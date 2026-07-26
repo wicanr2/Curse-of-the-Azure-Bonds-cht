@@ -302,4 +302,4 @@
 
 第 99 輪功能／文件 commit：`938d2a7`，已推送至 GitHub `main`。新增 DOS player item/effects pointer preservation、`.SWG` `0x3F` item stream adapter 與 party equipment projection；`.FX` effects、pointer address-space 與完整 save container 仍未完成。
 
-第一百輪功能／文件 commit：待本輪提交。新增 DOS `.FX` 9-byte effects stream adapter、Character preservation 與常見效果繁中名稱；effect gameplay tick／解除與完整 save container 仍未完成。
+第一百輪功能／文件 commit：`5bcea79`，已推送至 GitHub `main`。新增 DOS `.FX` 9-byte effects stream adapter、Character preservation 與常見效果繁中名稱；effect gameplay tick／解除與完整 save container 仍未完成。
