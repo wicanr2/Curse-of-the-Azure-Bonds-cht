@@ -780,6 +780,11 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		return nil, nil, nil, err
 	}
 	paths = append(paths, bigPicturePaths...)
+	sceneCharacterPaths, err := filepath.Glob("assets/sprites/character-area-*.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	paths = append(paths, sceneCharacterPaths...)
 	sort.Strings(paths)
 	images := make(map[string]*ebiten.Image, len(paths))
 	ids := make([]string, 0, len(paths))

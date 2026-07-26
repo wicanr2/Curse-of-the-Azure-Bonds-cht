@@ -78,3 +78,4 @@
 - [第八十輪 PIC／FINAL XOR delta](./round-80-pic-final-delta.md)（`READY`：限 PIC frame stream decode）
 - [第八十一輪 ECL PICTURE 事件畫面](./round-81-picture-event.md)（`READY`：限 PIC request 與 playback slice）
 - [第八十二輪 BIGPIC PICTURE 分支](./round-82-bigpic-event.md)（`READY`：限 BIGPIC extraction 與事件畫面）
+- [第八十三輪 HEAD／BODY 場景人物圖層](./round-83-head-body-scene-layers.md)（`READY`：限 scene character 素材與合成）

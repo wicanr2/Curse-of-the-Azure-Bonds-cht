@@ -20,11 +20,18 @@ type Picture struct {
 // the other layer; overlapping opaque pixels are combined with bitwise OR.
 // The source is top-left aligned, matching the original MergeIcon routine.
 func MergePictures(destination, source Picture) (Picture, error) {
+	return MergePicturesAt(destination, source, 0, 0)
+}
+
+// MergePicturesAt overlays source at pixel offset (offsetX, offsetY) on
+// destination. It preserves indexed transparent/OR semantics while
+// supporting Gold Box HEAD/BODY compositions with different origins.
+func MergePicturesAt(destination, source Picture, offsetX, offsetY int) (Picture, error) {
 	if destination.ItemCount == 0 || source.ItemCount == 0 {
 		return Picture{}, fmt.Errorf("cannot merge empty picture items")
 	}
-	if destination.Width() != source.Width() || source.Height() > destination.Height() {
-		return Picture{}, fmt.Errorf("cannot merge %dx%d source onto %dx%d destination", source.Width(), source.Height(), destination.Width(), destination.Height())
+	if offsetX < 0 || offsetY < 0 || offsetX+source.Width() > destination.Width() || offsetY+source.Height() > destination.Height() {
+		return Picture{}, fmt.Errorf("cannot merge %dx%d source at (%d,%d) onto %dx%d destination", source.Width(), source.Height(), offsetX, offsetY, destination.Width(), destination.Height())
 	}
 	result := destination
 	result.Pixels = append([]uint8(nil), destination.Pixels...)
@@ -35,7 +42,7 @@ func MergePictures(destination, source Picture) (Picture, error) {
 		for y := 0; y < source.Height(); y++ {
 			for x := 0; x < source.Width(); x++ {
 				sourceValue := source.Pixels[item*source.ItemSize()+y*source.Width()+x]
-				destinationIndex := item*destination.ItemSize() + y*destination.Width() + x
+				destinationIndex := item*destination.ItemSize() + (y+offsetY)*destination.Width() + x + offsetX
 				destinationValue := result.Pixels[destinationIndex]
 				switch {
 				case destinationValue == 16:
