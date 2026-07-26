@@ -12,6 +12,11 @@
     "enter_city": "進入城市",
     "journey_on": "繼續旅程",
     "camp": "紮營",
+    "inn": "客棧",
+    "store": "商店",
+    "bar": "酒館",
+    "leave": "離開",
+    "press_button": "請按任意鍵或 Enter 繼續",
     "ambushed": "你們遭到伏擊！",
     "captured": "你們被俘虜了。"
   }

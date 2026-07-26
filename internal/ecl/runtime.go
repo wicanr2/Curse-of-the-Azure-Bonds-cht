@@ -5,10 +5,11 @@ import "fmt"
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
-	Text  []string
-	Menus []Menu
-	PC    int
-	Steps int
+	Text           []string
+	Menus          []Menu
+	PC             int
+	Steps          int
+	WaitingForMenu bool
 }
 
 type Menu struct {
@@ -24,7 +25,7 @@ type Menu struct {
 // useful for proving an event prefix without silently treating the whole ECL
 // program as implemented.
 func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
-	return RunSubsetWithSelections(block, start, maxSteps, nil)
+	return runSubset(block, start, maxSteps, nil, false)
 }
 
 // RunSubsetWithSelections is RunSubset with deterministic selections for
@@ -32,6 +33,17 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 // default index 0. This is the bridge between ECL menu semantics and a UI;
 // it does not pretend to implement the original blocking DOS input routine.
 func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uint16) (RunResult, error) {
+	return runSubset(block, start, maxSteps, selections, false)
+}
+
+// RunSubsetInteractive pauses at the first menu whose selection is not
+// supplied. This allows a UI to feed one choice per frame/event instead of
+// silently choosing index zero for all later menus.
+func RunSubsetInteractive(block []byte, start, maxSteps int, selections []uint16) (RunResult, error) {
+	return runSubset(block, start, maxSteps, selections, true)
+}
+
+func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -193,6 +205,12 @@ func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uin
 				}
 				menu.Options = append(menu.Options, message)
 			}
+			if pauseOnMissing && selectionCursor >= len(selections) {
+				result.Menus = append(result.Menus, menu)
+				result.WaitingForMenu = true
+				result.PC = pc
+				return result, nil
+			}
 			if selectionCursor < len(selections) && selections[selectionCursor] < count {
 				menu.Selected = selections[selectionCursor]
 			}
@@ -230,6 +248,12 @@ func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uin
 					return result, fmt.Errorf("VERTICAL MENU option at %d: %w", pc, err)
 				}
 				menu.Options = append(menu.Options, message)
+			}
+			if pauseOnMissing && selectionCursor >= len(selections) {
+				result.Menus = append(result.Menus, menu)
+				result.WaitingForMenu = true
+				result.PC = pc
+				return result, nil
 			}
 			if selectionCursor < len(selections) && selections[selectionCursor] < count {
 				menu.Selected = selections[selectionCursor]

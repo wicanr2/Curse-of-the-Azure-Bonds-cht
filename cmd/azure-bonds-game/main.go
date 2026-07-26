@@ -37,7 +37,11 @@ func (a *app) Update() error {
 		case game.ModeTitle:
 			return a.state.Apply(game.ActionStart)
 		case game.ModeWilderness:
-			return a.state.Select(a.choiceCursor)
+			err := a.state.Select(a.choiceCursor)
+			if a.state.Mode == game.ModeWilderness {
+				a.choiceCursor = 0
+			}
+			return err
 		}
 	}
 	if a.state.Mode == game.ModeWilderness {
