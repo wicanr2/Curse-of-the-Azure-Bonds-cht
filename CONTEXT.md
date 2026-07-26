@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十六輪：combat error recovery。
+第一百五十七輪：ECL ADD NPC signal。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -142,7 +142,7 @@
 - 參考公開 CoAB 重寫程式後，確認 ECL 初始化會先連續讀五組 word-valued command-set；`internal/ecl.EntryPoints` 已加入此安全解析器與 regression test。
 - 實際 `ECL1.DAX` 三個 block 的 initial entry 都解析為 `0x8014`；CLI `-graph` 已優先使用該入口對應的 payload offset `+0x0014`，不再盲目從 `+0x0000` 開始。
 - `ParseOperands` 已正確消耗 `0x80 length payload` compressed-string operand；`TraceAt` 可從 initial entry 開始，block 81 已回歸解出 `AS YOU DEPART...`、`AS YOU LEAVE...` 等原始事件文字。
-- `internal/ecl.RunSubset` 已支援 bounded `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT`；實際 ECL1 從 initial entry 執行時會在尚未支援的 `0x25 ON GOTO` 或其他副作用命令安全停止。
+- `internal/ecl.RunSubset` 已支援 bounded `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT/ON GOTO/ON GOSUB`；實際 ECL1 仍會在其他尚未接入的副作用 command 安全停止。
 - `RunSubset` 已加入 `0x14 COMPARE AND`、`0x2A GETTABLE`、`0x2B HORIZONTAL MENU`；實際 ECL1 已讀出 TILVERTON／SHADOWDALE 開場與 `ENTER CITY/JOURNEY ON/CAMP` menu。
 - `game.NewStateFromECL` 與 Ebiten opening 已接上原始 menu 的繁中 locale 映射；未提供 sequence 時 runner 仍以 deterministic index 0。
 - `RunSubsetWithSelections`、`game.State.Select` 與 Ebiten cursor 已接上 menu index；實際 selection 1 會走到不同 ECL branch。
@@ -245,7 +245,7 @@
 11. 建立 ECL branch target graph，將 opening marker 後的選項與事件序列接入 state。
 12. 對 ECL graph 的 entry points 做原版事件文字對齊，建立第一個完整 event screen。
 13. 用 `EntryPoints` 對實際 ECL1–ECL6 做入口 regression，再逐步加入可執行 VM command subset。
-14. 將 `ON GOTO/GOSUB`、選單與 memory model 以 regression 驗證後接入遊戲 state。
+14. 將 `ON GOTO/GOSUB`、選單與 bounded memory model 以 regression 驗證後接入遊戲 state；完整 DOS memory model 仍保留 boundary。
 15. 將 menu selection 變成 Ebiten input／runner action，完成 Enter City／Journey On 第一個事件分支。
 16. 實作 `VERTICAL MENU` 的可觀測選項與 input，再擴展第一個城市事件。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。
@@ -415,3 +415,5 @@
 第一百五十五輪功能／文件 commit：`07634ab`，已推送至 GitHub `main`。將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn，讓敵方也使用 deterministic `AttackSequence` 與繁中多次攻擊摘要；新增 regression、READY 規格與共用 state knowledge。enemy AI、彈藥、Aim／line-of-sight 與額外職業攻擊仍保留 boundary。
 
 第一百五十六輪功能／文件 commit：`531f892`，已推送至 GitHub `main`。將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。
+
+第一百五十七輪待提交：將 ECL `ADD NPC (0x36)` 接成 `RunResult.NPCIDs` signal，讓實際 ECL1 block 0x52 的 `PICTURE → ADD NPC 0x55 → EXIT` 能安全完成；新增 synthetic／real-image regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。NPC table、party side effect 與完整劇情 continuation 仍保留 boundary。

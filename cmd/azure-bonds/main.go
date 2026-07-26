@@ -318,6 +318,9 @@ func main() {
 			if len(result.ProgramIDs) > 0 {
 				fmt.Printf("  subset PROGRAM ids=%v external-boundary=%t\n", result.ProgramIDs, result.ProgramExit)
 			}
+			if len(result.NPCIDs) > 0 {
+				fmt.Printf("  subset ADD NPC ids=%v\n", result.NPCIDs)
+			}
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
 			}
