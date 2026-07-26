@@ -17,6 +17,8 @@
 | Esc | 離開地圖或關閉手札 |
 | J | 隨時開啟冒險手札（戰鬥中停用） |
 
+手札共有八頁摘要；開啟後用左右／上下鍵翻頁，頁面內容包含序章、地理、勢力、神器、調查與戰鬥提示。
+
 啟動時可用 `-font` 指定支援繁中文字形的 TTF／OTF 字型，例如：
 
 ```text
@@ -40,4 +42,3 @@ go run ./cmd/azure-bonds-game -font /path/to/cjk-font.ttf
 - `Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf`
 - `Curse-of-the-Azure-Bonds_Misc_DOS_EN_Adventurers-Journal.pdf`
 - 本地 `Curse-of-the-Azure-Bonds_Misc_DOS_EN_Docs-as-TXT.zip` 的純文字轉錄
-

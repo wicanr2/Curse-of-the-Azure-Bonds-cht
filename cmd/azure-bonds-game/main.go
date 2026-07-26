@@ -42,6 +42,12 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
 			return a.state.CloseJournal()
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			return a.state.NextJournalPage()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			return a.state.PreviousJournalPage()
+		}
 		return nil
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyJ) {
@@ -122,6 +128,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 			text.Draw(screen, paragraph, a.face, 32, line, white)
 			line += 36
 		}
+		text.Draw(screen, "第 "+strconv.Itoa(a.state.JournalPage+1)+" / "+strconv.Itoa(len(a.state.JournalPages))+" 頁　左右：翻頁", a.face, 32, 320, white)
 		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 350, cyan)
 		return
 	}

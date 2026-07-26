@@ -232,6 +232,13 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	if err := state.OpenJournal(); err != nil || state.Mode != ModeJournal || state.JournalTitle == "" || state.JournalText == "" {
 		t.Fatalf("journal state=%#v err=%v", state, err)
 	}
+	firstPage := state.JournalText
+	if err := state.NextJournalPage(); err != nil || state.JournalPage != 1 || state.JournalText == firstPage {
+		t.Fatalf("journal next page=%#v err=%v", state, err)
+	}
+	if err := state.PreviousJournalPage(); err != nil || state.JournalPage != 0 || state.JournalText != firstPage {
+		t.Fatalf("journal previous page=%#v err=%v", state, err)
+	}
 	if err := state.CloseJournal(); err != nil || state.Mode != ModeWilderness {
 		t.Fatalf("journal close mode=%v err=%v", state.Mode, err)
 	}
