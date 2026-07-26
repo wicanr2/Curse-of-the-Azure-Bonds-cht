@@ -14,6 +14,8 @@
 
 ![GEO2 wall/door 組合出的 dungeon floor slice](docs/screenshots/dungeon-floor.png)
 
+![原始 CPIC 戰鬥小人與效果 sprite sheet](docs/screenshots/combat-sprites.png)
+
 目前已完成的垂直切片包括：
 
 - DAX 容器／RLE、ECL bounded VM trace 與跨 ECL1–ECL6 block context。
@@ -23,6 +25,7 @@
 - GEO2 wall／door fields → dungeon background composition → TILES pixel art 的可見 slice（`D` 預覽）。
 - dungeon table／chair decoration 已依 GEO `terrain & 0x40` 與原版 seeded dice pass 接入。
 - Ebiten 原始 tile gallery、GEO wall viewport 與依 GEO wall bytes 驗證的游標移動。
+- 已從 `CPIC1.DAX`–`CPIC6.DAX` 抽出 156 張透明背景戰鬥小人 PNG；完整索引在 [`assets/sprites/README.md`](assets/sprites/README.md)。
 - Area1／Area2 已知欄位已有 `0x800` bytes binary round-trip codec，未知 bytes 會保留。
 
 執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：
@@ -32,12 +35,14 @@ go test ./...
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -geo-set 3 -geo-block 0x10
+# 重新由本地原始 ZIP 產生 sprites 與 README 截圖
+go run ./scripts
 ```
 
 遊戲內快捷鍵：`Enter` 開始、`C` 建立角色、`J` 冒險手札、`T` 圖塊預覽、`G` GEO 預覽、`D` dungeon floor 預覽、`F5/F9` 儲存／載入 remake game。
 
 ## 尚未完成
 
-完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview；目前 remake save 已能恢復已實作的 game state，但原版完整 save slot／game-area loader 與所有 file side effects 仍未完成。
+完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材已抽出並放入 repo，但尚未接入 Ebiten combat renderer；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，但原版完整 save slot／game-area loader 與所有 file side effects 仍未完成。
 
 更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/) 與 [`docs/history.md`](docs/history.md)。

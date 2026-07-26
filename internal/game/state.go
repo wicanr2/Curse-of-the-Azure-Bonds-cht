@@ -465,11 +465,28 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModePlace
 	s.OriginalEvent = originalChoice
-	s.Message = localizeOption(s.catalog, originalChoice)
+	s.Message = s.placeEventMessage(originalChoice)
 	if originalChoice == "LEAVE" {
 		s.eventReturnMode = ModeMap
 	}
 	return nil
+}
+
+// placeEventMessage is the first localized place-event screen. The reference
+// engine dispatches these choices into separate routines; keeping the
+// dispatch explicit lets those routines replace this bounded screen without
+// changing the ECL/menu contract.
+func (s *State) placeEventMessage(originalChoice string) string {
+	switch originalChoice {
+	case "INN":
+		return s.catalog.Text("inn_event", "你來到"+s.LocationName+"的客棧。住宿與休息功能尚待接入。")
+	case "STORE":
+		return s.catalog.Text("store_event", "你來到"+s.LocationName+"的商店。原版商店功能尚待接入。")
+	case "BAR":
+		return s.catalog.Text("bar_event", "你來到"+s.LocationName+"的酒館。情報與對話功能尚待接入。")
+	default:
+		return localizeOption(s.catalog, originalChoice)
+	}
 }
 
 func (s *State) enterMap() {

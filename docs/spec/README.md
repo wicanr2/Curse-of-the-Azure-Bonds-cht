@@ -67,3 +67,4 @@
 - [第六十九輪 Area1／Area2 binary codec](./round-69-area-codec.md)（`READY`：限已定位欄位與未知 bytes preservation）
 - [第七十輪可恢復的 remake game save](./round-70-resumable-game-save.md)（`READY`：限目前 game state 與舊 party JSON 相容）
 - [第七十一輪三城市 location routing](./round-71-city-location-routing.md)（`READY`：限 opening city menu 與共同 map/place contract）
+- [第七十二輪戰鬥小人 sprite extraction](./round-72-combat-sprite-extraction.md)（`READY`：限 CPIC masked picture extraction）

@@ -191,6 +191,7 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	catalog.Strings["store"] = "商店"
 	catalog.Strings["bar"] = "酒館"
 	catalog.Strings["leave"] = "離開"
+	catalog.Strings["inn_event"] = "暗影谷客棧事件"
 	state := NewState(catalog)
 	state.Location = LocationShadowdale
 	state.Mode = ModeMap
@@ -203,7 +204,7 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.Message != "客棧" || state.OriginalEvent != "INN" {
+	if state.Mode != ModeEvent || state.Message != "暗影谷客棧事件" || state.OriginalEvent != "INN" {
 		t.Fatalf("inn event=%#v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModePlace {
