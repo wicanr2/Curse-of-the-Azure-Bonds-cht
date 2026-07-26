@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 25 輪：real NEWECL regression。
+第 26 輪：ECL5 real NEWECL regression。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -65,6 +65,7 @@
 - `cmd/azure-bonds-game` 已載入 ECL1 全部 blocks；`NewStateFromECLBlocks`／`State.Select` 使用 BlockSession 與 selection offset，能為後續 NEWECL 接續保留 bounded session。
 - `BlockSession.RunInteractive` 已實際接入 State，會依 `SelectionsConsumed` 傳遞 global sequence 並套用 NEWECL target；initial-entry graph 尚未找到 real reachable NEWECL edge。
 - `-all-entries -graph` 已掃描 ECL1–ECL6；ECL4 block `0x25` payload `+0x022B` 的 real `NEWECL → 0x50` 已由 `-block-id 37 -run-start 555` 驗證。
+- ECL5 block `0x30` payload `+0x0098` 的第二條 real `NEWECL → 0x50` 已由 `-block-id 48 -run-start 152` 驗證；兩者仍是 entry-level regression，尚未由完整玩家流程抵達。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
