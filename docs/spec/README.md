@@ -52,3 +52,4 @@
 - [第五十三輪可恢復的 ECL runtime](./round-53-resumable-ecl-runtime.md)（`READY`：限 menu pause／resume execution context）
 - [第五十四輪跨 ECL block runtime context](./round-54-cross-ecl-runtime-context.md)（`READY`：限 `NEWECL` context transfer）
 - [第五十五輪全 ECL global block namespace](./round-55-global-ecl-loader.md)（`READY`：限全檔 loader 與 real transition）
+- [第五十六輪 GEO 16×16 map geometry](./round-56-geo-map-geometry.md)（`READY`：限 GEO geometry parser）
