@@ -305,6 +305,48 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	}
 }
 
+func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["shop_menu_prompt"] = "商店選單"
+	catalog.Strings["shop_buy"] = "購買"
+	catalog.Strings["shop_view"] = "查看"
+	catalog.Strings["shop_take"] = "取出金幣"
+	catalog.Strings["shop_pool"] = "集中金幣"
+	catalog.Strings["shop_share"] = "分配金幣"
+	catalog.Strings["shop_appraise"] = "估價"
+	catalog.Strings["shop_exit"] = "離開商店"
+	state := NewState(catalog)
+	state.Mode = ModePlace
+	state.Location = LocationShadowdale
+	state.LocationName = "暗影谷"
+	state.Choices = []string{"客棧", "商店", "酒館", "離開"}
+	state.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 7 || state.Choices[0] != "購買" {
+		t.Fatalf("shop menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "BUY" {
+		t.Fatalf("shop buy state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopMenu || state.Choices[0] != "購買" {
+		t.Fatalf("shop continuation state=%#v", state)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || state.shopMenu || len(state.Choices) != 4 || state.Choices[1] != "商店" {
+		t.Fatalf("shop exit state=%#v", state)
+	}
+}
+
 func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"

@@ -112,6 +112,7 @@ type State struct {
 	eclSeed                int64
 	mapSeed                int64
 	geoMapPending          bool
+	shopMenu               bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -283,6 +284,9 @@ func (s *State) Select(index int) error {
 		originalChoice = s.currentOriginalChoices[index]
 	}
 	if s.Mode == ModePlace {
+		if s.shopMenu {
+			return s.selectShop(index, originalChoice)
+		}
 		return s.selectPlace(index, originalChoice)
 	}
 	s.Mode = ModeEvent
@@ -533,6 +537,10 @@ func (s *State) CloseJournal() error {
 }
 
 func (s *State) selectPlace(index int, originalChoice string) error {
+	if originalChoice == "STORE" {
+		s.enterShopMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModePlace
 	s.OriginalEvent = originalChoice
@@ -545,6 +553,50 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 		s.eventReturnMode = ModeMap
 	}
 	return nil
+}
+
+func (s *State) enterShopMenu() {
+	s.shopMenu = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
+	s.Choices = []string{
+		s.catalog.Text("shop_buy", "購買"),
+		s.catalog.Text("shop_view", "查看"),
+		s.catalog.Text("shop_take", "取出金幣"),
+		s.catalog.Text("shop_pool", "集中金幣"),
+		s.catalog.Text("shop_share", "分配金幣"),
+		s.catalog.Text("shop_appraise", "估價"),
+		s.catalog.Text("shop_exit", "離開商店"),
+	}
+	s.currentOriginalChoices = []string{"BUY", "VIEW", "TAKE", "POOL", "SHARE", "APPRAISE", "EXIT"}
+	s.Message = ""
+}
+
+func (s *State) selectShop(index int, originalChoice string) error {
+	if originalChoice == "EXIT" {
+		s.shopMenu = false
+		return s.EnterPlacesFromEvent()
+	}
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModePlace
+	s.OriginalEvent = originalChoice
+	s.Message = s.shopActionMessage(originalChoice)
+	return nil
+}
+
+func (s *State) shopActionMessage(originalChoice string) string {
+	switch originalChoice {
+	case "BUY":
+		return s.catalog.Text("shop_buy_unavailable", "商店庫存尚未載入。")
+	case "VIEW":
+		return s.catalog.Text("shop_view_unavailable", "查看角色與物品功能尚待接入。")
+	case "TAKE", "POOL", "SHARE":
+		return s.catalog.Text("shop_money_unavailable", "party money pool 功能尚待接入。")
+	case "APPRAISE":
+		return s.catalog.Text("shop_appraise_unavailable", "估價功能尚待接入。")
+	default:
+		return localizeOption(s.catalog, originalChoice)
+	}
 }
 
 // restorePartyAtInn applies the safe-rest boundary described by the original
@@ -658,6 +710,10 @@ func (s *State) Continue() error {
 		s.Mode = ModeWilderness
 		return nil
 	case ModePlace:
+		if s.shopMenu {
+			s.enterShopMenu()
+			return nil
+		}
 		s.eventReturnMode = ModeEvent
 		return s.EnterPlacesFromEvent()
 	case ModeMap:

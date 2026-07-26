@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百零九輪：商店 Buy／Sell／ID transaction contract。
+第一百一十輪：繁中 STORE Shop Menu state。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -321,3 +321,5 @@
 第一百零八輪功能／文件 commit：`75ae586`，已推送至 GitHub `main`。城市 `INN` 會恢復 party roster／fighter HP 並以繁中訊息返回場所選單；完整 CAMP、商店與酒館情報仍未完成。
 
 第一百零九輪功能／文件 commit：`755d83c`，已推送至 GitHub `main`。建立 price-injected Buy／Sell／200 GP ID party transaction；完整 money pool、shop stock 與 Shop Menu UI 仍未完成。
+
+第一百一十輪功能／文件 commit：待本輪提交。城市 STORE 已接入繁中 BUY／VIEW／TAKE／POOL／SHARE／APPRAISE／EXIT menu，未知 stock／money-pool action 保留明確 boundary。
