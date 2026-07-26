@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 71 輪：三城市 location routing。
+第 72 輪：戰鬥小人 sprite extraction。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -86,6 +86,8 @@
 第 70 輪功能／文件 commit：`bb428df`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 71 輪功能／文件 commit：`85196f2`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 72 輪功能／文件 commit：`06d5447`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 ## 已確認
 
