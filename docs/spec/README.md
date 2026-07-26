@@ -106,3 +106,4 @@
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
 - [第一百一十輪繁中 Shop Menu state](./110-shop-menu-state.md)（`READY`：限 STORE command UI boundary）
 - [第一百一十一輪 shop stock／party money pool](./111-shop-stock-money-pool.md)（`READY`：限 injected offer 與資產 API）
+- [第一百一十二輪 Shop BUY 商品選擇 UI](./112-shop-buy-selection.md)（`READY`：限 injected stock selection）

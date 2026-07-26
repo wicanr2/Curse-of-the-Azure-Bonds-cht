@@ -371,6 +371,42 @@ func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
 	}
 }
 
+func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Gold: 150, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	if err := state.PoolPartyGold(); err != nil {
+		t.Fatal(err)
+	}
+	state.SetShopOffers([]ShopOffer{{Item: monster.ItemRecord{Type: 36, Name: "長劍"}, Price: 100}})
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopStockMenu || len(state.Choices) != 2 || state.Choices[0] != "長劍（100 GP）" {
+		t.Fatalf("stock menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "BUY" || len(state.partyRoster[0].Equipment) != 1 || state.MoneyPool() != 50 {
+		t.Fatalf("after buy state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || state.shopStockMenu || len(state.Choices) != 7 {
+		t.Fatalf("after buy continue state=%#v", state)
+	}
+}
+
 func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"
