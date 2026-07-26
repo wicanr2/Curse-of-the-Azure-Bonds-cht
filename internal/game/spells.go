@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -47,4 +48,38 @@ func firstLevelMemorizedCapacity(character party.Character) int {
 	default:
 		return 0
 	}
+}
+
+// firstLevelMemorizationHours follows the RuleBook's bounded first-level
+// timing: four hours of minimum preparation plus fifteen minutes per spell.
+// Rest UI is expressed in whole hours, so the required duration is rounded up
+// and the pending selection remains intact when rest is too short.
+func firstLevelMemorizationHours(pending map[int][]uint8) int {
+	maxMinutes := 0
+	for _, spells := range pending {
+		if len(spells) == 0 {
+			continue
+		}
+		minutes := 4*60 + len(spells)*15
+		if minutes > maxMinutes {
+			maxMinutes = minutes
+		}
+	}
+	if maxMinutes == 0 {
+		return 0
+	}
+	return (maxMinutes + 59) / 60
+}
+
+// pendingCharacterIndexes provides deterministic ordering for diagnostics and
+// future per-character partial memorization rules.
+func pendingCharacterIndexes(pending map[int][]uint8) []int {
+	indexes := make([]int, 0, len(pending))
+	for index, spells := range pending {
+		if len(spells) > 0 {
+			indexes = append(indexes, index)
+		}
+	}
+	sort.Ints(indexes)
+	return indexes
 }

@@ -342,7 +342,8 @@ func (s *State) enterCampRestMenu() {
 
 func (s *State) applyPendingMemorization() int {
 	changed := 0
-	for characterIndex, spells := range s.pendingMemorizedSpells {
+	for _, characterIndex := range pendingCharacterIndexes(s.pendingMemorizedSpells) {
+		spells := s.pendingMemorizedSpells[characterIndex]
 		if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
 			continue
 		}
@@ -354,9 +355,10 @@ func (s *State) applyPendingMemorization() int {
 	return changed
 }
 
-// restParty applies only the manual's natural-healing portion: one HP per
-// 24 uninterrupted hours. Spell memorization and random interruption are
-// intentionally separate adapters until their original data is decoded.
+// restParty applies the manual's natural-healing portion: one HP per 24
+// uninterrupted hours. Memorization timing is checked before this service;
+// random interruption remains a separate adapter until its original data is
+// decoded.
 func (s *State) restParty() int {
 	healed := s.restHours / 24
 	if healed <= 0 {
@@ -744,6 +746,15 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.enterCampMenu()
 			return nil
 		case "REST_START":
+			requiredHours := firstLevelMemorizationHours(s.pendingMemorizedSpells)
+			if requiredHours > s.restHours {
+				s.campRestMenu = false
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = "REST"
+				s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_insufficient", "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。"), s.restHours, requiredHours)
+				return nil
+			}
 			memorized := s.applyPendingMemorization()
 			healed := s.restParty()
 			s.campRestMenu = false

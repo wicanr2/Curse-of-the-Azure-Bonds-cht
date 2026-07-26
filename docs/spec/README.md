@@ -127,3 +127,4 @@
 - [第一百三十輪 Known Spells preservation](./130-known-spell-preservation.md)（`READY`：限 DOS → party/save → CAMP MAGIC 資料保存）
 - [第一百三十一輪 CAMP MAGIC command menu](./131-camp-magic-command-menu.md)（`READY`：限 command routing 與 DISPLAY／REST）
 - [第一百三十二輪 CAMP MEMORIZE → REST writeback](./132-camp-memorize-rest-writeback.md)（`READY`：限 known-spell selection 與 slot writeback）
+- [第一百三十三輪 MEMORIZE preparation time](./133-memorize-preparation-time.md)（`READY`：限一級法術準備時間）
