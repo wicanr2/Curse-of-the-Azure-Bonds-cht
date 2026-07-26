@@ -42,3 +42,9 @@
 - `internal/ecl.Trace` 能依 command arity 追蹤 decoded block。
 - 未知 opcode／截斷 operand 會安全停止並保留已完成 trace。
 - `go test ./...` 與原始 ECL CLI trace 已通過。
+
+## 第七輪驗收
+
+- Go ECL layer 能從 length-prefixed payload 解碼 6-bit packed text。
+- 以原始 `ECL1.DAX` 的真實 payload 做 regression test。
+- CLI 能列出英文原文候選，作為後續繁中翻譯資源輸入。

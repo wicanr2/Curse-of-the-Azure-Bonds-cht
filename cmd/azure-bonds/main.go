@@ -15,6 +15,7 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
+	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	flag.Parse()
 	data, err := zipMember(*image, *member)
 	if err != nil {
@@ -34,6 +35,11 @@ func main() {
 			}
 			if err != nil {
 				fmt.Printf("  trace stopped safely: %v\n", err)
+			}
+		}
+		if *stringsOnly {
+			for _, text := range ecl.FindPackedTextCandidates(block.Data) {
+				fmt.Printf("  text=%q\n", text)
 			}
 		}
 	}
