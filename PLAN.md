@@ -79,3 +79,10 @@
 - [x] 修正已觀察 VM command table 的 arity metadata 並加入 regression test。
 - [x] 正確消耗 length-prefixed compressed-string operand，並支援從指定 entry offset trace。
 - [ ] 對全部實際 ECL block 驗證五個入口，並與事件文字對齊。
+
+## 第十三輪驗收
+
+- [x] 建立有步數上限的 ECL subset runner。
+- [x] 實作 `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT` 與 packed text 輸出測試。
+- [x] 未支援 opcode 以精確 payload offset 停止，未宣稱完整 VM。
+- [ ] 實作並驗證 `ON GOTO/GOSUB`、menu input 與完整 memory model。
