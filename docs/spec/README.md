@@ -44,3 +44,4 @@
 - [第四十五輪 繁中角色姓名輸入](./round-45-character-name-input.md)（`READY`：限 Unicode 姓名）
 - [第四十六輪 角色建立能力值編輯](./round-46-ability-editor.md)（`READY`：限能力值 slice）
 - [第四十七輪 能力值 3d6 擲骰與重擲](./round-47-ability-rolls.md)（`READY`：限可重現擲骰）
+- [第四十八輪 版本化 party JSON 存檔](./round-48-versioned-party-save.md)（`READY`：限 remake party descriptor）

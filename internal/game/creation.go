@@ -2,10 +2,12 @@ package game
 
 import (
 	"fmt"
+	"os"
 	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
 
 func starterCharacters() []party.Character {
@@ -165,11 +167,51 @@ func (s *State) FinishCharacterCreation() error {
 	if err := s.SetParty(fighters); err != nil {
 		return err
 	}
+	s.partyRoster = append(party.Roster(nil), s.CreationRoster...)
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.CreationMessage = ""
+	return nil
+}
+
+func (s *State) SavePartyFile(path string) error {
+	if len(s.partyRoster) == 0 {
+		return fmt.Errorf("no character-created party is available to save")
+	}
+	data, err := partySave.EncodeParty(s.partyRoster)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, data, 0o600)
+}
+
+func (s *State) LoadPartyFile(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	roster, err := partySave.DecodeParty(data)
+	if err != nil {
+		return err
+	}
+	fighters := make([]combat.Fighter, 0, len(roster))
+	for _, character := range roster {
+		fighter, err := character.Fighter()
+		if err != nil {
+			return err
+		}
+		fighters = append(fighters, fighter)
+	}
+	if err := s.SetParty(fighters); err != nil {
+		return err
+	}
+	s.partyRoster = append(party.Roster(nil), roster...)
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
+	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
 

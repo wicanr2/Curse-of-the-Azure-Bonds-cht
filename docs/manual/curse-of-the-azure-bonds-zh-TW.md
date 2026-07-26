@@ -16,6 +16,8 @@
 | 方向鍵 | 移動游標、在荒野地圖移動、選擇戰鬥目標 |
 | Esc | 離開地圖或關閉手札 |
 | J | 隨時開啟冒險手札（戰鬥中停用） |
+| F5 | 儲存已建立的隊伍至 `party.json` |
+| F9 | 從 `party.json` 載入隊伍 |
 
 手札共有八頁摘要；開啟後用左右／上下鍵翻頁，頁面內容包含序章、地理、勢力、神器、調查與戰鬥提示。
 
@@ -24,6 +26,8 @@
 ```text
 go run ./cmd/azure-bonds-game -font /path/to/cjk-font.ttf
 ```
+
+可用 `-party-save PATH` 更換 F5／F9 使用的檔案；也可用 `-party-load PATH` 在啟動時載入 remake 的版本化 party JSON。這份檔案目前只保存角色描述，不是原版 DOS 存檔。
 
 ## 地點速覽
 

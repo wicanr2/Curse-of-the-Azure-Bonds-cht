@@ -37,6 +37,7 @@ type app struct {
 	state        game.State
 	face         font.Face
 	choiceCursor int
+	partyPath    string
 }
 
 func (a *app) Update() error {
@@ -126,6 +127,23 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyJ) {
 		return a.state.OpenJournal()
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyF5) {
+		if err := a.state.SavePartyFile(a.partyPath); err != nil {
+			a.state.Message = "儲存失敗：" + err.Error()
+		} else {
+			a.state.Message = "隊伍已儲存：" + a.partyPath
+		}
+		return nil
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
+		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
+			a.state.Message = "載入失敗：" + err.Error()
+		} else {
+			a.state.Message = "隊伍已載入：" + a.partyPath
+			a.choiceCursor = 0
+		}
+		return nil
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		switch a.state.Mode {
@@ -222,6 +240,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 			text.Draw(screen, prefix+choice, a.face, 56, 220+index*40, white)
 		}
 		text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
+		text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
 	}
 	if a.state.Mode == game.ModeEvent {
 		text.Draw(screen, a.state.Message, a.face, 56, 220, cyan)
@@ -339,6 +358,8 @@ func main() {
 	encounter := flag.Bool("encounter", false, "start the observed ECL1 encounter directly")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
+	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
+	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	flag.Parse()
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -361,6 +382,11 @@ func main() {
 		eclBlocks[block.Entry.ID] = block.Data
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID)
+	if *partyLoadPath != "" {
+		if err := state.LoadPartyFile(*partyLoadPath); err != nil {
+			log.Fatal(err)
+		}
+	}
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -384,7 +410,7 @@ func main() {
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath)}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath}); err != nil {
 		log.Fatal(err)
 	}
 }
