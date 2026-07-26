@@ -254,6 +254,7 @@
 - [x] 將 RuleBook Curse（spell ID `2`）接入牧師 C／敵方 target selection、slot transaction、相鄰排除與 6 回合攻擊 debuff。
 - [x] 將 RuleBook Cause Light Wounds（spell ID `4`）接入牧師 W／touch target selection、slot transaction 與 deterministic 1d8 damage。
 - [x] 將 RuleBook Protection from Evil（spell ID `6`）接入牧師 P／party touch target、conditional evil-attacker AC +2 與 `3r/lvl` duration；保留 saving throw／alignment import boundary。
+- [x] 修正 class-local spell ID collision，並將 RuleBook Protection from Good（牧師 ID `7`）接入 G／party target／conditional good-attacker AC +2；Magic Missile（魔法師 ID `7`）保留 S 分流。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
