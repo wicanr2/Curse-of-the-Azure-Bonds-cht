@@ -10,6 +10,7 @@
   - `2`：`DAGGER FALLS`／匕首瀑布
 - `Area.CurrentCity` 保存選擇，wilderness floor 生成改用對應的 reference `CityInfo` flags，而非固定 index 0。
 - `WILDERNESS`／`EXIT` map-entry 與共用 INN／STORE／BAR／LEAVE place contract 可由三個 location 共用。
+- INN／STORE／BAR 已各自顯示繁中 place-event screen，按 Enter 可返回場所選單；商店交易、客棧休息與酒館情報 routine 仍分開列為待實作。
 - 保留原始英文 location 名稱與繁中顯示名稱。
 
 ## 邊界
