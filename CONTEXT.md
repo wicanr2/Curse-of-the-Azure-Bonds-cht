@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 84 輪：PICTURE Area2 HeadBlockId 分支與 HEAD/BODY scene event。
+第 85 輪：Area2 HeadBlockId binary codec 與 PICTURE scene sync。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -112,6 +112,8 @@
 第 83 輪功能／文件 commit：`325df5a`，已推送至 GitHub `main`。依 reference `HEAD<area>`／`BODY<area>` 與 body `y+5` 規則，抽出 HEAD2–6／BODY2–6 共 40／31 張 PNG，合成 30 張 scene character composites；新增 `gfx.MergePicturesAt` offset API、regression、共用 Ebiten loader 與第 83 輪規格。`go test ./...` 與素材重建通過。
 
 第 84 輪功能／文件 commit：`7092643`，已推送至 GitHub `main`。依 reference `Area2.HeadBlockId == 0xFF` 分流 PICTURE：非 sentinel 時 body 使用 PICTURE block、head 使用 scene state，Ebiten 顯示 HEAD/BODY composite；新增 `SetSceneCharacter`、可恢復事件 regression、第 84 輪規格與知識庫更新。`go test ./...` 通過。
+
+第 85 輪功能／文件 commit：`fcb63d7`，已推送至 GitHub `main`。確認並接入 reference `Area2.HeadBlockId @ 0x5C2`：`area.State`／Area2 codec 讀寫該欄位，`game.SetAreaState` 同步到 PICTURE HEAD/BODY branch；新增 raw codec 與 Area2→game regression、第 85 輪規格。`go test ./...` 通過。
 
 ## 已確認
 
