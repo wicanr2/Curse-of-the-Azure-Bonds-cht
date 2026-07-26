@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百二十一輪：CAMP ALTER／ORDER party reorder。
+第一百二十二輪：CAMP ALTER／DROP confirmation。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -345,3 +345,5 @@
 第一百二十輪功能／文件 commit：`e99977e`，已推送至 GitHub `main`。CAMP SAVE 透過一次性 state request 接到 Ebiten versioned party save；原版 SAVGAM slot／area container 尚未解析。
 
 第一百二十一輪功能／文件 commit：`29284fb`，已推送至 GitHub `main`。CAMP ALTER／ORDER 新增兩階段角色重排，並同步 party roster 與 combat fighter；DROP／SPEED／ICON／PICS／FIX 仍未完成。
+
+第一百二十二輪功能／文件 commit：`7c73ab3`，已推送至 GitHub `main`。CAMP ALTER／DROP 新增二次確認的永久角色移除，並同步 party roster／combat fighter；SPEED／ICON／PICS／FIX 仍未完成。
