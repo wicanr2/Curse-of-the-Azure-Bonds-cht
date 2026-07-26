@@ -435,6 +435,28 @@ func TestUnequipCursedAndRemoveItemQuantityRules(t *testing.T) {
 	}
 }
 
+func TestConsumeAmmunitionUsesInjectedRawTypeMappingAtomically(t *testing.T) {
+	character := validCharacter()
+	character.Equipment = []monster.ItemRecord{
+		{Type: 73, Count: 3},
+		{Type: 28, Count: 2},
+	}
+	mapping := map[uint8][]uint8{11: {73}}
+	if err := character.ConsumeAmmunition(11, 2, mapping); err != nil {
+		t.Fatal(err)
+	}
+	if len(character.Equipment) != 2 || character.Equipment[0].Count != 1 || character.Equipment[1].Count != 2 {
+		t.Fatalf("after arrow consumption=%+v", character.Equipment)
+	}
+	before := append([]monster.ItemRecord(nil), character.Equipment...)
+	if err := character.ConsumeAmmunition(11, 2, mapping); err == nil {
+		t.Fatal("expected insufficient arrow error")
+	}
+	if len(character.Equipment) != len(before) || character.Equipment[0].Count != before[0].Count {
+		t.Fatalf("insufficient consumption mutated equipment=%+v before=%+v", character.Equipment, before)
+	}
+}
+
 func TestUseConsumableRemovesScrollAndDecrementsWandCharge(t *testing.T) {
 	catalog, err := monster.ParseBaseItems(make([]byte, monster.BaseItemHeaderSize+80*monster.BaseItemRecordSize))
 	if err != nil {

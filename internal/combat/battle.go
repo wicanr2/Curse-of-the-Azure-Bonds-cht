@@ -72,6 +72,7 @@ type Fighter struct {
 	DamageDiceSides      int
 	DamageBonus          int
 	AttacksPerTurn       int
+	AmmunitionType       uint8
 	InitiativeBonus      int
 }
 

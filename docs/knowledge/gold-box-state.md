@@ -42,6 +42,7 @@ MOVE 的 adjacency transition 已可共用：Battle 保存舊座標，成功移�
 移入敵格則是另一條 MOVE branch：回傳 `MoveResult.Attack` 並保留角色原座標，State 沿用一般攻擊訊息與勝負 transition；不可把敵格當成一般 occupancy error，也不可讓 renderer 自行推測佔格、reach 或 facing。
 Combat VIEW 應是獨立 read-only transaction：保存 active party fighter ID，顯示可驗證的 HP／AC／attack summary，Enter／Esc 關閉且不消耗 turn。後續作品可替換 View Menu 欄位，但不能讓 renderer 直接修改戰鬥 state。
 武器多次攻擊也應維持三層資料流：`ITEMS` raw RateOfFire（以二倍值保存）→ equipped fighter `AttacksPerTurn` → Battle attack sequence。目標倒下後由 game target adapter 換下一個存活目標；彈藥消耗、職業等級額外攻擊與 Aim／range 不可由單一 RateOfFire byte 臆測。
+彈藥再拆成第四層：ITEMS raw `AmmunitionType` 與 inventory item type 是不同 namespace，必須由各遊戲資料層注入 mapping；`Character.ConsumeAmmunition` 在 Battle 前 atomic 扣除本回合 shots，mapping 缺失或不足時拒絕且不修改 inventory。後續 Gold Box 遊戲可重用 transaction，不共享未證實的 type 對應。
 
 ## Tavern Tale boundary
 

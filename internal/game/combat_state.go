@@ -1102,6 +1102,9 @@ func (s *State) combatAttackSequence(attacker combat.Fighter) ([]combat.AttackRe
 	if attacks < 1 {
 		attacks = 1
 	}
+	if err := s.consumeCombatAmmunition(attacker, attacks); err != nil {
+		return nil, err
+	}
 	results := make([]combat.AttackResult, 0, attacks)
 	for len(results) < attacks && s.battle.Status() == combat.StatusActive {
 		enemies := s.livingBySide(combat.SideEnemy)
@@ -1121,6 +1124,19 @@ func (s *State) combatAttackSequence(attacker combat.Fighter) ([]combat.AttackRe
 		}
 	}
 	return results, nil
+}
+
+func (s *State) consumeCombatAmmunition(attacker combat.Fighter, shots int) error {
+	if attacker.AmmunitionType == 0 || len(s.ammunitionItemTypes) == 0 {
+		return nil
+	}
+	for index := range s.partyRoster {
+		if s.partyRoster[index].ID != attacker.ID {
+			continue
+		}
+		return s.partyRoster[index].ConsumeAmmunition(attacker.AmmunitionType, shots, s.ammunitionItemTypes)
+	}
+	return fmt.Errorf("ammunition owner %q is not in party roster", attacker.ID)
 }
 
 func (s *State) advanceCombatToParty() error {

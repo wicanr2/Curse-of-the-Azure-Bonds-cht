@@ -13,5 +13,4 @@ RuleBook 的 Combat Fighting 說明：弓每回合可攻擊兩次，飛鏢每回
 
 ## 明確 boundary
 
-本輪只接入已由 ITEMS／RuleBook 證實的 weapon RateOfFire；尚未猜測箭／弩矢 inventory 消耗、彈藥不足時的 UI、戰士／聖騎士／遊俠高等級額外攻擊、近戰 sweep、back stab、range／line-of-sight 與完整 Aim Menu。
-
+本輪只接入已由 ITEMS／RuleBook 證實的 weapon RateOfFire；第 150 輪已另建立 raw ammunition requirement 與注入式 inventory consumption。戰士／聖騎士／遊俠高等級額外攻擊、近戰 sweep、back stab、range／line-of-sight 與完整 Aim Menu 仍待完成。
