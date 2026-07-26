@@ -25,6 +25,26 @@ func TestParseSyntheticPlanes(t *testing.T) {
 	}
 }
 
+func TestCanMoveHonorsBothCellWallsAndBounds(t *testing.T) {
+	var grid Grid
+	grid.Cells[0][0].WallDirections[1] = 1
+	if grid.CanMove(0, 0, 2) {
+		t.Fatal("movement through current cell wall should be blocked")
+	}
+	grid.Cells[0][0].WallDirections[1] = 0
+	grid.Cells[0][1].WallDirections[3] = 1
+	if grid.CanMove(0, 0, 2) {
+		t.Fatal("movement through neighbor cell wall should be blocked")
+	}
+	grid.Cells[0][1].WallDirections[3] = 0
+	if !grid.CanMove(0, 0, 2) {
+		t.Fatal("open adjacent cells should be traversable")
+	}
+	if grid.CanMove(0, 0, 6) {
+		t.Fatal("movement outside grid should be blocked")
+	}
+}
+
 func TestOriginalGEOBlocksHaveKnownShape(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

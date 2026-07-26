@@ -45,6 +45,8 @@ type app struct {
 	tileImages   []*ebiten.Image
 	geoPreview   bool
 	geoGrid      *geo.Grid
+	geoX         int
+	geoY         int
 }
 
 func (a *app) Update() error {
@@ -57,6 +59,18 @@ func (a *app) Update() error {
 	if a.geoPreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyG) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.geoPreview = false
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) && a.geoGrid.CanMove(a.geoX, a.geoY, 0) {
+			a.geoY--
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) && a.geoGrid.CanMove(a.geoX, a.geoY, 2) {
+			a.geoX++
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyDown) && a.geoGrid.CanMove(a.geoX, a.geoY, 4) {
+			a.geoY++
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && a.geoGrid.CanMove(a.geoX, a.geoY, 6) {
+			a.geoX--
 		}
 		return nil
 	}
@@ -138,6 +152,7 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.geoGrid != nil {
 		a.geoPreview = true
+		a.geoX, a.geoY = 0, 0
 		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
@@ -351,7 +366,8 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 			drawGeoWall(6, cell.WallDirections[3])
 		}
 	}
-	text.Draw(screen, "青線：原始 GEO wall 欄位（不是 tile／碰撞判定）", a.face, 24, 382, white)
+	ebitenutil.DrawRect(screen, float64(originX+a.geoX*cellSize+5), float64(originY+a.geoY*cellSize+5), cellSize-10, cellSize-10, color.RGBA{255, 255, 82, 255})
+	text.Draw(screen, "黃點：GEO wall 可通行游標；方向鍵移動　（不是完整 tile collision）", a.face, 24, 382, white)
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
