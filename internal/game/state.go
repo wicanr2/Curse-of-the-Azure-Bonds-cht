@@ -196,6 +196,13 @@ func (s *State) Select(index int) error {
 			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
 			s.OriginalLocation = "SHADOWDALE"
 		}
+		if result.CombatRequested {
+			s.OriginalEvent = "COMBAT"
+			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
+			s.eventReturnMode = ModeWilderness
+			s.Mode = ModeEvent
+			return nil
+		}
 		// WILDERNESS/EXIT is the observed Shadowdale map-entry menu. Handle
 		// these semantic transitions before the bounded runner's next-menu
 		// result is applied, since the original command may leave another

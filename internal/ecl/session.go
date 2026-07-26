@@ -86,6 +86,7 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
 		aggregate.PC = result.PC
+		aggregate.CombatRequested = aggregate.CombatRequested || result.CombatRequested
 		s.selectionOffset += result.SelectionsConsumed
 		if runErr != nil {
 			return aggregate, runErr

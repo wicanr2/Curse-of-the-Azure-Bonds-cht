@@ -166,6 +166,16 @@ func TestRunSubsetReportsNewECLBlock(t *testing.T) {
 	}
 }
 
+func TestRunSubsetReportsCombatRequest(t *testing.T) {
+	result, err := RunSubset([]byte{0, 0, 0x24, 0x00}, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.CombatRequested || result.Steps != 1 || result.PC != 1 {
+		t.Fatalf("result=%+v, want one combat request", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)

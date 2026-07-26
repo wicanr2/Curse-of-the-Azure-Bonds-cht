@@ -11,6 +11,7 @@ type RunResult struct {
 	Steps              int
 	WaitingForMenu     bool
 	NewECLBlockID      *uint8
+	CombatRequested    bool
 	SelectionsConsumed int
 }
 
@@ -318,6 +319,13 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			}
 			id := uint8(blockID)
 			result.NewECLBlockID = &id
+			result.PC = next
+			return result, nil
+		case 0x24: // COMBAT
+			// The original engine transfers control to its combat loop here.
+			// Expose that control transfer; do not silently fall through or
+			// claim that combat rules have been recreated.
+			result.CombatRequested = true
 			result.PC = next
 			return result, nil
 		case 0x25, 0x26: // ON GOTO / ON GOSUB

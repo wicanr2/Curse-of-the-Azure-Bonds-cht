@@ -171,4 +171,5 @@
 - [x] 將 Shadowdale `WILDERNESS/EXIT` 接成資料中立的 map entry／movement slice。
 - [x] 將 `INN/STORE/BAR/LEAVE` 接成 Shadowdale `ModePlace` 與繁中 state event contract。
 - [x] 將 `TREASURE` 8-operand framing 接入 bounded no-op，讓場所 trace 可安全繼續。
+- [x] 將 `COMBAT` 接入 ECL／session／game state request signal。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
