@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 89 輪：reference `PlaceCombatants` team origin／facing adapter。
+第 90 輪：原始 `ITEMS` base-item catalog 與繁中名稱擴充。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -278,4 +278,6 @@
 44. 接能力值逐項分配與規則化的角色完成流程。
 45. 補擲骰／重擲點數池、性別／年齡與 alignment，接角色存檔。
 46. 補裝備選擇、XP／等級與 party save/import。
-第 89 輪功能／文件 commit：待本輪提交。依 `ovr011.PlaceCombatants` 將遭遇距離與八方向 `mapDirection` 的 team origin／facing group 封裝為 `combat.EncounterTeamStart`，並新增可跨 Gold Box 遊戲沿用的規格 `docs/spec/089-combat-team-start-layout.md` 與知識庫條目。這一輪刻意未假設尚未解出的 occupancy／candidate ordering；待 Area／Player record 解出後再接入 `StartEncounter`。Docker 內 `go test ./...` 通過。
+第 89 輪功能／文件 commit：`d389002`，已推送至 GitHub `main`。依 `ovr011.PlaceCombatants` 將遭遇距離與八方向 `mapDirection` 的 team origin／facing group 封裝為 `combat.EncounterTeamStart`，刻意未假設尚未解出的 occupancy／candidate ordering。
+
+第 90 輪功能／文件 commit：待本輪提交。原始 ZIP 的非 DAX `ITEMS` 已依公開 Gold Box 格式解析為 2-byte header（實際 bytes `00 76`）+ 128 筆 16-byte descriptor；新增 `monster.ParseBaseItems`、安全 lookup、CLI `-base-items` 與已知 base-item 繁中名稱 catalog。Docker 內 `go test ./...` 與原始 `ITEMS` CLI 驗證通過後提交。

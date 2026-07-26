@@ -57,3 +57,7 @@ a、b 都不透明                   → a OR b
 ## 跨遊戲重用介面
 
 後續遊戲可沿用 `internal/dax`、`internal/gfx.Picture`、`gfx.MergePictures`、`gfx.MergePicturesAt`、`gfx.Picture.FlipHorizontal` 與 preview generator，只需建立每款遊戲的 DAX member 名稱、mask color、palette 與 icon layer mapping。
+
+## 共用資料檔邊界
+
+Gold Box 的 `ITEMS` 不是 DAX；目前 reference 格式是 2-byte header 加 16-byte descriptor table。descriptor index 就是 inventory item type，固定保存裝備欄位、hands、大小生物傷害、AC adjustment、weapon type、range、class usability mask 與 ammunition type。`monster.ParseBaseItems`／`BaseItemCatalog.Lookup` 可供後續遊戲沿用；若其他作品改變 descriptor 數量，仍應由 payload 長度計算，不要硬編碼 128。
