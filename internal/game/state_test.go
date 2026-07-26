@@ -91,3 +91,34 @@ func TestLocationDefaultsToWilderness(t *testing.T) {
 		t.Fatalf("location=%v, want wilderness", state.Location)
 	}
 }
+
+func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["shadowdale"] = "暗影谷"
+	catalog.Strings["wilderness"] = "荒野"
+	catalog.Strings["exit"] = "離開"
+	state := NewState(catalog)
+	state.Mode = ModeWilderness
+	state.Location = LocationShadowdale
+	state.LocationName = "暗影谷"
+	state.Choices = []string{"荒野", "離開"}
+	state.currentOriginalChoices = []string{"WILDERNESS", "EXIT"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeMap || state.MapX != 0 || state.MapY != 0 {
+		t.Fatalf("map entry state=%#v", state)
+	}
+	if err := state.Move(2, -1); err != nil {
+		t.Fatal(err)
+	}
+	if state.MapX != 2 || state.MapY != -1 {
+		t.Fatalf("map position=(%d,%d)", state.MapX, state.MapY)
+	}
+	if err := state.LeaveMap(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 3 {
+		t.Fatalf("leave state=%#v", state)
+	}
+}
