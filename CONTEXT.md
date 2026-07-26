@@ -414,4 +414,4 @@
 
 第一百五十五輪功能／文件 commit：`07634ab`，已推送至 GitHub `main`。將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn，讓敵方也使用 deterministic `AttackSequence` 與繁中多次攻擊摘要；新增 regression、READY 規格與共用 state knowledge。enemy AI、彈藥、Aim／line-of-sight 與額外職業攻擊仍保留 boundary。
 
-第一百五十六輪待提交：將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。
+第一百五十六輪功能／文件 commit：`531f892`，已推送至 GitHub `main`。將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。
