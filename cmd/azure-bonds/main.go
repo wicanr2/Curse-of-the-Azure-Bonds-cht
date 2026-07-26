@@ -29,6 +29,8 @@ func main() {
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
+	encounterStart := flag.Int("encounter-start", -1, "decode LOAD MONSTER sequence at this payload offset")
+	monsterMember := flag.String("monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter-start")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
@@ -97,6 +99,50 @@ func main() {
 				for index, affect := range affects {
 					fmt.Printf("  affect[%d] zh-name=%q kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, monster.ChineseAffectName(affect), affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
 				}
+			}
+		}
+		if *encounterStart >= 0 {
+			instructions, traceErr := ecl.TraceAt(block.Data, *encounterStart, 128)
+			spawns := make([]ecl.MonsterSpawn, 0)
+			for _, instruction := range instructions {
+				if instruction.Command.Opcode == 0x24 {
+					break
+				}
+				if instruction.Command.Opcode != 0x0B {
+					continue
+				}
+				spawn, spawnErr := ecl.DecodeMonsterSpawn(instruction)
+				if spawnErr != nil {
+					fmt.Printf("  encounter spawn stopped safely: %v\n", spawnErr)
+					break
+				}
+				spawns = append(spawns, spawn)
+			}
+			monsterData, memberErr := zipMember(*image, *monsterMember)
+			if memberErr != nil {
+				fmt.Printf("  encounter monster member stopped safely: %v\n", memberErr)
+			} else if monsterBlocks, parseErr := dax.Parse(monsterData); parseErr != nil {
+				fmt.Printf("  encounter monster DAX stopped safely: %v\n", parseErr)
+			} else {
+				records := make(map[uint8]monster.Record, len(monsterBlocks))
+				for _, monsterBlock := range monsterBlocks {
+					record, recordErr := monster.Parse(monsterBlock.Data)
+					if recordErr == nil {
+						records[monsterBlock.Entry.ID] = record
+					}
+				}
+				enemies, enemyErr := monster.BuildEnemies(spawns, records)
+				if enemyErr != nil {
+					fmt.Printf("  encounter build stopped safely: %v\n", enemyErr)
+				} else {
+					fmt.Printf("  encounter spawns=%d enemies=%d\n", len(spawns), len(enemies))
+					for _, enemy := range enemies {
+						fmt.Printf("    enemy id=%s name=%q hp=%d/%d ac=%d attack=%d damage=%dd%d%+d\n", enemy.ID, enemy.Name, enemy.HitPoints, enemy.MaxHitPoints, enemy.ArmorClass, enemy.AttackBonus, enemy.DamageDiceCount, enemy.DamageDiceSides, enemy.DamageBonus)
+					}
+				}
+			}
+			if traceErr != nil {
+				fmt.Printf("  encounter trace stopped safely: %v\n", traceErr)
 			}
 		}
 		if *scanOpcode >= 0 {

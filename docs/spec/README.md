@@ -30,3 +30,4 @@
 - [第三十三輪 MON*CHA monster record](./round-33-monster-cha-record.md)（`READY`：限固定 record offsets 與 raw combat fields）
 - [第三十四輪 MON*ITM／MON*SPC records](./round-34-monster-items-affects.md)（`READY`：限 raw record parser）
 - [第三十五輪 monster item／effect 繁中名稱](./round-35-monster-item-localization.md)（`READY`：限本輪實際觀察 IDs）
+- [第三十六輪 ECL-to-enemy encounter adapter](./round-36-ecl-encounter-adapter.md)（`READY`：限 enemy fighter 建立）

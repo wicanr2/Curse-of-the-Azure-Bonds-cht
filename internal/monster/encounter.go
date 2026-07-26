@@ -1,0 +1,30 @@
+package monster
+
+import (
+	"fmt"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+)
+
+// BuildEnemies joins ECL spawn descriptors with decoded MON*CHA records. It
+// intentionally returns fighters without party or map state; those belong to
+// the battle/session adapter.
+func BuildEnemies(spawns []ecl.MonsterSpawn, records map[uint8]Record) ([]combat.Fighter, error) {
+	enemies := make([]combat.Fighter, 0)
+	for _, spawn := range spawns {
+		record, ok := records[spawn.MonsterID]
+		if !ok {
+			return nil, fmt.Errorf("monster record 0x%02X is unavailable", spawn.MonsterID)
+		}
+		count := int(spawn.Count)
+		if count == 0 {
+			count = 1
+		}
+		for copyIndex := 0; copyIndex < count; copyIndex++ {
+			id := fmt.Sprintf("monster-%02X-%d", spawn.MonsterID, copyIndex+1)
+			enemies = append(enemies, record.Fighter(id, combat.SideEnemy))
+		}
+	}
+	return enemies, nil
+}

@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 35 輪：monster item／effect 繁中名稱。
+第 36 輪：ECL-to-enemy encounter adapter。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -39,6 +39,7 @@
 第 32 輪 commit：`01372f1`，已推送至 GitHub `main`。
 第 33 輪 commit：`84df0f9`，已推送至 GitHub `main`。
 第 34 輪 commit：`047e63f`，已推送至 GitHub `main`。
+第 35 輪 commit：`32aa9c8`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -85,6 +86,7 @@
 - `MON1CHA` fixed `0x1A6` record parser 已接入；實際 block `0x56` 解出 BUGBEAR `24/24 HP`、raw AC `55`、attack bonus `44`、`2d4`、initiative `9`，可轉成 `combat.Fighter`。
 - `MON*ITM` `0x3F`-byte parser 與 `MON*SPC` 9-byte affect parser 已接入；MON1 block `0x59` 有 5 筆 item、block `0x35` 有 2 筆 affect，名稱組合與 effects merge 尚未完成。
 - 已為實際觀察到的 item／effect IDs 接入繁中名稱：弩矢、輕弩、闊劍、盾牌、鏈甲、偵測隱形、酸液吐息；未知 IDs 仍明確 fallback。
+- `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -100,6 +102,7 @@
 - `MON*CHA` raw HP／AC／攻擊 parser 與 Fighter adapter 已完成；`MON*ITM`／`MON*SPC`、完整 ECL-to-Battle setup 仍未完成。
 - `MON*CHA`、`MON*ITM`、`MON*SPC` raw parser 已完成；item name catalog、effects merge 與完整 ECL-to-Battle setup 仍未完成。
 - 已觀察 IDs 的 monster item/effect 繁中顯示完成；完整 item type／name-number catalog、locale resource integration、effects merge 與 ECL-to-Battle setup 仍未完成。
+- 已觀察 IDs 的 monster item/effect 繁中顯示與 enemy adapter 完成；party、Battle 建立、完整 item catalog、effects merge、戰場與 UI 仍未完成。
 - CAMP／其他城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成；Shadowdale 首層場所 menu 已有 state contract。
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 已有資料中立的座標／輸入 contract；原始 tile、碰撞與場所事件仍未完成。
@@ -145,3 +148,4 @@
 33. 接入 `MON*ITM`／`MON*SPC`，將 ECL spawn sequence 建立成 Battle。
 34. 建立 item type／name-number catalog，合併 monster equipment/effects 並建立 Battle setup。
 35. 擴充完整 item catalog，整合 locale 與 ECL-to-Battle equipment/effects。
+36. 建立 party fighter 與 Battle，接入 encounter equipment/effects 與戰場 UI。
