@@ -332,4 +332,4 @@
 
 第一百一十四輪功能／文件 commit：`5ef7203`，已推送至 GitHub `main`。TAKE 會選角色與 1／10／100／全部金額，更新 pool／角色 gold 並返回 Shop Menu；任意數字輸入與 APPRAISE 仍未完成。
 
-第一百一十五輪功能／文件 commit：待本輪提交。APPRAISE 會選角色與 gems／jewelry，接受 injected offer 後清空財寶、將 GP 加入 pool 並返回 Shop Menu；拒絕報價分支仍未完成。
+第一百一十五輪功能／文件 commit：`6d69011`，已推送至 GitHub `main`。APPRAISE 會選角色與 gems／jewelry，接受 injected offer 後清空財寶、將 GP 加入 pool 並返回 Shop Menu；拒絕報價分支仍未完成。
