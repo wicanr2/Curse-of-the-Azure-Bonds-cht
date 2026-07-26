@@ -26,9 +26,14 @@ const (
 )
 
 type Fighter struct {
-	ID              string
-	Name            string
-	Side            Side
+	ID   string
+	Name string
+	Side Side
+	// SpriteSet/SpriteBlock identify the original CPIC asset when the fighter
+	// came from a LOAD MONSTER descriptor. A zero block means the renderer may
+	// choose a deterministic party fallback sprite.
+	SpriteSet       uint8
+	SpriteBlock     uint8
 	HitPoints       int
 	MaxHitPoints    int
 	ArmorClass      int

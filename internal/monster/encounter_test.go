@@ -17,6 +17,14 @@ func TestBuildEnemiesJoinsSpawnAndRecords(t *testing.T) {
 	}
 }
 
+func TestBuildEnemiesCarriesCPICBlock(t *testing.T) {
+	record := Record{Name: "Orc", HitPoints: 5, MaxHitPoints: 5, ArmorClass: 10}
+	enemies, err := BuildEnemies([]ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 0x35}}, map[uint8]Record{7: record})
+	if err != nil || len(enemies) != 1 || enemies[0].SpriteBlock != 0x35 {
+		t.Fatalf("enemies=%#v err=%v", enemies, err)
+	}
+}
+
 func TestBuildEnemiesRejectsMissingRecord(t *testing.T) {
 	if _, err := BuildEnemies([]ecl.MonsterSpawn{{MonsterID: 7, Count: 1}}, nil); err == nil {
 		t.Fatal("expected missing record error")

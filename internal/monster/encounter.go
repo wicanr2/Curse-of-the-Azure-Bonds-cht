@@ -23,7 +23,9 @@ func BuildEnemies(spawns []ecl.MonsterSpawn, records map[uint8]Record) ([]combat
 		}
 		for copyIndex := 0; copyIndex < count; copyIndex++ {
 			id := fmt.Sprintf("monster-%02X-%d", spawn.MonsterID, copyIndex+1)
-			enemies = append(enemies, record.Fighter(id, combat.SideEnemy))
+			fighter := record.Fighter(id, combat.SideEnemy)
+			fighter.SpriteBlock = spawn.IconBlock
+			enemies = append(enemies, fighter)
 		}
 	}
 	return enemies, nil
