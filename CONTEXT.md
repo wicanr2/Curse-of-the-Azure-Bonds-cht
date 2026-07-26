@@ -296,4 +296,4 @@
 
 第 96 輪功能／文件 commit：`0c1a122`，已推送至 GitHub `main`。新增 `Character.SpellSlots`、`Roster.FindSpell`、`State.ResolveSpellSearch`，並由 Ebiten bootstrap 載入原始 `ITEMS`，使 creation／party load 的 readied equipment 進入 fighter projection；原始 DOS spell offsets 與 ECL memory writeback 仍未完成。
 
-第 97 輪功能／文件 commit：`d92e8c0`，已推送至 GitHub `main`。新增 bounded DOS player spell record parser、truncated-record guard、known／memorized tests 與可重用知識庫規格。
+第 97 輪功能／文件 commit：`2280184`，已推送至 GitHub `main`。新增 bounded DOS player spell record parser、truncated-record guard、known／memorized tests 與可重用知識庫規格。
