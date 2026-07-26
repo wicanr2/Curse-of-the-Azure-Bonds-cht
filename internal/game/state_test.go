@@ -347,6 +347,30 @@ func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	}
 }
 
+func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "one", Name: "一號", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1, Gold: 100, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10}},
+		{ID: "two", Name: "二號", Race: party.RaceHuman, Class: party.ClassCleric, Level: 1, Gold: 50, Abilities: party.Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}},
+	}
+	if err := state.PoolPartyGold(); err != nil || state.MoneyPool() != 150 || state.partyRoster[0].Gold != 0 {
+		t.Fatalf("pooled state=%#v err=%v", state, err)
+	}
+	if err := state.TakeGold(0, 20); err != nil || state.MoneyPool() != 130 || state.partyRoster[0].Gold != 20 {
+		t.Fatalf("take state=%#v err=%v", state, err)
+	}
+	if err := state.ShareGold(); err != nil || state.MoneyPool() != 0 || state.partyRoster[0].Gold != 85 || state.partyRoster[1].Gold != 65 {
+		t.Fatalf("share state=%#v err=%v", state, err)
+	}
+	if err := state.PoolPartyGold(); err != nil {
+		t.Fatal(err)
+	}
+	state.SetShopOffers([]ShopOffer{{Item: monster.ItemRecord{Type: 36, Name: "長劍"}, Price: 100}})
+	if err := state.BuyShopOffer(0, 0); err != nil || state.MoneyPool() != 50 || len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 36 {
+		t.Fatalf("buy state=%#v err=%v", state, err)
+	}
+}
+
 func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"

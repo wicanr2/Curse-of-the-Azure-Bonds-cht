@@ -97,3 +97,5 @@ effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（
 商店共用 adapter 應把 offer price 與 stock 交給遊戲／script 層；`ITEMS` descriptor 只有 combat／usability 欄位，不能從 base item bytes 猜售價。`party.Character.BuyItem`／`SellItem`／`PayIdentifyFee` 目前只處理 party inventory、gold、readied lock、overflow 與已確認的 200 GP ID fee，後續 Gold Box 遊戲可重用同一 transaction boundary。
 
 `game.State` 的 STORE UI 已保存原版七個 command 的繁中 mapping。後續遊戲可沿用 `shopMenu` state 與 return-to-place contract，只替換 stock、money pool、character selection 與 appraisal service；未知 command 不應直接 fall through 成一般 ECL event。
+
+shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。

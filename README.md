@@ -62,6 +62,7 @@
 - 城市 `INN` 已接成安全休息場所：恢復 party roster 與畫面 fighter 的 HP，並以繁中訊息返回場所選單；完整 CAMP、商店與酒館情報仍待完成。
 - 已建立商店 Buy／Sell／ID 的 party transaction contract：價格由後續 shop stock 提供，ID fee 為 200 GP；完整 money pool 與 Shop Menu UI 仍待接入。
 - 城市 `STORE` 已接入繁中 Shop Menu（購買／查看／取出／集中／分配／估價／離開）；尚未載入 stock 的 action 會明確提示並可返回選單。
+- 已接入 injected shop offers 與 party money pool：可集中／提取／平均分配金幣，並由 pool 購買指定 offer；價格仍由城市／ECL data 提供。
 
 執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：
 
