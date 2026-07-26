@@ -300,4 +300,4 @@
 
 第 98 輪功能／文件 commit：`43b26d0`，已推送至 GitHub `main`。新增 `ParseDOSPlayerRecord`，解析公開 `.SAV/.GUY` 單職業核心欄位，並保留原始 HP、icon、金幣與 spell 到 party projection；`.SWG` inventory／`.FX` effects／多職業與完整 DOS save container 仍未完成。
 
-第 99 輪功能／文件 commit：待本輪提交。新增 DOS player item/effects pointer preservation、`.SWG` `0x3F` item stream adapter 與 party equipment projection；`.FX` effects、pointer address-space 與完整 save container 仍未完成。
+第 99 輪功能／文件 commit：`938d2a7`，已推送至 GitHub `main`。新增 DOS player item/effects pointer preservation、`.SWG` `0x3F` item stream adapter 與 party equipment projection；`.FX` effects、pointer address-space 與完整 save container 仍未完成。
