@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 47 輪：能力值 3d6 擲骰與重擲。
+第 48 輪：版本化 party JSON 存檔與 F5／F9 載入。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -51,6 +51,8 @@
 第 44 輪 commit：`f4b1d32`，已推送至 GitHub `main`。
 第 45 輪 commit：`d7eb4f6`，已推送至 GitHub `main`。
 第 46 輪 commit：`d780fda`，已推送至 GitHub `main`。
+第 47 輪 commit：`d2a1f3d`，已推送至 GitHub `main`。
+第 48 輪 commit：`cba797b`，準備推送至 GitHub `main`。
 
 ## 已確認
 
@@ -103,10 +105,10 @@
 - 已加入 `docs/manual/` 繁中遊玩手冊、`docs/history.md` 中文金盒子歷史筆記，以及遊戲內 `J`／`Esc` 冒險手札；`State.Camp` 接收 `PROGRAM 9` 並以繁中事件返回荒野，恢復規則仍未完成。
 - 冒險手札已擴充為八頁 locale-backed 摘要，State 保存頁碼並支援方向鍵翻頁；完整 59 個 Journal Entry／Tavern Tale 逐條觸發仍未完成。
 - `State.SetParty`／`PartyFighters` 已保存 party roster；戰鬥結束同步 HP，CAMP 對已保存 party 恢復 MaxHP，完整角色欄位與原始 CAMP side effects 仍未完成。
-- `internal/party` 已依 RuleBook／reference 建立六種玩家種族、六種基本職業、能力值 3–18、最低值與 1–6 人 roster validation；尚未接 Ebiten 建角／存檔。
-- Ebiten 已接 `C` 角色建立 starter UI：方向鍵選模板、Enter 加入、D 完成；三個模板會經 validation、投影成 combat fighter 並保存到 State，完整自訂建角／存檔仍未完成。
-- 建立畫面按 `N` 可輸入 Unicode／繁中姓名，Backspace／Enter／Esc 均已接 state；能力值分配、裝備與存檔仍未完成。
-- 建立畫面按 `A` 可編輯六項能力值，左右選欄、上下調整 3–18，完成加入時仍經職業最低值 validation；擲骰／重擲、裝備與存檔仍未完成。
+- `internal/party` 已依 RuleBook／reference 建立六種玩家種族、六種基本職業、能力值 3–18、最低值與 1–6 人 roster validation。
+- Ebiten 已接 `C` 角色建立 starter UI：方向鍵選模板、Enter 加入、D 完成；三個模板會經 validation、投影成 combat fighter 並保存到 State。
+- 建立畫面按 `N` 可輸入 Unicode／繁中姓名，按 `A` 可編輯六項能力值，按 `R` 可重擲六項 3d6；均在完成時經 validation。
+- `internal/save` 已建立 version 1 的 remake party JSON；F5／F9 與 `-party-load` 可保存／載入角色描述，原版 DOS save/import、裝備、XP／等級與完整 party state 仍未完成。
 - 建立畫面按 `R` 可重擲六項 3d6 能力值；核心接受 seed regression，完成加入時仍經職業最低值 validation。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 

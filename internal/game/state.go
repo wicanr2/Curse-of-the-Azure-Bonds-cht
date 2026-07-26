@@ -84,6 +84,7 @@ type State struct {
 	creationReturnMode     Mode
 	session                *ecl.BlockSession
 	party                  []combat.Fighter
+	partyRoster            party.Roster
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
 	combatTurnIndex        int

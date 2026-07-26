@@ -335,3 +335,27 @@ func TestCharacterCreationRerollsAbilitiesWithSeed(t *testing.T) {
 		t.Fatalf("reroll values=%d,%d", first, second)
 	}
 }
+
+func TestPartySaveLoadRoundTrip(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AddCreationCharacter(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.FinishCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	path := t.TempDir() + "/party.json"
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(testCatalog())
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	if len(loaded.PartyFighters()) != 1 || loaded.PartyFighters()[0].Name != "戰士" {
+		t.Fatalf("loaded party=%#v", loaded.PartyFighters())
+	}
+}
