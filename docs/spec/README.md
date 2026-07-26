@@ -141,3 +141,4 @@
 - [第一百四十四輪 combat MOVE](./144-combat-move.md)（`READY`：限單格 position mutation 與 occupancy-safe turn transaction）
 - [第一百四十五輪 MOVE free attack](./145-combat-free-attack-on-move.md)（`READY`：限離開鄰接範圍的免費攻擊 trigger）
 - [第一百四十六輪 MOVE attack](./146-combat-move-attack.md)（`READY`：限移入敵方格的攻擊 transaction）
+- [第一百四十七輪 combat camera](./147-combat-camera.md)（`READY`：限 active character camera transform）

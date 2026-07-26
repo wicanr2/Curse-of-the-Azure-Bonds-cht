@@ -697,6 +697,10 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	if !state.CombatActive() || len(state.CombatTargets()) != 1 {
 		t.Fatalf("combat state=%#v", state)
 	}
+	active, ok := state.CombatActiveFighter()
+	if !ok || active.ID != "hero" || active.CombatX != 4 || active.CombatY != 3 {
+		t.Fatalf("active combat fighter=%+v ok=%v", active, ok)
+	}
 	if err := state.CombatAct(); err != nil {
 		t.Fatal(err)
 	}
