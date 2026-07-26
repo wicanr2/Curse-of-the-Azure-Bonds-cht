@@ -6,8 +6,15 @@ import "fmt"
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
 	Text  []string
+	Menus []Menu
 	PC    int
 	Steps int
+}
+
+type Menu struct {
+	Location uint16
+	Options  []string
+	Selected uint16
 }
 
 // RunSubset executes only commands whose semantics are represented here.
@@ -29,6 +36,7 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 	pc := start
 	stack := make([]int, 0)
 	memory := make(map[uint16]uint16)
+	stringsMemory := make(map[uint16]string)
 	var compare [6]bool
 	result := RunResult{PC: pc}
 	for result.Steps < maxSteps {
@@ -54,6 +62,23 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 			pc = target
 			continue
 		case 0x03: // COMPARE
+			if operandIsText(instruction.Operands[0]) || operandIsText(instruction.Operands[1]) {
+				left, err := operandText(instruction.Operands[0], stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("string compare at %d: %w", pc, err)
+				}
+				right, err := operandText(instruction.Operands[1], stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("string compare at %d: %w", pc, err)
+				}
+				compare[0] = left == right
+				compare[1] = left != right
+				compare[2] = left < right
+				compare[3] = left > right
+				compare[4] = left <= right
+				compare[5] = left >= right
+				break
+			}
 			left, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {
 				return result, fmt.Errorf("compare at %d: %w", pc, err)
@@ -68,22 +93,128 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 			compare[3] = left > right
 			compare[4] = left <= right
 			compare[5] = left >= right
+		case 0x04, 0x05, 0x06, 0x07: // ADD / SUBTRACT / DIVIDE / MULTIPLY
+			if !instruction.Operands[2].WordSet {
+				return result, fmt.Errorf("arithmetic at %d has non-address destination", pc)
+			}
+			left, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("arithmetic at %d: %w", pc, err)
+			}
+			right, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("arithmetic at %d: %w", pc, err)
+			}
+			var value uint16
+			switch instruction.Command.Opcode {
+			case 0x04:
+				value = left + right
+			case 0x05:
+				value = right - left
+			case 0x06:
+				if right == 0 {
+					return result, fmt.Errorf("arithmetic at %d divides by zero", pc)
+				}
+				value = left / right
+			case 0x07:
+				value = left * right
+			}
+			memory[instruction.Operands[2].Word] = value
+		case 0x14: // COMPARE AND
+			leftA, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("COMPARE AND at %d: %w", pc, err)
+			}
+			rightA, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("COMPARE AND at %d: %w", pc, err)
+			}
+			leftB, err := operandValue(instruction.Operands[2], memory)
+			if err != nil {
+				return result, fmt.Errorf("COMPARE AND at %d: %w", pc, err)
+			}
+			rightB, err := operandValue(instruction.Operands[3], memory)
+			if err != nil {
+				return result, fmt.Errorf("COMPARE AND at %d: %w", pc, err)
+			}
+			for i := range compare {
+				compare[i] = false
+			}
+			if leftA == rightA && leftB == rightB {
+				compare[0] = true
+			} else {
+				compare[1] = true
+			}
+		case 0x2A: // GETTABLE
+			if !instruction.Operands[0].WordSet || !instruction.Operands[2].WordSet {
+				return result, fmt.Errorf("GETTABLE at %d has non-address operand", pc)
+			}
+			index, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("GETTABLE at %d: %w", pc, err)
+			}
+			value := memory[instruction.Operands[0].Word+index]
+			memory[instruction.Operands[2].Word] = value
+		case 0x2B: // HORIZONTAL MENU
+			header, headNext, err := ParseOperands(payload, pc, 2)
+			if err != nil {
+				return result, fmt.Errorf("HORIZONTAL MENU header at %d: %w", pc, err)
+			}
+			if !header[0].WordSet {
+				return result, fmt.Errorf("HORIZONTAL MENU at %d has non-address destination", pc)
+			}
+			count, err := operandValue(header[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("HORIZONTAL MENU count at %d: %w", pc, err)
+			}
+			if count == 0 || count > 64 {
+				return result, fmt.Errorf("HORIZONTAL MENU at %d has invalid option count %d", pc, count)
+			}
+			stringOperands, stringsEnd, err := ParseOperands(payload, headNext-1, int(count))
+			if err != nil {
+				return result, fmt.Errorf("HORIZONTAL MENU strings at %d: %w", pc, err)
+			}
+			menu := Menu{Location: header[0].Word, Options: make([]string, 0, count)}
+			for _, operand := range stringOperands {
+				message, err := operandText(operand, stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("HORIZONTAL MENU option at %d: %w", pc, err)
+				}
+				menu.Options = append(menu.Options, message)
+			}
+			memory[menu.Location] = menu.Selected
+			result.Menus = append(result.Menus, menu)
+			next = stringsEnd
 		case 0x09: // SAVE
 			if !instruction.Operands[1].WordSet {
 				return result, fmt.Errorf("save at %d has non-address destination", pc)
 			}
-			value, err := operandValue(instruction.Operands[0], memory)
-			if err != nil {
-				return result, fmt.Errorf("save at %d: %w", pc, err)
+			if operandIsText(instruction.Operands[0]) {
+				value, err := operandText(instruction.Operands[0], stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("save at %d: %w", pc, err)
+				}
+				stringsMemory[instruction.Operands[1].Word] = value
+			} else {
+				value, err := operandValue(instruction.Operands[0], memory)
+				if err != nil {
+					return result, fmt.Errorf("save at %d: %w", pc, err)
+				}
+				memory[instruction.Operands[1].Word] = value
 			}
-			memory[instruction.Operands[1].Word] = value
 		case 0x11, 0x12: // PRINT / PRINTCLEAR
 			if len(instruction.Operands) != 1 {
 				return result, fmt.Errorf("print at %d has unexpected arity", pc)
 			}
 			operand := instruction.Operands[0]
-			if len(operand.Packed) > 0 {
+			if operand.Code == 0x80 {
 				result.Text = append(result.Text, DecodePackedText(operand.Packed))
+			} else if operand.Code == 0x81 {
+				message, err := operandText(operand, stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("print at %d: %w", pc, err)
+				}
+				result.Text = append(result.Text, message)
 			} else {
 				value, err := operandValue(operand, memory)
 				if err != nil {
@@ -98,6 +229,42 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 			}
 			pc = stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
+			continue
+		case 0x25, 0x26: // ON GOTO / ON GOSUB
+			operands, headNext, err := ParseOperands(payload, pc, 2)
+			if err != nil {
+				return result, fmt.Errorf("ON branch at %d: %w", pc, err)
+			}
+			index, err := operandValue(operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("ON branch index at %d: %w", pc, err)
+			}
+			count, err := operandValue(operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("ON branch count at %d: %w", pc, err)
+			}
+			if count > 256 {
+				return result, fmt.Errorf("ON branch at %d has unreasonable target count %d", pc, count)
+			}
+			// The original decrements the cursor once before loading the
+			// variable target list, so its first skipped byte is headNext-1.
+			targets, afterTargets, err := ParseOperands(payload, headNext-1, int(count))
+			if err != nil {
+				return result, fmt.Errorf("ON branch targets at %d: %w", pc, err)
+			}
+			if index >= count {
+				pc = afterTargets
+				result.PC = pc
+				continue
+			}
+			target, ok := CodeTarget(targets[index], len(payload))
+			if !ok {
+				return result, fmt.Errorf("ON branch at %d has invalid target %d", pc, index)
+			}
+			if instruction.Command.Opcode == 0x26 {
+				stack = append(stack, afterTargets)
+			}
+			pc = target
 			continue
 		case 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B: // IF comparison
 			index := int(instruction.Command.Opcode - 0x16)
@@ -132,7 +299,23 @@ func operandValue(operand Operand, memory map[uint16]uint16) (uint16, error) {
 			return 0, fmt.Errorf("literal operand has no word")
 		}
 		return operand.Word, nil
+	case 0x81:
+		return 0, fmt.Errorf("string-memory operand cannot be used as a numeric value")
 	default:
 		return 0, fmt.Errorf("unsupported value operand code 0x%02X", operand.Code)
 	}
+}
+
+func operandIsText(operand Operand) bool {
+	return operand.Code == 0x80 || operand.Code == 0x81
+}
+
+func operandText(operand Operand, stringsMemory map[uint16]string) (string, error) {
+	if operand.Code == 0x80 {
+		return DecodePackedText(operand.Packed), nil
+	}
+	if operand.Code == 0x81 && operand.WordSet {
+		return stringsMemory[operand.Word], nil
+	}
+	return "", fmt.Errorf("unsupported string operand code 0x%02X", operand.Code)
 }

@@ -86,3 +86,10 @@
 - [x] 實作 `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT` 與 packed text 輸出測試。
 - [x] 未支援 opcode 以精確 payload offset 停止，未宣稱完整 VM。
 - [ ] 實作並驗證 `ON GOTO/GOSUB`、menu input 與完整 memory model。
+
+## 第十四輪驗收
+
+- [x] 實作 `COMPARE AND`、`GETTABLE` 與 `HORIZONTAL MENU` bounded semantics。
+- [x] 以真實 ECL1 initial entry 回歸開場三段文字與三個 menu 選項。
+- [x] 將原始 menu 選項接入 game state 與繁中 locale／Ebiten rendering。
+- [ ] 將 deterministic menu selection 改成玩家輸入，並接通兩個開場事件分支。

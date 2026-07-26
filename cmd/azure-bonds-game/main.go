@@ -52,8 +52,9 @@ func (a *app) Draw(screen *ebiten.Image) {
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 	if a.state.Mode == game.ModeWilderness {
-		text.Draw(screen, "← 進入城市", a.face, 56, 220, white)
-		text.Draw(screen, "→ 繼續旅程", a.face, 56, 260, white)
+		for index, choice := range a.state.Choices {
+			text.Draw(screen, choice, a.face, 56, 220+index*40, white)
+		}
 		text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
 	}
 	if a.state.Mode == game.ModeEvent {

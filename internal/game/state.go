@@ -38,6 +38,7 @@ type State struct {
 	// It is evidence that the opening state was sourced from the original data,
 	// not a replacement for the localized display string.
 	OriginalOpening string
+	OriginalChoices []string
 
 	catalog locale.Catalog
 }
@@ -48,6 +49,26 @@ func NewStateFromECL(catalog locale.Catalog, block []byte) State {
 		if strings.Contains(candidate, "YOU ARE AT THE EDGE OF") {
 			state.OriginalOpening = "YOU ARE AT THE EDGE OF"
 			break
+		}
+	}
+	if points, _, err := ecl.EntryPoints(block, 5); err == nil && len(points) == 5 {
+		start := int(points[4]) - ecl.CodeAddressBase
+		if result, runErr := ecl.RunSubset(block, start, 100); runErr == nil || len(result.Menus) > 0 {
+			if len(result.Menus) > 0 {
+				for _, option := range result.Menus[0].Options {
+					state.OriginalChoices = append(state.OriginalChoices, option)
+					switch option {
+					case "ENTER CITY":
+						state.Choices = append(state.Choices, catalog.Text("enter_city", "Enter city"))
+					case "JOURNEY ON":
+						state.Choices = append(state.Choices, catalog.Text("journey_on", "Journey on"))
+					case "CAMP":
+						state.Choices = append(state.Choices, catalog.Text("camp", "Camp"))
+					default:
+						state.Choices = append(state.Choices, option)
+					}
+				}
+			}
 		}
 	}
 	return state
@@ -67,9 +88,11 @@ func (s *State) Apply(action Action) error {
 	case s.Mode == ModeTitle && action == ActionStart:
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("you_are_at_the_edge_of", "You are at the edge of")
-		s.Choices = []string{
-			s.catalog.Text("enter_city", "Enter city"),
-			s.catalog.Text("journey_on", "Journey on"),
+		if len(s.Choices) == 0 {
+			s.Choices = []string{
+				s.catalog.Text("enter_city", "Enter city"),
+				s.catalog.Text("journey_on", "Journey on"),
+			}
 		}
 		s.Message = ""
 		return nil

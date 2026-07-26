@@ -1,5 +1,5 @@
-// Package ecl contains small, evidence-backed pieces of the ECL reader.
-// It does not yet execute ECL commands.
+// Package ecl contains evidence-backed ECL parsing and a deliberately bounded
+// command subset runner. It is not a complete recreation of the DOS engine.
 package ecl
 
 import "fmt"
@@ -38,7 +38,7 @@ func ParseOperands(payload []byte, offset, count int) ([]Operand, int, error) {
 			}
 			operand.Packed = append([]byte(nil), payload[pos+1:pos+1+length]...)
 			pos += length
-		} else if operand.Code == 1 || operand.Code == 2 || operand.Code == 3 {
+		} else if operand.Code == 1 || operand.Code == 2 || operand.Code == 3 || operand.Code == 0x81 {
 			pos++
 			if pos >= len(payload) {
 				return nil, pos, fmt.Errorf("operand %d high byte is truncated", i)
