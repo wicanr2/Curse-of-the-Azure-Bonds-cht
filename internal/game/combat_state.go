@@ -265,6 +265,27 @@ func (s *State) CombatCanCastCauseLightWounds() bool {
 	return false
 }
 
+func (s *State) CombatCanCastProtectionFromEvil() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok || len(s.protectionFromEvilTargets(caster)) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == ProtectionFromEvilSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
 
 func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
@@ -283,6 +304,12 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 			return nil
 		}
 		return s.causeLightWoundsTargets(caster)
+	case ProtectionFromEvilSpellID:
+		caster, ok := s.combatPartyTurn()
+		if !ok {
+			return nil
+		}
+		return s.protectionFromEvilTargets(caster)
 	default:
 		return nil
 	}
@@ -300,13 +327,16 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == CauseLightWoundsSpellID && !s.CombatCanCastCauseLightWounds() {
 		return fmt.Errorf("Cause Light Wounds is unavailable")
 	}
+	if spellID == ProtectionFromEvilSpellID && !s.CombatCanCastProtectionFromEvil() {
+		return fmt.Errorf("Protection from Evil is unavailable")
+	}
 	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
 		return fmt.Errorf("Magic Missile is unavailable")
 	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
@@ -323,6 +353,10 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		return nil
 	}
 	if spellID == CauseLightWoundsSpellID {
+		s.combatSpellTargetIndex = 0
+		return nil
+	}
+	if spellID == ProtectionFromEvilSpellID {
 		s.combatSpellTargetIndex = 0
 		return nil
 	}
@@ -384,6 +418,9 @@ func (s *State) CombatCast(spellID uint8) error {
 	if spellID == CauseLightWoundsSpellID {
 		return s.combatCastCauseLightWounds()
 	}
+	if spellID == ProtectionFromEvilSpellID {
+		return s.combatCastProtectionFromEvil()
+	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
 	}
@@ -433,6 +470,85 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func (s *State) protectionFromEvilTargets(caster combat.Fighter) []combat.Fighter {
+	targets := s.livingBySide(combat.SideParty)
+	if !caster.HasCombatPosition {
+		return targets
+	}
+	filtered := make([]combat.Fighter, 0, len(targets))
+	for _, target := range targets {
+		if target.ID == caster.ID {
+			filtered = append(filtered, target)
+			continue
+		}
+		if !target.HasCombatPosition {
+			filtered = append(filtered, target)
+			continue
+		}
+		dx := caster.CombatX - target.CombatX
+		if dx < 0 {
+			dx = -dx
+		}
+		dy := caster.CombatY - target.CombatY
+		if dy < 0 {
+			dy = -dy
+		}
+		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+			filtered = append(filtered, target)
+		}
+	}
+	return filtered
+}
+
+func (s *State) combatCastProtectionFromEvil() error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != ProtectionFromEvilSpellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassCleric {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == ProtectionFromEvilSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Protection from Evil", caster.ID)
+	}
+	targets := s.protectionFromEvilTargets(caster)
+	if s.combatSpellTargetIndex < 0 || s.combatSpellTargetIndex >= len(targets) {
+		return fmt.Errorf("no adjacent party member can receive Protection from Evil")
+	}
+	target := targets[s.combatSpellTargetIndex]
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	duration := 3 * casterLevel(s.partyRoster[characterIndex])
+	_, err := s.battle.CastProtectionFromEvil(caster.ID, target.ID, casterLevel(s.partyRoster[characterIndex]))
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, ProtectionFromEvilSpellID)
+		return err
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "%s 對 %s 施放防護邪惡，效果持續 %d 回合。"), caster.Name, target.Name, duration)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}

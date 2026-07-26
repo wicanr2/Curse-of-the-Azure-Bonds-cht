@@ -827,6 +827,33 @@ func TestCombatCastCauseLightWoundsConsumesSlotAndDamagesAdjacentEnemy(t *testin
 	}
 }
 
+func TestCombatCastProtectionFromEvilConsumesSlotAndProtectsSelf(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 2, SpellSlots: []uint8{ProtectionFromEvilSpellID}}}
+	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+	enemies := []combat.Fighter{{ID: "orc", Name: "獸人", Side: combat.SideEnemy, Evil: true, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 4}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastProtectionFromEvil() {
+		t.Fatalf("Protection from Evil should be available: turns=%#v", state.CombatTurns())
+	}
+	if err := state.BeginCombatCast(ProtectionFromEvilSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(ProtectionFromEvilSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Protection from Evil slot was not consumed: %#v", state.partyRoster[0].SpellSlots)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "cleric" && (!fighter.ProtectedFromEvil || fighter.ProtectionEvilRounds != 5) {
+			t.Fatalf("protection state=%+v", fighter)
+		}
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}

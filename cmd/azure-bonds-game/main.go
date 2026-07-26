@@ -276,6 +276,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
 			return a.state.BeginCombatCast(game.CauseLightWoundsSpellID)
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyP) && a.state.CombatCanCastProtectionFromEvil() {
+			return a.state.BeginCombatCast(game.ProtectionFromEvilSpellID)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.state.CombatSelectSpellTarget(1)
@@ -663,7 +666,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			x, y := 28+tile.X*48, 108+tile.Y*56
 			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
 			prefix := "  "
-			if a.state.CombatCastingSpell() == game.CureLightWoundsSpellID && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
+			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
 				prefix = "> "
 			}
 			text.Draw(screen, prefix+fighter.Name, a.face, x, y+66, white)
@@ -708,6 +711,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastCauseLightWounds() {
 		spellHint += "　W：造成輕傷"
+	}
+	if a.state.CombatCanCastProtectionFromEvil() {
+		spellHint += "　P：防護邪惡"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }
