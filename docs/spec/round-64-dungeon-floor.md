@@ -12,4 +12,4 @@
 
 ## 尚未完成
 
-原版 `sub_370D3` 的桌椅裝飾仍需完整 `wall_x2`／骰點狀態；dungeon area／map selection、camera、完整 combat placement／encounter 與音效仍待接入。
+本輪已補上 `sub_370D3` 的 seeded table／chair decoration：GEO `terrain & 0x40`、四方向 flags、`tile_index == 0x16` 與 1d10 機率均有 regression。dungeon area／map selection、camera、完整 combat placement／encounter 與音效仍待接入。
