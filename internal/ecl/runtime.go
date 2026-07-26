@@ -5,12 +5,13 @@ import "fmt"
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
-	Text           []string
-	Menus          []Menu
-	PC             int
-	Steps          int
-	WaitingForMenu bool
-	NewECLBlockID  *uint8
+	Text               []string
+	Menus              []Menu
+	PC                 int
+	Steps              int
+	WaitingForMenu     bool
+	NewECLBlockID      *uint8
+	SelectionsConsumed int
 }
 
 type Menu struct {
@@ -216,6 +217,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				menu.Selected = selections[selectionCursor]
 			}
 			selectionCursor++
+			result.SelectionsConsumed = selectionCursor
 			memory[menu.Location] = menu.Selected
 			result.Menus = append(result.Menus, menu)
 			next = stringsEnd
@@ -260,6 +262,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				menu.Selected = selections[selectionCursor]
 			}
 			selectionCursor++
+			result.SelectionsConsumed = selectionCursor
 			memory[menu.Location] = menu.Selected
 			result.Menus = append(result.Menus, menu)
 			next = stringsEnd

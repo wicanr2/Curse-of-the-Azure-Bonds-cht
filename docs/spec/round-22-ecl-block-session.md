@@ -11,7 +11,7 @@
 
 CLI 驗收 `ECL1.DAX -session`：block `0x50/0x51/0x52` 均成功建立，initial entry 均為 `+0x0014`。
 
-這仍不是完整跨 block VM：selection／memory／call stack 尚未跨 block 保存，game state 目前尚未持有 BlockSession。
+這仍不是完整跨 block VM：memory／call stack 尚未跨 block 保存；game state 已持有 BlockSession，但只整合 selection offset 與 bounded block switch。
 
 ## 驗收
 

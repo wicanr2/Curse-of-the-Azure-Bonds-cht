@@ -6,8 +6,9 @@ import "fmt"
 // intentionally separate from RunSubset: VM execution state can be extended
 // later without confusing a DAX block switch with a fallthrough branch.
 type BlockSession struct {
-	blocks  map[uint8][]byte
-	current uint8
+	blocks          map[uint8][]byte
+	current         uint8
+	selectionOffset int
 }
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
@@ -54,4 +55,41 @@ func (s *BlockSession) ApplyResult(result RunResult) error {
 		return nil
 	}
 	return s.Switch(*result.NewECLBlockID)
+}
+
+// RunInteractive executes the current block from its original entry and
+// automatically follows bounded NEWECL signals. The selection offset lets a
+// caller keep one global input sequence while each newly loaded block sees
+// only the choices not consumed by earlier blocks.
+func (s *BlockSession) RunInteractive(maxSteps int, selections []uint16) (RunResult, error) {
+	var aggregate RunResult
+	for transitions := 0; transitions < 8; transitions++ {
+		start, err := s.InitialEntry()
+		if err != nil {
+			return aggregate, err
+		}
+		remaining := selections
+		if s.selectionOffset < len(selections) {
+			remaining = selections[s.selectionOffset:]
+		} else {
+			remaining = nil
+		}
+		result, runErr := RunSubsetInteractive(s.CurrentData(), start, maxSteps, remaining)
+		aggregate.Text = append(aggregate.Text, result.Text...)
+		aggregate.Menus = append(aggregate.Menus, result.Menus...)
+		aggregate.Steps += result.Steps
+		aggregate.PC = result.PC
+		s.selectionOffset += result.SelectionsConsumed
+		if runErr != nil {
+			return aggregate, runErr
+		}
+		if result.NewECLBlockID == nil {
+			aggregate.WaitingForMenu = result.WaitingForMenu
+			return aggregate, nil
+		}
+		if err := s.ApplyResult(result); err != nil {
+			return aggregate, err
+		}
+	}
+	return aggregate, fmt.Errorf("ECL session exceeded block transition limit")
 }

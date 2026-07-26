@@ -147,3 +147,10 @@
 - [x] 驗證 ECL1 block `0x50/0x51/0x52` initial entries。
 - [x] 驗證 NEWECL target switch contract。
 - [ ] 將 session 接入 game runtime，保存跨 block state。
+
+## 第二十三輪驗收
+
+- [x] game command 載入 ECL1 全部 decoded blocks。
+- [x] `NewStateFromECLBlocks` 接入 BlockSession。
+- [x] State selection sequence 與 session offset 接通。
+- [ ] 以真實 NEWECL transition 做回歸，保存跨 block memory／call stack。

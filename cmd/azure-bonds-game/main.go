@@ -119,9 +119,13 @@ func main() {
 	if err != nil || len(blocks) == 0 {
 		log.Fatalf("ECL1.DAX: %v", err)
 	}
+	eclBlocks := make(map[uint8][]byte, len(blocks))
+	for _, block := range blocks {
+		eclBlocks[block.Entry.ID] = block.Data
+	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: game.NewStateFromECL(catalog, blocks[0].Data), face: loadFace(*fontPath)}); err != nil {
+	if err := ebiten.RunGame(&app{state: game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID), face: loadFace(*fontPath)}); err != nil {
 		log.Fatal(err)
 	}
 }
