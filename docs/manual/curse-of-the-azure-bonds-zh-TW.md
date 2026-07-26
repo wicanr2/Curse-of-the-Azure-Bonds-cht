@@ -41,6 +41,8 @@ go run ./cmd/azure-bonds-game -font /path/to/cjk-font.ttf
 
 本 remake 已接入基本回合、先攻、AC、攻擊與傷害，以及繁中戰鬥畫面。左右鍵選擇敵人，Enter 攻擊；S／H／C／W／P／G 會先進入施法目標選擇，左右切換、Enter 確認、Esc 取消；B 可讓牧師進入 Bless 無目標確認。Bless 使未與怪物相鄰的存活隊友攻擊加值提高 1；Curse 使未與我方相鄰的敵人攻擊加值降低 1；Cause Light Wounds 對相鄰敵人造成 1d8 傷害；Protection from Evil／Good 可保護自己或相鄰隊友，分別對明確標記的邪惡／善良攻擊者提供 AC +2。牧師與魔法師的 spell ID `7` 依職業正確分流。其他法術、物品效果、逃跑／談判、戰場格位與所有 AD&D 規則仍在還原中。
 
+遭遇選單的 `撤退` 會返回荒野；`談判` 會先讓玩家選擇傲慢、狡猾、謙卑、友善或威嚇。完整怪物反應與對話仍待接入。
+
 ## 研究來源
 
 - `Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf`

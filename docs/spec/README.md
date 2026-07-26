@@ -137,3 +137,4 @@
 - [第一百四十輪 combat Cause Light Wounds](./140-combat-cause-light-wounds.md)（`READY`：限 1d8 touch damage 與 target transaction）
 - [第一百四十一輪 combat Protection from Evil](./141-combat-protection-from-evil.md)（`READY`：限 alignment-aware AC protection 與 `3r/lvl` duration）
 - [第一百四十二輪 combat Protection from Good／spell identity](./142-combat-protection-from-good.md)（`READY`：限 class-specific ID 7 與 conditional AC protection）
+- [第一百四十三輪 encounter FLEE／PARLAY](./143-encounter-flee-parlay.md)（`READY`：限撤退事件與五種談判策略 menu）
