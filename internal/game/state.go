@@ -134,6 +134,9 @@ type State struct {
 	alterMenu              bool
 	alterOrderMenu         bool
 	alterOrderSelected     int
+	alterDropMenu          bool
+	alterDropConfirm       bool
+	alterDropSelected      int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -467,6 +470,9 @@ func (s *State) enterCampMenu() {
 	s.alterMenu = false
 	s.alterOrderMenu = false
 	s.alterOrderSelected = -1
+	s.alterDropMenu = false
+	s.alterDropConfirm = false
+	s.alterDropSelected = -1
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
 	s.Choices = []string{
@@ -514,6 +520,44 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			return nil
 		}
 	}
+	if s.alterDropMenu {
+		if originalChoice == "ALTER_DROP_EXIT" || originalChoice == "ALTER_DROP_CANCEL" {
+			s.alterDropMenu = false
+			s.alterDropConfirm = false
+			s.alterDropSelected = -1
+			s.enterAlterMenu()
+			return nil
+		}
+		if s.alterDropConfirm {
+			if originalChoice != "ALTER_DROP_CONFIRM" {
+				return fmt.Errorf("invalid alter drop confirmation %q", originalChoice)
+			}
+			if err := s.dropPartyCharacter(s.alterDropSelected); err != nil {
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = "ALTER DROP"
+				s.Message = "移除失敗：" + err.Error()
+				return nil
+			}
+			s.alterDropMenu = false
+			s.alterDropConfirm = false
+			s.alterDropSelected = -1
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "ALTER DROP"
+			s.Message = s.catalog.Text("alter_drop_done", "角色已從隊伍移除。此操作無法復原。")
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "ALTER_DROP_CHARACTER_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "ALTER_DROP_CHARACTER_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid alter drop character %q", originalChoice)
+			}
+			s.alterDropSelected = value
+			s.enterAlterDropConfirmMenu()
+			return nil
+		}
+	}
 	if s.alterMenu {
 		if originalChoice == "ALTER_EXIT" {
 			s.alterMenu = false
@@ -529,6 +573,17 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				return nil
 			}
 			s.enterAlterOrderMenu()
+			return nil
+		}
+		if originalChoice == "ALTER_DROP" {
+			if len(s.partyRoster) < 2 {
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = originalChoice
+				s.Message = s.catalog.Text("alter_drop_unavailable", "至少需要兩名角色才能移除角色。")
+				return nil
+			}
+			s.enterAlterDropMenu()
 			return nil
 		}
 		s.Mode = ModeEvent
@@ -652,6 +707,9 @@ func (s *State) enterAlterMenu() {
 	s.alterMenu = true
 	s.alterOrderMenu = false
 	s.alterOrderSelected = -1
+	s.alterDropMenu = false
+	s.alterDropConfirm = false
+	s.alterDropSelected = -1
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
 	s.Choices = []string{
@@ -664,6 +722,53 @@ func (s *State) enterAlterMenu() {
 	}
 	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT"}
 	s.Message = ""
+}
+
+func (s *State) enterAlterDropMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterDropMenu = true
+	s.alterDropConfirm = false
+	s.alterDropSelected = -1
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_drop_prompt", "選擇要移除的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_DROP_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("alter_drop_exit", "返回修改選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_DROP_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterAlterDropConfirmMenu() {
+	character := s.partyRoster[s.alterDropSelected]
+	s.alterDropConfirm = true
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_drop_confirm_prompt", "確定要永久移除%s？"), character.Name)
+	s.Choices = []string{s.catalog.Text("alter_drop_confirm", "確認移除"), s.catalog.Text("alter_drop_cancel", "取消")}
+	s.currentOriginalChoices = []string{"ALTER_DROP_CONFIRM", "ALTER_DROP_CANCEL"}
+	s.Message = s.catalog.Text("alter_drop_warning", "移除後角色將從隊伍與存檔中刪除，無法復原。")
+}
+
+func (s *State) dropPartyCharacter(index int) error {
+	if index < 0 || index >= len(s.partyRoster) {
+		return fmt.Errorf("party character index %d is out of range", index)
+	}
+	if len(s.partyRoster) <= 1 {
+		return fmt.Errorf("cannot remove the last party character")
+	}
+	id := s.partyRoster[index].ID
+	s.partyRoster = append(s.partyRoster[:index], s.partyRoster[index+1:]...)
+	for fighterIndex, fighter := range s.party {
+		if fighter.ID == id {
+			s.party = append(s.party[:fighterIndex], s.party[fighterIndex+1:]...)
+			break
+		}
+	}
+	return nil
 }
 
 func (s *State) enterAlterOrderMenu() {
@@ -1430,6 +1535,14 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.alterDropMenu {
+			if s.alterDropConfirm {
+				s.enterAlterDropConfirmMenu()
+			} else {
+				s.enterAlterDropMenu()
+			}
+			return nil
+		}
 		if s.alterMenu {
 			s.enterAlterMenu()
 			return nil
