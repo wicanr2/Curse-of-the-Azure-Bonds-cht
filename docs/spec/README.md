@@ -14,3 +14,4 @@
 - [第三輪 DOS loader 與 GAME.OVR](./round-03-loader-and-overlay.md)（`DRAFT`）
 - [第四輪 Go 核心層與繁中資源](./round-04-go-core.md)（`READY`：限 DAX container／locale）
 - [第五輪 ECL operand framing](./round-05-ecl-operands.md)（`DRAFT`）
+- [第六輪 ECL 安全 trace walker](./round-06-ecl-trace.md)（`DRAFT`）
