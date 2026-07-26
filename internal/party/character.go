@@ -103,8 +103,12 @@ type Character struct {
 	Level     int       `json:"level"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
-	IconSize  uint8                `json:"icon_size,omitempty"`
-	Equipment []monster.ItemRecord `json:"equipment,omitempty"`
+	IconSize        uint8                `json:"icon_size,omitempty"`
+	IconHeadBlock   uint8                `json:"icon_head,omitempty"`
+	IconWeaponBlock uint8                `json:"icon_weapon,omitempty"`
+	HitPoints       int                  `json:"hit_points,omitempty"`
+	MaxHitPoints    int                  `json:"max_hit_points,omitempty"`
+	Equipment       []monster.ItemRecord `json:"equipment,omitempty"`
 	// SpellSlots is the data-neutral ordered spell-slot list used by ECL
 	// SPELL resolution. It is optional until original DOS player offsets are
 	// decoded; old saves therefore remain valid.
@@ -332,10 +336,18 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	if iconSize == 0 {
 		iconSize = DefaultIconSize(c.Race)
 	}
+	hitPoints, maxHitPoints := hitPoints, hitPoints
+	if c.MaxHitPoints > 0 {
+		maxHitPoints = c.MaxHitPoints
+		hitPoints = c.HitPoints
+	}
+	if c.HitPoints > 0 && c.HitPoints <= maxHitPoints {
+		hitPoints = c.HitPoints
+	}
 	return combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
-		HasPartyIcon: true, PartyHeadBlock: 0, PartyBodyBlock: 0, PartyIconSize: iconSize,
-		HitPoints: hitPoints, MaxHitPoints: hitPoints, ArmorClass: armorClass,
+		HasPartyIcon: true, PartyHeadBlock: c.IconHeadBlock, PartyBodyBlock: c.IconWeaponBlock, PartyIconSize: iconSize,
+		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
 	}, nil

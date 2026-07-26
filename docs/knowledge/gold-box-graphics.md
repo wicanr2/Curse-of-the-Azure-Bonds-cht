@@ -75,3 +75,5 @@ ECL `SPELL` 也應保持 signal boundary：它描述 spell ID 與兩個 runtime 
 目前共用的 party adapter 是 `Character.SpellSlots`／`Roster.FindSpell`／`game.State.ResolveSpellSearch`；它用 ordered first-match 模擬 ECL search，但不取代原始 DOS player spell offsets。`ITEMS` catalog 則由 game bootstrap 載入，讓同一份 base descriptor 驅動 creation／save-load 的 equipment projection。
 
 DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共用的窄 adapter：公開 CoAB PC format 將 `0x01E–0x071` 定義為 memorized spell slots，`0x079–0x0DC` 定義為 one-based spell table 的 known flags。`party.ParseDOSPlayerSpellRecord` 只依這兩段資料工作，要求 decompressed record 至少 `0x0DD` bytes；不要在沒有版本證據時把其他 record offsets 猜成完整 character importer。`Character.ApplyDOSSpellRecord` 只替換 ordered non-empty `SpellSlots`，container／DAX／ECL writeback 由遊戲專屬層處理。
+
+核心角色匯入可沿用同一個 record boundary：公開格式將姓名、六能力值、race/class、HP、各職業 current level、icon 與金幣放在固定 offset；`party.ParseDOSPlayerRecord` 目前只接受 remake 能表達的單職業 race/class，並把 `0x1A4` current HP 與 `0x078` max HP 保留到 `Character`。不要把 `0x14D` item pointer 或 `0x0F2` effects pointer 當成 inline data；它們必須分別透過 `.SWG`／`.FX` adapter 解析。

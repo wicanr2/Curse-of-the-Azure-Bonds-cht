@@ -1,6 +1,7 @@
 package party
 
 import (
+	"encoding/binary"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -104,6 +105,35 @@ func TestParseDOSPlayerSpellRecord(t *testing.T) {
 func TestParseDOSPlayerSpellRecordRejectsTruncatedData(t *testing.T) {
 	if _, err := ParseDOSPlayerSpellRecord(make([]byte, DOSKnownSpellsEnd-1)); err == nil {
 		t.Fatal("expected truncated DOS record error")
+	}
+}
+
+func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
+	data := make([]byte, DOSPlayerRecordSize)
+	data[0] = 4
+	copy(data[1:], []byte("ELLA"))
+	data[0x10], data[0x12], data[0x14] = 16, 15, 12
+	data[0x16], data[0x18], data[0x1A] = 14, 13, 10
+	data[0x74], data[0x75] = 7, 5 // human magic-user
+	data[0x78], data[0x1A4] = 22, 18
+	data[0x10E] = 4
+	data[0x141], data[0x142], data[0x144] = 3, 4, 2
+	binary.LittleEndian.PutUint16(data[0x101:0x103], 123)
+	data[DOSMemorizedSpellsOffset] = 15
+
+	record, err := ParseDOSPlayerRecord(data, "wizard-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 {
+		t.Fatalf("record=%#v", record)
+	}
+	character, err := record.Character()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 {
+		t.Fatalf("character=%#v", character)
 	}
 }
 

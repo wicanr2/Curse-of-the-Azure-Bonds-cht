@@ -1,6 +1,9 @@
 package party
 
-import "fmt"
+import (
+	"encoding/binary"
+	"fmt"
+)
 
 // DOS player/creature records use a shared spell layout. These constants are
 // deliberately limited to fields documented by the public CoAB format notes;
@@ -10,6 +13,7 @@ const (
 	DOSMemorizedSpellsEnd    = 0x072 // exclusive; last documented byte is 0x071
 	DOSKnownSpellsOffset     = 0x079
 	DOSKnownSpellsEnd        = 0x0DD // exclusive; last documented byte is 0x0DC
+	DOSPlayerRecordSize      = 0x1A6 // last documented byte is current movement at 0x1A5
 )
 
 // DOSPlayerSpellRecord is the verified spell subset of a DOS .SAV/.GUY
@@ -18,6 +22,150 @@ const (
 type DOSPlayerSpellRecord struct {
 	MemorizedSpells []uint8
 	KnownSpells     []uint8
+}
+
+// DOSPlayerRecord is the verified, fixed-offset subset needed to project a
+// DOS player into the remake. Inventory/effects pointers are intentionally
+// retained as raw pointers for a later .SWG/.FX loader rather than guessed.
+type DOSPlayerRecord struct {
+	ID               string
+	Name             string
+	Race             Race
+	Class            Class
+	RawRace          uint8
+	RawClass         uint8
+	Abilities        Abilities
+	Level            int
+	MaxHitPoints     int
+	CurrentHitPoints int
+	IconHead         uint8
+	IconWeapon       uint8
+	IconSize         uint8
+	Gold             uint16
+	Gems             uint16
+	Jewelry          uint16
+	MemorizedSpells  []uint8
+	KnownSpells      []uint8
+}
+
+// ParseDOSPlayerRecord decodes the documented fixed portion of a decompressed
+// .SAV/.GUY player record. Only single-class races/classes represented by the
+// current remake Character model are accepted; raw offsets for inventory and
+// effects are not silently interpreted.
+func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
+	if len(data) < DOSPlayerRecordSize {
+		return DOSPlayerRecord{}, fmt.Errorf("DOS player record is %d bytes; need at least 0x%X", len(data), DOSPlayerRecordSize)
+	}
+	if id == "" {
+		return DOSPlayerRecord{}, fmt.Errorf("DOS player record ID is required")
+	}
+	nameLength := int(data[0])
+	if nameLength < 1 || nameLength > 15 {
+		return DOSPlayerRecord{}, fmt.Errorf("DOS player name length %d is outside 1..15", nameLength)
+	}
+	rawRace, err := parseDOSRace(data[0x74])
+	if err != nil {
+		return DOSPlayerRecord{}, err
+	}
+	rawClass, err := parseDOSClass(data[0x75])
+	if err != nil {
+		return DOSPlayerRecord{}, err
+	}
+	level := int(data[0x109+classLevelOffset(data[0x75])])
+	if level < 1 {
+		return DOSPlayerRecord{}, fmt.Errorf("DOS player class 0x%02X has no current level", rawClass)
+	}
+	spells, err := ParseDOSPlayerSpellRecord(data)
+	if err != nil {
+		return DOSPlayerRecord{}, err
+	}
+	return DOSPlayerRecord{
+		ID: id, Name: string(data[1 : 1+nameLength]), Race: rawRace, Class: rawClass,
+		RawRace: data[0x74], RawClass: data[0x75],
+		Abilities: Abilities{
+			Strength: int(data[0x10]), Intelligence: int(data[0x12]), Wisdom: int(data[0x14]),
+			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
+		},
+		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
+		IconHead: data[0x141], IconWeapon: data[0x142], IconSize: data[0x144],
+		Gold:            binary.LittleEndian.Uint16(data[0x101:0x103]),
+		Gems:            binary.LittleEndian.Uint16(data[0x105:0x107]),
+		Jewelry:         binary.LittleEndian.Uint16(data[0x107:0x109]),
+		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
+	}, nil
+}
+
+// Character projects the verified player fields into the current party model.
+// It keeps the original current/max HP and icon values so the combat renderer
+// can use imported data immediately.
+func (r DOSPlayerRecord) Character() (Character, error) {
+	character := Character{
+		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
+		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconSize: r.IconSize,
+		SpellSlots: append([]uint8(nil), r.MemorizedSpells...),
+	}
+	if err := character.Validate(); err != nil {
+		return Character{}, err
+	}
+	return character, nil
+}
+
+func parseDOSRace(raw uint8) (Race, error) {
+	switch raw {
+	case 1:
+		return RaceDwarf, nil
+	case 2:
+		return RaceElf, nil
+	case 3:
+		return RaceGnome, nil
+	case 4:
+		return RaceHalfElf, nil
+	case 5:
+		return RaceHalfling, nil
+	case 7:
+		return RaceHuman, nil
+	default:
+		return 0, fmt.Errorf("unsupported DOS player race 0x%02X", raw)
+	}
+}
+
+func parseDOSClass(raw uint8) (Class, error) {
+	switch raw {
+	case 0:
+		return ClassCleric, nil
+	case 2:
+		return ClassFighter, nil
+	case 3:
+		return ClassPaladin, nil
+	case 4:
+		return ClassRanger, nil
+	case 5:
+		return ClassMagicUser, nil
+	case 6:
+		return ClassThief, nil
+	default:
+		return 0, fmt.Errorf("unsupported DOS single-class value 0x%02X", raw)
+	}
+}
+
+func classLevelOffset(raw uint8) int {
+	switch raw {
+	case 0:
+		return 0
+	case 2:
+		return 2
+	case 3:
+		return 3
+	case 4:
+		return 4
+	case 5:
+		return 5
+	case 6:
+		return 6
+	default:
+		return 0
+	}
 }
 
 // ParseDOSPlayerSpellRecord parses only spell fields from an already
