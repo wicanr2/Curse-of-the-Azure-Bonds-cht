@@ -678,6 +678,12 @@ func className(c party.Class) string {
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "戰鬥", a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
+	active, activeOK := a.state.CombatActiveFighter()
+	camera := combat.NewCombatCamera(
+		combat.TilePoint{X: active.CombatX, Y: active.CombatY},
+		combat.TilePoint{X: 4, Y: 2},
+		activeOK && active.HasCombatPosition,
+	)
 	partyIndex, enemyIndex := 0, 0
 	targets := a.state.CombatTargets()
 	spellTargets := a.state.CombatSpellTargets()
@@ -687,6 +693,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			if fighter.HasCombatPosition {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
+			tile = camera.Apply(tile)
 			x, y := 28+tile.X*48, 108+tile.Y*56
 			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
 			prefix := "  "
@@ -702,6 +709,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		if fighter.HasCombatPosition {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
+		tile = camera.Apply(tile)
 		x, y := 28+tile.X*48, 108+tile.Y*56
 		a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
 		prefix := "  "

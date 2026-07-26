@@ -31,7 +31,7 @@ PICTURE 還有第二個 dispatch：Area2 `HeadBlockId == 0xFF` 才使用上述 P
 
 目前可重用的資料邊界是 Area2 raw record `0x5C2` → `area.State.HeadBlockID` → `game.State.SceneHeadBlock`；這讓 renderer 不需要直接讀 DOS record，也讓後續 Gold Box 遊戲可替換自己的 Area state codec。
 
-戰鬥圖示的方向與位置也應分開：direction 是 0–7 的 facing，tile position 是 combat map 座標，screen position 是 camera transform 後的結果。不要用 fighter list ordinal 取代真實 map position；目前 ordinal 只作 deterministic fallback。
+戰鬥圖示的方向與位置也應分開：direction 是 0–7 的 facing，tile position 是 combat map 座標，screen position 是 camera transform 後的結果。不要用 fighter list ordinal 取代真實 map position；目前 ordinal 只作 deterministic fallback。`CombatCamera` 以 active fighter 對齊 viewport，後續 Gold Box 遊戲可替換 viewport／scroll policy 而沿用資料與 renderer 分層。
 
 共用 fighter adapter 應保存 `pos` 與 `size`，而不是只保存最後的 screen pixel；這樣 camera、occupied tiles、碰撞與不同 Gold Box 戰場尺寸可以在上層替換。
 

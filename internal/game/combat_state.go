@@ -108,6 +108,15 @@ func (s *State) CombatTurns() []combat.Turn {
 	return append([]combat.Turn(nil), s.combatTurns...)
 }
 
+// CombatActiveFighter exposes the current turn's fighter to the renderer.
+// The camera follows this position but does not own combat turn mutation.
+func (s *State) CombatActiveFighter() (combat.Fighter, bool) {
+	if s.battle == nil || s.combatTurnIndex >= len(s.combatTurns) {
+		return combat.Fighter{}, false
+	}
+	return s.fighter(s.combatTurns[s.combatTurnIndex].FighterID)
+}
+
 func (s *State) CombatMessage() string { return s.combatMessage }
 
 func (s *State) CombatMoveMode() bool { return s.combatMoveMode }
