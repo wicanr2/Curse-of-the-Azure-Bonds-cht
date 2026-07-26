@@ -424,4 +424,4 @@
 
 第一百六十輪功能／文件 commit：`7ba3006`，已推送至 GitHub `main`。依公開 CoAB `LoadWalldef` reference 將 State 的 `LOAD PIECES` request 接到 `WALLDEF{area}`／`8X8D{area}` raw `PieceSet` catalog；補上單／多 WALLDEF record selector regression、原始 ZIP area 2 regression、dungeon preview 載入狀態與共用 graphics knowledge。WALLDEF row／column 的牆面拼圖、0x7F 特殊分支、碰撞與完整 3D renderer 仍保留 boundary。
 
-第一百六十一輪待提交：依 reference `WallDefBlock.Offset` 將 WALLDEF graphic IDs 套用 dungeon global bases `0x2E／0x74／0xBA`，新增 `PieceSet.WallSymbol` bounded cell-to-8×8D lookup、offset regression、READY 規格與共用 graphics knowledge；九種 3D viewport layout、GEO 深度遍歷與完整 renderer 仍保留 boundary。
+第一百六十一輪功能／文件 commit：`1da9e05`，已推送至 GitHub `main`。依 reference `WallDefBlock.Offset` 將 WALLDEF graphic IDs 套用 dungeon global bases `0x2E／0x74／0xBA`，新增 `PieceSet.WallSymbol` bounded cell-to-8×8D lookup、offset regression、READY 規格與共用 graphics knowledge；九種 3D viewport layout、GEO 深度遍歷與完整 renderer 仍保留 boundary。
