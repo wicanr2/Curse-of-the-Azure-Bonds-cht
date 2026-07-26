@@ -250,6 +250,10 @@ func (a *app) Update() error {
 		case game.ModeEvent:
 			return a.state.Continue()
 		case game.ModeCombat:
+			if a.state.CombatViewActive() {
+				a.state.EndCombatView()
+				return nil
+			}
 			if a.state.CombatCastingSpell() != 0 {
 				return a.state.CombatCast(a.state.CombatCastingSpell())
 			}
@@ -257,6 +261,12 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if a.state.CombatViewActive() {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+				a.state.EndCombatView()
+			}
+			return nil
+		}
 		if a.state.CombatMoveMode() {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 				a.state.CancelCombatMove()
@@ -302,6 +312,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
 			return a.state.BeginCombatMove()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
+			return a.state.BeginCombatView()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
@@ -678,6 +691,14 @@ func className(c party.Class) string {
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "戰鬥", a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
+	if a.state.CombatViewActive() {
+		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
+		for index, line := range a.state.CombatViewLines() {
+			text.Draw(screen, line, a.face, 64, 185+index*30, white)
+		}
+		text.Draw(screen, "Enter／Esc：返回戰鬥", a.face, 64, 350, cyan)
+		return
+	}
 	active, activeOK := a.state.CombatActiveFighter()
 	camera := combat.NewCombatCamera(
 		combat.TilePoint{X: active.CombatX, Y: active.CombatY},

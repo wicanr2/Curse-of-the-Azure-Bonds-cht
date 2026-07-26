@@ -142,3 +142,4 @@
 - [第一百四十五輪 MOVE free attack](./145-combat-free-attack-on-move.md)（`READY`：限離開鄰接範圍的免費攻擊 trigger）
 - [第一百四十六輪 MOVE attack](./146-combat-move-attack.md)（`READY`：限移入敵方格的攻擊 transaction）
 - [第一百四十七輪 combat camera](./147-combat-camera.md)（`READY`：限 active character camera transform）
+- [第一百四十八輪 combat VIEW](./148-combat-view.md)（`READY`：限 read-only fighter summary）

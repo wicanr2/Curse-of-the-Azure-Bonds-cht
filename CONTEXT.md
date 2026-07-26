@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百四十七輪：combat camera。
+第一百四十八輪：combat VIEW。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -396,4 +396,6 @@
 
 第一百四十六輪功能／文件 commit：`77e4245`，已推送至 GitHub `main`。MOVE 移入存活敵人格時回傳既有 attack transaction，保留 party fighter 原座標；隊友格仍拒絕，離開敵人鄰接範圍的 free attack 仍維持既有 branch。新增 RuleBook 規格、繁中 README／共用 state knowledge 與 game/combat tests。
 
-第一百四十七輪待提交：依 RuleBook active character centered camera，新增可重用 `CombatCamera`、State active fighter read API、Ebiten 座標轉換、測試與 graphics knowledge 更新；viewport 尺寸、scroll animation、地圖遮擋與真實 Area camera 仍保留 boundary。
+第一百四十七輪功能／文件 commit：`960cffb`，已推送至 GitHub `main`。依 RuleBook active character centered camera，新增可重用 `CombatCamera`、State active fighter read API、Ebiten 座標轉換、測試與 graphics knowledge 更新；viewport 尺寸、scroll animation、地圖遮擋與真實 Area camera 仍保留 boundary。
+
+第一百四十八輪待提交：Combat Menu `VIEW` 以 `V` 開啟繁中 read-only fighter summary，Enter／Esc 關閉且不消耗回合；新增 State／renderer tests、READY 規格與共用 state knowledge。完整 View Menu、物品／交易與 Combat FLEE 的速度／追擊規則仍保留 boundary。

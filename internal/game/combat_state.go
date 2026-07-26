@@ -117,6 +117,50 @@ func (s *State) CombatActiveFighter() (combat.Fighter, bool) {
 	return s.fighter(s.combatTurns[s.combatTurnIndex].FighterID)
 }
 
+// BeginCombatView opens the RuleBook's read-only character screen without
+// consuming the active fighter's turn.
+func (s *State) BeginCombatView() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	fighter, ok := s.CombatActiveFighter()
+	if !ok || fighter.Side != combat.SideParty {
+		return fmt.Errorf("it is not a party character turn")
+	}
+	s.combatView = true
+	s.combatViewFighterID = fighter.ID
+	return nil
+}
+
+func (s *State) EndCombatView() {
+	s.combatView = false
+	s.combatViewFighterID = ""
+}
+
+func (s *State) CombatViewActive() bool { return s.combatView }
+
+func (s *State) CombatViewFighter() (combat.Fighter, bool) {
+	if !s.combatView || s.battle == nil {
+		return combat.Fighter{}, false
+	}
+	return s.fighter(s.combatViewFighterID)
+}
+
+// CombatViewLines is a renderer-neutral Traditional Chinese summary. The
+// same state boundary can feed a text UI or a later Gold Box front end.
+func (s *State) CombatViewLines() []string {
+	fighter, ok := s.CombatViewFighter()
+	if !ok {
+		return nil
+	}
+	return []string{
+		fmt.Sprintf(s.catalog.Text("combat_view_name", "角色：%s"), fighter.Name),
+		fmt.Sprintf(s.catalog.Text("combat_view_hp", "生命：%d/%d"), fighter.HitPoints, fighter.MaxHitPoints),
+		fmt.Sprintf(s.catalog.Text("combat_view_ac", "護甲等級：%d"), fighter.ArmorClass),
+		fmt.Sprintf(s.catalog.Text("combat_view_attack", "攻擊加值：%d"), fighter.AttackBonus),
+	}
+}
+
 func (s *State) CombatMessage() string { return s.combatMessage }
 
 func (s *State) CombatMoveMode() bool { return s.combatMoveMode }
@@ -1090,6 +1134,7 @@ func (s *State) finishCombat() error {
 	}
 	s.CancelCombatCast()
 	s.CancelCombatMove()
+	s.EndCombatView()
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.eventReturnMode = ModeWilderness

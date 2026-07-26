@@ -732,6 +732,43 @@ func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	}
 }
 
+func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 10, ArmorClass: 6, AttackBonus: 3, InitiativeBonus: 20}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	activeBefore, ok := state.CombatActiveFighter()
+	if !ok {
+		t.Fatal("missing active fighter")
+	}
+	if err := state.BeginCombatView(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatViewActive() {
+		t.Fatal("combat view did not open")
+	}
+	viewed, ok := state.CombatViewFighter()
+	if !ok || viewed.ID != "hero" {
+		t.Fatalf("viewed=%+v ok=%v", viewed, ok)
+	}
+	lines := strings.Join(state.CombatViewLines(), " ")
+	for _, want := range []string{"角色：英雄", "生命：8/10", "護甲等級：6", "攻擊加值：3"} {
+		if !strings.Contains(lines, want) {
+			t.Fatalf("view lines=%q missing %q", lines, want)
+		}
+	}
+	activeAfter, ok := state.CombatActiveFighter()
+	if !ok || activeAfter.ID != activeBefore.ID {
+		t.Fatalf("view changed turn: before=%+v after=%+v", activeBefore, activeAfter)
+	}
+	state.EndCombatView()
+	if state.CombatViewActive() {
+		t.Fatal("combat view did not close")
+	}
+}
+
 func TestCombatMoveIntoEnemySquareResolvesAttack(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
