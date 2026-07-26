@@ -133,6 +133,7 @@ type State struct {
 	shopAppraiseCharacter  int
 	shopAppraiseKind       TreasureKind
 	barMenu                bool
+	parlayMenu             bool
 	barTales               []string
 	barTaleIndex           int
 	campMenu               bool
@@ -479,6 +480,9 @@ func (s *State) Select(index int) error {
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
 	}
+	if s.parlayMenu {
+		return s.selectParlay(index, originalChoice)
+	}
 	if s.Mode == ModePlace {
 		if s.shopMenu {
 			return s.selectShop(index, originalChoice)
@@ -497,6 +501,16 @@ func (s *State) Select(index int) error {
 	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
+	if originalChoice == "FLEE" {
+		s.OriginalEvent = "FLEE"
+		s.Message = s.catalog.Text("encounter_flee_done", "你們成功撤退，返回荒野。")
+		return nil
+	}
+	if originalChoice == "PARLAY" {
+		s.enterParlayMenu()
+		s.Mode = ModeWilderness
+		return nil
+	}
 	switch index {
 	case 0:
 		s.Message = s.catalog.Text("enter_city", "Enter city")
@@ -592,6 +606,36 @@ func (s *State) Select(index int) error {
 	if s.Location != LocationWilderness && originalChoice == "EXIT" {
 		s.leaveLocation()
 	}
+	return nil
+}
+
+func (s *State) enterParlayMenu() {
+	s.parlayMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("parlay_menu_prompt", "選擇談判策略")
+	s.Choices = []string{
+		s.catalog.Text("parlay_haughty", "傲慢"),
+		s.catalog.Text("parlay_sly", "狡猾"),
+		s.catalog.Text("parlay_meek", "謙卑"),
+		s.catalog.Text("parlay_nice", "友善"),
+		s.catalog.Text("parlay_abusive", "威嚇"),
+	}
+	s.currentOriginalChoices = []string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}
+	s.Message = ""
+}
+
+func (s *State) selectParlay(index int, originalChoice string) error {
+	if index < 0 || index >= len(s.currentOriginalChoices) || originalChoice == "" {
+		return fmt.Errorf("parlay choice %d is invalid", index)
+	}
+	s.parlayMenu = false
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	s.OriginalEvent = "PARLAY"
+	tactic := localizeOption(s.catalog, originalChoice)
+	s.Message = fmt.Sprintf(s.catalog.Text("encounter_parlay_done", "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。"), tactic)
+	s.Choices = nil
+	s.currentOriginalChoices = nil
 	return nil
 }
 
@@ -2338,6 +2382,16 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("encounter_advance", "接近")
 	case "PARLAY":
 		return catalog.Text("encounter_parlay", "談判")
+	case "PARLAY_HAUGHTY":
+		return catalog.Text("parlay_haughty", "傲慢")
+	case "PARLAY_SLY":
+		return catalog.Text("parlay_sly", "狡猾")
+	case "PARLAY_MEEK":
+		return catalog.Text("parlay_meek", "謙卑")
+	case "PARLAY_NICE":
+		return catalog.Text("parlay_nice", "友善")
+	case "PARLAY_ABUSIVE":
+		return catalog.Text("parlay_abusive", "威嚇")
 	case "EXIT":
 		return catalog.Text("exit", "Exit")
 	default:

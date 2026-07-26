@@ -161,6 +161,44 @@ func TestLocalizedEncounterMenuOptions(t *testing.T) {
 	}
 }
 
+func TestEncounterFleeReturnsToWildernessEvent(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"撤退"}
+	state.currentOriginalChoices = []string{"FLEE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "FLEE" || state.Message != "你們成功撤退，返回荒野。" {
+		t.Fatalf("flee state=%+v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {
+		t.Fatalf("flee continuation mode=%v err=%v", state.Mode, err)
+	}
+}
+
+func TestEncounterParlayOffersFiveTacticsAndReturnsEvent(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"談判"}
+	state.currentOriginalChoices = []string{"PARLAY"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.parlayMenu || len(state.Choices) != 5 {
+		t.Fatalf("parlay menu state=%+v", state)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "PARLAY" || !strings.Contains(state.Message, "謙卑") {
+		t.Fatalf("parlay result state=%+v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {
+		t.Fatalf("parlay continuation mode=%v err=%v", state.Mode, err)
+	}
+}
+
 func TestLocationDefaultsToWilderness(t *testing.T) {
 	state := NewState(testCatalog())
 	if state.Location != LocationWilderness || state.LocationName != "Wilderness" {
