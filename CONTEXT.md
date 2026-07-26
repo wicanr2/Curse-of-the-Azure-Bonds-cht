@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 92 輪：party equipment class／slot transaction contract。
+第 93 輪：party inventory quantity／cursed mutation contract。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -286,4 +286,6 @@
 
 第 91 輪功能／文件 commit：`ebc8715`，已推送至 GitHub `main`。ITEMS readied 武器／護甲效果已接入 party fighter，舊 JSON 行為保持相容。
 
-第 92 輪功能／文件 commit：待本輪提交。新增 `party.ItemClassBit`、`Character.CanEquip`／`EquipItem`／`UnequipItem`；以 reference class mask、裝備 slot、雙手／副手衝突與雙戒指上限建立可重用 inventory transaction。stack、彈藥、cursed、magic effects、商店與 DOS save offset 仍未完成。
+第 92 輪功能／文件 commit：`fe5edbd`，已推送至 GitHub `main`。party class／slot transaction 已完成，stack、cursed 與完整 inventory mutation 待後續處理。
+
+第 93 輪功能／文件 commit：待本輪提交。新增 `Character.RemoveItem` 的 Count stack decrement、readied protection，以及 `UnequipItem` 的 cursed equipment lock；消耗品 effect、charges、彈藥、商店與 DOS save offset 仍未完成。
