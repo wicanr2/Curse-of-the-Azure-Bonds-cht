@@ -114,12 +114,12 @@ func TestRunSubsetHorizontalMenuExtractsOptions(t *testing.T) {
 		0x80, 0x02, 0x0C, 0x32,
 		0x00,
 	}
-	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 10)
+	result, err := RunSubsetWithSelections(append([]byte{0, 0}, payload...), 0, 10, []uint16{1})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result.Menus) != 1 || len(result.Menus[0].Options) != 2 || result.Menus[0].Selected != 0 {
-		t.Fatalf("menus=%+v, want two options with default 0", result.Menus)
+	if len(result.Menus) != 1 || len(result.Menus[0].Options) != 2 || result.Menus[0].Selected != 1 {
+		t.Fatalf("menus=%+v, want two options with selected 1", result.Menus)
 	}
 }
 

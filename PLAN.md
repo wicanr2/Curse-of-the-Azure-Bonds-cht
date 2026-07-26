@@ -93,3 +93,10 @@
 - [x] 以真實 ECL1 initial entry 回歸開場三段文字與三個 menu 選項。
 - [x] 將原始 menu 選項接入 game state 與繁中 locale／Ebiten rendering。
 - [ ] 將 deterministic menu selection 改成玩家輸入，並接通兩個開場事件分支。
+
+## 第十五輪驗收
+
+- [x] 加入 successive ECL menu selection injection 與 regression。
+- [x] 將 Ebiten directional cursor／Enter 接入 game state 與 ECL selection。
+- [x] 以實際 ECL1 驗證 selection 0／1 走不同分支。
+- [ ] 實作 `VERTICAL MENU` 與後續事件 command subset。

@@ -39,12 +39,16 @@ type State struct {
 	// not a replacement for the localized display string.
 	OriginalOpening string
 	OriginalChoices []string
+	OriginalEvent   string
 
-	catalog locale.Catalog
+	catalog  locale.Catalog
+	eclBlock []byte
+	eclStart int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
 	state := NewState(catalog)
+	state.eclBlock = append([]byte(nil), block...)
 	for _, candidate := range ecl.FindPackedTextCandidates(block) {
 		if strings.Contains(candidate, "YOU ARE AT THE EDGE OF") {
 			state.OriginalOpening = "YOU ARE AT THE EDGE OF"
@@ -53,6 +57,7 @@ func NewStateFromECL(catalog locale.Catalog, block []byte) State {
 	}
 	if points, _, err := ecl.EntryPoints(block, 5); err == nil && len(points) == 5 {
 		start := int(points[4]) - ecl.CodeAddressBase
+		state.eclStart = start
 		if result, runErr := ecl.RunSubset(block, start, 100); runErr == nil || len(result.Menus) > 0 {
 			if len(result.Menus) > 0 {
 				for _, option := range result.Menus[0].Options {
@@ -97,14 +102,35 @@ func (s *State) Apply(action Action) error {
 		s.Message = ""
 		return nil
 	case s.Mode == ModeWilderness && action == ActionEnterCity:
-		s.Mode = ModeEvent
-		s.Message = s.catalog.Text("enter_city", "Enter city")
-		return nil
+		return s.Select(0)
 	case s.Mode == ModeWilderness && action == ActionJourneyOn:
-		s.Mode = ModeEvent
-		s.Message = s.catalog.Text("journey_on", "Journey on")
-		return nil
+		return s.Select(1)
 	default:
 		return fmt.Errorf("action %d is invalid in mode %d", action, s.Mode)
 	}
+}
+
+// Select applies a localized opening choice and, when the state came from an
+// ECL block, runs that choice through the bounded ECL subset.
+func (s *State) Select(index int) error {
+	if s.Mode != ModeWilderness || index < 0 || index >= len(s.Choices) {
+		return fmt.Errorf("choice %d is invalid in mode %d", index, s.Mode)
+	}
+	s.Mode = ModeEvent
+	switch index {
+	case 0:
+		s.Message = s.catalog.Text("enter_city", "Enter city")
+	case 1:
+		s.Message = s.catalog.Text("journey_on", "Journey on")
+	case 2:
+		s.Message = s.catalog.Text("camp", "Camp")
+	default:
+		s.Message = s.Choices[index]
+	}
+	if len(s.eclBlock) > 0 {
+		if result, _ := ecl.RunSubsetWithSelections(s.eclBlock, s.eclStart, 180, []uint16{uint16(index)}); len(result.Text) > 0 {
+			s.OriginalEvent = result.Text[len(result.Text)-1]
+		}
+	}
+	return nil
 }

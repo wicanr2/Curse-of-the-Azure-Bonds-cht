@@ -26,8 +26,9 @@ const (
 )
 
 type app struct {
-	state game.State
-	face  font.Face
+	state        game.State
+	face         font.Face
+	choiceCursor int
 }
 
 func (a *app) Update() error {
@@ -36,11 +37,20 @@ func (a *app) Update() error {
 		case game.ModeTitle:
 			return a.state.Apply(game.ActionStart)
 		case game.ModeWilderness:
-			return a.state.Apply(game.ActionEnterCity)
+			return a.state.Select(a.choiceCursor)
 		}
 	}
-	if a.state.Mode == game.ModeWilderness && inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		return a.state.Apply(game.ActionJourneyOn)
+	if a.state.Mode == game.ModeWilderness {
+		if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.choiceCursor+1 < len(a.state.Choices) {
+				a.choiceCursor++
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.choiceCursor > 0 {
+				a.choiceCursor--
+			}
+		}
 	}
 	return nil
 }
@@ -53,7 +63,11 @@ func (a *app) Draw(screen *ebiten.Image) {
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 	if a.state.Mode == game.ModeWilderness {
 		for index, choice := range a.state.Choices {
-			text.Draw(screen, choice, a.face, 56, 220+index*40, white)
+			prefix := "  "
+			if index == a.choiceCursor {
+				prefix = "> "
+			}
+			text.Draw(screen, prefix+choice, a.face, 56, 220+index*40, white)
 		}
 		text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
 	}

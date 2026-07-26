@@ -22,6 +22,14 @@ type Menu struct {
 // useful for proving an event prefix without silently treating the whole ECL
 // program as implemented.
 func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
+	return RunSubsetWithSelections(block, start, maxSteps, nil)
+}
+
+// RunSubsetWithSelections is RunSubset with deterministic selections for
+// successive HORIZONTAL MENU commands. A missing selection keeps the safe
+// default index 0. This is the bridge between ECL menu semantics and a UI;
+// it does not pretend to implement the original blocking DOS input routine.
+func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uint16) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -38,6 +46,7 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 	memory := make(map[uint16]uint16)
 	stringsMemory := make(map[uint16]string)
 	var compare [6]bool
+	selectionCursor := 0
 	result := RunResult{PC: pc}
 	for result.Steps < maxSteps {
 		instruction, err := decodeInstruction(payload, pc)
@@ -182,6 +191,10 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 				}
 				menu.Options = append(menu.Options, message)
 			}
+			if selectionCursor < len(selections) && selections[selectionCursor] < count {
+				menu.Selected = selections[selectionCursor]
+			}
+			selectionCursor++
 			memory[menu.Location] = menu.Selected
 			result.Menus = append(result.Menus, menu)
 			next = stringsEnd
