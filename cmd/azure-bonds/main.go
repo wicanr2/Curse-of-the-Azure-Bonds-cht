@@ -19,6 +19,7 @@ func main() {
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
+	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	flag.Parse()
 	data, err := zipMember(*image, *member)
 	if err != nil {
@@ -84,6 +85,20 @@ func main() {
 				fmt.Printf(" 0x%04X", point)
 			}
 			fmt.Println()
+		}
+		if *runSubset {
+			start := 0
+			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
+				start = int(points[4]) - ecl.CodeAddressBase
+			}
+			result, runErr := ecl.RunSubset(block.Data, start, 500)
+			fmt.Printf("  subset steps=%d stop=+0x%04X texts=%d\n", result.Steps, result.PC, len(result.Text))
+			for _, message := range result.Text {
+				fmt.Printf("    text=%q\n", message)
+			}
+			if runErr != nil {
+				fmt.Printf("  subset stopped safely: %v\n", runErr)
+			}
 		}
 	}
 }

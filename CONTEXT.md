@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 12 輪：ECL 初始化入口。
+第 13 輪：ECL bounded runtime subset。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -16,6 +16,7 @@
 第 8 輪 commit：`c079c50`，已推送至 GitHub `main`。
 第 9 輪 commit：`ec85c89`，已推送至 GitHub `main`。
 第 10 輪 commits：`d1aea12`、`a4df55b`，已推送至 GitHub `main`。
+第 11–12 輪 commits：`a798531`、`07c9309`、`697ff34`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -38,6 +39,7 @@
 - 參考公開 CoAB 重寫程式後，確認 ECL 初始化會先連續讀五組 word-valued command-set；`internal/ecl.EntryPoints` 已加入此安全解析器與 regression test。
 - 實際 `ECL1.DAX` 三個 block 的 initial entry 都解析為 `0x8014`；CLI `-graph` 已優先使用該入口對應的 payload offset `+0x0014`，不再盲目從 `+0x0000` 開始。
 - `ParseOperands` 已正確消耗 `0x80 length payload` compressed-string operand；`TraceAt` 可從 initial entry 開始，block 81 已回歸解出 `AS YOU DEPART...`、`AS YOU LEAVE...` 等原始事件文字。
+- `internal/ecl.RunSubset` 已支援 bounded `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT`；實際 ECL1 從 initial entry 執行時會在尚未支援的 `0x25 ON GOTO` 或其他副作用命令安全停止。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -63,3 +65,4 @@
 11. 建立 ECL branch target graph，將 opening marker 後的選項與事件序列接入 state。
 12. 對 ECL graph 的 entry points 做原版事件文字對齊，建立第一個完整 event screen。
 13. 用 `EntryPoints` 對實際 ECL1–ECL6 做入口 regression，再逐步加入可執行 VM command subset。
+14. 將 `ON GOTO/GOSUB`、選單與 memory model 以 regression 驗證後接入遊戲 state。

@@ -1,0 +1,22 @@
+# 第十三輪：ECL bounded runtime subset
+
+狀態：`READY`（限明確列出的命令 subset）
+
+`internal/ecl.RunSubset` 是第一個可執行的 ECL 小型 runtime，具備步數上限與明確錯誤停機：
+
+- `EXIT`、`GOTO`、`GOSUB`、`RETURN` 與 call stack。
+- `COMPARE`、六種 `IF`；不成立時依原版行為跳過下一個完整 command。
+- `SAVE` 的 scalar／memory subset。
+- `PRINT`／`PRINTCLEAR` 的 `0x80` compressed-string operand。
+- `PICTURE`、`LOAD FILES` 等尚未還原副作用的命令，只作 bounded no-op，並在文件中明確標示。
+
+任何其他 opcode（例如目前實際 ECL trace 遇到的 `0x25` ON GOTO、`0x36` ADD NPC）都會回傳 payload offset，不會被當成已支援。
+
+這不是完整遊戲 VM：尚未包含 party／地圖／戰鬥／選單輸入／音效狀態，亦不應把 no-op 命令的輸出視為原版等價。
+
+## 驗收
+
+```sh
+go test ./internal/ecl
+go run ./cmd/azure-bonds -image curseoftheazurebonds.zip -member ECL1.DAX -run-subset
+```
