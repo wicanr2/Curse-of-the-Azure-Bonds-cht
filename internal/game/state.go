@@ -139,9 +139,24 @@ type State struct {
 	alterDropSelected      int
 	alterPicsMenu          bool
 	alterSpeedMenu         bool
+	alterIconMenu          bool
+	alterIconEdit          bool
+	alterIconCharacter     int
+	alterIconHeadIndex     int
+	alterIconBodyIndex     int
 	picturesEnabled        bool
 	animationsEnabled      bool
 	messageSpeed           int
+}
+
+// playerIconBlocks are the four verified CHEAD/CBODY block families extracted
+// from the original assets. ICON never exposes blocks without a checked
+// sprite pair.
+var playerIconBlocks = []uint8{
+	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D,
+	0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D,
+	0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D,
+	0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD,
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -490,6 +505,8 @@ func (s *State) enterCampMenu() {
 	s.alterDropSelected = -1
 	s.alterPicsMenu = false
 	s.alterSpeedMenu = false
+	s.alterIconMenu = false
+	s.alterIconEdit = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
 	s.Choices = []string{
@@ -506,6 +523,49 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.alterIconMenu {
+		if originalChoice == "ALTER_ICON_EXIT" {
+			s.alterIconMenu = false
+			s.alterIconEdit = false
+			s.enterAlterMenu()
+			return nil
+		}
+		if s.alterIconEdit {
+			switch originalChoice {
+			case "ALTER_ICON_HEAD_STATUS", "ALTER_ICON_BODY_STATUS":
+				return nil
+			case "ALTER_ICON_HEAD_PREV":
+				s.alterIconHeadIndex = (s.alterIconHeadIndex + len(playerIconBlocks) - 1) % len(playerIconBlocks)
+				s.applyIconSelection()
+				return nil
+			case "ALTER_ICON_HEAD_NEXT":
+				s.alterIconHeadIndex = (s.alterIconHeadIndex + 1) % len(playerIconBlocks)
+				s.applyIconSelection()
+				return nil
+			case "ALTER_ICON_BODY_PREV":
+				s.alterIconBodyIndex = (s.alterIconBodyIndex + len(playerIconBlocks) - 1) % len(playerIconBlocks)
+				s.applyIconSelection()
+				return nil
+			case "ALTER_ICON_BODY_NEXT":
+				s.alterIconBodyIndex = (s.alterIconBodyIndex + 1) % len(playerIconBlocks)
+				s.applyIconSelection()
+				return nil
+			case "ALTER_ICON_DONE":
+				s.alterIconEdit = false
+				s.enterAlterIconMenu()
+				return nil
+			}
+		}
+		if strings.HasPrefix(originalChoice, "ALTER_ICON_CHARACTER_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "ALTER_ICON_CHARACTER_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid alter icon character %q", originalChoice)
+			}
+			s.alterIconCharacter = value
+			s.enterAlterIconEditMenu()
+			return nil
+		}
+	}
 	if s.alterSpeedMenu {
 		switch originalChoice {
 		case "ALTER_SPEED_EXIT":
@@ -647,6 +707,17 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.enterAlterSpeedMenu()
 			return nil
 		}
+		if originalChoice == "ALTER_ICON" {
+			if len(s.partyRoster) == 0 {
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = originalChoice
+				s.Message = s.catalog.Text("alter_icon_unavailable", "目前沒有可設定小人的角色。")
+				return nil
+			}
+			s.enterAlterIconMenu()
+			return nil
+		}
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModeWilderness
 		s.OriginalEvent = originalChoice
@@ -773,6 +844,8 @@ func (s *State) enterAlterMenu() {
 	s.alterDropSelected = -1
 	s.alterPicsMenu = false
 	s.alterSpeedMenu = false
+	s.alterIconMenu = false
+	s.alterIconEdit = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
 	s.Choices = []string{
@@ -804,6 +877,72 @@ func (s *State) enterAlterSpeedMenu() {
 
 // MessageSpeed returns the current 1..5 message reveal speed for renderers.
 func (s *State) MessageSpeed() int { return s.messageSpeed }
+
+func (s *State) enterAlterIconMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterIconMenu = true
+	s.alterIconEdit = false
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_icon_prompt", "選擇要設定小人的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（頭部 %02X／身體 %02X）", character.Name, character.IconHeadBlock, character.IconWeaponBlock))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ICON_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("alter_icon_exit", "返回修改選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ICON_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterAlterIconEditMenu() {
+	character := s.partyRoster[s.alterIconCharacter]
+	s.alterIconEdit = true
+	s.alterIconHeadIndex = iconBlockIndex(character.IconHeadBlock)
+	s.alterIconBodyIndex = iconBlockIndex(character.IconWeaponBlock)
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_icon_edit_prompt", "設定%s的小人"), character.Name)
+	s.Choices = []string{
+		fmt.Sprintf(s.catalog.Text("alter_icon_head", "頭部：%02X"), playerIconBlocks[s.alterIconHeadIndex]),
+		s.catalog.Text("alter_icon_head_prev", "頭部上一個"),
+		s.catalog.Text("alter_icon_head_next", "頭部下一個"),
+		fmt.Sprintf(s.catalog.Text("alter_icon_body", "身體：%02X"), playerIconBlocks[s.alterIconBodyIndex]),
+		s.catalog.Text("alter_icon_body_prev", "身體上一個"),
+		s.catalog.Text("alter_icon_body_next", "身體下一個"),
+		s.catalog.Text("alter_icon_done", "完成"),
+	}
+	s.currentOriginalChoices = []string{"ALTER_ICON_HEAD_STATUS", "ALTER_ICON_HEAD_PREV", "ALTER_ICON_HEAD_NEXT", "ALTER_ICON_BODY_STATUS", "ALTER_ICON_BODY_PREV", "ALTER_ICON_BODY_NEXT", "ALTER_ICON_DONE"}
+	s.Message = ""
+}
+
+func iconBlockIndex(block uint8) int {
+	for index, candidate := range playerIconBlocks {
+		if candidate == block {
+			return index
+		}
+	}
+	return 0
+}
+
+func (s *State) applyIconSelection() {
+	if s.alterIconCharacter < 0 || s.alterIconCharacter >= len(s.partyRoster) {
+		return
+	}
+	head := playerIconBlocks[s.alterIconHeadIndex]
+	body := playerIconBlocks[s.alterIconBodyIndex]
+	s.partyRoster[s.alterIconCharacter].IconHeadBlock = head
+	s.partyRoster[s.alterIconCharacter].IconWeaponBlock = body
+	id := s.partyRoster[s.alterIconCharacter].ID
+	for index := range s.party {
+		if s.party[index].ID == id {
+			s.party[index].HasPartyIcon = true
+			s.party[index].PartyHeadBlock = head
+			s.party[index].PartyBodyBlock = body
+		}
+	}
+	s.enterAlterIconEditMenu()
+}
 
 func (s *State) enterAlterPicsMenu() {
 	s.campMenu = true
