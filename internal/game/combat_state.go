@@ -1094,6 +1094,25 @@ func (s *State) CombatAct() error {
 	return s.advanceCombatToParty()
 }
 
+// CombatDone ends the active party fighter's turn without attacking. It is
+// the RuleBook Combat Menu DONE action and follows the same enemy-turn path
+// as other completed party actions.
+func (s *State) CombatDone() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	if s.combatMoveMode || s.combatCastingSpell != 0 || s.combatView {
+		return fmt.Errorf("combat action is still being selected")
+	}
+	attacker, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_done", "%s 結束回合。"), attacker.Name)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
 // combatAttackSequence keeps the game adapter responsible for target cursor
 // policy. If a target falls, remaining weapon attacks use the next living
 // enemy at the same cursor position, matching the RuleBook's Aim behavior.

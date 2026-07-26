@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十輪：combat ammunition transaction。
+第一百五十一輪：combat DONE。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -402,4 +402,6 @@
 
 第一百四十九輪功能／文件 commit：`418fe09`，已推送至 GitHub `main`。依 RuleBook 與 ITEMS RateOfFire，將已裝備武器 raw `4/6` 投影為每回合 2/3 次攻擊，接入 Battle sequence、目標倒下後換下一存活敵人、繁中摘要與測試；彈藥消耗已於第 150 輪接入注入式 adapter，職業等級額外攻擊、Aim／range 與 back stab 仍保留 boundary。
 
-第一百五十輪待提交：保存武器 raw AmmunitionType，建立 raw code→inventory type mapping 的注入式 atomic consumption，CombatAct 在 attack 前 preflight 本回合 shots；mapping 缺失／彈藥不足不修改 inventory。新增 party／game tests、READY 規格與共用 state knowledge。
+第一百五十輪功能／文件 commit：`02a161a`，已推送至 GitHub `main`。保存武器 raw AmmunitionType，建立 raw code→inventory type mapping 的注入式 atomic consumption，CombatAct 在 attack 前 preflight 本回合 shots；mapping 缺失／彈藥不足不修改 inventory。新增 party／game tests、READY 規格與共用 state knowledge。
+
+第一百五十一輪待提交：Combat Menu `DONE` 以 `D` 結束目前 party turn，不攻擊、不消耗彈藥，重用 enemy／next-party advancement；新增繁中提示、測試、READY 規格與共用 state knowledge。hold／delay 與其他 Combat Menu command 仍保留 boundary。
