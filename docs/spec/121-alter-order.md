@@ -10,7 +10,7 @@ RuleBook 的 CAMP 章節定義 `ALTER: ORDER DROP SPEED ICON PICS EXIT`，並說
 
 `CAMP → ALTER → ORDER` 先選要移動的角色，再選新的位置。成功後依同一個順序重排 `partyRoster`，並以 character ID 對齊目前的 `combat.Fighter` slice；未匹配的 fighter 保留在尾端，不以 slice ordinal 猜測角色身份。Enter 返回 ALTER Menu，離開 ALTER 才回 CAMP Menu。
 
-`SPEED／ICON` 仍是明確 placeholder；DROP 已由獨立規格接入永久刪除確認，PICS 已由獨立規格接入 renderer preferences，ICON 素材選擇尚未接入。
+`ICON` 仍是明確 placeholder；DROP 已由獨立規格接入永久刪除確認，PICS 與 SPEED 已分別接入 renderer preferences／message reveal，ICON 素材選擇尚未接入。
 
 ## 驗證
 
