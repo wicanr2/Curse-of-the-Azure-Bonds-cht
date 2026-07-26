@@ -132,3 +132,4 @@
 - [第一百三十五輪 combat Cure Light Wounds](./135-combat-cure-light-wounds.md)（`READY`：限一級牧師戰鬥治療）
 - [第一百三十六輪 combat spell target selection](./136-combat-spell-target-selection.md)（`READY`：限兩個已接入法術的目標選擇）
 - [第一百三十七輪 combat Bless](./137-combat-bless.md)（`READY`：限 Bless party attack bonus 與 no-target confirmation）
+- [第一百三十八輪 combat Bless adjacency／duration](./138-combat-bless-duration-adjacency.md)（`READY`：限八方向相鄰排除與 6 回合 duration）

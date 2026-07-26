@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百三十七輪：combat Bless。
+第一百三十八輪：combat Bless adjacency／duration。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -376,4 +376,6 @@
 
 第一百三十六輪功能／文件 commit：`25c0019`，已推送至 GitHub `main`。S／H 先進入施法目標選擇，左右切換、Enter 確認、Esc 取消；Magic Missile／Cure Light Wounds 分別使用敵方／我方 target list。
 
-第一百三十七輪功能／文件 commits：`89b7620`、`a7aaca3`，已推送至 GitHub `main`。已接入 RuleBook Bless（spell ID `1`）的 B／Enter／Esc 無目標施法 transaction；成功消耗牧師 slot，存活隊友各獲 `AttackBonus +1` 且不重複疊加。鄰近怪物排除與 duration 尚未解碼，保留為 CombatMap／runtime effect boundary。
+第一百三十七輪功能／文件 commits：`89b7620`、`a7aaca3`，已推送至 GitHub `main`。已接入 RuleBook Bless（spell ID `1`）的 B／Enter／Esc 無目標施法 transaction；成功消耗牧師 slot，隊伍攻擊加值效果與後續 adjacency／duration 收斂於下一輪。
+
+第一百三十八輪待提交：Bless 已依 RuleBook `6r` 接入 6 回合 duration，並依 CombatMap 八方向相鄰排除鄰近存活怪物的隊友；缺少位置資料時採 bounded 不排除 fallback。新增 `docs/spec/138-combat-bless-duration-adjacency.md` 與 regression tests。
