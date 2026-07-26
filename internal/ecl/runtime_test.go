@@ -140,6 +140,21 @@ func TestRunSubsetVerticalMenuExtractsPromptAndOptions(t *testing.T) {
 	}
 }
 
+func TestRunSubsetInteractivePausesBeforeUnselectedMenu(t *testing.T) {
+	payload := []byte{
+		0x2B, 0x02, 0x00, 0x90, 0x00, 1,
+		0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubsetInteractive(append([]byte{0, 0}, payload...), 0, 10, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.WaitingForMenu || len(result.Menus) != 1 || result.Menus[0].Options[0] != "HI" {
+		t.Fatalf("result=%+v, want waiting menu", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)

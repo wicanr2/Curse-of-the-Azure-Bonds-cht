@@ -106,4 +106,11 @@
 - [x] 實作 `VERTICAL MENU` header／prompt／variable options parsing。
 - [x] 支援 vertical menu selection injection 與 regression。
 - [x] 實際 ECL1 讀到城市場所 menu options。
-- [ ] 將 successive menu sequence 保存到 UI state，完成城市場所與離開事件。
+- [x] 將 successive menu sequence 保存到 UI state；城市場所與離開事件仍待完成。
+
+## 第十七輪驗收
+
+- [x] interactive runner 在未提供 selection 時暫停於下一個 menu。
+- [x] game state 保存 successive menu sequence 並接入 Ebiten。
+- [x] 新增城市 menu／continue prompt 的繁中 locale。
+- [ ] 建立城市場所事件 regression，完成第一個可玩的場所功能。

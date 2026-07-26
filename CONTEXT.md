@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 16 輪：VERTICAL MENU。
+第 17 輪：interactive menu session。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -20,6 +20,7 @@
 第 13 輪 commits：`a6529c8`、`2489507`，已推送至 GitHub `main`。
 第 14 輪 commits：`77375cd`、`b3aa461`，已推送至 GitHub `main`。
 第 15 輪 commit：`2d50510`，已推送至 GitHub `main`。
+第 16 輪 commit：`499e3d3`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -44,9 +45,10 @@
 - `ParseOperands` 已正確消耗 `0x80 length payload` compressed-string operand；`TraceAt` 可從 initial entry 開始，block 81 已回歸解出 `AS YOU DEPART...`、`AS YOU LEAVE...` 等原始事件文字。
 - `internal/ecl.RunSubset` 已支援 bounded `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT`；實際 ECL1 從 initial entry 執行時會在尚未支援的 `0x25 ON GOTO` 或其他副作用命令安全停止。
 - `RunSubset` 已加入 `0x14 COMPARE AND`、`0x2A GETTABLE`、`0x2B HORIZONTAL MENU`；實際 ECL1 已讀出 TILVERTON／SHADOWDALE 開場與 `ENTER CITY/JOURNEY ON/CAMP` menu。
-- `game.NewStateFromECL` 與 Ebiten opening 已接上原始 menu 的繁中 locale 映射；runner 仍以 deterministic index 0，尚未接完整玩家 menu input。
-- `RunSubsetWithSelections`、`game.State.Select` 與 Ebiten cursor 已接上 menu index；實際 selection 1 會走到不同 ECL branch，block 80 停在未支援 `0x15 VERTICAL MENU`。
-- `0x15 VERTICAL MENU` 已加入 prompt／options／selection parser；實際 ECL1 可讀到 `INN/STORE/BAR/LEAVE`，後續多層 menu sequence 尚未完整接入 UI state。
+- `game.NewStateFromECL` 與 Ebiten opening 已接上原始 menu 的繁中 locale 映射；未提供 sequence 時 runner 仍以 deterministic index 0。
+- `RunSubsetWithSelections`、`game.State.Select` 與 Ebiten cursor 已接上 menu index；實際 selection 1 會走到不同 ECL branch。
+- `0x15 VERTICAL MENU` 已加入 prompt／options／selection parser；實際 ECL1 可讀到 `INN/STORE/BAR/LEAVE`。
+- `RunSubsetInteractive` 與 `State.selectionSequence` 會在 sequence 用完時停在下一個 menu；繁中已加入客棧／商店／酒館／離開／繼續提示。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -55,7 +57,7 @@
 - `GAME.OVR` 與 `START.EXE` 的載入關係。
 - ECL opcode、字串編碼、分支／呼叫慣例。
 - unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
-- 完整 menu rendering／input semantics、CAMP 行為與後續事件仍未完成。
+- CAMP／城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成。
 - 中文化的字型格式與字串長度限制。
 
 ## 下一步
@@ -76,4 +78,6 @@
 14. 將 `ON GOTO/GOSUB`、選單與 memory model 以 regression 驗證後接入遊戲 state。
 15. 將 menu selection 變成 Ebiten input／runner action，完成 Enter City／Journey On 第一個事件分支。
 16. 實作 `VERTICAL MENU` 的可觀測選項與 input，再擴展第一個城市事件。
+17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。
+18. 建立城市場所的 ECL event regression，接入第一個可玩的場景功能。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。

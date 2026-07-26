@@ -41,9 +41,10 @@ type State struct {
 	OriginalChoices []string
 	OriginalEvent   string
 
-	catalog  locale.Catalog
-	eclBlock []byte
-	eclStart int
+	catalog           locale.Catalog
+	eclBlock          []byte
+	eclStart          int
+	selectionSequence []uint16
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -128,9 +129,51 @@ func (s *State) Select(index int) error {
 		s.Message = s.Choices[index]
 	}
 	if len(s.eclBlock) > 0 {
-		if result, _ := ecl.RunSubsetWithSelections(s.eclBlock, s.eclStart, 180, []uint16{uint16(index)}); len(result.Text) > 0 {
+		s.selectionSequence = append(s.selectionSequence, uint16(index))
+		result, _ := ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
+		if result.WaitingForMenu && len(result.Menus) > 0 {
+			menu := result.Menus[len(result.Menus)-1]
+			s.Choices = make([]string, 0, len(menu.Options))
+			for _, option := range menu.Options {
+				s.Choices = append(s.Choices, localizeOption(s.catalog, option))
+			}
+			if menu.Prompt != "" {
+				s.Prompt = localizePrompt(s.catalog, menu.Prompt)
+			}
+			s.Mode = ModeWilderness
+			return nil
+		}
+		if len(result.Text) > 0 {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
 		}
 	}
 	return nil
+}
+
+func localizeOption(catalog locale.Catalog, option string) string {
+	switch option {
+	case "ENTER CITY":
+		return catalog.Text("enter_city", "Enter city")
+	case "JOURNEY ON":
+		return catalog.Text("journey_on", "Journey on")
+	case "CAMP":
+		return catalog.Text("camp", "Camp")
+	case "INN":
+		return catalog.Text("inn", "Inn")
+	case "STORE":
+		return catalog.Text("store", "Store")
+	case "BAR":
+		return catalog.Text("bar", "Bar")
+	case "LEAVE":
+		return catalog.Text("leave", "Leave")
+	default:
+		return option
+	}
+}
+
+func localizePrompt(catalog locale.Catalog, prompt string) string {
+	if prompt == "PRESS BUTTON OR RETURN TO CONTINUE." {
+		return catalog.Text("press_button", "Press any button or Enter to continue")
+	}
+	return prompt
 }
