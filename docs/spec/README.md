@@ -61,3 +61,4 @@
 - [第六十二輪 README 與可重現截圖](./round-62-readme-screenshots.md)（`READY`：限 repository progress evidence）
 - [第六十三輪 wilderness floor construction](./round-63-wilderness-floor.md)（`READY`：限 reference wilderness floor generation 與目前 map slice）
 - [第六十四輪 GEO dungeon floor composition](./round-64-dungeon-floor.md)（`READY`：限四段 tile composition 與 GEO2 preview）
+- [第六十六輪原始 GEO map catalog](./round-66-geo-catalog.md)（`READY`：限 GEO DAX map ID catalog 與 preview selector）
