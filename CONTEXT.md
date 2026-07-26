@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 87 輪：CombatMap position／size state boundary 與 renderer 優先使用真實座標。
+第 88 輪：reference `try_place_combatant` combat position formula adapter。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -118,6 +118,8 @@
 第 86 輪功能／文件 commit：`4a60738`，已推送至 GitHub `main`。依 reference `MapDirectionDelta` 建立八方向 `combat.DirectionDelta`，新增 deterministic `FormationTile`，Ebiten 戰鬥 party／enemy sprite、姓名與 HP 改由 tile-derived 座標繪製；補 placement regression、第 86 輪規格與知識庫更新。`go test ./...` 通過。
 
 第 87 輪功能／文件 commit：`162b0e6`，已推送至 GitHub `main`。依 reference `CombatantMap {pos,size,screenPos}` 將 `HasCombatPosition`／`CombatX`／`CombatY`／`CombatSize` 接入 Fighter、StartCombat 與 Ebiten；外部真實 position 優先，缺少時才用 formation fallback。新增 position regression、第 87 輪規格與知識庫更新。`go test ./...` 通過。
+
+第 88 輪功能／文件 commit：`d73436b`，已推送至 GitHub `main`。反組譯 `ovr011.try_place_combatant`，封裝 `pos.x = candidateColumn + teamX*6 + groupRow*5 + 22`、`pos.y = candidateRow + teamY*5 + 10` 為 `combat.ReferencePlacement`，加入 regression、規格與知識庫；team／occupancy inputs 尚未強行假設。`go test ./...` 通過。
 
 ## 已確認
 
