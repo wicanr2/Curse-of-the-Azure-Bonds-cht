@@ -701,6 +701,10 @@ func main() {
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
+	dosCharacterID := flag.String("dos-character-id", "dos-character", "ID for a direct DOS character import")
+	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
+	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
+	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
 	flag.Parse()
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -734,7 +738,26 @@ func main() {
 	}
 	state.SetMonsterRecords(monsterRecords)
 	if *partyLoadPath != "" {
+		if *dosCharacterRecord != "" {
+			log.Fatal("-party-load and -dos-character-record cannot be used together")
+		}
 		if err := state.LoadPartyFile(*partyLoadPath); err != nil {
+			log.Fatal(err)
+		}
+	} else if *dosCharacterRecord != "" {
+		record, err := os.ReadFile(*dosCharacterRecord)
+		if err != nil {
+			log.Fatal(err)
+		}
+		effects, err := readOptional(*dosCharacterEffects)
+		if err != nil {
+			log.Fatal(err)
+		}
+		inventory, err := readOptional(*dosCharacterInventory)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := state.LoadDOSCharacterFiles(*dosCharacterID, party.DOSPlayerFiles{Record: record, Effects: effects, Inventory: inventory}); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -1008,4 +1031,11 @@ func zipMember(path, member string) ([]byte, error) {
 		return io.ReadAll(reader)
 	}
 	return nil, os.ErrNotExist
+}
+
+func readOptional(path string) ([]byte, error) {
+	if strings.TrimSpace(path) == "" {
+		return nil, nil
+	}
+	return os.ReadFile(path)
 }
