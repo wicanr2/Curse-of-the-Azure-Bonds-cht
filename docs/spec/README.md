@@ -100,3 +100,4 @@
 - [第一百零三輪 DOS character import CLI](./103-dos-character-import-cli.md)（`READY`：限 sidecar bundle → party JSON）
 - [第一百零四輪 remake startup DOS character import](./104-game-dos-character-startup.md)（`READY`：限單一 character bundle bridge）
 - [第一百零五輪 DOS `.FX` combat projection](./105-fx-combat-projection.md)（`READY`：限 Bless／Curse attack modifier）
+- [第一百零六輪 DOS `.FX` extended combat projection](./106-fx-combat-projection-extended.md)（`READY`：限 Blind／Bestow Curse／friendly Prayer）
