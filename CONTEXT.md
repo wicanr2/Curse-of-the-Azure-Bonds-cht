@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 80 輪：PIC／FINAL first-frame XOR delta decoder 與 PIC 素材抽取。
+第 81 輪：ECL PICTURE request → 繁中事件畫面與 PIC playback。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -104,6 +104,8 @@
 第 79 輪功能／文件 commit：`381c13b`，已推送至 GitHub `main`。SPRIT frame 的 `x/y` 已寫入 animation manifest 並由 Ebiten `combatAnimation` 套用至實際 draw origin；更新 SPRIT 規格、共用 Gold Box 圖像知識庫與 README，清除 frame position 尚未實作的過時斷言。`go test ./...` 與素材重建通過。
 
 第 80 輪功能／文件 commit：`aadd3fe`，已推送至 GitHub `main`。依 reference `load_pic_final` 實作 PIC／FINAL 後續 frame 對第一幀 packed bytes 的 XOR decoder；SPRIT 維持 full-frame mode。PIC1–PIC6 已抽出 152 張 PNG，新增 parser regression、規格與知識庫內容。`go test ./...` 與素材重建通過。
+
+第 81 輪功能／文件 commit：`f2640a6`，已推送至 GitHub `main`。ECL `PICTURE` opcode 現在產生 renderer-neutral block request；game state 進入可恢復 `ModeEvent`，Ebiten 依 `picN-block-XX` 播放 PIC frames，Enter 返回原流程；新增 ECL／game regression 與第 81 輪規格。`go test ./...` 通過。
 
 ## 已確認
 
