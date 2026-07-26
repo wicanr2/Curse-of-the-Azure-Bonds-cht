@@ -74,3 +74,4 @@
 - [第七十六輪 CHEAD／CBODY 玩家小人圖層](./round-76-party-icon-layers.md)（`READY`：限 party icon 合成與素材管線）
 - [第七十七輪玩家戰鬥 icon state](./round-77-combat-icon-state.md)（`READY`：限方向／攻擊選擇 state boundary）
 - [第七十八輪角色建立玩家 icon 預設](./round-78-player-icon-defaults.md)（`READY`：限新建角色 icon defaults）
+- [第七十九輪 SPRIT frame position](./round-79-sprit-position.md)（`READY`：限 animation frame offset）

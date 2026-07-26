@@ -1,554 +1,830 @@
 [
   {
     "name": "sprit1-block-02-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit1-block-02-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-02-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-04-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit1-block-04-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-04-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit1-block-06-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit1-block-06-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-06-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-08-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit1-block-08-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-08-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-09-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit1-block-09-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit1-block-09-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-00-frame-00.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-00-frame-01.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-00-frame-02.png",
-    "delay": 5
+    "delay": 5,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit2-block-01-frame-00.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-01-frame-01.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-01-frame-02.png",
-    "delay": 5
+    "delay": 5,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit2-block-02-frame-00.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-02-frame-01.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-02-frame-02.png",
-    "delay": 5
+    "delay": 5,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-07-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit2-block-07-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-07-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit2-block-09-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit2-block-09-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit2-block-09-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-10-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-10-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-10-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-11-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit3-block-11-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-11-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit3-block-12-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-12-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-12-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit3-block-13-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-13-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-13-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit3-block-19-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit3-block-19-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-19-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-1B-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-1B-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-1B-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-1E-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit3-block-1E-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit3-block-1E-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-31-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-31-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-31-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-43-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-43-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-43-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-20-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-20-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-20-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-21-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-21-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-21-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-22-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-22-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-22-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-23-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-23-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-23-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-09-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-09-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-09-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-25-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit4-block-25-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-25-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-26-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit4-block-26-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-26-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-27-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-27-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-27-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-28-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit4-block-28-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-28-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-29-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit4-block-29-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit4-block-29-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-2A-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-2A-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-2A-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit4-block-46-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-46-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit4-block-46-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit5-block-31-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit5-block-31-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-31-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit5-block-34-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit5-block-34-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-34-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-35-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit5-block-35-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit5-block-35-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-36-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 0,
+    "y": 1
   },
   {
     "name": "sprit5-block-36-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit5-block-36-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-39-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-39-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-39-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-3A-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-3A-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-3A-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit5-block-3B-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-3B-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit5-block-3B-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit5-block-3C-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit5-block-3C-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit5-block-3C-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-40-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-40-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-40-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-41-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit6-block-41-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit6-block-41-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-43-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-43-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-43-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit6-block-44-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 3,
+    "y": 1
   },
   {
     "name": "sprit6-block-44-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-44-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit6-block-45-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit6-block-45-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-45-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-46-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-46-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-46-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 5,
+    "y": 1
   },
   {
     "name": "sprit6-block-47-frame-00.png",
-    "delay": 0
+    "delay": 0,
+    "x": 2,
+    "y": 1
   },
   {
     "name": "sprit6-block-47-frame-01.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   },
   {
     "name": "sprit6-block-47-frame-02.png",
-    "delay": 0
+    "delay": 0,
+    "x": 4,
+    "y": 1
   }
 ]

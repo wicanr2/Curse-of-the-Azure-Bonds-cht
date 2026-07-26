@@ -28,6 +28,8 @@ type spriteFrame struct {
 type animationAssetRecord struct {
 	Name  string `json:"name"`
 	Delay uint32 `json:"delay"`
+	X     int16  `json:"x"`
+	Y     int16  `json:"y"`
 }
 
 func main() {
@@ -127,8 +129,8 @@ func renderCombatSprites() error {
 						return err
 					}
 					frames = append(frames, spriteFrame{name: name, img: img})
-					animationAssets = append(animationAssets, animationAssetRecord{Name: name, Delay: frame.Delay})
-					manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | frame %d (delay %d) | %dx%d | [`%s`](../../assets/sprites/%s) | animation extracted |\n", source, block.Entry.ID, index, frame.Delay, frame.Picture.Width(), frame.Picture.Height(), name, name))
+					animationAssets = append(animationAssets, animationAssetRecord{Name: name, Delay: frame.Delay, X: frame.Picture.X, Y: frame.Picture.Y})
+					manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | frame %d (delay %d, x %d, y %d) | %dx%d | [`%s`](../../assets/sprites/%s) | animation extracted |\n", source, block.Entry.ID, index, frame.Delay, frame.Picture.X, frame.Picture.Y, frame.Picture.Width(), frame.Picture.Height(), name, name))
 				}
 				continue
 			}
