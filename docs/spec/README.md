@@ -20,3 +20,4 @@
 - [第九輪 Ebiten opening prototype](./round-09-ebiten-opening.md)（`DRAFT`）
 - [第十輪 ECL data-driven opening](./round-10-data-driven-opening.md)（`DRAFT`）
 - [第十一輪 ECL branch target graph](./round-11-ecl-branch-graph.md)（`DRAFT`）
+- [第二十六輪 ECL5 real NEWECL regression](./round-26-ecl5-newecl-regression.md)（`READY`：限已定位 transition entry）
