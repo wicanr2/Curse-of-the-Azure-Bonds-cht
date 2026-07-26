@@ -119,6 +119,29 @@ func TestResolveAttackRequiresArmorClass(t *testing.T) {
 	}
 }
 
+func TestResolveAttackRejectsAdjacentMissileButAllowsDartException(t *testing.T) {
+	missile, err := NewBattle([]Fighter{
+		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 0, CombatY: 0, WeaponRange: 22, MissileWeapon: true},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 0, HasCombatPosition: true, CombatX: 1, CombatY: 0},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := missile.Attack("archer", "goblin"); err == nil {
+		t.Fatal("expected adjacent missile attack rejection")
+	}
+	dart, err := NewBattle([]Fighter{
+		{ID: "dart", Name: "Dart", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 0, CombatY: 0, WeaponRange: 6, MissileWeapon: true, ThrownWeapon: true},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 0, HasCombatPosition: true, CombatX: 1, CombatY: 0},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := dart.Attack("dart", "goblin"); err != nil {
+		t.Fatalf("dart adjacent exception rejected: %v", err)
+	}
+}
+
 func TestAttackSequenceUsesAttacksPerTurnAndStopsAtDefeat(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 3},

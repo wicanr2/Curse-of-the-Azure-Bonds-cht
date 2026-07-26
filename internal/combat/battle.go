@@ -74,6 +74,9 @@ type Fighter struct {
 	AttacksPerTurn       int
 	AmmunitionType       uint8
 	MovementAllowance    int
+	WeaponRange          int
+	MissileWeapon        bool
+	ThrownWeapon         bool
 	InitiativeBonus      int
 }
 
@@ -210,6 +213,9 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	}
 	if damageRoll < 0 {
 		return AttackResult{}, fmt.Errorf("negative damage roll")
+	}
+	if attacker.HasCombatPosition && target.HasCombatPosition && attacker.MissileWeapon && adjacent(attacker, target) && !attacker.ThrownWeapon {
+		return AttackResult{}, fmt.Errorf("missile weapon cannot attack an adjacent target")
 	}
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
