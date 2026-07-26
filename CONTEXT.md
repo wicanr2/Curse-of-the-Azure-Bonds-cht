@@ -316,4 +316,4 @@
 
 第一百零六輪功能／文件 commit：`253fdfb`，已推送至 GitHub `main`。新增 active Blind／Bestow Curse／friendly Prayer fighter projection；Haste、Protection、Mirror Image 與完整 target/action rules 仍未完成。
 
-第一百零七輪功能／文件 commit：待本輪提交。保存 DOS player `icon_id @ 0x143` 到 party／combat metadata；runtime icon slot allocation、CombatMap position／camera 與完整戰鬥流程仍未完成。
+第一百零七輪功能／文件 commit：`c3e93f3`，已推送至 GitHub `main`。保存 DOS player `icon_id @ 0x143` 到 party／combat metadata；runtime icon slot allocation、CombatMap position／camera 與完整戰鬥流程仍未完成。
