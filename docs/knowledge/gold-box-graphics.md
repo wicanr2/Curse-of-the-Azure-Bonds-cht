@@ -102,6 +102,8 @@ CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`RE
 
 目前 `CAMP VIEW` 已形成可重用的只讀 adapter：以 roster 為 source，角色選單與摘要畫面分離，equipment label 經 base-item catalog 映射；查看本身不得改動 gold、treasure、equipment 或 spell state。後續 Gold Box 遊戲只需替換 roster codec 與名稱 catalog，即可沿用這個 UI/state boundary。
 
+`CAMP MAGIC` 可沿用同一個 roster selector，但 spell layer 必須保持三段分離：DOS／save adapter 提供 ordered memorized slot IDs，catalog 提供名稱與 level，rules service 才處理 prepare／forget／cast／recovery。UI 顯示已保存的 ID 不代表已完成法術規則，也不應由 slot ordinal 推導 spell name。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。
