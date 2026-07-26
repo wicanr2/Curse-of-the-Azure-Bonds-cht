@@ -71,6 +71,7 @@
 - 荒野 `CAMP` 現在會進入繁中 `SAVE／VIEW／MAGIC／REST／ALTER／FIX／EXIT` 選單；`REST` 可返回 CAMP Menu，`EXIT` 返回荒野選單，`ALTER → ORDER` 可重排隊伍順序，`ALTER → DROP` 具二次確認並同步移除角色，其餘未解出的 routine 保留明確 placeholder 邊界。
 - `ALTER → PICS` 現在可切換怪物遭遇圖片與動畫；圖片關閉會略過事件圖片 renderer，動畫關閉會使用事件／戰鬥動畫首幀。
 - `ALTER → SPEED` 現在可調整 1–5 級訊息速度，Ebiten 事件訊息會依設定逐字顯示繁中內容。
+- `ALTER → ICON` 現在可選擇已抽出的 CHEAD／CBODY 頭部與身體圖層，並同步角色與戰鬥畫面小人。
 - `CAMP → VIEW` 現在可選角色查看職業、HP、金幣、寶石、珠寶與裝備摘要，並可返回 CAMP Menu。
 - `CAMP → MAGIC` 現在可查看各角色已記憶 spell-slot ID，並可返回 CAMP Menu；法術名稱、準備／施法與恢復規則仍待接入。
 - `CAMP → SAVE` 現在會透過 state request 寫入 configured versioned remake party save，並顯示成功／錯誤訊息；原版 `SAVGAM?.DAT` slot／area container 仍待反組譯。

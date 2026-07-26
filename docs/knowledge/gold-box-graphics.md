@@ -114,6 +114,8 @@ PICS preference 應在 game state 與 renderer 之間保持兩個獨立布林：
 
 SPEED preference 應以 renderer-neutral 的 1–5 級保存，文字 adapter 再依 Unicode rune reveal；不要以 byte offset 切中文訊息，也不要把速度設定混入 PIC／SPRIT frame delay。這讓後續 Golden Box 遊戲可替換字型與 UI 而保留相同設定語意。
 
+ICON selection 應只提供 manifest 已驗證的 layer pair，並以 character ID 將 roster metadata 投影到 combat fighter；不要把 block ordinal、weapon icon 或 `+0x80` attack variant 混為同一欄位。後續遊戲可替換 block family manifest，而沿用同一個 selection／projection contract。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。

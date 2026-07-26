@@ -958,6 +958,51 @@ func TestCampAlterSpeedAdjustsMessageRevealRate(t *testing.T) {
 	}
 }
 
+func TestCampAlterIconUpdatesRosterAndFighter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", Class: party.ClassFighter, Level: 1}}
+	state.party = []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HasPartyIcon: true}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.currentOriginalChoices[0] != "ALTER_ICON_CHARACTER_0" {
+		t.Fatalf("icon character menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 7 || !state.alterIconEdit {
+		t.Fatalf("icon edit menu state=%#v", state)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].IconHeadBlock != 1 || state.party[0].PartyHeadBlock != 1 {
+		t.Fatalf("head icon result roster=%#v party=%#v", state.partyRoster, state.party)
+	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].IconWeaponBlock != 1 || state.party[0].PartyBodyBlock != 1 {
+		t.Fatalf("body icon result roster=%#v party=%#v", state.partyRoster, state.party)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil || state.alterIconMenu || !state.alterMenu {
+		t.Fatalf("icon exit state=%#v err=%v", state, err)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}

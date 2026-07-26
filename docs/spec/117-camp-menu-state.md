@@ -11,7 +11,7 @@
 - 荒野選擇 `CAMP` 後進入繁中 CAMP Menu，保存原始 command 與 localized label 的分離。
 - `REST` 重用既有安全休息 boundary；事件完成後回到 CAMP Menu。
 - `EXIT` 回到荒野的 `ENTER CITY／JOURNEY ON／CAMP` 選單。
-- `VIEW／MAGIC／SAVE` 已接入目前 remake 的只讀／spell-slot／party-save boundary；`ALTER → ORDER／DROP／PICS／SPEED` 已接入 party reorder／confirmed removal／renderer preferences／message reveal。`ICON` 與 `FIX` 仍以明確 placeholder 保留未完成 routine 邊界。
+- `VIEW／MAGIC／SAVE` 已接入目前 remake 的只讀／spell-slot／party-save boundary；`ALTER → ORDER／DROP／PICS／SPEED／ICON` 已接入 party reorder／confirmed removal／renderer preferences／message reveal／player sprite selection。`FIX` 仍以明確 placeholder 保留未完成 routine 邊界。
 - 若 ECL 已提供 `CAMP` 事件 block，仍保留原有 ECL path，不由新 UI branch 覆寫。
 
 ## 驗證
