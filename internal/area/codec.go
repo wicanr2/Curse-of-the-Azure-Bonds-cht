@@ -9,13 +9,14 @@ import (
 const SnapshotSize = 0x800
 
 const (
-	area1MapBlock = 0x18A
-	area1Dungeon  = 0x1CC
-	area1LastX    = 0x1E0
-	area1LastY    = 0x1E2
-	area1LastECL  = 0x1E4
-	area1City     = 0x342
-	area2GameArea = 0x624
+	area1MapBlock  = 0x18A
+	area1Dungeon   = 0x1CC
+	area1LastX     = 0x1E0
+	area1LastY     = 0x1E2
+	area1LastECL   = 0x1E4
+	area1City      = 0x342
+	area2GameArea  = 0x624
+	area2HeadBlock = 0x5C2
 )
 
 func checkedRecord(data []byte, name string) ([]byte, error) {
@@ -74,7 +75,7 @@ func DecodeArea2(data []byte) (State, error) {
 	if err != nil {
 		return State{}, err
 	}
-	return State{GameArea: data[area2GameArea]}, nil
+	return State{GameArea: data[area2GameArea], HeadBlockID: data[area2HeadBlock]}, nil
 }
 
 // EncodeArea2 updates only the understood game-area byte and preserves the
@@ -88,5 +89,6 @@ func EncodeArea2(state State, original []byte) ([]byte, error) {
 		original = append([]byte(nil), original...)
 	}
 	original[area2GameArea] = state.GameArea
+	original[area2HeadBlock] = state.HeadBlockID
 	return original, nil
 }

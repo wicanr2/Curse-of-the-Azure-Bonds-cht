@@ -3,6 +3,7 @@ package game
 import (
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
@@ -73,6 +74,21 @@ func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
 	}
 	if state.SceneCharacterRequested {
 		t.Fatal("scene character request was not cleared")
+	}
+}
+
+func TestAreaStateHeadBlockDrivesPictureBranch(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetAreaState(area.State{GameArea: 2, HeadBlockID: 0x01})
+	state.Mode = ModeWilderness
+	state.Choices = []string{"人物"}
+	state.currentOriginalChoices = []string{"PICTURE"}
+	state.eclBlock = []byte{0, 0, 0x0E, 0x00, 0x02, 0x00}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.SceneCharacterRequested || state.SceneHeadBlock != 0x01 || state.SceneBodyBlock != 0x02 {
+		t.Fatalf("area-driven scene state=%#v", state)
 	}
 }
 
