@@ -21,6 +21,7 @@ const (
 	ModeMap
 	ModePlace
 	ModeCombat
+	ModeJournal
 )
 
 type Action uint8
@@ -56,6 +57,10 @@ type State struct {
 	OriginalChoices  []string
 	OriginalEvent    string
 	OriginalLocation string
+	JournalTitle     string
+	JournalText      string
+	JournalCloseText string
+	CampCount        int
 
 	catalog                locale.Catalog
 	eclBlock               []byte
@@ -63,6 +68,7 @@ type State struct {
 	selectionSequence      []uint16
 	currentOriginalChoices []string
 	eventReturnMode        Mode
+	journalReturnMode      Mode
 	session                *ecl.BlockSession
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
@@ -132,6 +138,9 @@ func NewState(catalog locale.Catalog) State {
 		Location:               LocationWilderness,
 		LocationName:           catalog.Text("wilderness", "Wilderness"),
 		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
+		JournalTitle:           catalog.Text("journal_title", "冒險手札"),
+		JournalText:            catalog.Text("journal_intro", "你們醒來後，必須查明蔚藍枷的來源。") + "\n" + catalog.Text("journal_objective", "目前目標：查訪城中線索。"),
+		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
 		catalog:                catalog,
 	}
 }
@@ -210,6 +219,9 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeEvent
 			return nil
 		}
+		if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
+			return s.Camp()
+		}
 		// WILDERNESS/EXIT is the observed Shadowdale map-entry menu. Handle
 		// these semantic transitions before the bounded runner's next-menu
 		// result is applied, since the original command may leave another
@@ -246,6 +258,38 @@ func (s *State) Select(index int) error {
 	if s.Location == LocationShadowdale && originalChoice == "EXIT" {
 		s.leaveLocation()
 	}
+	return nil
+}
+
+// Camp applies the observable PROGRAM 9 transition. The full original
+// interruption, spell recovery and HP restoration rules remain data-driven
+// work; this method keeps the player-visible state transition explicit.
+func (s *State) Camp() error {
+	if s.Mode != ModeWilderness && s.Mode != ModeEvent {
+		return fmt.Errorf("camp is invalid in mode %d", s.Mode)
+	}
+	s.CampCount++
+	s.OriginalEvent = "PROGRAM 9"
+	s.Message = s.catalog.Text("camp_resting", "你們紮營休息。")
+	s.eventReturnMode = ModeWilderness
+	s.Mode = ModeEvent
+	return nil
+}
+
+func (s *State) OpenJournal() error {
+	if s.Mode == ModeCombat {
+		return fmt.Errorf("journal is unavailable during combat")
+	}
+	s.journalReturnMode = s.Mode
+	s.Mode = ModeJournal
+	return nil
+}
+
+func (s *State) CloseJournal() error {
+	if s.Mode != ModeJournal {
+		return fmt.Errorf("journal is not open")
+	}
+	s.Mode = s.journalReturnMode
 	return nil
 }
 

@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -37,6 +38,15 @@ type app struct {
 }
 
 func (a *app) Update() error {
+	if a.state.Mode == game.ModeJournal {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
+			return a.state.CloseJournal()
+		}
+		return nil
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyJ) {
+		return a.state.OpenJournal()
+	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		switch a.state.Mode {
 		case game.ModeTitle:
@@ -105,6 +115,16 @@ func (a *app) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
+	if a.state.Mode == game.ModeJournal {
+		text.Draw(screen, a.state.JournalTitle, a.face, 32, 52, cyan)
+		line := 100
+		for _, paragraph := range strings.Split(a.state.JournalText, "\n") {
+			text.Draw(screen, paragraph, a.face, 32, line, white)
+			line += 36
+		}
+		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 350, cyan)
+		return
+	}
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)

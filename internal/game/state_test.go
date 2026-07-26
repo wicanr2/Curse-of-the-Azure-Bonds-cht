@@ -216,3 +216,23 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 		t.Fatalf("state=%#v enemies=%#v", state, enemies)
 	}
 }
+
+func TestCampBoundaryAndInGameJournal(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	if err := state.Camp(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.CampCount != 1 || state.OriginalEvent != "PROGRAM 9" {
+		t.Fatalf("camp state=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {
+		t.Fatalf("camp continuation mode=%v err=%v", state.Mode, err)
+	}
+	if err := state.OpenJournal(); err != nil || state.Mode != ModeJournal || state.JournalTitle == "" || state.JournalText == "" {
+		t.Fatalf("journal state=%#v err=%v", state, err)
+	}
+	if err := state.CloseJournal(); err != nil || state.Mode != ModeWilderness {
+		t.Fatalf("journal close mode=%v err=%v", state.Mode, err)
+	}
+}
