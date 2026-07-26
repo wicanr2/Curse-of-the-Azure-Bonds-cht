@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 38 輪：ECL encounter 到 Battle 的資料橋。
+第 39 輪：PROGRAM 外部 routine 邊界。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -42,6 +42,7 @@
 第 35 輪 commit：`32aa9c8`，已推送至 GitHub `main`。
 第 36 輪 commit：`4b2edd3`，已推送至 GitHub `main`。
 第 37 輪 commit：`3d25b13`，已推送至 GitHub `main`。
+第 38 輪 commit：`4adc4d5`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -88,8 +89,9 @@
 - `MON1CHA` fixed `0x1A6` record parser 已接入；實際 block `0x56` 解出 BUGBEAR `24/24 HP`、raw AC `55`、attack bonus `44`、`2d4`、initiative `9`，可轉成 `combat.Fighter`。
 - `MON*ITM` `0x3F`-byte parser 與 `MON*SPC` 9-byte affect parser 已接入；MON1 block `0x59` 有 5 筆 item、block `0x35` 有 2 筆 affect，名稱組合與 effects merge 尚未完成。
 - 已為實際觀察到的 item／effect IDs 接入繁中名稱：弩矢、輕弩、闊劍、盾牌、鏈甲、偵測隱形、酸液吐息；未知 IDs 仍明確 fallback。
-- `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止；目前仍需由 runtime 自動傳入 Battle。
+- `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止；`RunResult`／`State.StartEncounter` 已可傳入 Battle。
 - `cmd/azure-bonds-game -encounter` 已直接執行 ECL1 block `0x51 +0x1293`，讀取 `MON1CHA.DAX` 並進入戰鬥；此入口使用明確標示的 debug party，正常 opening 尚未自動抵達 encounter。
+- `PROGRAM 0/3/8/9` 已依參考重寫程式標示為外部 routine boundary；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu。CAMP／勝利／死亡 routine 本身仍待接入。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -100,7 +102,7 @@
 - unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
 - TREASURE 的 party inventory／獎勵規則仍未完成；目前僅有安全 operand prefix。
 - COMBAT signal、party／enemy model、基本回合／骰點／傷害與戰鬥 UI 垂直切片已完成；法術、物品、逃跑／PARLAY、戰場與完整原版流程仍未完成。
-- party／enemy、initiative、攻擊與傷害 core 及基本 UI 已完成；ECL encounter 自動接 Battle、戰場、法術、物品、逃跑／PARLAY 仍未完成。
+- party／enemy、initiative、攻擊與傷害 core 及基本 UI、ECL encounter direct-entry 已完成；完整玩家流程、戰場、法術、物品、逃跑／PARLAY 仍未完成。
 - ECL monster spawn descriptor、`MON*CHA` HP／AC／攻擊資料與 ECL-to-combat direct-entry adapter 已完成；完整玩家流程接線仍未完成。
 - `MON*CHA` raw HP／AC／攻擊 parser 與 Fighter adapter 已完成；`MON*ITM`／`MON*SPC`、完整 ECL-to-Battle setup 仍未完成。
 - `MON*CHA`、`MON*ITM`、`MON*SPC` raw parser 已完成；item name catalog、effects merge 與完整 ECL-to-Battle setup 仍未完成。

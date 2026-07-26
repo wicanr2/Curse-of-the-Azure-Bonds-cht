@@ -180,4 +180,5 @@
 - [x] 將真實 ECL spawn sequence 合併 MON*CHA，建立 24 個 enemy fighters 並在 COMBAT 邊界停止。
 - [x] 建立可操作 party／enemy Battle state、回合攻擊、勝負轉移與 Ebiten 繁中戰鬥畫面。
 - [x] 將 bounded ECL `COMBAT` result 的 encounter descriptors 與 `MON*CHA` records 接到 Battle，並提供 ECL1 direct-entry 驗證入口。
+- [x] 對 `PROGRAM 0/3/8/9` 建立外部 routine boundary signal，避免把 CAMP／勝利／死亡流程錯誤當作 ECL no-op。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。

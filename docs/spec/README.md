@@ -33,3 +33,4 @@
 - [第三十六輪 ECL-to-enemy encounter adapter](./round-36-ecl-encounter-adapter.md)（`READY`：限 enemy fighter 建立）
 - [第三十七輪 可操作戰鬥狀態與 Ebiten 畫面](./round-37-playable-combat-state.md)（`READY`：限戰鬥垂直切片）
 - [第三十八輪 ECL encounter 到 Battle 的資料橋](./round-38-ecl-encounter-to-battle.md)（`READY`：限 ECL1 direct-entry）
+- [第三十九輪 PROGRAM 外部 routine 邊界](./round-39-program-boundary.md)（`READY`：限 VM 控制轉移）

@@ -92,6 +92,8 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 			aggregate.MonsterSetup = &setup
 		}
 		aggregate.MonsterSpawns = append(aggregate.MonsterSpawns, result.MonsterSpawns...)
+		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
+		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		s.selectionOffset += result.SelectionsConsumed
 		if runErr != nil {
 			return aggregate, runErr

@@ -14,6 +14,8 @@ type RunResult struct {
 	CombatRequested    bool
 	MonsterSetup       *MonsterSetup
 	MonsterSpawns      []MonsterSpawn
+	ProgramIDs         []uint8
+	ProgramExit        bool
 	SelectionsConsumed int
 }
 
@@ -330,6 +332,22 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			result.CombatRequested = true
 			result.PC = next
 			return result, nil
+		case 0x38: // PROGRAM
+			// PROGRAM dispatches into an external engine routine. The reference
+			// implementation ends the current VM pass for PROGRAM 0/3/8/9;
+			// retain the ID and stop at that boundary until the corresponding
+			// renderer/game-state routine is implemented.
+			program, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("PROGRAM at %d: %w", pc, err)
+			}
+			programID := uint8(program)
+			result.ProgramIDs = append(result.ProgramIDs, programID)
+			if programID == 0 || programID == 3 || programID == 8 || programID == 9 {
+				result.ProgramExit = true
+				result.PC = next
+				return result, nil
+			}
 		case 0x0B: // LOAD MONSTER
 			spawn, err := DecodeMonsterSpawn(instruction)
 			if err != nil {
