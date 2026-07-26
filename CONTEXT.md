@@ -366,4 +366,4 @@
 
 第一百三十一輪功能／文件 commit：`8ba67b5`，已推送至 GitHub `main`。依 RuleBook 將 CAMP MAGIC 接成 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；DISPLAY／REST 已接入，CAST／MEMORIZE／SCRIBE 仍保留 rules boundary。
 
-第一百三十二輪待提交：MEMORIZE 可從 KnownSpells 選法術，先保存 pending state，REST_START 才寫回 SpellSlots；完整 capacity、準備時間、遭遇中斷與 CAST／SCRIBE 仍未完成。
+第一百三十二輪功能／文件 commit：`312f9b4`，已推送至 GitHub `main`。MEMORIZE 可從 KnownSpells 選法術，先保存 pending state，REST_START 才寫回 SpellSlots；完整 capacity、準備時間、遭遇中斷與 CAST／SCRIBE 仍未完成。
