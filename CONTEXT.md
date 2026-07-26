@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 20 輪：Shadowdale UI map state。
+第 21 輪：NEWECL signal。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -24,6 +24,7 @@
 第 17 輪 commit：`1e79695`，已推送至 GitHub `main`。
 第 18 輪 commit：`e6f9fd2`，已推送至 GitHub `main`。
 第 19 輪 commit：`624c9e1`，已推送至 GitHub `main`。
+第 20 輪 commit：`e36d1ef`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -55,6 +56,7 @@
 - `-interactive` CLI 已加入；實際 ECL1 sequence `0,0,1` 會停在 `SHADOWDALE/ASHABENFORD/DAGGER FALLS`，三個地點已接入繁中 locale。
 - 實際 sequence `0,0,1,0` 會停在 Shadowdale 的 `WILDERNESS/EXIT` menu；`game.State.Location` 已轉為 `LocationShadowdale` 並保留原文地點。
 - `LocationName` 已接入 locale／Ebiten UI；Shadowdale 地點狀態可見，WILDERNESS 回野外、EXIT 後續事件仍待實作。
+- `0x20 NEWECL` 已加入 `RunResult.NewECLBlockID` signal 與 synthetic test；尚未宣稱 real ECL1–ECL6 cross-block session 完成。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -67,6 +69,7 @@
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 目前只有 map-entry state，尚無座標／移動／場所功能。
 - Shadowdale UI label 已完成，但尚無座標／移動／場所功能。
+- 跨 ECL block loader、座標／移動／場所功能仍未完成。
 - 中文化的字型格式與字串長度限制。
 
 ## 下一步
@@ -92,4 +95,5 @@
 19. 將城市選擇寫入 map state，完成第一個地點（SHADOWDALE）的場所入口。
 20. 接通 Shadowdale `WILDERNESS/EXIT` 後的移動／場所 menu。
 21. 建立第一個場所的 map／ECL event state。
+22. 建立 ECL1–ECL6 DAX block session，驗證 NEWECL target。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。

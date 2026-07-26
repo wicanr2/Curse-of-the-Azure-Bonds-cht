@@ -110,6 +110,9 @@ func main() {
 			if result.WaitingForMenu {
 				fmt.Println("  subset waiting for menu selection")
 			}
+			if result.NewECLBlockID != nil {
+				fmt.Printf("  subset requested ECL block 0x%02X\n", *result.NewECLBlockID)
+			}
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
 			}

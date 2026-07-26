@@ -134,3 +134,9 @@
 - [x] 將 Shadowdale location name 接入 locale 與 Ebiten UI。
 - [x] 保留 Shadowdale 原始名稱與 map-entry menu state。
 - [ ] 實作 Shadowdale 座標／移動與第一個場所。
+
+## 第二十一輪驗收
+
+- [x] 實作 `NEWECL` bounded signal。
+- [x] 加入 target block ID regression。
+- [ ] 建立跨 ECL1–ECL6 DAX block session。
