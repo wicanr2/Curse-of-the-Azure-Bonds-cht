@@ -87,6 +87,14 @@
     "encounter_flee": "撤退",
     "encounter_advance": "接近",
     "encounter_parlay": "談判"
+	,"encounter_flee_done": "你們成功撤退，返回荒野。"
+	,"parlay_menu_prompt": "選擇談判策略"
+	,"parlay_haughty": "傲慢"
+	,"parlay_sly": "狡猾"
+	,"parlay_meek": "謙卑"
+	,"parlay_nice": "友善"
+	,"parlay_abusive": "威嚇"
+	,"encounter_parlay_done": "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。"
     ,"journal_title": "冒險手札"
     ,"journal_intro": "你們在提爾佛頓醒來，裝備全失，右臂下卻留下五枚蔚藍枷印。找出施術者，解除枷鎖。"
     ,"journal_objective": "目前目標：補充裝備、查訪城中線索，追查蔚藍枷的來源。"
