@@ -32,6 +32,8 @@ Cause Light Wounds 是同一 target transaction 的傷害變體：`W` 開始敵�
 
 Protection from Evil 是 conditional defense transaction：`P` 開始 party touch target selection（施法者可 self-target），Enter 才扣 slot，Esc 取消；fighter 保存 `ProtectedFromEvil` 與 `ProtectionEvilRounds=3×level`。攻擊解析只有在 attacker 明確 `Evil=true` 時才把受防護 target 的 AC 提高 2，不改 base AC。因 `MON*CHA` 尚未提供 alignment 證據，不能把所有怪物猜成 evil；saving throw +2、alignment import 與 dispel 由後續 rules／DOS adapter 注入。
 
+Protection from Good 使用同一防護 transaction，但必須保留職業 spell identity：牧師表的 ID `7` 由 `G` 進入 party target，魔法師表的 ID `7` 由 `S` 進入 Magic Missile enemy target。fighter 保存 `ProtectedFromGood` 與 `ProtectionGoodRounds=3×level`，只有 attacker `Good=true` 時 AC +2；不要把 class-local ordinal 當全域 spell enum。未知 alignment 與 saving throw engine 仍不可猜測。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
