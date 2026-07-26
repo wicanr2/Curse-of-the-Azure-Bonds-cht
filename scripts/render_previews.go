@@ -58,6 +58,9 @@ func main() {
 	if err := renderGeo(grid); err != nil {
 		panic(err)
 	}
+	if err := renderDungeon(grid, pictures); err != nil {
+		panic(err)
+	}
 }
 
 func readMember(path, name string) ([]byte, error) {
@@ -160,6 +163,33 @@ func renderWilderness(pictures []gfx.Picture) error {
 		}
 	}
 	return writePNG("docs/screenshots/wilderness-floor.png", dst)
+}
+
+func renderDungeon(grid geo.Grid, pictures []gfx.Picture) error {
+	const (
+		originX  = 24
+		originY  = 32
+		tileSize = 24
+		viewW    = 13
+		viewH    = 5
+	)
+	floor := mapdata.GenerateDungeon(grid, 8, 8)
+	dst := image.NewRGBA(image.Rect(0, 0, 384, 192))
+	fill(dst, color.RGBA{12, 18, 28, 255})
+	for row := 0; row < viewH; row++ {
+		for column := 0; column < viewW; column++ {
+			entry, ok := floor.Entry(18+column, 8+row)
+			if !ok {
+				continue
+			}
+			rgba, err := pictureRGBA(pictures, int(entry.TileIndex))
+			if err != nil {
+				return err
+			}
+			drawScaled(dst, rgba, originX+column*tileSize, originY+row*tileSize, 1)
+		}
+	}
+	return writePNG("docs/screenshots/dungeon-floor.png", dst)
 }
 
 func pictureRGBA(pictures []gfx.Picture, index int) (image.Image, error) {

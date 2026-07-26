@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 63 輪：wilderness floor construction 與荒野 tile composition。
+第 64 輪：GEO dungeon floor composition。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -70,6 +70,8 @@
 第 62 輪功能／文件 commit：`f742f7a`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 63 輪功能／文件 commit：`af7bf19`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 64 輪功能／文件 commit：待本輪提交後補登，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -164,6 +166,9 @@
 - `mapdata.GenerateWilderness` 已依 reference `SetupWildernessFloor01–03` 建立 50×25 floor，保留 city flags、骰點與 background entry → pixel tile 的資料邊界。
 - `game.State` 進入 Shadowdale map slice 時生成 seeded wilderness floor；`Move` 已檢查 map boundary 與 `BackgroundTile.MoveCost` impassable sentinel。
 - `scripts/render_previews.go` 新增 `docs/screenshots/wilderness-floor.png`，由原始 TILES 與同一 floor generator 組合產生。
+- `mapdata.GenerateDungeon` 已依 reference `SetupDungeonFloor` 的四段 builder，將 GEO wall／door detail 組成 13×5 dungeon background-entry window。
+- `cmd/azure-bonds-game` 新增 `D` dungeon floor preview；`docs/screenshots/dungeon-floor.png` 使用同一組 GEO、mapdata 與 TILES pipeline 產生。
+- dungeon floor 尚未宣稱完成桌椅 decoration、area selection、camera、combat placement、encounter 或音效。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
