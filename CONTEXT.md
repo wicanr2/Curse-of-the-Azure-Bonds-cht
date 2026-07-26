@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百二十六輪：CAMP FIX Cure Light Wounds healing boundary。
+第一百二十七輪：城市 BAR Tavern Tales state boundary。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -355,3 +355,5 @@
 第一百二十五輪功能／文件 commit：`8ae1d64`，已推送至 GitHub `main`。CAMP ALTER／ICON 新增已驗證 CHEAD／CBODY block 選擇，並同步 party／combat fighter icon；FIX 仍未完成。
 
 第一百二十六輪功能／文件 commit：`2de8b01`，已推送至 GitHub `main`。CAMP FIX 依已記憶的 Cure Light Wounds（目前由一級牧師表順序映射為 ID `3`）以 deterministic `1d8` 治療受傷 roster，並同步 combat fighter HP；spell catalog、時間推進與中斷規則仍待反組譯。
+
+第一百二十七輪功能／文件 commit：待本輪提交。城市 BAR 已接 ordered Tavern Tale menu、前六則繁中整理與城市場所返回；買酒價格、城市條件、完整 62 則內容與 ECL trigger 仍待反組譯。

@@ -128,6 +128,9 @@ type State struct {
 	shopTakeCharacter      int
 	shopAppraiseCharacter  int
 	shopAppraiseKind       TreasureKind
+	barMenu                bool
+	barTales               []string
+	barTaleIndex           int
 	campMenu               bool
 	campViewMenu           bool
 	campMagicMenu          bool
@@ -238,16 +241,70 @@ func NewState(catalog locale.Catalog) State {
 		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
 		JournalPages:           journalPages,
 		catalog:                catalog,
-		combatSeed:             1,
-		eclSeed:                1,
-		mapSeed:                1,
-		picturesEnabled:        true,
-		animationsEnabled:      true,
-		messageSpeed:           3,
-		fixSeed:                1,
-		GeoMapSet:              2,
-		GeoMapBlock:            1,
-		Area:                   area.State{GameArea: 2},
+		barTales: []string{
+			catalog.Text("bar_tale_1", "酒客低聲說：公主與國王都喬裝在城中。"),
+			catalog.Text("bar_tale_2", "有人說火焰巨人只怕三件古老神器，其中一件可能在北方瀑布下。"),
+			catalog.Text("bar_tale_3", "許多士兵覺得深坑不祥，有人寧可逃亡也不願去守衛。"),
+			catalog.Text("bar_tale_4", "這座城市的下水道，是達倫地區最危險的地方之一。"),
+			catalog.Text("bar_tale_5", "有人看見紅袍刺客在森林小徑巡邏。"),
+			catalog.Text("bar_tale_6", "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。"),
+		},
+		combatSeed:        1,
+		eclSeed:           1,
+		mapSeed:           1,
+		picturesEnabled:   true,
+		animationsEnabled: true,
+		messageSpeed:      3,
+		fixSeed:           1,
+		GeoMapSet:         2,
+		GeoMapBlock:       1,
+		Area:              area.State{GameArea: 2},
+	}
+}
+
+// SetBarTales installs the location/script-specific Tavern Tale sequence.
+// The default entries come from the supplied Adventure Journal; a later ECL
+// decoder can replace the sequence without changing the BAR UI contract.
+func (s *State) SetBarTales(tales []string) {
+	s.barTales = append([]string(nil), tales...)
+	s.barTaleIndex = 0
+}
+
+func (s *State) BarTaleIndex() int { return s.barTaleIndex }
+
+func (s *State) enterBarMenu() {
+	s.barMenu = true
+	s.shopMenu = false
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("bar_menu_prompt", "酒館裡，你想做什麼？")
+	s.Choices = []string{
+		s.catalog.Text("bar_listen", "聽酒館傳聞"),
+		s.catalog.Text("bar_exit", "離開酒館"),
+	}
+	s.currentOriginalChoices = []string{"BAR_LISTEN", "BAR_EXIT"}
+	s.Message = ""
+}
+
+func (s *State) selectBar(originalChoice string) error {
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModePlace
+	s.OriginalEvent = originalChoice
+	switch originalChoice {
+	case "BAR_LISTEN":
+		if s.barTaleIndex >= len(s.barTales) {
+			s.Message = s.catalog.Text("bar_no_tales", "目前沒有新的酒館傳聞。")
+			return nil
+		}
+		taleNumber := s.barTaleIndex + 1
+		s.Message = fmt.Sprintf(s.catalog.Text("bar_tale", "酒客傳聞 %d：%s"), taleNumber, s.barTales[s.barTaleIndex])
+		s.barTaleIndex++
+		return nil
+	case "BAR_EXIT":
+		s.barMenu = false
+		s.Message = s.catalog.Text("bar_exit_message", "你離開酒館，回到城市場所選單。")
+		return nil
+	default:
+		return fmt.Errorf("unknown bar choice %q", originalChoice)
 	}
 }
 
@@ -336,6 +393,9 @@ func (s *State) Select(index int) error {
 	if s.Mode == ModePlace {
 		if s.shopMenu {
 			return s.selectShop(index, originalChoice)
+		}
+		if s.barMenu {
+			return s.selectBar(originalChoice)
 		}
 		return s.selectPlace(index, originalChoice)
 	}
@@ -1357,6 +1417,10 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 		s.enterShopMenu()
 		return nil
 	}
+	if originalChoice == "BAR" {
+		s.enterBarMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModePlace
 	s.OriginalEvent = originalChoice
@@ -1373,6 +1437,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 
 func (s *State) enterShopMenu() {
 	s.shopMenu = true
+	s.barMenu = false
 	s.shopStockMenu = false
 	s.shopViewMenu = false
 	s.shopTakeMenu = false
@@ -1776,7 +1841,7 @@ func (s *State) placeEventMessage(originalChoice string) string {
 	case "STORE":
 		return s.catalog.Text("store_event", "你來到"+s.LocationName+"的商店。原版商店功能尚待接入。")
 	case "BAR":
-		return s.catalog.Text("bar_event", "你來到"+s.LocationName+"的酒館。情報與對話功能尚待接入。")
+		return s.catalog.Text("bar_event", "你來到"+s.LocationName+"的酒館。")
 	default:
 		return localizeOption(s.catalog, originalChoice)
 	}
@@ -1885,6 +1950,10 @@ func (s *State) Continue() error {
 	case ModePlace:
 		if s.shopMenu {
 			s.enterShopMenu()
+			return nil
+		}
+		if s.barMenu {
+			s.enterBarMenu()
 			return nil
 		}
 		s.eventReturnMode = ModeEvent
