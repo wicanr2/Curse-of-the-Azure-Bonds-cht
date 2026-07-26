@@ -575,7 +575,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		// Party icons are the original CHEAD+CBODY composition. The current
 		// roster has deterministic slots; character-specific icon IDs will
 		// replace this selector when the player record decoder is complete.
-		headBlock, bodyBlock := uint8(ordinal%6), uint8(ordinal%6)
+		headBlock, bodyBlock := uint8(0), uint8(0)
 		if fighter.HasPartyIcon {
 			headBlock, bodyBlock = fighter.PartyHeadBlock, fighter.PartyBodyBlock
 		}

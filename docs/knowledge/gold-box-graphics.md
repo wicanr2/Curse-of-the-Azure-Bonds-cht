@@ -17,6 +17,8 @@
 
 原作另以同一 layer block 加 `0x80` 取得 attack state；direction `> 3` 使用水平翻轉版本。
 
+新建玩家的初始 icon 欄位不是依隊伍 slot 變化：`head_icon=0`、`weapon_icon=0`；種族只先決定 `icon_size`，small races 是 dwarf／gnome／halfling，其餘是 normal。
+
 ## 合成規則
 
 對 destination `a` 與 source `b` 的每個 indexed pixel：

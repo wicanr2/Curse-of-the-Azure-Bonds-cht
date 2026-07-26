@@ -94,12 +94,15 @@ func (a *Abilities) Adjust(index, delta int) error {
 }
 
 type Character struct {
-	ID        string
-	Name      string
-	Race      Race
-	Class     Class
-	Abilities Abilities
-	Level     int
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Race      Race      `json:"race"`
+	Class     Class     `json:"class"`
+	Abilities Abilities `json:"abilities"`
+	Level     int       `json:"level"`
+	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
+	// Zero means derive the original default from Race for old save files.
+	IconSize uint8 `json:"icon_size,omitempty"`
 }
 
 type Roster []Character
@@ -148,12 +151,27 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		attackBonus = (c.Abilities.Dexterity - 10) / 2
 	}
 	armorClass := 10 - (c.Abilities.Dexterity-10)/2
+	iconSize := c.IconSize
+	if iconSize == 0 {
+		iconSize = DefaultIconSize(c.Race)
+	}
 	return combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
+		HasPartyIcon: true, PartyHeadBlock: 0, PartyBodyBlock: 0, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: hitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
 	}, nil
+}
+
+// DefaultIconSize matches the original character creation race switch.
+func DefaultIconSize(r Race) uint8 {
+	switch r {
+	case RaceDwarf, RaceGnome, RaceHalfling:
+		return 1
+	default:
+		return 2
+	}
 }
 
 func (r Race) String() string {
