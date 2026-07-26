@@ -78,6 +78,7 @@ type State struct {
 	Area            area.State
 	GeoMapSet       uint8
 	GeoMapBlock     uint8
+	LoadPieces      [3]uint16
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -139,6 +140,7 @@ type State struct {
 	eclSeed                int64
 	mapSeed                int64
 	geoMapPending          bool
+	loadPiecesPending      bool
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
@@ -565,6 +567,7 @@ func (s *State) Select(index int) error {
 			result, _ = ecl.RunSubsetInteractiveSeed(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed)
 		}
 		s.applyGeoMapLoad(result)
+		s.applyLoadPieces(result)
 		s.applyCitySelection()
 		if result.PictureRequested {
 			if !s.picturesEnabled {
@@ -696,6 +699,27 @@ func (s *State) ConsumeGeoMapRequest() (set, block uint8, ok bool) {
 	}
 	s.geoMapPending = false
 	return s.GeoMapSet, s.GeoMapBlock, true
+}
+
+// applyLoadPieces preserves the bounded ECL selector until a map-piece
+// adapter (for example DUNGCOM/WALLDEF/TILES) is available. It intentionally
+// does not assign file names or mutate the rendered floor.
+func (s *State) applyLoadPieces(result ecl.RunResult) {
+	if !result.LoadPiecesRequested {
+		return
+	}
+	s.LoadPieces = result.LoadPieces
+	s.loadPiecesPending = true
+}
+
+// ConsumeLoadPiecesRequest transfers the ECL LOAD PIECES selector exactly
+// once to a future map-piece loader.
+func (s *State) ConsumeLoadPiecesRequest() (pieces [3]uint16, ok bool) {
+	if !s.loadPiecesPending {
+		return [3]uint16{}, false
+	}
+	s.loadPiecesPending = false
+	return s.LoadPieces, true
 }
 
 // Camp applies the observable PROGRAM 9 transition by opening the CAMP menu.

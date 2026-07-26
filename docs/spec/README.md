@@ -153,3 +153,4 @@
 - [第一百五十六輪 combat error recovery](./156-combat-error-recovery.md)（`READY`：限玩家戰鬥輸入錯誤可恢復）
 - [第一百五十七輪 ECL ADD NPC signal](./157-ecl-add-npc-signal.md)（`READY`：限 NPC ID signal 與 bounded continuation）
 - [第一百五十八輪 ECL LOAD PIECES signal](./158-ecl-load-pieces-signal.md)（`READY`：限三個 selector signal 與 bounded continuation）
+- [第一百五十九輪 State LOAD PIECES request](./159-state-load-pieces-request.md)（`READY`：限一次性 map-piece request boundary）
