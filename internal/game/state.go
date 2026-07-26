@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
@@ -19,6 +20,7 @@ const (
 	ModeEvent
 	ModeMap
 	ModePlace
+	ModeCombat
 )
 
 type Action uint8
@@ -62,6 +64,11 @@ type State struct {
 	currentOriginalChoices []string
 	eventReturnMode        Mode
 	session                *ecl.BlockSession
+	battle                 *combat.Battle
+	combatTurns            []combat.Turn
+	combatTurnIndex        int
+	combatTargetIndex      int
+	combatMessage          string
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
