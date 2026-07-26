@@ -8,24 +8,25 @@ import (
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
-	Text               []string
-	Menus              []Menu
-	PC                 int
-	Steps              int
-	WaitingForMenu     bool
-	NewECLBlockID      *uint8
-	CombatRequested    bool
-	MonsterSetup       *MonsterSetup
-	MonsterSpawns      []MonsterSpawn
-	ProgramIDs         []uint8
-	ProgramExit        bool
-	SelectionsConsumed int
-	RandomValues       []uint16
-	EncounterActions   []uint16
-	LoadFilesRequested bool
-	LoadFiles          [3]uint16
-	PictureRequested   bool
-	PictureBlock       uint16
+	Text                []string
+	Menus               []Menu
+	PC                  int
+	Steps               int
+	WaitingForMenu      bool
+	NewECLBlockID       *uint8
+	CombatRequested     bool
+	MonsterSetup        *MonsterSetup
+	MonsterSpawns       []MonsterSpawn
+	ProgramIDs          []uint8
+	ProgramExit         bool
+	SelectionsConsumed  int
+	RandomValues        []uint16
+	EncounterActions    []uint16
+	LoadFilesRequested  bool
+	LoadFiles           [3]uint16
+	PictureRequested    bool
+	PictureBlock        uint16
+	BigPictureRequested bool
 }
 
 type Menu struct {
@@ -568,6 +569,7 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				if value != 0xFF {
 					result.PictureRequested = true
 					result.PictureBlock = value
+					result.BigPictureRequested = value >= 0x78
 				}
 			}
 			if instruction.Command.Opcode == 0x1C {

@@ -380,6 +380,19 @@ func (a *app) Draw(screen *ebiten.Image) {
 }
 
 func (a *app) drawPictureAnimation(screen *ebiten.Image) {
+	if a.state.BigPictureRequested {
+		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", a.state.Area.GameArea, a.state.PictureBlock)
+		if sprite := a.combatSprites[key]; sprite != nil {
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx())/2), float64((logicalHeight-sprite.Bounds().Dy())/2))
+			screen.DrawImage(sprite, op)
+			text.Draw(screen, "大幅事件畫面　Enter：繼續", a.face, 56, 380, color.RGBA{255, 255, 255, 255})
+			return
+		}
+		text.Draw(screen, "大幅事件圖片素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		return
+	}
 	key := fmt.Sprintf("pic%d-block-%02X", a.state.Area.GameArea, a.state.PictureBlock)
 	frames := a.combatAnimations[key]
 	if len(frames) == 0 {
@@ -762,6 +775,11 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		return nil, nil, nil, err
 	}
 	paths = append(paths, partyPaths...)
+	bigPicturePaths, err := filepath.Glob("assets/sprites/bigpic*-block-*-item-00.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	paths = append(paths, bigPicturePaths...)
 	sort.Strings(paths)
 	images := make(map[string]*ebiten.Image, len(paths))
 	ids := make([]string, 0, len(paths))
