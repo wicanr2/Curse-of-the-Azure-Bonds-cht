@@ -154,3 +154,10 @@
 - [x] `NewStateFromECLBlocks` 接入 BlockSession。
 - [x] State selection sequence 與 session offset 接通。
 - [ ] 以真實 NEWECL transition 做回歸，保存跨 block memory／call stack。
+
+## 第二十四輪驗收
+
+- [x] `BlockSession.RunInteractive` 接入 game runtime。
+- [x] selection offset 與 bounded NEWECL switch 有 synthetic regression。
+- [x] 確認 ECL1 initial-entry graph 尚無 reachable NEWECL edge，保留此未知。
+- [ ] 從其他 event entries 找出 real NEWECL transition。

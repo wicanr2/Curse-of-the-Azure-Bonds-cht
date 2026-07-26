@@ -97,6 +97,11 @@ func main() {
 			for _, edge := range result.Edges {
 				fmt.Printf("  edge +0x%04X -> +0x%04X (%s)\n", edge.From, edge.To, edge.Kind)
 			}
+			for _, instruction := range result.Instructions {
+				if instruction.Command.Opcode == 0x20 && len(instruction.Operands) == 1 {
+					fmt.Printf("  NEWECL at +0x%04X operand=%#v\n", instruction.Offset, instruction.Operands[0])
+				}
+			}
 			if err != nil {
 				fmt.Printf("  graph stopped safely: %v\n", err)
 			}
