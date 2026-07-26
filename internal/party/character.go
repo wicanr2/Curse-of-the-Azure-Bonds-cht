@@ -105,9 +105,35 @@ type Character struct {
 	// Zero means derive the original default from Race for old save files.
 	IconSize  uint8                `json:"icon_size,omitempty"`
 	Equipment []monster.ItemRecord `json:"equipment,omitempty"`
+	// SpellSlots is the data-neutral ordered spell-slot list used by ECL
+	// SPELL resolution. It is optional until original DOS player offsets are
+	// decoded; old saves therefore remain valid.
+	SpellSlots []uint8 `json:"spell_slots,omitempty"`
 }
 
 type Roster []Character
+
+type SpellMatch struct {
+	CharacterIndex int
+	SlotIndex      int
+}
+
+// FindSpell searches party characters in marching order, then each character's
+// ordered spell slots. This matches ECL SPELL's first-match contract while
+// keeping the source of spell slots replaceable by a DOS record decoder.
+func (r Roster) FindSpell(spellID uint16) (SpellMatch, bool) {
+	if spellID > 0xFF {
+		return SpellMatch{}, false
+	}
+	for characterIndex, character := range r {
+		for slotIndex, knownSpell := range character.SpellSlots {
+			if knownSpell == uint8(spellID) {
+				return SpellMatch{CharacterIndex: characterIndex, SlotIndex: slotIndex}, true
+			}
+		}
+	}
+	return SpellMatch{}, false
+}
 
 // ItemClassBit returns the class usability bit used by the original ITEMS
 // table. The values deliberately follow the DOS table rather than the local

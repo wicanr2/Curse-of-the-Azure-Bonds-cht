@@ -8,6 +8,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 func testCatalog() locale.Catalog {
@@ -505,5 +506,50 @@ func TestPartySaveLoadRoundTrip(t *testing.T) {
 	}
 	if len(loaded.PartyFighters()) != 1 || loaded.PartyFighters()[0].Name != "戰士" {
 		t.Fatalf("loaded party=%#v", loaded.PartyFighters())
+	}
+}
+
+func TestResolveSpellSearchUsesLoadedPartyRoster(t *testing.T) {
+	state := NewState(testCatalog())
+	first := party.Character{
+		ID: "p1", Name: "施法者", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 1,
+		Abilities:  party.Abilities{Strength: 10, Intelligence: 14, Wisdom: 10, Dexterity: 10, Constitution: 10, Charisma: 10},
+		SpellSlots: []uint8{0x12, 0x24},
+	}
+	second := first
+	second.ID, second.Name = "p2", "另一位施法者"
+	second.SpellSlots = []uint8{0x12}
+	state.partyRoster = party.Roster{first, second}
+	match, ok := state.ResolveSpellSearch(ecl.SpellSearch{SpellID: 0x12})
+	if !ok || match.CharacterIndex != 0 || match.SlotIndex != 0 {
+		t.Fatalf("spell match=%#v ok=%t", match, ok)
+	}
+}
+
+func TestItemCatalogFeedsCharacterCreationFighterProjection(t *testing.T) {
+	data := make([]byte, monster.BaseItemHeaderSize+monster.BaseItemRecordSize)
+	data[monster.BaseItemHeaderSize+2] = 2
+	data[monster.BaseItemHeaderSize+3] = 4
+	data[monster.BaseItemHeaderSize+9] = 2
+	data[monster.BaseItemHeaderSize+10] = 4
+	catalog, err := monster.ParseBaseItems(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	character := party.Character{
+		ID: "p1", Name: "戰士", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+		Equipment: []monster.ItemRecord{{Type: 0, Plus: 1, Readied: true}},
+	}
+	state := NewState(testCatalog())
+	state.SetItemCatalog(catalog)
+	state.Mode = ModeCharacterCreation
+	state.CreationRoster = party.Roster{character}
+	if err := state.FinishCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	fighters := state.PartyFighters()
+	if len(fighters) != 1 || fighters[0].DamageDiceCount != 2 || fighters[0].DamageDiceSides != 4 || fighters[0].DamageBonus != 1 || fighters[0].AttackBonus != 4 {
+		t.Fatalf("equipped creation fighter=%#v", fighters)
 	}
 }

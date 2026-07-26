@@ -715,6 +715,15 @@ func main() {
 		log.Fatal(err)
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
+	itemData, err := zipMember(*imagePath, "ITEMS")
+	if err != nil {
+		log.Fatal(err)
+	}
+	itemCatalog, err := monster.ParseBaseItems(itemData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	state.SetItemCatalog(itemCatalog)
 	monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
 	if err != nil {
 		log.Fatal(err)

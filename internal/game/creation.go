@@ -158,7 +158,7 @@ func (s *State) FinishCharacterCreation() error {
 	}
 	fighters := make([]combat.Fighter, 0, len(s.CreationRoster))
 	for _, character := range s.CreationRoster {
-		fighter, err := character.Fighter()
+		fighter, err := s.fighterForCharacter(character)
 		if err != nil {
 			return err
 		}
@@ -198,7 +198,7 @@ func (s *State) LoadPartyFile(path string) error {
 	}
 	fighters := make([]combat.Fighter, 0, len(file.Characters))
 	for _, character := range file.Characters {
-		fighter, err := character.Fighter()
+		fighter, err := s.fighterForCharacter(character)
 		if err != nil {
 			return err
 		}
