@@ -358,4 +358,4 @@
 
 第一百二十七輪功能／文件 commit：`c585d1b`，已推送至 GitHub `main`。城市 BAR 已接 ordered Tavern Tale menu、前六則繁中整理與城市場所返回；買酒價格、城市條件、完整 62 則內容與 ECL trigger 仍待反組譯。
 
-第一百二十八輪功能／文件 commit：待本輪提交。CAMP／PROGRAM 9 現在只開啟 CAMP Menu；REST 接入 `ADD／SUBTRACT／EXIT` 與每 24 小時自然恢復 1 HP，並同步 roster／fighter。法術記憶、遊戲時鐘與遭遇中斷仍待反組譯。
+第一百二十八輪功能／文件 commit：`c82919e`，已推送至 GitHub `main`。CAMP／PROGRAM 9 現在只開啟 CAMP Menu；REST 接入 `ADD／SUBTRACT／EXIT` 與每 24 小時自然恢復 1 HP，並同步 roster／fighter。法術記憶、遊戲時鐘與遭遇中斷仍待反組譯。
