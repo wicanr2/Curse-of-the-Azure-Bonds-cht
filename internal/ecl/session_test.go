@@ -63,3 +63,27 @@ func TestBlockSessionRunInteractiveFollowsNewECL(t *testing.T) {
 		t.Fatalf("current block=%#x result=%+v err=%v", session.CurrentBlockID(), result, err)
 	}
 }
+
+func TestBlockSessionResumesMenuWithCumulativeSelections(t *testing.T) {
+	block := append([]byte{0, 0},
+		0x2B, 0x02, 0x00, 0x90, 0x00, 0x02,
+		0x80, 0x02, 0x20, 0x92,
+		0x80, 0x02, 0x0C, 0x32,
+		0x00,
+	)
+	session, err := NewBlockSession(map[uint8][]byte{0x50: block}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := session.RunFrom(0, 8, nil)
+	if err != nil || !first.WaitingForMenu {
+		t.Fatalf("first run=%+v err=%v, want menu pause", first, err)
+	}
+	second, err := session.RunFrom(0, 8, []uint16{1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if second.WaitingForMenu || len(second.Menus) != 1 || second.Menus[0].Selected != 1 {
+		t.Fatalf("second run=%+v, want resumed selection 1", second)
+	}
+}

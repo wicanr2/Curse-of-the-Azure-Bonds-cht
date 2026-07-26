@@ -292,3 +292,29 @@ func TestRunSubsetEncounterMenuPausesAndMapsSelection(t *testing.T) {
 		t.Fatalf("selected result=%+v", selected)
 	}
 }
+
+func TestRuntimeStateResumesAtPausedMenu(t *testing.T) {
+	block := []byte{0, 0,
+		0x2B, 0x02, 0x00, 0x90, 0x00, 0x01,
+		0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	runtime := NewRuntimeState(0)
+	first, err := runSubsetWithState(block, 0, 8, nil, true, 1, runtime)
+	if err != nil || !first.WaitingForMenu {
+		t.Fatalf("first run=%+v err=%v, want menu pause", first, err)
+	}
+	if runtime.PC != 0 || !runtime.Started {
+		t.Fatalf("runtime=%+v, want resumable menu PC 0", runtime)
+	}
+	second, err := runSubsetWithState(block, 0, 8, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if second.WaitingForMenu || len(second.Menus) != 1 || second.Menus[0].Selected != 0 {
+		t.Fatalf("second run=%+v, want selected menu to continue", second)
+	}
+	if runtime.Memory[0x9000] != 0 {
+		t.Fatalf("runtime memory=%#v, want selected value retained", runtime.Memory)
+	}
+}
