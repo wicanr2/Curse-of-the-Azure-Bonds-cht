@@ -70,6 +70,9 @@ type State struct {
 	PictureRequested         bool
 	PictureBlock             uint16
 	BigPictureRequested      bool
+	SceneCharacterRequested  bool
+	SceneHeadBlock           uint8
+	SceneBodyBlock           uint8
 	OriginalLocation         string
 	JournalTitle             string
 	JournalText              string
@@ -179,6 +182,7 @@ func NewState(catalog locale.Catalog) State {
 		Prompt:                 catalog.Text("press_enter", "Press Enter to continue"),
 		Location:               LocationWilderness,
 		LocationName:           catalog.Text("wilderness", "Wilderness"),
+		SceneHeadBlock:         0xFF,
 		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
 		JournalTitle:           catalog.Text("journal_title", "冒險手札"),
 		JournalText:            journalPages[0],
@@ -294,6 +298,10 @@ func (s *State) Select(index int) error {
 			s.PictureRequested = true
 			s.PictureBlock = result.PictureBlock
 			s.BigPictureRequested = result.BigPictureRequested
+			s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
+			if s.SceneCharacterRequested {
+				s.SceneBodyBlock = uint8(result.PictureBlock)
+			}
 			s.OriginalEvent = "PICTURE"
 			s.Message = "事件畫面"
 			return nil
@@ -581,6 +589,8 @@ func (s *State) Continue() error {
 		s.PictureRequested = false
 		s.PictureBlock = 0
 		s.BigPictureRequested = false
+		s.SceneCharacterRequested = false
+		s.SceneBodyBlock = 0
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
@@ -597,6 +607,13 @@ func (s *State) Continue() error {
 	default:
 		return fmt.Errorf("event has no continuation")
 	}
+}
+
+// SetSceneCharacter selects the reference Area2 HeadBlockId branch for the
+// next PICTURE event. 0xFF means no head layer and restores normal PIC mode.
+func (s *State) SetSceneCharacter(headBlock, bodyBlock uint8) {
+	s.SceneHeadBlock = headBlock
+	s.SceneBodyBlock = bodyBlock
 }
 
 func (s *State) EnterPlacesFromEvent() error {
