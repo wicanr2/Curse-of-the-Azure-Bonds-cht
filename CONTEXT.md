@@ -318,4 +318,4 @@
 
 第一百零七輪功能／文件 commit：`c3e93f3`，已推送至 GitHub `main`。保存 DOS player `icon_id @ 0x143` 到 party／combat metadata；runtime icon slot allocation、CombatMap position／camera 與完整戰鬥流程仍未完成。
 
-第一百零八輪功能／文件 commit：待本輪提交。城市 `INN` 會恢復 party roster／fighter HP 並以繁中訊息返回場所選單；完整 CAMP、商店與酒館情報仍未完成。
+第一百零八輪功能／文件 commit：`75ae586`，已推送至 GitHub `main`。城市 `INN` 會恢復 party roster／fighter HP 並以繁中訊息返回場所選單；完整 CAMP、商店與酒館情報仍未完成。
