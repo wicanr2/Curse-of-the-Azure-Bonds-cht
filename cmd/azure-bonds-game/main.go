@@ -61,6 +61,7 @@ type app struct {
 	dungeonFloor     *mapdata.DungeonFloor
 	pieceSets        map[uint8]gfx.PieceSet
 	pieceLabel       string
+	wallPreview      []wallPreviewStamp
 	combatSprites    map[string]*ebiten.Image
 	combatSpriteIDs  []string
 	combatAnimations map[string][]combatAnimation
@@ -74,6 +75,12 @@ type combatAnimation struct {
 	delay uint32
 	x     int16
 	y     int16
+}
+
+type wallPreviewStamp struct {
+	image  *ebiten.Image
+	row    int
+	column int
 }
 
 func (a *app) combatAction(action func() error) error {
@@ -386,6 +393,7 @@ func (a *app) syncLoadPiecesRequest() {
 		return
 	}
 	a.pieceSets = sets
+	a.prepareWallPreview()
 	a.pieceLabel = fmt.Sprintf("LOAD PIECES [%d,%d,%d]：WALLDEF／8X8D 已載入", selectors[0], selectors[1], selectors[2])
 }
 
@@ -404,6 +412,45 @@ func (a *app) syncGeoMapRequest() {
 	a.dungeonFloor = &floor
 	a.geoSet, a.geoBlock = set, block
 	a.geoLabel = fmt.Sprintf("GEO%d block 0x%02X", set, block)
+	a.prepareWallPreview()
+}
+
+func (a *app) prepareWallPreview() {
+	a.wallPreview = nil
+	if a.geoGrid == nil || len(a.pieceSets) == 0 {
+		return
+	}
+	for y := 0; y < geo.Height; y++ {
+		for x := 0; x < geo.Width; x++ {
+			for _, direction := range []int{0, 2, 4, 6} {
+				wallType, ok := a.geoGrid.Wall(x, y, direction)
+				if !ok || wallType == 0 {
+					continue
+				}
+				setID := uint8((wallType-1)/5 + 1)
+				piece, ok := a.pieceSets[setID]
+				if !ok {
+					continue
+				}
+				stamps, err := gfx.BuildWallLayout(piece, wallType, 0, 4, 5)
+				if err != nil {
+					continue
+				}
+				for _, stamp := range stamps {
+					rgba, err := stamp.Picture.RGBA(stamp.Item, gfx.EGA16)
+					if err != nil {
+						continue
+					}
+					a.wallPreview = append(a.wallPreview, wallPreviewStamp{
+						image:  ebiten.NewImageFromImage(rgba),
+						row:    stamp.Row,
+						column: stamp.Column,
+					})
+				}
+				return
+			}
+		}
+	}
 }
 
 func (a *app) Draw(screen *ebiten.Image) {
@@ -674,6 +721,15 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	text.Draw(screen, "目前為 "+a.geoLabel+" map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
 	if a.pieceLabel != "" {
 		text.Draw(screen, a.pieceLabel, a.face, 24, 280, cyan)
+	}
+	if len(a.wallPreview) > 0 {
+		text.Draw(screen, "WALLDEF wall layout sample（raw 8×8D）", a.face, 360, 28, cyan)
+		for _, stamp := range a.wallPreview {
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Scale(3, 3)
+			op.GeoM.Translate(float64(360+(stamp.column-5)*24), float64(48+(stamp.row-4)*24))
+			screen.DrawImage(stamp.image, op)
+		}
 	}
 }
 
