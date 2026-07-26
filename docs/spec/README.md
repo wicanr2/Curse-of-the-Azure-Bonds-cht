@@ -131,3 +131,4 @@
 - [第一百三十四輪 combat Magic Missile](./134-combat-magic-missile.md)（`READY`：限一級魔法師施法）
 - [第一百三十五輪 combat Cure Light Wounds](./135-combat-cure-light-wounds.md)（`READY`：限一級牧師戰鬥治療）
 - [第一百三十六輪 combat spell target selection](./136-combat-spell-target-selection.md)（`READY`：限兩個已接入法術的目標選擇）
+- [第一百三十七輪 combat Bless](./137-combat-bless.md)（`READY`：限 Bless party attack bonus 與 no-target confirmation）

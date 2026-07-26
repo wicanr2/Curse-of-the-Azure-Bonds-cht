@@ -249,6 +249,7 @@
 - [x] 將 RuleBook 證實的一級 Magic Missile 接入 Battle、slot consumption、繁中 Ebiten S 鍵與 deterministic damage。
 - [x] 將 RuleBook 證實的一級 Cure Light Wounds 接入 Battle、slot consumption、受傷隊員 bounded target、繁中 Ebiten H 鍵與 deterministic healing。
 - [x] 將已接入戰鬥法術改為 CAST target-selection state，接入左右切換、Enter 確認與 Esc 取消。
+- [x] 將 RuleBook 證實的 Bless 接入戰鬥、牧師 slot、B／Enter confirmation 與 party attack bonus；保留鄰近怪物與 duration boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
