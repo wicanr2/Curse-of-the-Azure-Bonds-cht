@@ -18,6 +18,8 @@ RuleBook 的 Magic Menu command 順序是 `CAST／MEMORIZE／SCRIBE／DISPLAY／
 
 RuleBook 的 preparation timing 可作共用 adapter 輸入：每 spell level 15 分鐘，另加最低準備時間（一、二級 4 小時，三、四級 6 小時，五級 8 小時）。目前 CoAB 只對已核對的一級 catalog 套用 4 小時加每個 spell 15 分鐘並取整小時；不要把這個 bounded rule 擴大成所有等級的完整時鐘模型。
 
+戰鬥施法應拆成三層：game state 驗證並消耗 caster 的 memorized slot，combat core 套用已證實的 spell effect，renderer 只提供 action／target input。Magic Missile 是目前可沿用的例子：spell ID `7`、2–5 damage per missile、無 saving throw；不要用它的 damage path 代替治療、buff、save 或 area spell。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

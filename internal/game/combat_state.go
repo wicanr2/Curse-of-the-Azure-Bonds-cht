@@ -6,6 +6,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 // StartCombat creates the first playable battle adapter. Party and encounter
@@ -130,6 +131,105 @@ func (s *State) CombatSelectTarget(delta int) error {
 		s.combatTargetIndex += len(enemies)
 	}
 	return nil
+}
+
+func (s *State) combatPartyTurn() (combat.Fighter, bool) {
+	if s.combatTurnIndex >= len(s.combatTurns) {
+		return combat.Fighter{}, false
+	}
+	turn := s.combatTurns[s.combatTurnIndex]
+	fighter, ok := s.fighter(turn.FighterID)
+	if !ok || fighter.Side != combat.SideParty || fighter.HitPoints <= 0 {
+		return combat.Fighter{}, false
+	}
+	return fighter, true
+}
+
+// CombatCanCastMagicMissile exposes the UI gate for the one verified combat
+// spell. Slot mutation remains inside CombatCast so a disabled input cannot
+// consume a spell.
+func (s *State) CombatCanCastMagicMissile() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassMagicUser {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == MagicMissileSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// CombatCast applies the verified first-level Magic Missile path. It consumes
+// exactly one memorized slot, targets the current enemy selection, and then
+// advances the same deterministic enemy-turn boundary as a weapon attack.
+func (s *State) CombatCast(spellID uint8) error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	if spellID != MagicMissileSpellID {
+		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassMagicUser {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a magic-user in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == spellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Magic Missile", caster.ID)
+	}
+	enemies := s.livingBySide(combat.SideEnemy)
+	if len(enemies) == 0 {
+		return s.finishCombat()
+	}
+	if s.combatTargetIndex >= len(enemies) {
+		s.combatTargetIndex = 0
+	}
+	target := enemies[s.combatTargetIndex]
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastMagicMissile(caster.ID, target.ID, casterLevel(s.partyRoster[characterIndex]))
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, spellID)
+		return err
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func casterLevel(character party.Character) int {
+	if character.Level < 1 {
+		return 1
+	}
+	return character.Level
 }
 
 // CombatAct executes the current party member's attack and advances through

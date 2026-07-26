@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百三十三輪：MEMORIZE preparation time。
+第一百三十四輪：combat Magic Missile。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -369,3 +369,5 @@
 第一百三十二輪功能／文件 commit：`312f9b4`，已推送至 GitHub `main`。MEMORIZE 可從 KnownSpells 選法術，先保存 pending state，REST_START 才寫回 SpellSlots；完整 capacity、準備時間、遭遇中斷與 CAST／SCRIBE 仍未完成。
 
 第一百三十三輪功能／文件 commit：`3b61c33`，已推送至 GitHub `main`。對已核對的一級法術套用 RuleBook 的最低準備時間檢查；不足休息時保留 pending selection，不猜測高等級與遭遇中斷結果。
+
+第一百三十四輪待提交：戰鬥接入 RuleBook 證實的 Magic Missile（spell ID `7`）、slot consumption、2–5 damage per missile、level scaling 與 Ebiten S 鍵；其他 spell effects 仍未完成。

@@ -80,6 +80,15 @@ type AttackResult struct {
 	TargetHP   int
 }
 
+type SpellResult struct {
+	CasterID string
+	TargetID string
+	SpellID  uint8
+	Missiles int
+	Damage   int
+	TargetHP int
+}
+
 type Battle struct {
 	fighters map[string]Fighter
 	rng      *rand.Rand
@@ -213,6 +222,44 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 		damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
 	}
 	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
+}
+
+// CastMagicMissile applies the verified RuleBook first-level effect: every
+// missile deals 2-5 damage and has no saving throw. The seed-owned RNG keeps
+// the result replayable while the game adapter owns spell-slot consumption.
+func (b *Battle) CastMagicMissile(casterID, targetID string, level int) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if level < 1 {
+		return SpellResult{}, fmt.Errorf("caster level must be positive")
+	}
+	missiles := (level + 1) / 2
+	if missiles > 6 {
+		missiles = 6
+	}
+	damage := 0
+	for index := 0; index < missiles; index++ {
+		damage += b.rng.Intn(4) + 2
+	}
+	if damage > target.HitPoints {
+		damage = target.HitPoints
+	}
+	target.HitPoints -= damage
+	b.fighters[targetID] = target
+	b.updateStatus()
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 7, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
 }
 
 func (b *Battle) updateStatus() {

@@ -667,6 +667,31 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 }
 
+func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}
+	partyFighters := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastMagicMissile() {
+		t.Fatalf("magic missile should be available: turns=%#v state=%#v", state.CombatTurns(), state)
+	}
+	if err := state.CombatCast(MagicMissileSpellID); err != nil {
+		t.Fatal(err)
+	}
+	targetHP := 20
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "goblin" {
+			targetHP = fighter.HitPoints
+		}
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 || targetHP >= 20 {
+		t.Fatalf("cast state=%#v fighters=%#v", state, state.CombatFighters())
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}
