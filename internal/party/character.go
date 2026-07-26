@@ -103,12 +103,13 @@ type Character struct {
 	Level     int       `json:"level"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
-	IconSize        uint8                `json:"icon_size,omitempty"`
-	IconHeadBlock   uint8                `json:"icon_head,omitempty"`
-	IconWeaponBlock uint8                `json:"icon_weapon,omitempty"`
-	HitPoints       int                  `json:"hit_points,omitempty"`
-	MaxHitPoints    int                  `json:"max_hit_points,omitempty"`
-	Equipment       []monster.ItemRecord `json:"equipment,omitempty"`
+	IconSize        uint8                  `json:"icon_size,omitempty"`
+	IconHeadBlock   uint8                  `json:"icon_head,omitempty"`
+	IconWeaponBlock uint8                  `json:"icon_weapon,omitempty"`
+	HitPoints       int                    `json:"hit_points,omitempty"`
+	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
+	Equipment       []monster.ItemRecord   `json:"equipment,omitempty"`
+	Effects         []monster.AffectRecord `json:"effects,omitempty"`
 	// SpellSlots is the data-neutral ordered spell-slot list used by ECL
 	// SPELL resolution. It is optional until original DOS player offsets are
 	// decoded; old saves therefore remain valid.

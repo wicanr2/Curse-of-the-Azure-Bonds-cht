@@ -136,15 +136,22 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err := record.ApplyInventory(itemData); err != nil {
 		t.Fatal(err)
 	}
+	effectData := []byte{0x27, 0x34, 0x12, 7, 1, 8, 9, 10, 11}
+	if err := record.ApplyEffects(effectData); err != nil {
+		t.Fatal(err)
+	}
 	character, err := record.Character()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
 		t.Fatal("expected malformed DOS inventory error")
+	}
+	if err := character.ApplyDOSEffects(make([]byte, monster.AffectRecordSize-1)); err == nil {
+		t.Fatal("expected malformed DOS effects error")
 	}
 }
 
