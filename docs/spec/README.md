@@ -29,3 +29,4 @@
 - [第三十二輪 ECL monster spawn descriptors](./round-32-ecl-monster-spawn.md)（`READY`：限 ECL command descriptor）
 - [第三十三輪 MON*CHA monster record](./round-33-monster-cha-record.md)（`READY`：限固定 record offsets 與 raw combat fields）
 - [第三十四輪 MON*ITM／MON*SPC records](./round-34-monster-items-affects.md)（`READY`：限 raw record parser）
+- [第三十五輪 monster item／effect 繁中名稱](./round-35-monster-item-localization.md)（`READY`：限本輪實際觀察 IDs）

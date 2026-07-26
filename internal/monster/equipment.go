@@ -34,6 +34,42 @@ type AffectRecord struct {
 	Data     [4]byte
 }
 
+// ChineseName covers item types observed in the real MON1 encounter record.
+// The complete item-name table remains data work; unknown types deliberately
+// return a stable diagnostic instead of a fabricated translation.
+func ChineseName(item ItemRecord) string {
+	base, ok := map[uint8]string{
+		28: "弩矢", // Quarrel
+		35: "闊劍", // Broad Sword
+		46: "輕弩", // Light Crossbow
+		55: "鏈甲", // Chain Mail
+		59: "盾牌", // Shield
+	}[item.Type]
+	if !ok {
+		return fmt.Sprintf("未翻譯物品(0x%02X)", item.Type)
+	}
+	if item.Plus > 0 {
+		base = fmt.Sprintf("+%d %s", item.Plus, base)
+	}
+	if item.Cursed {
+		base += "（詛咒）"
+	}
+	if item.Count > 1 && item.Type == 28 {
+		base = fmt.Sprintf("%s ×%d", base, item.Count)
+	}
+	return base
+}
+
+func ChineseAffectName(affect AffectRecord) string {
+	if name, ok := map[uint8]string{
+		0x18: "偵測隱形",
+		0x5A: "酸液吐息",
+	}[affect.Kind]; ok {
+		return name
+	}
+	return fmt.Sprintf("未翻譯效果(0x%02X)", affect.Kind)
+}
+
 func ParseItems(data []byte) ([]ItemRecord, error) {
 	if len(data)%ItemRecordSize != 0 {
 		return nil, fmt.Errorf("item data is %d bytes, not a multiple of %d", len(data), ItemRecordSize)
