@@ -40,8 +40,28 @@ type app struct {
 
 func (a *app) Update() error {
 	if a.state.Mode == game.ModeCharacterCreation {
+		if a.state.CreationEditing {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+				return a.state.CancelCreationName()
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+				return a.state.BackspaceCreationName()
+			}
+			if chars := ebiten.InputChars(); len(chars) > 0 {
+				if err := a.state.AppendCreationName(chars); err != nil {
+					a.state.CreationMessage = err.Error()
+				}
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+				return a.state.CommitCreationName()
+			}
+			return nil
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			return a.state.CancelCharacterCreation()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
+			return a.state.BeginCreationName()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
 			return a.state.FinishCharacterCreation()
@@ -203,6 +223,11 @@ func (a *app) Draw(screen *ebiten.Image) {
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "建立冒險隊伍", a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CreationMessage, a.face, 32, 90, white)
+	if a.state.CreationEditing {
+		text.Draw(screen, "姓名："+a.state.CreationName+"_", a.face, 48, 140, white)
+		text.Draw(screen, "輸入文字　Enter：確定　Esc：取消", a.face, 48, 190, cyan)
+		return
+	}
 	for index, character := range a.state.CreationOptions {
 		prefix := "  "
 		if index == a.state.CreationCursor {
@@ -212,7 +237,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, label, a.face, 48, 150+index*38, white)
 	}
 	text.Draw(screen, "已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 285, cyan)
-	text.Draw(screen, "Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
+	text.Draw(screen, "N：改名　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
 }
 
 func raceName(r party.Race) string {

@@ -45,5 +45,6 @@
     ,"creation_prompt": "選擇角色模板，Enter 加入隊伍；D 完成建立。"
     ,"creation_added": "已加入：%s（目前 %d 人）"
     ,"party_ready": "隊伍已建立。準備開始冒險。"
+    ,"creation_named": "角色名稱：%s"
   }
 }

@@ -276,3 +276,22 @@ func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 		t.Fatalf("finished state mode=%v party=%#v", state.Mode, state.PartyFighters())
 	}
 }
+
+func TestCharacterCreationCustomNameSupportsUnicode(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCreationName(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AppendCreationName([]rune("阿勇")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CommitCreationName(); err != nil {
+		t.Fatal(err)
+	}
+	if state.CreationOptions[0].Name != "阿勇" || state.CreationEditing {
+		t.Fatalf("creation=%#v", state.CreationOptions[0])
+	}
+}

@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 44 輪：繁中角色建立 UI。
+第 45 輪：繁中角色姓名輸入。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -102,6 +102,7 @@
 - `State.SetParty`／`PartyFighters` 已保存 party roster；戰鬥結束同步 HP，CAMP 對已保存 party 恢復 MaxHP，完整角色欄位與原始 CAMP side effects 仍未完成。
 - `internal/party` 已依 RuleBook／reference 建立六種玩家種族、六種基本職業、能力值 3–18、最低值與 1–6 人 roster validation；尚未接 Ebiten 建角／存檔。
 - Ebiten 已接 `C` 角色建立 starter UI：方向鍵選模板、Enter 加入、D 完成；三個模板會經 validation、投影成 combat fighter 並保存到 State，完整自訂建角／存檔仍未完成。
+- 建立畫面按 `N` 可輸入 Unicode／繁中姓名，Backspace／Enter／Esc 均已接 state；能力值分配、裝備與存檔仍未完成。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -172,3 +173,4 @@
 41. 反組 party creation/import 與完整 CAMP 恢復／中斷規則。
 42. 將 `internal/party` 接入繁中角色建立 UI 與 State.SetParty。
 43. 補自訂姓名／能力值、裝備、XP／等級與 party save/import。
+44. 接能力值逐項分配與規則化的角色完成流程。

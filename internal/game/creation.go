@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -42,6 +43,59 @@ func (s *State) AddCreationCharacter(index int) error {
 	character.ID = fmt.Sprintf("%s-%d", character.ID, len(s.CreationRoster)+1)
 	s.CreationRoster = append(s.CreationRoster, character)
 	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_added", "已加入：%s（目前 %d 人）"), character.Name, len(s.CreationRoster))
+	return nil
+}
+
+func (s *State) BeginCreationName() error {
+	if s.Mode != ModeCharacterCreation || s.CreationCursor < 0 || s.CreationCursor >= len(s.CreationOptions) {
+		return fmt.Errorf("character name editor is unavailable")
+	}
+	s.CreationName = ""
+	s.CreationEditing = true
+	return nil
+}
+
+func (s *State) AppendCreationName(chars []rune) error {
+	if !s.CreationEditing {
+		return fmt.Errorf("character name editor is not active")
+	}
+	if utf8.RuneCountInString(s.CreationName)+len(chars) > 20 {
+		return fmt.Errorf("character name is limited to 20 characters")
+	}
+	s.CreationName += string(chars)
+	return nil
+}
+
+func (s *State) BackspaceCreationName() error {
+	if !s.CreationEditing {
+		return fmt.Errorf("character name editor is not active")
+	}
+	name := []rune(s.CreationName)
+	if len(name) > 0 {
+		s.CreationName = string(name[:len(name)-1])
+	}
+	return nil
+}
+
+func (s *State) CommitCreationName() error {
+	if !s.CreationEditing {
+		return fmt.Errorf("character name editor is not active")
+	}
+	if s.CreationName == "" {
+		return fmt.Errorf("character name cannot be empty")
+	}
+	s.CreationOptions[s.CreationCursor].Name = s.CreationName
+	s.CreationEditing = false
+	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_named", "角色名稱：%s"), s.CreationName)
+	return nil
+}
+
+func (s *State) CancelCreationName() error {
+	if !s.CreationEditing {
+		return fmt.Errorf("character name editor is not active")
+	}
+	s.CreationEditing = false
+	s.CreationName = ""
 	return nil
 }
 
