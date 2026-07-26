@@ -103,3 +103,4 @@
 - [第一百零六輪 DOS `.FX` extended combat projection](./106-fx-combat-projection-extended.md)（`READY`：限 Blind／Bestow Curse／friendly Prayer）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
+- [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）

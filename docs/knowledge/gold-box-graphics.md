@@ -93,3 +93,5 @@ DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共�
 effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（attack -1）、`0x21` Blind（attack -4、AC +4）、`0x24` Bestow Curse（attack -4）與對 party 的 `0x31` friendly Prayer（attack +1）投影到 `party.Character.Fighter`。hostile Prayer、Protection、Mirror Image、Haste 與需要 target／phase／saving throw 的部分仍由後續 combat rules layer 處理；這個界線可沿用到其他 Gold Box 遊戲。
 
 場所 service 也應保持資料中立：目前 `game.State` 的 `INN` 只做已由手冊確認的安全 HP restore，並同步 `partyRoster` 與 renderer fighter；Camp Menu 的 spell recovery、毒／疾病、守夜與中斷規則不可因客棧訊息而被假設完成。
+
+商店共用 adapter 應把 offer price 與 stock 交給遊戲／script 層；`ITEMS` descriptor 只有 combat／usability 欄位，不能從 base item bytes 猜售價。`party.Character.BuyItem`／`SellItem`／`PayIdentifyFee` 目前只處理 party inventory、gold、readied lock、overflow 與已確認的 200 GP ID fee，後續 Gold Box 遊戲可重用同一 transaction boundary。

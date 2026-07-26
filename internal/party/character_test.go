@@ -31,6 +31,44 @@ func TestCharacterAdvanceEffects(t *testing.T) {
 	}
 }
 
+func TestShopBuySellAndIdentifyTransactions(t *testing.T) {
+	character := validCharacter()
+	character.Gold = 500
+	item := monster.ItemRecord{Type: 36, Name: "長劍", Readied: true}
+	if err := character.BuyItem(item, 125); err != nil {
+		t.Fatal(err)
+	}
+	if character.Gold != 375 || len(character.Equipment) != 1 || character.Equipment[0].Readied {
+		t.Fatalf("after buy character=%#v", character)
+	}
+	sold, err := character.SellItem(0, 75)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sold.Type != 36 || character.Gold != 450 || len(character.Equipment) != 0 {
+		t.Fatalf("after sell character=%#v sold=%#v", character, sold)
+	}
+	if err := character.PayIdentifyFee(); err != nil {
+		t.Fatal(err)
+	}
+	if character.Gold != 250 {
+		t.Fatalf("after identify gold=%d, want 250", character.Gold)
+	}
+}
+
+func TestShopTransactionsProtectReadiedAndGoldOverflow(t *testing.T) {
+	character := validCharacter()
+	character.Gold = ^uint16(0)
+	character.Equipment = []monster.ItemRecord{{Type: 36, Readied: true}}
+	if _, err := character.SellItem(0, 1); err == nil || len(character.Equipment) != 1 {
+		t.Fatalf("readied/overflow sale should be rejected: character=%#v err=%v", character, err)
+	}
+	character.Gold = 0
+	if err := character.BuyItem(monster.ItemRecord{Type: 36}, 1); err == nil {
+		t.Fatal("buy with insufficient gold should be rejected")
+	}
+}
+
 func TestRaceClassRestrictions(t *testing.T) {
 	character := validCharacter()
 	character.Race = RaceDwarf

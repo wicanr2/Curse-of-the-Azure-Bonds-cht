@@ -232,6 +232,7 @@
 - [x] 反組譯並封裝 reference `try_place_combatant` position formula。
 - [x] 保存 DOS player record `icon_id` metadata 到 party／combat projection。
 - [x] 將城市 `INN` 接成安全休息、HP restore 與繁中返回場所流程。
+- [x] 建立商店 Buy／Sell／ID 的 price-injected party transaction contract。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
