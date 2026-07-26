@@ -270,6 +270,7 @@
 - [x] 將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn；保留 enemy AI、彈藥與額外職業攻擊 boundary。
 - [x] 將玩家 combat action error 接成繁中可恢復訊息，避免非法輸入結束 Ebiten game loop；保留資料／啟動錯誤向上回報 boundary。
 - [x] 將 ECL `ADD NPC` 接成 NPC ID signal，讓實際 ECL1 block 0x52 能安全走到 EXIT；保留 NPC table／party side effect boundary。
+- [x] 將 ECL `LOAD PIECES` 接成三 selector signal，保留地城 floor／wall／tile file side effect boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。

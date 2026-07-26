@@ -65,6 +65,17 @@ func TestRunSubsetAddNPCExposesIDAndContinuesToExit(t *testing.T) {
 	}
 }
 
+func TestRunSubsetLoadPiecesExposesThreeSelectors(t *testing.T) {
+	block := []byte{0, 0, 0x37, 0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil || !result.LoadPiecesRequested || result.LoadPieces != [3]uint16{1, 2, 3} {
+		t.Fatalf("result=%+v err=%v", result, err)
+	}
+	if result.Steps != 2 || result.PC != 8 {
+		t.Fatalf("steps=%d pc=%d, want two steps and exit at 8", result.Steps, result.PC)
+	}
+}
+
 func TestRunSubsetArithmeticWritesMemory(t *testing.T) {
 	// MULTIPLY 3, 4 -> memory[0x9000], then PRINT memory[0x9000].
 	payload := []byte{

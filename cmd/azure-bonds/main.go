@@ -315,6 +315,9 @@ func main() {
 			if result.CombatRequested {
 				fmt.Println("  subset requested COMBAT")
 			}
+			if result.LoadPiecesRequested {
+				fmt.Printf("  subset LOAD PIECES=%v\n", result.LoadPieces)
+			}
 			if len(result.ProgramIDs) > 0 {
 				fmt.Printf("  subset PROGRAM ids=%v external-boundary=%t\n", result.ProgramIDs, result.ProgramExit)
 			}

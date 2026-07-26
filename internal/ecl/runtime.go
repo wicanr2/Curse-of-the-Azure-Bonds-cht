@@ -25,6 +25,8 @@ type RunResult struct {
 	EncounterActions    []uint16
 	LoadFilesRequested  bool
 	LoadFiles           [3]uint16
+	LoadPiecesRequested bool
+	LoadPieces          [3]uint16
 	PictureRequested    bool
 	PictureBlock        uint16
 	BigPictureRequested bool
@@ -566,7 +568,7 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				}
 				next = skipped.Next
 			}
-		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x3B, 0x3C, 0x3D:
+		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x37, 0x3B, 0x3C, 0x3D:
 			// PICTURE, CLEARMONSTERS, LOAD FILES, TREASURE, SPRITE OFF and
 			// CLEAR BOX have decoded arity but require the full renderer,
 			// party/inventory or asset state. Consuming their operands and
@@ -580,6 +582,16 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 					result.LoadFiles[index] = value
 				}
 				result.LoadFilesRequested = true
+			}
+			if instruction.Command.Opcode == 0x37 {
+				for index, operand := range instruction.Operands {
+					value, err := operandValue(operand, memory)
+					if err != nil {
+						return result, fmt.Errorf("load pieces at %d: %w", pc, err)
+					}
+					result.LoadPieces[index] = value
+				}
+				result.LoadPiecesRequested = true
 			}
 			if instruction.Command.Opcode == 0x0E {
 				value, err := operandValue(instruction.Operands[0], memory)

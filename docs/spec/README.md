@@ -152,3 +152,4 @@
 - [第一百五十五輪 enemy RateOfFire turn](./155-enemy-rate-of-fire.md)（`READY`：限敵方已投影多次攻擊）
 - [第一百五十六輪 combat error recovery](./156-combat-error-recovery.md)（`READY`：限玩家戰鬥輸入錯誤可恢復）
 - [第一百五十七輪 ECL ADD NPC signal](./157-ecl-add-npc-signal.md)（`READY`：限 NPC ID signal 與 bounded continuation）
+- [第一百五十八輪 ECL LOAD PIECES signal](./158-ecl-load-pieces-signal.md)（`READY`：限三個 selector signal 與 bounded continuation）
