@@ -22,6 +22,8 @@ RuleBook 的 preparation timing 可作共用 adapter 輸入：每 spell level 15
 
 Cure Light Wounds 提供同一分層的 healing 例子：spell ID `3`、牧師 slot、combat core 1d8 封頂 MaxHP。target cursor 與完整 party ordering 尚未解出時，可用 stable roster／fighter order 的第一位受傷隊員作 adapter，但不能把這個 fallback 說成原版 target UI。
 
+CAST target selection 必須是 transaction state：開始選擇時不扣 slot，只有 Enter confirmation 才呼叫 effect adapter；Esc 必須完全取消。攻擊法術與治療法術應各自提供 target list，不能讓 enemy cursor ordinal 意外套到 party target。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

@@ -106,6 +106,8 @@ type State struct {
 	combatTurns            []combat.Turn
 	combatTurnIndex        int
 	combatTargetIndex      int
+	combatCastingSpell     uint8
+	combatSpellTargetIndex int
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
 	itemCatalog            monster.BaseItemCatalog

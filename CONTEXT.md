@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百三十五輪：combat Cure Light Wounds。
+第一百三十六輪：combat spell target selection。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -373,3 +373,5 @@
 第一百三十四輪功能／文件 commit：`2d7af62`，已推送至 GitHub `main`。戰鬥接入 RuleBook 證實的 Magic Missile（spell ID `7`）、slot consumption、2–5 damage per missile、level scaling 與 Ebiten S 鍵；其他 spell effects 仍未完成。
 
 第一百三十五輪功能／文件 commit：`2a7b7c7`，已推送至 GitHub `main`。戰鬥接入 RuleBook 證實的 Cure Light Wounds（spell ID `3`）、牧師 slot、1d8 封頂治療與 Ebiten H 鍵；完整 target cursor、施法中斷與其他 spell effects 仍未完成。
+
+第一百三十六輪待提交：S／H 先進入施法目標選擇，左右切換、Enter 確認、Esc 取消；Magic Missile／Cure Light Wounds 分別使用敵方／我方 target list。

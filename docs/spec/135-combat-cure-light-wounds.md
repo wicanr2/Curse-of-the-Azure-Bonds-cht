@@ -8,4 +8,4 @@ RuleBook 將 Cure Light Wounds 列為 `Both`，並明確記載治療 1–8 HP。
 
 ## 邊界
 
-目前沒有完整 target cursor、施法動畫、saving throw（此法術不需要）、施法中斷或其他治療法術；target selection 以 roster／fighter 穩定排序的第一位受傷隊員作 bounded adapter。其他 spell IDs 不共用此 healing path。
+目前仍沒有完整施法動畫、施法中斷或其他治療法術；Ebiten UI 已提供隊友 target cursor，無 UI 的直接 API 才以 roster／fighter 穩定排序的第一位受傷隊員作 bounded fallback。其他 spell IDs 不共用此 healing path。
