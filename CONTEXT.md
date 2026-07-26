@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百輪：DOS `.FX` effects 匯入與 party effect preservation。
+第一百零一輪：DOS `.FX` duration／strength fidelity 與 duration tick。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -303,3 +303,5 @@
 第 99 輪功能／文件 commit：`938d2a7`，已推送至 GitHub `main`。新增 DOS player item/effects pointer preservation、`.SWG` `0x3F` item stream adapter 與 party equipment projection；`.FX` effects、pointer address-space 與完整 save container 仍未完成。
 
 第一百輪功能／文件 commit：`5bcea79`，已推送至 GitHub `main`。新增 DOS `.FX` 9-byte effects stream adapter、Character preservation 與常見效果繁中名稱；effect gameplay tick／解除與完整 save container 仍未完成。
+
+第一百零一輪功能／文件 commit：待本輪提交。修正 `.FX` 16-bit duration／strength 欄位語意，新增 finite/permanent duration tick 與 party adapter；effect-specific gameplay 與 CAMP／戰鬥時間接線仍未完成。

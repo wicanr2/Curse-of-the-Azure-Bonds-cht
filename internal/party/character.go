@@ -116,6 +116,18 @@ type Character struct {
 	SpellSlots []uint8 `json:"spell_slots,omitempty"`
 }
 
+// AdvanceEffects consumes imported DOS effect durations without applying
+// effect-specific AD&D modifiers. The removed count lets game state surface
+// a localized message when a later rules layer wants to do so.
+func (c *Character) AdvanceEffects(minutes uint16) int {
+	if c == nil || minutes == 0 {
+		return 0
+	}
+	before := len(c.Effects)
+	c.Effects = monster.AdvanceAffects(c.Effects, minutes)
+	return before - len(c.Effects)
+}
+
 type Roster []Character
 
 type SpellMatch struct {

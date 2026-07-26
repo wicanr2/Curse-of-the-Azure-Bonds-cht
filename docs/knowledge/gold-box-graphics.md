@@ -81,3 +81,5 @@ DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共�
 `.SWG` inventory 應沿用 `monster.ParseItems` 的固定 `0x3F` record codec，不要把 player `0x14D` pointer 當成 record 內嵌位置；`DOSPlayerRecord.ApplyInventory`／`Character.ApplyDOSInventory` 接受外部 stream，保留 pointer raw value，讓未來的 save/container loader 決定 address space。item instance 的 `Readied`、`Cursed`、`Count`、`Affects` 仍由 `Character` transaction／consumable adapter 處理，不要在 `.SWG` parser 裡直接套用戰鬥效果。
 
 `.FX` effects 應沿用 `monster.ParseAffects` 的固定 9-byte codec：kind、little-endian duration、strength 與四 bytes effect-specific data 都先保存；`DOSPlayerRecord.ApplyEffects`／`Character.ApplyDOSEffects` 不應在 parser 階段直接修改 fighter。各遊戲再用 `ChineseAffectName` 與 rules adapter 顯示／套用效果，因為同一 kind 的 duration、strength 可能依遊戲版本不同。
+
+欄位注意：duration 是 bytes 1–2 的 little-endian minutes，strength 是 byte 3，`0xFF` strength 是 permanent；不要再把 byte 3 當 duration。`monster.AdvanceAffects` 只做時間消耗／移除，effect kind 的 AC、攻擊、HP、免疫與 status 仍應由各遊戲 rules adapter 決定。

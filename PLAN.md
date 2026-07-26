@@ -242,5 +242,6 @@
 - [x] 解析公開 DOS player record 的單職業核心欄位，接到 party／combat projection。
 - [x] 解碼 DOS `.SWG` item records，接到 party equipment projection。
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
+- [x] 修正 `.FX` duration／strength 欄位並建立 finite/permanent duration tick adapter。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

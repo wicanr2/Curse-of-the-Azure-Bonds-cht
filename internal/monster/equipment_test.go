@@ -124,8 +124,20 @@ func TestParseAffects(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(affects) != 1 || affects[0].Kind != 0x27 || affects[0].Value != 0x1234 || affects[0].Duration != 7 || !affects[0].Active || affects[0].Data != [4]byte{8, 9, 10, 11} {
+	if len(affects) != 1 || affects[0].Kind != 0x27 || affects[0].Value != 0x1234 || affects[0].Duration != 0x1234 || affects[0].Strength != 7 || !affects[0].Active || affects[0].Data != [4]byte{8, 9, 10, 11} {
 		t.Fatalf("affects=%#v", affects)
+	}
+}
+
+func TestAdvanceAffectsExpiresFiniteAndPreservesPermanent(t *testing.T) {
+	input := []AffectRecord{
+		{Kind: 1, Duration: 10, Value: 10, Strength: 2},
+		{Kind: 2, Duration: 5, Value: 5, Strength: 3},
+		{Kind: 3, Duration: 0, Value: 0, Strength: 0xFF},
+	}
+	output := AdvanceAffects(input, 5)
+	if len(output) != 2 || output[0].Duration != 5 || output[0].Value != 5 || output[1].Strength != 0xFF {
+		t.Fatalf("advanced affects=%#v", output)
 	}
 }
 

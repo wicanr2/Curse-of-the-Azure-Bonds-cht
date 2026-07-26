@@ -476,6 +476,21 @@ func (s *State) ResolveSpellSearch(request ecl.SpellSearch) (party.SpellMatch, b
 	return s.partyRoster.FindSpell(request.SpellID)
 }
 
+// AdvancePartyEffects consumes imported DOS effect durations for the loaded
+// party roster. It deliberately does not apply effect-specific combat
+// modifiers; those belong to the rules/action layer that knows the current
+// game clock boundary.
+func (s *State) AdvancePartyEffects(minutes uint16) int {
+	if minutes == 0 {
+		return 0
+	}
+	removed := 0
+	for index := range s.partyRoster {
+		removed += s.partyRoster[index].AdvanceEffects(minutes)
+	}
+	return removed
+}
+
 func (s *State) OpenJournal() error {
 	if s.Mode == ModeCombat {
 		return fmt.Errorf("journal is unavailable during combat")
