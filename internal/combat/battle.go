@@ -92,6 +92,7 @@ type AttackResult struct {
 
 type MoveResult struct {
 	Fighter     Fighter
+	Attack      *AttackResult
 	FreeAttacks []AttackResult
 }
 
@@ -251,17 +252,18 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
 }
 
-// Move translates a living fighter by one grid step. Battlefield bounds,
-// terrain and the RuleBook's free rear attack are owned by a future map/rules
-// adapter; the core currently guarantees occupancy-safe position mutation.
+// Move translates a living fighter by one grid step, or attacks an enemy
+// occupying the destination square. Battlefield bounds, terrain and the
+// RuleBook's rear-facing details remain owned by a future map/rules adapter.
 func (b *Battle) Move(fighterID string, dx, dy int) (Fighter, error) {
 	result, err := b.MoveWithFreeAttacks(fighterID, dx, dy)
 	return result.Fighter, err
 }
 
 // MoveWithFreeAttacks also applies the RuleBook's bounded free-attack trigger
-// when a party fighter leaves an enemy's adjacent square. Facing/rear AC is
-// still left to the future combat-map rules layer.
+// when a party fighter leaves an enemy's adjacent square. A party fighter
+// entering an enemy square resolves an attack without changing squares;
+// facing/rear AC is still left to the future combat-map rules layer.
 func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, error) {
 	fighter, ok := b.fighters[fighterID]
 	if !ok {
@@ -281,10 +283,18 @@ func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, 
 	}
 	old := fighter
 	nextX, nextY := fighter.CombatX+dx, fighter.CombatY+dy
-	for _, other := range b.fighters {
-		if other.ID != fighterID && other.HitPoints > 0 && other.HasCombatPosition && other.CombatX == nextX && other.CombatY == nextY {
-			return MoveResult{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
+	for _, other := range b.Fighters() {
+		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition || other.CombatX != nextX || other.CombatY != nextY {
+			continue
 		}
+		if fighter.Side == SideParty && other.Side == SideEnemy {
+			attack, err := b.Attack(fighterID, other.ID)
+			if err != nil {
+				return MoveResult{}, err
+			}
+			return MoveResult{Fighter: fighter, Attack: &attack}, nil
+		}
+		return MoveResult{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
 	}
 	fighter.CombatX, fighter.CombatY = nextX, nextY
 	b.fighters[fighterID] = fighter

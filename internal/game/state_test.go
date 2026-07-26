@@ -728,6 +728,32 @@ func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	}
 }
 
+func TestCombatMoveIntoEnemySquareResolvesAttack(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 5, CombatY: 3}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatMove(1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatMoveMode() || state.CombatMessage() == "" {
+		t.Fatalf("move attack state=%+v", state)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" && (fighter.CombatX != 4 || fighter.CombatY != 3) {
+			t.Fatalf("hero entered enemy square: %+v", fighter)
+		}
+		if fighter.ID == "goblin" && fighter.HitPoints != 19 {
+			t.Fatalf("goblin after move attack: %+v", fighter)
+		}
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}

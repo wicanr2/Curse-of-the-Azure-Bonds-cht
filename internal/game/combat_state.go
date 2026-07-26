@@ -138,10 +138,18 @@ func (s *State) CombatMove(dx, dy int) error {
 		return err
 	}
 	s.combatMoveMode = false
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
-	if len(moveResult.FreeAttacks) > 0 {
-		last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
-		s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "移動時遭受免費反擊，受到 %d 點傷害。"), last.Damage)
+	if moveResult.Attack != nil {
+		target, ok := s.fighter(moveResult.Attack.TargetID)
+		if !ok {
+			return fmt.Errorf("move attack target %q disappeared", moveResult.Attack.TargetID)
+		}
+		s.combatMessage = formatAttackMessage(s.catalog, moveResult.Fighter, target, *moveResult.Attack)
+	} else {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
+		if len(moveResult.FreeAttacks) > 0 {
+			last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
+			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "移動時遭受免費反擊，受到 %d 點傷害。"), last.Damage)
+		}
 	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
