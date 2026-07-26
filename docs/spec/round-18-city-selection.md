@@ -11,7 +11,7 @@
 → SHADOWDALE / ASHABENFORD / DAGGER FALLS
 ```
 
-第三個 menu 已接入 game state 與繁中 locale：`暗影谷`、`阿沙本福德`、`匕首瀑布`。這是第一個可由 ECL sequence 驅動的城市選擇場景；地點選定後的地圖／場所功能與戰鬥尚未完成。
+第三個 menu 已接入 game state 與繁中 locale：`暗影谷`、`阿沙本福德`、`匕首瀑布`。選擇 Shadowdale 後的下一個 `WILDERNESS / EXIT` map-entry menu 已在下一輪接入；場所功能與戰鬥尚未完成。
 
 ## 驗收
 

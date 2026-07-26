@@ -27,19 +27,28 @@ const (
 	ActionJourneyOn
 )
 
+type Location uint8
+
+const (
+	LocationWilderness Location = iota
+	LocationShadowdale
+)
+
 type State struct {
-	Mode    Mode
-	Title   string
-	Prompt  string
-	Choices []string
-	Message string
+	Mode     Mode
+	Title    string
+	Prompt   string
+	Choices  []string
+	Message  string
+	Location Location
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
 	// not a replacement for the localized display string.
-	OriginalOpening string
-	OriginalChoices []string
-	OriginalEvent   string
+	OriginalOpening  string
+	OriginalChoices  []string
+	OriginalEvent    string
+	OriginalLocation string
 
 	catalog           locale.Catalog
 	eclBlock          []byte
@@ -131,6 +140,10 @@ func (s *State) Select(index int) error {
 	if len(s.eclBlock) > 0 {
 		s.selectionSequence = append(s.selectionSequence, uint16(index))
 		result, _ := ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
+		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
+			s.Location = LocationShadowdale
+			s.OriginalLocation = "SHADOWDALE"
+		}
 		if result.WaitingForMenu && len(result.Menus) > 0 {
 			menu := result.Menus[len(result.Menus)-1]
 			s.Choices = make([]string, 0, len(menu.Options))
@@ -172,6 +185,10 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("ashabenford", "Ashabenford")
 	case "DAGGER FALLS":
 		return catalog.Text("dagger_falls", "Dagger Falls")
+	case "WILDERNESS":
+		return catalog.Text("wilderness", "Wilderness")
+	case "EXIT":
+		return catalog.Text("exit", "Exit")
 	default:
 		return option
 	}
