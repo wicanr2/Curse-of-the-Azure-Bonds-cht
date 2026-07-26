@@ -58,6 +58,7 @@ type Fighter struct {
 	MaxHitPoints      int
 	ArmorClass        int
 	AttackBonus       int
+	Blessed           bool
 	DamageDiceCount   int
 	DamageDiceSides   int
 	DamageBonus       int
@@ -88,6 +89,7 @@ type SpellResult struct {
 	Damage   int
 	Healing  int
 	TargetHP int
+	Targets  int
 }
 
 type Battle struct {
@@ -291,6 +293,33 @@ func (b *Battle) CastCureLightWounds(casterID, targetID string) (SpellResult, er
 	target.HitPoints += healing
 	b.fighters[targetID] = target
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 3, Healing: healing, TargetHP: target.HitPoints}, nil
+}
+
+// CastBless applies the verified first-level party-wide attack bonus. The
+// current bounded combat projection does not yet decode adjacency or duration,
+// so those RuleBook constraints remain explicit integration boundaries.
+func (b *Battle) CastBless(casterID string) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	affected := 0
+	for id, fighter := range b.fighters {
+		if fighter.Side != SideParty || fighter.HitPoints <= 0 || fighter.Blessed {
+			continue
+		}
+		fighter.AttackBonus++
+		fighter.Blessed = true
+		b.fighters[id] = fighter
+		affected++
+	}
+	return SpellResult{CasterID: casterID, SpellID: 1, Targets: affected}, nil
 }
 
 func (b *Battle) updateStatus() {

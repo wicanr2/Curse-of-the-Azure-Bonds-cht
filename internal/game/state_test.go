@@ -724,6 +724,47 @@ func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
 	}
 }
 
+func TestCombatCastBlessConsumesSlotAndRaisesPartyAttackBonus(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{BlessSpellID}}}
+	partyFighters := []combat.Fighter{
+		{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 2, InitiativeBonus: 20},
+		{ID: "hero", Name: "戰士", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 4},
+	}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastBless() {
+		t.Fatalf("Bless should be available: turns=%#v", state.CombatTurns())
+	}
+	if err := state.BeginCombatCast(BlessSpellID); err != nil || state.CombatCastingSpell() != BlessSpellID || len(state.partyRoster[0].SpellSlots) != 1 {
+		t.Fatalf("begin Bless state=%#v err=%v", state, err)
+	}
+	state.CancelCombatCast()
+	if err := state.BeginCombatCast(BlessSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(BlessSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Bless slot was not consumed: %#v", state.partyRoster[0].SpellSlots)
+	}
+	for _, fighter := range state.CombatFighters() {
+		switch fighter.ID {
+		case "cleric":
+			if fighter.AttackBonus != 3 || !fighter.Blessed {
+				t.Fatalf("cleric Bless state=%+v", fighter)
+			}
+		case "hero":
+			if fighter.AttackBonus != 5 || !fighter.Blessed {
+				t.Fatalf("hero Bless state=%+v", fighter)
+			}
+		}
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}
