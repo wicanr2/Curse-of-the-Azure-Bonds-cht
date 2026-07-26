@@ -133,12 +133,19 @@ func (s *State) CombatMove(dx, dy int) error {
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
-	moved, err := s.battle.Move(caster.ID, dx, dy)
+	moveResult, err := s.battle.MoveWithFreeAttacks(caster.ID, dx, dy)
 	if err != nil {
 		return err
 	}
 	s.combatMoveMode = false
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moved.Name, moved.CombatX, moved.CombatY)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
+	if len(moveResult.FreeAttacks) > 0 {
+		last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
+		s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "移動時遭受免費反擊，受到 %d 點傷害。"), last.Damage)
+	}
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }

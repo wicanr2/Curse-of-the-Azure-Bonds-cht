@@ -83,6 +83,7 @@
 	"combat_protection_from_evil": "%s 對 %s 施放防護邪惡，效果持續 %d 回合。",
 	"combat_protection_from_good": "%s 對 %s 施放防護善良，效果持續 %d 回合。",
 	"combat_moved": "%s 移動到 (%d,%d)。",
+	"combat_free_attack": "移動時遭受免費反擊，受到 %d 點傷害。",
     "encounter_combat": "戰鬥",
     "encounter_wait": "等待",
     "encounter_flee": "撤退",
