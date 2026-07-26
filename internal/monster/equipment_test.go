@@ -39,3 +39,24 @@ func TestRejectsMisalignedRecords(t *testing.T) {
 		t.Fatal("expected affect alignment error")
 	}
 }
+
+func TestChineseNameUsesObservedItemTypes(t *testing.T) {
+	if got := ChineseName(ItemRecord{Type: 28, Count: 9}); got != "弩矢 ×9" {
+		t.Fatalf("quarrel name=%q", got)
+	}
+	if got := ChineseName(ItemRecord{Type: 55}); got != "鏈甲" {
+		t.Fatalf("chain name=%q", got)
+	}
+	if got := ChineseName(ItemRecord{Type: 0xEE}); got != "未翻譯物品(0xEE)" {
+		t.Fatalf("unknown name=%q", got)
+	}
+}
+
+func TestChineseAffectNameUsesObservedKinds(t *testing.T) {
+	if got := ChineseAffectName(AffectRecord{Kind: 0x18}); got != "偵測隱形" {
+		t.Fatalf("detect invisibility=%q", got)
+	}
+	if got := ChineseAffectName(AffectRecord{Kind: 0x5A}); got != "酸液吐息" {
+		t.Fatalf("acid breath=%q", got)
+	}
+}

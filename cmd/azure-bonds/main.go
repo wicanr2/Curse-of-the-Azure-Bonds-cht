@@ -85,7 +85,7 @@ func main() {
 				fmt.Printf("  item records stopped safely: %v\n", itemErr)
 			} else {
 				for index, item := range items {
-					fmt.Printf("  item[%d] name=%q type=0x%02X plus=%d count=%d readied=%t cursed=%t affects=%#v\n", index, item.Name, item.Type, item.Plus, item.Count, item.Readied, item.Cursed, item.Affects)
+					fmt.Printf("  item[%d] name=%q zh-name=%q type=0x%02X name-numbers=%#v plus=%d count=%d readied=%t cursed=%t affects=%#v\n", index, item.Name, monster.ChineseName(item), item.Type, item.NameNumbers, item.Plus, item.Count, item.Readied, item.Cursed, item.Affects)
 				}
 			}
 		}
@@ -95,7 +95,7 @@ func main() {
 				fmt.Printf("  affect records stopped safely: %v\n", affectErr)
 			} else {
 				for index, affect := range affects {
-					fmt.Printf("  affect[%d] kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
+					fmt.Printf("  affect[%d] zh-name=%q kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, monster.ChineseAffectName(affect), affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
 				}
 			}
 		}

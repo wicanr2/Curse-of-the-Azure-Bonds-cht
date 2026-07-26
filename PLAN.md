@@ -176,4 +176,5 @@
 - [x] 解析 ECL `SETUP MONSTER`／`LOAD MONSTER` descriptor，驗證 Shadowdale encounter sequence。
 - [x] 解碼 `MON*CHA` 固定 record offsets，建立 raw stats 到 `combat.Fighter` adapter。
 - [x] 解碼 `MON*ITM` 63-byte 與 `MON*SPC` 9-byte raw records。
+- [x] 為已觀察 monster item/effect IDs 加入繁中顯示與未知 fallback。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
