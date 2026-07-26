@@ -112,3 +112,4 @@
 - [第一百一十五輪 Shop APPRAISE gems／jewelry](./115-shop-appraise.md)（`READY`：限 injected offer acceptance）
 - [第一百一十六輪 APPRAISE 接受／拒絕報價](./116-shop-appraise-confirm.md)（`READY`：限 confirmation branch）
 - [第一百一十七輪繁中 CAMP Menu state](./117-camp-menu-state.md)（`READY`：限 CAMP command／REST／EXIT boundary）
+- [第一百一十八輪 CAMP VIEW 角色摘要](./118-camp-view.md)（`READY`：限只讀 party summary）
