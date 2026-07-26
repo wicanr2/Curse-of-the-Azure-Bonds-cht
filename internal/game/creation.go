@@ -47,11 +47,50 @@ func (s *State) AddCreationCharacter(index int) error {
 }
 
 func (s *State) BeginCreationName() error {
-	if s.Mode != ModeCharacterCreation || s.CreationCursor < 0 || s.CreationCursor >= len(s.CreationOptions) {
+	if s.Mode != ModeCharacterCreation || s.CreationEditingAbilities || s.CreationCursor < 0 || s.CreationCursor >= len(s.CreationOptions) {
 		return fmt.Errorf("character name editor is unavailable")
 	}
 	s.CreationName = ""
 	s.CreationEditing = true
+	return nil
+}
+
+func (s *State) ToggleCreationAbilities() error {
+	if s.Mode != ModeCharacterCreation || s.CreationCursor < 0 || s.CreationCursor >= len(s.CreationOptions) {
+		return fmt.Errorf("ability editor is unavailable")
+	}
+	s.CreationEditingAbilities = !s.CreationEditingAbilities
+	s.CreationAbility = 0
+	if s.CreationEditingAbilities {
+		s.CreationMessage = s.catalog.Text("creation_ability_prompt", "左右選能力，上下調整數值。")
+	}
+	return nil
+}
+
+func (s *State) MoveCreationAbility(delta int) error {
+	if !s.CreationEditingAbilities {
+		return fmt.Errorf("ability editor is not active")
+	}
+	s.CreationAbility += delta
+	if s.CreationAbility < 0 {
+		s.CreationAbility = 5
+	}
+	if s.CreationAbility > 5 {
+		s.CreationAbility = 0
+	}
+	return nil
+}
+
+func (s *State) AdjustCreationAbility(delta int) error {
+	if !s.CreationEditingAbilities || len(s.CreationOptions) == 0 {
+		return fmt.Errorf("ability editor is not active")
+	}
+	if err := s.CreationOptions[s.CreationCursor].Abilities.Adjust(s.CreationAbility, delta); err != nil {
+		s.CreationMessage = err.Error()
+		return err
+	}
+	value, _ := s.CreationOptions[s.CreationCursor].Abilities.Value(s.CreationAbility)
+	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_ability_updated", "能力值已調整為 %d。"), value)
 	return nil
 }
 
@@ -130,5 +169,7 @@ func (s *State) CancelCharacterCreation() error {
 		return fmt.Errorf("character creation is not open")
 	}
 	s.Mode = s.creationReturnMode
+	s.CreationEditing = false
+	s.CreationEditingAbilities = false
 	return nil
 }

@@ -295,3 +295,25 @@ func TestCharacterCreationCustomNameSupportsUnicode(t *testing.T) {
 		t.Fatalf("creation=%#v", state.CreationOptions[0])
 	}
 }
+
+func TestCharacterCreationAdjustsAbilityValues(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.ToggleCreationAbilities(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AdjustCreationAbility(1); err != nil {
+		t.Fatal(err)
+	}
+	if got, _ := state.CreationOptions[0].Abilities.Value(0); got != 17 {
+		t.Fatalf("strength=%d, want 17", got)
+	}
+	if err := state.MoveCreationAbility(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.CreationAbility != 1 {
+		t.Fatalf("ability cursor=%d", state.CreationAbility)
+	}
+}

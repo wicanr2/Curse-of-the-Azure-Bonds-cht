@@ -42,3 +42,4 @@
 - [第四十三輪 角色建立規則核心](./round-43-character-creation-rules.md)（`READY`：限 validation）
 - [第四十四輪 繁中角色建立 UI](./round-44-character-creation-ui.md)（`READY`：限 starter slice）
 - [第四十五輪 繁中角色姓名輸入](./round-45-character-name-input.md)（`READY`：限 Unicode 姓名）
+- [第四十六輪 角色建立能力值編輯](./round-46-ability-editor.md)（`READY`：限能力值 slice）

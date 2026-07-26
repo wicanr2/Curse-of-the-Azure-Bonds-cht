@@ -40,6 +40,43 @@ type Abilities struct {
 	Charisma     int
 }
 
+func (a Abilities) Value(index int) (int, error) {
+	values := [...]int{a.Strength, a.Intelligence, a.Wisdom, a.Dexterity, a.Constitution, a.Charisma}
+	if index < 0 || index >= len(values) {
+		return 0, fmt.Errorf("ability index %d is out of range", index)
+	}
+	return values[index], nil
+}
+
+func (a *Abilities) Adjust(index, delta int) error {
+	if delta == 0 {
+		return nil
+	}
+	value, err := a.Value(index)
+	if err != nil {
+		return err
+	}
+	if value+delta < 3 || value+delta > 18 {
+		return fmt.Errorf("ability value must remain between 3 and 18")
+	}
+	value += delta
+	switch index {
+	case 0:
+		a.Strength = value
+	case 1:
+		a.Intelligence = value
+	case 2:
+		a.Wisdom = value
+	case 3:
+		a.Dexterity = value
+	case 4:
+		a.Constitution = value
+	case 5:
+		a.Charisma = value
+	}
+	return nil
+}
+
 type Character struct {
 	ID        string
 	Name      string

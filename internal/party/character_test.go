@@ -77,3 +77,13 @@ func TestStarterFighterProjection(t *testing.T) {
 		t.Fatalf("fighter=%#v", fighter)
 	}
 }
+
+func TestAbilityAdjustmentIsBounded(t *testing.T) {
+	abilities := Abilities{Strength: 3, Intelligence: 10, Wisdom: 10, Dexterity: 10, Constitution: 10, Charisma: 10}
+	if err := abilities.Adjust(0, -1); err == nil {
+		t.Fatal("expected lower bound error")
+	}
+	if err := abilities.Adjust(0, 1); err != nil || abilities.Strength != 4 {
+		t.Fatalf("abilities=%#v err=%v", abilities, err)
+	}
+}
