@@ -23,3 +23,10 @@ func TestFormationTileSeparatesPartyAndEnemyRows(t *testing.T) {
 		t.Fatalf("enemy tile=%#v", got)
 	}
 }
+
+func TestReferencePlacementMatchesTryPlaceCombatantFormula(t *testing.T) {
+	got := ReferencePlacement(2, 3, 1, 4, 5)
+	if got != (TilePoint{X: 5 + 2*6 + 1*5 + 22, Y: 4 + 3*5 + 10}) {
+		t.Fatalf("reference placement=%#v", got)
+	}
+}

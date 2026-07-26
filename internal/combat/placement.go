@@ -33,3 +33,13 @@ func FormationTile(side Side, ordinal int) TilePoint {
 	}
 	return TilePoint{X: column, Y: row}
 }
+
+// ReferencePlacement applies the coordinate formula used by the reference
+// try_place_combatant routine. candidateRow/Column are the free cells in the
+// current placement window; groupRow and teamX/Y come from the team layout.
+func ReferencePlacement(teamX, teamY, groupRow, candidateRow, candidateColumn int) TilePoint {
+	return TilePoint{
+		X: candidateColumn + teamX*6 + groupRow*5 + 22,
+		Y: candidateRow + teamY*5 + 10,
+	}
+}

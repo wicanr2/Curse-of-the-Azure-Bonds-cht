@@ -229,6 +229,7 @@
 - [x] 將 Area2 `HeadBlockId @ 0x5C2` 接入 codec 與 game state sync。
 - [x] 建立 combat 八方向 delta／tile placement contract，並接入目前 Ebiten formation renderer。
 - [x] 將 CombatMap position／size 接入 Fighter、StartCombat 與 renderer boundary。
+- [x] 反組譯並封裝 reference `try_place_combatant` position formula。
 - [ ] 解碼 DOS player record icon mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
