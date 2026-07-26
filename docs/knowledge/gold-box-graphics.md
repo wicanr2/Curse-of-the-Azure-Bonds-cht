@@ -103,3 +103,5 @@ shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolP
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。
 
 VIEW 目前只讀 party roster 並顯示 HP／gold／ChineseName equipment summary；不要在這個摘要層猜未識別 item、魔法 effect 或 ALTER menu side effects。
+
+TAKE UI 目前使用 bounded 1／10／100／全部選項，底層 `State.TakeGold` 仍是任意 amount 的通用 contract；其他 Gold Box 可替換輸入 widget，不應把 bounded UI 當成原版數字格式的證據。
