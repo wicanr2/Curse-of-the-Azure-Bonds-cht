@@ -127,6 +127,7 @@ type State struct {
 	shopTakeCharacter      int
 	shopAppraiseCharacter  int
 	shopAppraiseKind       TreasureKind
+	campMenu               bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -303,6 +304,13 @@ func (s *State) Select(index int) error {
 		}
 		return s.selectPlace(index, originalChoice)
 	}
+	if s.campMenu {
+		return s.selectCamp(index, originalChoice)
+	}
+	if originalChoice == "CAMP" && len(s.eclBlock) == 0 {
+		s.enterCampMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	switch index {
@@ -444,6 +452,64 @@ func (s *State) Camp() error {
 	s.eventReturnMode = ModeWilderness
 	s.Mode = ModeEvent
 	return nil
+}
+
+func (s *State) enterCampMenu() {
+	s.campMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
+	s.Choices = []string{
+		s.catalog.Text("camp_save", "儲存"),
+		s.catalog.Text("camp_view", "查看"),
+		s.catalog.Text("camp_magic", "法術"),
+		s.catalog.Text("camp_rest", "休息"),
+		s.catalog.Text("camp_alter", "修改"),
+		s.catalog.Text("camp_fix", "修理"),
+		s.catalog.Text("camp_exit", "離開"),
+	}
+	s.currentOriginalChoices = []string{"SAVE", "VIEW", "MAGIC", "REST", "ALTER", "FIX", "EXIT"}
+	s.Message = ""
+}
+
+func (s *State) selectCamp(index int, originalChoice string) error {
+	if originalChoice == "EXIT" {
+		s.campMenu = false
+		s.Mode = ModeWilderness
+		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
+		s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+		s.Message = ""
+		return nil
+	}
+	if originalChoice == "REST" {
+		if err := s.Camp(); err != nil {
+			return err
+		}
+		s.campMenu = true
+		return nil
+	}
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	s.OriginalEvent = originalChoice
+	s.Message = s.campActionMessage(originalChoice)
+	return nil
+}
+
+func (s *State) campActionMessage(originalChoice string) string {
+	switch originalChoice {
+	case "SAVE":
+		return s.catalog.Text("camp_save_unavailable", "請使用 F5 儲存目前隊伍；完整原版儲存選單尚待接入。")
+	case "VIEW":
+		return s.catalog.Text("camp_view_unavailable", "角色查看功能尚待接入。")
+	case "MAGIC":
+		return s.catalog.Text("camp_magic_unavailable", "法術準備功能尚待接入。")
+	case "ALTER":
+		return s.catalog.Text("camp_alter_unavailable", "角色修改功能尚待接入。")
+	case "FIX":
+		return s.catalog.Text("camp_fix_unavailable", "修理功能尚待接入。")
+	default:
+		return localizeOption(s.catalog, originalChoice)
+	}
 }
 
 // SetParty stores the current party roster without inventing character
@@ -1054,6 +1120,10 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.campMenu {
+			s.enterCampMenu()
+			return nil
+		}
 		s.Mode = ModeWilderness
 		return nil
 	case ModePlace:

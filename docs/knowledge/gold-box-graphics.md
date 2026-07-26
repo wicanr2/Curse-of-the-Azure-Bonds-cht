@@ -98,6 +98,8 @@ effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（
 
 `game.State` 的 STORE UI 已保存原版七個 command 的繁中 mapping。後續遊戲可沿用 `shopMenu` state 與 return-to-place contract，只替換 stock、money pool、character selection 與 appraisal service；未知 command 不應直接 fall through 成一般 ECL event。
 
+CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`REST` 呼叫遊戲專屬 safe-rest service，完成後回到 CAMP Menu，`EXIT` 才離開 menu。`SAVE`、`VIEW`、`MAGIC`、`ALTER`、`FIX` 在尚未解出各遊戲 routine 前應保留明確 placeholder，不要把不同 Gold Box 作品的存檔格式、法術恢復或角色修改規則硬編在共用 renderer。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。
