@@ -11,7 +11,7 @@
 
 ## 邊界
 
-目前只完成 SPRIT 原始 frame stream 與獨立 PNG extraction；`PIC/FINAL` 的跨 frame XOR delta、動畫播放時序、方向 flip 與 combat placement 尚未接入 renderer。
+目前只完成 SPRIT 原始 frame stream 與獨立 PNG extraction；第 80 輪已補上共用 parser 的 PIC XOR delta 與 PIC PNG extraction。完整 PIC/FINAL story mapping、方向 flip 與 combat placement 仍未完成。
 
 ## 驗證
 

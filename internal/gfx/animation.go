@@ -50,6 +50,13 @@ func AnimationFrameIndex(delays []uint32, elapsed time.Duration) int {
 // reference load_pic_final routine. Unlike a normal DAX picture block, the
 // stream starts with a frame count and each frame has its own dimensions.
 func ParseAnimation(data []byte, masked bool, maskColor uint8) (Animation, error) {
+	return ParseAnimationWithDelta(data, masked, maskColor, false)
+}
+
+// ParseAnimationWithDelta decodes the shared PIC/FINAL/SPRIT frame stream.
+// PIC and FINAL store every frame after frame zero XORed with the first
+// frame's packed bytes; SPRIT stores complete frames and must pass false.
+func ParseAnimationWithDelta(data []byte, masked bool, maskColor uint8, xorFromFirst bool) (Animation, error) {
 	if len(data) < 1 {
 		return Animation{}, fmt.Errorf("animation is empty")
 	}
@@ -62,6 +69,7 @@ func ParseAnimation(data []byte, masked bool, maskColor uint8) (Animation, error
 	}
 	frames := make([]AnimationFrame, 0, count)
 	offset := 1
+	var firstPacked []byte
 	for index := 0; index < count; index++ {
 		const headerSize = 21 // delay(4), dimensions/position(8), reserved(1), metadata(8)
 		if offset+headerSize > len(data) {
@@ -90,10 +98,23 @@ func ParseAnimation(data []byte, masked bool, maskColor uint8) (Animation, error
 		if packedSize <= 0 || offset+packedSize > len(data) {
 			return Animation{}, fmt.Errorf("frame %d pixels are truncated: need %d at %d", index, packedSize, offset)
 		}
+		packed := append([]byte(nil), data[offset:offset+packedSize]...)
+		if xorFromFirst {
+			if index == 0 {
+				firstPacked = append([]byte(nil), packed...)
+			} else {
+				if len(firstPacked) != len(packed) {
+					return Animation{}, fmt.Errorf("frame %d packed size %d differs from first frame %d", index, len(packed), len(firstPacked))
+				}
+				for pixel := range packed {
+					packed[pixel] ^= firstPacked[pixel]
+				}
+			}
+		}
 		pixels := make([]uint8, int(height)*int(widthUnits)*8)
 		for pixel := 0; pixel < len(pixels); pixel += 2 {
-			packed := data[offset+pixel/2]
-			first, second := packed>>4, packed&0x0F
+			packedByte := packed[pixel/2]
+			first, second := packedByte>>4, packedByte&0x0F
 			if masked && first == maskColor {
 				first = 16
 			}
