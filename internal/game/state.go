@@ -93,6 +93,7 @@ type State struct {
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
 	combatSeed             int64
+	eclSeed                int64
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -172,6 +173,7 @@ func NewState(catalog locale.Catalog) State {
 		JournalPages:           journalPages,
 		catalog:                catalog,
 		combatSeed:             1,
+		eclSeed:                1,
 	}
 }
 
@@ -188,6 +190,9 @@ func (s *State) SetMonsterRecords(records map[uint8]monster.Record) {
 // SetCombatSeed makes an ECL-triggered encounter reproducible for tests and
 // debug comparisons while leaving the normal startup seed deterministic.
 func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
+
+// SetECLSeed controls RANDOM values while replaying an event sequence.
+func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
 
 func (s *State) Apply(action Action) error {
 	switch {
@@ -243,13 +248,13 @@ func (s *State) Select(index int) error {
 		s.selectionSequence = append(s.selectionSequence, uint16(index))
 		var result ecl.RunResult
 		if s.session != nil {
-			result, _ = s.session.RunInteractive(180, s.selectionSequence)
+			result, _ = s.session.RunInteractiveSeed(180, s.selectionSequence, s.eclSeed)
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
 			}
 		} else {
-			result, _ = ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
+			result, _ = ecl.RunSubsetInteractiveSeed(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed)
 		}
 		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
 			s.Location = LocationShadowdale

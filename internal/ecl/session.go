@@ -68,9 +68,23 @@ func (s *BlockSession) RunInteractive(maxSteps int, selections []uint16) (RunRes
 	return s.RunFrom(start, maxSteps, selections)
 }
 
+// RunInteractiveSeed follows NEWECL transitions with a reproducible RANDOM
+// stream. The unseeded method remains the compatibility wrapper.
+func (s *BlockSession) RunInteractiveSeed(maxSteps int, selections []uint16, seed int64) (RunResult, error) {
+	start, err := s.InitialEntry()
+	if err != nil {
+		return RunResult{}, err
+	}
+	return s.runFromSeed(start, maxSteps, selections, seed)
+}
+
 // RunFrom executes an explicit event entry in the current block. After a
 // NEWECL signal, the target resumes at its own initial entry.
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
+	return s.runFromSeed(start, maxSteps, selections, 1)
+}
+
+func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
 	var aggregate RunResult
 	var err error
 	selectionOffset := 0
@@ -81,7 +95,7 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 		} else {
 			remaining = nil
 		}
-		result, runErr := RunSubsetInteractive(s.CurrentData(), start, maxSteps, remaining)
+		result, runErr := RunSubsetInteractiveSeed(s.CurrentData(), start, maxSteps, remaining, seed)
 		aggregate.Text = append(aggregate.Text, result.Text...)
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
@@ -94,6 +108,7 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 		aggregate.MonsterSpawns = append(aggregate.MonsterSpawns, result.MonsterSpawns...)
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
+		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		selectionOffset += result.SelectionsConsumed
 		if runErr != nil {
 			return aggregate, runErr

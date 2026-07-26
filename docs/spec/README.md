@@ -47,3 +47,4 @@
 - [第四十八輪 版本化 party JSON 存檔](./round-48-versioned-party-save.md)（`READY`：限 remake party descriptor）
 - [第四十九輪 ECL COMBAT 到可操作 Battle](./round-49-ecl-combat-state-bridge.md)（`READY`：限已載入 party／MON*CHA bridge）
 - [第五十輪 真實 ECL1 路徑戰鬥 regression](./round-50-real-ecl-combat-regression.md)（`READY`：限 block 0x51 journey slice）
+- [第五十一輪 ECL RANDOM 與可重現 seed](./round-51-ecl-random.md)（`READY`：限 bounded VM random）
