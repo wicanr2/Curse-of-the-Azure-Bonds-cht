@@ -13,6 +13,26 @@ type ShopOffer struct {
 	Price uint16
 }
 
+type TreasureKind uint8
+
+const (
+	TreasureGems TreasureKind = iota + 1
+	TreasureJewelry
+)
+
+// AppraisalOffers contains explicit shopkeeper offers. The Ready flags keep
+// an absent offer distinct from a legitimate zero-gold offer.
+type AppraisalOffers struct {
+	Gems         uint16
+	GemsReady    bool
+	Jewelry      uint16
+	JewelryReady bool
+}
+
+func (s *State) SetAppraisalOffers(offers AppraisalOffers) {
+	s.appraisalOffers = offers
+}
+
 // SetShopOffers replaces the current city shop stock with a defensive copy.
 // It is intentionally separate from the UI so each city/ECL script can load
 // its own stock without changing the Shop Menu state machine.
@@ -110,4 +130,36 @@ func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 		s.party[characterIndex] = fighter
 	}
 	return nil
+}
+
+// AppraiseTreasure accepts an injected shopkeeper offer and transfers the
+// selected character's entire gem/jewelry holding into the party pool.
+func (s *State) AppraiseTreasure(characterIndex int, kind TreasureKind) (uint16, error) {
+	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+		return 0, fmt.Errorf("character index %d is out of range", characterIndex)
+	}
+	character := &s.partyRoster[characterIndex]
+	var amount, offer uint16
+	var ready bool
+	switch kind {
+	case TreasureGems:
+		amount, offer, ready = character.Gems, s.appraisalOffers.Gems, s.appraisalOffers.GemsReady
+	case TreasureJewelry:
+		amount, offer, ready = character.Jewelry, s.appraisalOffers.Jewelry, s.appraisalOffers.JewelryReady
+	default:
+		return 0, fmt.Errorf("unknown appraisal treasure kind %d", kind)
+	}
+	if amount == 0 {
+		return 0, fmt.Errorf("character has no treasure kind %d", kind)
+	}
+	if !ready {
+		return 0, fmt.Errorf("appraisal offer for treasure kind %d is not loaded", kind)
+	}
+	s.moneyPool += uint32(offer)
+	if kind == TreasureGems {
+		character.Gems = 0
+	} else {
+		character.Jewelry = 0
+	}
+	return offer, nil
 }

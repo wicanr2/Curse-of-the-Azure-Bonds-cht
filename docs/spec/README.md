@@ -109,3 +109,4 @@
 - [第一百一十二輪 Shop BUY 商品選擇 UI](./112-shop-buy-selection.md)（`READY`：限 injected stock selection）
 - [第一百一十三輪 Shop VIEW 角色／裝備摘要](./113-shop-view.md)（`READY`：限 party summary UI）
 - [第一百一十四輪 Shop TAKE 角色／金額選單](./114-shop-take-menu.md)（`READY`：限 bounded amount input）
+- [第一百一十五輪 Shop APPRAISE gems／jewelry](./115-shop-appraise.md)（`READY`：限 injected offer acceptance）

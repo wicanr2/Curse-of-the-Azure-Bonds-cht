@@ -238,6 +238,7 @@
 - [x] 將 BUY 接成繁中商品清單、價格顯示、pool 扣款與 inventory 更新。
 - [x] 將 VIEW 接成繁中角色 HP／金幣／裝備摘要與返回 Shop Menu。
 - [x] 將 TAKE 接成繁中角色／金額選單、pool 扣款與角色 gold 更新。
+- [x] 將 APPRAISE 接成繁中角色／寶石選單、injected offer 與 pool 入帳。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
