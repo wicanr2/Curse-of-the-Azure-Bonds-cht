@@ -4,9 +4,10 @@
 
 ## 目前輪次
 
-第 2 輪：DAX 容器解析與 ECL 文字取樣。
+第 3 輪：DOS loader 與 `GAME.OVR` 角色分析。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
+第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -15,6 +16,7 @@
 - `ECL1.DAX` 至 `ECL6.DAX` 的大小約 16–27 KiB，應是按章節分組的腳本資料；尚未宣稱其 opcode 或 header 已確定。
 - DAX 容器的 2-byte header offset、9-byte block index 與 signed-byte RLE 已由第二輪工具在 ECL/GEO 樣本上驗證。
 - `scripts/dax_dump.py` 已能輸出 block metadata 與 ECL 6-bit packed text 取樣；`tests/test_dax_dump.py` 覆蓋正常 RLE 與截斷錯誤。
+- `START.EXE` 的 MZ header 與 `GAME.OVR` 的 `TPOV` 前綴已完成位元組級盤點；loader／overlay 的真正載入邊界仍未宣稱確定。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
