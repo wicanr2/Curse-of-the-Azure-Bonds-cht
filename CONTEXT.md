@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十二輪：armor movement allowance。
+第一百五十三輪：missile adjacency guard。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -406,4 +406,6 @@
 
 第一百五十一輪功能／文件 commit：`d4aef0b`，已推送至 GitHub `main`。Combat Menu `DONE` 以 `D` 結束目前 party turn，不攻擊、不消耗彈藥，重用 enemy／next-party advancement；新增繁中提示、測試、READY 規格與共用 state knowledge。hold／delay 與其他 Combat Menu command 仍保留 boundary。
 
-第一百五十二輪待提交：依 RuleBook Armor List 將 armor type `50–58` 的 12／9／6 movement allowance 投影到 fighter，MOVE 每個方向鍵逐格扣除，剩餘格數不推進回合；新增 UI 提示、party／game tests、READY 規格與共用 state knowledge。負重、地形、障礙、邊界與 FLEE speed 仍保留 boundary。
+第一百五十二輪功能／文件 commit：`900db82`，已推送至 GitHub `main`。依 RuleBook Armor List 將 armor type `50–58` 的 12／9／6 movement allowance 投影到 fighter，MOVE 每個方向鍵逐格扣除，剩餘格數不推進回合；新增 UI 提示、party／game tests、READY 規格與共用 state knowledge。負重、地形、障礙、邊界與 FLEE speed 仍保留 boundary。
+
+第一百五十三輪待提交：依 RuleBook missile adjacent prohibition 與 dart thrown exception，將 ITEMS weapon group profile 投影到 fighter，Battle 在有 CombatMap 座標時拒絕 missile 近身攻擊；新增 tests、READY 規格與共用 state knowledge。完整 Range、line-of-sight、Aim cursor 與其他 thrown weapon 仍保留 boundary。

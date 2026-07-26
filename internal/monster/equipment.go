@@ -55,6 +55,9 @@ type EquipmentEffect struct {
 	AttacksPerTurn        int
 	AmmunitionType        uint8
 	MovementAllowance     int
+	WeaponRange           int
+	MissileWeapon         bool
+	ThrownWeapon          bool
 }
 
 // ArmorClassImprovement decodes the reference's packed AC adjustment.
@@ -83,6 +86,16 @@ func (item BaseItem) MovementAllowance() int {
 	}
 }
 
+// IsMissileWeapon identifies the observed bow, crossbow and sling item group.
+// The group is explicit because Range alone also covers thrown weapons.
+func (item BaseItem) IsMissileWeapon() bool {
+	return item.Type >= 41 && item.Type <= 47
+}
+
+// IsThrownWeapon currently records only the RuleBook-confirmed dart
+// exception. Other thrown weapon profiles remain data-layer work.
+func (item BaseItem) IsThrownWeapon() bool { return item.Type == 9 }
+
 // UsableByMask reports whether the supplied reference class bit is allowed:
 // magic-user=1, cleric=2, thief=4, fighter=8, druid=16, monk=32,
 // paladin=64, ranger=128.
@@ -103,6 +116,9 @@ func (item ItemRecord) Effect(catalog BaseItemCatalog, large bool) (EquipmentEff
 		ArmorClassImprovement: base.ArmorClassImprovement(),
 		AmmunitionType:        base.AmmunitionType,
 		MovementAllowance:     base.MovementAllowance(),
+		WeaponRange:           int(base.Range),
+		MissileWeapon:         base.IsMissileWeapon(),
+		ThrownWeapon:          base.IsThrownWeapon(),
 	}
 	if base.RateOfFire > 0 {
 		effect.AttacksPerTurn = int(base.RateOfFire) / 2
