@@ -59,3 +59,9 @@
 - Ebiten command 能編譯並使用 `internal/game.State`。
 - 啟動畫面、輸入與繁中 catalog 已連通。
 - 字型以外部路徑注入，避免將未確認授權的字型提交至 repo。
+
+## 第十輪驗收
+
+- Ebiten opening 由原始 `ECL1.DAX` block 初始化。
+- 原始 marker 與繁中顯示文字在 state 層分離保存。
+- parser、state 與 Ebiten compile verification 通過。

@@ -18,3 +18,4 @@
 - [第七輪 ECL packed text extraction](./round-07-ecl-text.md)（`DRAFT`）
 - [第八輪繁中開場狀態核心](./round-08-localized-state.md)（`DRAFT`）
 - [第九輪 Ebiten opening prototype](./round-09-ebiten-opening.md)（`DRAFT`）
+- [第十輪 ECL data-driven opening](./round-10-data-driven-opening.md)（`DRAFT`）

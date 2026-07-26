@@ -38,3 +38,13 @@ func TestRejectsWrongModeAction(t *testing.T) {
 		t.Fatal("expected invalid action")
 	}
 }
+
+func TestOpeningStateRecordsOriginalECLText(t *testing.T) {
+	// 0x80 length + packed "YOU ARE AT THE EDGE OF" candidate.
+	packed := []byte{0x64, 0xf5, 0x60, 0x05, 0x21, 0x60, 0x05, 0x48, 0x14, 0x20, 0x58, 0x05, 0x10, 0x71, 0x60, 0x3c, 0x68, 0x00}
+	block := append([]byte{0, 0, 0x80, byte(len(packed))}, packed...)
+	state := NewStateFromECL(testCatalog(), block)
+	if state.OriginalOpening != "YOU ARE AT THE EDGE OF" {
+		t.Fatalf("original=%q", state.OriginalOpening)
+	}
+}
