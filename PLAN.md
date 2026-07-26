@@ -244,6 +244,7 @@
 - [x] 將 CAMP VIEW 接成角色選單、繁中角色摘要與可返回 CAMP Menu 的只讀流程。
 - [x] 將 CAMP MAGIC 接成角色選單與已記憶 spell-slot ID 查看；保留 spell rules／mutation boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
+- [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。

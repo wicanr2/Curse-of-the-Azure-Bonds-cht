@@ -793,6 +793,49 @@ func TestCampMenuSaveEmitsRequest(t *testing.T) {
 	}
 }
 
+func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{
+		{ID: "a", Name: "甲", Class: party.ClassFighter, Level: 1},
+		{ID: "b", Name: "乙", Class: party.ClassCleric, Level: 1},
+		{ID: "c", Name: "丙", Class: party.ClassThief, Level: 1},
+	}
+	state.party = []combat.Fighter{{ID: "a", Name: "甲"}, {ID: "b", Name: "乙"}, {ID: "c", Name: "丙"}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if !state.alterMenu || len(state.Choices) != 6 {
+		t.Fatalf("alter menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.alterOrderSelected != 0 || len(state.Choices) != 4 {
+		t.Fatalf("alter order destination state=%#v", state)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "ALTER ORDER" || state.partyRoster[0].ID != "b" || state.partyRoster[2].ID != "a" || state.party[0].ID != "b" {
+		t.Fatalf("alter order result state=%#v party=%#v", state, state.party)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.alterMenu {
+		t.Fatalf("alter order continuation state=%#v err=%v", state, err)
+	}
+	if err := state.Select(5); err != nil || state.alterMenu || !state.campMenu {
+		t.Fatalf("alter exit state=%#v err=%v", state, err)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}

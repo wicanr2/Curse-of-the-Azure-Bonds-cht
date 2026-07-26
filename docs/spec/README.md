@@ -115,3 +115,4 @@
 - [第一百一十八輪 CAMP VIEW 角色摘要](./118-camp-view.md)（`READY`：限只讀 party summary）
 - [第一百一十九輪 CAMP MAGIC spell-slot view](./119-camp-magic-view.md)（`READY`：限已驗證 spell ID 查看）
 - [第一百二十輪 CAMP SAVE request adapter](./120-camp-save-request.md)（`READY`：限 remake party save）
+- [第一百二十一輪 ALTER ORDER party reorder](./121-alter-order.md)（`READY`：限 roster／fighter 順序）
