@@ -253,6 +253,9 @@ func main() {
 			if result.CombatRequested {
 				fmt.Println("  subset requested COMBAT")
 			}
+			if len(result.ProgramIDs) > 0 {
+				fmt.Printf("  subset PROGRAM ids=%v external-boundary=%t\n", result.ProgramIDs, result.ProgramExit)
+			}
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
 			}

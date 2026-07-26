@@ -195,6 +195,17 @@ func TestRunSubsetCarriesEncounterDescriptorsToCombat(t *testing.T) {
 	}
 }
 
+func TestRunSubsetRecordsProgramAndContinuesBoundedTrace(t *testing.T) {
+	// PROGRAM 9; the external routine is an explicit VM boundary.
+	result, err := RunSubset([]byte{0, 0, 0x38, 0, 9, 0x00}, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.ProgramIDs) != 1 || result.ProgramIDs[0] != 9 || !result.ProgramExit || result.Steps != 1 {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)
