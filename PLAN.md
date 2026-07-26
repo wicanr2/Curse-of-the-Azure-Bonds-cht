@@ -20,7 +20,7 @@
 | 1. DAX／EXE／ECL 格式分析 | `docs/spec/` 格式規格與樣本工具 | 進行中 |
 | 2. ECL 最小直譯器 spike | 可讀取並追蹤一個最小場景 | 進行中 |
 | 3. 遊戲狀態與 AD&D 規則 | 核心模型與相容性測試 | 進行中 |
-| 4. 渲染、輸入、音效 | Go/Ebiten 可執行 prototype | 待開始 |
+| 4. 渲染、輸入、音效 | Go/Ebiten 可執行 prototype | 進行中 |
 | 5. 中文化與手札 | 字串資源、字型、繁中內容 | 待開始 |
 | 6. 整合與遊玩驗證 | DOS 對照測試與 release build | 待開始 |
 
@@ -53,3 +53,9 @@
 
 - `internal/game.State` 以 locale catalog 驅動繁中開場狀態轉移。
 - 狀態核心有錯誤 action 與完整 opening flow 測試。
+
+## 第九輪驗收
+
+- Ebiten command 能編譯並使用 `internal/game.State`。
+- 啟動畫面、輸入與繁中 catalog 已連通。
+- 字型以外部路徑注入，避免將未確認授權的字型提交至 repo。
