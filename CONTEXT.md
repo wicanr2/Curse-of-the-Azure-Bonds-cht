@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 54 輪：跨 ECL block 的 runtime context transfer。
+第 55 輪：全 ECL global block namespace 與 real NEWECL transition。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -59,6 +59,7 @@
 第 52 輪功能 commit：`4574181`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 53 輪功能 commit：`4d8b91e`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 54 輪功能 commit：`46e7fda`，已推送至 GitHub `main`；本行為後續文件同步提交。
+第 55 輪功能 commit：待提交；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -90,12 +91,12 @@
 - `-interactive` CLI 已加入；實際 ECL1 sequence `0,0,1` 會停在 `SHADOWDALE/ASHABENFORD/DAGGER FALLS`，三個地點已接入繁中 locale。
 - 實際 sequence `0,0,1,0` 會停在 Shadowdale 的 `WILDERNESS/EXIT` menu；`game.State.Location` 已轉為 `LocationShadowdale` 並保留原文地點。
 - `LocationName` 已接入 locale／Ebiten UI；Shadowdale 地點狀態可見，WILDERNESS 回野外、EXIT 後續事件仍待實作。
-- `0x20 NEWECL` 已加入 `RunResult.NewECLBlockID` signal 與 synthetic test；尚未宣稱 real ECL1–ECL6 cross-block session 完成。
+- `0x20 NEWECL` 已加入 `RunResult.NewECLBlockID` signal；第 55 輪已將 ECL1–ECL6 合併為 global block namespace。
 - `BlockSession` 已封裝 decoded block ID／payload、initial entry、validated switch；`ECL1.DAX -session` 已驗證 `0x50/0x51/0x52`。
-- `cmd/azure-bonds-game` 已載入 ECL1 全部 blocks；`NewStateFromECLBlocks`／`State.Select` 使用 BlockSession 與 selection offset，能為後續 NEWECL 接續保留 bounded session。
-- `BlockSession.RunInteractive` 已實際接入 State，會依 `SelectionsConsumed` 傳遞 global sequence 並套用 NEWECL target；initial-entry graph 尚未找到 real reachable NEWECL edge。
+- `cmd/azure-bonds-game` 已載入 ECL1–ECL6 全部 blocks；`NewStateFromECLBlocks`／`State.Select` 使用 global BlockSession 與 selection offset，能為後續 NEWECL 接續保留 bounded session。
+- `BlockSession.RunInteractive` 已實際接入 State，會依 `SelectionsConsumed` 傳遞 global sequence 並套用 NEWECL target；完整玩家流程仍未抵達所有 real entry。
 - `-all-entries -graph` 已掃描 ECL1–ECL6；ECL4 block `0x25` payload `+0x022B` 的 real `NEWECL → 0x50` 已由 `-block-id 37 -run-start 555` 驗證。
-- ECL5 block `0x30` payload `+0x0098` 的第二條 real `NEWECL → 0x50` 已由 `-block-id 48 -run-start 152` 驗證；兩者仍是 entry-level regression，尚未由完整玩家流程抵達。
+- ECL5 block `0x30` payload `+0x0098` 的第二條 real `NEWECL → 0x50` 已由 `-block-id 48 -run-start 152` 驗證；ECL1／ECL4／ECL5 合併 session 也已真實跳到 ECL1 block `0x50` 的 Tilverton opening menu。
 - Shadowdale `WILDERNESS/EXIT` 已接成第一個 `ModeMap` 垂直切片：State 保存 `(MapX, MapY)`，Ebiten 方向鍵可移動、Esc 可返回；目前沒有宣稱原始 tile 或場所資料已解碼。
 - 原始 ECL1 block `0x51` 已觀察到 `INN/STORE/BAR/LEAVE`；本輪接入 `ModePlace`、繁中選項與事件回復，但尚未宣稱場所內部 command path 已完成。
 - `0x27 TREASURE` 已依公開 command table 消耗 8 operands 並以 bounded no-op 繼續 trace；不宣稱已實作 treasure table、inventory 或獎勵效果。
@@ -141,8 +142,8 @@
 - CAMP／其他城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成；Shadowdale 首層場所 menu 已有 state contract。
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 已有資料中立的座標／輸入 contract；原始 tile、碰撞與場所事件仍未完成。
-- 跨 ECL block loader、原始 tile／碰撞與完整場所功能仍未完成。
-- memory／call stack／party/map state 尚未跨 block 保存，仍不是完整 VM。
+- 全 ECL global block loader 與 bounded memory／call stack transfer 已完成；原始 tile／碰撞與完整場所功能仍未完成。
+- party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
 - 完整 Adventurer's Journal 條目、CAMP 恢復／中斷規則與原始 party state 仍未完成。

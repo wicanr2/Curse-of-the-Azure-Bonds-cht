@@ -369,19 +369,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	imageData, err := zipMember(*imagePath, "ECL1.DAX")
+	eclBlocks, initialECL, err := loadECLBlocks(*imagePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	blocks, err := dax.Parse(imageData)
-	if err != nil || len(blocks) == 0 {
-		log.Fatalf("ECL1.DAX: %v", err)
-	}
-	eclBlocks := make(map[uint8][]byte, len(blocks))
-	for _, block := range blocks {
-		eclBlocks[block.Entry.ID] = block.Data
-	}
-	state := game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID)
+	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
 	monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
 	if err != nil {
 		log.Fatal(err)
@@ -414,6 +406,39 @@ func main() {
 	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// loadECLBlocks builds one session namespace from all six original ECL DAX
+// members. NEWECL operands are global block IDs (for example ECL4 can jump to
+// ECL1 block 0x50), so loading only ECL1 would make real transitions fail at
+// the loader boundary.
+func loadECLBlocks(imagePath string) (map[uint8][]byte, uint8, error) {
+	all := make(map[uint8][]byte)
+	var initial uint8
+	for index := 1; index <= 6; index++ {
+		member := fmt.Sprintf("ECL%d.DAX", index)
+		data, err := zipMember(imagePath, member)
+		if err != nil {
+			return nil, 0, fmt.Errorf("load %s: %w", member, err)
+		}
+		blocks, err := dax.Parse(data)
+		if err != nil || len(blocks) == 0 {
+			if err == nil {
+				err = fmt.Errorf("contains no blocks")
+			}
+			return nil, 0, fmt.Errorf("parse %s: %w", member, err)
+		}
+		if index == 1 {
+			initial = blocks[0].Entry.ID
+		}
+		for _, block := range blocks {
+			if _, exists := all[block.Entry.ID]; exists {
+				return nil, 0, fmt.Errorf("duplicate ECL block ID 0x%02X while loading %s", block.Entry.ID, member)
+			}
+			all[block.Entry.ID] = block.Data
+		}
+	}
+	return all, initial, nil
 }
 
 func loadMonsterRecords(data []byte) (map[uint8]monster.Record, error) {

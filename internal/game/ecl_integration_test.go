@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"io"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -76,6 +77,42 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.OriginalEvent != "COMBAT" {
 		t.Fatalf("real ECL path did not preserve combat boundary: mode=%v event=%q", state.Mode, state.OriginalEvent)
+	}
+}
+
+func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocksByID := make(map[uint8][]byte)
+	for _, member := range []string{"ECL1.DAX", "ECL4.DAX", "ECL5.DAX"} {
+		data := zipData(t, image, member)
+		blocks, parseErr := dax.Parse(data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		for _, block := range blocks {
+			blocksByID[block.Entry.ID] = block.Data
+		}
+	}
+	session, err := ecl.NewBlockSession(blocksByID, 0x25)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, runErr := session.RunFrom(555, 200, nil)
+	if runErr != nil {
+		t.Fatal(runErr)
+	}
+	if session.CurrentBlockID() != 0x50 {
+		t.Fatalf("cross-DAX block=0x%02X, want ECL1 block 0x50; result=%+v", session.CurrentBlockID(), result)
+	}
+	if len(result.Text) == 0 || !strings.Contains(strings.Join(result.Text, " "), "YOU ARE AT THE EDGE OF TILVERTON") {
+		t.Fatalf("cross-DAX text=%q, want ECL1 opening event", result.Text)
+	}
+	if !result.WaitingForMenu || len(result.Menus) != 1 || len(result.Menus[0].Options) != 3 {
+		t.Fatalf("cross-DAX result=%+v, want opening menu pause", result)
 	}
 }
 
