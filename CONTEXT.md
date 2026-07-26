@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十八輪：ECL LOAD PIECES signal。
+第一百五十九輪：State LOAD PIECES request。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -419,3 +419,5 @@
 第一百五十七輪功能／文件 commit：`5aabf79`，已推送至 GitHub `main`。將 ECL `ADD NPC (0x36)` 接成 `RunResult.NPCIDs` signal，讓實際 ECL1 block 0x52 的 `PICTURE → ADD NPC 0x55 → EXIT` 能安全完成；新增 synthetic／real-image regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。NPC table、party side effect 與完整劇情 continuation 仍保留 boundary。
 
 第一百五十八輪功能／文件 commit：`f9164e4`，已推送至 GitHub `main`。依跨 ECL 實際掃描將 `LOAD PIECES (0x37)` 接成三 selector signal，讓 ECL2 block 0x01 等實際 entry 不再因 opcode 停止；新增 synthetic／ECL1／ECL2 regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。地城 floor、wall、tile、碰撞與 camera side effect 仍保留 boundary。
+
+第一百五十九輪待提交：將 `LoadPiecesRequested` 從 ECL runner 接到 game State 一次性 `ConsumeLoadPiecesRequest()`，與 GEO `LOAD FILES` request 對齊；新增 state regression、READY 規格與共用 state knowledge。實際 map-piece 檔案對應與地城副作用仍保留 boundary。

@@ -239,6 +239,18 @@ func TestECLLoadFilesTransfersGeoBlockRequest(t *testing.T) {
 	}
 }
 
+func TestECLLoadPiecesTransfersRequestOnce(t *testing.T) {
+	state := NewState(testCatalog())
+	state.applyLoadPieces(ecl.RunResult{LoadPiecesRequested: true, LoadPieces: [3]uint16{1, 2, 3}})
+	pieces, ok := state.ConsumeLoadPiecesRequest()
+	if !ok || pieces != [3]uint16{1, 2, 3} {
+		t.Fatalf("load pieces request=%v,%v", pieces, ok)
+	}
+	if _, ok := state.ConsumeLoadPiecesRequest(); ok {
+		t.Fatal("load pieces request should be consumed exactly once")
+	}
+}
+
 func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"
