@@ -10,6 +10,7 @@ type RunResult struct {
 	PC             int
 	Steps          int
 	WaitingForMenu bool
+	NewECLBlockID  *uint8
 }
 
 type Menu struct {
@@ -307,6 +308,15 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			pc = stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
 			continue
+		case 0x20: // NEWECL
+			blockID, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("NEWECL at %d: %w", pc, err)
+			}
+			id := uint8(blockID)
+			result.NewECLBlockID = &id
+			result.PC = next
+			return result, nil
 		case 0x25, 0x26: // ON GOTO / ON GOSUB
 			operands, headNext, err := ParseOperands(payload, pc, 2)
 			if err != nil {

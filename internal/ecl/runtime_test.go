@@ -155,6 +155,17 @@ func TestRunSubsetInteractivePausesBeforeUnselectedMenu(t *testing.T) {
 	}
 }
 
+func TestRunSubsetReportsNewECLBlock(t *testing.T) {
+	block := []byte{0, 0, 0x20, 0x00, 0x51, 0x00}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.NewECLBlockID == nil || *result.NewECLBlockID != 0x51 {
+		t.Fatalf("result=%+v, want NEWECL 0x51", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)
