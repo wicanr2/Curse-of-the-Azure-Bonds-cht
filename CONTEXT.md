@@ -334,4 +334,4 @@
 
 第一百一十五輪功能／文件 commit：`6d69011`，已推送至 GitHub `main`。APPRAISE 會選角色與 gems／jewelry，接受 injected offer 後清空財寶、將 GP 加入 pool 並返回 Shop Menu；拒絕報價分支仍未完成。
 
-第一百一十六輪功能／文件 commit：待本輪提交。APPRAISE 新增接受／拒絕／返回確認；只有接受才清除財寶並入帳 pool。
+第一百一十六輪功能／文件 commit：`8cdde8b`，已推送至 GitHub `main`。APPRAISE 新增接受／拒絕／返回確認；只有接受才清除財寶並入帳 pool。
