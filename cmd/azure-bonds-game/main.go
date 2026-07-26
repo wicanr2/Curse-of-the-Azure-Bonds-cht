@@ -27,6 +27,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -37,16 +38,18 @@ const (
 )
 
 type app struct {
-	state        game.State
-	face         font.Face
-	choiceCursor int
-	partyPath    string
-	tilePreview  bool
-	tileImages   []*ebiten.Image
-	geoPreview   bool
-	geoGrid      *geo.Grid
-	geoX         int
-	geoY         int
+	state          game.State
+	face           font.Face
+	choiceCursor   int
+	partyPath      string
+	tilePreview    bool
+	tileImages     []*ebiten.Image
+	geoPreview     bool
+	geoGrid        *geo.Grid
+	geoX           int
+	geoY           int
+	dungeonPreview bool
+	dungeonFloor   *mapdata.DungeonFloor
 }
 
 func (a *app) Update() error {
@@ -71,6 +74,12 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) && a.geoGrid.CanMove(a.geoX, a.geoY, 6) {
 			a.geoX--
+		}
+		return nil
+	}
+	if a.dungeonPreview {
+		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			a.dungeonPreview = false
 		}
 		return nil
 	}
@@ -153,6 +162,10 @@ func (a *app) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.geoGrid != nil {
 		a.geoPreview = true
 		a.geoX, a.geoY = 0, 0
+		return nil
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyD) && a.dungeonFloor != nil {
+		a.dungeonPreview = true
 		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
@@ -261,6 +274,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 	}
 	if a.geoPreview {
 		a.drawGeoPreview(screen, white, cyan)
+		return
+	}
+	if a.dungeonPreview {
+		a.drawDungeonPreview(screen, white, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
@@ -412,6 +429,38 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "黃點：GEO wall 可通行游標；方向鍵移動　（不是完整 tile collision）", a.face, 24, 382, white)
 }
 
+func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "Dungeon floor composition（D／Esc：返回）", a.face, 24, 28, cyan)
+	if a.dungeonFloor == nil {
+		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
+		return
+	}
+	const (
+		viewWidth  = 13
+		viewHeight = 5
+		originX    = 24
+		originY    = 52
+		tileSize   = 24
+	)
+	startX, startY := 18, 8
+	for row := 0; row < viewHeight; row++ {
+		for column := 0; column < viewWidth; column++ {
+			x, y := startX+column, startY+row
+			entry, ok := a.dungeonFloor.Entry(x, y)
+			left, top := originX+column*tileSize, originY+row*tileSize
+			if ok && int(entry.TileIndex) < len(a.tileImages) {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(left), float64(top))
+				screen.DrawImage(a.tileImages[entry.TileIndex], op)
+			} else {
+				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize, tileSize, color.RGBA{24, 30, 48, 255})
+			}
+		}
+	}
+	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
+	text.Draw(screen, "目前為 GEO2 map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
+}
+
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "建立冒險隊伍", a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CreationMessage, a.face, 32, 90, white)
@@ -541,6 +590,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	dungeonFloor := loadDungeonPreview(geoGrid)
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -556,9 +606,14 @@ func main() {
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {
+	floor := mapdata.GenerateDungeon(*grid, 8, 8)
+	return &floor
 }
 
 func loadTileImages(imagePath string) ([]*ebiten.Image, error) {

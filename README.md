@@ -12,12 +12,15 @@
 
 ![原版規則生成的 50×25 wilderness floor 局部](docs/screenshots/wilderness-floor.png)
 
+![GEO2 wall/door 組合出的 dungeon floor slice](docs/screenshots/dungeon-floor.png)
+
 目前已完成的垂直切片包括：
 
 - DAX 容器／RLE、ECL bounded VM trace 與跨 ECL1–ECL6 block context。
 - 繁中開場、荒野／場所狀態、角色建立、party JSON 存檔，以及可操作戰鬥 prototype。
 - `TILES.DAX`／`8X8D*.DAX` indexed pictures、`WALLDEF*.DAX`、EGA16 palette 與 `GEO2–GEO6` geometry parser。
 - 原版 50×25 wilderness floor 生成規則、background entry → tile index mapping，以及依 movement cost 的荒野移動。
+- GEO2 wall／door fields → dungeon background composition → TILES pixel art 的可見 slice（`D` 預覽）。
 - Ebiten 原始 tile gallery、GEO wall viewport 與依 GEO wall bytes 驗證的游標移動。
 
 執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：
@@ -27,7 +30,7 @@ go test ./...
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
 ```
 
-遊戲內快捷鍵：`Enter` 開始、`C` 建立角色、`J` 冒險手札、`T` 圖塊預覽、`G` GEO 預覽、`F5/F9` 儲存／載入 party。
+遊戲內快捷鍵：`Enter` 開始、`C` 建立角色、`J` 冒險手札、`T` 圖塊預覽、`G` GEO 預覽、`D` dungeon floor 預覽、`F5/F9` 儲存／載入 party。
 
 ## 尚未完成
 
