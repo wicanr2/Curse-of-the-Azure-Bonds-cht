@@ -93,3 +93,33 @@ func TestCastCureLightWoundsHealsOneToEightAndCapsAtMaxHP(t *testing.T) {
 		t.Fatalf("healing result=%+v", result)
 	}
 }
+
+func TestCastBlessImprovesLivingPartyAttackBonusOnce(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 2},
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, AttackBonus: 4},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastBless("cleric")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != 1 || result.Targets != 2 {
+		t.Fatalf("result=%+v", result)
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.Side == SideParty && (!fighter.Blessed || (fighter.ID == "cleric" && fighter.AttackBonus != 3) || (fighter.ID == "hero" && fighter.AttackBonus != 5)) {
+			t.Fatalf("blessed fighter=%+v", fighter)
+		}
+	}
+	result, err = battle.CastBless("cleric")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Targets != 0 {
+		t.Fatalf("Bless stacked unexpectedly: %+v", result)
+	}
+}

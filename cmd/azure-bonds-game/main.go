@@ -267,6 +267,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
 			return a.state.BeginCombatCast(game.CureLightWoundsSpellID)
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
+			return a.state.BeginCombatCast(game.BlessSpellID)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.state.CombatSelectSpellTarget(1)
@@ -678,6 +681,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	spellHint := ""
 	if a.state.CombatCastingSpell() != 0 {
+		if a.state.CombatCastingSpell() == game.BlessSpellID {
+			text.Draw(screen, "確認施法：Enter　取消：Esc", a.face, 32, 350, cyan)
+			return
+		}
 		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
 		return
 	}
@@ -686,6 +693,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastCureLightWounds() {
 		spellHint += "　H：治療輕傷"
+	}
+	if a.state.CombatCanCastBless() {
+		spellHint += "　B：祝福"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }

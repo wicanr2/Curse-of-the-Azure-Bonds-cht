@@ -200,6 +200,29 @@ func (s *State) CombatCanCastCureLightWounds() bool {
 	return false
 }
 
+// CombatCanCastBless exposes the cleric's verified first-level Bless slot.
+// Bless is a no-target confirmation spell in the current combat UI.
+func (s *State) CombatCanCastBless() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == BlessSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
 
 func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
@@ -218,16 +241,23 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 // BeginCombatCast enters the RuleBook CAST target step without consuming a
 // spell. Enter confirms it; Escape can cancel it in the renderer.
 func (s *State) BeginCombatCast(spellID uint8) error {
+	if spellID == BlessSpellID && !s.CombatCanCastBless() {
+		return fmt.Errorf("Bless is unavailable")
+	}
 	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
 		return fmt.Errorf("Magic Missile is unavailable")
 	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
+	if spellID == BlessSpellID {
+		s.combatSpellTargetIndex = 0
+		return nil
+	}
 	if spellID == MagicMissileSpellID {
 		targets := s.livingBySide(combat.SideEnemy)
 		if s.combatTargetIndex >= len(targets) {
@@ -276,6 +306,9 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 func (s *State) CombatCast(spellID uint8) error {
 	if !s.CombatActive() {
 		return fmt.Errorf("combat is not active")
+	}
+	if spellID == BlessSpellID {
+		return s.combatCastBless()
 	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
@@ -330,6 +363,50 @@ func (s *State) CombatCast(spellID uint8) error {
 		return s.finishCombat()
 	}
 	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastBless() error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != BlessSpellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassCleric {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == BlessSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Bless", caster.ID)
+	}
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastBless(caster.ID)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, BlessSpellID)
+		return err
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bless", "%s 施放祝福，隊伍攻擊加值提高 1。"), caster.Name)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	_ = result
 	return s.advanceCombatToParty()
 }
 
@@ -472,6 +549,7 @@ func (s *State) finishCombat() error {
 	if s.battle == nil {
 		return fmt.Errorf("combat is not initialized")
 	}
+	s.CancelCombatCast()
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.eventReturnMode = ModeWilderness
