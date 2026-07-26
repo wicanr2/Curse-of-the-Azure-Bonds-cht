@@ -58,3 +58,4 @@
 - [第五十九輪 Ebiten 原始 tile gallery](./round-59-ebiten-tile-gallery.md)（`READY`：限 TILES graphics pipeline preview）
 - [第六十輪 GEO geometry Ebiten viewport](./round-60-geo-ebiten-viewport.md)（`READY`：限 GEO raw geometry preview）
 - [第六十一輪 GEO wall navigation contract](./round-61-geo-wall-navigation.md)（`READY`：限 raw GEO wall traversal）
+- [第六十二輪 README 與可重現截圖](./round-62-readme-screenshots.md)（`READY`：限 repository progress evidence）
