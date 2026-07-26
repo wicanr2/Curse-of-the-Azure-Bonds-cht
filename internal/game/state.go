@@ -116,12 +116,15 @@ type State struct {
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
+	appraisalOffers        AppraisalOffers
 	shopStockMenu          bool
 	shopViewMenu           bool
 	shopTakeMenu           bool
 	shopTakeAmountMenu     bool
+	shopAppraiseMenu       bool
 	shopCharacterIndex     int
 	shopTakeCharacter      int
+	shopAppraiseCharacter  int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -570,6 +573,7 @@ func (s *State) enterShopMenu() {
 	s.shopViewMenu = false
 	s.shopTakeMenu = false
 	s.shopTakeAmountMenu = false
+	s.shopAppraiseMenu = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
 	s.Choices = []string{
@@ -586,6 +590,40 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if strings.HasPrefix(originalChoice, "SHOP_APPRAISE_CHARACTER_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_APPRAISE_CHARACTER_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop appraise character command %q", originalChoice)
+		}
+		s.shopAppraiseCharacter = value
+		s.enterShopAppraiseTreasureMenu()
+		return nil
+	}
+	if strings.HasPrefix(originalChoice, "SHOP_APPRAISE_TREASURE_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_APPRAISE_TREASURE_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop appraisal command %q", originalChoice)
+		}
+		offer, err := s.AppraiseTreasure(s.shopAppraiseCharacter, TreasureKind(value))
+		if err != nil {
+			s.shopAppraiseMenu = false
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModePlace
+			s.OriginalEvent = "APPRAISE"
+			s.Message = "估價失敗：" + err.Error()
+			return nil
+		}
+		s.shopAppraiseMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "APPRAISE"
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_done", "店家支付 %d GP。"), offer)
+		return nil
+	}
+	if originalChoice == "SHOP_APPRAISE_EXIT" {
+		s.enterShopMenu()
+		return nil
+	}
 	if strings.HasPrefix(originalChoice, "SHOP_TAKE_CHARACTER_") {
 		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_TAKE_CHARACTER_"))
 		if err != nil {
@@ -676,7 +714,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
-	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu {
+	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu || s.shopAppraiseMenu {
 		return nil
 	}
 	s.Mode = ModeEvent
@@ -718,7 +756,11 @@ func (s *State) shopActionMessage(originalChoice string) string {
 		}
 		return fmt.Sprintf(s.catalog.Text("shop_share_done", "已分配金幣：%d GP。"), before)
 	case "APPRAISE":
-		return s.catalog.Text("shop_appraise_unavailable", "估價功能尚待接入。")
+		if len(s.partyRoster) == 0 {
+			return s.catalog.Text("shop_appraise_unavailable", "目前沒有可估價的角色。")
+		}
+		s.enterShopAppraiseCharacterMenu()
+		return ""
 	default:
 		return localizeOption(s.catalog, originalChoice)
 	}
@@ -805,6 +847,54 @@ func (s *State) enterShopTakeAmountMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopAppraiseCharacterMenu() {
+	s.shopMenu = true
+	s.shopStockMenu = false
+	s.shopViewMenu = false
+	s.shopTakeMenu = false
+	s.shopTakeAmountMenu = false
+	s.shopAppraiseMenu = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_appraise_prompt", "選擇要估價的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（寶石 %d、珠寶 %d）", character.Name, character.Gems, character.Jewelry))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopAppraiseTreasureMenu() {
+	s.shopAppraiseMenu = true
+	s.Mode = ModePlace
+	character := s.partyRoster[s.shopAppraiseCharacter]
+	s.Prompt = s.catalog.Text("shop_appraise_treasure_prompt", "選擇要估價的財寶")
+	s.Choices = make([]string, 0, 3)
+	s.currentOriginalChoices = make([]string, 0, 3)
+	if character.Gems > 0 {
+		label := "寶石（報價未載入）"
+		if s.appraisalOffers.GemsReady {
+			label = fmt.Sprintf("寶石（報價 %d GP）", s.appraisalOffers.Gems)
+		}
+		s.Choices = append(s.Choices, label)
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_TREASURE_1")
+	}
+	if character.Jewelry > 0 {
+		label := "珠寶（報價未載入）"
+		if s.appraisalOffers.JewelryReady {
+			label = fmt.Sprintf("珠寶（報價 %d GP）", s.appraisalOffers.Jewelry)
+		}
+		s.Choices = append(s.Choices, label)
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_TREASURE_2")
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_EXIT")
 	s.Message = ""
 }
 

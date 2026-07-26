@@ -481,6 +481,46 @@ func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
 	}
 }
 
+func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Gems:      3,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.SetAppraisalOffers(AppraisalOffers{Gems: 75, GemsReady: true})
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(5); err != nil { // APPRAISE
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopAppraiseMenu || state.Choices[0] != "英雄（寶石 3、珠寶 0）" {
+		t.Fatalf("appraise character menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || len(state.Choices) != 2 || state.Choices[0] != "寶石（報價 75 GP）" {
+		t.Fatalf("appraise treasure menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "APPRAISE" || state.partyRoster[0].Gems != 0 || state.MoneyPool() != 75 {
+		t.Fatalf("after appraise state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || state.shopAppraiseMenu || len(state.Choices) != 7 {
+		t.Fatalf("after appraise continue state=%#v", state)
+	}
+}
+
 func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"
