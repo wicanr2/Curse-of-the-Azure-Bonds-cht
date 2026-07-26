@@ -55,39 +55,59 @@ type State struct {
 	eclBlock          []byte
 	eclStart          int
 	selectionSequence []uint16
+	session           *ecl.BlockSession
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
+	return NewStateFromECLBlocks(catalog, map[uint8][]byte{0: block}, 0)
+}
+
+// NewStateFromECLBlocks constructs the opening state over all decoded ECL
+// blocks in one DAX member. The session is optional at the API boundary so
+// tests and small tools can still provide one block.
+func NewStateFromECLBlocks(catalog locale.Catalog, blocks map[uint8][]byte, initial uint8) State {
 	state := NewState(catalog)
-	state.eclBlock = append([]byte(nil), block...)
+	session, err := ecl.NewBlockSession(blocks, initial)
+	if err == nil {
+		state.session = session
+		state.eclBlock = session.CurrentData()
+	}
+	state.initializeECL()
+	return state
+}
+
+func (s *State) initializeECL() {
+	block := s.eclBlock
+	if s.session != nil {
+		block = s.session.CurrentData()
+	}
 	for _, candidate := range ecl.FindPackedTextCandidates(block) {
 		if strings.Contains(candidate, "YOU ARE AT THE EDGE OF") {
-			state.OriginalOpening = "YOU ARE AT THE EDGE OF"
+			s.OriginalOpening = "YOU ARE AT THE EDGE OF"
 			break
 		}
 	}
 	if points, _, err := ecl.EntryPoints(block, 5); err == nil && len(points) == 5 {
 		start := int(points[4]) - ecl.CodeAddressBase
-		state.eclStart = start
+		s.eclStart = start
 		if result, runErr := ecl.RunSubset(block, start, 100); runErr == nil || len(result.Menus) > 0 {
 			if len(result.Menus) > 0 {
 				for _, option := range result.Menus[0].Options {
-					state.OriginalChoices = append(state.OriginalChoices, option)
+					s.OriginalChoices = append(s.OriginalChoices, option)
 					switch option {
 					case "ENTER CITY":
-						state.Choices = append(state.Choices, catalog.Text("enter_city", "Enter city"))
+						s.Choices = append(s.Choices, s.catalog.Text("enter_city", "Enter city"))
 					case "JOURNEY ON":
-						state.Choices = append(state.Choices, catalog.Text("journey_on", "Journey on"))
+						s.Choices = append(s.Choices, s.catalog.Text("journey_on", "Journey on"))
 					case "CAMP":
-						state.Choices = append(state.Choices, catalog.Text("camp", "Camp"))
+						s.Choices = append(s.Choices, s.catalog.Text("camp", "Camp"))
 					default:
-						state.Choices = append(state.Choices, option)
+						s.Choices = append(s.Choices, option)
 					}
 				}
 			}
 		}
 	}
-	return state
 }
 
 func NewState(catalog locale.Catalog) State {
@@ -142,7 +162,16 @@ func (s *State) Select(index int) error {
 	}
 	if len(s.eclBlock) > 0 {
 		s.selectionSequence = append(s.selectionSequence, uint16(index))
-		result, _ := ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
+		var result ecl.RunResult
+		if s.session != nil {
+			result, _ = s.session.RunInteractive(180, s.selectionSequence)
+			s.eclBlock = s.session.CurrentData()
+			if start, err := s.session.InitialEntry(); err == nil {
+				s.eclStart = start
+			}
+		} else {
+			result, _ = ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
+		}
 		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
 			s.Location = LocationShadowdale
 			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
