@@ -98,3 +98,4 @@
 - [第一百零一輪 DOS `.FX` duration／strength fidelity](./101-dos-fx-duration-tick.md)（`READY`：限欄位修正與 duration tick）
 - [第一百零二輪 DOS player sidecar bundle importer](./102-dos-player-file-bundle.md)（`READY`：限 `.SAV/.GUY` + optional `.FX/.SWG`）
 - [第一百零三輪 DOS character import CLI](./103-dos-character-import-cli.md)（`READY`：限 sidecar bundle → party JSON）
+- [第一百零四輪 remake startup DOS character import](./104-game-dos-character-startup.md)（`READY`：限單一 character bundle bridge）

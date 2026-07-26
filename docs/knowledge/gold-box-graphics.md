@@ -87,3 +87,5 @@ DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共�
 角色檔案共用介面應先停在 sidecar bundle：必要 `.SAV/.GUY` record、optional `.FX`、optional `.SWG` 分別解析後再由 `party.ParseDOSPlayerFiles` 組合。不要因為文件名 `SAVGAM?.DAT` 已知就假設其 header、slot、area pointer 或 memory address；container 必須有 sample bytes／反組譯證據後才接入。
 
 `cmd/azure-bonds -import-character` 是 bundle 的可重現入口，輸入只讀、輸出目前 versioned party JSON；後續 Gold Box 遊戲只需替換 sidecar parser／class mapping，不應讓 CLI 直接解析未知的 save container。
+
+`cmd/azure-bonds-game -dos-character-record` 直接重用同一個 `party.DOSPlayerFiles` boundary，將 imported HP、icon、equipment、effects 接進 startup state；它只建立單一角色，不能冒充完整 SAVGAM party／area restore。

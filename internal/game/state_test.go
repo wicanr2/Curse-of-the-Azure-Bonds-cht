@@ -423,6 +423,23 @@ func TestAdvancePartyEffectsUsesRosterDurationAdapter(t *testing.T) {
 	}
 }
 
+func TestLoadDOSCharacterFilesInstallsImportedParty(t *testing.T) {
+	state := NewState(testCatalog())
+	record := make([]byte, party.DOSPlayerRecordSize)
+	record[0] = 4
+	copy(record[1:], []byte("ELLA"))
+	record[0x10], record[0x12], record[0x14] = 16, 15, 12
+	record[0x16], record[0x18], record[0x1A] = 14, 13, 10
+	record[0x74], record[0x75], record[0x78], record[0x1A4] = 7, 5, 22, 18
+	record[0x10E] = 4
+	if err := state.LoadDOSCharacterFiles("ella-1", party.DOSPlayerFiles{Record: record}); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.PartyFighters()) != 1 || state.PartyFighters()[0].Name != "ELLA" {
+		t.Fatalf("imported game state=%#v", state)
+	}
+}
+
 func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.OpenCharacterCreation(); err != nil || state.Mode != ModeCharacterCreation {

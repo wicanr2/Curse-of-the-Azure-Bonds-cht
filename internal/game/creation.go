@@ -233,6 +233,29 @@ func (s *State) LoadPartyFile(path string) error {
 	return nil
 }
 
+// LoadDOSCharacterFiles imports one original DOS character bundle directly
+// into the running remake. It is intentionally a one-character bridge until
+// the SAVGAM party/container format is decoded.
+func (s *State) LoadDOSCharacterFiles(id string, files party.DOSPlayerFiles) error {
+	character, err := party.ParseDOSPlayerFiles(id, files)
+	if err != nil {
+		return err
+	}
+	fighter, err := s.fighterForCharacter(character)
+	if err != nil {
+		return err
+	}
+	if err := s.SetParty([]combat.Fighter{fighter}); err != nil {
+		return err
+	}
+	s.partyRoster = party.Roster{character}
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
+	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	return nil
+}
+
 func (s *State) CancelCharacterCreation() error {
 	if s.Mode != ModeCharacterCreation {
 		return fmt.Errorf("character creation is not open")
