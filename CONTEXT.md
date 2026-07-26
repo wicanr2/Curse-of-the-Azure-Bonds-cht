@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 64 輪：GEO dungeon floor composition。
+第 65 輪：GEO dungeon decoration pass。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -72,6 +72,8 @@
 第 63 輪功能／文件 commit：`af7bf19`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 64 輪功能／文件 commit：`8e4d433`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 65 輪功能／文件 commit：待本輪提交後補登，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -168,7 +170,9 @@
 - `scripts/render_previews.go` 新增 `docs/screenshots/wilderness-floor.png`，由原始 TILES 與同一 floor generator 組合產生。
 - `mapdata.GenerateDungeon` 已依 reference `SetupDungeonFloor` 的四段 builder，將 GEO wall／door detail 組成 13×5 dungeon background-entry window。
 - `cmd/azure-bonds-game` 新增 `D` dungeon floor preview；`docs/screenshots/dungeon-floor.png` 使用同一組 GEO、mapdata 與 TILES pipeline 產生。
-- dungeon floor 尚未宣稱完成桌椅 decoration、area selection、camera、combat placement、encounter 或音效。
+- dungeon floor 的桌椅 decoration 已完成 reference `sub_370D3` 的 seeded pass；area selection、camera、combat placement、encounter 與音效仍未完成。
+- `mapdata.GenerateDungeonSeeded` 已讀取 GEO `terrain & 0x40`（reference `MapInfo.x2`），依 `sub_370D3` flags／tile index／1d10 dice 寫入 table entry `0x1A` 與 chair entry `0x1B`；seeded regression 通過。
+- dungeon preview／PNG 仍使用同一 decoration-enabled generator；完整 area selection、camera、combat placement、encounter 與音效仍未完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。

@@ -1,6 +1,10 @@
 package mapdata
 
-import "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+import (
+	"math/rand"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+)
 
 // DungeonFloor is the 50x25 background-entry buffer used by the reference
 // combat/map renderer. A 13x5 window around MapX/MapY is built from GEO wall
@@ -15,22 +19,82 @@ type DungeonFloor struct {
 // 13x5 dungeon window. The table/chair decoration pass is intentionally
 // separate because it depends on the reference wall-x2 field and dice state.
 func GenerateDungeon(grid geo.Grid, mapX, mapY int) DungeonFloor {
+	return GenerateDungeonSeeded(grid, mapX, mapY, 1)
+}
+
+// GenerateDungeonSeeded includes the reference sub_370D3 table/chair pass.
+// Seed is explicit because the original consumes the global dice stream.
+func GenerateDungeonSeeded(grid geo.Grid, mapX, mapY int, seed int64) DungeonFloor {
 	floor := DungeonFloor{MapX: mapX, MapY: mapY}
+	rng := rand.New(rand.NewSource(seed))
 	for row := -2; row <= 2; row++ {
 		for column := -6; column <= 6; column++ {
 			x, y := mapX+column, mapY+row
 			dir0 := dungeonDirFlags(grid, 0, x, y, mapY)
 			dir6 := dungeonDirFlags(grid, 6, x, y, mapY)
 			dir2 := dungeonDirFlags(grid, 2, x, y, mapY)
+			dir4 := dungeonDirFlags(grid, 4, x, y, mapY)
 
 			buildDungeonTiles1(&floor, column, row, dir6)
 			buildDungeonTiles2(&floor, column, row, dir0)
 			buildDungeonTiles3(&floor, grid, column, row, x, y, dir0, dir6)
 			buildDungeonTiles4(&floor, grid, column, row, x, y, dir0, dir2, mapY)
+			decorateDungeon(&floor, column, row, dir0, dir2, dir4, dir6, grid, x, y, rng)
 		}
 	}
 	return floor
 }
+
+func decorateDungeon(floor *DungeonFloor, column, row, dir0, dir2, dir4, dir6 int, grid geo.Grid, x, y int, rng *rand.Rand) {
+	if !decorationOpen(dir0, dir2, dir4, dir6) || x < 0 || x >= geo.Width || y < 0 || y >= geo.Height {
+		return
+	}
+	if grid.Cells[y][x].Terrain&0x40 == 0 {
+		return
+	}
+	for localRow := 2; localRow <= 3; localRow++ {
+		for localColumn := 2; localColumn <= 4; localColumn++ {
+			posX := column*6 + row*5 + 21 + localRow + localColumn
+			posY := row*5 + 10 + localColumn
+			if !inBounds(posX, posY) || dungeonTileIndex(*floor, posX, posY) != 0x16 || roll(rng, 10) > 5 {
+				continue
+			}
+			floor.Tiles[posY][posX] = 0x1A // reference Tile_Table
+			for _, delta := range [][2]int{{0, -1}, {1, 0}, {0, 1}, {-1, 0}} {
+				nextX, nextY := posX+delta[0], posY+delta[1]
+				if inBounds(nextX, nextY) && dungeonTileIndex(*floor, nextX, nextY) == 0x16 && roll(rng, 10) <= 9 {
+					floor.Tiles[nextY][nextX] = 0x1B // reference Tile_Chair
+				}
+			}
+		}
+	}
+}
+
+func decorationOpen(dir0, dir2, dir4, dir6 int) bool {
+	if dir0 != 1 && dir2 != 1 && dir4 != 1 && dir6 != 1 {
+		return false
+	}
+	if dir0 == 1 && dir4 == 1 && (dir2 != 1 || dir6 != 1) {
+		return false
+	}
+	if dir2 == 1 && dir6 == 1 && (dir0 != 1 || dir4 != 1) {
+		return false
+	}
+	if dir0 == 3 || dir2 == 3 || dir4 == 3 || dir6 == 3 {
+		return false
+	}
+	return true
+}
+
+func dungeonTileIndex(floor DungeonFloor, x, y int) uint8 {
+	entry, ok := floor.Entry(x, y)
+	if !ok {
+		return 0xFF
+	}
+	return entry.TileIndex
+}
+
+func roll(rng *rand.Rand, sides int) int { return rng.Intn(sides) + 1 }
 
 func (floor DungeonFloor) Entry(x, y int) (BackgroundTile, bool) {
 	if x < 0 || x >= WildernessWidth || y < 0 || y >= WildernessHeight {
