@@ -90,6 +90,11 @@ type AttackResult struct {
 	TargetHP   int
 }
 
+type MoveResult struct {
+	Fighter     Fighter
+	FreeAttacks []AttackResult
+}
+
 type SpellResult struct {
 	CasterID string
 	TargetID string
@@ -250,31 +255,58 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 // terrain and the RuleBook's free rear attack are owned by a future map/rules
 // adapter; the core currently guarantees occupancy-safe position mutation.
 func (b *Battle) Move(fighterID string, dx, dy int) (Fighter, error) {
+	result, err := b.MoveWithFreeAttacks(fighterID, dx, dy)
+	return result.Fighter, err
+}
+
+// MoveWithFreeAttacks also applies the RuleBook's bounded free-attack trigger
+// when a party fighter leaves an enemy's adjacent square. Facing/rear AC is
+// still left to the future combat-map rules layer.
+func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, error) {
 	fighter, ok := b.fighters[fighterID]
 	if !ok {
-		return Fighter{}, fmt.Errorf("unknown fighter %q", fighterID)
+		return MoveResult{}, fmt.Errorf("unknown fighter %q", fighterID)
 	}
 	if b.status != StatusActive {
-		return Fighter{}, fmt.Errorf("battle is already over")
+		return MoveResult{}, fmt.Errorf("battle is already over")
 	}
 	if fighter.HitPoints <= 0 {
-		return Fighter{}, fmt.Errorf("dead fighter cannot move")
+		return MoveResult{}, fmt.Errorf("dead fighter cannot move")
 	}
 	if dx < -1 || dx > 1 || dy < -1 || dy > 1 || (dx == 0 && dy == 0) {
-		return Fighter{}, fmt.Errorf("move delta (%d,%d) is not one grid step", dx, dy)
+		return MoveResult{}, fmt.Errorf("move delta (%d,%d) is not one grid step", dx, dy)
 	}
 	if !fighter.HasCombatPosition {
-		return Fighter{}, fmt.Errorf("fighter %q has no combat position", fighterID)
+		return MoveResult{}, fmt.Errorf("fighter %q has no combat position", fighterID)
 	}
+	old := fighter
 	nextX, nextY := fighter.CombatX+dx, fighter.CombatY+dy
 	for _, other := range b.fighters {
 		if other.ID != fighterID && other.HitPoints > 0 && other.HasCombatPosition && other.CombatX == nextX && other.CombatY == nextY {
-			return Fighter{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
+			return MoveResult{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
 		}
 	}
 	fighter.CombatX, fighter.CombatY = nextX, nextY
 	b.fighters[fighterID] = fighter
-	return fighter, nil
+	result := MoveResult{Fighter: fighter}
+	if old.Side == SideParty {
+		for _, enemy := range b.fighters {
+			if enemy.Side != SideEnemy || enemy.HitPoints <= 0 || !enemy.HasCombatPosition {
+				continue
+			}
+			if adjacent(old, enemy) && !adjacent(fighter, enemy) {
+				attack, err := b.Attack(enemy.ID, fighter.ID)
+				if err != nil {
+					return MoveResult{}, err
+				}
+				result.FreeAttacks = append(result.FreeAttacks, attack)
+				if b.status != StatusActive {
+					break
+				}
+			}
+		}
+	}
+	return result, nil
 }
 
 // CastMagicMissile applies the verified RuleBook first-level effect: every

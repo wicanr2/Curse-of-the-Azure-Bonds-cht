@@ -53,6 +53,23 @@ func TestMoveChangesPositionAndRejectsOccupiedDestination(t *testing.T) {
 	}
 }
 
+func TestMoveWithFreeAttacksTriggersWhenLeavingEnemyAdjacency(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, DamageDiceCount: 1, DamageDiceSides: 1, AttackBonus: 20, HasCombatPosition: true, CombatX: 3, CombatY: 2},
+	}, 6)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.MoveWithFreeAttacks("hero", -1, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.FreeAttacks) != 1 || result.FreeAttacks[0].AttackerID != "goblin" || result.FreeAttacks[0].TargetID != "hero" {
+		t.Fatalf("free attacks=%+v", result.FreeAttacks)
+	}
+}
+
 func TestResolveAttackNaturalOneMissesAndNaturalTwentyHits(t *testing.T) {
 	battle := testBattle(t)
 	miss, err := battle.ResolveAttack("hero", "goblin", 1, 8)
