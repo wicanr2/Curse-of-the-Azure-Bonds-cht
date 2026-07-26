@@ -54,3 +54,4 @@
 - [第五十五輪全 ECL global block namespace](./round-55-global-ecl-loader.md)（`READY`：限全檔 loader 與 real transition）
 - [第五十六輪 GEO 16×16 map geometry](./round-56-geo-map-geometry.md)（`READY`：限 GEO geometry parser）
 - [第五十七輪 indexed picture 與 WALLDEF](./round-57-indexed-picture-and-walldef.md)（`READY`：限 picture／wall data parser）
+- [第五十八輪 EGA indexed pixels 到 RGBA](./round-58-ega-rgba-adapter.md)（`READY`：限 palette／透明色 adapter）

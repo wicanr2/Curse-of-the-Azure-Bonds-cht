@@ -31,6 +31,26 @@ func TestParsePictureExpandsPackedNibblesAndMask(t *testing.T) {
 	}
 }
 
+func TestRGBAUsesEGAColoursAndTransparentMask(t *testing.T) {
+	data := make([]byte, 17+4)
+	data[0], data[2], data[8] = 1, 1, 1
+	data[17], data[18], data[19], data[20] = 0x1F, 0x2F, 0x34, 0x56
+	picture, err := ParsePicture(data, true, 0xF)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rgba, err := picture.RGBA(0, EGA16)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := rgba.RGBAAt(0, 0); got != EGA16[1] {
+		t.Fatalf("pixel(0,0)=%v, want EGA blue %v", got, EGA16[1])
+	}
+	if got := rgba.RGBAAt(1, 0); got.A != 0 {
+		t.Fatalf("masked pixel alpha=%d, want transparent", got.A)
+	}
+}
+
 func TestOriginalTileAndSymbolPicturesParse(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
