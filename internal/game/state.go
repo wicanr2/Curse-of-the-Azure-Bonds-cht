@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
@@ -90,6 +91,8 @@ type State struct {
 	combatTurnIndex        int
 	combatTargetIndex      int
 	combatMessage          string
+	monsterRecords         map[uint8]monster.Record
+	combatSeed             int64
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -168,8 +171,23 @@ func NewState(catalog locale.Catalog) State {
 		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
 		JournalPages:           journalPages,
 		catalog:                catalog,
+		combatSeed:             1,
 	}
 }
+
+// SetMonsterRecords installs the decoded MON*CHA table used when an ECL
+// COMBAT command reaches the game state. Keeping this as an explicit adapter
+// prevents the ECL VM from inventing combat statistics.
+func (s *State) SetMonsterRecords(records map[uint8]monster.Record) {
+	s.monsterRecords = make(map[uint8]monster.Record, len(records))
+	for id, record := range records {
+		s.monsterRecords[id] = record
+	}
+}
+
+// SetCombatSeed makes an ECL-triggered encounter reproducible for tests and
+// debug comparisons while leaving the normal startup seed deterministic.
+func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 
 func (s *State) Apply(action Action) error {
 	switch {
@@ -239,6 +257,12 @@ func (s *State) Select(index int) error {
 			s.OriginalLocation = "SHADOWDALE"
 		}
 		if result.CombatRequested {
+			if len(s.party) > 0 && len(s.monsterRecords) > 0 {
+				if err := s.StartEncounter(result, s.monsterRecords, s.party, s.combatSeed); err != nil {
+					return err
+				}
+				return nil
+			}
 			s.OriginalEvent = "COMBAT"
 			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
 			s.eventReturnMode = ModeWilderness
