@@ -806,6 +806,24 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	}
 }
 
+func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
+	state := NewState(testCatalog())
+	state.catalog.Strings["spell_cleric_1"] = "祝福"
+	state.catalog.Strings["spell_cleric_3"] = "治療輕傷"
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{{Name: "牧師", Class: party.ClassCleric, SpellSlots: []uint8{1, CureLightWoundsSpellID, 0x24}}}
+	state.enterCampMenu()
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "祝福") || !strings.Contains(state.Message, "治療輕傷") || !strings.Contains(state.Message, "0x24") {
+		t.Fatalf("spell labels=%q", state.Message)
+	}
+}
+
 func TestCampMenuSaveEmitsRequest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
