@@ -326,4 +326,4 @@
 
 第一百一十一輪功能／文件 commit：`8ec1f86`，已推送至 GitHub `main`。接入 injected shop offers、party money pool、POOL／TAKE／SHARE 與 pool-funded BUY；實際 item selection UI、VIEW／APPRAISE 仍未完成。
 
-第一百一十二輪功能／文件 commit：待本輪提交。BUY 會顯示繁中商品／價格、扣除 party pool、加入 active character inventory 並返回 Shop Menu；VIEW／TAKE 數量／APPRAISE 仍未完成。
+第一百一十二輪功能／文件 commit：`981d01d`，已推送至 GitHub `main`。BUY 會顯示繁中商品／價格、扣除 party pool、加入 active character inventory 並返回 Shop Menu；VIEW／TAKE 數量／APPRAISE 仍未完成。
