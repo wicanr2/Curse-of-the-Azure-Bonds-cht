@@ -5,6 +5,7 @@ package game
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 
@@ -147,6 +148,7 @@ type State struct {
 	picturesEnabled        bool
 	animationsEnabled      bool
 	messageSpeed           int
+	fixSeed                int64
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -242,6 +244,7 @@ func NewState(catalog locale.Catalog) State {
 		picturesEnabled:        true,
 		animationsEnabled:      true,
 		messageSpeed:           3,
+		fixSeed:                1,
 		GeoMapSet:              2,
 		GeoMapBlock:            1,
 		Area:                   area.State{GameArea: 2},
@@ -491,6 +494,72 @@ func (s *State) Camp() error {
 	s.eventReturnMode = ModeWilderness
 	s.Mode = ModeEvent
 	return nil
+}
+
+// CureLightWoundsSpellID follows the one-based order in the verified
+// first-level clerical spell table: Bless=1, Curse=2, Cure Light Wounds=3.
+// It is kept explicit because the full DOS spell catalog is not yet decoded.
+const CureLightWoundsSpellID uint8 = 3
+
+// SetFixSeed makes the bounded FIX healing rolls reproducible.
+func (s *State) SetFixSeed(seed int64) { s.fixSeed = seed }
+
+// Fix applies the currently memorized Cure Light Wounds slots from clerics.
+// The spell slots are restored after the operation, matching the manual's
+// "rememorize previously memorized spells" behavior; interruption and time
+// passage remain outside this deterministic service boundary.
+func (s *State) Fix() (healed, casts int, err error) {
+	if s.Mode != ModeWilderness && s.Mode != ModeEvent {
+		return 0, 0, fmt.Errorf("fix is invalid in mode %d", s.Mode)
+	}
+	for _, character := range s.partyRoster {
+		if character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == CureLightWoundsSpellID {
+				casts++
+			}
+		}
+	}
+	if casts == 0 {
+		s.eventReturnMode = ModeWilderness
+		s.Mode = ModeEvent
+		s.OriginalEvent = "FIX"
+		s.Message = s.catalog.Text("fix_no_cure", "沒有已記憶的 Cure Light Wounds，隊伍未改變。")
+		return 0, 0, nil
+	}
+	rng := rand.New(rand.NewSource(s.fixSeed))
+	for cast := 0; cast < casts; cast++ {
+		target := -1
+		for index, character := range s.partyRoster {
+			if character.HitPoints < character.MaxHitPoints {
+				target = index
+				break
+			}
+		}
+		if target < 0 {
+			break
+		}
+		amount := rng.Intn(8) + 1
+		before := s.partyRoster[target].HitPoints
+		s.partyRoster[target].HitPoints += amount
+		if s.partyRoster[target].HitPoints > s.partyRoster[target].MaxHitPoints {
+			s.partyRoster[target].HitPoints = s.partyRoster[target].MaxHitPoints
+		}
+		healed += s.partyRoster[target].HitPoints - before
+		id := s.partyRoster[target].ID
+		for fighterIndex := range s.party {
+			if s.party[fighterIndex].ID == id {
+				s.party[fighterIndex].HitPoints = s.partyRoster[target].HitPoints
+			}
+		}
+	}
+	s.eventReturnMode = ModeWilderness
+	s.Mode = ModeEvent
+	s.OriginalEvent = "FIX"
+	s.Message = fmt.Sprintf(s.catalog.Text("fix_done", "FIX 完成：施放 %d 次 Cure Light Wounds，共恢復 %d HP。"), casts, healed)
+	return healed, casts, nil
 }
 
 func (s *State) enterCampMenu() {
@@ -826,6 +895,10 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 	if originalChoice == "ALTER" {
 		s.enterAlterMenu()
 		return nil
+	}
+	if originalChoice == "FIX" {
+		_, _, err := s.Fix()
+		return err
 	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
@@ -1169,7 +1242,7 @@ func (s *State) campActionMessage(originalChoice string) string {
 	case "ALTER":
 		return s.catalog.Text("camp_alter_unavailable", "角色修改功能尚待接入。")
 	case "FIX":
-		return s.catalog.Text("camp_fix_unavailable", "修理功能尚待接入。")
+		return s.catalog.Text("fix_no_cure", "沒有已記憶的 Cure Light Wounds，隊伍未改變。")
 	default:
 		return localizeOption(s.catalog, originalChoice)
 	}

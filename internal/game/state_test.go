@@ -1003,6 +1003,31 @@ func TestCampAlterIconUpdatesRosterAndFighter(t *testing.T) {
 	}
 }
 
+func TestCampFixUsesMemorizedCureLightWounds(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{
+		{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, HitPoints: 8, MaxHitPoints: 8, SpellSlots: []uint8{CureLightWoundsSpellID}},
+		{ID: "fighter", Name: "戰士", Class: party.ClassFighter, Level: 1, HitPoints: 1, MaxHitPoints: 10},
+	}
+	state.party = []combat.Fighter{{ID: "cleric", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8}, {ID: "fighter", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 10}}
+	state.SetFixSeed(7)
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "FIX" || state.partyRoster[1].HitPoints <= 1 || state.partyRoster[1].HitPoints > 9 || state.party[1].HitPoints != state.partyRoster[1].HitPoints || len(state.partyRoster[0].SpellSlots) != 1 || !strings.Contains(state.Message, "Cure Light Wounds") {
+		t.Fatalf("fix result state=%#v party=%#v", state, state.party)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMenu {
+		t.Fatalf("fix continuation state=%#v err=%v", state, err)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}

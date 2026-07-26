@@ -120,3 +120,4 @@
 - [第一百二十三輪 ALTER PICS preferences](./123-alter-pics.md)（`READY`：限圖片／動畫 renderer preference）
 - [第一百二十四輪 ALTER SPEED message reveal](./124-alter-speed.md)（`READY`：限訊息顯示速度）
 - [第一百二十五輪 ALTER ICON player sprite selection](./125-alter-icon.md)（`READY`：限已驗證 CHEAD／CBODY block）
+- [第一百二十六輪 CAMP FIX Cure Light Wounds](./126-camp-fix.md)（`READY`：限已驗證法術序號與 deterministic healing boundary）
