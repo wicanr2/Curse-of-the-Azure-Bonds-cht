@@ -79,3 +79,4 @@
 - [第八十一輪 ECL PICTURE 事件畫面](./round-81-picture-event.md)（`READY`：限 PIC request 與 playback slice）
 - [第八十二輪 BIGPIC PICTURE 分支](./round-82-bigpic-event.md)（`READY`：限 BIGPIC extraction 與事件畫面）
 - [第八十三輪 HEAD／BODY 場景人物圖層](./round-83-head-body-scene-layers.md)（`READY`：限 scene character 素材與合成）
+- [第八十四輪 PICTURE HEAD／BODY branch](./round-84-head-body-picture-branch.md)（`READY`：限 Area2 head sentinel 與 scene event）

@@ -55,6 +55,27 @@ func TestPictureResultBecomesResumableEvent(t *testing.T) {
 	}
 }
 
+func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"人物"}
+	state.currentOriginalChoices = []string{"PICTURE"}
+	state.eclBlock = []byte{0, 0, 0x0E, 0x00, 0x03, 0x00}
+	state.SetSceneCharacter(0x01, 0x02)
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.SceneCharacterRequested || state.SceneHeadBlock != 0x01 || state.SceneBodyBlock != 0x03 {
+		t.Fatalf("scene character state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.SceneCharacterRequested {
+		t.Fatal("scene character request was not cleared")
+	}
+}
+
 func TestRejectsWrongModeAction(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.Apply(ActionEnterCity); err == nil {

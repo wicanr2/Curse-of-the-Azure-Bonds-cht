@@ -225,6 +225,7 @@
 - [x] 將 ECL `PICTURE` block request 接到可恢復繁中 event screen 與 PIC playback。
 - [x] 將 ECL PICTURE `>=0x78` 分流到 BIGPIC unmasked static picture extraction／event renderer。
 - [x] 抽取 HEAD/BODY scene layers，依 reference body y+5 合成並接入共用 asset loader。
+- [x] 將 Area2 HeadBlockId sentinel 接入 ECL PICTURE 的 HEAD/BODY scene branch。
 - [ ] 將 DOS player record icon mapping、direction-specific position 與八方向 combat placement 接入 renderer。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

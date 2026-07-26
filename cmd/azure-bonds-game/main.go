@@ -380,6 +380,20 @@ func (a *app) Draw(screen *ebiten.Image) {
 }
 
 func (a *app) drawPictureAnimation(screen *ebiten.Image) {
+	if a.state.SceneCharacterRequested {
+		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
+		if sprite := a.combatSprites[key]; sprite != nil {
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Scale(2, 2)
+			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*2)/2), 52)
+			screen.DrawImage(sprite, op)
+			text.Draw(screen, "人物場景　Enter：繼續", a.face, 56, 350, color.RGBA{255, 255, 255, 255})
+			return
+		}
+		text.Draw(screen, "人物圖層素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		return
+	}
 	if a.state.BigPictureRequested {
 		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", a.state.Area.GameArea, a.state.PictureBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
