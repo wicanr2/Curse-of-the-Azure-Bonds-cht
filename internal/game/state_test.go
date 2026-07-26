@@ -675,6 +675,37 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	}
 }
 
+func TestCampMenuRestAndExit(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.campMenu || len(state.Choices) != 7 || state.Choices[3] != "休息" {
+		t.Fatalf("camp menu state=%#v", state)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "PROGRAM 9" || !state.campMenu || state.CampCount != 1 {
+		t.Fatalf("camp rest state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.campMenu || len(state.Choices) != 7 {
+		t.Fatalf("camp rest continuation state=%#v", state)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || state.campMenu || len(state.Choices) != 3 || state.Choices[2] != "紮營" {
+		t.Fatalf("camp exit state=%#v", state)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
