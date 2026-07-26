@@ -116,6 +116,8 @@ SPEED preference 應以 renderer-neutral 的 1–5 級保存，文字 adapter �
 
 ICON selection 應只提供 manifest 已驗證的 layer pair，並以 character ID 將 roster metadata 投影到 combat fighter；不要把 block ordinal、weapon icon 或 `+0x80` attack variant 混為同一欄位。後續遊戲可替換 block family manifest，而沿用同一個 selection／projection contract。
 
+`LOAD PIECES A,B,C` 的 selector 順序已由公開 CoAB reference 收斂：A/B/C 分別填入 WALLDEF symbol set 1/2/3；單一 WALLDEF record 的 8×8D block 使用 selector，多 record 使用 `selector*10 + recordIndex + 1`。這是素材載入邊界，不代表 WALLDEF table 已直接等於畫面座標；後續 renderer 仍需解碼 row／column 到牆面組合的規則。
+
 CAMP FIX 應拆成可重用的 healing service 與各遊戲的 spell catalog adapter：目前 CoAB 只能以已確認的一級牧師表順序將 `Cure Light Wounds` 映射到 one-based ID `3`，並以 memorized slot 數量決定 cast 次數。治療應以 roster 順序選擇受傷角色、以 `1d8` 封頂 MaxHP，再以 stable character ID 同步 combat projection；spell slot 是否消耗、重記憶、時間推進與中斷則由遊戲規則層注入，不能寫死在共用 renderer。測試可注入 seed 保持重現性，但正式遊戲仍需接原版 random／time source。
 
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。

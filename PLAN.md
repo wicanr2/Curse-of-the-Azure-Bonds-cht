@@ -272,6 +272,7 @@
 - [x] 將 ECL `ADD NPC` 接成 NPC ID signal，讓實際 ECL1 block 0x52 能安全走到 EXIT；保留 NPC table／party side effect boundary。
 - [x] 將 ECL `LOAD PIECES` 接成三 selector signal，保留地城 floor／wall／tile file side effect boundary。
 - [x] 將 `LOAD PIECES` signal 保存為 State 一次性 request，保留 renderer／map adapter boundary。
+- [x] 依 reference `LoadWalldef` 將 `LOAD PIECES` selector 接到 WALLDEF／8X8D raw piece catalog，保留牆面 renderer boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
