@@ -754,7 +754,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		return
 	}
 	if a.state.CombatMoveMode() {
-		text.Draw(screen, "移動方向：方向鍵　取消：Esc", a.face, 32, 350, cyan)
+		text.Draw(screen, fmt.Sprintf("移動方向：方向鍵　剩餘 %d 格　取消：Esc", a.state.CombatMoveRemaining()), a.face, 32, 350, cyan)
 		return
 	}
 	if a.state.CombatCanCastMagicMissile() {

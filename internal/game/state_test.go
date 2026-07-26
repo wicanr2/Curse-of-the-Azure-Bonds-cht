@@ -791,6 +791,35 @@ func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	}
 }
 
+func TestCombatMoveUsesMultipleArmorLimitedSquaresBeforeEndingTurn(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, MovementAllowance: 2, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 7, CombatY: 3}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil || state.CombatMoveRemaining() != 2 {
+		t.Fatalf("begin move remaining=%d err=%v", state.CombatMoveRemaining(), err)
+	}
+	if err := state.CombatMove(-1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatMoveMode() || state.CombatMoveRemaining() != 1 {
+		t.Fatalf("first move ended turn: mode=%v remaining=%d", state.CombatMoveMode(), state.CombatMoveRemaining())
+	}
+	if err := state.CombatMove(-1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatMoveMode() {
+		t.Fatal("second move did not end turn")
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" && (fighter.CombatX != 2 || fighter.CombatY != 3) {
+			t.Fatalf("hero position=%+v", fighter)
+		}
+	}
+}
+
 func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 10, ArmorClass: 6, AttackBonus: 3, InitiativeBonus: 20}}

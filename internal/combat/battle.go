@@ -73,6 +73,7 @@ type Fighter struct {
 	DamageBonus          int
 	AttacksPerTurn       int
 	AmmunitionType       uint8
+	MovementAllowance    int
 	InitiativeBonus      int
 }
 

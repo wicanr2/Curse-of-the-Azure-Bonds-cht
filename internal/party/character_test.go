@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
@@ -292,6 +293,24 @@ func TestFighterWithEquipmentAppliesReadiedWeaponAndArmor(t *testing.T) {
 	if fighter.AttackBonus != 4 || fighter.DamageDiceCount != 1 || fighter.DamageDiceSides != 6 || fighter.DamageBonus != 1 || fighter.ArmorClass != 7 {
 		t.Fatalf("equipped fighter=%#v", fighter)
 	}
+}
+
+func TestFighterWithEquipmentProjectsArmorMovementAllowance(t *testing.T) {
+	items := make([]monster.BaseItem, 56)
+	items[55] = monster.BaseItem{Type: 55, ACAdjustment: 183}
+	fighter, err := validCharacterWithEquipment([]monster.ItemRecord{{Type: 55, Readied: true}}, monster.BaseItemCatalog{Items: items})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.MovementAllowance != 9 {
+		t.Fatalf("chain armor movement allowance=%d", fighter.MovementAllowance)
+	}
+}
+
+func validCharacterWithEquipment(items []monster.ItemRecord, catalog monster.BaseItemCatalog) (combat.Fighter, error) {
+	character := validCharacter()
+	character.Equipment = items
+	return character.FighterWithEquipment(catalog)
 }
 
 func TestFighterProjectionAppliesActiveBlessAndCurse(t *testing.T) {

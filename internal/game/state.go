@@ -111,6 +111,7 @@ type State struct {
 	combatCastingClassSet  bool
 	combatSpellTargetIndex int
 	combatMoveMode         bool
+	combatMoveRemaining    int
 	combatView             bool
 	combatViewFighterID    string
 	combatMessage          string

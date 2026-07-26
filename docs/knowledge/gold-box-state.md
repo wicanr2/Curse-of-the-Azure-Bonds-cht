@@ -44,6 +44,7 @@ Combat VIEW 應是獨立 read-only transaction：保存 active party fighter ID�
 武器多次攻擊也應維持三層資料流：`ITEMS` raw RateOfFire（以二倍值保存）→ equipped fighter `AttacksPerTurn` → Battle attack sequence。目標倒下後由 game target adapter 換下一個存活目標；彈藥消耗、職業等級額外攻擊與 Aim／range 不可由單一 RateOfFire byte 臆測。
 彈藥再拆成第四層：ITEMS raw `AmmunitionType` 與 inventory item type 是不同 namespace，必須由各遊戲資料層注入 mapping；`Character.ConsumeAmmunition` 在 Battle 前 atomic 扣除本回合 shots，mapping 缺失或不足時拒絕且不修改 inventory。後續 Gold Box 遊戲可重用 transaction，不共享未證實的 type 對應。
 Combat DONE 是獨立的 no-attack action：驗證 party turn 後只遞增 turn index 並進入 enemy／next-party adapter，不應呼叫 attack、spell 或 ammo consumption。VIEW／MOVE／CAST 等 pending selection 必須先退出或拒絕 DONE，避免 renderer input 穿透。
+MOVE 的格數應由 fighter 的 movement allowance transaction 管理：護甲 table 先給上限，每個 direction input 消耗一格，剩餘格數時不推進 party turn，耗盡才進 enemy／next-party adapter。負重、地形 cost、障礙與 FLEE 速度仍由各遊戲 CombatMap／rules adapter 注入。
 
 ## Tavern Tale boundary
 

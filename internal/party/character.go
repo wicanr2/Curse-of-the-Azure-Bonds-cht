@@ -482,6 +482,9 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			return combat.Fighter{}, effectErr
 		}
 		fighter.ArmorClass -= effect.ArmorClassImprovement
+		if effect.MovementAllowance > 0 && (fighter.MovementAllowance == 0 || effect.MovementAllowance < fighter.MovementAllowance) {
+			fighter.MovementAllowance = effect.MovementAllowance
+		}
 		if effect.DamageDiceCount > 0 && !hasWeapon {
 			fighter.AttackBonus += effect.AttackBonus
 			fighter.DamageDiceCount = effect.DamageDiceCount

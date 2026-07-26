@@ -264,6 +264,7 @@
 - [x] 將 RuleBook／ITEMS RateOfFire 接成 equipped fighter 多次攻擊與目標倒下後的下一目標 transaction；保留彈藥、等級額外攻擊、Aim／range boundary。
 - [x] 將 ITEMS raw AmmunitionType 投影到 fighter，建立注入式彈藥 mapping、atomic stack consumption 與 CombatAct preflight；保留特殊彈藥、裝填與 ranged line-of-sight boundary。
 - [x] 將 RuleBook Combat Menu `DONE` 接成 D／繁中 no-attack turn transaction，重用 enemy／next-party advancement；保留 hold／delay 與其他 command boundary。
+- [x] 將 RuleBook armor movement table 接入 `Fighter.MovementAllowance` 與多格 MOVE turn transaction；保留負重、地形、邊界與 FLEE speed boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
