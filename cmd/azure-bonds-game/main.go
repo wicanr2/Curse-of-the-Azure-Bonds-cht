@@ -257,6 +257,24 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if a.state.CombatMoveMode() {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+				a.state.CancelCombatMove()
+				return nil
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+				return a.state.CombatMove(0, -1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+				return a.state.CombatMove(1, 0)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+				return a.state.CombatMove(0, 1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+				return a.state.CombatMove(-1, 0)
+			}
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {
 			a.state.CancelCombatCast()
 			return nil
@@ -281,6 +299,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.state.CombatCanCastProtectionFromGood() {
 			return a.state.BeginCombatCast(game.ProtectionFromGoodSpellID)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
+			return a.state.BeginCombatMove()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
@@ -700,6 +721,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
 		return
 	}
+	if a.state.CombatMoveMode() {
+		text.Draw(screen, "移動方向：方向鍵　取消：Esc", a.face, 32, 350, cyan)
+		return
+	}
 	if a.state.CombatCanCastMagicMissile() {
 		spellHint = "　S：魔法飛彈"
 	}
@@ -721,7 +746,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if a.state.CombatCanCastProtectionFromGood() {
 		spellHint += "　G：防護善良"
 	}
-	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
+	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動"+spellHint, a.face, 32, 350, cyan)
 }
 
 func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {

@@ -30,6 +30,29 @@ func TestStartRoundIsDeterministicAndCoversLivingFighters(t *testing.T) {
 	}
 }
 
+func TestMoveChangesPositionAndRejectsOccupiedDestination(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 3, CombatY: 2},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	moved, err := battle.Move("hero", -1, 0)
+	if err != nil || moved.CombatX != 1 || moved.CombatY != 2 {
+		t.Fatalf("moved=%+v err=%v", moved, err)
+	}
+	if _, err := battle.Move("hero", 1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := battle.Move("hero", 1, 0); err == nil {
+		t.Fatal("expected occupied destination error")
+	}
+	if _, err := battle.Move("hero", 2, 0); err == nil {
+		t.Fatal("expected multi-step error")
+	}
+}
+
 func TestResolveAttackNaturalOneMissesAndNaturalTwentyHits(t *testing.T) {
 	battle := testBattle(t)
 	miss, err := battle.ResolveAttack("hero", "goblin", 1, 8)

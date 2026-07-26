@@ -246,6 +246,37 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
 }
 
+// Move translates a living fighter by one grid step. Battlefield bounds,
+// terrain and the RuleBook's free rear attack are owned by a future map/rules
+// adapter; the core currently guarantees occupancy-safe position mutation.
+func (b *Battle) Move(fighterID string, dx, dy int) (Fighter, error) {
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return Fighter{}, fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if b.status != StatusActive {
+		return Fighter{}, fmt.Errorf("battle is already over")
+	}
+	if fighter.HitPoints <= 0 {
+		return Fighter{}, fmt.Errorf("dead fighter cannot move")
+	}
+	if dx < -1 || dx > 1 || dy < -1 || dy > 1 || (dx == 0 && dy == 0) {
+		return Fighter{}, fmt.Errorf("move delta (%d,%d) is not one grid step", dx, dy)
+	}
+	if !fighter.HasCombatPosition {
+		return Fighter{}, fmt.Errorf("fighter %q has no combat position", fighterID)
+	}
+	nextX, nextY := fighter.CombatX+dx, fighter.CombatY+dy
+	for _, other := range b.fighters {
+		if other.ID != fighterID && other.HitPoints > 0 && other.HasCombatPosition && other.CombatX == nextX && other.CombatY == nextY {
+			return Fighter{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
+		}
+	}
+	fighter.CombatX, fighter.CombatY = nextX, nextY
+	b.fighters[fighterID] = fighter
+	return fighter, nil
+}
+
 // CastMagicMissile applies the verified RuleBook first-level effect: every
 // missile deals 2-5 damage and has no saving throw. The seed-owned RNG keeps
 // the result replayable while the game adapter owns spell-slot consumption.
