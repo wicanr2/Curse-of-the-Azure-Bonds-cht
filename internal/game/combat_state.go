@@ -16,17 +16,35 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		return fmt.Errorf("combat needs at least one party member and enemy")
 	}
 	fighters := make([]combat.Fighter, 0, len(party)+len(enemies))
+	partyIndex := 0
 	for _, fighter := range party {
 		if fighter.Side != combat.SideParty {
 			return fmt.Errorf("fighter %q is not marked as party", fighter.ID)
 		}
+		if !fighter.HasCombatPosition {
+			tile := combat.FormationTile(fighter.Side, partyIndex)
+			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+		}
+		if fighter.CombatSize == 0 {
+			fighter.CombatSize = 1
+		}
 		fighters = append(fighters, fighter)
+		partyIndex++
 	}
+	enemyIndex := 0
 	for _, fighter := range enemies {
 		if fighter.Side != combat.SideEnemy {
 			return fmt.Errorf("fighter %q is not marked as enemy", fighter.ID)
 		}
+		if !fighter.HasCombatPosition {
+			tile := combat.FormationTile(fighter.Side, enemyIndex)
+			fighter.HasCombatPosition, fighter.CombatX, fighter.CombatY = true, tile.X, tile.Y
+		}
+		if fighter.CombatSize == 0 {
+			fighter.CombatSize = 1
+		}
 		fighters = append(fighters, fighter)
+		enemyIndex++
 	}
 	battle, err := combat.NewBattle(fighters, seed)
 	if err != nil {

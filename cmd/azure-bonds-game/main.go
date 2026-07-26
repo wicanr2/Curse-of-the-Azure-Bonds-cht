@@ -595,6 +595,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.Side == combat.SideParty {
 			tile := combat.FormationTile(fighter.Side, partyIndex)
+			if fighter.HasCombatPosition {
+				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
+			}
 			x, y := 28+tile.X*48, 108+tile.Y*56
 			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
 			text.Draw(screen, fighter.Name, a.face, x, y+66, white)
@@ -603,6 +606,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			continue
 		}
 		tile := combat.FormationTile(fighter.Side, enemyIndex)
+		if fighter.HasCombatPosition {
+			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
+		}
 		x, y := 28+tile.X*48, 108+tile.Y*56
 		a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
 		prefix := "  "

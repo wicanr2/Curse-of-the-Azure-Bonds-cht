@@ -41,20 +41,26 @@ type Fighter struct {
 	HasAnimation   bool
 	// Party icon fields mirror the original Player combat record. They are
 	// renderer-neutral so save/import decoding can fill the actual values.
-	HasPartyIcon    bool
-	PartyHeadBlock  uint8
-	PartyBodyBlock  uint8
-	PartyIconSize   uint8
-	IconDirection   uint8
-	IconAttack      bool
-	HitPoints       int
-	MaxHitPoints    int
-	ArmorClass      int
-	AttackBonus     int
-	DamageDiceCount int
-	DamageDiceSides int
-	DamageBonus     int
-	InitiativeBonus int
+	HasPartyIcon   bool
+	PartyHeadBlock uint8
+	PartyBodyBlock uint8
+	PartyIconSize  uint8
+	IconDirection  uint8
+	IconAttack     bool
+	// CombatMap position/size. A future Area/ECL placement decoder can set
+	// these directly; StartCombat supplies a deterministic fallback otherwise.
+	HasCombatPosition bool
+	CombatX           int
+	CombatY           int
+	CombatSize        uint8
+	HitPoints         int
+	MaxHitPoints      int
+	ArmorClass        int
+	AttackBonus       int
+	DamageDiceCount   int
+	DamageDiceSides   int
+	DamageBonus       int
+	InitiativeBonus   int
 }
 
 type Turn struct {

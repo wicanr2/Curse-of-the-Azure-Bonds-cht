@@ -315,6 +315,7 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{
 		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HasCombatPosition: true, CombatX: 4, CombatY: 3,
 		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
 		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
 	}}
@@ -325,6 +326,19 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}}
 	if err := state.StartCombat(party, enemies, 7); err != nil {
 		t.Fatal(err)
+	}
+	positions := state.CombatFighters()
+	var hero, goblin combat.Fighter
+	for _, fighter := range positions {
+		if fighter.ID == "hero" {
+			hero = fighter
+		}
+		if fighter.ID == "goblin" {
+			goblin = fighter
+		}
+	}
+	if len(positions) != 2 || !hero.HasCombatPosition || hero.CombatX != 4 || hero.CombatY != 3 || !goblin.HasCombatPosition {
+		t.Fatalf("combat positions=%#v", positions)
 	}
 	if !state.CombatActive() || len(state.CombatTargets()) != 1 {
 		t.Fatalf("combat state=%#v", state)
