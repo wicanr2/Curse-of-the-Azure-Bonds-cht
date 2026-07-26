@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 91 輪：`ITEMS` readied equipment 到 party fighter adapter。
+第 92 輪：party equipment class／slot transaction contract。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -283,3 +283,7 @@
 第 90 輪功能／文件 commit：`0151599`，已推送至 GitHub `main`。原始 `ITEMS` 解析與 128-type 繁中 catalog 已由實際 ZIP 驗證。
 
 第 91 輪功能／文件 commit：待本輪提交。新增 `monster.ItemRecord.Effect`、packed AC／base damage adapter 與 `party.Character.FighterWithEquipment`；只套用 readied 基本武器／護甲，charges、Affects／法術、雙持、彈藥與完整 DOS inventory 仍明確保留未完成。完成 Docker 測試後提交。
+
+第 91 輪功能／文件 commit：`ebc8715`，已推送至 GitHub `main`。ITEMS readied 武器／護甲效果已接入 party fighter，舊 JSON 行為保持相容。
+
+第 92 輪功能／文件 commit：待本輪提交。新增 `party.ItemClassBit`、`Character.CanEquip`／`EquipItem`／`UnequipItem`；以 reference class mask、裝備 slot、雙手／副手衝突與雙戒指上限建立可重用 inventory transaction。stack、彈藥、cursed、magic effects、商店與 DOS save offset 仍未完成。

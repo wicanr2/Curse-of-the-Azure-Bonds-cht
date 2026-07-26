@@ -114,6 +114,65 @@ func TestFighterWithEquipmentAppliesReadiedWeaponAndArmor(t *testing.T) {
 	}
 }
 
+func TestEquipItemEnforcesClassSlotsHandsAndRings(t *testing.T) {
+	data := make([]byte, monster.BaseItemHeaderSize+7*monster.BaseItemRecordSize)
+	setBase := func(index int, slot, hands, mask uint8) {
+		offset := monster.BaseItemHeaderSize + index*monster.BaseItemRecordSize
+		data[offset] = slot
+		data[offset+1] = hands
+		data[offset+13] = mask
+	}
+	setBase(0, 0, 1, 8) // main-hand weapon
+	setBase(1, 1, 1, 8) // off-hand item
+	setBase(2, 0, 2, 8) // two-handed weapon
+	setBase(3, 9, 0, 8)
+	setBase(4, 9, 0, 8)
+	setBase(5, 9, 0, 8)
+	setBase(6, 0, 1, 2) // cleric-only item
+	catalog, err := monster.ParseBaseItems(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	character := validCharacter()
+	character.Equipment = make([]monster.ItemRecord, 7)
+	for index := range character.Equipment {
+		character.Equipment[index].Type = uint8(index)
+	}
+	if err := character.EquipItem(0, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(1, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(2, catalog); err == nil {
+		t.Fatal("two-handed weapon should conflict with off-hand")
+	}
+	if err := character.UnequipItem(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(2, catalog); err == nil {
+		t.Fatal("two-handed weapon should conflict with main hand")
+	}
+	if err := character.UnequipItem(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(2, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(3, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(4, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if err := character.EquipItem(5, catalog); err == nil {
+		t.Fatal("third ring should be rejected")
+	}
+	if err := character.EquipItem(6, catalog); err == nil {
+		t.Fatal("fighter should reject cleric-only item")
+	}
+}
+
 func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	for _, test := range []struct {
 		race Race

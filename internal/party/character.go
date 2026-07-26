@@ -109,6 +109,99 @@ type Character struct {
 
 type Roster []Character
 
+// ItemClassBit returns the class usability bit used by the original ITEMS
+// table. The values deliberately follow the DOS table rather than the local
+// enum order, which starts cleric at zero.
+func ItemClassBit(class Class) (uint8, bool) {
+	switch class {
+	case ClassMagicUser:
+		return 1, true
+	case ClassCleric:
+		return 2, true
+	case ClassThief:
+		return 4, true
+	case ClassFighter:
+		return 8, true
+	case ClassPaladin:
+		return 64, true
+	case ClassRanger:
+		return 128, true
+	default:
+		return 0, false
+	}
+}
+
+// CanEquip validates one inventory index against the reference class mask
+// and the currently readied equipment slots. It does not mutate the party.
+func (c Character) CanEquip(index int, catalog monster.BaseItemCatalog) error {
+	if index < 0 || index >= len(c.Equipment) {
+		return fmt.Errorf("equipment index %d is out of range", index)
+	}
+	item := c.Equipment[index]
+	base, ok := catalog.Lookup(item.Type)
+	if !ok {
+		return fmt.Errorf("item type 0x%02X is outside base catalog", item.Type)
+	}
+	classBit, ok := ItemClassBit(c.Class)
+	if !ok || !base.UsableByMask(classBit) {
+		return fmt.Errorf("%s cannot equip item type 0x%02X", c.Class, item.Type)
+	}
+	if item.Readied {
+		return nil
+	}
+	rings := 0
+	for otherIndex, other := range c.Equipment {
+		if otherIndex == index || !other.Readied {
+			continue
+		}
+		otherBase, otherOK := catalog.Lookup(other.Type)
+		if !otherOK {
+			return fmt.Errorf("readied item type 0x%02X is outside base catalog", other.Type)
+		}
+		if base.Slot == 9 && otherBase.Slot == 9 {
+			rings++
+			continue
+		}
+		if base.Slot <= 9 && base.Slot == otherBase.Slot {
+			return fmt.Errorf("equipment slot %d is already occupied", base.Slot)
+		}
+		if base.Slot == 0 && base.HandsRequired >= 2 && otherBase.Slot == 1 {
+			return fmt.Errorf("two-handed item conflicts with off-hand equipment")
+		}
+		if base.Slot == 1 && otherBase.Slot == 0 && otherBase.HandsRequired >= 2 {
+			return fmt.Errorf("off-hand equipment conflicts with two-handed weapon")
+		}
+	}
+	if base.Slot == 9 && rings >= 2 {
+		return fmt.Errorf("at most two rings may be readied")
+	}
+	return nil
+}
+
+// EquipItem marks an inventory item readied after CanEquip validation.
+func (c *Character) EquipItem(index int, catalog monster.BaseItemCatalog) error {
+	if c == nil {
+		return fmt.Errorf("cannot equip item on nil character")
+	}
+	if err := c.CanEquip(index, catalog); err != nil {
+		return err
+	}
+	c.Equipment[index].Readied = true
+	return nil
+}
+
+// UnequipItem clears the readied state without changing the inventory record.
+func (c *Character) UnequipItem(index int) error {
+	if c == nil {
+		return fmt.Errorf("cannot unequip item on nil character")
+	}
+	if index < 0 || index >= len(c.Equipment) {
+		return fmt.Errorf("equipment index %d is out of range", index)
+	}
+	c.Equipment[index].Readied = false
+	return nil
+}
+
 func (r Roster) Validate() error {
 	if len(r) == 0 || len(r) > 6 {
 		return fmt.Errorf("roster must contain 1..6 player characters")
