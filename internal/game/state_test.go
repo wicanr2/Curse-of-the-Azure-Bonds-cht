@@ -724,6 +724,23 @@ func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	}
 }
 
+func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 1}}}}
+	state.SetAmmunitionItemTypes(map[uint8][]uint8{11: {73}})
+	partyFighters := []combat.Fighter{{ID: "archer", Name: "弓手", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 2, AmmunitionType: 11, InitiativeBonus: 20}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 0}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err == nil {
+		t.Fatal("expected insufficient ammunition error")
+	}
+	if state.CombatFighters()[1].HitPoints != 10 || state.partyRoster[0].Equipment[0].Count != 1 {
+		t.Fatalf("failed attack mutated state: fighters=%+v roster=%+v", state.CombatFighters(), state.partyRoster)
+	}
+}
+
 func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}

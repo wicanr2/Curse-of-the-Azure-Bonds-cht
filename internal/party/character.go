@@ -280,6 +280,70 @@ func (c *Character) RemoveItem(index int) (monster.ItemRecord, error) {
 	return removed, nil
 }
 
+// ConsumeAmmunition removes shots for a weapon's raw ITEMS AmmunitionType.
+// The raw code and inventory item type use different namespaces in CoAB, so
+// the caller must inject the verified mapping for the current game's data.
+// The mutation is atomic: insufficient mapped ammunition leaves equipment
+// unchanged.
+func (c *Character) ConsumeAmmunition(ammunitionType uint8, shots int, itemTypes map[uint8][]uint8) error {
+	if c == nil {
+		return fmt.Errorf("cannot consume ammunition from nil character")
+	}
+	if ammunitionType == 0 {
+		return fmt.Errorf("ammunition type is not required")
+	}
+	if shots <= 0 {
+		return fmt.Errorf("ammunition shots must be positive")
+	}
+	candidates, ok := itemTypes[ammunitionType]
+	if !ok || len(candidates) == 0 {
+		return fmt.Errorf("no inventory mapping for ammunition type %d", ammunitionType)
+	}
+	allowed := make(map[uint8]bool, len(candidates))
+	for _, itemType := range candidates {
+		allowed[itemType] = true
+	}
+	available := 0
+	for _, item := range c.Equipment {
+		if !allowed[item.Type] {
+			continue
+		}
+		if item.Count == 0 {
+			available++
+		} else {
+			available += int(item.Count)
+		}
+	}
+	if available < shots {
+		return fmt.Errorf("ammunition type %d has %d shots; need %d", ammunitionType, available, shots)
+	}
+	remaining := shots
+	updated := make([]monster.ItemRecord, 0, len(c.Equipment))
+	for _, item := range c.Equipment {
+		if !allowed[item.Type] || remaining == 0 {
+			updated = append(updated, item)
+			continue
+		}
+		count := 1
+		if item.Count > 0 {
+			count = int(item.Count)
+		}
+		consume := count
+		if consume > remaining {
+			consume = remaining
+		}
+		remaining -= consume
+		if item.Count > 0 {
+			item.Count -= uint8(consume)
+			if item.Count > 0 {
+				updated = append(updated, item)
+			}
+		}
+	}
+	c.Equipment = updated
+	return nil
+}
+
 // UseConsumable consumes one scroll/potion or one charge from a wand. The
 // returned signal is intentionally renderer- and rules-neutral; a later
 // spell/effect system decides what EffectID or SpellIDs do.
@@ -424,6 +488,7 @@ func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat
 			fighter.DamageDiceSides = effect.DamageDiceSides
 			fighter.DamageBonus = effect.DamageBonus
 			fighter.AttacksPerTurn = effect.AttacksPerTurn
+			fighter.AmmunitionType = effect.AmmunitionType
 			hasWeapon = true
 		}
 	}

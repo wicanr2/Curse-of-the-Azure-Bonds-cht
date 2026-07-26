@@ -144,3 +144,4 @@
 - [第一百四十七輪 combat camera](./147-combat-camera.md)（`READY`：限 active character camera transform）
 - [第一百四十八輪 combat VIEW](./148-combat-view.md)（`READY`：限 read-only fighter summary）
 - [第一百四十九輪 weapon RateOfFire attacks](./149-combat-rate-of-fire.md)（`READY`：限已裝備武器的多次攻擊）
+- [第一百五十輪 combat ammunition transaction](./150-combat-ammunition-transaction.md)（`READY`：限注入 mapping 的彈藥 atomic consumption）

@@ -117,6 +117,7 @@ type State struct {
 	monsterRecords         map[uint8]monster.Record
 	itemCatalog            monster.BaseItemCatalog
 	itemCatalogReady       bool
+	ammunitionItemTypes    map[uint8][]uint8
 	combatSeed             int64
 	eclSeed                int64
 	mapSeed                int64
@@ -416,6 +417,16 @@ func (s *State) SetMonsterRecords(records map[uint8]monster.Record) {
 func (s *State) SetItemCatalog(catalog monster.BaseItemCatalog) {
 	s.itemCatalog = catalog
 	s.itemCatalogReady = true
+}
+
+// SetAmmunitionItemTypes injects the game's verified mapping from raw ITEMS
+// AmmunitionType codes to inventory item types. CoAB stores these in separate
+// namespaces, so the state must not invent a default mapping.
+func (s *State) SetAmmunitionItemTypes(mapping map[uint8][]uint8) {
+	s.ammunitionItemTypes = make(map[uint8][]uint8, len(mapping))
+	for ammoType, itemTypes := range mapping {
+		s.ammunitionItemTypes[ammoType] = append([]uint8(nil), itemTypes...)
+	}
 }
 
 func (s *State) fighterForCharacter(character party.Character) (combat.Fighter, error) {
