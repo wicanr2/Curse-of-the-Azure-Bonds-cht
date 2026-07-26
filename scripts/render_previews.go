@@ -95,6 +95,9 @@ func renderCombatSprites() error {
 	for index := 1; index <= 6; index++ {
 		sources = append(sources, fmt.Sprintf("SPRIT%d.DAX", index))
 	}
+	for index := 1; index <= 6; index++ {
+		sources = append(sources, fmt.Sprintf("PIC%d.DAX", index))
+	}
 	frames := make([]spriteFrame, 0)
 	animationAssets := make([]animationAssetRecord, 0)
 	layers := make(map[string]map[uint8]gfx.Picture)
@@ -112,8 +115,9 @@ func renderCombatSprites() error {
 			return fmt.Errorf("parse %s: %w", source, err)
 		}
 		for _, block := range blocks {
-			if strings.HasPrefix(source, "SPRIT") {
-				animation, err := gfx.ParseAnimation(block.Data, true, 0)
+			if strings.HasPrefix(source, "SPRIT") || strings.HasPrefix(source, "PIC") {
+				xorFromFirst := strings.HasPrefix(source, "PIC")
+				animation, err := gfx.ParseAnimationWithDelta(block.Data, true, 0, xorFromFirst)
 				if err != nil {
 					manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | — | — | — | skipped: `%s` |\n", source, block.Entry.ID, err))
 					continue

@@ -75,3 +75,4 @@
 - [第七十七輪玩家戰鬥 icon state](./round-77-combat-icon-state.md)（`READY`：限方向／攻擊選擇 state boundary）
 - [第七十八輪角色建立玩家 icon 預設](./round-78-player-icon-defaults.md)（`READY`：限新建角色 icon defaults）
 - [第七十九輪 SPRIT frame position](./round-79-sprit-position.md)（`READY`：限 animation frame offset）
+- [第八十輪 PIC／FINAL XOR delta](./round-80-pic-final-delta.md)（`READY`：限 PIC frame stream decode）

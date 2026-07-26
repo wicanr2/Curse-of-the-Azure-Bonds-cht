@@ -57,3 +57,32 @@ func TestParseAnimationRejectsTruncatedFrame(t *testing.T) {
 		t.Fatal("truncated animation accepted")
 	}
 }
+
+func TestParseAnimationWithDeltaXORsAgainstFirstFrame(t *testing.T) {
+	data := []byte{2}
+	appendFrame := func(packed []byte) {
+		header := make([]byte, 21)
+		binary.LittleEndian.PutUint32(header[0:], 1)
+		binary.LittleEndian.PutUint16(header[4:], 1)
+		binary.LittleEndian.PutUint16(header[6:], 1)
+		data = append(data, header...)
+		data = append(data, packed...)
+	}
+	first := []byte{0x12, 0x34, 0x56, 0x78}
+	decodedSecond := []byte{0x87, 0x65, 0x43, 0x21}
+	delta := make([]byte, len(first))
+	for index := range first {
+		delta[index] = first[index] ^ decodedSecond[index]
+	}
+	appendFrame(first)
+	appendFrame(delta)
+	animation, err := ParseAnimationWithDelta(data, false, 0, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for index, want := range decodedSecond {
+		if got := animation.Frames[1].Picture.Pixels[index*2] << 4; got != want&0xF0 {
+			t.Fatalf("frame pixel byte %d high nibble=%02X, want %02X", index, got, want&0xF0)
+		}
+	}
+}
