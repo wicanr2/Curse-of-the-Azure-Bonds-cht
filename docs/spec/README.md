@@ -130,3 +130,4 @@
 - [第一百三十三輪 MEMORIZE preparation time](./133-memorize-preparation-time.md)（`READY`：限一級法術準備時間）
 - [第一百三十四輪 combat Magic Missile](./134-combat-magic-missile.md)（`READY`：限一級魔法師施法）
 - [第一百三十五輪 combat Cure Light Wounds](./135-combat-cure-light-wounds.md)（`READY`：限一級牧師戰鬥治療）
+- [第一百三十六輪 combat spell target selection](./136-combat-spell-target-selection.md)（`READY`：限兩個已接入法術的目標選擇）

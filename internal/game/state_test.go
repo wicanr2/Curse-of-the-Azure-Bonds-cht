@@ -678,6 +678,13 @@ func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	if !state.CombatCanCastMagicMissile() {
 		t.Fatalf("magic missile should be available: turns=%#v state=%#v", state.CombatTurns(), state)
 	}
+	if err := state.BeginCombatCast(MagicMissileSpellID); err != nil || state.CombatCastingSpell() != MagicMissileSpellID || len(state.partyRoster[0].SpellSlots) != 1 {
+		t.Fatalf("begin cast state=%#v err=%v", state, err)
+	}
+	state.CancelCombatCast()
+	if state.CombatCastingSpell() != 0 || len(state.partyRoster[0].SpellSlots) != 1 {
+		t.Fatalf("cancel cast state=%#v", state)
+	}
 	if err := state.CombatCast(MagicMissileSpellID); err != nil {
 		t.Fatal(err)
 	}

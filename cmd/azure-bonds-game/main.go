@@ -250,20 +250,33 @@ func (a *app) Update() error {
 		case game.ModeEvent:
 			return a.state.Continue()
 		case game.ModeCombat:
+			if a.state.CombatCastingSpell() != 0 {
+				return a.state.CombatCast(a.state.CombatCastingSpell())
+			}
 			return a.state.CombatAct()
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {
+			a.state.CancelCombatCast()
+			return nil
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
-			return a.state.CombatCast(game.MagicMissileSpellID)
+			return a.state.BeginCombatCast(game.MagicMissileSpellID)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
-			return a.state.CombatCast(game.CureLightWoundsSpellID)
+			return a.state.BeginCombatCast(game.CureLightWoundsSpellID)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			if a.state.CombatCastingSpell() != 0 {
+				return a.state.CombatSelectSpellTarget(1)
+			}
 			return a.state.CombatSelectTarget(1)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			if a.state.CombatCastingSpell() != 0 {
+				return a.state.CombatSelectSpellTarget(-1)
+			}
 			return a.state.CombatSelectTarget(-1)
 		}
 	}
@@ -631,6 +644,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
 	partyIndex, enemyIndex := 0, 0
 	targets := a.state.CombatTargets()
+	spellTargets := a.state.CombatSpellTargets()
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.Side == combat.SideParty {
 			tile := combat.FormationTile(fighter.Side, partyIndex)
@@ -639,8 +653,12 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			}
 			x, y := 28+tile.X*48, 108+tile.Y*56
 			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
-			text.Draw(screen, fighter.Name, a.face, x, y+66, white)
-			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+66, white)
+			prefix := "  "
+			if a.state.CombatCastingSpell() == game.CureLightWoundsSpellID && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
+				prefix = "> "
+			}
+			text.Draw(screen, prefix+fighter.Name, a.face, x, y+66, white)
+			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+84, white)
 			partyIndex++
 			continue
 		}
@@ -659,6 +677,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		enemyIndex++
 	}
 	spellHint := ""
+	if a.state.CombatCastingSpell() != 0 {
+		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
+		return
+	}
 	if a.state.CombatCanCastMagicMissile() {
 		spellHint = "　S：魔法飛彈"
 	}

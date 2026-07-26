@@ -200,6 +200,76 @@ func (s *State) CombatCanCastCureLightWounds() bool {
 	return false
 }
 
+func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
+
+func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
+
+func (s *State) CombatSpellTargets() []combat.Fighter {
+	switch s.combatCastingSpell {
+	case CureLightWoundsSpellID:
+		return s.livingBySide(combat.SideParty)
+	case MagicMissileSpellID:
+		return s.livingBySide(combat.SideEnemy)
+	default:
+		return nil
+	}
+}
+
+// BeginCombatCast enters the RuleBook CAST target step without consuming a
+// spell. Enter confirms it; Escape can cancel it in the renderer.
+func (s *State) BeginCombatCast(spellID uint8) error {
+	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
+		return fmt.Errorf("Magic Missile is unavailable")
+	}
+	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
+		return fmt.Errorf("Cure Light Wounds is unavailable")
+	}
+	if spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
+		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
+	}
+	s.combatCastingSpell = spellID
+	if spellID == MagicMissileSpellID {
+		targets := s.livingBySide(combat.SideEnemy)
+		if s.combatTargetIndex >= len(targets) {
+			s.combatTargetIndex = 0
+		}
+		s.combatSpellTargetIndex = s.combatTargetIndex
+		return nil
+	}
+	targets := s.livingBySide(combat.SideParty)
+	s.combatSpellTargetIndex = 0
+	for index, target := range targets {
+		if target.HitPoints < target.MaxHitPoints {
+			s.combatSpellTargetIndex = index
+			break
+		}
+	}
+	return nil
+}
+
+func (s *State) CancelCombatCast() {
+	s.combatCastingSpell = 0
+	s.combatSpellTargetIndex = 0
+}
+
+func (s *State) CombatSelectSpellTarget(delta int) error {
+	if s.combatCastingSpell == 0 {
+		return fmt.Errorf("no spell target is being selected")
+	}
+	targets := s.CombatSpellTargets()
+	if len(targets) == 0 {
+		return fmt.Errorf("spell has no living targets")
+	}
+	s.combatSpellTargetIndex = (s.combatSpellTargetIndex + delta) % len(targets)
+	if s.combatSpellTargetIndex < 0 {
+		s.combatSpellTargetIndex += len(targets)
+	}
+	if s.combatCastingSpell == MagicMissileSpellID {
+		s.combatTargetIndex = s.combatSpellTargetIndex
+	}
+	return nil
+}
+
 // CombatCast applies the verified first-level Magic Missile path. It consumes
 // exactly one memorized slot, targets the current enemy selection, and then
 // advances the same deterministic enemy-turn boundary as a weapon attack.
@@ -209,6 +279,9 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
+	}
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
+		return fmt.Errorf("a different spell target is being selected")
 	}
 	if spellID != MagicMissileSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
@@ -251,6 +324,7 @@ func (s *State) CombatCast(spellID uint8) error {
 		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, spellID)
 		return err
 	}
+	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -285,14 +359,17 @@ func (s *State) combatCastCureLightWounds() error {
 		return fmt.Errorf("caster %q has no memorized Cure Light Wounds", caster.ID)
 	}
 	targets := s.livingBySide(combat.SideParty)
-	targetIndex := -1
-	for index, target := range targets {
-		if target.HitPoints < target.MaxHitPoints {
-			targetIndex = index
-			break
+	targetIndex := s.combatSpellTargetIndex
+	if s.combatCastingSpell == 0 {
+		targetIndex = -1
+		for index, target := range targets {
+			if target.HitPoints < target.MaxHitPoints {
+				targetIndex = index
+				break
+			}
 		}
 	}
-	if targetIndex < 0 {
+	if targetIndex < 0 || targetIndex >= len(targets) || targets[targetIndex].HitPoints >= targets[targetIndex].MaxHitPoints {
 		return fmt.Errorf("no wounded party member can receive Cure Light Wounds")
 	}
 	target := targets[targetIndex]
@@ -302,6 +379,7 @@ func (s *State) combatCastCureLightWounds() error {
 		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, CureLightWoundsSpellID)
 		return err
 	}
+	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "%s 對 %s 施放治療輕傷，恢復 %d HP。"), caster.Name, target.Name, result.Healing)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
