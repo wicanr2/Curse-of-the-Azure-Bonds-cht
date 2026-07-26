@@ -29,6 +29,7 @@ func main() {
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
+	baseItems := flag.Bool("base-items", false, "decode the standalone ITEMS base-item catalog")
 	encounterStart := flag.Int("encounter-start", -1, "decode LOAD MONSTER sequence at this payload offset")
 	monsterMember := flag.String("monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter-start")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
@@ -37,6 +38,25 @@ func main() {
 	sessionInfo := flag.Bool("session", false, "print decoded ECL block session entries")
 	selectionList := flag.String("select", "", "comma-separated HORIZONTAL MENU selections for -run-subset")
 	flag.Parse()
+	if *baseItems {
+		data, err := zipMember(*image, "ITEMS")
+		if err != nil {
+			log.Fatal(err)
+		}
+		catalog, err := monster.ParseBaseItems(data)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("ITEMS: header=0x%04X descriptors=%d\n", catalog.Header, len(catalog.Items))
+		for _, item := range catalog.Items {
+			fmt.Printf("  type=0x%02X zh-name=%q slot=%d hands=%d damage-small=%dd%d%+d damage-large=%dd%d%+d ac-adjust=%d class-mask=0x%02X ammo=%d\n",
+				item.Type, monster.ChineseName(monster.ItemRecord{Type: item.Type}), item.Slot, item.HandsRequired,
+				item.SmallDamageDice, item.SmallDamageSides, item.SmallDamageBonus,
+				item.LargeDamageDice, item.LargeDamageSides, item.LargeDamageBonus,
+				item.ACAdjustment, item.ClassUsabilityMask, item.AmmunitionType)
+		}
+		return
+	}
 	selections, err := parseSelections(*selectionList)
 	if err != nil {
 		log.Fatal(err)
