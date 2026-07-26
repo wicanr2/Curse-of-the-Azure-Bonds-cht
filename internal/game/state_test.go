@@ -1,6 +1,7 @@
 package game
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
@@ -404,6 +405,40 @@ func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	}
 	if state.Mode != ModePlace || state.shopStockMenu || len(state.Choices) != 7 {
 		t.Fatalf("after buy continue state=%#v", state)
+	}
+}
+
+func TestShopViewListsCharactersAndEquipment(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Gold: 40, HitPoints: 8, MaxHitPoints: 10,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+		Equipment: []monster.ItemRecord{{Type: 36, Name: "長劍", Readied: true}},
+	}}
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopViewMenu || len(state.Choices) != 2 || state.Choices[0] != "英雄（HP 8/10，40 GP）" {
+		t.Fatalf("view menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "VIEW" || !strings.Contains(state.Message, "長劍") || !strings.Contains(state.Message, "HP 8/10") {
+		t.Fatalf("view summary state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || state.shopViewMenu || len(state.Choices) != 7 {
+		t.Fatalf("after view continue state=%#v", state)
 	}
 }
 

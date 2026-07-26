@@ -117,6 +117,7 @@ type State struct {
 	shopOffers             []ShopOffer
 	moneyPool              uint32
 	shopStockMenu          bool
+	shopViewMenu           bool
 	shopCharacterIndex     int
 }
 
@@ -563,6 +564,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 func (s *State) enterShopMenu() {
 	s.shopMenu = true
 	s.shopStockMenu = false
+	s.shopViewMenu = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
 	s.Choices = []string{
@@ -579,6 +581,30 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if strings.HasPrefix(originalChoice, "SHOP_VIEW_") {
+		if originalChoice == "SHOP_VIEW_EXIT" {
+			s.enterShopMenu()
+			return nil
+		}
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_VIEW_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop view command %q", originalChoice)
+		}
+		if value < 0 || value >= len(s.partyRoster) {
+			return fmt.Errorf("shop view character index %d is out of range", value)
+		}
+		character := s.partyRoster[value]
+		equipment := make([]string, 0, len(character.Equipment))
+		for _, item := range character.Equipment {
+			equipment = append(equipment, monster.ChineseName(item))
+		}
+		s.shopViewMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "VIEW"
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_view_summary", "%s　HP %d/%d　金幣 %d　裝備：%s"), character.Name, character.HitPoints, character.MaxHitPoints, character.Gold, strings.Join(equipment, "、"))
+		return nil
+	}
 	if strings.HasPrefix(originalChoice, "SHOP_OFFER_") {
 		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_OFFER_"))
 		if err != nil {
@@ -610,7 +636,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
-	if s.shopStockMenu {
+	if s.shopStockMenu || s.shopViewMenu {
 		return nil
 	}
 	s.Mode = ModeEvent
@@ -629,7 +655,11 @@ func (s *State) shopActionMessage(originalChoice string) string {
 		s.enterShopStockMenu()
 		return ""
 	case "VIEW":
-		return s.catalog.Text("shop_view_unavailable", "查看角色與物品功能尚待接入。")
+		if len(s.partyRoster) == 0 {
+			return s.catalog.Text("shop_view_unavailable", "目前沒有可查看的角色。")
+		}
+		s.enterShopViewMenu()
+		return ""
 	case "TAKE":
 		return s.catalog.Text("shop_take_unavailable", "請先選擇角色與金幣數量。")
 	case "POOL":
@@ -664,6 +694,23 @@ func (s *State) enterShopStockMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_exit", "離開商店商品列表"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopViewMenu() {
+	s.shopMenu = true
+	s.shopStockMenu = false
+	s.shopViewMenu = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_view_prompt", "選擇要查看的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d，%d GP）", character.Name, character.HitPoints, character.MaxHitPoints, character.Gold))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_VIEW_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_view_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_VIEW_EXIT")
 	s.Message = ""
 }
 

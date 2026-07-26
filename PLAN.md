@@ -236,6 +236,7 @@
 - [x] 將城市 `STORE` 接成繁中 Shop Menu command state，保留 stock／money-pool 邊界。
 - [x] 建立 injected shop stock、party money pool、POOL／TAKE／SHARE 與 BUY state API。
 - [x] 將 BUY 接成繁中商品清單、價格顯示、pool 扣款與 inventory 更新。
+- [x] 將 VIEW 接成繁中角色 HP／金幣／裝備摘要與返回 Shop Menu。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
