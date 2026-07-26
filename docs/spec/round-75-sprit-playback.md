@@ -11,7 +11,7 @@
 
 ## 邊界
 
-目前沒有實作 reference 的方向 flip、frame position offset、PIC/FINAL XOR delta、CHEAD/CBODY merge 或完整八方向 combat placement。
+目前沒有實作 reference 的方向 flip、PIC/FINAL XOR delta 或完整八方向 combat placement；第 79 輪已補上 SPRIT frame position offset，CHEAD/CBODY merge 則見第 76 輪。
 
 ## 驗證
 

@@ -67,6 +67,8 @@ type app struct {
 type combatAnimation struct {
 	image *ebiten.Image
 	delay uint32
+	x     int16
+	y     int16
 }
 
 func (a *app) Update() error {
@@ -571,6 +573,7 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	}
 	key := ""
 	var sprite *ebiten.Image
+	var frameX, frameY int16
 	if fighter.Side == combat.SideParty {
 		// Party icons are the original CHEAD+CBODY composition. The current
 		// roster has deterministic slots; character-specific icon IDs will
@@ -589,7 +592,9 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	if sprite == nil && fighter.HasAnimation {
 		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
 		if animation := a.combatAnimations[key]; len(animation) > 0 {
-			sprite = animationImage(animation, time.Since(a.animationStart))
+			frame := animationFrame(animation, time.Since(a.animationStart))
+			sprite = frame.image
+			frameX, frameY = frame.x, frame.y
 		}
 	}
 	if sprite == nil && fighter.SpriteBlock != 0 {
@@ -606,10 +611,10 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	op := &ebiten.DrawImageOptions{}
 	if fighter.IconDirection > 3 {
 		op.GeoM.Scale(-2, 2)
-		op.GeoM.Translate(float64(x)+float64(sprite.Bounds().Dx()*2), float64(y))
+		op.GeoM.Translate(float64(x)+float64(frameX*2)+float64(sprite.Bounds().Dx()*2), float64(y)+float64(frameY*2))
 	} else {
 		op.GeoM.Scale(2, 2)
-		op.GeoM.Translate(float64(x), float64(y))
+		op.GeoM.Translate(float64(x)+float64(frameX*2), float64(y)+float64(frameY*2))
 	}
 	screen.DrawImage(sprite, op)
 }
@@ -709,11 +714,11 @@ func main() {
 	}
 }
 
-func animationImage(frames []combatAnimation, elapsed time.Duration) *ebiten.Image {
+func animationFrame(frames []combatAnimation, elapsed time.Duration) combatAnimation {
 	if len(frames) == 0 {
-		return nil
+		return combatAnimation{}
 	}
-	return frames[animationFrameIndex(frames, elapsed)].image
+	return frames[animationFrameIndex(frames, elapsed)]
 }
 
 func animationFrameIndex(frames []combatAnimation, elapsed time.Duration) int {
@@ -763,6 +768,8 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 	var records []struct {
 		Name  string `json:"name"`
 		Delay uint32 `json:"delay"`
+		X     int16  `json:"x"`
+		Y     int16  `json:"y"`
 	}
 	if err := json.Unmarshal(animationData, &records); err != nil {
 		return nil, nil, nil, fmt.Errorf("parse combat animation manifest: %w", err)
@@ -783,7 +790,7 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 			return nil, nil, nil, fmt.Errorf("animation asset %q has no frame marker", record.Name)
 		}
 		key := record.Name[:frameMarker]
-		animations[key] = append(animations[key], combatAnimation{image: ebiten.NewImageFromImage(decoded), delay: record.Delay})
+		animations[key] = append(animations[key], combatAnimation{image: ebiten.NewImageFromImage(decoded), delay: record.Delay, x: record.X, y: record.Y})
 	}
 	return images, ids, animations, nil
 }
