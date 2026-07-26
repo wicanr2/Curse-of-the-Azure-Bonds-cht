@@ -37,6 +37,7 @@
 - `internal/ecl.TraceGraph` 已能追蹤 code-segment `GOTO/GOSUB` targets；不執行條件或副作用。
 - 參考公開 CoAB 重寫程式後，確認 ECL 初始化會先連續讀五組 word-valued command-set；`internal/ecl.EntryPoints` 已加入此安全解析器與 regression test。
 - 實際 `ECL1.DAX` 三個 block 的 initial entry 都解析為 `0x8014`；CLI `-graph` 已優先使用該入口對應的 payload offset `+0x0014`，不再盲目從 `+0x0000` 開始。
+- `ParseOperands` 已正確消耗 `0x80 length payload` compressed-string operand；`TraceAt` 可從 initial entry 開始，block 81 已回歸解出 `AS YOU DEPART...`、`AS YOU LEAVE...` 等原始事件文字。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -44,6 +45,7 @@
 - DAX 的 header、壓縮方式、索引與圖像／腳本子格式。
 - `GAME.OVR` 與 `START.EXE` 的載入關係。
 - ECL opcode、字串編碼、分支／呼叫慣例。
+- unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
 - 中文化的字型格式與字串長度限制。
 
 ## 下一步

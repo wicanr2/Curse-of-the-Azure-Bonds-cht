@@ -25,3 +25,17 @@ func TestRejectsTruncatedOperand(t *testing.T) {
 		t.Fatal("expected truncation error")
 	}
 }
+
+func TestParsePackedOperandConsumesLengthPrefixedBytes(t *testing.T) {
+	payload := []byte{0x11, 0x80, 0x03, 0xAA, 0xBB, 0xCC, 0x00}
+	operands, next, err := ParseOperands(payload, 0, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if operands[0].Code != 0x80 || string(operands[0].Packed) != string([]byte{0xAA, 0xBB, 0xCC}) {
+		t.Fatalf("packed operand: %#v", operands[0])
+	}
+	if next != 6 {
+		t.Fatalf("next=%d, want 6", next)
+	}
+}

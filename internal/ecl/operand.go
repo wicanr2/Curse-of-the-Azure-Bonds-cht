@@ -10,6 +10,9 @@ type Operand struct {
 	High    byte
 	Word    uint16
 	WordSet bool
+	// Packed is present for code 0x80 operands. It contains exactly the
+	// length-prefixed compressed bytes consumed by vm_LoadCmdSets.
+	Packed []byte
 }
 
 // ParseOperands follows the operand framing used by the Gold Box ECL dump:
@@ -28,7 +31,14 @@ func ParseOperands(payload []byte, offset, count int) ([]Operand, int, error) {
 		}
 		operand := Operand{Code: payload[pos+1], Low: payload[pos+2]}
 		pos += 2
-		if operand.Code == 1 || operand.Code == 2 || operand.Code == 3 {
+		if operand.Code == 0x80 {
+			length := int(operand.Low)
+			if pos+1+length > len(payload) {
+				return nil, pos, fmt.Errorf("operand %d packed string is truncated", i)
+			}
+			operand.Packed = append([]byte(nil), payload[pos+1:pos+1+length]...)
+			pos += length
+		} else if operand.Code == 1 || operand.Code == 2 || operand.Code == 3 {
 			pos++
 			if pos >= len(payload) {
 				return nil, pos, fmt.Errorf("operand %d high byte is truncated", i)
@@ -119,10 +129,20 @@ func EntryPoints(block []byte, count int) ([]uint16, int, error) {
 // Trace decodes cursor movement only. It stops at the first unknown command
 // or malformed operand and returns the already decoded prefix plus an error.
 func Trace(block []byte, limit int) ([]Instruction, error) {
+	return TraceAt(block, 0, limit)
+}
+
+// TraceAt is Trace with an explicit decoded payload offset. This is needed
+// for ECL blocks whose executable entry is stored in the initialization
+// command sets rather than at payload offset zero.
+func TraceAt(block []byte, start, limit int) ([]Instruction, error) {
 	if len(block) < 2 {
 		return nil, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
 	payload := block[2:]
+	if start < 0 || start >= len(payload) {
+		return nil, fmt.Errorf("trace start %d is outside payload", start)
+	}
 	if limit <= 0 || limit > len(payload) {
 		limit = len(payload)
 	}
@@ -131,7 +151,7 @@ func Trace(block []byte, limit int) ([]Instruction, error) {
 		if len(trace) > 0 && trace[len(trace)-1].Next >= len(payload) {
 			return trace, nil
 		}
-		offset := 0
+		offset := start
 		if len(trace) > 0 {
 			offset = trace[len(trace)-1].Next
 		}
