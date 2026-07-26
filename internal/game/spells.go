@@ -8,6 +8,8 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
+const MagicMissileSpellID uint8 = 7
+
 // firstLevelSpellKeys contains only spell names whose class table order is
 // verified in the supplied RuleBook. Spell IDs outside this bounded catalog
 // remain visible as hex so the DOS slot data is never silently relabeled.

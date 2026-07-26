@@ -254,6 +254,9 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
+			return a.state.CombatCast(game.MagicMissileSpellID)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			return a.state.CombatSelectTarget(1)
 		}
@@ -652,7 +655,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+84, white)
 		enemyIndex++
 	}
-	text.Draw(screen, "左右：選擇目標　Enter：攻擊", a.face, 32, 350, cyan)
+	spellHint := ""
+	if a.state.CombatCanCastMagicMissile() {
+		spellHint = "　S：魔法飛彈"
+	}
+	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }
 
 func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {
