@@ -233,3 +233,22 @@ func TestRunSubsetConsumesTreasureOperandsAsBoundedNoOp(t *testing.T) {
 		t.Fatalf("result=%+v, want TREASURE then EXIT", result)
 	}
 }
+
+func TestRunSubsetRandomUsesInclusiveRangeAndSeed(t *testing.T) {
+	// RANDOM 3, 0x0100; SAVE 0x0100, 0x0101; EXIT.
+	block := []byte{0, 0, 0x08, 0x00, 0x03, 0x01, 0x00, 0x01, 0x09, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00}
+	first, err := RunSubsetWithSelectionsSeed(block, 0, 8, nil, 99)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := RunSubsetWithSelectionsSeed(block, 0, 8, nil, 99)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(first.RandomValues) != 1 || first.RandomValues[0] > 3 || len(second.RandomValues) != 1 || first.RandomValues[0] != second.RandomValues[0] {
+		t.Fatalf("seeded random values=%v,%v", first.RandomValues, second.RandomValues)
+	}
+	if first.Steps != second.Steps || first.PC != second.PC {
+		t.Fatalf("seeded runs diverged: first=%+v second=%+v", first, second)
+	}
+}

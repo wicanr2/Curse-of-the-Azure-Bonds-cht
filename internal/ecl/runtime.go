@@ -1,6 +1,9 @@
 package ecl
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
@@ -17,6 +20,7 @@ type RunResult struct {
 	ProgramIDs         []uint8
 	ProgramExit        bool
 	SelectionsConsumed int
+	RandomValues       []uint16
 }
 
 type Menu struct {
@@ -32,7 +36,7 @@ type Menu struct {
 // useful for proving an event prefix without silently treating the whole ECL
 // program as implemented.
 func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
-	return runSubset(block, start, maxSteps, nil, false)
+	return runSubset(block, start, maxSteps, nil, false, 1)
 }
 
 // RunSubsetWithSelections is RunSubset with deterministic selections for
@@ -40,17 +44,29 @@ func RunSubset(block []byte, start, maxSteps int) (RunResult, error) {
 // default index 0. This is the bridge between ECL menu semantics and a UI;
 // it does not pretend to implement the original blocking DOS input routine.
 func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uint16) (RunResult, error) {
-	return runSubset(block, start, maxSteps, selections, false)
+	return runSubset(block, start, maxSteps, selections, false, 1)
+}
+
+// RunSubsetWithSelectionsSeed is the deterministic variant used when an ECL
+// event contains RANDOM. It keeps the legacy wrapper behavior stable while
+// allowing a game session or regression to choose its own replay seed.
+func RunSubsetWithSelectionsSeed(block []byte, start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
+	return runSubset(block, start, maxSteps, selections, false, seed)
 }
 
 // RunSubsetInteractive pauses at the first menu whose selection is not
 // supplied. This allows a UI to feed one choice per frame/event instead of
 // silently choosing index zero for all later menus.
 func RunSubsetInteractive(block []byte, start, maxSteps int, selections []uint16) (RunResult, error) {
-	return runSubset(block, start, maxSteps, selections, true)
+	return runSubset(block, start, maxSteps, selections, true, 1)
 }
 
-func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool) (RunResult, error) {
+// RunSubsetInteractiveSeed is the seeded interactive runner for ECL RANDOM.
+func RunSubsetInteractiveSeed(block []byte, start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
+	return runSubset(block, start, maxSteps, selections, true, seed)
+}
+
+func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -66,6 +82,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 	stack := make([]int, 0)
 	memory := make(map[uint16]uint16)
 	stringsMemory := make(map[uint16]string)
+	rng := rand.New(rand.NewSource(seed))
 	var compare [6]bool
 	selectionCursor := 0
 	result := RunResult{PC: pc}
@@ -150,6 +167,26 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				value = left * right
 			}
 			memory[instruction.Operands[2].Word] = value
+		case 0x08: // RANDOM
+			if !instruction.Operands[1].WordSet {
+				return result, fmt.Errorf("random at %d has non-address destination", pc)
+			}
+			maximum, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("random at %d: %w", pc, err)
+			}
+			// The original increments every maximum below 0xFF, making the
+			// command an inclusive range [0, maximum].
+			bound := int(maximum)
+			if bound < 0xFF {
+				bound++
+			}
+			if bound == 0 {
+				bound = 1
+			}
+			value := uint16(rng.Intn(bound))
+			memory[instruction.Operands[1].Word] = value
+			result.RandomValues = append(result.RandomValues, value)
 		case 0x14: // COMPARE AND
 			leftA, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {
