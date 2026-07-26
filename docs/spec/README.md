@@ -134,3 +134,4 @@
 - [第一百三十七輪 combat Bless](./137-combat-bless.md)（`READY`：限 Bless party attack bonus 與 no-target confirmation）
 - [第一百三十八輪 combat Bless adjacency／duration](./138-combat-bless-duration-adjacency.md)（`READY`：限八方向相鄰排除與 6 回合 duration）
 - [第一百三十九輪 combat Curse](./139-combat-curse.md)（`READY`：限敵方 debuff、相鄰排除與 6 回合 duration）
+- [第一百四十輪 combat Cause Light Wounds](./140-combat-cause-light-wounds.md)（`READY`：限 1d8 touch damage 與 target transaction）

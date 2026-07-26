@@ -28,6 +28,8 @@ Bless 是第一個可沿用的 buff transaction：`B` 開始、Enter 確認、Es
 
 Curse 沿用同一 transaction 但 target side 相反：`C` 開始敵方目標選擇，Enter 才扣牧師 slot，Esc 完全取消；core 對未與存活 party fighter 八方向相鄰的 enemy 套用 `AttackBonus -1`、`CurseRounds=6`，每次新回合遞減並在期滿恢復。RuleBook 明確說 Curse 目標無 saving throw；range／area 的完整地圖選擇仍由後續 CombatMap／ECL adapter 提供。
 
+Cause Light Wounds 是同一 target transaction 的傷害變體：`W` 開始敵方 touch target selection，Enter 才扣牧師 slot，Esc 取消；core 以 deterministic `1d8` 減少相鄰敵人 HP，無 saving throw，並沿用 Battle 的死亡／勝負 transition。Cure 與 Cause 都是 touch spell，不能共用 Bless／Curse 的 party-wide target fallback；缺少位置資料時才使用 direct API 的 bounded fallback。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
