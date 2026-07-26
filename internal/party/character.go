@@ -108,6 +108,9 @@ type Character struct {
 	IconWeaponBlock uint8                  `json:"icon_weapon,omitempty"`
 	HitPoints       int                    `json:"hit_points,omitempty"`
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
+	Gold            uint16                 `json:"gold,omitempty"`
+	Gems            uint16                 `json:"gems,omitempty"`
+	Jewelry         uint16                 `json:"jewelry,omitempty"`
 	Equipment       []monster.ItemRecord   `json:"equipment,omitempty"`
 	Effects         []monster.AffectRecord `json:"effects,omitempty"`
 	// SpellSlots is the data-neutral ordered spell-slot list used by ECL

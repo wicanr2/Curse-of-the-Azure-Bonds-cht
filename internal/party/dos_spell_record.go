@@ -54,6 +54,36 @@ type DOSPlayerRecord struct {
 	Effects          []monster.AffectRecord
 }
 
+// DOSPlayerFiles is the decomposed character bundle documented by the
+// original game: the .SAV/.GUY record is required, while .FX and .SWG are
+// optional sidecar streams.
+type DOSPlayerFiles struct {
+	Record    []byte
+	Effects   []byte
+	Inventory []byte
+}
+
+// ParseDOSPlayerFiles imports one character from the three original sidecar
+// files. It deliberately stops before SAVGAM*.DAT/container parsing, whose
+// address space and area payload are a separate format boundary.
+func ParseDOSPlayerFiles(id string, files DOSPlayerFiles) (Character, error) {
+	record, err := ParseDOSPlayerRecord(files.Record, id)
+	if err != nil {
+		return Character{}, err
+	}
+	if files.Effects != nil {
+		if err := record.ApplyEffects(files.Effects); err != nil {
+			return Character{}, err
+		}
+	}
+	if files.Inventory != nil {
+		if err := record.ApplyInventory(files.Inventory); err != nil {
+			return Character{}, err
+		}
+	}
+	return record.Character()
+}
+
 // ParseDOSPlayerRecord decodes the documented fixed portion of a decompressed
 // .SAV/.GUY player record. Only single-class races/classes represented by the
 // current remake Character model are accepted; raw offsets for inventory and
@@ -110,6 +140,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconSize: r.IconSize,
 		Equipment:  append([]monster.ItemRecord(nil), r.Inventory...),
 		Effects:    append([]monster.AffectRecord(nil), r.Effects...),
