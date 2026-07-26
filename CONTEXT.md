@@ -314,4 +314,4 @@
 
 第一百零五輪功能／文件 commit：`f57ba3e`，已推送至 GitHub `main`。將 active Bless／Curse effect 投影為 fighter attack +1／-1，其他 target/phase effects 保留未套用。
 
-第一百零六輪功能／文件 commit：待本輪提交。新增 active Blind／Bestow Curse／friendly Prayer fighter projection；Haste、Protection、Mirror Image 與完整 target/action rules 仍未完成。
+第一百零六輪功能／文件 commit：`253fdfb`，已推送至 GitHub `main`。新增 active Blind／Bestow Curse／friendly Prayer fighter projection；Haste、Protection、Mirror Image 與完整 target/action rules 仍未完成。
