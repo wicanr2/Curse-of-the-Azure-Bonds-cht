@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 76 輪：CHEAD／CBODY party combat icon 圖層合成與 Gold Box 圖像知識庫。
+第 77 輪：玩家戰鬥 icon state、normal／attack 圖層與方向 flip。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -96,6 +96,8 @@
 第 75 輪功能／文件 commit：`e720de7`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 76 輪功能／文件 commit：`3e11803`，已推送至 GitHub `main`。已加入 `gfx.MergePictures` 的透明／bitwise-OR 合成規則；從 `CHEAD.DAX`／`CBODY.DAX` 產生六張 `party-block-XX.png`，Ebiten party fighter 優先顯示合成小人；新增 `docs/knowledge/gold-box-graphics.md` 與第 76 輪規格。測試與素材重建通過。
+
+第 77 輪功能／文件 commit：`419cd9d`，已推送至 GitHub `main`。`combat.Fighter` 現在保存 party icon head/body、normal／attack 與 direction state；`gfx.Picture.FlipHorizontal` 與 Ebiten renderer 已接入方向 flip；generator 產生 normal／attack CHEAD＋CBODY 合成圖，並補上第 77 輪規格與知識庫更新。`go test ./...` 通過。
 
 ## 已確認
 
