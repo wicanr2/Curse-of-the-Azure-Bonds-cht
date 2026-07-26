@@ -365,7 +365,11 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				}
 				next = skipped.Next
 			}
-		case 0x0E, 0x1C, 0x21, 0x31, 0x3D: // stateful in the full engine; safe prefix no-op
+		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x3D:
+			// PICTURE, CLEARMONSTERS, LOAD FILES, TREASURE, SPRITE OFF and
+			// CLEAR BOX have decoded arity but require the full renderer,
+			// party/inventory or asset state. Consuming their operands and
+			// continuing is a bounded prefix behavior, not a claim of effects.
 		default:
 			return result, fmt.Errorf("unsupported opcode 0x%02X at payload offset %d", instruction.Command.Opcode, pc)
 		}

@@ -176,3 +176,20 @@ func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 		t.Fatalf("text=%q, want one empty string", result.Text)
 	}
 }
+
+func TestRunSubsetConsumesTreasureOperandsAsBoundedNoOp(t *testing.T) {
+	// TREASURE has eight decoded operands. The bounded runner must consume
+	// them before continuing to EXIT, without inventing inventory effects.
+	payload := []byte{0x27}
+	for i := 0; i < 8; i++ {
+		payload = append(payload, 0x00, 0x00)
+	}
+	payload = append(payload, 0x00)
+	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Steps != 2 || result.PC != len(payload) {
+		t.Fatalf("result=%+v, want TREASURE then EXIT", result)
+	}
+}

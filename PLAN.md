@@ -170,4 +170,5 @@
 - [x] 驗證 ECL5 block 0x30 `+0x0098` 的第二條 real NEWECL。
 - [x] 將 Shadowdale `WILDERNESS/EXIT` 接成資料中立的 map entry／movement slice。
 - [x] 將 `INN/STORE/BAR/LEAVE` 接成 Shadowdale `ModePlace` 與繁中 state event contract。
+- [x] 將 `TREASURE` 8-operand framing 接入 bounded no-op，讓場所 trace 可安全繼續。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
