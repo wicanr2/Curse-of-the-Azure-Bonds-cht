@@ -6,8 +6,10 @@ import "fmt"
 // intentionally separate from RunSubset: VM execution state can be extended
 // later without confusing a DAX block switch with a fallthrough branch.
 type BlockSession struct {
-	blocks  map[uint8][]byte
-	current uint8
+	blocks          map[uint8][]byte
+	current         uint8
+	states          map[uint8]*RuntimeState
+	selectionOffset int
 }
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
@@ -21,7 +23,11 @@ func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, err
 	for id, data := range blocks {
 		owned[id] = append([]byte(nil), data...)
 	}
-	return &BlockSession{blocks: owned, current: current}, nil
+	states := make(map[uint8]*RuntimeState, len(owned))
+	for id := range owned {
+		states[id] = NewRuntimeState(0)
+	}
+	return &BlockSession{blocks: owned, current: current, states: states}, nil
 }
 
 func (s *BlockSession) CurrentBlockID() uint8 { return s.current }
@@ -35,6 +41,9 @@ func (s *BlockSession) Switch(id uint8) error {
 		return fmt.Errorf("ECL session target block 0x%02X is unavailable", id)
 	}
 	s.current = id
+	if _, ok := s.states[id]; !ok {
+		s.states[id] = NewRuntimeState(0)
+	}
 	return nil
 }
 
@@ -87,7 +96,7 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
 	var aggregate RunResult
 	var err error
-	selectionOffset := 0
+	selectionOffset := s.selectionOffset
 	for transitions := 0; transitions < 8; transitions++ {
 		remaining := selections
 		if selectionOffset < len(selections) {
@@ -95,7 +104,11 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		} else {
 			remaining = nil
 		}
-		result, runErr := RunSubsetInteractiveSeed(s.CurrentData(), start, maxSteps, remaining, seed)
+		runtime := s.states[s.current]
+		if !runtime.Started {
+			runtime.PC = start
+		}
+		result, runErr := runSubsetWithState(s.CurrentData(), start, maxSteps, remaining, true, seed, runtime)
 		aggregate.Text = append(aggregate.Text, result.Text...)
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
@@ -111,6 +124,7 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
 		selectionOffset += result.SelectionsConsumed
+		s.selectionOffset = selectionOffset
 		if runErr != nil {
 			return aggregate, runErr
 		}

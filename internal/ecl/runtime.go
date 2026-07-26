@@ -32,6 +32,27 @@ type Menu struct {
 	Prompt   string
 }
 
+// RuntimeState is the resumable portion of the bounded ECL VM. A menu pause
+// must not discard the memory writes, comparison flags, or call stack that led
+// to it; otherwise feeding the next choice replays the event from its entry
+// with a different machine state.
+type RuntimeState struct {
+	PC      int
+	Started bool
+	Stack   []int
+	Memory  map[uint16]uint16
+	Strings map[uint16]string
+	Compare [6]bool
+}
+
+func NewRuntimeState(start int) *RuntimeState {
+	return &RuntimeState{
+		PC:      start,
+		Memory:  make(map[uint16]uint16),
+		Strings: make(map[uint16]string),
+	}
+}
+
 // RunSubset executes only commands whose semantics are represented here.
 // Unsupported commands return an error at their exact payload offset. This is
 // useful for proving an event prefix without silently treating the whole ECL
@@ -68,6 +89,10 @@ func RunSubsetInteractiveSeed(block []byte, start, maxSteps int, selections []ui
 }
 
 func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
+	return runSubsetWithState(block, start, maxSteps, selections, pauseOnMissing, seed, NewRuntimeState(start))
+}
+
+func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -85,6 +110,28 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 	stringsMemory := make(map[uint16]string)
 	rng := rand.New(rand.NewSource(seed))
 	var compare [6]bool
+	if runtime != nil && runtime.Started {
+		pc = runtime.PC
+		stack = append(stack, runtime.Stack...)
+		for address, value := range runtime.Memory {
+			memory[address] = value
+		}
+		for address, value := range runtime.Strings {
+			stringsMemory[address] = value
+		}
+		compare = runtime.Compare
+	}
+	saveState := func(nextPC int) {
+		if runtime == nil {
+			return
+		}
+		runtime.PC = nextPC
+		runtime.Started = true
+		runtime.Stack = append(runtime.Stack[:0], stack...)
+		runtime.Memory = memory
+		runtime.Strings = stringsMemory
+		runtime.Compare = compare
+	}
 	selectionCursor := 0
 	result := RunResult{PC: pc}
 	for result.Steps < maxSteps {
@@ -255,6 +302,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				result.Menus = append(result.Menus, menu)
 				result.WaitingForMenu = true
 				result.PC = pc
+				saveState(pc)
 				return result, nil
 			}
 			if selectionCursor < len(selections) && selections[selectionCursor] < uint16(len(options)) {
@@ -301,6 +349,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				result.Menus = append(result.Menus, menu)
 				result.WaitingForMenu = true
 				result.PC = pc
+				saveState(pc)
 				return result, nil
 			}
 			if selectionCursor < len(selections) && selections[selectionCursor] < count {
@@ -346,6 +395,7 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 				result.Menus = append(result.Menus, menu)
 				result.WaitingForMenu = true
 				result.PC = pc
+				saveState(pc)
 				return result, nil
 			}
 			if selectionCursor < len(selections) && selections[selectionCursor] < count {
