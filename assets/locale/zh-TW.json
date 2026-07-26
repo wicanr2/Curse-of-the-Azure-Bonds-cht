@@ -91,6 +91,7 @@
 	,"camp_rest_subtract": "減少 24 小時"
 	,"camp_rest_exit": "返回紮營選單"
 	,"camp_rest_done": "休息 %d 小時完成，隊伍自然恢復 %d HP。"
+	,"camp_rest_insufficient": "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。"
     ,"camp_continue": "Enter：返回荒野"
     ,"camp_menu_prompt": "紮營選單"
     ,"camp_save": "儲存"

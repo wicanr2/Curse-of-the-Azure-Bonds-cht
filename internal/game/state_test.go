@@ -877,6 +877,27 @@ func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
 	}
 }
 
+func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
+	if got := firstLevelMemorizationHours(map[int][]uint8{0: {1}}); got != 5 {
+		t.Fatalf("one first-level spell requires %d hours, want 5", got)
+	}
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{1}}}
+	state.pendingMemorizedSpells = map[int][]uint8{0: {7}}
+	state.SetRestHours(4)
+	state.enterCampMenu()
+	state.enterCampRestMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 1 {
+		t.Fatalf("short rest changed slots=%v", got)
+	}
+	if !strings.Contains(state.Message, "至少需要 5 小時") || state.pendingMemorizedSpells[0][0] != 7 {
+		t.Fatalf("short rest state=%#v", state)
+	}
+}
+
 func TestCampMenuSaveEmitsRequest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
