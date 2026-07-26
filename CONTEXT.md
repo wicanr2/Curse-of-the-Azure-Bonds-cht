@@ -362,4 +362,4 @@
 
 第一百二十九輪功能／文件 commit：`ce44a6d`，已推送至 GitHub `main`。CAMP MAGIC 現在將已核對的一級牧師／魔法師前八個 spell IDs 顯示為繁中名稱，未知 ID 保留 hex；完整 spell catalog、CAST／MEMORIZE／SCRIBE 與 recovery rules 仍待反組譯。
 
-第一百三十輪待提交：將 DOS known-spell flags 保存到 `Character.KnownSpells`／party save，並在 CAMP MAGIC 顯示已記憶／可用數量；CAST／MEMORIZE／SCRIBE 與消耗規則仍未完成。
+第一百三十輪功能／文件 commit：`a885b9f`，已推送至 GitHub `main`。DOS known-spell flags 現在保存到 `Character.KnownSpells`／party save，並在 CAMP MAGIC 顯示已記憶／可用數量；CAST／MEMORIZE／SCRIBE 與消耗規則仍未完成。
