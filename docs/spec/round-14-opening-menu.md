@@ -18,7 +18,7 @@ TILVERTON / SHADOWDALE
 menu: ENTER CITY, JOURNEY ON, CAMP
 ```
 
-`internal/game.NewStateFromECL` 會將第一個 ECL menu 的英文選項保留於 `OriginalChoices`，並以 locale 映射成繁中選項；Ebiten prototype 改為繪製 state 的 choices。runner 目前選取 index 0 作為 deterministic extraction，尚未接玩家 menu input，也尚未實作 CAMP 行為。
+`internal/game.NewStateFromECL` 會將第一個 ECL menu 的英文選項保留於 `OriginalChoices`，並以 locale 映射成繁中選項；Ebiten prototype 改為繪製 state 的 choices。未提供 selection 時 runner 仍以 index 0 作為 deterministic extraction，但現在可注入 successive menu selections；CAMP 行為仍未實作。
 
 ## 驗收
 

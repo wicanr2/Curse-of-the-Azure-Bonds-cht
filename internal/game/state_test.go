@@ -67,4 +67,10 @@ func TestStateUsesECLInitialMenuChoices(t *testing.T) {
 	if len(state.OriginalChoices) != 2 || state.OriginalChoices[0] != "ENTER CITY" || state.Choices[1] != "繼續旅程" {
 		t.Fatalf("state=%#v", state)
 	}
+	if err := state.Apply(ActionStart); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil || state.Mode != ModeEvent || state.Message != "繼續旅程" {
+		t.Fatalf("selected state=%#v err=%v", state, err)
+	}
 }

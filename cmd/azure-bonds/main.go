@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strconv"
+	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
@@ -20,7 +22,12 @@ func main() {
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
+	selectionList := flag.String("select", "", "comma-separated HORIZONTAL MENU selections for -run-subset")
 	flag.Parse()
+	selections, err := parseSelections(*selectionList)
+	if err != nil {
+		log.Fatal(err)
+	}
 	data, err := zipMember(*image, *member)
 	if err != nil {
 		log.Fatal(err)
@@ -91,7 +98,7 @@ func main() {
 			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
 				start = int(points[4]) - ecl.CodeAddressBase
 			}
-			result, runErr := ecl.RunSubset(block.Data, start, 500)
+			result, runErr := ecl.RunSubsetWithSelections(block.Data, start, 500, selections)
 			fmt.Printf("  subset steps=%d stop=+0x%04X texts=%d\n", result.Steps, result.PC, len(result.Text))
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
@@ -104,6 +111,22 @@ func main() {
 			}
 		}
 	}
+}
+
+func parseSelections(value string) ([]uint16, error) {
+	if strings.TrimSpace(value) == "" {
+		return nil, nil
+	}
+	parts := strings.Split(value, ",")
+	selections := make([]uint16, 0, len(parts))
+	for _, part := range parts {
+		parsed, err := strconv.ParseUint(strings.TrimSpace(part), 10, 16)
+		if err != nil {
+			return nil, fmt.Errorf("invalid menu selection %q: %w", part, err)
+		}
+		selections = append(selections, uint16(parsed))
+	}
+	return selections, nil
 }
 
 func zipMember(path, member string) ([]byte, error) {
