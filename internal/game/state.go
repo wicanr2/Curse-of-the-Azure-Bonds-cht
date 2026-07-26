@@ -67,6 +67,8 @@ type State struct {
 	OriginalOpening          string
 	OriginalChoices          []string
 	OriginalEvent            string
+	PictureRequested         bool
+	PictureBlock             uint16
 	OriginalLocation         string
 	JournalTitle             string
 	JournalText              string
@@ -287,6 +289,13 @@ func (s *State) Select(index int) error {
 		}
 		s.applyGeoMapLoad(result)
 		s.applyCitySelection()
+		if result.PictureRequested {
+			s.PictureRequested = true
+			s.PictureBlock = result.PictureBlock
+			s.OriginalEvent = "PICTURE"
+			s.Message = "事件畫面"
+			return nil
+		}
 		if result.CombatRequested {
 			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(s.monsterRecords) > 0 {
 				if err := s.StartEncounter(result, s.monsterRecords, s.party, s.combatSeed); err != nil {
@@ -565,6 +574,10 @@ func (s *State) EnterPlaces() error {
 func (s *State) Continue() error {
 	if s.Mode != ModeEvent {
 		return fmt.Errorf("continue is invalid in mode %d", s.Mode)
+	}
+	if s.PictureRequested {
+		s.PictureRequested = false
+		s.PictureBlock = 0
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:

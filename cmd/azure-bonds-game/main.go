@@ -351,6 +351,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
 	}
 	if a.state.Mode == game.ModeEvent {
+		if a.state.PictureRequested {
+			a.drawPictureAnimation(screen)
+			return
+		}
 		text.Draw(screen, a.state.Message, a.face, 56, 220, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 330, white)
 	}
@@ -373,6 +377,22 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawCombat(screen, white, cyan)
 		return
 	}
+}
+
+func (a *app) drawPictureAnimation(screen *ebiten.Image) {
+	key := fmt.Sprintf("pic%d-block-%02X", a.state.Area.GameArea, a.state.PictureBlock)
+	frames := a.combatAnimations[key]
+	if len(frames) == 0 {
+		text.Draw(screen, "事件圖片素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		return
+	}
+	frame := animationFrame(frames, time.Since(a.animationStart))
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(2, 2)
+	op.GeoM.Translate(160+float64(frame.x*2), 76+float64(frame.y*2))
+	screen.DrawImage(frame.image, op)
+	text.Draw(screen, "事件畫面　Enter：繼續", a.face, 56, 350, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawWildernessMap(screen *ebiten.Image, white, cyan color.Color) {

@@ -222,6 +222,7 @@
 - [x] 反組並接入新建角色 head／weapon block 0 與 race-based icon size defaults。
 - [x] 將 SPRIT frame x/y position metadata 寫入 manifest 並接入 combat renderer。
 - [x] 解碼 PIC1–PIC6 的 PIC/FINAL first-frame XOR delta，並加入共用 animation parser regression。
+- [x] 將 ECL `PICTURE` block request 接到可恢復繁中 event screen 與 PIC playback。
 - [ ] 將 DOS player record icon mapping、direction-specific position 與八方向 combat placement 接入 renderer。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

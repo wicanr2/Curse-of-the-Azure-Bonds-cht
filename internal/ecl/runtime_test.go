@@ -176,6 +176,16 @@ func TestRunSubsetReportsCombatRequest(t *testing.T) {
 	}
 }
 
+func TestRunSubsetReportsPictureRequest(t *testing.T) {
+	result, err := RunSubset([]byte{0, 0, 0x0E, 0x00, 0x1D, 0x00}, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.PictureRequested || result.PictureBlock != 0x1D {
+		t.Fatalf("result=%+v, want PIC block 0x1D", result)
+	}
+}
+
 func TestRunSubsetCarriesEncounterDescriptorsToCombat(t *testing.T) {
 	// SETUP MONSTER 4,2,4; LOAD MONSTER 0x56,10,0x56; COMBAT.
 	block := []byte{0, 0,
