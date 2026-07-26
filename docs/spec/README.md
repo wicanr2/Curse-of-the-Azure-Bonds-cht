@@ -110,3 +110,4 @@
 - [第一百一十三輪 Shop VIEW 角色／裝備摘要](./113-shop-view.md)（`READY`：限 party summary UI）
 - [第一百一十四輪 Shop TAKE 角色／金額選單](./114-shop-take-menu.md)（`READY`：限 bounded amount input）
 - [第一百一十五輪 Shop APPRAISE gems／jewelry](./115-shop-appraise.md)（`READY`：限 injected offer acceptance）
+- [第一百一十六輪 APPRAISE 接受／拒絕報價](./116-shop-appraise-confirm.md)（`READY`：限 confirmation branch）
