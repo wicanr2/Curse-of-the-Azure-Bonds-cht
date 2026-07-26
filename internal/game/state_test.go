@@ -751,6 +751,32 @@ func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
 	}
 }
 
+func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: 100,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "archer", Name: "敵方弓手", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+		AttacksPerTurn: 2,
+	}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatDone(); err != nil {
+		t.Fatal(err)
+	}
+	active, ok := state.CombatActiveFighter()
+	if state.Mode != ModeCombat || !ok || active.ID != "hero" {
+		t.Fatalf("enemy turn did not return to party: mode=%v message=%q", state.Mode, state.CombatMessage())
+	}
+	if active.HitPoints != 8 || !strings.Contains(state.CombatMessage(), "連續攻擊 2 次") {
+		t.Fatalf("enemy multi-attack not applied: fighter=%+v message=%q", active, state.CombatMessage())
+	}
+}
+
 func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 1}}}}

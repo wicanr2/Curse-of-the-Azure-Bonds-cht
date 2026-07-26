@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十四輪：combat attack preflight。
+第一百五十五輪：enemy RateOfFire turn。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -411,3 +411,5 @@
 第一百五十三輪功能／文件 commit：`e6971c8`，已推送至 GitHub `main`。依 RuleBook missile adjacent prohibition 與 dart thrown exception，將 ITEMS weapon group profile 投影到 fighter，Battle 在有 CombatMap 座標時拒絕 missile 近身攻擊；新增 tests、READY 規格與共用 state knowledge。完整 Range、line-of-sight、Aim cursor 與其他 thrown weapon 仍保留 boundary。
 
 第一百五十四輪功能／文件 commit：`e0d4e31`，已推送至 GitHub `main`。修正第 153 輪 guard 與第 150 輪 ammunition atomic contract 的順序，Battle 提供不擲骰 `ValidateAttack`，CombatAct 在扣除彈藥前先拒絕無效相鄰 missile attack；新增 regression、READY 規格與共用 state knowledge。完整 ranged multi-target transaction、Range、line-of-sight 與其他 thrown weapon 仍保留 boundary。
+
+第一百五十五輪待提交：將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn，讓敵方也使用 deterministic `AttackSequence` 與繁中多次攻擊摘要；新增 regression、READY 規格與共用 state knowledge。enemy AI、彈藥、Aim／line-of-sight 與額外職業攻擊仍保留 boundary。

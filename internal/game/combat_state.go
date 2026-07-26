@@ -1203,11 +1203,27 @@ func (s *State) advanceCombatToParty() error {
 		if len(party) == 0 {
 			return s.finishCombat()
 		}
-		result, err := s.battle.Attack(fighter.ID, party[0].ID)
-		if err != nil {
-			return err
+		if fighter.AttacksPerTurn > 1 {
+			results, err := s.battle.AttackSequence(fighter.ID, party[0].ID)
+			if err != nil {
+				return err
+			}
+			if len(results) == 1 {
+				target, ok := s.fighter(results[0].TargetID)
+				if !ok {
+					return fmt.Errorf("enemy attack target %q disappeared", results[0].TargetID)
+				}
+				s.combatMessage = formatAttackMessage(s.catalog, fighter, target, results[0])
+			} else {
+				s.combatMessage = formatMultiAttackMessage(s.catalog, fighter, results)
+			}
+		} else {
+			result, err := s.battle.Attack(fighter.ID, party[0].ID)
+			if err != nil {
+				return err
+			}
+			s.combatMessage = formatAttackMessage(s.catalog, fighter, party[0], result)
 		}
-		s.combatMessage = formatAttackMessage(s.catalog, fighter, party[0], result)
 		s.combatTurnIndex++
 	}
 	return s.finishCombat()
