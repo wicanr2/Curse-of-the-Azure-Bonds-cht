@@ -37,6 +37,6 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -geo-set 3 -geo-bl
 
 ## 尚未完成
 
-完整 ECL opcode／routine、副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。ECL `LOAD FILES` 已能驅動 GEO map preview，但完整 Area1／game-area loader 與所有原版 file side effects 仍未完成。
+完整 ECL opcode／routine、副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview；完整 Area1／game-area loader 與所有原版 file side effects 仍未完成。
 
 更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/) 與 [`docs/history.md`](docs/history.md)。
