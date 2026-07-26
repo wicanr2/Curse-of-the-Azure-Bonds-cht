@@ -46,6 +46,38 @@ func TestParseBaseItemsRejectsMalformedData(t *testing.T) {
 	}
 }
 
+func TestEquipmentEffectUsesBaseDamageAndPackedAC(t *testing.T) {
+	data := make([]byte, BaseItemHeaderSize+2*BaseItemRecordSize)
+	data[BaseItemHeaderSize+2] = 1
+	data[BaseItemHeaderSize+3] = 6
+	data[BaseItemHeaderSize+4] = 1
+	data[BaseItemHeaderSize+9] = 2
+	data[BaseItemHeaderSize+10] = 4
+	data[BaseItemHeaderSize+11] = 2
+	data[BaseItemHeaderSize+6] = 183
+	data[BaseItemHeaderSize+BaseItemRecordSize+0] = 2
+	data[BaseItemHeaderSize+BaseItemRecordSize+1] = 1
+	data[BaseItemHeaderSize+BaseItemRecordSize+6] = 129
+	catalog, err := ParseBaseItems(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	weapon, err := (ItemRecord{Type: 0, Plus: 1}).Effect(catalog, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if weapon.DamageDiceCount != 2 || weapon.DamageDiceSides != 4 || weapon.DamageBonus != 3 || weapon.AttackBonus != 1 {
+		t.Fatalf("weapon effect=%#v", weapon)
+	}
+	armor, err := (ItemRecord{Type: 1}).Effect(catalog, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if armor.Slot != 2 || armor.ArmorClassImprovement != 1 {
+		t.Fatalf("armor effect=%#v", armor)
+	}
+}
+
 func TestParseItemsAndSignedFields(t *testing.T) {
 	data := make([]byte, ItemRecordSize)
 	copy(data, "LONG SWORD")

@@ -8,6 +8,7 @@ import (
 	"math/rand"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 type Race uint8
@@ -102,7 +103,8 @@ type Character struct {
 	Level     int       `json:"level"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
-	IconSize uint8 `json:"icon_size,omitempty"`
+	IconSize  uint8                `json:"icon_size,omitempty"`
+	Equipment []monster.ItemRecord `json:"equipment,omitempty"`
 }
 
 type Roster []Character
@@ -162,6 +164,36 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
 	}, nil
+}
+
+// FighterWithEquipment applies readied base weapon/armor effects from a
+// decoded ITEMS catalog. It is an additive adapter for remake party JSON;
+// magical effect stacks and the original DOS inventory record remain outside
+// this boundary.
+func (c Character) FighterWithEquipment(catalog monster.BaseItemCatalog) (combat.Fighter, error) {
+	fighter, err := c.Fighter()
+	if err != nil {
+		return combat.Fighter{}, err
+	}
+	hasWeapon := false
+	for _, item := range c.Equipment {
+		if !item.Readied {
+			continue
+		}
+		effect, effectErr := item.Effect(catalog, false)
+		if effectErr != nil {
+			return combat.Fighter{}, effectErr
+		}
+		fighter.ArmorClass -= effect.ArmorClassImprovement
+		if effect.DamageDiceCount > 0 && !hasWeapon {
+			fighter.AttackBonus += effect.AttackBonus
+			fighter.DamageDiceCount = effect.DamageDiceCount
+			fighter.DamageDiceSides = effect.DamageDiceSides
+			fighter.DamageBonus = effect.DamageBonus
+			hasWeapon = true
+		}
+	}
+	return fighter, nil
 }
 
 // DefaultIconSize matches the original character creation race switch.

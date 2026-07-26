@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 90 輪：原始 `ITEMS` base-item catalog 與繁中名稱擴充。
+第 91 輪：`ITEMS` readied equipment 到 party fighter adapter。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -280,4 +280,6 @@
 46. 補裝備選擇、XP／等級與 party save/import。
 第 89 輪功能／文件 commit：`d389002`，已推送至 GitHub `main`。依 `ovr011.PlaceCombatants` 將遭遇距離與八方向 `mapDirection` 的 team origin／facing group 封裝為 `combat.EncounterTeamStart`，刻意未假設尚未解出的 occupancy／candidate ordering。
 
-第 90 輪功能／文件 commit：待本輪提交。原始 ZIP 的非 DAX `ITEMS` 已依公開 Gold Box 格式解析為 2-byte header（實際 bytes `00 76`）+ 128 筆 16-byte descriptor；新增 `monster.ParseBaseItems`、安全 lookup、CLI `-base-items` 與已知 base-item 繁中名稱 catalog。Docker 內 `go test ./...` 與原始 `ITEMS` CLI 驗證通過後提交。
+第 90 輪功能／文件 commit：`0151599`，已推送至 GitHub `main`。原始 `ITEMS` 解析與 128-type 繁中 catalog 已由實際 ZIP 驗證。
+
+第 91 輪功能／文件 commit：待本輪提交。新增 `monster.ItemRecord.Effect`、packed AC／base damage adapter 與 `party.Character.FighterWithEquipment`；只套用 readied 基本武器／護甲，charges、Affects／法術、雙持、彈藥與完整 DOS inventory 仍明確保留未完成。完成 Docker 測試後提交。
