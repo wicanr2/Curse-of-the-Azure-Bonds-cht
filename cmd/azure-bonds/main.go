@@ -27,6 +27,8 @@ func main() {
 	findOpcode := flag.Int("find-opcode", -1, "print reachable instructions with this opcode when used with -graph")
 	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
+	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
+	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
@@ -75,6 +77,26 @@ func main() {
 				fmt.Printf("  monster record stopped safely: %v\n", recordErr)
 			} else {
 				fmt.Printf("  monster name=%q mod=0x%02X hp=%d/%d ac=%d attack-bonus=%d damage=%dd%d%+d initiative=%d\n", record.Name, record.ModID, record.HitPoints, record.MaxHitPoints, record.ArmorClass, record.AttackBonus, record.DamageDiceCount, record.DamageDiceSides, record.DamageBonus, record.InitiativeBonus)
+			}
+		}
+		if *monsterItems {
+			items, itemErr := monster.ParseItems(block.Data)
+			if itemErr != nil {
+				fmt.Printf("  item records stopped safely: %v\n", itemErr)
+			} else {
+				for index, item := range items {
+					fmt.Printf("  item[%d] name=%q type=0x%02X plus=%d count=%d readied=%t cursed=%t affects=%#v\n", index, item.Name, item.Type, item.Plus, item.Count, item.Readied, item.Cursed, item.Affects)
+				}
+			}
+		}
+		if *monsterAffects {
+			affects, affectErr := monster.ParseAffects(block.Data)
+			if affectErr != nil {
+				fmt.Printf("  affect records stopped safely: %v\n", affectErr)
+			} else {
+				for index, affect := range affects {
+					fmt.Printf("  affect[%d] kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
+				}
 			}
 		}
 		if *scanOpcode >= 0 {

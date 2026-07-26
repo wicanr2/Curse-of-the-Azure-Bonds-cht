@@ -175,4 +175,5 @@
 - [x] 建立可注入骰點的 party／enemy combat core、initiative、AC、攻擊與傷害。
 - [x] 解析 ECL `SETUP MONSTER`／`LOAD MONSTER` descriptor，驗證 Shadowdale encounter sequence。
 - [x] 解碼 `MON*CHA` 固定 record offsets，建立 raw stats 到 `combat.Fighter` adapter。
+- [x] 解碼 `MON*ITM` 63-byte 與 `MON*SPC` 9-byte raw records。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
