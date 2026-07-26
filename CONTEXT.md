@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百四十輪：combat Cause Light Wounds。
+第一百四十一輪：combat Protection from Evil。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -382,4 +382,6 @@
 
 第一百三十九輪功能／文件 commits：`82e2c64`、`9279fc2`，已推送至 GitHub `main`。已接入 RuleBook Curse（spell ID `2`）的 C／敵方目標選擇／Enter confirmation；未與我方八方向相鄰的敵人攻擊加值降低 1，持續 6 回合後恢復，並保留無 position direct API fallback。
 
-第一百四十輪待提交：已接入 RuleBook Cause Light Wounds（spell ID `4`）的 W／敵方 touch target selection／Enter confirmation；相鄰敵人承受 deterministic 1d8 damage、無 saving throw，並保留無 position direct API fallback。新增 `docs/spec/140-combat-cause-light-wounds.md` 與 regression tests。
+第一百四十輪功能／文件 commits：`a2d968b`、`dabafa2`，已推送至 GitHub `main`。已接入 RuleBook Cause Light Wounds（spell ID `4`）的 W／敵方 touch target selection／Enter confirmation；相鄰敵人承受 deterministic 1d8 damage、無 saving throw，並保留無 position direct API fallback。
+
+第一百四十一輪待提交：已接入 RuleBook Protection from Evil（spell ID `6`）的 P／party touch target／Enter confirmation；明確標記 `Evil=true` 的攻擊者對受防護目標只獲得 AC +2 門檻，duration 為 `3×caster level` 回合；saving throw、alignment import 與 dispel 保留 boundary。

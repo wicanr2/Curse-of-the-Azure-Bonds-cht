@@ -135,3 +135,4 @@
 - [第一百三十八輪 combat Bless adjacency／duration](./138-combat-bless-duration-adjacency.md)（`READY`：限八方向相鄰排除與 6 回合 duration）
 - [第一百三十九輪 combat Curse](./139-combat-curse.md)（`READY`：限敵方 debuff、相鄰排除與 6 回合 duration）
 - [第一百四十輪 combat Cause Light Wounds](./140-combat-cause-light-wounds.md)（`READY`：限 1d8 touch damage 與 target transaction）
+- [第一百四十一輪 combat Protection from Evil](./141-combat-protection-from-evil.md)（`READY`：限 alignment-aware AC protection 與 `3r/lvl` duration）

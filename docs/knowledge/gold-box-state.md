@@ -30,6 +30,8 @@ Curse 沿用同一 transaction 但 target side 相反：`C` 開始敵方目標�
 
 Cause Light Wounds 是同一 target transaction 的傷害變體：`W` 開始敵方 touch target selection，Enter 才扣牧師 slot，Esc 取消；core 以 deterministic `1d8` 減少相鄰敵人 HP，無 saving throw，並沿用 Battle 的死亡／勝負 transition。Cure 與 Cause 都是 touch spell，不能共用 Bless／Curse 的 party-wide target fallback；缺少位置資料時才使用 direct API 的 bounded fallback。
 
+Protection from Evil 是 conditional defense transaction：`P` 開始 party touch target selection（施法者可 self-target），Enter 才扣 slot，Esc 取消；fighter 保存 `ProtectedFromEvil` 與 `ProtectionEvilRounds=3×level`。攻擊解析只有在 attacker 明確 `Evil=true` 時才把受防護 target 的 AC 提高 2，不改 base AC。因 `MON*CHA` 尚未提供 alignment 證據，不能把所有怪物猜成 evil；saving throw +2、alignment import 與 dispel 由後續 rules／DOS adapter 注入。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
