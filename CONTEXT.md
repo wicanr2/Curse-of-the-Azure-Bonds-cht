@@ -360,4 +360,4 @@
 
 第一百二十八輪功能／文件 commit：`c82919e`，已推送至 GitHub `main`。CAMP／PROGRAM 9 現在只開啟 CAMP Menu；REST 接入 `ADD／SUBTRACT／EXIT` 與每 24 小時自然恢復 1 HP，並同步 roster／fighter。法術記憶、遊戲時鐘與遭遇中斷仍待反組譯。
 
-第一百二十九輪功能／文件 commit：待本輪提交。CAMP MAGIC 現在將已核對的一級牧師／魔法師前八個 spell IDs 顯示為繁中名稱，未知 ID 保留 hex；完整 spell catalog、CAST／MEMORIZE／SCRIBE 與 recovery rules 仍待反組譯。
+第一百二十九輪功能／文件 commit：`ce44a6d`，已推送至 GitHub `main`。CAMP MAGIC 現在將已核對的一級牧師／魔法師前八個 spell IDs 顯示為繁中名稱，未知 ID 保留 hex；完整 spell catalog、CAST／MEMORIZE／SCRIBE 與 recovery rules 仍待反組譯。
