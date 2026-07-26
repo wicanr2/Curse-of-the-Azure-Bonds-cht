@@ -132,6 +132,8 @@ type State struct {
 	barTales               []string
 	barTaleIndex           int
 	campMenu               bool
+	campRestMenu           bool
+	restHours              int
 	campViewMenu           bool
 	campMagicMenu          bool
 	saveRequested          bool
@@ -249,6 +251,7 @@ func NewState(catalog locale.Catalog) State {
 			catalog.Text("bar_tale_5", "有人看見紅袍刺客在森林小徑巡邏。"),
 			catalog.Text("bar_tale_6", "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。"),
 		},
+		restHours:         24,
 		combatSeed:        1,
 		eclSeed:           1,
 		mapSeed:           1,
@@ -271,6 +274,17 @@ func (s *State) SetBarTales(tales []string) {
 }
 
 func (s *State) BarTaleIndex() int { return s.barTaleIndex }
+
+// SetRestHours sets the requested rest duration for deterministic tests and
+// future memorize/time adapters. REST uses 24-hour units for natural healing.
+func (s *State) SetRestHours(hours int) {
+	if hours < 0 {
+		hours = 0
+	}
+	s.restHours = hours
+}
+
+func (s *State) RestHours() int { return s.restHours }
 
 func (s *State) enterBarMenu() {
 	s.barMenu = true
@@ -306,6 +320,57 @@ func (s *State) selectBar(originalChoice string) error {
 	default:
 		return fmt.Errorf("unknown bar choice %q", originalChoice)
 	}
+}
+
+func (s *State) enterCampRestMenu() {
+	s.campRestMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_rest_menu_prompt", "休息設定")
+	s.Choices = []string{
+		fmt.Sprintf(s.catalog.Text("camp_rest_start", "開始休息（%d 小時）"), s.restHours),
+		s.catalog.Text("camp_rest_add", "增加 24 小時"),
+		s.catalog.Text("camp_rest_subtract", "減少 24 小時"),
+		s.catalog.Text("camp_rest_exit", "返回紮營選單"),
+	}
+	s.currentOriginalChoices = []string{"REST_START", "REST_ADD", "REST_SUBTRACT", "REST_EXIT"}
+	s.Message = ""
+}
+
+// restParty applies only the manual's natural-healing portion: one HP per
+// 24 uninterrupted hours. Spell memorization and random interruption are
+// intentionally separate adapters until their original data is decoded.
+func (s *State) restParty() int {
+	healed := s.restHours / 24
+	if healed <= 0 {
+		return 0
+	}
+	count := 0
+	if len(s.partyRoster) > 0 {
+		for index := range s.partyRoster {
+			before := s.partyRoster[index].HitPoints
+			s.partyRoster[index].HitPoints += healed
+			if s.partyRoster[index].HitPoints > s.partyRoster[index].MaxHitPoints {
+				s.partyRoster[index].HitPoints = s.partyRoster[index].MaxHitPoints
+			}
+			count += s.partyRoster[index].HitPoints - before
+			id := s.partyRoster[index].ID
+			for fighterIndex := range s.party {
+				if s.party[fighterIndex].ID == id {
+					s.party[fighterIndex].HitPoints = s.partyRoster[index].HitPoints
+				}
+			}
+		}
+		return count
+	}
+	for index := range s.party {
+		before := s.party[index].HitPoints
+		s.party[index].HitPoints += healed
+		if s.party[index].HitPoints > s.party[index].MaxHitPoints {
+			s.party[index].HitPoints = s.party[index].MaxHitPoints
+		}
+		count += s.party[index].HitPoints - before
+	}
+	return count
 }
 
 // SetMonsterRecords installs the decoded MON*CHA table used when an ECL
@@ -534,25 +599,14 @@ func (s *State) ConsumeGeoMapRequest() (set, block uint8, ok bool) {
 	return s.GeoMapSet, s.GeoMapBlock, true
 }
 
-// Camp applies the observable PROGRAM 9 transition. The full original
-// interruption, spell recovery and HP restoration rules remain data-driven
-// work; this method keeps the player-visible state transition explicit.
+// Camp applies the observable PROGRAM 9 transition by opening the CAMP menu.
+// Resting is a separate menu service; entering CAMP must not heal the party.
 func (s *State) Camp() error {
 	if s.Mode != ModeWilderness && s.Mode != ModeEvent {
 		return fmt.Errorf("camp is invalid in mode %d", s.Mode)
 	}
 	s.CampCount++
-	s.OriginalEvent = "PROGRAM 9"
-	if len(s.party) > 0 {
-		for index := range s.party {
-			s.party[index].HitPoints = s.party[index].MaxHitPoints
-		}
-		s.Message = s.catalog.Text("camp_restored", "隊伍休息後恢復體力。")
-	} else {
-		s.Message = s.catalog.Text("camp_resting", "你們紮營休息。")
-	}
-	s.eventReturnMode = ModeWilderness
-	s.Mode = ModeEvent
+	s.enterCampMenu()
 	return nil
 }
 
@@ -624,6 +678,7 @@ func (s *State) Fix() (healed, casts int, err error) {
 
 func (s *State) enterCampMenu() {
 	s.campMenu = true
+	s.campRestMenu = false
 	s.campViewMenu = false
 	s.campMagicMenu = false
 	s.alterMenu = false
@@ -652,6 +707,33 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.campRestMenu {
+		switch originalChoice {
+		case "REST_ADD":
+			s.restHours += 24
+			s.enterCampRestMenu()
+			return nil
+		case "REST_SUBTRACT":
+			if s.restHours >= 24 {
+				s.restHours -= 24
+			}
+			s.enterCampRestMenu()
+			return nil
+		case "REST_EXIT":
+			s.enterCampMenu()
+			return nil
+		case "REST_START":
+			healed := s.restParty()
+			s.campRestMenu = false
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "REST"
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_done", "休息 %d 小時完成，隊伍自然恢復 %d HP。"), s.restHours, healed)
+			return nil
+		default:
+			return fmt.Errorf("unknown camp rest choice %q", originalChoice)
+		}
+	}
 	if s.alterIconMenu {
 		if originalChoice == "ALTER_ICON_EXIT" {
 			s.alterIconMenu = false
@@ -912,10 +994,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		return nil
 	}
 	if originalChoice == "REST" {
-		if err := s.Camp(); err != nil {
-			return err
-		}
-		s.campMenu = true
+		s.enterCampRestMenu()
 		return nil
 	}
 	if originalChoice == "SAVE" {

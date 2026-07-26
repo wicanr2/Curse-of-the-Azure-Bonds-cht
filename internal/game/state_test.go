@@ -687,11 +687,8 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	if err := state.Camp(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.CampCount != 1 || state.OriginalEvent != "PROGRAM 9" {
+	if state.Mode != ModeWilderness || !state.campMenu || state.CampCount != 1 {
 		t.Fatalf("camp state=%#v", state)
-	}
-	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {
-		t.Fatalf("camp continuation mode=%v err=%v", state.Mode, err)
 	}
 	if err := state.OpenJournal(); err != nil || state.Mode != ModeJournal || state.JournalTitle == "" || state.JournalText == "" {
 		t.Fatalf("journal state=%#v err=%v", state, err)
@@ -722,8 +719,14 @@ func TestCampMenuRestAndExit(t *testing.T) {
 	if err := state.Select(3); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "PROGRAM 9" || !state.campMenu || state.CampCount != 1 {
+	if state.Mode != ModeWilderness || !state.campRestMenu || !state.campMenu || len(state.Choices) != 4 || state.CampCount != 0 {
 		t.Fatalf("camp rest state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "REST" || state.RestHours() != 24 {
+		t.Fatalf("rest start state=%#v", state)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
@@ -1061,7 +1064,7 @@ func TestCampFixUsesMemorizedCureLightWounds(t *testing.T) {
 	}
 }
 
-func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
+func TestCampOpensMenuWithoutInstantHealing(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
 	if err := state.SetParty(party); err != nil {
@@ -1071,8 +1074,26 @@ func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	if err := state.Camp(); err != nil {
 		t.Fatal(err)
 	}
-	if got := state.PartyFighters()[0].HitPoints; got != 10 {
-		t.Fatalf("restored hp=%d, want 10", got)
+	if state.Mode != ModeWilderness || !state.campMenu || state.PartyFighters()[0].HitPoints != 3 {
+		t.Fatalf("camp state=%#v", state)
+	}
+}
+
+func TestCampRestNaturallyHealsOneHPPer24Hours(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 3, MaxHitPoints: 10}}
+	state.party = []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
+	state.SetRestHours(48)
+	state.enterCampMenu()
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.partyRoster[0].HitPoints != 5 || state.party[0].HitPoints != 5 || !strings.Contains(state.Message, "48") {
+		t.Fatalf("rest healing state=%#v", state)
 	}
 }
 

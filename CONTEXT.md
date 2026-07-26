@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百二十七輪：城市 BAR Tavern Tales state boundary。
+第一百二十八輪：CAMP REST menu／自然 HP recovery boundary。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -168,8 +168,8 @@
 - 已為實際觀察到的 item／effect IDs 接入繁中名稱：弩矢、輕弩、闊劍、盾牌、鏈甲、偵測隱形、酸液吐息；未知 IDs 仍明確 fallback。
 - `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止；`RunResult`／`State.StartEncounter` 已可傳入 Battle。
 - `cmd/azure-bonds-game -encounter` 已直接執行 ECL1 block `0x51 +0x1293`，讀取 `MON1CHA.DAX` 並進入戰鬥；此入口使用明確標示的 debug party，正常 opening 尚未自動抵達 encounter。
-- `PROGRAM 0/3/8/9` 已依參考重寫程式標示為外部 routine boundary；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu。CAMP／勝利／死亡 routine 本身仍待接入。
-- 已加入 `docs/manual/` 繁中遊玩手冊、`docs/history.md` 中文金盒子歷史筆記，以及遊戲內 `J`／`Esc` 冒險手札；`State.Camp` 接收 `PROGRAM 9` 並以繁中事件返回荒野，恢復規則仍未完成。
+- `PROGRAM 0/3/8/9` 已依參考重寫程式標示為外部 routine boundary；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu。CAMP 已開啟繁中 command menu，勝利／死亡 routine 仍待接入。
+- 已加入 `docs/manual/` 繁中遊玩手冊、`docs/history.md` 中文金盒子歷史筆記，以及遊戲內 `J`／`Esc` 冒險手札；`State.Camp` 接收 `PROGRAM 9` 並開啟 CAMP Menu，REST 的自然恢復已接入窄 boundary，完整時鐘／中斷規則仍未完成。
 - 冒險手札已擴充為八頁 locale-backed 摘要，State 保存頁碼並支援方向鍵翻頁；完整 59 個 Journal Entry／Tavern Tale 逐條觸發仍未完成。
 - `State.SetParty`／`PartyFighters` 已保存 party roster；戰鬥結束同步 HP，CAMP 對已保存 party 恢復 MaxHP，完整角色欄位與原始 CAMP side effects 仍未完成。
 - `internal/party` 已依 RuleBook／reference 建立六種玩家種族、六種基本職業、能力值 3–18、最低值與 1–6 人 roster validation。
@@ -357,3 +357,5 @@
 第一百二十六輪功能／文件 commit：`2de8b01`，已推送至 GitHub `main`。CAMP FIX 依已記憶的 Cure Light Wounds（目前由一級牧師表順序映射為 ID `3`）以 deterministic `1d8` 治療受傷 roster，並同步 combat fighter HP；spell catalog、時間推進與中斷規則仍待反組譯。
 
 第一百二十七輪功能／文件 commit：`c585d1b`，已推送至 GitHub `main`。城市 BAR 已接 ordered Tavern Tale menu、前六則繁中整理與城市場所返回；買酒價格、城市條件、完整 62 則內容與 ECL trigger 仍待反組譯。
+
+第一百二十八輪功能／文件 commit：待本輪提交。CAMP／PROGRAM 9 現在只開啟 CAMP Menu；REST 接入 `ADD／SUBTRACT／EXIT` 與每 24 小時自然恢復 1 HP，並同步 roster／fighter。法術記憶、遊戲時鐘與遭遇中斷仍待反組譯。
