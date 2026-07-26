@@ -109,7 +109,13 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	}
 	b.round++
 	turns := make([]Turn, 0, len(b.fighters))
-	for _, fighter := range b.fighters {
+	ids := make([]string, 0, len(b.fighters))
+	for id := range b.fighters {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		fighter := b.fighters[id]
 		if fighter.HitPoints > 0 {
 			turns = append(turns, Turn{FighterID: fighter.ID, Initiative: b.rng.Intn(20) + 1 + fighter.InitiativeBonus})
 		}

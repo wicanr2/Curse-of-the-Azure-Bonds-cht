@@ -23,6 +23,8 @@ func main() {
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	allEntries := flag.Bool("all-entries", false, "use all five ECL initialization entries with -graph")
+	findOpcode := flag.Int("find-opcode", -1, "print reachable instructions with this opcode when used with -graph")
+	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
@@ -65,6 +67,17 @@ func main() {
 			continue
 		}
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
+		if *scanOpcode >= 0 {
+			instructions, scanErr := ecl.ScanKnownInstructions(block.Data)
+			for _, instruction := range instructions {
+				if instruction.Command.Opcode == byte(*scanOpcode) {
+					fmt.Printf("  scan opcode 0x%02X at +0x%04X operands=%#v next=+0x%04X\n", instruction.Command.Opcode, instruction.Offset, instruction.Operands, instruction.Next)
+				}
+			}
+			if scanErr != nil {
+				fmt.Printf("  scan stopped safely: %v\n", scanErr)
+			}
+		}
 		if *trace {
 			var instructions []ecl.Instruction
 			var err error
@@ -74,7 +87,7 @@ func main() {
 				instructions, err = ecl.Trace(block.Data, 40)
 			}
 			for _, instruction := range instructions {
-				fmt.Printf("  +0x%04X %-16s operands=%d\n", instruction.Offset, instruction.Command.Name, len(instruction.Operands))
+				fmt.Printf("  +0x%04X %-16s operands=%#v\n", instruction.Offset, instruction.Command.Name, instruction.Operands)
 				for _, operand := range instruction.Operands {
 					if len(operand.Packed) > 0 {
 						fmt.Printf("    packed=%q\n", ecl.DecodePackedText(operand.Packed))
@@ -114,6 +127,9 @@ func main() {
 				fmt.Printf("  edge +0x%04X -> +0x%04X (%s)\n", edge.From, edge.To, edge.Kind)
 			}
 			for _, instruction := range result.Instructions {
+				if *findOpcode >= 0 && instruction.Command.Opcode == byte(*findOpcode) {
+					fmt.Printf("  found opcode 0x%02X at +0x%04X operands=%#v next=+0x%04X\n", instruction.Command.Opcode, instruction.Offset, instruction.Operands, instruction.Next)
+				}
 				if instruction.Command.Opcode == 0x20 && len(instruction.Operands) == 1 {
 					fmt.Printf("  NEWECL at +0x%04X operand=%#v\n", instruction.Offset, instruction.Operands[0])
 				}
