@@ -142,6 +142,26 @@ func (w WallDef) ID(row, column int) (uint8, bool) {
 	return w.Rows[row][column], true
 }
 
+// OffsetSymbols applies the reference WallDefBlock.Offset rule. Symbol IDs
+// below 0x2D are structural values; only graphic IDs are shifted into the
+// global 8X8D symbol namespace.
+func (w *WallDef) OffsetSymbols(offset int) {
+	if w == nil || offset == 0 {
+		return
+	}
+	for row := range w.Rows {
+		for column, value := range w.Rows[row] {
+			if value < 0x2D {
+				continue
+			}
+			shifted := int(value) + offset
+			if shifted >= 0 && shifted <= 0xFF {
+				w.Rows[row][column] = uint8(shifted)
+			}
+		}
+	}
+}
+
 // ParseWallDef decodes one 5x156 WALLDEF block.
 func ParseWallDef(data []byte) (WallDef, error) {
 	const size = 5 * 156
