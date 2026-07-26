@@ -324,4 +324,4 @@
 
 第一百一十輪功能／文件 commit：`e8ddd14`，已推送至 GitHub `main`。城市 STORE 已接入繁中 BUY／VIEW／TAKE／POOL／SHARE／APPRAISE／EXIT menu，未知 stock／money-pool action 保留明確 boundary。
 
-第一百一十一輪功能／文件 commit：待本輪提交。接入 injected shop offers、party money pool、POOL／TAKE／SHARE 與 pool-funded BUY；實際 item selection UI、VIEW／APPRAISE 仍未完成。
+第一百一十一輪功能／文件 commit：`8ec1f86`，已推送至 GitHub `main`。接入 injected shop offers、party money pool、POOL／TAKE／SHARE 與 pool-funded BUY；實際 item selection UI、VIEW／APPRAISE 仍未完成。
