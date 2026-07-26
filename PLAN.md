@@ -201,4 +201,5 @@
 - [x] 建立 reference EGA16 palette 與 indexed picture → RGBA adapter。
 - [x] 將 `TILES.DAX` indexed pictures 接入 Ebiten，建立繁中原始 tile gallery preview。
 - [x] 將原始 `GEO2` geometry block 接入 Ebiten raw geometry viewport。
+- [x] 以 GEO wall fields 建立 shared `CanMove` navigation contract 與 viewport cursor regression。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

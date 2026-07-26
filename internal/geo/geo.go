@@ -73,3 +73,53 @@ func (g Grid) Cell(x, y int) (Cell, bool) {
 	}
 	return g.Cells[y][x], true
 }
+
+// Wall returns the raw wall type for one of the four cardinal directions
+// used by the original engine: 0=north, 2=east, 4=south, 6=west.
+func (g Grid) Wall(x, y, direction int) (uint8, bool) {
+	cell, ok := g.Cell(x, y)
+	if !ok {
+		return 0, false
+	}
+	index := -1
+	switch direction {
+	case 0:
+		index = 0
+	case 2:
+		index = 1
+	case 4:
+		index = 2
+	case 6:
+		index = 3
+	}
+	if index < 0 {
+		return 0, false
+	}
+	return cell.WallDirections[index], true
+}
+
+// CanMove checks only the proven GEO wall fields. It deliberately does not
+// apply background-tile movement cost, encounters, or party placement rules.
+func (g Grid) CanMove(x, y, direction int) bool {
+	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
+		return false
+	}
+	dx, dy := 0, 0
+	switch direction {
+	case 0:
+		dy = -1
+	case 2:
+		dx = 1
+	case 4:
+		dy = 1
+	case 6:
+		dx = -1
+	}
+	if _, ok := g.Cell(x+dx, y+dy); !ok {
+		return false
+	}
+	wall, _ := g.Wall(x, y, direction)
+	opposite := (direction + 4) % 8
+	other, _ := g.Wall(x+dx, y+dy, opposite)
+	return wall == 0 && other == 0
+}
