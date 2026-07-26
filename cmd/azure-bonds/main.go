@@ -16,6 +16,7 @@ func main() {
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
+	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	flag.Parse()
 	data, err := zipMember(*image, *member)
 	if err != nil {
@@ -40,6 +41,16 @@ func main() {
 		if *stringsOnly {
 			for _, text := range ecl.FindPackedTextCandidates(block.Data) {
 				fmt.Printf("  text=%q\n", text)
+			}
+		}
+		if *graph {
+			result, err := ecl.TraceGraph(block.Data, nil, 2000)
+			fmt.Printf("  graph instructions=%d edges=%d\n", len(result.Instructions), len(result.Edges))
+			for _, edge := range result.Edges {
+				fmt.Printf("  edge +0x%04X -> +0x%04X (%s)\n", edge.From, edge.To, edge.Kind)
+			}
+			if err != nil {
+				fmt.Printf("  graph stopped safely: %v\n", err)
 			}
 		}
 	}

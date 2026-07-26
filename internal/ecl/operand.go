@@ -55,6 +55,8 @@ type Instruction struct {
 	Next     int
 }
 
+const CodeAddressBase = 0x8000
+
 // KnownCommands contains only the command metadata recovered from the public
 // ECL dump table. It describes cursor movement, not command execution.
 var KnownCommands = map[byte]Command{
@@ -100,21 +102,109 @@ func Trace(block []byte, limit int) ([]Instruction, error) {
 		if len(trace) > 0 {
 			offset = trace[len(trace)-1].Next
 		}
-		opcode := payload[offset]
-		command, ok := KnownCommands[opcode]
-		if !ok {
-			return trace, fmt.Errorf("unknown opcode 0x%02X at payload offset %d", opcode, offset)
+		instruction, err := decodeInstruction(payload, offset)
+		if err != nil {
+			return trace, err
 		}
-		next := offset + 1
-		var operands []Operand
-		var err error
-		if command.Arity > 0 {
-			operands, next, err = ParseOperands(payload, offset, command.Arity)
-			if err != nil {
-				return trace, fmt.Errorf("opcode 0x%02X at %d: %w", opcode, offset, err)
-			}
-		}
-		trace = append(trace, Instruction{Offset: offset, Command: command, Operands: operands, Next: next})
+		trace = append(trace, instruction)
 	}
 	return trace, nil
+}
+
+func decodeInstruction(payload []byte, offset int) (Instruction, error) {
+	if offset < 0 || offset >= len(payload) {
+		return Instruction{}, fmt.Errorf("instruction offset %d is outside payload", offset)
+	}
+	opcode := payload[offset]
+	command, ok := KnownCommands[opcode]
+	if !ok {
+		return Instruction{}, fmt.Errorf("unknown opcode 0x%02X at payload offset %d", opcode, offset)
+	}
+	next := offset + 1
+	var operands []Operand
+	if command.Arity > 0 {
+		var err error
+		operands, next, err = ParseOperands(payload, offset, command.Arity)
+		if err != nil {
+			return Instruction{}, fmt.Errorf("opcode 0x%02X at %d: %w", opcode, offset, err)
+		}
+	}
+	return Instruction{Offset: offset, Command: command, Operands: operands, Next: next}, nil
+}
+
+type Edge struct {
+	From int
+	To   int
+	Kind string
+}
+
+type Graph struct {
+	Instructions []Instruction
+	Edges        []Edge
+}
+
+// CodeTarget converts a word operand in the ECL code segment to a decoded
+// payload offset. Values outside the code segment are data pointers and are
+// deliberately not treated as branch destinations.
+func CodeTarget(operand Operand, payloadLength int) (int, bool) {
+	if !operand.WordSet || int(operand.Word) < CodeAddressBase {
+		return 0, false
+	}
+	offset := int(operand.Word) - CodeAddressBase
+	return offset, offset >= 0 && offset < payloadLength
+}
+
+// TraceGraph follows only statically visible GOTO/GOSUB targets and sequential
+// fallthrough. It does not evaluate IF conditions or execute side effects.
+// This makes it suitable for discovering event entry points without silently
+// inventing game state.
+func TraceGraph(block []byte, starts []int, limit int) (Graph, error) {
+	if len(block) < 2 {
+		return Graph{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	payload := block[2:]
+	if limit <= 0 {
+		limit = len(payload)
+	}
+	if len(starts) == 0 {
+		starts = []int{0}
+	}
+	queue := append([]int(nil), starts...)
+	seen := make(map[int]bool)
+	graph := Graph{}
+	for len(queue) > 0 && len(graph.Instructions) < limit {
+		offset := queue[0]
+		queue = queue[1:]
+		if seen[offset] {
+			continue
+		}
+		for offset >= 0 && offset < len(payload) && !seen[offset] && len(graph.Instructions) < limit {
+			instruction, err := decodeInstruction(payload, offset)
+			if err != nil {
+				return graph, err
+			}
+			seen[offset] = true
+			graph.Instructions = append(graph.Instructions, instruction)
+			if instruction.Command.Opcode == 0x01 || instruction.Command.Opcode == 0x02 {
+				if len(instruction.Operands) == 1 {
+					if target, ok := CodeTarget(instruction.Operands[0], len(payload)); ok {
+						kind := "GOTO"
+						if instruction.Command.Opcode == 0x02 {
+							kind = "GOSUB"
+						}
+						graph.Edges = append(graph.Edges, Edge{From: instruction.Offset, To: target, Kind: kind})
+						queue = append(queue, target)
+					}
+				}
+				if instruction.Command.Opcode == 0x01 {
+					break
+				}
+			}
+			if instruction.Command.Opcode == 0x00 || instruction.Command.Opcode == 0x13 {
+				break
+			}
+			offset = instruction.Next
+		}
+	}
+	return graph, nil
 }

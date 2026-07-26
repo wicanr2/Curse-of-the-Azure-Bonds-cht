@@ -65,3 +65,9 @@
 - Ebiten opening 由原始 `ECL1.DAX` block 初始化。
 - 原始 marker 與繁中顯示文字在 state 層分離保存。
 - parser、state 與 Ebiten compile verification 通過。
+
+## 第十一輪驗收
+
+- `GOTO/GOSUB` code targets 可轉換成 payload offsets。
+- 靜態 graph 對未知／越界資料安全停止。
+- ECL branch graph 有單元測試與原始 block CLI 驗收。
