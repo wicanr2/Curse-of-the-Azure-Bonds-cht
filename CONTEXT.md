@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百一十一輪：shop stock／party money pool gameplay state。
+第一百一十二輪：Shop BUY 商品選擇 UI。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -325,3 +325,5 @@
 第一百一十輪功能／文件 commit：`e8ddd14`，已推送至 GitHub `main`。城市 STORE 已接入繁中 BUY／VIEW／TAKE／POOL／SHARE／APPRAISE／EXIT menu，未知 stock／money-pool action 保留明確 boundary。
 
 第一百一十一輪功能／文件 commit：`8ec1f86`，已推送至 GitHub `main`。接入 injected shop offers、party money pool、POOL／TAKE／SHARE 與 pool-funded BUY；實際 item selection UI、VIEW／APPRAISE 仍未完成。
+
+第一百一十二輪功能／文件 commit：待本輪提交。BUY 會顯示繁中商品／價格、扣除 party pool、加入 active character inventory 並返回 Shop Menu；VIEW／TAKE 數量／APPRAISE 仍未完成。

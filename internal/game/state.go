@@ -5,6 +5,7 @@ package game
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
@@ -115,6 +116,8 @@ type State struct {
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
+	shopStockMenu          bool
+	shopCharacterIndex     int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -559,6 +562,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 
 func (s *State) enterShopMenu() {
 	s.shopMenu = true
+	s.shopStockMenu = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
 	s.Choices = []string{
@@ -575,14 +579,44 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if strings.HasPrefix(originalChoice, "SHOP_OFFER_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_OFFER_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop offer command %q", originalChoice)
+		}
+		if err := s.BuyShopOffer(s.shopCharacterIndex, value); err != nil {
+			s.shopStockMenu = false
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModePlace
+			s.OriginalEvent = "BUY"
+			s.Message = "購買失敗：" + err.Error()
+			return nil
+		}
+		item := s.shopOffers[value].Item
+		s.shopOffers = append(s.shopOffers[:value], s.shopOffers[value+1:]...)
+		s.shopStockMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "BUY"
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_done", "已購買%s。"), monster.ChineseName(item))
+		return nil
+	}
+	if originalChoice == "SHOP_EXIT" {
+		s.enterShopMenu()
+		return nil
+	}
 	if originalChoice == "EXIT" {
 		s.shopMenu = false
 		return s.EnterPlacesFromEvent()
 	}
+	message := s.shopActionMessage(originalChoice)
+	if s.shopStockMenu {
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModePlace
 	s.OriginalEvent = originalChoice
-	s.Message = s.shopActionMessage(originalChoice)
+	s.Message = message
 	return nil
 }
 
@@ -592,7 +626,8 @@ func (s *State) shopActionMessage(originalChoice string) string {
 		if len(s.shopOffers) == 0 {
 			return s.catalog.Text("shop_buy_unavailable", "商店庫存尚未載入。")
 		}
-		return s.catalog.Text("shop_buy_ready", "商店庫存已載入，購買操作尚待接入。")
+		s.enterShopStockMenu()
+		return ""
 	case "VIEW":
 		return s.catalog.Text("shop_view_unavailable", "查看角色與物品功能尚待接入。")
 	case "TAKE":
@@ -613,6 +648,34 @@ func (s *State) shopActionMessage(originalChoice string) string {
 	default:
 		return localizeOption(s.catalog, originalChoice)
 	}
+}
+
+func (s *State) enterShopStockMenu() {
+	s.shopMenu = true
+	s.shopStockMenu = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_stock_prompt", "選擇要購買的物品")
+	s.Choices = make([]string, 0, len(s.shopOffers)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.shopOffers)+1)
+	for index, offer := range s.shopOffers {
+		name := monster.ChineseName(offer.Item)
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d GP）", name, offer.Price))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_OFFER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_exit", "離開商店商品列表"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_EXIT")
+	s.Message = ""
+}
+
+// SetShopCharacter selects the active character for BUY. The current UI keeps
+// this explicit API boundary until the original VIEW/character selector is
+// decoded; it defaults to the first roster member.
+func (s *State) SetShopCharacter(index int) error {
+	if index < 0 || index >= len(s.partyRoster) {
+		return fmt.Errorf("shop character index %d is out of range", index)
+	}
+	s.shopCharacterIndex = index
+	return nil
 }
 
 // restorePartyAtInn applies the safe-rest boundary described by the original
