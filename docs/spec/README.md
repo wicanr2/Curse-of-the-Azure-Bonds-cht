@@ -10,3 +10,4 @@
 目前規格：
 
 - [第一輪素材與格式盤點](./round-01-inventory.md)（`DRAFT`）
+- [第二輪 DAX 容器與 ECL 文字取樣](./round-02-dax-container.md)（`DRAFT`）
