@@ -9,9 +9,10 @@ import (
 )
 
 const (
-	BlessSpellID        uint8 = 1
-	CurseSpellID        uint8 = 2
-	MagicMissileSpellID uint8 = 7
+	BlessSpellID            uint8 = 1
+	CurseSpellID            uint8 = 2
+	CauseLightWoundsSpellID uint8 = 4
+	MagicMissileSpellID     uint8 = 7
 )
 
 // firstLevelSpellKeys contains only spell names whose class table order is
