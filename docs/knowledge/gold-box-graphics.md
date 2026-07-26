@@ -77,3 +77,5 @@ ECL `SPELL` 也應保持 signal boundary：它描述 spell ID 與兩個 runtime 
 DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共用的窄 adapter：公開 CoAB PC format 將 `0x01E–0x071` 定義為 memorized spell slots，`0x079–0x0DC` 定義為 one-based spell table 的 known flags。`party.ParseDOSPlayerSpellRecord` 只依這兩段資料工作，要求 decompressed record 至少 `0x0DD` bytes；不要在沒有版本證據時把其他 record offsets 猜成完整 character importer。`Character.ApplyDOSSpellRecord` 只替換 ordered non-empty `SpellSlots`，container／DAX／ECL writeback 由遊戲專屬層處理。
 
 核心角色匯入可沿用同一個 record boundary：公開格式將姓名、六能力值、race/class、HP、各職業 current level、icon 與金幣放在固定 offset；`party.ParseDOSPlayerRecord` 目前只接受 remake 能表達的單職業 race/class，並把 `0x1A4` current HP 與 `0x078` max HP 保留到 `Character`。不要把 `0x14D` item pointer 或 `0x0F2` effects pointer 當成 inline data；它們必須分別透過 `.SWG`／`.FX` adapter 解析。
+
+`.SWG` inventory 應沿用 `monster.ParseItems` 的固定 `0x3F` record codec，不要把 player `0x14D` pointer 當成 record 內嵌位置；`DOSPlayerRecord.ApplyInventory`／`Character.ApplyDOSInventory` 接受外部 stream，保留 pointer raw value，讓未來的 save/container loader 決定 address space。item instance 的 `Readied`、`Cursed`、`Count`、`Affects` 仍由 `Character` transaction／consumable adapter 處理，不要在 `.SWG` parser 裡直接套用戰鬥效果。

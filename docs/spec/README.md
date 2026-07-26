@@ -93,3 +93,4 @@
 - [第九十六輪 party spell-slot resolver](./096-party-spell-slot-resolver.md)（`READY`：限 remake roster bridge）
 - [第九十七輪 DOS player spell record parser](./097-dos-player-spell-record.md)（`READY`：限已公開 spell 欄位與 remake adapter）
 - [第九十八輪 DOS player record 核心角色匯入](./098-dos-player-record-core.md)（`READY`：限單職業核心欄位與 remake projection）
+- [第九十九輪 DOS `.SWG` inventory 匯入](./099-dos-swg-inventory.md)（`READY`：限連續 item records 與 party equipment projection）

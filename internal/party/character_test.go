@@ -119,21 +119,32 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x10E] = 4
 	data[0x141], data[0x142], data[0x144] = 3, 4, 2
 	binary.LittleEndian.PutUint16(data[0x101:0x103], 123)
+	binary.LittleEndian.PutUint32(data[0x14D:0x151], 0x12345678)
+	binary.LittleEndian.PutUint32(data[0x0F2:0x0F6], 0x87654321)
 	data[DOSMemorizedSpellsOffset] = 15
 
 	record, err := ParseDOSPlayerRecord(data, "wizard-1")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 {
+	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 {
 		t.Fatalf("record=%#v", record)
+	}
+	itemData := make([]byte, monster.ItemRecordSize)
+	itemData[0x2E], itemData[0x34], itemData[0x39] = 36, 1, 2
+	copy(itemData[:4], []byte("SWORD"))
+	if err := record.ApplyInventory(itemData); err != nil {
+		t.Fatal(err)
 	}
 	character, err := record.Character()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true {
 		t.Fatalf("character=%#v", character)
+	}
+	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
+		t.Fatal("expected malformed DOS inventory error")
 	}
 }
 
