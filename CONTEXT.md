@@ -304,4 +304,4 @@
 
 第一百輪功能／文件 commit：`5bcea79`，已推送至 GitHub `main`。新增 DOS `.FX` 9-byte effects stream adapter、Character preservation 與常見效果繁中名稱；effect gameplay tick／解除與完整 save container 仍未完成。
 
-第一百零一輪功能／文件 commit：待本輪提交。修正 `.FX` 16-bit duration／strength 欄位語意，新增 finite/permanent duration tick 與 party adapter；effect-specific gameplay 與 CAMP／戰鬥時間接線仍未完成。
+第一百零一輪功能／文件 commit：`2179dd6`，已推送至 GitHub `main`。修正 `.FX` 16-bit duration／strength 欄位語意，新增 finite/permanent duration tick 與 party adapter；effect-specific gameplay 與 CAMP／戰鬥時間接線仍未完成。
