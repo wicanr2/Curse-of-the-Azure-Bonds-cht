@@ -136,6 +136,7 @@ type State struct {
 	restHours              int
 	campViewMenu           bool
 	campMagicMenu          bool
+	campMagicViewMenu      bool
 	saveRequested          bool
 	alterMenu              bool
 	alterOrderMenu         bool
@@ -681,6 +682,7 @@ func (s *State) enterCampMenu() {
 	s.campRestMenu = false
 	s.campViewMenu = false
 	s.campMagicMenu = false
+	s.campMagicViewMenu = false
 	s.alterMenu = false
 	s.alterOrderMenu = false
 	s.alterOrderSelected = -1
@@ -941,8 +943,29 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.enterCampMenu()
 			return nil
 		}
-		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_") {
-			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_"))
+		switch originalChoice {
+		case "CAMP_MAGIC_DISPLAY":
+			s.enterCampMagicViewMenu()
+			return nil
+		case "CAMP_MAGIC_REST":
+			s.enterCampRestMenu()
+			return nil
+		case "CAMP_MAGIC_CAST", "CAMP_MAGIC_MEMORIZE", "CAMP_MAGIC_SCRIBE":
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "MAGIC"
+			s.Message = s.catalog.Text("camp_magic_pending", "此法術功能已進入資料邊界，完整規則仍待接入。")
+			return nil
+		}
+	}
+	if s.campMagicViewMenu {
+		if originalChoice == "CAMP_MAGIC_VIEW_EXIT" {
+			s.campMagicViewMenu = false
+			s.enterCampMagicMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_VIEW_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_VIEW_"))
 			if err != nil || value < 0 || value >= len(s.partyRoster) {
 				return fmt.Errorf("invalid camp magic character %q", originalChoice)
 			}
@@ -1338,16 +1361,35 @@ func (s *State) enterCampViewMenu() {
 func (s *State) enterCampMagicMenu() {
 	s.campMenu = true
 	s.campMagicMenu = true
+	s.campMagicViewMenu = false
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_magic_menu_prompt", "法術選單")
+	s.Choices = []string{
+		s.catalog.Text("camp_magic_cast", "施法"),
+		s.catalog.Text("camp_magic_memorize", "記憶法術"),
+		s.catalog.Text("camp_magic_scribe", "抄錄"),
+		s.catalog.Text("camp_magic_display", "查看已記憶法術"),
+		s.catalog.Text("camp_magic_rest", "休息"),
+		s.catalog.Text("camp_magic_exit", "返回紮營選單"),
+	}
+	s.currentOriginalChoices = []string{"CAMP_MAGIC_CAST", "CAMP_MAGIC_MEMORIZE", "CAMP_MAGIC_SCRIBE", "CAMP_MAGIC_DISPLAY", "CAMP_MAGIC_REST", "CAMP_MAGIC_EXIT"}
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicViewMenu() {
+	s.campMenu = true
+	s.campMagicMenu = false
+	s.campMagicViewMenu = true
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_magic_prompt", "選擇要查看法術的角色")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
 		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_character", "%s（已記憶 %d 個法術／可用 %d 個）"), character.Name, len(character.SpellSlots), len(character.KnownSpells)))
-		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_"+strconv.Itoa(index))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_VIEW_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_exit", "返回紮營選單"))
-	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_EXIT")
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_view_exit", "返回法術選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_VIEW_EXIT")
 	s.Message = ""
 }
 
@@ -2014,6 +2056,10 @@ func (s *State) Continue() error {
 		}
 		if s.campMagicMenu {
 			s.enterCampMagicMenu()
+			return nil
+		}
+		if s.campMagicViewMenu {
+			s.enterCampMagicViewMenu()
 			return nil
 		}
 		if s.campViewMenu {

@@ -789,8 +789,14 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !state.campMagicMenu || len(state.Choices) != 2 {
+	if state.Mode != ModeWilderness || !state.campMagicMenu || len(state.Choices) != 6 || state.Choices[3] != "查看已記憶法術" {
 		t.Fatalf("camp magic menu state=%#v", state)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.campMagicViewMenu || len(state.Choices) != 2 {
+		t.Fatalf("camp magic view menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
@@ -798,10 +804,13 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "0x12") || !strings.Contains(state.Message, "0x24") || !strings.Contains(state.Message, "可用法術：2") {
 		t.Fatalf("camp magic summary state=%#v", state)
 	}
-	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicMenu {
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicViewMenu {
 		t.Fatalf("camp magic return state=%#v err=%v", state, err)
 	}
-	if err := state.Select(1); err != nil || state.campMagicMenu || !state.campMenu {
+	if err := state.Select(1); err != nil || !state.campMagicMenu || state.campMagicViewMenu {
+		t.Fatalf("camp magic command return state=%#v err=%v", state, err)
+	}
+	if err := state.Select(5); err != nil || state.campMagicMenu || !state.campMenu {
 		t.Fatalf("camp magic exit state=%#v err=%v", state, err)
 	}
 }
@@ -814,6 +823,9 @@ func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
 	state.partyRoster = party.Roster{{Name: "牧師", Class: party.ClassCleric, SpellSlots: []uint8{1, CureLightWoundsSpellID, 0x24}}}
 	state.enterCampMenu()
 	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(3); err != nil {
 		t.Fatal(err)
 	}
 	if err := state.Select(0); err != nil {
