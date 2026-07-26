@@ -364,4 +364,4 @@
 
 第一百三十輪功能／文件 commit：`a885b9f`，已推送至 GitHub `main`。DOS known-spell flags 現在保存到 `Character.KnownSpells`／party save，並在 CAMP MAGIC 顯示已記憶／可用數量；CAST／MEMORIZE／SCRIBE 與消耗規則仍未完成。
 
-第一百三十一輪待提交：依 RuleBook 將 CAMP MAGIC 接成 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；DISPLAY／REST 已接入，CAST／MEMORIZE／SCRIBE 仍保留 rules boundary。
+第一百三十一輪功能／文件 commit：`8ba67b5`，已推送至 GitHub `main`。依 RuleBook 將 CAMP MAGIC 接成 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；DISPLAY／REST 已接入，CAST／MEMORIZE／SCRIBE 仍保留 rules boundary。
