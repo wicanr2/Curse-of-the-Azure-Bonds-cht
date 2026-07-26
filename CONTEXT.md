@@ -308,4 +308,4 @@
 
 第一百零二輪功能／文件 commit：`0332a09`，已推送至 GitHub `main`。新增 `ParseDOSPlayerFiles` sidecar bundle importer，並將 gold/gems/jewelry 保存到 `Character`；`SAVGAM?.DAT` party／area container 仍未解析。
 
-第一百零三輪功能／文件 commit：待本輪提交。新增 `cmd/azure-bonds -import-character`，把已證實的 `.SAV/.GUY` + optional `.FX/.SWG` bundle 輸出成 versioned remake party JSON。
+第一百零三輪功能／文件 commit：`6497c18`，已推送至 GitHub `main`。新增 `cmd/azure-bonds -import-character`，把已證實的 `.SAV/.GUY` + optional `.FX/.SWG` bundle 輸出成 versioned remake party JSON。
