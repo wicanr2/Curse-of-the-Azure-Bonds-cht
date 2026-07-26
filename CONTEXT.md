@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 85 輪：Area2 HeadBlockId binary codec 與 PICTURE scene sync。
+第 86 輪：combat tile placement、八方向 delta 與戰鬥 renderer layout。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -114,6 +114,8 @@
 第 84 輪功能／文件 commit：`7092643`，已推送至 GitHub `main`。依 reference `Area2.HeadBlockId == 0xFF` 分流 PICTURE：非 sentinel 時 body 使用 PICTURE block、head 使用 scene state，Ebiten 顯示 HEAD/BODY composite；新增 `SetSceneCharacter`、可恢復事件 regression、第 84 輪規格與知識庫更新。`go test ./...` 通過。
 
 第 85 輪功能／文件 commit：`fcb63d7`，已推送至 GitHub `main`。確認並接入 reference `Area2.HeadBlockId @ 0x5C2`：`area.State`／Area2 codec 讀寫該欄位，`game.SetAreaState` 同步到 PICTURE HEAD/BODY branch；新增 raw codec 與 Area2→game regression、第 85 輪規格。`go test ./...` 通過。
+
+第 86 輪功能／文件 commit：`4a60738`，已推送至 GitHub `main`。依 reference `MapDirectionDelta` 建立八方向 `combat.DirectionDelta`，新增 deterministic `FormationTile`，Ebiten 戰鬥 party／enemy sprite、姓名與 HP 改由 tile-derived 座標繪製；補 placement regression、第 86 輪規格與知識庫更新。`go test ./...` 通過。
 
 ## 已確認
 
