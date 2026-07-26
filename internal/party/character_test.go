@@ -173,6 +173,40 @@ func TestEquipItemEnforcesClassSlotsHandsAndRings(t *testing.T) {
 	}
 }
 
+func TestUnequipCursedAndRemoveItemQuantityRules(t *testing.T) {
+	character := validCharacter()
+	character.Equipment = []monster.ItemRecord{
+		{Type: 1, Count: 3},
+		{Type: 2, Readied: true, Cursed: true},
+		{Type: 3, Readied: true},
+	}
+	if err := character.UnequipItem(1); err == nil {
+		t.Fatal("cursed readied item should remain locked")
+	}
+	if err := character.UnequipItem(2); err != nil {
+		t.Fatal(err)
+	}
+	removed, err := character.RemoveItem(0)
+	if err != nil || removed.Count != 1 || len(character.Equipment) != 3 || character.Equipment[0].Count != 2 {
+		t.Fatalf("stack removal removed=%#v equipment=%#v err=%v", removed, character.Equipment, err)
+	}
+	if _, err := character.RemoveItem(1); err == nil {
+		t.Fatal("readied item should not be removed")
+	}
+	if _, err := character.RemoveItem(0); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := character.RemoveItem(0); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := character.RemoveItem(1); err != nil {
+		t.Fatal(err)
+	}
+	if len(character.Equipment) != 1 || character.Equipment[0].Type != 2 {
+		t.Fatalf("non-stacking removal equipment=%#v", character.Equipment)
+	}
+}
+
 func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	for _, test := range []struct {
 		race Race

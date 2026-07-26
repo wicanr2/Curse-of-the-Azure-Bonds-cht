@@ -198,8 +198,36 @@ func (c *Character) UnequipItem(index int) error {
 	if index < 0 || index >= len(c.Equipment) {
 		return fmt.Errorf("equipment index %d is out of range", index)
 	}
+	if c.Equipment[index].Readied && c.Equipment[index].Cursed {
+		return fmt.Errorf("cursed item type 0x%02X cannot be unequipped", c.Equipment[index].Type)
+	}
 	c.Equipment[index].Readied = false
 	return nil
+}
+
+// RemoveItem removes one inventory unit. Count zero is the DOS encoding for
+// a non-stacking single item; a positive count is decremented in place. A
+// readied item must be unequipped first so shop/treasure mutations cannot
+// silently invalidate the equipment projection.
+func (c *Character) RemoveItem(index int) (monster.ItemRecord, error) {
+	if c == nil {
+		return monster.ItemRecord{}, fmt.Errorf("cannot remove item from nil character")
+	}
+	if index < 0 || index >= len(c.Equipment) {
+		return monster.ItemRecord{}, fmt.Errorf("equipment index %d is out of range", index)
+	}
+	item := c.Equipment[index]
+	if item.Readied {
+		return monster.ItemRecord{}, fmt.Errorf("readied item type 0x%02X must be unequipped first", item.Type)
+	}
+	removed := item
+	removed.Count = 1
+	if item.Count > 1 {
+		c.Equipment[index].Count--
+		return removed, nil
+	}
+	c.Equipment = append(c.Equipment[:index], c.Equipment[index+1:]...)
+	return removed, nil
 }
 
 func (r Roster) Validate() error {

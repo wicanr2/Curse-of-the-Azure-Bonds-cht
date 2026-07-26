@@ -65,3 +65,5 @@ Gold Box 的 `ITEMS` 不是 DAX；目前 reference 格式是 2-byte header 加 1
 裝備效果層應保持兩段式：`ItemRecord` 的 instance state（plus、readied、cursed、Affects）先查 `BaseItem` descriptor，再由上層決定是否投影到 fighter。現在 `ItemRecord.Effect`／`party.Character.FighterWithEquipment` 只實作 readied 基本武器／護甲，避免把 charges、magic effect 或 inventory mutation 混進共用 parser。
 
 Party inventory transaction 可沿用 `party.ItemClassBit` 與 `Character.CanEquip`：class bit 來自原始 table，不可直接拿本地 enum 數字；slot 0/1 的 hands conflict 與 slot 9 的雙戒指限制也應留在資料層，renderer／商店只呼叫 `EquipItem`／`UnequipItem`。
+
+Inventory mutation 也應以 instance state 為單位：`Count == 0` 是單件非堆疊物，正數才遞減 stack；readied 物品不可直接移除，cursed readied 物品不可卸下。`Character.RemoveItem` 提供這個跨遊戲可重用的安全邊界，消耗品真正 effect 仍由各遊戲 adapter 實作。
