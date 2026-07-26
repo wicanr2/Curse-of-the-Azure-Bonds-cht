@@ -72,6 +72,53 @@ func TestRosterLimitAndDuplicateIDs(t *testing.T) {
 	}
 }
 
+func TestParseDOSPlayerSpellRecord(t *testing.T) {
+	data := make([]byte, DOSKnownSpellsEnd)
+	data[DOSMemorizedSpellsOffset] = 7
+	data[DOSMemorizedSpellsOffset+1] = 0
+	data[DOSMemorizedSpellsOffset+2] = 42
+	data[DOSKnownSpellsOffset] = 1
+	data[DOSKnownSpellsOffset+3] = 2
+	data[DOSKnownSpellsEnd-1] = 1
+
+	record, err := ParseDOSPlayerSpellRecord(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := record.MemorizedSpells, []uint8{7, 42}; !sameUint8(got, want) {
+		t.Fatalf("memorized spells=%v, want %v", got, want)
+	}
+	if got, want := record.KnownSpells, []uint8{1, 4, 100}; !sameUint8(got, want) {
+		t.Fatalf("known spells=%v, want %v", got, want)
+	}
+
+	character := validCharacter()
+	if err := character.ApplyDOSSpellRecord(data); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := character.SpellSlots, []uint8{7, 42}; !sameUint8(got, want) {
+		t.Fatalf("character spell slots=%v, want %v", got, want)
+	}
+}
+
+func TestParseDOSPlayerSpellRecordRejectsTruncatedData(t *testing.T) {
+	if _, err := ParseDOSPlayerSpellRecord(make([]byte, DOSKnownSpellsEnd-1)); err == nil {
+		t.Fatal("expected truncated DOS record error")
+	}
+}
+
+func sameUint8(left, right []uint8) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for index := range left {
+		if left[index] != right[index] {
+			return false
+		}
+	}
+	return true
+}
+
 func TestStarterFighterProjection(t *testing.T) {
 	fighter, err := validCharacter().Fighter()
 	if err != nil {

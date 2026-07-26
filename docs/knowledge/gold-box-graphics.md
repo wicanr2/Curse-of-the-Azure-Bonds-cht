@@ -73,3 +73,5 @@ Inventory mutation 也應以 instance state 為單位：`Count == 0` 是單件�
 ECL `SPELL` 也應保持 signal boundary：它描述 spell ID 與兩個 runtime memory addresses，不等於已經找到施法者。`ecl.RunResult.SpellSearches` 可跨 Gold Box engine 重用，實際 party spell-slot lookup 再由各遊戲的 character record adapter 提供。
 
 目前共用的 party adapter 是 `Character.SpellSlots`／`Roster.FindSpell`／`game.State.ResolveSpellSearch`；它用 ordered first-match 模擬 ECL search，但不取代原始 DOS player spell offsets。`ITEMS` catalog 則由 game bootstrap 載入，讓同一份 base descriptor 驅動 creation／save-load 的 equipment projection。
+
+DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共用的窄 adapter：公開 CoAB PC format 將 `0x01E–0x071` 定義為 memorized spell slots，`0x079–0x0DC` 定義為 one-based spell table 的 known flags。`party.ParseDOSPlayerSpellRecord` 只依這兩段資料工作，要求 decompressed record 至少 `0x0DD` bytes；不要在沒有版本證據時把其他 record offsets 猜成完整 character importer。`Character.ApplyDOSSpellRecord` 只替換 ordered non-empty `SpellSlots`，container／DAX／ECL writeback 由遊戲專屬層處理。

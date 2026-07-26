@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 96 輪：party spell-slot resolver 與 ITEMS → game bootstrap 接線。
+第 97 輪：DOS player spell record spell 欄位 parser 與 party adapter。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -294,4 +294,6 @@
 
 第 95 輪功能／文件 commit：`a604bcc`，已推送至 GitHub `main`。ECL SPELL／PROTECTION bounded signals 與 regression 已完成。
 
-第 96 輪功能／文件 commit：待本輪提交。新增 `Character.SpellSlots`、`Roster.FindSpell`、`State.ResolveSpellSearch`，並由 Ebiten bootstrap 載入原始 `ITEMS`，使 creation／party load 的 readied equipment 進入 fighter projection；原始 DOS spell offsets 與 ECL memory writeback 仍未完成。
+第 96 輪功能／文件 commit：`0c1a122`，已推送至 GitHub `main`。新增 `Character.SpellSlots`、`Roster.FindSpell`、`State.ResolveSpellSearch`，並由 Ebiten bootstrap 載入原始 `ITEMS`，使 creation／party load 的 readied equipment 進入 fighter projection；原始 DOS spell offsets 與 ECL memory writeback 仍未完成。
+
+第 97 輪功能／文件 commit：`d92e8c0`，已推送至 GitHub `main`。新增 bounded DOS player spell record parser、truncated-record guard、known／memorized tests 與可重用知識庫規格。

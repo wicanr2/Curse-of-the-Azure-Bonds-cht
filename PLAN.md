@@ -238,5 +238,6 @@
 - [x] 解碼 scroll／potion／wand properties，建立 consumable use signal 與 charge mutation。
 - [x] 將 ECL `SPELL`／`PROTECTION` operand 接成 bounded runtime signal。
 - [x] 建立 remake party ordered spell-slot resolver，並將 ITEMS catalog 接入 character creation／party load。
+- [x] 解析公開 DOS player record 的 memorized／known spell 欄位，並接到 party spell-slot adapter。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
