@@ -43,6 +43,16 @@ func (a *app) Update() error {
 				a.choiceCursor = 0
 			}
 			return err
+		case game.ModeMap:
+			return a.state.EnterPlaces()
+		case game.ModePlace:
+			err := a.state.Select(a.choiceCursor)
+			if a.state.Mode == game.ModePlace {
+				a.choiceCursor = 0
+			}
+			return err
+		case game.ModeEvent:
+			return a.state.Continue()
 		}
 	}
 	if a.state.Mode == game.ModeMap {
@@ -62,7 +72,7 @@ func (a *app) Update() error {
 			return a.state.Move(1, 0)
 		}
 	}
-	if a.state.Mode == game.ModeWilderness {
+	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
 		if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.choiceCursor+1 < len(a.state.Choices) {
 				a.choiceCursor++
@@ -84,7 +94,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
-	if a.state.Mode == game.ModeWilderness {
+	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
 		for index, choice := range a.state.Choices {
 			prefix := "  "
 			if index == a.choiceCursor {
@@ -98,10 +108,20 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, a.state.Message, a.face, 56, 220, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 330, white)
 	}
+	if a.state.Mode == game.ModePlace {
+		for index, choice := range a.state.Choices {
+			prefix := "  "
+			if index == a.choiceCursor {
+				prefix = "> "
+			}
+			text.Draw(screen, prefix+choice, a.face, 56, 220+index*34, white)
+		}
+		text.Draw(screen, "Enter：選擇", a.face, 56, 350, cyan)
+	}
 	if a.state.Mode == game.ModeMap {
 		text.Draw(screen, "暗影谷荒野", a.face, 56, 220, cyan)
 		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
-		text.Draw(screen, "方向鍵：移動　Esc：離開", a.face, 56, 330, white)
+		text.Draw(screen, "Enter：場所　方向鍵：移動　Esc：離開", a.face, 56, 330, white)
 	}
 }
 

@@ -127,13 +127,13 @@
 - [x] 新增 `LocationWilderness`／`LocationShadowdale` map state。
 - [x] 以 ECL1 `0,0,1,0` 驗證 Shadowdale map-entry menu。
 - [x] 將 `WILDERNESS`／`EXIT` 接入繁中 locale。
-- [ ] 實作 Shadowdale 移動與場所 menu。
+- [x] 實作 Shadowdale 資料中立移動與場所 menu contract。
 
 ## 第二十輪驗收
 
 - [x] 將 Shadowdale location name 接入 locale 與 Ebiten UI。
 - [x] 保留 Shadowdale 原始名稱與 map-entry menu state。
-- [ ] 實作 Shadowdale 座標／移動與第一個場所。
+- [x] 實作 Shadowdale 座標／移動與第一層場所 menu；原始 tile 與場所內部功能仍待完成。
 
 ## 第二十一輪驗收
 
@@ -169,4 +169,5 @@
 - [x] CLI entry-level regression 驗證 target 0x50。
 - [x] 驗證 ECL5 block 0x30 `+0x0098` 的第二條 real NEWECL。
 - [x] 將 Shadowdale `WILDERNESS/EXIT` 接成資料中立的 map entry／movement slice。
+- [x] 將 `INN/STORE/BAR/LEAVE` 接成 Shadowdale `ModePlace` 與繁中 state event contract。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
