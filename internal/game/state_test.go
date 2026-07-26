@@ -88,6 +88,20 @@ func TestLocalizedCityMenuOptions(t *testing.T) {
 	}
 }
 
+func TestLocalizedEncounterMenuOptions(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["encounter_combat"] = "戰鬥"
+	catalog.Strings["encounter_wait"] = "等待"
+	catalog.Strings["encounter_flee"] = "撤退"
+	catalog.Strings["encounter_advance"] = "接近"
+	catalog.Strings["encounter_parlay"] = "談判"
+	for original, want := range map[string]string{"COMBAT": "戰鬥", "WAIT": "等待", "FLEE": "撤退", "ADVANCE": "接近", "PARLAY": "談判"} {
+		if got := localizeOption(catalog, original); got != want {
+			t.Fatalf("%s localized as %q, want %q", original, got, want)
+		}
+	}
+}
+
 func TestLocationDefaultsToWilderness(t *testing.T) {
 	state := NewState(testCatalog())
 	if state.Location != LocationWilderness || state.LocationName != "Wilderness" {

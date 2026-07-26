@@ -252,3 +252,43 @@ func TestRunSubsetRandomUsesInclusiveRangeAndSeed(t *testing.T) {
 		t.Fatalf("seeded runs diverged: first=%+v second=%+v", first, second)
 	}
 }
+
+func TestRunSubsetEncounterMenuPausesAndMapsSelection(t *testing.T) {
+	payload := []byte{0x29}
+	appendScalar := func(value byte) { payload = append(payload, 0x00, value) }
+	appendWord := func(value uint16) { payload = append(payload, 0x01, byte(value), byte(value>>8)) }
+	appendPacked := func(value []byte) {
+		payload = append(payload, 0x80, byte(len(value)))
+		payload = append(payload, value...)
+	}
+	appendScalar(8)
+	appendScalar(2)
+	appendScalar(3)
+	appendWord(0x0200)
+	appendScalar(1)
+	appendScalar(2)
+	appendScalar(3)
+	appendScalar(4)
+	appendScalar(5)
+	appendPacked([]byte{0x00})
+	appendPacked([]byte{0x00})
+	appendPacked([]byte{0x00})
+	appendScalar(0)
+	appendScalar(0)
+	payload = append(payload, 0x00)
+	block := append([]byte{0, 0}, payload...)
+	waiting, err := RunSubsetInteractive(block, 0, 8, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !waiting.WaitingForMenu || len(waiting.Menus) != 1 || waiting.Menus[0].Options[3] != "ADVANCE" {
+		t.Fatalf("waiting result=%+v", waiting)
+	}
+	selected, err := RunSubsetInteractive(block, 0, 8, []uint16{3})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if selected.WaitingForMenu || len(selected.EncounterActions) != 1 || selected.EncounterActions[0] != 4 {
+		t.Fatalf("selected result=%+v", selected)
+	}
+}

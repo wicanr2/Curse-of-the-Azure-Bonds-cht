@@ -21,6 +21,7 @@ type RunResult struct {
 	ProgramExit        bool
 	SelectionsConsumed int
 	RandomValues       []uint16
+	EncounterActions   []uint16
 }
 
 type Menu struct {
@@ -222,6 +223,53 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			}
 			value := memory[instruction.Operands[0].Word+index]
 			memory[instruction.Operands[2].Word] = value
+		case 0x29: // ENCOUNTER MENU
+			if len(instruction.Operands) != 14 {
+				return result, fmt.Errorf("encounter menu at %d has %d operands", pc, len(instruction.Operands))
+			}
+			if !instruction.Operands[3].WordSet {
+				return result, fmt.Errorf("encounter menu at %d has no memory destination", pc)
+			}
+			maxDistance, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("encounter menu distance at %d: %w", pc, err)
+			}
+			prompt := ""
+			for index := 9; index <= 11; index++ {
+				if operandIsText(instruction.Operands[index]) {
+					prompt, err = operandText(instruction.Operands[index], stringsMemory)
+					if err != nil {
+						return result, fmt.Errorf("encounter menu prompt at %d: %w", pc, err)
+					}
+					if prompt != "" {
+						break
+					}
+				}
+			}
+			options := []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}
+			if maxDistance == 0 {
+				options[3] = "PARLAY"
+			}
+			menu := Menu{Location: instruction.Operands[3].Word, Options: options, Prompt: prompt}
+			if pauseOnMissing && selectionCursor >= len(selections) {
+				result.Menus = append(result.Menus, menu)
+				result.WaitingForMenu = true
+				result.PC = pc
+				return result, nil
+			}
+			if selectionCursor < len(selections) && selections[selectionCursor] < uint16(len(options)) {
+				menu.Selected = selections[selectionCursor]
+			}
+			selectionCursor++
+			result.SelectionsConsumed = selectionCursor
+			mappingIndex := int(menu.Selected)
+			mapping, err := operandValue(instruction.Operands[4+mappingIndex], memory)
+			if err != nil {
+				return result, fmt.Errorf("encounter menu action at %d: %w", pc, err)
+			}
+			memory[instruction.Operands[3].Word] = mapping
+			result.EncounterActions = append(result.EncounterActions, mapping)
+			result.Menus = append(result.Menus, menu)
 		case 0x2B: // HORIZONTAL MENU
 			header, headNext, err := ParseOperands(payload, pc, 2)
 			if err != nil {
