@@ -204,4 +204,5 @@
 - [x] 以 GEO wall fields 建立 shared `CanMove` navigation contract 與 viewport cursor regression。
 - [x] 建立 reference `BackGroundTiles` 74 筆 metadata layer，保留 floor construction 的待實作邊界。
 - [x] 建立根目錄 README 與由原始 DAX parser 可重現的 TILES／GEO PNG 截圖證據。
+- [x] 還原 50×25 wilderness floor construction，接通 background entry → TILES index 與 movement cost。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

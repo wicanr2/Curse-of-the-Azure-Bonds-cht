@@ -126,10 +126,20 @@ func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	if state.Mode != ModeMap || state.MapX != 0 || state.MapY != 0 {
 		t.Fatalf("map entry state=%#v", state)
 	}
-	if err := state.Move(2, -1); err != nil {
+	dx, dy := 0, 0
+	for _, candidate := range [][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}} {
+		if state.WildernessFloor.CanEnter(candidate[0], candidate[1]) {
+			dx, dy = candidate[0], candidate[1]
+			break
+		}
+	}
+	if dx == 0 && dy == 0 {
+		t.Fatal("generated origin has no passable neighbor")
+	}
+	if err := state.Move(dx, dy); err != nil {
 		t.Fatal(err)
 	}
-	if state.MapX != 2 || state.MapY != -1 {
+	if state.MapX != dx || state.MapY != dy {
 		t.Fatalf("map position=(%d,%d)", state.MapX, state.MapY)
 	}
 	if err := state.LeaveMap(); err != nil {

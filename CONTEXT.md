@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 62 輪：README 與可重現成果截圖。
+第 63 輪：wilderness floor construction 與荒野 tile composition。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -68,6 +68,8 @@
 第 61 輪功能 commit：`7a085aa`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 62 輪功能／文件 commit：`f742f7a`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 63 輪功能／文件 commit：待本輪提交後補登，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -159,6 +161,9 @@
 - `internal/mapdata` 已保存 reference `BackGroundTiles` 實際 74 筆 metadata，保留 0xFF impassable sentinel 與 reserved tail；尚未宣稱完成 floor／tile mapping。
 - 根目錄 `README.md` 已加入目前成果與限制，`docs/screenshots/tiles-gallery.png`、`geo-geometry.png` 由 `scripts/render_previews.go` 從原始 DAX 以現有 parser 可重現產生。
 - README 截圖證明 TILES indexed graphics 與 GEO raw wall geometry 管線已初步完成；不代表完整地圖、完整劇情或完整遊戲已完成。
+- `mapdata.GenerateWilderness` 已依 reference `SetupWildernessFloor01–03` 建立 50×25 floor，保留 city flags、骰點與 background entry → pixel tile 的資料邊界。
+- `game.State` 進入 Shadowdale map slice 時生成 seeded wilderness floor；`Move` 已檢查 map boundary 與 `BackgroundTile.MoveCost` impassable sentinel。
+- `scripts/render_previews.go` 新增 `docs/screenshots/wilderness-floor.png`，由原始 TILES 與同一 floor generator 組合產生。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
