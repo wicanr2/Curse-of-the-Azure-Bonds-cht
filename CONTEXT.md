@@ -89,6 +89,8 @@
 
 第 72 輪功能／文件 commit：`06d5447`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
+第 73 輪功能／文件 commit：`1049135`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
 ## 已確認
 
 - `curseoftheazurebonds.zip` 是 94 個檔案、約 1.2 MiB 的 DOS 遊戲映像，包含 `START.EXE`、`GAME.OVR`、六組 `ECL*.DAX`、圖像、精靈、地城與怪物資料。
