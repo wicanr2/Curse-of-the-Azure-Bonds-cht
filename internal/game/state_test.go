@@ -122,3 +122,38 @@ func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 		t.Fatalf("leave state=%#v", state)
 	}
 }
+
+func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["shadowdale"] = "暗影谷"
+	catalog.Strings["shadowdale_map_prompt"] = "暗影谷荒野"
+	catalog.Strings["what_place"] = "你在暗影谷。要去哪裡？"
+	catalog.Strings["inn"] = "客棧"
+	catalog.Strings["store"] = "商店"
+	catalog.Strings["bar"] = "酒館"
+	catalog.Strings["leave"] = "離開"
+	state := NewState(catalog)
+	state.Location = LocationShadowdale
+	state.Mode = ModeMap
+	if err := state.EnterPlaces(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || len(state.Choices) != 4 || state.Choices[0] != "客棧" {
+		t.Fatalf("place menu=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.Message != "客棧" || state.OriginalEvent != "INN" {
+		t.Fatalf("inn event=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModePlace {
+		t.Fatalf("place continuation state=%#v err=%v", state, err)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeMap {
+		t.Fatalf("leave continuation state=%#v err=%v", state, err)
+	}
+}

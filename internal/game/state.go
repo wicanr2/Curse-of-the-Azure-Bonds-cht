@@ -18,6 +18,7 @@ const (
 	ModeWilderness
 	ModeEvent
 	ModeMap
+	ModePlace
 )
 
 type Action uint8
@@ -59,6 +60,7 @@ type State struct {
 	eclStart               int
 	selectionSequence      []uint16
 	currentOriginalChoices []string
+	eventReturnMode        Mode
 	session                *ecl.BlockSession
 }
 
@@ -155,14 +157,18 @@ func (s *State) Select(index int) error {
 	if s.Mode == ModeMap {
 		return fmt.Errorf("choice %d is invalid in map mode", index)
 	}
-	if s.Mode != ModeWilderness || index < 0 || index >= len(s.Choices) {
+	if s.Mode != ModeWilderness && s.Mode != ModePlace || index < 0 || index >= len(s.Choices) {
 		return fmt.Errorf("choice %d is invalid in mode %d", index, s.Mode)
 	}
 	originalChoice := ""
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
 	}
+	if s.Mode == ModePlace {
+		return s.selectPlace(index, originalChoice)
+	}
 	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
 	switch index {
 	case 0:
 		s.Message = s.catalog.Text("enter_city", "Enter city")
@@ -229,6 +235,17 @@ func (s *State) Select(index int) error {
 	return nil
 }
 
+func (s *State) selectPlace(index int, originalChoice string) error {
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModePlace
+	s.OriginalEvent = originalChoice
+	s.Message = localizeOption(s.catalog, originalChoice)
+	if originalChoice == "LEAVE" {
+		s.eventReturnMode = ModeMap
+	}
+	return nil
+}
+
 func (s *State) enterMap() {
 	s.Mode = ModeMap
 	s.MapX, s.MapY = 0, 0
@@ -257,6 +274,66 @@ func (s *State) LeaveMap() error {
 		return fmt.Errorf("leave map is invalid in mode %d", s.Mode)
 	}
 	s.leaveLocation()
+	return nil
+}
+
+// EnterPlaces exposes the Shadowdale place menu observed in ECL1 block 0x51.
+// It is separate from map movement so the future decoded tile/encounter layer
+// can be inserted without changing the place-event input contract.
+func (s *State) EnterPlaces() error {
+	if s.Mode != ModeMap || s.Location != LocationShadowdale {
+		return fmt.Errorf("place menu is invalid in mode %d at location %d", s.Mode, s.Location)
+	}
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("what_place", "你在暗影谷。要去哪裡？")
+	s.Choices = []string{
+		s.catalog.Text("inn", "客棧"),
+		s.catalog.Text("store", "商店"),
+		s.catalog.Text("bar", "酒館"),
+		s.catalog.Text("leave", "離開"),
+	}
+	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
+	s.Message = ""
+	return nil
+}
+
+// Continue advances a localized place event back to its observed parent
+// screen. Other event screens remain explicit future work.
+func (s *State) Continue() error {
+	if s.Mode != ModeEvent {
+		return fmt.Errorf("continue is invalid in mode %d", s.Mode)
+	}
+	switch s.eventReturnMode {
+	case ModeWilderness:
+		s.Mode = ModeWilderness
+		return nil
+	case ModePlace:
+		s.eventReturnMode = ModeEvent
+		return s.EnterPlacesFromEvent()
+	case ModeMap:
+		s.Mode = ModeMap
+		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+		s.Message = ""
+		return nil
+	default:
+		return fmt.Errorf("event has no continuation")
+	}
+}
+
+func (s *State) EnterPlacesFromEvent() error {
+	if s.Location != LocationShadowdale {
+		return fmt.Errorf("place menu is invalid at location %d", s.Location)
+	}
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("what_place", "你在暗影谷。要去哪裡？")
+	s.Choices = []string{
+		s.catalog.Text("inn", "客棧"),
+		s.catalog.Text("store", "商店"),
+		s.catalog.Text("bar", "酒館"),
+		s.catalog.Text("leave", "離開"),
+	}
+	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
+	s.Message = ""
 	return nil
 }
 
