@@ -140,3 +140,10 @@
 - [x] 實作 `NEWECL` bounded signal。
 - [x] 加入 target block ID regression。
 - [ ] 建立跨 ECL1–ECL6 DAX block session。
+
+## 第二十二輪驗收
+
+- [x] 建立 decoded ECL `BlockSession`。
+- [x] 驗證 ECL1 block `0x50/0x51/0x52` initial entries。
+- [x] 驗證 NEWECL target switch contract。
+- [ ] 將 session 接入 game runtime，保存跨 block state。
