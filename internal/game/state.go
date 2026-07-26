@@ -72,6 +72,7 @@ type State struct {
 	eventReturnMode        Mode
 	journalReturnMode      Mode
 	session                *ecl.BlockSession
+	party                  []combat.Fighter
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
 	combatTurnIndex        int
@@ -283,10 +284,45 @@ func (s *State) Camp() error {
 	}
 	s.CampCount++
 	s.OriginalEvent = "PROGRAM 9"
-	s.Message = s.catalog.Text("camp_resting", "你們紮營休息。")
+	if len(s.party) > 0 {
+		for index := range s.party {
+			s.party[index].HitPoints = s.party[index].MaxHitPoints
+		}
+		s.Message = s.catalog.Text("camp_restored", "隊伍休息後恢復體力。")
+	} else {
+		s.Message = s.catalog.Text("camp_resting", "你們紮營休息。")
+	}
 	s.eventReturnMode = ModeWilderness
 	s.Mode = ModeEvent
 	return nil
+}
+
+// SetParty stores the current party roster without inventing character
+// creation or import fields. It is the state boundary used by combat, CAMP,
+// and the future save/import adapter.
+func (s *State) SetParty(party []combat.Fighter) error {
+	if len(party) == 0 {
+		return fmt.Errorf("party cannot be empty")
+	}
+	seen := make(map[string]struct{}, len(party))
+	for _, fighter := range party {
+		if fighter.ID == "" {
+			return fmt.Errorf("party member has empty ID")
+		}
+		if fighter.Side != combat.SideParty {
+			return fmt.Errorf("fighter %q is not marked as party", fighter.ID)
+		}
+		if _, exists := seen[fighter.ID]; exists {
+			return fmt.Errorf("duplicate party member %q", fighter.ID)
+		}
+		seen[fighter.ID] = struct{}{}
+	}
+	s.party = append([]combat.Fighter(nil), party...)
+	return nil
+}
+
+func (s *State) PartyFighters() []combat.Fighter {
+	return append([]combat.Fighter(nil), s.party...)
 }
 
 func (s *State) OpenJournal() error {

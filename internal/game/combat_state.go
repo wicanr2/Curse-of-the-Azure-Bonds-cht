@@ -37,6 +37,9 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		return err
 	}
 	s.battle = battle
+	if err := s.SetParty(party); err != nil {
+		return err
+	}
 	s.combatTurns = turns
 	s.combatTurnIndex = 0
 	s.combatTargetIndex = 0
@@ -182,11 +185,23 @@ func (s *State) finishCombat() error {
 		return fmt.Errorf("combat is not initialized")
 	}
 	s.Mode = ModeEvent
+	s.syncPartyFromBattle()
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "COMBAT"
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
 	s.Message = s.combatMessage
 	return nil
+}
+
+func (s *State) syncPartyFromBattle() {
+	if s.battle == nil || len(s.party) == 0 {
+		return
+	}
+	for index := range s.party {
+		if fighter, ok := s.fighter(s.party[index].ID); ok {
+			s.party[index] = fighter
+		}
+	}
 }
 
 func (s *State) fighter(id string) (combat.Fighter, bool) {

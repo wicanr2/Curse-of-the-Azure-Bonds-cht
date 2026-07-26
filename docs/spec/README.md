@@ -38,3 +38,4 @@
 - [第三十九輪 PROGRAM 外部 routine 邊界](./round-39-program-boundary.md)（`READY`：限 VM 控制轉移）
 - [第四十輪 遊戲內冒險手札與 CAMP state](./round-40-journal-and-camp-state.md)（`READY`：限資料呈現與控制邊界）
 - [第四十一輪 可翻頁的繁中冒險手札](./round-41-journal-pages.md)（`READY`：限八頁摘要與 UI 導航）
+- [第四十二輪 party 保存與 CAMP 恢復 state](./round-42-party-camp-state.md)（`READY`：限 party HP boundary）
