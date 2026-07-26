@@ -95,7 +95,7 @@
 
 第 75 輪功能／文件 commit：`e720de7`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
-第 76 輪功能／文件：已加入 `gfx.MergePictures` 的透明／bitwise-OR 合成規則；從 `CHEAD.DAX`／`CBODY.DAX` 產生六張 `party-block-XX.png`，Ebiten party fighter 優先顯示合成小人；新增 `docs/knowledge/gold-box-graphics.md` 與第 76 輪規格。測試與素材重建通過，待本輪 commit／push。
+第 76 輪功能／文件 commit：`3e11803`，已推送至 GitHub `main`。已加入 `gfx.MergePictures` 的透明／bitwise-OR 合成規則；從 `CHEAD.DAX`／`CBODY.DAX` 產生六張 `party-block-XX.png`，Ebiten party fighter 優先顯示合成小人；新增 `docs/knowledge/gold-box-graphics.md` 與第 76 輪規格。測試與素材重建通過。
 
 ## 已確認
 
