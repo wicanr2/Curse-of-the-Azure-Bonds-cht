@@ -19,6 +19,7 @@ type RunResult struct {
 	MonsterSpawns       []MonsterSpawn
 	ProgramIDs          []uint8
 	ProgramExit         bool
+	NPCIDs              []uint16
 	SelectionsConsumed  int
 	RandomValues        []uint16
 	EncounterActions    []uint16
@@ -512,6 +513,14 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				return result, fmt.Errorf("SETUP MONSTER at %d: %w", pc, err)
 			}
 			result.MonsterSetup = &setup
+		case 0x36: // ADD NPC
+			npcID, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("ADD NPC at %d: %w", pc, err)
+			}
+			// Preserve the observed ID; the NPC table and party insertion side
+			// effect belong to the game adapter.
+			result.NPCIDs = append(result.NPCIDs, npcID)
 		case 0x25, 0x26: // ON GOTO / ON GOSUB
 			operands, headNext, err := ParseOperands(payload, pc, 2)
 			if err != nil {
