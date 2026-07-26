@@ -29,6 +29,7 @@ type Fighter struct {
 	ID   string
 	Name string
 	Side Side
+	Evil bool
 	// SpriteSet/SpriteBlock identify the original CPIC asset when the fighter
 	// came from a LOAD MONSTER descriptor. A zero block means the renderer may
 	// choose a deterministic party fallback sprite.
@@ -50,22 +51,24 @@ type Fighter struct {
 	IconAttack     bool
 	// CombatMap position/size. A future Area/ECL placement decoder can set
 	// these directly; StartCombat supplies a deterministic fallback otherwise.
-	HasCombatPosition bool
-	CombatX           int
-	CombatY           int
-	CombatSize        uint8
-	HitPoints         int
-	MaxHitPoints      int
-	ArmorClass        int
-	AttackBonus       int
-	Blessed           bool
-	BlessRounds       int
-	Cursed            bool
-	CurseRounds       int
-	DamageDiceCount   int
-	DamageDiceSides   int
-	DamageBonus       int
-	InitiativeBonus   int
+	HasCombatPosition    bool
+	CombatX              int
+	CombatY              int
+	CombatSize           uint8
+	HitPoints            int
+	MaxHitPoints         int
+	ArmorClass           int
+	AttackBonus          int
+	Blessed              bool
+	BlessRounds          int
+	Cursed               bool
+	CurseRounds          int
+	ProtectedFromEvil    bool
+	ProtectionEvilRounds int
+	DamageDiceCount      int
+	DamageDiceSides      int
+	DamageBonus          int
+	InitiativeBonus      int
 }
 
 type Turn struct {
@@ -150,6 +153,7 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	b.round++
 	b.advanceBlessDurations()
 	b.advanceCurseDurations()
+	b.advanceProtectionDurations()
 	turns := make([]Turn, 0, len(b.fighters))
 	ids := make([]string, 0, len(b.fighters))
 	for id := range b.fighters {
@@ -196,7 +200,11 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		return AttackResult{}, fmt.Errorf("negative damage roll")
 	}
 	critical := attackRoll == 20
-	hit := critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= target.ArmorClass)
+	targetArmorClass := target.ArmorClass
+	if attacker.Evil && target.ProtectedFromEvil {
+		targetArmorClass += 2
+	}
+	hit := critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= targetArmorClass)
 	damage := 0
 	if hit {
 		damage = damageRoll + attacker.DamageBonus
@@ -334,6 +342,39 @@ func (b *Battle) CastCauseLightWounds(casterID, targetID string) (SpellResult, e
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 4, Damage: damage, TargetHP: target.HitPoints}, nil
 }
 
+// CastProtectionFromEvil applies the verified conditional AC protection. The
+// caller supplies a living party target; alignment-aware attack resolution is
+// intentionally kept in Battle rather than mutating base ArmorClass.
+func (b *Battle) CastProtectionFromEvil(casterID, targetID string, casterLevel int) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if target.Side != SideParty {
+		return SpellResult{}, fmt.Errorf("Protection from Evil target %q is not party", targetID)
+	}
+	if casterLevel < 1 {
+		return SpellResult{}, fmt.Errorf("caster level must be positive")
+	}
+	if target.ProtectedFromEvil {
+		return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 6}, nil
+	}
+	target.ProtectedFromEvil = true
+	target.ProtectionEvilRounds = 3 * casterLevel
+	b.fighters[targetID] = target
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 6, Targets: 1}, nil
+}
+
 func adjacent(first, second Fighter) bool {
 	dx := first.CombatX - second.CombatX
 	if dx < 0 {
@@ -455,6 +496,19 @@ func (b *Battle) advanceCurseDurations() {
 		if fighter.CurseRounds == 0 {
 			fighter.AttackBonus++
 			fighter.Cursed = false
+		}
+		b.fighters[id] = fighter
+	}
+}
+
+func (b *Battle) advanceProtectionDurations() {
+	for id, fighter := range b.fighters {
+		if !fighter.ProtectedFromEvil || fighter.ProtectionEvilRounds <= 0 {
+			continue
+		}
+		fighter.ProtectionEvilRounds--
+		if fighter.ProtectionEvilRounds == 0 {
+			fighter.ProtectedFromEvil = false
 		}
 		b.fighters[id] = fighter
 	}

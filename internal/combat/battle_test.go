@@ -240,3 +240,46 @@ func TestCastCauseLightWoundsDealsOneToEightTouchDamage(t *testing.T) {
 		t.Fatal("expected touch-range failure")
 	}
 }
+
+func TestProtectionFromEvilAddsConditionalACAndExpires(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "orc", Name: "Orc", Side: SideEnemy, Evil: true, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, AttackBonus: 8},
+	}, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastProtectionFromEvil("cleric", "cleric", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != 6 || result.Targets != 1 {
+		t.Fatalf("protection result=%+v", result)
+	}
+	var protected Fighter
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "cleric" {
+			protected = fighter
+		}
+	}
+	if !protected.ProtectedFromEvil || protected.ProtectionEvilRounds != 3 || protected.ArmorClass != 10 {
+		t.Fatalf("protected fighter=%+v", protected)
+	}
+	miss, err := battle.ResolveAttack("orc", "cleric", 2, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if miss.Hit {
+		t.Fatalf("evil attacker ignored protection: %+v", miss)
+	}
+	for round := 0; round < 3; round++ {
+		if _, err := battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "cleric" && (fighter.ProtectedFromEvil || fighter.ProtectionEvilRounds != 0) {
+			t.Fatalf("protection did not expire: %+v", fighter)
+		}
+	}
+}
