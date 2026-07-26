@@ -123,3 +123,47 @@ func TestCastBlessImprovesLivingPartyAttackBonusOnce(t *testing.T) {
 		t.Fatalf("Bless stacked unexpectedly: %+v", result)
 	}
 }
+
+func TestCastBlessSkipsAdjacentPartyAndExpiresAfterSixRounds(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 2, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, AttackBonus: 4, HasCombatPosition: true, CombatX: 6, CombatY: 6},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastBless("cleric")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Targets != 1 {
+		t.Fatalf("Bless affected=%d, want distant hero only", result.Targets)
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "cleric" && (fighter.Blessed || fighter.AttackBonus != 2) {
+			t.Fatalf("adjacent cleric was blessed: %+v", fighter)
+		}
+		if fighter.ID == "hero" && (fighter.BlessRounds != 6 || fighter.AttackBonus != 5) {
+			t.Fatalf("distant hero=%+v", fighter)
+		}
+	}
+	for round := 0; round < 5; round++ {
+		if _, err := battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "hero" && (fighter.BlessRounds != 1 || !fighter.Blessed) {
+			t.Fatalf("hero before expiry=%+v", fighter)
+		}
+	}
+	if _, err := battle.StartRound(); err != nil {
+		t.Fatal(err)
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "hero" && (fighter.BlessRounds != 0 || fighter.Blessed || fighter.AttackBonus != 4) {
+			t.Fatalf("hero after expiry=%+v", fighter)
+		}
+	}
+}

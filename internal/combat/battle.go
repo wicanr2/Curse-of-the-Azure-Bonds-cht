@@ -59,6 +59,7 @@ type Fighter struct {
 	ArmorClass        int
 	AttackBonus       int
 	Blessed           bool
+	BlessRounds       int
 	DamageDiceCount   int
 	DamageDiceSides   int
 	DamageBonus       int
@@ -145,6 +146,7 @@ func (b *Battle) StartRound() ([]Turn, error) {
 		return nil, fmt.Errorf("battle is already over")
 	}
 	b.round++
+	b.advanceBlessDurations()
 	turns := make([]Turn, 0, len(b.fighters))
 	ids := make([]string, 0, len(b.fighters))
 	for id := range b.fighters {
@@ -311,15 +313,53 @@ func (b *Battle) CastBless(casterID string) (SpellResult, error) {
 	}
 	affected := 0
 	for id, fighter := range b.fighters {
-		if fighter.Side != SideParty || fighter.HitPoints <= 0 || fighter.Blessed {
+		if fighter.Side != SideParty || fighter.HitPoints <= 0 || fighter.Blessed || b.adjacentToLivingEnemy(fighter) {
 			continue
 		}
 		fighter.AttackBonus++
 		fighter.Blessed = true
+		fighter.BlessRounds = 6
 		b.fighters[id] = fighter
 		affected++
 	}
 	return SpellResult{CasterID: casterID, SpellID: 1, Targets: affected}, nil
+}
+
+func (b *Battle) adjacentToLivingEnemy(party Fighter) bool {
+	if !party.HasCombatPosition {
+		return false
+	}
+	for _, enemy := range b.fighters {
+		if enemy.Side != SideEnemy || enemy.HitPoints <= 0 || !enemy.HasCombatPosition {
+			continue
+		}
+		dx := party.CombatX - enemy.CombatX
+		if dx < 0 {
+			dx = -dx
+		}
+		dy := party.CombatY - enemy.CombatY
+		if dy < 0 {
+			dy = -dy
+		}
+		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+			return true
+		}
+	}
+	return false
+}
+
+func (b *Battle) advanceBlessDurations() {
+	for id, fighter := range b.fighters {
+		if !fighter.Blessed || fighter.BlessRounds <= 0 {
+			continue
+		}
+		fighter.BlessRounds--
+		if fighter.BlessRounds == 0 {
+			fighter.AttackBonus--
+			fighter.Blessed = false
+		}
+		b.fighters[id] = fighter
+	}
 }
 
 func (b *Battle) updateStatus() {
