@@ -172,11 +172,21 @@ func (s *State) BeginCombatMove() error {
 	if _, ok := s.combatPartyTurn(); !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
+	fighter, _ := s.combatPartyTurn()
+	s.combatMoveRemaining = fighter.MovementAllowance
+	if s.combatMoveRemaining < 1 {
+		s.combatMoveRemaining = 1
+	}
 	s.combatMoveMode = true
 	return nil
 }
 
-func (s *State) CancelCombatMove() { s.combatMoveMode = false }
+func (s *State) CancelCombatMove() {
+	s.combatMoveMode = false
+	s.combatMoveRemaining = 0
+}
+
+func (s *State) CombatMoveRemaining() int { return s.combatMoveRemaining }
 
 func (s *State) CombatMove(dx, dy int) error {
 	if !s.CombatActive() {
@@ -190,7 +200,9 @@ func (s *State) CombatMove(dx, dy int) error {
 	if err != nil {
 		return err
 	}
-	s.combatMoveMode = false
+	s.combatMoveRemaining--
+	endTurn := moveResult.Attack != nil || s.combatMoveRemaining <= 0
+	s.combatMoveMode = !endTurn
 	if moveResult.Attack != nil {
 		target, ok := s.fighter(moveResult.Attack.TargetID)
 		if !ok {
@@ -206,6 +218,9 @@ func (s *State) CombatMove(dx, dy int) error {
 	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
+	}
+	if s.combatMoveMode {
+		return nil
 	}
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()

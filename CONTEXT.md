@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十一輪：combat DONE。
+第一百五十二輪：armor movement allowance。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -404,4 +404,6 @@
 
 第一百五十輪功能／文件 commit：`02a161a`，已推送至 GitHub `main`。保存武器 raw AmmunitionType，建立 raw code→inventory type mapping 的注入式 atomic consumption，CombatAct 在 attack 前 preflight 本回合 shots；mapping 缺失／彈藥不足不修改 inventory。新增 party／game tests、READY 規格與共用 state knowledge。
 
-第一百五十一輪待提交：Combat Menu `DONE` 以 `D` 結束目前 party turn，不攻擊、不消耗彈藥，重用 enemy／next-party advancement；新增繁中提示、測試、READY 規格與共用 state knowledge。hold／delay 與其他 Combat Menu command 仍保留 boundary。
+第一百五十一輪功能／文件 commit：`d4aef0b`，已推送至 GitHub `main`。Combat Menu `DONE` 以 `D` 結束目前 party turn，不攻擊、不消耗彈藥，重用 enemy／next-party advancement；新增繁中提示、測試、READY 規格與共用 state knowledge。hold／delay 與其他 Combat Menu command 仍保留 boundary。
+
+第一百五十二輪待提交：依 RuleBook Armor List 將 armor type `50–58` 的 12／9／6 movement allowance 投影到 fighter，MOVE 每個方向鍵逐格扣除，剩餘格數不推進回合；新增 UI 提示、party／game tests、READY 規格與共用 state knowledge。負重、地形、障礙、邊界與 FLEE speed 仍保留 boundary。

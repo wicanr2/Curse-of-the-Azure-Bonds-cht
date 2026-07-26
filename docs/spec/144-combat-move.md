@@ -13,4 +13,4 @@ Combat Menu 明確包含 `MOVE`；移動用來移動角色與攻擊，若離開�
 
 ## 明確 boundary
 
-本輪仍未猜測地形／戰場邊界、負重／護甲 movement allowance、facing、離場 flee 與完整 movement animation；進入敵方格的攻擊已由第 146 輪接入 bounded transaction。
+本輪仍未猜測地形／戰場邊界、負重、facing、離場 flee 與完整 movement animation；進入敵方格的攻擊已由第 146 輪接入 bounded transaction，護甲 movement allowance 則由第 152 輪接入。

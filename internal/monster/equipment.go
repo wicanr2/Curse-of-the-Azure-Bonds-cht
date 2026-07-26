@@ -54,6 +54,7 @@ type EquipmentEffect struct {
 	DamageBonus           int
 	AttacksPerTurn        int
 	AmmunitionType        uint8
+	MovementAllowance     int
 }
 
 // ArmorClassImprovement decodes the reference's packed AC adjustment.
@@ -65,6 +66,21 @@ func (item BaseItem) ArmorClassImprovement() int {
 		return int(item.ACAdjustment) - 128
 	}
 	return 0
+}
+
+// MovementAllowance returns the RuleBook maximum squares for the observed
+// armor item types. Zero means this descriptor does not impose an armor cap.
+func (item BaseItem) MovementAllowance() int {
+	switch item.Type {
+	case 50: // leather
+		return 12
+	case 51, 52, 53, 55, 57: // padded, studded, ring, chain, banded
+		return 9
+	case 54, 56, 58: // scale, splint, plate
+		return 6
+	default:
+		return 0
+	}
 }
 
 // UsableByMask reports whether the supplied reference class bit is allowed:
@@ -86,6 +102,7 @@ func (item ItemRecord) Effect(catalog BaseItemCatalog, large bool) (EquipmentEff
 		AttackBonus:           item.Plus,
 		ArmorClassImprovement: base.ArmorClassImprovement(),
 		AmmunitionType:        base.AmmunitionType,
+		MovementAllowance:     base.MovementAllowance(),
 	}
 	if base.RateOfFire > 0 {
 		effect.AttacksPerTurn = int(base.RateOfFire) / 2
