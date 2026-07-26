@@ -58,6 +58,7 @@
 - 新增 `ParseDOSPlayerFiles`：將必要的 `.SAV/.GUY` 與可選 `.FX/.SWG` sidecars 組成可用的 party `Character`，並保存 gold/gems/jewelry；`SAVGAM?.DAT` container 尚未解析。
 - CLI 可用 `-import-character -character-record <file> [-character-effects <file>] [-character-inventory <file>] -out-party <json>` 將原版角色匯入 remake party JSON；不會修改原始檔案。
 - `cmd/azure-bonds-game` 也支援 `-dos-character-record`（及 optional `.FX/.SWG`）直接以原版單一角色啟動 remake；`-party-load` 與此模式互斥。
+- imported active Bless／Curse effects 會投影到 fighter attack bonus（+1／-1）；需要目標或戰鬥 phase 的 effects 仍待 rules layer。
 
 執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：
 

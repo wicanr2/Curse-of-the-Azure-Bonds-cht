@@ -360,13 +360,32 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	if c.HitPoints > 0 && c.HitPoints <= maxHitPoints {
 		hitPoints = c.HitPoints
 	}
-	return combat.Fighter{
+	fighter := combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
 		HasPartyIcon: true, PartyHeadBlock: c.IconHeadBlock, PartyBodyBlock: c.IconWeaponBlock, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
-	}, nil
+	}
+	return c.applyKnownEffects(fighter), nil
+}
+
+// applyKnownEffects projects only unconditional attack modifiers documented
+// for the current CoAB rules slice. Effects requiring target alignment,
+// morale, saving throws, or status transitions remain in the rules layer.
+func (c Character) applyKnownEffects(fighter combat.Fighter) combat.Fighter {
+	for _, effect := range c.Effects {
+		if !effect.Active {
+			continue
+		}
+		switch effect.Kind {
+		case 0x01: // Bless: -1 THAC0, equivalent to +1 attack bonus.
+			fighter.AttackBonus++
+		case 0x02: // Curse: +1 THAC0, equivalent to -1 attack bonus.
+			fighter.AttackBonus--
+		}
+	}
+	return fighter
 }
 
 // FighterWithEquipment applies readied base weapon/armor effects from a
