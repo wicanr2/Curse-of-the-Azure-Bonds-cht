@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 77 輪：玩家戰鬥 icon state、normal／attack 圖層與方向 flip。
+第 78 輪：角色建立玩家 icon defaults 與 race-based icon size。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -98,6 +98,8 @@
 第 76 輪功能／文件 commit：`3e11803`，已推送至 GitHub `main`。已加入 `gfx.MergePictures` 的透明／bitwise-OR 合成規則；從 `CHEAD.DAX`／`CBODY.DAX` 產生六張 `party-block-XX.png`，Ebiten party fighter 優先顯示合成小人；新增 `docs/knowledge/gold-box-graphics.md` 與第 76 輪規格。測試與素材重建通過。
 
 第 77 輪功能／文件 commit：`419cd9d`，已推送至 GitHub `main`。`combat.Fighter` 現在保存 party icon head/body、normal／attack 與 direction state；`gfx.Picture.FlipHorizontal` 與 Ebiten renderer 已接入方向 flip；generator 產生 normal／attack CHEAD＋CBODY 合成圖，並補上第 77 輪規格與知識庫更新。`go test ./...` 通過。
+
+第 78 輪功能／文件 commit：`0a5f96c`，已推送至 GitHub `main`。依 reference 反組譯確認新建角色 `head_icon=0`、`weapon_icon=0`，並將 dwarf／gnome／halfling 的 small `icon_size=1`、其餘種族 normal `icon_size=2` 接入 `party.Character`、fighter projection 與舊 JSON 相容路徑；移除 party-slot 假造外觀的規則。`go test ./...` 與素材重建通過。
 
 ## 已確認
 
