@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"image/color"
@@ -41,24 +42,31 @@ const (
 )
 
 type app struct {
-	state           game.State
-	face            font.Face
-	choiceCursor    int
-	partyPath       string
-	tilePreview     bool
-	tileImages      []*ebiten.Image
-	geoPreview      bool
-	geoGrid         *geo.Grid
-	geoX            int
-	geoY            int
-	geoLabel        string
-	geoCatalog      geo.Catalog
-	geoSet          uint8
-	geoBlock        uint8
-	dungeonPreview  bool
-	dungeonFloor    *mapdata.DungeonFloor
-	combatSprites   map[string]*ebiten.Image
-	combatSpriteIDs []string
+	state            game.State
+	face             font.Face
+	choiceCursor     int
+	partyPath        string
+	tilePreview      bool
+	tileImages       []*ebiten.Image
+	geoPreview       bool
+	geoGrid          *geo.Grid
+	geoX             int
+	geoY             int
+	geoLabel         string
+	geoCatalog       geo.Catalog
+	geoSet           uint8
+	geoBlock         uint8
+	dungeonPreview   bool
+	dungeonFloor     *mapdata.DungeonFloor
+	combatSprites    map[string]*ebiten.Image
+	combatSpriteIDs  []string
+	combatAnimations map[string][]combatAnimation
+	animationStart   time.Time
+}
+
+type combatAnimation struct {
+	image *ebiten.Image
+	delay uint32
 }
 
 func (a *app) Update() error {
@@ -562,16 +570,24 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		return
 	}
 	key := ""
-	if fighter.SpriteBlock != 0 {
-		key = fmt.Sprintf("cpic%d-block-%02X-item-00.png", fighter.SpriteSet, fighter.SpriteBlock)
+	var sprite *ebiten.Image
+	if fighter.HasAnimation {
+		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
+		if animation := a.combatAnimations[key]; len(animation) > 0 {
+			sprite = animationImage(animation, time.Since(a.animationStart))
+		}
 	}
-	if key == "" || a.combatSprites[key] == nil {
+	if sprite == nil && fighter.SpriteBlock != 0 {
+		key = fmt.Sprintf("cpic%d-block-%02X-item-00.png", fighter.SpriteSet, fighter.SpriteBlock)
+		sprite = a.combatSprites[key]
+	}
+	if sprite == nil {
 		if len(a.combatSpriteIDs) == 0 {
 			return
 		}
 		key = a.combatSpriteIDs[ordinal%len(a.combatSpriteIDs)]
+		sprite = a.combatSprites[key]
 	}
-	sprite := a.combatSprites[key]
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(2, 2)
 	op.GeoM.Translate(float64(x), float64(y))
@@ -664,19 +680,37 @@ func main() {
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
 	geoLabel := fmt.Sprintf("GEO%d block 0x%02X", *geoSet, *geoBlock)
-	combatSprites, combatSpriteIDs, err := loadCombatSprites()
+	combatSprites, combatSpriteIDs, combatAnimations, err := loadCombatSprites()
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func loadCombatSprites() (map[string]*ebiten.Image, []string, error) {
+func animationImage(frames []combatAnimation, elapsed time.Duration) *ebiten.Image {
+	if len(frames) == 0 {
+		return nil
+	}
+	return frames[animationFrameIndex(frames, elapsed)].image
+}
+
+func animationFrameIndex(frames []combatAnimation, elapsed time.Duration) int {
+	if len(frames) == 0 {
+		return -1
+	}
+	delays := make([]uint32, len(frames))
+	for index, frame := range frames {
+		delays[index] = frame.delay
+	}
+	return gfx.AnimationFrameIndex(delays, elapsed)
+}
+
+func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]combatAnimation, error) {
 	paths, err := filepath.Glob("assets/sprites/cpic*-block-*-item-00.png")
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	sort.Strings(paths)
 	images := make(map[string]*ebiten.Image, len(paths))
@@ -684,18 +718,47 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, error) {
 	for _, path := range paths {
 		file, err := os.Open(path)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 		decoded, err := png.Decode(file)
 		file.Close()
 		if err != nil {
-			return nil, nil, fmt.Errorf("decode combat sprite %s: %w", path, err)
+			return nil, nil, nil, fmt.Errorf("decode combat sprite %s: %w", path, err)
 		}
 		name := filepath.Base(path)
 		images[name] = ebiten.NewImageFromImage(decoded)
 		ids = append(ids, name)
 	}
-	return images, ids, nil
+	animationData, err := os.ReadFile("assets/sprites/animation.json")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	var records []struct {
+		Name  string `json:"name"`
+		Delay uint32 `json:"delay"`
+	}
+	if err := json.Unmarshal(animationData, &records); err != nil {
+		return nil, nil, nil, fmt.Errorf("parse combat animation manifest: %w", err)
+	}
+	animations := make(map[string][]combatAnimation)
+	for _, record := range records {
+		file, err := os.Open(filepath.Join("assets/sprites", record.Name))
+		if err != nil {
+			return nil, nil, nil, err
+		}
+		decoded, err := png.Decode(file)
+		file.Close()
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("decode combat animation %s: %w", record.Name, err)
+		}
+		frameMarker := strings.Index(record.Name, "-frame-")
+		if frameMarker < 0 {
+			return nil, nil, nil, fmt.Errorf("animation asset %q has no frame marker", record.Name)
+		}
+		key := record.Name[:frameMarker]
+		animations[key] = append(animations[key], combatAnimation{image: ebiten.NewImageFromImage(decoded), delay: record.Delay})
+	}
+	return images, ids, animations, nil
 }
 
 func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {

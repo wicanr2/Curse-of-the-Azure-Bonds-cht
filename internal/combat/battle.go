@@ -32,8 +32,13 @@ type Fighter struct {
 	// SpriteSet/SpriteBlock identify the original CPIC asset when the fighter
 	// came from a LOAD MONSTER descriptor. A zero block means the renderer may
 	// choose a deterministic party fallback sprite.
-	SpriteSet       uint8
-	SpriteBlock     uint8
+	SpriteSet   uint8
+	SpriteBlock uint8
+	// AnimationBlock is the SPRIT block from SETUP MONSTER. It is separate
+	// from SpriteBlock because the original engine loads CPIC and SPRIT from
+	// different DAX families.
+	AnimationBlock  uint8
+	HasAnimation    bool
 	HitPoints       int
 	MaxHitPoints    int
 	ArmorClass      int

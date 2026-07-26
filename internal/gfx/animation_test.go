@@ -3,6 +3,7 @@ package gfx
 import (
 	"encoding/binary"
 	"testing"
+	"time"
 )
 
 func TestParseAnimationFramesAndMask(t *testing.T) {
@@ -35,6 +36,19 @@ func TestParseAnimationFramesAndMask(t *testing.T) {
 	}
 	if second := animation.Frames[1]; second.Delay != 9 || second.Picture.X != 4 {
 		t.Fatalf("second frame=%#v", second)
+	}
+}
+
+func TestAnimationFrameIndexUsesTenthSecondDelay(t *testing.T) {
+	delays := []uint32{1, 3}
+	if got := AnimationFrameIndex(delays, 50*time.Millisecond); got != 0 {
+		t.Fatalf("frame at 50ms=%d, want 0", got)
+	}
+	if got := AnimationFrameIndex(delays, 150*time.Millisecond); got != 1 {
+		t.Fatalf("frame at 150ms=%d, want 1", got)
+	}
+	if got := AnimationFrameIndex(delays, 450*time.Millisecond); got != 0 {
+		t.Fatalf("frame at 450ms=%d, want 0 after loop", got)
 	}
 }
 
