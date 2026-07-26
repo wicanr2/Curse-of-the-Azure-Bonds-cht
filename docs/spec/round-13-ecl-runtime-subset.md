@@ -8,11 +8,11 @@
 - `COMPARE`、六種 `IF`；不成立時依原版行為跳過下一個完整 command。
 - `SAVE` 的 scalar／memory subset。
 - `PRINT`／`PRINTCLEAR` 的 `0x80` compressed-string operand。
-- `PICTURE`、`LOAD FILES` 等尚未還原副作用的命令，只作 bounded no-op，並在文件中明確標示。
+- `PICTURE` 等尚未還原副作用的命令仍作 bounded no-op；`LOAD FILES` 已改為消耗三個 operand 並輸出可觀測 map-load selector signal，但仍未宣稱完成所有 DOS file／picture／wallset 副作用。
 
 任何其他 opcode（例如目前實際 ECL trace 遇到的 `0x25` ON GOTO、`0x36` ADD NPC）都會回傳 payload offset，不會被當成已支援。
 
-這不是完整遊戲 VM：尚未包含 party／地圖／戰鬥／選單輸入／音效狀態，亦不應把 no-op 命令的輸出視為原版等價。
+這不是完整遊戲 VM：尚未包含完整 party／地圖／戰鬥／選單輸入／音效狀態，亦不應把 bounded command signal 視為所有原版副作用的等價實作。
 
 ## 驗收
 

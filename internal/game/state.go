@@ -54,6 +54,8 @@ type State struct {
 	MapX            int
 	MapY            int
 	WildernessFloor mapdata.WildernessFloor
+	GeoMapSet       uint8
+	GeoMapBlock     uint8
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -97,6 +99,7 @@ type State struct {
 	combatSeed             int64
 	eclSeed                int64
 	mapSeed                int64
+	geoMapPending          bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -178,6 +181,8 @@ func NewState(catalog locale.Catalog) State {
 		combatSeed:             1,
 		eclSeed:                1,
 		mapSeed:                1,
+		GeoMapSet:              2,
+		GeoMapBlock:            1,
 	}
 }
 
@@ -265,6 +270,7 @@ func (s *State) Select(index int) error {
 		} else {
 			result, _ = ecl.RunSubsetInteractiveSeed(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed)
 		}
+		s.applyGeoMapLoad(result)
 		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
 			s.Location = LocationShadowdale
 			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
@@ -323,6 +329,29 @@ func (s *State) Select(index int) error {
 		s.leaveLocation()
 	}
 	return nil
+}
+
+func (s *State) applyGeoMapLoad(result ecl.RunResult) {
+	if !result.LoadFilesRequested {
+		return
+	}
+	block := result.LoadFiles[2]
+	if block == 0xFF || block == 0x7F {
+		return
+	}
+	s.GeoMapBlock = uint8(block)
+	s.geoMapPending = true
+}
+
+// ConsumeGeoMapRequest transfers the bounded ECL LOAD FILES effect to the
+// renderer's GEO catalog. Keeping this at the state boundary avoids coupling
+// the VM to Ebiten or to ZIP asset I/O.
+func (s *State) ConsumeGeoMapRequest() (set, block uint8, ok bool) {
+	if !s.geoMapPending {
+		return 0, 0, false
+	}
+	s.geoMapPending = false
+	return s.GeoMapSet, s.GeoMapBlock, true
 }
 
 // Camp applies the observable PROGRAM 9 transition. The full original

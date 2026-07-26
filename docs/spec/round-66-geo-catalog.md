@@ -11,4 +11,4 @@
 
 ## 尚未完成
 
-reference `Area1.current_3DMap_block_id` 與 ECL／area state 的完整 loader 尚未接通；目前 selector 是明確 CLI 選擇，尚非完整玩家流程的自動地圖切換。
+完整 `Area1.current_3DMap_block_id` 與 ECL／area save loader 尚未接通；CLI selector 與本輪 `LOAD FILES` pending bridge 已能驅動 preview，但尚非完整 DOS area state。
