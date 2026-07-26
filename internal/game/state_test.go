@@ -35,6 +35,26 @@ func TestLocalizedOpeningFlow(t *testing.T) {
 	}
 }
 
+func TestPictureResultBecomesResumableEvent(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"事件畫面"}
+	state.currentOriginalChoices = []string{"PICTURE"}
+	state.eclBlock = []byte{0, 0, 0x0E, 0x00, 0x1D, 0x00}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 0x1D || state.OriginalEvent != "PICTURE" {
+		t.Fatalf("picture state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || state.PictureRequested {
+		t.Fatalf("picture continuation state=%#v", state)
+	}
+}
+
 func TestRejectsWrongModeAction(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.Apply(ActionEnterCity); err == nil {

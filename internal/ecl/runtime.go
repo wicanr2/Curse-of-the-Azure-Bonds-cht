@@ -24,6 +24,8 @@ type RunResult struct {
 	EncounterActions   []uint16
 	LoadFilesRequested bool
 	LoadFiles          [3]uint16
+	PictureRequested   bool
+	PictureBlock       uint16
 }
 
 type Menu struct {
@@ -557,6 +559,16 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 					result.LoadFiles[index] = value
 				}
 				result.LoadFilesRequested = true
+			}
+			if instruction.Command.Opcode == 0x0E {
+				value, err := operandValue(instruction.Operands[0], memory)
+				if err != nil {
+					return result, fmt.Errorf("picture at %d: %w", pc, err)
+				}
+				if value != 0xFF {
+					result.PictureRequested = true
+					result.PictureBlock = value
+				}
 			}
 			if instruction.Command.Opcode == 0x1C {
 				result.MonsterSetup = nil
