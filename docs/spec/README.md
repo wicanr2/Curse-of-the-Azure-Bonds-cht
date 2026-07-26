@@ -86,3 +86,4 @@
 - [第八十八輪 reference combat placement formula](./round-88-reference-combat-placement-formula.md)（`READY`：限 `try_place_combatant` adapter）
 - [第九十輪 ITEMS base catalog](./090-items-base-catalog.md)（`READY`：限 128 筆 descriptor codec 與已知名稱 catalog）
 - [第九十一輪 equipped fighter effect adapter](./091-equipment-effect-adapter.md)（`READY`：限 readied 武器／護甲投影）
+- [第九十二輪 party equipment slot contract](./092-party-equipment-slots.md)（`READY`：限 class mask／slot transaction）
