@@ -51,6 +51,21 @@ func MergePictures(destination, source Picture) (Picture, error) {
 	return result, nil
 }
 
+// FlipHorizontal returns a left-to-right indexed copy of one picture. The
+// original CombatIcon caches this variant and chooses it for directions > 3.
+func (p Picture) FlipHorizontal() Picture {
+	result := p
+	result.Pixels = make([]uint8, len(p.Pixels))
+	for item := 0; item < int(p.ItemCount); item++ {
+		for y := 0; y < p.Height(); y++ {
+			for x := 0; x < p.Width(); x++ {
+				result.Pixels[item*p.ItemSize()+y*p.Width()+x] = p.Pixels[item*p.ItemSize()+y*p.Width()+(p.Width()-1-x)]
+			}
+		}
+	}
+	return result
+}
+
 func (p Picture) Width() int  { return int(p.WidthUnits) * 8 }
 func (p Picture) Height() int { return int(p.HeightUnits) }
 

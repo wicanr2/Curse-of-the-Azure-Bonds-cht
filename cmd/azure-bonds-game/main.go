@@ -575,7 +575,15 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		// Party icons are the original CHEAD+CBODY composition. The current
 		// roster has deterministic slots; character-specific icon IDs will
 		// replace this selector when the player record decoder is complete.
-		key = fmt.Sprintf("party-block-%02X.png", ordinal%6)
+		headBlock, bodyBlock := uint8(ordinal%6), uint8(ordinal%6)
+		if fighter.HasPartyIcon {
+			headBlock, bodyBlock = fighter.PartyHeadBlock, fighter.PartyBodyBlock
+		}
+		prefix := "party"
+		if fighter.IconAttack {
+			prefix = "party-attack"
+		}
+		key = fmt.Sprintf("%s-head-%02X-body-%02X.png", prefix, headBlock, bodyBlock)
 		sprite = a.combatSprites[key]
 	}
 	if sprite == nil && fighter.HasAnimation {
@@ -596,8 +604,13 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		sprite = a.combatSprites[key]
 	}
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(2, 2)
-	op.GeoM.Translate(float64(x), float64(y))
+	if fighter.IconDirection > 3 {
+		op.GeoM.Scale(-2, 2)
+		op.GeoM.Translate(float64(x)+float64(sprite.Bounds().Dx()*2), float64(y))
+	} else {
+		op.GeoM.Scale(2, 2)
+		op.GeoM.Translate(float64(x), float64(y))
+	}
 	screen.DrawImage(sprite, op)
 }
 
@@ -719,7 +732,7 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	partyPaths, err := filepath.Glob("assets/sprites/party-block-*.png")
+	partyPaths, err := filepath.Glob("assets/sprites/party*-head-*-body-*.png")
 	if err != nil {
 		return nil, nil, nil, err
 	}

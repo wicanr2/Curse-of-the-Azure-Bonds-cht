@@ -72,3 +72,4 @@
 - [第七十四輪 SPRIT animation codec](./round-74-sprit-animation.md)（`READY`：限 SPRIT frame stream decode）
 - [第七十五輪 SPRIT runtime playback](./round-75-sprit-playback.md)（`READY`：限目前 combat renderer 的 SPRIT playback）
 - [第七十六輪 CHEAD／CBODY 玩家小人圖層](./round-76-party-icon-layers.md)（`READY`：限 party icon 合成與素材管線）
+- [第七十七輪玩家戰鬥 icon state](./round-77-combat-icon-state.md)（`READY`：限方向／攻擊選擇 state boundary）

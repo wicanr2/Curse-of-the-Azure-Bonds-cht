@@ -413,6 +413,13 @@ func (s *State) SetParty(party []combat.Fighter) error {
 		seen[fighter.ID] = struct{}{}
 	}
 	s.party = append([]combat.Fighter(nil), party...)
+	for index := range s.party {
+		if !s.party[index].HasPartyIcon {
+			s.party[index].HasPartyIcon = true
+			s.party[index].PartyHeadBlock = uint8(index % 6)
+			s.party[index].PartyBodyBlock = uint8(index % 6)
+		}
+	}
 	return nil
 }
 

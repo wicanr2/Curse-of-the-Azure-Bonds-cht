@@ -37,8 +37,15 @@ type Fighter struct {
 	// AnimationBlock is the SPRIT block from SETUP MONSTER. It is separate
 	// from SpriteBlock because the original engine loads CPIC and SPRIT from
 	// different DAX families.
-	AnimationBlock  uint8
-	HasAnimation    bool
+	AnimationBlock uint8
+	HasAnimation   bool
+	// Party icon fields mirror the original Player combat record. They are
+	// renderer-neutral so save/import decoding can fill the actual values.
+	HasPartyIcon    bool
+	PartyHeadBlock  uint8
+	PartyBodyBlock  uint8
+	IconDirection   uint8
+	IconAttack      bool
 	HitPoints       int
 	MaxHitPoints    int
 	ArmorClass      int
