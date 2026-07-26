@@ -142,6 +142,19 @@ func TestResolveAttackRejectsAdjacentMissileButAllowsDartException(t *testing.T)
 	}
 }
 
+func TestValidateAttackRejectsAdjacentMissileBeforeRandomRoll(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, MissileWeapon: true, HasCombatPosition: true, CombatX: 0, CombatY: 0},
+		{ID: "goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 0},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.ValidateAttack("archer", "goblin"); err == nil {
+		t.Fatal("expected adjacent missile preflight rejection")
+	}
+}
+
 func TestAttackSequenceUsesAttacksPerTurnAndStopsAtDefeat(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 3},
