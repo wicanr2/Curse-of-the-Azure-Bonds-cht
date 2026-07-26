@@ -765,6 +765,37 @@ func TestCombatCastBlessConsumesSlotAndRaisesPartyAttackBonus(t *testing.T) {
 	}
 }
 
+func TestCombatCastCurseConsumesSlotAndDebuffsSelectedEnemy(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CurseSpellID}}}
+	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, AttackBonus: 3}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastCurse() {
+		t.Fatalf("Curse should be available: turns=%#v", state.CombatTurns())
+	}
+	if err := state.BeginCombatCast(CurseSpellID); err != nil || state.CombatCastingSpell() != CurseSpellID || len(state.partyRoster[0].SpellSlots) != 1 {
+		t.Fatalf("begin Curse state=%+v err=%v", state, err)
+	}
+	state.CancelCombatCast()
+	if err := state.BeginCombatCast(CurseSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(CurseSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Curse slot was not consumed: %#v", state.partyRoster[0].SpellSlots)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "goblin" && (fighter.AttackBonus != 2 || !fighter.Cursed || fighter.CurseRounds != 5) {
+			t.Fatalf("enemy Curse state=%+v", fighter)
+		}
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}

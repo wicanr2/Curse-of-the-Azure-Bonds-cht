@@ -10,6 +10,7 @@ import (
 
 const (
 	BlessSpellID        uint8 = 1
+	CurseSpellID        uint8 = 2
 	MagicMissileSpellID uint8 = 7
 )
 

@@ -174,7 +174,7 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyC) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.Mode != game.ModeCombat {
 		return a.state.OpenCharacterCreation()
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyT) {
@@ -269,6 +269,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
 			return a.state.BeginCombatCast(game.BlessSpellID)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
+			return a.state.BeginCombatCast(game.CurseSpellID)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
@@ -696,6 +699,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastBless() {
 		spellHint += "　B：祝福"
+	}
+	if a.state.CombatCanCastCurse() {
+		spellHint += "　C：詛咒"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }
