@@ -83,3 +83,5 @@ DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共�
 `.FX` effects 應沿用 `monster.ParseAffects` 的固定 9-byte codec：kind、little-endian duration、strength 與四 bytes effect-specific data 都先保存；`DOSPlayerRecord.ApplyEffects`／`Character.ApplyDOSEffects` 不應在 parser 階段直接修改 fighter。各遊戲再用 `ChineseAffectName` 與 rules adapter 顯示／套用效果，因為同一 kind 的 duration、strength 可能依遊戲版本不同。
 
 欄位注意：duration 是 bytes 1–2 的 little-endian minutes，strength 是 byte 3，`0xFF` strength 是 permanent；不要再把 byte 3 當 duration。`monster.AdvanceAffects` 只做時間消耗／移除，effect kind 的 AC、攻擊、HP、免疫與 status 仍應由各遊戲 rules adapter 決定。
+
+角色檔案共用介面應先停在 sidecar bundle：必要 `.SAV/.GUY` record、optional `.FX`、optional `.SWG` 分別解析後再由 `party.ParseDOSPlayerFiles` 組合。不要因為文件名 `SAVGAM?.DAT` 已知就假設其 header、slot、area pointer 或 memory address；container 必須有 sample bytes／反組譯證據後才接入。

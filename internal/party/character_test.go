@@ -155,7 +155,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
@@ -163,6 +163,27 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if err := character.ApplyDOSEffects(make([]byte, monster.AffectRecordSize-1)); err == nil {
 		t.Fatal("expected malformed DOS effects error")
+	}
+}
+
+func TestParseDOSPlayerFilesBundlesOptionalSidecars(t *testing.T) {
+	record := make([]byte, DOSPlayerRecordSize)
+	record[0] = 4
+	copy(record[1:], []byte("ELLA"))
+	record[0x10], record[0x12], record[0x14] = 16, 15, 12
+	record[0x16], record[0x18], record[0x1A] = 14, 13, 10
+	record[0x74], record[0x75], record[0x78], record[0x1A4] = 7, 5, 22, 18
+	record[0x10E] = 4
+	character, err := ParseDOSPlayerFiles("ella-1", DOSPlayerFiles{
+		Record:    record,
+		Effects:   []byte{0x27, 0x34, 0x12, 7, 1, 8, 9, 10, 11},
+		Inventory: make([]byte, monster.ItemRecordSize),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(character.Effects) != 1 || len(character.Equipment) != 1 {
+		t.Fatalf("bundled character=%#v", character)
 	}
 }
 
