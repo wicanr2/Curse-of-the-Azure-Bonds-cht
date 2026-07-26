@@ -244,6 +244,7 @@
 - [x] 將 CAMP VIEW 接成角色選單、繁中角色摘要與可返回 CAMP Menu 的只讀流程。
 - [x] 將 CAMP MAGIC 接成角色選單、已記憶 spell-slot 查看與已核對的一級法術名稱；保留 spell rules／mutation boundary。
 - [x] 將 CAMP MAGIC 接成 RuleBook 證實的 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command routing；保留 CAST／MEMORIZE／SCRIBE rules boundary。
+- [x] 將 CAMP MEMORIZE 接成 known-spell selection、pending state 與 REST_START 的 SpellSlots writeback；保留完整 capacity／時間／中斷規則 boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
