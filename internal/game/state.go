@@ -4,6 +4,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -17,6 +18,21 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
+
+// ReportCombatError converts a recoverable combat action failure into a
+// Traditional Chinese message without leaving the combat mode. Input
+// adapters should call this instead of returning player-caused action errors
+// to the Ebiten game loop.
+func (s *State) ReportCombatError(err error) {
+	if err == nil {
+		return
+	}
+	if errors.Is(err, combat.ErrAdjacentMissileTarget) {
+		s.combatMessage = s.catalog.Text("combat_missile_adjacent_error", "飛彈武器不能攻擊相鄰目標。")
+		return
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_action_error", "無法執行戰鬥行動：%s"), err.Error())
+}
 
 type Mode uint8
 

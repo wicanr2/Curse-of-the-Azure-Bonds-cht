@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
@@ -816,6 +817,18 @@ func TestCombatAdjacentMissileRejectsBeforeAmmunitionTransaction(t *testing.T) {
 	}
 	if got := state.CombatTargets()[0].HitPoints; got != 10 {
 		t.Fatalf("invalid missile attack changed target HP: %d", got)
+	}
+}
+
+func TestReportCombatErrorKeepsLocalizedRecoverableMessage(t *testing.T) {
+	state := NewState(testCatalog())
+	state.ReportCombatError(combat.ErrAdjacentMissileTarget)
+	if state.CombatMessage() != "飛彈武器不能攻擊相鄰目標。" {
+		t.Fatalf("missile error message=%q", state.CombatMessage())
+	}
+	state.ReportCombatError(errors.New("combat is not active"))
+	if !strings.Contains(state.CombatMessage(), "無法執行戰鬥行動") {
+		t.Fatalf("generic combat error message=%q", state.CombatMessage())
 	}
 }
 
