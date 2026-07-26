@@ -15,6 +15,30 @@ func TestDirectionDeltaUsesReferenceEightWayOrder(t *testing.T) {
 	}
 }
 
+func TestEncounterTeamStartUsesDistanceAndOppositeFacing(t *testing.T) {
+	layout := EncounterLayout{Distance: 3, MapDirection: 3}
+	party, partyFacing, ok := EncounterTeamStart(layout, SideParty)
+	if !ok || party != (TilePoint{}) || partyFacing != 1 {
+		t.Fatalf("party start=%#v facing=%d ok=%t", party, partyFacing, ok)
+	}
+	enemy, enemyFacing, ok := EncounterTeamStart(layout, SideEnemy)
+	if !ok || enemy != (TilePoint{X: 3, Y: 3}) || enemyFacing != 3 {
+		t.Fatalf("enemy start=%#v facing=%d ok=%t", enemy, enemyFacing, ok)
+	}
+}
+
+func TestEncounterTeamStartRejectsInvalidInputs(t *testing.T) {
+	if _, _, ok := EncounterTeamStart(EncounterLayout{Distance: -1}, SideEnemy); ok {
+		t.Fatal("negative distance should be rejected")
+	}
+	if _, _, ok := EncounterTeamStart(EncounterLayout{MapDirection: 8}, SideEnemy); ok {
+		t.Fatal("direction 8 should be rejected")
+	}
+	if _, _, ok := EncounterTeamStart(EncounterLayout{}, Side(2)); ok {
+		t.Fatal("unknown side should be rejected")
+	}
+}
+
 func TestFormationTileSeparatesPartyAndEnemyRows(t *testing.T) {
 	if got := FormationTile(SideParty, 2); got != (TilePoint{X: 2, Y: 0}) {
 		t.Fatalf("party tile=%#v", got)

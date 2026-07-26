@@ -7,6 +7,15 @@ type TilePoint struct {
 	Y int
 }
 
+// EncounterLayout contains the reference inputs used to separate the two
+// combat teams. Distance comes from SETUP MONSTER's max-distance value; the
+// map direction is kept separate because it belongs to the Area/CombatMap
+// state, not to an individual fighter.
+type EncounterLayout struct {
+	Distance     int
+	MapDirection uint8
+}
+
 // DirectionDelta returns the reference MapDirectionDelta order:
 // north, northeast, east, southeast, south, southwest, west, northwest.
 func DirectionDelta(direction uint8) (TilePoint, bool) {
@@ -18,6 +27,29 @@ func DirectionDelta(direction uint8) (TilePoint, bool) {
 		return TilePoint{}, false
 	}
 	return deltas[direction], true
+}
+
+// EncounterTeamStart returns the reference team origin and facing group.
+// The reference engine keeps the party at (0, 0), while the enemy team is
+// offset by encounter distance along MapDirectionDelta. Facing is stored in
+// four cardinal groups (the reference divides the eight-way direction by 2).
+// This intentionally does not choose an occupied candidate cell; that still
+// requires the decoded combat-map occupancy table.
+func EncounterTeamStart(layout EncounterLayout, side Side) (TilePoint, uint8, bool) {
+	if layout.Distance < 0 || layout.MapDirection >= 8 {
+		return TilePoint{}, 0, false
+	}
+	if side == SideParty {
+		return TilePoint{}, layout.MapDirection / 2, true
+	}
+	if side != SideEnemy {
+		return TilePoint{}, 0, false
+	}
+	delta, _ := DirectionDelta(layout.MapDirection)
+	return TilePoint{
+		X: layout.Distance * delta.X,
+		Y: layout.Distance * delta.Y,
+	}, ((layout.MapDirection + 4) % 8) / 2, true
 }
 
 // FormationTile is the temporary deterministic placement used until ECL /
