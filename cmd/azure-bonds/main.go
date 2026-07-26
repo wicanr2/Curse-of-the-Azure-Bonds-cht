@@ -11,6 +11,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 func main() {
@@ -25,6 +26,7 @@ func main() {
 	allEntries := flag.Bool("all-entries", false, "use all five ECL initialization entries with -graph")
 	findOpcode := flag.Int("find-opcode", -1, "print reachable instructions with this opcode when used with -graph")
 	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
+	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
@@ -67,6 +69,14 @@ func main() {
 			continue
 		}
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
+		if *monsterRecord {
+			record, recordErr := monster.Parse(block.Data)
+			if recordErr != nil {
+				fmt.Printf("  monster record stopped safely: %v\n", recordErr)
+			} else {
+				fmt.Printf("  monster name=%q mod=0x%02X hp=%d/%d ac=%d attack-bonus=%d damage=%dd%d%+d initiative=%d\n", record.Name, record.ModID, record.HitPoints, record.MaxHitPoints, record.ArmorClass, record.AttackBonus, record.DamageDiceCount, record.DamageDiceSides, record.DamageBonus, record.InitiativeBonus)
+			}
+		}
 		if *scanOpcode >= 0 {
 			instructions, scanErr := ecl.ScanKnownInstructions(block.Data)
 			for _, instruction := range instructions {
