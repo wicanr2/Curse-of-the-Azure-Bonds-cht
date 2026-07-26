@@ -223,6 +223,27 @@ func (s *State) CombatCanCastBless() bool {
 	return false
 }
 
+func (s *State) CombatCanCastCurse() bool {
+	if !s.CombatActive() || len(s.livingBySide(combat.SideEnemy)) == 0 {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == CurseSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
 
 func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
@@ -232,6 +253,8 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 	case CureLightWoundsSpellID:
 		return s.livingBySide(combat.SideParty)
 	case MagicMissileSpellID:
+		return s.livingBySide(combat.SideEnemy)
+	case CurseSpellID:
 		return s.livingBySide(combat.SideEnemy)
 	default:
 		return nil
@@ -244,18 +267,29 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == BlessSpellID && !s.CombatCanCastBless() {
 		return fmt.Errorf("Bless is unavailable")
 	}
+	if spellID == CurseSpellID && !s.CombatCanCastCurse() {
+		return fmt.Errorf("Curse is unavailable")
+	}
 	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
 		return fmt.Errorf("Magic Missile is unavailable")
 	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
 	if spellID == BlessSpellID {
 		s.combatSpellTargetIndex = 0
+		return nil
+	}
+	if spellID == CurseSpellID {
+		targets := s.livingBySide(combat.SideEnemy)
+		if s.combatTargetIndex >= len(targets) {
+			s.combatTargetIndex = 0
+		}
+		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
 	if spellID == MagicMissileSpellID {
@@ -294,7 +328,7 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 	if s.combatSpellTargetIndex < 0 {
 		s.combatSpellTargetIndex += len(targets)
 	}
-	if s.combatCastingSpell == MagicMissileSpellID {
+	if s.combatCastingSpell == MagicMissileSpellID || s.combatCastingSpell == CurseSpellID {
 		s.combatTargetIndex = s.combatSpellTargetIndex
 	}
 	return nil
@@ -309,6 +343,9 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	if spellID == BlessSpellID {
 		return s.combatCastBless()
+	}
+	if spellID == CurseSpellID {
+		return s.combatCastCurse()
 	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
@@ -359,6 +396,61 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastCurse() error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != CurseSpellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassCleric {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == CurseSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Curse", caster.ID)
+	}
+	enemies := s.livingBySide(combat.SideEnemy)
+	if len(enemies) == 0 {
+		return s.finishCombat()
+	}
+	if s.combatSpellTargetIndex >= len(enemies) {
+		s.combatSpellTargetIndex = 0
+	}
+	target := enemies[s.combatSpellTargetIndex]
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastCurse(caster.ID, target.ID)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, CurseSpellID)
+		return err
+	}
+	s.CancelCombatCast()
+	if result.Targets == 0 {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse_immune", "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。"), caster.Name, target.Name)
+	} else {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse", "%s 對 %s 施放詛咒，敵方攻擊加值降低 1。"), caster.Name, target.Name)
+	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}

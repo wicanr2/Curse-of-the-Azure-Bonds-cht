@@ -60,6 +60,8 @@ type Fighter struct {
 	AttackBonus       int
 	Blessed           bool
 	BlessRounds       int
+	Cursed            bool
+	CurseRounds       int
 	DamageDiceCount   int
 	DamageDiceSides   int
 	DamageBonus       int
@@ -147,6 +149,7 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	}
 	b.round++
 	b.advanceBlessDurations()
+	b.advanceCurseDurations()
 	turns := make([]Turn, 0, len(b.fighters))
 	ids := make([]string, 0, len(b.fighters))
 	for id := range b.fighters {
@@ -357,6 +360,71 @@ func (b *Battle) advanceBlessDurations() {
 		if fighter.BlessRounds == 0 {
 			fighter.AttackBonus--
 			fighter.Blessed = false
+		}
+		b.fighters[id] = fighter
+	}
+}
+
+func (b *Battle) CastCurse(casterID, targetID string) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if target.Side != SideEnemy {
+		return SpellResult{}, fmt.Errorf("Curse target %q is not an enemy", targetID)
+	}
+	if target.Cursed || b.adjacentToLivingParty(target) {
+		return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 2}, nil
+	}
+	target.AttackBonus--
+	target.Cursed = true
+	target.CurseRounds = 6
+	b.fighters[targetID] = target
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 2, Targets: 1}, nil
+}
+
+func (b *Battle) adjacentToLivingParty(enemy Fighter) bool {
+	if !enemy.HasCombatPosition {
+		return false
+	}
+	for _, party := range b.fighters {
+		if party.Side != SideParty || party.HitPoints <= 0 || !party.HasCombatPosition {
+			continue
+		}
+		dx := enemy.CombatX - party.CombatX
+		if dx < 0 {
+			dx = -dx
+		}
+		dy := enemy.CombatY - party.CombatY
+		if dy < 0 {
+			dy = -dy
+		}
+		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+			return true
+		}
+	}
+	return false
+}
+
+func (b *Battle) advanceCurseDurations() {
+	for id, fighter := range b.fighters {
+		if !fighter.Cursed || fighter.CurseRounds <= 0 {
+			continue
+		}
+		fighter.CurseRounds--
+		if fighter.CurseRounds == 0 {
+			fighter.AttackBonus++
+			fighter.Cursed = false
 		}
 		b.fighters[id] = fighter
 	}

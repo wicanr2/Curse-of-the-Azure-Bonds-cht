@@ -167,3 +167,49 @@ func TestCastBlessSkipsAdjacentPartyAndExpiresAfterSixRounds(t *testing.T) {
 		}
 	}
 }
+
+func TestCastCurseSkipsAdjacentEnemyAndExpiresAfterSixRounds(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "near", Name: "Near", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, AttackBonus: 3, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+		{ID: "far", Name: "Far", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, AttackBonus: 4, HasCombatPosition: true, CombatX: 6, CombatY: 6},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCurse("cleric", "near")
+	if err != nil {
+		t.Fatal(err)
+	}
+	nearCursed := false
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "near" {
+			nearCursed = fighter.Cursed
+		}
+	}
+	if result.Targets != 0 || nearCursed {
+		t.Fatalf("adjacent target was cursed: result=%+v fighters=%+v", result, battle.Fighters())
+	}
+	result, err = battle.CastCurse("cleric", "far")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Targets != 1 {
+		t.Fatalf("distant target result=%+v", result)
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "far" && (fighter.AttackBonus != 3 || fighter.CurseRounds != 6 || !fighter.Cursed) {
+			t.Fatalf("cursed target=%+v", fighter)
+		}
+	}
+	for round := 0; round < 6; round++ {
+		if _, err := battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "far" && (fighter.AttackBonus != 4 || fighter.Cursed || fighter.CurseRounds != 0) {
+			t.Fatalf("expired curse=%+v", fighter)
+		}
+	}
+}

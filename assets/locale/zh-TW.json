@@ -77,6 +77,8 @@
 	"combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
 	"combat_cure_light_wounds": "%s 對 %s 施放治療輕傷，恢復 %d HP。",
 	"combat_bless": "%s 施放祝福，隊伍攻擊加值提高 1。",
+	"combat_curse": "%s 對 %s 施放詛咒，敵方攻擊加值降低 1。",
+	"combat_curse_immune": "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。",
     "encounter_combat": "戰鬥",
     "encounter_wait": "等待",
     "encounter_flee": "撤退",
