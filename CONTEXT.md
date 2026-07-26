@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 32 輪：ECL monster spawn descriptors。
+第 33 輪：MON*CHA monster record。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -36,6 +36,7 @@
 第 29 輪 commit：`2c03327`，已推送至 GitHub `main`。
 第 30 輪 commit：`1edfc84`，已推送至 GitHub `main`。
 第 31 輪 commit：`dd3dee6`，已推送至 GitHub `main`。
+第 32 輪 commit：`01372f1`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -79,6 +80,7 @@
 - 真實 ECL1 block `0x51` 的 `+0x0643 COMBAT` 已轉為 `RunResult.CombatRequested`，BlockSession 與 Game state 會保留此控制轉移並顯示繁中入口訊息；完整戰鬥仍未完成。
 - `internal/combat` 已建立可注入骰點的 party／enemy core：initiative、天然 1／20、AC、damage 與勝負狀態均有 regression；尚未接 ECL encounter 或 Ebiten combat UI。
 - ECL1 block `0x51 +0x1293` 的 `SETUP MONSTER`／三個 `LOAD MONSTER` 已由 descriptor decoder 驗證，接續 `+0x12B0 COMBAT`；尚未解碼 `MON*CHA` stats。
+- `MON1CHA` fixed `0x1A6` record parser 已接入；實際 block `0x56` 解出 BUGBEAR `24/24 HP`、raw AC `55`、attack bonus `44`、`2d4`、initiative `9`，可轉成 `combat.Fighter`。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -91,6 +93,7 @@
 - COMBAT signal 已完成，但 party／enemy model、回合、骰點、傷害、法術、逃跑與戰鬥 UI 仍未完成。
 - party／enemy、initiative、攻擊與傷害 core 已完成；ECL encounter、戰場、法術、物品、逃跑／PARLAY 與 UI 仍未完成。
 - ECL monster spawn descriptor 已完成；`MON*CHA` HP／AC／攻擊資料與 ECL-to-combat adapter 仍未完成。
+- `MON*CHA` raw HP／AC／攻擊 parser 與 Fighter adapter 已完成；`MON*ITM`／`MON*SPC`、完整 ECL-to-Battle setup 仍未完成。
 - CAMP／其他城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成；Shadowdale 首層場所 menu 已有 state contract。
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 已有資料中立的座標／輸入 contract；原始 tile、碰撞與場所事件仍未完成。
@@ -133,3 +136,4 @@
 30. 建立 party／enemy combat model，接入 AD&D 回合與戰鬥 UI。
 31. 將 ECL `LOAD MONSTER`／`SETUP MONSTER` 接到 combat fighter 與 battle map。
 32. 解碼 `MON1CHA` 等 monster records，建立 ECL-to-combat adapter。
+33. 接入 `MON*ITM`／`MON*SPC`，將 ECL spawn sequence 建立成 Battle。
