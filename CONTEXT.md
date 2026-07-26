@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 61 輪：GEO wall navigation contract。
+第 62 輪：README 與可重現成果截圖。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -66,6 +66,8 @@
 第 59 輪功能 commit：`595c6ce`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 60 輪功能 commit：`5d13970`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 61 輪功能 commit：`7a085aa`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 62 輪功能／文件 commit：`f742f7a`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -154,6 +156,9 @@
 - `cmd/azure-bonds-game` 已載入 `TILES.DAX` 兩個 block 並以 `T` 顯示 48 個原始 24×24 tile 的 Ebiten gallery；GEO tile index mapping、完整 map viewport 與碰撞仍未完成。
 - `cmd/azure-bonds-game` 已以 `G` 顯示 `GEO2` 第一個 block 的 16×16 raw wall geometry viewport；background floor construction、tile mapping、碰撞與 camera 仍未完成。
 - `geo.Grid.CanMove` 已依 raw wall fields 建立 shared 四方向 traversal contract；viewport 黃點遵守目前／相鄰 cell wall 與邊界，完整 movement cost、encounter 與 floor collision 仍未完成。
+- `internal/mapdata` 已保存 reference `BackGroundTiles` 實際 74 筆 metadata，保留 0xFF impassable sentinel 與 reserved tail；尚未宣稱完成 floor／tile mapping。
+- 根目錄 `README.md` 已加入目前成果與限制，`docs/screenshots/tiles-gallery.png`、`geo-geometry.png` 由 `scripts/render_previews.go` 從原始 DAX 以現有 parser 可重現產生。
+- README 截圖證明 TILES indexed graphics 與 GEO raw wall geometry 管線已初步完成；不代表完整地圖、完整劇情或完整遊戲已完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
