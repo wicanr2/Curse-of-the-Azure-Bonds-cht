@@ -180,7 +180,7 @@ func (s *State) SavePartyFile(path string) error {
 	if len(s.partyRoster) == 0 {
 		return fmt.Errorf("no character-created party is available to save")
 	}
-	data, err := partySave.EncodeParty(s.partyRoster)
+	data, err := partySave.EncodeGame(s.partyRoster, s.Area, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY)
 	if err != nil {
 		return err
 	}
@@ -192,12 +192,12 @@ func (s *State) LoadPartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	roster, err := partySave.DecodeParty(data)
+	file, err := partySave.DecodeGame(data)
 	if err != nil {
 		return err
 	}
-	fighters := make([]combat.Fighter, 0, len(roster))
-	for _, character := range roster {
+	fighters := make([]combat.Fighter, 0, len(file.Characters))
+	for _, character := range file.Characters {
 		fighter, err := character.Fighter()
 		if err != nil {
 			return err
@@ -207,8 +207,26 @@ func (s *State) LoadPartyFile(path string) error {
 	if err := s.SetParty(fighters); err != nil {
 		return err
 	}
-	s.partyRoster = append(party.Roster(nil), roster...)
-	s.Mode = ModeWilderness
+	s.partyRoster = append(party.Roster(nil), file.Characters...)
+	s.Area = file.Area
+	s.GeoMapSet = file.Area.GameArea
+	s.GeoMapBlock = file.Area.Current3DMapBlockID
+	s.MapX, s.MapY = file.MapX, file.MapY
+	if file.Location <= uint8(LocationShadowdale) {
+		s.Location = Location(file.Location)
+	}
+	if file.Version == 1 {
+		// Legacy party.json had no adventure-state fields.
+		s.Mode = ModeWilderness
+		s.Location = LocationWilderness
+	} else if file.Mode <= uint8(ModeCharacterCreation) {
+		s.Mode = Mode(file.Mode)
+	} else {
+		s.Mode = ModeWilderness
+	}
+	if s.Mode == ModeMap && s.Location != LocationShadowdale {
+		s.Mode = ModeWilderness
+	}
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
