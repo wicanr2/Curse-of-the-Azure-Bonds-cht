@@ -23,6 +23,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -38,9 +39,17 @@ type app struct {
 	face         font.Face
 	choiceCursor int
 	partyPath    string
+	tilePreview  bool
+	tileImages   []*ebiten.Image
 }
 
 func (a *app) Update() error {
+	if a.tilePreview {
+		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			a.tilePreview = false
+		}
+		return nil
+	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		if a.state.CreationEditing {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -112,6 +121,10 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyC) {
 		return a.state.OpenCharacterCreation()
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyT) {
+		a.tilePreview = true
+		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
@@ -213,6 +226,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
+	if a.tilePreview {
+		a.drawTilePreview(screen, white, cyan)
+		return
+	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		a.drawCreation(screen, white, cyan)
 		return
@@ -264,6 +281,19 @@ func (a *app) Draw(screen *ebiten.Image) {
 	if a.state.Mode == game.ModeCombat {
 		a.drawCombat(screen, white, cyan)
 		return
+	}
+}
+
+func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "原始圖塊預覽（T／Esc：返回）", a.face, 24, 28, cyan)
+	for index, tile := range a.tileImages {
+		column := index % 8
+		row := index / 8
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(2, 2)
+		op.GeoM.Translate(float64(24+column*76), float64(44+row*56))
+		screen.DrawImage(tile, op)
+		text.Draw(screen, strconv.Itoa(index), a.face, 24+column*76, 44+row*56+50, white)
 	}
 }
 
@@ -388,6 +418,10 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+	tileImages, err := loadTileImages(*imagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -403,9 +437,35 @@ func main() {
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
+	data, err := zipMember(imagePath, "TILES.DAX")
+	if err != nil {
+		return nil, err
+	}
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse TILES.DAX: %w", err)
+	}
+	images := make([]*ebiten.Image, 0)
+	for _, block := range blocks {
+		picture, err := gfx.ParsePicture(block.Data, false, 0)
+		if err != nil {
+			return nil, fmt.Errorf("TILES.DAX block 0x%02X: %w", block.Entry.ID, err)
+		}
+		for item := 0; item < int(picture.ItemCount); item++ {
+			rgba, err := picture.RGBA(item, gfx.EGA16)
+			if err != nil {
+				return nil, fmt.Errorf("TILES.DAX block 0x%02X item %d: %w", block.Entry.ID, item, err)
+			}
+			images = append(images, ebiten.NewImageFromImage(rgba))
+		}
+	}
+	return images, nil
 }
 
 // loadECLBlocks builds one session namespace from all six original ECL DAX
