@@ -198,4 +198,5 @@
 - [x] 將 bounded runtime context（memory／flags／call stack）帶過 `NEWECL` target block，並建立跨 block regression。
 - [x] 解碼 `GEO2–GEO6` 的 16×16 geometry planes，建立原始 map cell data layer。
 - [x] 解碼 `TILES.DAX`／`8X8D*.DAX` indexed pictures 與 `WALLDEF*.DAX` records。
+- [x] 建立 reference EGA16 palette 與 indexed picture → RGBA adapter。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
