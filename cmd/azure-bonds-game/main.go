@@ -273,6 +273,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
 			return a.state.BeginCombatCast(game.CurseSpellID)
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
+			return a.state.BeginCombatCast(game.CauseLightWoundsSpellID)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
 				return a.state.CombatSelectSpellTarget(1)
@@ -702,6 +705,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastCurse() {
 		spellHint += "　C：詛咒"
+	}
+	if a.state.CombatCanCastCauseLightWounds() {
+		spellHint += "　W：造成輕傷"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }

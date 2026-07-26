@@ -796,6 +796,37 @@ func TestCombatCastCurseConsumesSlotAndDebuffsSelectedEnemy(t *testing.T) {
 	}
 }
 
+func TestCombatCastCauseLightWoundsConsumesSlotAndDamagesAdjacentEnemy(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CauseLightWoundsSpellID}}}
+	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 1, CombatY: 1}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastCauseLightWounds() {
+		t.Fatalf("Cause Light Wounds should be available: turns=%#v", state.CombatTurns())
+	}
+	if err := state.BeginCombatCast(CauseLightWoundsSpellID); err != nil || len(state.partyRoster[0].SpellSlots) != 1 {
+		t.Fatalf("begin Cause Light Wounds state=%+v err=%v", state, err)
+	}
+	state.CancelCombatCast()
+	if err := state.BeginCombatCast(CauseLightWoundsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(CauseLightWoundsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Cause Light Wounds slot was not consumed: %#v", state.partyRoster[0].SpellSlots)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "goblin" && (fighter.HitPoints >= 20 || fighter.HitPoints < 12 || fighter.HitPoints > 19) {
+			t.Fatalf("enemy damage state=%+v", fighter)
+		}
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}

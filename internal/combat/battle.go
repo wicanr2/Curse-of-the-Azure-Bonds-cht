@@ -300,6 +300,52 @@ func (b *Battle) CastCureLightWounds(casterID, targetID string) (SpellResult, er
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 3, Healing: healing, TargetHP: target.HitPoints}, nil
 }
 
+// CastCauseLightWounds applies the verified 1-8 HP touch damage. The target
+// must be an adjacent living enemy when both fighters carry CombatMap
+// positions; position-less direct callers retain the bounded fallback.
+func (b *Battle) CastCauseLightWounds(casterID, targetID string) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if target.Side != SideEnemy {
+		return SpellResult{}, fmt.Errorf("Cause Light Wounds target %q is not an enemy", targetID)
+	}
+	if caster.HasCombatPosition && target.HasCombatPosition && !adjacent(caster, target) {
+		return SpellResult{}, fmt.Errorf("Cause Light Wounds target %q is out of touch range", targetID)
+	}
+	damage := b.rng.Intn(8) + 1
+	if damage > target.HitPoints {
+		damage = target.HitPoints
+	}
+	target.HitPoints -= damage
+	b.fighters[targetID] = target
+	b.updateStatus()
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 4, Damage: damage, TargetHP: target.HitPoints}, nil
+}
+
+func adjacent(first, second Fighter) bool {
+	dx := first.CombatX - second.CombatX
+	if dx < 0 {
+		dx = -dx
+	}
+	dy := first.CombatY - second.CombatY
+	if dy < 0 {
+		dy = -dy
+	}
+	return dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
+}
+
 // CastBless applies the verified first-level party-wide attack bonus. The
 // current bounded combat projection does not yet decode adjacency or duration,
 // so those RuleBook constraints remain explicit integration boundaries.
@@ -336,15 +382,7 @@ func (b *Battle) adjacentToLivingEnemy(party Fighter) bool {
 		if enemy.Side != SideEnemy || enemy.HitPoints <= 0 || !enemy.HasCombatPosition {
 			continue
 		}
-		dx := party.CombatX - enemy.CombatX
-		if dx < 0 {
-			dx = -dx
-		}
-		dy := party.CombatY - enemy.CombatY
-		if dy < 0 {
-			dy = -dy
-		}
-		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+		if adjacent(party, enemy) {
 			return true
 		}
 	}
@@ -401,15 +439,7 @@ func (b *Battle) adjacentToLivingParty(enemy Fighter) bool {
 		if party.Side != SideParty || party.HitPoints <= 0 || !party.HasCombatPosition {
 			continue
 		}
-		dx := enemy.CombatX - party.CombatX
-		if dx < 0 {
-			dx = -dx
-		}
-		dy := enemy.CombatY - party.CombatY
-		if dy < 0 {
-			dy = -dy
-		}
-		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+		if adjacent(enemy, party) {
 			return true
 		}
 	}

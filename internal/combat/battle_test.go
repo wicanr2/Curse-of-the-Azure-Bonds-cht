@@ -213,3 +213,30 @@ func TestCastCurseSkipsAdjacentEnemyAndExpiresAfterSixRounds(t *testing.T) {
 		}
 	}
 }
+
+func TestCastCauseLightWoundsDealsOneToEightTouchDamage(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "near", Name: "Near", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+	}, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCauseLightWounds("cleric", "near")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != 4 || result.Damage < 1 || result.Damage > 8 || result.TargetHP != 20-result.Damage {
+		t.Fatalf("cause light wounds result=%+v", result)
+	}
+	farBattle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "far", Name: "Far", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 4},
+	}, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := farBattle.CastCauseLightWounds("cleric", "far"); err == nil {
+		t.Fatal("expected touch-range failure")
+	}
+}
