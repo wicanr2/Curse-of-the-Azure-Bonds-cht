@@ -19,6 +19,7 @@
 ```sh
 go test ./internal/ecl
 go run ./cmd/azure-bonds -image curseoftheazurebonds.zip -member ECL1.DAX -entrypoints
+go run ./cmd/azure-bonds -image curseoftheazurebonds.zip -member ECL1.DAX -run-subset
 ```
 
 實際 `ECL1.DAX` 的三個 block 已能解析出第五個 initial entry point `0x8014`。CLI 的 `-graph` 現在優先從第五個入口開始；若 header 不完整才保留 offset 0 fallback。CLI 的 `-trace -trace-start 20` 已在 block 81 解出 `AS YOU DEPART...` 等原始事件文字。下一步是建立完整 regression，並確認 code address 與 packed text／選單事件的對齊。
