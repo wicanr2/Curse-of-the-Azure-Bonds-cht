@@ -71,3 +71,10 @@
 - `GOTO/GOSUB` code targets 可轉換成 payload offsets。
 - 靜態 graph 對未知／越界資料安全停止。
 - ECL branch graph 有單元測試與原始 block CLI 驗收。
+
+## 第十二輪驗收
+
+- [x] 以公開 CoAB 重寫程式核對 ECL 初始化順序。
+- [x] 加入五組 word-valued ECL 初始化入口的 bounded parser。
+- [x] 修正已觀察 VM command table 的 arity metadata 並加入 regression test。
+- [ ] 對全部實際 ECL block 驗證五個入口，並與事件文字對齊。
