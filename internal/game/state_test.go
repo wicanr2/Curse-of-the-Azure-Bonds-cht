@@ -705,6 +705,29 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 }
 
+func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 7, CombatY: 3}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil || !state.CombatMoveMode() {
+		t.Fatalf("begin move state=%+v err=%v", state, err)
+	}
+	if err := state.CombatMove(-1, 0); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatMoveMode() {
+		t.Fatal("move mode was not cleared")
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" && (fighter.CombatX != 3 || fighter.CombatY != 3) {
+			t.Fatalf("hero position=%+v", fighter)
+		}
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}

@@ -110,6 +110,7 @@ type State struct {
 	combatCastingClass     party.Class
 	combatCastingClassSet  bool
 	combatSpellTargetIndex int
+	combatMoveMode         bool
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
 	itemCatalog            monster.BaseItemCatalog

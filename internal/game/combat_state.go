@@ -110,6 +110,39 @@ func (s *State) CombatTurns() []combat.Turn {
 
 func (s *State) CombatMessage() string { return s.combatMessage }
 
+func (s *State) CombatMoveMode() bool { return s.combatMoveMode }
+
+func (s *State) BeginCombatMove() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	if _, ok := s.combatPartyTurn(); !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	s.combatMoveMode = true
+	return nil
+}
+
+func (s *State) CancelCombatMove() { s.combatMoveMode = false }
+
+func (s *State) CombatMove(dx, dy int) error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	moved, err := s.battle.Move(caster.ID, dx, dy)
+	if err != nil {
+		return err
+	}
+	s.combatMoveMode = false
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moved.Name, moved.CombatX, moved.CombatY)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
 func (s *State) CombatTargetIndex() int { return s.combatTargetIndex }
 
 func (s *State) CombatTargets() []combat.Fighter {
@@ -1032,6 +1065,7 @@ func (s *State) finishCombat() error {
 		return fmt.Errorf("combat is not initialized")
 	}
 	s.CancelCombatCast()
+	s.CancelCombatMove()
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.eventReturnMode = ModeWilderness
