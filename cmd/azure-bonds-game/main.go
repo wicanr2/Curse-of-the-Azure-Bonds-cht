@@ -313,6 +313,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
 			return a.state.BeginCombatMove()
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+			return a.state.CombatDone()
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
 			return a.state.BeginCombatView()
 		}
@@ -775,7 +778,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if a.state.CombatCanCastProtectionFromGood() {
 		spellHint += "　G：防護善良"
 	}
-	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動"+spellHint, a.face, 32, 350, cyan)
+	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動　D：結束回合"+spellHint, a.face, 32, 350, cyan)
 }
 
 func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {

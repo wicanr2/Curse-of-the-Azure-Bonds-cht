@@ -724,6 +724,33 @@ func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	}
 }
 
+func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{
+		{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100},
+		{ID: "ally", Name: "隊友", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 0},
+	}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 0, DamageDiceCount: 0}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "hero" {
+		t.Fatalf("unexpected first active fighter=%+v ok=%v", active, ok)
+	}
+	if err := state.CombatDone(); err != nil {
+		t.Fatal(err)
+	}
+	active, ok := state.CombatActiveFighter()
+	if !ok || active.ID != "ally" {
+		t.Fatalf("DONE did not advance to next party fighter=%+v ok=%v", active, ok)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "goblin" && fighter.HitPoints != 20 {
+			t.Fatalf("DONE attacked enemy: %+v", fighter)
+		}
+	}
+}
+
 func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 1}}}}

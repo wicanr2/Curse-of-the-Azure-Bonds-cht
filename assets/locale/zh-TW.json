@@ -85,6 +85,7 @@
 	"combat_moved": "%s 移動到 (%d,%d)。",
 	"combat_free_attack": "移動時遭受免費反擊，受到 %d 點傷害。",
 	"combat_multi_attack": "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。",
+	"combat_done": "%s 結束回合。",
     "encounter_combat": "戰鬥",
     "encounter_wait": "等待",
     "encounter_flee": "撤退",
