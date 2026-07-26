@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百五十五輪：enemy RateOfFire turn。
+第一百五十六輪：combat error recovery。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -413,3 +413,5 @@
 第一百五十四輪功能／文件 commit：`e0d4e31`，已推送至 GitHub `main`。修正第 153 輪 guard 與第 150 輪 ammunition atomic contract 的順序，Battle 提供不擲骰 `ValidateAttack`，CombatAct 在扣除彈藥前先拒絕無效相鄰 missile attack；新增 regression、READY 規格與共用 state knowledge。完整 ranged multi-target transaction、Range、line-of-sight 與其他 thrown weapon 仍保留 boundary。
 
 第一百五十五輪功能／文件 commit：`07634ab`，已推送至 GitHub `main`。將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn，讓敵方也使用 deterministic `AttackSequence` 與繁中多次攻擊摘要；新增 regression、READY 規格與共用 state knowledge。enemy AI、彈藥、Aim／line-of-sight 與額外職業攻擊仍保留 boundary。
+
+第一百五十六輪待提交：將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。

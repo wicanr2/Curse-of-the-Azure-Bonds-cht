@@ -73,6 +73,13 @@ type combatAnimation struct {
 	y     int16
 }
 
+func (a *app) combatAction(action func() error) error {
+	if err := action(); err != nil {
+		a.state.ReportCombatError(err)
+	}
+	return nil
+}
+
 func (a *app) Update() error {
 	a.syncGeoMapRequest()
 	if a.tilePreview {
@@ -255,9 +262,9 @@ func (a *app) Update() error {
 				return nil
 			}
 			if a.state.CombatCastingSpell() != 0 {
-				return a.state.CombatCast(a.state.CombatCastingSpell())
+				return a.combatAction(func() error { return a.state.CombatCast(a.state.CombatCastingSpell()) })
 			}
-			return a.state.CombatAct()
+			return a.combatAction(a.state.CombatAct)
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
@@ -273,16 +280,16 @@ func (a *app) Update() error {
 				return nil
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-				return a.state.CombatMove(0, -1)
+				return a.combatAction(func() error { return a.state.CombatMove(0, -1) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-				return a.state.CombatMove(1, 0)
+				return a.combatAction(func() error { return a.state.CombatMove(1, 0) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-				return a.state.CombatMove(0, 1)
+				return a.combatAction(func() error { return a.state.CombatMove(0, 1) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-				return a.state.CombatMove(-1, 0)
+				return a.combatAction(func() error { return a.state.CombatMove(-1, 0) })
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {
@@ -290,46 +297,46 @@ func (a *app) Update() error {
 			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
-			return a.state.BeginCombatCast(game.MagicMissileSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.MagicMissileSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
-			return a.state.BeginCombatCast(game.CureLightWoundsSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CureLightWoundsSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanCastBless() {
-			return a.state.BeginCombatCast(game.BlessSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.BlessSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyC) && a.state.CombatCanCastCurse() {
-			return a.state.BeginCombatCast(game.CurseSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CurseSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyW) && a.state.CombatCanCastCauseLightWounds() {
-			return a.state.BeginCombatCast(game.CauseLightWoundsSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CauseLightWoundsSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyP) && a.state.CombatCanCastProtectionFromEvil() {
-			return a.state.BeginCombatCast(game.ProtectionFromEvilSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.ProtectionFromEvilSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.state.CombatCanCastProtectionFromGood() {
-			return a.state.BeginCombatCast(game.ProtectionFromGoodSpellID)
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.ProtectionFromGoodSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-			return a.state.BeginCombatMove()
+			return a.combatAction(a.state.BeginCombatMove)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-			return a.state.CombatDone()
+			return a.combatAction(a.state.CombatDone)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
-			return a.state.BeginCombatView()
+			return a.combatAction(a.state.BeginCombatView)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.state.CombatCastingSpell() != 0 {
-				return a.state.CombatSelectSpellTarget(1)
+				return a.combatAction(func() error { return a.state.CombatSelectSpellTarget(1) })
 			}
-			return a.state.CombatSelectTarget(1)
+			return a.combatAction(func() error { return a.state.CombatSelectTarget(1) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
 			if a.state.CombatCastingSpell() != 0 {
-				return a.state.CombatSelectSpellTarget(-1)
+				return a.combatAction(func() error { return a.state.CombatSelectSpellTarget(-1) })
 			}
-			return a.state.CombatSelectTarget(-1)
+			return a.combatAction(func() error { return a.state.CombatSelectTarget(-1) })
 		}
 	}
 	if a.state.Mode == game.ModeMap {

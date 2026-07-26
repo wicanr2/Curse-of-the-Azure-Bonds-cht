@@ -4,10 +4,15 @@
 package combat
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"sort"
 )
+
+// ErrAdjacentMissileTarget identifies the RuleBook's recoverable range
+// restriction so UI adapters can present a localized message.
+var ErrAdjacentMissileTarget = errors.New("missile weapon cannot attack an adjacent target")
 
 type Side uint8
 
@@ -178,7 +183,7 @@ func (b *Battle) ValidateAttack(attackerID, targetID string) error {
 		return fmt.Errorf("dead fighter cannot attack")
 	}
 	if attacker.HasCombatPosition && target.HasCombatPosition && attacker.MissileWeapon && adjacent(attacker, target) && !attacker.ThrownWeapon {
-		return fmt.Errorf("missile weapon cannot attack an adjacent target")
+		return ErrAdjacentMissileTarget
 	}
 	return nil
 }

@@ -268,6 +268,7 @@
 - [x] 將 RuleBook missile adjacent prohibition 與 dart thrown exception 接入 weapon profile／Battle guard；保留完整 Range、line-of-sight、Aim 與其他 thrown weapon boundary。
 - [x] 將 missile adjacency guard 接到 ammunition transaction 前的 attack preflight，避免無效攻擊消耗彈藥；保留多目標 ranged transaction boundary。
 - [x] 將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn；保留 enemy AI、彈藥與額外職業攻擊 boundary。
+- [x] 將玩家 combat action error 接成繁中可恢復訊息，避免非法輸入結束 Ebiten game loop；保留資料／啟動錯誤向上回報 boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
