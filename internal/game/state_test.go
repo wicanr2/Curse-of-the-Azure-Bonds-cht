@@ -243,3 +243,18 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 		t.Fatalf("journal close mode=%v err=%v", state.Mode, err)
 	}
 }
+
+func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
+	state := NewState(testCatalog())
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
+	if err := state.SetParty(party); err != nil {
+		t.Fatal(err)
+	}
+	state.Mode = ModeWilderness
+	if err := state.Camp(); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.PartyFighters()[0].HitPoints; got != 10 {
+		t.Fatalf("restored hp=%d, want 10", got)
+	}
+}
