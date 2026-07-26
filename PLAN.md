@@ -273,6 +273,7 @@
 - [x] 將 ECL `LOAD PIECES` 接成三 selector signal，保留地城 floor／wall／tile file side effect boundary。
 - [x] 將 `LOAD PIECES` signal 保存為 State 一次性 request，保留 renderer／map adapter boundary。
 - [x] 依 reference `LoadWalldef` 將 `LOAD PIECES` selector 接到 WALLDEF／8X8D raw piece catalog，保留牆面 renderer boundary。
+- [x] 依 reference `WallDefBlock.Offset` 將 WALLDEF graphic IDs 映射到 global 8×8D symbol item，提供 bounded `WallSymbol` lookup。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。

@@ -13,9 +13,15 @@ type PieceSet struct {
 	SetID          uint8
 	Selector       uint8
 	WallDefs       []WallDef
+	SymbolSetIDs   []uint8
 	SymbolBlockIDs []uint8
 	Symbols        map[uint8]Picture
 }
+
+// SymbolSetBase is the reference global-symbol base for the three WALLDEF
+// slots populated by LOAD PIECES. The separate 8X8D set 0 (base 0x01) is
+// used by the area-map path and is intentionally outside this table.
+var SymbolSetBase = [...]uint16{0, 0x2E, 0x74, 0xBA}
 
 // ParsePieceSet applies the LOAD PIECES mapping recovered from the reference
 // engine's LoadWalldef routine. A single WALLDEF record uses the selector as
@@ -44,10 +50,16 @@ func ParsePieceSet(setID, selector uint8, wallBlocks, symbolBlocks []dax.Block) 
 		SetID:          setID,
 		Selector:       selector,
 		WallDefs:       walls,
+		SymbolSetIDs:   make([]uint8, len(walls)),
 		SymbolBlockIDs: make([]uint8, len(walls)),
 		Symbols:        make(map[uint8]Picture, len(walls)),
 	}
 	for index := range walls {
+		globalSet := int(setID) + index
+		if globalSet < 1 || globalSet >= len(SymbolSetBase) {
+			return PieceSet{}, fmt.Errorf("piece set %d record %d exceeds symbol-set range", setID, index)
+		}
+		walls[index].OffsetSymbols(int(SymbolSetBase[globalSet]) - int(SymbolSetBase[1]))
 		symbolID := selector
 		if len(walls) > 1 {
 			value := int(selector)*10 + index + 1
@@ -71,7 +83,30 @@ func ParsePieceSet(setID, selector uint8, wallBlocks, symbolBlocks []dax.Block) 
 			return PieceSet{}, fmt.Errorf("8X8D symbol block %d: %w", symbolID, err)
 		}
 		result.SymbolBlockIDs[index] = symbolID
+		result.SymbolSetIDs[index] = uint8(globalSet)
 		result.Symbols[symbolID] = picture
 	}
 	return result, nil
+}
+
+// WallSymbol resolves one WALLDEF cell into its 8X8D picture item. The
+// returned picture retains all items so callers can choose the item index
+// using globalID without losing the source bitmap.
+func (p PieceSet) WallSymbol(record, row, column int) (picture Picture, globalID uint8, ok bool) {
+	if record < 0 || record >= len(p.WallDefs) || record >= len(p.SymbolSetIDs) || record >= len(p.SymbolBlockIDs) {
+		return Picture{}, 0, false
+	}
+	id, ok := p.WallDefs[record].ID(row, column)
+	if !ok || id == 0 {
+		return Picture{}, 0, false
+	}
+	picture, ok = p.Symbols[p.SymbolBlockIDs[record]]
+	if !ok {
+		return Picture{}, 0, false
+	}
+	local := int(id) - int(SymbolSetBase[p.SymbolSetIDs[record]])
+	if local < 0 || local >= int(picture.ItemCount) {
+		return Picture{}, 0, false
+	}
+	return picture, id, true
 }

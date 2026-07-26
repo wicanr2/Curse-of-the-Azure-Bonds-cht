@@ -57,10 +57,14 @@ func TestParsePieceSetFromOriginalArea2Image(t *testing.T) {
 }
 
 func testSymbolPicture() []byte {
-	data := make([]byte, 17+32)
+	return testSymbolPictureItems(1)
+}
+
+func testSymbolPictureItems(items int) []byte {
+	data := make([]byte, 17+items*32)
 	data[0] = 8 // height
 	data[2] = 1 // width units: 8 pixels
-	data[8] = 1 // one symbol item
+	data[8] = byte(items)
 	for index := 17; index < len(data); index++ {
 		data[index] = 0x12
 	}
@@ -92,11 +96,14 @@ func TestParsePieceSetMapsSingleWallRecordToSelector(t *testing.T) {
 }
 
 func TestParsePieceSetUsesReferenceMultiRecordSymbolIDs(t *testing.T) {
+	wallData := testWallData(2)
+	wallData[0] = 0x2E
+	wallData[5*156] = 0x2F
 	set, err := ParsePieceSet(2, 7,
-		[]dax.Block{{Entry: dax.Entry{ID: 7}, Data: testWallData(2)}},
+		[]dax.Block{{Entry: dax.Entry{ID: 7}, Data: wallData}},
 		[]dax.Block{
-			{Entry: dax.Entry{ID: 71}, Data: testSymbolPicture()},
-			{Entry: dax.Entry{ID: 72}, Data: testSymbolPicture()},
+			{Entry: dax.Entry{ID: 71}, Data: testSymbolPictureItems(70)},
+			{Entry: dax.Entry{ID: 72}, Data: testSymbolPictureItems(70)},
 		},
 	)
 	if err != nil {
@@ -104,6 +111,15 @@ func TestParsePieceSetUsesReferenceMultiRecordSymbolIDs(t *testing.T) {
 	}
 	if got, want := set.SymbolBlockIDs, []uint8{71, 72}; len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
 		t.Fatalf("symbol block IDs = %v, want %v", got, want)
+	}
+	if got, want := set.WallDefs[0].Rows[0][0], uint8(0x74); got != want {
+		t.Fatalf("first wall symbol = 0x%02X, want 0x%02X", got, want)
+	}
+	if got, want := set.WallDefs[1].Rows[0][0], uint8(0xBB); got != want {
+		t.Fatalf("second wall symbol = 0x%02X, want 0x%02X", got, want)
+	}
+	if _, id, ok := set.WallSymbol(0, 0, 0); !ok || id != 0x74 {
+		t.Fatalf("WallSymbol first record = id 0x%02X, ok %v", id, ok)
 	}
 }
 
