@@ -69,6 +69,8 @@ type State struct {
 	CreationRoster   party.Roster
 	CreationCursor   int
 	CreationMessage  string
+	CreationName     string
+	CreationEditing  bool
 
 	catalog                locale.Catalog
 	eclBlock               []byte

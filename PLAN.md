@@ -186,4 +186,5 @@
 - [x] 保存 party roster、同步戰鬥 HP，並建立 CAMP 後 HP 恢復的 state boundary。
 - [x] 建立六種玩家種族、六種基本職業、能力值與 1–6 人 roster validation。
 - [x] 接通繁中角色建立 starter UI，完成後將角色投影並保存到 `State.SetParty`。
+- [x] 接通 Unicode／繁中自訂角色姓名輸入與 State 保存。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
