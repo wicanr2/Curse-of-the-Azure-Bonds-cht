@@ -113,6 +113,8 @@ type State struct {
 	mapSeed                int64
 	geoMapPending          bool
 	shopMenu               bool
+	shopOffers             []ShopOffer
+	moneyPool              uint32
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -587,11 +589,25 @@ func (s *State) selectShop(index int, originalChoice string) error {
 func (s *State) shopActionMessage(originalChoice string) string {
 	switch originalChoice {
 	case "BUY":
-		return s.catalog.Text("shop_buy_unavailable", "商店庫存尚未載入。")
+		if len(s.shopOffers) == 0 {
+			return s.catalog.Text("shop_buy_unavailable", "商店庫存尚未載入。")
+		}
+		return s.catalog.Text("shop_buy_ready", "商店庫存已載入，購買操作尚待接入。")
 	case "VIEW":
 		return s.catalog.Text("shop_view_unavailable", "查看角色與物品功能尚待接入。")
-	case "TAKE", "POOL", "SHARE":
-		return s.catalog.Text("shop_money_unavailable", "party money pool 功能尚待接入。")
+	case "TAKE":
+		return s.catalog.Text("shop_take_unavailable", "請先選擇角色與金幣數量。")
+	case "POOL":
+		if err := s.PoolPartyGold(); err != nil {
+			return "集中金幣失敗：" + err.Error()
+		}
+		return fmt.Sprintf(s.catalog.Text("shop_pool_done", "已集中金幣：%d GP。"), s.moneyPool)
+	case "SHARE":
+		before := s.moneyPool
+		if err := s.ShareGold(); err != nil {
+			return "分配金幣失敗：" + err.Error()
+		}
+		return fmt.Sprintf(s.catalog.Text("shop_share_done", "已分配金幣：%d GP。"), before)
 	case "APPRAISE":
 		return s.catalog.Text("shop_appraise_unavailable", "估價功能尚待接入。")
 	default:

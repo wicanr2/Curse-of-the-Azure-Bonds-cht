@@ -105,3 +105,4 @@
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
 - [第一百一十輪繁中 Shop Menu state](./110-shop-menu-state.md)（`READY`：限 STORE command UI boundary）
+- [第一百一十一輪 shop stock／party money pool](./111-shop-stock-money-pool.md)（`READY`：限 injected offer 與資產 API）
