@@ -15,3 +15,4 @@
 - [第四輪 Go 核心層與繁中資源](./round-04-go-core.md)（`READY`：限 DAX container／locale）
 - [第五輪 ECL operand framing](./round-05-ecl-operands.md)（`DRAFT`）
 - [第六輪 ECL 安全 trace walker](./round-06-ecl-trace.md)（`DRAFT`）
+- [第七輪 ECL packed text extraction](./round-07-ecl-text.md)（`DRAFT`）
