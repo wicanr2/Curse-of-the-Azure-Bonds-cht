@@ -62,12 +62,19 @@ func (s *BlockSession) ApplyResult(result RunResult) error {
 // caller keep one global input sequence while each newly loaded block sees
 // only the choices not consumed by earlier blocks.
 func (s *BlockSession) RunInteractive(maxSteps int, selections []uint16) (RunResult, error) {
+	start, err := s.InitialEntry()
+	if err != nil {
+		return RunResult{}, err
+	}
+	return s.RunFrom(start, maxSteps, selections)
+}
+
+// RunFrom executes an explicit event entry in the current block. After a
+// NEWECL signal, the target resumes at its own initial entry.
+func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
 	var aggregate RunResult
+	var err error
 	for transitions := 0; transitions < 8; transitions++ {
-		start, err := s.InitialEntry()
-		if err != nil {
-			return aggregate, err
-		}
 		remaining := selections
 		if s.selectionOffset < len(selections) {
 			remaining = selections[s.selectionOffset:]
@@ -88,6 +95,10 @@ func (s *BlockSession) RunInteractive(maxSteps int, selections []uint16) (RunRes
 			return aggregate, nil
 		}
 		if err := s.ApplyResult(result); err != nil {
+			return aggregate, err
+		}
+		start, err = s.InitialEntry()
+		if err != nil {
 			return aggregate, err
 		}
 	}

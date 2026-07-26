@@ -161,3 +161,10 @@
 - [x] selection offset 與 bounded NEWECL switch 有 synthetic regression。
 - [x] 確認 ECL1 initial-entry graph 尚無 reachable NEWECL edge，保留此未知。
 - [ ] 從其他 event entries 找出 real NEWECL transition。
+
+## 第二十五輪驗收
+
+- [x] 掃描全部 ECL 初始化 entries。
+- [x] 定位 ECL4 block 0x25 `+0x022B` real NEWECL。
+- [x] CLI entry-level regression 驗證 target 0x50。
+- [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
