@@ -49,11 +49,15 @@ type app struct {
 	geoX           int
 	geoY           int
 	geoLabel       string
+	geoCatalog     geo.Catalog
+	geoSet         uint8
+	geoBlock       uint8
 	dungeonPreview bool
 	dungeonFloor   *mapdata.DungeonFloor
 }
 
 func (a *app) Update() error {
+	a.syncGeoMapRequest()
 	if a.tilePreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
@@ -263,6 +267,23 @@ func (a *app) Update() error {
 		}
 	}
 	return nil
+}
+
+func (a *app) syncGeoMapRequest() {
+	set, block, ok := a.state.ConsumeGeoMapRequest()
+	if !ok {
+		return
+	}
+	grid, found := a.geoCatalog.Lookup(geo.MapRef{Set: set, BlockID: block})
+	if !found {
+		a.state.Message = fmt.Sprintf("找不到 GEO%d block 0x%02X", set, block)
+		return
+	}
+	a.geoGrid = &grid
+	floor := mapdata.GenerateDungeon(grid, 8, 8)
+	a.dungeonFloor = &floor
+	a.geoSet, a.geoBlock = set, block
+	a.geoLabel = fmt.Sprintf("GEO%d block 0x%02X", set, block)
 }
 
 func (a *app) Draw(screen *ebiten.Image) {
@@ -589,10 +610,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	geoGrid, err := loadGEOPreview(*imagePath, uint8(*geoSet), uint8(*geoBlock))
+	geoCatalog, err := loadGEOCatalog(*imagePath)
 	if err != nil {
 		log.Fatal(err)
 	}
+	geoRef := geo.MapRef{Set: uint8(*geoSet), BlockID: uint8(*geoBlock)}
+	geoGridValue, ok := geoCatalog.Lookup(geoRef)
+	if !ok {
+		log.Fatalf("GEO%d block 0x%02X is not in original catalog", geoRef.Set, geoRef.BlockID)
+	}
+	geoGrid := &geoGridValue
 	dungeonFloor := loadDungeonPreview(geoGrid)
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
@@ -610,7 +637,7 @@ func main() {
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
 	geoLabel := fmt.Sprintf("GEO%d block 0x%02X", *geoSet, *geoBlock)
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID}); err != nil {
 		log.Fatal(err)
 	}
 }

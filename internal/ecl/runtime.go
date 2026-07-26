@@ -22,6 +22,8 @@ type RunResult struct {
 	SelectionsConsumed int
 	RandomValues       []uint16
 	EncounterActions   []uint16
+	LoadFilesRequested bool
+	LoadFiles          [3]uint16
 }
 
 type Menu struct {
@@ -546,6 +548,16 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// CLEAR BOX have decoded arity but require the full renderer,
 			// party/inventory or asset state. Consuming their operands and
 			// continuing is a bounded prefix behavior, not a claim of effects.
+			if instruction.Command.Opcode == 0x21 {
+				for index, operand := range instruction.Operands {
+					value, err := operandValue(operand, memory)
+					if err != nil {
+						return result, fmt.Errorf("load files at %d: %w", pc, err)
+					}
+					result.LoadFiles[index] = value
+				}
+				result.LoadFilesRequested = true
+			}
 			if instruction.Command.Opcode == 0x1C {
 				result.MonsterSetup = nil
 				result.MonsterSpawns = nil

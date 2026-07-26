@@ -109,6 +109,18 @@ func TestLocationDefaultsToWilderness(t *testing.T) {
 	}
 }
 
+func TestECLLoadFilesTransfersGeoBlockRequest(t *testing.T) {
+	state := NewState(testCatalog())
+	state.applyGeoMapLoad(ecl.RunResult{LoadFilesRequested: true, LoadFiles: [3]uint16{0xFF, 0xFF, 0x10}})
+	set, block, ok := state.ConsumeGeoMapRequest()
+	if !ok || set != 2 || block != 0x10 {
+		t.Fatalf("geo request=(%d,%#x,%v), want set 2 block 0x10", set, block, ok)
+	}
+	if _, _, ok := state.ConsumeGeoMapRequest(); ok {
+		t.Fatal("geo map request should be consumed exactly once")
+	}
+}
+
 func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"
