@@ -142,6 +142,57 @@ type ItemRecord struct {
 	Affects         [3]uint8
 }
 
+type ConsumableKind uint8
+
+const (
+	ConsumableScroll ConsumableKind = iota + 1
+	ConsumablePotion
+	ConsumableCharged
+)
+
+// ConsumableUse is a data signal for the later spell/effect engine. SpellIDs
+// are populated for scrolls; charged items expose the effect byte and charge
+// transition without applying any AD&D rule here.
+type ConsumableUse struct {
+	Kind          ConsumableKind
+	ItemType      uint8
+	EffectID      uint8
+	SpellIDs      []uint8
+	ChargesBefore int
+	ChargesAfter  int
+}
+
+// DecodeConsumable interprets the item properties documented by the original
+// item format. Types 60-62 are scrolls, 71/84 are one-use potions, and 78/79
+// are charged wands. The catalog lookup keeps corrupted item types bounded.
+func (item ItemRecord) DecodeConsumable(catalog BaseItemCatalog) (ConsumableUse, error) {
+	if _, ok := catalog.Lookup(item.Type); !ok {
+		return ConsumableUse{}, fmt.Errorf("item type 0x%02X is outside base catalog", item.Type)
+	}
+	use := ConsumableUse{ItemType: item.Type}
+	switch item.Type {
+	case 60, 61, 62:
+		use.Kind = ConsumableScroll
+		for _, spellID := range item.Affects {
+			if spellID != 0 {
+				use.SpellIDs = append(use.SpellIDs, spellID)
+			}
+		}
+		use.ChargesBefore, use.ChargesAfter = 1, 0
+	case 71, 84:
+		use.Kind = ConsumablePotion
+		use.ChargesBefore, use.ChargesAfter = 1, 0
+	case 78, 79:
+		use.Kind = ConsumableCharged
+		use.EffectID = item.Affects[1]
+		use.ChargesBefore = int(item.Affects[0])
+		use.ChargesAfter = use.ChargesBefore
+	default:
+		return ConsumableUse{}, fmt.Errorf("item type 0x%02X is not a supported consumable", item.Type)
+	}
+	return use, nil
+}
+
 type AffectRecord struct {
 	Kind     uint8
 	Value    uint16

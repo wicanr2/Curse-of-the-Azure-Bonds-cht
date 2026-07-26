@@ -235,5 +235,6 @@
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
 - [x] 建立 party equipment class mask、slot collision、雙手武器與雙戒指 transaction contract。
 - [x] 建立 inventory Count stack／readied protection／cursed lock mutation contract。
+- [x] 解碼 scroll／potion／wand properties，建立 consumable use signal 與 charge mutation。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

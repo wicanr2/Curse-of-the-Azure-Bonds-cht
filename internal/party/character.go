@@ -230,6 +230,34 @@ func (c *Character) RemoveItem(index int) (monster.ItemRecord, error) {
 	return removed, nil
 }
 
+// UseConsumable consumes one scroll/potion or one charge from a wand. The
+// returned signal is intentionally renderer- and rules-neutral; a later
+// spell/effect system decides what EffectID or SpellIDs do.
+func (c *Character) UseConsumable(index int, catalog monster.BaseItemCatalog) (monster.ConsumableUse, error) {
+	if c == nil {
+		return monster.ConsumableUse{}, fmt.Errorf("cannot use item on nil character")
+	}
+	if index < 0 || index >= len(c.Equipment) {
+		return monster.ConsumableUse{}, fmt.Errorf("equipment index %d is out of range", index)
+	}
+	use, err := c.Equipment[index].DecodeConsumable(catalog)
+	if err != nil {
+		return monster.ConsumableUse{}, err
+	}
+	if use.Kind == monster.ConsumableCharged {
+		if use.ChargesBefore <= 0 {
+			return monster.ConsumableUse{}, fmt.Errorf("item type 0x%02X has no charges", c.Equipment[index].Type)
+		}
+		c.Equipment[index].Affects[0]--
+		use.ChargesAfter = int(c.Equipment[index].Affects[0])
+		return use, nil
+	}
+	if _, err := c.RemoveItem(index); err != nil {
+		return monster.ConsumableUse{}, err
+	}
+	return use, nil
+}
+
 func (r Roster) Validate() error {
 	if len(r) == 0 || len(r) > 6 {
 		return fmt.Errorf("roster must contain 1..6 player characters")
