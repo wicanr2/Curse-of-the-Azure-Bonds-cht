@@ -17,6 +17,7 @@ const (
 	ModeTitle Mode = iota
 	ModeWilderness
 	ModeEvent
+	ModeMap
 )
 
 type Action uint8
@@ -42,6 +43,8 @@ type State struct {
 	Message      string
 	Location     Location
 	LocationName string
+	MapX         int
+	MapY         int
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -51,11 +54,12 @@ type State struct {
 	OriginalEvent    string
 	OriginalLocation string
 
-	catalog           locale.Catalog
-	eclBlock          []byte
-	eclStart          int
-	selectionSequence []uint16
-	session           *ecl.BlockSession
+	catalog                locale.Catalog
+	eclBlock               []byte
+	eclStart               int
+	selectionSequence      []uint16
+	currentOriginalChoices []string
+	session                *ecl.BlockSession
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -94,6 +98,7 @@ func (s *State) initializeECL() {
 			if len(result.Menus) > 0 {
 				for _, option := range result.Menus[0].Options {
 					s.OriginalChoices = append(s.OriginalChoices, option)
+					s.currentOriginalChoices = append(s.currentOriginalChoices, option)
 					switch option {
 					case "ENTER CITY":
 						s.Choices = append(s.Choices, s.catalog.Text("enter_city", "Enter city"))
@@ -112,12 +117,13 @@ func (s *State) initializeECL() {
 
 func NewState(catalog locale.Catalog) State {
 	return State{
-		Mode:         ModeTitle,
-		Title:        catalog.Text("title", "Curse of the Azure Bonds"),
-		Prompt:       catalog.Text("press_enter", "Press Enter to continue"),
-		Location:     LocationWilderness,
-		LocationName: catalog.Text("wilderness", "Wilderness"),
-		catalog:      catalog,
+		Mode:                   ModeTitle,
+		Title:                  catalog.Text("title", "Curse of the Azure Bonds"),
+		Prompt:                 catalog.Text("press_enter", "Press Enter to continue"),
+		Location:               LocationWilderness,
+		LocationName:           catalog.Text("wilderness", "Wilderness"),
+		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
+		catalog:                catalog,
 	}
 }
 
@@ -146,8 +152,15 @@ func (s *State) Apply(action Action) error {
 // Select applies a localized opening choice and, when the state came from an
 // ECL block, runs that choice through the bounded ECL subset.
 func (s *State) Select(index int) error {
+	if s.Mode == ModeMap {
+		return fmt.Errorf("choice %d is invalid in map mode", index)
+	}
 	if s.Mode != ModeWilderness || index < 0 || index >= len(s.Choices) {
 		return fmt.Errorf("choice %d is invalid in mode %d", index, s.Mode)
+	}
+	originalChoice := ""
+	if index < len(s.currentOriginalChoices) {
+		originalChoice = s.currentOriginalChoices[index]
 	}
 	s.Mode = ModeEvent
 	switch index {
@@ -177,9 +190,22 @@ func (s *State) Select(index int) error {
 			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
 			s.OriginalLocation = "SHADOWDALE"
 		}
+		// WILDERNESS/EXIT is the observed Shadowdale map-entry menu. Handle
+		// these semantic transitions before the bounded runner's next-menu
+		// result is applied, since the original command may leave another
+		// continuation menu in the trace.
+		if s.Location == LocationShadowdale && originalChoice == "WILDERNESS" {
+			s.enterMap()
+			return nil
+		}
+		if s.Location == LocationShadowdale && originalChoice == "EXIT" {
+			s.leaveLocation()
+			return nil
+		}
 		if result.WaitingForMenu && len(result.Menus) > 0 {
 			menu := result.Menus[len(result.Menus)-1]
 			s.Choices = make([]string, 0, len(menu.Options))
+			s.currentOriginalChoices = append([]string(nil), menu.Options...)
 			for _, option := range menu.Options {
 				s.Choices = append(s.Choices, localizeOption(s.catalog, option))
 			}
@@ -193,7 +219,58 @@ func (s *State) Select(index int) error {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
 		}
 	}
+	if s.Location == LocationShadowdale && originalChoice == "WILDERNESS" {
+		s.enterMap()
+		return nil
+	}
+	if s.Location == LocationShadowdale && originalChoice == "EXIT" {
+		s.leaveLocation()
+	}
 	return nil
+}
+
+func (s *State) enterMap() {
+	s.Mode = ModeMap
+	s.MapX, s.MapY = 0, 0
+	s.Choices = nil
+	s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+	s.Message = ""
+}
+
+// Move changes the data-neutral map cursor used by the first navigable map slice.
+// The coordinate system is deliberately data-neutral until the original map
+// tile table is decoded; it still gives the renderer and tests a stable input
+// contract without inventing tile semantics.
+func (s *State) Move(dx, dy int) error {
+	if s.Mode != ModeMap {
+		return fmt.Errorf("movement is invalid in mode %d", s.Mode)
+	}
+	s.MapX += dx
+	s.MapY += dy
+	return nil
+}
+
+// LeaveMap returns from the navigable wilderness slice to the known location
+// menu. The original ECL's next place menu remains data-driven work.
+func (s *State) LeaveMap() error {
+	if s.Mode != ModeMap {
+		return fmt.Errorf("leave map is invalid in mode %d", s.Mode)
+	}
+	s.leaveLocation()
+	return nil
+}
+
+func (s *State) leaveLocation() {
+	s.Mode = ModeWilderness
+	s.MapX, s.MapY = 0, 0
+	s.Choices = []string{
+		s.catalog.Text("enter_city", "Enter city"),
+		s.catalog.Text("journey_on", "Journey on"),
+		s.catalog.Text("camp", "Camp"),
+	}
+	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	s.Prompt = s.catalog.Text("press_button", "Press any button or Enter to continue")
+	s.Message = ""
 }
 
 func localizeOption(catalog locale.Catalog, option string) string {

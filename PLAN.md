@@ -168,4 +168,5 @@
 - [x] 定位 ECL4 block 0x25 `+0x022B` real NEWECL。
 - [x] CLI entry-level regression 驗證 target 0x50。
 - [x] 驗證 ECL5 block 0x30 `+0x0098` 的第二條 real NEWECL。
+- [x] 將 Shadowdale `WILDERNESS/EXIT` 接成資料中立的 map entry／movement slice。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。

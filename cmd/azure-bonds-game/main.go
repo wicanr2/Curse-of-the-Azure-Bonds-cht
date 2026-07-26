@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -44,6 +45,23 @@ func (a *app) Update() error {
 			return err
 		}
 	}
+	if a.state.Mode == game.ModeMap {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			return a.state.LeaveMap()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			return a.state.Move(0, -1)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			return a.state.Move(0, 1)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			return a.state.Move(-1, 0)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			return a.state.Move(1, 0)
+		}
+	}
 	if a.state.Mode == game.ModeWilderness {
 		if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			if a.choiceCursor+1 < len(a.state.Choices) {
@@ -79,6 +97,11 @@ func (a *app) Draw(screen *ebiten.Image) {
 	if a.state.Mode == game.ModeEvent {
 		text.Draw(screen, a.state.Message, a.face, 56, 220, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 330, white)
+	}
+	if a.state.Mode == game.ModeMap {
+		text.Draw(screen, "暗影谷荒野", a.face, 56, 220, cyan)
+		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
+		text.Draw(screen, "方向鍵：移動　Esc：離開", a.face, 56, 330, white)
 	}
 }
 
