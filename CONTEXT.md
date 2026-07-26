@@ -4,12 +4,13 @@
 
 ## 目前輪次
 
-第 5 輪：Go DAX 核心層完成，開始 ECL operand framing。
+第 6 輪：ECL 安全 trace walker。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
 第 3 輪 commit：`b2631a9`，已推送至 GitHub `main`。
 第 4 輪 commit：`beb9de1`，已推送至 GitHub `main`。
+第 5 輪 commit：`9162462`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -22,6 +23,7 @@
 - `internal/dax` 已實作已確認的 DAX container parser；`internal/locale` 與 `assets/locale/zh-TW.json` 建立第一版繁中資源層。
 - Go 1.22 容器驗證通過：`go test ./...`，CLI 能解析 `ECL1.DAX` 的 3 blocks。
 - `internal/ecl.ParseOperands` 已實作並測試 ECL 的局部 cursor／word framing；尚未執行 opcode。
+- `internal/ecl.Trace` 已加入 command metadata 與安全停止行為；可追蹤已知命令，但尚未實作分支或副作用。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -39,3 +41,4 @@
 4. 建立 ECL block 的欄位／事件邊界測試，才評估是否能把 ECL 規格標為 `READY`。
 5. 將 ECL decoded payload 分成事件 header、控制資料與文字，建立最小場景 trace。
 6. 以 operand framing 為基礎加入未知 opcode 安全停止的 trace walker。
+7. 對齊 ECL branch targets 與原版場景入口，建立最小可執行事件狀態。
