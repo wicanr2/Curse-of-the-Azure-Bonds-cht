@@ -35,6 +35,8 @@ PICTURE 還有第二個 dispatch：Area2 `HeadBlockId == 0xFF` 才使用上述 P
 
 共用 fighter adapter 應保存 `pos` 與 `size`，而不是只保存最後的 screen pixel；這樣 camera、occupied tiles、碰撞與不同 Gold Box 戰場尺寸可以在上層替換。
 
+目前已知的 reference position 生成公式可由 `combat.ReferencePlacement` 重用，但它依賴 team／candidate／occupancy 資料；在資料未解出前，不能把 deterministic formation 宣稱為原版 placement。
+
 新建玩家的初始 icon 欄位不是依隊伍 slot 變化：`head_icon=0`、`weapon_icon=0`；種族只先決定 `icon_size`，small races 是 dwarf／gnome／halfling，其餘是 normal。
 
 ## 合成規則
