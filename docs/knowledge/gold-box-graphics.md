@@ -15,6 +15,8 @@
 - `CHEAD`：玩家頭部 layer，通常比 body canvas 矮，左上對齊合成。
 - `CBODY`：玩家身體／武器 layer，通常提供 24×24 的 destination canvas。
 
+- `HEAD<area>`／`BODY<area>`：一般場景人物 layer；reference 使用 unmasked DAX pictures，BODY 相對 HEAD 向下 5 rows。
+
 原作另以同一 layer block 加 `0x80` 取得 attack state；direction `> 3` 使用水平翻轉版本。
 
 SPRIT frame 的 `x/y` 是 icon canvas 內的 placement metadata；應在 indexed frame 載入後保留，繪製時再依 renderer scale 套用，不能把它誤當成地圖座標。
@@ -42,4 +44,4 @@ a、b 都不透明                   → a OR b
 
 ## 跨遊戲重用介面
 
-後續遊戲可沿用 `internal/dax`、`internal/gfx.Picture`、`gfx.MergePictures`、`gfx.Picture.FlipHorizontal` 與 preview generator，只需建立每款遊戲的 DAX member 名稱、mask color、palette 與 icon layer mapping。
+後續遊戲可沿用 `internal/dax`、`internal/gfx.Picture`、`gfx.MergePictures`、`gfx.MergePicturesAt`、`gfx.Picture.FlipHorizontal` 與 preview generator，只需建立每款遊戲的 DAX member 名稱、mask color、palette 與 icon layer mapping。

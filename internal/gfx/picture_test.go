@@ -24,6 +24,23 @@ func TestMergePicturesRejectsWiderSource(t *testing.T) {
 	}
 }
 
+func TestMergePicturesAtAppliesPixelOffset(t *testing.T) {
+	destination := Picture{WidthUnits: 1, HeightUnits: 2, ItemCount: 1, Pixels: make([]uint8, 16)}
+	for index := range destination.Pixels {
+		destination.Pixels[index] = 16
+	}
+	source := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: []uint8{1, 2, 3, 4, 5, 6, 7, 8}}
+	merged, err := MergePicturesAt(destination, source, 0, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for index, want := range source.Pixels {
+		if got := merged.Pixels[8+index]; got != want {
+			t.Fatalf("offset pixel %d=%d, want %d", index, got, want)
+		}
+	}
+}
+
 func TestFlipHorizontalPreservesIndexedPixels(t *testing.T) {
 	picture := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: []uint8{1, 2, 3, 4, 5, 6, 7, 8}}
 	flipped := picture.FlipHorizontal()

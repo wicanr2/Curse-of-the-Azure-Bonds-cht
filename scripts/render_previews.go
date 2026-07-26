@@ -101,6 +101,9 @@ func renderCombatSprites() error {
 	for _, index := range []int{1, 2, 6} {
 		sources = append(sources, fmt.Sprintf("BIGPIC%d.DAX", index))
 	}
+	for index := 2; index <= 6; index++ {
+		sources = append(sources, fmt.Sprintf("HEAD%d.DAX", index), fmt.Sprintf("BODY%d.DAX", index))
+	}
 	frames := make([]spriteFrame, 0)
 	animationAssets := make([]animationAssetRecord, 0)
 	layers := make(map[string]map[uint8]gfx.Picture)
@@ -141,7 +144,7 @@ func renderCombatSprites() error {
 				}
 				continue
 			}
-			masked := !strings.HasPrefix(source, "BIGPIC")
+			masked := !strings.HasPrefix(source, "BIGPIC") && !strings.HasPrefix(source, "HEAD") && !strings.HasPrefix(source, "BODY")
 			picture, err := gfx.ParsePicture(block.Data, masked, 0)
 			if err != nil {
 				manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | — | — | — | skipped: `%s` |\n", source, block.Entry.ID, err))
@@ -158,7 +161,7 @@ func renderCombatSprites() error {
 					return err
 				}
 				frames = append(frames, spriteFrame{name: name, img: img})
-				if item == 0 && (source == "CHEAD.DAX" || source == "CBODY.DAX") {
+				if item == 0 && (source == "CHEAD.DAX" || source == "CBODY.DAX" || strings.HasPrefix(source, "HEAD") || strings.HasPrefix(source, "BODY")) {
 					stem := strings.TrimSuffix(source, filepath.Ext(source))
 					if layers[stem] == nil {
 						layers[stem] = make(map[uint8]gfx.Picture)
@@ -198,6 +201,32 @@ func renderCombatSprites() error {
 			}
 			frames = append(frames, spriteFrame{name: name, img: img})
 			manifest.WriteString(fmt.Sprintf("| `CHEAD+CBODY` | `0x%02X` | %s merged | %dx%d | [`%s`](../../assets/sprites/%s) | party layer composition |\n", id, variant.suffix, merged.Width(), merged.Height(), name, name))
+		}
+	}
+	// General scene characters use HEAD<area> and BODY<area> pictures. The
+	// reference draws the head at the origin and the body five rows below it.
+	for area := 2; area <= 6; area++ {
+		headLayers := layers[fmt.Sprintf("HEAD%d", area)]
+		bodyLayers := layers[fmt.Sprintf("BODY%d", area)]
+		for id, head := range headLayers {
+			body, ok := bodyLayers[id]
+			if !ok {
+				continue
+			}
+			merged, err := gfx.MergePicturesAt(body, head, 0, 5)
+			if err != nil {
+				return fmt.Errorf("merge HEAD%d/BODY%d block 0x%02X: %w", area, area, id, err)
+			}
+			img, err := merged.RGBA(0, gfx.EGA16)
+			if err != nil {
+				return err
+			}
+			name := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", area, id, id)
+			if err := writePNG(filepath.Join("assets/sprites", name), img); err != nil {
+				return err
+			}
+			frames = append(frames, spriteFrame{name: name, img: img})
+			manifest.WriteString(fmt.Sprintf("| `HEAD%d+BODY%d` | `0x%02X` | merged body y+5 | %dx%d | [`%s`](../../assets/sprites/%s) | scene character composition |\n", area, area, id, merged.Width(), merged.Height(), name, name))
 		}
 	}
 	if err := os.WriteFile("assets/sprites/README.md", []byte(manifest.String()), 0644); err != nil {
