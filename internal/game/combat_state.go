@@ -1074,20 +1074,53 @@ func (s *State) CombatAct() error {
 	if len(enemies) == 0 {
 		return s.finishCombat()
 	}
-	if s.combatTargetIndex >= len(enemies) {
-		s.combatTargetIndex = 0
-	}
-	target := enemies[s.combatTargetIndex]
-	result, err := s.battle.Attack(attacker.ID, target.ID)
+	results, err := s.combatAttackSequence(attacker)
 	if err != nil {
 		return err
 	}
-	s.combatMessage = formatAttackMessage(s.catalog, attacker, target, result)
+	if len(results) == 1 {
+		target, ok := s.fighter(results[0].TargetID)
+		if !ok {
+			return fmt.Errorf("attack target %q disappeared", results[0].TargetID)
+		}
+		s.combatMessage = formatAttackMessage(s.catalog, attacker, target, results[0])
+	} else {
+		s.combatMessage = formatMultiAttackMessage(s.catalog, attacker, results)
+	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
+}
+
+// combatAttackSequence keeps the game adapter responsible for target cursor
+// policy. If a target falls, remaining weapon attacks use the next living
+// enemy at the same cursor position, matching the RuleBook's Aim behavior.
+func (s *State) combatAttackSequence(attacker combat.Fighter) ([]combat.AttackResult, error) {
+	attacks := attacker.AttacksPerTurn
+	if attacks < 1 {
+		attacks = 1
+	}
+	results := make([]combat.AttackResult, 0, attacks)
+	for len(results) < attacks && s.battle.Status() == combat.StatusActive {
+		enemies := s.livingBySide(combat.SideEnemy)
+		if len(enemies) == 0 {
+			break
+		}
+		if s.combatTargetIndex >= len(enemies) {
+			s.combatTargetIndex = 0
+		}
+		sequence, err := s.battle.AttackSequence(attacker.ID, enemies[s.combatTargetIndex].ID)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, sequence...)
+		if len(sequence) == 0 || sequence[len(sequence)-1].TargetHP > 0 {
+			break
+		}
+	}
+	return results, nil
 }
 
 func (s *State) advanceCombatToParty() error {
@@ -1183,6 +1216,17 @@ func formatAttackMessage(catalog interface{ Text(string, string) string }, attac
 		return fmt.Sprintf(catalog.Text("combat_miss", "%s 攻擊 %s 未命中。"), attacker.Name, target.Name)
 	}
 	return fmt.Sprintf(catalog.Text("combat_hit", "%s 攻擊 %s，造成 %d 點傷害。"), attacker.Name, target.Name, result.Damage)
+}
+
+func formatMultiAttackMessage(catalog interface{ Text(string, string) string }, attacker combat.Fighter, results []combat.AttackResult) string {
+	hits, damage := 0, 0
+	for _, result := range results {
+		if result.Hit {
+			hits++
+			damage += result.Damage
+		}
+	}
+	return fmt.Sprintf(catalog.Text("combat_multi_attack", "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。"), attacker.Name, len(results), hits, damage)
 }
 
 func combatResultMessage(catalog interface{ Text(string, string) string }, status combat.Status) string {

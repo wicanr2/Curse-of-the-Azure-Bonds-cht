@@ -261,6 +261,7 @@
 - [x] 將 RuleBook MOVE 的移入敵格攻擊接入 Battle／State；保留地形、邊界、負重、facing、reach 與動畫 boundary。
 - [x] 將 RuleBook active-character centered camera 接入 CombatMap／State／Ebiten renderer；保留 viewport、scroll animation 與真實 Area camera boundary。
 - [x] 將 RuleBook Combat Menu `VIEW` 接成繁中 read-only fighter summary、V／Enter／Esc 與不消耗回合的 State transaction；保留完整 View Menu／物品／交易 boundary。
+- [x] 將 RuleBook／ITEMS RateOfFire 接成 equipped fighter 多次攻擊與目標倒下後的下一目標 transaction；保留彈藥、等級額外攻擊、Aim／range boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。

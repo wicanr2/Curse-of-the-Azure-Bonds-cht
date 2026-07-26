@@ -71,6 +71,7 @@ type Fighter struct {
 	DamageDiceCount      int
 	DamageDiceSides      int
 	DamageBonus          int
+	AttacksPerTurn       int
 	InitiativeBonus      int
 }
 
@@ -250,6 +251,32 @@ func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
 		damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
 	}
 	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
+}
+
+// AttackSequence resolves the number of attacks granted by the readied
+// weapon's RateOfFire projection. A zero value keeps old callers at one
+// attack. Target selection after a target falls belongs to the game adapter.
+func (b *Battle) AttackSequence(attackerID, targetID string) ([]AttackResult, error) {
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return nil, fmt.Errorf("unknown attacker %q", attackerID)
+	}
+	attacks := attacker.AttacksPerTurn
+	if attacks < 1 {
+		attacks = 1
+	}
+	results := make([]AttackResult, 0, attacks)
+	for index := 0; index < attacks && b.status == StatusActive; index++ {
+		result, err := b.Attack(attackerID, targetID)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, result)
+		if result.TargetHP <= 0 {
+			break
+		}
+	}
+	return results, nil
 }
 
 // Move translates a living fighter by one grid step, or attacks an enemy

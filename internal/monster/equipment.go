@@ -52,6 +52,7 @@ type EquipmentEffect struct {
 	DamageDiceCount       int
 	DamageDiceSides       int
 	DamageBonus           int
+	AttacksPerTurn        int
 }
 
 // ArmorClassImprovement decodes the reference's packed AC adjustment.
@@ -83,6 +84,12 @@ func (item ItemRecord) Effect(catalog BaseItemCatalog, large bool) (EquipmentEff
 		Slot:                  base.Slot,
 		AttackBonus:           item.Plus,
 		ArmorClassImprovement: base.ArmorClassImprovement(),
+	}
+	if base.RateOfFire > 0 {
+		effect.AttacksPerTurn = int(base.RateOfFire) / 2
+		if effect.AttacksPerTurn < 1 {
+			effect.AttacksPerTurn = 1
+		}
 	}
 	if large {
 		effect.DamageDiceCount = int(base.LargeDamageDice)

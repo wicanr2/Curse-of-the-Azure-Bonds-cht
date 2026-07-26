@@ -709,6 +709,21 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 }
 
+func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{ID: "archer", Name: "弓手", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 2, InitiativeBonus: 20}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 2, MaxHitPoints: 2, ArmorClass: 0}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
+		t.Fatalf("multi attack status=%v mode=%v message=%q", state.CombatStatus(), state.Mode, state.Message)
+	}
+}
+
 func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
