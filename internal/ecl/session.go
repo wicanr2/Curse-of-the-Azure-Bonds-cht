@@ -125,6 +125,10 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
+		if result.LoadPiecesRequested {
+			aggregate.LoadPiecesRequested = true
+			aggregate.LoadPieces = result.LoadPieces
+		}
 		selectionOffset += result.SelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {

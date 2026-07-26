@@ -55,6 +55,8 @@ Ranged attack 不能只看 `BaseItem.Range != 0`：RuleBook 的 adjacent missile
 
 ECL `ADD NPC` 應採資料 signal boundary：runner 保存 operand 的 NPC ID 並繼續至下一個 command，game adapter 再依作品 NPC table 決定是否建立角色／對話／隊伍 side effect。`NPCIDs` 可跨 Gold Box runner 重用，但不能把 ID signal 當成已完成 NPC record lookup。
 
+`LOAD PIECES` 也應先保存三個 selector，再由作品的 file／map adapter 解讀：目前 ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations 只證明 operand shape，不足以把欄位硬編成某一個 floor、wall 或 tile 檔案。共用 runner 可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換實際 map loader。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
