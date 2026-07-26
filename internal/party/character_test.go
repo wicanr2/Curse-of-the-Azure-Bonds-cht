@@ -128,7 +128,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x74], data[0x75] = 7, 5 // human magic-user
 	data[0x78], data[0x1A4] = 22, 18
 	data[0x10E] = 4
-	data[0x141], data[0x142], data[0x144] = 3, 4, 2
+	data[0x141], data[0x142], data[0x143], data[0x144] = 3, 4, 0x0A, 2
 	binary.LittleEndian.PutUint16(data[0x101:0x103], 123)
 	binary.LittleEndian.PutUint32(data[0x14D:0x151], 0x12345678)
 	binary.LittleEndian.PutUint32(data[0x0F2:0x0F6], 0x87654321)
@@ -138,7 +138,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 {
+	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 {
 		t.Fatalf("record=%#v", record)
 	}
 	itemData := make([]byte, monster.ItemRecordSize)
@@ -155,7 +155,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.IconHeadBlock != 3 || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
@@ -209,6 +209,18 @@ func TestStarterFighterProjection(t *testing.T) {
 	}
 	if !fighter.HasPartyIcon || fighter.PartyHeadBlock != 0 || fighter.PartyBodyBlock != 0 || fighter.PartyIconSize != 2 {
 		t.Fatalf("fighter icon=%#v", fighter)
+	}
+}
+
+func TestFighterProjectionPreservesDOSIconID(t *testing.T) {
+	character := validCharacter()
+	character.IconID = 0x0A
+	fighter, err := character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.PartyIconID != 0x0A {
+		t.Fatalf("fighter icon id=%#x, want 0x0A", fighter.PartyIconID)
 	}
 }
 

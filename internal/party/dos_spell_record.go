@@ -42,6 +42,7 @@ type DOSPlayerRecord struct {
 	CurrentHitPoints int
 	IconHead         uint8
 	IconWeapon       uint8
+	IconID           uint8
 	IconSize         uint8
 	Gold             uint16
 	Gems             uint16
@@ -123,7 +124,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
-		IconHead: data[0x141], IconWeapon: data[0x142], IconSize: data[0x144],
+		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Gold:            binary.LittleEndian.Uint16(data[0x101:0x103]),
 		Gems:            binary.LittleEndian.Uint16(data[0x105:0x107]),
 		Jewelry:         binary.LittleEndian.Uint16(data[0x107:0x109]),
@@ -141,7 +142,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
-		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconSize: r.IconSize,
+		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:  append([]monster.ItemRecord(nil), r.Inventory...),
 		Effects:    append([]monster.AffectRecord(nil), r.Effects...),
 		SpellSlots: append([]uint8(nil), r.MemorizedSpells...),

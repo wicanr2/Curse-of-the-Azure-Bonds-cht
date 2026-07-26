@@ -106,6 +106,7 @@ type Character struct {
 	IconSize        uint8                  `json:"icon_size,omitempty"`
 	IconHeadBlock   uint8                  `json:"icon_head,omitempty"`
 	IconWeaponBlock uint8                  `json:"icon_weapon,omitempty"`
+	IconID          uint8                  `json:"icon_id,omitempty"`
 	HitPoints       int                    `json:"hit_points,omitempty"`
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
 	Gold            uint16                 `json:"gold,omitempty"`
@@ -362,7 +363,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	}
 	fighter := combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
-		HasPartyIcon: true, PartyHeadBlock: c.IconHeadBlock, PartyBodyBlock: c.IconWeaponBlock, PartyIconSize: iconSize,
+		HasPartyIcon: true, PartyHeadBlock: c.IconHeadBlock, PartyBodyBlock: c.IconWeaponBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
