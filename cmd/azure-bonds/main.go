@@ -15,6 +15,7 @@ func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
+	traceStart := flag.Int("trace-start", -1, "decoded payload offset for -trace (default 0)")
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
@@ -31,9 +32,20 @@ func main() {
 	for _, block := range blocks {
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
 		if *trace {
-			instructions, err := ecl.Trace(block.Data, 40)
+			var instructions []ecl.Instruction
+			var err error
+			if *traceStart >= 0 {
+				instructions, err = ecl.TraceAt(block.Data, *traceStart, 40)
+			} else {
+				instructions, err = ecl.Trace(block.Data, 40)
+			}
 			for _, instruction := range instructions {
 				fmt.Printf("  +0x%04X %-16s operands=%d\n", instruction.Offset, instruction.Command.Name, len(instruction.Operands))
+				for _, operand := range instruction.Operands {
+					if len(operand.Packed) > 0 {
+						fmt.Printf("    packed=%q\n", ecl.DecodePackedText(operand.Packed))
+					}
+				}
 			}
 			if err != nil {
 				fmt.Printf("  trace stopped safely: %v\n", err)

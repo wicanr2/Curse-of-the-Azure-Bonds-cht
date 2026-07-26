@@ -77,4 +77,5 @@
 - [x] 以公開 CoAB 重寫程式核對 ECL 初始化順序。
 - [x] 加入五組 word-valued ECL 初始化入口的 bounded parser。
 - [x] 修正已觀察 VM command table 的 arity metadata 並加入 regression test。
+- [x] 正確消耗 length-prefixed compressed-string operand，並支援從指定 entry offset trace。
 - [ ] 對全部實際 ECL block 驗證五個入口，並與事件文字對齊。
