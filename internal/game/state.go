@@ -60,6 +60,8 @@ type State struct {
 	JournalTitle     string
 	JournalText      string
 	JournalCloseText string
+	JournalPages     []string
+	JournalPage      int
 	CampCount        int
 
 	catalog                locale.Catalog
@@ -131,6 +133,16 @@ func (s *State) initializeECL() {
 }
 
 func NewState(catalog locale.Catalog) State {
+	journalPages := []string{
+		catalog.Text("journal_page_1", "序章：隊伍醒來後必須查明蔚藍枷的來源。"),
+		catalog.Text("journal_page_2", "達倫地區有許多城鎮與荒野等待探索。"),
+		catalog.Text("journal_page_3", "五個邪惡勢力各自利用枷印。"),
+		catalog.Text("journal_page_4", "解除枷印需要查明並擊破其來源。"),
+		catalog.Text("journal_page_5", "三件神器是對抗火焰之主的關鍵。"),
+		catalog.Text("journal_page_6", "先整裝，再向城鎮居民查詢線索。"),
+		catalog.Text("journal_page_7", "戰鬥時觀察先攻、AC 與攻擊加值。"),
+		catalog.Text("journal_page_8", "本 remake 以 Go／Ebiten 重建 Gold Box 冒險。"),
+	}
 	return State{
 		Mode:                   ModeTitle,
 		Title:                  catalog.Text("title", "Curse of the Azure Bonds"),
@@ -139,8 +151,9 @@ func NewState(catalog locale.Catalog) State {
 		LocationName:           catalog.Text("wilderness", "Wilderness"),
 		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
 		JournalTitle:           catalog.Text("journal_title", "冒險手札"),
-		JournalText:            catalog.Text("journal_intro", "你們醒來後，必須查明蔚藍枷的來源。") + "\n" + catalog.Text("journal_objective", "目前目標：查訪城中線索。"),
+		JournalText:            journalPages[0],
 		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
+		JournalPages:           journalPages,
 		catalog:                catalog,
 	}
 }
@@ -281,7 +294,31 @@ func (s *State) OpenJournal() error {
 		return fmt.Errorf("journal is unavailable during combat")
 	}
 	s.journalReturnMode = s.Mode
+	s.JournalPage = 0
+	s.JournalText = s.JournalPages[0]
 	s.Mode = ModeJournal
+	return nil
+}
+
+func (s *State) NextJournalPage() error {
+	if s.Mode != ModeJournal {
+		return fmt.Errorf("journal is not open")
+	}
+	if s.JournalPage+1 < len(s.JournalPages) {
+		s.JournalPage++
+		s.JournalText = s.JournalPages[s.JournalPage]
+	}
+	return nil
+}
+
+func (s *State) PreviousJournalPage() error {
+	if s.Mode != ModeJournal {
+		return fmt.Errorf("journal is not open")
+	}
+	if s.JournalPage > 0 {
+		s.JournalPage--
+		s.JournalText = s.JournalPages[s.JournalPage]
+	}
 	return nil
 }
 

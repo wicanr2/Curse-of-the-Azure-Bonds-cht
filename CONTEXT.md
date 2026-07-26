@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 40 輪：遊戲內冒險手札與 CAMP state。
+第 41 輪：可翻頁的繁中冒險手札。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -44,6 +44,7 @@
 第 37 輪 commit：`3d25b13`，已推送至 GitHub `main`。
 第 38 輪 commit：`4adc4d5`，已推送至 GitHub `main`。
 第 39 輪 commit：`251e087`，已推送至 GitHub `main`。
+第 40 輪 commit：`f18a058`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -94,6 +95,7 @@
 - `cmd/azure-bonds-game -encounter` 已直接執行 ECL1 block `0x51 +0x1293`，讀取 `MON1CHA.DAX` 並進入戰鬥；此入口使用明確標示的 debug party，正常 opening 尚未自動抵達 encounter。
 - `PROGRAM 0/3/8/9` 已依參考重寫程式標示為外部 routine boundary；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu。CAMP／勝利／死亡 routine 本身仍待接入。
 - 已加入 `docs/manual/` 繁中遊玩手冊、`docs/history.md` 中文金盒子歷史筆記，以及遊戲內 `J`／`Esc` 冒險手札；`State.Camp` 接收 `PROGRAM 9` 並以繁中事件返回荒野，恢復規則仍未完成。
+- 冒險手札已擴充為八頁 locale-backed 摘要，State 保存頁碼並支援方向鍵翻頁；完整 59 個 Journal Entry／Tavern Tale 逐條觸發仍未完成。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -160,3 +162,4 @@
 37. 將 ECL `COMBAT` result 的 spawn descriptors／MON*CHA records 自動接入 `State.StartCombat`。
 38. 由完整 opening／城市／地圖流程抵達 ECL1 encounter，移除 debug party 依賴。
 39. 整理完整 Adventure Journal 條目、接入 CAMP 恢復／中斷規則與 party state。
+40. 將 Journal Entry／Tavern Tale 做成資料驅動的已讀條目與劇情觸發。
