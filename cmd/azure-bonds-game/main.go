@@ -594,21 +594,23 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	targets := a.state.CombatTargets()
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.Side == combat.SideParty {
-			x := 28 + partyIndex*76
-			a.drawFighterSprite(screen, fighter, partyIndex, x, 108)
-			text.Draw(screen, fighter.Name, a.face, x, 174, white)
-			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, 192, white)
+			tile := combat.FormationTile(fighter.Side, partyIndex)
+			x, y := 28+tile.X*48, 108+tile.Y*56
+			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
+			text.Draw(screen, fighter.Name, a.face, x, y+66, white)
+			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+66, white)
 			partyIndex++
 			continue
 		}
-		x := 340 + enemyIndex*76
-		a.drawFighterSprite(screen, fighter, enemyIndex, x, 108)
+		tile := combat.FormationTile(fighter.Side, enemyIndex)
+		x, y := 28+tile.X*48, 108+tile.Y*56
+		a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
 		prefix := "  "
 		if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
 			prefix = "> "
 		}
-		text.Draw(screen, prefix+fighter.Name, a.face, x, 174, white)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, 192, white)
+		text.Draw(screen, prefix+fighter.Name, a.face, x, y+66, white)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+84, white)
 		enemyIndex++
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊", a.face, 32, 350, cyan)
