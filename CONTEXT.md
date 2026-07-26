@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百零二輪：DOS player `.SAV/.GUY` + `.FX/.SWG` sidecar bundle importer。
+第一百零三輪：DOS character bundle import CLI 與 party JSON 輸出。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -307,3 +307,5 @@
 第一百零一輪功能／文件 commit：`2179dd6`，已推送至 GitHub `main`。修正 `.FX` 16-bit duration／strength 欄位語意，新增 finite/permanent duration tick 與 party adapter；effect-specific gameplay 與 CAMP／戰鬥時間接線仍未完成。
 
 第一百零二輪功能／文件 commit：`0332a09`，已推送至 GitHub `main`。新增 `ParseDOSPlayerFiles` sidecar bundle importer，並將 gold/gems/jewelry 保存到 `Character`；`SAVGAM?.DAT` party／area container 仍未解析。
+
+第一百零三輪功能／文件 commit：待本輪提交。新增 `cmd/azure-bonds -import-character`，把已證實的 `.SAV/.GUY` + optional `.FX/.SWG` bundle 輸出成 versioned remake party JSON。

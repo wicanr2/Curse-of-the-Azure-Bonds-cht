@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
 
 func main() {
@@ -37,7 +40,46 @@ func main() {
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
 	sessionInfo := flag.Bool("session", false, "print decoded ECL block session entries")
 	selectionList := flag.String("select", "", "comma-separated HORIZONTAL MENU selections for -run-subset")
+	importCharacter := flag.Bool("import-character", false, "import one DOS .SAV/.GUY character with optional .FX/.SWG sidecars")
+	characterID := flag.String("character-id", "dos-character", "remake ID for -import-character")
+	characterRecord := flag.String("character-record", "", "DOS .SAV or .GUY path for -import-character")
+	characterEffects := flag.String("character-effects", "", "optional DOS .FX path for -import-character")
+	characterInventory := flag.String("character-inventory", "", "optional DOS .SWG path for -import-character")
+	outParty := flag.String("out-party", "", "write imported character as versioned party JSON")
 	flag.Parse()
+	if *importCharacter {
+		if strings.TrimSpace(*characterRecord) == "" {
+			log.Fatal("-character-record is required with -import-character")
+		}
+		record, err := os.ReadFile(*characterRecord)
+		if err != nil {
+			log.Fatal(err)
+		}
+		effects, err := optionalFile(*characterEffects)
+		if err != nil {
+			log.Fatal(err)
+		}
+		inventory, err := optionalFile(*characterInventory)
+		if err != nil {
+			log.Fatal(err)
+		}
+		character, err := party.ParseDOSPlayerFiles(*characterID, party.DOSPlayerFiles{Record: record, Effects: effects, Inventory: inventory})
+		if err != nil {
+			log.Fatal(err)
+		}
+		data, err := partySave.EncodeParty(party.Roster{character})
+		if err != nil {
+			log.Fatal(err)
+		}
+		if *outParty == "" {
+			fmt.Print(string(data))
+		} else if err := os.WriteFile(*outParty, data, 0o600); err != nil {
+			log.Fatal(err)
+		} else {
+			fmt.Printf("已匯入 DOS 角色 %q，輸出：%s\n", character.Name, *outParty)
+		}
+		return
+	}
 	if *baseItems {
 		data, err := zipMember(*image, "ITEMS")
 		if err != nil {
@@ -311,6 +353,13 @@ func parseSelections(value string) ([]uint16, error) {
 		selections = append(selections, uint16(parsed))
 	}
 	return selections, nil
+}
+
+func optionalFile(path string) ([]byte, error) {
+	if strings.TrimSpace(path) == "" {
+		return nil, nil
+	}
+	return os.ReadFile(path)
 }
 
 func zipMember(path, member string) ([]byte, error) {
