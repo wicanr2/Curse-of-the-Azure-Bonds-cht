@@ -67,6 +67,15 @@ func (s *State) ToggleCreationAbilities() error {
 	return nil
 }
 
+func (s *State) RerollCreationAbilities(seed int64) error {
+	if s.Mode != ModeCharacterCreation || s.CreationCursor < 0 || s.CreationCursor >= len(s.CreationOptions) {
+		return fmt.Errorf("ability reroll is unavailable")
+	}
+	s.CreationOptions[s.CreationCursor].Abilities = party.RollAbilities(seed)
+	s.CreationMessage = s.catalog.Text("creation_rerolled", "能力值已重擲，請確認職業最低值。")
+	return nil
+}
+
 func (s *State) MoveCreationAbility(delta int) error {
 	if !s.CreationEditingAbilities {
 		return fmt.Errorf("ability editor is not active")

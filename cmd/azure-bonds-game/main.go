@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -86,6 +87,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyA) {
 			return a.state.ToggleCreationAbilities()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+			return a.state.RerollCreationAbilities(time.Now().UnixNano())
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
 			return a.state.FinishCharacterCreation()
@@ -275,7 +279,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, label, a.face, 48, 150+index*38, white)
 	}
 	text.Draw(screen, "已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 285, cyan)
-	text.Draw(screen, "N：改名　A：能力值　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
+	text.Draw(screen, "N：改名　A：能力值　R：重擲　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
 }
 
 func raceName(r party.Race) string {

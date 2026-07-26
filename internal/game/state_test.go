@@ -317,3 +317,21 @@ func TestCharacterCreationAdjustsAbilityValues(t *testing.T) {
 		t.Fatalf("ability cursor=%d", state.CreationAbility)
 	}
 }
+
+func TestCharacterCreationRerollsAbilitiesWithSeed(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.RerollCreationAbilities(42); err != nil {
+		t.Fatal(err)
+	}
+	first, _ := state.CreationOptions[0].Abilities.Value(0)
+	if err := state.RerollCreationAbilities(42); err != nil {
+		t.Fatal(err)
+	}
+	second, _ := state.CreationOptions[0].Abilities.Value(0)
+	if first != second || first < 3 || first > 18 {
+		t.Fatalf("reroll values=%d,%d", first, second)
+	}
+}
