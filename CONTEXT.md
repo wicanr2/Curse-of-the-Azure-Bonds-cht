@@ -416,4 +416,4 @@
 
 第一百五十六輪功能／文件 commit：`531f892`，已推送至 GitHub `main`。將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。
 
-第一百五十七輪待提交：將 ECL `ADD NPC (0x36)` 接成 `RunResult.NPCIDs` signal，讓實際 ECL1 block 0x52 的 `PICTURE → ADD NPC 0x55 → EXIT` 能安全完成；新增 synthetic／real-image regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。NPC table、party side effect 與完整劇情 continuation 仍保留 boundary。
+第一百五十七輪功能／文件 commit：`5aabf79`，已推送至 GitHub `main`。將 ECL `ADD NPC (0x36)` 接成 `RunResult.NPCIDs` signal，讓實際 ECL1 block 0x52 的 `PICTURE → ADD NPC 0x55 → EXIT` 能安全完成；新增 synthetic／real-image regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。NPC table、party side effect 與完整劇情 continuation 仍保留 boundary。
