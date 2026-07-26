@@ -6,9 +6,8 @@ import "fmt"
 // intentionally separate from RunSubset: VM execution state can be extended
 // later without confusing a DAX block switch with a fallthrough branch.
 type BlockSession struct {
-	blocks          map[uint8][]byte
-	current         uint8
-	selectionOffset int
+	blocks  map[uint8][]byte
+	current uint8
 }
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
@@ -74,10 +73,11 @@ func (s *BlockSession) RunInteractive(maxSteps int, selections []uint16) (RunRes
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
 	var aggregate RunResult
 	var err error
+	selectionOffset := 0
 	for transitions := 0; transitions < 8; transitions++ {
 		remaining := selections
-		if s.selectionOffset < len(selections) {
-			remaining = selections[s.selectionOffset:]
+		if selectionOffset < len(selections) {
+			remaining = selections[selectionOffset:]
 		} else {
 			remaining = nil
 		}
@@ -94,7 +94,7 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 		aggregate.MonsterSpawns = append(aggregate.MonsterSpawns, result.MonsterSpawns...)
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
-		s.selectionOffset += result.SelectionsConsumed
+		selectionOffset += result.SelectionsConsumed
 		if runErr != nil {
 			return aggregate, runErr
 		}

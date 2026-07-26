@@ -257,7 +257,7 @@ func (s *State) Select(index int) error {
 			s.OriginalLocation = "SHADOWDALE"
 		}
 		if result.CombatRequested {
-			if len(s.party) > 0 && len(s.monsterRecords) > 0 {
+			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(s.monsterRecords) > 0 {
 				if err := s.StartEncounter(result, s.monsterRecords, s.party, s.combatSeed); err != nil {
 					return err
 				}
