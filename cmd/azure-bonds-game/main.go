@@ -5,9 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"image/color"
+	"image/png"
 	"io"
 	"log"
 	"os"
+	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -38,22 +41,24 @@ const (
 )
 
 type app struct {
-	state          game.State
-	face           font.Face
-	choiceCursor   int
-	partyPath      string
-	tilePreview    bool
-	tileImages     []*ebiten.Image
-	geoPreview     bool
-	geoGrid        *geo.Grid
-	geoX           int
-	geoY           int
-	geoLabel       string
-	geoCatalog     geo.Catalog
-	geoSet         uint8
-	geoBlock       uint8
-	dungeonPreview bool
-	dungeonFloor   *mapdata.DungeonFloor
+	state           game.State
+	face            font.Face
+	choiceCursor    int
+	partyPath       string
+	tilePreview     bool
+	tileImages      []*ebiten.Image
+	geoPreview      bool
+	geoGrid         *geo.Grid
+	geoX            int
+	geoY            int
+	geoLabel        string
+	geoCatalog      geo.Catalog
+	geoSet          uint8
+	geoBlock        uint8
+	dungeonPreview  bool
+	dungeonFloor    *mapdata.DungeonFloor
+	combatSprites   map[string]*ebiten.Image
+	combatSpriteIDs []string
 }
 
 func (a *app) Update() error {
@@ -528,27 +533,49 @@ func className(c party.Class) string {
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "戰鬥", a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
-	line := 130
+	partyIndex, enemyIndex := 0, 0
 	targets := a.state.CombatTargets()
 	for _, fighter := range a.state.CombatFighters() {
-		if fighter.Side == 0 {
-			text.Draw(screen, fighter.Name+" 生命 "+strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, 32, line, white)
-			line += 24
-		}
-	}
-	line += 12
-	for _, fighter := range a.state.CombatFighters() {
-		if fighter.Side != 1 {
+		if fighter.Side == combat.SideParty {
+			x := 28 + partyIndex*76
+			a.drawFighterSprite(screen, fighter, partyIndex, x, 108)
+			text.Draw(screen, fighter.Name, a.face, x, 174, white)
+			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, 192, white)
+			partyIndex++
 			continue
 		}
+		x := 340 + enemyIndex*76
+		a.drawFighterSprite(screen, fighter, enemyIndex, x, 108)
 		prefix := "  "
 		if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
 			prefix = "> "
 		}
-		text.Draw(screen, prefix+fighter.Name+" 生命 "+strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, 32, line, white)
-		line += 24
+		text.Draw(screen, prefix+fighter.Name, a.face, x, 174, white)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, 192, white)
+		enemyIndex++
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊", a.face, 32, 350, cyan)
+}
+
+func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {
+	if len(a.combatSprites) == 0 {
+		return
+	}
+	key := ""
+	if fighter.SpriteBlock != 0 {
+		key = fmt.Sprintf("cpic%d-block-%02X-item-00.png", fighter.SpriteSet, fighter.SpriteBlock)
+	}
+	if key == "" || a.combatSprites[key] == nil {
+		if len(a.combatSpriteIDs) == 0 {
+			return
+		}
+		key = a.combatSpriteIDs[ordinal%len(a.combatSpriteIDs)]
+	}
+	sprite := a.combatSprites[key]
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(2, 2)
+	op.GeoM.Translate(float64(x), float64(y))
+	screen.DrawImage(sprite, op)
 }
 
 func (a *app) Layout(_, _ int) (int, int) { return logicalWidth, logicalHeight }
@@ -637,9 +664,38 @@ func main() {
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
 	geoLabel := fmt.Sprintf("GEO%d block 0x%02X", *geoSet, *geoBlock)
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID}); err != nil {
+	combatSprites, combatSpriteIDs, err := loadCombatSprites()
+	if err != nil {
 		log.Fatal(err)
 	}
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs}); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func loadCombatSprites() (map[string]*ebiten.Image, []string, error) {
+	paths, err := filepath.Glob("assets/sprites/cpic*-block-*-item-00.png")
+	if err != nil {
+		return nil, nil, err
+	}
+	sort.Strings(paths)
+	images := make(map[string]*ebiten.Image, len(paths))
+	ids := make([]string, 0, len(paths))
+	for _, path := range paths {
+		file, err := os.Open(path)
+		if err != nil {
+			return nil, nil, err
+		}
+		decoded, err := png.Decode(file)
+		file.Close()
+		if err != nil {
+			return nil, nil, fmt.Errorf("decode combat sprite %s: %w", path, err)
+		}
+		name := filepath.Base(path)
+		images[name] = ebiten.NewImageFromImage(decoded)
+		ids = append(ids, name)
+	}
+	return images, ids, nil
 }
 
 func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {

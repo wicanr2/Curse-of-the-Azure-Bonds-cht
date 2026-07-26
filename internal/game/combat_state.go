@@ -59,6 +59,9 @@ func (s *State) StartEncounter(result ecl.RunResult, records map[uint8]monster.R
 	if err != nil {
 		return err
 	}
+	for index := range enemies {
+		enemies[index].SpriteSet = s.Area.GameArea
+	}
 	return s.StartCombat(party, enemies, seed)
 }
 
