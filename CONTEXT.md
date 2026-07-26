@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百二十八輪：CAMP REST menu／自然 HP recovery boundary。
+第一百二十九輪：CAMP MAGIC bounded spell catalog。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -340,7 +340,7 @@
 
 第一百一十八輪功能／文件 commit：`b7c3f44`，已推送至 GitHub `main`。CAMP VIEW 新增角色選單、只讀繁中摘要與返回 CAMP Menu；未識別物品與 ALTER side effects 仍不猜測。
 
-第一百一十九輪功能／文件 commit：`e4734d0`，已推送至 GitHub `main`。CAMP MAGIC 新增角色選單與已記憶 spell-slot ID 查看；spell catalog、prepare／cast／recovery rules 尚未接入。
+第一百一十九輪功能／文件 commit：`e4734d0`，已推送至 GitHub `main`。CAMP MAGIC 新增角色選單與已記憶 spell-slot ID 查看；當時完整 spell catalog、prepare／cast／recovery rules 尚未接入；目前已另加 bounded 一級法術名稱 catalog。
 
 第一百二十輪功能／文件 commit：`e99977e`，已推送至 GitHub `main`。CAMP SAVE 透過一次性 state request 接到 Ebiten versioned party save；原版 SAVGAM slot／area container 尚未解析。
 
@@ -359,3 +359,5 @@
 第一百二十七輪功能／文件 commit：`c585d1b`，已推送至 GitHub `main`。城市 BAR 已接 ordered Tavern Tale menu、前六則繁中整理與城市場所返回；買酒價格、城市條件、完整 62 則內容與 ECL trigger 仍待反組譯。
 
 第一百二十八輪功能／文件 commit：`c82919e`，已推送至 GitHub `main`。CAMP／PROGRAM 9 現在只開啟 CAMP Menu；REST 接入 `ADD／SUBTRACT／EXIT` 與每 24 小時自然恢復 1 HP，並同步 roster／fighter。法術記憶、遊戲時鐘與遭遇中斷仍待反組譯。
+
+第一百二十九輪功能／文件 commit：待本輪提交。CAMP MAGIC 現在將已核對的一級牧師／魔法師前八個 spell IDs 顯示為繁中名稱，未知 ID 保留 hex；完整 spell catalog、CAST／MEMORIZE／SCRIBE 與 recovery rules 仍待反組譯。

@@ -949,7 +949,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			character := s.partyRoster[value]
 			slots := make([]string, 0, len(character.SpellSlots))
 			for _, spellID := range character.SpellSlots {
-				slots = append(slots, fmt.Sprintf("0x%02X", spellID))
+				slots = append(slots, campSpellLabel(s.catalog, character.Class, spellID))
 			}
 			if len(slots) == 0 {
 				slots = append(slots, s.catalog.Text("camp_magic_none", "目前沒有已記憶法術"))
