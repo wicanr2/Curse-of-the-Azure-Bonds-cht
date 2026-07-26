@@ -372,4 +372,4 @@
 
 第一百三十四輪功能／文件 commit：`2d7af62`，已推送至 GitHub `main`。戰鬥接入 RuleBook 證實的 Magic Missile（spell ID `7`）、slot consumption、2–5 damage per missile、level scaling 與 Ebiten S 鍵；其他 spell effects 仍未完成。
 
-第一百三十五輪待提交：戰鬥接入 RuleBook 證實的 Cure Light Wounds（spell ID `3`）、牧師 slot、1d8 封頂治療與 Ebiten H 鍵；完整 target cursor、施法中斷與其他 spell effects 仍未完成。
+第一百三十五輪功能／文件 commit：`2a7b7c7`，已推送至 GitHub `main`。戰鬥接入 RuleBook 證實的 Cure Light Wounds（spell ID `3`）、牧師 slot、1d8 封頂治療與 Ebiten H 鍵；完整 target cursor、施法中斷與其他 spell effects 仍未完成。
