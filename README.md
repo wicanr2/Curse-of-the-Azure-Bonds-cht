@@ -76,6 +76,7 @@
 - `CAMP → MAGIC` 現在可查看各角色已記憶 spell-slot ID，並可返回 CAMP Menu；法術名稱、準備／施法與恢復規則仍待接入。
 - `CAMP → SAVE` 現在會透過 state request 寫入 configured versioned remake party save，並顯示成功／錯誤訊息；原版 `SAVGAM?.DAT` slot／area container 仍待反組譯。
 - `CAMP → FIX` 現在會依已記憶的 Cure Light Wounds 對受傷隊員施放固定 `1d8` 治療，並同步 roster／戰鬥 HP；原版施法時間、被打斷與完整 spell catalog 仍待反組譯。
+- `CAMP → REST` 現在提供 `REST ADD SUBTRACT EXIT`，每 24 小時不間斷休息自然恢復 1 HP；CAMP 不再進入即滿血，法術記憶、時鐘與遭遇中斷仍待反組譯。
 - `城市 → BAR` 現在可逐則閱讀前六則繁中 Tavern Tale，按 Enter 回到酒館再離開返回場所選單；買酒價格、城市條件與完整 ECL tale trigger 仍待反組譯。內容整理見 [`docs/manual/tavern-tales-zh-TW.md`](docs/manual/tavern-tales-zh-TW.md)。
 
 執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：

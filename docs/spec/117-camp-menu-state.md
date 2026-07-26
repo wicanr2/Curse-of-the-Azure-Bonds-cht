@@ -4,7 +4,7 @@
 
 ## 證據
 
-繁中遊玩手冊的 CAMP 指令列為 `SAVE VIEW MAGIC REST ALTER FIX EXIT`。既有 `State.Camp()` 已驗證休息時恢復目前 party fighter HP，並以 `PROGRAM 9` 作為事件標記。
+繁中遊玩手冊的 CAMP 指令列為 `SAVE VIEW MAGIC REST ALTER FIX EXIT`。`State.Camp()` 現在將 `PROGRAM 9` 接到 CAMP Menu；`REST` 的自然恢復另由 REST Menu service 處理，不在進入 CAMP 時瞬間補滿 HP。
 
 ## 實作 contract
 
@@ -16,4 +16,4 @@
 
 ## 驗證
 
-`TestCampMenuRestAndExit` 與 `TestCampFixUsesMemorizedCureLightWounds` 覆蓋 CAMP 進入、REST／FIX return、REST count、治療與 EXIT return；`go test ./...` 在本輪通過。後續仍可在解出原版 SAVE、完整法術恢復、角色修改與 FIX 的時間／中斷 routine 後，逐項替換窄 service boundary。
+`TestCampMenuRestAndExit`、`TestCampOpensMenuWithoutInstantHealing`、`TestCampRestNaturallyHealsOneHPPer24Hours` 與 `TestCampFixUsesMemorizedCureLightWounds` 覆蓋 CAMP 進入、REST menu／return、自然治療、FIX 與 EXIT；`go test ./...` 在本輪通過。後續仍可在解出原版 SAVE、完整法術恢復、角色修改與 REST／FIX 的時間／中斷 routine 後，逐項替換窄 service boundary。
