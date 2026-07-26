@@ -107,3 +107,5 @@ VIEW 目前只讀 party roster 並顯示 HP／gold／ChineseName equipment summa
 TAKE UI 目前使用 bounded 1／10／100／全部選項，底層 `State.TakeGold` 仍是任意 amount 的通用 contract；其他 Gold Box 可替換輸入 widget，不應把 bounded UI 當成原版數字格式的證據。
 
 APPRAISE 以 `AppraisalOffers` 的 Ready flag／offer value 連接 gems／jewelry 到 money pool；沒有報價時 UI 不應把 treasure 數值直接當 GP，也不應省略拒絕報價的後續分支。
+
+APPRAISE confirmation 現在分離 accept／reject／cancel；只有 accept 才呼叫 `AppraiseTreasure`。這個 transaction boundary 可跨 Gold Box 遊戲沿用，避免 UI 選取本身造成不可逆的 treasure mutation。

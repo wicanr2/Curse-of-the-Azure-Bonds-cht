@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百一十五輪：Shop APPRAISE gems／jewelry UI。
+第一百一十六輪：APPRAISE 接受／拒絕報價 confirmation。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -333,3 +333,5 @@
 第一百一十四輪功能／文件 commit：`5ef7203`，已推送至 GitHub `main`。TAKE 會選角色與 1／10／100／全部金額，更新 pool／角色 gold 並返回 Shop Menu；任意數字輸入與 APPRAISE 仍未完成。
 
 第一百一十五輪功能／文件 commit：`6d69011`，已推送至 GitHub `main`。APPRAISE 會選角色與 gems／jewelry，接受 injected offer 後清空財寶、將 GP 加入 pool 並返回 Shop Menu；拒絕報價分支仍未完成。
+
+第一百一十六輪功能／文件 commit：待本輪提交。APPRAISE 新增接受／拒絕／返回確認；只有接受才清除財寶並入帳 pool。

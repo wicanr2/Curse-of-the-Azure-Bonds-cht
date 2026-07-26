@@ -510,14 +510,51 @@ func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
+	if state.Mode != ModePlace || !state.shopAppraiseConfirm || len(state.Choices) != 3 || state.Choices[0] != "接受" {
+		t.Fatalf("appraise confirmation state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
 	if state.Mode != ModeEvent || state.OriginalEvent != "APPRAISE" || state.partyRoster[0].Gems != 0 || state.MoneyPool() != 75 {
-		t.Fatalf("after appraise state=%#v", state)
+		t.Fatalf("after appraise accept state=%#v", state)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
 	if state.Mode != ModePlace || state.shopAppraiseMenu || len(state.Choices) != 7 {
 		t.Fatalf("after appraise continue state=%#v", state)
+	}
+}
+
+func TestShopAppraiseRejectKeepsTreasure(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Gems:      3,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.SetAppraisalOffers(AppraisalOffers{Gems: 75, GemsReady: true})
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.partyRoster[0].Gems != 3 || state.MoneyPool() != 0 || !strings.Contains(state.Message, "拒絕") {
+		t.Fatalf("after appraise reject state=%#v", state)
 	}
 }
 

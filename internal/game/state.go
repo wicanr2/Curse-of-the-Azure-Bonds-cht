@@ -122,9 +122,11 @@ type State struct {
 	shopTakeMenu           bool
 	shopTakeAmountMenu     bool
 	shopAppraiseMenu       bool
+	shopAppraiseConfirm    bool
 	shopCharacterIndex     int
 	shopTakeCharacter      int
 	shopAppraiseCharacter  int
+	shopAppraiseKind       TreasureKind
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -574,6 +576,7 @@ func (s *State) enterShopMenu() {
 	s.shopTakeMenu = false
 	s.shopTakeAmountMenu = false
 	s.shopAppraiseMenu = false
+	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
 	s.Choices = []string{
@@ -590,6 +593,33 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if originalChoice == "SHOP_APPRAISE_ACCEPT" {
+		offer, err := s.AppraiseTreasure(s.shopAppraiseCharacter, s.shopAppraiseKind)
+		s.shopAppraiseMenu = false
+		s.shopAppraiseConfirm = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "APPRAISE"
+		if err != nil {
+			s.Message = "估價失敗：" + err.Error()
+		} else {
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_done", "店家支付 %d GP。"), offer)
+		}
+		return nil
+	}
+	if originalChoice == "SHOP_APPRAISE_REJECT" {
+		s.shopAppraiseMenu = false
+		s.shopAppraiseConfirm = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "APPRAISE"
+		s.Message = s.catalog.Text("shop_appraise_rejected", "你拒絕了報價，財寶仍由隊伍保留。")
+		return nil
+	}
+	if originalChoice == "SHOP_APPRAISE_CANCEL" {
+		s.enterShopAppraiseTreasureMenu()
+		return nil
+	}
 	if strings.HasPrefix(originalChoice, "SHOP_APPRAISE_CHARACTER_") {
 		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_APPRAISE_CHARACTER_"))
 		if err != nil {
@@ -604,20 +634,11 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		if err != nil {
 			return fmt.Errorf("invalid shop appraisal command %q", originalChoice)
 		}
-		offer, err := s.AppraiseTreasure(s.shopAppraiseCharacter, TreasureKind(value))
-		if err != nil {
-			s.shopAppraiseMenu = false
-			s.Mode = ModeEvent
-			s.eventReturnMode = ModePlace
-			s.OriginalEvent = "APPRAISE"
-			s.Message = "估價失敗：" + err.Error()
-			return nil
+		if value != int(TreasureGems) && value != int(TreasureJewelry) {
+			return fmt.Errorf("invalid appraisal treasure kind %d", value)
 		}
-		s.shopAppraiseMenu = false
-		s.Mode = ModeEvent
-		s.eventReturnMode = ModePlace
-		s.OriginalEvent = "APPRAISE"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_done", "店家支付 %d GP。"), offer)
+		s.shopAppraiseKind = TreasureKind(value)
+		s.enterShopAppraiseConfirmMenu()
 		return nil
 	}
 	if originalChoice == "SHOP_APPRAISE_EXIT" {
@@ -857,6 +878,7 @@ func (s *State) enterShopAppraiseCharacterMenu() {
 	s.shopTakeMenu = false
 	s.shopTakeAmountMenu = false
 	s.shopAppraiseMenu = true
+	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_appraise_prompt", "選擇要估價的角色")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
@@ -872,6 +894,7 @@ func (s *State) enterShopAppraiseCharacterMenu() {
 
 func (s *State) enterShopAppraiseTreasureMenu() {
 	s.shopAppraiseMenu = true
+	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
 	character := s.partyRoster[s.shopAppraiseCharacter]
 	s.Prompt = s.catalog.Text("shop_appraise_treasure_prompt", "選擇要估價的財寶")
@@ -895,6 +918,20 @@ func (s *State) enterShopAppraiseTreasureMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "返回商店"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopAppraiseConfirmMenu() {
+	s.shopAppraiseMenu = true
+	s.shopAppraiseConfirm = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_appraise_confirm_prompt", "接受店家的報價嗎？")
+	s.Choices = []string{
+		s.catalog.Text("shop_appraise_accept", "接受"),
+		s.catalog.Text("shop_appraise_reject", "拒絕"),
+		s.catalog.Text("shop_appraise_cancel", "返回"),
+	}
+	s.currentOriginalChoices = []string{"SHOP_APPRAISE_ACCEPT", "SHOP_APPRAISE_REJECT", "SHOP_APPRAISE_CANCEL"}
 	s.Message = ""
 }
 
