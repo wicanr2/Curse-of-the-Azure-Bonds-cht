@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 28 輪：Shadowdale 場所 menu contract。
+第 29 輪：TREASURE bounded prefix。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -32,6 +32,7 @@
 第 25 輪 commit：`9cc0db0`，已推送至 GitHub `main`。
 第 26 輪 commit：`357b7da`，已推送至 GitHub `main`。
 第 27 輪 commit：`ad4e98d`，已推送至 GitHub `main`。
+第 28 輪 commit：`80f9c46`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -71,6 +72,7 @@
 - ECL5 block `0x30` payload `+0x0098` 的第二條 real `NEWECL → 0x50` 已由 `-block-id 48 -run-start 152` 驗證；兩者仍是 entry-level regression，尚未由完整玩家流程抵達。
 - Shadowdale `WILDERNESS/EXIT` 已接成第一個 `ModeMap` 垂直切片：State 保存 `(MapX, MapY)`，Ebiten 方向鍵可移動、Esc 可返回；目前沒有宣稱原始 tile 或場所資料已解碼。
 - 原始 ECL1 block `0x51` 已觀察到 `INN/STORE/BAR/LEAVE`；本輪接入 `ModePlace`、繁中選項與事件回復，但尚未宣稱場所內部 command path 已完成。
+- `0x27 TREASURE` 已依公開 command table 消耗 8 operands 並以 bounded no-op 繼續 trace；不宣稱已實作 treasure table、inventory 或獎勵效果。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -79,6 +81,7 @@
 - `GAME.OVR` 與 `START.EXE` 的載入關係。
 - ECL opcode、字串編碼、分支／呼叫慣例。
 - unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
+- TREASURE 的 party inventory／獎勵規則仍未完成；目前僅有安全 operand prefix。
 - CAMP／其他城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成；Shadowdale 首層場所 menu 已有 state contract。
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 已有資料中立的座標／輸入 contract；原始 tile、碰撞與場所事件仍未完成。
@@ -117,3 +120,4 @@
 26. 將 ECL4 real transition 接入可導航的 event entry，補齊跨 block memory／call stack。
 27. 解碼原始地圖 tile／座標規則，並接入 ECL1 block 0x51 的完整場所 command path。
 28. 實作場所內部的角色、交易、休息、情報與 AD&D 規則。
+29. 解碼 TREASURE table 與 party inventory 效果，補真實 event regression。

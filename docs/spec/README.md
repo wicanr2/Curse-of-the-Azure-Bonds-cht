@@ -23,3 +23,4 @@
 - [第二十六輪 ECL5 real NEWECL regression](./round-26-ecl5-newecl-regression.md)（`READY`：限已定位 transition entry）
 - [第二十七輪 Shadowdale 荒野入口](./round-27-shadowdale-map-entry.md)（`READY`：限入口狀態與輸入 contract）
 - [第二十八輪 Shadowdale 場所 menu](./round-28-shadowdale-place-menu.md)（`READY`：限選項與 state-level event contract）
+- [第二十九輪 TREASURE bounded prefix](./round-29-treasure-prefix.md)（`READY`：限 operand framing 與安全前綴）
