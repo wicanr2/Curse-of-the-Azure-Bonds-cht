@@ -17,6 +17,7 @@ func main() {
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
+	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	flag.Parse()
 	data, err := zipMember(*image, *member)
 	if err != nil {
@@ -44,7 +45,14 @@ func main() {
 			}
 		}
 		if *graph {
-			result, err := ecl.TraceGraph(block.Data, nil, 2000)
+			starts := []int(nil)
+			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
+				starts = []int{int(points[4]) - ecl.CodeAddressBase}
+				fmt.Printf("  graph start=+0x%04X (initial entry 0x%04X)\n", starts[0], points[4])
+			} else if entryErr != nil {
+				fmt.Printf("  entry point unavailable; graph fallback start=+0x0000: %v\n", entryErr)
+			}
+			result, err := ecl.TraceGraph(block.Data, starts, 2000)
 			fmt.Printf("  graph instructions=%d edges=%d\n", len(result.Instructions), len(result.Edges))
 			for _, edge := range result.Edges {
 				fmt.Printf("  edge +0x%04X -> +0x%04X (%s)\n", edge.From, edge.To, edge.Kind)
@@ -52,6 +60,18 @@ func main() {
 			if err != nil {
 				fmt.Printf("  graph stopped safely: %v\n", err)
 			}
+		}
+		if *entryPoints {
+			points, next, err := ecl.EntryPoints(block.Data, 5)
+			if err != nil {
+				fmt.Printf("  entry points stopped safely: %v\n", err)
+				continue
+			}
+			fmt.Printf("  entry points cursor=+0x%04X", next)
+			for _, point := range points {
+				fmt.Printf(" 0x%04X", point)
+			}
+			fmt.Println()
 		}
 	}
 }

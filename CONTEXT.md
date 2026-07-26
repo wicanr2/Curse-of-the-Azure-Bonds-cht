@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 11 輪：ECL branch target graph。
+第 12 輪：ECL 初始化入口。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -35,6 +35,8 @@
 - Ebiten opening 已改為讀取 `ECL1.DAX` 第一個 block；`game.State.OriginalOpening` 會記錄從原始 payload 辨識出的 opening marker。
 - 第十輪驗證通過：internal tests 與 `cmd/azure-bonds-game` Ebiten compile；GUI 仍需有 display 才能實跑。
 - `internal/ecl.TraceGraph` 已能追蹤 code-segment `GOTO/GOSUB` targets；不執行條件或副作用。
+- 參考公開 CoAB 重寫程式後，確認 ECL 初始化會先連續讀五組 word-valued command-set；`internal/ecl.EntryPoints` 已加入此安全解析器與 regression test。
+- 實際 `ECL1.DAX` 三個 block 的 initial entry 都解析為 `0x8014`；CLI `-graph` 已優先使用該入口對應的 payload offset `+0x0014`，不再盲目從 `+0x0000` 開始。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -58,3 +60,4 @@
 10. 將 ECL event trace 與 Ebiten event screen 接起來，加入第一個可驗證劇情場景。
 11. 建立 ECL branch target graph，將 opening marker 後的選項與事件序列接入 state。
 12. 對 ECL graph 的 entry points 做原版事件文字對齊，建立第一個完整 event screen。
+13. 用 `EntryPoints` 對實際 ECL1–ECL6 做入口 regression，再逐步加入可執行 VM command subset。
