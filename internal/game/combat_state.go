@@ -286,6 +286,27 @@ func (s *State) CombatCanCastProtectionFromEvil() bool {
 	return false
 }
 
+func (s *State) CombatCanCastProtectionFromGood() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok || len(s.protectionFromGoodTargets(caster)) == 0 {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == ProtectionFromGoodSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
 
 func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
@@ -295,6 +316,13 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 	case CureLightWoundsSpellID:
 		return s.livingBySide(combat.SideParty)
 	case MagicMissileSpellID:
+		if s.combatSpellIsProtectionFromGood() {
+			caster, ok := s.combatPartyTurn()
+			if !ok {
+				return nil
+			}
+			return s.protectionFromGoodTargets(caster)
+		}
 		return s.livingBySide(combat.SideEnemy)
 	case CurseSpellID:
 		return s.livingBySide(combat.SideEnemy)
@@ -315,6 +343,20 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 	}
 }
 
+// CombatSpellTargetsEnemy distinguishes the class-specific spell ID 7:
+// Magic Missile is a magic-user enemy target, while Protection from Good is a
+// cleric party target.
+func (s *State) CombatSpellTargetsEnemy() bool {
+	switch s.combatCastingSpell {
+	case MagicMissileSpellID:
+		return !s.combatSpellIsProtectionFromGood()
+	case CurseSpellID, CauseLightWoundsSpellID:
+		return true
+	default:
+		return false
+	}
+}
+
 // BeginCombatCast enters the RuleBook CAST target step without consuming a
 // spell. Enter confirms it; Escape can cancel it in the renderer.
 func (s *State) BeginCombatCast(spellID uint8) error {
@@ -330,8 +372,8 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == ProtectionFromEvilSpellID && !s.CombatCanCastProtectionFromEvil() {
 		return fmt.Errorf("Protection from Evil is unavailable")
 	}
-	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
-		return fmt.Errorf("Magic Missile is unavailable")
+	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() && !s.CombatCanCastProtectionFromGood() {
+		return fmt.Errorf("spell 0x%02X is unavailable for this caster", spellID)
 	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
@@ -340,6 +382,27 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
+	if spellID == ProtectionFromGoodSpellID {
+		caster, ok := s.combatPartyTurn()
+		if !ok {
+			return fmt.Errorf("it is not a living party turn")
+		}
+		class, ok := s.combatCasterClass(caster.ID)
+		if !ok {
+			return fmt.Errorf("caster %q has no class", caster.ID)
+		}
+		s.combatCastingClass, s.combatCastingClassSet = class, true
+		if class == party.ClassCleric {
+			s.combatSpellTargetIndex = 0
+			return nil
+		}
+		targets := s.livingBySide(combat.SideEnemy)
+		if s.combatTargetIndex >= len(targets) {
+			s.combatTargetIndex = 0
+		}
+		s.combatSpellTargetIndex = s.combatTargetIndex
+		return nil
+	}
 	if spellID == BlessSpellID {
 		s.combatSpellTargetIndex = 0
 		return nil
@@ -381,6 +444,7 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 
 func (s *State) CancelCombatCast() {
 	s.combatCastingSpell = 0
+	s.combatCastingClassSet = false
 	s.combatSpellTargetIndex = 0
 }
 
@@ -396,7 +460,7 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 	if s.combatSpellTargetIndex < 0 {
 		s.combatSpellTargetIndex += len(targets)
 	}
-	if s.combatCastingSpell == MagicMissileSpellID || s.combatCastingSpell == CurseSpellID || s.combatCastingSpell == CauseLightWoundsSpellID {
+	if s.CombatSpellTargetsEnemy() {
 		s.combatTargetIndex = s.combatSpellTargetIndex
 	}
 	return nil
@@ -420,6 +484,9 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	if spellID == ProtectionFromEvilSpellID {
 		return s.combatCastProtectionFromEvil()
+	}
+	if spellID == ProtectionFromGoodSpellID && s.combatSpellIsProtectionFromGood() {
+		return s.combatCastProtectionFromGood()
 	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
@@ -505,6 +572,102 @@ func (s *State) protectionFromEvilTargets(caster combat.Fighter) []combat.Fighte
 		}
 	}
 	return filtered
+}
+
+func (s *State) protectionFromGoodTargets(caster combat.Fighter) []combat.Fighter {
+	targets := s.livingBySide(combat.SideParty)
+	if !caster.HasCombatPosition {
+		return targets
+	}
+	filtered := make([]combat.Fighter, 0, len(targets))
+	for _, target := range targets {
+		if target.ID == caster.ID || !target.HasCombatPosition {
+			filtered = append(filtered, target)
+			continue
+		}
+		dx := caster.CombatX - target.CombatX
+		if dx < 0 {
+			dx = -dx
+		}
+		dy := caster.CombatY - target.CombatY
+		if dy < 0 {
+			dy = -dy
+		}
+		if dx <= 1 && dy <= 1 && (dx != 0 || dy != 0) {
+			filtered = append(filtered, target)
+		}
+	}
+	return filtered
+}
+
+func (s *State) combatCasterClass(casterID string) (party.Class, bool) {
+	for _, character := range s.partyRoster {
+		if character.ID == casterID {
+			return character.Class, true
+		}
+	}
+	return 0, false
+}
+
+func (s *State) combatSpellIsProtectionFromGood() bool {
+	if s.combatCastingClassSet {
+		return s.combatCastingClass == party.ClassCleric
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	class, ok := s.combatCasterClass(caster.ID)
+	return ok && class == party.ClassCleric
+}
+
+func (s *State) combatCastProtectionFromGood() error {
+	if s.combatCastingSpell != 0 && s.combatCastingSpell != ProtectionFromGoodSpellID {
+		return fmt.Errorf("a different spell target is being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassCleric {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == ProtectionFromGoodSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Protection from Good", caster.ID)
+	}
+	targets := s.protectionFromGoodTargets(caster)
+	if s.combatSpellTargetIndex < 0 || s.combatSpellTargetIndex >= len(targets) {
+		return fmt.Errorf("no adjacent party member can receive Protection from Good")
+	}
+	target := targets[s.combatSpellTargetIndex]
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	duration := 3 * casterLevel(s.partyRoster[characterIndex])
+	_, err := s.battle.CastProtectionFromGood(caster.ID, target.ID, casterLevel(s.partyRoster[characterIndex]))
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, ProtectionFromGoodSpellID)
+		return err
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "%s 對 %s 施放防護善良，效果持續 %d 回合。"), caster.Name, target.Name, duration)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
 }
 
 func (s *State) combatCastProtectionFromEvil() error {

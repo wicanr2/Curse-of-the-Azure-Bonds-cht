@@ -30,6 +30,7 @@ type Fighter struct {
 	Name string
 	Side Side
 	Evil bool
+	Good bool
 	// SpriteSet/SpriteBlock identify the original CPIC asset when the fighter
 	// came from a LOAD MONSTER descriptor. A zero block means the renderer may
 	// choose a deterministic party fallback sprite.
@@ -65,6 +66,8 @@ type Fighter struct {
 	CurseRounds          int
 	ProtectedFromEvil    bool
 	ProtectionEvilRounds int
+	ProtectedFromGood    bool
+	ProtectionGoodRounds int
 	DamageDiceCount      int
 	DamageDiceSides      int
 	DamageBonus          int
@@ -202,6 +205,9 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
 	if attacker.Evil && target.ProtectedFromEvil {
+		targetArmorClass += 2
+	}
+	if attacker.Good && target.ProtectedFromGood {
 		targetArmorClass += 2
 	}
 	hit := critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= targetArmorClass)
@@ -375,6 +381,36 @@ func (b *Battle) CastProtectionFromEvil(casterID, targetID string, casterLevel i
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 6, Targets: 1}, nil
 }
 
+func (b *Battle) CastProtectionFromGood(casterID, targetID string, casterLevel int) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if target.Side != SideParty {
+		return SpellResult{}, fmt.Errorf("Protection from Good target %q is not party", targetID)
+	}
+	if casterLevel < 1 {
+		return SpellResult{}, fmt.Errorf("caster level must be positive")
+	}
+	if target.ProtectedFromGood {
+		return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 7}, nil
+	}
+	target.ProtectedFromGood = true
+	target.ProtectionGoodRounds = 3 * casterLevel
+	b.fighters[targetID] = target
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 7, Targets: 1}, nil
+}
+
 func adjacent(first, second Fighter) bool {
 	dx := first.CombatX - second.CombatX
 	if dx < 0 {
@@ -387,9 +423,8 @@ func adjacent(first, second Fighter) bool {
 	return dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
 }
 
-// CastBless applies the verified first-level party-wide attack bonus. The
-// current bounded combat projection does not yet decode adjacency or duration,
-// so those RuleBook constraints remain explicit integration boundaries.
+// CastBless applies the verified first-level party-wide attack bonus, using
+// CombatMap adjacency and the six-round duration contract.
 func (b *Battle) CastBless(casterID string) (SpellResult, error) {
 	caster, ok := b.fighters[casterID]
 	if !ok {
@@ -509,6 +544,16 @@ func (b *Battle) advanceProtectionDurations() {
 		fighter.ProtectionEvilRounds--
 		if fighter.ProtectionEvilRounds == 0 {
 			fighter.ProtectedFromEvil = false
+		}
+		b.fighters[id] = fighter
+	}
+	for id, fighter := range b.fighters {
+		if !fighter.ProtectedFromGood || fighter.ProtectionGoodRounds <= 0 {
+			continue
+		}
+		fighter.ProtectionGoodRounds--
+		if fighter.ProtectionGoodRounds == 0 {
+			fighter.ProtectedFromGood = false
 		}
 		b.fighters[id] = fighter
 	}

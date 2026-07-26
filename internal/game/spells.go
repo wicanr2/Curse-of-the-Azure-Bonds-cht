@@ -13,6 +13,7 @@ const (
 	CurseSpellID              uint8 = 2
 	CauseLightWoundsSpellID   uint8 = 4
 	ProtectionFromEvilSpellID uint8 = 6
+	ProtectionFromGoodSpellID uint8 = 7
 	MagicMissileSpellID       uint8 = 7
 )
 
