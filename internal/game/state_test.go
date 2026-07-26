@@ -177,6 +177,26 @@ func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	}
 }
 
+func TestECLCombatRequestStartsBattleWithConfiguredParty(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"遭遇"}
+	state.currentOriginalChoices = []string{"ENCOUNTER"}
+	state.eclBlock = []byte{0, 0, 0x0B, 0x00, 0x56, 0x00, 0x01, 0x00, 0x56, 0x24}
+	state.eclStart = 0
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}
+	if err := state.SetParty(party); err != nil {
+		t.Fatal(err)
+	}
+	state.SetMonsterRecords(map[uint8]monster.Record{0x56: {Name: "BUGBEAR", MaxHitPoints: 2, HitPoints: 2, ArmorClass: 0, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1}})
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatActive() || len(state.CombatTargets()) != 1 {
+		t.Fatalf("combat state=%#v targets=%#v", state, state.CombatTargets())
+	}
+}
+
 func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{

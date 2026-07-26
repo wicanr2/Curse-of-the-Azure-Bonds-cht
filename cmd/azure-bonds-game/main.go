@@ -382,6 +382,15 @@ func main() {
 		eclBlocks[block.Entry.ID] = block.Data
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID)
+	monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
+	if err != nil {
+		log.Fatal(err)
+	}
+	monsterRecords, err := loadMonsterRecords(monsterData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	state.SetMonsterRecords(monsterRecords)
 	if *partyLoadPath != "" {
 		if err := state.LoadPartyFile(*partyLoadPath); err != nil {
 			log.Fatal(err)
@@ -396,15 +405,7 @@ func main() {
 		if runErr != nil {
 			log.Fatal(runErr)
 		}
-		monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
-		if err != nil {
-			log.Fatal(err)
-		}
-		records, err := loadMonsterRecords(monsterData)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := state.StartEncounter(result, records, demoParty(), 37); err != nil {
+		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
 	}
