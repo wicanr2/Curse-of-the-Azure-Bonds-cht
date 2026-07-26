@@ -1,8 +1,10 @@
 package main
 
 import (
+	"archive/zip"
 	"flag"
 	"image/color"
+	"io"
 	"log"
 	"os"
 
@@ -13,6 +15,7 @@ import (
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/font/opentype"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
@@ -78,6 +81,7 @@ func loadFace(path string) font.Face {
 func main() {
 	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
+	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	flag.Parse()
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -87,9 +91,37 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ebiten.SetWindowSize(logicalWidth, logicalHeight)
-	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: game.NewState(catalog), face: loadFace(*fontPath)}); err != nil {
+	imageData, err := zipMember(*imagePath, "ECL1.DAX")
+	if err != nil {
 		log.Fatal(err)
 	}
+	blocks, err := dax.Parse(imageData)
+	if err != nil || len(blocks) == 0 {
+		log.Fatalf("ECL1.DAX: %v", err)
+	}
+	ebiten.SetWindowSize(logicalWidth, logicalHeight)
+	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
+	if err := ebiten.RunGame(&app{state: game.NewStateFromECL(catalog, blocks[0].Data), face: loadFace(*fontPath)}); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func zipMember(path, member string) ([]byte, error) {
+	archive, err := zip.OpenReader(path)
+	if err != nil {
+		return nil, err
+	}
+	defer archive.Close()
+	for _, file := range archive.File {
+		if file.Name != member {
+			continue
+		}
+		reader, err := file.Open()
+		if err != nil {
+			return nil, err
+		}
+		defer reader.Close()
+		return io.ReadAll(reader)
+	}
+	return nil, os.ErrNotExist
 }

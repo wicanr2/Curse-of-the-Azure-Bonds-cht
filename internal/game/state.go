@@ -5,7 +5,9 @@ package game
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
 
@@ -32,7 +34,23 @@ type State struct {
 	Choices []string
 	Message string
 
+	// OriginalOpening records the English sentence found in the ECL payload.
+	// It is evidence that the opening state was sourced from the original data,
+	// not a replacement for the localized display string.
+	OriginalOpening string
+
 	catalog locale.Catalog
+}
+
+func NewStateFromECL(catalog locale.Catalog, block []byte) State {
+	state := NewState(catalog)
+	for _, candidate := range ecl.FindPackedTextCandidates(block) {
+		if strings.Contains(candidate, "YOU ARE AT THE EDGE OF") {
+			state.OriginalOpening = "YOU ARE AT THE EDGE OF"
+			break
+		}
+	}
+	return state
 }
 
 func NewState(catalog locale.Catalog) State {
