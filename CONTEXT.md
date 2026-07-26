@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百四十八輪：combat VIEW。
+第一百四十九輪：weapon RateOfFire attacks。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -398,4 +398,6 @@
 
 第一百四十七輪功能／文件 commit：`960cffb`，已推送至 GitHub `main`。依 RuleBook active character centered camera，新增可重用 `CombatCamera`、State active fighter read API、Ebiten 座標轉換、測試與 graphics knowledge 更新；viewport 尺寸、scroll animation、地圖遮擋與真實 Area camera 仍保留 boundary。
 
-第一百四十八輪待提交：Combat Menu `VIEW` 以 `V` 開啟繁中 read-only fighter summary，Enter／Esc 關閉且不消耗回合；新增 State／renderer tests、READY 規格與共用 state knowledge。完整 View Menu、物品／交易與 Combat FLEE 的速度／追擊規則仍保留 boundary。
+第一百四十八輪功能／文件 commit：`223fc04`，已推送至 GitHub `main`。Combat Menu `VIEW` 以 `V` 開啟繁中 read-only fighter summary，Enter／Esc 關閉且不消耗回合；新增 State／renderer tests、READY 規格與共用 state knowledge。完整 View Menu、物品／交易與 Combat FLEE 的速度／追擊規則仍保留 boundary。
+
+第一百四十九輪待提交：依 RuleBook 與 ITEMS RateOfFire，將已裝備武器 raw `4/6` 投影為每回合 2/3 次攻擊，接入 Battle sequence、目標倒下後換下一存活敵人、繁中摘要與測試；彈藥消耗、職業等級額外攻擊、Aim／range 與 back stab 仍保留 boundary。

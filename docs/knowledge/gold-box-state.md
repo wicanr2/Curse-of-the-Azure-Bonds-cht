@@ -41,6 +41,7 @@ Combat MOVE 也採 action transaction：`M` 開始、方向鍵確認一格位置
 MOVE 的 adjacency transition 已可共用：Battle 保存舊座標，成功移動後對「舊位置相鄰、 新位置不相鄰」的存活 enemy 呼叫一次 free attack，再由 State 消耗 party turn。這只證明 trigger 與基本攻擊，不代表已解出背面 AC、facing、武器 reach 或地形規則。
 移入敵格則是另一條 MOVE branch：回傳 `MoveResult.Attack` 並保留角色原座標，State 沿用一般攻擊訊息與勝負 transition；不可把敵格當成一般 occupancy error，也不可讓 renderer 自行推測佔格、reach 或 facing。
 Combat VIEW 應是獨立 read-only transaction：保存 active party fighter ID，顯示可驗證的 HP／AC／attack summary，Enter／Esc 關閉且不消耗 turn。後續作品可替換 View Menu 欄位，但不能讓 renderer 直接修改戰鬥 state。
+武器多次攻擊也應維持三層資料流：`ITEMS` raw RateOfFire（以二倍值保存）→ equipped fighter `AttacksPerTurn` → Battle attack sequence。目標倒下後由 game target adapter 換下一個存活目標；彈藥消耗、職業等級額外攻擊與 Aim／range 不可由單一 RateOfFire byte 臆測。
 
 ## Tavern Tale boundary
 

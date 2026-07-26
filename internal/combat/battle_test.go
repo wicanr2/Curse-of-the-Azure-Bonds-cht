@@ -119,6 +119,23 @@ func TestResolveAttackRequiresArmorClass(t *testing.T) {
 	}
 }
 
+func TestAttackSequenceUsesAttacksPerTurnAndStopsAtDefeat(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 3},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 2, MaxHitPoints: 2, ArmorClass: 0},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	results, err := battle.AttackSequence("archer", "goblin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(results) != 2 || !results[0].Hit || !results[1].Hit || results[1].TargetHP != 0 || battle.Status() != StatusPartyWon {
+		t.Fatalf("sequence=%+v status=%v", results, battle.Status())
+	}
+}
+
 func TestCastMagicMissileUsesVerifiedDamageAndLevelScaling(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "mage", Name: "Mage", Side: SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10},

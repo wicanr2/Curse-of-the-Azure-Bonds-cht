@@ -78,6 +78,20 @@ func TestEquipmentEffectUsesBaseDamageAndPackedAC(t *testing.T) {
 	}
 }
 
+func TestEquipmentEffectProjectsRateOfFireAsAttacksPerTurn(t *testing.T) {
+	items := make([]BaseItem, 42)
+	items[41] = BaseItem{Type: 41, SmallDamageDice: 1, SmallDamageSides: 6, RateOfFire: 4}
+	catalog := BaseItemCatalog{Items: items}
+	item := ItemRecord{Type: 41, Count: 1}
+	effect, err := item.Effect(catalog, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if effect.AttacksPerTurn != 2 {
+		t.Fatalf("effect=%+v", effect)
+	}
+}
+
 func TestDecodeConsumableKindsAndProperties(t *testing.T) {
 	catalog, err := ParseBaseItems(make([]byte, BaseItemHeaderSize+128*BaseItemRecordSize))
 	if err != nil {
