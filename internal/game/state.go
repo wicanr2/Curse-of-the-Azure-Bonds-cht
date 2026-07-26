@@ -118,7 +118,10 @@ type State struct {
 	moneyPool              uint32
 	shopStockMenu          bool
 	shopViewMenu           bool
+	shopTakeMenu           bool
+	shopTakeAmountMenu     bool
 	shopCharacterIndex     int
+	shopTakeCharacter      int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -565,6 +568,8 @@ func (s *State) enterShopMenu() {
 	s.shopMenu = true
 	s.shopStockMenu = false
 	s.shopViewMenu = false
+	s.shopTakeMenu = false
+	s.shopTakeAmountMenu = false
 	s.Mode = ModePlace
 	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
 	s.Choices = []string{
@@ -581,6 +586,41 @@ func (s *State) enterShopMenu() {
 }
 
 func (s *State) selectShop(index int, originalChoice string) error {
+	if strings.HasPrefix(originalChoice, "SHOP_TAKE_CHARACTER_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_TAKE_CHARACTER_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop take character command %q", originalChoice)
+		}
+		s.shopTakeCharacter = value
+		s.enterShopTakeAmountMenu()
+		return nil
+	}
+	if strings.HasPrefix(originalChoice, "SHOP_TAKE_AMOUNT_") {
+		value, err := strconv.ParseUint(strings.TrimPrefix(originalChoice, "SHOP_TAKE_AMOUNT_"), 10, 32)
+		if err != nil {
+			return fmt.Errorf("invalid shop take amount command %q", originalChoice)
+		}
+		if err := s.TakeGold(s.shopTakeCharacter, uint32(value)); err != nil {
+			s.shopTakeMenu = false
+			s.shopTakeAmountMenu = false
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModePlace
+			s.OriginalEvent = "TAKE"
+			s.Message = "取出金幣失敗：" + err.Error()
+			return nil
+		}
+		s.shopTakeMenu = false
+		s.shopTakeAmountMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "TAKE"
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_take_done", "已取出 %d GP 給%s。"), value, s.partyRoster[s.shopTakeCharacter].Name)
+		return nil
+	}
+	if originalChoice == "SHOP_TAKE_EXIT" {
+		s.enterShopMenu()
+		return nil
+	}
 	if strings.HasPrefix(originalChoice, "SHOP_VIEW_") {
 		if originalChoice == "SHOP_VIEW_EXIT" {
 			s.enterShopMenu()
@@ -636,7 +676,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
-	if s.shopStockMenu || s.shopViewMenu {
+	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu {
 		return nil
 	}
 	s.Mode = ModeEvent
@@ -661,7 +701,11 @@ func (s *State) shopActionMessage(originalChoice string) string {
 		s.enterShopViewMenu()
 		return ""
 	case "TAKE":
-		return s.catalog.Text("shop_take_unavailable", "請先選擇角色與金幣數量。")
+		if len(s.partyRoster) == 0 || s.moneyPool == 0 {
+			return s.catalog.Text("shop_take_unavailable", "目前沒有可提取的 party 金幣。")
+		}
+		s.enterShopTakeMenu()
+		return ""
 	case "POOL":
 		if err := s.PoolPartyGold(); err != nil {
 			return "集中金幣失敗：" + err.Error()
@@ -711,6 +755,56 @@ func (s *State) enterShopViewMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_view_exit", "返回商店"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_VIEW_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopTakeMenu() {
+	s.shopMenu = true
+	s.shopStockMenu = false
+	s.shopViewMenu = false
+	s.shopTakeMenu = true
+	s.shopTakeAmountMenu = false
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_take_prompt", "選擇要取出金幣的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（目前 %d GP）", character.Name, character.Gold))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopTakeAmountMenu() {
+	s.shopTakeAmountMenu = true
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_take_amount_prompt", "選擇要取出的金額")
+	amounts := make([]uint32, 0, 4)
+	for _, amount := range []uint32{1, 10, 100, s.moneyPool} {
+		if amount == 0 || amount > s.moneyPool {
+			continue
+		}
+		seen := false
+		for _, existing := range amounts {
+			if existing == amount {
+				seen = true
+				break
+			}
+		}
+		if !seen {
+			amounts = append(amounts, amount)
+		}
+	}
+	s.Choices = make([]string, 0, len(amounts)+1)
+	s.currentOriginalChoices = make([]string, 0, len(amounts)+1)
+	for _, amount := range amounts {
+		s.Choices = append(s.Choices, fmt.Sprintf("%d GP", amount))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_AMOUNT_"+strconv.FormatUint(uint64(amount), 10))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
 	s.Message = ""
 }
 

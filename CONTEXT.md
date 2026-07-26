@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百一十三輪：Shop VIEW 角色／裝備摘要 UI。
+第一百一十四輪：Shop TAKE 角色／金額選單 UI。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -329,3 +329,5 @@
 第一百一十二輪功能／文件 commit：`981d01d`，已推送至 GitHub `main`。BUY 會顯示繁中商品／價格、扣除 party pool、加入 active character inventory 並返回 Shop Menu；VIEW／TAKE 數量／APPRAISE 仍未完成。
 
 第一百一十三輪功能／文件 commit：`502b53e`，已推送至 GitHub `main`。VIEW 會列出角色 HP／金幣／繁中裝備摘要並返回 Shop Menu；完整 ALTER／ID／APPRAISE 與角色選擇 side effects 仍未完成。
+
+第一百一十四輪功能／文件 commit：待本輪提交。TAKE 會選角色與 1／10／100／全部金額，更新 pool／角色 gold 並返回 Shop Menu；任意數字輸入與 APPRAISE 仍未完成。

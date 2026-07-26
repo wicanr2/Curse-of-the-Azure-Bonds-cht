@@ -442,6 +442,45 @@ func TestShopViewListsCharactersAndEquipment(t *testing.T) {
 	}
 }
 
+func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.moneyPool = 150
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopTakeMenu || len(state.Choices) != 2 || state.Choices[0] != "英雄（目前 0 GP）" {
+		t.Fatalf("take character menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopTakeAmountMenu || state.Choices[0] != "1 GP" || state.Choices[len(state.Choices)-1] != "返回商店" {
+		t.Fatalf("take amount menu state=%#v", state)
+	}
+	if err := state.Select(2); err != nil { // 100 GP
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "TAKE" || state.partyRoster[0].Gold != 100 || state.MoneyPool() != 50 {
+		t.Fatalf("after take state=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || state.shopTakeMenu || len(state.Choices) != 7 {
+		t.Fatalf("after take continue state=%#v", state)
+	}
+}
+
 func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"
