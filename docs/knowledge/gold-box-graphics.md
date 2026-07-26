@@ -100,6 +100,8 @@ effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（
 
 CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`REST` 呼叫遊戲專屬 safe-rest service，完成後回到 CAMP Menu，`EXIT` 才離開 menu。`SAVE`、`VIEW`、`MAGIC`、`ALTER`、`FIX` 在尚未解出各遊戲 routine 前應保留明確 placeholder，不要把不同 Gold Box 作品的存檔格式、法術恢復或角色修改規則硬編在共用 renderer。
 
+目前 `CAMP VIEW` 已形成可重用的只讀 adapter：以 roster 為 source，角色選單與摘要畫面分離，equipment label 經 base-item catalog 映射；查看本身不得改動 gold、treasure、equipment 或 spell state。後續 Gold Box 遊戲只需替換 roster codec 與名稱 catalog，即可沿用這個 UI/state boundary。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。

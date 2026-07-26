@@ -128,6 +128,7 @@ type State struct {
 	shopAppraiseCharacter  int
 	shopAppraiseKind       TreasureKind
 	campMenu               bool
+	campViewMenu           bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -472,6 +473,29 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.campViewMenu {
+		if originalChoice == "CAMP_VIEW_EXIT" {
+			s.campViewMenu = false
+			s.enterCampMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_VIEW_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_VIEW_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid camp view character %q", originalChoice)
+			}
+			character := s.partyRoster[value]
+			equipment := make([]string, 0, len(character.Equipment))
+			for _, item := range character.Equipment {
+				equipment = append(equipment, monster.ChineseName(item))
+			}
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "VIEW"
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_view_summary", "%s　%s　HP %d/%d　金幣 %d　寶石 %d　珠寶 %d　裝備：%s"), character.Name, characterClassName(character.Class), character.HitPoints, character.MaxHitPoints, character.Gold, character.Gems, character.Jewelry, strings.Join(equipment, "、"))
+			return nil
+		}
+	}
 	if originalChoice == "EXIT" {
 		s.campMenu = false
 		s.Mode = ModeWilderness
@@ -488,11 +512,57 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.campMenu = true
 		return nil
 	}
+	if originalChoice == "VIEW" {
+		if len(s.partyRoster) == 0 {
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = originalChoice
+			s.Message = s.catalog.Text("camp_view_unavailable", "目前沒有可查看的角色。")
+			return nil
+		}
+		s.enterCampViewMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = originalChoice
 	s.Message = s.campActionMessage(originalChoice)
 	return nil
+}
+
+func (s *State) enterCampViewMenu() {
+	s.campMenu = true
+	s.campViewMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_view_prompt", "選擇要查看的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "返回紮營選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_EXIT")
+	s.Message = ""
+}
+
+func characterClassName(class party.Class) string {
+	switch class {
+	case party.ClassCleric:
+		return "牧師"
+	case party.ClassFighter:
+		return "戰士"
+	case party.ClassRanger:
+		return "遊俠"
+	case party.ClassPaladin:
+		return "聖武士"
+	case party.ClassMagicUser:
+		return "魔法師"
+	case party.ClassThief:
+		return "盜賊"
+	default:
+		return "未知職業"
+	}
 }
 
 func (s *State) campActionMessage(originalChoice string) string {
@@ -1120,6 +1190,10 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.campViewMenu {
+			s.enterCampViewMenu()
+			return nil
+		}
 		if s.campMenu {
 			s.enterCampMenu()
 			return nil
