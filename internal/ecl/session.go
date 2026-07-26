@@ -87,6 +87,11 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 		aggregate.Steps += result.Steps
 		aggregate.PC = result.PC
 		aggregate.CombatRequested = aggregate.CombatRequested || result.CombatRequested
+		if result.MonsterSetup != nil {
+			setup := *result.MonsterSetup
+			aggregate.MonsterSetup = &setup
+		}
+		aggregate.MonsterSpawns = append(aggregate.MonsterSpawns, result.MonsterSpawns...)
 		s.selectionOffset += result.SelectionsConsumed
 		if runErr != nil {
 			return aggregate, runErr

@@ -12,6 +12,8 @@ type RunResult struct {
 	WaitingForMenu     bool
 	NewECLBlockID      *uint8
 	CombatRequested    bool
+	MonsterSetup       *MonsterSetup
+	MonsterSpawns      []MonsterSpawn
 	SelectionsConsumed int
 }
 
@@ -328,6 +330,18 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			result.CombatRequested = true
 			result.PC = next
 			return result, nil
+		case 0x0B: // LOAD MONSTER
+			spawn, err := DecodeMonsterSpawn(instruction)
+			if err != nil {
+				return result, fmt.Errorf("LOAD MONSTER at %d: %w", pc, err)
+			}
+			result.MonsterSpawns = append(result.MonsterSpawns, spawn)
+		case 0x0C: // SETUP MONSTER
+			setup, err := DecodeMonsterSetup(instruction)
+			if err != nil {
+				return result, fmt.Errorf("SETUP MONSTER at %d: %w", pc, err)
+			}
+			result.MonsterSetup = &setup
 		case 0x25, 0x26: // ON GOTO / ON GOSUB
 			operands, headNext, err := ParseOperands(payload, pc, 2)
 			if err != nil {
@@ -378,6 +392,10 @@ func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMi
 			// CLEAR BOX have decoded arity but require the full renderer,
 			// party/inventory or asset state. Consuming their operands and
 			// continuing is a bounded prefix behavior, not a claim of effects.
+			if instruction.Command.Opcode == 0x1C {
+				result.MonsterSetup = nil
+				result.MonsterSpawns = nil
+			}
 		default:
 			return result, fmt.Errorf("unsupported opcode 0x%02X at payload offset %d", instruction.Command.Opcode, pc)
 		}
