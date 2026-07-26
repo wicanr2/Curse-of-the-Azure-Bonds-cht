@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 88 輪：reference `try_place_combatant` combat position formula adapter。
+第 89 輪：reference `PlaceCombatants` team origin／facing adapter。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -278,3 +278,4 @@
 44. 接能力值逐項分配與規則化的角色完成流程。
 45. 補擲骰／重擲點數池、性別／年齡與 alignment，接角色存檔。
 46. 補裝備選擇、XP／等級與 party save/import。
+第 89 輪功能／文件 commit：待本輪提交。依 `ovr011.PlaceCombatants` 將遭遇距離與八方向 `mapDirection` 的 team origin／facing group 封裝為 `combat.EncounterTeamStart`，並新增可跨 Gold Box 遊戲沿用的規格 `docs/spec/089-combat-team-start-layout.md` 與知識庫條目。這一輪刻意未假設尚未解出的 occupancy／candidate ordering；待 Area／Player record 解出後再接入 `StartEncounter`。Docker 內 `go test ./...` 通過。

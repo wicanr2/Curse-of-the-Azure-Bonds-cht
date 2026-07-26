@@ -37,6 +37,8 @@ PICTURE 還有第二個 dispatch：Area2 `HeadBlockId == 0xFF` 才使用上述 P
 
 目前已知的 reference position 生成公式可由 `combat.ReferencePlacement` 重用，但它依賴 team／candidate／occupancy 資料；在資料未解出前，不能把 deterministic formation 宣稱為原版 placement。
 
+目前已確認 `PlaceCombatants` 的 team layout：party origin 固定為 `(0,0)`；enemy origin 為 `encounterDistance × MapDirectionDelta[mapDirection]`；party facing group 是 `mapDirection / 2`，enemy facing group 是 `((mapDirection + 4) % 8) / 2`。`combat.EncounterTeamStart` 已封裝這個不含 renderer 的轉換。`mapDirection` 與 occupancy table 尚未從 Area／Player record 接入，因此它只提供 team origin／facing，不代替候選格搜尋。
+
 新建玩家的初始 icon 欄位不是依隊伍 slot 變化：`head_icon=0`、`weapon_icon=0`；種族只先決定 `icon_size`，small races 是 dwarf／gnome／halfling，其餘是 normal。
 
 ## 合成規則
