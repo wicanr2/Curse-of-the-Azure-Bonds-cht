@@ -121,3 +121,10 @@
 - [x] 驗證 ECL1 `0,0,1` 城市選擇序列。
 - [x] 將 Shadowdale／Ashabenford／Dagger Falls 接入繁中 locale 與 state mapping。
 - [ ] 將地點選擇寫入 map state，接通第一個場所入口。
+
+## 第十九輪驗收
+
+- [x] 新增 `LocationWilderness`／`LocationShadowdale` map state。
+- [x] 以 ECL1 `0,0,1,0` 驗證 Shadowdale map-entry menu。
+- [x] 將 `WILDERNESS`／`EXIT` 接入繁中 locale。
+- [ ] 實作 Shadowdale 移動與場所 menu。

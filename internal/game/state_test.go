@@ -84,3 +84,10 @@ func TestLocalizedCityMenuOptions(t *testing.T) {
 		t.Fatalf("localized city=%q", got)
 	}
 }
+
+func TestLocationDefaultsToWilderness(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.Location != LocationWilderness {
+		t.Fatalf("location=%v, want wilderness", state.Location)
+	}
+}
