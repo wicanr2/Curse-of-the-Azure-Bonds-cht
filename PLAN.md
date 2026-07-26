@@ -212,5 +212,6 @@
 - [x] 建立 Area1／Area2 `inDungeon`、`game_area` 與 LOAD FILES branch contract。
 - [x] 建立 Area1／Area2 已知欄位 binary codec，並保留未知 bytes。
 - [x] 將 remake F5/F9 擴充為可恢復 Area、location、mode 與 map 座標的版本 2 game save。
+- [x] 將 opening city menu routing 到暗影谷、阿沙本福德、匕首瀑布，並使用對應 wilderness city flags。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

@@ -212,7 +212,7 @@ func (s *State) LoadPartyFile(path string) error {
 	s.GeoMapSet = file.Area.GameArea
 	s.GeoMapBlock = file.Area.Current3DMapBlockID
 	s.MapX, s.MapY = file.MapX, file.MapY
-	if file.Location <= uint8(LocationShadowdale) {
+	if file.Location <= uint8(LocationDaggerFalls) {
 		s.Location = Location(file.Location)
 	}
 	if file.Version == 1 {

@@ -109,6 +109,25 @@ func TestLocationDefaultsToWilderness(t *testing.T) {
 	}
 }
 
+func TestCityMenuSelectionMapsAllLocalizedLocations(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["shadowdale"] = "暗影谷"
+	catalog.Strings["ashabenford"] = "阿沙本福德"
+	catalog.Strings["dagger_falls"] = "匕首瀑布"
+	for index, want := range []struct {
+		location Location
+		name     string
+		original string
+	}{{LocationShadowdale, "暗影谷", "SHADOWDALE"}, {LocationAshabenford, "阿沙本福德", "ASHABENFORD"}, {LocationDaggerFalls, "匕首瀑布", "DAGGER FALLS"}} {
+		state := NewState(catalog)
+		state.selectionSequence = []uint16{0, 0, 1, uint16(index)}
+		state.applyCitySelection()
+		if state.Location != want.location || state.LocationName != want.name || state.OriginalLocation != want.original || state.Area.CurrentCity != uint8(index) {
+			t.Fatalf("city %d state=%#v want=%#v", index, state, want)
+		}
+	}
+}
+
 func TestECLLoadFilesTransfersGeoBlockRequest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.SetInDungeon(true)
