@@ -172,4 +172,5 @@
 - [x] 將 `INN/STORE/BAR/LEAVE` 接成 Shadowdale `ModePlace` 與繁中 state event contract。
 - [x] 將 `TREASURE` 8-operand framing 接入 bounded no-op，讓場所 trace 可安全繼續。
 - [x] 將 `COMBAT` 接入 ECL／session／game state request signal。
+- [x] 建立可注入骰點的 party／enemy combat core、initiative、AC、攻擊與傷害。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
