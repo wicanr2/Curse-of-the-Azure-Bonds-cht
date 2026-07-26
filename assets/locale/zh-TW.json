@@ -75,6 +75,7 @@
     "captured": "你們被俘虜了。",
     "combat_started": "戰鬥開始！",
 	"combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
+	"combat_cure_light_wounds": "%s 對 %s 施放治療輕傷，恢復 %d HP。",
     "encounter_combat": "戰鬥",
     "encounter_wait": "等待",
     "encounter_flee": "撤退",

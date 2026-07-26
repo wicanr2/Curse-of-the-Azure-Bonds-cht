@@ -86,6 +86,7 @@ type SpellResult struct {
 	SpellID  uint8
 	Missiles int
 	Damage   int
+	Healing  int
 	TargetHP int
 }
 
@@ -260,6 +261,36 @@ func (b *Battle) CastMagicMissile(casterID, targetID string, level int) (SpellRe
 	b.fighters[targetID] = target
 	b.updateStatus()
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 7, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
+}
+
+// CastCureLightWounds applies the verified 1-8 HP touch-heal effect. The
+// caller decides whether the caster has the clerical slot and which friendly
+// target is legal; Battle only owns deterministic dice and HP mutation.
+func (b *Battle) CastCureLightWounds(casterID, targetID string) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return SpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+		return SpellResult{}, fmt.Errorf("dead fighter cannot use Cure Light Wounds")
+	}
+	healing := b.rng.Intn(8) + 1
+	if healing > target.MaxHitPoints-target.HitPoints {
+		healing = target.MaxHitPoints - target.HitPoints
+	}
+	if healing < 0 {
+		healing = 0
+	}
+	target.HitPoints += healing
+	b.fighters[targetID] = target
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 3, Healing: healing, TargetHP: target.HitPoints}, nil
 }
 
 func (b *Battle) updateStatus() {
