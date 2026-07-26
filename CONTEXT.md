@@ -422,4 +422,4 @@
 
 第一百五十九輪功能／文件 commit：`eec71dd`，已推送至 GitHub `main`。將 `LoadPiecesRequested` 從 ECL runner 接到 game State 一次性 `ConsumeLoadPiecesRequest()`，與 GEO `LOAD FILES` request 對齊；新增 state regression、READY 規格與共用 state knowledge。當時尚未接入 map-piece file adapter；完整地城副作用仍保留 boundary。
 
-第一百六十輪待提交：依公開 CoAB `LoadWalldef` reference 將 State 的 `LOAD PIECES` request 接到 `WALLDEF{area}`／`8X8D{area}` raw `PieceSet` catalog；補上單／多 WALLDEF record selector regression、原始 ZIP area 2 regression、dungeon preview 載入狀態與共用 graphics knowledge。WALLDEF row／column 的牆面拼圖、0x7F 特殊分支、碰撞與完整 3D renderer 仍保留 boundary。
+第一百六十輪功能／文件 commit：`7ba3006`，已推送至 GitHub `main`。依公開 CoAB `LoadWalldef` reference 將 State 的 `LOAD PIECES` request 接到 `WALLDEF{area}`／`8X8D{area}` raw `PieceSet` catalog；補上單／多 WALLDEF record selector regression、原始 ZIP area 2 regression、dungeon preview 載入狀態與共用 graphics knowledge。WALLDEF row／column 的牆面拼圖、0x7F 特殊分支、碰撞與完整 3D renderer 仍保留 boundary。
