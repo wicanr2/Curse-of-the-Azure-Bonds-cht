@@ -123,6 +123,23 @@ func TestRunSubsetHorizontalMenuExtractsOptions(t *testing.T) {
 	}
 }
 
+func TestRunSubsetVerticalMenuExtractsPromptAndOptions(t *testing.T) {
+	// VERTICAL MENU memory[0x9000], prompt "HI", two options, EXIT.
+	payload := []byte{
+		0x15, 0x02, 0x00, 0x90, 0x80, 0x02, 0x20, 0x92, 0x00, 2,
+		0x80, 0x02, 0x20, 0x92,
+		0x80, 0x02, 0x0C, 0x32,
+		0x00,
+	}
+	result, err := RunSubsetWithSelections(append([]byte{0, 0}, payload...), 0, 10, []uint16{1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Menus) != 1 || !result.Menus[0].Vertical || result.Menus[0].Prompt != "HI" || result.Menus[0].Selected != 1 {
+		t.Fatalf("menus=%+v, want vertical HI menu selected 1", result.Menus)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)

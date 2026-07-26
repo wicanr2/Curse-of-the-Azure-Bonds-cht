@@ -15,6 +15,8 @@ type Menu struct {
 	Location uint16
 	Options  []string
 	Selected uint16
+	Vertical bool
+	Prompt   string
 }
 
 // RunSubset executes only commands whose semantics are represented here.
@@ -188,6 +190,44 @@ func RunSubsetWithSelections(block []byte, start, maxSteps int, selections []uin
 				message, err := operandText(operand, stringsMemory)
 				if err != nil {
 					return result, fmt.Errorf("HORIZONTAL MENU option at %d: %w", pc, err)
+				}
+				menu.Options = append(menu.Options, message)
+			}
+			if selectionCursor < len(selections) && selections[selectionCursor] < count {
+				menu.Selected = selections[selectionCursor]
+			}
+			selectionCursor++
+			memory[menu.Location] = menu.Selected
+			result.Menus = append(result.Menus, menu)
+			next = stringsEnd
+		case 0x15: // VERTICAL MENU
+			header, headNext, err := ParseOperands(payload, pc, 3)
+			if err != nil {
+				return result, fmt.Errorf("VERTICAL MENU header at %d: %w", pc, err)
+			}
+			if !header[0].WordSet {
+				return result, fmt.Errorf("VERTICAL MENU at %d has non-address destination", pc)
+			}
+			count, err := operandValue(header[2], memory)
+			if err != nil {
+				return result, fmt.Errorf("VERTICAL MENU count at %d: %w", pc, err)
+			}
+			if count == 0 || count > 64 {
+				return result, fmt.Errorf("VERTICAL MENU at %d has invalid option count %d", pc, count)
+			}
+			prompt, err := operandText(header[1], stringsMemory)
+			if err != nil {
+				return result, fmt.Errorf("VERTICAL MENU prompt at %d: %w", pc, err)
+			}
+			stringOperands, stringsEnd, err := ParseOperands(payload, headNext-1, int(count))
+			if err != nil {
+				return result, fmt.Errorf("VERTICAL MENU strings at %d: %w", pc, err)
+			}
+			menu := Menu{Location: header[0].Word, Options: make([]string, 0, count), Vertical: true, Prompt: prompt}
+			for _, operand := range stringOperands {
+				message, err := operandText(operand, stringsMemory)
+				if err != nil {
+					return result, fmt.Errorf("VERTICAL MENU option at %d: %w", pc, err)
 				}
 				menu.Options = append(menu.Options, message)
 			}
