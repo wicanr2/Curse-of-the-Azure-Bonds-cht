@@ -24,7 +24,7 @@ Cure Light Wounds 提供同一分層的 healing 例子：spell ID `3`、牧師 s
 
 CAST target selection 必須是 transaction state：開始選擇時不扣 slot，只有 Enter confirmation 才呼叫 effect adapter；Esc 必須完全取消。攻擊法術與治療法術應各自提供 target list，不能讓 enemy cursor ordinal 意外套到 party target。
 
-Bless 是第一個可沿用的 buff transaction：`B` 開始、Enter 確認、Esc 取消；core 只對存活 party fighter 套用一次 `AttackBonus +1`，並以 status flag 防止重複疊加。原版的鄰近怪物排除與 duration 尚未由 CoAB CombatMap／runtime effects 解出，不能把目前 bounded party-wide effect 當成完整規則；後續 Golden Box 遊戲可沿用同一 transaction，再注入 adjacency／duration adapter。
+Bless 是第一個可沿用的 buff transaction：`B` 開始、Enter 確認、Esc 取消；core 對未與存活怪物八方向相鄰的 party fighter 套用一次 `AttackBonus +1`，保存 `BlessRounds=6`，並以 status flag 防止重複疊加；每次開始戰鬥回合遞減，期滿撤回修正。低階 direct API 缺少位置資料時採「無法判定則不排除」fallback，後續 Golden Box 遊戲可替換更完整的 CombatMap／area adapter。
 
 ## Tavern Tale boundary
 

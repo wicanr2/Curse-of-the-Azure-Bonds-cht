@@ -75,7 +75,7 @@
 - `CAMP → VIEW` 現在可選角色查看職業、HP、金幣、寶石、珠寶與裝備摘要，並可返回 CAMP Menu。
 - `CAMP → MAGIC` 現在提供原版已證實的 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；`DISPLAY` 可查看各角色已記憶法術，`MEMORIZE` 可選取 known spells 並在 `REST → START` 寫回記憶欄位，`REST` 回用 CAMP 休息服務，施法／抄錄與完整 slot／時間規則仍待接入。
 - `CAMP → SAVE` 現在會透過 state request 寫入 configured versioned remake party save，並顯示成功／錯誤訊息；原版 `SAVGAM?.DAT` slot／area container 仍待反組譯。
-- `CAMP → FIX` 現在會依已記憶的 Cure Light Wounds 對受傷隊員施放固定 `1d8` 治療，並同步 roster／戰鬥 HP；戰鬥中 S／H 會先進入施法目標選擇，左右鍵切換、Enter 確認、Esc 取消，B 會進入 Bless 的無目標確認，再分別施放 Magic Missile／Cure Light Wounds／Bless；Bless 目前以存活隊友攻擊加值 +1 為 bounded effect，鄰近怪物與 duration 仍待反組譯。
+- `CAMP → FIX` 現在會依已記憶的 Cure Light Wounds 對受傷隊員施放固定 `1d8` 治療，並同步 roster／戰鬥 HP；戰鬥中 S／H 會先進入施法目標選擇，左右鍵切換、Enter 確認、Esc 取消，B 會進入 Bless 的無目標確認，再分別施放 Magic Missile／Cure Light Wounds／Bless；Bless 會排除施法時與存活怪物八方向相鄰的隊友，持續 6 個戰鬥回合後撤回攻擊加值。
 - `CAMP → REST` 現在提供 `REST ADD SUBTRACT EXIT`，每 24 小時不間斷休息自然恢復 1 HP；一級法術記憶會先檢查「4 小時最低準備 + 每個法術 15 分鐘」，不足時保留 pending 選擇，完整高等級時間與遭遇中斷仍待反組譯。
 - `城市 → BAR` 現在可逐則閱讀前六則繁中 Tavern Tale，按 Enter 回到酒館再離開返回場所選單；買酒價格、城市條件與完整 ECL tale trigger 仍待反組譯。內容整理見 [`docs/manual/tavern-tales-zh-TW.md`](docs/manual/tavern-tales-zh-TW.md)。
 
