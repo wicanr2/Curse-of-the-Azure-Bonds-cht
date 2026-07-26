@@ -55,7 +55,7 @@ Ranged attack 不能只看 `BaseItem.Range != 0`：RuleBook 的 adjacent missile
 
 ECL `ADD NPC` 應採資料 signal boundary：runner 保存 operand 的 NPC ID 並繼續至下一個 command，game adapter 再依作品 NPC table 決定是否建立角色／對話／隊伍 side effect。`NPCIDs` 可跨 Gold Box runner 重用，但不能把 ID signal 當成已完成 NPC record lookup。
 
-`LOAD PIECES` 也應先保存三個 selector，再由作品的 file／map adapter 解讀：目前 ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations 只證明 operand shape，不足以把欄位硬編成某一個 floor、wall 或 tile 檔案。共用 runner 可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換實際 map loader。
+`LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。
 

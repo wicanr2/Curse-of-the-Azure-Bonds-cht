@@ -43,6 +43,7 @@ const (
 
 type app struct {
 	state            game.State
+	imagePath        string
 	face             font.Face
 	choiceCursor     int
 	partyPath        string
@@ -58,6 +59,8 @@ type app struct {
 	geoBlock         uint8
 	dungeonPreview   bool
 	dungeonFloor     *mapdata.DungeonFloor
+	pieceSets        map[uint8]gfx.PieceSet
+	pieceLabel       string
 	combatSprites    map[string]*ebiten.Image
 	combatSpriteIDs  []string
 	combatAnimations map[string][]combatAnimation
@@ -82,6 +85,7 @@ func (a *app) combatAction(action func() error) error {
 
 func (a *app) Update() error {
 	a.syncGeoMapRequest()
+	a.syncLoadPiecesRequest()
 	if a.tilePreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
@@ -371,6 +375,20 @@ func (a *app) Update() error {
 	return nil
 }
 
+func (a *app) syncLoadPiecesRequest() {
+	selectors, ok := a.state.ConsumeLoadPiecesRequest()
+	if !ok {
+		return
+	}
+	sets, err := loadMapPieceSets(a.imagePath, a.state.GeoMapSet, selectors)
+	if err != nil {
+		a.state.Message = "地城圖塊載入失敗：" + err.Error()
+		return
+	}
+	a.pieceSets = sets
+	a.pieceLabel = fmt.Sprintf("LOAD PIECES [%d,%d,%d]：WALLDEF／8X8D 已載入", selectors[0], selectors[1], selectors[2])
+}
+
 func (a *app) syncGeoMapRequest() {
 	set, block, ok := a.state.ConsumeGeoMapRequest()
 	if !ok {
@@ -654,6 +672,9 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	}
 	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
 	text.Draw(screen, "目前為 "+a.geoLabel+" map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
+	if a.pieceLabel != "" {
+		text.Draw(screen, a.pieceLabel, a.face, 24, 280, cyan)
+	}
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
@@ -965,7 +986,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -1090,6 +1111,46 @@ func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
 		}
 	}
 	return images, nil
+}
+
+// loadMapPieceSets mirrors the verified reference LoadWalldef mapping while
+// keeping selector interpretation out of the ECL VM and State packages.
+func loadMapPieceSets(imagePath string, areaID uint8, selectors [3]uint16) (map[uint8]gfx.PieceSet, error) {
+	if areaID < 1 || areaID > 6 {
+		return nil, fmt.Errorf("map piece area %d is outside original range 1..6", areaID)
+	}
+	wallData, err := zipMember(imagePath, fmt.Sprintf("WALLDEF%d.DAX", areaID))
+	if err != nil {
+		return nil, err
+	}
+	symbolData, err := zipMember(imagePath, fmt.Sprintf("8X8D%d.DAX", areaID))
+	if err != nil {
+		return nil, err
+	}
+	wallBlocks, err := dax.Parse(wallData)
+	if err != nil {
+		return nil, fmt.Errorf("parse WALLDEF%d.DAX: %w", areaID, err)
+	}
+	symbolBlocks, err := dax.Parse(symbolData)
+	if err != nil {
+		return nil, fmt.Errorf("parse 8X8D%d.DAX: %w", areaID, err)
+	}
+	result := make(map[uint8]gfx.PieceSet, 3)
+	for index, rawSelector := range selectors {
+		if rawSelector == 0xFF {
+			continue
+		}
+		if rawSelector > 0xFF {
+			return nil, fmt.Errorf("map piece selector %d overflows byte", rawSelector)
+		}
+		setID := uint8(index + 1)
+		pieceSet, err := gfx.ParsePieceSet(setID, uint8(rawSelector), wallBlocks, symbolBlocks)
+		if err != nil {
+			return nil, fmt.Errorf("piece set %d: %w", setID, err)
+		}
+		result[setID] = pieceSet
+	}
+	return result, nil
 }
 
 func loadGEOPreview(imagePath string, set, blockID uint8) (*geo.Grid, error) {
