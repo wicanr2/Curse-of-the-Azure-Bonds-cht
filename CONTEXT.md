@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 78 輪：角色建立玩家 icon defaults 與 race-based icon size。
+第 79 輪：SPRIT frame position offset 接入戰鬥 renderer。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -100,6 +100,8 @@
 第 77 輪功能／文件 commit：`419cd9d`，已推送至 GitHub `main`。`combat.Fighter` 現在保存 party icon head/body、normal／attack 與 direction state；`gfx.Picture.FlipHorizontal` 與 Ebiten renderer 已接入方向 flip；generator 產生 normal／attack CHEAD＋CBODY 合成圖，並補上第 77 輪規格與知識庫更新。`go test ./...` 通過。
 
 第 78 輪功能／文件 commit：`0a5f96c`，已推送至 GitHub `main`。依 reference 反組譯確認新建角色 `head_icon=0`、`weapon_icon=0`，並將 dwarf／gnome／halfling 的 small `icon_size=1`、其餘種族 normal `icon_size=2` 接入 `party.Character`、fighter projection 與舊 JSON 相容路徑；移除 party-slot 假造外觀的規則。`go test ./...` 與素材重建通過。
+
+第 79 輪功能／文件 commit：`381c13b`，已推送至 GitHub `main`。SPRIT frame 的 `x/y` 已寫入 animation manifest 並由 Ebiten `combatAnimation` 套用至實際 draw origin；更新 SPRIT 規格、共用 Gold Box 圖像知識庫與 README，清除 frame position 尚未實作的過時斷言。`go test ./...` 與素材重建通過。
 
 ## 已確認
 
