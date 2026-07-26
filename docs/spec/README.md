@@ -149,3 +149,4 @@
 - [第一百五十二輪 armor movement allowance](./152-combat-movement-allowance.md)（`READY`：限護甲上限與多格 MOVE）
 - [第一百五十三輪 missile adjacency guard](./153-combat-missile-adjacency.md)（`READY`：限 missile／dart 近身攻擊規則）
 - [第一百五十四輪 combat attack preflight](./154-combat-attack-preflight.md)（`READY`：限攻擊驗證先於彈藥 transaction）
+- [第一百五十五輪 enemy RateOfFire turn](./155-enemy-rate-of-fire.md)（`READY`：限敵方已投影多次攻擊）

@@ -49,6 +49,8 @@ Ranged attack 不能只看 `BaseItem.Range != 0`：RuleBook 的 adjacent missile
 
 攻擊 transaction 的順序也要跨 Gold Box 共用：先由 `Battle.ValidateAttack` 做不擲骰的 target／range preflight，再扣除本回合彈藥，最後才執行 Attack／AttackSequence。如此無效的相鄰 missile 攻擊不會消耗箭／弩矢，也不會改變 deterministic RNG；直接 `ResolveAttack` 仍可接受注入骰值做規則測試。
 
+`AttacksPerTurn` 不能只在 party UI 套用：enemy turn 若已由 ITEMS／monster adapter 投影出大於 1 的值，也必須使用同一個 `Battle.AttackSequence`；零值或 1 維持單次攻擊。這只修正已知武器 profile 的回合套用，不代表已解出 enemy AI、彈藥或額外職業攻擊。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
