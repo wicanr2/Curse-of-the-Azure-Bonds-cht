@@ -8,10 +8,10 @@
 
 實際 `ECL1.DAX` 驗證：
 
-- selection `0`（ENTER CITY）進入 block 80 的 `0x15 VERTICAL MENU` 路徑。
+- selection `0`（ENTER CITY）進入 block 80 的 `0x15 VERTICAL MENU` 路徑；該 parser 已在下一輪完成。
 - selection `1`（JOURNEY ON）進入不同的 block 80 路徑，停在另一個未支援 command。
 
-這已是可驗證的 input-to-ECL 分支，不代表 `VERTICAL MENU`、戰鬥或完整事件 VM 已完成。
+這已是可驗證的 input-to-ECL 分支，不代表戰鬥或完整事件 VM 已完成。
 
 ## 驗收
 

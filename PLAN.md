@@ -100,3 +100,10 @@
 - [x] 將 Ebiten directional cursor／Enter 接入 game state 與 ECL selection。
 - [x] 以實際 ECL1 驗證 selection 0／1 走不同分支。
 - [ ] 實作 `VERTICAL MENU` 與後續事件 command subset。
+
+## 第十六輪驗收
+
+- [x] 實作 `VERTICAL MENU` header／prompt／variable options parsing。
+- [x] 支援 vertical menu selection injection 與 regression。
+- [x] 實際 ECL1 讀到城市場所 menu options。
+- [ ] 將 successive menu sequence 保存到 UI state，完成城市場所與離開事件。
