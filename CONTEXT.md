@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百一十七輪：繁中 CAMP Menu／REST／EXIT state。
+第一百一十八輪：CAMP VIEW 角色摘要 state。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -337,3 +337,5 @@
 第一百一十六輪功能／文件 commit：`8cdde8b`，已推送至 GitHub `main`。APPRAISE 新增接受／拒絕／返回確認；只有接受才清除財寶並入帳 pool。
 
 第一百一十七輪功能／文件 commit：`993ced5`，已推送至 GitHub `main`。建立繁中 CAMP Menu，接入 REST return 與 EXIT 荒野返回；SAVE／VIEW／MAGIC／ALTER／FIX 保留明確 placeholder boundary。
+
+第一百一十八輪功能／文件 commit：`b7c3f44`，已推送至 GitHub `main`。CAMP VIEW 新增角色選單、只讀繁中摘要與返回 CAMP Menu；未識別物品與 ALTER side effects 仍不猜測。
