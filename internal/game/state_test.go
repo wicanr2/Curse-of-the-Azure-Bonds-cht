@@ -157,3 +157,19 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 		t.Fatalf("leave continuation state=%#v err=%v", state, err)
 	}
 }
+
+func TestStateExposesCombatEntryFromECL(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["combat_started"] = "戰鬥開始（戰鬥規則尚未完成）"
+	state := NewState(catalog)
+	state.Mode = ModeWilderness
+	state.Choices = []string{"遭遇"}
+	state.currentOriginalChoices = []string{"ENCOUNTER"}
+	state.eclBlock = []byte{0, 0, 0x24}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.Message != "戰鬥開始（戰鬥規則尚未完成）" || state.OriginalEvent != "COMBAT" {
+		t.Fatalf("combat state=%#v", state)
+	}
+}
