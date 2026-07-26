@@ -241,6 +241,34 @@ func TestFighterWithEquipmentAppliesReadiedWeaponAndArmor(t *testing.T) {
 	}
 }
 
+func TestFighterProjectionAppliesActiveBlessAndCurse(t *testing.T) {
+	character := validCharacter()
+	base, err := character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	character.Effects = []monster.AffectRecord{
+		{Kind: 0x01, Strength: 1, Active: true},
+		{Kind: 0x02, Strength: 1, Active: false},
+	}
+	fighter, err := character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.AttackBonus != base.AttackBonus+1 {
+		t.Fatalf("active bless projection attack=%d base=%d", fighter.AttackBonus, base.AttackBonus)
+	}
+	character.Effects[0].Active = false
+	character.Effects[1].Active = true
+	fighter, err = character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.AttackBonus != base.AttackBonus-1 {
+		t.Fatalf("active curse projection attack=%d base=%d", fighter.AttackBonus, base.AttackBonus)
+	}
+}
+
 func TestEquipItemEnforcesClassSlotsHandsAndRings(t *testing.T) {
 	data := make([]byte, monster.BaseItemHeaderSize+7*monster.BaseItemRecordSize)
 	setBase := func(index int, slot, hands, mask uint8) {

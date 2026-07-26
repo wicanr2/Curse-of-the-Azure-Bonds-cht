@@ -246,5 +246,6 @@
 - [x] 建立 `.SAV/.GUY` + optional `.FX/.SWG` DOS player sidecar bundle importer。
 - [x] 提供 DOS character bundle → versioned remake party JSON 的可重現 CLI。
 - [x] 將 DOS character bundle 接入 Ebiten remake startup bridge。
+- [x] 將 imported active Bless／Curse effects 投影到 combat fighter attack bonus。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

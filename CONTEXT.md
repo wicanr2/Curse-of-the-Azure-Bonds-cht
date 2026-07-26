@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百零四輪：DOS character bundle 接入 Ebiten remake startup。
+第一百零五輪：DOS `.FX` active Bless／Curse combat projection。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -311,3 +311,5 @@
 第一百零三輪功能／文件 commit：`6497c18`，已推送至 GitHub `main`。新增 `cmd/azure-bonds -import-character`，把已證實的 `.SAV/.GUY` + optional `.FX/.SWG` bundle 輸出成 versioned remake party JSON。
 
 第一百零四輪功能／文件 commit：`d3bc6e9`，已推送至 GitHub `main`。新增 `cmd/azure-bonds-game -dos-character-record` startup bridge，直接載入單一原版角色 sidecar bundle；完整六人 SAVGAM party／area container 仍未解析。
+
+第一百零五輪功能／文件 commit：待本輪提交。將 active Bless／Curse effect 投影為 fighter attack +1／-1，其他 target/phase effects 保留未套用。
