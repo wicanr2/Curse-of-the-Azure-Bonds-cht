@@ -35,12 +35,13 @@ const (
 )
 
 type State struct {
-	Mode     Mode
-	Title    string
-	Prompt   string
-	Choices  []string
-	Message  string
-	Location Location
+	Mode         Mode
+	Title        string
+	Prompt       string
+	Choices      []string
+	Message      string
+	Location     Location
+	LocationName string
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -91,10 +92,12 @@ func NewStateFromECL(catalog locale.Catalog, block []byte) State {
 
 func NewState(catalog locale.Catalog) State {
 	return State{
-		Mode:    ModeTitle,
-		Title:   catalog.Text("title", "Curse of the Azure Bonds"),
-		Prompt:  catalog.Text("press_enter", "Press Enter to continue"),
-		catalog: catalog,
+		Mode:         ModeTitle,
+		Title:        catalog.Text("title", "Curse of the Azure Bonds"),
+		Prompt:       catalog.Text("press_enter", "Press Enter to continue"),
+		Location:     LocationWilderness,
+		LocationName: catalog.Text("wilderness", "Wilderness"),
+		catalog:      catalog,
 	}
 }
 
@@ -142,6 +145,7 @@ func (s *State) Select(index int) error {
 		result, _ := ecl.RunSubsetInteractive(s.eclBlock, s.eclStart, 180, s.selectionSequence)
 		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
 			s.Location = LocationShadowdale
+			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
 			s.OriginalLocation = "SHADOWDALE"
 		}
 		if result.WaitingForMenu && len(result.Menus) > 0 {

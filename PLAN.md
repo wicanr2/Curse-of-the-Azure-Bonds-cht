@@ -128,3 +128,9 @@
 - [x] 以 ECL1 `0,0,1,0` 驗證 Shadowdale map-entry menu。
 - [x] 將 `WILDERNESS`／`EXIT` 接入繁中 locale。
 - [ ] 實作 Shadowdale 移動與場所 menu。
+
+## 第二十輪驗收
+
+- [x] 將 Shadowdale location name 接入 locale 與 Ebiten UI。
+- [x] 保留 Shadowdale 原始名稱與 map-entry menu state。
+- [ ] 實作 Shadowdale 座標／移動與第一個場所。

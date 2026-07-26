@@ -14,7 +14,7 @@ ECL1 block 80 的可重現 sequence：
 
 `game.State` 現在具有 `Location`：預設 `LocationWilderness`，完成上述 Shadowdale selection 後轉為 `LocationShadowdale`，並保留 `OriginalLocation == "SHADOWDALE"`。`WILDERNESS`／`EXIT` 已加入繁中 locale（荒野／離開）。
 
-這是 map state 的第一個入口，不是完整地圖引擎；座標、移動、場所功能、戰鬥與存檔仍未完成。
+這是 map state 的第一個入口，並已在 UI 顯示 locale 地點名稱；不是完整地圖引擎，座標、移動、場所功能、戰鬥與存檔仍未完成。
 
 ## 驗收
 
