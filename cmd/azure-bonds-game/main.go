@@ -571,7 +571,14 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	}
 	key := ""
 	var sprite *ebiten.Image
-	if fighter.HasAnimation {
+	if fighter.Side == combat.SideParty {
+		// Party icons are the original CHEAD+CBODY composition. The current
+		// roster has deterministic slots; character-specific icon IDs will
+		// replace this selector when the player record decoder is complete.
+		key = fmt.Sprintf("party-block-%02X.png", ordinal%6)
+		sprite = a.combatSprites[key]
+	}
+	if sprite == nil && fighter.HasAnimation {
 		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
 		if animation := a.combatAnimations[key]; len(animation) > 0 {
 			sprite = animationImage(animation, time.Since(a.animationStart))
@@ -712,6 +719,11 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 	if err != nil {
 		return nil, nil, nil, err
 	}
+	partyPaths, err := filepath.Glob("assets/sprites/party-block-*.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	paths = append(paths, partyPaths...)
 	sort.Strings(paths)
 	images := make(map[string]*ebiten.Image, len(paths))
 	ids := make([]string, 0, len(paths))
@@ -727,7 +739,9 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		}
 		name := filepath.Base(path)
 		images[name] = ebiten.NewImageFromImage(decoded)
-		ids = append(ids, name)
+		if strings.HasPrefix(name, "cpic") {
+			ids = append(ids, name)
+		}
 	}
 	animationData, err := os.ReadFile("assets/sprites/animation.json")
 	if err != nil {
