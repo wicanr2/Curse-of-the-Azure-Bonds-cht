@@ -278,6 +278,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 350, cyan)
 		return
 	}
+	if a.state.Mode == game.ModeMap {
+		a.drawWildernessMap(screen, white, cyan)
+		return
+	}
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
@@ -315,6 +319,44 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawCombat(screen, white, cyan)
 		return
 	}
+}
+
+func (a *app) drawWildernessMap(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "暗影谷荒野（原版 50×25 floor）", a.face, 24, 28, cyan)
+	const (
+		viewWidth  = 7
+		viewHeight = 5
+		scale      = 2
+		tileSize   = 24
+		originX    = 24
+		originY    = 48
+	)
+	for row := 0; row < viewHeight; row++ {
+		for column := 0; column < viewWidth; column++ {
+			x := a.state.MapX + column - viewWidth/2
+			y := a.state.MapY + row - viewHeight/2
+			entry, ok := a.state.WildernessFloor.Entry(x, y)
+			left := originX + column*tileSize*scale
+			top := originY + row*tileSize*scale
+			if ok && int(entry.TileIndex) < len(a.tileImages) {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Scale(scale, scale)
+				op.GeoM.Translate(float64(left), float64(top))
+				screen.DrawImage(a.tileImages[entry.TileIndex], op)
+			} else {
+				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize*scale, tileSize*scale, color.RGBA{24, 30, 48, 255})
+			}
+			if x == a.state.MapX && y == a.state.MapY {
+				ebitenutil.DrawRect(screen, float64(left+tileSize*scale/2-4), float64(top+tileSize*scale/2-4), 8, 8, color.RGBA{255, 230, 80, 255})
+			}
+		}
+	}
+	text.Draw(screen, "位置：（"+strconv.Itoa(a.state.MapX)+"，"+strconv.Itoa(a.state.MapY)+"）", a.face, 390, 90, white)
+	if entry, ok := a.state.WildernessFloor.Entry(a.state.MapX, a.state.MapY); ok {
+		text.Draw(screen, "背景 entry："+strconv.Itoa(int(a.state.WildernessFloor.Tiles[a.state.MapY][a.state.MapX]))+"　tile："+strconv.Itoa(int(entry.TileIndex)), a.face, 390, 125, white)
+	}
+	text.Draw(screen, "方向鍵：移動（依 floor movement cost）", a.face, 390, 180, white)
+	text.Draw(screen, "Enter：場所　Esc：離開", a.face, 390, 215, cyan)
 }
 
 func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {

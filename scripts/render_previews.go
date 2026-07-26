@@ -14,6 +14,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
 
 func main() {
@@ -37,6 +38,9 @@ func main() {
 		pictures = append(pictures, picture)
 	}
 	if err := renderTiles(pictures); err != nil {
+		panic(err)
+	}
+	if err := renderWilderness(pictures); err != nil {
 		panic(err)
 	}
 	data, err = readMember("curseoftheazurebonds.zip", "GEO2.DAX")
@@ -121,6 +125,51 @@ func renderGeo(grid geo.Grid) error {
 	}
 	fillRect(dst, originX+2, originY+2, 6, 6, color.RGBA{255, 220, 80, 255})
 	return writePNG("docs/screenshots/geo-geometry.png", dst)
+}
+
+func renderWilderness(pictures []gfx.Picture) error {
+	const (
+		scale    = 2
+		tileSize = 24
+		originX  = 24
+		originY  = 32
+		viewW    = 7
+		viewH    = 5
+	)
+	floor := mapdata.GenerateWilderness(0, 1)
+	dst := image.NewRGBA(image.Rect(0, 0, 384, 304))
+	fill(dst, color.RGBA{12, 18, 28, 255})
+	centerX, centerY := 25, 12
+	for row := 0; row < viewH; row++ {
+		for column := 0; column < viewW; column++ {
+			x := centerX + column - viewW/2
+			y := centerY + row - viewH/2
+			entry, ok := floor.Entry(x, y)
+			left := originX + column*tileSize*scale
+			top := originY + row*tileSize*scale
+			if ok {
+				rgba, err := pictureRGBA(pictures, int(entry.TileIndex))
+				if err != nil {
+					return err
+				}
+				drawScaled(dst, rgba, left, top, scale)
+			}
+			if x == centerX && y == centerY {
+				fillRect(dst, left+tileSize*scale/2-4, top+tileSize*scale/2-4, 8, 8, color.RGBA{255, 230, 80, 255})
+			}
+		}
+	}
+	return writePNG("docs/screenshots/wilderness-floor.png", dst)
+}
+
+func pictureRGBA(pictures []gfx.Picture, index int) (image.Image, error) {
+	for _, picture := range pictures {
+		if index < int(picture.ItemCount) {
+			return picture.RGBA(index, gfx.EGA16)
+		}
+		index -= int(picture.ItemCount)
+	}
+	return nil, fmt.Errorf("TILES.DAX has no item %d", index)
 }
 
 func fill(dst *image.RGBA, c color.Color) {

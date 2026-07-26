@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -43,15 +44,16 @@ const (
 )
 
 type State struct {
-	Mode         Mode
-	Title        string
-	Prompt       string
-	Choices      []string
-	Message      string
-	Location     Location
-	LocationName string
-	MapX         int
-	MapY         int
+	Mode            Mode
+	Title           string
+	Prompt          string
+	Choices         []string
+	Message         string
+	Location        Location
+	LocationName    string
+	MapX            int
+	MapY            int
+	WildernessFloor mapdata.WildernessFloor
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -94,6 +96,7 @@ type State struct {
 	monsterRecords         map[uint8]monster.Record
 	combatSeed             int64
 	eclSeed                int64
+	mapSeed                int64
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -174,6 +177,7 @@ func NewState(catalog locale.Catalog) State {
 		catalog:                catalog,
 		combatSeed:             1,
 		eclSeed:                1,
+		mapSeed:                1,
 	}
 }
 
@@ -193,6 +197,11 @@ func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 
 // SetECLSeed controls RANDOM values while replaying an event sequence.
 func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
+
+// SetMapSeed makes wilderness floor generation reproducible for replay and
+// tests. The original engine rolls a fresh floor; this explicit seed keeps
+// the remake deterministic until the original save/area seed is decoded.
+func (s *State) SetMapSeed(seed int64) { s.mapSeed = seed }
 
 func (s *State) Apply(action Action) error {
 	switch {
@@ -421,6 +430,11 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 func (s *State) enterMap() {
 	s.Mode = ModeMap
 	s.MapX, s.MapY = 0, 0
+	cityFlags, ok := mapdata.CityInfo(0)
+	if !ok {
+		cityFlags = 0
+	}
+	s.WildernessFloor = mapdata.GenerateWilderness(cityFlags, s.mapSeed)
 	s.Choices = nil
 	s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
 	s.Message = ""
@@ -434,8 +448,11 @@ func (s *State) Move(dx, dy int) error {
 	if s.Mode != ModeMap {
 		return fmt.Errorf("movement is invalid in mode %d", s.Mode)
 	}
-	s.MapX += dx
-	s.MapY += dy
+	nextX, nextY := s.MapX+dx, s.MapY+dy
+	if !s.WildernessFloor.CanEnter(nextX, nextY) {
+		return fmt.Errorf("wilderness tile at (%d,%d) is not passable", nextX, nextY)
+	}
+	s.MapX, s.MapY = nextX, nextY
 	return nil
 }
 
