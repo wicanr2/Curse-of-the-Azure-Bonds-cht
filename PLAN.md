@@ -207,4 +207,5 @@
 - [x] 還原 50×25 wilderness floor construction，接通 background entry → TILES index 與 movement cost。
 - [x] 還原 GEO dungeon floor 四段 tile composition，接通 D 預覽與可重現 dungeon screenshot。
 - [x] 接回 dungeon `terrain & 0x40` table／chair decoration pass 與 seeded regression。
+- [x] 建立 GEO2–GEO6 全 16 block 的原始 map catalog，並接通 set/block preview selector。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

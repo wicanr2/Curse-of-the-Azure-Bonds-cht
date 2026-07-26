@@ -48,6 +48,7 @@ type app struct {
 	geoGrid        *geo.Grid
 	geoX           int
 	geoY           int
+	geoLabel       string
 	dungeonPreview bool
 	dungeonFloor   *mapdata.DungeonFloor
 }
@@ -390,7 +391,7 @@ func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "GEO2 原始幾何預覽（G／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, a.geoLabel+" 原始幾何預覽（G／Esc：返回）", a.face, 24, 28, cyan)
 	if a.geoGrid == nil {
 		text.Draw(screen, "沒有載入 GEO geometry", a.face, 24, 70, white)
 		return
@@ -458,7 +459,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		}
 	}
 	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
-	text.Draw(screen, "目前為 GEO2 map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
+	text.Draw(screen, "目前為 "+a.geoLabel+" map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
@@ -549,6 +550,8 @@ func main() {
 	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
+	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
+	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
 	encounter := flag.Bool("encounter", false, "start the observed ECL1 encounter directly")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
@@ -586,7 +589,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	geoGrid, err := loadGEOPreview(*imagePath)
+	geoGrid, err := loadGEOPreview(*imagePath, uint8(*geoSet), uint8(*geoBlock))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -606,7 +609,8 @@ func main() {
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor}); err != nil {
+	geoLabel := fmt.Sprintf("GEO%d block 0x%02X", *geoSet, *geoBlock)
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -642,23 +646,33 @@ func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
 	return images, nil
 }
 
-func loadGEOPreview(imagePath string) (*geo.Grid, error) {
-	data, err := zipMember(imagePath, "GEO2.DAX")
+func loadGEOPreview(imagePath string, set, blockID uint8) (*geo.Grid, error) {
+	if set < 2 || set > 6 {
+		return nil, fmt.Errorf("GEO set %d is outside original range 2..6", set)
+	}
+	catalog, err := loadGEOCatalog(imagePath)
 	if err != nil {
 		return nil, err
 	}
-	blocks, err := dax.Parse(data)
-	if err != nil {
-		return nil, fmt.Errorf("parse GEO2.DAX: %w", err)
-	}
-	if len(blocks) == 0 {
-		return nil, fmt.Errorf("GEO2.DAX contains no blocks")
-	}
-	grid, err := geo.Parse(blocks[0].Entry.ID, blocks[0].Data)
-	if err != nil {
-		return nil, fmt.Errorf("GEO2.DAX block 0x%02X: %w", blocks[0].Entry.ID, err)
+	grid, ok := catalog.Lookup(geo.MapRef{Set: set, BlockID: blockID})
+	if !ok {
+		return nil, fmt.Errorf("GEO%d block 0x%02X is not in original catalog", set, blockID)
 	}
 	return &grid, nil
+}
+
+func loadGEOCatalog(imagePath string) (geo.Catalog, error) {
+	catalog := geo.NewCatalog()
+	for set := uint8(2); set <= 6; set++ {
+		data, err := zipMember(imagePath, fmt.Sprintf("GEO%d.DAX", set))
+		if err != nil {
+			return catalog, err
+		}
+		if err := catalog.AddDAX(set, data); err != nil {
+			return catalog, err
+		}
+	}
+	return catalog, nil
 }
 
 // loadECLBlocks builds one session namespace from all six original ECL DAX

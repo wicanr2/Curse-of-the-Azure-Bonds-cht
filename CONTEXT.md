@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 65 輪：GEO dungeon decoration pass。
+第 66 輪：原始 GEO map catalog 與 preview selector。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -74,6 +74,8 @@
 第 64 輪功能／文件 commit：`8e4d433`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 65 輪功能／文件 commit：`f9d65c1`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 66 輪功能／文件 commit：待本輪提交後補登，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -173,6 +175,8 @@
 - dungeon floor 的桌椅 decoration 已完成 reference `sub_370D3` 的 seeded pass；area selection、camera、combat placement、encounter 與音效仍未完成。
 - `mapdata.GenerateDungeonSeeded` 已讀取 GEO `terrain & 0x40`（reference `MapInfo.x2`），依 `sub_370D3` flags／tile index／1d10 dice 寫入 table entry `0x1A` 與 chair entry `0x1B`；seeded regression 通過。
 - dungeon preview／PNG 仍使用同一 decoration-enabled generator；完整 area selection、camera、combat placement、encounter 與音效仍未完成。
+- `geo.Catalog` 已保留 GEO2–GEO6 全部 16 個原始 DAX block IDs，並以 `MapRef{Set,BlockID}` 查找；原始 block shape regression 通過。
+- `cmd/azure-bonds-game` 新增 `-geo-set`／`-geo-block`，選中的 GEO block 會同時驅動 G geometry 與 D dungeon floor preview；area pointer 自動選圖尚未完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。

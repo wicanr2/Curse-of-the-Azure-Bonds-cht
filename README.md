@@ -29,12 +29,14 @@
 ```sh
 go test ./...
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
+# 例：選擇原始 GEO3 block 0x10 作為目前 map preview
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -geo-set 3 -geo-block 0x10
 ```
 
 遊戲內快捷鍵：`Enter` 開始、`C` 建立角色、`J` 冒險手札、`T` 圖塊預覽、`G` GEO 預覽、`D` dungeon floor 預覽、`F5/F9` 儲存／載入 party。
 
 ## 尚未完成
 
-完整 ECL opcode／routine、副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。GEO 預覽目前顯示的是已確認的 raw geometry，不代表完整遊戲地圖渲染。
+完整 ECL opcode／routine、副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。GEO catalog 已保留原始 set／block IDs，但 area pointer 尚未自動驅動完整遊戲地圖切換。
 
 更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/) 與 [`docs/history.md`](docs/history.md)。
