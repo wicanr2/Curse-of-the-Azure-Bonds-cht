@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百一十六輪：APPRAISE 接受／拒絕報價 confirmation。
+第一百一十七輪：繁中 CAMP Menu／REST／EXIT state。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -335,3 +335,5 @@
 第一百一十五輪功能／文件 commit：`6d69011`，已推送至 GitHub `main`。APPRAISE 會選角色與 gems／jewelry，接受 injected offer 後清空財寶、將 GP 加入 pool 並返回 Shop Menu；拒絕報價分支仍未完成。
 
 第一百一十六輪功能／文件 commit：`8cdde8b`，已推送至 GitHub `main`。APPRAISE 新增接受／拒絕／返回確認；只有接受才清除財寶並入帳 pool。
+
+第一百一十七輪功能／文件 commit：`993ced5`，已推送至 GitHub `main`。建立繁中 CAMP Menu，接入 REST return 與 EXIT 荒野返回；SAVE／VIEW／MAGIC／ALTER／FIX 保留明確 placeholder boundary。
