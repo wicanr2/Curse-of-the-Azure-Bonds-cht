@@ -20,6 +20,17 @@ func TestValidHumanFighter(t *testing.T) {
 	}
 }
 
+func TestCharacterAdvanceEffects(t *testing.T) {
+	character := validCharacter()
+	character.Effects = []monster.AffectRecord{{Kind: 1, Duration: 3, Value: 3, Strength: 1}}
+	if removed := character.AdvanceEffects(2); removed != 0 || character.Effects[0].Duration != 1 {
+		t.Fatalf("effects after two minutes=%#v removed=%d", character.Effects, removed)
+	}
+	if removed := character.AdvanceEffects(1); removed != 1 || len(character.Effects) != 0 {
+		t.Fatalf("effects after expiry=%#v removed=%d", character.Effects, removed)
+	}
+}
+
 func TestRaceClassRestrictions(t *testing.T) {
 	character := validCharacter()
 	character.Race = RaceDwarf

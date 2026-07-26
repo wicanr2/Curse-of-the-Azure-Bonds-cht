@@ -408,6 +408,21 @@ func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	}
 }
 
+func TestAdvancePartyEffectsUsesRosterDurationAdapter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+		Effects:   []monster.AffectRecord{{Kind: 1, Duration: 2, Value: 2, Strength: 1}},
+	}}
+	if removed := state.AdvancePartyEffects(1); removed != 0 || state.partyRoster[0].Effects[0].Duration != 1 {
+		t.Fatalf("effects after one minute=%#v removed=%d", state.partyRoster[0].Effects, removed)
+	}
+	if removed := state.AdvancePartyEffects(1); removed != 1 || len(state.partyRoster[0].Effects) != 0 {
+		t.Fatalf("effects after expiry=%#v removed=%d", state.partyRoster[0].Effects, removed)
+	}
+}
+
 func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.OpenCharacterCreation(); err != nil || state.Mode != ModeCharacterCreation {

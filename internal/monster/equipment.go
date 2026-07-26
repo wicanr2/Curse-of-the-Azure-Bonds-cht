@@ -194,9 +194,12 @@ func (item ItemRecord) DecodeConsumable(catalog BaseItemCatalog) (ConsumableUse,
 }
 
 type AffectRecord struct {
-	Kind     uint8
+	Kind uint8
+	// Value is retained as the raw little-endian duration for CLI/API
+	// compatibility. Duration names the same documented field explicitly.
 	Value    uint16
-	Duration uint8
+	Duration uint16
+	Strength uint8
 	Active   bool
 	Data     [4]byte
 }
@@ -303,12 +306,34 @@ func ParseAffects(data []byte) ([]AffectRecord, error) {
 	}
 	affects := make([]AffectRecord, 0, len(data)/AffectRecordSize)
 	for offset := 0; offset < len(data); offset += AffectRecordSize {
+		duration := binary.LittleEndian.Uint16(data[offset+1 : offset+3])
 		record := AffectRecord{
-			Kind: data[offset], Value: binary.LittleEndian.Uint16(data[offset+1 : offset+3]),
-			Duration: data[offset+3], Active: data[offset+4] != 0,
+			Kind: data[offset], Value: duration, Duration: duration,
+			Strength: data[offset+3], Active: data[offset+4] != 0,
 		}
 		copy(record.Data[:], data[offset+5:offset+9])
 		affects = append(affects, record)
 	}
 	return affects, nil
+}
+
+// AdvanceAffects consumes effect duration in minutes. Strength 255 is the
+// documented permanent marker and is never expired. The raw effect payload is
+// preserved for active records; gameplay application remains an outer layer.
+func AdvanceAffects(affects []AffectRecord, minutes uint16) []AffectRecord {
+	if minutes == 0 {
+		return append([]AffectRecord(nil), affects...)
+	}
+	active := make([]AffectRecord, 0, len(affects))
+	for _, affect := range affects {
+		if affect.Strength != 0xFF {
+			if affect.Duration <= minutes {
+				continue
+			}
+			affect.Duration -= minutes
+			affect.Value = affect.Duration
+		}
+		active = append(active, affect)
+	}
+	return active
 }
