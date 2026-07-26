@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 93 輪：party inventory quantity／cursed mutation contract。
+第 94 輪：scroll／potion／wand consumable use signal。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -288,4 +288,6 @@
 
 第 92 輪功能／文件 commit：`fe5edbd`，已推送至 GitHub `main`。party class／slot transaction 已完成，stack、cursed 與完整 inventory mutation 待後續處理。
 
-第 93 輪功能／文件 commit：待本輪提交。新增 `Character.RemoveItem` 的 Count stack decrement、readied protection，以及 `UnequipItem` 的 cursed equipment lock；消耗品 effect、charges、彈藥、商店與 DOS save offset 仍未完成。
+第 93 輪功能／文件 commit：`5cdb800`，已推送至 GitHub `main`。inventory stack mutation 與 cursed readied lock 已完成。
+
+第 94 輪功能／文件 commit：待本輪提交。新增 `ItemRecord.DecodeConsumable` 與 `Character.UseConsumable`：依 reference properties 支援 scroll spell IDs、potion one-use、wand charge decrement；spell targeting、effect engine、彈藥、商店與完整 DOS inventory 仍未完成。

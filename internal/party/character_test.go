@@ -207,6 +207,32 @@ func TestUnequipCursedAndRemoveItemQuantityRules(t *testing.T) {
 	}
 }
 
+func TestUseConsumableRemovesScrollAndDecrementsWandCharge(t *testing.T) {
+	catalog, err := monster.ParseBaseItems(make([]byte, monster.BaseItemHeaderSize+80*monster.BaseItemRecordSize))
+	if err != nil {
+		t.Fatal(err)
+	}
+	character := validCharacter()
+	character.Equipment = []monster.ItemRecord{
+		{Type: 60, Count: 2, Affects: [3]uint8{3, 0x18, 0}},
+		{Type: 78, Readied: true, Affects: [3]uint8{2, 0x5A, 0}},
+	}
+	use, err := character.UseConsumable(0, catalog)
+	if err != nil || use.Kind != monster.ConsumableScroll || len(use.SpellIDs) != 2 || character.Equipment[0].Count != 1 {
+		t.Fatalf("scroll use=%#v equipment=%#v err=%v", use, character.Equipment, err)
+	}
+	use, err = character.UseConsumable(1, catalog)
+	if err != nil || use.Kind != monster.ConsumableCharged || use.ChargesBefore != 2 || use.ChargesAfter != 1 || character.Equipment[1].Affects[0] != 1 {
+		t.Fatalf("wand use=%#v equipment=%#v err=%v", use, character.Equipment, err)
+	}
+	if _, err := character.UseConsumable(0, catalog); err != nil {
+		t.Fatal(err)
+	}
+	if len(character.Equipment) != 1 || character.Equipment[0].Type != 78 {
+		t.Fatalf("last scroll use equipment=%#v", character.Equipment)
+	}
+}
+
 func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	for _, test := range []struct {
 		race Race

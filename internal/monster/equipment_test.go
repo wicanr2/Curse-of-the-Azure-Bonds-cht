@@ -78,6 +78,28 @@ func TestEquipmentEffectUsesBaseDamageAndPackedAC(t *testing.T) {
 	}
 }
 
+func TestDecodeConsumableKindsAndProperties(t *testing.T) {
+	catalog, err := ParseBaseItems(make([]byte, BaseItemHeaderSize+128*BaseItemRecordSize))
+	if err != nil {
+		t.Fatal(err)
+	}
+	scroll, err := (ItemRecord{Type: 60, Affects: [3]uint8{3, 0x18, 0}}).DecodeConsumable(catalog)
+	if err != nil || scroll.Kind != ConsumableScroll || len(scroll.SpellIDs) != 2 || scroll.SpellIDs[1] != 0x18 {
+		t.Fatalf("scroll=%#v err=%v", scroll, err)
+	}
+	potion, err := (ItemRecord{Type: 84}).DecodeConsumable(catalog)
+	if err != nil || potion.Kind != ConsumablePotion || potion.ChargesBefore != 1 {
+		t.Fatalf("potion=%#v err=%v", potion, err)
+	}
+	wand, err := (ItemRecord{Type: 78, Affects: [3]uint8{4, 0x5A, 0}}).DecodeConsumable(catalog)
+	if err != nil || wand.Kind != ConsumableCharged || wand.EffectID != 0x5A || wand.ChargesBefore != 4 || wand.ChargesAfter != 4 {
+		t.Fatalf("wand=%#v err=%v", wand, err)
+	}
+	if _, err := (ItemRecord{Type: 1}).DecodeConsumable(catalog); err == nil {
+		t.Fatal("weapon should not be decoded as consumable")
+	}
+}
+
 func TestParseItemsAndSignedFields(t *testing.T) {
 	data := make([]byte, ItemRecordSize)
 	copy(data, "LONG SWORD")

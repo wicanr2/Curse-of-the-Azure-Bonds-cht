@@ -67,3 +67,5 @@ Gold Box 的 `ITEMS` 不是 DAX；目前 reference 格式是 2-byte header 加 1
 Party inventory transaction 可沿用 `party.ItemClassBit` 與 `Character.CanEquip`：class bit 來自原始 table，不可直接拿本地 enum 數字；slot 0/1 的 hands conflict 與 slot 9 的雙戒指限制也應留在資料層，renderer／商店只呼叫 `EquipItem`／`UnequipItem`。
 
 Inventory mutation 也應以 instance state 為單位：`Count == 0` 是單件非堆疊物，正數才遞減 stack；readied 物品不可直接移除，cursed readied 物品不可卸下。`Character.RemoveItem` 提供這個跨遊戲可重用的安全邊界，消耗品真正 effect 仍由各遊戲 adapter 實作。
+
+`Affects` 不是統一的 generic status：scroll 用 properties 保存 spell IDs，charged wand 用第一個 byte 保存 charges、第二個保存 effect ID。共用層應先回傳 `ConsumableUse` signal，再由各遊戲的 spell/effect engine 決定結果；不要在 parser 階段直接把 effect ID 當成傷害或狀態。
