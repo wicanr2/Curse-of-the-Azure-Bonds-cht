@@ -118,6 +118,9 @@ type Character struct {
 	// SPELL resolution. It is optional until original DOS player offsets are
 	// decoded; old saves therefore remain valid.
 	SpellSlots []uint8 `json:"spell_slots,omitempty"`
+	// KnownSpells preserves the imported spell-book flags separately from
+	// SpellSlots, which represents spells currently memorized for use.
+	KnownSpells []uint8 `json:"known_spells,omitempty"`
 }
 
 // AdvanceEffects consumes imported DOS effect durations without applying

@@ -957,7 +957,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "MAGIC"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_summary", "%s　法術欄位：%s"), character.Name, strings.Join(slots, "、"))
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_summary", "%s　法術欄位：%s　可用法術：%d 個"), character.Name, strings.Join(slots, "、"), len(character.KnownSpells))
 			return nil
 		}
 	}
@@ -1343,7 +1343,7 @@ func (s *State) enterCampMagicMenu() {
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（已記憶 %d 個法術）", character.Name, len(character.SpellSlots)))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_character", "%s（已記憶 %d 個法術／可用 %d 個）"), character.Name, len(character.SpellSlots), len(character.KnownSpells)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_exit", "返回紮營選單"))

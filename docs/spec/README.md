@@ -124,3 +124,4 @@
 - [第一百二十七輪城市 BAR Tavern Tales](./127-bar-tavern-tales.md)（`READY`：限 ordered tale sequence 與場所返回）
 - [第一百二十八輪 CAMP REST menu／自然恢復](./128-camp-rest-menu.md)（`READY`：限 24 小時自然 HP recovery）
 - [第一百二十九輪 CAMP MAGIC bounded spell catalog](./129-camp-magic-spell-catalog.md)（`READY`：限已核對的一級法術名稱）
+- [第一百三十輪 Known Spells preservation](./130-known-spell-preservation.md)（`READY`：限 DOS → party/save → CAMP MAGIC 資料保存）

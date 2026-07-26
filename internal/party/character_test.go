@@ -149,6 +149,9 @@ func TestParseDOSPlayerSpellRecord(t *testing.T) {
 	if got, want := character.SpellSlots, []uint8{7, 42}; !sameUint8(got, want) {
 		t.Fatalf("character spell slots=%v, want %v", got, want)
 	}
+	if got, want := character.KnownSpells, []uint8{1, 4, 100}; !sameUint8(got, want) {
+		t.Fatalf("character known spells=%v, want %v", got, want)
+	}
 }
 
 func TestParseDOSPlayerSpellRecordRejectsTruncatedData(t *testing.T) {

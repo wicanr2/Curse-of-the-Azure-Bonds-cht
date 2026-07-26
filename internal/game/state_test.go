@@ -782,7 +782,7 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
-	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, SpellSlots: []uint8{0x12, 0x24}}}
+	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, SpellSlots: []uint8{0x12, 0x24}, KnownSpells: []uint8{1, 7}}}
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
@@ -795,7 +795,7 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "0x12") || !strings.Contains(state.Message, "0x24") {
+	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "0x12") || !strings.Contains(state.Message, "0x24") || !strings.Contains(state.Message, "可用法術：2") {
 		t.Fatalf("camp magic summary state=%#v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicMenu {
