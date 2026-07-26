@@ -370,4 +370,4 @@
 
 第一百三十三輪功能／文件 commit：`3b61c33`，已推送至 GitHub `main`。對已核對的一級法術套用 RuleBook 的最低準備時間檢查；不足休息時保留 pending selection，不猜測高等級與遭遇中斷結果。
 
-第一百三十四輪待提交：戰鬥接入 RuleBook 證實的 Magic Missile（spell ID `7`）、slot consumption、2–5 damage per missile、level scaling 與 Ebiten S 鍵；其他 spell effects 仍未完成。
+第一百三十四輪功能／文件 commit：`2d7af62`，已推送至 GitHub `main`。戰鬥接入 RuleBook 證實的 Magic Missile（spell ID `7`）、slot consumption、2–5 damage per missile、level scaling 與 Ebiten S 鍵；其他 spell effects 仍未完成。
