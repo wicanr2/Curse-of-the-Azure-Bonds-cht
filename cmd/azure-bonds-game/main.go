@@ -62,6 +62,8 @@ type app struct {
 	combatSpriteIDs  []string
 	combatAnimations map[string][]combatAnimation
 	animationStart   time.Time
+	messageSnapshot  string
+	messageStart     time.Time
 }
 
 type combatAnimation struct {
@@ -362,7 +364,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 			a.drawPictureAnimation(screen)
 			return
 		}
-		text.Draw(screen, a.state.Message, a.face, 56, 220, cyan)
+		text.Draw(screen, a.revealedMessage(), a.face, 56, 220, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 330, white)
 	}
 	if a.state.Mode == game.ModePlace {
@@ -384,6 +386,27 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawCombat(screen, white, cyan)
 		return
 	}
+}
+
+func (a *app) revealedMessage() string {
+	if a.messageSnapshot != a.state.Message {
+		a.messageSnapshot = a.state.Message
+		a.messageStart = time.Now()
+	}
+	runes := []rune(a.state.Message)
+	if len(runes) == 0 {
+		return ""
+	}
+	speed := a.state.MessageSpeed()
+	if speed < 1 {
+		speed = 1
+	}
+	interval := time.Duration(120/speed) * time.Millisecond
+	count := int(time.Since(a.messageStart) / interval)
+	if count >= len(runes) {
+		return a.state.Message
+	}
+	return string(runes[:count])
 }
 
 func (a *app) drawPictureAnimation(screen *ebiten.Image) {

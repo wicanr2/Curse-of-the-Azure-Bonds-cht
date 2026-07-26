@@ -247,6 +247,7 @@
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
 - [x] 將 CAMP ALTER／PICS 接成怪物圖片／動畫 runtime preference，並接到事件／戰鬥 renderer。
+- [x] 將 CAMP ALTER／SPEED 接成 1–5 級訊息速度，並接到 Ebiten Unicode message reveal。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。

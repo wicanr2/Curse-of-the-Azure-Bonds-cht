@@ -138,8 +138,10 @@ type State struct {
 	alterDropConfirm       bool
 	alterDropSelected      int
 	alterPicsMenu          bool
+	alterSpeedMenu         bool
 	picturesEnabled        bool
 	animationsEnabled      bool
+	messageSpeed           int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -224,6 +226,7 @@ func NewState(catalog locale.Catalog) State {
 		mapSeed:                1,
 		picturesEnabled:        true,
 		animationsEnabled:      true,
+		messageSpeed:           3,
 		GeoMapSet:              2,
 		GeoMapBlock:            1,
 		Area:                   area.State{GameArea: 2},
@@ -486,6 +489,7 @@ func (s *State) enterCampMenu() {
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
 	s.alterPicsMenu = false
+	s.alterSpeedMenu = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
 	s.Choices = []string{
@@ -502,6 +506,26 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.alterSpeedMenu {
+		switch originalChoice {
+		case "ALTER_SPEED_EXIT":
+			s.alterSpeedMenu = false
+			s.enterAlterMenu()
+			return nil
+		case "ALTER_SPEED_SLOWER":
+			if s.messageSpeed > 1 {
+				s.messageSpeed--
+			}
+			s.enterAlterSpeedMenu()
+			return nil
+		case "ALTER_SPEED_FASTER":
+			if s.messageSpeed < 5 {
+				s.messageSpeed++
+			}
+			s.enterAlterSpeedMenu()
+			return nil
+		}
+	}
 	if s.alterPicsMenu {
 		switch originalChoice {
 		case "ALTER_PICS_EXIT":
@@ -617,6 +641,10 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		}
 		if originalChoice == "ALTER_PICS" {
 			s.enterAlterPicsMenu()
+			return nil
+		}
+		if originalChoice == "ALTER_SPEED" {
+			s.enterAlterSpeedMenu()
 			return nil
 		}
 		s.Mode = ModeEvent
@@ -744,6 +772,7 @@ func (s *State) enterAlterMenu() {
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
 	s.alterPicsMenu = false
+	s.alterSpeedMenu = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
 	s.Choices = []string{
@@ -757,6 +786,24 @@ func (s *State) enterAlterMenu() {
 	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT"}
 	s.Message = ""
 }
+
+func (s *State) enterAlterSpeedMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterSpeedMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_speed_prompt", "訊息速度：第%d級"), s.messageSpeed)
+	s.Choices = []string{
+		s.catalog.Text("alter_speed_slower", "較慢"),
+		s.catalog.Text("alter_speed_faster", "較快"),
+		s.catalog.Text("alter_speed_exit", "返回修改選單"),
+	}
+	s.currentOriginalChoices = []string{"ALTER_SPEED_SLOWER", "ALTER_SPEED_FASTER", "ALTER_SPEED_EXIT"}
+	s.Message = ""
+}
+
+// MessageSpeed returns the current 1..5 message reveal speed for renderers.
+func (s *State) MessageSpeed() int { return s.messageSpeed }
 
 func (s *State) enterAlterPicsMenu() {
 	s.campMenu = true
