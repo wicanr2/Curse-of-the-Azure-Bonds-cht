@@ -312,4 +312,4 @@
 
 第一百零四輪功能／文件 commit：`d3bc6e9`，已推送至 GitHub `main`。新增 `cmd/azure-bonds-game -dos-character-record` startup bridge，直接載入單一原版角色 sidecar bundle；完整六人 SAVGAM party／area container 仍未解析。
 
-第一百零五輪功能／文件 commit：待本輪提交。將 active Bless／Curse effect 投影為 fighter attack +1／-1，其他 target/phase effects 保留未套用。
+第一百零五輪功能／文件 commit：`f57ba3e`，已推送至 GitHub `main`。將 active Bless／Curse effect 投影為 fighter attack +1／-1，其他 target/phase effects 保留未套用。
