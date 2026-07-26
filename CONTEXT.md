@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 8 輪：繁中開場狀態核心。
+第 9 輪：Ebiten opening prototype。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -13,6 +13,7 @@
 第 5 輪 commit：`9162462`，已推送至 GitHub `main`。
 第 6 輪 commit：`26b889c`，已推送至 GitHub `main`。
 第 7 輪 commit：`002acab`，已推送至 GitHub `main`。
+第 8 輪 commit：`c079c50`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -28,6 +29,7 @@
 - `internal/ecl.Trace` 已加入 command metadata 與安全停止行為；可追蹤已知命令，但尚未實作分支或副作用。
 - `internal/ecl.DecodePackedText`／`FindPackedTextCandidates` 已能抽取 ECL 英文候選；真實 `YOU ARE AT THE EDGE OF` payload regression test 通過。
 - `internal/game.State` 已將 `zh-TW` catalog 接入 Title → Wilderness → Event 的 opening flow，並有狀態轉移測試。
+- `cmd/azure-bonds-game` 已接入 Ebiten、鍵盤輸入與外部 TTF/OTF 字型；仍是 prototype，未宣稱完整遊戲。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -48,3 +50,4 @@
 7. 對齊 ECL branch targets 與原版場景入口，建立最小可執行事件狀態。
 8. 對全部 ECL 建立去重原文 catalog，開始逐項接入繁中翻譯。
 9. 建立 Ebiten input／render adapter，先視覺化 opening state。
+10. 將 ECL event trace 與 Ebiten event screen 接起來，加入第一個可驗證劇情場景。

@@ -17,3 +17,4 @@
 - [第六輪 ECL 安全 trace walker](./round-06-ecl-trace.md)（`DRAFT`）
 - [第七輪 ECL packed text extraction](./round-07-ecl-text.md)（`DRAFT`）
 - [第八輪繁中開場狀態核心](./round-08-localized-state.md)（`DRAFT`）
+- [第九輪 Ebiten opening prototype](./round-09-ebiten-opening.md)（`DRAFT`）
