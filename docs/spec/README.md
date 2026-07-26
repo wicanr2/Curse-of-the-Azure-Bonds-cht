@@ -56,3 +56,4 @@
 - [第五十七輪 indexed picture 與 WALLDEF](./round-57-indexed-picture-and-walldef.md)（`READY`：限 picture／wall data parser）
 - [第五十八輪 EGA indexed pixels 到 RGBA](./round-58-ega-rgba-adapter.md)（`READY`：限 palette／透明色 adapter）
 - [第五十九輪 Ebiten 原始 tile gallery](./round-59-ebiten-tile-gallery.md)（`READY`：限 TILES graphics pipeline preview）
+- [第六十輪 GEO geometry Ebiten viewport](./round-60-geo-ebiten-viewport.md)（`READY`：限 GEO raw geometry preview）

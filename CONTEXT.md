@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 59 輪：Ebiten 原始 TILES graphics pipeline preview。
+第 60 輪：GEO geometry Ebiten viewport。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -64,6 +64,7 @@
 第 57 輪功能 commit：`a983eca`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 58 輪功能 commit：`0a56423`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 59 輪功能 commit：`595c6ce`，已推送至 GitHub `main`；本行為後續文件同步提交。
+第 60 輪功能 commit：待提交；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -150,6 +151,7 @@
 - `internal/gfx` 已解析原始 `TILES.DAX` 24×24 indexed pictures、`8X8D2–6.DAX` 8×8 symbol pictures 與可串接的 `WALLDEF2–6.DAX` records；palette mapping、畫面組合與碰撞仍未完成。
 - `internal/gfx.Picture.RGBA` 已接 reference EGA16 palette 與 mask index 16 的透明語意；尚未接入 Ebiten map viewport。
 - `cmd/azure-bonds-game` 已載入 `TILES.DAX` 兩個 block 並以 `T` 顯示 48 個原始 24×24 tile 的 Ebiten gallery；GEO tile index mapping、完整 map viewport 與碰撞仍未完成。
+- `cmd/azure-bonds-game` 已以 `G` 顯示 `GEO2` 第一個 block 的 16×16 raw wall geometry viewport；background floor construction、tile mapping、碰撞與 camera 仍未完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
