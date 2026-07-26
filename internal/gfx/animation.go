@@ -3,6 +3,7 @@ package gfx
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
 )
 
 // AnimationFrame is one frame from the custom PIC/SPRIT animation stream.
@@ -15,6 +16,34 @@ type AnimationFrame struct {
 
 type Animation struct {
 	Frames []AnimationFrame
+}
+
+// AnimationFrameIndex selects a frame using the original delay unit of one
+// tenth of a second. Zero-delay frames are given one tick so malformed or
+// placeholder timing cannot create a zero-duration loop.
+func AnimationFrameIndex(delays []uint32, elapsed time.Duration) int {
+	if len(delays) == 0 {
+		return -1
+	}
+	total := time.Duration(0)
+	for _, delay := range delays {
+		if delay == 0 {
+			delay = 1
+		}
+		total += time.Duration(delay) * 100 * time.Millisecond
+	}
+	position := elapsed % total
+	for index, delay := range delays {
+		if delay == 0 {
+			delay = 1
+		}
+		span := time.Duration(delay) * 100 * time.Millisecond
+		if position < span {
+			return index
+		}
+		position -= span
+	}
+	return len(delays) - 1
 }
 
 // ParseAnimation decodes the frame stream used by SPRIT*.DAX and by the

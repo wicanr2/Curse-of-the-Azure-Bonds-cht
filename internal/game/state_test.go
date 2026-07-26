@@ -284,12 +284,12 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}
 	records := map[uint8]monster.Record{0x56: {Name: "BUGBEAR", MaxHitPoints: 2, HitPoints: 2, ArmorClass: 0, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1}}
-	result := ecl.RunResult{CombatRequested: true, MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 0x56, Count: 1}}}
+	result := ecl.RunResult{CombatRequested: true, MonsterSetup: &ecl.MonsterSetup{SpriteID: 0x09}, MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 0x56, Count: 1, IconBlock: 0x35}}}
 	if err := state.StartEncounter(result, records, party, 11); err != nil {
 		t.Fatal(err)
 	}
 	enemies := state.CombatTargets()
-	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" {
+	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" || enemies[0].SpriteSet != state.Area.GameArea || enemies[0].SpriteBlock != 0x35 || enemies[0].AnimationBlock != 0x09 || !enemies[0].HasAnimation {
 		t.Fatalf("state=%#v enemies=%#v", state, enemies)
 	}
 }

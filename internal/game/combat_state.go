@@ -61,6 +61,10 @@ func (s *State) StartEncounter(result ecl.RunResult, records map[uint8]monster.R
 	}
 	for index := range enemies {
 		enemies[index].SpriteSet = s.Area.GameArea
+		if result.MonsterSetup != nil {
+			enemies[index].AnimationBlock = result.MonsterSetup.SpriteID
+			enemies[index].HasAnimation = true
+		}
 	}
 	return s.StartCombat(party, enemies, seed)
 }

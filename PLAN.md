@@ -216,6 +216,7 @@
 - [x] 從 CPIC1–CPIC6 抽出戰鬥小人 PNG、manifest 與可重現 sprite sheet。
 - [x] 將 CPIC block mapping 與戰鬥場景 Ebiten renderer 接通。
 - [x] 解碼 `SPRIT*.DAX` frame stream 並抽出逐幀 PNG。
-- [ ] 將 SPRIT animation timing／direction、CHEAD/CBODY 組合與八方向 combat placement 接入 renderer。
+- [x] 將 SPRIT animation timing 與 ECL `SETUP MONSTER` block 接入 renderer。
+- [ ] 將 SPRIT direction／position、CHEAD/CBODY 組合與八方向 combat placement 接入 renderer。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
