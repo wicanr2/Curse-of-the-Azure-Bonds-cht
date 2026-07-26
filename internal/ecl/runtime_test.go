@@ -184,6 +184,13 @@ func TestRunSubsetReportsPictureRequest(t *testing.T) {
 	if !result.PictureRequested || result.PictureBlock != 0x1D {
 		t.Fatalf("result=%+v, want PIC block 0x1D", result)
 	}
+	if result.BigPictureRequested {
+		t.Fatal("regular PIC was marked as BIGPIC")
+	}
+	big, err := RunSubset([]byte{0, 0, 0x0E, 0x00, 0x78, 0x00}, 0, 10)
+	if err != nil || !big.BigPictureRequested || big.PictureBlock != 0x78 {
+		t.Fatalf("big picture result=%+v err=%v", big, err)
+	}
 }
 
 func TestRunSubsetCarriesEncounterDescriptorsToCombat(t *testing.T) {

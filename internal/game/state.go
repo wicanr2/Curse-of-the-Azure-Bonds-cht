@@ -69,6 +69,7 @@ type State struct {
 	OriginalEvent            string
 	PictureRequested         bool
 	PictureBlock             uint16
+	BigPictureRequested      bool
 	OriginalLocation         string
 	JournalTitle             string
 	JournalText              string
@@ -292,6 +293,7 @@ func (s *State) Select(index int) error {
 		if result.PictureRequested {
 			s.PictureRequested = true
 			s.PictureBlock = result.PictureBlock
+			s.BigPictureRequested = result.BigPictureRequested
 			s.OriginalEvent = "PICTURE"
 			s.Message = "事件畫面"
 			return nil
@@ -578,6 +580,7 @@ func (s *State) Continue() error {
 	if s.PictureRequested {
 		s.PictureRequested = false
 		s.PictureBlock = 0
+		s.BigPictureRequested = false
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:

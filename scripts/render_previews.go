@@ -98,6 +98,9 @@ func renderCombatSprites() error {
 	for index := 1; index <= 6; index++ {
 		sources = append(sources, fmt.Sprintf("PIC%d.DAX", index))
 	}
+	for _, index := range []int{1, 2, 6} {
+		sources = append(sources, fmt.Sprintf("BIGPIC%d.DAX", index))
+	}
 	frames := make([]spriteFrame, 0)
 	animationAssets := make([]animationAssetRecord, 0)
 	layers := make(map[string]map[uint8]gfx.Picture)
@@ -138,7 +141,8 @@ func renderCombatSprites() error {
 				}
 				continue
 			}
-			picture, err := gfx.ParsePicture(block.Data, true, 0)
+			masked := !strings.HasPrefix(source, "BIGPIC")
+			picture, err := gfx.ParsePicture(block.Data, masked, 0)
 			if err != nil {
 				manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | — | — | — | skipped: `%s` |\n", source, block.Entry.ID, err))
 				continue

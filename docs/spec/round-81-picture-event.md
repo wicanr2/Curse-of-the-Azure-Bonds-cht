@@ -11,7 +11,7 @@
 
 ## 邊界
 
-目前尚未完整解碼 reference 的 `BIGPIC`、HEAD/BODY overlay、PICTURE `0xFF` redraw side effects 與所有 ECL story path；本輪證明的是 PICTURE request → localized event screen 的 vertical slice。
+第 82 輪已補上 `BIGPIC` block 分支；目前仍尚未完整接入 BIGPIC 的 redraw side effects、HEAD/BODY overlay、PICTURE `0xFF` 行為與所有 ECL story path。本輪證明的是 PICTURE request → localized event screen 的 vertical slice。
 
 ## 驗證
 
