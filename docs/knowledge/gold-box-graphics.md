@@ -106,6 +106,8 @@ CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`RE
 
 CAMP SAVE 的跨遊戲介面也應是 intent signal：game state 只提供一次性 save request，platform adapter 再決定 configured path、container codec、atomic write 與錯誤呈現。remake party JSON 可作目前 fallback，但不能把它當成原版 SAVGAM slot／area 格式。
 
+ALTER ORDER 的跨遊戲 boundary 應以 stable character ID 重排 roster，再由 combat projection 依 ID 重新建立 fighter order；不能只交換 renderer ordinal。這同時保留後續遊戲替換 formation／deployment rules 的空間，並讓 DROP、ICON 等具有不可逆或素材 side effect 的 command 各自接 adapter。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。

@@ -131,6 +131,9 @@ type State struct {
 	campViewMenu           bool
 	campMagicMenu          bool
 	saveRequested          bool
+	alterMenu              bool
+	alterOrderMenu         bool
+	alterOrderSelected     int
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -459,6 +462,11 @@ func (s *State) Camp() error {
 
 func (s *State) enterCampMenu() {
 	s.campMenu = true
+	s.campViewMenu = false
+	s.campMagicMenu = false
+	s.alterMenu = false
+	s.alterOrderMenu = false
+	s.alterOrderSelected = -1
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
 	s.Choices = []string{
@@ -475,6 +483,60 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.alterOrderMenu {
+		if originalChoice == "ALTER_ORDER_EXIT" {
+			s.alterOrderMenu = false
+			s.enterAlterMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "ALTER_ORDER_CHARACTER_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "ALTER_ORDER_CHARACTER_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid alter order character %q", originalChoice)
+			}
+			if s.alterOrderSelected < 0 {
+				s.alterOrderSelected = value
+				s.enterAlterOrderDestinationMenu()
+				return nil
+			}
+			if value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid alter order destination %d", value)
+			}
+			if err := s.movePartyCharacter(s.alterOrderSelected, value); err != nil {
+				return err
+			}
+			s.alterOrderMenu = false
+			s.alterOrderSelected = -1
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "ALTER ORDER"
+			s.Message = s.catalog.Text("alter_order_done", "隊伍順序已更新。")
+			return nil
+		}
+	}
+	if s.alterMenu {
+		if originalChoice == "ALTER_EXIT" {
+			s.alterMenu = false
+			s.enterCampMenu()
+			return nil
+		}
+		if originalChoice == "ALTER_ORDER" {
+			if len(s.partyRoster) < 2 {
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = originalChoice
+				s.Message = s.catalog.Text("alter_order_unavailable", "至少需要兩名角色才能調整順序。")
+				return nil
+			}
+			s.enterAlterOrderMenu()
+			return nil
+		}
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.OriginalEvent = originalChoice
+		s.Message = s.alterActionMessage(originalChoice)
+		return nil
+	}
 	if s.campMagicMenu {
 		if originalChoice == "CAMP_MAGIC_EXIT" {
 			s.campMagicMenu = false
@@ -574,11 +636,114 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.enterCampMagicMenu()
 		return nil
 	}
+	if originalChoice == "ALTER" {
+		s.enterAlterMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = originalChoice
 	s.Message = s.campActionMessage(originalChoice)
 	return nil
+}
+
+func (s *State) enterAlterMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterOrderMenu = false
+	s.alterOrderSelected = -1
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
+	s.Choices = []string{
+		s.catalog.Text("alter_order", "順序"),
+		s.catalog.Text("alter_drop", "移除"),
+		s.catalog.Text("alter_speed", "速度"),
+		s.catalog.Text("alter_icon", "小人"),
+		s.catalog.Text("alter_pics", "圖片"),
+		s.catalog.Text("alter_exit", "離開"),
+	}
+	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT"}
+	s.Message = ""
+}
+
+func (s *State) enterAlterOrderMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterOrderMenu = true
+	s.alterOrderSelected = -1
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_order_prompt", "選擇要移動的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%d. %s", index+1, character.Name))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ORDER_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("alter_order_exit", "返回修改選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ORDER_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterAlterOrderDestinationMenu() {
+	s.Prompt = s.catalog.Text("alter_order_destination_prompt", "選擇新的位置")
+	for index, character := range s.partyRoster {
+		s.Choices[index] = fmt.Sprintf("第%d位：%s", index+1, character.Name)
+		s.currentOriginalChoices[index] = "ALTER_ORDER_CHARACTER_" + strconv.Itoa(index)
+	}
+	s.Choices[len(s.Choices)-1] = s.catalog.Text("alter_order_cancel", "取消")
+	s.currentOriginalChoices[len(s.currentOriginalChoices)-1] = "ALTER_ORDER_EXIT"
+	s.Message = s.catalog.Text("alter_order_selected", "已選取角色，請選擇新的位置。")
+}
+
+func (s *State) movePartyCharacter(from, to int) error {
+	if from < 0 || from >= len(s.partyRoster) || to < 0 || to >= len(s.partyRoster) {
+		return fmt.Errorf("party order index out of range: %d -> %d", from, to)
+	}
+	if from == to {
+		return nil
+	}
+	selected := s.partyRoster[from]
+	s.partyRoster = append(s.partyRoster[:from], s.partyRoster[from+1:]...)
+	s.partyRoster = append(s.partyRoster, party.Character{})
+	copy(s.partyRoster[to+1:], s.partyRoster[to:])
+	s.partyRoster[to] = selected
+	if len(s.party) == 0 {
+		return nil
+	}
+	byID := make(map[string]combat.Fighter, len(s.party))
+	for _, fighter := range s.party {
+		byID[fighter.ID] = fighter
+	}
+	reordered := make([]combat.Fighter, 0, len(s.party))
+	used := make(map[string]bool, len(s.party))
+	for _, character := range s.partyRoster {
+		if fighter, ok := byID[character.ID]; ok && !used[character.ID] {
+			reordered = append(reordered, fighter)
+			used[character.ID] = true
+		}
+	}
+	for _, fighter := range s.party {
+		if !used[fighter.ID] {
+			reordered = append(reordered, fighter)
+		}
+	}
+	s.party = reordered
+	return nil
+}
+
+func (s *State) alterActionMessage(originalChoice string) string {
+	switch originalChoice {
+	case "ALTER_DROP":
+		return s.catalog.Text("alter_drop_unavailable", "角色移除功能尚待接入。")
+	case "ALTER_SPEED":
+		return s.catalog.Text("alter_speed_unavailable", "遊戲速度設定功能尚待接入。")
+	case "ALTER_ICON":
+		return s.catalog.Text("alter_icon_unavailable", "戰鬥小人設定功能尚待接入。")
+	case "ALTER_PICS":
+		return s.catalog.Text("alter_pics_unavailable", "遭遇圖片設定功能尚待接入。")
+	default:
+		return localizeOption(s.catalog, originalChoice)
+	}
 }
 
 // ConsumeSaveRequest transfers a CAMP SAVE intent to the platform adapter.
@@ -1265,6 +1430,10 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.alterMenu {
+			s.enterAlterMenu()
+			return nil
+		}
 		if s.campMagicMenu {
 			s.enterCampMagicMenu()
 			return nil
