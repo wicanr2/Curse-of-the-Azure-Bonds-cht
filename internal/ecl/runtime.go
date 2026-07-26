@@ -459,6 +459,7 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			id := uint8(blockID)
 			result.NewECLBlockID = &id
 			result.PC = next
+			saveState(next)
 			return result, nil
 		case 0x24: // COMBAT
 			// The original engine transfers control to its combat loop here.

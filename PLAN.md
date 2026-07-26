@@ -195,4 +195,5 @@
 - [x] 實作 ECL `RANDOM` 與 State 可注入 seed，保留 deterministic regression。
 - [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。
 - [x] 保存 ECL menu pause 的 PC、memory、比較旗標、call stack，並以 cumulative selections resume。
-- [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
+- [x] 將 bounded runtime context（memory／flags／call stack）帶過 `NEWECL` target block，並建立跨 block regression。
+- [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的 real continuation。

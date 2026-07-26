@@ -22,4 +22,4 @@ ECL interactive runner 在缺少下一個 selection 時會停在目前 command�
 
 ## 邊界與未完成項目
 
-本輪沒有宣稱完整 VM：unknown opcode、DOS memory layout、外部 `PROGRAM` routine、跨 ECL block 的完整 memory／call stack transfer，以及 event 完成後的原版 continuation 仍待反組與驗證。此 context 目前以 block 為保存單位；`NEWECL` target 會切換到 target block 的獨立 runtime context。
+本輪沒有宣稱完整 VM：unknown opcode、DOS memory layout、外部 `PROGRAM` routine，以及 event 完成後的原版 continuation 仍待反組與驗證。第 54 輪已將同一個 resumable context 延伸到 `NEWECL` target；本文件只保留 menu pause／resume 的範圍。
