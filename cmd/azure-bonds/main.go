@@ -18,8 +18,11 @@ func main() {
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	traceStart := flag.Int("trace-start", -1, "decoded payload offset for -trace (default 0)")
+	runStart := flag.Int("run-start", -1, "decoded payload offset for -run-subset (default initial entry)")
+	blockID := flag.Int("block-id", -1, "inspect only this decimal DAX block ID")
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
+	allEntries := flag.Bool("all-entries", false, "use all five ECL initialization entries with -graph")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
@@ -58,6 +61,9 @@ func main() {
 		}
 	}
 	for _, block := range blocks {
+		if *blockID >= 0 && int(block.Entry.ID) != *blockID {
+			continue
+		}
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
 		if *trace {
 			var instructions []ecl.Instruction
@@ -87,8 +93,18 @@ func main() {
 		if *graph {
 			starts := []int(nil)
 			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
-				starts = []int{int(points[4]) - ecl.CodeAddressBase}
-				fmt.Printf("  graph start=+0x%04X (initial entry 0x%04X)\n", starts[0], points[4])
+				entryIndex := 4
+				if *allEntries {
+					starts = make([]int, 0, len(points))
+					for index, point := range points {
+						offset := int(point) - ecl.CodeAddressBase
+						starts = append(starts, offset)
+						fmt.Printf("  graph entry[%d]=+0x%04X (code 0x%04X)\n", index, offset, point)
+					}
+				} else {
+					starts = []int{int(points[entryIndex]) - ecl.CodeAddressBase}
+					fmt.Printf("  graph start=+0x%04X (initial entry 0x%04X)\n", starts[0], points[entryIndex])
+				}
 			} else if entryErr != nil {
 				fmt.Printf("  entry point unavailable; graph fallback start=+0x0000: %v\n", entryErr)
 			}
@@ -119,9 +135,12 @@ func main() {
 			fmt.Println()
 		}
 		if *runSubset {
-			start := 0
-			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
-				start = int(points[4]) - ecl.CodeAddressBase
+			start := *runStart
+			if start < 0 {
+				start = 0
+				if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
+					start = int(points[4]) - ecl.CodeAddressBase
+				}
 			}
 			var result ecl.RunResult
 			var runErr error
