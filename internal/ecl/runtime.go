@@ -27,6 +27,17 @@ type RunResult struct {
 	PictureRequested    bool
 	PictureBlock        uint16
 	BigPictureRequested bool
+	SpellSearches       []SpellSearch
+	ProtectionRequests  []uint16
+}
+
+// SpellSearch is the data-bearing part of ECL SPELL. The bounded runner keeps
+// the requested spell and destination addresses; a party spell-slot resolver
+// can later fill the reference result values.
+type SpellSearch struct {
+	SpellID          uint16
+	SpellSlotAddress uint16
+	CharacterAddress uint16
 }
 
 type Menu struct {
@@ -546,7 +557,7 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				}
 				next = skipped.Next
 			}
-		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x3D:
+		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x3B, 0x3C, 0x3D:
 			// PICTURE, CLEARMONSTERS, LOAD FILES, TREASURE, SPRITE OFF and
 			// CLEAR BOX have decoded arity but require the full renderer,
 			// party/inventory or asset state. Consuming their operands and
@@ -576,6 +587,30 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				result.MonsterSetup = nil
 				result.MonsterSpawns = nil
 			}
+			if instruction.Command.Opcode == 0x3B {
+				spellID, err := operandValue(instruction.Operands[0], memory)
+				if err != nil {
+					return result, fmt.Errorf("spell at %d: %w", pc, err)
+				}
+				slotAddress, err := operandAddress(instruction.Operands[1])
+				if err != nil {
+					return result, fmt.Errorf("spell slot address at %d: %w", pc, err)
+				}
+				characterAddress, err := operandAddress(instruction.Operands[2])
+				if err != nil {
+					return result, fmt.Errorf("spell character address at %d: %w", pc, err)
+				}
+				result.SpellSearches = append(result.SpellSearches, SpellSearch{
+					SpellID: spellID, SpellSlotAddress: slotAddress, CharacterAddress: characterAddress,
+				})
+			}
+			if instruction.Command.Opcode == 0x3C {
+				address, err := operandAddress(instruction.Operands[0])
+				if err != nil {
+					return result, fmt.Errorf("protection address at %d: %w", pc, err)
+				}
+				result.ProtectionRequests = append(result.ProtectionRequests, address)
+			}
 		default:
 			return result, fmt.Errorf("unsupported opcode 0x%02X at payload offset %d", instruction.Command.Opcode, pc)
 		}
@@ -604,6 +639,13 @@ func operandValue(operand Operand, memory map[uint16]uint16) (uint16, error) {
 	default:
 		return 0, fmt.Errorf("unsupported value operand code 0x%02X", operand.Code)
 	}
+}
+
+func operandAddress(operand Operand) (uint16, error) {
+	if !operand.WordSet || (operand.Code != 0x01 && operand.Code != 0x02 && operand.Code != 0x03 && operand.Code != 0x81) {
+		return 0, fmt.Errorf("operand is not a word address")
+	}
+	return operand.Word, nil
 }
 
 func operandIsText(operand Operand) bool {

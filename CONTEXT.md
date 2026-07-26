@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 94 輪：scroll／potion／wand consumable use signal。
+第 95 輪：ECL `SPELL`／`PROTECTION` bounded runtime signal。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -290,4 +290,6 @@
 
 第 93 輪功能／文件 commit：`5cdb800`，已推送至 GitHub `main`。inventory stack mutation 與 cursed readied lock 已完成。
 
-第 94 輪功能／文件 commit：待本輪提交。新增 `ItemRecord.DecodeConsumable` 與 `Character.UseConsumable`：依 reference properties 支援 scroll spell IDs、potion one-use、wand charge decrement；spell targeting、effect engine、彈藥、商店與完整 DOS inventory 仍未完成。
+第 94 輪功能／文件 commit：`5834646`，已推送至 GitHub `main`。scroll／potion／wand consumable data signal 與 inventory mutation 已完成。
+
+第 95 輪功能／文件 commit：待本輪提交。ECL `SPELL`／`PROTECTION` 現在正確消耗 operands 並回傳 `RunResult.SpellSearches`／`ProtectionRequests`；不虛構尚未載入的 party spell slots 或 copy-protection 結果。完成 Docker 測試後提交。

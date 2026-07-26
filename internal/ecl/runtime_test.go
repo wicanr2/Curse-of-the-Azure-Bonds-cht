@@ -251,6 +251,31 @@ func TestRunSubsetConsumesTreasureOperandsAsBoundedNoOp(t *testing.T) {
 	}
 }
 
+func TestRunSubsetEmitsSpellAndProtectionSignals(t *testing.T) {
+	payload := []byte{
+		0x3B, 0x00, 0x12, 0x01, 0x00, 0x7C, 0x01, 0x01, 0x7C,
+		0x3C, 0x01, 0x02, 0x7C,
+		0x00,
+	}
+	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.SpellSearches) != 1 {
+		t.Fatalf("spell searches=%#v", result.SpellSearches)
+	}
+	spell := result.SpellSearches[0]
+	if spell.SpellID != 0x12 || spell.SpellSlotAddress != 0x7C00 || spell.CharacterAddress != 0x7C01 {
+		t.Fatalf("spell=%#v", spell)
+	}
+	if len(result.ProtectionRequests) != 1 || result.ProtectionRequests[0] != 0x7C02 {
+		t.Fatalf("protection=%#v", result.ProtectionRequests)
+	}
+	if result.Steps != 3 {
+		t.Fatalf("steps=%d, want 3", result.Steps)
+	}
+}
+
 func TestRunSubsetRandomUsesInclusiveRangeAndSeed(t *testing.T) {
 	// RANDOM 3, 0x0100; SAVE 0x0100, 0x0101; EXIT.
 	block := []byte{0, 0, 0x08, 0x00, 0x03, 0x01, 0x00, 0x01, 0x09, 0x01, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00}
