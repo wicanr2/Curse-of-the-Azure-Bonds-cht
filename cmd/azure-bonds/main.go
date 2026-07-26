@@ -23,6 +23,7 @@ func main() {
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
+	sessionInfo := flag.Bool("session", false, "print decoded ECL block session entries")
 	selectionList := flag.String("select", "", "comma-separated HORIZONTAL MENU selections for -run-subset")
 	flag.Parse()
 	selections, err := parseSelections(*selectionList)
@@ -38,6 +39,24 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("%s: %d blocks\n", *member, len(blocks))
+	if *sessionInfo {
+		byID := make(map[uint8][]byte, len(blocks))
+		for _, block := range blocks {
+			byID[block.Entry.ID] = block.Data
+		}
+		session, err := ecl.NewBlockSession(byID, blocks[0].Entry.ID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("  session current=0x%02X initial=+0x%04X\n", session.CurrentBlockID(), mustInitial(session))
+		for _, block := range blocks {
+			entry, entryErr := ecl.NewBlockSession(byID, block.Entry.ID)
+			if entryErr != nil {
+				log.Fatal(entryErr)
+			}
+			fmt.Printf("  block 0x%02X initial=+0x%04X\n", entry.CurrentBlockID(), mustInitial(entry))
+		}
+	}
 	for _, block := range blocks {
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
 		if *trace {
@@ -124,6 +143,14 @@ func main() {
 			}
 		}
 	}
+}
+
+func mustInitial(session *ecl.BlockSession) int {
+	entry, err := session.InitialEntry()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return entry
 }
 
 func parseSelections(value string) ([]uint16, error) {
