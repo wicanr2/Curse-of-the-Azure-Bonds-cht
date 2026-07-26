@@ -50,3 +50,4 @@
 - [第五十一輪 ECL RANDOM 與可重現 seed](./round-51-ecl-random.md)（`READY`：限 bounded VM random）
 - [第五十二輪 ECL ENCOUNTER MENU](./round-52-encounter-menu.md)（`READY`：限 bounded encounter-menu bridge）
 - [第五十三輪可恢復的 ECL runtime](./round-53-resumable-ecl-runtime.md)（`READY`：限 menu pause／resume execution context）
+- [第五十四輪跨 ECL block runtime context](./round-54-cross-ecl-runtime-context.md)（`READY`：限 `NEWECL` context transfer）

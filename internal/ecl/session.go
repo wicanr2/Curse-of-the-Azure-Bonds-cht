@@ -24,8 +24,9 @@ func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, err
 		owned[id] = append([]byte(nil), data...)
 	}
 	states := make(map[uint8]*RuntimeState, len(owned))
+	shared := NewRuntimeState(0)
 	for id := range owned {
-		states[id] = NewRuntimeState(0)
+		states[id] = shared
 	}
 	return &BlockSession{blocks: owned, current: current, states: states}, nil
 }
@@ -42,7 +43,7 @@ func (s *BlockSession) Switch(id uint8) error {
 	}
 	s.current = id
 	if _, ok := s.states[id]; !ok {
-		s.states[id] = NewRuntimeState(0)
+		s.states[id] = s.states[s.current]
 	}
 	return nil
 }
@@ -139,6 +140,9 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		if err != nil {
 			return aggregate, err
 		}
+		runtime = s.states[s.current]
+		runtime.PC = start
+		runtime.Started = true
 	}
 	return aggregate, fmt.Errorf("ECL session exceeded block transition limit")
 }

@@ -87,3 +87,29 @@ func TestBlockSessionResumesMenuWithCumulativeSelections(t *testing.T) {
 		t.Fatalf("second run=%+v, want resumed selection 1", second)
 	}
 }
+
+func TestBlockSessionCarriesMemoryAcrossNewECL(t *testing.T) {
+	first := append([]byte{0, 0,
+		0x09, 0x00, 7, 0x02, 0x00, 0x90,
+		0x20, 0x00, 0x51,
+	}, make([]byte, 32)...)
+	second := append([]byte{0, 0}, make([]byte, 32)...)
+	for i := 0; i < 5; i++ {
+		pos := 2 + i*4
+		second[pos+1], second[pos+2], second[pos+3] = 0x02, 0x14, 0x80
+	}
+	second[2+0x14] = 0x11
+	second[2+0x15], second[2+0x16], second[2+0x17] = 0x01, 0x00, 0x90
+	second[2+0x18] = 0x00
+	session, err := NewBlockSession(map[uint8][]byte{0x50: first, 0x51: second}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := session.RunFrom(0, 20, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x51 || len(result.Text) != 1 || result.Text[0] != "7" {
+		t.Fatalf("result=%+v block=%#x, want target block to print carried memory", result, session.CurrentBlockID())
+	}
+}
