@@ -166,6 +166,12 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("bar", "Bar")
 	case "LEAVE":
 		return catalog.Text("leave", "Leave")
+	case "SHADOWDALE":
+		return catalog.Text("shadowdale", "Shadowdale")
+	case "ASHABENFORD":
+		return catalog.Text("ashabenford", "Ashabenford")
+	case "DAGGER FALLS":
+		return catalog.Text("dagger_falls", "Dagger Falls")
 	default:
 		return option
 	}

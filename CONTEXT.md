@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 17 輪：interactive menu session。
+第 18 輪：城市選擇場景。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -21,6 +21,7 @@
 第 14 輪 commits：`77375cd`、`b3aa461`，已推送至 GitHub `main`。
 第 15 輪 commit：`2d50510`，已推送至 GitHub `main`。
 第 16 輪 commit：`499e3d3`，已推送至 GitHub `main`。
+第 17 輪 commit：`1e79695`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -49,6 +50,7 @@
 - `RunSubsetWithSelections`、`game.State.Select` 與 Ebiten cursor 已接上 menu index；實際 selection 1 會走到不同 ECL branch。
 - `0x15 VERTICAL MENU` 已加入 prompt／options／selection parser；實際 ECL1 可讀到 `INN/STORE/BAR/LEAVE`。
 - `RunSubsetInteractive` 與 `State.selectionSequence` 會在 sequence 用完時停在下一個 menu；繁中已加入客棧／商店／酒館／離開／繼續提示。
+- `-interactive` CLI 已加入；實際 ECL1 sequence `0,0,1` 會停在 `SHADOWDALE/ASHABENFORD/DAGGER FALLS`，三個地點已接入繁中 locale。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -58,6 +60,7 @@
 - ECL opcode、字串編碼、分支／呼叫慣例。
 - unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
 - CAMP／城市場所功能、完整 menu rendering／input semantics 與後續事件仍未完成。
+- 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - 中文化的字型格式與字串長度限制。
 
 ## 下一步
@@ -80,4 +83,5 @@
 16. 實作 `VERTICAL MENU` 的可觀測選項與 input，再擴展第一個城市事件。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。
 18. 建立城市場所的 ECL event regression，接入第一個可玩的場景功能。
+19. 將城市選擇寫入 map state，完成第一個地點（SHADOWDALE）的場所入口。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。

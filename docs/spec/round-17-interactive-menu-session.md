@@ -9,7 +9,7 @@
 - game state 將英文 menu option 映射成繁中：`客棧`、`商店`、`酒館`、`離開`，以及 `請按任意鍵或 Enter 繼續`。
 - 未提供 menu selection 的 research runner 仍維持 deterministic index 0 行為。
 
-這解決了 menu framing 與連續輸入保存；城市事件、CAMP、場所功能、戰鬥與音效仍未完成。
+這解決了 menu framing 與連續輸入保存；城市場所的地點選擇已在下一輪對齊，CAMP、場所功能、戰鬥與音效仍未完成。
 
 ## 驗收
 
