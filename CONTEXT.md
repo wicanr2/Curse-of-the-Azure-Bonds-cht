@@ -320,4 +320,4 @@
 
 第一百零八輪功能／文件 commit：`75ae586`，已推送至 GitHub `main`。城市 `INN` 會恢復 party roster／fighter HP 並以繁中訊息返回場所選單；完整 CAMP、商店與酒館情報仍未完成。
 
-第一百零九輪功能／文件 commit：待本輪提交。建立 price-injected Buy／Sell／200 GP ID party transaction；完整 money pool、shop stock 與 Shop Menu UI 仍未完成。
+第一百零九輪功能／文件 commit：`755d83c`，已推送至 GitHub `main`。建立 price-injected Buy／Sell／200 GP ID party transaction；完整 money pool、shop stock 與 Shop Menu UI 仍未完成。
