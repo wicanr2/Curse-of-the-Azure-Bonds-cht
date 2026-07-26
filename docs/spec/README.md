@@ -129,3 +129,4 @@
 - [第一百三十二輪 CAMP MEMORIZE → REST writeback](./132-camp-memorize-rest-writeback.md)（`READY`：限 known-spell selection 與 slot writeback）
 - [第一百三十三輪 MEMORIZE preparation time](./133-memorize-preparation-time.md)（`READY`：限一級法術準備時間）
 - [第一百三十四輪 combat Magic Missile](./134-combat-magic-missile.md)（`READY`：限一級魔法師施法）
+- [第一百三十五輪 combat Cure Light Wounds](./135-combat-cure-light-wounds.md)（`READY`：限一級牧師戰鬥治療）

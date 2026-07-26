@@ -169,12 +169,46 @@ func (s *State) CombatCanCastMagicMissile() bool {
 	return false
 }
 
+func (s *State) CombatCanCastCureLightWounds() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	wounded := false
+	for _, fighter := range s.livingBySide(combat.SideParty) {
+		if fighter.HitPoints < fighter.MaxHitPoints {
+			wounded = true
+			break
+		}
+	}
+	if !wounded {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || character.Class != party.ClassCleric {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == CureLightWoundsSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // CombatCast applies the verified first-level Magic Missile path. It consumes
 // exactly one memorized slot, targets the current enemy selection, and then
 // advances the same deterministic enemy-turn boundary as a weapon attack.
 func (s *State) CombatCast(spellID uint8) error {
 	if !s.CombatActive() {
 		return fmt.Errorf("combat is not active")
+	}
+	if spellID == CureLightWoundsSpellID {
+		return s.combatCastCureLightWounds()
 	}
 	if spellID != MagicMissileSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
@@ -218,6 +252,57 @@ func (s *State) CombatCast(spellID uint8) error {
 		return err
 	}
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastCureLightWounds() error {
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.Class == party.ClassCleric {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a cleric in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == CureLightWoundsSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Cure Light Wounds", caster.ID)
+	}
+	targets := s.livingBySide(combat.SideParty)
+	targetIndex := -1
+	for index, target := range targets {
+		if target.HitPoints < target.MaxHitPoints {
+			targetIndex = index
+			break
+		}
+	}
+	if targetIndex < 0 {
+		return fmt.Errorf("no wounded party member can receive Cure Light Wounds")
+	}
+	target := targets[targetIndex]
+	s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots[:spellIndex], s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...)
+	result, err := s.battle.CastCureLightWounds(caster.ID, target.ID)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, CureLightWoundsSpellID)
+		return err
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "%s 對 %s 施放治療輕傷，恢復 %d HP。"), caster.Name, target.Name, result.Healing)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}

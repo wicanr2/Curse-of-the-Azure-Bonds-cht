@@ -39,7 +39,7 @@ go run ./cmd/azure-bonds-game -font /path/to/cjk-font.ttf
 
 ## 戰鬥提示
 
-本 remake 已接入基本回合、先攻、AC、攻擊與傷害，以及繁中戰鬥畫面。左右鍵選擇敵人，Enter 攻擊；輪到有已記憶 Magic Missile 的魔法師時可按 S 施法。其他法術、物品效果、逃跑／談判、戰場格位與所有 AD&D 規則仍在還原中。
+本 remake 已接入基本回合、先攻、AC、攻擊與傷害，以及繁中戰鬥畫面。左右鍵選擇敵人，Enter 攻擊；輪到有已記憶 Magic Missile 的魔法師時可按 S，輪到有 Cure Light Wounds 的牧師且隊伍有人受傷時可按 H。其他法術、物品效果、逃跑／談判、戰場格位與所有 AD&D 規則仍在還原中。
 
 ## 研究來源
 

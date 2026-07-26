@@ -257,6 +257,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
 			return a.state.CombatCast(game.MagicMissileSpellID)
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
+			return a.state.CombatCast(game.CureLightWoundsSpellID)
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
 			return a.state.CombatSelectTarget(1)
 		}
@@ -658,6 +661,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	spellHint := ""
 	if a.state.CombatCanCastMagicMissile() {
 		spellHint = "　S：魔法飛彈"
+	}
+	if a.state.CombatCanCastCureLightWounds() {
+		spellHint += "　H：治療輕傷"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊"+spellHint, a.face, 32, 350, cyan)
 }

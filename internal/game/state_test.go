@@ -692,6 +692,31 @@ func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	}
 }
 
+func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CureLightWoundsSpellID}}}
+	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20}, {ID: "hero", Name: "戰士", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10, ArmorClass: 10}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastCureLightWounds() {
+		t.Fatalf("cure light wounds should be available: turns=%#v", state.CombatTurns())
+	}
+	if err := state.CombatCast(CureLightWoundsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	heroHP := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" {
+			heroHP = fighter.HitPoints
+		}
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 || heroHP <= 3 || heroHP > 10 {
+		t.Fatalf("healing state=%#v fighters=%#v", state, state.CombatFighters())
+	}
+}
+
 func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}

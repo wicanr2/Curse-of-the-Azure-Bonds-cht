@@ -75,3 +75,21 @@ func TestCastMagicMissileUsesVerifiedDamageAndLevelScaling(t *testing.T) {
 		t.Fatalf("spell result=%+v", result)
 	}
 }
+
+func TestCastCureLightWoundsHealsOneToEightAndCapsAtMaxHP(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 3, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10},
+	}, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCureLightWounds("cleric", "hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != 3 || result.Healing < 1 || result.Healing > 7 || result.TargetHP != 3+result.Healing {
+		t.Fatalf("healing result=%+v", result)
+	}
+}
