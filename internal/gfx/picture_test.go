@@ -123,6 +123,25 @@ func TestParsePieceSetUsesReferenceMultiRecordSymbolIDs(t *testing.T) {
 	}
 }
 
+func TestBuildWallLayoutUsesReferenceWindowShape(t *testing.T) {
+	wallData := testWallData(1)
+	wallData[0] = 0x2E
+	set, err := ParsePieceSet(1, 7,
+		[]dax.Block{{Entry: dax.Entry{ID: 7}, Data: wallData}},
+		[]dax.Block{{Entry: dax.Entry{ID: 7}, Data: testSymbolPictureItems(70)}},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	stamps, err := BuildWallLayout(set, 1, 0, 4, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(stamps) != 1 || stamps[0].Row != 4 || stamps[0].Column != 5 || stamps[0].Item != 0 {
+		t.Fatalf("stamps = %+v, want one front-wall stamp at (4,5), item 0", stamps)
+	}
+}
+
 func TestMergePicturesUsesTransparentAndORLayers(t *testing.T) {
 	destination := Picture{WidthUnits: 1, HeightUnits: 2, ItemCount: 1, Pixels: []uint8{1, 16, 4, 16, 16, 2, 8, 16}}
 	source := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: []uint8{16, 2, 8, 16, 16, 16, 16, 16}}

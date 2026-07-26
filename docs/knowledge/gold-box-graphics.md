@@ -120,6 +120,8 @@ ICON selection 應只提供 manifest 已驗證的 layer pair，並以 character 
 
 WALLDEF graphic IDs 在載入後不是原始值直出：reference `Offset` 只平移 `>=0x2D` 的值，三個 dungeon symbol slot 的 global base 分別為 `0x2E`、`0x74`、`0xBA`。共用 `gfx.PieceSet.WallSymbol` 可沿用這個 cell-to-item lookup；area-map 的 `0x01` base 是另一個 8×8D set，不能混用。
 
+3D wall layout 可跨 Gold Box 共用 `WallStamp` contract：reference 的十個 viewport metadata 是 `idxOffset=[0,2,6,10,22,38,54,110,132,154]`、`colCount=[1,1,1,3,2,2,7,2,2,1]`、`rowCount=[2,4,4,4,8,8,8,11,11,2]`。先由 wall type 分流到 WALLDEF slot／slice，再以 row-major stamp 輸出；方向遍歷與遮擋應留在作品 renderer adapter。
+
 CAMP FIX 應拆成可重用的 healing service 與各遊戲的 spell catalog adapter：目前 CoAB 只能以已確認的一級牧師表順序將 `Cure Light Wounds` 映射到 one-based ID `3`，並以 memorized slot 數量決定 cast 次數。治療應以 roster 順序選擇受傷角色、以 `1d8` 封頂 MaxHP，再以 stable character ID 同步 combat projection；spell slot 是否消耗、重記憶、時間推進與中斷則由遊戲規則層注入，不能寫死在共用 renderer。測試可注入 seed 保持重現性，但正式遊戲仍需接原版 random／time source。
 
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
