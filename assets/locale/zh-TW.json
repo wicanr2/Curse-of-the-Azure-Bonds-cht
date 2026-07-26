@@ -1,0 +1,17 @@
+{
+  "language": "zh-TW",
+  "strings": {
+    "title": "青色枷的詛咒",
+    "continue": "繼續",
+    "new_game": "新的遊戲",
+    "load_game": "載入遊戲",
+    "save_game": "儲存遊戲",
+    "quit": "離開",
+    "press_enter": "請按 Enter 繼續",
+    "you_are_at_the_edge_of": "你已抵達邊界。",
+    "enter_city": "進入城市",
+    "journey_on": "繼續旅程",
+    "ambushed": "你們遭到伏擊！",
+    "captured": "你們被俘虜了。"
+  }
+}
