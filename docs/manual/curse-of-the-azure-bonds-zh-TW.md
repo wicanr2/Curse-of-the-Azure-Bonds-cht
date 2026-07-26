@@ -43,6 +43,8 @@ go run ./cmd/azure-bonds-game -font /path/to/cjk-font.ttf
 
 遭遇選單的 `撤退` 會返回荒野；`談判` 會先讓玩家選擇傲慢、狡猾、謙卑、友善或威嚇。完整怪物反應與對話仍待接入。
 
+戰鬥中按 `M` 再按方向鍵，可讓當前角色移動一格；Esc 取消移動模式。移動會消耗該角色回合。
+
 ## 研究來源
 
 - `Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf`

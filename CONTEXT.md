@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百四十三輪：encounter FLEE／PARLAY。
+第一百四十四輪：combat MOVE。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -388,4 +388,6 @@
 
 第一百四十二輪功能／文件 commits：`cd8942a`、`9e6e660`，已推送至 GitHub `main`。已修正 class-local spell ID collision，牧師 ID `7` 由 G 施放 Protection from Good，魔法師 ID `7` 由 S 施放 Magic Missile；明確 `Good=true` 攻擊者才觸發 AC +2，duration 為 `3×caster level` 回合。
 
-第一百四十三輪待提交：ECL encounter 的 FLEE 進入繁中可恢復撤退事件；PARLAY 提供 HAUGHTY／SLY／MEEK／NICE／ABUSIVE 五種 tactic，選擇後返回荒野事件。怪物速度、追擊、speaker／reaction 與完整 conversation script 保留 boundary。
+第一百四十三輪功能／文件 commits：`c7fac1f`、`2f078a1`，已推送至 GitHub `main`。ECL encounter 的 FLEE 進入繁中可恢復撤退事件；PARLAY 提供 HAUGHTY／SLY／MEEK／NICE／ABUSIVE 五種 tactic，選擇後返回荒野事件。怪物速度、追擊、speaker／reaction 與完整 conversation script 保留 boundary。
+
+第一百四十四輪待提交：戰鬥按 M 進入 MOVE，方向鍵單格移動當前 party fighter，Battle 驗證 occupancy 後更新 CombatMap 座標並消耗回合；地形、負重、進入敵格、free rear attack、facing 與完整離場規則保留 boundary。

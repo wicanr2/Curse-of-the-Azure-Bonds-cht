@@ -36,6 +36,8 @@ Protection from Good 使用同一防護 transaction，但必須保留職業 spel
 
 Encounter non-combat menu 也應保留兩階段 transaction：`FLEE` 直接進入可恢復事件，`PARLAY` 先保存 tactic token，再交由 script／reaction adapter 決定結果。CoAB 目前已接入五個 RuleBook tactic token 的繁中 menu，但不猜速度、追擊、speaker、reaction 或對話結果；後續 Golden Box 遊戲可共用 menu state，只替換 ECL／conversation data。
 
+Combat MOVE 也採 action transaction：`M` 開始、方向鍵確認一格位置、Esc 取消；只有 Battle occupancy validation 成功後才更新座標並消耗 party turn。地形／邊界／負重／free rear attack／facing 不應在 renderer 猜測，應由後續作品的 CombatMap 與 rules adapter 注入。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

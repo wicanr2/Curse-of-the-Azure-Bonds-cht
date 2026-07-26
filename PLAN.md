@@ -256,6 +256,7 @@
 - [x] 將 RuleBook Protection from Evil（spell ID `6`）接入牧師 P／party touch target、conditional evil-attacker AC +2 與 `3r/lvl` duration；保留 saving throw／alignment import boundary。
 - [x] 修正 class-local spell ID collision，並將 RuleBook Protection from Good（牧師 ID `7`）接入 G／party target／conditional good-attacker AC +2；Magic Missile（魔法師 ID `7`）保留 S 分流。
 - [x] 將 RuleBook encounter `FLEE` 接成繁中可恢復事件，`PARLAY` 接成五種 tactic menu；保留速度／追擊／reaction／script boundary。
+- [x] 將 RuleBook Combat Menu `MOVE` 接成 M／方向鍵單格移動、occupancy-safe position mutation 與 party turn consumption；保留地形／free attack／facing boundary。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
