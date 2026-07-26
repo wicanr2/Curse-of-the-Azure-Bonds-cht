@@ -15,6 +15,42 @@ type Picture struct {
 	Pixels      []uint8
 }
 
+// MergePictures overlays source onto destination using the masked-icon rule
+// used by the Gold Box combat renderer. Transparent pixels (index 16) reveal
+// the other layer; overlapping opaque pixels are combined with bitwise OR.
+// The source is top-left aligned, matching the original MergeIcon routine.
+func MergePictures(destination, source Picture) (Picture, error) {
+	if destination.ItemCount == 0 || source.ItemCount == 0 {
+		return Picture{}, fmt.Errorf("cannot merge empty picture items")
+	}
+	if destination.Width() != source.Width() || source.Height() > destination.Height() {
+		return Picture{}, fmt.Errorf("cannot merge %dx%d source onto %dx%d destination", source.Width(), source.Height(), destination.Width(), destination.Height())
+	}
+	result := destination
+	result.Pixels = append([]uint8(nil), destination.Pixels...)
+	for item := 0; item < int(source.ItemCount); item++ {
+		if item >= int(destination.ItemCount) {
+			break
+		}
+		for y := 0; y < source.Height(); y++ {
+			for x := 0; x < source.Width(); x++ {
+				sourceValue := source.Pixels[item*source.ItemSize()+y*source.Width()+x]
+				destinationIndex := item*destination.ItemSize() + y*destination.Width() + x
+				destinationValue := result.Pixels[destinationIndex]
+				switch {
+				case destinationValue == 16:
+					result.Pixels[destinationIndex] = sourceValue
+				case sourceValue == 16:
+					// Keep the destination pixel.
+				default:
+					result.Pixels[destinationIndex] = destinationValue | sourceValue
+				}
+			}
+		}
+	}
+	return result, nil
+}
+
 func (p Picture) Width() int  { return int(p.WidthUnits) * 8 }
 func (p Picture) Height() int { return int(p.HeightUnits) }
 
