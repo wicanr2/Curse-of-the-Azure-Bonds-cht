@@ -416,8 +416,13 @@ func (s *State) SetParty(party []combat.Fighter) error {
 	for index := range s.party {
 		if !s.party[index].HasPartyIcon {
 			s.party[index].HasPartyIcon = true
-			s.party[index].PartyHeadBlock = uint8(index % 6)
-			s.party[index].PartyBodyBlock = uint8(index % 6)
+			// Original new characters begin with head_icon=0 and
+			// weapon_icon=0; do not invent slot-dependent art here.
+			s.party[index].PartyHeadBlock = 0
+			s.party[index].PartyBodyBlock = 0
+			if s.party[index].PartyIconSize == 0 {
+				s.party[index].PartyIconSize = 2
+			}
 		}
 	}
 	return nil

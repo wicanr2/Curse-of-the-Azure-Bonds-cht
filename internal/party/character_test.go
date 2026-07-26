@@ -76,6 +76,23 @@ func TestStarterFighterProjection(t *testing.T) {
 	if fighter.Side != 0 || fighter.MaxHitPoints != 10 || fighter.DamageDiceSides != 8 {
 		t.Fatalf("fighter=%#v", fighter)
 	}
+	if !fighter.HasPartyIcon || fighter.PartyHeadBlock != 0 || fighter.PartyBodyBlock != 0 || fighter.PartyIconSize != 2 {
+		t.Fatalf("fighter icon=%#v", fighter)
+	}
+}
+
+func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
+	for _, test := range []struct {
+		race Race
+		want uint8
+	}{
+		{RaceDwarf, 1}, {RaceGnome, 1}, {RaceHalfling, 1},
+		{RaceElf, 2}, {RaceHalfElf, 2}, {RaceHuman, 2},
+	} {
+		if got := DefaultIconSize(test.race); got != test.want {
+			t.Errorf("DefaultIconSize(%v)=%d, want %d", test.race, got, test.want)
+		}
+	}
 }
 
 func TestAbilityAdjustmentIsBounded(t *testing.T) {
