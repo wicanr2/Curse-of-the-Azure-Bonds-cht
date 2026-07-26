@@ -39,3 +39,17 @@ func TestParsePackedOperandConsumesLengthPrefixedBytes(t *testing.T) {
 		t.Fatalf("next=%d, want 6", next)
 	}
 }
+
+func TestParseStringMemoryOperandConsumesWord(t *testing.T) {
+	payload := []byte{0x11, 0x81, 0x34, 0x7C, 0x00}
+	operands, next, err := ParseOperands(payload, 0, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !operands[0].WordSet || operands[0].Word != 0x7C34 {
+		t.Fatalf("string-memory operand: %#v", operands[0])
+	}
+	if next != 4 {
+		t.Fatalf("next=%d, want 4", next)
+	}
+}
