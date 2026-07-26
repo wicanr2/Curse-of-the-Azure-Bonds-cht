@@ -200,4 +200,5 @@
 - [x] 解碼 `TILES.DAX`／`8X8D*.DAX` indexed pictures 與 `WALLDEF*.DAX` records。
 - [x] 建立 reference EGA16 palette 與 indexed picture → RGBA adapter。
 - [x] 將 `TILES.DAX` indexed pictures 接入 Ebiten，建立繁中原始 tile gallery preview。
+- [x] 將原始 `GEO2` geometry block 接入 Ebiten raw geometry viewport。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

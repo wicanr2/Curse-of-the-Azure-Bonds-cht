@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
@@ -23,6 +24,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -41,12 +43,20 @@ type app struct {
 	partyPath    string
 	tilePreview  bool
 	tileImages   []*ebiten.Image
+	geoPreview   bool
+	geoGrid      *geo.Grid
 }
 
 func (a *app) Update() error {
 	if a.tilePreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
+		}
+		return nil
+	}
+	if a.geoPreview {
+		if inpututil.IsKeyJustPressed(ebiten.KeyG) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			a.geoPreview = false
 		}
 		return nil
 	}
@@ -124,6 +134,10 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyT) {
 		a.tilePreview = true
+		return nil
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.geoGrid != nil {
+		a.geoPreview = true
 		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
@@ -230,6 +244,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawTilePreview(screen, white, cyan)
 		return
 	}
+	if a.geoPreview {
+		a.drawGeoPreview(screen, white, cyan)
+		return
+	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		a.drawCreation(screen, white, cyan)
 		return
@@ -295,6 +313,45 @@ func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
 		screen.DrawImage(tile, op)
 		text.Draw(screen, strconv.Itoa(index), a.face, 24+column*76, 44+row*56+50, white)
 	}
+}
+
+func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "GEO2 原始幾何預覽（G／Esc：返回）", a.face, 24, 28, cyan)
+	if a.geoGrid == nil {
+		text.Draw(screen, "沒有載入 GEO geometry", a.face, 24, 70, white)
+		return
+	}
+	const cellSize = 20
+	const originX, originY = 24, 48
+	for y := 0; y < geo.Height; y++ {
+		for x := 0; x < geo.Width; x++ {
+			cell, _ := a.geoGrid.Cell(x, y)
+			left := float64(originX + x*cellSize)
+			top := float64(originY + y*cellSize)
+			ebitenutil.DrawRect(screen, left+1, top+1, cellSize-2, cellSize-2, color.RGBA{20, 28, 52, 255})
+			drawGeoWall := func(direction int, value uint8) {
+				if value == 0 {
+					return
+				}
+				wallColor := cyan
+				switch direction {
+				case 0:
+					ebitenutil.DrawLine(screen, left, top, left+cellSize, top, wallColor)
+				case 2:
+					ebitenutil.DrawLine(screen, left+cellSize, top, left+cellSize, top+cellSize, wallColor)
+				case 4:
+					ebitenutil.DrawLine(screen, left, top+cellSize, left+cellSize, top+cellSize, wallColor)
+				case 6:
+					ebitenutil.DrawLine(screen, left, top, left, top+cellSize, wallColor)
+				}
+			}
+			drawGeoWall(0, cell.WallDirections[0])
+			drawGeoWall(2, cell.WallDirections[1])
+			drawGeoWall(4, cell.WallDirections[2])
+			drawGeoWall(6, cell.WallDirections[3])
+		}
+	}
+	text.Draw(screen, "青線：原始 GEO wall 欄位（不是 tile／碰撞判定）", a.face, 24, 382, white)
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
@@ -422,6 +479,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	geoGrid, err := loadGEOPreview(*imagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -437,7 +498,7 @@ func main() {
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -466,6 +527,25 @@ func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
 		}
 	}
 	return images, nil
+}
+
+func loadGEOPreview(imagePath string) (*geo.Grid, error) {
+	data, err := zipMember(imagePath, "GEO2.DAX")
+	if err != nil {
+		return nil, err
+	}
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse GEO2.DAX: %w", err)
+	}
+	if len(blocks) == 0 {
+		return nil, fmt.Errorf("GEO2.DAX contains no blocks")
+	}
+	grid, err := geo.Parse(blocks[0].Entry.ID, blocks[0].Data)
+	if err != nil {
+		return nil, fmt.Errorf("GEO2.DAX block 0x%02X: %w", blocks[0].Entry.ID, err)
+	}
+	return &grid, nil
 }
 
 // loadECLBlocks builds one session namespace from all six original ECL DAX
