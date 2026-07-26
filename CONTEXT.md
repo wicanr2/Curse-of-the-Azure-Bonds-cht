@@ -322,4 +322,4 @@
 
 第一百零九輪功能／文件 commit：`755d83c`，已推送至 GitHub `main`。建立 price-injected Buy／Sell／200 GP ID party transaction；完整 money pool、shop stock 與 Shop Menu UI 仍未完成。
 
-第一百一十輪功能／文件 commit：待本輪提交。城市 STORE 已接入繁中 BUY／VIEW／TAKE／POOL／SHARE／APPRAISE／EXIT menu，未知 stock／money-pool action 保留明確 boundary。
+第一百一十輪功能／文件 commit：`e8ddd14`，已推送至 GitHub `main`。城市 STORE 已接入繁中 BUY／VIEW／TAKE／POOL／SHARE／APPRAISE／EXIT menu，未知 stock／money-pool action 保留明確 boundary。
