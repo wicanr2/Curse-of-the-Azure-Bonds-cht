@@ -741,6 +741,35 @@ func TestCampMenuViewCharacterAndReturn(t *testing.T) {
 	}
 }
 
+func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, SpellSlots: []uint8{0x12, 0x24}}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.campMagicMenu || len(state.Choices) != 2 {
+		t.Fatalf("camp magic menu state=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC" || !strings.Contains(state.Message, "0x12") || !strings.Contains(state.Message, "0x24") {
+		t.Fatalf("camp magic summary state=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicMenu {
+		t.Fatalf("camp magic return state=%#v err=%v", state, err)
+	}
+	if err := state.Select(1); err != nil || state.campMagicMenu || !state.campMenu {
+		t.Fatalf("camp magic exit state=%#v err=%v", state, err)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}

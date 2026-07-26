@@ -129,6 +129,7 @@ type State struct {
 	shopAppraiseKind       TreasureKind
 	campMenu               bool
 	campViewMenu           bool
+	campMagicMenu          bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -473,6 +474,32 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.campMagicMenu {
+		if originalChoice == "CAMP_MAGIC_EXIT" {
+			s.campMagicMenu = false
+			s.enterCampMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid camp magic character %q", originalChoice)
+			}
+			character := s.partyRoster[value]
+			slots := make([]string, 0, len(character.SpellSlots))
+			for _, spellID := range character.SpellSlots {
+				slots = append(slots, fmt.Sprintf("0x%02X", spellID))
+			}
+			if len(slots) == 0 {
+				slots = append(slots, s.catalog.Text("camp_magic_none", "目前沒有已記憶法術"))
+			}
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = "MAGIC"
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_summary", "%s　法術欄位：%s"), character.Name, strings.Join(slots, "、"))
+			return nil
+		}
+	}
 	if s.campViewMenu {
 		if originalChoice == "CAMP_VIEW_EXIT" {
 			s.campViewMenu = false
@@ -523,6 +550,17 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.enterCampViewMenu()
 		return nil
 	}
+	if originalChoice == "MAGIC" {
+		if len(s.partyRoster) == 0 {
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModeWilderness
+			s.OriginalEvent = originalChoice
+			s.Message = s.catalog.Text("camp_magic_unavailable", "目前沒有可查看法術的角色。")
+			return nil
+		}
+		s.enterCampMagicMenu()
+		return nil
+	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = originalChoice
@@ -543,6 +581,22 @@ func (s *State) enterCampViewMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "返回紮營選單"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicMenu() {
+	s.campMenu = true
+	s.campMagicMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_magic_prompt", "選擇要查看法術的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（已記憶 %d 個法術）", character.Name, len(character.SpellSlots)))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_exit", "返回紮營選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_EXIT")
 	s.Message = ""
 }
 
@@ -1190,6 +1244,10 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.campMagicMenu {
+			s.enterCampMagicMenu()
+			return nil
+		}
 		if s.campViewMenu {
 			s.enterCampViewMenu()
 			return nil

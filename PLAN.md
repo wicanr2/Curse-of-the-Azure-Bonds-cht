@@ -242,6 +242,7 @@
 - [x] 補上 APPRAISE 報價的接受／拒絕／返回 confirmation branch。
 - [x] 建立繁中 CAMP Menu（SAVE／VIEW／MAGIC／REST／ALTER／FIX／EXIT），接入 REST／EXIT state boundary。
 - [x] 將 CAMP VIEW 接成角色選單、繁中角色摘要與可返回 CAMP Menu 的只讀流程。
+- [x] 將 CAMP MAGIC 接成角色選單與已記憶 spell-slot ID 查看；保留 spell rules／mutation boundary。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
