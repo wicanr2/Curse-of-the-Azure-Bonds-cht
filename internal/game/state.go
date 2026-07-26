@@ -537,10 +537,31 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 	s.eventReturnMode = ModePlace
 	s.OriginalEvent = originalChoice
 	s.Message = s.placeEventMessage(originalChoice)
+	if originalChoice == "INN" {
+		s.restorePartyAtInn()
+		s.Message = s.catalog.Text("inn_restored", "你們在客棧安全休息，隊伍恢復體力。")
+	}
 	if originalChoice == "LEAVE" {
 		s.eventReturnMode = ModeMap
 	}
 	return nil
+}
+
+// restorePartyAtInn applies the safe-rest boundary described by the original
+// manual: an inn is a protected place to rest. The roster is the source of
+// truth for save/load, while party mirrors the currently rendered fighters.
+func (s *State) restorePartyAtInn() {
+	for index := range s.partyRoster {
+		s.partyRoster[index].HitPoints = s.partyRoster[index].MaxHitPoints
+	}
+	for index := range s.party {
+		if index < len(s.partyRoster) {
+			s.party[index].HitPoints = s.partyRoster[index].HitPoints
+			s.party[index].MaxHitPoints = s.partyRoster[index].MaxHitPoints
+			continue
+		}
+		s.party[index].HitPoints = s.party[index].MaxHitPoints
+	}
 }
 
 // placeEventMessage is the first localized place-event screen. The reference

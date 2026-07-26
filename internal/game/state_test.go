@@ -240,6 +240,35 @@ func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	}
 }
 
+func TestInnRestoresPartyAndReturnsToPlaceMenu(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["inn_restored"] = "客棧休息完成"
+	state := NewState(catalog)
+	state.Mode = ModePlace
+	state.Location = LocationShadowdale
+	state.LocationName = "暗影谷"
+	state.Choices = []string{"客棧", "商店", "酒館", "離開"}
+	state.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, HitPoints: 2, MaxHitPoints: 10,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.party = []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 2, MaxHitPoints: 10}}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.Message != "客棧休息完成" || state.partyRoster[0].HitPoints != 10 || state.party[0].HitPoints != 10 {
+		t.Fatalf("inn state=%#v party=%#v roster=%#v", state, state.party, state.partyRoster)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace {
+		t.Fatalf("after inn continue mode=%v, want place", state.Mode)
+	}
+}
+
 func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"
@@ -249,7 +278,7 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	catalog.Strings["store"] = "商店"
 	catalog.Strings["bar"] = "酒館"
 	catalog.Strings["leave"] = "離開"
-	catalog.Strings["inn_event"] = "暗影谷客棧事件"
+	catalog.Strings["inn_restored"] = "暗影谷客棧休息完成"
 	state := NewState(catalog)
 	state.Location = LocationShadowdale
 	state.Mode = ModeMap
@@ -262,7 +291,7 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.Message != "暗影谷客棧事件" || state.OriginalEvent != "INN" {
+	if state.Mode != ModeEvent || state.Message != "暗影谷客棧休息完成" || state.OriginalEvent != "INN" {
 		t.Fatalf("inn event=%#v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModePlace {
