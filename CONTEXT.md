@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 69 輪：Area1／Area2 binary codec。
+第 70 輪：可恢復的 remake game save。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。

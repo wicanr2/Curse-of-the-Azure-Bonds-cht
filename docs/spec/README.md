@@ -65,3 +65,4 @@
 - [第六十七輪 ECL LOAD FILES → GEO map request](./round-67-ecl-map-load.md)（`READY`：限第三 operand selector 與 renderer bridge）
 - [第六十八輪 Area1／Area2 map-load boundary](./round-68-area-state.md)（`READY`：限 area state 與 `CMD_LoadFiles` branch contract）
 - [第六十九輪 Area1／Area2 binary codec](./round-69-area-codec.md)（`READY`：限已定位欄位與未知 bytes preservation）
+- [第七十輪可恢復的 remake game save](./round-70-resumable-game-save.md)（`READY`：限目前 game state 與舊 party JSON 相容）
