@@ -140,3 +140,4 @@
 - [第一百四十三輪 encounter FLEE／PARLAY](./143-encounter-flee-parlay.md)（`READY`：限撤退事件與五種談判策略 menu）
 - [第一百四十四輪 combat MOVE](./144-combat-move.md)（`READY`：限單格 position mutation 與 occupancy-safe turn transaction）
 - [第一百四十五輪 MOVE free attack](./145-combat-free-attack-on-move.md)（`READY`：限離開鄰接範圍的免費攻擊 trigger）
+- [第一百四十六輪 MOVE attack](./146-combat-move-attack.md)（`READY`：限移入敵方格的攻擊 transaction）

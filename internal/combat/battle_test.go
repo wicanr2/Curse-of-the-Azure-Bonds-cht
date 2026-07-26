@@ -33,7 +33,7 @@ func TestStartRoundIsDeterministicAndCoversLivingFighters(t *testing.T) {
 func TestMoveChangesPositionAndRejectsOccupiedDestination(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 2},
-		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 3, CombatY: 2},
+		{ID: "ally", Name: "Ally", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 3, CombatY: 2},
 	}, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -50,6 +50,26 @@ func TestMoveChangesPositionAndRejectsOccupiedDestination(t *testing.T) {
 	}
 	if _, err := battle.Move("hero", 2, 0); err == nil {
 		t.Fatal("expected multi-step error")
+	}
+}
+
+func TestMoveIntoEnemySquareResolvesAttackWithoutChangingPosition(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "goblin", Name: "Goblin", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 3, CombatY: 2},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.MoveWithFreeAttacks("hero", 1, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Attack == nil || result.Attack.AttackerID != "hero" || result.Attack.TargetID != "goblin" || len(result.FreeAttacks) != 0 {
+		t.Fatalf("move attack=%+v free attacks=%+v", result.Attack, result.FreeAttacks)
+	}
+	if result.Fighter.CombatX != 2 || result.Fighter.CombatY != 2 {
+		t.Fatalf("fighter moved onto enemy square: %+v", result.Fighter)
 	}
 }
 
