@@ -3,6 +3,8 @@ package party
 import (
 	"encoding/binary"
 	"fmt"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 // DOS player/creature records use a shared spell layout. These constants are
@@ -46,6 +48,9 @@ type DOSPlayerRecord struct {
 	Jewelry          uint16
 	MemorizedSpells  []uint8
 	KnownSpells      []uint8
+	ItemsPointer     uint32
+	EffectsPointer   uint32
+	Inventory        []monster.ItemRecord
 }
 
 // ParseDOSPlayerRecord decodes the documented fixed portion of a decompressed
@@ -91,6 +96,8 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 		Gold:            binary.LittleEndian.Uint16(data[0x101:0x103]),
 		Gems:            binary.LittleEndian.Uint16(data[0x105:0x107]),
 		Jewelry:         binary.LittleEndian.Uint16(data[0x107:0x109]),
+		ItemsPointer:    binary.LittleEndian.Uint32(data[0x14D:0x151]),
+		EffectsPointer:  binary.LittleEndian.Uint32(data[0x0F2:0x0F6]),
 		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 	}, nil
 }
@@ -103,12 +110,29 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconSize: r.IconSize,
+		Equipment:  append([]monster.ItemRecord(nil), r.Inventory...),
 		SpellSlots: append([]uint8(nil), r.MemorizedSpells...),
 	}
 	if err := character.Validate(); err != nil {
 		return Character{}, err
 	}
 	return character, nil
+}
+
+// ApplyInventory decodes a DOS .SWG item stream and attaches it to the
+// already parsed player record. The stream is a sequence of documented 0x3F
+// byte item records; pointer resolution belongs to the outer save/container
+// loader and is not guessed here.
+func (r *DOSPlayerRecord) ApplyInventory(data []byte) error {
+	if r == nil {
+		return fmt.Errorf("cannot apply inventory to nil DOS player record")
+	}
+	items, err := monster.ParseItems(data)
+	if err != nil {
+		return err
+	}
+	r.Inventory = append(r.Inventory[:0], items...)
+	return nil
 }
 
 func parseDOSRace(raw uint8) (Race, error) {
@@ -206,5 +230,20 @@ func (c *Character) ApplyDOSSpellRecord(data []byte) error {
 		return err
 	}
 	c.SpellSlots = append(c.SpellSlots[:0], record.MemorizedSpells...)
+	return nil
+}
+
+// ApplyDOSInventory replaces the remake equipment list with a decoded .SWG
+// item stream. It is separate from the player pointer because .SAV/.GUY and
+// .SWG are different files/regions in the original format.
+func (c *Character) ApplyDOSInventory(data []byte) error {
+	if c == nil {
+		return fmt.Errorf("cannot apply inventory to nil character")
+	}
+	items, err := monster.ParseItems(data)
+	if err != nil {
+		return err
+	}
+	c.Equipment = append(c.Equipment[:0], items...)
 	return nil
 }

@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 98 輪：DOS player record 核心角色匯入與 party／combat projection。
+第 99 輪：DOS `.SWG` inventory 匯入與 party equipment projection。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -299,3 +299,5 @@
 第 97 輪功能／文件 commit：`2280184`，已推送至 GitHub `main`。新增 bounded DOS player spell record parser、truncated-record guard、known／memorized tests 與可重用知識庫規格。
 
 第 98 輪功能／文件 commit：`43b26d0`，已推送至 GitHub `main`。新增 `ParseDOSPlayerRecord`，解析公開 `.SAV/.GUY` 單職業核心欄位，並保留原始 HP、icon、金幣與 spell 到 party projection；`.SWG` inventory／`.FX` effects／多職業與完整 DOS save container 仍未完成。
+
+第 99 輪功能／文件 commit：待本輪提交。新增 DOS player item/effects pointer preservation、`.SWG` `0x3F` item stream adapter 與 party equipment projection；`.FX` effects、pointer address-space 與完整 save container 仍未完成。
