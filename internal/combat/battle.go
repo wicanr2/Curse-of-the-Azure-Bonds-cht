@@ -159,6 +159,30 @@ func (b *Battle) Fighters() []Fighter {
 	return output
 }
 
+// ValidateAttack checks non-random attack preconditions. Game adapters can
+// call it before committing resources such as ammunition, while Attack calls
+// it before consuming the deterministic RNG stream.
+func (b *Battle) ValidateAttack(attackerID, targetID string) error {
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return fmt.Errorf("unknown attacker %q", attackerID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return fmt.Errorf("unknown target %q", targetID)
+	}
+	if b.status != StatusActive {
+		return fmt.Errorf("battle is already over")
+	}
+	if attacker.HitPoints <= 0 || target.HitPoints <= 0 {
+		return fmt.Errorf("dead fighter cannot attack")
+	}
+	if attacker.HasCombatPosition && target.HasCombatPosition && attacker.MissileWeapon && adjacent(attacker, target) && !attacker.ThrownWeapon {
+		return fmt.Errorf("missile weapon cannot attack an adjacent target")
+	}
+	return nil
+}
+
 // StartRound rolls the reference engine's d20-style initiative input for all
 // living fighters. Ties are deterministic by fighter ID for reproducibility.
 func (b *Battle) StartRound() ([]Turn, error) {
@@ -214,8 +238,8 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	if damageRoll < 0 {
 		return AttackResult{}, fmt.Errorf("negative damage roll")
 	}
-	if attacker.HasCombatPosition && target.HasCombatPosition && attacker.MissileWeapon && adjacent(attacker, target) && !attacker.ThrownWeapon {
-		return AttackResult{}, fmt.Errorf("missile weapon cannot attack an adjacent target")
+	if err := b.ValidateAttack(attackerID, targetID); err != nil {
+		return AttackResult{}, err
 	}
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
@@ -246,10 +270,10 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 // the dice source inside Battle makes the game adapter reproducible by seed,
 // while ResolveAttack remains available for exact rule regression tests.
 func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
-	attacker, ok := b.fighters[attackerID]
-	if !ok {
-		return AttackResult{}, fmt.Errorf("unknown attacker %q", attackerID)
+	if err := b.ValidateAttack(attackerID, targetID); err != nil {
+		return AttackResult{}, err
 	}
+	attacker := b.fighters[attackerID]
 	if attacker.DamageDiceCount < 1 || attacker.DamageDiceSides < 1 {
 		return b.ResolveAttack(attackerID, targetID, b.rng.Intn(20)+1, 0)
 	}

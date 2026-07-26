@@ -768,6 +768,31 @@ func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.
 	}
 }
 
+func TestCombatAdjacentMissileRejectsBeforeAmmunitionTransaction(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 2}}}}
+	state.SetAmmunitionItemTypes(map[uint8][]uint8{11: {73}})
+	partyFighters := []combat.Fighter{{
+		ID: "archer", Name: "弓手", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+		AmmunitionType: 11, MissileWeapon: true, HasCombatPosition: true, CombatX: 0, CombatY: 0,
+		InitiativeBonus: 20,
+	}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 0, HasCombatPosition: true, CombatX: 1, CombatY: 0}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err == nil {
+		t.Fatal("expected adjacent missile rejection")
+	}
+	if got := state.partyRoster[0].Equipment[0].Count; got != 2 {
+		t.Fatalf("invalid missile attack consumed ammunition: %d", got)
+	}
+	if got := state.CombatTargets()[0].HitPoints; got != 10 {
+		t.Fatalf("invalid missile attack changed target HP: %d", got)
+	}
+}
+
 func TestCombatMoveConsumesPartyTurnAndUpdatesPosition(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 4, CombatY: 3}}

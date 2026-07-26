@@ -1136,12 +1136,24 @@ func (s *State) combatAttackSequence(attacker combat.Fighter) ([]combat.AttackRe
 	if attacks < 1 {
 		attacks = 1
 	}
+	enemies := s.livingBySide(combat.SideEnemy)
+	if len(enemies) == 0 {
+		return nil, nil
+	}
+	if s.combatTargetIndex >= len(enemies) {
+		s.combatTargetIndex = 0
+	}
+	// Validate before the ammunition transaction so a rejected adjacent
+	// missile attack cannot consume arrows or bolts.
+	if err := s.battle.ValidateAttack(attacker.ID, enemies[s.combatTargetIndex].ID); err != nil {
+		return nil, err
+	}
 	if err := s.consumeCombatAmmunition(attacker, attacks); err != nil {
 		return nil, err
 	}
 	results := make([]combat.AttackResult, 0, attacks)
 	for len(results) < attacks && s.battle.Status() == combat.StatusActive {
-		enemies := s.livingBySide(combat.SideEnemy)
+		enemies = s.livingBySide(combat.SideEnemy)
 		if len(enemies) == 0 {
 			break
 		}
