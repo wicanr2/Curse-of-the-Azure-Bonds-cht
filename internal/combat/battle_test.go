@@ -283,3 +283,27 @@ func TestProtectionFromEvilAddsConditionalACAndExpires(t *testing.T) {
 		}
 	}
 }
+
+func TestProtectionFromGoodUsesClassSpecificSpellIDAndConditionalAC(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "paladin", Name: "Paladin", Side: SideEnemy, Good: true, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, AttackBonus: 8},
+	}, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastProtectionFromGood("cleric", "cleric", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != 7 || result.Targets != 1 {
+		t.Fatalf("protection from good result=%+v", result)
+	}
+	miss, err := battle.ResolveAttack("paladin", "cleric", 2, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if miss.Hit {
+		t.Fatalf("good attacker ignored protection: %+v", miss)
+	}
+}
