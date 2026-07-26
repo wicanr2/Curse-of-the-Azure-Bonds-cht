@@ -53,6 +53,16 @@ func (a *app) Update() error {
 			return err
 		case game.ModeEvent:
 			return a.state.Continue()
+		case game.ModeCombat:
+			return a.state.CombatAct()
+		}
+	}
+	if a.state.Mode == game.ModeCombat {
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			return a.state.CombatSelectTarget(1)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			return a.state.CombatSelectTarget(-1)
 		}
 	}
 	if a.state.Mode == game.ModeMap {
@@ -123,6 +133,36 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
 		text.Draw(screen, "Enter：場所　方向鍵：移動　Esc：離開", a.face, 56, 330, white)
 	}
+	if a.state.Mode == game.ModeCombat {
+		a.drawCombat(screen, white, cyan)
+		return
+	}
+}
+
+func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "戰鬥", a.face, 32, 52, cyan)
+	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
+	line := 130
+	targets := a.state.CombatTargets()
+	for _, fighter := range a.state.CombatFighters() {
+		if fighter.Side == 0 {
+			text.Draw(screen, fighter.Name+" 生命 "+strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, 32, line, white)
+			line += 24
+		}
+	}
+	line += 12
+	for _, fighter := range a.state.CombatFighters() {
+		if fighter.Side != 1 {
+			continue
+		}
+		prefix := "  "
+		if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
+			prefix = "> "
+		}
+		text.Draw(screen, prefix+fighter.Name+" 生命 "+strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, 32, line, white)
+		line += 24
+	}
+	text.Draw(screen, "左右：選擇目標　Enter：攻擊", a.face, 32, 350, cyan)
 }
 
 func (a *app) Layout(_, _ int) (int, int) { return logicalWidth, logicalHeight }

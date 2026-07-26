@@ -3,6 +3,7 @@ package game
 import (
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
 
@@ -171,5 +172,31 @@ func TestStateExposesCombatEntryFromECL(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.Message != "戰鬥開始（戰鬥規則尚未完成）" || state.OriginalEvent != "COMBAT" {
 		t.Fatalf("combat state=%#v", state)
+	}
+}
+
+func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
+	state := NewState(testCatalog())
+	party := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "goblin", Name: "哥布林", Side: combat.SideEnemy,
+		HitPoints: 1, MaxHitPoints: 1, ArmorClass: 0,
+		AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1,
+	}}
+	if err := state.StartCombat(party, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatActive() || len(state.CombatTargets()) != 1 {
+		t.Fatalf("combat state=%#v", state)
+	}
+	if err := state.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("combat result mode=%v status=%v message=%q", state.Mode, state.CombatStatus(), state.Message)
 	}
 }

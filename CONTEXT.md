@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 36 輪：ECL-to-enemy encounter adapter。
+第 37 輪：可操作戰鬥狀態與 Ebiten 畫面。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -40,6 +40,7 @@
 第 33 輪 commit：`84df0f9`，已推送至 GitHub `main`。
 第 34 輪 commit：`047e63f`，已推送至 GitHub `main`。
 第 35 輪 commit：`32aa9c8`，已推送至 GitHub `main`。
+第 36 輪 commit：`4b2edd3`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -80,13 +81,13 @@
 - Shadowdale `WILDERNESS/EXIT` 已接成第一個 `ModeMap` 垂直切片：State 保存 `(MapX, MapY)`，Ebiten 方向鍵可移動、Esc 可返回；目前沒有宣稱原始 tile 或場所資料已解碼。
 - 原始 ECL1 block `0x51` 已觀察到 `INN/STORE/BAR/LEAVE`；本輪接入 `ModePlace`、繁中選項與事件回復，但尚未宣稱場所內部 command path 已完成。
 - `0x27 TREASURE` 已依公開 command table 消耗 8 operands 並以 bounded no-op 繼續 trace；不宣稱已實作 treasure table、inventory 或獎勵效果。
-- 真實 ECL1 block `0x51` 的 `+0x0643 COMBAT` 已轉為 `RunResult.CombatRequested`，BlockSession 與 Game state 會保留此控制轉移並顯示繁中入口訊息；完整戰鬥仍未完成。
-- `internal/combat` 已建立可注入骰點的 party／enemy core：initiative、天然 1／20、AC、damage 與勝負狀態均有 regression；尚未接 ECL encounter 或 Ebiten combat UI。
+- 真實 ECL1 block `0x51` 的 `+0x0643 COMBAT` 已轉為 `RunResult.CombatRequested`，BlockSession 與 Game state 會保留此控制轉移並顯示繁中入口訊息；完整 ECL-to-Battle 流程仍未完成。
+- `internal/combat.Battle.Attack` 與 `internal/game.State.StartCombat/CombatAct` 已接成可由 seed 重現的玩家／敵人回合切片；Ebiten 已有繁中 HP、目標與攻擊畫面，但完整 AD&D 戰鬥仍未完成。
 - ECL1 block `0x51 +0x1293` 的 `SETUP MONSTER`／三個 `LOAD MONSTER` 已由 descriptor decoder 驗證，接續 `+0x12B0 COMBAT`；尚未解碼 `MON*CHA` stats。
 - `MON1CHA` fixed `0x1A6` record parser 已接入；實際 block `0x56` 解出 BUGBEAR `24/24 HP`、raw AC `55`、attack bonus `44`、`2d4`、initiative `9`，可轉成 `combat.Fighter`。
 - `MON*ITM` `0x3F`-byte parser 與 `MON*SPC` 9-byte affect parser 已接入；MON1 block `0x59` 有 5 筆 item、block `0x35` 有 2 筆 affect，名稱組合與 effects merge 尚未完成。
 - 已為實際觀察到的 item／effect IDs 接入繁中名稱：弩矢、輕弩、闊劍、盾牌、鏈甲、偵測隱形、酸液吐息；未知 IDs 仍明確 fallback。
-- `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止。
+- `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止；目前仍需由 runtime 自動傳入 Battle。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -96,8 +97,8 @@
 - ECL opcode、字串編碼、分支／呼叫慣例。
 - unknown opcode `0x85` 的完整語意與 IF／menu 的 runtime state 仍未完成。
 - TREASURE 的 party inventory／獎勵規則仍未完成；目前僅有安全 operand prefix。
-- COMBAT signal 已完成，但 party／enemy model、回合、骰點、傷害、法術、逃跑與戰鬥 UI 仍未完成。
-- party／enemy、initiative、攻擊與傷害 core 已完成；ECL encounter、戰場、法術、物品、逃跑／PARLAY 與 UI 仍未完成。
+- COMBAT signal、party／enemy model、基本回合／骰點／傷害與戰鬥 UI 垂直切片已完成；法術、物品、逃跑／PARLAY、戰場與完整原版流程仍未完成。
+- party／enemy、initiative、攻擊與傷害 core 及基本 UI 已完成；ECL encounter 自動接 Battle、戰場、法術、物品、逃跑／PARLAY 仍未完成。
 - ECL monster spawn descriptor 已完成；`MON*CHA` HP／AC／攻擊資料與 ECL-to-combat adapter 仍未完成。
 - `MON*CHA` raw HP／AC／攻擊 parser 與 Fighter adapter 已完成；`MON*ITM`／`MON*SPC`、完整 ECL-to-Battle setup 仍未完成。
 - `MON*CHA`、`MON*ITM`、`MON*SPC` raw parser 已完成；item name catalog、effects merge 與完整 ECL-to-Battle setup 仍未完成。
@@ -149,3 +150,4 @@
 34. 建立 item type／name-number catalog，合併 monster equipment/effects 並建立 Battle setup。
 35. 擴充完整 item catalog，整合 locale 與 ECL-to-Battle equipment/effects。
 36. 建立 party fighter 與 Battle，接入 encounter equipment/effects 與戰場 UI。
+37. 將 ECL `COMBAT` result 的 spawn descriptors／MON*CHA records 自動接入 `State.StartCombat`。

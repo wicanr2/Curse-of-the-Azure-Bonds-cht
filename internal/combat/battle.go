@@ -171,6 +171,25 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	return AttackResult{AttackerID: attackerID, TargetID: targetID, AttackRoll: attackRoll, Total: attackRoll + attacker.AttackBonus, Hit: hit, Critical: critical, Damage: damage, TargetHP: target.HitPoints}, nil
 }
 
+// Attack rolls a normal attack using the battle's deterministic RNG. Keeping
+// the dice source inside Battle makes the game adapter reproducible by seed,
+// while ResolveAttack remains available for exact rule regression tests.
+func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return AttackResult{}, fmt.Errorf("unknown attacker %q", attackerID)
+	}
+	if attacker.DamageDiceCount < 1 || attacker.DamageDiceSides < 1 {
+		return b.ResolveAttack(attackerID, targetID, b.rng.Intn(20)+1, 0)
+	}
+	attackRoll := b.rng.Intn(20) + 1
+	damageRoll := 0
+	for i := 0; i < attacker.DamageDiceCount; i++ {
+		damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
+	}
+	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
+}
+
 func (b *Battle) updateStatus() {
 	partyAlive, enemyAlive := false, false
 	for _, fighter := range b.fighters {
