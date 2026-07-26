@@ -165,25 +165,30 @@ func renderCombatSprites() error {
 	// later character data can select the exact head/body IDs without changing
 	// the asset format.
 	for id := uint8(0); id < 6; id++ {
-		head, headOK := layers["CHEAD"][id]
-		body, bodyOK := layers["CBODY"][id]
-		if !headOK || !bodyOK {
-			continue
+		for _, variant := range []struct {
+			suffix string
+			offset uint8
+		}{{suffix: "", offset: 0}, {suffix: "-attack", offset: 0x80}} {
+			head, headOK := layers["CHEAD"][id+variant.offset]
+			body, bodyOK := layers["CBODY"][id+variant.offset]
+			if !headOK || !bodyOK {
+				continue
+			}
+			merged, err := gfx.MergePictures(body, head)
+			if err != nil {
+				return fmt.Errorf("merge party icon 0x%02X%s: %w", id, variant.suffix, err)
+			}
+			img, err := merged.RGBA(0, gfx.EGA16)
+			if err != nil {
+				return err
+			}
+			name := fmt.Sprintf("party%s-head-%02X-body-%02X.png", variant.suffix, id, id)
+			if err := writePNG(filepath.Join("assets/sprites", name), img); err != nil {
+				return err
+			}
+			frames = append(frames, spriteFrame{name: name, img: img})
+			manifest.WriteString(fmt.Sprintf("| `CHEAD+CBODY` | `0x%02X` | %s merged | %dx%d | [`%s`](../../assets/sprites/%s) | party layer composition |\n", id, variant.suffix, merged.Width(), merged.Height(), name, name))
 		}
-		merged, err := gfx.MergePictures(body, head)
-		if err != nil {
-			return fmt.Errorf("merge party icon 0x%02X: %w", id, err)
-		}
-		img, err := merged.RGBA(0, gfx.EGA16)
-		if err != nil {
-			return err
-		}
-		name := fmt.Sprintf("party-block-%02X.png", id)
-		if err := writePNG(filepath.Join("assets/sprites", name), img); err != nil {
-			return err
-		}
-		frames = append(frames, spriteFrame{name: name, img: img})
-		manifest.WriteString(fmt.Sprintf("| `CHEAD+CBODY` | `0x%02X` | merged | %dx%d | [`%s`](../../assets/sprites/%s) | party layer composition |\n", id, merged.Width(), merged.Height(), name, name))
 	}
 	if err := os.WriteFile("assets/sprites/README.md", []byte(manifest.String()), 0644); err != nil {
 		return err

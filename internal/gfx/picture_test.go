@@ -23,3 +23,14 @@ func TestMergePicturesRejectsWiderSource(t *testing.T) {
 		t.Fatal("expected dimension error")
 	}
 }
+
+func TestFlipHorizontalPreservesIndexedPixels(t *testing.T) {
+	picture := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: []uint8{1, 2, 3, 4, 5, 6, 7, 8}}
+	flipped := picture.FlipHorizontal()
+	want := []uint8{8, 7, 6, 5, 4, 3, 2, 1}
+	for i, got := range flipped.Pixels {
+		if got != want[i] {
+			t.Fatalf("pixel %d = %d, want %d", i, got, want[i])
+		}
+	}
+}

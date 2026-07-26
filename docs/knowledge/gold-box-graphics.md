@@ -15,6 +15,8 @@
 - `CHEAD`：玩家頭部 layer，通常比 body canvas 矮，左上對齊合成。
 - `CBODY`：玩家身體／武器 layer，通常提供 24×24 的 destination canvas。
 
+原作另以同一 layer block 加 `0x80` 取得 attack state；direction `> 3` 使用水平翻轉版本。
+
 ## 合成規則
 
 對 destination `a` 與 source `b` 的每個 indexed pixel：
@@ -30,4 +32,4 @@ a、b 都不透明                   → a OR b
 
 ## 跨遊戲重用介面
 
-後續遊戲可沿用 `internal/dax`、`internal/gfx.Picture`、`gfx.MergePictures` 與 preview generator，只需建立每款遊戲的 DAX member 名稱、mask color、palette 與 icon layer mapping。
+後續遊戲可沿用 `internal/dax`、`internal/gfx.Picture`、`gfx.MergePictures`、`gfx.Picture.FlipHorizontal` 與 preview generator，只需建立每款遊戲的 DAX member 名稱、mask color、palette 與 icon layer mapping。

@@ -218,6 +218,7 @@
 - [x] 解碼 `SPRIT*.DAX` frame stream 並抽出逐幀 PNG。
 - [x] 將 SPRIT animation timing 與 ECL `SETUP MONSTER` block 接入 renderer。
 - [x] 解析 CHEAD／CBODY masked layers，依 reference `MergeIcon` 規則產生 party combat icon 並接入 renderer。
-- [ ] 將 SPRIT direction／position、玩家 icon block mapping 與八方向 combat placement 接入 renderer。
+- [x] 將玩家 icon state、normal／attack layer 與 direction flip 接入 renderer boundary。
+- [ ] 將 DOS player record icon mapping、SPRIT position 與八方向 combat placement 接入 renderer。
 - [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
