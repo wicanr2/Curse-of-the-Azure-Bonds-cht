@@ -38,6 +38,8 @@ Encounter non-combat menu 也應保留兩階段 transaction：`FLEE` 直接進�
 
 Combat MOVE 也採 action transaction：`M` 開始、方向鍵確認一格位置、Esc 取消；只有 Battle occupancy validation 成功後才更新座標並消耗 party turn。地形／邊界／負重／free rear attack／facing 不應在 renderer 猜測，應由後續作品的 CombatMap 與 rules adapter 注入。
 
+MOVE 的 adjacency transition 已可共用：Battle 保存舊座標，成功移動後對「舊位置相鄰、 新位置不相鄰」的存活 enemy 呼叫一次 free attack，再由 State 消耗 party turn。這只證明 trigger 與基本攻擊，不代表已解出背面 AC、facing、武器 reach 或地形規則。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
