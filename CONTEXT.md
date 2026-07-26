@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 10 輪：ECL data-driven opening。
+第 11 輪：ECL branch target graph。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -15,6 +15,7 @@
 第 7 輪 commit：`002acab`，已推送至 GitHub `main`。
 第 8 輪 commit：`c079c50`，已推送至 GitHub `main`。
 第 9 輪 commit：`ec85c89`，已推送至 GitHub `main`。
+第 10 輪 commits：`d1aea12`、`a4df55b`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -33,6 +34,7 @@
 - `cmd/azure-bonds-game` 已接入 Ebiten、鍵盤輸入與外部 TTF/OTF 字型；仍是 prototype，未宣稱完整遊戲。
 - Ebiten opening 已改為讀取 `ECL1.DAX` 第一個 block；`game.State.OriginalOpening` 會記錄從原始 payload 辨識出的 opening marker。
 - 第十輪驗證通過：internal tests 與 `cmd/azure-bonds-game` Ebiten compile；GUI 仍需有 display 才能實跑。
+- `internal/ecl.TraceGraph` 已能追蹤 code-segment `GOTO/GOSUB` targets；不執行條件或副作用。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -55,3 +57,4 @@
 9. 建立 Ebiten input／render adapter，先視覺化 opening state。
 10. 將 ECL event trace 與 Ebiten event screen 接起來，加入第一個可驗證劇情場景。
 11. 建立 ECL branch target graph，將 opening marker 後的選項與事件序列接入 state。
+12. 對 ECL graph 的 entry points 做原版事件文字對齊，建立第一個完整 event screen。
