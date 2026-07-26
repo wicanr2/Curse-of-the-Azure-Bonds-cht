@@ -42,6 +42,8 @@ type Location uint8
 const (
 	LocationWilderness Location = iota
 	LocationShadowdale
+	LocationAshabenford
+	LocationDaggerFalls
 )
 
 type State struct {
@@ -284,11 +286,7 @@ func (s *State) Select(index int) error {
 			result, _ = ecl.RunSubsetInteractiveSeed(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed)
 		}
 		s.applyGeoMapLoad(result)
-		if len(s.selectionSequence) >= 4 && s.selectionSequence[0] == 0 && s.selectionSequence[1] == 0 && s.selectionSequence[2] == 1 && s.selectionSequence[3] == 0 {
-			s.Location = LocationShadowdale
-			s.LocationName = s.catalog.Text("shadowdale", "Shadowdale")
-			s.OriginalLocation = "SHADOWDALE"
-		}
+		s.applyCitySelection()
 		if result.CombatRequested {
 			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(s.monsterRecords) > 0 {
 				if err := s.StartEncounter(result, s.monsterRecords, s.party, s.combatSeed); err != nil {
@@ -309,11 +307,11 @@ func (s *State) Select(index int) error {
 		// these semantic transitions before the bounded runner's next-menu
 		// result is applied, since the original command may leave another
 		// continuation menu in the trace.
-		if s.Location == LocationShadowdale && originalChoice == "WILDERNESS" {
+		if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
 			s.enterMap()
 			return nil
 		}
-		if s.Location == LocationShadowdale && originalChoice == "EXIT" {
+		if s.Location != LocationWilderness && originalChoice == "EXIT" {
 			s.leaveLocation()
 			return nil
 		}
@@ -334,11 +332,11 @@ func (s *State) Select(index int) error {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
 		}
 	}
-	if s.Location == LocationShadowdale && originalChoice == "WILDERNESS" {
+	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
 		s.enterMap()
 		return nil
 	}
-	if s.Location == LocationShadowdale && originalChoice == "EXIT" {
+	if s.Location != LocationWilderness && originalChoice == "EXIT" {
 		s.leaveLocation()
 	}
 	return nil
@@ -477,7 +475,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 func (s *State) enterMap() {
 	s.Mode = ModeMap
 	s.MapX, s.MapY = 0, 0
-	cityFlags, ok := mapdata.CityInfo(0)
+	cityFlags, ok := mapdata.CityInfo(int(s.Area.CurrentCity))
 	if !ok {
 		cityFlags = 0
 	}
@@ -517,11 +515,11 @@ func (s *State) LeaveMap() error {
 // It is separate from map movement so the future decoded tile/encounter layer
 // can be inserted without changing the place-event input contract.
 func (s *State) EnterPlaces() error {
-	if s.Mode != ModeMap || s.Location != LocationShadowdale {
+	if s.Mode != ModeMap || s.Location == LocationWilderness {
 		return fmt.Errorf("place menu is invalid in mode %d at location %d", s.Mode, s.Location)
 	}
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("what_place", "你在暗影谷。要去哪裡？")
+	s.Prompt = s.placePrompt()
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
 		s.catalog.Text("store", "商店"),
@@ -557,11 +555,11 @@ func (s *State) Continue() error {
 }
 
 func (s *State) EnterPlacesFromEvent() error {
-	if s.Location != LocationShadowdale {
+	if s.Location == LocationWilderness {
 		return fmt.Errorf("place menu is invalid at location %d", s.Location)
 	}
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("what_place", "你在暗影谷。要去哪裡？")
+	s.Prompt = s.placePrompt()
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
 		s.catalog.Text("store", "商店"),
@@ -571,6 +569,37 @@ func (s *State) EnterPlacesFromEvent() error {
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
 	s.Message = ""
 	return nil
+}
+
+func (s *State) placePrompt() string {
+	return "你在" + s.LocationName + "。要去哪裡？"
+}
+
+// applyCitySelection maps the observed ECL city menu order to the three
+// named locations. The first three selections are the proven opening path:
+// ENTER CITY, CONTINUE, JOURNEY ON; the fourth selects the city.
+func (s *State) applyCitySelection() {
+	if len(s.selectionSequence) < 4 || s.selectionSequence[0] != 0 || s.selectionSequence[1] != 0 || s.selectionSequence[2] != 1 {
+		return
+	}
+	choice := s.selectionSequence[3]
+	if choice > 2 {
+		return
+	}
+	locations := [...]struct {
+		location Location
+		key      string
+		original string
+	}{
+		{LocationShadowdale, "shadowdale", "SHADOWDALE"},
+		{LocationAshabenford, "ashabenford", "ASHABENFORD"},
+		{LocationDaggerFalls, "dagger_falls", "DAGGER FALLS"},
+	}
+	selected := locations[choice]
+	s.Location = selected.location
+	s.LocationName = s.catalog.Text(selected.key, selected.original)
+	s.OriginalLocation = selected.original
+	s.Area.CurrentCity = uint8(choice)
 }
 
 func (s *State) leaveLocation() {
