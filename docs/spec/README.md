@@ -114,3 +114,4 @@
 - [第一百一十七輪繁中 CAMP Menu state](./117-camp-menu-state.md)（`READY`：限 CAMP command／REST／EXIT boundary）
 - [第一百一十八輪 CAMP VIEW 角色摘要](./118-camp-view.md)（`READY`：限只讀 party summary）
 - [第一百一十九輪 CAMP MAGIC spell-slot view](./119-camp-magic-view.md)（`READY`：限已驗證 spell ID 查看）
+- [第一百二十輪 CAMP SAVE request adapter](./120-camp-save-request.md)（`READY`：限 remake party save）

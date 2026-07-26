@@ -226,6 +226,13 @@ func (a *app) Update() error {
 			return a.state.Apply(game.ActionStart)
 		case game.ModeWilderness:
 			err := a.state.Select(a.choiceCursor)
+			if a.state.ConsumeSaveRequest() {
+				if saveErr := a.state.SavePartyFile(a.partyPath); saveErr != nil {
+					a.state.Message = "儲存失敗：" + saveErr.Error()
+				} else {
+					a.state.Message = "隊伍已儲存：" + a.partyPath
+				}
+			}
 			if a.state.Mode == game.ModeWilderness {
 				a.choiceCursor = 0
 			}
