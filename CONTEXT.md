@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 46 輪：角色建立能力值編輯。
+第 47 輪：能力值 3d6 擲骰與重擲。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -50,6 +50,7 @@
 第 43 輪 commit：`b756398`，已推送至 GitHub `main`。
 第 44 輪 commit：`f4b1d32`，已推送至 GitHub `main`。
 第 45 輪 commit：`d7eb4f6`，已推送至 GitHub `main`。
+第 46 輪 commit：`d780fda`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -106,6 +107,7 @@
 - Ebiten 已接 `C` 角色建立 starter UI：方向鍵選模板、Enter 加入、D 完成；三個模板會經 validation、投影成 combat fighter 並保存到 State，完整自訂建角／存檔仍未完成。
 - 建立畫面按 `N` 可輸入 Unicode／繁中姓名，Backspace／Enter／Esc 均已接 state；能力值分配、裝備與存檔仍未完成。
 - 建立畫面按 `A` 可編輯六項能力值，左右選欄、上下調整 3–18，完成加入時仍經職業最低值 validation；擲骰／重擲、裝備與存檔仍未完成。
+- 建立畫面按 `R` 可重擲六項 3d6 能力值；核心接受 seed regression，完成加入時仍經職業最低值 validation。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -178,3 +180,4 @@
 43. 補自訂姓名／能力值、裝備、XP／等級與 party save/import。
 44. 接能力值逐項分配與規則化的角色完成流程。
 45. 補擲骰／重擲點數池、性別／年齡與 alignment，接角色存檔。
+46. 補裝備選擇、XP／等級與 party save/import。

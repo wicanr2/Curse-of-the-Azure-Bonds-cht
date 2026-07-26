@@ -5,6 +5,7 @@ package party
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 )
@@ -38,6 +39,21 @@ type Abilities struct {
 	Dexterity    int
 	Constitution int
 	Charisma     int
+}
+
+// RollAbilities reproduces the rule-book's six ability generation shape: six
+// independent 3d6 rolls. A caller-provided seed keeps tests and replays
+// deterministic without coupling the party package to UI randomness.
+func RollAbilities(seed int64) Abilities {
+	rng := rand.New(rand.NewSource(seed))
+	roll := func() int {
+		total := 0
+		for i := 0; i < 3; i++ {
+			total += rng.Intn(6) + 1
+		}
+		return total
+	}
+	return Abilities{Strength: roll(), Intelligence: roll(), Wisdom: roll(), Dexterity: roll(), Constitution: roll(), Charisma: roll()}
 }
 
 func (a Abilities) Value(index int) (int, error) {

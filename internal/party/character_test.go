@@ -87,3 +87,17 @@ func TestAbilityAdjustmentIsBounded(t *testing.T) {
 		t.Fatalf("abilities=%#v err=%v", abilities, err)
 	}
 }
+
+func TestRollAbilitiesIsDeterministicAndWithin3d6(t *testing.T) {
+	first := RollAbilities(42)
+	second := RollAbilities(42)
+	if first != second {
+		t.Fatalf("same seed produced different abilities: %#v %#v", first, second)
+	}
+	for index := 0; index < 6; index++ {
+		value, err := first.Value(index)
+		if err != nil || value < 3 || value > 18 {
+			t.Fatalf("ability[%d]=%d err=%v", index, value, err)
+		}
+	}
+}

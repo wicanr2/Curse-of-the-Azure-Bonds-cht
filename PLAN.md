@@ -188,4 +188,5 @@
 - [x] 接通繁中角色建立 starter UI，完成後將角色投影並保存到 `State.SetParty`。
 - [x] 接通 Unicode／繁中自訂角色姓名輸入與 State 保存。
 - [x] 接通六項能力值的繁中編輯、3–18 bounds 與職業最低值 validation。
+- [x] 加入六項能力值的 3d6 擲骰／重擲，並保留 seed regression。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
