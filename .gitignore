@@ -1,0 +1,11 @@
+# 原始研究素材（僅本地使用，避免把商業遊戲映像與掃描手冊推送到 repo）
+*.zip
+*.rar
+*.pdf
+
+# 本地解包與分析輸出
+workplace/original/
+workplace/extracted/
+workplace/output/
+*.pyc
+__pycache__/
