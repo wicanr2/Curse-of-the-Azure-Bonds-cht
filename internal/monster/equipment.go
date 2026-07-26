@@ -43,6 +43,59 @@ type BaseItemCatalog struct {
 	Items  []BaseItem
 }
 
+// EquipmentEffect is the small, renderer-neutral projection needed by the
+// current combat adapter. Charges and magical effect stacks remain separate.
+type EquipmentEffect struct {
+	Slot                  uint8
+	AttackBonus           int
+	ArmorClassImprovement int
+	DamageDiceCount       int
+	DamageDiceSides       int
+	DamageBonus           int
+}
+
+// ArmorClassImprovement decodes the reference's packed AC adjustment.
+func (item BaseItem) ArmorClassImprovement() int {
+	if item.ACAdjustment >= 178 {
+		return int(item.ACAdjustment) - 178
+	}
+	if item.ACAdjustment >= 128 {
+		return int(item.ACAdjustment) - 128
+	}
+	return 0
+}
+
+// UsableByMask reports whether the supplied reference class bit is allowed:
+// magic-user=1, cleric=2, thief=4, fighter=8, druid=16, monk=32,
+// paladin=64, ranger=128.
+func (item BaseItem) UsableByMask(classBit uint8) bool {
+	return classBit != 0 && item.ClassUsabilityMask&classBit != 0
+}
+
+// Effect projects one inventory item onto combat stats. large selects the
+// large-target damage columns; the current party slice uses false.
+func (item ItemRecord) Effect(catalog BaseItemCatalog, large bool) (EquipmentEffect, error) {
+	base, ok := catalog.Lookup(item.Type)
+	if !ok {
+		return EquipmentEffect{}, fmt.Errorf("item type 0x%02X is outside base catalog", item.Type)
+	}
+	effect := EquipmentEffect{
+		Slot:                  base.Slot,
+		AttackBonus:           item.Plus,
+		ArmorClassImprovement: base.ArmorClassImprovement(),
+	}
+	if large {
+		effect.DamageDiceCount = int(base.LargeDamageDice)
+		effect.DamageDiceSides = int(base.LargeDamageSides)
+		effect.DamageBonus = int(base.LargeDamageBonus) + item.Plus
+	} else {
+		effect.DamageDiceCount = int(base.SmallDamageDice)
+		effect.DamageDiceSides = int(base.SmallDamageSides)
+		effect.DamageBonus = int(base.SmallDamageBonus) + item.Plus
+	}
+	return effect, nil
+}
+
 // ParseBaseItems decodes the standalone ITEMS member. Its current image is
 // 2050 bytes: a two-byte header followed by 128 fixed-size descriptors.
 func ParseBaseItems(data []byte) (BaseItemCatalog, error) {

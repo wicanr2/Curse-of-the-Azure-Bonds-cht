@@ -1,6 +1,10 @@
 package party
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+)
 
 func validCharacter() Character {
 	return Character{
@@ -78,6 +82,35 @@ func TestStarterFighterProjection(t *testing.T) {
 	}
 	if !fighter.HasPartyIcon || fighter.PartyHeadBlock != 0 || fighter.PartyBodyBlock != 0 || fighter.PartyIconSize != 2 {
 		t.Fatalf("fighter icon=%#v", fighter)
+	}
+}
+
+func TestFighterWithEquipmentAppliesReadiedWeaponAndArmor(t *testing.T) {
+	data := make([]byte, monster.BaseItemHeaderSize+3*monster.BaseItemRecordSize)
+	// type 0: one d6 weapon with a +1 item bonus
+	data[monster.BaseItemHeaderSize+2] = 1
+	data[monster.BaseItemHeaderSize+3] = 6
+	data[monster.BaseItemHeaderSize+9] = 1
+	data[monster.BaseItemHeaderSize+10] = 6
+	data[monster.BaseItemHeaderSize+monster.BaseItemRecordSize+0] = 2
+	// type 1: body armor with packed AC improvement 2
+	data[monster.BaseItemHeaderSize+monster.BaseItemRecordSize+6] = 180
+	catalog, err := monster.ParseBaseItems(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	character := validCharacter()
+	character.Equipment = []monster.ItemRecord{
+		{Type: 0, Plus: 1, Readied: true},
+		{Type: 1, Readied: true},
+		{Type: 2, Readied: false},
+	}
+	fighter, err := character.FighterWithEquipment(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.AttackBonus != 4 || fighter.DamageDiceCount != 1 || fighter.DamageDiceSides != 6 || fighter.DamageBonus != 1 || fighter.ArmorClass != 7 {
+		t.Fatalf("equipped fighter=%#v", fighter)
 	}
 }
 

@@ -61,3 +61,5 @@ a、b 都不透明                   → a OR b
 ## 共用資料檔邊界
 
 Gold Box 的 `ITEMS` 不是 DAX；目前 reference 格式是 2-byte header 加 16-byte descriptor table。descriptor index 就是 inventory item type，固定保存裝備欄位、hands、大小生物傷害、AC adjustment、weapon type、range、class usability mask 與 ammunition type。`monster.ParseBaseItems`／`BaseItemCatalog.Lookup` 可供後續遊戲沿用；若其他作品改變 descriptor 數量，仍應由 payload 長度計算，不要硬編碼 128。
+
+裝備效果層應保持兩段式：`ItemRecord` 的 instance state（plus、readied、cursed、Affects）先查 `BaseItem` descriptor，再由上層決定是否投影到 fighter。現在 `ItemRecord.Effect`／`party.Character.FighterWithEquipment` 只實作 readied 基本武器／護甲，避免把 charges、magic effect 或 inventory mutation 混進共用 parser。
