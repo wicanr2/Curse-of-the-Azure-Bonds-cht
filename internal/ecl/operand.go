@@ -164,6 +164,28 @@ func TraceAt(block []byte, start, limit int) ([]Instruction, error) {
 	return trace, nil
 }
 
+// ScanKnownInstructions linearly scans a decoded payload, resynchronizing at
+// bytes that do not form a known instruction. It is an analysis aid for
+// locating command records outside the currently reachable control-flow
+// graph; callers must treat candidates as evidence to verify, not execution.
+func ScanKnownInstructions(block []byte) ([]Instruction, error) {
+	if len(block) < 2 {
+		return nil, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	payload := block[2:]
+	output := make([]Instruction, 0)
+	for offset := 0; offset < len(payload); {
+		instruction, err := decodeInstruction(payload, offset)
+		if err != nil || instruction.Next <= offset || instruction.Next > len(payload) {
+			offset++
+			continue
+		}
+		output = append(output, instruction)
+		offset = instruction.Next
+	}
+	return output, nil
+}
+
 func decodeInstruction(payload []byte, offset int) (Instruction, error) {
 	if offset < 0 || offset >= len(payload) {
 		return Instruction{}, fmt.Errorf("instruction offset %d is outside payload", offset)

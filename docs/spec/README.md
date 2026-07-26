@@ -26,3 +26,4 @@
 - [第二十九輪 TREASURE bounded prefix](./round-29-treasure-prefix.md)（`READY`：限 operand framing 與安全前綴）
 - [第三十輪 COMBAT request signal](./round-30-combat-request.md)（`READY`：限控制轉移 signal）
 - [第三十一輪 AD&D combat core](./round-31-combat-core.md)（`READY`：限可注入骰點的核心規則）
+- [第三十二輪 ECL monster spawn descriptors](./round-32-ecl-monster-spawn.md)（`READY`：限 ECL command descriptor）
