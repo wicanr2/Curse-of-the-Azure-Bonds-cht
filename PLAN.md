@@ -19,7 +19,7 @@
 | 0. 基線與素材盤點 | 本計畫、素材清單、GitHub 基線 | 完成 |
 | 1. DAX／EXE／ECL 格式分析 | `docs/spec/` 格式規格與樣本工具 | 進行中 |
 | 2. ECL 最小直譯器 spike | 可讀取並追蹤一個最小場景 | 進行中 |
-| 3. 遊戲狀態與 AD&D 規則 | 核心模型與相容性測試 | 待開始 |
+| 3. 遊戲狀態與 AD&D 規則 | 核心模型與相容性測試 | 進行中 |
 | 4. 渲染、輸入、音效 | Go/Ebiten 可執行 prototype | 待開始 |
 | 5. 中文化與手札 | 字串資源、字型、繁中內容 | 待開始 |
 | 6. 整合與遊玩驗證 | DOS 對照測試與 release build | 待開始 |
@@ -48,3 +48,8 @@
 - Go ECL layer 能從 length-prefixed payload 解碼 6-bit packed text。
 - 以原始 `ECL1.DAX` 的真實 payload 做 regression test。
 - CLI 能列出英文原文候選，作為後續繁中翻譯資源輸入。
+
+## 第八輪驗收
+
+- `internal/game.State` 以 locale catalog 驅動繁中開場狀態轉移。
+- 狀態核心有錯誤 action 與完整 opening flow 測試。
