@@ -90,4 +90,4 @@ DOS player／creature record 的 spell 欄位可作為後續 Gold Box 遊戲共�
 
 `cmd/azure-bonds-game -dos-character-record` 直接重用同一個 `party.DOSPlayerFiles` boundary，將 imported HP、icon、equipment、effects 接進 startup state；它只建立單一角色，不能冒充完整 SAVGAM party／area restore。
 
-effect projection 目前只允許 active `0x01` Bless（attack +1）與 active `0x02` Curse（attack -1）進入 `party.Character.Fighter`；Bestow Curse、Prayer、Protection、Blind、Haste 等必須等 target／phase／rules state 齊全後再處理，不能在 importer 中猜測。
+effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（attack -1）、`0x21` Blind（attack -4、AC +4）、`0x24` Bestow Curse（attack -4）與對 party 的 `0x31` friendly Prayer（attack +1）投影到 `party.Character.Fighter`。hostile Prayer、Protection、Mirror Image、Haste 與需要 target／phase／saving throw 的部分仍由後續 combat rules layer 處理；這個界線可沿用到其他 Gold Box 遊戲。

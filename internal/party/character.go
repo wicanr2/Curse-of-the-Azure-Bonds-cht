@@ -370,7 +370,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	return c.applyKnownEffects(fighter), nil
 }
 
-// applyKnownEffects projects only unconditional attack modifiers documented
+// applyKnownEffects projects only unconditional attack and AC modifiers documented
 // for the current CoAB rules slice. Effects requiring target alignment,
 // morale, saving throws, or status transitions remain in the rules layer.
 func (c Character) applyKnownEffects(fighter combat.Fighter) combat.Fighter {
@@ -383,6 +383,13 @@ func (c Character) applyKnownEffects(fighter combat.Fighter) combat.Fighter {
 			fighter.AttackBonus++
 		case 0x02: // Curse: +1 THAC0, equivalent to -1 attack bonus.
 			fighter.AttackBonus--
+		case 0x21: // Blind: -4 attack and +4 AC (worse AC).
+			fighter.AttackBonus -= 4
+			fighter.ArmorClass += 4
+		case 0x24: // Bestow Curse: -4 attack.
+			fighter.AttackBonus -= 4
+		case 0x31: // Prayer: friendly effect gives -1 THAC0, or +1 attack.
+			fighter.AttackBonus++
 		}
 	}
 	return fighter

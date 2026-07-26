@@ -269,6 +269,26 @@ func TestFighterProjectionAppliesActiveBlessAndCurse(t *testing.T) {
 	}
 }
 
+func TestFighterProjectionAppliesActiveBlindBestowCurseAndPrayer(t *testing.T) {
+	character := validCharacter()
+	base, err := character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	character.Effects = []monster.AffectRecord{
+		{Kind: 0x21, Active: true}, // Blind
+		{Kind: 0x24, Active: true}, // Bestow Curse
+		{Kind: 0x31, Active: true}, // friendly Prayer
+	}
+	fighter, err := character.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.AttackBonus != base.AttackBonus-4-4+1 || fighter.ArmorClass != base.ArmorClass+4 {
+		t.Fatalf("projected fighter=%#v base=%#v", fighter, base)
+	}
+}
+
 func TestEquipItemEnforcesClassSlotsHandsAndRings(t *testing.T) {
 	data := make([]byte, monster.BaseItemHeaderSize+7*monster.BaseItemRecordSize)
 	setBase := func(index int, slot, hands, mask uint8) {
