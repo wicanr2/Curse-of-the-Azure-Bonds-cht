@@ -258,3 +258,21 @@ func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 		t.Fatalf("restored hp=%d, want 10", got)
 	}
 }
+
+func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil || state.Mode != ModeCharacterCreation {
+		t.Fatalf("open creation mode=%v err=%v", state.Mode, err)
+	}
+	for index := range state.CreationOptions {
+		if err := state.AddCreationCharacter(index); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := state.FinishCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.PartyFighters()) != 3 {
+		t.Fatalf("finished state mode=%v party=%#v", state.Mode, state.PartyFighters())
+	}
+}

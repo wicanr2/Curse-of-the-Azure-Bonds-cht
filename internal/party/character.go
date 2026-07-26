@@ -3,7 +3,11 @@
 // book/reference rewrite; combat serialization remains a separate adapter.
 package party
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+)
 
 type Race uint8
 
@@ -62,6 +66,41 @@ func (r Roster) Validate() error {
 		seen[character.ID] = struct{}{}
 	}
 	return nil
+}
+
+// Fighter returns the starter combat projection used by the character
+// creation slice. The full AD&D level, equipment and spell tables remain a
+// separate data source; these defaults are intentionally deterministic.
+func (c Character) Fighter() (combat.Fighter, error) {
+	if err := c.Validate(); err != nil {
+		return combat.Fighter{}, err
+	}
+	hitDie, damageSides := 6, 4
+	specialist := c.Class == ClassFighter || c.Class == ClassRanger || c.Class == ClassPaladin
+	switch c.Class {
+	case ClassCleric:
+		hitDie, damageSides = 8, 6
+	case ClassFighter, ClassRanger, ClassPaladin:
+		hitDie, damageSides = 10, 8
+	case ClassThief:
+		hitDie, damageSides = 6, 6
+	}
+	constitutionBonus := (c.Abilities.Constitution - 14) / 2
+	hitPoints := hitDie + constitutionBonus
+	if hitPoints < 1 {
+		hitPoints = 1
+	}
+	attackBonus := (c.Abilities.Strength - 10) / 2
+	if !specialist {
+		attackBonus = (c.Abilities.Dexterity - 10) / 2
+	}
+	armorClass := 10 - (c.Abilities.Dexterity-10)/2
+	return combat.Fighter{
+		ID: c.ID, Name: c.Name, Side: combat.SideParty,
+		HitPoints: hitPoints, MaxHitPoints: hitPoints, ArmorClass: armorClass,
+		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
+		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
+	}, nil
 }
 
 func (r Race) String() string {

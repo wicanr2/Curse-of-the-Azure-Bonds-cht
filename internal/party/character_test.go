@@ -67,3 +67,13 @@ func TestRosterLimitAndDuplicateIDs(t *testing.T) {
 		t.Fatal("expected roster size error")
 	}
 }
+
+func TestStarterFighterProjection(t *testing.T) {
+	fighter, err := validCharacter().Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.Side != 0 || fighter.MaxHitPoints != 10 || fighter.DamageDiceSides != 8 {
+		t.Fatalf("fighter=%#v", fighter)
+	}
+}

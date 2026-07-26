@@ -42,5 +42,8 @@
     ,"journal_page_6": "遊玩提示：先在城鎮補充武器與護甲，再向神殿、賢者、酒館與守衛詢問。手札條目可能是真相，也可能是謠言；不要提前閱讀未觸發的線索。"
     ,"journal_page_7": "戰鬥提示：觀察先攻、護甲等級與攻擊加值，保護施法者，並在戰前準備法術。戰鬥畫面可用左右鍵選擇敵人，Enter 執行攻擊。"
     ,"journal_page_8": "歷史：本作是 SSI 的 Forgotten Realms Gold Box 冒險，承接《Pool of Radiance》。本 remake 以 Go／Ebiten 重建資料、腳本、繁中介面與可驗證的遊戲狀態。"
+    ,"creation_prompt": "選擇角色模板，Enter 加入隊伍；D 完成建立。"
+    ,"creation_added": "已加入：%s（目前 %d 人）"
+    ,"party_ready": "隊伍已建立。準備開始冒險。"
   }
 }

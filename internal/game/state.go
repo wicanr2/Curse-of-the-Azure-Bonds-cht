@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 type Mode uint8
@@ -22,6 +23,7 @@ const (
 	ModePlace
 	ModeCombat
 	ModeJournal
+	ModeCharacterCreation
 )
 
 type Action uint8
@@ -63,6 +65,10 @@ type State struct {
 	JournalPages     []string
 	JournalPage      int
 	CampCount        int
+	CreationOptions  []party.Character
+	CreationRoster   party.Roster
+	CreationCursor   int
+	CreationMessage  string
 
 	catalog                locale.Catalog
 	eclBlock               []byte
@@ -71,6 +77,7 @@ type State struct {
 	currentOriginalChoices []string
 	eventReturnMode        Mode
 	journalReturnMode      Mode
+	creationReturnMode     Mode
 	session                *ecl.BlockSession
 	party                  []combat.Fighter
 	battle                 *combat.Battle

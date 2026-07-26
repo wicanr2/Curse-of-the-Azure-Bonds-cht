@@ -24,6 +24,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 const (
@@ -38,6 +39,31 @@ type app struct {
 }
 
 func (a *app) Update() error {
+	if a.state.Mode == game.ModeCharacterCreation {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			return a.state.CancelCharacterCreation()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+			return a.state.FinishCharacterCreation()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			return a.state.AddCreationCharacter(a.state.CreationCursor)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			if a.state.CreationCursor+1 < len(a.state.CreationOptions) {
+				a.state.CreationCursor++
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			if a.state.CreationCursor > 0 {
+				a.state.CreationCursor--
+			}
+		}
+		return nil
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyC) {
+		return a.state.OpenCharacterCreation()
+	}
 	if a.state.Mode == game.ModeJournal {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyJ) {
 			return a.state.CloseJournal()
@@ -121,6 +147,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
+	if a.state.Mode == game.ModeCharacterCreation {
+		a.drawCreation(screen, white, cyan)
+		return
+	}
 	if a.state.Mode == game.ModeJournal {
 		text.Draw(screen, a.state.JournalTitle, a.face, 32, 52, cyan)
 		line := 100
@@ -168,6 +198,29 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawCombat(screen, white, cyan)
 		return
 	}
+}
+
+func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
+	text.Draw(screen, "建立冒險隊伍", a.face, 32, 52, cyan)
+	text.Draw(screen, a.state.CreationMessage, a.face, 32, 90, white)
+	for index, character := range a.state.CreationOptions {
+		prefix := "  "
+		if index == a.state.CreationCursor {
+			prefix = "> "
+		}
+		label := prefix + character.Name + "（" + raceName(character.Race) + "／" + className(character.Class) + "）"
+		text.Draw(screen, label, a.face, 48, 150+index*38, white)
+	}
+	text.Draw(screen, "已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 285, cyan)
+	text.Draw(screen, "Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
+}
+
+func raceName(r party.Race) string {
+	return map[party.Race]string{party.RaceDwarf: "矮人", party.RaceElf: "精靈", party.RaceGnome: "侏儒", party.RaceHalfElf: "半精靈", party.RaceHalfling: "半身人", party.RaceHuman: "人類"}[r]
+}
+
+func className(c party.Class) string {
+	return map[party.Class]string{party.ClassCleric: "牧師", party.ClassFighter: "戰士", party.ClassRanger: "遊俠", party.ClassPaladin: "聖武士", party.ClassMagicUser: "魔法師", party.ClassThief: "盜賊"}[c]
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {

@@ -40,3 +40,4 @@
 - [第四十一輪 可翻頁的繁中冒險手札](./round-41-journal-pages.md)（`READY`：限八頁摘要與 UI 導航）
 - [第四十二輪 party 保存與 CAMP 恢復 state](./round-42-party-camp-state.md)（`READY`：限 party HP boundary）
 - [第四十三輪 角色建立規則核心](./round-43-character-creation-rules.md)（`READY`：限 validation）
+- [第四十四輪 繁中角色建立 UI](./round-44-character-creation-ui.md)（`READY`：限 starter slice）
