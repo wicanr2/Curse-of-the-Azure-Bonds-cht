@@ -55,22 +55,24 @@ type State struct {
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
 	// not a replacement for the localized display string.
-	OriginalOpening  string
-	OriginalChoices  []string
-	OriginalEvent    string
-	OriginalLocation string
-	JournalTitle     string
-	JournalText      string
-	JournalCloseText string
-	JournalPages     []string
-	JournalPage      int
-	CampCount        int
-	CreationOptions  []party.Character
-	CreationRoster   party.Roster
-	CreationCursor   int
-	CreationMessage  string
-	CreationName     string
-	CreationEditing  bool
+	OriginalOpening          string
+	OriginalChoices          []string
+	OriginalEvent            string
+	OriginalLocation         string
+	JournalTitle             string
+	JournalText              string
+	JournalCloseText         string
+	JournalPages             []string
+	JournalPage              int
+	CampCount                int
+	CreationOptions          []party.Character
+	CreationRoster           party.Roster
+	CreationCursor           int
+	CreationMessage          string
+	CreationName             string
+	CreationEditing          bool
+	CreationAbility          int
+	CreationEditingAbilities bool
 
 	catalog                locale.Catalog
 	eclBlock               []byte

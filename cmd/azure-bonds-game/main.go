@@ -57,11 +57,35 @@ func (a *app) Update() error {
 			}
 			return nil
 		}
+		if a.state.CreationEditingAbilities {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyA) {
+				return a.state.ToggleCreationAbilities()
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+				return a.state.MoveCreationAbility(-1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+				return a.state.MoveCreationAbility(1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+				return a.state.AdjustCreationAbility(1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+				return a.state.AdjustCreationAbility(-1)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+				return a.state.AddCreationCharacter(a.state.CreationCursor)
+			}
+			return nil
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			return a.state.CancelCharacterCreation()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
 			return a.state.BeginCreationName()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+			return a.state.ToggleCreationAbilities()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
 			return a.state.FinishCharacterCreation()
@@ -228,6 +252,20 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, "輸入文字　Enter：確定　Esc：取消", a.face, 48, 190, cyan)
 		return
 	}
+	if a.state.CreationEditingAbilities {
+		character := a.state.CreationOptions[a.state.CreationCursor]
+		text.Draw(screen, "編輯："+character.Name+"（左右選能力，上下調整）", a.face, 32, 135, white)
+		for index, name := range []string{"力量", "智力", "智慧", "敏捷", "體質", "魅力"} {
+			value, _ := character.Abilities.Value(index)
+			prefix := "  "
+			if index == a.state.CreationAbility {
+				prefix = "> "
+			}
+			text.Draw(screen, prefix+name+"："+strconv.Itoa(value), a.face, 64, 175+index*25, white)
+		}
+		text.Draw(screen, "A／Esc：返回　Enter：加入隊伍", a.face, 48, 350, cyan)
+		return
+	}
 	for index, character := range a.state.CreationOptions {
 		prefix := "  "
 		if index == a.state.CreationCursor {
@@ -237,7 +275,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, label, a.face, 48, 150+index*38, white)
 	}
 	text.Draw(screen, "已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 285, cyan)
-	text.Draw(screen, "N：改名　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
+	text.Draw(screen, "N：改名　A：能力值　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
 }
 
 func raceName(r party.Race) string {
