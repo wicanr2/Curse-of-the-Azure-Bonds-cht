@@ -48,3 +48,23 @@ func TestOpeningStateRecordsOriginalECLText(t *testing.T) {
 		t.Fatalf("original=%q", state.OriginalOpening)
 	}
 }
+
+func TestStateUsesECLInitialMenuChoices(t *testing.T) {
+	block := make([]byte, 2+47)
+	for i := 0; i < 5; i++ {
+		pos := 2 + i*4
+		block[pos+1], block[pos+2], block[pos+3] = 0x02, 0x14, 0x80
+	}
+	payload := block[2:]
+	payload[20] = 0x2B
+	payload[21], payload[22], payload[23] = 0x02, 0x00, 0x90
+	payload[24], payload[25] = 0x00, 0x02
+	// Packed "ENTER CITY" and "JOURNEY ON" from the original ECL string records.
+	copy(payload[26:], []byte{0x80, 0x08, 0x14, 0xE5, 0x05, 0x4A, 0x00, 0xC9, 0x51, 0x90})
+	copy(payload[36:], []byte{0x80, 0x08, 0x28, 0xF5, 0x52, 0x38, 0x56, 0x60, 0x3C, 0xE0})
+	payload[46] = 0x00
+	state := NewStateFromECL(testCatalog(), block)
+	if len(state.OriginalChoices) != 2 || state.OriginalChoices[0] != "ENTER CITY" || state.Choices[1] != "繼續旅程" {
+		t.Fatalf("state=%#v", state)
+	}
+}

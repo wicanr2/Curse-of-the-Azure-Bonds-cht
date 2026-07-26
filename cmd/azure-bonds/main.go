@@ -96,6 +96,9 @@ func main() {
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
 			}
+			for _, menu := range result.Menus {
+				fmt.Printf("    menu location=0x%04X selected=%d options=%q\n", menu.Location, menu.Selected, menu.Options)
+			}
 			if runErr != nil {
 				fmt.Printf("  subset stopped safely: %v\n", runErr)
 			}
