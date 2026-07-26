@@ -104,6 +104,8 @@ CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`RE
 
 `CAMP MAGIC` 可沿用同一個 roster selector，但 spell layer 必須保持三段分離：DOS／save adapter 提供 ordered memorized slot IDs，catalog 提供名稱與 level，rules service 才處理 prepare／forget／cast／recovery。UI 顯示已保存的 ID 不代表已完成法術規則，也不應由 slot ordinal 推導 spell name。
 
+CAMP SAVE 的跨遊戲介面也應是 intent signal：game state 只提供一次性 save request，platform adapter 再決定 configured path、container codec、atomic write 與錯誤呈現。remake party JSON 可作目前 fallback，但不能把它當成原版 SAVGAM slot／area 格式。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
 BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。

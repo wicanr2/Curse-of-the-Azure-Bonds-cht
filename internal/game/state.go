@@ -130,6 +130,7 @@ type State struct {
 	campMenu               bool
 	campViewMenu           bool
 	campMagicMenu          bool
+	saveRequested          bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -539,6 +540,18 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.campMenu = true
 		return nil
 	}
+	if originalChoice == "SAVE" {
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.OriginalEvent = originalChoice
+		if len(s.partyRoster) == 0 {
+			s.Message = s.catalog.Text("camp_save_unavailable", "目前沒有可儲存的角色隊伍。")
+			return nil
+		}
+		s.saveRequested = true
+		s.Message = s.catalog.Text("camp_save_requested", "已要求儲存目前隊伍。")
+		return nil
+	}
 	if originalChoice == "VIEW" {
 		if len(s.partyRoster) == 0 {
 			s.Mode = ModeEvent
@@ -566,6 +579,14 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 	s.OriginalEvent = originalChoice
 	s.Message = s.campActionMessage(originalChoice)
 	return nil
+}
+
+// ConsumeSaveRequest transfers a CAMP SAVE intent to the platform adapter.
+// The state layer never chooses a filesystem path or performs file I/O.
+func (s *State) ConsumeSaveRequest() bool {
+	requested := s.saveRequested
+	s.saveRequested = false
+	return requested
 }
 
 func (s *State) enterCampViewMenu() {
