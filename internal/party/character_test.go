@@ -233,6 +233,24 @@ func TestUseConsumableRemovesScrollAndDecrementsWandCharge(t *testing.T) {
 	}
 }
 
+func TestRosterFindSpellReturnsFirstCharacterAndSlot(t *testing.T) {
+	first := validCharacter()
+	first.SpellSlots = []uint8{0x12, 0x24}
+	second := validCharacter()
+	second.ID = "p2"
+	second.SpellSlots = []uint8{0x12}
+	match, ok := (Roster{first, second}).FindSpell(0x12)
+	if !ok || match.CharacterIndex != 0 || match.SlotIndex != 0 {
+		t.Fatalf("match=%#v ok=%t", match, ok)
+	}
+	if _, ok := (Roster{first}).FindSpell(0x100); ok {
+		t.Fatal("spell IDs above byte range should not match")
+	}
+	if _, ok := (Roster{first}).FindSpell(0x7F); ok {
+		t.Fatal("unknown spell should not match")
+	}
+}
+
 func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	for _, test := range []struct {
 		race Race

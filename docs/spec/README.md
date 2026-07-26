@@ -90,3 +90,4 @@
 - [第九十三輪 inventory quantity／cursed mutation](./093-inventory-mutation.md)（`READY`：限 stack／readied／cursed）
 - [第九十四輪 consumable item use signal](./094-consumable-item-use.md)（`READY`：限 scroll／potion／wand）
 - [第九十五輪 ECL SPELL／PROTECTION signal](./095-ecl-spell-protection-signal.md)（`READY`：限 bounded runtime signal）
+- [第九十六輪 party spell-slot resolver](./096-party-spell-slot-resolver.md)（`READY`：限 remake roster bridge）

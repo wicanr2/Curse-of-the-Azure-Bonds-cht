@@ -71,3 +71,5 @@ Inventory mutation 也應以 instance state 為單位：`Count == 0` 是單件�
 `Affects` 不是統一的 generic status：scroll 用 properties 保存 spell IDs，charged wand 用第一個 byte 保存 charges、第二個保存 effect ID。共用層應先回傳 `ConsumableUse` signal，再由各遊戲的 spell/effect engine 決定結果；不要在 parser 階段直接把 effect ID 當成傷害或狀態。
 
 ECL `SPELL` 也應保持 signal boundary：它描述 spell ID 與兩個 runtime memory addresses，不等於已經找到施法者。`ecl.RunResult.SpellSearches` 可跨 Gold Box engine 重用，實際 party spell-slot lookup 再由各遊戲的 character record adapter 提供。
+
+目前共用的 party adapter 是 `Character.SpellSlots`／`Roster.FindSpell`／`game.State.ResolveSpellSearch`；它用 ordered first-match 模擬 ECL search，但不取代原始 DOS player spell offsets。`ITEMS` catalog 則由 game bootstrap 載入，讓同一份 base descriptor 驅動 creation／save-load 的 equipment projection。

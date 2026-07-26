@@ -106,6 +106,8 @@ type State struct {
 	combatTargetIndex      int
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
+	itemCatalog            monster.BaseItemCatalog
+	itemCatalogReady       bool
 	combatSeed             int64
 	eclSeed                int64
 	mapSeed                int64
@@ -206,6 +208,20 @@ func (s *State) SetMonsterRecords(records map[uint8]monster.Record) {
 	for id, record := range records {
 		s.monsterRecords[id] = record
 	}
+}
+
+// SetItemCatalog installs the decoded original ITEMS table. Until this is
+// called, old party/save paths retain their equipment-neutral projection.
+func (s *State) SetItemCatalog(catalog monster.BaseItemCatalog) {
+	s.itemCatalog = catalog
+	s.itemCatalogReady = true
+}
+
+func (s *State) fighterForCharacter(character party.Character) (combat.Fighter, error) {
+	if s.itemCatalogReady {
+		return character.FighterWithEquipment(s.itemCatalog)
+	}
+	return character.Fighter()
 }
 
 // SetCombatSeed makes an ECL-triggered encounter reproducible for tests and
@@ -450,6 +466,14 @@ func (s *State) SetParty(party []combat.Fighter) error {
 
 func (s *State) PartyFighters() []combat.Fighter {
 	return append([]combat.Fighter(nil), s.party...)
+}
+
+// ResolveSpellSearch bridges an ECL SPELL signal to the currently loaded
+// remake roster. It returns the first matching character/slot without
+// mutating ECL memory; the runtime adapter can perform those writes once its
+// resumable memory context is exposed at the right boundary.
+func (s *State) ResolveSpellSearch(request ecl.SpellSearch) (party.SpellMatch, bool) {
+	return s.partyRoster.FindSpell(request.SpellID)
 }
 
 func (s *State) OpenJournal() error {
