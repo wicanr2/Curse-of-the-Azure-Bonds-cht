@@ -137,6 +137,9 @@ type State struct {
 	alterDropMenu          bool
 	alterDropConfirm       bool
 	alterDropSelected      int
+	alterPicsMenu          bool
+	picturesEnabled        bool
+	animationsEnabled      bool
 }
 
 func NewStateFromECL(catalog locale.Catalog, block []byte) State {
@@ -219,6 +222,8 @@ func NewState(catalog locale.Catalog) State {
 		combatSeed:             1,
 		eclSeed:                1,
 		mapSeed:                1,
+		picturesEnabled:        true,
+		animationsEnabled:      true,
 		GeoMapSet:              2,
 		GeoMapBlock:            1,
 		Area:                   area.State{GameArea: 2},
@@ -347,6 +352,13 @@ func (s *State) Select(index int) error {
 		s.applyGeoMapLoad(result)
 		s.applyCitySelection()
 		if result.PictureRequested {
+			if !s.picturesEnabled {
+				s.PictureRequested = false
+				s.PictureBlock = result.PictureBlock
+				s.OriginalEvent = "PICTURE"
+				s.Message = s.catalog.Text("pics_monsters_off_message", "遭遇圖片已關閉。")
+				return nil
+			}
 			s.PictureRequested = true
 			s.PictureBlock = result.PictureBlock
 			s.BigPictureRequested = result.BigPictureRequested
@@ -473,6 +485,7 @@ func (s *State) enterCampMenu() {
 	s.alterDropMenu = false
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
+	s.alterPicsMenu = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
 	s.Choices = []string{
@@ -489,6 +502,22 @@ func (s *State) enterCampMenu() {
 }
 
 func (s *State) selectCamp(index int, originalChoice string) error {
+	if s.alterPicsMenu {
+		switch originalChoice {
+		case "ALTER_PICS_EXIT":
+			s.alterPicsMenu = false
+			s.enterAlterMenu()
+			return nil
+		case "ALTER_PICS_MONSTERS":
+			s.picturesEnabled = !s.picturesEnabled
+			s.enterAlterPicsMenu()
+			return nil
+		case "ALTER_PICS_ANIMATIONS":
+			s.animationsEnabled = !s.animationsEnabled
+			s.enterAlterPicsMenu()
+			return nil
+		}
+	}
 	if s.alterOrderMenu {
 		if originalChoice == "ALTER_ORDER_EXIT" {
 			s.alterOrderMenu = false
@@ -584,6 +613,10 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				return nil
 			}
 			s.enterAlterDropMenu()
+			return nil
+		}
+		if originalChoice == "ALTER_PICS" {
+			s.enterAlterPicsMenu()
 			return nil
 		}
 		s.Mode = ModeEvent
@@ -710,6 +743,7 @@ func (s *State) enterAlterMenu() {
 	s.alterDropMenu = false
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
+	s.alterPicsMenu = false
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
 	s.Choices = []string{
@@ -723,6 +757,34 @@ func (s *State) enterAlterMenu() {
 	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT"}
 	s.Message = ""
 }
+
+func (s *State) enterAlterPicsMenu() {
+	s.campMenu = true
+	s.alterMenu = true
+	s.alterPicsMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_pics_prompt", "遭遇圖片設定")
+	monsterState := s.catalog.Text("alter_pics_on", "開啟")
+	if !s.picturesEnabled {
+		monsterState = s.catalog.Text("alter_pics_off", "關閉")
+	}
+	animationState := s.catalog.Text("alter_pics_on", "開啟")
+	if !s.animationsEnabled {
+		animationState = s.catalog.Text("alter_pics_off", "關閉")
+	}
+	s.Choices = []string{
+		fmt.Sprintf(s.catalog.Text("alter_pics_monsters", "怪物圖片：%s"), monsterState),
+		fmt.Sprintf(s.catalog.Text("alter_pics_animations", "動畫：%s"), animationState),
+		s.catalog.Text("alter_pics_exit", "返回修改選單"),
+	}
+	s.currentOriginalChoices = []string{"ALTER_PICS_MONSTERS", "ALTER_PICS_ANIMATIONS", "ALTER_PICS_EXIT"}
+	s.Message = ""
+}
+
+// PicturesEnabled and AnimationsEnabled expose renderer-neutral ALTER PICS
+// preferences without coupling the game state to Ebiten.
+func (s *State) PicturesEnabled() bool   { return s.picturesEnabled }
+func (s *State) AnimationsEnabled() bool { return s.animationsEnabled }
 
 func (s *State) enterAlterDropMenu() {
 	s.campMenu = true

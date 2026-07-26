@@ -69,6 +69,7 @@
 - `STORE → 估價` 現在可選角色與寶石／珠寶，接受外部注入報價後清除財寶並將 GP 加入 party pool。
 - APPRAISE 現在會先顯示「接受／拒絕／返回」確認；拒絕報價會保留財寶與 party pool。
 - 荒野 `CAMP` 現在會進入繁中 `SAVE／VIEW／MAGIC／REST／ALTER／FIX／EXIT` 選單；`REST` 可返回 CAMP Menu，`EXIT` 返回荒野選單，`ALTER → ORDER` 可重排隊伍順序，`ALTER → DROP` 具二次確認並同步移除角色，其餘未解出的 routine 保留明確 placeholder 邊界。
+- `ALTER → PICS` 現在可切換怪物遭遇圖片與動畫；圖片關閉會略過事件圖片 renderer，動畫關閉會使用事件／戰鬥動畫首幀。
 - `CAMP → VIEW` 現在可選角色查看職業、HP、金幣、寶石、珠寶與裝備摘要，並可返回 CAMP Menu。
 - `CAMP → MAGIC` 現在可查看各角色已記憶 spell-slot ID，並可返回 CAMP Menu；法術名稱、準備／施法與恢復規則仍待接入。
 - `CAMP → SAVE` 現在會透過 state request 寫入 configured versioned remake party save，並顯示成功／錯誤訊息；原版 `SAVGAM?.DAT` slot／area container 仍待反組譯。

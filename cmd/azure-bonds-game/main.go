@@ -421,7 +421,10 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
 		return
 	}
-	frame := animationFrame(frames, time.Since(a.animationStart))
+	frame := frames[0]
+	if a.state.AnimationsEnabled() {
+		frame = animationFrame(frames, time.Since(a.animationStart))
+	}
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(2, 2)
 	op.GeoM.Translate(160+float64(frame.x*2), 76+float64(frame.y*2))
@@ -654,7 +657,10 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	if sprite == nil && fighter.HasAnimation {
 		key = fmt.Sprintf("sprit%d-block-%02X", fighter.SpriteSet, fighter.AnimationBlock)
 		if animation := a.combatAnimations[key]; len(animation) > 0 {
-			frame := animationFrame(animation, time.Since(a.animationStart))
+			frame := animation[0]
+			if a.state.AnimationsEnabled() {
+				frame = animationFrame(animation, time.Since(a.animationStart))
+			}
 			sprite = frame.image
 			frameX, frameY = frame.x, frame.y
 		}

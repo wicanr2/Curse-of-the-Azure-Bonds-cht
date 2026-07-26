@@ -117,3 +117,4 @@
 - [第一百二十輪 CAMP SAVE request adapter](./120-camp-save-request.md)（`READY`：限 remake party save）
 - [第一百二十一輪 ALTER ORDER party reorder](./121-alter-order.md)（`READY`：限 roster／fighter 順序）
 - [第一百二十二輪 ALTER DROP confirmation](./122-alter-drop.md)（`READY`：限 confirmed party removal）
+- [第一百二十三輪 ALTER PICS preferences](./123-alter-pics.md)（`READY`：限圖片／動畫 renderer preference）
