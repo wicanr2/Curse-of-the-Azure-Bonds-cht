@@ -193,4 +193,5 @@
 - [x] 將 ECL `COMBAT` 在有 party／MON*CHA records 時接到可操作 Battle；缺少資料時保留安全 boundary。
 - [x] 以真實 ECL1 block 0x51 的 `JOURNEY ON → STORE` 建立 COMBAT boundary regression，確認缺 descriptor 時不虛構 Battle。
 - [x] 實作 ECL `RANDOM` 與 State 可注入 seed，保留 deterministic regression。
+- [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。

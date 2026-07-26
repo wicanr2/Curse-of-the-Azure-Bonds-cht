@@ -546,6 +546,16 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("dagger_falls", "Dagger Falls")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
+	case "COMBAT":
+		return catalog.Text("encounter_combat", "戰鬥")
+	case "WAIT":
+		return catalog.Text("encounter_wait", "等待")
+	case "FLEE":
+		return catalog.Text("encounter_flee", "撤退")
+	case "ADVANCE":
+		return catalog.Text("encounter_advance", "接近")
+	case "PARLAY":
+		return catalog.Text("encounter_parlay", "談判")
 	case "EXIT":
 		return catalog.Text("exit", "Exit")
 	default:
