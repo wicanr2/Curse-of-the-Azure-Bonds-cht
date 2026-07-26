@@ -160,4 +160,7 @@ func TestChineseAffectNameUsesObservedKinds(t *testing.T) {
 	if got := ChineseAffectName(AffectRecord{Kind: 0x5A}); got != "酸液吐息" {
 		t.Fatalf("acid breath=%q", got)
 	}
+	if got := ChineseAffectName(AffectRecord{Kind: 0x27}); got != "加速" {
+		t.Fatalf("haste=%q", got)
+	}
 }

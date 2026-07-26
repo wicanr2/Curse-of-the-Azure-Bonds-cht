@@ -94,3 +94,4 @@
 - [第九十七輪 DOS player spell record parser](./097-dos-player-spell-record.md)（`READY`：限已公開 spell 欄位與 remake adapter）
 - [第九十八輪 DOS player record 核心角色匯入](./098-dos-player-record-core.md)（`READY`：限單職業核心欄位與 remake projection）
 - [第九十九輪 DOS `.SWG` inventory 匯入](./099-dos-swg-inventory.md)（`READY`：限連續 item records 與 party equipment projection）
+- [第一百輪 DOS `.FX` effects 匯入](./100-dos-fx-effects.md)（`READY`：限 9-byte effects 保存與繁中名稱）

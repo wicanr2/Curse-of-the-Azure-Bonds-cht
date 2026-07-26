@@ -247,6 +247,24 @@ func ChineseName(item ItemRecord) string {
 
 func ChineseAffectName(affect AffectRecord) string {
 	if name, ok := map[uint8]string{
+		0x01: "祝福",
+		0x02: "詛咒",
+		0x08: "防護邪惡",
+		0x09: "防護善良",
+		0x0A: "抵抗寒冷",
+		0x19: "隱形",
+		0x1C: "鏡像",
+		0x21: "目盲",
+		0x23: "困惑",
+		0x27: "加速",
+		0x28: "在臭雲中",
+		0x2A: "緩慢",
+		0x31: "祈禱",
+		0x34: "定身",
+		0x35: "沉睡",
+		0x37: "中毒",
+		0x3F: "小型無敵法球",
+		0x44: "智力衰退",
 		0x18: "偵測隱形",
 		0x5A: "酸液吐息",
 	}[affect.Kind]; ok {

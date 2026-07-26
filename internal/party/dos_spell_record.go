@@ -51,6 +51,7 @@ type DOSPlayerRecord struct {
 	ItemsPointer     uint32
 	EffectsPointer   uint32
 	Inventory        []monster.ItemRecord
+	Effects          []monster.AffectRecord
 }
 
 // ParseDOSPlayerRecord decodes the documented fixed portion of a decompressed
@@ -111,6 +112,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconSize: r.IconSize,
 		Equipment:  append([]monster.ItemRecord(nil), r.Inventory...),
+		Effects:    append([]monster.AffectRecord(nil), r.Effects...),
 		SpellSlots: append([]uint8(nil), r.MemorizedSpells...),
 	}
 	if err := character.Validate(); err != nil {
@@ -132,6 +134,20 @@ func (r *DOSPlayerRecord) ApplyInventory(data []byte) error {
 		return err
 	}
 	r.Inventory = append(r.Inventory[:0], items...)
+	return nil
+}
+
+// ApplyEffects decodes the external DOS .FX stream. Each effect is the
+// documented 9-byte record; gameplay application remains a later rules layer.
+func (r *DOSPlayerRecord) ApplyEffects(data []byte) error {
+	if r == nil {
+		return fmt.Errorf("cannot apply effects to nil DOS player record")
+	}
+	effects, err := monster.ParseAffects(data)
+	if err != nil {
+		return err
+	}
+	r.Effects = append(r.Effects[:0], effects...)
 	return nil
 }
 
@@ -245,5 +261,20 @@ func (c *Character) ApplyDOSInventory(data []byte) error {
 		return err
 	}
 	c.Equipment = append(c.Equipment[:0], items...)
+	return nil
+}
+
+// ApplyDOSEffects replaces the preserved effect list from a DOS .FX stream.
+// It does not change combat stats; callers can later interpret each effect
+// through the game-specific AD&D rules layer.
+func (c *Character) ApplyDOSEffects(data []byte) error {
+	if c == nil {
+		return fmt.Errorf("cannot apply effects to nil character")
+	}
+	effects, err := monster.ParseAffects(data)
+	if err != nil {
+		return err
+	}
+	c.Effects = append(c.Effects[:0], effects...)
 	return nil
 }
