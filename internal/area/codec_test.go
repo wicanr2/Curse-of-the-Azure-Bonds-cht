@@ -43,13 +43,15 @@ func TestArea2CodecAndRecordSizes(t *testing.T) {
 	raw := make([]byte, SnapshotSize)
 	raw[0x20] = 0xCC
 	raw[area2GameArea] = 3
+	raw[area2HeadBlock] = 0x12
 	state, err := DecodeArea2(raw)
-	if err != nil || state.GameArea != 3 {
+	if err != nil || state.GameArea != 3 || state.HeadBlockID != 0x12 {
 		t.Fatalf("decode Area2: state=%+v err=%v", state, err)
 	}
 	state.GameArea = 9
+	state.HeadBlockID = 0x34
 	encoded, err := EncodeArea2(state, raw)
-	if err != nil || encoded[area2GameArea] != 9 || encoded[0x20] != 0xCC {
+	if err != nil || encoded[area2GameArea] != 9 || encoded[area2HeadBlock] != 0x34 || encoded[0x20] != 0xCC {
 		t.Fatalf("encode Area2 failed: err=%v", err)
 	}
 	if _, err := DecodeArea1(make([]byte, SnapshotSize-1)); err == nil {

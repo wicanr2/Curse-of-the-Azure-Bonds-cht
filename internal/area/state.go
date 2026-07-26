@@ -3,7 +3,10 @@
 package area
 
 type State struct {
-	GameArea            uint8
+	GameArea uint8
+	// HeadBlockID mirrors Area2.HeadBlockId at 0x5C2. 0xFF means PICTURE
+	// uses PIC/BIGPIC instead of the HEAD/BODY scene branch.
+	HeadBlockID         uint8
 	InDungeon           bool
 	Current3DMapBlockID uint8
 	CurrentCity         uint8

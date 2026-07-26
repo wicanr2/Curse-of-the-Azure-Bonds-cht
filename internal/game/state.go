@@ -224,6 +224,7 @@ func (s *State) SetMapSeed(seed int64) { s.mapSeed = seed }
 // loading and GEO selection.
 func (s *State) SetAreaState(value area.State) {
 	s.Area = value
+	s.SceneHeadBlock = value.HeadBlockID
 	s.GeoMapSet = value.GameArea
 	s.GeoMapBlock = value.Current3DMapBlockID
 }
