@@ -53,3 +53,4 @@
 - [第五十四輪跨 ECL block runtime context](./round-54-cross-ecl-runtime-context.md)（`READY`：限 `NEWECL` context transfer）
 - [第五十五輪全 ECL global block namespace](./round-55-global-ecl-loader.md)（`READY`：限全檔 loader 與 real transition）
 - [第五十六輪 GEO 16×16 map geometry](./round-56-geo-map-geometry.md)（`READY`：限 GEO geometry parser）
+- [第五十七輪 indexed picture 與 WALLDEF](./round-57-indexed-picture-and-walldef.md)（`READY`：限 picture／wall data parser）

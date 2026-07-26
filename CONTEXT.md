@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 56 輪：GEO 16×16 map geometry data layer。
+第 57 輪：indexed picture、tile 與 WALLDEF data layer。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -61,6 +61,7 @@
 第 54 輪功能 commit：`46e7fda`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 55 輪功能 commit：`bb66b25`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 56 輪功能 commit：`a2ba9ad`，已推送至 GitHub `main`；本行為後續文件同步提交。
+第 57 輪功能 commit：待提交；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -144,6 +145,7 @@
 - 地點選定後的 map／place state、CAMP 與後續事件仍未完成。
 - Shadowdale 已有資料中立的座標／輸入 contract；原始 tile、碰撞與場所事件仍未完成。
 - 全 ECL global block loader 與 bounded memory／call stack transfer 已完成；GEO 16×16 geometry parser 已完成，原始 tile art／碰撞與完整場所功能仍未完成。
+- `internal/gfx` 已解析原始 `TILES.DAX` 24×24 indexed pictures、`8X8D2–6.DAX` 8×8 symbol pictures 與可串接的 `WALLDEF2–6.DAX` records；palette mapping、畫面組合與碰撞仍未完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
