@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 23 輪：game ECL block session integration。
+第 24 輪：session runtime execution。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -27,6 +27,7 @@
 第 20 輪 commit：`e36d1ef`，已推送至 GitHub `main`。
 第 21 輪 commit：`9d7087f`，已推送至 GitHub `main`。
 第 22 輪 commit：`2b5ff95`，已推送至 GitHub `main`。
+第 23 輪 commit：`1f6849e`，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -61,6 +62,7 @@
 - `0x20 NEWECL` 已加入 `RunResult.NewECLBlockID` signal 與 synthetic test；尚未宣稱 real ECL1–ECL6 cross-block session 完成。
 - `BlockSession` 已封裝 decoded block ID／payload、initial entry、validated switch；`ECL1.DAX -session` 已驗證 `0x50/0x51/0x52`。
 - `cmd/azure-bonds-game` 已載入 ECL1 全部 blocks；`NewStateFromECLBlocks`／`State.Select` 使用 BlockSession 與 selection offset，能為後續 NEWECL 接續保留 bounded session。
+- `BlockSession.RunInteractive` 已實際接入 State，會依 `SelectionsConsumed` 傳遞 global sequence 並套用 NEWECL target；initial-entry graph 尚未找到 real reachable NEWECL edge。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
 ## 尚未確定
@@ -75,6 +77,7 @@
 - Shadowdale UI label 已完成，但尚無座標／移動／場所功能。
 - 跨 ECL block loader、座標／移動／場所功能仍未完成。
 - memory／call stack／party/map state 尚未跨 block 保存，仍不是完整 VM。
+- real cross-block story transition 仍待可達 event entry regression。
 - 中文化的字型格式與字串長度限制。
 
 ## 下一步
@@ -103,4 +106,5 @@
 22. 建立 ECL1–ECL6 DAX block session，驗證 NEWECL target。
 23. 將 BlockSession 串入 game runtime，保存跨 block event state。
 24. 建立 real NEWECL transition regression，補齊跨 block memory／call stack。
+25. 掃描各 ECL event entry，找出可達 NEWECL transition 並建立實際 regression。
 17. 將 successive menu sequence 保存為 game event state，完成城市場所選擇與離開分支。
