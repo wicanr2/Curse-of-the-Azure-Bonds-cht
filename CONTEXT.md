@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 48 輪：版本化 party JSON 存檔與 F5／F9 載入。
+第 49 輪：ECL COMBAT 接入可操作 Battle。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -53,6 +53,7 @@
 第 46 輪 commit：`d780fda`，已推送至 GitHub `main`。
 第 47 輪 commit：`d2a1f3d`，已推送至 GitHub `main`。
 第 48 輪功能 commit：`cfa0fce`，已推送至 GitHub `main`；本行為後續文件同步提交。
+第 49 輪功能 commit：`6464ea6`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -109,6 +110,7 @@
 - Ebiten 已接 `C` 角色建立 starter UI：方向鍵選模板、Enter 加入、D 完成；三個模板會經 validation、投影成 combat fighter 並保存到 State。
 - 建立畫面按 `N` 可輸入 Unicode／繁中姓名，按 `A` 可編輯六項能力值，按 `R` 可重擲六項 3d6；均在完成時經 validation。
 - `internal/save` 已建立 version 1 的 remake party JSON；F5／F9 與 `-party-load` 可保存／載入角色描述，原版 DOS save/import、裝備、XP／等級與完整 party state 仍未完成。
+- ECL `COMBAT` 現在在 State 已有 party 與 `MON1CHA` records 時，會由真實 spawn descriptors 建立可操作 Battle；缺少資料時仍安全停在事件 boundary。
 - 建立畫面按 `R` 可重擲六項 3d6 能力值；核心接受 seed regression，完成加入時仍經職業最低值 validation。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
