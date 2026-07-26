@@ -22,6 +22,7 @@ func main() {
 	graph := flag.Bool("graph", false, "trace statically reachable ECL branches")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
+	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
 	selectionList := flag.String("select", "", "comma-separated HORIZONTAL MENU selections for -run-subset")
 	flag.Parse()
 	selections, err := parseSelections(*selectionList)
@@ -98,8 +99,17 @@ func main() {
 			if points, _, entryErr := ecl.EntryPoints(block.Data, 5); entryErr == nil && len(points) == 5 {
 				start = int(points[4]) - ecl.CodeAddressBase
 			}
-			result, runErr := ecl.RunSubsetWithSelections(block.Data, start, 500, selections)
+			var result ecl.RunResult
+			var runErr error
+			if *interactive {
+				result, runErr = ecl.RunSubsetInteractive(block.Data, start, 500, selections)
+			} else {
+				result, runErr = ecl.RunSubsetWithSelections(block.Data, start, 500, selections)
+			}
 			fmt.Printf("  subset steps=%d stop=+0x%04X texts=%d\n", result.Steps, result.PC, len(result.Text))
+			if result.WaitingForMenu {
+				fmt.Println("  subset waiting for menu selection")
+			}
 			for _, message := range result.Text {
 				fmt.Printf("    text=%q\n", message)
 			}

@@ -74,3 +74,13 @@ func TestStateUsesECLInitialMenuChoices(t *testing.T) {
 		t.Fatalf("selected state=%#v err=%v", state, err)
 	}
 }
+
+func TestLocalizedCityMenuOptions(t *testing.T) {
+	catalog := testCatalog()
+	catalog.Strings["shadowdale"] = "暗影谷"
+	catalog.Strings["ashabenford"] = "阿沙本福德"
+	catalog.Strings["dagger_falls"] = "匕首瀑布"
+	if got := localizeOption(catalog, "DAGGER FALLS"); got != "匕首瀑布" {
+		t.Fatalf("localized city=%q", got)
+	}
+}

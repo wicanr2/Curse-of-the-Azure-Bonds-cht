@@ -114,3 +114,10 @@
 - [x] game state 保存 successive menu sequence 並接入 Ebiten。
 - [x] 新增城市 menu／continue prompt 的繁中 locale。
 - [ ] 建立城市場所事件 regression，完成第一個可玩的場所功能。
+
+## 第十八輪驗收
+
+- [x] 新增 interactive CLI 以重現 selection sequence。
+- [x] 驗證 ECL1 `0,0,1` 城市選擇序列。
+- [x] 將 Shadowdale／Ashabenford／Dagger Falls 接入繁中 locale 與 state mapping。
+- [ ] 將地點選擇寫入 map state，接通第一個場所入口。
