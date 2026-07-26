@@ -64,6 +64,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
+	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 	if a.state.Mode == game.ModeWilderness {
 		for index, choice := range a.state.Choices {
