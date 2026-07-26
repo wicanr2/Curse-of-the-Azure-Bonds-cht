@@ -102,6 +102,27 @@ func renderCombatSprites() error {
 			return fmt.Errorf("parse %s: %w", source, err)
 		}
 		for _, block := range blocks {
+			if strings.HasPrefix(source, "SPRIT") {
+				animation, err := gfx.ParseAnimation(block.Data, true, 0)
+				if err != nil {
+					manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | — | — | — | skipped: `%s` |\n", source, block.Entry.ID, err))
+					continue
+				}
+				stem := strings.TrimSuffix(source, filepath.Ext(source))
+				for index, frame := range animation.Frames {
+					img, err := frame.Picture.RGBA(0, gfx.EGA16)
+					if err != nil {
+						return fmt.Errorf("render %s block 0x%02X frame %d: %w", source, block.Entry.ID, index, err)
+					}
+					name := fmt.Sprintf("%s-block-%02X-frame-%02d.png", strings.ToLower(stem), block.Entry.ID, index)
+					if err := writePNG(filepath.Join("assets/sprites", name), img); err != nil {
+						return err
+					}
+					frames = append(frames, spriteFrame{name: name, img: img})
+					manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | frame %d (delay %d) | %dx%d | [`%s`](../../assets/sprites/%s) | animation extracted |\n", source, block.Entry.ID, index, frame.Delay, frame.Picture.Width(), frame.Picture.Height(), name, name))
+				}
+				continue
+			}
 			picture, err := gfx.ParsePicture(block.Data, true, 0)
 			if err != nil {
 				manifest.WriteString(fmt.Sprintf("| `%s` | `0x%02X` | — | — | — | skipped: `%s` |\n", source, block.Entry.ID, err))

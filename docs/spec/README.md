@@ -69,3 +69,4 @@
 - [第七十一輪三城市 location routing](./round-71-city-location-routing.md)（`READY`：限 opening city menu 與共同 map/place contract）
 - [第七十二輪戰鬥小人 sprite extraction](./round-72-combat-sprite-extraction.md)（`READY`：限 CPIC masked picture extraction）
 - [第七十三輪 Ebiten combat sprite renderer](./round-73-combat-sprite-renderer.md)（`READY`：限 CPIC asset mapping 與目前 playable combat slice）
+- [第七十四輪 SPRIT animation codec](./round-74-sprit-animation.md)（`READY`：限 SPRIT frame stream decode）
