@@ -139,28 +139,28 @@
 
 - [x] 實作 `NEWECL` bounded signal。
 - [x] 加入 target block ID regression。
-- [ ] 建立跨 ECL1–ECL6 DAX block session。
+- [x] 建立跨 ECL1–ECL6 DAX block session 與 global block namespace。
 
 ## 第二十二輪驗收
 
 - [x] 建立 decoded ECL `BlockSession`。
 - [x] 驗證 ECL1 block `0x50/0x51/0x52` initial entries。
 - [x] 驗證 NEWECL target switch contract。
-- [ ] 將 session 接入 game runtime，保存跨 block state。
+- [x] 將全 ECL session 接入 game runtime，保存 bounded 跨 block state。
 
 ## 第二十三輪驗收
 
 - [x] game command 載入 ECL1 全部 decoded blocks。
 - [x] `NewStateFromECLBlocks` 接入 BlockSession。
 - [x] State selection sequence 與 session offset 接通。
-- [ ] 以真實 NEWECL transition 做回歸，保存跨 block memory／call stack。
+- [x] 以真實 NEWECL transition 做回歸，保存 bounded 跨 block memory／call stack。
 
 ## 第二十四輪驗收
 
 - [x] `BlockSession.RunInteractive` 接入 game runtime。
 - [x] selection offset 與 bounded NEWECL switch 有 synthetic regression。
 - [x] 確認 ECL1 initial-entry graph 尚無 reachable NEWECL edge，保留此未知。
-- [ ] 從其他 event entries 找出 real NEWECL transition。
+- [x] 從其他 event entries 找出 ECL4／ECL5 real NEWECL transition。
 
 ## 第二十五輪驗收
 
@@ -196,4 +196,4 @@
 - [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。
 - [x] 保存 ECL menu pause 的 PC、memory、比較旗標、call stack，並以 cumulative selections resume。
 - [x] 將 bounded runtime context（memory／flags／call stack）帶過 `NEWECL` target block，並建立跨 block regression。
-- [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的 real continuation。
+- [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

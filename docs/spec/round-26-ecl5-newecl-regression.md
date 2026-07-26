@@ -21,7 +21,7 @@ go run ./cmd/azure-bonds \
 ```
 
 預期輸出包含 `subset steps=1` 與 `subset requested ECL block 0x50`。
-此回歸只證明 ECL5 的 entry-level transition signal 與 BlockSession target contract 相容；尚未宣稱從完整玩家流程抵達，也未完成跨 block memory／call stack。
+此回歸只證明 ECL5 的 entry-level transition signal 與 BlockSession target contract 相容；第 55 輪另以 ECL1／ECL4／ECL5 合併 session 驗證 target entry，尚未宣稱從完整玩家流程抵達。
 
 - [x] 以原始映像解碼 ECL5 block 0x30。
 - [x] 從 payload `+0x0098` 執行單一 NEWECL 指令。
