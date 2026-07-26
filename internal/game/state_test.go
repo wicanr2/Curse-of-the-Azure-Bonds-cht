@@ -836,6 +836,54 @@ func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
 	}
 }
 
+func TestCampAlterDropRequiresConfirmationAndRemovesCharacter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{
+		{ID: "a", Name: "甲", Class: party.ClassFighter, Level: 1},
+		{ID: "b", Name: "乙", Class: party.ClassCleric, Level: 1},
+	}
+	state.party = []combat.Fighter{{ID: "a", Name: "甲"}, {ID: "b", Name: "乙"}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.alterDropConfirm || state.partyRoster[1].ID != "b" {
+		t.Fatalf("drop confirmation state=%#v", state)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.alterDropConfirm || !state.alterMenu || len(state.partyRoster) != 2 {
+		t.Fatalf("drop cancel state=%#v", state)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "ALTER DROP" || len(state.partyRoster) != 1 || state.partyRoster[0].ID != "b" || len(state.party) != 1 || state.party[0].ID != "b" {
+		t.Fatalf("drop result state=%#v party=%#v", state, state.party)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.alterMenu {
+		t.Fatalf("drop continuation state=%#v err=%v", state, err)
+	}
+}
+
 func TestPartyPersistsThroughCampAndRestoresHitPoints(t *testing.T) {
 	state := NewState(testCatalog())
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}

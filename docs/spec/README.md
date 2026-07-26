@@ -116,3 +116,4 @@
 - [第一百一十九輪 CAMP MAGIC spell-slot view](./119-camp-magic-view.md)（`READY`：限已驗證 spell ID 查看）
 - [第一百二十輪 CAMP SAVE request adapter](./120-camp-save-request.md)（`READY`：限 remake party save）
 - [第一百二十一輪 ALTER ORDER party reorder](./121-alter-order.md)（`READY`：限 roster／fighter 順序）
+- [第一百二十二輪 ALTER DROP confirmation](./122-alter-drop.md)（`READY`：限 confirmed party removal）
