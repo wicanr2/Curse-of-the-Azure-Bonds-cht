@@ -81,3 +81,4 @@
 - [第八十三輪 HEAD／BODY 場景人物圖層](./round-83-head-body-scene-layers.md)（`READY`：限 scene character 素材與合成）
 - [第八十四輪 PICTURE HEAD／BODY branch](./round-84-head-body-picture-branch.md)（`READY`：限 Area2 head sentinel 與 scene event）
 - [第八十五輪 Area2 HeadBlockId codec](./round-85-area2-head-block-codec.md)（`READY`：限 `0x5C2` 與 PICTURE sync）
+- [第八十六輪 combat tile placement](./round-86-combat-placement.md)（`READY`：限 formation 與八方向 delta contract）
