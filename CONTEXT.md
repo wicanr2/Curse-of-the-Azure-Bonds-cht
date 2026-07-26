@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百四十四輪：combat MOVE。
+第一百四十五輪：combat MOVE free attack。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -390,4 +390,6 @@
 
 第一百四十三輪功能／文件 commits：`c7fac1f`、`2f078a1`，已推送至 GitHub `main`。ECL encounter 的 FLEE 進入繁中可恢復撤退事件；PARLAY 提供 HAUGHTY／SLY／MEEK／NICE／ABUSIVE 五種 tactic，選擇後返回荒野事件。怪物速度、追擊、speaker／reaction 與完整 conversation script 保留 boundary。
 
-第一百四十四輪待提交：戰鬥按 M 進入 MOVE，方向鍵單格移動當前 party fighter，Battle 驗證 occupancy 後更新 CombatMap 座標並消耗回合；地形、負重、進入敵格、free rear attack、facing 與完整離場規則保留 boundary。
+第一百四十四輪功能／文件 commits：`7849d19`、`4a26a36`，已推送至 GitHub `main`。戰鬥按 M 進入 MOVE，方向鍵單格移動當前 party fighter，Battle 驗證 occupancy 後更新 CombatMap 座標並消耗回合；地形、負重、進入敵格、facing 與完整離場規則仍保留 boundary。
+
+第一百四十五輪待提交：MOVE 成功後若角色離開敵人鄰接範圍，Battle 對該移動者觸發存活 enemy free attack，State 顯示繁中反擊訊息並沿用勝負 transition；背面 AC／facing／reach／地形仍保留 boundary。
