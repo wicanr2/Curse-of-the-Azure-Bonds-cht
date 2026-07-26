@@ -184,4 +184,5 @@
 - [x] 加入繁中遊戲內冒險手札、中文歷史筆記，以及 `PROGRAM 9` 到 CAMP state 的可測試控制邊界。
 - [x] 將冒險手札摘要做成八頁可翻閱的繁中遊戲內資料，接通 J／方向鍵／Esc 導航。
 - [x] 保存 party roster、同步戰鬥 HP，並建立 CAMP 後 HP 恢復的 state boundary。
+- [x] 建立六種玩家種族、六種基本職業、能力值與 1–6 人 roster validation。
 - [ ] 從完整玩家流程抵達該 entry，保存跨 block memory／call stack。
