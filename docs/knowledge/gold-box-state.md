@@ -34,6 +34,8 @@ Protection from Evil 是 conditional defense transaction：`P` 開始 party touc
 
 Protection from Good 使用同一防護 transaction，但必須保留職業 spell identity：牧師表的 ID `7` 由 `G` 進入 party target，魔法師表的 ID `7` 由 `S` 進入 Magic Missile enemy target。fighter 保存 `ProtectedFromGood` 與 `ProtectionGoodRounds=3×level`，只有 attacker `Good=true` 時 AC +2；不要把 class-local ordinal 當全域 spell enum。未知 alignment 與 saving throw engine 仍不可猜測。
 
+Encounter non-combat menu 也應保留兩階段 transaction：`FLEE` 直接進入可恢復事件，`PARLAY` 先保存 tactic token，再交由 script／reaction adapter 決定結果。CoAB 目前已接入五個 RuleBook tactic token 的繁中 menu，但不猜速度、追擊、speaker、reaction 或對話結果；後續 Golden Box 遊戲可共用 menu state，只替換 ECL／conversation data。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
