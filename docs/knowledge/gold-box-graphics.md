@@ -98,7 +98,7 @@ effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（
 
 `game.State` 的 STORE UI 已保存原版七個 command 的繁中 mapping。後續遊戲可沿用 `shopMenu` state 與 return-to-place contract，只替換 stock、money pool、character selection 與 appraisal service；未知 command 不應直接 fall through 成一般 ECL event。
 
-CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`REST` 呼叫遊戲專屬 safe-rest service，完成後回到 CAMP Menu，`EXIT` 才離開 menu。`SAVE`、`VIEW`、`MAGIC`、`ALTER`、`FIX` 在尚未解出各遊戲 routine 前應保留明確 placeholder，不要把不同 Gold Box 作品的存檔格式、法術恢復或角色修改規則硬編在共用 renderer。
+CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`REST` 呼叫遊戲專屬 safe-rest service，完成後回到 CAMP Menu，`EXIT` 才離開 menu。`SAVE`、`VIEW`、`MAGIC`、`ALTER`、`FIX` 應各自注入遊戲專屬 service；已解出的窄 boundary 可以先接入，但不要把不同 Gold Box 作品的存檔格式、法術恢復或角色修改規則硬編在共用 renderer。
 
 目前 `CAMP VIEW` 已形成可重用的只讀 adapter：以 roster 為 source，角色選單與摘要畫面分離，equipment label 經 base-item catalog 映射；查看本身不得改動 gold、treasure、equipment 或 spell state。後續 Gold Box 遊戲只需替換 roster codec 與名稱 catalog，即可沿用這個 UI/state boundary。
 
@@ -115,6 +115,8 @@ PICS preference 應在 game state 與 renderer 之間保持兩個獨立布林：
 SPEED preference 應以 renderer-neutral 的 1–5 級保存，文字 adapter 再依 Unicode rune reveal；不要以 byte offset 切中文訊息，也不要把速度設定混入 PIC／SPRIT frame delay。這讓後續 Golden Box 遊戲可替換字型與 UI 而保留相同設定語意。
 
 ICON selection 應只提供 manifest 已驗證的 layer pair，並以 character ID 將 roster metadata 投影到 combat fighter；不要把 block ordinal、weapon icon 或 `+0x80` attack variant 混為同一欄位。後續遊戲可替換 block family manifest，而沿用同一個 selection／projection contract。
+
+CAMP FIX 應拆成可重用的 healing service 與各遊戲的 spell catalog adapter：目前 CoAB 只能以已確認的一級牧師表順序將 `Cure Light Wounds` 映射到 one-based ID `3`，並以 memorized slot 數量決定 cast 次數。治療應以 roster 順序選擇受傷角色、以 `1d8` 封頂 MaxHP，再以 stable character ID 同步 combat projection；spell slot 是否消耗、重記憶、時間推進與中斷則由遊戲規則層注入，不能寫死在共用 renderer。測試可注入 seed 保持重現性，但正式遊戲仍需接原版 random／time source。
 
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 

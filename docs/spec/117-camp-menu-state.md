@@ -11,9 +11,9 @@
 - 荒野選擇 `CAMP` 後進入繁中 CAMP Menu，保存原始 command 與 localized label 的分離。
 - `REST` 重用既有安全休息 boundary；事件完成後回到 CAMP Menu。
 - `EXIT` 回到荒野的 `ENTER CITY／JOURNEY ON／CAMP` 選單。
-- `VIEW／MAGIC／SAVE` 已接入目前 remake 的只讀／spell-slot／party-save boundary；`ALTER → ORDER／DROP／PICS／SPEED／ICON` 已接入 party reorder／confirmed removal／renderer preferences／message reveal／player sprite selection。`FIX` 仍以明確 placeholder 保留未完成 routine 邊界。
+- `VIEW／MAGIC／SAVE` 已接入目前 remake 的只讀／spell-slot／party-save boundary；`ALTER → ORDER／DROP／PICS／SPEED／ICON` 已接入 party reorder／confirmed removal／renderer preferences／message reveal／player sprite selection；`FIX` 已接入目前可證實的 Cure Light Wounds healing boundary。原版施法時間、遊戲時間與中斷規則仍未完成。
 - 若 ECL 已提供 `CAMP` 事件 block，仍保留原有 ECL path，不由新 UI branch 覆寫。
 
 ## 驗證
 
-`TestCampMenuRestAndExit` 覆蓋 CAMP 進入、REST return、REST count 與 EXIT return；`go test ./...` 在本輪通過。後續可在解出原版 SAVE、法術恢復、角色修改與修理 routine 後，逐項替換 placeholder service。
+`TestCampMenuRestAndExit` 與 `TestCampFixUsesMemorizedCureLightWounds` 覆蓋 CAMP 進入、REST／FIX return、REST count、治療與 EXIT return；`go test ./...` 在本輪通過。後續仍可在解出原版 SAVE、完整法術恢復、角色修改與 FIX 的時間／中斷 routine 後，逐項替換窄 service boundary。
