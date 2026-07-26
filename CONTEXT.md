@@ -330,4 +330,4 @@
 
 第一百一十三輪功能／文件 commit：`502b53e`，已推送至 GitHub `main`。VIEW 會列出角色 HP／金幣／繁中裝備摘要並返回 Shop Menu；完整 ALTER／ID／APPRAISE 與角色選擇 side effects 仍未完成。
 
-第一百一十四輪功能／文件 commit：待本輪提交。TAKE 會選角色與 1／10／100／全部金額，更新 pool／角色 gold 並返回 Shop Menu；任意數字輸入與 APPRAISE 仍未完成。
+第一百一十四輪功能／文件 commit：`5ef7203`，已推送至 GitHub `main`。TAKE 會選角色與 1／10／100／全部金額，更新 pool／角色 gold 並返回 Shop Menu；任意數字輸入與 APPRAISE 仍未完成。
