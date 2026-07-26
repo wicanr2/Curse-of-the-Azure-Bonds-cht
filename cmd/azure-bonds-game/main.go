@@ -3,6 +3,7 @@ package main
 import (
 	"archive/zip"
 	"flag"
+	"fmt"
 	"image/color"
 	"io"
 	"log"
@@ -16,9 +17,12 @@ import (
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/font/opentype"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 const (
@@ -185,6 +189,9 @@ func main() {
 	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
+	encounter := flag.Bool("encounter", false, "start the observed ECL1 encounter directly")
+	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
+	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	flag.Parse()
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -206,10 +213,60 @@ func main() {
 	for _, block := range blocks {
 		eclBlocks[block.Entry.ID] = block.Data
 	}
+	state := game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID)
+	if *encounter {
+		block, ok := eclBlocks[uint8(*encounterBlock)]
+		if !ok {
+			log.Fatalf("ECL block 0x%02X is unavailable", *encounterBlock)
+		}
+		result, runErr := ecl.RunSubset(block, *encounterStart, 128)
+		if runErr != nil {
+			log.Fatal(runErr)
+		}
+		monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
+		if err != nil {
+			log.Fatal(err)
+		}
+		records, err := loadMonsterRecords(monsterData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := state.StartEncounter(result, records, demoParty(), 37); err != nil {
+			log.Fatal(err)
+		}
+	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)
 	ebiten.SetWindowTitle(catalog.Text("title", "Curse of the Azure Bonds"))
-	if err := ebiten.RunGame(&app{state: game.NewStateFromECLBlocks(catalog, eclBlocks, blocks[0].Entry.ID), face: loadFace(*fontPath)}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, face: loadFace(*fontPath)}); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func loadMonsterRecords(data []byte) (map[uint8]monster.Record, error) {
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	records := make(map[uint8]monster.Record, len(blocks))
+	for _, block := range blocks {
+		record, err := monster.Parse(block.Data)
+		if err != nil {
+			return nil, fmt.Errorf("MON1CHA block 0x%02X: %w", block.Entry.ID, err)
+		}
+		records[block.Entry.ID] = record
+	}
+	return records, nil
+}
+
+// demoParty is deliberately an explicit debug roster for -encounter. The
+// original party save/creation data is a separate reverse-engineering task;
+// normal startup still uses the opening state and does not silently invent it.
+func demoParty() []combat.Fighter {
+	return []combat.Fighter{
+		{ID: "party-1", Name: "戰士", Side: combat.SideParty, HitPoints: 42, MaxHitPoints: 42, ArmorClass: 4, AttackBonus: 16, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 1},
+		{ID: "party-2", Name: "遊俠", Side: combat.SideParty, HitPoints: 34, MaxHitPoints: 34, ArmorClass: 5, AttackBonus: 15, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 2},
+		{ID: "party-3", Name: "牧師", Side: combat.SideParty, HitPoints: 30, MaxHitPoints: 30, ArmorClass: 6, AttackBonus: 12, DamageDiceCount: 1, DamageDiceSides: 6, InitiativeBonus: 0},
+		{ID: "party-4", Name: "法師", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 8, AttackBonus: 10, DamageDiceCount: 1, DamageDiceSides: 4, InitiativeBonus: 1},
 	}
 }
 

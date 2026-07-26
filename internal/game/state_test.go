@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 func testCatalog() locale.Catalog {
@@ -198,5 +200,19 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
 		t.Fatalf("combat result mode=%v status=%v message=%q", state.Mode, state.CombatStatus(), state.Message)
+	}
+}
+
+func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
+	state := NewState(testCatalog())
+	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1}}
+	records := map[uint8]monster.Record{0x56: {Name: "BUGBEAR", MaxHitPoints: 2, HitPoints: 2, ArmorClass: 0, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1}}
+	result := ecl.RunResult{CombatRequested: true, MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 0x56, Count: 1}}}
+	if err := state.StartEncounter(result, records, party, 11); err != nil {
+		t.Fatal(err)
+	}
+	enemies := state.CombatTargets()
+	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" {
+		t.Fatalf("state=%#v enemies=%#v", state, enemies)
 	}
 }

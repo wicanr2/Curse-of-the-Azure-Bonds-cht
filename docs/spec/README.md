@@ -32,3 +32,4 @@
 - [第三十五輪 monster item／effect 繁中名稱](./round-35-monster-item-localization.md)（`READY`：限本輪實際觀察 IDs）
 - [第三十六輪 ECL-to-enemy encounter adapter](./round-36-ecl-encounter-adapter.md)（`READY`：限 enemy fighter 建立）
 - [第三十七輪 可操作戰鬥狀態與 Ebiten 畫面](./round-37-playable-combat-state.md)（`READY`：限戰鬥垂直切片）
+- [第三十八輪 ECL encounter 到 Battle 的資料橋](./round-38-ecl-encounter-to-battle.md)（`READY`：限 ECL1 direct-entry）

@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 // StartCombat creates the first playable battle adapter. Party and encounter
@@ -41,6 +43,20 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
+}
+
+// StartEncounter is the data bridge from the bounded ECL runner to the
+// playable battle state. ECL supplies only spawn IDs/counts; MON*CHA supplies
+// the combat statistics, and the caller supplies the decoded party roster.
+func (s *State) StartEncounter(result ecl.RunResult, records map[uint8]monster.Record, party []combat.Fighter, seed int64) error {
+	if !result.CombatRequested {
+		return fmt.Errorf("ECL result does not request combat")
+	}
+	enemies, err := monster.BuildEnemies(result.MonsterSpawns, records)
+	if err != nil {
+		return err
+	}
+	return s.StartCombat(party, enemies, seed)
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }

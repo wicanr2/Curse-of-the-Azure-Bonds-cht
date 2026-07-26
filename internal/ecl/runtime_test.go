@@ -176,6 +176,25 @@ func TestRunSubsetReportsCombatRequest(t *testing.T) {
 	}
 }
 
+func TestRunSubsetCarriesEncounterDescriptorsToCombat(t *testing.T) {
+	// SETUP MONSTER 4,2,4; LOAD MONSTER 0x56,10,0x56; COMBAT.
+	block := []byte{0, 0,
+		0x0C, 0, 4, 0, 2, 0, 4,
+		0x0B, 0, 0x56, 0, 10, 0, 0x56,
+		0x24,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.CombatRequested || result.MonsterSetup == nil || len(result.MonsterSpawns) != 1 {
+		t.Fatalf("result=%+v", result)
+	}
+	if result.MonsterSetup.SpriteID != 4 || result.MonsterSpawns[0].MonsterID != 0x56 || result.MonsterSpawns[0].Count != 10 {
+		t.Fatalf("encounter=%+v setup=%+v", result.MonsterSpawns, result.MonsterSetup)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)
