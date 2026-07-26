@@ -9,3 +9,4 @@ workplace/extracted/
 workplace/output/
 *.pyc
 __pycache__/
+*.test
