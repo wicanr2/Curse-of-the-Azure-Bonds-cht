@@ -44,6 +44,7 @@ type Fighter struct {
 	HasPartyIcon   bool
 	PartyHeadBlock uint8
 	PartyBodyBlock uint8
+	PartyIconID    uint8
 	PartyIconSize  uint8
 	IconDirection  uint8
 	IconAttack     bool

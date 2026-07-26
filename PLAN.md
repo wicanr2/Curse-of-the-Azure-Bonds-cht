@@ -230,7 +230,8 @@
 - [x] 建立 combat 八方向 delta／tile placement contract，並接入目前 Ebiten formation renderer。
 - [x] 將 CombatMap position／size 接入 Fighter、StartCombat 與 renderer boundary。
 - [x] 反組譯並封裝 reference `try_place_combatant` position formula。
-- [ ] 解碼 DOS player record icon mapping、真實 CombatMap position／camera 與 direction-specific placement。
+- [x] 保存 DOS player record `icon_id` metadata 到 party／combat projection。
+- [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
 - [x] 建立 party equipment class mask、slot collision、雙手武器與雙戒指 transaction contract。
