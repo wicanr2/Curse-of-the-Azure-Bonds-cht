@@ -143,9 +143,10 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
-		Equipment:  append([]monster.ItemRecord(nil), r.Inventory...),
-		Effects:    append([]monster.AffectRecord(nil), r.Effects...),
-		SpellSlots: append([]uint8(nil), r.MemorizedSpells...),
+		Equipment:   append([]monster.ItemRecord(nil), r.Inventory...),
+		Effects:     append([]monster.AffectRecord(nil), r.Effects...),
+		SpellSlots:  append([]uint8(nil), r.MemorizedSpells...),
+		KnownSpells: append([]uint8(nil), r.KnownSpells...),
 	}
 	if err := character.Validate(); err != nil {
 		return Character{}, err
@@ -278,6 +279,7 @@ func (c *Character) ApplyDOSSpellRecord(data []byte) error {
 		return err
 	}
 	c.SpellSlots = append(c.SpellSlots[:0], record.MemorizedSpells...)
+	c.KnownSpells = append(c.KnownSpells[:0], record.KnownSpells...)
 	return nil
 }
 

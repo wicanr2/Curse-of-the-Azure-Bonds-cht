@@ -261,6 +261,7 @@
 - [x] 將 ECL `SPELL`／`PROTECTION` operand 接成 bounded runtime signal。
 - [x] 建立 remake party ordered spell-slot resolver，並將 ITEMS catalog 接入 character creation／party load。
 - [x] 解析公開 DOS player record 的 memorized／known spell 欄位，並接到 party spell-slot adapter。
+- [x] 將 DOS known-spell flags 保存到 Character／party save，並在 CAMP MAGIC 顯示已記憶／可用數量。
 - [x] 解析公開 DOS player record 的單職業核心欄位，接到 party／combat projection。
 - [x] 解碼 DOS `.SWG` item records，接到 party equipment projection。
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
