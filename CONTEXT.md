@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 49 輪：ECL COMBAT 接入可操作 Battle。
+第 50 輪：真實 ECL1 COMBAT boundary regression 與 session 選擇 offset 修正。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -54,6 +54,7 @@
 第 47 輪 commit：`d2a1f3d`，已推送至 GitHub `main`。
 第 48 輪功能 commit：`cfa0fce`，已推送至 GitHub `main`；本行為後續文件同步提交。
 第 49 輪功能 commit：`6464ea6`，已推送至 GitHub `main`；本行為後續文件同步提交。
+第 50 輪功能 commit：`e0b7030`，準備推送至 GitHub `main`；本行為後續文件同步提交。
 
 ## 已確認
 
@@ -111,6 +112,7 @@
 - 建立畫面按 `N` 可輸入 Unicode／繁中姓名，按 `A` 可編輯六項能力值，按 `R` 可重擲六項 3d6；均在完成時經 validation。
 - `internal/save` 已建立 version 1 的 remake party JSON；F5／F9 與 `-party-load` 可保存／載入角色描述，原版 DOS save/import、裝備、XP／等級與完整 party state 仍未完成。
 - ECL `COMBAT` 現在在 State 已有 party 與 `MON1CHA` records 時，會由真實 spawn descriptors 建立可操作 Battle；缺少資料時仍安全停在事件 boundary。
+- 真實 ECL1 block `0x51` 的 `JOURNEY ON → STORE` 已建立 regression：可抵達 `COMBAT`，但該路徑沒有 `LOAD MONSTER` descriptors，因此明確停在 boundary；不能把它誤報為已完成 encounter。
 - 建立畫面按 `R` 可重擲六項 3d6 能力值；核心接受 seed regression，完成加入時仍經職業最低值 validation。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
 
