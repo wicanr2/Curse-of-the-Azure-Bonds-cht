@@ -306,6 +306,39 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 	}
 }
 
+func TestBarMenuReadsTavernTalesAndReturnsToPlaces(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Location = LocationShadowdale
+	state.Mode = ModePlace
+	state.Choices = []string{"客棧", "商店", "酒館", "離開"}
+	state.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
+	state.SetBarTales([]string{"第一則傳聞", "第二則傳聞"})
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.barMenu || len(state.Choices) != 2 || state.Choices[0] != "聽酒館傳聞" {
+		t.Fatalf("bar menu=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "BAR_LISTEN" || !strings.Contains(state.Message, "第一則傳聞") || state.BarTaleIndex() != 1 {
+		t.Fatalf("bar tale=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModePlace || !state.barMenu {
+		t.Fatalf("bar continuation state=%#v err=%v", state, err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "BAR_EXIT" || state.barMenu {
+		t.Fatalf("bar exit=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModePlace || state.barMenu {
+		t.Fatalf("place return state=%#v err=%v", state, err)
+	}
+}
+
 func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shop_menu_prompt"] = "商店選單"

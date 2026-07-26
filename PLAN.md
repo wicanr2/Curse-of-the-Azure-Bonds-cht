@@ -250,6 +250,7 @@
 - [x] 將 CAMP ALTER／SPEED 接成 1–5 級訊息速度，並接到 Ebiten Unicode message reveal。
 - [x] 將 CAMP ALTER／ICON 接成已驗證 CHEAD／CBODY block 選擇，並同步 roster／combat fighter icon。
 - [x] 將 CAMP FIX 接成已驗證 Cure Light Wounds spell-slot、`1d8` healing 與 roster／combat fighter HP sync boundary。
+- [x] 將城市 BAR 接成 ordered Tavern Tale menu、繁中內容與城市場所返回 boundary；買酒價格／ECL trigger 保留 data adapter。
 - [ ] 解碼 DOS player runtime icon slot mapping、真實 CombatMap position／camera 與 direction-specific placement。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
