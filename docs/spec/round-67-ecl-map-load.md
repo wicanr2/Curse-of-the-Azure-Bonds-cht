@@ -9,7 +9,7 @@ reference `ovr003.CMD_LoadFiles` 讀取三個 command-set operand；當第三值
 本輪實作：
 
 - `ecl.RunSubset` 的 opcode `0x21` 解碼三個 operand，輸出 `LoadFilesRequested` 與 `[3]uint16`。
-- `game.State` 將有效第三值保存為 `GeoMapBlock` pending request，預設 `GeoMapSet=2`（目前 runtime 尚未從完整 `game_area` save state 解碼 set）。
+- `game.State` 在 `Area.InDungeon` 為 true 時，將有效第三值保存為 `GeoMapBlock` pending request，預設 `GeoMapSet=2`（目前 runtime 尚未從完整 `game_area` save state 解碼 set）。
 - Ebiten app 消費 request，從 `geo.Catalog` 查找原始 set/block，並同時更新 G geometry 與 D dungeon floor。
 - state／ECL regression 驗證 request 只能消費一次；catalog regression 驗證所有 16 個原始 GEO IDs。
 

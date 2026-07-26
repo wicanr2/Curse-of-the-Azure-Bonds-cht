@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
@@ -54,6 +55,7 @@ type State struct {
 	MapX            int
 	MapY            int
 	WildernessFloor mapdata.WildernessFloor
+	Area            area.State
 	GeoMapSet       uint8
 	GeoMapBlock     uint8
 
@@ -183,6 +185,7 @@ func NewState(catalog locale.Catalog) State {
 		mapSeed:                1,
 		GeoMapSet:              2,
 		GeoMapBlock:            1,
+		Area:                   area.State{GameArea: 2},
 	}
 }
 
@@ -207,6 +210,16 @@ func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
 // tests. The original engine rolls a fresh floor; this explicit seed keeps
 // the remake deterministic until the original save/area seed is decoded.
 func (s *State) SetMapSeed(seed int64) { s.mapSeed = seed }
+
+// SetAreaState installs the decoded Area1/Area2 boundary used by ECL file
+// loading and GEO selection.
+func (s *State) SetAreaState(value area.State) {
+	s.Area = value
+	s.GeoMapSet = value.GameArea
+	s.GeoMapBlock = value.Current3DMapBlockID
+}
+
+func (s *State) SetInDungeon(value bool) { s.Area.InDungeon = value }
 
 func (s *State) Apply(action Action) error {
 	switch {
@@ -335,11 +348,16 @@ func (s *State) applyGeoMapLoad(result ecl.RunResult) {
 	if !result.LoadFilesRequested {
 		return
 	}
-	block := result.LoadFiles[2]
-	if block == 0xFF || block == 0x7F {
+	lastBlock := uint8(0)
+	if s.session != nil {
+		lastBlock = s.session.CurrentBlockID()
+	}
+	effect := s.Area.ApplyLoadFiles(result.LoadFiles, lastBlock)
+	if effect.GeoMapBlock == nil {
 		return
 	}
-	s.GeoMapBlock = uint8(block)
+	s.GeoMapSet = s.Area.GameArea
+	s.GeoMapBlock = *effect.GeoMapBlock
 	s.geoMapPending = true
 }
 

@@ -63,3 +63,4 @@
 - [第六十四輪 GEO dungeon floor composition](./round-64-dungeon-floor.md)（`READY`：限四段 tile composition 與 GEO2 preview）
 - [第六十六輪原始 GEO map catalog](./round-66-geo-catalog.md)（`READY`：限 GEO DAX map ID catalog 與 preview selector）
 - [第六十七輪 ECL LOAD FILES → GEO map request](./round-67-ecl-map-load.md)（`READY`：限第三 operand selector 與 renderer bridge）
+- [第六十八輪 Area1／Area2 map-load boundary](./round-68-area-state.md)（`READY`：限 area state 與 `CMD_LoadFiles` branch contract）

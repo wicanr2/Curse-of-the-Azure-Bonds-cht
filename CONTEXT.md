@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第 67 輪：ECL LOAD FILES → GEO map request。
+第 68 輪：Area1／Area2 map-load boundary。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -78,6 +78,8 @@
 第 66 輪功能／文件 commit：`ae4e32a`，已推送至 GitHub `main`；本行為後續文件同步提交。
 
 第 67 輪功能／文件 commit：`8144392`，已推送至 GitHub `main`；本行為後續文件同步提交。
+
+第 68 輪功能／文件 commit：待本輪提交後補登，已推送至 GitHub `main`。
 
 ## 已確認
 
@@ -181,6 +183,8 @@
 - `cmd/azure-bonds-game` 新增 `-geo-set`／`-geo-block`，選中的 GEO block 會同時驅動 G geometry 與 D dungeon floor preview；area pointer 自動選圖尚未完成。
 - ECL opcode `0x21 LOAD FILES` 已解碼三個 operand；有效第三值會經 `game.State` pending request，由 Ebiten 從 `geo.Catalog` 自動切換 GEO geometry／dungeon floor。
 - 完整 `Area1.inDungeon`／`game_area`／save loader、WALLDEF reload 與非 dungeon picture side effect 尚未完成。
+- `internal/area.State` 已建立 reference `current_3DMap_block_id`／`inDungeon`／`game_area` 邊界；`LOAD FILES` 現在只有在 dungeon state 才產生 GEO request，非 dungeon 分支保留 big-picture effect signal。
+- `game.State` 已接入 `Area.State`，可用 `SetInDungeon(true)` 驗證 ECL map load；完整 Area1／Area2 save/import 與自動 game-area 載入仍未完成。
 - party／map state 的完整 VM semantics 尚未跨 block 保存，仍不是完整 VM。
 - real transition 已有 entry-level regression，但尚未由完整玩家流程抵達。
 - 中文化的字型格式與字串長度限制。
