@@ -4,7 +4,7 @@
 
 ## 目前輪次
 
-第一百三十一輪：CAMP MAGIC command menu。
+第一百三十二輪：CAMP MEMORIZE → REST writeback。
 
 第 1 輪 commit：`d87b8c3`，已推送至 GitHub `main`。
 第 2 輪 commit：`f46bb3d`，已推送至 GitHub `main`。
@@ -365,3 +365,5 @@
 第一百三十輪功能／文件 commit：`a885b9f`，已推送至 GitHub `main`。DOS known-spell flags 現在保存到 `Character.KnownSpells`／party save，並在 CAMP MAGIC 顯示已記憶／可用數量；CAST／MEMORIZE／SCRIBE 與消耗規則仍未完成。
 
 第一百三十一輪功能／文件 commit：`8ba67b5`，已推送至 GitHub `main`。依 RuleBook 將 CAMP MAGIC 接成 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；DISPLAY／REST 已接入，CAST／MEMORIZE／SCRIBE 仍保留 rules boundary。
+
+第一百三十二輪待提交：MEMORIZE 可從 KnownSpells 選法術，先保存 pending state，REST_START 才寫回 SpellSlots；完整 capacity、準備時間、遭遇中斷與 CAST／SCRIBE 仍未完成。

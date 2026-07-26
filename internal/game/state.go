@@ -137,6 +137,9 @@ type State struct {
 	campViewMenu           bool
 	campMagicMenu          bool
 	campMagicViewMenu      bool
+	campMagicMemorizeMenu  bool
+	campMagicMemorizeChar  int
+	pendingMemorizedSpells map[int][]uint8
 	saveRequested          bool
 	alterMenu              bool
 	alterOrderMenu         bool
@@ -335,6 +338,20 @@ func (s *State) enterCampRestMenu() {
 	}
 	s.currentOriginalChoices = []string{"REST_START", "REST_ADD", "REST_SUBTRACT", "REST_EXIT"}
 	s.Message = ""
+}
+
+func (s *State) applyPendingMemorization() int {
+	changed := 0
+	for characterIndex, spells := range s.pendingMemorizedSpells {
+		if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+			continue
+		}
+		character := &s.partyRoster[characterIndex]
+		character.SpellSlots = append(character.SpellSlots[:0], spells...)
+		changed++
+	}
+	s.pendingMemorizedSpells = nil
+	return changed
 }
 
 // restParty applies only the manual's natural-healing portion: one HP per
@@ -683,6 +700,8 @@ func (s *State) enterCampMenu() {
 	s.campViewMenu = false
 	s.campMagicMenu = false
 	s.campMagicViewMenu = false
+	s.campMagicMemorizeMenu = false
+	s.campMagicMemorizeChar = -1
 	s.alterMenu = false
 	s.alterOrderMenu = false
 	s.alterOrderSelected = -1
@@ -725,12 +744,13 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.enterCampMenu()
 			return nil
 		case "REST_START":
+			memorized := s.applyPendingMemorization()
 			healed := s.restParty()
 			s.campRestMenu = false
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "REST"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_done", "休息 %d 小時完成，隊伍自然恢復 %d HP。"), s.restHours, healed)
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_done", "休息 %d 小時完成，隊伍自然恢復 %d HP，完成 %d 名角色的法術記憶。"), s.restHours, healed, memorized)
 			return nil
 		default:
 			return fmt.Errorf("unknown camp rest choice %q", originalChoice)
@@ -947,14 +967,77 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		case "CAMP_MAGIC_DISPLAY":
 			s.enterCampMagicViewMenu()
 			return nil
+		case "CAMP_MAGIC_MEMORIZE":
+			s.enterCampMagicMemorizeCharacterMenu()
+			return nil
 		case "CAMP_MAGIC_REST":
 			s.enterCampRestMenu()
 			return nil
-		case "CAMP_MAGIC_CAST", "CAMP_MAGIC_MEMORIZE", "CAMP_MAGIC_SCRIBE":
+		case "CAMP_MAGIC_CAST", "CAMP_MAGIC_SCRIBE":
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "MAGIC"
 			s.Message = s.catalog.Text("camp_magic_pending", "此法術功能已進入資料邊界，完整規則仍待接入。")
+			return nil
+		}
+	}
+	if s.campMagicMemorizeMenu {
+		if originalChoice == "CAMP_MAGIC_MEMORIZE_EXIT" {
+			s.campMagicMemorizeMenu = false
+			s.campMagicMemorizeChar = -1
+			s.enterCampMagicMenu()
+			return nil
+		}
+		if s.campMagicMemorizeChar < 0 {
+			if strings.HasPrefix(originalChoice, "CAMP_MAGIC_MEM_CHAR_") {
+				value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_MEM_CHAR_"))
+				if err != nil || value < 0 || value >= len(s.partyRoster) {
+					return fmt.Errorf("invalid memorize character %q", originalChoice)
+				}
+				s.enterCampMagicMemorizeSpellMenu(value)
+				return nil
+			}
+			return fmt.Errorf("unknown memorize character choice %q", originalChoice)
+		}
+		if originalChoice == "CAMP_MAGIC_MEM_DONE" {
+			s.enterCampMagicMemorizeCharacterMenu()
+			s.Message = s.catalog.Text("camp_magic_memorize_selected", "法術選擇已暫存，請在 REST 後完成記憶。")
+			return nil
+		}
+		if originalChoice == "CAMP_MAGIC_MEM_CANCEL" {
+			delete(s.pendingMemorizedSpells, s.campMagicMemorizeChar)
+			s.enterCampMagicMemorizeCharacterMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_MEM_SPELL_") {
+			spellIndex, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_MEM_SPELL_"))
+			character := s.partyRoster[s.campMagicMemorizeChar]
+			if err != nil || spellIndex < 0 || spellIndex >= len(character.KnownSpells) {
+				return fmt.Errorf("invalid memorize spell %q", originalChoice)
+			}
+			if s.pendingMemorizedSpells == nil {
+				s.pendingMemorizedSpells = make(map[int][]uint8)
+			}
+			selected := s.pendingMemorizedSpells[s.campMagicMemorizeChar]
+			spellID := character.KnownSpells[spellIndex]
+			removed := false
+			for index, selectedID := range selected {
+				if selectedID == spellID {
+					selected = append(selected[:index], selected[index+1:]...)
+					removed = true
+					break
+				}
+			}
+			if !removed {
+				capacity := firstLevelMemorizedCapacity(character)
+				if len(selected) >= capacity {
+					s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_full", "最多可選 %d 個法術。"), capacity)
+					return nil
+				}
+				selected = append(selected, spellID)
+			}
+			s.pendingMemorizedSpells[s.campMagicMemorizeChar] = selected
+			s.enterCampMagicMemorizeSpellMenu(s.campMagicMemorizeChar)
 			return nil
 		}
 	}
@@ -1390,6 +1473,51 @@ func (s *State) enterCampMagicViewMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_view_exit", "返回法術選單"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_VIEW_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicMemorizeCharacterMenu() {
+	s.campMenu = true
+	s.campMagicMenu = false
+	s.campMagicViewMenu = false
+	s.campMagicMemorizeMenu = true
+	s.campMagicMemorizeChar = -1
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_magic_memorize_prompt", "選擇要準備法術的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		capacity := firstLevelMemorizedCapacity(character)
+		selected := len(s.pendingMemorizedSpells[index])
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_memorize_character", "%s（已選 %d/%d）"), character.Name, selected, capacity))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_CHAR_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_memorize_exit", "返回法術選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEMORIZE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicMemorizeSpellMenu(characterIndex int) {
+	character := s.partyRoster[characterIndex]
+	s.campMagicMemorizeChar = characterIndex
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_spell_prompt", "%s 的可用法術"), character.Name)
+	s.Choices = make([]string, 0, len(character.KnownSpells)+2)
+	s.currentOriginalChoices = make([]string, 0, len(character.KnownSpells)+2)
+	selected := s.pendingMemorizedSpells[characterIndex]
+	for index, spellID := range character.KnownSpells {
+		mark := " "
+		for _, selectedID := range selected {
+			if selectedID == spellID {
+				mark = "*"
+				break
+			}
+		}
+		s.Choices = append(s.Choices, fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, character.Class, spellID)))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_SPELL_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_mem_done", "完成選擇"), s.catalog.Text("camp_magic_mem_cancel", "取消此角色"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_DONE", "CAMP_MAGIC_MEM_CANCEL")
 	s.Message = ""
 }
 

@@ -836,6 +836,47 @@ func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
 	}
 }
 
+func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{1}, KnownSpells: []uint8{1, 7}}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 7 {
+		t.Fatalf("memorized slots=%v, want [7] after rest", got)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "REST" || !strings.Contains(state.Message, "完成 1 名角色的法術記憶") {
+		t.Fatalf("rest result state=%#v", state)
+	}
+}
+
 func TestCampMenuSaveEmitsRequest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness

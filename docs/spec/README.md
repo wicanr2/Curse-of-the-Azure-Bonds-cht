@@ -126,3 +126,4 @@
 - [第一百二十九輪 CAMP MAGIC bounded spell catalog](./129-camp-magic-spell-catalog.md)（`READY`：限已核對的一級法術名稱）
 - [第一百三十輪 Known Spells preservation](./130-known-spell-preservation.md)（`READY`：限 DOS → party/save → CAMP MAGIC 資料保存）
 - [第一百三十一輪 CAMP MAGIC command menu](./131-camp-magic-command-menu.md)（`READY`：限 command routing 與 DISPLAY／REST）
+- [第一百三十二輪 CAMP MEMORIZE → REST writeback](./132-camp-memorize-rest-writeback.md)（`READY`：限 known-spell selection 與 slot writeback）

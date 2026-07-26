@@ -28,3 +28,23 @@ func campSpellLabel(catalog locale.Catalog, class party.Class, spellID uint8) st
 	}
 	return catalog.Text(keys[spellID-1], fmt.Sprintf("法術 0x%02X", spellID))
 }
+
+// firstLevelMemorizedCapacity is the bounded preparation adapter used by the
+// current first-level spell catalog. Imported characters retain the observed
+// number of memorized slots; newly created spellcasters use the documented
+// first-level capacity. Higher-level and multi-level slot tables remain a
+// rules-data task.
+func firstLevelMemorizedCapacity(character party.Character) int {
+	if len(character.SpellSlots) > 0 {
+		return len(character.SpellSlots)
+	}
+	if character.Level < 1 {
+		return 0
+	}
+	switch character.Class {
+	case party.ClassCleric, party.ClassMagicUser:
+		return 1
+	default:
+		return 0
+	}
+}
