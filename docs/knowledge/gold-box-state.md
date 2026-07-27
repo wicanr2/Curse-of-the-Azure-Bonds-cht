@@ -197,8 +197,12 @@ learning 與完整 rest encounter table 仍不能由此窄 slice 推論。
 
 remake JSON save version 5 現在保存七個 raw clock slots 與 age-cycle overflow，
 `State.SavePartyFile`／`LoadPartyFile` 會保留時間進度；versions 1–4 仍可載入並使用零時鐘。
-DOS SAVGAM Area1 clock bytes 尚未在 raw offset 層合併，避免把 remake JSON 欄位誤宣稱為
-原版存檔格式。
+remake JSON 與 DOS SAVGAM Area1 clock 現已在已定位 raw offsets 層分開保存；其他未知
+Area1 bytes 仍不會被 remake JSON 欄位誤宣稱為原版格式。
+
+更新：reference Area1 的七個 clock words 位於 `0x18C..0x198`，不是 unknown bytes；
+`area.State.GameTime`、Area1 codec、SAVGAM load 與 State `AdvanceGameTime` 現在共用這個
+raw order。其他未定位 Area1 bytes 仍維持 preservation boundary。
 
 Reference `NormalizeClock` 在 slot 6 overflow 時會對每個 `Player.age` 加一。CoAB normal
 player record 的 signed age `0x76` 已由 parser／`Character`／`PatchDOSPlayerRecord` 保存，

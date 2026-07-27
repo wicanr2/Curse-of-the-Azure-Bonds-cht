@@ -15,6 +15,9 @@ type State struct {
 	LastECLBlockID      uint16
 	OutdoorSkyColor     uint16
 	IndoorSkyColor      uint16
+	// GameTime mirrors the seven Area1 words at 0x18C..0x198 in reference
+	// order, allowing the DOS SAVGAM clock to round-trip.
+	GameTime [7]uint16
 }
 
 type LoadFilesEffect struct {

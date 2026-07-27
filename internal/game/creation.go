@@ -196,7 +196,9 @@ func (s *State) SavePartyFile(path string) error {
 	if len(s.partyRoster) == 0 {
 		return fmt.Errorf("no character-created party is available to save")
 	}
-	data, err := partySave.EncodeGameWithTime(s.partyRoster, s.Area, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles)
+	areaState := s.Area
+	areaState.GameTime = s.gameClock
+	data, err := partySave.EncodeGameWithTime(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles)
 	if err != nil {
 		return err
 	}
@@ -241,6 +243,7 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	area1.GameArea = area2.GameArea
 	area1.HeadBlockID = area2.HeadBlockID
 	s.Area = area1
+	s.gameClock = area1.GameTime
 	s.GeoMapSet = area1.GameArea
 	s.GeoMapBlock = area1.Current3DMapBlockID
 	s.MapX = int(container.MapPosX)
@@ -530,6 +533,11 @@ func (s *State) LoadPartyFile(path string) error {
 		s.gameAgeCycles = 0
 	}
 	s.Area = file.Area
+	s.gameClock = file.GameTime
+	if file.GameTime == [7]uint16{} {
+		s.gameClock = file.Area.GameTime
+	}
+	s.Area.GameTime = s.gameClock
 	s.GeoMapSet = file.Area.GameArea
 	s.GeoMapBlock = file.Area.Current3DMapBlockID
 	s.MapX, s.MapY = file.MapX, file.MapY

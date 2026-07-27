@@ -17,6 +17,7 @@ const (
 	area1OutdoorSky = 0x1FA
 	area1IndoorSky  = 0x1FC
 	area1City       = 0x342
+	area1GameTime   = 0x18C
 	area2GameArea   = 0x624
 	area2HeadBlock  = 0x5C2
 )
@@ -35,7 +36,7 @@ func DecodeArea1(data []byte) (State, error) {
 	if err != nil {
 		return State{}, err
 	}
-	return State{
+	state := State{
 		Current3DMapBlockID: data[area1MapBlock],
 		InDungeon:           int16(binary.LittleEndian.Uint16(data[area1Dungeon:])) != 0,
 		LastXPos:            int16(binary.LittleEndian.Uint16(data[area1LastX:])),
@@ -44,7 +45,12 @@ func DecodeArea1(data []byte) (State, error) {
 		CurrentCity:         data[area1City],
 		OutdoorSkyColor:     binary.LittleEndian.Uint16(data[area1OutdoorSky:]),
 		IndoorSkyColor:      binary.LittleEndian.Uint16(data[area1IndoorSky:]),
-	}, nil
+	}
+	for index := range state.GameTime {
+		offset := area1GameTime + index*2
+		state.GameTime[index] = binary.LittleEndian.Uint16(data[offset:])
+	}
+	return state, nil
 }
 
 // EncodeArea1 updates known fields in a copy of original. Passing nil creates
@@ -71,6 +77,10 @@ func EncodeArea1(state State, original []byte) ([]byte, error) {
 	binary.LittleEndian.PutUint16(out[area1OutdoorSky:], state.OutdoorSkyColor)
 	binary.LittleEndian.PutUint16(out[area1IndoorSky:], state.IndoorSkyColor)
 	out[area1City] = state.CurrentCity
+	for index, value := range state.GameTime {
+		offset := area1GameTime + index*2
+		binary.LittleEndian.PutUint16(out[offset:], value)
+	}
 	return out, nil
 }
 

@@ -531,6 +531,12 @@ knowledge。Docker 已通過 `internal/ecl`、`internal/game`、`internal/party`
 `internal/locale`；target／saving throw／random roll／HP mutation 仍保留 party adapter
 boundary。
 
+第二百四十七輪重大里程碑：依 reference `Area1.field_6A00_Get/Set` 確認七個 game-time
+words 位於 `0x18C..0x198`，接入 `area.State.GameTime`、Area1 binary codec、SAVGAM prefix
+load、`State.SetAreaState`、`AdvanceGameTime` 與 remake save synchronization；新增 Area1
+raw round-trip 與 State mirror regression、READY spec、README／PLAN／Gold Box state knowledge。
+完整 calendar UI 與其他 unknown Area1 fields 仍保留 boundary。
+
 第二百四十五輪重大里程碑：依 reference `race_ages`／`ovr018` 補上 single-class
 `StartingAgeSpecFor` 與 deterministic `RollStartingAge`，明確映射六 race、六 supported
 classes 的 base age／dice count／size，unsupported 組合回傳錯誤。新增 human fighter

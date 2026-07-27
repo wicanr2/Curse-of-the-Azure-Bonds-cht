@@ -50,6 +50,9 @@ func TestECLClockAdvancesSharedGameTime(t *testing.T) {
 	if got := state.GameTimeSlots(); got[1] != 3 {
 		t.Fatalf("clock=%v, want slot 1 to advance by 3", got)
 	}
+	if state.Area.GameTime[1] != 3 {
+		t.Fatalf("area clock=%v, want slot 1 to mirror state", state.Area.GameTime)
+	}
 	if err := state.applyECLClockSignals(ecl.RunResult{ClockRequests: []ecl.ClockRequest{{TimeStep: 1, TimeSlot: 7}}}); err == nil {
 		t.Fatal("invalid ECL CLOCK slot was accepted")
 	}

@@ -26,6 +26,7 @@ func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 		return nil
 	}
 	s.addGameClock(timeSlot, amount)
+	s.Area.GameTime = s.gameClock
 	minutes := uint64(amount)
 	for slot := timeSlot; slot > 1; slot-- {
 		minutes *= uint64(referenceTimeScales[slot-1])
