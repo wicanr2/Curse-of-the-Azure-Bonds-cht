@@ -903,3 +903,7 @@ READY spec；reference AC internal scale、完整 multi-class level／THAC0 tabl
 `0xA5..0xAC` thief skills、`0x9F` movement 與 `8001` active-affect branches；四個結果
 destination 由 PartyContext 寫回 shared ECL memory，新增 READY spec 與 min／max／average
 regression。未知 selector、NPC／temporary party 語意與各作品 scaling 仍保留 boundary。
+
+第二百六十七輪 ECL engine 里程碑：依 `ovr003.CMD_Who` 接入 `WHO (0x39)` prompt request，
+跨 `NEWECL` 聚合並繼續 cursor；新增 READY spec、command knowledge 與 no-prompt regression。
+這輪刻意保留 State roster UI／selected-player transaction，沒有自動替玩家選第一位角色。
