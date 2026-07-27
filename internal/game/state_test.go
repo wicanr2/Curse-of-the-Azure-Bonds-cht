@@ -2464,6 +2464,28 @@ func TestCampRestNaturallyHealsOneHPPer24Hours(t *testing.T) {
 	}
 }
 
+func TestCampRestAdvancesGameTimeBeforeHealing(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 3, MaxHitPoints: 10,
+		Effects: []monster.AffectRecord{{Kind: 0x27, Duration: 30, Value: 30, Strength: 1}}}}
+	state.SetRestHours(1)
+	state.enterCampMenu()
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].Effects) != 0 || state.partyRoster[0].HitPoints != 3 {
+		t.Fatalf("rest effects/healing=%#v, want 60-minute expiry and no 24h heal", state.partyRoster[0])
+	}
+	clock := state.GameTimeSlots()
+	if clock[1] != 0 || clock[2] != 0 || clock[3] != 1 {
+		t.Fatalf("rest clock=%v, want one normalized hour", clock)
+	}
+}
+
 func TestAdvancePartyEffectsUsesRosterDurationAdapter(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

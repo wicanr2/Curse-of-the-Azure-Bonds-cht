@@ -330,6 +330,7 @@
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
 - [x] 修正 `.FX` duration／strength 欄位並建立 finite/permanent duration tick adapter。
 - [x] 依 reference `ovr021.step_game_time` 接入七-slot raw clock、slot scaling 與 party／active battle effect timeout；age writeback、REST interruption 與完整 calendar 仍保留 boundary。
+- [x] 將 `REST_START` 接到 slot-1 game-time advancement（每小時 60 分鐘），在自然回血前到期 finite effects；random interruption／safe location／spell-learning side effects 仍保留 boundary。
 - [x] 建立 `.SAV/.GUY` + optional `.FX/.SWG` DOS player sidecar bundle importer。
 - [x] 提供 DOS character bundle → versioned remake party JSON 的可重現 CLI。
 - [x] 將 DOS character bundle 接入 Ebiten remake startup bridge。
