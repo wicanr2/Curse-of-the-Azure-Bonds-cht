@@ -120,6 +120,13 @@ effect projection 目前將 active `0x01` Bless（attack +1）、`0x02` Curse（
 
 CAMP 也應採相同的資料／UI 分層：`CAMP` 先進入 command state，`REST` 呼叫遊戲專屬 safe-rest service，完成後回到 CAMP Menu，`EXIT` 才離開 menu。`SAVE`、`VIEW`、`MAGIC`、`ALTER`、`FIX` 應各自注入遊戲專屬 service；已解出的窄 boundary 可以先接入，但不要把不同 Gold Box 作品的存檔格式、法術恢復或角色修改規則硬編在共用 renderer。
 
+640×480 remake 使用原 320×240 的 2× 邏輯空間：原始 24×24 combat icon 以
+nearest-neighbor 放大為 48×48，WALLDEF／8X8D 與事件圖也只採整數倍率，不做
+bilinear filtering。中文不是放大 DOS 8×8 字模，而是在放大後的 canvas 以
+16×15 或 24×24 等高解析 Unicode glyph 重新排版；目前主 UI 使用 24px font，
+事件 caption 每行最多 22 個 Unicode code point。素材層與文字層必須分離，
+以便後續 Gold Box 作品沿用 pixel-art renderer 而替換 locale/font。
+
 目前 `CAMP VIEW` 已形成可重用的只讀 adapter：以 roster 為 source，角色選單與摘要畫面分離，equipment label 經 base-item catalog 映射；查看本身不得改動 gold、treasure、equipment 或 spell state。後續 Gold Box 遊戲只需替換 roster codec 與名稱 catalog，即可沿用這個 UI/state boundary。
 
 `CAMP MAGIC` 可沿用同一個 roster selector，但 spell layer 必須保持三段分離：DOS／save adapter 提供 ordered memorized slot IDs，catalog 提供名稱與 level，rules service 才處理 prepare／forget／cast／recovery。UI 顯示已保存的 ID 不代表已完成法術規則，也不應由 slot ordinal 推導 spell name。

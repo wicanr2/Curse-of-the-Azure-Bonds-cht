@@ -85,6 +85,7 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	if !result.CombatRequested {
 		return fmt.Errorf("ECL result does not request combat")
 	}
+	applyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites, len(party))
 	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, records, affects)
 	if err != nil {
 		return err
@@ -96,7 +97,37 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 			enemies[index].HasAnimation = true
 		}
 	}
+	for index := 0; index < len(enemies); {
+		if enemies[index].Side == combat.SideParty {
+			party = append(party, enemies[index])
+			enemies = append(enemies[:index], enemies[index+1:]...)
+			continue
+		}
+		index++
+	}
 	return s.StartCombat(party, enemies, seed)
+}
+
+func applyCombatTeamWrites(spawns []ecl.MonsterSpawn, writes []ecl.CombatTeamWrite, partyCount int) {
+	for _, write := range writes {
+		monsterIndex := write.TeamListIndex - partyCount
+		for spawnIndex := range spawns {
+			count := int(spawns[spawnIndex].Count)
+			if count == 0 {
+				count = 1
+			}
+			if monsterIndex >= 0 && monsterIndex < count {
+				mask := uint64(1) << monsterIndex
+				if write.Value == 0 || write.Value == 0x80 {
+					spawns[spawnIndex].PartyMask |= mask
+				} else if write.Value == 0x81 {
+					spawns[spawnIndex].PartyMask &^= mask
+				}
+				break
+			}
+			monsterIndex -= count
+		}
+	}
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }
@@ -1279,7 +1310,7 @@ func (s *State) advanceCombatToParty() error {
 			s.combatTurnIndex++
 			continue
 		}
-		if fighter.Side == combat.SideParty {
+		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
 		}
 		if fighter.MonsterIsHeld() {
@@ -1287,11 +1318,15 @@ func (s *State) advanceCombatToParty() error {
 			s.combatTurnIndex++
 			continue
 		}
-		party := s.livingBySide(combat.SideParty)
-		if len(party) == 0 {
+		targetSide := combat.SideParty
+		if fighter.Side == combat.SideParty {
+			targetSide = combat.SideEnemy
+		}
+		targets := s.livingBySide(targetSide)
+		if len(targets) == 0 {
 			return s.finishCombat()
 		}
-		target, err := s.battle.SelectCombatTarget(fighter.ID, combat.SideParty)
+		target, err := s.battle.SelectCombatTarget(fighter.ID, targetSide)
 		if err != nil {
 			return err
 		}
@@ -1446,6 +1481,7 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	}
 	s.applyCitySelection()
 	if len(result.Text) > 0 {
+		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
 	}
 

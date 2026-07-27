@@ -273,6 +273,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.DelayCount += result.DelayCount
 		aggregate.LoadCharacterAddresses = append(aggregate.LoadCharacterAddresses, result.LoadCharacterAddresses...)
 		aggregate.LoadCharacterRequests = append(aggregate.LoadCharacterRequests, result.LoadCharacterRequests...)
+		aggregate.CombatTeamWrites = append(aggregate.CombatTeamWrites, result.CombatTeamWrites...)
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
 		aggregate.FindItemRequests = append(aggregate.FindItemRequests, result.FindItemRequests...)
 		aggregate.FindSpecialRequests = append(aggregate.FindSpecialRequests, result.FindSpecialRequests...)

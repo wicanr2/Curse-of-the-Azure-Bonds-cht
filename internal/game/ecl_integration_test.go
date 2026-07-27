@@ -843,6 +843,73 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("thieves guild transition mode=%v block=%#x position=(%d,%d) choices=%v",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.Choices)
 	}
+	geometryX, geometryY, geometryDirection := state.DungeonGeometryView()
+	if geometryX != 9 || geometryY != 3 || geometryDirection != 4 {
+		t.Fatalf("guild script-to-geometry view=(%d,%d,%d), want (9,3,4)",
+			geometryX, geometryY, geometryDirection)
+	}
+	state.SetDungeonGeometryView(geometryX, geometryY, geometryDirection)
+	if state.DungeonX != 1 || state.DungeonY != 12 || state.DungeonDirection != 0 {
+		t.Fatalf("guild geometry-to-script inverse=(%d,%d,%d), want (1,12,0)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+	state.DungeonWallType, _ = grid.WallWrapped(geometryX, geometryY, int(geometryDirection))
+	state.DungeonWallRoof = grid.CellWrapped(geometryX, geometryY).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	guildParty, guildEnemies := 0, 0
+	guildFighters := state.CombatFighters()
+	for _, fighter := range guildFighters {
+		if fighter.Side == combat.SideParty {
+			guildParty++
+		} else {
+			guildEnemies++
+		}
+	}
+	if guildParty != 5 || guildEnemies != 13 {
+		t.Fatalf("guild mixed battle party/enemy=%d/%d, want hero + 4 allied thieves vs 2 Fire Knives + 11 thieves",
+			guildParty, guildEnemies)
+	}
+	for turn := 0; turn < 100 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
+		!strings.Contains(state.Message, "尤拉什") || !strings.Contains(state.Message, "手札第 4 條") {
+		t.Fatalf("guild victory mode=%v status=%v message=%q choices=%v",
+			state.Mode, state.CombatStatus(), state.Message, state.Choices)
+	}
+	foundJournal4 := false
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 4：") &&
+			strings.Contains(page, "下水道地圖") && strings.Contains(page, "火刀據點") {
+			foundJournal4 = true
+			break
+		}
+	}
+	if !foundJournal4 {
+		t.Fatalf("Journal Entry 4 was not unlocked in-game: pages=%v", state.JournalPages)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
