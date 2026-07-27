@@ -260,6 +260,9 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 紅線是敵方，黃框標示目前行動者。角色名稱與 HP 移至下方 24px 中文資訊列，
 不再把十八組文字疊在懷舊小人上。`-guildmaster` 仍會完整跑過 Weaponers、Filani、
 皇家馬車、衛兵戰、投降與牢房，並非直接拼裝測試戰場。
+- 正式流程現已繼續進入 ECL2 block 3／GEO2 block 3 的提爾佛頓下水道。入口會顯示
+  低矮、濕滑環境的繁中說明；抵達 terrain `0x81` 火刀檢查哨後可拒絕投降，與
+  5 名 FIRE KNIFE 作戰，勝利後藏起屍體並回到同一份 ECL 探索狀態。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -289,6 +292,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -tavern
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -high-priest
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -carriage
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -guildmaster
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -sewers
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

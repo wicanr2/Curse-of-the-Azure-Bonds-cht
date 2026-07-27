@@ -271,3 +271,5 @@
 - [第二百九十一輪提爾佛頓高階祭司與手札 19](./291-tilverton-high-priest-journal-19.md)（`READY`：限 selector `0x8F`、Remove Curse、手札解鎖與 640×480 中文事件版面）
 - [第二百九十二輪皇家馬車與盜賊公會轉場](./292-tilverton-carriage-guild-transition.md)（`READY`：限城門條件、五名皇家衛兵戰鬥、投降與 ECL block 2 transition）
 - [第二百九十三輪盜賊公會混合陣營戰鬥](./293-thieves-guild-allied-combat.md)（`READY`：限 selected-player window、4 名 quick-fight 友軍、戰後手札 4）
+- [第二百九十四輪公會探索與下水道出口](./294-guild-exploration-sewer-exit.md)（`READY`：限一次性友軍清理、公會房間與 ECL block 3 轉場）
+- [第二百九十五輪提爾佛頓下水道檢查哨](./295-tilverton-sewers-checkpoint.md)（`READY`：限 block 3 初始化、terrain `0x81`、五名火刀戰與 continuation）

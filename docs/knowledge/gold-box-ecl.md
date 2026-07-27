@@ -179,3 +179,19 @@ ECL2 block 2 entry 0 以 work address `0x7ED5` 作 gate；成立後呼叫 `0xC01
 ECL encounter 的 `PartyMask` 不代表永久加入隊伍。公會戰的四名 QuickFight THIEF
 是 temporary allies；戰鬥結束後必須從 active fighter projection 移除（包括屍體），
 否則下一場犬舍戰會污染隊伍人數與 `PARTYSTRENGTH`。
+
+## 五入口 lifecycle ABI 與 terrain dispatch
+
+CoAB block 3 再次證實五個 initialization command-set address 具有固定角色：
+`entry 0=per-turn`、`entry 1=SearchLocation`、`entry 2=PreCampCheck`、
+`entry 3=CampInterrupted`、`entry 4=initial`。各次呼叫共享 ECL memory，但要重設
+PC／call stack；按 CAMP 只能先跑 entry 2，真正中斷時才跑 entry 3。
+
+SearchLocation 不應由 State 直接把座標映射成事件。下水道 entry 1 先計算
+`selector=C04F&0x3F`，再用 variable-length `ON GOTO` table 分派 `0x80..0x93`
+terrain。`0x81` 與 `0x82` 雖位於不同座標，卻共用同一火刀檢查哨 handler。
+共用引擎應保存 raw GEO terrain → ECL selector 邊界；座標只屬地圖資料。
+
+跨 `NEWECL` 後，target initial entry 寫入的 `C04B/C04C/C04D` 必須重新投影到
+renderer state。方向仍是 half-direction（乘二成八方向）；只切 block 而沿用舊
+State 座標會讓 renderer 與 script 分離。

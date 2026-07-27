@@ -1133,3 +1133,13 @@ renderer 現只回報 passable boundary attempt，由 State 寫 `0x7ED5=1` 後�
 README／knowledge base／READY spec 294 同步確立 640×480 logical canvas：
 原始像素素材 nearest-neighbor 整數放大，繁中以 24px（緊湊欄位可用 16×15）
 獨立高解析重繪。
+
+第二百九十五輪成果：ECL2 block 2 的下水道出口現會先把 combined GEO
+`(10,15,S)` 寫入 source registers，避免 local guild X 被錯誤減十成負數；`NEWECL 3`
+後再讀回 target `C04B/C04C/C04D`，正式落在 GEO2 block 3 `(0,1,S)`。block 3
+initial entry 的惡臭、黏液、低天花板與濕滑戰鬥環境已繁中化。real-image regression
+接著抵達 `(1,8)` terrain `0x81` 的火刀檢查哨，拒絕投降、驗證五名
+MON2 FIRE KNIFE、實際打贏戰鬥，再由同一 resumable ECL 顯示藏起屍體的繁中
+continuation。新增 `-sewers` 全故事重現入口、READY spec 295；subagent 的 block 3
+唯讀盤點也整理出五入口 lifecycle ABI、`C04F&0x3F → ON GOTO` terrain dispatch、
+camp entry 分工與主要 encounters，已收斂進共用 Gold Box ECL 知識庫。

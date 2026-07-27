@@ -1472,6 +1472,7 @@ func main() {
 	highPriest := flag.Bool("high-priest", false, "start at Tilverton's high priest through the formal ECL flow")
 	carriage := flag.Bool("carriage", false, "start at Tilverton's royal-carriage main-story event through the formal ECL flow")
 	guildmaster := flag.Bool("guildmaster", false, "start at the Thieves' Guild mixed-team battle through the full ECL story path")
+	sewers := flag.Bool("sewers", false, "start at the first Tilverton Sewers checkpoint through the full ECL story path")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1628,9 +1629,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern/-high-priest/-carriage cannot be combined with a loaded party")
+			log.Fatal("story preview flags cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1641,7 +1642,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster {
+		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1651,13 +1652,22 @@ func main() {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
-			if *carriage || *guildmaster {
+			if *carriage || *guildmaster || *sewers {
 				if err := prepareCarriagePreview(&state, geoGrid); err != nil {
 					log.Fatal(err)
 				}
-				if *guildmaster {
+				if *guildmaster || *sewers {
 					if err := prepareGuildmasterBattle(&state, geoGrid); err != nil {
 						log.Fatal(err)
+					}
+					if *sewers {
+						sewerGrid, ok := geoCatalog.Lookup(geo.MapRef{Set: 2, BlockID: 3})
+						if !ok {
+							log.Fatal("GEO2 block 3 is unavailable")
+						}
+						if err := prepareSewerCheckpoint(&state, geoGrid, &sewerGrid); err != nil {
+							log.Fatal(err)
+						}
 					}
 				}
 			}
@@ -1674,10 +1684,10 @@ func main() {
 				x, y, direction = 6, 10, 0
 			} else if *highPriest {
 				x, y, direction = 1, 10, 0
-			} else if *carriage || *guildmaster {
+			} else if *carriage || *guildmaster || *sewers {
 				x, y, direction = state.DungeonX, state.DungeonY, state.DungeonDirection
 			}
-			if !*carriage && !*guildmaster {
+			if !*carriage && !*guildmaster && !*sewers {
 				state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 				state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
 				state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
@@ -1698,6 +1708,42 @@ func main() {
 	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func prepareSewerCheckpoint(state *game.State, guildGrid, sewerGrid *geo.Grid) error {
+	for turn := 0; turn < 100 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			return fmt.Errorf("finish guild battle: %w", err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon {
+		return fmt.Errorf("guild battle ended with status %v", state.CombatStatus())
+	}
+	if err := state.Select(0); err != nil {
+		return err
+	}
+	state.SetDungeonGeometryView(10, 15, 4)
+	state.DungeonWallType, _ = guildGrid.WallWrapped(10, 15, 4)
+	state.DungeonWallRoof = guildGrid.CellWrapped(10, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		return fmt.Errorf("inspect sewer door: %w", err)
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		return fmt.Errorf("enter sewers: %w", err)
+	}
+	if err := state.Select(0); err != nil {
+		return err
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 8, 2
+	state.DungeonWallType, _ = sewerGrid.WallWrapped(1, 8, 2)
+	state.DungeonWallRoof = sewerGrid.CellWrapped(1, 8).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		return fmt.Errorf("enter Fire Knife checkpoint: %w", err)
+	}
+	return nil
 }
 
 func prepareGuildmasterBattle(state *game.State, grid *geo.Grid) error {
