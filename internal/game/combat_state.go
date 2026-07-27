@@ -570,6 +570,19 @@ func (s *State) CancelCombatCast() {
 	s.combatSpellTargetIndex = 0
 }
 
+// clearCombatActionFor mirrors the reference per-player Action.Clear call
+// for the UI-owned portion of the active turn. Battle owns the fighter's
+// renderer-neutral CombatAction fields; State owns the pending target/cast
+// selection and must clear it when that same fighter is downed.
+func (s *State) clearCombatActionFor(fighterID string) {
+	if s.combatTurnIndex >= len(s.combatTurns) || s.combatTurns[s.combatTurnIndex].FighterID != fighterID {
+		return
+	}
+	s.CancelCombatCast()
+	s.CancelCombatMove()
+	s.EndCombatView()
+}
+
 func (s *State) CombatSelectSpellTarget(delta int) error {
 	if s.combatCastingSpell == 0 {
 		return fmt.Errorf("no spell target is being selected")

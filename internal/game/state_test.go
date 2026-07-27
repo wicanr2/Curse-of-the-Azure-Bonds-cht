@@ -648,6 +648,28 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 	}
 }
 
+func TestClearCombatActionForResetsCurrentFighterUIState(t *testing.T) {
+	state := NewState(testCatalog())
+	state.combatTurns = []combat.Turn{{FighterID: "hero"}}
+	state.combatTurnIndex = 0
+	state.combatCastingSpell = MagicMissileSpellID
+	state.combatCastingClassSet = true
+	state.combatSpellTargetIndex = 2
+	state.combatMoveMode = true
+	state.combatMoveRemaining = 3
+	state.combatView = true
+	state.combatViewFighterID = "hero"
+
+	state.clearCombatActionFor("goblin")
+	if state.combatCastingSpell == 0 || !state.combatMoveMode || !state.combatView {
+		t.Fatal("non-current fighter unexpectedly cleared the active action")
+	}
+	state.clearCombatActionFor("hero")
+	if state.combatCastingSpell != 0 || state.combatCastingClassSet || state.combatSpellTargetIndex != 0 || state.combatMoveMode || state.combatMoveRemaining != 0 || state.combatView || state.combatViewFighterID != "" {
+		t.Fatalf("current fighter action was not cleared: spell=%d class=%v target=%d move=%v remaining=%d view=%v viewID=%q", state.combatCastingSpell, state.combatCastingClassSet, state.combatSpellTargetIndex, state.combatMoveMode, state.combatMoveRemaining, state.combatView, state.combatViewFighterID)
+	}
+}
+
 func TestResolveDeathEffectsIsTransactionalAndSyncsRoster(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "hero", HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusDying, Bleeding: 2,

@@ -951,6 +951,9 @@ func (s *State) ResolveDeathEffects(context party.DeathEffectContext) error {
 			if err := s.battle.SetHitPoints(character.ID, character.HitPoints); err != nil {
 				return err
 			}
+			if character.HitPoints == 0 {
+				s.clearCombatActionFor(character.ID)
+			}
 		}
 		if s.battle.Status() != combat.StatusActive {
 			return s.finishCombat()
@@ -1011,6 +1014,9 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 			}
 			if err := s.battle.SetHitPoints(character.ID, character.HitPoints); err != nil {
 				return outcomes, err
+			}
+			if character.HitPoints == 0 {
+				s.clearCombatActionFor(character.ID)
 			}
 		}
 		if s.battle.Status() != combat.StatusActive {
