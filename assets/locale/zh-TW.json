@@ -12,6 +12,8 @@
     "ecl_war_blasted_city": "你們找到城市中一片遭戰火摧毀的區域。",
     "ecl_small_magic_shop": "你們發現一間小型魔法商店。",
     "ecl_opening_tilverton": "前往提爾佛頓鎮的途中，你們",
+    "tilverton": "提爾佛頓",
+    "dungeon_prompt": "↑：前進　K／M：轉向",
     "ecl_opening_ambushed": "遭到伏擊、被俘，並被擊昏。當",
     "ecl_opening_cursed": "你們醒來時，隊伍已被五個青色",
     "ecl_opening_symbols": "符印下了詛咒。",

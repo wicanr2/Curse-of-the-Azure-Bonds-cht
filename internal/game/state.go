@@ -47,6 +47,7 @@ const (
 	ModeCombat
 	ModeJournal
 	ModeCharacterCreation
+	ModeDungeon
 )
 
 type Action uint8
@@ -64,6 +65,7 @@ const (
 	LocationShadowdale
 	LocationAshabenford
 	LocationDaggerFalls
+	LocationTilverton
 )
 
 type State struct {
@@ -131,6 +133,7 @@ type State struct {
 	session                *ecl.BlockSession
 	pendingPictureResult   *ecl.RunResult
 	newGameEntryActive     bool
+	eclMenuReturnMode      Mode
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
@@ -771,7 +774,11 @@ func (s *State) BeginAdventure() error {
 	s.Choices = nil
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
+	s.eclMenuReturnMode = ModeTitle
 	s.newGameEntryActive = true
+	// seg001.Init/InitAgain establish a fresh campaign as an indoor map before
+	// sub_29758 selects and runs global block 0x01.
+	s.Area.InDungeon = true
 
 	result, err := s.session.RunInteractiveSeedWithPartyContextAndWhoSelections(
 		180, nil, nil, s.eclSeed, s.eclPartyContext(),
@@ -888,6 +895,9 @@ func (s *State) Select(index int) error {
 	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
+	if s.eclMenuReturnMode != ModeTitle {
+		s.eventReturnMode = s.eclMenuReturnMode
+	}
 	if originalChoice == "FLEE" {
 		s.OriginalEvent = "FLEE"
 		s.Message = s.catalog.Text("encounter_flee_done", "你們成功撤退，返回荒野。")
@@ -1054,6 +1064,12 @@ func (s *State) Select(index int) error {
 		}
 		if result.Exited && s.newGameEntryActive && s.session != nil && s.session.CurrentBlockID() == 0x01 {
 			s.finishNewGameEntry()
+			return nil
+		}
+		if result.Exited && s.eclMenuReturnMode == ModeDungeon && len(result.Text) == 0 {
+			s.Mode = ModeDungeon
+			s.eclMenuReturnMode = ModeTitle
+			s.Message = ""
 			return nil
 		}
 		if len(result.Text) > 0 {
@@ -3878,8 +3894,8 @@ func (s *State) enterMapAt(x, y int) {
 }
 
 // finishNewGameEntry mirrors sub_29758 after the initial ECL entry returns:
-// the outdoor Area transitions to the wilderness world loop using the
-// script-written map position and facing registers.
+// a fresh campaign remains in the indoor DungeonMap state established by
+// seg001 and uses the script-written map position and half-direction.
 func (s *State) finishNewGameEntry() {
 	s.newGameEntryActive = false
 	x, y := uint16(7), uint16(13)
@@ -3890,12 +3906,103 @@ func (s *State) finishNewGameEntry() {
 		y = value
 	}
 	if value, ok := s.session.MemoryValue(0xC04D); ok {
-		s.DungeonDirection = uint8(value & 7)
+		s.DungeonDirection = uint8(value&3) * 2
 	}
-	s.Location = LocationWilderness
-	s.LocationName = s.catalog.Text("wilderness", "荒野")
-	s.OriginalLocation = "WILDERNESS"
-	s.enterMapAt(int(x), int(y))
+	s.DungeonX, s.DungeonY = int(x), int(y)
+	s.MapX, s.MapY = int(x), int(y)
+	s.Location = LocationTilverton
+	s.LocationName = s.catalog.Text("tilverton", "提爾佛頓")
+	s.OriginalLocation = "TILVERTON"
+	s.Mode = ModeDungeon
+	s.Choices = nil
+	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向")
+	s.Message = ""
+}
+
+// RunDungeonLifecycle synchronizes reference map registers and invokes the
+// per-turn then search-location ECL entries used by sub_29758 after a
+// successful forward step.
+func (s *State) RunDungeonLifecycle() error {
+	if s.Mode != ModeDungeon {
+		return fmt.Errorf("dungeon lifecycle is invalid in mode %d", s.Mode)
+	}
+	if s.session == nil {
+		return fmt.Errorf("dungeon lifecycle requires an ECL session")
+	}
+	s.session.SetMemoryValue(0xC04B, uint16(s.DungeonX))
+	s.session.SetMemoryValue(0xC04C, uint16(s.DungeonY))
+	s.session.SetMemoryValue(0xC04D, uint16(s.DungeonDirection/2))
+	s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
+	s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
+
+	for _, entry := range []int{0, 1} {
+		result, err := s.session.RunEntrySeedWithPartyContext(
+			entry, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+		)
+		if err != nil {
+			return err
+		}
+		if handled, err := s.applyDungeonLifecycleResult(result); handled || err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) {
+	s.applyGeoMapLoad(result)
+	s.applyLoadPieces(result)
+	s.applyECLCallSignals(result)
+	s.applySpellSignals(result)
+	s.applyECLDamageSignals(result)
+	s.applyECLLoadCharacterSignals(result)
+	if err := s.applyECLNPCSignals(result); err != nil {
+		return true, err
+	}
+	if err := s.applyECLDumpSignals(result); err != nil {
+		return true, err
+	}
+	if err := s.applyECLClockSignals(result); err != nil {
+		return true, err
+	}
+	s.applyECLInventorySignals(result)
+	s.applyECLTreasureSignals(result)
+	if len(result.Text) > 0 {
+		s.Message = localizeECLText(s.catalog, result.Text)
+	}
+	s.eclMenuReturnMode = ModeDungeon
+	s.eventReturnMode = ModeDungeon
+	if result.PictureRequested {
+		s.Mode = ModeEvent
+		s.PictureRequested = true
+		s.PictureBlock = result.PictureBlock
+		s.BigPictureRequested = result.BigPictureRequested
+		s.OriginalEvent = "PICTURE"
+		if result.CombatRequested || result.WaitingForMenu {
+			pending := result
+			pending.PictureRequested = false
+			s.pendingPictureResult = &pending
+		}
+		return true, nil
+	}
+	if result.CombatRequested {
+		records := s.monsterRecordsForCurrentECL()
+		if len(result.MonsterSpawns) > 0 && len(records) > 0 {
+			return true, s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+		}
+		s.Mode = ModeEvent
+		s.OriginalEvent = "COMBAT"
+		return true, nil
+	}
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		s.enterECLMenu(result.Menus[len(result.Menus)-1])
+		return true, nil
+	}
+	if len(result.Text) > 0 {
+		s.Mode = ModeEvent
+		return true, nil
+	}
+	return false, nil
 }
 
 // Move changes the data-neutral map cursor used by the first navigable map slice.
@@ -4023,6 +4130,11 @@ func (s *State) Continue() error {
 		s.Mode = ModeMap
 		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
 		s.Message = ""
+		return nil
+	case ModeDungeon:
+		s.Mode = ModeDungeon
+		s.Message = ""
+		s.eclMenuReturnMode = ModeTitle
 		return nil
 	default:
 		return fmt.Errorf("event has no continuation")

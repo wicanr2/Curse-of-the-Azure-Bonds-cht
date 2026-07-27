@@ -1,4 +1,4 @@
-# 第二百七十九輪：正式序幕 EXIT → 荒野主迴圈
+# 第二百七十九輪：正式序幕 EXIT → 提爾佛頓主迴圈
 
 狀態：READY
 
@@ -11,9 +11,10 @@
 - `SAVE 13, 0xC04C`：map Y；
 - `SAVE 1, 0xC04D`：方向。
 
-Reference `ovr003.sub_29758` 在 initial `RunEclVm` 返回後，若不是 demo，保存目前 ECL
-block 並進入 world loop。作品資料／Area 的 outdoor 狀態使 `game_state` 選為
-`WildernessMap`。這不是另一個 ECL menu。
+Reference `seg001.Init/InitAgain` 在新 campaign 明確設定 `area_ptr.inDungeon = 1`。
+`ovr003.sub_29758` 在 initial `RunEclVm` 返回後，若不是 demo，保存目前 ECL block 並
+進入 `DungeonMap` world loop。先前因 remake 的零值 Area 誤判為 `WildernessMap`，
+該斷言已撤回；這也不是另一個 ECL menu。
 
 ## Remake transaction
 
@@ -24,14 +25,15 @@ block 並進入 world loop。作品資料／Area 的 outdoor 狀態使 `game_sta
 State 僅在 active new-game block `0x01` initial transaction 收到 EXIT 時：
 
 1. 讀取 `0xC04B..0xC04D`；
-2. 設定 wilderness location；
-3. 進入 `ModeMap (7,13)`、方向 `1`；
-4. 清除 Continue choices，不顯示人造「進入城市／繼續旅程／紮營」選單。
+2. 設定提爾佛頓室內 location；
+3. 將 script half-direction `1` 轉成 renderer direction `2`；
+4. 進入 `ModeDungeon (7,13)`；
+5. 清除 Continue choices，不顯示人造「進入城市／繼續旅程／紮營」選單。
 
 ## Regression
 
 真實 image integration 從無隊伍 title 開始，完成角色建立與兩次 Continue，驗證最後為
-block `0x01`、`ModeMap`、座標 `(7,13)`、方向 `1`、wilderness location 且 choices 為空。
+block `0x01`、`ModeDungeon`、GEO1、座標 `(7,13)`、方向 `2`、提爾佛頓且 choices 為空。
 
 ```text
 go test ./internal/ecl ./internal/game

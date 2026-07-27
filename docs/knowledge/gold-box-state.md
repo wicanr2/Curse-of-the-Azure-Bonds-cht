@@ -106,7 +106,19 @@ COMBAT，也可能是 menu，應保存通用 deferred result。
 
 正式 initial entry 執行 `EXIT` 後要回到 engine world loop。CoAB 在 block `0x01` 先把
 map X/Y/direction 寫入 `0xC04B..0xC04D`，因此 State adapter 應在 lifecycle completion
-讀出 `(7,13,1)` 並進入 wilderness map；不可用 renderer 自造的三選項取代這個 transition。
+讀出 `(7,13,1)`；其中 direction 是 half-direction，renderer facing 為 `2`。`seg001`
+證實 fresh campaign 的 `inDungeon=1`，所以應進入提爾佛頓 GEO1 DungeonMap，不是
+wilderness map；不可用 renderer 自造的三選項取代這個 transition。
+
+`CMD_LoadFiles` 的 C# local 命名容易造成 operand 反轉：`var_3=operand 1`、
+`var_2=operand 2`、`var_1=operand 3`。Dungeon GEO selector 是 operand 1；outdoor
+BIGPIC 判斷是 operand 3。跨作品 adapter 應保存 operand 原始順序，不能依 local 變數尾碼
+猜索引。
+
+五個 ECL entry 是獨立的 `RunEclVm` lifecycle invocation。前一次 EXIT 後再執行 per-turn
+或 SearchLocation 時，要保留 shared memory、重新設定 PC 並清除 call stack；不能沿用
+EXIT 後 PC，也不能 fresh-reset memory。CoAB dungeon 每次成功前進後會同步
+`C04B..C04F` 再依序執行 entry 0／1。
 
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
@@ -114,7 +126,7 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 ## Save 與 dungeon camera
 
-可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；依 reference `seg001.Init`，舊版 save 或越界值回到 `(7,13,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標。
+可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 map 座標與八方向 facing；第 280 輪已由正式 new-game ECL 證實它對應原版 party map registers。依 reference `seg001.Init`，舊版 save 或越界值回到 `(7,13,0)`；其他 Gold Box 作品仍需自己的 Area／ECL 證據。
 
 第 181 輪已由 `ovr017.SaveGame/loadSaveGame` 證實 `SAVGAM?.DAT` 固定前綴：`game_area`、Area1／Area2、runtime state、ECL memory、5-byte map state、game states、三組 block/set pair、party count 與 8 筆 `0x29` CHRDAT name records。`internal/save.SAVGAMContainer` 以 raw bytes 保留未知欄位並可 round-trip；其後個別 CHRDAT player files、slot 命名與 file side effects 仍由作品專屬 adapter 處理，不能只因 prefix codec 存在就宣稱完成完整 DOS save。
 

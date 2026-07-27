@@ -156,8 +156,9 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if a.dungeonPreview {
-		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+	if a.dungeonPreview || a.state.Mode == game.ModeDungeon {
+		productionDungeon := a.state.Mode == game.ModeDungeon
+		if !productionDungeon && (inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape)) {
 			a.dungeonDoorMenu = false
 			a.dungeonPreview = false
 		}
@@ -165,30 +166,37 @@ func (a *app) Update() error {
 			a.updateDungeonDoorMenu()
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-			a.moveDungeonPreview(0, -1, 0)
+		if productionDungeon {
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+				a.moveDungeonForward()
+			}
+		} else {
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+				a.moveDungeonPreview(0, -1, 0)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+				a.moveDungeonPreview(1, 0, 2)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+				a.moveDungeonPreview(0, 1, 4)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+				a.moveDungeonPreview(-1, 0, 6)
+			}
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			a.moveDungeonPreview(1, 0, 2)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-			a.moveDungeonPreview(0, 1, 4)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			a.moveDungeonPreview(-1, 0, 6)
-		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+		if inpututil.IsKeyJustPressed(ebiten.KeyQ) || inpututil.IsKeyJustPressed(ebiten.KeyK) {
 			a.state.TurnDungeon(-2)
 			a.prepareWallPreview()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+		if inpututil.IsKeyJustPressed(ebiten.KeyR) || inpututil.IsKeyJustPressed(ebiten.KeyM) {
 			a.state.TurnDungeon(2)
 			a.prepareWallPreview()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 			a.tryDungeonPickLock()
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyK) {
+		if (productionDungeon && inpututil.IsKeyJustPressed(ebiten.KeyN)) ||
+			(!productionDungeon && inpututil.IsKeyJustPressed(ebiten.KeyK)) {
 			a.tryDungeonKnock()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyB) {
@@ -540,6 +548,24 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
 	a.refreshDungeonPreview()
 	a.playSound(sound.Step)
+	if a.state.Mode == game.ModeDungeon {
+		if err := a.state.RunDungeonLifecycle(); err != nil {
+			a.state.Message = "地城事件執行失敗：" + err.Error()
+		}
+	}
+}
+
+func (a *app) moveDungeonForward() {
+	switch a.state.DungeonDirection {
+	case 0:
+		a.moveDungeonPreview(0, -1, 0)
+	case 2:
+		a.moveDungeonPreview(1, 0, 2)
+	case 4:
+		a.moveDungeonPreview(0, 1, 4)
+	case 6:
+		a.moveDungeonPreview(-1, 0, 6)
+	}
 }
 
 func (a *app) updateDungeonDoorMenu() {
@@ -685,7 +711,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawGeoPreview(screen, white, cyan)
 		return
 	}
-	if a.dungeonPreview {
+	if a.dungeonPreview || a.state.Mode == game.ModeDungeon {
 		a.drawDungeonPreview(screen, white, cyan)
 		return
 	}
@@ -942,12 +968,17 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q,E 轉向／P 撬鎖／K Knock／B 撞門／D 返回）", a.face, 24, 28, cyan)
+	production := a.state.Mode == game.ModeDungeon
+	title := "地城結構預覽"
+	if production {
+		title = a.state.LocationName + "・地城探索"
+	}
+	text.Draw(screen, title, a.face, 24, 30, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
 	}
-	ebitenutil.DrawRect(screen, 350, 40, 290, 165, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
+	ebitenutil.DrawRect(screen, 350, 64, 290, 145, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
 	doorFlags, doorFlagsOK := uint8(0), false
 	if a.geoGrid != nil {
 		doorFlags, doorFlagsOK = a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
@@ -956,7 +987,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		viewWidth  = 13
 		viewHeight = 5
 		originX    = 24
-		originY    = 52
+		originY    = 76
 		tileSize   = 24
 	)
 	startX, startY := 18, 8
@@ -974,14 +1005,14 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			}
 		}
 	}
-	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
-	text.Draw(screen, "目前為 "+a.geoLabel+" map position ("+strconv.Itoa(a.dungeonX)+","+strconv.Itoa(a.dungeonY)+")、facing "+dungeonDirectionName(a.state.DungeonDirection)+" 的 floor slice", a.face, 24, 245, white)
-	text.Draw(screen, fmt.Sprintf("mapWallType=%02X　mapWallRoof=%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 262, white)
+	text.Draw(screen, fmt.Sprintf("位置：(%d,%d)　方向：%s　地圖：GEO%d/%02X",
+		a.dungeonX, a.dungeonY, dungeonDirectionName(a.state.DungeonDirection), a.geoSet, a.geoBlock), a.face, 24, 242, white)
+	text.Draw(screen, fmt.Sprintf("牆面：%02X　地形／屋頂：%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 278, white)
 	if a.state.DungeonWallType != 0 && doorFlagsOK {
-		text.Draw(screen, fmt.Sprintf("WallDoorFlags=%d（GEO x3 detail）", doorFlags), a.face, 24, 279, white)
+		text.Draw(screen, fmt.Sprintf("門狀態：%d", doorFlags), a.face, 360, 278, white)
 	}
 	if a.state.Message != "" {
-		text.Draw(screen, a.state.Message, a.face, 24, 296, white)
+		text.Draw(screen, a.state.Message, a.face, 24, 350, white)
 	}
 	if a.dungeonDoorMenu && doorFlagsOK {
 		options := a.state.DungeonDoorMenuOptions(doorFlags)
@@ -995,20 +1026,29 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		} else if options.Knock {
 			items = "B Bash　K Knock　Esc Exit"
 		}
-		text.Draw(screen, "Locked door："+items, a.face, 24, 330, color.RGBA{255, 220, 110, 255})
+		text.Draw(screen, "上鎖的門："+items, a.face, 24, 386, color.RGBA{255, 220, 110, 255})
 	}
 	if a.pieceLabel != "" {
-		text.Draw(screen, a.pieceLabel, a.face, 24, 314, cyan)
+		label := a.pieceLabel
+		if production {
+			label = fmt.Sprintf("地城牆面素材已載入：%d／%d／%d", a.state.LoadPieces[0], a.state.LoadPieces[1], a.state.LoadPieces[2])
+		}
+		text.Draw(screen, label, a.face, 24, 314, cyan)
 	}
 	if len(a.wallPreview) > 0 {
-		text.Draw(screen, "WALLDEF Far/Mid/Near（raw 8×8D）", a.face, 360, 28, cyan)
 		for _, stamp := range a.wallPreview {
 			op := &ebiten.DrawImageOptions{}
+			op.Filter = ebiten.FilterNearest
 			op.GeoM.Scale(2, 2)
-			op.GeoM.Translate(float64(360+stamp.column*16), float64(48+stamp.row*16))
+			op.GeoM.Translate(float64(360+stamp.column*16), float64(76+stamp.row*16))
 			screen.DrawImage(stamp.image, op)
 		}
 	}
+	controls := "↑ 前進　K/M 轉向　P 撬鎖　N 敲擊　B 撞門"
+	if !production {
+		controls = "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
+	}
+	text.Draw(screen, controls, a.face, 24, 450, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -1328,6 +1368,13 @@ func loadFace(path string) font.Face {
 					return face
 				}
 			}
+			if collection, err := opentype.ParseCollection(data); err == nil && collection.NumFonts() > 0 {
+				if parsed, err := collection.Font(0); err == nil {
+					if face, err := opentype.NewFace(parsed, &opentype.FaceOptions{Size: 24, DPI: 72, Hinting: font.HintingFull}); err == nil {
+						return face
+					}
+				}
+			}
 		}
 	}
 	return basicfont.Face7x13
@@ -1340,6 +1387,7 @@ func main() {
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
+	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1494,6 +1542,19 @@ func main() {
 			log.Fatal(runErr)
 		}
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
+			log.Fatal(err)
+		}
+	} else if *opening {
+		if len(state.PartyFighters()) != 0 {
+			log.Fatal("-opening cannot be combined with a loaded party")
+		}
+		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.AddCreationCharacter(0); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
 	}

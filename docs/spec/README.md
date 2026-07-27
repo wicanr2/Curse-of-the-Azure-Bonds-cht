@@ -61,10 +61,10 @@
 - [第六十輪 GEO geometry Ebiten viewport](./round-60-geo-ebiten-viewport.md)（`READY`：限 GEO raw geometry preview）
 - [第六十一輪 GEO wall navigation contract](./round-61-geo-wall-navigation.md)（`READY`：限 raw GEO wall traversal）
 - [第六十二輪 README 與可重現截圖](./round-62-readme-screenshots.md)（`READY`：限 repository progress evidence）
-- [第六十三輪 wilderness floor construction](./round-63-wilderness-floor.md)（`READY`：限 reference wilderness floor generation 與目前 map slice）
+- [第六十三輪 wilderness combat-floor construction](./round-63-wilderness-floor.md)（`READY`：限野外遭遇 combat background generation）
 - [第六十四輪 GEO dungeon floor composition](./round-64-dungeon-floor.md)（`READY`：限四段 tile composition 與 GEO2 preview）
 - [第六十六輪原始 GEO map catalog](./round-66-geo-catalog.md)（`READY`：限 GEO DAX map ID catalog 與 preview selector）
-- [第六十七輪 ECL LOAD FILES → GEO map request](./round-67-ecl-map-load.md)（`READY`：限第三 operand selector 與 renderer bridge）
+- [第六十七輪 ECL LOAD FILES → GEO map request](./round-67-ecl-map-load.md)（`READY`：第 280 輪修正為第一 operand selector）
 - [第六十八輪 Area1／Area2 map-load boundary](./round-68-area-state.md)（`READY`：限 area state 與 `CMD_LoadFiles` branch contract）
 - [第六十九輪 Area1／Area2 binary codec](./round-69-area-codec.md)（`READY`：限已定位欄位與未知 bytes preservation）
 - [第七十輪可恢復的 remake game save](./round-70-resumable-game-save.md)（`READY`：限目前 game state 與舊 party JSON 相容）
@@ -166,7 +166,8 @@
 - [第一百五十七輪 ECL ADD NPC signal](./157-ecl-add-npc-signal.md)（`READY`：舊 framing 已由第 277 輪修正）
 - [第二百七十七輪 ADD NPC 與青色枷 demo 展示序列](./277-add-npc-opening-flow.md)（`READY`）
 - [第二百七十八輪正式 new-game global block 0x01](./278-real-new-game-dispatch.md)（`READY`）
-- [第二百七十九輪正式序幕 EXIT → 荒野主迴圈](./279-new-game-world-entry.md)（`READY`）
+- [第二百七十九輪正式序幕 EXIT → 提爾佛頓主迴圈](./279-new-game-world-entry.md)（`READY`）
+- [第二百八十輪提爾佛頓 GEO1 與 dungeon lifecycle](./280-tilverton-dungeon-lifecycle.md)（`READY`）
 - [第一百五十八輪 ECL LOAD PIECES signal](./158-ecl-load-pieces-signal.md)（`READY`：限三個 selector signal 與 bounded continuation）
 - [第一百五十九輪 State LOAD PIECES request](./159-state-load-pieces-request.md)（`READY`：限一次性 map-piece request boundary）
 - [第一百六十輪 LOAD PIECES 地圖素材 adapter](./160-load-pieces-map-adapter.md)（`READY`：限 WALLDEF／8X8D selector 載入）

@@ -986,8 +986,17 @@ boundary擴充到 menu，Ebiten圖片下方顯示三行漸顯文字；real regre
 邏輯畫布也由 640×400 擴為 640×480；88px PIC／人物圖以 nearest-neighbor 3×、BIGPIC
 以 2× 整數像素放大，文字則以 24px 高解析字型重繪，下方保留三行訊息與獨立 Enter 提示列。
 
-第二百七十九輪未提交成果：真實 ECL2 block 1 在兩次 Continue 後於 `+0x1CBB` 執行
-`EXIT`；序幕已將 map X/Y/direction 寫為 `C04B/C04C/C04D = 7/13/1`。Runner 新增明確
-`Exited` lifecycle signal，BlockSession 提供 read-only shared memory word；State 僅在
-active new-game transaction 完成時直接進入 wilderness `ModeMap (7,13)`、方向 1，
-移除人造中介選單。新增 real-image regression 與 READY spec 279。
+第二百七十九輪 commit `6384eef` 曾正確找到 `+0x1CBB EXIT` 與
+`C04B/C04C/C04D = 7/13/1`，但因 remake Area 零值誤稱為 wilderness `ModeMap`。
+第 280 輪依 `seg001.Init/InitAgain` 的 `inDungeon=1` 推翻該 adapter：正式起點是提爾佛頓
+GEO2 block 1 的 DungeonMap，script half-direction 1 對應 renderer 東向 2。
+
+第二百八十輪未提交成果同時修正 `CMD_LoadFiles` operand 次序：operand 1 是 dungeon
+GEO selector，operand 3 才是 outdoor BIGPIC。BlockSession 新增五-entry lifecycle API，
+EXIT 保存 shared memory writes；正式 dungeon 成功前進會同步 `C04B..C04F`，依序執行
+per-turn／SearchLocation，並把文字、PICTURE、menu、combat signal 接回 State。
+Ebiten 正式流程會自動顯示既有 GEO／WALLDEF／8X8D 3D renderer，不再要求按 D。
+另外確認 `ovr011.SetupWildernessFloor` 的 50×25 buffer 是野外遭遇 combat floor，
+不是世界地圖；README、PLAN、spec 63／67 與共用知識庫已清除舊斷言。正式地城 UI
+已依 640×480／24px 中文重排左右圖像區與分行狀態列，font loader 補 TTC collection；
+`-opening` 走過真實序幕後以 Xvfb 擷取 `docs/screenshots/tilverton-opening.png` 並更新 README。

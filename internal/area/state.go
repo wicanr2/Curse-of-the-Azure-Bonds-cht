@@ -26,17 +26,18 @@ type LoadFilesEffect struct {
 }
 
 // ApplyLoadFiles mirrors the proven CMD_LoadFiles branch. Values are the
-// three ECL operands in original order; operand 2 (index 2) is the GEO block
-// selector when the area is a dungeon.
+// three ECL operands in original order. Reference CMD_LoadFiles names operand
+// 1 var_3 and uses it as the GEO block in a dungeon; operand 3 (var_1) drives
+// the outdoor BIGPIC reload branch.
 func (s *State) ApplyLoadFiles(values [3]uint16, lastDAXBlockID uint8) LoadFilesEffect {
 	var effect LoadFilesEffect
-	mapBlock := values[2]
+	mapBlock := values[0]
 	if s.InDungeon && mapBlock != 0xFF && mapBlock != 0x7F {
 		block := uint8(mapBlock)
 		s.Current3DMapBlockID = block
 		effect.GeoMapBlock = &block
 	}
-	if !s.InDungeon && values[0] != 0xFF && lastDAXBlockID != 0x50 {
+	if !s.InDungeon && values[2] != 0xFF && lastDAXBlockID != 0x50 {
 		effect.BigPicture = true
 	}
 	return effect

@@ -144,13 +144,27 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeMap || state.MapX != 7 || state.MapY != 13 || state.DungeonDirection != 1 {
+	if state.Mode != ModeDungeon || state.DungeonX != 7 || state.DungeonY != 13 || state.DungeonDirection != 2 {
 		t.Fatalf("new game world entry: mode=%v position=(%d,%d) direction=%d",
-			state.Mode, state.MapX, state.MapY, state.DungeonDirection)
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
-	if state.Location != LocationWilderness || len(state.Choices) != 0 {
-		t.Fatalf("new game world location=%v choices=%v, want wilderness map without synthetic menu",
-			state.Location, state.Choices)
+	if state.Location != LocationTilverton || !state.Area.InDungeon ||
+		state.Area.Current3DMapBlockID != 1 || len(state.Choices) != 0 {
+		t.Fatalf("new game world location=%v area=%+v choices=%v, want Tilverton GEO1 dungeon without synthetic menu",
+			state.Location, state.Area, state.Choices)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("initial dungeon lifecycle mode=%v, want dungeon after clean per-turn/search EXITs", state.Mode)
+	}
+	for address, want := range map[uint16]uint16{
+		0xC04B: 7, 0xC04C: 13, 0xC04D: 1, 0xC04E: 0, 0xC04F: 0,
+	} {
+		if got, ok := state.session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("world register %#x=%d,%v, want %d,true", address, got, ok, want)
+		}
 	}
 }
 

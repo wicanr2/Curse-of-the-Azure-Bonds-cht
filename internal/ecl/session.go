@@ -55,6 +55,16 @@ func (s *BlockSession) MemoryValue(address uint16) (uint16, bool) {
 	return value, ok
 }
 
+// SetMemoryValue synchronizes a work-owned engine register into shared VM
+// memory before a lifecycle entry. The work adapter owns address semantics.
+func (s *BlockSession) SetMemoryValue(address, value uint16) {
+	state := s.states[s.current]
+	if state == nil {
+		return
+	}
+	state.Memory[address] = value
+}
+
 func (s *BlockSession) Switch(id uint8) error {
 	if _, ok := s.blocks[id]; !ok {
 		return fmt.Errorf("ECL session target block 0x%02X is unavailable", id)
@@ -85,11 +95,20 @@ func (s *BlockSession) Reset(id uint8) error {
 // InitialEntry returns the fifth vm_init_ecl entry for the current block as a
 // decoded payload offset.
 func (s *BlockSession) InitialEntry() (int, error) {
+	return s.EntryPoint(4)
+}
+
+// EntryPoint returns one of vm_init_ecl's five lifecycle entries:
+// per-turn, search-location, pre-camp, camp-interrupted, and initial.
+func (s *BlockSession) EntryPoint(index int) (int, error) {
+	if index < 0 || index >= 5 {
+		return 0, fmt.Errorf("ECL lifecycle entry index %d is outside 0..4", index)
+	}
 	points, _, err := EntryPoints(s.blocks[s.current], 5)
 	if err != nil {
 		return 0, err
 	}
-	return int(points[4]) - CodeAddressBase, nil
+	return int(points[index]) - CodeAddressBase, nil
 }
 
 // ApplyResult applies a bounded runner's NEWECL signal to this session.
@@ -146,6 +165,28 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSte
 // NEWECL signal, the target resumes at its own initial entry.
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
 	return s.runFromSeed(start, maxSteps, selections, 1)
+}
+
+// RunEntry starts a fresh invocation at one lifecycle entry while preserving
+// shared VM memory. This mirrors separate RunEclVm calls after an earlier
+// entry has EXITed; RunFrom remains the resumable transaction primitive.
+func (s *BlockSession) RunEntry(index, maxSteps int, selections []uint16) (RunResult, error) {
+	return s.RunEntrySeedWithPartyContext(index, maxSteps, selections, nil, 1, PartyContext{})
+}
+
+// RunEntrySeedWithPartyContext is the party-aware lifecycle counterpart to
+// the resumable interactive APIs.
+func (s *BlockSession) RunEntrySeedWithPartyContext(index, maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	start, err := s.EntryPoint(index)
+	if err != nil {
+		return RunResult{}, err
+	}
+	runtime := s.states[s.current]
+	runtime.PC = start
+	runtime.Started = true
+	runtime.Stack = runtime.Stack[:0]
+	owned := context.clone()
+	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &owned)
 }
 
 func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
