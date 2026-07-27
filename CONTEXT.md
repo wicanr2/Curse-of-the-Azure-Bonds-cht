@@ -875,3 +875,10 @@ READY spec 與共用 Gold Box ECL knowledge；完整各 block engine routine 與
 input boundary 更新角色名稱、roster 與 fighter display name；SAVGAM writer 會保留角色
 ID／sidecar basename 與未知 bytes，只 patch DOS name field。原版 code-page transcoding、
 多職業 serializer 與完整 delete semantics 仍保留 boundary。
+
+第二百六十二輪 multi-class rules 里程碑：新增 `Character.HasClass`，以保存的
+`ClassLevels[8]` 判斷角色實際擁有的職業，舊 JSON／缺少 metadata 時退回 primary class。
+`CanEquip`、CAMP MAGIC 與 combat cleric／magic-user gates 已使用此判定，Protection from
+Good 也不再被 primary-class projection 誤導。新增 READY spec 與 Gold Box 可重用邊界文件；
+THAC0、生命骰、高等級 spell capacity、部分 UI label 與完整 multi-class serializer 仍待
+逐欄反組譯驗證。

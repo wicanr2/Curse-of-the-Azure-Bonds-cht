@@ -1413,7 +1413,7 @@ func (s *State) Fix() (healed, casts int, err error) {
 		return 0, 0, fmt.Errorf("fix is invalid in mode %d", s.Mode)
 	}
 	for _, character := range s.partyRoster {
-		if character.Class != party.ClassCleric {
+		if !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -2431,7 +2431,7 @@ func (s *State) enterCampMagicCastCharacterMenu() {
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	for index, character := range s.partyRoster {
-		if (character.Class != party.ClassCleric && character.Class != party.ClassMagicUser) || len(character.SpellSlots) == 0 {
+		if (!character.HasClass(party.ClassCleric) && !character.HasClass(party.ClassMagicUser)) || len(character.SpellSlots) == 0 {
 			continue
 		}
 		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_cast_character", "%s（已記憶 %d 個法術）"), character.Name, len(character.SpellSlots)))
@@ -2489,7 +2489,7 @@ func (s *State) castCampCureLightWounds(targetIndex int) error {
 		return fmt.Errorf("Cure Light Wounds caster is not selected")
 	}
 	caster := &s.partyRoster[s.campMagicCastChar]
-	if caster.Class != party.ClassCleric && caster.Class != party.ClassMagicUser {
+	if !caster.HasClass(party.ClassCleric) && !caster.HasClass(party.ClassMagicUser) {
 		return fmt.Errorf("character %q cannot cast Cure Light Wounds", caster.Name)
 	}
 	spellIndex := -1

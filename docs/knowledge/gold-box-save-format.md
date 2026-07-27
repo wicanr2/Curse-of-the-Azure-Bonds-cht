@@ -66,6 +66,11 @@ runtime path；不要用 clock word 或 age bracket threshold 取代角色 recor
 本 repo 已有 DOS player parser 與 SAVGAM staged writer；完整多職業欄位、所有 sidecar
 schema、刪除／重排角色的原版副作用仍是未完成項目。
 
+Multi-class raw levels 現在由 player record `0x109..0x110` 保存到 `ClassLevels[8]`，
+`0xE6` 的 multiclass level 另存為 aggregate level；writeback 只 patch 已驗證欄位並保留
+其他 bytes。後續 Gold Box importer 應先保留 raw slots，再由作品規則層透過 `HasClass`
+投影能力，避免把多職業角色不可逆地壓成一個 primary class。
+
 證據來源：本 repo 提供的 `Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf` 與 RefCard
 說明操作流程，但沒有上述 raw offset 表；offset、race/class mapping 與 ECL table
 operand 則依 [CoAB technical save-format guide](https://gamefaqs.gamespot.com/pc/564786/curse-of-the-azure-bonds/faqs/78365)

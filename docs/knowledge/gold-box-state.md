@@ -233,4 +233,12 @@ cleric／fighter／thief 單職業生成。外部 AD&D 1e age table 與 referenc
 copy 入 roster 時才生成 age、套用 ability delta，再給 copied ID。這保留 UI 編輯可重複預覽，
 也避免對同一 template 累積 modifiers；完整原版 race/class selection 仍可沿用同一 ordering。
 
+### Multi-class rules projection（CoAB round 262）
+
+`Character.HasClass` 是跨 Gold Box 可重用的 compatibility seam：若 `ClassLevels[8]` 有
+raw level metadata，規則層依 slot 判定職業；舊資料沒有 metadata 時才回到 primary class。
+目前已接入 equipment class-mask、CAMP MAGIC 與 combat spell eligibility。THAC0、HP growth、
+高等級 spell capacity 與 UI label 仍須各作品依 reference class-level table 擴充，不能把
+primary-class fallback 當成完整 AD&D multi-class engine。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。
