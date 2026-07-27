@@ -197,6 +197,17 @@ func TestChineseNameUsesObservedItemTypes(t *testing.T) {
 	}
 }
 
+func TestChineseNameProjectsVisibleReferenceNameNumbers(t *testing.T) {
+	item := ItemRecord{Type: 36, NameNumbers: [3]uint8{159, 36, 0}}
+	if got := ChineseName(item); got != "+1 長劍" {
+		t.Fatalf("visible name numbers=%q", got)
+	}
+	item.HiddenNameFlags = 4 // reference hides namenum1
+	if got := ChineseName(item); got != "長劍" {
+		t.Fatalf("hidden name number=%q", got)
+	}
+}
+
 func TestChineseAffectNameUsesObservedKinds(t *testing.T) {
 	if got := ChineseAffectName(AffectRecord{Kind: 0x18}); got != "偵測隱形" {
 		t.Fatalf("detect invisibility=%q", got)
