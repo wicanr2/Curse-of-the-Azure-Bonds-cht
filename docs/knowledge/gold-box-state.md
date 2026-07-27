@@ -123,6 +123,14 @@ Combat icon facing 應使用 reference `HalfDirToIso={7,2,3,6}`，不是直接�
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
 
+## ECL DAMAGE state boundary
+
+`DAMAGE` 和 `SPELL`／`PROTECTION` 一樣，先由 VM 產生資料 signal，再由 State 保存
+一次性 pending request。CoAB 的 `State.ConsumeDamageRequests()` 會保留五個 raw
+operand 的順序；在 selected-character address、DOS `saveVerse` 與 target／dice
+resolver 尚未完整接入前，不應固定扣第一位角色 HP。這個 queue contract 可供其他
+Gold Box 遊戲沿用，再替換其 party rules adapter。
+
 ## 中文化注意
 
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。
