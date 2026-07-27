@@ -125,3 +125,27 @@ func TestCanHitECLDamageDisplaceClearsBitAtRoundStartWhenRollIsZero(t *testing.T
 		t.Fatalf("round-start displace hit=%t data=%02x err=%v, want hit and cleared bit", hit, target.Effects[1].Data[0], err)
 	}
 }
+
+func TestApplyECLDamageProjectsReferenceDownAndDeathStates(t *testing.T) {
+	tests := []struct {
+		name   string
+		damage int
+		start  HealthStatus
+		want   HealthStatus
+	}{
+		{name: "exact zero", damage: 10, want: HealthStatusUnconscious},
+		{name: "small overkill", damage: 15, want: HealthStatusDying},
+		{name: "large overkill", damage: 20, want: HealthStatusDead},
+		{name: "animated exact zero", damage: 10, start: HealthStatusAnimated, want: HealthStatusDead},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			roster := Roster{{ID: "hero", HitPoints: 10, HealthStatus: test.start}}
+			request := ecl.DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: uint16(test.damage), SaveFlags: 0x80}
+			outcomes, err := roster.ApplyECLDamage(request, 0, func(int) int { return test.damage }, func(int) int { return 1 })
+			if err != nil || len(outcomes) != 1 || outcomes[0].Applied != 10 || outcomes[0].Health != test.want || roster[0].HealthStatus != test.want || roster[0].HitPoints != 0 {
+				t.Fatalf("outcomes=%#v roster=%#v err=%v", outcomes, roster, err)
+			}
+		})
+	}
+}

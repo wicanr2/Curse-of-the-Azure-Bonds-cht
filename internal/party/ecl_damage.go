@@ -15,6 +15,7 @@ type DamageOutcome struct {
 	SaveRoll    int
 	Saved       bool
 	Hit         bool
+	Health      HealthStatus
 }
 
 // DamageHitResolver supplies the original CanHitTarget branch. It receives
@@ -29,16 +30,50 @@ type ECLHitContext struct {
 	CombatRound int
 }
 
-// ApplyDamage clamps HP at zero and reports the amount actually removed.
+// ApplyDamage clamps HP at zero and reports the amount actually removed. The
+// status-aware variant below preserves the reference DOS down/death rules.
 func (c *Character) ApplyDamage(amount int) int {
+	applied, _ := c.ApplyDamageWithHealthStatus(amount)
+	return applied
+}
+
+// ApplyDamageWithHealthStatus projects reference damage_player. A 1..9 point
+// overkill leaves a character dying, a 10+ overkill kills, and exact zero is
+// unconscious unless the previous state was animated. Downed characters keep
+// HP at zero and cannot remain in combat.
+func (c *Character) ApplyDamageWithHealthStatus(amount int) (int, HealthStatus) {
 	if c == nil || amount <= 0 || c.HitPoints <= 0 {
-		return 0
+		if c == nil {
+			return 0, HealthStatusOK
+		}
+		return 0, c.HealthStatus
 	}
-	if amount > c.HitPoints {
-		amount = c.HitPoints
+	previous := c.HealthStatus
+	applied := amount
+	if applied > c.HitPoints {
+		applied = c.HitPoints
 	}
-	c.HitPoints -= amount
-	return amount
+	newHP, overkill := c.HitPoints, 0
+	if amount <= c.HitPoints {
+		newHP = c.HitPoints - amount
+	} else {
+		overkill = amount - c.HitPoints
+	}
+	status := previous
+	if overkill > 9 || (newHP == 0 && previous == HealthStatusAnimated) {
+		status = HealthStatusDead
+	} else if overkill > 0 {
+		status = HealthStatusDying
+	} else if newHP == 0 {
+		status = HealthStatusUnconscious
+	}
+	c.HealthStatus = status
+	if status != HealthStatusOK && status != HealthStatusAnimated {
+		c.HitPoints = 0
+	} else {
+		c.HitPoints = newHP
+	}
+	return applied, status
 }
 
 // CanHitECLDamageTarget implements the verified CanHitTarget arithmetic after
@@ -142,9 +177,9 @@ func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selecte
 			if hitErr != nil {
 				return nil, hitErr
 			}
-			outcome := DamageOutcome{TargetIndex: targetIndex, DamageRoll: damage, Hit: hit}
+			outcome := DamageOutcome{TargetIndex: targetIndex, DamageRoll: damage, Hit: hit, Health: r[targetIndex].HealthStatus}
 			if hit {
-				outcome.Applied = r[targetIndex].ApplyDamage(damage)
+				outcome.Applied, outcome.Health = r[targetIndex].ApplyDamageWithHealthStatus(damage)
 			}
 			outcomes = append(outcomes, outcome)
 			// The reference rerolls the next damage packet after every random
@@ -162,13 +197,13 @@ func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selecte
 		if index < 0 || index >= len(r) {
 			return DamageOutcome{}, fmt.Errorf("ECL DAMAGE target index %d is outside party", index)
 		}
-		outcome := DamageOutcome{TargetIndex: index, DamageRoll: damage}
+		outcome := DamageOutcome{TargetIndex: index, DamageRoll: damage, Health: r[index].HealthStatus}
 		if autoDamage {
-			outcome.Applied = r[index].ApplyDamage(damage)
+			outcome.Applied, outcome.Health = r[index].ApplyDamageWithHealthStatus(damage)
 			return outcome, nil
 		}
 		if noSave {
-			outcome.Applied = r[index].ApplyDamage(damage)
+			outcome.Applied, outcome.Health = r[index].ApplyDamageWithHealthStatus(damage)
 			return outcome, nil
 		}
 		if saveType >= 5 {
@@ -189,7 +224,7 @@ func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selecte
 			outcome.Saved = roll+saveBonus+int(r[index].SavingThrowBonus) >= int(r[index].SavingThrows[saveType])
 		}
 		if !outcome.Saved || request.Flags&0x10 != 0 {
-			outcome.Applied = r[index].ApplyDamage(damage)
+			outcome.Applied, outcome.Health = r[index].ApplyDamageWithHealthStatus(damage)
 		}
 		return outcome, nil
 	}
