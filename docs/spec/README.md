@@ -164,3 +164,4 @@
 - [第一百六十七輪 dungeon coordinate wrap](./167-dungeon-coordinate-wrap.md)（`READY`：限 dungeon GEO／wall 的 16×16 wrap）
 - [第一百六十八輪 map wall cache save](./168-map-wall-cache-save.md)（`READY`：限 5-byte map state 的 wall cache）
 - [第一百六十九輪 dungeon sky layer](./169-dungeon-sky-layer.md)（`READY`：限 Area1 sky colour 與 preview background）
+- [第一百七十輪 WallDoorFlags detail](./170-wall-door-flags.md)（`READY`：限 GEO door/detail flag adapter）

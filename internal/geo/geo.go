@@ -136,6 +136,31 @@ func (g Grid) WallWrapped(x, y, direction int) (uint8, bool) {
 	return cell.WallDirections[index], true
 }
 
+// WallDoorFlagsWrapped mirrors reference WallDoorFlagsGet. A cell without a
+// wall returns 1; when a wall exists, the direction's GEO detail/x3 value is
+// returned. The boolean only reports an invalid direction.
+func (g Grid) WallDoorFlagsWrapped(x, y, direction int) (uint8, bool) {
+	cell := g.CellWrapped(x, y)
+	index := -1
+	switch direction {
+	case 0:
+		index = 0
+	case 2:
+		index = 1
+	case 4:
+		index = 2
+	case 6:
+		index = 3
+	}
+	if index < 0 {
+		return 0, false
+	}
+	if cell.WallDirections[index] == 0 {
+		return 1, true
+	}
+	return cell.DetailDirections[index], true
+}
+
 // CanMove checks only the proven GEO wall fields. It deliberately does not
 // apply background-tile movement cost, encounters, or party placement rules.
 func (g Grid) CanMove(x, y, direction int) bool {

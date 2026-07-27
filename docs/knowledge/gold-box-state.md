@@ -71,6 +71,8 @@ GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon
 
 Dungeon background 也應分成「Area palette input」與「GEO roof selection」：CoAB 已解碼 Area1 `0x1FA/0x1FC` 的 outdoor／indoor sky words，並依 `mapWallRoof & 0x80` 選擇 reference sky palette。後續 Gold Box 遊戲可沿用這個 adapter，但不要把 sky colour index 當作 terrain、door 或 roof geometry。
 
+Door state 也應先保存 raw signal 再交給 rules service：reference `WallDoorFlagsGet` 的 no-wall default `1` 與 walled `x3` detail 是不同語意，不能只用非零判定「有門」。CoAB 目前只顯示 `WallDoorFlags` evidence；後續作品可共用 flag adapter，再注入 lock／bash／pick／knock skill 與 mutation rules。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
