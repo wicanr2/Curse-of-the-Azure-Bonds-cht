@@ -122,6 +122,62 @@ func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	}
 }
 
+func TestRealECL2EncounterBuildsBattleFromMON2CHA(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+
+	eclData := zipData(t, image, "ECL2.DAX")
+	eclBlocks, err := dax.Parse(eclData)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var encounterBlock []byte
+	for _, block := range eclBlocks {
+		if block.Entry.ID == 3 {
+			encounterBlock = block.Data
+			break
+		}
+	}
+	if len(encounterBlock) == 0 {
+		t.Fatal("ECL2 block 3 is absent")
+	}
+	result, err := ecl.RunSubset(encounterBlock, 0x2B0, 128)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.CombatRequested || len(result.MonsterSpawns) != 2 {
+		t.Fatalf("ECL2 encounter result=%+v, want COMBAT with two spawn descriptors", result)
+	}
+
+	monsterData := zipData(t, image, "MON2CHA.DAX")
+	monsterBlocks, err := dax.Parse(monsterData)
+	if err != nil {
+		t.Fatal(err)
+	}
+	records := make(map[uint8]monster.Record, len(monsterBlocks))
+	for _, block := range monsterBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		records[block.Entry.ID] = record
+	}
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+		ArmorClass: 5, AttackBonus: 10, DamageDiceCount: 1, DamageDiceSides: 6, InitiativeBonus: 100,
+	}}
+	if err := state.StartEncounter(result, records, partyFighters, 37); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatActive() || len(state.CombatTargets()) == 0 {
+		t.Fatalf("ECL2 battle was not created: fighters=%#v", state.CombatFighters())
+	}
+}
+
 func zipData(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, file := range archive.File {

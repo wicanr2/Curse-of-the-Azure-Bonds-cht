@@ -37,3 +37,15 @@ func TestParseRejectsShortRecord(t *testing.T) {
 		t.Fatal("expected short record error")
 	}
 }
+
+func TestCombatArmorClassNormalizesPackedMonsterAC(t *testing.T) {
+	if got := CombatArmorClass(59); got != 1 {
+		t.Fatalf("packed AC 59=%d, want 1", got)
+	}
+	if got := CombatArmorClass(10); got != 10 {
+		t.Fatalf("already decoded AC 10=%d, want 10", got)
+	}
+	if got := (Record{ArmorClass: 59}).Fighter("fire-knife", combat.SideEnemy).ArmorClass; got != 1 {
+		t.Fatalf("fighter AC=%d, want 1", got)
+	}
+}

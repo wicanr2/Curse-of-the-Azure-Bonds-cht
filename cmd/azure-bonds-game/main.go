@@ -1193,9 +1193,10 @@ func main() {
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
-	encounter := flag.Bool("encounter", false, "start the observed ECL1 encounter directly")
+	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
+	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -1228,7 +1229,7 @@ func main() {
 		log.Fatal(err)
 	}
 	state.SetItemCatalog(itemCatalog)
-	monsterData, err := zipMember(*imagePath, "MON1CHA.DAX")
+	monsterData, err := zipMember(*imagePath, *encounterMonsterMember)
 	if err != nil {
 		log.Fatal(err)
 	}
