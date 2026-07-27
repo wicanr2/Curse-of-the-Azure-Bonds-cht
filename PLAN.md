@@ -295,6 +295,7 @@
 - [x] 將城市 BAR 接成 ordered Tavern Tale menu、繁中內容與城市場所返回 boundary；買酒價格／ECL trigger 保留 data adapter。
 - [x] 將 CAMP REST 接成 `REST ADD SUBTRACT EXIT`、24 小時自然 HP recovery 與 CAMP menu boundary；spell memorization／中斷保留 adapter。
 - [x] 解碼 DOS player runtime CHEAD／CBODY icon slot mapping 與 small `+0x40` namespace；真實 CombatMap position／camera 與 direction-specific placement仍待完成。
+- [x] 將 CHEAD／CBODY attack `+0x80` namespace 接入 on-demand combat icon composition；direction-specific placement／recolor／runtime cache 仍待完成。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
 - [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
 - [x] 建立 party equipment class mask、slot collision、雙手武器與雙戒指 transaction contract。

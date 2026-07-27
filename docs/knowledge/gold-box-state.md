@@ -87,6 +87,8 @@ Locked door menu 的 capability 應在 raw detail 之上計算：detail 2 可列
 
 Party icon import 也要分 raw slot 與實際 DAX block：DOS `icon_size=1` 不是把 raw ID 當成 normal，而是 CHEADT／CBODYT 的 `raw+0x40` namespace；`icon_size=2` 保持 raw ID。共用 party projection 可保存 raw bytes，renderer adapter 再呼叫 normalized mapping，讓後續 Gold Box 遊戲替換其 CHEAD/CBODY file family。
 
+攻擊姿態再沿用同一個 block contract 加 `0x80`：reference `LoadIcons(normal_id, normal_id+0x80)`，因此 small icon 的攻擊 block 會是 `(raw+0x40)+0x80`。方向只在 `>3` 時選水平翻轉副本；不可把攻擊姿態誤當成另一套方向 ID。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

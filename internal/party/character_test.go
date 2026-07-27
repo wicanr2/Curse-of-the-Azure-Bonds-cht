@@ -547,6 +547,9 @@ func TestCombatIconBlocksAppliesSmallIconNamespaceOffset(t *testing.T) {
 	if head, body := character.CombatIconBlocks(); head != 3 || body != 7 {
 		t.Fatalf("normal icon blocks=(%02X,%02X), want (03,07)", head, body)
 	}
+	if head, body := character.CombatIconBlocksFor(true); head != 0x83 || body != 0x87 {
+		t.Fatalf("attack icon blocks=(%02X,%02X), want (83,87)", head, body)
+	}
 }
 
 func TestAbilityAdjustmentIsBounded(t *testing.T) {
