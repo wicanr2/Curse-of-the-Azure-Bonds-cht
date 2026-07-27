@@ -22,6 +22,13 @@ type DamageOutcome struct {
 // target selection, so natural 1/20 handling remains visible to the adapter.
 type DamageHitResolver func(target Character, bonus int, rollDie func(int) int) (bool, error)
 
+// ECLHitContext carries the combat state inspected by Type_16 effects.
+// Callers that do not have action state can use its zero value.
+type ECLHitContext struct {
+	ActionDelay int
+	CombatRound int
+}
+
 // ApplyDamage clamps HP at zero and reports the amount actually removed.
 func (c *Character) ApplyDamage(amount int) int {
 	if c == nil || amount <= 0 || c.HitPoints <= 0 {
@@ -35,10 +42,18 @@ func (c *Character) ApplyDamage(amount int) int {
 }
 
 // CanHitECLDamageTarget implements the verified CanHitTarget arithmetic after
-// the caller supplies the target's projected AC. Target invisibility effects
-// apply the reference -4 attack-roll modifier; blink/displace need combat
-// round state and are intentionally left to a richer resolver.
+// the caller supplies the target's projected AC. It uses the default hit
+// context; callers with combat action state should use the Context variant.
 func CanHitECLDamageTarget(target Character, armorClass, bonus int, rollDie func(int) int) (bool, error) {
+	return CanHitECLDamageTargetWithContext(target, armorClass, bonus, ECLHitContext{}, rollDie)
+}
+
+// CanHitECLDamageTargetWithContext projects the verified Type_16 hit effects.
+// Natural 20 is first changed to 100 in the reference engine, then effects
+// are evaluated; blink can therefore still force a miss when action delay is
+// zero. Displace remains an injected-resolver concern because its reference
+// result depends on a persistent affect-data bit.
+func CanHitECLDamageTargetWithContext(target Character, armorClass, bonus int, context ECLHitContext, rollDie func(int) int) (bool, error) {
 	if rollDie == nil {
 		return false, fmt.Errorf("CanHitTarget requires an injected d20 roller")
 	}
@@ -50,14 +65,22 @@ func CanHitECLDamageTarget(target Character, armorClass, bonus int, rollDie func
 		return false, nil
 	}
 	if roll == 20 {
-		return true, nil
+		roll = 100
 	}
 	for _, effect := range target.Effects {
-		if effect.Active && (effect.Kind == 0x19 || effect.Kind == 0x47) {
+		if !effect.Active {
+			continue
+		}
+		switch effect.Kind {
+		case 0x19, 0x47: // invisibility / invisible
 			roll -= 4
+		case 0x25: // blink: AffectBlink when action.delay == 0
+			if context.ActionDelay == 0 {
+				roll = -1
+			}
 		}
 	}
-	return roll+bonus > armorClass, nil
+	return roll >= 0 && roll+bonus > armorClass, nil
 }
 
 // ApplyECLDamage resolves the verified selected-target and whole-party forms

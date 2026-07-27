@@ -84,3 +84,18 @@ func TestCanHitECLDamageTargetAppliesInvisibilityRollPenalty(t *testing.T) {
 		t.Fatalf("inactive effect hit=%t err=%v, want hit", hit, err)
 	}
 }
+
+func TestCanHitECLDamageTargetBlinkCanOverrideNaturalTwenty(t *testing.T) {
+	target := Character{Effects: []monster.AffectRecord{{Kind: 0x25, Active: true}}}
+	hit, err := CanHitECLDamageTargetWithContext(target, 10, 0, ECLHitContext{ActionDelay: 0}, func(int) int { return 20 })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if hit {
+		t.Fatal("blink with zero action delay should force the hit roll below zero")
+	}
+	hit, err = CanHitECLDamageTargetWithContext(target, 10, 0, ECLHitContext{ActionDelay: 1}, func(int) int { return 20 })
+	if err != nil || !hit {
+		t.Fatalf("blink after action delay hit=%t err=%v, want hit", hit, err)
+	}
+}
