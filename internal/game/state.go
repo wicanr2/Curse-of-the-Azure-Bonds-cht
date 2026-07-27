@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -68,6 +69,8 @@ const (
 	LocationDaggerFalls
 	LocationTilverton
 	LocationStandingStone
+	LocationEssembra
+	LocationHap
 )
 
 type State struct {
@@ -883,6 +886,9 @@ func (s *State) BeginAdventure() error {
 }
 
 func (s *State) enterECLMenu(menu ecl.Menu) {
+	if slices.Equal(menu.Options, []string{"PATROL", "FOREST", "JOURNEY ON", "CAMP"}) {
+		menu.Options = []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}
+	}
 	s.Choices = make([]string, 0, len(menu.Options))
 	s.currentOriginalChoices = append([]string(nil), menu.Options...)
 	for _, option := range menu.Options {
@@ -977,7 +983,14 @@ func (s *State) Select(index int) error {
 		}
 		var result ecl.RunResult
 		if s.session != nil {
-			result, _ = s.session.RunInteractiveSeedWithPartyContextAndWhoSelections(180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
+			selection := uint16(index)
+			var menuSelection, whoSelection *uint16
+			if whoSelecting {
+				whoSelection = &selection
+			} else {
+				menuSelection = &selection
+			}
+			result, _ = s.session.ResumeInteractiveSelectionSeed(180, menuSelection, whoSelection, s.eclSeed, s.eclPartyContext())
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
@@ -1137,16 +1150,7 @@ func (s *State) Select(index int) error {
 			return nil
 		}
 		if result.WaitingForMenu && len(result.Menus) > 0 {
-			menu := result.Menus[len(result.Menus)-1]
-			s.Choices = make([]string, 0, len(menu.Options))
-			s.currentOriginalChoices = append([]string(nil), menu.Options...)
-			for _, option := range menu.Options {
-				s.Choices = append(s.Choices, localizeOption(s.catalog, option))
-			}
-			if menu.Prompt != "" {
-				s.Prompt = localizePrompt(s.catalog, menu.Prompt)
-			}
-			s.Mode = ModeWilderness
+			s.enterECLMenu(result.Menus[len(result.Menus)-1])
 			return nil
 		}
 		if result.Exited && s.newGameEntryActive && s.session != nil && s.session.CurrentBlockID() == 0x01 {
@@ -4665,7 +4669,8 @@ func (s *State) placePrompt() string {
 func (s *State) applyCitySelection() {
 	if s.session != nil {
 		for _, address := range []uint16{0x4C9B, 0x4C9C} {
-			if value, ok := s.session.MemoryValue(address); ok && value >= 1 && value <= 4 {
+			if value, ok := s.session.MemoryValue(address); ok &&
+				((value >= 1 && value <= 4) || value == 8 || value == 9) {
 				s.setWorldLocation(value)
 				return
 			}
@@ -4690,6 +4695,18 @@ func (s *State) setWorldLocation(value uint16) {
 		s.Location = LocationStandingStone
 		s.LocationName = s.catalog.Text("standing_stone", "立石群")
 		s.OriginalLocation = "THE STANDING STONE"
+		return
+	}
+	if value == 8 {
+		s.Location = LocationEssembra
+		s.LocationName = s.catalog.Text("essembra", "艾森布拉")
+		s.OriginalLocation = "ESSEMBRA"
+		return
+	}
+	if value == 9 {
+		s.Location = LocationHap
+		s.LocationName = s.catalog.Text("hap", "哈普")
+		s.OriginalLocation = "HAP"
 	}
 }
 
@@ -4772,6 +4789,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("temple", "神殿")
 	case "RELAX":
 		return catalog.Text("relax", "休息並聽取傳聞")
+	case "PATROL FOREST":
+		return catalog.Text("patrol_forest", "巡查森林")
 	case "THANK HIM":
 		return catalog.Text("thank_him", "向他道謝")
 	case "ATTACK":
@@ -4788,6 +4807,12 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("tilverton", "提爾佛頓")
 	case "THE STANDING STONE":
 		return catalog.Text("standing_stone", "立石群")
+	case "ESSEMBRA":
+		return catalog.Text("essembra", "艾森布拉")
+	case "HAP":
+		return catalog.Text("hap", "哈普")
+	case "HILLSFAR":
+		return catalog.Text("hillsfar", "希爾斯法")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
 	case "TRAIL":
@@ -4864,6 +4889,26 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
+	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
+		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):
+		return catalog.Text(
+			"ecl_hap_black_dragons",
+			"巨大的黑影在天際翱翔，突然俯衝而下——竟是三隻駭人的黑龍！",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ESSEMBRA"):
+		return catalog.Text(
+			"ecl_essembra_edge",
+			"你們來到艾森布拉城外。要進城，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
+		return catalog.Text(
+			"ecl_hap_edge",
+			"你們來到哈普村外。要進村，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "HOW WILL YOU GET TO ESSEMBRA"):
+		return catalog.Text("ecl_route_essembra", "要如何前往艾森布拉？")
+	case strings.Contains(joined, "HOW WILL YOU GET TO HAP"):
+		return catalog.Text("ecl_route_hap", "要如何前往哈普？")
 	case strings.Contains(joined, "SEEK RED TO THE SOUTH"):
 		return catalog.Text(
 			"ecl_standing_stone_seek_red",

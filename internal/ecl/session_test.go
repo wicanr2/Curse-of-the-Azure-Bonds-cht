@@ -107,6 +107,37 @@ func TestBlockSessionResumesMenuWithCumulativeSelections(t *testing.T) {
 	}
 }
 
+func TestBlockSessionResumesMenuWithIncrementalSelection(t *testing.T) {
+	code := []byte{
+		0x2B, 0x02, 0x00, 0x90, 0x00, 0x02,
+		0x80, 0x02, 0x20, 0x92,
+		0x80, 0x02, 0x0C, 0x32,
+		0x00,
+	}
+	block := make([]byte, 2+0x14+len(code))
+	for i := 0; i < 5; i++ {
+		pos := 2 + i*4
+		block[pos+1], block[pos+2], block[pos+3] = 0x02, 0x14, 0x80
+	}
+	copy(block[2+0x14:], code)
+	session, err := NewBlockSession(map[uint8][]byte{0x50: block}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, err := session.RunInteractiveSeedWithPartyContext(8, nil, 1, PartyContext{})
+	if err != nil || !first.WaitingForMenu {
+		t.Fatalf("first run=%+v err=%v, want menu pause", first, err)
+	}
+	selection := uint16(1)
+	second, err := session.ResumeInteractiveSelectionSeed(8, &selection, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if second.WaitingForMenu || len(second.Menus) != 1 || second.Menus[0].Selected != 1 {
+		t.Fatalf("second run=%+v, want resumed incremental selection 1", second)
+	}
+}
+
 func TestBlockSessionCarriesMemoryAcrossNewECL(t *testing.T) {
 	first := append([]byte{0, 0,
 		0x09, 0x00, 7, 0x02, 0x00, 0x7B,

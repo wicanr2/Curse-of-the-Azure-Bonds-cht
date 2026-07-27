@@ -1,5 +1,19 @@
 # Gold Box 共用 state／城市 service 知識
 
+## 世界地點值與旅途戰鬥 continuation
+
+CoAB 的 world current-location byte 是作品資料值，不是連續的 remake enum。
+目前真實流程已鎖定 Standing Stone=`4`、Essembra=`8`、Hap=`9`；其他 Gold Box
+作品應保留自己的原始值與顯示名稱 mapping，不能按旅途順序自行遞增。
+
+旅途上的 `COMBAT` 屬 ECL transaction 中斷點。勝利後必須恢復同一份 runtime，
+才能執行抵達地點、寫入 world byte 與顯示 edge menu。複合英文 menu label 也可能
+由多個文字片段組成，但仍只消耗一個 selection index；作品 adapter 可正規化顯示
+文字，不可改 VM index。
+
+一次性遭遇旗標可能在 `COMBAT` 前寫入。CoAB 的 Hap 黑龍事件以 `4CA2=1`
+表示「已觸發接近事件」，不是「已獲勝」；戰鬥結果與續接 ownership 必須另行保存。
+
 ## 城市場所分層
 
 Gold Box 城市應先由 `ModePlace` 保存 `INN／STORE／BAR／LEAVE` parent menu，再由各場所進入自己的 service state。場所 service 完成後以 `ModeEvent` 保存可翻譯訊息與 `eventReturnMode`，Enter 才回 parent menu；不可把荒野、城市 map 與場所事件混用成同一個返回值。

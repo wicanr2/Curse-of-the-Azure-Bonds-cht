@@ -283,3 +283,4 @@
 - [第三百零三輪火刀首領與解除枷印](./303-fire-knife-leader-bond.md)（`READY`：限 terrain `0x87`、21 人首領戰、勝利財寶、手札 11／53／54 與第一段 bond progression）
 - [第三百零四輪提爾佛頓放逐與阿沙本福德山徑](./304-tilverton-ashabenford-trail.md)（`READY`：限 BIGPIC 121、Tilverton 禁止入城、Ashabenford TRAIL、八隻鷹馬與 world-state writeback）
 - [第三百零五輪阿沙本福德與立石群](./305-ashabenford-standing-stone.md)（`READY`：限 PICTURE 80、城市服務、酒館傳聞 28、Shadow Gap 火刀伏擊與灰袍人紅色提示）
+- [第三百零六輪艾森布拉、哈普與黑龍](./306-essembra-hap-black-dragons.md)（`READY`：限複合選項、world values 8/9 與三隻黑龍戰）
