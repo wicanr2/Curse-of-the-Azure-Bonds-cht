@@ -444,9 +444,10 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	if c.HitPoints > 0 && c.HitPoints <= maxHitPoints {
 		hitPoints = c.HitPoints
 	}
+	headBlock, bodyBlock := c.CombatIconBlocks()
 	fighter := combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
-		HasPartyIcon: true, PartyHeadBlock: c.IconHeadBlock, PartyBodyBlock: c.IconWeaponBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
+		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
@@ -525,6 +526,26 @@ func DefaultIconSize(r Race) uint8 {
 	default:
 		return 2
 	}
+}
+
+// CombatIconBlocks maps raw DOS head_icon/weapon_icon slots to the actual
+// CHEAD/CBODY blocks selected by LoadPlayerCombatIcon. Small icons use the T
+// files, whose namespace is the raw slot plus 0x40.
+func (c Character) CombatIconBlocks() (head, body uint8) {
+	head, body = c.IconHeadBlock, c.IconWeaponBlock
+	size := c.IconSize
+	if size == 0 {
+		size = DefaultIconSize(c.Race)
+	}
+	if size == 1 {
+		if head < 0x40 {
+			head += 0x40
+		}
+		if body < 0x40 {
+			body += 0x40
+		}
+	}
+	return head, body
 }
 
 func (r Race) String() string {

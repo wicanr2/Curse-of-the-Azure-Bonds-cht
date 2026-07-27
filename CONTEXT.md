@@ -457,3 +457,5 @@
 第一百七十六輪功能 commit：`a53744b`，已推送至 GitHub `main`。依 reference `locked_door` 建立 detail 2/3 的 Bash／Pick／Knock／Exit capability resolver，並將方向鍵撞上上鎖門時接到 preview menu；新增 menu capability regression 與 READY 規格。完整 DOS 視窗樣式、door graphics、時間／傷害 side effects 與劇情 integration 仍保留 boundary。
 
 第一百七十七輪功能 commit：`b86c485`，已推送至 GitHub `main`。依 reference `seg001.Init` 將 State、save／preview fallback 與 startup dungeon default 從 `(8,8,0)` 修正為 `(7,13,0)`，並清理已過時的 README／knowledge assertions；新增 READY 規格。`InitAgain` direction 2、完整 SAVGAM context 與劇情 integration 仍保留 boundary。
+
+第一百七十八輪功能 commit 待補：依 reference `LoadPlayerCombatIcon`／`chead_cbody_comspr_icon` 將 DOS `icon_size=1` 的 CHEAD/CBODY raw slot 映射到 `+0x40`，載入 extracted raw layers 並在 renderer on-demand 合成；新增 small／normal icon regression、READY 規格與共用 party knowledge。direction-specific placement、recolor、animation 與完整 CombatIcon runtime 仍保留 boundary。
