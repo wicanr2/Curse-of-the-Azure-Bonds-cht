@@ -679,3 +679,11 @@ Gold Box knowledge base。Docker Go 1.23 通過 `internal/combat`、`internal/ga
 initially-downed regression，確認倒下角色不會佔用碰撞格；更新 README、PLAN 與 Gold Box
 ECL knowledge。Docker Go 1.23 通過 `internal/combat`、`internal/game`、`internal/party`、
 `internal/ecl`、`internal/locale`。
+
+第二百二十七輪重大里程碑 commit：`e6aa0a2`，依 reference `Tile_DownPlayer=0x1F`／
+`downedPlayers` 將 `Fighter.DownedCorpse` 與死亡 flash 分離：team party HP=0 角色保留
+死亡座標但不佔用 CombatMap position；Ebiten 在 skull flash 後以繁中「倒下」corpse marker
+顯示。Cure Light Wounds target routing 現可選到非 dead 的 unconscious／dying corpse，
+普通治療同步 roster HP、清除 DeathOverlay，但不讓角色恢復戰鬥格；新增 combat／State
+regressions。Docker Go 1.23 通過 `internal/combat`、`internal/game`、`internal/party`、
+`internal/ecl`、`internal/locale`。
