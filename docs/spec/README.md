@@ -166,3 +166,4 @@
 - [第一百六十九輪 dungeon sky layer](./169-dungeon-sky-layer.md)（`READY`：限 Area1 sky colour 與 preview background）
 - [第一百七十輪 WallDoorFlags detail](./170-wall-door-flags.md)（`READY`：限 GEO door/detail flag adapter）
 - [第一百七十一輪 unlocked door movement](./171-unlocked-door-movement.md)（`READY`：限 GEO door detail movement／raw unlock）
+- [第一百七十二輪 DOS thief skill preservation](./172-dos-thief-skills.md)（`READY`：限 `.SAV/.GUY` skill bytes 與 open-locks adapter）

@@ -15,6 +15,8 @@ const (
 	DOSMemorizedSpellsEnd    = 0x072 // exclusive; last documented byte is 0x071
 	DOSKnownSpellsOffset     = 0x079
 	DOSKnownSpellsEnd        = 0x0DD // exclusive; last documented byte is 0x0DC
+	DOSThiefSkillsOffset     = 0x0EA
+	DOSThiefSkillsEnd        = 0x0F2 // exclusive; open-locks is index 1
 	DOSPlayerRecordSize      = 0x1A6 // last documented byte is current movement at 0x1A5
 )
 
@@ -51,6 +53,7 @@ type DOSPlayerRecord struct {
 	KnownSpells      []uint8
 	ItemsPointer     uint32
 	EffectsPointer   uint32
+	ThiefSkills      []uint8
 	Inventory        []monster.ItemRecord
 	Effects          []monster.AffectRecord
 }
@@ -130,6 +133,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 		Jewelry:         binary.LittleEndian.Uint16(data[0x107:0x109]),
 		ItemsPointer:    binary.LittleEndian.Uint32(data[0x14D:0x151]),
 		EffectsPointer:  binary.LittleEndian.Uint32(data[0x0F2:0x0F6]),
+		ThiefSkills:     append([]uint8(nil), data[DOSThiefSkillsOffset:DOSThiefSkillsEnd]...),
 		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 	}, nil
 }
@@ -147,6 +151,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Effects:     append([]monster.AffectRecord(nil), r.Effects...),
 		SpellSlots:  append([]uint8(nil), r.MemorizedSpells...),
 		KnownSpells: append([]uint8(nil), r.KnownSpells...),
+		ThiefSkills: append([]uint8(nil), r.ThiefSkills...),
 	}
 	if err := character.Validate(); err != nil {
 		return Character{}, err

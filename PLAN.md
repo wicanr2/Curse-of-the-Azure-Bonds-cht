@@ -219,6 +219,7 @@
 - [x] 解碼 Area1 `0x1FA/0x1FC` indoor/outdoor sky colour，依 mapWallRoof high bit 接入 dungeon preview sky layer。
 - [x] 依 reference `WallDoorFlagsGet` 接入 GEO no-wall default／walled x3 detail adapter 與 preview evidence。
 - [x] 依 reference `MapSetDoorUnlocked`／`TryStepForward` 接入 unlocked detail `1` 的 dungeon movement 與雙側 raw unlock adapter。
+- [x] 從 DOS player record `0xEA–0xF1` 保存八項 thief skills，並提供 `open_locks` party adapter。
 - [x] 將 opening city menu routing 到暗影谷、阿沙本福德、匕首瀑布，並使用對應 wilderness city flags。
 - [x] 從 CPIC1–CPIC6 抽出戰鬥小人 PNG、manifest 與可重現 sprite sheet。
 - [x] 將 CPIC block mapping 與戰鬥場景 Ebiten renderer 接通。
