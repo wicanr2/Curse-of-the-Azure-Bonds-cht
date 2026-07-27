@@ -102,3 +102,59 @@ func TestRealECL2Block1LoadPiecesPrefix(t *testing.T) {
 		t.Fatalf("result=%+v err=%v", result, err)
 	}
 }
+
+func TestRealECL1ToECL2NEWECLSwitch(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocksByID := make(map[uint8][]byte)
+	for _, member := range []string{"ECL1.DAX", "ECL2.DAX"} {
+		var data []byte
+		for _, entry := range archive.File {
+			if entry.Name != member {
+				continue
+			}
+			reader, openErr := entry.Open()
+			if openErr != nil {
+				t.Fatal(openErr)
+			}
+			data, err = io.ReadAll(reader)
+			reader.Close()
+			if err != nil {
+				t.Fatal(err)
+			}
+			break
+		}
+		if len(data) == 0 {
+			t.Fatalf("%s is absent from original image", member)
+		}
+		parsed, parseErr := dax.Parse(data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		for _, block := range parsed {
+			if member == "ECL1.DAX" && block.Entry.ID != 0x50 {
+				continue
+			}
+			if member == "ECL2.DAX" && block.Entry.ID != 3 {
+				continue
+			}
+			blocksByID[block.Entry.ID] = block.Data
+		}
+	}
+	session, err := NewBlockSession(blocksByID, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, runErr := session.RunFrom(0x5B5, 128, nil)
+	if session.CurrentBlockID() != 3 {
+		t.Fatalf("current block=0x%02X result=%+v err=%v, want ECL2 block 3", session.CurrentBlockID(), result, runErr)
+	}
+	// ECL2's target entry may stop at a later unsupported routine; the
+	// transition itself must still be applied and remain observable.
+	if runErr != nil && result.Steps == 0 {
+		t.Fatalf("target transition produced no bounded result: result=%+v err=%v", result, runErr)
+	}
+}
