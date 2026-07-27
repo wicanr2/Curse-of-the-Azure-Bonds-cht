@@ -395,12 +395,12 @@ func TestRunSubsetDecodesLoadCharacterPlayerSelector(t *testing.T) {
 }
 
 func TestRunSubsetLoadCharacterFeedsSelectedNameStringMemory(t *testing.T) {
-	// LOAD CHARACTER 1; LOAD CHARACTER 0 (not found); COMPARE [0x7C00],
+	// LOAD CHARACTER 0; LOAD CHARACTER 1 (not found); COMPARE [0x7C00],
 	// packed "HI"; IF =; GOTO success; PRINT "NO"; EXIT;
 	// success: PRINT "YES"; EXIT. The failed lookup preserves the last player.
 	block := []byte{0, 0,
-		0x0A, 0x02, 0x01, 0x00,
 		0x0A, 0x02, 0x00, 0x00,
+		0x0A, 0x02, 0x01, 0x00,
 		0x03, 0x81, 0x00, 0x7C, 0x80, 0x02, 0x20, 0x92,
 		0x16,
 		0x01, 0x02, 0x1C, 0x80,
@@ -485,7 +485,7 @@ func TestRunSubsetDestroyItemsUpdatesWorkingInventoryQueries(t *testing.T) {
 
 func TestRunSubsetFindSpecialUsesLoadCharacterSelection(t *testing.T) {
 	block := []byte{0, 0,
-		0x0A, 0x02, 0x01, 0x00,
+		0x0A, 0x02, 0x00, 0x00,
 		0x3F, 0x00, 0x27,
 		0x16,
 		0x01, 0x02, 0x13, 0x80,
@@ -531,7 +531,7 @@ func TestRunSubsetFindSpecialUsesWhoSelectionAfterResume(t *testing.T) {
 
 func TestRunSubsetDumpRemovesSelectedFromWorkingParty(t *testing.T) {
 	block := []byte{0, 0,
-		0x0A, 0x02, 0x02, 0x00,
+		0x0A, 0x02, 0x01, 0x00,
 		0x3E,
 		0x3F, 0x00, 0x27,
 		0x00,

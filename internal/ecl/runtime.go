@@ -976,14 +976,14 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if workingPartyContext != nil {
 				teamCount += len(workingPartyContext.Members)
 			}
-			if selectedTeamListIndex > 0 && selectedTeamListIndex < teamCount {
+			if selectedTeamListIndex >= 0 && selectedTeamListIndex < teamCount {
 				memory[0x7D00] = 1
 			} else {
 				memory[0x7D00] = 0x80
 			}
 			if workingPartyContext != nil {
-				playerIndex := int(value&0x7F) - 1
-				if value&0x7F > 0 && playerIndex >= 0 && playerIndex < len(workingPartyContext.Members) {
+				playerIndex := int(value & 0x7F)
+				if playerIndex >= 0 && playerIndex < len(workingPartyContext.Members) {
 					// Reference vm_CopyStringFromMemory treats 0x7C00 as the
 					// selected player's name string. Preserve it in RuntimeState
 					// so later COMPARE/PRINT operands see the same selection.

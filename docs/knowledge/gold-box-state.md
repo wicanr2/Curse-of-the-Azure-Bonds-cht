@@ -170,6 +170,11 @@ dispatch table，frontend 不應另做地點 switch。
 直接在 640×480 層 rasterize，而不是先畫進 320×240 再放大。事件 PICTURE 最好使用
 獨立 layout，避免沿用探索 HUD 後讓 3× HEAD／BODY 圖覆蓋日期或提示。
 
+本地化角色也要分離兩種 identity：`display name` 供 640×480 中文 UI 顯示，
+`script name` 則保留 DOS 15-byte 名稱供 ECL `LOAD CHARACTER → [0x7C00] COMPARE`
+使用。阿卡巴證明直接覆蓋原名雖然畫面正確，卻會切斷隊伍成員限定的劇情分支；
+這項模型應由後續 Gold Box 作品沿用。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。
@@ -334,7 +339,7 @@ Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 r
 ### ECL selected-player bridge（CoAB round 269）
 
 `WHO` 是 UI pause／resume transaction；`LOAD CHARACTER` 則是 script 直接指定角色的
-1-based selector。State 將其低 7 bits 映射到 `partyRoster`，與 WHO 共用 selected-player
+zero-based selector。State 將其低 7 bits 映射到 `partyRoster`，與 WHO 共用 selected-player
 ID；無效 selector 只留下 not-found flag，不破壞上一個有效選擇。bit 7 目前只保存為
 restore／redraw metadata，未把尚未完整反組譯的 DOS global cleanup 假設成已完成。這個
 「VM decoded request → persistent roster adapter」是其他 Golden Box 作品可重用的接點。

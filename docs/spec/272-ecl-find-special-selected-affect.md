@@ -12,7 +12,7 @@
 
 - `RuntimeState` 保存 selected-player index 與有效旗標，與 memory、strings、compare flags
   一起跨 menu／WHO pause 與 shared BlockSession／NEWECL context。
-- 成功的 `LOAD CHARACTER` 以 1-based selector 更新 selected index；完成的 `WHO`
+- 成功的 `LOAD CHARACTER` 以 zero-based selector 更新 selected index；完成的 `WHO`
   selection 以 UI 的 0-based roster index 更新同一狀態。
 - `FIND SPECIAL` 只查 selected member 的 active `PartyMemberContext.Effects`，產生
   `FindSpecialRequest` 並設定 `=`／`<>`；沒有 party context 或尚未選角時維持 unresolved。

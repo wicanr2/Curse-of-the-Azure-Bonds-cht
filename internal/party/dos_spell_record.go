@@ -310,7 +310,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 // can use imported data immediately.
 func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
-		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
+		ID: r.ID, Name: r.Name, ScriptName: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		RawClassID: r.RawClass,
 		Level:      r.Level, Age: r.Age, Experience: r.Experience,
 		HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
