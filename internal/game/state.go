@@ -191,6 +191,9 @@ type State struct {
 	campMagicViewMenu      bool
 	campMagicMemorizeMenu  bool
 	campMagicMemorizeChar  int
+	campMagicCastMenu      bool
+	campMagicCastChar      int
+	campMagicCastSpell     uint8
 	pendingMemorizedSpells map[int][]uint8
 	saveRequested          bool
 	alterMenu              bool
@@ -1193,6 +1196,9 @@ func (s *State) enterCampMenu() {
 	s.campMagicViewMenu = false
 	s.campMagicMemorizeMenu = false
 	s.campMagicMemorizeChar = -1
+	s.campMagicCastMenu = false
+	s.campMagicCastChar = -1
+	s.campMagicCastSpell = 0
 	s.alterMenu = false
 	s.alterOrderMenu = false
 	s.alterOrderSelected = -1
@@ -1470,18 +1476,64 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		case "CAMP_MAGIC_DISPLAY":
 			s.enterCampMagicViewMenu()
 			return nil
+		case "CAMP_MAGIC_CAST":
+			s.enterCampMagicCastCharacterMenu()
+			return nil
 		case "CAMP_MAGIC_MEMORIZE":
 			s.enterCampMagicMemorizeCharacterMenu()
 			return nil
 		case "CAMP_MAGIC_REST":
 			s.enterCampRestMenu()
 			return nil
-		case "CAMP_MAGIC_CAST", "CAMP_MAGIC_SCRIBE":
+		case "CAMP_MAGIC_SCRIBE":
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "MAGIC"
 			s.Message = s.catalog.Text("camp_magic_pending", "此法術功能已進入資料邊界，完整規則仍待接入。")
 			return nil
+		}
+	}
+	if s.campMagicCastMenu {
+		if originalChoice == "CAMP_MAGIC_CAST_EXIT" {
+			s.enterCampMagicMenu()
+			return nil
+		}
+		if s.campMagicCastChar < 0 {
+			if strings.HasPrefix(originalChoice, "CAMP_MAGIC_CAST_CHAR_") {
+				value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_CAST_CHAR_"))
+				if err != nil || value < 0 || value >= len(s.partyRoster) {
+					return fmt.Errorf("invalid cast character %q", originalChoice)
+				}
+				s.enterCampMagicCastSpellMenu(value)
+				return nil
+			}
+			return fmt.Errorf("unknown cast character choice %q", originalChoice)
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_CAST_SPELL_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_CAST_SPELL_"))
+			character := s.partyRoster[s.campMagicCastChar]
+			if err != nil || value < 0 || value >= len(character.SpellSlots) {
+				return fmt.Errorf("invalid cast spell %q", originalChoice)
+			}
+			s.campMagicCastSpell = character.SpellSlots[value]
+			if s.campMagicCastSpell != CureLightWoundsSpellID {
+				s.campMagicCastMenu = false
+				s.campMagicMenu = true
+				s.Mode = ModeEvent
+				s.eventReturnMode = ModeWilderness
+				s.OriginalEvent = "MAGIC CAST"
+				s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_unknown", "目前只能在紮營施放 Cure Light Wounds；法術 0x%02X 尚待接入。"), s.campMagicCastSpell)
+				return nil
+			}
+			s.enterCampMagicCastTargetMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "CAMP_MAGIC_CAST_TARGET_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "CAMP_MAGIC_CAST_TARGET_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid cast target %q", originalChoice)
+			}
+			return s.castCampCureLightWounds(value)
 		}
 	}
 	if s.campMagicMemorizeMenu {
@@ -1948,6 +2000,9 @@ func (s *State) enterCampMagicMenu() {
 	s.campMenu = true
 	s.campMagicMenu = true
 	s.campMagicViewMenu = false
+	s.campMagicCastMenu = false
+	s.campMagicCastChar = -1
+	s.campMagicCastSpell = 0
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("camp_magic_menu_prompt", "法術選單")
 	s.Choices = []string{
@@ -1960,6 +2015,124 @@ func (s *State) enterCampMagicMenu() {
 	}
 	s.currentOriginalChoices = []string{"CAMP_MAGIC_CAST", "CAMP_MAGIC_MEMORIZE", "CAMP_MAGIC_SCRIBE", "CAMP_MAGIC_DISPLAY", "CAMP_MAGIC_REST", "CAMP_MAGIC_EXIT"}
 	s.Message = ""
+}
+
+func (s *State) enterCampMagicCastCharacterMenu() {
+	s.campMenu = true
+	s.campMagicMenu = false
+	s.campMagicViewMenu = false
+	s.campMagicMemorizeMenu = false
+	s.campMagicCastMenu = true
+	s.campMagicCastChar = -1
+	s.campMagicCastSpell = 0
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_magic_cast_character_prompt", "選擇施法者")
+	s.Choices = nil
+	s.currentOriginalChoices = nil
+	for index, character := range s.partyRoster {
+		if (character.Class != party.ClassCleric && character.Class != party.ClassMagicUser) || len(character.SpellSlots) == 0 {
+			continue
+		}
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_cast_character", "%s（已記憶 %d 個法術）"), character.Name, len(character.SpellSlots)))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_CHAR_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicCastSpellMenu(characterIndex int) {
+	character := s.partyRoster[characterIndex]
+	s.campMagicCastChar = characterIndex
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_cast_spell_prompt", "%s 要施放哪個法術？"), character.Name)
+	s.Choices = make([]string, 0, len(character.SpellSlots)+1)
+	s.currentOriginalChoices = make([]string, 0, len(character.SpellSlots)+1)
+	for index, spellID := range character.SpellSlots {
+		s.Choices = append(s.Choices, campSpellLabel(s.catalog, character.Class, spellID))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_SPELL_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterCampMagicCastTargetMenu() {
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("camp_magic_cast_target_prompt", "選擇 Cure Light Wounds 目標")
+	s.Choices = nil
+	s.currentOriginalChoices = nil
+	for index, character := range s.partyRoster {
+		if character.HealthStatus == party.HealthStatusDead || character.HitPoints >= character.MaxHitPoints {
+			continue
+		}
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_TARGET_"+strconv.Itoa(index))
+	}
+	if len(s.Choices) == 0 {
+		s.campMagicCastMenu = false
+		s.campMagicMenu = true
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.OriginalEvent = "MAGIC CAST"
+		s.Message = s.catalog.Text("camp_magic_cast_no_target", "沒有需要治療的隊員，法術未消耗。")
+		return
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
+	s.Message = ""
+}
+
+func (s *State) castCampCureLightWounds(targetIndex int) error {
+	if s.campMagicCastChar < 0 || s.campMagicCastChar >= len(s.partyRoster) {
+		return fmt.Errorf("Cure Light Wounds caster is not selected")
+	}
+	caster := &s.partyRoster[s.campMagicCastChar]
+	if caster.Class != party.ClassCleric && caster.Class != party.ClassMagicUser {
+		return fmt.Errorf("character %q cannot cast Cure Light Wounds", caster.Name)
+	}
+	spellIndex := -1
+	for index, spellID := range caster.SpellSlots {
+		if spellID == CureLightWoundsSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no Cure Light Wounds", caster.Name)
+	}
+	if targetIndex < 0 || targetIndex >= len(s.partyRoster) {
+		return fmt.Errorf("Cure Light Wounds target %d is outside party", targetIndex)
+	}
+	target := &s.partyRoster[targetIndex]
+	if target.HealthStatus == party.HealthStatusDead || target.HitPoints >= target.MaxHitPoints {
+		return fmt.Errorf("Cure Light Wounds target %q is not wounded", target.Name)
+	}
+	casterName, targetName, targetID := caster.Name, target.Name, target.ID
+	caster.SpellSlots = append(caster.SpellSlots[:spellIndex], caster.SpellSlots[spellIndex+1:]...)
+	rng := rand.New(rand.NewSource(s.fixSeed))
+	s.fixSeed++
+	healed := rng.Intn(8) + 1
+	before := target.HitPoints
+	target.HitPoints += healed
+	if target.HitPoints > target.MaxHitPoints {
+		target.HitPoints = target.MaxHitPoints
+	}
+	actual := target.HitPoints - before
+	for index := range s.party {
+		if s.party[index].ID == targetID {
+			s.party[index].HitPoints = target.HitPoints
+		}
+	}
+	s.campMagicCastMenu = false
+	s.campMagicMenu = true
+	s.campMagicCastChar = -1
+	s.campMagicCastSpell = 0
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	s.OriginalEvent = "MAGIC CAST"
+	s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_done", "%s 對 %s 施放 Cure Light Wounds，恢復 %d HP。"), casterName, targetName, actual)
+	return nil
 }
 
 func (s *State) enterCampMagicViewMenu() {
