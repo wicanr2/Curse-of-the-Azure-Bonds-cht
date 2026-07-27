@@ -229,6 +229,13 @@ spellCastCount 容量列出尚未學會的繁中法術，選一個寫入 spell b
 事件模式使用獨立的 640×480 版面，避免日期 HUD 與 3× 人物圖重疊。原始 88px
 HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 24px CJK 字型重繪，
 保留未來改用約 16×15 緊湊字級的空間，不受原版 8×8 英文字格限制。
+- GEO2 `(1,10)` 的高階祭司主線已接通。玩家說明青色枷的遭遇後，祭司施展移除詛咒
+  仍遭印記的藍焰反擊；此時才解鎖使用者提供 Adventure Journal PDF 的手札條目 19。
+
+![提爾佛頓高階祭司 HEAD6／BODY6 的 640×480 繁中事件](docs/screenshots/tilverton-high-priest.png)
+
+事件字幕已改成每行 22 個 Unicode 字元，不再沿用 34 個英文字元的寬度假設；24px
+繁中可完整留在 640px 畫布內，原始人物像素仍保持 nearest-neighbor 3×。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -255,6 +262,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -weapon-shop
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -temple
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -training
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -tavern
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -high-priest
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

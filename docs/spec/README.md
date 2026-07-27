@@ -267,3 +267,5 @@
 - [第二百八十七輪訓練規則與正式流程](./287-training-fidelity-and-real-flow.md)（`READY`：限 hit-dice 上限、種族上限與 real ECL/GEO vertical slice）
 - [第二百八十八輪 dual-class 訓練 HP gate](./288-dual-class-training-hp-gate.md)（`READY`：限 DOS `0xE5/0xE6`、升級 HP 抑制與恢復）
 - [第二百八十九輪訓練升級選法術](./289-training-spell-choice.md)（`READY`：限 DOS spellCastCount、MU／ranger 候選與 KnownSpells writeback）
+- [第二百九十輪提爾佛頓酒館與手札 17](./290-tilverton-tavern-journal-17.md)（`READY`：限 selector `0x88`、紫色腰帶女子、華麗匕首與手札解鎖）
+- [第二百九十一輪提爾佛頓高階祭司與手札 19](./291-tilverton-high-priest-journal-19.md)（`READY`：限 selector `0x8F`、Remove Curse、手札解鎖與 640×480 中文事件版面）
