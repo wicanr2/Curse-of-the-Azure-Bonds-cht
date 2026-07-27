@@ -1261,3 +1261,10 @@ MON5CHA／SPC／ITM 入隊資料及解放前旅店。阿卡巴實際為 38 歲�
 哈普解放後現會正確顯示阿卡巴的祕密商路提示。視覺契約仍為 640×480：
 原圖／戰鬥小人 nearest-neighbour 整數放大，繁中正文 24×24 級、緊湊欄位
 16×15 級，兩條 raster pipeline 分離。
+第三百一十一輪成果：哈普地城出口現依 `4C5E` 提供地圖 CAVES 路線，
+由真實 `NEWECL 0x32` 載入 Area 5 GEO block 50、pieces `8,FF,FF`，落在
+`(15,5,W)` 的古老熔岩洞。入口伏擊使用 MON5 `0x39×4 + 0x31×3`，即四隻
+火蜥蜴與三名黑暗精靈戰士；戰勝後保留同一 block 探索。修正 menu transaction
+內 block switch 未清除來源 `7ED5/7EC9`，避免勝利後誤返荒野。新增
+`-lava-tube` 真實 initial-entry 預覽與 640×480 `hap-lava-tube.png`；一般 ECL
+menu 現能同時顯示 24px 中文 narrative，不再只剩選項。

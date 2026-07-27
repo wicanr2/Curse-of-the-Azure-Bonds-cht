@@ -64,6 +64,14 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
   MON5 裝備與 11 個已知法術一併載入。中文顯示名與 DOS script name 分離後，
   解放哈普時會正確追加他所知道的法師塔祕密商路。畫面維持 640×480，
   原圖整數倍 nearest-neighbor 放大，繁中正文以 24×24 級字形重繪。
+- 解放哈普後可循伊弗利特身上的地圖前往古老熔岩洞（ECL5 block `0x32`）；
+  入口伏擊由四隻原版 icon `0x39` 火蜥蜴與三名黑暗精靈組成。跨地圖的 exit
+  work byte 已正確清除，戰勝後會留在熔岩洞繼續探索。
+
+![哈普地圖通往古老熔岩洞的 640×480 繁中實機畫面](docs/screenshots/hap-lava-tube.png)
+
+畫面可用 `-lava-tube` 從真實 ECL initial entry 重現。中文直接以 24px 字形
+繪製在 640×480 畫布；後續戰鬥小人仍使用原始像素並採整數倍率 nearest-neighbor。
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。

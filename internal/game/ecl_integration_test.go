@@ -2325,6 +2325,83 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeDungeon {
 		t.Fatalf("Hap liberation returned mode=%v, want dungeon", state.Mode)
 	}
+	state.DungeonDirection = 2
+	state.DungeonWallType = 7
+	state.DungeonWallRoof = 2
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "返回荒野") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("Hap exit choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "循著地圖前往洞穴") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"CAVES", "WILDERNESS"}) {
+		t.Fatalf("Hap map route choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 0x32 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 ||
+		state.DungeonX != 15 || state.DungeonY != 5 || state.DungeonDirection != 6 ||
+		state.LoadPieces != [3]uint16{8, 0xFF, 0xFF} ||
+		!strings.Contains(state.Message, "古老的熔岩隧道") {
+		t.Fatalf("lava tube entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.LoadPieces, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "火蜥蜴與黑暗精靈") {
+		t.Fatalf("lava tube ambush message=%q", state.Message)
+	}
+	if state.Mode != ModeCombat {
+		t.Fatalf("lava tube ambush mode=%v, want combat", state.Mode)
+	}
+	salamanders, darkElves := 0, 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideParty {
+			continue
+		}
+		switch {
+		case fighter.Name == "火蜥蜴" && fighter.SpriteBlock == 0x39:
+			salamanders++
+		case fighter.Name == "黑暗精靈戰士" && fighter.SpriteBlock == 0x31:
+			darkElves++
+		default:
+			t.Fatalf("unexpected lava tube enemy=%+v", fighter)
+		}
+	}
+	if salamanders != 4 || darkElves != 3 {
+		t.Fatalf("lava tube enemies salamanders=%d dark-elves=%d", salamanders, darkElves)
+	}
+	for turn := 0; turn < 32 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent || state.Message != "戰鬥勝利！" {
+		t.Fatalf("lava tube battle result mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.Message != "" {
+		t.Fatalf("lava tube battle continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := session.Reset(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.StartDungeonStoryPreview(0x32, 0x31, 5); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "古老的熔岩隧道") {
+		t.Fatalf("lava tube preview mode=%v message=%q", state.Mode, state.Message)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

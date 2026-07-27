@@ -288,3 +288,4 @@
 - [第三百零八輪哈普黑暗精靈巡邏](./308-hap-dark-elf-patrol.md)（`READY`：限 ENCOUNTER COMBAT resolver、terrain 0x80 與 MON5 0x31–0x33）
 - [第三百零九輪伊弗利特與哈普解放](./309-hap-efreet-liberation.md)（`READY`：限 terrain 0x88、APPROACH、13 名敵軍與法師塔提示）
 - [第三百一十輪哈普阿卡巴入隊與祕密商路](./310-hap-akabar-recruitment.md)（`READY`：限 terrain 0x8A、MON5 NPC 0x3B、zero-based LOAD CHARACTER 與祕密商路）
+- [第三百一十一輪哈普地圖、熔岩洞入口與伏擊](./311-hap-lava-tube-entry.md)（`READY`：限 CAVES 路線、ECL5 block 0x32、七名敵軍與跨地圖 work-byte 清理）
