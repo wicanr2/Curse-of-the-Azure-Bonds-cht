@@ -223,6 +223,16 @@ func TestTurnDungeonUsesEightDirectionOrder(t *testing.T) {
 	}
 }
 
+func TestCombatMapDirectionIsValidated(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.SetCombatMapDirection(8); err == nil {
+		t.Fatal("direction 8 should be rejected")
+	}
+	if err := state.SetCombatMapDirection(3); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestDungeonDefaultsFollowReferenceInit(t *testing.T) {
 	state := NewState(testCatalog())
 	if state.DungeonX != 7 || state.DungeonY != 13 || state.DungeonDirection != 0 {
@@ -1256,6 +1266,14 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	enemies := state.CombatTargets()
 	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" || enemies[0].SpriteSet != state.Area.GameArea || enemies[0].SpriteBlock != 0x35 || enemies[0].AnimationBlock != 0x09 || !enemies[0].HasAnimation {
 		t.Fatalf("state=%#v enemies=%#v", state, enemies)
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideParty && fighter.IconDirection != 7 {
+			t.Fatalf("party icon direction=%d, want 7", fighter.IconDirection)
+		}
+		if fighter.Side == combat.SideEnemy && fighter.IconDirection != 3 {
+			t.Fatalf("enemy icon direction=%d, want 3", fighter.IconDirection)
+		}
 	}
 }
 

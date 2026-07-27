@@ -193,6 +193,7 @@ type State struct {
 	messageSpeed           int
 	fixSeed                int64
 	dungeonSeed            int64
+	combatMapDirection     uint8
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -477,6 +478,16 @@ func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
 // SetDungeonSeed makes the d100 stream used by the dungeon action adapter
 // reproducible for tests and replay.
 func (s *State) SetDungeonSeed(seed int64) { s.dungeonSeed = seed }
+
+// SetCombatMapDirection supplies the Area/encounter facing used by the
+// reference SetupCombatActions icon direction adapter.
+func (s *State) SetCombatMapDirection(direction uint8) error {
+	if direction >= 8 {
+		return fmt.Errorf("combat map direction %d is outside 0..7", direction)
+	}
+	s.combatMapDirection = direction
+	return nil
+}
 
 // SetMapSeed makes wilderness floor generation reproducible for replay and
 // tests. The original engine rolls a fresh floor; this explicit seed keeps

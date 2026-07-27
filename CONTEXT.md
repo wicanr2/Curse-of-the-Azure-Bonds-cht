@@ -461,3 +461,5 @@
 第一百七十八輪功能 commit：`cd2c0d9`，已推送至 GitHub `main`。依 reference `LoadPlayerCombatIcon`／`chead_cbody_comspr_icon` 將 DOS `icon_size=1` 的 CHEAD/CBODY raw slot 映射到 `+0x40`，載入 extracted raw layers 並在 renderer on-demand 合成；新增 small／normal icon regression、READY 規格與共用 party knowledge。direction-specific placement、recolor、animation 與完整 CombatIcon runtime 仍保留 boundary。
 
 第一百七十九輪功能 commit：`2c3426c`，已推送至 GitHub `main`。依 reference `CombatIcon.LoadIcons` 將 attack layer 映射到 normal block `+0x80`，並接入 CHEAD／CBODY on-demand attack composition；新增 attack block regression、READY 規格與共用 icon knowledge。direction-specific placement、recolor 與完整 CombatIcon runtime cache 仍保留 boundary。
+
+第一百八十輪功能 commit 待補：依 reference `SetupCombatActions`／`HalfDirToIso` 將 map direction 映射到 party／enemy `IconDirection`，接入 StartCombat 與水平 flip adapter；新增 placement／StartEncounter regression、READY 規格與共用 combat knowledge。完整 Area/ECL direction source、CombatMap placement、recolor 與 runtime cache 仍保留 boundary。

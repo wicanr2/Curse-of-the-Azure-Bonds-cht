@@ -29,6 +29,8 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		if fighter.CombatSize == 0 {
 			fighter.CombatSize = 1
 		}
+		iconDirection, _ := combat.IconDirectionForTeam(s.combatMapDirection, fighter.Side)
+		fighter.IconDirection = iconDirection
 		fighters = append(fighters, fighter)
 		partyIndex++
 	}
@@ -44,6 +46,8 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		if fighter.CombatSize == 0 {
 			fighter.CombatSize = 1
 		}
+		iconDirection, _ := combat.IconDirectionForTeam(s.combatMapDirection, fighter.Side)
+		fighter.IconDirection = iconDirection
 		fighters = append(fighters, fighter)
 		enemyIndex++
 	}
