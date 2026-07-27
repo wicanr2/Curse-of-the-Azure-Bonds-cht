@@ -89,6 +89,8 @@ Party icon import 也要分 raw slot 與實際 DAX block：DOS `icon_size=1` 不
 
 攻擊姿態再沿用同一個 block contract 加 `0x80`：reference `LoadIcons(normal_id, normal_id+0x80)`，因此 small icon 的攻擊 block 會是 `(raw+0x40)+0x80`。方向只在 `>3` 時選水平翻轉副本；不可把攻擊姿態誤當成另一套方向 ID。
 
+Combat icon facing 應使用 reference `HalfDirToIso={7,2,3,6}`，不是直接把 map direction 當 screen direction；party 用 `HalfDirToIso[mapDirection/2]`，enemy 加 4 modulo 8。這個四組方向同時供 placement 與 CHEAD/CBODY flip adapter 使用。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

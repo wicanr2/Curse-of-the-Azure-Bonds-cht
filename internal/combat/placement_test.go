@@ -39,6 +39,20 @@ func TestEncounterTeamStartRejectsInvalidInputs(t *testing.T) {
 	}
 }
 
+func TestIconDirectionForTeamUsesReferenceHalfDirToIso(t *testing.T) {
+	party, ok := IconDirectionForTeam(0, SideParty)
+	if !ok || party != 7 {
+		t.Fatalf("party direction=%d ok=%t, want 7", party, ok)
+	}
+	enemy, ok := IconDirectionForTeam(0, SideEnemy)
+	if !ok || enemy != 3 {
+		t.Fatalf("enemy direction=%d ok=%t, want 3", enemy, ok)
+	}
+	if _, ok := IconDirectionForTeam(8, SideParty); ok {
+		t.Fatal("direction 8 should be rejected")
+	}
+}
+
 func TestFormationTileSeparatesPartyAndEnemyRows(t *testing.T) {
 	if got := FormationTile(SideParty, 2); got != (TilePoint{X: 2, Y: 0}) {
 		t.Fatalf("party tile=%#v", got)
