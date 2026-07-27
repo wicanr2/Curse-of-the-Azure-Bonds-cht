@@ -493,3 +493,6 @@
 - [x] 從熔岩洞 GEO5 `(6,15,W)` 依 per-turn direction gate 進入 ECL5 block
   `0x33` 法師塔；完成庭院、德拉坎德羅斯、塔頂黑龍幻象、手札 15、
   `4CFF=1` 解除枷印及四項後續選擇的真實 continuation。
+- [x] 完成法師塔 `ATTACK WIZARD` 分支：黑龍離去、德拉坎德羅斯召兵逃跑、
+  MON5 伊弗利特×1／黑暗精靈戰士×2／法師×1，以及勝利後安全屋頂與
+  block `0x33` 地城 continuation；新增 640×480 原版小人實機戰鬥圖。
