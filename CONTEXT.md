@@ -492,4 +492,4 @@
 
 第一百九十四輪功能 commit：`630d1b3`，修正真實 ECL1 JOURNEY ON integration regression：PICTURE 已是明確的繁中事件畫面，測試現在先驗證 request，再以 `Continue()` 模擬 Enter，最後確認流程抵達 COMBAT boundary。Docker non-Ebiten internal packages 全部通過。
 
-第一百九十五輪功能 commit：`ad676f2`，將 ECL `SPELL`／`PROTECTION` 結果接到 State pending queue，新增一次性 consume API 與 regression；State 保留原始 signal 順序／位址，不猜測未知 party memory side effect。`go test ./internal/game ./internal/ecl` 已於 Docker 通過。
+第一百九十五輪功能 commits：`ad676f2`、`12a0fd7`，將 ECL `SPELL`／`PROTECTION` 結果接到 State pending queue，新增一次性 consume API，並驗證真實 `State.Select` wiring；State 保留原始 signal 順序／位址，不猜測未知 party memory side effect。`go test ./internal/game ./internal/ecl` 已於 Docker 通過。
