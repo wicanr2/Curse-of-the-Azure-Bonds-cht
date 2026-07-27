@@ -645,3 +645,16 @@ redraw 與其他 Death routine 仍保留 boundary。Docker 已通過 `internal/c
 第二百二十二輪文件 commit：`4353c21`，更新 Death／combatant removal READY spec、
 Gold Box ECL／State 知識庫、README 與 PLAN，記錄 position removal 與剩餘 renderer side
 effects。
+
+第二百二十三輪功能 commit：`eea573d`，將 reference `CombatantKilled` 的死亡視覺需求
+建立為 renderer-neutral `Fighter.DeathOverlay` signal；Battle 在 HP=0 時同時保留死亡時
+CombatX/Y anchor、清除 `HasCombatPosition`，治療時清除 overlay signal。Ebiten combat
+renderer 已在該 anchor 畫出可見的繁中「倒下」overlay；exact `combat_icons[24]/[25]`
+skull asset 尚未因 CPIC/COMSPR byte-family 證據不足而硬編。新增 Battle regression。
+Docker Go 1.23 已通過 `internal/combat`、`internal/game`、`internal/party`、`internal/ecl`、
+`internal/locale`；`cmd/azure-bonds-game` 編譯仍受容器缺 ALSA/X11 headers／Ebiten backend
+限制，並非本輪核心測試失敗。
+
+第二百二十三輪文件 commit：`bd31db2`，更新 Death／combatant removal READY spec、Gold Box
+ECL／State 可重用知識庫、README 與 PLAN，記錄 DeathOverlay contract、目前 renderer fallback
+與 exact skull 素材證據邊界。
