@@ -213,3 +213,4 @@
 - [第二百三十二輪 README live combat screenshot](./232-live-combat-screenshot.md)（`READY`：限 direct-entry 畫面證據）
 - [第二百三十三輪 MON*CHA monster Magic Missile](./233-monster-magic-missile.md)（`READY`：限 raw spell slot 與一級法術）
 - [第二百三十四輪 MON*SPC monster effects attachment](./234-monster-spc-attachment.md)（`READY`：限章節／monster ID 關聯與 raw fighter preservation）
+- [第二百三十五輪 MON*SPC invisibility combat projection](./235-monster-spc-invisibility.md)（`READY`：限 affect `0x19`／`0x47` 的 AC +4）
