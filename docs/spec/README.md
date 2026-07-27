@@ -223,3 +223,4 @@
 - [第二百四十三輪 DOS player age writeback](./243-player-age-writeback.md)（`READY`：限 `0x76` age 與 slot-6 overflow）
 - [第二百四十四輪 age-based ability effects](./244-age-ability-effects.md)（`READY`：限新角色 age bracket data adapter）
 - [第二百四十五輪 reference starting-age generator](./245-starting-age-generator.md)（`READY`：限 single-class race/class age dice）
+- [第二百四十六輪 character-creation age transaction](./246-creation-age-transaction.md)（`READY`：限加入隊伍時 age／ability projection）

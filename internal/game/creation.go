@@ -45,6 +45,19 @@ func (s *State) AddCreationCharacter(index int) error {
 		return fmt.Errorf("party already has six characters")
 	}
 	character := s.CreationOptions[index]
+	// The reference assigns age after race/class selection. Keep the template
+	// values editable, then apply the generated age only to the copied party
+	// character so an option can be previewed and reused without double-aging.
+	seed := int64(0xC0AB) + int64(index)*97 + int64(len(s.CreationRoster))*13
+	age, err := party.RollStartingAge(character.Race, character.Class, seed)
+	if err != nil {
+		return err
+	}
+	character.Age = age
+	character.Abilities, err = character.Abilities.WithAgeEffects(character.Race, int(age))
+	if err != nil {
+		return err
+	}
 	character.ID = fmt.Sprintf("%s-%d", character.ID, len(s.CreationRoster)+1)
 	s.CreationRoster = append(s.CreationRoster, character)
 	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_added", "已加入：%s（目前 %d 人）"), character.Name, len(s.CreationRoster))

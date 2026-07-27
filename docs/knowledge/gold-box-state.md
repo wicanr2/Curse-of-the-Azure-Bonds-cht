@@ -215,4 +215,8 @@ record double-count。
 combination error；後續作品只需替換 race/class table，即可重用 deterministic creation
 resolver。
 
+目前 `State.AddCreationCharacter` 是 age transaction 的作品 adapter：template preview 不變，
+copy 入 roster 時才生成 age、套用 ability delta，再給 copied ID。這保留 UI 編輯可重複預覽，
+也避免對同一 template 累積 modifiers；完整原版 race/class selection 仍可沿用同一 ordering。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。

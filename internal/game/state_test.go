@@ -2591,6 +2591,9 @@ func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	if state.Mode != ModeWilderness || len(state.PartyFighters()) != 3 {
 		t.Fatalf("finished state mode=%v party=%#v", state.Mode, state.PartyFighters())
 	}
+	if state.partyRoster[0].Age == 0 || state.partyRoster[1].Age == 0 || state.partyRoster[2].Age == 0 {
+		t.Fatalf("created party ages=%#v, want generated ages", state.partyRoster)
+	}
 }
 
 func TestCharacterCreationCustomNameSupportsUnicode(t *testing.T) {
