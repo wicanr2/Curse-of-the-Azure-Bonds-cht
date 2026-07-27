@@ -1602,6 +1602,72 @@ func TestRealFireKnifeAshenRooms(t *testing.T) {
 	}
 }
 
+func TestRealFireKnifeLeaderEncounterAndBondProgression(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hideout []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 4 {
+			hideout = block.Data
+			break
+		}
+	}
+	session, err := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04F, 0x87)
+	beforeCombat, err := session.RunEntrySeedWithPartyContext(1, 1000, []uint16{0}, nil, 1, ecl.PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !beforeCombat.CombatRequested || beforeCombat.PictureBlock != 12 ||
+		len(beforeCombat.MonsterSpawns) != 2 ||
+		beforeCombat.MonsterSpawns[0] != (ecl.MonsterSpawn{MonsterID: 1, Count: 20, IconBlock: 1}) ||
+		beforeCombat.MonsterSpawns[1] != (ecl.MonsterSpawn{MonsterID: 3, Count: 1, IconBlock: 3}) {
+		t.Fatalf("leader encounter=%+v", beforeCombat)
+	}
+	if len(beforeCombat.TreasureRequests) != 1 ||
+		beforeCombat.TreasureRequests[0] != (ecl.TreasureRequest{
+			Coins: [7]uint16{0, 0, 0, 2000, 3000, 8, 4}, ItemBlock: 0x82,
+		}) {
+		t.Fatalf("leader treasure=%+v", beforeCombat.TreasureRequests)
+	}
+	session.SetMemoryValue(0x7EC7, 0)
+	postSelections := []uint16{0}
+	var continuation []ecl.RunResult
+	for step := 0; step < 5; step++ {
+		postSelections = append(postSelections, 0)
+		continued, continueErr := session.RunInteractiveSeed(1000, postSelections, 1)
+		if continueErr != nil {
+			t.Fatal(continueErr)
+		}
+		continuation = append(continuation, continued)
+	}
+	if !strings.Contains(strings.Join(continuation[0].Text, " "), "JOURNAL ENTRY 54") ||
+		!strings.Contains(strings.Join(continuation[0].Text, " "), "JOURNAL ENTRY 53") ||
+		continuation[0].PictureBlock != 13 {
+		t.Fatalf("leader victory continuation=%+v", continuation[0])
+	}
+	for address, want := range map[uint16]uint16{0x4CFF: 1, 0x4C2A: 1} {
+		if got, ok := session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("memory[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
+	}
+	if !strings.Contains(strings.Join(continuation[1].Text, " "), "FIRST NIGHT OUTSIDE THE CITY") ||
+		!continuation[2].BigPictureRequested || continuation[2].PictureBlock != 120 ||
+		!strings.Contains(strings.Join(continuation[4].Text, " "), "COLD SWEAT") {
+		t.Fatalf("bond dream continuation=%+v", continuation)
+	}
+}
+
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

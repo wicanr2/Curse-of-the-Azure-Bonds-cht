@@ -1429,6 +1429,11 @@ func (s *State) finishCombat() error {
 		} else if continued {
 			return nil
 		}
+		if len(s.pendingTreasure) > 0 {
+			if err := s.ResolveTreasureRequests(); err != nil {
+				return err
+			}
+		}
 		if len(s.pendingTreasureItems) > 0 {
 			s.enterTreasureMenu()
 			return nil
@@ -1484,7 +1489,10 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	}
 	treasureReady := false
 	if len(result.TreasureRequests) > 0 {
-		if err := s.ResolveTreasureRequests(); err != nil {
+		deferUntilVictory := result.CombatRequested && len(result.MonsterSpawns) > 0
+		if deferUntilVictory {
+			treasureReady = false
+		} else if err := s.ResolveTreasureRequests(); err != nil {
 			s.Message = "財寶等待素材載入：" + err.Error()
 		} else if len(s.pendingTreasureItems) > 0 {
 			treasureReady = true
@@ -1508,7 +1516,14 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		s.Message = "事件畫面"
+		if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
+			pending := result
+			pending.PictureRequested = false
+			s.pendingPictureResult = &pending
+		}
+		if s.Message == "" {
+			s.Message = "事件畫面"
+		}
 		return true, nil
 	}
 	if result.CombatRequested {

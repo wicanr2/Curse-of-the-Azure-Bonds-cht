@@ -1006,7 +1006,14 @@ func (s *State) Select(index int) error {
 		s.applyECLRobSignals(result)
 		treasureReady := false
 		if len(result.TreasureRequests) > 0 {
-			if err := s.ResolveTreasureRequests(); err != nil {
+			// Some encounter scripts queue their reward immediately before
+			// COMBAT. Keep that request raw until the party actually wins.
+			// COMBAT without monster spawns is the separate treasure-service
+			// boundary and must still open its loot menu immediately.
+			deferUntilVictory := result.CombatRequested && len(result.MonsterSpawns) > 0
+			if deferUntilVictory {
+				treasureReady = false
+			} else if err := s.ResolveTreasureRequests(); err != nil {
 				// A headless/test adapter may not have loaded ITEM*.DAX yet.
 				// Keep the raw request pending and let the ECL control flow reach
 				// its next command (including COMBAT) instead of aborting it.
@@ -1132,6 +1139,19 @@ func (s *State) Select(index int) error {
 			}
 			s.Mode = ModeWilderness
 			return nil
+		}
+		if result.Exited && len(s.pendingTreasure) > 0 {
+			if err := s.ResolveTreasureRequests(); err != nil {
+				return err
+			}
+			if len(s.pendingTreasureItems) > 0 {
+				if s.eclMenuReturnMode == ModeDungeon {
+					s.enterTreasureMenuFor(ModeDungeon)
+				} else {
+					s.enterTreasureMenu()
+				}
+				return nil
+			}
 		}
 		if result.Exited && s.newGameEntryActive && s.session != nil && s.session.CurrentBlockID() == 0x01 {
 			s.finishNewGameEntry()
@@ -4905,6 +4925,49 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_fire_knife_shrouded_bodies",
 			"房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。",
 		)
+	case strings.Contains(joined, "LEADER OF THE FIRE KNIVES") &&
+		strings.Contains(joined, "JOURNAL ENTRY") &&
+		strings.Contains(joined, "11"):
+		return catalog.Text(
+			"ecl_fire_knife_leader",
+			"你們遇見了火刀首領。他陰險地冷笑著開口；你們將他的話記入冒險手札第 11 條。",
+		)
+	case strings.Contains(joined, "FIRE KNIVES HAVE BEEN DEFEATED") &&
+		strings.Contains(joined, "JOURNAL ENTRY 54"):
+		return catalog.Text(
+			"ecl_fire_knife_victory",
+			"火刀眾已被擊敗。公主以利刃威脅首領；你們將接下來發生的事記入冒險手札第 54 條。",
+		)
+	case strings.Contains(joined, "FREEING GIOGI") &&
+		strings.Contains(joined, "JOURNAL ENTRY 53"):
+		return catalog.Text(
+			"ecl_fire_knife_royal_arrival",
+			"正當你們準備替喬吉鬆綁，整個房間忽然劇烈震動；你們將接下來發生的事記入冒險手札第 53 條。",
+		)
+	case strings.Contains(joined, "FIRST NIGHT OUTSIDE THE CITY") &&
+		strings.Contains(joined, "VIVID DREAM"):
+		return catalog.Text(
+			"ecl_first_bond_dream",
+			"離城後的第一夜，一股怪異倦意籠罩全隊，連守夜者也沉沉睡去。毫無預兆地，你們墜入一場無比鮮明的夢。",
+		)
+	case strings.Contains(joined, "FOUR FACES LEER DOWN") &&
+		strings.Contains(joined, "WEAKEST OF YOUR MASTERS"):
+		return catalog.Text(
+			"ecl_bond_masters_taunt",
+			"四張面孔鄙夷地俯視你們的勝利。陰沉不祥的聲音宣告：「你們第一位、也是最弱的主人已經倒下；如今你們已踏上奴役之路。」",
+		)
+	case strings.Contains(joined, "WIZARD IN RED") &&
+		strings.Contains(joined, "PAWNS OF THE FLAMED ONE"):
+		return catalog.Text(
+			"ecl_bond_masters_prophecy",
+			"「即使意志反抗，你們仍將依序服侍我們：紅袍法師、綠衣女子與黑暗之主。最後，當靈魂之火熄滅，你們將淪為燃燒者的棋子。」",
+		)
+	case strings.Contains(joined, "FACES LAUGH WITH EVIL JOY") &&
+		strings.Contains(joined, "AWAKE IN A COLD SWEAT"):
+		return catalog.Text(
+			"ecl_bond_dream_ends",
+			"四張面孔邪惡地狂笑。夢境逐漸消退，你們渾身冷汗地驚醒。",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -5004,6 +5067,49 @@ func (s *State) unlockJournalEntries(texts []string) {
 			"手札條目 4：一幅標有「公會」與「據點」的下水道地圖。它畫出一條狹長、曲折的地下通路，"+
 				"由提爾佛頓盜賊公會一路通往火刀據點；原始地圖圖像保存於 Adventurer's Journal 第 11 頁。",
 		)})
+	}
+	if strings.Contains(joined, "LEADER OF THE FIRE KNIVES") &&
+		strings.Contains(joined, "JOURNAL ENTRY") &&
+		strings.Contains(joined, "11") {
+		s.appendJournalPages("手札條目 11", []string{
+			s.catalog.Text(
+				"journal_entry_11_1",
+				"手札條目 11（1/2）：火刀首領說，你們來得正是時候；他們預料國王會落入備用陷阱。"+
+					"可惜你們攻擊了錯誤目標。接著他指向兩名被綁在牆邊的俘虜：一名瘦削的鬍鬚男子，"+
+					"以及一名繫著破舊紫色肩帶的年輕女子。",
+			),
+			s.catalog.Text(
+				"journal_entry_11_2",
+				"手札條目 11（2/2）：那名男子是擅長模仿的喬吉・維文斯普爾；首領命他再次模仿國王的聲音。"+
+					"女子則是讓國王得以來到此地的娜卡西亞公主。就在此刻，公主掙脫束縛，抄起手邊的棍棒"+
+					"重擊首領，並高喊：「快！趁首領還不能喚起你們的枷印前，解決他的守衛！」",
+			),
+		})
+	}
+	if strings.Contains(joined, "FIRE KNIVES HAVE BEEN DEFEATED") &&
+		strings.Contains(joined, "JOURNAL ENTRY 54") {
+		s.appendJournalPages("手札條目 54：", []string{s.catalog.Text(
+			"journal_entry_54",
+			"手札條目 54：公主正審問稍微恢復意識的首領。她將匕首抵在他喉頭，首領嘶聲答應解除枷印。"+
+				"他吐出一個毫無意義的音節，你們身上的火刀枷印隨之消退。",
+		)})
+	}
+	if strings.Contains(joined, "FREEING GIOGI") &&
+		strings.Contains(joined, "JOURNAL ENTRY 53") {
+		s.appendJournalPages("手札條目 53", []string{
+			s.catalog.Text(
+				"journal_entry_53_1",
+				"手札條目 53（1/2）：屋頂突然消失，阿祖恩國王、宮廷法師凡格達海斯與皇家衛隊降入房中。"+
+					"衛兵指認你們曾企圖弒君；娜卡西亞公主立刻擋在父王與你們之間，說明你們受火刀控制，"+
+					"不僅無法自主，還救了她。",
+			),
+			s.catalog.Text(
+				"journal_entry_53_2",
+				"手札條目 53（2/2）：國王仍以你們曾攻擊他、身上又有其他控制枷印為由，將你們逐出科米爾。"+
+					"離開前，剛德祭司加里踉蹌現身，與公主相擁。衛兵把你們帶到城外後離去；不久，加里與"+
+					"娜卡西亞共乘一騎奔向北方，公主在遠處向你們揮手。",
+			),
+		})
 	}
 	if strings.Contains(joined, "JOURNAL ENTRY 31.") {
 		s.appendJournalPages("手札條目 31：", []string{s.catalog.Text(

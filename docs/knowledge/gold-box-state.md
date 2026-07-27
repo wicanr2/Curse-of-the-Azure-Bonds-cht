@@ -375,3 +375,17 @@ selectors `0x1C–0x20` 證實常見的一次性房間模板可跨 Gold Box 作�
 但 pause 數仍由 script 決定；例如焚毀圖書館先描述焦屍，再於第二個 pause 取得
 紙張與手札 29，renderer 不能把多段文字合成後提前解鎖 journal。作品層只負責
 依原始 text signal 在正確 continuation append 中文手札。
+
+#### Encounter-owned treasure
+
+`TREASURE → COMBAT` 不能只按 opcode 相鄰關係判成商店／財寶服務。ECL2 block 4
+火刀首領先建立 21 名 monster spawns，再建立 treasure packet，最後送出 COMBAT；
+該 packet 是勝利獎勵，戰前必須保持 raw pending。可重用的判別規則是：
+
+- `CombatRequested && len(MonsterSpawns)>0`：遭遇戰，TREASURE 延後至勝利。
+- `CombatRequested && len(MonsterSpawns)==0`：引擎服務 boundary，可立即解析財寶。
+
+戰後敘事也可能跨多次 PICTURE／Continue 才 `NEWECL`；因此 pending reward 的
+ownership 應跟著 ECL session，而不是跟著單一 renderer 畫面。火刀首領線另證實
+劇情旗標有嚴格時序：`4CFF`（解除火刀枷印）→ `4C2A`（皇家事件）→ 四段夢境 →
+`7F12`（跨章 bond progression），不可在戰鬥結束瞬間一次寫完。

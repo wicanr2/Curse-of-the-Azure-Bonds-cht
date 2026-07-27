@@ -454,3 +454,6 @@
 - [x] 批次完成 ECL2 block 4 terrains `0x9C–0xA0`：煙味走廊、隱形僕人臥室、
   焚毀圖書館、烈焰實驗室與覆屍房；鎖定 `4C11..4C15` visited bytes，並依
   Adventurer's Journal 在取得焦屍紙張後解鎖繁中手札 29。
+- [x] 反組並接通 ECL2 block 4 terrain `0x87` 火刀首領線：PICTURE 12、手札 11、
+  20+1 正式遭遇、勝利後 17,000 GP／寶石／珠寶／兩件隨機物品，以及手札
+  54／53、`4CFF`／`4C2A` 與四段 bond 主人夢境 continuation。

@@ -3,6 +3,7 @@ package game
 import (
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
@@ -17,6 +18,39 @@ func TestECLDestroyItemsMutatesPersistentRoster(t *testing.T) {
 	state.applyECLInventorySignals(ecl.RunResult{DestroyItemIDs: []uint16{0x5E}})
 	if len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 0x23 {
 		t.Fatalf("roster=%#v", state.partyRoster[0].Equipment)
+	}
+}
+
+func TestEncounterTreasureResolvesOnlyAfterVictory(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
+	state.applyECLTreasureSignals(ecl.RunResult{TreasureRequests: []ecl.TreasureRequest{{
+		Coins: [7]uint16{0, 0, 0, 2000, 3000, 8, 4}, ItemBlock: 0x82,
+	}}})
+	if state.MoneyPool() != 0 || len(state.PendingTreasureItems()) != 0 {
+		t.Fatal("encounter reward was granted before combat")
+	}
+	if err := state.StartCombat(
+		[]combat.Fighter{{
+			ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+			ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100,
+		}},
+		[]combat.Fighter{{ID: "guard", Name: "守衛", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1}},
+		7,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	if state.MoneyPool() != 17000 {
+		t.Fatalf("victory money=%d, want 17000 GP", state.MoneyPool())
+	}
+	if gems, jewelry := state.TreasurePool(); gems != 8 || jewelry != 4 {
+		t.Fatalf("victory treasure=(%d,%d), want (8,4)", gems, jewelry)
+	}
+	if !state.treasureMenu || len(state.PendingTreasureItems()) != 2 {
+		t.Fatalf("victory treasure menu=%v items=%#v", state.treasureMenu, state.PendingTreasureItems())
 	}
 }
 
