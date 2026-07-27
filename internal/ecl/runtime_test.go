@@ -601,3 +601,13 @@ func TestRunSubsetWithPartyContextResolvesCheckPartySkills(t *testing.T) {
 		t.Fatalf("check party result=%#v", request)
 	}
 }
+
+func TestRunSubsetExposesWhoSelectionBoundary(t *testing.T) {
+	result, err := RunSubset([]byte{0, 0, 0x39, 0x00, 0x00, 0x00}, 0, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.WhoRequests) != 1 || result.WhoRequests[0].Prompt != "" || result.Steps != 2 {
+		t.Fatalf("WHO result=%+v", result)
+	}
+}

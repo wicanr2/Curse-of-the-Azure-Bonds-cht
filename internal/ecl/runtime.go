@@ -43,6 +43,7 @@ type RunResult struct {
 	PartyStrengthRequests  []PartyStrengthRequest
 	PartySurpriseRequests  []PartySurpriseRequest
 	CheckPartyRequests     []CheckPartyRequest
+	WhoRequests            []WhoRequest
 }
 
 type PartyStrengthRequest struct {
@@ -60,6 +61,13 @@ type CheckPartyRequest struct {
 	Average      uint16
 	AffectFound  bool
 	Resolved     bool
+}
+
+// WhoRequest marks the reference character-selection boundary. WHO consumes
+// the current ECL prompt text but its player selection belongs to the UI/state
+// adapter rather than a normal HORIZONTAL/VERTICAL MENU.
+type WhoRequest struct {
+	Prompt string
 }
 
 // PartySurpriseRequest preserves the two destination addresses used by the
@@ -829,6 +837,12 @@ func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []u
 				}
 			}
 			result.CheckPartyRequests = append(result.CheckPartyRequests, request)
+		case 0x39: // WHO
+			prompt := ""
+			if len(result.Text) > 0 {
+				prompt = result.Text[len(result.Text)-1]
+			}
+			result.WhoRequests = append(result.WhoRequests, WhoRequest{Prompt: prompt})
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout
