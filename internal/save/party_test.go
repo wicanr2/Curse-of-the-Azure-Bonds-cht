@@ -41,6 +41,24 @@ func TestGameJSONRoundTripRestoresAdventureState(t *testing.T) {
 	}
 }
 
+func TestGameJSONRoundTripRestoresDungeonViewState(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	data, err := EncodeGameWithDungeon(roster, area.State{GameArea: 2, InDungeon: true}, 3, 1, 4, 5, 11, 6, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != CurrentGameVersion || file.DungeonX != 11 || file.DungeonY != 6 || file.DungeonDir != 2 {
+		t.Fatalf("decoded dungeon state=%+v", file)
+	}
+}
+
 func TestDecodeGameAcceptsLegacyPartySave(t *testing.T) {
 	file, err := DecodeGame([]byte(`{"version":1,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}]}`))
 	if err != nil || file.Version != 1 {

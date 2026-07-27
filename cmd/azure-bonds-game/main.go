@@ -423,7 +423,10 @@ func (a *app) syncGeoMapRequest() {
 		return
 	}
 	a.geoGrid = &grid
-	a.dungeonX, a.dungeonY = 8, 8
+	a.dungeonX, a.dungeonY = a.state.DungeonX, a.state.DungeonY
+	if a.dungeonX < 0 || a.dungeonX >= geo.Width || a.dungeonY < 0 || a.dungeonY >= geo.Height {
+		a.dungeonX, a.dungeonY = 8, 8
+	}
 	a.refreshDungeonPreview()
 	a.geoSet, a.geoBlock = set, block
 	a.geoLabel = fmt.Sprintf("GEO%d block 0x%02X", set, block)
@@ -435,6 +438,7 @@ func (a *app) refreshDungeonPreview() {
 	}
 	floor := mapdata.GenerateDungeon(*a.geoGrid, a.dungeonX, a.dungeonY)
 	a.dungeonFloor = &floor
+	a.state.DungeonX, a.state.DungeonY = a.dungeonX, a.dungeonY
 	a.prepareWallPreview()
 }
 
@@ -452,7 +456,7 @@ func (a *app) prepareWallPreview() {
 	if a.geoGrid == nil || len(a.pieceSets) == 0 {
 		return
 	}
-	view, err := gfx.TraverseWallView(*a.geoGrid, 0, a.dungeonX, a.dungeonY)
+	view, err := gfx.TraverseWallView(*a.geoGrid, a.state.DungeonDirection, a.dungeonX, a.dungeonY)
 	if err != nil {
 		return
 	}
@@ -1048,7 +1052,8 @@ func main() {
 		log.Fatalf("GEO%d block 0x%02X is not in original catalog", geoRef.Set, geoRef.BlockID)
 	}
 	geoGrid := &geoGridValue
-	dungeonFloor := loadDungeonPreview(geoGrid)
+	dungeonFloorValue := mapdata.GenerateDungeon(*geoGrid, state.DungeonX, state.DungeonY)
+	dungeonFloor := &dungeonFloorValue
 	if *encounter {
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
@@ -1069,7 +1074,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: 8, dungeonY: 8, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }

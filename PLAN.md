@@ -212,6 +212,7 @@
 - [x] 建立 Area1／Area2 `inDungeon`、`game_area` 與 LOAD FILES branch contract。
 - [x] 建立 Area1／Area2 已知欄位 binary codec，並保留未知 bytes。
 - [x] 將 remake F5/F9 擴充為可恢復 Area、location、mode 與 map 座標的版本 2 game save。
+- [x] 將 remake F5/F9 擴充為 version 3 dungeon 3D preview 位置／方向 save state，並保留 v1/v2 舊檔安全 defaults。
 - [x] 將 opening city menu routing 到暗影谷、阿沙本福德、匕首瀑布，並使用對應 wilderness city flags。
 - [x] 從 CPIC1–CPIC6 抽出戰鬥小人 PNG、manifest 與可重現 sprite sheet。
 - [x] 將 CPIC block mapping 與戰鬥場景 Ebiten renderer 接通。
