@@ -10,13 +10,18 @@
 
 流程固定為：
 
-`JOURNEY ON` → `ModeEvent / OriginalEvent=PICTURE` → `Continue()` → 恢復荒野／ECL menu → 下一個 choice → `COMBAT` boundary。
+`JOURNEY ON` → `ModeEvent / OriginalEvent=PICTURE` → `Continue()` → 恢復荒野／ECL
+menu → 下一個 choice → `COMBAT` opcode。第 284 輪已確認這個 STORE branch 會依
+EnterShop 轉入 CityShop。
 
 `Continue()` 負責清除 `PictureRequested`、`PictureBlock`、BIGPIC 與 scene overlay flags；它不假設 picture 已經完成任何戰鬥或地圖副作用。
 
 ## Regression
 
-`TestRealECLJourneyReachesBattleWithLoadedParty` 使用 repo 原始 image 的 `ECL1.DAX`、`MON1CHA.DAX`，先選 JOURNEY ON，確認停在 PICTURE，再呼叫 `Continue()` 模擬 Enter，最後驗證 `ModeEvent / OriginalEvent=COMBAT`。這保護真實 ECL selection sequence 不會因 renderer event boundary 被跳過或重複消費。
+現行 `TestRealECLJourneyDispatchesGeneralStoreService` 使用 repo 原始 image 的
+`ECL1.DAX`／`ITEM1.DAX`，先選 JOURNEY ON，確認停在 PICTURE，再呼叫
+`Continue()` 模擬 Enter，最後驗證 CityShop 與真實庫存。這保護真實 ECL selection
+sequence 不會因 renderer event boundary 被跳過或重複消費。
 
 Docker 內 non-Ebiten internal packages 全部通過；Ebiten command packages 的完整 build 仍需要容器提供 ALSA／X11 開發標頭。
 

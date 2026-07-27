@@ -167,7 +167,8 @@
 
 - [x] `BlockSession.RunInteractive` 接入 game runtime。
 - [x] selection offset 與 bounded NEWECL switch 有 synthetic regression。
-- [x] 真實 ECL1 JOURNEY ON 的 PICTURE event 先停住，按 Enter 後續抵達 COMBAT boundary。
+- [x] 真實 ECL1 JOURNEY ON 的 PICTURE event 先停住，按 Enter 後續抵達 COMBAT opcode；
+  第 284 輪已確認該 STORE branch 會分派 CityShop，而非 battle。
 - [x] 確認 ECL1 initial-entry graph 尚無 reachable NEWECL edge，保留此未知。
 - [x] 從其他 event entries 找出 ECL4／ECL5 real NEWECL transition。
 
@@ -208,7 +209,8 @@
 - [x] 以真實 ECL2 block 3 entry 3／MON2CHA records 建立可操作 encounter regression，並提供跨章節 `-encounter-monster-member` 入口。
 - [x] 將正常 State COMBAT boundary 的 MON*CHA lookup 依 ECL1–ECL6 chapter namespace 分流，不再只使用 MON1CHA。
 - [x] 以原始 ECL1 block `0x50`／ECL2 block `3` 驗證跨 DAX `NEWECL` transition，並保留 target 後續 bounded stop。
-- [x] 以真實 ECL1 block 0x51 的 `JOURNEY ON → STORE` 建立 COMBAT boundary regression，確認缺 descriptor 時不虛構 Battle。
+- [x] 以真實 ECL1 block 0x51 的 `JOURNEY ON → STORE` 建立 CityShop service
+  regression，確認 EnterShop／ITEM1 stock，不再把 COMBAT opcode 誤報為 Battle。
 - [x] 實作 ECL `RANDOM` 與 State 可注入 seed，保留 deterministic regression。
 - [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。
 - [x] 保存 ECL menu pause 的 PC、memory、比較旗標、call stack，並以 cumulative selections resume。
@@ -322,7 +324,8 @@
 - [x] 將 CHEAD／CBODY attack `+0x80` namespace 接入 on-demand combat icon composition；direction-specific placement／recolor／runtime cache 仍待完成。
 - [x] 依 reference `HalfDirToIso` 將 combat map direction 接到 party／enemy IconDirection 與 flip adapter；完整 Area/ECL direction source 與 placement 仍待完成。
 - [x] 解析原始 `ITEMS` base-item descriptor table，建立可重用 catalog 與已知繁中名稱。
-- [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；charges、魔法效果與商店仍待完成。
+- [x] 將已知 `ITEMS` readied 武器／護甲效果投影到 party fighter；CityShop 核心已完成，
+  charges、完整魔法效果與各城店家差異仍待完成。
 - [x] 建立 party equipment class mask、slot collision、雙手武器與雙戒指 transaction contract。
 - [x] 建立 inventory Count stack／readied protection／cursed lock mutation contract。
 - [x] 解碼 scroll／potion／wand properties，建立 consumable use signal 與 charge mutation。
@@ -393,3 +396,7 @@
 - [x] 依 `CMD_AddNPC/load_npc` 接入 morale、MON Player record／effect／item、最低空 icon slot 與 selected-player party insertion；補 PICTURE→COMBAT deferred transaction。
 - [x] 依 `sub_29758` 將正常角色建立完成接到 global block 0x01；新增 fresh session reset、
   正式兩段繁中開場與通用 PICTURE→menu deferred transaction。
+- [x] 依 `CMD_Combat`／`CityShop` 將 COMBAT opcode 的 EnterShop service dispatch
+  接入真實 General Store／Weaponers 流程；ITEM 庫存、shift 計價、typed coins
+  優先付款、不耗盡 stock 與 resumable ECL continuation 已驗證。Temple service
+  保留獨立 boundary，待取得交易規格後再實作。

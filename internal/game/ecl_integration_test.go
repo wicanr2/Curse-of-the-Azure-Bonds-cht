@@ -16,7 +16,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
-func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
+func TestRealECLJourneyDispatchesGeneralStoreService(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
 		t.Skipf("original image is unavailable: %v", err)
@@ -56,10 +56,20 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 	if debugErr != nil {
 		t.Fatal(debugErr)
 	}
-	if !debugResult.CombatRequested || len(debugResult.MonsterSpawns) != 0 {
-		t.Fatalf("real result=%+v, want COMBAT without spawn descriptors", debugResult)
+	if !debugResult.ShopRequested || debugResult.ShopPriceScale != 0x10 ||
+		debugResult.CombatRequested || len(debugResult.TreasureRequests) != 1 ||
+		debugResult.TreasureRequests[0].ItemBlock != 5 {
+		t.Fatalf("real result=%+v, want General Store service with ITEM1 block 5", debugResult)
 	}
 	state.SetMonsterRecords(records)
+	treasureItems, err := ParseTreasureItemBlocks(map[uint8][]byte{
+		1: zipData(t, image, "ITEM1.DAX"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureItems)
+	state.Area.GameArea = 1
 	if err := state.SetParty([]combat.Fighter{{
 		ID: "hero", Name: "英雄", Side: combat.SideParty,
 		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 5,
@@ -71,7 +81,7 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 		t.Fatal(err)
 	}
 	// The observed ECL1 path is JOURNEY ON, then STORE; the latter reaches
-	// the first COMBAT command in block 0x51.
+	// CMD_COMBAT with EnterShop set and therefore enters CityShop.
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
@@ -84,8 +94,9 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "COMBAT" {
-		t.Fatalf("real ECL path did not preserve combat boundary: mode=%v event=%q", state.Mode, state.OriginalEvent)
+	if state.Mode != ModePlace || !state.shopMenu || len(state.ShopOffers()) == 0 {
+		t.Fatalf("real ECL path did not dispatch CityShop: mode=%v shop=%v offers=%d",
+			state.Mode, state.shopMenu, len(state.ShopOffers()))
 	}
 }
 
@@ -169,6 +180,13 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if !ok || !grid.CanMoveDungeonWrapped(7, 13, 6) {
 		t.Fatal("Tilverton start has no verified west path to the Windlord's Inn")
 	}
+	treasureItems, err := ParseTreasureItemBlocks(map[uint8][]byte{
+		2: zipData(t, image, "ITEM2.DAX"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureItems)
 	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 13, 6
 	state.DungeonWallType, _ = grid.WallWrapped(6, 13, 6)
 	state.DungeonWallRoof = grid.CellWrapped(6, 13).Terrain
@@ -348,6 +366,80 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 5 {
 		t.Fatalf("Filani continuation mode=%v position=(%d,%d), want same dungeon cell",
+			state.Mode, state.DungeonX, state.DungeonY)
+	}
+
+	// Weaponers of Cormyr uses CMD_COMBAT as CityShop's engine-service
+	// boundary after setting Area2.EnterShop and loading ITEM2 block 5.
+	state.partyRoster[0].Platinum = 0xFFFF
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 2, 12, 0
+	state.DungeonWallType, _ = grid.WallWrapped(2, 12, 0)
+	state.DungeonWallRoof = grid.CellWrapped(2, 12).Terrain
+	if state.DungeonWallRoof != 0x84 {
+		t.Fatalf("Weaponers GEO selector=%#x, want 0x84", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
+		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
+		!strings.Contains(state.Message, "科米爾") || !strings.Contains(state.Message, "精鋼") {
+		t.Fatalf("Weaponers introduction mode=%v picture=%v:%d head/body=%d/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 2 ||
+		state.Choices[0] != "是" || state.Choices[1] != "否" {
+		t.Fatalf("Weaponers menu mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	offers := state.ShopOffers()
+	if state.Mode != ModePlace || !state.shopMenu || len(offers) == 0 || len(state.Choices) != 9 {
+		t.Fatalf("Weaponers service mode=%v shop=%v offers=%d choices=%v",
+			state.Mode, state.shopMenu, len(offers), state.Choices)
+	}
+	beforeWorth := characterCoinGoldWorth(state.partyRoster[0])
+	beforeEquipment := len(state.partyRoster[0].Equipment)
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.shopStockMenu || len(state.Choices) < 2 {
+		t.Fatalf("Weaponers stock menu=%v choices=%v", state.shopStockMenu, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].Equipment) != beforeEquipment+1 ||
+		characterCoinGoldWorth(state.partyRoster[0]) != beforeWorth-uint32(offers[0].Price) ||
+		len(state.ShopOffers()) != len(offers) {
+		t.Fatalf("Weaponers purchase equipment=%d worth=%d offers=%d, want %d/%d/%d",
+			len(state.partyRoster[0].Equipment), characterCoinGoldWorth(state.partyRoster[0]),
+			len(state.ShopOffers()), beforeEquipment+1, beforeWorth-uint32(offers[0].Price), len(offers))
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopMenu {
+		t.Fatalf("Weaponers purchase continuation mode=%v shop=%v", state.Mode, state.shopMenu)
+	}
+	if err := state.Select(8); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "準確命中") {
+		t.Fatalf("Weaponers departure mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 2 || state.DungeonY != 12 {
+		t.Fatalf("Weaponers continuation mode=%v position=(%d,%d), want same dungeon cell",
 			state.Mode, state.DungeonX, state.DungeonY)
 	}
 }

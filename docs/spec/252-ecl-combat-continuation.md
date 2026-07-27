@@ -23,7 +23,9 @@ ECL `COMBAT (0x24)` 會將 runtime PC 保存到該 instruction 的 next offset�
 ## 驗證
 
 - synthetic regression：COMBAT → one-option menu，確認 next-PC 保存與中文 menu 恢復。
-- 原始 `curseoftheazurebonds.zip`：ECL1 `JOURNEY ON → PICTURE → COMBAT` real journey
+- 原始 `curseoftheazurebonds.zip`：ECL1 `JOURNEY ON → PICTURE → COMBAT opcode`
+  real journey；第 284 輪確認這條 STORE branch 的 continuation 進入 CityShop，
+  戰鬥 continuation 由其他 synthetic／real combat regressions 驗證
   regression 通過；ECL2 MON encounter battle bridge 也通過。
 
 這只完成戰鬥控制流與已證實的 State bridge；各 ECL block 尚有未支援 engine routine、

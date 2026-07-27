@@ -186,7 +186,9 @@
 - ECL `ENCOUNTER MENU` opcode `0x29` 已解析 14 operands，支援 `COMBAT／WAIT／FLEE／ADVANCE／PARLAY` action mapping、interactive pause 與繁中顯示；實際接近距離、外部遭遇 routine 與戰鬥規則仍未完成。
 - ECL interactive menu pause 現在保存 PC、numeric／string memory、比較旗標與 call stack；`BlockSession` 保存共享 runtime context 與 cumulative selection offset，可從同一 menu resume。
 - `NEWECL` 現在將 bounded runtime context 帶到 target block initial entry；synthetic regression 已確認 source memory 可被 target 讀取，完整原始 block continuation 與所有 DOS memory semantics 仍未完成。
-- 真實 ECL1 block `0x51` 的 `JOURNEY ON → STORE` 已建立 regression：可抵達 `COMBAT`，但該路徑沒有 `LOAD MONSTER` descriptors，因此明確停在 boundary；不能把它誤報為已完成 encounter。
+- 真實 ECL1 block `0x51` 的 `JOURNEY ON → STORE` 已建立 regression；第 284 輪
+  進一步證明該 `COMBAT` opcode 依 EnterShop 分派 CityShop，並非缺 monster
+  descriptor 的 encounter。
 - ECL `RANDOM` opcode `0x08` 已加入 seeded bounded runner；`RunResult` 保存 random values，State 可用 `SetECLSeed` 重播事件，完整遭遇表與其外部 routine 仍未完成。
 - 建立畫面按 `R` 可重擲六項 3d6 能力值；核心接受 seed regression，完成加入時仍經職業最低值 validation。
 - 原始映像與 PDF／RAR 手冊是本地研究素材，第一輪不直接納入 Git 追蹤。
@@ -1027,3 +1029,13 @@ State 對 Copper／Silver／Electrum／Gold／Platinum 逐欄向下取整，並�
 「是 → 如實相告」執行真實 `ROB 1,50,0`，解鎖使用者提供 Journal Entry 38 的三頁繁中
 全文，經兩個 Continue 返回原格。新增 READY spec 283、ECL/save knowledge、
 `-filani` 重現入口與 640×480 `tilverton-filani.png` README 截圖。
+
+第二百八十四輪成果：反組 `ovr003.CMD_Combat` 與 `ovr007.CityShop`，確認
+`COMBAT (0x24)` 會在無怪物的 normal context 依 Area2 `EnterShop／EnterTemple`
+分派 engine service。VM 現輸出一次性 shop／temple signal並保存 next-PC；State
+以同一結果的 TREASURE／ITEM block 建立商品，套用原版 shift 計價、角色五種硬幣
+優先與 pooled-money fallback，購買 clone 不耗盡庫存。正式 Tilverton `(2,12)`
+selector `0x84` 已完成 Weaponers PICTURE 4、YES／NO、ITEM2 block 5、購買與離店後
+`MAY YOU ALWAYS STRIKE TRUE.` continuation，最後返回原格；General Store 的舊
+「COMBAT」測試斷言也已修正為 CityShop。新增 READY spec 284、共用 command-set
+知識、`-weapon-shop` 重現入口與 640×480 `tilverton-weaponers.png` README 截圖。

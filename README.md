@@ -71,7 +71,8 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - Ebiten remake 的邏輯畫布與預設視窗已擴為 `640×480`；88px PIC／人物圖採 nearest-neighbor 3×、304×120 BIGPIC 採 2× 整數像素放大，繁中文字則直接以 24px 高解析字型重繪。新增的垂直空間用於三行敘事與獨立操作提示，避免中文字覆蓋原圖。
 - 字型 loader 同時支援單一 TTF/OTF 與 TTC collection；Noto Sans CJK `.ttc` 可直接以
   24px 渲染，不會因 collection parse 失敗退回 ASCII bitmap font。
-- 真實 ECL1 JOURNEY ON 路徑已驗證 `PICTURE → Enter → COMBAT` continuation；事件畫面會先停住，玩家消費後才繼續原始選擇序列。
+- 真實 ECL1 JOURNEY ON／STORE 路徑已驗證 `PICTURE → Enter → COMBAT opcode →
+  CityShop` continuation；這裡的 `COMBAT` 是原版 engine service dispatcher，不是戰鬥。
 - ECL `COMBAT (0x24)` 現在會保存 next-PC；可玩戰鬥勝利後，State 會恢復同一個 ECL runtime，繼續跑原版的文字、menu、picture 或 `NEWECL`，不再丟回 stale wilderness menu。
 - 已依 reference `seg044`／`Resource.resx` 保存 9 個 PC WAV sound assets，`internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊與已實作法術 intent 播放對應音效；背景音樂仍待接入。
 - PICTURE block `>= 0x78` 已分流到 BIGPIC 靜態大圖；目前從 BIGPIC1／2／6 抽出 4 張原始大圖並在事件畫面置中顯示。
@@ -189,6 +190,16 @@ GEO／ECL dispatch 抵達旅店；低解析原圖以整數倍放大，事件人�
 
 這條主線可用 `-filani` 重現；原始像素人物維持整數倍 nearest-neighbor 放大，
 繁中對話在 640×480 畫布獨立以高解析字型排版。
+- GEO2 `(2,12)` selector `0x84` 的「科米爾武器店」已接回正式 ECL：
+  PICTURE 4／YES 後由 `COMBAT` opcode 依 `EnterShop` 旗標進入原版 CityShop，
+  商品取自 `ITEM2.DAX` block 5。價格、角色五種硬幣優先付款、共用金幣 fallback、
+  購買 clone 且庫存不耗盡，以及離店後續跑原 ECL 都依 reference 重現。
+
+![科米爾武器店 PICTURE 4 的 640×480 繁中事件](docs/screenshots/tilverton-weaponers.png)
+
+上圖可用 `-weapon-shop` 從正式序幕 transaction 重現。HEAD4／BODY4 原始像素圖採
+nearest-neighbor 整數倍放大；繁中以 24px 字型直接畫在 640×480 畫布，因此不會把
+低解析英文字格硬塞成難辨識的中文字。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -211,6 +222,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -opening
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -inn
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -filani
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -weapon-shop
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

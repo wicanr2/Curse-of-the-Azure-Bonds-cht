@@ -5,7 +5,9 @@
 ## 已完成
 
 - regression 直接讀 repository 中的原始 ZIP、解析 `ECL1.DAX` 與 `MON1CHA.DAX`。
-- 以真實 opening 選擇 `JOURNEY ON → STORE` 跑 `game.State`，驗證 ECL1 block `0x51` 到達 `COMBAT` boundary。
+- 以真實 opening 選擇 `JOURNEY ON → STORE` 跑 `game.State`，驗證 ECL1 block
+  `0x51` 到達 `COMBAT` opcode。第 284 輪已用 `CMD_Combat` 證據修正其語意：
+  EnterShop 已設定時這是 CityShop service boundary，不是 battle。
 - 該路徑的 bounded result 沒有 `LOAD MONSTER` descriptors；State 因此保留事件 boundary，不虛構敵人或錯誤建立空 Battle。
 - party 由測試明確注入，monster table 由真實 `MON1CHA` records 解析；`-run-subset -interactive -select 1,1` 可人工重現同一觀察。
 

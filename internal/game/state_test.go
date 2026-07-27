@@ -1072,6 +1072,25 @@ func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
 	}
 }
 
+func TestShopPurchaseUsesTypedCoinsAndDoesNotDepleteStock(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Platinum: 2, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.SetShopOffers([]ShopOffer{{Item: monster.ItemRecord{Type: 36, Name: "長劍"}, Price: 6}})
+	if err := state.BuyShopOffer(0, 0); err != nil {
+		t.Fatal(err)
+	}
+	if got := characterCoinGoldWorth(state.partyRoster[0]); got != 4 {
+		t.Fatalf("typed coin worth=%d, want 4 GP after purchase", got)
+	}
+	if len(state.partyRoster[0].Equipment) != 1 || len(state.ShopOffers()) != 1 {
+		t.Fatalf("equipment=%d stock=%d, want cloned purchase and retained stock",
+			len(state.partyRoster[0].Equipment), len(state.ShopOffers()))
+	}
+}
+
 func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

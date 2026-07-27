@@ -178,6 +178,7 @@ type State struct {
 	treasureTakeMenu       bool
 	treasureItemIndex      int
 	shopMenu               bool
+	shopECLService         bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
 	treasureGems           uint32
@@ -1022,6 +1023,9 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeWilderness
 			return nil
 		}
+		if result.ShopRequested {
+			return s.enterECLShop(result)
+		}
 		if result.PictureRequested {
 			if !s.picturesEnabled {
 				s.PictureRequested = false
@@ -1382,6 +1386,53 @@ func (s *State) applyECLInventorySignals(result ecl.RunResult) {
 // random treasure here: those operations need the active area and item data.
 func (s *State) applyECLTreasureSignals(result ecl.RunResult) {
 	s.pendingTreasure = append(s.pendingTreasure, result.TreasureRequests...)
+}
+
+func (s *State) enterECLShop(result ecl.RunResult) error {
+	if !result.ShopRequested {
+		return fmt.Errorf("ECL shop service was not requested")
+	}
+	if err := s.ResolveTreasureRequests(); err != nil {
+		return err
+	}
+	offers := make([]ShopOffer, 0, len(s.pendingTreasureItems))
+	for _, item := range s.pendingTreasureItems {
+		price := int(item.Value)
+		if price <= 0 {
+			price = 1
+		}
+		switch result.ShopPriceScale {
+		case 0x01:
+			price >>= 4
+		case 0x02:
+			price >>= 3
+		case 0x04:
+			price >>= 2
+		case 0x08:
+			price >>= 1
+		case 0x20:
+			price <<= 1
+		case 0x40:
+			price <<= 2
+		case 0x80:
+			price <<= 3
+		}
+		if price < 1 {
+			price = 1
+		}
+		if price > 0xFFFF {
+			price = 0xFFFF
+		}
+		offers = append(offers, ShopOffer{Item: item, Price: uint16(price)})
+	}
+	s.pendingTreasureItems = nil
+	s.SetShopOffers(offers)
+	s.moneyPool = 0
+	s.shopECLService = true
+	s.eclMenuReturnMode = ModeDungeon
+	s.eventReturnMode = ModeDungeon
+	s.enterShopMenu()
+	return nil
 }
 
 // applyECLRobSignals mirrors CMD_Rob: money is scaled by the retained
@@ -3696,7 +3747,6 @@ func (s *State) selectShop(index int, originalChoice string) error {
 			return nil
 		}
 		item := s.shopOffers[value].Item
-		s.shopOffers = append(s.shopOffers[:value], s.shopOffers[value+1:]...)
 		s.shopStockMenu = false
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
@@ -3710,6 +3760,18 @@ func (s *State) selectShop(index int, originalChoice string) error {
 	}
 	if originalChoice == "EXIT" {
 		s.shopMenu = false
+		if s.shopECLService {
+			s.shopECLService = false
+			continued, err := s.continueECLAfterEngineBoundary()
+			if err != nil {
+				return err
+			}
+			if continued {
+				return nil
+			}
+			s.Mode = ModeDungeon
+			return nil
+		}
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
@@ -4152,6 +4214,9 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
+	if result.ShopRequested {
+		return true, s.enterECLShop(result)
+	}
 	if result.PictureRequested {
 		s.Mode = ModeEvent
 		s.PictureRequested = true
@@ -4255,6 +4320,9 @@ func (s *State) Continue() error {
 			result := *s.pendingPictureResult
 			s.pendingPictureResult = nil
 			records := s.monsterRecordsForCurrentECL()
+			if result.ShopRequested {
+				return s.enterECLShop(result)
+			}
 			if result.CombatRequested {
 				if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
 					return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
@@ -4563,6 +4631,20 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_filani_lie", "「別把賢者當成傻瓜。」她把你們趕了出去。")
 	case "'THEN WE HAVE NOTHING TO DISCUSS.'":
 		return catalog.Text("ecl_filani_no", "「那我們就沒什麼好談的了。」")
+	case "'WE HAVE A SELECTION OF THE FINEST CORMYR STEEL.":
+		return catalog.Text("ecl_weaponers_intro", "「我們備有最上等的科米爾精鋼武器。")
+	case "INTERESTED?":
+		return catalog.Text("ecl_weaponers_interested", "有興趣嗎？」")
+	case "'MAY YOU ALWAYS STRIKE TRUE.'":
+		return catalog.Text("ecl_weaponers_farewell", "「願你每次出手都準確命中。」")
+	case "'GOOD DAY THEN.'":
+		return catalog.Text("ecl_weaponers_decline", "「那麼，祝你今日愉快。」")
+	case "'GOOD DAY TO YOU, GENTLE PERSONS. DO YOU WISH":
+		return catalog.Text("ecl_general_store_intro", "「各位貴客，日安。你們想要")
+	case "TO MAKE A PURCHASE?'":
+		return catalog.Text("ecl_general_store_purchase", "買些東西嗎？」")
+	case "'THANK YOU. RETURN SOON.'":
+		return catalog.Text("ecl_general_store_farewell", "「多謝惠顧，歡迎再來。」")
 	case "YOU MOVE AWAY.":
 		return catalog.Text("ecl_move_away", "你們離開此處。")
 	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
