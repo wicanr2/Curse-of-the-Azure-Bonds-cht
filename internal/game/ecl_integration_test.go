@@ -1117,6 +1117,22 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("sewer knight revisit mode=%v message=%q choices=%v, want consumed event",
 			state.Mode, state.Message, state.Choices)
 	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 8, 15, 4
+	state.DungeonWallType, _ = sewerGrid.WallWrapped(8, 15, 4)
+	state.DungeonWallRoof = sewerGrid.CellWrapped(8, 15).Terrain
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || state.session.CurrentBlockID() != 4 ||
+		state.GeoMapSet != 2 || state.GeoMapBlock != 4 ||
+		state.DungeonX != 6 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
+		state.LoadPieces != [3]uint16{1, 2, 4} ||
+		!strings.Contains(state.Message, "火刀據點") {
+		t.Fatalf("Fire Knife hideout entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q choices=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.LoadPieces,
+			state.Message, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
