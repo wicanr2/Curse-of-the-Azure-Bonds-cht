@@ -349,3 +349,4 @@
 - [x] 保存 DOS player `field_186 @ 0x186` signed saving bonus，接入 ECL DAMAGE save resolution 與 record writeback。
 - [x] 建立 State default hit resolver，投影 fighter／equipment AC 並套用已證實的 invisibility `0x19`／`0x47` -4、action-delay-aware blink `0x25` 與 displace `0x59` consumed-bit；effect mutation 具 transactional rollback，其他 affect／death continuation 仍待補證。
 - [x] 依 reference `damage_player` 將 ECL DAMAGE exact-zero／overkill／animated cases 投影到 Character.HealthStatus 與 DamageOutcome；完整 Death routine、bleeding 與 party win/loss continuation 仍待接入。
+- [x] 將 active combat 的 ECL DAMAGE HP 經 `Battle.SetHitPoints` 同步並重新計算 party／enemy status，status 結束時接既有 `finishCombat`；完整 Death routine、bleeding 與 effect removal 仍待接入。
