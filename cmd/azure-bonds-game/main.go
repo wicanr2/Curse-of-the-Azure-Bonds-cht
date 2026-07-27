@@ -1101,14 +1101,26 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動　D：結束回合"+spellHint, a.face, 32, 350, cyan)
 }
 
-// drawFighterDeathOverlay is the current renderer adapter for the combat-core
-// DeathOverlay signal. The reference uses an animated skull from combat_icons
-// 24/25; until those icon-family indices are proven against extracted bytes,
-// this visible Chinese overlay keeps the state transition testable.
+// drawFighterDeathOverlay is the renderer adapter for the combat-core
+// DeathOverlay signal. seg001.Init maps combat_icons[24] to COMSPR block 0x0B
+// (attack becomes 0x8B) and combat_icons[25] to COMSPR block 0x19 (normal).
+// CombatantKilled alternates those two icons while flashing the skull.
 func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fighter, x, y int) {
 	if !fighter.DeathOverlay {
 		return
 	}
+	iconKey := "comspr-block-19-item-00.png"
+	if (time.Since(a.animationStart)/(100*time.Millisecond))%2 == 0 {
+		iconKey = "comspr-block-8B-item-00.png"
+	}
+	if icon := a.combatSprites[iconKey]; icon != nil {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(2, 2)
+		op.GeoM.Translate(float64(x), float64(y))
+		screen.DrawImage(icon, op)
+		return
+	}
+	// Keep a visible diagnostic fallback if a derived sprite was not packaged.
 	ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 80, G: 12, B: 20, A: 220})
 	text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 }
@@ -1383,6 +1395,11 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 	}
 	paths = append(paths, cheadPaths...)
 	paths = append(paths, cbodyPaths...)
+	comsprPaths, err := filepath.Glob("assets/sprites/comspr-block-*-item-00.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	paths = append(paths, comsprPaths...)
 	bigPicturePaths, err := filepath.Glob("assets/sprites/bigpic*-block-*-item-00.png")
 	if err != nil {
 		return nil, nil, nil, err
