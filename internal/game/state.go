@@ -18,6 +18,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
 
 // ReportCombatError converts a recoverable combat action failure into a
@@ -125,6 +126,7 @@ type State struct {
 	session                *ecl.BlockSession
 	party                  []combat.Fighter
 	partyRoster            party.Roster
+	savgamPrefix           *partySave.SAVGAMContainer
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
 	combatTurnIndex        int
