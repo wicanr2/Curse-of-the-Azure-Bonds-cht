@@ -499,3 +499,5 @@
 第一百九十七輪功能 commit：`d1327af`，以真實 ECL2 block 3 entry 3 與 `MON2CHA.DAX` 建立 playable Battle regression；修正 `MON*CHA` 50..60 packed ArmorClass 的 `60-raw` adapter，並新增 `-encounter-monster-member` 支援跨章節 direct encounter。ECL2 direct entry 已於 Docker 通過，正常玩家流程仍待完整 ECL continuation。
 
 第一百九十八輪功能 commit：`860f7c4`，遊戲啟動載入 `MON1CHA`–`MON6CHA`，State 依 ECL global block namespace 選擇 chapter-local monster table；新增 ECL2 chapter selection regression。`go test ./internal/game ./internal/monster ./internal/ecl` 已於 Docker 通過。
+
+第一百九十九輪功能 commit：`cb70681`，以原始 ECL1 block `0x50` payload `+0x5B5` 驗證 `NEWECL 0x03` 會切換到 ECL2 block `3`，新增 global session regression；target 後續 unsupported routine 仍保留 bounded stop boundary。

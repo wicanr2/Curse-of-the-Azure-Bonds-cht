@@ -197,6 +197,7 @@
 - [x] 將 ECL `COMBAT` 在有 party／MON*CHA records 時接到可操作 Battle；缺少資料時保留安全 boundary。
 - [x] 以真實 ECL2 block 3 entry 3／MON2CHA records 建立可操作 encounter regression，並提供跨章節 `-encounter-monster-member` 入口。
 - [x] 將正常 State COMBAT boundary 的 MON*CHA lookup 依 ECL1–ECL6 chapter namespace 分流，不再只使用 MON1CHA。
+- [x] 以原始 ECL1 block `0x50`／ECL2 block `3` 驗證跨 DAX `NEWECL` transition，並保留 target 後續 bounded stop。
 - [x] 以真實 ECL1 block 0x51 的 `JOURNEY ON → STORE` 建立 COMBAT boundary regression，確認缺 descriptor 時不虛構 Battle。
 - [x] 實作 ECL `RANDOM` 與 State 可注入 seed，保留 deterministic regression。
 - [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。
