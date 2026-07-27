@@ -489,3 +489,5 @@
 第一百九十二輪功能 commit：`befdc61`，將既有 `PayIdentifyFee` 接入繁中 Shop Menu，完成角色／物品選擇與 200 GP ID transaction，保留 `HiddenNameFlags` 與未解碼 magic result；新增 regression、locale、READY 規格與 shop knowledge。
 
 第一百九十三輪功能 commit：`00682ff`，修正 `BlockSession` 跨 `NEWECL` 遺失 `LOAD FILES`／`PICTURE`／`SPELL`／`PROTECTION` 結果的問題；新增跨三個 synthetic ECL block 的 signal regression。`go test ./internal/ecl` 已於 Docker 通過；完整 `go test ./...` 仍受容器缺少 ALSA／X11 headers 及既存 game integration failure 影響。
+
+第一百九十四輪功能 commit：`630d1b3`，修正真實 ECL1 JOURNEY ON integration regression：PICTURE 已是明確的繁中事件畫面，測試現在先驗證 request，再以 `Continue()` 模擬 Enter，最後確認流程抵達 COMBAT boundary。Docker non-Ebiten internal packages 全部通過。

@@ -160,6 +160,7 @@
 
 - [x] `BlockSession.RunInteractive` 接入 game runtime。
 - [x] selection offset 與 bounded NEWECL switch 有 synthetic regression。
+- [x] 真實 ECL1 JOURNEY ON 的 PICTURE event 先停住，按 Enter 後續抵達 COMBAT boundary。
 - [x] 確認 ECL1 initial-entry graph 尚無 reachable NEWECL edge，保留此未知。
 - [x] 從其他 event entries 找出 ECL4／ECL5 real NEWECL transition。
 
