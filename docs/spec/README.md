@@ -289,3 +289,4 @@
 - [第三百零九輪伊弗利特與哈普解放](./309-hap-efreet-liberation.md)（`READY`：限 terrain 0x88、APPROACH、13 名敵軍與法師塔提示）
 - [第三百一十輪哈普阿卡巴入隊與祕密商路](./310-hap-akabar-recruitment.md)（`READY`：限 terrain 0x8A、MON5 NPC 0x3B、zero-based LOAD CHARACTER 與祕密商路）
 - [第三百一十一輪哈普地圖、熔岩洞入口與伏擊](./311-hap-lava-tube-entry.md)（`READY`：限 CAVES 路線、ECL5 block 0x32、七名敵軍與跨地圖 work-byte 清理）
+- [第三百一十二輪熔岩洞火蜥蜴守門巡邏](./312-lava-tube-guarded-door.md)（`READY`：限 terrain 0x8A、MON5 3/3/1 守門戰、夢境警告與 ON GOTO selector base）

@@ -1268,3 +1268,10 @@ MON5CHA／SPC／ITM 入隊資料及解放前旅店。阿卡巴實際為 38 歲�
 內 block switch 未清除來源 `7ED5/7EC9`，避免勝利後誤返荒野。新增
 `-lava-tube` 真實 initial-entry 預覽與 640×480 `hap-lava-tube.png`；一般 ECL
 menu 現能同時顯示 24px 中文 narrative，不再只剩選項。
+第三百一十二輪成果：盤點 ECL5 block `0x32 +0x05B5` terrain dispatch，
+確認 `ON GOTO` selector 1 才是第一個 target；terrain `0x8A` 第十項因此落在
+`+0x10C6`，不是零起算會誤判的 `0x89`。真實 GEO5 `(9,10)` 現可觸發
+火蜥蜴守門巡邏，使用 MON5 `0x39×3 + 0x31×3 + 0x33×1`。勝利後
+`4C48 |= 0x08`，同一 resumable ECL 直接顯示繁中夢境警告並返回熔岩洞探索。
+規格 312 與 Gold Box 指令集知識庫已保存 selector base 與戰後 presentation
+不一定先停泛用勝利頁的契約。

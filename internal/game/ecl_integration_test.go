@@ -2393,6 +2393,66 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeDungeon || state.Message != "" {
 		t.Fatalf("lava tube battle continuation mode=%v message=%q", state.Mode, state.Message)
 	}
+	lavaCatalog := geo.NewCatalog()
+	if err := lavaCatalog.AddDAX(5, zipData(t, image, "GEO5.DAX")); err != nil {
+		t.Fatal(err)
+	}
+	lavaGrid, ok := lavaCatalog.Lookup(geo.MapRef{Set: 5, BlockID: 0x32})
+	if !ok {
+		t.Fatal("GEO5 block 0x32 is unavailable")
+	}
+	if center, east := lavaGrid.CellWrapped(15, 5).Terrain, lavaGrid.CellWrapped(0, 5).Terrain; center != 0x80 || east != 0x89 {
+		t.Fatalf("lava entrance terrains center=%#x east=%#x, want 0x80/0x89", center, east)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 9, 10, 2
+	state.DungeonWallType, _ = lavaGrid.WallWrapped(9, 10, 2)
+	state.DungeonWallRoof = lavaGrid.CellWrapped(9, 10).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !strings.Contains(state.Message, "火蜥蜴率領的巡邏隊") {
+		flag, _ := session.MemoryValue(0x4C48)
+		boss, _ := session.MemoryValue(0x4C60)
+		t.Fatalf("lava guarded door mode=%v message=%q flags=%#x boss=%#x picture=%v/%d originals=%#v",
+			state.Mode, state.Message, flag, boss, state.PictureRequested, state.PictureBlock, state.currentOriginalChoices)
+	}
+	doorSalamanders, doorFighters, doorClerics := 0, 0, 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideParty {
+			continue
+		}
+		switch fighter.Name {
+		case "火蜥蜴":
+			doorSalamanders++
+		case "黑暗精靈戰士":
+			doorFighters++
+		case "黑暗精靈牧師":
+			doorClerics++
+		default:
+			t.Fatalf("unexpected guarded-door enemy=%+v", fighter)
+		}
+	}
+	if doorSalamanders != 3 || doorFighters != 3 || doorClerics != 1 {
+		t.Fatalf("guarded-door enemies salamanders=%d fighters=%d clerics=%d",
+			doorSalamanders, doorFighters, doorClerics)
+	}
+	for turn := 0; turn < 32 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "前方危機重重") {
+		t.Fatalf("guarded-door warning mode=%v message=%q", state.Mode, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C48); !ok || got&0x08 == 0 {
+		t.Fatalf("guarded-door flag=%#x,%v want bit 0x08", got, ok)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("guarded-door continuation mode=%v, want dungeon", state.Mode)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

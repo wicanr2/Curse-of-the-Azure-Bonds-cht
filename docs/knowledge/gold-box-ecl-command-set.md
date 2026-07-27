@@ -141,6 +141,11 @@ DOS 姓名比較失敗。
 registers，並清除來源 movement cycle 的 exit／forced-move work bytes。CoAB 的
 `7ED5`／`7EC9` 若滲入 ECL5 block `0x32`，入口戰勝後就會錯誤跳到返回荒野分支。
 
+`ON GOTO (0x25)` 的 table selector 必須保留原版 base：selector 1 取第一個
+target，selector 0 則走 table 前的 fallthrough/default。ECL5 block `0x32`
+以 `C04F & 0x7F` dispatch terrain；因此 `0x8A → selector 10 → 第十個 target
++0x10C6`。若把 table 當零起算，會把 terrain `0x89` 錯標成火蜥蜴守門事件。
+
 `FIND SPECIAL (0x3F)` 查的是目前 `SelectedPlayer` 的 active affect，不是全隊 affect
 query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共用 `RuntimeState`
 保存 selected-player index，讓 `LOAD CHARACTER` 與 WHO selection 都能餵給後續
