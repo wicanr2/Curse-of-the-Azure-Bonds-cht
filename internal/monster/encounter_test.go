@@ -47,3 +47,17 @@ func TestBuildEnemiesWithAffectsCopiesSPCRecords(t *testing.T) {
 		t.Fatalf("effect instances alias each other: %#v", enemies)
 	}
 }
+
+func TestBuildEnemiesWithAffectsProjectsHasteAttacks(t *testing.T) {
+	records := map[uint8]Record{7: {Name: "Ogre", MaxHitPoints: 8, HitPoints: 8, AttacksPerTurn: 2}}
+	affects := map[uint8][]AffectRecord{7: {{Kind: 0x27, Active: true}}}
+	enemies, err := BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
+	if err != nil || len(enemies) != 1 || enemies[0].AttacksPerTurn != 4 {
+		t.Fatalf("enemies=%#v err=%v", enemies, err)
+	}
+	affects[7][0].Active = false
+	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
+	if err != nil || enemies[0].AttacksPerTurn != 2 {
+		t.Fatalf("inactive haste enemies=%#v err=%v", enemies, err)
+	}
+}

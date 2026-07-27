@@ -745,3 +745,9 @@ Gold Box state knowledge。隱形／加速／睡眠等效果的戰鬥語意仍�
 combat exact-boundary regression、READY spec 與 README／PLAN／Gold Box state knowledge。
 其他 `MON*SPC` effect kinds 仍保留逐項證據 boundary。Docker Go 1.23 核心測試與
 `git diff --check` 通過。
+
+第二百三十六輪重大里程碑：依 reference `load_mob` 的 `field_A1` 解析
+`MON*CHA[0xA1]` 為 `Record.AttacksPerTurn`，並依 `AffectHaste` 將 active
+`MON*SPC` affect `0x27` 加倍接到 enemy fighter 的每回合攻擊次數。新增 raw offset／
+active-inactive Haste regressions、READY spec 與 README／PLAN／Gold Box state knowledge。
+完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過。

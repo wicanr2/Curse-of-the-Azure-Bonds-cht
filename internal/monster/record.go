@@ -24,6 +24,7 @@ type Record struct {
 	DamageDiceSides  int
 	DamageBonus      int
 	InitiativeBonus  int
+	AttacksPerTurn   int
 	ModID            uint8
 	SpellIDs         []uint8
 	MonsterSpellUses [3]uint8
@@ -92,6 +93,7 @@ func Parse(data []byte) (Record, error) {
 		DamageDiceSides:  diceSides,
 		DamageBonus:      damageBonus,
 		InitiativeBonus:  int(data[0x1A5]),
+		AttacksPerTurn:   int(data[0xA1]),
 		ModID:            data[0x126],
 		SpellIDs:         spellIDs,
 		MonsterSpellUses: spellUses,
@@ -105,6 +107,7 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		ArmorClass: CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
+		AttacksPerTurn:  r.AttacksPerTurn,
 		MonsterSpellIDs: append([]uint8(nil), r.SpellIDs...), MonsterSpellUses: r.MonsterSpellUses,
 	}
 }
