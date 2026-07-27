@@ -195,6 +195,23 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
+	if a.state.RenameEditing() {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			return a.state.CancelRename()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			return a.state.BackspaceRenameName()
+		}
+		if chars := ebiten.InputChars(); len(chars) > 0 {
+			if err := a.state.AppendRenameName(chars); err != nil {
+				a.state.Message = err.Error()
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			return a.state.CommitRename()
+		}
+		return nil
+	}
 	if a.state.Mode == game.ModeCharacterCreation {
 		if a.state.CreationEditing {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -659,6 +676,13 @@ func (a *app) Draw(screen *ebiten.Image) {
 	}
 	if a.dungeonPreview {
 		a.drawDungeonPreview(screen, white, cyan)
+		return
+	}
+	if a.state.RenameEditing() {
+		text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
+		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
+		text.Draw(screen, "名稱："+a.state.RenameText()+"_", a.face, 56, 220, cyan)
+		text.Draw(screen, "Enter：確認　Backspace：刪除　Esc：取消", a.face, 56, 330, white)
 		return
 	}
 	if a.state.Mode == game.ModeCharacterCreation {

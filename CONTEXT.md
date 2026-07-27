@@ -864,3 +864,8 @@ READY spec 與共用 Gold Box ECL knowledge；完整各 block engine routine 與
 施法者／memorized slot／受傷目標三段選單；已核對的 Cure Light Wounds 會消耗 slot、擲
 `1d8`、同步 roster／fighter HP，並以繁中訊息回到 MAGIC。SCRIBE、未知 spell rules、
 高等級／多職業 slot 與完整施法時間仍保留 boundary。
+
+第二百五十四輪玩家流程里程碑：新增 `CAMP → ALTER → RENAME`，以最多 15 bytes 的中文
+input boundary 更新角色名稱、roster 與 fighter display name；SAVGAM writer 會保留角色
+ID／sidecar basename 與未知 bytes，只 patch DOS name field。原版 code-page transcoding、
+多職業 serializer 與完整 delete semantics 仍保留 boundary。

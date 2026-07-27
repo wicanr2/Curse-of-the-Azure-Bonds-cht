@@ -54,12 +54,14 @@ runtime path；不要用 clock word 或 age bracket threshold 取代角色 recor
 
 ## 可重用修改流程
 
-後續 Pool、Secret、Savage Frontier 等 Gold Box 作品可沿用以下 adapter contract：
+後續 Pool、Secret、Savage Frontier 等 Gold Box 作品可沿用以下 adapter contract；目前 remake
+的 `ALTER → RENAME` 已使用同一條名稱 writeback 路徑：
 
 1. 先辨識 slot 與 player sidecar，建立 backup。
 2. 讀入 raw bytes，只修改已驗證 offset。
 3. 以 sibling staging file 寫出，再替換目標檔；失敗時保留原檔。
-4. 重新 parse 並檢查 age／race／class／name，未知 bytes 做 byte-for-byte preservation。
+4. 重新 parse 並檢查 age／race／class／name，未知 bytes 做 byte-for-byte preservation；角色
+   ID 與 `.SAV/.GUY` sidecar basename 不因 rename 改變。
 
 本 repo 已有 DOS player parser 與 SAVGAM staged writer；完整多職業欄位、所有 sidecar
 schema、刪除／重排角色的原版副作用仍是未完成項目。

@@ -424,6 +424,7 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 	state.partyRoster[0].HitPoints = 6
 	state.partyRoster[0].Gold = 321
 	state.partyRoster[0].SpellSlots = []uint8{0x02, 0x04}
+	state.partyRoster[0].Name = "新名"
 	if err := os.WriteFile(directory+"/CHRDATC2.sav", record, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -444,7 +445,7 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if decoded.CurrentHitPoints != 6 || decoded.Gold != 321 || !reflect.DeepEqual(decoded.MemorizedSpells, []uint8{2, 4}) {
+	if decoded.Name != "新名" || decoded.CurrentHitPoints != 6 || decoded.Gold != 321 || !reflect.DeepEqual(decoded.MemorizedSpells, []uint8{2, 4}) {
 		t.Fatalf("saved player fields=%#v", decoded)
 	}
 	savedPrefix, err := os.ReadFile(directory + "/savgamc.dat")
@@ -2342,7 +2343,7 @@ func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
 	if err := state.Select(4); err != nil {
 		t.Fatal(err)
 	}
-	if !state.alterMenu || len(state.Choices) != 6 {
+	if !state.alterMenu || len(state.Choices) != 7 {
 		t.Fatalf("alter menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -2365,6 +2366,42 @@ func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
 	}
 	if err := state.Select(5); err != nil || state.alterMenu || !state.campMenu {
 		t.Fatalf("alter exit state=%#v err=%v", state, err)
+	}
+}
+
+func TestCampAlterRenameUpdatesRosterAndFighter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{{ID: "hero", Name: "舊名", Class: party.ClassFighter, Level: 1}}
+	state.party = []combat.Fighter{{ID: "hero", Name: "舊名", Side: combat.SideParty}}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil || !state.RenameEditing() {
+		t.Fatalf("rename editor state=%#v err=%v", state, err)
+	}
+	if err := state.BackspaceRenameName(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.AppendRenameName([]rune("新")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CommitRename(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "ALTER RENAME" || state.partyRoster[0].Name != "舊新" || state.party[0].Name != "舊新" {
+		t.Fatalf("rename result state=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.alterMenu {
+		t.Fatalf("rename continuation state=%#v err=%v", state, err)
 	}
 }
 
