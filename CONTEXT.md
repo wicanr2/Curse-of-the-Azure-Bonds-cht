@@ -776,3 +776,10 @@ slot-6 overflow 以 age cycles 保存。新增 clock normalization、slot-2 十�
 permanent party／battle effect regressions、READY spec 與 README／PLAN／Gold Box state
 knowledge。完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過；REST interruption、
 calendar UI、DOS age writeback 與完整 time-triggered ECL 仍保留 boundary。
+
+第二百四十輪重大里程碑：依 reference REST loop 的 `step_game_time(1,5)`，將
+`REST_START` 接到 `AdvanceGameTimeHours`，每 requested hour 推進 60 個 slot-1 minutes，
+先處理 finite effect timeout，再執行既有每 24 小時 +1 HP natural healing。新增 REST
+clock／effect-order regression、READY spec 與 README／PLAN／Gold Box state knowledge。
+完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過；rest interruption、safe
+location、spell-learning side effects 與完整 rest encounter table 仍保留 boundary。

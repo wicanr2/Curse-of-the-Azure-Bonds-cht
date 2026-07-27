@@ -190,4 +190,9 @@ raw clock、套用同一 elapsed-minute 計算，並讓 party `.FX` 與 active b
 共同到期；`Strength=0xFF` 永久 effect 不被移除。slot-6 overflow 暫存為 age cycles，
 尚未寫回 DOS player age 欄位。
 
+REST 現在使用同一 adapter：`REST_START` 將 requested hours 轉成每小時 60 個 slot-1
+minutes，先跑 effect timeout，再執行既有每 24 小時 +1 HP 的 bounded natural healing。
+這保留了原版「時間推進與 effect expiry 先發生」的順序；中斷、safe location、spell
+learning 與完整 rest encounter table 仍不能由此窄 slice 推論。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。

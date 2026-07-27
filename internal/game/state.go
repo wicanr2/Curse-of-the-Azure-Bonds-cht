@@ -1229,6 +1229,9 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				return nil
 			}
 			memorized := s.applyPendingMemorization()
+			if err := s.AdvanceGameTimeHours(s.restHours); err != nil {
+				return err
+			}
 			healed := s.restParty()
 			s.campRestMenu = false
 			s.Mode = ModeEvent

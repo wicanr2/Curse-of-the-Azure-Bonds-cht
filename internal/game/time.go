@@ -41,6 +41,26 @@ func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 	return nil
 }
 
+// AdvanceGameTimeHours is the REST-facing adapter. Reference rest_time uses
+// slot 1 in minute-sized steps; chunking keeps the public uint16 API safe for
+// unusually long deterministic tests.
+func (s *State) AdvanceGameTimeHours(hours int) error {
+	if hours < 0 {
+		return fmt.Errorf("rest hours cannot be negative: %d", hours)
+	}
+	for hours > 0 {
+		chunk := hours
+		if chunk > math.MaxUint16/60 {
+			chunk = math.MaxUint16 / 60
+		}
+		if err := s.AdvanceGameTime(1, uint16(chunk*60)); err != nil {
+			return err
+		}
+		hours -= chunk
+	}
+	return nil
+}
+
 func (s *State) addGameClock(timeSlot int, amount uint16) {
 	carry := uint32(amount)
 	for slot := timeSlot; slot < len(s.gameClock) && carry > 0; slot++ {
