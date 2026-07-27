@@ -81,6 +81,8 @@ Door action resolver 可沿用同一個跨作品 contract：`PickLock` 依 march
 
 CoAB 現在把該 contract 接到 dungeon preview：P 僅對 detail 2 撬鎖，K 對 detail 2/3 消耗 Knock 並解鎖。State 持有獨立 dungeon RNG seed，Ebiten 只負責輸入、訊息與 GEO mutation；其他 Gold Box 遊戲可重用 action service，但必須替換 menu／map context，不應把 preview 快捷鍵當成原版完整 dungeon loop。
 
+撞門規則不能簡化成 Strength 百分比：CoAB reference 以 `Str.full`／`Str00.cur` 選擇 die size 與 threshold，detail 3 另有 unpickable door table；`bash_door()` 甚至在 Strength 18、exceptional 0–50 先成功再額外擲骰。共用 parser 應保存 DOS full／exceptional 欄位，resolver 接受骰子注入，並讓 map service 在成功後才做雙側 unlock。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
