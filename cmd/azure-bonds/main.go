@@ -36,6 +36,7 @@ func main() {
 	encounterStart := flag.Int("encounter-start", -1, "decode LOAD MONSTER sequence at this payload offset")
 	monsterMember := flag.String("monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter-start")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
+	entrySmoke := flag.Bool("entry-smoke", false, "run each ECL initialization entry with bounded semantics")
 	runSubset := flag.Bool("run-subset", false, "run the bounded ECL command subset from the initial entry")
 	interactive := flag.Bool("interactive", false, "pause -run-subset at the first unselected menu")
 	sessionInfo := flag.Bool("session", false, "print decoded ECL block session entries")
@@ -135,6 +136,19 @@ func main() {
 			continue
 		}
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
+		if *entrySmoke {
+			reports, smokeErr := ecl.SmokeInitializationEntries(block.Data, 5, 500, selections)
+			if smokeErr != nil {
+				fmt.Printf("  entry smoke stopped safely: %v\n", smokeErr)
+			} else {
+				for _, report := range reports {
+					fmt.Printf("  entry[%d] address=0x%04X start=+0x%04X steps=%d pc=+0x%04X menu=%t combat=%t spawns=%d program=%v err=%v\n",
+						report.Index, report.Address, report.Start, report.Result.Steps, report.Result.PC,
+						report.Result.WaitingForMenu, report.Result.CombatRequested, len(report.Result.MonsterSpawns),
+						report.Result.ProgramIDs, report.Err)
+				}
+			}
+		}
 		if *monsterRecord {
 			record, recordErr := monster.Parse(block.Data)
 			if recordErr != nil {
