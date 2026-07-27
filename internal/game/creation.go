@@ -5,6 +5,7 @@ import (
 	"os"
 	"unicode/utf8"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -185,6 +186,102 @@ func (s *State) SavePartyFile(path string) error {
 		return err
 	}
 	return os.WriteFile(path, data, 0o600)
+}
+
+// SaveSAVGAMPrefix writes the reference-compatible fixed SAVGAM prefix while
+// preserving any raw records loaded previously. It is deliberately separate
+// from SavePartyFile: the original player-file side effects are not yet
+// decoded, so this method must not be presented as a complete DOS slot save.
+func (s *State) SaveSAVGAMPrefix(path string) error {
+	container, err := s.savgamContainerForSave()
+	if err != nil {
+		return err
+	}
+	data, err := partySave.EncodeSAVGAM(container)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, data, 0o600)
+}
+
+// LoadSAVGAMPrefix imports the fixed binary prefix and applies only fields
+// whose Area/map meaning is already proven. Character CHRDAT player files
+// remain a separate import step and are not synthesized from name records.
+func (s *State) LoadSAVGAMPrefix(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	container, err := partySave.DecodeSAVGAM(data)
+	if err != nil {
+		return err
+	}
+	area1, err := area.DecodeArea1(container.Area1)
+	if err != nil {
+		return err
+	}
+	area2, err := area.DecodeArea2(container.Area2)
+	if err != nil {
+		return err
+	}
+	area1.GameArea = area2.GameArea
+	area1.HeadBlockID = area2.HeadBlockID
+	s.Area = area1
+	s.GeoMapSet = area1.GameArea
+	s.GeoMapBlock = area1.Current3DMapBlockID
+	s.MapX = int(container.MapPosX)
+	s.MapY = int(container.MapPosY)
+	s.DungeonDirection = container.MapDirection
+	s.DungeonWallType = container.MapWallType
+	s.DungeonWallRoof = container.MapWallRoof
+	s.savgamPrefix = &container
+	return nil
+}
+
+func (s *State) savgamContainerForSave() (partySave.SAVGAMContainer, error) {
+	var container partySave.SAVGAMContainer
+	var err error
+	if s.savgamPrefix != nil {
+		container = *s.savgamPrefix
+		container.Area1 = append([]byte(nil), s.savgamPrefix.Area1...)
+		container.Area2 = append([]byte(nil), s.savgamPrefix.Area2...)
+		container.Runtime = append([]byte(nil), s.savgamPrefix.Runtime...)
+		container.ECL = append([]byte(nil), s.savgamPrefix.ECL...)
+	}
+	container.GameArea = s.Area.GameArea
+	container.Area1, err = area.EncodeArea1(s.Area, container.Area1)
+	if err != nil {
+		return partySave.SAVGAMContainer{}, err
+	}
+	container.Area2, err = area.EncodeArea2(s.Area, container.Area2)
+	if err != nil {
+		return partySave.SAVGAMContainer{}, err
+	}
+	if container.Runtime == nil {
+		container.Runtime = make([]byte, partySave.SAVGAMRuntimeStateSize)
+	}
+	if container.ECL == nil {
+		container.ECL = make([]byte, partySave.SAVGAMECLMemorySize)
+	}
+	if s.MapX < -128 || s.MapX > 127 || s.MapY < -128 || s.MapY > 127 {
+		return partySave.SAVGAMContainer{}, fmt.Errorf("SAVGAM map position out of signed-byte range: (%d,%d)", s.MapX, s.MapY)
+	}
+	container.MapPosX = int8(s.MapX)
+	container.MapPosY = int8(s.MapY)
+	container.MapDirection = s.DungeonDirection
+	container.MapWallType = s.DungeonWallType
+	container.MapWallRoof = s.DungeonWallRoof
+	container.PartyCount = uint8(len(s.partyRoster))
+	for index := range container.CharacterRefs {
+		container.CharacterRefs[index] = nil
+	}
+	for index, character := range s.partyRoster {
+		if index >= len(container.CharacterRefs) {
+			break
+		}
+		container.CharacterRefs[index] = []byte(character.Name)
+	}
+	return container, nil
 }
 
 func (s *State) LoadPartyFile(path string) error {

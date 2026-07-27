@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"os"
 	"strings"
 	"testing"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
 
 func testCatalog() locale.Catalog {
@@ -286,6 +288,36 @@ func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	}
 	if loaded.DungeonX != 11 || loaded.DungeonY != 6 || loaded.DungeonDirection != 2 || loaded.DungeonWallType != 7 || loaded.DungeonWallRoof != 0x40 {
 		t.Fatalf("loaded dungeon state=(%d,%d,%d)", loaded.DungeonX, loaded.DungeonY, loaded.DungeonDirection)
+	}
+}
+
+func TestSAVGAMPrefixStateAdapterRestoresKnownFieldsAndRawRecords(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "p1", Name: "阿勇"}}
+	state.Area = area.State{GameArea: 4, Current3DMapBlockID: 0x12, CurrentCity: 2, InDungeon: true}
+	state.MapX, state.MapY = -7, 13
+	state.DungeonDirection, state.DungeonWallType, state.DungeonWallRoof = 6, 0x81, 0x40
+	path := t.TempDir() + "/SAVGAM0.DAT"
+	if err := state.SaveSAVGAMPrefix(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(testCatalog())
+	if err := loaded.LoadSAVGAMPrefix(path); err != nil {
+		t.Fatal(err)
+	}
+	if loaded.Area.GameArea != 4 || loaded.Area.Current3DMapBlockID != 0x12 || !loaded.Area.InDungeon || loaded.MapX != -7 || loaded.MapY != 13 || loaded.DungeonDirection != 6 || loaded.DungeonWallType != 0x81 || loaded.DungeonWallRoof != 0x40 {
+		t.Fatalf("known SAVGAM state not restored: area=%#v map=(%d,%d) dungeon=(%d,%d,%d)", loaded.Area, loaded.MapX, loaded.MapY, loaded.DungeonDirection, loaded.DungeonWallType, loaded.DungeonWallRoof)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	container, err := partySave.DecodeSAVGAM(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if container.PartyCount != 1 || string(container.CharacterRefs[0][:len("阿勇")]) != "阿勇" {
+		t.Fatalf("SAVGAM party refs=%#v", container.CharacterRefs[0])
 	}
 }
 
