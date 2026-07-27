@@ -75,10 +75,17 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 // playable battle state. ECL supplies only spawn IDs/counts; MON*CHA supplies
 // the combat statistics, and the caller supplies the decoded party roster.
 func (s *State) StartEncounter(result ecl.RunResult, records map[uint8]monster.Record, party []combat.Fighter, seed int64) error {
+	return s.StartEncounterWithAffects(result, records, nil, party, seed)
+}
+
+// StartEncounterWithAffects is the data bridge including the chapter-local
+// MON*SPC table. Raw effects are preserved on enemy fighters but are not yet
+// interpreted as combat rules.
+func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint8]monster.Record, affects map[uint8][]monster.AffectRecord, party []combat.Fighter, seed int64) error {
 	if !result.CombatRequested {
 		return fmt.Errorf("ECL result does not request combat")
 	}
-	enemies, err := monster.BuildEnemies(result.MonsterSpawns, records)
+	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, records, affects)
 	if err != nil {
 		return err
 	}

@@ -30,3 +30,20 @@ func TestBuildEnemiesRejectsMissingRecord(t *testing.T) {
 		t.Fatal("expected missing record error")
 	}
 }
+
+func TestBuildEnemiesWithAffectsCopiesSPCRecords(t *testing.T) {
+	records := map[uint8]Record{7: {Name: "Goblin", MaxHitPoints: 3, HitPoints: 3}}
+	affects := map[uint8][]AffectRecord{7: {{Kind: 0x19, Duration: 4, Active: true}}}
+	enemies, err := BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7, Count: 2}}, records, affects)
+	if err != nil || len(enemies) != 2 {
+		t.Fatalf("enemies=%#v err=%v", enemies, err)
+	}
+	if len(enemies[0].MonsterAffects) != 1 || len(enemies[1].MonsterAffects) != 1 {
+		t.Fatalf("effects=%#v", enemies)
+	}
+	affects[7][0].Duration = 99
+	enemies[0].MonsterAffects[0].Duration = 88
+	if enemies[1].MonsterAffects[0].Duration != 4 {
+		t.Fatalf("effect instances alias each other: %#v", enemies)
+	}
+}
