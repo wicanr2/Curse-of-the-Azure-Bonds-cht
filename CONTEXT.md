@@ -672,3 +672,10 @@ Battle 在 HP=0 時清零；State 若倒下者正是 current turn，也清除施
 selection。新增 combat／State regressions，並更新 ECL／State READY spec、README、PLAN、
 Gold Box knowledge base。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
 `internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百二十六輪重大里程碑 commit：`51ae23b`，補上 save／encounter 初始 HP=0 fighter
+的 CombatantKilled boundary：`NewBattle` 立即清除 `HasCombatPosition` 與
+`CombatAction`、發出 `DeathOverlay`，且 `StartRound` 不把倒下者放入 turns。新增
+initially-downed regression，確認倒下角色不會佔用碰撞格；更新 README、PLAN 與 Gold Box
+ECL knowledge。Docker Go 1.23 通過 `internal/combat`、`internal/game`、`internal/party`、
+`internal/ecl`、`internal/locale`。
