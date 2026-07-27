@@ -27,8 +27,8 @@ go run ./cmd/azure-bonds -member ECL1.DAX -entry-smoke
 
 - ECL1 的 opening entries 可停在 menu；ECL1 block 0x52 entry 4 可安全走到 `ADD NPC` boundary。
 - ECL2 block 3 entry 3 觀察到 `COMBAT` 與兩個 `LOAD MONSTER` spawn，提供下一輪真實可玩 encounter 的候選 entry。
-- ECL3／ECL4／ECL5／ECL6 入口結果保留了多個 `0x2D`／`0x2F` unsupported opcode，以及 operand 非 literal 的 `LOAD／SETUP MONSTER`，明確指出需要補 operand semantics，而不是猜測敵人資料。
+- 第二百七十三輪重跑時，ECL1–ECL6 共 25 blocks／125 entries 已全數抵達正常 bounded boundary，沒有 unsupported opcode；早期 `0x2D` CALL、`0x2F` AND 與 variable monster operands 的停止點均已由後續 evidence-backed semantics 取代。
 
 ## Boundary
 
-這輪完成的是 evidence and triage tool，不是完整 ECL VM、完整事件文字對齊或玩家流程。後續只有在 opcode／operand 證據收斂後，才能把 smoke entry 接成正式劇情或 Battle entry。
+這是 corpus prefix gate，不是完整事件文字對齊或完整玩家流程；menu 的所有選擇、random branches、PROGRAM side effects 與跨事件持久狀態仍需各自 real-flow regression。

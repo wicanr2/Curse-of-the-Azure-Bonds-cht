@@ -4,6 +4,8 @@
 
 每個 ECL DAX block 的五個 initialization entries 是不同的 script entry，不應只測第五個 opening entry。`ecl.SmokeInitializationEntries` 以同一 bounded input sequence 分別執行它們，並保存 per-entry error，適合後續 Pool of Radiance、Secret of the Silver Blades 等 Gold Box 遊戲沿用。
 
+CoAB 目前的 corpus gate 固定原始 ECL1–ECL6 共 25 blocks／125 initialization entries，要求每個入口不再出現 unsupported-opcode error。這證明「目前可達 prefix」已收斂，不能外推成所有 menu choice／random branch 都覆蓋；其他 Gold Box 作品應以自己的 member／block count 建立同類 gate，而不是沿用 CoAB 的 25／125 常數。
+
 `COMBAT`、`LOAD MONSTER`、`PROGRAM` 與 menu 都是 observable boundary；entry smoke report 出現 signal 只代表 VM 已讀到該 command，不代表 external routine、monster table、party memory 或 renderer side effect 已完成。
 
 ## Evidence discipline
@@ -66,6 +68,8 @@ ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可�
  `=`／`<>` compare flags；缺 context 的 trace 仍保留 unresolved signal。這使 VM
  query／working view 與作品專屬 persistent party state mutation
  維持可跨 Gold Box 重用的邊界。
+
+real-image regression 另從 ECL5 block `0x30:+0x0014` 注入含 item type `0x5E` 的 party context，確認第一個 FIND ITEM found branch 會抵達原文含 `SUNLIGHT` 的裝備腐朽事件；這把 synthetic compare test 與真實 ECL operand／branch framing 連在一起。
 
 `DAMAGE` 也已建立可跨作品重用的 raw request boundary。公開 CoAB reference 證實
 五個 operand 順序是 `flags, dice_count, dice_size, damage_bonus, save_flags`；VM

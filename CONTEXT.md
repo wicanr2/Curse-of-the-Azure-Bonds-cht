@@ -940,3 +940,5 @@ READY spec、README 與共用 Golden Box ECL knowledge，並移除舊「尚未�
 `FIND SPECIAL` 現在查 selected member 的 active effects、回傳 resolved request 並設定
 `=`／`<>`。新增 LOAD CHARACTER branch 與 WHO pause/resume 第二角色 regressions、READY
 spec、README、State／command knowledge；缺 context 或尚未選角仍維持 unresolved。
+
+第二百七十三輪 real-image verification 里程碑：重跑原始 ECL1–ECL6 共 25 decoded blocks／125 個 initialization entries，全部以正常 EXIT、menu、COMBAT、PROGRAM boundary 或 NEWECL 返回，unsupported-opcode error 為零。新增 corpus regression，若 member／block count、entry framing 或 bounded semantics 退化會指出精確 member／block／entry／PC。另以 ECL5 block `0x30:+0x0014` 與含 item `0x5E` 的 PartyContext 驗證真實 FIND ITEM found branch 抵達 `SUNLIGHT` 裝備腐朽文字。更新 READY spec、README、ECL knowledge，並移除第 196 輪仍記載 `0x2D/0x2F` unsupported stop 的過時斷言。
