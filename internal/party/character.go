@@ -532,6 +532,12 @@ func DefaultIconSize(r Race) uint8 {
 // CHEAD/CBODY blocks selected by LoadPlayerCombatIcon. Small icons use the T
 // files, whose namespace is the raw slot plus 0x40.
 func (c Character) CombatIconBlocks() (head, body uint8) {
+	return c.CombatIconBlocksFor(false)
+}
+
+// CombatIconBlocksFor adds the reference LoadIcons attack namespace when the
+// combat icon is in its attack state. The DAX loader uses normal_id+0x80.
+func (c Character) CombatIconBlocksFor(attack bool) (head, body uint8) {
 	head, body = c.IconHeadBlock, c.IconWeaponBlock
 	size := c.IconSize
 	if size == 0 {
@@ -544,6 +550,10 @@ func (c Character) CombatIconBlocks() (head, body uint8) {
 		if body < 0x40 {
 			body += 0x40
 		}
+	}
+	if attack {
+		head += 0x80
+		body += 0x80
 	}
 	return head, body
 }

@@ -1100,8 +1100,13 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 		}
 	}
 	if sprite == nil && fighter.Side == combat.SideParty && fighter.HasPartyIcon {
-		headKey := fmt.Sprintf("chead-block-%02X-item-00.png", fighter.PartyHeadBlock)
-		bodyKey := fmt.Sprintf("cbody-block-%02X-item-00.png", fighter.PartyBodyBlock)
+		headBlock, bodyBlock := fighter.PartyHeadBlock, fighter.PartyBodyBlock
+		if fighter.IconAttack {
+			headBlock += 0x80
+			bodyBlock += 0x80
+		}
+		headKey := fmt.Sprintf("chead-block-%02X-item-00.png", headBlock)
+		bodyKey := fmt.Sprintf("cbody-block-%02X-item-00.png", bodyBlock)
 		headImage, headOK := a.combatSprites[headKey]
 		bodyImage, bodyOK := a.combatSprites[bodyKey]
 		if headOK && bodyOK {
