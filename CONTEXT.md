@@ -458,4 +458,4 @@
 
 第一百七十七輪功能 commit：`b86c485`，已推送至 GitHub `main`。依 reference `seg001.Init` 將 State、save／preview fallback 與 startup dungeon default 從 `(8,8,0)` 修正為 `(7,13,0)`，並清理已過時的 README／knowledge assertions；新增 READY 規格。`InitAgain` direction 2、完整 SAVGAM context 與劇情 integration 仍保留 boundary。
 
-第一百七十八輪功能 commit 待補：依 reference `LoadPlayerCombatIcon`／`chead_cbody_comspr_icon` 將 DOS `icon_size=1` 的 CHEAD/CBODY raw slot 映射到 `+0x40`，載入 extracted raw layers 並在 renderer on-demand 合成；新增 small／normal icon regression、READY 規格與共用 party knowledge。direction-specific placement、recolor、animation 與完整 CombatIcon runtime 仍保留 boundary。
+第一百七十八輪功能 commit：`cd2c0d9`，已推送至 GitHub `main`。依 reference `LoadPlayerCombatIcon`／`chead_cbody_comspr_icon` 將 DOS `icon_size=1` 的 CHEAD/CBODY raw slot 映射到 `+0x40`，載入 extracted raw layers 並在 renderer on-demand 合成；新增 small／normal icon regression、READY 規格與共用 party knowledge。direction-specific placement、recolor、animation 與完整 CombatIcon runtime 仍保留 boundary。
