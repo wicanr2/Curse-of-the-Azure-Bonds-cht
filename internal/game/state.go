@@ -668,6 +668,9 @@ func (s *State) Select(index int) error {
 		s.applyLoadPieces(result)
 		s.applySpellSignals(result)
 		s.applyCitySelection()
+		if len(result.Text) > 0 {
+			s.Message = localizeECLText(s.catalog, result.Text)
+		}
 		if result.PictureRequested {
 			if !s.picturesEnabled {
 				s.PictureRequested = false
@@ -731,7 +734,6 @@ func (s *State) Select(index int) error {
 		}
 		if len(result.Text) > 0 {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
-			s.Message = localizeECLText(s.catalog, result.Text)
 		}
 	}
 	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
@@ -2819,6 +2821,18 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_yulash_sound", "尤拉什。聲音")
 	case "OF BATTLE RINGS OUT FROM INSIDE":
 		return catalog.Text("ecl_battle_rings", "從裡面傳來戰鬥聲")
+	case "YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR.":
+		return catalog.Text("ecl_cultists_dead", "你們看見三名邪教徒倒臥在地板上。")
+	case "JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH.":
+		return catalog.Text("ecl_wounded_cleric", "就在前方，另一名牧師喘著氣。")
+	case "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC":
+		return catalog.Text("ecl_cleric_fanatic", "受傷牧師的雙眼因狂熱而睜大。")
+	case "TRIUMPH. HE HOWLS,":
+		return catalog.Text("ecl_cleric_howl", "勝利。他嚎叫著：")
+	case "YOU FIND A WAR BLASTED SECTION OF THE CITY.":
+		return catalog.Text("ecl_war_blasted_city", "你們找到城市中一片遭戰火摧毀的區域。")
+	case "YOU DISCOVER A SMALL MAGIC SHOP.":
+		return catalog.Text("ecl_small_magic_shop", "你們發現一間小型魔法商店。")
 	default:
 		return line
 	}

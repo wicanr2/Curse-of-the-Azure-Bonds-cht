@@ -2275,9 +2275,10 @@ func TestLocalizeECLTextUsesCatalogAndPreservesUnknownLines(t *testing.T) {
 	catalog := testCatalog()
 	message := localizeECLText(catalog, []string{
 		"SMOKE RISES FROM BEHIND THE RUINED WALLS",
+		"YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR.",
 		"UNMAPPED ECL LINE",
 	})
-	if message != "煙霧從殘破的牆後升起 UNMAPPED ECL LINE" {
+	if message != "煙霧從殘破的牆後升起 你們看見三名邪教徒倒臥在地板上。 UNMAPPED ECL LINE" {
 		t.Fatalf("message=%q", message)
 	}
 }

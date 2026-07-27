@@ -198,3 +198,4 @@
 - [第二百零一輪 ECL variable monster operands](./201-ecl-variable-monster-operands.md)（`READY`：限 bounded runtime memory resolution）
 - [第二百零二輪 ECL external CALL signal](./202-ecl-external-call-signal.md)（`READY`：限 external address signal 與 return-after-call）
 - [第二百零三輪 ECL event text localization bridge](./203-ecl-event-text-localization.md)（`READY`：限已驗證事件片段與 unknown fallback）
+- [第二百零四輪 ECL continuous event localization](./204-ecl-continuous-event-localization.md)（`READY`：限 ECL3／ECL4 已驗證片段與 menu pause）
