@@ -232,7 +232,11 @@ type Character struct {
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
 	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
 	Bleeding        int                    `json:"bleeding,omitempty"`
+	Copper          uint16                 `json:"copper,omitempty"`
+	Silver          uint16                 `json:"silver,omitempty"`
+	Electrum        uint16                 `json:"electrum,omitempty"`
 	Gold            uint16                 `json:"gold,omitempty"`
+	Platinum        uint16                 `json:"platinum,omitempty"`
 	Gems            uint16                 `json:"gems,omitempty"`
 	Jewelry         uint16                 `json:"jewelry,omitempty"`
 	Equipment       []monster.ItemRecord   `json:"equipment,omitempty"`

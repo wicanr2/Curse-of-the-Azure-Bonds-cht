@@ -170,6 +170,7 @@
 - [第二百八十輪提爾佛頓 GEO1 與 dungeon lifecycle](./280-tilverton-dungeon-lifecycle.md)（`READY`）
 - [第二百八十一輪 Dungeon CAMP lifecycle](./281-dungeon-camp-lifecycle.md)（`READY`）
 - [第二百八十二輪 ECL code memory 與 Windlord's Inn](./282-ecl-code-memory-tilverton-inn.md)（`READY`）
+- [第二百八十三輪 ECL ROB、賢者菲拉妮與手札條目 38](./283-ecl-rob-filani-journal-38.md)（`READY`）
 - [第一百五十八輪 ECL LOAD PIECES signal](./158-ecl-load-pieces-signal.md)（`READY`：限三個 selector signal 與 bounded continuation）
 - [第一百五十九輪 State LOAD PIECES request](./159-state-load-pieces-request.md)（`READY`：限一次性 map-piece request boundary）
 - [第一百六十輪 LOAD PIECES 地圖素材 adapter](./160-load-pieces-map-adapter.md)（`READY`：限 WALLDEF／8X8D selector 載入）

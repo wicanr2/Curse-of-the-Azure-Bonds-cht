@@ -286,7 +286,11 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	copy(data[DOSThiefSkillsOffset:DOSThiefSkillsEnd], []byte{12, 34, 56, 78, 90, 11, 22, 33})
 	data[0x10E] = 4
 	data[0x141], data[0x142], data[0x143], data[0x144] = 3, 4, 0x0A, 2
+	binary.LittleEndian.PutUint16(data[0x0FB:0x0FD], 11)
+	binary.LittleEndian.PutUint16(data[0x0FD:0x0FF], 22)
+	binary.LittleEndian.PutUint16(data[0x0FF:0x101], 33)
 	binary.LittleEndian.PutUint16(data[0x101:0x103], 123)
+	binary.LittleEndian.PutUint16(data[0x103:0x105], 44)
 	binary.LittleEndian.PutUint32(data[0x14D:0x151], 0x12345678)
 	binary.LittleEndian.PutUint32(data[0x0F2:0x0F6], 0x87654321)
 	data[DOSMemorizedSpellsOffset] = 15
@@ -295,7 +299,10 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
+	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 ||
+		record.Copper != 11 || record.Silver != 22 || record.Electrum != 33 ||
+		record.Gold != 123 || record.Platinum != 44 ||
+		record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
 		t.Fatalf("record=%#v", record)
 	}
 	itemData := make([]byte, monster.ItemRecordSize)
@@ -312,7 +319,10 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || character.SavingThrowBonus != -2 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 ||
+		character.Copper != 11 || character.Silver != 22 || character.Electrum != 33 ||
+		character.Gold != 123 || character.Platinum != 44 ||
+		character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || character.SavingThrowBonus != -2 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
@@ -325,12 +335,21 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 		t.Fatalf("character age=%d, want 37", character.Age)
 	}
 	character.Age = 42
+	character.Copper, character.Silver, character.Electrum = 101, 102, 103
+	character.Gold, character.Platinum = 104, 105
 	patched, err := PatchDOSPlayerRecord(data, character)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if got := int16(binary.LittleEndian.Uint16(patched[0x76:0x78])); got != 42 {
 		t.Fatalf("patched DOS age=%d, want 42", got)
+	}
+	for offset, want := range map[int]uint16{
+		0x0FB: 101, 0x0FD: 102, 0x0FF: 103, 0x101: 104, 0x103: 105,
+	} {
+		if got := binary.LittleEndian.Uint16(patched[offset : offset+2]); got != want {
+			t.Fatalf("patched DOS coin at %#x=%d, want %d", offset, got, want)
+		}
 	}
 }
 

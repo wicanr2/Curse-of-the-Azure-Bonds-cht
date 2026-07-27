@@ -1017,3 +1017,13 @@ table，code window 外的 shared memory 仍保留。AND／OR 也依 `CMD_AndOr`
 地城格。PICTURE opcode 同步保存稍後會被 script 清除的 HeadBlockId，讓 HEAD3／BODY3
 原始人物素材正確顯示；手札改為 24px、22 字寬七行排版。新增 READY spec 282、
 synthetic VM gates、real-image regression 與 640×480 `tilverton-inn.png` README 截圖。
+
+第二百八十三輪成果：反組 `CMD_Rob (0x28)` 的三 operands 與 reference
+`RobMoney/RobItems`，VM 現發出 selected/all-party、loss percent、item chance request；
+State 對 Copper／Silver／Electrum／Gold／Platinum 逐欄向下取整，並依 inventory 順序、
+重量 `>24/-50`、`>255/-90` 與 deterministic `1d100` 處理物品。DOS player
+`0xFB..0x108` 七個 money/treasure words 全部進入 typed parse/project/writeback。
+正式 Tilverton GEO `(6,5)` selector `0x8A` 現顯示 HEAD5／BODY5 賢者菲拉妮；
+「是 → 如實相告」執行真實 `ROB 1,50,0`，解鎖使用者提供 Journal Entry 38 的三頁繁中
+全文，經兩個 Continue 返回原格。新增 READY spec 283、ECL/save knowledge、
+`-filani` 重現入口與 640×480 `tilverton-filani.png` README 截圖。

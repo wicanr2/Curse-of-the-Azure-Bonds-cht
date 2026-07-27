@@ -621,6 +621,24 @@ func TestRunSubsetEmitsTreasureOperands(t *testing.T) {
 	}
 }
 
+func TestRunSubsetEmitsRobRequestAndContinues(t *testing.T) {
+	block := []byte{
+		0, 0,
+		0x28, 0x00, 0x01, 0x00, 0x32, 0x00, 0x00,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := RobRequest{AllParty: true, LossPercent: 50, SelectedPlayerIndex: -1}
+	if len(result.RobRequests) != 1 || result.RobRequests[0] != want ||
+		len(result.Text) != 1 || result.Text[0] != "HI" || !result.Exited {
+		t.Fatalf("result=%+v, want ROB request %+v and continuation", result, want)
+	}
+}
+
 func TestRunSubsetEmitsSpellAndProtectionSignals(t *testing.T) {
 	payload := []byte{
 		0x3B, 0x00, 0x12, 0x01, 0x00, 0x7C, 0x01, 0x01, 0x7C,

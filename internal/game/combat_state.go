@@ -1431,6 +1431,7 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 	}
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
+	s.applyECLRobSignals(result)
 	treasureReady := false
 	if len(result.TreasureRequests) > 0 {
 		if err := s.ResolveTreasureRequests(); err != nil {
