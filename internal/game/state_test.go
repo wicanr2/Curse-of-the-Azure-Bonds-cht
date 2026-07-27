@@ -366,6 +366,7 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 		t.Fatal(err)
 	}
 	record := make([]byte, party.DOSPlayerRecordSize)
+	record[0x190] = 0xAA // undocumented byte must survive a known-field patch
 	record[0] = 4
 	copy(record[1:], "ELLA")
 	record[0x10], record[0x11], record[0x12] = 16, 16, 10
@@ -390,6 +391,34 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 	}
 	if err := state.LoadSAVGAMSlot(directory, 'K'); err == nil {
 		t.Fatal("slot key K should be rejected")
+	}
+	state.partyRoster[0].HitPoints = 6
+	state.partyRoster[0].Gold = 321
+	state.partyRoster[0].SpellSlots = []uint8{0x02, 0x04}
+	if err := state.SaveSAVGAMSlot(directory, 'C'); err != nil {
+		t.Fatal(err)
+	}
+	savedRecord, err := os.ReadFile(directory + "/CHRDATC1.sav")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if savedRecord[0x190] != 0xAA {
+		t.Fatalf("unknown player byte changed: %#x", savedRecord[0x190])
+	}
+	decoded, err := party.ParseDOSPlayerRecord(savedRecord, "CHRDATC1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if decoded.CurrentHitPoints != 6 || decoded.Gold != 321 || !reflect.DeepEqual(decoded.MemorizedSpells, []uint8{2, 4}) {
+		t.Fatalf("saved player fields=%#v", decoded)
+	}
+	savedPrefix, err := os.ReadFile(directory + "/savgamc.dat")
+	if err != nil {
+		t.Fatal(err)
+	}
+	savedContainer, err := partySave.DecodeSAVGAM(savedPrefix)
+	if err != nil || !strings.HasPrefix(string(savedContainer.CharacterRefs[0]), "CHRDATC1") {
+		t.Fatalf("saved prefix ref=%q err=%v", savedContainer.CharacterRefs[0], err)
 	}
 }
 

@@ -127,6 +127,7 @@ type State struct {
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
+	savgamPlayers          map[string]party.DOSPlayerFiles
 	pendingSoundEvents     []SoundEvent
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn

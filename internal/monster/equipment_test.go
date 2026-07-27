@@ -40,6 +40,24 @@ func TestParseBaseItemsUsesTypeIndexAndSignedBonuses(t *testing.T) {
 	}
 }
 
+func TestEncodeEquipmentSidecarsRoundTripKnownFields(t *testing.T) {
+	items := []ItemRecord{{Name: "長劍", Type: 36, NameNumbers: [3]uint8{1, 2, 3}, Plus: -1, PlusSave: 2, Readied: true, HiddenNameFlags: 4, Cursed: true, Weight: 7, Count: 2, Value: 123, Affects: [3]uint8{8, 9, 10}}}
+	data, err := EncodeItems(items)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded, err := ParseItems(data)
+	if err != nil || len(decoded) != 1 || decoded[0] != items[0] {
+		t.Fatalf("item round trip=%#v err=%v", decoded, err)
+	}
+	affects := []AffectRecord{{Kind: 0x27, Value: 3, Duration: 3, Strength: 2, Active: true, Data: [4]byte{1, 2, 3, 4}}}
+	data = EncodeAffects(affects)
+	parsed, err := ParseAffects(data)
+	if len(data) != AffectRecordSize || err != nil || len(parsed) != 1 || parsed[0] != affects[0] || parsed[0].Value != 3 {
+		t.Fatalf("effect round trip=%#v bytes=%x err=%v", parsed, data, err)
+	}
+}
+
 func TestParseBaseItemsRejectsMalformedData(t *testing.T) {
 	if _, err := ParseBaseItems([]byte{0, 1, 2}); err == nil {
 		t.Fatal("expected malformed ITEMS error")

@@ -329,6 +329,39 @@ func ParseItems(data []byte) ([]ItemRecord, error) {
 	return items, nil
 }
 
+// EncodeItems serializes the documented 0x3F-byte SWG records and leaves no
+// undocumented bytes to guess. It is the inverse of ParseItems for fields
+// currently understood by the remake.
+func EncodeItems(items []ItemRecord) ([]byte, error) {
+	data := make([]byte, len(items)*ItemRecordSize)
+	for index, item := range items {
+		if len([]byte(item.Name)) > 0x2A {
+			return nil, fmt.Errorf("item %d name exceeds 0x2A bytes", index)
+		}
+		if item.Plus < -128 || item.Plus > 127 {
+			return nil, fmt.Errorf("item %d plus %d does not fit signed byte", index, item.Plus)
+		}
+		offset := index * ItemRecordSize
+		copy(data[offset:offset+0x2A], []byte(item.Name))
+		data[offset+0x2E] = item.Type
+		copy(data[offset+0x2F:offset+0x32], item.NameNumbers[:])
+		data[offset+0x32] = byte(int8(item.Plus))
+		data[offset+0x33] = item.PlusSave
+		if item.Readied {
+			data[offset+0x34] = 1
+		}
+		data[offset+0x35] = item.HiddenNameFlags
+		if item.Cursed {
+			data[offset+0x36] = 1
+		}
+		binary.LittleEndian.PutUint16(data[offset+0x37:offset+0x39], uint16(item.Weight))
+		data[offset+0x39] = item.Count
+		binary.LittleEndian.PutUint16(data[offset+0x3A:offset+0x3C], uint16(item.Value))
+		copy(data[offset+0x3C:offset+0x3F], item.Affects[:])
+	}
+	return data, nil
+}
+
 func parseItem(data []byte) ItemRecord {
 	name := strings.TrimRight(string(data[:0x2A]), "\x00 ")
 	return ItemRecord{
@@ -357,6 +390,27 @@ func ParseAffects(data []byte) ([]AffectRecord, error) {
 		affects = append(affects, record)
 	}
 	return affects, nil
+}
+
+// EncodeAffects serializes the documented 9-byte FX records. Data is kept
+// verbatim for the four currently uninterpreted payload bytes.
+func EncodeAffects(affects []AffectRecord) []byte {
+	data := make([]byte, len(affects)*AffectRecordSize)
+	for index, affect := range affects {
+		offset := index * AffectRecordSize
+		duration := affect.Duration
+		if duration == 0 {
+			duration = affect.Value
+		}
+		data[offset] = affect.Kind
+		binary.LittleEndian.PutUint16(data[offset+1:offset+3], duration)
+		data[offset+3] = affect.Strength
+		if affect.Active {
+			data[offset+4] = 1
+		}
+		copy(data[offset+5:offset+9], affect.Data[:])
+	}
+	return data
 }
 
 // AdvanceAffects consumes effect duration in minutes. Strength 255 is the
