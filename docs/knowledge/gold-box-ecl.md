@@ -82,4 +82,6 @@ party／enemy win state 並走既有 finish continuation。角色倒下時也會
 19-kind `RemoveCombatAffects` table；blink／invisibility 依 reference 不在該清單中而
 保留。已解出的 Death adapter 另處理 affect_63 recovery、bleeding 與 troll fire/acid
 gate；dragon-slayer `0x4B` 已由 explicit dragon target／strength bonus context 投影
-1d12×3+4 damage 與 +2 attack bonus。其他 Death routine 仍保留 boundary。
+1d12×3+4 damage 與 +2 attack bonus。Battle 對倒下 fighter 也會清除
+`HasCombatPosition`，對應 reference CombatMap size 0；skull overlay、actions clear 與
+其他 Death routine 仍保留 boundary。
