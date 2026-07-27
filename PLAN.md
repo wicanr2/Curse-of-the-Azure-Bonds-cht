@@ -58,6 +58,7 @@
 
 - Ebiten command 能編譯並使用 `internal/game.State`。
 - 啟動畫面、輸入與繁中 catalog 已連通。
+- [x] 將 remake 邏輯畫布擴為 640×480，事件圖下方保留三行大型繁中敘事與獨立操作列。
 - 字型以外部路徑注入，避免將未確認授權的字型提交至 repo。
 
 ## 第十輪驗收
@@ -295,7 +296,7 @@
 - [x] 將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn；保留 enemy AI、彈藥與額外職業攻擊 boundary。
 - [x] 將玩家 combat action error 接成繁中可恢復訊息，避免非法輸入結束 Ebiten game loop；保留資料／啟動錯誤向上回報 boundary。
 - [x] 將 ECL `ADD NPC` 修正為 ID＋morale，接入 MON*CHA／SPC／ITM party transaction；
-  真實 ECL1 block 0x52 加入三名 NPC、播放完整序幕並抵達 COMBAT（舊 EXIT 判讀已推翻）。
+  真實 ECL1 block 0x52 demo 加入三名 NPC、播放展示序列並抵達 COMBAT（舊 EXIT 判讀已推翻；正常 new game 不使用此 block）。
 - [x] 將 ECL `LOAD PIECES` 接成三 selector signal，保留地城 floor／wall／tile file side effect boundary。
 - [x] 將 `LOAD PIECES` signal 保存為 State 一次性 request，保留 renderer／map adapter boundary。
 - [x] 依 reference `LoadWalldef` 將 `LOAD PIECES` selector 接到 WALLDEF／8X8D raw piece catalog，保留牆面 renderer boundary。
@@ -385,3 +386,5 @@
 - [x] 依 `CMD_Program` 將 0/3/8/9 接成共用 State external-routine adapter，涵蓋 start menu、party killed、game won 全隊恢復／存檔選擇與 CAMP，並由戰鬥後 continuation 共用。
 - [x] 依 `CMD_Call` 將 real ECL observed `0x2E10/0xC01E/0xB200` 接成 redraw、forced wrapped movement 與 default sound-A transaction；保留 `word_1EE76 == 10` sound-B boundary。
 - [x] 依 `CMD_AddNPC/load_npc` 接入 morale、MON Player record／effect／item、最低空 icon slot 與 selected-player party insertion；補 PICTURE→COMBAT deferred transaction。
+- [x] 依 `sub_29758` 將正常角色建立完成接到 global block 0x01；新增 fresh session reset、
+  正式兩段繁中開場與通用 PICTURE→menu deferred transaction。

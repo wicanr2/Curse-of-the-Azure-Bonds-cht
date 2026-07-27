@@ -8,6 +8,11 @@ CoAB 目前的 corpus gate 固定原始 ECL1–ECL6 共 25 blocks／125 initiali
 
 `COMBAT`、`LOAD MONSTER`、`PROGRAM` 與 menu 都是 observable boundary；entry smoke report 出現 signal 只代表 VM 已讀到該 command，不代表 external routine、monster table、party memory 或 renderer side effect 已完成。
 
+初始化 entry 的 block selection屬於 engine lifecycle，不可從內容猜用途。CoAB reference
+證明 block `0x52` 是 `inDemo`，正常 new game 是 global block `0x01`；兩者雖都能輸出
+青色枷背景文字，party side effect完全不同。fresh new-game reset與 NEWECL continuation
+也必須是兩個 API。
+
 ## Evidence discipline
 
 當 real entry 在 operand 1 出現 `code 0x01` 時，不能直接把它當 literal monster count。應先反組 `SAVE／memory` operand semantics，再修改 `DecodeMonsterSpawn`／`DecodeMonsterSetup`；否則會把 ECL 的 runtime variable 誤解成固定 encounter。

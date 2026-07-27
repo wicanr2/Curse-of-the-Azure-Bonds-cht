@@ -11,7 +11,7 @@ ECL command table 將 opcode `0x36` 定義為 `ADD NPC`。本輪早期依 comman
 - `RunResult.NPCIDs` 保留相容 ID view；第 277 輪新增 `NPCRequests{ID,Morale}`。
 - synthetic regression 現確認 `ADD NPC 0x55,100 → EXIT` 的正確 framing。
 - real regression 已更新：block `0x52` 連續加入 `0x55/0x58/0x5A`、morale 均為 100，
-  播放完整詛咒序幕，最後在 COMBAT 停止；不存在先前宣稱的早期 EXIT。
+  播放完整 demo 展示序列，最後在 COMBAT 停止；不存在先前宣稱的早期 EXIT。
 - `BlockSession` 與 CLI 都保留／顯示 NPC ID signal。
 
 ## 明確 boundary

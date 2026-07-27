@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"io"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -84,6 +85,61 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.OriginalEvent != "COMBAT" {
 		t.Fatalf("real ECL path did not preserve combat boundary: mode=%v event=%q", state.Mode, state.OriginalEvent)
+	}
+}
+
+func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+
+	all := make(map[uint8][]byte)
+	for chapter := 1; chapter <= 6; chapter++ {
+		blocks, parseErr := dax.Parse(zipData(t, image, "ECL"+strconv.Itoa(chapter)+".DAX"))
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		for _, block := range blocks {
+			all[block.Entry.ID] = block.Data
+		}
+	}
+	state := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	if err := state.Apply(ActionStart); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCharacterCreation {
+		t.Fatalf("party-less production start mode=%v, want character creation", state.Mode)
+	}
+	if err := state.AddCreationCharacter(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.FinishCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 0x01 {
+		t.Fatalf("new game block=0x%02X, want 0x01", state.session.CurrentBlockID())
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "小房間") || !strings.Contains(state.Message, "所有裝備都不見了") {
+		t.Fatalf("new game first pause: mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+	}
+	if state.LoadPieces != [3]uint16{1, 2, 3} {
+		t.Fatalf("new game LOAD PIECES=%v", state.LoadPieces)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested ||
+		!strings.Contains(state.Message, "持劍的手臂") || !strings.Contains(state.Message, "相同的印記") {
+		t.Fatalf("new game picture text: mode=%v picture=%v message=%q", state.Mode, state.PictureRequested, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 {
+		t.Fatalf("new game second pause: mode=%v choices=%v", state.Mode, state.Choices)
 	}
 }
 
@@ -253,7 +309,7 @@ func TestRealECL1AddNPCBuildsThreePartyMembers(t *testing.T) {
 	}
 	state.Mode = ModeEvent
 	state.PictureRequested = true
-	state.pendingPictureCombat = &result
+	state.pendingPictureResult = &result
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
