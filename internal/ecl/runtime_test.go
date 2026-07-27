@@ -298,6 +298,51 @@ func TestRunSubsetRecordsPrintReturnAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetRecordsLoadCharacterAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x0A, 0x01, 0x79, 0x7F,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.LoadCharacterAddresses) != 1 || result.LoadCharacterAddresses[0] != 0x7F79 || len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
+func TestRunSubsetRecordsFindItemQueryAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x32, 0x00, 0x5E,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.FindItemIDs) != 1 || result.FindItemIDs[0] != 0x5E || len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
+func TestRunSubsetRecordsDestroyItemRequestAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x40, 0x00, 0x5E,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.DestroyItemIDs) != 1 || result.DestroyItemIDs[0] != 0x5E || len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)
