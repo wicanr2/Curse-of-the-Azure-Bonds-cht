@@ -201,3 +201,9 @@ Continue 後落地。下水道騎士事件依序是出場文字、效忠 menu、
 State 必須保存 pending PC 與原始 menu index。繁中 label 只能是 display adapter，
 不能把「娜卡西亞公主」反向當作 script branch key。完成後重訪 `0x83` 不再觸發，
 證明 first-visit／friend state 應由 shared ECL memory 保存，而非 renderer 的座標清單。
+
+boundary attempt 除了作品 work flag，也可能依賴 engine movement sentinel。CoAB
+block 3 entry 0 先檢查 `0x7EC9`；若殘留 `0xFF`，會把本次 exit flag 清掉，導致
+SearchLocation 把邊界格誤當一般房間事件。movement adapter 必須在每次新的越界步伐
+清除 stale sentinel，再讓 ECL 自己執行 `CALL 0xC01E`、座標修正與 `NEWECL`。
+這個 sentinel lifecycle 可跨 Gold Box 共用，但其位址仍屬作品 memory adapter。

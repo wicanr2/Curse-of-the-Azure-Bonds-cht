@@ -436,3 +436,6 @@
   拒絕投降後完成五名 FIRE KNIFE 戰鬥、繁中勝利 continuation 與 `-sewers` 入口。
 - [x] 接續正式下水道流程至 `(13,10)` terrain `0x83`，完成迷斯卓諾騎士出場、
   三項效忠選單與娜卡西亞公主友善分支；最後 Continue 返回地城，重訪不再重播。
+- [x] 修正 boundary movement 的 stale `0x7EC9` sentinel，讓下水道 E2 `(8,15)`
+  依原始 entry 0 執行 `CALL 0xC01E → X-2 → NEWECL 4`；正式流程進入 GEO2
+  block 4 `(6,1,S)`、套用 pieces `1,2,4` 並顯示繁中火刀據點入口。

@@ -1152,3 +1152,14 @@ GEO2 block 3 `(13,10)` terrain `0x83`，跑過遭屠滅的檢查哨與迷斯卓�
 ModeDungeon；重訪同 terrain 已驗證不重播。新增 READY spec 296，知識庫補上
 multi-pause dialogue 必須保存 pending PC、plot mutation 可能延後到最後 Continue、
 localized label 不可取代 script key 的共用契約。
+
+第二百九十七輪成果：追蹤 ECL2 block 3 entry 0 後確認，下水道邊界除了
+`0x7ED5` 還會先檢查 engine movement sentinel `0x7EC9`；公會轉場留下的 `0xFF`
+若未在新步伐清除，會取消 exit attempt，接著把 E2 格誤派成 Otyugh 房間。
+`RunDungeonExitLifecycle` 現在先同步 combined GEO、清除 stale sentinel、再交回
+原始 ECL。正式新遊戲 regression 已從騎士分支走到 `(8,15,S)`，由 script 執行
+`CALL 0xC01E → Y=0 → X-2 → NEWECL 4`，進入 GEO2 block 4 `(6,1,S)`。
+target initial entry 的 `LOAD FILES 4,2,0xFF`、`LOAD PIECES 1,2,4` 與
+`YOU ARE ENTERING THE HIDEOUT` 均在同一 session 聚合，入口文字已繁中化。
+新增 READY spec 297，Gold Box 知識庫補上 boundary work flag 與 movement sentinel
+是兩個不同 lifecycle 狀態的契約。

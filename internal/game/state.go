@@ -4204,6 +4204,9 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		s.session.SetMemoryValue(0xC04B, uint16(x))
 		s.session.SetMemoryValue(0xC04C, uint16(y))
 		s.session.SetMemoryValue(0xC04D, uint16(direction/2))
+		// The reference movement helper clears the stale forced-move sentinel
+		// before per-turn ECL decides whether this boundary attempt is real.
+		s.session.SetMemoryValue(0x7EC9, 0)
 		s.session.SetMemoryValue(0x7ED5, 1)
 	}
 
@@ -4753,6 +4756,8 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_tilverton_sewers_entry",
 			"你們進入提爾佛頓惡臭撲鼻、覆滿黏液的下水道。地面濕滑、天花板低矮，顯然很難在這裡靈活作戰。",
 		)
+	case strings.Contains(joined, "YOU ARE ENTERING THE HIDEOUT"):
+		return catalog.Text("ecl_fire_knife_hideout_entry", "你們進入了火刀據點。")
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
