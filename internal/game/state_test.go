@@ -617,6 +617,32 @@ func TestResolvePendingECLDamageDisplaceBitIsTransactional(t *testing.T) {
 	}
 }
 
+func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 1, MaxHitPoints: 1}}
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 1, ArmorClass: 10}},
+		[]combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10}}, 7); err != nil {
+		t.Fatal(err)
+	}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 0x80, DiceCount: 1, DiceSize: 1, SaveFlags: 0x80,
+	}}})
+	outcomes, err := state.ResolvePendingECLDamage(0, func(int) int { return 1 }, func(int) int { return 1 })
+	if err != nil || len(outcomes) != 1 || outcomes[0].Health != party.HealthStatusUnconscious {
+		t.Fatalf("outcomes=%#v err=%v", outcomes, err)
+	}
+	heroHP := -1
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" {
+			heroHP = fighter.HitPoints
+		}
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 {
+		t.Fatalf("mode=%v status=%v roster=%#v fighters=%#v", state.Mode, state.CombatStatus(), state.partyRoster, state.CombatFighters())
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{
