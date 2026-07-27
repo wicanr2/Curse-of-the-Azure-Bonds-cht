@@ -381,3 +381,4 @@
 - [x] 依 `CMD_FindSpecial` 保存 resumable selected-player index，讓 LOAD CHARACTER／WHO 後續查 selected member active affect 並設定 `=`／`<>` compare flags。
 - [x] 將原始 ECL1–ECL6 的 25 blocks／125 initialization entries 建成無 unsupported-opcode 的 real-image corpus gate，並驗證 ECL5 日光腐朽的 real FIND ITEM found branch。
 - [x] 依 `CMD_Dump`／`FreeCurrentPlayer` 實作 selected member 離隊、working-party更新、fallback selection 與 State roster／fighter同步；鎖定 real ECL5 Akabar DUMP。
+- [x] 依 `CMD_Program` 將 0/3/8/9 接成共用 State external-routine adapter，涵蓋 start menu、party killed、game won 全隊恢復／存檔選擇與 CAMP，並由戰鬥後 continuation 共用。

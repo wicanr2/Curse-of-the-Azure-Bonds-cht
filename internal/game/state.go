@@ -209,6 +209,9 @@ type State struct {
 	campMagicCastSpell     uint8
 	pendingMemorizedSpells map[int][]uint8
 	saveRequested          bool
+	programEndMenu         bool
+	gameWon                bool
+	partyKilled            bool
 	alterMenu              bool
 	alterOrderMenu         bool
 	alterOrderSelected     int
@@ -744,6 +747,9 @@ func (s *State) Select(index int) error {
 	if s.campMenu {
 		return s.selectCamp(index, originalChoice)
 	}
+	if s.programEndMenu {
+		return s.selectProgramEnd(originalChoice)
+	}
 	if whoSelecting {
 		s.whoMenu = false
 		s.whoSelectionSequence = append(s.whoSelectionSequence, uint16(index))
@@ -880,8 +886,8 @@ func (s *State) Select(index int) error {
 			s.enterTreasureMenu()
 			return nil
 		}
-		if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
-			return s.Camp()
+		if handled, err := s.applyECLProgram(result); handled || err != nil {
+			return err
 		}
 		// WILDERNESS/EXIT is the observed Shadowdale map-entry menu. Handle
 		// these semantic transitions before the bounded runner's next-menu
@@ -2528,6 +2534,95 @@ func (s *State) ConsumeSaveRequest() bool {
 	requested := s.saveRequested
 	s.saveRequested = false
 	return requested
+}
+
+// GameWon and PartyKilled expose terminal PROGRAM side effects without
+// coupling frontends to the ECL VM's numeric routine IDs.
+func (s *State) GameWon() bool {
+	return s.gameWon
+}
+
+func (s *State) PartyKilled() bool {
+	return s.partyKilled
+}
+
+// applyECLProgram translates the external routines observed in CMD_Program
+// into frontend-neutral State transactions. PROGRAM 8 asks before saving in
+// the reference; the remake keeps that choice but returns to its title screen
+// instead of terminating the host process.
+func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
+	if !result.ProgramExit || len(result.ProgramIDs) == 0 {
+		return false, nil
+	}
+	id := result.ProgramIDs[len(result.ProgramIDs)-1]
+	switch id {
+	case 0:
+		s.enterProgramTitle("主選單")
+		return true, nil
+	case 3:
+		s.partyKilled = true
+		s.programEndMenu = true
+		s.Mode = ModeWilderness
+		s.OriginalEvent = "PROGRAM 3"
+		s.Prompt = "隊伍全滅"
+		s.Choices = []string{"返回標題"}
+		s.currentOriginalChoices = []string{"PROGRAM_END"}
+		s.Message = "隊伍已全滅。"
+		return true, nil
+	case 8:
+		s.gameWon = true
+		for index := range s.partyRoster {
+			s.partyRoster[index].HitPoints = s.partyRoster[index].MaxHitPoints
+			s.partyRoster[index].HealthStatus = party.HealthStatusOK
+			s.partyRoster[index].Bleeding = 0
+		}
+		for index := range s.party {
+			s.party[index].HitPoints = s.party[index].MaxHitPoints
+			s.party[index].DeathOverlay = false
+			s.party[index].DownedCorpse = false
+		}
+		s.programEndMenu = true
+		s.Mode = ModeWilderness
+		s.OriginalEvent = "PROGRAM 8"
+		s.Prompt = "你們解除了青色枷鎖的詛咒！"
+		s.Choices = []string{"保存勝利進度並結束", "不保存並結束"}
+		s.currentOriginalChoices = []string{"PROGRAM_WIN_SAVE", "PROGRAM_END"}
+		s.Message = "全隊已恢復，是否在結束前保存？"
+		return true, nil
+	case 9:
+		return true, s.Camp()
+	default:
+		return false, nil
+	}
+}
+
+func (s *State) selectProgramEnd(originalChoice string) error {
+	switch originalChoice {
+	case "PROGRAM_WIN_SAVE":
+		if len(s.partyRoster) == 0 {
+			return fmt.Errorf("cannot save victory without a party roster")
+		}
+		s.saveRequested = true
+		s.enterProgramTitle("勝利進度已要求保存。")
+		return nil
+	case "PROGRAM_END":
+		s.enterProgramTitle("冒險告一段落。")
+		return nil
+	default:
+		return fmt.Errorf("invalid PROGRAM end choice %q", originalChoice)
+	}
+}
+
+func (s *State) enterProgramTitle(message string) {
+	s.programEndMenu = false
+	s.Mode = ModeTitle
+	s.OriginalEvent = "PROGRAM 0"
+	s.Prompt = s.Title
+	s.Choices = nil
+	s.currentOriginalChoices = nil
+	s.Message = message
+	s.eclBlock = nil
+	s.session = nil
 }
 
 func (s *State) enterCampViewMenu() {

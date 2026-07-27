@@ -174,7 +174,7 @@
 - 已為實際觀察到的 item／effect IDs 接入繁中名稱：弩矢、輕弩、闊劍、盾牌、鏈甲、偵測隱形、酸液吐息；未知 IDs 仍明確 fallback。
 - `BuildEnemies` 已將 ECL1 block `0x51 +0x1293` 的 3 個 spawn 與 `MON1CHA` 合併，真實輸出 24 個 enemies（FIGHTER×4、BUGBEAR×10、WORG×10），在第一個 COMBAT 邊界停止；`RunResult`／`State.StartEncounter` 已可傳入 Battle。
 - `cmd/azure-bonds-game -encounter` 已直接執行 ECL1 block `0x51 +0x1293`，讀取 `MON1CHA.DAX` 並進入戰鬥；此入口使用明確標示的 debug party，正常 opening 尚未自動抵達 encounter。
-- `PROGRAM 0/3/8/9` 已依參考重寫程式標示為外部 routine boundary；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu。CAMP 已開啟繁中 command menu，勝利／死亡 routine 仍待接入。
+- `PROGRAM 0/3/8/9` 已依參考重寫程式接成外部 routine boundary 與共用 State adapter；真實 CAMP selection 在 `PROGRAM 9` 停止，不再錯誤重複跑場所 menu，0/3/8 則處理返回標題、全滅與勝利恢復／存檔選擇。
 - 已加入 `docs/manual/` 繁中遊玩手冊、`docs/history.md` 中文金盒子歷史筆記，以及遊戲內 `J`／`Esc` 冒險手札；`State.Camp` 接收 `PROGRAM 9` 並開啟 CAMP Menu，REST 的自然恢復已接入窄 boundary，完整時鐘／中斷規則仍未完成。
 - 冒險手札已擴充為八頁 locale-backed 摘要，State 保存頁碼並支援方向鍵翻頁；完整 59 個 Journal Entry／Tavern Tale 逐條觸發仍未完成。
 - `State.SetParty`／`PartyFighters` 已保存 party roster；戰鬥結束同步 HP，CAMP 對已保存 party 恢復 MaxHP，完整角色欄位與原始 CAMP side effects 仍未完成。
@@ -951,3 +951,9 @@ persistent roster與同 ID fighter，且不套 ALTER DROP 的 last-member guard�
 最後角色 regressions，並鎖定 real ECL5 block `0x30:+0x020E` 的 Akabar DUMP opcode。
 補充 cross-NEWECL regression：BlockSession 使用 caller PartyContext 的 deep copy作為同一
 session mutable working party，target block可見已離隊結果，而呼叫端 context保持不變。
+
+第二百七十五輪 ECL／State 里程碑：依 `ovr003.CMD_Program` 將外部 routine 0/3/8/9
+集中到 `State.applyECLProgram`。一般事件與戰鬥後 ECL continuation 現在共用 start-menu、
+party-killed、game-won／全隊 HP 與健康恢復／存檔詢問，以及 CAMP transaction。DOS 勝利
+後 process exit 在桌面重製版明確映射為返回標題；新增四 routine regression、READY spec、
+README 與可跨 Gold Box 沿用的 VM／作品 adapter 分層知識。

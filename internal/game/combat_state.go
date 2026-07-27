@@ -1469,11 +1469,8 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 		s.enterTreasureMenu()
 		return true, nil
 	}
-	if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
-		if err := s.Camp(); err != nil {
-			return false, err
-		}
-		return true, nil
+	if handled, err := s.applyECLProgram(result); handled || err != nil {
+		return handled, err
 	}
 	if result.WaitingForMenu && len(result.Menus) > 0 {
 		menu := result.Menus[len(result.Menus)-1]
