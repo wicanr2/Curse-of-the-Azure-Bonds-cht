@@ -667,6 +667,7 @@ func (s *State) Select(index int) error {
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
 		s.applySpellSignals(result)
+		s.applyECLInventorySignals(result)
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.Message = localizeECLText(s.catalog, result.Text)
@@ -835,6 +836,17 @@ func (s *State) applySpellSignals(result ecl.RunResult) {
 	}
 	if len(result.ProtectionRequests) > 0 {
 		s.pendingProtection = append(s.pendingProtection, result.ProtectionRequests...)
+	}
+}
+
+// applyECLInventorySignals is the party adapter for the bounded ECL
+// inventory commands. FIND ITEM remains an observable query; DESTROY ITEMS
+// is the verified mutation and is applied to the persistent roster.
+func (s *State) applyECLInventorySignals(result ecl.RunResult) {
+	for _, itemID := range result.DestroyItemIDs {
+		for characterIndex := range s.partyRoster {
+			s.partyRoster[characterIndex].DestroyItemType(uint8(itemID))
+		}
 	}
 }
 
