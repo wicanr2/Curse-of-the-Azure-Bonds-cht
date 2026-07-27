@@ -13,6 +13,8 @@ type State struct {
 	LastXPos            int16
 	LastYPos            int16
 	LastECLBlockID      uint16
+	OutdoorSkyColor     uint16
+	IndoorSkyColor      uint16
 }
 
 type LoadFilesEffect struct {

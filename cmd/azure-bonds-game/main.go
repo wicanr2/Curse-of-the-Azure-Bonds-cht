@@ -24,6 +24,7 @@ import (
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/font/opentype"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
@@ -748,6 +749,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
 	}
+	ebitenutil.DrawRect(screen, 350, 40, 290, 165, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
 	const (
 		viewWidth  = 13
 		viewHeight = 5
@@ -785,6 +787,15 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			screen.DrawImage(stamp.image, op)
 		}
 	}
+}
+
+func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
+	var skyColours = [...]uint8{0x00, 0x0F, 0x04, 0x0B, 0x0D, 0x02, 0x09, 0x0E, 0x00, 0x0F, 0x04, 0x0B, 0x0D, 0x02, 0x09, 0x0E}
+	index := areaState.OutdoorSkyColor
+	if wallRoof > 0x7F {
+		index = areaState.IndoorSkyColor
+	}
+	return gfx.EGA16[skyColours[index%uint16(len(skyColours))]]
 }
 
 func dungeonDirectionName(direction uint8) string {

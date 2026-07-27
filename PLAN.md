@@ -216,6 +216,7 @@
 - [x] 將 dungeon preview Q/E 接成 reference 八方向 facing rotation，重建 Far／Mid／Near wall view 並覆蓋 wrap regression。
 - [x] 將 reference dungeon 16×16 coordinate wrap 接成明確 wrapped GEO／wall traversal API，讓 preview 跨邊界移動並保留 strict API。
 - [x] 將 reference 5-byte map state 的 `mapWallType/mapWallRoof` 接入 version 4 remake save，並由 wrapped GEO refresh 重算。
+- [x] 解碼 Area1 `0x1FA/0x1FC` indoor/outdoor sky colour，依 mapWallRoof high bit 接入 dungeon preview sky layer。
 - [x] 將 opening city menu routing 到暗影谷、阿沙本福德、匕首瀑布，並使用對應 wilderness city flags。
 - [x] 從 CPIC1–CPIC6 抽出戰鬥小人 PNG、manifest 與可重現 sprite sheet。
 - [x] 將 CPIC block mapping 與戰鬥場景 Ebiten renderer 接通。
