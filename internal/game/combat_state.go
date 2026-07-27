@@ -1382,6 +1382,10 @@ func (s *State) finishCombat() error {
 		} else if continued {
 			return nil
 		}
+		if len(s.pendingTreasureItems) > 0 {
+			s.enterTreasureMenu()
+			return nil
+		}
 	}
 	return nil
 }
@@ -1411,6 +1415,15 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 		return false, err
 	}
 	s.applyECLInventorySignals(result)
+	s.applyECLTreasureSignals(result)
+	treasureReady := false
+	if len(result.TreasureRequests) > 0 {
+		if err := s.ResolveTreasureRequests(); err != nil {
+			s.Message = "財寶等待素材載入：" + err.Error()
+		} else if len(s.pendingTreasureItems) > 0 {
+			treasureReady = true
+		}
+	}
 	s.applyCitySelection()
 	if len(result.Text) > 0 {
 		s.Message = localizeECLText(s.catalog, result.Text)
@@ -1439,6 +1452,10 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 		s.Mode = ModeEvent
 		s.OriginalEvent = "COMBAT"
 		s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+		return true, nil
+	}
+	if treasureReady {
+		s.enterTreasureMenu()
 		return true, nil
 	}
 	if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
