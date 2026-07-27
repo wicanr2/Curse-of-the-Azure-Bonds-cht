@@ -263,6 +263,26 @@ func TestRunSubsetRecordsProgramAndContinuesBoundedTrace(t *testing.T) {
 	}
 }
 
+func TestRunSubsetRecordsExternalCallAndReturnsToECL(t *testing.T) {
+	// CALL [0x2E10] is an external engine routine; the bounded VM exposes the
+	// address and continues with the following localized text.
+	block := []byte{0, 0,
+		0x2D, 0x01, 0x10, 0x2E,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.CallAddresses) != 1 || result.CallAddresses[0] != 0x2E10 {
+		t.Fatalf("calls=%#v", result.CallAddresses)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("text=%q, want [HI]", result.Text)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)

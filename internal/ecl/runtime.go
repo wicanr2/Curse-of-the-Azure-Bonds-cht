@@ -19,6 +19,7 @@ type RunResult struct {
 	MonsterSpawns       []MonsterSpawn
 	ProgramIDs          []uint8
 	ProgramExit         bool
+	CallAddresses       []uint16
 	NPCIDs              []uint16
 	SelectionsConsumed  int
 	RandomValues        []uint16
@@ -491,6 +492,15 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			result.CombatRequested = true
 			result.PC = next
 			return result, nil
+		case 0x2D: // CALL
+			address, err := operandAddress(instruction.Operands[0])
+			if err != nil {
+				return result, fmt.Errorf("CALL at %d: %w", pc, err)
+			}
+			// CALL dispatches an engine routine and returns to the next ECL
+			// instruction. Keep the address observable while leaving the
+			// routine-specific DOS side effect to a later adapter.
+			result.CallAddresses = append(result.CallAddresses, address)
 		case 0x38: // PROGRAM
 			// PROGRAM dispatches into an external engine routine. The reference
 			// implementation ends the current VM pass for PROGRAM 0/3/8/9;
