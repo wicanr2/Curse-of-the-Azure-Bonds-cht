@@ -107,6 +107,8 @@
 - 戰鬥已接入 missile 近身限制：已辨識的弓／弩／投石索不可攻擊相鄰目標，飛鏢保留 RuleBook 的 thrown exception；完整射程與 line-of-sight 仍待反組譯。
 - 攻擊已加入不擲骰的 preflight：無效的相鄰 missile 攻擊會在彈藥 transaction 前拒絕，不消耗箭／弩矢。
 - 敵方若有已驗證的多次攻擊 profile，也會沿用相同的 RateOfFire attack sequence。
+- 敵方回合現在依 reference `find_target`／`BuildNearTargets` 的 bounded contract，從存活
+  party 中以 seeded RNG 選擇目標；同一回合多次攻擊維持同一目標，不再固定攻擊隊伍第一人。
 - 玩家戰鬥輸入若違反射程／彈藥／目標規則，會顯示繁中錯誤並留在戰鬥畫面，不會結束遊戲主迴圈。
 - ECL `ADD NPC` 現在會保存 NPC ID signal 並繼續執行；NPC 資料表與加入隊伍的完整 side effect 仍由後續 adapter 接入。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。

@@ -209,3 +209,4 @@
 - [第二百一十二輪 DOS saveVerse／ECL DAMAGE adapter](./212-dos-saveverse-ecl-damage.md)（`READY`：限 selected／whole-party branches）
 - [第二百一十三輪 ECL DAMAGE random target](./213-ecl-damage-random-target.md)（`READY`：限注入式 random target／CanHitTarget）
 - [第二百一十四輪 ECL DAMAGE AC／effects](./214-ecl-damage-ac-effects.md)（`READY`：限 DOS field_186 與 target invisibility）
+- [第二百三十一輪 combat enemy target selection](./231-combat-enemy-target-selection.md)（`READY`：限 seeded 存活目標選擇）

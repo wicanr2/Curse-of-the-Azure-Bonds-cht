@@ -1403,6 +1403,37 @@ func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
 	}
 }
 
+func TestEnemyTurnSelectsAmongLivingPartyTargets(t *testing.T) {
+	selectedAlly := false
+	for seed := int64(1); seed <= 32; seed++ {
+		state := NewState(testCatalog())
+		partyFighters := []combat.Fighter{
+			{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 100},
+			{ID: "ally", Name: "隊友", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 90},
+		}
+		enemies := []combat.Fighter{{
+			ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+			ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: -100,
+		}}
+		if err := state.StartCombat(partyFighters, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.CombatDone(); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.CombatDone(); err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(state.CombatMessage(), "隊友") {
+			selectedAlly = true
+			break
+		}
+	}
+	if !selectedAlly {
+		t.Fatal("enemy target selection never chose the second living party member")
+	}
+}
+
 func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 1}}}}

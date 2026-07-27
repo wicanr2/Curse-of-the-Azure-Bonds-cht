@@ -1268,8 +1268,12 @@ func (s *State) advanceCombatToParty() error {
 		if len(party) == 0 {
 			return s.finishCombat()
 		}
+		target, err := s.battle.SelectCombatTarget(fighter.ID, combat.SideParty)
+		if err != nil {
+			return err
+		}
 		if fighter.AttacksPerTurn > 1 {
-			results, err := s.battle.AttackSequence(fighter.ID, party[0].ID)
+			results, err := s.battle.AttackSequence(fighter.ID, target.ID)
 			if err != nil {
 				return err
 			}
@@ -1284,7 +1288,7 @@ func (s *State) advanceCombatToParty() error {
 			}
 			s.requestAttackSounds(results)
 		} else {
-			result, err := s.battle.Attack(fighter.ID, party[0].ID)
+			result, err := s.battle.Attack(fighter.ID, target.ID)
 			if err != nil {
 				return err
 			}

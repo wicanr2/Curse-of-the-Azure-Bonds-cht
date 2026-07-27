@@ -312,6 +312,38 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	return turns, nil
 }
 
+// SelectCombatTarget reproduces the bounded target-selection part of the
+// reference monster turn. The full engine builds a reachable/visible target
+// list; until those map rules are decoded, this adapter uses all living
+// fighters on the requested opposing side. Sorting before consuming the
+// seeded RNG keeps replays independent of Go map iteration order.
+func (b *Battle) SelectCombatTarget(attackerID string, targetSide Side) (Fighter, error) {
+	if b == nil {
+		return Fighter{}, fmt.Errorf("battle is nil")
+	}
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return Fighter{}, fmt.Errorf("unknown attacker %q", attackerID)
+	}
+	if b.status != StatusActive {
+		return Fighter{}, fmt.Errorf("battle is already over")
+	}
+	if attacker.HitPoints <= 0 {
+		return Fighter{}, fmt.Errorf("dead fighter cannot select a target")
+	}
+	candidates := make([]Fighter, 0, len(b.fighters))
+	for _, fighter := range b.fighters {
+		if fighter.Side == targetSide && fighter.HitPoints > 0 {
+			candidates = append(candidates, fighter)
+		}
+	}
+	if len(candidates) == 0 {
+		return Fighter{}, fmt.Errorf("no living target on side %d", targetSide)
+	}
+	sort.Slice(candidates, func(i, j int) bool { return candidates[i].ID < candidates[j].ID })
+	return candidates[b.rng.Intn(len(candidates))], nil
+}
+
 // ResolveAttack applies the recovered attack rule with injected dice. A
 // natural 1 misses, a natural 20 always hits, otherwise d20+AttackBonus must
 // meet the target AC. damageRoll is the already rolled weapon-dice total.

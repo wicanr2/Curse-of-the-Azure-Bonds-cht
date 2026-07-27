@@ -2,6 +2,43 @@ package combat
 
 import "testing"
 
+func TestSelectCombatTargetUsesSeededCandidateSelection(t *testing.T) {
+	newBattle := func(seed int64) *Battle {
+		battle, err := NewBattle([]Fighter{
+			{ID: "ogre", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10},
+			{ID: "cleric", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10},
+			{ID: "fighter", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10},
+		}, seed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return battle
+	}
+
+	first, err := newBattle(41).SelectCombatTarget("ogre", SideParty)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replay, err := newBattle(41).SelectCombatTarget("ogre", SideParty)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.ID != replay.ID {
+		t.Fatalf("same seed selected different targets: %q vs %q", first.ID, replay.ID)
+	}
+	seen := map[string]bool{first.ID: true}
+	for seed := int64(42); seed < 64; seed++ {
+		target, err := newBattle(seed).SelectCombatTarget("ogre", SideParty)
+		if err != nil {
+			t.Fatal(err)
+		}
+		seen[target.ID] = true
+	}
+	if len(seen) != 2 {
+		t.Fatalf("seeded target selection never varied candidates: %v", seen)
+	}
+}
+
 func TestSetHitPointsMarksDeathOverlayAndClearsCombatPosition(t *testing.T) {
 	battle, err := NewBattle([]Fighter{{
 		ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10,

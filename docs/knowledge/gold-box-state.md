@@ -51,6 +51,13 @@ Ranged attack 不能只看 `BaseItem.Range != 0`：RuleBook 的 adjacent missile
 
 `AttacksPerTurn` 不能只在 party UI 套用：enemy turn 若已由 ITEMS／monster adapter 投影出大於 1 的值，也必須使用同一個 `Battle.AttackSequence`；零值或 1 維持單次攻擊。這只修正已知武器 profile 的回合套用，不代表已解出 enemy AI、彈藥或額外職業攻擊。
 
+敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
+`find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
+亂數選一個可見／可達目標；目前 remake 以 sorted fighter ID + Battle seeded RNG
+重現「從存活 party 選目標」這一層，並在同一 enemy turn 固定該 target。牆面／pathfinding、
+visibility、persistent `Action.target`、AI spell priority 與 guarding 仍由後續 rules／map
+adapter 提供，不能把這個候選清單邊界說成完整 monster AI。
+
 玩家輸入造成的 combat error 也應是可恢復 transaction：input adapter 將 `ValidateAttack`／彈藥／target selection 的 error 送到 localized message presenter，保留目前 Mode、turn、HP 與 inventory，不能直接結束 Ebiten game loop。`combat.ErrAdjacentMissileTarget` 可作為跨作品共用的規則錯誤識別；啟動／資料載入錯誤則仍可向上回報。
 
 ECL `ADD NPC` 應採資料 signal boundary：runner 保存 operand 的 NPC ID 並繼續至下一個 command，game adapter 再依作品 NPC table 決定是否建立角色／對話／隊伍 side effect。`NPCIDs` 可跨 Gold Box runner 重用，但不能把 ID signal 當成已完成 NPC record lookup。
