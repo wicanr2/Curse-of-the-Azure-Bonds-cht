@@ -160,6 +160,7 @@
 - Shadowdale `WILDERNESS/EXIT` 已接成第一個 `ModeMap` 垂直切片：State 保存 `(MapX, MapY)`，Ebiten 方向鍵可移動、Esc 可返回；目前沒有宣稱原始 tile 或場所資料已解碼。
 - 原始 ECL1 block `0x51` 已觀察到 `INN/STORE/BAR/LEAVE`；本輪接入 `ModePlace`、繁中選項與事件回復，但尚未宣稱場所內部 command path 已完成。
 - `0x27 TREASURE` 已依公開 command table 解碼 7 種 pooled money（Copper／Silver／Electrum／Gold／Platinum／Gems／Jewelry）與第 8 個 `ITEM{area}.DAX` block operand；`RunResult`／`BlockSession`／State 已接 raw signal 與 exactly-once queue，尚未宣稱已完成 ITEM DAX 抽物、random branch 或 inventory mutation。
+- `ITEM1.DAX`～`ITEM6.DAX` 已由啟動器載入並交給 `game.ParseTreasureItemBlocks`；State 可解析 deterministic block、累加 reference coin conversion、保留 Gems／Jewelry treasure pool，並透過明確 `TakeTreasureItem` 寫入 party equipment。random item branch、完整 loot UI 與劇情入口仍保留 boundary。
 - 真實 ECL1 block `0x51` 的 `+0x0643 COMBAT` 已轉為 `RunResult.CombatRequested`，並保留 `SETUP MONSTER`／`LOAD MONSTER` descriptors；`State.StartEncounter` 可用 `MON*CHA` records 建立 Battle，完整玩家流程仍未完成。
 - `internal/combat.Battle.Attack` 與 `internal/game.State.StartCombat/CombatAct` 已接成可由 seed 重現的玩家／敵人回合切片；Ebiten 已有繁中 HP、目標與攻擊畫面，但完整 AD&D 戰鬥仍未完成。
 - ECL1 block `0x51 +0x1293` 的 `SETUP MONSTER`／三個 `LOAD MONSTER` 已由 descriptor decoder 驗證，接續 `+0x12B0 COMBAT`；尚未解碼 `MON*CHA` stats。

@@ -160,9 +160,13 @@ type State struct {
 	pendingDamageRequests  []ecl.DamageRequest
 	pendingProtection      []uint16
 	pendingTreasure        []ecl.TreasureRequest
+	treasureItemBlocks     map[uint16][]monster.ItemRecord
+	pendingTreasureItems   []monster.ItemRecord
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
+	treasureGems           uint32
+	treasureJewelry        uint32
 	appraisalOffers        AppraisalOffers
 	shopStockMenu          bool
 	shopViewMenu           bool
@@ -937,6 +941,95 @@ func (s *State) ConsumeTreasureRequests() []ecl.TreasureRequest {
 	requests := append([]ecl.TreasureRequest(nil), s.pendingTreasure...)
 	s.pendingTreasure = nil
 	return requests
+}
+
+// SetTreasureItemBlocks installs decoded ITEM{area}.DAX blocks. The map key is
+// normally (area << 8) | raw TREASURE item-block operand; a raw block key is
+// also accepted for focused tests and callers with one active area.
+func (s *State) SetTreasureItemBlocks(blocks map[uint16][]monster.ItemRecord) {
+	s.treasureItemBlocks = make(map[uint16][]monster.ItemRecord, len(blocks))
+	for block, items := range blocks {
+		s.treasureItemBlocks[block] = append([]monster.ItemRecord(nil), items...)
+	}
+}
+
+// PendingTreasureItems returns loot made available by resolved TREASURE
+// requests. Items are not silently assigned to the first character; the UI or
+// caller must explicitly choose a recipient with TakeTreasureItem.
+func (s *State) PendingTreasureItems() []monster.ItemRecord {
+	return append([]monster.ItemRecord(nil), s.pendingTreasureItems...)
+}
+
+// TreasurePool returns the non-coin pooled treasure that the remake state
+// keeps separately from its gold-only shop pool.
+func (s *State) TreasurePool() (gems, jewelry uint32) {
+	return s.treasureGems, s.treasureJewelry
+}
+
+// ResolveTreasureRequests applies deterministic TREASURE effects and queues
+// the item records for explicit pickup. It supports area item blocks and the
+// 0xFF no-item branch; >=0x80 random generation remains an explicit boundary.
+func (s *State) ResolveTreasureRequests() error {
+	if len(s.pendingTreasure) == 0 {
+		return nil
+	}
+	type resolved struct {
+		gold          uint32
+		gems, jewelry uint32
+		items         []monster.ItemRecord
+	}
+	var total resolved
+	for _, request := range s.pendingTreasure {
+		copper := uint64(request.Coins[0]) + uint64(request.Coins[1])*10 + uint64(request.Coins[2])*100 + uint64(request.Coins[3])*200 + uint64(request.Coins[4])*1000
+		total.gold += uint32(copper / 200)
+		total.gems += uint32(request.Coins[5])
+		total.jewelry += uint32(request.Coins[6])
+		if request.ItemBlock == 0xFF {
+			continue
+		}
+		if request.ItemBlock >= 0x80 {
+			return fmt.Errorf("TREASURE random item block 0x%02X is not implemented", request.ItemBlock)
+		}
+		key := uint16(s.Area.GameArea)<<8 | request.ItemBlock
+		items, ok := s.treasureItemBlocks[key]
+		if !ok {
+			items, ok = s.treasureItemBlocks[request.ItemBlock]
+		}
+		if !ok {
+			return fmt.Errorf("TREASURE item block 0x%02X for area %d is not loaded", request.ItemBlock, s.Area.GameArea)
+		}
+		total.items = append(total.items, items...)
+	}
+	s.moneyPool += total.gold
+	s.treasureGems += total.gems
+	s.treasureJewelry += total.jewelry
+	s.pendingTreasureItems = append(s.pendingTreasureItems, total.items...)
+	s.pendingTreasure = nil
+	return nil
+}
+
+// TakeTreasureItem assigns one queued loot record to a selected character.
+func (s *State) TakeTreasureItem(characterIndex, itemIndex int) error {
+	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+		return fmt.Errorf("character index %d is out of range", characterIndex)
+	}
+	if itemIndex < 0 || itemIndex >= len(s.pendingTreasureItems) {
+		return fmt.Errorf("treasure item index %d is out of range", itemIndex)
+	}
+	item := s.pendingTreasureItems[itemIndex]
+	if item.Count == 0 {
+		item.Count = 1
+	}
+	s.partyRoster[characterIndex].Equipment = append(s.partyRoster[characterIndex].Equipment, item)
+	s.pendingTreasureItems = append(s.pendingTreasureItems[:itemIndex], s.pendingTreasureItems[itemIndex+1:]...)
+	if characterIndex < len(s.party) {
+		fighter, err := s.fighterForCharacter(s.partyRoster[characterIndex])
+		if err != nil {
+			return err
+		}
+		s.party[characterIndex] = fighter
+	}
+	return nil
 }
 
 // ConsumeSpellSearches transfers pending ECL SPELL requests exactly once.

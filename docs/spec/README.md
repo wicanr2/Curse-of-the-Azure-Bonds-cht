@@ -233,3 +233,4 @@
 - [第二百五十三輪 CAMP MAGIC CAST Cure Light Wounds](./253-camp-magic-cast.md)（`READY`：限非戰鬥施法選單、slot transaction 與 HP projection）
 - [第二百五十四輪 CAMP ALTER RENAME](./254-camp-alter-rename.md)（`READY`：限角色名稱輸入、roster／fighter projection 與 SAVGAM writeback）
 - [第二百五十五輪 ECL TREASURE signal](./255-ecl-treasure-signal.md)（`READY`：限七種金錢／ITEM block raw signal 與 State exactly-once queue）
+- [第二百五十六輪 ITEM DAX treasure loader](./256-item-dax-treasure-loader.md)（`READY`：限六區域 ITEM DAX parser、loot queue 與明確 pickup）

@@ -1341,6 +1341,11 @@ func main() {
 		log.Fatal(err)
 	}
 	state.SetItemCatalog(itemCatalog)
+	treasureItems, err := loadTreasureItemBlocks(*imagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureItems)
 	monsterData, err := zipMember(*imagePath, *encounterMonsterMember)
 	if err != nil {
 		log.Fatal(err)
@@ -1730,6 +1735,22 @@ func loadMonsterAffects(data []byte) (map[uint8][]monster.AffectRecord, error) {
 		affects[block.Entry.ID] = records
 	}
 	return affects, nil
+}
+
+// loadTreasureItemBlocks decodes the six original ITEM*.DAX containers into
+// one global raw block map. TREASURE's final operand is the block ID, so the
+// State adapter can resolve it without coupling ECL to ZIP/DAX I/O.
+func loadTreasureItemBlocks(imagePath string) (map[uint16][]monster.ItemRecord, error) {
+	areaData := make(map[uint8][]byte)
+	for area := 1; area <= 6; area++ {
+		member := fmt.Sprintf("ITEM%d.DAX", area)
+		data, err := zipMember(imagePath, member)
+		if err != nil {
+			return nil, fmt.Errorf("load %s: %w", member, err)
+		}
+		areaData[uint8(area)] = data
+	}
+	return game.ParseTreasureItemBlocks(areaData)
 }
 
 // demoParty is deliberately an explicit debug roster for -encounter. The
