@@ -195,3 +195,9 @@ terrain。`0x81` 與 `0x82` 雖位於不同座標，卻共用同一火刀檢查�
 跨 `NEWECL` 後，target initial entry 寫入的 `C04B/C04C/C04D` 必須重新投影到
 renderer state。方向仍是 half-direction（乘二成八方向）；只切 block 而沿用舊
 State 座標會讓 renderer 與 script 分離。
+
+同一 terrain handler 可跨多個 UI pause，plot mutation 可能只在最後一次
+Continue 後落地。下水道騎士事件依序是出場文字、效忠 menu、分支文字、返回地城；
+State 必須保存 pending PC 與原始 menu index。繁中 label 只能是 display adapter，
+不能把「娜卡西亞公主」反向當作 script branch key。完成後重訪 `0x83` 不再觸發，
+證明 first-visit／friend state 應由 shared ECL memory 保存，而非 renderer 的座標清單。

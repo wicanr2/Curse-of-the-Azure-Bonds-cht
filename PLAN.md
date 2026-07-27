@@ -434,3 +434,5 @@
 - [x] 接通 ECL2 block 3 initial entry／GEO2 block 3，修正跨 block combined
   geometry 與 target map register 回讀；正式流程抵達 terrain `0x81` 火刀檢查哨，
   拒絕投降後完成五名 FIRE KNIFE 戰鬥、繁中勝利 continuation 與 `-sewers` 入口。
+- [x] 接續正式下水道流程至 `(13,10)` terrain `0x83`，完成迷斯卓諾騎士出場、
+  三項效忠選單與娜卡西亞公主友善分支；最後 Continue 返回地城，重訪不再重播。
