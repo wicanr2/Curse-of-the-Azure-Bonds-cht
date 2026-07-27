@@ -4631,6 +4631,10 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("encounter_combat", "戰鬥")
 	case "WAIT":
 		return catalog.Text("encounter_wait", "等待")
+	case "ENTER THE BLADES":
+		return catalog.Text("enter_blades", "闖入刀刃")
+	case "RETREAT":
+		return catalog.Text("retreat", "撤退")
 	case "FLEE":
 		return catalog.Text("encounter_flee", "撤退")
 	case "ADVANCE":
@@ -4758,6 +4762,20 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "YOU ARE ENTERING THE HIDEOUT"):
 		return catalog.Text("ecl_fire_knife_hideout_entry", "你們進入了火刀據點。")
+	case strings.Contains(joined, "BLADES SLOW DOWN") &&
+		strings.Contains(joined, "FADE AWAY"):
+		return catalog.Text(
+			"ecl_fire_knife_blade_barrier_fades",
+			"片刻後，刀刃逐漸放慢並消失；嗡鳴降成低語，最後完全止息。房裡看來已有其他人遭刀刃捲入。",
+		)
+	case strings.Contains(joined, "CLOUD OF BLADES WHIRLING") &&
+		strings.Contains(joined, "METALLIC WHINE"):
+		return catalog.Text(
+			"ecl_fire_knife_blade_barrier",
+			"你們在房間入口停下。前方有一團刀刃彼此盤旋，尖銳的金屬嗡鳴幾乎蓋過所有聲音。你們要怎麼做？",
+		)
+	case strings.Contains(joined, "THE BLADES TEAR INTO YOU"):
+		return catalog.Text("ecl_fire_knife_blades_damage", "旋轉刀刃狠狠撕裂了你們！")
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(

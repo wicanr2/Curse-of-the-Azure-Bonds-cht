@@ -1135,6 +1135,75 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 }
 
+func TestRealFireKnifeBladeBarrierWaitBranch(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hideout []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 4 {
+			hideout = block.Data
+			break
+		}
+	}
+	if len(hideout) == 0 {
+		t.Fatal("missing ECL2 block 4")
+	}
+	run := func(selections []uint16) ecl.RunResult {
+		session, sessionErr := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, 0x99)
+		result, runErr := session.RunEntrySeedWithPartyContext(
+			1, 500, selections, nil, 1, ecl.PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		return result
+	}
+	prompt := run(nil)
+	if !prompt.WaitingForMenu || len(prompt.Menus) != 1 ||
+		len(prompt.Menus[0].Options) != 3 ||
+		prompt.Menus[0].Options[0] != "ENTER THE BLADES" ||
+		prompt.Menus[0].Options[1] != "WAIT" ||
+		!strings.Contains(strings.Join(prompt.Text, " "), "CLOUD OF BLADES") {
+		t.Fatalf("blade barrier prompt=%+v", prompt)
+	}
+	wait := run([]uint16{1})
+	joined := strings.Join(wait.Text, " ")
+	if !wait.WaitingForMenu || len(wait.Menus) != 2 ||
+		len(wait.Menus[1].Options) != 1 ||
+		wait.Menus[1].Options[0] != "PRESS BUTTON OR RETURN TO CONTINUE." ||
+		len(wait.DamageRequests) != 0 ||
+		!strings.Contains(joined, "BLADES SLOW DOWN") ||
+		!strings.Contains(joined, "FADE AWAY") {
+		t.Fatalf("blade barrier wait branch=%+v", wait)
+	}
+	if got := localizeECLText(testCatalog(), prompt.Text); !strings.Contains(got, "刀刃") ||
+		!strings.Contains(got, "金屬嗡鳴") {
+		t.Fatalf("localized blade barrier=%q", got)
+	}
+	if got := localizeECLText(testCatalog(), wait.Text); !strings.Contains(got, "逐漸放慢") ||
+		!strings.Contains(got, "完全止息") {
+		t.Fatalf("localized blade barrier aftermath=%q", got)
+	}
+	if got := []string{
+		localizeOption(testCatalog(), "ENTER THE BLADES"),
+		localizeOption(testCatalog(), "WAIT"),
+		localizeOption(testCatalog(), "RETREAT"),
+	}; strings.Join(got, "/") != "闖入刀刃/等待/撤退" {
+		t.Fatalf("localized blade barrier choices=%v", got)
+	}
+}
+
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

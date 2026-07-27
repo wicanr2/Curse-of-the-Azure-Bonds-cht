@@ -1163,3 +1163,10 @@ target initial entry 的 `LOAD FILES 4,2,0xFF`、`LOAD PIECES 1,2,4` 與
 `YOU ARE ENTERING THE HIDEOUT` 均在同一 session 聚合，入口文字已繁中化。
 新增 READY spec 297，Gold Box 知識庫補上 boundary work flag 與 movement sentinel
 是兩個不同 lifecycle 狀態的契約。
+
+第二百九十八輪成果：盤點 ECL2 block 4 的 `C04F&0x3F` dispatch，確認 GEO2
+terrain `0x99` 對應 selector `0x19` 的旋轉刀刃屏障。真實 ECL regression 鎖定
+`ENTER THE BLADES / WAIT / RETREAT` 原始順序，並驗證 WAIT 不產生 DAMAGE、
+刀刃減速消散的 continuation。State 新增「闖入刀刃／等待／撤退」、機關描述與
+消散結果繁中；READY spec 298、README 與 Gold Box 共用知識庫同步記錄
+640×480 畫布、24px 閱讀字級、16×15 緊湊字級及原始像素整數放大契約。

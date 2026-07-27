@@ -320,3 +320,11 @@ stable character ID同步移除 fighter，save layer稍後處理 stale DOS sidec
 working party，確保同一 ECL run 的 FIND ITEM／FIND SPECIAL 不會看到已離隊角色。
 BlockSession 應持有 public context 的 deep copy並跨 NEWECL重用；每個 block重新 clone會讓
 角色復活，直接改 caller slice則會在 State正式消費 DumpRequest前洩漏 mutation。
+
+### Terrain menu branches（CoAB round 298）
+
+SearchLocation 的 terrain selector 是事件入口，不是 UI event ID。原始 menu option
+順序必須保留給 ECL selection index；翻成較寬的中文標籤時只替換 State display
+字串。像火刀據點 `0x99 → selector 0x19` 的 WAIT 分支，regression 應同時鎖定
+原始 index、沒有 `DAMAGE` signal，以及後續 plot text，避免 renderer 因中文字寬度
+重新排序選項而改變劇情。
