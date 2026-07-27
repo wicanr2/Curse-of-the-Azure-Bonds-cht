@@ -54,6 +54,8 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	if character.ClassLevels != [8]uint8{} {
 		copy(out[0x109:0x111], character.ClassLevels[:])
 	}
+	out[0xE5] = character.HitDice
+	out[0xE6] = character.MulticlassLevel
 	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
 	binary.LittleEndian.PutUint32(out[0x127:0x12B], character.Experience)
 	if len(out) > 0x1A4 {
@@ -143,6 +145,7 @@ type DOSPlayerRecord struct {
 	SavingThrows     []uint8
 	SavingThrowBonus int8
 	ClassLevels      [8]uint8
+	HitDice          uint8
 	MulticlassLevel  uint8
 	Inventory        []monster.ItemRecord
 	Effects          []monster.AffectRecord
@@ -289,7 +292,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		SavingThrows:     append([]uint8(nil), data[DOSSavingThrowsOffset:DOSSavingThrowsEnd]...),
 		SavingThrowBonus: int8(data[0x186]),
 		MemorizedSpells:  spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
-		ClassLevels: classLevels, MulticlassLevel: data[0xE6],
+		ClassLevels: classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
 	}, nil
 }
 
@@ -303,8 +306,8 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level:      r.Level, Age: r.Age, Experience: r.Experience,
 		HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale,
-		ClassLevels: r.ClassLevels,
-		Copper:      r.Copper, Silver: r.Silver, Electrum: r.Electrum,
+		ClassLevels: r.ClassLevels, HitDice: r.HitDice, MulticlassLevel: r.MulticlassLevel,
+		Copper: r.Copper, Silver: r.Silver, Electrum: r.Electrum,
 		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),

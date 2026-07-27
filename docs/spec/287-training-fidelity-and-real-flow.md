@@ -23,5 +23,6 @@
 驗證 PICTURE 4、中文問題、YES、場所限定 `PROGRAM 0`、角色選擇、確認、扣款、
 等級／HP 成長及離開後回到同一地城格。
 
-升級時 magic-user／高等 ranger 的互動式選法術，以及 dual-class
-`HitDice <= multiclassLevel` HP gate 尚未具備完整資料模型，本輪不宣稱完成。
+dual-class `HitDice <= multiclassLevel` HP gate 已於第 288 輪接入。升級時
+magic-user／高等 ranger 的互動式選法術仍缺 `spellCastCount` 原始資料模型，
+本輪不宣稱完成。

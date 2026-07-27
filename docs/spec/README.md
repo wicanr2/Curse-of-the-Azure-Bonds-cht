@@ -265,3 +265,4 @@
 - [第二百八十五輪剛德神殿治療服務](./285-gond-temple-service.md)（`READY`：限 EnterTemple、十種治療與 mixed HEAD／BODY composition）
 - [第二百八十六輪提爾佛頓訓練場](./286-tilverton-training-hall.md)（`READY`：限經驗值、1000 GP、等級／HP 成長 transaction）
 - [第二百八十七輪訓練規則與正式流程](./287-training-fidelity-and-real-flow.md)（`READY`：限 hit-dice 上限、種族上限與 real ECL/GEO vertical slice）
+- [第二百八十八輪 dual-class 訓練 HP gate](./288-dual-class-training-hp-gate.md)（`READY`：限 DOS `0xE5/0xE6`、升級 HP 抑制與恢復）

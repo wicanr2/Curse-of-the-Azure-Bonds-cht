@@ -165,6 +165,7 @@ func (s *State) applyTraining(index int) error {
 	}
 	if character.ClassLevels == [8]uint8{} {
 		character.Level++
+		character.HitDice = uint8(character.Level)
 	} else {
 		character.ClassLevels[info.Slot]++
 		character.Level = 0
@@ -173,6 +174,18 @@ func (s *State) applyTraining(index int) error {
 				character.Level = int(level)
 			}
 		}
+		character.HitDice = uint8(character.Level)
+	}
+	if character.HitDice > 0 && character.HitDice <= character.MulticlassLevel {
+		if err := s.syncTempleCharacter(index); err != nil {
+			return err
+		}
+		s.trainingConfirmMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.Message = fmt.Sprintf("恭喜！%s成為 %d 級%s；超過原職業等級前不增加 HP。",
+			character.Name, oldLevel+1, characterClassName(info.Class))
+		return nil
 	}
 	character.MaxHitPoints += increase
 	character.HitPoints += increase

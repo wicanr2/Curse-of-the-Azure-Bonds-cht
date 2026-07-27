@@ -219,6 +219,11 @@ type Character struct {
 	// ClassLevels preserves the eight raw DOS class-level slots. Class remains
 	// the primary-class projection used by the current combat rules layer.
 	ClassLevels [8]uint8 `json:"class_levels,omitempty"`
+	// HitDice and MulticlassLevel preserve DOS offsets 0xE5/0xE6. A
+	// dual-class character gains no training HP until the active class has
+	// surpassed the old class level.
+	HitDice         uint8 `json:"hit_dice,omitempty"`
+	MulticlassLevel uint8 `json:"multiclass_level,omitempty"`
 	// Age preserves the signed DOS player age at record offset 0x76.
 	Age int16 `json:"age,omitempty"`
 	// NPC and ControlMorale preserve CMD_AddNPC's party-control distinction.

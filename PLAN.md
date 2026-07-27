@@ -405,8 +405,11 @@
   付款與 ECL resume；Raise Dead 的 Constitution／多職業最大 HP penalty 仍待補齊。
 - [x] 依 ECL2 terrain `0x8C` 與 `ovr018.train_player` 接通 Tilverton `(5,2)` 訓練場：
   保存 DOS 32-bit XP、六職業經驗門檻、角色自身 1000 GP 付款、class level 與 HP 成長；
-  高等級 fixed HP、種族上限與完整多職業 CON 已於下一輪補齊，升級選法術與 dual-class
-  HP gate 仍待補齊。
+  高等級 fixed HP、種族上限、完整多職業 CON 與 dual-class HP gate 已由後續輪次
+  補齊，目前升級選法術仍待 spellCastCount 模型。
 - [x] 依 `sub_509E0`／`get_con_hp_adj`／`Limits.RaceClassLimit` 補齊訓練 hit-dice
   上限後固定 HP、跨職業 Constitution 與種族職業上限；real-image regression 已從
   ECL2／GEO2 `(5,2)` 跑過付款、升級並返回同格。
+- [x] 保存 DOS `HitDice @ 0xE5`／`multiclassLevel @ 0xE6` 到 Character／JSON／
+  raw writeback，並依 reference 在 dual-class active level 未超過舊職業前抑制訓練 HP；
+  超過後恢復正常成長。升級選法術仍待 spellCastCount 模型。

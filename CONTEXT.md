@@ -1064,4 +1064,12 @@ dual-class HP gate。
 未達 hit-dice 上限職業計算的 Constitution、多職業除數與 dwarf／elf／gnome／
 half-elf／halfling 職業等級上限。正式角色建立整合測試現從真實 ECL2／GEO2
 `(5,2)` 跑過 PICTURE 4、中文詢問、YES、場所限定 PROGRAM 0、角色確認、扣 1000 GP、
-升級／HP 成長，再離開返回同一格。升級選法術與 dual-class HP gate 保持明確 boundary。
+升級／HP 成長，再離開返回同一格。dual-class HP gate 已於第 288 輪完成，目前只保留
+升級選法術 boundary。
+
+第二百八十八輪成果：補回 DOS Player `HitDice @ 0xE5` 與既有
+`multiclassLevel @ 0xE6` 的 Character／JSON／raw patch round-trip。訓練升級後會像
+`ReclacClassBonuses` 以 active class level 更新 HitDice；若尚未超過 dual-class
+舊職業等級，仍扣款並升級但不增加 HP，超過後恢復一般 HP 成長。新增抑制／恢復
+regression 與 READY spec 288。升級選法術經 reference 確認還需要
+`spellCastCount[class, spellLevel]` 篩選，現有 KnownSpells 不足以忠實代替。
