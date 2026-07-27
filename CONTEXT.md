@@ -738,3 +738,10 @@ knowledge；其他 monster spells、MON*SPC effects、AI priority／range／savi
 chapter table adapter、CLI loader、copy-isolation regression、READY spec 與 README／PLAN／
 Gold Box state knowledge。隱形／加速／睡眠等效果的戰鬥語意仍未猜測。Docker Go 1.23
 完整 `go test ./...` 與 `git diff --check` 通過。
+
+第二百三十五輪重大里程碑 commit：`f703d80`，依 reference
+`CanHitTarget`／`CheckAffectsEffect(Type_16)` 將 active monster affect `0x19`／`0x47`
+投影為 combat target AC +4；inactive effect 不影響命中，raw record 不被消耗。新增
+combat exact-boundary regression、READY spec 與 README／PLAN／Gold Box state knowledge。
+其他 `MON*SPC` effect kinds 仍保留逐項證據 boundary。Docker Go 1.23 核心測試與
+`git diff --check` 通過。
