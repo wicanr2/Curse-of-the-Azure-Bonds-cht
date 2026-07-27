@@ -25,3 +25,15 @@ ECL2 block 3 entry 3 現在已通過 raw ECL2／MON2CHA → `game.StartEncounter
 若作品的 block namespace 或 MON ID 規則不同，後續 Gold Box 遊戲必須注入自己的 mapping；不能只因 CoAB 的 chapter ranges 相鄰，就把它當成通用 DOS 常數。
 
 ECL1 block `0x50` payload `+0x5B5` 的 `NEWECL 0x03` 已由原始 image regression 證實會切到 ECL2 block `3`。`BlockSession` 應先套用 target，再讓 target entry 自己 bounded stop；target 後的 unsupported opcode 不能回退成 source block，也不能清空共享 runtime context。
+
+## Variable monster descriptors
+
+ECL3／ECL4／ECL6 的 real-image entry smoke 證實，`LOAD MONSTER`／`SETUP MONSTER`
+不一定把 ID、數量、sprite 寫成 literal；常見形式是 `code 0x01` memory operand，
+由同一段 entry 先用 `SAVE`、`AND`／`OR` 初始化，再在遭遇 command 讀回。bounded
+runner 現在用 runtime memory resolve 這些 numeric descriptor，並限制結果在 byte
+範圍，避免把未初始化或過大的 word 當成 monster ID。
+
+這個 adapter 讓 real ECL3 block 17／18 與 ECL4 block 33／37 的 smoke entry
+抵達 `COMBAT` 並產生 spawn signal；它仍不代表已完成所有 `CALL`、monster table
+side effect、party memory 或完整劇情流程。

@@ -43,3 +43,7 @@ external `PROGRAM` routine、monster table 與 save side effect 必須由各作�
 ECL1–ECL6 entry smoke 已實際遇到 `0x2D CALL`／`0x2F AND`。本輪只釋放有足夠
 operand evidence 的 `AND`／`OR` bounded memory operation；`CALL` 留在 unsupported
 boundary，直到能從原始反組譯或跨作品對照確認 return／context semantics。
+
+最新 smoke evidence 顯示，補上 variable monster operands 後，ECL3 block 17／18、
+ECL4 block 33／37 等真實 entries 已能抵達 COMBAT 並產生 spawn signal；這是 bounded
+descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
