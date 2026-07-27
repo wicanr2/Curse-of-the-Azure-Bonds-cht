@@ -359,6 +359,39 @@ func TestParseDOSHalfOrcRace(t *testing.T) {
 	}
 }
 
+func TestParseDOSMulticlassPreservesClassLevels(t *testing.T) {
+	record := make([]byte, DOSPlayerRecordSize)
+	record[0] = 4
+	copy(record[1:], []byte("DUAL"))
+	record[0x74], record[0x75] = 7, 13 // human fighter/magic-user
+	record[0xE6] = 2
+	record[0x10B], record[0x10E] = 2, 1 // fighter and magic-user levels
+	record[0x78], record[0x1A4] = 12, 12
+	record[0x10], record[0x12], record[0x14] = 16, 12, 12
+	record[0x16], record[0x18], record[0x1A] = 12, 12, 10
+	parsed, err := ParseDOSPlayerRecord(record, "dual-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if parsed.RawClass != 13 || parsed.Class != ClassFighter || parsed.Level != 2 || parsed.ClassLevels[2] != 2 || parsed.ClassLevels[5] != 1 {
+		t.Fatalf("multiclass record=%#v", parsed)
+	}
+	character, err := parsed.Character()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if character.ClassLevels != parsed.ClassLevels || character.Class != ClassFighter {
+		t.Fatalf("character=%#v", character)
+	}
+	patched, err := PatchDOSPlayerRecord(record, character)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if patched[0x10B] != 2 || patched[0x10E] != 1 {
+		t.Fatalf("patched class levels=%v", patched[0x109:0x111])
+	}
+}
+
 func TestParseDOSPlayerFilesBundlesOptionalSidecars(t *testing.T) {
 	record := make([]byte, DOSPlayerRecordSize)
 	record[0] = 4

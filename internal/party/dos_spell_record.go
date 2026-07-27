@@ -51,6 +51,9 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	out[0x18] = uint8(character.Abilities.Constitution)
 	out[0x1A] = uint8(character.Abilities.Charisma)
 	out[0x78] = uint8(character.MaxHitPoints)
+	if character.ClassLevels != [8]uint8{} {
+		copy(out[0x109:0x111], character.ClassLevels[:])
+	}
 	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
 	if len(out) > 0x1A4 {
 		out[0x1A4] = uint8(character.HitPoints)
@@ -99,8 +102,8 @@ type DOSPlayerSpellRecord struct {
 }
 
 // DOSPlayerRecord is the verified, fixed-offset subset needed to project a
-// DOS player into the remake. Inventory/effects pointers are intentionally
-// retained as raw pointers for a later .SWG/.FX loader rather than guessed.
+// DOS player into the remake. Multi-class raw class IDs are projected to a
+// primary class while ClassLevels and MulticlassLevel remain lossless.
 type DOSPlayerRecord struct {
 	ID               string
 	Name             string
@@ -127,6 +130,8 @@ type DOSPlayerRecord struct {
 	ThiefSkills      []uint8
 	SavingThrows     []uint8
 	SavingThrowBonus int8
+	ClassLevels      [8]uint8
+	MulticlassLevel  uint8
 	Inventory        []monster.ItemRecord
 	Effects          []monster.AffectRecord
 }
@@ -184,7 +189,19 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 	if err != nil {
 		return DOSPlayerRecord{}, err
 	}
+	var classLevels [8]uint8
+	copy(classLevels[:], data[0x109:0x111])
 	level := int(data[0x109+classLevelOffset(data[0x75])])
+	if data[0x75] >= 8 && data[0x75] <= 16 {
+		level = int(data[0xE6])
+		if level == 0 {
+			for _, classLevel := range classLevels {
+				if int(classLevel) > level {
+					level = int(classLevel)
+				}
+			}
+		}
+	}
 	if level < 1 {
 		return DOSPlayerRecord{}, fmt.Errorf("DOS player class 0x%02X has no current level", rawClass)
 	}
@@ -212,6 +229,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 		SavingThrows:     append([]uint8(nil), data[DOSSavingThrowsOffset:DOSSavingThrowsEnd]...),
 		SavingThrowBonus: int8(data[0x186]),
 		MemorizedSpells:  spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
+		ClassLevels: classLevels, MulticlassLevel: data[0xE6],
 	}, nil
 }
 
@@ -222,7 +240,8 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		Level: r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
-		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
+		ClassLevels: r.ClassLevels,
+		Gold:        r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),
 		Effects:          append([]monster.AffectRecord(nil), r.Effects...),
@@ -303,6 +322,12 @@ func parseDOSClass(raw uint8) (Class, error) {
 		return ClassMagicUser, nil
 	case 6:
 		return ClassThief, nil
+	case 8, 9, 10, 11, 12:
+		return ClassCleric, nil
+	case 13, 14, 15:
+		return ClassFighter, nil
+	case 16:
+		return ClassMagicUser, nil
 	default:
 		return 0, fmt.Errorf("unsupported DOS single-class value 0x%02X", raw)
 	}
