@@ -34,6 +34,7 @@
 - SPRIT manifest 的 frame `x/y` placement 也已接入戰鬥 renderer，播放時會依原始 frame canvas offset 顯示。
 - PIC1–PIC6 的 PIC/FINAL-style XOR frame delta 也已解碼並抽出 152 張 PNG；SPRIT 與 PIC 兩種 payload 語意在 parser 中明確分流。
 - ECL `PICTURE` request 已接到繁中事件畫面：game state 保存 block、Ebiten 播放對應 PIC frames，Enter 可返回原流程。
+- 真實 ECL1 JOURNEY ON 路徑已驗證 `PICTURE → Enter → COMBAT` continuation；事件畫面會先停住，玩家消費後才繼續原始選擇序列。
 - 已依 reference `seg044`／`Resource.resx` 保存 9 個 PC WAV sound assets，`internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊與已實作法術 intent 播放對應音效；背景音樂仍待接入。
 - PICTURE block `>= 0x78` 已分流到 BIGPIC 靜態大圖；目前從 BIGPIC1／2／6 抽出 4 張原始大圖並在事件畫面置中顯示。
 - 一般場景人物的 `HEAD2–6`／`BODY2–6` 也已抽出並依 reference body `y+5` 合成 30 張 PNG，後續城鎮／事件 renderer 可直接載入。
