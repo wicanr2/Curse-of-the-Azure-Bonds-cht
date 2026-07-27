@@ -49,3 +49,32 @@ func TestECLTreasureResolvesMoneyAndItemBlock(t *testing.T) {
 		t.Fatalf("equipment=%#v", state.partyRoster[0].Equipment)
 	}
 }
+
+func TestECLTreasureResolvesReferenceRandomCount(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetECLSeed(7)
+	state.applyECLTreasureSignals(ecl.RunResult{TreasureRequests: []ecl.TreasureRequest{{ItemBlock: 0x82}}})
+	if err := state.ResolveTreasureRequests(); err != nil {
+		t.Fatal(err)
+	}
+	items := state.PendingTreasureItems()
+	if len(items) != 2 || items[0].Count != 1 || items[1].Count != 1 {
+		t.Fatalf("random items=%#v, want two count-one records", items)
+	}
+}
+
+func TestTreasureMenuAssignsSelectedItemToCharacter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "fighter", Name: "戰士"}}
+	state.pendingTreasureItems = []monster.ItemRecord{{Type: 36, Count: 1}}
+	state.enterTreasureMenu()
+	if err := state.Select(0); err != nil || !state.treasureTakeMenu {
+		t.Fatalf("item selection err=%v takeMenu=%v", err, state.treasureTakeMenu)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 36 {
+		t.Fatalf("mode=%d equipment=%#v", state.Mode, state.partyRoster[0].Equipment)
+	}
+}
