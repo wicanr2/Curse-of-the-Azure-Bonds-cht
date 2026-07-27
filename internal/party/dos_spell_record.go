@@ -58,6 +58,9 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	out[0xE6] = character.MulticlassLevel
 	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
 	binary.LittleEndian.PutUint32(out[0x127:0x12B], character.Experience)
+	for class := 0; class < 3; class++ {
+		copy(out[0x12D+class*5:0x132+class*5], character.SpellCastCount[class][:])
+	}
 	if len(out) > 0x1A4 {
 		out[0x1A4] = uint8(character.HitPoints)
 	}
@@ -139,6 +142,7 @@ type DOSPlayerRecord struct {
 	Jewelry          uint16
 	MemorizedSpells  []uint8
 	KnownSpells      []uint8
+	SpellCastCount   [3][5]uint8
 	ItemsPointer     uint32
 	EffectsPointer   uint32
 	ThiefSkills      []uint8
@@ -266,6 +270,10 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 	if err != nil {
 		return DOSPlayerRecord{}, err
 	}
+	var spellCastCount [3][5]uint8
+	for class := 0; class < 3; class++ {
+		copy(spellCastCount[class][:], data[0x12D+class*5:0x132+class*5])
+	}
 	return DOSPlayerRecord{
 		ID: id, Name: string(data[1 : 1+nameLength]), Race: rawRace, Class: rawClass,
 		RawRace: data[0x74], RawClass: data[0x75],
@@ -292,7 +300,8 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		SavingThrows:     append([]uint8(nil), data[DOSSavingThrowsOffset:DOSSavingThrowsEnd]...),
 		SavingThrowBonus: int8(data[0x186]),
 		MemorizedSpells:  spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
-		ClassLevels: classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
+		SpellCastCount: spellCastCount,
+		ClassLevels:    classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
 	}, nil
 }
 
@@ -314,6 +323,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Effects:          append([]monster.AffectRecord(nil), r.Effects...),
 		SpellSlots:       append([]uint8(nil), r.MemorizedSpells...),
 		KnownSpells:      append([]uint8(nil), r.KnownSpells...),
+		SpellCastCount:   r.SpellCastCount,
 		ThiefSkills:      append([]uint8(nil), r.ThiefSkills...),
 		SavingThrows:     append([]uint8(nil), r.SavingThrows...),
 		SavingThrowBonus: r.SavingThrowBonus,

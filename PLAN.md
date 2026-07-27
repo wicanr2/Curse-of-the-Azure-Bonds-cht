@@ -412,4 +412,7 @@
   ECL2／GEO2 `(5,2)` 跑過付款、升級並返回同格。
 - [x] 保存 DOS `HitDice @ 0xE5`／`multiclassLevel @ 0xE6` 到 Character／JSON／
   raw writeback，並依 reference 在 dual-class active level 未超過舊職業前抑制訓練 HP；
-  超過後恢復正常成長。升級選法術仍待 spellCastCount 模型。
+  超過後恢復正常成長。升級選法術的 spellCastCount 模型已於下一輪完成。
+- [x] 保存 DOS `spellCastCount[3,5] @ 0x12D..0x13B`，依 MU／ranger level tables
+  重算容量，並將 1..5 級、容量可用且尚未知的法術接成繁中訓練選單與 KnownSpells
+  writeback；9 級遊俠同時包含 druid／magic-user 候選。

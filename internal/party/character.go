@@ -256,6 +256,9 @@ type Character struct {
 	// KnownSpells preserves the imported spell-book flags separately from
 	// SpellSlots, which represents spells currently memorized for use.
 	KnownSpells []uint8 `json:"known_spells,omitempty"`
+	// SpellCastCount stores cleric, druid and magic-user capacities for spell
+	// levels 1..5, matching the DOS 3x5 table at 0x12D.
+	SpellCastCount [3][5]uint8 `json:"spell_cast_count,omitempty"`
 	// SavingThrows preserves the original DOS saveVerse order. The raw
 	// five-byte order is retained so ECL DAMAGE adapters can apply the correct
 	// saving-throw type.

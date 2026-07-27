@@ -218,7 +218,8 @@ fallback。畫面仍採原始像素 3× nearest-neighbor，中文字維持 24px 
 原始人物像素維持 nearest-neighbor 整數倍放大，中文提示則以 24px 字型直接重繪；
 訓練流程已由正式角色建立一路驗證到同格返回；高等級 fixed HP、種族／職業等級上限
 與多職業 Constitution 計算也已依 reference 接通。dual-class 會在新職業尚未超過
-舊職業等級時抑制 HP 成長，超過後恢復；目前只剩升級選法術仍待補齊。
+舊職業等級時抑制 HP 成長，超過後恢復。魔法師與 9 級以上遊俠升級時，會按原版
+spellCastCount 容量列出尚未學會的繁中法術，選一個寫入 spell book。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。

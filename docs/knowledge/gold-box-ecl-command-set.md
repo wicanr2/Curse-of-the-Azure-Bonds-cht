@@ -175,5 +175,6 @@ Player record `0x127` little-endian dword，Area training class mask 決定可�
 訓練 HP 不可永遠擲 hit die：`max_class_hit_dice` 之後改用職業固定值；race/class
 limit 也在 XP 判斷前執行。這兩組 table／限制屬作品 rules adapter，不應塞進共用 VM。
 dual-class gate 同樣是 player rules adapter：DOS `0xE5 HitDice` 在 active class
-重算後若仍 `<= 0xE6 multiclassLevel`，訓練不增加 HP。升級學法術必須先有
-`spellCastCount[class, level]`，不能只靠 KnownSpells 推導。
+重算後若仍 `<= 0xE6 multiclassLevel`，訓練不增加 HP。升級學法術使用 DOS
+`spellCastCount[3,5] @ 0x12D..0x13B` 判斷可用法術等級，再排除 KnownSpells；
+容量與 spell metadata 都屬作品 rules adapter，不屬 ECL VM。

@@ -143,3 +143,82 @@ func TestDualClassTrainingRestoresHPAfterOldLevelExceeded(t *testing.T) {
 			got.Level, got.HitDice, got.HitPoints, got.MaxHitPoints)
 	}
 }
+
+func TestMagicUserTrainingChoosesOneNewKnownSpell(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.partyRoster = party.Roster{{
+		Name: "米拉", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 1,
+		ClassLevels: [8]uint8{5: 1}, Experience: 2501,
+		HitPoints: 4, MaxHitPoints: 4, Platinum: 400,
+		HealthStatus: party.HealthStatusOK,
+		Abilities:    party.Abilities{Constitution: 12},
+		KnownSpells:  []uint8{9, 10, 11, 12, 13, 14},
+	}}
+	state.enterTrainingMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.trainingSpellMenu || state.Mode != ModeWilderness || len(state.Choices) == 0 {
+		t.Fatalf("spell choice menu=%v mode=%v choices=%v", state.trainingSpellMenu, state.Mode, state.Choices)
+	}
+	magicMissile := -1
+	for index, choice := range state.Choices {
+		if choice == "魔法飛彈" {
+			magicMissile = index
+			break
+		}
+	}
+	if magicMissile < 0 {
+		t.Fatalf("magic missile absent from choices %v", state.Choices)
+	}
+	if err := state.Select(magicMissile); err != nil {
+		t.Fatal(err)
+	}
+	got := state.partyRoster[0]
+	if got.Level != 2 || !containsSpell(got.KnownSpells, 15) || state.Mode != ModeEvent {
+		t.Fatalf("trained mage level=%d known=%v mode=%v", got.Level, got.KnownSpells, state.Mode)
+	}
+}
+
+func TestNinthLevelRangerChoosesFromDruidAndMagicUserSpells(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.partyRoster = party.Roster{{
+		Name: "凱拉", Race: party.RaceHuman, Class: party.ClassRanger, Level: 8,
+		ClassLevels: [8]uint8{4: 8}, Experience: 225001,
+		HitPoints: 50, MaxHitPoints: 50, Platinum: 400,
+		HealthStatus: party.HealthStatusOK,
+		Abilities:    party.Abilities{Constitution: 16},
+	}}
+	state.enterTrainingMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	seenDruid, seenMagicUser := false, false
+	for _, original := range state.currentOriginalChoices {
+		if original == "TRAIN_SPELL_77" {
+			seenDruid = true
+		}
+		if original == "TRAIN_SPELL_9" {
+			seenMagicUser = true
+		}
+	}
+	if !state.trainingSpellMenu || !seenDruid || !seenMagicUser {
+		t.Fatalf("ranger spell menu=%v druid=%v magic-user=%v choices=%v",
+			state.trainingSpellMenu, seenDruid, seenMagicUser, state.currentOriginalChoices)
+	}
+}
+
+func containsSpell(spells []uint8, want uint8) bool {
+	for _, spellID := range spells {
+		if spellID == want {
+			return true
+		}
+	}
+	return false
+}
