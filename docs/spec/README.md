@@ -238,3 +238,4 @@
 - [第二百五十八輪 TREASURE／COMBAT continuation](./258-treasure-combat-continuation.md)（`READY`：限 loot、戰鬥與勝利後 ECL continuation 順序）
 - [第二百五十九輪 DOS multi-class level preservation](./259-dos-multiclass-levels.md)（`READY`：限 raw class IDs、八組等級與 primary-class adapter）
 - [第二百六十輪 ITEM NameNumbers 繁中顯示](./260-item-name-number-localization.md)（`READY`：限 hidden flag、已確認 magic components 與 raw-preserving display）
+- [第二百六十一輪 multi-class character creation](./261-multiclass-character-creation.md)（`READY`：限 reference race/class list、raw levels 與 primary-class adapter）

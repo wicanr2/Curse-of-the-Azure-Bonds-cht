@@ -14,30 +14,62 @@ import (
 )
 
 func starterCharacters() []party.Character {
-	// Keep the first three familiar human options stable for existing saves and
-	// tests, then expose every currently verified single-class race/class pair.
+	// Keep the verified single-class options first, then append the exact
+	// multi-class combinations listed by reference Gbl.RaceClasses.
 	combos := []struct {
-		race  party.Race
-		class party.Class
+		race   party.Race
+		class  party.Class
+		raw    uint8
+		name   string
+		levels [8]uint8
 	}{
-		{party.RaceHuman, party.ClassFighter}, {party.RaceHuman, party.ClassCleric},
-		{party.RaceHuman, party.ClassMagicUser}, {party.RaceHuman, party.ClassRanger},
-		{party.RaceHuman, party.ClassPaladin}, {party.RaceHuman, party.ClassThief},
-		{party.RaceDwarf, party.ClassFighter}, {party.RaceDwarf, party.ClassThief},
-		{party.RaceElf, party.ClassCleric}, {party.RaceElf, party.ClassFighter},
-		{party.RaceElf, party.ClassMagicUser}, {party.RaceElf, party.ClassThief},
-		{party.RaceGnome, party.ClassFighter}, {party.RaceGnome, party.ClassThief},
-		{party.RaceHalfElf, party.ClassCleric}, {party.RaceHalfElf, party.ClassFighter},
-		{party.RaceHalfElf, party.ClassMagicUser}, {party.RaceHalfElf, party.ClassThief},
-		{party.RaceHalfling, party.ClassFighter}, {party.RaceHalfling, party.ClassThief},
-		{party.RaceHalfOrc, party.ClassCleric}, {party.RaceHalfOrc, party.ClassFighter},
-		{party.RaceHalfOrc, party.ClassThief},
+		{party.RaceHuman, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHuman, party.ClassCleric, 0, "牧師", [8]uint8{1}},
+		{party.RaceHuman, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}}, {party.RaceHuman, party.ClassRanger, 4, "遊俠", [8]uint8{0, 0, 0, 0, 1}},
+		{party.RaceHuman, party.ClassPaladin, 3, "聖武士", [8]uint8{0, 0, 0, 1}}, {party.RaceHuman, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
+		{party.RaceDwarf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceDwarf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
+		{party.RaceElf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceElf, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}},
+		{party.RaceElf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceGnome, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}},
+		{party.RaceGnome, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 0, "牧師", [8]uint8{1}},
+		{party.RaceHalfElf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHalfElf, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}},
+		{party.RaceHalfElf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceHalfElf, party.ClassRanger, 4, "遊俠", [8]uint8{0, 0, 0, 0, 1}},
+		{party.RaceHalfling, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHalfling, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
+		{party.RaceHalfOrc, party.ClassCleric, 0, "牧師", [8]uint8{1}}, {party.RaceHalfOrc, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}},
+		{party.RaceHalfOrc, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
+	}
+	multi := []struct {
+		race    party.Race
+		primary party.Class
+		raw     uint8
+		name    string
+		levels  [8]uint8
+	}{
+		{party.RaceDwarf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+		{party.RaceElf, party.ClassFighter, 13, "戰士／法師", [8]uint8{0, 0, 1, 0, 0, 1}}, {party.RaceElf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+		{party.RaceElf, party.ClassFighter, 15, "戰士／法師／盜賊", [8]uint8{0, 0, 1, 0, 0, 1, 1}}, {party.RaceElf, party.ClassMagicUser, 16, "法師／盜賊", [8]uint8{0, 0, 0, 0, 0, 1, 1}},
+		{party.RaceGnome, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+		{party.RaceHalfElf, party.ClassCleric, 8, "牧師／戰士", [8]uint8{1, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 10, "牧師／遊俠", [8]uint8{1, 0, 0, 0, 1}},
+		{party.RaceHalfElf, party.ClassCleric, 9, "牧師／戰士／法師", [8]uint8{1, 0, 1, 0, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 11, "牧師／法師", [8]uint8{1, 0, 0, 0, 0, 1}},
+		{party.RaceHalfElf, party.ClassFighter, 13, "戰士／法師", [8]uint8{0, 0, 1, 0, 0, 1}}, {party.RaceHalfElf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+		{party.RaceHalfElf, party.ClassFighter, 15, "戰士／法師／盜賊", [8]uint8{0, 0, 1, 0, 0, 1, 1}}, {party.RaceHalfElf, party.ClassMagicUser, 16, "法師／盜賊", [8]uint8{0, 0, 0, 0, 0, 1, 1}},
+		{party.RaceHalfling, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+		{party.RaceHalfOrc, party.ClassCleric, 8, "牧師／戰士", [8]uint8{1, 0, 1}}, {party.RaceHalfOrc, party.ClassCleric, 12, "牧師／盜賊", [8]uint8{1, 0, 0, 0, 0, 0, 1}},
+		{party.RaceHalfOrc, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
+	}
+	for _, option := range multi {
+		combos = append(combos, struct {
+			race   party.Race
+			class  party.Class
+			raw    uint8
+			name   string
+			levels [8]uint8
+		}{option.race, option.primary, option.raw, option.name, option.levels})
 	}
 	result := make([]party.Character, 0, len(combos))
 	for index, combo := range combos {
 		character := party.Character{
-			ID: fmt.Sprintf("creation-%02d", index), Name: creationClassName(combo.class),
+			ID: fmt.Sprintf("creation-%02d", index), Name: combo.name,
 			Race: combo.race, Class: combo.class, Level: 1,
+			RawClassID: combo.raw, ClassLevels: combo.levels,
 			Abilities: creationBaseAbilities(combo.class),
 		}
 		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
