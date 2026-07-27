@@ -26,7 +26,9 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   `CheckAffectsEffect` 項目仍不在本輪假裝完成。
 - `Character.HealthStatus`／`DamageOutcome.Health` 保存 OK、animated、unconscious、
   dying、dead projection；完整 combatant removal、bleeding、`CheckAffectsEffect(Death)`
-  仍由 combat adapter 處理。若 State 正在 active combat，`Battle.SetHitPoints` 會同步
+ 仍由 combat adapter 處理。若 State 正在 active combat，`Character.RemoveCombatAffects`
+  會依 reference 19-kind table 清理 combat-only effects（blink／invisibility 不在清單
+  中而保留），`Battle.SetHitPoints` 會同步
   ECL HP 並重新計算 party／enemy status；status 非 active 時走既有 `finishCombat`。
 
 ## 驗收

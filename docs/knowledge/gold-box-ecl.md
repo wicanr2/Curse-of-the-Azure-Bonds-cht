@@ -78,5 +78,6 @@ blink `0x25`。State context variant 可傳入目前 action delay／combat round
 命中；State resolver 會在 transaction working roster deep-copy effects，避免失敗
 request 洩漏 consumed bit。Damage adapter 也保存 reference 的 OK／animated／unconscious／
 dying／dead health state；active combat 時 State 會透過 Battle bridge 重新計算
-party／enemy win state 並走既有 finish continuation。完整 `CheckAffectsEffect(Death)`、
-bleeding 與 effect removal 仍保留 boundary。
+party／enemy win state 並走既有 finish continuation。角色倒下時也會套用 reference
+19-kind `RemoveCombatAffects` table；blink／invisibility 依 reference 不在該清單中而
+保留。完整 `CheckAffectsEffect(Death)` 與 bleeding 仍保留 boundary。
