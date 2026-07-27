@@ -417,8 +417,12 @@ func (s *State) LoadCharacterHighBit() bool { return s.loadCharacterHighBit }
 func (s *State) eclPartyContext() ecl.PartyContext {
 	context := ecl.PartyContext{Members: make([]ecl.PartyMemberContext, 0, len(s.partyRoster))}
 	for _, character := range s.partyRoster {
+		scriptName := character.ScriptName
+		if scriptName == "" {
+			scriptName = character.Name
+		}
 		member := ecl.PartyMemberContext{
-			Name:           character.Name,
+			Name:           scriptName,
 			HitPoints:      character.HitPoints,
 			ClericLevel:    character.ClassLevel(party.ClassCleric),
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
@@ -1428,8 +1432,8 @@ func (s *State) applyECLLoadCharacterSignals(result ecl.RunResult) {
 	}
 	request := result.LoadCharacterRequests[len(result.LoadCharacterRequests)-1]
 	s.loadCharacterHighBit = request.HighBitSet
-	index := int(request.PlayerIndex) - 1
-	if request.PlayerIndex == 0 || index < 0 || index >= len(s.partyRoster) {
+	index := int(request.PlayerIndex)
+	if index < 0 || index >= len(s.partyRoster) {
 		s.loadCharacterNotFound = true
 		return
 	}
@@ -3216,6 +3220,9 @@ func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
 		if err != nil {
 			return fmt.Errorf("ADD NPC 0x%02X character: %w", npcID, err)
 		}
+		if chapter == 5 && npcID == 0x3B {
+			character.Name = s.catalog.Text("npc_akabar", "阿卡巴・貝爾・阿卡什")
+		}
 		usedIcons := [8]bool{}
 		for _, member := range s.partyRoster {
 			if member.IconID < 8 {
@@ -4968,6 +4975,24 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_hap_elder_wizard_tower",
 			"長老壓低聲音：「我不願顯得忘恩負義，但這些精靈受附近法師塔控制。只有摧毀那個巢穴，我們才真正安全。」",
+		)
+	case strings.Contains(joined, "AKABAR MENTIONS THAT HE HAS HEARD OF SECRET TRADE ROUTES") &&
+		strings.Contains(joined, "HAPPY TO GUIDE THE PARTY THERE"):
+		return catalog.Text(
+			"ecl_hap_akabar_secret_routes",
+			"阿卡巴提到，他聽說有祕密商路可以繞過法師塔；他很樂意帶領隊伍前往。",
+		)
+	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
+		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):
+		return catalog.Text(
+			"ecl_hap_akabar_join",
+			"「你們終於來了。我是阿卡巴・貝爾・阿卡什。只要聯手，我們就能粉碎這股黑暗浪潮。」要讓他加入隊伍嗎？",
+		)
+	case strings.Contains(joined, "A SURLY INNKEEPER COMES UP") &&
+		strings.Contains(joined, "DO YOU STAY"):
+		return catalog.Text(
+			"ecl_hap_inn_before_liberation",
+			"一名板著臉的旅店老闆走來：「把門關上！怪物正在外頭。你們想住就住，只要保持低調。」要留下嗎？",
 		)
 	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
 		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):

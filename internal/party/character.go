@@ -206,10 +206,13 @@ func (a *Abilities) Adjust(index, delta int) error {
 }
 
 type Character struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Race  Race   `json:"race"`
-	Class Class  `json:"class"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// ScriptName preserves the DOS name used by ECL string comparisons when
+	// Name is localized for display. Empty keeps old saves compatible.
+	ScriptName string `json:"script_name,omitempty"`
+	Race       Race   `json:"race"`
+	Class      Class  `json:"class"`
 	// RawClassID preserves the DOS ClassId, including multi-class IDs 8..16.
 	RawClassID uint8     `json:"raw_class_id,omitempty"`
 	Abilities  Abilities `json:"abilities"`

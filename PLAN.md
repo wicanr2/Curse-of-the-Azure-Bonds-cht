@@ -385,7 +385,7 @@
 - [x] 讓 ECL `COMBAT` 保存 next-PC，並在 party victory 後續跑同一個 resumable ECL session；menu／picture／NEWECL continuation 已有 synthetic／real regression，完整各 block routine 仍待反組譯。
 - [x] 將 `CAMP → MAGIC → CAST` 接入施法者／memorized slot／受傷目標選單與 Cure Light Wounds `1d8` transaction；SCRIBE、其他法術與完整 slot／時間規則仍待接入。
 - [x] 將 `CAMP → ALTER → RENAME` 接入 15-byte DOS name editor、roster／fighter projection 與 SAVGAM raw-preserving name writeback；Big5 transcoding、多職業與完整 delete semantics 仍待接入。
-- [x] 依 `ovr003.CMD_LoadCharacter` 解碼 ECL `LOAD CHARACTER` 的 1-based selector／bit-7 flag，接回 State persistent roster 的 selected player；完整 external string／party-summary side effects 仍待反組譯。
+- [x] 依 `ovr003.CMD_LoadCharacter` 與 ECL5 阿卡巴搜尋子程序解碼 ECL `LOAD CHARACTER` 的 zero-based selector／bit-7 flag，接回 State persistent roster 的 selected player；完整 external string／party-summary side effects 仍待反組譯。
 - [x] 依 `vm_CopyStringFromMemory` 將 selected player name 投影到 resumable ECL `0x7C00` string slot，讓 `LOAD CHARACTER → COMPARE/IF` 姓名分支可執行；其他 DOS memory-string regions 仍待驗證。
 - [x] 依 `CMD_FindItem` 將全隊 raw item type 投影到 ECL party context，設定 `=`／`<>` compare flags，並讓同-run `DESTROY ITEMS` 更新 working query view。
 - [x] 依 `CMD_FindSpecial` 保存 resumable selected-player index，讓 LOAD CHARACTER／WHO 後續查 selected member active affect 並設定 `=`／`<>` compare flags。
@@ -473,3 +473,6 @@
 - [x] 接通哈普 terrain `0x88` 伊弗利特頭目：APPROACH signal、MON5
   `0x34 + 6×0x32 + 6×0x33`、`4C01/4C5E`、地圖、PICTURE 50 解放群眾與
   長老的法師塔提示。
+- [x] 接通哈普 terrain `0x8A` 阿卡巴入隊、MON5 sidecars 與解放前旅店；
+  修正 zero-based `LOAD CHARACTER`，分離中文顯示名／DOS script name，讓解放後
+  阿卡巴祕密商路分支可執行。

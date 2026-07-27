@@ -1748,6 +1748,32 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		monster5Records[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(5, monster5Records)
+	monster5Affects := make(map[uint8][]monster.AffectRecord)
+	monster5AffectBlocks, err := dax.Parse(zipData(t, image, "MON5SPC.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range monster5AffectBlocks {
+		parsed, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster5Affects[block.Entry.ID] = parsed
+	}
+	state.SetMonsterAffectsForECL(5, monster5Affects)
+	monster5Items := make(map[uint8][]monster.ItemRecord)
+	monster5ItemBlocks, err := dax.Parse(zipData(t, image, "MON5ITM.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range monster5ItemBlocks {
+		parsed, parseErr := monster.ParseItems(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster5Items[block.Entry.ID] = parsed
+	}
+	state.SetMonsterItemsForECL(5, monster5Items)
 	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{{
 		ID: "leader", Name: "火刀首領", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1,
 	}}, 7); err != nil {
@@ -2154,6 +2180,54 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4C47); !ok || got != 1 {
 		t.Fatalf("Hap defeated patrol count=%#x,%v want 1", got, ok)
 	}
+	state.DungeonWallRoof = 0x8A
+	state.DungeonWallType = 0
+	session.SetMemoryValue(0x4BC9, 15)
+	session.SetMemoryValue(0x4C02, 0)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 59 ||
+		!strings.Contains(state.Message, "阿卡巴・貝爾・阿卡什") {
+		t.Fatalf("Hap Akabar picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("Hap Akabar choices=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster) != 2 || state.partyRoster[1].Name != "阿卡巴・貝爾・阿卡什" ||
+		state.partyRoster[1].ScriptName != "AKABAR BEL AKAS" ||
+		state.partyRoster[1].Class != party.ClassMagicUser || state.partyRoster[1].Level != 5 ||
+		len(state.partyRoster[1].Equipment) != 2 || len(state.partyRoster[1].KnownSpells) != 11 {
+		t.Fatalf("Hap Akabar roster=%+v", state.partyRoster)
+	}
+	if !state.PictureRequested || state.PictureBlock != 50 ||
+		!strings.Contains(state.Message, "保持低調") {
+		t.Fatalf("Hap inn picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("Hap inn choices=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Hap inn exit mode=%v, want dungeon", state.Mode)
+	}
+	for address, want := range map[uint16]uint16{0x4C5F: 1, 0x7F7A: 1} {
+		if got, ok := session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("Hap Akabar flag[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
+	}
+
 	state.party[0].HitPoints, state.party[0].MaxHitPoints = 500, 500
 	state.partyRoster[0].HitPoints, state.partyRoster[0].MaxHitPoints = 500, 500
 	state.DungeonWallRoof = 0x88
@@ -2179,11 +2253,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hap efreet combat mode=%v event=%q message=%q", state.Mode, state.OriginalEvent, state.Message)
 	}
 	efreetFighters := state.CombatFighters()
-	if len(efreetFighters) != 14 {
-		t.Fatalf("Hap efreet fighters=%d, want hero plus 13 enemies", len(efreetFighters))
+	if len(efreetFighters) != 15 {
+		t.Fatalf("Hap efreet fighters=%d, want two party members plus 13 enemies", len(efreetFighters))
 	}
 	efreetCount, mageCount, clericCount := 0, 0, 0
-	for _, fighter := range efreetFighters[1:] {
+	for _, fighter := range efreetFighters {
+		if fighter.Side == combat.SideParty {
+			continue
+		}
 		switch {
 		case fighter.Name == "伊弗利特" && fighter.SpriteBlock == 0x34:
 			efreetCount++
@@ -2234,6 +2311,19 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if !strings.Contains(state.Message, "附近法師塔控制") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap elder tower choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "祕密商路") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap Akabar secret route choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Hap liberation returned mode=%v, want dungeon", state.Mode)
 	}
 }
 

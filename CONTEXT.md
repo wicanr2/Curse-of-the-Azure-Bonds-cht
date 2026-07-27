@@ -1252,3 +1252,12 @@ visited byte：走廊奇怪煙味、整齊得異常且由看不見僕人復原�
 中文依使用者 Adventurer's Journal 核對，保留盟友控制火焰、在軀體間移動、
 異次元力量及「烈焰之主就是泰蘭索斯」線索。所有房間均驗證返回 ModeDungeon
 且重訪不重播；新增 READY spec 302。
+第三百一十輪成果：反組 ECL5 block `0x31` terrain `0x8A` 與共用子程序
+`+0x0E0A`，完成 PICTURE 59 阿卡巴會面、YES／NO、`ADD NPC 0x3B,0x64`、
+MON5CHA／SPC／ITM 入隊資料及解放前旅店。阿卡巴實際為 38 歲五級人類魔法師，
+有兩件裝備、11 個 known spells 與 `4/2/1` 容量。子程序從 TeamList slot 0
+逐人比對 `AKABAR BEL AKAS`，據此修正共用 `LOAD CHARACTER` 為 zero-based，
+並新增 `Character.ScriptName`，使中文顯示名不再破壞 ECL script identity。
+哈普解放後現會正確顯示阿卡巴的祕密商路提示。視覺契約仍為 640×480：
+原圖／戰鬥小人 nearest-neighbour 整數放大，繁中正文 24×24 級、緊湊欄位
+16×15 級，兩條 raster pipeline 分離。

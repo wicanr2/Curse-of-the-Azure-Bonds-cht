@@ -255,7 +255,7 @@
 - [第二百六十六輪 ECL CHECKPARTY](./266-ecl-checkparty.md)（`READY`：限 skill／movement／affect branches）
 - [第二百六十七輪 ECL WHO selection](./267-ecl-who-selection.md)（`READY`：限 prompt／selection request boundary）
 - [第二百六十八輪 WHO roster transaction](./268-who-roster-transaction.md)（`READY`：限 ECL pause／選角／resume）
-- [第二百六十九輪 ECL LOAD CHARACTER roster transaction](./269-ecl-load-character-roster.md)（`READY`：限 1-based selector／roster bridge）
+- [第二百六十九輪 ECL LOAD CHARACTER roster transaction](./269-ecl-load-character-roster.md)（`READY`：第三百一十輪補正為 zero-based selector／roster bridge）
 - [第二百七十輪 ECL selected-player name string](./270-ecl-selected-player-name-string.md)（`READY`：限 `0x7C00` 姓名與 COMPARE branch）
 - [第二百七十一輪 ECL FIND ITEM party query](./271-ecl-find-item-party-query.md)（`READY`：限全隊 item type 與 compare flags）
 - [第二百七十二輪 ECL FIND SPECIAL selected affect](./272-ecl-find-special-selected-affect.md)（`READY`：限 selected player active affect 與 compare flags）
@@ -287,3 +287,4 @@
 - [第三百零七輪哈普村入口與躲藏村民](./307-hap-village-entry.md)（`READY`：限 Area 5／ECL 0x31 入口、terrain 0x84 與 PICTURE 50）
 - [第三百零八輪哈普黑暗精靈巡邏](./308-hap-dark-elf-patrol.md)（`READY`：限 ENCOUNTER COMBAT resolver、terrain 0x80 與 MON5 0x31–0x33）
 - [第三百零九輪伊弗利特與哈普解放](./309-hap-efreet-liberation.md)（`READY`：限 terrain 0x88、APPROACH、13 名敵軍與法師塔提示）
+- [第三百一十輪哈普阿卡巴入隊與祕密商路](./310-hap-akabar-recruitment.md)（`READY`：限 terrain 0x8A、MON5 NPC 0x3B、zero-based LOAD CHARACTER 與祕密商路）

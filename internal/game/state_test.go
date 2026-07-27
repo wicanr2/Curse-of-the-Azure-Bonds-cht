@@ -149,17 +149,17 @@ func TestECLWhoPausesForRosterAndResumesSelectedPlayer(t *testing.T) {
 	}
 }
 
-func TestECLLoadCharacterResolvesOneBasedRosterAndHighBit(t *testing.T) {
+func TestECLLoadCharacterResolvesZeroBasedRosterAndHighBit(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "a", Name: "甲"}, {ID: "b", Name: "乙"}}
 	state.applyECLLoadCharacterSignals(ecl.RunResult{LoadCharacterRequests: []ecl.LoadCharacterRequest{{
-		Address: 0x7F79, Value: 0x82, PlayerIndex: 2, HighBitSet: true,
+		Address: 0x7F79, Value: 0x81, PlayerIndex: 1, HighBitSet: true,
 	}}})
 	if state.SelectedPlayerID() != "b" || state.LoadCharacterNotFound() || !state.LoadCharacterHighBit() {
 		t.Fatalf("state=%#v selected=%q", state, state.SelectedPlayerID())
 	}
 	state.applyECLLoadCharacterSignals(ecl.RunResult{LoadCharacterRequests: []ecl.LoadCharacterRequest{{
-		Address: 0x7F79, Value: 0, PlayerIndex: 0,
+		Address: 0x7F79, Value: 2, PlayerIndex: 2,
 	}}})
 	if state.SelectedPlayerID() != "b" || !state.LoadCharacterNotFound() {
 		t.Fatalf("invalid lookup state=%#v selected=%q", state, state.SelectedPlayerID())

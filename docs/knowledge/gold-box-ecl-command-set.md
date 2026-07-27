@@ -121,17 +121,20 @@ request，這個規則可跨 Gold Box 重用，但各作品需重新驗證 selec
 path 會 pause，State 以 roster UI 消費 selection，再由 shared `RuntimeState` resume；
 selected player ID 已保存，但其他 global routine side effects 仍需各自驗證。
 
-`LOAD CHARACTER (0x0A)` 與 WHO 不同：reference 從 operand value 取得 1-based player
+`LOAD CHARACTER (0x0A)` 與 WHO 不同：reference 從 operand value 取得 zero-based player
 selector，低 7 bits 對應 `TeamList[selector]`，bit 7 是 restore／party-summary redraw
 flag。共用 VM 會同時保存 raw word address 與 `LoadCharacterRequest`；CoAB State 已將
 有效 selector 接回 persistent roster 的 selected player，無效 selector 保留 not-found
-狀態。`FreeCurrentPlayer`、external string context 與 redraw side effects 仍須各作品
-依 reference 逐欄接線。
+狀態。ECL5 阿卡巴搜尋子程序會從 0 遞增到 7，證實 slot 0 必須是有效角色；
+bit 7 另保留 restore／redraw 狀態，不改變低七位索引。`FreeCurrentPlayer`、external string context
+與 redraw side effects 仍須各作品依 reference 逐欄接線。
 
 已核對的 `vm_CopyStringFromMemory` 特例是 `0x7C00`：它讀取目前 `SelectedPlayer.name`。
-因此共用 runtime 只由作品 `PartyContext` 提供 roster name，並在 `LOAD CHARACTER` 後更新
+因此共用 runtime 只由作品 `PartyContext` 提供 script name，並在 `LOAD CHARACTER` 後更新
 `RuntimeState.Strings[0x7C00]`；後續 `0x81` `COMPARE`／`PRINT` 可使用該姓名。這不代表
 `0x4B00`、`0x7A00`、`0x8000` 等其他 DOS memory regions 已完成。
+本地化作品必須分開保存 script identity 與 display name，否則中文顯示名會令固定的
+DOS 姓名比較失敗。
 
 `FIND SPECIAL (0x3F)` 查的是目前 `SelectedPlayer` 的 active affect，不是全隊 affect
 query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共用 `RuntimeState`
