@@ -44,6 +44,20 @@ func TestAbilitiesWithAgeEffectsDoesNotImplicitlyTouchDOSProjection(t *testing.T
 	}
 }
 
+func TestRollStartingAgeUsesReferenceHumanFighterEntry(t *testing.T) {
+	spec, err := StartingAgeSpecFor(RaceHuman, ClassFighter)
+	if err != nil || spec != (StartingAgeSpec{BaseAge: 18, DiceCount: 1, DiceSize: 4}) {
+		t.Fatalf("human fighter spec=%+v err=%v", spec, err)
+	}
+	age, err := RollStartingAge(RaceHuman, ClassFighter, 7)
+	if err != nil || age < 19 || age > 22 {
+		t.Fatalf("starting age=%d err=%v, want 19..22", age, err)
+	}
+	if _, err := StartingAgeSpecFor(RaceDwarf, ClassCleric); err == nil {
+		t.Fatal("unsupported dwarf cleric age entry was accepted")
+	}
+}
+
 func TestCharacterAdvanceEffects(t *testing.T) {
 	character := validCharacter()
 	character.Effects = []monster.AffectRecord{{Kind: 1, Duration: 3, Value: 3, Strength: 1}}

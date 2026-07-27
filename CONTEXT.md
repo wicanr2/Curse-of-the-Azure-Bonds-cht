@@ -531,6 +531,12 @@ knowledge。Docker 已通過 `internal/ecl`、`internal/game`、`internal/party`
 `internal/locale`；target／saving throw／random roll／HP mutation 仍保留 party adapter
 boundary。
 
+第二百四十五輪重大里程碑：依 reference `race_ages`／`ovr018` 補上 single-class
+`StartingAgeSpecFor` 與 deterministic `RollStartingAge`，明確映射六 race、六 supported
+classes 的 base age／dice count／size，unsupported 組合回傳錯誤。新增 human fighter
+range regression、READY spec 與 README／PLAN／Gold Box state knowledge；目前 starter
+templates 與完整角色建立 UI 尚未自動套用，multi-class／half-orc 仍保留 boundary。
+
 第二百一十一輪功能 commit：`3068c2b`，將 `RunResult.DamageRequests` 接入 State
 pending queue／`ConsumeDamageRequests()` exactly-once API，避免事件／選單 pause 遺失
 script damage effect；新增 READY spec 與共用 State knowledge。由於 remake 尚未保存
