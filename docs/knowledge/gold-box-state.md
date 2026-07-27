@@ -369,3 +369,9 @@ SearchLocation entry，結束後清回 0。火刀辦公室 `0x1B` 展示標準�
 `CombatRequested` 就建立戰場；其 return mode 也要保存來源，地城搜索所得財寶
 結束後應回 ModeDungeon。`ItemBlock=0x80+n` 表示 n 件隨機物品，而非一般 ITEM
 block ID。
+
+selectors `0x1C–0x20` 證實常見的一次性房間模板可跨 Gold Box 作品重用：
+`COMPARE flag,1 → IF= EXIT → SAVE 1 → PRINT/GOSUB Continue → dungeon return`。
+但 pause 數仍由 script 決定；例如焚毀圖書館先描述焦屍，再於第二個 pause 取得
+紙張與手札 29，renderer 不能把多段文字合成後提前解鎖 journal。作品層只負責
+依原始 text signal 在正確 continuation append 中文手札。

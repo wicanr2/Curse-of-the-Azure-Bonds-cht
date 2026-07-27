@@ -1195,3 +1195,12 @@ SearchLocation invocation 期間設定 `7ECA=1`。火刀辦公室 GEO2 block 4
 原始 `TREASURE(0,0,0,500,500,3,2,0x82)` 已接成 3000 GP 等值 pool、3 gems、
 2 jewelry 與兩件 seeded random items；後續 COMBAT 正確視為 treasure service，
 寶物 UI 返回 ModeDungeon。real-image／playable State regression 均鎖定防重複。
+
+第三百零二輪成果：以 table-driven real-image／State regression 一次接通火刀據點
+selector `0x1C–0x20`／terrain `0x9C–0xA0`。五個事件分別使用 `4C11..4C15`
+visited byte：走廊奇怪煙味、整齊得異常且由看不見僕人復原的臥室、仍冒煙的焚毀
+圖書館、遭同一烈焰完全摧毀的實驗室，以及標示「待復活／待埋葬」的兩排覆屍。
+圖書館保留原始兩次 Continue；第二段取走焦屍手中未燒毀紙張後才解鎖手札 29。
+中文依使用者 Adventurer's Journal 核對，保留盟友控制火焰、在軀體間移動、
+異次元力量及「烈焰之主就是泰蘭索斯」線索。所有房間均驗證返回 ModeDungeon
+且重訪不重播；新增 READY spec 302。
