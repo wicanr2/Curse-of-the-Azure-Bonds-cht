@@ -13,18 +13,20 @@ import (
 const RecordSize = 0x1A6
 
 type Record struct {
-	Name            string
-	THAC0           int
-	MaxHitPoints    int
-	HitPoints       int
-	BaseArmorClass  int
-	ArmorClass      int
-	AttackBonus     int
-	DamageDiceCount int
-	DamageDiceSides int
-	DamageBonus     int
-	InitiativeBonus int
-	ModID           uint8
+	Name             string
+	THAC0            int
+	MaxHitPoints     int
+	HitPoints        int
+	BaseArmorClass   int
+	ArmorClass       int
+	AttackBonus      int
+	DamageDiceCount  int
+	DamageDiceSides  int
+	DamageBonus      int
+	InitiativeBonus  int
+	ModID            uint8
+	SpellIDs         []uint8
+	MonsterSpellUses [3]uint8
 }
 
 // CombatArmorClass converts the packed MON*CHA armor value used by the
@@ -68,6 +70,14 @@ func Parse(data []byte) (Record, error) {
 	if damageBonus == 0 {
 		damageBonus = int(int8(data[0x122]))
 	}
+	spellIDs := make([]uint8, 0, 0x38)
+	for _, spellID := range data[0x33:0x6B] {
+		if spellID != 0 {
+			spellIDs = append(spellIDs, spellID)
+		}
+	}
+	var spellUses [3]uint8
+	copy(spellUses[:], data[0xB5:0xB8])
 	return Record{
 		Name:           name,
 		THAC0:          int(int8(data[0x73])),
@@ -77,12 +87,14 @@ func Parse(data []byte) (Record, error) {
 		ArmorClass:     int(data[0x19A]),
 		// The reference marks hitBonus/ac as IByte (unsigned byte), unlike
 		// the signed damage and THAC0 fields.
-		AttackBonus:     int(data[0x199]),
-		DamageDiceCount: diceCount,
-		DamageDiceSides: diceSides,
-		DamageBonus:     damageBonus,
-		InitiativeBonus: int(data[0x1A5]),
-		ModID:           data[0x126],
+		AttackBonus:      int(data[0x199]),
+		DamageDiceCount:  diceCount,
+		DamageDiceSides:  diceSides,
+		DamageBonus:      damageBonus,
+		InitiativeBonus:  int(data[0x1A5]),
+		ModID:            data[0x126],
+		SpellIDs:         spellIDs,
+		MonsterSpellUses: spellUses,
 	}, nil
 }
 
@@ -93,5 +105,6 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		ArmorClass: CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
+		MonsterSpellIDs: append([]uint8(nil), r.SpellIDs...), MonsterSpellUses: r.MonsterSpellUses,
 	}
 }

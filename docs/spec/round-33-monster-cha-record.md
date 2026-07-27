@@ -25,7 +25,10 @@ MON1CHA block 0x56:
 name=BUGBEAR mod=0xFF hp=24/24 ac=55 attack-bonus=44 damage=2d4+0 initiative=9
 ```
 
-Parser 可將 record 轉成 `combat.Fighter`，但完整 ECL adapter 仍需處理 `MON*ITM` 裝備、`MON*SPC` effects、攻擊二、AC 顯示轉換與 party battle setup。
+Parser 可將 record 轉成 `combat.Fighter`，並保存 reference `field_33` spell-list slots／
+`field_B5..B7` magic-user uses；目前只接入已核對的 Magic Missile `0x0F`。完整 ECL
+adapter 仍需處理 `MON*ITM` 裝備、`MON*SPC` effects、攻擊二、AC 顯示轉換與 party battle
+setup。
 
 - [x] 驗證固定 record size。
 - [x] 解析名稱、HP、AC、攻擊與 initiative 欄位。

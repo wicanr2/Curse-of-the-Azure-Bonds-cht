@@ -324,6 +324,27 @@ func TestCastMagicMissileUsesVerifiedDamageAndLevelScaling(t *testing.T) {
 	}
 }
 
+func TestCastMonsterMagicMissileConsumesRawLevelOneUse(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage-monster", Name: "施法怪", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10,
+			MonsterSpellIDs: []uint8{MonsterMagicMissileSpellID}, MonsterSpellUses: [3]uint8{1}},
+		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10},
+	}, 9)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastMonsterMagicMissile("mage-monster", "hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != MonsterMagicMissileSpellID || result.Missiles != 1 || result.Damage < 2 || result.Damage > 5 {
+		t.Fatalf("monster spell result=%+v", result)
+	}
+	if _, err := battle.CastMonsterMagicMissile("mage-monster", "hero"); err == nil {
+		t.Fatal("monster spell use was not consumed")
+	}
+}
+
 func TestCastCureLightWoundsHealsOneToEightAndCapsAtMaxHP(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "cleric", Name: "Cleric", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},

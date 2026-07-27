@@ -13,7 +13,7 @@
 ## 邊界與未完成項目
 
 - 完整玩家流程尚未抵達此 encounter；目前是可重現的 direct-entry vertical slice。
-- party roster、`MON*ITM`／`MON*SPC` effects、戰場格位、法術、逃跑／PARLAY 與原版戰鬥數值仍未完整還原。
+- party roster、`MON*ITM`／`MON*SPC` effects、戰場格位、其餘 monster spells、逃跑／PARLAY 與原版戰鬥數值仍未完整還原；目前僅有 MON*CHA raw spell slots 與 Magic Missile `0x0F` bounded slice。
 - 不把 debug party 的數值當成原版資料。
 
 ## 驗證
@@ -22,4 +22,3 @@
 CGO_ENABLED=1 go test -vet=off ./...
 go run ./cmd/azure-bonds -block-id 81 -encounter-start 4755 -monster-member MON1CHA.DAX
 ```
-
