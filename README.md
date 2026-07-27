@@ -88,6 +88,12 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   載入 PICTURE 51 五層庭院、德拉坎德羅斯與塔頂黑龍幻象。WAIT 分支一路
   保留每個 PRINT RETURN，依使用者 Adventure Journal 解鎖完整繁中手札 15，
   原 ECL 再次寫入 `4CFF=1` 並令德拉坎德羅斯的枷印消退，最後停在原版四項選擇。
+- 選擇「攻擊法師」後，黑龍離開人類紛爭；德拉坎德羅斯逃下樓並留下
+  1 名伊弗利特、2 名黑暗精靈戰士與 1 名法師。四名守軍均取自 MON5 原始
+  record／小人 sprite；勝利後原 ECL 續接「屋頂可安全休息」，再回塔頂探索。
+  `-wizard-tower-battle` 可直接重現這個完整主線戰鬥 boundary。
+
+![德拉坎德羅斯守軍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-battle.png)
 
 ![德拉坎德羅斯法師塔庭院的 640×480 繁中實機畫面](docs/screenshots/wizard-tower-courtyard.png)
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。

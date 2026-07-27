@@ -2644,6 +2644,66 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if journal15Pages != 2 {
 		t.Fatalf("wizard-tower journal 15 pages=%d, want 2", journal15Pages)
 	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "人類之間的爭端") || !state.PictureRequested ||
+		state.PictureBlock != 0x35 {
+		t.Fatalf("attack-wizard dragons depart picture=%v/%d message=%q",
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	sawDracandrosCallTroops := strings.Contains(state.Message, "保護我")
+	for step := 0; step < 4 && state.Mode != ModeCombat; step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		} else if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+		sawDracandrosCallTroops = sawDracandrosCallTroops || strings.Contains(state.Message, "保護我")
+	}
+	if state.Mode != ModeCombat || !sawDracandrosCallTroops {
+		t.Fatalf("attack-wizard combat mode=%v saw-call=%v message=%q",
+			state.Mode, sawDracandrosCallTroops, state.Message)
+	}
+	towerFighters := state.CombatFighters()
+	efreeti, darkElfFighters, darkElfMages := 0, 0, 0
+	for _, fighter := range towerFighters {
+		if fighter.Side == combat.SideParty {
+			continue
+		}
+		switch {
+		case fighter.Name == "伊弗利特" && fighter.SpriteBlock == 0x34:
+			efreeti++
+		case fighter.Name == "黑暗精靈戰士" && fighter.SpriteBlock == 0x31:
+			darkElfFighters++
+		case fighter.Name == "黑暗精靈法師" && fighter.SpriteBlock == 0x32:
+			darkElfMages++
+		default:
+			t.Fatalf("unexpected wizard-tower defender=%+v", fighter)
+		}
+	}
+	if efreeti != 1 || darkElfFighters != 2 || darkElfMages != 1 {
+		t.Fatalf("wizard-tower defenders efreeti=%d fighters=%d mages=%d",
+			efreeti, darkElfFighters, darkElfMages)
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "安全休息") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("wizard-tower victory continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
+		t.Fatalf("wizard-tower roof return mode=%v block=%#x message=%q",
+			state.Mode, session.CurrentBlockID(), state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

@@ -1303,3 +1303,11 @@ GEO5 block `0x33`、pieces `14/15/FF` 與 PICTURE 51 五層法師塔庭院。
 枷印消退，但不把已被火刀事件設定的同位址誤稱為第二枚計數器。最後停在
 `ATTACK DRAGONS/ATTACK WIZARD/FLEE/PARLAY WITH THE DRAGONS` 真實 vertical
 menu。新增 `-wizard-tower` 640×480 重現入口、READY spec 315 與共用知識庫。
+
+第三百一十六輪成果：法師塔四項真實選單的 `ATTACK WIZARD`（index 1）已
+沿同一 ECL5 block `0x33` session 接通。黑龍宣告不介入人類爭端後飛離，
+德拉坎德羅斯召來守軍並逃下樓；戰場由 MON5 原始 records 建立 1 名伊弗利特、
+2 名黑暗精靈戰士與 1 名法師。勝利後從原 COMBAT PC 續接「屋頂可安全休息」，
+再由 EXIT 回 block `0x33` 地城。新增 `-wizard-tower-battle` 可重現入口、
+READY spec 316，並在 Gold Box 知識庫保存一般文字選單不可按 label 提前攔截、
+CLEAR MONSTERS 只清 encounter build list 的契約。

@@ -485,3 +485,9 @@ world location values 不只三座早期城市。`4C9B=4` 是 Standing Stone；�
 玩家剛選的場所 context 配對為 training service；只有其他 start-menu context
 才回標題。可重用 VM 應輸出 routine boundary，語意由作品 State 的 caller context
 判斷。
+
+一般文字 vertical menu 的 label 即使叫 `ATTACK WIZARD`，仍只是 ECL selection
+index，不是 renderer 或 State 應提前攔截的 COMBAT action。法師塔 block `0x33`
+證實選定分支後還會依序執行 PICTURE、龍群與德拉坎德羅斯敘事、monster build
+與 COMBAT。勝利 continuation 必須保存原 PC，才能顯示安全屋頂文字並由 EXIT
+回地城；按 label 猜 action 會跳過整段原始控制流。

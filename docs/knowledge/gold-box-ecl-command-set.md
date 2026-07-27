@@ -256,6 +256,12 @@ HORIZONTAL／VERTICAL MENU 的 option label 不等於 engine command。ECL5 bloc
 script 能決定語意：WAIT 略過一段定身文字，其餘三項顯示後仍全部匯流到塔頂。
 adapter 若按字串提前執行 action，會跳過 `4CFF=1`、手札 15 與整段主線。
 
+`CLEAR MONSTERS` 的作用域是目前 encounter build list，不是 active party。
+同一 block 的 `ATTACK WIZARD` 分支先 `SETUP MONSTER 0x34,0,0x34`，再 clear
+舊 descriptors，載入 MON5 `0x34×1 + 0x31×2 + 0x32×1` 後才 COMBAT。
+SETUP 的 animation/icon context 與 LOAD MONSTER 的角色 record ID 是兩個
+namespace；共用 VM 應分開保存，不可因數值相同而合併成單一 monster key。
+
 ## CoAB ECL／engine memory ownership
 
 | address／range | owner／方向 | lifecycle |
