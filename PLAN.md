@@ -425,3 +425,6 @@
 - [x] 接通 Tilverton `(1,0)` 皇家馬車主線條件鏈：Weaponers／Filani／第一次城門
   警告 → PICTURE 11 → 青色枷強制攻擊 → 五名 MON2 Royal Guard 戰鬥 →
   surrender／jail／PICTURE 2 thief rescue → ECL block 2、`(1,12,0)`。
+- [x] 反組 ECL2 block 2 selected-player window，將 15 名 THIEF 正確分成
+  4 名我方 QuickFight 友軍與 11 名敵軍；完成公會戰勝利 continuation、繁中遺言、
+  Journal Entry 4、local ECL／combined GEO 雙向座標與 640×480 小人戰鬥 HUD。

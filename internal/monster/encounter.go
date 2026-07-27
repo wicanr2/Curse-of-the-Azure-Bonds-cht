@@ -28,7 +28,12 @@ func BuildEnemiesWithAffects(spawns []ecl.MonsterSpawn, records map[uint8]Record
 		}
 		for copyIndex := 0; copyIndex < count; copyIndex++ {
 			id := fmt.Sprintf("monster-%02X-%d", spawn.MonsterID, copyIndex+1)
-			fighter := record.Fighter(id, combat.SideEnemy)
+			side := combat.SideEnemy
+			if spawn.PartyMask&(uint64(1)<<copyIndex) != 0 {
+				side = combat.SideParty
+			}
+			fighter := record.Fighter(id, side)
+			fighter.QuickFight = side == combat.SideParty
 			for _, affect := range affects[spawn.MonsterID] {
 				fighter.MonsterAffects = append(fighter.MonsterAffects, combat.MonsterAffect{
 					Kind: affect.Kind, Value: affect.Value, Duration: affect.Duration,

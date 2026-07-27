@@ -30,6 +30,7 @@ type RunResult struct {
 	DelayCount             int
 	LoadCharacterAddresses []uint16
 	LoadCharacterRequests  []LoadCharacterRequest
+	CombatTeamWrites       []CombatTeamWrite
 	FindItemIDs            []uint16
 	FindItemRequests       []FindItemRequest
 	FindSpecialRequests    []FindSpecialRequest
@@ -94,6 +95,12 @@ type LoadCharacterRequest struct {
 	Value       uint16
 	PlayerIndex uint8
 	HighBitSet  bool
+}
+
+// CombatTeamWrite preserves SAVE to SelectedPlayer's combat-team field.
+type CombatTeamWrite struct {
+	TeamListIndex int
+	Value         uint16
 }
 
 // FindItemRequest records the reference party-wide item query. Resolved is
@@ -430,6 +437,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 	var compare [6]bool
 	selectedPlayerIndex := -1
 	selectedPlayerSet := false
+	selectedTeamListIndex := 0
 	if runtime != nil && runtime.Started {
 		pc = runtime.PC
 		stack = append(stack, runtime.Stack...)
@@ -776,6 +784,35 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 					return result, fmt.Errorf("save at %d: %w", pc, err)
 				}
 				memory[instruction.Operands[1].Word] = value
+				if instruction.Operands[1].Word == 0x7D0C {
+					result.CombatTeamWrites = append(result.CombatTeamWrites, CombatTeamWrite{
+						TeamListIndex: selectedTeamListIndex,
+						Value:         value,
+					})
+				}
+				// The player-memory window is relative to SelectedPlayer in
+				// the reference VM. Scripts use LOAD CHARACTER followed by a
+				// write to +0x10C to move loaded NPC copies between combat
+				// teams. Preserve that side effect on the spawn descriptor.
+				if instruction.Operands[1].Word == 0x7D0C && workingPartyContext != nil {
+					monsterIndex := selectedTeamListIndex - len(workingPartyContext.Members)
+					for spawnIndex := range result.MonsterSpawns {
+						count := int(result.MonsterSpawns[spawnIndex].Count)
+						if count == 0 {
+							count = 1
+						}
+						if monsterIndex >= 0 && monsterIndex < count {
+							mask := uint64(1) << monsterIndex
+							if value == 0 || value == 0x80 {
+								result.MonsterSpawns[spawnIndex].PartyMask |= mask
+							} else if value == 0x81 {
+								result.MonsterSpawns[spawnIndex].PartyMask &^= mask
+							}
+							break
+						}
+						monsterIndex -= count
+					}
+				}
 			}
 		case 0x11, 0x12: // PRINT / PRINTCLEAR
 			if len(instruction.Operands) != 1 {
@@ -908,6 +945,28 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			result.LoadCharacterRequests = append(result.LoadCharacterRequests, LoadCharacterRequest{
 				Address: address, Value: value, PlayerIndex: uint8(value & 0x7F), HighBitSet: value&0x80 != 0,
 			})
+			selectedTeamListIndex = int(value & 0x7F)
+			// LOAD CHARACTER selects an absolute TeamList slot. The player
+			// memory window at +0x100 does not contain a stored byte: the
+			// reference getter projects in_combat as 1 (or 0x80 when absent).
+			// Guild block 2 relies on this probe before assigning four loaded
+			// thieves to our quick-fight team.
+			teamCount := len(result.MonsterSpawns)
+			for _, spawn := range result.MonsterSpawns {
+				count := int(spawn.Count)
+				if count == 0 {
+					count = 1
+				}
+				teamCount += count - 1
+			}
+			if workingPartyContext != nil {
+				teamCount += len(workingPartyContext.Members)
+			}
+			if selectedTeamListIndex > 0 && selectedTeamListIndex < teamCount {
+				memory[0x7D00] = 1
+			} else {
+				memory[0x7D00] = 0x80
+			}
 			if workingPartyContext != nil {
 				playerIndex := int(value&0x7F) - 1
 				if value&0x7F > 0 && playerIndex >= 0 && playerIndex < len(workingPartyContext.Members) {

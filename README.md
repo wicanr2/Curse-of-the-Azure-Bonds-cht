@@ -245,6 +245,16 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 `-carriage` 並非直接指定圖片：bootstrap 會在同一 resumable ECL memory 跑完必要場所
 與第一次 gate state，再停在第二次 PICTURE 11。馬車原始像素採 nearest-neighbor 3×，
 繁中敘事維持 24px／每行 22 Unicode 字元。
+- Thieves' Guild 開場戰已解出原版的混合陣營迴圈：4 名 THIEF 是我方
+  `QuickFight` 友軍，敵方則是 2 FIRE KNIFE 與 11 THIEF。勝利後公會首領留下
+  下水道地圖，遊戲內立即解鎖 Adventure Journal Entry 4。
+
+![盜賊公會 4 名友軍對火刀與敵方盜賊的 640×480 混合陣營戰](docs/screenshots/tilverton-guildmaster-battle.png)
+
+戰鬥小人維持原始 24×24 素材並以 nearest-neighbor 放大為 48×48；藍線是我方、
+紅線是敵方，黃框標示目前行動者。角色名稱與 HP 移至下方 24px 中文資訊列，
+不再把十八組文字疊在懷舊小人上。`-guildmaster` 仍會完整跑過 Weaponers、Filani、
+皇家馬車、衛兵戰、投降與牢房，並非直接拼裝測試戰場。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -273,6 +283,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -training
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -tavern
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -high-priest
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -carriage
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -guildmaster
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

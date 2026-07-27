@@ -188,11 +188,11 @@ func (a *app) Update() error {
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyQ) || inpututil.IsKeyJustPressed(ebiten.KeyK) {
-			a.state.TurnDungeon(-2)
+			a.turnDungeonGeometry(-2)
 			a.prepareWallPreview()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyR) || inpututil.IsKeyJustPressed(ebiten.KeyM) {
-			a.state.TurnDungeon(2)
+			a.turnDungeonGeometry(2)
 			a.prepareWallPreview()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
@@ -510,7 +510,7 @@ func (a *app) syncGeoMapRequest() {
 		return
 	}
 	a.geoGrid = &grid
-	a.dungeonX, a.dungeonY = a.state.DungeonX, a.state.DungeonY
+	a.dungeonX, a.dungeonY, _ = a.state.DungeonGeometryView()
 	if a.dungeonX < 0 || a.dungeonX >= geo.Width || a.dungeonY < 0 || a.dungeonY >= geo.Height {
 		a.dungeonX, a.dungeonY = 7, 13
 	}
@@ -525,8 +525,13 @@ func (a *app) refreshDungeonPreview() {
 	}
 	floor := mapdata.GenerateDungeon(*a.geoGrid, a.dungeonX, a.dungeonY)
 	a.dungeonFloor = &floor
-	a.state.DungeonX, a.state.DungeonY = a.dungeonX, a.dungeonY
 	a.prepareWallPreview()
+}
+
+func (a *app) turnDungeonGeometry(delta int) {
+	x, y, direction := a.state.DungeonGeometryView()
+	direction = uint8((int(direction) + delta + 8) % 8)
+	a.state.SetDungeonGeometryView(x, y, direction)
 }
 
 func (a *app) syncECLCallRequests() {
@@ -549,6 +554,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	}
 	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
 	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
+	a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, uint8(direction))
 	a.refreshDungeonPreview()
 	a.playSound(sound.Step)
 	if a.state.Mode == game.ModeDungeon {
@@ -559,7 +565,8 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 }
 
 func (a *app) moveDungeonForward() {
-	switch a.state.DungeonDirection {
+	_, _, direction := a.state.DungeonGeometryView()
+	switch direction {
 	case 0:
 		a.moveDungeonPreview(0, -1, 0)
 	case 2:
@@ -611,7 +618,8 @@ func (a *app) prepareWallPreview() {
 	if len(a.pieceSets) == 0 {
 		return
 	}
-	view, err := gfx.TraverseWallViewWrapped(*a.geoGrid, a.state.DungeonDirection, a.dungeonX, a.dungeonY)
+	_, _, direction := a.state.DungeonGeometryView()
+	view, err := gfx.TraverseWallViewWrapped(*a.geoGrid, direction, a.dungeonX, a.dungeonY)
 	if err != nil {
 		return
 	}
@@ -643,7 +651,8 @@ func (a *app) syncDungeonWallState() {
 	if a.geoGrid == nil {
 		return
 	}
-	wall, _ := a.geoGrid.WallWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
+	_, _, direction := a.state.DungeonGeometryView()
+	wall, _ := a.geoGrid.WallWrapped(a.dungeonX, a.dungeonY, int(direction))
 	cell := a.geoGrid.CellWrapped(a.dungeonX, a.dungeonY)
 	a.state.DungeonWallType = wall
 	a.state.DungeonWallRoof = cell.Terrain
@@ -653,7 +662,8 @@ func (a *app) dungeonDoorFlags() (uint8, bool) {
 	if a.geoGrid == nil {
 		return 0, false
 	}
-	return a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
+	_, _, direction := a.state.DungeonGeometryView()
+	return a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(direction))
 }
 
 func (a *app) tryDungeonPickLock() {
@@ -663,7 +673,8 @@ func (a *app) tryDungeonPickLock() {
 		return
 	}
 	result := a.state.PickDungeonLock()
-	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+	_, _, direction := a.state.DungeonGeometryView()
+	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
 		a.state.Message = "撬鎖成功，門已雙側解鎖"
 		a.refreshDungeonPreview()
 		return
@@ -681,7 +692,8 @@ func (a *app) tryDungeonKnock() {
 		a.state.Message = fmt.Sprintf("沒有可用的 Knock（0x%02X）", dungeon.KnockSpellID)
 		return
 	}
-	if a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+	_, _, direction := a.state.DungeonGeometryView()
+	if a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
 		a.state.Message = "Knock 成功，門已雙側解鎖"
 		a.refreshDungeonPreview()
 	}
@@ -694,7 +706,8 @@ func (a *app) tryDungeonBash() {
 		return
 	}
 	result := a.state.BashDungeonDoor(flags)
-	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+	_, _, direction := a.state.DungeonGeometryView()
+	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
 		a.state.Message = "撞門成功，門已雙側解鎖"
 		a.refreshDungeonPreview()
 		return
@@ -744,6 +757,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawPictureAnimation(screen)
 		return
 	}
+	if a.state.Mode == game.ModeCombat {
+		a.drawCombat(screen, white, cyan)
+		return
+	}
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
@@ -777,10 +794,6 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "暗影谷荒野", a.face, 56, 220, cyan)
 		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
 		text.Draw(screen, "Enter：場所　方向鍵：移動　Esc：離開", a.face, 56, 330, white)
-	}
-	if a.state.Mode == game.ModeCombat {
-		a.drawCombat(screen, white, cyan)
-		return
 	}
 }
 
@@ -1007,8 +1020,9 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	}
 	ebitenutil.DrawRect(screen, 350, 64, 290, 145, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
 	doorFlags, doorFlagsOK := uint8(0), false
+	_, _, geometryDirection := a.state.DungeonGeometryView()
 	if a.geoGrid != nil {
-		doorFlags, doorFlagsOK = a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
+		doorFlags, doorFlagsOK = a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(geometryDirection))
 	}
 	const (
 		viewWidth  = 13
@@ -1033,7 +1047,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		}
 	}
 	text.Draw(screen, fmt.Sprintf("位置：(%d,%d)　方向：%s　地圖：GEO%d/%02X",
-		a.dungeonX, a.dungeonY, dungeonDirectionName(a.state.DungeonDirection), a.geoSet, a.geoBlock), a.face, 24, 242, white)
+		a.dungeonX, a.dungeonY, dungeonDirectionName(geometryDirection), a.geoSet, a.geoBlock), a.face, 24, 242, white)
 	text.Draw(screen, fmt.Sprintf("牆面：%02X　地形／屋頂：%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 278, white)
 	if a.state.DungeonWallType != 0 && doorFlagsOK {
 		text.Draw(screen, fmt.Sprintf("門狀態：%d", doorFlags), a.face, 360, 278, white)
@@ -1150,8 +1164,8 @@ func className(c party.Class) string {
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "戰鬥", a.face, 32, 52, cyan)
-	text.Draw(screen, a.state.CombatMessage(), a.face, 32, 90, white)
+	text.Draw(screen, "戰鬥", a.face, 24, 28, cyan)
+	drawWrappedText(screen, a.state.CombatMessage(), a.face, 24, 68, 24, 27, 1, white)
 	if a.state.CombatViewActive() {
 		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
 		for index, line := range a.state.CombatViewLines() {
@@ -1161,10 +1175,12 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		return
 	}
 	active, activeOK := a.state.CombatActiveFighter()
+	useCamera := activeOK && active.HasCombatPosition &&
+		(active.CombatX < 0 || active.CombatX > 10 || active.CombatY < 0 || active.CombatY > 4)
 	camera := combat.NewCombatCamera(
 		combat.TilePoint{X: active.CombatX, Y: active.CombatY},
 		combat.TilePoint{X: 4, Y: 2},
-		activeOK && active.HasCombatPosition,
+		useCamera,
 	)
 	partyIndex, enemyIndex := 0, 0
 	targets := a.state.CombatTargets()
@@ -1181,17 +1197,16 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
 			tile = camera.Apply(tile)
-			x, y := 28+tile.X*48, 108+tile.Y*56
+			x, y := 24+tile.X*52, 104+tile.Y*52
 			if !fighter.DownedCorpse && !fighter.DeathOverlay {
 				a.drawFighterSprite(screen, fighter, partyIndex, x, y)
 			}
 			a.drawFighterDeathOverlay(screen, fighter, x, y)
-			prefix := "  "
+			selected := false
 			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID || (a.state.CombatCastingSpell() == game.ProtectionFromGoodSpellID && !a.state.CombatSpellTargetsEnemy())) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
-				prefix = "> "
+				selected = true
 			}
-			text.Draw(screen, prefix+fighter.Name, a.face, x, y+66, white)
-			text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+84, white)
+			a.drawCombatSpriteMarker(screen, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
 			partyIndex++
 			continue
 		}
@@ -1200,18 +1215,24 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
 		tile = camera.Apply(tile)
-		x, y := 28+tile.X*48, 108+tile.Y*56
+		x, y := 24+tile.X*52, 104+tile.Y*52
 		if !fighter.DownedCorpse && !fighter.DeathOverlay {
 			a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
 		}
 		a.drawFighterDeathOverlay(screen, fighter, x, y)
-		prefix := "  "
+		selected := false
 		if (a.state.CombatCastingSpell() == 0 || a.state.CombatSpellTargetsEnemy()) && len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
-			prefix = "> "
+			selected = true
 		}
-		text.Draw(screen, prefix+fighter.Name, a.face, x, y+66, white)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints)+"/"+strconv.Itoa(fighter.MaxHitPoints), a.face, x, y+84, white)
+		a.drawCombatSpriteMarker(screen, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
 		enemyIndex++
+	}
+	if activeOK {
+		text.Draw(screen, fmt.Sprintf("行動：%s　HP %d/%d", active.Name, active.HitPoints, active.MaxHitPoints), a.face, 24, 375, cyan)
+	}
+	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
+		target := targets[a.state.CombatTargetIndex()]
+		text.Draw(screen, fmt.Sprintf("目標：%s　HP %d/%d", target.Name, target.HitPoints, target.MaxHitPoints), a.face, 24, 405, white)
 	}
 	spellHint := ""
 	if a.state.CombatCastingSpell() != 0 {
@@ -1247,7 +1268,26 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if a.state.CombatCanCastProtectionFromGood() {
 		spellHint += "　G：防護善良"
 	}
-	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動　D：結束回合"+spellHint, a.face, 32, 350, cyan)
+	text.Draw(screen, "左右：選目標　Enter：攻擊　M：移動　D：結束"+spellHint, a.face, 24, 452, cyan)
+}
+
+func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
+	teamColor := color.RGBA{R: 70, G: 190, B: 255, A: 255}
+	if fighter.Side == combat.SideEnemy {
+		teamColor = color.RGBA{R: 255, G: 82, B: 82, A: 255}
+	}
+	ebitenutil.DrawRect(screen, float64(x), float64(y-4), 48, 3, teamColor)
+	if !active && !selected {
+		return
+	}
+	marker := color.RGBA{R: 255, G: 235, B: 80, A: 255}
+	if selected {
+		marker = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+	}
+	ebitenutil.DrawRect(screen, float64(x-3), float64(y-7), 54, 2, marker)
+	ebitenutil.DrawRect(screen, float64(x-3), float64(y+49), 54, 2, marker)
+	ebitenutil.DrawRect(screen, float64(x-3), float64(y-7), 2, 58, marker)
+	ebitenutil.DrawRect(screen, float64(x+49), float64(y-7), 2, 58, marker)
 }
 
 // drawFighterDeathOverlay is the renderer adapter for the combat-core
@@ -1423,6 +1463,7 @@ func main() {
 	tavern := flag.Bool("tavern", false, "start at Tilverton's tavern through the formal ECL flow")
 	highPriest := flag.Bool("high-priest", false, "start at Tilverton's high priest through the formal ECL flow")
 	carriage := flag.Bool("carriage", false, "start at Tilverton's royal-carriage main-story event through the formal ECL flow")
+	guildmaster := flag.Bool("guildmaster", false, "start at the Thieves' Guild mixed-team battle through the full ECL story path")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1579,7 +1620,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster {
 		if len(state.PartyFighters()) != 0 {
 			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern/-high-priest/-carriage cannot be combined with a loaded party")
 		}
@@ -1592,7 +1633,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage {
+		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1602,9 +1643,14 @@ func main() {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
-			if *carriage {
+			if *carriage || *guildmaster {
 				if err := prepareCarriagePreview(&state, geoGrid); err != nil {
 					log.Fatal(err)
+				}
+				if *guildmaster {
+					if err := prepareGuildmasterBattle(&state, geoGrid); err != nil {
+						log.Fatal(err)
+					}
 				}
 			}
 			x, y, direction := 6, 13, uint8(6)
@@ -1620,10 +1666,10 @@ func main() {
 				x, y, direction = 6, 10, 0
 			} else if *highPriest {
 				x, y, direction = 1, 10, 0
-			} else if *carriage {
+			} else if *carriage || *guildmaster {
 				x, y, direction = state.DungeonX, state.DungeonY, state.DungeonDirection
 			}
-			if !*carriage {
+			if !*carriage && !*guildmaster {
 				state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 				state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
 				state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
@@ -1640,9 +1686,64 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	dungeonX, dungeonY, _ := state.DungeonGeometryView()
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func prepareGuildmasterBattle(state *game.State, grid *geo.Grid) error {
+	hero := state.PartyFighters()[0]
+	hero.HitPoints, hero.MaxHitPoints = 200, 200
+	hero.ArmorClass, hero.InitiativeBonus, hero.AttackBonus = -10, 100, 100
+	hero.DamageDiceCount, hero.DamageDiceSides, hero.DamageBonus = 1, 1, 100
+	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
+		return err
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	for range 4 {
+		if err := state.Select(0); err != nil {
+			return err
+		}
+	}
+	for turn := 0; turn < 10 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			return err
+		}
+	}
+	for _, selection := range []int{0, 0, 0} {
+		if err := state.Select(selection); err != nil {
+			return err
+		}
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	for range 2 {
+		if err := state.Select(0); err != nil {
+			return err
+		}
+	}
+	x, y, direction := state.DungeonGeometryView()
+	state.DungeonWallType, _ = grid.WallWrapped(x, y, int(direction))
+	state.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		return err
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	if err := state.Select(1); err != nil {
+		return err
+	}
+	for range 4 {
+		if err := state.Select(0); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func prepareCarriagePreview(state *game.State, grid *geo.Grid) error {

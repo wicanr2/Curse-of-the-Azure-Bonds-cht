@@ -14,6 +14,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -4217,6 +4218,34 @@ func (s *State) syncDungeonECLRegisters() {
 	s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
 }
 
+// DungeonGeometryView maps ECL-facing map registers to the cell and facing
+// used by the combined GEO geometry. Tilverton's ECL block 2 stores the
+// Thieves' Guild as a local 8x16 map mirrored into the right half of GEO2
+// block 1: script (1,12,N) corresponds to geometry (9,3,S).
+func (s *State) DungeonGeometryView() (x, y int, direction uint8) {
+	x, y, direction = s.DungeonX, s.DungeonY, s.DungeonDirection
+	if s.session != nil && s.session.CurrentBlockID() == 0x02 &&
+		s.GeoMapSet == 2 && s.GeoMapBlock == 1 {
+		x = (x + 8) % geo.Width
+		y = geo.Height - 1 - y
+		direction = (4 - direction + 8) % 8
+	}
+	return x, y, direction
+}
+
+// SetDungeonGeometryView is the inverse adapter used by renderers after a
+// movement in combined GEO coordinates. ECL continues to see its local map.
+func (s *State) SetDungeonGeometryView(x, y int, direction uint8) {
+	if s.session != nil && s.session.CurrentBlockID() == 0x02 &&
+		s.GeoMapSet == 2 && s.GeoMapBlock == 1 {
+		s.DungeonX = (x + 8) % geo.Width
+		s.DungeonY = geo.Height - 1 - y
+		s.DungeonDirection = (4 - direction + 8) % 8
+		return
+	}
+	s.DungeonX, s.DungeonY, s.DungeonDirection = x, y, direction
+}
+
 func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) {
 	s.applyGeoMapLoad(result)
 	s.applyLoadPieces(result)
@@ -4607,6 +4636,45 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
+	case strings.Contains(joined, "BEFORE YOU STANDS A BURLY MAN") &&
+		strings.Contains(joined, "CARE TO REST"):
+		return catalog.Text(
+			"ecl_guildmaster_greeting",
+			"一名魁梧男子站在你們面前，身旁圍著數名警戒的護衛。他顯得有些緊張，問道：「你們看來不太穩當，要先休息嗎？」",
+		)
+	case strings.Contains(joined, "THE FIRE KNIVES HAVE THE KING'S DAUGHTER") &&
+		strings.Contains(joined, "I CAN OFFER INFORMATION"):
+		return catalog.Text(
+			"ecl_guildmaster_briefing",
+			"「好，那就繼續。火刀綁架了國王的女兒，把她藏在據點裡，想引國王踏入陷阱。我不能直接介入，但可以提供情報。」",
+		)
+	case strings.Contains(joined, "SIDE DOOR EXPLODES INWARD") &&
+		strings.Contains(joined, "DEAFENING CRASH"):
+		return catalog.Text("ecl_guild_breach", "突然間，側門伴隨震耳欲聾的巨響向內炸開！")
+	case strings.Contains(joined, "TRAITOROUS SCUM") &&
+		strings.Contains(joined, "SEIZE THEM ALL"):
+		return catalog.Text(
+			"ecl_guild_fire_knife_command",
+			"一名火刀嘶聲喝道：「叛徒渣滓！把他們全抓起來！」大批盜賊隨即散開包圍眾人。",
+		)
+	case strings.Contains(joined, "GUILDMASTER HURLS A POISONED DAGGER") &&
+		strings.Contains(joined, "TWITCHING VIOLENTLY"):
+		return catalog.Text(
+			"ecl_guild_poisoned_dagger",
+			"公會首領擲出淬毒匕首，正中一名火刀的咽喉；那人癱倒在地，劇烈抽搐。",
+		)
+	case strings.Contains(joined, "ARROW HIT THE GUILDMASTER IN THE CHEST") &&
+		strings.Contains(joined, "THE BATTLE IS JOINED"):
+		return catalog.Text(
+			"ecl_guild_battle_joined",
+			"你們準備迎戰時，一支箭射中公會首領胸口。四名忠於公會的盜賊與你們並肩作戰，混戰就此爆發！",
+		)
+	case strings.Contains(joined, "THE GUILDMASTER GASPS") &&
+		strings.Contains(joined, "JOURNAL ENTRY 4"):
+		return catalog.Text(
+			"ecl_guildmaster_death",
+			"公會首領奄奄一息地喘道：「權衡之下，我寧可待在尤拉什……」隨即死去。你們在他身上找到一幅通往火刀據點的下水道地圖，記入冒險手札第 4 條。",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -4673,6 +4741,14 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
+	if strings.Contains(joined, "THE GUILDMASTER GASPS") &&
+		strings.Contains(joined, "JOURNAL ENTRY 4") {
+		s.appendJournalPages("手札條目 4：", []string{s.catalog.Text(
+			"journal_entry_4",
+			"手札條目 4：一幅標有「公會」與「據點」的下水道地圖。它畫出一條狹長、曲折的地下通路，"+
+				"由提爾佛頓盜賊公會一路通往火刀據點；原始地圖圖像保存於 Adventurer's Journal 第 11 頁。",
+		)})
+	}
 	if strings.Contains(joined, "JOURNAL ENTRY 31.") {
 		s.appendJournalPages("手札條目 31：", []string{s.catalog.Text(
 			"journal_entry_31",

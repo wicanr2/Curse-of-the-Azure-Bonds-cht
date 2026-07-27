@@ -1109,3 +1109,16 @@ PICTURE 2／HEAD2／BODY2 盜賊救援與 Thieves' Guild 描述，最後確認 `
 及 `(1,12,0)` map registers。新增 `-carriage` 正式條件 bootstrap、READY spec 292、
 完整繁中敘事與 640×480 `tilverton-carriage.png` README 實機圖。共用 ECL 知識庫新增
 「location state → combat boundary → pauses → chapter switch」不得 fresh-reset 的契約。
+
+第二百九十三輪成果：反組 ECL2 block 2 `+0x046B..+0x04BC`，確認原版以
+`LOAD CHARACTER 10..13` 逐名讀 selected-player `in_combat @ +0x100`，再寫
+`combat_team/quick_fight @ +0x10C = 0x80`，讓四名 THIEF 成為我方 AI 友軍。
+VM 現能投影 selected TeamList player-window、跨 pause 保存 team writes，並把
+單一 15 人 spawn 拆成 4 名我方與 11 名敵方；混合陣營 AI 會攻擊相反 side，
+不再停成四個玩家回合。正式新遊戲 regression 已由 Weaponers、Filani、皇家馬車、
+投降與牢房一路抵達公會，驗證 hero + 4 allied THIEF 對 2 FIRE KNIFE + 11 THIEF，
+勝利後顯示繁中遺言並解鎖只有地圖圖像的 Journal Entry 4。ECL block 2 的 local
+`(1,12,N)` 與 GEO2 combined `(9,3,S)` 已有雙向 renderer adapter。戰鬥 HUD 改為
+640×480 專用畫面：24×24 原始小人 nearest-neighbor 2×，隊伍色條／選取框及下方
+24px 中文名稱與 HP，十八組文字不再互相重疊。新增 `-guildmaster`、READY spec 293、
+知識庫與 `tilverton-guildmaster-battle.png` README 實機圖。

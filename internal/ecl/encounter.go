@@ -9,6 +9,10 @@ type MonsterSpawn struct {
 	MonsterID uint8
 	Count     uint8
 	IconBlock uint8
+	// PartyMask records copies reassigned to CombatTeam.Ours by a later
+	// LOAD CHARACTER + SAVE to the selected combat-team field (0x7D0C).
+	// Bit zero is the first copy produced by this LOAD MONSTER.
+	PartyMask uint64
 }
 
 type MonsterSetup struct {

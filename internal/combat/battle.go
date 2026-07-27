@@ -34,8 +34,11 @@ type Fighter struct {
 	ID   string
 	Name string
 	Side Side
-	Evil bool
-	Good bool
+	// QuickFight delegates this fighter's turn to combat AI even when it is
+	// on the party side. ECL uses this for allied NPCs in mixed-team battles.
+	QuickFight bool
+	Evil       bool
+	Good       bool
 	// SpriteSet/SpriteBlock identify the original CPIC asset when the fighter
 	// came from a LOAD MONSTER descriptor. A zero block means the renderer may
 	// choose a deterministic party fallback sprite.
