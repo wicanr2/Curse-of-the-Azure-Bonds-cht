@@ -159,10 +159,13 @@ type State struct {
 	shopViewMenu           bool
 	shopTakeMenu           bool
 	shopTakeAmountMenu     bool
+	shopSellMenu           bool
+	shopSellItemMenu       bool
 	shopAppraiseMenu       bool
 	shopAppraiseConfirm    bool
 	shopCharacterIndex     int
 	shopTakeCharacter      int
+	shopSellCharacter      int
 	shopAppraiseCharacter  int
 	shopAppraiseKind       TreasureKind
 	barMenu                bool
@@ -1884,6 +1887,8 @@ func (s *State) enterShopMenu() {
 	s.shopViewMenu = false
 	s.shopTakeMenu = false
 	s.shopTakeAmountMenu = false
+	s.shopSellMenu = false
+	s.shopSellItemMenu = false
 	s.shopAppraiseMenu = false
 	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
@@ -1895,9 +1900,10 @@ func (s *State) enterShopMenu() {
 		s.catalog.Text("shop_pool", "集中金幣"),
 		s.catalog.Text("shop_share", "分配金幣"),
 		s.catalog.Text("shop_appraise", "估價"),
+		s.catalog.Text("shop_sell", "販售"),
 		s.catalog.Text("shop_exit", "離開商店"),
 	}
-	s.currentOriginalChoices = []string{"BUY", "VIEW", "TAKE", "POOL", "SHARE", "APPRAISE", "EXIT"}
+	s.currentOriginalChoices = []string{"BUY", "VIEW", "TAKE", "POOL", "SHARE", "APPRAISE", "SELL", "EXIT"}
 	s.Message = ""
 }
 
@@ -1961,6 +1967,48 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		}
 		s.shopTakeCharacter = value
 		s.enterShopTakeAmountMenu()
+		return nil
+	}
+	if strings.HasPrefix(originalChoice, "SHOP_SELL_CHARACTER_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_SELL_CHARACTER_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop sell character command %q", originalChoice)
+		}
+		if value < 0 || value >= len(s.partyRoster) {
+			return fmt.Errorf("shop sell character index %d is out of range", value)
+		}
+		s.shopSellCharacter = value
+		s.enterShopSellItemMenu()
+		return nil
+	}
+	if strings.HasPrefix(originalChoice, "SHOP_SELL_ITEM_") {
+		value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "SHOP_SELL_ITEM_"))
+		if err != nil {
+			return fmt.Errorf("invalid shop sell item command %q", originalChoice)
+		}
+		if value < 0 || value >= len(s.partyRoster[s.shopSellCharacter].Equipment) {
+			return fmt.Errorf("shop sell item index %d is out of range", value)
+		}
+		item := s.partyRoster[s.shopSellCharacter].Equipment[value]
+		if err := s.SellShopItem(s.shopSellCharacter, value); err != nil {
+			s.shopSellMenu = false
+			s.shopSellItemMenu = false
+			s.Mode = ModeEvent
+			s.eventReturnMode = ModePlace
+			s.OriginalEvent = "SELL"
+			s.Message = "販售失敗：" + err.Error()
+			return nil
+		}
+		s.shopSellMenu = false
+		s.shopSellItemMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModePlace
+		s.OriginalEvent = "SELL"
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_sale_done", "已販售%s，取得 %d GP。"), monster.ChineseName(item), item.Value)
+		return nil
+	}
+	if originalChoice == "SHOP_SELL_EXIT" {
+		s.enterShopMenu()
 		return nil
 	}
 	if strings.HasPrefix(originalChoice, "SHOP_TAKE_AMOUNT_") {
@@ -2044,7 +2092,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		return s.EnterPlacesFromEvent()
 	}
 	message := s.shopActionMessage(originalChoice)
-	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu || s.shopAppraiseMenu {
+	if s.shopStockMenu || s.shopViewMenu || s.shopTakeMenu || s.shopSellMenu || s.shopAppraiseMenu {
 		return nil
 	}
 	s.Mode = ModeEvent
@@ -2090,6 +2138,12 @@ func (s *State) shopActionMessage(originalChoice string) string {
 			return s.catalog.Text("shop_appraise_unavailable", "目前沒有可估價的角色。")
 		}
 		s.enterShopAppraiseCharacterMenu()
+		return ""
+	case "SELL":
+		if len(s.partyRoster) == 0 {
+			return s.catalog.Text("shop_sell_unavailable", "目前沒有可販售物品的角色。")
+		}
+		s.enterShopSellCharacterMenu()
 		return ""
 	default:
 		return localizeOption(s.catalog, originalChoice)
@@ -2177,6 +2231,45 @@ func (s *State) enterShopTakeAmountMenu() {
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopSellCharacterMenu() {
+	s.shopMenu = true
+	s.shopStockMenu = false
+	s.shopViewMenu = false
+	s.shopTakeMenu = false
+	s.shopTakeAmountMenu = false
+	s.shopSellMenu = true
+	s.shopSellItemMenu = false
+	s.shopAppraiseMenu = false
+	s.Mode = ModePlace
+	s.Prompt = s.catalog.Text("shop_sell_prompt", "選擇要販售物品的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d 件物品）", character.Name, len(character.Equipment)))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_EXIT")
+	s.Message = ""
+}
+
+func (s *State) enterShopSellItemMenu() {
+	s.shopSellMenu = true
+	s.shopSellItemMenu = true
+	s.Mode = ModePlace
+	character := s.partyRoster[s.shopSellCharacter]
+	s.Prompt = fmt.Sprintf(s.catalog.Text("shop_sell_item_prompt", "選擇%s要販售的物品"), character.Name)
+	s.Choices = make([]string, 0, len(character.Equipment)+1)
+	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
+	for index, item := range character.Equipment {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d GP）", monster.ChineseName(item), item.Value))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_ITEM_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "返回商店"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_EXIT")
 	s.Message = ""
 }
 

@@ -132,6 +132,39 @@ func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 	return nil
 }
 
+// SellShopItem transfers an item's documented raw Value to the party pool
+// and removes it from the selected character. Readied and cursed items stay
+// protected by the same inventory rules used by the DOS adapter.
+func (s *State) SellShopItem(characterIndex, itemIndex int) error {
+	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+		return fmt.Errorf("character index %d is out of range", characterIndex)
+	}
+	character := &s.partyRoster[characterIndex]
+	if itemIndex < 0 || itemIndex >= len(character.Equipment) {
+		return fmt.Errorf("item index %d is out of range", itemIndex)
+	}
+	item := character.Equipment[itemIndex]
+	if item.Readied {
+		return fmt.Errorf("cannot sell a readied item")
+	}
+	if item.Cursed {
+		return fmt.Errorf("cannot sell a cursed item")
+	}
+	if item.Value <= 0 {
+		return fmt.Errorf("item has no positive documented sale value")
+	}
+	s.moneyPool += uint32(item.Value)
+	character.Equipment = append(character.Equipment[:itemIndex], character.Equipment[itemIndex+1:]...)
+	if characterIndex < len(s.party) {
+		fighter, err := s.fighterForCharacter(*character)
+		if err != nil {
+			return err
+		}
+		s.party[characterIndex] = fighter
+	}
+	return nil
+}
+
 // AppraiseTreasure accepts an injected shopkeeper offer and transfers the
 // selected character's entire gem/jewelry holding into the party pool.
 func (s *State) AppraiseTreasure(characterIndex int, kind TreasureKind) (uint16, error) {
