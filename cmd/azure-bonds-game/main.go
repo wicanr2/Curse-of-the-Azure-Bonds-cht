@@ -50,6 +50,9 @@ type app struct {
 	face             font.Face
 	choiceCursor     int
 	partyPath        string
+	savgamDir        string
+	savgamSlot       byte
+	savgamSlotSave   bool
 	tilePreview      bool
 	tileImages       []*ebiten.Image
 	geoPreview       bool
@@ -107,6 +110,20 @@ func (a *app) syncSoundEvents() {
 	for _, event := range a.state.ConsumeSoundEvents() {
 		a.playSound(sound.ID(event))
 	}
+}
+
+func (a *app) saveCurrentGame() error {
+	if a.savgamSlotSave {
+		return a.state.SaveSAVGAMSlot(a.savgamDir, a.savgamSlot)
+	}
+	return a.state.SavePartyFile(a.partyPath)
+}
+
+func (a *app) saveTarget() string {
+	if a.savgamSlotSave {
+		return filepath.Join(a.savgamDir, fmt.Sprintf("savgam%c.dat", a.savgamSlot+('a'-'A')))
+	}
+	return a.partyPath
 }
 
 func (a *app) Update() error {
@@ -279,10 +296,10 @@ func (a *app) Update() error {
 		return a.state.OpenJournal()
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyF5) {
-		if err := a.state.SavePartyFile(a.partyPath); err != nil {
+		if err := a.saveCurrentGame(); err != nil {
 			a.state.Message = "儲存失敗：" + err.Error()
 		} else {
-			a.state.Message = "隊伍已儲存：" + a.partyPath
+			a.state.Message = "隊伍已儲存：" + a.saveTarget()
 		}
 		return nil
 	}
@@ -302,10 +319,10 @@ func (a *app) Update() error {
 		case game.ModeWilderness:
 			err := a.state.Select(a.choiceCursor)
 			if a.state.ConsumeSaveRequest() {
-				if saveErr := a.state.SavePartyFile(a.partyPath); saveErr != nil {
+				if saveErr := a.saveCurrentGame(); saveErr != nil {
 					a.state.Message = "儲存失敗：" + saveErr.Error()
 				} else {
-					a.state.Message = "隊伍已儲存：" + a.partyPath
+					a.state.Message = "隊伍已儲存：" + a.saveTarget()
 				}
 			}
 			if a.state.Mode == game.ModeWilderness {
@@ -1183,7 +1200,7 @@ func main() {
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	savgamDir := flag.String("savgam-dir", "", "directory containing reference savgam?.dat and CHRDAT player bundles")
-	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load with -savgam-dir")
+	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load and save with -savgam-dir")
 	dosCharacterID := flag.String("dos-character-id", "dos-character", "ID for a direct DOS character import")
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
@@ -1224,11 +1241,16 @@ func main() {
 	if soundErr != nil {
 		log.Printf("sound disabled: %v", soundErr)
 	}
+	var loadedSAVGAMSlot byte
 	if *savgamDir != "" || *savgamSlot != "" {
 		if *savgamDir == "" || len(*savgamSlot) != 1 || *partyLoadPath != "" || *dosCharacterRecord != "" {
 			log.Fatal("-savgam-dir/-savgam-slot require exactly one A..J key and cannot be combined with party/player import flags")
 		}
-		if err := state.LoadSAVGAMSlot(*savgamDir, strings.ToUpper(*savgamSlot)[0]); err != nil {
+		loadedSAVGAMSlot = strings.ToUpper(*savgamSlot)[0]
+		if loadedSAVGAMSlot < 'A' || loadedSAVGAMSlot > 'J' {
+			log.Fatal("-savgam-slot must be one letter A..J")
+		}
+		if err := state.LoadSAVGAMSlot(*savgamDir, loadedSAVGAMSlot); err != nil {
 			log.Fatal(err)
 		}
 	} else if *partyLoadPath != "" {
@@ -1291,7 +1313,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
