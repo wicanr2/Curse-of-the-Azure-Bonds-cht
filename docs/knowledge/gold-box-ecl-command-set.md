@@ -63,3 +63,8 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 
 `FIND ITEM`／`DESTROY ITEMS` 是另一組可跨作品重用的 inventory boundary；VM 只
 保存 item IDs，不應在缺 party roster context 時自行改 inventory 或 compare flags。
+
+目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
+party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
+的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party
+adapter」分層，但仍須各自驗證 item type namespace、compare result 與角色範圍。
