@@ -2392,7 +2392,7 @@ func (s *State) Continue() error {
 			s.enterCampMenu()
 			return nil
 		}
-		s.Mode = ModeWilderness
+		s.restoreWildernessMenu()
 		return nil
 	case ModePlace:
 		if s.shopMenu {
@@ -2471,12 +2471,16 @@ func (s *State) applyCitySelection() {
 }
 
 func (s *State) leaveLocation() {
-	s.Mode = ModeWilderness
+	s.restoreWildernessMenu()
 	s.MapX, s.MapY = 0, 0
+}
+
+func (s *State) restoreWildernessMenu() {
+	s.Mode = ModeWilderness
 	s.Choices = []string{
-		s.catalog.Text("enter_city", "Enter city"),
-		s.catalog.Text("journey_on", "Journey on"),
-		s.catalog.Text("camp", "Camp"),
+		s.catalog.Text("enter_city", "進入城市"),
+		s.catalog.Text("journey_on", "繼續旅程"),
+		s.catalog.Text("camp", "紮營"),
 	}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.Prompt = s.catalog.Text("press_button", "Press any button or Enter to continue")

@@ -978,6 +978,30 @@ func TestFinishedCombatSyncsRosterHitPointsForSaveAndCamp(t *testing.T) {
 	}
 }
 
+func TestCombatResultContinuationRestoresWildernessMenu(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
+	state.Choices = []string{"舊 ECL 選項"}
+	state.currentOriginalChoices = []string{"STALE"}
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1, ArmorClass: 0}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent {
+		t.Fatalf("combat did not produce result event: mode=%v", state.Mode)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("wilderness menu was not restored: mode=%v choices=%#v", state.Mode, state.currentOriginalChoices)
+	}
+}
+
 func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{
