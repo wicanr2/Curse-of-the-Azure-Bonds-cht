@@ -581,3 +581,13 @@ transaction 在後續 request error 時 rollback displace bit，不污染 live r
 
 第二百一十六輪文件 commit：`6a5f2ed`，更新 ECL AC／effects READY spec、Gold Box ECL／
 State 知識庫、README 與 PLAN，記錄 displace data mapping 與 transactional rollback。
+
+第二百一十七輪功能 commit：`8dc0c1e`，依 reference `damage_player` 將 ECL DAMAGE
+傷害結果投影到可向後相容的 `Character.HealthStatus`／`DamageOutcome.Health`：exact zero
+為 unconscious、1..9 overkill 為 dying、10+ overkill 為 dead，animated exact zero
+亦為 dead；非 OK／animated 狀態 HP 寫回 0。DOS 固定 player record 未被臆測新增欄位。
+Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十七輪文件 commit：`9ad9f79`，更新 ECL DAMAGE READY spec、Gold Box ECL／
+State 知識庫、README 與 PLAN，區分已完成的 health-state projection 與尚未接入的
+`CheckAffectsEffect(Death)`、bleeding、combatant removal、party win/loss continuation。
