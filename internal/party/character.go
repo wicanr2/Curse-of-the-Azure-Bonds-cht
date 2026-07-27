@@ -214,6 +214,8 @@ type Character struct {
 	RawClassID uint8     `json:"raw_class_id,omitempty"`
 	Abilities  Abilities `json:"abilities"`
 	Level      int       `json:"level"`
+	// Experience preserves the DOS Player.exp dword at offset 0x127.
+	Experience uint32 `json:"experience,omitempty"`
 	// ClassLevels preserves the eight raw DOS class-level slots. Class remains
 	// the primary-class projection used by the current combat rules layer.
 	ClassLevels [8]uint8 `json:"class_levels,omitempty"`

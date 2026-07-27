@@ -55,6 +55,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 		copy(out[0x109:0x111], character.ClassLevels[:])
 	}
 	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
+	binary.LittleEndian.PutUint32(out[0x127:0x12B], character.Experience)
 	if len(out) > 0x1A4 {
 		out[0x1A4] = uint8(character.HitPoints)
 	}
@@ -121,6 +122,7 @@ type DOSPlayerRecord struct {
 	MaxHitPoints     int
 	CurrentHitPoints int
 	Age              int16
+	Experience       uint32
 	ControlMorale    uint8
 	IconHead         uint8
 	IconWeapon       uint8
@@ -271,6 +273,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
 		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
+		Experience:    binary.LittleEndian.Uint32(data[0x127:0x12B]),
 		ControlMorale: data[0xF7],
 		IconHead:      data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Copper:           binary.LittleEndian.Uint16(data[0x0FB:0x0FD]),
@@ -297,7 +300,8 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		RawClassID: r.RawClass,
-		Level:      r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		Level:      r.Level, Age: r.Age, Experience: r.Experience,
+		HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale,
 		ClassLevels: r.ClassLevels,
 		Copper:      r.Copper, Silver: r.Silver, Electrum: r.Electrum,

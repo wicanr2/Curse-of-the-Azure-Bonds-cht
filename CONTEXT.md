@@ -1049,3 +1049,11 @@ Raise Dead 的 Constitution／多職業 max-HP penalty 保留明確 boundary。�
 首次證明 HEAD／BODY selectors 不同，新增可擴張 masked scene compositor，BODY `y+5`
 再覆蓋 HEAD，修正舊預產同號圖造成的缺圖／裁頭。新增 READY spec 285、
 `-temple` 入口與 640×480 `tilverton-gond-temple.png` README 截圖。
+
+第二百八十六輪成果：ECL2 GEO2 `(5,2)` terrain `0x8C` 的 Hall of Training 已由
+PICTURE 4／中文詢問接到場所限定 `PROGRAM 0`。依 `ovr018.train_player` 保存 DOS
+`Player.exp @ 0x127` dword，加入 cleric／fighter／paladin／ranger／magic-user／thief
+經驗門檻、1000 GP 角色付款、擲兩次 hit die 取高、Constitution 與 class-level／HP
+成長。一般 `PROGRAM 0` 返回標題的既有語意不變。新增 READY spec 286、`-training`
+重現入口與 640×480 README 截圖；高等級固定 HP、種族上限、完整多職業 CON 與升級
+選法術維持明確 boundary。

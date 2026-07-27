@@ -165,3 +165,10 @@ CoAB `ADD NPC (0x36)` 是 ID＋morale 兩 operands。真實 block 的第二 oper
 corpus gate除「無 unsupported opcode」外，也應鎖定 steps、PC、signal sequence 與後續文字／
 COMBAT，才能抓出這類 framing 錯誤。`DELAY (0x3A)` 是無 ECL-memory side effect 的 engine
 timing signal，runner應計數並繼續，renderer再決定實時呈現。
+# 場所限定 PROGRAM service
+
+CoAB ECL2 的 Hall of Training 證明 `PROGRAM 0` 不能只按 ID 全域解讀：terrain
+`0x8C` 的 YES 分支也呼叫 0，但 reference 會進入 `ovr018.train_player`。可沿用的
+Gold Box 分層方式是由 VM 保存 PROGRAM ID，再由作品 adapter 同時檢查 Area／terrain／
+return context；CoAB 其他 context 的 PROGRAM 0 才是返回主選單。訓練角色的 XP 是
+Player record `0x127` little-endian dword，Area training class mask 決定可訓練職業。

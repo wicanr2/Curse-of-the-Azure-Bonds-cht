@@ -293,6 +293,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	binary.LittleEndian.PutUint16(data[0x103:0x105], 44)
 	binary.LittleEndian.PutUint32(data[0x14D:0x151], 0x12345678)
 	binary.LittleEndian.PutUint32(data[0x0F2:0x0F6], 0x87654321)
+	binary.LittleEndian.PutUint32(data[0x127:0x12B], 2501)
 	data[DOSMemorizedSpellsOffset] = 15
 
 	record, err := ParseDOSPlayerRecord(data, "wizard-1")
@@ -301,7 +302,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 ||
 		record.Copper != 11 || record.Silver != 22 || record.Electrum != 33 ||
-		record.Gold != 123 || record.Platinum != 44 ||
+		record.Gold != 123 || record.Platinum != 44 || record.Experience != 2501 ||
 		record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
 		t.Fatalf("record=%#v", record)
 	}
@@ -321,7 +322,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if character.HitPoints != 18 || character.MaxHitPoints != 22 ||
 		character.Copper != 11 || character.Silver != 22 || character.Electrum != 33 ||
-		character.Gold != 123 || character.Platinum != 44 ||
+		character.Gold != 123 || character.Platinum != 44 || character.Experience != 2501 ||
 		character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || character.SavingThrowBonus != -2 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
@@ -337,12 +338,16 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	character.Age = 42
 	character.Copper, character.Silver, character.Electrum = 101, 102, 103
 	character.Gold, character.Platinum = 104, 105
+	character.Experience = 4001
 	patched, err := PatchDOSPlayerRecord(data, character)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if got := int16(binary.LittleEndian.Uint16(patched[0x76:0x78])); got != 42 {
 		t.Fatalf("patched DOS age=%d, want 42", got)
+	}
+	if got := binary.LittleEndian.Uint32(patched[0x127:0x12B]); got != 4001 {
+		t.Fatalf("patched DOS experience=%d, want 4001", got)
 	}
 	for offset, want := range map[int]uint16{
 		0x0FB: 101, 0x0FD: 102, 0x0FF: 103, 0x101: 104, 0x103: 105,
