@@ -87,6 +87,10 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	if !result.CombatRequested {
 		return fmt.Errorf("ECL result does not request combat")
 	}
+	s.combatReturnMode = ModeWilderness
+	if s.eclMenuReturnMode == ModeDungeon || s.eventReturnMode == ModeDungeon {
+		s.combatReturnMode = ModeDungeon
+	}
 	applyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites, len(party))
 	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, records, affects)
 	if err != nil {
@@ -119,6 +123,12 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_fighter", "戰士")
 	case "BLACK DRAGON":
 		return catalog.Text("monster_black_dragon", "黑龍")
+	case "DK ELF FIGHTER":
+		return catalog.Text("monster_dark_elf_fighter", "黑暗精靈戰士")
+	case "DARK ELF MAGE":
+		return catalog.Text("monster_dark_elf_mage", "黑暗精靈法師")
+	case "DARK ELF CLERIC":
+		return catalog.Text("monster_dark_elf_cleric", "黑暗精靈牧師")
 	default:
 		return name
 	}
@@ -1435,7 +1445,10 @@ func (s *State) finishCombat() error {
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
 	s.removeTemporaryCombatAllies()
-	s.eventReturnMode = ModeWilderness
+	s.eventReturnMode = s.combatReturnMode
+	if s.eventReturnMode != ModeDungeon {
+		s.eventReturnMode = ModeWilderness
+	}
 	s.OriginalEvent = "COMBAT"
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
 	s.Message = s.combatMessage

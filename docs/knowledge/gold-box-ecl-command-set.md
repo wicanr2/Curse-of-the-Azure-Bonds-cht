@@ -210,6 +210,15 @@ adapter 的 commit contract，不代表任意 Gold Box script 的原始 opcode �
 這是 VM 與作品 adapter 之間的隱性 ABI。新增 opcode 時應同時標明 effect 是立即 memory
 mutation、pause 前 commit、deferred service，或 resume-only continuation。
 
+## ENCOUNTER MENU behavior mode
+
+`CMD_EncounterMenu (0x29)` 的 operands 5–9 是 COMBAT／WAIT／FLEE／
+ADVANCE／PARLAY 各自的 behavior mode，不是 final branch value。reference
+會依選項、encounter distance、party movement 與 monster movement，把 mode
+解析成 destination `0..3`。已確認 COMBAT 對 modes `0/1/3/4` 一律得到 `1`；
+mode `2` 仍依雙方 movement 決定 `0` 或 `1`。共用 VM 不得再直接複製 mode
+到 destination；缺少 engine context 的 case 必須保留 boundary。
+
 ## CoAB ECL／engine memory ownership
 
 | address／range | owner／方向 | lifecycle |

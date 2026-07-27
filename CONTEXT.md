@@ -2,7 +2,14 @@
 
 更新日期：2026-07-28
 
-最新成果：正式流程已從哈普村外進入 Area 5／ECL5 block `0x31`。入口載入
+最新成果：哈普 ECL5 block `0x31` 的 terrain `0x80` 黑暗精靈巡邏已接通。
+依公開 reference 修正 opcode `0x29 ENCOUNTER MENU`：五個 script values 是
+behavior modes，COMBAT 對 modes 0/1/3/4 應解析為 destination `1`，不能直接
+複製 mode。seed 3 的正式流程建立三名 MON5 `0x31` 戰士與一名 `0x32` 法師，
+套用原版 icon 與繁中名稱；勝利後 `4C47=1` 並返回哈普 dungeon，而不是村外
+wilderness menu。規格與共用引擎結論收進 spec 308 與 ECL 指令集知識庫。
+
+先前成果：正式流程已從哈普村外進入 Area 5／ECL5 block `0x31`。入口載入
 map pieces `12,FF,FF`，顯示 640×480／24px 繁中荒村敘事後進入探索模式；
 terrain `0x84` 已接通 HEAD／PICTURE 50 的躲藏村民事件，可選離開或繼續
 交談，最後返回同一 resumable runtime。visited `4C02=1`、terrain dispatch

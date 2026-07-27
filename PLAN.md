@@ -467,3 +467,6 @@
   並完成前往哈普的三隻 MON1 `0x35` 黑龍戰與勝利後 world value `9` continuation。
 - [x] 從哈普村外進入 Area 5／ECL `0x31`，完成 map pieces `12,FF,FF`
   荒村入口，以及 terrain `0x84` PICTURE 50 躲藏村民的交談／返回探索流程。
+- [x] 依 reference 修正 ENCOUNTER MENU 的 behavior-mode COMBAT resolver，
+  接通哈普 terrain `0x80` 黑暗精靈巡邏、MON5 `0x31–0x33` 與戰勝後
+  `4C47` 累加／返回 dungeon continuation。

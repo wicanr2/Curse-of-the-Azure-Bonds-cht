@@ -781,6 +781,33 @@ func TestRunSubsetEncounterMenuPausesAndMapsSelection(t *testing.T) {
 	}
 }
 
+func TestRunSubsetEncounterMenuCombatResolvesBehaviorMode(t *testing.T) {
+	payload := []byte{0x29}
+	appendScalar := func(value byte) { payload = append(payload, 0x00, value) }
+	appendWord := func(value uint16) { payload = append(payload, 0x01, byte(value), byte(value>>8)) }
+	appendPacked := func() { payload = append(payload, 0x80, 0x00) }
+	appendScalar(0x31)
+	appendScalar(2)
+	appendScalar(0x31)
+	appendWord(0x7F79)
+	for _, value := range []byte{0, 3, 0, 3, 4} {
+		appendScalar(value)
+	}
+	appendPacked()
+	appendPacked()
+	appendPacked()
+	appendScalar(12)
+	appendScalar(12)
+	payload = append(payload, 0x00)
+	result, err := RunSubsetInteractive(append([]byte{0, 0}, payload...), 0, 8, []uint16{0})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.EncounterActions) != 1 || result.EncounterActions[0] != 1 {
+		t.Fatalf("combat encounter action=%v, want resolved ON GOTO value 1", result.EncounterActions)
+	}
+}
+
 func TestRuntimeStateResumesAtPausedMenu(t *testing.T) {
 	block := []byte{0, 0,
 		0x2B, 0x02, 0x00, 0x90, 0x00, 0x01,

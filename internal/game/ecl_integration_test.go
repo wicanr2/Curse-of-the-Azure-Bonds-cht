@@ -1735,6 +1735,19 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		monsterRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(1, monsterRecords)
+	monster5Blocks, err := dax.Parse(zipData(t, image, "MON5CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monster5Records := make(map[uint8]monster.Record, len(monster5Blocks))
+	for _, block := range monster5Blocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster5Records[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(5, monster5Records)
 	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{{
 		ID: "leader", Name: "火刀首領", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1,
 	}}, 7); err != nil {
@@ -2094,6 +2107,52 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeDungeon {
 		t.Fatalf("Hap peasant event returned mode=%v, want dungeon", state.Mode)
+	}
+	state.DungeonWallRoof = 0x80
+	state.eclSeed = 3
+	session.SetMemoryValue(0x4BC9, 15)
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) ||
+		state.Prompt != "一隊黑暗精靈巡邏兵出現了" {
+		t.Fatalf("Hap patrol choices=%#v prompt=%q", state.currentOriginalChoices, state.Prompt)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !strings.Contains(state.Message, "死得痛快") {
+		t.Fatalf("Hap patrol combat mode=%v message=%q", state.Mode, state.Message)
+	}
+	patrolFighters := state.CombatFighters()
+	if len(patrolFighters) != 5 {
+		t.Fatalf("Hap patrol fighters=%d, want hero, three fighters, and one mage", len(patrolFighters))
+	}
+	for _, fighter := range patrolFighters[1:4] {
+		if fighter.Name != "黑暗精靈戰士" || fighter.SpriteBlock != 0x31 {
+			t.Fatalf("Hap dark elf fighter=%+v", fighter)
+		}
+	}
+	if patrolFighters[4].Name != "黑暗精靈法師" || patrolFighters[4].SpriteBlock != 0x32 {
+		t.Fatalf("Hap dark elf mage=%+v", patrolFighters[4])
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent || state.Message != "戰鬥勝利！" {
+		t.Fatalf("Hap patrol victory mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Hap patrol continuation mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C47); !ok || got != 1 {
+		t.Fatalf("Hap defeated patrol count=%#x,%v want 1", got, ok)
 	}
 }
 
