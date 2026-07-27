@@ -126,6 +126,21 @@ func (f Fighter) MonsterAffectArmorClassBonus() int {
 	return bonus
 }
 
+// MonsterAffectAttacksPerTurn projects the verified Haste multiplier over
+// the decoded MON*CHA attacksCount field.
+func (f Fighter) MonsterAffectAttacksPerTurn() int {
+	attacks := f.AttacksPerTurn
+	if attacks < 1 {
+		attacks = 1
+	}
+	for _, affect := range f.MonsterAffects {
+		if affect.Active && affect.Kind == 0x27 {
+			attacks *= 2
+		}
+	}
+	return attacks
+}
+
 const MonsterMagicMissileSpellID uint8 = 0x0F
 
 // ActionState mirrors the per-player fields cleared by the reference

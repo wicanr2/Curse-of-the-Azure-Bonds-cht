@@ -35,6 +35,7 @@ func BuildEnemiesWithAffects(spawns []ecl.MonsterSpawn, records map[uint8]Record
 					Strength: affect.Strength, Active: affect.Active, Data: affect.Data,
 				})
 			}
+			fighter.AttacksPerTurn = fighter.MonsterAffectAttacksPerTurn()
 			fighter.SpriteBlock = spawn.IconBlock
 			enemies = append(enemies, fighter)
 		}

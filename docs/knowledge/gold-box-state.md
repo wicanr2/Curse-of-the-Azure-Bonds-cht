@@ -66,6 +66,11 @@ fighter 的 `MonsterAffects`。這只證明 raw attachment 與生命週期邊界
 `CanHitTarget` 的 `CheckAffectsEffect(Type_16)` 會讓 `0x19`／`0x47` 攻擊骰 -4，combat
 core 以目標 AC +4 表示，並只對 active raw records 生效；effect record 本身不被消耗。
 
+Monster 的攻擊次數也不再完全依賴 synthetic default：reference `load_mob` 的
+`field_A1` 已解析為 `Record.AttacksPerTurn`，再由 active Haste `0x27` 依
+`AffectHaste` 加倍。這仍未包含 Slow、movement half-actions、遠程彈藥與完整
+`reclac_attacks` weapon profile。
+
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
 亂數選一個可見／可達目標；目前 remake 以 sorted fighter ID + Battle seeded RNG
