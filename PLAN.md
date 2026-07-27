@@ -214,6 +214,7 @@
 - [x] 將 remake F5/F9 擴充為可恢復 Area、location、mode 與 map 座標的版本 2 game save。
 - [x] 將 remake F5/F9 擴充為 version 3 dungeon 3D preview 位置／方向 save state，並保留 v1/v2 舊檔安全 defaults。
 - [x] 將 dungeon preview Q/E 接成 reference 八方向 facing rotation，重建 Far／Mid／Near wall view 並覆蓋 wrap regression。
+- [x] 將 reference dungeon 16×16 coordinate wrap 接成明確 wrapped GEO／wall traversal API，讓 preview 跨邊界移動並保留 strict API。
 - [x] 將 opening city menu routing 到暗影谷、阿沙本福德、匕首瀑布，並使用對應 wilderness city flags。
 - [x] 從 CPIC1–CPIC6 抽出戰鬥小人 PNG、manifest 與可重現 sprite sheet。
 - [x] 將 CPIC block mapping 與戰鬥場景 Ebiten renderer 接通。

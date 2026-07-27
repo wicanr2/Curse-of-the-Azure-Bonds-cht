@@ -72,3 +72,18 @@ func TestTraverseWallViewRejectsInvalidDirection(t *testing.T) {
 		t.Fatal("expected invalid direction error")
 	}
 }
+
+func TestTraverseWallViewWrappedReadsAcrossMapEdge(t *testing.T) {
+	var grid geo.Grid
+	grid.Cells[geo.Height-2][8].WallDirections[0] = 3
+	view, err := TraverseWallViewWrapped(grid, 0, 8, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, call := range view.Calls {
+		if call.Depth == 2 && call.MapX == 8 && call.MapY == -2 && call.WallType == 3 {
+			return
+		}
+	}
+	t.Fatalf("wrapped far wall not found in %+v", view.Calls)
+}

@@ -435,3 +435,5 @@
 第一百六十五輪功能 commit：`6f530a9`，已推送至 GitHub `main`。將 dungeon preview 的 `(x,y,direction)` 接入 remake game save version 3；v1/v2 舊檔與越界值回到安全預設，F9／啟動載入後重建 floor／wall view。新增 save codec／game adapter round-trip regression、READY 規格與共用 state knowledge。原版 DOS `SAVGAM?.DAT` container 與 Area 真實座標寫回仍保留 boundary。
 
 第一百六十六輪功能 commit：`e45cd03`，已推送至 GitHub `main`。將 dungeon preview Q/E 接成 reference 八方向 facing rotation（`±2`），轉向後重建 Far／Mid／Near wall view；新增 state wrap regression、READY 規格與共用 state knowledge。Area 真實 `mapDirection`、轉向時間、sky／roof／door overlay 與完整 3D viewport 仍保留 boundary。
+
+第一百六十七輪待提交：依 reference `getMap_XXX`／`MovePositionForward` 將 dungeon 16×16 coordinate wrap 接成明確 `geo` wrapped API、wrapped Far／Mid／Near traversal 與 preview 跨邊界 movement；strict API 保留給不允許 wrap 的 context。原版 `mapWallType/mapWallRoof` 五-byte save segment、ECL 例外判斷與完整 3D overlay 仍保留 boundary。
