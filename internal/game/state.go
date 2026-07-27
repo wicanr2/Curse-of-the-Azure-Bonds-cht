@@ -159,6 +159,7 @@ type State struct {
 	pendingSpellSearches   []ecl.SpellSearch
 	pendingDamageRequests  []ecl.DamageRequest
 	pendingProtection      []uint16
+	pendingTreasure        []ecl.TreasureRequest
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
@@ -719,6 +720,7 @@ func (s *State) Select(index int) error {
 			return err
 		}
 		s.applyECLInventorySignals(result)
+		s.applyECLTreasureSignals(result)
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.Message = localizeECLText(s.catalog, result.Text)
@@ -921,6 +923,20 @@ func (s *State) applyECLInventorySignals(result ecl.RunResult) {
 			s.partyRoster[characterIndex].DestroyItemType(uint8(itemID))
 		}
 	}
+}
+
+// applyECLTreasureSignals keeps the raw loot request available to the item
+// and money adapters. It intentionally does not load ITEM*.DAX or generate
+// random treasure here: those operations need the active area and item data.
+func (s *State) applyECLTreasureSignals(result ecl.RunResult) {
+	s.pendingTreasure = append(s.pendingTreasure, result.TreasureRequests...)
+}
+
+// ConsumeTreasureRequests transfers pending ECL TREASURE requests exactly once.
+func (s *State) ConsumeTreasureRequests() []ecl.TreasureRequest {
+	requests := append([]ecl.TreasureRequest(nil), s.pendingTreasure...)
+	s.pendingTreasure = nil
+	return requests
 }
 
 // ConsumeSpellSearches transfers pending ECL SPELL requests exactly once.

@@ -406,12 +406,12 @@ func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	}
 }
 
-func TestRunSubsetConsumesTreasureOperandsAsBoundedNoOp(t *testing.T) {
-	// TREASURE has eight decoded operands. The bounded runner must consume
-	// them before continuing to EXIT, without inventing inventory effects.
+func TestRunSubsetEmitsTreasureOperands(t *testing.T) {
+	// TREASURE has eight decoded operands. The bounded runner must preserve
+	// their raw values before continuing to EXIT.
 	payload := []byte{0x27}
-	for i := 0; i < 8; i++ {
-		payload = append(payload, 0x00, 0x00)
+	for i := 1; i <= 8; i++ {
+		payload = append(payload, 0x00, byte(i))
 	}
 	payload = append(payload, 0x00)
 	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 10)
@@ -420,6 +420,9 @@ func TestRunSubsetConsumesTreasureOperandsAsBoundedNoOp(t *testing.T) {
 	}
 	if result.Steps != 2 || result.PC != len(payload) {
 		t.Fatalf("result=%+v, want TREASURE then EXIT", result)
+	}
+	if len(result.TreasureRequests) != 1 || result.TreasureRequests[0].Coins[0] != 1 || result.TreasureRequests[0].Coins[6] != 7 || result.TreasureRequests[0].ItemBlock != 8 {
+		t.Fatalf("treasure=%+v, want seven coin counts and item block", result.TreasureRequests)
 	}
 }
 
