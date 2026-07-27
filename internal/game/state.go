@@ -5043,6 +5043,14 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_lava_tube_ambush",
 			"熱浪從隱蔽凹室中湧出，緊接著火蜥蜴與黑暗精靈一擁而上。",
 		)
+	case strings.Contains(joined, "THE DOOR IS GUARDED BY A SALAMANDER LED PATROL"):
+		return catalog.Text("ecl_lava_tube_guarded_door", "門前由一支火蜥蜴率領的巡邏隊把守。")
+	case strings.Contains(joined, "A DREAM-LIKE VOICE IN YOUR HEAD SAYS") &&
+		strings.Contains(joined, "BE FULLY PREPARED"):
+		return catalog.Text(
+			"ecl_lava_tube_dream_warning",
+			"一個夢境般的聲音在腦中響起：「前方危機重重，務必做好萬全準備！」",
+		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):
 		return catalog.Text(

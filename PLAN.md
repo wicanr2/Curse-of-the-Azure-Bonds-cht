@@ -479,3 +479,6 @@
 - [x] 從哈普解放後地圖選擇 CAVES，正式進入 ECL5 block `0x32` 古老熔岩洞；
   完成 4 隻火蜥蜴＋3 名黑暗精靈入口戰、跨 NEWECL work-byte 清理、
   `-lava-tube` 640×480 重現入口與 README 實機圖。
+- [x] 接通 GEO5 block `0x32` `(9,10)` terrain `0x8A` 火蜥蜴守門巡邏：
+  3 火蜥蜴＋3 黑暗精靈戰士＋1 牧師、`4C48` bit 3 與戰後夢境警告；
+  共用知識庫補正 `ON GOTO` selector 1 對應第一個 target。

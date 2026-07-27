@@ -180,6 +180,11 @@ PRINT RETURN。640×480 renderer 不可只畫 choices 而丟掉 `State.Message`�
 上方以 24px CJK 字形排敘事，再把短選項移到下方。這與 PICTURE caption、純選單
 是三種不同 layout boundary。
 
+戰鬥結束後的 presentation 也由 script boundary 決定。熔岩洞守門戰在 COMBAT
+continuation 後立刻 PRINT 夢境警告，因此 State 可能直接進入帶單一
+press-button choice 的 `ModeWilderness`，而不先停在泛用勝利頁。renderer 與測試
+不可假設每場勝利都必然多一次 Continue。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。
