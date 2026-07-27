@@ -99,3 +99,29 @@ func TestCanHitECLDamageTargetBlinkCanOverrideNaturalTwenty(t *testing.T) {
 		t.Fatalf("blink after action delay hit=%t err=%v, want hit", hit, err)
 	}
 }
+
+func TestCanHitECLDamageTargetDisplaceConsumesFirstHit(t *testing.T) {
+	target := Character{Effects: []monster.AffectRecord{{Kind: 0x59, Active: true}}}
+	hit, err := CanHitECLDamageTargetWithContext(target, 10, 0, ECLHitContext{CombatRound: 1}, func(int) int { return 20 })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if hit || target.Effects[0].Data[0]&0x10 == 0 {
+		t.Fatalf("first displaced hit=%t data=%02x, want miss and consumed bit", hit, target.Effects[0].Data[0])
+	}
+	hit, err = CanHitECLDamageTargetWithContext(target, 10, 0, ECLHitContext{CombatRound: 1}, func(int) int { return 20 })
+	if err != nil || !hit {
+		t.Fatalf("second displaced hit=%t err=%v, want hit after consumed bit", hit, err)
+	}
+}
+
+func TestCanHitECLDamageDisplaceClearsBitAtRoundStartWhenRollIsZero(t *testing.T) {
+	target := Character{Effects: []monster.AffectRecord{
+		{Kind: 0x19, Active: true},
+		{Kind: 0x59, Active: true, Data: [4]byte{0x10}},
+	}}
+	hit, err := CanHitECLDamageTargetWithContext(target, -1, 0, ECLHitContext{CombatRound: 0}, func(int) int { return 4 })
+	if err != nil || !hit || target.Effects[1].Data[0]&0x10 != 0 {
+		t.Fatalf("round-start displace hit=%t data=%02x err=%v, want hit and cleared bit", hit, target.Effects[1].Data[0], err)
+	}
+}
