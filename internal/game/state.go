@@ -151,6 +151,8 @@ type State struct {
 	mapSeed                int64
 	geoMapPending          bool
 	loadPiecesPending      bool
+	pendingSpellSearches   []ecl.SpellSearch
+	pendingProtection      []uint16
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
@@ -617,6 +619,7 @@ func (s *State) Select(index int) error {
 		}
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
+		s.applySpellSignals(result)
 		s.applyCitySelection()
 		if result.PictureRequested {
 			if !s.picturesEnabled {
@@ -769,6 +772,35 @@ func (s *State) ConsumeLoadPiecesRequest() (pieces [3]uint16, ok bool) {
 	}
 	s.loadPiecesPending = false
 	return s.LoadPieces, true
+}
+
+// applySpellSignals transfers ECL SPELL/PROTECTION requests to the game
+// boundary without guessing their party or combat side effects. The ECL
+// runner may reach these signals before a picture/menu pause, so they must
+// survive the current State event until a party/rules adapter consumes them.
+func (s *State) applySpellSignals(result ecl.RunResult) {
+	if len(result.SpellSearches) > 0 {
+		s.pendingSpellSearches = append(s.pendingSpellSearches, result.SpellSearches...)
+	}
+	if len(result.ProtectionRequests) > 0 {
+		s.pendingProtection = append(s.pendingProtection, result.ProtectionRequests...)
+	}
+}
+
+// ConsumeSpellSearches transfers pending ECL SPELL requests exactly once.
+func (s *State) ConsumeSpellSearches() []ecl.SpellSearch {
+	requests := append([]ecl.SpellSearch(nil), s.pendingSpellSearches...)
+	s.pendingSpellSearches = nil
+	return requests
+}
+
+// ConsumeProtectionRequests transfers pending ECL PROTECTION requests
+// exactly once. Address resolution remains the responsibility of the
+// work-specific party/runtime adapter.
+func (s *State) ConsumeProtectionRequests() []uint16 {
+	requests := append([]uint16(nil), s.pendingProtection...)
+	s.pendingProtection = nil
+	return requests
 }
 
 // Camp applies the observable PROGRAM 9 transition by opening the CAMP menu.

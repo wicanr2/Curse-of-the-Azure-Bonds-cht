@@ -472,6 +472,25 @@ func TestECLLoadPiecesTransfersRequestOnce(t *testing.T) {
 	}
 }
 
+func TestECLSpellSignalsTransferToStateOnce(t *testing.T) {
+	state := NewState(testCatalog())
+	state.applySpellSignals(ecl.RunResult{
+		SpellSearches:      []ecl.SpellSearch{{SpellID: 0x12, SpellSlotAddress: 0x100, CharacterAddress: 0x200}},
+		ProtectionRequests: []uint16{0x7C02},
+	})
+	spells := state.ConsumeSpellSearches()
+	if len(spells) != 1 || spells[0].SpellID != 0x12 || spells[0].SpellSlotAddress != 0x100 || spells[0].CharacterAddress != 0x200 {
+		t.Fatalf("spell requests=%#v", spells)
+	}
+	protection := state.ConsumeProtectionRequests()
+	if len(protection) != 1 || protection[0] != 0x7C02 {
+		t.Fatalf("protection requests=%#v", protection)
+	}
+	if len(state.ConsumeSpellSearches()) != 0 || len(state.ConsumeProtectionRequests()) != 0 {
+		t.Fatal("ECL spell signals were not consumed exactly once")
+	}
+}
+
 func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"
