@@ -491,6 +491,21 @@ func TestECLSpellSignalsTransferToStateOnce(t *testing.T) {
 	}
 }
 
+func TestECLDamageSignalsTransferToStateOnce(t *testing.T) {
+	state := NewState(testCatalog())
+	state.applyECLDamageSignals(ecl.RunResult{
+		DamageRequests: []ecl.DamageRequest{{Flags: 0xA0, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x80}},
+	})
+	requests := state.ConsumeDamageRequests()
+	want := ecl.DamageRequest{Flags: 0xA0, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x80}
+	if len(requests) != 1 || requests[0] != want {
+		t.Fatalf("damage requests=%#v, want %#v", requests, want)
+	}
+	if len(state.ConsumeDamageRequests()) != 0 {
+		t.Fatal("ECL damage signals were not consumed exactly once")
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

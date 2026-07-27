@@ -153,6 +153,7 @@ type State struct {
 	geoMapPending          bool
 	loadPiecesPending      bool
 	pendingSpellSearches   []ecl.SpellSearch
+	pendingDamageRequests  []ecl.DamageRequest
 	pendingProtection      []uint16
 	shopMenu               bool
 	shopOffers             []ShopOffer
@@ -667,6 +668,7 @@ func (s *State) Select(index int) error {
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
 		s.applySpellSignals(result)
+		s.applyECLDamageSignals(result)
 		s.applyECLInventorySignals(result)
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
@@ -839,6 +841,16 @@ func (s *State) applySpellSignals(result ecl.RunResult) {
 	}
 }
 
+// applyECLDamageSignals preserves ECL environmental／script damage requests
+// until a party rules adapter can resolve target selection, saving throws and
+// deterministic dice. The bounded VM signal must survive State.Select just as
+// SPELL and PROTECTION do; it must not silently become a fixed HP mutation.
+func (s *State) applyECLDamageSignals(result ecl.RunResult) {
+	if len(result.DamageRequests) > 0 {
+		s.pendingDamageRequests = append(s.pendingDamageRequests, result.DamageRequests...)
+	}
+}
+
 // applyECLInventorySignals is the party adapter for the bounded ECL
 // inventory commands. FIND ITEM remains an observable query; DESTROY ITEMS
 // is the verified mutation and is applied to the persistent roster.
@@ -854,6 +866,15 @@ func (s *State) applyECLInventorySignals(result ecl.RunResult) {
 func (s *State) ConsumeSpellSearches() []ecl.SpellSearch {
 	requests := append([]ecl.SpellSearch(nil), s.pendingSpellSearches...)
 	s.pendingSpellSearches = nil
+	return requests
+}
+
+// ConsumeDamageRequests transfers pending ECL DAMAGE requests exactly once.
+// A later party/rules adapter owns target selection, saving throws, dice and
+// HP writeback; this API intentionally returns the original raw operands.
+func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
+	requests := append([]ecl.DamageRequest(nil), s.pendingDamageRequests...)
+	s.pendingDamageRequests = nil
 	return requests
 }
 
