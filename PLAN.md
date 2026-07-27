@@ -59,6 +59,7 @@
 - Ebiten command 能編譯並使用 `internal/game.State`。
 - 啟動畫面、輸入與繁中 catalog 已連通。
 - [x] 將 remake 邏輯畫布擴為 640×480，事件圖下方保留三行大型繁中敘事與獨立操作列。
+- [x] 正式 new-game block 0x01 完成後依 ECL EXIT 與 C04B–C04D registers 進入荒野 (7,13)，移除人造中介選單。
 - 字型以外部路徑注入，避免將未確認授權的字型提交至 repo。
 
 ## 第十輪驗收

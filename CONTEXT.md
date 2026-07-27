@@ -985,3 +985,9 @@ boundary擴充到 menu，Ebiten圖片下方顯示三行漸顯文字；real regre
 鎖定 block identity、兩段文字、picture、menu與 pieces。配合繁中文字較大，Ebiten
 邏輯畫布也由 640×400 擴為 640×480；88px PIC／人物圖以 nearest-neighbor 3×、BIGPIC
 以 2× 整數像素放大，文字則以 24px 高解析字型重繪，下方保留三行訊息與獨立 Enter 提示列。
+
+第二百七十九輪未提交成果：真實 ECL2 block 1 在兩次 Continue 後於 `+0x1CBB` 執行
+`EXIT`；序幕已將 map X/Y/direction 寫為 `C04B/C04C/C04D = 7/13/1`。Runner 新增明確
+`Exited` lifecycle signal，BlockSession 提供 read-only shared memory word；State 僅在
+active new-game transaction 完成時直接進入 wilderness `ModeMap (7,13)`、方向 1，
+移除人造中介選單。新增 real-image regression 與 READY spec 279。

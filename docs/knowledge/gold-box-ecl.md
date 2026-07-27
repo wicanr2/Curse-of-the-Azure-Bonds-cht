@@ -13,6 +13,14 @@ CoAB 目前的 corpus gate 固定原始 ECL1–ECL6 共 25 blocks／125 initiali
 青色枷背景文字，party side effect完全不同。fresh new-game reset與 NEWECL continuation
 也必須是兩個 API。
 
+## EXIT 是 lifecycle signal
+
+Opcode `0x00 EXIT` 不只是 runner 正常返回。作品 adapter 必須能區分「真的執行 EXIT」、
+menu／WHO input pause、步數上限與 unsupported stop。CoAB block `0x01` 的 initial EXIT
+會把控制權交回 `sub_29758` world loop；若只看到 `WaitingForMenu=false` 就回到泛用 menu，
+會憑空改寫原版流程。共享 VM memory 可提供 script-written registers，但位址的作品語意
+應留在 work adapter，不放進共用 ECL interpreter。
+
 ## Evidence discipline
 
 當 real entry 在 operand 1 出現 `code 0x01` 時，不能直接把它當 literal monster count。應先反組 `SAVE／memory` operand semantics，再修改 `DecodeMonsterSpawn`／`DecodeMonsterSetup`；否則會把 ECL 的 runtime variable 誤解成固定 encounter。

@@ -15,6 +15,9 @@ func TestRunSubsetPrintsPackedTextAndStops(t *testing.T) {
 	if result.Steps != 2 {
 		t.Fatalf("steps=%d, want 2", result.Steps)
 	}
+	if !result.Exited {
+		t.Fatal("EXIT command did not expose lifecycle completion")
+	}
 }
 
 func TestRunSubsetIFSkipsOneCompleteCommand(t *testing.T) {

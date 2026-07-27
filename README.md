@@ -154,6 +154,8 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 正式角色建立完成後會 reset 到 global ECL block `0x01`，顯示繁中「小房間醒來、
   裝備與記憶消失」及 PIC 0x0A 的青色印記事件；圖片後的 Continue menu 不再遺失。
   沒有隊伍時在標題按 Enter 會直接開角色建立，完成後自動進入這條正式流程。
+- 正式 block `0x01` 的第二次 Continue 後已依真實 `EXIT` 進入荒野主迴圈；script 寫入的
+  `0xC04B/0xC04C/0xC04D` 會還原起點 `(7,13)` 與方向 `1`，不再返回 remake 自造選單。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。

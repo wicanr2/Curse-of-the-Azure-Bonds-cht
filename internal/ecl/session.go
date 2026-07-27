@@ -43,6 +43,18 @@ func (s *BlockSession) CurrentData() []byte {
 	return append([]byte(nil), s.blocks[s.current]...)
 }
 
+// MemoryValue exposes one word from the shared ECL VM memory for the work
+// adapter. Addresses such as 0xC04B..0xC04D are reference engine registers
+// written by scripts before control returns to the world loop.
+func (s *BlockSession) MemoryValue(address uint16) (uint16, bool) {
+	state := s.states[s.current]
+	if state == nil {
+		return 0, false
+	}
+	value, ok := state.Memory[address]
+	return value, ok
+}
+
 func (s *BlockSession) Switch(id uint8) error {
 	if _, ok := s.blocks[id]; !ok {
 		return fmt.Errorf("ECL session target block 0x%02X is unavailable", id)
@@ -170,6 +182,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
 		aggregate.PC = result.PC
+		aggregate.Exited = aggregate.Exited || result.Exited
 		aggregate.CombatRequested = aggregate.CombatRequested || result.CombatRequested
 		if result.MonsterSetup != nil {
 			setup := *result.MonsterSetup
