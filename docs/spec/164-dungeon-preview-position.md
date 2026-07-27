@@ -11,4 +11,4 @@
 
 ## 邊界
 
-這是 renderer preview 的 position slice，不是完整原版 party camera：尚未接 Area／save 的真實座標、方向轉向、ECL context wrap、遭遇觸發、movement cost 或 scroll animation。
+這是 renderer preview 的 position slice，不是完整原版 party camera：第 165 輪已接 remake save 的座標與方向欄位；本輪仍不宣稱完成 Area 真實座標、ECL context wrap、遭遇觸發、movement cost 或 scroll animation。

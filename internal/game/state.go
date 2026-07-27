@@ -484,6 +484,17 @@ func (s *State) SetAreaState(value area.State) {
 
 func (s *State) SetInDungeon(value bool) { s.Area.InDungeon = value }
 
+// TurnDungeon rotates the dungeon camera in the reference eight-direction
+// order (north, northeast, east, ...). The renderer owns movement, while the
+// game state owns the persisted facing value.
+func (s *State) TurnDungeon(delta int) {
+	direction := (int(s.DungeonDirection) + delta) % 8
+	if direction < 0 {
+		direction += 8
+	}
+	s.DungeonDirection = uint8(direction)
+}
+
 func (s *State) Apply(action Action) error {
 	switch {
 	case s.Mode == ModeTitle && action == ActionStart:
