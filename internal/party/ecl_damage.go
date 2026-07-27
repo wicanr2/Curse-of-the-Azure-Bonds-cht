@@ -14,7 +14,13 @@ type DamageOutcome struct {
 	Applied     int
 	SaveRoll    int
 	Saved       bool
+	Hit         bool
 }
+
+// DamageHitResolver supplies the original CanHitTarget branch. It receives
+// the raw command bonus and the same injected d20 source used by damage and
+// target selection, so natural 1/20 handling remains visible to the adapter.
+type DamageHitResolver func(target Character, bonus int, rollDie func(int) int) (bool, error)
 
 // ApplyDamage clamps HP at zero and reports the amount actually removed.
 func (c *Character) ApplyDamage(amount int) int {
@@ -33,6 +39,13 @@ func (c *Character) ApplyDamage(amount int) int {
 // are preserved here; random-target and CanHitTarget branches remain explicit
 // errors until their party selection context is available.
 func (r Roster) ApplyECLDamage(request ecl.DamageRequest, selectedIndex int, rollDie, rollSave func(int) int) ([]DamageOutcome, error) {
+	return r.ApplyECLDamageWithHitResolver(request, selectedIndex, rollDie, rollSave, nil)
+}
+
+// ApplyECLDamageWithHitResolver extends ApplyECLDamage with the verified
+// random-target/CanHitTarget branch. A nil hit resolver keeps that branch an
+// explicit boundary while preserving the older selected-target API.
+func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selectedIndex int, rollDie, rollSave func(int) int, hitTarget DamageHitResolver) ([]DamageOutcome, error) {
 	if len(r) == 0 {
 		return nil, fmt.Errorf("ECL DAMAGE requires a non-empty party")
 	}
@@ -53,13 +66,39 @@ func (r Roster) ApplyECLDamage(request ecl.DamageRequest, selectedIndex int, rol
 		}
 		return total, nil
 	}
-	if request.Flags&0x80 == 0 {
-		return nil, fmt.Errorf("ECL DAMAGE random-target branch is not resolved")
-	}
-
 	damage, err := rollDamage()
 	if err != nil {
 		return nil, err
+	}
+	if request.Flags&0x80 == 0 {
+		if hitTarget == nil {
+			return nil, fmt.Errorf("ECL DAMAGE random-target branch requires CanHitTarget resolver")
+		}
+		count := int(uint8(request.Flags))
+		outcomes := make([]DamageOutcome, 0, count)
+		for index := 0; index < count; index++ {
+			targetRoll := rollDie(len(r))
+			if targetRoll < 1 || targetRoll > len(r) {
+				return nil, fmt.Errorf("ECL DAMAGE target roll %d is outside 1..%d", targetRoll, len(r))
+			}
+			targetIndex := targetRoll - 1
+			hit, hitErr := hitTarget(r[targetIndex], int(uint8(request.SaveFlags)), rollDie)
+			if hitErr != nil {
+				return nil, hitErr
+			}
+			outcome := DamageOutcome{TargetIndex: targetIndex, DamageRoll: damage, Hit: hit}
+			if hit {
+				outcome.Applied = r[targetIndex].ApplyDamage(damage)
+			}
+			outcomes = append(outcomes, outcome)
+			// The reference rerolls the next damage packet after every random
+			// target attempt; retaining that order keeps replay streams stable.
+			damage, err = rollDamage()
+			if err != nil {
+				return nil, err
+			}
+		}
+		return outcomes, nil
 	}
 	saveBonus := int(request.Flags & 0x1F)
 	saveType := uint8(request.SaveFlags & 7)
