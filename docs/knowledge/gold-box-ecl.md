@@ -73,5 +73,7 @@ adapter 保存；selected／whole-party branches 與 random target 可注入 dic
 resolver 後寫回 roster HP。DOS `field_186` saving bonus 已由 party adapter 保存並
 納入 save threshold；State 的 default hit resolver 也會投影 fighter／equipment AC，
 並套用已證實的 invisibility `0x19`／`0x47` -4 attack roll 與 action-delay-aware
-blink `0x25`。State context variant 可傳入目前 action delay；displace／其他
-`CheckAffectsEffect` 規則與死亡流程仍保留 boundary。
+blink `0x25`。State context variant 可傳入目前 action delay／combat round；displace
+`0x59` 會依 FX effect-data 第一 byte 的 `0x10` consumed bit 實作首次 miss 與後續
+命中；State resolver 會在 transaction working roster deep-copy effects，避免失敗
+request 洩漏 consumed bit。其他 `CheckAffectsEffect` 規則與死亡流程仍保留 boundary。

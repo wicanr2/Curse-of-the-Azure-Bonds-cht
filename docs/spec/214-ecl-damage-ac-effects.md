@@ -18,11 +18,14 @@ ECL damage save bonus。
 - `CanHitECLDamageTargetWithContext` 實作 raw AC、natural 1／20、active invisibility
   `-4` 與 action-delay-aware blink；State default resolver 優先使用 decoded equipment
   AC，未就緒時使用 Character AC，並提供 context variant。
-- displace 仍需要 persistent affect-data context，由 injected hit resolver 處理；death
-  transition 與其他 `CheckAffectsEffect` 項目不在本輪假裝完成。
+- displace 使用 FX effect-data 第一 byte 的 persistent `0x10` consumed bit，並依
+  `combat_round == 0 && attack_roll == 0` 清除該 bit；State context adapter 會 deep-copy
+  effect slice，成功時持久化、失敗時 rollback。death transition 與其他
+  `CheckAffectsEffect` 項目仍不在本輪假裝完成。
 
 ## 驗收
 
 party parser／damage tests 覆蓋 `field_186=-2`、saving roll、invisibility modifier 與
-blink 覆寫 natural 20；game test 覆蓋 State default resolver、projected AC 與 blink
-context。相關 packages Docker 測試通過。
+blink 覆寫 natural 20、displace 首次 miss／bit consume／後續命中與 round-start reset；
+game test 覆蓋 State default resolver、projected AC、blink context 與 transactional
+rollback。相關 packages Docker 測試通過。
