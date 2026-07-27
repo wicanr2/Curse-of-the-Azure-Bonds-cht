@@ -611,3 +611,16 @@ bleeding、完整 combatant removal 仍保留 boundary。Docker 已通過 `inter
 
 第二百一十九輪文件 commit：`b31e551`，更新 death/effect READY spec、Gold Box ECL／
 State 知識庫、README 與 PLAN，記錄 cleanup table 與尚未解出的 Death side effects。
+
+第二百二十輪功能 commit：`eb24633`，依 reference `CheckAffectsEffect(Death)`／
+`sub_3BEE8`／`AffectTrollFireOrAcid` 建立 `DeathEffectContext` 與
+`Character.ApplyDeathEffects`：Bleeding 保存 overkill；affect_63 對 dying／unconscious
+在明確 combat-heal 條件下恢復並建立永久 affect_5F；troll effect `0x64` 只在已知非
+火／酸 damage flags 時以 3d6 建立 TrollRegen `0x66`。`State.ResolveDeathEffects` 以
+deep-copy transaction 接入 roster／Battle sync；未猜測 ECL DAMAGE 缺少的 damage type。
+Docker 已通過 `internal/combat`、`internal/game`、`internal/party`、`internal/ecl`、
+`internal/locale`。
+
+第二百二十輪文件 commit：`800c064`，更新 Death side-effect READY spec、Gold Box ECL／
+State 知識庫、README 與 PLAN，明確保留 dragon-slayer target side effect 與其他未知
+Death routine boundary。
