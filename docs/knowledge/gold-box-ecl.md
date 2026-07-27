@@ -34,13 +34,23 @@ menu pause 才是從既有 PC resume。EXIT 也要提交該 invocation 的 memor
 
 ## Monster AC adapter
 
-真實 `MON2CHA` 的 `ArmorClass` byte 使用 50..60 的 packed representation：`60 - raw` 才是 signed combat AC；ECL2 FIRE KNIFE raw `59` 因此是 AC `1`。`monster.CombatArmorClass` 只在這個已觀察範圍轉換，較小 synthetic／已解碼值保持原值。這個 adapter 可由後續 Gold Box 遊戲重用，但仍需各作品自己的 record evidence。
+真實 `MON*CHA` 的 `ArmorClass` byte 使用至少 50..70 的 packed representation：
+`60 - raw` 才是 signed combat AC；ECL2 FIRE KNIFE raw `59` 因此是 AC `1`，
+MON5 DRACOLICH raw `66` 是 AC `-6`。`monster.CombatArmorClass` 只在這個已有
+實物證據的範圍轉換，較小 synthetic／已解碼值保持原值。這個 adapter 可由後續
+Gold Box 遊戲重用，但仍需各作品自己的 record evidence。
 
 ECL2 block 3 entry 3 現在已通過 raw ECL2／MON2CHA → `game.StartEncounter` regression，證明 encounter data bridge 能建立 playable Battle；它仍是 direct entry slice，不宣稱一般玩家流程已自動抵達。
 
 ## Chapter-local monster tables
 
-`MON1CHA`–`MON6CHA` 的 monster ID 不能直接合併成一張 map；State 依 observed global ECL namespace 分流：`0x00..0x0F`→ECL2、`0x10..0x1F`→ECL3、`0x20..0x2F`→ECL4、`0x30..0x3F`→ECL5、`0x40..0x4F`→ECL6、`0x50..`→ECL1。這是 loader／State adapter 的責任，不應放進 bounded ECL VM。
+`MON1CHA`–`MON6CHA` 的 monster ID 不能直接合併成一張 map。encounter spawn 的
+monster ID range 是首要 chapter key：`0x00..0x0F`→MON2、`0x10..0x1F`→MON3、
+`0x20..0x2F`→MON4、`0x30..0x3F`→MON5、`0x40..0x4F`→MON6、`0x50..`→MON1。
+ECL1 世界 dispatcher block `0x50` 在 `+0x149A` 召喚 MON5 `0x3C` DRACOLICH，
+證明不能只依目前 ECL namespace 選表。State 應逐一依 spawn ID resolve record；
+目前 ECL chapter 只適合作為沒有有效 ID range 時的 fallback。這是 loader／State
+adapter 的責任，不應放進 bounded ECL VM。
 
 ### LOAD CHARACTER 與混合陣營
 

@@ -5256,6 +5256,13 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_area5_depart_dark_elf_decay",
 			"日光使黑暗精靈的武器與護甲腐朽失效。",
 		)
+	case strings.Contains(joined, "OUT OF A COPSE OF TREES COMES A SKELETAL") &&
+		strings.Contains(joined, "YOU HAVE DEPRIVED ME OF MY TUTOR") &&
+		strings.Contains(joined, "I CAN AVENGE MYSELF"):
+		return catalog.Text(
+			"ecl_post_wizard_dracolich",
+			"一具骷髏身影從樹叢現身，誓言為導師復仇。",
+		)
 	case strings.Contains(joined, "WAY DOWN TO THE CAVES") &&
 		strings.Contains(joined, "SECRET PASSAGE") &&
 		strings.Contains(joined, "DIRECTLY TO THE WILDERNESS"):

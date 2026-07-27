@@ -508,3 +508,6 @@
 - [x] 完成 Area 5 DEPART 的 ECL5 block `0x30` 清理程序：投影 selected-player
   `ControlMorale @ 0x7CB8`、阿卡巴繁中告別／DUMP、黑暗精靈裝備
   `0x5E/0x60/0x61` 見光腐朽／銷毀，最後 NEWECL `0x50` 回到世界旅程。
+- [x] 接通哈普 `JOURNEY ON → ESSEMBRA → TRAIL` 的主線龍巫妖遭遇：
+  ECL1 block `0x50 +0x149A` 跨章載入 MON5 `0x3C`、AC -6 與原版小人，
+  勝利後抵達艾森布拉；補齊繁中、READY spec、長流程與 real-image regression。

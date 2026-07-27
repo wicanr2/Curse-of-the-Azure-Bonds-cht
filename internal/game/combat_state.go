@@ -91,8 +91,29 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	if s.eclMenuReturnMode == ModeDungeon || s.eventReturnMode == ModeDungeon {
 		s.combatReturnMode = ModeDungeon
 	}
+	// Monster IDs use the same global chapter ranges as ECL block IDs, but a
+	// world dispatcher may summon a previous area's monster after NEWECL.
+	// Resolve every spawn from its ID namespace instead of assuming that the
+	// current ECL block owns the MON table (ECL1 block 0x50 summons MON5 0x3C).
+	resolvedRecords := make(map[uint8]monster.Record, len(records))
+	for id, record := range records {
+		resolvedRecords[id] = record
+	}
+	resolvedAffects := make(map[uint8][]monster.AffectRecord, len(affects))
+	for id, list := range affects {
+		resolvedAffects[id] = list
+	}
+	for _, spawn := range result.MonsterSpawns {
+		chapter := monsterChapterForBlock(spawn.MonsterID)
+		if record, ok := s.monsterRecordsByECL[chapter][spawn.MonsterID]; ok {
+			resolvedRecords[spawn.MonsterID] = record
+		}
+		if list, ok := s.monsterAffectsByECL[chapter][spawn.MonsterID]; ok {
+			resolvedAffects[spawn.MonsterID] = list
+		}
+	}
 	applyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites, len(party))
-	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, records, affects)
+	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, resolvedRecords, resolvedAffects)
 	if err != nil {
 		return err
 	}
@@ -133,6 +154,8 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_efreeti", "伊弗利特")
 	case "SALAMANDER":
 		return catalog.Text("monster_salamander", "火蜥蜴")
+	case "DRACOLICH":
+		return catalog.Text("monster_dracolich", "龍巫妖")
 	default:
 		return name
 	}
