@@ -13,12 +13,13 @@ natural 1 miss、natural 20 hit，否則 d20 加 raw operand bonus 並與 target
 
 - `party.ApplyECLDamageWithHitResolver` 保存 target order／hit／applied damage，使用
   注入 `rollDie` 保持可重播。
-- `DamageHitResolver` 接收 target、raw `saveFlags` byte 與 d20 source；AC／invisibility
-  affect 等作品資料由 resolver 自己投影，不在 party damage core 猜測。
+- `DamageHitResolver` 接收 target、raw `saveFlags` byte 與 d20 source，仍可供作品注入
+  完整 combat effect；State 的 default resolver 已投影 Character／equipment AC，並套用
+  已證實的 invisibility `0x19`／`0x47` -4 attack roll。
 - State 提供 `ResolvePendingECLDamageWithHitResolver`，成功後 transactional 寫回 roster
   與 stable-ID fighter HP。
-- 原版 death transition、`CheckAffectsEffect` 與完整 AC projection 仍是後續 adapter；
-  resolver 回傳 error 時不清空 pending request。
+- blink／displace／其他 `CheckAffectsEffect` projection、原版 death transition 與完整
+  UI 仍是後續 adapter；resolver 回傳 error 時不清空 pending request。
 
 ## 驗收
 

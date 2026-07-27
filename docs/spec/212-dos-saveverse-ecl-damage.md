@@ -18,7 +18,9 @@ branch 使用原始 save type。
 - State `ResolvePendingECLDamage` 以 working roster transactional writeback，成功後
   清空 pending queue，並依 stable character ID 同步 renderer fighter HP。
 - `flags & 0x80 == 0` 的 random-target／`CanHitTarget` branch 現已另由注入式 resolver
-  覆蓋；affect save bonus、party death continuation 仍是後續 boundary，不能假裝已完成。
+  覆蓋；DOS player `field_186 @ 0x186` 的 signed saving bonus 也已保存、writeback，
+  並納入 save threshold。由 affect 推導的其他 save bonus 與 party death continuation
+  仍是後續 boundary。
 
 ## 驗收
 
