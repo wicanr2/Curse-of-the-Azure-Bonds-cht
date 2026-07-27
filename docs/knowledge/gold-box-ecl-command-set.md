@@ -87,7 +87,9 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 它不觸碰 ECL call stack。
 
 `FIND ITEM`／`DESTROY ITEMS` 是另一組可跨作品重用的 inventory boundary；VM 只
-保存 item IDs，不應在缺 party roster context 時自行改 inventory 或 compare flags。
+保存 item IDs；有作品 party context 時，`FIND ITEM` 依全隊 raw item types 設定
+`=`／`<>`，缺 context 時維持 unresolved。`DESTROY ITEMS` 會更新同-run working view，
+真正 persistent roster mutation仍由作品 State adapter負責。
 
 `PARTYSTRENGTH (0x1D)` 與 `PARTY SURPRISE (0x22)` 現在由 bounded VM 保存已驗證的 word
 destination request 並繼續 cursor；State 注入 `PartyContext` 時會依 reference 計算並寫回

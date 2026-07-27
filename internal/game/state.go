@@ -390,6 +390,9 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
 			HasRangerClass: character.HasClass(party.ClassRanger),
 		}
+		for _, item := range character.Equipment {
+			member.ItemTypes = append(member.ItemTypes, item.Type)
+		}
 		copy(member.ThiefSkills[:], character.ThiefSkills)
 		for _, fighter := range s.party {
 			if fighter.ID == character.ID {
