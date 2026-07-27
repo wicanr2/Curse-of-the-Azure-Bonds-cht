@@ -687,3 +687,11 @@ ECL knowledge。Docker Go 1.23 通過 `internal/combat`、`internal/game`、`int
 普通治療同步 roster HP、清除 DeathOverlay，但不讓角色恢復戰鬥格；新增 combat／State
 regressions。Docker Go 1.23 通過 `internal/combat`、`internal/game`、`internal/party`、
 `internal/ecl`、`internal/locale`。
+
+第二百二十八輪重大里程碑 commit：`a907601`，依 reference `combat_heal` 建立
+`Battle.RestoreCombatant(fighterID, position)` explicit stand-up contract：只有
+`DeathEffectContext.CombatHealAllowed` 的 affect_63 recovery，在 HP 恢復為 OK 後才以保存的
+CombatX/Y 清除 `DownedCorpse`、恢復 `HasCombatPosition`；普通 Cure Light Wounds 仍只加 HP
+並讓 corpse 留在原地。新增 Battle／State placement regressions，更新 ECL／State spec、
+README、PLAN 與 Gold Box knowledge。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
+`internal/party`、`internal/ecl`、`internal/locale`。
