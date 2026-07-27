@@ -172,3 +172,5 @@ CoAB ECL2 的 Hall of Training 證明 `PROGRAM 0` 不能只按 ID 全域解讀�
 Gold Box 分層方式是由 VM 保存 PROGRAM ID，再由作品 adapter 同時檢查 Area／terrain／
 return context；CoAB 其他 context 的 PROGRAM 0 才是返回主選單。訓練角色的 XP 是
 Player record `0x127` little-endian dword，Area training class mask 決定可訓練職業。
+訓練 HP 不可永遠擲 hit die：`max_class_hit_dice` 之後改用職業固定值；race/class
+limit 也在 XP 判斷前執行。這兩組 table／限制屬作品 rules adapter，不應塞進共用 VM。

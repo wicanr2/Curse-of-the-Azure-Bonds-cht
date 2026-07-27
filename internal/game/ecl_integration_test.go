@@ -499,6 +499,75 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
 			state.Message, state.Choices)
 	}
+
+	// The Hall of Training at GEO2 (5,2), terrain 0x8C, reuses PICTURE 4
+	// before its YES branch invokes the location-specific PROGRAM 0 service.
+	character := &state.partyRoster[0]
+	character.Class = party.ClassFighter
+	character.Level = 1
+	character.ClassLevels = [8]uint8{2: 1}
+	character.Experience = 2001
+	character.HitPoints, character.MaxHitPoints = 10, 10
+	character.HealthStatus = party.HealthStatusOK
+	character.Platinum = 0xFFFF
+	beforeWorth = characterCoinGoldWorth(*character)
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 5, 2, 0
+	state.DungeonWallType, _ = grid.WallWrapped(5, 2, 0)
+	state.DungeonWallRoof = grid.CellWrapped(5, 2).Terrain
+	if state.DungeonWallRoof != 0x8C {
+		t.Fatalf("training hall GEO selector=%#x, want 0x8C", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
+		!strings.Contains(state.Message, "接受訓練") {
+		t.Fatalf("training picture mode=%v picture=%v:%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 2 {
+		t.Fatalf("training question mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.trainingMenu || len(state.Choices) != 2 {
+		t.Fatalf("training service mode=%v menu=%v choices=%v",
+			state.Mode, state.trainingMenu, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.trainingConfirmMenu || len(state.Choices) != 2 {
+		t.Fatalf("training confirmation=%v choices=%v", state.trainingConfirmMenu, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].Level != 2 || state.partyRoster[0].ClassLevels[2] != 2 ||
+		state.partyRoster[0].MaxHitPoints <= 10 ||
+		characterCoinGoldWorth(state.partyRoster[0]) != beforeWorth-1000 {
+		t.Fatalf("training result level=%d classes=%v hp=%d/%d worth=%d, want level 2 and %d",
+			state.partyRoster[0].Level, state.partyRoster[0].ClassLevels,
+			state.partyRoster[0].HitPoints, state.partyRoster[0].MaxHitPoints,
+			characterCoinGoldWorth(state.partyRoster[0]), beforeWorth-1000)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.trainingMenu {
+		t.Fatalf("training result continuation mode=%v menu=%v", state.Mode, state.trainingMenu)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 5 || state.DungeonY != 2 {
+		t.Fatalf("training departure mode=%v position=(%d,%d), want same dungeon cell",
+			state.Mode, state.DungeonX, state.DungeonY)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

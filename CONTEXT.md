@@ -1056,4 +1056,12 @@ PICTURE 4／中文詢問接到場所限定 `PROGRAM 0`。依 `ovr018.train_playe
 經驗門檻、1000 GP 角色付款、擲兩次 hit die 取高、Constitution 與 class-level／HP
 成長。一般 `PROGRAM 0` 返回標題的既有語意不變。新增 READY spec 286、`-training`
 重現入口與 640×480 README 截圖；高等級固定 HP、種族上限、完整多職業 CON 與升級
-選法術維持明確 boundary。
+選法術當時維持 boundary；前三項已於第 287 輪補齊，目前只保留升級選法術與
+dual-class HP gate。
+
+第二百八十七輪成果：回讀公開 CoAB reference `sub_509E0`／`get_con_hp_adj`／
+`Limits.RaceClassLimit`，補上六職業 hit-dice 上限後的固定 `+1/+2/+3 HP`、只對
+未達 hit-dice 上限職業計算的 Constitution、多職業除數與 dwarf／elf／gnome／
+half-elf／halfling 職業等級上限。正式角色建立整合測試現從真實 ECL2／GEO2
+`(5,2)` 跑過 PICTURE 4、中文詢問、YES、場所限定 PROGRAM 0、角色確認、扣 1000 GP、
+升級／HP 成長，再離開返回同一格。升級選法術與 dual-class HP gate 保持明確 boundary。
