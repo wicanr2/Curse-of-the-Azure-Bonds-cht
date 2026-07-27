@@ -2544,6 +2544,20 @@ func TestAdvanceGameTimeUsesReferenceSlotScaleAndExpiresEffects(t *testing.T) {
 	}
 }
 
+func TestAdvanceGameTimeIncrementsPartyAgeOnSlotSixOverflow(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{Age: 40}}
+	if err := state.AdvanceGameTime(6, 0x100); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.partyRoster[0].Age; got != 41 {
+		t.Fatalf("party age=%d, want 41", got)
+	}
+	if state.GameAgeCycles() != 1 || state.GameTimeSlots()[6] != 0 {
+		t.Fatalf("clock=%v age cycles=%d", state.GameTimeSlots(), state.GameAgeCycles())
+	}
+}
+
 func TestLoadDOSCharacterFilesInstallsImportedParty(t *testing.T) {
 	state := NewState(testCatalog())
 	record := make([]byte, party.DOSPlayerRecordSize)

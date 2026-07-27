@@ -228,6 +228,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x16], data[0x18], data[0x1A] = 14, 13, 10
 	data[0x74], data[0x75] = 7, 5 // human magic-user
 	data[0x78], data[0x1A4] = 22, 18
+	binary.LittleEndian.PutUint16(data[0x76:0x78], uint16(37))
 	copy(data[DOSSavingThrowsOffset:DOSSavingThrowsEnd], []byte{14, 12, 10, 13, 11})
 	data[0x186] = 0xFE // signed -2
 	copy(data[DOSThiefSkillsOffset:DOSThiefSkillsEnd], []byte{12, 34, 56, 78, 90, 11, 22, 33})
@@ -242,7 +243,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
+	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
 		t.Fatalf("record=%#v", record)
 	}
 	itemData := make([]byte, monster.ItemRecordSize)
@@ -267,6 +268,17 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if err := character.ApplyDOSEffects(make([]byte, monster.AffectRecordSize-1)); err == nil {
 		t.Fatal("expected malformed DOS effects error")
+	}
+	if character.Age != 37 {
+		t.Fatalf("character age=%d, want 37", character.Age)
+	}
+	character.Age = 42
+	patched, err := PatchDOSPlayerRecord(data, character)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := int16(binary.LittleEndian.Uint16(patched[0x76:0x78])); got != 42 {
+		t.Fatalf("patched DOS age=%d, want 42", got)
 	}
 }
 

@@ -798,3 +798,10 @@ save version 5；`State.SavePartyFile`／`LoadPartyFile` 現在會保存並恢�
 1–4 仍可載入並使用零時鐘。新增 save round-trip regression、READY spec、README／PLAN／
 Gold Box state knowledge。DOS SAVGAM Area1 clock raw offset、calendar UI 與完整 time-triggered
 event table 仍保留 boundary。
+
+第二百四十三輪重大里程碑：依 reference `Player.age @ 0x76`、Pool/Rad `age @ 0x30` 與
+`NormalizeClock`，將 normal DOS player `.SAV/.GUY` age 接入 parser、`Character`、slot-6
+overflow writeback 與 `PatchDOSPlayerRecord`；每次 slot-6 overflow 讓 party roster 每人加一歲，
+並以 int16 saturation 防止 wrap。新增 parser／writeback／game clock regressions、READY spec、
+README／PLAN／Gold Box state knowledge。Pool/Rad importer、age-based ability modifiers、
+完整 DOS age UI 與多職業序列化仍保留 boundary。

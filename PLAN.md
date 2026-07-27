@@ -362,3 +362,4 @@
 - [x] 依 reference `find_target`／`BuildNearTargets` 建立 seeded enemy target-selection contract：敵方回合從存活 party 選擇目標，同一回合多次攻擊固定 target；visibility／pathfinding／AI spell priority／guarding 保留 boundary。
 - [x] 依 reference `CMD_EclClock` 修正 ECL CLOCK 為兩 operand，跨 BlockSession 聚合並接到 State `AdvanceGameTime`；完整 memory-backed clock values／time-triggered event table 仍待驗證。
 - [x] 將七-slot game clock／age cycles 接入 remake JSON save version 5，保留 versions 1–4 相容載入；DOS SAVGAM Area1 raw clock offset 仍待獨立驗證。
+- [x] 依 reference `Player.age @ 0x76` 與 `NormalizeClock` 接入 DOS age import／writeback、slot-6 overflow 年齡增加與 regression；Pool/Rad `0x30` 與 age-based ability modifiers 仍待獨立驗證。

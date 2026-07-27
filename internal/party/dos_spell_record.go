@@ -51,6 +51,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	out[0x18] = uint8(character.Abilities.Constitution)
 	out[0x1A] = uint8(character.Abilities.Charisma)
 	out[0x78] = uint8(character.MaxHitPoints)
+	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
 	if len(out) > 0x1A4 {
 		out[0x1A4] = uint8(character.HitPoints)
 	}
@@ -111,6 +112,7 @@ type DOSPlayerRecord struct {
 	Level            int
 	MaxHitPoints     int
 	CurrentHitPoints int
+	Age              int16
 	IconHead         uint8
 	IconWeapon       uint8
 	IconID           uint8
@@ -199,6 +201,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
+		Age:      int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
 		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Gold:             binary.LittleEndian.Uint16(data[0x101:0x103]),
 		Gems:             binary.LittleEndian.Uint16(data[0x105:0x107]),
@@ -218,7 +221,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
-		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		Level: r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),
