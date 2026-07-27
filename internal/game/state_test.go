@@ -112,6 +112,43 @@ func TestPictureResultBecomesResumableEvent(t *testing.T) {
 	}
 }
 
+func TestECLWhoPausesForRosterAndResumesSelectedPlayer(t *testing.T) {
+	block := make([]byte, 2+0x18)
+	for index := 0; index < 5; index++ {
+		pos := 2 + index*4
+		block[pos+1], block[pos+2], block[pos+3] = 0x02, 0x14, 0x80
+	}
+	block[2+0x14] = 0x39
+	block[2+0x15], block[2+0x16] = 0x00, 0x00
+	block[2+0x17] = 0x00
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x50: block}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := NewState(testCatalog())
+	state.session = session
+	state.eclBlock = session.CurrentData()
+	state.Mode = ModeWilderness
+	state.Choices = []string{"觸發 WHO"}
+	state.currentOriginalChoices = []string{"WHO"}
+	state.partyRoster = party.Roster{
+		{ID: "a", Name: "甲", Class: party.ClassFighter, Level: 1, Abilities: party.Abilities{Strength: 10, Dexterity: 10, Constitution: 10}},
+		{ID: "b", Name: "乙", Class: party.ClassFighter, Level: 1, Abilities: party.Abilities{Strength: 10, Dexterity: 10, Constitution: 10}},
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 2 || state.SelectedPlayerID() != "" {
+		t.Fatalf("WHO pause state=%#v selected=%q", state, state.SelectedPlayerID())
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.SelectedPlayerID() != "b" {
+		t.Fatalf("WHO resume state=%#v selected=%q", state, state.SelectedPlayerID())
+	}
+}
+
 func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
