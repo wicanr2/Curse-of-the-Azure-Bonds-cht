@@ -344,6 +344,24 @@ func TestRunSubsetRecordsLoadCharacterAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetDecodesLoadCharacterPlayerSelector(t *testing.T) {
+	block := []byte{0, 0,
+		0x0A, 0x02, 0x81, 0x00,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.LoadCharacterRequests) != 1 {
+		t.Fatalf("requests=%#v", result.LoadCharacterRequests)
+	}
+	request := result.LoadCharacterRequests[0]
+	if request.Address != 0x0081 || request.Value != 0x0081 || request.PlayerIndex != 1 || !request.HighBitSet {
+		t.Fatalf("request=%#v", request)
+	}
+}
+
 func TestRunSubsetRecordsFindItemQueryAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x32, 0x00, 0x5E,

@@ -149,6 +149,23 @@ func TestECLWhoPausesForRosterAndResumesSelectedPlayer(t *testing.T) {
 	}
 }
 
+func TestECLLoadCharacterResolvesOneBasedRosterAndHighBit(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "a", Name: "甲"}, {ID: "b", Name: "乙"}}
+	state.applyECLLoadCharacterSignals(ecl.RunResult{LoadCharacterRequests: []ecl.LoadCharacterRequest{{
+		Address: 0x7F79, Value: 0x82, PlayerIndex: 2, HighBitSet: true,
+	}}})
+	if state.SelectedPlayerID() != "b" || state.LoadCharacterNotFound() || !state.LoadCharacterHighBit() {
+		t.Fatalf("state=%#v selected=%q", state, state.SelectedPlayerID())
+	}
+	state.applyECLLoadCharacterSignals(ecl.RunResult{LoadCharacterRequests: []ecl.LoadCharacterRequest{{
+		Address: 0x7F79, Value: 0, PlayerIndex: 0,
+	}}})
+	if state.SelectedPlayerID() != "b" || !state.LoadCharacterNotFound() {
+		t.Fatalf("invalid lookup state=%#v selected=%q", state, state.SelectedPlayerID())
+	}
+}
+
 func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness

@@ -159,6 +159,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.DamageRequests = append(aggregate.DamageRequests, result.DamageRequests...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
 		aggregate.LoadCharacterAddresses = append(aggregate.LoadCharacterAddresses, result.LoadCharacterAddresses...)
+		aggregate.LoadCharacterRequests = append(aggregate.LoadCharacterRequests, result.LoadCharacterRequests...)
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
 		aggregate.DestroyItemIDs = append(aggregate.DestroyItemIDs, result.DestroyItemIDs...)
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)

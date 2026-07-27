@@ -375,3 +375,4 @@
 - [x] 讓 ECL `COMBAT` 保存 next-PC，並在 party victory 後續跑同一個 resumable ECL session；menu／picture／NEWECL continuation 已有 synthetic／real regression，完整各 block routine 仍待反組譯。
 - [x] 將 `CAMP → MAGIC → CAST` 接入施法者／memorized slot／受傷目標選單與 Cure Light Wounds `1d8` transaction；SCRIBE、其他法術與完整 slot／時間規則仍待接入。
 - [x] 將 `CAMP → ALTER → RENAME` 接入 15-byte DOS name editor、roster／fighter projection 與 SAVGAM raw-preserving name writeback；Big5 transcoding、多職業與完整 delete semantics 仍待接入。
+- [x] 依 `ovr003.CMD_LoadCharacter` 解碼 ECL `LOAD CHARACTER` 的 1-based selector／bit-7 flag，接回 State persistent roster 的 selected player；完整 external string／party-summary side effects 仍待反組譯。

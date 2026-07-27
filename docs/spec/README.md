@@ -246,3 +246,4 @@
 - [第二百六十六輪 ECL CHECKPARTY](./266-ecl-checkparty.md)（`READY`：限 skill／movement／affect branches）
 - [第二百六十七輪 ECL WHO selection](./267-ecl-who-selection.md)（`READY`：限 prompt／selection request boundary）
 - [第二百六十八輪 WHO roster transaction](./268-who-roster-transaction.md)（`READY`：限 ECL pause／選角／resume）
+- [第二百六十九輪 ECL LOAD CHARACTER roster transaction](./269-ecl-load-character-roster.md)（`READY`：限 1-based selector／roster bridge）
