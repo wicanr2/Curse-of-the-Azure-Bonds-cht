@@ -91,6 +91,31 @@ func TestRealECL5WizardTowerDragonParlayMappings(t *testing.T) {
 		if block.Entry.ID != 0x33 {
 			continue
 		}
+		for _, selection := range []uint16{0, 2} {
+			result, runErr := RunSubsetInteractiveSeed(block.Data, 0x0452, 500, []uint16{selection, 0}, 1)
+			if runErr != nil || !result.CombatRequested || len(result.MonsterSpawns) != 1 ||
+				result.MonsterSpawns[0].MonsterID != 0x35 || result.MonsterSpawns[0].Count != 14 {
+				t.Fatalf("wizard-tower outer selection %d result=%+v err=%v, want fourteen black dragons",
+					selection, result, runErr)
+			}
+		}
+		noEligibility := NewRuntimeState(0x0676)
+		noEligibility.Memory[0x4C61] = 0
+		skippedHeart, skippedErr := runSubsetWithState(block.Data, 0x0676, 500, nil, true, 1, noEligibility)
+		if skippedErr != nil || len(skippedHeart.DamageRequests) != 0 ||
+			strings.Contains(strings.Join(skippedHeart.Text, " "), "TAKE ONE OF THEIR HEARTS") ||
+			!strings.Contains(strings.Join(skippedHeart.Text, " "), "REST SAFELY") {
+			t.Fatalf("ineligible dragon-heart continuation=%+v err=%v", skippedHeart, skippedErr)
+		}
+		declineRuntime := NewRuntimeState(0x0676)
+		declineRuntime.Memory[0x4C61] = 1
+		declinedHeart, declinedErr := runSubsetWithState(block.Data, 0x0676, 500, []uint16{1}, true, 1, declineRuntime)
+		if declinedErr != nil || len(declinedHeart.DamageRequests) != 0 ||
+			declineRuntime.Memory[0x4C64] != 0 ||
+			!strings.Contains(strings.Join(declinedHeart.Text, " "), "REST SAFELY") {
+			t.Fatalf("declined dragon-heart continuation=%+v memory=%#v err=%v",
+				declinedHeart, declineRuntime.Memory, declinedErr)
+		}
 		for tactic, want := range []uint16{1, 0, 0, 0, 1} {
 			runtime := NewRuntimeState(0x05EA)
 			result, runErr := runSubsetWithState(block.Data, 0x05EA, 500, []uint16{uint16(tactic)}, true, 1, runtime)

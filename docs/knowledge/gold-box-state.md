@@ -190,6 +190,13 @@ COMBAT → YES/NO → WHO → conditional text → YES/NO → dungeon`。熔岩�
 證明 WHO 不只服務施法或物品，也可能在戰後選擇承受環境危險的角色；State 必須
 跨所有 pause 保存 selected-player context，而 renderer 只顯示中文姓名。
 
+法師塔龍心提供另一種戰後 transaction：
+`COMBAT → conditional YES/NO → PRINT RETURN → whole-party DAMAGE → flag → dungeon`。
+`DAMAGE 0xC0` 已指定全隊，因此不需 WHO／random-target context；State 可依每名
+角色的 saving throws 自動解析。pending queue 可能同時留有較早、仍需 selected
+target 的 packet；resolver 必須只取出目前可自動處理的 whole-party requests，
+保留其他 packet，不能因 queue 中第一個不相容 request 就讓後續酸液完全不扣 HP。
+
 ENCOUNTER 的 WAIT／FLEE／PARLAY 若來自 ECL，必須先回送同一 runtime，由
 behavior-mode resolver 決定 final result。熔岩池 distance 0 的 WAIT 與 PARLAY
 都會抵達真正的五態度 `PARLAY` command；State 只能把該 ECL menu 本地化，

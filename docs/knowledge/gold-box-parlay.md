@@ -90,5 +90,6 @@ frontend action。可重用 runner 應遵守：
   `0/1` 擴張出這些語意。
 - 本分支三個成功態度匯流，不代表 `SLY`、`MEEK`、`NICE` 在其他 encounter
   等價；兩個戰鬥態度亦同。
-- `+0x04FD` 戰後對 `0x7EC7` 的判斷、黑龍心臟事件與後續屋頂流程不在本文
-  的 PARLAY 分流範圍，不能用本文推論其完整戰鬥／獎勵規則。
+- `+0x04FD` 之後的黑龍重戰 gate、龍心與酸液流程已由
+  [規格 318](../spec/318-wizard-tower-black-dragons-heart.md) 另行核對；
+  它們是共用 hostile target 的後續，不應反推成 PARLAY opcode 的全域語意。

@@ -96,6 +96,14 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   狡猾／謙卑／友善則說服龍群離去，再匯入同一守軍戰。態度 mapping 完全由
   block `0x33` 的 `PARLAY 1,0,0,0,1` 與後續 branch 決定，不是重製版猜測；
   `-wizard-tower-parlay` 可重現成功交涉的原圖與繁中結果。
+- 「攻擊龍群」與「撤退」都會進入同一場 14 黑龍戰；後者在原 script 中確實
+  無法逃走。若 `4C61==1`，戰後可選擇剖取龍心：全隊依原 ECL 承受
+  `DAMAGE 0xC0,3d4+3,save type 1`，成功後寫入 `4C64=1`，再回安全屋頂。
+  direct-entry 戰場可用
+  `-encounter -encounter-area 5 -encounter-block 51 -encounter-start 1269 -encounter-monster-member MON5CHA.DAX`
+  重現；Area 5 確保使用正確的原版 CPIC namespace。
+
+![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
 
 ![成功說服法師塔黑龍的 640×480 原圖放大與 24px 繁中畫面](docs/screenshots/wizard-tower-dragon-parlay.png)
 
