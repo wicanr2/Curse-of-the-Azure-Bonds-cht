@@ -194,6 +194,51 @@ func TestRealECL5WizardTowerExitBranches(t *testing.T) {
 	t.Fatal("ECL5 block 0x33 is absent")
 }
 
+func TestRealECL5AreaDepartureFindsAkabarAndDarkElfItems(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL5.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 0x30 {
+			continue
+		}
+		runtime := NewRuntimeState(0x0014)
+		runtime.Started = true
+		runtime.Memory[0x4C60] = 1
+		runtime.Memory[0x4C5E] = 1
+		context := PartyContext{Members: []PartyMemberContext{
+			{Name: "HERO", ItemTypes: []uint8{0x5E, 0x60, 0x61}},
+			{Name: "AKABAR BEL AKAS", ControlMorale: 0xB2},
+		}}
+		result, runErr := runSubsetWithStateContext(block.Data, 0x0014, 500, nil, true, 1, runtime, &context)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		joined := strings.Join(result.Text, " ")
+		if !result.WaitingForMenu ||
+			!strings.Contains(joined, "YOUR HELP WAS INVALUABLE") ||
+			len(result.DumpRequests) != 1 || !result.DumpRequests[0].Resolved {
+			t.Fatalf("Akabar departure result=%+v text=%q", result, joined)
+		}
+		result, runErr = runSubsetWithStateContext(block.Data, 0x0014, 500, []uint16{0}, true, 1, runtime, &context)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		joined = strings.Join(result.Text, " ")
+		if !result.WaitingForMenu || !strings.Contains(joined, "DECAY TO USELESSNESS") {
+			t.Fatalf("dark-elf item decay result=%+v text=%q", result, joined)
+		}
+		return
+	}
+	t.Fatal("ECL5 block 0x30 is absent")
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {

@@ -2973,6 +2973,78 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("wizard-tower village return block=%#x geo=%#x mode=%v message=%q",
 			session.CurrentBlockID(), state.GeoMapBlock, state.Mode, state.Message)
 	}
+	state.partyRoster[0].Equipment = append(state.partyRoster[0].Equipment,
+		monster.ItemRecord{Type: 0x5E},
+		monster.ItemRecord{Type: 0x60},
+		monster.ItemRecord{Type: 0x61},
+		monster.ItemRecord{Type: 0x09},
+	)
+	session.SetMemoryValue(0x4C60, 1)
+	if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
+		t.Fatal(err)
+	}
+	state.Mode = ModeDungeon
+	state.PictureRequested = false
+	state.pendingPictureResult = nil
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 15, 2
+	state.DungeonWallType, _ = towerGrid.WallWrapped(7, 15, 2)
+	state.DungeonWallRoof = towerGrid.CellWrapped(7, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	for _, itemType := range []uint8{0x5E, 0x60, 0x61} {
+		found := false
+		for _, item := range state.partyRoster[0].Equipment {
+			found = found || item.Type == itemType
+		}
+		if !found {
+			t.Fatalf("dark-elf item %#x disappeared before DEPART", itemType)
+		}
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x30 ||
+		!strings.Contains(state.Message, "阿卡巴") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("wizard-tower Akabar farewell block=%#x mode=%v originals=%#v message=%q",
+			session.CurrentBlockID(), state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if len(state.partyRoster) != 1 || state.partyRoster[0].ID != "hero" {
+		t.Fatalf("Akabar departure roster=%#v, want hero only", state.partyRoster)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x30 ||
+		!strings.Contains(state.Message, "日光") ||
+		!strings.Contains(state.Message, "腐朽") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("wizard-tower dark-elf decay block=%#x mode=%v originals=%#v message=%q",
+			session.CurrentBlockID(), state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x50 || !state.PictureRequested || state.PictureBlock != 121 {
+		t.Fatalf("wizard-tower depart world return block=%#x mode=%v picture=%v/%d message=%q",
+			session.CurrentBlockID(), state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	for _, item := range state.partyRoster[0].Equipment {
+		if item.Type == 0x5E || item.Type == 0x60 || item.Type == 0x61 {
+			t.Fatalf("sunlight did not destroy dark-elf item %#x", item.Type)
+		}
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("wizard-tower depart routes=%#v mode=%v message=%q",
+			state.currentOriginalChoices, state.Mode, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

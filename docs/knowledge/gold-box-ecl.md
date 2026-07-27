@@ -53,6 +53,12 @@ selected-player window 不能當成普通 VM byte array。CoAB ECL2 block 2
 作品 adapter 再把 monster copy ordinal 投影到 mixed-side encounter；不能把整個
 LOAD MONSTER descriptor 一律視為敵軍，也不能讓 allied quick-fight NPC 變成玩家回合。
 
+同一 selected-player window 的 `+0xB8` 是 control/morale byte。CoAB ECL5 block
+`0x30` 以 `LOAD CHARACTER 0..7 → COMPARE 0x7CB8,0x80 → IF <` 跳過不存在或
+非 NPC slot，再用 `0x7C00` 姓名找阿卡巴。共用 `PartyMemberContext` 因此必須同時
+投影 script name 與 `ControlMorale`；只提供姓名會讓真實 NPC 掃描在名稱比較前
+就被錯誤略過。無效 selector 要清成 0，避免沿用上一名 NPC 的 `>=0x80`。
+
 若作品的 block namespace 或 MON ID 規則不同，後續 Gold Box 遊戲必須注入自己的 mapping；不能只因 CoAB 的 chapter ranges 相鄰，就把它當成通用 DOS 常數。
 
 ECL1 block `0x50` payload `+0x5B5` 的 `NEWECL 0x03` 已由原始 image regression 證實會切到 ECL2 block `3`。`BlockSession` 應先套用 target，再讓 target entry 自己 bounded stop；target 後的 unsupported opcode 不能回退成 source block，也不能清空共享 runtime context。

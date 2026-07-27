@@ -423,6 +423,7 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 		}
 		member := ecl.PartyMemberContext{
 			Name:           scriptName,
+			ControlMorale:  character.ControlMorale,
 			HitPoints:      character.HitPoints,
 			ClericLevel:    character.ClassLevel(party.ClassCleric),
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
@@ -5242,6 +5243,18 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_wizard_tower_wilderness_exit",
 			"要先繞到哈普圖斯村，還是直接離開這一帶？",
+		)
+	case strings.Contains(joined, "YOUR HELP WAS INVALUABLE TO ME") &&
+		strings.Contains(joined, "BUSINESS TO ATTEND TO"):
+		return catalog.Text(
+			"ecl_area5_depart_akabar",
+			"阿卡巴向你們道別，隨後離隊處理自己的事務。",
+		)
+	case strings.Contains(joined, "DARK ELF") &&
+		strings.Contains(joined, "DECAY TO USELESSNESS"):
+		return catalog.Text(
+			"ecl_area5_depart_dark_elf_decay",
+			"日光使黑暗精靈的武器與護甲腐朽失效。",
 		)
 	case strings.Contains(joined, "WAY DOWN TO THE CAVES") &&
 		strings.Contains(joined, "SECRET PASSAGE") &&

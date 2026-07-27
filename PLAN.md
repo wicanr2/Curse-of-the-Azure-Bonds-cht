@@ -505,3 +505,6 @@
 - [x] 接通法師塔塔頂 `(7,15,E)` terrain `0x01` 三向出口：
   CAVES→熔岩洞、WILDERNESS→VILLAGE／DEPART 第二層選單、STAY HERE→塔頂；
   同步 NEWECL 目的地 GEO、加入 `-wizard-tower-exit` 與 640×480 繁中實機圖。
+- [x] 完成 Area 5 DEPART 的 ECL5 block `0x30` 清理程序：投影 selected-player
+  `ControlMorale @ 0x7CB8`、阿卡巴繁中告別／DUMP、黑暗精靈裝備
+  `0x5E/0x60/0x61` 見光腐朽／銷毀，最後 NEWECL `0x50` 回到世界旅程。

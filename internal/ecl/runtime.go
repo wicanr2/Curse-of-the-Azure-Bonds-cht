@@ -89,7 +89,7 @@ type CheckPartyRequest struct {
 
 // LoadCharacterRequest is the decoded boundary for reference LOAD CHARACTER.
 // Address preserves the raw word operand; Value is vm_GetCmdValue's result.
-// The low 7 bits select the 1-based party member and bit 7 is the reference
+// The low 7 bits select the zero-based TeamList member and bit 7 is the reference
 // restore/redraw flag.
 type LoadCharacterRequest struct {
 	Address     uint16
@@ -155,6 +155,7 @@ type PartySurpriseRequest struct {
 // VM remains reusable by other Gold Box works.
 type PartyMemberContext struct {
 	Name              string
+	ControlMorale     uint8
 	ItemTypes         []uint8
 	HitPoints         int
 	ArmorClass        int
@@ -1007,8 +1008,14 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 					// selected player's name string. Preserve it in RuntimeState
 					// so later COMPARE/PRINT operands see the same selection.
 					stringsMemory[0x7C00] = workingPartyContext.Members[playerIndex].Name
+					// Player +0xB8 is the control/morale byte. NPC records use
+					// values >=0x80; ECL5 block 0x30 relies on this validity
+					// probe before comparing Akabar's selected name.
+					memory[0x7CB8] = uint16(workingPartyContext.Members[playerIndex].ControlMorale)
 					selectedPlayerIndex = playerIndex
 					selectedPlayerSet = true
+				} else {
+					memory[0x7CB8] = 0
 				}
 			}
 		case 0x32: // FIND ITEM
