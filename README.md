@@ -16,6 +16,11 @@
 
 ![原始 CPIC 戰鬥小人與效果 sprite sheet](docs/screenshots/combat-sprites.png)
 
+![Ebiten 繁中 direct-entry 戰鬥畫面](docs/screenshots/combat-game.png)
+
+上圖是目前 remake 使用原始 MON1CHA／CPIC 素材進入可操作戰鬥的實際畫面（headless
+Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
+
 目前已完成的垂直切片包括：
 
 - DAX 容器／RLE、ECL bounded VM trace 與跨 ECL1–ECL6 block context。
