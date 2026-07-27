@@ -367,12 +367,19 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
 			HasRangerClass: character.HasClass(party.ClassRanger),
 		}
+		copy(member.ThiefSkills[:], character.ThiefSkills)
 		for _, fighter := range s.party {
 			if fighter.ID == character.ID {
 				member.HitPoints = fighter.HitPoints
 				member.ArmorClass = fighter.ArmorClass
 				member.AttackBonus = fighter.AttackBonus
+				member.MovementAllowance = fighter.MovementAllowance
 				break
+			}
+		}
+		for _, effect := range character.Effects {
+			if effect.Active {
+				member.Effects = append(member.Effects, effect.Kind)
 			}
 		}
 		context.Members = append(context.Members, member)

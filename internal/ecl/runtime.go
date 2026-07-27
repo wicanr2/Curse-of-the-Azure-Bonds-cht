@@ -42,12 +42,24 @@ type RunResult struct {
 	TreasureRequests       []TreasureRequest
 	PartyStrengthRequests  []PartyStrengthRequest
 	PartySurpriseRequests  []PartySurpriseRequest
+	CheckPartyRequests     []CheckPartyRequest
 }
 
 type PartyStrengthRequest struct {
 	Destination uint16
 	Value       uint16
 	Resolved    bool
+}
+
+type CheckPartyRequest struct {
+	Query        uint16
+	AffectID     uint16
+	Destinations [4]uint16
+	Minimum      uint16
+	Maximum      uint16
+	Average      uint16
+	AffectFound  bool
+	Resolved     bool
 }
 
 // PartySurpriseRequest preserves the two destination addresses used by the
@@ -65,12 +77,15 @@ type PartySurpriseRequest struct {
 // commands. It deliberately avoids importing party/combat packages so the ECL
 // VM remains reusable by other Gold Box works.
 type PartyMemberContext struct {
-	HitPoints      int
-	ArmorClass     int
-	AttackBonus    int
-	ClericLevel    int
-	MagicUserLevel int
-	HasRangerClass bool
+	HitPoints         int
+	ArmorClass        int
+	AttackBonus       int
+	ClericLevel       int
+	MagicUserLevel    int
+	HasRangerClass    bool
+	ThiefSkills       [8]uint8
+	MovementAllowance int
+	Effects           []uint8
 }
 
 type PartyContext struct {
@@ -110,6 +125,56 @@ func (c PartyContext) hasRanger() bool {
 		}
 	}
 	return false
+}
+
+func (c PartyContext) checkParty(query, affectID uint16) (CheckPartyRequest, bool) {
+	request := CheckPartyRequest{Query: query, AffectID: affectID}
+	normalized := query - 0x7FFF
+	if normalized == 8001 {
+		for _, member := range c.Members {
+			for _, effect := range member.Effects {
+				if uint16(effect) == affectID {
+					request.AffectFound = true
+				}
+			}
+		}
+		request.Resolved = true
+		return request, true
+	}
+	if normalized >= 0xA5 && normalized <= 0xAC {
+		index := int(normalized - 0xA5)
+		request.Minimum, request.Maximum, request.Average = partyMetric(c.Members, func(member PartyMemberContext) int {
+			return int(member.ThiefSkills[index])
+		})
+		request.Resolved = true
+		return request, true
+	}
+	if normalized == 0x9F {
+		request.Minimum, request.Maximum, request.Average = partyMetric(c.Members, func(member PartyMemberContext) int {
+			return member.MovementAllowance
+		})
+		request.Resolved = true
+		return request, true
+	}
+	return request, false
+}
+
+func partyMetric(members []PartyMemberContext, metric func(PartyMemberContext) int) (uint16, uint16, uint16) {
+	if len(members) == 0 {
+		return 0, 0, 0
+	}
+	minimum, maximum, total := metric(members[0]), metric(members[0]), 0
+	for _, member := range members {
+		value := metric(member)
+		if value < minimum {
+			minimum = value
+		}
+		if value > maximum {
+			maximum = value
+		}
+		total += value
+	}
+	return uint16(minimum), uint16(maximum), uint16(total / len(members))
 }
 
 // TreasureRequest preserves the eight raw TREASURE operands. The first seven
@@ -722,6 +787,48 @@ func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []u
 				memory[request.OtherDestination] = request.OtherValue
 			}
 			result.PartySurpriseRequests = append(result.PartySurpriseRequests, request)
+		case 0x1E: // CHECKPARTY
+			query := uint16(0)
+			var err error
+			if instruction.Operands[0].Code == 1 {
+				query = instruction.Operands[0].Word
+			} else {
+				query, err = operandValue(instruction.Operands[0], memory)
+				if err != nil {
+					return result, fmt.Errorf("CHECKPARTY query at %d: %w", pc, err)
+				}
+			}
+			affectID, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("CHECKPARTY affect at %d: %w", pc, err)
+			}
+			request := CheckPartyRequest{Query: query, AffectID: affectID}
+			for index := range request.Destinations {
+				operand := instruction.Operands[index+2]
+				if !operand.WordSet {
+					return result, fmt.Errorf("CHECKPARTY destination %d at %d is not an address", index+1, pc)
+				}
+				request.Destinations[index] = operand.Word
+			}
+			if partyContext != nil {
+				resolved, known := partyContext.checkParty(query, affectID)
+				resolved.Destinations = request.Destinations
+				request = resolved
+				if request.Resolved {
+					if request.AffectFound {
+						memory[request.Destinations[0]] = 0
+						memory[request.Destinations[1]] = 0
+						memory[request.Destinations[2]] = 0
+						memory[request.Destinations[3]] = 1
+					} else if known {
+						memory[request.Destinations[0]] = request.Minimum
+						memory[request.Destinations[1]] = request.Maximum
+						memory[request.Destinations[2]] = request.Average
+						memory[request.Destinations[3]] = 0
+					}
+				}
+			}
+			result.CheckPartyRequests = append(result.CheckPartyRequests, request)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout

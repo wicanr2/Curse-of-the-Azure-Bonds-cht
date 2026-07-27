@@ -243,3 +243,4 @@
 - [第二百六十三輪 DOS player age patch CLI](./263-dos-age-patch-cli.md)（`READY`：限單一 `.SAV/.GUY` 年齡欄位修改）
 - [第二百六十四輪 ECL party rule signals](./264-ecl-party-rule-signals.md)（`READY`：限 `PARTYSTRENGTH`／`PARTY SURPRISE` request continuation）
 - [第二百六十五輪 ECL party context writeback](./265-ecl-party-context-writeback.md)（`READY`：限 party rule memory writeback）
+- [第二百六十六輪 ECL CHECKPARTY](./266-ecl-checkparty.md)（`READY`：限 skill／movement／affect branches）
