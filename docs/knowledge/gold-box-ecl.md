@@ -65,3 +65,8 @@ ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可�
  `FIND ITEM` 仍只保存 query signal，因為 compare flag／item namespace 尚未由
  原始 party memory 完整解出。這使 VM signal 與作品專屬 party state mutation
  維持可跨 Gold Box 重用的邊界。
+
+`DAMAGE` 也已建立可跨作品重用的 raw request boundary。公開 CoAB reference 證實
+五個 operand 順序是 `flags, dice_count, dice_size, damage_bonus, save_flags`；VM
+保存 `DamageRequest` 並繼續 cursor。flags 的 party target／saving throw／random
+選擇與 HP mutation 必須由作品 adapter 解讀，不可把它直接當成 combat attack。
