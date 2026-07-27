@@ -89,6 +89,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 第 195 輪把 ECL `SPELL`／`PROTECTION` 從 VM signal 接到 State pending queue。State 只保存原始 spell ID、slot／character address 與 protection address，透過一次性 `ConsumeSpellSearches()`／`ConsumeProtectionRequests()` 交給作品專屬 party／rules adapter；這延續 Gold Box 共用的 signal boundary，不把未知 address 直接寫入 party memory，也不把 request 誤稱為已完成施法。
 
+第 196 輪建立可跨作品重用的 ECL entry smoke contract：`SmokeInitializationEntries` 逐一執行每個 block 的五個 `vm_init_ecl` command-set entry，保留 entry address、bounded PC、steps、menu、COMBAT、spawn、PROGRAM 與 per-entry error。實際 ECL1–ECL6 image 已跑過全 block；ECL2 block 3 entry 3 觀察到兩個 monster spawn 並抵達 COMBAT，其他章節也明確暴露 `0x2D`／`0x2F` 等尚未支援 opcode。這是反組譯證據與 triage 工具，不等於完整劇情或 VM 已完成。
+
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。
