@@ -57,10 +57,15 @@ type Fighter struct {
 	IconAttack     bool
 	// CombatMap position/size. A future Area/ECL placement decoder can set
 	// these directly; StartCombat supplies a deterministic fallback otherwise.
-	HasCombatPosition    bool
-	CombatX              int
-	CombatY              int
-	CombatSize           uint8
+	HasCombatPosition bool
+	CombatX           int
+	CombatY           int
+	CombatSize        uint8
+	// DeathOverlay requests the renderer's downed/death visual. The original
+	// CombatantKilled routine draws an animated skull; keeping this as a
+	// signal lets each frontend choose an asset without leaking CPIC indices
+	// into the combat core.
+	DeathOverlay         bool
 	HitPoints            int
 	MaxHitPoints         int
 	ArmorClass           int
@@ -183,6 +188,11 @@ func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
 		// Reference CombatMap size becomes zero when in_combat is cleared;
 		// HasCombatPosition is the renderer-neutral equivalent.
 		fighter.HasCombatPosition = false
+		fighter.DeathOverlay = true
+	} else {
+		// Healing clears the one-shot downed visual. Position restoration is a
+		// separate placement operation, matching the reference map contract.
+		fighter.DeathOverlay = false
 	}
 	b.fighters[fighterID] = fighter
 	b.updateStatus()

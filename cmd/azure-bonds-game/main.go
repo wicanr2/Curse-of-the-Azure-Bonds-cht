@@ -1032,12 +1032,13 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.Side == combat.SideParty {
 			tile := combat.FormationTile(fighter.Side, partyIndex)
-			if fighter.HasCombatPosition {
+			if fighter.HasCombatPosition || fighter.DeathOverlay {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
 			tile = camera.Apply(tile)
 			x, y := 28+tile.X*48, 108+tile.Y*56
 			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
+			a.drawFighterDeathOverlay(screen, fighter, x, y)
 			prefix := "  "
 			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID || (a.state.CombatCastingSpell() == game.ProtectionFromGoodSpellID && !a.state.CombatSpellTargetsEnemy())) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
 				prefix = "> "
@@ -1048,12 +1049,13 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			continue
 		}
 		tile := combat.FormationTile(fighter.Side, enemyIndex)
-		if fighter.HasCombatPosition {
+		if fighter.HasCombatPosition || fighter.DeathOverlay {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
 		tile = camera.Apply(tile)
 		x, y := 28+tile.X*48, 108+tile.Y*56
 		a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
+		a.drawFighterDeathOverlay(screen, fighter, x, y)
 		prefix := "  "
 		if (a.state.CombatCastingSpell() == 0 || a.state.CombatSpellTargetsEnemy()) && len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
 			prefix = "> "
@@ -1097,6 +1099,18 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		spellHint += "　G：防護善良"
 	}
 	text.Draw(screen, "左右：選擇目標　Enter：攻擊　M：移動　D：結束回合"+spellHint, a.face, 32, 350, cyan)
+}
+
+// drawFighterDeathOverlay is the current renderer adapter for the combat-core
+// DeathOverlay signal. The reference uses an animated skull from combat_icons
+// 24/25; until those icon-family indices are proven against extracted bytes,
+// this visible Chinese overlay keeps the state transition testable.
+func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fighter, x, y int) {
+	if !fighter.DeathOverlay {
+		return
+	}
+	ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 80, G: 12, B: 20, A: 220})
+	text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 }
 
 func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {

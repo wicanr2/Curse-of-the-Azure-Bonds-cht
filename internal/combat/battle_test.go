@@ -2,6 +2,30 @@ package combat
 
 import "testing"
 
+func TestSetHitPointsMarksDeathOverlayAndClearsCombatPosition(t *testing.T) {
+	battle, err := NewBattle([]Fighter{{
+		ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 3,
+	}}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.SetHitPoints("hero", 0); err != nil {
+		t.Fatal(err)
+	}
+	fighter := battle.Fighters()[0]
+	if fighter.HasCombatPosition || !fighter.DeathOverlay || fighter.CombatX != 4 || fighter.CombatY != 3 {
+		t.Fatalf("death state lost position anchor: %+v", fighter)
+	}
+	if err := battle.SetHitPoints("hero", 3); err != nil {
+		t.Fatal(err)
+	}
+	fighter = battle.Fighters()[0]
+	if fighter.DeathOverlay || fighter.HasCombatPosition {
+		t.Fatalf("healing unexpectedly restored placement or overlay: %+v", fighter)
+	}
+}
+
 func testBattle(t *testing.T) *Battle {
 	t.Helper()
 	battle, err := NewBattle([]Fighter{
