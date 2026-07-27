@@ -127,6 +127,7 @@ type State struct {
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
+	pendingSoundEvents     []SoundEvent
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
 	combatTurnIndex        int
@@ -521,6 +522,7 @@ func (s *State) TurnDungeon(delta int) {
 func (s *State) Apply(action Action) error {
 	switch {
 	case s.Mode == ModeTitle && action == ActionStart:
+		s.requestSound(SoundStart)
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("you_are_at_the_edge_of", "You are at the edge of")
 		if len(s.Choices) == 0 {
@@ -2312,6 +2314,7 @@ func (s *State) Move(dx, dy int) error {
 		return fmt.Errorf("wilderness tile at (%d,%d) is not passable", nextX, nextY)
 	}
 	s.MapX, s.MapY = nextX, nextY
+	s.requestSound(SoundStep)
 	return nil
 }
 

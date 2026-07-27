@@ -213,10 +213,12 @@ func (s *State) CombatMove(dx, dy int) error {
 			return fmt.Errorf("move attack target %q disappeared", moveResult.Attack.TargetID)
 		}
 		s.combatMessage = formatAttackMessage(s.catalog, moveResult.Fighter, target, *moveResult.Attack)
+		s.requestAttackSounds([]combat.AttackResult{*moveResult.Attack})
 	} else {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
 		if len(moveResult.FreeAttacks) > 0 {
 			last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
+			s.requestAttackSounds(moveResult.FreeAttacks)
 			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "移動時遭受免費反擊，受到 %d 點傷害。"), last.Damage)
 		}
 	}
@@ -657,6 +659,7 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	s.requestSound(SoundMagicHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -783,6 +786,7 @@ func (s *State) combatCastProtectionFromGood() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "%s 對 %s 施放防護善良，效果持續 %d 回合。"), caster.Name, target.Name, duration)
+	s.requestSound(SoundMagicHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -832,6 +836,7 @@ func (s *State) combatCastProtectionFromEvil() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "%s 對 %s 施放防護邪惡，效果持續 %d 回合。"), caster.Name, target.Name, duration)
+	s.requestSound(SoundMagicHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -906,6 +911,7 @@ func (s *State) combatCastCauseLightWounds() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cause_light_wounds", "%s 對 %s 施放造成輕傷，造成 %d 點傷害。"), caster.Name, target.Name, result.Damage)
+	s.requestSound(SoundMagicHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -956,6 +962,7 @@ func (s *State) combatCastCurse() error {
 		return err
 	}
 	s.CancelCombatCast()
+	s.requestSound(SoundMagicHit)
 	if result.Targets == 0 {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse_immune", "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。"), caster.Name, target.Name)
 	} else {
@@ -1003,6 +1010,7 @@ func (s *State) combatCastBless() error {
 		return err
 	}
 	s.CancelCombatCast()
+	s.requestSound(SoundMagicHit)
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bless", "%s 施放祝福，隊伍攻擊加值提高 1。"), caster.Name)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -1059,6 +1067,7 @@ func (s *State) combatCastCureLightWounds() error {
 		return err
 	}
 	s.CancelCombatCast()
+	s.requestSound(SoundMagicHit)
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "%s 對 %s 施放治療輕傷，恢復 %d HP。"), caster.Name, target.Name, result.Healing)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -1106,6 +1115,7 @@ func (s *State) CombatAct() error {
 	} else {
 		s.combatMessage = formatMultiAttackMessage(s.catalog, attacker, results)
 	}
+	s.requestAttackSounds(results)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -1221,16 +1231,31 @@ func (s *State) advanceCombatToParty() error {
 			} else {
 				s.combatMessage = formatMultiAttackMessage(s.catalog, fighter, results)
 			}
+			s.requestAttackSounds(results)
 		} else {
 			result, err := s.battle.Attack(fighter.ID, party[0].ID)
 			if err != nil {
 				return err
 			}
 			s.combatMessage = formatAttackMessage(s.catalog, fighter, party[0], result)
+			s.requestAttackSounds([]combat.AttackResult{result})
 		}
 		s.combatTurnIndex++
 	}
 	return s.finishCombat()
+}
+
+func (s *State) requestAttackSounds(results []combat.AttackResult) {
+	for _, result := range results {
+		if result.Hit {
+			s.requestSound(SoundHit)
+		} else {
+			s.requestSound(SoundMiss)
+		}
+		if result.TargetHP <= 0 {
+			s.requestSound(SoundDeath)
+		}
+	}
 }
 
 func (s *State) advanceCombatRound() error {

@@ -1,6 +1,6 @@
 # 第 183 輪：reference PC sound assets 與 Ebiten playback
 
-狀態：`READY`（限已證實 WAV selector 與目前三個觸發點）
+狀態：`READY`（限已證實 WAV selector 與目前 State／playback 觸發點）
 
 ## 證據
 
@@ -11,5 +11,6 @@
 - 啟動標題按 Enter 播放 `sound_D/start_sound.wav`。
 - 荒野合法移動與 dungeon preview 合法移動播放 `sound_A/step.wav`。
 - `-sound-dir` 可指定素材路徑；素材或 audio backend 不可用時只停用聲音，不阻斷文字／地圖／戰鬥流程。
+- State 的戰鬥 intent 會對武器命中／未命中、擊倒、免費反擊與已實作法術發出 selector；Ebiten 只消費 intent，不依賴中文訊息文字判斷音效。
 
-本輪沒有宣稱完成完整戰鬥音效觸發、背景音樂、MIDI／AdLib、音量／設定選單或所有 ECL routine 的 sound call。
+本輪沒有宣稱完成背景音樂、MIDI／AdLib、音量／設定選單或所有 ECL routine 的 sound call。

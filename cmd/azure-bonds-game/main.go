@@ -103,7 +103,14 @@ func (a *app) playSound(id sound.ID) {
 	}
 }
 
+func (a *app) syncSoundEvents() {
+	for _, event := range a.state.ConsumeSoundEvents() {
+		a.playSound(sound.ID(event))
+	}
+}
+
 func (a *app) Update() error {
+	a.syncSoundEvents()
 	a.syncGeoMapRequest()
 	a.syncLoadPiecesRequest()
 	if a.tilePreview {
@@ -291,7 +298,6 @@ func (a *app) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		switch a.state.Mode {
 		case game.ModeTitle:
-			a.playSound(sound.Start)
 			return a.state.Apply(game.ActionStart)
 		case game.ModeWilderness:
 			err := a.state.Select(a.choiceCursor)
@@ -404,32 +410,16 @@ func (a *app) Update() error {
 			return a.state.LeaveMap()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-			err := a.state.Move(0, -1)
-			if err == nil {
-				a.playSound(sound.Step)
-			}
-			return err
+			return a.state.Move(0, -1)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-			err := a.state.Move(0, 1)
-			if err == nil {
-				a.playSound(sound.Step)
-			}
-			return err
+			return a.state.Move(0, 1)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			err := a.state.Move(-1, 0)
-			if err == nil {
-				a.playSound(sound.Step)
-			}
-			return err
+			return a.state.Move(-1, 0)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			err := a.state.Move(1, 0)
-			if err == nil {
-				a.playSound(sound.Step)
-			}
-			return err
+			return a.state.Move(1, 0)
 		}
 	}
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
