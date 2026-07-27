@@ -469,3 +469,5 @@
 第一百八十二輪功能 commit：`216f7b2`，將 `SAVGAM` fixed prefix 接到 `game.State.LoadSAVGAMPrefix`／`SaveSAVGAMPrefix`；依 Area codec 更新已知 Area／GEO/map 欄位，保留未知 runtime／ECL／raw records，並以 signed map position、facing、wall cache 建立 State regression。此為 prefix load/export adapter，不取代 F5 remake JSON，也不宣稱已完成個別 CHRDAT player files、slot 選擇與 multi-file side effects。
 
 第一百八十三輪功能 commit：`aa04200`，依 reference `seg044.SoundInit/PlaySound` 與 `Main/Resource.resx` 保存 9 個 PC WAV，建立 `internal/sound` selector catalog、WAV decode regression 與 Ebiten playback adapter；title start、荒野移動、dungeon preview 移動已播放對應原版音效，並加入 `-sound-dir`。完整戰鬥 sound calls、背景音樂、MIDI／AdLib 與音量設定仍保留 boundary。
+
+第一百八十四輪功能 commit：`e0d871f`，建立 renderer-neutral `game.SoundEvent` queue，將武器命中／未命中、擊倒、移動時攻擊／免費反擊與已實作法術的 sound intent 接到 Ebiten `internal/sound` player；title start 與 wilderness movement 也改由 State queue 發送。新增 one-shot event order regression、READY 規格並清理上一輪「完整戰鬥音效尚未接入」的過時斷言；背景音樂、MIDI／AdLib、音量設定與所有 ECL sound calls 仍保留 boundary。
