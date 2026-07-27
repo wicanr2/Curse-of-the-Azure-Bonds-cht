@@ -113,3 +113,34 @@ func TestBlockSessionCarriesMemoryAcrossNewECL(t *testing.T) {
 		t.Fatalf("result=%+v block=%#x, want target block to print carried memory", result, session.CurrentBlockID())
 	}
 }
+
+func TestBlockSessionAggregatesSignalsAcrossNewECL(t *testing.T) {
+	first := sessionBlock(0x8014)
+	first[2] = 0x20
+	first[3], first[4] = 0x00, 0x51
+	second := sessionBlock(0x8014)
+	second = append(second, make([]byte, 12)...)
+	second[2+0x14] = 0x0E
+	second[2+0x15], second[2+0x16] = 0x00, 0x1D
+	second[2+0x17] = 0x20
+	second[2+0x18], second[2+0x19] = 0x00, 0x52
+	third := sessionBlock(0x8014)
+	third = append(third, make([]byte, 16)...)
+	third[2+0x14] = 0x21
+	copy(third[2+0x15:], []byte{0x00, 0x12, 0x00, 0x34, 0x00, 0x10, 0x00})
+	firstResult, firstErr := RunSubset(first, 0, 40)
+	if firstErr != nil || firstResult.NewECLBlockID == nil {
+		t.Fatalf("first synthetic block=%x result=%+v err=%v", first, firstResult, firstErr)
+	}
+	session, err := NewBlockSession(map[uint8][]byte{0x50: first, 0x51: second, 0x52: third}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := session.RunFrom(0, 40, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x52 || !result.PictureRequested || result.PictureBlock != 0x1D || !result.LoadFilesRequested || result.LoadFiles != [3]uint16{0x12, 0x34, 0x10} {
+		t.Fatalf("cross-block signals=%+v current=0x%02X", result, session.CurrentBlockID())
+	}
+}

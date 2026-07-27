@@ -125,10 +125,21 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
+		aggregate.LoadFilesRequested = aggregate.LoadFilesRequested || result.LoadFilesRequested
+		if result.LoadFilesRequested {
+			aggregate.LoadFiles = result.LoadFiles
+		}
 		if result.LoadPiecesRequested {
 			aggregate.LoadPiecesRequested = true
 			aggregate.LoadPieces = result.LoadPieces
 		}
+		aggregate.PictureRequested = aggregate.PictureRequested || result.PictureRequested
+		if result.PictureRequested {
+			aggregate.PictureBlock = result.PictureBlock
+			aggregate.BigPictureRequested = result.BigPictureRequested
+		}
+		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
+		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
 		selectionOffset += result.SelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {
