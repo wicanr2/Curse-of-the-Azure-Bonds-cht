@@ -835,3 +835,9 @@ mapping，建立 `State.GameTimeDisplay`／`GameTimeText` renderer-neutral 繁�
 一般畫面與荒野地圖現在顯示 `HH:MM` 及依七-slot scale 推出的日／月／年欄位。新增 READY
 spec、回歸測試並更新 README／PLAN／Gold Box state knowledge；完整原版日曆規則與
 time-triggered ECL 仍保留 boundary。
+
+第二百四十九輪重大里程碑：將已驗證的 race/class restrictions、class minimums 與
+`race_ages` single-class table 接入角色建立選單，從三個固定模板擴充為 19 個可驗證組合；
+加入隊伍仍使用 copied-character age／ability transaction，Ebiten 以五列捲動顯示。新增
+creation option regression、READY spec 與 README／PLAN／Gold Box state knowledge；
+多職業、half-orc 與原版完整 create/modify/drop menu 仍保留 boundary。

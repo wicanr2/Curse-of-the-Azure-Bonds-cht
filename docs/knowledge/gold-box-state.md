@@ -223,6 +223,10 @@ record double-count。
 combination error；後續作品只需替換 race/class table，即可重用 deterministic creation
 resolver。
 
+角色建立 UI 現已把這個 resolver 與既有 `Character.Validate` 真正接線：19 個 single-class
+race/class 組合可由選單選取，加入隊伍時才對 copied character 套用 age roll／age effects。
+多職業／dual-class、half-orc 與原版完整 create/modify/drop menu 仍是獨立 boundary。
+
 目前 `State.AddCreationCharacter` 是 age transaction 的作品 adapter：template preview 不變，
 copy 入 roster 時才生成 age、套用 ability delta，再給 copied ID。這保留 UI 編輯可重複預覽，
 也避免對同一 template 累積 modifiers；完整原版 race/class selection 仍可沿用同一 ordering。

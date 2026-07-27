@@ -992,15 +992,27 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, "A／Esc：返回　Enter：加入隊伍", a.face, 48, 350, cyan)
 		return
 	}
-	for index, character := range a.state.CreationOptions {
+	start := a.state.CreationCursor - 3
+	if start < 0 {
+		start = 0
+	}
+	if maxStart := len(a.state.CreationOptions) - 5; start > maxStart && maxStart > 0 {
+		start = maxStart
+	}
+	end := start + 5
+	if end > len(a.state.CreationOptions) {
+		end = len(a.state.CreationOptions)
+	}
+	for index := start; index < end; index++ {
+		character := a.state.CreationOptions[index]
 		prefix := "  "
 		if index == a.state.CreationCursor {
 			prefix = "> "
 		}
 		label := prefix + character.Name + "（" + raceName(character.Race) + "／" + className(character.Class) + "）"
-		text.Draw(screen, label, a.face, 48, 150+index*38, white)
+		text.Draw(screen, label, a.face, 48, 150+(index-start)*32, white)
 	}
-	text.Draw(screen, "已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 285, cyan)
+	text.Draw(screen, "選項 "+strconv.Itoa(a.state.CreationCursor+1)+"／"+strconv.Itoa(len(a.state.CreationOptions))+"　已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 325, cyan)
 	text.Draw(screen, "N：改名　A：能力值　R：重擲　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
 }
 

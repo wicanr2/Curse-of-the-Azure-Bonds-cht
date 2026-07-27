@@ -368,3 +368,4 @@
 - [x] 依 reference `StatValue.AgeEffects` 建立五段 race bracket／六項 ability delta 的明確 `WithAgeEffects` adapter；避免對已含 age-adjusted stats 的 DOS import 重複套用，creation UI／class limits 仍待接線。
 - [x] 依 reference `race_ages`／`ovr018` 建立 single-class starting-age base+dice resolver；creation UI integration、多職業與 half-orc 仍待接線。
 - [x] 將 starting-age／age ability effect 接入 `State.AddCreationCharacter` copy transaction；完整 race/class menu、多職業、half-orc 與 alignment UI 仍待接線。
+- [x] 將已驗證的 19 個 single-class race/class 組合接入角色建立選單，並加入五列捲動顯示；多職業、half-orc 與完整原版建立流程仍待反組譯。
