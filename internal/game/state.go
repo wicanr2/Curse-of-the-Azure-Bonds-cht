@@ -926,7 +926,14 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil
 	}
-	working := append(party.Roster(nil), s.partyRoster...)
+	working := make(party.Roster, len(s.partyRoster))
+	for index, character := range s.partyRoster {
+		working[index] = character
+		// Type_16 displace consumes a persistent FX data bit. Deep-copy the
+		// effect slice so a failed multi-request transaction cannot leak that
+		// mutation into the live roster.
+		working[index].Effects = append([]monster.AffectRecord(nil), character.Effects...)
+	}
 	outcomes := make([]party.DamageOutcome, 0)
 	for _, request := range s.pendingDamageRequests {
 		resolved, err := working.ApplyECLDamageWithHitResolver(request, selectedIndex, rollDie, rollSave, hitTarget)
