@@ -476,3 +476,6 @@
 - [x] 接通哈普 terrain `0x8A` 阿卡巴入隊、MON5 sidecars 與解放前旅店；
   修正 zero-based `LOAD CHARACTER`，分離中文顯示名／DOS script name，讓解放後
   阿卡巴祕密商路分支可執行。
+- [x] 從哈普解放後地圖選擇 CAVES，正式進入 ECL5 block `0x32` 古老熔岩洞；
+  完成 4 隻火蜥蜴＋3 名黑暗精靈入口戰、跨 NEWECL work-byte 清理、
+  `-lava-tube` 640×480 重現入口與 README 實機圖。

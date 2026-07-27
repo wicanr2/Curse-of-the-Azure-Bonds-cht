@@ -777,15 +777,22 @@ func (a *app) Draw(screen *ebiten.Image) {
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 	text.Draw(screen, a.state.GameTimeText(), a.face, 32, 170, cyan)
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
+		choiceTop := 220
+		if a.state.Mode == game.ModeWilderness && a.state.Message != "" {
+			drawWrappedText(screen, a.revealedMessage(), a.face, 32, 210, 22, 30, 4, cyan)
+			choiceTop = 350
+		}
 		for index, choice := range a.state.Choices {
 			prefix := "  "
 			if index == a.choiceCursor {
 				prefix = "> "
 			}
-			text.Draw(screen, prefix+choice, a.face, 56, 220+index*40, white)
+			text.Draw(screen, prefix+choice, a.face, 56, choiceTop+index*40, white)
 		}
-		text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
-		text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
+		if a.state.Message == "" {
+			text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
+			text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
+		}
 	}
 	if a.state.Mode == game.ModeEvent {
 		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
@@ -1476,6 +1483,7 @@ func main() {
 	carriage := flag.Bool("carriage", false, "start at Tilverton's royal-carriage main-story event through the formal ECL flow")
 	guildmaster := flag.Bool("guildmaster", false, "start at the Thieves' Guild mixed-team battle through the full ECL story path")
 	sewers := flag.Bool("sewers", false, "start at the first Tilverton Sewers checkpoint through the full ECL story path")
+	lavaTube := flag.Bool("lava-tube", false, "start at the Hap map route into the ancient lava tube")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1630,6 +1638,22 @@ func main() {
 			log.Fatal(runErr)
 		}
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
+			log.Fatal(err)
+		}
+	} else if *lavaTube {
+		if len(state.PartyFighters()) != 0 {
+			log.Fatal("-lava-tube cannot be combined with a loaded party")
+		}
+		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.AddCreationCharacter(0); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.FinishCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.StartDungeonStoryPreview(0x32, 0x31, 5); err != nil {
 			log.Fatal(err)
 		}
 	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {

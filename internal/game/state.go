@@ -989,6 +989,7 @@ func (s *State) Select(index int) error {
 		var result ecl.RunResult
 		var runErr error
 		if s.session != nil {
+			blockBefore := s.session.CurrentBlockID()
 			selection := uint16(index)
 			var menuSelection, whoSelection *uint16
 			if whoSelecting {
@@ -1000,6 +1001,14 @@ func (s *State) Select(index int) error {
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
+			}
+			if blockBefore == 0x31 && s.session.CurrentBlockID() == 0x32 {
+				s.syncDungeonStateFromECLRegisters()
+				// The verified Hap CAVES transition starts a fresh map
+				// movement cycle. Do not leak the village exit-attempt and
+				// forced-move work bytes into the lava-tube post-combat path.
+				s.session.SetMemoryValue(0x7ED5, 0)
+				s.session.SetMemoryValue(0x7EC9, 0)
 			}
 			// Hap ENTER CITY is an engine-level area transition wrapped
 			// around ECL's NEWECL 0x31. The script loads its map pieces, while
@@ -4384,6 +4393,43 @@ func (s *State) RunDungeonExitLifecycle() error {
 	return s.runDungeonLifecycle(true)
 }
 
+// StartDungeonStoryPreview enters a verified ECL dungeon block through its
+// normal initialization entry. It is used by reproducible frontend previews;
+// previousBlockID supplies the same source-block context that NEWECL would
+// leave in the DOS dispatcher.
+func (s *State) StartDungeonStoryPreview(blockID, previousBlockID, gameArea uint8) error {
+	if s.session == nil {
+		return fmt.Errorf("dungeon story preview requires an ECL session")
+	}
+	if err := s.session.Switch(blockID); err != nil {
+		return err
+	}
+	s.eclBlock = s.session.CurrentData()
+	start, err := s.session.InitialEntry()
+	if err != nil {
+		return err
+	}
+	s.eclStart = start
+	s.session.SetMemoryValue(0x4BF2, uint16(previousBlockID))
+	s.session.SetMemoryValue(0x7ED5, 0)
+	s.session.SetMemoryValue(0x7EC9, 0)
+	s.Area.GameArea = gameArea
+	s.Area.InDungeon = true
+	s.GeoMapSet = gameArea
+	s.Mode = ModeDungeon
+	result, err := s.session.RunEntrySeedWithPartyContext(
+		4, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	s.applyGeoMapLoad(result)
+	s.applyLoadPieces(result)
+	s.syncDungeonStateFromECLRegisters()
+	_, err = s.applyDungeonLifecycleResult(result)
+	return err
+}
+
 func (s *State) syncDungeonStateFromECLRegisters() {
 	if value, ok := s.session.MemoryValue(0xC04B); ok {
 		s.DungeonX = int(int16(value))
@@ -4981,6 +5027,21 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_hap_akabar_secret_routes",
 			"阿卡巴提到，他聽說有祕密商路可以繞過法師塔；他很樂意帶領隊伍前往。",
+		)
+	case strings.Contains(joined, "YOU ARE HEADING BACK TO THE WILDERNESS") &&
+		strings.Contains(joined, "WANT TO CONTINUE"):
+		return catalog.Text("ecl_hap_leave", "你們正準備返回荒野。要繼續嗎？")
+	case strings.Contains(joined, "FOLLOW THE MAP TO THE CAVES") &&
+		strings.Contains(joined, "GO INTO THE WILDERNESS"):
+		return catalog.Text("ecl_hap_map_route", "要循著地圖前往洞穴，還是回到荒野？")
+	case strings.Contains(joined, "YOU HAVE ENTERED AN ANCIENT LAVA TUBE") &&
+		strings.Contains(joined, "ASH COVERS THE FLOOR"):
+		return catalog.Text("ecl_lava_tube_entry", "你們進入一條古老的熔岩隧道，地面覆滿火山灰。")
+	case strings.Contains(joined, "FROM HIDDEN ALCOVES COMES A WAVE OF HEAT") &&
+		strings.Contains(joined, "SALAMANDERS AND DARK ELVES"):
+		return catalog.Text(
+			"ecl_lava_tube_ambush",
+			"熱浪從隱蔽凹室中湧出，緊接著火蜥蜴與黑暗精靈一擁而上。",
 		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):

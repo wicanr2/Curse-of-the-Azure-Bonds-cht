@@ -136,6 +136,11 @@ bit 7 另保留 restore／redraw 狀態，不改變低七位索引。`FreeCurren
 本地化作品必須分開保存 script identity 與 display name，否則中文顯示名會令固定的
 DOS 姓名比較失敗。
 
+`NEWECL` 可在一個 menu selection transaction 內發生，target initial entry 甚至可能
+立即建立 COMBAT。作品 adapter 應在觀察到 block identity 改變時同步 target map
+registers，並清除來源 movement cycle 的 exit／forced-move work bytes。CoAB 的
+`7ED5`／`7EC9` 若滲入 ECL5 block `0x32`，入口戰勝後就會錯誤跳到返回荒野分支。
+
 `FIND SPECIAL (0x3F)` 查的是目前 `SelectedPlayer` 的 active affect，不是全隊 affect
 query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共用 `RuntimeState`
 保存 selected-player index，讓 `LOAD CHARACTER` 與 WHO selection 都能餵給後續
