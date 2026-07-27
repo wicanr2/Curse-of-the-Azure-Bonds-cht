@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 func TestApplyECLDamageSelectedTargetUsesDOSSaveVerse(t *testing.T) {
@@ -21,6 +22,15 @@ func TestApplyECLDamageSelectedTargetUsesDOSSaveVerse(t *testing.T) {
 	}
 	if roster[0].HitPoints != 10 || roster[1].HitPoints != 5 {
 		t.Fatalf("roster HP=%d,%d", roster[0].HitPoints, roster[1].HitPoints)
+	}
+}
+
+func TestApplyECLDamageUsesImportedSavingThrowBonus(t *testing.T) {
+	roster := Roster{{ID: "hero", HitPoints: 10, SavingThrows: []uint8{12, 12, 12, 12, 12}, SavingThrowBonus: 2}}
+	request := ecl.DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: 1, SaveFlags: 0x81}
+	outcomes, err := roster.ApplyECLDamage(request, 0, func(int) int { return 1 }, func(int) int { return 10 })
+	if err != nil || len(outcomes) != 1 || !outcomes[0].Saved || roster[0].HitPoints != 10 {
+		t.Fatalf("outcomes=%#v roster=%#v err=%v", outcomes, roster, err)
 	}
 }
 
@@ -59,5 +69,18 @@ func TestApplyECLDamageRandomTargetsUseInjectedCanHitTarget(t *testing.T) {
 	})
 	if err != nil || len(outcomes) != 2 || outcomes[0].TargetIndex != 1 || outcomes[0].Hit || outcomes[1].TargetIndex != 0 || !outcomes[1].Hit || roster[0].HitPoints != 7 || roster[1].HitPoints != 10 {
 		t.Fatalf("outcomes=%#v roster=%#v err=%v", outcomes, roster, err)
+	}
+}
+
+func TestCanHitECLDamageTargetAppliesInvisibilityRollPenalty(t *testing.T) {
+	target := Character{Effects: []monster.AffectRecord{{Kind: 0x19, Active: true}}}
+	hit, err := CanHitECLDamageTarget(target, 10, 0, func(int) int { return 14 })
+	if err != nil || hit {
+		t.Fatalf("invisible target hit=%t err=%v, want miss after -4", hit, err)
+	}
+	target.Effects[0].Active = false
+	hit, err = CanHitECLDamageTarget(target, 10, 0, func(int) int { return 14 })
+	if err != nil || !hit {
+		t.Fatalf("inactive effect hit=%t err=%v, want hit", hit, err)
 	}
 }

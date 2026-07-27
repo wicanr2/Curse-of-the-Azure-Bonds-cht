@@ -171,6 +171,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x74], data[0x75] = 7, 5 // human magic-user
 	data[0x78], data[0x1A4] = 22, 18
 	copy(data[DOSSavingThrowsOffset:DOSSavingThrowsEnd], []byte{14, 12, 10, 13, 11})
+	data[0x186] = 0xFE // signed -2
 	copy(data[DOSThiefSkillsOffset:DOSThiefSkillsEnd], []byte{12, 34, 56, 78, 90, 11, 22, 33})
 	data[0x10E] = 4
 	data[0x141], data[0x142], data[0x143], data[0x144] = 3, 4, 0x0A, 2
@@ -183,7 +184,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 {
+	if record.Name != "ELLA" || record.Level != 4 || record.Gold != 123 || record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
 		t.Fatalf("record=%#v", record)
 	}
 	itemData := make([]byte, monster.ItemRecordSize)
@@ -200,7 +201,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || character.SavingThrowBonus != -2 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {
