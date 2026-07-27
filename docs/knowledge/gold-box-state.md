@@ -1,5 +1,11 @@
 # Gold Box 共用 state／城市 service 知識
 
+## Dungeon boss continuation ownership
+
+Dungeon boss battle 的返回 owner 必須在建立 Battle 時 snapshot。哈普伊弗利特
+戰後先回 ECL `0x31` 取得地圖、PICTURE 與長老提示，最後才回 dungeon；若
+`finishCombat` 無條件設定 Wilderness，會跳回村外並遺失 `4C01/4C5E` 後續。
+
 ## 世界地點值與旅途戰鬥 continuation
 
 CoAB 的 world current-location byte 是作品資料值，不是連續的 remake enum。

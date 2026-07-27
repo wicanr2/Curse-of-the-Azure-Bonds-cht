@@ -808,6 +808,16 @@ func TestRunSubsetEncounterMenuCombatResolvesBehaviorMode(t *testing.T) {
 	}
 }
 
+func TestRunSubsetApproachPreservesPresentationSignal(t *testing.T) {
+	result, err := RunSubset([]byte{0, 0, 0x0D, 0x3A, 0x0D, 0x00}, 0, 8)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.Exited || result.ApproachCount != 2 || result.DelayCount != 1 {
+		t.Fatalf("result=%+v, want two APPROACH signals around one DELAY", result)
+	}
+}
+
 func TestRuntimeStateResumesAtPausedMenu(t *testing.T) {
 	block := []byte{0, 0,
 		0x2B, 0x02, 0x00, 0x90, 0x00, 0x01,

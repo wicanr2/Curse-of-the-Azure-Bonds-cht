@@ -129,6 +129,8 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_dark_elf_mage", "黑暗精靈法師")
 	case "DARK ELF CLERIC":
 		return catalog.Text("monster_dark_elf_cleric", "黑暗精靈牧師")
+	case "EFREETI":
+		return catalog.Text("monster_efreeti", "伊弗利特")
 	default:
 		return name
 	}

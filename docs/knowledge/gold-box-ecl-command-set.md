@@ -219,6 +219,12 @@ ADVANCE／PARLAY 各自的 behavior mode，不是 final branch value。reference
 mode `2` 仍依雙方 movement 決定 `0` 或 `1`。共用 VM 不得再直接複製 mode
 到 destination；缺少 engine context 的 case 必須保留 boundary。
 
+`APPROACH (0x0D)` 是 encounter presentation command，不是未知 opcode 或
+ECL memory mutation。CoAB reference 會讓 encounter sprite 靠近隊伍；共用
+runner 以 ordered count 保存 intent，frontend 再依 encounter distance／sprite
+state 呈現。runner error 不得在 State adapter 被丟棄，否則真正的 unsupported
+command 會被誤顯示成空白劇情並污染後續 selection offsets。
+
 ## CoAB ECL／engine memory ownership
 
 | address／range | owner／方向 | lifecycle |

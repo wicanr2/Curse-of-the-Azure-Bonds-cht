@@ -286,3 +286,4 @@
 - [第三百零六輪艾森布拉、哈普與黑龍](./306-essembra-hap-black-dragons.md)（`READY`：限複合選項、world values 8/9 與三隻黑龍戰）
 - [第三百零七輪哈普村入口與躲藏村民](./307-hap-village-entry.md)（`READY`：限 Area 5／ECL 0x31 入口、terrain 0x84 與 PICTURE 50）
 - [第三百零八輪哈普黑暗精靈巡邏](./308-hap-dark-elf-patrol.md)（`READY`：限 ENCOUNTER COMBAT resolver、terrain 0x80 與 MON5 0x31–0x33）
+- [第三百零九輪伊弗利特與哈普解放](./309-hap-efreet-liberation.md)（`READY`：限 terrain 0x88、APPROACH、13 名敵軍與法師塔提示）

@@ -2154,6 +2154,87 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4C47); !ok || got != 1 {
 		t.Fatalf("Hap defeated patrol count=%#x,%v want 1", got, ok)
 	}
+	state.party[0].HitPoints, state.party[0].MaxHitPoints = 500, 500
+	state.partyRoster[0].HitPoints, state.partyRoster[0].MaxHitPoints = 500, 500
+	state.DungeonWallRoof = 0x88
+	session.SetMemoryValue(0x4BC9, 15)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "伊弗利特") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap efreet barn choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		!strings.Contains(state.Message, "伊弗利特隆隆吼道") {
+		t.Fatalf("Hap efreet approach choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat {
+		t.Fatalf("Hap efreet combat mode=%v event=%q message=%q", state.Mode, state.OriginalEvent, state.Message)
+	}
+	efreetFighters := state.CombatFighters()
+	if len(efreetFighters) != 14 {
+		t.Fatalf("Hap efreet fighters=%d, want hero plus 13 enemies", len(efreetFighters))
+	}
+	efreetCount, mageCount, clericCount := 0, 0, 0
+	for _, fighter := range efreetFighters[1:] {
+		switch {
+		case fighter.Name == "伊弗利特" && fighter.SpriteBlock == 0x34:
+			efreetCount++
+		case fighter.Name == "黑暗精靈法師" && fighter.SpriteBlock == 0x32:
+			mageCount++
+		case fighter.Name == "黑暗精靈牧師" && fighter.SpriteBlock == 0x33:
+			clericCount++
+		default:
+			t.Fatalf("unexpected Hap efreet cohort=%+v", fighter)
+		}
+	}
+	if efreetCount != 1 || mageCount != 6 || clericCount != 6 {
+		t.Fatalf("Hap efreet cohort counts efreet=%d mage=%d cleric=%d", efreetCount, mageCount, clericCount)
+	}
+	for turn := 0; turn < 32 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !strings.Contains(state.Message, "村莊與一處洞穴") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap efreet map choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	for address, want := range map[uint16]uint16{0x4C01: 5, 0x4C5E: 1} {
+		if got, ok := session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("Hap efreet flag[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 50 ||
+		!strings.Contains(state.Message, "整座村莊隨即充滿歡呼") {
+		t.Fatalf("Hap liberation picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "哈普圖斯永遠歡迎") {
+		t.Fatalf("Hap elder thanks=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "附近法師塔控制") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap elder tower choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
