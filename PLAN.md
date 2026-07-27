@@ -88,6 +88,7 @@
 - [x] 未支援 opcode 以精確 payload offset 停止，未宣稱完整 VM。
 - [x] 實作 bounded `ON GOTO/GOSUB`、menu input；完整 DOS memory model 仍保留 boundary。
 - [x] 依 reference `CMD_PartyStrength`／`CMD_PartySurprise` 消費 ECL party-rule command，並由注入的 `PartyContext` 將 verified roster stats writeback 到 shared ECL memory；完整 AC scale／multi-class rule table 仍保留 boundary。
+- [x] 依 reference `CMD_CheckParty` 接入 thief skill／movement／active-affect branches 與四欄 memory writeback；未知 selector／完整作品 scaling 仍保留 boundary。
 
 ## 第十四輪驗收
 

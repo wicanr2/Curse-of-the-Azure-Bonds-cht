@@ -574,3 +574,30 @@ func TestRunSubsetWithPartyContextResolvesPartyCommands(t *testing.T) {
 		t.Fatalf("resolved surprise=%#v", result.PartySurpriseRequests)
 	}
 }
+
+func TestRunSubsetWithPartyContextResolvesCheckPartySkills(t *testing.T) {
+	block := []byte{0, 0,
+		0x1E,
+		0x01, 0xA4, 0x80, // 0x80A4 - 0x7FFF = 0xA5: open-locks skill
+		0x00, 0x00, // affect ID (unused by skill query)
+		0x01, 0x00, 0x90,
+		0x01, 0x01, 0x90,
+		0x01, 0x02, 0x90,
+		0x01, 0x03, 0x90,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 10, nil, 1, PartyContext{Members: []PartyMemberContext{
+		{ThiefSkills: [8]uint8{10}},
+		{ThiefSkills: [8]uint8{20}},
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.CheckPartyRequests) != 1 {
+		t.Fatalf("check party requests=%#v", result.CheckPartyRequests)
+	}
+	request := result.CheckPartyRequests[0]
+	if !request.Resolved || request.Minimum != 10 || request.Maximum != 20 || request.Average != 15 {
+		t.Fatalf("check party result=%#v", request)
+	}
+}

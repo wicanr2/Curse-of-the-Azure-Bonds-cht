@@ -898,3 +898,8 @@ transaction 與原版 player delete semantics 仍維持既有 boundary。
 roster／fighter projection 解析 `PARTYSTRENGTH` 與 `PARTY SURPRISE`，將結果寫回 shared
 ECL memory，並在 `NEWECL`／menu continuation 間保留。新增 context-resolved regression 與
 READY spec；reference AC internal scale、完整 multi-class level／THAC0 table 仍保留邊界。
+
+第二百六十六輪 ECL／State 里程碑：依 `ovr003.CMD_CheckParty` 接入 normalized selector
+`0xA5..0xAC` thief skills、`0x9F` movement 與 `8001` active-affect branches；四個結果
+destination 由 PartyContext 寫回 shared ECL memory，新增 READY spec 與 min／max／average
+regression。未知 selector、NPC／temporary party 語意與各作品 scaling 仍保留 boundary。

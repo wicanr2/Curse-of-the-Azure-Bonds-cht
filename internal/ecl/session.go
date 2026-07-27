@@ -164,6 +164,7 @@ func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selectio
 		aggregate.TreasureRequests = append(aggregate.TreasureRequests, result.TreasureRequests...)
 		aggregate.PartyStrengthRequests = append(aggregate.PartyStrengthRequests, result.PartyStrengthRequests...)
 		aggregate.PartySurpriseRequests = append(aggregate.PartySurpriseRequests, result.PartySurpriseRequests...)
+		aggregate.CheckPartyRequests = append(aggregate.CheckPartyRequests, result.CheckPartyRequests...)
 		selectionOffset += result.SelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {

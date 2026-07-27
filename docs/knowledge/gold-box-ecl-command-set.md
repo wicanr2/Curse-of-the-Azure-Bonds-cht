@@ -94,6 +94,11 @@ destination request 並繼續 cursor；State 注入 `PartyContext` 時會依 ref
 shared ECL memory，沒有 roster context 的純 VM path 則維持 unresolved request，不寫入
 猜測值。
 
+`CHECKPARTY (0x1E)` 已釋放三個 reference branches：normalized selector `0xA5..0xAC`
+查 thief skills、`0x9F` 查 movement、`8001` 查 active affect；四個 destination 的
+min／max／average／found ordering 由 `PartyContext` 寫入。未知 selector 仍只保存 raw
+request，這個規則可跨 Gold Box 重用，但各作品需重新驗證 selector table。
+
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
 的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party
