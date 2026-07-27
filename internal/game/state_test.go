@@ -531,6 +531,30 @@ func TestResolvePendingECLDamageWritesRosterAndFighterHP(t *testing.T) {
 	}
 }
 
+func TestResolvePendingECLDamageWithHitResolverHandlesRandomTargets(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "first", HitPoints: 10}, {ID: "second", HitPoints: 10}}
+	state.party = []combat.Fighter{{ID: "first", HitPoints: 10}, {ID: "second", HitPoints: 10}}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 2, DiceCount: 1, DiceSize: 1, Bonus: 2, SaveFlags: 3,
+	}}})
+	targetRolls := []int{2, 1}
+	targetIndex := 0
+	outcomes, err := state.ResolvePendingECLDamageWithHitResolver(-1, func(sides int) int {
+		if sides == 1 {
+			return 1
+		}
+		value := targetRolls[targetIndex]
+		targetIndex++
+		return value
+	}, func(int) int { return 1 }, func(target party.Character, bonus int, rollDie func(int) int) (bool, error) {
+		return target.ID == "first" && bonus == 3, nil
+	})
+	if err != nil || len(outcomes) != 2 || state.partyRoster[0].HitPoints != 7 || state.partyRoster[1].HitPoints != 10 || state.party[0].HitPoints != 7 {
+		t.Fatalf("outcomes=%#v roster=%#v fighters=%#v err=%v", outcomes, state.partyRoster, state.party, err)
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

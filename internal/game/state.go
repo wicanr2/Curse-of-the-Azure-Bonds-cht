@@ -883,13 +883,24 @@ func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
 // inputs because ECL memory does not yet expose a universal character picker.
 // Roster HP is synchronized to any renderer-facing fighter with the same ID.
 func (s *State) ResolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int) ([]party.DamageOutcome, error) {
+	return s.resolvePendingECLDamage(selectedIndex, rollDie, rollSave, nil)
+}
+
+// ResolvePendingECLDamageWithHitResolver additionally enables the original
+// random-target DAMAGE branch. The hit resolver is explicit because its AC
+// projection and affect checks belong to the party/combat adapter.
+func (s *State) ResolvePendingECLDamageWithHitResolver(selectedIndex int, rollDie, rollSave func(int) int, hitTarget party.DamageHitResolver) ([]party.DamageOutcome, error) {
+	return s.resolvePendingECLDamage(selectedIndex, rollDie, rollSave, hitTarget)
+}
+
+func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int, hitTarget party.DamageHitResolver) ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil
 	}
 	working := append(party.Roster(nil), s.partyRoster...)
 	outcomes := make([]party.DamageOutcome, 0)
 	for _, request := range s.pendingDamageRequests {
-		resolved, err := working.ApplyECLDamage(request, selectedIndex, rollDie, rollSave)
+		resolved, err := working.ApplyECLDamageWithHitResolver(request, selectedIndex, rollDie, rollSave, hitTarget)
 		if err != nil {
 			return nil, err
 		}
