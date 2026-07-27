@@ -27,6 +27,11 @@ type WallView struct {
 	Calls          []WallLayoutCall
 }
 
+type wallViewMap struct {
+	grid geo.Grid
+	wrap bool
+}
+
 var wallViewDelta = [...]struct{ x, y int }{
 	{0, -1}, {1, -1}, {1, 0}, {1, 1},
 	{0, 1}, {-1, 1}, {-1, 0}, {-1, -1},
@@ -39,15 +44,21 @@ func wallViewDirection(direction uint8) (struct{ x, y int }, bool) {
 	return wallViewDelta[direction], true
 }
 
-func wallViewWall(grid geo.Grid, direction uint8, x, y int) uint8 {
-	value, ok := grid.Wall(x, y, int(direction))
+func wallViewWall(grid wallViewMap, direction uint8, x, y int) uint8 {
+	var value uint8
+	var ok bool
+	if grid.wrap {
+		value, ok = grid.grid.WallWrapped(x, y, int(direction))
+	} else {
+		value, ok = grid.grid.Wall(x, y, int(direction))
+	}
 	if !ok {
 		return 0
 	}
 	return value
 }
 
-func addWallCall(calls *[]WallLayoutCall, grid geo.Grid, depth int, direction uint8, x, y, layout, row, column int) {
+func addWallCall(calls *[]WallLayoutCall, grid wallViewMap, depth int, direction uint8, x, y, layout, row, column int) {
 	wallType := wallViewWall(grid, direction, x, y)
 	if wallType == 0 {
 		return
@@ -68,7 +79,7 @@ func addWallCallValue(calls *[]WallLayoutCall, depth int, direction uint8, x, y 
 	})
 }
 
-func drawWallFar(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
+func drawWallFar(grid wallViewMap, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
 	startX, startY := x, y
 	leftDelta, _ := wallViewDirection(left)
 	var previous uint8
@@ -142,7 +153,7 @@ func drawWallFar(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, r
 	}
 }
 
-func drawWallMid(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
+func drawWallMid(grid wallViewMap, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
 	baseX, baseY := x, y
 	leftDelta, _ := wallViewDirection(left)
 	rightDelta, _ := wallViewDirection(right)
@@ -167,7 +178,7 @@ func drawWallMid(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, r
 	}
 }
 
-func drawWallNear(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
+func drawWallNear(grid wallViewMap, calls *[]WallLayoutCall, partyDirection, left, right uint8, x, y int) {
 	baseX, baseY := x, y
 	leftDelta, _ := wallViewDirection(left)
 	rightDelta, _ := wallViewDirection(right)
@@ -197,6 +208,17 @@ func drawWallNear(grid geo.Grid, calls *[]WallLayoutCall, partyDirection, left, 
 // engine's wrap decision depends on ECL context and belongs to an outer Area
 // adapter.
 func TraverseWallView(grid geo.Grid, partyDirection uint8, partyX, partyY int) (WallView, error) {
+	return traverseWallView(grid, partyDirection, partyX, partyY, false)
+}
+
+// TraverseWallViewWrapped uses the original 16x16 dungeon coordinate wrap.
+// It is separate from TraverseWallView because wilderness/ECL contexts can
+// intentionally reject out-of-range coordinates.
+func TraverseWallViewWrapped(grid geo.Grid, partyDirection uint8, partyX, partyY int) (WallView, error) {
+	return traverseWallView(grid, partyDirection, partyX, partyY, true)
+}
+
+func traverseWallView(grid geo.Grid, partyDirection uint8, partyX, partyY int, wrap bool) (WallView, error) {
 	if partyDirection >= uint8(len(wallViewDelta)) {
 		return WallView{}, fmt.Errorf("party direction %d is outside 0..7", partyDirection)
 	}
@@ -206,16 +228,17 @@ func TraverseWallView(grid geo.Grid, partyDirection uint8, partyX, partyY int) (
 	partyDelta, _ := wallViewDirection(partyDirection)
 	behindDelta, _ := wallViewDirection(behind)
 	view := WallView{PartyDirection: partyDirection, Calls: make([]WallLayoutCall, 0)}
+	wallMap := wallViewMap{grid: grid, wrap: wrap}
 	x := partyX + 2*partyDelta.x
 	y := partyY + 2*partyDelta.y
 	for depth := 2; depth >= 0; depth-- {
 		switch depth {
 		case 2:
-			drawWallFar(grid, &view.Calls, partyDirection, left, right, x, y)
+			drawWallFar(wallMap, &view.Calls, partyDirection, left, right, x, y)
 		case 1:
-			drawWallMid(grid, &view.Calls, partyDirection, left, right, x, y)
+			drawWallMid(wallMap, &view.Calls, partyDirection, left, right, x, y)
 		case 0:
-			drawWallNear(grid, &view.Calls, partyDirection, left, right, x, y)
+			drawWallNear(wallMap, &view.Calls, partyDirection, left, right, x, y)
 		}
 		x += behindDelta.x
 		y += behindDelta.y

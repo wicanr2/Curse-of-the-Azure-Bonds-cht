@@ -451,11 +451,11 @@ func (a *app) refreshDungeonPreview() {
 }
 
 func (a *app) moveDungeonPreview(dx, dy, direction int) {
-	if a.geoGrid == nil || !a.geoGrid.CanMove(a.dungeonX, a.dungeonY, direction) {
+	if a.geoGrid == nil || !a.geoGrid.CanMoveWrapped(a.dungeonX, a.dungeonY, direction) {
 		return
 	}
-	a.dungeonX += dx
-	a.dungeonY += dy
+	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
+	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
 	a.refreshDungeonPreview()
 }
 
@@ -464,7 +464,7 @@ func (a *app) prepareWallPreview() {
 	if a.geoGrid == nil || len(a.pieceSets) == 0 {
 		return
 	}
-	view, err := gfx.TraverseWallView(*a.geoGrid, a.state.DungeonDirection, a.dungeonX, a.dungeonY)
+	view, err := gfx.TraverseWallViewWrapped(*a.geoGrid, a.state.DungeonDirection, a.dungeonX, a.dungeonY)
 	if err != nil {
 		return
 	}
@@ -729,7 +729,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q/E 轉向／D／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, "Dungeon floor composition（方向鍵移動含 wrap／Q/E 轉向／D／Esc：返回）", a.face, 24, 28, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return

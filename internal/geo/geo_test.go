@@ -45,6 +45,22 @@ func TestCanMoveHonorsBothCellWallsAndBounds(t *testing.T) {
 	}
 }
 
+func TestWrappedDungeonMovementCrossesMapEdge(t *testing.T) {
+	var grid Grid
+	grid.Cells[0][0].WallDirections[0] = 0
+	grid.Cells[Height-1][0].WallDirections[2] = 0
+	if !grid.CanMoveWrapped(0, 0, 0) {
+		t.Fatal("open north edge should wrap to the last row")
+	}
+	grid.Cells[0][0].WallDirections[0] = 1
+	if grid.CanMoveWrapped(0, 0, 0) {
+		t.Fatal("current wrapped wall should block movement")
+	}
+	if got := WrapCoordinate(-1, Width); got != Width-1 {
+		t.Fatalf("wrapped coordinate=%d, want %d", got, Width-1)
+	}
+}
+
 func TestOriginalGEOBlocksHaveKnownShape(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

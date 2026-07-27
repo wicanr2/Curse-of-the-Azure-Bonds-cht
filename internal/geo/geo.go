@@ -74,6 +74,24 @@ func (g Grid) Cell(x, y int) (Cell, bool) {
 	return g.Cells[y][x], true
 }
 
+// WrapCoordinate applies the original 16x16 dungeon coordinate wrap.
+func WrapCoordinate(value, size int) int {
+	if size <= 0 {
+		return 0
+	}
+	value %= size
+	if value < 0 {
+		value += size
+	}
+	return value
+}
+
+// CellWrapped reads a dungeon cell after applying the reference map wrap.
+// Callers should use this only when their ECL/Area context permits wrapping.
+func (g Grid) CellWrapped(x, y int) Cell {
+	return g.Cells[WrapCoordinate(y, Height)][WrapCoordinate(x, Width)]
+}
+
 // Wall returns the raw wall type for one of the four cardinal directions
 // used by the original engine: 0=north, 2=east, 4=south, 6=west.
 func (g Grid) Wall(x, y, direction int) (uint8, bool) {
@@ -81,6 +99,26 @@ func (g Grid) Wall(x, y, direction int) (uint8, bool) {
 	if !ok {
 		return 0, false
 	}
+	index := -1
+	switch direction {
+	case 0:
+		index = 0
+	case 2:
+		index = 1
+	case 4:
+		index = 2
+	case 6:
+		index = 3
+	}
+	if index < 0 {
+		return 0, false
+	}
+	return cell.WallDirections[index], true
+}
+
+// WallWrapped is the wrapped counterpart to Wall for dungeon contexts.
+func (g Grid) WallWrapped(x, y, direction int) (uint8, bool) {
+	cell := g.CellWrapped(x, y)
 	index := -1
 	switch direction {
 	case 0:
@@ -121,5 +159,27 @@ func (g Grid) CanMove(x, y, direction int) bool {
 	wall, _ := g.Wall(x, y, direction)
 	opposite := (direction + 4) % 8
 	other, _ := g.Wall(x+dx, y+dy, opposite)
+	return wall == 0 && other == 0
+}
+
+// CanMoveWrapped applies the same two-sided wall check as CanMove, but wraps
+// both the current and destination coordinates like the original dungeon map.
+func (g Grid) CanMoveWrapped(x, y, direction int) bool {
+	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
+		return false
+	}
+	dx, dy := 0, 0
+	switch direction {
+	case 0:
+		dy = -1
+	case 2:
+		dx = 1
+	case 4:
+		dy = 1
+	case 6:
+		dx = -1
+	}
+	wall, _ := g.WallWrapped(x, y, direction)
+	other, _ := g.WallWrapped(x+dx, y+dy, (direction+4)%8)
 	return wall == 0 && other == 0
 }

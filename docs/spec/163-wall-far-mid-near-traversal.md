@@ -18,4 +18,4 @@ reference `Draw3dWorld` 以 party direction 計算 `left=(dir+6)%8`、`behind=(d
 
 ## 邊界
 
-共用 traversal 不自行 wrap GEO 邊界；reference 的 wrap 取決於 ECL block context，需由 Area adapter 注入。sky／roof／door overlay、遮擋排序、camera movement 與完整 Ebiten 3D screen 仍待完成。
+第 167 輪新增 `TraverseWallViewWrapped`，讓 dungeon preview 明確套用 reference 16×16 wrap；未包裝的 `TraverseWallView` 仍保留嚴格邊界，供不允許 wrap 的 context 使用。sky／roof／door overlay、遮擋排序、camera movement 與完整 Ebiten 3D screen 仍待完成。
