@@ -134,3 +134,7 @@ ordered `DumpRequest` 更新 working party，作品 State 再同步 persistent r
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
 的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party
 adapter」分層，但仍須各自驗證 item type namespace、compare result 與角色範圍。
+CoAB 的 `PROGRAM (0x38)` 已確認 0/3/8/9 都是「停止本輪 VM，再交給 engine」：
+0=start menu、3=party killed、8=game won／全隊恢復／詢問存檔、9=encamp。可重用 VM
+只應回傳 ID 與 boundary；作品 State adapter 才能決定 process exit、title screen 與存檔
+UI。CoAB remake 讓一般選單與 combat continuation 共用同一 adapter，避免戰後吞掉勝利。

@@ -1,6 +1,6 @@
 # 第三十九輪：PROGRAM 外部 routine 邊界
 
-狀態：READY（VM 控制轉移邊界；不宣稱外部 routine 已重製）
+狀態：READY（VM 控制轉移邊界；State side effects 見第 275 輪）
 
 ## 本輪證據
 
@@ -9,10 +9,12 @@
 - 真實 ECL1 block `0x51` initial flow，從 payload `+0x014B` 以 selection `2`（CAMP）執行 34 steps 後在 `PROGRAM 9` 的 `+0x05DB` 停止；不再錯誤地重複跑場所 menu。
 - synthetic regression 驗證 `PROGRAM 9` 只消耗自身指令並回傳 external boundary。
 
-## 邊界與未完成項目
+## 後續進度與邊界
 
-- CAMP 的休息／被打斷／恢復 HP 與 ECL 後續地圖狀態仍未接入 Game state。
-- `PROGRAM 0` 的 start menu、`PROGRAM 3` 的 party-killed、`PROGRAM 8` 的勝利流程仍只回傳控制邊界。
+- 第 40、117 輪已將 `PROGRAM 9` 接入 CAMP state；第 275 輪再將
+  `PROGRAM 0/3/8` 接入 start menu、party-killed 與 game-won transaction。
+- DOS 原版直接結束 process 的部分，在桌面重製版被明確轉譯為返回標題；這是 frontend
+  policy，不宣稱與 DOS process lifecycle 相同。
 
 ## 驗證
 
