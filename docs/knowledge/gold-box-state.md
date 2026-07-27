@@ -51,6 +51,12 @@ Ranged attack 不能只看 `BaseItem.Range != 0`：RuleBook 的 adjacent missile
 
 `AttacksPerTurn` 不能只在 party UI 套用：enemy turn 若已由 ITEMS／monster adapter 投影出大於 1 的值，也必須使用同一個 `Battle.AttackSequence`；零值或 1 維持單次攻擊。這只修正已知武器 profile 的回合套用，不代表已解出 enemy AI、彈藥或額外職業攻擊。
 
+Monster spell 也沿用 raw-data → fighter → rules 三層：reference `PoolRadPlayer.field_33`
+是 0x38 個 spell-list slot，`field_B5..B7` 是 magic-user level-use counts；CoAB 目前只
+把已核對的 `0x0F Magic Missile` 接成一級單枚 2–5 damage，並在 enemy turn 成功施放後
+消耗一次 level-1 use。其他 raw spell ID 只保存、不猜效果；AI priority、saving throw、
+range、`MON*SPC` effects 與完整 monster spell turn 必須各自取得證據。
+
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
 亂數選一個可見／可達目標；目前 remake 以 sorted fighter ID + Battle seeded RNG

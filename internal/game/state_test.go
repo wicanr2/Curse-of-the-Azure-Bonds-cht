@@ -1434,6 +1434,37 @@ func TestEnemyTurnSelectsAmongLivingPartyTargets(t *testing.T) {
 	}
 }
 
+func TestEnemyTurnCastsVerifiedMonsterMagicMissile(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: 100,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "spell-monster", Name: "施法怪", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: -100, MonsterSpellIDs: []uint8{combat.MonsterMagicMissileSpellID},
+		MonsterSpellUses: [3]uint8{1},
+	}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatDone(); err != nil {
+		t.Fatal(err)
+	}
+	active, ok := state.CombatActiveFighter()
+	if state.Mode != ModeCombat || !ok || active.ID != "hero" {
+		t.Fatalf("monster spell turn did not return to party: mode=%v active=%+v message=%q", state.Mode, active, state.CombatMessage())
+	}
+	if active.HitPoints < 5 || active.HitPoints > 8 || !strings.Contains(state.CombatMessage(), "魔法飛彈") {
+		t.Fatalf("monster spell was not applied: active=%+v message=%q", active, state.CombatMessage())
+	}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "spell-monster" && fighter.MonsterSpellUses[0] != 0 {
+			t.Fatalf("monster spell use not consumed: %+v", fighter)
+		}
+	}
+}
+
 func TestCombatAmmunitionMappingRejectsInsufficientShotsBeforeAttack(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "archer", Name: "弓手", Equipment: []monster.ItemRecord{{Type: 73, Count: 1}}}}

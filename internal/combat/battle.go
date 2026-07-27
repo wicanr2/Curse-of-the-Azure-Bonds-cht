@@ -94,7 +94,13 @@ type Fighter struct {
 	MissileWeapon        bool
 	ThrownWeapon         bool
 	InitiativeBonus      int
+	// MonsterSpellIDs mirrors the raw MON*CHA spell-list slots. The bounded
+	// monster-turn adapter currently consumes only Magic Missile (0x0F).
+	MonsterSpellIDs  []uint8
+	MonsterSpellUses [3]uint8
 }
+
+const MonsterMagicMissileSpellID uint8 = 0x0F
 
 // ActionState mirrors the per-player fields cleared by the reference
 // CombatantKilled routine. It is deliberately data-only so ECL, UI and other
@@ -512,6 +518,42 @@ func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, 
 // missile deals 2-5 damage and has no saving throw. The seed-owned RNG keeps
 // the result replayable while the game adapter owns spell-slot consumption.
 func (b *Battle) CastMagicMissile(casterID, targetID string, level int) (SpellResult, error) {
+	return b.castMagicMissile(casterID, targetID, level, 7)
+}
+
+// CastMonsterMagicMissile applies the reference monster spell ID 0x0F. Unlike
+// the party path, the monster's level-1 spell use is stored on the fighter
+// from MON*CHA and is consumed atomically with the effect.
+func (b *Battle) CastMonsterMagicMissile(casterID, targetID string) (SpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	hasSpell := false
+	for _, spellID := range caster.MonsterSpellIDs {
+		if spellID == MonsterMagicMissileSpellID {
+			hasSpell = true
+			break
+		}
+	}
+	if !hasSpell {
+		return SpellResult{}, fmt.Errorf("monster %q has no Magic Missile spell", casterID)
+	}
+	if caster.MonsterSpellUses[0] == 0 {
+		return SpellResult{}, fmt.Errorf("monster %q has no level-1 spell uses", casterID)
+	}
+	caster.MonsterSpellUses[0]--
+	b.fighters[casterID] = caster
+	result, err := b.castMagicMissile(casterID, targetID, 1, MonsterMagicMissileSpellID)
+	if err != nil {
+		caster.MonsterSpellUses[0]++
+		b.fighters[casterID] = caster
+		return SpellResult{}, err
+	}
+	return result, nil
+}
+
+func (b *Battle) castMagicMissile(casterID, targetID string, level int, spellID uint8) (SpellResult, error) {
 	caster, ok := b.fighters[casterID]
 	if !ok {
 		return SpellResult{}, fmt.Errorf("unknown caster %q", casterID)
@@ -543,7 +585,7 @@ func (b *Battle) CastMagicMissile(casterID, targetID string, level int) (SpellRe
 	target.HitPoints -= damage
 	b.fighters[targetID] = target
 	b.updateStatus()
-	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 7, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: spellID, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
 }
 
 // CastCureLightWounds applies the verified 1-8 HP touch-heal effect. The

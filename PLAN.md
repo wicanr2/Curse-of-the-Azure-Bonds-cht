@@ -180,6 +180,7 @@
 - [x] 解析 ECL `SETUP MONSTER`／`LOAD MONSTER` descriptor，驗證 Shadowdale encounter sequence。
 - [x] 解碼 `MON*CHA` 固定 record offsets，建立 raw stats 到 `combat.Fighter` adapter。
 - [x] 解碼 `MON*ITM` 63-byte 與 `MON*SPC` 9-byte raw records。
+- [x] 依 reference `PoolRadPlayer.field_33`／`field_B5..B7` 保存 MON*CHA monster spell slots，並接入第一個已核對的 monster Magic Missile `0x0F`；其他 spell／AI／MON*SPC effect 仍保留 boundary。
 - [x] 為已觀察 monster item/effect IDs 加入繁中顯示與未知 fallback。
 - [x] 將真實 ECL spawn sequence 合併 MON*CHA，建立 24 個 enemy fighters 並在 COMBAT 邊界停止。
 - [x] 建立可操作 party／enemy Battle state、回合攻擊、勝負轉移與 Ebiten 繁中戰鬥畫面。

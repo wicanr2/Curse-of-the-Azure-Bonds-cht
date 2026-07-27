@@ -1272,6 +1272,18 @@ func (s *State) advanceCombatToParty() error {
 		if err != nil {
 			return err
 		}
+		if hasMonsterMagicMissile(fighter) {
+			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
+			if spellErr == nil {
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_magic_missile", "%s 施放魔法飛彈攻擊 %s，造成 %d 點傷害。"), fighter.Name, target.Name, result.Damage)
+				s.requestSound(SoundMagicHit)
+				if s.battle.Status() != combat.StatusActive {
+					return s.finishCombat()
+				}
+				s.combatTurnIndex++
+				return s.advanceCombatToParty()
+			}
+		}
 		if fighter.AttacksPerTurn > 1 {
 			results, err := s.battle.AttackSequence(fighter.ID, target.ID)
 			if err != nil {
@@ -1298,6 +1310,18 @@ func (s *State) advanceCombatToParty() error {
 		s.combatTurnIndex++
 	}
 	return s.finishCombat()
+}
+
+func hasMonsterMagicMissile(fighter combat.Fighter) bool {
+	if fighter.MonsterSpellUses[0] == 0 {
+		return false
+	}
+	for _, spellID := range fighter.MonsterSpellIDs {
+		if spellID == combat.MonsterMagicMissileSpellID {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *State) requestAttackSounds(results []combat.AttackResult) {

@@ -211,3 +211,4 @@
 - [第二百一十四輪 ECL DAMAGE AC／effects](./214-ecl-damage-ac-effects.md)（`READY`：限 DOS field_186 與 target invisibility）
 - [第二百三十一輪 combat enemy target selection](./231-combat-enemy-target-selection.md)（`READY`：限 seeded 存活目標選擇）
 - [第二百三十二輪 README live combat screenshot](./232-live-combat-screenshot.md)（`READY`：限 direct-entry 畫面證據）
+- [第二百三十三輪 MON*CHA monster Magic Missile](./233-monster-magic-missile.md)（`READY`：限 raw spell slot 與一級法術）
