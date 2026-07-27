@@ -62,6 +62,14 @@ roll 與 party HP mutation 仍由作品 adapter 實作，避免把 ECL flags 誤
 共用 `AdvanceGameTime(timeSlot, timeStep)`；這個「VM signal → 作品 time adapter」分層
 可重用到其他 Gold Box 遊戲，但各作品仍須重新驗證 slot scale 與事件觸發規則。
 
+`0x35 SAVE TABLE` 的 reference operand contract 是 `value, address, offset`：先把
+前兩個 numeric operand 解成 value 與 destination base，再把第三個 numeric operand
+加到 destination，將 value 寫入 `memory[address+offset]`。這與 `0x2A GETTABLE`
+的 indexed read 成對；bounded VM 已實作兩者，並以 synthetic memory regression 保護
+「operand 可是 literal 或 memory value、offset 可是 literal 或 memory value」的語意。
+這是可跨 Gold Box 重用的 raw ECL memory primitive，作品專屬的 table schema 仍須另行
+由反組譯證據建立。
+
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
 

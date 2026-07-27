@@ -228,3 +228,4 @@
 - [第二百四十八輪 reference game clock HUD](./248-clock-hud.md)（`READY`：限 HH:MM／日曆 renderer-neutral display）
 - [第二百四十九輪完整單職業角色建立選項](./249-character-creation-options.md)（`READY`：限已驗證單職業種族／職業組合）
 - [第二百五十輪半獸人 race／DOS parser](./250-half-orc-race.md)（`READY`：限 raw race 6 與 cleric／fighter／thief 單職業）
+- [第二百五十一輪 DOS save format／age evidence](./251-save-format-age-evidence.md)（`READY`：限 player record offset、存檔 sidecar 與安全修改邊界）

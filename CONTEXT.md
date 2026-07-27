@@ -837,7 +837,7 @@ spec、回歸測試並更新 README／PLAN／Gold Box state knowledge；完整�
 time-triggered ECL 仍保留 boundary。
 
 第二百四十九輪重大里程碑：將已驗證的 race/class restrictions、class minimums 與
-`race_ages` single-class table 接入角色建立選單，從三個固定模板擴充為 19 個可驗證組合；
+`race_ages` single-class table 接入角色建立選單，從三個固定模板擴充為 22 個可驗證組合；
 加入隊伍仍使用 copied-character age／ability transaction，Ebiten 以五列捲動顯示。新增
 creation option regression、READY spec 與 README／PLAN／Gold Box state knowledge；
 多職業、half-orc 與原版完整 create/modify/drop menu 仍保留 boundary。
@@ -847,3 +847,9 @@ raw race `6`，新增 `RaceHalfOrc`、半獸人 age effects、DOS parser 與繁�
 cleric／fighter／thief 選項；依 `ClassId` index 修正 fighter `13+1d4` age。角色建立
 目前共有 22 個已驗證 single-class 選項。新增 READY spec、parser／rules regression 與
 README／PLAN／knowledge 更新；half-orc multi-class 與完整原版建立流程仍保留 boundary。
+
+第二百五十一輪存檔／知識庫里程碑：整理 `SAVGAM?.DAT`、`CHRDAT{slot}{1..6}.SAV/.GUY`
+與 optional `.FX/.SWG` sidecar 的可驗證邊界，確認角色 age 位於 `0x76..0x77` signed
+little-endian，並加入 race `0x74`、class `0x75` 與 shared ECL flag mapping 文件；同時
+完成 ECL `SAVE TABLE (0x35)` indexed write 與 regression。這些 raw-preserving contract
+可供後續 Gold Box 作品沿用；完整 multi-class serializer 與未知 sidecar schema 仍保留 boundary。
