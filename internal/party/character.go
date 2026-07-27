@@ -150,6 +150,33 @@ type Character struct {
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
 }
 
+// combatAffectKinds is the verified RemoveCombatAffects table from the DOS
+// engine. Unknown and persistent non-combat effects remain untouched.
+var combatAffectKinds = map[uint8]struct{}{
+	0x07: {}, 0x0B: {}, 0x0D: {}, 0x15: {}, 0x17: {}, 0x1E: {}, 0x1F: {}, 0x20: {},
+	0x33: {}, 0x34: {}, 0x35: {}, 0x3A: {}, 0x3B: {}, 0x5F: {}, 0x62: {}, 0x88: {},
+	0x89: {}, 0x8B: {}, 0x90: {},
+}
+
+// RemoveCombatAffects removes only the effects listed by the reference
+// RemoveCombatAffects routine and reports how many records were removed.
+func (c *Character) RemoveCombatAffects() int {
+	if c == nil || len(c.Effects) == 0 {
+		return 0
+	}
+	kept := make([]monster.AffectRecord, 0, len(c.Effects))
+	removed := 0
+	for _, effect := range c.Effects {
+		if _, ok := combatAffectKinds[effect.Kind]; ok {
+			removed++
+			continue
+		}
+		kept = append(kept, effect)
+	}
+	c.Effects = kept
+	return removed
+}
+
 // AdvanceEffects consumes imported DOS effect durations without applying
 // effect-specific AD&D modifiers. The removed count lets game state surface
 // a localized message when a later rules layer wants to do so.

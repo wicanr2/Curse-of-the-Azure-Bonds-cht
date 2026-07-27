@@ -32,6 +32,15 @@ func TestCharacterAdvanceEffects(t *testing.T) {
 	}
 }
 
+func TestCharacterRemoveCombatAffectsPreservesPersistentEffects(t *testing.T) {
+	character := Character{Effects: []monster.AffectRecord{
+		{Kind: 0x25}, {Kind: 0x07}, {Kind: 0x34}, {Kind: 0x01}, {Kind: 0x19},
+	}}
+	if removed := character.RemoveCombatAffects(); removed != 2 || len(character.Effects) != 3 || character.Effects[0].Kind != 0x25 || character.Effects[1].Kind != 0x01 || character.Effects[2].Kind != 0x19 {
+		t.Fatalf("removed=%d effects=%#v", removed, character.Effects)
+	}
+}
+
 func TestShopBuySellAndIdentifyTransactions(t *testing.T) {
 	character := validCharacter()
 	character.Gold = 500

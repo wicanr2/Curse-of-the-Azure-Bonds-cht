@@ -953,6 +953,12 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 		}
 	}
 	if s.battle != nil && s.Mode == ModeCombat {
+		for index := range s.partyRoster {
+			status := s.partyRoster[index].HealthStatus
+			if status == party.HealthStatusUnconscious || status == party.HealthStatusDying || status == party.HealthStatusDead {
+				s.partyRoster[index].RemoveCombatAffects()
+			}
+		}
 		for _, character := range s.partyRoster {
 			if _, ok := s.fighter(character.ID); !ok {
 				continue
