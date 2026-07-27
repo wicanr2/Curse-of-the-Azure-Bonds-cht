@@ -67,6 +67,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 第 182 輪將這個 prefix 接到 `game.State.LoadSAVGAMPrefix`／`SaveSAVGAMPrefix`：Area codec 更新已知 Area1／Area2 欄位，map segment 更新 signed map position、facing 與 wall cache，未知 memory／records 由 raw container 原樣保留。這個 adapter 可以作為後續 Gold Box 共用入口，但不應從 CHRDAT name record 猜測角色能力、裝備或 spell pointer；那些仍需個別 player record evidence。
 
+第 185 輪依 `ovr017` 的實際命名把 prefix 與 player sidecars 接成 load path：`savgam{a..j}.dat` → `CHRDAT{A..J}{1..6}.sav`，同 basename 的 `.swg`／`.fx` optional。這條路徑重用既有 raw player parser 並能進入中文 remake；寫回 `Player.StructSize`、刪除原始 player 檔與 CAMP multi-file atomic save 仍需獨立 adapter，不能把 load success 當成完整 save compatibility。
+
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。
