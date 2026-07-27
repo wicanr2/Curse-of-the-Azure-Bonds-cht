@@ -1376,7 +1376,96 @@ func (s *State) finishCombat() error {
 	s.OriginalEvent = "COMBAT"
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
 	s.Message = s.combatMessage
+	if s.battle.Status() == combat.StatusPartyWon {
+		if continued, err := s.continueECLAfterCombat(); err != nil {
+			return err
+		} else if continued {
+			return nil
+		}
+	}
 	return nil
+}
+
+// continueECLAfterCombat resumes the same runtime state that stopped at the
+// ECL COMBAT opcode. The bounded VM saves its PC immediately after COMBAT, so
+// a party victory can continue into the original PRINT/menu/NEWECL path
+// without replaying the encounter. A battle entered through StartCombat (or a
+// direct test adapter without an ECL session) keeps the existing result screen.
+func (s *State) continueECLAfterCombat() (bool, error) {
+	if s.session == nil || len(s.eclBlock) == 0 {
+		return false, nil
+	}
+	result, err := s.session.RunInteractiveSeed(180, nil, s.eclSeed)
+	if err != nil {
+		return false, err
+	}
+	s.eclBlock = s.session.CurrentData()
+	if start, startErr := s.session.InitialEntry(); startErr == nil {
+		s.eclStart = start
+	}
+	s.applyGeoMapLoad(result)
+	s.applyLoadPieces(result)
+	s.applySpellSignals(result)
+	s.applyECLDamageSignals(result)
+	if err := s.applyECLClockSignals(result); err != nil {
+		return false, err
+	}
+	s.applyECLInventorySignals(result)
+	s.applyCitySelection()
+	if len(result.Text) > 0 {
+		s.Message = localizeECLText(s.catalog, result.Text)
+	}
+
+	if result.PictureRequested {
+		s.PictureRequested = true
+		s.PictureBlock = result.PictureBlock
+		s.BigPictureRequested = result.BigPictureRequested
+		s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
+		if s.SceneCharacterRequested {
+			s.SceneBodyBlock = uint8(result.PictureBlock)
+		}
+		s.OriginalEvent = "PICTURE"
+		s.Message = "事件畫面"
+		return true, nil
+	}
+	if result.CombatRequested {
+		records := s.monsterRecordsForCurrentECL()
+		if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+			if err := s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed); err != nil {
+				return false, err
+			}
+			return true, nil
+		}
+		s.Mode = ModeEvent
+		s.OriginalEvent = "COMBAT"
+		s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+		return true, nil
+	}
+	if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
+		if err := s.Camp(); err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		menu := result.Menus[len(result.Menus)-1]
+		s.Choices = make([]string, 0, len(menu.Options))
+		s.currentOriginalChoices = append([]string(nil), menu.Options...)
+		for _, option := range menu.Options {
+			s.Choices = append(s.Choices, localizeOption(s.catalog, option))
+		}
+		if menu.Prompt != "" {
+			s.Prompt = localizePrompt(s.catalog, menu.Prompt)
+		}
+		s.Mode = ModeWilderness
+		return true, nil
+	}
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	if len(result.Text) > 0 {
+		s.OriginalEvent = result.Text[len(result.Text)-1]
+	}
+	return true, nil
 }
 
 func (s *State) syncPartyFromBattle() {

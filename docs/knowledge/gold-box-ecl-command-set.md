@@ -70,6 +70,12 @@ roll 與 party HP mutation 仍由作品 adapter 實作，避免把 ECL flags 誤
 這是可跨 Gold Box 重用的 raw ECL memory primitive，作品專屬的 table schema 仍須另行
 由反組譯證據建立。
 
+`0x24 COMBAT` 也是一個 resumable engine boundary：VM 會把 PC 推進到 COMBAT 後的
+instruction，再把控制權交給 battle loop。State 的 adapter 在 party victory 後以同一個
+`RuntimeState` 續跑，因此可以接回 ECL 的 text、menu、PICTURE 或 `NEWECL`；direct-entry
+戰鬥沒有 ECL session 時則維持一般結果畫面。這個 contract 對後續 Gold Box 作品比「戰鬥
+結束就回地圖」更接近原版事件 continuation。
+
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
 

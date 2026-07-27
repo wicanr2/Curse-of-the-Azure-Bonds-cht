@@ -1380,6 +1380,55 @@ func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	}
 }
 
+func TestECLCombatVictoryResumesFollowingMenu(t *testing.T) {
+	// Five entry pointers are required by BlockSession. The explicit entry at
+	// payload +0x14 first requests COMBAT; after victory the resumable PC must
+	// continue into a one-option horizontal menu instead of restoring stale
+	// wilderness choices.
+	block := make([]byte, 2+0x14+1+15)
+	for index := 0; index < 5; index++ {
+		pos := 2 + index*4
+		block[pos+1], block[pos+2], block[pos+3] = 0x02, 0x14, 0x80
+	}
+	block[2+0x14] = 0x24
+	copy(block[2+0x15:], []byte{
+		0x2B, 0x02, 0x00, 0x90, 0x00, 1,
+		0x80, 0x02, 0x20, 0x92,
+		0x00,
+	})
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x50: block}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result, runErr := session.RunFrom(0x14, 20, nil); runErr != nil || !result.CombatRequested {
+		t.Fatalf("combat prefix=%+v err=%v", result, runErr)
+	}
+
+	state := NewState(testCatalog())
+	state.session = session
+	state.eclBlock = session.CurrentData()
+	state.Choices = []string{"舊 ECL 選項"}
+	state.currentOriginalChoices = []string{"STALE"}
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "goblin", Name: "哥布林", Side: combat.SideEnemy,
+		HitPoints: 1, MaxHitPoints: 1, ArmorClass: 0,
+	}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !reflect.DeepEqual(state.currentOriginalChoices, []string{"HI"}) {
+		t.Fatalf("continuation mode=%v choices=%#v message=%q", state.Mode, state.currentOriginalChoices, state.Message)
+	}
+}
+
 func TestFinishedCombatSyncsRosterHitPointsForSaveAndCamp(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
