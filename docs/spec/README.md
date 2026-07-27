@@ -278,3 +278,4 @@
 - [第二百九十八輪火刀據點刀刃屏障](./298-fire-knife-blade-barrier.md)（`READY`：限 terrain `0x99`、三項選單、等待分支與 640×480 中文事件版面）
 - [第二百九十九輪環境全隊傷害](./299-automatic-environmental-damage.md)（`READY`：限刀刃 `0xE0`／8d8、全隊 HP transaction 與 exactly-once consume）
 - [第三百輪火刀定身房與手札 26](./300-fire-knife-frozen-room.md)（`READY`：限 terrain `0x9A`、三分支、一次性旗標與事件後手札解鎖）
+- [第三百零一輪火刀辦公室搜索](./301-fire-knife-office-search.md)（`READY`：限 terrain `0x9B`、SEARCH flag、手札 9、隨機財寶與地城返回）

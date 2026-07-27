@@ -355,3 +355,17 @@ dispatch。火刀據點後半可重用的定位如下：
 先設定 `4CFE|=0x20`，所以 ENTER、WAIT、RETREAT 都會消耗事件；ENTER 的順序是
 主選單 → 撕裂提示 Continue → DAMAGE → 消散 Continue → `SPRITE OFF/CALL
 0x2E10/EXIT`。
+
+#### Explicit dungeon SEARCH
+
+SEARCH 不是每步自動搜尋。作品 UI 在玩家按 `S` 時暫時寫 `7ECA=1`，只執行
+SearchLocation entry，結束後清回 0。火刀辦公室 `0x1B` 展示標準多階段模式：
+首次普通進入將 `4C10` 從 0 設成 1；只有 `4C10==1 && 7ECA==1` 才搜索抽屜，
+接著先設 `4C10=2` 與 `4CFE|=0x80`，再顯示文件、手札與寶物。不能把 SEARCH
+簡化成 renderer 額外文字，也不能在每次 movement 永久維持 `7ECA=1`。
+
+`CLEARMONSTERS → TREASURE → COMBAT` 是原引擎 treasure-service dispatch。
+若 `TREASURE` 已產生可領取物，State 必須先開 treasure UI，而不是因看見
+`CombatRequested` 就建立戰場；其 return mode 也要保存來源，地城搜索所得財寶
+結束後應回 ModeDungeon。`ItemBlock=0x80+n` 表示 n 件隨機物品，而非一般 ITEM
+block ID。

@@ -1186,3 +1186,12 @@ script index；審問會先繳械逐漸恢復行動的火刀、取得情報並�
 入侵牧師為營救南方首領房囚犯而施展定身，最後在此房被制伏。`4CFE & 0x40`
 在選單前設定，因此三分支均消耗事件；真實 ECL 與 playable State regression 已
 鎖定返回地城、手札不提前洩漏及重訪不重播。新增 READY spec 300。
+
+第三百零一輪成果：補上原版地城 `SEARCH` 操作；640×480 地城按 `S` 時只在
+SearchLocation invocation 期間設定 `7ECA=1`。火刀辦公室 GEO2 block 4
+`(14,11)`／terrain `0x9B` 首訪描述房間並令 `4C10:0→1`，普通重訪無事；搜索才令
+`4C10:1→2`、設定 `4CFE&0x80`，找到花梨木書桌文件並解鎖手札 9。手札中文依
+使用者 PDF 第 12 頁圖像忠實記錄「燃燒靈氣、能附身其他軀體、與光芒之池有關」。
+原始 `TREASURE(0,0,0,500,500,3,2,0x82)` 已接成 3000 GP 等值 pool、3 gems、
+2 jewelry 與兩件 seeded random items；後續 COMBAT 正確視為 treasure service，
+寶物 UI 返回 ModeDungeon。real-image／playable State regression 均鎖定防重複。

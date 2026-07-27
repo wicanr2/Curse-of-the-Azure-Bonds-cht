@@ -83,6 +83,9 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 火刀據點 terrain `0x9A` 的定身房也已可玩：`撤退／審問／殺死` 保留原始
   menu index；審問會在火刀恢復行動前繳械並解鎖手札 26，說明入侵牧師為營救
   南方首領房的囚犯而來。三分支都依 `4CFE & 0x40` 成為一次性事件。
+- 地城正式加入 `S：搜索`。火刀辦公室 `(14,11)` 首訪只顯示房間；搜索才會找到
+  花梨木書桌文件、解鎖圖像手札 9，並取得 500 金幣、500 白金幣、3 顆寶石、
+  2 件珠寶與 2 件隨機物品。寶物 UI 結束後正確返回 640×480 地城，而非誤開戰鬥。
 - 字型 loader 同時支援單一 TTF/OTF 與 TTC collection；Noto Sans CJK `.ttc` 可直接以
   24px 渲染，不會因 collection parse 失敗退回 ASCII bitmap font。
 - 真實 ECL1 JOURNEY ON／STORE 路徑已驗證 `PICTURE → Enter → COMBAT opcode →

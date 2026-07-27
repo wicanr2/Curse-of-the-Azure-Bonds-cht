@@ -1368,6 +1368,136 @@ func TestRealFireKnifeFrozenRoomBranches(t *testing.T) {
 	}
 }
 
+func TestRealFireKnifeOfficeStages(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hideout []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 4 {
+			hideout = block.Data
+			break
+		}
+	}
+	run := func(memory map[uint16]uint16, selections []uint16) ecl.RunResult {
+		session, sessionErr := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, 0x9B)
+		for address, value := range memory {
+			session.SetMemoryValue(address, value)
+		}
+		result, runErr := session.RunEntrySeedWithPartyContext(
+			1, 500, selections, nil, 1, ecl.PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		return result
+	}
+	fresh := run(nil, nil)
+	if !fresh.WaitingForMenu || len(fresh.Menus) != 1 ||
+		!strings.Contains(strings.Join(fresh.Text, " "), "ORNATE ROOM") {
+		t.Fatalf("fresh Fire Knife office=%+v", fresh)
+	}
+	ordinaryRevisit := run(map[uint16]uint16{0x4C10: 1}, nil)
+	if !ordinaryRevisit.Exited || len(ordinaryRevisit.Text) != 0 {
+		t.Fatalf("ordinary office revisit=%+v", ordinaryRevisit)
+	}
+	search := run(map[uint16]uint16{0x4C10: 1, 0x7ECA: 1}, nil)
+	searchText := strings.Join(search.Text, " ")
+	if !search.WaitingForMenu || !strings.Contains(searchText, "ROSEWOOD DESK") ||
+		!strings.Contains(searchText, "JOURNAL ENTRY 9") {
+		t.Fatalf("office search=%+v", search)
+	}
+	loot := run(map[uint16]uint16{0x4C10: 1, 0x7ECA: 1}, []uint16{0})
+	if !loot.CombatRequested || len(loot.TreasureRequests) != 1 ||
+		loot.TreasureRequests[0] != (ecl.TreasureRequest{
+			Coins: [7]uint16{0, 0, 0, 500, 500, 3, 2}, ItemBlock: 0x82,
+		}) {
+		t.Fatalf("office loot=%+v", loot)
+	}
+	consumed := run(map[uint16]uint16{0x4C10: 2, 0x4CFE: 0x80, 0x7ECA: 1}, nil)
+	if !consumed.Exited || len(consumed.Text) != 0 || len(consumed.TreasureRequests) != 0 {
+		t.Fatalf("consumed office search=%+v", consumed)
+	}
+
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)
+	if err := state.session.Reset(4); err != nil {
+		t.Fatal(err)
+	}
+	state.Mode = ModeDungeon
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 14, 11, 0
+	state.DungeonWallRoof = 0x9B
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "火刀") || !strings.Contains(state.Message, "辦公室") {
+		t.Fatalf("playable office intro=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("office intro return mode=%v", state.Mode)
+	}
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "花梨木書桌") ||
+		!strings.Contains(state.Message, "手札第 9 條") {
+		t.Fatalf("localized office search=%q", state.Message)
+	}
+	foundJournal := false
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 9：") &&
+			strings.Contains(page, "燃燒靈氣") &&
+			strings.Contains(page, "光芒之池") {
+			foundJournal = true
+		}
+	}
+	if !foundJournal {
+		t.Fatalf("Journal Entry 9 was not unlocked: %v", state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		len(state.PendingTreasureItems()) != 2 || len(state.Choices) != 3 {
+		t.Fatalf("office treasure mode=%v menu=%v items=%v choices=%v",
+			state.Mode, state.treasureMenu, state.PendingTreasureItems(), state.Choices)
+	}
+	if state.MoneyPool() != 3000 {
+		t.Fatalf("office pooled gold=%d, want 3000", state.MoneyPool())
+	}
+	gems, jewelry := state.TreasurePool()
+	if gems != 3 || jewelry != 2 {
+		t.Fatalf("office treasure pool gems/jewelry=%d/%d", gems, jewelry)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("office treasure exit mode=%v message=%q", state.Mode, state.Message)
+	}
+	beforeItems := len(state.PendingTreasureItems())
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.PendingTreasureItems()) != beforeItems ||
+		state.MoneyPool() != 3000 {
+		t.Fatalf("office consumed search mode=%v items=%d/%d money=%d",
+			state.Mode, len(state.PendingTreasureItems()), beforeItems, state.MoneyPool())
+	}
+}
+
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
