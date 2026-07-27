@@ -535,3 +535,24 @@ func TestRuntimeStateResumesAtPausedMenu(t *testing.T) {
 		t.Fatalf("runtime memory=%#v, want selected value retained", runtime.Memory)
 	}
 }
+
+func TestRunSubsetExposesPartyRuleRequestsAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x1D, 0x01, 0x00, 0x90,
+		0x22, 0x01, 0x01, 0x90, 0x01, 0x04, 0x90,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.PartyStrengthRequests) != 1 || result.PartyStrengthRequests[0] != 0x9000 {
+		t.Fatalf("party strength requests=%#v", result.PartyStrengthRequests)
+	}
+	if len(result.PartySurpriseRequests) != 1 || result.PartySurpriseRequests[0] != (PartySurpriseRequest{RangerDestination: 0x9001, OtherDestination: 0x9004}) {
+		t.Fatalf("party surprise requests=%#v", result.PartySurpriseRequests)
+	}
+	if result.Steps != 3 || result.PC == 0 {
+		t.Fatalf("result=%+v, party commands should continue to EXIT", result)
+	}
+}

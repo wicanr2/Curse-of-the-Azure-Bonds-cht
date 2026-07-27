@@ -40,6 +40,16 @@ type RunResult struct {
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
 	TreasureRequests       []TreasureRequest
+	PartyStrengthRequests  []uint16
+	PartySurpriseRequests  []PartySurpriseRequest
+}
+
+// PartySurpriseRequest preserves the two destination addresses used by the
+// reference PARTY SURPRISE command. The party/ranger calculation belongs to
+// the game adapter because the bounded VM has no roster context.
+type PartySurpriseRequest struct {
+	RangerDestination uint16
+	OtherDestination  uint16
 }
 
 // TreasureRequest preserves the eight raw TREASURE operands. The first seven
@@ -610,6 +620,22 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// Keep inventory mutation explicit for the party adapter; the VM
 			// itself must not silently delete an item without roster context.
 			result.DestroyItemIDs = append(result.DestroyItemIDs, itemID)
+		case 0x1D: // PARTYSTRENGTH
+			if !instruction.Operands[0].WordSet {
+				return result, fmt.Errorf("PARTYSTRENGTH at %d has non-address destination", pc)
+			}
+			// Reference CMD_PartyStrength computes a byte from the live party
+			// (HP, AC, hit bonus, cleric level and magic-user level). Preserve
+			// the destination here; the game adapter supplies those roster stats.
+			result.PartyStrengthRequests = append(result.PartyStrengthRequests, instruction.Operands[0].Word)
+		case 0x22: // PARTY SURPRISE
+			if !instruction.Operands[0].WordSet || !instruction.Operands[1].WordSet {
+				return result, fmt.Errorf("PARTY SURPRISE at %d has non-address destination", pc)
+			}
+			result.PartySurpriseRequests = append(result.PartySurpriseRequests, PartySurpriseRequest{
+				RangerDestination: instruction.Operands[0].Word,
+				OtherDestination:  instruction.Operands[1].Word,
+			})
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout

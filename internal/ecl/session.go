@@ -148,6 +148,8 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
 		aggregate.ClockRequests = append(aggregate.ClockRequests, result.ClockRequests...)
 		aggregate.TreasureRequests = append(aggregate.TreasureRequests, result.TreasureRequests...)
+		aggregate.PartyStrengthRequests = append(aggregate.PartyStrengthRequests, result.PartyStrengthRequests...)
+		aggregate.PartySurpriseRequests = append(aggregate.PartySurpriseRequests, result.PartySurpriseRequests...)
 		selectionOffset += result.SelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {

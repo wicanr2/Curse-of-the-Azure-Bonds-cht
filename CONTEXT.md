@@ -887,3 +887,9 @@ THAC0、生命骰、高等級 spell capacity、部分 UI label 與完整 multi-c
 `cmd/azure-bonds -set-age` 安全修改流程，要求明確 `-out-record`，不覆寫來源檔並保留
 未知 bytes。新增 READY spec 與 CLI 文件；完整 SAVGAM slot replacement、sidecar atomic
 transaction 與原版 player delete semantics 仍維持既有 boundary。
+
+第二百六十四輪 ECL engine 里程碑：依 `ovr003.CMD_PartyStrength`／`CMD_PartySurprise`
+接入 `PARTYSTRENGTH (0x1D)` 與 `PARTY SURPRISE (0x22)` 的 word destination request，
+並讓 bounded VM／BlockSession 正常繼續與聚合。新增 READY spec、synthetic regression 與
+共用 ECL command knowledge；實際 party stat calculation、AC scale、multi-class level
+來源與 surprise result 仍待 State adapter 逐欄接線。
