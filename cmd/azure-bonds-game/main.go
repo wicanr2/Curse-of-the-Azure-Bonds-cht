@@ -1416,6 +1416,7 @@ func main() {
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
 	weaponShop := flag.Bool("weapon-shop", false, "start at Weaponers of Cormyr through the formal Tilverton ECL flow")
 	temple := flag.Bool("temple", false, "start at Gond's altar through the formal Tilverton ECL flow")
+	training := flag.Bool("training", false, "start at Tilverton's Hall of Training through the formal ECL flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1572,9 +1573,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1585,7 +1586,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple {
+		if *inn || *filani || *weaponShop || *temple || *training {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1602,6 +1603,8 @@ func main() {
 				x, y, direction = 2, 12, 0
 			} else if *temple {
 				x, y, direction = 0, 7, 0
+			} else if *training {
+				x, y, direction = 5, 2, 0
 			}
 			state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 			state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))

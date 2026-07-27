@@ -27,6 +27,22 @@ func TestApplyECLProgramStartMenu(t *testing.T) {
 	}
 }
 
+func TestApplyECLProgramTrainingHall(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.Mode = ModeEvent
+	state.eventReturnMode = ModeDungeon
+	state.DungeonWallRoof = 0x8C
+	state.partyRoster = party.Roster{{Name: "亞倫", Class: party.ClassFighter, Level: 1}}
+
+	handled, err := state.applyECLProgram(programResult(0))
+	if err != nil || !handled {
+		t.Fatalf("training PROGRAM 0: handled=%v err=%v", handled, err)
+	}
+	if state.Mode != ModeWilderness || !state.trainingMenu || len(state.Choices) != 2 {
+		t.Fatalf("training hall not entered: mode=%v menu=%v choices=%v", state.Mode, state.trainingMenu, state.Choices)
+	}
+}
+
 func TestApplyECLProgramPartyKilled(t *testing.T) {
 	state := NewState(locale.Catalog{})
 

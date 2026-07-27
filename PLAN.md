@@ -403,3 +403,6 @@
 - [x] 依 `ovr005.temple_shop/temple_heal` 接通 Tilverton `(0,7)` Gond altar：
   PICTURE 6、EnterTemple service、十種治療價格／骰數／effect mutation、typed-coin
   付款與 ECL resume；Raise Dead 的 Constitution／多職業最大 HP penalty 仍待補齊。
+- [x] 依 ECL2 terrain `0x8C` 與 `ovr018.train_player` 接通 Tilverton `(5,2)` 訓練場：
+  保存 DOS 32-bit XP、六職業經驗門檻、角色自身 1000 GP 付款、class level 與 HP 成長；
+  高等級固定 HP、種族上限、完整多職業 CON 與升級選法術仍待補齊。

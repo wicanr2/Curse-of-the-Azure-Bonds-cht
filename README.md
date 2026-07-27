@@ -209,6 +209,14 @@ nearest-neighbor 整數倍放大；繁中以 24px 字型直接畫在 640×480 �
 這個事件證明 HEAD／BODY selectors 並不必同號。素材產生器現在會建立可擴張畫布，
 先把 BODY 放在 `y+5`，再以 masked HEAD 覆蓋；因此神官頭像不再被裁切或落入缺圖
 fallback。畫面仍採原始像素 3× nearest-neighbor，中文字維持 24px 高解析排版。
+- GEO2 `(5,2)` 的訓練場已接通 PICTURE 4 → `PROGRAM 0` 特定場所服務。角色會依
+  DOS `0x127` 的 32-bit XP 與六職業原版門檻判定，確認後由該角色支付 1000 GP，
+  提升 class level 並按 hit die／Constitution 增加 HP；一般 `PROGRAM 0` 仍返回標題。
+
+![提爾佛頓訓練場的 640×480 繁中事件](docs/screenshots/tilverton-training.png)
+
+原始人物像素維持 nearest-neighbor 整數倍放大，中文提示則以 24px 字型直接重繪；
+高等級固定 HP、完整多職業規則與升級選法術仍保留為後續反組譯邊界。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -233,6 +241,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -inn
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -filani
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -weapon-shop
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -temple
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -training
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

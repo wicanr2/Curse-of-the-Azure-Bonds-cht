@@ -185,6 +185,9 @@ type State struct {
 	templeECLService       bool
 	templeCharacterIndex   int
 	templePendingCure      int
+	trainingMenu           bool
+	trainingConfirmMenu    bool
+	trainingCharacterIndex int
 	shopOffers             []ShopOffer
 	moneyPool              uint32
 	treasureGems           uint32
@@ -920,6 +923,9 @@ func (s *State) Select(index int) error {
 	}
 	if s.campMenu {
 		return s.selectCamp(index, originalChoice)
+	}
+	if s.trainingMenu {
+		return s.selectTraining(originalChoice)
 	}
 	if s.programEndMenu {
 		return s.selectProgramEnd(originalChoice)
@@ -2952,6 +2958,10 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 	id := result.ProgramIDs[len(result.ProgramIDs)-1]
 	switch id {
 	case 0:
+		if s.eventReturnMode == ModeDungeon && s.DungeonWallRoof == 0x8C {
+			s.enterTrainingMenu()
+			return true, nil
+		}
 		s.enterProgramTitle("主選單")
 		return true, nil
 	case 3:
@@ -4358,6 +4368,10 @@ func (s *State) Continue() error {
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
+		if s.trainingMenu {
+			s.enterTrainingMenu()
+			return nil
+		}
 		if s.alterDropMenu {
 			if s.alterDropConfirm {
 				s.enterAlterDropConfirmMenu()
@@ -4609,6 +4623,12 @@ func (s *State) appendJournalPages(marker string, pages []string) {
 
 func localizeECLLine(catalog locale.Catalog, line string) string {
 	switch line {
+	case "DO YOU WANT TO TRAIN?", "'DO YOU WANT TO TRAIN?'":
+		return catalog.Text("ecl_training_prompt", "你們要接受訓練嗎？")
+	case "YOU'RE SHOWING GREAT PROGRESS. RETURN AGAIN WHEN":
+		return catalog.Text("ecl_training_progress", "你們的進步很大。準備好時再回來，")
+	case "YOU ARE READY.' YOU EXIT THE HALL.":
+		return catalog.Text("ecl_training_exit", "你們離開了訓練場。")
 	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
 		return catalog.Text("ecl_new_game_awaken", "你們在一間小房間裡醒來。環顧四周，你們注意到")
 	case "THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.":
