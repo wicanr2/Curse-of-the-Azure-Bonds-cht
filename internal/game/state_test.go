@@ -168,9 +168,9 @@ func TestECLLoadCharacterResolvesOneBasedRosterAndHighBit(t *testing.T) {
 
 func TestECLPartyContextProjectsCharacterNames(t *testing.T) {
 	state := NewState(testCatalog())
-	state.partyRoster = party.Roster{{ID: "a", Name: "阿卡巴"}, {ID: "b", Name: "乙"}}
+	state.partyRoster = party.Roster{{ID: "a", Name: "阿卡巴", Equipment: []monster.ItemRecord{{Type: 0x5E}}}, {ID: "b", Name: "乙"}}
 	context := state.eclPartyContext()
-	if len(context.Members) != 2 || context.Members[0].Name != "阿卡巴" || context.Members[1].Name != "乙" {
+	if len(context.Members) != 2 || context.Members[0].Name != "阿卡巴" || context.Members[1].Name != "乙" || len(context.Members[0].ItemTypes) != 1 || context.Members[0].ItemTypes[0] != 0x5E {
 		t.Fatalf("party context=%#v", context)
 	}
 }

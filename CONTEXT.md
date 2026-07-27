@@ -926,3 +926,10 @@ boundary。新增 READY spec、command knowledge 與可跨 Golden Box 重用的 
 `COMPARE → IF/GOTO` 走姓名分支，新增互斥 success/failure regression、READY spec、README
 與共用 command knowledge。原先「完整 external string context 未完成」已收斂為
 「`0x7C00` 姓名已完成，其餘 DOS memory regions 仍待逐區驗證」。
+
+第二百七十一輪 ECL inventory-query 里程碑：依 `ovr003.CMD_FindItem` 將
+`PartyMemberContext.ItemTypes` 接入全隊 item-record 查詢；resolved `FIND ITEM` 現會
+清空 compare flags並設定 `=`／`<>`，可直接驅動原始 `IF/GOTO`。同一 VM run 的
+`DESTROY ITEMS` 也會更新 working inventory view，後續查詢不再看到已毀 type；persistent
+roster mutation仍由 State 負責。新增 found／not-found／find-destroy-find regressions、
+READY spec、README 與共用 Golden Box ECL knowledge，並移除舊「尚未設定 compare」斷言。

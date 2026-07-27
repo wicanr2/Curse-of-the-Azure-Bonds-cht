@@ -26,6 +26,7 @@ type RunResult struct {
 	LoadCharacterAddresses []uint16
 	LoadCharacterRequests  []LoadCharacterRequest
 	FindItemIDs            []uint16
+	FindItemRequests       []FindItemRequest
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
 	SelectionsConsumed     int
@@ -77,6 +78,14 @@ type LoadCharacterRequest struct {
 	HighBitSet  bool
 }
 
+// FindItemRequest records the reference party-wide item query. Resolved is
+// false when the bounded VM has no injected party inventory context.
+type FindItemRequest struct {
+	ItemID   uint16
+	Found    bool
+	Resolved bool
+}
+
 // WhoRequest marks the reference character-selection boundary. WHO consumes
 // the current ECL prompt text but its player selection belongs to the UI/state
 // adapter rather than a normal HORIZONTAL/VERTICAL MENU.
@@ -102,6 +111,7 @@ type PartySurpriseRequest struct {
 // VM remains reusable by other Gold Box works.
 type PartyMemberContext struct {
 	Name              string
+	ItemTypes         []uint8
 	HitPoints         int
 	ArmorClass        int
 	AttackBonus       int
@@ -340,6 +350,14 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 	stack := make([]int, 0)
 	memory := make(map[uint16]uint16)
 	stringsMemory := make(map[uint16]string)
+	partyItems := make(map[uint16]bool)
+	if partyContext != nil {
+		for _, member := range partyContext.Members {
+			for _, itemType := range member.ItemTypes {
+				partyItems[uint16(itemType)] = true
+			}
+		}
+	}
 	rng := rand.New(rand.NewSource(seed))
 	var compare [6]bool
 	if runtime != nil && runtime.Started {
@@ -792,10 +810,18 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if err != nil {
 				return result, fmt.Errorf("FIND ITEM at %d: %w", pc, err)
 			}
-			// Inventory membership is party state, not ECL memory. Expose the
-			// query and leave compare flags unchanged until a party adapter is
-			// available; do not invent found/not-found state here.
 			result.FindItemIDs = append(result.FindItemIDs, itemID)
+			request := FindItemRequest{ItemID: itemID}
+			if partyContext != nil {
+				request.Resolved = true
+				request.Found = partyItems[itemID]
+				for index := range compare {
+					compare[index] = false
+				}
+				compare[0] = request.Found
+				compare[1] = !request.Found
+			}
+			result.FindItemRequests = append(result.FindItemRequests, request)
 		case 0x40: // DESTROY ITEMS
 			itemID, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {
@@ -804,6 +830,9 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			// Keep inventory mutation explicit for the party adapter; the VM
 			// itself must not silently delete an item without roster context.
 			result.DestroyItemIDs = append(result.DestroyItemIDs, itemID)
+			if partyContext != nil {
+				delete(partyItems, itemID)
+			}
 		case 0x1D: // PARTYSTRENGTH
 			if !instruction.Operands[0].WordSet {
 				return result, fmt.Errorf("PARTYSTRENGTH at %d has non-address destination", pc)

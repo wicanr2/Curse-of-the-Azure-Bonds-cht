@@ -403,6 +403,54 @@ func TestRunSubsetRecordsFindItemQueryAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetFindItemResolvesPartyInventoryCompareFlags(t *testing.T) {
+	block := []byte{0, 0,
+		0x32, 0x00, 0x5E,
+		0x16,
+		0x01, 0x02, 0x0F, 0x80,
+		0x11, 0x80, 0x03, 0x38, 0xF0, 0x00,
+		0x00,
+		0x11, 0x80, 0x03, 0x64, 0x54, 0xC0,
+		0x00,
+	}
+	for _, test := range []struct {
+		name     string
+		items    []uint8
+		wantText string
+		want     bool
+	}{{name: "found", items: []uint8{0x5E}, wantText: "YES", want: true}, {name: "not found", wantText: "NO"}} {
+		t.Run(test.name, func(t *testing.T) {
+			result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 20, nil, 1, PartyContext{
+				Members: []PartyMemberContext{{ItemTypes: test.items}},
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(result.Text) != 1 || result.Text[0] != test.wantText || len(result.FindItemRequests) != 1 || !result.FindItemRequests[0].Resolved || result.FindItemRequests[0].Found != test.want {
+				t.Fatalf("result=%+v, want text %q found %v", result, test.wantText, test.want)
+			}
+		})
+	}
+}
+
+func TestRunSubsetDestroyItemsUpdatesWorkingInventoryQueries(t *testing.T) {
+	block := []byte{0, 0,
+		0x32, 0x00, 0x5E,
+		0x40, 0x00, 0x5E,
+		0x32, 0x00, 0x5E,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 10, nil, 1, PartyContext{
+		Members: []PartyMemberContext{{ItemTypes: []uint8{0x5E}}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.FindItemRequests) != 2 || !result.FindItemRequests[0].Found || result.FindItemRequests[1].Found {
+		t.Fatalf("requests=%#v", result.FindItemRequests)
+	}
+}
+
 func TestRunSubsetRecordsDestroyItemRequestAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x40, 0x00, 0x5E,
