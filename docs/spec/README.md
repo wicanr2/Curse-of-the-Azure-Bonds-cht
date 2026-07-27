@@ -172,3 +172,4 @@
 - [第一百七十五輪 dungeon bash door](./175-dungeon-bash-door.md)（`READY`：限 Strength／骰點撞門與 B adapter）
 - [第一百七十六輪 locked-door menu](./176-locked-door-menu.md)（`READY`：限 detail 2/3 action capability 與 menu dispatch）
 - [第一百七十七輪 reference dungeon default position](./177-dungeon-default-position.md)（`READY`：限 `(7,13,0)` initialization／fallback contract）
+- [第一百七十八輪 DOS CHEAD/CBODY icon slot mapping](./178-dos-icon-slot-mapping.md)（`READY`：限 small／normal block namespace 與 layer composition）

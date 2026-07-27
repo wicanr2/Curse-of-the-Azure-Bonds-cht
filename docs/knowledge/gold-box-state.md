@@ -85,6 +85,8 @@ CoAB 現在把該 contract 接到 dungeon preview：P 僅對 detail 2 撬鎖，K
 
 Locked door menu 的 capability 應在 raw detail 之上計算：detail 2 可列 Pick，detail 3 不列 Pick；Knock 必須先存在 `0x1F` memorized slot，Bash 對兩種 locked detail 都列出。preview 的方向鍵阻擋可重用這個 menu service，但各 Gold Box 遊戲仍需提供自己的文字／游標與劇情 entry。
 
+Party icon import 也要分 raw slot 與實際 DAX block：DOS `icon_size=1` 不是把 raw ID 當成 normal，而是 CHEADT／CBODYT 的 `raw+0x40` namespace；`icon_size=2` 保持 raw ID。共用 party projection 可保存 raw bytes，renderer adapter 再呼叫 normalized mapping，讓後續 Gold Box 遊戲替換其 CHEAD/CBODY file family。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

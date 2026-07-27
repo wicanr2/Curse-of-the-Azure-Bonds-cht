@@ -1074,9 +1074,9 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 	var sprite *ebiten.Image
 	var frameX, frameY int16
 	if fighter.Side == combat.SideParty {
-		// Party icons are the original CHEAD+CBODY composition. The current
-		// roster has deterministic slots; character-specific icon IDs will
-		// replace this selector when the player record decoder is complete.
+		// Party icons are the original CHEAD+CBODY composition. Imported DOS
+		// slots are normalized by Character.CombatIconBlocks; the fallback below
+		// composes the extracted raw layers on demand.
 		headBlock, bodyBlock := uint8(0), uint8(0)
 		if fighter.HasPartyIcon {
 			headBlock, bodyBlock = fighter.PartyHeadBlock, fighter.PartyBodyBlock
@@ -1097,6 +1097,18 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 			}
 			sprite = frame.image
 			frameX, frameY = frame.x, frame.y
+		}
+	}
+	if sprite == nil && fighter.Side == combat.SideParty && fighter.HasPartyIcon {
+		headKey := fmt.Sprintf("chead-block-%02X-item-00.png", fighter.PartyHeadBlock)
+		bodyKey := fmt.Sprintf("cbody-block-%02X-item-00.png", fighter.PartyBodyBlock)
+		headImage, headOK := a.combatSprites[headKey]
+		bodyImage, bodyOK := a.combatSprites[bodyKey]
+		if headOK && bodyOK {
+			composite := ebiten.NewImage(24, 24)
+			composite.DrawImage(bodyImage, nil)
+			composite.DrawImage(headImage, nil)
+			sprite = composite
 		}
 	}
 	if sprite == nil && fighter.SpriteBlock != 0 {
@@ -1277,6 +1289,16 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		return nil, nil, nil, err
 	}
 	paths = append(paths, partyPaths...)
+	cheadPaths, err := filepath.Glob("assets/sprites/chead-block-*-item-00.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	cbodyPaths, err := filepath.Glob("assets/sprites/cbody-block-*-item-00.png")
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	paths = append(paths, cheadPaths...)
+	paths = append(paths, cbodyPaths...)
 	bigPicturePaths, err := filepath.Glob("assets/sprites/bigpic*-block-*-item-00.png")
 	if err != nil {
 		return nil, nil, nil, err

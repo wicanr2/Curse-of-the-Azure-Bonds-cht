@@ -536,6 +536,19 @@ func TestDefaultIconSizeMatchesReferenceRaceSwitch(t *testing.T) {
 	}
 }
 
+func TestCombatIconBlocksAppliesSmallIconNamespaceOffset(t *testing.T) {
+	character := validCharacter()
+	character.Race = RaceDwarf
+	character.IconHeadBlock, character.IconWeaponBlock = 3, 7
+	if head, body := character.CombatIconBlocks(); head != 0x43 || body != 0x47 {
+		t.Fatalf("small icon blocks=(%02X,%02X), want (43,47)", head, body)
+	}
+	character.IconSize = 2
+	if head, body := character.CombatIconBlocks(); head != 3 || body != 7 {
+		t.Fatalf("normal icon blocks=(%02X,%02X), want (03,07)", head, body)
+	}
+}
+
 func TestAbilityAdjustmentIsBounded(t *testing.T) {
 	abilities := Abilities{Strength: 3, Intelligence: 10, Wisdom: 10, Dexterity: 10, Constitution: 10, Charisma: 10}
 	if err := abilities.Adjust(0, -1); err == nil {
