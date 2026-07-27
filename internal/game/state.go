@@ -731,6 +731,7 @@ func (s *State) Select(index int) error {
 		}
 		s.applyECLInventorySignals(result)
 		s.applyECLTreasureSignals(result)
+		treasureReady := false
 		if len(result.TreasureRequests) > 0 {
 			if err := s.ResolveTreasureRequests(); err != nil {
 				// A headless/test adapter may not have loaded ITEM*.DAX yet.
@@ -738,8 +739,7 @@ func (s *State) Select(index int) error {
 				// its next command (including COMBAT) instead of aborting it.
 				s.Message = "財寶等待素材載入：" + err.Error()
 			} else if len(s.pendingTreasureItems) > 0 {
-				s.enterTreasureMenu()
-				return nil
+				treasureReady = true
 			}
 		}
 		s.applyCitySelection()
@@ -777,6 +777,10 @@ func (s *State) Select(index int) error {
 			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
 			s.eventReturnMode = ModeWilderness
 			s.Mode = ModeEvent
+			return nil
+		}
+		if treasureReady {
+			s.enterTreasureMenu()
 			return nil
 		}
 		if result.ProgramExit && len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 9 {
