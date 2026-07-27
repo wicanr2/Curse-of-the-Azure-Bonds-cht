@@ -30,7 +30,8 @@
 | `combat_icons[25].GetIcon(Normal, 0)` | `COMSPR.DAX` block `0x19` | [`comspr-block-19-item-00.png`](../../assets/sprites/comspr-block-19-item-00.png) |
 
 `CombatantKilled` 以 9 次短 delay 交替繪製 attack／normal icon；目前 Ebiten 已沿用
-這個 100ms 交替 contract，並以 `DeathOverlay` signal 保留死亡座標。這個 mapping
+這個 100ms 交替 contract；共用 `DeathOverlayFrame` 固定九次後結束 flash，renderer 再
+依 `DownedCorpse` 顯示 corpse marker。這個 mapping
 只描述來源與 renderer 資產，不把 skull 的閃爍狀態塞進共用 combat core。
 
 原作另以同一 layer block 加 `0x80` 取得 attack state；direction `> 3` 使用水平翻轉版本。

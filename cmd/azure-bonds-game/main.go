@@ -45,39 +45,40 @@ const (
 )
 
 type app struct {
-	state            game.State
-	imagePath        string
-	face             font.Face
-	choiceCursor     int
-	partyPath        string
-	savgamDir        string
-	savgamSlot       byte
-	savgamSlotSave   bool
-	tilePreview      bool
-	tileImages       []*ebiten.Image
-	geoPreview       bool
-	geoGrid          *geo.Grid
-	geoX             int
-	geoY             int
-	geoLabel         string
-	geoCatalog       geo.Catalog
-	geoSet           uint8
-	geoBlock         uint8
-	dungeonPreview   bool
-	dungeonFloor     *mapdata.DungeonFloor
-	dungeonX         int
-	dungeonY         int
-	dungeonDoorMenu  bool
-	pieceSets        map[uint8]gfx.PieceSet
-	pieceLabel       string
-	wallPreview      []wallPreviewStamp
-	combatSprites    map[string]*ebiten.Image
-	combatSpriteIDs  []string
-	combatAnimations map[string][]combatAnimation
-	animationStart   time.Time
-	messageSnapshot  string
-	messageStart     time.Time
-	soundPlayer      *sound.Player
+	state               game.State
+	imagePath           string
+	face                font.Face
+	choiceCursor        int
+	partyPath           string
+	savgamDir           string
+	savgamSlot          byte
+	savgamSlotSave      bool
+	tilePreview         bool
+	tileImages          []*ebiten.Image
+	geoPreview          bool
+	geoGrid             *geo.Grid
+	geoX                int
+	geoY                int
+	geoLabel            string
+	geoCatalog          geo.Catalog
+	geoSet              uint8
+	geoBlock            uint8
+	dungeonPreview      bool
+	dungeonFloor        *mapdata.DungeonFloor
+	dungeonX            int
+	dungeonY            int
+	dungeonDoorMenu     bool
+	pieceSets           map[uint8]gfx.PieceSet
+	pieceLabel          string
+	wallPreview         []wallPreviewStamp
+	combatSprites       map[string]*ebiten.Image
+	combatSpriteIDs     []string
+	combatAnimations    map[string][]combatAnimation
+	animationStart      time.Time
+	deathOverlayStarted map[string]time.Time
+	messageSnapshot     string
+	messageStart        time.Time
+	soundPlayer         *sound.Player
 }
 
 type combatAnimation struct {
@@ -1037,7 +1038,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			}
 			tile = camera.Apply(tile)
 			x, y := 28+tile.X*48, 108+tile.Y*56
-			if !fighter.DownedCorpse {
+			if !fighter.DownedCorpse && !fighter.DeathOverlay {
 				a.drawFighterSprite(screen, fighter, partyIndex, x, y)
 			}
 			a.drawFighterDeathOverlay(screen, fighter, x, y)
@@ -1056,7 +1057,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		tile = camera.Apply(tile)
 		x, y := 28+tile.X*48, 108+tile.Y*56
-		if !fighter.DownedCorpse {
+		if !fighter.DownedCorpse && !fighter.DeathOverlay {
 			a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
 		}
 		a.drawFighterDeathOverlay(screen, fighter, x, y)
@@ -1111,6 +1112,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 // CombatantKilled alternates those two icons while flashing the skull.
 func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fighter, x, y int) {
 	if !fighter.DeathOverlay && !fighter.DownedCorpse {
+		if a.deathOverlayStarted != nil {
+			delete(a.deathOverlayStarted, fighter.ID)
+		}
 		return
 	}
 	if fighter.DownedCorpse && !fighter.DeathOverlay {
@@ -1118,8 +1122,24 @@ func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fight
 		text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 		return
 	}
+	if a.deathOverlayStarted == nil {
+		a.deathOverlayStarted = make(map[string]time.Time)
+	}
+	started, ok := a.deathOverlayStarted[fighter.ID]
+	if !ok {
+		started = time.Now()
+		a.deathOverlayStarted[fighter.ID] = started
+	}
+	frame, active := combat.DeathOverlayFrame(time.Since(started))
+	if !active {
+		if fighter.DownedCorpse {
+			ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 58, G: 38, B: 28, A: 220})
+			text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
+		}
+		return
+	}
 	iconKey := "comspr-block-19-item-00.png"
-	if (time.Since(a.animationStart)/(100*time.Millisecond))%2 == 0 {
+	if frame == 0 {
 		iconKey = "comspr-block-8B-item-00.png"
 	}
 	if icon := a.combatSprites[iconKey]; icon != nil {
