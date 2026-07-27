@@ -43,6 +43,16 @@ func TestApplyECLProgramTrainingHall(t *testing.T) {
 	}
 }
 
+func TestHallChoiceRecognizesTrainingProgramContext(t *testing.T) {
+	if !isTrainingProgramChoice("HALL", programResult(0)) {
+		t.Fatal("HALL PROGRAM 0 was not recognized as training")
+	}
+	if isTrainingProgramChoice("BAR", programResult(0)) ||
+		isTrainingProgramChoice("HALL", programResult(3)) {
+		t.Fatal("unrelated program context was misclassified as training")
+	}
+}
+
 func TestApplyECLProgramPartyKilled(t *testing.T) {
 	state := NewState(locale.Catalog{})
 

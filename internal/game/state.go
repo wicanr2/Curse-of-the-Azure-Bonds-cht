@@ -67,6 +67,7 @@ const (
 	LocationAshabenford
 	LocationDaggerFalls
 	LocationTilverton
+	LocationStandingStone
 )
 
 type State struct {
@@ -1114,6 +1115,10 @@ func (s *State) Select(index int) error {
 			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
 			s.eventReturnMode = ModeWilderness
 			s.Mode = ModeEvent
+			return nil
+		}
+		if isTrainingProgramChoice(originalChoice, result) {
+			s.enterTrainingMenu()
 			return nil
 		}
 		if handled, err := s.applyECLProgram(result); handled || err != nil {
@@ -3107,6 +3112,11 @@ func (s *State) selectProgramEnd(originalChoice string) error {
 	}
 }
 
+func isTrainingProgramChoice(originalChoice string, result ecl.RunResult) bool {
+	return originalChoice == "HALL" && result.ProgramExit &&
+		len(result.ProgramIDs) > 0 && result.ProgramIDs[len(result.ProgramIDs)-1] == 0
+}
+
 func (s *State) enterProgramTitle(message string) {
 	s.programEndMenu = false
 	s.Mode = ModeTitle
@@ -4655,8 +4665,8 @@ func (s *State) placePrompt() string {
 func (s *State) applyCitySelection() {
 	if s.session != nil {
 		for _, address := range []uint16{0x4C9B, 0x4C9C} {
-			if value, ok := s.session.MemoryValue(address); ok && value >= 1 && value <= 3 {
-				s.setNamedLocation(int(value - 1))
+			if value, ok := s.session.MemoryValue(address); ok && value >= 1 && value <= 4 {
+				s.setWorldLocation(value)
 				return
 			}
 		}
@@ -4669,6 +4679,18 @@ func (s *State) applyCitySelection() {
 		return
 	}
 	s.setNamedLocation(int(choice))
+}
+
+func (s *State) setWorldLocation(value uint16) {
+	if value >= 1 && value <= 3 {
+		s.setNamedLocation(int(value - 1))
+		return
+	}
+	if value == 4 {
+		s.Location = LocationStandingStone
+		s.LocationName = s.catalog.Text("standing_stone", "立石群")
+		s.OriginalLocation = "THE STANDING STONE"
+	}
 }
 
 func (s *State) setNamedLocation(choice int) {
@@ -4744,6 +4766,16 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("store", "Store")
 	case "BAR":
 		return catalog.Text("bar", "Bar")
+	case "HALL":
+		return catalog.Text("training_hall", "訓練場")
+	case "TEMPLE":
+		return catalog.Text("temple", "神殿")
+	case "RELAX":
+		return catalog.Text("relax", "休息並聽取傳聞")
+	case "THANK HIM":
+		return catalog.Text("thank_him", "向他道謝")
+	case "ATTACK":
+		return catalog.Text("attack", "攻擊")
 	case "LEAVE", "Leave":
 		return catalog.Text("leave", "離開")
 	case "SHADOWDALE":
@@ -4752,6 +4784,10 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("ashabenford", "Ashabenford")
 	case "DAGGER FALLS":
 		return catalog.Text("dagger_falls", "Dagger Falls")
+	case "TILVERTON":
+		return catalog.Text("tilverton", "提爾佛頓")
+	case "THE STANDING STONE":
+		return catalog.Text("standing_stone", "立石群")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
 	case "TRAIL":
@@ -4805,6 +4841,9 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 		destination := strings.TrimSpace(strings.TrimSuffix(strings.TrimPrefix(prompt, "HOW WILL YOU GET TO "), "?"))
 		return fmt.Sprintf(catalog.Text("route_prompt", "要如何前往%s？"), localizeOption(catalog, destination))
 	}
+	if prompt == "FROM HERE YOU MAY JOURNEY TO" {
+		return catalog.Text("journey_destination_prompt", "從這裡可以前往")
+	}
 	return prompt
 }
 
@@ -4825,6 +4864,45 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
+	case strings.Contains(joined, "SEEK RED TO THE SOUTH"):
+		return catalog.Text(
+			"ecl_standing_stone_seek_red",
+			"他繼續說：「往南方尋找紅色之人。」",
+		)
+	case strings.Contains(joined, "YOU PRESENTLY SERVE FOUR MASTER") &&
+		strings.Contains(joined, "RETURN TO ME WHEN YOU HAVE SLAIN THREE MORE"):
+		return catalog.Text(
+			"ecl_standing_stone_four_masters",
+			"他開口說：「你們目前仍服侍四位主人。再除掉其中三位後回來找我，屆時你們將成就自己的命運。」你們要怎麼做？",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE STANDING STONES") &&
+		strings.Contains(joined, "GREY ROBED MAN"):
+		return catalog.Text(
+			"ecl_standing_stone_grey_man",
+			"你們來到立石群。一名灰袍男子靠著巨石而坐，臉孔隱沒在陰影裡。",
+		)
+	case strings.Contains(joined, "AMBUSHED BY FIRE KNIVES DISGUISED AS A PATROL"):
+		return catalog.Text(
+			"ecl_shadow_gap_fire_knife_patrol",
+			"一隊偽裝成巡邏兵的火刀突然伏擊你們！",
+		)
+	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 28"):
+		return catalog.Text(
+			"tavern_tale_28",
+			"你們無意間聽見一則酒館傳聞：已有兩艘前往暗影谷的船失蹤，河道變得非常危險。",
+		)
+	case strings.Contains(joined, "YOU ARE IN A RIVERSIDE ALE HOUSE") &&
+		strings.Contains(joined, "WHAT WILL YOU DO"):
+		return catalog.Text(
+			"ecl_ashabenford_ale_house",
+			"你們身在河畔酒館。要做什麼？",
+		)
+	case strings.Contains(joined, "YOU ARE IN ASHABENFORD") &&
+		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
+		return catalog.Text(
+			"ecl_ashabenford_places",
+			"你們身在阿沙本福德。要前往哪個場所？",
+		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ASHABENFORD"):
 		return catalog.Text(
 			"ecl_ashabenford_edge",

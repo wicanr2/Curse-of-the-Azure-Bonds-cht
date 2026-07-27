@@ -460,3 +460,6 @@
 - [x] 接續第一枚枷印解除後的正式世界流程：NEWECL `0x50`／BIGPIC 121、
   提爾佛頓禁止入城、JOURNEY ON→阿沙本福德→TRAIL、提爾隘口八隻鷹馬戰，
   並依 `4C9B/4C9C` 同步 LocationAshabenford。
+- [x] 接通阿沙本福德 PICTURE 80 與六項場所選單，修正 HALL `PROGRAM 0`
+  訓練 context；完成河畔酒館 Tavern Tale 28、Shadow Gap 六名偽裝火刀伏擊、
+  Standing Stone 灰袍人與「往南尋找紅色之人」主線提示。

@@ -1848,6 +1848,124 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatalf("Ashabenford memory[%#x]=%#x,%v want %#x", address, got, ok, want)
 		}
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 80 ||
+		!strings.Contains(state.Message, "阿沙本福德") {
+		t.Fatalf("Ashabenford entry mode=%v picture=%v/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) {
+		t.Fatalf("Ashabenford places mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) ||
+		!strings.Contains(state.Message, "河畔酒館") {
+		t.Fatalf("Ashabenford ale house choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		!strings.Contains(state.Message, "兩艘") || !strings.Contains(state.Message, "暗影谷") {
+		t.Fatalf("Ashabenford Tavern Tale 28 choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
+		t.Fatalf("ale house did not resume after tale: %#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) {
+		t.Fatalf("Ashabenford places did not resume: %#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || !state.BigPictureRequested || state.PictureBlock != 121 {
+		t.Fatalf("Ashabenford leave picture=%v big=%v block=%d", state.PictureRequested, state.BigPictureRequested, state.PictureBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TILVERTON", "SHADOWDALE", "THE STANDING STONE"}) ||
+		state.Prompt != "從這裡可以前往" {
+		t.Fatalf("Ashabenford destinations=%#v prompt=%q", state.currentOriginalChoices, state.Prompt)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Standing Stone routes=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "偽裝成巡邏兵的火刀") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Shadow Gap ambush choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("Shadow Gap patrol did not enter combat: mode=%v message=%q", state.Mode, state.Message)
+	}
+	patrol := state.CombatFighters()
+	if len(patrol) != 7 {
+		t.Fatalf("Shadow Gap fighters=%d, want hero plus six disguised Fire Knives", len(patrol))
+	}
+	for _, fighter := range patrol[1:] {
+		if fighter.Name != "戰士" || fighter.SpriteBlock != 0x20 || fighter.Side != combat.SideEnemy {
+			t.Fatalf("Shadow Gap enemy=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !strings.Contains(state.Message, "灰袍男子") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Standing Stone arrival choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"THANK HIM", "ATTACK", "LEAVE"}) ||
+		!strings.Contains(state.Message, "四位主人") {
+		t.Fatalf("Standing Stone counsel choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "南方") || !strings.Contains(state.Message, "紅色之人") ||
+		state.Location != LocationStandingStone {
+		t.Fatalf("Standing Stone hint location=%v message=%q", state.Location, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 4 {
+		t.Fatalf("Standing Stone current-location memory=%#x,%v want 4", got, ok)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
