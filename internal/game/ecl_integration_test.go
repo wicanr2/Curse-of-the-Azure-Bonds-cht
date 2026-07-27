@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"io"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
@@ -1608,18 +1609,17 @@ func TestRealFireKnifeLeaderEncounterAndBondProgression(t *testing.T) {
 		t.Skipf("original image is unavailable: %v", err)
 	}
 	defer image.Close()
-	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	var hideout []byte
-	for _, block := range blocks {
-		if block.Entry.ID == 4 {
-			hideout = block.Data
-			break
+	allBlocks := make(map[uint8][]byte)
+	for _, member := range []string{"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX"} {
+		blocks, parseErr := dax.Parse(zipData(t, image, member))
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		for _, block := range blocks {
+			allBlocks[block.Entry.ID] = block.Data
 		}
 	}
-	session, err := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+	session, err := ecl.NewBlockSession(allBlocks, 4)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1665,6 +1665,188 @@ func TestRealFireKnifeLeaderEncounterAndBondProgression(t *testing.T) {
 		!continuation[2].BigPictureRequested || continuation[2].PictureBlock != 120 ||
 		!strings.Contains(strings.Join(continuation[4].Text, " "), "COLD SWEAT") {
 		t.Fatalf("bond dream continuation=%+v", continuation)
+	}
+	postSelections = append(postSelections, 0)
+	chapter, err := session.RunInteractiveSeed(1000, postSelections, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := session.MemoryValue(0x7F12); !ok || got != 1 {
+		t.Fatalf("bond progression memory=%#x,%v want 1", got, ok)
+	}
+	if session.CurrentBlockID() != 0x50 {
+		t.Fatalf("post-Fire-Knife block=%#x result=%+v, want ECL1 block 0x50", session.CurrentBlockID(), chapter)
+	}
+}
+
+func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	allBlocks := make(map[uint8][]byte)
+	for _, member := range []string{"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX"} {
+		blocks, parseErr := dax.Parse(zipData(t, image, member))
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		for _, block := range blocks {
+			allBlocks[block.Entry.ID] = block.Data
+		}
+	}
+	session, err := ecl.NewBlockSession(allBlocks, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04F, 0x87)
+	encounter, err := session.RunEntrySeedWithPartyContext(1, 1000, []uint16{0}, nil, 1, ecl.PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := NewState(testCatalog())
+	state.session = session
+	state.eclBlock = session.CurrentData()
+	state.eclStart, err = session.InitialEntry()
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.selectionSequence = []uint16{0}
+	state.eclMenuReturnMode = ModeDungeon
+	state.eventReturnMode = ModeDungeon
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
+	state.applyECLTreasureSignals(encounter)
+	hero := combat.Fighter{
+		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+		DamageBonus: 100, AttacksPerTurn: 8, InitiativeBonus: 100,
+	}
+	state.party = []combat.Fighter{hero}
+	monsterBlocks, err := dax.Parse(zipData(t, image, "MON1CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monsterRecords := make(map[uint8]monster.Record, len(monsterBlocks))
+	for _, block := range monsterBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monsterRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(1, monsterRecords)
+	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{{
+		ID: "leader", Name: "火刀首領", Side: combat.SideEnemy, HitPoints: 1, MaxHitPoints: 1,
+	}}, 7); err != nil {
+		t.Fatal(err)
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !state.treasureMenu || state.MoneyPool() != 17000 || len(state.PendingTreasureItems()) != 2 {
+		t.Fatalf("victory loot menu=%v money=%d items=%#v", state.treasureMenu, state.MoneyPool(), state.PendingTreasureItems())
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 14 || !strings.Contains(state.Message, "手札第 54") {
+		t.Fatalf("Journal 54 state mode=%v picture=%d message=%q", state.Mode, state.PictureBlock, state.Message)
+	}
+	for step := 0; step < 6; step++ {
+		if state.PictureRequested {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if state.Mode != ModeWilderness || len(state.Choices) == 0 {
+			t.Fatalf("continuation step %d mode=%v picture=%v choices=%v message=%q",
+				step, state.Mode, state.PictureRequested, state.currentOriginalChoices, state.Message)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !state.PictureRequested || !state.BigPictureRequested || state.PictureBlock != 121 {
+		t.Fatalf("Tilverton edge picture=%v big=%v block=%d message=%q",
+			state.PictureRequested, state.BigPictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Tilverton edge mode=%v choices=%#v message=%q", state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	for address, want := range map[uint16]uint16{0x4CFF: 1, 0x4C2A: 1, 0x7F12: 1} {
+		if got, ok := session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("memory[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
+	}
+	for _, entry := range []string{"手札條目 54", "手札條目 53"} {
+		found := false
+		for _, page := range state.JournalPages {
+			found = found || strings.HasPrefix(page, entry)
+		}
+		if !found {
+			t.Fatalf("%s was not unlocked: %v", entry, state.JournalPages)
+		}
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"SHADOWDALE", "ASHABENFORD", "DAGGER FALLS"}) {
+		t.Fatalf("post-Fire-Knife journey mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Ashabenford routes=%#v message=%q", state.currentOriginalChoices, state.Prompt)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "提爾隘口") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Tilver's Gap event choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("Tilver's Gap encounter mode=%v event=%q message=%q", state.Mode, state.OriginalEvent, state.Message)
+	}
+	fighters := state.CombatFighters()
+	if len(fighters) != 9 {
+		t.Fatalf("Tilver's Gap fighters=%d, want hero plus eight hippogriffs", len(fighters))
+	}
+	for _, fighter := range fighters[1:] {
+		if fighter.Name != "鷹馬" || fighter.SpriteBlock != 81 || fighter.Side != combat.SideEnemy {
+			t.Fatalf("Tilver's Gap enemy=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationAshabenford ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		!strings.Contains(state.Message, "阿沙本福德城外") {
+		t.Fatalf("Ashabenford arrival mode=%v location=%v choices=%#v message=%q",
+			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
+	}
+	if len(state.PendingTreasureItems()) != 0 {
+		t.Fatalf("skipped Fire Knife loot leaked into the hippogriff victory: %#v", state.PendingTreasureItems())
+	}
+	for address, want := range map[uint16]uint16{0x4C83: 1, 0x4C9B: 2, 0x4CA1: 2} {
+		if got, ok := session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("Ashabenford memory[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
 	}
 }
 

@@ -179,6 +179,7 @@ type State struct {
 	treasureTakeMenu       bool
 	treasureItemIndex      int
 	treasureReturnMode     Mode
+	treasureResumeECL      bool
 	shopMenu               bool
 	shopECLService         bool
 	templeMenu             bool
@@ -1059,6 +1060,9 @@ func (s *State) Select(index int) error {
 				s.PictureBlock = result.PictureBlock
 				s.OriginalEvent = "PICTURE"
 				s.Message = s.catalog.Text("pics_monsters_off_message", "遭遇圖片已關閉。")
+				if handled, err := s.continueAfterSuppressedPicture(result); handled || err != nil {
+					return err
+				}
 				return nil
 			}
 			s.PictureRequested = true
@@ -1140,19 +1144,6 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeWilderness
 			return nil
 		}
-		if result.Exited && len(s.pendingTreasure) > 0 {
-			if err := s.ResolveTreasureRequests(); err != nil {
-				return err
-			}
-			if len(s.pendingTreasureItems) > 0 {
-				if s.eclMenuReturnMode == ModeDungeon {
-					s.enterTreasureMenuFor(ModeDungeon)
-				} else {
-					s.enterTreasureMenu()
-				}
-				return nil
-			}
-		}
 		if result.Exited && s.newGameEntryActive && s.session != nil && s.session.CurrentBlockID() == 0x01 {
 			s.finishNewGameEntry()
 			return nil
@@ -1179,6 +1170,29 @@ func (s *State) Select(index int) error {
 		s.leaveLocation()
 	}
 	return nil
+}
+
+func (s *State) continueAfterSuppressedPicture(result ecl.RunResult) (bool, error) {
+	if result.ShopRequested {
+		return true, s.enterECLShop(result)
+	}
+	if result.TempleRequested {
+		return true, s.enterECLTemple()
+	}
+	if result.CombatRequested {
+		records := s.monsterRecordsForCurrentECL()
+		if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+			return true, s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+		}
+		s.Mode = ModeEvent
+		s.OriginalEvent = "COMBAT"
+		return true, nil
+	}
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		s.enterECLMenu(result.Menus[len(result.Menus)-1])
+		return true, nil
+	}
+	return false, nil
 }
 
 func (s *State) enterParlayMenu() {
@@ -1234,7 +1248,7 @@ func (s *State) enterTreasureTakeMenu() {
 func (s *State) selectTreasure(index int, originalChoice string) error {
 	if s.treasureTakeMenu {
 		if originalChoice == "TREASURE_CANCEL" {
-			s.enterTreasureMenu()
+			s.enterTreasureMenuFor(s.treasureReturnMode)
 			return nil
 		}
 		if !strings.HasPrefix(originalChoice, "TREASURE_CHARACTER_") {
@@ -1248,22 +1262,14 @@ func (s *State) selectTreasure(index int, originalChoice string) error {
 			return err
 		}
 		if len(s.pendingTreasureItems) > 0 {
-			s.enterTreasureMenu()
+			s.enterTreasureMenuFor(s.treasureReturnMode)
 			return nil
 		}
-		s.treasureMenu = false
-		s.treasureTakeMenu = false
-		s.Mode = s.treasureReturnMode
-		s.OriginalEvent = "TREASURE"
-		s.Message = s.catalog.Text("treasure_taken", "財寶已加入隊伍裝備。")
-		return nil
+		return s.leaveTreasureMenu(s.catalog.Text("treasure_taken", "財寶已加入隊伍裝備。"))
 	}
 	if originalChoice == "TREASURE_EXIT" {
-		s.treasureMenu = false
-		s.Mode = s.treasureReturnMode
-		s.OriginalEvent = "TREASURE"
-		s.Message = s.catalog.Text("treasure_skipped", "隊伍繼續前進，未收下剩餘財寶。")
-		return nil
+		s.pendingTreasureItems = nil
+		return s.leaveTreasureMenu(s.catalog.Text("treasure_skipped", "隊伍繼續前進，未收下剩餘財寶。"))
 	}
 	if !strings.HasPrefix(originalChoice, "TREASURE_ITEM_") {
 		return fmt.Errorf("invalid treasure item command %q", originalChoice)
@@ -1274,6 +1280,26 @@ func (s *State) selectTreasure(index int, originalChoice string) error {
 	}
 	s.treasureItemIndex = itemIndex
 	s.enterTreasureTakeMenu()
+	return nil
+}
+
+func (s *State) leaveTreasureMenu(message string) error {
+	s.treasureMenu = false
+	s.treasureTakeMenu = false
+	s.Mode = s.treasureReturnMode
+	s.OriginalEvent = "TREASURE"
+	s.Message = message
+	if !s.treasureResumeECL {
+		return nil
+	}
+	s.treasureResumeECL = false
+	continued, err := s.continueECLAfterEngineBoundary()
+	if err != nil {
+		return err
+	}
+	if !continued {
+		s.Mode = s.treasureReturnMode
+	}
 	return nil
 }
 
@@ -4623,10 +4649,18 @@ func (s *State) placePrompt() string {
 	return "你在" + s.LocationName + "。要去哪裡？"
 }
 
-// applyCitySelection maps the observed ECL city menu order to the three
-// named locations. The first three selections are the proven opening path:
-// ENTER CITY, CONTINUE, JOURNEY ON; the fourth selects the city.
+// applyCitySelection prefers the ECL world dispatcher's current/destination
+// bytes, then retains the observed opening sequence as a compatibility
+// fallback for synthetic sessions.
 func (s *State) applyCitySelection() {
+	if s.session != nil {
+		for _, address := range []uint16{0x4C9B, 0x4C9C} {
+			if value, ok := s.session.MemoryValue(address); ok && value >= 1 && value <= 3 {
+				s.setNamedLocation(int(value - 1))
+				return
+			}
+		}
+	}
 	if len(s.selectionSequence) < 4 || s.selectionSequence[0] != 0 || s.selectionSequence[1] != 0 || s.selectionSequence[2] != 1 {
 		return
 	}
@@ -4634,6 +4668,10 @@ func (s *State) applyCitySelection() {
 	if choice > 2 {
 		return
 	}
+	s.setNamedLocation(int(choice))
+}
+
+func (s *State) setNamedLocation(choice int) {
 	locations := [...]struct {
 		location Location
 		key      string
@@ -4642,6 +4680,9 @@ func (s *State) applyCitySelection() {
 		{LocationShadowdale, "shadowdale", "SHADOWDALE"},
 		{LocationAshabenford, "ashabenford", "ASHABENFORD"},
 		{LocationDaggerFalls, "dagger_falls", "DAGGER FALLS"},
+	}
+	if choice < 0 || choice >= len(locations) {
+		return
 	}
 	selected := locations[choice]
 	s.Location = selected.location
@@ -4713,6 +4754,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("dagger_falls", "Dagger Falls")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
+	case "TRAIL":
+		return catalog.Text("trail", "小徑")
 	case "COMBAT":
 		return catalog.Text("encounter_combat", "戰鬥")
 	case "WAIT":
@@ -4758,6 +4801,10 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 	if prompt == "PRESS BUTTON OR RETURN TO CONTINUE." {
 		return catalog.Text("press_button", "Press any button or Enter to continue")
 	}
+	if strings.HasPrefix(prompt, "HOW WILL YOU GET TO ") {
+		destination := strings.TrimSpace(strings.TrimSuffix(strings.TrimPrefix(prompt, "HOW WILL YOU GET TO "), "?"))
+		return fmt.Sprintf(catalog.Text("route_prompt", "要如何前往%s？"), localizeOption(catalog, destination))
+	}
 	return prompt
 }
 
@@ -4778,6 +4825,25 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ASHABENFORD"):
+		return catalog.Text(
+			"ecl_ashabenford_edge",
+			"你們來到阿沙本福德城外。要進城，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF TILVERTON"):
+		return catalog.Text(
+			"ecl_tilverton_edge",
+			"你們來到提爾佛頓城外。要進城，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "GUARDS BAR YOUR WAY"):
+		return catalog.Text("ecl_tilverton_barred", "衛兵擋住你們的去路，不准你們再進入提爾佛頓。")
+	case strings.Contains(joined, "MOUNTAINS RISE INTO AN IMPASSABLE WALL") &&
+		strings.Contains(joined, "TILVER'S GAP") &&
+		strings.Contains(joined, "FLYING SHAPES"):
+		return catalog.Text(
+			"ecl_tilvers_gap_flying_shapes",
+			"群山拔地而起，形成無法翻越的高牆，只有提爾隘口將其劃破。幾道飛行身影從積雪山峰盤旋俯衝而下。",
+		)
 	case strings.Contains(joined, "BEFORE YOU STANDS A BURLY MAN") &&
 		strings.Contains(joined, "CARE TO REST"):
 		return catalog.Text(
