@@ -4873,6 +4873,38 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_fire_knife_office",
 			"這是一間裝飾華麗的房間，看來是火刀某位高層人物的辦公室。",
 		)
+	case strings.Contains(joined, "HAND KEPT THE PAPER") &&
+		strings.Contains(joined, "JOURNAL ENTRY 29"):
+		return catalog.Text(
+			"ecl_fire_knife_library_paper",
+			"焦屍的手保住了紙張，使它未被燒毀。你們取走紙張，並將內容記入冒險手札第 29 條。",
+		)
+	case strings.Contains(joined, "STRANGE SMOKY SCENT"):
+		return catalog.Text("ecl_fire_knife_smoky_hall", "你們走進走廊時，察覺到一股奇怪的煙味。")
+	case strings.Contains(joined, "EXTREMELY WELL ORDERED BEDROOM") &&
+		strings.Contains(joined, "UNSEEN SERVANTS"):
+		return catalog.Text(
+			"ecl_fire_knife_ordered_bedroom",
+			"這間臥室整齊得異常，一切都精確歸位。搜索後沒有發現值錢物品；你們離開時，看不見的僕人又開始將房間恢復原狀。",
+		)
+	case strings.Contains(joined, "ROOM WAS ONCE A LIBRARY") &&
+		strings.Contains(joined, "CHARRED BODY"):
+		return catalog.Text(
+			"ecl_fire_knife_burned_library",
+			"這裡原是圖書館，如今書架與藏書都化為灰燼，部分仍冒著煙。房間中央有具焦屍，手中緊握一張紙。",
+		)
+	case strings.Contains(joined, "ONCE A LAB") &&
+		strings.Contains(joined, "NOTHING ESCAPED DESTRUCTION"):
+		return catalog.Text(
+			"ecl_fire_knife_burned_lab",
+			"這裡原是一間實驗室，同樣遭猛烈烈焰席捲，沒有任何東西逃過毀滅。",
+		)
+	case strings.Contains(joined, "TWO ROWS OF SHROUDED BODIES") &&
+		strings.Contains(joined, "TO BE RAISED"):
+		return catalog.Text(
+			"ecl_fire_knife_shrouded_bodies",
+			"房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -5026,6 +5058,14 @@ func (s *State) unlockJournalEntries(texts []string) {
 			"手札條目 9：文件旁畫著一個帶火焰輪廓的人形，軀幹上有三道彎曲符號。註記寫著："+
 				"一、具有燃燒靈氣；二、能附身其他軀體；三、與光芒之池有所牽連。"+
 				"原始圖像保存於 Adventurer's Journal 第 12 頁。",
+		)})
+	}
+	if strings.Contains(joined, "HAND KEPT THE PAPER") &&
+		strings.Contains(joined, "JOURNAL ENTRY 29") {
+		s.appendJournalPages("手札條目 29：", []string{s.catalog.Text(
+			"journal_entry_29",
+			"手札條目 29：未被燒毀的部分寫著：「……我們的盟友能控制火焰、從一具軀體掠入另一具軀體，"+
+				"並展現多種異次元力量。我的結論是，『烈焰之主』不可能是別人，只會是泰蘭索斯……」",
 		)})
 	}
 }

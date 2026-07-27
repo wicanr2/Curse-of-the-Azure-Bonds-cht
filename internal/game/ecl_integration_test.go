@@ -1498,6 +1498,110 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 	}
 }
 
+func TestRealFireKnifeAshenRooms(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hideout []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 4 {
+			hideout = block.Data
+			break
+		}
+	}
+	run := func(terrain uint16, selections []uint16) ecl.RunResult {
+		session, sessionErr := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, terrain)
+		result, runErr := session.RunEntrySeedWithPartyContext(
+			1, 500, selections, nil, 1, ecl.PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		return result
+	}
+	cases := []struct {
+		terrain       uint16
+		flag          uint16
+		raw           string
+		localized     string
+		continuations []uint16
+	}{
+		{0x9C, 0x4C11, "STRANGE SMOKY SCENT", "奇怪的煙味", []uint16{0}},
+		{0x9D, 0x4C12, "UNSEEN SERVANTS", "看不見的僕人", []uint16{0}},
+		{0x9E, 0x4C13, "CHARRED BODY", "焦屍", []uint16{0, 0}},
+		{0x9F, 0x4C14, "NOTHING ESCAPED DESTRUCTION", "逃過毀滅", []uint16{0}},
+		{0xA0, 0x4C15, "TWO ROWS OF SHROUDED BODIES", "待復活", []uint16{0}},
+	}
+	for _, test := range cases {
+		first := run(test.terrain, nil)
+		if !first.WaitingForMenu ||
+			!strings.Contains(strings.Join(first.Text, " "), test.raw) {
+			t.Fatalf("ashen terrain %#x first=%+v", test.terrain, first)
+		}
+		completed := run(test.terrain, test.continuations)
+		if !completed.Exited || completed.WaitingForMenu {
+			t.Fatalf("ashen terrain %#x completed=%+v", test.terrain, completed)
+		}
+
+		state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)
+		if err := state.session.Reset(4); err != nil {
+			t.Fatal(err)
+		}
+		state.Mode = ModeDungeon
+		state.DungeonWallRoof = uint8(test.terrain)
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(state.Message, test.localized) {
+			t.Fatalf("localized terrain %#x message=%q", test.terrain, state.Message)
+		}
+		for range test.continuations {
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("terrain %#x return mode=%v message=%q",
+				test.terrain, state.Mode, state.Message)
+		}
+		if value, ok := state.session.MemoryValue(test.flag); !ok || value != 1 {
+			t.Fatalf("terrain %#x visited flag %#x=%d,%v",
+				test.terrain, test.flag, value, ok)
+		}
+		state.DungeonWallRoof = uint8(test.terrain)
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if state.Mode != ModeDungeon || len(state.Choices) != 0 {
+			t.Fatalf("terrain %#x revisit mode=%v choices=%v message=%q",
+				test.terrain, state.Mode, state.Choices, state.Message)
+		}
+		if test.terrain == 0x9E {
+			foundJournal := false
+			for _, page := range state.JournalPages {
+				if strings.HasPrefix(page, "手札條目 29：") &&
+					strings.Contains(page, "異次元力量") &&
+					strings.Contains(page, "泰蘭索斯") {
+					foundJournal = true
+				}
+			}
+			if !foundJournal {
+				t.Fatalf("Journal Entry 29 was not unlocked: %v", state.JournalPages)
+			}
+		}
+	}
+}
+
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

@@ -451,3 +451,6 @@
 - [x] 接通正式地城 SEARCH（`S`／`7ECA=1`）與火刀辦公室 terrain `0x9B`：
   `4C10` 0→1→2 多階段探索、`4CFE&0x80` 防重複、繁中手札 9，以及
   500 gold／500 platinum／3 gems／2 jewelry／兩件 random items 的 treasure UI。
+- [x] 批次完成 ECL2 block 4 terrains `0x9C–0xA0`：煙味走廊、隱形僕人臥室、
+  焚毀圖書館、烈焰實驗室與覆屍房；鎖定 `4C11..4C15` visited bytes，並依
+  Adventurer's Journal 在取得焦屍紙張後解鎖繁中手札 29。
