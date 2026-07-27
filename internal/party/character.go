@@ -150,6 +150,7 @@ const (
 	HealthStatusUnconscious
 	HealthStatusDying
 	HealthStatusDead
+	HealthStatusStoned
 )
 
 // RollAbilities reproduces the rule-book's six ability generation shape: six

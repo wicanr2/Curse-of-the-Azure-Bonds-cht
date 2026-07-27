@@ -181,6 +181,32 @@ func TestMergePicturesAtAppliesPixelOffset(t *testing.T) {
 	}
 }
 
+func TestComposeHeadBodyGrowsCanvasAndOffsetsBody(t *testing.T) {
+	head := Picture{WidthUnits: 1, HeightUnits: 2, ItemCount: 1, Pixels: filledPicturePixels(16, 1)}
+	body := Picture{WidthUnits: 1, HeightUnits: 3, ItemCount: 1, Pixels: filledPicturePixels(24, 2)}
+	composed, err := ComposeHeadBody(head, body, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if composed.Width() != 8 || composed.Height() != 4 {
+		t.Fatalf("composed dimensions=%dx%d, want 8x4", composed.Width(), composed.Height())
+	}
+	if value, _ := composed.Pixel(0, 0, 0); value != 1 {
+		t.Fatalf("HEAD pixel=%d, want 1 at origin", value)
+	}
+	if value, _ := composed.Pixel(0, 0, 3); value != 2 {
+		t.Fatalf("BODY pixel=%d, want 2 at y=3", value)
+	}
+}
+
+func filledPicturePixels(size int, value uint8) []uint8 {
+	pixels := make([]uint8, size)
+	for index := range pixels {
+		pixels[index] = value
+	}
+	return pixels
+}
+
 func TestFlipHorizontalPreservesIndexedPixels(t *testing.T) {
 	picture := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: []uint8{1, 2, 3, 4, 5, 6, 7, 8}}
 	flipped := picture.FlipHorizontal()

@@ -1091,6 +1091,53 @@ func TestShopPurchaseUsesTypedCoinsAndDoesNotDepleteStock(t *testing.T) {
 	}
 }
 
+func TestTempleCureLightWoundsUsesReferenceCostAndTypedCoins(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, HitPoints: 2, MaxHitPoints: 10, Platinum: 21,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.fixSeed = 1
+	if err := state.enterECLTemple(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !state.templeConfirmMenu || state.Choices[0] != "確定" {
+		t.Fatalf("temple confirmation state=%#v", state)
+	}
+	beforeWorth := characterCoinGoldWorth(state.partyRoster[0])
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HitPoints <= 2 || state.partyRoster[0].HitPoints > 10 ||
+		characterCoinGoldWorth(state.partyRoster[0]) != beforeWorth-100 {
+		t.Fatalf("temple cure hp=%d worth=%d, want healed and %d",
+			state.partyRoster[0].HitPoints, characterCoinGoldWorth(state.partyRoster[0]), beforeWorth-100)
+	}
+}
+
+func TestTempleRemoveCurseClearsEffectAndCursedEquipment(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Gold: 4000,
+		Effects:   []monster.AffectRecord{{Kind: 0x24, Active: true}, {Kind: 0x27, Active: true}},
+		Equipment: []monster.ItemRecord{{Type: 36, Cursed: true}},
+	}}
+	if err := state.applyTempleCure(8); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].Effects) != 1 || state.partyRoster[0].Effects[0].Kind != 0x27 ||
+		state.partyRoster[0].Equipment[0].Cursed {
+		t.Fatalf("remove curse result=%#v", state.partyRoster[0])
+	}
+}
+
 func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

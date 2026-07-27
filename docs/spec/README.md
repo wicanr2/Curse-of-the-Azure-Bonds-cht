@@ -262,3 +262,4 @@
 - [第二百七十三輪 real ECL corpus smoke gate](./273-real-ecl-corpus-smoke.md)（`READY`：限 25 blocks／125 initialization entries 與 ECL5 inventory branch）
 - [第二百七十四輪 ECL DUMP party removal](./274-ecl-dump-party-removal.md)（`READY`：限 selected member removal／fallback selection／State sync）
 - [第二百八十四輪 ECL 城市商店服務](./284-ecl-city-shop-service.md)（`READY`：限 COMBAT service dispatch、CityShop 商品／付款與 continuation）
+- [第二百八十五輪剛德神殿治療服務](./285-gond-temple-service.md)（`READY`：限 EnterTemple、十種治療與 mixed HEAD／BODY composition）

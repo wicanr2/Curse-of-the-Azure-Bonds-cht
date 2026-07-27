@@ -213,7 +213,7 @@ func renderCombatSprites() error {
 			if !ok {
 				continue
 			}
-			merged, err := gfx.MergePicturesAt(body, head, 0, 5)
+			merged, err := gfx.ComposeHeadBody(head, body, 5)
 			if err != nil {
 				return fmt.Errorf("merge HEAD%d/BODY%d block 0x%02X: %w", area, area, id, err)
 			}
@@ -227,6 +227,28 @@ func renderCombatSprites() error {
 			}
 			frames = append(frames, spriteFrame{name: name, img: img})
 			manifest.WriteString(fmt.Sprintf("| `HEAD%d+BODY%d` | `0x%02X` | merged body y+5 | %dx%d | [`%s`](../../assets/sprites/%s) | scene character composition |\n", area, area, id, merged.Width(), merged.Height(), name, name))
+		}
+		// ECL may combine independent HEAD/BODY selectors. Tilverton's Gond
+		// altar is the first proven mixed pair: HEAD2 block 9 + BODY2 block 6.
+		if area == 2 {
+			head, headOK := headLayers[9]
+			body, bodyOK := bodyLayers[6]
+			if headOK && bodyOK {
+				merged, err := gfx.ComposeHeadBody(head, body, 5)
+				if err != nil {
+					return fmt.Errorf("merge HEAD2 block 0x09/BODY2 block 0x06: %w", err)
+				}
+				img, err := merged.RGBA(0, gfx.EGA16)
+				if err != nil {
+					return err
+				}
+				name := "character-area-2-head-09-body-06.png"
+				if err := writePNG(filepath.Join("assets/sprites", name), img); err != nil {
+					return err
+				}
+				frames = append(frames, spriteFrame{name: name, img: img})
+				manifest.WriteString(fmt.Sprintf("| `HEAD2 0x09 + BODY2 0x06` | mixed selectors | merged body y+5 | %dx%d | [`%s`](../../assets/sprites/%s) | Gond altar ECL composition |\n", merged.Width(), merged.Height(), name, name))
+			}
 		}
 	}
 	if err := os.WriteFile("assets/sprites/README.md", []byte(manifest.String()), 0644); err != nil {
