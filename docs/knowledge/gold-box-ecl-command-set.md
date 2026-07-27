@@ -60,3 +60,6 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 
 `PRINT RETURN` 同樣只保存 renderer-facing cursor signal，不應誤當成 VM `RETURN`；
 它不觸碰 ECL call stack。
+
+`FIND ITEM`／`DESTROY ITEMS` 是另一組可跨作品重用的 inventory boundary；VM 只
+保存 item IDs，不應在缺 party roster context 時自行改 inventory 或 compare flags。
