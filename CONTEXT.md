@@ -465,3 +465,5 @@
 第一百八十輪功能 commit：`9f7c476`，已推送至 GitHub `main`。依 reference `SetupCombatActions`／`HalfDirToIso` 將 map direction 映射到 party／enemy `IconDirection`，接入 StartCombat 與水平 flip adapter；新增 placement／StartEncounter regression、READY 規格與共用 combat knowledge。完整 Area/ECL direction source、CombatMap placement、recolor 與 runtime cache 仍保留 boundary。
 
 第一百八十一輪功能 commit：`bed7e56`，依 reference `ovr017.SaveGame/loadSaveGame` 建立 `SAVGAM?.DAT` 固定前綴 raw codec：保存 game area、Area1／Area2、runtime／ECL raw bytes、5-byte map state、game states、三組 block/set pair、party count 與 8 筆固定 CHRDAT name records；新增 strict-size validation、trailing player-file suffix boundary regression、READY 規格與共用 Gold Box save knowledge。完整 slot、Area 欄位解碼、個別 player files 與 file side effects 仍保留 boundary。
+
+第一百八十二輪功能 commit：`216f7b2`，將 `SAVGAM` fixed prefix 接到 `game.State.LoadSAVGAMPrefix`／`SaveSAVGAMPrefix`；依 Area codec 更新已知 Area／GEO/map 欄位，保留未知 runtime／ECL／raw records，並以 signed map position、facing、wall cache 建立 State regression。此為 prefix load/export adapter，不取代 F5 remake JSON，也不宣稱已完成個別 CHRDAT player files、slot 選擇與 multi-file side effects。
