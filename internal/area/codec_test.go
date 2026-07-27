@@ -16,17 +16,21 @@ func TestArea1CodecReadsKnownFieldsAndPreservesUnknownBytes(t *testing.T) {
 	binary.LittleEndian.PutUint16(raw[area1LastY:], uint16(lastY))
 	binary.LittleEndian.PutUint16(raw[area1LastECL:], 0x1234)
 	raw[area1City] = 7
+	binary.LittleEndian.PutUint16(raw[area1OutdoorSky:], 5)
+	binary.LittleEndian.PutUint16(raw[area1IndoorSky:], 9)
 
 	state, err := DecodeArea1(raw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if state.Current3DMapBlockID != 0x42 || !state.InDungeon || state.LastXPos != -12 || state.LastYPos != 34 || state.LastECLBlockID != 0x1234 || state.CurrentCity != 7 {
+	if state.Current3DMapBlockID != 0x42 || !state.InDungeon || state.LastXPos != -12 || state.LastYPos != 34 || state.LastECLBlockID != 0x1234 || state.CurrentCity != 7 || state.OutdoorSkyColor != 5 || state.IndoorSkyColor != 9 {
 		t.Fatalf("decoded state mismatch: %+v", state)
 	}
 	state.Current3DMapBlockID = 0x45
 	state.InDungeon = false
 	state.LastXPos = -99
+	state.OutdoorSkyColor = 6
+	state.IndoorSkyColor = 10
 	encoded, err := EncodeArea1(state, raw)
 	if err != nil {
 		t.Fatal(err)
@@ -36,6 +40,9 @@ func TestArea1CodecReadsKnownFieldsAndPreservesUnknownBytes(t *testing.T) {
 	}
 	if got := int16(binary.LittleEndian.Uint16(encoded[area1LastX:])); got != -99 {
 		t.Fatalf("last x = %d, want -99", got)
+	}
+	if got := binary.LittleEndian.Uint16(encoded[area1OutdoorSky:]); got != 6 || binary.LittleEndian.Uint16(encoded[area1IndoorSky:]) != 10 {
+		t.Fatalf("sky colours=(%d,%d), want (6,10)", got, binary.LittleEndian.Uint16(encoded[area1IndoorSky:]))
 	}
 }
 

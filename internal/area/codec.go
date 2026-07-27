@@ -9,14 +9,16 @@ import (
 const SnapshotSize = 0x800
 
 const (
-	area1MapBlock  = 0x18A
-	area1Dungeon   = 0x1CC
-	area1LastX     = 0x1E0
-	area1LastY     = 0x1E2
-	area1LastECL   = 0x1E4
-	area1City      = 0x342
-	area2GameArea  = 0x624
-	area2HeadBlock = 0x5C2
+	area1MapBlock   = 0x18A
+	area1Dungeon    = 0x1CC
+	area1LastX      = 0x1E0
+	area1LastY      = 0x1E2
+	area1LastECL    = 0x1E4
+	area1OutdoorSky = 0x1FA
+	area1IndoorSky  = 0x1FC
+	area1City       = 0x342
+	area2GameArea   = 0x624
+	area2HeadBlock  = 0x5C2
 )
 
 func checkedRecord(data []byte, name string) ([]byte, error) {
@@ -40,6 +42,8 @@ func DecodeArea1(data []byte) (State, error) {
 		LastYPos:            int16(binary.LittleEndian.Uint16(data[area1LastY:])),
 		LastECLBlockID:      binary.LittleEndian.Uint16(data[area1LastECL:]),
 		CurrentCity:         data[area1City],
+		OutdoorSkyColor:     binary.LittleEndian.Uint16(data[area1OutdoorSky:]),
+		IndoorSkyColor:      binary.LittleEndian.Uint16(data[area1IndoorSky:]),
 	}, nil
 }
 
@@ -64,6 +68,8 @@ func EncodeArea1(state State, original []byte) ([]byte, error) {
 	binary.LittleEndian.PutUint16(out[area1LastX:], uint16(state.LastXPos))
 	binary.LittleEndian.PutUint16(out[area1LastY:], uint16(state.LastYPos))
 	binary.LittleEndian.PutUint16(out[area1LastECL:], state.LastECLBlockID)
+	binary.LittleEndian.PutUint16(out[area1OutdoorSky:], state.OutdoorSkyColor)
+	binary.LittleEndian.PutUint16(out[area1IndoorSky:], state.IndoorSkyColor)
 	out[area1City] = state.CurrentCity
 	return out, nil
 }
