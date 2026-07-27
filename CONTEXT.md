@@ -471,3 +471,5 @@
 第一百八十三輪功能 commit：`aa04200`，依 reference `seg044.SoundInit/PlaySound` 與 `Main/Resource.resx` 保存 9 個 PC WAV，建立 `internal/sound` selector catalog、WAV decode regression 與 Ebiten playback adapter；title start、荒野移動、dungeon preview 移動已播放對應原版音效，並加入 `-sound-dir`。完整戰鬥 sound calls、背景音樂、MIDI／AdLib 與音量設定仍保留 boundary。
 
 第一百八十四輪功能 commit：`e0d871f`，建立 renderer-neutral `game.SoundEvent` queue，將武器命中／未命中、擊倒、移動時攻擊／免費反擊與已實作法術的 sound intent 接到 Ebiten `internal/sound` player；title start 與 wilderness movement 也改由 State queue 發送。新增 one-shot event order regression、READY 規格並清理上一輪「完整戰鬥音效尚未接入」的過時斷言；背景音樂、MIDI／AdLib、音量設定與所有 ECL sound calls 仍保留 boundary。
+
+第一百八十五輪功能 commit：`9186a08`，依 `ovr017.SaveGame/loadSaveGame` 的實際檔名與 side-effect 順序，新增 `State.LoadSAVGAMSlot`：載入 `savgamA..J.dat`、`CHRDAT{slot}{1..6}.sav` 與 optional `.swg/.fx`，重用既有 DOS player parsers 建立 party／fighter 並進入繁中 wilderness；新增 `-savgam-dir/-savgam-slot` 啟動入口、synthetic slot regression、READY 規格與 state knowledge。Player.StructSize writeback、原始檔刪除與 CAMP multi-file save transaction 仍保留 boundary。
