@@ -119,4 +119,6 @@ go run ./scripts
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；原版完整 save slot／game-area loader 與所有 file side effects 仍未完成。
 
+本輪新增地城撬鎖核心：保留 DOS open-locks 百分比，依隊伍順序以注入 d100 判定，並提供 Knock `0x1F` 的第一個 spell-slot 消耗；尚未接入完整 door menu、bash 或 renderer。
+
 更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/) 與 [`docs/history.md`](docs/history.md)。
