@@ -8,6 +8,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 )
@@ -276,6 +277,12 @@ func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
 		if err != nil {
 			return fmt.Errorf("SAVGAM player %s: %w", base, err)
 		}
+		if s.savgamPlayers == nil {
+			s.savgamPlayers = make(map[string]party.DOSPlayerFiles)
+		}
+		s.savgamPlayers[base] = party.DOSPlayerFiles{
+			Record: append([]byte(nil), record...), Effects: append([]byte(nil), effects...), Inventory: append([]byte(nil), inventory...),
+		}
 		roster = append(roster, character)
 	}
 	if len(roster) == 0 {
@@ -297,6 +304,94 @@ func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	return nil
+}
+
+// SaveSAVGAMSlot writes the current party back to a reference-style slot.
+// Only documented player offsets and decoded SWG/FX records are serialized;
+// every unknown byte in each original .sav record is preserved. Files are
+// prepared in a sibling staging directory before replacement, so a failed
+// encode never leaves a partially written staged bundle behind.
+func (s *State) SaveSAVGAMSlot(directory string, key byte) error {
+	if key >= 'a' && key <= 'j' {
+		key -= 'a' - 'A'
+	}
+	if key < 'A' || key > 'J' {
+		return fmt.Errorf("SAVGAM slot key %q is outside A..J", key)
+	}
+	if s.savgamPrefix == nil {
+		return fmt.Errorf("no SAVGAM prefix is loaded")
+	}
+	if len(s.partyRoster) == 0 || len(s.partyRoster) > 6 {
+		return fmt.Errorf("SAVGAM party size %d is outside 1..6", len(s.partyRoster))
+	}
+	if s.savgamPlayers == nil {
+		return fmt.Errorf("no raw SAVGAM player records are retained")
+	}
+
+	container, err := s.savgamContainerForSave()
+	if err != nil {
+		return err
+	}
+	for index := range container.CharacterRefs {
+		container.CharacterRefs[index] = nil
+	}
+	for index := range s.partyRoster {
+		container.CharacterRefs[index] = []byte(fmt.Sprintf("CHRDAT%c%d", key, index+1))
+	}
+	prefix, err := partySave.EncodeSAVGAM(container)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(directory, 0o755); err != nil {
+		return err
+	}
+	stage, err := os.MkdirTemp(directory, ".savgam-save-*")
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(stage)
+	write := func(name string, data []byte) error {
+		return os.WriteFile(filepath.Join(stage, name), data, 0o600)
+	}
+	prefixName := fmt.Sprintf("savgam%c.dat", key+('a'-'A'))
+	if err := write(prefixName, prefix); err != nil {
+		return err
+	}
+	for index, character := range s.partyRoster {
+		base := fmt.Sprintf("CHRDAT%c%d", key, index+1)
+		raw, ok := s.savgamPlayers[character.ID]
+		if !ok {
+			return fmt.Errorf("no raw SAVGAM player record retained for %q", character.ID)
+		}
+		record, err := party.PatchDOSPlayerRecord(raw.Record, character)
+		if err != nil {
+			return fmt.Errorf("patch SAVGAM player %s: %w", base, err)
+		}
+		inventory, err := monster.EncodeItems(character.Equipment)
+		if err != nil {
+			return fmt.Errorf("encode SAVGAM inventory %s: %w", base, err)
+		}
+		if err := write(base+".sav", record); err != nil {
+			return err
+		}
+		if err := write(base+".swg", inventory); err != nil {
+			return err
+		}
+		if err := write(base+".fx", monster.EncodeAffects(character.Effects)); err != nil {
+			return err
+		}
+	}
+	entries, err := os.ReadDir(stage)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		if err := os.Rename(filepath.Join(stage, entry.Name()), filepath.Join(directory, entry.Name())); err != nil {
+			return fmt.Errorf("replace SAVGAM file %s: %w", entry.Name(), err)
+		}
+	}
+	s.savgamPrefix = &container
 	return nil
 }
 

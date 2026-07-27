@@ -20,6 +20,68 @@ const (
 	DOSPlayerRecordSize      = 0x1A6 // last documented byte is current movement at 0x1A5
 )
 
+// PatchDOSPlayerRecord updates only fields whose offsets are currently
+// documented by the CoAB record parser. Unknown bytes are copied unchanged.
+// This is used by the SAVGAM slot writer; it is not a full Player serializer.
+func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
+	if len(data) < DOSPlayerRecordSize {
+		return nil, fmt.Errorf("DOS player record is %d bytes; need at least 0x%X", len(data), DOSPlayerRecordSize)
+	}
+	name := []byte(character.Name)
+	if len(name) < 1 || len(name) > 15 {
+		return nil, fmt.Errorf("DOS player name must be 1..15 bytes, got %d", len(name))
+	}
+	if character.HitPoints < 0 || character.HitPoints > 255 || character.MaxHitPoints < 0 || character.MaxHitPoints > 255 {
+		return nil, fmt.Errorf("DOS HP must fit one byte: current=%d max=%d", character.HitPoints, character.MaxHitPoints)
+	}
+	out := append([]byte(nil), data...)
+	for i := 0; i < 16; i++ {
+		out[i] = 0
+	}
+	out[0] = byte(len(name))
+	copy(out[1:], name)
+	out[0x10] = uint8(character.Abilities.Strength)
+	out[0x11] = uint8(character.Abilities.StrengthFull)
+	out[0x1C] = uint8(character.Abilities.StrengthExceptional)
+	out[0x12] = uint8(character.Abilities.Intelligence)
+	out[0x14] = uint8(character.Abilities.Wisdom)
+	out[0x16] = uint8(character.Abilities.Dexterity)
+	out[0x18] = uint8(character.Abilities.Constitution)
+	out[0x1A] = uint8(character.Abilities.Charisma)
+	out[0x78] = uint8(character.MaxHitPoints)
+	if len(out) > 0x1A4 {
+		out[0x1A4] = uint8(character.HitPoints)
+	}
+	binary.LittleEndian.PutUint16(out[0x101:0x103], character.Gold)
+	binary.LittleEndian.PutUint16(out[0x105:0x107], character.Gems)
+	binary.LittleEndian.PutUint16(out[0x107:0x109], character.Jewelry)
+	out[0x141], out[0x142], out[0x143], out[0x144] = character.IconHeadBlock, character.IconWeaponBlock, character.IconID, character.IconSize
+	for i := DOSMemorizedSpellsOffset; i < DOSMemorizedSpellsEnd; i++ {
+		out[i] = 0
+	}
+	if len(character.SpellSlots) > DOSMemorizedSpellsEnd-DOSMemorizedSpellsOffset {
+		return nil, fmt.Errorf("DOS memorized spell slots exceed %d", DOSMemorizedSpellsEnd-DOSMemorizedSpellsOffset)
+	}
+	copy(out[DOSMemorizedSpellsOffset:DOSMemorizedSpellsEnd], character.SpellSlots)
+	for i := DOSKnownSpellsOffset; i < DOSKnownSpellsEnd; i++ {
+		out[i] = 0
+	}
+	for _, spellID := range character.KnownSpells {
+		if spellID == 0 || int(spellID) > DOSKnownSpellsEnd-DOSKnownSpellsOffset {
+			return nil, fmt.Errorf("DOS known spell ID %d is outside 1..%d", spellID, DOSKnownSpellsEnd-DOSKnownSpellsOffset)
+		}
+		out[DOSKnownSpellsOffset+int(spellID)-1] = 1
+	}
+	if len(character.ThiefSkills) > DOSThiefSkillsEnd-DOSThiefSkillsOffset {
+		return nil, fmt.Errorf("DOS thief skill count exceeds %d", DOSThiefSkillsEnd-DOSThiefSkillsOffset)
+	}
+	for i := DOSThiefSkillsOffset; i < DOSThiefSkillsEnd; i++ {
+		out[i] = 0
+	}
+	copy(out[DOSThiefSkillsOffset:DOSThiefSkillsEnd], character.ThiefSkills)
+	return out, nil
+}
+
 // DOSPlayerSpellRecord is the verified spell subset of a DOS .SAV/.GUY
 // creature record. MemorizedSpells preserves slot order and omits empty slots;
 // KnownSpells contains one-based spell IDs whose known flag is set.
