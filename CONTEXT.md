@@ -723,3 +723,11 @@ knowledge；visibility／pathfinding／persistent Action.target／AI spell prior
 renderer 可顯示繁中戰鬥訊息、party／enemy 小人、HP 與操作提示；明確標示這仍是
 direct-entry vertical slice，不宣稱完整玩家流程。重新產生 parser screenshot，
 `git diff --check` 通過。
+
+第二百三十三輪重大里程碑 commit：`58668fa`，依 reference `PoolRadPlayer.field_33`／
+`field_B5..B7` 保存 MON*CHA spell-list slots 與 magic-user level-use counts 到
+`combat.Fighter`。敵方回合現在會先嘗試已核對的 Magic Missile `0x0F`：一級單枚、
+2–5 damage、成功後 atomic 消耗 level-1 use，失敗或無可用次數才回到 physical attack。
+新增 monster parser／combat／State regressions、READY spec、README／PLAN／Gold Box state
+knowledge；其他 monster spells、MON*SPC effects、AI priority／range／saving throw 仍保留
+明確 boundary。Docker Go 1.23 核心測試與 `git diff --check` 通過。
