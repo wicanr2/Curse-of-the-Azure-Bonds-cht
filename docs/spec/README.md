@@ -225,3 +225,4 @@
 - [第二百四十五輪 reference starting-age generator](./245-starting-age-generator.md)（`READY`：限 single-class race/class age dice）
 - [第二百四十六輪 character-creation age transaction](./246-creation-age-transaction.md)（`READY`：限加入隊伍時 age／ability projection）
 - [第二百四十七輪 Area1 game-time codec](./247-area1-clock-codec.md)（`READY`：限七個 raw clock words 與 State synchronization）
+- [第二百四十八輪 reference game clock HUD](./248-clock-hud.md)（`READY`：限 HH:MM／日曆 renderer-neutral display）

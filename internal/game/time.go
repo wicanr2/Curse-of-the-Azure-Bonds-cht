@@ -9,6 +9,36 @@ import (
 // are kept as raw units so callers can preserve the original rest/map clock.
 var referenceTimeScales = [...]uint16{10, 10, 6, 24, 30, 12, 0x100}
 
+// GameTimeDisplay is the renderer-neutral view of the reference Area1 clock.
+// The raw order is deliberately kept in GameTimeSlots; this view only applies
+// the reference field mapping used by the map-position display.
+type GameTimeDisplay struct {
+	Minute uint16
+	Hour   uint16
+	Day    uint16
+	Month  uint16
+	Year   uint16
+}
+
+// GameTimeDisplay returns the reference clock fields used by the remake HUD.
+// Area1 stores decimal minutes as separate tens and ones slots.
+func (s *State) GameTimeDisplay() GameTimeDisplay {
+	clock := s.gameClock
+	return GameTimeDisplay{
+		Minute: clock[2]*10 + clock[1],
+		Hour:   clock[3],
+		Day:    clock[4],
+		Month:  clock[5],
+		Year:   clock[6],
+	}
+}
+
+// GameTimeText is the compact Traditional Chinese clock shown by frontends.
+func (s *State) GameTimeText() string {
+	clock := s.GameTimeDisplay()
+	return fmt.Sprintf("時間：%02d:%02d　日期：第%d日／第%d月／第%d年", clock.Hour, clock.Minute, clock.Day, clock.Month, clock.Year)
+}
+
 // GameTimeSlots returns a copy of the raw seven-slot clock.
 func (s *State) GameTimeSlots() [7]uint16 { return s.gameClock }
 

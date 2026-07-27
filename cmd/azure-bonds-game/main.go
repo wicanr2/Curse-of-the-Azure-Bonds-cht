@@ -683,6 +683,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
+	text.Draw(screen, a.state.GameTimeText(), a.face, 32, 170, cyan)
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
 		for index, choice := range a.state.Choices {
 			prefix := "  "
@@ -792,6 +793,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 
 func (a *app) drawWildernessMap(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "暗影谷荒野（原版 50×25 floor）", a.face, 24, 28, cyan)
+	text.Draw(screen, a.state.GameTimeText(), a.face, 390, 55, cyan)
 	const (
 		viewWidth  = 7
 		viewHeight = 5
