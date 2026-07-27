@@ -283,6 +283,21 @@ func TestRunSubsetRecordsExternalCallAndReturnsToECL(t *testing.T) {
 	}
 }
 
+func TestRunSubsetRecordsPrintReturnAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x33,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.PrintReturnCount != 1 || len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)

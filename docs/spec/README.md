@@ -199,3 +199,4 @@
 - [第二百零二輪 ECL external CALL signal](./202-ecl-external-call-signal.md)（`READY`：限 external address signal 與 return-after-call）
 - [第二百零三輪 ECL event text localization bridge](./203-ecl-event-text-localization.md)（`READY`：限已驗證事件片段與 unknown fallback）
 - [第二百零四輪 ECL continuous event localization](./204-ecl-continuous-event-localization.md)（`READY`：限 ECL3／ECL4 已驗證片段與 menu pause）
+- [第二百零五輪 ECL PRINT RETURN boundary](./205-ecl-print-return.md)（`READY`：限 opcode `0x33` cursor continuation）

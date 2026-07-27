@@ -123,6 +123,7 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
+		aggregate.PrintReturnCount += result.PrintReturnCount
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
