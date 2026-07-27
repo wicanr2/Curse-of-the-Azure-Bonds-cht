@@ -59,7 +59,7 @@
 - Ebiten command 能編譯並使用 `internal/game.State`。
 - 啟動畫面、輸入與繁中 catalog 已連通。
 - [x] 將 remake 邏輯畫布擴為 640×480，事件圖下方保留三行大型繁中敘事與獨立操作列。
-- [x] 正式 new-game block 0x01 完成後依 ECL EXIT 與 C04B–C04D registers 進入荒野 (7,13)，移除人造中介選單。
+- [x] 正式 new-game block 0x01 完成後依 ECL EXIT 與 C04B–C04D registers 進入提爾佛頓 GEO1 (7,13)、面東，移除人造中介選單。
 - 字型以外部路徑注入，避免將未確認授權的字型提交至 repo。
 
 ## 第十輪驗收
@@ -221,11 +221,12 @@
 - [x] 以 GEO wall fields 建立 shared `CanMove` navigation contract 與 viewport cursor regression。
 - [x] 建立 reference `BackGroundTiles` 74 筆 metadata layer，保留 floor construction 的待實作邊界。
 - [x] 建立根目錄 README 與由原始 DAX parser 可重現的 TILES／GEO PNG 截圖證據。
-- [x] 還原 50×25 wilderness floor construction，接通 background entry → TILES index 與 movement cost。
+- [x] 還原野外遭遇用的 50×25 combat-floor construction，接通 background entry → TILES index 與 movement cost；不再誤稱為世界地圖。
+- [x] 正式 dungeon movement 同步 C04B–C04F，執行 per-turn／SearchLocation lifecycle entries，並自動使用 3D renderer。
 - [x] 還原 GEO dungeon floor 四段 tile composition，接通 D 預覽與可重現 dungeon screenshot。
 - [x] 接回 dungeon `terrain & 0x40` table／chair decoration pass 與 seeded regression。
 - [x] 建立 GEO2–GEO6 全 16 block 的原始 map catalog，並接通 set/block preview selector。
-- [x] 將 ECL `LOAD FILES` 第三 operand 接到 State pending GEO map request 與 renderer catalog。
+- [x] 將 ECL `LOAD FILES` 第一 operand 接到 dungeon GEO pending request、第三 operand 接 outdoor BIGPIC，並由 renderer catalog 消費。
 - [x] 建立 Area1／Area2 `inDungeon`、`game_area` 與 LOAD FILES branch contract。
 - [x] 建立 Area1／Area2 已知欄位 binary codec，並保留未知 bytes。
 - [x] 將 remake F5/F9 擴充為可恢復 Area、location、mode 與 map 座標的版本 2 game save。

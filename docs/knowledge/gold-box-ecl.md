@@ -21,6 +21,11 @@ menu／WHO input pause、步數上限與 unsupported stop。CoAB block `0x01` �
 會憑空改寫原版流程。共享 VM memory 可提供 script-written registers，但位址的作品語意
 應留在 work adapter，不放進共用 ECL interpreter。
 
+同一 block 的五個 entry 不是五個可互換的開場。Reference `vm_init_ecl` 依序讀取
+per-turn、SearchLocation、PreCampCheck、CampInterrupted、initial。`RunEntry` 類 API
+必須保存 shared memory、把 PC 設到指定 entry 並清空上一 invocation 的 call stack；
+menu pause 才是從既有 PC resume。EXIT 也要提交該 invocation 的 memory writes。
+
 ## Evidence discipline
 
 當 real entry 在 operand 1 出現 `code 0x01` 時，不能直接把它當 literal monster count。應先反組 `SAVE／memory` operand semantics，再修改 `DecodeMonsterSpawn`／`DecodeMonsterSetup`；否則會把 ECL 的 runtime variable 誤解成固定 encounter。

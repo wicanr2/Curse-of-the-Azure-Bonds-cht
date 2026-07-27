@@ -455,6 +455,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		case 0x00: // EXIT
 			result.PC = next
 			result.Exited = true
+			saveState(next)
 			return result, nil
 		case 0x01, 0x02: // GOTO / GOSUB
 			target, ok := CodeTarget(instruction.Operands[0], len(payload))

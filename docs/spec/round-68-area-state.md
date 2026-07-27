@@ -8,8 +8,8 @@ reference `Area1` 的已知欄位包括 `current_3DMap_block_id`（`0x18A`）、
 
 `internal/area.State` 現在保存這些已驗證的 map-selection 邊界欄位，並實作 `ApplyLoadFiles`：
 
-- dungeon 且第三 operand 不是 `0xFF`／`0x7F`：更新 `Current3DMapBlockID`，產生 GEO map effect。
-- 非 dungeon 且第一 operand 有效、last DAX block 不是 `0x50`：產生 big-picture effect。
+- dungeon 且第一 operand 不是 `0xFF`／`0x7F`：更新 `Current3DMapBlockID`，產生 GEO map effect。
+- 非 dungeon 且第三 operand 有效、last DAX block 不是 `0x50`：產生 big-picture effect。
 - 其他情況不虛構 map／picture side effect。
 
 `game.State` 已使用此 contract；ECL map request 只有在 `SetInDungeon(true)` 後才會轉給 GEO catalog，避免把 wilderness `LOAD FILES` 誤當 dungeon map。

@@ -117,6 +117,31 @@ func TestBlockSessionCarriesMemoryAcrossNewECL(t *testing.T) {
 	}
 }
 
+func TestBlockSessionRunEntryRestartsLifecycleWithSharedMemory(t *testing.T) {
+	block := sessionBlock(0x8014)
+	block = append(block, make([]byte, 32)...)
+	// entry 0 saves 7 then exits; initial entry saves 9 then exits.
+	block[4], block[5] = 0x20, 0x80
+	copy(block[2+0x14:], []byte{0x09, 0x00, 9, 0x02, 0x00, 0x90, 0x00})
+	copy(block[2+0x20:], []byte{0x09, 0x00, 7, 0x02, 0x01, 0x90, 0x00})
+	session, err := NewBlockSession(map[uint8][]byte{1: block}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := session.RunInteractive(20, nil); err != nil {
+		t.Fatal(err)
+	}
+	result, err := session.RunEntry(0, 20, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	initial, initialOK := session.MemoryValue(0x9000)
+	turn, turnOK := session.MemoryValue(0x9001)
+	if !result.Exited || !initialOK || initial != 9 || !turnOK || turn != 7 {
+		t.Fatalf("result=%+v memory=(%d,%v),(%d,%v)", result, initial, initialOK, turn, turnOK)
+	}
+}
+
 func TestBlockSessionAggregatesSignalsAcrossNewECL(t *testing.T) {
 	first := sessionBlock(0x8014)
 	first[2] = 0x20

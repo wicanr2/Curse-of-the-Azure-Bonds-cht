@@ -10,7 +10,7 @@
 
 ![GEO2 原始 16×16 wall geometry](docs/screenshots/geo-geometry.png)
 
-![原版規則生成的 50×25 wilderness floor 局部](docs/screenshots/wilderness-floor.png)
+![原版規則生成的 50×25 野外遭遇戰鬥地面](docs/screenshots/wilderness-floor.png)
 
 ![GEO2 wall/door 組合出的 dungeon floor slice](docs/screenshots/dungeon-floor.png)
 
@@ -20,6 +20,11 @@
 
 上圖是目前 remake 使用原始 MON1CHA／CPIC 素材進入可操作戰鬥的實際畫面（headless
 Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
+
+![正式序幕後的提爾佛頓 640×480 地城畫面](docs/screenshots/tilverton-opening.png)
+
+上圖由 `-opening` 走過真實 block `0x01` 的兩段 Continue 後擷取：使用 TTC 24px
+繁中字型、原始 TILES／GEO2 block 1／WALLDEF／8X8D 素材，位置 `(7,13)`、面東。
 
 目前已完成的垂直切片包括：
 
@@ -51,7 +56,7 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 遊戲啟動會載入 `MON1CHA`–`MON6CHA`，State 依全域 ECL block namespace 選擇章節對應的 monster table，避免跨章節同 ID 誤解析。
 - 已以原始 image 驗證 ECL1 block `0x50` 的 `NEWECL 0x03` 可切換到 ECL2 block `3`；target 後續若遇未支援 routine 仍會保留 transition boundary。
 - `TILES.DAX`／`8X8D*.DAX` indexed pictures、`WALLDEF*.DAX`、EGA16 palette 與 `GEO2–GEO6` geometry parser。
-- 原版 50×25 wilderness floor 生成規則、background entry → tile index mapping，以及依 movement cost 的荒野移動。
+- 原版 `SetupWildernessFloor` 的 50×25 野外遭遇戰鬥地面生成規則，以及 background entry → combat tile mapping；它不是世界地圖。
 - GEO2 wall／door fields → dungeon background composition → TILES pixel art 的可見 slice（`D` 預覽）。
 - dungeon table／chair decoration 已依 GEO `terrain & 0x40` 與原版 seeded dice pass 接入。
 - Ebiten 原始 tile gallery、GEO wall viewport 與依 GEO wall bytes 驗證的游標移動。
@@ -64,6 +69,8 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - PIC1–PIC6 的 PIC/FINAL-style XOR frame delta 也已解碼並抽出 152 張 PNG；SPRIT 與 PIC 兩種 payload 語意在 parser 中明確分流。
 - ECL `PICTURE` request 已接到繁中事件畫面：game state 保存 block、Ebiten 播放對應 PIC frames，Enter 可返回原流程。
 - Ebiten remake 的邏輯畫布與預設視窗已擴為 `640×480`；88px PIC／人物圖採 nearest-neighbor 3×、304×120 BIGPIC 採 2× 整數像素放大，繁中文字則直接以 24px 高解析字型重繪。新增的垂直空間用於三行敘事與獨立操作提示，避免中文字覆蓋原圖。
+- 字型 loader 同時支援單一 TTF/OTF 與 TTC collection；Noto Sans CJK `.ttc` 可直接以
+  24px 渲染，不會因 collection parse 失敗退回 ASCII bitmap font。
 - 真實 ECL1 JOURNEY ON 路徑已驗證 `PICTURE → Enter → COMBAT` continuation；事件畫面會先停住，玩家消費後才繼續原始選擇序列。
 - ECL `COMBAT (0x24)` 現在會保存 next-PC；可玩戰鬥勝利後，State 會恢復同一個 ECL runtime，繼續跑原版的文字、menu、picture 或 `NEWECL`，不再丟回 stale wilderness menu。
 - 已依 reference `seg044`／`Resource.resx` 保存 9 個 PC WAV sound assets，`internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊與已實作法術 intent 播放對應音效；背景音樂仍待接入。
@@ -154,8 +161,12 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 正式角色建立完成後會 reset 到 global ECL block `0x01`，顯示繁中「小房間醒來、
   裝備與記憶消失」及 PIC 0x0A 的青色印記事件；圖片後的 Continue menu 不再遺失。
   沒有隊伍時在標題按 Enter 會直接開角色建立，完成後自動進入這條正式流程。
-- 正式 block `0x01` 的第二次 Continue 後已依真實 `EXIT` 進入荒野主迴圈；script 寫入的
-  `0xC04B/0xC04C/0xC04D` 會還原起點 `(7,13)` 與方向 `1`，不再返回 remake 自造選單。
+- 正式 block `0x01` 的第二次 Continue 後已依真實 `EXIT` 進入提爾佛頓室內 GEO1；
+  script 寫入的 `0xC04B/0xC04C/0xC04D = 7/13/1` 會還原起點 `(7,13)`，並將
+  half-direction `1` 轉成 renderer 的東向 `2`，不再返回 remake 自造選單。
+- 正式流程會自動打開 GEO／WALLDEF／8X8D 3D 畫面，不需再按 `D` 進 debug preview；
+  ↑ 前進、K/M 轉向。成功前進會同步 `C04B..C04F` 並依序執行 per-turn／SearchLocation
+  ECL entries，讓地點文字、選單、圖片與戰鬥回到原版 lifecycle。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。

@@ -571,7 +571,7 @@ func TestCityMenuSelectionMapsAllLocalizedLocations(t *testing.T) {
 func TestECLLoadFilesTransfersGeoBlockRequest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.SetInDungeon(true)
-	state.applyGeoMapLoad(ecl.RunResult{LoadFilesRequested: true, LoadFiles: [3]uint16{0xFF, 0xFF, 0x10}})
+	state.applyGeoMapLoad(ecl.RunResult{LoadFilesRequested: true, LoadFiles: [3]uint16{0x10, 0xFF, 0xFF}})
 	set, block, ok := state.ConsumeGeoMapRequest()
 	if !ok || set != 2 || block != 0x10 {
 		t.Fatalf("geo request=(%d,%#x,%v), want set 2 block 0x10", set, block, ok)
