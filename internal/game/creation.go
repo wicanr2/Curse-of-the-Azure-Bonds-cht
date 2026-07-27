@@ -190,10 +190,9 @@ func (s *State) SavePartyFile(path string) error {
 	return os.WriteFile(path, data, 0o600)
 }
 
-// SaveSAVGAMPrefix writes the reference-compatible fixed SAVGAM prefix while
-// preserving any raw records loaded previously. It is deliberately separate
-// from SavePartyFile: the original player-file side effects are not yet
-// decoded, so this method must not be presented as a complete DOS slot save.
+// SaveSAVGAMPrefix writes only the reference-compatible fixed SAVGAM prefix
+// while preserving raw records loaded previously. SaveSAVGAMSlot is the
+// higher-level API for a loaded prefix plus CHRDAT player sidecars.
 func (s *State) SaveSAVGAMPrefix(path string) error {
 	container, err := s.savgamContainerForSave()
 	if err != nil {
