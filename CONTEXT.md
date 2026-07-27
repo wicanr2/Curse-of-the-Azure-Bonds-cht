@@ -505,3 +505,5 @@
 第二百輪功能 commit：`f822c89`，依既有 ECL command table／operand contract 將 `0x2F AND` 與 `0x30 OR` 接入 bounded 16-bit memory destination semantics，新增 regression 與 READY 規格；另建立可供後續 Gold Box 作品沿用的 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md) 指令集知識庫。ECL1–ECL6 smoke 已遇到的 `0x2D CALL` 仍維持 unsupported，待確認 external dispatch／return context 後再實作。
 
 第二百零一輪功能 commit：`a04f6d6`，以原始 ECL3／ECL4／ECL6 smoke 的 `code 0x01` monster operands 為證據，將 `LOAD MONSTER`／`SETUP MONSTER` 接到 bounded runtime memory resolution，加入 byte-range validation 與 variable descriptor regression；ECL3 block 17／18、ECL4 block 33／37 real entries 已抵達 COMBAT／spawn boundary。完整 `CALL`／external routine、party memory 與玩家流程仍保留 boundary。
+
+第二百零二輪功能 commit：`c45888e`，以 ECL1–ECL6 raw scan 的 `0x2E10`／`0xC01E`／`0xB200` 非 code-segment CALL operands 與 ECL3 opening 的 CALL→PRINT／menu sequence 為證據，新增 `RunResult.CallAddresses` external dispatch signal；bounded VM 從 CALL 後續 instruction 繼續，ECL3 block 16／17／18／21 smoke 已越過原本 `0x2D` stop。真正 engine routine side effect 仍保留 boundary。
