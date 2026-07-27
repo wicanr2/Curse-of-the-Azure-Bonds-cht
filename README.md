@@ -75,6 +75,9 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 熔岩洞內 GEO `(9,10)` 的 terrain `0x8A` 守門巡邏也已可玩：3 隻火蜥蜴、
   3 名黑暗精靈戰士與 1 名牧師。勝利會保存 `4C48` 狀態，並由原 ECL 顯示
   「前方危機重重」的夢境警告，再回到洞內探索。
+- GEO `(0,5)` 的 terrain `0x89` 面北會顯示 PICTURE 57 熔岩池，接入四項
+  ENCOUNTER 與 15 隻火蜥蜴戰。勝利後可調查六只防火桶，以 WHO 選擇前往者；
+  沒有耐熱條件的角色會被迫退回，流程可安全返回地城。
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。

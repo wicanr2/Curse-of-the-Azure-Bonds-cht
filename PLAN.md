@@ -482,3 +482,6 @@
 - [x] 接通 GEO5 block `0x32` `(9,10)` terrain `0x8A` 火蜥蜴守門巡邏：
   3 火蜥蜴＋3 黑暗精靈戰士＋1 牧師、`4C48` bit 3 與戰後夢境警告；
   共用知識庫補正 `ON GOTO` selector 1 對應第一個 target。
+- [x] 接通 GEO5 `(0,5,N)` terrain `0x89` 方向敏感熔岩池：
+  PICTURE 57、四項 ENCOUNTER、15 隻火蜥蜴、`4C48` bit 0、六只防火桶、
+  WHO 志願者與一般英雄熱度退回／拒絕重試流程。
