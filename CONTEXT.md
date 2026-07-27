@@ -536,3 +536,10 @@ pending queue／`ConsumeDamageRequests()` exactly-once API，避免事件／選�
 script damage effect；新增 READY spec 與共用 State knowledge。由於 remake 尚未保存
 原版五類 `saveVerse` 與 selected-character memory mapping，本輪不猜固定 HP mutation。
 Docker 已通過 `internal/game`、`internal/ecl`、`internal/party`、`internal/locale`。
+
+第二百一十二輪功能 commit：`387b9fb`，依 reference player `saveVerse` `0xDF–0xE3`
+與 `CMD_Damage` flags，保存五類 saving throws 到 DOS parser／Character／JSON／record
+writeback；新增 selected／whole-party DAMAGE resolver、natural 1／20、注入骰點、
+transactional roster HP 與 stable-ID fighter sync。random-target／`CanHitTarget`、
+affect save bonus 與死亡 continuation 仍保留 boundary。Docker 已通過
+`internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。

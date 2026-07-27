@@ -13,10 +13,11 @@
 
 ## Evidence boundary
 
-公開 CoAB `CMD_Damage` 已確認五欄 operand 順序，但目前 remake `Character` 尚未保存
-原版五類 `saveVerse` 與 ECL selected-character memory mapping。固定扣除第一位角色 HP
-會把 adapter fallback 誤稱成原版語意，因此先採與 `SPELL`／`PROTECTION` 相同的
-signal-to-State queue 分層。
+公開 CoAB `CMD_Damage` 已確認五欄 operand 順序；DOS `saveVerse` 現已保存到
+`Character`，但在本規格建立時尚未具備 selected-character memory mapping。固定扣除
+第一位角色 HP 會把 adapter fallback 誤稱成原版語意，因此先採與
+`SPELL`／`PROTECTION` 相同的 signal-to-State queue 分層；後續窄化 resolver 已另列於
+spec 212。
 
 ## 驗收
 
