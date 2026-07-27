@@ -252,6 +252,20 @@ type Character struct {
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
 }
 
+// HasClass reports whether a character can use rules associated with a class.
+// Imported／created multi-class characters consult raw ClassLevels; legacy
+// single-class JSON without those slots falls back to Character.Class.
+func (c Character) HasClass(class Class) bool {
+	if c.ClassLevels != [8]uint8{} {
+		index := map[Class]int{
+			ClassCleric: 0, ClassFighter: 2, ClassRanger: 4,
+			ClassPaladin: 3, ClassMagicUser: 5, ClassThief: 6,
+		}[class]
+		return c.ClassLevels[index] > 0
+	}
+	return c.Class == class
+}
+
 const (
 	DeathDamageFire = 0x01
 	DeathDamageAcid = 0x10
@@ -457,8 +471,15 @@ func (c Character) CanEquip(index int, catalog monster.BaseItemCatalog) error {
 	if !ok {
 		return fmt.Errorf("item type 0x%02X is outside base catalog", item.Type)
 	}
-	classBit, ok := ItemClassBit(c.Class)
-	if !ok || !base.UsableByMask(classBit) {
+	usable := false
+	for _, class := range []Class{ClassCleric, ClassFighter, ClassRanger, ClassPaladin, ClassMagicUser, ClassThief} {
+		classBit, ok := ItemClassBit(class)
+		if ok && c.HasClass(class) && base.UsableByMask(classBit) {
+			usable = true
+			break
+		}
+	}
+	if !usable {
 		return fmt.Errorf("%s cannot equip item type 0x%02X", c.Class, item.Type)
 	}
 	if item.Readied {

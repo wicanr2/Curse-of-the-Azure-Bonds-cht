@@ -51,12 +51,10 @@ func firstLevelMemorizedCapacity(character party.Character) int {
 	if character.Level < 1 {
 		return 0
 	}
-	switch character.Class {
-	case party.ClassCleric, party.ClassMagicUser:
+	if character.HasClass(party.ClassCleric) || character.HasClass(party.ClassMagicUser) {
 		return 1
-	default:
-		return 0
 	}
+	return 0
 }
 
 // firstLevelMemorizationHours follows the RuleBook's bounded first-level

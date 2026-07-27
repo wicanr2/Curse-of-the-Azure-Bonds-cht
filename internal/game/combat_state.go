@@ -286,7 +286,7 @@ func (s *State) CombatCanCastMagicMissile() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassMagicUser {
+		if character.ID != caster.ID || !character.HasClass(party.ClassMagicUser) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -317,7 +317,7 @@ func (s *State) CombatCanCastCureLightWounds() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -340,7 +340,7 @@ func (s *State) CombatCanCastBless() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -361,7 +361,7 @@ func (s *State) CombatCanCastCurse() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -382,7 +382,7 @@ func (s *State) CombatCanCastCauseLightWounds() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -403,7 +403,7 @@ func (s *State) CombatCanCastProtectionFromEvil() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -424,7 +424,7 @@ func (s *State) CombatCanCastProtectionFromGood() bool {
 		return false
 	}
 	for _, character := range s.partyRoster {
-		if character.ID != caster.ID || character.Class != party.ClassCleric {
+		if character.ID != caster.ID || !character.HasClass(party.ClassCleric) {
 			continue
 		}
 		for _, spellID := range character.SpellSlots {
@@ -544,15 +544,17 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		if !ok {
 			return fmt.Errorf("it is not a living party turn")
 		}
-		class, ok := s.combatCasterClass(caster.ID)
-		if !ok {
+		if _, ok := s.combatCasterClass(caster.ID); !ok {
 			return fmt.Errorf("caster %q has no class", caster.ID)
 		}
-		s.combatCastingClass, s.combatCastingClassSet = class, true
-		if class == party.ClassCleric {
+		cleric := s.combatCasterHasClass(caster.ID, party.ClassCleric)
+		if cleric {
+			s.combatCastingClass, s.combatCastingClassSet = party.ClassCleric, true
 			s.combatSpellTargetIndex = 0
 			return nil
 		}
+		class, _ := s.combatCasterClass(caster.ID)
+		s.combatCastingClass, s.combatCastingClassSet = class, true
 		targets := s.livingBySide(combat.SideEnemy)
 		if s.combatTargetIndex >= len(targets) {
 			s.combatTargetIndex = 0
@@ -673,7 +675,7 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassMagicUser {
+		if character.ID == caster.ID && character.HasClass(party.ClassMagicUser) {
 			characterIndex = index
 			break
 		}
@@ -780,6 +782,15 @@ func (s *State) combatCasterClass(casterID string) (party.Class, bool) {
 	return 0, false
 }
 
+func (s *State) combatCasterHasClass(casterID string, class party.Class) bool {
+	for _, character := range s.partyRoster {
+		if character.ID == casterID {
+			return character.HasClass(class)
+		}
+	}
+	return false
+}
+
 func (s *State) combatSpellIsProtectionFromGood() bool {
 	if s.combatCastingClassSet {
 		return s.combatCastingClass == party.ClassCleric
@@ -788,8 +799,8 @@ func (s *State) combatSpellIsProtectionFromGood() bool {
 	if !ok {
 		return false
 	}
-	class, ok := s.combatCasterClass(caster.ID)
-	return ok && class == party.ClassCleric
+	_, ok = s.combatCasterClass(caster.ID)
+	return ok && s.combatCasterHasClass(caster.ID, party.ClassCleric)
 }
 
 func (s *State) combatCastProtectionFromGood() error {
@@ -802,7 +813,7 @@ func (s *State) combatCastProtectionFromGood() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
@@ -852,7 +863,7 @@ func (s *State) combatCastProtectionFromEvil() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
@@ -928,7 +939,7 @@ func (s *State) combatCastCauseLightWounds() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
@@ -977,7 +988,7 @@ func (s *State) combatCastCurse() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
@@ -1033,7 +1044,7 @@ func (s *State) combatCastBless() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
@@ -1075,7 +1086,7 @@ func (s *State) combatCastCureLightWounds() error {
 	}
 	characterIndex := -1
 	for index, character := range s.partyRoster {
-		if character.ID == caster.ID && character.Class == party.ClassCleric {
+		if character.ID == caster.ID && character.HasClass(party.ClassCleric) {
 			characterIndex = index
 			break
 		}
