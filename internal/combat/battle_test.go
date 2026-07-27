@@ -27,6 +27,33 @@ func TestSetHitPointsMarksDeathOverlayAndClearsCombatPosition(t *testing.T) {
 	}
 }
 
+func TestNewBattleNormalizesInitiallyDownedFighter(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 2, CombatY: 2,
+			CombatAction: ActionState{Delay: 3, Move: 1, SpellID: 4, Guarding: true}},
+		{ID: "goblin", Side: SideEnemy, HitPoints: 5, MaxHitPoints: 5, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 3, CombatY: 2},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	turns, err := battle.StartRound()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hero Fighter
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "hero" {
+			hero = fighter
+			break
+		}
+	}
+	if hero.HasCombatPosition || !hero.DeathOverlay || hero.CombatAction != (ActionState{}) || len(turns) != 1 || turns[0].FighterID != "goblin" {
+		t.Fatalf("initial downed fighter was not normalized: hero=%+v turns=%+v", hero, turns)
+	}
+}
+
 func testBattle(t *testing.T) *Battle {
 	t.Helper()
 	battle, err := NewBattle([]Fighter{
