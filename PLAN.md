@@ -445,3 +445,6 @@
 - [x] 完成刀刃屏障 ENTER 分支：第二次 pause 後解碼 `DAMAGE flags=0xE0,
   8d8, bonus=0, save=0`，自動套用同一傷害包到全隊並同步 roster／fighter HP；
   真實 ECL 與可玩 State regression 均鎖定消散 continuation。
+- [x] 完成 ECL2 block 4 selector `0x1A`／terrain `0x9A` 定身房：
+  撤退／審問／殺死三分支、`4CFE & 0x40` 一次性狀態、繁中敘事，以及依使用者
+  Adventurer's Journal 來源在審問後解鎖手札 26。
