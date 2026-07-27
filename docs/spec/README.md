@@ -292,3 +292,4 @@
 - [第三百一十二輪熔岩洞火蜥蜴守門巡邏](./312-lava-tube-guarded-door.md)（`READY`：限 terrain 0x8A、MON5 3/3/1 守門戰、夢境警告與 ON GOTO selector base）
 - [第三百一十三輪熔岩池、十五隻火蜥蜴與防火桶](./313-lava-tube-salamander-pools.md)（`READY`：限 terrain 0x89 面北、PICTURE 57、15 火蜥蜴、六桶與 WHO 熱度分支）
 - [第三百一十四輪 640×480 圖像放大與中文 HUD 排版](./314-640x480-cjk-renderer-pass.md)（`READY`：限 dungeon tile 2×、24/16px CJK tiers、HUD 換行與場所選單去重）
+- [第三百一十五輪法師塔入口與德拉坎德羅斯龍群騙局](./315-wizard-tower-dracandros-arrival.md)（`READY`：限 block 0x32→0x33、塔頂幻象、手札 15 與四項真實選擇邊界）

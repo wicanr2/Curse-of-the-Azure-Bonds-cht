@@ -1292,3 +1292,14 @@ WAIT→友善警告→無旗標離開，重訪後 COMBAT→戰鬥→防火桶。
 renderer pass：24px 正文／16px compact 雙 CJK face、系統字型自動尋找、
 dungeon 24×24 tile nearest-neighbor 2×、Combat／Dungeon HUD 分行與 Unicode
 rune 換行，並移除 ModePlace 選單重複繪製。
+
+第三百一十五輪成果：熔岩洞 GEO5 `(6,15,W)` 現依 block `0x32` per-turn
+方向 gate 寫入 `C04B/C04C/C04D=7/15/3` 並 `NEWECL 0x33`，正式載入
+GEO5 block `0x33`、pieces `14/15/FF` 與 PICTURE 51 五層法師塔庭院。
+同一 resumable session 接續德拉坎德羅斯兩次 APPROACH、普通
+`COMBAT/WAIT/FLEE/PARLAY` 選單、塔頂黑龍群、屠龍命令與煙霧幻象。
+使用者提供的 Adventurer's Journal 條目 15 已整理成兩頁繁中，只在原 ECL
+真正輸出 journal marker 後解鎖；事件再次寫入 `4CFF=1` 並令德拉坎德羅斯的
+枷印消退，但不把已被火刀事件設定的同位址誤稱為第二枚計數器。最後停在
+`ATTACK DRAGONS/ATTACK WIZARD/FLEE/PARLAY WITH THE DRAGONS` 真實 vertical
+menu。新增 `-wizard-tower` 640×480 重現入口、READY spec 315 與共用知識庫。

@@ -2555,6 +2555,95 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4C48); !ok || got&0x01 == 0 {
 		t.Fatalf("lava pools flag=%#x,%v want bit 0x01", got, ok)
 	}
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 15") {
+			t.Fatalf("wizard-tower journal unlocked before event: %q", page)
+		}
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 15, 6
+	state.DungeonWallType, _ = lavaGrid.WallWrapped(6, 15, 6)
+	state.DungeonWallRoof = lavaGrid.CellWrapped(6, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x33 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x33 ||
+		state.DungeonX != 7 || state.DungeonY != 15 || state.DungeonDirection != 6 ||
+		state.LoadPieces != [3]uint16{0x0E, 0x0F, 0xFF} ||
+		!state.PictureRequested || state.PictureBlock != 0x33 ||
+		!strings.Contains(state.Message, "五層高塔的庭院") {
+		t.Fatalf("wizard-tower transition block=%#x geo=%d/%#x pos=(%d,%d,%d) pieces=%v picture=%v/%d message=%q",
+			session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, state.LoadPieces,
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "德拉坎德羅斯") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+		t.Fatalf("Dracandros arrival message=%q choices=%#v", state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	wizardTowerMessages := []string{
+		"一大群黑龍",
+		"獨自走上前來",
+		"伊爾明斯特",
+		"只是一道幻象",
+		"手札條目 15",
+		"一枚枷印逐漸消退",
+	}
+	for _, fragment := range wizardTowerMessages {
+		for step := 0; step < 4 && !strings.Contains(state.Message, fragment); step++ {
+			var err error
+			if state.Mode == ModeEvent {
+				err = state.Continue()
+			} else {
+				err = state.Select(0)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+		if !strings.Contains(state.Message, fragment) {
+			t.Fatalf("wizard-tower continuation want=%q mode=%v message=%q choices=%#v",
+				fragment, state.Mode, state.Message, state.currentOriginalChoices)
+		}
+	}
+	for step := 0; step < 4 && !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"ATTACK DRAGONS", "ATTACK WIZARD", "FLEE", "PARLAY WITH THE DRAGONS"}); step++ {
+		var err error
+		if state.Mode == ModeEvent {
+			err = state.Continue()
+		} else {
+			err = state.Select(0)
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"ATTACK DRAGONS", "ATTACK WIZARD", "FLEE", "PARLAY WITH THE DRAGONS"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"攻擊龍群", "攻擊法師", "撤退", "與龍群交涉"}) {
+		t.Fatalf("wizard-tower decision originals=%#v localized=%#v",
+			state.currentOriginalChoices, state.Choices)
+	}
+	if got, ok := session.MemoryValue(0x4CFF); !ok || got != 1 {
+		t.Fatalf("wizard-tower faded-bond flag=%#x,%v want 1", got, ok)
+	}
+	journal15Pages := 0
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 15") {
+			journal15Pages++
+		}
+	}
+	if journal15Pages != 2 {
+		t.Fatalf("wizard-tower journal 15 pages=%d, want 2", journal15Pages)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

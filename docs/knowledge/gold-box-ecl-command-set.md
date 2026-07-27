@@ -251,6 +251,11 @@ runner 以 ordered count 保存 intent，frontend 再依 encounter distance／sp
 state 呈現。runner error 不得在 State adapter 被丟棄，否則真正的 unsupported
 command 會被誤顯示成空白劇情並污染後續 selection offsets。
 
+HORIZONTAL／VERTICAL MENU 的 option label 不等於 engine command。ECL5 block
+`0x33 +0x0193` 的普通四選單恰好命名為 `COMBAT/WAIT/FLEE/PARLAY`，但只有
+script 能決定語意：WAIT 略過一段定身文字，其餘三項顯示後仍全部匯流到塔頂。
+adapter 若按字串提前執行 action，會跳過 `4CFF=1`、手札 15 與整段主線。
+
 ## CoAB ECL／engine memory ownership
 
 | address／range | owner／方向 | lifecycle |
