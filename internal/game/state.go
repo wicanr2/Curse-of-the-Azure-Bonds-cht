@@ -895,9 +895,17 @@ func (s *State) ResolvePendingECLDamageWithHitResolver(selectedIndex int, rollDi
 
 // ResolvePendingECLDamageWithDefaultHitResolver projects the current party
 // AC from Character (and decoded equipment when available), then applies the
-// verified CanHitTarget natural-roll/invisibility rules. Blink/displace and
+// verified CanHitTarget natural-roll/invisibility/blink rules. Displace and
 // other combat-round effects remain available through the injected variant.
 func (s *State) ResolvePendingECLDamageWithDefaultHitResolver(selectedIndex int, rollDie, rollSave func(int) int) ([]party.DamageOutcome, error) {
+	return s.ResolvePendingECLDamageWithDefaultHitResolverContext(selectedIndex, party.ECLHitContext{}, rollDie, rollSave)
+}
+
+// ResolvePendingECLDamageWithDefaultHitResolverContext is the State adapter
+// for callers that have the current combat action delay/round. It preserves
+// the transactional pending-request behavior while projecting Type_16 hit
+// effects with that explicit context.
+func (s *State) ResolvePendingECLDamageWithDefaultHitResolverContext(selectedIndex int, context party.ECLHitContext, rollDie, rollSave func(int) int) ([]party.DamageOutcome, error) {
 	hitTarget := func(target party.Character, bonus int, hitRoll func(int) int) (bool, error) {
 		fighter, err := target.Fighter()
 		if err != nil {
@@ -909,7 +917,7 @@ func (s *State) ResolvePendingECLDamageWithDefaultHitResolver(selectedIndex int,
 				return false, err
 			}
 		}
-		return party.CanHitECLDamageTarget(target, fighter.ArmorClass, bonus, hitRoll)
+		return party.CanHitECLDamageTargetWithContext(target, fighter.ArmorClass, bonus, context, hitRoll)
 	}
 	return s.ResolvePendingECLDamageWithHitResolver(selectedIndex, rollDie, rollSave, hitTarget)
 }
