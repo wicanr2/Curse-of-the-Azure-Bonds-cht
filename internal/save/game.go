@@ -30,7 +30,8 @@ type GameFile struct {
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
-	return EncodeGameWithDungeonState(roster, areaState, mode, location, mapX, mapY, 8, 8, 0, 0, 0)
+	// seg001.Init initializes the original dungeon camera at (7, 0x0D).
+	return EncodeGameWithDungeonState(roster, areaState, mode, location, mapX, mapY, 7, 13, 0, 0, 0)
 }
 
 // EncodeGameWithDungeon writes the current remake adventure state including

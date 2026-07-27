@@ -61,7 +61,7 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 ## Save 與 dungeon camera
 
-可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；舊版 save 或越界值回到 `(8,8,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標；不能因 remake preview 能保存就宣稱已完成 DOS `SAVGAM` container。
+可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；依 reference `seg001.Init`，舊版 save 或越界值回到 `(7,13,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標；不能因 remake preview 能保存就宣稱已完成 DOS `SAVGAM` container。
 
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 

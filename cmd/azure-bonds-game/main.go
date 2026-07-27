@@ -450,7 +450,7 @@ func (a *app) syncGeoMapRequest() {
 	a.geoGrid = &grid
 	a.dungeonX, a.dungeonY = a.state.DungeonX, a.state.DungeonY
 	if a.dungeonX < 0 || a.dungeonX >= geo.Width || a.dungeonY < 0 || a.dungeonY >= geo.Height {
-		a.dungeonX, a.dungeonY = 8, 8
+		a.dungeonX, a.dungeonY = 7, 13
 	}
 	a.refreshDungeonPreview()
 	a.geoSet, a.geoBlock = set, block
@@ -1341,7 +1341,7 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 }
 
 func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {
-	floor := mapdata.GenerateDungeon(*grid, 8, 8)
+	floor := mapdata.GenerateDungeon(*grid, 7, 13)
 	return &floor
 }
 

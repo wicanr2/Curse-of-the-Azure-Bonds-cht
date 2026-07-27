@@ -301,10 +301,11 @@ func NewState(catalog locale.Catalog) State {
 		dungeonSeed:       1,
 		GeoMapSet:         2,
 		GeoMapBlock:       1,
-		DungeonX:          8,
-		DungeonY:          8,
-		DungeonDirection:  0,
-		Area:              area.State{GameArea: 2},
+		// Reference seg001.Init: mapPosX=7, mapPosY=0x0D, direction=0.
+		DungeonX:         7,
+		DungeonY:         13,
+		DungeonDirection: 0,
+		Area:             area.State{GameArea: 2},
 	}
 }
 
