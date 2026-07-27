@@ -207,6 +207,22 @@ func TestLocationDefaultsToWilderness(t *testing.T) {
 	}
 }
 
+func TestTurnDungeonUsesEightDirectionOrder(t *testing.T) {
+	state := NewState(testCatalog())
+	state.TurnDungeon(2)
+	if state.DungeonDirection != 2 {
+		t.Fatalf("direction after right turn=%d, want 2", state.DungeonDirection)
+	}
+	state.TurnDungeon(-4)
+	if state.DungeonDirection != 6 {
+		t.Fatalf("direction after left turn=%d, want 6", state.DungeonDirection)
+	}
+	state.TurnDungeon(10)
+	if state.DungeonDirection != 0 {
+		t.Fatalf("direction after wrapped turn=%d, want 0", state.DungeonDirection)
+	}
+}
+
 func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

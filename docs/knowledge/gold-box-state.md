@@ -63,6 +63,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；舊版 save 或越界值回到 `(8,8,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標；不能因 remake preview 能保存就宣稱已完成 DOS `SAVGAM` container。
 
+Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

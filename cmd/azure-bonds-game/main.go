@@ -135,6 +135,14 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
 			a.moveDungeonPreview(-1, 0, 6)
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+			a.state.TurnDungeon(-2)
+			a.prepareWallPreview()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+			a.state.TurnDungeon(2)
+			a.prepareWallPreview()
+		}
 		return nil
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
@@ -721,7 +729,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（方向鍵移動／D／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q/E 轉向／D／Esc：返回）", a.face, 24, 28, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
@@ -749,7 +757,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		}
 	}
 	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
-	text.Draw(screen, "目前為 "+a.geoLabel+" map position ("+strconv.Itoa(a.dungeonX)+","+strconv.Itoa(a.dungeonY)+") 的 floor slice", a.face, 24, 245, white)
+	text.Draw(screen, "目前為 "+a.geoLabel+" map position ("+strconv.Itoa(a.dungeonX)+","+strconv.Itoa(a.dungeonY)+")、facing "+dungeonDirectionName(a.state.DungeonDirection)+" 的 floor slice", a.face, 24, 245, white)
 	if a.pieceLabel != "" {
 		text.Draw(screen, a.pieceLabel, a.face, 24, 280, cyan)
 	}
@@ -762,6 +770,14 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			screen.DrawImage(stamp.image, op)
 		}
 	}
+}
+
+func dungeonDirectionName(direction uint8) string {
+	names := [...]string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
+	if int(direction) >= len(names) {
+		return "?"
+	}
+	return names[direction]
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
