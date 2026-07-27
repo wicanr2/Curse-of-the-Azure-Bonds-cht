@@ -634,3 +634,14 @@ Death routine boundary。
 
 第二百二十一輪文件 commit：`bd0b6da`，更新 Death effect READY spec、Gold Box ECL／
 State 知識庫、README 與 PLAN，記錄 dragon-slayer explicit target contract。
+
+第二百二十二輪功能 commit：`5abf8be`，依 reference `RemoveFromCombat`／`CombatantKilled`
+將 Battle fighter HP=0 的 combat position 清為 `HasCombatPosition=false`，對應原版
+`CombatMap[player_index].size=0`；既有 Battle win/loss 與 finishCombat continuation
+保持不變。新增 State active-combat regression；skull overlay、actions clear、完整 map
+redraw 與其他 Death routine 仍保留 boundary。Docker 已通過 `internal/combat`、
+`internal/game`、`internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百二十二輪文件 commit：`4353c21`，更新 Death／combatant removal READY spec、
+Gold Box ECL／State 知識庫、README 與 PLAN，記錄 position removal 與剩餘 renderer side
+effects。
