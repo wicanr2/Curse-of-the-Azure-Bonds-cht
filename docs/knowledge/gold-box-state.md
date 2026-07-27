@@ -68,8 +68,8 @@ core 以目標 AC +4 表示，並只對 active raw records 生效；effect recor
 
 Monster 的攻擊次數也不再完全依賴 synthetic default：reference `load_mob` 的
 `field_A1` 已解析為 `Record.AttacksPerTurn`，再由 active Haste `0x27` 依
-`AffectHaste` 加倍。這仍未包含 Slow、movement half-actions、遠程彈藥與完整
-`reclac_attacks` weapon profile。
+`AffectHaste` 加倍，`AffectSlow`（`0x2A`）減半，並保留目前 adapter 的至少一攻下限。
+這仍未包含 movement half-actions、遠程彈藥與完整 `reclac_attacks` weapon profile。
 
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
