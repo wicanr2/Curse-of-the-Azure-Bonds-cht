@@ -327,5 +327,6 @@
 - [x] 依 reference `SaveGame/loadSaveGame` 將 SAVGAM slot prefix 與 `CHRDAT*.sav`／optional `.fx/.swg` 接到 State loader，並提供 `-savgam-dir/-savgam-slot` 啟動入口。
 - [x] 將已完成的 `SAVGAM` slot load path 延伸到已證實 Player fields／`.swg`／`.fx` writeback，使用 sibling staging directory 後逐檔替換；保留未知 `.sav` bytes。
 - [x] 將 loaded SAVGAM slot writer 接到 Ebiten F5 與 CAMP SAVE；一般 remake JSON save path 維持不變。
-- [ ] 補齊原版 player delete／rename semantics、多職業與未知欄位證據，並將 slot writer 接到 CAMP save 的完整 multi-file transaction。
+- [x] 依已知 `SaveGame` side effect 清理該 slot 的 stale `CHRDAT*.sav/.swg/.fx`，並以 backup/rollback 保護 staged replacement。
+- [ ] 補齊原版 player delete／rename semantics、多職業與未知欄位證據，及完整 player serialization。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

@@ -477,3 +477,5 @@
 第一百八十六輪功能 commit：`9e64347`，依同一組 `ovr017` 證據新增 `PatchDOSPlayerRecord`、`.swg/.fx` encoders 與 `State.SaveSAVGAMSlot`。已載入角色的已證實欄位可回寫，未知 `.sav` bytes 保留；輸出先進 staging directory 再逐檔替換，仍保留原版刪檔、多職業、未知 sidecar 與 CAMP multi-file atomic transaction boundary。`go test ./...` 與兩個 CLI build 已於 Docker 通過。
 
 第一百八十七輪功能 commit：`b40587c`，將 loaded SAVGAM slot 接到 Ebiten F5 與 CAMP SAVE；`-savgam-dir/-savgam-slot` 模式寫回同一 slot，一般模式維持 remake JSON。新增 workflow 規格與 README／PLAN／state knowledge 更新；原版刪檔、多職業、未知 sidecar 與跨檔案 atomic transaction 仍保留 boundary。
+
+第一百八十八輪功能 commit：`ce606ad`，依已知 `SaveGame` side effect，將 SAVGAM slot 的 prefix 與 `CHRDAT{key}{1..6}` 檔案先移入 backup，再替換 staged bundle；隊伍縮編的 stale player sidecars 會被清理，替換失敗可 rollback。新增 stale-file regression 與 READY 規格；多職業、未知欄位與完整 player serialization 仍保留 boundary。

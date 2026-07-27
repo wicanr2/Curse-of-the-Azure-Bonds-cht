@@ -108,6 +108,7 @@
 - [第一百八十五輪 SAVGAM player bundle loader](./185-savgam-player-bundle-loader.md)（`READY`：限 reference slot load 與既有 player sidecars）
 - [第一百八十六輪 SAVGAM player writeback](./186-savgam-player-writeback.md)（`READY`：限已證實欄位、sidecar encoder 與 staged slot replacement）
 - [第一百八十七輪 SAVGAM save workflow](./187-savgam-save-workflow.md)（`READY`：限 loaded slot 的 F5／CAMP SAVE adapter）
+- [第一百八十八輪 SAVGAM stale-file cleanup](./188-savgam-stale-file-cleanup.md)（`READY`：限縮編 slot 的受限檔案清理與 rollback）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
