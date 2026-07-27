@@ -666,6 +666,15 @@ func TestResolveDeathEffectsIsTransactionalAndSyncsRoster(t *testing.T) {
 	}
 }
 
+func TestResolveDragonSlayerUsesExplicitMonsterTargetContext(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{Effects: []monster.AffectRecord{{Kind: 0x4B, Active: true}}}}
+	result, err := state.ResolveDragonSlayer(0, party.MonsterTypeDragon, 1, func(int) int { return 10 })
+	if err != nil || !result.Triggered || result.Damage != 35 || result.AttackRollBonus != 2 {
+		t.Fatalf("result=%#v err=%v", result, err)
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

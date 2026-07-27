@@ -78,6 +78,18 @@ func TestCharacterApplyDeathEffectsTrollRegenRequiresKnownNonFireAcidDamage(t *t
 	}
 }
 
+func TestCharacterResolveDragonSlayerRequiresDragonTarget(t *testing.T) {
+	character := Character{Effects: []monster.AffectRecord{{Kind: 0x4B, Active: true}}}
+	result, err := character.ResolveDragonSlayer(MonsterTypeDragon, 3, func(int) int { return 12 })
+	if err != nil || !result.Triggered || result.Damage != 43 || result.AttackRollBonus != 2 {
+		t.Fatalf("dragon result=%#v err=%v", result, err)
+	}
+	result, err = character.ResolveDragonSlayer(10, 3, func(int) int { return 12 })
+	if err != nil || result.Triggered {
+		t.Fatalf("non-dragon result=%#v err=%v", result, err)
+	}
+}
+
 func TestShopBuySellAndIdentifyTransactions(t *testing.T) {
 	character := validCharacter()
 	character.Gold = 500
