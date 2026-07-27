@@ -296,6 +296,31 @@ func (c *Character) RemoveItem(index int) (monster.ItemRecord, error) {
 	return removed, nil
 }
 
+// DestroyItemType applies an explicit ECL DESTROY ITEMS effect. Unlike the
+// player-facing RemoveItem operation, this effect may remove readied items:
+// the original event can destroy equipment while it is worn. It removes all
+// matching records and returns the number of item units destroyed.
+func (c *Character) DestroyItemType(itemType uint8) int {
+	if c == nil {
+		return 0
+	}
+	updated := make([]monster.ItemRecord, 0, len(c.Equipment))
+	destroyed := 0
+	for _, item := range c.Equipment {
+		if item.Type != itemType {
+			updated = append(updated, item)
+			continue
+		}
+		count := int(item.Count)
+		if count == 0 {
+			count = 1
+		}
+		destroyed += count
+	}
+	c.Equipment = updated
+	return destroyed
+}
+
 // ConsumeAmmunition removes shots for a weapon's raw ITEMS AmmunitionType.
 // The raw code and inventory item type use different namespaces in CoAB, so
 // the caller must inject the verified mapping for the current game's data.
