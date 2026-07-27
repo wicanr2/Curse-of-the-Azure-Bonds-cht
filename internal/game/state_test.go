@@ -240,6 +240,17 @@ func TestDungeonStateActionsUseRosterAndSeededRolls(t *testing.T) {
 	}
 }
 
+func TestDungeonDoorMenuOptionsReadLoadedRoster(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ThiefSkills: []uint8{0, 25}, SpellSlots: []uint8{0x1F}}}
+	if got := state.DungeonDoorMenuOptions(2); !got.Bash || !got.Pick || !got.Knock {
+		t.Fatalf("detail2 options=%#v", got)
+	}
+	if got := state.DungeonDoorMenuOptions(3); got.Pick || !got.Bash || !got.Knock {
+		t.Fatalf("detail3 options=%#v", got)
+	}
+}
+
 func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

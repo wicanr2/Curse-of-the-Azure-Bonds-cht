@@ -63,6 +63,7 @@ type app struct {
 	dungeonFloor     *mapdata.DungeonFloor
 	dungeonX         int
 	dungeonY         int
+	dungeonDoorMenu  bool
 	pieceSets        map[uint8]gfx.PieceSet
 	pieceLabel       string
 	wallPreview      []wallPreviewStamp
@@ -123,7 +124,12 @@ func (a *app) Update() error {
 	}
 	if a.dungeonPreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+			a.dungeonDoorMenu = false
 			a.dungeonPreview = false
+		}
+		if a.dungeonDoorMenu {
+			a.updateDungeonDoorMenu()
+			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 			a.moveDungeonPreview(0, -1, 0)
@@ -463,11 +469,46 @@ func (a *app) refreshDungeonPreview() {
 
 func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	if a.geoGrid == nil || !a.geoGrid.CanMoveDungeonWrapped(a.dungeonX, a.dungeonY, direction) {
+		if flags, ok := a.dungeonDoorFlags(); ok && (flags == 2 || flags == 3) {
+			a.dungeonDoorMenu = true
+			a.state.Message = "門已上鎖，請選擇 Bash／Pick／Knock／Exit"
+		}
 		return
 	}
 	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
 	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
 	a.refreshDungeonPreview()
+}
+
+func (a *app) updateDungeonDoorMenu() {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		a.dungeonDoorMenu = false
+		return
+	}
+	flags, ok := a.dungeonDoorFlags()
+	if !ok {
+		a.dungeonDoorMenu = false
+		return
+	}
+	options := a.state.DungeonDoorMenuOptions(flags)
+	if inpututil.IsKeyJustPressed(ebiten.KeyB) && options.Bash {
+		a.tryDungeonBash()
+		a.dungeonDoorMenu = false
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyP) && options.Pick {
+		a.tryDungeonPickLock()
+		// Pick is one-shot even when it fails; remaining actions may still be
+		// selected, matching can_pick_door=false in locked_door.
+		if flags, ok := a.dungeonDoorFlags(); !ok || flags != 2 {
+			a.dungeonDoorMenu = false
+		}
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyK) && options.Knock {
+		a.tryDungeonKnock()
+		a.dungeonDoorMenu = false
+	}
 }
 
 func (a *app) prepareWallPreview() {
@@ -847,6 +888,20 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	}
 	if a.state.Message != "" {
 		text.Draw(screen, a.state.Message, a.face, 24, 296, white)
+	}
+	if a.dungeonDoorMenu && doorFlagsOK {
+		options := a.state.DungeonDoorMenuOptions(doorFlags)
+		items := "B Bash　Esc Exit"
+		if options.Pick {
+			items = "B Bash　P Pick　"
+			if options.Knock {
+				items += "K Knock　"
+			}
+			items += "Esc Exit"
+		} else if options.Knock {
+			items = "B Bash　K Knock　Esc Exit"
+		}
+		text.Draw(screen, "Locked door："+items, a.face, 24, 330, color.RGBA{255, 220, 110, 255})
 	}
 	if a.pieceLabel != "" {
 		text.Draw(screen, a.pieceLabel, a.face, 24, 314, cyan)

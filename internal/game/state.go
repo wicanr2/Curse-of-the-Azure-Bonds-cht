@@ -1756,6 +1756,12 @@ func (s *State) BashDungeonDoor(detail uint8) dungeon.BashResult {
 	return dungeon.BashDoor(s.partyRoster, detail, func(sides int) int { return rng.Intn(sides) + 1 })
 }
 
+// DungeonDoorMenuOptions exposes only the actions available to the loaded
+// party for the current raw WallDoorFlags detail.
+func (s *State) DungeonDoorMenuOptions(detail uint8) dungeon.DoorMenuOptions {
+	return dungeon.DoorMenuOptionsFor(s.partyRoster, detail)
+}
+
 // ConsumeDungeonKnockSpell removes the first memorized Knock slot from the
 // loaded roster, preserving the reference party-order transaction.
 func (s *State) ConsumeDungeonKnockSpell() bool {

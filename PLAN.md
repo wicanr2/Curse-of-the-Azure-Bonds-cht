@@ -308,6 +308,7 @@
 - [x] 將已保存的 DOS open-locks skill 接成注入 d100 的 pick-lock transaction 與 Knock `0x1F` slot 消耗核心；door UI／bash 仍待完成。
 - [x] 將 pick-lock／Knock 接到 dungeon preview P/K action adapter，成功後呼叫 GEO 雙側 unlock；完整 locked-door menu／bash 仍待完成。
 - [x] 依 reference strength／exceptional tables 將 bash-door dice resolver 接到 preview B；完整 locked-door menu 與撞門 side effects 仍待完成。
+- [x] 依 reference `locked_door` 將 detail 2/3 action capabilities 接到方向鍵阻擋後的 preview menu；完整 DOS 視窗／door graphics／劇情 entry 仍待完成。
 - [x] 解碼 DOS `.SWG` item records，接到 party equipment projection。
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
 - [x] 修正 `.FX` duration／strength 欄位並建立 finite/permanent duration tick adapter。
