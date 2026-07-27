@@ -515,3 +515,10 @@
 第二百零五輪功能 commit：`11ea665`，依 ECL3 block 16 entry 4 的 raw `PRINT RETURN`→後續 menu sequence，新增 `RunResult.PrintReturnCount` 與 session aggregation；真實 entry 已由原本 `0x33` stop 推進至 `menu=true`，新增 bounded regression／READY 規格。DOS text-window layout 與完整後續事件仍保留 boundary。
 
 第二百零六至二百零八輪功能 commit：`3dd0645`，依 ECL5 block 48 raw trace／scan 將 `LOAD CHARACTER`、`FIND ITEM`、`DESTROY ITEMS` 接成 bounded signals，保留 character address、inventory query／destroy IDs 並繼續 control flow；real entry 已由 `0x0A`／`0x32`／`0x40` stops 推進到 `NEWECL` boundary。party ownership、compare result、實際 item deletion 與完整事件分支仍保留 boundary。
+
+第二百零九輪功能 commit：`74adb2f`，依 ECL5 sunlight event 的 raw evidence 建立
+`DESTROY ITEMS` → persistent party roster adapter；新增可刪除 readied／stacked item
+units 的 `Character.DestroyItemType`，並以 party／State regression 驗證。`FIND ITEM`
+仍維持 query-only signal，compare result、完整 item namespace 與事件分支仍保留
+boundary。Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、
+`internal/locale` 測試。

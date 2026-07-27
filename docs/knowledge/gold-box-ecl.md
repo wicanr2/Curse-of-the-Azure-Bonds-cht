@@ -59,5 +59,9 @@ menu；這證實 text-window boundary 與 ECL control-flow boundary 可以分開
 
 ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可重用
  signals：`FIND ITEM` 保存查詢 ID，`DESTROY ITEMS` 保存待消耗 ID；real entry
- 已從原本 `0x0A`／`0x32`／`0x40` stops 推進到 `NEWECL` boundary。實際 party
- ownership、found result 與 item deletion 仍由 State／party adapter 消費。
+ 已從原本 `0x0A`／`0x32`／`0x40` stops 推進到 `NEWECL` boundary。State 現在會把
+ `DESTROY ITEMS` 的 verified IDs 套用到 persistent party roster；`Character` 的
+ ECL destroy adapter 會刪除所有相同 type 的 item units，包括已 readied record。
+ `FIND ITEM` 仍只保存 query signal，因為 compare flag／item namespace 尚未由
+ 原始 party memory 完整解出。這使 VM signal 與作品專屬 party state mutation
+ 維持可跨 Gold Box 重用的邊界。
