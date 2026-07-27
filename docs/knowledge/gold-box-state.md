@@ -83,6 +83,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 第 192 輪把既有 `party.PayIdentifyFee` 接到繁中 Shop Menu。200 GP fee 由 character gold 扣除，raw `HiddenNameFlags` 保留不改；共用 Gold Box adapter 可以沿用 fee／selection transaction，但各作品仍需提供 magic item result table，不能由 type byte 臆測。
 
+第 193 輪補上 `BlockSession` 的跨 `NEWECL` signal aggregation contract。ECL block 是可中斷／可轉移的 bounded VM 執行單位，因此 `LOAD FILES`、`PICTURE`、`SPELL`、`PROTECTION` 不能只留在單一 `RunSubset` 結果；session 會保留一次性 request，合併 spell／protection list，並把資料交給作品的 map／picture／party adapter。這個 signal boundary 可供後續 Gold Box 遊戲沿用，但不代表已完成各作品的資源 lookup 或法術效果。
+
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。

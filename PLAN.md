@@ -147,6 +147,7 @@
 - [x] 驗證 ECL1 block `0x50/0x51/0x52` initial entries。
 - [x] 驗證 NEWECL target switch contract。
 - [x] 將全 ECL session 接入 game runtime，保存 bounded 跨 block state。
+- [x] 補齊 BlockSession 跨 NEWECL 的 LOAD FILES／PICTURE／SPELL／PROTECTION signal aggregation。
 
 ## 第二十三輪驗收
 
