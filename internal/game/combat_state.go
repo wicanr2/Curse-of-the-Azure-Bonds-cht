@@ -1420,6 +1420,7 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 	}
 	s.applyGeoMapLoad(result)
 	s.applyLoadPieces(result)
+	s.applyECLCallSignals(result)
 	s.applySpellSignals(result)
 	s.applyECLDamageSignals(result)
 	if err := s.applyECLClockSignals(result); err != nil {

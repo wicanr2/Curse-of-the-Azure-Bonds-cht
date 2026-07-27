@@ -122,6 +122,41 @@ func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	}
 }
 
+func TestRealECL3CallRedrawReachesStateAdapter(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+
+	blocks, err := dax.Parse(zipData(t, image, "ECL3.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var block []byte
+	for _, candidate := range blocks {
+		if candidate.Entry.ID == 16 {
+			block = candidate.Data
+			break
+		}
+	}
+	if len(block) == 0 {
+		t.Fatal("ECL3 block 16 is absent")
+	}
+	result, err := ecl.RunSubsetInteractive(block, 0x0198, 40, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.CallAddresses) != 1 || result.CallAddresses[0] != 0x2E10 {
+		t.Fatalf("real CALL addresses=%#v, want [0x2E10]", result.CallAddresses)
+	}
+	state := State{}
+	state.applyECLCallSignals(result)
+	if got := state.ConsumeECLCallRequests(); len(got) != 1 || got[0] != 0x2E10 {
+		t.Fatalf("State CALL requests=%#v", got)
+	}
+}
+
 func TestRealECL2EncounterBuildsBattleFromMON2CHA(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

@@ -138,3 +138,9 @@ CoAB 的 `PROGRAM (0x38)` 已確認 0/3/8/9 都是「停止本輪 VM，再交給
 0=start menu、3=party killed、8=game won／全隊恢復／詢問存檔、9=encamp。可重用 VM
 只應回傳 ID 與 boundary；作品 State adapter 才能決定 process exit、title screen 與存檔
 UI。CoAB remake 讓一般選單與 combat continuation 共用同一 adapter，避免戰後吞掉勝利。
+
+`CALL (0x2D)` 的 raw operand 不能直接當 code pointer：CoAB dispatch 先做 unsigned
+`operand - 0x7FFF`。已觀察 raw `0x2E10/0xC01E/0xB200` 分別是 redraw、forced
+`MovePositionForward` 與 sound A/B。forced move 是 16×16 cardinal wrap 且不檢查碰撞；
+玩家按鍵 movement 的門／牆阻擋不可誤套到 script CALL。其他作品必須重新驗證 dispatch
+base 與 address table，不可直接沿用 CoAB 位址。

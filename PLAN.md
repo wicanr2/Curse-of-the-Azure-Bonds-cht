@@ -96,14 +96,14 @@
 - [x] 實作 `COMPARE AND`、`GETTABLE` 與 `HORIZONTAL MENU` bounded semantics。
 - [x] 以真實 ECL1 initial entry 回歸開場三段文字與三個 menu 選項。
 - [x] 將原始 menu 選項接入 game state 與繁中 locale／Ebiten rendering。
-- [ ] 將 deterministic menu selection 改成玩家輸入，並接通兩個開場事件分支。
+- [x] 將 deterministic menu selection 改成玩家輸入，並接通兩個開場事件分支（第 15、17 輪完成 resumable UI）。
 
 ## 第十五輪驗收
 
 - [x] 加入 successive ECL menu selection injection 與 regression。
 - [x] 將 Ebiten directional cursor／Enter 接入 game state 與 ECL selection。
 - [x] 以實際 ECL1 驗證 selection 0／1 走不同分支。
-- [ ] 實作 `VERTICAL MENU` 與後續事件 command subset。
+- [x] 實作 `VERTICAL MENU` 與後續事件 command subset（第 16 輪完成）。
 
 ## 第十六輪驗收
 
@@ -117,14 +117,14 @@
 - [x] interactive runner 在未提供 selection 時暫停於下一個 menu。
 - [x] game state 保存 successive menu sequence 並接入 Ebiten。
 - [x] 新增城市 menu／continue prompt 的繁中 locale。
-- [ ] 建立城市場所事件 regression，完成第一個可玩的場所功能。
+- [x] 建立城市場所事件 regression，完成第一個可玩的場所功能（後續 INN／STORE／BAR 已接入）。
 
 ## 第十八輪驗收
 
 - [x] 新增 interactive CLI 以重現 selection sequence。
 - [x] 驗證 ECL1 `0,0,1` 城市選擇序列。
 - [x] 將 Shadowdale／Ashabenford／Dagger Falls 接入繁中 locale 與 state mapping。
-- [ ] 將地點選擇寫入 map state，接通第一個場所入口。
+- [x] 將地點選擇寫入 map state，接通第一個場所入口（第 19、20 輪完成）。
 
 ## 第十九輪驗收
 
@@ -382,3 +382,4 @@
 - [x] 將原始 ECL1–ECL6 的 25 blocks／125 initialization entries 建成無 unsupported-opcode 的 real-image corpus gate，並驗證 ECL5 日光腐朽的 real FIND ITEM found branch。
 - [x] 依 `CMD_Dump`／`FreeCurrentPlayer` 實作 selected member 離隊、working-party更新、fallback selection 與 State roster／fighter同步；鎖定 real ECL5 Akabar DUMP。
 - [x] 依 `CMD_Program` 將 0/3/8/9 接成共用 State external-routine adapter，涵蓋 start menu、party killed、game won 全隊恢復／存檔選擇與 CAMP，並由戰鬥後 continuation 共用。
+- [x] 依 `CMD_Call` 將 real ECL observed `0x2E10/0xC01E/0xB200` 接成 redraw、forced wrapped movement 與 default sound-A transaction；保留 `word_1EE76 == 10` sound-B boundary。

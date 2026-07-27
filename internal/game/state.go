@@ -134,6 +134,7 @@ type State struct {
 	savgamPrefix           *partySave.SAVGAMContainer
 	savgamPlayers          map[string]party.DOSPlayerFiles
 	pendingSoundEvents     []SoundEvent
+	pendingECLCalls        []uint16
 	battle                 *combat.Battle
 	combatTurns            []combat.Turn
 	combatTurnIndex        int
@@ -797,6 +798,7 @@ func (s *State) Select(index int) error {
 		}
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
+		s.applyECLCallSignals(result)
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
 		s.applyECLLoadCharacterSignals(result)
@@ -2623,6 +2625,44 @@ func (s *State) enterProgramTitle(message string) {
 	s.Message = message
 	s.eclBlock = nil
 	s.session = nil
+}
+
+// applyECLCallSignals translates the three raw CALL operands observed in the
+// CoAB ECL image. CALL 0xC01E maps to reference MovePositionForward and is a
+// forced wrapped move (the routine itself does not perform collision checks).
+// The renderer still consumes the ordered calls so redraw can use its loaded
+// GEO/piece assets.
+func (s *State) applyECLCallSignals(result ecl.RunResult) {
+	for _, address := range result.CallAddresses {
+		s.pendingECLCalls = append(s.pendingECLCalls, address)
+		switch address {
+		case 0xC01E:
+			switch s.DungeonDirection {
+			case 0:
+				s.DungeonY = (s.DungeonY + 15) % 16
+			case 2:
+				s.DungeonX = (s.DungeonX + 1) % 16
+			case 4:
+				s.DungeonY = (s.DungeonY + 1) % 16
+			case 6:
+				s.DungeonX = (s.DungeonX + 15) % 16
+			}
+		case 0xB200:
+			// Reference word_1EE76 selects sound_a for the default/8 branch
+			// and sound_b for 10. That transient is not yet projected into
+			// State, so preserve the verified default sound_a behavior.
+			s.requestSound(SoundStep)
+		}
+	}
+}
+
+// ConsumeECLCallRequests transfers ordered redraw/external-call intents to the
+// frontend. State-owned effects (position and default sound) are already
+// applied before this transaction is exposed.
+func (s *State) ConsumeECLCallRequests() []uint16 {
+	requests := append([]uint16(nil), s.pendingECLCalls...)
+	s.pendingECLCalls = nil
+	return requests
 }
 
 func (s *State) enterCampViewMenu() {

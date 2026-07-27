@@ -13,6 +13,11 @@ continuation。CoAB 已確認 0=start menu、3=party killed、8=game won／全�
 9=encamp。共用 VM 只發布 routine ID；桌面 frontend 可把 DOS 的 process exit 明確映射成
 返回標題，同時保留勝利存檔選擇。
 
+Map external-call adapter 要區分玩家移動與 script forced movement：前者檢查 GEO wall／
+locked door，後者若 reference routine 只做 coordinate wrap，就必須先忠實移動再 refresh
+wall/roof。State 保存座標與 ordered one-shot request，frontend 只使用已載入的 GEO／piece
+assets 重建畫面；這能讓 headless rules test 不依賴 renderer。
+
 Spell UI 也應保持三層：DOS／save adapter 保存 ordered slot IDs，verified catalog 只把有證據的 class／ID 映射成名稱，rules engine 才處理 CAST／MEMORIZE／SCRIBE 與消耗。CoAB 目前只核對一級牧師／魔法師前八個 ID；未知 slot 顯示 hex 比猜 global ordinal 更安全，後續 Golden Box 遊戲可替換同一個 catalog adapter。
 
 `KnownSpells` 與 `SpellSlots` 必須分開保存：前者是角色已學會的 spell-book flags，後者是目前已記憶欄位。DOS parser、party Character 與 versioned JSON save 都應保留兩者；UI 只呈現數量與已核對名稱，不能因此推導可施法規則。
