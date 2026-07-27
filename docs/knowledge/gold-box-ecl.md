@@ -83,5 +83,8 @@ party／enemy win state 並走既有 finish continuation。角色倒下時也會
 保留。已解出的 Death adapter 另處理 affect_63 recovery、bleeding 與 troll fire/acid
 gate；dragon-slayer `0x4B` 已由 explicit dragon target／strength bonus context 投影
 1d12×3+4 damage 與 +2 attack bonus。Battle 對倒下 fighter 也會清除
-`HasCombatPosition`，對應 reference CombatMap size 0；skull overlay、actions clear 與
-其他 Death routine 仍保留 boundary。
+`HasCombatPosition`，對應 reference CombatMap size 0；同一個 Battle bridge 會發出
+renderer-neutral `DeathOverlay` signal，讓 Ebiten 在保留死亡座標 anchor 的位置顯示目前
+繁中「倒下」overlay。reference 的 `combat_icons[24]/[25]` 只已證實為 skull overlay
+呼叫索引，尚未證實 CPIC/COMSPR 素材族，故 exact skull animation、actions clear 與其他
+Death routine 仍保留 boundary。
