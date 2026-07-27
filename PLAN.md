@@ -428,3 +428,6 @@
 - [x] 反組 ECL2 block 2 selected-player window，將 15 名 THIEF 正確分成
   4 名我方 QuickFight 友軍與 11 名敵軍；完成公會戰勝利 continuation、繁中遺言、
   Journal Entry 4、local ECL／combined GEO 雙向座標與 640×480 小人戰鬥 HUD。
+- [x] 依 ECL2 block 2 entry 0 的 `0x7ED5 → CALL 0xC01E → NEWECL 3` 接通
+  公會南側下水道出口；一次性友軍戰後清理、犬舍戰與公會房間繁中探索已納入
+  real-image regression，並記錄 640×480／24px 中文圖文分層 contract。

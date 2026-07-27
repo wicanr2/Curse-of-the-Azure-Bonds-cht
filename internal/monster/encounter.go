@@ -34,6 +34,7 @@ func BuildEnemiesWithAffects(spawns []ecl.MonsterSpawn, records map[uint8]Record
 			}
 			fighter := record.Fighter(id, side)
 			fighter.QuickFight = side == combat.SideParty
+			fighter.TemporaryAlly = side == combat.SideParty
 			for _, affect := range affects[spawn.MonsterID] {
 				fighter.MonsterAffects = append(fighter.MonsterAffects, combat.MonsterAffect{
 					Kind: affect.Kind, Value: affect.Value, Duration: affect.Duration,

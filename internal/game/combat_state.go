@@ -1418,6 +1418,7 @@ func (s *State) finishCombat() error {
 	s.EndCombatView()
 	s.Mode = ModeEvent
 	s.syncPartyFromBattle()
+	s.removeTemporaryCombatAllies()
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "COMBAT"
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
@@ -1434,6 +1435,16 @@ func (s *State) finishCombat() error {
 		}
 	}
 	return nil
+}
+
+func (s *State) removeTemporaryCombatAllies() {
+	persistent := s.party[:0]
+	for _, fighter := range s.party {
+		if !fighter.TemporaryAlly {
+			persistent = append(persistent, fighter)
+		}
+	}
+	s.party = persistent
 }
 
 // continueECLAfterEngineBoundary resumes the runtime state saved after

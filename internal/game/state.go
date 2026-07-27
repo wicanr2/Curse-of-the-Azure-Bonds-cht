@@ -4210,6 +4210,18 @@ func (s *State) RunDungeonLifecycle() error {
 	return nil
 }
 
+// RunDungeonExitLifecycle supplies the boundary-crossing signal before running
+// the normal per-step entries. ECL2 block 2 gates both Thieves' Guild sewer
+// exits on 0x7ED5; the original 3-D movement loop sets this state only when a
+// passable step attempts to leave the 16x16 geometry.
+func (s *State) RunDungeonExitLifecycle() error {
+	if s.session == nil {
+		return fmt.Errorf("dungeon exit lifecycle requires an ECL session")
+	}
+	s.session.SetMemoryValue(0x7ED5, 1)
+	return s.RunDungeonLifecycle()
+}
+
 func (s *State) syncDungeonECLRegisters() {
 	s.session.SetMemoryValue(0xC04B, uint16(s.DungeonX))
 	s.session.SetMemoryValue(0xC04C, uint16(s.DungeonY))
@@ -4675,6 +4687,32 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_guildmaster_death",
 			"公會首領奄奄一息地喘道：「權衡之下，我寧可待在尤拉什……」隨即死去。你們在他身上找到一幅通往火刀據點的下水道地圖，記入冒險手札第 4 條。",
 		)
+	case strings.Contains(joined, "HALFLING WITH A HARP") &&
+		strings.Contains(joined, "DISAPPEAR"):
+		return catalog.Text(
+			"ecl_guild_halfling",
+			"走廊盡頭，你們看見一名抱著豎琴的半身人閃進門口，隨即消失。",
+		)
+	case strings.Contains(joined, "HUNGRY SNARLS") &&
+		strings.Contains(joined, "RELEASES THE PACK"):
+		return catalog.Text(
+			"ecl_guild_kennel_intro",
+			"你們一進門便聽見飢餓的低吼。一名火刀放出了犬群！",
+		)
+	case strings.Contains(joined, "GNAWED BONES") &&
+		strings.Contains(joined, "LEASHES"):
+		return catalog.Text("ecl_guild_kennel_aftermath", "房裡散落著被啃咬的骨頭與斷裂的皮帶。")
+	case strings.Contains(joined, "CAGES THAT ONCE HELD MONKEYS"):
+		return catalog.Text("ecl_guild_monkey_cages", "你們看見幾座曾用來關猴子的空籠。")
+	case strings.Contains(joined, "OPEN GUEST BOOK") &&
+		strings.Contains(joined, "O.RUSKETTLE"):
+		return catalog.Text(
+			"ecl_guild_guest_book",
+			"桌上攤著一本訪客簿，最後一筆寫著：「奧莉芙・拉斯凱托，國度吟遊詩人——碰豎琴者，小心你的手。」",
+		)
+	case strings.Contains(joined, "GREEN SLIMY MARKS") &&
+		strings.Contains(joined, "MORE DISTINCT NEAR THE DOOR"):
+		return catalog.Text("ecl_guild_sewer_traces", "地面留有綠色黏液痕跡，越靠近門越清晰。")
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
