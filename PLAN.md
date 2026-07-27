@@ -195,6 +195,7 @@
 - [x] 加入六項能力值的 3d6 擲骰／重擲，並保留 seed regression。
 - [x] 建立版本化 remake party JSON，接通 F5／F9 與啟動載入；原版 DOS save/import 仍待反組。
 - [x] 將 ECL `COMBAT` 在有 party／MON*CHA records 時接到可操作 Battle；缺少資料時保留安全 boundary。
+- [x] 以真實 ECL2 block 3 entry 3／MON2CHA records 建立可操作 encounter regression，並提供跨章節 `-encounter-monster-member` 入口。
 - [x] 以真實 ECL1 block 0x51 的 `JOURNEY ON → STORE` 建立 COMBAT boundary regression，確認缺 descriptor 時不虛構 Battle。
 - [x] 實作 ECL `RANDOM` 與 State 可注入 seed，保留 deterministic regression。
 - [x] 實作 ECL `ENCOUNTER MENU` operand framing、selection pause 與 memory action mapping。

@@ -191,3 +191,4 @@
 - [第一百九十四輪真實 ECL PICTURE continuation](./194-real-ecl-picture-continuation.md)（`READY`：限 ECL1 JOURNEY ON 的 PICTURE→Enter→COMBAT boundary）
 - [第一百九十五輪 ECL spell signal state bridge](./195-ecl-spell-state-bridge.md)（`READY`：限 SPELL／PROTECTION pending queue 與一次性 consume）
 - [第一百九十六輪 ECL initialization entry smoke analysis](./196-ecl-entry-smoke.md)（`READY`：限 ECL1–ECL6 五入口 bounded report）
+- [第一百九十七輪真實 ECL2 encounter Battle](./197-real-ecl2-encounter-battle.md)（`READY`：限 block 3 entry 3、MON2CHA 與 packed AC adapter）
