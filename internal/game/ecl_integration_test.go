@@ -1135,7 +1135,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 }
 
-func TestRealFireKnifeBladeBarrierWaitBranch(t *testing.T) {
+func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
 		t.Skipf("original image is unavailable: %v", err)
@@ -1201,6 +1201,62 @@ func TestRealFireKnifeBladeBarrierWaitBranch(t *testing.T) {
 		localizeOption(testCatalog(), "RETREAT"),
 	}; strings.Join(got, "/") != "闖入刀刃/等待/撤退" {
 		t.Fatalf("localized blade barrier choices=%v", got)
+	}
+	enter := run([]uint16{0, 0})
+	if len(enter.DamageRequests) != 1 ||
+		enter.DamageRequests[0] != (ecl.DamageRequest{
+			Flags: 0xE0, DiceCount: 8, DiceSize: 8, Bonus: 0, SaveFlags: 0,
+		}) ||
+		!strings.Contains(strings.Join(enter.Text, " "), "BLADES TEAR INTO YOU") {
+		t.Fatalf("blade barrier enter branch=%+v", enter)
+	}
+
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)
+	if err := state.session.Reset(4); err != nil {
+		t.Fatal(err)
+	}
+	state.Mode = ModeDungeon
+	state.DungeonWallRoof = 0x99
+	state.partyRoster = party.Roster{
+		{ID: "one", Name: "一", HitPoints: 100, MaxHitPoints: 100},
+		{ID: "two", Name: "二", HitPoints: 100, MaxHitPoints: 100},
+	}
+	state.party = []combat.Fighter{
+		{ID: "one", HitPoints: 100, MaxHitPoints: 100},
+		{ID: "two", HitPoints: 100, MaxHitPoints: 100},
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 3 || state.Choices[0] != "闖入刀刃" {
+		t.Fatalf("playable blade barrier prompt choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HitPoints != 62 || state.partyRoster[1].HitPoints != 62 ||
+		state.party[0].HitPoints != 62 || state.party[1].HitPoints != 62 ||
+		!strings.Contains(state.Message, "完全止息") {
+		t.Fatalf("playable blade damage roster=%+v fighters=%+v message=%q choices=%v",
+			state.partyRoster, state.party, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.Choices) != 0 {
+		t.Fatalf("blade barrier return mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	state.DungeonWallRoof = 0x99
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.Choices) != 0 || state.Message != "" {
+		t.Fatalf("blade barrier revisit mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
 	}
 }
 

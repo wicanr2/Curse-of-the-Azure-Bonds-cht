@@ -77,6 +77,9 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 火刀據點第一個機關房已由 ECL2 block 4 terrain `0x99` 驗證：旋轉刀刃、
   `闖入刀刃／等待／撤退` 三項繁中選單及安全等待後刀刃消散分支均保留原始
   script index；事件沿用 640×480、24px 中文與整數倍像素圖分層。
+- 「闖入刀刃」現會依原始 `DAMAGE 0xE0,8d8,0,0` 對全隊套用同一包無豁免
+  8d8 傷害，角色資料與畫面 fighter HP 同步，之後接回刀刃消散 continuation；
+  非全隊自動傷害仍保留給選角／豁免／命中判定 adapter。
 - 字型 loader 同時支援單一 TTF/OTF 與 TTC collection；Noto Sans CJK `.ttc` 可直接以
   24px 渲染，不會因 collection parse 失敗退回 ASCII bitmap font。
 - 真實 ECL1 JOURNEY ON／STORE 路徑已驗證 `PICTURE → Enter → COMBAT opcode →

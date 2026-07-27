@@ -652,6 +652,35 @@ func TestResolvePendingECLDamageWritesRosterAndFighterHP(t *testing.T) {
 	}
 }
 
+func TestAutomaticWholePartyECLDamageUsesStateSeed(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetECLSeed(1)
+	state.partyRoster = party.Roster{
+		{ID: "one", Name: "一", HitPoints: 100, MaxHitPoints: 100},
+		{ID: "two", Name: "二", HitPoints: 100, MaxHitPoints: 100},
+	}
+	state.party = []combat.Fighter{
+		{ID: "one", HitPoints: 100, MaxHitPoints: 100},
+		{ID: "two", HitPoints: 100, MaxHitPoints: 100},
+	}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 0xE0, DiceCount: 8, DiceSize: 8,
+	}}})
+	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(outcomes) != 2 || outcomes[0].DamageRoll != 38 ||
+		state.partyRoster[0].HitPoints != 62 || state.partyRoster[1].HitPoints != 62 ||
+		state.party[0].HitPoints != 62 || state.party[1].HitPoints != 62 {
+		t.Fatalf("automatic damage outcomes=%+v roster=%+v fighters=%+v",
+			outcomes, state.partyRoster, state.party)
+	}
+	if len(state.ConsumeDamageRequests()) != 0 {
+		t.Fatal("automatic whole-party damage remained pending")
+	}
+}
+
 func TestResolvePendingECLDamageWithHitResolverHandlesRandomTargets(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "first", HitPoints: 10}, {ID: "second", HitPoints: 10}}

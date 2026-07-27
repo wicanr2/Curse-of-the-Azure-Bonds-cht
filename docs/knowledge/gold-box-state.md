@@ -328,3 +328,30 @@ SearchLocation 的 terrain selector 是事件入口，不是 UI event ID。原�
 字串。像火刀據點 `0x99 → selector 0x19` 的 WAIT 分支，regression 應同時鎖定
 原始 index、沒有 `DAMAGE` signal，以及後續 plot text，避免 renderer 因中文字寬度
 重新排序選項而改變劇情。
+
+全隊環境陷阱可由 `DAMAGE flags & 0xE0 == 0xE0` 安全地在作品 State 自動提交：
+`0x80` 表示非 random-target、`0x40` 表示 whole party、`0x20` 表示 auto damage。
+這一型不需要 WHO、saving throw 或 CanHitTarget，且一個 damage roll 套用到所有
+隊員。其他 flag 組合不可順便自動處理，必須保留 pending request 給各自 adapter。
+
+#### ECL2 block 4 selector map
+
+SearchLocation entry `+0x00E1` 在 `+0x00F5` 以 `C04F & 0x003F` 做 33-way
+dispatch。火刀據點後半可重用的定位如下：
+
+| Selector | Handler | State | Room |
+|---|---:|---|---|
+| `0x19` | `+0x0C2A` | `4CFE & 0x20` | 旋轉刀刃；ENTER 於 `+0x0D16` 送出 `0xE0,8d8,0,0` |
+| `0x1A` | `+0x0DA2` | `4CFE & 0x40` | 被定身的火刀；撤退／審問／殺死，審問解鎖手札 26 |
+| `0x1B` | `+0x0F17` | `4C10`、`4CFE & 0x80` | 火刀高層辦公室；多階段文件、手札 9 與 treasure |
+| `0x1C` | `+0x101A` | `4C11=1` | 走廊的奇怪煙味 |
+| `0x1D` | `+0x105F` | `4C12=1` | 異常整齊、由隱形僕人復原的臥室 |
+| `0x1E` | `+0x111C` | `4C13=1` | 焚毀圖書館、焦屍紙張與手札 29 |
+| `0x1F` | `+0x120D` | `4C14=1` | 被烈焰摧毀的實驗室 |
+| `0x20` | `+0x1279` | `4C15=1` | 「待復活／待埋葬」兩排覆屍 |
+
+`0x1C–0x20` 多採 `COMPARE visited → EXIT → SAVE 1 → PRINT → 共用 Continue`
+模板；`0x1B` 是多階段狀態，不可壓成單一 visited boolean。刀刃事件則在選單前
+先設定 `4CFE|=0x20`，所以 ENTER、WAIT、RETREAT 都會消耗事件；ENTER 的順序是
+主選單 → 撕裂提示 Continue → DAMAGE → 消散 Continue → `SPRITE OFF/CALL
+0x2E10/EXIT`。

@@ -1170,3 +1170,11 @@ terrain `0x99` 對應 selector `0x19` 的旋轉刀刃屏障。真實 ECL regress
 刀刃減速消散的 continuation。State 新增「闖入刀刃／等待／撤退」、機關描述與
 消散結果繁中；READY spec 298、README 與 Gold Box 共用知識庫同步記錄
 640×480 畫布、24px 閱讀字級、16×15 緊湊字級及原始像素整數放大契約。
+
+第二百九十九輪成果：補完刀刃屏障的危險分支。原始 ENTER index 0 先顯示
+`THE BLADES TEAR INTO YOU`，下一個 press-button continuation 才送出
+`DAMAGE flags=0xE0, dice=8d8, bonus=0, saveFlags=0`，最後與 WAIT 匯流到刀刃
+消散。State 現只自動提交這種 whole-party auto-damage packet，以 seeded dice
+對所有隊員套用同一傷害並同步 persistent roster／renderer fighter HP；選角、豁免
+與 random-hit 形式維持既有 pending boundary。真實 ECL、State 兩人隊伍 100→62 HP
+與 exactly-once consume 均有 regression，新增 READY spec 299。
