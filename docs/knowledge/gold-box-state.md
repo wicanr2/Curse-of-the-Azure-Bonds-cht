@@ -62,6 +62,10 @@ chapter-local monster ID 讀取九-byte affect records，State 再將其複製�
 fighter 的 `MonsterAffects`。這只證明 raw attachment 與生命週期邊界；隱形、加速、睡眠
 等 effect 如何改變戰鬥，仍須逐種對照 reference routine 後才能投影。
 
+目前第一個已核對的 monster effect projection 是 invisibility：reference
+`CanHitTarget` 的 `CheckAffectsEffect(Type_16)` 會讓 `0x19`／`0x47` 攻擊骰 -4，combat
+core 以目標 AC +4 表示，並只對 active raw records 生效；effect record 本身不被消耗。
+
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
 亂數選一個可見／可達目標；目前 remake 以 sorted fighter ID + Battle seeded RNG

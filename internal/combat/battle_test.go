@@ -254,6 +254,33 @@ func TestResolveAttackRequiresArmorClass(t *testing.T) {
 	}
 }
 
+func TestResolveAttackProjectsMonsterInvisibilityACBonus(t *testing.T) {
+	base := []Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1},
+		{ID: "invisible", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, MonsterAffects: []MonsterAffect{{Kind: 0x19, Active: true}}},
+	}
+	battle, err := NewBattle(base, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("hero", "invisible", 13, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Hit {
+		t.Fatalf("invisible target was hit at adjusted AC boundary: %#v", result)
+	}
+	base[1].MonsterAffects[0].Active = false
+	battle, err = NewBattle(base, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err = battle.ResolveAttack("hero", "invisible", 13, 1)
+	if err != nil || !result.Hit {
+		t.Fatalf("inactive invisibility should not alter hit: result=%#v err=%v", result, err)
+	}
+}
+
 func TestResolveAttackRejectsAdjacentMissileButAllowsDartException(t *testing.T) {
 	missile, err := NewBattle([]Fighter{
 		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 0, CombatY: 0, WeaponRange: 22, MissileWeapon: true},

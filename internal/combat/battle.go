@@ -114,6 +114,18 @@ type MonsterAffect struct {
 	Data     [4]byte
 }
 
+// MonsterAffectArmorClassBonus projects only the effect kinds whose
+// CanHitTarget behavior is verified in the reference adapter.
+func (f Fighter) MonsterAffectArmorClassBonus() int {
+	bonus := 0
+	for _, affect := range f.MonsterAffects {
+		if affect.Active && (affect.Kind == 0x19 || affect.Kind == 0x47) {
+			bonus += 4
+		}
+	}
+	return bonus
+}
+
 const MonsterMagicMissileSpellID uint8 = 0x0F
 
 // ActionState mirrors the per-player fields cleared by the reference
@@ -393,6 +405,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	}
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
+	targetArmorClass += target.MonsterAffectArmorClassBonus()
 	if attacker.Evil && target.ProtectedFromEvil {
 		targetArmorClass += 2
 	}
