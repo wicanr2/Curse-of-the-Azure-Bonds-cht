@@ -77,6 +77,46 @@ func TestRealECL5SunlightFindItemUsesPartyContext(t *testing.T) {
 	t.Fatal("ECL5 block 0x30 is absent")
 }
 
+func TestRealECL5WizardTowerDragonParlayMappings(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL5.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 0x33 {
+			continue
+		}
+		for tactic, want := range []uint16{1, 0, 0, 0, 1} {
+			runtime := NewRuntimeState(0x05EA)
+			result, runErr := runSubsetWithState(block.Data, 0x05EA, 500, []uint16{uint16(tactic)}, true, 1, runtime)
+			if runErr != nil {
+				t.Fatalf("tactic %d: %v", tactic, runErr)
+			}
+			if got := runtime.Memory[0x7F79]; got != want {
+				t.Fatalf("tactic %d mapping=%d, want %d result=%+v", tactic, got, want, result)
+			}
+			if want == 1 {
+				hostile, hostileErr := RunSubsetInteractiveSeed(block.Data, 0x05EA, 500, []uint16{uint16(tactic), 0}, 1)
+				if hostileErr != nil || !hostile.CombatRequested || len(hostile.MonsterSpawns) != 1 ||
+					hostile.MonsterSpawns[0].MonsterID != 0x35 || hostile.MonsterSpawns[0].Count != 14 {
+					t.Fatalf("hostile tactic %d result=%+v err=%v, want fourteen black dragons",
+						tactic, hostile, hostileErr)
+				}
+			}
+			if want == 0 && !strings.Contains(strings.Join(result.Text, " "), "YOU HAVE CONVINCED US") {
+				t.Fatalf("successful tactic %d text=%q", tactic, result.Text)
+			}
+		}
+		return
+	}
+	t.Fatal("ECL5 block 0x33 is absent")
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {

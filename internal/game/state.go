@@ -5153,6 +5153,13 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_wizard_tower_safe_roof",
 			"看來你們足以守住屋頂，可以在這裡安全休息。",
 		)
+	case strings.Contains(joined, "YOU HAVE CONVINCED US") &&
+		strings.Contains(joined, "NO PLOT AGAINST") &&
+		strings.Contains(joined, "DISPUTE WITH DRACANDROS"):
+		return catalog.Text(
+			"ecl_wizard_tower_dragons_convinced",
+			"黑龍說：「你們已使我們相信，這裡並沒有對付龍族的陰謀。我們現在離開，讓你們自行解決與德拉坎德羅斯的爭端。」",
+		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):
 		return catalog.Text(

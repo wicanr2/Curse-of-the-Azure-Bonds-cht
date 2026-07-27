@@ -2704,6 +2704,104 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("wizard-tower roof return mode=%v block=%#x message=%q",
 			state.Mode, session.CurrentBlockID(), state.Message)
 	}
+	session.SetMemoryValue(0x4C60, 0)
+	state.PictureRequested = false
+	if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
+		t.Fatal(err)
+	}
+	towerDecision := []string{"ATTACK DRAGONS", "ATTACK WIZARD", "FLEE", "PARLAY WITH THE DRAGONS"}
+	for step := 0; step < 24 && !reflect.DeepEqual(state.currentOriginalChoices, towerDecision); step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		selection := 0
+		if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+			selection = 1
+		}
+		if err := state.Select(selection); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, towerDecision) {
+		t.Fatalf("replayed wizard-tower decision mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	parlayTactics := []string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}
+	for step := 0; step < 4 && !reflect.DeepEqual(state.currentOriginalChoices, parlayTactics); step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		} else if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, parlayTactics) ||
+		!reflect.DeepEqual(state.Choices, []string{"傲慢", "狡猾", "謙卑", "友善", "威嚇"}) {
+		t.Fatalf("wizard-tower parlay originals=%#v localized=%#v",
+			state.currentOriginalChoices, state.Choices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	sawDragonsConvinced := strings.Contains(state.Message, "沒有對付龍族的陰謀")
+	sawParlayTroops := strings.Contains(state.Message, "保護我")
+	for step := 0; step < 8 && state.Mode != ModeCombat; step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		} else if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+		sawDragonsConvinced = sawDragonsConvinced || strings.Contains(state.Message, "沒有對付龍族的陰謀")
+		sawParlayTroops = sawParlayTroops || strings.Contains(state.Message, "保護我")
+	}
+	if state.Mode != ModeCombat || !sawDragonsConvinced || !sawParlayTroops {
+		t.Fatalf("wizard-tower successful parlay mode=%v convinced=%v troops=%v message=%q",
+			state.Mode, sawDragonsConvinced, sawParlayTroops, state.Message)
+	}
+	parlayDefenders := state.CombatFighters()
+	parlayEfreeti, parlayFighters, parlayMages := 0, 0, 0
+	for _, fighter := range parlayDefenders {
+		if fighter.Side == combat.SideParty {
+			continue
+		}
+		switch {
+		case fighter.Name == "伊弗利特" && fighter.SpriteBlock == 0x34:
+			parlayEfreeti++
+		case fighter.Name == "黑暗精靈戰士" && fighter.SpriteBlock == 0x31:
+			parlayFighters++
+		case fighter.Name == "黑暗精靈法師" && fighter.SpriteBlock == 0x32:
+			parlayMages++
+		default:
+			t.Fatalf("unexpected parlay defender=%+v", fighter)
+		}
+	}
+	if parlayEfreeti != 1 || parlayFighters != 2 || parlayMages != 1 {
+		t.Fatalf("parlay defenders efreeti=%d fighters=%d mages=%d",
+			parlayEfreeti, parlayFighters, parlayMages)
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "安全休息") {
+		t.Fatalf("parlay victory continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
+		t.Fatalf("parlay roof return mode=%v block=%#x", state.Mode, session.CurrentBlockID())
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
