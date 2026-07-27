@@ -825,6 +825,7 @@ func (s *State) BeginAdventure() error {
 	}
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
+	s.applyECLRobSignals(result)
 	if len(result.Text) > 0 {
 		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
@@ -978,6 +979,7 @@ func (s *State) Select(index int) error {
 		}
 		s.applyECLInventorySignals(result)
 		s.applyECLTreasureSignals(result)
+		s.applyECLRobSignals(result)
 		treasureReady := false
 		if len(result.TreasureRequests) > 0 {
 			if err := s.ResolveTreasureRequests(); err != nil {
@@ -1380,6 +1382,67 @@ func (s *State) applyECLInventorySignals(result ecl.RunResult) {
 // random treasure here: those operations need the active area and item data.
 func (s *State) applyECLTreasureSignals(result ecl.RunResult) {
 	s.pendingTreasure = append(s.pendingTreasure, result.TreasureRequests...)
+}
+
+// applyECLRobSignals mirrors CMD_Rob: money is scaled by the retained
+// percentage, then inventory entries are tested in order. Five typed coin
+// fields mirror the DOS MoneySet; gems and jewelry are deliberately excluded.
+func (s *State) applyECLRobSignals(result ecl.RunResult) {
+	for requestIndex, request := range result.RobRequests {
+		targets := make([]int, 0, len(s.partyRoster))
+		if request.AllParty {
+			for index := range s.partyRoster {
+				targets = append(targets, index)
+			}
+		} else if request.SelectedPlayerSet &&
+			request.SelectedPlayerIndex >= 0 && request.SelectedPlayerIndex < len(s.partyRoster) {
+			targets = append(targets, request.SelectedPlayerIndex)
+		}
+		retained := 100
+		if request.LossPercent >= 100 {
+			retained = 0
+		} else {
+			retained -= int(request.LossPercent)
+		}
+		rng := rand.New(rand.NewSource(s.eclSeed + int64(requestIndex)))
+		for _, characterIndex := range targets {
+			character := &s.partyRoster[characterIndex]
+			scaleCoin := func(value uint16) uint16 {
+				return uint16((uint32(value) * uint32(retained)) / 100)
+			}
+			character.Copper = scaleCoin(character.Copper)
+			character.Silver = scaleCoin(character.Silver)
+			character.Electrum = scaleCoin(character.Electrum)
+			character.Gold = scaleCoin(character.Gold)
+			character.Platinum = scaleCoin(character.Platinum)
+			chance := int(request.ItemChance)
+			kept := character.Equipment[:0]
+			for _, item := range character.Equipment {
+				if item.Weight > 255 {
+					if chance > 90 {
+						chance -= 90
+					} else {
+						chance = 0
+					}
+				} else if item.Weight > 24 {
+					if chance > 50 {
+						chance -= 50
+					} else {
+						chance = 0
+					}
+				}
+				if rng.Intn(100)+1 > chance {
+					kept = append(kept, item)
+				}
+			}
+			character.Equipment = kept
+			if characterIndex < len(s.party) {
+				if fighter, err := s.fighterForCharacter(*character); err == nil {
+					s.party[characterIndex] = fighter
+				}
+			}
+		}
+	}
 }
 
 // ConsumeTreasureRequests transfers pending ECL TREASURE requests exactly once.
@@ -4082,6 +4145,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
+	s.applyECLRobSignals(result)
 	if len(result.Text) > 0 {
 		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
@@ -4340,6 +4404,14 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	switch option {
 	case "PRESS BUTTON OR RETURN TO CONTINUE.":
 		return catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
+	case "YES":
+		return catalog.Text("yes", "是")
+	case "NO":
+		return catalog.Text("no", "否")
+	case "TELL THE TRUTH":
+		return catalog.Text("tell_truth", "如實相告")
+	case "LIE":
+		return catalog.Text("lie", "說謊")
 	case "ENTER CITY":
 		return catalog.Text("enter_city", "Enter city")
 	case "JOURNEY ON":
@@ -4410,21 +4482,39 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
-	if !strings.Contains(joined, "JOURNAL ENTRY 31.") {
-		return
+	if strings.Contains(joined, "JOURNAL ENTRY 31.") {
+		s.appendJournalPages("手札條目 31：", []string{s.catalog.Text(
+			"journal_entry_31",
+			"手札條目 31：你們是由一群紅袍人送來的。他們說在路上發現你們時，你們已奄奄一息；"+
+				"房錢已預付，所以想住多久都可以。你們來時身上就有那些刺青，旅店老闆娘從未見過類似圖紋。"+
+				"她建議去找賢者菲拉妮，往北兩個街區就能找到她。",
+		)})
 	}
-	const marker = "手札條目 31："
+	if strings.Contains(joined, "SHE TALKS") && strings.Contains(joined, "38.") {
+		s.appendJournalPages("手札條目 38", []string{
+			s.catalog.Text("journal_entry_38_1",
+				"手札條目 38（1/3）：你們帶著五個不同組織的印記。菲拉妮認得其中三個，"+
+					"一個從未見過，最後一個則令她憂心。火焰與匕首是「火刀」的標誌；這群刺客過去以西門城為據點。"+
+					"舊組織已遭摧毀，如今必定另有新基地，但她不知道位於何處。"),
+			s.catalog.Text("journal_entry_38_2",
+				"手札條目 38（2/3）：掌心之口是神祇摩安德的標誌。祂曾被逐出世界，"+
+					"卻短暫化作一堆污穢再現；被擊敗前摧毀了尤拉什城的一部分。其教團偏愛綠色。"+
+					"三角形中的華麗 Z 則代表散塔林會「黑網」。"),
+			s.catalog.Text("journal_entry_38_3",
+				"手札條目 38（3/3）：黑網是由散提爾堡的祭司、法師與盜賊組成的邪惡聯盟，"+
+					"甚至有人說他們實際統治著散提爾堡。燃燒印記她從未見過。最後的弦月標誌，"+
+					"與暗影谷一位強大賢者有令人不安的相似之處；為了自身安全，她不願再多說。"),
+		})
+	}
+}
+
+func (s *State) appendJournalPages(marker string, pages []string) {
 	for _, page := range s.JournalPages {
 		if strings.HasPrefix(page, marker) {
 			return
 		}
 	}
-	s.JournalPages = append(s.JournalPages, s.catalog.Text(
-		"journal_entry_31",
-		marker+"你們是由一群紅袍人送來的。他們說在路上發現你們時，你們已奄奄一息；"+
-			"房錢已預付，所以想住多久都可以。你們來時身上就有那些刺青，旅店老闆娘從未見過類似圖紋。"+
-			"她建議去找賢者菲拉妮，往北兩個街區就能找到她。",
-	))
+	s.JournalPages = append(s.JournalPages, pages...)
 }
 
 func localizeECLLine(catalog locale.Catalog, line string) string {
@@ -4457,6 +4547,24 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tilverton_inn_sage", "第 31 條。「或許賢者能幫上忙；你們也可以到")
 	case "THE SHOP ACROSS THE WAY.'":
 		return catalog.Text("ecl_tilverton_inn_shop", "對街的商店取得武器。」")
+	case "'I AM THE SAGE FILANI. YOU ARE HERE ABOUT THE SIGILS,":
+		return catalog.Text("ecl_filani_intro", "「我是賢者菲拉妮。你們是為了那些印記而來，")
+	case "CORRECT?'":
+		return catalog.Text("ecl_filani_correct", "對吧？」")
+	case "'THIS IS AN INTERESTING CASE. I'LL DO IT FOR HALF YOUR":
+		return catalog.Text("ecl_filani_price", "「這個案例很有意思。我可以替你們研究，代價是你們")
+	case "FUNDS. HOW MUCH DO YOU HAVE?'":
+		return catalog.Text("ecl_filani_funds", "一半的財物。你們身上有多少？」")
+	case "SHE TALKS":
+		return catalog.Text("ecl_filani_talks", "她開始解說，內容記於冒險手札")
+	case "38.":
+		return catalog.Text("ecl_filani_journal_38", "第 38 條。")
+	case "'DO NOT THINK SAGES ARE FOOLS.' SHE SENDS YOU OUT.":
+		return catalog.Text("ecl_filani_lie", "「別把賢者當成傻瓜。」她把你們趕了出去。")
+	case "'THEN WE HAVE NOTHING TO DISCUSS.'":
+		return catalog.Text("ecl_filani_no", "「那我們就沒什麼好談的了。」")
+	case "YOU MOVE AWAY.":
+		return catalog.Text("ecl_move_away", "你們離開此處。")
 	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
 		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
 	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":

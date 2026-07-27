@@ -225,6 +225,7 @@
 - [x] 正式 dungeon movement 同步 C04B–C04F，執行 per-turn／SearchLocation lifecycle entries，並自動使用 3D renderer。
 - [x] 接通 Dungeon E → PreCampCheck → CAMP → optional CampInterrupted，unsafe rest 依 1/100 中斷並返回原 3D view。
 - [x] 修正 ECL 0x8000–0x9DFF code-memory／AND-OR compare side effects，從正式起點走到 Windlord's Inn 並在遊戲內解鎖手札條目 31。
+- [x] 接通 ECL ROB 的全隊／選角、五種 coin 與物品機率規則；完成賢者菲拉妮真話分支並解鎖手札條目 38。
 - [x] 還原 GEO dungeon floor 四段 tile composition，接通 D 預覽與可重現 dungeon screenshot。
 - [x] 接回 dungeon `terrain & 0x40` table／chair decoration pass 與 seeded regression。
 - [x] 建立 GEO2–GEO6 全 16 block 的原始 map catalog，並接通 set/block preview selector。

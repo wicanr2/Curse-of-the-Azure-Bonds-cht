@@ -1413,6 +1413,7 @@ func main() {
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
+	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1569,9 +1570,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn {
+	} else if *opening || *inn || *filani {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn/-filani cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1582,7 +1583,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn {
+		if *inn || *filani {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1592,9 +1593,13 @@ func main() {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
-			state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 13, 6
-			state.DungeonWallType, _ = geoGrid.WallWrapped(6, 13, 6)
-			state.DungeonWallRoof = geoGrid.CellWrapped(6, 13).Terrain
+			x, y, direction := 6, 13, uint8(6)
+			if *filani {
+				x, y, direction = 6, 5, 0
+			}
+			state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
+			state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
+			state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
 			if err := state.RunDungeonLifecycle(); err != nil {
 				log.Fatal(err)
 			}

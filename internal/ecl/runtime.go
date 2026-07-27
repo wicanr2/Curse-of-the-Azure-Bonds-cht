@@ -51,6 +51,7 @@ type RunResult struct {
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
 	TreasureRequests       []TreasureRequest
+	RobRequests            []RobRequest
 	PartyStrengthRequests  []PartyStrengthRequest
 	PartySurpriseRequests  []PartySurpriseRequest
 	CheckPartyRequests     []CheckPartyRequest
@@ -259,6 +260,16 @@ func partyMetric(members []PartyMemberContext, metric func(PartyMemberContext) i
 type TreasureRequest struct {
 	Coins     [7]uint16
 	ItemBlock uint16
+}
+
+// RobRequest preserves ROB's party scope, percentage removed and per-item
+// theft chance. SelectedPlayerIndex is meaningful only when AllParty is false.
+type RobRequest struct {
+	AllParty            bool
+	LossPercent         uint16
+	ItemChance          uint16
+	SelectedPlayerIndex int
+	SelectedPlayerSet   bool
 }
 
 // ClockRequest is the raw two-operand signal emitted by ECL CLOCK. The game
@@ -1156,6 +1167,22 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				}
 				next = skipped.Next
 			}
+		case 0x28: // ROB
+			values := [3]uint16{}
+			for index, operand := range instruction.Operands {
+				value, valueErr := operandValue(operand, memory)
+				if valueErr != nil {
+					return result, fmt.Errorf("rob at %d operand %d: %w", pc, index, valueErr)
+				}
+				values[index] = value
+			}
+			result.RobRequests = append(result.RobRequests, RobRequest{
+				AllParty:            values[0] != 0,
+				LossPercent:         values[1],
+				ItemChance:          values[2],
+				SelectedPlayerIndex: selectedPlayerIndex,
+				SelectedPlayerSet:   selectedPlayerSet,
+			})
 		case 0x0E, 0x1C, 0x21, 0x27, 0x31, 0x37, 0x3B, 0x3C, 0x3D:
 			// PICTURE, CLEARMONSTERS, LOAD FILES, TREASURE, SPRITE OFF and
 			// CLEAR BOX have decoded arity but require the full renderer,

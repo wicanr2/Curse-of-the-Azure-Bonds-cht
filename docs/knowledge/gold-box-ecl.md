@@ -65,6 +65,14 @@ SearchLocation 是 GEO 與 script 的橋接：CoAB 由目前 cell／facing 產�
 `C04B..C04F`，ECL 再以 `C04F & 0x7F → GETTABLE → ON GOTO` 派送事件。共用 VM只實作
 memory 與 control flow；各作品 adapter 負責座標、half-direction、wall 與 terrain 語意。
 
+`ROB (0x28)` 是三 operand party mutation，不是單純文字「付款」：scope 為 selected
+member／all party；第二 operand 是損失百分比，各 coin 以
+`floor(count × (100-loss)/100)` 獨立縮減；第三 operand 是逐 item 的 `1d100` 偷竊率。
+reference 在每件 item 判定前依重量累積調低 chance：`weight>24` 減 50、
+`weight>255` 減 90，最低為零。Gems／Jewelry 不在 `Money.ScaleAll` 的 coin 範圍。
+因此 VM 應發出含原始 scope/percent/chance 的 request，作品 party adapter 才處理 typed
+money 與 inventory；不能把 ROB 硬編成固定 GP 費用。
+
 ## Variable monster descriptors
 
 ECL3／ECL4／ECL6 的 real-image entry smoke 證實，`LOAD MONSTER`／`SETUP MONSTER`

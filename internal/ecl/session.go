@@ -296,6 +296,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
 		aggregate.ClockRequests = append(aggregate.ClockRequests, result.ClockRequests...)
 		aggregate.TreasureRequests = append(aggregate.TreasureRequests, result.TreasureRequests...)
+		aggregate.RobRequests = append(aggregate.RobRequests, result.RobRequests...)
 		aggregate.PartyStrengthRequests = append(aggregate.PartyStrengthRequests, result.PartyStrengthRequests...)
 		aggregate.PartySurpriseRequests = append(aggregate.PartySurpriseRequests, result.PartySurpriseRequests...)
 		aggregate.CheckPartyRequests = append(aggregate.CheckPartyRequests, result.CheckPartyRequests...)

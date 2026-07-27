@@ -180,6 +180,15 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 上圖由 `-inn` 重現正式角色建立後的序幕，從 `(7,13)` 往西走一格，經原版
 GEO／ECL dispatch 抵達旅店；低解析原圖以整數倍放大，事件人物由 HEAD3／BODY3
 原始像素素材合成，繁中文字則以 24px 高解析字型在 640×480 畫面重新排版。
+- GEO2 `(6,5)` selector `0x8A` 的賢者菲拉妮事件也已接回正式 ECL。PICTURE 5
+  顯示 HEAD5／BODY5 原始人物；回答「是 → 如實相告」會執行原版 `ROB 1,50,0`，
+  將全隊 Copper／Silver／Electrum／Gold／Platinum 各自減半，再把 PDF/TXT 的
+  Journal Entry 38 繁中全文以三個 24px 手札頁解鎖，最後返回同一地城格。
+
+![賢者菲拉妮 PICTURE 5 的 640×480 繁中事件](docs/screenshots/tilverton-filani.png)
+
+這條主線可用 `-filani` 重現；原始像素人物維持整數倍 nearest-neighbor 放大，
+繁中對話在 640×480 畫布獨立以高解析字型排版。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -201,6 +210,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
 # 可重現正式序幕／Windlord's Inn 640×480 繁中 vertical slice
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -opening
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -inn
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -filani
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

@@ -58,7 +58,11 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	if len(out) > 0x1A4 {
 		out[0x1A4] = uint8(character.HitPoints)
 	}
+	binary.LittleEndian.PutUint16(out[0x0FB:0x0FD], character.Copper)
+	binary.LittleEndian.PutUint16(out[0x0FD:0x0FF], character.Silver)
+	binary.LittleEndian.PutUint16(out[0x0FF:0x101], character.Electrum)
 	binary.LittleEndian.PutUint16(out[0x101:0x103], character.Gold)
+	binary.LittleEndian.PutUint16(out[0x103:0x105], character.Platinum)
 	binary.LittleEndian.PutUint16(out[0x105:0x107], character.Gems)
 	binary.LittleEndian.PutUint16(out[0x107:0x109], character.Jewelry)
 	out[0x141], out[0x142], out[0x143], out[0x144] = character.IconHeadBlock, character.IconWeaponBlock, character.IconID, character.IconSize
@@ -122,7 +126,11 @@ type DOSPlayerRecord struct {
 	IconWeapon       uint8
 	IconID           uint8
 	IconSize         uint8
+	Copper           uint16
+	Silver           uint16
+	Electrum         uint16
 	Gold             uint16
+	Platinum         uint16
 	Gems             uint16
 	Jewelry          uint16
 	MemorizedSpells  []uint8
@@ -265,7 +273,11 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
 		ControlMorale: data[0xF7],
 		IconHead:      data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
+		Copper:           binary.LittleEndian.Uint16(data[0x0FB:0x0FD]),
+		Silver:           binary.LittleEndian.Uint16(data[0x0FD:0x0FF]),
+		Electrum:         binary.LittleEndian.Uint16(data[0x0FF:0x101]),
 		Gold:             binary.LittleEndian.Uint16(data[0x101:0x103]),
+		Platinum:         binary.LittleEndian.Uint16(data[0x103:0x105]),
 		Gems:             binary.LittleEndian.Uint16(data[0x105:0x107]),
 		Jewelry:          binary.LittleEndian.Uint16(data[0x107:0x109]),
 		ItemsPointer:     binary.LittleEndian.Uint32(data[0x14D:0x151]),
@@ -288,7 +300,8 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level:      r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale,
 		ClassLevels: r.ClassLevels,
-		Gold:        r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
+		Copper:      r.Copper, Silver: r.Silver, Electrum: r.Electrum,
+		Gold: r.Gold, Platinum: r.Platinum, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
 		Equipment:        append([]monster.ItemRecord(nil), r.Inventory...),
 		Effects:          append([]monster.AffectRecord(nil), r.Effects...),

@@ -28,6 +28,13 @@ offset 以角色 record 起點計算，整數為 little-endian：
 | `0x76..0x77` | age | signed little-endian 年齡 |
 | `0x78` | max HP | 角色最大生命值 |
 | `0x0DF..0x0E3` | saving throws | 五項 save 值 |
+| `0x0FB..0x0FC` | copper | 銅幣數量 |
+| `0x0FD..0x0FE` | silver | 銀幣數量 |
+| `0x0FF..0x100` | electrum | 琥珀金幣數量 |
+| `0x101..0x102` | gold | 金幣數量 |
+| `0x103..0x104` | platinum | 白金幣數量 |
+| `0x105..0x106` | gems | 寶石數量 |
+| `0x107..0x108` | jewelry | 珠寶數量 |
 | `0x186` | saving bonus | 作品 record 的 saving bonus 欄位 |
 
 因此，若只要修改年紀，目標是 `.SAV/.GUY` 的 `0x76` two-byte word；例如 25 歲的
@@ -45,6 +52,11 @@ race、class、name、HP 與未知 bytes 沒有被改動。
 這個生成表與 runtime age effects 是兩件事：`race_ages[race][class]` 只負責建立新角色，
 既有 record 的 `0x76..0x77` 應直接讀寫。game clock 的 slot-6 年份進位則是另一條
 runtime path；不要用 clock word 或 age bracket threshold 取代角色 record age。
+
+五種 coin 是連續的獨立 16-bit 欄位，不能只把 Gold 投影成「總資產」。ECL `ROB`
+逐欄縮放 Copper 到 Platinum，卻刻意不縮放 Gems／Jewelry；shop 的 gold-worth 換算則是
+另一層規則。raw-preserving importer／writer 必須保留這七欄，作品規則層再決定顯示、
+負重與兌換方式。
 
 ## ECL shared flags
 

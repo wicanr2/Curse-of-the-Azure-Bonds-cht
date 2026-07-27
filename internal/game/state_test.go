@@ -2150,6 +2150,43 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	}
 }
 
+func TestECLRobScalesPartyGoldAndUsesReferenceWeightPenalty(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = []party.Character{
+		{
+			ID: "one", Copper: 9, Silver: 7, Electrum: 5, Gold: 101, Platinum: 3,
+			Equipment: []monster.ItemRecord{
+				{Type: 1, Weight: 10},
+				{Type: 2, Weight: 300},
+			},
+		},
+		{ID: "two", Gold: 51},
+	}
+	state.applyECLRobSignals(ecl.RunResult{RobRequests: []ecl.RobRequest{{
+		AllParty: true, LossPercent: 50, ItemChance: 100,
+	}}})
+	if state.partyRoster[0].Gold != 50 || state.partyRoster[1].Gold != 25 {
+		t.Fatalf("ROB gold=(%d,%d), want floor-scaled (50,25)",
+			state.partyRoster[0].Gold, state.partyRoster[1].Gold)
+	}
+	if got := state.partyRoster[0]; got.Copper != 4 || got.Silver != 3 ||
+		got.Electrum != 2 || got.Platinum != 1 {
+		t.Fatalf("ROB typed coins=(%d,%d,%d,%d), want floor-scaled (4,3,2,1)",
+			got.Copper, got.Silver, got.Electrum, got.Platinum)
+	}
+	if len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 2 {
+		t.Fatalf("ROB equipment=%+v, want light item stolen and >255 weight item retained after -90 chance",
+			state.partyRoster[0].Equipment)
+	}
+	state.applyECLRobSignals(ecl.RunResult{RobRequests: []ecl.RobRequest{{
+		LossPercent: 100, SelectedPlayerIndex: 1, SelectedPlayerSet: true,
+	}}})
+	if state.partyRoster[0].Gold != 50 || state.partyRoster[1].Gold != 0 {
+		t.Fatalf("selected ROB gold=(%d,%d), want only member 1 cleared",
+			state.partyRoster[0].Gold, state.partyRoster[1].Gold)
+	}
+}
+
 func TestCampMenuRestAndExit(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness

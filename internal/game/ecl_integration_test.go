@@ -284,6 +284,72 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if state.Mode != ModeDungeon {
 		t.Fatalf("interrupted camp continuation mode=%v, want dungeon", state.Mode)
 	}
+
+	// Continue the same formal Tilverton session at the sage Filani's GEO
+	// selector. The truth branch executes real ROB 1,50,0 before revealing
+	// Journal Entry 38.
+	state.partyRoster[0].Gold = 101
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 5, 0
+	state.DungeonWallType, _ = grid.WallWrapped(6, 5, 0)
+	state.DungeonWallRoof = grid.CellWrapped(6, 5).Terrain
+	if state.DungeonWallRoof != 0x8A {
+		t.Fatalf("Filani GEO selector=%#x, want 0x8A", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 5 ||
+		!state.SceneCharacterRequested || state.SceneHeadBlock != 5 || state.SceneBodyBlock != 5 ||
+		!strings.Contains(state.Message, "賢者菲拉妮") || !strings.Contains(state.Message, "印記") {
+		t.Fatalf("Filani introduction mode=%v picture=%v:%d head/body=%d/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 2 ||
+		state.Choices[0] != "是" || state.Choices[1] != "否" {
+		t.Fatalf("Filani first menu mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 3 ||
+		state.Choices[0] != "如實相告" || state.Choices[1] != "說謊" ||
+		!strings.Contains(state.Message, "一半的財物") {
+		t.Fatalf("Filani truth menu mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].Gold != 50 {
+		t.Fatalf("Filani ROB gold=%d, want floor(101*0.5)=50", state.partyRoster[0].Gold)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "38") {
+		t.Fatalf("Filani journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+	}
+	if len(state.JournalPages) != 12 ||
+		!strings.HasPrefix(state.JournalPages[9], "手札條目 38（1/3）") ||
+		!strings.Contains(state.JournalPages[11], "暗影谷") {
+		t.Fatalf("Journal Entry 38 was not unlocked as three readable pages: pages=%v", state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "離開此處") {
+		t.Fatalf("Filani departure pause mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 5 {
+		t.Fatalf("Filani continuation mode=%v position=(%d,%d), want same dungeon cell",
+			state.Mode, state.DungeonX, state.DungeonY)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
