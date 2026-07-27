@@ -512,10 +512,11 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			return result, nil
 		case 0x24: // COMBAT
 			// The original engine transfers control to its combat loop here.
-			// Expose that control transfer; do not silently fall through or
-			// claim that combat rules have been recreated.
+			// Expose that control transfer and persist the instruction after it;
+			// the game adapter can resume the same ECL event after victory.
 			result.CombatRequested = true
 			result.PC = next
+			saveState(next)
 			return result, nil
 		case 0x2D: // CALL
 			address, err := operandAddress(instruction.Operands[0])

@@ -853,3 +853,9 @@ README／PLAN／knowledge 更新；half-orc multi-class 與完整原版建立流
 little-endian，並加入 race `0x74`、class `0x75` 與 shared ECL flag mapping 文件；同時
 完成 ECL `SAVE TABLE (0x35)` indexed write 與 regression。這些 raw-preserving contract
 可供後續 Gold Box 作品沿用；完整 multi-class serializer 與未知 sidecar schema 仍保留 boundary。
+
+第二百五十二輪主流程里程碑：修正 ECL `COMBAT (0x24)` 在 bounded VM 只回傳 next PC、卻
+未保存 resumable runtime state 的問題；現在真實／synthetic battle victory 會接回同一個
+ECL session，繼續 menu／picture／NEWECL／PROGRAM 9 結果。新增跨戰鬥 continuation regression、
+READY spec 與共用 Gold Box ECL knowledge；完整各 block engine routine 與劇情 side effects
+仍保留 boundary。

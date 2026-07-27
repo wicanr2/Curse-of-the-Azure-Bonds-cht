@@ -369,3 +369,4 @@
 - [x] 依 reference `race_ages`／`ovr018` 建立 single-class starting-age base+dice resolver；多職業與完整 creation UI 仍待接線。
 - [x] 將 starting-age／age ability effect 接入 `State.AddCreationCharacter` copy transaction；多職業與 alignment UI 仍待接線。
 - [x] 將已驗證的 22 個 single-class race/class 組合接入角色建立選單，並加入五列捲動顯示；多職業與完整原版建立流程仍待反組譯。
+- [x] 讓 ECL `COMBAT` 保存 next-PC，並在 party victory 後續跑同一個 resumable ECL session；menu／picture／NEWECL continuation 已有 synthetic／real regression，完整各 block routine 仍待反組譯。
