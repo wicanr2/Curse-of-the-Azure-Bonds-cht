@@ -183,7 +183,7 @@ func (s *State) SavePartyFile(path string) error {
 	if len(s.partyRoster) == 0 {
 		return fmt.Errorf("no character-created party is available to save")
 	}
-	data, err := partySave.EncodeGameWithDungeonState(s.partyRoster, s.Area, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof)
+	data, err := partySave.EncodeGameWithTime(s.partyRoster, s.Area, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles)
 	if err != nil {
 		return err
 	}
@@ -509,6 +509,13 @@ func (s *State) LoadPartyFile(path string) error {
 		return err
 	}
 	s.partyRoster = append(party.Roster(nil), file.Characters...)
+	if file.Version >= 5 {
+		s.gameClock = file.GameTime
+		s.gameAgeCycles = file.GameAgeCycles
+	} else {
+		s.gameClock = [7]uint16{}
+		s.gameAgeCycles = 0
+	}
 	s.Area = file.Area
 	s.GeoMapSet = file.Area.GameArea
 	s.GeoMapBlock = file.Area.Current3DMapBlockID

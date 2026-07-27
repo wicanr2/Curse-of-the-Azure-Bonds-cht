@@ -792,3 +792,9 @@ READY spec 與共用 Gold Box command-set knowledge。核心 `internal/ecl`／`i
 測試通過；完整 `go test ./...` 在目前容器因缺 ALSA/X11 headers 的 `cmd/azure-bonds-game`
 與 `internal/sound` build dependency 失敗，非本輪 Go logic failure。memory-backed operand
 值、time-triggered event table 與完整玩家流程仍保留 boundary。
+
+第二百四十二輪重大里程碑：將七-slot game clock 與 age-cycle overflow 接入 remake JSON
+save version 5；`State.SavePartyFile`／`LoadPartyFile` 現在會保存並恢復時間進度，versions
+1–4 仍可載入並使用零時鐘。新增 save round-trip regression、READY spec、README／PLAN／
+Gold Box state knowledge。DOS SAVGAM Area1 clock raw offset、calendar UI 與完整 time-triggered
+event table 仍保留 boundary。
