@@ -24,6 +24,7 @@ type RunResult struct {
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
 	LoadCharacterAddresses []uint16
+	LoadCharacterRequests  []LoadCharacterRequest
 	FindItemIDs            []uint16
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
@@ -63,6 +64,17 @@ type CheckPartyRequest struct {
 	Average      uint16
 	AffectFound  bool
 	Resolved     bool
+}
+
+// LoadCharacterRequest is the decoded boundary for reference LOAD CHARACTER.
+// Address preserves the raw word operand; Value is vm_GetCmdValue's result.
+// The low 7 bits select the 1-based party member and bit 7 is the reference
+// restore/redraw flag.
+type LoadCharacterRequest struct {
+	Address     uint16
+	Value       uint16
+	PlayerIndex uint8
+	HighBitSet  bool
 }
 
 // WhoRequest marks the reference character-selection boundary. WHO consumes
@@ -755,10 +767,16 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if err != nil {
 				return result, fmt.Errorf("LOAD CHARACTER at %d: %w", pc, err)
 			}
-			// The DOS engine loads a party character/name record into its
-			// external string context. Keep the source address observable and
-			// continue; State adapters can later supply the actual character.
+			value, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("LOAD CHARACTER value at %d: %w", pc, err)
+			}
+			// Keep both raw address and decoded player selector observable; the
+			// State adapter owns roster resolution and renderer side effects.
 			result.LoadCharacterAddresses = append(result.LoadCharacterAddresses, address)
+			result.LoadCharacterRequests = append(result.LoadCharacterRequests, LoadCharacterRequest{
+				Address: address, Value: value, PlayerIndex: uint8(value & 0x7F), HighBitSet: value&0x80 != 0,
+			})
 		case 0x32: // FIND ITEM
 			itemID, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {

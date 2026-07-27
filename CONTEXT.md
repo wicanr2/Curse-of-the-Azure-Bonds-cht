@@ -912,3 +912,10 @@ regression。未知 selector、NPC／temporary party 語意與各作品 scaling 
 interactive VM 會停在 WHO，State 顯示繁中 roster，選擇後透過同一個 BlockSession resume，
 並保存 selected player ID。新增 READY spec 與 State regression；selected player 對所有
 DOS global routine 的完整 side effects、NPC／temporary party 語意仍保留 boundary。
+
+第二百六十九輪 ECL／State 里程碑：依 `ovr003.CMD_LoadCharacter` 將 `LOAD CHARACTER`
+從 raw address signal 擴充為 decoded `LoadCharacterRequest`，保留低 7 bits 的 1-based
+player selector 與 bit 7 restore/redraw metadata；State 已映射到 persistent `partyRoster`
+並與 WHO 共用 selected player ID，無效 selector 有明確 not-found regression。完整
+`FreeCurrentPlayer`、party summary redraw、external string context 與 NPC 語意仍保留
+boundary。新增 READY spec、command knowledge 與可跨 Golden Box 重用的 VM→roster adapter。

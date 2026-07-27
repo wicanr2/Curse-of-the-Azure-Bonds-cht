@@ -122,6 +122,8 @@ type State struct {
 	whoSelectionSequence   []uint16
 	whoMenu                bool
 	whoSelectedIndex       int
+	loadCharacterNotFound  bool
+	loadCharacterHighBit   bool
 	currentOriginalChoices []string
 	eventReturnMode        Mode
 	journalReturnMode      Mode
@@ -358,14 +360,21 @@ func (s *State) SetBarTales(tales []string) {
 
 func (s *State) BarTaleIndex() int { return s.barTaleIndex }
 
-// SelectedPlayerID exposes the last character chosen through an ECL WHO
-// transaction. An empty string means no WHO selection has been committed.
+// SelectedPlayerID exposes the last character selected by ECL WHO or LOAD
+// CHARACTER. An empty string means no valid character has been committed.
 func (s *State) SelectedPlayerID() string {
 	if s.whoSelectedIndex < 0 || s.whoSelectedIndex >= len(s.partyRoster) {
 		return ""
 	}
 	return s.partyRoster[s.whoSelectedIndex].ID
 }
+
+// LoadCharacterNotFound reports the last LOAD CHARACTER lookup result.
+func (s *State) LoadCharacterNotFound() bool { return s.loadCharacterNotFound }
+
+// LoadCharacterHighBit reports the reference restore/redraw flag on the last
+// LOAD CHARACTER value.
+func (s *State) LoadCharacterHighBit() bool { return s.loadCharacterHighBit }
 
 // eclPartyContext projects the currently loaded roster into the small,
 // renderer-neutral context required by reference PARTY commands. Combat
@@ -780,6 +789,7 @@ func (s *State) Select(index int) error {
 		s.applyLoadPieces(result)
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
+		s.applyECLLoadCharacterSignals(result)
 		if err := s.applyECLClockSignals(result); err != nil {
 			return err
 		}
@@ -1083,6 +1093,25 @@ func (s *State) applyECLDamageSignals(result ecl.RunResult) {
 	if len(result.DamageRequests) > 0 {
 		s.pendingDamageRequests = append(s.pendingDamageRequests, result.DamageRequests...)
 	}
+}
+
+// applyECLLoadCharacterSignals resolves the reference's 1-based player index
+// against the persistent roster. The high bit is retained for the later
+// redraw/free-current-player path, but does not invent that renderer side
+// effect at this State boundary.
+func (s *State) applyECLLoadCharacterSignals(result ecl.RunResult) {
+	if len(result.LoadCharacterRequests) == 0 {
+		return
+	}
+	request := result.LoadCharacterRequests[len(result.LoadCharacterRequests)-1]
+	s.loadCharacterHighBit = request.HighBitSet
+	index := int(request.PlayerIndex) - 1
+	if request.PlayerIndex == 0 || index < 0 || index >= len(s.partyRoster) {
+		s.loadCharacterNotFound = true
+		return
+	}
+	s.loadCharacterNotFound = false
+	s.whoSelectedIndex = index
 }
 
 // applyECLClockSignals bridges the reference ECL CLOCK command to the shared

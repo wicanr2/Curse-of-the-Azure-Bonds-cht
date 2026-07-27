@@ -242,3 +242,11 @@ raw level metadata，規則層依 slot 判定職業；舊資料沒有 metadata �
 primary-class fallback 當成完整 AD&D multi-class engine。
 
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。
+
+### ECL selected-player bridge（CoAB round 269）
+
+`WHO` 是 UI pause／resume transaction；`LOAD CHARACTER` 則是 script 直接指定角色的
+1-based selector。State 將其低 7 bits 映射到 `partyRoster`，與 WHO 共用 selected-player
+ID；無效 selector 只留下 not-found flag，不破壞上一個有效選擇。bit 7 目前只保存為
+restore／redraw metadata，未把尚未完整反組譯的 DOS global cleanup 假設成已完成。這個
+「VM decoded request → persistent roster adapter」是其他 Golden Box 作品可重用的接點。
