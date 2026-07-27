@@ -39,6 +39,15 @@ type RunResult struct {
 	SpellSearches          []SpellSearch
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
+	TreasureRequests       []TreasureRequest
+}
+
+// TreasureRequest preserves the eight raw TREASURE operands. The first seven
+// values are Copper, Silver, Electrum, Gold, Platinum, Gems and Jewelry;
+// ItemBlock selects an ITEM{area}.DAX stock block, or a special/random branch.
+type TreasureRequest struct {
+	Coins     [7]uint16
+	ItemBlock uint16
 }
 
 // ClockRequest is the raw two-operand signal emitted by ECL CLOCK. The game
@@ -726,6 +735,21 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			if instruction.Command.Opcode == 0x1C {
 				result.MonsterSetup = nil
 				result.MonsterSpawns = nil
+			}
+			if instruction.Command.Opcode == 0x27 {
+				request := TreasureRequest{}
+				for index, operand := range instruction.Operands {
+					value, err := operandValue(operand, memory)
+					if err != nil {
+						return result, fmt.Errorf("treasure at %d: %w", pc, err)
+					}
+					if index < len(request.Coins) {
+						request.Coins[index] = value
+					} else {
+						request.ItemBlock = value
+					}
+				}
+				result.TreasureRequests = append(result.TreasureRequests, request)
 			}
 			if instruction.Command.Opcode == 0x3B {
 				spellID, err := operandValue(instruction.Operands[0], memory)
