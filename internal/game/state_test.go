@@ -958,6 +958,26 @@ func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	}
 }
 
+func TestFinishedCombatSyncsRosterHitPointsForSaveAndCamp(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 2}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	result, err := state.battle.Attack("goblin", "hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := state.finishCombat(); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HitPoints != result.TargetHP || state.PartyFighters()[0].HitPoints != result.TargetHP {
+		t.Fatalf("combat HP did not reach save roster: result=%d roster=%d fighter=%d", result.TargetHP, state.partyRoster[0].HitPoints, state.PartyFighters()[0].HitPoints)
+	}
+}
+
 func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{

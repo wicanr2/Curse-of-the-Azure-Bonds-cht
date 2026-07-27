@@ -1291,6 +1291,15 @@ func (s *State) syncPartyFromBattle() {
 	for index := range s.party {
 		if fighter, ok := s.fighter(s.party[index].ID); ok {
 			s.party[index] = fighter
+			for rosterIndex := range s.partyRoster {
+				if s.partyRoster[rosterIndex].ID == fighter.ID {
+					s.partyRoster[rosterIndex].HitPoints = fighter.HitPoints
+					if fighter.MaxHitPoints > 0 {
+						s.partyRoster[rosterIndex].MaxHitPoints = fighter.MaxHitPoints
+					}
+					break
+				}
+			}
 		}
 	}
 }
