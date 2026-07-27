@@ -124,6 +124,9 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
+		aggregate.LoadCharacterAddresses = append(aggregate.LoadCharacterAddresses, result.LoadCharacterAddresses...)
+		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
+		aggregate.DestroyItemIDs = append(aggregate.DestroyItemIDs, result.DestroyItemIDs...)
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)

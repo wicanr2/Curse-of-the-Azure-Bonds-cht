@@ -8,32 +8,35 @@ import (
 // RunResult is the observable output of the bounded ECL subset runner.
 // It deliberately exposes text and stop position, not DOS rendering state.
 type RunResult struct {
-	Text                []string
-	Menus               []Menu
-	PC                  int
-	Steps               int
-	WaitingForMenu      bool
-	NewECLBlockID       *uint8
-	CombatRequested     bool
-	MonsterSetup        *MonsterSetup
-	MonsterSpawns       []MonsterSpawn
-	ProgramIDs          []uint8
-	ProgramExit         bool
-	CallAddresses       []uint16
-	PrintReturnCount    int
-	NPCIDs              []uint16
-	SelectionsConsumed  int
-	RandomValues        []uint16
-	EncounterActions    []uint16
-	LoadFilesRequested  bool
-	LoadFiles           [3]uint16
-	LoadPiecesRequested bool
-	LoadPieces          [3]uint16
-	PictureRequested    bool
-	PictureBlock        uint16
-	BigPictureRequested bool
-	SpellSearches       []SpellSearch
-	ProtectionRequests  []uint16
+	Text                   []string
+	Menus                  []Menu
+	PC                     int
+	Steps                  int
+	WaitingForMenu         bool
+	NewECLBlockID          *uint8
+	CombatRequested        bool
+	MonsterSetup           *MonsterSetup
+	MonsterSpawns          []MonsterSpawn
+	ProgramIDs             []uint8
+	ProgramExit            bool
+	CallAddresses          []uint16
+	PrintReturnCount       int
+	LoadCharacterAddresses []uint16
+	FindItemIDs            []uint16
+	DestroyItemIDs         []uint16
+	NPCIDs                 []uint16
+	SelectionsConsumed     int
+	RandomValues           []uint16
+	EncounterActions       []uint16
+	LoadFilesRequested     bool
+	LoadFiles              [3]uint16
+	LoadPiecesRequested    bool
+	LoadPieces             [3]uint16
+	PictureRequested       bool
+	PictureBlock           uint16
+	BigPictureRequested    bool
+	SpellSearches          []SpellSearch
+	ProtectionRequests     []uint16
 }
 
 // SpellSearch is the data-bearing part of ECL SPELL. The bounded runner keeps
@@ -502,6 +505,32 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+		case 0x0A: // LOAD CHARACTER
+			address, err := operandAddress(instruction.Operands[0])
+			if err != nil {
+				return result, fmt.Errorf("LOAD CHARACTER at %d: %w", pc, err)
+			}
+			// The DOS engine loads a party character/name record into its
+			// external string context. Keep the source address observable and
+			// continue; State adapters can later supply the actual character.
+			result.LoadCharacterAddresses = append(result.LoadCharacterAddresses, address)
+		case 0x32: // FIND ITEM
+			itemID, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("FIND ITEM at %d: %w", pc, err)
+			}
+			// Inventory membership is party state, not ECL memory. Expose the
+			// query and leave compare flags unchanged until a party adapter is
+			// available; do not invent found/not-found state here.
+			result.FindItemIDs = append(result.FindItemIDs, itemID)
+		case 0x40: // DESTROY ITEMS
+			itemID, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("DESTROY ITEMS at %d: %w", pc, err)
+			}
+			// Keep inventory mutation explicit for the party adapter; the VM
+			// itself must not silently delete an item without roster context.
+			result.DestroyItemIDs = append(result.DestroyItemIDs, itemID)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout
