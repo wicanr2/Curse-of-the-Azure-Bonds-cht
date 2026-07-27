@@ -384,6 +384,7 @@ func (s *State) eclPartyContext() ecl.PartyContext {
 	context := ecl.PartyContext{Members: make([]ecl.PartyMemberContext, 0, len(s.partyRoster))}
 	for _, character := range s.partyRoster {
 		member := ecl.PartyMemberContext{
+			Name:           character.Name,
 			HitPoints:      character.HitPoints,
 			ClericLevel:    character.ClassLevel(party.ClassCleric),
 			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),

@@ -919,3 +919,10 @@ player selector 與 bit 7 restore/redraw metadata；State 已映射到 persisten
 並與 WHO 共用 selected player ID，無效 selector 有明確 not-found regression。完整
 `FreeCurrentPlayer`、party summary redraw、external string context 與 NPC 語意仍保留
 boundary。新增 READY spec、command knowledge 與可跨 Golden Box 重用的 VM→roster adapter。
+
+第二百七十輪 ECL string-memory 里程碑：依 `ovr008.vm_CopyStringFromMemory` 的明確
+`0x7C00 == SelectedPlayer.name` 特例，將 `PartyMemberContext.Name` 接入 resumable
+`RuntimeState.Strings`。現在 `LOAD CHARACTER` 後的 `0x81` string operand 可經
+`COMPARE → IF/GOTO` 走姓名分支，新增互斥 success/failure regression、READY spec、README
+與共用 command knowledge。原先「完整 external string context 未完成」已收斂為
+「`0x7C00` 姓名已完成，其餘 DOS memory regions 仍待逐區驗證」。

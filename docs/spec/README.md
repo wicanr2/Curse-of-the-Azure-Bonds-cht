@@ -247,3 +247,4 @@
 - [第二百六十七輪 ECL WHO selection](./267-ecl-who-selection.md)（`READY`：限 prompt／selection request boundary）
 - [第二百六十八輪 WHO roster transaction](./268-who-roster-transaction.md)（`READY`：限 ECL pause／選角／resume）
 - [第二百六十九輪 ECL LOAD CHARACTER roster transaction](./269-ecl-load-character-roster.md)（`READY`：限 1-based selector／roster bridge）
+- [第二百七十輪 ECL selected-player name string](./270-ecl-selected-player-name-string.md)（`READY`：限 `0x7C00` 姓名與 COMPARE branch）
