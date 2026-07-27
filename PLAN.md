@@ -78,7 +78,8 @@
 - [x] 加入五組 word-valued ECL 初始化入口的 bounded parser。
 - [x] 修正已觀察 VM command table 的 arity metadata 並加入 regression test。
 - [x] 正確消耗 length-prefixed compressed-string operand，並支援從指定 entry offset trace。
-- [ ] 對全部實際 ECL block 驗證五個入口，並與事件文字對齊。
+- [x] 以 bounded smoke analyzer 執行 ECL1–ECL6 全部實際 block 的五個 initialization entries，記錄 menu／COMBAT／PROGRAM／unsupported opcode。
+- [ ] 對已支援的實際入口逐一與事件文字、完整 input sequence 對齊。
 
 ## 第十三輪驗收
 
