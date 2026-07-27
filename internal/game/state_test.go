@@ -630,7 +630,7 @@ func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 7 || state.Choices[0] != "購買" {
+	if state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 8 || state.Choices[0] != "購買" {
 		t.Fatalf("shop menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -645,7 +645,7 @@ func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	if state.Mode != ModePlace || !state.shopMenu || state.Choices[0] != "購買" {
 		t.Fatalf("shop continuation state=%#v", state)
 	}
-	if err := state.Select(6); err != nil {
+	if err := state.Select(7); err != nil {
 		t.Fatal(err)
 	}
 	if state.Mode != ModePlace || state.shopMenu || len(state.Choices) != 4 || state.Choices[1] != "商店" {
@@ -708,8 +708,50 @@ func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || state.shopStockMenu || len(state.Choices) != 7 {
+	if state.Mode != ModePlace || state.shopStockMenu || len(state.Choices) != 8 {
 		t.Fatalf("after buy continue state=%#v", state)
+	}
+}
+
+func TestShopSellListsItemsAndUsesDocumentedValue(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Equipment: []monster.ItemRecord{{Type: 36, Name: "長劍", Value: 75}},
+	}}
+	state.Mode = ModePlace
+	state.Choices = []string{"商店"}
+	state.currentOriginalChoices = []string{"STORE"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(6); err != nil { // SELL
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopSellMenu || len(state.Choices) != 2 {
+		t.Fatalf("sell character menu=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.shopSellItemMenu || state.Choices[0] != "長劍（75 GP）" {
+		t.Fatalf("sell item menu=%#v", state)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "SELL" || state.MoneyPool() != 75 || len(state.partyRoster[0].Equipment) != 0 {
+		t.Fatalf("after sell state=%#v", state)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 8 {
+		t.Fatalf("sell continuation state=%#v err=%v", state, err)
+	}
+	state.partyRoster[0].Equipment = []monster.ItemRecord{{Type: 36, Value: 50, Readied: true}, {Type: 37, Value: 50, Cursed: true}}
+	if err := state.SellShopItem(0, 0); err == nil {
+		t.Fatal("readied item should not be sellable")
+	}
+	if err := state.SellShopItem(0, 1); err == nil {
+		t.Fatal("cursed item should not be sellable")
 	}
 }
 
@@ -742,7 +784,7 @@ func TestShopViewListsCharactersAndEquipment(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || state.shopViewMenu || len(state.Choices) != 7 {
+	if state.Mode != ModePlace || state.shopViewMenu || len(state.Choices) != 8 {
 		t.Fatalf("after view continue state=%#v", state)
 	}
 }
@@ -781,7 +823,7 @@ func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || state.shopTakeMenu || len(state.Choices) != 7 {
+	if state.Mode != ModePlace || state.shopTakeMenu || len(state.Choices) != 8 {
 		t.Fatalf("after take continue state=%#v", state)
 	}
 }
@@ -827,7 +869,7 @@ func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || state.shopAppraiseMenu || len(state.Choices) != 7 {
+	if state.Mode != ModePlace || state.shopAppraiseMenu || len(state.Choices) != 8 {
 		t.Fatalf("after appraise continue state=%#v", state)
 	}
 }
