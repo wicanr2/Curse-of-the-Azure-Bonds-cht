@@ -594,6 +594,29 @@ func TestResolvePendingECLDamageDefaultResolverPassesBlinkContext(t *testing.T) 
 	}
 }
 
+func TestResolvePendingECLDamageDisplaceBitIsTransactional(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 10, Dexterity: 10, Constitution: 10, Intelligence: 10, Wisdom: 10, Charisma: 10},
+		HitPoints: 10, MaxHitPoints: 10, Effects: []monster.AffectRecord{{Kind: 0x59, Active: true}}}}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{
+		{Flags: 1, DiceCount: 1, DiceSize: 1},
+		{Flags: 1, DiceCount: 0, DiceSize: 1},
+	}})
+	_, err := state.ResolvePendingECLDamageWithDefaultHitResolverContext(-1, party.ECLHitContext{CombatRound: 1}, func(sides int) int {
+		if sides == 1 {
+			return 1
+		}
+		return 20
+	}, func(int) int { return 1 })
+	if err == nil || state.partyRoster[0].Effects[0].Data[0]&0x10 != 0 {
+		t.Fatalf("err=%v roster effect data=%02x, want rollback", err, state.partyRoster[0].Effects[0].Data[0])
+	}
+	if len(state.ConsumeDamageRequests()) != 2 {
+		t.Fatal("failed damage transaction should retain both pending requests")
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{
