@@ -351,3 +351,4 @@
 - [x] 依 reference `damage_player` 將 ECL DAMAGE exact-zero／overkill／animated cases 投影到 Character.HealthStatus 與 DamageOutcome；完整 Death routine、bleeding 與 party win/loss continuation 仍待接入。
 - [x] 將 active combat 的 ECL DAMAGE HP 經 `Battle.SetHitPoints` 同步並重新計算 party／enemy status，status 結束時接既有 `finishCombat`；完整 Death routine、bleeding 與 effect removal 仍待接入。
 - [x] 依 reference `RemoveCombatAffects` 清理 active-combat 倒下角色的 19 個 combat-only effect kind；blink／invisibility 保留，`CheckAffectsEffect(Death)` 與 bleeding 仍待接入。
+- [x] 依 reference `CheckAffectsEffect(Death)` 接入 affect_63 recovery、Bleeding 與 troll_fire_or_acid damage-flag gate／TrollRegen `0x66`；dragon-slayer target side effect 與其他 Death routine 仍待接入。

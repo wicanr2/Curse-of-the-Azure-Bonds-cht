@@ -25,8 +25,11 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   effect slice，成功時持久化、失敗時 rollback。death transition 與其他
   `CheckAffectsEffect` 項目仍不在本輪假裝完成。
 - `Character.HealthStatus`／`DamageOutcome.Health` 保存 OK、animated、unconscious、
-  dying、dead projection；完整 combatant removal、bleeding、`CheckAffectsEffect(Death)`
- 仍由 combat adapter 處理。若 State 正在 active combat，`Character.RemoveCombatAffects`
+  dying、dead projection；`Bleeding` 保存 overkill。`Character.ApplyDeathEffects`／
+  `State.ResolveDeathEffects` 已接入已證實的 affect_63 recovery 與 troll_fire_or_acid
+  `0x64`→TrollRegen `0x66`（damage flags／combat heal 條件必須明確注入）。完整
+  combatant removal、dragon-slayer `0x4B` target side effect 與其他 Death routine
+  仍由 combat adapter 處理。若 State 正在 active combat，`Character.RemoveCombatAffects`
   會依 reference 19-kind table 清理 combat-only effects（blink／invisibility 不在清單
   中而保留），`Battle.SetHitPoints` 會同步
   ECL HP 並重新計算 party／enemy status；status 非 active 時走既有 `finishCombat`。
@@ -36,5 +39,6 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
 party parser／damage tests 覆蓋 `field_186=-2`、saving roll、invisibility modifier 與
 blink 覆寫 natural 20、displace 首次 miss／bit consume／後續命中與 round-start reset；
 game test 覆蓋 State default resolver、projected AC、blink context 與 transactional
-rollback；party test 覆蓋 exact zero、overkill 與 animated death states。相關 packages
-Docker 測試通過。
+rollback；party test 覆蓋 exact zero、overkill、animated death、affect_63 recovery 與
+troll fire/acid gate，game test 覆蓋 State death-effect transaction。相關 packages Docker
+測試通過。

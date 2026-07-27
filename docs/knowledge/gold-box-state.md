@@ -137,8 +137,10 @@ equipment AC、invisibility、action-delay-aware blink 與 displace consumed-bit
 仍應由作品 adapter 補上；目前 DamageOutcome 已保存 exact-zero／overkill 的 health
 state；`CheckAffectsEffect(Death)` 尚未接入 ECL queue。active combat 的 ECL queue 現已
 透過 `Battle.SetHitPoints` 接入 win/loss transition，並在倒下時呼叫
-`Character.RemoveCombatAffects`；`CheckAffectsEffect(Death)`、bleeding 與完整
-combatant removal 仍待接入。
+`Character.RemoveCombatAffects`；`CheckAffectsEffect(Death)` 與完整 combatant removal
+仍待接入。State `ResolveDeathEffects` 現可在 caller 明確提供 damage flags／combat-heal
+條件時 transactionally 套用 affect_63 recovery 與 TrollRegen；未知 target side effect
+不會因缺少資料而猜測。
 
 ## 中文化注意
 
