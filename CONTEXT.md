@@ -485,3 +485,5 @@
 第一百九十輪功能 commit：`7b33384`，修正戰鬥結果按 Enter 後保留 stale ECL choices 的主流程問題；新增 `restoreWildernessMenu`，統一返回繁中荒野主選單，並加入 continuation regression／READY 規格與 state knowledge。
 
 第一百九十一輪功能 commit：`a9806e9`，將城市商店 SELL 接入繁中 Shop Menu，依已解碼 item `Value` 將非 readied／非 cursed 物品售出並將 GP 放入 party pool；新增 menu／transaction regression、繁中 locale、READY 規格與共用 shop knowledge。城市 stock／ID／鑑定 routine 仍保留 boundary。
+
+第一百九十二輪功能 commit：`befdc61`，將既有 `PayIdentifyFee` 接入繁中 Shop Menu，完成角色／物品選擇與 200 GP ID transaction，保留 `HiddenNameFlags` 與未解碼 magic result；新增 regression、locale、READY 規格與 shop knowledge。
