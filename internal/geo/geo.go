@@ -208,3 +208,58 @@ func (g Grid) CanMoveWrapped(x, y, direction int) bool {
 	other, _ := g.WallWrapped(x+dx, y+dy, (direction+4)%8)
 	return wall == 0 && other == 0
 }
+
+// CanMoveDungeonWrapped applies the reference dungeon distinction between a
+// solid wall and an unlocked door. A wall with detail/x3 value 1 is passable;
+// locked/unpickable values 2/3 remain blocked until a rules service mutates
+// the GEO detail.
+func (g Grid) CanMoveDungeonWrapped(x, y, direction int) bool {
+	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
+		return false
+	}
+	wall, _ := g.WallWrapped(x, y, direction)
+	if wall == 0 {
+		return true
+	}
+	flags, _ := g.WallDoorFlagsWrapped(x, y, direction)
+	return flags == 1
+}
+
+// UnlockDoorWrapped mirrors MapSetDoorUnlocked on both sides of a doorway.
+// It is a raw map mutation; skill checks, dice, spells, and menu state belong
+// to the caller that decides whether unlocking succeeds.
+func (g *Grid) UnlockDoorWrapped(x, y, direction int) bool {
+	if g == nil || (direction != 0 && direction != 2 && direction != 4 && direction != 6) {
+		return false
+	}
+	if wall, _ := g.WallWrapped(x, y, direction); wall == 0 {
+		return false
+	}
+	setDoorDetail := func(px, py, dir int) {
+		cell := &g.Cells[WrapCoordinate(py, Height)][WrapCoordinate(px, Width)]
+		index := 0
+		switch dir {
+		case 2:
+			index = 1
+		case 4:
+			index = 2
+		case 6:
+			index = 3
+		}
+		cell.DetailDirections[index] = 1
+	}
+	dx, dy := 0, 0
+	switch direction {
+	case 0:
+		dy = -1
+	case 2:
+		dx = 1
+	case 4:
+		dy = 1
+	case 6:
+		dx = -1
+	}
+	setDoorDetail(x, y, direction)
+	setDoorDetail(x+dx, y+dy, (direction+4)%8)
+	return true
+}

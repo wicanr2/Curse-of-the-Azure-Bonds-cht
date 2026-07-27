@@ -165,3 +165,4 @@
 - [第一百六十八輪 map wall cache save](./168-map-wall-cache-save.md)（`READY`：限 5-byte map state 的 wall cache）
 - [第一百六十九輪 dungeon sky layer](./169-dungeon-sky-layer.md)（`READY`：限 Area1 sky colour 與 preview background）
 - [第一百七十輪 WallDoorFlags detail](./170-wall-door-flags.md)（`READY`：限 GEO door/detail flag adapter）
+- [第一百七十一輪 unlocked door movement](./171-unlocked-door-movement.md)（`READY`：限 GEO door detail movement／raw unlock）

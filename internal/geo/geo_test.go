@@ -76,6 +76,23 @@ func TestWallDoorFlagsWrappedMirrorsReferenceDefaultAndDetail(t *testing.T) {
 	}
 }
 
+func TestDungeonMovementAllowsUnlockedDoorAndUnlocksBothSides(t *testing.T) {
+	var grid Grid
+	grid.Cells[0][0].WallDirections[1] = 4
+	grid.Cells[0][0].DetailDirections[1] = 2
+	grid.Cells[0][1].WallDirections[3] = 4
+	grid.Cells[0][1].DetailDirections[3] = 2
+	if grid.CanMoveDungeonWrapped(0, 0, 2) {
+		t.Fatal("locked door should block dungeon movement")
+	}
+	if !grid.UnlockDoorWrapped(0, 0, 2) {
+		t.Fatal("expected wall to be unlocked")
+	}
+	if !grid.CanMoveDungeonWrapped(0, 0, 2) || grid.Cells[0][1].DetailDirections[3] != 1 {
+		t.Fatalf("unlocked door state=%+v", grid.Cells[0][1])
+	}
+}
+
 func TestOriginalGEOBlocksHaveKnownShape(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

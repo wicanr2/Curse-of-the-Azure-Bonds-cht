@@ -452,7 +452,7 @@ func (a *app) refreshDungeonPreview() {
 }
 
 func (a *app) moveDungeonPreview(dx, dy, direction int) {
-	if a.geoGrid == nil || !a.geoGrid.CanMoveWrapped(a.dungeonX, a.dungeonY, direction) {
+	if a.geoGrid == nil || !a.geoGrid.CanMoveDungeonWrapped(a.dungeonX, a.dungeonY, direction) {
 		return
 	}
 	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
