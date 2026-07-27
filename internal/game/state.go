@@ -726,6 +726,14 @@ func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 // SetECLSeed controls RANDOM values while replaying an event sequence.
 func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
 
+// SetECLMemoryValue seeds one verified engine/script work word for a
+// reproducible story preview. Normal gameplay obtains these values from ECL.
+func (s *State) SetECLMemoryValue(address, value uint16) {
+	if s.session != nil {
+		s.session.SetMemoryValue(address, value)
+	}
+}
+
 // SetDungeonSeed makes the d100 stream used by the dungeon action adapter
 // reproducible for tests and replay.
 func (s *State) SetDungeonSeed(seed int64) { s.dungeonSeed = seed }
@@ -988,8 +996,9 @@ func (s *State) Select(index int) error {
 		}
 		var result ecl.RunResult
 		var runErr error
+		var blockBefore uint8
 		if s.session != nil {
-			blockBefore := s.session.CurrentBlockID()
+			blockBefore = s.session.CurrentBlockID()
 			selection := uint16(index)
 			var menuSelection, whoSelection *uint16
 			if whoSelecting {
@@ -1002,8 +1011,12 @@ func (s *State) Select(index int) error {
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
 			}
-			if blockBefore == 0x31 && s.session.CurrentBlockID() == 0x32 {
+			currentBlock := s.session.CurrentBlockID()
+			if blockBefore != currentBlock && s.Area.InDungeon && s.Area.GameArea == 5 &&
+				(currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33) {
 				s.syncDungeonStateFromECLRegisters()
+			}
+			if blockBefore == 0x31 && s.session.CurrentBlockID() == 0x32 {
 				// The verified Hap CAVES transition starts a fresh map
 				// movement cycle. Do not leak the village exit-attempt and
 				// forced-move work bytes into the lava-tube post-combat path.
@@ -1027,6 +1040,18 @@ func (s *State) Select(index int) error {
 			return runErr
 		}
 		s.applyGeoMapLoad(result)
+		if s.session != nil && blockBefore != s.session.CurrentBlockID() &&
+			s.Area.InDungeon && s.Area.GameArea == 5 {
+			currentBlock := s.session.CurrentBlockID()
+			if currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33 {
+				// Hap village, caves, and wizard-tower roof use matching
+				// ECL/GEO block IDs. Resolve the destination after LOAD FILES
+				// aggregation, which can still contain the source block.
+				s.GeoMapSet = s.Area.GameArea
+				s.GeoMapBlock = currentBlock
+				s.geoMapPending = true
+			}
+		}
 		s.applyLoadPieces(result)
 		s.applyECLCallSignals(result)
 		s.applySpellSignals(result)
@@ -1169,7 +1194,8 @@ func (s *State) Select(index int) error {
 		// these semantic transitions before the bounded runner's next-menu
 		// result is applied, since the original command may leave another
 		// continuation menu in the trace.
-		if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
+		if s.Location != LocationWilderness && originalChoice == "WILDERNESS" &&
+			!(s.session != nil && s.session.CurrentBlockID() == 0x33) {
 			s.enterMap()
 			return nil
 		}
@@ -1203,7 +1229,8 @@ func (s *State) Select(index int) error {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
 		}
 	}
-	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
+	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" &&
+		!(s.session != nil && s.session.CurrentBlockID() == 0x33) {
 		s.enterMap()
 		return nil
 	}
@@ -4905,6 +4932,14 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("try_talk_further", "繼續交談")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
+	case "CAVES":
+		return catalog.Text("caves", "洞穴")
+	case "STAY HERE":
+		return catalog.Text("stay_here", "留在這裡")
+	case "VILLAGE":
+		return catalog.Text("village", "村莊")
+	case "DEPART":
+		return catalog.Text("depart", "離開此區")
 	case "TRAIL":
 		return catalog.Text("trail", "小徑")
 	case "COMBAT":
@@ -5201,6 +5236,19 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_wizard_tower_dragon_heart_acid",
 			"你們剖開黑龍、取出內臟時，被噴濺的酸液淋得滿身，但仍成功取出了龍心。",
+		)
+	case strings.Contains(joined, "STOP BY HAPTOOTH VILLAGE") &&
+		strings.Contains(joined, "DEPART THE AREA"):
+		return catalog.Text(
+			"ecl_wizard_tower_wilderness_exit",
+			"要先繞到哈普圖斯村，還是直接離開這一帶？",
+		)
+	case strings.Contains(joined, "WAY DOWN TO THE CAVES") &&
+		strings.Contains(joined, "SECRET PASSAGE") &&
+		strings.Contains(joined, "DIRECTLY TO THE WILDERNESS"):
+		return catalog.Text(
+			"ecl_wizard_tower_roof_exit",
+			"這條路可下到洞穴；你們也發現一條能直達荒野的祕道。要走哪一條路？",
 		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):

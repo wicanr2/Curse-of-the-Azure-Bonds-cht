@@ -502,3 +502,6 @@
 - [x] 完成 `ATTACK DRAGONS`／`FLEE` 共用 14 黑龍戰、`7EC7` raw 重戰 gate、
   `4C61` 條件式龍心、YES/NO、全隊 `3d4+3` 酸液 save 與 `4C64=1`；
   修正混合 pending DAMAGE resolver，新增 Area 5 原版黑龍小人實機圖。
+- [x] 接通法師塔塔頂 `(7,15,E)` terrain `0x01` 三向出口：
+  CAVES→熔岩洞、WILDERNESS→VILLAGE／DEPART 第二層選單、STAY HERE→塔頂；
+  同步 NEWECL 目的地 GEO、加入 `-wizard-tower-exit` 與 640×480 繁中實機圖。

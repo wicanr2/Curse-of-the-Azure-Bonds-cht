@@ -181,3 +181,7 @@ APPRAISE confirmation 現在分離 accept／reject／cancel；只有 accept 才�
 nearest-neighbour 整數放大，保留清楚像素邊緣；中文字不從 DOS bitmap 拉伸，而以
 16×15 compact tier 或 24×24 reading tier 直接重繪。圖片層與 Unicode 文字層必須
 分離，才能讓後續 Gold Box 作品共用素材 decoder，同時各自調整中文行寬與 HUD。
+640×480 是遊戲內部固定 logical resolution，不只是把 320×240 最終 framebuffer
+平滑拉大：原素材在圖片層指定 `FilterNearest` 後做整數倍率 transform，24px／16px
+CJK 字則直接 rasterize 到 640×480 文字層。如此原版小人保留硬邊像素，中文也不受
+8px Latin cell 限制。

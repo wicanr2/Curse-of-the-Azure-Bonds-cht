@@ -102,8 +102,14 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   direct-entry 戰場可用
   `-encounter -encounter-area 5 -encounter-block 51 -encounter-start 1269 -encounter-monster-member MON5CHA.DAX`
   重現；Area 5 確保使用正確的原版 CPIC namespace。
+- 戰後塔頂 `(7,15,E)` 的 terrain `0x01` 出口已接通。原版三項選單可返回
+  熔岩洞、經祕道前往荒野，或留在塔頂；選荒野後仍會依原 ECL 再詢問回哈普村
+  或離開此區，不會被重製版看到 `WILDERNESS` 字樣便提前跳過第二層選單。
+  `-wizard-tower-exit` 可直接重現這個 640×480 繁中出口。
 
 ![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
+
+![法師塔塔頂祕道的 640×480／24px 繁中實機選單](docs/screenshots/wizard-tower-roof-exit.png)
 
 ![成功說服法師塔黑龍的 640×480 原圖放大與 24px 繁中畫面](docs/screenshots/wizard-tower-dragon-parlay.png)
 

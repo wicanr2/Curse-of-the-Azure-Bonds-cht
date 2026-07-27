@@ -142,6 +142,58 @@ func TestRealECL5WizardTowerDragonParlayMappings(t *testing.T) {
 	t.Fatal("ECL5 block 0x33 is absent")
 }
 
+func TestRealECL5WizardTowerExitBranches(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL5.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 0x33 {
+			continue
+		}
+		for name, test := range map[string]struct {
+			selections []uint16
+			blockID    uint8
+			exited     bool
+		}{
+			"caves":   {selections: []uint16{0}, blockID: 0x32},
+			"village": {selections: []uint16{1, 0}, blockID: 0x31},
+			"depart":  {selections: []uint16{1, 1}, blockID: 0x30},
+			"stay":    {selections: []uint16{2}, exited: true},
+		} {
+			runtime := NewRuntimeState(0x07EA)
+			result, runErr := runSubsetWithState(block.Data, 0x07EA, 500, test.selections, true, 1, runtime)
+			if runErr != nil {
+				t.Fatalf("%s: %v", name, runErr)
+			}
+			if result.Exited != test.exited {
+				t.Fatalf("%s exited=%v, want %v result=%+v", name, result.Exited, test.exited, result)
+			}
+			if test.blockID != 0 && (result.NewECLBlockID == nil || *result.NewECLBlockID != test.blockID) {
+				t.Fatalf("%s block=%v, want %#x result=%+v", name, result.NewECLBlockID, test.blockID, result)
+			}
+			if name == "caves" && (runtime.Memory[0xC04B] != 6 ||
+				runtime.Memory[0xC04C] != 15 || runtime.Memory[0xC04D] != 0) {
+				t.Fatalf("caves position=%d,%d,%d, want 6,15,0",
+					runtime.Memory[0xC04B], runtime.Memory[0xC04C], runtime.Memory[0xC04D])
+			}
+			if name == "stay" && len(result.Menus) != 1 {
+				t.Fatalf("stay menus=%#v, want one roof menu", result.Menus)
+			}
+			if (name == "village" || name == "depart") && len(result.Menus) != 2 {
+				t.Fatalf("%s menus=%#v, want roof and destination menus", name, result.Menus)
+			}
+		}
+		return
+	}
+	t.Fatal("ECL5 block 0x33 is absent")
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {

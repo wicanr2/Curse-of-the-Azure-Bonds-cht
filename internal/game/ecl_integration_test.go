@@ -2401,6 +2401,10 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if !ok {
 		t.Fatal("GEO5 block 0x32 is unavailable")
 	}
+	towerGrid, ok := lavaCatalog.Lookup(geo.MapRef{Set: 5, BlockID: 0x33})
+	if !ok {
+		t.Fatal("GEO5 block 0x33 is unavailable")
+	}
 	if center, east := lavaGrid.CellWrapped(15, 5).Terrain, lavaGrid.CellWrapped(0, 5).Terrain; center != 0x80 || east != 0x89 {
 		t.Fatalf("lava entrance terrains center=%#x east=%#x, want 0x80/0x89", center, east)
 	}
@@ -2900,6 +2904,74 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
 		t.Fatalf("dragon-heart roof return mode=%v block=%#x", state.Mode, session.CurrentBlockID())
+	}
+	if terrain := towerGrid.CellWrapped(7, 15).Terrain; terrain != 1 {
+		t.Fatalf("wizard-tower exit terrain=%#x, want 1", terrain)
+	}
+	state.catalog.Strings["wilderness"] = "荒野"
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 15, 2
+	state.DungeonWallType, _ = towerGrid.WallWrapped(7, 15, 2)
+	state.DungeonWallRoof = towerGrid.CellWrapped(7, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	roofExitChoices := []string{"CAVES", "WILDERNESS", "STAY HERE"}
+	if !strings.Contains(state.Message, "直達荒野的祕道") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, roofExitChoices) ||
+		!reflect.DeepEqual(state.Choices, []string{"洞穴", "荒野", "留在這裡"}) {
+		t.Fatalf("wizard-tower roof exit originals=%#v localized=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
+		t.Fatalf("wizard-tower stay mode=%v block=%#x", state.Mode, session.CurrentBlockID())
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 15, 2
+	state.DungeonWallRoof = towerGrid.CellWrapped(7, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x32 || state.GeoMapBlock != 0x32 ||
+		state.DungeonX != 6 || state.DungeonY != 15 || state.DungeonDirection != 2 {
+		t.Fatalf("wizard-tower caves return block=%#x geo=%#x pos=(%d,%d,%d) mode=%v message=%q",
+			session.CurrentBlockID(), state.GeoMapBlock, state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.Mode, state.Message)
+	}
+	session.SetMemoryValue(0x4C60, 1)
+	if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
+		t.Fatal(err)
+	}
+	// The preview entry faithfully raises the tower establishing picture.
+	// This revisit test is concerned with the already-completed roof exit.
+	state.Mode = ModeDungeon
+	state.PictureRequested = false
+	state.pendingPictureResult = nil
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 15, 2
+	state.DungeonWallType, _ = towerGrid.WallWrapped(7, 15, 2)
+	state.DungeonWallRoof = towerGrid.CellWrapped(7, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "哈普圖斯村") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"VILLAGE", "DEPART"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"村莊", "離開此區"}) {
+		t.Fatalf("wizard-tower wilderness submenu mode=%v originals=%#v localized=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x31 || state.GeoMapBlock != 0x31 {
+		t.Fatalf("wizard-tower village return block=%#x geo=%#x mode=%v message=%q",
+			session.CurrentBlockID(), state.GeoMapBlock, state.Mode, state.Message)
 	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)

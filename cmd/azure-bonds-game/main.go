@@ -1507,6 +1507,7 @@ func main() {
 	wizardTower := flag.Bool("wizard-tower", false, "start at the ECL5 wizard-tower courtyard and Dracandros story")
 	wizardTowerBattle := flag.Bool("wizard-tower-battle", false, "start at Dracandros' original wizard-tower patrol battle")
 	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
+	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1684,7 +1685,7 @@ func main() {
 		if err := state.StartDungeonStoryPreview(0x32, 0x31, 5); err != nil {
 			log.Fatal(err)
 		}
-	} else if *wizardTower || *wizardTowerBattle || *wizardTowerParlay {
+	} else if *wizardTower || *wizardTowerBattle || *wizardTowerParlay || *wizardTowerExit {
 		if len(state.PartyFighters()) != 0 {
 			log.Fatal("wizard-tower previews cannot be combined with a loaded party")
 		}
@@ -1699,6 +1700,19 @@ func main() {
 		}
 		if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
 			log.Fatal(err)
+		}
+		if *wizardTowerExit {
+			state.SetECLMemoryValue(0x4C60, 1)
+			state.Mode = game.ModeDungeon
+			state.PictureRequested = false
+			state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 15, 2
+			state.DungeonWallRoof = 1
+			if err := state.RunDungeonLifecycle(); err != nil {
+				log.Fatal(err)
+			}
+			if len(state.Choices) != 3 {
+				log.Fatal("-wizard-tower-exit did not reach the original three-way roof menu")
+			}
 		}
 		if *wizardTowerBattle {
 			for step := 0; step < 32 && !state.CombatActive(); step++ {

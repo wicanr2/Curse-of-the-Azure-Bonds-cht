@@ -1326,3 +1326,12 @@ READY spec 317、`-wizard-tower-parlay` 重現入口與 640×480 黑龍繁中實
 條件則跳過。State whole-party resolver 現可從混合 pending queue 取出 `0xC0`
 packet 而保留需 selected target 的舊 packet。新增 READY spec 318、
 `-encounter-area` graphics namespace 與 640×480 Area 5 原版 14 黑龍實機圖。
+
+第三百一十九輪成果：法師塔塔頂 GEO5 block `0x33 (7,15,E)` terrain `0x01`
+出口已由真實 ECL 接通。第一層保留 `CAVES/WILDERNESS/STAY HERE`；WILDERNESS
+不再被泛用 label adapter 提前攔截，會繼續顯示 `VILLAGE/DEPART`，四條結果分別
+鎖定 block `0x32/0x31/0x30` 或留在 `0x33`。NEWECL 後同步 destination GEO 與
+target initial registers，新增 READY spec 319、`-wizard-tower-exit` 及
+640×480／24px 繁中實機圖。共用 Gold Box 知識庫同步確立：原圖 nearest-neighbour
+整數放大、CJK 直接在高解析 logical canvas rasterize，ordinary menu label 不可
+脫離 block context 當成引擎 action。
