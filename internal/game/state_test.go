@@ -555,6 +555,28 @@ func TestResolvePendingECLDamageWithHitResolverHandlesRandomTargets(t *testing.T
 	}
 }
 
+func TestResolvePendingECLDamageWithDefaultHitResolverUsesProjectedAC(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 10, Dexterity: 10, Constitution: 10, Intelligence: 10, Wisdom: 10, Charisma: 10},
+		HitPoints: 10, MaxHitPoints: 10,
+		Effects: []monster.AffectRecord{{Kind: 0x19, Active: true}},
+	}}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 1, DiceCount: 1, DiceSize: 1, SaveFlags: 0,
+	}}})
+	outcomes, err := state.ResolvePendingECLDamageWithDefaultHitResolver(0, func(sides int) int {
+		if sides == 1 {
+			return 1
+		}
+		return 14
+	}, func(int) int { return 1 })
+	if err != nil || len(outcomes) != 1 || outcomes[0].Hit || state.partyRoster[0].HitPoints != 10 {
+		t.Fatalf("outcomes=%#v roster=%#v err=%v", outcomes, state.partyRoster, err)
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

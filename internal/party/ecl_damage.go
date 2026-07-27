@@ -34,6 +34,32 @@ func (c *Character) ApplyDamage(amount int) int {
 	return amount
 }
 
+// CanHitECLDamageTarget implements the verified CanHitTarget arithmetic after
+// the caller supplies the target's projected AC. Target invisibility effects
+// apply the reference -4 attack-roll modifier; blink/displace need combat
+// round state and are intentionally left to a richer resolver.
+func CanHitECLDamageTarget(target Character, armorClass, bonus int, rollDie func(int) int) (bool, error) {
+	if rollDie == nil {
+		return false, fmt.Errorf("CanHitTarget requires an injected d20 roller")
+	}
+	roll := rollDie(20)
+	if roll < 1 || roll > 20 {
+		return false, fmt.Errorf("CanHitTarget roll %d is outside 1..20", roll)
+	}
+	if roll == 1 {
+		return false, nil
+	}
+	if roll == 20 {
+		return true, nil
+	}
+	for _, effect := range target.Effects {
+		if effect.Active && (effect.Kind == 0x19 || effect.Kind == 0x47) {
+			roll -= 4
+		}
+	}
+	return roll+bonus > armorClass, nil
+}
+
 // ApplyECLDamage resolves the verified selected-target and whole-party forms
 // of CoAB DAMAGE. The original flags 0x80/0x40/0x20/0x10 and saveFlags 0x80
 // are preserved here; random-target and CanHitTarget branches remain explicit
@@ -130,7 +156,7 @@ func (r Roster) ApplyECLDamageWithHitResolver(request ecl.DamageRequest, selecte
 		} else if len(r[index].SavingThrows) != 5 {
 			return DamageOutcome{}, fmt.Errorf("character %q has no five-byte saving throws", r[index].ID)
 		} else {
-			outcome.Saved = roll+saveBonus >= int(r[index].SavingThrows[saveType])
+			outcome.Saved = roll+saveBonus+int(r[index].SavingThrowBonus) >= int(r[index].SavingThrows[saveType])
 		}
 		if !outcome.Saved || request.Flags&0x10 != 0 {
 			outcome.Applied = r[index].ApplyDamage(damage)

@@ -893,6 +893,27 @@ func (s *State) ResolvePendingECLDamageWithHitResolver(selectedIndex int, rollDi
 	return s.resolvePendingECLDamage(selectedIndex, rollDie, rollSave, hitTarget)
 }
 
+// ResolvePendingECLDamageWithDefaultHitResolver projects the current party
+// AC from Character (and decoded equipment when available), then applies the
+// verified CanHitTarget natural-roll/invisibility rules. Blink/displace and
+// other combat-round effects remain available through the injected variant.
+func (s *State) ResolvePendingECLDamageWithDefaultHitResolver(selectedIndex int, rollDie, rollSave func(int) int) ([]party.DamageOutcome, error) {
+	hitTarget := func(target party.Character, bonus int, hitRoll func(int) int) (bool, error) {
+		fighter, err := target.Fighter()
+		if err != nil {
+			return false, err
+		}
+		if s.itemCatalogReady {
+			fighter, err = target.FighterWithEquipment(s.itemCatalog)
+			if err != nil {
+				return false, err
+			}
+		}
+		return party.CanHitECLDamageTarget(target, fighter.ArmorClass, bonus, hitRoll)
+	}
+	return s.ResolvePendingECLDamageWithHitResolver(selectedIndex, rollDie, rollSave, hitTarget)
+}
+
 func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int, hitTarget party.DamageHitResolver) ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil

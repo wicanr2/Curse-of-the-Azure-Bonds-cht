@@ -129,6 +129,9 @@ type Character struct {
 	// five-byte order is retained so ECL DAMAGE adapters can apply the correct
 	// saving-throw type.
 	SavingThrows []uint8 `json:"saving_throws,omitempty"`
+	// SavingThrowBonus preserves DOS player field_186, including signed item or
+	// effect-derived bonus already present in an imported record.
+	SavingThrowBonus int8 `json:"saving_throw_bonus,omitempty"`
 	// ThiefSkills preserves the eight DOS thief percentages; index 1 is
 	// open-locks and remains in original order.
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
