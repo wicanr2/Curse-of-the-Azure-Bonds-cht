@@ -207,7 +207,7 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			compare[3] = left > right
 			compare[4] = left <= right
 			compare[5] = left >= right
-		case 0x04, 0x05, 0x06, 0x07: // ADD / SUBTRACT / DIVIDE / MULTIPLY
+		case 0x04, 0x05, 0x06, 0x07, 0x2F, 0x30: // arithmetic / AND / OR
 			if !instruction.Operands[2].WordSet {
 				return result, fmt.Errorf("arithmetic at %d has non-address destination", pc)
 			}
@@ -232,6 +232,10 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				value = left / right
 			case 0x07:
 				value = left * right
+			case 0x2F:
+				value = left & right
+			case 0x30:
+				value = left | right
 			}
 			memory[instruction.Operands[2].Word] = value
 		case 0x08: // RANDOM
