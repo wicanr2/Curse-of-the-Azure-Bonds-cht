@@ -658,3 +658,10 @@ Docker Go 1.23 已通過 `internal/combat`、`internal/game`、`internal/party`�
 第二百二十三輪文件 commit：`bd31db2`，更新 Death／combatant removal READY spec、Gold Box
 ECL／State 可重用知識庫、README 與 PLAN，記錄 DeathOverlay contract、目前 renderer fallback
 與 exact skull 素材證據邊界。
+
+第二百二十四輪重大里程碑 commit：`258fde2`，追證 `seg001.Init` 的 COMSPR icon
+initialization：`combat_icons[24].GetIcon(Attack, 0)` 對應 `COMSPR` block `0x8B`，
+`combat_icons[25].GetIcon(Normal, 0)` 對應 `COMSPR` block `0x19`。Ebiten 現在載入
+COMSPR derived PNG，依 DeathOverlay signal 在死亡座標以 100ms phase 交替顯示原版
+skull／blank overlay；更新 graphics／ECL／README／PLAN 知識庫。Docker Go 1.23 已通過
+`internal/combat`、`internal/game`、`internal/party`、`internal/ecl`、`internal/locale`。
