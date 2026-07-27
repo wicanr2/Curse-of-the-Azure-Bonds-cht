@@ -619,7 +619,7 @@ func TestResolvePendingECLDamageDisplaceBitIsTransactional(t *testing.T) {
 
 func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T) {
 	state := NewState(testCatalog())
-	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 1, MaxHitPoints: 1}}
+	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 1, MaxHitPoints: 1, Effects: []monster.AffectRecord{{Kind: 0x25}, {Kind: 0x07}, {Kind: 0x01}}}}
 	if err := state.StartCombat(
 		[]combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 1, ArmorClass: 10}},
 		[]combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10}}, 7); err != nil {
@@ -640,6 +640,9 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 	}
 	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 {
 		t.Fatalf("mode=%v status=%v roster=%#v fighters=%#v", state.Mode, state.CombatStatus(), state.partyRoster, state.CombatFighters())
+	}
+	if len(state.partyRoster[0].Effects) != 2 || state.partyRoster[0].Effects[0].Kind != 0x25 || state.partyRoster[0].Effects[1].Kind != 0x01 {
+		t.Fatalf("combat effects were not removed: %#v", state.partyRoster[0].Effects)
 	}
 }
 
