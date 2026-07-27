@@ -46,6 +46,18 @@ type Abilities struct {
 	Charisma            int
 }
 
+// HealthStatus mirrors the reference player's combat health states while
+// keeping the existing zero-value JSON saves valid.
+type HealthStatus uint8
+
+const (
+	HealthStatusOK HealthStatus = iota
+	HealthStatusAnimated
+	HealthStatusUnconscious
+	HealthStatusDying
+	HealthStatusDead
+)
+
 // RollAbilities reproduces the rule-book's six ability generation shape: six
 // independent 3d6 rolls. A caller-provided seed keeps tests and replays
 // deterministic without coupling the party package to UI randomness.
@@ -113,6 +125,7 @@ type Character struct {
 	IconID          uint8                  `json:"icon_id,omitempty"`
 	HitPoints       int                    `json:"hit_points,omitempty"`
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
+	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
 	Gold            uint16                 `json:"gold,omitempty"`
 	Gems            uint16                 `json:"gems,omitempty"`
 	Jewelry         uint16                 `json:"jewelry,omitempty"`
