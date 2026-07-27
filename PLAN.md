@@ -320,5 +320,6 @@
 - [x] 將 DOS character bundle 接入 Ebiten remake startup bridge。
 - [x] 將 imported active Bless／Curse effects 投影到 combat fighter attack bonus。
 - [x] 將 active Blind／Bestow Curse／friendly Prayer effects 投影到 fighter attack／AC。
-- [ ] 將 Area codec 接入完整 DOS save/import slot 與所有 file side effects。
+- [x] 依 `ovr017.SaveGame/loadSaveGame` 建立 `SAVGAM` 固定前綴 raw codec 與 round-trip regression；完整 slot／Area 欄位／player-file side effects 仍待接入。
+- [ ] 將 `SAVGAM` fixed prefix、Area codec 與 `.SAV/.GUY` player sidecars 接入完整 DOS save/import slot。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

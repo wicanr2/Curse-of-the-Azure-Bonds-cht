@@ -101,6 +101,7 @@
 - [第一百零四輪 remake startup DOS character import](./104-game-dos-character-startup.md)（`READY`：限單一 character bundle bridge）
 - [第一百零五輪 DOS `.FX` combat projection](./105-fx-combat-projection.md)（`READY`：限 Bless／Curse attack modifier）
 - [第一百零六輪 DOS `.FX` extended combat projection](./106-fx-combat-projection-extended.md)（`READY`：限 Blind／Bestow Curse／friendly Prayer）
+- [第一百八十一輪 SAVGAM 固定前綴 codec](./181-savgam-fixed-prefix.md)（`READY`：限已證實 binary prefix 與 raw segment round-trip）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
