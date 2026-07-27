@@ -429,3 +429,5 @@
 第一百六十二輪功能／文件 commit：`4b88cf6`，已推送至 GitHub `main`。依 reference `draw_3D_8x8_titles` 建立十組 `idxOffset／rowCount／colCount` wall layout，輸出 `WallStamp` 並接到 dungeon preview 的原始 8×8D sample；補上 layout regression、READY 規格與共用 graphics knowledge。`Draw3dWorldFar/Mid/Near` 方向遍歷、遮擋、sky／roof、door 與 camera 仍保留 boundary。
 
 第一百六十三輪功能／文件 commit：`519ec4f`，已推送至 GitHub `main`。依 reference `Draw3dWorldFar/Mid/Near` 將 party direction 與 GEO wall fields 接成 ordered `WallLayoutCall` traversal，dungeon preview 改用 Far／Mid／Near 全段 wall stamps；補上 depth／座標 regression、READY 規格與共用 graphics knowledge。GEO wrap、sky／roof、door、遮擋與 camera 仍保留 boundary。
+
+第一百六十四輪待提交：dungeon preview 保存 `(dungeonX,dungeonY)`，方向鍵透過 GEO 雙側 wall contract 移動，成功後重建 floor 與 Far／Mid／Near wall stamps；新增 position／camera slice 規格與共用 graphics knowledge。Area／save 真實座標、direction、movement cost、encounter、wrap 與 scroll animation 仍保留 boundary。

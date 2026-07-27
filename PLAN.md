@@ -276,6 +276,7 @@
 - [x] 依 reference `WallDefBlock.Offset` 將 WALLDEF graphic IDs 映射到 global 8×8D symbol item，提供 bounded `WallSymbol` lookup。
 - [x] 依 reference `draw_3D_8x8_titles` 建立十組 wall viewport layout metadata、`WallStamp` 與 dungeon preview sample。
 - [x] 依 reference `Draw3dWorldFar/Mid/Near` 建立 Far／Mid／Near GEO wall traversal 與 ordered `WallLayoutCall`。
+- [x] 將 dungeon preview position 接到 GEO-safe movement，移動後重建 floor 與 Far／Mid／Near wall stamps。
 - [x] 將 CAMP SAVE 接成 state request 與 Ebiten party-save adapter；保留原版 SAVGAM container boundary。
 - [x] 將 CAMP ALTER／ORDER 接成兩階段角色重排，並同步 party roster 與 combat fighter 順序。
 - [x] 將 CAMP ALTER／DROP 接成二次確認的永久角色移除，並同步 party roster 與 combat fighter。
