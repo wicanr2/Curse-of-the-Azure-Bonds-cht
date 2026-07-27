@@ -131,9 +131,10 @@ operand 的順序；現在 DOS `saveVerse` `0xDF–0xE3` 已保存到 Character�
 `ResolvePendingECLDamage` 以注入骰點處理 selected／whole-party branches，並由
 `ResolvePendingECLDamageWithHitResolver` 處理 random target；DOS `field_186` 已納入
 save resolution，`ResolvePendingECLDamageWithDefaultHitResolver` 則提供 fighter／
-equipment AC、invisibility 與 action-delay-aware blink 的共用投影；context variant
-可由戰鬥回合傳入 delay。displace／其他 affect 與死亡 continuation 仍應由作品
-adapter 補上。
+equipment AC、invisibility、action-delay-aware blink 與 displace consumed-bit 的
+共用投影；context variant 可由戰鬥回合傳入 delay／round，並將 FX effect-data bit
+寫回 working roster，並在 resolver error 時 rollback。其他 affect 與死亡 continuation
+仍應由作品 adapter 補上。
 
 ## 中文化注意
 
