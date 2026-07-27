@@ -158,6 +158,7 @@ type State struct {
 	combatView             bool
 	combatViewFighterID    string
 	combatMessage          string
+	combatReturnMode       Mode
 	monsterRecords         map[uint8]monster.Record
 	monsterRecordsByECL    map[uint8]map[uint8]monster.Record
 	monsterAffects         map[uint8][]monster.AffectRecord
@@ -4885,6 +4886,9 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 	if prompt == "FROM HERE YOU MAY JOURNEY TO" {
 		return catalog.Text("journey_destination_prompt", "從這裡可以前往")
 	}
+	if prompt == "A DARK ELF PATROL ARRIVES" {
+		return catalog.Text("ecl_hap_dark_elf_patrol", "一隊黑暗精靈巡邏兵出現了")
+	}
 	return prompt
 }
 
@@ -4919,6 +4923,12 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "THE CRINGING PEASANTS FLEE OUT INTO THE STREET"):
 		return catalog.Text("ecl_hap_peasants_flee", "畏縮的村民奪門而出，逃進街道。")
+	case strings.Contains(joined, "YOU UNGRATEFUL SLIME") &&
+		strings.Contains(joined, "BE HAPPY FOR A QUICK DEATH"):
+		return catalog.Text(
+			"ecl_hap_dark_elf_attack",
+			"「忘恩負義的渣滓！你們一再挑戰我們的耐性，就慶幸自己能死得痛快吧！」",
+		)
 	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
 		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):
 		return catalog.Text(
