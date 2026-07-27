@@ -59,6 +59,25 @@ func TestGameJSONRoundTripRestoresDungeonViewState(t *testing.T) {
 	}
 }
 
+func TestGameJSONRoundTripRestoresGameTime(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	wantClock := [7]uint16{2, 4, 1, 3, 5, 6, 7}
+	data, err := EncodeGameWithTime(roster, area.State{}, 3, 1, 12, 8, 7, 13, 0, 0, 0, wantClock, 9)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != CurrentGameVersion || file.GameTime != wantClock || file.GameAgeCycles != 9 {
+		t.Fatalf("decoded game time=%+v, want clock=%v age=9", file, wantClock)
+	}
+}
+
 func TestDecodeGameAcceptsLegacyPartySave(t *testing.T) {
 	file, err := DecodeGame([]byte(`{"version":1,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}]}`))
 	if err != nil || file.Version != 1 {

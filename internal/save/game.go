@@ -9,7 +9,7 @@ import (
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 4
+const CurrentGameVersion = 5
 
 // GameFile contains the party plus the platform-neutral adventure state that
 // the remake can currently restore. Numeric mode/location values are kept
@@ -27,6 +27,8 @@ type GameFile struct {
 	DungeonDir      uint8        `json:"dungeon_direction"`
 	DungeonWallType uint8        `json:"dungeon_wall_type"`
 	DungeonWallRoof uint8        `json:"dungeon_wall_roof"`
+	GameTime        [7]uint16    `json:"game_time"`
+	GameAgeCycles   uint32       `json:"game_age_cycles"`
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
@@ -44,6 +46,13 @@ func EncodeGameWithDungeon(roster party.Roster, areaState area.State, mode, loca
 // EncodeGameWithDungeonState also preserves the reference mapWallType and
 // mapWallRoof cache values from the original five-byte map segment.
 func EncodeGameWithDungeonState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8) ([]byte, error) {
+	return EncodeGameWithTime(roster, areaState, mode, location, mapX, mapY, dungeonX, dungeonY, dungeonDirection, dungeonWallType, dungeonWallRoof, [7]uint16{}, 0)
+}
+
+// EncodeGameWithTime serializes the resumable adventure state including the
+// reference seven-slot clock. The older helpers remain source-compatible and
+// encode a zero clock for callers that do not own time state.
+func EncodeGameWithTime(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
 		return nil, err
 	}
@@ -52,6 +61,7 @@ func EncodeGameWithDungeonState(roster party.Roster, areaState area.State, mode,
 		Mode: mode, Location: location, MapX: mapX, MapY: mapY,
 		DungeonX: dungeonX, DungeonY: dungeonY, DungeonDir: dungeonDirection,
 		DungeonWallType: dungeonWallType, DungeonWallRoof: dungeonWallRoof,
+		GameTime: gameTime, GameAgeCycles: gameAgeCycles,
 	}, "", "  ")
 }
 
@@ -62,7 +72,7 @@ func DecodeGame(data []byte) (GameFile, error) {
 	}
 	// Version 1 was a party-only save. Accept it and use safe defaults for
 	// fields introduced by the resumable game format.
-	if file.Version != 1 && file.Version != 2 && file.Version != 3 && file.Version != CurrentGameVersion {
+	if file.Version != 1 && file.Version != 2 && file.Version != 3 && file.Version != 4 && file.Version != CurrentGameVersion {
 		return GameFile{}, fmt.Errorf("unsupported game save version %d", file.Version)
 	}
 	if err := file.Characters.Validate(); err != nil {

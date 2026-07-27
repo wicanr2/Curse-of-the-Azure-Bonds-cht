@@ -219,3 +219,4 @@
 - [第二百三十九輪 game-time effect timeout](./239-game-time-effect-timeout.md)（`READY`：限七-slot clock 與 elapsed-minute effect timeout）
 - [第二百四十輪 REST game-time integration](./240-rest-game-time.md)（`READY`：限 REST_START→slot-1 time advancement）
 - [第二百四十一輪 ECL CLOCK time-step](./241-ecl-clock-time-step.md)（`READY`：限兩 operand 解碼與 State game-time adapter）
+- [第二百四十二輪 game-time save/load](./242-game-time-save.md)（`READY`：限 remake JSON clock persistence）
