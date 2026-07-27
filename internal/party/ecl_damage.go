@@ -51,8 +51,8 @@ func CanHitECLDamageTarget(target Character, armorClass, bonus int, rollDie func
 // CanHitECLDamageTargetWithContext projects the verified Type_16 hit effects.
 // Natural 20 is first changed to 100 in the reference engine, then effects
 // are evaluated; blink can therefore still force a miss when action delay is
-// zero. Displace remains an injected-resolver concern because its reference
-// result depends on a persistent affect-data bit.
+// zero. The first FX effect-data byte stores displace's persistent 0x10
+// consumed bit, matching the reference affect_data byte.
 func CanHitECLDamageTargetWithContext(target Character, armorClass, bonus int, context ECLHitContext, rollDie func(int) int) (bool, error) {
 	if rollDie == nil {
 		return false, fmt.Errorf("CanHitTarget requires an injected d20 roller")
@@ -67,7 +67,7 @@ func CanHitECLDamageTargetWithContext(target Character, armorClass, bonus int, c
 	if roll == 20 {
 		roll = 100
 	}
-	for _, effect := range target.Effects {
+	for index, effect := range target.Effects {
 		if !effect.Active {
 			continue
 		}
@@ -77,6 +77,13 @@ func CanHitECLDamageTargetWithContext(target Character, armorClass, bonus int, c
 		case 0x25: // blink: AffectBlink when action.delay == 0
 			if context.ActionDelay == 0 {
 				roll = -1
+			}
+		case 0x59: // displace: AffectDisplace
+			if context.CombatRound == 0 && roll == 0 {
+				target.Effects[index].Data[0] &= 0x0F
+			} else if target.Effects[index].Data[0]&0x10 == 0 {
+				roll = -1
+				target.Effects[index].Data[0] |= 0x10
 			}
 		}
 	}
