@@ -987,6 +987,9 @@ func (s *State) Select(index int) error {
 		s.applyECLCallSignals(result)
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
+		if _, err := s.resolveAutomaticWholePartyECLDamage(); err != nil {
+			return err
+		}
 		s.applyECLLoadCharacterSignals(result)
 		if err := s.applyECLNPCSignals(result); err != nil {
 			return err
@@ -1692,6 +1695,29 @@ func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
 	requests := append([]ecl.DamageRequest(nil), s.pendingDamageRequests...)
 	s.pendingDamageRequests = nil
 	return requests
+}
+
+// resolveAutomaticWholePartyECLDamage commits environmental DAMAGE packets
+// that explicitly target the whole party and bypass saving throws
+// (flags 0x80|0x40|0x20). Other DAMAGE forms remain pending because they need
+// a selected character or the reference CanHitTarget adapter.
+func (s *State) resolveAutomaticWholePartyECLDamage() ([]party.DamageOutcome, error) {
+	if len(s.pendingDamageRequests) == 0 {
+		return nil, nil
+	}
+	for _, request := range s.pendingDamageRequests {
+		if request.Flags&0xE0 != 0xE0 {
+			return nil, nil
+		}
+	}
+	rng := rand.New(rand.NewSource(s.eclSeed))
+	roll := func(sides int) int {
+		if sides <= 0 {
+			return 0
+		}
+		return rng.Intn(sides) + 1
+	}
+	return s.ResolvePendingECLDamage(-1, roll, roll)
 }
 
 // ResolvePendingECLDamage applies pending requests transactionally through

@@ -442,3 +442,6 @@
 - [x] 反組 ECL2 block 4 SearchLocation dispatch，確認 terrain `0x99`／selector
   `0x19` 是旋轉刀刃屏障；接入三項繁中選單與 WAIT 無傷害消散分支，並鎖定
   640×480、24px 中文／整數倍原圖的事件版面契約。
+- [x] 完成刀刃屏障 ENTER 分支：第二次 pause 後解碼 `DAMAGE flags=0xE0,
+  8d8, bonus=0, save=0`，自動套用同一傷害包到全隊並同步 roster／fighter HP；
+  真實 ECL 與可玩 State regression 均鎖定消散 continuation。
