@@ -200,6 +200,15 @@ GEO／ECL dispatch 抵達旅店；低解析原圖以整數倍放大，事件人�
 上圖可用 `-weapon-shop` 從正式序幕 transaction 重現。HEAD4／BODY4 原始像素圖採
 nearest-neighbor 整數倍放大；繁中以 24px 字型直接畫在 640×480 畫布，因此不會把
 低解析英文字格硬塞成難辨識的中文字。
+- GEO2 `(0,7)` 的剛德祭壇已接通 PICTURE 6 → EnterTemple → Temple service。
+  十種治療依 reference 使用固定價格、原版 healing dice／effect 清理，以及角色五種
+  typed coins 優先付款；離開後恢復同一條 ECL 並返回原地城格。
+
+![剛德神殿 HEAD9／BODY6 的 640×480 原始人物事件](docs/screenshots/tilverton-gond-temple.png)
+
+這個事件證明 HEAD／BODY selectors 並不必同號。素材產生器現在會建立可擴張畫布，
+先把 BODY 放在 `y+5`，再以 masked HEAD 覆蓋；因此神官頭像不再被裁切或落入缺圖
+fallback。畫面仍採原始像素 3× nearest-neighbor，中文字維持 24px 高解析排版。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -223,6 +232,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -opening
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -inn
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -filani
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -weapon-shop
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -temple
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview

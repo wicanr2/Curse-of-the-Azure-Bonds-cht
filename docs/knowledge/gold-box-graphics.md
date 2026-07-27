@@ -148,9 +148,16 @@ dungeon preview 的 position service 可沿用 `geo.Grid.CanMove`：先驗證目
 
 CAMP FIX 應拆成可重用的 healing service 與各遊戲的 spell catalog adapter：目前 CoAB 只能以已確認的一級牧師表順序將 `Cure Light Wounds` 映射到 one-based ID `3`，並以 memorized slot 數量決定 cast 次數。治療應以 roster 順序選擇受傷角色、以 `1d8` 封頂 MaxHP，再以 stable character ID 同步 combat projection；spell slot 是否消耗、重記憶、時間推進與中斷則由遊戲規則層注入，不能寫死在共用 renderer。測試可注入 seed 保持重現性，但正式遊戲仍需接原版 random／time source。
 
+HEAD／BODY scene selectors 是兩個獨立欄位，不能假設同號。CoAB Tilverton Gond
+祭壇實際使用 HEAD2 `0x09`＋BODY2 `0x06`。合成 canvas 高度至少是
+`max(headHeight, 5+bodyHeight)`；BODY 放在 `y+5`，再以 HEAD 的非透明 pixels 覆蓋，
+否則以 BODY 當固定 destination 會裁掉較高 layer，使用 OR merge 也會讓白色衣領吞掉臉。
+
 shop stock／money pool 的共用邊界現在由 `game.ShopOffer`、`State.PoolPartyGold`、`TakeGold`、`ShareGold`、`BuyShopOffer` 提供。offer price 必須由各遊戲資料層注入；gold pool 的平均分配與 remainder 順序可直接沿用到其他 Gold Box 遊戲。
 
-BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；購買後 stock entry 會移除，inventory item 一律先保持未 ready。active character selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。
+BUY renderer/state 已使用 `monster.ChineseName` 顯示 item offer；CityShop 購買會
+clone item 且不移除 stock entry，inventory item 一律先保持未 ready。active character
+selector 仍是明確 API，不可用 shop list ordinal 假裝完整 VIEW menu。
 
 VIEW 目前只讀 party roster 並顯示 HP／gold／ChineseName equipment summary；不要在這個摘要層猜未識別 item、魔法 effect 或 ALTER menu side effects。
 

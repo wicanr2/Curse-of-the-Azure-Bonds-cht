@@ -669,6 +669,34 @@ func TestRunSubsetCombatDispatchesAreaShopService(t *testing.T) {
 	}
 }
 
+func TestRunSubsetCombatDispatchesAreaTempleService(t *testing.T) {
+	block := []byte{
+		0, 0,
+		0x09, 0x00, 0x01, 0x01, 0xE2, 0x7E,
+		0x24,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	runtime := NewRuntimeState(0)
+	result, err := runSubsetWithState(block, 0, 20, nil, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.TempleRequested || result.ShopRequested || result.CombatRequested || result.PC != 7 {
+		t.Fatalf("temple dispatch result=%+v", result)
+	}
+	if runtime.Memory[0x7EE2] != 0 {
+		t.Fatalf("EnterTemple mirror=%d, want consumed zero", runtime.Memory[0x7EE2])
+	}
+	result, err = runSubsetWithState(block, 0, 20, nil, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "HI" || !result.Exited {
+		t.Fatalf("temple continuation result=%+v", result)
+	}
+}
+
 func TestRunSubsetEmitsSpellAndProtectionSignals(t *testing.T) {
 	payload := []byte{
 		0x3B, 0x00, 0x12, 0x01, 0x00, 0x7C, 0x01, 0x01, 0x7C,

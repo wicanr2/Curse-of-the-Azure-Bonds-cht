@@ -1433,6 +1433,9 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	if result.ShopRequested {
 		return true, s.enterECLShop(result)
 	}
+	if result.TempleRequested {
+		return true, s.enterECLTemple()
+	}
 	treasureReady := false
 	if len(result.TreasureRequests) > 0 {
 		if err := s.ResolveTreasureRequests(); err != nil {
@@ -1493,6 +1496,9 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 		}
 		s.Mode = ModeWilderness
 		return true, nil
+	}
+	if result.Exited && len(result.Text) == 0 {
+		return false, nil
 	}
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness

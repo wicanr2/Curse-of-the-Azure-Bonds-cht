@@ -58,6 +58,59 @@ func MergePicturesAt(destination, source Picture, offsetX, offsetY int) (Picture
 	return result, nil
 }
 
+// ComposeHeadBody creates the reference scene-character canvas: BODY is
+// positioned bodyY pixels lower, then masked HEAD pixels are drawn at the
+// origin. Unlike MergePicturesAt this grows the destination, so a short HEAD
+// record cannot clip the BODY.
+func ComposeHeadBody(head, body Picture, bodyY int) (Picture, error) {
+	if head.ItemCount == 0 || body.ItemCount == 0 {
+		return Picture{}, fmt.Errorf("cannot compose empty HEAD/BODY picture")
+	}
+	if bodyY < 0 {
+		return Picture{}, fmt.Errorf("BODY y offset %d is negative", bodyY)
+	}
+	width := head.Width()
+	if body.Width() > width {
+		width = body.Width()
+	}
+	if width%8 != 0 {
+		return Picture{}, fmt.Errorf("composed width %d is not divisible by 8", width)
+	}
+	height := head.Height()
+	if bodyY+body.Height() > height {
+		height = bodyY + body.Height()
+	}
+	itemCount := head.ItemCount
+	if body.ItemCount < itemCount {
+		itemCount = body.ItemCount
+	}
+	result := Picture{
+		WidthUnits:  uint16(width / 8),
+		HeightUnits: uint16(height),
+		ItemCount:   itemCount,
+		Pixels:      make([]uint8, int(itemCount)*width*height),
+	}
+	for index := range result.Pixels {
+		result.Pixels[index] = 16
+	}
+	overlay := func(source Picture, offsetY int) {
+		for item := 0; item < int(itemCount); item++ {
+			for y := 0; y < source.Height(); y++ {
+				for x := 0; x < source.Width(); x++ {
+					sourceValue := source.Pixels[item*source.ItemSize()+y*source.Width()+x]
+					destinationIndex := item*result.ItemSize() + (y+offsetY)*width + x
+					if sourceValue != 16 {
+						result.Pixels[destinationIndex] = sourceValue
+					}
+				}
+			}
+		}
+	}
+	overlay(body, bodyY)
+	overlay(head, 0)
+	return result, nil
+}
+
 // FlipHorizontal returns a left-to-right indexed copy of one picture. The
 // original CombatIcon caches this variant and chooses it for directions > 3.
 func (p Picture) FlipHorizontal() Picture {

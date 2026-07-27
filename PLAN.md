@@ -398,5 +398,8 @@
   正式兩段繁中開場與通用 PICTURE→menu deferred transaction。
 - [x] 依 `CMD_Combat`／`CityShop` 將 COMBAT opcode 的 EnterShop service dispatch
   接入真實 General Store／Weaponers 流程；ITEM 庫存、shift 計價、typed coins
-  優先付款、不耗盡 stock 與 resumable ECL continuation 已驗證。Temple service
-  保留獨立 boundary，待取得交易規格後再實作。
+  優先付款、不耗盡 stock 與 resumable ECL continuation 已驗證；Temple service
+  已於下一輪依獨立交易規格接通。
+- [x] 依 `ovr005.temple_shop/temple_heal` 接通 Tilverton `(0,7)` Gond altar：
+  PICTURE 6、EnterTemple service、十種治療價格／骰數／effect mutation、typed-coin
+  付款與 ECL resume；Raise Dead 的 Constitution／多職業最大 HP penalty 仍待補齊。

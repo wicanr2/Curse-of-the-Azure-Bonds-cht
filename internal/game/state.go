@@ -179,6 +179,12 @@ type State struct {
 	treasureItemIndex      int
 	shopMenu               bool
 	shopECLService         bool
+	templeMenu             bool
+	templeHealMenu         bool
+	templeConfirmMenu      bool
+	templeECLService       bool
+	templeCharacterIndex   int
+	templePendingCure      int
 	shopOffers             []ShopOffer
 	moneyPool              uint32
 	treasureGems           uint32
@@ -901,6 +907,9 @@ func (s *State) Select(index int) error {
 		return s.selectParlay(index, originalChoice)
 	}
 	if s.Mode == ModePlace {
+		if s.templeMenu {
+			return s.selectTemple(originalChoice)
+		}
 		if s.shopMenu {
 			return s.selectShop(index, originalChoice)
 		}
@@ -1023,9 +1032,6 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeWilderness
 			return nil
 		}
-		if result.ShopRequested {
-			return s.enterECLShop(result)
-		}
 		if result.PictureRequested {
 			if !s.picturesEnabled {
 				s.PictureRequested = false
@@ -1048,12 +1054,18 @@ func (s *State) Select(index int) error {
 			if s.Message == "" {
 				s.Message = "事件畫面"
 			}
-			if result.CombatRequested || result.WaitingForMenu {
+			if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
 				pending := result
 				pending.PictureRequested = false
 				s.pendingPictureResult = &pending
 			}
 			return nil
+		}
+		if result.ShopRequested {
+			return s.enterECLShop(result)
+		}
+		if result.TempleRequested {
+			return s.enterECLTemple()
 		}
 		if result.CombatRequested {
 			records := s.monsterRecordsForCurrentECL()
@@ -4214,9 +4226,6 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
-	if result.ShopRequested {
-		return true, s.enterECLShop(result)
-	}
 	if result.PictureRequested {
 		s.Mode = ModeEvent
 		s.PictureRequested = true
@@ -4230,12 +4239,18 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.WaitingForMenu {
+		if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
 			pending := result
 			pending.PictureRequested = false
 			s.pendingPictureResult = &pending
 		}
 		return true, nil
+	}
+	if result.ShopRequested {
+		return true, s.enterECLShop(result)
+	}
+	if result.TempleRequested {
+		return true, s.enterECLTemple()
 	}
 	if result.CombatRequested {
 		records := s.monsterRecordsForCurrentECL()
@@ -4323,6 +4338,9 @@ func (s *State) Continue() error {
 			if result.ShopRequested {
 				return s.enterECLShop(result)
 			}
+			if result.TempleRequested {
+				return s.enterECLTemple()
+			}
 			if result.CombatRequested {
 				if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
 					return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
@@ -4371,6 +4389,10 @@ func (s *State) Continue() error {
 		s.restoreWildernessMenu()
 		return nil
 	case ModePlace:
+		if s.templeMenu {
+			s.enterTempleMenu()
+			return nil
+		}
 		if s.shopMenu {
 			s.enterShopMenu()
 			return nil

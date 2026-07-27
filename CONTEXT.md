@@ -1039,3 +1039,13 @@ selector `0x84` 已完成 Weaponers PICTURE 4、YES／NO、ITEM2 block 5、購�
 `MAY YOU ALWAYS STRIKE TRUE.` continuation，最後返回原格；General Store 的舊
 「COMBAT」測試斷言也已修正為 CityShop。新增 READY spec 284、共用 command-set
 知識、`-weapon-shop` 重現入口與 640×480 `tilverton-weaponers.png` README 截圖。
+
+第二百八十五輪成果：依 ECL2 real scan 確認 GEO2 `(0,7)` terrain `0x92` 是剛德祭壇，
+會聚合 PICTURE 6（HEAD2 `9`／BODY2 `6`）與 EnterTemple service。State 現先保留
+PICTURE boundary，Enter 後進入神殿；`ovr005.temple_shop/temple_heal` 的十種治療、
+固定價格、`1d8／2d8+1／3d8+3／Heal`、blind／disease／poison／curse／stone／raise
+effect transaction 與 typed-coin payment 已接入，離開後 resume ECL 並返回原格。
+Raise Dead 的 Constitution／多職業 max-HP penalty 保留明確 boundary。另因這個事件
+首次證明 HEAD／BODY selectors 不同，新增可擴張 masked scene compositor，BODY `y+5`
+再覆蓋 HEAD，修正舊預產同號圖造成的缺圖／裁頭。新增 READY spec 285、
+`-temple` 入口與 640×480 `tilverton-gond-temple.png` README 截圖。

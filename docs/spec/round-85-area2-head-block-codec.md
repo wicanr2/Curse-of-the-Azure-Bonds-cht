@@ -15,7 +15,8 @@
 
 ## 邊界
 
-Area2 仍只解讀已定位欄位；完整 Area2 loader、NPC／地圖腳本如何寫入 HeadBlockId、`EnterTemple` 與其他 area side effects 尚未完成。
+Area2 仍只解讀已定位欄位；第 285 輪已接通 ECL mirror 的 `EnterTemple` service，
+完整 Area2 loader 與其他未知 area side effects 尚未完成。
 
 ## 驗證
 

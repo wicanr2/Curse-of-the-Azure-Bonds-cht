@@ -47,16 +47,19 @@ func (s *State) ShopOffers() []ShopOffer {
 
 func (s *State) MoneyPool() uint32 { return s.moneyPool }
 
-// PoolPartyGold implements the manual's POOL command. Gold is moved out of
-// each roster character and into one party pool; calling it again combines
-// any newly acquired per-character gold into the same pool.
+// PoolPartyGold implements the manual's POOL command. All five typed coin
+// fields contribute their reference gold worth before being cleared.
 func (s *State) PoolPartyGold() error {
 	if len(s.partyRoster) == 0 {
 		return fmt.Errorf("cannot pool gold without a party")
 	}
 	for index := range s.partyRoster {
-		s.moneyPool += uint32(s.partyRoster[index].Gold)
+		s.moneyPool += characterCoinGoldWorth(s.partyRoster[index])
+		s.partyRoster[index].Copper = 0
+		s.partyRoster[index].Silver = 0
+		s.partyRoster[index].Electrum = 0
 		s.partyRoster[index].Gold = 0
+		s.partyRoster[index].Platinum = 0
 	}
 	return nil
 }

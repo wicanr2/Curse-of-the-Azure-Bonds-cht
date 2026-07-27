@@ -46,8 +46,8 @@ gold worth，再退回 pooled money；`CityShop` 進入時會清空既有 pooled
   pooled money fallback。
 - 離開 ECL-backed shop 時，以 COMBAT 後已保存的 PC 與同一 `RuntimeState` 恢復原
   ECL，不重播 TREASURE、扣款或進店前對話，最後回到原地城座標。
-- Temple 只保留已辨識的獨立 boundary；在 temple UI 與交易規則取得規格前，不可
-  誤套 CityShop adapter。
+- Temple 維持獨立 boundary，不誤套 CityShop adapter；其 UI／治療交易已由
+  [第 285 輪規格](./285-gond-temple-service.md)依 `ovr005` 證據接通。
 
 ## Regression
 

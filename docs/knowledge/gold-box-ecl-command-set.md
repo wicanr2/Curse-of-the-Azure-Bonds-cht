@@ -87,6 +87,11 @@ money；進店會清空既有 pool。後續作品可重用 resumable dispatch �
 service priority、ITEM namespace、價格表及貨幣規則都必須重新驗證，不能把 CoAB 常數
 升格成通用 VM semantics。
 
+Temple 沿用同一 external-service boundary，但交易表不同：`ovr005.temple_shop`
+提供 Heal／View／Pool／Share／Appraise，`temple_heal` 再列出十個固定價格的
+condition／HP services。可共用的是 EnterTemple signal、typed-money payment 與
+resume contract；治療 affect IDs、價格、Raise Dead stat penalty 必須逐作品驗證。
+
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
 

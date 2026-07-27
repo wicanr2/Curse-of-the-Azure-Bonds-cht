@@ -442,6 +442,63 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Weaponers continuation mode=%v position=(%d,%d), want same dungeon cell",
 			state.Mode, state.DungeonX, state.DungeonY)
 	}
+
+	// The altar at GEO2 (0,7), terrain 0x92, requests PICTURE 6 and then
+	// dispatches temple_shop through the same resumable CMD_COMBAT boundary.
+	state.partyRoster[0].HitPoints = 1
+	state.partyRoster[0].MaxHitPoints = 10
+	state.partyRoster[0].Platinum = 0xFFFF
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 0, 7, 0
+	state.DungeonWallType, _ = grid.WallWrapped(0, 7, 0)
+	state.DungeonWallRoof = grid.CellWrapped(0, 7).Terrain
+	if state.DungeonWallRoof != 0x92 {
+		t.Fatalf("Gond altar GEO selector=%#x, want 0x92", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 6 ||
+		!state.SceneCharacterRequested || state.SceneHeadBlock != 9 || state.SceneBodyBlock != 6 {
+		t.Fatalf("Gond altar picture mode=%v picture=%v:%d head/body=%d/%d",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.templeMenu || len(state.Choices) != 6 {
+		t.Fatalf("Gond temple service mode=%v temple=%v choices=%v",
+			state.Mode, state.templeMenu, state.Choices)
+	}
+	beforeWorth = characterCoinGoldWorth(state.partyRoster[0])
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HitPoints <= 1 ||
+		characterCoinGoldWorth(state.partyRoster[0]) != beforeWorth-100 {
+		t.Fatalf("Gond cure hp=%d worth=%d, want healed and %d",
+			state.partyRoster[0].HitPoints, characterCoinGoldWorth(state.partyRoster[0]), beforeWorth-100)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModePlace || !state.templeMenu {
+		t.Fatalf("Gond cure continuation mode=%v temple=%v", state.Mode, state.templeMenu)
+	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 0 || state.DungeonY != 7 {
+		t.Fatalf("Gond temple continuation mode=%v position=(%d,%d) picture=%v:%d message=%q choices=%v, want same dungeon cell",
+			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
+			state.Message, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
