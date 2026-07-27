@@ -995,6 +995,16 @@ func (s *State) Select(index int) error {
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
 			}
+			// Hap ENTER CITY is an engine-level area transition wrapped
+			// around ECL's NEWECL 0x31. The script loads its map pieces, while
+			// the DOS dispatcher selects Area 5 and dungeon exploration.
+			if originalChoice == "ENTER CITY" && s.session.CurrentBlockID() == 0x31 {
+				s.Area.GameArea = 5
+				s.Area.InDungeon = true
+				s.GeoMapSet = 5
+				s.eclMenuReturnMode = ModeDungeon
+				s.eventReturnMode = ModeDungeon
+			}
 		} else {
 			result, _ = ecl.RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
 		}
@@ -1162,7 +1172,11 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeDungeon
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
-			s.Prompt = ""
+			if s.session != nil && s.session.CurrentBlockID() == 0x31 {
+				s.Prompt = s.catalog.Text("hap_dungeon_prompt", "哈普村　↑：前進　K／M：轉向　S：搜索　E：紮營")
+			} else {
+				s.Prompt = ""
+			}
 			s.Choices = nil
 			s.currentOriginalChoices = nil
 			return nil
@@ -4813,6 +4827,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("hap", "哈普")
 	case "HILLSFAR":
 		return catalog.Text("hillsfar", "希爾斯法")
+	case "TRY TO TALK FURTHER":
+		return catalog.Text("try_talk_further", "繼續交談")
 	case "WILDERNESS":
 		return catalog.Text("wilderness", "Wilderness")
 	case "TRAIL":
@@ -4889,6 +4905,20 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
+	case strings.Contains(joined, "THIS RUN DOWN VILLAGE IS STRANGELY QUIET") &&
+		strings.Contains(joined, "NO ONE IS ABOUT"):
+		return catalog.Text(
+			"ecl_hap_abandoned_village",
+			"這座破敗的村莊異常寂靜。風沿著空蕩街道呼嘯，掠過一扇扇緊閉的窗戶；四下不見人影。",
+		)
+	case strings.Contains(joined, "YOU BURST IN ON SOME PEASANTS WHO SCUTTLE BACK") &&
+		strings.Contains(joined, "LEAVE BEFORE THE HORDE FINDS YOU WITH US"):
+		return catalog.Text(
+			"ecl_hap_hiding_peasants",
+			"你們闖進屋裡，幾名村民驚慌退縮，喊道：「快走！別讓那群怪物發現你們和我們在一起！」你們要怎麼做？",
+		)
+	case strings.Contains(joined, "THE CRINGING PEASANTS FLEE OUT INTO THE STREET"):
+		return catalog.Text("ecl_hap_peasants_flee", "畏縮的村民奪門而出，逃進街道。")
 	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
 		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):
 		return catalog.Text(

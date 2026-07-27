@@ -284,3 +284,4 @@
 - [第三百零四輪提爾佛頓放逐與阿沙本福德山徑](./304-tilverton-ashabenford-trail.md)（`READY`：限 BIGPIC 121、Tilverton 禁止入城、Ashabenford TRAIL、八隻鷹馬與 world-state writeback）
 - [第三百零五輪阿沙本福德與立石群](./305-ashabenford-standing-stone.md)（`READY`：限 PICTURE 80、城市服務、酒館傳聞 28、Shadow Gap 火刀伏擊與灰袍人紅色提示）
 - [第三百零六輪艾森布拉、哈普與黑龍](./306-essembra-hap-black-dragons.md)（`READY`：限複合選項、world values 8/9 與三隻黑龍戰）
+- [第三百零七輪哈普村入口與躲藏村民](./307-hap-village-entry.md)（`READY`：限 Area 5／ECL 0x31 入口、terrain 0x84 與 PICTURE 50）

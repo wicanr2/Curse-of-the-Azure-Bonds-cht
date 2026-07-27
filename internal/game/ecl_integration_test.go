@@ -2047,6 +2047,54 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4CA1); !ok || got != 9 {
 		t.Fatalf("Hap previous-location mirror=%#x,%v want 9", got, ok)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x31 || state.Area.GameArea != 5 || !state.Area.InDungeon ||
+		state.GeoMapSet != 5 || !strings.Contains(state.Message, "破敗的村莊") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap entry block=%#x area=%+v geo=%d choices=%#v message=%q",
+			session.CurrentBlockID(), state.Area, state.GeoMapSet, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.Prompt != "哈普村　↑：前進　K／M：轉向　S：搜索　E：紮營" ||
+		state.LoadPieces != [3]uint16{12, 0xFF, 0xFF} {
+		t.Fatalf("Hap dungeon mode=%v prompt=%q pieces=%v", state.Mode, state.Prompt, state.LoadPieces)
+	}
+	state.DungeonWallRoof = 0x84
+	session.SetMemoryValue(0x4BC9, 15)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 50 ||
+		!strings.Contains(state.Message, "幾名村民驚慌退縮") {
+		t.Fatalf("Hap peasants mode=%v picture=%v/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C02); !ok || got != 1 {
+		t.Fatalf("Hap peasant visited flag=%#x,%v want 1", got, ok)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"LEAVE", "TRY TO TALK FURTHER"}) {
+		t.Fatalf("Hap peasants choices=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "村民奪門而出") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hap talk choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Hap peasant event returned mode=%v, want dungeon", state.Mode)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

@@ -49,6 +49,10 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
   顯示與 branch 錯位。往哈普途中會建立三隻原版 MON1 `0x35`「黑龍」與
   icon `0x35` 小人，勝利後恢復同一份 ECL session，以 world value `9`
   抵達哈普村外。
+- 哈普村外 `ENTER CITY` 現已正式切入 Area 5／ECL5 block `0x31`，載入
+  map pieces `12,FF,FF` 並顯示 640×480 繁中荒村入口。terrain `0x84`
+  的民宅會顯示原版 PICTURE 50；玩家可選擇離開或繼續交談，村民逃走後
+  返回同一份可探索 runtime，visited flag 不會遺失。
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。
