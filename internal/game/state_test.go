@@ -223,6 +223,13 @@ func TestTurnDungeonUsesEightDirectionOrder(t *testing.T) {
 	}
 }
 
+func TestDungeonDefaultsFollowReferenceInit(t *testing.T) {
+	state := NewState(testCatalog())
+	if state.DungeonX != 7 || state.DungeonY != 13 || state.DungeonDirection != 0 {
+		t.Fatalf("default dungeon state=(%d,%d,%d), want (7,13,0)", state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}
+
 func TestDungeonStateActionsUseRosterAndSeededRolls(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{HitPoints: 6, ThiefSkills: []uint8{0, 100}}}

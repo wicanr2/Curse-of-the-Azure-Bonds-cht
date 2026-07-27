@@ -220,11 +220,11 @@ func (s *State) LoadPartyFile(path string) error {
 			s.DungeonWallType, s.DungeonWallRoof = 0, 0
 		}
 		if s.DungeonX < 0 || s.DungeonX >= 16 || s.DungeonY < 0 || s.DungeonY >= 16 || s.DungeonDirection >= 8 {
-			s.DungeonX, s.DungeonY, s.DungeonDirection = 8, 8, 0
+			s.DungeonX, s.DungeonY, s.DungeonDirection = 7, 13, 0
 			s.DungeonWallType, s.DungeonWallRoof = 0, 0
 		}
 	} else {
-		s.DungeonX, s.DungeonY, s.DungeonDirection = 8, 8, 0
+		s.DungeonX, s.DungeonY, s.DungeonDirection = 7, 13, 0
 		s.DungeonWallType, s.DungeonWallRoof = 0, 0
 	}
 	if file.Location <= uint8(LocationDaggerFalls) {
