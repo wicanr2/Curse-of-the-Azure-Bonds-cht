@@ -530,3 +530,9 @@ continuation 與真實 ECL2 block 3 `+0x1599` operand regression、READY spec �
 knowledge。Docker 已通過 `internal/ecl`、`internal/game`、`internal/party`、
 `internal/locale`；target／saving throw／random roll／HP mutation 仍保留 party adapter
 boundary。
+
+第二百一十一輪功能 commit：`3068c2b`，將 `RunResult.DamageRequests` 接入 State
+pending queue／`ConsumeDamageRequests()` exactly-once API，避免事件／選單 pause 遺失
+script damage effect；新增 READY spec 與共用 State knowledge。由於 remake 尚未保存
+原版五類 `saveVerse` 與 selected-character memory mapping，本輪不猜固定 HP mutation。
+Docker 已通過 `internal/game`、`internal/ecl`、`internal/party`、`internal/locale`。
