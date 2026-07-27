@@ -165,6 +165,24 @@ func (s *State) SellShopItem(characterIndex, itemIndex int) error {
 	return nil
 }
 
+// IdentifyShopItem charges the manual-confirmed 200 GP fee. The raw item is
+// returned for the UI, while magical name/effect decoding remains explicit
+// future data work rather than being fabricated from the type byte.
+func (s *State) IdentifyShopItem(characterIndex, itemIndex int) (monster.ItemRecord, error) {
+	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+		return monster.ItemRecord{}, fmt.Errorf("character index %d is out of range", characterIndex)
+	}
+	character := &s.partyRoster[characterIndex]
+	if itemIndex < 0 || itemIndex >= len(character.Equipment) {
+		return monster.ItemRecord{}, fmt.Errorf("item index %d is out of range", itemIndex)
+	}
+	item := character.Equipment[itemIndex]
+	if err := character.PayIdentifyFee(); err != nil {
+		return monster.ItemRecord{}, err
+	}
+	return item, nil
+}
+
 // AppraiseTreasure accepts an injected shopkeeper offer and transfers the
 // selected character's entire gem/jewelry holding into the party pool.
 func (s *State) AppraiseTreasure(characterIndex int, kind TreasureKind) (uint16, error) {
