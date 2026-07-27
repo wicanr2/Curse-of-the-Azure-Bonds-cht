@@ -2,7 +2,13 @@
 
 更新日期：2026-07-28
 
-最新成果：正式世界流程已由立石群延伸到艾森布拉與哈普。原始複合選項
+最新成果：正式流程已從哈普村外進入 Area 5／ECL5 block `0x31`。入口載入
+map pieces `12,FF,FF`，顯示 640×480／24px 繁中荒村敘事後進入探索模式；
+terrain `0x84` 已接通 HEAD／PICTURE 50 的躲藏村民事件，可選離開或繼續
+交談，最後返回同一 resumable runtime。visited `4C02=1`、terrain dispatch
+與未知 `4BC9 > 14` gate 已收進 spec 307 及 Gold Box state 知識庫。
+
+先前成果：正式世界流程已由立石群延伸到艾森布拉與哈普。原始複合選項
 `PATROL FOREST` 已按單一 selection index 正規化；Standing Stone → Essembra
 會寫入 `4C9B=8`，Essembra → Hap 途中建立三隻 MON1 `0x35` 黑龍，勝利後恢復
 同一份 ECL session，以 `4C9B=9` 抵達哈普村外。規格與跨作品注意事項收進

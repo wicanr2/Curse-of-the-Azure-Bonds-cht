@@ -14,6 +14,16 @@ CoAB 的 world current-location byte 是作品資料值，不是連續的 remake
 一次性遭遇旗標可能在 `COMBAT` 前寫入。CoAB 的 Hap 黑龍事件以 `4CA2=1`
 表示「已觸發接近事件」，不是「已獲勝」；戰鬥結果與續接 ownership 必須另行保存。
 
+世界 dispatcher 的 `NEWECL` 也可能隱含 engine area transition。CoAB 從 Hap
+村外進入 global block `0x31` 時，ECL 只發出 `LOAD PIECES 12,FF,FF`；Area 5、
+dungeon mode 與對應 graphics namespace 是外層 dispatcher 的責任。共用 VM
+不可猜 area，作品 adapter 則不能因缺少 `LOAD FILES` 而沿用上一區域。
+
+SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
+selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
+並在同一 runtime 返回探索。`4BC9 > 14` 的 gate 已由原始 ECL 證實，但在
+engine work byte 語意確認前不得命名成時間、機率或其他規則。
+
 ## 城市場所分層
 
 Gold Box 城市應先由 `ModePlace` 保存 `INN／STORE／BAR／LEAVE` parent menu，再由各場所進入自己的 service state。場所 service 完成後以 `ModeEvent` 保存可翻譯訊息與 `eventReturnMode`，Enter 才回 parent menu；不可把荒野、城市 map 與場所事件混用成同一個返回值。

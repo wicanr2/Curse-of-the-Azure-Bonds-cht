@@ -465,3 +465,5 @@
   Standing Stone 灰袍人與「往南尋找紅色之人」主線提示。
 - [x] 接續立石群 `PATROL FOREST` 複合選項、艾森布拉 world value `8`，
   並完成前往哈普的三隻 MON1 `0x35` 黑龍戰與勝利後 world value `9` continuation。
+- [x] 從哈普村外進入 Area 5／ECL `0x31`，完成 map pieces `12,FF,FF`
+  荒村入口，以及 terrain `0x84` PICTURE 50 躲藏村民的交談／返回探索流程。
