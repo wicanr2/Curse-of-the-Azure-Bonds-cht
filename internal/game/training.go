@@ -28,10 +28,12 @@ var trainingClasses = []trainingClass{
 }
 
 const trainingCost = uint32(1000)
+const trainingSpellCommandPrefix = "TRAIN_SPELL_"
 
 func (s *State) enterTrainingMenu() {
 	s.trainingMenu = true
 	s.trainingConfirmMenu = false
+	s.trainingSpellMenu = false
 	s.Mode = ModeWilderness
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
@@ -49,10 +51,38 @@ func (s *State) enterTrainingMenu() {
 }
 
 func (s *State) selectTraining(originalChoice string) error {
+	if len(originalChoice) > len(trainingSpellCommandPrefix) &&
+		originalChoice[:len(trainingSpellCommandPrefix)] == trainingSpellCommandPrefix {
+		if !s.trainingSpellMenu {
+			return fmt.Errorf("training spell selected outside spell menu")
+		}
+		spellID, err := strconv.Atoi(originalChoice[len(trainingSpellCommandPrefix):])
+		if err != nil || spellID < 1 || spellID > 100 {
+			return fmt.Errorf("invalid training spell command %q", originalChoice)
+		}
+		allowed := false
+		for _, candidate := range s.trainingSpellChoices {
+			if candidate == uint8(spellID) {
+				allowed = true
+				break
+			}
+		}
+		if !allowed {
+			return fmt.Errorf("spell %d is not available for training", spellID)
+		}
+		character := &s.partyRoster[s.trainingCharacterIndex]
+		character.KnownSpells = append(character.KnownSpells, uint8(spellID))
+		if err := s.syncTempleCharacter(s.trainingCharacterIndex); err != nil {
+			return err
+		}
+		s.trainingSpellMenu = false
+		return s.finishTrainingResult(s.trainingResult + fmt.Sprintf(" 並學會%s。", trainingSpellName(uint8(spellID))))
+	}
 	switch originalChoice {
 	case "TRAIN_EXIT":
 		s.trainingMenu = false
 		s.trainingConfirmMenu = false
+		s.trainingSpellMenu = false
 		s.Mode = ModeDungeon
 		s.Message = ""
 		return nil
@@ -159,10 +189,6 @@ func (s *State) applyTraining(index int) error {
 			hitRoll = second
 		}
 	}
-	increase := (hitRoll + trainingConstitutionBonus(*character)) / classCount
-	if increase < 1 {
-		increase = 1
-	}
 	if character.ClassLevels == [8]uint8{} {
 		character.Level++
 		character.HitDice = uint8(character.Level)
@@ -176,27 +202,49 @@ func (s *State) applyTraining(index int) error {
 		}
 		character.HitDice = uint8(character.Level)
 	}
-	if character.HitDice > 0 && character.HitDice <= character.MulticlassLevel {
-		if err := s.syncTempleCharacter(index); err != nil {
-			return err
+	recalculateTrainingSpellCounts(character)
+	increase := 0
+	if character.HitDice == 0 || character.HitDice > character.MulticlassLevel {
+		increase = (hitRoll + trainingConstitutionBonus(*character)) / classCount
+		if increase < 1 {
+			increase = 1
 		}
-		s.trainingConfirmMenu = false
-		s.Mode = ModeEvent
-		s.eventReturnMode = ModeWilderness
-		s.Message = fmt.Sprintf("恭喜！%s成為 %d 級%s；超過原職業等級前不增加 HP。",
-			character.Name, oldLevel+1, characterClassName(info.Class))
-		return nil
+		character.MaxHitPoints += increase
+		character.HitPoints += increase
 	}
-	character.MaxHitPoints += increase
-	character.HitPoints += increase
 	if err := s.syncTempleCharacter(index); err != nil {
 		return err
 	}
+	result := fmt.Sprintf("恭喜！%s成為 %d 級%s", character.Name, oldLevel+1, characterClassName(info.Class))
+	if increase > 0 {
+		result += fmt.Sprintf("，最大 HP 增加 %d。", increase)
+	} else {
+		result += "；超過原職業等級前不增加 HP。"
+	}
+	if info.Class == party.ClassMagicUser || info.Class == party.ClassRanger && oldLevel+1 > 8 {
+		if candidates := trainingSpellCandidates(*character); len(candidates) > 0 {
+			s.trainingSpellMenu = true
+			s.trainingSpellChoices = candidates
+			s.trainingResult = result
+			s.Mode = ModeWilderness
+			s.Prompt = "選擇一個新法術"
+			s.Choices = make([]string, 0, len(candidates))
+			s.currentOriginalChoices = make([]string, 0, len(candidates))
+			for _, spellID := range candidates {
+				s.Choices = append(s.Choices, trainingSpellName(spellID))
+				s.currentOriginalChoices = append(s.currentOriginalChoices, trainingSpellCommandPrefix+strconv.Itoa(int(spellID)))
+			}
+			return nil
+		}
+	}
+	return s.finishTrainingResult(result)
+}
+
+func (s *State) finishTrainingResult(message string) error {
 	s.trainingConfirmMenu = false
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
-	s.Message = fmt.Sprintf("恭喜！%s成為 %d 級%s，最大 HP 增加 %d。",
-		character.Name, oldLevel+1, characterClassName(info.Class), increase)
+	s.Message = message
 	return nil
 }
 
@@ -273,4 +321,94 @@ func trainingRaceClassLimited(character party.Character, class party.Class, leve
 			(level == 6 || level == 5 && strength == 17 || level == 4 && strength < 17)
 	}
 	return false
+}
+
+type trainingSpell struct {
+	ID    uint8
+	Class int
+	Level int
+	Name  string
+}
+
+var trainingSpells = []trainingSpell{
+	{9, 2, 1, "燃燒之手"}, {10, 2, 1, "魅惑人類"}, {11, 2, 1, "偵測魔法"},
+	{12, 2, 1, "變巨術"}, {13, 2, 1, "縮小術"}, {14, 2, 1, "交友術"},
+	{15, 2, 1, "魔法飛彈"}, {16, 2, 1, "防護邪惡"}, {17, 2, 1, "防護善良"},
+	{18, 2, 1, "閱讀魔法"}, {19, 2, 1, "護盾術"}, {20, 2, 1, "電爪"},
+	{21, 2, 1, "睡眠術"},
+	{29, 2, 2, "偵測隱形"}, {30, 2, 2, "隱形術"}, {31, 2, 2, "敲擊術"},
+	{32, 2, 2, "鏡影術"}, {33, 2, 2, "衰弱射線"}, {34, 2, 2, "惡臭之雲"},
+	{35, 2, 2, "力量術"},
+	{45, 2, 3, "閃現術"}, {46, 2, 3, "解除魔法"}, {47, 2, 3, "火球術"},
+	{48, 2, 3, "加速術"}, {49, 2, 3, "人類定身術"}, {50, 2, 3, "十呎隱形術"},
+	{51, 2, 3, "閃電束"}, {52, 2, 3, "十呎防護邪惡"}, {53, 2, 3, "十呎防護善良"},
+	{54, 2, 3, "防護普通飛彈"}, {55, 2, 3, "緩慢術"},
+	{81, 2, 4, "魅惑怪物"}, {82, 2, 4, "困惑術"}, {83, 2, 4, "次元門"},
+	{84, 2, 4, "恐懼術"}, {85, 2, 4, "火焰護盾"}, {86, 2, 4, "笨拙術"},
+	{87, 2, 4, "冰風暴"}, {88, 2, 4, "次級法術無效結界"}, {89, 2, 4, "移除詛咒"},
+	{100, 2, 4, "降咒術"},
+	{91, 2, 5, "死雲術"}, {92, 2, 5, "冰錐術"}, {93, 2, 5, "弱智術"},
+	{94, 2, 5, "怪物定身術"},
+	{77, 1, 1, "德魯伊偵測魔法"}, {78, 1, 1, "糾纏術"},
+	{79, 1, 1, "妖火術"}, {80, 1, 1, "動物隱形術"},
+}
+
+func trainingSpellCandidates(character party.Character) []uint8 {
+	known := make(map[uint8]bool, len(character.KnownSpells))
+	for _, spellID := range character.KnownSpells {
+		known[spellID] = true
+	}
+	result := make([]uint8, 0)
+	for _, spell := range trainingSpells {
+		if !known[spell.ID] && spell.Level >= 1 && spell.Level <= 5 &&
+			character.SpellCastCount[spell.Class][spell.Level-1] > 0 {
+			result = append(result, spell.ID)
+		}
+	}
+	return result
+}
+
+func trainingSpellName(spellID uint8) string {
+	for _, spell := range trainingSpells {
+		if spell.ID == spellID {
+			return spell.Name
+		}
+	}
+	return fmt.Sprintf("未知法術 0x%02X", spellID)
+}
+
+func recalculateTrainingSpellCounts(character *party.Character) {
+	character.SpellCastCount[1] = [5]uint8{}
+	character.SpellCastCount[2] = [5]uint8{}
+	magicUserLevel := character.ClassLevel(party.ClassMagicUser)
+	if magicUserLevel > 0 {
+		character.SpellCastCount[2][0] = 1
+		table := [...][5]uint8{
+			{1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {1, 1, 0, 0, 0},
+			{1, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 1, 0, 1, 0},
+			{0, 0, 1, 1, 0}, {0, 0, 0, 0, 1}, {0, 1, 0, 0, 1},
+			{0, 0, 1, 1, 1}, {0, 0, 0, 1, 1},
+		}
+		for level := 0; level <= magicUserLevel-2 && level < len(table); level++ {
+			for spellLevel := 0; spellLevel < 5; spellLevel++ {
+				character.SpellCastCount[2][spellLevel] += table[level][spellLevel]
+			}
+		}
+	}
+	rangerLevel := character.ClassLevel(party.ClassRanger)
+	if rangerLevel > 7 {
+		table := [...][5]uint8{
+			{}, {}, {}, {}, {}, {}, {}, {},
+			{1, 0, 0, 0, 0}, {0, 0, 0, 1, 0}, {1, 0, 0, 0, 0},
+			{0, 0, 0, 1, 0}, {0, 1, 0, 0, 0},
+		}
+		for level := 8; level <= rangerLevel && level < len(table); level++ {
+			for spellLevel := 0; spellLevel < 3; spellLevel++ {
+				character.SpellCastCount[1][spellLevel] += table[level][spellLevel]
+			}
+			for spellLevel := 3; spellLevel < 5; spellLevel++ {
+				character.SpellCastCount[2][spellLevel-3] += table[level][spellLevel]
+			}
+		}
+	}
 }

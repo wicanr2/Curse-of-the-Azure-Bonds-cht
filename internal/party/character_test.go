@@ -281,6 +281,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x74], data[0x75] = 7, 5 // human magic-user
 	data[0x78], data[0x1A4] = 22, 18
 	data[0xE5], data[0xE6] = 4, 7
+	copy(data[0x12D:0x13C], []byte{3, 2, 1, 0, 0, 1, 0, 0, 0, 0, 4, 3, 2, 1, 0})
 	binary.LittleEndian.PutUint16(data[0x76:0x78], uint16(37))
 	copy(data[DOSSavingThrowsOffset:DOSSavingThrowsEnd], []byte{14, 12, 10, 13, 11})
 	data[0x186] = 0xFE // signed -2
@@ -305,6 +306,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 		record.Copper != 11 || record.Silver != 22 || record.Electrum != 33 ||
 		record.Gold != 123 || record.Platinum != 44 || record.Experience != 2501 ||
 		record.HitDice != 4 || record.MulticlassLevel != 7 ||
+		record.SpellCastCount[0][0] != 3 || record.SpellCastCount[2][3] != 1 ||
 		record.CurrentHitPoints != 18 || record.IconHead != 3 || record.IconID != 0x0A || record.ItemsPointer != 0x12345678 || record.EffectsPointer != 0x87654321 || len(record.SavingThrows) != 5 || record.SavingThrows[2] != 10 || record.SavingThrowBonus != -2 {
 		t.Fatalf("record=%#v", record)
 	}
@@ -326,6 +328,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 		character.Copper != 11 || character.Silver != 22 || character.Electrum != 33 ||
 		character.Gold != 123 || character.Platinum != 44 || character.Experience != 2501 ||
 		character.HitDice != 4 || character.MulticlassLevel != 7 ||
+		character.SpellCastCount[0][0] != 3 || character.SpellCastCount[2][3] != 1 ||
 		character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.SavingThrows) != 5 || character.SavingThrows[4] != 11 || character.SavingThrowBonus != -2 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
@@ -343,6 +346,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	character.Gold, character.Platinum = 104, 105
 	character.Experience = 4001
 	character.HitDice, character.MulticlassLevel = 5, 8
+	character.SpellCastCount[2] = [5]uint8{5, 4, 3, 2, 1}
 	patched, err := PatchDOSPlayerRecord(data, character)
 	if err != nil {
 		t.Fatal(err)
@@ -355,6 +359,9 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if patched[0xE5] != 5 || patched[0xE6] != 8 {
 		t.Fatalf("patched DOS hit-dice gate=%d/%d, want 5/8", patched[0xE5], patched[0xE6])
+	}
+	if got := patched[0x12D+10 : 0x12D+15]; !sameUint8(got, []uint8{5, 4, 3, 2, 1}) {
+		t.Fatalf("patched DOS magic-user spell counts=%v", got)
 	}
 	for offset, want := range map[int]uint16{
 		0x0FB: 101, 0x0FD: 102, 0x0FF: 103, 0x101: 104, 0x103: 105,

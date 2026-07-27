@@ -187,7 +187,10 @@ type State struct {
 	templePendingCure      int
 	trainingMenu           bool
 	trainingConfirmMenu    bool
+	trainingSpellMenu      bool
 	trainingCharacterIndex int
+	trainingSpellChoices   []uint8
+	trainingResult         string
 	shopOffers             []ShopOffer
 	moneyPool              uint32
 	treasureGems           uint32

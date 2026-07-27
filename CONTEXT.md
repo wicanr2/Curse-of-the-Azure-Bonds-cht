@@ -1072,4 +1072,11 @@ half-elf／halfling 職業等級上限。正式角色建立整合測試現從真
 `ReclacClassBonuses` 以 active class level 更新 HitDice；若尚未超過 dual-class
 舊職業等級，仍扣款並升級但不增加 HP，超過後恢復一般 HP 成長。新增抑制／恢復
 regression 與 READY spec 288。升級選法術經 reference 確認還需要
-`spellCastCount[class, spellLevel]` 篩選，現有 KnownSpells 不足以忠實代替。
+`spellCastCount[class, spellLevel]` 篩選；此模型與選單已於第 289 輪接續完成。
+
+第二百八十九輪成果：定位 DOS Player `spellCastCount[3,5] @ 0x12D..0x13B`，加入
+Character／JSON／raw patch round-trip。訓練依 `MU_spell_lvl_learn` 與 ranger
+`unk_1A758` 重算容量，再用 CoAB spell class／level metadata 排除超過 5 級、容量為零、
+monster／cleric 與已知法術。magic-user 升級及 ranger 新等級大於 8 會顯示不可取消的
+繁中法術選單，選一個加入 KnownSpells；9 級遊俠 regression 同時鎖定 druid 與
+magic-user 候選。
