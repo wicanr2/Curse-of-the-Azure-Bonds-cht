@@ -218,3 +218,4 @@
 - [第二百三十七輪 held monster turn](./237-monster-held-turn.md)（`READY`：限 `0x1F`／`0x33`／`0x34`／`0x35`）
 - [第二百三十九輪 game-time effect timeout](./239-game-time-effect-timeout.md)（`READY`：限七-slot clock 與 elapsed-minute effect timeout）
 - [第二百四十輪 REST game-time integration](./240-rest-game-time.md)（`READY`：限 REST_START→slot-1 time advancement）
+- [第二百四十一輪 ECL CLOCK time-step](./241-ecl-clock-time-step.md)（`READY`：限兩 operand 解碼與 State game-time adapter）

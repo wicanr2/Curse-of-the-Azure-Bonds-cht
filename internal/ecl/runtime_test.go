@@ -216,6 +216,19 @@ func TestRunSubsetReportsCombatRequest(t *testing.T) {
 	}
 }
 
+func TestRunSubsetReportsECLClockOperands(t *testing.T) {
+	// ECL CLOCK timeStep=3, timeSlot=1; the reference command loads two
+	// operands before calling step_game_time.
+	block := []byte{0, 0, 0x34, 0, 3, 0, 1, 0}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.ClockRequests) != 1 || result.ClockRequests[0] != (ClockRequest{TimeStep: 3, TimeSlot: 1}) {
+		t.Fatalf("clock result=%+v", result.ClockRequests)
+	}
+}
+
 func TestRunSubsetReportsPictureRequest(t *testing.T) {
 	result, err := RunSubset([]byte{0, 0, 0x0E, 0x00, 0x1D, 0x00}, 0, 10)
 	if err != nil {

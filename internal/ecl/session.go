@@ -146,6 +146,7 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		}
 		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
+		aggregate.ClockRequests = append(aggregate.ClockRequests, result.ClockRequests...)
 		selectionOffset += result.SelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {

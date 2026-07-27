@@ -57,6 +57,11 @@ descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
 numeric values 並繼續 cursor；target selection、saving throw、signed bonus、random
 roll 與 party HP mutation 仍由作品 adapter 實作，避免把 ECL flags 誤當成一般攻擊。
 
+`0x34 ECL CLOCK` 是 reference `vm_LoadCmdSets(2)` 的兩個 numeric operands：
+`timeStep`、`timeSlot`。CoAB 的 bounded VM 現在輸出 raw `ClockRequest`，State 再呼叫
+共用 `AdvanceGameTime(timeSlot, timeStep)`；這個「VM signal → 作品 time adapter」分層
+可重用到其他 Gold Box 遊戲，但各作品仍須重新驗證 slot scale 與事件觸發規則。
+
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
 
