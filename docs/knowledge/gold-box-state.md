@@ -129,8 +129,10 @@ Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor te
 一次性 pending request。CoAB 的 `State.ConsumeDamageRequests()` 會保留五個 raw
 operand 的順序；現在 DOS `saveVerse` `0xDF–0xE3` 已保存到 Character，並可由
 `ResolvePendingECLDamage` 以注入骰點處理 selected／whole-party branches，並由
-`ResolvePendingECLDamageWithHitResolver` 處理 random target。AC／affect save bonus
-與死亡 continuation 仍應由作品 adapter 補上。
+`ResolvePendingECLDamageWithHitResolver` 處理 random target；DOS `field_186` 已納入
+save resolution，`ResolvePendingECLDamageWithDefaultHitResolver` 則提供 fighter／
+equipment AC 與 invisibility 的共用投影。blink／displace／其他 affect 與死亡
+continuation 仍應由作品 adapter 補上。
 
 ## 中文化注意
 

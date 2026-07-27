@@ -70,5 +70,7 @@ ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可�
 五個 operand 順序是 `flags, dice_count, dice_size, damage_bonus, save_flags`；VM
 保存 `DamageRequest` 並繼續 cursor。DOS player `saveVerse` raw bytes 現在由 party
 adapter 保存；selected／whole-party branches 與 random target 可注入 dice／save／hit
-resolver 後寫回 roster HP。AC／invisibility affect、save bonus 與死亡流程仍保留
-boundary。
+resolver 後寫回 roster HP。DOS `field_186` saving bonus 已由 party adapter 保存並
+納入 save threshold；State 的 default hit resolver 也會投影 fighter／equipment AC，
+並套用已證實的 invisibility `0x19`／`0x47` -4 attack roll。blink／displace／其他
+`CheckAffectsEffect` 規則與死亡流程仍保留 boundary。
