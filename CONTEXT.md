@@ -550,3 +550,14 @@ natural 1／20 與注入式 hit resolver；State 提供 resolver variant 並 tra
 roster／fighter HP。新增 party／game regressions 與 READY spec；AC／invisibility affect、
 save-effect bonus 與死亡 continuation 仍保留 boundary。Docker 已通過
 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十四輪功能 commit：`442b51a`，依 reference `CanHitTarget`／`RollSavingThrow`
+補上 DOS player `field_186 @ 0x186` signed saving bonus 的 parser／Character／JSON／
+writeback，並接入 ECL DAMAGE save threshold；State 新增 default hit resolver，使用
+fighter／equipment projected AC 與已證實的 invisibility `0x19`／`0x47` -4 attack roll。
+blink／displace／其他 `CheckAffectsEffect` 與死亡 continuation 仍保留 boundary。
+Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十四輪文件 commit：`efa1056`，更新 README、PLAN、ECL／State 共用知識庫與
+212／213 READY specs，明確區分已完成的 save bonus／AC／invisibility adapter 與後續
+作品專屬效果邊界。
