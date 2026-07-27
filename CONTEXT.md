@@ -447,3 +447,5 @@
 第一百七十一輪功能 commit：`1d292c0`，已推送至 GitHub `main`。依 reference `TryStepForward`／`MapSetDoorUnlocked` 接入 detail `1` unlocked doorway movement 與雙側 `UnlockDoorWrapped` raw mutation；detail `2/3` 保持阻擋。新增 GEO movement／mutation regression、READY 規格與共用 state knowledge。完整 bash／pick／knock menu、技能／骰點／法術消耗與 door graphics 仍保留 boundary。
 
 第一百七十二輪功能 commit：`a6a1622`，已推送至 GitHub `main`。依 reference `Player.thief_skills` 將 DOS record `0xEA–0xF1` 保存到 `DOSPlayerRecord`／`Character`／JSON，提供 `OpenLocksSkill()` index 1 adapter；新增 synthetic parser regression、READY 規格與共用 party/state knowledge。thief skill 重算、pick-lock dice、door menu、bash／knock 與完整 DOS save container 仍保留 boundary。
+
+第一百七十三輪功能 commit 待補：依 reference `pick_lock()`／`Spells.knock` 建立 `internal/dungeon` 的 injected d100 pick-lock resolver 與 Knock `0x1F` first-slot consume；新增死亡角色跳過、inclusive roll、失敗消耗嘗試與 spell removal regression、READY 規格與共用 dungeon knowledge。door mutation、完整 door menu、bash 與 thief skill 重算仍保留 boundary。

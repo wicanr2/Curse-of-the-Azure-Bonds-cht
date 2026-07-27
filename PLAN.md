@@ -305,6 +305,7 @@
 - [x] 解析公開 DOS player record 的 memorized／known spell 欄位，並接到 party spell-slot adapter。
 - [x] 將 DOS known-spell flags 保存到 Character／party save，並在 CAMP MAGIC 顯示已記憶／可用數量。
 - [x] 解析公開 DOS player record 的單職業核心欄位，接到 party／combat projection。
+- [x] 將已保存的 DOS open-locks skill 接成注入 d100 的 pick-lock transaction 與 Knock `0x1F` slot 消耗核心；door UI／bash 仍待完成。
 - [x] 解碼 DOS `.SWG` item records，接到 party equipment projection。
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
 - [x] 修正 `.FX` duration／strength 欄位並建立 finite/permanent duration tick adapter。
