@@ -85,6 +85,9 @@ func (s *State) selectTraining(originalChoice string) error {
 		s.trainingSpellMenu = false
 		s.Mode = ModeDungeon
 		s.Message = ""
+		s.Prompt = ""
+		s.Choices = nil
+		s.currentOriginalChoices = nil
 		return nil
 	case "TRAIN_CONFIRM":
 		return s.applyTraining(s.trainingCharacterIndex)

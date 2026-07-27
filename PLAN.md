@@ -406,7 +406,7 @@
 - [x] 依 ECL2 terrain `0x8C` 與 `ovr018.train_player` 接通 Tilverton `(5,2)` 訓練場：
   保存 DOS 32-bit XP、六職業經驗門檻、角色自身 1000 GP 付款、class level 與 HP 成長；
   高等級 fixed HP、種族上限、完整多職業 CON 與 dual-class HP gate 已由後續輪次
-  補齊，目前升級選法術仍待 spellCastCount 模型。
+  補齊，升級選法術與 spellCastCount 模型也已於第 289 輪完成。
 - [x] 依 `sub_509E0`／`get_con_hp_adj`／`Limits.RaceClassLimit` 補齊訓練 hit-dice
   上限後固定 HP、跨職業 Constitution 與種族職業上限；real-image regression 已從
   ECL2／GEO2 `(5,2)` 跑過付款、升級並返回同格。
@@ -416,3 +416,6 @@
 - [x] 保存 DOS `spellCastCount[3,5] @ 0x12D..0x13B`，依 MU／ranger level tables
   重算容量，並將 1..5 級、容量可用且尚未知的法術接成繁中訓練選單與 KnownSpells
   writeback；9 級遊俠同時包含 druid／magic-user 候選。
+- [x] 依 GEO2 `(6,10)` selector `0x88` 接通提爾佛頓酒館 PICTURE 4、飲料選單、
+  紫色腰帶女子與調查分支；華麗匕首事件會解鎖手札 17，並以 640×480／24px 中文
+  獨立事件版面避免 HUD 與原始像素圖重疊。

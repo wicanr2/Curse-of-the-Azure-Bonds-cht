@@ -1131,6 +1131,9 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeDungeon
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
+			s.Prompt = ""
+			s.Choices = nil
+			s.currentOriginalChoices = nil
 			return nil
 		}
 		if len(result.Text) > 0 {
@@ -4517,6 +4520,18 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("no", "否")
 	case "TELL THE TRUTH":
 		return catalog.Text("tell_truth", "如實相告")
+	case "PUNCH BARKEEP":
+		return catalog.Text("tavern_punch", "揍酒保")
+	case "HAVE A DRINK":
+		return catalog.Text("tavern_drink", "喝一杯")
+	case "DRAGON'S BREATH":
+		return catalog.Text("tavern_dragon_breath", "龍息酒")
+	case "BASILISK":
+		return catalog.Text("tavern_basilisk", "石化蜥蜴酒")
+	case "LEMONADE":
+		return catalog.Text("tavern_lemonade", "檸檬水")
+	case "WHISKEY":
+		return catalog.Text("tavern_whiskey", "威士忌")
 	case "LIE":
 		return catalog.Text("lie", "說謊")
 	case "ENTER CITY":
@@ -4531,8 +4546,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("store", "Store")
 	case "BAR":
 		return catalog.Text("bar", "Bar")
-	case "LEAVE":
-		return catalog.Text("leave", "Leave")
+	case "LEAVE", "Leave":
+		return catalog.Text("leave", "離開")
 	case "SHADOWDALE":
 		return catalog.Text("shadowdale", "Shadowdale")
 	case "ASHABENFORD":
@@ -4613,6 +4628,13 @@ func (s *State) unlockJournalEntries(texts []string) {
 					"與暗影谷一位強大賢者有令人不安的相似之處；為了自身安全，她不願再多說。"),
 		})
 	}
+	if strings.Contains(joined, "ORNATE KNIFE") && strings.Contains(joined, "17.") {
+		s.appendJournalPages("手札條目 17：", []string{s.catalog.Text(
+			"journal_entry_17",
+			"手札條目 17：巷子裡只留下一把華麗匕首。它有深色握柄、寬大的護手，"+
+				"刀刃呈不規則火焰形；原手札在此畫出匕首外觀，這正是追查「火刀」組織的重要線索。",
+		)})
+	}
 }
 
 func (s *State) appendJournalPages(marker string, pages []string) {
@@ -4632,6 +4654,30 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_training_progress", "你們的進步很大。準備好時再回來，")
 	case "YOU ARE READY.' YOU EXIT THE HALL.":
 		return catalog.Text("ecl_training_exit", "你們離開了訓練場。")
+	case "'WHAT'S YOUR PLEASURE?'":
+		return catalog.Text("ecl_tavern_pleasure", "「幾位想來點什麼？」")
+	case "'A SPECIAL CUSTOMER'S ARRIVED. YOU HAVE TO SLIP":
+		return catalog.Text("ecl_tavern_special_1", "「有位特別的客人到了。你們得暫時")
+	case "OUTSIDE FOR A MOMENT.' DO YOU GO?":
+		return catalog.Text("ecl_tavern_special_2", "到外面等一下。」你們要出去嗎？")
+	case "AS YOU BEGIN TO WALK OUT THE DOOR, YOU SEE A":
+		return catalog.Text("ecl_tavern_purple_1", "你們正要走出門時，看見一名")
+	case "YOUNG WOMAN WITH A PURPLE SASH SLIP IN THE SIDE DOOR.":
+		return catalog.Text("ecl_tavern_purple_2", "繫著紫色腰帶的年輕女子溜進側門。")
+	case "A FEW OF THE OTHER PATRONS HANG BACK, AS IF TO MEET HER.":
+		return catalog.Text("ecl_tavern_purple_3", "另有幾名酒客刻意留下，似乎正等著與她會面。")
+	case "AS YOU CONSIDER YOUR NEXT MOVE, YOU HEAR A":
+		return catalog.Text("ecl_tavern_commotion_1", "你們正盤算下一步時，聽見")
+	case "COMMOTION AROUND THE SIDE OF THE BUILDING. DO YOU GO":
+		return catalog.Text("ecl_tavern_commotion_2", "建築側邊傳來騷動。要前去")
+	case "TO INVESTIGATE?":
+		return catalog.Text("ecl_tavern_commotion_3", "調查嗎？")
+	case "THERE IS NOTHING HERE NOW, EXCEPT FOR AN ORNATE":
+		return catalog.Text("ecl_tavern_knife_1", "這裡如今空無一人，只留下一把華麗")
+	case "KNIFE":
+		return catalog.Text("ecl_tavern_knife_2", "匕首")
+	case "17.":
+		return catalog.Text("ecl_tavern_journal_17", "第 17 條。")
 	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
 		return catalog.Text("ecl_new_game_awaken", "你們在一間小房間裡醒來。環顧四周，你們注意到")
 	case "THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.":

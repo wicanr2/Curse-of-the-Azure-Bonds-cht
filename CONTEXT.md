@@ -1080,3 +1080,12 @@ Character／JSON／raw patch round-trip。訓練依 `MU_spell_lvl_learn` 與 ran
 monster／cleric 與已知法術。magic-user 升級及 ranger 新等級大於 8 會顯示不可取消的
 繁中法術選單，選一個加入 KnownSpells；9 級遊俠 regression 同時鎖定 druid 與
 magic-user 候選。
+
+第二百九十輪成果：GEO2 `(6,10)` terrain `0x88` 的真實提爾佛頓酒館已接通
+PICTURE 4／HEAD4／BODY4、酒館動作與四種飲料選單。`LEMONADE → YES` 會走過紫色
+腰帶女子及側邊騷動，調查後找到華麗火焰形匕首；Adventure Journal Entry 17 原本只有
+插圖，因此遊戲內手札使用忠實的中文圖像描述，不杜撰額外劇情。real-image regression
+鎖定完整分支、手札解鎖、EXIT 返回同格及 stale choice 清理。新增 `-tavern` 重現入口與
+`tilverton-tavern.png`；事件畫面改成獨立 640×480 layout，原始圖 3× nearest-neighbor、
+中文 24px 直接重繪，修正探索 HUD 與人物圖重疊。共用知識庫同步記錄 16×15／24×24
+中文字級與圖片、文字分離 pipeline。
