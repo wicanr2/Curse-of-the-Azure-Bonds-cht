@@ -395,8 +395,14 @@ func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
 	state.partyRoster[0].HitPoints = 6
 	state.partyRoster[0].Gold = 321
 	state.partyRoster[0].SpellSlots = []uint8{0x02, 0x04}
+	if err := os.WriteFile(directory+"/CHRDATC2.sav", record, 0o600); err != nil {
+		t.Fatal(err)
+	}
 	if err := state.SaveSAVGAMSlot(directory, 'C'); err != nil {
 		t.Fatal(err)
+	}
+	if _, err := os.Stat(directory + "/CHRDATC2.sav"); !os.IsNotExist(err) {
+		t.Fatalf("stale player file was not removed, stat error=%v", err)
 	}
 	savedRecord, err := os.ReadFile(directory + "/CHRDATC1.sav")
 	if err != nil {

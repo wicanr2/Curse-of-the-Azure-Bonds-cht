@@ -385,10 +385,47 @@ func (s *State) SaveSAVGAMSlot(directory string, key byte) error {
 	if err != nil {
 		return err
 	}
+	backup, err := os.MkdirTemp(directory, ".savgam-backup-*")
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(backup)
+	fileNames := []string{prefixName}
+	for index := 1; index <= 6; index++ {
+		base := fmt.Sprintf("CHRDAT%c%d", key, index)
+		fileNames = append(fileNames, base+".sav", base+".swg", base+".fx")
+	}
+	backedUp := make([]string, 0, len(fileNames))
+	for _, name := range fileNames {
+		target := filepath.Join(directory, name)
+		if _, statErr := os.Stat(target); os.IsNotExist(statErr) {
+			continue
+		} else if statErr != nil {
+			return statErr
+		}
+		if err := os.Rename(target, filepath.Join(backup, name)); err != nil {
+			for _, restored := range backedUp {
+				_ = os.Rename(filepath.Join(backup, restored), filepath.Join(directory, restored))
+			}
+			return fmt.Errorf("backup SAVGAM file %s: %w", name, err)
+		}
+		backedUp = append(backedUp, name)
+	}
+	installed := make([]string, 0, len(entries))
+	rollback := func() {
+		for _, name := range installed {
+			_ = os.Remove(filepath.Join(directory, name))
+		}
+		for _, name := range backedUp {
+			_ = os.Rename(filepath.Join(backup, name), filepath.Join(directory, name))
+		}
+	}
 	for _, entry := range entries {
 		if err := os.Rename(filepath.Join(stage, entry.Name()), filepath.Join(directory, entry.Name())); err != nil {
+			rollback()
 			return fmt.Errorf("replace SAVGAM file %s: %w", entry.Name(), err)
 		}
+		installed = append(installed, entry.Name())
 	}
 	s.savgamPrefix = &container
 	return nil
