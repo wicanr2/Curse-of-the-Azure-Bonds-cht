@@ -440,4 +440,4 @@
 
 第一百六十八輪功能 commit：`5cc1b42`，已推送至 GitHub `main`。依 reference `ovr017` 5-byte map segment 將 `mapWallType`／`mapWallRoof` 接入 remake save version 4；wrapped GEO refresh 會在位置／方向變更後重算，v3 舊檔 cache 回到 0。新增 save codec／game adapter round-trip 與 v3 compatibility regression、READY 規格及共用 state knowledge。完整 `SAVGAM?.DAT` container、slot、Area／ECL memory 與 player records 仍保留 boundary。
 
-第一百六十九輪待提交：解碼 Area1 `0x1FA/0x1FC` outdoor／indoor sky colour，依 `mapWallRoof > 0x7F` 接入 dungeon preview EGA sky background；新增 Area codec regression、READY 規格與共用 state knowledge。完整 `Draw3dWorldBackground`、roof geometry、door overlay 與原版 save container 仍保留 boundary。
+第一百六十九輪功能 commit：`f714494`，已推送至 GitHub `main`。解碼 Area1 `0x1FA/0x1FC` outdoor／indoor sky colour，依 `mapWallRoof > 0x7F` 接入 dungeon preview EGA sky background；新增 Area codec regression、READY 規格與共用 state knowledge。完整 `Draw3dWorldBackground`、roof geometry、door overlay 與原版 save container 仍保留 boundary。
