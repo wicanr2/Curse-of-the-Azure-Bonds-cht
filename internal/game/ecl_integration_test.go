@@ -118,6 +118,19 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		}
 	}
 	state := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	guardBlocks, err := dax.Parse(zipData(t, image, "MON2CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	guardRecords := make(map[uint8]monster.Record, len(guardBlocks))
+	for _, block := range guardBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		guardRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(2, guardRecords)
 	if err := state.Apply(ActionStart); err != nil {
 		t.Fatal(err)
 	}
@@ -703,6 +716,132 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		len(state.Choices) != 0 {
 		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want same cell",
 			state.Mode, state.DungeonX, state.DungeonY, state.Message, state.Choices, state.currentOriginalChoices)
+	}
+	// Keep the single generated integration-test hero alive while five real
+	// Royal Guards take their opening turns. A normal campaign has a full party.
+	hero := state.PartyFighters()[0]
+	hero.HitPoints, hero.MaxHitPoints = 200, 200
+	hero.ArmorClass = -10
+	hero.InitiativeBonus = 100
+	hero.AttackBonus = 100
+	hero.DamageDiceCount, hero.DamageDiceSides, hero.DamageBonus = 1, 1, 100
+	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
+		t.Fatal(err)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 0, 0
+	state.DungeonWallType, _ = grid.WallWrapped(1, 0, 0)
+	state.DungeonWallRoof = grid.CellWrapped(1, 0).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "皇家衛兵") || !strings.Contains(state.Message, "暫時封閉") {
+		t.Fatalf("first city-gate block mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 1 || state.DungeonY != 0 {
+		t.Fatalf("first city-gate return mode=%v position=(%d,%d)",
+			state.Mode, state.DungeonX, state.DungeonY)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 11 ||
+		state.SceneHeadBlock != 0xFF || !strings.Contains(state.Message, "皇家馬車") {
+		t.Fatalf("royal carriage picture mode=%v picture=%v:%d head=%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.SceneHeadBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "讓路") {
+		t.Fatalf("royal carriage first pause mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "青色印記") || !strings.Contains(state.Message, "迫使") {
+		t.Fatalf("royal carriage compulsion message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "不是真正的國王") || !strings.Contains(state.Message, "又來了") {
+		t.Fatalf("royal carriage false king message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "警鐘") || !strings.Contains(state.Message, "拔劍") {
+		t.Fatalf("royal carriage alarm message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatFighters()) != 6 ||
+		len(state.CombatTargets()) != 5 {
+		t.Fatalf("Royal Guard combat mode=%v active=%v fighters=%v targets=%v",
+			state.Mode, state.CombatActive(), state.CombatFighters(), state.CombatTargets())
+	}
+	for turn := 0; turn < 10 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
+		!strings.Contains(state.Message, "紅袍人") || !strings.Contains(state.Message, "小巷") {
+		t.Fatalf("Royal Guard victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
+		!strings.Contains(state.Message, "投降") {
+		t.Fatalf("surrender prompt choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 1 || !strings.Contains(state.Message, "牢房") {
+		t.Fatalf("jail pause choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 2 ||
+		state.SceneHeadBlock != 2 || state.SceneBodyBlock != 2 ||
+		!strings.Contains(state.Message, "盜賊") || !strings.Contains(state.Message, "裝備") {
+		t.Fatalf("thief rescue picture mode=%v picture=%v:%d head/body=%d/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "盜賊") {
+		t.Fatalf("thief rescue pause mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "隱密通道") || !strings.Contains(state.Message, "盜賊公會") {
+		t.Fatalf("thieves guild arrival message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x02 ||
+		state.DungeonX != 1 || state.DungeonY != 12 || len(state.Choices) != 0 {
+		t.Fatalf("thieves guild transition mode=%v block=%#x position=(%d,%d) choices=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.Choices)
 	}
 }
 

@@ -1099,3 +1099,13 @@ Journal Entry 19。使用者提供的 Adventure Journal 掃描 PDF 證實完整�
 每行 22 個 Unicode 字元，24px 中文不再超出右邊界。Gold Box command-set 知識庫也
 修正 CALL 的過期「未實作」斷言，新增五層 opcode 支援矩陣、signal exactly-once
 時序與 ECL／engine memory ownership 表。
+
+第二百九十二輪成果：正式新遊戲 session 已跑通 Tilverton `(1,0)` 皇家馬車主線。
+Weaponers、Filani 與第一次城門警告是原 ECL memory 條件；第二次進入才顯示 PICTURE 11，
+國王聲音使青色枷發光並強迫隊伍攻擊。整合測試載入 `MON2CHA.DAX`，要求建立單一
+test hero 加五名 Royal Guard 的 active battle，不再接受「戰鬥規則尚未完成」占位；
+以真實 combat actions 勝利後，續跑紅袍人劫走假國王、YES／NO 投降、牢房、
+PICTURE 2／HEAD2／BODY2 盜賊救援與 Thieves' Guild 描述，最後確認 `NEWECL 0x02`
+及 `(1,12,0)` map registers。新增 `-carriage` 正式條件 bootstrap、READY spec 292、
+完整繁中敘事與 640×480 `tilverton-carriage.png` README 實機圖。共用 ECL 知識庫新增
+「location state → combat boundary → pauses → chapter switch」不得 fresh-reset 的契約。

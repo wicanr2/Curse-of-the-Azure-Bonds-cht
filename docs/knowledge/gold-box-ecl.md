@@ -65,6 +65,13 @@ SearchLocation 是 GEO 與 script 的橋接：CoAB 由目前 cell／facing 產�
 `C04B..C04F`，ECL 再以 `C04F & 0x7F → GETTABLE → ON GOTO` 派送事件。共用 VM只實作
 memory 與 control flow；各作品 adapter 負責座標、half-direction、wall 與 terrain 語意。
 
+SearchLocation 的 plot state 必須留在 resumable ECL memory。Tilverton 城門 `(1,0)`
+已證實同一座標第一次只顯示封路警告；在 Weaponers 與 Filani flags 都成立且警告已發生
+後，第二次才進入 PICTURE 11／Royal Guard COMBAT。戰後 YES surrender 再經 jail、
+PICTURE 2 與 `NEWECL 0x02`，最後由 script 將 map registers 寫成 `(1,12,0)`。這種
+「場所條件 → combat engine boundary → 多個 pause → chapter switch」不能拆成 renderer
+旗標，也不能在 combat victory 後重建 fresh runtime，否則會遺失投降與章節轉場。
+
 `ROB (0x28)` 是三 operand party mutation，不是單純文字「付款」：scope 為 selected
 member／all party；第二 operand 是損失百分比，各 coin 以
 `floor(count × (100-loss)/100)` 獨立縮減；第三 operand 是逐 item 的 `1d100` 偷竊率。

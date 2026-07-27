@@ -4606,6 +4606,60 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"他同情地聽完你們的遭遇，接著施展移除詛咒法術；你們將結果記入冒險手札第 19 條。",
 		)
 	}
+	switch {
+	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
+		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
+		return catalog.Text(
+			"ecl_carriage_gate_closed",
+			"你們遇上一隊皇家衛兵。他們說國王的馬車即將抵達，此路暫時封閉，並把你們遣回城內。",
+		)
+	case strings.Contains(joined, "MAKE WAY FOR THE ROYAL CARRIAGE"):
+		return catalog.Text(
+			"ecl_carriage_make_way",
+			"你們再次遇上皇家衛兵。他們高喊：「讓路！皇家馬車即將通過！」",
+		)
+	case strings.Contains(joined, "KING'S VOICE COMING FROM THE CARRIAGE") &&
+		strings.Contains(joined, "COMPULSION TO ATTACK"):
+		return catalog.Text(
+			"ecl_carriage_bond_compulsion",
+			"國王的聲音從馬車裡傳來。你們手臂上的青色印記突然發出強光，一股無法抗拒的力量迫使你們攻擊皇家馬車！",
+		)
+	case strings.Contains(joined, "I'M NOT REALLY THE KING") &&
+		strings.Contains(joined, "OH NO! NOT AGAIN"):
+		return catalog.Text(
+			"ecl_carriage_false_king",
+			"馬車撤退時，一名年輕男子探出身子，沙啞地喊：「別殺我，我不是真正的國王！」"+
+				"他看見你們的青色印記後驚叫：「不！怎麼又來了！」隨即昏倒在車內，印記的光芒也逐漸消退。",
+		)
+	case strings.Contains(joined, "LOUD BELL STARTS RINGING") &&
+		strings.Contains(joined, "SWORDS DRAWN"):
+		return catalog.Text(
+			"ecl_carriage_alarm",
+			"身後響起刺耳警鐘，皇家衛兵拔劍朝你們衝來。",
+		)
+	case strings.Contains(joined, "TWO RED ROBED MEN JUMP THE CARRIAGE") &&
+		strings.Contains(joined, "DRAG HIM INTO AN ALLEYWAY"):
+		return catalog.Text(
+			"ecl_carriage_abduction",
+			"越過衝鋒的衛兵，你們看見兩名紅袍人跳上馬車，把那名瘦弱男子拖出來，拉進一條小巷。",
+		)
+	case strings.Contains(joined, "DO YOU SURRENDER"):
+		return catalog.Text("ecl_carriage_surrender", "一名衛兵喝問：「你們投降嗎？」")
+	case strings.Contains(joined, "YOU ARE THROWN IN JAIL"):
+		return catalog.Text("ecl_carriage_jailed", "你們被投入牢房。")
+	case strings.Contains(joined, "ONE WALL SLIDES OPEN AND A THIEF APPEARS") &&
+		strings.Contains(joined, "SIGNALS YOU TO FOLLOW HIM"):
+		return catalog.Text(
+			"ecl_carriage_thief_rescue",
+			"幾個小時後，一面牆悄然滑開，一名盜賊現身。他歸還你們的裝備，示意眾人跟上。",
+		)
+	case strings.Contains(joined, "LEADS YOU THROUGH HIDDEN PASSAGES") &&
+		strings.Contains(joined, "THE THIEVES' GUILD"):
+		return catalog.Text(
+			"ecl_carriage_guild_arrival",
+			"那人領著你們穿過隱密通道，最後來到一處陰暗的地下區域——提爾佛頓盜賊公會。",
+		)
+	}
 	localized := make([]string, 0, len(texts))
 	for _, text := range texts {
 		localized = append(localized, localizeECLLine(catalog, text))

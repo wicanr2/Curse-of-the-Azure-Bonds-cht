@@ -269,3 +269,4 @@
 - [第二百八十九輪訓練升級選法術](./289-training-spell-choice.md)（`READY`：限 DOS spellCastCount、MU／ranger 候選與 KnownSpells writeback）
 - [第二百九十輪提爾佛頓酒館與手札 17](./290-tilverton-tavern-journal-17.md)（`READY`：限 selector `0x88`、紫色腰帶女子、華麗匕首與手札解鎖）
 - [第二百九十一輪提爾佛頓高階祭司與手札 19](./291-tilverton-high-priest-journal-19.md)（`READY`：限 selector `0x8F`、Remove Curse、手札解鎖與 640×480 中文事件版面）
+- [第二百九十二輪皇家馬車與盜賊公會轉場](./292-tilverton-carriage-guild-transition.md)（`READY`：限城門條件、五名皇家衛兵戰鬥、投降與 ECL block 2 transition）

@@ -1422,6 +1422,7 @@ func main() {
 	training := flag.Bool("training", false, "start at Tilverton's Hall of Training through the formal ECL flow")
 	tavern := flag.Bool("tavern", false, "start at Tilverton's tavern through the formal ECL flow")
 	highPriest := flag.Bool("high-priest", false, "start at Tilverton's high priest through the formal ECL flow")
+	carriage := flag.Bool("carriage", false, "start at Tilverton's royal-carriage main-story event through the formal ECL flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1578,9 +1579,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern/-high-priest cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern/-high-priest/-carriage cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1591,7 +1592,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest {
+		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1600,6 +1601,11 @@ func main() {
 			}
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
+			}
+			if *carriage {
+				if err := prepareCarriagePreview(&state, geoGrid); err != nil {
+					log.Fatal(err)
+				}
 			}
 			x, y, direction := 6, 13, uint8(6)
 			if *filani {
@@ -1614,12 +1620,16 @@ func main() {
 				x, y, direction = 6, 10, 0
 			} else if *highPriest {
 				x, y, direction = 1, 10, 0
+			} else if *carriage {
+				x, y, direction = state.DungeonX, state.DungeonY, state.DungeonDirection
 			}
-			state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
-			state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
-			state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
-			if err := state.RunDungeonLifecycle(); err != nil {
-				log.Fatal(err)
+			if !*carriage {
+				state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
+				state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
+				state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
+				if err := state.RunDungeonLifecycle(); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	}
@@ -1633,6 +1643,57 @@ func main() {
 	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func prepareCarriagePreview(state *game.State, grid *geo.Grid) error {
+	enter := func(x, y int) error {
+		state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, 0
+		state.DungeonWallType, _ = grid.WallWrapped(x, y, 0)
+		state.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+		return state.RunDungeonLifecycle()
+	}
+
+	// Visit Weaponers through the real shop service, then leave without buying.
+	if err := enter(2, 12); err != nil {
+		return fmt.Errorf("prepare carriage Weaponers: %w", err)
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	if err := state.Select(0); err != nil {
+		return err
+	}
+	if err := state.Select(8); err != nil {
+		return err
+	}
+	if err := state.Select(0); err != nil {
+		return err
+	}
+
+	// Tell Filani the truth through the real ROB／Journal 38 path.
+	if err := enter(6, 5); err != nil {
+		return fmt.Errorf("prepare carriage Filani: %w", err)
+	}
+	if err := state.Continue(); err != nil {
+		return err
+	}
+	for _, selection := range []int{0, 0, 0, 0} {
+		if err := state.Select(selection); err != nil {
+			return err
+		}
+	}
+
+	// The first gate visit records the warning; the second starts the carriage.
+	if err := enter(1, 0); err != nil {
+		return fmt.Errorf("prepare carriage first gate: %w", err)
+	}
+	if err := state.Select(0); err != nil {
+		return err
+	}
+	if err := enter(1, 0); err != nil {
+		return fmt.Errorf("prepare carriage second gate: %w", err)
+	}
+	return nil
 }
 
 func animationFrame(frames []combatAnimation, elapsed time.Duration) combatAnimation {
