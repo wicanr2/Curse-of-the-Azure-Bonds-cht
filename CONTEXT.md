@@ -487,3 +487,5 @@
 第一百九十一輪功能 commit：`a9806e9`，將城市商店 SELL 接入繁中 Shop Menu，依已解碼 item `Value` 將非 readied／非 cursed 物品售出並將 GP 放入 party pool；新增 menu／transaction regression、繁中 locale、READY 規格與共用 shop knowledge。城市 stock／ID／鑑定 routine 仍保留 boundary。
 
 第一百九十二輪功能 commit：`befdc61`，將既有 `PayIdentifyFee` 接入繁中 Shop Menu，完成角色／物品選擇與 200 GP ID transaction，保留 `HiddenNameFlags` 與未解碼 magic result；新增 regression、locale、READY 規格與 shop knowledge。
+
+第一百九十三輪功能 commit：`00682ff`，修正 `BlockSession` 跨 `NEWECL` 遺失 `LOAD FILES`／`PICTURE`／`SPELL`／`PROTECTION` 結果的問題；新增跨三個 synthetic ECL block 的 signal regression。`go test ./internal/ecl` 已於 Docker 通過；完整 `go test ./...` 仍受容器缺少 ALSA／X11 headers 及既存 game integration failure 影響。
