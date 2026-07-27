@@ -479,3 +479,5 @@
 第一百八十七輪功能 commit：`b40587c`，將 loaded SAVGAM slot 接到 Ebiten F5 與 CAMP SAVE；`-savgam-dir/-savgam-slot` 模式寫回同一 slot，一般模式維持 remake JSON。新增 workflow 規格與 README／PLAN／state knowledge 更新；原版刪檔、多職業、未知 sidecar 與跨檔案 atomic transaction 仍保留 boundary。
 
 第一百八十八輪功能 commit：`ce606ad`，依已知 `SaveGame` side effect，將 SAVGAM slot 的 prefix 與 `CHRDAT{key}{1..6}` 檔案先移入 backup，再替換 staged bundle；隊伍縮編的 stale player sidecars 會被清理，替換失敗可 rollback。新增 stale-file regression 與 READY 規格；多職業、未知欄位與完整 player serialization 仍保留 boundary。
+
+第一百八十九輪功能 commit：`84def37`，修正戰鬥結束時只同步 renderer-facing party、未同步持久 `partyRoster` 的狀態問題；現在 HP／MaxHP 會依 fighter ID 回寫 roster，供 CAMP 與兩種 save path 使用，並新增 regression／READY 規格與 state knowledge。
