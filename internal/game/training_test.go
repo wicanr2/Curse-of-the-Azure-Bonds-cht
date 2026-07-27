@@ -94,3 +94,52 @@ func TestTrainingEnforcesRaceClassLevelLimit(t *testing.T) {
 		t.Fatalf("strong dwarf eligibility=%v level=%d, want level 7 trainable", eligible, level)
 	}
 }
+
+func TestDualClassTrainingSuppressesHPUntilOldLevelExceeded(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.partyRoster = party.Roster{{
+		Name: "轉職者", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 2,
+		ClassLevels: [8]uint8{5: 2}, Experience: 5001,
+		HitDice: 2, MulticlassLevel: 5,
+		HitPoints: 12, MaxHitPoints: 12, Platinum: 400,
+		HealthStatus: party.HealthStatusOK,
+		Abilities:    party.Abilities{Constitution: 16},
+	}}
+	state.enterTrainingMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	got := state.partyRoster[0]
+	if got.Level != 3 || got.HitDice != 3 || got.HitPoints != 12 || got.MaxHitPoints != 12 {
+		t.Fatalf("dual-class gate level=%d hitDice=%d HP=%d/%d, want 3/3 and unchanged",
+			got.Level, got.HitDice, got.HitPoints, got.MaxHitPoints)
+	}
+}
+
+func TestDualClassTrainingRestoresHPAfterOldLevelExceeded(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.fixSeed = 11
+	state.partyRoster = party.Roster{{
+		Name: "轉職者", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 5,
+		ClassLevels: [8]uint8{5: 5}, Experience: 40001,
+		HitDice: 5, MulticlassLevel: 5,
+		HitPoints: 12, MaxHitPoints: 12, Platinum: 400,
+		HealthStatus: party.HealthStatusOK,
+		Abilities:    party.Abilities{Constitution: 16},
+	}}
+	state.enterTrainingMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	got := state.partyRoster[0]
+	if got.Level != 6 || got.HitDice != 6 || got.MaxHitPoints <= 12 {
+		t.Fatalf("dual-class recovery level=%d hitDice=%d HP=%d/%d, want 6/6 and HP growth",
+			got.Level, got.HitDice, got.HitPoints, got.MaxHitPoints)
+	}
+}
