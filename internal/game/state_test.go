@@ -1572,6 +1572,19 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	}
 }
 
+func TestMonsterRecordsFollowCurrentECLChapter(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{
+		3: append([]byte{0, 0}, make([]byte, 32)...),
+	}, 3)
+	state.SetMonsterRecords(map[uint8]monster.Record{7: {Name: "ECL1 fallback"}})
+	state.SetMonsterRecordsForECL(2, map[uint8]monster.Record{7: {Name: "ECL2 monster"}})
+	state.SetMonsterRecordsForECL(1, map[uint8]monster.Record{7: {Name: "ECL1 monster"}})
+	records := state.monsterRecordsForCurrentECL()
+	if records[7].Name != "ECL2 monster" {
+		t.Fatalf("records=%#v, want ECL2 table", records)
+	}
+}
+
 func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness

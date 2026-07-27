@@ -1238,6 +1238,18 @@ func main() {
 		log.Fatal(err)
 	}
 	state.SetMonsterRecords(monsterRecords)
+	for chapter := uint8(1); chapter <= 6; chapter++ {
+		member := fmt.Sprintf("MON%dCHA.DAX", chapter)
+		data, loadErr := zipMember(*imagePath, member)
+		if loadErr != nil {
+			log.Fatal(loadErr)
+		}
+		records, parseErr := loadMonsterRecords(data)
+		if parseErr != nil {
+			log.Fatal(parseErr)
+		}
+		state.SetMonsterRecordsForECL(chapter, records)
+	}
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
 		log.Printf("sound disabled: %v", soundErr)

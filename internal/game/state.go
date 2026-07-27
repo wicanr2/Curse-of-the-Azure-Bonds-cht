@@ -143,6 +143,7 @@ type State struct {
 	combatViewFighterID    string
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
+	monsterRecordsByECL    map[uint8]map[uint8]monster.Record
 	itemCatalog            monster.BaseItemCatalog
 	itemCatalogReady       bool
 	ammunitionItemTypes    map[uint8][]uint8
@@ -456,6 +457,52 @@ func (s *State) SetMonsterRecords(records map[uint8]monster.Record) {
 	}
 }
 
+// SetMonsterRecordsForECL installs the MON*CHA table for one original ECL
+// chapter. Monster IDs are chapter-local in the DOS image, so merging all six
+// tables into one map would allow a valid ID to resolve to the wrong monster.
+func (s *State) SetMonsterRecordsForECL(chapter uint8, records map[uint8]monster.Record) {
+	if chapter < 1 || chapter > 6 {
+		return
+	}
+	if s.monsterRecordsByECL == nil {
+		s.monsterRecordsByECL = make(map[uint8]map[uint8]monster.Record)
+	}
+	copyRecords := make(map[uint8]monster.Record, len(records))
+	for id, record := range records {
+		copyRecords[id] = record
+	}
+	s.monsterRecordsByECL[chapter] = copyRecords
+}
+
+// monsterChapterForBlock follows the observed global ECL block namespaces:
+// ECL2 uses 0x00..0x0F, ECL3 0x10..0x1F, through ECL6 0x40..0x4F, while
+// ECL1 occupies 0x50..0x5F and its additional blocks.
+func monsterChapterForBlock(blockID uint8) uint8 {
+	switch {
+	case blockID >= 0x50:
+		return 1
+	case blockID >= 0x40:
+		return 6
+	case blockID >= 0x30:
+		return 5
+	case blockID >= 0x20:
+		return 4
+	case blockID >= 0x10:
+		return 3
+	default:
+		return 2
+	}
+}
+
+func (s *State) monsterRecordsForCurrentECL() map[uint8]monster.Record {
+	if s.session != nil && len(s.monsterRecordsByECL) > 0 {
+		if records := s.monsterRecordsByECL[monsterChapterForBlock(s.session.CurrentBlockID())]; len(records) > 0 {
+			return records
+		}
+	}
+	return s.monsterRecords
+}
+
 // SetItemCatalog installs the decoded original ITEMS table. Until this is
 // called, old party/save paths retain their equipment-neutral projection.
 func (s *State) SetItemCatalog(catalog monster.BaseItemCatalog) {
@@ -641,8 +688,9 @@ func (s *State) Select(index int) error {
 			return nil
 		}
 		if result.CombatRequested {
-			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(s.monsterRecords) > 0 {
-				if err := s.StartEncounter(result, s.monsterRecords, s.party, s.combatSeed); err != nil {
+			records := s.monsterRecordsForCurrentECL()
+			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+				if err := s.StartEncounter(result, records, s.party, s.combatSeed); err != nil {
 					return err
 				}
 				return nil
