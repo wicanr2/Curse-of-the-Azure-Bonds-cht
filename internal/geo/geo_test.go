@@ -61,6 +61,21 @@ func TestWrappedDungeonMovementCrossesMapEdge(t *testing.T) {
 	}
 }
 
+func TestWallDoorFlagsWrappedMirrorsReferenceDefaultAndDetail(t *testing.T) {
+	var grid Grid
+	if got, ok := grid.WallDoorFlagsWrapped(0, 0, 0); !ok || got != 1 {
+		t.Fatalf("open edge flag=(%d,%t), want (1,true)", got, ok)
+	}
+	grid.Cells[0][0].WallDirections[0] = 4
+	grid.Cells[0][0].DetailDirections[0] = 3
+	if got, ok := grid.WallDoorFlagsWrapped(0, 0, 0); !ok || got != 3 {
+		t.Fatalf("walled detail flag=(%d,%t), want (3,true)", got, ok)
+	}
+	if _, ok := grid.WallDoorFlagsWrapped(0, 0, 1); ok {
+		t.Fatal("diagonal door flag direction should be rejected")
+	}
+}
+
 func TestOriginalGEOBlocksHaveKnownShape(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

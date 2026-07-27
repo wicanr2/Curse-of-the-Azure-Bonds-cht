@@ -750,6 +750,10 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		return
 	}
 	ebitenutil.DrawRect(screen, 350, 40, 290, 165, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
+	doorFlags, doorFlagsOK := uint8(0), false
+	if a.geoGrid != nil {
+		doorFlags, doorFlagsOK = a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
+	}
 	const (
 		viewWidth  = 13
 		viewHeight = 5
@@ -775,8 +779,11 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
 	text.Draw(screen, "目前為 "+a.geoLabel+" map position ("+strconv.Itoa(a.dungeonX)+","+strconv.Itoa(a.dungeonY)+")、facing "+dungeonDirectionName(a.state.DungeonDirection)+" 的 floor slice", a.face, 24, 245, white)
 	text.Draw(screen, fmt.Sprintf("mapWallType=%02X　mapWallRoof=%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 262, white)
+	if a.state.DungeonWallType != 0 && doorFlagsOK {
+		text.Draw(screen, fmt.Sprintf("WallDoorFlags=%d（GEO x3 detail）", doorFlags), a.face, 24, 279, white)
+	}
 	if a.pieceLabel != "" {
-		text.Draw(screen, a.pieceLabel, a.face, 24, 297, cyan)
+		text.Draw(screen, a.pieceLabel, a.face, 24, 314, cyan)
 	}
 	if len(a.wallPreview) > 0 {
 		text.Draw(screen, "WALLDEF Far/Mid/Near（raw 8×8D）", a.face, 360, 28, cyan)
