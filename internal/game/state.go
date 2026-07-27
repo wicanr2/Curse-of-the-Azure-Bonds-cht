@@ -12,6 +12,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
@@ -191,6 +192,7 @@ type State struct {
 	animationsEnabled      bool
 	messageSpeed           int
 	fixSeed                int64
+	dungeonSeed            int64
 }
 
 // playerIconBlocks are the four verified CHEAD/CBODY block families extracted
@@ -296,6 +298,7 @@ func NewState(catalog locale.Catalog) State {
 		animationsEnabled: true,
 		messageSpeed:      3,
 		fixSeed:           1,
+		dungeonSeed:       1,
 		GeoMapSet:         2,
 		GeoMapBlock:       1,
 		DungeonX:          8,
@@ -469,6 +472,10 @@ func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 
 // SetECLSeed controls RANDOM values while replaying an event sequence.
 func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
+
+// SetDungeonSeed makes the d100 stream used by the dungeon action adapter
+// reproducible for tests and replay.
+func (s *State) SetDungeonSeed(seed int64) { s.dungeonSeed = seed }
 
 // SetMapSeed makes wilderness floor generation reproducible for replay and
 // tests. The original engine rolls a fresh floor; this explicit seed keeps
@@ -1728,6 +1735,27 @@ func (s *State) SetParty(party []combat.Fighter) error {
 
 func (s *State) PartyFighters() []combat.Fighter {
 	return append([]combat.Fighter(nil), s.party...)
+}
+
+// PickDungeonLock resolves one original pick-lock attempt against the loaded
+// roster. The map mutation belongs to the GEO adapter because State does not
+// own a particular area's wrapped grid.
+func (s *State) PickDungeonLock() dungeon.PickLockResult {
+	seed := s.dungeonSeed
+	s.dungeonSeed++
+	rng := rand.New(rand.NewSource(seed))
+	return dungeon.PickLock(s.partyRoster, func() uint8 { return uint8(rng.Intn(100) + 1) })
+}
+
+// ConsumeDungeonKnockSpell removes the first memorized Knock slot from the
+// loaded roster, preserving the reference party-order transaction.
+func (s *State) ConsumeDungeonKnockSpell() bool {
+	updated, ok := dungeon.ConsumeSpell(s.partyRoster, dungeon.KnockSpellID)
+	if !ok {
+		return false
+	}
+	s.partyRoster = updated
+	return true
 }
 
 // ResolveSpellSearch bridges an ECL SPELL signal to the currently loaded

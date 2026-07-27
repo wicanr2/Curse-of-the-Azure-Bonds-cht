@@ -12,7 +12,7 @@
 
 - `internal/dungeon.PickLock` 接受注入 d100，保留「每位隊員都消費一次 roll、健康、隊伍順序、inclusive roll、失敗仍已嘗試」；`HitPoints <= 0` 視為目前資料模型中的非健康角色。
 - `internal/dungeon.ConsumeSpell` 實作第一個 spell-slot 的移除，`KnockSpellID` 固定為 `0x1F`。
-- 尚未把結果接入 dungeon UI、door mutation、Knock menu 或 bash；caller 仍需依目前 `WallDoorFlags` detail 與 `UnlockDoorWrapped` 完成 transaction。
+- 已由第一百七十四輪接入 dungeon preview 的 P/K adapter；完整 `locked_door` menu、door graphics 與 bash 仍不在本規格範圍。
 - 不重算 thief skill，也不以 Dexterity 或 local class 猜測缺失的 DOS 百分比。
 
 ## Regression

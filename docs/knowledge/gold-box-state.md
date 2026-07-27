@@ -79,6 +79,8 @@ DOS player import 應保留 thief skill array 的 ordinal，不只保存 class�
 
 Door action resolver 可沿用同一個跨作品 contract：`PickLock` 依 marching order 為每位隊員消費一次 d100，再以健康狀態與已驗證 open-lock skill 判定 `roll <= skill`；成功才交給地圖 service 做雙側 unlock，失敗仍消耗本次 pick opportunity。Knock 應以 reference spell ID `0x1F` 搜尋並消耗第一個 memorized slot。這個 resolver 不應自行碰 renderer 或把 bash 規則混進來。
 
+CoAB 現在把該 contract 接到 dungeon preview：P 僅對 detail 2 撬鎖，K 對 detail 2/3 消耗 Knock 並解鎖。State 持有獨立 dungeon RNG seed，Ebiten 只負責輸入、訊息與 GEO mutation；其他 Gold Box 遊戲可重用 action service，但必須替換 menu／map context，不應把 preview 快捷鍵當成原版完整 dungeon loop。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
