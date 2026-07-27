@@ -491,6 +491,25 @@ func TestECLSpellSignalsTransferToStateOnce(t *testing.T) {
 	}
 }
 
+func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
+	state := NewState(testCatalog())
+	state.eclBlock = append([]byte{0, 0}, []byte{
+		0x3B, 0x00, 0x12, 0x01, 0x00, 0x7C, 0x01, 0x01, 0x7C,
+		0x3C, 0x01, 0x02, 0x7C,
+		0x00,
+	}...)
+	state.eclStart = 0
+	state.Mode = ModeWilderness
+	state.Choices = []string{"繼續旅程"}
+	state.currentOriginalChoices = []string{"JOURNEY ON"}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.ConsumeSpellSearches()) != 1 || len(state.ConsumeProtectionRequests()) != 1 {
+		t.Fatalf("selection did not capture ECL signals: state=%#v", state)
+	}
+}
+
 func TestShadowdaleWildernessMapMovementAndExit(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"
