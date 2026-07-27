@@ -103,6 +103,7 @@
 - [第一百零六輪 DOS `.FX` extended combat projection](./106-fx-combat-projection-extended.md)（`READY`：限 Blind／Bestow Curse／friendly Prayer）
 - [第一百八十一輪 SAVGAM 固定前綴 codec](./181-savgam-fixed-prefix.md)（`READY`：限已證實 binary prefix 與 raw segment round-trip）
 - [第一百八十二輪 SAVGAM prefix／State adapter](./182-savgam-state-adapter.md)（`READY`：限已解碼 Area／map state 的 load／export）
+- [第一百八十三輪 reference PC sound assets](./183-reference-pc-sound-assets.md)（`READY`：限已證實 WAV selector 與目前 playback adapter）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
