@@ -99,6 +99,11 @@ ClassLevel 恰有一個非零 slot 時才可於 NPC 專用 parser 推導，不�
 同一 VM pass 可以先 PICTURE 再抵達 COMBAT。State 必須保存後續 combat transaction，
 讓玩家看完圖片後開始 battle；若只依 result 欄位固定優先序提前 return，會永久吞掉戰鬥。
 
+CoAB new-game dispatch 必須先分 demo 與玩家流程：`sub_29758` 在 `inDemo` 才選
+block `0x52`，正常 `LastEclBlockId==0` 選 global block `0x01`。開始新流程要 fresh-reset
+VM memory／PC／selection offsets；`NEWECL` 則必須保存它們。PICTURE 後續不只可能是
+COMBAT，也可能是 menu，應保存通用 deferred result。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。

@@ -129,7 +129,7 @@ type State struct {
 	journalReturnMode      Mode
 	creationReturnMode     Mode
 	session                *ecl.BlockSession
-	pendingPictureCombat   *ecl.RunResult
+	pendingPictureResult   *ecl.RunResult
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
@@ -722,6 +722,9 @@ func (s *State) Apply(action Action) error {
 	switch {
 	case s.Mode == ModeTitle && action == ActionStart:
 		s.requestSound(SoundStart)
+		if s.session != nil && s.session.HasBlock(0x01) && len(s.party) == 0 {
+			return s.OpenCharacterCreation()
+		}
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("you_are_at_the_edge_of", "You are at the edge of")
 		if len(s.Choices) == 0 {
@@ -739,6 +742,102 @@ func (s *State) Apply(action Action) error {
 	default:
 		return fmt.Errorf("action %d is invalid in mode %d", action, s.Mode)
 	}
+}
+
+// BeginAdventure follows the non-demo new-game dispatch in sub_29758:
+// LastEclBlockId==0 selects global ECL block 0x01, resets VM state, runs its
+// fifth vm_init_ecl entry, and pauses at the first data-driven menu.
+func (s *State) BeginAdventure() error {
+	if len(s.partyRoster) == 0 || len(s.party) == 0 {
+		return fmt.Errorf("adventure requires a created or loaded party")
+	}
+	if s.session == nil {
+		return fmt.Errorf("adventure requires a global ECL session")
+	}
+	if err := s.session.Reset(0x01); err != nil {
+		return err
+	}
+	s.eclBlock = s.session.CurrentData()
+	start, err := s.session.InitialEntry()
+	if err != nil {
+		return err
+	}
+	s.eclStart = start
+	s.selectionSequence = nil
+	s.whoSelectionSequence = nil
+	s.whoMenu = false
+	s.currentOriginalChoices = nil
+	s.Choices = nil
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+
+	result, err := s.session.RunInteractiveSeedWithPartyContextAndWhoSelections(
+		180, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	s.eclBlock = s.session.CurrentData()
+	s.applyGeoMapLoad(result)
+	s.applyLoadPieces(result)
+	s.applyECLCallSignals(result)
+	s.applySpellSignals(result)
+	s.applyECLDamageSignals(result)
+	s.applyECLLoadCharacterSignals(result)
+	if err := s.applyECLNPCSignals(result); err != nil {
+		return err
+	}
+	if err := s.applyECLDumpSignals(result); err != nil {
+		return err
+	}
+	if err := s.applyECLClockSignals(result); err != nil {
+		return err
+	}
+	s.applyECLInventorySignals(result)
+	s.applyECLTreasureSignals(result)
+	if len(result.Text) > 0 {
+		s.Message = localizeECLText(s.catalog, result.Text)
+	}
+	if result.PictureRequested {
+		s.PictureRequested = true
+		s.PictureBlock = result.PictureBlock
+		s.BigPictureRequested = result.BigPictureRequested
+		s.OriginalEvent = "PICTURE"
+		if result.CombatRequested || result.WaitingForMenu {
+			pending := result
+			pending.PictureRequested = false
+			s.pendingPictureResult = &pending
+		}
+		return nil
+	}
+	if result.CombatRequested {
+		records := s.monsterRecordsForCurrentECL()
+		if len(result.MonsterSpawns) > 0 && len(records) > 0 {
+			return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+		}
+		s.OriginalEvent = "COMBAT"
+		return nil
+	}
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		s.enterECLMenu(result.Menus[len(result.Menus)-1])
+		return nil
+	}
+	s.OriginalEvent = "NEW GAME"
+	return nil
+}
+
+func (s *State) enterECLMenu(menu ecl.Menu) {
+	s.Choices = make([]string, 0, len(menu.Options))
+	s.currentOriginalChoices = append([]string(nil), menu.Options...)
+	for _, option := range menu.Options {
+		s.Choices = append(s.Choices, localizeOption(s.catalog, option))
+	}
+	if menu.Prompt != "" {
+		s.Prompt = localizePrompt(s.catalog, menu.Prompt)
+	} else {
+		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
+	}
+	s.Mode = ModeWilderness
 }
 
 // Select applies a localized opening choice and, when the state came from an
@@ -895,11 +994,13 @@ func (s *State) Select(index int) error {
 				s.SceneBodyBlock = uint8(result.PictureBlock)
 			}
 			s.OriginalEvent = "PICTURE"
-			s.Message = "事件畫面"
-			if result.CombatRequested {
+			if s.Message == "" {
+				s.Message = "事件畫面"
+			}
+			if result.CombatRequested || result.WaitingForMenu {
 				pending := result
 				pending.PictureRequested = false
-				s.pendingPictureCombat = &pending
+				s.pendingPictureResult = &pending
 			}
 			return nil
 		}
@@ -3825,17 +3926,23 @@ func (s *State) Continue() error {
 		s.BigPictureRequested = false
 		s.SceneCharacterRequested = false
 		s.SceneBodyBlock = 0
-		if s.pendingPictureCombat != nil {
-			result := *s.pendingPictureCombat
-			s.pendingPictureCombat = nil
+		if s.pendingPictureResult != nil {
+			result := *s.pendingPictureResult
+			s.pendingPictureResult = nil
 			records := s.monsterRecordsForCurrentECL()
-			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
-				return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+			if result.CombatRequested {
+				if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+					return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+				}
+				s.OriginalEvent = "COMBAT"
+				s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+				s.eventReturnMode = ModeWilderness
+				return nil
 			}
-			s.OriginalEvent = "COMBAT"
-			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
-			s.eventReturnMode = ModeWilderness
-			return nil
+			if result.WaitingForMenu && len(result.Menus) > 0 {
+				s.enterECLMenu(result.Menus[len(result.Menus)-1])
+				return nil
+			}
 		}
 	}
 	switch s.eventReturnMode {
@@ -4031,6 +4138,16 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 
 func localizeECLLine(catalog locale.Catalog, line string) string {
 	switch line {
+	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
+		return catalog.Text("ecl_new_game_awaken", "你們在一間小房間裡醒來。環顧四周，你們注意到")
+	case "THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.":
+		return catalog.Text("ecl_new_game_gear_gone", "所有裝備都不見了，最近發生的事情也完全想不起來。")
+	case "ADDING TO YOUR DISQUIET, YOU NOTICE THAT YOUR SWORD ARM":
+		return catalog.Text("ecl_new_game_disquiet", "更令人不安的是，你們發現持劍的手臂")
+	case "HAS BEEN SOMEHOW IMPRINTED WITH STRANGE PATTERNS. THE REST":
+		return catalog.Text("ecl_new_game_patterns", "不知為何被烙上了奇異圖紋。隊伍中的其他人")
+	case "OF YOUR PARTY ARE IDENTICALLY MARKED.":
+		return catalog.Text("ecl_new_game_identical", "也都帶著完全相同的印記。")
 	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
 		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
 	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":

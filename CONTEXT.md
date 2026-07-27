@@ -424,7 +424,8 @@
 
 第一百五十七輪曾將 `ADD NPC (0x36)` 誤判為單 operand，使 block 0x52 的 morale
 operand code `0x00` 被當成 EXIT；第 277 輪已推翻並修正。正確流程是連續加入
-`0x55/0x58/0x5A`、播放完整詛咒序幕並抵達 COMBAT。
+`0x55/0x58/0x5A`、播放完整 demo 展示序列並抵達 COMBAT；第 278 輪確認正常 new game
+改走 global block `0x01`。
 
 第一百五十八輪功能／文件 commit：`f9164e4`，已推送至 GitHub `main`。依跨 ECL 實際掃描將 `LOAD PIECES (0x37)` 接成三 selector signal，讓 ECL2 block 0x01 等實際 entry 不再因 opcode 停止；新增 synthetic／ECL1／ECL2 regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。地城 floor、wall、tile、碰撞與 camera side effect 仍保留 boundary。
 
@@ -967,10 +968,20 @@ README 與可跨 Gold Box 沿用的 VM／作品 adapter 分層知識。
 reference default sound A。新增 ECL3 block 16 real CALL、四方向 wrap、ordered request
 regressions與 READY spec；`word_1EE76 == 10` sound-B transient 仍保留 evidence boundary。
 
-第二百七十七輪開場主流程里程碑：依 `CMD_AddNPC.vm_LoadCmdSets(2)` 修正 NPC ID＋
+第二百七十七輪 demo／NPC 里程碑：依 `CMD_AddNPC.vm_LoadCmdSets(2)` 修正 NPC ID＋
 morale framing，新增 `NPCRequest` 與 `DELAY` timing signal；真實 ECL1 block 0x52
-現執行 53 steps，加入 RUSTLE／CYNTHIA／GRENDEL、輸出 11 段青色枷序幕、聚合
+現執行 53 steps，加入 RUSTLE／CYNTHIA／GRENDEL、輸出 11 段青色枷展示文字、聚合
 `CALL 0x6803`／DELAY，最後抵達 COMBAT。State 依 chapter-local MON*CHA／SPC／ITM
 建立 persistent NPC Character／fighter、control morale 與最低空 icon slot；NPC 專用
 parser以唯一 ClassLevel修正 stale class_id，普通 save import仍嚴格。PICTURE 後 deferred
-combat transaction也已接通，11 段序幕逐行翻成繁中，玩家看完事件圖即可進入真正 Battle。
+combat transaction也已接通，11 段文字逐行翻成繁中。第 278 輪依 `sub_29758` 確認
+0x52 僅供 `inDemo`，正常玩家流程不可加入這三名 NPC。
+
+第二百七十八輪正式 new-game 里程碑：`FinishCharacterCreation` 在 production ECL
+session 現會 fresh reset 到 global block `0x01`（ECL2），而非人造荒野 menu。真實 entry
+載入 FILES `1,2,FF`／PIECES `1,2,3`，依序顯示「小房間醒來、裝備與記憶消失」及
+PIC 0x0A「持劍手臂出現奇異圖紋、全隊相同印記」兩段繁中。State 將 picture deferred
+boundary擴充到 menu，Ebiten圖片下方顯示三行漸顯文字；real regression從角色建立完成
+鎖定 block identity、兩段文字、picture、menu與 pieces。配合繁中文字較大，Ebiten
+邏輯畫布也由 640×400 擴為 640×480；88px PIC／人物圖以 nearest-neighbor 3×、BIGPIC
+以 2× 整數像素放大，文字則以 24px 高解析字型重繪，下方保留三行訊息與獨立 Enter 提示列。

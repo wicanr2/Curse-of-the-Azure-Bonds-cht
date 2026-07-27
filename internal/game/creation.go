@@ -272,12 +272,18 @@ func (s *State) FinishCharacterCreation() error {
 		return err
 	}
 	s.partyRoster = append(party.Roster(nil), s.CreationRoster...)
-	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
-	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
-	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.CreationMessage = ""
-	return nil
+	if s.session == nil {
+		// Data-neutral tests/embedders may construct State without the
+		// original image. Production NewStateFromECLBlocks always takes the
+		// verified block-0x01 path below.
+		s.Mode = ModeWilderness
+		s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
+		s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+		return nil
+	}
+	return s.BeginAdventure()
 }
 
 func (s *State) SavePartyFile(path string) error {

@@ -33,3 +33,19 @@ func TestOpeningCurseTextIsLocalizedLineForLine(t *testing.T) {
 		}
 	}
 }
+
+func TestActualNewGameTextIsLocalized(t *testing.T) {
+	original := []string{
+		"YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE",
+		"THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.",
+		"ADDING TO YOUR DISQUIET, YOU NOTICE THAT YOUR SWORD ARM",
+		"HAS BEEN SOMEHOW IMPRINTED WITH STRANGE PATTERNS. THE REST",
+		"OF YOUR PARTY ARE IDENTICALLY MARKED.",
+	}
+	got := localizeECLText(locale.Catalog{}, original)
+	for _, want := range []string{"小房間", "所有裝備都不見了", "持劍的手臂", "奇異圖紋", "相同的印記"} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("localized new game %q does not contain %q", got, want)
+		}
+	}
+}

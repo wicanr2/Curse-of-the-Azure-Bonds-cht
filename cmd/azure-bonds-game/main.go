@@ -41,7 +41,7 @@ import (
 
 const (
 	logicalWidth  = 640
-	logicalHeight = 400
+	logicalHeight = 480
 )
 
 type app struct {
@@ -784,11 +784,14 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	if a.state.SceneCharacterRequested {
 		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
+			const pixelScale = 3
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Scale(2, 2)
-			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*2)/2), 52)
+			op.Filter = ebiten.FilterNearest
+			op.GeoM.Scale(pixelScale, pixelScale)
+			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 70)
 			screen.DrawImage(sprite, op)
-			text.Draw(screen, "人物場景　Enter：繼續", a.face, 56, 350, color.RGBA{255, 255, 255, 255})
+			a.drawPictureMessage(screen)
+			text.Draw(screen, "人物場景　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		text.Draw(screen, "人物圖層素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
@@ -798,10 +801,14 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	if a.state.BigPictureRequested {
 		key := fmt.Sprintf("bigpic%d-block-%02X-item-00.png", a.state.Area.GameArea, a.state.PictureBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
+			const pixelScale = 2
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx())/2), float64((logicalHeight-sprite.Bounds().Dy())/2))
+			op.Filter = ebiten.FilterNearest
+			op.GeoM.Scale(pixelScale, pixelScale)
+			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 44)
 			screen.DrawImage(sprite, op)
-			text.Draw(screen, "大幅事件畫面　Enter：繼續", a.face, 56, 380, color.RGBA{255, 255, 255, 255})
+			a.drawPictureMessage(screen)
+			text.Draw(screen, "大幅事件畫面　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		text.Draw(screen, "大幅事件圖片素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
@@ -820,10 +827,26 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(2, 2)
-	op.GeoM.Translate(160+float64(frame.x*2), 76+float64(frame.y*2))
+	const pixelScale = 3
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(pixelScale, pixelScale)
+	op.GeoM.Translate(float64((logicalWidth-frame.image.Bounds().Dx()*pixelScale)/2)+float64(frame.x*pixelScale), 42+float64(frame.y*pixelScale))
 	screen.DrawImage(frame.image, op)
-	text.Draw(screen, "事件畫面　Enter：繼續", a.face, 56, 350, color.RGBA{255, 255, 255, 255})
+	a.drawPictureMessage(screen)
+	text.Draw(screen, "事件畫面　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
+}
+
+func (a *app) drawPictureMessage(screen *ebiten.Image) {
+	runes := []rune(a.revealedMessage())
+	const lineRunes = 34
+	for line := 0; line < 3 && len(runes) > 0; line++ {
+		count := lineRunes
+		if len(runes) < count {
+			count = len(runes)
+		}
+		text.Draw(screen, string(runes[:count]), a.face, 38, 350+line*28, color.RGBA{92, 220, 255, 255})
+		runes = runes[count:]
+	}
 }
 
 func (a *app) drawWildernessMap(screen *ebiten.Image, white, cyan color.Color) {

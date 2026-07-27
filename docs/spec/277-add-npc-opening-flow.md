@@ -1,4 +1,4 @@
-# 第二百七十七輪：ADD NPC 與青色枷完整序幕
+# 第二百七十七輪：ADD NPC 與青色枷 demo 展示序列
 
 狀態：READY
 
@@ -31,6 +31,10 @@ NPC parser依該 slot 推導 class，普通玩家 save parser仍維持嚴格驗�
 
 ## Real opening evidence
 
+後續 reference `sub_29758` 證明 block `0x52` 僅在 `gbl.inDemo == true` 載入，
+執行後會清空 TeamList；它是 attract/demo sequence，不是玩家建立隊伍後的正式 new game。
+正式流程已於第 278 輪接到 global block `0x01`。本節保留 demo sequence 的真實證據。
+
 block `0x52:+0x0014` 現執行 53 steps：
 
 - 加入 RUSTLE（fighter 9）、CYNTHIA（magic-user 9）、GRENDEL（cleric 9）；
@@ -40,7 +44,7 @@ block `0x52:+0x0014` 現執行 53 steps：
 - 最後在 `COMBAT` 停止，保留 monster setup／spawn。
 
 State 若同一 result 同時包含 PICTURE 與 COMBAT，會先顯示事件圖片並保存 combat；
-玩家 Continue 後用剛加入的隊伍建立真正 Battle，不再遺失 combat signal。
+demo adapter／direct regression Continue 後會用剛加入的隊伍建立 Battle，不再遺失 signal。
 11 段原文逐行保留在 VM evidence，State／zh-TW catalog 則組成繁中序幕，涵蓋伏擊、
 五個青色符印、金屬枷鎖、聯盟成員與重新掌握命運。
 
@@ -48,7 +52,8 @@ State 若同一 result 同時包含 PICTURE 與 COMBAT，會先顯示事件圖�
 
 `CALL 0x6803` 對應 reference `DrawMaybeOverlayed → NextFrame → GameDelay`；目前 Ebiten
 PIC renderer 已有時間式多 frame animation，但尚未逐 pulse 重播 ECL 的 11 次 timing。
-NPC 的完整 AI morale 行為、treasure share 與 SAVGAM 新增 sidecar serialization 仍待驗證。
+NPC 的完整 AI morale 行為、treasure share、demo 結束清隊 UI 與 SAVGAM 新增 sidecar
+serialization 仍待驗證。正常玩家流程不可自動加入這三名 demo NPC。
 
 ```text
 go test ./internal/ecl ./internal/monster ./internal/party ./internal/game ./internal/save

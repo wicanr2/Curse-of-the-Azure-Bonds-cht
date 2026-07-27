@@ -34,6 +34,11 @@ func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, err
 
 func (s *BlockSession) CurrentBlockID() uint8 { return s.current }
 
+func (s *BlockSession) HasBlock(id uint8) bool {
+	_, ok := s.blocks[id]
+	return ok
+}
+
 func (s *BlockSession) CurrentData() []byte {
 	return append([]byte(nil), s.blocks[s.current]...)
 }
@@ -46,6 +51,22 @@ func (s *BlockSession) Switch(id uint8) error {
 	if _, ok := s.states[id]; !ok {
 		s.states[id] = s.states[s.current]
 	}
+	return nil
+}
+
+// Reset starts a fresh VM context at one available block. This is distinct
+// from NEWECL/Switch, which must preserve shared memory and resumable PC.
+func (s *BlockSession) Reset(id uint8) error {
+	if _, ok := s.blocks[id]; !ok {
+		return fmt.Errorf("ECL session reset block 0x%02X is unavailable", id)
+	}
+	shared := NewRuntimeState(0)
+	for blockID := range s.blocks {
+		s.states[blockID] = shared
+	}
+	s.current = id
+	s.selectionOffset = 0
+	s.whoSelectionOffset = 0
 	return nil
 }
 
