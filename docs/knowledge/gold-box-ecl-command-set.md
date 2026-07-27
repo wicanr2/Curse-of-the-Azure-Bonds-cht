@@ -57,3 +57,6 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 
 事件 segment 與 menu pause 是兩個不同 observable outputs；State 必須先保存 text，
 再切換 choices／waiting state。這項 ordering 可供後續 Gold Box 遊戲共用。
+
+`PRINT RETURN` 同樣只保存 renderer-facing cursor signal，不應誤當成 VM `RETURN`；
+它不觸碰 ECL call stack。

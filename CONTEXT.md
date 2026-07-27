@@ -511,3 +511,5 @@
 第二百零三輪功能 commit：`76a1fa4`，將已由 ECL3 block 16 entry 4 raw image 驗證的 Yulash smoke text 接入 zh-TW locale 與 State event message；未知 ECL text 原樣保留，raw runner 結果不變，新增 localization regression。完整 ECL 對話翻譯與其他作品文字仍需逐段反組譯／翻譯。
 
 第二百零四輪功能 commit：`eb4ab29`，依 ECL3／ECL4 raw event runs 新增邪教徒／受傷牧師、戰火城市與小型魔法商店的 zh-TW catalog mapping；State 將 ECL text message 提前保存到 menu pause 前，新增 unknown fallback regression 與 READY 規格。完整事件分支、CALL routine side effect 與全部 ECL 文字仍保留 boundary。
+
+第二百零五輪功能 commit：`11ea665`，依 ECL3 block 16 entry 4 的 raw `PRINT RETURN`→後續 menu sequence，新增 `RunResult.PrintReturnCount` 與 session aggregation；真實 entry 已由原本 `0x33` stop 推進至 `menu=true`，新增 bounded regression／READY 規格。DOS text-window layout 與完整後續事件仍保留 boundary。
