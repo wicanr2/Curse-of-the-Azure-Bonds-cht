@@ -54,3 +54,6 @@ descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
 
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
+
+事件 segment 與 menu pause 是兩個不同 observable outputs；State 必須先保存 text，
+再切換 choices／waiting state。這項 ordering 可供後續 Gold Box 遊戲共用。
