@@ -48,6 +48,9 @@ func TestCombatArmorClassNormalizesPackedMonsterAC(t *testing.T) {
 	if got := CombatArmorClass(59); got != 1 {
 		t.Fatalf("packed AC 59=%d, want 1", got)
 	}
+	if got := CombatArmorClass(66); got != -6 {
+		t.Fatalf("packed AC 66=%d, want -6", got)
+	}
 	if got := CombatArmorClass(10); got != 10 {
 		t.Fatalf("already decoded AC 10=%d, want 10", got)
 	}

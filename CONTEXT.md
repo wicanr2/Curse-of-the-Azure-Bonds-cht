@@ -1344,3 +1344,11 @@ target initial registers，新增 READY spec 319、`-wizard-tower-exit` 及
 ENTER CITY／JOURNEY ON／CAMP 世界流程。新增 READY spec 320、synthetic
 selected-window regression、real block 0x30 regression 與完整塔頂長流程驗證；
 Gold Box 共用知識庫同步記錄 control/morale projection 與 DEPART cleanup 契約。
+
+第三百二十一輪成果：Area 5 離場回到哈普後，`JOURNEY ON → ESSEMBRA → TRAIL`
+現沿 ECL1 block `0x50 +0x149A` 顯示龍巫妖復仇繁中事件並進入戰鬥。此 script
+雖位於 ECL1，卻 `LOAD MONSTER 0x3C,1,0x3C`，實際 record 是 MON5 DRACOLICH；
+State 因此改為逐 spawn 依 monster ID range 選擇 MON*CHA／MON*SPC，ECL chapter
+只作 fallback。MON5 record 解出 66 HP、raw AC 66→AC -6、3d8，並使用 CPIC5
+原版小人。勝利後正式抵達艾森布拉城外。新增 READY spec 321、real-image 與
+法師塔至艾森布拉長流程 regression，並更新 640×480 README 實機圖。

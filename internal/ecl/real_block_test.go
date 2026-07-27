@@ -239,6 +239,36 @@ func TestRealECL5AreaDepartureFindsAkabarAndDarkElfItems(t *testing.T) {
 	t.Fatal("ECL5 block 0x30 is absent")
 }
 
+func TestRealECL1WorldDispatcherBuildsPostWizardDracolich(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL1.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 0x50 {
+			continue
+		}
+		result, runErr := RunSubset(block.Data, 0x149A, 20)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !result.CombatRequested || len(result.MonsterSpawns) != 1 {
+			t.Fatalf("post-wizard encounter result=%+v", result)
+		}
+		spawn := result.MonsterSpawns[0]
+		if spawn.MonsterID != 0x3C || spawn.Count != 1 || spawn.IconBlock != 0x3C {
+			t.Fatalf("post-wizard spawn=%+v, want MON5 dracolich 0x3C x1", spawn)
+		}
+		return
+	}
+	t.Fatal("ECL1 block 0x50 is absent")
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {

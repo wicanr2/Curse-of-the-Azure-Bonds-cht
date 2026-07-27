@@ -37,11 +37,12 @@ type Record struct {
 
 // CombatArmorClass converts the packed MON*CHA armor value used by the
 // original records to the signed AD&D combat AC. Real CoAB records store
-// values 50..60 as 60-AC (for example FIRE KNIFE 0x3B means AC 1). Small
+// values 50..70 as 60-AC (for example FIRE KNIFE 0x3B means AC 1 and the
+// post-Dracandros DRACOLICH uses 0x42 for AC -6). Small
 // values are retained for synthetic/decoded records that already use combat
 // AC, keeping the intermediate parser representation backwards compatible.
 func CombatArmorClass(raw int) int {
-	if raw >= 50 && raw <= 60 {
+	if raw >= 50 && raw <= 70 {
 		return 60 - raw
 	}
 	return raw

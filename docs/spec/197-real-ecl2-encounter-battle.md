@@ -14,7 +14,9 @@
 combat AC = 60 - raw ArmorClass
 ```
 
-`monster.CombatArmorClass` 只轉換 50..60；小於 50 的 intermediate／synthetic record 保持原值，避免破壞既有 parser contract。
+`monster.CombatArmorClass` 原由本輪證實 50..60；第 321 輪再由 MON5 DRACOLICH
+raw `66` 擴充實物證據至 50..70。小於 50 的 intermediate／synthetic record
+仍保持原值，避免破壞既有 parser contract。
 
 ## Regression and CLI
 

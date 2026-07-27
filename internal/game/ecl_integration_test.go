@@ -3045,6 +3045,51 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("wizard-tower depart routes=%#v mode=%v message=%q",
 			state.currentOriginalChoices, state.Mode, state.Message)
 	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ESSEMBRA"}) {
+		t.Fatalf("post-wizard destinations location=%v originals=%#v message=%q",
+			state.Location, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("post-wizard Essembra routes=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "骷髏") ||
+		!strings.Contains(state.Message, "導師") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("post-wizard skeletal encounter originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	dracolichFighters := state.CombatFighters()
+	if state.Mode != ModeCombat || len(dracolichFighters) != 2 ||
+		dracolichFighters[1].Name != "龍巫妖" || dracolichFighters[1].SpriteSet != 5 ||
+		dracolichFighters[1].SpriteBlock != 0x3C || dracolichFighters[1].ArmorClass != -6 ||
+		dracolichFighters[1].HitPoints != 66 {
+		t.Fatalf("post-wizard dracolich combat mode=%v fighters=%#v message=%q",
+			state.Mode, dracolichFighters, state.Message)
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationEssembra ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		!strings.Contains(state.Message, "艾森布拉城外") {
+		t.Fatalf("post-dracolich arrival mode=%v location=%v originals=%#v message=%q",
+			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

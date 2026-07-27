@@ -110,6 +110,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   法師塔旗標正式告別並由 `DUMP` 離隊；日光會使 item type `0x5E/0x60/0x61`
   的黑暗精靈武器、護甲腐朽。兩段繁中 Continue 完成後才 `NEWECL 0x50`，
   顯示原版 BIGPIC 121 並回到可繼續選擇城市／旅程／紮營的世界流程。
+- 回到哈普後選擇 `JOURNEY ON → ESSEMBRA → TRAIL`，現會沿 ECL1 block
+  `0x50 +0x149A` 遭遇替德拉坎德羅斯復仇的龍巫妖。引擎會依 spawn ID `0x3C`
+  正確跨章載入 MON5 record 與原版 CPIC5 小人（66 HP、AC -6），勝利後正式
+  抵達艾森布拉城外，而非誤用目前世界 block 所屬的 MON1 table。
 
 ![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
 
@@ -120,6 +124,8 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 ![德拉坎德羅斯守軍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-battle.png)
 
 ![德拉坎德羅斯法師塔庭院的 640×480 繁中實機畫面](docs/screenshots/wizard-tower-courtyard.png)
+
+![前往艾森布拉途中龍巫妖的 640×480 繁中實機戰鬥](docs/screenshots/post-wizard-dracolich.png)
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。
@@ -144,7 +150,9 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 - 已解析 `MON*CHA[0xA1]` monster base attacks count；active Haste `0x27`／Slow `0x2A` 會依 reference 加倍／減半目前 enemy 的每回合攻擊次數（保留至少一攻）。
 - 已接入 reference `Player.IsHeld`：active `helpless／snake charm／paralyze／sleep`（`0x1F／0x33／0x34／0x35`）的 enemy 會跳過回合，且被 held target 的攻擊必定命中；中文訊息已接入。
 - ECL `CLOCK (0x34)` 已依 reference 解碼兩個 operand（timeStep／timeSlot），跨 ECL session 聚合後接到 State 七-slot game-time adapter；因此 ECL 事件與 REST 共用 effect timeout 時鐘，完整 time-triggered event table 仍待驗證。
-- 遊戲啟動會載入 `MON1CHA`–`MON6CHA`，State 依全域 ECL block namespace 選擇章節對應的 monster table，避免跨章節同 ID 誤解析。
+- 遊戲啟動會載入 `MON1CHA`–`MON6CHA`；encounter 逐隻依 monster ID range
+  選章，ECL namespace 僅作 fallback。這可處理 ECL1 世界 block 直接召喚
+  MON5 `0x3C` 龍巫妖等跨章 encounter。
 - 已以原始 image 驗證 ECL1 block `0x50` 的 `NEWECL 0x03` 可切換到 ECL2 block `3`；target 後續若遇未支援 routine 仍會保留 transition boundary。
 - `TILES.DAX`／`8X8D*.DAX` indexed pictures、`WALLDEF*.DAX`、EGA16 palette 與 `GEO2–GEO6` geometry parser。
 - 原版 `SetupWildernessFloor` 的 50×25 野外遭遇戰鬥地面生成規則，以及 background entry → combat tile mapping；它不是世界地圖。
