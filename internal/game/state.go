@@ -706,6 +706,9 @@ func (s *State) Select(index int) error {
 		s.applyLoadPieces(result)
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
+		if err := s.applyECLClockSignals(result); err != nil {
+			return err
+		}
 		s.applyECLInventorySignals(result)
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
@@ -886,6 +889,18 @@ func (s *State) applyECLDamageSignals(result ecl.RunResult) {
 	if len(result.DamageRequests) > 0 {
 		s.pendingDamageRequests = append(s.pendingDamageRequests, result.DamageRequests...)
 	}
+}
+
+// applyECLClockSignals bridges the reference ECL CLOCK command to the shared
+// game-time adapter. Invalid slots are returned to the caller instead of
+// silently mutating the clock with an invented interpretation.
+func (s *State) applyECLClockSignals(result ecl.RunResult) error {
+	for _, request := range result.ClockRequests {
+		if err := s.AdvanceGameTime(int(request.TimeSlot), request.TimeStep); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // applyECLInventorySignals is the party adapter for the bounded ECL

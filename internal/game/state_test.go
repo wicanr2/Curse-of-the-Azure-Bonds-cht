@@ -42,6 +42,19 @@ func TestLocalizedOpeningFlow(t *testing.T) {
 	}
 }
 
+func TestECLClockAdvancesSharedGameTime(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.applyECLClockSignals(ecl.RunResult{ClockRequests: []ecl.ClockRequest{{TimeStep: 3, TimeSlot: 1}}}); err != nil {
+		t.Fatal(err)
+	}
+	if got := state.GameTimeSlots(); got[1] != 3 {
+		t.Fatalf("clock=%v, want slot 1 to advance by 3", got)
+	}
+	if err := state.applyECLClockSignals(ecl.RunResult{ClockRequests: []ecl.ClockRequest{{TimeStep: 1, TimeSlot: 7}}}); err == nil {
+		t.Fatal("invalid ECL CLOCK slot was accepted")
+	}
+}
+
 func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.Apply(ActionStart); err != nil {

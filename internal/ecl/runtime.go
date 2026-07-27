@@ -38,6 +38,14 @@ type RunResult struct {
 	BigPictureRequested    bool
 	SpellSearches          []SpellSearch
 	ProtectionRequests     []uint16
+	ClockRequests          []ClockRequest
+}
+
+// ClockRequest is the raw two-operand signal emitted by ECL CLOCK. The game
+// adapter owns the clock and effect expiration; the VM only decodes it.
+type ClockRequest struct {
+	TimeStep uint16
+	TimeSlot uint16
 }
 
 // DamageRequest preserves the five numeric operands consumed by the original
@@ -538,6 +546,19 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				Flags: values[0], DiceCount: values[1], DiceSize: values[2],
 				Bonus: values[3], SaveFlags: values[4],
 			})
+		case 0x34: // ECL CLOCK
+			if len(instruction.Operands) != 2 {
+				return result, fmt.Errorf("ECL CLOCK at %d has unexpected arity", pc)
+			}
+			timeStep, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("ECL CLOCK time step at %d: %w", pc, err)
+			}
+			timeSlot, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("ECL CLOCK time slot at %d: %w", pc, err)
+			}
+			result.ClockRequests = append(result.ClockRequests, ClockRequest{TimeStep: timeStep, TimeSlot: timeSlot})
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])
 			if err != nil {

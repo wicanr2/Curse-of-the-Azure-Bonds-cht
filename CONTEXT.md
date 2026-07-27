@@ -783,3 +783,12 @@ calendar UI、DOS age writeback 與完整 time-triggered ECL 仍保留 boundary�
 clock／effect-order regression、READY spec 與 README／PLAN／Gold Box state knowledge。
 完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過；rest interruption、safe
 location、spell-learning side effects 與完整 rest encounter table 仍保留 boundary。
+
+第二百四十一輪重大里程碑：依 reference `CMD_EclClock`／`vm_LoadCmdSets(2)` 確認
+`ECL CLOCK (0x34)` 必須吃 `timeStep`、`timeSlot` 兩個 operand；修正 command metadata，
+新增 `ClockRequest` 與跨 `BlockSession` aggregation，並由 State 呼叫既有七-slot
+`AdvanceGameTime`，讓 ECL 與 REST 共用 finite effect timeout。新增 ECL／State regression、
+READY spec 與共用 Gold Box command-set knowledge。核心 `internal/ecl`／`internal/game`
+測試通過；完整 `go test ./...` 在目前容器因缺 ALSA/X11 headers 的 `cmd/azure-bonds-game`
+與 `internal/sound` build dependency 失敗，非本輪 Go logic failure。memory-backed operand
+值、time-triggered event table 與完整玩家流程仍保留 boundary。
