@@ -957,3 +957,10 @@ session mutable working party，target block可見已離隊結果，而呼叫端
 party-killed、game-won／全隊 HP 與健康恢復／存檔詢問，以及 CAMP transaction。DOS 勝利
 後 process exit 在桌面重製版明確映射為返回標題；新增四 routine regression、READY spec、
 README 與可跨 Gold Box 沿用的 VM／作品 adapter 分層知識。
+
+第二百七十六輪 ECL／map 里程碑：反組 `CMD_Call` 的 `operand - 0x7FFF` dispatch，
+將原始 image observed `0x2E10/0xC01E/0xB200` 對應到 redraw、forced
+`MovePositionForward` 與 sound A/B。State 現會讓 `0xC01E` 依 0/2/4/6 方向在 16×16
+座標 wrap，frontend exactly-once 重建 dungeon floor／wall／roof；`0xB200` 先重現
+reference default sound A。新增 ECL3 block 16 real CALL、四方向 wrap、ordered request
+regressions與 READY spec；`word_1EE76 == 10` sound-B transient 仍保留 evidence boundary。

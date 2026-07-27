@@ -131,6 +131,7 @@ func (a *app) Update() error {
 	a.syncSoundEvents()
 	a.syncGeoMapRequest()
 	a.syncLoadPiecesRequest()
+	a.syncECLCallRequests()
 	if a.tilePreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
@@ -515,6 +516,16 @@ func (a *app) refreshDungeonPreview() {
 	a.dungeonFloor = &floor
 	a.state.DungeonX, a.state.DungeonY = a.dungeonX, a.dungeonY
 	a.prepareWallPreview()
+}
+
+func (a *app) syncECLCallRequests() {
+	for _, address := range a.state.ConsumeECLCallRequests() {
+		switch address {
+		case 0x2E10, 0xC01E:
+			a.dungeonX, a.dungeonY = a.state.DungeonX, a.state.DungeonY
+			a.refreshDungeonPreview()
+		}
+	}
 }
 
 func (a *app) moveDungeonPreview(dx, dy, direction int) {
