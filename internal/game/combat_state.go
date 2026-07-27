@@ -1448,6 +1448,9 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
 		s.BigPictureRequested = result.BigPictureRequested
+		if result.PictureHeadBlockSet {
+			s.SceneHeadBlock = uint8(result.PictureHeadBlock)
+		}
 		s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
 		if s.SceneCharacterRequested {
 			s.SceneBodyBlock = uint8(result.PictureBlock)

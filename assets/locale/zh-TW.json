@@ -275,5 +275,13 @@
     ,"creation_ability_prompt": "左右選能力，上下調整數值。"
     ,"creation_ability_updated": "能力值已調整為 %d。"
     ,"creation_rerolled": "能力值已重擲，請確認職業最低值。"
+    ,"ecl_tilverton_inn_welcome": "「歡迎來到美麗的提爾佛頓！」"
+    ,"ecl_tilverton_inn_scowls": "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。"
+    ,"ecl_tilverton_inn_calm": "「請先冷靜，讓我解釋。」"
+    ,"ecl_tilverton_inn_listen": "你們聽她說明，"
+    ,"ecl_tilverton_inn_record": "並將內容記入冒險手札"
+    ,"ecl_tilverton_inn_sage": "第 31 條。「或許賢者能幫上忙；你們也可以到"
+    ,"ecl_tilverton_inn_shop": "對街的商店取得武器。」"
+    ,"journal_entry_31": "手札條目 31：你們是由一群紅袍人送來的。他們說在路上發現你們時，你們已奄奄一息；房錢已預付，所以想住多久都可以。你們來時身上就有那些刺青，旅店老闆娘從未見過類似圖紋。她建議去找賢者菲拉妮，往北兩個街區就能找到她。"
   }
 }

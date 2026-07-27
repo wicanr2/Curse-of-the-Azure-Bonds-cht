@@ -16,7 +16,9 @@
 
 ## 邊界
 
-目前 `SetSceneCharacter` 是 Area2 loader 的明確 adapter；Area2 binary codec 尚未宣稱已定位 `HeadBlockId @ 0x5C2`，完整 NPC／地圖事件仍待接入。
+本輪當時只建立 `SetSceneCharacter` adapter；後續第 85 輪已定位 Area2 raw record
+`HeadBlockId @ 0x5C2`，第 282 輪再確認 ECL 執行期 mirror `0x7EE1` 必須在 PICTURE
+opcode 當下擷取。完整 NPC／其他地圖事件仍待逐一接入。
 
 ## 驗證
 

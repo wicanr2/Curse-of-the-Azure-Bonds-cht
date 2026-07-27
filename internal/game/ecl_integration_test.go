@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -153,19 +154,89 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("new game world location=%v area=%+v choices=%v, want Tilverton GEO1 dungeon without synthetic menu",
 			state.Location, state.Area, state.Choices)
 	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
-	}
-	if state.Mode != ModeDungeon {
-		t.Fatalf("initial dungeon lifecycle mode=%v, want dungeon after clean per-turn/search EXITs", state.Mode)
-	}
 	for address, want := range map[uint16]uint16{
-		0xC04B: 7, 0xC04C: 13, 0xC04D: 1, 0xC04E: 0, 0xC04F: 0,
+		0xC04B: 7, 0xC04C: 13, 0xC04D: 1,
 	} {
 		if got, ok := state.session.MemoryValue(address); !ok || got != want {
 			t.Fatalf("world register %#x=%d,%v, want %d,true", address, got, ok, want)
 		}
 	}
+	geoCatalog := geo.NewCatalog()
+	if err := geoCatalog.AddDAX(2, zipData(t, image, "GEO2.DAX")); err != nil {
+		t.Fatal(err)
+	}
+	grid, ok := geoCatalog.Lookup(geo.MapRef{Set: 2, BlockID: 1})
+	if !ok || !grid.CanMoveDungeonWrapped(7, 13, 6) {
+		t.Fatal("Tilverton start has no verified west path to the Windlord's Inn")
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 13, 6
+	state.DungeonWallType, _ = grid.WallWrapped(6, 13, 6)
+	state.DungeonWallRoof = grid.CellWrapped(6, 13).Terrain
+	if state.DungeonWallRoof != 0x86 {
+		t.Fatalf("Windlord's Inn GEO selector=%#x, want 0x86", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 3 ||
+		!state.SceneCharacterRequested || state.SceneHeadBlock != 3 || state.SceneBodyBlock != 3 ||
+		!strings.Contains(state.Message, "歡迎來到美麗的提爾佛頓") ||
+		!strings.Contains(state.Message, "旅店老闆娘") {
+		registers := make([]uint16, 0, 5)
+		for address := uint16(0xC04B); address <= 0xC04F; address++ {
+			value, _ := state.session.MemoryValue(address)
+			registers = append(registers, value)
+		}
+		flags, _ := state.session.MemoryValue(0x4C00)
+		mask, _ := state.session.MemoryValue(0x7F7A)
+		index, _ := state.session.MemoryValue(0x7F3F)
+		quotient, _ := state.session.MemoryValue(0x7F80)
+		selector, _ := state.session.MemoryValue(0x7F7B)
+		t.Fatalf("Windlord's Inn first pause mode=%v picture=%v:%d message=%q registers=%#v flags=%#x mask=%#x index=%#x quotient=%#x selector=%#x",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message, registers, flags, mask, index, quotient, selector)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		state.Choices[0] != state.catalog.Text("press_button", "請按任意鍵或 Enter 繼續") {
+		t.Fatalf("Windlord's Inn first Continue mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "賢者") {
+		t.Fatalf("Windlord's Inn journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+	}
+	if len(state.JournalPages) != 9 || !strings.Contains(state.JournalPages[8], "手札條目 31") ||
+		!strings.Contains(state.JournalPages[8], "菲拉妮") {
+		t.Fatalf("Journal Entry 31 was not unlocked in-game: pages=%v", state.JournalPages)
+	}
+	if err := state.OpenJournal(); err != nil {
+		t.Fatal(err)
+	}
+	for state.JournalPage+1 < len(state.JournalPages) {
+		if err := state.NextJournalPage(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.JournalPage != 8 || !strings.Contains(state.JournalText, "手札條目 31") {
+		t.Fatalf("unlocked Journal Entry 31 is not reachable in journal UI: page=%d text=%q",
+			state.JournalPage, state.JournalText)
+	}
+	if err := state.CloseJournal(); err != nil || state.Mode != ModeWilderness {
+		t.Fatalf("close journal after inn event: mode=%v err=%v", state.Mode, err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 13 {
+		t.Fatalf("Windlord's Inn continuation mode=%v position=(%d,%d), want same dungeon cell",
+			state.Mode, state.DungeonX, state.DungeonY)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 13, 2
+	state.DungeonWallType, state.DungeonWallRoof = 0, 0
 	if err := state.EnterDungeonCamp(); err != nil {
 		t.Fatal(err)
 	}

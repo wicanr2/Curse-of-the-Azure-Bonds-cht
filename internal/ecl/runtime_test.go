@@ -115,6 +115,26 @@ func TestRunSubsetBitwiseWritesMemory(t *testing.T) {
 	}
 }
 
+func TestRunSubsetBitwiseResultFeedsIfFlags(t *testing.T) {
+	// AND 0, 0 compares the result with zero. IF <> must therefore skip the
+	// first EXIT and reach SAVE/PRINT.
+	block := []byte{0, 0,
+		0x2F, 0x00, 0, 0x00, 0, 0x02, 0x00, 0x7B,
+		0x17,
+		0x00,
+		0x09, 0x00, 7, 0x02, 0x01, 0x7B,
+		0x11, 0x01, 0x01, 0x7B,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "7" {
+		t.Fatalf("text=%q, want [7] after AND compare flags", result.Text)
+	}
+}
+
 func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 	// GETTABLE memory[0x9000 + 1] -> memory[0x9100], then print it.
 	payload := []byte{
@@ -253,7 +273,11 @@ func TestRunSubsetReportsECLClockOperands(t *testing.T) {
 }
 
 func TestRunSubsetReportsPictureRequest(t *testing.T) {
-	result, err := RunSubset([]byte{0, 0, 0x0E, 0x00, 0x1D, 0x00}, 0, 10)
+	result, err := RunSubset([]byte{0, 0,
+		0x09, 0x00, 3, 0x02, 0xE1, 0x7E,
+		0x0E, 0x00, 0x1D,
+		0x00,
+	}, 0, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -262,6 +286,9 @@ func TestRunSubsetReportsPictureRequest(t *testing.T) {
 	}
 	if result.BigPictureRequested {
 		t.Fatal("regular PIC was marked as BIGPIC")
+	}
+	if !result.PictureHeadBlockSet || result.PictureHeadBlock != 3 {
+		t.Fatalf("picture head selector=%d,%v, want 3,true", result.PictureHeadBlock, result.PictureHeadBlockSet)
 	}
 	big, err := RunSubset([]byte{0, 0, 0x0E, 0x00, 0x78, 0x00}, 0, 10)
 	if err != nil || !big.BigPictureRequested || big.PictureBlock != 0x78 {

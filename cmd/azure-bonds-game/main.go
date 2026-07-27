@@ -731,13 +731,9 @@ func (a *app) Draw(screen *ebiten.Image) {
 	}
 	if a.state.Mode == game.ModeJournal {
 		text.Draw(screen, a.state.JournalTitle, a.face, 32, 52, cyan)
-		line := 100
-		for _, paragraph := range strings.Split(a.state.JournalText, "\n") {
-			text.Draw(screen, paragraph, a.face, 32, line, white)
-			line += 36
-		}
-		text.Draw(screen, "第 "+strconv.Itoa(a.state.JournalPage+1)+" / "+strconv.Itoa(len(a.state.JournalPages))+" 頁　左右：翻頁", a.face, 32, 320, white)
-		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 350, cyan)
+		drawWrappedText(screen, a.state.JournalText, a.face, 32, 100, 22, 32, 7, white)
+		text.Draw(screen, "第 "+strconv.Itoa(a.state.JournalPage+1)+" / "+strconv.Itoa(len(a.state.JournalPages))+" 頁　左右：翻頁", a.face, 32, 350, white)
+		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 390, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeMap {
@@ -1416,6 +1412,7 @@ func main() {
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
+	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1572,9 +1569,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening {
+	} else if *opening || *inn {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1584,6 +1581,23 @@ func main() {
 		}
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
+		}
+		if *inn {
+			if err := state.Select(0); err != nil {
+				log.Fatal(err)
+			}
+			if err := state.Continue(); err != nil {
+				log.Fatal(err)
+			}
+			if err := state.Select(0); err != nil {
+				log.Fatal(err)
+			}
+			state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 13, 6
+			state.DungeonWallType, _ = geoGrid.WallWrapped(6, 13, 6)
+			state.DungeonWallRoof = geoGrid.CellWrapped(6, 13).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 	ebiten.SetWindowSize(logicalWidth, logicalHeight)

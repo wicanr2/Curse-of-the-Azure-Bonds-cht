@@ -1007,3 +1007,13 @@ Ebiten 正式流程會自動顯示既有 GEO／WALLDEF／8X8D 3D renderer，不�
 ／memorization，執行皇家巡邏繁中事件，Continue 後回原 dungeon。CAMP EXIT 以
 `campReturnMode` 返回 3D view；一般 640×480 event text 改成 24px 五行換行。新增 READY
 spec 281 與 real-image regression。
+
+第二百八十二輪成果：修正 VM 長期缺少的 ECL byte code-memory mapping；reference
+`0x8000..0x9DFF` 現在隨 block load／NEWECL switch 重載，GETTABLE 可讀腳本內 dispatch
+table，code window 外的 shared memory 仍保留。AND／OR 也依 `CMD_AndOr` 補上
+`compare_variables(result,0)` side effect。正式序幕後由 GEO2 `(7,13)` 往西抵達
+`(6,13)`，SearchLocation selector `0x86` 進入 Windlord's Inn PICTURE 3 與兩段繁中事件；
+事件引用 Journal Entry 31 時才將使用者提供 PDF 的中文全文加入遊戲內手札，最後返回原
+地城格。PICTURE opcode 同步保存稍後會被 script 清除的 HeadBlockId，讓 HEAD3／BODY3
+原始人物素材正確顯示；手札改為 24px、22 字寬七行排版。新增 READY spec 282、
+synthetic VM gates、real-image regression 與 640×480 `tilverton-inn.png` README 截圖。

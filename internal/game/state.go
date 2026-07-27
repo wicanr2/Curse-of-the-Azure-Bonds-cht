@@ -826,12 +826,20 @@ func (s *State) BeginAdventure() error {
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	if len(result.Text) > 0 {
+		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
 	}
 	if result.PictureRequested {
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
 		s.BigPictureRequested = result.BigPictureRequested
+		if result.PictureHeadBlockSet {
+			s.SceneHeadBlock = uint8(result.PictureHeadBlock)
+		}
+		s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
+		if s.SceneCharacterRequested {
+			s.SceneBodyBlock = uint8(result.PictureBlock)
+		}
 		s.OriginalEvent = "PICTURE"
 		if result.CombatRequested || result.WaitingForMenu {
 			pending := result
@@ -983,6 +991,7 @@ func (s *State) Select(index int) error {
 		}
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
+			s.unlockJournalEntries(result.Text)
 			s.Message = localizeECLText(s.catalog, result.Text)
 		}
 		if len(result.WhoRequests) > 0 {
@@ -1022,6 +1031,9 @@ func (s *State) Select(index int) error {
 			s.PictureRequested = true
 			s.PictureBlock = result.PictureBlock
 			s.BigPictureRequested = result.BigPictureRequested
+			if result.PictureHeadBlockSet {
+				s.SceneHeadBlock = uint8(result.PictureHeadBlock)
+			}
 			s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
 			if s.SceneCharacterRequested {
 				s.SceneBodyBlock = uint8(result.PictureBlock)
@@ -1087,7 +1099,8 @@ func (s *State) Select(index int) error {
 			s.finishNewGameEntry()
 			return nil
 		}
-		if result.Exited && s.eclMenuReturnMode == ModeDungeon && len(result.Text) == 0 {
+		if result.Exited && s.eclMenuReturnMode == ModeDungeon &&
+			strings.TrimSpace(strings.Join(result.Text, "")) == "" {
 			s.Mode = ModeDungeon
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
@@ -4070,6 +4083,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	if len(result.Text) > 0 {
+		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
 	}
 	s.eclMenuReturnMode = ModeDungeon
@@ -4079,6 +4093,13 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
 		s.BigPictureRequested = result.BigPictureRequested
+		if result.PictureHeadBlockSet {
+			s.SceneHeadBlock = uint8(result.PictureHeadBlock)
+		}
+		s.SceneCharacterRequested = !result.BigPictureRequested && s.SceneHeadBlock != 0xFF
+		if s.SceneCharacterRequested {
+			s.SceneBodyBlock = uint8(result.PictureBlock)
+		}
 		s.OriginalEvent = "PICTURE"
 		if result.CombatRequested || result.WaitingForMenu {
 			pending := result
@@ -4317,6 +4338,8 @@ func (s *State) restoreWildernessMenu() {
 
 func localizeOption(catalog locale.Catalog, option string) string {
 	switch option {
+	case "PRESS BUTTON OR RETURN TO CONTINUE.":
+		return catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
 	case "ENTER CITY":
 		return catalog.Text("enter_city", "Enter city")
 	case "JOURNEY ON":
@@ -4381,6 +4404,29 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	return strings.Join(localized, " ")
 }
 
+// unlockJournalEntries bridges original "record it in Journal Entry N"
+// script text to the remake's in-game journal. Entries are appended only
+// after their event fires, so the bundled manual does not reveal future
+// clues prematurely.
+func (s *State) unlockJournalEntries(texts []string) {
+	joined := strings.Join(texts, " ")
+	if !strings.Contains(joined, "JOURNAL ENTRY 31.") {
+		return
+	}
+	const marker = "手札條目 31："
+	for _, page := range s.JournalPages {
+		if strings.HasPrefix(page, marker) {
+			return
+		}
+	}
+	s.JournalPages = append(s.JournalPages, s.catalog.Text(
+		"journal_entry_31",
+		marker+"你們是由一群紅袍人送來的。他們說在路上發現你們時，你們已奄奄一息；"+
+			"房錢已預付，所以想住多久都可以。你們來時身上就有那些刺青，旅店老闆娘從未見過類似圖紋。"+
+			"她建議去找賢者菲拉妮，往北兩個街區就能找到她。",
+	))
+}
+
 func localizeECLLine(catalog locale.Catalog, line string) string {
 	switch line {
 	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
@@ -4397,6 +4443,20 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tilverton_patrol_arrives", "一支皇家巡邏隊抵達。")
 	case "ROYAL GUARDS TELL YOU TO MOVE ALONG.":
 		return catalog.Text("ecl_tilverton_guards_move", "皇家衛兵命令你們立刻離開。")
+	case "'WELCOME TO THE FAIR CITY OF TILVERTON,' BEAMS THE":
+		return catalog.Text("ecl_tilverton_inn_welcome", "「歡迎來到美麗的提爾佛頓！」")
+	case "INNKEEPER. THEN SHE NOTICES YOUR COLLECTIVE SCOWLS.":
+		return catalog.Text("ecl_tilverton_inn_scowls", "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。")
+	case "'PLEASE CALM DOWN WHILE I EXPLAIN.'":
+		return catalog.Text("ecl_tilverton_inn_calm", "「請先冷靜，讓我解釋。」")
+	case "YOU LISTEN,":
+		return catalog.Text("ecl_tilverton_inn_listen", "你們聽她說明，")
+	case "AND YOU RECORD IT IN JOURNAL ENTRY":
+		return catalog.Text("ecl_tilverton_inn_record", "並將內容記入冒險手札")
+	case "31. 'PERHAPS THE SAGE WILL HELP. YOU CAN GET WEAPONS FROM":
+		return catalog.Text("ecl_tilverton_inn_sage", "第 31 條。「或許賢者能幫上忙；你們也可以到")
+	case "THE SHOP ACROSS THE WAY.'":
+		return catalog.Text("ecl_tilverton_inn_shop", "對街的商店取得武器。」")
 	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
 		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
 	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":

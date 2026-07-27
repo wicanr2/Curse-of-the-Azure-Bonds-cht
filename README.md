@@ -120,7 +120,7 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - `cmd/azure-bonds-game` 也支援 `-dos-character-record`（及 optional `.FX/.SWG`）直接以原版單一角色啟動 remake；`-party-load` 與此模式互斥。
 - `cmd/azure-bonds-game` 支援 `-savgam-dir <dir> -savgam-slot A` 直接載入 reference `savgama.dat` 與 `CHRDATA1.sav`／optional `.fx/.swg` party bundles；此模式與 remake JSON／單角色 import 互斥，且 F5／CAMP SAVE 會回寫同一個 slot。
 - imported active Bless／Curse／Blind／Bestow Curse／friendly Prayer effects 會投影到 fighter attack／AC（可確認的修正為 +1、-1、Blind -4/+4 AC、Bestow Curse -4、Prayer +1）；需要目標或戰鬥 phase 的 effects 仍待 rules layer。
-- 城市 `INN` 已接成安全休息場所：恢復 party roster 與畫面 fighter 的 HP，並以繁中訊息返回場所選單；CAMP 的 SAVE／VIEW／MAGIC／ALTER／FIX 與 BAR Tavern Tale 窄 service 已逐步接入，買酒價格／完整酒館 trigger、REST interruption 與完整原版日曆規則仍待完成。
+- 城市 `INN` 已接成安全休息場所：恢復 party roster 與畫面 fighter 的 HP，並以繁中訊息返回場所選單；CAMP 的 SAVE／VIEW／MAGIC／ALTER／FIX 與 BAR Tavern Tale 窄 service 已逐步接入，買酒價格／其他城市的 rest encounter table 與完整原版日曆規則仍待完成。
 - 已建立商店 Buy／Sell／ID 的 party transaction contract：價格由後續 shop stock 提供，ID fee 為 200 GP；目前繁中 Shop Menu 已可購買、販售、鑑定、查看、集中／分配金幣與估價，完整原版 stock／ID result data 仍待接入。
 - 城市 `STORE` 已接入繁中 Shop Menu（購買／販售／鑑定／查看／取出／集中／分配／估價／離開）；尚未載入 stock 的 action 會明確提示並可返回選單。
 - 已接入 injected shop offers 與 party money pool：可集中／提取／平均分配金幣，並由 pool 購買指定 offer；價格仍由城市／ECL data 提供。
@@ -170,6 +170,16 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 提爾佛頓地城按 `E` 會先執行原版 PreCampCheck 再開 CAMP；安全起點可休息，unsafe
   cell 會依 script 的 `1/100` 在第一小時中斷，執行 CampInterrupted 皇家巡邏事件，
   Continue 後返回原 3D 座標。一般繁中事件已改為 24px 五行自動換行。
+- 正式起點轉身往西一格，GEO2 selector `0x86` 現會經原版
+  `GETTABLE → ON GOTO` 進入 Windlord's Inn：顯示原始 PICTURE 3、兩段繁中旅店對話，
+  並在劇情提到 Journal Entry 31 時，直接把 PDF 手札的中文全文解鎖到遊戲內 `J` 手札；
+  Continue 完成後返回同一個地城格，不必另外翻閱紙本說明書。
+
+![正式流程抵達 Windlord's Inn 的 640×480 繁中事件](docs/screenshots/tilverton-inn.png)
+
+上圖由 `-inn` 重現正式角色建立後的序幕，從 `(7,13)` 往西走一格，經原版
+GEO／ECL dispatch 抵達旅店；低解析原圖以整數倍放大，事件人物由 HEAD3／BODY3
+原始像素素材合成，繁中文字則以 24px 高解析字型在 640×480 畫面重新排版。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -188,6 +198,9 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 go test ./...
 go run ./cmd/azure-bonds -base-items
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
+# 可重現正式序幕／Windlord's Inn 640×480 繁中 vertical slice
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -opening
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -inn
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview
