@@ -72,5 +72,6 @@ ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可�
 adapter 保存；selected／whole-party branches 與 random target 可注入 dice／save／hit
 resolver 後寫回 roster HP。DOS `field_186` saving bonus 已由 party adapter 保存並
 納入 save threshold；State 的 default hit resolver 也會投影 fighter／equipment AC，
-並套用已證實的 invisibility `0x19`／`0x47` -4 attack roll。blink／displace／其他
+並套用已證實的 invisibility `0x19`／`0x47` -4 attack roll 與 action-delay-aware
+blink `0x25`。State context variant 可傳入目前 action delay；displace／其他
 `CheckAffectsEffect` 規則與死亡流程仍保留 boundary。
