@@ -278,6 +278,23 @@ func ChineseName(item ItemRecord) string {
 	if !ok {
 		return fmt.Sprintf("未翻譯物品(0x%02X)", item.Type)
 	}
+	parts := make([]string, 0, 3)
+	for slot := 3; slot >= 1; slot-- {
+		nameNumber := item.NameNumbers[slot-1]
+		if nameNumber == 0 || item.HiddenNameFlags&(1<<(3-slot)) != 0 {
+			continue
+		}
+		if translated, ok := chineseItemNameNumber(nameNumber); ok {
+			// The type's base name is already rendered below; avoid duplicating
+			// the common type token when it is also present in NameNumbers.
+			if translated != base {
+				parts = append(parts, translated)
+			}
+		}
+	}
+	if len(parts) > 0 {
+		base = strings.Join(append(parts, base), " ")
+	}
 	if item.Plus > 0 {
 		base = fmt.Sprintf("+%d %s", item.Plus, base)
 	}
@@ -288,6 +305,29 @@ func ChineseName(item ItemRecord) string {
 		base = fmt.Sprintf("%s ×%d", base, item.Count)
 	}
 	return base
+}
+
+// chineseItemNameNumber covers the reference itemNames entries that affect
+// observed magical equipment. Unknown name numbers remain raw data and are
+// intentionally omitted rather than receiving an invented translation.
+func chineseItemNameNumber(value uint8) (string, bool) {
+	name, ok := map[uint8]string{
+		36: "長劍", 37: "短劍", 38: "雙手劍", 55: "鏈甲", 59: "盾牌",
+		60: "防護卷軸", 61: "魔法師卷軸", 62: "牧師卷軸", 73: "箭",
+		77: "護腕", 79: "魔杖", 81: "魔法", 125: "屠龍者", 128: "霜寒",
+		159: "+1", 160: "+2", 161: "+3", 162: "+4", 163: "+5",
+		164: "的", 167: "偏移", 181: "力量", 182: "治療",
+		197: "尋找", 198: "-1", 199: "-2", 200: "-3",
+		203: "魔法飛彈", 204: "豁免", 205: "牧師卷軸", 206: "魔法師卷軸",
+		210: "防護卷軸", 211: "珠寶", 212: "精製", 213: "巨大",
+		214: "骨製", 215: "黃銅", 217: "AC 2", 218: "AC 6",
+		219: "AC 4", 220: "AC 3", 221: "防護", 222: "麻痺",
+		223: "食人魔力量", 224: "隱形", 226: "精靈之力",
+		232: "馬格魯比耶特", 236: "巨人力量", 238: "火焰舌",
+		246: "泰爾", 247: "坦帕斯", 248: "蘇恩", 250: "對不死生物 +3",
+		252: "詛咒",
+	}[value]
+	return name, ok
 }
 
 func ChineseAffectName(affect AffectRecord) string {

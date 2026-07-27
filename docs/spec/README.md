@@ -237,3 +237,4 @@
 - [第二百五十七輪 TREASURE random 與 party pickup](./257-treasure-random-and-pickup.md)（`READY`：限 seeded random table、loot menu 與 party equipment mutation）
 - [第二百五十八輪 TREASURE／COMBAT continuation](./258-treasure-combat-continuation.md)（`READY`：限 loot、戰鬥與勝利後 ECL continuation 順序）
 - [第二百五十九輪 DOS multi-class level preservation](./259-dos-multiclass-levels.md)（`READY`：限 raw class IDs、八組等級與 primary-class adapter）
+- [第二百六十輪 ITEM NameNumbers 繁中顯示](./260-item-name-number-localization.md)（`READY`：限 hidden flag、已確認 magic components 與 raw-preserving display）
