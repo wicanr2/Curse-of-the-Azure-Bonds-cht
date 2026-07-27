@@ -646,6 +646,26 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 	}
 }
 
+func TestResolveDeathEffectsIsTransactionalAndSyncsRoster(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "hero", HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusDying, Bleeding: 2,
+		Effects: []monster.AffectRecord{{Kind: 0x63, Active: true}}}}
+	if err := state.ResolveDeathEffects(party.DeathEffectContext{CombatHealAllowed: true, RollDie: func(int) int { return 4 }}); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HealthStatus != party.HealthStatusOK || state.partyRoster[0].HitPoints != 4 || len(state.partyRoster[0].Effects) != 1 || state.partyRoster[0].Effects[0].Kind != 0x5F {
+		t.Fatalf("death recovery state=%#v", state.partyRoster[0])
+	}
+	state.partyRoster[0].Effects = []monster.AffectRecord{{Kind: 0x64, Active: true}}
+	before := state.partyRoster[0]
+	if err := state.ResolveDeathEffects(party.DeathEffectContext{DamageFlagsKnown: true, RollDie: func(int) int { return 0 }}); err == nil {
+		t.Fatal("invalid troll die should fail")
+	}
+	if state.partyRoster[0].Effects[0].Kind != before.Effects[0].Kind || len(state.partyRoster[0].Effects) != 1 {
+		t.Fatalf("failed death transaction leaked effects: %#v", state.partyRoster[0])
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

@@ -41,6 +41,43 @@ func TestCharacterRemoveCombatAffectsPreservesPersistentEffects(t *testing.T) {
 	}
 }
 
+func TestCharacterApplyDeathEffectsRecoversDyingAndAddsRegeneration(t *testing.T) {
+	character := Character{HitPoints: 0, HealthStatus: HealthStatusDying, Bleeding: 2,
+		Effects: []monster.AffectRecord{{Kind: 0x63, Active: true}}}
+	if err := character.ApplyDeathEffects(DeathEffectContext{CombatHealAllowed: true, RollDie: func(sides int) int {
+		if sides == 4 {
+			return 4
+		}
+		return 1
+	}}); err != nil {
+		t.Fatal(err)
+	}
+	if character.HealthStatus != HealthStatusOK || character.HitPoints != 4 || character.Bleeding != 0 || len(character.Effects) != 1 || character.Effects[0].Kind != 0x5F || character.Effects[0].Duration != 5 || character.Effects[0].Strength != 0xFF {
+		t.Fatalf("recovery result=%#v", character)
+	}
+}
+
+func TestCharacterApplyDeathEffectsTrollRegenRequiresKnownNonFireAcidDamage(t *testing.T) {
+	character := Character{Effects: []monster.AffectRecord{{Kind: 0x64, Active: true}}}
+	roll := 0
+	if err := character.ApplyDeathEffects(DeathEffectContext{DamageFlagsKnown: true, RollDie: func(int) int {
+		roll++
+		return roll
+	}}); err != nil {
+		t.Fatal(err)
+	}
+	if len(character.Effects) != 2 || character.Effects[1].Kind != 0x66 || character.Effects[1].Duration != 6 || character.Effects[1].Strength != 0xFF {
+		t.Fatalf("troll regen=%#v", character.Effects)
+	}
+	fire := Character{Effects: []monster.AffectRecord{{Kind: 0x64, Active: true}}}
+	if err := fire.ApplyDeathEffects(DeathEffectContext{DamageFlagsKnown: true, DamageFlags: DeathDamageFire, RollDie: func(int) int { return 1 }}); err != nil {
+		t.Fatal(err)
+	}
+	if len(fire.Effects) != 1 {
+		t.Fatalf("fire damage should suppress troll regen: %#v", fire.Effects)
+	}
+}
+
 func TestShopBuySellAndIdentifyTransactions(t *testing.T) {
 	character := validCharacter()
 	character.Gold = 500

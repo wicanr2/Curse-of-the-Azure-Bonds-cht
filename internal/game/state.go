@@ -922,6 +922,43 @@ func (s *State) ResolvePendingECLDamageWithDefaultHitResolverContext(selectedInd
 	return s.ResolvePendingECLDamageWithHitResolver(selectedIndex, rollDie, rollSave, hitTarget)
 }
 
+// ResolveDeathEffects applies explicitly decoded Death-effect context to the
+// party transactionally. ECL DAMAGE does not carry damage type, so callers
+// must identify flags before enabling troll fire/acid behavior.
+func (s *State) ResolveDeathEffects(context party.DeathEffectContext) error {
+	working := make(party.Roster, len(s.partyRoster))
+	for index, character := range s.partyRoster {
+		working[index] = character
+		working[index].Effects = append([]monster.AffectRecord(nil), character.Effects...)
+		if err := working[index].ApplyDeathEffects(context); err != nil {
+			return err
+		}
+	}
+	s.partyRoster = working
+	for fighterIndex := range s.party {
+		for characterIndex := range s.partyRoster {
+			if s.party[fighterIndex].ID == s.partyRoster[characterIndex].ID {
+				s.party[fighterIndex].HitPoints = s.partyRoster[characterIndex].HitPoints
+				break
+			}
+		}
+	}
+	if s.battle != nil && s.Mode == ModeCombat {
+		for _, character := range s.partyRoster {
+			if _, ok := s.fighter(character.ID); !ok {
+				continue
+			}
+			if err := s.battle.SetHitPoints(character.ID, character.HitPoints); err != nil {
+				return err
+			}
+		}
+		if s.battle.Status() != combat.StatusActive {
+			return s.finishCombat()
+		}
+	}
+	return nil
+}
+
 func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int, hitTarget party.DamageHitResolver) ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil

@@ -126,6 +126,7 @@ type Character struct {
 	HitPoints       int                    `json:"hit_points,omitempty"`
 	MaxHitPoints    int                    `json:"max_hit_points,omitempty"`
 	HealthStatus    HealthStatus           `json:"health_status,omitempty"`
+	Bleeding        int                    `json:"bleeding,omitempty"`
 	Gold            uint16                 `json:"gold,omitempty"`
 	Gems            uint16                 `json:"gems,omitempty"`
 	Jewelry         uint16                 `json:"jewelry,omitempty"`
@@ -148,6 +149,73 @@ type Character struct {
 	// ThiefSkills preserves the eight DOS thief percentages; index 1 is
 	// open-locks and remains in original order.
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
+}
+
+const (
+	DeathDamageFire = 0x01
+	DeathDamageAcid = 0x10
+)
+
+// DeathEffectContext contains the external state required by the verified
+// CheckAffectsEffect(Death) handlers. Damage type is deliberately explicit
+// because ECL DAMAGE's five operands do not encode it.
+type DeathEffectContext struct {
+	DamageFlags       uint8
+	DamageFlagsKnown  bool
+	CombatHealAllowed bool
+	RollDie           func(int) int
+}
+
+// ApplyDeathEffects projects the verified affect_63 and troll_fire_or_acid
+// death handlers. Unknown Death effects remain preserved for later adapters.
+func (c *Character) ApplyDeathEffects(context DeathEffectContext) error {
+	if c == nil {
+		return nil
+	}
+	if context.RollDie == nil {
+		return fmt.Errorf("death effects require an injected die roller")
+	}
+	for index := 0; index < len(c.Effects); index++ {
+		effect := c.Effects[index]
+		if !effect.Active {
+			continue
+		}
+		switch effect.Kind {
+		case 0x63: // affect_63: death-time recovery
+			heal := 0
+			if c.HealthStatus == HealthStatusDying && c.Bleeding < 6 {
+				heal = 6 - c.Bleeding
+			} else if c.HealthStatus == HealthStatusUnconscious {
+				heal = 6
+			}
+			if heal > 0 && context.CombatHealAllowed {
+				c.HealthStatus = HealthStatusOK
+				c.HitPoints = heal
+				c.Bleeding = 0
+				roll := context.RollDie(4)
+				if roll < 1 || roll > 4 {
+					return fmt.Errorf("death recovery die roll %d is outside 1..4", roll)
+				}
+				regeneration := uint16(roll + 1)
+				c.Effects = append(c.Effects, monster.AffectRecord{Kind: 0x5F, Value: regeneration, Duration: regeneration, Strength: 0xFF, Active: true})
+				c.Effects = append(c.Effects[:index], c.Effects[index+1:]...)
+				index--
+			}
+		case 0x64: // troll_fire_or_acid
+			if context.DamageFlagsKnown && context.DamageFlags&(DeathDamageFire|DeathDamageAcid) == 0 {
+				total := 0
+				for rollIndex := 0; rollIndex < 3; rollIndex++ {
+					roll := context.RollDie(6)
+					if roll < 1 || roll > 6 {
+						return fmt.Errorf("troll regeneration die roll %d is outside 1..6", roll)
+					}
+					total += roll
+				}
+				c.Effects = append(c.Effects, monster.AffectRecord{Kind: 0x66, Value: uint16(total), Duration: uint16(total), Strength: 0xFF, Active: true})
+			}
+		}
+	}
+	return nil
 }
 
 // combatAffectKinds is the verified RemoveCombatAffects table from the DOS

@@ -68,6 +68,11 @@ func (c *Character) ApplyDamageWithHealthStatus(amount int) (int, HealthStatus) 
 		status = HealthStatusUnconscious
 	}
 	c.HealthStatus = status
+	if status == HealthStatusDying {
+		c.Bleeding = overkill
+	} else {
+		c.Bleeding = 0
+	}
 	if status != HealthStatusOK && status != HealthStatusAnimated {
 		c.HitPoints = 0
 	} else {
