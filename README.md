@@ -45,6 +45,10 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
   RELAX 會直接顯示手冊 Tavern Tale 28 的繁中內容。離城後可經 Shadow Gap
   擊敗六名偽裝巡邏兵的火刀，抵達立石群並取得灰袍人的主線提示：
   「往南方尋找紅色之人」。
+- 立石群已能繼續前往艾森布拉與哈普；`PATROL FOREST` 複合選項不再造成
+  顯示與 branch 錯位。往哈普途中會建立三隻原版 MON1 `0x35`「黑龍」與
+  icon `0x35` 小人，勝利後恢復同一份 ECL session，以 world value `9`
+  抵達哈普村外。
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。

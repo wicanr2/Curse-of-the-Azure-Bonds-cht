@@ -191,6 +191,22 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSte
 	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &owned)
 }
 
+// ResumeInteractiveSelectionSeed supplies only the choices made at the
+// currently paused UI boundary. BlockSession owns the cumulative offsets;
+// callers must not reconstruct a growing history of synthetic Continue,
+// menu, and WHO inputs themselves.
+func (s *BlockSession) ResumeInteractiveSelectionSeed(maxSteps int, selection, whoSelection *uint16, seed int64, context PartyContext) (RunResult, error) {
+	selections := make([]uint16, s.selectionOffset)
+	if selection != nil {
+		selections = append(selections, *selection)
+	}
+	whoSelections := make([]uint16, s.whoSelectionOffset)
+	if whoSelection != nil {
+		whoSelections = append(whoSelections, *whoSelection)
+	}
+	return s.RunInteractiveSeedWithPartyContextAndWhoSelections(maxSteps, selections, whoSelections, seed, context)
+}
+
 // RunFrom executes an explicit event entry in the current block. After a
 // NEWECL signal, the target resumes at its own initial entry.
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {

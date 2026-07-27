@@ -463,3 +463,5 @@
 - [x] 接通阿沙本福德 PICTURE 80 與六項場所選單，修正 HALL `PROGRAM 0`
   訓練 context；完成河畔酒館 Tavern Tale 28、Shadow Gap 六名偽裝火刀伏擊、
   Standing Stone 灰袍人與「往南尋找紅色之人」主線提示。
+- [x] 接續立石群 `PATROL FOREST` 複合選項、艾森布拉 world value `8`，
+  並完成前往哈普的三隻 MON1 `0x35` 黑龍戰與勝利後 world value `9` continuation。

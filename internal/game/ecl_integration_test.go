@@ -1966,6 +1966,87 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 4 {
 		t.Fatalf("Standing Stone current-location memory=%#x,%v want 4", got, ok)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Standing Stone actions=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR"}) {
+		t.Fatalf("Standing Stone destinations=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) ||
+		!strings.Contains(state.Message, "艾森布拉") {
+		t.Fatalf("Essembra routes=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Location != LocationEssembra || !strings.Contains(state.Message, "艾森布拉城外") {
+		t.Fatalf("Essembra arrival location=%v message=%q", state.Location, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 8 {
+		t.Fatalf("Essembra current-location memory=%#x,%v want 8", got, ok)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAP", "THE STANDING STONE"}) {
+		t.Fatalf("Essembra destinations=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) ||
+		!strings.Contains(state.Message, "哈普") {
+		t.Fatalf("Hap routes=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "三隻") || !strings.Contains(state.Message, "黑龍") {
+		t.Fatalf("Hap dragon approach message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("Hap dragons did not enter combat: mode=%v message=%q", state.Mode, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4CA2); !ok || got != 1 {
+		t.Fatalf("Hap dragon encounter flag=%#x,%v want 1 before combat", got, ok)
+	}
+	dragons := state.CombatFighters()
+	if len(dragons) != 4 {
+		t.Fatalf("Hap dragon fighters=%d, want hero plus three dragons", len(dragons))
+	}
+	for _, fighter := range dragons[1:] {
+		if fighter.Name != "黑龍" || fighter.SpriteBlock != 0x35 || fighter.Side != combat.SideEnemy {
+			t.Fatalf("Hap dragon=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Location != LocationHap || !strings.Contains(state.Message, "哈普村外") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Hap arrival location=%v choices=%#v message=%q",
+			state.Location, state.currentOriginalChoices, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 9 {
+		t.Fatalf("Hap current-location memory=%#x,%v want 9", got, ok)
+	}
+	if got, ok := session.MemoryValue(0x4CA1); !ok || got != 9 {
+		t.Fatalf("Hap previous-location mirror=%#x,%v want 9", got, ok)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

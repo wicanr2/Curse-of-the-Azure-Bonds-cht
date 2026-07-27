@@ -2,7 +2,14 @@
 
 更新日期：2026-07-28
 
-最新成果：ECL2 block 4 terrain `0x87` 火刀首領主線已反組並接入 State。原始
+最新成果：正式世界流程已由立石群延伸到艾森布拉與哈普。原始複合選項
+`PATROL FOREST` 已按單一 selection index 正規化；Standing Stone → Essembra
+會寫入 `4C9B=8`，Essembra → Hap 途中建立三隻 MON1 `0x35` 黑龍，勝利後恢復
+同一份 ECL session，以 `4C9B=9` 抵達哈普村外。規格與跨作品注意事項收進
+spec 306 與 Gold Box state 知識庫。畫面契約維持 640×480、原圖整數
+nearest-neighbour、24px 繁中（緊湊欄位約 16×15）。
+
+先前成果：ECL2 block 4 terrain `0x87` 火刀首領主線已反組並接入 State。原始
 PICTURE 12／手札 11 後建立 20 名 record 1 與 1 名 record 3；COMBAT 前的
 treasure packet 現依 monster spawns 判成遭遇獎勵，只有勝利後才解析為
 17,000 GP、8 gems、4 jewelry 與兩件隨機物品。戰後手札 54／53、PICTURE
