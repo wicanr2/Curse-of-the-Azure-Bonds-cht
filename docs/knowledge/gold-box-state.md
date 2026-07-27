@@ -90,7 +90,14 @@ adapter 提供，不能把這個候選清單邊界說成完整 monster AI。
 
 玩家輸入造成的 combat error 也應是可恢復 transaction：input adapter 將 `ValidateAttack`／彈藥／target selection 的 error 送到 localized message presenter，保留目前 Mode、turn、HP 與 inventory，不能直接結束 Ebiten game loop。`combat.ErrAdjacentMissileTarget` 可作為跨作品共用的規則錯誤識別；啟動／資料載入錯誤則仍可向上回報。
 
-ECL `ADD NPC` 應採資料 signal boundary：runner 保存 operand 的 NPC ID 並繼續至下一個 command，game adapter 再依作品 NPC table 決定是否建立角色／對話／隊伍 side effect。`NPCIDs` 可跨 Gold Box runner 重用，但不能把 ID signal 當成已完成 NPC record lookup。
+ECL `ADD NPC` 應採資料 signal boundary，但 CoAB 是兩 operands（ID、morale），不可因
+command metadata 的 `1` 誤判只讀一個 operand。作品 adapter 再以目前 area 的
+MON*CHA／SPC／ITM 執行 `load_mob`、最低空 icon slot、selected player 與
+`(morale >> 1) + NPC_Base`。MON Player record 的 class_id 可能 stale；只有在
+ClassLevel 恰有一個非零 slot 時才可於 NPC 專用 parser 推導，不能放寬普通 save importer。
+
+同一 VM pass 可以先 PICTURE 再抵達 COMBAT。State 必須保存後續 combat transaction，
+讓玩家看完圖片後開始 battle；若只依 result 欄位固定優先序提前 return，會永久吞掉戰鬥。
 
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 

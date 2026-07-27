@@ -90,6 +90,7 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	}
 	copy(out[DOSSavingThrowsOffset:DOSSavingThrowsEnd], character.SavingThrows)
 	out[0x186] = byte(character.SavingThrowBonus)
+	out[0xF7] = character.ControlMorale
 	return out, nil
 }
 
@@ -116,6 +117,7 @@ type DOSPlayerRecord struct {
 	MaxHitPoints     int
 	CurrentHitPoints int
 	Age              int16
+	ControlMorale    uint8
 	IconHead         uint8
 	IconWeapon       uint8
 	IconID           uint8
@@ -171,6 +173,17 @@ func ParseDOSPlayerFiles(id string, files DOSPlayerFiles) (Character, error) {
 // current remake Character model are accepted; raw offsets for inventory and
 // effects are not silently interpreted.
 func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
+	return parseDOSPlayerRecord(data, id, false)
+}
+
+// ParseDOSNPCRecord accepts MON*CHA Player records whose class_id can be
+// stale while exactly one ClassLevel slot identifies the class used by
+// ReclacClassBonuses. Ordinary player save imports remain strict.
+func ParseDOSNPCRecord(data []byte, id string) (DOSPlayerRecord, error) {
+	return parseDOSPlayerRecord(data, id, true)
+}
+
+func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayerRecord, error) {
 	if len(data) < DOSPlayerRecordSize {
 		return DOSPlayerRecord{}, fmt.Errorf("DOS player record is %d bytes; need at least 0x%X", len(data), DOSPlayerRecordSize)
 	}
@@ -202,6 +215,37 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 			}
 		}
 	}
+	if level < 1 && inferNPCClass {
+		slot := -1
+		for index, classLevel := range classLevels {
+			if classLevel == 0 {
+				continue
+			}
+			if slot >= 0 {
+				return DOSPlayerRecord{}, fmt.Errorf("DOS NPC has ambiguous class levels %v", classLevels)
+			}
+			slot = index
+			level = int(classLevel)
+		}
+		if slot >= 0 {
+			switch slot {
+			case 0:
+				rawClass = ClassCleric
+			case 2:
+				rawClass = ClassFighter
+			case 3:
+				rawClass = ClassPaladin
+			case 4:
+				rawClass = ClassRanger
+			case 5:
+				rawClass = ClassMagicUser
+			case 6:
+				rawClass = ClassThief
+			default:
+				return DOSPlayerRecord{}, fmt.Errorf("DOS NPC class-level slot %d is unsupported", slot)
+			}
+		}
+	}
 	if level < 1 {
 		return DOSPlayerRecord{}, fmt.Errorf("DOS player class 0x%02X has no current level", rawClass)
 	}
@@ -218,8 +262,9 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),
-		Age:      int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
-		IconHead: data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
+		Age:           int16(binary.LittleEndian.Uint16(data[0x76:0x78])),
+		ControlMorale: data[0xF7],
+		IconHead:      data[0x141], IconWeapon: data[0x142], IconID: data[0x143], IconSize: data[0x144],
 		Gold:             binary.LittleEndian.Uint16(data[0x101:0x103]),
 		Gems:             binary.LittleEndian.Uint16(data[0x105:0x107]),
 		Jewelry:          binary.LittleEndian.Uint16(data[0x107:0x109]),
@@ -241,6 +286,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
 		RawClassID: r.RawClass,
 		Level:      r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		NPC: r.ControlMorale >= 0x80, ControlMorale: r.ControlMorale,
 		ClassLevels: r.ClassLevels,
 		Gold:        r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,

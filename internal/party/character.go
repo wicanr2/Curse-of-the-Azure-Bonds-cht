@@ -218,6 +218,10 @@ type Character struct {
 	ClassLevels [8]uint8 `json:"class_levels,omitempty"`
 	// Age preserves the signed DOS player age at record offset 0x76.
 	Age int16 `json:"age,omitempty"`
+	// NPC and ControlMorale preserve CMD_AddNPC's party-control distinction.
+	// ControlMorale >= 0x80 is the reference NPC namespace.
+	NPC           bool  `json:"npc,omitempty"`
+	ControlMorale uint8 `json:"control_morale,omitempty"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
 	IconSize        uint8                  `json:"icon_size,omitempty"`

@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
@@ -154,6 +155,110 @@ func TestRealECL3CallRedrawReachesStateAdapter(t *testing.T) {
 	state.applyECLCallSignals(result)
 	if got := state.ConsumeECLCallRequests(); len(got) != 1 || got[0] != 0x2E10 {
 		t.Fatalf("State CALL requests=%#v", got)
+	}
+}
+
+func TestRealECL1AddNPCBuildsThreePartyMembers(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+
+	eclBlocks, err := dax.Parse(zipData(t, image, "ECL1.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var opening []byte
+	for _, block := range eclBlocks {
+		if block.Entry.ID == 0x52 {
+			opening = block.Data
+			break
+		}
+	}
+	if len(opening) == 0 {
+		t.Fatal("ECL1 block 0x52 is absent")
+	}
+	result, err := ecl.RunSubset(opening, 0x14, 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	records := make(map[uint8]monster.Record)
+	monsterBlocks, err := dax.Parse(zipData(t, image, "MON1CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range monsterBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		records[block.Entry.ID] = record
+	}
+	affects := make(map[uint8][]monster.AffectRecord)
+	affectBlocks, err := dax.Parse(zipData(t, image, "MON1SPC.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range affectBlocks {
+		parsed, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		affects[block.Entry.ID] = parsed
+	}
+	items := make(map[uint8][]monster.ItemRecord)
+	itemBlocks, err := dax.Parse(zipData(t, image, "MON1ITM.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range itemBlocks {
+		parsed, parseErr := monster.ParseItems(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		items[block.Entry.ID] = parsed
+	}
+
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x52: opening}, 0x52)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := State{
+		session:     session,
+		partyRoster: party.Roster{{ID: "pc", Name: "玩家", IconID: 0, HitPoints: 10, MaxHitPoints: 10}},
+		party:       []combat.Fighter{{ID: "pc", Name: "玩家", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10}},
+	}
+	state.SetMonsterRecordsForECL(1, records)
+	state.SetMonsterAffectsForECL(1, affects)
+	state.SetMonsterItemsForECL(1, items)
+	if err := state.applyECLNPCSignals(result); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster) != 4 || len(state.party) != 4 {
+		t.Fatalf("party sizes roster=%d fighters=%d", len(state.partyRoster), len(state.party))
+	}
+	for index, want := range []string{"RUSTLE", "CYNTHIA", "GRENDEL"} {
+		character := state.partyRoster[index+1]
+		if character.Name != want || !character.NPC || character.ControlMorale != 0xB2 || character.IconID != uint8(index+1) {
+			t.Fatalf("NPC %d=%+v", index, character)
+		}
+		if state.party[index+1].Name != want || state.party[index+1].Side != combat.SideParty {
+			t.Fatalf("NPC fighter %d=%+v", index, state.party[index+1])
+		}
+	}
+	if state.whoSelectedIndex != 3 {
+		t.Fatalf("selected index=%d, want last NPC", state.whoSelectedIndex)
+	}
+	state.Mode = ModeEvent
+	state.PictureRequested = true
+	state.pendingPictureCombat = &result
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("picture continuation did not enter real opening combat: mode=%v event=%q", state.Mode, state.OriginalEvent)
 	}
 }
 

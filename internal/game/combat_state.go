@@ -1423,6 +1423,9 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 	s.applyECLCallSignals(result)
 	s.applySpellSignals(result)
 	s.applyECLDamageSignals(result)
+	if err := s.applyECLNPCSignals(result); err != nil {
+		return false, err
+	}
 	if err := s.applyECLClockSignals(result); err != nil {
 		return false, err
 	}

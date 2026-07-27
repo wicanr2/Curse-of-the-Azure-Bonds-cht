@@ -334,6 +334,33 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 }
 
+func TestParseDOSNPCRecordInfersSinglePopulatedClassLevel(t *testing.T) {
+	data := make([]byte, DOSPlayerRecordSize)
+	data[0] = 7
+	copy(data[1:], []byte("CYNTHIA"))
+	data[0x10], data[0x12], data[0x14] = 10, 16, 12
+	data[0x16], data[0x18], data[0x1A] = 14, 10, 11
+	data[0x74], data[0x75] = 7, 2 // stale fighter class_id
+	data[0x10E] = 9               // sole magic-user ClassLevel
+	data[0x78], data[0x1A4] = 40, 40
+	data[0xF7] = 0xB2
+
+	if _, err := ParseDOSPlayerRecord(data, "strict"); err == nil {
+		t.Fatal("ordinary player parser accepted stale NPC class metadata")
+	}
+	record, err := ParseDOSNPCRecord(data, "npc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	character, err := record.Character()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if character.Class != ClassMagicUser || character.Level != 9 || !character.NPC || character.ControlMorale != 0xB2 {
+		t.Fatalf("NPC character=%+v", character)
+	}
+}
+
 func TestParseDOSHalfOrcRace(t *testing.T) {
 	record := make([]byte, DOSPlayerRecordSize)
 	record[0] = 3

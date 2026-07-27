@@ -422,7 +422,9 @@
 
 第一百五十六輪功能／文件 commit：`531f892`，已推送至 GitHub `main`。將玩家 combat input error 接成 `ReportCombatError`／繁中訊息，尤其讓相鄰 missile／彈藥／目標錯誤留在戰鬥畫面而不結束 Ebiten game loop；新增 error sentinel、輸入攔截、regression、READY 規格與共用 state knowledge。完整 error catalog、ranged rules 與資料／啟動錯誤仍保留 boundary。
 
-第一百五十七輪功能／文件 commit：`5aabf79`，已推送至 GitHub `main`。將 ECL `ADD NPC (0x36)` 接成 `RunResult.NPCIDs` signal，讓實際 ECL1 block 0x52 的 `PICTURE → ADD NPC 0x55 → EXIT` 能安全完成；新增 synthetic／real-image regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。NPC table、party side effect 與完整劇情 continuation 仍保留 boundary。
+第一百五十七輪曾將 `ADD NPC (0x36)` 誤判為單 operand，使 block 0x52 的 morale
+operand code `0x00` 被當成 EXIT；第 277 輪已推翻並修正。正確流程是連續加入
+`0x55/0x58/0x5A`、播放完整詛咒序幕並抵達 COMBAT。
 
 第一百五十八輪功能／文件 commit：`f9164e4`，已推送至 GitHub `main`。依跨 ECL 實際掃描將 `LOAD PIECES (0x37)` 接成三 selector signal，讓 ECL2 block 0x01 等實際 entry 不再因 opcode 停止；新增 synthetic／ECL1／ECL2 regression、CLI／BlockSession propagation、READY 規格與共用 state knowledge。地城 floor、wall、tile、碰撞與 camera side effect 仍保留 boundary。
 
@@ -964,3 +966,11 @@ README 與可跨 Gold Box 沿用的 VM／作品 adapter 分層知識。
 座標 wrap，frontend exactly-once 重建 dungeon floor／wall／roof；`0xB200` 先重現
 reference default sound A。新增 ECL3 block 16 real CALL、四方向 wrap、ordered request
 regressions與 READY spec；`word_1EE76 == 10` sound-B transient 仍保留 evidence boundary。
+
+第二百七十七輪開場主流程里程碑：依 `CMD_AddNPC.vm_LoadCmdSets(2)` 修正 NPC ID＋
+morale framing，新增 `NPCRequest` 與 `DELAY` timing signal；真實 ECL1 block 0x52
+現執行 53 steps，加入 RUSTLE／CYNTHIA／GRENDEL、輸出 11 段青色枷序幕、聚合
+`CALL 0x6803`／DELAY，最後抵達 COMBAT。State 依 chapter-local MON*CHA／SPC／ITM
+建立 persistent NPC Character／fighter、control morale 與最低空 icon slot；NPC 專用
+parser以唯一 ClassLevel修正 stale class_id，普通 save import仍嚴格。PICTURE 後 deferred
+combat transaction也已接通，11 段序幕逐行翻成繁中，玩家看完事件圖即可進入真正 Battle。

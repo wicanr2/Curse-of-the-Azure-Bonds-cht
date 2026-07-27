@@ -3,6 +3,7 @@ package ecl
 import (
 	"archive/zip"
 	"io"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -137,11 +138,16 @@ func TestRealECL1Block82AddNPCReachesExit(t *testing.T) {
 	if !found {
 		t.Fatal("ECL1 block 0x52 is absent")
 	}
-	result, err := RunSubset(block.Data, 0x14, 20)
+	result, err := RunSubset(block.Data, 0x14, 100)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result.NPCIDs) != 1 || result.NPCIDs[0] != 0x55 || result.Steps != 5 || result.PC != 0x23 {
+	wantNPCs := []NPCRequest{{ID: 0x55, Morale: 100}, {ID: 0x58, Morale: 100}, {ID: 0x5A, Morale: 100}}
+	if !reflect.DeepEqual(result.NPCIDs, []uint16{0x55, 0x58, 0x5A}) ||
+		!reflect.DeepEqual(result.NPCRequests, wantNPCs) ||
+		!result.CombatRequested || result.DelayCount != 12 ||
+		!reflect.DeepEqual(result.CallAddresses, []uint16{0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803, 0x6803}) ||
+		result.Steps != 53 || result.PC != 0x236 {
 		t.Fatalf("result=%+v", result)
 	}
 }

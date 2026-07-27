@@ -23,6 +23,7 @@ type RunResult struct {
 	CallAddresses          []uint16
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
+	DelayCount             int
 	LoadCharacterAddresses []uint16
 	LoadCharacterRequests  []LoadCharacterRequest
 	FindItemIDs            []uint16
@@ -31,6 +32,7 @@ type RunResult struct {
 	DumpRequests           []DumpRequest
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
+	NPCRequests            []NPCRequest
 	SelectionsConsumed     int
 	WhoSelectionsConsumed  int
 	RandomValues           []uint16
@@ -50,6 +52,13 @@ type RunResult struct {
 	PartySurpriseRequests  []PartySurpriseRequest
 	CheckPartyRequests     []CheckPartyRequest
 	WhoRequests            []WhoRequest
+}
+
+// NPCRequest preserves both operands consumed by CMD_AddNPC. Morale is later
+// converted by the game adapter to (morale >> 1) + Control.NPC_Base.
+type NPCRequest struct {
+	ID     uint16
+	Morale uint16
 }
 
 type PartyStrengthRequest struct {
@@ -781,6 +790,10 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+		case 0x3A: // DELAY
+			// GameDelay is an engine timing boundary with no ECL memory side
+			// effect. Preserve the count for the frontend and continue.
+			result.DelayCount++
 		case 0x2E: // DAMAGE
 			if len(instruction.Operands) != 5 {
 				return result, fmt.Errorf("DAMAGE at %d has unexpected arity", pc)
@@ -1064,9 +1077,12 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if err != nil {
 				return result, fmt.Errorf("ADD NPC at %d: %w", pc, err)
 			}
-			// Preserve the observed ID; the NPC table and party insertion side
-			// effect belong to the game adapter.
+			morale, err := operandValue(instruction.Operands[1], memory)
+			if err != nil {
+				return result, fmt.Errorf("ADD NPC morale at %d: %w", pc, err)
+			}
 			result.NPCIDs = append(result.NPCIDs, npcID)
+			result.NPCRequests = append(result.NPCRequests, NPCRequest{ID: npcID, Morale: morale})
 		case 0x25, 0x26: // ON GOTO / ON GOSUB
 			operands, headNext, err := ParseOperands(payload, pc, 2)
 			if err != nil {

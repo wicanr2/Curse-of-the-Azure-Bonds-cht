@@ -160,6 +160,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
 		aggregate.DamageRequests = append(aggregate.DamageRequests, result.DamageRequests...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
+		aggregate.DelayCount += result.DelayCount
 		aggregate.LoadCharacterAddresses = append(aggregate.LoadCharacterAddresses, result.LoadCharacterAddresses...)
 		aggregate.LoadCharacterRequests = append(aggregate.LoadCharacterRequests, result.LoadCharacterRequests...)
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
@@ -168,6 +169,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.DumpRequests = append(aggregate.DumpRequests, result.DumpRequests...)
 		aggregate.DestroyItemIDs = append(aggregate.DestroyItemIDs, result.DestroyItemIDs...)
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
+		aggregate.NPCRequests = append(aggregate.NPCRequests, result.NPCRequests...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)
 		aggregate.EncounterActions = append(aggregate.EncounterActions, result.EncounterActions...)
 		aggregate.LoadFilesRequested = aggregate.LoadFilesRequested || result.LoadFilesRequested
