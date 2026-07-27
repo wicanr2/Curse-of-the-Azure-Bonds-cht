@@ -73,6 +73,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 第 187 輪將這個 writer 接到 Ebiten workflow：`-savgam-dir/-savgam-slot` 載入成功後，F5 與 CAMP SAVE 共用 `saveCurrentGame`，寫回同一個 slot；未載入 SAVGAM 時維持 remake JSON。這個選擇留在 platform adapter，不讓 `State` 依賴鍵盤或檔案路徑，後續 Gold Box 可沿用 workflow contract。
 
+第 188 輪補上縮編清理：`SaveSAVGAMSlot` 只列舉目前 key 的 prefix 與六組 `CHRDAT` sidecar，先移至受限 backup directory，再安裝新 bundle；失敗會移除已安裝項目並還原已備份檔。這解決 party drop/reorder 後舊角色檔污染同一 slot 的問題，但不等於已解碼多職業或全部原始 player serializer。
+
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。
