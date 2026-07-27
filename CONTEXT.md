@@ -731,3 +731,10 @@ direct-entry vertical slice，不宣稱完整玩家流程。重新產生 parser 
 新增 monster parser／combat／State regressions、READY spec、README／PLAN／Gold Box state
 knowledge；其他 monster spells、MON*SPC effects、AI priority／range／saving throw 仍保留
 明確 boundary。Docker Go 1.23 核心測試與 `git diff --check` 通過。
+
+第二百三十四輪重大里程碑 commit：`7ece3a3`，依 reference `load_mob` 將
+`MON1SPC`–`MON6SPC` 以 chapter-local monster ID 載入，並把九-byte raw affect records
+以 copy 掛到 enemy fighter 的 `MonsterAffects`。新增 `BuildEnemiesWithAffects`、State
+chapter table adapter、CLI loader、copy-isolation regression、READY spec 與 README／PLAN／
+Gold Box state knowledge。隱形／加速／睡眠等效果的戰鬥語意仍未猜測。Docker Go 1.23
+完整 `go test ./...` 與 `git diff --check` 通過。
