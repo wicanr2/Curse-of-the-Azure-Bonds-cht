@@ -1318,3 +1318,11 @@ HAUGHTY/SLY/MEEK/NICE/ABUSIVE；傲慢與威嚇進入 14 隻 MON5 `0x35` 黑龍�
 其餘三種會播放「沒有對付龍族的陰謀」繁中對話，再匯入德拉坎德羅斯四名
 守軍戰，勝利後仍回安全屋頂。新增獨立 `gold-box-parlay.md` 知識文件、
 READY spec 317、`-wizard-tower-parlay` 重現入口與 640×480 黑龍繁中實機圖。
+
+第三百一十八輪成果：法師塔 outer menu 的 `ATTACK DRAGONS` 與 `FLEE`
+均由原 ECL 匯入 MON5 `0x35×14` 黑龍戰，證實此處撤退不成功。勝利後保存
+`7EC7 > 0x80` raw 重戰 gate；`4C61==1` 時可選擇取龍心，YES 會播放酸液繁中、
+自動解析全隊 `DAMAGE 0xC0,3d4+3,save type 1` 並寫 `4C64=1`，NO／不符合
+條件則跳過。State whole-party resolver 現可從混合 pending queue 取出 `0xC0`
+packet 而保留需 selected target 的舊 packet。新增 READY spec 318、
+`-encounter-area` graphics namespace 與 640×480 Area 5 原版 14 黑龍實機圖。

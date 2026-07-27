@@ -1795,17 +1795,25 @@ func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
 }
 
 // resolveAutomaticWholePartyECLDamage commits environmental DAMAGE packets
-// that explicitly target the whole party and bypass saving throws
-// (flags 0x80|0x40|0x20). Other DAMAGE forms remain pending because they need
-// a selected character or the reference CanHitTarget adapter.
+// that explicitly target the whole party (flags 0x80|0x40). The 0x20 bit
+// bypasses saving throws; packets without it still resolve each member's
+// encoded save type. Other DAMAGE forms remain pending because they need a
+// selected character or the reference CanHitTarget adapter.
 func (s *State) resolveAutomaticWholePartyECLDamage() ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil
 	}
+	automatic := make([]ecl.DamageRequest, 0, len(s.pendingDamageRequests))
+	remaining := make([]ecl.DamageRequest, 0, len(s.pendingDamageRequests))
 	for _, request := range s.pendingDamageRequests {
-		if request.Flags&0xE0 != 0xE0 {
-			return nil, nil
+		if request.Flags&0xC0 == 0xC0 {
+			automatic = append(automatic, request)
+		} else {
+			remaining = append(remaining, request)
 		}
+	}
+	if len(automatic) == 0 {
+		return nil, nil
 	}
 	rng := rand.New(rand.NewSource(s.eclSeed))
 	roll := func(sides int) int {
@@ -1814,7 +1822,15 @@ func (s *State) resolveAutomaticWholePartyECLDamage() ([]party.DamageOutcome, er
 		}
 		return rng.Intn(sides) + 1
 	}
-	return s.ResolvePendingECLDamage(-1, roll, roll)
+	original := s.pendingDamageRequests
+	s.pendingDamageRequests = automatic
+	outcomes, err := s.ResolvePendingECLDamage(-1, roll, roll)
+	if err != nil {
+		s.pendingDamageRequests = original
+		return nil, err
+	}
+	s.pendingDamageRequests = remaining
+	return outcomes, nil
 }
 
 // ResolvePendingECLDamage applies pending requests transactionally through
@@ -5159,6 +5175,32 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_wizard_tower_dragons_convinced",
 			"黑龍說：「你們已使我們相信，這裡並沒有對付龍族的陰謀。我們現在離開，讓你們自行解決與德拉坎德羅斯的爭端。」",
+		)
+	case strings.Contains(joined, "YOU ARE RIGHT DRACANDROS") &&
+		strings.Contains(joined, "THEY CONDEMN THEMSELVES"):
+		return catalog.Text(
+			"ecl_wizard_tower_dragons_condemn",
+			"黑龍說：「德拉坎德羅斯，你說得對。他們已自行定罪。」",
+		)
+	case strings.Contains(joined, "DRACANDROS ESCAPED DOWNSTAIRS") &&
+		strings.Contains(joined, "DRAGON BODIES LIE STREWN ABOUT") &&
+		strings.Contains(joined, "DO YOU TAKE ONE OF THEIR HEARTS"):
+		return catalog.Text(
+			"ecl_wizard_tower_take_dragon_heart",
+			"戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。要取走其中一顆龍心嗎？",
+		)
+	case strings.Contains(joined, "DRACANDROS ESCAPED DOWNSTAIRS") &&
+		strings.Contains(joined, "DRAGON BODIES LIE STREWN ABOUT"):
+		return catalog.Text(
+			"ecl_wizard_tower_dragon_bodies",
+			"戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。",
+		)
+	case strings.Contains(joined, "CUT INTO THE DRAGON") &&
+		strings.Contains(joined, "SPRAY OF ACID") &&
+		strings.Contains(joined, "EXTRACT THE HEART"):
+		return catalog.Text(
+			"ecl_wizard_tower_dragon_heart_acid",
+			"你們剖開黑龍、取出內臟時，被噴濺的酸液淋得滿身，但仍成功取出了龍心。",
 		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):

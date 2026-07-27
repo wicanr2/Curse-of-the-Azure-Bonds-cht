@@ -681,6 +681,53 @@ func TestAutomaticWholePartyECLDamageUsesStateSeed(t *testing.T) {
 	}
 }
 
+func TestAutomaticWholePartyECLDamageResolvesSavingThrows(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetECLSeed(1)
+	state.partyRoster = party.Roster{
+		{ID: "one", Name: "一", HitPoints: 100, MaxHitPoints: 100, SavingThrows: []uint8{21, 21, 21, 21, 21}},
+		{ID: "two", Name: "二", HitPoints: 100, MaxHitPoints: 100, SavingThrows: []uint8{21, 21, 21, 21, 21}},
+	}
+	state.party = []combat.Fighter{
+		{ID: "one", HitPoints: 100, MaxHitPoints: 100},
+		{ID: "two", HitPoints: 100, MaxHitPoints: 100},
+	}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 0xC0, DiceCount: 3, DiceSize: 4, Bonus: 3, SaveFlags: 1,
+	}}})
+	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(outcomes) != 2 || outcomes[0].DamageRoll != 13 ||
+		!outcomes[0].Saved || outcomes[0].Applied != 0 ||
+		outcomes[1].Saved || outcomes[1].Applied != 13 ||
+		state.partyRoster[0].HitPoints != 100 || state.partyRoster[1].HitPoints != 87 {
+		t.Fatalf("saving damage outcomes=%+v roster=%+v", outcomes, state.partyRoster)
+	}
+	if len(state.ConsumeDamageRequests()) != 0 {
+		t.Fatal("saving whole-party damage remained pending")
+	}
+}
+
+func TestAutomaticWholePartyECLDamageDoesNotWaitBehindSelectedPackets(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetECLSeed(1)
+	state.partyRoster = party.Roster{{ID: "one", HitPoints: 100, MaxHitPoints: 100}}
+	state.party = []combat.Fighter{{ID: "one", HitPoints: 100, MaxHitPoints: 100}}
+	selected := ecl.DamageRequest{Flags: 0x90, DiceCount: 1, DiceSize: 10, SaveFlags: 0x80}
+	wholeParty := ecl.DamageRequest{Flags: 0xE0, DiceCount: 1, DiceSize: 1}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{selected, wholeParty}})
+	outcomes, err := state.resolveAutomaticWholePartyECLDamage()
+	if err != nil || len(outcomes) != 1 || outcomes[0].Applied != 1 ||
+		state.partyRoster[0].HitPoints != 99 {
+		t.Fatalf("mixed automatic damage outcomes=%+v err=%v roster=%+v", outcomes, err, state.partyRoster)
+	}
+	if !reflect.DeepEqual(state.pendingDamageRequests, []ecl.DamageRequest{selected}) {
+		t.Fatalf("selected pending packet was not preserved: %#v", state.pendingDamageRequests)
+	}
+}
+
 func TestResolvePendingECLDamageWithHitResolverHandlesRandomTargets(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "first", HitPoints: 10}, {ID: "second", HitPoints: 10}}

@@ -2802,6 +2802,105 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
 		t.Fatalf("parlay roof return mode=%v block=%#x", state.Mode, session.CurrentBlockID())
 	}
+	session.SetMemoryValue(0x4C60, 0)
+	session.SetMemoryValue(0x4C61, 1)
+	session.SetMemoryValue(0x4C64, 0)
+	state.PictureRequested = false
+	state.partyRoster[0].HitPoints = 500
+	state.partyRoster[0].MaxHitPoints = 500
+	state.partyRoster[0].SavingThrows = []uint8{21, 21, 21, 21, 21}
+	state.party[0].HitPoints = 500
+	state.party[0].MaxHitPoints = 500
+	if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
+		t.Fatal(err)
+	}
+	for step := 0; step < 24 && !reflect.DeepEqual(state.currentOriginalChoices, towerDecision); step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		selection := 0
+		if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+			selection = 1
+		}
+		if err := state.Select(selection); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, towerDecision) {
+		t.Fatalf("attack-dragons replay mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	sawDragonsCondemn := strings.Contains(state.Message, "自行定罪")
+	for step := 0; step < 4 && state.Mode != ModeCombat; step++ {
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		} else if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+		sawDragonsCondemn = sawDragonsCondemn || strings.Contains(state.Message, "自行定罪")
+	}
+	if state.Mode != ModeCombat || !sawDragonsCondemn {
+		t.Fatalf("attack-dragons combat mode=%v condemn=%v message=%q",
+			state.Mode, sawDragonsCondemn, state.Message)
+	}
+	dragonCount := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			if fighter.Name != "黑龍" || fighter.SpriteBlock != 0x35 {
+				t.Fatalf("unexpected wizard-tower dragon=%+v", fighter)
+			}
+			dragonCount++
+		}
+	}
+	if dragonCount != 14 {
+		t.Fatalf("wizard-tower black dragons=%d, want 14", dragonCount)
+	}
+	for turn := 0; turn < 32 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "黑龍的屍體") ||
+		!strings.Contains(state.Message, "龍心") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("dragon-heart prompt mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	hpBeforeAcid := state.partyRoster[0].HitPoints
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "酸液") || !strings.Contains(state.Message, "龍心") {
+		t.Fatalf("dragon-heart acid message=%q", state.Message)
+	}
+	state.SetECLSeed(3)
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HitPoints >= hpBeforeAcid || state.party[0].HitPoints != state.partyRoster[0].HitPoints {
+		t.Fatalf("dragon-heart acid HP roster=%d fighter=%d before=%d pending=%#v",
+			state.partyRoster[0].HitPoints, state.party[0].HitPoints, hpBeforeAcid, state.pendingDamageRequests)
+	}
+	if got, ok := session.MemoryValue(0x4C64); !ok || got != 1 {
+		t.Fatalf("dragon-heart flag=%#x,%v want 1", got, ok)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "安全休息") {
+		t.Fatalf("dragon-heart safe roof mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x33 {
+		t.Fatalf("dragon-heart roof return mode=%v block=%#x", state.Mode, session.CurrentBlockID())
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

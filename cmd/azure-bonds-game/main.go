@@ -1510,6 +1510,7 @@ func main() {
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
+	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -1652,6 +1653,10 @@ func main() {
 	dungeonFloorValue := mapdata.GenerateDungeon(*geoGrid, state.DungeonX, state.DungeonY)
 	dungeonFloor := &dungeonFloorValue
 	if *encounter {
+		if *encounterArea < 1 || *encounterArea > 6 {
+			log.Fatal("-encounter-area must be 1..6")
+		}
+		state.Area.GameArea = uint8(*encounterArea)
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
 			log.Fatalf("ECL block 0x%02X is unavailable", *encounterBlock)
