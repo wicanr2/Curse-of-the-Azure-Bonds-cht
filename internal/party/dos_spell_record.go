@@ -239,7 +239,8 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 func (r DOSPlayerRecord) Character() (Character, error) {
 	character := Character{
 		ID: r.ID, Name: r.Name, Race: r.Race, Class: r.Class, Abilities: r.Abilities,
-		Level: r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
+		RawClassID: r.RawClass,
+		Level:      r.Level, Age: r.Age, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		ClassLevels: r.ClassLevels,
 		Gold:        r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,

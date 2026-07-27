@@ -2749,14 +2749,15 @@ func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	}
 }
 
-func TestCharacterCreationListsVerifiedSingleClassOptions(t *testing.T) {
+func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.OpenCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.CreationOptions) != 22 {
-		t.Fatalf("creation options=%d, want 22 verified race/class combinations", len(state.CreationOptions))
+	if len(state.CreationOptions) != 40 {
+		t.Fatalf("creation options=%d, want 40 verified single/multi-class combinations", len(state.CreationOptions))
 	}
+	multiClassCount := 0
 	for index, character := range state.CreationOptions {
 		if err := character.Validate(); err != nil {
 			t.Fatalf("option %d=%#v is invalid: %v", index, character, err)
@@ -2764,6 +2765,19 @@ func TestCharacterCreationListsVerifiedSingleClassOptions(t *testing.T) {
 		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
 			t.Fatalf("option %d has no starting-age evidence: %v", index, err)
 		}
+		if character.RawClassID >= 8 {
+			multiClassCount++
+			levels := uint8(0)
+			for _, level := range character.ClassLevels {
+				levels += level
+			}
+			if levels < 2 {
+				t.Fatalf("multi-class option %d has no preserved class levels: %#v", index, character)
+			}
+		}
+	}
+	if multiClassCount != 18 {
+		t.Fatalf("multi-class options=%d, want 18 reference race/class entries", multiClassCount)
 	}
 }
 

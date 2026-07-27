@@ -205,12 +205,14 @@ func (a *Abilities) Adjust(index, delta int) error {
 }
 
 type Character struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Race      Race      `json:"race"`
-	Class     Class     `json:"class"`
-	Abilities Abilities `json:"abilities"`
-	Level     int       `json:"level"`
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Race  Race   `json:"race"`
+	Class Class  `json:"class"`
+	// RawClassID preserves the DOS ClassId, including multi-class IDs 8..16.
+	RawClassID uint8     `json:"raw_class_id,omitempty"`
+	Abilities  Abilities `json:"abilities"`
+	Level      int       `json:"level"`
 	// ClassLevels preserves the eight raw DOS class-level slots. Class remains
 	// the primary-class projection used by the current combat rules layer.
 	ClassLevels [8]uint8 `json:"class_levels,omitempty"`
