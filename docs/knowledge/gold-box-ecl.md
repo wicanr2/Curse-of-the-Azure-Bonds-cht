@@ -93,5 +93,8 @@ spell ID、guarding 清零；若倒下者是 State current turn，State 會同�
 `Tile_DownPlayer=0x1F`；Cure Light Wounds 可依 `heal_player` boundary 選到
 unconscious／dying corpse，普通治療只清除 skull flash、保留 corpse 與無 position 狀態，
 直到後續 combat-heal／placement contract 明確讓角色站起。`NewBattle` 對 save／encounter
-初始 HP=0 fighter 也套用相同正規化，因此不會進入 turn 或佔用碰撞格。完整 9-cycle timing
+初始 HP=0 fighter 也套用相同正規化，因此不會進入 turn 或佔用碰撞格。明確
+`CombatHealAllowed` 的 affect_63 recovery 會以死亡時 CombatX/Y 呼叫
+`Battle.RestoreCombatant`，清除 `DownedCorpse` 並重新放回 position；普通 Cure 不會站起。
+完整 9-cycle timing
 與其他 Death routine 仍保留 boundary。

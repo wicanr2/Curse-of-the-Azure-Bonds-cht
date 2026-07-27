@@ -926,8 +926,10 @@ func (s *State) ResolvePendingECLDamageWithDefaultHitResolverContext(selectedInd
 // party transactionally. ECL DAMAGE does not carry damage type, so callers
 // must identify flags before enabling troll fire/acid behavior.
 func (s *State) ResolveDeathEffects(context party.DeathEffectContext) error {
+	wasDowned := make(map[string]bool, len(s.partyRoster))
 	working := make(party.Roster, len(s.partyRoster))
 	for index, character := range s.partyRoster {
+		wasDowned[character.ID] = character.HitPoints == 0
 		working[index] = character
 		working[index].Effects = append([]monster.AffectRecord(nil), character.Effects...)
 		if err := working[index].ApplyDeathEffects(context); err != nil {
@@ -951,8 +953,24 @@ func (s *State) ResolveDeathEffects(context party.DeathEffectContext) error {
 			if err := s.battle.SetHitPoints(character.ID, character.HitPoints); err != nil {
 				return err
 			}
+			if context.CombatHealAllowed && wasDowned[character.ID] && character.HitPoints > 0 && character.HealthStatus == party.HealthStatusOK {
+				fighter, ok := s.fighter(character.ID)
+				if !ok {
+					return fmt.Errorf("combat-heal fighter %q disappeared", character.ID)
+				}
+				if fighter.DownedCorpse {
+					if err := s.battle.RestoreCombatant(character.ID, combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}); err != nil {
+						return err
+					}
+				}
+			}
 			if character.HitPoints == 0 {
 				s.clearCombatActionFor(character.ID)
+			}
+		}
+		for index := range s.party {
+			if fighter, ok := s.fighter(s.party[index].ID); ok {
+				s.party[index] = fighter
 			}
 		}
 		if s.battle.Status() != combat.StatusActive {

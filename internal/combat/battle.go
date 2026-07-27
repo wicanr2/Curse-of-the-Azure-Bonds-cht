@@ -226,6 +226,37 @@ func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
 	return nil
 }
 
+// RestoreCombatant explicitly performs the reference combat_heal placement
+// boundary. HP healing alone intentionally does not call this method: a
+// healed DownedCorpse remains off the combat map until a caller supplies the
+// stand-up/placement intent.
+func (b *Battle) RestoreCombatant(fighterID string, position TilePoint) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if fighter.HitPoints <= 0 {
+		return fmt.Errorf("fighter %q cannot stand with %d hit points", fighterID, fighter.HitPoints)
+	}
+	for _, other := range b.fighters {
+		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition {
+			continue
+		}
+		if other.CombatX == position.X && other.CombatY == position.Y {
+			return fmt.Errorf("fighter %q placement (%d,%d) is occupied by %q", fighterID, position.X, position.Y, other.ID)
+		}
+	}
+	fighter.HasCombatPosition = true
+	fighter.CombatX, fighter.CombatY = position.X, position.Y
+	fighter.DeathOverlay = false
+	fighter.DownedCorpse = false
+	b.fighters[fighterID] = fighter
+	return nil
+}
+
 // ValidateAttack checks non-random attack preconditions. Game adapters can
 // call it before committing resources such as ammunition, while Attack calls
 // it before consuming the deterministic RNG stream.
