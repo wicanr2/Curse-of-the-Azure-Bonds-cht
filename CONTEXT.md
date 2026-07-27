@@ -708,3 +708,11 @@ Ebiten render lifecycle：enemy 的 DeathOverlay 九次 phase 結束後完全停
 並從戰場畫面退出；team party 的 DownedCorpse 則保留原座標與繁中「倒下」marker。更新
 ECL／graphics／README／PLAN 知識庫。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
 `internal/party`、`internal/ecl`、`internal/locale`，`git diff --check` 通過。
+
+第二百三十一輪重大里程碑 commit：`d5c6f8c`，依 reference `find_target`／
+`BuildNearTargets` 建立 `Battle.SelectCombatTarget`：enemy turn 從 sorted、存活的 party
+candidate 以 seeded RNG 選擇目標，同一回合的 multi-attack 維持同一 target，不再固定攻擊
+party[0]。新增 combat／State deterministic regressions、READY spec 與 Gold Box state
+knowledge；visibility／pathfinding／persistent Action.target／AI spell priority／guarding
+仍保留明確 boundary。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
+`internal/party`、`internal/ecl`、`internal/locale`，`git diff --check` 通過。
