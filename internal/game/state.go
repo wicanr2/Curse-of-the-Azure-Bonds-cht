@@ -959,6 +959,15 @@ func (s *State) ResolveDeathEffects(context party.DeathEffectContext) error {
 	return nil
 }
 
+// ResolveDragonSlayer exposes the target-aware weapon effect without
+// inventing a universal monster-type field in Character or ECL DAMAGE.
+func (s *State) ResolveDragonSlayer(characterIndex int, targetMonsterType uint8, strengthDamageBonus int, rollDie func(int) int) (party.DragonSlayerResult, error) {
+	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
+		return party.DragonSlayerResult{}, fmt.Errorf("dragon-slayer character index %d outside party", characterIndex)
+	}
+	return s.partyRoster[characterIndex].ResolveDragonSlayer(targetMonsterType, strengthDamageBonus, rollDie)
+}
+
 func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int, hitTarget party.DamageHitResolver) ([]party.DamageOutcome, error) {
 	if len(s.pendingDamageRequests) == 0 {
 		return nil, nil

@@ -166,6 +166,39 @@ type DeathEffectContext struct {
 	RollDie           func(int) int
 }
 
+const MonsterTypeDragon = 3
+
+// DragonSlayerResult is the verified weapon-effect projection used by the
+// reference dragon-slayer affect. Target kind and strength damage bonus are
+// explicit because neither is encoded by the ECL DAMAGE operands.
+type DragonSlayerResult struct {
+	Triggered       bool
+	Damage          int
+	AttackRollBonus int
+}
+
+// ResolveDragonSlayer applies the reference 1d12*3+4+strength damage bonus
+// and +2 attack roll only when an active dragon-slayer effect targets a dragon.
+func (c Character) ResolveDragonSlayer(targetMonsterType uint8, strengthDamageBonus int, rollDie func(int) int) (DragonSlayerResult, error) {
+	if rollDie == nil {
+		return DragonSlayerResult{}, fmt.Errorf("dragon-slayer requires an injected d12 roller")
+	}
+	if targetMonsterType != MonsterTypeDragon {
+		return DragonSlayerResult{}, nil
+	}
+	for _, effect := range c.Effects {
+		if !effect.Active || effect.Kind != 0x4B {
+			continue
+		}
+		roll := rollDie(12)
+		if roll < 1 || roll > 12 {
+			return DragonSlayerResult{}, fmt.Errorf("dragon-slayer roll %d is outside 1..12", roll)
+		}
+		return DragonSlayerResult{Triggered: true, Damage: roll*3 + 4 + strengthDamageBonus, AttackRollBonus: 2}, nil
+	}
+	return DragonSlayerResult{}, nil
+}
+
 // ApplyDeathEffects projects the verified affect_63 and troll_fire_or_acid
 // death handlers. Unknown Death effects remain preserved for later adapters.
 func (c *Character) ApplyDeathEffects(context DeathEffectContext) error {
