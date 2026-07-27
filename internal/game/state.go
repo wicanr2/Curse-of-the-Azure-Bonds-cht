@@ -952,6 +952,21 @@ func (s *State) resolvePendingECLDamage(selectedIndex int, rollDie, rollSave fun
 			}
 		}
 	}
+	if s.battle != nil && s.Mode == ModeCombat {
+		for _, character := range s.partyRoster {
+			if _, ok := s.fighter(character.ID); !ok {
+				continue
+			}
+			if err := s.battle.SetHitPoints(character.ID, character.HitPoints); err != nil {
+				return outcomes, err
+			}
+		}
+		if s.battle.Status() != combat.StatusActive {
+			if err := s.finishCombat(); err != nil {
+				return outcomes, err
+			}
+		}
+	}
 	return outcomes, nil
 }
 

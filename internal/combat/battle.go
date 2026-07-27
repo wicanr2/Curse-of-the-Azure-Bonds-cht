@@ -164,6 +164,26 @@ func (b *Battle) Fighters() []Fighter {
 	return output
 }
 
+// SetHitPoints applies an external damage/healing adapter to a combatant and
+// immediately recomputes the reference party/enemy win state. ECL DAMAGE can
+// use this bridge without reaching into the Battle fighter map.
+func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if hitPoints < 0 || hitPoints > fighter.MaxHitPoints {
+		return fmt.Errorf("fighter %q hit points %d outside 0..%d", fighterID, hitPoints, fighter.MaxHitPoints)
+	}
+	fighter.HitPoints = hitPoints
+	b.fighters[fighterID] = fighter
+	b.updateStatus()
+	return nil
+}
+
 // ValidateAttack checks non-random attack preconditions. Game adapters can
 // call it before committing resources such as ammunition, while Attack calls
 // it before consuming the deterministic RNG stream.
