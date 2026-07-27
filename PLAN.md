@@ -244,6 +244,7 @@
 - [x] 將城市 `STORE` 接成繁中 Shop Menu command state，保留 stock／money-pool 邊界。
 - [x] 建立 injected shop stock、party money pool、POOL／TAKE／SHARE 與 BUY state API。
 - [x] 將 BUY 接成繁中商品清單、價格顯示、pool 扣款與 inventory 更新。
+- [x] 將 SELL 接入繁中 Shop Menu：角色／物品選擇、item `Value` 入 pool、readied／cursed protection 與 party projection。
 - [x] 將 VIEW 接成繁中角色 HP／金幣／裝備摘要與返回 Shop Menu。
 - [x] 將 TAKE 接成繁中角色／金額選單、pool 扣款與角色 gold 更新。
 - [x] 將 APPRAISE 接成繁中角色／寶石選單、injected offer 與 pool 入帳。

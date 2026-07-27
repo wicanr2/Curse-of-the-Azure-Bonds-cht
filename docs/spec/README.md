@@ -185,3 +185,4 @@
 - [第一百七十八輪 DOS CHEAD/CBODY icon slot mapping](./178-dos-icon-slot-mapping.md)（`READY`：限 small／normal block namespace 與 layer composition）
 - [第一百七十九輪 DOS icon attack layer](./179-dos-icon-attack-layer.md)（`READY`：限 attack `+0x80` block 與 composition）
 - [第一百八十輪 combat icon direction](./180-combat-icon-direction.md)（`READY`：限 HalfDirToIso 與 team opposite facing）
+- [第一百九十一輪 localized shop sell](./191-localized-shop-sell.md)（`READY`：限商店販售 transaction 與繁中 UI）
