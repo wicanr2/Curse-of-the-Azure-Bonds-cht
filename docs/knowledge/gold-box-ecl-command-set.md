@@ -47,3 +47,7 @@ boundary，直到能從原始反組譯或跨作品對照確認 return／context 
 最新 smoke evidence 顯示，補上 variable monster operands 後，ECL3 block 17／18、
 ECL4 block 33／37 等真實 entries 已能抵達 COMBAT 並產生 spawn signal；這是 bounded
 descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
+
+`0x2D CALL` 現在也有 reusable external-call boundary：保存 observed word address
+並 return 到下一個 ECL instruction。後續作品可重用 signal contract，再依各作品
+的 recognized address table 注入 routine handler；不可把它直接改成 `GOSUB`。

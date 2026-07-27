@@ -37,3 +37,12 @@ runner 現在用 runtime memory resolve 這些 numeric descriptor，並限制結
 這個 adapter 讓 real ECL3 block 17／18 與 ECL4 block 33／37 的 smoke entry
 抵達 `COMBAT` 並產生 spawn signal；它仍不代表已完成所有 `CALL`、monster table
 side effect、party memory 或完整劇情流程。
+
+## External CALL boundary
+
+ECL `0x2D CALL` 的 operand 集合在 ECL1–ECL6 raw image 收斂到非 code-segment
+address，主要為 `0x2E10`，另見 `0xC01E`／`0xB200`。它與 `GOTO`／`GOSUB` 的
+payload target 不同；real ECL3 opening 在 CALL 後會繼續 `PRINTCLEAR`、文字與
+menu。bounded VM 現在保存 `RunResult.CallAddresses`，並從下一個 instruction
+繼續，讓後續中文事件可以被觀察；真正 routine 的 DOS memory、UI、sound 或
+combat side effect 仍由後續 adapter 實作。
