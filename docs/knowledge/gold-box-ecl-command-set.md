@@ -144,3 +144,9 @@ UI。CoAB remake 讓一般選單與 combat continuation 共用同一 adapter，�
 `MovePositionForward` 與 sound A/B。forced move 是 16×16 cardinal wrap 且不檢查碰撞；
 玩家按鍵 movement 的門／牆阻擋不可誤套到 script CALL。其他作品必須重新驗證 dispatch
 base 與 address table，不可直接沿用 CoAB 位址。
+
+CoAB `ADD NPC (0x36)` 是 ID＋morale 兩 operands。真實 block 的第二 operand 常以
+`0x00,value` 編碼；少吃一個 operand會把 `0x00` 誤判成 EXIT，形成看似通過的假 boundary。
+corpus gate除「無 unsupported opcode」外，也應鎖定 steps、PC、signal sequence 與後續文字／
+COMBAT，才能抓出這類 framing 錯誤。`DELAY (0x3A)` 是無 ECL-memory side effect 的 engine
+timing signal，runner應計數並繼續，renderer再決定實時呈現。

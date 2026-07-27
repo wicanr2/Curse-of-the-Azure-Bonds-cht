@@ -13,6 +13,10 @@ import (
 const RecordSize = 0x1A6
 
 type Record struct {
+	// Raw preserves the shared 0x1A6 Player record used by load_npc. Combat
+	// parsing reads only a subset; the party adapter needs race/class/icon and
+	// other verified player fields without reparsing the DAX container.
+	Raw              []byte
 	Name             string
 	THAC0            int
 	MaxHitPoints     int
@@ -80,6 +84,7 @@ func Parse(data []byte) (Record, error) {
 	var spellUses [3]uint8
 	copy(spellUses[:], data[0xB5:0xB8])
 	return Record{
+		Raw:            append([]byte(nil), data[:RecordSize]...),
 		Name:           name,
 		THAC0:          int(int8(data[0x73])),
 		MaxHitPoints:   maxHP,

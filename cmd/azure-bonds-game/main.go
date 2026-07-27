@@ -1395,6 +1395,15 @@ func main() {
 			log.Fatal(parseAffectErr)
 		}
 		state.SetMonsterAffectsForECL(chapter, affects)
+		itemData, itemErr := zipMember(*imagePath, fmt.Sprintf("MON%dITM.DAX", chapter))
+		if itemErr != nil {
+			log.Fatal(itemErr)
+		}
+		items, parseItemErr := loadMonsterItems(itemData)
+		if parseItemErr != nil {
+			log.Fatal(parseItemErr)
+		}
+		state.SetMonsterItemsForECL(chapter, items)
 	}
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
@@ -1746,6 +1755,22 @@ func loadMonsterAffects(data []byte) (map[uint8][]monster.AffectRecord, error) {
 		affects[block.Entry.ID] = records
 	}
 	return affects, nil
+}
+
+func loadMonsterItems(data []byte) (map[uint8][]monster.ItemRecord, error) {
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	items := make(map[uint8][]monster.ItemRecord, len(blocks))
+	for _, block := range blocks {
+		records, parseErr := monster.ParseItems(block.Data)
+		if parseErr != nil {
+			return nil, fmt.Errorf("MON*ITM block 0x%02X: %w", block.Entry.ID, parseErr)
+		}
+		items[block.Entry.ID] = records
+	}
+	return items, nil
 }
 
 // loadTreasureItemBlocks decodes the six original ITEM*.DAX containers into

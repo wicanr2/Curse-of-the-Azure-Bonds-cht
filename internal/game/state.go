@@ -129,6 +129,7 @@ type State struct {
 	journalReturnMode      Mode
 	creationReturnMode     Mode
 	session                *ecl.BlockSession
+	pendingPictureCombat   *ecl.RunResult
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
@@ -152,6 +153,7 @@ type State struct {
 	monsterRecordsByECL    map[uint8]map[uint8]monster.Record
 	monsterAffects         map[uint8][]monster.AffectRecord
 	monsterAffectsByECL    map[uint8]map[uint8][]monster.AffectRecord
+	monsterItemsByECL      map[uint8]map[uint8][]monster.ItemRecord
 	gameClock              [7]uint16
 	gameAgeCycles          uint32
 	itemCatalog            monster.BaseItemCatalog
@@ -574,6 +576,22 @@ func (s *State) SetMonsterAffectsForECL(chapter uint8, affects map[uint8][]monst
 	s.monsterAffectsByECL[chapter] = cloneMonsterAffects(affects)
 }
 
+// SetMonsterItemsForECL installs the chapter-local MON*ITM sidecars used by
+// both encounter equipment and CMD_AddNPC's load_mob transaction.
+func (s *State) SetMonsterItemsForECL(chapter uint8, items map[uint8][]monster.ItemRecord) {
+	if chapter < 1 || chapter > 6 {
+		return
+	}
+	if s.monsterItemsByECL == nil {
+		s.monsterItemsByECL = make(map[uint8]map[uint8][]monster.ItemRecord)
+	}
+	copyItems := make(map[uint8][]monster.ItemRecord, len(items))
+	for id, records := range items {
+		copyItems[id] = append([]monster.ItemRecord(nil), records...)
+	}
+	s.monsterItemsByECL[chapter] = copyItems
+}
+
 func cloneMonsterAffects(source map[uint8][]monster.AffectRecord) map[uint8][]monster.AffectRecord {
 	result := make(map[uint8][]monster.AffectRecord, len(source))
 	for id, effects := range source {
@@ -618,6 +636,13 @@ func (s *State) monsterAffectsForCurrentECL() map[uint8][]monster.AffectRecord {
 		}
 	}
 	return s.monsterAffects
+}
+
+func (s *State) monsterItemsForCurrentECL() map[uint8][]monster.ItemRecord {
+	if s.session == nil {
+		return nil
+	}
+	return s.monsterItemsByECL[monsterChapterForBlock(s.session.CurrentBlockID())]
 }
 
 // SetItemCatalog installs the decoded original ITEMS table. Until this is
@@ -802,6 +827,9 @@ func (s *State) Select(index int) error {
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
 		s.applyECLLoadCharacterSignals(result)
+		if err := s.applyECLNPCSignals(result); err != nil {
+			return err
+		}
 		if err := s.applyECLDumpSignals(result); err != nil {
 			return err
 		}
@@ -868,6 +896,11 @@ func (s *State) Select(index int) error {
 			}
 			s.OriginalEvent = "PICTURE"
 			s.Message = "事件畫面"
+			if result.CombatRequested {
+				pending := result
+				pending.PictureRequested = false
+				s.pendingPictureCombat = &pending
+			}
 			return nil
 		}
 		if result.CombatRequested {
@@ -2656,6 +2689,62 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 	}
 }
 
+// applyECLNPCSignals mirrors load_npc: resolve the current chapter's shared
+// MON*CHA Player record plus SPC/ITM sidecars, insert it into the party,
+// assign the lowest free icon slot, select it, then apply CMD_AddNPC morale.
+func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
+	if len(result.NPCRequests) == 0 {
+		return nil
+	}
+	chapter := uint8(1)
+	if s.session != nil {
+		chapter = monsterChapterForBlock(s.session.CurrentBlockID())
+	}
+	records := s.monsterRecordsForCurrentECL()
+	affects := s.monsterAffectsForCurrentECL()
+	items := s.monsterItemsForCurrentECL()
+	for _, request := range result.NPCRequests {
+		if len(s.partyRoster) > 7 {
+			continue
+		}
+		npcID := uint8(request.ID)
+		record, ok := records[npcID]
+		if !ok || len(record.Raw) < party.DOSPlayerRecordSize {
+			return fmt.Errorf("ADD NPC 0x%02X has no MON%dCHA Player record", npcID, chapter)
+		}
+		id := fmt.Sprintf("npc-%d-%02x-%d", chapter, npcID, len(s.partyRoster))
+		parsed, err := party.ParseDOSNPCRecord(record.Raw, id)
+		if err != nil {
+			return fmt.Errorf("ADD NPC 0x%02X: %w", npcID, err)
+		}
+		parsed.Inventory = append([]monster.ItemRecord(nil), items[npcID]...)
+		parsed.Effects = append([]monster.AffectRecord(nil), affects[npcID]...)
+		parsed.ControlMorale = uint8(request.Morale>>1) + 0x80
+		character, err := parsed.Character()
+		if err != nil {
+			return fmt.Errorf("ADD NPC 0x%02X character: %w", npcID, err)
+		}
+		usedIcons := [8]bool{}
+		for _, member := range s.partyRoster {
+			if member.IconID < 8 {
+				usedIcons[member.IconID] = true
+			}
+		}
+		character.IconID = 0
+		for character.IconID < 8 && usedIcons[character.IconID] {
+			character.IconID++
+		}
+		fighter, err := s.fighterForCharacter(character)
+		if err != nil {
+			return fmt.Errorf("ADD NPC 0x%02X fighter: %w", npcID, err)
+		}
+		s.partyRoster = append(s.partyRoster, character)
+		s.party = append(s.party, fighter)
+		s.whoSelectedIndex = len(s.partyRoster) - 1
+	}
+	return nil
+}
+
 // ConsumeECLCallRequests transfers ordered redraw/external-call intents to the
 // frontend. State-owned effects (position and default sound) are already
 // applied before this transaction is exposed.
@@ -3736,6 +3825,18 @@ func (s *State) Continue() error {
 		s.BigPictureRequested = false
 		s.SceneCharacterRequested = false
 		s.SceneBodyBlock = 0
+		if s.pendingPictureCombat != nil {
+			result := *s.pendingPictureCombat
+			s.pendingPictureCombat = nil
+			records := s.monsterRecordsForCurrentECL()
+			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
+				return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
+			}
+			s.OriginalEvent = "COMBAT"
+			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+			s.eventReturnMode = ModeWilderness
+			return nil
+		}
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
@@ -3930,6 +4031,28 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 
 func localizeECLLine(catalog locale.Catalog, line string) string {
 	switch line {
+	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
+		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
+	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":
+		return catalog.Text("ecl_opening_ambushed", "遭到伏擊、被俘，並被擊昏。當")
+	case "YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE":
+		return catalog.Text("ecl_opening_cursed", "你們醒來時，隊伍已被五個青色")
+	case "SYMBOLS.":
+		return catalog.Text("ecl_opening_symbols", "符印下了詛咒。")
+	case "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS.":
+		return catalog.Text("ecl_opening_ensnare", "這些符印如金屬枷鎖般束縛你們的意志。")
+	case "AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND.":
+		return catalog.Text("ecl_opening_command", "當枷印發光時，你們就必須服從它們的命令。")
+	case "YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS":
+		return catalog.Text("ecl_opening_only_hope", "唯一的希望，是在被遺忘的國度中尋找")
+	case "FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS":
+		return catalog.Text("ecl_opening_alliance", "創造這些枷印的聯盟成員")
+	case "AND REGAIN CONTROL OF YOUR OWN DESTINY.":
+		return catalog.Text("ecl_opening_destiny", "並重新掌握自己的命運。")
+	case "NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN":
+		return catalog.Text("ecl_opening_nowhere_safe", "國度中沒有任何地方絕對安全。即使")
+	case "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE.":
+		return catalog.Text("ecl_opening_deadly_foe", "最平靜的景象，也可能藏著致命敵人。")
 	case "SMOKE RISES FROM BEHIND THE RUINED WALLS":
 		return catalog.Text("ecl_smoke_rises", "煙霧從殘破的牆後升起")
 	case "OF YULASH. THE SOUND":

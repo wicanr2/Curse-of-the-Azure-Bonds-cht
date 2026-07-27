@@ -146,7 +146,10 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 敵方回合現在依 reference `find_target`／`BuildNearTargets` 的 bounded contract，從存活
   party 中以 seeded RNG 選擇目標；同一回合多次攻擊維持同一目標，不再固定攻擊隊伍第一人。
 - 玩家戰鬥輸入若違反射程／彈藥／目標規則，會顯示繁中錯誤並留在戰鬥畫面，不會結束遊戲主迴圈。
-- ECL `ADD NPC` 現在會保存 NPC ID signal 並繼續執行；NPC 資料表與加入隊伍的完整 side effect 仍由後續 adapter 接入。
+- ECL `ADD NPC` 已修正為 ID＋morale 兩 operands，並依 `load_npc` 從 chapter-local
+  MON*CHA／SPC／ITM 建立 NPC、指派 icon slot、control morale 並加入 roster／fighter。
+  真實 ECL1 block `0x52` 現可加入 RUSTLE、CYNTHIA、GRENDEL，播放完整青色枷序幕，
+  11 段原文已逐行翻成繁中，顯示事件圖片後進入伏擊戰。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。

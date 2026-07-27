@@ -13,4 +13,7 @@ ECL5 block `0x30` entry `+0x0014` 另以含 raw item type `0x5E` 的 party conte
 - `TestRealAllInitializationEntriesReachSupportedBoundary` 動態讀取六個 ECL members，要求 25 blocks／125 entries 且每個 `EntrySmokeReport.Err == nil`。
 - 原始 image 缺席時 test skip；image 存在但 member、block count、entry framing 或 VM semantics regression 時必須失敗並指出 member／block／entry／PC。
 - corpus smoke 證明所有 initialization entries 的目前可達 prefix 已受支援，不等於每條 menu choice、random branch、外部 PROGRAM side effect 或完整玩家劇情都完成。
+- 第 277 輪證明「無 unsupported opcode」仍不足以驗證 framing：ADD NPC 少吃 morale
+  operand 時曾把 `0x00` 假判為 EXIT，corpus gate依然全綠。現在另以 block 0x52 鎖定
+  三筆 NPC request、53 steps、11 段文字、CALL／DELAY counts 與 COMBAT boundary。
 - ECL5 real-party test 保護 `PartyContext.ItemTypes → FIND ITEM compare → sunlight text`，避免 synthetic tests 通過但真實 operand／branch framing 失配。

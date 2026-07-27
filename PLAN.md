@@ -89,7 +89,7 @@
 - [x] 實作 bounded `ON GOTO/GOSUB`、menu input；完整 DOS memory model 仍保留 boundary。
 - [x] 依 reference `CMD_PartyStrength`／`CMD_PartySurprise` 消費 ECL party-rule command，並由注入的 `PartyContext` 將 verified roster stats writeback 到 shared ECL memory；完整 AC scale／multi-class rule table 仍保留 boundary。
 - [x] 依 reference `CMD_CheckParty` 接入 thief skill／movement／active-affect branches 與四欄 memory writeback；未知 selector／完整作品 scaling 仍保留 boundary。
-- [x] 依 reference `CMD_Who` 完成 prompt、roster UI、selected-player writeback 與 resumable ECL transaction；NPC／temporary party side effects 仍保留 boundary。
+- [x] 依 reference `CMD_Who` 完成 prompt、roster UI、selected-player writeback 與 resumable ECL transaction；ADD NPC 已於第 277 輪接入，其他 temporary-party 語意仍保留 boundary。
 
 ## 第十四輪驗收
 
@@ -294,7 +294,8 @@
 - [x] 將 missile adjacency guard 接到 ammunition transaction 前的 attack preflight，避免無效攻擊消耗彈藥；保留多目標 ranged transaction boundary。
 - [x] 將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn；保留 enemy AI、彈藥與額外職業攻擊 boundary。
 - [x] 將玩家 combat action error 接成繁中可恢復訊息，避免非法輸入結束 Ebiten game loop；保留資料／啟動錯誤向上回報 boundary。
-- [x] 將 ECL `ADD NPC` 接成 NPC ID signal，讓實際 ECL1 block 0x52 能安全走到 EXIT；保留 NPC table／party side effect boundary。
+- [x] 將 ECL `ADD NPC` 修正為 ID＋morale，接入 MON*CHA／SPC／ITM party transaction；
+  真實 ECL1 block 0x52 加入三名 NPC、播放完整序幕並抵達 COMBAT（舊 EXIT 判讀已推翻）。
 - [x] 將 ECL `LOAD PIECES` 接成三 selector signal，保留地城 floor／wall／tile file side effect boundary。
 - [x] 將 `LOAD PIECES` signal 保存為 State 一次性 request，保留 renderer／map adapter boundary。
 - [x] 依 reference `LoadWalldef` 將 `LOAD PIECES` selector 接到 WALLDEF／8X8D raw piece catalog，保留牆面 renderer boundary。
@@ -383,3 +384,4 @@
 - [x] 依 `CMD_Dump`／`FreeCurrentPlayer` 實作 selected member 離隊、working-party更新、fallback selection 與 State roster／fighter同步；鎖定 real ECL5 Akabar DUMP。
 - [x] 依 `CMD_Program` 將 0/3/8/9 接成共用 State external-routine adapter，涵蓋 start menu、party killed、game won 全隊恢復／存檔選擇與 CAMP，並由戰鬥後 continuation 共用。
 - [x] 依 `CMD_Call` 將 real ECL observed `0x2E10/0xC01E/0xB200` 接成 redraw、forced wrapped movement 與 default sound-A transaction；保留 `word_1EE76 == 10` sound-B boundary。
+- [x] 依 `CMD_AddNPC/load_npc` 接入 morale、MON Player record／effect／item、最低空 icon slot 與 selected-player party insertion；補 PICTURE→COMBAT deferred transaction。

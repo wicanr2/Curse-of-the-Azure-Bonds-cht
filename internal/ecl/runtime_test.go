@@ -55,12 +55,14 @@ func TestRunSubsetOnGotoSelectsTargetAndConsumesTargetList(t *testing.T) {
 }
 
 func TestRunSubsetAddNPCExposesIDAndContinuesToExit(t *testing.T) {
-	block := []byte{0, 0, 0x36, 0x00, 0x55, 0x00}
+	block := []byte{0, 0, 0x36, 0x00, 0x55, 0x00, 0x64, 0x00}
 	result, err := RunSubset(block, 0, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result.NPCIDs) != 1 || result.NPCIDs[0] != 0x55 || result.Steps != 2 || result.PC != 4 {
+	if len(result.NPCIDs) != 1 || result.NPCIDs[0] != 0x55 ||
+		len(result.NPCRequests) != 1 || result.NPCRequests[0] != (NPCRequest{ID: 0x55, Morale: 100}) ||
+		result.Steps != 2 || result.PC != 6 {
 		t.Fatalf("result=%+v", result)
 	}
 }
