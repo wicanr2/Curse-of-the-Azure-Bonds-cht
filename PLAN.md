@@ -422,3 +422,6 @@
 - [x] 依 GEO2 `(1,10)` selector `0x8F` 接通高階祭司 PICTURE 6、說明遭遇與
   Remove Curse 失敗分支；使用者 PDF 的手札 19 於事件後解鎖。事件字幕改為
   22 Unicode 字寬，24px 中文不超出 640×480 畫布。
+- [x] 接通 Tilverton `(1,0)` 皇家馬車主線條件鏈：Weaponers／Filani／第一次城門
+  警告 → PICTURE 11 → 青色枷強制攻擊 → 五名 MON2 Royal Guard 戰鬥 →
+  surrender／jail／PICTURE 2 thief rescue → ECL block 2、`(1,12,0)`。

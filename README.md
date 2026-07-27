@@ -236,6 +236,15 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 
 事件字幕已改成每行 22 個 Unicode 字元，不再沿用 34 個英文字元的寬度假設；24px
 繁中可完整留在 640px 畫布內，原始人物像素仍保持 nearest-neighbor 3×。
+- Tilverton 主線現在能從 Weaponers、Filani 與第一次城門警告，正式觸發皇家馬車。
+  國王聲音令青色枷強迫隊伍攻擊，接著建立五名皇家衛兵的真實 MON2 戰鬥；勝利後可
+  投降、入獄，由盜賊歸還裝備並帶往 Thieves' Guild，最後切換到 ECL block 2。
+
+![提爾佛頓皇家馬車 PICTURE 11 的 640×480 繁中主線事件](docs/screenshots/tilverton-carriage.png)
+
+`-carriage` 並非直接指定圖片：bootstrap 會在同一 resumable ECL memory 跑完必要場所
+與第一次 gate state，再停在第二次 PICTURE 11。馬車原始像素採 nearest-neighbor 3×，
+繁中敘事維持 24px／每行 22 Unicode 字元。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -263,6 +272,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -temple
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -training
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -tavern
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -high-priest
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -carriage
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview
