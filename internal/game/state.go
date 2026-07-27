@@ -202,6 +202,11 @@ type State struct {
 	alterDropMenu          bool
 	alterDropConfirm       bool
 	alterDropSelected      int
+	alterRenameMenu        bool
+	alterRenameChar        int
+	renameEditing          bool
+	renameCharacter        int
+	renameName             string
 	alterPicsMenu          bool
 	alterSpeedMenu         bool
 	alterIconMenu          bool
@@ -1205,6 +1210,11 @@ func (s *State) enterCampMenu() {
 	s.alterDropMenu = false
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
+	s.alterRenameMenu = false
+	s.alterRenameChar = -1
+	s.renameEditing = false
+	s.renameCharacter = -1
+	s.renameName = ""
 	s.alterPicsMenu = false
 	s.alterSpeedMenu = false
 	s.alterIconMenu = false
@@ -1413,6 +1423,22 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			return nil
 		}
 	}
+	if s.alterRenameMenu {
+		if originalChoice == "ALTER_RENAME_EXIT" {
+			s.alterRenameMenu = false
+			s.alterRenameChar = -1
+			s.enterAlterMenu()
+			return nil
+		}
+		if strings.HasPrefix(originalChoice, "ALTER_RENAME_CHARACTER_") {
+			value, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "ALTER_RENAME_CHARACTER_"))
+			if err != nil || value < 0 || value >= len(s.partyRoster) {
+				return fmt.Errorf("invalid alter rename character %q", originalChoice)
+			}
+			s.alterRenameChar = value
+			return s.BeginRenameCharacter(value)
+		}
+	}
 	if s.alterMenu {
 		if originalChoice == "ALTER_EXIT" {
 			s.alterMenu = false
@@ -1458,6 +1484,10 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				return nil
 			}
 			s.enterAlterIconMenu()
+			return nil
+		}
+		if originalChoice == "ALTER_RENAME" {
+			s.enterAlterRenameMenu()
 			return nil
 		}
 		s.Mode = ModeEvent
@@ -1715,6 +1745,8 @@ func (s *State) enterAlterMenu() {
 	s.alterDropMenu = false
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
+	s.alterRenameMenu = false
+	s.alterRenameChar = -1
 	s.alterPicsMenu = false
 	s.alterSpeedMenu = false
 	s.alterIconMenu = false
@@ -1728,9 +1760,109 @@ func (s *State) enterAlterMenu() {
 		s.catalog.Text("alter_icon", "小人"),
 		s.catalog.Text("alter_pics", "圖片"),
 		s.catalog.Text("alter_exit", "離開"),
+		s.catalog.Text("alter_rename", "改名"),
 	}
-	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT"}
+	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT", "ALTER_RENAME"}
 	s.Message = ""
+}
+
+func (s *State) enterAlterRenameMenu() {
+	s.campMenu = true
+	s.alterMenu = false
+	s.alterRenameMenu = true
+	s.alterRenameChar = -1
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("alter_rename_prompt", "選擇要改名的角色")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, fmt.Sprintf("%s（%s）", character.Name, character.ID))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_RENAME_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("alter_rename_exit", "返回修改選單"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_RENAME_EXIT")
+	s.Message = ""
+}
+
+// RenameEditing reports whether the Ebiten input adapter should route text
+// input to the ALTER rename editor instead of the normal menu.
+func (s *State) RenameEditing() bool { return s.renameEditing }
+
+func (s *State) RenameText() string { return s.renameName }
+
+func (s *State) BeginRenameCharacter(index int) error {
+	if index < 0 || index >= len(s.partyRoster) {
+		return fmt.Errorf("rename character index %d is out of range", index)
+	}
+	s.renameEditing = true
+	s.renameCharacter = index
+	s.renameName = s.partyRoster[index].Name
+	s.Mode = ModeWilderness
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_rename_edit_prompt", "輸入 %s 的新名稱"), s.partyRoster[index].Name)
+	s.Message = ""
+	return nil
+}
+
+func (s *State) AppendRenameName(chars []rune) error {
+	if !s.renameEditing {
+		return fmt.Errorf("rename editor is not active")
+	}
+	if len([]byte(s.renameName+string(chars))) > 15 {
+		return fmt.Errorf("DOS 角色名稱最多 15 bytes")
+	}
+	s.renameName += string(chars)
+	return nil
+}
+
+func (s *State) BackspaceRenameName() error {
+	if !s.renameEditing {
+		return fmt.Errorf("rename editor is not active")
+	}
+	name := []rune(s.renameName)
+	if len(name) > 0 {
+		s.renameName = string(name[:len(name)-1])
+	}
+	return nil
+}
+
+func (s *State) CancelRename() error {
+	if !s.renameEditing {
+		return fmt.Errorf("rename editor is not active")
+	}
+	s.renameEditing = false
+	s.renameCharacter = -1
+	s.renameName = ""
+	s.enterAlterRenameMenu()
+	return nil
+}
+
+func (s *State) CommitRename() error {
+	if !s.renameEditing || s.renameCharacter < 0 || s.renameCharacter >= len(s.partyRoster) {
+		return fmt.Errorf("rename editor is not active")
+	}
+	if s.renameName == "" {
+		return fmt.Errorf("character name cannot be empty")
+	}
+	index := s.renameCharacter
+	oldName := s.partyRoster[index].Name
+	s.partyRoster[index].Name = s.renameName
+	id := s.partyRoster[index].ID
+	for fighterIndex := range s.party {
+		if s.party[fighterIndex].ID == id {
+			s.party[fighterIndex].Name = s.renameName
+		}
+	}
+	s.renameEditing = false
+	s.renameCharacter = -1
+	s.renameName = ""
+	s.alterRenameMenu = false
+	s.alterRenameChar = -1
+	s.alterMenu = true
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	s.OriginalEvent = "ALTER RENAME"
+	s.Message = fmt.Sprintf(s.catalog.Text("alter_rename_done", "%s 已改名為 %s。"), oldName, s.partyRoster[index].Name)
+	return nil
 }
 
 func (s *State) enterAlterSpeedMenu() {
