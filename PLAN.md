@@ -439,3 +439,6 @@
 - [x] 修正 boundary movement 的 stale `0x7EC9` sentinel，讓下水道 E2 `(8,15)`
   依原始 entry 0 執行 `CALL 0xC01E → X-2 → NEWECL 4`；正式流程進入 GEO2
   block 4 `(6,1,S)`、套用 pieces `1,2,4` 並顯示繁中火刀據點入口。
+- [x] 反組 ECL2 block 4 SearchLocation dispatch，確認 terrain `0x99`／selector
+  `0x19` 是旋轉刀刃屏障；接入三項繁中選單與 WAIT 無傷害消散分支，並鎖定
+  640×480、24px 中文／整數倍原圖的事件版面契約。
