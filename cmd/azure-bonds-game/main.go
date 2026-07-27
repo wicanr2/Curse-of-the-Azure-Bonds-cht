@@ -740,6 +740,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawWildernessMap(screen, white, cyan)
 		return
 	}
+	if a.state.Mode == game.ModeEvent && a.state.PictureRequested {
+		a.drawPictureAnimation(screen)
+		return
+	}
 	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
@@ -756,10 +760,6 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
 	}
 	if a.state.Mode == game.ModeEvent {
-		if a.state.PictureRequested {
-			a.drawPictureAnimation(screen)
-			return
-		}
 		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 410, white)
 	}
@@ -1417,6 +1417,7 @@ func main() {
 	weaponShop := flag.Bool("weapon-shop", false, "start at Weaponers of Cormyr through the formal Tilverton ECL flow")
 	temple := flag.Bool("temple", false, "start at Gond's altar through the formal Tilverton ECL flow")
 	training := flag.Bool("training", false, "start at Tilverton's Hall of Training through the formal ECL flow")
+	tavern := flag.Bool("tavern", false, "start at Tilverton's tavern through the formal ECL flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1573,9 +1574,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1586,7 +1587,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training {
+		if *inn || *filani || *weaponShop || *temple || *training || *tavern {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1605,6 +1606,8 @@ func main() {
 				x, y, direction = 0, 7, 0
 			} else if *training {
 				x, y, direction = 5, 2, 0
+			} else if *tavern {
+				x, y, direction = 6, 10, 0
 			}
 			state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 			state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))

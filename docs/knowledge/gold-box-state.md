@@ -136,6 +136,9 @@ dispatch table，frontend 不應另做地點 switch。
 擴到至少 640×480：原版 tile／sprite／PIC 只以 nearest-neighbor 整數倍放大，保留像素
 輪廓；Unicode 中文則在放大後的畫布直接用約 24px 的 TTF／OTF／TTC 重繪。圖片縮放與
 文字 rasterization 必須是兩條 pipeline，才不會得到模糊圖片或被 8×8 英文字格限制的中文。
+較密集的短選單可使用約 16×15 的中文字級，敘事與標題則以約 24×24 為主；兩者都應
+直接在 640×480 層 rasterize，而不是先畫進 320×240 再放大。事件 PICTURE 最好使用
+獨立 layout，避免沿用探索 HUD 後讓 3× HEAD／BODY 圖覆蓋日期或提示。
 
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 

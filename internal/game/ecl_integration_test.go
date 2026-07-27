@@ -568,6 +568,86 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("training departure mode=%v position=(%d,%d), want same dungeon cell",
 			state.Mode, state.DungeonX, state.DungeonY)
 	}
+	if len(state.Choices) != 0 {
+		t.Fatalf("training departure retained stale choices %v", state.Choices)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 10, 0
+	state.DungeonWallType, _ = grid.WallWrapped(6, 10, 0)
+	state.DungeonWallRoof = grid.CellWrapped(6, 10).Terrain
+	if state.DungeonWallRoof != 0x88 {
+		t.Fatalf("tavern GEO selector=%#x, want 0x88", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
+		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
+		!strings.Contains(state.Message, "幾位想來點什麼") {
+		t.Fatalf("tavern picture mode=%v picture=%v:%d head/body=%d/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 3 ||
+		state.Choices[0] != "揍酒保" || state.Choices[1] != "喝一杯" || state.Choices[2] != "離開" {
+		t.Fatalf("tavern action menu mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 4 ||
+		state.Choices[0] != "龍息酒" || state.Choices[1] != "石化蜥蜴酒" ||
+		state.Choices[2] != "檸檬水" || state.Choices[3] != "威士忌" {
+		t.Fatalf("tavern drink menu mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
+		!strings.Contains(state.Message, "特別的客人") {
+		t.Fatalf("tavern special-customer prompt choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 1 || !strings.Contains(state.Message, "紫色腰帶") {
+		t.Fatalf("tavern purple-sash pause choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
+		!strings.Contains(state.Message, "騷動") || !strings.Contains(state.Message, "調查") {
+		t.Fatalf("tavern investigate prompt choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 1 || !strings.Contains(state.Message, "華麗") ||
+		!strings.Contains(state.Message, "匕首") || !strings.Contains(state.Message, "第 17 條") {
+		t.Fatalf("tavern knife pause choices=%v message=%q", state.Choices, state.Message)
+	}
+	foundJournal17 := false
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 17：") && strings.Contains(page, "火刀") {
+			foundJournal17 = true
+			break
+		}
+	}
+	if !foundJournal17 {
+		t.Fatalf("Journal Entry 17 was not unlocked in-game: pages=%v", state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 10 ||
+		len(state.Choices) != 0 {
+		t.Fatalf("tavern continuation mode=%v position=(%d,%d) picture=%v:%d message=%q choices=%v, want same tavern cell without stale menu",
+			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
+			state.Message, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

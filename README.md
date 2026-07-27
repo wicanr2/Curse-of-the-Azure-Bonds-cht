@@ -220,6 +220,15 @@ fallback。畫面仍採原始像素 3× nearest-neighbor，中文字維持 24px 
 與多職業 Constitution 計算也已依 reference 接通。dual-class 會在新職業尚未超過
 舊職業等級時抑制 HP 成長，超過後恢復。魔法師與 9 級以上遊俠升級時，會按原版
 spellCastCount 容量列出尚未學會的繁中法術，選一個寫入 spell book。
+- GEO2 `(6,10)` 的真實酒館流程已接通：喝檸檬水後可追查繫紫色腰帶的女子，在側巷
+  找到華麗火焰形匕首，事件發生時才把原 Adventure Journal 的插圖線索整理成遊戲內
+  「手札條目 17」。
+
+![提爾佛頓酒館 PICTURE 4 的 640×480 繁中事件](docs/screenshots/tilverton-tavern.png)
+
+事件模式使用獨立的 640×480 版面，避免日期 HUD 與 3× 人物圖重疊。原始 88px
+HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 24px CJK 字型重繪，
+保留未來改用約 16×15 緊湊字級的空間，不受原版 8×8 英文字格限制。
 - ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
 - `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
@@ -245,6 +254,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -filani
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -weapon-shop
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -temple
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -training
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -tavern
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview
