@@ -841,3 +841,9 @@ time-triggered ECL 仍保留 boundary。
 加入隊伍仍使用 copied-character age／ability transaction，Ebiten 以五列捲動顯示。新增
 creation option regression、READY spec 與 README／PLAN／Gold Box state knowledge；
 多職業、half-orc 與原版完整 create/modify/drop menu 仍保留 boundary。
+
+第二百五十輪重大里程碑：依 reference `Gbl.RaceClasses`、`race_ages`、`Limits` 與 DOS
+raw race `6`，新增 `RaceHalfOrc`、半獸人 age effects、DOS parser 與繁中建立選單的
+cleric／thief 選項；fighter 的空白 age entry 不臆測生成。角色建立目前共有 21 個已驗證
+single-class 選項。新增 READY spec、parser／rules regression 與 README／PLAN／knowledge
+更新；half-orc multi-class、fighter age policy 與完整原版建立流程仍保留 boundary。

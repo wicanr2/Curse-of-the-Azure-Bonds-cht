@@ -30,6 +30,7 @@ func starterCharacters() []party.Character {
 		{party.RaceHalfElf, party.ClassCleric}, {party.RaceHalfElf, party.ClassFighter},
 		{party.RaceHalfElf, party.ClassMagicUser}, {party.RaceHalfElf, party.ClassThief},
 		{party.RaceHalfling, party.ClassFighter}, {party.RaceHalfling, party.ClassThief},
+		{party.RaceHalfOrc, party.ClassCleric}, {party.RaceHalfOrc, party.ClassThief},
 	}
 	result := make([]party.Character, 0, len(combos))
 	for index, combo := range combos {

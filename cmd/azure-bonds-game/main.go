@@ -1017,7 +1017,7 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func raceName(r party.Race) string {
-	return map[party.Race]string{party.RaceDwarf: "矮人", party.RaceElf: "精靈", party.RaceGnome: "侏儒", party.RaceHalfElf: "半精靈", party.RaceHalfling: "半身人", party.RaceHuman: "人類"}[r]
+	return map[party.Race]string{party.RaceDwarf: "矮人", party.RaceElf: "精靈", party.RaceGnome: "侏儒", party.RaceHalfElf: "半精靈", party.RaceHalfling: "半身人", party.RaceHuman: "人類", party.RaceHalfOrc: "半獸人"}[r]
 }
 
 func className(c party.Class) string {

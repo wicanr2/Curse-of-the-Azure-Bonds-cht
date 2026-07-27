@@ -1,5 +1,5 @@
 // Package party contains the data-neutral character-creation contract. It
-// follows the six player races and class minimums observed in the CoAB rule
+// follows the seven player races and class minimums observed in the CoAB rule
 // book/reference rewrite; combat serialization remains a separate adapter.
 package party
 
@@ -20,6 +20,7 @@ const (
 	RaceHalfElf
 	RaceHalfling
 	RaceHuman
+	RaceHalfOrc
 )
 
 type Class uint8
@@ -57,7 +58,7 @@ type StartingAgeSpec struct {
 // dice entry represents a class/race combination not supported by the current
 // single-class remake model.
 func StartingAgeSpecFor(race Race, class Class) (StartingAgeSpec, error) {
-	if race < RaceDwarf || race > RaceHuman {
+	if race < RaceDwarf || race > RaceHalfOrc {
 		return StartingAgeSpec{}, fmt.Errorf("race %d has no CoAB age table", race)
 	}
 	// Rows follow the reference race_ages table; columns are cleric, fighter,
@@ -69,6 +70,7 @@ func StartingAgeSpecFor(race Race, class Class) (StartingAgeSpec, error) {
 		{{40, 2, 4}, {22, 3, 4}, {0, 0, 0}, {0, 0, 0}, {30, 2, 8}, {22, 3, 8}},       // half-elf
 		{{0, 0, 0}, {20, 3, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {40, 2, 4}},         // halfling
 		{{18, 1, 4}, {18, 1, 4}, {17, 1, 4}, {20, 1, 4}, {24, 2, 4}, {18, 1, 4}},     // human
+		{{20, 1, 4}, {0, 0, 0}, {13, 1, 4}, {0, 0, 0}, {0, 0, 0}, {20, 2, 4}},        // half-orc
 	}
 	if class < ClassCleric || class > ClassThief {
 		return StartingAgeSpec{}, fmt.Errorf("class %d has no CoAB age table", class)
@@ -99,7 +101,7 @@ func RollStartingAge(race Race, class Class, seed int64) (int16, error) {
 // ability roll. DOS player records already contain the resulting stats, so
 // import and combat projection must not call this implicitly.
 func (a Abilities) WithAgeEffects(race Race, age int) (Abilities, error) {
-	if race < RaceDwarf || race > RaceHuman {
+	if race < RaceDwarf || race > RaceHalfOrc {
 		return Abilities{}, fmt.Errorf("race %d has no CoAB age table", race)
 	}
 	brackets := [...][]int{
@@ -109,6 +111,7 @@ func (a Abilities) WithAgeEffects(race Race, age int) (Abilities, error) {
 		{40, 100, 175, 250, 325},       // half-elf
 		{0x21, 0x44, 0x65, 0x90, 0xC7}, // halfling
 		{0x14, 0x28, 0x3C, 0x5A, 0x78}, // human
+		{0x0F, 0x1E, 0x2D, 0x3C, 0x50}, // half-orc
 	}
 	effects := [...][5]int{
 		{0, 1, -1, -2, -1}, // strength
@@ -825,7 +828,7 @@ func (c Character) CombatIconBlocksFor(attack bool) (head, body uint8) {
 }
 
 func (r Race) String() string {
-	return [...]string{"dwarf", "elf", "gnome", "half-elf", "halfling", "human"}[r]
+	return [...]string{"dwarf", "elf", "gnome", "half-elf", "halfling", "human", "half-orc"}[r]
 }
 
 func (c Class) String() string {
@@ -836,7 +839,7 @@ func (c Character) Validate() error {
 	if c.ID == "" || c.Name == "" {
 		return fmt.Errorf("character ID and name are required")
 	}
-	if c.Race > RaceHuman {
+	if c.Race > RaceHalfOrc {
 		return fmt.Errorf("unsupported race %d", c.Race)
 	}
 	if c.Class > ClassThief {
@@ -881,6 +884,8 @@ func raceAllowsClass(race Race, class Class) bool {
 		return class == ClassFighter || class == ClassThief
 	case RaceElf:
 		return class == ClassFighter || class == ClassMagicUser || class == ClassThief
+	case RaceHalfOrc:
+		return class == ClassCleric || class == ClassFighter || class == ClassThief
 	default:
 		return false
 	}
