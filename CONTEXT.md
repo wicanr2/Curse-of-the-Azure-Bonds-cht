@@ -624,3 +624,13 @@ Docker 已通過 `internal/combat`、`internal/game`、`internal/party`、`inter
 第二百二十輪文件 commit：`800c064`，更新 Death side-effect READY spec、Gold Box ECL／
 State 知識庫、README 與 PLAN，明確保留 dragon-slayer target side effect 與其他未知
 Death routine boundary。
+
+第二百二十一輪功能 commit：`a0738a9`，依 reference `AffectDragonSlayer` 建立
+`Character.ResolveDragonSlayer` 與 `State.ResolveDragonSlayer`：只有 explicit
+`MonsterTypeDragon` target 才以 injected d12 計算 `1d12*3 + 4 + strength damage bonus`
+並回傳 attack roll `+2`；非龍目標不觸發。target kind／Strength bonus 不從 ECL DAMAGE
+五 operands 猜測。Docker 已通過 `internal/combat`、`internal/game`、`internal/party`、
+`internal/ecl`、`internal/locale`。
+
+第二百二十一輪文件 commit：`bd0b6da`，更新 Death effect READY spec、Gold Box ECL／
+State 知識庫、README 與 PLAN，記錄 dragon-slayer explicit target contract。
