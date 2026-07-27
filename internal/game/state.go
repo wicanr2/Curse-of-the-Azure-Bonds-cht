@@ -1747,6 +1747,15 @@ func (s *State) PickDungeonLock() dungeon.PickLockResult {
 	return dungeon.PickLock(s.partyRoster, func() uint8 { return uint8(rng.Intn(100) + 1) })
 }
 
+// BashDungeonDoor resolves the reference strength/dice table against the
+// loaded roster. GEO unlock mutation remains with the map adapter.
+func (s *State) BashDungeonDoor(detail uint8) dungeon.BashResult {
+	seed := s.dungeonSeed
+	s.dungeonSeed++
+	rng := rand.New(rand.NewSource(seed))
+	return dungeon.BashDoor(s.partyRoster, detail, func(sides int) int { return rng.Intn(sides) + 1 })
+}
+
 // ConsumeDungeonKnockSpell removes the first memorized Knock slot from the
 // loaded roster, preserving the reference party-order transaction.
 func (s *State) ConsumeDungeonKnockSpell() bool {

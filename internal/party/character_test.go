@@ -165,7 +165,8 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data := make([]byte, DOSPlayerRecordSize)
 	data[0] = 4
 	copy(data[1:], []byte("ELLA"))
-	data[0x10], data[0x12], data[0x14] = 16, 15, 12
+	data[0x10], data[0x11], data[0x12], data[0x14] = 16, 17, 15, 12
+	data[0x1C] = 75
 	data[0x16], data[0x18], data[0x1A] = 14, 13, 10
 	data[0x74], data[0x75] = 7, 5 // human magic-user
 	data[0x78], data[0x1A4] = 22, 18
@@ -198,7 +199,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Gold != 123 || character.Abilities.StrengthFull != 17 || character.Abilities.StrengthExceptional != 75 || character.IconHeadBlock != 3 || character.IconID != 0x0A || character.SpellSlots[0] != 15 || character.OpenLocksSkill() != 34 || len(character.ThiefSkills) != 8 || len(character.Equipment) != 1 || character.Equipment[0].Type != 36 || character.Equipment[0].Readied != true || len(character.Effects) != 1 || character.Effects[0].Kind != 0x27 {
 		t.Fatalf("character=%#v", character)
 	}
 	if err := character.ApplyDOSInventory(make([]byte, monster.ItemRecordSize-1)); err == nil {

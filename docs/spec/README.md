@@ -169,3 +169,4 @@
 - [第一百七十二輪 DOS thief skill preservation](./172-dos-thief-skills.md)（`READY`：限 `.SAV/.GUY` skill bytes 與 open-locks adapter）
 - [第一百七十三輪 dungeon pick-lock transaction](./173-dungeon-pick-lock.md)（`READY`：限 d100 開鎖與 Knock slot 消耗核心）
 - [第一百七十四輪 dungeon door action adapter](./174-dungeon-door-actions.md)（`READY`：限 P/K preview action 與 GEO unlock transaction）
+- [第一百七十五輪 dungeon bash door](./175-dungeon-bash-door.md)（`READY`：限 Strength／骰點撞門與 B adapter）

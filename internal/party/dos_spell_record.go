@@ -123,7 +123,8 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 		ID: id, Name: string(data[1 : 1+nameLength]), Race: rawRace, Class: rawClass,
 		RawRace: data[0x74], RawClass: data[0x75],
 		Abilities: Abilities{
-			Strength: int(data[0x10]), Intelligence: int(data[0x12]), Wisdom: int(data[0x14]),
+			Strength: int(data[0x10]), StrengthFull: int(data[0x11]), StrengthExceptional: int(data[0x1C]),
+			Intelligence: int(data[0x12]), Wisdom: int(data[0x14]),
 			Dexterity: int(data[0x16]), Constitution: int(data[0x18]), Charisma: int(data[0x1A]),
 		},
 		Level: level, MaxHitPoints: int(data[0x78]), CurrentHitPoints: int(data[0x1A4]),

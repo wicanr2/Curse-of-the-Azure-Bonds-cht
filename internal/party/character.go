@@ -34,12 +34,16 @@ const (
 )
 
 type Abilities struct {
-	Strength     int
-	Intelligence int
-	Wisdom       int
-	Dexterity    int
-	Constitution int
-	Charisma     int
+	Strength int
+	// StrengthFull and StrengthExceptional preserve DOS Str.full and
+	// Str00.cur when imported; Strength remains the legacy normalized value.
+	StrengthFull        int
+	StrengthExceptional int
+	Intelligence        int
+	Wisdom              int
+	Dexterity           int
+	Constitution        int
+	Charisma            int
 }
 
 // RollAbilities reproduces the rule-book's six ability generation shape: six

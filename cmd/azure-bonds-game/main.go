@@ -151,6 +151,9 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyK) {
 			a.tryDungeonKnock()
 		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyB) {
+			a.tryDungeonBash()
+		}
 		return nil
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
@@ -552,6 +555,21 @@ func (a *app) tryDungeonKnock() {
 	}
 }
 
+func (a *app) tryDungeonBash() {
+	flags, ok := a.dungeonDoorFlags()
+	if !ok || (flags != 2 && flags != 3) {
+		a.state.Message = "目前沒有可撞擊的上鎖門面"
+		return
+	}
+	result := a.state.BashDungeonDoor(flags)
+	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+		a.state.Message = "撞門成功，門已雙側解鎖"
+		a.refreshDungeonPreview()
+		return
+	}
+	a.state.Message = "撞門失敗"
+}
+
 func (a *app) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
@@ -789,7 +807,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q,E 轉向／P 撬鎖／K Knock／D 返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q,E 轉向／P 撬鎖／K Knock／B 撞門／D 返回）", a.face, 24, 28, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
