@@ -51,3 +51,6 @@ descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
 `0x2D CALL` 現在也有 reusable external-call boundary：保存 observed word address
 並 return 到下一個 ECL instruction。後續作品可重用 signal contract，再依各作品
 的 recognized address table 注入 routine handler；不可把它直接改成 `GOSUB`。
+
+ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
+才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。
