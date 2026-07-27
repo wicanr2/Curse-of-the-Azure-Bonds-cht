@@ -70,7 +70,7 @@ func StartingAgeSpecFor(race Race, class Class) (StartingAgeSpec, error) {
 		{{40, 2, 4}, {22, 3, 4}, {0, 0, 0}, {0, 0, 0}, {30, 2, 8}, {22, 3, 8}},       // half-elf
 		{{0, 0, 0}, {20, 3, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {40, 2, 4}},         // halfling
 		{{18, 1, 4}, {18, 1, 4}, {17, 1, 4}, {20, 1, 4}, {24, 2, 4}, {18, 1, 4}},     // human
-		{{20, 1, 4}, {0, 0, 0}, {13, 1, 4}, {0, 0, 0}, {0, 0, 0}, {20, 2, 4}},        // half-orc
+		{{20, 1, 4}, {13, 1, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {20, 2, 4}},        // half-orc
 	}
 	if class < ClassCleric || class > ClassThief {
 		return StartingAgeSpec{}, fmt.Errorf("class %d has no CoAB age table", class)

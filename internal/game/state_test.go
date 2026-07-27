@@ -2617,8 +2617,8 @@ func TestCharacterCreationListsVerifiedSingleClassOptions(t *testing.T) {
 	if err := state.OpenCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.CreationOptions) != 21 {
-		t.Fatalf("creation options=%d, want 21 verified race/class combinations", len(state.CreationOptions))
+	if len(state.CreationOptions) != 22 {
+		t.Fatalf("creation options=%d, want 22 verified race/class combinations", len(state.CreationOptions))
 	}
 	for index, character := range state.CreationOptions {
 		if err := character.Validate(); err != nil {

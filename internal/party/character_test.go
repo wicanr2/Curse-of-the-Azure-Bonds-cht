@@ -59,13 +59,13 @@ func TestRollStartingAgeUsesReferenceHumanFighterEntry(t *testing.T) {
 }
 
 func TestHalfOrcSingleClassEvidence(t *testing.T) {
-	for _, class := range []Class{ClassCleric, ClassThief} {
+	for _, class := range []Class{ClassCleric, ClassFighter, ClassThief} {
 		if _, err := StartingAgeSpecFor(RaceHalfOrc, class); err != nil {
 			t.Fatalf("half-orc %s age spec: %v", class, err)
 		}
 	}
-	if _, err := StartingAgeSpecFor(RaceHalfOrc, ClassFighter); err == nil {
-		t.Fatal("half-orc fighter has no verified starting-age entry")
+	if spec, err := StartingAgeSpecFor(RaceHalfOrc, ClassFighter); err != nil || spec != (StartingAgeSpec{BaseAge: 13, DiceCount: 1, DiceSize: 4}) {
+		t.Fatalf("half-orc fighter spec=%+v err=%v", spec, err)
 	}
 	character := Character{ID: "orc", Name: "半獸人", Race: RaceHalfOrc, Class: ClassCleric, Level: 1, Abilities: Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}}
 	if err := character.Validate(); err != nil {

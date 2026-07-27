@@ -223,10 +223,11 @@ record double-count。
 combination error；後續作品只需替換 race/class table，即可重用 deterministic creation
 resolver。
 
-角色建立 UI 現已把這個 resolver 與既有 `Character.Validate` 真正接線：21 個 single-class
+角色建立 UI 現已把這個 resolver 與既有 `Character.Validate` 真正接線：22 個 single-class
 race/class 組合可由選單選取，加入隊伍時才對 copied character 套用 age roll／age effects。
 多職業／dual-class 與原版完整 create/modify/drop menu 仍是獨立 boundary；half-orc 已接入
-cleric／thief 單職業生成，fighter 的 reference age entry 為空值，仍不臆測生成。
+cleric／fighter／thief 單職業生成。外部 AD&D 1e age table 與 reference class-index mapping
+已重新核對，half-orc fighter 採 `13+1d4`；原先將此值誤讀成 ranger slot 的 boundary 已移除。
 
 目前 `State.AddCreationCharacter` 是 age transaction 的作品 adapter：template preview 不變，
 copy 入 roster 時才生成 age、套用 ability delta，再給 copied ID。這保留 UI 編輯可重複預覽，
