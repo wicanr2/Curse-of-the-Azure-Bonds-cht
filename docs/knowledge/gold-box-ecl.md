@@ -56,3 +56,8 @@ State 現在會把已驗證的 ECL3 Yulash smoke text 經 zh-TW catalog 顯示�
 
 ECL3 block 16 entry 4 的 `PRINT RETURN`（`0x33`）現在也會保留 signal 並繼續到
 menu；這證實 text-window boundary 與 ECL control-flow boundary 可以分開處理。
+
+ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可重用
+ signals：`FIND ITEM` 保存查詢 ID，`DESTROY ITEMS` 保存待消耗 ID；real entry
+ 已從原本 `0x0A`／`0x32`／`0x40` stops 推進到 `NEWECL` boundary。實際 party
+ ownership、found result 與 item deletion 仍由 State／party adapter 消費。
