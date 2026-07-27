@@ -141,6 +141,17 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 {
 		t.Fatalf("new game second pause: mode=%v choices=%v", state.Mode, state.Choices)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeMap || state.MapX != 7 || state.MapY != 13 || state.DungeonDirection != 1 {
+		t.Fatalf("new game world entry: mode=%v position=(%d,%d) direction=%d",
+			state.Mode, state.MapX, state.MapY, state.DungeonDirection)
+	}
+	if state.Location != LocationWilderness || len(state.Choices) != 0 {
+		t.Fatalf("new game world location=%v choices=%v, want wilderness map without synthetic menu",
+			state.Location, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

@@ -130,6 +130,7 @@ type State struct {
 	creationReturnMode     Mode
 	session                *ecl.BlockSession
 	pendingPictureResult   *ecl.RunResult
+	newGameEntryActive     bool
 	party                  []combat.Fighter
 	partyRoster            party.Roster
 	savgamPrefix           *partySave.SAVGAMContainer
@@ -770,6 +771,7 @@ func (s *State) BeginAdventure() error {
 	s.Choices = nil
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
+	s.newGameEntryActive = true
 
 	result, err := s.session.RunInteractiveSeedWithPartyContextAndWhoSelections(
 		180, nil, nil, s.eclSeed, s.eclPartyContext(),
@@ -1048,6 +1050,10 @@ func (s *State) Select(index int) error {
 				s.Prompt = localizePrompt(s.catalog, menu.Prompt)
 			}
 			s.Mode = ModeWilderness
+			return nil
+		}
+		if result.Exited && s.newGameEntryActive && s.session != nil && s.session.CurrentBlockID() == 0x01 {
+			s.finishNewGameEntry()
 			return nil
 		}
 		if len(result.Text) > 0 {
@@ -3855,8 +3861,12 @@ func (s *State) placeEventMessage(originalChoice string) string {
 }
 
 func (s *State) enterMap() {
+	s.enterMapAt(0, 0)
+}
+
+func (s *State) enterMapAt(x, y int) {
 	s.Mode = ModeMap
-	s.MapX, s.MapY = 0, 0
+	s.MapX, s.MapY = x, y
 	cityFlags, ok := mapdata.CityInfo(int(s.Area.CurrentCity))
 	if !ok {
 		cityFlags = 0
@@ -3865,6 +3875,27 @@ func (s *State) enterMap() {
 	s.Choices = nil
 	s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
 	s.Message = ""
+}
+
+// finishNewGameEntry mirrors sub_29758 after the initial ECL entry returns:
+// the outdoor Area transitions to the wilderness world loop using the
+// script-written map position and facing registers.
+func (s *State) finishNewGameEntry() {
+	s.newGameEntryActive = false
+	x, y := uint16(7), uint16(13)
+	if value, ok := s.session.MemoryValue(0xC04B); ok {
+		x = value
+	}
+	if value, ok := s.session.MemoryValue(0xC04C); ok {
+		y = value
+	}
+	if value, ok := s.session.MemoryValue(0xC04D); ok {
+		s.DungeonDirection = uint8(value & 7)
+	}
+	s.Location = LocationWilderness
+	s.LocationName = s.catalog.Text("wilderness", "荒野")
+	s.OriginalLocation = "WILDERNESS"
+	s.enterMapAt(int(x), int(y))
 }
 
 // Move changes the data-neutral map cursor used by the first navigable map slice.

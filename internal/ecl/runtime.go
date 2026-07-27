@@ -12,6 +12,7 @@ type RunResult struct {
 	Menus                  []Menu
 	PC                     int
 	Steps                  int
+	Exited                 bool
 	WaitingForMenu         bool
 	WaitingForWho          bool
 	NewECLBlockID          *uint8
@@ -453,6 +454,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		switch instruction.Command.Opcode {
 		case 0x00: // EXIT
 			result.PC = next
+			result.Exited = true
 			return result, nil
 		case 0x01, 0x02: // GOTO / GOSUB
 			target, ok := CodeTarget(instruction.Operands[0], len(payload))

@@ -112,6 +112,9 @@ func TestBlockSessionCarriesMemoryAcrossNewECL(t *testing.T) {
 	if session.CurrentBlockID() != 0x51 || len(result.Text) != 1 || result.Text[0] != "7" {
 		t.Fatalf("result=%+v block=%#x, want target block to print carried memory", result, session.CurrentBlockID())
 	}
+	if value, ok := session.MemoryValue(0x9000); !ok || value != 7 {
+		t.Fatalf("shared memory[0x9000]=%d,%v, want 7,true", value, ok)
+	}
 }
 
 func TestBlockSessionAggregatesSignalsAcrossNewECL(t *testing.T) {
