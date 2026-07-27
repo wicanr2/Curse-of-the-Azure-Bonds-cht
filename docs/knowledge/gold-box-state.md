@@ -75,6 +75,8 @@ Door state 也應先保存 raw signal 再交給 rules service：reference `WallD
 
 Dungeon movement 的 door branch 也要和 generic wall collision 分層：CoAB `CanMoveDungeonWrapped` 只放行無 wall 或 detail `1` 的 unlocked door，detail `2/3` 保持 blocked；`UnlockDoorWrapped` 只做 reference 的雙側 raw mutation。上層作品 service 必須先完成 skill／dice／spell transaction 才能呼叫它，不能讓 renderer 直接解鎖。
 
+DOS player import 應保留 thief skill array 的 ordinal，不只保存 class：CoAB `ThiefSkills[1]` 對應 reference `open_locks`，透過 `Character.OpenLocksSkill()` 提供 rules input。其他 Gold Box 遊戲可重用欄位與 JSON contract，但不得用 local class 或 Dexterity 重新推算未經證實的百分比。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

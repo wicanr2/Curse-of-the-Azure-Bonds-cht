@@ -445,3 +445,5 @@
 第一百七十輪功能 commit：`a8c050e`，已推送至 GitHub `main`。依 reference `WallDoorFlagsGet` 接入 GEO wrapped no-wall default `1`／walled `x3` detail API，並在 dungeon preview 顯示目前 facing 的 door/detail evidence；新增 exact GEO regression、READY 規格與共用 state knowledge。開門、解鎖、撬門、撞門與 door symbol overlay 仍保留 boundary。
 
 第一百七十一輪功能 commit：`1d292c0`，已推送至 GitHub `main`。依 reference `TryStepForward`／`MapSetDoorUnlocked` 接入 detail `1` unlocked doorway movement 與雙側 `UnlockDoorWrapped` raw mutation；detail `2/3` 保持阻擋。新增 GEO movement／mutation regression、READY 規格與共用 state knowledge。完整 bash／pick／knock menu、技能／骰點／法術消耗與 door graphics 仍保留 boundary。
+
+第一百七十二輪待提交：依 reference `Player.thief_skills` 將 DOS record `0xEA–0xF1` 保存到 `DOSPlayerRecord`／`Character`／JSON，提供 `OpenLocksSkill()` index 1 adapter；新增 synthetic parser regression、READY 規格與共用 party/state knowledge。thief skill 重算、pick-lock dice、door menu、bash／knock 與完整 DOS save container 仍保留 boundary。

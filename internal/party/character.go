@@ -121,6 +121,9 @@ type Character struct {
 	// KnownSpells preserves the imported spell-book flags separately from
 	// SpellSlots, which represents spells currently memorized for use.
 	KnownSpells []uint8 `json:"known_spells,omitempty"`
+	// ThiefSkills preserves the eight DOS thief percentages; index 1 is
+	// open-locks and remains in original order.
+	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
 }
 
 // AdvanceEffects consumes imported DOS effect durations without applying
@@ -133,6 +136,15 @@ func (c *Character) AdvanceEffects(minutes uint16) int {
 	before := len(c.Effects)
 	c.Effects = monster.AdvanceAffects(c.Effects, minutes)
 	return before - len(c.Effects)
+}
+
+// OpenLocksSkill returns the imported DOS open-locks percentage. Zero means
+// no verified skill data is available, not an automatic failed roll.
+func (c Character) OpenLocksSkill() uint8 {
+	if len(c.ThiefSkills) <= 1 {
+		return 0
+	}
+	return c.ThiefSkills[1]
 }
 
 type Roster []Character
