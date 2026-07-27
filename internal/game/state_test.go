@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -38,6 +39,27 @@ func TestLocalizedOpeningFlow(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.Message != "進入城市" {
 		t.Fatalf("event state=%#v", state)
+	}
+}
+
+func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.Apply(ActionStart); err != nil {
+		t.Fatal(err)
+	}
+	events := state.ConsumeSoundEvents()
+	if len(events) != 1 || events[0] != SoundStart {
+		t.Fatalf("start sound events=%#v", events)
+	}
+	if got := state.ConsumeSoundEvents(); len(got) != 0 {
+		t.Fatalf("sound events were not consumed: %#v", got)
+	}
+	state.requestAttackSounds([]combat.AttackResult{
+		{Hit: true, TargetHP: 0},
+		{Hit: false, TargetHP: 4},
+	})
+	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundHit, SoundDeath, SoundMiss}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("attack sound events=%#v want %#v", got, want)
 	}
 }
 
