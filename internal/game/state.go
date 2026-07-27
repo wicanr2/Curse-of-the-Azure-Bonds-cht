@@ -146,6 +146,8 @@ type State struct {
 	monsterRecordsByECL    map[uint8]map[uint8]monster.Record
 	monsterAffects         map[uint8][]monster.AffectRecord
 	monsterAffectsByECL    map[uint8]map[uint8][]monster.AffectRecord
+	gameClock              [7]uint16
+	gameAgeCycles          uint32
 	itemCatalog            monster.BaseItemCatalog
 	itemCatalogReady       bool
 	ammunitionItemTypes    map[uint8][]uint8

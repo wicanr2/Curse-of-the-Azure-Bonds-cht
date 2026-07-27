@@ -2479,6 +2479,36 @@ func TestAdvancePartyEffectsUsesRosterDurationAdapter(t *testing.T) {
 	}
 }
 
+func TestAdvanceGameTimeUsesReferenceSlotScaleAndExpiresEffects(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{Effects: []monster.AffectRecord{{Kind: 1, Duration: 11, Value: 11, Strength: 1}}}}
+	if err := state.AdvanceGameTime(2, 1); err != nil {
+		t.Fatal(err)
+	}
+	clock := state.GameTimeSlots()
+	if clock[2] != 1 || state.partyRoster[0].Effects[0].Duration != 1 {
+		t.Fatalf("clock=%v effects=%#v, want slot-2=1 and 1 minute remaining", clock, state.partyRoster[0].Effects)
+	}
+	if err := state.AdvanceGameTime(1, 1); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].Effects) != 0 || state.GameTimeSlots()[1] != 1 {
+		t.Fatalf("after expiry clock=%v effects=%#v", state.GameTimeSlots(), state.partyRoster[0].Effects)
+	}
+	if err := state.AdvanceGameTime(0, 9); err != nil {
+		t.Fatal(err)
+	}
+	if state.GameTimeSlots()[0] != 9 {
+		t.Fatalf("clock slot-0=%v", state.GameTimeSlots())
+	}
+	if err := state.AdvanceGameTime(0, 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.GameTimeSlots()[0] != 0 || state.GameTimeSlots()[1] != 2 {
+		t.Fatalf("clock normalization=%v", state.GameTimeSlots())
+	}
+}
+
 func TestLoadDOSCharacterFilesInstallsImportedParty(t *testing.T) {
 	state := NewState(testCatalog())
 	record := make([]byte, party.DOSPlayerRecordSize)

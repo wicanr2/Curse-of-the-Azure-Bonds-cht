@@ -767,3 +767,12 @@ boundary；Docker Go 1.23 核心測試與 `git diff --check` 通過。
 而是依 `AttackResult.TargetID` 重新查找實際命中的隊員；當第一位 party fighter 已倒下、
 第二位成為 target 時新增 regression，避免戰鬥規則與畫面文字分離。Docker Go 1.23
 `internal/game`／`internal/combat`／`internal/monster` 測試與 `git diff --check` 通過。
+
+第二百三十九輪重大里程碑：依 reference `ovr021.step_game_time`／`CheckAffectsTimingOut`
+建立 `State.AdvanceGameTime` 七-slot raw clock adapter，採用
+`{10,10,6,24,30,12,0x100}` 級聯進位與 slot→elapsed-minute conversion；party `.FX` 與
+active battle raw effects 共用 timeout transaction，`Strength=0xFF` 永久 effect 保留，
+slot-6 overflow 以 age cycles 保存。新增 clock normalization、slot-2 十分鐘換算、finite/
+permanent party／battle effect regressions、READY spec 與 README／PLAN／Gold Box state
+knowledge。完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過；REST interruption、
+calendar UI、DOS age writeback 與完整 time-triggered ECL 仍保留 boundary。

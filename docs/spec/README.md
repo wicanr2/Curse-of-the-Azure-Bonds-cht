@@ -216,3 +216,4 @@
 - [第二百三十五輪 MON*SPC invisibility combat projection](./235-monster-spc-invisibility.md)（`READY`：限 affect `0x19`／`0x47` 的 AC +4）
 - [第二百三十六輪 monster attacksCount／Haste](./236-monster-haste-attacks.md)（`READY`：限 `MON*CHA[0xA1]` 與 affect `0x27`）
 - [第二百三十七輪 held monster turn](./237-monster-held-turn.md)（`READY`：限 `0x1F`／`0x33`／`0x34`／`0x35`）
+- [第二百三十九輪 game-time effect timeout](./239-game-time-effect-timeout.md)（`READY`：限七-slot clock 與 elapsed-minute effect timeout）
