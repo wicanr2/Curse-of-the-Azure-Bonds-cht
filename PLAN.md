@@ -324,6 +324,7 @@
 - [x] 將 `SAVGAM` fixed prefix 接到 State 的 Area／map load／export adapter，保留未知 raw segments；尚未取代 remake JSON。
 - [x] 依 reference `seg044`／`Resource.resx` 抽出 9 個 PC WAV，建立共用 sound selector catalog 與 Ebiten playback adapter。
 - [x] 將 State sound intent 接到武器命中／未命中、擊倒、免費反擊與已實作法術；背景音樂與完整 ECL sound calls 仍待接入。
-- [x] 依 reference `SaveGame/loadSaveGame` 將 SAVGAM slot prefix 與 `CHRDAT*.sav`／optional `.fx/.swg` 接到 State loader，並提供 `-savgam-dir/-savgam-slot` 啟動入口；player record writeback 與完整 multi-file save 仍待接入。
-- [ ] 將已完成的 `SAVGAM` slot load path 延伸到 Player record／`.swg`／`.fx` writeback 與 CAMP multi-file save transaction。
+- [x] 依 reference `SaveGame/loadSaveGame` 將 SAVGAM slot prefix 與 `CHRDAT*.sav`／optional `.fx/.swg` 接到 State loader，並提供 `-savgam-dir/-savgam-slot` 啟動入口。
+- [x] 將已完成的 `SAVGAM` slot load path 延伸到已證實 Player fields／`.swg`／`.fx` writeback，使用 sibling staging directory 後逐檔替換；保留未知 `.sav` bytes。
+- [ ] 補齊原版 player delete／rename semantics、多職業與未知欄位證據，並將 slot writer 接到 CAMP save 的完整 multi-file transaction。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

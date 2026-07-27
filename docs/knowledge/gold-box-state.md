@@ -69,6 +69,8 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 第 185 輪依 `ovr017` 的實際命名把 prefix 與 player sidecars 接成 load path：`savgam{a..j}.dat` → `CHRDAT{A..J}{1..6}.sav`，同 basename 的 `.swg`／`.fx` optional。這條路徑重用既有 raw player parser 並能進入中文 remake；寫回 `Player.StructSize`、刪除原始 player 檔與 CAMP multi-file atomic save 仍需獨立 adapter，不能把 load success 當成完整 save compatibility。
 
+第 186 輪新增 `SaveSAVGAMSlot`。它以載入時保留的 raw `.sav` 為底，依已證實 offset patch HP、能力、金幣／寶石／珠寶、icon、memorized／known spells 與 thief skills；`.swg` 以 `0x3F` item encoder、`.fx` 以 9-byte effect encoder 重建，未知 `.sav` bytes 不被清零。prefix 的 party refs 改為 `CHRDAT{slot}{1..6}`，所有檔案先寫入 sibling staging directory，再逐檔替換。這是可重現的 staged writer，不是已完成原版刪檔、跨檔案 atomic commit 或多職業完整序列化；後續 Gold Box 可沿用 raw-preserving patch contract，再替換作品專屬 player offsets。
+
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。

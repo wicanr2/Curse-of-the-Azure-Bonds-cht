@@ -106,6 +106,7 @@
 - [第一百八十三輪 reference PC sound assets](./183-reference-pc-sound-assets.md)（`READY`：限已證實 WAV selector 與目前 playback adapter）
 - [第一百八十四輪 combat sound intents](./184-combat-sound-intents.md)（`READY`：限目前已實作 combat actions 的 State／Ebiten bridge）
 - [第一百八十五輪 SAVGAM player bundle loader](./185-savgam-player-bundle-loader.md)（`READY`：限 reference slot load 與既有 player sidecars）
+- [第一百八十六輪 SAVGAM player writeback](./186-savgam-player-writeback.md)（`READY`：限已證實欄位、sidecar encoder 與 staged slot replacement）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
