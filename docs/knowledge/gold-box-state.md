@@ -205,4 +205,9 @@ player record 的 signed age `0x76` 已由 parser／`Character`／`PatchDOSPlaye
 而 `State.AdvanceGameTime` 會同步 party roster 年齡並以 int16 saturation 防止 wrap；Pool/Rad
 record 的 `0x30` 仍是另一個 importer contract。
 
+Age modifier 是 new-character generation rule，不是載入既有 DOS player 後每次重算的
+runtime effect。共用 adapter `Abilities.WithAgeEffects` 保存五段 race brackets 與六項
+delta；作品 UI 先提供 age/base abilities，再由 creation rules 呼叫，避免 imported
+record double-count。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。

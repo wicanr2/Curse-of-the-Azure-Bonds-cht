@@ -21,6 +21,29 @@ func TestValidHumanFighter(t *testing.T) {
 	}
 }
 
+func TestAbilitiesWithAgeEffectsUsesReferenceHumanBrackets(t *testing.T) {
+	base := Abilities{Strength: 10, Intelligence: 10, Wisdom: 10, Dexterity: 10, Constitution: 10, Charisma: 10}
+	got, err := base.WithAgeEffects(RaceHuman, 61)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Human thresholds 20/40/60: INT +1, WIS -1+1+1, CON +1-1.
+	if got.Strength != 10 || got.Intelligence != 11 || got.Wisdom != 11 || got.Dexterity != 10 || got.Constitution != 10 || got.Charisma != 10 {
+		t.Fatalf("age-adjusted abilities=%+v", got)
+	}
+}
+
+func TestAbilitiesWithAgeEffectsDoesNotImplicitlyTouchDOSProjection(t *testing.T) {
+	base := validCharacter()
+	fighter, err := base.Fighter()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fighter.AttackBonus != 3 {
+		t.Fatalf("fighter attack bonus=%d, want base projection 3", fighter.AttackBonus)
+	}
+}
+
 func TestCharacterAdvanceEffects(t *testing.T) {
 	character := validCharacter()
 	character.Effects = []monster.AffectRecord{{Kind: 1, Duration: 3, Value: 3, Strength: 1}}
