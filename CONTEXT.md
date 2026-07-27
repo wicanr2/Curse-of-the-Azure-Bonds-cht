@@ -453,3 +453,5 @@
 第一百七十四輪功能 commit：`ec2d0bb`，已推送至 GitHub `main`。將 pick-lock／Knock 接入 Ebiten dungeon preview 的 P/K action adapter；P 只允許 detail 2，K 允許 detail 2/3，成功後呼叫 GEO 雙側 unlock，新增 seeded State action regression 與 READY 規格。完整 locked-door menu、bash、door graphics 與劇情 integration 仍保留 boundary。
 
 第一百七十五輪功能 commit：`db51598`，已推送至 GitHub `main`。依 reference `bash_door()` 保存 DOS `Str.full`／`Str00.cur`，建立 detail 2/3 的 strength／exceptional die resolver，並接入 dungeon preview `B` 撞門與 GEO 雙側 unlock；新增 bash table、extra-roll 與 DOS import regression、READY 規格。完整 locked-door menu、side effects、door graphics 與劇情 integration 仍保留 boundary。
+
+第一百七十六輪功能 commit 待補：依 reference `locked_door` 建立 detail 2/3 的 Bash／Pick／Knock／Exit capability resolver，並將方向鍵撞上上鎖門時接到 preview menu；新增 menu capability regression 與 READY 規格。完整 DOS 視窗樣式、door graphics、時間／傷害 side effects 與劇情 integration 仍保留 boundary。

@@ -83,6 +83,8 @@ CoAB 現在把該 contract 接到 dungeon preview：P 僅對 detail 2 撬鎖，K
 
 撞門規則不能簡化成 Strength 百分比：CoAB reference 以 `Str.full`／`Str00.cur` 選擇 die size 與 threshold，detail 3 另有 unpickable door table；`bash_door()` 甚至在 Strength 18、exceptional 0–50 先成功再額外擲骰。共用 parser 應保存 DOS full／exceptional 欄位，resolver 接受骰子注入，並讓 map service 在成功後才做雙側 unlock。
 
+Locked door menu 的 capability 應在 raw detail 之上計算：detail 2 可列 Pick，detail 3 不列 Pick；Knock 必須先存在 `0x1F` memorized slot，Bash 對兩種 locked detail 都列出。preview 的方向鍵阻擋可重用這個 menu service，但各 Gold Box 遊戲仍需提供自己的文字／游標與劇情 entry。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。
