@@ -73,6 +73,8 @@ Dungeon background 也應分成「Area palette input」與「GEO roof selection�
 
 Door state 也應先保存 raw signal 再交給 rules service：reference `WallDoorFlagsGet` 的 no-wall default `1` 與 walled `x3` detail 是不同語意，不能只用非零判定「有門」。CoAB 目前只顯示 `WallDoorFlags` evidence；後續作品可共用 flag adapter，再注入 lock／bash／pick／knock skill 與 mutation rules。
 
+Dungeon movement 的 door branch 也要和 generic wall collision 分層：CoAB `CanMoveDungeonWrapped` 只放行無 wall 或 detail `1` 的 unlocked door，detail `2/3` 保持 blocked；`UnlockDoorWrapped` 只做 reference 的雙側 raw mutation。上層作品 service 必須先完成 skill／dice／spell transaction 才能呼叫它，不能讓 renderer 直接解鎖。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

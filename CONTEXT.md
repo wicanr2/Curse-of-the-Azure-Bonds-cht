@@ -443,3 +443,5 @@
 第一百六十九輪功能 commit：`f714494`，已推送至 GitHub `main`。解碼 Area1 `0x1FA/0x1FC` outdoor／indoor sky colour，依 `mapWallRoof > 0x7F` 接入 dungeon preview EGA sky background；新增 Area codec regression、READY 規格與共用 state knowledge。完整 `Draw3dWorldBackground`、roof geometry、door overlay 與原版 save container 仍保留 boundary。
 
 第一百七十輪功能 commit：`a8c050e`，已推送至 GitHub `main`。依 reference `WallDoorFlagsGet` 接入 GEO wrapped no-wall default `1`／walled `x3` detail API，並在 dungeon preview 顯示目前 facing 的 door/detail evidence；新增 exact GEO regression、READY 規格與共用 state knowledge。開門、解鎖、撬門、撞門與 door symbol overlay 仍保留 boundary。
+
+第一百七十一輪待提交：依 reference `TryStepForward`／`MapSetDoorUnlocked` 接入 detail `1` unlocked doorway movement 與雙側 `UnlockDoorWrapped` raw mutation；detail `2/3` 保持阻擋。完整 bash／pick／knock menu、技能／骰點／法術消耗與 door graphics 仍保留 boundary。
