@@ -1275,3 +1275,10 @@ menu 現能同時顯示 24px 中文 narrative，不再只剩選項。
 `4C48 |= 0x08`，同一 resumable ECL 直接顯示繁中夢境警告並返回熔岩洞探索。
 規格 312 與 Gold Box 指令集知識庫已保存 selector base 與戰後 presentation
 不一定先停泛用勝利頁的契約。
+第三百一十三輪成果：ECL5 block `0x32` per-turn 事件已在真實 GEO5
+`(0,5,N)` 接通。terrain `0x89` 必須面北才顯示 PICTURE 57 的間歇泉與熔岩池，
+接著保留 `COMBAT/WAIT/FLEE/PARLAY` 原始順序；已驗證 WAIT 路徑建立 15 隻
+MON5 `0x39` 火蜥蜴。勝利後 `4C48 |= 1`，發現六只防火桶；YES 進入 WHO，
+一般英雄因熱度過強退回，再選 NO 返回洞內。繁中與 regression 已涵蓋每個
+PICTURE／PRINT RETURN／menu／COMBAT／WHO boundary；知識庫新增方向敏感
+per-turn terrain 與戰後環境志願者 selection 契約。

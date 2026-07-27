@@ -5051,6 +5051,27 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_lava_tube_dream_warning",
 			"一個夢境般的聲音在腦中響起：「前方危機重重，務必做好萬全準備！」",
 		)
+	case strings.Contains(joined, "THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS") &&
+		strings.Contains(joined, "SALAMANDERS ARE SPORTING IN THE POOLS"):
+		return catalog.Text(
+			"ecl_lava_tube_salamander_pools",
+			"房內遍布活躍的間歇泉與熔岩池，火蜥蜴正在池中嬉戲。",
+		)
+	case strings.Contains(joined, "INTENSE HEAT WASHES OVER YOU"):
+		return catalog.Text("ecl_lava_tube_intense_heat", "灼熱的熱浪席捲全隊。")
+	case strings.Contains(joined, "AMONGST THE POOLS OF LAVA") &&
+		strings.Contains(joined, "SIX FIREPROOF CASKS") &&
+		strings.Contains(joined, "OPEN ONE"):
+		return catalog.Text(
+			"ecl_lava_tube_fireproof_casks",
+			"熔岩池之間放著六只防火桶。要派人前去打開其中一只嗎？",
+		)
+	case strings.Contains(joined, "THE HEAT IS TOO INTENSE") &&
+		strings.Contains(joined, "DOES ANYONE WANT TO TRY AGAIN"):
+		return catalog.Text(
+			"ecl_lava_tube_cask_heat_retreat",
+			"熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？",
+		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):
 		return catalog.Text(

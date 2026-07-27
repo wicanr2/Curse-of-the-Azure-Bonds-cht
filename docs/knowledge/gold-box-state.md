@@ -185,6 +185,11 @@ continuation 後立刻 PRINT 夢境警告，因此 State 可能直接進入帶�
 press-button choice 的 `ModeWilderness`，而不先停在泛用勝利頁。renderer 與測試
 不可假設每場勝利都必然多一次 Continue。
 
+完整 encounter transaction 可以是 `PICTURE → PRINT RETURN → ENCOUNTER →
+COMBAT → YES/NO → WHO → conditional text → YES/NO → dungeon`。熔岩池防火桶
+證明 WHO 不只服務施法或物品，也可能在戰後選擇承受環境危險的角色；State 必須
+跨所有 pause 保存 selected-player context，而 renderer 只顯示中文姓名。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。

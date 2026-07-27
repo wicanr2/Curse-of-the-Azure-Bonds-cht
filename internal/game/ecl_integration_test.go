@@ -2453,6 +2453,77 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeDungeon {
 		t.Fatalf("guarded-door continuation mode=%v, want dungeon", state.Mode)
 	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 0, 5, 0
+	state.DungeonWallType, _ = lavaGrid.WallWrapped(0, 5, 0)
+	state.DungeonWallRoof = lavaGrid.CellWrapped(0, 5).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 57 ||
+		!strings.Contains(state.Message, "間歇泉與熔岩池") {
+		t.Fatalf("lava pools picture=%v/%d message=%q",
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+		t.Fatalf("lava pools encounter choices=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !strings.Contains(state.Message, "灼熱的熱浪") {
+		t.Fatalf("lava pools combat mode=%v message=%q", state.Mode, state.Message)
+	}
+	poolSalamanders := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			if fighter.Name != "火蜥蜴" || fighter.SpriteBlock != 0x39 {
+				t.Fatalf("unexpected lava pools enemy=%+v", fighter)
+			}
+			poolSalamanders++
+		}
+	}
+	if poolSalamanders != 15 {
+		t.Fatalf("lava pools salamanders=%d, want 15", poolSalamanders)
+	}
+	for turn := 0; turn < 48 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "六只防火桶") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("lava pools casks mode=%v message=%q choices=%#v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Prompt != "請選擇角色" || len(state.Choices) != 2 {
+		t.Fatalf("lava cask volunteer prompt=%q choices=%#v", state.Prompt, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "熱度過於猛烈") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("lava cask heat mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("lava cask decline mode=%v, want dungeon", state.Mode)
+	}
+	if got, ok := session.MemoryValue(0x4C48); !ok || got&0x01 == 0 {
+		t.Fatalf("lava pools flag=%#x,%v want bit 0x01", got, ok)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

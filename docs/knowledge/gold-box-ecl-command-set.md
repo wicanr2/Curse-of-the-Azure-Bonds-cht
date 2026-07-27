@@ -146,6 +146,11 @@ target，selector 0 則走 table 前的 fallthrough/default。ECL5 block `0x32`
 以 `C04F & 0x7F` dispatch terrain；因此 `0x8A → selector 10 → 第十個 target
 +0x10C6`。若把 table 當零起算，會把 terrain `0x89` 錯標成火蜥蜴守門事件。
 
+並非每個 terrain 都走 SearchLocation table。ECL5 block `0x32` 的熔岩池在
+per-turn entry 同時比較 `C04F` terrain 與 `C04D` facing；terrain `0x89`
+只有面北才顯示 PICTURE 57。可重用 dungeon adapter 必須每一步同步 cell、
+front wall 與 half-direction，不能把方向敏感事件簡化成「踩格即觸發」。
+
 `FIND SPECIAL (0x3F)` 查的是目前 `SelectedPlayer` 的 active affect，不是全隊 affect
 query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共用 `RuntimeState`
 保存 selected-player index，讓 `LOAD CHARACTER` 與 WHO selection 都能餵給後續
