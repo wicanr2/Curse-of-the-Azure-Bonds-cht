@@ -47,7 +47,44 @@ func main() {
 	characterEffects := flag.String("character-effects", "", "optional DOS .FX path for -import-character")
 	characterInventory := flag.String("character-inventory", "", "optional DOS .SWG path for -import-character")
 	outParty := flag.String("out-party", "", "write imported character as versioned party JSON")
+	setAge := flag.String("set-age", "", "set the signed DOS player age when used with -character-record")
+	outRecord := flag.String("out-record", "", "write a patched DOS .SAV/.GUY record to this new path")
 	flag.Parse()
+	if strings.TrimSpace(*setAge) != "" {
+		if strings.TrimSpace(*characterRecord) == "" {
+			log.Fatal("-character-record is required with -set-age")
+		}
+		if strings.TrimSpace(*outRecord) == "" {
+			log.Fatal("-out-record is required with -set-age; the source record is never overwritten")
+		}
+		parsedAge, err := strconv.ParseInt(strings.TrimSpace(*setAge), 10, 16)
+		if err != nil {
+			log.Fatalf("invalid -set-age %q: %v (expected -32768..32767)", *setAge, err)
+		}
+		record, err := os.ReadFile(*characterRecord)
+		if err != nil {
+			log.Fatal(err)
+		}
+		character, err := party.ParseDOSPlayerRecord(record, "cli-age-patch")
+		if err != nil {
+			log.Fatal(err)
+		}
+		before := character.Age
+		projected, err := character.Character()
+		if err != nil {
+			log.Fatal(err)
+		}
+		projected.Age = int16(parsedAge)
+		patched, err := party.PatchDOSPlayerRecord(record, projected)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*outRecord, patched, 0o600); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("已修改 DOS 角色 %q 年齡：%d → %d，輸出：%s\n", character.Name, before, projected.Age, *outRecord)
+		return
+	}
 	if *importCharacter {
 		if strings.TrimSpace(*characterRecord) == "" {
 			log.Fatal("-character-record is required with -import-character")

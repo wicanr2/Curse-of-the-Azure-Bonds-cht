@@ -240,3 +240,4 @@
 - [第二百六十輪 ITEM NameNumbers 繁中顯示](./260-item-name-number-localization.md)（`READY`：限 hidden flag、已確認 magic components 與 raw-preserving display）
 - [第二百六十一輪 multi-class character creation](./261-multiclass-character-creation.md)（`READY`：限 reference race/class list、raw levels 與 primary-class adapter）
 - [第二百六十二輪 multi-class rules projection](./262-multiclass-rules-projection.md)（`READY`：限裝備與一級法術職業判定）
+- [第二百六十三輪 DOS player age patch CLI](./263-dos-age-patch-cli.md)（`READY`：限單一 `.SAV/.GUY` 年齡欄位修改）

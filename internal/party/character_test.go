@@ -392,6 +392,17 @@ func TestParseDOSMulticlassPreservesClassLevels(t *testing.T) {
 	}
 }
 
+func TestCharacterHasClassUsesRawLevelsAndLegacyFallback(t *testing.T) {
+	character := Character{Class: ClassFighter, ClassLevels: [8]uint8{2: 3, 5: 1}}
+	if !character.HasClass(ClassFighter) || !character.HasClass(ClassMagicUser) || character.HasClass(ClassCleric) {
+		t.Fatalf("raw multiclass projection=%#v", character)
+	}
+	legacy := Character{Class: ClassCleric}
+	if !legacy.HasClass(ClassCleric) || legacy.HasClass(ClassMagicUser) {
+		t.Fatalf("legacy primary-class fallback=%#v", legacy)
+	}
+}
+
 func TestParseDOSPlayerFilesBundlesOptionalSidecars(t *testing.T) {
 	record := make([]byte, DOSPlayerRecordSize)
 	record[0] = 4
