@@ -420,35 +420,30 @@ func (a *app) prepareWallPreview() {
 	if a.geoGrid == nil || len(a.pieceSets) == 0 {
 		return
 	}
-	for y := 0; y < geo.Height; y++ {
-		for x := 0; x < geo.Width; x++ {
-			for _, direction := range []int{0, 2, 4, 6} {
-				wallType, ok := a.geoGrid.Wall(x, y, direction)
-				if !ok || wallType == 0 {
-					continue
-				}
-				setID := uint8((wallType-1)/5 + 1)
-				piece, ok := a.pieceSets[setID]
-				if !ok {
-					continue
-				}
-				stamps, err := gfx.BuildWallLayout(piece, wallType, 0, 4, 5)
-				if err != nil {
-					continue
-				}
-				for _, stamp := range stamps {
-					rgba, err := stamp.Picture.RGBA(stamp.Item, gfx.EGA16)
-					if err != nil {
-						continue
-					}
-					a.wallPreview = append(a.wallPreview, wallPreviewStamp{
-						image:  ebiten.NewImageFromImage(rgba),
-						row:    stamp.Row,
-						column: stamp.Column,
-					})
-				}
-				return
+	view, err := gfx.TraverseWallView(*a.geoGrid, 0, 8, 8)
+	if err != nil {
+		return
+	}
+	for _, call := range view.Calls {
+		setID := uint8((call.WallType-1)/5 + 1)
+		piece, ok := a.pieceSets[setID]
+		if !ok {
+			continue
+		}
+		stamps, err := gfx.BuildWallLayout(piece, call.WallType, call.Layout, call.RowStart, call.ColStart)
+		if err != nil {
+			continue
+		}
+		for _, stamp := range stamps {
+			rgba, err := stamp.Picture.RGBA(stamp.Item, gfx.EGA16)
+			if err != nil {
+				continue
 			}
+			a.wallPreview = append(a.wallPreview, wallPreviewStamp{
+				image:  ebiten.NewImageFromImage(rgba),
+				row:    stamp.Row,
+				column: stamp.Column,
+			})
 		}
 	}
 }
@@ -726,8 +721,8 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		text.Draw(screen, "WALLDEF wall layout sample（raw 8×8D）", a.face, 360, 28, cyan)
 		for _, stamp := range a.wallPreview {
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Scale(3, 3)
-			op.GeoM.Translate(float64(360+(stamp.column-5)*24), float64(48+(stamp.row-4)*24))
+			op.GeoM.Scale(2, 2)
+			op.GeoM.Translate(float64(360+stamp.column*16), float64(48+stamp.row*16))
 			screen.DrawImage(stamp.image, op)
 		}
 	}
