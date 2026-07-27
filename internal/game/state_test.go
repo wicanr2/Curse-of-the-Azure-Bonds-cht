@@ -343,6 +343,56 @@ func TestSAVGAMPrefixStateAdapterRestoresKnownFieldsAndRawRecords(t *testing.T) 
 	}
 }
 
+func TestLoadSAVGAMSlotLoadsPlayerRecordAndOptionalSidecars(t *testing.T) {
+	directory := t.TempDir()
+	areaState := area.State{GameArea: 3, Current3DMapBlockID: 0x21, InDungeon: true}
+	area1, err := area.EncodeArea1(areaState, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	area2, err := area.EncodeArea2(areaState, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	prefix, err := partySave.EncodeSAVGAM(partySave.SAVGAMContainer{
+		GameArea: 3, Area1: area1, Area2: area2,
+		Runtime: make([]byte, partySave.SAVGAMRuntimeStateSize), ECL: make([]byte, partySave.SAVGAMECLMemorySize),
+		PartyCount: 1, CharacterRefs: [8][]byte{[]byte("CHRDATC1")},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(directory+"/savgamc.dat", prefix, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	record := make([]byte, party.DOSPlayerRecordSize)
+	record[0] = 4
+	copy(record[1:], "ELLA")
+	record[0x10], record[0x11], record[0x12] = 16, 16, 10
+	record[0x14], record[0x16], record[0x18], record[0x1A] = 10, 12, 14, 10
+	record[0x74], record[0x75] = 7, 2
+	record[0x78], record[0x1A4], record[0x10B] = 10, 8, 1
+	if err := os.WriteFile(directory+"/CHRDATC1.sav", record, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(directory+"/CHRDATC1.fx", []byte{0x27, 3, 0, 1, 2, 3, 4, 5, 6}, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(directory+"/CHRDATC1.swg", make([]byte, monster.ItemRecordSize), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	state := NewState(testCatalog())
+	if err := state.LoadSAVGAMSlot(directory, 'C'); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || state.Area.GameArea != 3 || state.GeoMapBlock != 0x21 || len(state.partyRoster) != 1 || state.partyRoster[0].Name != "ELLA" || len(state.partyRoster[0].Effects) != 1 || len(state.partyRoster[0].Equipment) != 1 {
+		t.Fatalf("loaded SAVGAM state=%#v roster=%#v", state, state.partyRoster)
+	}
+	if err := state.LoadSAVGAMSlot(directory, 'K'); err == nil {
+		t.Fatal("slot key K should be rejected")
+	}
+}
+
 func TestCityMenuSelectionMapsAllLocalizedLocations(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"

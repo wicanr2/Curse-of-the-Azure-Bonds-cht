@@ -1182,6 +1182,8 @@ func main() {
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
+	savgamDir := flag.String("savgam-dir", "", "directory containing reference savgam?.dat and CHRDAT player bundles")
+	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load with -savgam-dir")
 	dosCharacterID := flag.String("dos-character-id", "dos-character", "ID for a direct DOS character import")
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
@@ -1222,7 +1224,14 @@ func main() {
 	if soundErr != nil {
 		log.Printf("sound disabled: %v", soundErr)
 	}
-	if *partyLoadPath != "" {
+	if *savgamDir != "" || *savgamSlot != "" {
+		if *savgamDir == "" || len(*savgamSlot) != 1 || *partyLoadPath != "" || *dosCharacterRecord != "" {
+			log.Fatal("-savgam-dir/-savgam-slot require exactly one A..J key and cannot be combined with party/player import flags")
+		}
+		if err := state.LoadSAVGAMSlot(*savgamDir, strings.ToUpper(*savgamSlot)[0]); err != nil {
+			log.Fatal(err)
+		}
+	} else if *partyLoadPath != "" {
 		if *dosCharacterRecord != "" {
 			log.Fatal("-party-load and -dos-character-record cannot be used together")
 		}

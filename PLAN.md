@@ -321,8 +321,9 @@
 - [x] 將 imported active Bless／Curse effects 投影到 combat fighter attack bonus。
 - [x] 將 active Blind／Bestow Curse／friendly Prayer effects 投影到 fighter attack／AC。
 - [x] 依 `ovr017.SaveGame/loadSaveGame` 建立 `SAVGAM` 固定前綴 raw codec 與 round-trip regression；完整 slot／Area 欄位／player-file side effects 仍待接入。
-- [x] 將 `SAVGAM` fixed prefix 接到 State 的 Area／map load／export adapter，保留未知 raw segments；尚未取代 remake JSON 或接入 individual CHRDAT files。
+- [x] 將 `SAVGAM` fixed prefix 接到 State 的 Area／map load／export adapter，保留未知 raw segments；尚未取代 remake JSON。
 - [x] 依 reference `seg044`／`Resource.resx` 抽出 9 個 PC WAV，建立共用 sound selector catalog 與 Ebiten playback adapter。
 - [x] 將 State sound intent 接到武器命中／未命中、擊倒、免費反擊與已實作法術；背景音樂與完整 ECL sound calls 仍待接入。
-- [ ] 將 `SAVGAM` fixed prefix、Area codec 與 `.SAV/.GUY` player sidecars 接入完整 DOS save/import slot。
+- [x] 依 reference `SaveGame/loadSaveGame` 將 SAVGAM slot prefix 與 `CHRDAT*.sav`／optional `.fx/.swg` 接到 State loader，並提供 `-savgam-dir/-savgam-slot` 啟動入口；player record writeback 與完整 multi-file save 仍待接入。
+- [ ] 將已完成的 `SAVGAM` slot load path 延伸到 Player record／`.swg`／`.fx` writeback 與 CAMP multi-file save transaction。
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。

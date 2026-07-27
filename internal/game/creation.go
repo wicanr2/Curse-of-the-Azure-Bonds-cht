@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
@@ -238,6 +239,78 @@ func (s *State) LoadSAVGAMPrefix(path string) error {
 	return nil
 }
 
+// LoadSAVGAMSlot loads the reference save-game prefix plus its CHRDAT player
+// bundles from a directory. SaveGame writes the prefix as savgamA..J.dat and
+// names party records CHRDAT{key}{1..6}.sav; .swg/.fx are optional sidecars.
+// This loader intentionally does not infer unsupported multi-class fields or
+// rewrite the original files.
+func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
+	if key < 'A' || key > 'J' {
+		return fmt.Errorf("SAVGAM slot key %q is outside A..J", key)
+	}
+	prefixPath := filepath.Join(directory, fmt.Sprintf("savgam%c.dat", key+('a'-'A')))
+	if err := s.LoadSAVGAMPrefix(prefixPath); err != nil {
+		return err
+	}
+	container := s.savgamPrefix
+	if container == nil {
+		return fmt.Errorf("SAVGAM prefix was not retained")
+	}
+	roster := make(party.Roster, 0, container.PartyCount)
+	for index := 0; index < int(container.PartyCount); index++ {
+		base := fmt.Sprintf("CHRDAT%c%d", key, index+1)
+		recordPath := filepath.Join(directory, base+".sav")
+		record, err := os.ReadFile(recordPath)
+		if err != nil {
+			return fmt.Errorf("SAVGAM player %s: %w", base, err)
+		}
+		effects, err := readOptionalSAVGAMSidecar(filepath.Join(directory, base+".fx"))
+		if err != nil {
+			return err
+		}
+		inventory, err := readOptionalSAVGAMSidecar(filepath.Join(directory, base+".swg"))
+		if err != nil {
+			return err
+		}
+		character, err := party.ParseDOSPlayerFiles(base, party.DOSPlayerFiles{Record: record, Effects: effects, Inventory: inventory})
+		if err != nil {
+			return fmt.Errorf("SAVGAM player %s: %w", base, err)
+		}
+		roster = append(roster, character)
+	}
+	if len(roster) == 0 {
+		return fmt.Errorf("SAVGAM slot %c has no player records", key)
+	}
+	fighters := make([]combat.Fighter, 0, len(roster))
+	for _, character := range roster {
+		fighter, err := s.fighterForCharacter(character)
+		if err != nil {
+			return err
+		}
+		fighters = append(fighters, fighter)
+	}
+	if err := s.SetParty(fighters); err != nil {
+		return err
+	}
+	s.partyRoster = roster
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
+	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	return nil
+}
+
+func readOptionalSAVGAMSidecar(path string) ([]byte, error) {
+	data, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func (s *State) savgamContainerForSave() (partySave.SAVGAMContainer, error) {
 	var container partySave.SAVGAMContainer
 	var err error
@@ -346,8 +419,8 @@ func (s *State) LoadPartyFile(path string) error {
 }
 
 // LoadDOSCharacterFiles imports one original DOS character bundle directly
-// into the running remake. It is intentionally a one-character bridge until
-// the SAVGAM party/container format is decoded.
+// into the running remake. It remains useful for inspecting an individual
+// record without loading a complete SAVGAM slot.
 func (s *State) LoadDOSCharacterFiles(id string, files party.DOSPlayerFiles) error {
 	character, err := party.ParseDOSPlayerFiles(id, files)
 	if err != nil {
