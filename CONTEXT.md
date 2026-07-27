@@ -882,3 +882,8 @@ ID／sidecar basename 與未知 bytes，只 patch DOS name field。原版 code-p
 Good 也不再被 primary-class projection 誤導。新增 READY spec 與 Gold Box 可重用邊界文件；
 THAC0、生命骰、高等級 spell capacity、部分 UI label 與完整 multi-class serializer 仍待
 逐欄反組譯驗證。
+
+第二百六十三輪工具里程碑：將已驗證的 DOS player age `0x76..0x77` 接成
+`cmd/azure-bonds -set-age` 安全修改流程，要求明確 `-out-record`，不覆寫來源檔並保留
+未知 bytes。新增 READY spec 與 CLI 文件；完整 SAVGAM slot replacement、sidecar atomic
+transaction 與原版 player delete semantics 仍維持既有 boundary。
