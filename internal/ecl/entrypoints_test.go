@@ -29,3 +29,23 @@ func TestEntryPointsRejectsNonWordHeader(t *testing.T) {
 		t.Fatal("EntryPoints() accepted a non-word command-set header")
 	}
 }
+
+func TestSmokeInitializationEntriesKeepsPerEntryResults(t *testing.T) {
+	block := []byte{0, 0}
+	for index := 0; index < 5; index++ {
+		block = append(block, 0xFF, 0x01, byte(0x14+index), 0x80)
+	}
+	block = append(block, 0, 0, 0, 0, 0)
+	reports, err := SmokeInitializationEntries(block, 5, 4, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(reports) != 5 {
+		t.Fatalf("reports=%d, want 5", len(reports))
+	}
+	for index, report := range reports {
+		if report.Index != index || report.Start != 0x14+index || report.Err != nil || report.Result.Steps != 1 {
+			t.Fatalf("report[%d]=%+v", index, report)
+		}
+	}
+}
