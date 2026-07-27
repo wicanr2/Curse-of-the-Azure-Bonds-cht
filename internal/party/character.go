@@ -46,6 +46,55 @@ type Abilities struct {
 	Charisma            int
 }
 
+// StartingAgeSpec is the reference race/class age generator shape.
+type StartingAgeSpec struct {
+	BaseAge   int
+	DiceCount int
+	DiceSize  int
+}
+
+// StartingAgeSpecFor returns the verified single-class CoAB age entry. A zero
+// dice entry represents a class/race combination not supported by the current
+// single-class remake model.
+func StartingAgeSpecFor(race Race, class Class) (StartingAgeSpec, error) {
+	if race < RaceDwarf || race > RaceHuman {
+		return StartingAgeSpec{}, fmt.Errorf("race %d has no CoAB age table", race)
+	}
+	// Rows follow the reference race_ages table; columns are cleric, fighter,
+	// ranger, paladin, magic-user, thief in this package's class order.
+	table := [...][6]StartingAgeSpec{
+		{{0, 0, 0}, {40, 5, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {75, 3, 6}},         // dwarf
+		{{650, 10, 10}, {130, 5, 6}, {0, 0, 0}, {0, 0, 0}, {150, 5, 6}, {100, 5, 6}}, // elf
+		{{300, 3, 12}, {60, 5, 4}, {0, 0, 0}, {0, 0, 0}, {100, 2, 12}, {80, 5, 4}},   // gnome
+		{{40, 2, 4}, {22, 3, 4}, {0, 0, 0}, {0, 0, 0}, {30, 2, 8}, {22, 3, 8}},       // half-elf
+		{{0, 0, 0}, {20, 3, 4}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {40, 2, 4}},         // halfling
+		{{18, 1, 4}, {18, 1, 4}, {17, 1, 4}, {20, 1, 4}, {24, 2, 4}, {18, 1, 4}},     // human
+	}
+	if class < ClassCleric || class > ClassThief {
+		return StartingAgeSpec{}, fmt.Errorf("class %d has no CoAB age table", class)
+	}
+	spec := table[race][class]
+	if spec.DiceCount == 0 || spec.DiceSize == 0 {
+		return StartingAgeSpec{}, fmt.Errorf("%s cannot generate a single-class age for %s", race, class)
+	}
+	return spec, nil
+}
+
+// RollStartingAge reproduces reference roll_dice(diceSize, diceCount) plus
+// base_age using a caller-provided seed for replayable creation tests.
+func RollStartingAge(race Race, class Class, seed int64) (int16, error) {
+	spec, err := StartingAgeSpecFor(race, class)
+	if err != nil {
+		return 0, err
+	}
+	rng := rand.New(rand.NewSource(seed))
+	age := spec.BaseAge
+	for i := 0; i < spec.DiceCount; i++ {
+		age += rng.Intn(spec.DiceSize) + 1
+	}
+	return int16(age), nil
+}
+
 // WithAgeEffects applies the reference new-character age brackets to a base
 // ability roll. DOS player records already contain the resulting stats, so
 // import and combat projection must not call this implicitly.

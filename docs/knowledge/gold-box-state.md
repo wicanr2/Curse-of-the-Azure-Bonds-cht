@@ -210,4 +210,9 @@ runtime effect。共用 adapter `Abilities.WithAgeEffects` 保存五段 race bra
 delta；作品 UI 先提供 age/base abilities，再由 creation rules 呼叫，避免 imported
 record double-count。
 
+新角色年齡另有 `race_ages[race][class]` 生成表，不應用 age bracket threshold 反推。共用
+`StartingAgeSpecFor`／`RollStartingAge` 保存 base age、dice count／size 與 unsupported
+combination error；後續作品只需替換 race/class table，即可重用 deterministic creation
+resolver。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。
