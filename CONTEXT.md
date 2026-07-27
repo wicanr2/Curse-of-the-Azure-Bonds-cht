@@ -495,3 +495,5 @@
 第一百九十五輪功能 commits：`ad676f2`、`12a0fd7`，將 ECL `SPELL`／`PROTECTION` 結果接到 State pending queue，新增一次性 consume API，並驗證真實 `State.Select` wiring；State 保留原始 signal 順序／位址，不猜測未知 party memory side effect。`go test ./internal/game ./internal/ecl` 已於 Docker 通過。
 
 第一百九十六輪功能 commit：`35fffaa`，新增 `SmokeInitializationEntries` 與 `cmd/azure-bonds -entry-smoke`，逐一 bounded 執行 ECL1–ECL6 全部 block 的五個 initialization entries；實際 image smoke run 已記錄 menu／COMBAT／monster spawn／unsupported opcode per entry，並新增 READY 規格與 ECL knowledge。
+
+第一百九十七輪功能 commit：`d1327af`，以真實 ECL2 block 3 entry 3 與 `MON2CHA.DAX` 建立 playable Battle regression；修正 `MON*CHA` 50..60 packed ArmorClass 的 `60-raw` adapter，並新增 `-encounter-monster-member` 支援跨章節 direct encounter。ECL2 direct entry 已於 Docker 通過，正常玩家流程仍待完整 ECL continuation。
