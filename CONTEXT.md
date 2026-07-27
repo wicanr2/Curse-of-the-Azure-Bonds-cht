@@ -537,6 +537,11 @@ classes 的 base age／dice count／size，unsupported 組合回傳錯誤。新�
 range regression、READY spec 與 README／PLAN／Gold Box state knowledge；目前 starter
 templates 與完整角色建立 UI 尚未自動套用，multi-class／half-orc 仍保留 boundary。
 
+第二百四十六輪重大里程碑：將 `RollStartingAge`／`WithAgeEffects` 接入
+`State.AddCreationCharacter`：保留可編輯 template 不變，加入隊伍時對 copied character 生成
+deterministic age、套用六項 ability effects，再寫入 roster；新增 real creation regression。
+完整 race/class／alignment 建立選單、多職業與 half-orc 仍保留 boundary。
+
 第二百一十一輪功能 commit：`3068c2b`，將 `RunResult.DamageRequests` 接入 State
 pending queue／`ConsumeDamageRequests()` exactly-once API，避免事件／選單 pause 遺失
 script damage effect；新增 READY spec 與共用 State knowledge。由於 remake 尚未保存
