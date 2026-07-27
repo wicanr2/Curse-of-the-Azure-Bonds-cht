@@ -40,9 +40,10 @@ external `PROGRAM` routine、monster table 與 save side effect 必須由各作�
 
 ## Current evidence boundary
 
-ECL1–ECL6 entry smoke 已實際遇到 `0x2D CALL`／`0x2F AND`。本輪只釋放有足夠
-operand evidence 的 `AND`／`OR` bounded memory operation；`CALL` 留在 unsupported
-boundary，直到能從原始反組譯或跨作品對照確認 return／context semantics。
+ECL1–ECL6 entry smoke 已實際遇到 `0x1D PARTYSTRENGTH`、`0x22 PARTY SURPRISE`、
+`0x2D CALL`／`0x2F AND`。`AND`／`OR` 已是 bounded memory operation，`CALL` 已建立
+external-call signal；本輪再加入兩個 party-rule destination signal。它們都不把缺少的
+作品 party context 猜成 VM memory side effect。
 
 最新 smoke evidence 顯示，補上 variable monster operands 後，ECL3 block 17／18、
 ECL4 block 33／37 等真實 entries 已能抵達 COMBAT 並產生 spawn signal；這是 bounded
@@ -87,6 +88,10 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 
 `FIND ITEM`／`DESTROY ITEMS` 是另一組可跨作品重用的 inventory boundary；VM 只
 保存 item IDs，不應在缺 party roster context 時自行改 inventory 或 compare flags。
+
+`PARTYSTRENGTH (0x1D)` 與 `PARTY SURPRISE (0x22)` 現在也會由 bounded VM 保存已驗證的
+word destination request 並繼續 cursor；party HP／AC／職業等級與 surprise result 仍由
+作品 adapter 解析，不應在沒有 roster context 的 VM 中寫入猜測值。
 
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item

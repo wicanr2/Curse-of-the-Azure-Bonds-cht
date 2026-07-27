@@ -87,6 +87,7 @@
 - [x] 實作 `SAVE/COMPARE/IF/GOTO/GOSUB/RETURN/PRINT` 與 packed text 輸出測試。
 - [x] 未支援 opcode 以精確 payload offset 停止，未宣稱完整 VM。
 - [x] 實作 bounded `ON GOTO/GOSUB`、menu input；完整 DOS memory model 仍保留 boundary。
+- [x] 依 reference `CMD_PartyStrength`／`CMD_PartySurprise` 消費 ECL party-rule command，保存 word destinations 並跨 BlockSession continuation；實際 roster stat writeback 仍保留 State adapter boundary。
 
 ## 第十四輪驗收
 
