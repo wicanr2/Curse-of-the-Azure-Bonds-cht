@@ -179,6 +179,11 @@ func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
 		return fmt.Errorf("fighter %q hit points %d outside 0..%d", fighterID, hitPoints, fighter.MaxHitPoints)
 	}
 	fighter.HitPoints = hitPoints
+	if hitPoints == 0 {
+		// Reference CombatMap size becomes zero when in_combat is cleared;
+		// HasCombatPosition is the renderer-neutral equivalent.
+		fighter.HasCombatPosition = false
+	}
 	b.fighters[fighterID] = fighter
 	b.updateStatus()
 	return nil
