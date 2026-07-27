@@ -111,6 +111,11 @@ flag。共用 VM 會同時保存 raw word address 與 `LoadCharacterRequest`；C
 狀態。`FreeCurrentPlayer`、external string context 與 redraw side effects 仍須各作品
 依 reference 逐欄接線。
 
+已核對的 `vm_CopyStringFromMemory` 特例是 `0x7C00`：它讀取目前 `SelectedPlayer.name`。
+因此共用 runtime 只由作品 `PartyContext` 提供 roster name，並在 `LOAD CHARACTER` 後更新
+`RuntimeState.Strings[0x7C00]`；後續 `0x81` `COMPARE`／`PRINT` 可使用該姓名。這不代表
+`0x4B00`、`0x7A00`、`0x8000` 等其他 DOS memory regions 已完成。
+
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
 的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party

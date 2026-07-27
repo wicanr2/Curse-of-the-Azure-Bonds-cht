@@ -11,6 +11,7 @@
 - bounded VM 保留既有 `LoadCharacterAddresses` raw word signal，並新增 `LoadCharacterRequest{Address, Value, PlayerIndex, HighBitSet}`。
 - `PlayerIndex` 是低 7 bits 的 1-based selector；State 以 `PlayerIndex-1` 對應 persistent `partyRoster`，成功後更新共用 selected-player ID。
 - `PlayerIndex == 0` 或超出 roster 會保留 `LoadCharacterNotFound`，不清除上一個有效 selected player。
-- `HighBitSet` 只保存 reference restore／redraw flag；完整 `FreeCurrentPlayer`、party summary redraw 與 DOS external string context 仍是下一個 engine boundary。
+- `HighBitSet` 只保存 reference restore／redraw flag；完整 `FreeCurrentPlayer`、party summary redraw 與 `0x7C00` 姓名以外的 DOS external string context 仍是下一個 engine boundary。
+- CoAB `PartyContext` 會將 roster name 提供給 runtime 的 `0x7C00` selected-player string slot，因此後續 `0x81` string operand 可被 `COMPARE`／`IF` 使用；其他 DOS memory regions 仍不會被猜測填入。
 
 這一輪完成的是「ECL selector → party roster」資料橋，不宣稱已完成所有原版角色 record 載入或 UI redraw side effects。

@@ -376,3 +376,4 @@
 - [x] 將 `CAMP → MAGIC → CAST` 接入施法者／memorized slot／受傷目標選單與 Cure Light Wounds `1d8` transaction；SCRIBE、其他法術與完整 slot／時間規則仍待接入。
 - [x] 將 `CAMP → ALTER → RENAME` 接入 15-byte DOS name editor、roster／fighter projection 與 SAVGAM raw-preserving name writeback；Big5 transcoding、多職業與完整 delete semantics 仍待接入。
 - [x] 依 `ovr003.CMD_LoadCharacter` 解碼 ECL `LOAD CHARACTER` 的 1-based selector／bit-7 flag，接回 State persistent roster 的 selected player；完整 external string／party-summary side effects 仍待反組譯。
+- [x] 依 `vm_CopyStringFromMemory` 將 selected player name 投影到 resumable ECL `0x7C00` string slot，讓 `LOAD CHARACTER → COMPARE/IF` 姓名分支可執行；其他 DOS memory-string regions 仍待驗證。

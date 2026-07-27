@@ -101,6 +101,7 @@ type PartySurpriseRequest struct {
 // commands. It deliberately avoids importing party/combat packages so the ECL
 // VM remains reusable by other Gold Box works.
 type PartyMemberContext struct {
+	Name              string
 	HitPoints         int
 	ArmorClass        int
 	AttackBonus       int
@@ -777,6 +778,15 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			result.LoadCharacterRequests = append(result.LoadCharacterRequests, LoadCharacterRequest{
 				Address: address, Value: value, PlayerIndex: uint8(value & 0x7F), HighBitSet: value&0x80 != 0,
 			})
+			if partyContext != nil {
+				playerIndex := int(value&0x7F) - 1
+				if value&0x7F > 0 && playerIndex >= 0 && playerIndex < len(partyContext.Members) {
+					// Reference vm_CopyStringFromMemory treats 0x7C00 as the
+					// selected player's name string. Preserve it in RuntimeState
+					// so later COMPARE/PRINT operands see the same selection.
+					stringsMemory[0x7C00] = partyContext.Members[playerIndex].Name
+				}
+			}
 		case 0x32: // FIND ITEM
 			itemID, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {

@@ -166,6 +166,15 @@ func TestECLLoadCharacterResolvesOneBasedRosterAndHighBit(t *testing.T) {
 	}
 }
 
+func TestECLPartyContextProjectsCharacterNames(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "a", Name: "阿卡巴"}, {ID: "b", Name: "乙"}}
+	context := state.eclPartyContext()
+	if len(context.Members) != 2 || context.Members[0].Name != "阿卡巴" || context.Members[1].Name != "乙" {
+		t.Fatalf("party context=%#v", context)
+	}
+}
+
 func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
