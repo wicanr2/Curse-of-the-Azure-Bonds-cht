@@ -33,7 +33,7 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   renderer-neutral `Fighter.DeathOverlay` signal。Ebiten 目前保留死亡時的 CombatX/Y
   anchor 並顯示原版 `COMSPR 0x8B`／`0x19` 交替 skull overlay；其來源 mapping 已整理於
   `docs/knowledge/gold-box-graphics.md`，renderer 以 100ms phase 顯示九次後轉為 corpse
-  marker（enemy 則停止死亡小人繪製）。Battle 同時清除
+  marker（enemy 則停止死亡小人與名稱／HP 繪製）。Battle 同時清除
   renderer-neutral `CombatAction` 的 delay／move／spell ID／guarding；若倒下者是目前
   State turn，State 也清除施法、移動與角色檢視選擇。明確 `CombatHealAllowed` 的
   affect_63 recovery 會以保存的 CombatX/Y 呼叫 `Battle.RestoreCombatant`，清除 corpse

@@ -1031,6 +1031,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	targets := a.state.CombatTargets()
 	spellTargets := a.state.CombatSpellTargets()
 	for _, fighter := range a.state.CombatFighters() {
+		if fighter.HitPoints <= 0 && !fighter.DownedCorpse {
+			if _, active := a.deathOverlayFrame(fighter); !active {
+				continue
+			}
+		}
 		if fighter.Side == combat.SideParty {
 			tile := combat.FormationTile(fighter.Side, partyIndex)
 			if fighter.HasCombatPosition || fighter.DeathOverlay || fighter.DownedCorpse {
@@ -1122,15 +1127,7 @@ func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fight
 		text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 		return
 	}
-	if a.deathOverlayStarted == nil {
-		a.deathOverlayStarted = make(map[string]time.Time)
-	}
-	started, ok := a.deathOverlayStarted[fighter.ID]
-	if !ok {
-		started = time.Now()
-		a.deathOverlayStarted[fighter.ID] = started
-	}
-	frame, active := combat.DeathOverlayFrame(time.Since(started))
+	frame, active := a.deathOverlayFrame(fighter)
 	if !active {
 		if fighter.DownedCorpse {
 			ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 58, G: 38, B: 28, A: 220})
@@ -1152,6 +1149,28 @@ func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fight
 	// Keep a visible diagnostic fallback if a derived sprite was not packaged.
 	ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 80, G: 12, B: 20, A: 220})
 	text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
+}
+
+func (a *app) deathOverlayFrame(fighter combat.Fighter) (uint8, bool) {
+	if !fighter.DeathOverlay {
+		if a.deathOverlayStarted != nil {
+			delete(a.deathOverlayStarted, fighter.ID)
+		}
+		return 0, false
+	}
+	if a.deathOverlayStarted == nil {
+		a.deathOverlayStarted = make(map[string]time.Time)
+	}
+	started, ok := a.deathOverlayStarted[fighter.ID]
+	if !ok {
+		started = time.Now()
+		a.deathOverlayStarted[fighter.ID] = started
+	}
+	frame, active := combat.DeathOverlayFrame(time.Since(started))
+	if !active && !fighter.DownedCorpse {
+		delete(a.deathOverlayStarted, fighter.ID)
+	}
+	return frame, active
 }
 
 func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, ordinal, x, y int) {
