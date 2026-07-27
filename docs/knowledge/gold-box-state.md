@@ -177,4 +177,9 @@ kind、strength damage bonus 與 d12 roller。
 
 ## 中文化注意
 
+Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、
+paralyze、sleep（`0x1F`／`0x33`／`0x34`／`0x35`）會讓怪物跳過整個回合；`AttackTarget01`
+的 `target.IsHeld()` 例外則讓攻擊 held target 必定命中。這只處理 combat action boundary，
+不代表已完成解除、豁免、持續時間或治療流程。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。

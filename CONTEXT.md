@@ -755,3 +755,10 @@ active-inactive Haste regressions、READY spec 與 README／PLAN／Gold Box stat
 第二百三十六輪追加規則：依 reference `AffectSlow` 將 active `MON*SPC` affect `0x2A`
 套用為每回合攻擊次數減半，並與 Haste 組合測試；目前 adapter 保留至少一攻下限。
 movement half-actions、遠程彈藥與完整 weapon profile 仍保留 boundary。
+
+第二百三十七輪重大里程碑：依 reference `Player.IsHeld`／`AttackTarget01` 接入 active
+`MON*SPC` helpless／snake charm／paralyze／sleep（`0x1F`／`0x33`／`0x34`／`0x35`）。
+Held enemy 會在 State enemy turn 跳過 physical／spell action；held target 由 combat core
+套用 guaranteed-hit 例外，raw effect 不消耗。新增 combat、monster、State regressions、
+READY spec 與 README／PLAN／Gold Box state knowledge。解除／豁免／持續時間／治療仍保留
+boundary；Docker Go 1.23 核心測試與 `git diff --check` 通過。

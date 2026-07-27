@@ -281,6 +281,24 @@ func TestResolveAttackProjectsMonsterInvisibilityACBonus(t *testing.T) {
 	}
 }
 
+func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: -20, DamageDiceCount: 1, DamageDiceSides: 1},
+		{ID: "sleeping", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
+	}
+	battle, err := NewBattle(fighters, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("hero", "sleeping", 1, 1)
+	if err != nil || !result.Hit || result.Damage != 1 {
+		t.Fatalf("held target result=%#v err=%v", result, err)
+	}
+	if !battle.Fighters()[1].MonsterIsHeld() {
+		t.Fatal("held effect was unexpectedly consumed")
+	}
+}
+
 func TestResolveAttackRejectsAdjacentMissileButAllowsDartException(t *testing.T) {
 	missile, err := NewBattle([]Fighter{
 		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 0, CombatY: 0, WeaponRange: 22, MissileWeapon: true},
