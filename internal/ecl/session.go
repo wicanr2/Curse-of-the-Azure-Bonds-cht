@@ -123,6 +123,7 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
+		aggregate.DamageRequests = append(aggregate.DamageRequests, result.DamageRequests...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
 		aggregate.LoadCharacterAddresses = append(aggregate.LoadCharacterAddresses, result.LoadCharacterAddresses...)
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)

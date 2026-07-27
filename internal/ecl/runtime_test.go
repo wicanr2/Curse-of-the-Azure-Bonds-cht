@@ -343,6 +343,27 @@ func TestRunSubsetRecordsDestroyItemRequestAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetRecordsDamageOperandsAndContinues(t *testing.T) {
+	block := []byte{0, 0,
+		0x2E,
+		0x00, 0x80,
+		0x00, 0x01,
+		0x00, 0x06,
+		0x00, 0x01,
+		0x00, 0x80,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	result, err := RunSubset(block, 0, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := DamageRequest{Flags: 0x80, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x80}
+	if len(result.DamageRequests) != 1 || result.DamageRequests[0] != want || len(result.Text) != 1 || result.Text[0] != "HI" {
+		t.Fatalf("result=%+v, want damage=%+v and continuation", result, want)
+	}
+}
+
 func TestRunSubsetAcceptsEmptyPackedString(t *testing.T) {
 	block := []byte{0, 0, 0x11, 0x80, 0x00, 0x00}
 	result, err := RunSubset(block, 0, 10)
