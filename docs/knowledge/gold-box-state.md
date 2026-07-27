@@ -61,7 +61,9 @@ State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOA
 
 ## Save 與 dungeon camera
 
-可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；依 reference `seg001.Init`，舊版 save 或越界值回到 `(7,13,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標；不能因 remake preview 能保存就宣稱已完成 DOS `SAVGAM` container。
+可恢復的 remake save 應把 party／Area state 與 renderer-driving dungeon camera 分開命名。CoAB version 3 的 `dungeon_x`／`dungeon_y`／`dungeon_direction` 保存 16×16 preview 座標與八方向 facing；依 reference `seg001.Init`，舊版 save 或越界值回到 `(7,13,0)`。後續 Gold Box 遊戲可沿用這個 optional field contract，但只有在各作品的 Area／ECL 證據確認後，才把它映射成原版 party 座標。
+
+第 181 輪已由 `ovr017.SaveGame/loadSaveGame` 證實 `SAVGAM?.DAT` 固定前綴：`game_area`、Area1／Area2、runtime state、ECL memory、5-byte map state、game states、三組 block/set pair、party count 與 8 筆 `0x29` CHRDAT name records。`internal/save.SAVGAMContainer` 以 raw bytes 保留未知欄位並可 round-trip；其後個別 CHRDAT player files、slot 命名與 file side effects 仍由作品專屬 adapter 處理，不能只因 prefix codec 存在就宣稱完成完整 DOS save。
 
 Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte：CoAB 目前以 `N,NE,E,SE,S,SW,W,NW` 的 `±2` delta 實作 Q/E 90 度轉向，wall traversal 直接讀 state。其他 Gold Box 遊戲可替換輸入／轉向規則，但應保留 normalized 0..7、wrap 與 save validation。
 
