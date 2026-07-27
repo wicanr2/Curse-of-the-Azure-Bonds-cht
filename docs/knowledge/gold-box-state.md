@@ -250,3 +250,8 @@ Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 r
 ID；無效 selector 只留下 not-found flag，不破壞上一個有效選擇。bit 7 目前只保存為
 restore／redraw metadata，未把尚未完整反組譯的 DOS global cleanup 假設成已完成。這個
 「VM decoded request → persistent roster adapter」是其他 Golden Box 作品可重用的接點。
+
+selected-player identity 不只供 UI 顯示：`FIND SPECIAL` 會立即查該角色的 active affect。
+因此 VM 的 selected index 必須和 memory／string／compare state 一樣可恢復；WHO pause
+前不能先猜角色，resume 後才提交 UI index，LOAD CHARACTER 無效 selector 也不能清掉
+上一個有效角色。作品 State 只需提供 active effect IDs，VM 負責 reference `=`／`<>` 分支。

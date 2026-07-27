@@ -162,6 +162,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.LoadCharacterRequests = append(aggregate.LoadCharacterRequests, result.LoadCharacterRequests...)
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
 		aggregate.FindItemRequests = append(aggregate.FindItemRequests, result.FindItemRequests...)
+		aggregate.FindSpecialRequests = append(aggregate.FindSpecialRequests, result.FindSpecialRequests...)
 		aggregate.DestroyItemIDs = append(aggregate.DestroyItemIDs, result.DestroyItemIDs...)
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)

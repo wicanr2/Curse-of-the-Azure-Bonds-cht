@@ -933,3 +933,10 @@ boundary。新增 READY spec、command knowledge 與可跨 Golden Box 重用的 
 `DESTROY ITEMS` 也會更新 working inventory view，後續查詢不再看到已毀 type；persistent
 roster mutation仍由 State 負責。新增 found／not-found／find-destroy-find regressions、
 READY spec、README 與共用 Golden Box ECL knowledge，並移除舊「尚未設定 compare」斷言。
+
+第二百七十二輪 ECL selected-affect 里程碑：確認 opcode `0x3F` 是 `FIND SPECIAL`、
+`0x3D` 是 CLEAR BOX；新增 `RuntimeState.SelectedPlayerIndex/Set`，讓 LOAD CHARACTER 的
+1-based selector 與 WHO 的 0-based UI selection 更新同一份可恢復 selected identity。
+`FIND SPECIAL` 現在查 selected member 的 active effects、回傳 resolved request 並設定
+`=`／`<>`。新增 LOAD CHARACTER branch 與 WHO pause/resume 第二角色 regressions、READY
+spec、README、State／command knowledge；缺 context 或尚未選角仍維持 unresolved。

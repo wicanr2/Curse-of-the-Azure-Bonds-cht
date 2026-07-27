@@ -378,3 +378,4 @@
 - [x] 依 `ovr003.CMD_LoadCharacter` 解碼 ECL `LOAD CHARACTER` 的 1-based selector／bit-7 flag，接回 State persistent roster 的 selected player；完整 external string／party-summary side effects 仍待反組譯。
 - [x] 依 `vm_CopyStringFromMemory` 將 selected player name 投影到 resumable ECL `0x7C00` string slot，讓 `LOAD CHARACTER → COMPARE/IF` 姓名分支可執行；其他 DOS memory-string regions 仍待驗證。
 - [x] 依 `CMD_FindItem` 將全隊 raw item type 投影到 ECL party context，設定 `=`／`<>` compare flags，並讓同-run `DESTROY ITEMS` 更新 working query view。
+- [x] 依 `CMD_FindSpecial` 保存 resumable selected-player index，讓 LOAD CHARACTER／WHO 後續查 selected member active affect 並設定 `=`／`<>` compare flags。

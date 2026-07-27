@@ -451,6 +451,52 @@ func TestRunSubsetDestroyItemsUpdatesWorkingInventoryQueries(t *testing.T) {
 	}
 }
 
+func TestRunSubsetFindSpecialUsesLoadCharacterSelection(t *testing.T) {
+	block := []byte{0, 0,
+		0x0A, 0x02, 0x01, 0x00,
+		0x3F, 0x00, 0x27,
+		0x16,
+		0x01, 0x02, 0x13, 0x80,
+		0x11, 0x80, 0x03, 0x38, 0xF0, 0x00,
+		0x00,
+		0x11, 0x80, 0x03, 0x64, 0x54, 0xC0,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 20, nil, 1, PartyContext{
+		Members: []PartyMemberContext{{Effects: []uint8{0x27}}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "YES" || len(result.FindSpecialRequests) != 1 || !result.FindSpecialRequests[0].Resolved || !result.FindSpecialRequests[0].Found || result.FindSpecialRequests[0].SelectedPlayerIndex != 0 {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
+func TestRunSubsetFindSpecialUsesWhoSelectionAfterResume(t *testing.T) {
+	block := []byte{0, 0,
+		0x39, 0x00, 0x00,
+		0x3F, 0x00, 0x27,
+		0x00,
+	}
+	context := PartyContext{Members: []PartyMemberContext{{}, {Effects: []uint8{0x27}}}}
+	runtime := NewRuntimeState(0)
+	paused, err := runSubsetWithStateContextAndWhoSelections(block, 0, 10, nil, nil, true, 1, runtime, &context)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !paused.WaitingForWho || runtime.PC != 0 {
+		t.Fatalf("paused=%+v runtime=%+v", paused, runtime)
+	}
+	result, err := runSubsetWithStateContextAndWhoSelections(block, 0, 10, nil, []uint16{1}, true, 1, runtime, &context)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.WaitingForWho || len(result.FindSpecialRequests) != 1 || !result.FindSpecialRequests[0].Found || result.FindSpecialRequests[0].SelectedPlayerIndex != 1 {
+		t.Fatalf("result=%+v", result)
+	}
+}
+
 func TestRunSubsetRecordsDestroyItemRequestAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x40, 0x00, 0x5E,

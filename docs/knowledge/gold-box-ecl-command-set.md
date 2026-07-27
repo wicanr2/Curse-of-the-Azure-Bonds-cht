@@ -118,6 +118,12 @@ flag。共用 VM 會同時保存 raw word address 與 `LoadCharacterRequest`；C
 `RuntimeState.Strings[0x7C00]`；後續 `0x81` `COMPARE`／`PRINT` 可使用該姓名。這不代表
 `0x4B00`、`0x7A00`、`0x8000` 等其他 DOS memory regions 已完成。
 
+`FIND SPECIAL (0x3F)` 查的是目前 `SelectedPlayer` 的 active affect，不是全隊 affect
+query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共用 `RuntimeState`
+保存 selected-player index，讓 `LOAD CHARACTER` 與 WHO selection 都能餵給後續
+`FIND SPECIAL`，並跨 pause／shared BlockSession 保留；有 context 時設定 `=`／`<>`，
+缺 context 或未選角時維持 unresolved request。
+
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
 的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party
