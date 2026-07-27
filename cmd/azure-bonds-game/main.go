@@ -36,6 +36,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
 )
 
 const (
@@ -73,6 +74,7 @@ type app struct {
 	animationStart   time.Time
 	messageSnapshot  string
 	messageStart     time.Time
+	soundPlayer      *sound.Player
 }
 
 type combatAnimation struct {
@@ -93,6 +95,12 @@ func (a *app) combatAction(action func() error) error {
 		a.state.ReportCombatError(err)
 	}
 	return nil
+}
+
+func (a *app) playSound(id sound.ID) {
+	if a.soundPlayer != nil {
+		a.soundPlayer.Play(id)
+	}
 }
 
 func (a *app) Update() error {
@@ -283,6 +291,7 @@ func (a *app) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		switch a.state.Mode {
 		case game.ModeTitle:
+			a.playSound(sound.Start)
 			return a.state.Apply(game.ActionStart)
 		case game.ModeWilderness:
 			err := a.state.Select(a.choiceCursor)
@@ -395,16 +404,32 @@ func (a *app) Update() error {
 			return a.state.LeaveMap()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-			return a.state.Move(0, -1)
+			err := a.state.Move(0, -1)
+			if err == nil {
+				a.playSound(sound.Step)
+			}
+			return err
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-			return a.state.Move(0, 1)
+			err := a.state.Move(0, 1)
+			if err == nil {
+				a.playSound(sound.Step)
+			}
+			return err
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-			return a.state.Move(-1, 0)
+			err := a.state.Move(-1, 0)
+			if err == nil {
+				a.playSound(sound.Step)
+			}
+			return err
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-			return a.state.Move(1, 0)
+			err := a.state.Move(1, 0)
+			if err == nil {
+				a.playSound(sound.Step)
+			}
+			return err
 		}
 	}
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
@@ -478,6 +503,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
 	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
 	a.refreshDungeonPreview()
+	a.playSound(sound.Step)
 }
 
 func (a *app) updateDungeonDoorMenu() {
@@ -1164,6 +1190,7 @@ func main() {
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
+	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	dosCharacterID := flag.String("dos-character-id", "dos-character", "ID for a direct DOS character import")
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
@@ -1201,6 +1228,10 @@ func main() {
 		log.Fatal(err)
 	}
 	state.SetMonsterRecords(monsterRecords)
+	soundPlayer, soundErr := sound.Load(*soundDir)
+	if soundErr != nil {
+		log.Printf("sound disabled: %v", soundErr)
+	}
 	if *partyLoadPath != "" {
 		if *dosCharacterRecord != "" {
 			log.Fatal("-party-load and -dos-character-record cannot be used together")
@@ -1261,7 +1292,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: state.DungeonX, dungeonY: state.DungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
