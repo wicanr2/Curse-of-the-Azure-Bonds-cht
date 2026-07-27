@@ -1032,12 +1032,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.Side == combat.SideParty {
 			tile := combat.FormationTile(fighter.Side, partyIndex)
-			if fighter.HasCombatPosition || fighter.DeathOverlay {
+			if fighter.HasCombatPosition || fighter.DeathOverlay || fighter.DownedCorpse {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
 			tile = camera.Apply(tile)
 			x, y := 28+tile.X*48, 108+tile.Y*56
-			a.drawFighterSprite(screen, fighter, partyIndex, x, y)
+			if !fighter.DownedCorpse {
+				a.drawFighterSprite(screen, fighter, partyIndex, x, y)
+			}
 			a.drawFighterDeathOverlay(screen, fighter, x, y)
 			prefix := "  "
 			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID || (a.state.CombatCastingSpell() == game.ProtectionFromGoodSpellID && !a.state.CombatSpellTargetsEnemy())) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
@@ -1049,12 +1051,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			continue
 		}
 		tile := combat.FormationTile(fighter.Side, enemyIndex)
-		if fighter.HasCombatPosition || fighter.DeathOverlay {
+		if fighter.HasCombatPosition || fighter.DeathOverlay || fighter.DownedCorpse {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
 		tile = camera.Apply(tile)
 		x, y := 28+tile.X*48, 108+tile.Y*56
-		a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
+		if !fighter.DownedCorpse {
+			a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
+		}
 		a.drawFighterDeathOverlay(screen, fighter, x, y)
 		prefix := "  "
 		if (a.state.CombatCastingSpell() == 0 || a.state.CombatSpellTargetsEnemy()) && len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
@@ -1106,7 +1110,12 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 // (attack becomes 0x8B) and combat_icons[25] to COMSPR block 0x19 (normal).
 // CombatantKilled alternates those two icons while flashing the skull.
 func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fighter, x, y int) {
-	if !fighter.DeathOverlay {
+	if !fighter.DeathOverlay && !fighter.DownedCorpse {
+		return
+	}
+	if fighter.DownedCorpse && !fighter.DeathOverlay {
+		ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 58, G: 38, B: 28, A: 220})
+		text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 		return
 	}
 	iconKey := "comspr-block-19-item-00.png"

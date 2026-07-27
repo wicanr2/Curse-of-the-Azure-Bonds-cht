@@ -300,7 +300,7 @@ func (s *State) CombatCanCastCureLightWounds() bool {
 		return false
 	}
 	wounded := false
-	for _, fighter := range s.livingBySide(combat.SideParty) {
+	for _, fighter := range s.combatHealingTargets() {
 		if fighter.HitPoints < fighter.MaxHitPoints {
 			wounded = true
 			break
@@ -436,7 +436,7 @@ func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
 func (s *State) CombatSpellTargets() []combat.Fighter {
 	switch s.combatCastingSpell {
 	case CureLightWoundsSpellID:
-		return s.livingBySide(combat.SideParty)
+		return s.combatHealingTargets()
 	case MagicMissileSpellID:
 		if s.combatSpellIsProtectionFromGood() {
 			caster, ok := s.combatPartyTurn()
@@ -463,6 +463,34 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 	default:
 		return nil
 	}
+}
+
+// combatHealingTargets mirrors the reference heal_player target boundary:
+// wounded living party members and downed unconscious/dying/animated party
+// members are legal; dead characters are not. A downed target stays out of
+// combat placement until an explicit combat-heal/placement operation.
+func (s *State) combatHealingTargets() []combat.Fighter {
+	if s.battle == nil {
+		return nil
+	}
+	targets := make([]combat.Fighter, 0)
+	for _, fighter := range s.battle.Fighters() {
+		if fighter.Side != combat.SideParty || fighter.HitPoints >= fighter.MaxHitPoints {
+			continue
+		}
+		status := party.HealthStatusOK
+		for _, character := range s.partyRoster {
+			if character.ID == fighter.ID {
+				status = character.HealthStatus
+				break
+			}
+		}
+		if status == party.HealthStatusDead {
+			continue
+		}
+		targets = append(targets, fighter)
+	}
+	return targets
 }
 
 // CombatSpellTargetsEnemy distinguishes the class-specific spell ID 7:
@@ -553,7 +581,7 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
-	targets := s.livingBySide(combat.SideParty)
+	targets := s.combatHealingTargets()
 	s.combatSpellTargetIndex = 0
 	for index, target := range targets {
 		if target.HitPoints < target.MaxHitPoints {
@@ -1058,7 +1086,7 @@ func (s *State) combatCastCureLightWounds() error {
 	if spellIndex < 0 {
 		return fmt.Errorf("caster %q has no memorized Cure Light Wounds", caster.ID)
 	}
-	targets := s.livingBySide(combat.SideParty)
+	targets := s.combatHealingTargets()
 	targetIndex := s.combatSpellTargetIndex
 	if s.combatCastingSpell == 0 {
 		targetIndex = -1
@@ -1078,6 +1106,16 @@ func (s *State) combatCastCureLightWounds() error {
 	if err != nil {
 		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, CureLightWoundsSpellID)
 		return err
+	}
+	for index := range s.partyRoster {
+		if s.partyRoster[index].ID == target.ID {
+			s.partyRoster[index].HitPoints = result.TargetHP
+		}
+	}
+	for index := range s.party {
+		if s.party[index].ID == target.ID {
+			s.party[index].HitPoints = result.TargetHP
+		}
 	}
 	s.CancelCombatCast()
 	s.requestSound(SoundMagicHit)
