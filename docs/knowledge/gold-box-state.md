@@ -386,6 +386,20 @@ selectors `0x1C–0x20` 證實常見的一次性房間模板可跨 Gold Box 作�
 - `CombatRequested && len(MonsterSpawns)==0`：引擎服務 boundary，可立即解析財寶。
 
 戰後敘事也可能跨多次 PICTURE／Continue 才 `NEWECL`；因此 pending reward 的
-ownership 應跟著 ECL session，而不是跟著單一 renderer 畫面。火刀首領線另證實
+ownership 應跟著 ECL session，而不是跟著單一 renderer 畫面。實作上在勝利後
+解析 reward，loot menu 關閉時再 resume 保存的 ECL engine boundary；不可先
+resume 多段故事、期待任意後續 EXIT 恰好撿回 pending loot。火刀首領線另證實
 劇情旗標有嚴格時序：`4CFF`（解除火刀枷印）→ `4C2A`（皇家事件）→ 四段夢境 →
 `7F12`（跨章 bond progression），不可在戰鬥結束瞬間一次寫完。
+
+#### World destination state
+
+ECL1 block `0x50` 的 route selection 以 `4C9C` 保存目的地，world dispatcher
+再將它寫入 `4C9B`（current location）與 `4CA1`。State 不可依「新遊戲時第四個
+selection」硬編碼城市；章節 continuation 已累積許多 Continue/menu choices。
+可重用 adapter 應優先讀 dispatcher bytes：CoAB 的 `1/2/3` 分別投影為
+Shadowdale/Ashabenford/Dagger Falls，再以舊 sequence 僅作 synthetic fallback。
+
+loot 選擇「暫不收下」代表離開剩餘物品，必須清掉 pending item list；否則下一個
+沒有 TREASURE 的 encounter 勝利時仍會誤開上一戰 loot。火刀首領→Tilver's Gap
+端到端流程已用這個跨戰鬥 regression 鎖定 ownership。

@@ -10,6 +10,12 @@ treasure packet 現依 monster spawns 判成遭遇獎勵，只有勝利後才解
 Gold Box state knowledge。畫面契約維持 640×480、原圖整數 nearest-neighbour、
 24px 繁中（緊湊欄位 16×15）。
 
+後續已延伸至阿沙本福德：修正 encounter loot 的 ECL continuation ownership、
+略過財寶後清除剩餘物，避免在下一場戰鬥重現；戰後 State 可走完 BIGPIC 121、
+Tilverton 禁止入城、JOURNEY ON→ASHABENFORD→TRAIL、提爾隘口八隻鷹馬戰，
+最後以 `4C83=1`、`4C9B=2`、`4CA1=2` 落在 LocationAshabenford。圖片關閉時
+仍會保留原始 Continue menu，不會截斷多段 ECL 劇情。
+
 ## 目前輪次
 
 第一百五十九輪：State LOAD PIECES request。

@@ -457,3 +457,6 @@
 - [x] 反組並接通 ECL2 block 4 terrain `0x87` 火刀首領線：PICTURE 12、手札 11、
   20+1 正式遭遇、勝利後 17,000 GP／寶石／珠寶／兩件隨機物品，以及手札
   54／53、`4CFF`／`4C2A` 與四段 bond 主人夢境 continuation。
+- [x] 接續第一枚枷印解除後的正式世界流程：NEWECL `0x50`／BIGPIC 121、
+  提爾佛頓禁止入城、JOURNEY ON→阿沙本福德→TRAIL、提爾隘口八隻鷹馬戰，
+  並依 `4C9B/4C9C` 同步 LocationAshabenford。

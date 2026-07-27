@@ -13,7 +13,8 @@ Continue 後建立 20 名 MON2 record 1 與 1 名 record 3；兩組 `PartyMask=0
 4 jewelry、`ItemBlock=0x82`。這是遭遇戰勝利獎勵，不是
 `CLEARMONSTERS → TREASURE → COMBAT` 的 treasure-service；State 只有在實際
 monster spawns 為空時才可提前開 loot UI。依既有換算，勝利後入池 17,000 GP
-與兩件隨機物品。
+與兩件隨機物品。loot UI 結束後才 resume 同一 ECL combat boundary，確保後續
+手札、夢境及章節切換不被財寶選單截斷。
 
 ## 戰後 continuation
 
@@ -34,4 +35,5 @@ monster spawns 為空時才可提前開 loot UI。依既有換算，勝利後入
 - real ECL regression 鎖定 monster descriptors、treasure packet、兩本戰後手札、
   PICTURE 13、BIGPIC 120，以及 `4CFF`／`4C2A`。
 - State regression 鎖定遭遇獎勵戰前不可取得、勝利後才得到 17,000 GP、8 gems、
-  4 jewelry 與兩件隨機物品。
+  4 jewelry 與兩件隨機物品，並從 loot 一路走完 `NEWECL 0x50`、恢復
+  Tilverton 的 `ENTER CITY／JOURNEY ON／CAMP` 選單。

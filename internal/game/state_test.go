@@ -1660,6 +1660,28 @@ func TestCombatResultContinuationRestoresWildernessMenu(t *testing.T) {
 	}
 }
 
+func TestSuppressedECLPictureStillPresentsContinuationMenu(t *testing.T) {
+	state := NewState(testCatalog())
+	state.picturesEnabled = false
+	result := ecl.RunResult{
+		PictureRequested: true,
+		PictureBlock:     14,
+		WaitingForMenu:   true,
+		Menus: []ecl.Menu{{
+			Options: []string{"PRESS BUTTON OR RETURN TO CONTINUE."},
+		}},
+	}
+	handled, err := state.continueAfterSuppressedPicture(result)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !handled || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("suppressed picture continuation handled=%v mode=%v choices=%#v",
+			handled, state.Mode, state.currentOriginalChoices)
+	}
+}
+
 func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{

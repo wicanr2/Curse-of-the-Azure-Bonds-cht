@@ -2,9 +2,11 @@ package game
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
@@ -91,6 +93,7 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		return err
 	}
 	for index := range enemies {
+		enemies[index].Name = localizeMonsterName(s.catalog, enemies[index].Name)
 		enemies[index].SpriteSet = s.Area.GameArea
 		if result.MonsterSetup != nil {
 			enemies[index].AnimationBlock = result.MonsterSetup.SpriteID
@@ -106,6 +109,15 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		index++
 	}
 	return s.StartCombat(party, enemies, seed)
+}
+
+func localizeMonsterName(catalog locale.Catalog, name string) string {
+	switch strings.TrimSpace(strings.ToUpper(name)) {
+	case "HIPPOGRIFF":
+		return catalog.Text("monster_hippogriff", "鷹馬")
+	default:
+		return name
+	}
 }
 
 func applyCombatTeamWrites(spawns []ecl.MonsterSpawn, writes []ecl.CombatTeamWrite, partyCount int) {
@@ -1424,18 +1436,19 @@ func (s *State) finishCombat() error {
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
 	s.Message = s.combatMessage
 	if s.battle.Status() == combat.StatusPartyWon {
-		if continued, err := s.continueECLAfterEngineBoundary(); err != nil {
-			return err
-		} else if continued {
-			return nil
-		}
 		if len(s.pendingTreasure) > 0 {
 			if err := s.ResolveTreasureRequests(); err != nil {
 				return err
 			}
 		}
 		if len(s.pendingTreasureItems) > 0 {
+			s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
 			s.enterTreasureMenu()
+			return nil
+		}
+		if continued, err := s.continueECLAfterEngineBoundary(); err != nil {
+			return err
+		} else if continued {
 			return nil
 		}
 	}
@@ -1505,6 +1518,15 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	}
 
 	if result.PictureRequested {
+		if !s.picturesEnabled {
+			s.PictureRequested = false
+			s.PictureBlock = result.PictureBlock
+			s.OriginalEvent = "PICTURE"
+			if handled, handleErr := s.continueAfterSuppressedPicture(result); handled || handleErr != nil {
+				return handled, handleErr
+			}
+			return true, nil
+		}
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
 		s.BigPictureRequested = result.BigPictureRequested
