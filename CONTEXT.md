@@ -695,3 +695,10 @@ CombatX/Y 清除 `DownedCorpse`、恢復 `HasCombatPosition`；普通 Cure Light
 並讓 corpse 留在原地。新增 Battle／State placement regressions，更新 ECL／State spec、
 README、PLAN 與 Gold Box knowledge。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
 `internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百二十九輪重大里程碑 commit：`1041099`，建立 renderer-neutral
+`combat.DeathOverlayFrame`：以 100ms cadence 交替 `COMSPR 0x8B`／`0x19` 九次後結束
+flash。Ebiten 保存每個 fighter 的 flash start time；party 隨後顯示 `DownedCorpse`，enemy
+停止繪製死亡小人，治療時清理 lifecycle state。新增 9-cycle core regression，更新 Death／
+graphics／README／PLAN 知識庫。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
+`internal/party`、`internal/ecl`、`internal/locale`。
