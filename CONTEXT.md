@@ -497,3 +497,5 @@
 第一百九十六輪功能 commit：`35fffaa`，新增 `SmokeInitializationEntries` 與 `cmd/azure-bonds -entry-smoke`，逐一 bounded 執行 ECL1–ECL6 全部 block 的五個 initialization entries；實際 image smoke run 已記錄 menu／COMBAT／monster spawn／unsupported opcode per entry，並新增 READY 規格與 ECL knowledge。
 
 第一百九十七輪功能 commit：`d1327af`，以真實 ECL2 block 3 entry 3 與 `MON2CHA.DAX` 建立 playable Battle regression；修正 `MON*CHA` 50..60 packed ArmorClass 的 `60-raw` adapter，並新增 `-encounter-monster-member` 支援跨章節 direct encounter。ECL2 direct entry 已於 Docker 通過，正常玩家流程仍待完整 ECL continuation。
+
+第一百九十八輪功能 commit：`860f7c4`，遊戲啟動載入 `MON1CHA`–`MON6CHA`，State 依 ECL global block namespace 選擇 chapter-local monster table；新增 ECL2 chapter selection regression。`go test ./internal/game ./internal/monster ./internal/ecl` 已於 Docker 通過。
