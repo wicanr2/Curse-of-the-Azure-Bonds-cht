@@ -12,7 +12,7 @@
 
 ## 保留邊界
 
-`TREASURE` operand `>= 0x80` 的 random item generation、完整原版 item selection UI、item name-number localization 與所有 loot event 的實際劇情入口仍待接入；`0xFF` no-item branch 已支援。
+完整原版 item selection UI、item name-number localization 與所有 loot event 的實際劇情入口仍待接入；`0xFF` no-item branch 已支援，random branch 已在後續第 257 輪接入。
 
 ## 回歸
 

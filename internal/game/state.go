@@ -162,6 +162,9 @@ type State struct {
 	pendingTreasure        []ecl.TreasureRequest
 	treasureItemBlocks     map[uint16][]monster.ItemRecord
 	pendingTreasureItems   []monster.ItemRecord
+	treasureMenu           bool
+	treasureTakeMenu       bool
+	treasureItemIndex      int
 	shopMenu               bool
 	shopOffers             []ShopOffer
 	moneyPool              uint32
@@ -663,6 +666,9 @@ func (s *State) Select(index int) error {
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
 	}
+	if s.treasureMenu {
+		return s.selectTreasure(index, originalChoice)
+	}
 	if s.parlayMenu {
 		return s.selectParlay(index, originalChoice)
 	}
@@ -725,6 +731,17 @@ func (s *State) Select(index int) error {
 		}
 		s.applyECLInventorySignals(result)
 		s.applyECLTreasureSignals(result)
+		if len(result.TreasureRequests) > 0 {
+			if err := s.ResolveTreasureRequests(); err != nil {
+				// A headless/test adapter may not have loaded ITEM*.DAX yet.
+				// Keep the raw request pending and let the ECL control flow reach
+				// its next command (including COMBAT) instead of aborting it.
+				s.Message = "財寶等待素材載入：" + err.Error()
+			} else if len(s.pendingTreasureItems) > 0 {
+				s.enterTreasureMenu()
+				return nil
+			}
+		}
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.Message = localizeECLText(s.catalog, result.Text)
@@ -817,6 +834,84 @@ func (s *State) enterParlayMenu() {
 	}
 	s.currentOriginalChoices = []string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}
 	s.Message = ""
+}
+
+func (s *State) enterTreasureMenu() {
+	s.treasureMenu = true
+	s.treasureTakeMenu = false
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("treasure_prompt", "選擇要收下的財寶")
+	s.Choices = make([]string, 0, len(s.pendingTreasureItems)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.pendingTreasureItems)+1)
+	for index, item := range s.pendingTreasureItems {
+		s.Choices = append(s.Choices, monster.ChineseName(item))
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_ITEM_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("treasure_exit", "暫不收下／繼續"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_EXIT")
+	s.Message = s.catalog.Text("treasure_ready", "發現財寶。")
+}
+
+func (s *State) enterTreasureTakeMenu() {
+	s.treasureTakeMenu = true
+	s.Mode = ModeWilderness
+	s.Prompt = s.catalog.Text("treasure_take_prompt", "選擇由哪位角色收下")
+	s.Choices = make([]string, 0, len(s.partyRoster)+1)
+	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
+	for index, character := range s.partyRoster {
+		s.Choices = append(s.Choices, character.Name)
+		s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_CHARACTER_"+strconv.Itoa(index))
+	}
+	s.Choices = append(s.Choices, s.catalog.Text("treasure_cancel", "返回財寶列表"))
+	s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_CANCEL")
+}
+
+func (s *State) selectTreasure(index int, originalChoice string) error {
+	if s.treasureTakeMenu {
+		if originalChoice == "TREASURE_CANCEL" {
+			s.enterTreasureMenu()
+			return nil
+		}
+		if !strings.HasPrefix(originalChoice, "TREASURE_CHARACTER_") {
+			return fmt.Errorf("invalid treasure character command %q", originalChoice)
+		}
+		characterIndex, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "TREASURE_CHARACTER_"))
+		if err != nil {
+			return fmt.Errorf("invalid treasure character command %q", originalChoice)
+		}
+		if err := s.TakeTreasureItem(characterIndex, s.treasureItemIndex); err != nil {
+			return err
+		}
+		if len(s.pendingTreasureItems) > 0 {
+			s.enterTreasureMenu()
+			return nil
+		}
+		s.treasureMenu = false
+		s.treasureTakeMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.OriginalEvent = "TREASURE"
+		s.Message = s.catalog.Text("treasure_taken", "財寶已加入隊伍裝備。")
+		return nil
+	}
+	if originalChoice == "TREASURE_EXIT" {
+		s.treasureMenu = false
+		s.Mode = ModeEvent
+		s.eventReturnMode = ModeWilderness
+		s.OriginalEvent = "TREASURE"
+		s.Message = s.catalog.Text("treasure_skipped", "隊伍繼續前進，未收下剩餘財寶。")
+		return nil
+	}
+	if !strings.HasPrefix(originalChoice, "TREASURE_ITEM_") {
+		return fmt.Errorf("invalid treasure item command %q", originalChoice)
+	}
+	itemIndex, err := strconv.Atoi(strings.TrimPrefix(originalChoice, "TREASURE_ITEM_"))
+	if err != nil || itemIndex < 0 || itemIndex >= len(s.pendingTreasureItems) {
+		return fmt.Errorf("invalid treasure item index %q", originalChoice)
+	}
+	s.treasureItemIndex = itemIndex
+	s.enterTreasureTakeMenu()
+	return nil
 }
 
 func (s *State) selectParlay(index int, originalChoice string) error {
@@ -979,6 +1074,7 @@ func (s *State) ResolveTreasureRequests() error {
 		items         []monster.ItemRecord
 	}
 	var total resolved
+	rng := rand.New(rand.NewSource(s.eclSeed))
 	for _, request := range s.pendingTreasure {
 		copper := uint64(request.Coins[0]) + uint64(request.Coins[1])*10 + uint64(request.Coins[2])*100 + uint64(request.Coins[3])*200 + uint64(request.Coins[4])*1000
 		total.gold += uint32(copper / 200)
@@ -988,7 +1084,13 @@ func (s *State) ResolveTreasureRequests() error {
 			continue
 		}
 		if request.ItemBlock >= 0x80 {
-			return fmt.Errorf("TREASURE random item block 0x%02X is not implemented", request.ItemBlock)
+			if request.ItemBlock == 0xFF {
+				continue
+			}
+			for count := 0; count < int(request.ItemBlock-0x80); count++ {
+				total.items = append(total.items, monster.ItemRecord{Type: randomTreasureItemType(rng), Count: 1})
+			}
+			continue
 		}
 		key := uint16(s.Area.GameArea)<<8 | request.ItemBlock
 		items, ok := s.treasureItemBlocks[key]
@@ -1006,6 +1108,60 @@ func (s *State) ResolveTreasureRequests() error {
 	s.pendingTreasureItems = append(s.pendingTreasureItems, total.items...)
 	s.pendingTreasure = nil
 	return nil
+}
+
+// randomTreasureItemType mirrors the reference CMD_Treasure d100 table. The
+// caller owns the seeded stream; this helper only returns the raw item type.
+func randomTreasureItemType(rng *rand.Rand) uint8 {
+	roll := rng.Intn(100) + 1
+	if roll <= 60 {
+		itemRoll := rng.Intn(100) + 1
+		if itemRoll <= 47 || (itemRoll >= 50 && itemRoll <= 59) {
+			if itemRoll == 45 {
+				return 59
+			}
+			return uint8(itemRoll)
+		}
+		if itemRoll <= 90 {
+			swordRoll := rng.Intn(10) + 1
+			switch {
+			case swordRoll <= 4:
+				return 36
+			case swordRoll <= 7:
+				return 35
+			case swordRoll == 8:
+				return 34
+			case swordRoll == 9:
+				return 37
+			default:
+				return 38
+			}
+		}
+		if itemRoll <= 94 {
+			return 73
+		}
+		if itemRoll <= 97 {
+			return 93
+		}
+		return 77
+	}
+	if roll <= 0x55 {
+		return 61
+	}
+	if roll <= 0x5C {
+		return 62
+	}
+	if roll <= 0x62 {
+		potionRoll := rng.Intn(15) + 1
+		if potionRoll <= 9 {
+			return 71
+		}
+		if potionRoll == 10 {
+			return 84
+		}
+		return 79
+	}
+	return 59
 }
 
 // TakeTreasureItem assigns one queued loot record to a selected character.
