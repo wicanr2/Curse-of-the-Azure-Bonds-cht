@@ -15,6 +15,8 @@ const (
 	DOSMemorizedSpellsEnd    = 0x072 // exclusive; last documented byte is 0x071
 	DOSKnownSpellsOffset     = 0x079
 	DOSKnownSpellsEnd        = 0x0DD // exclusive; last documented byte is 0x0DC
+	DOSSavingThrowsOffset    = 0x0DF
+	DOSSavingThrowsEnd       = 0x0E4 // exclusive; five saveVerse bytes
 	DOSThiefSkillsOffset     = 0x0EA
 	DOSThiefSkillsEnd        = 0x0F2 // exclusive; open-locks is index 1
 	DOSPlayerRecordSize      = 0x1A6 // last documented byte is current movement at 0x1A5
@@ -79,6 +81,10 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 		out[i] = 0
 	}
 	copy(out[DOSThiefSkillsOffset:DOSThiefSkillsEnd], character.ThiefSkills)
+	if len(character.SavingThrows) > DOSSavingThrowsEnd-DOSSavingThrowsOffset {
+		return nil, fmt.Errorf("DOS saving throw count exceeds %d", DOSSavingThrowsEnd-DOSSavingThrowsOffset)
+	}
+	copy(out[DOSSavingThrowsOffset:DOSSavingThrowsEnd], character.SavingThrows)
 	return out, nil
 }
 
@@ -116,6 +122,7 @@ type DOSPlayerRecord struct {
 	ItemsPointer     uint32
 	EffectsPointer   uint32
 	ThiefSkills      []uint8
+	SavingThrows     []uint8
 	Inventory        []monster.ItemRecord
 	Effects          []monster.AffectRecord
 }
@@ -197,6 +204,7 @@ func ParseDOSPlayerRecord(data []byte, id string) (DOSPlayerRecord, error) {
 		ItemsPointer:    binary.LittleEndian.Uint32(data[0x14D:0x151]),
 		EffectsPointer:  binary.LittleEndian.Uint32(data[0x0F2:0x0F6]),
 		ThiefSkills:     append([]uint8(nil), data[DOSThiefSkillsOffset:DOSThiefSkillsEnd]...),
+		SavingThrows:    append([]uint8(nil), data[DOSSavingThrowsOffset:DOSSavingThrowsEnd]...),
 		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 	}, nil
 }
@@ -210,11 +218,12 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		Level: r.Level, HitPoints: r.CurrentHitPoints, MaxHitPoints: r.MaxHitPoints,
 		Gold: r.Gold, Gems: r.Gems, Jewelry: r.Jewelry,
 		IconHeadBlock: r.IconHead, IconWeaponBlock: r.IconWeapon, IconID: r.IconID, IconSize: r.IconSize,
-		Equipment:   append([]monster.ItemRecord(nil), r.Inventory...),
-		Effects:     append([]monster.AffectRecord(nil), r.Effects...),
-		SpellSlots:  append([]uint8(nil), r.MemorizedSpells...),
-		KnownSpells: append([]uint8(nil), r.KnownSpells...),
-		ThiefSkills: append([]uint8(nil), r.ThiefSkills...),
+		Equipment:    append([]monster.ItemRecord(nil), r.Inventory...),
+		Effects:      append([]monster.AffectRecord(nil), r.Effects...),
+		SpellSlots:   append([]uint8(nil), r.MemorizedSpells...),
+		KnownSpells:  append([]uint8(nil), r.KnownSpells...),
+		ThiefSkills:  append([]uint8(nil), r.ThiefSkills...),
+		SavingThrows: append([]uint8(nil), r.SavingThrows...),
 	}
 	if err := character.Validate(); err != nil {
 		return Character{}, err

@@ -506,6 +506,31 @@ func TestECLDamageSignalsTransferToStateOnce(t *testing.T) {
 	}
 }
 
+func TestResolvePendingECLDamageWritesRosterAndFighterHP(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "first", HitPoints: 10, SavingThrows: []uint8{12, 12, 12, 12, 12}},
+		{ID: "second", HitPoints: 10, SavingThrows: []uint8{12, 12, 12, 12, 12}},
+	}
+	state.party = []combat.Fighter{
+		{ID: "first", HitPoints: 10, MaxHitPoints: 10},
+		{ID: "second", HitPoints: 10, MaxHitPoints: 10},
+	}
+	state.applyECLDamageSignals(ecl.RunResult{DamageRequests: []ecl.DamageRequest{{
+		Flags: 0x80, DiceCount: 1, DiceSize: 6, Bonus: 1, SaveFlags: 0x81,
+	}}})
+	outcomes, err := state.ResolvePendingECLDamage(1, func(int) int { return 4 }, func(int) int { return 1 })
+	if err != nil || len(outcomes) != 1 || outcomes[0].Applied != 5 {
+		t.Fatalf("outcomes=%#v err=%v", outcomes, err)
+	}
+	if state.partyRoster[0].HitPoints != 10 || state.partyRoster[1].HitPoints != 5 || state.party[1].HitPoints != 5 {
+		t.Fatalf("roster=%#v fighters=%#v", state.partyRoster, state.party)
+	}
+	if len(state.ConsumeDamageRequests()) != 0 {
+		t.Fatal("resolved damage request remained pending")
+	}
+}
+
 func TestECLSpellSignalsAreCapturedDuringSelection(t *testing.T) {
 	state := NewState(testCatalog())
 	state.eclBlock = append([]byte{0, 0}, []byte{

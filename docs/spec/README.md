@@ -206,3 +206,4 @@
 - [第二百零九輪 ECL inventory state adapter](./209-ecl-inventory-state-adapter.md)（`READY`：限 ECL5 verified destroy effect）
 - [第二百一十輪 ECL DAMAGE signal](./210-ecl-damage-signal.md)（`READY`：限五 operand raw signal 與 continuation）
 - [第二百一十一輪 ECL DAMAGE State queue](./211-ecl-damage-state-queue.md)（`READY`：限 State pending queue 與 exactly-once consume）
+- [第二百一十二輪 DOS saveVerse／ECL DAMAGE adapter](./212-dos-saveverse-ecl-damage.md)（`READY`：限 selected／whole-party branches）

@@ -878,6 +878,36 @@ func (s *State) ConsumeDamageRequests() []ecl.DamageRequest {
 	return requests
 }
 
+// ResolvePendingECLDamage applies pending requests transactionally through
+// the party adapter. The selected index and both dice functions are explicit
+// inputs because ECL memory does not yet expose a universal character picker.
+// Roster HP is synchronized to any renderer-facing fighter with the same ID.
+func (s *State) ResolvePendingECLDamage(selectedIndex int, rollDie, rollSave func(int) int) ([]party.DamageOutcome, error) {
+	if len(s.pendingDamageRequests) == 0 {
+		return nil, nil
+	}
+	working := append(party.Roster(nil), s.partyRoster...)
+	outcomes := make([]party.DamageOutcome, 0)
+	for _, request := range s.pendingDamageRequests {
+		resolved, err := working.ApplyECLDamage(request, selectedIndex, rollDie, rollSave)
+		if err != nil {
+			return nil, err
+		}
+		outcomes = append(outcomes, resolved...)
+	}
+	s.partyRoster = working
+	s.pendingDamageRequests = nil
+	for fighterIndex := range s.party {
+		for characterIndex := range s.partyRoster {
+			if s.party[fighterIndex].ID == s.partyRoster[characterIndex].ID {
+				s.party[fighterIndex].HitPoints = s.partyRoster[characterIndex].HitPoints
+				break
+			}
+		}
+	}
+	return outcomes, nil
+}
+
 // ConsumeProtectionRequests transfers pending ECL PROTECTION requests
 // exactly once. Address resolution remains the responsibility of the
 // work-specific party/runtime adapter.
