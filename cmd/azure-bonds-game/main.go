@@ -27,6 +27,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
@@ -143,6 +144,12 @@ func (a *app) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyE) {
 			a.state.TurnDungeon(2)
 			a.prepareWallPreview()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyP) {
+			a.tryDungeonPickLock()
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyK) {
+			a.tryDungeonKnock()
 		}
 		return nil
 	}
@@ -507,6 +514,44 @@ func (a *app) syncDungeonWallState() {
 	a.state.DungeonWallRoof = cell.Terrain
 }
 
+func (a *app) dungeonDoorFlags() (uint8, bool) {
+	if a.geoGrid == nil {
+		return 0, false
+	}
+	return a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection))
+}
+
+func (a *app) tryDungeonPickLock() {
+	flags, ok := a.dungeonDoorFlags()
+	if !ok || flags != 2 {
+		a.state.Message = "目前門面不可撬鎖（只有 detail 2 可撬鎖）"
+		return
+	}
+	result := a.state.PickDungeonLock()
+	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+		a.state.Message = "撬鎖成功，門已雙側解鎖"
+		a.refreshDungeonPreview()
+		return
+	}
+	a.state.Message = "撬鎖失敗，本次撬鎖機會已消耗"
+}
+
+func (a *app) tryDungeonKnock() {
+	flags, ok := a.dungeonDoorFlags()
+	if !ok || (flags != 2 && flags != 3) {
+		a.state.Message = "目前沒有可施放 Knock 的上鎖門面"
+		return
+	}
+	if !a.state.ConsumeDungeonKnockSpell() {
+		a.state.Message = fmt.Sprintf("沒有可用的 Knock（0x%02X）", dungeon.KnockSpellID)
+		return
+	}
+	if a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(a.state.DungeonDirection)) {
+		a.state.Message = "Knock 成功，門已雙側解鎖"
+		a.refreshDungeonPreview()
+	}
+}
+
 func (a *app) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
@@ -744,7 +789,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（方向鍵移動含 wrap／Q/E 轉向／D／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, "Dungeon floor composition（方向鍵移動／Q,E 轉向／P 撬鎖／K Knock／D 返回）", a.face, 24, 28, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
@@ -781,6 +826,9 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	text.Draw(screen, fmt.Sprintf("mapWallType=%02X　mapWallRoof=%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 262, white)
 	if a.state.DungeonWallType != 0 && doorFlagsOK {
 		text.Draw(screen, fmt.Sprintf("WallDoorFlags=%d（GEO x3 detail）", doorFlags), a.face, 24, 279, white)
+	}
+	if a.state.Message != "" {
+		text.Draw(screen, a.state.Message, a.face, 24, 296, white)
 	}
 	if a.pieceLabel != "" {
 		text.Draw(screen, a.pieceLabel, a.face, 24, 314, cyan)

@@ -223,6 +223,23 @@ func TestTurnDungeonUsesEightDirectionOrder(t *testing.T) {
 	}
 }
 
+func TestDungeonStateActionsUseRosterAndSeededRolls(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{HitPoints: 6, ThiefSkills: []uint8{0, 100}}}
+	state.SetDungeonSeed(42)
+	result := state.PickDungeonLock()
+	if !result.Attempted || !result.Opened || result.CharacterIndex != 0 {
+		t.Fatalf("pick result=%#v", result)
+	}
+	state.partyRoster[0].SpellSlots = []uint8{0x1F, 2}
+	if !state.ConsumeDungeonKnockSpell() {
+		t.Fatal("Knock slot should be consumed")
+	}
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 2 {
+		t.Fatalf("remaining spell slots=%#v", got)
+	}
+}
+
 func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{

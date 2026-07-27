@@ -449,3 +449,5 @@
 第一百七十二輪功能 commit：`a6a1622`，已推送至 GitHub `main`。依 reference `Player.thief_skills` 將 DOS record `0xEA–0xF1` 保存到 `DOSPlayerRecord`／`Character`／JSON，提供 `OpenLocksSkill()` index 1 adapter；新增 synthetic parser regression、READY 規格與共用 party/state knowledge。thief skill 重算、pick-lock dice、door menu、bash／knock 與完整 DOS save container 仍保留 boundary。
 
 第一百七十三輪功能 commit：`939b258`，已推送至 GitHub `main`。依 reference `pick_lock()`／`Spells.knock` 建立 `internal/dungeon` 的 injected d100 pick-lock resolver 與 Knock `0x1F` first-slot consume；新增逐位 roll、健康狀態、inclusive roll、失敗消耗嘗試與 spell removal regression、READY 規格與共用 dungeon knowledge。door mutation、完整 door menu、bash 與 thief skill 重算仍保留 boundary。
+
+第一百七十四輪功能 commit 待補：將 pick-lock／Knock 接入 Ebiten dungeon preview 的 P/K action adapter；P 只允許 detail 2，K 允許 detail 2/3，成功後呼叫 GEO 雙側 unlock，新增 seeded State action regression 與 READY 規格。完整 locked-door menu、bash、door graphics 與劇情 integration 仍保留 boundary。
