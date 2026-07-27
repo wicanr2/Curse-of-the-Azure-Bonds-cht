@@ -166,3 +166,16 @@ unconscious／dying corpse，普通治療只清除 skull flash、保留 corpse �
 `Battle.RestoreCombatant`，清除 `DownedCorpse` 並重新放回 position；普通 Cure 不會站起。
 renderer-neutral `DeathOverlayFrame` 現已覆蓋完整 9-cycle timing，Ebiten 九次後 party
 轉為 corpse marker、enemy 完全移除名稱／HP render；其他 Death routine 仍保留 boundary。
+
+## 地圖邊界與 ECL 轉場
+
+Gold Box 的「走出 16×16 地圖」不是一般座標 wrap。reference
+`ovr015.TryStepForward` 會保留邊界嘗試狀態，再由每步 entry 判斷作品劇情。CoAB
+ECL2 block 2 entry 0 以 work address `0x7ED5` 作 gate；成立後呼叫 `0xC01E`、
+調整 X，再執行 `NEWECL 3` 進入下水道。因此共用引擎應提供
+`boundary attempt → ECL work signal → normal lifecycle`，不可由 renderer 直接指定
+目的 block，也不可把所有地圖邊緣都無條件 wrap。
+
+ECL encounter 的 `PartyMask` 不代表永久加入隊伍。公會戰的四名 QuickFight THIEF
+是 temporary allies；戰鬥結束後必須從 active fighter projection 移除（包括屍體），
+否則下一場犬舍戰會污染隊伍人數與 `PARTYSTRENGTH`。

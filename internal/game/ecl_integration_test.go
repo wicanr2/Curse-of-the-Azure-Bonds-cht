@@ -910,6 +910,114 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if !foundJournal4 {
 		t.Fatalf("Journal Entry 4 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.SetDungeonGeometryView(11, 7, 0)
+	state.DungeonWallType, _ = grid.WallWrapped(11, 7, 0)
+	state.DungeonWallRoof = grid.CellWrapped(11, 7).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "抱著豎琴的半身人") {
+		t.Fatalf("guild halfling event mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.SetDungeonGeometryView(12, 7, 0)
+	state.DungeonWallType, _ = grid.WallWrapped(12, 7, 0)
+	state.DungeonWallRoof = grid.CellWrapped(12, 7).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "放出了犬群") {
+		t.Fatalf("guild kennel intro mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	}
+	hero = state.PartyFighters()[0]
+	hero.HitPoints, hero.MaxHitPoints = 2000, 2000
+	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("guild kennel combat mode=%v active=%v fighters=%v",
+			state.Mode, state.CombatActive(), state.CombatFighters())
+	}
+	kennelParty, kennelFireKnives, kennelDogs := 0, 0, 0
+	for _, fighter := range state.CombatFighters() {
+		switch {
+		case fighter.Side == combat.SideParty:
+			kennelParty++
+		case fighter.Name == "FIRE KNIFE":
+			kennelFireKnives++
+		case fighter.Name == "FIGHTING DOG":
+			kennelDogs++
+		}
+	}
+	if kennelParty != 1 || kennelFireKnives != 1 || kennelDogs < 8 {
+		t.Fatalf("guild kennel party/fire-knives/dogs=%d/%d/%d",
+			kennelParty, kennelFireKnives, kennelDogs)
+	}
+	for turn := 0; turn < 30 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
+		!strings.Contains(state.Message, "被啃咬的骨頭") {
+		t.Fatalf("guild kennel result mode=%v status=%v message=%q choices=%v",
+			state.Mode, state.CombatStatus(), state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.SetDungeonGeometryView(15, 7, 0)
+	state.DungeonWallType, _ = grid.WallWrapped(15, 7, 0)
+	state.DungeonWallRoof = grid.CellWrapped(15, 7).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "關猴子的空籠") {
+		t.Fatalf("guild cages mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.SetDungeonGeometryView(11, 3, 0)
+	state.DungeonWallType, _ = grid.WallWrapped(11, 3, 0)
+	state.DungeonWallRoof = grid.CellWrapped(11, 3).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "奧莉芙・拉斯凱托") {
+		t.Fatalf("guild guestbook mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.SetDungeonGeometryView(10, 15, 4)
+	state.DungeonWallType, _ = grid.WallWrapped(10, 15, 4)
+	state.DungeonWallRoof = grid.CellWrapped(10, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !strings.Contains(state.Message, "綠色黏液痕跡") {
+		t.Fatalf("guild sewer door mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 3 {
+		t.Fatalf("guild sewer exit mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d terrain=%#x message=%q choices=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.GeoMapSet, state.GeoMapBlock, state.DungeonWallRoof, state.Message, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

@@ -552,13 +552,21 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 		}
 		return
 	}
-	a.dungeonX = geo.WrapCoordinate(a.dungeonX+dx, geo.Width)
-	a.dungeonY = geo.WrapCoordinate(a.dungeonY+dy, geo.Height)
+	nextX, nextY := a.dungeonX+dx, a.dungeonY+dy
+	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
+	a.dungeonX = geo.WrapCoordinate(nextX, geo.Width)
+	a.dungeonY = geo.WrapCoordinate(nextY, geo.Height)
 	a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, uint8(direction))
 	a.refreshDungeonPreview()
 	a.playSound(sound.Step)
 	if a.state.Mode == game.ModeDungeon {
-		if err := a.state.RunDungeonLifecycle(); err != nil {
+		var err error
+		if exitAttempt {
+			err = a.state.RunDungeonExitLifecycle()
+		} else {
+			err = a.state.RunDungeonLifecycle()
+		}
+		if err != nil {
 			a.state.Message = "地城事件執行失敗：" + err.Error()
 		}
 	}

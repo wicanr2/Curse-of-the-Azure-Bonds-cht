@@ -1122,3 +1122,14 @@ VM 現能投影 selected TeamList player-window、跨 pause 保存 team writes�
 640×480 專用畫面：24×24 原始小人 nearest-neighbor 2×，隊伍色條／選取框及下方
 24px 中文名稱與 HP，十八組文字不再互相重疊。新增 `-guildmaster`、READY spec 293、
 知識庫與 `tilverton-guildmaster-battle.png` README 實機圖。
+
+第二百九十四輪成果：公會戰 ECL `PartyMask` 產生的四名 QuickFight THIEF 現標記為
+temporary allies，戰鬥結束後連同屍體從 active party projection 清除，避免污染下一場
+犬舍戰與 `PARTYSTRENGTH`。正式新遊戲 regression 已繼續走過抱豎琴半身人、
+1 FIRE KNIFE＋依隊伍強度縮放的 FIGHTING DOG、猴籠、奧莉芙・拉斯凱托訪客簿及
+綠色黏液門，全部加入繁中。依 reference 邊界移動與 ECL2 block 2 entry 0，
+renderer 現只回報 passable boundary attempt，由 State 寫 `0x7ED5=1` 後照常執行
+`CALL 0xC01E → NEWECL 3`，真實流程已進入提爾佛頓下水道而非硬指定 block。
+README／knowledge base／READY spec 294 同步確立 640×480 logical canvas：
+原始像素素材 nearest-neighbor 整數放大，繁中以 24px（緊湊欄位可用 16×15）
+獨立高解析重繪。

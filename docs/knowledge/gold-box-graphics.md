@@ -173,3 +173,11 @@ TAKE UI 目前使用 bounded 1／10／100／全部選項，底層 `State.TakeGol
 APPRAISE 以 `AppraisalOffers` 的 Ready flag／offer value 連接 gems／jewelry 到 money pool；沒有報價時 UI 不應把 treasure 數值直接當 GP，也不應省略拒絕報價的後續分支。
 
 APPRAISE confirmation 現在分離 accept／reject／cancel；只有 accept 才呼叫 `AppraiseTreasure`。這個 transaction boundary 可跨 Gold Box 遊戲沿用，避免 UI 選取本身造成不可逆的 treasure mutation。
+
+## 640×480 中文重製畫布
+
+原版 320×200／320×240 級畫面適合 8px 拉丁字，但不足以容納可讀繁中。remake
+固定使用 640×480 logical canvas，原始 tile、PIC 與 combat sprite 只採 2×／3×
+nearest-neighbour 整數放大，保留清楚像素邊緣；中文字不從 DOS bitmap 拉伸，而以
+16×15 compact tier 或 24×24 reading tier 直接重繪。圖片層與 Unicode 文字層必須
+分離，才能讓後續 Gold Box 作品共用素材 decoder，同時各自調整中文行寬與 HUD。
