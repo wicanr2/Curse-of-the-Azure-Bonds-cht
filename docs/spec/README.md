@@ -189,3 +189,4 @@
 - [第一百九十二輪 localized shop identify](./192-localized-shop-identify.md)（`READY`：限 200 GP 鑑定 transaction 與 result boundary）
 - [第一百九十三輪跨 ECL signal aggregation](./193-cross-ecl-signal-aggregation.md)（`READY`：限 NEWECL 後 LOAD FILES／PICTURE／SPELL／PROTECTION signal 保留）
 - [第一百九十四輪真實 ECL PICTURE continuation](./194-real-ecl-picture-continuation.md)（`READY`：限 ECL1 JOURNEY ON 的 PICTURE→Enter→COMBAT boundary）
+- [第一百九十五輪 ECL spell signal state bridge](./195-ecl-spell-state-bridge.md)（`READY`：限 SPELL／PROTECTION pending queue 與一次性 consume）
