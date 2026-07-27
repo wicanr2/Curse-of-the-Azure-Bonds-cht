@@ -1,6 +1,14 @@
 # 專案現況
 
-更新日期：2026-07-27
+更新日期：2026-07-28
+
+最新成果：ECL2 block 4 terrain `0x87` 火刀首領主線已反組並接入 State。原始
+PICTURE 12／手札 11 後建立 20 名 record 1 與 1 名 record 3；COMBAT 前的
+treasure packet 現依 monster spawns 判成遭遇獎勵，只有勝利後才解析為
+17,000 GP、8 gems、4 jewelry 與兩件隨機物品。戰後手札 54／53、PICTURE
+14／13、四段主人夢境與 `4CFF → 4C2A → 7F12` 時序已收進 spec 303 與共用
+Gold Box state knowledge。畫面契約維持 640×480、原圖整數 nearest-neighbour、
+24px 繁中（緊湊欄位 16×15）。
 
 ## 目前輪次
 
