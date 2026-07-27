@@ -1000,3 +1000,10 @@ Ebiten 正式流程會自動顯示既有 GEO／WALLDEF／8X8D 3D renderer，不�
 不是世界地圖；README、PLAN、spec 63／67 與共用知識庫已清除舊斷言。正式地城 UI
 已依 640×480／24px 中文重排左右圖像區與分行狀態列，font loader 補 TTC collection；
 `-opening` 走過真實序幕後以 Xvfb 擷取 `docs/screenshots/tilverton-opening.png` 並更新 README。
+
+第二百八十一輪成果：依 `TryEncamp` 接通 ModeDungeon 的 `E → PreCampCheck(entry2)
+→ CAMP → optional CampInterrupted(entry3)`。真實 block 1 在 `(7,13)` 寫 rest encounter
+`0/0`，`x<5 || y<13` 寫 `1/100`；unsafe 24h rest 只推進 1 小時即中斷，不套完整 healing
+／memorization，執行皇家巡邏繁中事件，Continue 後回原 dungeon。CAMP EXIT 以
+`campReturnMode` 返回 3D view；一般 640×480 event text 改成 24px 五行換行。新增 READY
+spec 281 與 real-image regression。

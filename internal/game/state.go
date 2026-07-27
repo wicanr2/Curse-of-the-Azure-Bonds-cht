@@ -204,8 +204,11 @@ type State struct {
 	barTales               []string
 	barTaleIndex           int
 	campMenu               bool
+	campReturnMode         Mode
 	campRestMenu           bool
 	restHours              int
+	restEncounterPeriod    uint16
+	restEncounterPercent   uint16
 	campViewMenu           bool
 	campMagicMenu          bool
 	campMagicViewMenu      bool
@@ -504,7 +507,11 @@ func (s *State) applyPendingMemorization() int {
 // random interruption remains a separate adapter until its original data is
 // decoded.
 func (s *State) restParty() int {
-	healed := s.restHours / 24
+	return s.restPartyHours(s.restHours)
+}
+
+func (s *State) restPartyHours(hours int) int {
+	healed := hours / 24
 	if healed <= 0 {
 		return 0
 	}
@@ -535,6 +542,20 @@ func (s *State) restParty() int {
 		count += s.party[index].HitPoints - before
 	}
 	return count
+}
+
+func (s *State) restInterruption(requestedHours int) (completedHours int, interrupted bool) {
+	if requestedHours <= 0 || s.restEncounterPeriod == 0 || s.restEncounterPercent == 0 {
+		return requestedHours, false
+	}
+	rng := rand.New(rand.NewSource(s.eclSeed))
+	period := int(s.restEncounterPeriod)
+	for completed := period; completed <= requestedHours; completed += period {
+		if rng.Intn(100)+1 <= int(s.restEncounterPercent) {
+			return completed, true
+		}
+	}
+	return requestedHours, false
 }
 
 // SetMonsterRecords installs the decoded MON*CHA table used when an ECL
@@ -1705,8 +1726,58 @@ func (s *State) Camp() error {
 		return fmt.Errorf("camp is invalid in mode %d", s.Mode)
 	}
 	s.CampCount++
+	if s.campReturnMode == ModeTitle {
+		s.campReturnMode = ModeWilderness
+	}
 	s.enterCampMenu()
 	return nil
+}
+
+// EnterDungeonCamp mirrors TryEncamp: run PreCampCheck before opening CAMP.
+// The script writes encounter period/percentage to 0x7ED2/0x7ED3.
+func (s *State) EnterDungeonCamp() error {
+	if s.Mode != ModeDungeon {
+		return fmt.Errorf("dungeon camp is invalid in mode %d", s.Mode)
+	}
+	if s.session == nil {
+		return fmt.Errorf("dungeon camp requires an ECL session")
+	}
+	s.syncDungeonECLRegisters()
+	result, err := s.session.RunEntrySeedWithPartyContext(
+		2, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	if period, ok := s.session.MemoryValue(0x7ED2); ok {
+		s.restEncounterPeriod = period
+	}
+	if percent, ok := s.session.MemoryValue(0x7ED3); ok {
+		s.restEncounterPercent = percent
+	}
+	if handled, err := s.applyDungeonLifecycleResult(result); handled || err != nil {
+		return err
+	}
+	s.CampCount++
+	s.campReturnMode = ModeDungeon
+	s.enterCampMenu()
+	return nil
+}
+
+// RunCampInterrupted invokes the fourth vm_init_ecl entry after a rest
+// adapter has actually reported an interruption.
+func (s *State) RunCampInterrupted() error {
+	if s.session == nil {
+		return fmt.Errorf("camp interruption requires an ECL session")
+	}
+	result, err := s.session.RunEntrySeedWithPartyContext(
+		3, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	_, err = s.applyDungeonLifecycleResult(result)
+	return err
 }
 
 // CureLightWoundsSpellID follows the one-based order in the verified
@@ -1842,12 +1913,30 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_insufficient", "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。"), s.restHours, requiredHours)
 				return nil
 			}
-			memorized := s.applyPendingMemorization()
-			if err := s.AdvanceGameTimeHours(s.restHours); err != nil {
+			completedHours, interrupted := s.restInterruption(s.restHours)
+			if err := s.AdvanceGameTimeHours(completedHours); err != nil {
 				return err
 			}
-			healed := s.restParty()
+			healed := s.restPartyHours(completedHours)
 			s.campRestMenu = false
+			if interrupted {
+				s.campMenu = false
+				s.Mode = ModeDungeon
+				s.eventReturnMode = ModeDungeon
+				if err := s.RunCampInterrupted(); err != nil {
+					return err
+				}
+				prefix := s.catalog.Text("camp_rest_interrupted", "你們的休息突然中斷！")
+				if s.Message == "" {
+					s.Mode = ModeEvent
+					s.Message = prefix
+				} else {
+					s.Message = prefix + "\n" + s.Message
+				}
+				s.OriginalEvent = "CAMP INTERRUPTED"
+				return nil
+			}
+			memorized := s.applyPendingMemorization()
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "REST"
@@ -2259,6 +2348,15 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 	}
 	if originalChoice == "EXIT" {
 		s.campMenu = false
+		if s.campReturnMode == ModeDungeon {
+			s.Mode = ModeDungeon
+			s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　E：紮營")
+			s.Choices = nil
+			s.currentOriginalChoices = nil
+			s.Message = ""
+			s.campReturnMode = ModeTitle
+			return nil
+		}
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
 		s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
@@ -3915,7 +4013,7 @@ func (s *State) finishNewGameEntry() {
 	s.OriginalLocation = "TILVERTON"
 	s.Mode = ModeDungeon
 	s.Choices = nil
-	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向")
+	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　E：紮營")
 	s.Message = ""
 }
 
@@ -3929,11 +4027,7 @@ func (s *State) RunDungeonLifecycle() error {
 	if s.session == nil {
 		return fmt.Errorf("dungeon lifecycle requires an ECL session")
 	}
-	s.session.SetMemoryValue(0xC04B, uint16(s.DungeonX))
-	s.session.SetMemoryValue(0xC04C, uint16(s.DungeonY))
-	s.session.SetMemoryValue(0xC04D, uint16(s.DungeonDirection/2))
-	s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
-	s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
+	s.syncDungeonECLRegisters()
 
 	for _, entry := range []int{0, 1} {
 		result, err := s.session.RunEntrySeedWithPartyContext(
@@ -3947,6 +4041,14 @@ func (s *State) RunDungeonLifecycle() error {
 		}
 	}
 	return nil
+}
+
+func (s *State) syncDungeonECLRegisters() {
+	s.session.SetMemoryValue(0xC04B, uint16(s.DungeonX))
+	s.session.SetMemoryValue(0xC04C, uint16(s.DungeonY))
+	s.session.SetMemoryValue(0xC04D, uint16(s.DungeonDirection/2))
+	s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
+	s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
 }
 
 func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) {
@@ -4291,6 +4393,10 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_new_game_patterns", "不知為何被烙上了奇異圖紋。隊伍中的其他人")
 	case "OF YOUR PARTY ARE IDENTICALLY MARKED.":
 		return catalog.Text("ecl_new_game_identical", "也都帶著完全相同的印記。")
+	case "A PATROL ARRIVES.":
+		return catalog.Text("ecl_tilverton_patrol_arrives", "一支皇家巡邏隊抵達。")
+	case "ROYAL GUARDS TELL YOU TO MOVE ALONG.":
+		return catalog.Text("ecl_tilverton_guards_move", "皇家衛兵命令你們立刻離開。")
 	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
 		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
 	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":
