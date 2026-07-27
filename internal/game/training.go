@@ -13,16 +13,18 @@ type trainingClass struct {
 	Slot      int
 	Mask      uint8
 	HitDie    int
+	MaxHitDie int
+	FixedHP   int
 	Threshold []uint32
 }
 
 var trainingClasses = []trainingClass{
-	{party.ClassCleric, 0, 0x02, 8, []uint32{0, 1501, 3001, 6001, 13001, 27501, 55001, 110001, 225001, 450001}},
-	{party.ClassFighter, 2, 0x08, 10, []uint32{0, 2001, 4001, 8001, 18001, 35001, 70001, 125001, 250001, 500001, 750001, 1000001}},
-	{party.ClassPaladin, 3, 0x10, 10, []uint32{0, 2751, 5501, 12001, 24001, 45001, 95001, 175001, 350001, 700001, 1050001}},
-	{party.ClassRanger, 4, 0x20, 8, []uint32{0, 2251, 4501, 10001, 20001, 40001, 90001, 150001, 225001, 325001, 650001}},
-	{party.ClassMagicUser, 5, 0x01, 4, []uint32{0, 2501, 5001, 10001, 22501, 40001, 60001, 90001, 135001, 250001, 375001}},
-	{party.ClassThief, 6, 0x04, 6, []uint32{0, 1251, 2501, 5001, 10001, 20001, 42501, 70001, 110001, 160001, 220001, 440001}},
+	{party.ClassCleric, 0, 0x02, 8, 10, 2, []uint32{0, 1501, 3001, 6001, 13001, 27501, 55001, 110001, 225001, 450001}},
+	{party.ClassFighter, 2, 0x08, 10, 10, 3, []uint32{0, 2001, 4001, 8001, 18001, 35001, 70001, 125001, 250001, 500001, 750001, 1000001}},
+	{party.ClassPaladin, 3, 0x10, 10, 10, 3, []uint32{0, 2751, 5501, 12001, 24001, 45001, 95001, 175001, 350001, 700001, 1050001}},
+	{party.ClassRanger, 4, 0x20, 8, 11, 2, []uint32{0, 2251, 4501, 10001, 20001, 40001, 90001, 150001, 225001, 325001, 650001}},
+	{party.ClassMagicUser, 5, 0x01, 4, 12, 1, []uint32{0, 2501, 5001, 10001, 22501, 40001, 60001, 90001, 135001, 250001, 375001}},
+	{party.ClassThief, 6, 0x04, 6, 11, 2, []uint32{0, 1251, 2501, 5001, 10001, 20001, 42501, 70001, 110001, 160001, 220001, 440001}},
 }
 
 const trainingCost = uint32(1000)
@@ -106,6 +108,9 @@ func trainableClass(character party.Character, trainerMask uint8) (trainingClass
 		if level <= 0 || level >= len(info.Threshold) || info.Mask&trainerMask == 0 {
 			continue
 		}
+		if trainingRaceClassLimited(character, info.Class, level) {
+			continue
+		}
 		threshold := info.Threshold[level]
 		if threshold > 0 && threshold <= character.Experience && threshold >= selectedThreshold {
 			selected, selectedLevel, selectedThreshold = info, level, threshold
@@ -134,24 +139,27 @@ func (s *State) applyTraining(index int) error {
 	if classCount == 0 {
 		classCount = 1
 	}
-	rng := rand.New(rand.NewSource(s.fixSeed))
-	s.fixSeed++
-	diceCount := 1
-	if info.Class == party.ClassRanger && oldLevel == 1 {
-		diceCount = 2
-	}
-	roll := func() int {
-		total := 0
-		for count := 0; count < diceCount; count++ {
-			total += rng.Intn(info.HitDie) + 1
+	hitRoll := info.FixedHP
+	if oldLevel < info.MaxHitDie {
+		rng := rand.New(rand.NewSource(s.fixSeed))
+		s.fixSeed++
+		diceCount := 1
+		if info.Class == party.ClassRanger && oldLevel == 1 {
+			diceCount = 2
 		}
-		return total
+		roll := func() int {
+			total := 0
+			for count := 0; count < diceCount; count++ {
+				total += rng.Intn(info.HitDie) + 1
+			}
+			return total
+		}
+		hitRoll = roll()
+		if second := roll(); second > hitRoll {
+			hitRoll = second
+		}
 	}
-	hitRoll := roll()
-	if second := roll(); second > hitRoll {
-		hitRoll = second
-	}
-	increase := (hitRoll + trainingConstitutionBonus(*character, info.Class)) / classCount
+	increase := (hitRoll + trainingConstitutionBonus(*character)) / classCount
 	if increase < 1 {
 		increase = 1
 	}
@@ -179,7 +187,7 @@ func (s *State) applyTraining(index int) error {
 	return nil
 }
 
-func trainingConstitutionBonus(character party.Character, class party.Class) int {
+func trainingConstitutionBonus(character party.Character) int {
 	con := character.Abilities.Constitution
 	base := 0
 	switch {
@@ -192,19 +200,64 @@ func trainingConstitutionBonus(character party.Character, class party.Class) int
 	case con >= 16:
 		base = 2
 	}
-	if class == party.ClassFighter || class == party.ClassPaladin || class == party.ClassRanger {
-		switch {
-		case con == 17:
-			base++
-		case con == 18:
-			base += 2
-		case con >= 19 && con <= 20:
-			base += 3
-		case con >= 21 && con <= 23:
-			base += 4
-		case con >= 24:
-			base += 5
+	total := 0
+	for _, info := range trainingClasses {
+		level := character.ClassLevel(info.Class)
+		if level <= 0 || level >= info.MaxHitDie {
+			continue
+		}
+		classBonus := base
+		if character.Class == party.ClassFighter || character.Class == party.ClassPaladin || character.Class == party.ClassRanger {
+			switch {
+			case con == 17:
+				classBonus++
+			case con == 18:
+				classBonus += 2
+			case con >= 19 && con <= 20:
+				classBonus += 3
+			case con >= 21 && con <= 23:
+				classBonus += 4
+			case con >= 24:
+				classBonus += 5
+			}
+		}
+		total += classBonus
+		if info.Class == party.ClassRanger && level == 1 {
+			total *= 2
 		}
 	}
-	return base
+	return total
+}
+
+func trainingRaceClassLimited(character party.Character, class party.Class, level int) bool {
+	strength := character.Abilities.StrengthFull
+	if strength == 0 {
+		strength = character.Abilities.Strength
+	}
+	switch character.Race {
+	case party.RaceDwarf:
+		return class == party.ClassFighter &&
+			(level == 9 || level == 8 && strength == 17 || level == 7 && strength < 17)
+	case party.RaceElf:
+		if class == party.ClassFighter {
+			return level == 7 || level == 6 && strength == 17 || level == 5 && strength < 17
+		}
+		if class == party.ClassMagicUser {
+			intelligence := character.Abilities.Intelligence
+			return level == 11 || level == 10 && intelligence == 17 || level == 9 && intelligence < 17
+		}
+	case party.RaceGnome:
+		return class == party.ClassFighter && (level == 6 || level == 5 && strength < 18)
+	case party.RaceHalfElf:
+		if class == party.ClassCleric {
+			return level == 5
+		}
+		if class == party.ClassFighter || class == party.ClassRanger || class == party.ClassMagicUser {
+			return level == 8 || level == 7 && strength == 17 || level == 6 && strength < 17
+		}
+	case party.RaceHalfling:
+		return class == party.ClassFighter &&
+			(level == 6 || level == 5 && strength == 17 || level == 4 && strength < 17)
+	}
+	return false
 }

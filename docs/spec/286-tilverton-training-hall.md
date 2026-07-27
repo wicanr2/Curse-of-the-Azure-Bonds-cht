@@ -19,5 +19,6 @@
 確認後扣除 1000 GP、提升對應 class level、增加 current/max HP，並保存經驗值。
 
 本輪涵蓋 cleric、fighter、paladin、ranger、magic-user、thief 的 reference 門檻。
-高等級固定 HP、多職業完整 Constitution 算法、種族等級上限，以及 magic-user／ranger
-升級選法術仍是明確未完成邊界。
+高等級固定 HP、多職業 Constitution 算法與種族等級上限已由第 287 輪 reference
+與正式流程 regression 接續完成。magic-user／ranger 升級選法術與 dual-class HP gate
+仍是明確未完成邊界。

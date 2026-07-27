@@ -57,3 +57,40 @@ func TestTrainingHallRejectsInsufficientExperience(t *testing.T) {
 		t.Fatalf("mode=%v message=%q", state.Mode, state.Message)
 	}
 }
+
+func TestTrainingUsesFixedHPAfterMaximumHitDice(t *testing.T) {
+	state := NewState(locale.Catalog{})
+	state.partyRoster = party.Roster{{
+		Name: "老兵", Race: party.RaceHuman, Class: party.ClassFighter, Level: 10,
+		ClassLevels: [8]uint8{2: 10}, Experience: 750001,
+		HitPoints: 70, MaxHitPoints: 70, Platinum: 400,
+		HealthStatus: party.HealthStatusOK,
+		Abilities:    party.Abilities{Constitution: 18},
+	}}
+	state.enterTrainingMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	got := state.partyRoster[0]
+	if got.Level != 11 || got.MaxHitPoints != 73 {
+		t.Fatalf("high-level fighter level=%d HP=%d, want 11 and 73", got.Level, got.MaxHitPoints)
+	}
+}
+
+func TestTrainingEnforcesRaceClassLevelLimit(t *testing.T) {
+	character := party.Character{
+		Race: party.RaceDwarf, Class: party.ClassFighter, Level: 7,
+		ClassLevels: [8]uint8{2: 7}, Experience: 125001,
+		Abilities: party.Abilities{StrengthFull: 16},
+	}
+	if _, _, eligible := trainableClass(character, 0xFF); eligible {
+		t.Fatal("dwarf fighter with strength 16 trained past reference level limit")
+	}
+	character.Abilities.StrengthFull = 18
+	if _, level, eligible := trainableClass(character, 0xFF); !eligible || level != 7 {
+		t.Fatalf("strong dwarf eligibility=%v level=%d, want level 7 trainable", eligible, level)
+	}
+}
