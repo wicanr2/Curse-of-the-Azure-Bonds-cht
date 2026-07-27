@@ -591,3 +591,13 @@ Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal
 第二百一十七輪文件 commit：`9ad9f79`，更新 ECL DAMAGE READY spec、Gold Box ECL／
 State 知識庫、README 與 PLAN，區分已完成的 health-state projection 與尚未接入的
 `CheckAffectsEffect(Death)`、bleeding、combatant removal、party win/loss continuation。
+
+第二百一十八輪功能 commit：`d8825a4`，新增 `combat.Battle.SetHitPoints` external bridge；
+State active-combat ECL DAMAGE resolution 會把 roster HP 同步到 Battle fighter、重新
+計算 party／enemy status，並在 status 結束時走既有 `finishCombat` continuation。新增
+active party defeat regression；完整 `CheckAffectsEffect(Death)`、bleeding、effect removal
+仍保留 boundary。Docker 已通過 `internal/combat`、`internal/game`、`internal/party`、
+`internal/ecl`、`internal/locale`。
+
+第二百一十八輪文件 commit：`e6f8e2b`，更新 ECL death continuation READY spec、Gold Box
+ECL／State 知識庫、README 與 PLAN，清除 active combat win/loss 已完成後的過時描述。
