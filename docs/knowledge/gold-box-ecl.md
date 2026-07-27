@@ -49,3 +49,7 @@ combat side effect 仍由後續 adapter 實作。
 
 State 現在會把已驗證的 ECL3 Yulash smoke text 經 zh-TW catalog 顯示為繁中訊息，
 未知 segment 保留原文，且 raw `RunResult.Text` 不變，方便後續逐段翻譯與對照原版。
+
+後續 raw-image runs 又確認 ECL3 的邪教徒／受傷牧師事件、戰火摧毀的城市片段，
+以及 ECL4 的小型魔法商店片段；State 會在 `WaitingForMenu` 前保存合併後訊息，
+所以 `PRESS BUTTON OR RETURN TO CONTINUE.` pause 不會吃掉中文事件內容。
