@@ -92,6 +92,24 @@ func TestRunSubsetArithmeticWritesMemory(t *testing.T) {
 	}
 }
 
+func TestRunSubsetBitwiseWritesMemory(t *testing.T) {
+	// AND 0xF0F0, 0x0FF0 -> 0x9000; OR 0x9000, 0x000F -> 0x9001.
+	payload := []byte{
+		0x2F, 0x02, 0xF0, 0xF0, 0x02, 0xF0, 0x0F, 0x02, 0x00, 0x90,
+		0x30, 0x01, 0x00, 0x90, 0x00, 0x0F, 0x02, 0x01, 0x90,
+		0x11, 0x01, 0x00, 0x90,
+		0x11, 0x01, 0x01, 0x90,
+		0x00,
+	}
+	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 2 || result.Text[0] != "240" || result.Text[1] != "255" {
+		t.Fatalf("text=%q, want [240 255]", result.Text)
+	}
+}
+
 func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 	// GETTABLE memory[0x9000 + 1] -> memory[0x9100], then print it.
 	payload := []byte{
