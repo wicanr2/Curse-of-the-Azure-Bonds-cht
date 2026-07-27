@@ -195,3 +195,4 @@
 - [第一百九十八輪跨 ECL chapter monster records](./198-ecl-chapter-monster-records.md)（`READY`：限 ECL block namespace 到 MON1–MON6CHA lookup）
 - [第一百九十九輪真實 ECL1→ECL2 transition](./199-real-ecl1-ecl2-transition.md)（`READY`：限 block 0x50 的 NEWECL 0x03 與 global session switch）
 - [第二百輪 ECL bitwise AND／OR bounded semantics](./200-ecl-bitwise-ops.md)（`READY`：保留 `CALL` boundary）
+- [第二百零一輪 ECL variable monster operands](./201-ecl-variable-monster-operands.md)（`READY`：限 bounded runtime memory resolution）

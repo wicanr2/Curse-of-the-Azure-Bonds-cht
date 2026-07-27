@@ -508,13 +508,13 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				return result, nil
 			}
 		case 0x0B: // LOAD MONSTER
-			spawn, err := DecodeMonsterSpawn(instruction)
+			spawn, err := DecodeMonsterSpawnFromMemory(instruction, memory)
 			if err != nil {
 				return result, fmt.Errorf("LOAD MONSTER at %d: %w", pc, err)
 			}
 			result.MonsterSpawns = append(result.MonsterSpawns, spawn)
 		case 0x0C: // SETUP MONSTER
-			setup, err := DecodeMonsterSetup(instruction)
+			setup, err := DecodeMonsterSetupFromMemory(instruction, memory)
 			if err != nil {
 				return result, fmt.Errorf("SETUP MONSTER at %d: %w", pc, err)
 			}

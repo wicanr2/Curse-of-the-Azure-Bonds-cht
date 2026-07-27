@@ -39,3 +39,21 @@ func TestDecodeMonsterSpawnRejectsMemoryOperand(t *testing.T) {
 		t.Fatal("expected non-literal operand error")
 	}
 }
+
+func TestDecodeMonsterSpawnResolvesMemoryOperands(t *testing.T) {
+	instruction := Instruction{Command: Command{Opcode: 0x0B}, Operands: []Operand{
+		{Code: 0x01, Word: 0xC04F, WordSet: true},
+		{Code: 0x00, Low: 4},
+		{Code: 0x01, Word: 0x7F79, WordSet: true},
+	}}
+	spawn, err := DecodeMonsterSpawnFromMemory(instruction, map[uint16]uint16{
+		0xC04F: 0x59,
+		0x7F79: 0x20,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if spawn != (MonsterSpawn{MonsterID: 0x59, Count: 4, IconBlock: 0x20}) {
+		t.Fatalf("spawn=%+v", spawn)
+	}
+}
