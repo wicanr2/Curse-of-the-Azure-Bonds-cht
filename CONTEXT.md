@@ -501,3 +501,5 @@
 第一百九十八輪功能 commit：`860f7c4`，遊戲啟動載入 `MON1CHA`–`MON6CHA`，State 依 ECL global block namespace 選擇 chapter-local monster table；新增 ECL2 chapter selection regression。`go test ./internal/game ./internal/monster ./internal/ecl` 已於 Docker 通過。
 
 第一百九十九輪功能 commit：`cb70681`，以原始 ECL1 block `0x50` payload `+0x5B5` 驗證 `NEWECL 0x03` 會切換到 ECL2 block `3`，新增 global session regression；target 後續 unsupported routine 仍保留 bounded stop boundary。
+
+第二百輪功能 commit：`f822c89`，依既有 ECL command table／operand contract 將 `0x2F AND` 與 `0x30 OR` 接入 bounded 16-bit memory destination semantics，新增 regression 與 READY 規格；另建立可供後續 Gold Box 作品沿用的 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md) 指令集知識庫。ECL1–ECL6 smoke 已遇到的 `0x2D CALL` 仍維持 unsupported，待確認 external dispatch／return context 後再實作。
