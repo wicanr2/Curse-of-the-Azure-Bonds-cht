@@ -46,7 +46,7 @@ func TestGameJSONRoundTripRestoresDungeonViewState(t *testing.T) {
 		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
 	}}
-	data, err := EncodeGameWithDungeon(roster, area.State{GameArea: 2, InDungeon: true}, 3, 1, 4, 5, 11, 6, 2)
+	data, err := EncodeGameWithDungeonState(roster, area.State{GameArea: 2, InDungeon: true}, 3, 1, 4, 5, 11, 6, 2, 7, 0x40)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +54,7 @@ func TestGameJSONRoundTripRestoresDungeonViewState(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if file.Version != CurrentGameVersion || file.DungeonX != 11 || file.DungeonY != 6 || file.DungeonDir != 2 {
+	if file.Version != CurrentGameVersion || file.DungeonX != 11 || file.DungeonY != 6 || file.DungeonDir != 2 || file.DungeonWallType != 7 || file.DungeonWallRoof != 0x40 {
 		t.Fatalf("decoded dungeon state=%+v", file)
 	}
 }
@@ -63,6 +63,16 @@ func TestDecodeGameAcceptsLegacyPartySave(t *testing.T) {
 	file, err := DecodeGame([]byte(`{"version":1,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}]}`))
 	if err != nil || file.Version != 1 {
 		t.Fatalf("legacy decode file=%+v err=%v", file, err)
+	}
+}
+
+func TestDecodeGameAcceptsVersion3DungeonSave(t *testing.T) {
+	file, err := DecodeGame([]byte(`{"version":3,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}],"dungeon_x":11,"dungeon_y":6,"dungeon_direction":2}`))
+	if err != nil || file.Version != 3 || file.DungeonX != 11 || file.DungeonY != 6 || file.DungeonDir != 2 {
+		t.Fatalf("version 3 decode file=%+v err=%v", file, err)
+	}
+	if file.DungeonWallType != 0 || file.DungeonWallRoof != 0 {
+		t.Fatalf("version 3 wall cache=%+v, want zero defaults", file)
 	}
 }
 

@@ -162,3 +162,4 @@
 - [第一百六十五輪 dungeon 3D view save state](./165-dungeon-save-state.md)（`READY`：限 remake JSON 的地城位置／方向保存）
 - [第一百六十六輪 dungeon facing rotation](./166-dungeon-facing.md)（`READY`：限八方向 facing 與 wall traversal）
 - [第一百六十七輪 dungeon coordinate wrap](./167-dungeon-coordinate-wrap.md)（`READY`：限 dungeon GEO／wall 的 16×16 wrap）
+- [第一百六十八輪 map wall cache save](./168-map-wall-cache-save.md)（`READY`：限 5-byte map state 的 wall cache）

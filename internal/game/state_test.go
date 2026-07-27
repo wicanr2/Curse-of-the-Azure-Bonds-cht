@@ -230,6 +230,7 @@ func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
 	}}
 	state.DungeonX, state.DungeonY, state.DungeonDirection = 11, 6, 2
+	state.DungeonWallType, state.DungeonWallRoof = 7, 0x40
 	path := t.TempDir() + "/game.json"
 	if err := state.SavePartyFile(path); err != nil {
 		t.Fatal(err)
@@ -238,7 +239,7 @@ func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	if err := loaded.LoadPartyFile(path); err != nil {
 		t.Fatal(err)
 	}
-	if loaded.DungeonX != 11 || loaded.DungeonY != 6 || loaded.DungeonDirection != 2 {
+	if loaded.DungeonX != 11 || loaded.DungeonY != 6 || loaded.DungeonDirection != 2 || loaded.DungeonWallType != 7 || loaded.DungeonWallRoof != 0x40 {
 		t.Fatalf("loaded dungeon state=(%d,%d,%d)", loaded.DungeonX, loaded.DungeonY, loaded.DungeonDirection)
 	}
 }
