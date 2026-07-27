@@ -58,6 +58,19 @@ func TestECLClockAdvancesSharedGameTime(t *testing.T) {
 	}
 }
 
+func TestGameTimeDisplayUsesReferenceArea1Mapping(t *testing.T) {
+	state := NewState(testCatalog())
+	state.gameClock = [7]uint16{0, 4, 5, 13, 7, 2, 9}
+
+	display := state.GameTimeDisplay()
+	if display.Hour != 13 || display.Minute != 54 || display.Day != 7 || display.Month != 2 || display.Year != 9 {
+		t.Fatalf("display=%+v, want 13:54 day=7 month=2 year=9", display)
+	}
+	if got := state.GameTimeText(); got != "時間：13:54　日期：第7日／第2月／第9年" {
+		t.Fatalf("text=%q", got)
+	}
+}
+
 func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.Apply(ActionStart); err != nil {

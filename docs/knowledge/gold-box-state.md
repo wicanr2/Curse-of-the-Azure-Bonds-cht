@@ -6,7 +6,7 @@ Gold Box 城市應先由 `ModePlace` 保存 `INN／STORE／BAR／LEAVE` parent m
 
 目前可沿用的 adapter 是：`INN` 的 safe HP restore、`STORE` 的 price-injected transaction、`BAR` 的 ordered `SetBarTales` sequence。各遊戲只需替換城市／ECL data loader，不應複製 renderer 或把原版 routine 的未知副作用猜進共用 state。
 
-CAMP 入口與 REST 必須分離：`PROGRAM 9`／CAMP 只建立 camp command state，不能直接把 HP 設成 MaxHP；REST menu 再以遊戲提供的時間來源計算自然恢復。CoAB 目前採 24 小時一個可測試單位、每位受傷角色 +1 HP，並以 character ID 同步 combat projection。State 現已保存 reference 七-slot clock 並提供 elapsed-minute effect timeout；safe location、calendar UI 與 random interruption 仍由 rules／ECL adapter 注入。
+CAMP 入口與 REST 必須分離：`PROGRAM 9`／CAMP 只建立 camp command state，不能直接把 HP 設成 MaxHP；REST menu 再以遊戲提供的時間來源計算自然恢復。CoAB 目前採 24 小時一個可測試單位、每位受傷角色 +1 HP，並以 character ID 同步 combat projection。State 現已保存 reference 七-slot clock 並提供 elapsed-minute effect timeout；完整原版日曆規則與 random interruption 仍由 rules／ECL adapter 注入。
 
 Spell UI 也應保持三層：DOS／save adapter 保存 ordered slot IDs，verified catalog 只把有證據的 class／ID 映射成名稱，rules engine 才處理 CAST／MEMORIZE／SCRIBE 與消耗。CoAB 目前只核對一級牧師／魔法師前八個 ID；未知 slot 顯示 hex 比猜 global ordinal 更安全，後續 Golden Box 遊戲可替換同一個 catalog adapter。
 
@@ -208,6 +208,10 @@ Reference `NormalizeClock` 在 slot 6 overflow 時會對每個 `Player.age` 加�
 player record 的 signed age `0x76` 已由 parser／`Character`／`PatchDOSPlayerRecord` 保存，
 而 `State.AdvanceGameTime` 會同步 party roster 年齡並以 int16 saturation 防止 wrap；Pool/Rad
 record 的 `0x30` 仍是另一個 importer contract。
+
+Reference map-position UI 只直接顯示 `time_hour` 與十進位 `HH:MM`；remake 的
+`GameTimeDisplay`／`GameTimeText` 另外把已由 `timeScales` 支持的日／月／年欄位以繁中
+HUD 暴露。這是可重用的 renderer-neutral adapter，不代表已完成所有作品的日曆或時間事件。
 
 Age modifier 是 new-character generation rule，不是載入既有 DOS player 後每次重算的
 runtime effect。共用 adapter `Abilities.WithAgeEffects` 保存五段 race brackets 與六項

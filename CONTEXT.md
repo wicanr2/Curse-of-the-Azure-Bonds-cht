@@ -829,3 +829,9 @@ age brackets 與六項 ability deltas，新增 human bracket regression。確認
 規則；既有 DOS player record 已含結果，故沒有把 helper 隱式接到 import／Fighter，避免
 double-count。creation age UI、完整 race/class limits 與 Pool/Rad `0x30` importer 仍保留
 boundary。
+
+第二百四十八輪重大里程碑：依 reference `display_map_position_time` 與 Area1 raw field
+mapping，建立 `State.GameTimeDisplay`／`GameTimeText` renderer-neutral 繁中 clock HUD；
+一般畫面與荒野地圖現在顯示 `HH:MM` 及依七-slot scale 推出的日／月／年欄位。新增 READY
+spec、回歸測試並更新 README／PLAN／Gold Box state knowledge；完整原版日曆規則與
+time-triggered ECL 仍保留 boundary。
