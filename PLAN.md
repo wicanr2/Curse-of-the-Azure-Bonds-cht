@@ -193,7 +193,7 @@
 - [x] 加入繁中遊戲內冒險手札、中文歷史筆記，以及 `PROGRAM 9` 到 CAMP state 的可測試控制邊界。
 - [x] 將冒險手札摘要做成八頁可翻閱的繁中遊戲內資料，接通 J／方向鍵／Esc 導航。
 - [x] 保存 party roster、同步戰鬥 HP，並建立 CAMP 後 HP 恢復的 state boundary。
-- [x] 建立六種玩家種族、六種基本職業、能力值與 1–6 人 roster validation。
+- [x] 建立七種玩家種族、六種基本職業、能力值與 1–6 人 roster validation。
 - [x] 接通繁中角色建立 starter UI，完成後將角色投影並保存到 `State.SetParty`。
 - [x] 接通 Unicode／繁中自訂角色姓名輸入與 State 保存。
 - [x] 接通六項能力值的繁中編輯、3–18 bounds 與職業最低值 validation。
@@ -366,6 +366,6 @@
 - [x] 依 reference `display_map_position_time` 將七-slot clock 接成 renderer-neutral 繁中 `HH:MM`／日曆 HUD，並顯示於一般畫面與荒野地圖；完整原版日曆規則仍待追蹤。
 - [x] 依 reference `Player.age @ 0x76` 與 `NormalizeClock` 接入 DOS age import／writeback、slot-6 overflow 年齡增加與 regression；Pool/Rad `0x30` 與 age-based ability modifiers 仍待獨立驗證。
 - [x] 依 reference `StatValue.AgeEffects` 建立五段 race bracket／六項 ability delta 的明確 `WithAgeEffects` adapter；避免對已含 age-adjusted stats 的 DOS import 重複套用，creation UI／class limits 仍待接線。
-- [x] 依 reference `race_ages`／`ovr018` 建立 single-class starting-age base+dice resolver；creation UI integration、多職業與 half-orc 仍待接線。
-- [x] 將 starting-age／age ability effect 接入 `State.AddCreationCharacter` copy transaction；完整 race/class menu、多職業、half-orc 與 alignment UI 仍待接線。
-- [x] 將已驗證的 19 個 single-class race/class 組合接入角色建立選單，並加入五列捲動顯示；多職業、half-orc 與完整原版建立流程仍待反組譯。
+- [x] 依 reference `race_ages`／`ovr018` 建立 single-class starting-age base+dice resolver；多職業與完整 creation UI 仍待接線。
+- [x] 將 starting-age／age ability effect 接入 `State.AddCreationCharacter` copy transaction；多職業與 alignment UI 仍待接線。
+- [x] 將已驗證的 21 個 single-class race/class 組合接入角色建立選單，並加入五列捲動顯示；多職業與完整原版建立流程仍待反組譯。

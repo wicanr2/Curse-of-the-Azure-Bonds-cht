@@ -58,6 +58,21 @@ func TestRollStartingAgeUsesReferenceHumanFighterEntry(t *testing.T) {
 	}
 }
 
+func TestHalfOrcSingleClassEvidence(t *testing.T) {
+	for _, class := range []Class{ClassCleric, ClassThief} {
+		if _, err := StartingAgeSpecFor(RaceHalfOrc, class); err != nil {
+			t.Fatalf("half-orc %s age spec: %v", class, err)
+		}
+	}
+	if _, err := StartingAgeSpecFor(RaceHalfOrc, ClassFighter); err == nil {
+		t.Fatal("half-orc fighter has no verified starting-age entry")
+	}
+	character := Character{ID: "orc", Name: "半獸人", Race: RaceHalfOrc, Class: ClassCleric, Level: 1, Abilities: Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}}
+	if err := character.Validate(); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCharacterAdvanceEffects(t *testing.T) {
 	character := validCharacter()
 	character.Effects = []monster.AffectRecord{{Kind: 1, Duration: 3, Value: 3, Strength: 1}}
@@ -316,6 +331,31 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	}
 	if got := int16(binary.LittleEndian.Uint16(patched[0x76:0x78])); got != 42 {
 		t.Fatalf("patched DOS age=%d, want 42", got)
+	}
+}
+
+func TestParseDOSHalfOrcRace(t *testing.T) {
+	record := make([]byte, DOSPlayerRecordSize)
+	record[0] = 3
+	copy(record[1:], []byte("ORC"))
+	record[0x74] = 6
+	record[0x75] = 0
+	record[0x109] = 1
+	record[0x10], record[0x12], record[0x14] = 10, 10, 16
+	record[0x16], record[0x18], record[0x1A] = 10, 14, 10
+	parsed, err := ParseDOSPlayerRecord(record, "orc-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if parsed.Race != RaceHalfOrc {
+		t.Fatalf("race=%v, want half-orc", parsed.Race)
+	}
+	character, err := parsed.Character()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if character.Race != RaceHalfOrc {
+		t.Fatalf("character race=%v, want half-orc", character.Race)
 	}
 }
 

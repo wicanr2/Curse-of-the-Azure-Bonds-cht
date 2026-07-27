@@ -280,6 +280,8 @@ func parseDOSRace(raw uint8) (Race, error) {
 		return RaceHalfElf, nil
 	case 5:
 		return RaceHalfling, nil
+	case 6:
+		return RaceHalfOrc, nil
 	case 7:
 		return RaceHuman, nil
 	default:
