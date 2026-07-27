@@ -27,6 +27,18 @@ type Record struct {
 	ModID           uint8
 }
 
+// CombatArmorClass converts the packed MON*CHA armor value used by the
+// original records to the signed AD&D combat AC. Real CoAB records store
+// values 50..60 as 60-AC (for example FIRE KNIFE 0x3B means AC 1). Small
+// values are retained for synthetic/decoded records that already use combat
+// AC, keeping the intermediate parser representation backwards compatible.
+func CombatArmorClass(raw int) int {
+	if raw >= 50 && raw <= 60 {
+		return 60 - raw
+	}
+	return raw
+}
+
 func Parse(data []byte) (Record, error) {
 	if len(data) < RecordSize {
 		return Record{}, fmt.Errorf("monster record is %d bytes, need %d", len(data), RecordSize)
@@ -78,7 +90,7 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 	return combat.Fighter{
 		ID: id, Name: r.Name, Side: side,
 		HitPoints: r.HitPoints, MaxHitPoints: r.MaxHitPoints,
-		ArmorClass: r.ArmorClass, AttackBonus: r.AttackBonus,
+		ArmorClass: CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
 	}
