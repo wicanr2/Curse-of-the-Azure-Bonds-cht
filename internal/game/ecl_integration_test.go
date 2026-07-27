@@ -2476,6 +2476,37 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}) {
+		t.Fatalf("lava pools WAIT parlay choices=%#v", state.currentOriginalChoices)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "冰冷") {
+		t.Fatalf("lava pools nice parlay mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("lava pools nice parlay continuation mode=%v, want dungeon", state.Mode)
+	}
+	if got, _ := session.MemoryValue(0x4C48); got&0x01 != 0 {
+		t.Fatalf("lava pools parlay prematurely set completion flag=%#x", got)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
 	if state.Mode != ModeCombat || !strings.Contains(state.Message, "灼熱的熱浪") {
 		t.Fatalf("lava pools combat mode=%v message=%q", state.Mode, state.Message)
 	}

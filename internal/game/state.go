@@ -962,12 +962,12 @@ func (s *State) Select(index int) error {
 	if s.eclMenuReturnMode != ModeTitle {
 		s.eventReturnMode = s.eclMenuReturnMode
 	}
-	if originalChoice == "FLEE" {
+	if len(s.eclBlock) == 0 && originalChoice == "FLEE" {
 		s.OriginalEvent = "FLEE"
 		s.Message = s.catalog.Text("encounter_flee_done", "你們成功撤退，返回荒野。")
 		return nil
 	}
-	if originalChoice == "PARLAY" {
+	if len(s.eclBlock) == 0 && originalChoice == "PARLAY" {
 		s.enterParlayMenu()
 		s.Mode = ModeWilderness
 		return nil
@@ -5059,6 +5059,18 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "INTENSE HEAT WASHES OVER YOU"):
 		return catalog.Text("ecl_lava_tube_intense_heat", "灼熱的熱浪席捲全隊。")
+	case strings.Contains(joined, "WE HAVE NO LOVE FOR DARK ELVES") &&
+		strings.Contains(joined, "TAKE ANY TREASURE"):
+		return catalog.Text(
+			"ecl_lava_tube_sly_parlay",
+			"「我們對黑暗精靈毫無好感。你們想拿多少財寶，就拿多少吧。」",
+		)
+	case strings.Contains(joined, "YOU COLD THINGS SHOULD LEAVE") &&
+		strings.Contains(joined, "CRIMDRAC FINDS YOU"):
+		return catalog.Text(
+			"ecl_lava_tube_nice_parlay",
+			"「你們這些冰冷生物，最好趁克林德拉克還沒發現前離開。」",
+		)
 	case strings.Contains(joined, "AMONGST THE POOLS OF LAVA") &&
 		strings.Contains(joined, "SIX FIREPROOF CASKS") &&
 		strings.Contains(joined, "OPEN ONE"):

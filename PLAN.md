@@ -485,3 +485,8 @@
 - [x] 接通 GEO5 `(0,5,N)` terrain `0x89` 方向敏感熔岩池：
   PICTURE 57、四項 ENCOUNTER、15 隻火蜥蜴、`4C48` bit 0、六只防火桶、
   WHO 志願者與一般英雄熱度退回／拒絕重試流程。
+- [x] 修正熔岩池 ENCOUNTER behavior-mode：WAIT／PARLAY 在 distance 0 進入
+  真實五態度 PARLAY，友善分支警告後無旗標離開；COMBAT 才建立 15 隻火蜥蜴。
+- [x] 落實 640×480 renderer 的 24px 正文／16px compact 雙字級；
+  dungeon 24×24 tiles 改為 nearest-neighbor 2×，Combat／Dungeon HUD 換行，
+  並移除 ModePlace 重複繪製。
