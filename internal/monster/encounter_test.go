@@ -71,3 +71,11 @@ func TestBuildEnemiesWithAffectsProjectsHasteAttacks(t *testing.T) {
 		t.Fatalf("haste+slow attacks=%#v err=%v", enemies, err)
 	}
 }
+
+func TestBuildEnemiesWithAffectsPreservesHeldState(t *testing.T) {
+	records := map[uint8]Record{7: {Name: "眠怪", MaxHitPoints: 4, HitPoints: 4}}
+	enemies, err := BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, map[uint8][]AffectRecord{7: {{Kind: 0x34, Active: true}}})
+	if err != nil || len(enemies) != 1 || !enemies[0].MonsterIsHeld() {
+		t.Fatalf("enemies=%#v err=%v", enemies, err)
+	}
+}

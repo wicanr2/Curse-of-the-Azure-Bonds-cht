@@ -150,6 +150,16 @@ func (f Fighter) MonsterAffectAttacksPerTurn() int {
 	return attacks
 }
 
+// MonsterIsHeld mirrors the reference Player.IsHeld affect set.
+func (f Fighter) MonsterIsHeld() bool {
+	for _, affect := range f.MonsterAffects {
+		if affect.Active && (affect.Kind == 0x1F || affect.Kind == 0x33 || affect.Kind == 0x34 || affect.Kind == 0x35) {
+			return true
+		}
+	}
+	return false
+}
+
 const MonsterMagicMissileSpellID uint8 = 0x0F
 
 // ActionState mirrors the per-player fields cleared by the reference
@@ -436,7 +446,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	if attacker.Good && target.ProtectedFromGood {
 		targetArmorClass += 2
 	}
-	hit := critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= targetArmorClass)
+	hit := target.MonsterIsHeld() || critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= targetArmorClass)
 	damage := 0
 	if hit {
 		damage = damageRoll + attacker.DamageBonus

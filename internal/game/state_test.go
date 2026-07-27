@@ -1291,6 +1291,29 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 }
 
+func TestHeldEnemySkipsTurnBeforePartyInput(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "sleeping", Name: "沉睡哥布林", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 100,
+		MonsterAffects: []combat.MonsterAffect{{Kind: 0x35, Active: true}},
+	}}
+	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	active, ok := state.CombatActiveFighter()
+	if !ok || active.ID != "hero" {
+		t.Fatalf("active=%+v ok=%v message=%q", active, ok, state.CombatMessage())
+	}
+	if state.CombatMessage() != "沉睡哥布林 無法行動。" {
+		t.Fatalf("held message=%q", state.CombatMessage())
+	}
+}
+
 func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "archer", Name: "弓手", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 2, InitiativeBonus: 20}}

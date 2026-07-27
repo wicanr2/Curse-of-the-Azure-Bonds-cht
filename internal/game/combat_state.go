@@ -1271,6 +1271,11 @@ func (s *State) advanceCombatToParty() error {
 		if fighter.Side == combat.SideParty {
 			return nil
 		}
+		if fighter.MonsterIsHeld() {
+			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_held", "%s 無法行動。"), fighter.Name)
+			s.combatTurnIndex++
+			continue
+		}
 		party := s.livingBySide(combat.SideParty)
 		if len(party) == 0 {
 			return s.finishCombat()

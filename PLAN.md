@@ -184,6 +184,7 @@
 - [x] 依 reference 將 `MON1SPC`–`MON6SPC` 以 chapter-local monster ID 掛到 enemy fighter raw `MonsterAffects`；效果 gameplay projection 仍保留 boundary。
 - [x] 依 reference `CanHitTarget` 將 active monster invisibility `0x19`／`0x47` 投影為 combat target AC +4；其他 effect kinds 仍保留 boundary。
 - [x] 依 reference `MON*CHA[0xA1]`／`AffectHaste`／`AffectSlow` 接入 monster base attacks count 與 active Haste `0x27`／Slow `0x2A` 倍率；movement timing 仍保留 boundary。
+- [x] 依 reference `Player.IsHeld` 接入 enemy held turn skip 與 held-target guaranteed hit（`0x1F`／`0x33`／`0x34`／`0x35`）；cure／save／effect removal 仍保留 boundary。
 - [x] 為已觀察 monster item/effect IDs 加入繁中顯示與未知 fallback。
 - [x] 將真實 ECL spawn sequence 合併 MON*CHA，建立 24 個 enemy fighters 並在 COMBAT 邊界停止。
 - [x] 建立可操作 party／enemy Battle state、回合攻擊、勝負轉移與 Ebiten 繁中戰鬥畫面。
