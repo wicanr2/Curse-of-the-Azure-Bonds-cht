@@ -495,7 +495,10 @@ func (a *app) syncLoadPiecesRequest() {
 	}
 	sets, err := loadMapPieceSets(a.imagePath, a.state.GeoMapSet, selectors)
 	if err != nil {
-		a.state.Message = "地城圖塊載入失敗：" + err.Error()
+		// Asset diagnostics belong to the renderer label. ECL event text is
+		// authoritative story state and must survive a missing optional wall
+		// selector (the wizard-tower PICTURE is still independently usable).
+		a.pieceLabel = "LOAD PIECES 未載入：" + err.Error()
 		return
 	}
 	a.pieceSets = sets
@@ -1501,6 +1504,7 @@ func main() {
 	guildmaster := flag.Bool("guildmaster", false, "start at the Thieves' Guild mixed-team battle through the full ECL story path")
 	sewers := flag.Bool("sewers", false, "start at the first Tilverton Sewers checkpoint through the full ECL story path")
 	lavaTube := flag.Bool("lava-tube", false, "start at the Hap map route into the ancient lava tube")
+	wizardTower := flag.Bool("wizard-tower", false, "start at the ECL5 wizard-tower courtyard and Dracandros story")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1671,6 +1675,22 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := state.StartDungeonStoryPreview(0x32, 0x31, 5); err != nil {
+			log.Fatal(err)
+		}
+	} else if *wizardTower {
+		if len(state.PartyFighters()) != 0 {
+			log.Fatal("-wizard-tower cannot be combined with a loaded party")
+		}
+		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.AddCreationCharacter(0); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.FinishCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.StartDungeonStoryPreview(0x33, 0x32, 5); err != nil {
 			log.Fatal(err)
 		}
 	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {

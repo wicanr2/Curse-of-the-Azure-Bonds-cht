@@ -195,10 +195,23 @@ behavior-mode resolver 決定 final result。熔岩池 distance 0 的 WAIT 與 P
 都會抵達真正的五態度 `PARLAY` command；State 只能把該 ECL menu 本地化，
 不能用脫離 script 的泛用交涉 UI 取代。
 
+選項文字不是引擎 action。法師塔 block `0x33 +0x0193` 使用普通
+HORIZONTAL MENU 顯示 `COMBAT/WAIT/FLEE/PARLAY`，但四項都由 script 自行分支
+後匯流，不能因 label 是 COMBAT 或 FLEE 就由 State 提前開戰／撤退。同理，
+後續 `ATTACK DRAGONS/ATTACK WIZARD/FLEE/PARLAY WITH THE DRAGONS` 是普通
+VERTICAL MENU，必須以 original key 回送 ECL。
+
+跨地圖 direction gate 應保存 source writes：block `0x32 (6,15,W)` 寫
+`C04B/C04C/C04D=7/15/3` 後 `NEWECL 0x33`，target initial entry 不覆寫這三欄，
+所以 renderer 必須落在 GEO5 block `0x33 (7,15,W)`。稍後 script 強制傳送塔頂
+再改成 `3/1/2`，不能把入口位置誤當整段事件的固定 camera。
+
 640×480 frontend 應實際保存兩個 CJK text tier，而非只在文件上約定：
 24px face 用於敘事，16px compact face 用於操作列、門選項與密集戰鬥快捷鍵。
 原始 24×24 dungeon tiles、wall stamps、CPIC／SPRIT 小人則各自以 nearest-neighbor
 整數倍 rasterize。Unicode 換行按 rune 計數；不得按 UTF-8 byte 或沿用英文欄寬。
+renderer 載入 optional wall／sprite 素材失敗時也不可改寫 `State.Message`；
+診斷應留在獨立 label/log，否則正確 ECL 劇情會被技術錯誤文字取代。
 
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 

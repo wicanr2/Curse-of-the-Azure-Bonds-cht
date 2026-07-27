@@ -490,3 +490,6 @@
 - [x] 落實 640×480 renderer 的 24px 正文／16px compact 雙字級；
   dungeon 24×24 tiles 改為 nearest-neighbor 2×，Combat／Dungeon HUD 換行，
   並移除 ModePlace 重複繪製。
+- [x] 從熔岩洞 GEO5 `(6,15,W)` 依 per-turn direction gate 進入 ECL5 block
+  `0x33` 法師塔；完成庭院、德拉坎德羅斯、塔頂黑龍幻象、手札 15、
+  `4CFF=1` 解除枷印及四項後續選擇的真實 continuation。

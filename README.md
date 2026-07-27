@@ -84,6 +84,12 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   友善交涉得到克林德拉克警告後離開；COMBAT 才建立 15 隻火蜥蜴。勝利後可
   調查六只防火桶，以 WHO 選擇前往者；沒有耐熱條件的角色會被迫退回，
   流程可安全返回地城。
+- 熔岩洞 `(6,15)` 面西會由原始方向 gate 進入 ECL5 block `0x33` 法師塔：
+  載入 PICTURE 51 五層庭院、德拉坎德羅斯與塔頂黑龍幻象。WAIT 分支一路
+  保留每個 PRINT RETURN，依使用者 Adventure Journal 解鎖完整繁中手札 15，
+  原 ECL 再次寫入 `4CFF=1` 並令德拉坎德羅斯的枷印消退，最後停在原版四項選擇。
+
+![德拉坎德羅斯法師塔庭院的 640×480 繁中實機畫面](docs/screenshots/wizard-tower-courtyard.png)
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。
@@ -365,6 +371,7 @@ go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -high-priest
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -carriage
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -guildmaster
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -sewers
+go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -wizard-tower
 # 直接載入原版 slot；F5／CAMP SAVE 會回寫該 slot
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -savgam-dir /path/to/save -savgam-slot A
 # 例：選擇原始 GEO3 block 0x10 作為目前 map preview
