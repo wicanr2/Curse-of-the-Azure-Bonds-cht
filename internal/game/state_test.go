@@ -633,12 +633,14 @@ func TestResolvePendingECLDamageFinishesActiveCombatWhenPartyFalls(t *testing.T)
 		t.Fatalf("outcomes=%#v err=%v", outcomes, err)
 	}
 	heroHP := -1
+	heroHasPosition := true
 	for _, fighter := range state.CombatFighters() {
 		if fighter.ID == "hero" {
 			heroHP = fighter.HitPoints
+			heroHasPosition = fighter.HasCombatPosition
 		}
 	}
-	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 {
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusEnemyWon || state.partyRoster[0].HitPoints != 0 || heroHP != 0 || heroHasPosition {
 		t.Fatalf("mode=%v status=%v roster=%#v fighters=%#v", state.Mode, state.CombatStatus(), state.partyRoster, state.CombatFighters())
 	}
 	if len(state.partyRoster[0].Effects) != 2 || state.partyRoster[0].Effects[0].Kind != 0x25 || state.partyRoster[0].Effects[1].Kind != 0x01 {
