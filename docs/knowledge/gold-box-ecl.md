@@ -46,6 +46,25 @@ ECL2 block 3 entry 3 現在已通過 raw ECL2／MON2CHA → `game.StartEncounter
 
 ECL1 block `0x50` payload `+0x5B5` 的 `NEWECL 0x03` 已由原始 image regression 證實會切到 ECL2 block `3`。`BlockSession` 應先套用 target，再讓 target entry 自己 bounded stop；target 後的 unsupported opcode 不能回退成 source block，也不能清空共享 runtime context。
 
+## Code memory 與 lifecycle ABI
+
+`vm_init_ecl` 依序載入五個 word entry：per-turn、SearchLocation、PreCampCheck、
+CampInterrupted、initial。它們是 engine ABI；initial 是 index 4，不能依文字內容猜測。
+新的 lifecycle invocation 會從指定 PC 開始，但 ECL／Area／player memory 仍有各自生命週期。
+
+`0x8000..0x9DFF` 是目前 ECL block 的 byte-addressable code memory，不是空白 shared word
+map。GETTABLE 可直接把腳本尾端 bytes 當 dispatch table；NEWECL Switch 必須替換這個
+window，同時保留 `0x4Bxx` Area、`0x7Axx` party structure、`0x7Cxx` player 等外部區域。
+測試若要驗證跨 block shared memory，也不可把 `0x9000` 誤當持久 scratch address。
+
+AND／OR 除了寫回 byte result，還會執行 `compare_variables(result, 0)`。許多 event-bit
+utility 隨即使用 IF，沒有額外 COMPARE；遺漏這個 side effect 會讓 opcode corpus 看似
+可跑，實際地點事件卻全部被錯誤跳過。
+
+SearchLocation 是 GEO 與 script 的橋接：CoAB 由目前 cell／facing 產生
+`C04B..C04F`，ECL 再以 `C04F & 0x7F → GETTABLE → ON GOTO` 派送事件。共用 VM只實作
+memory 與 control flow；各作品 adapter 負責座標、half-direction、wall 與 terrain 語意。
+
 ## Variable monster descriptors
 
 ECL3／ECL4／ECL6 的 real-image entry smoke 證實，`LOAD MONSTER`／`SETUP MONSTER`

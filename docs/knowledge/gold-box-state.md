@@ -126,6 +126,12 @@ CampInterrupted。CAMP 子畫面必須記住來源 mode，EXIT 才能回到同�
 泛用 wilderness menu。中斷前已經過的時間可以提交，但不可套用完整休息的 healing／spell
 memorization。
 
+地城移動的 reference ordering是「玩家輸入／移動與門處理 → per-turn → SearchLocation」；
+每次 invocation 前，作品 adapter 必須從目前 GEO cell／facing 同步 map registers。CoAB
+的 `C04D` 是 half-direction，`C04E` 是面前 wall type，`C04F` 是完整 terrain/x2 byte
+（包含 high-bit flags），不能只傳座標或把 x2 預先遮罩。SearchLocation 自己決定 mask 與
+dispatch table，frontend 不應另做地點 switch。
+
 繁中 remake 不應把 320×240 當作最終排版限制。可重用的視覺策略是把 logical canvas
 擴到至少 640×480：原版 tile／sprite／PIC 只以 nearest-neighbor 整數倍放大，保留像素
 輪廓；Unicode 中文則在放大後的畫布直接用約 24px 的 TTF／OTF／TTC 重繪。圖片縮放與

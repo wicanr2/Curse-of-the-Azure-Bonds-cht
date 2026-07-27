@@ -47,6 +47,9 @@ PICTURE 的 block threshold 是重要的 family dispatch：`block < 0x78` 使用
 PICTURE 還有第二個 dispatch：Area2 `HeadBlockId == 0xFF` 才使用上述 PIC/BIGPIC；若 head block 存在，body block 由 PICTURE operand 提供，改用 `HEAD<area>`＋`BODY<area>` scene composite。
 
 目前可重用的資料邊界是 Area2 raw record `0x5C2` → `area.State.HeadBlockID` → `game.State.SceneHeadBlock`；這讓 renderer 不需要直接讀 DOS record，也讓後續 Gold Box 遊戲可替換自己的 Area state codec。
+ECL script 可能在 PICTURE 後立刻把執行期 mirror `0x7EE1` 清回 `0xFF`，因此 VM 的
+PICTURE signal 必須同時保存 opcode 當下的 HeadBlockId；不能等整段 ECL 因 menu／EXIT
+停止後才從共享 memory 重建 scene selector。
 
 戰鬥圖示的方向與位置也應分開：direction 是 0–7 的 facing，tile position 是 combat map 座標，screen position 是 camera transform 後的結果。不要用 fighter list ordinal 取代真實 map position；目前 ordinal 只作 deterministic fallback。`CombatCamera` 以 active fighter 對齊 viewport，後續 Gold Box 遊戲可替換 viewport／scroll policy 而沿用資料與 renderer 分層。
 

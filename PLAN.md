@@ -224,6 +224,7 @@
 - [x] 還原野外遭遇用的 50×25 combat-floor construction，接通 background entry → TILES index 與 movement cost；不再誤稱為世界地圖。
 - [x] 正式 dungeon movement 同步 C04B–C04F，執行 per-turn／SearchLocation lifecycle entries，並自動使用 3D renderer。
 - [x] 接通 Dungeon E → PreCampCheck → CAMP → optional CampInterrupted，unsafe rest 依 1/100 中斷並返回原 3D view。
+- [x] 修正 ECL 0x8000–0x9DFF code-memory／AND-OR compare side effects，從正式起點走到 Windlord's Inn 並在遊戲內解鎖手札條目 31。
 - [x] 還原 GEO dungeon floor 四段 tile composition，接通 D 預覽與可重現 dungeon screenshot。
 - [x] 接回 dungeon `terrain & 0x40` table／chair decoration pass 與 seeded regression。
 - [x] 建立 GEO2–GEO6 全 16 block 的原始 map catalog，並接通 set/block preview selector。
@@ -337,7 +338,7 @@
 - [x] 解碼 DOS `.SWG` item records，接到 party equipment projection。
 - [x] 解碼 DOS `.FX` 9-byte effects，接到 party effect preservation 與繁中名稱。
 - [x] 修正 `.FX` duration／strength 欄位並建立 finite/permanent duration tick adapter。
-- [x] 依 reference `ovr021.step_game_time` 接入七-slot raw clock、slot scaling 與 party／active battle effect timeout；age writeback、REST interruption 與完整 calendar 仍保留 boundary。
+- [x] 依 reference `ovr021.step_game_time` 接入七-slot raw clock、slot scaling 與 party／active battle effect timeout；age writeback 與 Tilverton CAMP interruption 已完成，完整 calendar 與其他區域 encounter table 仍保留 boundary。
 - [x] 將 `REST_START` 接到 slot-1 game-time advancement（每小時 60 分鐘），在自然回血前到期 finite effects；random interruption／safe location／spell-learning side effects 仍保留 boundary。
 - [x] 建立 `.SAV/.GUY` + optional `.FX/.SWG` DOS player sidecar bundle importer。
 - [x] 提供 DOS character bundle → versioned remake party JSON 的可重現 CLI。

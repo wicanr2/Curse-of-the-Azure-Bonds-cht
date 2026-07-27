@@ -45,6 +45,8 @@ type RunResult struct {
 	PictureRequested       bool
 	PictureBlock           uint16
 	BigPictureRequested    bool
+	PictureHeadBlock       uint16
+	PictureHeadBlockSet    bool
 	SpellSearches          []SpellSearch
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
@@ -427,6 +429,18 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		selectedPlayerIndex = runtime.SelectedPlayerIndex
 		selectedPlayerSet = runtime.SelectedPlayerSet
 	}
+	// Standalone runners do not have a BlockSession to install the reference
+	// 0x8000 code-memory window. Populate missing bytes here; a session-owned
+	// runtime already contains the same values and may preserve in-run writes.
+	for index, value := range payload {
+		address := CodeAddressBase + index
+		if address > 0x9DFF {
+			break
+		}
+		if _, exists := memory[uint16(address)]; !exists {
+			memory[uint16(address)] = uint16(value)
+		}
+	}
 	saveState := func(nextPC int) {
 		if runtime == nil {
 			return
@@ -530,6 +544,17 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				value = left | right
 			}
 			memory[instruction.Operands[2].Word] = value
+			if instruction.Command.Opcode == 0x2F || instruction.Command.Opcode == 0x30 {
+				// Reference CMD_AndOr calls compare_variables(result, 0)
+				// before writing the destination. Event-bit helpers therefore
+				// branch on the bitwise result without an explicit COMPARE.
+				compare[0] = value == 0
+				compare[1] = value != 0
+				compare[2] = 0 < value
+				compare[3] = 0 > value
+				compare[4] = 0 <= value
+				compare[5] = 0 >= value
+			}
 		case 0x08: // RANDOM
 			if !instruction.Operands[1].WordSet {
 				return result, fmt.Errorf("random at %d has non-address destination", pc)
@@ -1165,6 +1190,10 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 					result.PictureRequested = true
 					result.PictureBlock = value
 					result.BigPictureRequested = value >= 0x78
+					if head, ok := memory[0x7EE1]; ok {
+						result.PictureHeadBlock = head
+						result.PictureHeadBlockSet = true
+					}
 				}
 			}
 			if instruction.Command.Opcode == 0x1C {

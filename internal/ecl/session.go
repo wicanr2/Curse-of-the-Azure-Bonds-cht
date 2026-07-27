@@ -29,7 +29,9 @@ func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, err
 	for id := range owned {
 		states[id] = shared
 	}
-	return &BlockSession{blocks: owned, current: current, states: states}, nil
+	session := &BlockSession{blocks: owned, current: current, states: states}
+	session.loadCurrentCodeMemory()
+	return session, nil
 }
 
 func (s *BlockSession) CurrentBlockID() uint8 { return s.current }
@@ -73,6 +75,7 @@ func (s *BlockSession) Switch(id uint8) error {
 	if _, ok := s.states[id]; !ok {
 		s.states[id] = s.states[s.current]
 	}
+	s.loadCurrentCodeMemory()
 	return nil
 }
 
@@ -89,7 +92,34 @@ func (s *BlockSession) Reset(id uint8) error {
 	s.current = id
 	s.selectionOffset = 0
 	s.whoSelectionOffset = 0
+	s.loadCurrentCodeMemory()
 	return nil
+}
+
+// loadCurrentCodeMemory mirrors the reference EclBlock mapping: the decoded
+// payload is byte-addressable at 0x8000..0x9DFF. ECL GETTABLE routinely reads
+// dispatch bytes from this region, so it cannot be represented as an empty
+// generic word map. Loading another block replaces this code window while
+// preserving Area/player/shared memory outside it.
+func (s *BlockSession) loadCurrentCodeMemory() {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return
+	}
+	for address := uint16(CodeAddressBase); address <= 0x9DFF; address++ {
+		delete(runtime.Memory, address)
+	}
+	data := s.blocks[s.current]
+	if len(data) < 2 {
+		return
+	}
+	for index, value := range data[2:] {
+		address := CodeAddressBase + index
+		if address > 0x9DFF {
+			break
+		}
+		runtime.Memory[uint16(address)] = uint16(value)
+	}
 }
 
 // InitialEntry returns the fifth vm_init_ecl entry for the current block as a
@@ -259,6 +289,8 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		if result.PictureRequested {
 			aggregate.PictureBlock = result.PictureBlock
 			aggregate.BigPictureRequested = result.BigPictureRequested
+			aggregate.PictureHeadBlock = result.PictureHeadBlock
+			aggregate.PictureHeadBlockSet = result.PictureHeadBlockSet
 		}
 		aggregate.SpellSearches = append(aggregate.SpellSearches, result.SpellSearches...)
 		aggregate.ProtectionRequests = append(aggregate.ProtectionRequests, result.ProtectionRequests...)
