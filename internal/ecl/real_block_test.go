@@ -3,10 +3,95 @@ package ecl
 import (
 	"archive/zip"
 	"io"
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 )
+
+func TestRealAllInitializationEntriesReachSupportedBoundary(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocksSeen := 0
+	entriesSeen := 0
+	for _, member := range []string{"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX"} {
+		blocks, parseErr := dax.Parse(realZipMember(t, archive, member))
+		if parseErr != nil {
+			t.Fatalf("%s: %v", member, parseErr)
+		}
+		blocksSeen += len(blocks)
+		for _, block := range blocks {
+			reports, smokeErr := SmokeInitializationEntries(block.Data, 5, 500, nil)
+			if smokeErr != nil {
+				t.Fatalf("%s block 0x%02X: %v", member, block.Entry.ID, smokeErr)
+			}
+			entriesSeen += len(reports)
+			for _, report := range reports {
+				if report.Err != nil {
+					t.Fatalf("%s block 0x%02X entry %d stopped at +0x%04X after %d steps: %v", member, block.Entry.ID, report.Index, report.Result.PC, report.Result.Steps, report.Err)
+				}
+			}
+		}
+	}
+	if blocksSeen != 25 || entriesSeen != 125 {
+		t.Fatalf("smoke coverage blocks=%d entries=%d, want 25 and 125", blocksSeen, entriesSeen)
+	}
+}
+
+func TestRealECL5SunlightFindItemUsesPartyContext(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL5.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 0x30 {
+			continue
+		}
+		result, runErr := RunSubsetInteractiveSeedWithPartyContext(block.Data, 0x14, 500, []uint16{0}, 1, PartyContext{
+			Members: []PartyMemberContext{{Name: "HERO", ItemTypes: []uint8{0x5E}}},
+		})
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if len(result.FindItemRequests) == 0 || !result.FindItemRequests[0].Resolved || !result.FindItemRequests[0].Found {
+			t.Fatalf("find requests=%#v", result.FindItemRequests)
+		}
+		if !strings.Contains(strings.Join(result.Text, " "), "SUNLIGHT") {
+			t.Fatalf("text=%q, want sunlight decay event", result.Text)
+		}
+		return
+	}
+	t.Fatal("ECL5 block 0x30 is absent")
+}
+
+func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
+	t.Helper()
+	for _, entry := range archive.File {
+		if entry.Name != name {
+			continue
+		}
+		reader, err := entry.Open()
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, err := io.ReadAll(reader)
+		reader.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	t.Fatalf("%s is absent from original image", name)
+	return nil
+}
 
 func TestRealECL1Block82AddNPCReachesExit(t *testing.T) {
 	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")

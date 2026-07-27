@@ -250,3 +250,4 @@
 - [第二百七十輪 ECL selected-player name string](./270-ecl-selected-player-name-string.md)（`READY`：限 `0x7C00` 姓名與 COMPARE branch）
 - [第二百七十一輪 ECL FIND ITEM party query](./271-ecl-find-item-party-query.md)（`READY`：限全隊 item type 與 compare flags）
 - [第二百七十二輪 ECL FIND SPECIAL selected affect](./272-ecl-find-special-selected-affect.md)（`READY`：限 selected player active affect 與 compare flags）
+- [第二百七十三輪 real ECL corpus smoke gate](./273-real-ecl-corpus-smoke.md)（`READY`：限 25 blocks／125 initialization entries 與 ECL5 inventory branch）
