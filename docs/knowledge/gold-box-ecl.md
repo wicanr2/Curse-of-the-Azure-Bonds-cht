@@ -53,3 +53,6 @@ State 現在會把已驗證的 ECL3 Yulash smoke text 經 zh-TW catalog 顯示�
 後續 raw-image runs 又確認 ECL3 的邪教徒／受傷牧師事件、戰火摧毀的城市片段，
 以及 ECL4 的小型魔法商店片段；State 會在 `WaitingForMenu` 前保存合併後訊息，
 所以 `PRESS BUTTON OR RETURN TO CONTINUE.` pause 不會吃掉中文事件內容。
+
+ECL3 block 16 entry 4 的 `PRINT RETURN`（`0x33`）現在也會保留 signal 並繼續到
+menu；這證實 text-window boundary 與 ECL control-flow boundary 可以分開處理。
