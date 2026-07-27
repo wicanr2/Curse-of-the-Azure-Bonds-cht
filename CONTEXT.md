@@ -1178,3 +1178,11 @@ terrain `0x99` 對應 selector `0x19` 的旋轉刀刃屏障。真實 ECL regress
 對所有隊員套用同一傷害並同步 persistent roster／renderer fighter HP；選角、豁免
 與 random-hit 形式維持既有 pending boundary。真實 ECL、State 兩人隊伍 100→62 HP
 與 exactly-once consume 均有 regression，新增 READY spec 299。
+
+第三百輪成果：接通 ECL2 block 4 selector `0x1A`／GEO terrain `0x9A` 的定身房。
+原始 `RETREAT / INTERROGATE / KILL` 順序已繁中為「撤退／審問／殺死」而不改
+script index；審問會先繳械逐漸恢復行動的火刀、取得情報並解鎖手札 26，殺死分支
+則忠實顯示趁定身尚未解除時屠殺。手札中文依使用者 Adventurer's Journal 核對：
+入侵牧師為營救南方首領房囚犯而施展定身，最後在此房被制伏。`4CFE & 0x40`
+在選單前設定，因此三分支均消耗事件；真實 ECL 與 playable State regression 已
+鎖定返回地城、手札不提前洩漏及重訪不重播。新增 READY spec 300。

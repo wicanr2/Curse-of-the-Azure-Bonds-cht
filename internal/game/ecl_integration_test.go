@@ -1260,6 +1260,114 @@ func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 	}
 }
 
+func TestRealFireKnifeFrozenRoomBranches(t *testing.T) {
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer image.Close()
+	blocks, err := dax.Parse(zipData(t, image, "ECL2.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hideout []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 4 {
+			hideout = block.Data
+			break
+		}
+	}
+	run := func(selections []uint16) ecl.RunResult {
+		session, sessionErr := ecl.NewBlockSession(map[uint8][]byte{4: hideout}, 4)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, 0x9A)
+		result, runErr := session.RunEntrySeedWithPartyContext(
+			1, 500, selections, nil, 1, ecl.PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		return result
+	}
+	prompt := run(nil)
+	if !prompt.WaitingForMenu || len(prompt.Menus) != 1 ||
+		strings.Join(prompt.Menus[0].Options, "/") != "RETREAT/INTERROGATE/KILL" ||
+		!strings.Contains(strings.Join(prompt.Text, " "), "PEOPLE FROZEN IN") {
+		t.Fatalf("frozen room prompt=%+v", prompt)
+	}
+	retreat := run([]uint16{0})
+	if !retreat.Exited || retreat.WaitingForMenu || len(retreat.DamageRequests) != 0 {
+		t.Fatalf("frozen room retreat=%+v", retreat)
+	}
+	interrogate := run([]uint16{1})
+	interrogateText := strings.Join(interrogate.Text, " ")
+	if !interrogate.WaitingForMenu || len(interrogate.Menus) != 2 ||
+		!strings.Contains(interrogateText, "YOU DISARM THE FIRE KNIVES") ||
+		!strings.Contains(interrogateText, "JOURNAL ENTRY 26") {
+		t.Fatalf("frozen room interrogate=%+v", interrogate)
+	}
+	kill := run([]uint16{2})
+	if !kill.WaitingForMenu ||
+		!strings.Contains(strings.Join(kill.Text, " "), "YOU SLAUGHTER THEM") {
+		t.Fatalf("frozen room kill=%+v", kill)
+	}
+	if got := []string{
+		localizeOption(testCatalog(), "RETREAT"),
+		localizeOption(testCatalog(), "INTERROGATE"),
+		localizeOption(testCatalog(), "KILL"),
+	}; strings.Join(got, "/") != "撤退/審問/殺死" {
+		t.Fatalf("localized frozen-room choices=%v", got)
+	}
+
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)
+	if err := state.session.Reset(4); err != nil {
+		t.Fatal(err)
+	}
+	state.Mode = ModeDungeon
+	state.DungeonWallRoof = 0x9A
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 3 || state.Choices[1] != "審問" ||
+		!strings.Contains(state.Message, "交戰姿勢") {
+		t.Fatalf("playable frozen room choices=%v message=%q", state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "有用情報") ||
+		!strings.Contains(state.Message, "第 26 條") {
+		t.Fatalf("playable frozen interrogation message=%q", state.Message)
+	}
+	foundJournal := false
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 26：") &&
+			strings.Contains(page, "入侵牧師") &&
+			strings.Contains(page, "南方首領房") {
+			foundJournal = true
+		}
+	}
+	if !foundJournal {
+		t.Fatalf("Journal Entry 26 was not unlocked: %v", state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("frozen interrogation return mode=%v message=%q", state.Mode, state.Message)
+	}
+	state.DungeonWallRoof = 0x9A
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.Message != "" || len(state.Choices) != 0 {
+		t.Fatalf("frozen room revisit mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.Choices)
+	}
+}
+
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

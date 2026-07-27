@@ -80,6 +80,9 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 - 「闖入刀刃」現會依原始 `DAMAGE 0xE0,8d8,0,0` 對全隊套用同一包無豁免
   8d8 傷害，角色資料與畫面 fighter HP 同步，之後接回刀刃消散 continuation；
   非全隊自動傷害仍保留給選角／豁免／命中判定 adapter。
+- 火刀據點 terrain `0x9A` 的定身房也已可玩：`撤退／審問／殺死` 保留原始
+  menu index；審問會在火刀恢復行動前繳械並解鎖手札 26，說明入侵牧師為營救
+  南方首領房的囚犯而來。三分支都依 `4CFE & 0x40` 成為一次性事件。
 - 字型 loader 同時支援單一 TTF/OTF 與 TTC collection；Noto Sans CJK `.ttc` 可直接以
   24px 渲染，不會因 collection parse 失敗退回 ASCII bitmap font。
 - 真實 ECL1 JOURNEY ON／STORE 路徑已驗證 `PICTURE → Enter → COMBAT opcode →

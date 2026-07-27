@@ -4661,6 +4661,10 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("enter_blades", "闖入刀刃")
 	case "RETREAT":
 		return catalog.Text("retreat", "撤退")
+	case "INTERROGATE":
+		return catalog.Text("interrogate", "審問")
+	case "KILL":
+		return catalog.Text("kill", "殺死")
 	case "FLEE":
 		return catalog.Text("encounter_flee", "撤退")
 	case "ADVANCE":
@@ -4802,6 +4806,21 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "THE BLADES TEAR INTO YOU"):
 		return catalog.Text("ecl_fire_knife_blades_damage", "旋轉刀刃狠狠撕裂了你們！")
+	case strings.Contains(joined, "YOU DISARM THE FIRE KNIVES") &&
+		strings.Contains(joined, "JOURNAL ENTRY 26"):
+		return catalog.Text(
+			"ecl_fire_knife_frozen_interrogate",
+			"火刀成員逐漸恢復行動時，你們先繳了他們的械。他們仍神情茫然，你們趁機問出一些有用情報，並記入冒險手札第 26 條。",
+		)
+	case strings.Contains(joined, "YOU SLAUGHTER THEM") &&
+		strings.Contains(joined, "BEING HELD"):
+		return catalog.Text("ecl_fire_knife_frozen_kill", "你們趁他們尚未從定身狀態恢復，將他們全數殺死。")
+	case strings.Contains(joined, "PEOPLE FROZEN IN") &&
+		strings.Contains(joined, "BEGINNING TO MOVE"):
+		return catalog.Text(
+			"ecl_fire_knife_frozen_room",
+			"房裡有許多人凝固在交戰姿勢中；有幾人倒成扭曲的一團，另一些已開始活動。你們要怎麼做？",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -4939,6 +4958,13 @@ func (s *State) unlockJournalEntries(texts []string) {
 			"手札條目 19：祭司開始施法時，青色枷突然發出耀眼光芒。藍色火焰自印記竄出，"+
 				"在房內四處迸射；眾人痛苦得扭曲身體，祭司只得停止施法。"+
 				"他說：「這些枷鎖會抵抗我的神力，我無法解除它們。祝你們往後順利，願剛德與你們同在。」",
+		)})
+	}
+	if strings.Contains(joined, "YOU DISARM THE FIRE KNIVES") &&
+		strings.Contains(joined, "JOURNAL ENTRY 26") {
+		s.appendJournalPages("手札條目 26：", []string{s.catalog.Text(
+			"journal_entry_26",
+			"手札條目 26：這些人中了入侵牧師施展的定身法術。那名牧師是為了營救被關在南方首領房裡的囚犯而來；所幸火刀最後在這間房裡制伏了他。",
 		)})
 	}
 }
