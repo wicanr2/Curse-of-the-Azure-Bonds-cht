@@ -639,6 +639,36 @@ func TestRunSubsetEmitsRobRequestAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetCombatDispatchesAreaShopService(t *testing.T) {
+	block := []byte{
+		0, 0,
+		0x09, 0x00, 0x01, 0x01, 0x6C, 0x7F,
+		0x09, 0x00, 0x10, 0x01, 0x6D, 0x7F,
+		0x24,
+		0x11, 0x80, 0x02, 0x20, 0x92,
+		0x00,
+	}
+	runtime := NewRuntimeState(0)
+	result, err := runSubsetWithState(block, 0, 20, nil, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.ShopRequested || result.ShopPriceScale != 0x10 ||
+		result.CombatRequested || result.PC != 13 {
+		t.Fatalf("shop dispatch result=%+v", result)
+	}
+	if runtime.Memory[0x7F6C] != 0 {
+		t.Fatalf("EnterShop mirror=%d, want consumed zero", runtime.Memory[0x7F6C])
+	}
+	result, err = runSubsetWithState(block, 0, 20, nil, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "HI" || !result.Exited {
+		t.Fatalf("shop continuation result=%+v", result)
+	}
+}
+
 func TestRunSubsetEmitsSpellAndProtectionSignals(t *testing.T) {
 	payload := []byte{
 		0x3B, 0x00, 0x12, 0x01, 0x00, 0x7C, 0x01, 0x01, 0x7C,

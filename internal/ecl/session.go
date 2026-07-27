@@ -255,6 +255,11 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.PC = result.PC
 		aggregate.Exited = aggregate.Exited || result.Exited
 		aggregate.CombatRequested = aggregate.CombatRequested || result.CombatRequested
+		aggregate.ShopRequested = aggregate.ShopRequested || result.ShopRequested
+		if result.ShopRequested {
+			aggregate.ShopPriceScale = result.ShopPriceScale
+		}
+		aggregate.TempleRequested = aggregate.TempleRequested || result.TempleRequested
 		if result.MonsterSetup != nil {
 			setup := *result.MonsterSetup
 			aggregate.MonsterSetup = &setup

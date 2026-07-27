@@ -197,7 +197,7 @@
 - [第一百九十一輪 localized shop sell](./191-localized-shop-sell.md)（`READY`：限商店販售 transaction 與繁中 UI）
 - [第一百九十二輪 localized shop identify](./192-localized-shop-identify.md)（`READY`：限 200 GP 鑑定 transaction 與 result boundary）
 - [第一百九十三輪跨 ECL signal aggregation](./193-cross-ecl-signal-aggregation.md)（`READY`：限 NEWECL 後 LOAD FILES／PICTURE／SPELL／PROTECTION signal 保留）
-- [第一百九十四輪真實 ECL PICTURE continuation](./194-real-ecl-picture-continuation.md)（`READY`：限 ECL1 JOURNEY ON 的 PICTURE→Enter→COMBAT boundary）
+- [第一百九十四輪真實 ECL PICTURE continuation](./194-real-ecl-picture-continuation.md)（`READY`：限 ECL1 JOURNEY ON 的 PICTURE→Enter→COMBAT opcode／CityShop boundary）
 - [第一百九十五輪 ECL spell signal state bridge](./195-ecl-spell-state-bridge.md)（`READY`：限 SPELL／PROTECTION pending queue 與一次性 consume）
 - [第一百九十六輪 ECL initialization entry smoke analysis](./196-ecl-entry-smoke.md)（`READY`：限 ECL1–ECL6 五入口 bounded report）
 - [第一百九十七輪真實 ECL2 encounter Battle](./197-real-ecl2-encounter-battle.md)（`READY`：限 block 3 entry 3、MON2CHA 與 packed AC adapter）
@@ -261,3 +261,4 @@
 - [第二百七十二輪 ECL FIND SPECIAL selected affect](./272-ecl-find-special-selected-affect.md)（`READY`：限 selected player active affect 與 compare flags）
 - [第二百七十三輪 real ECL corpus smoke gate](./273-real-ecl-corpus-smoke.md)（`READY`：限 25 blocks／125 initialization entries 與 ECL5 inventory branch）
 - [第二百七十四輪 ECL DUMP party removal](./274-ecl-dump-party-removal.md)（`READY`：限 selected member removal／fallback selection／State sync）
+- [第二百八十四輪 ECL 城市商店服務](./284-ecl-city-shop-service.md)（`READY`：限 COMBAT service dispatch、CityShop 商品／付款與 continuation）

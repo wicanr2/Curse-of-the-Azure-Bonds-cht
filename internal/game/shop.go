@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 // ShopOffer is a script/data-layer shop stock entry. ITEMS descriptors do not
@@ -105,8 +106,8 @@ func (s *State) ShareGold() error {
 	return nil
 }
 
-// BuyShopOffer spends the party pool on one injected offer and refreshes the
-// corresponding combat fighter projection when that character is loaded.
+// BuyShopOffer follows CityShop's payment order: the selected character's
+// five coin fields are used first by gold worth, then the pooled GP fallback.
 func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 	if characterIndex < 0 || characterIndex >= len(s.partyRoster) {
 		return fmt.Errorf("character index %d is out of range", characterIndex)
@@ -115,13 +116,17 @@ func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 		return fmt.Errorf("shop offer index %d is out of range", offerIndex)
 	}
 	offer := s.shopOffers[offerIndex]
-	if uint32(offer.Price) > s.moneyPool {
-		return fmt.Errorf("money pool has %d gold; shop price is %d", s.moneyPool, offer.Price)
+	character := &s.partyRoster[characterIndex]
+	if characterCoinGoldWorth(*character) >= uint32(offer.Price) {
+		subtractCharacterGoldWorth(character, uint32(offer.Price))
+	} else if uint32(offer.Price) <= s.moneyPool {
+		s.moneyPool -= uint32(offer.Price)
+	} else {
+		return fmt.Errorf("character and money pool cannot pay %d gold", offer.Price)
 	}
 	item := offer.Item
 	item.Readied = false
-	s.partyRoster[characterIndex].Equipment = append(s.partyRoster[characterIndex].Equipment, item)
-	s.moneyPool -= uint32(offer.Price)
+	character.Equipment = append(character.Equipment, item)
 	if characterIndex < len(s.party) {
 		fighter, err := s.fighterForCharacter(s.partyRoster[characterIndex])
 		if err != nil {
@@ -130,6 +135,45 @@ func (s *State) BuyShopOffer(characterIndex, offerIndex int) error {
 		s.party[characterIndex] = fighter
 	}
 	return nil
+}
+
+func characterCoinGoldWorth(character party.Character) uint32 {
+	copper := uint64(character.Copper) +
+		uint64(character.Silver)*10 +
+		uint64(character.Electrum)*100 +
+		uint64(character.Gold)*200 +
+		uint64(character.Platinum)*1000
+	return uint32(copper / 200)
+}
+
+func subtractCharacterGoldWorth(character *party.Character, gold uint32) {
+	values := [5]int{
+		int(character.Copper), int(character.Silver), int(character.Electrum),
+		int(character.Gold), int(character.Platinum),
+	}
+	perCopper := [5]int{1, 10, 100, 200, 1000}
+	coppers := int(gold) * 200
+	for coin := 0; coppers > 0 && coin < len(values); coin++ {
+		subCoins := coppers/perCopper[coin] + 1
+		if values[coin] < subCoins {
+			subCoins = values[coin]
+		}
+		coppers -= perCopper[coin] * subCoins
+		values[coin] -= subCoins
+	}
+	if coppers < 0 {
+		coppers = -coppers
+		for coin := len(values) - 1; coppers > 0 && coin >= 0; coin-- {
+			addCoins := coppers / perCopper[coin]
+			coppers -= perCopper[coin] * addCoins
+			values[coin] += addCoins
+		}
+	}
+	character.Copper = uint16(values[0])
+	character.Silver = uint16(values[1])
+	character.Electrum = uint16(values[2])
+	character.Gold = uint16(values[3])
+	character.Platinum = uint16(values[4])
 }
 
 // SellShopItem transfers an item's documented raw Value to the party pool

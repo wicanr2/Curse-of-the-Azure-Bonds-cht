@@ -71,11 +71,21 @@ roll 與 party HP mutation 仍由作品 adapter 實作，避免把 ECL flags 誤
 這是可跨 Gold Box 重用的 raw ECL memory primitive，作品專屬的 table schema 仍須另行
 由反組譯證據建立。
 
-`0x24 COMBAT` 也是一個 resumable engine boundary：VM 會把 PC 推進到 COMBAT 後的
-instruction，再把控制權交給 battle loop。State 的 adapter 在 party victory 後以同一個
-`RuntimeState` 續跑，因此可以接回 ECL 的 text、menu、PICTURE 或 `NEWECL`；direct-entry
-戰鬥沒有 ECL session 時則維持一般結果畫面。這個 contract 對後續 Gold Box 作品比「戰鬥
-結束就回地圖」更接近原版事件 continuation。
+`0x24 COMBAT` 是 resumable engine boundary，但不保證進入 battle loop。CoAB reference
+`CMD_Combat` 在無怪物且 combat type 為 normal 時，先依 `Area2.EnterShop`／
+`EnterTemple` 派送 `CityShop`／temple shop，兩個 flag 都未設定才做一般戰後寶物；
+有怪物或特殊 combat type 才進入戰鬥。CoAB ECL mirror 已確認 EnterShop=`0x7F6C`、
+shop price scale=`0x7F6D`、EnterTemple=`0x7EE2`。VM 必須先輸出 typed service／combat
+signal並把 PC 推進到 COMBAT 後，State adapter 在 service 關閉或 party victory 後以同一
+`RuntimeState` 續跑，才能接回 text、menu、PICTURE 或 `NEWECL`。
+
+CityShop 的 stock 由前置 `TREASURE` 載入 `items_pointer`；購入時加入商品的
+`ShallowClone()`，不移除 stock entry。`field_6DA` 的 `01/02/04/08` 是右移
+4/3/2/1，`20/40/80` 是左移 1/2/3，其他值（包括 Tilverton Weaponers 使用的
+`0x10`）維持原價。付款先用 selected player 的 typed-coin gold worth，再用 pooled
+money；進店會清空既有 pool。後續作品可重用 resumable dispatch 形狀，但 Area2 位址、
+service priority、ITEM namespace、價格表及貨幣規則都必須重新驗證，不能把 CoAB 常數
+升格成通用 VM semantics。
 
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。

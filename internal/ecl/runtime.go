@@ -17,6 +17,9 @@ type RunResult struct {
 	WaitingForWho          bool
 	NewECLBlockID          *uint8
 	CombatRequested        bool
+	ShopRequested          bool
+	ShopPriceScale         uint16
+	TempleRequested        bool
 	MonsterSetup           *MonsterSetup
 	MonsterSpawns          []MonsterSpawn
 	ProgramIDs             []uint8
@@ -813,10 +816,19 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			saveState(next)
 			return result, nil
 		case 0x24: // COMBAT
-			// The original engine transfers control to its combat loop here.
-			// Expose that control transfer and persist the instruction after it;
-			// the game adapter can resume the same ECL event after victory.
-			result.CombatRequested = true
+			// CMD_Combat is also the external service dispatcher when no
+			// monsters are loaded. Area2.EnterShop/EnterTemple are mirrored in
+			// the ECL player-memory window and take precedence over combat.
+			if memory[0x7F6C] == 1 {
+				result.ShopRequested = true
+				result.ShopPriceScale = memory[0x7F6D]
+				memory[0x7F6C] = 0
+			} else if memory[0x7EE2] == 1 {
+				result.TempleRequested = true
+				memory[0x7EE2] = 0
+			} else {
+				result.CombatRequested = true
+			}
 			result.PC = next
 			saveState(next)
 			return result, nil

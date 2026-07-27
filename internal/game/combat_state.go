@@ -1388,7 +1388,7 @@ func (s *State) finishCombat() error {
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
 	s.Message = s.combatMessage
 	if s.battle.Status() == combat.StatusPartyWon {
-		if continued, err := s.continueECLAfterCombat(); err != nil {
+		if continued, err := s.continueECLAfterEngineBoundary(); err != nil {
 			return err
 		} else if continued {
 			return nil
@@ -1401,12 +1401,10 @@ func (s *State) finishCombat() error {
 	return nil
 }
 
-// continueECLAfterCombat resumes the same runtime state that stopped at the
-// ECL COMBAT opcode. The bounded VM saves its PC immediately after COMBAT, so
-// a party victory can continue into the original PRINT/menu/NEWECL path
-// without replaying the encounter. A battle entered through StartCombat (or a
-// direct test adapter without an ECL session) keeps the existing result screen.
-func (s *State) continueECLAfterCombat() (bool, error) {
+// continueECLAfterEngineBoundary resumes the runtime state saved after
+// CMD_Combat dispatched combat, CityShop or Temple. Combat calls it after
+// victory; ECL-backed services call it when their UI closes.
+func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	if s.session == nil || len(s.eclBlock) == 0 {
 		return false, nil
 	}
@@ -1432,6 +1430,9 @@ func (s *State) continueECLAfterCombat() (bool, error) {
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	s.applyECLRobSignals(result)
+	if result.ShopRequested {
+		return true, s.enterECLShop(result)
+	}
 	treasureReady := false
 	if len(result.TreasureRequests) > 0 {
 		if err := s.ResolveTreasureRequests(); err != nil {
