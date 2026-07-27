@@ -192,3 +192,4 @@
 - [第一百九十五輪 ECL spell signal state bridge](./195-ecl-spell-state-bridge.md)（`READY`：限 SPELL／PROTECTION pending queue 與一次性 consume）
 - [第一百九十六輪 ECL initialization entry smoke analysis](./196-ecl-entry-smoke.md)（`READY`：限 ECL1–ECL6 五入口 bounded report）
 - [第一百九十七輪真實 ECL2 encounter Battle](./197-real-ecl2-encounter-battle.md)（`READY`：限 block 3 entry 3、MON2CHA 與 packed AC adapter）
+- [第一百九十八輪跨 ECL chapter monster records](./198-ecl-chapter-monster-records.md)（`READY`：限 ECL block namespace 到 MON1–MON6CHA lookup）
