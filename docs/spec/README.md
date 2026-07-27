@@ -236,3 +236,4 @@
 - [第二百五十六輪 ITEM DAX treasure loader](./256-item-dax-treasure-loader.md)（`READY`：限六區域 ITEM DAX parser、loot queue 與明確 pickup）
 - [第二百五十七輪 TREASURE random 與 party pickup](./257-treasure-random-and-pickup.md)（`READY`：限 seeded random table、loot menu 與 party equipment mutation）
 - [第二百五十八輪 TREASURE／COMBAT continuation](./258-treasure-combat-continuation.md)（`READY`：限 loot、戰鬥與勝利後 ECL continuation 順序）
+- [第二百五十九輪 DOS multi-class level preservation](./259-dos-multiclass-levels.md)（`READY`：限 raw class IDs、八組等級與 primary-class adapter）
