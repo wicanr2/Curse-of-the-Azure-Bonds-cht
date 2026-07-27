@@ -282,3 +282,4 @@
 - [第三百零二輪火刀灰燼房間](./302-fire-knife-ashen-rooms.md)（`READY`：限 terrains `0x9C–0xA0`、五個 visited flags、手札 29 與繁中探索）
 - [第三百零三輪火刀首領與解除枷印](./303-fire-knife-leader-bond.md)（`READY`：限 terrain `0x87`、21 人首領戰、勝利財寶、手札 11／53／54 與第一段 bond progression）
 - [第三百零四輪提爾佛頓放逐與阿沙本福德山徑](./304-tilverton-ashabenford-trail.md)（`READY`：限 BIGPIC 121、Tilverton 禁止入城、Ashabenford TRAIL、八隻鷹馬與 world-state writeback）
+- [第三百零五輪阿沙本福德與立石群](./305-ashabenford-standing-stone.md)（`READY`：限 PICTURE 80、城市服務、酒館傳聞 28、Shadow Gap 火刀伏擊與灰袍人紅色提示）

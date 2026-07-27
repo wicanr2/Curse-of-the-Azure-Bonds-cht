@@ -115,6 +115,8 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 	switch strings.TrimSpace(strings.ToUpper(name)) {
 	case "HIPPOGRIFF":
 		return catalog.Text("monster_hippogriff", "鷹馬")
+	case "FIGHTER":
+		return catalog.Text("monster_fighter", "戰士")
 	default:
 		return name
 	}

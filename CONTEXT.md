@@ -16,6 +16,13 @@ Tilverton 禁止入城、JOURNEY ON→ASHABENFORD→TRAIL、提爾隘口八隻�
 最後以 `4C83=1`、`4C9B=2`、`4CA1=2` 落在 LocationAshabenford。圖片關閉時
 仍會保留原始 Continue menu，不會截斷多段 ECL 劇情。
 
+正式流程再延伸至立石群：Ashabenford ENTER CITY 顯示 PICTURE 80 與
+INN/STORE/HALL/TEMPLE/BAR/LEAVE；HALL 的 PROGRAM 0 依 choice context 進入
+訓練服務。河畔酒館已繁中化 Tavern Tale 28。離城選 Standing Stone TRAIL
+會遭六名 MON1 `0x59`／icon `0x20` 偽裝火刀伏擊；勝利後灰袍人指出尚有四位
+主人，THANK HIM 顯示「往南方尋找紅色之人」，並以 `4C9B=4` 同步
+LocationStandingStone。
+
 ## 目前輪次
 
 第一百五十九輪：State LOAD PIECES request。

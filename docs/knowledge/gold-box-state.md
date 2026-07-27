@@ -403,3 +403,12 @@ Shadowdale/Ashabenford/Dagger Falls，再以舊 sequence 僅作 synthetic fallba
 loot 選擇「暫不收下」代表離開剩餘物品，必須清掉 pending item list；否則下一個
 沒有 TREASURE 的 encounter 勝利時仍會誤開上一戰 loot。火刀首領→Tilver's Gap
 端到端流程已用這個跨戰鬥 regression 鎖定 ownership。
+
+world location values 不只三座早期城市。`4C9B=4` 是 Standing Stone；作品層應用
+明確 value→Location table 投影，而不是把超過 3 的值忽略、也不能與 remake
+內部 `LocationTilverton` enum 數字混為一談。
+
+`PROGRAM` ID 也不是全域單義。Ashabenford HALL 再次證實 PROGRAM 0 必須和
+玩家剛選的場所 context 配對為 training service；只有其他 start-menu context
+才回標題。可重用 VM 應輸出 routine boundary，語意由作品 State 的 caller context
+判斷。
