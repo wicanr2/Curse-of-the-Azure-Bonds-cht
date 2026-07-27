@@ -702,3 +702,9 @@ flash。Ebiten 保存每個 fighter 的 flash start time；party 隨後顯示 `D
 停止繪製死亡小人，治療時清理 lifecycle state。新增 9-cycle core regression，更新 Death／
 graphics／README／PLAN 知識庫。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
 `internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百三十輪重大里程碑 commit：`d40f877`，依 reference `RemoveFromCombat` 完成
+Ebiten render lifecycle：enemy 的 DeathOverlay 九次 phase 結束後完全停止繪製名稱／HP，
+並從戰場畫面退出；team party 的 DownedCorpse 則保留原座標與繁中「倒下」marker。更新
+ECL／graphics／README／PLAN 知識庫。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
+`internal/party`、`internal/ecl`、`internal/locale`，`git diff --check` 通過。
