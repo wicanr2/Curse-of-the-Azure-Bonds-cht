@@ -157,3 +157,4 @@
 - [第一百六十輪 LOAD PIECES 地圖素材 adapter](./160-load-pieces-map-adapter.md)（`READY`：限 WALLDEF／8X8D selector 載入）
 - [第一百六十一輪 WALLDEF global symbol offset](./161-walldef-symbol-offset.md)（`READY`：限 raw cell 到 8×8D item lookup）
 - [第一百六十二輪 3D wall viewport layout slice](./162-wall-viewport-layout.md)（`READY`：限 wall stamp layout 與 preview）
+- [第一百六十三輪 Far／Mid／Near wall traversal](./163-wall-far-mid-near-traversal.md)（`READY`：限 GEO traversal 與 layout calls）
