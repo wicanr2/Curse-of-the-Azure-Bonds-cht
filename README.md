@@ -106,6 +106,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   熔岩洞、經祕道前往荒野，或留在塔頂；選荒野後仍會依原 ECL 再詢問回哈普村
   或離開此區，不會被重製版看到 `WILDERNESS` 字樣便提前跳過第二層選單。
   `-wizard-tower-exit` 可直接重現這個 640×480 繁中出口。
+- 塔頂祕道選擇「離開此區」後不再停在 ECL5 block `0x30`：阿卡巴會依哈普與
+  法師塔旗標正式告別並由 `DUMP` 離隊；日光會使 item type `0x5E/0x60/0x61`
+  的黑暗精靈武器、護甲腐朽。兩段繁中 Continue 完成後才 `NEWECL 0x50`，
+  顯示原版 BIGPIC 121 並回到可繼續選擇城市／旅程／紮營的世界流程。
 
 ![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
 

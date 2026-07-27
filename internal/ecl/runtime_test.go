@@ -420,6 +420,29 @@ func TestRunSubsetLoadCharacterFeedsSelectedNameStringMemory(t *testing.T) {
 	}
 }
 
+func TestRunSubsetLoadCharacterProjectsControlMorale(t *testing.T) {
+	// LOAD CHARACTER 0; COMPARE [player+0xB8], 0x80; IF >=; GOTO success.
+	block := []byte{0, 0,
+		0x0A, 0x02, 0x00, 0x00,
+		0x03, 0x01, 0xB8, 0x7C, 0x00, 0x80,
+		0x1B,
+		0x01, 0x02, 0x16, 0x80,
+		0x11, 0x80, 0x03, 0x38, 0xF0, 0x00,
+		0x00,
+		0x11, 0x80, 0x03, 0x64, 0x54, 0xC0,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 20, nil, 1, PartyContext{
+		Members: []PartyMemberContext{{Name: "NPC", ControlMorale: 0xB2}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "YES" {
+		t.Fatalf("text=%q, want projected control/morale to take >= 0x80 branch", result.Text)
+	}
+}
+
 func TestRunSubsetRecordsFindItemQueryAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x32, 0x00, 0x5E,

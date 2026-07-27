@@ -230,6 +230,12 @@ resume 原 script，才會出現 `VILLAGE/DEPART` 第二層選單。作品 adapt
 最後留下 `(6,15,E)`。State 應在完整 transition 後重新讀 `C04B..C04D`，並同步
 目的 ECL/GEO block；不可只套 source write，也不可讓 renderer 沿用舊 geometry。
 
+地區 `DEPART` 也可能是劇情清理 entry，而非直接切換世界畫面。CoAB Area 5 的
+block `0x30` 會先掃描阿卡巴、以 DUMP 離隊，再檢查並銷毀三類見光腐朽的黑暗
+精靈裝備，最後才 `NEWECL 0x50`。State 應按每個 Continue result 依序套用 NPC 與
+inventory signals；若 renderer／label adapter 提前 `enterMap()`，玩家雖看似離場，
+但 roster、裝備和章節 work bytes 都會與原版分歧。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。

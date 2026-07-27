@@ -1335,3 +1335,12 @@ target initial registers，新增 READY spec 319、`-wizard-tower-exit` 及
 640×480／24px 繁中實機圖。共用 Gold Box 知識庫同步確立：原圖 nearest-neighbour
 整數放大、CJK 直接在高解析 logical canvas rasterize，ordinary menu label 不可
 脫離 block context 當成引擎 action。
+
+第三百二十輪成果：法師塔祕道 DEPART 已沿真實 session 完成 ECL5 block `0x30`
+離場程序。`LOAD CHARACTER` 現將 party `ControlMorale` 投影到 selected-player
+`0x7CB8`，阿卡巴不再因只有姓名投影而被錯判不存在；完成塔與哈普時，他會以
+繁中告別並由原 DUMP 離隊。下一個獨立 Continue 顯示日光使黑暗精靈裝備腐朽，
+並銷毀 item `0x5E/0x60/0x61`。最後 `NEWECL 0x50` 顯示 BIGPIC 121，回到
+ENTER CITY／JOURNEY ON／CAMP 世界流程。新增 READY spec 320、synthetic
+selected-window regression、real block 0x30 regression 與完整塔頂長流程驗證；
+Gold Box 共用知識庫同步記錄 control/morale projection 與 DEPART cleanup 契約。

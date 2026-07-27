@@ -297,3 +297,4 @@
 - [第三百一十七輪法師塔與黑龍交涉](./317-wizard-tower-dragon-parlay.md)（`READY`：限五態度 mapping、敵對黑龍戰、成功交涉後守軍與地城 continuation）
 - [第三百一十八輪法師塔黑龍戰與龍心](./318-wizard-tower-black-dragons-heart.md)（`READY`：限 ATTACK/FLEE 共用 14 黑龍、戰後龍心、酸液 DAMAGE 與安全屋頂）
 - [第三百一十九輪法師塔屋頂出口與祕道](./319-wizard-tower-roof-exits.md)（`READY`：限 `(7,15,E)` terrain 1、CAVES/WILDERNESS/STAY HERE、村莊／離區 NEWECL）
+- [第三百二十輪 Area 5 離場清理與阿卡巴告別](./320-area5-departure-cleanup.md)（`READY`：限 block 0x30 NPC／黑暗精靈裝備清理與 NEWECL 0x50 世界返回）
