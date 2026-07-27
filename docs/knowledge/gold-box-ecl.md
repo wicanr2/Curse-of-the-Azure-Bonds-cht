@@ -96,5 +96,5 @@ unconscious／dying corpse，普通治療只清除 skull flash、保留 corpse �
 初始 HP=0 fighter 也套用相同正規化，因此不會進入 turn 或佔用碰撞格。明確
 `CombatHealAllowed` 的 affect_63 recovery 會以死亡時 CombatX/Y 呼叫
 `Battle.RestoreCombatant`，清除 `DownedCorpse` 並重新放回 position；普通 Cure 不會站起。
-renderer-neutral `DeathOverlayFrame` 現已覆蓋完整 9-cycle timing，Ebiten 九次後轉為
-corpse marker；其他 Death routine 仍保留 boundary。
+renderer-neutral `DeathOverlayFrame` 現已覆蓋完整 9-cycle timing，Ebiten 九次後 party
+轉為 corpse marker、enemy 完全移除名稱／HP render；其他 Death routine 仍保留 boundary。
