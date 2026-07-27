@@ -522,3 +522,11 @@ units 的 `Character.DestroyItemType`，並以 party／State regression 驗證�
 仍維持 query-only signal，compare result、完整 item namespace 與事件分支仍保留
 boundary。Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、
 `internal/locale` 測試。
+
+第二百一十輪功能 commit：`ed4f162`，依公開 CoAB reference `CMD_Damage` 與六個
+ECL raw scan，將 `DAMAGE` 五欄 `flags／dice_count／dice_size／damage_bonus／save_flags`
+保存為 `RunResult.DamageRequests`，並接入 `BlockSession` aggregation；新增 synthetic
+continuation 與真實 ECL2 block 3 `+0x1599` operand regression、READY spec 與 command-set
+knowledge。Docker 已通過 `internal/ecl`、`internal/game`、`internal/party`、
+`internal/locale`；target／saving throw／random roll／HP mutation 仍保留 party adapter
+boundary。
