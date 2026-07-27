@@ -559,6 +559,21 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 				return result, fmt.Errorf("ECL CLOCK time slot at %d: %w", pc, err)
 			}
 			result.ClockRequests = append(result.ClockRequests, ClockRequest{TimeStep: timeStep, TimeSlot: timeSlot})
+		case 0x35: // SAVE TABLE
+			if !instruction.Operands[1].WordSet {
+				return result, fmt.Errorf("SAVE TABLE at %d has non-address destination", pc)
+			}
+			value, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("SAVE TABLE value at %d: %w", pc, err)
+			}
+			offset, err := operandValue(instruction.Operands[2], memory)
+			if err != nil {
+				return result, fmt.Errorf("SAVE TABLE offset at %d: %w", pc, err)
+			}
+			// Reference CMD_SaveTable writes value operand 1 to the address
+			// operand 2.Word + value operand 3.
+			memory[instruction.Operands[1].Word+offset] = value
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])
 			if err != nil {

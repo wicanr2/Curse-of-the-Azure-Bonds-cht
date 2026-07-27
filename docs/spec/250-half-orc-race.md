@@ -15,7 +15,8 @@ reference `Gbl.RaceClasses` 明確列出半獸人的 cleric、fighter、thief �
 ## 實作邊界
 
 - `party.RaceHalfOrc` 與 raw DOS race `6` 已可解析、驗證、序列化並使用正常 combat icon size。
-- 建立選單接入半獸人 cleric／fighter／thief。
+- 建立選單接入半獸人 cleric／fighter／thief；fighter 的 `13+1d4` 已修正為
+  reference `ClassId=2`，不再誤套到本專案的 ranger index。
 - half-orc multi-class、alignment／level limits 與完整原版建立流程仍待接續。
 
 ## 驗證

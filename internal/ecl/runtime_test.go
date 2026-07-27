@@ -128,6 +128,24 @@ func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 	}
 }
 
+func TestRunSubsetSaveTableWritesIndexedMemory(t *testing.T) {
+	// SAVE 7 -> memory[0x9000]; SAVE TABLE memory[0x9000] to
+	// memory[0x9100+2]; then print the indexed destination.
+	payload := []byte{
+		0x09, 0x00, 7, 0x02, 0x00, 0x90,
+		0x35, 0x01, 0x00, 0x90, 0x02, 0x00, 0x91, 0x00, 2,
+		0x11, 0x01, 0x02, 0x91,
+		0x00,
+	}
+	result, err := RunSubset(append([]byte{0, 0}, payload...), 0, 20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "7" {
+		t.Fatalf("text=%q, want [7]", result.Text)
+	}
+}
+
 func TestRunSubsetCompareAndFeedsIf(t *testing.T) {
 	// COMPARE AND (1,1) (2,2); IF =; PRINT "YES"; EXIT.
 	payload := []byte{
