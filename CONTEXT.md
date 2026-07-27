@@ -601,3 +601,13 @@ active party defeat regression；完整 `CheckAffectsEffect(Death)`、bleeding�
 
 第二百一十八輪文件 commit：`e6f8e2b`，更新 ECL death continuation READY spec、Gold Box
 ECL／State 知識庫、README 與 PLAN，清除 active combat win/loss 已完成後的過時描述。
+
+第二百一十九輪功能 commit：`37d2678`，依 reference `RemoveCombatAffects` 建立
+`Character.RemoveCombatAffects` 的 19-kind cleanup table，並在 active-combat ECL damage
+角色倒下時接入 State；blink `0x25`／invisibility `0x19`／`0x47` 因不在 reference
+清單中保留。新增 party cleanup 與 State death regression；`CheckAffectsEffect(Death)`、
+bleeding、完整 combatant removal 仍保留 boundary。Docker 已通過 `internal/combat`、
+`internal/game`、`internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百一十九輪文件 commit：`b31e551`，更新 death/effect READY spec、Gold Box ECL／
+State 知識庫、README 與 PLAN，記錄 cleanup table 與尚未解出的 Death side effects。
