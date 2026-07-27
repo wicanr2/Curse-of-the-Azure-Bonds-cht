@@ -561,3 +561,13 @@ Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal
 第二百一十四輪文件 commit：`efa1056`，更新 README、PLAN、ECL／State 共用知識庫與
 212／213 READY specs，明確區分已完成的 save bonus／AC／invisibility adapter 與後續
 作品專屬效果邊界。
+
+第二百一十五輪功能 commit：`b1a3298`，依 reference `CheckAffectsEffect(Type_16)`／
+`AffectBlink` 修正 `CanHitTarget` 的 natural-20 順序：先放大為 100，再套用 effects；
+active blink `0x25` 在 `actions.delay == 0` 時可將 attack roll 設為 -1。新增
+`ECLHitContext` 與 State context adapter，讓戰鬥回合能傳入 action delay；displace 的
+persistent affect-data bit、其他 effects 與 death continuation 仍保留 boundary。
+Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十五輪文件 commit：`0da9742`，更新 ECL／State 共用知識庫、READY spec、
+README 與 PLAN，清除 blink 已完成後的過時描述。
