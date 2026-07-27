@@ -65,20 +65,23 @@ const (
 )
 
 type State struct {
-	Mode            Mode
-	Title           string
-	Prompt          string
-	Choices         []string
-	Message         string
-	Location        Location
-	LocationName    string
-	MapX            int
-	MapY            int
-	WildernessFloor mapdata.WildernessFloor
-	Area            area.State
-	GeoMapSet       uint8
-	GeoMapBlock     uint8
-	LoadPieces      [3]uint16
+	Mode             Mode
+	Title            string
+	Prompt           string
+	Choices          []string
+	Message          string
+	Location         Location
+	LocationName     string
+	MapX             int
+	MapY             int
+	DungeonX         int
+	DungeonY         int
+	DungeonDirection uint8
+	WildernessFloor  mapdata.WildernessFloor
+	Area             area.State
+	GeoMapSet        uint8
+	GeoMapBlock      uint8
+	LoadPieces       [3]uint16
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -293,6 +296,9 @@ func NewState(catalog locale.Catalog) State {
 		fixSeed:           1,
 		GeoMapSet:         2,
 		GeoMapBlock:       1,
+		DungeonX:          8,
+		DungeonY:          8,
+		DungeonDirection:  0,
 		Area:              area.State{GameArea: 2},
 	}
 }

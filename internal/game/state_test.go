@@ -207,6 +207,26 @@ func TestLocationDefaultsToWilderness(t *testing.T) {
 	}
 }
 
+func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 11, 6, 2
+	path := t.TempDir() + "/game.json"
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(testCatalog())
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	if loaded.DungeonX != 11 || loaded.DungeonY != 6 || loaded.DungeonDirection != 2 {
+		t.Fatalf("loaded dungeon state=(%d,%d,%d)", loaded.DungeonX, loaded.DungeonY, loaded.DungeonDirection)
+	}
+}
+
 func TestCityMenuSelectionMapsAllLocalizedLocations(t *testing.T) {
 	catalog := testCatalog()
 	catalog.Strings["shadowdale"] = "暗影谷"

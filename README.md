@@ -93,6 +93,7 @@
 - dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
 - dungeon preview 現在會依 party facing 執行 Far／Mid／Near GEO wall traversal，展開有順序的 8×8D wall stamps；GEO wrap、sky／roof、door、遮擋與 camera 仍待完成。
 - dungeon preview 方向鍵現在會依 GEO 雙側 wall collision 移動 map position，並重建 floor／Far/Mid/Near wall view；正式 Area camera、scroll、movement cost 與 encounter 仍待完成。
+- remake game save version 3 現在會保存 dungeon preview 的 `(x,y)` 與八方向 facing；舊版 save 可載入並安全回到中心預設，F9／啟動載入後會重建 floor 與 wall view。
 - `CAMP → REST` 現在提供 `REST ADD SUBTRACT EXIT`，每 24 小時不間斷休息自然恢復 1 HP；一級法術記憶會先檢查「4 小時最低準備 + 每個法術 15 分鐘」，不足時保留 pending 選擇，完整高等級時間與遭遇中斷仍待反組譯。
 - `城市 → BAR` 現在可逐則閱讀前六則繁中 Tavern Tale，按 Enter 回到酒館再離開返回場所選單；買酒價格、城市條件與完整 ECL tale trigger 仍待反組譯。內容整理見 [`docs/manual/tavern-tales-zh-TW.md`](docs/manual/tavern-tales-zh-TW.md)。
 
@@ -112,6 +113,6 @@ go run ./scripts
 
 ## 尚未完成
 
-完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，但原版完整 save slot／game-area loader 與所有 file side effects 仍未完成。
+完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；原版完整 save slot／game-area loader 與所有 file side effects 仍未完成。
 
 更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/) 與 [`docs/history.md`](docs/history.md)。
