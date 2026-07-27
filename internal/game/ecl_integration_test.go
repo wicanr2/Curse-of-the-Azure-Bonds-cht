@@ -1018,6 +1018,63 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.GeoMapSet, state.GeoMapBlock, state.DungeonWallRoof, state.Message, state.Choices)
 	}
+	if state.Mode != ModeWilderness || state.GeoMapSet != 2 || state.GeoMapBlock != 3 ||
+		state.DungeonX != 0 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
+		!strings.Contains(state.Message, "提爾佛頓") || !strings.Contains(state.Message, "難在這裡靈活作戰") {
+		t.Fatalf("sewer entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.Message)
+	}
+	sewerGrid, ok := geoCatalog.Lookup(geo.MapRef{Set: 2, BlockID: 3})
+	if !ok {
+		t.Fatal("Tilverton sewer GEO2 block 3 is absent")
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 8, 2
+	state.DungeonWallType, _ = sewerGrid.WallWrapped(1, 8, 2)
+	state.DungeonWallRoof = sewerGrid.CellWrapped(1, 8).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "火刀要求你們立刻投降") ||
+		len(state.Choices) != 2 {
+		t.Fatalf("sewer checkpoint mode=%v terrain=%#x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message, state.Choices)
+	}
+	hero = state.PartyFighters()[0]
+	hero.HitPoints, hero.MaxHitPoints = 2000, 2000
+	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("sewer checkpoint refusal mode=%v active=%v message=%q",
+			state.Mode, state.CombatActive(), state.Message)
+	}
+	fireKnives := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy && fighter.Name == "FIRE KNIFE" {
+			fireKnives++
+		}
+	}
+	if fireKnives != 5 {
+		t.Fatalf("sewer checkpoint Fire Knives=%d, want 5; fighters=%v",
+			fireKnives, state.CombatFighters())
+	}
+	for turn := 0; turn < 30 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
+		!strings.Contains(state.Message, "火刀的屍體藏了起來") {
+		t.Fatalf("sewer checkpoint status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

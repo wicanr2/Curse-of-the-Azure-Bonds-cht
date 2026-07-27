@@ -4188,6 +4188,10 @@ func (s *State) finishNewGameEntry() {
 // per-turn then search-location ECL entries used by sub_29758 after a
 // successful forward step.
 func (s *State) RunDungeonLifecycle() error {
+	return s.runDungeonLifecycle(false)
+}
+
+func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	if s.Mode != ModeDungeon {
 		return fmt.Errorf("dungeon lifecycle is invalid in mode %d", s.Mode)
 	}
@@ -4195,13 +4199,24 @@ func (s *State) RunDungeonLifecycle() error {
 		return fmt.Errorf("dungeon lifecycle requires an ECL session")
 	}
 	s.syncDungeonECLRegisters()
+	if exitAttempt {
+		x, y, direction := s.DungeonGeometryView()
+		s.session.SetMemoryValue(0xC04B, uint16(x))
+		s.session.SetMemoryValue(0xC04C, uint16(y))
+		s.session.SetMemoryValue(0xC04D, uint16(direction/2))
+		s.session.SetMemoryValue(0x7ED5, 1)
+	}
 
 	for _, entry := range []int{0, 1} {
+		blockBefore := s.session.CurrentBlockID()
 		result, err := s.session.RunEntrySeedWithPartyContext(
 			entry, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 		)
 		if err != nil {
 			return err
+		}
+		if s.session.CurrentBlockID() != blockBefore {
+			s.syncDungeonStateFromECLRegisters()
 		}
 		if handled, err := s.applyDungeonLifecycleResult(result); handled || err != nil {
 			return err
@@ -4218,8 +4233,20 @@ func (s *State) RunDungeonExitLifecycle() error {
 	if s.session == nil {
 		return fmt.Errorf("dungeon exit lifecycle requires an ECL session")
 	}
-	s.session.SetMemoryValue(0x7ED5, 1)
-	return s.RunDungeonLifecycle()
+	return s.runDungeonLifecycle(true)
+}
+
+func (s *State) syncDungeonStateFromECLRegisters() {
+	if value, ok := s.session.MemoryValue(0xC04B); ok {
+		s.DungeonX = int(int16(value))
+	}
+	if value, ok := s.session.MemoryValue(0xC04C); ok {
+		s.DungeonY = int(int16(value))
+	}
+	if value, ok := s.session.MemoryValue(0xC04D); ok {
+		s.DungeonDirection = uint8(value&3) * 2
+	}
+	s.MapX, s.MapY = s.DungeonX, s.DungeonY
 }
 
 func (s *State) syncDungeonECLRegisters() {
@@ -4713,6 +4740,13 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	case strings.Contains(joined, "GREEN SLIMY MARKS") &&
 		strings.Contains(joined, "MORE DISTINCT NEAR THE DOOR"):
 		return catalog.Text("ecl_guild_sewer_traces", "地面留有綠色黏液痕跡，越靠近門越清晰。")
+	case strings.Contains(joined, "FOUL SMELLING, SLIME COVERED") &&
+		strings.Contains(joined, "FIGHTING WILL BE") &&
+		strings.Contains(joined, "AWKWARD"):
+		return catalog.Text(
+			"ecl_tilverton_sewers_entry",
+			"你們進入提爾佛頓惡臭撲鼻、覆滿黏液的下水道。地面濕滑、天花板低矮，顯然很難在這裡靈活作戰。",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -4730,6 +4764,14 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_carriage_bond_compulsion",
 			"國王的聲音從馬車裡傳來。你們手臂上的青色印記突然發出強光，一股無法抗拒的力量迫使你們攻擊皇家馬車！",
 		)
+	case strings.Contains(joined, "FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER") &&
+		strings.Contains(joined, "DO YOU SURRENDER"):
+		return catalog.Text(
+			"ecl_sewers_fire_knife_checkpoint",
+			"火刀要求你們立刻投降。你們要投降嗎？",
+		)
+	case strings.Contains(joined, "YOU QUICKLY HIDE THEIR BODIES"):
+		return catalog.Text("ecl_sewers_hide_checkpoint_bodies", "你們迅速把火刀的屍體藏了起來。")
 	case strings.Contains(joined, "I'M NOT REALLY THE KING") &&
 		strings.Contains(joined, "OH NO! NOT AGAIN"):
 		return catalog.Text(
