@@ -71,6 +71,16 @@ func (s *State) addGameClock(timeSlot int, amount uint16) {
 	}
 	if carry > 0 {
 		s.gameAgeCycles += carry
+		for index := range s.partyRoster {
+			age := int64(s.partyRoster[index].Age) + int64(carry)
+			if age > math.MaxInt16 {
+				age = math.MaxInt16
+			}
+			if age < math.MinInt16 {
+				age = math.MinInt16
+			}
+			s.partyRoster[index].Age = int16(age)
+		}
 	}
 }
 

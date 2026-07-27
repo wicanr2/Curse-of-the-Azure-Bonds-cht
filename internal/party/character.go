@@ -117,6 +117,8 @@ type Character struct {
 	Class     Class     `json:"class"`
 	Abilities Abilities `json:"abilities"`
 	Level     int       `json:"level"`
+	// Age preserves the signed DOS player age at record offset 0x76.
+	Age int16 `json:"age,omitempty"`
 	// IconSize follows Player.icon_size: 1 is small and 2 is normal.
 	// Zero means derive the original default from Race for old save files.
 	IconSize        uint8                  `json:"icon_size,omitempty"`
