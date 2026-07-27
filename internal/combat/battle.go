@@ -162,6 +162,14 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 		if fighter.DamageDiceCount < 0 || fighter.DamageDiceSides < 0 {
 			return nil, fmt.Errorf("fighter %q has invalid damage dice", fighter.ID)
 		}
+		if fighter.HitPoints == 0 {
+			// A battle imported from a save/encounter may already contain a
+			// downed combatant. Apply the same CombatantKilled boundary at
+			// construction time so it cannot occupy a tile or turn order.
+			fighter.HasCombatPosition = false
+			fighter.DeathOverlay = true
+			fighter.CombatAction = ActionState{}
+		}
 		b.fighters[fighter.ID] = fighter
 	}
 	return b, nil
