@@ -17,9 +17,9 @@ roster and return the selected character through an explicit selection transacti
 
 ## Boundary
 
-This round does not silently choose a character or mutate `SelectedPlayer`; the State
-selection transaction, prompt rendering and continuation writeback remain separate.
-This avoids confusing WHO's roster selection with HORIZONTAL/VERTICAL MENU selection.
+The bounded VM does not silently choose a character. State roster selection and
+continuation are defined by the follow-up [WHO roster transaction](./268-who-roster-transaction.md);
+WHO remains distinct from HORIZONTAL/VERTICAL MENU selection.
 
 ## Verification
 

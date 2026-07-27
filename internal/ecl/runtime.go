@@ -13,6 +13,7 @@ type RunResult struct {
 	PC                     int
 	Steps                  int
 	WaitingForMenu         bool
+	WaitingForWho          bool
 	NewECLBlockID          *uint8
 	CombatRequested        bool
 	MonsterSetup           *MonsterSetup
@@ -27,6 +28,7 @@ type RunResult struct {
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
 	SelectionsConsumed     int
+	WhoSelectionsConsumed  int
 	RandomValues           []uint16
 	EncounterActions       []uint16
 	LoadFilesRequested     bool
@@ -67,7 +69,9 @@ type CheckPartyRequest struct {
 // the current ECL prompt text but its player selection belongs to the UI/state
 // adapter rather than a normal HORIZONTAL/VERTICAL MENU.
 type WhoRequest struct {
-	Prompt string
+	Prompt            string
+	Selected          uint16
+	SelectionProvided bool
 }
 
 // PartySurpriseRequest preserves the two destination addresses used by the
@@ -291,6 +295,10 @@ func RunSubsetInteractiveSeedWithPartyContext(block []byte, start, maxSteps int,
 	return runSubsetWithStateContext(block, start, maxSteps, selections, true, seed, NewRuntimeState(start), &context)
 }
 
+func RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(block []byte, start, maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, whoSelections, true, seed, NewRuntimeState(start), &context)
+}
+
 func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
 	return runSubsetWithState(block, start, maxSteps, selections, pauseOnMissing, seed, NewRuntimeState(start))
 }
@@ -300,6 +308,10 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 }
 
 func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
+	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, nil, pauseOnMissing, seed, runtime, partyContext)
+}
+
+func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int, selections, whoSelections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -340,6 +352,7 @@ func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []u
 		runtime.Compare = compare
 	}
 	selectionCursor := 0
+	whoSelectionCursor := 0
 	result := RunResult{PC: pc}
 	for result.Steps < maxSteps {
 		instruction, err := decodeInstruction(payload, pc)
@@ -842,7 +855,21 @@ func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []u
 			if len(result.Text) > 0 {
 				prompt = result.Text[len(result.Text)-1]
 			}
-			result.WhoRequests = append(result.WhoRequests, WhoRequest{Prompt: prompt})
+			request := WhoRequest{Prompt: prompt}
+			if whoSelectionCursor >= len(whoSelections) && pauseOnMissing {
+				result.WhoRequests = append(result.WhoRequests, request)
+				result.WaitingForWho = true
+				result.PC = pc
+				saveState(pc)
+				return result, nil
+			}
+			if whoSelectionCursor < len(whoSelections) {
+				request.Selected = whoSelections[whoSelectionCursor]
+				request.SelectionProvided = true
+				whoSelectionCursor++
+				result.WhoSelectionsConsumed++
+			}
+			result.WhoRequests = append(result.WhoRequests, request)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout

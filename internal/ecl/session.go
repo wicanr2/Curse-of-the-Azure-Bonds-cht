@@ -6,10 +6,11 @@ import "fmt"
 // intentionally separate from RunSubset: VM execution state can be extended
 // later without confusing a DAX block switch with a fallthrough branch.
 type BlockSession struct {
-	blocks          map[uint8][]byte
-	current         uint8
-	states          map[uint8]*RuntimeState
-	selectionOffset int
+	blocks             map[uint8][]byte
+	current            uint8
+	states             map[uint8]*RuntimeState
+	selectionOffset    int
+	whoSelectionOffset int
 }
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
@@ -98,6 +99,14 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContext(maxSteps int, selectio
 	return s.runFromSeedWithPartyContext(start, maxSteps, selections, seed, &context)
 }
 
+func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	start, err := s.InitialEntry()
+	if err != nil {
+		return RunResult{}, err
+	}
+	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &context)
+}
+
 // RunFrom executes an explicit event entry in the current block. After a
 // NEWECL signal, the target resumes at its own initial entry.
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
@@ -109,6 +118,10 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 }
 
 func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selections []uint16, seed int64, partyContext *PartyContext) (RunResult, error) {
+	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, nil, seed, partyContext)
+}
+
+func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSteps int, selections, whoSelections []uint16, seed int64, partyContext *PartyContext) (RunResult, error) {
 	var aggregate RunResult
 	var err error
 	selectionOffset := s.selectionOffset
@@ -119,11 +132,17 @@ func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selectio
 		} else {
 			remaining = nil
 		}
+		remainingWho := whoSelections
+		if s.whoSelectionOffset < len(whoSelections) {
+			remainingWho = whoSelections[s.whoSelectionOffset:]
+		} else {
+			remainingWho = nil
+		}
 		runtime := s.states[s.current]
 		if !runtime.Started {
 			runtime.PC = start
 		}
-		result, runErr := runSubsetWithStateContext(s.CurrentData(), start, maxSteps, remaining, true, seed, runtime, partyContext)
+		result, runErr := runSubsetWithStateContextAndWhoSelections(s.CurrentData(), start, maxSteps, remaining, remainingWho, true, seed, runtime, partyContext)
 		aggregate.Text = append(aggregate.Text, result.Text...)
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
@@ -167,12 +186,14 @@ func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selectio
 		aggregate.CheckPartyRequests = append(aggregate.CheckPartyRequests, result.CheckPartyRequests...)
 		aggregate.WhoRequests = append(aggregate.WhoRequests, result.WhoRequests...)
 		selectionOffset += result.SelectionsConsumed
+		s.whoSelectionOffset += result.WhoSelectionsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {
 			return aggregate, runErr
 		}
 		if result.NewECLBlockID == nil {
 			aggregate.WaitingForMenu = result.WaitingForMenu
+			aggregate.WaitingForWho = result.WaitingForWho
 			return aggregate, nil
 		}
 		if err := s.ApplyResult(result); err != nil {

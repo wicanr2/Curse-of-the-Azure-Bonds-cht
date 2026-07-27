@@ -245,3 +245,4 @@
 - [第二百六十五輪 ECL party context writeback](./265-ecl-party-context-writeback.md)（`READY`：限 party rule memory writeback）
 - [第二百六十六輪 ECL CHECKPARTY](./266-ecl-checkparty.md)（`READY`：限 skill／movement／affect branches）
 - [第二百六十七輪 ECL WHO selection](./267-ecl-who-selection.md)（`READY`：限 prompt／selection request boundary）
+- [第二百六十八輪 WHO roster transaction](./268-who-roster-transaction.md)（`READY`：限 ECL pause／選角／resume）

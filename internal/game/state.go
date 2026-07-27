@@ -119,6 +119,9 @@ type State struct {
 	eclBlock               []byte
 	eclStart               int
 	selectionSequence      []uint16
+	whoSelectionSequence   []uint16
+	whoMenu                bool
+	whoSelectedIndex       int
 	currentOriginalChoices []string
 	eventReturnMode        Mode
 	journalReturnMode      Mode
@@ -340,6 +343,7 @@ func NewState(catalog locale.Catalog) State {
 		DungeonX:         7,
 		DungeonY:         13,
 		DungeonDirection: 0,
+		whoSelectedIndex: -1,
 		Area:             area.State{GameArea: 2},
 	}
 }
@@ -353,6 +357,15 @@ func (s *State) SetBarTales(tales []string) {
 }
 
 func (s *State) BarTaleIndex() int { return s.barTaleIndex }
+
+// SelectedPlayerID exposes the last character chosen through an ECL WHO
+// transaction. An empty string means no WHO selection has been committed.
+func (s *State) SelectedPlayerID() string {
+	if s.whoSelectedIndex < 0 || s.whoSelectedIndex >= len(s.partyRoster) {
+		return ""
+	}
+	return s.partyRoster[s.whoSelectedIndex].ID
+}
 
 // eclPartyContext projects the currently loaded roster into the small,
 // renderer-neutral context required by reference PARTY commands. Combat
@@ -692,7 +705,8 @@ func (s *State) Select(index int) error {
 	if s.Mode == ModeMap {
 		return fmt.Errorf("choice %d is invalid in map mode", index)
 	}
-	if s.Mode != ModeWilderness && s.Mode != ModePlace || index < 0 || index >= len(s.Choices) {
+	whoSelecting := s.whoMenu
+	if (s.Mode != ModeWilderness && s.Mode != ModePlace) || index < 0 || index >= len(s.Choices) {
 		return fmt.Errorf("choice %d is invalid in mode %d", index, s.Mode)
 	}
 	originalChoice := ""
@@ -716,6 +730,11 @@ func (s *State) Select(index int) error {
 	}
 	if s.campMenu {
 		return s.selectCamp(index, originalChoice)
+	}
+	if whoSelecting {
+		s.whoMenu = false
+		s.whoSelectionSequence = append(s.whoSelectionSequence, uint16(index))
+		s.Message = fmt.Sprintf("已選擇角色：%s", s.Choices[index])
 	}
 	if originalChoice == "CAMP" && len(s.eclBlock) == 0 {
 		s.enterCampMenu()
@@ -744,16 +763,18 @@ func (s *State) Select(index int) error {
 		s.Message = s.Choices[index]
 	}
 	if len(s.eclBlock) > 0 {
-		s.selectionSequence = append(s.selectionSequence, uint16(index))
+		if !whoSelecting {
+			s.selectionSequence = append(s.selectionSequence, uint16(index))
+		}
 		var result ecl.RunResult
 		if s.session != nil {
-			result, _ = s.session.RunInteractiveSeedWithPartyContext(180, s.selectionSequence, s.eclSeed, s.eclPartyContext())
+			result, _ = s.session.RunInteractiveSeedWithPartyContextAndWhoSelections(180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
 			}
 		} else {
-			result, _ = ecl.RunSubsetInteractiveSeedWithPartyContext(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed, s.eclPartyContext())
+			result, _ = ecl.RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
 		}
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
@@ -778,6 +799,32 @@ func (s *State) Select(index int) error {
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.Message = localizeECLText(s.catalog, result.Text)
+		}
+		if len(result.WhoRequests) > 0 {
+			request := result.WhoRequests[len(result.WhoRequests)-1]
+			if request.SelectionProvided {
+				selected := int(request.Selected)
+				if selected < 0 || selected >= len(s.partyRoster) {
+					return fmt.Errorf("WHO selected character %d is outside party roster", selected)
+				}
+				s.whoSelectedIndex = selected
+			}
+		}
+		if result.WaitingForWho {
+			s.whoMenu = true
+			s.Choices = make([]string, 0, len(s.partyRoster))
+			s.currentOriginalChoices = make([]string, 0, len(s.partyRoster))
+			for _, character := range s.partyRoster {
+				s.Choices = append(s.Choices, character.Name)
+				s.currentOriginalChoices = append(s.currentOriginalChoices, character.ID)
+			}
+			if len(result.WhoRequests) > 0 && result.WhoRequests[len(result.WhoRequests)-1].Prompt != "" {
+				s.Prompt = localizeECLText(s.catalog, []string{result.WhoRequests[len(result.WhoRequests)-1].Prompt})
+			} else {
+				s.Prompt = "請選擇角色"
+			}
+			s.Mode = ModeWilderness
+			return nil
 		}
 		if result.PictureRequested {
 			if !s.picturesEnabled {

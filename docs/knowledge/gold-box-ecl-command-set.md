@@ -100,8 +100,9 @@ min／max／average／found ordering 由 `PartyContext` 寫入。未知 selector
 request，這個規則可跨 Gold Box 重用，但各作品需重新驗證 selector table。
 
 `WHO (0x39)` 是一個獨立的 character-selection boundary：它使用目前 prompt 呼叫
-`selectAPlayer`，不是從 operand 產生選項。VM 現在保存 `WhoRequest.Prompt` 並繼續，
-State adapter 應以 roster UI／明確 selection transaction 消費，不能自動選第一位角色。
+`selectAPlayer`，不是從 operand 產生選項。VM 現在保存 `WhoRequest.Prompt`，interactive
+path 會 pause，State 以 roster UI 消費 selection，再由 shared `RuntimeState` resume；
+selected player ID 已保存，但其他 global routine side effects 仍需各自驗證。
 
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item

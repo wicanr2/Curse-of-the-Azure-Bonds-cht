@@ -907,3 +907,8 @@ regression。未知 selector、NPC／temporary party 語意與各作品 scaling 
 第二百六十七輪 ECL engine 里程碑：依 `ovr003.CMD_Who` 接入 `WHO (0x39)` prompt request，
 跨 `NEWECL` 聚合並繼續 cursor；新增 READY spec、command knowledge 與 no-prompt regression。
 這輪刻意保留 State roster UI／selected-player transaction，沒有自動替玩家選第一位角色。
+
+第二百六十八輪 State／ECL 里程碑：將 `WHO` 做成真正可恢復的角色選擇 transaction；
+interactive VM 會停在 WHO，State 顯示繁中 roster，選擇後透過同一個 BlockSession resume，
+並保存 selected player ID。新增 READY spec 與 State regression；selected player 對所有
+DOS global routine 的完整 side effects、NPC／temporary party 語意仍保留 boundary。
