@@ -59,6 +59,8 @@ type app struct {
 	geoBlock         uint8
 	dungeonPreview   bool
 	dungeonFloor     *mapdata.DungeonFloor
+	dungeonX         int
+	dungeonY         int
 	pieceSets        map[uint8]gfx.PieceSet
 	pieceLabel       string
 	wallPreview      []wallPreviewStamp
@@ -120,6 +122,18 @@ func (a *app) Update() error {
 	if a.dungeonPreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.dungeonPreview = false
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+			a.moveDungeonPreview(0, -1, 0)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+			a.moveDungeonPreview(1, 0, 2)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+			a.moveDungeonPreview(0, 1, 4)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+			a.moveDungeonPreview(-1, 0, 6)
 		}
 		return nil
 	}
@@ -206,6 +220,7 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyD) && a.dungeonFloor != nil {
 		a.dungeonPreview = true
+		a.refreshDungeonPreview()
 		return nil
 	}
 	if a.state.Mode == game.ModeJournal {
@@ -408,11 +423,28 @@ func (a *app) syncGeoMapRequest() {
 		return
 	}
 	a.geoGrid = &grid
-	floor := mapdata.GenerateDungeon(grid, 8, 8)
-	a.dungeonFloor = &floor
+	a.dungeonX, a.dungeonY = 8, 8
+	a.refreshDungeonPreview()
 	a.geoSet, a.geoBlock = set, block
 	a.geoLabel = fmt.Sprintf("GEO%d block 0x%02X", set, block)
+}
+
+func (a *app) refreshDungeonPreview() {
+	if a.geoGrid == nil {
+		return
+	}
+	floor := mapdata.GenerateDungeon(*a.geoGrid, a.dungeonX, a.dungeonY)
+	a.dungeonFloor = &floor
 	a.prepareWallPreview()
+}
+
+func (a *app) moveDungeonPreview(dx, dy, direction int) {
+	if a.geoGrid == nil || !a.geoGrid.CanMove(a.dungeonX, a.dungeonY, direction) {
+		return
+	}
+	a.dungeonX += dx
+	a.dungeonY += dy
+	a.refreshDungeonPreview()
 }
 
 func (a *app) prepareWallPreview() {
@@ -420,7 +452,7 @@ func (a *app) prepareWallPreview() {
 	if a.geoGrid == nil || len(a.pieceSets) == 0 {
 		return
 	}
-	view, err := gfx.TraverseWallView(*a.geoGrid, 0, 8, 8)
+	view, err := gfx.TraverseWallView(*a.geoGrid, 0, a.dungeonX, a.dungeonY)
 	if err != nil {
 		return
 	}
@@ -685,7 +717,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "Dungeon floor composition（D／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, "Dungeon floor composition（方向鍵移動／D／Esc：返回）", a.face, 24, 28, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
 		return
@@ -713,12 +745,12 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		}
 	}
 	text.Draw(screen, "GEO wall/door → 13×5 dungeon background entries → TILES pixel art", a.face, 24, 210, white)
-	text.Draw(screen, "目前為 "+a.geoLabel+" map center (8,8) 的可重現 floor slice", a.face, 24, 245, white)
+	text.Draw(screen, "目前為 "+a.geoLabel+" map position ("+strconv.Itoa(a.dungeonX)+","+strconv.Itoa(a.dungeonY)+") 的 floor slice", a.face, 24, 245, white)
 	if a.pieceLabel != "" {
 		text.Draw(screen, a.pieceLabel, a.face, 24, 280, cyan)
 	}
 	if len(a.wallPreview) > 0 {
-		text.Draw(screen, "WALLDEF wall layout sample（raw 8×8D）", a.face, 360, 28, cyan)
+		text.Draw(screen, "WALLDEF Far/Mid/Near（raw 8×8D）", a.face, 360, 28, cyan)
 		for _, stamp := range a.wallPreview {
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Scale(2, 2)
@@ -1037,7 +1069,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: 8, dungeonY: 8, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
