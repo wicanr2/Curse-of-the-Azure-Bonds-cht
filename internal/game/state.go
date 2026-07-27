@@ -794,6 +794,9 @@ func (s *State) Select(index int) error {
 		s.applySpellSignals(result)
 		s.applyECLDamageSignals(result)
 		s.applyECLLoadCharacterSignals(result)
+		if err := s.applyECLDumpSignals(result); err != nil {
+			return err
+		}
 		if err := s.applyECLClockSignals(result); err != nil {
 			return err
 		}
@@ -1116,6 +1119,39 @@ func (s *State) applyECLLoadCharacterSignals(result ecl.RunResult) {
 	}
 	s.loadCharacterNotFound = false
 	s.whoSelectedIndex = index
+}
+
+// applyECLDumpSignals applies reference DUMP removal to the persistent roster
+// and its combat projection. Unlike player-facing ALTER DROP, an ECL script
+// may remove the last member; the VM request already carries the reference
+// predecessor-selection result for each ordered removal.
+func (s *State) applyECLDumpSignals(result ecl.RunResult) error {
+	for _, request := range result.DumpRequests {
+		if !request.Resolved {
+			continue
+		}
+		index := request.SelectedPlayerIndex
+		if index < 0 || index >= len(s.partyRoster) {
+			return fmt.Errorf("DUMP selected character %d is outside party roster", index)
+		}
+		id := s.partyRoster[index].ID
+		s.partyRoster = append(s.partyRoster[:index], s.partyRoster[index+1:]...)
+		for fighterIndex := range s.party {
+			if s.party[fighterIndex].ID == id {
+				s.party = append(s.party[:fighterIndex], s.party[fighterIndex+1:]...)
+				break
+			}
+		}
+		if request.NextSelectedPlayerSet {
+			if request.NextSelectedPlayerIndex < 0 || request.NextSelectedPlayerIndex >= len(s.partyRoster) {
+				return fmt.Errorf("DUMP next selected character %d is outside party roster", request.NextSelectedPlayerIndex)
+			}
+			s.whoSelectedIndex = request.NextSelectedPlayerIndex
+		} else {
+			s.whoSelectedIndex = -1
+		}
+	}
+	return nil
 }
 
 // applyECLClockSignals bridges the reference ECL CLOCK command to the shared

@@ -497,6 +497,31 @@ func TestRunSubsetFindSpecialUsesWhoSelectionAfterResume(t *testing.T) {
 	}
 }
 
+func TestRunSubsetDumpRemovesSelectedFromWorkingParty(t *testing.T) {
+	block := []byte{0, 0,
+		0x0A, 0x02, 0x02, 0x00,
+		0x3E,
+		0x3F, 0x00, 0x27,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 10, nil, 1, PartyContext{
+		Members: []PartyMemberContext{{Name: "A", Effects: []uint8{0x27}}, {Name: "B", Effects: []uint8{0x2A}}, {Name: "C"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.DumpRequests) != 1 {
+		t.Fatalf("dump requests=%#v", result.DumpRequests)
+	}
+	dump := result.DumpRequests[0]
+	if !dump.Resolved || dump.SelectedPlayerIndex != 1 || !dump.NextSelectedPlayerSet || dump.NextSelectedPlayerIndex != 0 {
+		t.Fatalf("dump=%#v", dump)
+	}
+	if len(result.FindSpecialRequests) != 1 || !result.FindSpecialRequests[0].Resolved || !result.FindSpecialRequests[0].Found || result.FindSpecialRequests[0].SelectedPlayerIndex != 0 {
+		t.Fatalf("find special=%#v", result.FindSpecialRequests)
+	}
+}
+
 func TestRunSubsetRecordsDestroyItemRequestAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x40, 0x00, 0x5E,

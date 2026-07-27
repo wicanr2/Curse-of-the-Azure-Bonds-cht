@@ -255,3 +255,10 @@ selected-player identity 不只供 UI 顯示：`FIND SPECIAL` 會立即查該角
 因此 VM 的 selected index 必須和 memory／string／compare state 一樣可恢復；WHO pause
 前不能先猜角色，resume 後才提交 UI index，LOAD CHARACTER 無效 selector 也不能清掉
 上一個有效角色。作品 State 只需提供 active effect IDs，VM 負責 reference `=`／`<>` 分支。
+
+script-controlled party departure 必須和 player-facing drop 分開：ECL `DUMP` 可移除最後一人，
+並依原 index選前一位／新第一位；ALTER DROP 則保護玩家避免留下空隊伍。State adapter用
+stable character ID同步移除 fighter，save layer稍後處理 stale DOS sidecars。VM 先更新
+working party，確保同一 ECL run 的 FIND ITEM／FIND SPECIAL 不會看到已離隊角色。
+BlockSession 應持有 public context 的 deep copy並跨 NEWECL重用；每個 block重新 clone會讓
+角色復活，直接改 caller slice則會在 State正式消費 DumpRequest前洩漏 mutation。

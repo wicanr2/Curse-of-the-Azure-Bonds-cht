@@ -67,6 +67,10 @@ func TestRealECL5SunlightFindItemUsesPartyContext(t *testing.T) {
 		if !strings.Contains(strings.Join(result.Text, " "), "SUNLIGHT") {
 			t.Fatalf("text=%q, want sunlight decay event", result.Text)
 		}
+		instruction, decodeErr := decodeInstruction(block.Data[2:], 0x20E)
+		if decodeErr != nil || instruction.Command.Opcode != 0x3E {
+			t.Fatalf("ECL5 Akabar leave instruction=%+v err=%v, want DUMP", instruction, decodeErr)
+		}
 		return
 	}
 	t.Fatal("ECL5 block 0x30 is absent")

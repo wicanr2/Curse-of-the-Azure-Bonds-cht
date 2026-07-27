@@ -942,3 +942,12 @@ READY spec、README 與共用 Golden Box ECL knowledge，並移除舊「尚未�
 spec、README、State／command knowledge；缺 context 或尚未選角仍維持 unresolved。
 
 第二百七十三輪 real-image verification 里程碑：重跑原始 ECL1–ECL6 共 25 decoded blocks／125 個 initialization entries，全部以正常 EXIT、menu、COMBAT、PROGRAM boundary 或 NEWECL 返回，unsupported-opcode error 為零。新增 corpus regression，若 member／block count、entry framing 或 bounded semantics 退化會指出精確 member／block／entry／PC。另以 ECL5 block `0x30:+0x0014` 與含 item `0x5E` 的 PartyContext 驗證真實 FIND ITEM found branch 抵達 `SUNLIGHT` 裝備腐朽文字。更新 READY spec、README、ECL knowledge，並移除第 196 輪仍記載 `0x2D/0x2F` unsupported stop 的過時斷言。
+
+第二百七十四輪 ECL party-departure 里程碑：依 `CMD_Dump`／`FreeCurrentPlayer` 確認
+`DUMP (0x3E)` 會移除 selected TeamList member、釋放 icon、減 party size，並選前一位／
+新第一位；空隊伍則清除 selection。VM 新增 ordered `DumpRequest` 與 mutable working
+PartyContext，讓後續 inventory／affect／party-rule query看見移除後狀態；State同步移除
+persistent roster與同 ID fighter，且不套 ALTER DROP 的 last-member guard。新增中間／
+最後角色 regressions，並鎖定 real ECL5 block `0x30:+0x020E` 的 Akabar DUMP opcode。
+補充 cross-NEWECL regression：BlockSession 使用 caller PartyContext 的 deep copy作為同一
+session mutable working party，target block可見已離隊結果，而呼叫端 context保持不變。

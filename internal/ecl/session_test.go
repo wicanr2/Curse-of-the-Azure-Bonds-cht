@@ -144,3 +144,32 @@ func TestBlockSessionAggregatesSignalsAcrossNewECL(t *testing.T) {
 		t.Fatalf("cross-block signals=%+v current=0x%02X", result, session.CurrentBlockID())
 	}
 }
+
+func TestBlockSessionCarriesDumpedWorkingPartyAcrossNewECL(t *testing.T) {
+	first := append(sessionBlock(0x8014), make([]byte, 16)...)
+	copy(first[2+0x14:], []byte{
+		0x0A, 0x02, 0x02, 0x00,
+		0x3E,
+		0x20, 0x00, 0x51,
+	})
+	second := append(sessionBlock(0x8014), make([]byte, 8)...)
+	copy(second[2+0x14:], []byte{
+		0x3F, 0x00, 0x27,
+		0x00,
+	})
+	session, err := NewBlockSession(map[uint8][]byte{0x50: first, 0x51: second}, 0x50)
+	if err != nil {
+		t.Fatal(err)
+	}
+	context := PartyContext{Members: []PartyMemberContext{{Name: "A", Effects: []uint8{0x27}}, {Name: "B"}}}
+	result, err := session.RunInteractiveSeedWithPartyContext(20, nil, 1, context)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x51 || len(result.DumpRequests) != 1 || !result.DumpRequests[0].Resolved || len(result.FindSpecialRequests) != 1 || !result.FindSpecialRequests[0].Found {
+		t.Fatalf("result=%+v current=0x%02X", result, session.CurrentBlockID())
+	}
+	if len(context.Members) != 2 || context.Members[0].Name != "A" || context.Members[1].Name != "B" {
+		t.Fatalf("caller context was mutated: %#v", context)
+	}
+}

@@ -124,6 +124,12 @@ query；`0x3D` 則是 CLEAR BOX，兩者不能因 opcode 接近而混用。共�
 `FIND SPECIAL`，並跨 pause／shared BlockSession 保留；有 context 時設定 `=`／`<>`，
 缺 context 或未選角時維持 unresolved request。
 
+`DUMP (0x3E)` 是角色離隊 command，不是 debug dump。reference 的
+`FreeCurrentPlayer(selected, free_icon=true, leave_party_size=false)` 會移除 TeamList member、
+減少 party size並回傳前一位／新第一位作為 selection；空隊伍回傳 null。共用 VM 以
+ordered `DumpRequest` 更新 working party，作品 State 再同步 persistent roster／fighter。
+它與玩家操作的 ALTER DROP 不同，不能強制「至少留一人」。
+
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item
 的 `Character.RemoveItem` 不同。後續 Gold Box 作品可沿用「VM signal → 作品 party
