@@ -1601,6 +1601,34 @@ func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
 	}
 }
 
+func TestCombatCastCureLightWoundsHealsDownedPartyCorpse(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "cleric", Name: "牧師", Class: party.ClassCleric, HitPoints: 8, MaxHitPoints: 8, SpellSlots: []uint8{CureLightWoundsSpellID}},
+		{ID: "hero", Name: "倒下的英雄", Class: party.ClassFighter, HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusUnconscious},
+	}
+	if err := state.StartCombat(
+		[]combat.Fighter{
+			{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, InitiativeBonus: 20},
+			{ID: "hero", Name: "倒下的英雄", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10},
+		},
+		[]combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCast(CureLightWoundsSpellID); err != nil {
+		t.Fatal(err)
+	}
+	var hero combat.Fighter
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" {
+			hero = fighter
+		}
+	}
+	if hero.HitPoints <= 0 || hero.DeathOverlay || !hero.DownedCorpse || hero.HasCombatPosition || state.partyRoster[1].HitPoints != hero.HitPoints {
+		t.Fatalf("downed cure state=%+v roster=%#v", hero, state.partyRoster)
+	}
+}
+
 func TestCombatCastBlessConsumesSlotAndRaisesPartyAttackBonus(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{BlessSpellID}}}

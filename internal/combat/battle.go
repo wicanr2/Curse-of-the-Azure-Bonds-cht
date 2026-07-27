@@ -65,7 +65,12 @@ type Fighter struct {
 	// CombatantKilled routine draws an animated skull; keeping this as a
 	// signal lets each frontend choose an asset without leaking CPIC indices
 	// into the combat core.
-	DeathOverlay         bool
+	DeathOverlay bool
+	// DownedCorpse marks a team party fighter whose map tile became the
+	// reference Tile_DownPlayer (0x1F). Ordinary healing clears the overlay
+	// flash but does not restore combat placement; combat_heal/placement must
+	// clear this marker separately.
+	DownedCorpse         bool
 	CombatAction         ActionState
 	HitPoints            int
 	MaxHitPoints         int
@@ -168,6 +173,7 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 			// construction time so it cannot occupy a tile or turn order.
 			fighter.HasCombatPosition = false
 			fighter.DeathOverlay = true
+			fighter.DownedCorpse = fighter.Side == SideParty
 			fighter.CombatAction = ActionState{}
 		}
 		b.fighters[fighter.ID] = fighter
@@ -208,6 +214,7 @@ func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
 		// HasCombatPosition is the renderer-neutral equivalent.
 		fighter.HasCombatPosition = false
 		fighter.DeathOverlay = true
+		fighter.DownedCorpse = fighter.Side == SideParty
 		fighter.CombatAction = ActionState{}
 	} else {
 		// Healing clears the one-shot downed visual. Position restoration is a
@@ -491,7 +498,7 @@ func (b *Battle) CastCureLightWounds(casterID, targetID string) (SpellResult, er
 	if b.status != StatusActive {
 		return SpellResult{}, fmt.Errorf("battle is already over")
 	}
-	if caster.HitPoints <= 0 || target.HitPoints <= 0 {
+	if caster.HitPoints <= 0 || (target.HitPoints <= 0 && !target.DownedCorpse) {
 		return SpellResult{}, fmt.Errorf("dead fighter cannot use Cure Light Wounds")
 	}
 	healing := b.rng.Intn(8) + 1
@@ -502,6 +509,9 @@ func (b *Battle) CastCureLightWounds(casterID, targetID string) (SpellResult, er
 		healing = 0
 	}
 	target.HitPoints += healing
+	if target.HitPoints > 0 {
+		target.DeathOverlay = false
+	}
 	b.fighters[targetID] = target
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 3, Healing: healing, TargetHP: target.HitPoints}, nil
 }

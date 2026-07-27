@@ -89,5 +89,9 @@ renderer-neutral `DeathOverlay` signal，讓 Ebiten 在保留死亡座標 anchor
 `COMSPR 0x8B`、`combat_icons[25].Normal` 是 `COMSPR 0x19`；Ebiten 以 100ms phase
 交替顯示兩張 derived sprite。Battle 也將 per-fighter `CombatAction` 的 delay、move、
 spell ID、guarding 清零；若倒下者是 State current turn，State 會同步清除施法／移動／
-檢視 selection。`NewBattle` 對 save／encounter 初始 HP=0 fighter 也套用相同正規化，
-因此不會進入 turn 或佔用碰撞格。完整 9-cycle timing 與其他 Death routine 仍保留 boundary。
+檢視 selection。team party 倒下者另保存 `DownedCorpse=true`，對應原版
+`Tile_DownPlayer=0x1F`；Cure Light Wounds 可依 `heal_player` boundary 選到
+unconscious／dying corpse，普通治療只清除 skull flash、保留 corpse 與無 position 狀態，
+直到後續 combat-heal／placement contract 明確讓角色站起。`NewBattle` 對 save／encounter
+初始 HP=0 fighter 也套用相同正規化，因此不會進入 turn 或佔用碰撞格。完整 9-cycle timing
+與其他 Death routine 仍保留 boundary。

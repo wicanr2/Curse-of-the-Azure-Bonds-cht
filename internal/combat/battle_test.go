@@ -54,6 +54,30 @@ func TestNewBattleNormalizesInitiallyDownedFighter(t *testing.T) {
 	}
 }
 
+func TestCureLightWoundsCanHealDownedPartyWithoutRestoringPlacement(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, HasCombatPosition: true},
+		{ID: "hero", Side: SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true},
+		{ID: "goblin", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, HasCombatPosition: true},
+	}, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCureLightWounds("cleric", "hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var hero Fighter
+	for _, fighter := range battle.Fighters() {
+		if fighter.ID == "hero" {
+			hero = fighter
+		}
+	}
+	if result.Healing <= 0 || hero.HitPoints <= 0 || hero.DeathOverlay || !hero.DownedCorpse || hero.HasCombatPosition {
+		t.Fatalf("downed cure changed wrong boundaries: result=%+v hero=%+v", result, hero)
+	}
+}
+
 func testBattle(t *testing.T) *Battle {
 	t.Helper()
 	battle, err := NewBattle([]Fighter{
