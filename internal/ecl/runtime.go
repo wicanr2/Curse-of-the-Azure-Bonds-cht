@@ -27,6 +27,7 @@ type RunResult struct {
 	LoadCharacterRequests  []LoadCharacterRequest
 	FindItemIDs            []uint16
 	FindItemRequests       []FindItemRequest
+	FindSpecialRequests    []FindSpecialRequest
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
 	SelectionsConsumed     int
@@ -84,6 +85,15 @@ type FindItemRequest struct {
 	ItemID   uint16
 	Found    bool
 	Resolved bool
+}
+
+// FindSpecialRequest records FIND SPECIAL against the current selected
+// player's active affects.
+type FindSpecialRequest struct {
+	AffectID            uint16
+	SelectedPlayerIndex int
+	Found               bool
+	Resolved            bool
 }
 
 // WhoRequest marks the reference character-selection boundary. WHO consumes
@@ -261,12 +271,14 @@ type Menu struct {
 // to it; otherwise feeding the next choice replays the event from its entry
 // with a different machine state.
 type RuntimeState struct {
-	PC      int
-	Started bool
-	Stack   []int
-	Memory  map[uint16]uint16
-	Strings map[uint16]string
-	Compare [6]bool
+	PC                  int
+	Started             bool
+	Stack               []int
+	Memory              map[uint16]uint16
+	Strings             map[uint16]string
+	Compare             [6]bool
+	SelectedPlayerIndex int
+	SelectedPlayerSet   bool
 }
 
 func NewRuntimeState(start int) *RuntimeState {
@@ -360,6 +372,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 	}
 	rng := rand.New(rand.NewSource(seed))
 	var compare [6]bool
+	selectedPlayerIndex := -1
+	selectedPlayerSet := false
 	if runtime != nil && runtime.Started {
 		pc = runtime.PC
 		stack = append(stack, runtime.Stack...)
@@ -370,6 +384,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			stringsMemory[address] = value
 		}
 		compare = runtime.Compare
+		selectedPlayerIndex = runtime.SelectedPlayerIndex
+		selectedPlayerSet = runtime.SelectedPlayerSet
 	}
 	saveState := func(nextPC int) {
 		if runtime == nil {
@@ -381,6 +397,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		runtime.Memory = memory
 		runtime.Strings = stringsMemory
 		runtime.Compare = compare
+		runtime.SelectedPlayerIndex = selectedPlayerIndex
+		runtime.SelectedPlayerSet = selectedPlayerSet
 	}
 	selectionCursor := 0
 	whoSelectionCursor := 0
@@ -803,6 +821,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 					// selected player's name string. Preserve it in RuntimeState
 					// so later COMPARE/PRINT operands see the same selection.
 					stringsMemory[0x7C00] = partyContext.Members[playerIndex].Name
+					selectedPlayerIndex = playerIndex
+					selectedPlayerSet = true
 				}
 			}
 		case 0x32: // FIND ITEM
@@ -925,8 +945,34 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				request.SelectionProvided = true
 				whoSelectionCursor++
 				result.WhoSelectionsConsumed++
+				if partyContext != nil && int(request.Selected) < len(partyContext.Members) {
+					selectedPlayerIndex = int(request.Selected)
+					selectedPlayerSet = true
+					stringsMemory[0x7C00] = partyContext.Members[selectedPlayerIndex].Name
+				}
 			}
 			result.WhoRequests = append(result.WhoRequests, request)
+		case 0x3F: // FIND SPECIAL
+			affectID, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("FIND SPECIAL at %d: %w", pc, err)
+			}
+			request := FindSpecialRequest{AffectID: affectID, SelectedPlayerIndex: selectedPlayerIndex}
+			if partyContext != nil && selectedPlayerSet && selectedPlayerIndex >= 0 && selectedPlayerIndex < len(partyContext.Members) {
+				request.Resolved = true
+				for _, activeAffect := range partyContext.Members[selectedPlayerIndex].Effects {
+					if uint16(activeAffect) == affectID {
+						request.Found = true
+						break
+					}
+				}
+				for index := range compare {
+					compare[index] = false
+				}
+				compare[0] = request.Found
+				compare[1] = !request.Found
+			}
+			result.FindSpecialRequests = append(result.FindSpecialRequests, request)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout
