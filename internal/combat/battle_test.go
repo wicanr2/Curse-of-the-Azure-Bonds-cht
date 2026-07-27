@@ -78,6 +78,28 @@ func TestCureLightWoundsCanHealDownedPartyWithoutRestoringPlacement(t *testing.T
 	}
 }
 
+func TestRestoreCombatantStandsUpAtExplicitPlacement(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "cleric", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "hero", Side: SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.SetHitPoints("hero", 4); err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.RestoreCombatant("hero", TilePoint{X: 2, Y: 1}); err != nil {
+		t.Fatal(err)
+	}
+	fighters := battle.Fighters()
+	for _, fighter := range fighters {
+		if fighter.ID == "hero" && (!fighter.HasCombatPosition || fighter.DownedCorpse || fighter.DeathOverlay || fighter.CombatX != 2 || fighter.CombatY != 1) {
+			t.Fatalf("restore did not stand hero up: %+v", fighter)
+		}
+	}
+}
+
 func testBattle(t *testing.T) *Battle {
 	t.Helper()
 	battle, err := NewBattle([]Fighter{

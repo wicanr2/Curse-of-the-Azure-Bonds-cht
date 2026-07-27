@@ -141,7 +141,8 @@ state；`CheckAffectsEffect(Death)` 尚未接入 ECL queue。active combat 的 E
 仍待接入；Battle HP=0 時已清除 `HasCombatPosition` 並發出 `DeathOverlay` signal；
 Ebiten 以死亡座標 anchor 顯示目前的繁中「倒下」overlay；Battle 會清除 per-fighter
 `CombatAction`，team party 另保存 `DownedCorpse` 對應 `Tile_DownPlayer=0x1F`；Cure Light
-Wounds 可治療可復原的 corpse 但不恢復 position。State current turn 也會清除施法／移動／檢視
+Wounds 可治療可復原的 corpse 但不恢復 position；只有明確 `CombatHealAllowed` 的
+affect_63 recovery 會用保存座標呼叫 `RestoreCombatant` 站起。State current turn 也會清除施法／移動／檢視
 selection。State `ResolveDeathEffects` 現可在 caller 明確提供 damage flags／combat-heal
 條件時 transactionally 套用 affect_63 recovery 與 TrollRegen；未知 target side effect
 不會因缺少資料而猜測；`ResolveDragonSlayer` 另要求 caller 明確提供 target monster

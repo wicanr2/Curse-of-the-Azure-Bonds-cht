@@ -690,6 +690,34 @@ func TestResolveDeathEffectsIsTransactionalAndSyncsRoster(t *testing.T) {
 	}
 }
 
+func TestResolveDeathEffectsCombatHealRestoresDownedPlacement(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "cleric", Name: "牧師", HitPoints: 8, MaxHitPoints: 8},
+		{ID: "hero", Name: "倒下的英雄", HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusDying, Bleeding: 2, Effects: []monster.AffectRecord{{Kind: 0x63, Active: true}}},
+	}
+	if err := state.StartCombat(
+		[]combat.Fighter{
+			{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, InitiativeBonus: 20, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "hero", Name: "倒下的英雄", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+		},
+		[]combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.ResolveDeathEffects(party.DeathEffectContext{CombatHealAllowed: true, RollDie: func(int) int { return 4 }}); err != nil {
+		t.Fatal(err)
+	}
+	var hero combat.Fighter
+	for _, fighter := range state.CombatFighters() {
+		if fighter.ID == "hero" {
+			hero = fighter
+		}
+	}
+	if state.partyRoster[1].HealthStatus != party.HealthStatusOK || hero.HitPoints != 4 || !hero.HasCombatPosition || hero.DownedCorpse || hero.DeathOverlay || hero.CombatX != 2 || hero.CombatY != 1 {
+		t.Fatalf("combat heal did not restore placement: roster=%#v hero=%+v", state.partyRoster, hero)
+	}
+}
+
 func TestResolveDragonSlayerUsesExplicitMonsterTargetContext(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{Effects: []monster.AffectRecord{{Kind: 0x4B, Active: true}}}}

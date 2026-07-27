@@ -34,7 +34,9 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   anchor 並顯示原版 `COMSPR 0x8B`／`0x19` 交替 skull overlay；其來源 mapping 已整理於
   `docs/knowledge/gold-box-graphics.md`，renderer 以 100ms phase 顯示。Battle 同時清除
   renderer-neutral `CombatAction` 的 delay／move／spell ID／guarding；若倒下者是目前
-  State turn，State 也清除施法、移動與角色檢視選擇。dragon-slayer `0x4B`
+  State turn，State 也清除施法、移動與角色檢視選擇。明確 `CombatHealAllowed` 的
+  affect_63 recovery 會以保存的 CombatX/Y 呼叫 `Battle.RestoreCombatant`，清除 corpse
+  並重新佔用 position；普通 Cure 不呼叫 stand-up。dragon-slayer `0x4B`
   已由 `ResolveDragonSlayer` 接受 explicit target monster kind、strength damage bonus
   與 d12 roller，避免 Character／ECL DAMAGE 猜測 target。若 State 正在 active combat，
   `Character.RemoveCombatAffects`
