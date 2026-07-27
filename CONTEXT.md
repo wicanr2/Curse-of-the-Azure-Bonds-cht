@@ -805,3 +805,10 @@ overflow writeback 與 `PatchDOSPlayerRecord`；每次 slot-6 overflow 讓 party
 並以 int16 saturation 防止 wrap。新增 parser／writeback／game clock regressions、READY spec、
 README／PLAN／Gold Box state knowledge。Pool/Rad importer、age-based ability modifiers、
 完整 DOS age UI 與多職業序列化仍保留 boundary。
+
+第二百四十四輪重大里程碑：依 reference `StatValue.AgeEffects`／`Limits.RaceAgeBrackets`
+建立 `Abilities.WithAgeEffects`，保存 dwarf／elf／gnome／half-elf／halfling／human 五段
+age brackets 與六項 ability deltas，新增 human bracket regression。確認這是新角色生成
+規則；既有 DOS player record 已含結果，故沒有把 helper 隱式接到 import／Fighter，避免
+double-count。creation age UI、完整 race/class limits 與 Pool/Rad `0x30` importer 仍保留
+boundary。

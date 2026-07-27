@@ -221,3 +221,4 @@
 - [第二百四十一輪 ECL CLOCK time-step](./241-ecl-clock-time-step.md)（`READY`：限兩 operand 解碼與 State game-time adapter）
 - [第二百四十二輪 game-time save/load](./242-game-time-save.md)（`READY`：限 remake JSON clock persistence）
 - [第二百四十三輪 DOS player age writeback](./243-player-age-writeback.md)（`READY`：限 `0x76` age 與 slot-6 overflow）
+- [第二百四十四輪 age-based ability effects](./244-age-ability-effects.md)（`READY`：限新角色 age bracket data adapter）

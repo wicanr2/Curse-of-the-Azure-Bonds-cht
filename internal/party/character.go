@@ -46,6 +46,48 @@ type Abilities struct {
 	Charisma            int
 }
 
+// WithAgeEffects applies the reference new-character age brackets to a base
+// ability roll. DOS player records already contain the resulting stats, so
+// import and combat projection must not call this implicitly.
+func (a Abilities) WithAgeEffects(race Race, age int) (Abilities, error) {
+	if race < RaceDwarf || race > RaceHuman {
+		return Abilities{}, fmt.Errorf("race %d has no CoAB age table", race)
+	}
+	brackets := [...][]int{
+		{50, 150, 250, 350, 450},       // dwarf
+		{175, 550, 875, 1200, 1600},    // elf
+		{90, 300, 450, 600, 750},       // gnome
+		{40, 100, 175, 250, 325},       // half-elf
+		{0x21, 0x44, 0x65, 0x90, 0xC7}, // halfling
+		{0x14, 0x28, 0x3C, 0x5A, 0x78}, // human
+	}
+	effects := [...][5]int{
+		{0, 1, -1, -2, -1}, // strength
+		{0, 0, 1, 0, 1},    // intelligence
+		{-1, 1, 1, 1, 1},   // wisdom
+		{0, 0, 0, -2, -1},  // dexterity
+		{1, 0, -1, -1, -1}, // constitution
+		{0, 0, 0, 0, 0},    // charisma
+	}
+	result := a
+	values := []*int{&result.Strength, &result.Intelligence, &result.Wisdom, &result.Dexterity, &result.Constitution, &result.Charisma}
+	for stat := range values {
+		for bracket, threshold := range brackets[race] {
+			if threshold < age {
+				*values[stat] += effects[stat][bracket]
+			}
+		}
+	}
+	if result.StrengthFull != 0 {
+		for bracket, threshold := range brackets[race] {
+			if threshold < age {
+				result.StrengthFull += effects[0][bracket]
+			}
+		}
+	}
+	return result, nil
+}
+
 // HealthStatus mirrors the reference player's combat health states while
 // keeping the existing zero-value JSON saves valid.
 type HealthStatus uint8
