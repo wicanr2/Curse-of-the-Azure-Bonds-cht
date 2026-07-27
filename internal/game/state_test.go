@@ -2270,3 +2270,14 @@ func TestItemCatalogFeedsCharacterCreationFighterProjection(t *testing.T) {
 		t.Fatalf("equipped creation fighter=%#v", fighters)
 	}
 }
+
+func TestLocalizeECLTextUsesCatalogAndPreservesUnknownLines(t *testing.T) {
+	catalog := testCatalog()
+	message := localizeECLText(catalog, []string{
+		"SMOKE RISES FROM BEHIND THE RUINED WALLS",
+		"UNMAPPED ECL LINE",
+	})
+	if message != "煙霧從殘破的牆後升起 UNMAPPED ECL LINE" {
+		t.Fatalf("message=%q", message)
+	}
+}
