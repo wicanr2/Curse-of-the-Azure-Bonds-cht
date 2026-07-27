@@ -178,6 +178,7 @@ type State struct {
 	treasureMenu           bool
 	treasureTakeMenu       bool
 	treasureItemIndex      int
+	treasureReturnMode     Mode
 	shopMenu               bool
 	shopECLService         bool
 	templeMenu             bool
@@ -1080,6 +1081,16 @@ func (s *State) Select(index int) error {
 		if result.TempleRequested {
 			return s.enterECLTemple()
 		}
+		// TREASURE followed by COMBAT is the reference treasure-service
+		// dispatch, not a monster battle. Resolve and present loot first.
+		if treasureReady {
+			if s.eclMenuReturnMode == ModeDungeon {
+				s.enterTreasureMenuFor(ModeDungeon)
+			} else {
+				s.enterTreasureMenu()
+			}
+			return nil
+		}
 		if result.CombatRequested {
 			records := s.monsterRecordsForCurrentECL()
 			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
@@ -1092,10 +1103,6 @@ func (s *State) Select(index int) error {
 			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
 			s.eventReturnMode = ModeWilderness
 			s.Mode = ModeEvent
-			return nil
-		}
-		if treasureReady {
-			s.enterTreasureMenu()
 			return nil
 		}
 		if handled, err := s.applyECLProgram(result); handled || err != nil {
@@ -1170,8 +1177,13 @@ func (s *State) enterParlayMenu() {
 }
 
 func (s *State) enterTreasureMenu() {
+	s.enterTreasureMenuFor(ModeEvent)
+}
+
+func (s *State) enterTreasureMenuFor(returnMode Mode) {
 	s.treasureMenu = true
 	s.treasureTakeMenu = false
+	s.treasureReturnMode = returnMode
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("treasure_prompt", "選擇要收下的財寶")
 	s.Choices = make([]string, 0, len(s.pendingTreasureItems)+1)
@@ -1221,16 +1233,14 @@ func (s *State) selectTreasure(index int, originalChoice string) error {
 		}
 		s.treasureMenu = false
 		s.treasureTakeMenu = false
-		s.Mode = ModeEvent
-		s.eventReturnMode = ModeWilderness
+		s.Mode = s.treasureReturnMode
 		s.OriginalEvent = "TREASURE"
 		s.Message = s.catalog.Text("treasure_taken", "財寶已加入隊伍裝備。")
 		return nil
 	}
 	if originalChoice == "TREASURE_EXIT" {
 		s.treasureMenu = false
-		s.Mode = ModeEvent
-		s.eventReturnMode = ModeWilderness
+		s.Mode = s.treasureReturnMode
 		s.OriginalEvent = "TREASURE"
 		s.Message = s.catalog.Text("treasure_skipped", "隊伍繼續前進，未收下剩餘財寶。")
 		return nil
@@ -2528,7 +2538,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.campMenu = false
 		if s.campReturnMode == ModeDungeon {
 			s.Mode = ModeDungeon
-			s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　E：紮營")
+			s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　S：搜索　E：紮營")
 			s.Choices = nil
 			s.currentOriginalChoices = nil
 			s.Message = ""
@@ -4206,7 +4216,7 @@ func (s *State) finishNewGameEntry() {
 	s.OriginalLocation = "TILVERTON"
 	s.Mode = ModeDungeon
 	s.Choices = nil
-	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　E：紮營")
+	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　S：搜索　E：紮營")
 	s.Message = ""
 }
 
@@ -4215,6 +4225,29 @@ func (s *State) finishNewGameEntry() {
 // successful forward step.
 func (s *State) RunDungeonLifecycle() error {
 	return s.runDungeonLifecycle(false)
+}
+
+// SearchDungeonLocation mirrors the explicit dungeon SEARCH command. The
+// reference engine exposes that action through work flag 0x7ECA while running
+// SearchLocation; ordinary movement keeps the flag clear.
+func (s *State) SearchDungeonLocation() error {
+	if s.Mode != ModeDungeon {
+		return fmt.Errorf("dungeon search is invalid in mode %d", s.Mode)
+	}
+	if s.session == nil {
+		return fmt.Errorf("dungeon search requires an ECL session")
+	}
+	s.syncDungeonECLRegisters()
+	s.session.SetMemoryValue(0x7ECA, 1)
+	defer s.session.SetMemoryValue(0x7ECA, 0)
+	result, err := s.session.RunEntrySeedWithPartyContext(
+		1, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	_, err = s.applyDungeonLifecycleResult(result)
+	return err
 }
 
 func (s *State) runDungeonLifecycle(exitAttempt bool) error {
@@ -4364,6 +4397,13 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	if result.TempleRequested {
 		return true, s.enterECLTemple()
+	}
+	if len(result.TreasureRequests) > 0 {
+		if err := s.ResolveTreasureRequests(); err != nil {
+			return true, err
+		}
+		s.enterTreasureMenuFor(ModeDungeon)
+		return true, nil
 	}
 	if result.CombatRequested {
 		records := s.monsterRecordsForCurrentECL()
@@ -4821,6 +4861,18 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_fire_knife_frozen_room",
 			"房裡有許多人凝固在交戰姿勢中；有幾人倒成扭曲的一團，另一些已開始活動。你們要怎麼做？",
 		)
+	case strings.Contains(joined, "DRAWERS OF A ROSEWOOD DESK") &&
+		strings.Contains(joined, "INTERESTING PAPERS"):
+		return catalog.Text(
+			"ecl_fire_knife_office_search",
+			"你們在花梨木書桌的抽屜裡找到一些值得注意的文件，記入冒險手札第 9 條；此外還有其他物品引起你們注意。",
+		)
+	case strings.Contains(joined, "ORNATE ROOM") &&
+		strings.Contains(joined, "HIGH UP IN THE FIRE KNIVES"):
+		return catalog.Text(
+			"ecl_fire_knife_office",
+			"這是一間裝飾華麗的房間，看來是火刀某位高層人物的辦公室。",
+		)
 	case strings.Contains(joined, "THIS WAY IS CLOSED") &&
 		strings.Contains(joined, "ROYAL CARRIAGE IS COMING SOON"):
 		return catalog.Text(
@@ -4965,6 +5017,15 @@ func (s *State) unlockJournalEntries(texts []string) {
 		s.appendJournalPages("手札條目 26：", []string{s.catalog.Text(
 			"journal_entry_26",
 			"手札條目 26：這些人中了入侵牧師施展的定身法術。那名牧師是為了營救被關在南方首領房裡的囚犯而來；所幸火刀最後在這間房裡制伏了他。",
+		)})
+	}
+	if strings.Contains(joined, "DRAWERS OF A ROSEWOOD DESK") &&
+		strings.Contains(joined, "9. OTHER ITEMS") {
+		s.appendJournalPages("手札條目 9：", []string{s.catalog.Text(
+			"journal_entry_9",
+			"手札條目 9：文件旁畫著一個帶火焰輪廓的人形，軀幹上有三道彎曲符號。註記寫著："+
+				"一、具有燃燒靈氣；二、能附身其他軀體；三、與光芒之池有所牽連。"+
+				"原始圖像保存於 Adventurer's Journal 第 12 頁。",
 		)})
 	}
 }

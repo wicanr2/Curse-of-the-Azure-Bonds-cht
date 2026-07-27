@@ -448,3 +448,6 @@
 - [x] 完成 ECL2 block 4 selector `0x1A`／terrain `0x9A` 定身房：
   撤退／審問／殺死三分支、`4CFE & 0x40` 一次性狀態、繁中敘事，以及依使用者
   Adventurer's Journal 來源在審問後解鎖手札 26。
+- [x] 接通正式地城 SEARCH（`S`／`7ECA=1`）與火刀辦公室 terrain `0x9B`：
+  `4C10` 0→1→2 多階段探索、`4CFE&0x80` 防重複、繁中手札 9，以及
+  500 gold／500 platinum／3 gems／2 jewelry／兩件 random items 的 treasure UI。

@@ -173,6 +173,9 @@ func (a *app) Update() error {
 			if inpututil.IsKeyJustPressed(ebiten.KeyE) {
 				return a.state.EnterDungeonCamp()
 			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+				return a.state.SearchDungeonLocation()
+			}
 		} else {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				a.moveDungeonPreview(0, -1, 0)
