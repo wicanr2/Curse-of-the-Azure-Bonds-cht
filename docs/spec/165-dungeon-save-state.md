@@ -5,9 +5,9 @@
 ## 證據與實作
 
 - 第 164 輪已讓 dungeon preview 以 `(dungeonX, dungeonY)` 移動並重建 floor／Far／Mid／Near wall view；本輪把這三個 renderer-driving 欄位提升為 `game.State` 的可保存狀態。
-- remake game JSON version 從 `2` 升為 `3`，新增 `dungeon_x`、`dungeon_y`、`dungeon_direction`。
+- remake game JSON version 從 `2` 升為 `3`，新增 `dungeon_x`、`dungeon_y`、`dungeon_direction`；第 168 輪再升為 `4` 保存同一原版 map segment 的 wall cache。
 - `F5` 由 `State.SavePartyFile` 寫入目前位置；`F9`／啟動載入會恢復它，Ebiten GEO preview 以恢復後座標重新生成 floor，wall traversal 讀取恢復後方向。
-- version `1`／`2` 舊檔仍可載入；沒有新欄位時安全回到 `(8,8)`、方向 `0`。超出 16×16／八方向範圍的 version 3 值也回到同一預設。
+- version `1`／`2` 舊檔仍可載入；version `3` 沒有 wall cache 時由第 168 輪路徑使用 0 defaults。沒有新欄位時安全回到 `(8,8)`、方向 `0`；version `3`／`4` 的座標或方向越界也回到同一預設。
 
 ## 可沿用的 Gold Box contract
 

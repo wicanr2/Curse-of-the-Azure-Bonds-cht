@@ -67,6 +67,8 @@ Facing rotation 也應留在 state adapter，不要讓 renderer 自己改 byte�
 
 GEO 座標要把 strict 與 wrapped context 分成兩個 API。reference dungeon `getMap_XXX`／`MovePositionForward` 會在 16×16 邊緣 wrap，但 ECL block 0／10 有 invalid-coordinate 特例；因此 CoAB 的 `CanMoveWrapped`／`TraverseWallViewWrapped` 只由 dungeon preview 呼叫，不能把 wrap 偷渡到 wilderness、Area loader 或所有 ECL block。
 
+原版 map save segment 的 `mapWallType`／`mapWallRoof` 是可重算的 cache，不是另一份地圖真相：前者由目前 facing 的 GEO wall type 得出，後者由 current cell 的 GEO `x2`／`Terrain` 得出。共用 save adapter 可以保存它們以維持 byte-level state，但每個作品仍應在位置／方向變更後重算，不能只信任載入的 cache 來判斷碰撞。
+
 ## Tavern Tale boundary
 
 Adventure Journal 的 Tavern Tale 是編號資料，不是任意酒館 flavor text。共用 UI 應一次消費一個 tale ID／文字，保存目前 sequence index，避免玩家一次看到尚未觸發的線索。真假、城市條件、買酒價格、重複規則與 random trigger 由 ECL／script adapter 提供；在證據不足時，`SetBarTales` 的 injected sequence 比硬編全域順序安全。

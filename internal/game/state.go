@@ -77,6 +77,8 @@ type State struct {
 	DungeonX         int
 	DungeonY         int
 	DungeonDirection uint8
+	DungeonWallType  uint8
+	DungeonWallRoof  uint8
 	WildernessFloor  mapdata.WildernessFloor
 	Area             area.State
 	GeoMapSet        uint8
