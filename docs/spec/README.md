@@ -230,3 +230,4 @@
 - [第二百五十輪半獸人 race／DOS parser](./250-half-orc-race.md)（`READY`：限 raw race 6 與 cleric／fighter／thief 單職業）
 - [第二百五十一輪 DOS save format／age evidence](./251-save-format-age-evidence.md)（`READY`：限 player record offset、存檔 sidecar 與安全修改邊界）
 - [第二百五十二輪 ECL COMBAT continuation](./252-ecl-combat-continuation.md)（`READY`：限 COMBAT next-PC、戰鬥勝利後 ECL resumable path）
+- [第二百五十三輪 CAMP MAGIC CAST Cure Light Wounds](./253-camp-magic-cast.md)（`READY`：限非戰鬥施法選單、slot transaction 與 HP projection）

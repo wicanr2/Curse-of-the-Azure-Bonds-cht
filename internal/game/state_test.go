@@ -2189,6 +2189,57 @@ func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
 	}
 }
 
+func TestCampMagicCastCureLightWoundsConsumesSlotAndSyncsHP(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeWilderness
+	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
+	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	state.partyRoster = party.Roster{
+		{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CureLightWoundsSpellID}},
+		{ID: "fighter", Name: "戰士", Class: party.ClassFighter, Level: 1, HitPoints: 2, MaxHitPoints: 10},
+	}
+	if err := state.SetParty([]combat.Fighter{
+		{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "fighter", Name: "戰士", Side: combat.SideParty, HitPoints: 2, MaxHitPoints: 10, ArmorClass: 10},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.currentOriginalChoices[0] != "CAMP_MAGIC_CAST_SPELL_0" {
+		t.Fatalf("cast spell menu=%#v originals=%#v", state.Choices, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.Choices) != 2 || state.currentOriginalChoices[0] != "CAMP_MAGIC_CAST_TARGET_1" {
+		t.Fatalf("cast target menu=%#v originals=%#v", state.Choices, state.currentOriginalChoices)
+	}
+	state.SetFixSeed(0)
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.OriginalEvent != "MAGIC CAST" || state.partyRoster[1].HitPoints <= 2 || len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("cast result state=%#v", state)
+	}
+	if state.PartyFighters()[1].HitPoints != state.partyRoster[1].HitPoints || !strings.Contains(state.Message, "Cure Light Wounds") {
+		t.Fatalf("cast sync message=%q fighters=%#v roster=%#v", state.Message, state.PartyFighters(), state.partyRoster)
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeWilderness || !state.campMagicMenu {
+		t.Fatalf("cast continuation state=%#v err=%v", state, err)
+	}
+}
+
 func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
