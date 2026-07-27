@@ -16,10 +16,13 @@ attacks-per-turn field. `engine/ovr013.cs:AffectHaste` doubles
   fighter.
 - Treat a zero synthetic/missing value as one attack in the adapter.
 - Each active Haste affect `0x27` doubles that base count.
-- Slow, movement timing, ranged profiles, and full `reclac_attacks` inputs
-  remain separate evidence tasks.
+- Each active Slow affect `0x2A` halves that count, with the current adapter
+  retaining at least one attack.
+- Movement timing, ranged profiles, and full `reclac_attacks` inputs remain
+  separate evidence tasks.
 
 ## Verification boundary
 
-Raw-record and encounter tests verify offset decoding, base count, and active
-Haste doubling. This is not a claim that all effect kinds are implemented.
+Raw-record and encounter tests verify offset decoding, base count, active
+Haste doubling, Slow halving, and their composition. This is not a claim that
+all effect kinds are implemented.

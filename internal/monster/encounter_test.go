@@ -60,4 +60,14 @@ func TestBuildEnemiesWithAffectsProjectsHasteAttacks(t *testing.T) {
 	if err != nil || enemies[0].AttacksPerTurn != 2 {
 		t.Fatalf("inactive haste enemies=%#v err=%v", enemies, err)
 	}
+	affects[7] = []AffectRecord{{Kind: 0x2A, Active: true}}
+	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
+	if err != nil || enemies[0].AttacksPerTurn != 1 {
+		t.Fatalf("slow attacks=%#v err=%v", enemies, err)
+	}
+	affects[7] = []AffectRecord{{Kind: 0x27, Active: true}, {Kind: 0x2A, Active: true}}
+	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
+	if err != nil || enemies[0].AttacksPerTurn != 2 {
+		t.Fatalf("haste+slow attacks=%#v err=%v", enemies, err)
+	}
 }

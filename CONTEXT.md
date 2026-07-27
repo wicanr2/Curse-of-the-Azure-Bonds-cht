@@ -751,3 +751,7 @@ combat exact-boundary regression、READY spec 與 README／PLAN／Gold Box state
 `MON*SPC` affect `0x27` 加倍接到 enemy fighter 的每回合攻擊次數。新增 raw offset／
 active-inactive Haste regressions、READY spec 與 README／PLAN／Gold Box state knowledge。
 完整 Docker Go 1.23 `go test ./...` 與 `git diff --check` 通過。
+
+第二百三十六輪追加規則：依 reference `AffectSlow` 將 active `MON*SPC` affect `0x2A`
+套用為每回合攻擊次數減半，並與 Haste 組合測試；目前 adapter 保留至少一攻下限。
+movement half-actions、遠程彈藥與完整 weapon profile 仍保留 boundary。

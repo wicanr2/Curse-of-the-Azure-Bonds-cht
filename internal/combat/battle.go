@@ -134,9 +134,18 @@ func (f Fighter) MonsterAffectAttacksPerTurn() int {
 		attacks = 1
 	}
 	for _, affect := range f.MonsterAffects {
-		if affect.Active && affect.Kind == 0x27 {
-			attacks *= 2
+		if !affect.Active {
+			continue
 		}
+		switch affect.Kind {
+		case 0x27: // haste: AffectHaste doubles half-actions
+			attacks *= 2
+		case 0x2A: // slow: AffectSlow halves half-actions
+			attacks /= 2
+		}
+	}
+	if attacks < 1 {
+		attacks = 1
 	}
 	return attacks
 }
