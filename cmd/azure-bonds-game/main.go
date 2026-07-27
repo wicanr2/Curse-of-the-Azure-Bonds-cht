@@ -1312,6 +1312,15 @@ func main() {
 		log.Fatal(err)
 	}
 	state.SetMonsterRecords(monsterRecords)
+	monsterAffectData, err := zipMember(*imagePath, "MON1SPC.DAX")
+	if err != nil {
+		log.Fatal(err)
+	}
+	monsterAffects, err := loadMonsterAffects(monsterAffectData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	state.SetMonsterAffects(monsterAffects)
 	for chapter := uint8(1); chapter <= 6; chapter++ {
 		member := fmt.Sprintf("MON%dCHA.DAX", chapter)
 		data, loadErr := zipMember(*imagePath, member)
@@ -1323,6 +1332,15 @@ func main() {
 			log.Fatal(parseErr)
 		}
 		state.SetMonsterRecordsForECL(chapter, records)
+		affectData, affectErr := zipMember(*imagePath, fmt.Sprintf("MON%dSPC.DAX", chapter))
+		if affectErr != nil {
+			log.Fatal(affectErr)
+		}
+		affects, parseAffectErr := loadMonsterAffects(affectData)
+		if parseAffectErr != nil {
+			log.Fatal(parseAffectErr)
+		}
+		state.SetMonsterAffectsForECL(chapter, affects)
 	}
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
@@ -1658,6 +1676,22 @@ func loadMonsterRecords(data []byte) (map[uint8]monster.Record, error) {
 		records[block.Entry.ID] = record
 	}
 	return records, nil
+}
+
+func loadMonsterAffects(data []byte) (map[uint8][]monster.AffectRecord, error) {
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	affects := make(map[uint8][]monster.AffectRecord, len(blocks))
+	for _, block := range blocks {
+		records, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			return nil, fmt.Errorf("MON*SPC block 0x%02X: %w", block.Entry.ID, parseErr)
+		}
+		affects[block.Entry.ID] = records
+	}
+	return affects, nil
 }
 
 // demoParty is deliberately an explicit debug roster for -encounter. The

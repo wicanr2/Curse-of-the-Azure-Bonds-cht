@@ -55,6 +55,9 @@ type Fighter struct {
 	PartyIconSize  uint8
 	IconDirection  uint8
 	IconAttack     bool
+	// MonsterAffects preserves raw MON*SPC records. Gameplay projections are
+	// intentionally left to later, verified rules adapters.
+	MonsterAffects []MonsterAffect
 	// CombatMap position/size. A future Area/ECL placement decoder can set
 	// these directly; StartCombat supplies a deterministic fallback otherwise.
 	HasCombatPosition bool
@@ -98,6 +101,17 @@ type Fighter struct {
 	// monster-turn adapter currently consumes only Magic Missile (0x0F).
 	MonsterSpellIDs  []uint8
 	MonsterSpellUses [3]uint8
+}
+
+// MonsterAffect mirrors one nine-byte MON*SPC record without importing the
+// monster data package into the combat core.
+type MonsterAffect struct {
+	Kind     uint8
+	Value    uint16
+	Duration uint16
+	Strength uint8
+	Active   bool
+	Data     [4]byte
 }
 
 const MonsterMagicMissileSpellID uint8 = 0x0F

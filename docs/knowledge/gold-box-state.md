@@ -55,7 +55,12 @@ Monster spell 也沿用 raw-data → fighter → rules 三層：reference `PoolR
 是 0x38 個 spell-list slot，`field_B5..B7` 是 magic-user level-use counts；CoAB 目前只
 把已核對的 `0x0F Magic Missile` 接成一級單枚 2–5 damage，並在 enemy turn 成功施放後
 消耗一次 level-1 use。其他 raw spell ID 只保存、不猜效果；AI priority、saving throw、
-range、`MON*SPC` effects 與完整 monster spell turn 必須各自取得證據。
+range 與完整 monster spell turn 必須各自取得證據。
+
+`MON*SPC` 的資料層已另外完成：reference `load_mob` 以與 `MON*CHA` 相同的
+chapter-local monster ID 讀取九-byte affect records，State 再將其複製到 enemy
+fighter 的 `MonsterAffects`。這只證明 raw attachment 與生命週期邊界；隱形、加速、睡眠
+等 effect 如何改變戰鬥，仍須逐種對照 reference routine 後才能投影。
 
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded

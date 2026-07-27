@@ -11,6 +11,11 @@ import (
 // intentionally returns fighters without party or map state; those belong to
 // the battle/session adapter.
 func BuildEnemies(spawns []ecl.MonsterSpawn, records map[uint8]Record) ([]combat.Fighter, error) {
+	return BuildEnemiesWithAffects(spawns, records, nil)
+}
+
+// BuildEnemiesWithAffects also attaches chapter-local MON*SPC effects.
+func BuildEnemiesWithAffects(spawns []ecl.MonsterSpawn, records map[uint8]Record, affects map[uint8][]AffectRecord) ([]combat.Fighter, error) {
 	enemies := make([]combat.Fighter, 0)
 	for _, spawn := range spawns {
 		record, ok := records[spawn.MonsterID]
@@ -24,6 +29,12 @@ func BuildEnemies(spawns []ecl.MonsterSpawn, records map[uint8]Record) ([]combat
 		for copyIndex := 0; copyIndex < count; copyIndex++ {
 			id := fmt.Sprintf("monster-%02X-%d", spawn.MonsterID, copyIndex+1)
 			fighter := record.Fighter(id, combat.SideEnemy)
+			for _, affect := range affects[spawn.MonsterID] {
+				fighter.MonsterAffects = append(fighter.MonsterAffects, combat.MonsterAffect{
+					Kind: affect.Kind, Value: affect.Value, Duration: affect.Duration,
+					Strength: affect.Strength, Active: affect.Active, Data: affect.Data,
+				})
+			}
 			fighter.SpriteBlock = spawn.IconBlock
 			enemies = append(enemies, fighter)
 		}

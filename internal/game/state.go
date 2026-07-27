@@ -144,6 +144,8 @@ type State struct {
 	combatMessage          string
 	monsterRecords         map[uint8]monster.Record
 	monsterRecordsByECL    map[uint8]map[uint8]monster.Record
+	monsterAffects         map[uint8][]monster.AffectRecord
+	monsterAffectsByECL    map[uint8]map[uint8][]monster.AffectRecord
 	itemCatalog            monster.BaseItemCatalog
 	itemCatalogReady       bool
 	ammunitionItemTypes    map[uint8][]uint8
@@ -475,6 +477,30 @@ func (s *State) SetMonsterRecordsForECL(chapter uint8, records map[uint8]monster
 	s.monsterRecordsByECL[chapter] = copyRecords
 }
 
+// SetMonsterAffects installs the decoded MON*SPC fallback table.
+func (s *State) SetMonsterAffects(affects map[uint8][]monster.AffectRecord) {
+	s.monsterAffects = cloneMonsterAffects(affects)
+}
+
+// SetMonsterAffectsForECL installs a chapter-local MON*SPC table.
+func (s *State) SetMonsterAffectsForECL(chapter uint8, affects map[uint8][]monster.AffectRecord) {
+	if chapter < 1 || chapter > 6 {
+		return
+	}
+	if s.monsterAffectsByECL == nil {
+		s.monsterAffectsByECL = make(map[uint8]map[uint8][]monster.AffectRecord)
+	}
+	s.monsterAffectsByECL[chapter] = cloneMonsterAffects(affects)
+}
+
+func cloneMonsterAffects(source map[uint8][]monster.AffectRecord) map[uint8][]monster.AffectRecord {
+	result := make(map[uint8][]monster.AffectRecord, len(source))
+	for id, effects := range source {
+		result[id] = append([]monster.AffectRecord(nil), effects...)
+	}
+	return result
+}
+
 // monsterChapterForBlock follows the observed global ECL block namespaces:
 // ECL2 uses 0x00..0x0F, ECL3 0x10..0x1F, through ECL6 0x40..0x4F, while
 // ECL1 occupies 0x50..0x5F and its additional blocks.
@@ -502,6 +528,15 @@ func (s *State) monsterRecordsForCurrentECL() map[uint8]monster.Record {
 		}
 	}
 	return s.monsterRecords
+}
+
+func (s *State) monsterAffectsForCurrentECL() map[uint8][]monster.AffectRecord {
+	if s.session != nil && len(s.monsterAffectsByECL) > 0 {
+		if affects := s.monsterAffectsByECL[monsterChapterForBlock(s.session.CurrentBlockID())]; len(affects) > 0 {
+			return affects
+		}
+	}
+	return s.monsterAffects
 }
 
 // SetItemCatalog installs the decoded original ITEMS table. Until this is
@@ -696,7 +731,7 @@ func (s *State) Select(index int) error {
 		if result.CombatRequested {
 			records := s.monsterRecordsForCurrentECL()
 			if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
-				if err := s.StartEncounter(result, records, s.party, s.combatSeed); err != nil {
+				if err := s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed); err != nil {
 					return err
 				}
 				return nil
