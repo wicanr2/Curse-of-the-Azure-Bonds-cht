@@ -20,6 +20,7 @@ type RunResult struct {
 	ProgramIDs          []uint8
 	ProgramExit         bool
 	CallAddresses       []uint16
+	PrintReturnCount    int
 	NPCIDs              []uint16
 	SelectionsConsumed  int
 	RandomValues        []uint16
@@ -501,6 +502,11 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+		case 0x33: // PRINT RETURN
+			// This command changes the original text window/cursor state. Keep
+			// its instruction boundary observable while leaving renderer layout
+			// to the game UI adapter.
+			result.PrintReturnCount++
 		case 0x38: // PROGRAM
 			// PROGRAM dispatches into an external engine routine. The reference
 			// implementation ends the current VM pass for PROGRAM 0/3/8/9;
