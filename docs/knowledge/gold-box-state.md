@@ -135,7 +135,9 @@ equipment AC、invisibility、action-delay-aware blink 與 displace consumed-bit
 共用投影；context variant 可由戰鬥回合傳入 delay／round，並將 FX effect-data bit
 寫回 working roster，並在 resolver error 時 rollback。其他 affect 與死亡 continuation
 仍應由作品 adapter 補上；目前 DamageOutcome 已保存 exact-zero／overkill 的 health
-state，尚未把 `CheckAffectsEffect(Death)` 或 combat win/loss transition 接到 ECL queue。
+state；`CheckAffectsEffect(Death)` 尚未接入 ECL queue。active combat 的 ECL queue 現已
+透過 `Battle.SetHitPoints` 接入 win/loss transition；
+`CheckAffectsEffect(Death)`、bleeding 與完整 combatant removal 仍待接入。
 
 ## 中文化注意
 
