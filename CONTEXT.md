@@ -543,3 +543,10 @@ writeback；新增 selected／whole-party DAMAGE resolver、natural 1／20、注
 transactional roster HP 與 stable-ID fighter sync。random-target／`CanHitTarget`、
 affect save bonus 與死亡 continuation 仍保留 boundary。Docker 已通過
 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十三輪功能 commit：`7250778`，依 reference `CanHitTarget` 接入 ECL DAMAGE
+random-target branch：低八位 target count、party-size random selection、raw hit bonus、
+natural 1／20 與注入式 hit resolver；State 提供 resolver variant 並 transactional sync
+roster／fighter HP。新增 party／game regressions 與 READY spec；AC／invisibility affect、
+save-effect bonus 與死亡 continuation 仍保留 boundary。Docker 已通過
+`internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。

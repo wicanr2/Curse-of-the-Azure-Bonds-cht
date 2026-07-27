@@ -17,8 +17,8 @@ branch 使用原始 save type。
   branches，dice 與 saving throw 由注入函式提供，並將 HP clamp 到零。
 - State `ResolvePendingECLDamage` 以 working roster transactional writeback，成功後
   清空 pending queue，並依 stable character ID 同步 renderer fighter HP。
-- `flags & 0x80 == 0` 的 random-target／`CanHitTarget` branch，以及 affect save bonus、
-  party death continuation，仍明確回傳 boundary error，不能假裝已完成。
+- `flags & 0x80 == 0` 的 random-target／`CanHitTarget` branch 現已另由注入式 resolver
+  覆蓋；affect save bonus、party death continuation 仍是後續 boundary，不能假裝已完成。
 
 ## 驗收
 
