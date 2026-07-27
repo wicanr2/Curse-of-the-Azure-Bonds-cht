@@ -76,4 +76,6 @@ resolver 後寫回 roster HP。DOS `field_186` saving bonus 已由 party adapter
 blink `0x25`。State context variant 可傳入目前 action delay／combat round；displace
 `0x59` 會依 FX effect-data 第一 byte 的 `0x10` consumed bit 實作首次 miss 與後續
 命中；State resolver 會在 transaction working roster deep-copy effects，避免失敗
-request 洩漏 consumed bit。其他 `CheckAffectsEffect` 規則與死亡流程仍保留 boundary。
+request 洩漏 consumed bit。Damage adapter 也保存 reference 的 OK／animated／unconscious／
+dying／dead health state；完整 `CheckAffectsEffect(Death)` 與 party continuation 仍保留
+boundary。
