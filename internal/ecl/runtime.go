@@ -27,6 +27,7 @@ type RunResult struct {
 	CallAddresses          []uint16
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
+	ApproachCount          int
 	DelayCount             int
 	LoadCharacterAddresses []uint16
 	LoadCharacterRequests  []LoadCharacterRequest
@@ -890,6 +891,11 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			// GameDelay is an engine timing boundary with no ECL memory side
 			// effect. Preserve the count for the frontend and continue.
 			result.DelayCount++
+		case 0x0D: // APPROACH
+			// Reference CMD_Approach advances an encounter sprite toward the
+			// party. Preserve the presentation signal while leaving geometry
+			// and animation to the engine adapter.
+			result.ApproachCount++
 		case 0x2E: // DAMAGE
 			if len(instruction.Operands) != 5 {
 				return result, fmt.Errorf("DAMAGE at %d has unexpected arity", pc)

@@ -2,7 +2,14 @@
 
 更新日期：2026-07-28
 
-最新成果：哈普 ECL5 block `0x31` 的 terrain `0x80` 黑暗精靈巡邏已接通。
+最新成果：哈普 ECL5 block `0x31` terrain `0x88` 的伊弗利特頭目主線已接通。
+新支援的 `APPROACH (0x0D)` 以 renderer-neutral count 保存兩次靠近動畫；
+State 不再吞掉 ECL runner error。正式戰鬥包含 MON5 `0x34` 伊弗利特一名、
+`0x32` 法師六名與 `0x33` 牧師六名。勝利後寫入 `4C01=5`、`4C5E=1`，
+取得村莊／洞穴地圖，播放 PICTURE 50 解放群眾，並由長老指出附近法師塔。
+成果收進 spec 309 及 Gold Box ECL／state 知識庫。
+
+先前成果：哈普 ECL5 block `0x31` 的 terrain `0x80` 黑暗精靈巡邏已接通。
 依公開 reference 修正 opcode `0x29 ENCOUNTER MENU`：五個 script values 是
 behavior modes，COMBAT 對 modes 0/1/3/4 應解析為 destination `1`，不能直接
 複製 mode。seed 3 的正式流程建立三名 MON5 `0x31` 戰士與一名 `0x32` 法師，

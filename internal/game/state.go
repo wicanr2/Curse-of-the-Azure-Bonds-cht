@@ -983,6 +983,7 @@ func (s *State) Select(index int) error {
 			s.selectionSequence = append(s.selectionSequence, uint16(index))
 		}
 		var result ecl.RunResult
+		var runErr error
 		if s.session != nil {
 			selection := uint16(index)
 			var menuSelection, whoSelection *uint16
@@ -991,7 +992,7 @@ func (s *State) Select(index int) error {
 			} else {
 				menuSelection = &selection
 			}
-			result, _ = s.session.ResumeInteractiveSelectionSeed(180, menuSelection, whoSelection, s.eclSeed, s.eclPartyContext())
+			result, runErr = s.session.ResumeInteractiveSelectionSeed(180, menuSelection, whoSelection, s.eclSeed, s.eclPartyContext())
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
@@ -1007,7 +1008,10 @@ func (s *State) Select(index int) error {
 				s.eventReturnMode = ModeDungeon
 			}
 		} else {
-			result, _ = ecl.RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
+			result, runErr = ecl.RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.whoSelectionSequence, s.eclSeed, s.eclPartyContext())
+		}
+		if runErr != nil {
+			return runErr
 		}
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)
@@ -4928,6 +4932,42 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_hap_dark_elf_attack",
 			"「忘恩負義的渣滓！你們一再挑戰我們的耐性，就慶幸自己能死得痛快吧！」",
+		)
+	case strings.Contains(joined, "THIS BARN IS EMPTY") &&
+		strings.Contains(joined, "EFREET AND HIS DARK ELFIN COHORTS"):
+		return catalog.Text(
+			"ecl_hap_efreet_barn",
+			"穀倉裡空無一物，只剩伊弗利特與他的黑暗精靈黨羽。",
+		)
+	case strings.Contains(joined, "THE EFREET VOICE BOOMS OUT") &&
+		strings.Contains(joined, "DOOM ON YOUR VILLAGE"):
+		return catalog.Text(
+			"ecl_hap_efreet_threat",
+			"伊弗利特隆隆吼道：「可悲的蟲子竟敢反抗！我們會先殺了你們，再燒毀這片破爛村落。是你們把毀滅帶給了自己的村莊！」",
+		)
+	case strings.Contains(joined, "ON THE BODY OF THE EFREET IS A MAP") &&
+		strings.Contains(joined, "THE TOWN AND A CAVE"):
+		return catalog.Text(
+			"ecl_hap_efreet_map",
+			"你們在伊弗利特的屍體上找到一張地圖，標出了村莊與一處洞穴。",
+		)
+	case strings.Contains(joined, "A SHORT TIME AFTER THE SOUNDS OF BATTLE FADE") &&
+		strings.Contains(joined, "LOUD CHEERS AND LAUGHTER"):
+		return catalog.Text(
+			"ecl_hap_liberated_crowd",
+			"戰聲平息不久，幾顆膽怯的腦袋探進穀倉。人群很快聚集起來，整座村莊隨即充滿歡呼與笑聲。",
+		)
+	case strings.Contains(joined, "AN ELDER OF THE VILLAGE COMES FORWARD") &&
+		strings.Contains(joined, "ALWAYS BE WELCOME IN HAPTOOTH"):
+		return catalog.Text(
+			"ecl_hap_elder_thanks",
+			"一位村中長老上前說：「我們永遠感激你們；哈普圖斯永遠歡迎各位。」",
+		)
+	case strings.Contains(joined, "THE ELDER LOWERS HIS VOICE") &&
+		strings.Contains(joined, "CONTROLLED FROM THE WIZARD'S TOWER NEARBY"):
+		return catalog.Text(
+			"ecl_hap_elder_wizard_tower",
+			"長老壓低聲音：「我不願顯得忘恩負義，但這些精靈受附近法師塔控制。只有摧毀那個巢穴，我們才真正安全。」",
 		)
 	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
 		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):

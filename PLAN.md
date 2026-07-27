@@ -470,3 +470,6 @@
 - [x] 依 reference 修正 ENCOUNTER MENU 的 behavior-mode COMBAT resolver，
   接通哈普 terrain `0x80` 黑暗精靈巡邏、MON5 `0x31–0x33` 與戰勝後
   `4C47` 累加／返回 dungeon continuation。
+- [x] 接通哈普 terrain `0x88` 伊弗利特頭目：APPROACH signal、MON5
+  `0x34 + 6×0x32 + 6×0x33`、`4C01/4C5E`、地圖、PICTURE 50 解放群眾與
+  長老的法師塔提示。
