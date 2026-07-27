@@ -46,3 +46,6 @@ payload target 不同；real ECL3 opening 在 CALL 後會繼續 `PRINTCLEAR`、�
 menu。bounded VM 現在保存 `RunResult.CallAddresses`，並從下一個 instruction
 繼續，讓後續中文事件可以被觀察；真正 routine 的 DOS memory、UI、sound 或
 combat side effect 仍由後續 adapter 實作。
+
+State 現在會把已驗證的 ECL3 Yulash smoke text 經 zh-TW catalog 顯示為繁中訊息，
+未知 segment 保留原文，且 raw `RunResult.Text` 不變，方便後續逐段翻譯與對照原版。
