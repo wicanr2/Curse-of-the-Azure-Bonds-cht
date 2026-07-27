@@ -345,3 +345,4 @@
 - [x] 將 ECL `DAMAGE` signal 接入 State pending queue 與 exactly-once consume；保留 selected-character／save-throw／HP mutation boundary。
 - [x] 保存 DOS player `saveVerse` `0xDF–0xE3` 到 Character／JSON／writeback adapter。
 - [x] 依 CoAB reference 接入 ECL `DAMAGE` selected／whole-party branches、注入骰點、save resolution 與 roster／fighter HP sync；random-target／death continuation 保留 boundary。
+- [x] 依 reference `CanHitTarget` 接入 ECL `DAMAGE` random target count、target order、natural 1／20 hit resolver 與 State HP sync；AC／affect projection／death continuation 保留 boundary。

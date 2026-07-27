@@ -69,5 +69,6 @@ ECL5 block 48 的 `LOAD CHARACTER` 後續 inventory sequence 也已被拆成可�
 `DAMAGE` 也已建立可跨作品重用的 raw request boundary。公開 CoAB reference 證實
 五個 operand 順序是 `flags, dice_count, dice_size, damage_bonus, save_flags`；VM
 保存 `DamageRequest` 並繼續 cursor。DOS player `saveVerse` raw bytes 現在由 party
-adapter 保存；已證實的 selected／whole-party branches 可注入 dice／save roll 後寫回
-roster HP。random target、`CanHitTarget`、affect bonus 與死亡流程仍保留 boundary。
+adapter 保存；selected／whole-party branches 與 random target 可注入 dice／save／hit
+resolver 後寫回 roster HP。AC／invisibility affect、save bonus 與死亡流程仍保留
+boundary。
