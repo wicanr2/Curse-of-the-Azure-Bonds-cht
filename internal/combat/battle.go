@@ -66,6 +66,7 @@ type Fighter struct {
 	// signal lets each frontend choose an asset without leaking CPIC indices
 	// into the combat core.
 	DeathOverlay         bool
+	CombatAction         ActionState
 	HitPoints            int
 	MaxHitPoints         int
 	ArmorClass           int
@@ -88,6 +89,16 @@ type Fighter struct {
 	MissileWeapon        bool
 	ThrownWeapon         bool
 	InitiativeBonus      int
+}
+
+// ActionState mirrors the per-player fields cleared by the reference
+// CombatantKilled routine. It is deliberately data-only so ECL, UI and other
+// Gold Box frontends can share the reset contract.
+type ActionState struct {
+	Delay    int
+	Move     int
+	SpellID  uint8
+	Guarding bool
 }
 
 type Turn struct {
@@ -189,6 +200,7 @@ func (b *Battle) SetHitPoints(fighterID string, hitPoints int) error {
 		// HasCombatPosition is the renderer-neutral equivalent.
 		fighter.HasCombatPosition = false
 		fighter.DeathOverlay = true
+		fighter.CombatAction = ActionState{}
 	} else {
 		// Healing clears the one-shot downed visual. Position restoration is a
 		// separate placement operation, matching the reference map contract.

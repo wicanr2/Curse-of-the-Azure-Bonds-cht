@@ -32,7 +32,9 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   removal 已由 `HasCombatPosition=false` 對應 reference CombatMap size 0，並發出
   renderer-neutral `Fighter.DeathOverlay` signal。Ebiten 目前保留死亡時的 CombatX/Y
   anchor 並顯示原版 `COMSPR 0x8B`／`0x19` 交替 skull overlay；其來源 mapping 已整理於
-  `docs/knowledge/gold-box-graphics.md`，renderer 以 100ms phase 顯示。dragon-slayer `0x4B`
+  `docs/knowledge/gold-box-graphics.md`，renderer 以 100ms phase 顯示。Battle 同時清除
+  renderer-neutral `CombatAction` 的 delay／move／spell ID／guarding；若倒下者是目前
+  State turn，State 也清除施法、移動與角色檢視選擇。dragon-slayer `0x4B`
   已由 `ResolveDragonSlayer` 接受 explicit target monster kind、strength damage bonus
   與 d12 roller，避免 Character／ECL DAMAGE 猜測 target。若 State 正在 active combat，
   `Character.RemoveCombatAffects`

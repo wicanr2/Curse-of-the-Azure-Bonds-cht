@@ -6,6 +6,7 @@ func TestSetHitPointsMarksDeathOverlayAndClearsCombatPosition(t *testing.T) {
 	battle, err := NewBattle([]Fighter{{
 		ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10,
 		ArmorClass: 10, HasCombatPosition: true, CombatX: 4, CombatY: 3,
+		CombatAction: ActionState{Delay: 4, Move: 2, SpellID: 7, Guarding: true},
 	}}, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -14,7 +15,7 @@ func TestSetHitPointsMarksDeathOverlayAndClearsCombatPosition(t *testing.T) {
 		t.Fatal(err)
 	}
 	fighter := battle.Fighters()[0]
-	if fighter.HasCombatPosition || !fighter.DeathOverlay || fighter.CombatX != 4 || fighter.CombatY != 3 {
+	if fighter.HasCombatPosition || !fighter.DeathOverlay || fighter.CombatX != 4 || fighter.CombatY != 3 || fighter.CombatAction != (ActionState{}) {
 		t.Fatalf("death state lost position anchor: %+v", fighter)
 	}
 	if err := battle.SetHitPoints("hero", 3); err != nil {
