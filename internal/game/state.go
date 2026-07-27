@@ -4644,6 +4644,12 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("parlay_nice", "友善")
 	case "PARLAY_ABUSIVE":
 		return catalog.Text("parlay_abusive", "威嚇")
+	case "FIRE KNIVES":
+		return catalog.Text("fire_knives", "火刀")
+	case "PRINCESS NACACIA":
+		return catalog.Text("princess_nacacia", "娜卡西亞公主")
+	case "NO ONE":
+		return catalog.Text("no_one", "不效忠任何人")
 	case "EXIT":
 		return catalog.Text("exit", "Exit")
 	default:
@@ -4772,6 +4778,24 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "YOU QUICKLY HIDE THEIR BODIES"):
 		return catalog.Text("ecl_sewers_hide_checkpoint_bodies", "你們迅速把火刀的屍體藏了起來。")
+	case strings.Contains(joined, "SLAUGHTERED REMAINS OF A FIRE KNIFE") &&
+		strings.Contains(joined, "KNIGHTS OF MYTH DRANNOR"):
+		return catalog.Text(
+			"ecl_sewers_knight_appears",
+			"這裡躺著一處遭屠滅的火刀檢查哨。你們小心查看時，一名男子從陰影中走出；他手持長劍，身穿迷斯卓諾騎士團的制服。",
+		)
+	case strings.Contains(joined, "BLUE TATTOO MARKINGS OF THE FIRE KNIVES") &&
+		strings.Contains(joined, "TO WHOM DO YOU OWE ALLEGIANCE"):
+		return catalog.Text(
+			"ecl_sewers_knight_allegiance",
+			"「你們身上帶著火刀的青色刺青，但我聽說那個受詛咒的烈焰者正用這類印記控制他人。你們效忠誰？」",
+		)
+	case strings.Contains(joined, "THAT PRINCESS IS A POPULAR GIRL") &&
+		strings.Contains(joined, "DON'T KILL THE CLERIC WITH A HAMMER"):
+		return catalog.Text(
+			"ecl_sewers_knight_princess_friend",
+			"他笑道：「那位公主還真受歡迎！繼續往南走，別殺掉拿著戰鎚的牧師；他也正試著營救她。」說完便讓你們通過。",
+		)
 	case strings.Contains(joined, "I'M NOT REALLY THE KING") &&
 		strings.Contains(joined, "OH NO! NOT AGAIN"):
 		return catalog.Text(

@@ -273,3 +273,4 @@
 - [第二百九十三輪盜賊公會混合陣營戰鬥](./293-thieves-guild-allied-combat.md)（`READY`：限 selected-player window、4 名 quick-fight 友軍、戰後手札 4）
 - [第二百九十四輪公會探索與下水道出口](./294-guild-exploration-sewer-exit.md)（`READY`：限一次性友軍清理、公會房間與 ECL block 3 轉場）
 - [第二百九十五輪提爾佛頓下水道檢查哨](./295-tilverton-sewers-checkpoint.md)（`READY`：限 block 3 初始化、terrain `0x81`、五名火刀戰與 continuation）
+- [第二百九十六輪下水道迷斯卓諾騎士](./296-sewers-myth-drannor-knight.md)（`READY`：限 terrain `0x83`、效忠選單、娜卡西亞友善分支與重訪狀態）

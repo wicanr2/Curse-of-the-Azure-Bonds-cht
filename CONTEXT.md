@@ -1143,3 +1143,12 @@ MON2 FIRE KNIFE、實際打贏戰鬥，再由同一 resumable ECL 顯示藏起�
 continuation。新增 `-sewers` 全故事重現入口、READY spec 295；subagent 的 block 3
 唯讀盤點也整理出五入口 lifecycle ABI、`C04F&0x3F → ON GOTO` terrain dispatch、
 camp entry 分工與主要 encounters，已收斂進共用 Gold Box ECL 知識庫。
+
+第二百九十六輪成果：正式新遊戲 regression 在五名火刀檢查哨戰後繼續前往
+GEO2 block 3 `(13,10)` terrain `0x83`，跑過遭屠滅的檢查哨與迷斯卓諾騎士出場、
+青色刺青質問，以及 FIRE KNIVES／PRINCESS NACACIA／NO ONE 三項效忠 menu。
+繁中 display labels 保持原始 menu index；選「娜卡西亞公主」後，騎士提示別殺
+拿戰鎚的牧師並放行。最後 Continue 會落實 ECL first-visit／friend state，返回
+ModeDungeon；重訪同 terrain 已驗證不重播。新增 READY spec 296，知識庫補上
+multi-pause dialogue 必須保存 pending PC、plot mutation 可能延後到最後 Continue、
+localized label 不可取代 script key 的共用契約。

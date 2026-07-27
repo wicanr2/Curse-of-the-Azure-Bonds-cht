@@ -1075,6 +1075,48 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("sewer checkpoint status=%v mode=%v message=%q",
 			state.CombatStatus(), state.Mode, state.Message)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 13, 10, 2
+	state.DungeonWallType, _ = sewerGrid.WallWrapped(13, 10, 2)
+	state.DungeonWallRoof = sewerGrid.CellWrapped(13, 10).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "迷斯卓諾騎士團") {
+		t.Fatalf("sewer knight first pause mode=%v terrain=%#x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "你們效忠誰") ||
+		len(state.Choices) != 3 || state.Choices[1] != "娜卡西亞公主" {
+		t.Fatalf("sewer knight allegiance mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.Choices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "拿著戰鎚的牧師") ||
+		!strings.Contains(state.Message, "讓你們通過") {
+		t.Fatalf("sewer knight Princess branch mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 13, 10, 2
+	state.DungeonWallType, _ = sewerGrid.WallWrapped(13, 10, 2)
+	state.DungeonWallRoof = sewerGrid.CellWrapped(13, 10).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.Message != "" || len(state.Choices) != 0 {
+		t.Fatalf("sewer knight revisit mode=%v message=%q choices=%v, want consumed event",
+			state.Mode, state.Message, state.Choices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {
