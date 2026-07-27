@@ -20,6 +20,7 @@ type RunResult struct {
 	ProgramIDs             []uint8
 	ProgramExit            bool
 	CallAddresses          []uint16
+	DamageRequests         []DamageRequest
 	PrintReturnCount       int
 	LoadCharacterAddresses []uint16
 	FindItemIDs            []uint16
@@ -37,6 +38,18 @@ type RunResult struct {
 	BigPictureRequested    bool
 	SpellSearches          []SpellSearch
 	ProtectionRequests     []uint16
+}
+
+// DamageRequest preserves the five numeric operands consumed by the original
+// ECL DAMAGE command. Flags encode target count/selection and saving-throw
+// behavior in the DOS engine; the bounded VM leaves those rules to a
+// party/combat adapter instead of rolling or mutating HP here.
+type DamageRequest struct {
+	Flags     uint16
+	DiceCount uint16
+	DiceSize  uint16
+	Bonus     uint16
+	SaveFlags uint16
 }
 
 // SpellSearch is the data-bearing part of ECL SPELL. The bounded runner keeps
@@ -505,6 +518,26 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+		case 0x2E: // DAMAGE
+			if len(instruction.Operands) != 5 {
+				return result, fmt.Errorf("DAMAGE at %d has unexpected arity", pc)
+			}
+			values := make([]uint16, len(instruction.Operands))
+			for index, operand := range instruction.Operands {
+				value, err := operandValue(operand, memory)
+				if err != nil {
+					return result, fmt.Errorf("DAMAGE operand %d at %d: %w", index+1, pc, err)
+				}
+				values[index] = value
+			}
+			// The public CoAB reference confirms the order as flags, dice count,
+			// dice size, damage bonus, and saving-throw flags. Keep raw values;
+			// signed bonus conversion, target selection, saves, and HP mutation
+			// belong to the game adapter.
+			result.DamageRequests = append(result.DamageRequests, DamageRequest{
+				Flags: values[0], DiceCount: values[1], DiceSize: values[2],
+				Bonus: values[3], SaveFlags: values[4],
+			})
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])
 			if err != nil {

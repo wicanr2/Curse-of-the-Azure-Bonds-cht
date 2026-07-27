@@ -14,7 +14,7 @@ opcode 名稱／arity」與「已證實 runtime semantics」分開；command tab
 | `15`–`1F` | menus／IF variants／CLEARMONSTERS／party checks | variable／fixed | partial |
 | `20`–`2C` | NEWECL／LOAD FILES／surprise／COMBAT／ON branches／treasure／menus／PARLAY | variable | partial signal／bounded |
 | `2D` | CALL | 1 | **未實作；需確認 external dispatch 或 code call** |
-| `2E` | DAMAGE | 5 | 未實作 |
+| `2E` | DAMAGE | 5 | bounded raw signal（flags／dice／bonus／save flags） |
 | `2F`–`30` | AND／OR | 3/3 | bounded 16-bit memory destination |
 | `31`–`40` | sprite／item／clock／save table／NPC／pieces／PROGRAM／WHO／delay／spell／protection／… | variable | partial signal／bounded |
 
@@ -51,6 +51,11 @@ descriptor bridge，不是完整外部 routine 或玩家流程完成的證明。
 `0x2D CALL` 現在也有 reusable external-call boundary：保存 observed word address
 並 return 到下一個 ECL instruction。後續作品可重用 signal contract，再依各作品
 的 recognized address table 注入 routine handler；不可把它直接改成 `GOSUB`。
+
+`0x2E DAMAGE` 的公開 CoAB reference operand 順序已確認為
+`flags, dice_count, dice_size, damage_bonus, save_flags`。VM 現在只保存這五個 raw
+numeric values 並繼續 cursor；target selection、saving throw、signed bonus、random
+roll 與 party HP mutation 仍由作品 adapter 實作，避免把 ECL flags 誤當成一般攻擊。
 
 ECL event text 也採同一 evidence discipline：只有已由 raw image 解出的 segment
 才進入作品 locale catalog，未知句子維持原文，避免跨作品誤套 CoAB 翻譯。

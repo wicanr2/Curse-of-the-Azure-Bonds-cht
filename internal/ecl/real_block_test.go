@@ -158,3 +158,58 @@ func TestRealECL1ToECL2NEWECLSwitch(t *testing.T) {
 		t.Fatalf("target transition produced no bounded result: result=%+v err=%v", result, runErr)
 	}
 }
+
+func TestRealECL2Block3DamageOperandOrder(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	var eclData []byte
+	for _, entry := range archive.File {
+		if entry.Name != "ECL2.DAX" {
+			continue
+		}
+		reader, openErr := entry.Open()
+		if openErr != nil {
+			t.Fatal(openErr)
+		}
+		eclData, err = io.ReadAll(reader)
+		reader.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		break
+	}
+	if len(eclData) == 0 {
+		t.Fatal("ECL2.DAX is absent from original image")
+	}
+	blocks, err := dax.Parse(eclData)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != 3 {
+			continue
+		}
+		instruction, decodeErr := decodeInstruction(block.Data[2:], 0x1599)
+		if decodeErr != nil {
+			t.Fatal(decodeErr)
+		}
+		if instruction.Command.Opcode != 0x2E || len(instruction.Operands) != 5 {
+			t.Fatalf("instruction=%+v, want DAMAGE with five operands", instruction)
+		}
+		want := []uint16{0xA0, 1, 6, 1, 0x80}
+		for index, operand := range instruction.Operands {
+			value, valueErr := operandValue(operand, nil)
+			if valueErr != nil {
+				t.Fatalf("operand %d: %v", index, valueErr)
+			}
+			if value != want[index] {
+				t.Fatalf("operand %d=0x%X, want 0x%X", index, value, want[index])
+			}
+		}
+		return
+	}
+	t.Fatal("ECL2 block 3 is absent")
+}

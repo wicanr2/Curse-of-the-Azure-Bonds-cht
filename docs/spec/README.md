@@ -204,3 +204,4 @@
 - [第二百零七輪 ECL FIND ITEM signal](./207-ecl-find-item-signal.md)（`READY`：限 inventory query signal 與 continuation）
 - [第二百零八輪 ECL DESTROY ITEMS signal](./208-ecl-destroy-items-signal.md)（`READY`：限 inventory mutation signal 與 continuation）
 - [第二百零九輪 ECL inventory state adapter](./209-ecl-inventory-state-adapter.md)（`READY`：限 ECL5 verified destroy effect）
+- [第二百一十輪 ECL DAMAGE signal](./210-ecl-damage-signal.md)（`READY`：限五 operand raw signal 與 continuation）
