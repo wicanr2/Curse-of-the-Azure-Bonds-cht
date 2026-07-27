@@ -481,3 +481,5 @@
 第一百八十八輪功能 commit：`ce606ad`，依已知 `SaveGame` side effect，將 SAVGAM slot 的 prefix 與 `CHRDAT{key}{1..6}` 檔案先移入 backup，再替換 staged bundle；隊伍縮編的 stale player sidecars 會被清理，替換失敗可 rollback。新增 stale-file regression 與 READY 規格；多職業、未知欄位與完整 player serialization 仍保留 boundary。
 
 第一百八十九輪功能 commit：`84def37`，修正戰鬥結束時只同步 renderer-facing party、未同步持久 `partyRoster` 的狀態問題；現在 HP／MaxHP 會依 fighter ID 回寫 roster，供 CAMP 與兩種 save path 使用，並新增 regression／READY 規格與 state knowledge。
+
+第一百九十輪功能 commit：`7b33384`，修正戰鬥結果按 Enter 後保留 stale ECL choices 的主流程問題；新增 `restoreWildernessMenu`，統一返回繁中荒野主選單，並加入 continuation regression／READY 規格與 state knowledge。

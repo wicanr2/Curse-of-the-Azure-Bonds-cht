@@ -110,6 +110,7 @@
 - [第一百八十七輪 SAVGAM save workflow](./187-savgam-save-workflow.md)（`READY`：限 loaded slot 的 F5／CAMP SAVE adapter）
 - [第一百八十八輪 SAVGAM stale-file cleanup](./188-savgam-stale-file-cleanup.md)（`READY`：限縮編 slot 的受限檔案清理與 rollback）
 - [第一百八十九輪 combat HP roster synchronization](./189-combat-hp-roster-sync.md)（`READY`：限戰鬥結束後的 party／save state synchronization）
+- [第一百九十輪 combat result continuation](./190-combat-result-continuation.md)（`READY`：限戰鬥結果返回荒野主選單）
 - [第一百零七輪 DOS player `icon_id` preservation](./107-dos-player-icon-id.md)（`READY`：限 icon metadata 保存）
 - [第一百零八輪城市客棧安全休息](./108-inn-safe-rest.md)（`READY`：限 INN HP restore）
 - [第一百零九輪商店 Buy／Sell／ID transaction](./109-shop-transactions.md)（`READY`：限 price-injected party transaction）
