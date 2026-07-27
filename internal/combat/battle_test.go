@@ -299,6 +299,28 @@ func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
 	}
 }
 
+func TestAdvanceMonsterAffectsUsesFiniteMinutesAndPermanentMarker(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "monster", Side: SideEnemy, HitPoints: 5, MaxHitPoints: 5,
+			MonsterAffects: []MonsterAffect{
+				{Kind: 0x35, Duration: 3, Value: 3, Strength: 1, Active: true},
+				{Kind: 0x27, Duration: 3, Value: 3, Strength: 0xFF, Active: true},
+			}}}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if removed := battle.AdvanceMonsterAffects(2); removed != 0 {
+		t.Fatalf("removed=%d after two minutes", removed)
+	}
+	fighter := battle.Fighters()[0]
+	if fighter.MonsterAffects[0].Duration != 1 || len(fighter.MonsterAffects) != 2 {
+		t.Fatalf("after two minutes=%#v", fighter.MonsterAffects)
+	}
+	if removed := battle.AdvanceMonsterAffects(1); removed != 1 || len(battle.Fighters()[0].MonsterAffects) != 1 {
+		t.Fatalf("expiry removed=%d effects=%#v", removed, battle.Fighters()[0].MonsterAffects)
+	}
+}
+
 func TestResolveAttackRejectsAdjacentMissileButAllowsDartException(t *testing.T) {
 	missile, err := NewBattle([]Fighter{
 		{ID: "archer", Name: "Archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 0, CombatY: 0, WeaponRange: 22, MissileWeapon: true},

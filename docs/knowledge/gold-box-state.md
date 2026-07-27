@@ -6,7 +6,7 @@ Gold Box 城市應先由 `ModePlace` 保存 `INN／STORE／BAR／LEAVE` parent m
 
 目前可沿用的 adapter 是：`INN` 的 safe HP restore、`STORE` 的 price-injected transaction、`BAR` 的 ordered `SetBarTales` sequence。各遊戲只需替換城市／ECL data loader，不應複製 renderer 或把原版 routine 的未知副作用猜進共用 state。
 
-CAMP 入口與 REST 必須分離：`PROGRAM 9`／CAMP 只建立 camp command state，不能直接把 HP 設成 MaxHP；REST menu 再以遊戲提供的時間來源計算自然恢復。CoAB 目前採 24 小時一個可測試單位、每位受傷角色 +1 HP，並以 character ID 同步 combat projection。memorize duration、clock、safe location 與 random interruption 應由後續作品的 rules／ECL adapter 注入。
+CAMP 入口與 REST 必須分離：`PROGRAM 9`／CAMP 只建立 camp command state，不能直接把 HP 設成 MaxHP；REST menu 再以遊戲提供的時間來源計算自然恢復。CoAB 目前採 24 小時一個可測試單位、每位受傷角色 +1 HP，並以 character ID 同步 combat projection。State 現已保存 reference 七-slot clock 並提供 elapsed-minute effect timeout；safe location、calendar UI 與 random interruption 仍由 rules／ECL adapter 注入。
 
 Spell UI 也應保持三層：DOS／save adapter 保存 ordered slot IDs，verified catalog 只把有證據的 class／ID 映射成名稱，rules engine 才處理 CAST／MEMORIZE／SCRIBE 與消耗。CoAB 目前只核對一級牧師／魔法師前八個 ID；未知 slot 顯示 hex 比猜 global ordinal 更安全，後續 Golden Box 遊戲可替換同一個 catalog adapter。
 
@@ -181,5 +181,13 @@ Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、
 paralyze、sleep（`0x1F`／`0x33`／`0x34`／`0x35`）會讓怪物跳過整個回合；`AttackTarget01`
 的 `target.IsHeld()` 例外則讓攻擊 held target 必定命中。這只處理 combat action boundary，
 不代表已完成解除、豁免、持續時間或治療流程。
+
+## Game-time adapter
+
+`ovr021.step_game_time` 的時間槽不是單純 combat round：slot 2 以 10 分鐘換算，
+更高槽位依 `{10,10,6,24,30,12,0x100}` 級聯進位。`State.AdvanceGameTime` 現在保留
+raw clock、套用同一 elapsed-minute 計算，並讓 party `.FX` 與 active battle raw effects
+共同到期；`Strength=0xFF` 永久 effect 不被移除。slot-6 overflow 暫存為 age cycles，
+尚未寫回 DOS player age 欄位。
 
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。

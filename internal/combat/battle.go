@@ -378,6 +378,39 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	return turns, nil
 }
 
+// AdvanceMonsterAffects applies the reference finite-duration timeout rule to
+// raw combat effects. Strength 255 is the permanent marker.
+func (b *Battle) AdvanceMonsterAffects(minutes uint16) int {
+	if minutes == 0 {
+		return 0
+	}
+	removed := 0
+	for id, fighter := range b.fighters {
+		if len(fighter.MonsterAffects) == 0 {
+			continue
+		}
+		kept := make([]MonsterAffect, 0, len(fighter.MonsterAffects))
+		for _, affect := range fighter.MonsterAffects {
+			if affect.Strength != 0xFF {
+				duration := affect.Duration
+				if duration == 0 {
+					duration = affect.Value
+				}
+				if duration <= minutes {
+					removed++
+					continue
+				}
+				affect.Duration = duration - minutes
+				affect.Value = affect.Duration
+			}
+			kept = append(kept, affect)
+		}
+		fighter.MonsterAffects = kept
+		b.fighters[id] = fighter
+	}
+	return removed
+}
+
 // SelectCombatTarget reproduces the bounded target-selection part of the
 // reference monster turn. The full engine builds a reachable/visible target
 // list; until those map rules are decoded, this adapter uses all living
