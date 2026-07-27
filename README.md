@@ -92,6 +92,12 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   1 名伊弗利特、2 名黑暗精靈戰士與 1 名法師。四名守軍均取自 MON5 原始
   record／小人 sprite；勝利後原 ECL 續接「屋頂可安全休息」，再回塔頂探索。
   `-wizard-tower-battle` 可直接重現這個完整主線戰鬥 boundary。
+- 選擇「與龍群交涉」會進入原版五態度 PARLAY：傲慢／威嚇導向 14 隻黑龍，
+  狡猾／謙卑／友善則說服龍群離去，再匯入同一守軍戰。態度 mapping 完全由
+  block `0x33` 的 `PARLAY 1,0,0,0,1` 與後續 branch 決定，不是重製版猜測；
+  `-wizard-tower-parlay` 可重現成功交涉的原圖與繁中結果。
+
+![成功說服法師塔黑龍的 640×480 原圖放大與 24px 繁中畫面](docs/screenshots/wizard-tower-dragon-parlay.png)
 
 ![德拉坎德羅斯守軍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-battle.png)
 

@@ -496,3 +496,6 @@
 - [x] 完成法師塔 `ATTACK WIZARD` 分支：黑龍離去、德拉坎德羅斯召兵逃跑、
   MON5 伊弗利特×1／黑暗精靈戰士×2／法師×1，以及勝利後安全屋頂與
   block `0x33` 地城 continuation；新增 640×480 原版小人實機戰鬥圖。
+- [x] 完成法師塔 `PARLAY WITH THE DRAGONS`：五態度
+  `HAUGHTY/SLY/MEEK/NICE/ABUSIVE` 的 `1/0/0/0/1` mapping、敵對 14 黑龍戰、
+  成功說服後守軍戰與安全屋頂 continuation；新增原版黑龍 640×480 繁中圖。

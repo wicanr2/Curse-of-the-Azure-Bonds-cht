@@ -1311,3 +1311,10 @@ menu。新增 `-wizard-tower` 640×480 重現入口、READY spec 315 與共用�
 再由 EXIT 回 block `0x33` 地城。新增 `-wizard-tower-battle` 可重現入口、
 READY spec 316，並在 Gold Box 知識庫保存一般文字選單不可按 label 提前攔截、
 CLEAR MONSTERS 只清 encounter build list 的契約。
+
+第三百一十七輪成果：法師塔 `PARLAY WITH THE DRAGONS` 已接入原始
+`+0x05EA PARLAY 1,0,0,0,1,[7F79]`。五態度依序為
+HAUGHTY/SLY/MEEK/NICE/ABUSIVE；傲慢與威嚇進入 14 隻 MON5 `0x35` 黑龍戰，
+其餘三種會播放「沒有對付龍族的陰謀」繁中對話，再匯入德拉坎德羅斯四名
+守軍戰，勝利後仍回安全屋頂。新增獨立 `gold-box-parlay.md` 知識文件、
+READY spec 317、`-wizard-tower-parlay` 重現入口與 640×480 黑龍繁中實機圖。

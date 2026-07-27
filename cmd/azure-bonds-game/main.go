@@ -1506,6 +1506,7 @@ func main() {
 	lavaTube := flag.Bool("lava-tube", false, "start at the Hap map route into the ancient lava tube")
 	wizardTower := flag.Bool("wizard-tower", false, "start at the ECL5 wizard-tower courtyard and Dracandros story")
 	wizardTowerBattle := flag.Bool("wizard-tower-battle", false, "start at Dracandros' original wizard-tower patrol battle")
+	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1678,7 +1679,7 @@ func main() {
 		if err := state.StartDungeonStoryPreview(0x32, 0x31, 5); err != nil {
 			log.Fatal(err)
 		}
-	} else if *wizardTower || *wizardTowerBattle {
+	} else if *wizardTower || *wizardTowerBattle || *wizardTowerParlay {
 		if len(state.PartyFighters()) != 0 {
 			log.Fatal("wizard-tower previews cannot be combined with a loaded party")
 		}
@@ -1714,6 +1715,33 @@ func main() {
 			}
 			if !state.CombatActive() {
 				log.Fatal("-wizard-tower-battle did not reach the original combat boundary")
+			}
+		}
+		if *wizardTowerParlay {
+			reachedParlayText := false
+			for step := 0; step < 40; step++ {
+				if strings.Contains(state.Message, "沒有對付龍族的陰謀") {
+					reachedParlayText = true
+					break
+				}
+				if state.Mode == game.ModeEvent {
+					if err := state.Continue(); err != nil {
+						log.Fatal(err)
+					}
+					continue
+				}
+				selection := 0
+				for index, choice := range state.Choices {
+					if choice == "等待" || choice == "與龍群交涉" || choice == "狡猾" {
+						selection = index
+					}
+				}
+				if err := state.Select(selection); err != nil {
+					log.Fatal(err)
+				}
+			}
+			if !reachedParlayText {
+				log.Fatal("-wizard-tower-parlay did not reach the original successful parlay text")
 			}
 		}
 	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
