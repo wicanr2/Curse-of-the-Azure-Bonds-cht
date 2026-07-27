@@ -72,6 +72,12 @@ func TestRealECLJourneyReachesBattleWithLoadedParty(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
+	if state.OriginalEvent != "PICTURE" || !state.PictureRequested {
+		t.Fatalf("journey picture boundary=%#v", state)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
