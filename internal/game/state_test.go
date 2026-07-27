@@ -1314,6 +1314,28 @@ func TestHeldEnemySkipsTurnBeforePartyInput(t *testing.T) {
 	}
 }
 
+func TestEnemyAttackMessageUsesResolvedTarget(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{
+		{ID: "hero-a", Name: "甲", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "hero-b", Name: "乙", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+	}
+	enemies := []combat.Fighter{{
+		ID: "ogre", Name: "食人魔", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 100,
+	}}
+	if err := state.StartCombat(partyFighters, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatMessage() == "" {
+		t.Fatal("enemy turn did not produce a message")
+	}
+	message := state.CombatMessage()
+	if !strings.Contains(message, "乙") || strings.Contains(message, "甲") {
+		t.Fatalf("message=%q does not name only the resolved living target", message)
+	}
+}
+
 func TestPlayableCombatUsesWeaponAttackSequence(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "archer", Name: "弓手", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 2, InitiativeBonus: 20}}

@@ -762,3 +762,8 @@ Held enemy 會在 State enemy turn 跳過 physical／spell action；held target 
 套用 guaranteed-hit 例外，raw effect 不消耗。新增 combat、monster、State regressions、
 READY spec 與 README／PLAN／Gold Box state knowledge。解除／豁免／持續時間／治療仍保留
 boundary；Docker Go 1.23 核心測試與 `git diff --check` 通過。
+
+第二百三十八輪修正：enemy 單次 physical attack 的中文訊息不再固定使用 `party[0]`，
+而是依 `AttackResult.TargetID` 重新查找實際命中的隊員；當第一位 party fighter 已倒下、
+第二位成為 target 時新增 regression，避免戰鬥規則與畫面文字分離。Docker Go 1.23
+`internal/game`／`internal/combat`／`internal/monster` 測試與 `git diff --check` 通過。
