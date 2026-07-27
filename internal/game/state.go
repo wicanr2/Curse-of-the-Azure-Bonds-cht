@@ -354,6 +354,32 @@ func (s *State) SetBarTales(tales []string) {
 
 func (s *State) BarTaleIndex() int { return s.barTaleIndex }
 
+// eclPartyContext projects the currently loaded roster into the small,
+// renderer-neutral context required by reference PARTY commands. Combat
+// projection is preferred when available because it includes readied effects;
+// the character projection remains the deterministic fallback outside combat.
+func (s *State) eclPartyContext() ecl.PartyContext {
+	context := ecl.PartyContext{Members: make([]ecl.PartyMemberContext, 0, len(s.partyRoster))}
+	for _, character := range s.partyRoster {
+		member := ecl.PartyMemberContext{
+			HitPoints:      character.HitPoints,
+			ClericLevel:    character.ClassLevel(party.ClassCleric),
+			MagicUserLevel: character.ClassLevel(party.ClassMagicUser),
+			HasRangerClass: character.HasClass(party.ClassRanger),
+		}
+		for _, fighter := range s.party {
+			if fighter.ID == character.ID {
+				member.HitPoints = fighter.HitPoints
+				member.ArmorClass = fighter.ArmorClass
+				member.AttackBonus = fighter.AttackBonus
+				break
+			}
+		}
+		context.Members = append(context.Members, member)
+	}
+	return context
+}
+
 // SetRestHours sets the requested rest duration for deterministic tests and
 // future memorize/time adapters. REST uses 24-hour units for natural healing.
 func (s *State) SetRestHours(hours int) {
@@ -714,13 +740,13 @@ func (s *State) Select(index int) error {
 		s.selectionSequence = append(s.selectionSequence, uint16(index))
 		var result ecl.RunResult
 		if s.session != nil {
-			result, _ = s.session.RunInteractiveSeed(180, s.selectionSequence, s.eclSeed)
+			result, _ = s.session.RunInteractiveSeedWithPartyContext(180, s.selectionSequence, s.eclSeed, s.eclPartyContext())
 			s.eclBlock = s.session.CurrentData()
 			if start, err := s.session.InitialEntry(); err == nil {
 				s.eclStart = start
 			}
 		} else {
-			result, _ = ecl.RunSubsetInteractiveSeed(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed)
+			result, _ = ecl.RunSubsetInteractiveSeedWithPartyContext(s.eclBlock, s.eclStart, 180, s.selectionSequence, s.eclSeed, s.eclPartyContext())
 		}
 		s.applyGeoMapLoad(result)
 		s.applyLoadPieces(result)

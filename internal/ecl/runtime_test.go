@@ -546,7 +546,7 @@ func TestRunSubsetExposesPartyRuleRequestsAndContinues(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(result.PartyStrengthRequests) != 1 || result.PartyStrengthRequests[0] != 0x9000 {
+	if len(result.PartyStrengthRequests) != 1 || result.PartyStrengthRequests[0].Destination != 0x9000 || result.PartyStrengthRequests[0].Resolved {
 		t.Fatalf("party strength requests=%#v", result.PartyStrengthRequests)
 	}
 	if len(result.PartySurpriseRequests) != 1 || result.PartySurpriseRequests[0] != (PartySurpriseRequest{RangerDestination: 0x9001, OtherDestination: 0x9004}) {
@@ -554,5 +554,23 @@ func TestRunSubsetExposesPartyRuleRequestsAndContinues(t *testing.T) {
 	}
 	if result.Steps != 3 || result.PC == 0 {
 		t.Fatalf("result=%+v, party commands should continue to EXIT", result)
+	}
+}
+
+func TestRunSubsetWithPartyContextResolvesPartyCommands(t *testing.T) {
+	block := []byte{0, 0,
+		0x1D, 0x01, 0x00, 0x90,
+		0x22, 0x01, 0x01, 0x90, 0x01, 0x04, 0x90,
+		0x00,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 10, nil, 1, PartyContext{Members: []PartyMemberContext{{HitPoints: 20, HasRangerClass: true}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.PartyStrengthRequests) != 1 || !result.PartyStrengthRequests[0].Resolved || result.PartyStrengthRequests[0].Value != 2 {
+		t.Fatalf("resolved strength=%#v", result.PartyStrengthRequests)
+	}
+	if len(result.PartySurpriseRequests) != 1 || !result.PartySurpriseRequests[0].Resolved || result.PartySurpriseRequests[0].RangerValue != 1 {
+		t.Fatalf("resolved surprise=%#v", result.PartySurpriseRequests)
 	}
 }

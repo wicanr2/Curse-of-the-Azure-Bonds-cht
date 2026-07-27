@@ -40,8 +40,14 @@ type RunResult struct {
 	ProtectionRequests     []uint16
 	ClockRequests          []ClockRequest
 	TreasureRequests       []TreasureRequest
-	PartyStrengthRequests  []uint16
+	PartyStrengthRequests  []PartyStrengthRequest
 	PartySurpriseRequests  []PartySurpriseRequest
+}
+
+type PartyStrengthRequest struct {
+	Destination uint16
+	Value       uint16
+	Resolved    bool
 }
 
 // PartySurpriseRequest preserves the two destination addresses used by the
@@ -50,6 +56,60 @@ type RunResult struct {
 type PartySurpriseRequest struct {
 	RangerDestination uint16
 	OtherDestination  uint16
+	RangerValue       uint16
+	OtherValue        uint16
+	Resolved          bool
+}
+
+// PartyMemberContext contains only the values needed by the verified party
+// commands. It deliberately avoids importing party/combat packages so the ECL
+// VM remains reusable by other Gold Box works.
+type PartyMemberContext struct {
+	HitPoints      int
+	ArmorClass     int
+	AttackBonus    int
+	ClericLevel    int
+	MagicUserLevel int
+	HasRangerClass bool
+}
+
+type PartyContext struct {
+	Members []PartyMemberContext
+}
+
+func (c PartyContext) partyStrength() uint16 {
+	var value int
+	for _, member := range c.Members {
+		armorClass := member.ArmorClass
+		if armorClass > 60 {
+			armorClass -= 60
+		} else {
+			armorClass = 0
+		}
+		hitBonus := member.AttackBonus
+		if hitBonus > 39 {
+			hitBonus -= 39
+		} else {
+			hitBonus = 0
+		}
+		value += ((member.ClericLevel * 4) + member.HitPoints + (armorClass * 5) + (hitBonus * 5) + (member.MagicUserLevel * 8)) / 10
+	}
+	if value < 0 {
+		return 0
+	}
+	if value > 0xFF {
+		value = 0xFF
+	}
+	return uint16(value)
+}
+
+func (c PartyContext) hasRanger() bool {
+	for _, member := range c.Members {
+		if member.HasRangerClass {
+			return true
+		}
+	}
+	return false
 }
 
 // TreasureRequest preserves the eight raw TREASURE operands. The first seven
@@ -152,11 +212,21 @@ func RunSubsetInteractiveSeed(block []byte, start, maxSteps int, selections []ui
 	return runSubset(block, start, maxSteps, selections, true, seed)
 }
 
+// RunSubsetInteractiveSeedWithPartyContext resolves verified party commands
+// against the supplied roster while preserving the seeded interactive API.
+func RunSubsetInteractiveSeedWithPartyContext(block []byte, start, maxSteps int, selections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	return runSubsetWithStateContext(block, start, maxSteps, selections, true, seed, NewRuntimeState(start), &context)
+}
+
 func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
 	return runSubsetWithState(block, start, maxSteps, selections, pauseOnMissing, seed, NewRuntimeState(start))
 }
 
 func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState) (RunResult, error) {
+	return runSubsetWithStateContext(block, start, maxSteps, selections, pauseOnMissing, seed, runtime, nil)
+}
+
+func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -627,15 +697,31 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 			// Reference CMD_PartyStrength computes a byte from the live party
 			// (HP, AC, hit bonus, cleric level and magic-user level). Preserve
 			// the destination here; the game adapter supplies those roster stats.
-			result.PartyStrengthRequests = append(result.PartyStrengthRequests, instruction.Operands[0].Word)
+			request := PartyStrengthRequest{Destination: instruction.Operands[0].Word}
+			if partyContext != nil {
+				request.Value = partyContext.partyStrength()
+				request.Resolved = true
+				memory[request.Destination] = request.Value
+			}
+			result.PartyStrengthRequests = append(result.PartyStrengthRequests, request)
 		case 0x22: // PARTY SURPRISE
 			if !instruction.Operands[0].WordSet || !instruction.Operands[1].WordSet {
 				return result, fmt.Errorf("PARTY SURPRISE at %d has non-address destination", pc)
 			}
-			result.PartySurpriseRequests = append(result.PartySurpriseRequests, PartySurpriseRequest{
+			request := PartySurpriseRequest{
 				RangerDestination: instruction.Operands[0].Word,
 				OtherDestination:  instruction.Operands[1].Word,
-			})
+			}
+			if partyContext != nil {
+				request.RangerValue = 0
+				if partyContext.hasRanger() {
+					request.RangerValue = 1
+				}
+				request.Resolved = true
+				memory[request.RangerDestination] = request.RangerValue
+				memory[request.OtherDestination] = request.OtherValue
+			}
+			result.PartySurpriseRequests = append(result.PartySurpriseRequests, request)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout
