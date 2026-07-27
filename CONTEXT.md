@@ -716,3 +716,10 @@ party[0]。新增 combat／State deterministic regressions、READY spec 與 Gold
 knowledge；visibility／pathfinding／persistent Action.target／AI spell priority／guarding
 仍保留明確 boundary。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
 `internal/party`、`internal/ecl`、`internal/locale`，`git diff --check` 通過。
+
+第二百三十二輪重大里程碑 commit：`c5c0cc5`，以 headless Xvfb 啟動目前 Ebiten
+`-encounter` direct-entry，擷取 640×400 實際繁中戰鬥畫面 `docs/screenshots/combat-game.png`，
+並更新 README gallery、sprites manifest 與 live screenshot READY spec。畫面證明目前
+renderer 可顯示繁中戰鬥訊息、party／enemy 小人、HP 與操作提示；明確標示這仍是
+direct-entry vertical slice，不宣稱完整玩家流程。重新產生 parser screenshot，
+`git diff --check` 通過。
