@@ -170,6 +170,9 @@ func (a *app) Update() error {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				a.moveDungeonForward()
 			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyE) {
+				return a.state.EnterDungeonCamp()
+			}
 		} else {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				a.moveDungeonPreview(0, -1, 0)
@@ -761,8 +764,8 @@ func (a *app) Draw(screen *ebiten.Image) {
 			a.drawPictureAnimation(screen)
 			return
 		}
-		text.Draw(screen, a.revealedMessage(), a.face, 56, 220, cyan)
-		text.Draw(screen, "Enter：繼續", a.face, 56, 330, white)
+		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
+		text.Draw(screen, "Enter：繼續", a.face, 56, 410, white)
 	}
 	if a.state.Mode == game.ModePlace {
 		for index, choice := range a.state.Choices {
@@ -782,6 +785,31 @@ func (a *app) Draw(screen *ebiten.Image) {
 	if a.state.Mode == game.ModeCombat {
 		a.drawCombat(screen, white, cyan)
 		return
+	}
+}
+
+func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
+	lines := make([]string, 0, maxLines)
+	for _, paragraph := range strings.Split(value, "\n") {
+		runes := []rune(paragraph)
+		if len(runes) == 0 {
+			lines = append(lines, "")
+			continue
+		}
+		for len(runes) > 0 {
+			count := lineRunes
+			if len(runes) < count {
+				count = len(runes)
+			}
+			lines = append(lines, string(runes[:count]))
+			runes = runes[count:]
+		}
+	}
+	if len(lines) > maxLines {
+		lines = lines[:maxLines]
+	}
+	for index, line := range lines {
+		text.Draw(screen, line, face, x, y+index*lineHeight, ink)
 	}
 }
 
@@ -1044,7 +1072,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			screen.DrawImage(stamp.image, op)
 		}
 	}
-	controls := "↑ 前進　K/M 轉向　P 撬鎖　N 敲擊　B 撞門"
+	controls := "↑ 前進　K/M 轉向　E 紮營　P 撬鎖　N 敲擊　B 撞門"
 	if !production {
 		controls = "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
 	}

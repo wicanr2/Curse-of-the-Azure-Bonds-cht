@@ -120,6 +120,17 @@ BIGPIC 判斷是 operand 3。跨作品 adapter 應保存 operand 原始順序，
 EXIT 後 PC，也不能 fresh-reset memory。CoAB dungeon 每次成功前進後會同步
 `C04B..C04F` 再依序執行 entry 0／1。
 
+Dungeon CAMP 也是 lifecycle transaction，不是 UI shortcut：先跑 PreCampCheck，讓作品
+script 寫入 rest encounter period／percentage；只有 rest service 回報 interrupted 才跑
+CampInterrupted。CAMP 子畫面必須記住來源 mode，EXIT 才能回到同一 dungeon，而不是回到
+泛用 wilderness menu。中斷前已經過的時間可以提交，但不可套用完整休息的 healing／spell
+memorization。
+
+繁中 remake 不應把 320×240 當作最終排版限制。可重用的視覺策略是把 logical canvas
+擴到至少 640×480：原版 tile／sprite／PIC 只以 nearest-neighbor 整數倍放大，保留像素
+輪廓；Unicode 中文則在放大後的畫布直接用約 24px 的 TTF／OTF／TTC 重繪。圖片縮放與
+文字 rasterization 必須是兩條 pipeline，才不會得到模糊圖片或被 8×8 英文字格限制的中文。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。

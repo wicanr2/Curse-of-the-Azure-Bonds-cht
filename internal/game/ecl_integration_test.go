@@ -166,6 +166,53 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			t.Fatalf("world register %#x=%d,%v, want %d,true", address, got, ok, want)
 		}
 	}
+	if err := state.EnterDungeonCamp(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.campMenu || len(state.Choices) != 7 ||
+		state.restEncounterPeriod != 0 || state.restEncounterPercent != 0 {
+		t.Fatalf("safe Tilverton camp mode=%v menu=%v choices=%v encounter=%d/%d",
+			state.Mode, state.campMenu, state.Choices, state.restEncounterPeriod, state.restEncounterPercent)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 7 || state.DungeonY != 13 {
+		t.Fatalf("camp exit mode=%v position=(%d,%d), want original dungeon view", state.Mode, state.DungeonX, state.DungeonY)
+	}
+	state.DungeonX = 4
+	if err := state.EnterDungeonCamp(); err != nil {
+		t.Fatal(err)
+	}
+	if state.restEncounterPeriod != 1 || state.restEncounterPercent != 100 {
+		t.Fatalf("unsafe Tilverton camp encounter=%d/%d, want 1/100",
+			state.restEncounterPeriod, state.restEncounterPercent)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 || state.campMenu || !strings.Contains(state.Message, "休息突然中斷") ||
+		(!strings.Contains(state.Message, "皇家巡邏隊") && !strings.Contains(state.Message, "皇家衛兵")) {
+		t.Fatalf("unsafe interrupted rest mode=%v camp=%v message=%q",
+			state.Mode, state.campMenu, state.Message)
+	}
+	if clock := state.GameTimeDisplay(); clock.Hour != 1 || clock.Minute != 0 {
+		t.Fatalf("unsafe interrupted rest clock=%+v, want exactly one completed hour", clock)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("interrupted camp continuation mode=%v, want dungeon", state.Mode)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

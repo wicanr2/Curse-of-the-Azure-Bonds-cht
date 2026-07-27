@@ -223,6 +223,7 @@
 - [x] 建立根目錄 README 與由原始 DAX parser 可重現的 TILES／GEO PNG 截圖證據。
 - [x] 還原野外遭遇用的 50×25 combat-floor construction，接通 background entry → TILES index 與 movement cost；不再誤稱為世界地圖。
 - [x] 正式 dungeon movement 同步 C04B–C04F，執行 per-turn／SearchLocation lifecycle entries，並自動使用 3D renderer。
+- [x] 接通 Dungeon E → PreCampCheck → CAMP → optional CampInterrupted，unsafe rest 依 1/100 中斷並返回原 3D view。
 - [x] 還原 GEO dungeon floor 四段 tile composition，接通 D 預覽與可重現 dungeon screenshot。
 - [x] 接回 dungeon `terrain & 0x40` table／chair decoration pass 與 seeded regression。
 - [x] 建立 GEO2–GEO6 全 16 block 的原始 map catalog，並接通 set/block preview selector。
