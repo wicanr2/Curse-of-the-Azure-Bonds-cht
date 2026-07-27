@@ -80,4 +80,5 @@ request 洩漏 consumed bit。Damage adapter 也保存 reference 的 OK／animat
 dying／dead health state；active combat 時 State 會透過 Battle bridge 重新計算
 party／enemy win state 並走既有 finish continuation。角色倒下時也會套用 reference
 19-kind `RemoveCombatAffects` table；blink／invisibility 依 reference 不在該清單中而
-保留。完整 `CheckAffectsEffect(Death)` 與 bleeding 仍保留 boundary。
+保留。已解出的 Death adapter 另處理 affect_63 recovery、bleeding 與 troll fire/acid
+gate；dragon-slayer target side effect 與其他 Death routine 仍保留 boundary。
