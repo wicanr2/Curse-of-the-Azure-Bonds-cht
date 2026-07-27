@@ -17,6 +17,22 @@
 
 - `HEAD<area>`／`BODY<area>`：一般場景人物 layer；reference 使用 unmasked DAX pictures，BODY 相對 HEAD 向下 5 rows。
 
+### CombatantKilled skull overlay
+
+`seg001.Init` 建立 26 個 `combat_icons`，其中迴圈 `block_id=0x00..0x0B` 將
+`COMSPR` normal block 載入 icon index `0x0D..0x18`，attack block 則使用
+`block_id+0x80`；接著 index `0x19` 載入 `COMSPR 0x19`／`0x99`。因此 reference
+`ovr033.CombatantKilled` 的兩個來源可確定為：
+
+| reference call | DAX source | derived asset |
+|---|---|---|
+| `combat_icons[24].GetIcon(Attack, 0)` | `COMSPR.DAX` block `0x8B` | [`comspr-block-8B-item-00.png`](../../assets/sprites/comspr-block-8B-item-00.png) |
+| `combat_icons[25].GetIcon(Normal, 0)` | `COMSPR.DAX` block `0x19` | [`comspr-block-19-item-00.png`](../../assets/sprites/comspr-block-19-item-00.png) |
+
+`CombatantKilled` 以 9 次短 delay 交替繪製 attack／normal icon；目前 Ebiten 已沿用
+這個 100ms 交替 contract，並以 `DeathOverlay` signal 保留死亡座標。這個 mapping
+只描述來源與 renderer 資產，不把 skull 的閃爍狀態塞進共用 combat core。
+
 原作另以同一 layer block 加 `0x80` 取得 attack state；direction `> 3` 使用水平翻轉版本。
 
 SPRIT frame 的 `x/y` 是 icon canvas 內的 placement metadata；應在 indexed frame 載入後保留，繪製時再依 renderer scale 套用，不能把它誤當成地圖座標。
