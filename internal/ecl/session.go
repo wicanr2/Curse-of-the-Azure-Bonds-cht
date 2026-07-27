@@ -96,7 +96,8 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContext(maxSteps int, selectio
 	if err != nil {
 		return RunResult{}, err
 	}
-	return s.runFromSeedWithPartyContext(start, maxSteps, selections, seed, &context)
+	owned := context.clone()
+	return s.runFromSeedWithPartyContext(start, maxSteps, selections, seed, &owned)
 }
 
 func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
@@ -104,7 +105,8 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSte
 	if err != nil {
 		return RunResult{}, err
 	}
-	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &context)
+	owned := context.clone()
+	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &owned)
 }
 
 // RunFrom executes an explicit event entry in the current block. After a
@@ -163,6 +165,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.FindItemIDs = append(aggregate.FindItemIDs, result.FindItemIDs...)
 		aggregate.FindItemRequests = append(aggregate.FindItemRequests, result.FindItemRequests...)
 		aggregate.FindSpecialRequests = append(aggregate.FindSpecialRequests, result.FindSpecialRequests...)
+		aggregate.DumpRequests = append(aggregate.DumpRequests, result.DumpRequests...)
 		aggregate.DestroyItemIDs = append(aggregate.DestroyItemIDs, result.DestroyItemIDs...)
 		aggregate.NPCIDs = append(aggregate.NPCIDs, result.NPCIDs...)
 		aggregate.RandomValues = append(aggregate.RandomValues, result.RandomValues...)

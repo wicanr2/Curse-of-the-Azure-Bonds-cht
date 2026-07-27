@@ -28,6 +28,7 @@ type RunResult struct {
 	FindItemIDs            []uint16
 	FindItemRequests       []FindItemRequest
 	FindSpecialRequests    []FindSpecialRequest
+	DumpRequests           []DumpRequest
 	DestroyItemIDs         []uint16
 	NPCIDs                 []uint16
 	SelectionsConsumed     int
@@ -96,6 +97,15 @@ type FindSpecialRequest struct {
 	Resolved            bool
 }
 
+// DumpRequest records removal of the currently selected party member and the
+// reference fallback selection after that removal.
+type DumpRequest struct {
+	SelectedPlayerIndex     int
+	NextSelectedPlayerIndex int
+	NextSelectedPlayerSet   bool
+	Resolved                bool
+}
+
 // WhoRequest marks the reference character-selection boundary. WHO consumes
 // the current ECL prompt text but its player selection belongs to the UI/state
 // adapter rather than a normal HORIZONTAL/VERTICAL MENU.
@@ -135,6 +145,15 @@ type PartyMemberContext struct {
 
 type PartyContext struct {
 	Members []PartyMemberContext
+}
+
+func (c PartyContext) clone() PartyContext {
+	owned := PartyContext{Members: append([]PartyMemberContext(nil), c.Members...)}
+	for index := range owned.Members {
+		owned.Members[index].ItemTypes = append([]uint8(nil), owned.Members[index].ItemTypes...)
+		owned.Members[index].Effects = append([]uint8(nil), owned.Members[index].Effects...)
+	}
+	return owned
 }
 
 func (c PartyContext) partyStrength() uint16 {
@@ -327,11 +346,13 @@ func RunSubsetInteractiveSeed(block []byte, start, maxSteps int, selections []ui
 // RunSubsetInteractiveSeedWithPartyContext resolves verified party commands
 // against the supplied roster while preserving the seeded interactive API.
 func RunSubsetInteractiveSeedWithPartyContext(block []byte, start, maxSteps int, selections []uint16, seed int64, context PartyContext) (RunResult, error) {
-	return runSubsetWithStateContext(block, start, maxSteps, selections, true, seed, NewRuntimeState(start), &context)
+	owned := context.clone()
+	return runSubsetWithStateContext(block, start, maxSteps, selections, true, seed, NewRuntimeState(start), &owned)
 }
 
 func RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(block []byte, start, maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
-	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, whoSelections, true, seed, NewRuntimeState(start), &context)
+	owned := context.clone()
+	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, whoSelections, true, seed, NewRuntimeState(start), &owned)
 }
 
 func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
@@ -362,14 +383,23 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 	stack := make([]int, 0)
 	memory := make(map[uint16]uint16)
 	stringsMemory := make(map[uint16]string)
-	partyItems := make(map[uint16]bool)
+	var workingPartyContext *PartyContext
 	if partyContext != nil {
-		for _, member := range partyContext.Members {
+		workingPartyContext = partyContext
+	}
+	partyItems := make(map[uint16]bool)
+	rebuildPartyItems := func() {
+		clear(partyItems)
+		if workingPartyContext == nil {
+			return
+		}
+		for _, member := range workingPartyContext.Members {
 			for _, itemType := range member.ItemTypes {
 				partyItems[uint16(itemType)] = true
 			}
 		}
 	}
+	rebuildPartyItems()
 	rng := rand.New(rand.NewSource(seed))
 	var compare [6]bool
 	selectedPlayerIndex := -1
@@ -814,13 +844,13 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			result.LoadCharacterRequests = append(result.LoadCharacterRequests, LoadCharacterRequest{
 				Address: address, Value: value, PlayerIndex: uint8(value & 0x7F), HighBitSet: value&0x80 != 0,
 			})
-			if partyContext != nil {
+			if workingPartyContext != nil {
 				playerIndex := int(value&0x7F) - 1
-				if value&0x7F > 0 && playerIndex >= 0 && playerIndex < len(partyContext.Members) {
+				if value&0x7F > 0 && playerIndex >= 0 && playerIndex < len(workingPartyContext.Members) {
 					// Reference vm_CopyStringFromMemory treats 0x7C00 as the
 					// selected player's name string. Preserve it in RuntimeState
 					// so later COMPARE/PRINT operands see the same selection.
-					stringsMemory[0x7C00] = partyContext.Members[playerIndex].Name
+					stringsMemory[0x7C00] = workingPartyContext.Members[playerIndex].Name
 					selectedPlayerIndex = playerIndex
 					selectedPlayerSet = true
 				}
@@ -832,7 +862,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			}
 			result.FindItemIDs = append(result.FindItemIDs, itemID)
 			request := FindItemRequest{ItemID: itemID}
-			if partyContext != nil {
+			if workingPartyContext != nil {
 				request.Resolved = true
 				request.Found = partyItems[itemID]
 				for index := range compare {
@@ -850,7 +880,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			// Keep inventory mutation explicit for the party adapter; the VM
 			// itself must not silently delete an item without roster context.
 			result.DestroyItemIDs = append(result.DestroyItemIDs, itemID)
-			if partyContext != nil {
+			if workingPartyContext != nil {
 				delete(partyItems, itemID)
 			}
 		case 0x1D: // PARTYSTRENGTH
@@ -861,8 +891,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			// (HP, AC, hit bonus, cleric level and magic-user level). Preserve
 			// the destination here; the game adapter supplies those roster stats.
 			request := PartyStrengthRequest{Destination: instruction.Operands[0].Word}
-			if partyContext != nil {
-				request.Value = partyContext.partyStrength()
+			if workingPartyContext != nil {
+				request.Value = workingPartyContext.partyStrength()
 				request.Resolved = true
 				memory[request.Destination] = request.Value
 			}
@@ -875,9 +905,9 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				RangerDestination: instruction.Operands[0].Word,
 				OtherDestination:  instruction.Operands[1].Word,
 			}
-			if partyContext != nil {
+			if workingPartyContext != nil {
 				request.RangerValue = 0
-				if partyContext.hasRanger() {
+				if workingPartyContext.hasRanger() {
 					request.RangerValue = 1
 				}
 				request.Resolved = true
@@ -908,8 +938,8 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				}
 				request.Destinations[index] = operand.Word
 			}
-			if partyContext != nil {
-				resolved, known := partyContext.checkParty(query, affectID)
+			if workingPartyContext != nil {
+				resolved, known := workingPartyContext.checkParty(query, affectID)
 				resolved.Destinations = request.Destinations
 				request = resolved
 				if request.Resolved {
@@ -945,10 +975,10 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				request.SelectionProvided = true
 				whoSelectionCursor++
 				result.WhoSelectionsConsumed++
-				if partyContext != nil && int(request.Selected) < len(partyContext.Members) {
+				if workingPartyContext != nil && int(request.Selected) < len(workingPartyContext.Members) {
 					selectedPlayerIndex = int(request.Selected)
 					selectedPlayerSet = true
-					stringsMemory[0x7C00] = partyContext.Members[selectedPlayerIndex].Name
+					stringsMemory[0x7C00] = workingPartyContext.Members[selectedPlayerIndex].Name
 				}
 			}
 			result.WhoRequests = append(result.WhoRequests, request)
@@ -958,9 +988,9 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				return result, fmt.Errorf("FIND SPECIAL at %d: %w", pc, err)
 			}
 			request := FindSpecialRequest{AffectID: affectID, SelectedPlayerIndex: selectedPlayerIndex}
-			if partyContext != nil && selectedPlayerSet && selectedPlayerIndex >= 0 && selectedPlayerIndex < len(partyContext.Members) {
+			if workingPartyContext != nil && selectedPlayerSet && selectedPlayerIndex >= 0 && selectedPlayerIndex < len(workingPartyContext.Members) {
 				request.Resolved = true
-				for _, activeAffect := range partyContext.Members[selectedPlayerIndex].Effects {
+				for _, activeAffect := range workingPartyContext.Members[selectedPlayerIndex].Effects {
 					if uint16(activeAffect) == affectID {
 						request.Found = true
 						break
@@ -973,6 +1003,29 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 				compare[1] = !request.Found
 			}
 			result.FindSpecialRequests = append(result.FindSpecialRequests, request)
+		case 0x3E: // DUMP
+			request := DumpRequest{SelectedPlayerIndex: selectedPlayerIndex, NextSelectedPlayerIndex: -1}
+			if workingPartyContext != nil && selectedPlayerSet && selectedPlayerIndex >= 0 && selectedPlayerIndex < len(workingPartyContext.Members) {
+				request.Resolved = true
+				workingPartyContext.Members = append(workingPartyContext.Members[:selectedPlayerIndex], workingPartyContext.Members[selectedPlayerIndex+1:]...)
+				rebuildPartyItems()
+				if len(workingPartyContext.Members) > 0 {
+					if selectedPlayerIndex > 0 {
+						selectedPlayerIndex--
+					} else {
+						selectedPlayerIndex = 0
+					}
+					selectedPlayerSet = true
+					request.NextSelectedPlayerIndex = selectedPlayerIndex
+					request.NextSelectedPlayerSet = true
+					stringsMemory[0x7C00] = workingPartyContext.Members[selectedPlayerIndex].Name
+				} else {
+					selectedPlayerIndex = -1
+					selectedPlayerSet = false
+					delete(stringsMemory, 0x7C00)
+				}
+			}
+			result.DumpRequests = append(result.DumpRequests, request)
 		case 0x33: // PRINT RETURN
 			// This command changes the original text window/cursor state. Keep
 			// its instruction boundary observable while leaving renderer layout

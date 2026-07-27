@@ -251,3 +251,4 @@
 - [第二百七十一輪 ECL FIND ITEM party query](./271-ecl-find-item-party-query.md)（`READY`：限全隊 item type 與 compare flags）
 - [第二百七十二輪 ECL FIND SPECIAL selected affect](./272-ecl-find-special-selected-affect.md)（`READY`：限 selected player active affect 與 compare flags）
 - [第二百七十三輪 real ECL corpus smoke gate](./273-real-ecl-corpus-smoke.md)（`READY`：限 25 blocks／125 initialization entries 與 ECL5 inventory branch）
+- [第二百七十四輪 ECL DUMP party removal](./274-ecl-dump-party-removal.md)（`READY`：限 selected member removal／fallback selection／State sync）

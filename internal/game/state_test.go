@@ -175,6 +175,34 @@ func TestECLPartyContextProjectsCharacterNames(t *testing.T) {
 	}
 }
 
+func TestECLDumpRemovesSelectedRosterAndFighter(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "a", Name: "甲"}, {ID: "b", Name: "乙"}, {ID: "c", Name: "丙"}}
+	state.party = []combat.Fighter{{ID: "a"}, {ID: "b"}, {ID: "c"}}
+	state.whoSelectedIndex = 1
+	err := state.applyECLDumpSignals(ecl.RunResult{DumpRequests: []ecl.DumpRequest{{
+		SelectedPlayerIndex: 1, NextSelectedPlayerIndex: 0, NextSelectedPlayerSet: true, Resolved: true,
+	}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster) != 2 || state.partyRoster[0].ID != "a" || state.partyRoster[1].ID != "c" || len(state.party) != 2 || state.party[0].ID != "a" || state.party[1].ID != "c" || state.SelectedPlayerID() != "a" {
+		t.Fatalf("roster=%#v fighters=%#v selected=%q", state.partyRoster, state.party, state.SelectedPlayerID())
+	}
+}
+
+func TestECLDumpMayRemoveLastPartyMember(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{ID: "npc", Name: "同行者"}}
+	state.party = []combat.Fighter{{ID: "npc"}}
+	err := state.applyECLDumpSignals(ecl.RunResult{DumpRequests: []ecl.DumpRequest{{
+		SelectedPlayerIndex: 0, NextSelectedPlayerIndex: -1, Resolved: true,
+	}}})
+	if err != nil || len(state.partyRoster) != 0 || len(state.party) != 0 || state.SelectedPlayerID() != "" {
+		t.Fatalf("err=%v roster=%#v fighters=%#v selected=%q", err, state.partyRoster, state.party, state.SelectedPlayerID())
+	}
+}
+
 func TestPictureUsesHeadBodyBranchWhenHeadBlockIsPresent(t *testing.T) {
 	state := NewState(testCatalog())
 	state.Mode = ModeWilderness
