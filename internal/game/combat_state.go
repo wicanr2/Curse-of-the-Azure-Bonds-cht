@@ -1316,7 +1316,11 @@ func (s *State) advanceCombatToParty() error {
 			if err != nil {
 				return err
 			}
-			s.combatMessage = formatAttackMessage(s.catalog, fighter, party[0], result)
+			resolvedTarget, ok := s.fighter(result.TargetID)
+			if !ok {
+				return fmt.Errorf("enemy attack target %q disappeared", result.TargetID)
+			}
+			s.combatMessage = formatAttackMessage(s.catalog, fighter, resolvedTarget, result)
 			s.requestAttackSounds([]combat.AttackResult{result})
 		}
 		s.combatTurnIndex++
