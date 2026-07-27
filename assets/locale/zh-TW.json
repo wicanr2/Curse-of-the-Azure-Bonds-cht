@@ -2,6 +2,9 @@
   "language": "zh-TW",
   "strings": {
     "title": "青色枷的詛咒",
+    "ecl_smoke_rises": "煙霧從殘破的牆後升起",
+    "ecl_yulash_sound": "尤拉什。聲音",
+    "ecl_battle_rings": "從裡面傳來戰鬥聲",
     "continue": "繼續",
     "new_game": "新的遊戲",
     "load_game": "載入遊戲",

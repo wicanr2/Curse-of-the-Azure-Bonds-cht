@@ -731,6 +731,7 @@ func (s *State) Select(index int) error {
 		}
 		if len(result.Text) > 0 {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
+			s.Message = localizeECLText(s.catalog, result.Text)
 		}
 	}
 	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" {
@@ -2800,4 +2801,25 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 		return catalog.Text("press_button", "Press any button or Enter to continue")
 	}
 	return prompt
+}
+
+func localizeECLText(catalog locale.Catalog, texts []string) string {
+	localized := make([]string, 0, len(texts))
+	for _, text := range texts {
+		localized = append(localized, localizeECLLine(catalog, text))
+	}
+	return strings.Join(localized, " ")
+}
+
+func localizeECLLine(catalog locale.Catalog, line string) string {
+	switch line {
+	case "SMOKE RISES FROM BEHIND THE RUINED WALLS":
+		return catalog.Text("ecl_smoke_rises", "煙霧從殘破的牆後升起")
+	case "OF YULASH. THE SOUND":
+		return catalog.Text("ecl_yulash_sound", "尤拉什。聲音")
+	case "OF BATTLE RINGS OUT FROM INSIDE":
+		return catalog.Text("ecl_battle_rings", "從裡面傳來戰鬥聲")
+	default:
+		return line
+	}
 }
