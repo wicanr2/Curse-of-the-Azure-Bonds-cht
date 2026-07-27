@@ -29,7 +29,11 @@ ECL damage save bonus。Reference `damage_player` 將 exact zero 設為 unconsci
   `State.ResolveDeathEffects` 已接入已證實的 affect_63 recovery 與 troll_fire_or_acid
   `0x64`→TrollRegen `0x66`（damage flags／combat heal 條件必須明確注入）。完整
   combatant removal 與其他 Death routine 仍由 combat adapter 處理；Battle position
-  removal 已由 `HasCombatPosition=false` 對應 reference CombatMap size 0。dragon-slayer `0x4B`
+  removal 已由 `HasCombatPosition=false` 對應 reference CombatMap size 0，並發出
+  renderer-neutral `Fighter.DeathOverlay` signal。Ebiten 目前保留死亡時的 CombatX/Y
+  anchor 並顯示繁中「倒下」overlay；原版 `CombatantKilled` 使用 `combat_icons[24]/[25]`
+  skull animation，但目前只證實呼叫索引，尚未證實 CPIC/COMSPR extracted byte family，
+  故不硬編素材索引。dragon-slayer `0x4B`
   已由 `ResolveDragonSlayer` 接受 explicit target monster kind、strength damage bonus
   與 d12 roller，避免 Character／ECL DAMAGE 猜測 target。若 State 正在 active combat，
   `Character.RemoveCombatAffects`

@@ -138,7 +138,8 @@ equipment AC、invisibility、action-delay-aware blink 與 displace consumed-bit
 state；`CheckAffectsEffect(Death)` 尚未接入 ECL queue。active combat 的 ECL queue 現已
 透過 `Battle.SetHitPoints` 接入 win/loss transition，並在倒下時呼叫
 `Character.RemoveCombatAffects`；`CheckAffectsEffect(Death)` 與完整 combatant removal
-仍待接入；Battle HP=0 時已清除 `HasCombatPosition`。State `ResolveDeathEffects` 現可在 caller 明確提供 damage flags／combat-heal
+仍待接入；Battle HP=0 時已清除 `HasCombatPosition` 並發出 `DeathOverlay` signal；
+Ebiten 以死亡座標 anchor 顯示目前的繁中「倒下」overlay。State `ResolveDeathEffects` 現可在 caller 明確提供 damage flags／combat-heal
 條件時 transactionally 套用 affect_63 recovery 與 TrollRegen；未知 target side effect
 不會因缺少資料而猜測；`ResolveDragonSlayer` 另要求 caller 明確提供 target monster
 kind、strength damage bonus 與 d12 roller。
