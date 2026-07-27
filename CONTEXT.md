@@ -1277,8 +1277,18 @@ menu 現能同時顯示 24px 中文 narrative，不再只剩選項。
 不一定先停泛用勝利頁的契約。
 第三百一十三輪成果：ECL5 block `0x32` per-turn 事件已在真實 GEO5
 `(0,5,N)` 接通。terrain `0x89` 必須面北才顯示 PICTURE 57 的間歇泉與熔岩池，
-接著保留 `COMBAT/WAIT/FLEE/PARLAY` 原始順序；已驗證 WAIT 路徑建立 15 隻
+接著保留 `COMBAT/WAIT/FLEE/PARLAY` 原始順序；已驗證 COMBAT 路徑建立 15 隻
 MON5 `0x39` 火蜥蜴。勝利後 `4C48 |= 1`，發現六只防火桶；YES 進入 WHO，
 一般英雄因熱度過強退回，再選 NO 返回洞內。繁中與 regression 已涵蓋每個
 PICTURE／PRINT RETURN／menu／COMBAT／WHO boundary；知識庫新增方向敏感
 per-turn terrain 與戰後環境志願者 selection 契約。
+
+第三百一十四輪成果：重新對照 `CMD_EncounterMenu` reference 與 ECL5 block
+`0x32 +0x01B7/+0x0281`，推翻上一輪「WAIT 直接進戰鬥」斷言。distance 0 的
+WAIT／PARLAY 都把 behavior mode 4 解析為 result 3，進入五態度 PARLAY；
+FLEE 的 mode 1 解析為 result 2，只有 COMBAT 才進 15 隻火蜥蜴。VM 新增
+可恢復 PARLAY opcode，State 不再提前攔截 ECL FLEE／PARLAY；真實長流程驗證
+WAIT→友善警告→無旗標離開，重訪後 COMBAT→戰鬥→防火桶。同步完成 640×480
+renderer pass：24px 正文／16px compact 雙 CJK face、系統字型自動尋找、
+dungeon 24×24 tile nearest-neighbor 2×、Combat／Dungeon HUD 分行與 Unicode
+rune 換行，並移除 ModePlace 選單重複繪製。

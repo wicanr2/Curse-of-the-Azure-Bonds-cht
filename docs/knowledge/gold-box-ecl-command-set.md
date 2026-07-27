@@ -234,8 +234,16 @@ mutation、pause 前 commit、deferred service，或 resume-only continuation。
 ADVANCE／PARLAY 各自的 behavior mode，不是 final branch value。reference
 會依選項、encounter distance、party movement 與 monster movement，把 mode
 解析成 destination `0..3`。已確認 COMBAT 對 modes `0/1/3/4` 一律得到 `1`；
-mode `2` 仍依雙方 movement 決定 `0` 或 `1`。共用 VM 不得再直接複製 mode
-到 destination；缺少 engine context 的 case 必須保留 boundary。
+mode `2` 仍依雙方 movement 決定 `0` 或 `1`。ECL5 block `0x32 +0x01B7`
+另外實證 distance 0 的 `WAIT(mode 4) → result 3`、`FLEE(mode 1) → result 2`、
+`PARLAY(mode 4) → result 3`。因此 WAIT 不可因 raw `4` 落出 ON GOTO table
+再順序執行 COMBAT branch。
+
+`PARLAY (0x2C)` 本身也是五選一 input command：五個態度 result 後才是
+destination address。它必須像 menu 一樣 pause／resume 並保存 PC、memory 與
+selection cursor；State 不可先攔下 PARLAY 顯示泛用文案，否則原 script 的
+SLY／NICE 等分支永遠無法執行。共用 VM 不得直接複製未知 behavior mode 到
+destination；缺少 engine context 的 case 必須保留 boundary。
 
 `APPROACH (0x0D)` 是 encounter presentation command，不是未知 opcode 或
 ECL memory mutation。CoAB reference 會讓 encounter sprite 靠近隊伍；共用

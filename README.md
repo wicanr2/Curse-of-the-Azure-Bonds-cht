@@ -27,8 +27,10 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
 繁中字型、原始 TILES／GEO2 block 1／WALLDEF／8X8D 素材，位置 `(7,13)`、面東。
 
 本重製版以 `640×480` 為固定邏輯畫布：原版像素圖片採 nearest-neighbor
-整數倍放大，繁中則獨立使用 24px 高解析字型（緊湊欄位可用 16×15），不把
+整數倍放大，繁中則獨立使用 24px 高解析正文與 16px 緊湊 HUD，不把
 320×240 的 8px 英文字格直接套給中文，因此小人仍保留原味、中文字也能清楚排版。
+正式 dungeon floor 的原始 24×24 tile 也以 2× 顯示；戰鬥法術與地城操作列
+使用獨立 compact line，長中文訊息按 Unicode 字元換行。
 
 目前已完成的垂直切片包括：
 
@@ -68,16 +70,20 @@ Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完�
   入口伏擊由四隻原版 icon `0x39` 火蜥蜴與三名黑暗精靈組成。跨地圖的 exit
   work byte 已正確清除，戰勝後會留在熔岩洞繼續探索。
 
-![哈普地圖通往古老熔岩洞的 640×480 繁中實機畫面](docs/screenshots/hap-lava-tube.png)
+![哈普地圖通往古老熔岩洞的最新 640×480 繁中實機畫面](docs/screenshots/hap-lava-tube-ui-640.png)
 
 畫面可用 `-lava-tube` 從真實 ECL initial entry 重現。中文直接以 24px 字形
-繪製在 640×480 畫布；後續戰鬥小人仍使用原始像素並採整數倍率 nearest-neighbor。
+繪製在 640×480 畫布；此圖由 Xvfb 執行正式 Ebiten command、讓程式自動找到
+Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用原始像素並採
+整數倍率 nearest-neighbor。
 - 熔岩洞內 GEO `(9,10)` 的 terrain `0x8A` 守門巡邏也已可玩：3 隻火蜥蜴、
   3 名黑暗精靈戰士與 1 名牧師。勝利會保存 `4C48` 狀態，並由原 ECL 顯示
   「前方危機重重」的夢境警告，再回到洞內探索。
 - GEO `(0,5)` 的 terrain `0x89` 面北會顯示 PICTURE 57 熔岩池，接入四項
-  ENCOUNTER 與 15 隻火蜥蜴戰。勝利後可調查六只防火桶，以 WHO 選擇前往者；
-  沒有耐熱條件的角色會被迫退回，流程可安全返回地城。
+  ENCOUNTER。原版 behavior-mode 已正確還原：WAIT／PARLAY 會進入五種交涉態度，
+  友善交涉得到克林德拉克警告後離開；COMBAT 才建立 15 隻火蜥蜴。勝利後可
+  調查六只防火桶，以 WHO 選擇前往者；沒有耐熱條件的角色會被迫退回，
+  流程可安全返回地城。
 - 原始 ECL1–ECL6 的 25 blocks／125 個 initialization entries 現已納入 real-image regression，全部可抵達正常 EXIT、menu、COMBAT、PROGRAM 或 NEWECL boundary，沒有 unsupported-opcode stop；這仍不代表所有 menu／random 劇情分支已完成。
 - `BlockSession` 會跨 `NEWECL` 保留並合併 `LOAD FILES`、`PICTURE`、`SPELL`／`PROTECTION` 等 renderer／state-neutral signals，避免事件換 block 後遺失請求。
 - ECL `DAMAGE` 已依公開 CoAB reference 保存五欄 raw request（flags／dice／bonus／save flags）並跨 `NEWECL` aggregation；party target、saving throw、random roll 與 HP mutation 已接入 party／State adapter。
@@ -340,7 +346,8 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 - `CAMP → REST` 現在提供 `REST ADD SUBTRACT EXIT`，`REST_START` 依 reference 推進 slot-1 game time（每小時 60 分鐘），先處理 finite effect timeout，再每 24 小時不間斷休息自然恢復 1 HP；一級法術記憶會先檢查「4 小時最低準備 + 每個法術 15 分鐘」。地城休息已套用 ECL 設定的 period／percentage 遭遇檢查；完整高等級記憶時間仍待反組譯。
 - `城市 → BAR` 現在可逐則閱讀前六則繁中 Tavern Tale，按 Enter 回到酒館再離開返回場所選單；買酒價格、城市條件與完整 ECL tale trigger 仍待反組譯。內容整理見 [`docs/manual/tavern-tales-zh-TW.md`](docs/manual/tavern-tales-zh-TW.md)。
 
-執行遊戲需要原始素材與可顯示繁中的 TTF／OTF 字型：
+執行遊戲需要原始素材與可顯示繁中的 TTF／OTF／TTC 字型。可用 `-font`
+明確指定；未指定時會依 Linux、macOS、Windows 常見系統 CJK 字型路徑自動尋找：
 
 ```sh
 go test ./...

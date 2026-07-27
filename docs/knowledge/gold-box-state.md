@@ -190,6 +190,16 @@ COMBAT → YES/NO → WHO → conditional text → YES/NO → dungeon`。熔岩�
 證明 WHO 不只服務施法或物品，也可能在戰後選擇承受環境危險的角色；State 必須
 跨所有 pause 保存 selected-player context，而 renderer 只顯示中文姓名。
 
+ENCOUNTER 的 WAIT／FLEE／PARLAY 若來自 ECL，必須先回送同一 runtime，由
+behavior-mode resolver 決定 final result。熔岩池 distance 0 的 WAIT 與 PARLAY
+都會抵達真正的五態度 `PARLAY` command；State 只能把該 ECL menu 本地化，
+不能用脫離 script 的泛用交涉 UI 取代。
+
+640×480 frontend 應實際保存兩個 CJK text tier，而非只在文件上約定：
+24px face 用於敘事，16px compact face 用於操作列、門選項與密集戰鬥快捷鍵。
+原始 24×24 dungeon tiles、wall stamps、CPIC／SPRIT 小人則各自以 nearest-neighbor
+整數倍 rasterize。Unicode 換行按 rune 計數；不得按 UTF-8 byte 或沿用英文欄寬。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。

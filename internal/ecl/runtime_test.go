@@ -808,6 +808,56 @@ func TestRunSubsetEncounterMenuCombatResolvesBehaviorMode(t *testing.T) {
 	}
 }
 
+func TestResolveEncounterActionAtContactDistance(t *testing.T) {
+	tests := []struct {
+		name      string
+		selection uint16
+		behavior  uint16
+		want      uint16
+	}{
+		{name: "combat", selection: 0, behavior: 0, want: 1},
+		{name: "wait enters parlay", selection: 1, behavior: 4, want: 3},
+		{name: "flee", selection: 2, behavior: 1, want: 2},
+		{name: "parlay", selection: 3, behavior: 4, want: 3},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := resolveEncounterAction(test.selection, test.behavior, 0); got != test.want {
+				t.Fatalf("resolveEncounterAction(%d,%d,0)=%d, want %d", test.selection, test.behavior, got, test.want)
+			}
+		})
+	}
+}
+
+func TestRunSubsetParlayPausesAndWritesTacticResult(t *testing.T) {
+	block := []byte{0, 0,
+		0x2C,
+		0x00, 0,
+		0x00, 1,
+		0x00, 2,
+		0x00, 2,
+		0x00, 0,
+		0x01, 0x79, 0x7F,
+		0x00,
+	}
+	waiting, err := RunSubsetInteractive(block, 0, 8, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !waiting.WaitingForMenu || len(waiting.Menus) != 1 ||
+		waiting.Menus[0].Options[1] != "PARLAY_SLY" {
+		t.Fatalf("waiting parlay=%+v", waiting)
+	}
+	runtime := NewRuntimeState(0)
+	selected, err := runSubsetWithState(block, 0, 8, []uint16{1}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if selected.WaitingForMenu || runtime.Memory[0x7F79] != 1 {
+		t.Fatalf("selected parlay=%+v", selected)
+	}
+}
+
 func TestRunSubsetApproachPreservesPresentationSignal(t *testing.T) {
 	result, err := RunSubset([]byte{0, 0, 0x0D, 0x3A, 0x0D, 0x00}, 0, 8)
 	if err != nil {

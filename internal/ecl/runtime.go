@@ -678,16 +678,35 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if err != nil {
 				return result, fmt.Errorf("encounter menu action at %d: %w", pc, err)
 			}
-			// Reference CMD_EncounterMenu treats the five script values as
-			// behavior modes, not as the final ON GOTO result. Choosing
-			// COMBAT resolves modes 0, 1, 3, and 4 to result 1. Mode 2 also
-			// consults relative group movement, which remains a typed engine
-			// boundary until that context is supplied to the VM.
-			if menu.Selected == 0 && mapping != 2 {
-				mapping = 1
-			}
+			mapping = resolveEncounterAction(menu.Selected, mapping, maxDistance)
 			memory[instruction.Operands[3].Word] = mapping
 			result.EncounterActions = append(result.EncounterActions, mapping)
+			result.Menus = append(result.Menus, menu)
+		case 0x2C: // PARLAY
+			if len(instruction.Operands) != 6 || !instruction.Operands[5].WordSet {
+				return result, fmt.Errorf("parlay at %d has invalid operands", pc)
+			}
+			menu := Menu{
+				Location: instruction.Operands[5].Word,
+				Options:  []string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"},
+			}
+			if pauseOnMissing && selectionCursor >= len(selections) {
+				result.Menus = append(result.Menus, menu)
+				result.WaitingForMenu = true
+				result.PC = pc
+				saveState(pc)
+				return result, nil
+			}
+			if selectionCursor < len(selections) && selections[selectionCursor] < uint16(len(menu.Options)) {
+				menu.Selected = selections[selectionCursor]
+			}
+			selectionCursor++
+			result.SelectionsConsumed = selectionCursor
+			mapping, err := operandValue(instruction.Operands[menu.Selected], memory)
+			if err != nil {
+				return result, fmt.Errorf("parlay action at %d: %w", pc, err)
+			}
+			memory[instruction.Operands[5].Word] = mapping
 			result.Menus = append(result.Menus, menu)
 		case 0x2B: // HORIZONTAL MENU
 			header, headNext, err := ParseOperands(payload, pc, 2)
@@ -1358,6 +1377,24 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		result.PC = pc
 	}
 	return result, fmt.Errorf("runtime step limit %d reached at payload offset %d", maxSteps, pc)
+}
+
+func resolveEncounterAction(selection uint16, behavior, maxDistance uint16) uint16 {
+	switch {
+	case selection == 0 && behavior != 2:
+		// COMBAT closes distance and fights for all fully understood behavior
+		// modes. Mode 2 also depends on relative group movement.
+		return 1
+	case selection == 1 && maxDistance == 0 && behavior == 4:
+		// At contact distance WAIT gives the monsters the initiative to talk.
+		return 3
+	case selection == 2 && behavior == 1:
+		return 2
+	case selection == 3 && maxDistance == 0 && behavior == 4:
+		return 3
+	default:
+		return behavior
+	}
 }
 
 func operandValue(operand Operand, memory map[uint16]uint16) (uint16, error) {

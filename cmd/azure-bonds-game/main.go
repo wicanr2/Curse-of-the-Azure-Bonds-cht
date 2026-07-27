@@ -48,6 +48,7 @@ type app struct {
 	state               game.State
 	imagePath           string
 	face                font.Face
+	compactFace         font.Face
 	choiceCursor        int
 	partyPath           string
 	savgamDir           string
@@ -798,16 +799,6 @@ func (a *app) Draw(screen *ebiten.Image) {
 		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
 		text.Draw(screen, "Enter：繼續", a.face, 56, 410, white)
 	}
-	if a.state.Mode == game.ModePlace {
-		for index, choice := range a.state.Choices {
-			prefix := "  "
-			if index == a.choiceCursor {
-				prefix = "> "
-			}
-			text.Draw(screen, prefix+choice, a.face, 56, 220+index*34, white)
-		}
-		text.Draw(screen, "Enter：選擇", a.face, 56, 350, cyan)
-	}
 	if a.state.Mode == game.ModeMap {
 		text.Draw(screen, "暗影谷荒野", a.face, 56, 220, cyan)
 		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
@@ -816,6 +807,16 @@ func (a *app) Draw(screen *ebiten.Image) {
 }
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
+	lines := wrapTextLines(value, lineRunes, maxLines)
+	for index, line := range lines {
+		text.Draw(screen, line, face, x, y+index*lineHeight, ink)
+	}
+}
+
+func wrapTextLines(value string, lineRunes, maxLines int) []string {
+	if lineRunes < 1 || maxLines < 1 {
+		return nil
+	}
 	lines := make([]string, 0, maxLines)
 	for _, paragraph := range strings.Split(value, "\n") {
 		runes := []rune(paragraph)
@@ -835,9 +836,7 @@ func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, l
 	if len(lines) > maxLines {
 		lines = lines[:maxLines]
 	}
-	for index, line := range lines {
-		text.Draw(screen, line, face, x, y+index*lineHeight, ink)
-	}
+	return lines
 }
 
 func (a *app) revealedMessage() string {
@@ -1043,24 +1042,27 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		doorFlags, doorFlagsOK = a.geoGrid.WallDoorFlagsWrapped(a.dungeonX, a.dungeonY, int(geometryDirection))
 	}
 	const (
-		viewWidth  = 13
-		viewHeight = 5
+		viewWidth  = 6
+		viewHeight = 3
 		originX    = 24
 		originY    = 76
 		tileSize   = 24
+		pixelScale = 2
 	)
-	startX, startY := 18, 8
+	startX, startY := 21, 9
 	for row := 0; row < viewHeight; row++ {
 		for column := 0; column < viewWidth; column++ {
 			x, y := startX+column, startY+row
 			entry, ok := a.dungeonFloor.Entry(x, y)
-			left, top := originX+column*tileSize, originY+row*tileSize
+			left, top := originX+column*tileSize*pixelScale, originY+row*tileSize*pixelScale
 			if ok && int(entry.TileIndex) < len(a.tileImages) {
 				op := &ebiten.DrawImageOptions{}
+				op.Filter = ebiten.FilterNearest
+				op.GeoM.Scale(pixelScale, pixelScale)
 				op.GeoM.Translate(float64(left), float64(top))
 				screen.DrawImage(a.tileImages[entry.TileIndex], op)
 			} else {
-				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize, tileSize, color.RGBA{24, 30, 48, 255})
+				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize*pixelScale, tileSize*pixelScale, color.RGBA{24, 30, 48, 255})
 			}
 		}
 	}
@@ -1071,7 +1073,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		text.Draw(screen, fmt.Sprintf("門狀態：%d", doorFlags), a.face, 360, 278, white)
 	}
 	if a.state.Message != "" {
-		text.Draw(screen, a.state.Message, a.face, 24, 350, white)
+		drawWrappedText(screen, a.state.Message, a.face, 24, 342, 22, 30, 2, white)
 	}
 	if a.dungeonDoorMenu && doorFlagsOK {
 		options := a.state.DungeonDoorMenuOptions(doorFlags)
@@ -1085,7 +1087,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		} else if options.Knock {
 			items = "B Bash　K Knock　Esc Exit"
 		}
-		text.Draw(screen, "上鎖的門："+items, a.face, 24, 386, color.RGBA{255, 220, 110, 255})
+		text.Draw(screen, "上鎖的門："+items, a.compactFace, 24, 404, color.RGBA{255, 220, 110, 255})
 	}
 	if a.pieceLabel != "" {
 		label := a.pieceLabel
@@ -1107,7 +1109,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 	if !production {
 		controls = "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
 	}
-	text.Draw(screen, controls, a.face, 24, 450, cyan)
+	drawWrappedText(screen, controls, a.compactFace, 24, 434, 36, 20, 2, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -1252,7 +1254,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		target := targets[a.state.CombatTargetIndex()]
 		text.Draw(screen, fmt.Sprintf("目標：%s　HP %d/%d", target.Name, target.HitPoints, target.MaxHitPoints), a.face, 24, 405, white)
 	}
-	spellHint := ""
+	spellHints := make([]string, 0, 7)
 	if a.state.CombatCastingSpell() != 0 {
 		if a.state.CombatCastingSpell() == game.BlessSpellID {
 			text.Draw(screen, "確認施法：Enter　取消：Esc", a.face, 32, 350, cyan)
@@ -1266,27 +1268,30 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		return
 	}
 	if a.state.CombatCanCastMagicMissile() {
-		spellHint = "　S：魔法飛彈"
+		spellHints = append(spellHints, "S飛彈")
 	}
 	if a.state.CombatCanCastCureLightWounds() {
-		spellHint += "　H：治療輕傷"
+		spellHints = append(spellHints, "H治療")
 	}
 	if a.state.CombatCanCastBless() {
-		spellHint += "　B：祝福"
+		spellHints = append(spellHints, "B祝福")
 	}
 	if a.state.CombatCanCastCurse() {
-		spellHint += "　C：詛咒"
+		spellHints = append(spellHints, "C詛咒")
 	}
 	if a.state.CombatCanCastCauseLightWounds() {
-		spellHint += "　W：造成輕傷"
+		spellHints = append(spellHints, "W傷害")
 	}
 	if a.state.CombatCanCastProtectionFromEvil() {
-		spellHint += "　P：防護邪惡"
+		spellHints = append(spellHints, "P防邪")
 	}
 	if a.state.CombatCanCastProtectionFromGood() {
-		spellHint += "　G：防護善良"
+		spellHints = append(spellHints, "G防善")
 	}
-	text.Draw(screen, "左右：選目標　Enter：攻擊　M：移動　D：結束"+spellHint, a.face, 24, 452, cyan)
+	text.Draw(screen, "左右：選目標　Enter：攻擊　M：移動　D：結束", a.compactFace, 24, 434, cyan)
+	if len(spellHints) > 0 {
+		text.Draw(screen, "法術："+strings.Join(spellHints, "　"), a.compactFace, 24, 458, cyan)
+	}
 }
 
 func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
@@ -1444,18 +1449,30 @@ func (a *app) drawFighterSprite(screen *ebiten.Image, fighter combat.Fighter, or
 
 func (a *app) Layout(_, _ int) (int, int) { return logicalWidth, logicalHeight }
 
-func loadFace(path string) font.Face {
-	if path != "" {
-		data, err := os.ReadFile(path)
+func loadFace(path string, size float64) font.Face {
+	candidates := []string{path}
+	if path == "" {
+		candidates = []string{
+			"/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+			"/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+			"/System/Library/Fonts/PingFang.ttc",
+			`C:\Windows\Fonts\msjh.ttc`,
+		}
+	}
+	for _, candidate := range candidates {
+		if candidate == "" {
+			continue
+		}
+		data, err := os.ReadFile(candidate)
 		if err == nil {
 			if parsed, err := opentype.Parse(data); err == nil {
-				if face, err := opentype.NewFace(parsed, &opentype.FaceOptions{Size: 24, DPI: 72, Hinting: font.HintingFull}); err == nil {
+				if face, err := opentype.NewFace(parsed, &opentype.FaceOptions{Size: size, DPI: 72, Hinting: font.HintingFull}); err == nil {
 					return face
 				}
 			}
 			if collection, err := opentype.ParseCollection(data); err == nil && collection.NumFonts() > 0 {
 				if parsed, err := collection.Font(0); err == nil {
-					if face, err := opentype.NewFace(parsed, &opentype.FaceOptions{Size: 24, DPI: 72, Hinting: font.HintingFull}); err == nil {
+					if face, err := opentype.NewFace(parsed, &opentype.FaceOptions{Size: size, DPI: 72, Hinting: font.HintingFull}); err == nil {
 						return face
 					}
 				}
@@ -1732,7 +1749,7 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
