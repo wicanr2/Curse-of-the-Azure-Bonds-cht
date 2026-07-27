@@ -125,6 +125,10 @@ type Character struct {
 	// KnownSpells preserves the imported spell-book flags separately from
 	// SpellSlots, which represents spells currently memorized for use.
 	KnownSpells []uint8 `json:"known_spells,omitempty"`
+	// SavingThrows preserves the original DOS saveVerse order. The raw
+	// five-byte order is retained so ECL DAMAGE adapters can apply the correct
+	// saving-throw type.
+	SavingThrows []uint8 `json:"saving_throws,omitempty"`
 	// ThiefSkills preserves the eight DOS thief percentages; index 1 is
 	// open-locks and remains in original order.
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
