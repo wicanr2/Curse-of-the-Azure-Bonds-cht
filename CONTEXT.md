@@ -571,3 +571,13 @@ Docker 已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal
 
 第二百一十五輪文件 commit：`0da9742`，更新 ECL／State 共用知識庫、READY spec、
 README 與 PLAN，清除 blink 已完成後的過時描述。
+
+第二百一十六輪功能 commit：`4cfa81e`，依 reference `AffectDisplace` 將 ECL `DAMAGE`
+命中投影延伸到 displace `0x59`：FX effect-data 第一 byte 的 `0x10` consumed bit
+使首次攻擊 miss、後續攻擊可命中；combat round 0 且 attack roll 為 0 時清除此 bit。
+第二個功能 commit：`d4f4a51`，State working roster deep-copy effects，確保多筆 DAMAGE
+transaction 在後續 request error 時 rollback displace bit，不污染 live roster。Docker
+已通過 `internal/party`、`internal/game`、`internal/ecl`、`internal/locale`。
+
+第二百一十六輪文件 commit：`6a5f2ed`，更新 ECL AC／effects READY spec、Gold Box ECL／
+State 知識庫、README 與 PLAN，記錄 displace data mapping 與 transactional rollback。
