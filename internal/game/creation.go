@@ -14,11 +14,65 @@ import (
 )
 
 func starterCharacters() []party.Character {
-	return []party.Character{
-		{ID: "fighter", Name: "戰士", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10}},
-		{ID: "cleric", Name: "牧師", Race: party.RaceHuman, Class: party.ClassCleric, Level: 1, Abilities: party.Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}},
-		{ID: "mage", Name: "法師", Race: party.RaceElf, Class: party.ClassMagicUser, Level: 1, Abilities: party.Abilities{Strength: 8, Intelligence: 16, Wisdom: 10, Dexterity: 14, Constitution: 10, Charisma: 12}},
+	// Keep the first three familiar human options stable for existing saves and
+	// tests, then expose every currently verified single-class race/class pair.
+	combos := []struct {
+		race  party.Race
+		class party.Class
+	}{
+		{party.RaceHuman, party.ClassFighter}, {party.RaceHuman, party.ClassCleric},
+		{party.RaceHuman, party.ClassMagicUser}, {party.RaceHuman, party.ClassRanger},
+		{party.RaceHuman, party.ClassPaladin}, {party.RaceHuman, party.ClassThief},
+		{party.RaceDwarf, party.ClassFighter}, {party.RaceDwarf, party.ClassThief},
+		{party.RaceElf, party.ClassCleric}, {party.RaceElf, party.ClassFighter},
+		{party.RaceElf, party.ClassMagicUser}, {party.RaceElf, party.ClassThief},
+		{party.RaceGnome, party.ClassFighter}, {party.RaceGnome, party.ClassThief},
+		{party.RaceHalfElf, party.ClassCleric}, {party.RaceHalfElf, party.ClassFighter},
+		{party.RaceHalfElf, party.ClassMagicUser}, {party.RaceHalfElf, party.ClassThief},
+		{party.RaceHalfling, party.ClassFighter}, {party.RaceHalfling, party.ClassThief},
 	}
+	result := make([]party.Character, 0, len(combos))
+	for index, combo := range combos {
+		character := party.Character{
+			ID: fmt.Sprintf("creation-%02d", index), Name: creationClassName(combo.class),
+			Race: combo.race, Class: combo.class, Level: 1,
+			Abilities: creationBaseAbilities(combo.class),
+		}
+		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
+			continue
+		}
+		if err := character.Validate(); err != nil {
+			continue
+		}
+		result = append(result, character)
+	}
+	return result
+}
+
+func creationBaseAbilities(class party.Class) party.Abilities {
+	switch class {
+	case party.ClassCleric:
+		return party.Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}
+	case party.ClassFighter:
+		return party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10}
+	case party.ClassRanger:
+		return party.Abilities{Strength: 14, Intelligence: 13, Wisdom: 14, Dexterity: 12, Constitution: 14, Charisma: 10}
+	case party.ClassPaladin:
+		return party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 14, Dexterity: 12, Constitution: 14, Charisma: 17}
+	case party.ClassMagicUser:
+		return party.Abilities{Strength: 8, Intelligence: 16, Wisdom: 10, Dexterity: 14, Constitution: 10, Charisma: 12}
+	case party.ClassThief:
+		return party.Abilities{Strength: 10, Intelligence: 12, Wisdom: 10, Dexterity: 16, Constitution: 12, Charisma: 10}
+	default:
+		return party.Abilities{}
+	}
+}
+
+func creationClassName(class party.Class) string {
+	return map[party.Class]string{
+		party.ClassCleric: "牧師", party.ClassFighter: "戰士", party.ClassRanger: "遊俠",
+		party.ClassPaladin: "聖武士", party.ClassMagicUser: "法師", party.ClassThief: "盜賊",
+	}[class]
 }
 
 func (s *State) OpenCharacterCreation() error {

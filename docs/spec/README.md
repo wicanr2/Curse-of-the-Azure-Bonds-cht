@@ -226,3 +226,4 @@
 - [第二百四十六輪 character-creation age transaction](./246-creation-age-transaction.md)（`READY`：限加入隊伍時 age／ability projection）
 - [第二百四十七輪 Area1 game-time codec](./247-area1-clock-codec.md)（`READY`：限七個 raw clock words 與 State synchronization）
 - [第二百四十八輪 reference game clock HUD](./248-clock-hud.md)（`READY`：限 HH:MM／日曆 renderer-neutral display）
+- [第二百四十九輪完整單職業角色建立選項](./249-character-creation-options.md)（`READY`：限 20 個已驗證種族／職業組合）

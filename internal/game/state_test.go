@@ -2596,7 +2596,7 @@ func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	if err := state.OpenCharacterCreation(); err != nil || state.Mode != ModeCharacterCreation {
 		t.Fatalf("open creation mode=%v err=%v", state.Mode, err)
 	}
-	for index := range state.CreationOptions {
+	for index := 0; index < 6; index++ {
 		if err := state.AddCreationCharacter(index); err != nil {
 			t.Fatal(err)
 		}
@@ -2604,11 +2604,29 @@ func TestCharacterCreationBuildsPartyAndReturnsToWilderness(t *testing.T) {
 	if err := state.FinishCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || len(state.PartyFighters()) != 3 {
+	if state.Mode != ModeWilderness || len(state.PartyFighters()) != 6 {
 		t.Fatalf("finished state mode=%v party=%#v", state.Mode, state.PartyFighters())
 	}
 	if state.partyRoster[0].Age == 0 || state.partyRoster[1].Age == 0 || state.partyRoster[2].Age == 0 {
 		t.Fatalf("created party ages=%#v, want generated ages", state.partyRoster)
+	}
+}
+
+func TestCharacterCreationListsVerifiedSingleClassOptions(t *testing.T) {
+	state := NewState(testCatalog())
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.CreationOptions) != 19 {
+		t.Fatalf("creation options=%d, want 19 verified race/class combinations", len(state.CreationOptions))
+	}
+	for index, character := range state.CreationOptions {
+		if err := character.Validate(); err != nil {
+			t.Fatalf("option %d=%#v is invalid: %v", index, character, err)
+		}
+		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
+			t.Fatalf("option %d has no starting-age evidence: %v", index, err)
+		}
 	}
 }
 
