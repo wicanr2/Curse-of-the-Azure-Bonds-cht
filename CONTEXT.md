@@ -893,3 +893,8 @@ transaction 與原版 player delete semantics 仍維持既有 boundary。
 並讓 bounded VM／BlockSession 正常繼續與聚合。新增 READY spec、synthetic regression 與
 共用 ECL command knowledge；實際 party stat calculation、AC scale、multi-class level
 來源與 surprise result 仍待 State adapter 逐欄接線。
+
+第二百六十五輪 ECL／State 里程碑：新增可注入的 `ecl.PartyContext`，由 State 使用目前
+roster／fighter projection 解析 `PARTYSTRENGTH` 與 `PARTY SURPRISE`，將結果寫回 shared
+ECL memory，並在 `NEWECL`／menu continuation 間保留。新增 context-resolved regression 與
+READY spec；reference AC internal scale、完整 multi-class level／THAC0 table 仍保留邊界。

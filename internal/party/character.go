@@ -266,6 +266,22 @@ func (c Character) HasClass(class Class) bool {
 	return c.Class == class
 }
 
+// ClassLevel returns the raw level for one represented class. Legacy
+// single-class characters without ClassLevels use the primary Level field.
+func (c Character) ClassLevel(class Class) int {
+	if c.ClassLevels != [8]uint8{} {
+		index := map[Class]int{
+			ClassCleric: 0, ClassFighter: 2, ClassRanger: 4,
+			ClassPaladin: 3, ClassMagicUser: 5, ClassThief: 6,
+		}[class]
+		return int(c.ClassLevels[index])
+	}
+	if c.Class == class {
+		return c.Level
+	}
+	return 0
+}
+
 const (
 	DeathDamageFire = 0x01
 	DeathDamageAcid = 0x10

@@ -89,9 +89,10 @@ ECL event text 也採同一 evidence discipline：只有已由 raw image 解出�
 `FIND ITEM`／`DESTROY ITEMS` 是另一組可跨作品重用的 inventory boundary；VM 只
 保存 item IDs，不應在缺 party roster context 時自行改 inventory 或 compare flags。
 
-`PARTYSTRENGTH (0x1D)` 與 `PARTY SURPRISE (0x22)` 現在也會由 bounded VM 保存已驗證的
-word destination request 並繼續 cursor；party HP／AC／職業等級與 surprise result 仍由
-作品 adapter 解析，不應在沒有 roster context 的 VM 中寫入猜測值。
+`PARTYSTRENGTH (0x1D)` 與 `PARTY SURPRISE (0x22)` 現在由 bounded VM 保存已驗證的 word
+destination request 並繼續 cursor；State 注入 `PartyContext` 時會依 reference 計算並寫回
+shared ECL memory，沒有 roster context 的純 VM path 則維持 unresolved request，不寫入
+猜測值。
 
 目前 CoAB 的 State adapter 已把 verified `DESTROY ITEMS` IDs 廣播到 persistent
 party roster；這是 ECL effect 的明確 mutation，與玩家操作用、會保護 readied item

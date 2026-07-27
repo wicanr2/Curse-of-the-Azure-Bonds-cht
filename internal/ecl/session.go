@@ -88,6 +88,16 @@ func (s *BlockSession) RunInteractiveSeed(maxSteps int, selections []uint16, see
 	return s.runFromSeed(start, maxSteps, selections, seed)
 }
 
+// RunInteractiveSeedWithPartyContext resolves party-rule commands against a
+// caller-owned roster while preserving the session's shared runtime memory.
+func (s *BlockSession) RunInteractiveSeedWithPartyContext(maxSteps int, selections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	start, err := s.InitialEntry()
+	if err != nil {
+		return RunResult{}, err
+	}
+	return s.runFromSeedWithPartyContext(start, maxSteps, selections, seed, &context)
+}
+
 // RunFrom executes an explicit event entry in the current block. After a
 // NEWECL signal, the target resumes at its own initial entry.
 func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunResult, error) {
@@ -95,6 +105,10 @@ func (s *BlockSession) RunFrom(start, maxSteps int, selections []uint16) (RunRes
 }
 
 func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, seed int64) (RunResult, error) {
+	return s.runFromSeedWithPartyContext(start, maxSteps, selections, seed, nil)
+}
+
+func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selections []uint16, seed int64, partyContext *PartyContext) (RunResult, error) {
 	var aggregate RunResult
 	var err error
 	selectionOffset := s.selectionOffset
@@ -109,7 +123,7 @@ func (s *BlockSession) runFromSeed(start, maxSteps int, selections []uint16, see
 		if !runtime.Started {
 			runtime.PC = start
 		}
-		result, runErr := runSubsetWithState(s.CurrentData(), start, maxSteps, remaining, true, seed, runtime)
+		result, runErr := runSubsetWithStateContext(s.CurrentData(), start, maxSteps, remaining, true, seed, runtime, partyContext)
 		aggregate.Text = append(aggregate.Text, result.Text...)
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
