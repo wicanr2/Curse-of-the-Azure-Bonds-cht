@@ -665,3 +665,10 @@ initialization：`combat_icons[24].GetIcon(Attack, 0)` 對應 `COMSPR` block `0x
 COMSPR derived PNG，依 DeathOverlay signal 在死亡座標以 100ms phase 交替顯示原版
 skull／blank overlay；更新 graphics／ECL／README／PLAN 知識庫。Docker Go 1.23 已通過
 `internal/combat`、`internal/game`、`internal/party`、`internal/ecl`、`internal/locale`。
+
+第二百二十五輪重大里程碑 commit：`f2372a7`，依 reference `Action.Clear` 將死亡後的
+per-fighter `CombatAction`（delay、move、spell ID、guarding）建立成共用資料 contract，
+Battle 在 HP=0 時清零；State 若倒下者正是 current turn，也清除施法、移動、檢視與 target
+selection。新增 combat／State regressions，並更新 ECL／State READY spec、README、PLAN、
+Gold Box knowledge base。Docker Go 1.23 通過 `internal/combat`、`internal/game`、
+`internal/party`、`internal/ecl`、`internal/locale`。
