@@ -4591,6 +4591,21 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 }
 
 func localizeECLText(catalog locale.Catalog, texts []string) string {
+	joined := strings.Join(texts, " ")
+	if strings.Contains(joined, "I AM THE HIGH PRIEST") &&
+		strings.Contains(joined, "TELL ME YOUR STORY") {
+		return catalog.Text(
+			"ecl_high_priest_intro",
+			"「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」",
+		)
+	}
+	if strings.Contains(joined, "REMOVE CURSE SPELL") &&
+		strings.Contains(joined, "JOURNAL ENTRY") && strings.Contains(joined, "19.") {
+		return catalog.Text(
+			"ecl_high_priest_spell",
+			"他同情地聽完你們的遭遇，接著施展移除詛咒法術；你們將結果記入冒險手札第 19 條。",
+		)
+	}
 	localized := make([]string, 0, len(texts))
 	for _, text := range texts {
 		localized = append(localized, localizeECLLine(catalog, text))
@@ -4635,6 +4650,14 @@ func (s *State) unlockJournalEntries(texts []string) {
 				"刀刃呈不規則火焰形；原手札在此畫出匕首外觀，這正是追查「火刀」組織的重要線索。",
 		)})
 	}
+	if strings.Contains(joined, "REMOVE CURSE SPELL") && strings.Contains(joined, "19.") {
+		s.appendJournalPages("手札條目 19：", []string{s.catalog.Text(
+			"journal_entry_19",
+			"手札條目 19：祭司開始施法時，青色枷突然發出耀眼光芒。藍色火焰自印記竄出，"+
+				"在房內四處迸射；眾人痛苦得扭曲身體，祭司只得停止施法。"+
+				"他說：「這些枷鎖會抵抗我的神力，我無法解除它們。祝你們往後順利，願剛德與你們同在。」",
+		)})
+	}
 }
 
 func (s *State) appendJournalPages(marker string, pages []string) {
@@ -4647,7 +4670,7 @@ func (s *State) appendJournalPages(marker string, pages []string) {
 }
 
 func localizeECLLine(catalog locale.Catalog, line string) string {
-	switch line {
+	switch strings.TrimSpace(line) {
 	case "DO YOU WANT TO TRAIN?", "'DO YOU WANT TO TRAIN?'":
 		return catalog.Text("ecl_training_prompt", "你們要接受訓練嗎？")
 	case "YOU'RE SHOWING GREAT PROGRESS. RETURN AGAIN WHEN":
@@ -4678,6 +4701,12 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tavern_knife_2", "匕首")
 	case "17.":
 		return catalog.Text("ecl_tavern_journal_17", "第 17 條。")
+	case "'I AM THE HIGH PRIEST. YOU LOOK TROUBLED, MY CHILDREN. DO YOU WISH TO TELL ME YOUR STORY?'":
+		return catalog.Text("ecl_high_priest_intro", "「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」")
+	case "HE LISTENS SYMPATHETICALLY AND CASTS A REMOVE CURSE SPELL":
+		return catalog.Text("ecl_high_priest_spell", "他同情地聽完你們的遭遇，接著施展移除詛咒法術，")
+	case "19.":
+		return catalog.Text("ecl_high_priest_journal_19", "第 19 條。")
 	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
 		return catalog.Text("ecl_new_game_awaken", "你們在一間小房間裡醒來。環顧四周，你們注意到")
 	case "THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.":

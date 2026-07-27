@@ -648,6 +648,62 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
 			state.Message, state.Choices)
 	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 10, 0
+	state.DungeonWallType, _ = grid.WallWrapped(1, 10, 0)
+	state.DungeonWallRoof = grid.CellWrapped(1, 10).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x8F || state.Mode != ModeEvent || !state.PictureRequested ||
+		state.PictureBlock != 6 || state.SceneHeadBlock != 6 || state.SceneBodyBlock != 6 ||
+		!strings.Contains(state.Message, "高階祭司") {
+		t.Fatalf("high priest introduction selector=%#x mode=%v picture=%v:%d head/body=%d/%d message=%q",
+			state.DungeonWallRoof, state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 2 ||
+		state.Choices[0] != "是" || state.Choices[1] != "否" {
+		t.Fatalf("high priest story prompt mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "移除詛咒") || !strings.Contains(state.Message, "第 19 條") {
+		t.Fatalf("high priest remove-curse pause mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	foundJournal19 := false
+	for _, page := range state.JournalPages {
+		if strings.HasPrefix(page, "手札條目 19：") &&
+			strings.Contains(page, "藍色火焰") && strings.Contains(page, "剛德") {
+			foundJournal19 = true
+			break
+		}
+	}
+	if !foundJournal19 {
+		t.Fatalf("Journal Entry 19 was not unlocked in-game: pages=%v", state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, "離開此處") {
+		t.Fatalf("high priest departure pause mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 1 || state.DungeonY != 10 ||
+		len(state.Choices) != 0 {
+		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want same cell",
+			state.Mode, state.DungeonX, state.DungeonY, state.Message, state.Choices, state.currentOriginalChoices)
+	}
 }
 
 func TestRealCrossDAXNEWECLReachesECL1Entry(t *testing.T) {

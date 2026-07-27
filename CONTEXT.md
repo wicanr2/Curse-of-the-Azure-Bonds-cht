@@ -1089,3 +1089,13 @@ PICTURE 4／HEAD4／BODY4、酒館動作與四種飲料選單。`LEMONADE → YE
 `tilverton-tavern.png`；事件畫面改成獨立 640×480 layout，原始圖 3× nearest-neighbor、
 中文 24px 直接重繪，修正探索 HUD 與人物圖重疊。共用知識庫同步記錄 16×15／24×24
 中文字級與圖片、文字分離 pipeline。
+
+第二百九十一輪成果：定位 GEO2 `(1,10)` terrain `0x8F` 為剛德神殿高階祭司。
+真實 ECL2 流程顯示 PICTURE 6／HEAD6／BODY6，YES 分支施展 Remove Curse 並記錄
+Journal Entry 19。使用者提供的 Adventure Journal 掃描 PDF 證實完整內容為青色枷
+發光、射出藍焰並令眾人劇痛，祭司因神力遭抵抗而停止；此中文全文只在事件發生後
+解鎖。real-image regression 鎖定問答、兩段 press-button pause 與同格返回；新增
+`-high-priest` 及 640×480 README 實機圖。事件 caption 由 34 個英文字元假設改成
+每行 22 個 Unicode 字元，24px 中文不再超出右邊界。Gold Box command-set 知識庫也
+修正 CALL 的過期「未實作」斷言，新增五層 opcode 支援矩陣、signal exactly-once
+時序與 ECL／engine memory ownership 表。

@@ -888,7 +888,10 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
 	runes := []rune(a.revealedMessage())
-	const lineRunes = 34
+	// A 24px CJK glyph is much wider than the original 8px Latin cell.
+	// Keep picture captions to 22 Unicode code points so both Traditional
+	// Chinese and mixed ASCII text stay inside the 640px logical canvas.
+	const lineRunes = 22
 	for line := 0; line < 3 && len(runes) > 0; line++ {
 		count := lineRunes
 		if len(runes) < count {
@@ -1418,6 +1421,7 @@ func main() {
 	temple := flag.Bool("temple", false, "start at Gond's altar through the formal Tilverton ECL flow")
 	training := flag.Bool("training", false, "start at Tilverton's Hall of Training through the formal ECL flow")
 	tavern := flag.Bool("tavern", false, "start at Tilverton's tavern through the formal ECL flow")
+	highPriest := flag.Bool("high-priest", false, "start at Tilverton's high priest through the formal ECL flow")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1574,9 +1578,9 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern {
+	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest {
 		if len(state.PartyFighters()) != 0 {
-			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern cannot be combined with a loaded party")
+			log.Fatal("-opening/-inn/-filani/-weapon-shop/-temple/-training/-tavern/-high-priest cannot be combined with a loaded party")
 		}
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
@@ -1587,7 +1591,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training || *tavern {
+		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -1608,6 +1612,8 @@ func main() {
 				x, y, direction = 5, 2, 0
 			} else if *tavern {
 				x, y, direction = 6, 10, 0
+			} else if *highPriest {
+				x, y, direction = 1, 10, 0
 			}
 			state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 			state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))

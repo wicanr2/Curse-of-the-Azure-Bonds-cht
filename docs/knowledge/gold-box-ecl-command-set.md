@@ -13,7 +13,7 @@ opcode 名稱／arity」與「已證實 runtime semantics」分開；command tab
 | `09`–`14` | SAVE／LOAD CHARACTER／LOAD MONSTER／SETUP MONSTER／APPROACH／PICTURE／…／COMPARE AND | 2/1/3/3/0/1/…/4 | partial signal／bounded |
 | `15`–`1F` | menus／IF variants／CLEARMONSTERS／party checks | variable／fixed | partial |
 | `20`–`2C` | NEWECL／LOAD FILES／surprise／COMBAT／ON branches／treasure／menus／PARLAY | variable | partial signal／bounded |
-| `2D` | CALL | 1 | **未實作；需確認 external dispatch 或 code call** |
+| `2D` | CALL | 1 | typed external-call signal；CoAB 已接三個 observed address |
 | `2E` | DAMAGE | 5 | bounded raw signal（flags／dice／bonus／save flags） |
 | `2F`–`30` | AND／OR | 3/3 | bounded 16-bit memory destination |
 | `31`–`40` | sprite／item／clock／save table／NPC／pieces／PROGRAM／WHO／delay／spell／protection／… | variable | partial signal／bounded |
@@ -178,3 +178,51 @@ dual-class gate 同樣是 player rules adapter：DOS `0xE5 HitDice` 在 active c
 重算後若仍 `<= 0xE6 multiclassLevel`，訓練不增加 HP。升級學法術使用 DOS
 `spellCastCount[3,5] @ 0x12D..0x13B` 判斷可用法術等級，再排除 KnownSpells；
 容量與 spell metadata 都屬作品 rules adapter，不屬 ECL VM。
+
+## 支援程度不能只用「已實作／未實作」
+
+每個 opcode 應分別記錄五層證據，避免 parser 能前進就被誤認為完整遊戲語意：
+
+1. framing：arity 與 operand cursor 已知；
+2. bounded VM：control flow 或 memory mutation 已知；
+3. typed signal：runner 能保存 renderer／engine request；
+4. 作品 adapter：CoAB State 已處理該 request；
+5. real-image regression：原始 ECL 分支已由玩家流程鎖定。
+
+例如 `CALL (0x2D)` 已達 typed signal，CoAB 的 `0x2E10／0xC01E／0xB200` 也有作品
+adapter 與 regression，但未知 address 仍只有保留 request；不能把整個 opcode 宣稱為
+完整 DOS external dispatch。`PICTURE／LOAD FILES／TREASURE／LOAD PIECES／SPELL／
+PROTECTION` 也都已超過 no-op framing，runtime 註解與本表應依這五層維持一致。
+
+## Signal 時序與 exactly-once
+
+`RunResult` 目前依 signal 類型保存結果，State 以固定順序套用 CALL、spell、DAMAGE、
+LOAD CHARACTER、NPC／DUMP、CLOCK、inventory、TREASURE、ROB。這個順序是目前 CoAB
+adapter 的 commit contract，不代表任意 Gold Box script 的原始 opcode 順序都能由分類
+後的 slices 完整重建。
+
+- pause 前已套用的 persistent mutation，在同一 `RuntimeState` resume 後不得重播；
+- `TREASURE → COMBAT` 的 CityShop 路徑必須先建立 stock，再派送 shop service；
+- `PICTURE` 必須在 opcode 當下 snapshot HEAD selector `0x7EE1`，不能在 pause 後回讀；
+- `NEWECL` 可聚合 signal，但若新作品依賴不同種類 signal 的精確交錯順序，runner 必須
+  改用 ordered event log，而不能假設目前分類套用順序等同原始執行順序。
+
+這是 VM 與作品 adapter 之間的隱性 ABI。新增 opcode 時應同時標明 effect 是立即 memory
+mutation、pause 前 commit、deferred service，或 resume-only continuation。
+
+## CoAB ECL／engine memory ownership
+
+| address／range | owner／方向 | lifecycle |
+|---|---|---|
+| `0x8000..0x9DFF` | current ECL block code window；loader → VM | `NEWECL` 替換，不是 shared scratch |
+| `0xC04B..0xC04F` | State → ECL：X、Y、half-facing、wall、terrain | 每次 dungeon lifecycle 前同步 |
+| `0x7EE1` | ECL → PICTURE：HEAD selector | opcode 當下 snapshot |
+| `0x7EE2` | ECL → engine：EnterTemple | service dispatch 時 consume |
+| `0x7F6C` | ECL → engine：EnterShop | service dispatch 時 consume |
+| `0x7F6D` | ECL → shop：price shift selector | shop transaction 期間保留 |
+| `0x7C00` | selected player name string；State party context → VM | LOAD CHARACTER／WHO 後更新，跨 pause 保留 |
+
+`0x4C00／0x7F3F／0x7F7A／0x7F7B／0x7F80` 已在 Tilverton SearchLocation regression
+觀察到，但欄位語意尚未全部證實，只能列為 dispatch scratch evidence，不能升格為
+跨作品 ABI。`LOAD FILES (0x21)` 的 dungeon GEO selector 與 outdoor BIGPIC operands
+也屬作品 adapter 解讀，不能沿用早期把 operand 1／3 對調的舊斷言。
