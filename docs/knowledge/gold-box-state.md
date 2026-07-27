@@ -220,6 +220,16 @@ VERTICAL MENU，必須以 original key 回送 ECL。
 renderer 載入 optional wall／sprite 素材失敗時也不可改寫 `State.Message`；
 診斷應留在獨立 label/log，否則正確 ECL 劇情會被技術錯誤文字取代。
 
+普通 menu 的 `WILDERNESS` 也不能視為全域 engine action。CoAB 法師塔 block
+`0x33` 的第一層出口是 `CAVES/WILDERNESS/STAY HERE`，其中 WILDERNESS 必須先
+resume 原 script，才會出現 `VILLAGE/DEPART` 第二層選單。作品 adapter 若要為
+特定城市攔截同名 label，至少要以 ECL block／caller context 限定，不能只比字串。
+
+跨地城 `NEWECL` 後，destination initial entry 可能改寫 source 已設定的位置或
+面向；例如塔頂 CAVES 分支先寫 `(6,15,N)`，熔岩洞 block `0x32` initial entry
+最後留下 `(6,15,E)`。State 應在完整 transition 後重新讀 `C04B..C04D`，並同步
+目的 ECL/GEO block；不可只套 source write，也不可讓 renderer 沿用舊 geometry。
+
 `LOAD PIECES` 先保存三個 selector，再由作品的 file／map adapter 解讀：ECL2 `1,2,3` 與跨 ECL 章節的 repeated observations，加上 reference `LoadWalldef`，已足以把 selectors 接到 `WALLDEF{area}` 的 symbol set 1/2/3 與對應 `8X8D` block。這只證明 raw piece catalog 的載入 boundary，不等於完成 floor／wall／tile renderer；共用 runner 仍可沿用 `LoadPiecesRequested`／`LoadPieces` signal，後續 Gold Box 遊戲替換作品專屬 map adapter。
 
 State 層不能丟掉已驗證的 ECL signal：`LoadPiecesRequested` 應像 `LOAD FILES` 一樣進入一次性 `ConsumeLoadPiecesRequest()`，renderer／map adapter 再決定如何解讀，避免 VM 直接依賴 ZIP 檔名，也保留後續作品替換地圖格式的空間。
