@@ -432,4 +432,4 @@
 
 第一百六十四輪功能／文件 commit：`b890ffc`，已推送至 GitHub `main`。dungeon preview 保存 `(dungeonX,dungeonY)`，方向鍵透過 GEO 雙側 wall contract 移動，成功後重建 floor 與 Far／Mid／Near wall stamps；新增 position／camera slice 規格與共用 graphics knowledge。Area／save 真實座標、direction、movement cost、encounter、wrap 與 scroll animation 仍保留 boundary。
 
-第一百六十五輪待提交：將 dungeon preview 的 `(x,y,direction)` 接入 remake game save version 3；v1/v2 舊檔與越界值回到安全預設，F9／啟動載入後重建 floor／wall view。原版 DOS `SAVGAM?.DAT` container 與 Area 真實座標寫回仍保留 boundary。
+第一百六十五輪功能 commit：`6f530a9`，已推送至 GitHub `main`。將 dungeon preview 的 `(x,y,direction)` 接入 remake game save version 3；v1/v2 舊檔與越界值回到安全預設，F9／啟動載入後重建 floor／wall view。新增 save codec／game adapter round-trip regression、READY 規格與共用 state knowledge。原版 DOS `SAVGAM?.DAT` container 與 Area 真實座標寫回仍保留 boundary。
