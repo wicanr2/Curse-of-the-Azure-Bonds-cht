@@ -343,3 +343,5 @@
 - [ ] 從完整玩家流程抵達該 entry，驗證跨 block context 的完整劇情 continuation。
 - [x] 依 CoAB reference 與 ECL2 block 3 real scan 建立 `DAMAGE` 五 operand raw signal；target／saving throw／HP mutation 保留 party adapter boundary。
 - [x] 將 ECL `DAMAGE` signal 接入 State pending queue 與 exactly-once consume；保留 selected-character／save-throw／HP mutation boundary。
+- [x] 保存 DOS player `saveVerse` `0xDF–0xE3` 到 Character／JSON／writeback adapter。
+- [x] 依 CoAB reference 接入 ECL `DAMAGE` selected／whole-party branches、注入骰點、save resolution 與 roster／fighter HP sync；random-target／death continuation 保留 boundary。
