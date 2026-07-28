@@ -75,6 +75,7 @@ type app struct {
 	combatSprites       map[string]*ebiten.Image
 	combatSpriteIDs     []string
 	combatTerrain       map[string][]*ebiten.Image
+	combatTerrainMode   string
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
@@ -1260,14 +1261,19 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	)
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
-	terrainName := "WILDCOM"
-	if a.state.Area.InDungeon || a.state.Area.GameArea > 1 {
-		terrainName = "DUNGCOM"
-	}
-	if terrain := a.combatTerrain[terrainName]; len(terrain) > 0 && a.dungeonFloor != nil && terrainName == "DUNGCOM" {
+	terrainName := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+	if terrain := a.combatTerrain[terrainName]; len(terrain) > 0 {
 		for row := 0; row < 7; row++ {
 			for column := 0; column < 7; column++ {
-				entry, ok := a.dungeonFloor.Entry(18+column, 7+row)
+				entry, ok := combatTerrainEntry(
+					terrainName,
+					a.dungeonFloor,
+					a.state.WildernessFloor,
+					a.state.MapX,
+					a.state.MapY,
+					column,
+					row,
+				)
 				if !ok || int(entry.TileIndex) >= len(terrain) {
 					continue
 				}
@@ -1428,6 +1434,32 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "移動　查看　瞄準　使用　施法　快速　結束", a.compactFace, 8, 478, cyan)
 	if len(spellHints) > 0 {
 		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
+	}
+}
+
+func selectCombatTerrainName(inDungeon bool, override string) string {
+	if override == "DUNGCOM" || override == "WILDCOM" || override == "RANDCOM" {
+		return override
+	}
+	if inDungeon {
+		return "DUNGCOM"
+	}
+	return "WILDCOM"
+}
+
+func combatTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY, column, row int) (mapdata.BackgroundTile, bool) {
+	switch mode {
+	case "DUNGCOM":
+		if dungeon == nil {
+			return mapdata.BackgroundTile{}, false
+		}
+		return dungeon.Entry(18+column, 7+row)
+	case "WILDCOM":
+		return wilderness.Entry(mapX+column-3, mapY+row-3)
+	default:
+		// RANDCOM is an overlay/decor atlas, not a complete floor. Its
+		// placement routine remains a separate reverse-engineering boundary.
+		return mapdata.BackgroundTile{}, false
 	}
 }
 
@@ -1649,6 +1681,7 @@ func main() {
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
+	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -1659,6 +1692,10 @@ func main() {
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
 	flag.Parse()
+	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
+	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
+		log.Fatal("-combat-terrain must be DUNGCOM, WILDCOM, RANDCOM, or empty for automatic selection")
+	}
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
 		log.Fatal(err)
@@ -1799,6 +1836,13 @@ func main() {
 			log.Fatal("-encounter-area must be 1..6")
 		}
 		state.Area.GameArea = uint8(*encounterArea)
+		if *combatTerrainMode == "WILDCOM" {
+			state.SetInDungeon(false)
+			state.MapX, state.MapY = 25, 12
+			state.WildernessFloor = mapdata.GenerateWilderness(0x20, 1)
+		} else if *combatTerrainMode == "DUNGCOM" {
+			state.SetInDungeon(true)
+		}
 		block, ok := eclBlocks[uint8(*encounterBlock)]
 		if !ok {
 			log.Fatalf("ECL block 0x%02X is unavailable", *encounterBlock)
@@ -1980,7 +2024,7 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }

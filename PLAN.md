@@ -519,3 +519,5 @@
   怪物 occupancy／anchor；以 corridor aim 與 black dragon DOS 場景做 overlay 驗收。
 - [x] 解碼 `DUNGCOM/WILDCOM/RANDCOM` 的 17-byte header 與 24×24 4bpp items，
   產生三套 gallery，並由 dungeon background entries 接回 DUNGCOM 實際牆片。
+- [x] 將 50×25 `WildernessFloor` 的 7×7 camera slice 接回 WILDCOM；
+  terrain family 改由 `Area.InDungeon` 決定，RANDCOM 保持 decoration boundary。

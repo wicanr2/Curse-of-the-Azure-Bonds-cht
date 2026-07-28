@@ -1379,3 +1379,12 @@ regression 與三套 gallery。Ebiten 地城戰場現由既有 `GenerateDungeon`
 繪製真正 DUNGCOM 石牆／斜牆／轉角，取代單色 placeholder。完整 encounter
 terrain-mode selector、WILDCOM procedural placement、RANDCOM decoration、
 原始 stone-frame tiles 與大型怪物 occupancy 仍保留為後續 RE boundary。
+
+第三百二十五輪成果：正式接通 WILDCOM 野外戰場。renderer 以 `MapX/MapY`
+為中心查 `SetupWildernessFloor` 已還原的 50×25 buffer，將 7×7 entries 的
+`TileIndex 0..33` 對應 WILDCOM 34 張原始 tile；實機圖已顯示樹、倒木、岩石、
+草地與水岸。terrain family selector 改為只依 `Area.InDungeon` 選
+DUNGCOM／WILDCOM，不再使用 `GameArea>1` heuristic；`-combat-terrain`
+只保留作 deterministic visual verification。RANDCOM 六張特殊物件明確保持
+decoration overlay boundary。新增 selector／camera tests、READY spec 325 與
+640×480 野外戰鬥截圖。
