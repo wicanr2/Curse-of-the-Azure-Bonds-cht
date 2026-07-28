@@ -213,14 +213,18 @@ DOS 戰鬥畫面的可重用 native geometry 是 `8 + 168 + 8 + 128 + 8 = 320`�
 戰鬥 terrain 不在一般 `TILES.DAX`：`DUNGCOM`／`WILDCOM`／`RANDCOM` 是共用
 17-byte picture header 加多張 24×24 4bpp items，CoAB 分別有 25／34／6 張。
 palette 0 是 overlay transparency。地城的 `BackgroundTile.TileIndex` 可直接查
-DUNGCOM atlas；WILDCOM 與 RANDCOM 的選擇／擺放仍應由作品 engine adapter
-提供，不能用 atlas index 當地圖順序。
+DUNGCOM atlas；地城全域 graphic ID `0x22..0x27` 則先畫 DUNGCOM 開放地板
+`0x16`，再查 RANDCOM `0..5` 作透明 overlay。不能用 atlas index 當地圖順序。
 
 CoAB 的 wilderness background table 已提供直接映射：WILDCOM 有 34 張，
 而 wilderness entries 的 `TileIndex` 正好落在 `0..33`。7×7 renderer 以
 `MapX/MapY` 為中心查 50×25 `WildernessFloor` 即可。terrain family 應由
 `Area.InDungeon` 選 DUNGCOM／WILDCOM，不可用 ECL chapter 或 GameArea 猜測。
-RANDCOM 只有六張特殊物件，是後續 decoration pass，不能替代完整 floor。
+RANDCOM 只有六張特殊物件，不能替代完整 floor。CoAB 的 placement 由
+`sub_370D3` 對 GEO terrain `&0x40` 的開放區執行 seed-driven table/chair pass；
+BackgroundTiles entries `0x1A/0x1B` 保存全域 graphic ID `0x22/0x23`。
+同一數值在 WILDCOM namespace 仍是野外 tile，atlas family 必須先由 area mode
+決定，不能全域一律減 `0x22`。
 
 ## 大型戰鬥小人與 footprint
 

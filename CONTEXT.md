@@ -1396,3 +1396,13 @@ MON1–MON6 原始 records 收斂怪物形狀碼：1／2／3／4 分別是
 shape 顯示；2×2 龍巫妖為 96×96，CPIC 鏡像仍保留 `6-x` 左上錨點，避免因
 額外扣除寬度而被戰場 clipping。更新 READY spec 326、Gold Box graphics
 知識庫與 640×480 DUNGCOM 龍巫妖實機圖。
+
+第三百二十七輪成果：接通已存在但先前未繪出的 RANDCOM 原版裝飾 pass。
+reference `sub_370D3` 在 GEO terrain bit `0x40` 的開放區，以 dice stream 寫入
+table／chair BackgroundTiles entries `0x1A/0x1B`；其 graphic ID
+`0x22/0x23` 屬於全域 namespace，應映射 RANDCOM `0/1`，不是拿去查只有
+25 張的 DUNGCOM。renderer 現先畫 DUNGCOM floor `0x16`，再透明疊加
+RANDCOM `id-0x22`；WILDCOM `0..33` 保持獨立。原始 catalog 掃描與
+`GEO2 block 01, center (13,0), seed 1` 的 640×480 Xvfb 圖均確認桌椅可見。
+新增 READY spec 327、atlas bounds tests、`-dungeon-x/-dungeon-y` deterministic
+visual flags，並同步 README 與 Gold Box graphics 知識庫。

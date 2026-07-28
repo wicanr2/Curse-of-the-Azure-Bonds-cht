@@ -1262,7 +1262,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
 	terrainName := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
-	if terrain := a.combatTerrain[terrainName]; len(terrain) > 0 {
+	if len(a.combatTerrain[terrainName]) > 0 {
 		for row := 0; row < 7; row++ {
 			for column := 0; column < 7; column++ {
 				entry, ok := combatTerrainEntry(
@@ -1274,14 +1274,20 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 					column,
 					row,
 				)
-				if !ok || int(entry.TileIndex) >= len(terrain) {
+				if !ok {
 					continue
 				}
-				op := &ebiten.DrawImageOptions{}
-				op.Filter = ebiten.FilterNearest
-				op.GeoM.Scale(2, 2)
-				op.GeoM.Translate(float64(column*48), float64(row*48))
-				battlefield.DrawImage(terrain[entry.TileIndex], op)
+				for _, layer := range combatTerrainLayers(terrainName, entry) {
+					tiles := a.combatTerrain[layer.Atlas]
+					if layer.Index < 0 || layer.Index >= len(tiles) {
+						continue
+					}
+					op := &ebiten.DrawImageOptions{}
+					op.Filter = ebiten.FilterNearest
+					op.GeoM.Scale(2, 2)
+					op.GeoM.Translate(float64(column*48), float64(row*48))
+					battlefield.DrawImage(tiles[layer.Index], op)
+				}
 			}
 		}
 	}
@@ -1455,6 +1461,36 @@ func selectCombatTerrainName(inDungeon bool, override string) string {
 // for multi-cell monsters; their footprint expands right and down from it.
 func mirroredCombatAnchor(tile combat.TilePoint) combat.TilePoint {
 	return combat.TilePoint{X: 6 - tile.X, Y: tile.Y}
+}
+
+type combatTerrainLayer struct {
+	Atlas string
+	Index int
+}
+
+func combatTerrainLayers(mode string, entry mapdata.BackgroundTile) []combatTerrainLayer {
+	index := int(entry.TileIndex)
+	switch mode {
+	case "DUNGCOM":
+		if index >= 0 && index < 25 {
+			return []combatTerrainLayer{{Atlas: "DUNGCOM", Index: index}}
+		}
+		// The reference BackgroundTiles table uses one global graphic
+		// namespace. IDs 0x22..0x27 select RANDCOM items 0..5. They are
+		// transparent furniture/obstacle overlays placed only after the
+		// dungeon generator has found an open DUNGCOM floor tile (0x16).
+		if index >= 0x22 && index <= 0x27 {
+			return []combatTerrainLayer{
+				{Atlas: "DUNGCOM", Index: 0x16},
+				{Atlas: "RANDCOM", Index: index - 0x22},
+			}
+		}
+	case "WILDCOM":
+		if index >= 0 && index < 34 {
+			return []combatTerrainLayer{{Atlas: "WILDCOM", Index: index}}
+		}
+	}
+	return nil
 }
 
 func combatTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY, column, row int) (mapdata.BackgroundTile, bool) {
@@ -1666,6 +1702,8 @@ func main() {
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
 	geoBlock := flag.Int("geo-block", 1, "original GEO block ID used by the map preview")
+	dungeonXOverride := flag.Int("dungeon-x", -1, "override dungeon X (0..15) for deterministic visual verification")
+	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
@@ -1702,6 +1740,9 @@ func main() {
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
 		log.Fatal("-combat-terrain must be DUNGCOM, WILDCOM, RANDCOM, or empty for automatic selection")
 	}
+	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
+		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
+	}
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
 		log.Fatal(err)
@@ -1715,6 +1756,9 @@ func main() {
 		log.Fatal(err)
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
+	if *dungeonXOverride >= 0 {
+		state.DungeonX, state.DungeonY = *dungeonXOverride, *dungeonYOverride
+	}
 	itemData, err := zipMember(*imagePath, "ITEMS")
 	if err != nil {
 		log.Fatal(err)
