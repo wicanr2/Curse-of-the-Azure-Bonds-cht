@@ -74,6 +74,7 @@ type app struct {
 	wallPreview         []wallPreviewStamp
 	combatSprites       map[string]*ebiten.Image
 	combatSpriteIDs     []string
+	combatTerrain       map[string][]*ebiten.Image
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
@@ -1259,6 +1260,25 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	)
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
+	terrainName := "WILDCOM"
+	if a.state.Area.InDungeon || a.state.Area.GameArea > 1 {
+		terrainName = "DUNGCOM"
+	}
+	if terrain := a.combatTerrain[terrainName]; len(terrain) > 0 && a.dungeonFloor != nil && terrainName == "DUNGCOM" {
+		for row := 0; row < 7; row++ {
+			for column := 0; column < 7; column++ {
+				entry, ok := a.dungeonFloor.Entry(18+column, 7+row)
+				if !ok || int(entry.TileIndex) >= len(terrain) {
+					continue
+				}
+				op := &ebiten.DrawImageOptions{}
+				op.Filter = ebiten.FilterNearest
+				op.GeoM.Scale(2, 2)
+				op.GeoM.Translate(float64(column*48), float64(row*48))
+				battlefield.DrawImage(terrain[entry.TileIndex], op)
+			}
+		}
+	}
 	battlefieldOp := &ebiten.DrawImageOptions{}
 	battlefieldOp.GeoM.Translate(battlefieldX, battlefieldY)
 	screen.DrawImage(battlefield, battlefieldOp)
@@ -1327,7 +1347,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID || (a.state.CombatCastingSpell() == game.ProtectionFromGoodSpellID && !a.state.CombatSpellTargetsEnemy())) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
 				selected = true
 			}
-			a.drawCombatSpriteMarker(battlefield, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
+			isActive := activeOK && (active.ID == fighter.ID ||
+				(active.Side == fighter.Side && active.Name == fighter.Name &&
+					active.CombatX == fighter.CombatX && active.CombatY == fighter.CombatY))
+			a.drawCombatSpriteMarker(battlefield, fighter, isActive, selected, x, y)
 			partyIndex++
 			continue
 		}
@@ -1346,7 +1369,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		if (a.state.CombatCastingSpell() == 0 || a.state.CombatSpellTargetsEnemy()) && len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
 			selected = true
 		}
-		a.drawCombatSpriteMarker(battlefield, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
+		isActive := activeOK && (active.ID == fighter.ID ||
+			(active.Side == fighter.Side && active.Name == fighter.Name &&
+				active.CombatX == fighter.CombatX && active.CombatY == fighter.CombatY))
+		a.drawCombatSpriteMarker(battlefield, fighter, isActive, selected, x, y)
 		enemyIndex++
 	}
 	screen.DrawImage(battlefield, battlefieldOp)
@@ -1752,6 +1778,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	combatTerrain, err := loadCombatTerrainImages(*imagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 	geoCatalog, err := loadGEOCatalog(*imagePath)
 	if err != nil {
 		log.Fatal(err)
@@ -1950,7 +1980,7 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -2231,6 +2261,34 @@ func loadTileImages(imagePath string) ([]*ebiten.Image, error) {
 		}
 	}
 	return images, nil
+}
+
+func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, error) {
+	result := make(map[string][]*ebiten.Image)
+	for _, source := range []string{"DUNGCOM", "WILDCOM", "RANDCOM"} {
+		data, err := zipMember(imagePath, source+".DAX")
+		if err != nil {
+			return nil, err
+		}
+		blocks, err := dax.Parse(data)
+		if err != nil || len(blocks) != 1 {
+			return nil, fmt.Errorf("parse %s.DAX: blocks=%d err=%v", source, len(blocks), err)
+		}
+		set, err := gfx.ParseCombatTiles(blocks[0].Data)
+		if err != nil {
+			return nil, fmt.Errorf("parse %s.DAX combat tiles: %w", source, err)
+		}
+		images := make([]*ebiten.Image, 0, len(set.Tiles))
+		for _, tile := range set.Tiles {
+			rgba, err := tile.RGBA(0, gfx.EGA16)
+			if err != nil {
+				return nil, err
+			}
+			images = append(images, ebiten.NewImageFromImage(rgba))
+		}
+		result[source] = images
+	}
+	return result, nil
 }
 
 // loadMapPieceSets mirrors the verified reference LoadWalldef mapping while

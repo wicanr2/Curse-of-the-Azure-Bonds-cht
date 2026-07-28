@@ -517,3 +517,5 @@
   16px 中央石框、256px 右欄與兩列 footer；移除 checkerboard、team bars 與 target card。
 - [ ] 反組 combat terrain selector、斜牆／階梯拼接、原始石框 tiles，以及大型
   怪物 occupancy／anchor；以 corridor aim 與 black dragon DOS 場景做 overlay 驗收。
+- [x] 解碼 `DUNGCOM/WILDCOM/RANDCOM` 的 17-byte header 與 24×24 4bpp items，
+  產生三套 gallery，並由 dungeon background entries 接回 DUNGCOM 實際牆片。
