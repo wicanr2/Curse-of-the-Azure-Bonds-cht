@@ -4628,6 +4628,9 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	s.applyECLRobSignals(result)
+	if s.applyPitOfMoanderDeparture() {
+		return true, nil
+	}
 	if hasMeaningfulECLText(result.Text) {
 		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
@@ -4686,6 +4689,75 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 		return true, nil
 	}
 	return false, nil
+}
+
+// applyPitOfMoanderDeparture bridges the verified ECL3 block 0x11 exit into
+// persistent party state. The reference script marks the completed escape
+// with 4C5B=FF and 7F12=1 before NEWECL 0x51; its preceding LOAD CHARACTER /
+// DUMP sequence does not retain a stable player index across the block switch.
+// Alias and Dragonbait leave in every observed branch, including the branch
+// where Dragonbait carries Alias's body toward Hillsfar.
+func (s *State) applyPitOfMoanderDeparture() bool {
+	if s.session == nil || s.session.CurrentBlockID() != 0x51 {
+		return false
+	}
+	gauntlet, gauntletOK := s.session.MemoryValue(0x4C5B)
+	progress, progressOK := s.session.MemoryValue(0x7F12)
+	if !gauntletOK || !progressOK || gauntlet != 0xFF || progress != 1 {
+		return false
+	}
+
+	aliasAlive := false
+	foundCompanion := false
+	for _, character := range s.partyRoster {
+		if character.ScriptName == "ALIAS" {
+			foundCompanion = true
+			aliasAlive = character.HitPoints > 0
+		} else if character.ScriptName == "DRAGONBAIT" {
+			foundCompanion = true
+		}
+	}
+	if !foundCompanion {
+		return false
+	}
+
+	removedIDs := make(map[string]bool, 2)
+	keptRoster := s.partyRoster[:0]
+	for _, character := range s.partyRoster {
+		if character.ScriptName == "ALIAS" || character.ScriptName == "DRAGONBAIT" {
+			removedIDs[character.ID] = true
+			continue
+		}
+		keptRoster = append(keptRoster, character)
+	}
+	s.partyRoster = keptRoster
+	keptFighters := s.party[:0]
+	for _, fighter := range s.party {
+		if !removedIDs[fighter.ID] {
+			keptFighters = append(keptFighters, fighter)
+		}
+	}
+	s.party = keptFighters
+	s.whoSelectedIndex = -1
+
+	if aliasAlive {
+		s.Message = s.catalog.Text(
+			"ecl_pit_alias_dragonbait_farewell",
+			"愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。"+
+				"空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
+		)
+	} else {
+		s.Message = s.catalog.Text(
+			"ecl_pit_dragonbait_carries_alias",
+			"龍餌抱起愛麗雅絲的遺體，向眾人沉默地鞠躬，隨後朝希爾斯法的方向離去。",
+		)
+	}
+	s.Mode = ModeEvent
+	s.eventReturnMode = ModeWilderness
+	s.eclMenuReturnMode = ModeWilderness
+	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
+	s.Choices = []string{localizeOption(s.catalog, s.currentOriginalChoices[0])}
+	return true
 }
 
 // Move changes the data-neutral map cursor used by the first navigable map slice.
@@ -5772,6 +5844,19 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_pit_temple_map_journal_20",
 			"你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。",
+		)
+	case strings.Contains(joined, "YOU ARE ATTACKED BY A LARGE FORCE OF") &&
+		strings.Contains(joined, "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"):
+		return catalog.Text(
+			"ecl_pit_exit_last_stand",
+			"大批摩安德教徒發動最後阻擊，企圖阻止你們逃出地底！",
+		)
+	case strings.Contains(joined, "WE MUST LEAVE YOU NOW") &&
+		strings.Contains(joined, "ALIAS THANKS YOU FOR YOUR HELP"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_farewell",
+			"愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。"+
+				"空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
 		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):

@@ -1549,8 +1549,15 @@ func (s *State) removeTemporaryCombatAllies() {
 // CMD_Combat dispatched combat, CityShop or Temple. Combat calls it after
 // victory; ECL-backed services call it when their UI closes.
 func (s *State) continueECLAfterEngineBoundary() (bool, error) {
+	return s.continueECLAfterEngineBoundaryDepth(0)
+}
+
+func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 	if s.session == nil || len(s.eclBlock) == 0 {
 		return false, nil
+	}
+	if depth >= 8 {
+		return false, fmt.Errorf("ECL continuation exceeded 8 engine-only boundaries")
 	}
 	// Long post-combat scripts can build the next encounter before reaching
 	// their next player-visible boundary. Mogion's victory continuation is
@@ -1672,11 +1679,27 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 		s.Mode = ModeWilderness
 		return true, nil
 	}
-	if result.Exited && len(result.Text) == 0 {
+	if result.Exited && !hasMeaningfulECLText(result.Text) {
 		return false, nil
 	}
+	if !hasMeaningfulECLText(result.Text) && !result.PictureRequested && !result.CombatRequested &&
+		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu &&
+		len(result.CallAddresses) > 0 {
+		// CALL is an immediate engine adapter boundary. A combat continuation
+		// may reach redraw/cleanup helpers before the next script-visible
+		// event; consume those calls and keep the same ECL PC moving.
+		return s.continueECLAfterEngineBoundaryDepth(depth + 1)
+	}
+	if !hasMeaningfulECLText(result.Text) && !result.PictureRequested && !result.CombatRequested &&
+		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu {
+		// A quiet continuation is not a new world event. Restore the mode that
+		// owned combat so dungeon encounters remain inside their map.
+		s.Mode = s.combatReturnMode
+		s.eventReturnMode = s.combatReturnMode
+		return true, nil
+	}
 	s.Mode = ModeEvent
-	s.eventReturnMode = ModeWilderness
+	s.eventReturnMode = s.combatReturnMode
 	if len(result.Text) > 0 {
 		s.OriginalEvent = result.Text[len(result.Text)-1]
 	}

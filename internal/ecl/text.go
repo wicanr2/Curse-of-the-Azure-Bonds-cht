@@ -2,6 +2,13 @@ package ecl
 
 import "strings"
 
+// PackedTextCandidate preserves the byte offset of a readable-looking packed
+// string so reverse-engineering tools can jump directly to its instruction.
+type PackedTextCandidate struct {
+	Offset int
+	Text   string
+}
+
 // DecodePackedText decodes the six-bit text payload used by ECL string
 // records. Zero values are padding and are omitted.
 func DecodePackedText(payload []byte) string {
@@ -39,7 +46,17 @@ func DecodePackedText(payload []byte) string {
 // strings. It intentionally retains the candidate nature: graphics and map
 // payloads can contain the same byte marker by coincidence.
 func FindPackedTextCandidates(data []byte) []string {
-	var candidates []string
+	positioned := FindPackedTextCandidatesAt(data)
+	candidates := make([]string, 0, len(positioned))
+	for _, candidate := range positioned {
+		candidates = append(candidates, candidate.Text)
+	}
+	return candidates
+}
+
+// FindPackedTextCandidatesAt is the positioned form used by disassembly tools.
+func FindPackedTextCandidatesAt(data []byte) []PackedTextCandidate {
+	var candidates []PackedTextCandidate
 	for i := 0; i+2 < len(data); i++ {
 		if data[i] != 0x80 {
 			continue
@@ -53,7 +70,7 @@ func FindPackedTextCandidates(data []byte) []string {
 		if len(text) <= 3 || !hasLetter(text) || !strings.ContainsAny(text, " \t") {
 			continue
 		}
-		candidates = append(candidates, text)
+		candidates = append(candidates, PackedTextCandidate{Offset: i, Text: text})
 	}
 	return candidates
 }

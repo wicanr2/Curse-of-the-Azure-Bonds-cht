@@ -32,10 +32,14 @@ func TestDecodePackedText(t *testing.T) {
 
 func TestFindPackedTextCandidates(t *testing.T) {
 	packed := packText("ENTER CITY")
-	data := append([]byte{0x80, byte(len(packed))}, packed...)
+	data := append([]byte{0xFF, 0xFF, 0x80, byte(len(packed))}, packed...)
 	got := FindPackedTextCandidates(data)
 	if len(got) != 1 || got[0] != "ENTER CITY" {
 		t.Fatalf("got %#v", got)
+	}
+	positioned := FindPackedTextCandidatesAt(data)
+	if len(positioned) != 1 || positioned[0].Offset != 2 || positioned[0].Text != "ENTER CITY" {
+		t.Fatalf("positioned=%#v", positioned)
 	}
 }
 

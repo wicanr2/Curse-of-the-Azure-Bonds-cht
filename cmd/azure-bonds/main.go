@@ -295,8 +295,8 @@ func main() {
 			}
 		}
 		if *stringsOnly {
-			for _, text := range ecl.FindPackedTextCandidates(block.Data) {
-				fmt.Printf("  text=%q\n", text)
+			for _, candidate := range ecl.FindPackedTextCandidatesAt(block.Data) {
+				fmt.Printf("  +0x%04X text=%q\n", candidate.Offset, candidate.Text)
 			}
 		}
 		if *graph {

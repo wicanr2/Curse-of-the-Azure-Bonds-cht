@@ -4202,6 +4202,124 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if strings.Contains(state.Message, "祭壇中找到一批珠寶與寶石") {
 		t.Fatalf("Pit altar treasure repeated after one-time search: %q", state.Message)
 	}
+	state.DungeonX = 15
+	state.DungeonY = 14
+	state.DungeonDirection = 4
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(15, 14, 4)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(15, 14).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	for step := 0; step < 12 && state.Mode != ModeDungeon; step++ {
+		if state.PictureRequested {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		if len(state.currentOriginalChoices) > 0 {
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x11 {
+		t.Fatalf("Pit upstairs mode=%v block=0x%02x geo=%d/%d pos=(%d,%d,%d) originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	state.DungeonX = 0
+	state.DungeonY = 12
+	state.DungeonDirection = 6
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(0, 12, 6)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(0, 12).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "最後阻擊") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit exit battle warning mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() {
+		t.Fatalf("Pit exit battle mode=%v event=%q message=%q", state.Mode, state.OriginalEvent, state.Message)
+	}
+	exitEnemies := map[uint8]int{}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			exitEnemies[fighter.SpriteBlock]++
+		}
+	}
+	if !reflect.DeepEqual(exitEnemies, map[uint8]int{0x11: 10, 0x1C: 5, 0x19: 5}) {
+		t.Fatalf("Pit exit enemies=%#v fighters=%#v", exitEnemies, state.CombatFighters())
+	}
+	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Pit exit victory return mode=%v block=0x%02x originals=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
+	}
+	state.DungeonX = 0
+	state.DungeonY = 11
+	state.DungeonDirection = 6
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(0, 11, 6)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(0, 11).Terrain
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.session.CurrentBlockID() != 0x51 ||
+		!strings.Contains(state.Message, "愛麗雅絲說") ||
+		!strings.Contains(state.Message, "忍冬花香") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit departure mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if flag, ok := state.session.MemoryValue(0x4C5B); !ok || flag != 0xFF {
+		t.Fatalf("Pit departure gauntlet flag=%02x ok=%v", flag, ok)
+	}
+	if flag, ok := state.session.MemoryValue(0x7F12); !ok || flag != 1 {
+		t.Fatalf("Pit departure progress flag=%02x ok=%v", flag, ok)
+	}
+	for _, character := range state.partyRoster {
+		if character.ScriptName == "ALIAS" || character.ScriptName == "DRAGONBAIT" {
+			t.Fatalf("Pit departure retained companion %#v", character)
+		}
+	}
+	if len(state.partyRoster) != 1 || state.partyRoster[0].ID != hero.ID ||
+		len(state.party) != 1 || state.party[0].ID != hero.ID {
+		t.Fatalf("Pit departure party roster=%#v fighters=%#v", state.partyRoster, state.party)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Pit departure return mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

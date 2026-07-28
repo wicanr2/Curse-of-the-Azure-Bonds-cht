@@ -278,3 +278,17 @@ namespace；共用 VM 應分開保存，不可因數值相同而合併成單一 
 觀察到，但欄位語意尚未全部證實，只能列為 dispatch scratch evidence，不能升格為
 跨作品 ABI。`LOAD FILES (0x21)` 的 dungeon GEO selector 與 outdoor BIGPIC operands
 也屬作品 adapter 解讀，不能沿用早期把 operand 1／3 對調的舊斷言。
+
+## Packed text offset 與 GEO selector dispatch
+
+反組譯 packed text 時只列內容不足以回到控制流；`FindPackedTextCandidatesAt`
+同時回傳 block-relative byte offset，CLI `-strings` 會輸出 `+0xOFFSET text=...`。
+這讓文字可直接與 disassembly branch target、ON GOTO table 及 runtime PC 對照，
+而不是靠句子順序推測事件位置。
+
+GEO cell 的 terrain／event selector 也不是全域事件 ID。CoAB ECL3 block `0x11`
+的 SearchLocation entry `+0x0523` 以 ON GOTO dispatch；selector `0x0F` 跳到
+`+0x1249`。同一 GEO3 block `0x11` 內 `(12,4)` 與 `(0,12)` 都帶低七位
+`0x0F`（後者為 `0x8F`），但事件是否成立仍受座標、方向與 plot flags 控制。
+因此可沿用的解析器應輸出「cell raw value + normalized selector + script block +
+handler offset」，不能建立 selector 到劇情名稱的一對一全域表。

@@ -2,7 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：摩安德祭壇藏寶與手札 20 已接通。取得護手後回到上層 `(12,0)`，
+最新成果：摩安德之坑已可完整撤離。祭壇藏寶後回到上層 `(0,12)` 會觸發
+10 名教徒、5 名蕈人與 5 名蔓生怪的最後阻擊；勝利返回地城後在 `(0,11,W)`
+執行原出口 handler，寫入 `4C5B=FF／7F12=1` 並 `NEWECL 0x51`。愛麗雅絲與
+龍餌依原劇情繁中告別並從 persistent roster／combat projection 離隊，Continue
+才回世界選單。combat continuation 現保存 dungeon return mode；packed-text
+工具也會輸出 block-relative offset，成果收進 READY spec 340、繁中攻略與
+Gold Box ECL／state 知識庫。
+
+先前成果：摩安德祭壇藏寶與手札 20 已接通。取得護手後回到上層 `(12,0)`，
 面東或西主動 SEARCH，ECL3 selector `0x10` 會一次性給予 20 顆寶石、6 件珠寶，
 並從 ITEM3 block `0x10` 解出 `+2` 精製牧師卷軸與 `+2` 護手／手套。零
 monster spawn 的 COMBAT 現正確視為 treasure-service boundary；關閉財寶選單
