@@ -18,6 +18,7 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		firstPerson.GeometryFile != "GEO4.DAX" ||
 		firstPerson.WallFile != "WALLDEF4.DAX" ||
 		firstPerson.SymbolFile != "8X8D4.DAX" ||
+		firstPerson.SkyFile != "SKY.DAX" || firstPerson.SkyBlocks != [3]uint8{250, 251, 252} ||
 		firstPerson.Spawn == nil || firstPerson.Spawn.X != 2 ||
 		firstPerson.Spawn.Y != 0 || firstPerson.Spawn.Direction != 4 {
 		t.Fatalf("Zhentil Keep map definition=%+v", pack.Maps)

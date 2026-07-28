@@ -91,10 +91,12 @@ GEO dungeon buffer 的 background entry 查回 DUNGCOM／RANDCOM，不是手工 
 ![正式序幕後的提爾佛頓 640×480 第一人稱地圖](docs/screenshots/tilverton-first-person-remake.png)
 
 上圖由 `-opening` 走過真實 block `0x01` 後，以 Docker／Xvfb 擷取。第一人稱
-視窗保留原生 `22×8px = 176px` 的完整 WALLDEF 橫向座標，再以 nearest-neighbour
-放大為 352px；右側是隊伍 AC／HP，下方是 24px 繁中敘事與命令列。素材來自
-GEO2 block 1／WALLDEF2／8X8D2，位置 `(7,13)`、面東，不再把 debug 平面圖與
-3-D 牆面硬擠在同一區。
+視窗保留原生 176px 面板，再以 nearest-neighbour 放大為 352px；其中原版
+`Draw3dWorldBackground` 的 sky／地平線／地面是中央 88×88 區，地面直接取自
+`SKY.DAX/FC`。WALLDEF stamps 僅接受 row／column `0..10`，並依原 routine 放在
+`(column+3,row+3)×8`，已修正舊圖額外右移／上移造成的三片巨牆。素材來自
+GEO2/01、WALLDEF2、8X8D2 與 SKY/FA–FC，位置 `(7,13)`、面東；右側為隊伍，
+下方與命令列統一使用本機倚天 16×15 粗體，不再依賴系統 CJK TTF。
 
 本重製版以 `640×480` 為固定邏輯畫布：原版像素圖片採 nearest-neighbor
 整數倍放大，繁中則獨立使用 24px 高解析正文與 16px 緊湊 HUD，不把

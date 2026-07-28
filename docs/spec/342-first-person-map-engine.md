@@ -33,3 +33,8 @@ WALLDEF2／8X8D2 在 Docker／Xvfb 中產生，尺寸 640×480。
 - CoAB Docker／Xvfb `go test ./...` 全數通過。
 - game-pack regression 鎖定散提爾堡資源、block、spawn 與方向。
 - 原始 ZIP integration 繼續驗證各 GEO block shape 與 WALLDEF2／8X8D2 mapping。
+
+第 346 輪已修正本輪 renderer 的 screen transform：原版只畫
+row／column `0..10`，實際 native origin 是 `(column+3,row+3)×8`；先前
+640×480 畫面錯誤多加水平 48px、少加垂直 32px。SKY 背景與全域倚天
+16×15 UI 亦已接入，最新 screenshot 已取代本輪舊圖。

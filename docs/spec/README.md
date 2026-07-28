@@ -317,3 +317,4 @@
 - [第三百四十三輪原版世界地圖](./343-overland-world-map.md)（`READY`：限 BIGPIC1/0x79、A–N JSON points、繁中 HUD 與 640×480 實機圖）
 - [第三百四十四輪 AREA 俯視地圖與倚天字形](./344-area-overhead-map.md)（`READY`：限 GEO projection、JSON resource、16×15 ETen adapter 與 640×480 實機圖）
 - [第三百四十五輪原版 AREA 8X8D symbol map](./345-original-area-symbol-map.md)（`READY`：限 11×11 camera、wall mask、8X8D1/CA、party arrow 與實機圖）
+- [第三百四十六輪第一人稱背景與 wall 座標](./346-first-person-background-coordinates.md)（`READY`：限 native background、SKY/FA–FC、wall +3 transform 與倚天全 UI）

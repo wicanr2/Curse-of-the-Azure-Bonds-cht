@@ -281,3 +281,12 @@ GEO2–6 沿用，不能依目前 area 改抓 `8X8D2–6`。原始 8×8 bitmap �
 Big5 A440 起算，次常用區接在第 5401 字後，全形符號則來自 `SPCFONT.15`。
 加粗方式是每列 bitmap 與向右平移 1px 的結果 OR，不做平滑縮放。字模檔本身
 有著作權，不應提交到公開 engine 或作品 repo；只提交讀取器並由使用者指定路徑。
+
+`Draw3dWorldBackground` 並不填滿整個 176px viewport：native sky、horizon、
+ground rectangles 分別是 `(24,24,88,44)`、`(24,68,88,2)`、
+`(24,70,88,42)`。SKY masked pictures FA／FB／FC 是 88×16、24×24、88×48；
+FC 固定在 row 7／column 2，FA／FB 只在 outdoor sky palette 11 下依方向與
+hour 顯示。wall stamp 也不是任意平移：reference 先 clip logical row／column
+至 `0..10`，`draw_3D_8x8_titles` 加 2 cell，`Put8x8Symbol` 再加 1 cell，
+所以 native pixel position 必須是 `(column+3,row+3)×8`。忽略 clipping 或
+額外平移會把本應不可見的側牆畫成三片巨大牆板。

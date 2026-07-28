@@ -75,6 +75,28 @@ func TestParsePieceSetFromOriginalArea2Image(t *testing.T) {
 	if !foundArea {
 		t.Fatal("8X8D1 block 0xCA is missing")
 	}
+	skyBlocks, err := dax.Parse(readMember("SKY.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	expectedSky := map[uint8][2]int{
+		250: {88, 16},
+		251: {24, 24},
+		252: {88, 48},
+	}
+	if len(skyBlocks) != len(expectedSky) {
+		t.Fatalf("SKY blocks=%d, want %d", len(skyBlocks), len(expectedSky))
+	}
+	for _, block := range skyBlocks {
+		picture, parseErr := ParsePicture(block.Data, true, 13)
+		if parseErr != nil {
+			t.Fatalf("SKY block 0x%02X: %v", block.Entry.ID, parseErr)
+		}
+		dimensions, ok := expectedSky[block.Entry.ID]
+		if !ok || picture.Width() != dimensions[0] || picture.Height() != dimensions[1] || picture.ItemCount != 1 {
+			t.Fatalf("SKY block 0x%02X = %dx%d items=%d", block.Entry.ID, picture.Width(), picture.Height(), picture.ItemCount)
+		}
+	}
 }
 
 func testSymbolPicture() []byte {
