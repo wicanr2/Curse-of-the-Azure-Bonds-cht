@@ -1632,6 +1632,17 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 		}
 		return true, nil
 	}
+	// TREASURE followed by COMBAT without monster spawns is the reference
+	// treasure-service boundary, not a battle.
+	if treasureReady {
+		s.treasureResumeECL = true
+		if s.eclMenuReturnMode == ModeDungeon {
+			s.enterTreasureMenuFor(ModeDungeon)
+		} else {
+			s.enterTreasureMenu()
+		}
+		return true, nil
+	}
 	if result.CombatRequested {
 		records := s.monsterRecordsForCurrentECL()
 		if len(result.MonsterSpawns) > 0 && len(s.party) > 0 && len(records) > 0 {
@@ -1643,10 +1654,6 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 		s.Mode = ModeEvent
 		s.OriginalEvent = "COMBAT"
 		s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
-		return true, nil
-	}
-	if treasureReady {
-		s.enterTreasureMenu()
 		return true, nil
 	}
 	if handled, err := s.applyECLProgram(result); handled || err != nil {

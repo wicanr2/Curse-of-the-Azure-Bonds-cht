@@ -2,7 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：摩貢首戰、三塊摩安德殘軀與護手已接通。首戰勝利會沿同一 ECL3
+最新成果：摩安德祭壇藏寶與手札 20 已接通。取得護手後回到上層 `(12,0)`，
+面東或西主動 SEARCH，ECL3 selector `0x10` 會一次性給予 20 顆寶石、6 件珠寶，
+並從 ITEM3 block `0x10` 解出 `+2` 精製牧師卷軸與 `+2` 護手／手套。零
+monster spawn 的 COMBAT 現正確視為 treasure-service boundary；關閉財寶選單
+會 resume 同一 ECL session，顯示繁中神殿地圖、解鎖手札 20 並返回地城。
+ITEM1～6 已在整合流程以 chapter namespace 載入。成果收進 READY spec 339、
+繁中攻略與 Gold Box state 知識庫。
+
+先前成果：摩貢首戰、三塊摩安德殘軀與護手已接通。首戰勝利會沿同一 ECL3
 block `0x12` runtime 關閉異次元裂隙；三塊已穿越的殘軀長出數百張嘴尖叫後，
 以 MON3 `0x1A BIT O' MOANDER` 進入第二戰。每塊 140 HP、CombatSize `4`
 （2×2），名稱繁中為「摩安德殘軀」。勝利後找到摩安德護手，下一個

@@ -1720,6 +1720,18 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	state.eventReturnMode = ModeDungeon
 	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
 	state.applyECLTreasureSignals(encounter)
+	treasureItems, err := ParseTreasureItemBlocks(map[uint8][]byte{
+		1: zipData(t, image, "ITEM1.DAX"),
+		2: zipData(t, image, "ITEM2.DAX"),
+		3: zipData(t, image, "ITEM3.DAX"),
+		4: zipData(t, image, "ITEM4.DAX"),
+		5: zipData(t, image, "ITEM5.DAX"),
+		6: zipData(t, image, "ITEM6.DAX"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureItems)
 	hero := combat.Fighter{
 		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
 		ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
@@ -4113,6 +4125,82 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Pit Moander gauntlet continuation mode=%v block=0x%02x flag4C5B=%#x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), moanderGauntletFlag,
 			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	var pitAfterGauntlet []string
+	for step := 0; step < 12 && state.Mode != ModeDungeon; step++ {
+		pitAfterGauntlet = append(pitAfterGauntlet, state.Message)
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		if reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		break
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Pit after gauntlet mode=%v block=0x%02x originals=%#v choices=%#v message=%q stages=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message, pitAfterGauntlet)
+	}
+	state.DungeonX = 12
+	state.DungeonY = 0
+	state.DungeonDirection = 2
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(12, 0, 2)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(12, 0).Terrain
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "祭壇中找到一批珠寶與寶石") {
+		t.Fatalf("Pit altar search mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	gems, jewelry := state.TreasurePool()
+	if !state.treasureMenu || state.Mode != ModeWilderness ||
+		gems != 28 || jewelry != 10 || len(state.PendingTreasureItems()) == 0 {
+		t.Fatalf("Pit altar treasure mode=%v menu=%v block=0x%02x originals=%#v choices=%#v message=%q items=%#v gems=%d jewelry=%d",
+			state.Mode, state.treasureMenu, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message, state.PendingTreasureItems(), gems, jewelry)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "神殿地圖") ||
+		!strings.Contains(state.Message, "手札第 20") {
+		t.Fatalf("Pit altar map mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	foundJournal20 := false
+	for _, page := range state.JournalPages {
+		foundJournal20 = foundJournal20 || strings.HasPrefix(page, "手札條目 20")
+	}
+	if !foundJournal20 {
+		t.Fatalf("Pit altar Journal 20 was not unlocked: %v", state.JournalPages)
+	}
+	if reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Pit altar continuation mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(state.Message, "祭壇中找到一批珠寶與寶石") {
+		t.Fatalf("Pit altar treasure repeated after one-time search: %q", state.Message)
 	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)

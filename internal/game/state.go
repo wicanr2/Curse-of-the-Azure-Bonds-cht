@@ -1197,6 +1197,7 @@ func (s *State) Select(index int) error {
 		// TREASURE followed by COMBAT is the reference treasure-service
 		// dispatch, not a monster battle. Resolve and present loot first.
 		if treasureReady {
+			s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
 			if s.eclMenuReturnMode == ModeDungeon {
 				s.enterTreasureMenuFor(ModeDungeon)
 			} else {
@@ -4663,6 +4664,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 		if err := s.ResolveTreasureRequests(); err != nil {
 			return true, err
 		}
+		s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
 		s.enterTreasureMenuFor(ModeDungeon)
 		return true, nil
 	}
@@ -5760,6 +5762,17 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_pit_priest_flees_after_moander",
 			"一名祭司衝進房間，驚恐地環顧四周，隨即逃回走廊並高喊：「他們殺了神！」",
 		)
+	case strings.Contains(joined, "YOU HAVE FOUND A CACHE OF JEWELS AND GEMS"):
+		return catalog.Text(
+			"ecl_pit_altar_jewels_gems",
+			"你們在祭壇中找到一批珠寶與寶石！",
+		)
+	case strings.Contains(joined, "YOU HAVE ALSO FOUND A MAP OF THE TEMPLE") &&
+		strings.Contains(joined, "JOURNAL ENTRY 20"):
+		return catalog.Text(
+			"ecl_pit_temple_map_journal_20",
+			"你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -6142,6 +6155,15 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
+	if strings.Contains(joined, "YOU HAVE ALSO FOUND A MAP OF THE TEMPLE") &&
+		strings.Contains(joined, "JOURNAL ENTRY 20") {
+		s.appendJournalPages("手札條目 20：", []string{s.catalog.Text(
+			"journal_entry_20",
+			"手札條目 20：摩安德原始神殿的地圖。入口通往環繞祭壇區的曲折通道；"+
+				"地圖標出了中央神殿、下層入口，以及散布各處的房間與死路。"+
+				"原始地圖圖像保存於 Adventurer's Journal。",
+		)})
+	}
 	if strings.Contains(joined, "SHE TELLS HER STORY") &&
 		strings.Contains(joined, "JOURNAL ENTRY 3") {
 		s.appendJournalPages("手札條目 3", []string{

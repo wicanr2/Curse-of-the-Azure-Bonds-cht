@@ -507,6 +507,14 @@ SearchLocation entry，結束後清回 0。火刀辦公室 `0x1B` 展示標準�
 結束後應回 ModeDungeon。`ItemBlock=0x80+n` 表示 n 件隨機物品，而非一般 ITEM
 block ID。
 
+摩安德祭壇補足這個 boundary 的 continuation ownership：ECL3 selector `0x10`
+在 `(12,0)`、東西向、`7ECA=1` 時先送 TREASURE（20 gems、6 jewelry、
+ITEM3 block `0x10`），再送零 monster spawn 的 COMBAT。財寶選單關閉後必須
+resume 同一 session，才會執行神殿地圖與 Journal Entry 20，再返回 Dungeon；
+不能把 loot UI 當成終止事件。`ITEM*.DAX` block ID 是 area-local，跨作品 adapter
+應以 `(area << 8) | block` 保存，並在整個 request 可解析後才原子加入 coin、
+gems、jewelry 與 items，避免素材缺失後重試造成重複結算。
+
 selectors `0x1C–0x20` 證實常見的一次性房間模板可跨 Gold Box 作品重用：
 `COMPARE flag,1 → IF= EXIT → SAVE 1 → PRINT/GOSUB Continue → dungeon return`。
 但 pause 數仍由 script 決定；例如焚毀圖書館先描述焦屍，再於第二個 pause 取得
