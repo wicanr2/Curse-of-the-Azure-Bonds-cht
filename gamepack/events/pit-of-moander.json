@@ -55,6 +55,22 @@
   },
   "maps": [
     {
+      "id": "tilverton.first-person",
+      "kind": "first_person",
+      "area_id": 2,
+      "geometry_block": 1,
+      "geometry_file": "GEO2.DAX",
+      "wall_file": "WALLDEF2.DAX",
+      "symbol_file": "8X8D2.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "outdoor_sky_color": 3,
+      "indoor_sky_color": 0,
+      "wrap": true,
+      "scale": 2,
+      "spawn": {"x": 7, "y": 13, "direction": 0}
+    },
+    {
       "id": "tilverton.area-map",
       "kind": "area",
       "area_id": 2,

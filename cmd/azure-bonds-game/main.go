@@ -1302,14 +1302,14 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 }
 
 func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
-	// The recovered 3-D layout spans columns -5..15 around native column 5:
-	// 22 8px cells = 176px, exactly 352px at the remake's integer 2x scale.
-	// Keep that viewport intact instead of squeezing it beside a debug map.
-	drawPanelFrame(screen, 8, 8, 352, 272)
-	drawPanelFrame(screen, 360, 8, 272, 272)
-	drawPanelFrame(screen, 8, 280, 624, 168)
-	drawPanelFrame(screen, 8, 448, 624, 28)
-	ebitenutil.DrawRect(screen, 14, 14, 340, 260, color.RGBA{0, 0, 0, 255})
+	// DOS oracle: the native 320px top row is split at x=128, not near the
+	// centre. At 2x the first-person panel is 256px and the roster is 384px.
+	// The extra 80 vertical remake pixels enlarge only the text region.
+	drawPanelFrame(screen, 0, 0, 256, 272)
+	drawPanelFrame(screen, 256, 0, 384, 272)
+	drawPanelFrame(screen, 0, 272, 640, 176)
+	drawPanelFrame(screen, 0, 448, 640, 32)
+	ebitenutil.DrawRect(screen, 6, 6, 244, 260, color.RGBA{0, 0, 0, 255})
 	_, _, direction := a.state.DungeonGeometryView()
 	background, backgroundErr := gfx.BuildBackground(
 		a.state.Area.OutdoorSkyColor,
@@ -1350,28 +1350,30 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		screen.DrawImage(stamp.image, op)
 	}
 
-	text.Draw(screen, "姓名", a.compactFace, 376, 36, white)
-	text.Draw(screen, "AC", a.compactFace, 526, 36, white)
-	text.Draw(screen, "HP", a.compactFace, 582, 36, white)
+	text.Draw(screen, "姓名", a.compactFace, 272, 38, white)
+	text.Draw(screen, "AC", a.compactFace, 468, 38, white)
+	text.Draw(screen, "HP", a.compactFace, 586, 38, white)
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
-		text.Draw(screen, fighter.Name, a.compactFace, 376, 66+index*25, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 530, 66+index*25, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 584, 66+index*25, cyan)
+		text.Draw(screen, fighter.Name, a.compactFace, 272, 68+index*20, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 472, 68+index*20, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 588, 68+index*20, cyan)
 	}
 
-	text.Draw(screen, a.state.LocationName, a.face, 24, 312, cyan)
-	status := fmt.Sprintf("位置 (%d,%d)　方向 %s", a.dungeonX, a.dungeonY, dungeonDirectionName(direction))
-	text.Draw(screen, status, a.compactFace, 24, 340, white)
+	status := fmt.Sprintf("(%d,%d) %s %02d:%02d", a.dungeonX, a.dungeonY,
+		dungeonDirectionName(direction), a.state.GameTimeDisplay().Hour, a.state.GameTimeDisplay().Minute)
+	text.Draw(screen, status, a.compactFace, 272, 254, cyan)
 	if a.state.Message != "" {
-		drawWrappedText(screen, a.state.Message, a.face, 24, 372, 24, 28, 2, white)
+		drawWrappedText(screen, a.state.Message, a.face, 8, 302, 38, 24, 5, white)
+	} else {
+		text.Draw(screen, a.state.LocationName, a.face, 8, 302, cyan)
 	}
 	if a.dungeonDoorMenu {
-		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 24, 430, color.RGBA{255, 255, 82, 255})
+		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
 	}
-	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 24, 470, cyan)
+	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 8, 472, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -2094,9 +2096,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	firstPersonDefinition, ok := pack.FindMapByKind("first_person")
+	firstPersonDefinition, exactFirstPerson := pack.FindMapByKindLocation(
+		"first_person", uint8(*geoSet), uint8(*geoBlock),
+	)
+	ok = exactFirstPerson
+	if !ok {
+		firstPersonDefinition, ok = pack.FindMapByKind("first_person")
+	}
 	if !ok {
 		log.Fatal("game pack has no first-person map definition")
+	}
+	if exactFirstPerson {
+		if firstPersonDefinition.OutdoorSkyColor != nil {
+			state.Area.OutdoorSkyColor = uint16(*firstPersonDefinition.OutdoorSkyColor)
+		}
+		if firstPersonDefinition.IndoorSkyColor != nil {
+			state.Area.IndoorSkyColor = uint16(*firstPersonDefinition.IndoorSkyColor)
+		}
 	}
 	skyImages, err := loadSkyImages(*imagePath, firstPersonDefinition.SkyFile, firstPersonDefinition.SkyBlocks)
 	if err != nil {

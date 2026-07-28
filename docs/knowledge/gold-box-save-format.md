@@ -53,6 +53,11 @@ race、class、name、HP 與未知 bytes 沒有被改動。
 既有 record 的 `0x76..0x77` 應直接讀寫。game clock 的 slot-6 年份進位則是另一條
 runtime path；不要用 clock word 或 age bracket threshold 取代角色 record age。
 
+原版 DOSBox 實測也能直接看到此欄：新建 male dwarf fighter 的角色資料頁顯示
+`AGE 55`（另一輪擲骰得到 52），與「建立時擲年齡、存檔後直接保存」的模型一致。
+畫面證據見
+[`character-age-create.png`](../reference/original-dos/character-age-create.png)。
+
 五種 coin 是連續的獨立 16-bit 欄位，不能只把 Gold 投影成「總資產」。ECL `ROB`
 逐欄縮放 Copper 到 Platinum，卻刻意不縮放 Gems／Jewelry；shop 的 gold-worth 換算則是
 另一層規則。raw-preserving importer／writer 必須保留這七欄，作品規則層再決定顯示、

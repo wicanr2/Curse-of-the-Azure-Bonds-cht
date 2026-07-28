@@ -313,8 +313,9 @@
 - [第三百三十三輪尤拉什間諜戰與指揮官通行證](./333-yulash-spies-commander-pass.md)（`READY`：限 terrain `0x9A`、MON3 1/8/2 間諜戰、NICE、手札 22／52 與 `(1,3,E)`）
 - [第三百三十四輪摩安德之坑入口](./334-pit-of-moander-entry.md)（`READY`：限尤拉什 `(11,0,N)` terrain `0x26`、ECL/GEO3 `0x10→0x11`、入口崩塌與 `(0,0,E)`）
 - [第三百三十五輪愛麗雅絲與龍餌入隊](./335-alias-dragonbait-recruitment.md)（`READY`：限 Pit level 1 terrain `0x85`、PICTURE 18、手札 3、MON3 `0x16/0x17` 與 saurial NPC）
-- [第三百四十二輪第一人稱地圖共用引擎](./342-first-person-map-engine.md)（`READY`：限 GEO／WALLDEF／8X8D engine、JSON resources、352px viewport 與 640×480 實機圖）
+- [第三百四十二輪第一人稱地圖共用引擎](./342-first-person-map-engine.md)（`READY`：限 GEO／WALLDEF／8X8D engine、JSON resources；早期 352px panel 推論已由第 347 輪修正）
 - [第三百四十三輪原版世界地圖](./343-overland-world-map.md)（`READY`：限 BIGPIC1/0x79、A–N JSON points、繁中 HUD 與 640×480 實機圖）
 - [第三百四十四輪 AREA 俯視地圖與倚天字形](./344-area-overhead-map.md)（`READY`：限 GEO projection、JSON resource、16×15 ETen adapter 與 640×480 實機圖）
 - [第三百四十五輪原版 AREA 8X8D symbol map](./345-original-area-symbol-map.md)（`READY`：限 11×11 camera、wall mask、8X8D1/CA、party arrow 與實機圖）
 - [第三百四十六輪第一人稱背景與 wall 座標](./346-first-person-background-coordinates.md)（`READY`：限 native background、SKY/FA–FC、wall +3 transform 與倚天全 UI）
+- [第三百四十七輪 DOS 冒險畫面 layout oracle](./347-dos-adventure-layout-oracle.md)（`READY`：原生 128／192 top split、640×480 投影、Tilverton first-person JSON）

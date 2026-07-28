@@ -19,6 +19,9 @@ READY
 - CoAB technical guide：確認角色 record offsets、race/class enum 與 save naming。
 - `/tmp/coab-reference`：以 `Gbl.RaceClasses`、`race_ages`、`NormalizeClock` 與 player
   parser 交叉核對 class index、半獸人 fighter `13+1d4` 及 age writeback。
+- 原版 DOSBox 角色建立畫面：實際建立 male dwarf fighter 時顯示 `AGE 55`，證明
+  age 是角色資料頁的獨立欄位，而不是 remake UI 推算值。原生 320×200 oracle
+  保存於 [`../reference/original-dos/character-age-create.png`](../reference/original-dos/character-age-create.png)。
 
 這份規格只定義可安全 patch 的 evidence boundary；尚未完成完整 character serializer、
 multi-class record、所有 `.FX/.SWG` 欄位與原版跨檔案刪除副作用。

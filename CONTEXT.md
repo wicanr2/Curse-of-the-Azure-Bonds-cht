@@ -1536,9 +1536,9 @@ composition/resource loader 搬移，以及 640×480 第一人稱地圖實機截
 第三百四十二輪成果：獨立 engine 新增 `graphics`，接管 SSI indexed picture、
 EGA RGBA、WALLDEF、LOAD PIECES global offsets 與 8X8D stamps；中立 block map
 消除對 CoAB `internal/dax` 的反向依賴。CoAB map JSON 現指定 GEO/WALLDEF/8X8D
-檔名並驗證 base filename。正式地城 layout 依 recovered `-5..15` logical
-columns 保留原生 176px／2× 352px 第一人稱 viewport，右側 roster、下方繁中
-敘事及 footer；舊 debug floor 不再混入 production。Docker/Xvfb 實機圖為
+檔名並驗證 base filename。該輪曾把 recovered `-5..15` wall traversal columns
+誤當成 176px panel 寬；第 347 輪 DOS oracle 已證實實際 chrome 是左 128px、
+右 192px。舊 debug floor 不再混入 production。Docker/Xvfb 實機圖為
 `docs/screenshots/tilverton-first-person-remake.png`。door／roof overlays、
 斜向逐像素 DOS oracle 與 wilderness world map 仍是後續 map fidelity 邊界。
 
@@ -1584,3 +1584,26 @@ row/column 0..10，native position 是 `(column+3,row+3)×8`；舊 renderer
 錯誤右移 48px、上移 32px，才形成 README 舊圖的三片巨牆。`-eten-font`
 現在同時接管 regular/compact face，全畫面使用倚天 16×15 embolden。最新
 Docker/Xvfb 圖已覆寫 `docs/screenshots/tilverton-first-person-remake.png`。
+
+後續 DOSBox oracle 進度：已完整走到原版角色建立的 stats／命名／戰鬥小人
+配色流程，確認選單需以游標與彩色功能鍵混合操作。實機新建 male dwarf
+fighter 顯示 `AGE 55`（另一輪為 52），原生 320×200 證據保存為
+`docs/reference/original-dos/character-age-create.png`，並補入 spec 251 與
+Gold Box save-format 知識庫。角色 pool 的下一個阻礙是原版要求 A: floppy；
+`/tmp` DOSBox harness 已嘗試以同一暫存目錄掛載 A:，尚未取得可載入 party，
+不應把黑畫面誤列為 adventure oracle。倚天字型則已確認與 Monkey Island 2
+`build_eten_font.py` 完全同構：原生 `STDFONT.15` 16×15，每列將 source pixel
+向右 OR 1px；不做容易黏筆劃的 24→16 縮圖。README 已將此啟動方式列為建議值。
+
+第三百四十七輪成果：發現原版標題的 `D` 可直接進入內建 demo，無須先完成
+A: character-pool 流程；因此取得真正 native 320×200 冒險 chrome oracle
+`docs/reference/original-dos/tilverton-first-person-demo.png`。畫面訊息明示
+`NOWHERE IN THE REAL...`，只可用於 GUI／SKY／status layout，不可當 GEO2/01
+牆配置證據。實測 top row 在 native x=128 分割、y=136 進入 message：
+640×480 remake 現為 first-person 256×272、roster 384×272、message
+640×176、footer 640×32；多出的 80px 僅擴充繁中訊息。CoAB JSON 新增
+`tilverton.first-person`，明列 GEO2/01、WALLDEF2、8X8D2、SKY FA–FC、
+spawn `(7,13,N)` 與 outdoor sky selector 3。獨立 engine `908cfb7` 已推送，
+新增 `FindMapByKindLocation` 與 indoor/outdoor sky schema，使同一 geometry
+block 的 AREA／first-person projections 不再互相誤選。正式 `-opening`
+Docker/Xvfb 圖已更新 `docs/screenshots/tilverton-first-person-remake.png`。

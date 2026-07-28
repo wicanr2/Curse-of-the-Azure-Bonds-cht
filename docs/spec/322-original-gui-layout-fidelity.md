@@ -16,11 +16,13 @@
 
 ## 640×480 冒險版面
 
-- 左上是 264×272 圖像框；原始 PIC 或 HEAD／BODY 合成圖以 nearest-neighbour
-  2× 放大並置中。
-- 右上是 360×272 隊伍表，固定保留姓名、AC、HP 欄。
-- 下方 624×168 是 24px 繁中敘事區，最多四行。
-- 最底 624×28 是 16px compact command line。
+本節早期依公開截圖估出的 264／360 分割已由第 347 輪本機 DOSBox 原生
+320×200 oracle 取代。正式比例是左 128／右 192 native pixels；2× 後為：
+
+- 左上 256×272 圖像框；
+- 右上 384×272 隊伍表，固定保留姓名、AC、HP 與底部狀態列；
+- 下方 640×176 是擴充繁中敘事區；
+- 最底 640×32 是倚天 16×15 compact command line。
 - HEAD 先畫、BODY 在 y+40 後畫；BODY 的肩膀／領口可遮住頭部下緣，
   palette index 0 與透明 sentinel 不得塗黑 HEAD。
 

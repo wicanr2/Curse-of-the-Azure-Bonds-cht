@@ -88,14 +88,20 @@ GEO dungeon buffer 的 background entry 查回 DUNGCOM／RANDCOM，不是手工 
 舊版 direct-entry 戰鬥圖已由上方原版比例校正版取代；它仍是 headless Xvfb
 可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
 
+![原版 DOS 320×200 內建 demo 冒險版面](docs/reference/original-dos/tilverton-first-person-demo.png)
+
+原版實機 oracle 證實 top row 在 native `x=128` 分割：第一人稱區 128px、
+roster 192px；狀態列也位於 roster 底部。demo 訊息自稱不是真實場景，因此只用
+來量測 GUI／SKY，不拿它推斷提爾佛頓 GEO 牆配置。
+
 ![正式序幕後的提爾佛頓 640×480 第一人稱地圖](docs/screenshots/tilverton-first-person-remake.png)
 
 上圖由 `-opening` 走過真實 block `0x01` 後，以 Docker／Xvfb 擷取。第一人稱
-視窗保留原生 176px 面板，再以 nearest-neighbour 放大為 352px；其中原版
+面板依原版 128px 放大為 256px，右側 roster 為 384px；其中原版
 `Draw3dWorldBackground` 的 sky／地平線／地面是中央 88×88 區，地面直接取自
 `SKY.DAX/FC`。WALLDEF stamps 僅接受 row／column `0..10`，並依原 routine 放在
 `(column+3,row+3)×8`，已修正舊圖額外右移／上移造成的三片巨牆。素材來自
-GEO2/01、WALLDEF2、8X8D2 與 SKY/FA–FC，位置 `(7,13)`、面東；右側為隊伍，
+GEO2/01、WALLDEF2、8X8D2 與 SKY/FA–FC，位置 `(7,13)`、面北；右側為隊伍，
 下方與命令列統一使用本機倚天 16×15 粗體，不再依賴系統 CJK TTF。
 
 本重製版以 `640×480` 為固定邏輯畫布：原版像素圖片採 nearest-neighbor
@@ -498,6 +504,16 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 ```sh
 go test ./...
 go run ./cmd/azure-bonds -base-items
+# 建議：倚天原生 16×15 明體，執行期水平加粗 1px
+go run ./cmd/azure-bonds-game \
+  -eten-font /home/anr2/cht/etan_font/stdfont.15
+
+# 若已從 ET353S.iso 取出 SPCFONT.15，可讓全形標點也保持倚天字形
+go run ./cmd/azure-bonds-game \
+  -eten-font /home/anr2/cht/etan_font/stdfont.15 \
+  -eten-symbol-font /path/to/SPCFONT.15
+
+# 也保留一般 TrueType/OpenType fallback
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf
 # 可重現正式序幕／Windlord's Inn 640×480 繁中 vertical slice
 go run ./cmd/azure-bonds-game -font /path/to/chinese-font.ttf -opening
