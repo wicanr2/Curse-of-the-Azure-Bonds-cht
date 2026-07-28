@@ -1310,11 +1310,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			continue
 		}
 		if !havePosition {
-			minX, maxX, minY, maxY = fighter.CombatX, fighter.CombatX, fighter.CombatY, fighter.CombatY
+			footprint := combat.FootprintForSize(fighter.CombatSize)
+			minX, maxX, minY, maxY = fighter.CombatX, fighter.CombatX+footprint.Width-1, fighter.CombatY, fighter.CombatY+footprint.Height-1
 			havePosition = true
 		} else {
+			footprint := combat.FootprintForSize(fighter.CombatSize)
 			minX, maxX = min(minX, fighter.CombatX), max(maxX, fighter.CombatX)
-			minY, maxY = min(minY, fighter.CombatY), max(maxY, fighter.CombatY)
+			maxX = max(maxX, fighter.CombatX+footprint.Width-1)
+			minY, maxY = min(minY, fighter.CombatY), max(maxY, fighter.CombatY+footprint.Height-1)
 		}
 	}
 	useCamera := havePosition && (minX < 0 || maxX > 6 || minY < 0 || maxY > 6)
@@ -1343,7 +1346,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
 			tile = camera.Apply(tile)
-			tile.X = 6 - tile.X
+			tile = mirroredCombatAnchor(tile)
 			x, y := tile.X*48, tile.Y*48
 			if !fighter.DownedCorpse && !fighter.DeathOverlay {
 				a.drawFighterSprite(battlefield, fighter, partyIndex, x, y)
@@ -1365,7 +1368,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
 		tile = camera.Apply(tile)
-		tile.X = 6 - tile.X
+		tile = mirroredCombatAnchor(tile)
 		x, y := tile.X*48, tile.Y*48
 		if !fighter.DownedCorpse && !fighter.DeathOverlay {
 			a.drawFighterSprite(battlefield, fighter, enemyIndex, x, y)
@@ -1447,6 +1450,13 @@ func selectCombatTerrainName(inDungeon bool, override string) string {
 	return "WILDCOM"
 }
 
+// mirroredCombatAnchor converts the original combat column to the remake's
+// mirrored view. CPIC coordinates remain the upper-left drawing anchor even
+// for multi-cell monsters; their footprint expands right and down from it.
+func mirroredCombatAnchor(tile combat.TilePoint) combat.TilePoint {
+	return combat.TilePoint{X: 6 - tile.X, Y: tile.Y}
+}
+
 func combatTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY, column, row int) (mapdata.BackgroundTile, bool) {
 	switch mode {
 	case "DUNGCOM":
@@ -1464,12 +1474,6 @@ func combatTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness m
 }
 
 func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
-	// Until the original multi-cell occupancy/anchor table is decoded, keep an
-	// enemy target in the footer instead of drawing a false one-cell box over
-	// only the head of a 2x2 dragon or other large creature.
-	if fighter.Side == combat.SideEnemy && selected && !active {
-		return
-	}
 	if !active && !selected {
 		return
 	}
@@ -1479,10 +1483,12 @@ func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighte
 	if selected {
 		marker = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	}
-	ebitenutil.DrawRect(screen, float64(x), float64(y), 48, 2, marker)
-	ebitenutil.DrawRect(screen, float64(x), float64(y+46), 48, 2, marker)
-	ebitenutil.DrawRect(screen, float64(x), float64(y), 2, 48, marker)
-	ebitenutil.DrawRect(screen, float64(x+46), float64(y), 2, 48, marker)
+	footprint := combat.FootprintForSize(fighter.CombatSize)
+	width, height := footprint.Width*48, footprint.Height*48
+	ebitenutil.DrawRect(screen, float64(x), float64(y), float64(width), 2, marker)
+	ebitenutil.DrawRect(screen, float64(x), float64(y+height-2), float64(width), 2, marker)
+	ebitenutil.DrawRect(screen, float64(x), float64(y), 2, float64(height), marker)
+	ebitenutil.DrawRect(screen, float64(x+width-2), float64(y), 2, float64(height), marker)
 }
 
 // drawFighterDeathOverlay is the renderer adapter for the combat-core

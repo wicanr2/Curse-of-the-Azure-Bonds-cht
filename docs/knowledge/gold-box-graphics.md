@@ -221,3 +221,15 @@ CoAB 的 wilderness background table 已提供直接映射：WILDCOM 有 34 張�
 `MapX/MapY` 為中心查 50×25 `WildernessFloor` 即可。terrain family 應由
 `Area.InDungeon` 選 DUNGCOM／WILDCOM，不可用 ECL chapter 或 GameArea 猜測。
 RANDCOM 只有六張特殊物件，是後續 decoration pass，不能替代完整 floor。
+
+## 大型戰鬥小人與 footprint
+
+CoAB monster player record 的 `field_DE & 7` 會成為 `CombatMap.size`：
+`1=1×1`、`2=1×2`、`3=2×1`、`4=2×2`。這是可放在 renderer-neutral combat
+model 的矩形 occupancy contract；碰撞、近戰 adjacency、復活位置與 camera
+extent 都應讀同一 shape，不能由 CPIC bitmap 寬高反推。
+
+畫面層仍須保留作品 adapter。CoAB 的水平鏡像以 `6-x` 得到 CPIC 左上錨點，
+footprint marker 從該點向右、下展開；不要因寬度為 2 再向左平移，否則位於
+左緣的大型怪物會被 clipping target 切掉。640×480 的 2× pixel pass 中，
+單格為 48×48，size 4 marker 因此是 96×96。
