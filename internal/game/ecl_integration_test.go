@@ -3213,6 +3213,179 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Essembra bar exit mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 121 ||
+		!strings.Contains(state.Message, "艾森布拉城外") {
+		t.Fatalf("Essembra leave picture mode=%v block=0x%02X originals=%#v message=%q picture=%v/%d",
+			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Message, state.PictureRequested, state.PictureBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Essembra edge mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAP", "THE STANDING STONE"}) {
+		t.Fatalf("Essembra departure destinations=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Standing Stone route choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "灰袍男子") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Standing Stone return mode=%v location=%v originals=%#v message=%q",
+			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"THANK HIM", "ATTACK", "LEAVE"}) {
+		t.Fatalf("Standing Stone return counsel originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Standing Stone leave counsel originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR"}) {
+		t.Fatalf("Standing Stone destinations for Hillsfar=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Hillsfar route choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x51 || !state.PictureRequested || state.PictureBlock != 121 ||
+		!strings.Contains(state.Message, "偽裝成戰士的火刀") {
+		t.Fatalf("Hillsfar trail ambush mode=%v block=0x%02X location=%v originals=%#v message=%q picture=%v/%d",
+			state.Mode, session.CurrentBlockID(), state.Location, state.currentOriginalChoices,
+			state.Message, state.PictureRequested, state.PictureBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Hillsfar ambush continuation mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	hillsfarPatrol := state.CombatFighters()
+	if state.Mode != ModeCombat || len(hillsfarPatrol) != 7 {
+		t.Fatalf("Hillsfar trail combat mode=%v fighters=%#v message=%q",
+			state.Mode, hillsfarPatrol, state.Message)
+	}
+	for _, fighter := range hillsfarPatrol[1:] {
+		if fighter.Name != "戰士" || fighter.SpriteBlock != 0x20 ||
+			fighter.Side != combat.SideEnemy {
+			t.Fatalf("Hillsfar trail enemy=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationHillsfar ||
+		state.Area.CurrentCity != 11 ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		!strings.Contains(state.Message, "希爾斯法城外") {
+		t.Fatalf("Hillsfar arrival mode=%v block=0x%02X location=%v currentCity=%d originals=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.Location, state.Area.CurrentCity,
+			state.currentOriginalChoices, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 11 {
+		t.Fatalf("Hillsfar current-location memory=%#x,%v want 11", got, ok)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 80 ||
+		!strings.Contains(state.Message, "身在希爾斯法") {
+		t.Fatalf("Hillsfar enter mode=%v block=0x%02X location=%v originals=%#v message=%q picture=%v/%d",
+			state.Mode, session.CurrentBlockID(), state.Location, state.currentOriginalChoices,
+			state.Message, state.PictureRequested, state.PictureBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
+		!strings.Contains(state.Message, "身在希爾斯法") {
+		t.Fatalf("Hillsfar places mode=%v block=0x%02X originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "碼頭邊的酒館") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
+		t.Fatalf("Hillsfar bar mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "紅羽衛") ||
+		!strings.Contains(state.Message, "打翻") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("Hillsfar Red Plume provocation originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	hillsfarRedPlumes := state.CombatFighters()
+	if state.Mode != ModeCombat || len(hillsfarRedPlumes) != 7 {
+		t.Fatalf("Hillsfar Red Plume combat mode=%v fighters=%#v message=%q",
+			state.Mode, hillsfarRedPlumes, state.Message)
+	}
+	for _, fighter := range hillsfarRedPlumes[1:] {
+		if fighter.Name != "戰士" || fighter.SpriteBlock != 0x20 ||
+			fighter.Side != combat.SideEnemy {
+			t.Fatalf("Hillsfar Red Plume enemy=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) ||
+		!strings.Contains(state.Message, "碼頭邊的酒館") {
+		t.Fatalf("Hillsfar Red Plume victory mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
