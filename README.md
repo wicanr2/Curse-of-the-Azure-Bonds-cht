@@ -18,15 +18,14 @@
 並依 game-pack JSON 的 A–N world values 與 Clue Book 第 35 頁座標標示目前
 位置；地名、目前位置與旅行選單以 24／16px 繁中在 640×480 畫布重繪。
 
-![GEO 牆面與門資料驅動的 640×480 AREA 俯視地圖](docs/screenshots/coab-area-map-remake.png)
+![原始 8X8D 灰牆符號驅動的 640×480 AREA 俯視地圖](docs/screenshots/coab-area-map-remake.png)
 
 原版 `AREA` 指令是目前迷宮周遭的俯視阻礙圖，不是世界旅行圖，也不是
-`WILDCOM` 戰鬥地板。上圖由 `GEO2.DAX` block `0x01` 的 16×16 cell、牆與門
-直接投影，隊伍位置為 `(7,13)`。共用 projection 位於獨立 engine，CoAB 只以
-game-pack JSON 指定 GEO／8X8D 資源。中文使用倚天 `STDFONT.15` 的原生
-16×15 點陣並水平加粗 1px；字型因著作權只從本機載入，不隨 repo 散布。
-`8X8D2` AREA 符號的精確組合規則仍待反組譯，因此目前是資料正確的向量第一版，
-不宣稱已完成原版像素皮膚。
+`WILDCOM` 戰鬥地板。上圖依原 routine 畫出邊界夾制的 11×11 視窗：
+`GEO2.DAX/01` 每格的 N／E／S／W 牆形成 4-bit mask，直接選取全域
+`8X8D1.DAX/CA` 的原始 8×8 灰牆 symbol，再以 2× nearest-neighbour 顯示；
+白色箭頭同樣是原始四方向 symbol。原版刻意不顯示門與牆種類。中文使用倚天
+`STDFONT.15` 的 16×15 點陣並水平加粗 1px；字型因著作權只從本機載入。
 
 ![原版四區配置的 640×480 繁中冒險畫面](docs/screenshots/gold-box-layout-adventure.png)
 

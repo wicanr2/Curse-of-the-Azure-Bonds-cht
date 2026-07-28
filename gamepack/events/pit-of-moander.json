@@ -60,7 +60,8 @@
       "area_id": 2,
       "geometry_block": 1,
       "geometry_file": "GEO2.DAX",
-      "symbol_file": "8X8D2.DAX",
+      "symbol_file": "8X8D1.DAX",
+      "symbol_block": 202,
       "scale": 2
     },
     {

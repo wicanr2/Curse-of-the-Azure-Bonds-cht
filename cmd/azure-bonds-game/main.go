@@ -61,6 +61,7 @@ type app struct {
 	tileImages          []*ebiten.Image
 	geoPreview          bool
 	areaMapPreview      bool
+	areaMapSymbols      []*ebiten.Image
 	geoGrid             *geo.Grid
 	geoX                int
 	geoY                int
@@ -1115,40 +1116,38 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, "尚未載入 GEO 區域資料", a.face, 24, 48, white)
 		return
 	}
-	projection := enginearea.Project(*a.geoGrid)
-	const cellSize, originX, originY = 20, 24, 24
-	for _, cell := range projection.Cells {
-		fill := color.RGBA{18, 28, 66, 255}
-		if cell.Terrain&0x80 != 0 {
-			fill = color.RGBA{28, 44, 92, 255}
-		}
-		ebitenutil.DrawRect(screen,
-			float64(originX+cell.X*cellSize+1), float64(originY+cell.Y*cellSize+1),
-			cellSize-2, cellSize-2, fill)
-	}
-	for _, segment := range projection.Segments {
-		ink := cyan
-		if segment.Door {
-			ink = color.RGBA{255, 255, 82, 255}
-		}
-		ebitenutil.DrawLine(screen,
-			float64(originX+segment.X1*cellSize), float64(originY+segment.Y1*cellSize),
-			float64(originX+segment.X2*cellSize), float64(originY+segment.Y2*cellSize), ink)
-	}
 	x, y, direction := a.state.DungeonGeometryView()
 	if !a.areaMapPreview {
 		x, y = a.state.MapX, a.state.MapY
 	}
-	ebitenutil.DrawRect(screen, float64(originX+x*cellSize+6), float64(originY+y*cellSize+6), 8, 8, color.RGBA{255, 255, 82, 255})
+	view, err := enginearea.BuildOriginal(*a.geoGrid, x, y, int(direction))
+	if err != nil || len(a.areaMapSymbols) < 20 {
+		text.Draw(screen, "AREA 原始符號資料無法使用", a.compactFace, 24, 48, white)
+		return
+	}
+	const tileSize, originX, originY = 16, 32, 32
+	drawSymbol := func(item, screenX, screenY int) {
+		if item < 0 || item >= len(a.areaMapSymbols) {
+			return
+		}
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Scale(2, 2)
+		options.GeoM.Translate(float64(originX+screenX*tileSize), float64(originY+screenY*tileSize))
+		screen.DrawImage(a.areaMapSymbols[item], options)
+	}
+	for _, tile := range view.Tiles {
+		drawSymbol(tile.Item, tile.ScreenX, tile.ScreenY)
+	}
+	drawSymbol(view.PartyItem, view.PartyScreenX, view.PartyScreenY)
 
 	text.Draw(screen, "區域地圖", a.compactFace, 376, 38, cyan)
-	text.Draw(screen, fmt.Sprintf("GEO%d／%02X", a.geoSet, a.geoBlock), a.compactFace, 376, 66, white)
+	text.Draw(screen, fmt.Sprintf("GEO%d／%02X　8X8D／CA", a.geoSet, a.geoBlock), a.compactFace, 376, 66, white)
 	text.Draw(screen, fmt.Sprintf("位置 (%d,%d)", x, y), a.compactFace, 376, 102, white)
 	text.Draw(screen, "方向 "+dungeonDirectionName(direction), a.compactFace, 376, 130, white)
-	text.Draw(screen, "青色：牆壁", a.compactFace, 376, 182, cyan)
-	text.Draw(screen, "黃色：門／隊伍", a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
+	text.Draw(screen, "原版 11×11 AREA 視窗", a.compactFace, 376, 182, cyan)
+	text.Draw(screen, "方向標記：隊伍位置", a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
 	text.Draw(screen, a.state.LocationName, a.compactFace, 24, 390, cyan)
-	text.Draw(screen, "AREA 顯示目前區域的主要阻礙與隊伍位置。", a.compactFace, 24, 422, white)
+	text.Draw(screen, "AREA 顯示目前區域的牆面與隊伍方向。", a.compactFace, 24, 422, white)
 	text.Draw(screen, "A／Esc：返回探索", a.compactFace, 24, 470, cyan)
 }
 
@@ -2042,6 +2041,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	pack, err := gamepack.Default()
+	if err != nil {
+		log.Fatal(err)
+	}
+	areaMapDefinition, ok := pack.FindMapByKind("area")
+	if !ok {
+		log.Fatal("game pack has no AREA map definition")
+	}
+	areaMapSymbols, err := loadAreaMapSymbols(*imagePath, areaMapDefinition.SymbolFile, areaMapDefinition.SymbolBlock)
+	if err != nil {
+		log.Fatal(err)
+	}
 	geoCatalog, err := loadGEOCatalog(*imagePath)
 	if err != nil {
 		log.Fatal(err)
@@ -2256,7 +2267,7 @@ func main() {
 		}
 		compactFace = etenFace
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -2565,6 +2576,42 @@ func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, erro
 		result[source] = images
 	}
 	return result, nil
+}
+
+func loadAreaMapSymbols(imagePath, symbolFile string, blockID uint8) ([]*ebiten.Image, error) {
+	if symbolFile == "" {
+		return nil, fmt.Errorf("AREA symbol file is empty")
+	}
+	data, err := zipMember(imagePath, symbolFile)
+	if err != nil {
+		return nil, err
+	}
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
+	}
+	for _, block := range blocks {
+		if block.Entry.ID != blockID {
+			continue
+		}
+		picture, err := gfx.ParsePicture(block.Data, true, 13)
+		if err != nil {
+			return nil, fmt.Errorf("%s block 0x%02X: %w", symbolFile, blockID, err)
+		}
+		if picture.Width() != 8 || picture.Height() != 8 || picture.ItemCount < 20 {
+			return nil, fmt.Errorf("%s block 0x%02X is %dx%d items=%d, want 8x8 and at least 20 items", symbolFile, blockID, picture.Width(), picture.Height(), picture.ItemCount)
+		}
+		images := make([]*ebiten.Image, 0, picture.ItemCount)
+		for item := 0; item < int(picture.ItemCount); item++ {
+			rgba, err := picture.RGBA(item, gfx.EGA16)
+			if err != nil {
+				return nil, err
+			}
+			images = append(images, ebiten.NewImageFromImage(rgba))
+		}
+		return images, nil
+	}
+	return nil, fmt.Errorf("%s has no AREA symbol block 0x%02X", symbolFile, blockID)
 }
 
 // loadMapPieceSets mirrors the verified reference LoadWalldef mapping while

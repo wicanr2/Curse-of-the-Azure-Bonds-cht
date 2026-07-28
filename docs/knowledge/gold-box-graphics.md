@@ -263,15 +263,19 @@ debug 區會造成錯誤裁切與「三片牆」錯位。原始 8px bitmap 只�
 ## AREA 俯視地圖的可重用邊界
 
 Gold Box 的 `AREA` 是目前 GEO 區域的 overhead obstruction map，與 BIGPIC
-世界旅行圖及 WILDCOM 50×25 戰鬥背景是三個不同系統。共用 engine 應由
-16×16 GEO grid 投影 terrain、實體牆邊與門 detail；相鄰 cell 共享的物理邊
-必須去重，避免牆線因重畫而變粗。作品 game pack 保存 area、GEO block、
-8X8D set、位置及本地化文字。
+世界旅行圖及 WILDCOM 50×25 戰鬥背景是三個不同系統。CoAB reference
+`ovr031.DrawAreaMap` 的原版規則是 11×11 視窗；camera offset 為
+`clamp(party-5, 0, 5)`。每格只檢查 GEO 四個 cardinal wall type 是否非零，
+依 N／E／S／W 分別累加 `1/2/4/8`，global symbol ID 是 `0x104+mask`。
+牆種類與 door detail 均不顯示；reference 的 door pass 位於
+`Cheats.improved_area_map`，不能當成原版功能。
 
-CoAB `8X8D2.DAX` block 1 是 17-byte SSI header 加 70 個 8×8 4bpp symbols；
-後段可目視確認含藍色牆角、牆段與門符號，但尚無足夠 oracle 證明每個 symbol
-ID 如何由 GEO wall/detail 組合。規則證實前使用 GEO 向量投影，不能猜表後
-宣稱像素還原。WILDCOM 只可用於野外戰鬥。
+AREA 使用啟動時、`game_area=1` 載入 symbol set 4 的 `8X8D1.DAX` block
+`0xCA`。set 4 global base 是 `0x100`，因此 wall local items 為 `4..19`；
+隊伍使用 `0x100+(partyDir>>1)`，即 local item `0..3`。這套全域 set 會跨
+GEO2–6 沿用，不能依目前 area 改抓 `8X8D2–6`。原始 8×8 bitmap 採整數放大。
+證據為公開 reference commit `9dc46f1` 的 `engine/ovr031.cs` 與
+`engine/seg001.cs`。
 
 繁中緊湊 HUD 可讀倚天 `STDFONT.15` 的原生 Big5 16×15 點陣；其常用區由
 Big5 A440 起算，次常用區接在第 5401 字後，全形符號則來自 `SPCFONT.15`。

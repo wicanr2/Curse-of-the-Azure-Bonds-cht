@@ -1554,10 +1554,21 @@ Shadowdale AREA overhead map 與 optional travel encounters 尚待後續。
 第三百四十四輪成果：補上與世界地圖、戰鬥地板分離的 AREA 俯視地圖。獨立
 engine `areamap.Project` 由 16×16 GEO grid 產生 terrain cells、去重實體牆段、
 wall type 與 door detail；engine commit 為 `2ef18ca`。CoAB game-pack JSON
-新增 `tilverton.area-map`，指定 Area 2、`GEO2.DAX` block 1、`8X8D2.DAX`
+新增 `tilverton.area-map`，指定 Area 2、`GEO2.DAX` block 1；
 與 2× scale。正式地城按 A 開啟、A／Esc 返回，舊 `ModeMap` 畫面也不再誤用
 WILDCOM combat floor。中文字改讀本機倚天 `STDFONT.15` Big5 分區字模，
 以 Monkey Island 2 已驗證的逐列水平 1px embolden 顯示 16×15 粗體；
 optional `SPCFONT.15` 處理全形符號，字型檔因著作權不提交。640×480 實機圖為
-`docs/screenshots/coab-area-map-remake.png`。`8X8D2` exact AREA symbol
-composition 尚無足夠 oracle，目前是 GEO 資料正確的向量第一版。
+`docs/screenshots/coab-area-map-remake.png`。本輪的向量 renderer 與
+`8X8D2/01` 推測已由第 345 輪原版 symbol renderer 取代。
+
+第三百四十五輪成果：依公開 reference commit `9dc46f1` 的
+`ovr031.DrawAreaMap`／`seg001` 還原原版 AREA。全域 symbol set 4 在
+`game_area=1` 時載入 `8X8D1.DAX/CA`；11×11 camera offset 為
+`clamp(party-5,0,5)`，每格 N/E/S/W wall presence 組成 `1/2/4/8` mask，
+選 local item `4+mask`，隊伍方向選 item `direction>>1`。原版不顯示門；
+reference door pass 是 cheat。獨立 engine `443281a` 新增
+`areamap.BuildOriginal` 與 schema `symbol_block`。CoAB renderer 現直接以
+2× nearest-neighbour 畫 8×8 EGA 灰牆與白色方向箭頭，取代向量 16×16 全圖；
+JSON 指定 `8X8D1.DAX/CA`。更新後的 640×480 倚天粗體實機圖仍為
+`docs/screenshots/coab-area-map-remake.png`。
