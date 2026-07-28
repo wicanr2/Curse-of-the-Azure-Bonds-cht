@@ -820,6 +820,9 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawWildernessMap(screen, white, cyan)
 		return
 	}
+	if a.state.Mode == game.ModeWilderness && a.state.Message == "" && a.drawOverlandMap(screen, white, cyan) {
+		return
+	}
 	if a.state.Mode == game.ModeEvent && a.state.PictureRequested {
 		a.drawPictureAnimation(screen)
 		return
@@ -859,6 +862,64 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
 		text.Draw(screen, "Enter：場所　方向鍵：移動　Esc：離開", a.face, 56, 330, white)
 	}
+}
+
+func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) bool {
+	pack, err := gamepack.Default()
+	if err != nil {
+		return false
+	}
+	definition, ok := pack.FindMapByKind("overland")
+	if !ok {
+		return false
+	}
+	stem := strings.ToLower(strings.TrimSuffix(definition.ImageFile, filepath.Ext(definition.ImageFile)))
+	key := fmt.Sprintf("%s-block-%02X-item-00.png", stem, definition.GeometryBlock)
+	mapImage := a.combatSprites[key]
+	if mapImage == nil {
+		return false
+	}
+	drawPanelFrame(screen, 8, 8, 624, 256)
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(float64(definition.Scale), float64(definition.Scale))
+	op.GeoM.Translate(16, 16)
+	screen.DrawImage(mapImage, op)
+
+	currentValue := a.state.Area.CurrentCity
+	currentName := a.state.LocationName
+	for _, point := range definition.Locations {
+		if point.Value != currentValue {
+			continue
+		}
+		x := 16 + point.X*definition.Scale
+		y := 16 + point.Y*definition.Scale
+		ink := color.RGBA{255, 255, 82, 255}
+		ebitenutil.DrawRect(screen, float64(x-7), float64(y-7), 15, 3, ink)
+		ebitenutil.DrawRect(screen, float64(x-7), float64(y+5), 15, 3, ink)
+		ebitenutil.DrawRect(screen, float64(x-7), float64(y-7), 3, 15, ink)
+		ebitenutil.DrawRect(screen, float64(x+5), float64(y-7), 3, 15, ink)
+		if localized, found := pack.Text(point.MessageID, "zh-TW"); found {
+			currentName = localized
+		}
+		break
+	}
+
+	drawPanelFrame(screen, 8, 264, 624, 184)
+	drawPanelFrame(screen, 8, 448, 624, 28)
+	text.Draw(screen, "月海諸地・世界地圖", a.face, 24, 296, cyan)
+	text.Draw(screen, "目前位置："+currentName, a.face, 24, 328, white)
+	timeLabel := strings.Split(a.state.GameTimeText(), "　")[0]
+	text.Draw(screen, timeLabel, a.compactFace, 468, 294, cyan)
+	for index, choice := range a.state.Choices {
+		prefix := "  "
+		if index == a.choiceCursor {
+			prefix = "> "
+		}
+		text.Draw(screen, prefix+choice, a.face, 40, 366+index*30, white)
+	}
+	text.Draw(screen, "方向鍵選擇　Enter 確認", a.compactFace, 344, 470, cyan)
+	return true
 }
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
@@ -1793,6 +1854,7 @@ func main() {
 	wizardTowerBattle := flag.Bool("wizard-tower-battle", false, "start at Dracandros' original wizard-tower patrol battle")
 	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
 	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
+	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -1828,6 +1890,18 @@ func main() {
 		log.Fatal(err)
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
+	if *worldMapPreview {
+		state.Mode = game.ModeWilderness
+		state.Area.CurrentCity = 4
+		state.Location = game.LocationStandingStone
+		state.LocationName = catalog.Text("standing_stone", "立石")
+		state.Choices = []string{
+			catalog.Text("enter_city", "進入城市"),
+			catalog.Text("journey_on", "繼續旅程"),
+			catalog.Text("camp", "紮營"),
+		}
+		state.Prompt = catalog.Text("press_button", "請選擇行動")
+	}
 	if *dungeonXOverride >= 0 {
 		state.DungeonX, state.DungeonY = *dungeonXOverride, *dungeonYOverride
 	}

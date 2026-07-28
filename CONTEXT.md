@@ -1541,3 +1541,12 @@ columns 保留原生 176px／2× 352px 第一人稱 viewport，右側 roster、�
 敘事及 footer；舊 debug floor 不再混入 production。Docker/Xvfb 實機圖為
 `docs/screenshots/tilverton-first-person-remake.png`。door／roof overlays、
 斜向逐像素 DOS oracle 與 wilderness world map 仍是後續 map fidelity 邊界。
+
+第三百四十三輪成果：世界地圖改讀原始 `BIGPIC1 block 0x79`，不再把
+WILDCOM 50×25 combat floor 誤稱 overland。使用者提供的 Clue Book PDF 第 35
+頁與攻略確認 CoAB 只能在興趣點間旅行。獨立 engine schema／`worldmap` 支援
+作品中立 image、localized points 與 cardinal selection；CoAB JSON 保存 A–N
+14 個 values／座標／翻譯。正式 `ModeWilderness` 顯示 608×240 nearest-neighbour
+地圖、目前位置、旅行選單與繁中 HUD；`-world-map` 的 Docker/Xvfb 實機圖為
+`docs/screenshots/coab-overland-map-remake.png`。route graph 自 ECL 匯出、
+Shadowdale AREA overhead map 與 optional travel encounters 尚待後續。

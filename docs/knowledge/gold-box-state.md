@@ -16,6 +16,12 @@ Hap=`9`、Yulash=`10`、Hillsfar=`11`、Zhentil Keep=`12`、
 Myth Drannor=`13`。其他 Gold Box 作品應保留自己的原始值與顯示名稱 mapping，
 不能按 remake enum 或目前旅途順序自行遞增。
 
+CoAB overland 不是自由格狀移動。Clue Book 第 35 頁與原始
+`BIGPIC1 block 0x79` 證明玩家只在方形／圓形興趣點之間選擇旅行，途中由 ECL
+插入事件。`WILDCOM` 的 50×25 buffer 是戰鬥背景，絕不能拿來當世界地圖。
+game-pack 應保存 world value、穩定 ID、翻譯 key 與 BIGPIC source pixel 座標；
+共用 renderer 只負責 point cursor 與整數放大，路線可達性仍由 ECL menu 決定。
+
 旅途上的 `COMBAT` 屬 ECL transaction 中斷點。勝利後必須恢復同一份 runtime，
 才能執行抵達地點、寫入 world byte 與顯示 edge menu。複合英文 menu label 也可能
 由多個文字片段組成，但仍只消耗一個 selection index；作品 adapter 可正規化顯示

@@ -11,6 +11,13 @@
 
 最新畫面已依原版 DOS 截圖重新校正版面，不再沿用先前置中的 prototype：
 
+![原始 BIGPIC 與 Clue Book 座標驅動的 640×480 世界地圖](docs/screenshots/coab-overland-map-remake.png)
+
+世界地圖不再誤用 WILDCOM 的 50×25 戰鬥地板。上圖直接解碼
+`BIGPIC1.DAX` block `0x79`，以 2× nearest-neighbour 顯示 608×240 地圖，
+並依 game-pack JSON 的 A–N world values 與 Clue Book 第 35 頁座標標示目前
+位置；地名、目前位置與旅行選單以 24／16px 繁中在 640×480 畫布重繪。
+
 ![原版四區配置的 640×480 繁中冒險畫面](docs/screenshots/gold-box-layout-adventure.png)
 
 ![原版左右配置的 640×480 繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)

@@ -13,6 +13,20 @@
       "zhentil.guards_warning": "A guard says the party matches the little thief's description; the commander says they will get theirs inside.",
       "zhentil.inner_city": "You join the teeming masses of the inner city.",
       "journal.32": "Journal Entry 32: Two guards and their commander compile a detailed file on the party and insist that it is strictly routine."
+      ,"world.tilverton": "Tilverton"
+      ,"world.shadowdale": "Shadowdale"
+      ,"world.ashabenford": "Ashabenford"
+      ,"world.dagger-falls": "Dagger Falls"
+      ,"world.standing-stone": "The Standing Stone"
+      ,"world.voonlar": "Voonlar"
+      ,"world.phlan": "Phlan"
+      ,"world.teshwave": "Teshwave"
+      ,"world.essembra": "Essembra"
+      ,"world.hap": "Hap"
+      ,"world.yulash": "Yulash"
+      ,"world.hillsfar": "Hillsfar"
+      ,"world.zhentil-keep": "Zhentil Keep"
+      ,"world.myth-drannor": "Myth Drannor"
     },
     "zh-TW": {
       "pit.departure.alias_alive": "愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
@@ -23,9 +37,47 @@
       "zhentil.guards_warning": "離開時，你們聽見一名衛兵說：「果然和那個小賊說的一樣。」指揮官回答：「別擔心，他們進城後自然會吃到苦頭。」",
       "zhentil.inner_city": "你們匯入熙來攘往的人群，進入散提爾堡內城。",
       "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」"
+      ,"world.tilverton": "提爾佛頓"
+      ,"world.shadowdale": "暗影谷"
+      ,"world.ashabenford": "阿沙本福德"
+      ,"world.dagger-falls": "匕首瀑布"
+      ,"world.standing-stone": "立石"
+      ,"world.voonlar": "弗恩拉"
+      ,"world.phlan": "普蘭"
+      ,"world.teshwave": "特什維夫"
+      ,"world.essembra": "艾森布拉"
+      ,"world.hap": "哈普"
+      ,"world.yulash": "尤拉什"
+      ,"world.hillsfar": "希爾斯法"
+      ,"world.zhentil-keep": "散提爾堡"
+      ,"world.myth-drannor": "迷斯卓諾"
     }
   },
   "maps": [
+    {
+      "id": "moonsea.overland",
+      "kind": "overland",
+      "area_id": 1,
+      "image_file": "BIGPIC1.DAX",
+      "geometry_block": 121,
+      "scale": 2,
+      "locations": [
+        {"value": 0, "id": "tilverton", "message_id": "world.tilverton", "x": 27, "y": 103},
+        {"value": 1, "id": "shadowdale", "message_id": "world.shadowdale", "x": 88, "y": 65},
+        {"value": 2, "id": "ashabenford", "message_id": "world.ashabenford", "x": 151, "y": 83},
+        {"value": 3, "id": "dagger-falls", "message_id": "world.dagger-falls", "x": 78, "y": 37},
+        {"value": 4, "id": "standing-stone", "message_id": "world.standing-stone", "x": 203, "y": 80},
+        {"value": 5, "id": "voonlar", "message_id": "world.voonlar", "x": 136, "y": 43},
+        {"value": 6, "id": "phlan", "message_id": "world.phlan", "x": 299, "y": 7},
+        {"value": 7, "id": "teshwave", "message_id": "world.teshwave", "x": 145, "y": 26},
+        {"value": 8, "id": "essembra", "message_id": "world.essembra", "x": 207, "y": 96},
+        {"value": 9, "id": "hap", "message_id": "world.hap", "x": 218, "y": 113},
+        {"value": 10, "id": "yulash", "message_id": "world.yulash", "x": 175, "y": 35},
+        {"value": 11, "id": "hillsfar", "message_id": "world.hillsfar", "x": 253, "y": 47},
+        {"value": 12, "id": "zhentil-keep", "message_id": "world.zhentil-keep", "x": 195, "y": 19},
+        {"value": 13, "id": "myth-drannor", "message_id": "world.myth-drannor", "x": 204, "y": 65}
+      ]
+    },
     {
       "id": "zhentil-keep.inner-city",
       "kind": "first_person",
