@@ -161,8 +161,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   正確跨章載入 MON5 record 與原版 CPIC5 小人（66 HP、AC -6），勝利後正式
   抵達艾森布拉城外，而非誤用目前世界 block 所屬的 MON1 table。
 - 艾森布拉的 `BAR → RELAX` 現已保留原版兩層 ECL 城市事件：先進入俯瞰林地
-  的露天酒館，再聽見 Tavern Tale 60，Continue 後回到
-  `HAVE A DRINK / RELAX / EXIT`。這段已接在同一條「新遊戲 → 法師塔 →
+  的露天酒館，再聽見「龐大身影飛越森林、朝南而去」的 Tavern Tale 60。
+  `HAVE A DRINK` 也已還原五種酒與 EXIT；選啤酒會依原 script 顯示提示寒冷
+  攻擊克制紅袍法師火焰生物的 Tale 44。Continue 可回酒館，EXIT 可回艾森布拉
+  六場所選單。這段已接在同一條「新遊戲 → 法師塔 →
   龍巫妖 → 艾森布拉」真實 session 回歸中。反組譯亦釐清手札 18 的灰袍人
   屬於暗影谷酒館，不能因 DAX 字串相鄰而錯接到艾森布拉。
 

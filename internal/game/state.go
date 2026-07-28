@@ -4904,6 +4904,14 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("tavern_lemonade", "檸檬水")
 	case "WHISKEY":
 		return catalog.Text("tavern_whiskey", "威士忌")
+	case "BEER":
+		return catalog.Text("tavern_beer", "啤酒")
+	case "ALE":
+		return catalog.Text("tavern_ale", "愛爾啤酒")
+	case "PORT":
+		return catalog.Text("tavern_port", "波特酒")
+	case "MEAD":
+		return catalog.Text("tavern_mead", "蜂蜜酒")
 	case "LIE":
 		return catalog.Text("lie", "說謊")
 	case "ENTER CITY":
@@ -5003,7 +5011,7 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	case "NO ONE":
 		return catalog.Text("no_one", "不效忠任何人")
 	case "EXIT":
-		return catalog.Text("exit", "Exit")
+		return catalog.Text("exit", "離開")
 	default:
 		return option
 	}
@@ -5019,6 +5027,9 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 	}
 	if prompt == "FROM HERE YOU MAY JOURNEY TO" {
 		return catalog.Text("journey_destination_prompt", "從這裡可以前往")
+	}
+	if prompt == "WHAT WILL YOU DRINK?" {
+		return catalog.Text("tavern_drink_prompt", "要喝什麼？")
 	}
 	if prompt == "A DARK ELF PATROL ARRIVES" {
 		return catalog.Text("ecl_hap_dark_elf_patrol", "一隊黑暗精靈巡邏兵出現了")
@@ -5335,10 +5346,17 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_shadowdale_hooded_man",
 			"一名兜帽低垂的灰袍男子坐在昏暗角落。他招手示意你們靠近，低聲說了一番話，隨後便消失無蹤。",
 		)
+	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
+		return catalog.Text("tavern_drink_prompt", "要喝什麼？")
+	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 44"):
+		return catalog.Text(
+			"tavern_tale_44",
+			"酒客說：「紅袍法師喜愛火焰生物；面對他們時，寒冷攻擊往往是最好的防禦。」",
+		)
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 60"):
 		return catalog.Text(
 			"tavern_tale_60",
-			"你們無意間聽見酒館傳聞 60。",
+			"酒客說：「有幾道龐大身影飛越森林，朝南方去了。」",
 		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
 		return catalog.Text(
