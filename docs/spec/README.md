@@ -315,3 +315,4 @@
 - [第三百三十五輪愛麗雅絲與龍餌入隊](./335-alias-dragonbait-recruitment.md)（`READY`：限 Pit level 1 terrain `0x85`、PICTURE 18、手札 3、MON3 `0x16/0x17` 與 saurial NPC）
 - [第三百四十二輪第一人稱地圖共用引擎](./342-first-person-map-engine.md)（`READY`：限 GEO／WALLDEF／8X8D engine、JSON resources、352px viewport 與 640×480 實機圖）
 - [第三百四十三輪原版世界地圖](./343-overland-world-map.md)（`READY`：限 BIGPIC1/0x79、A–N JSON points、繁中 HUD 與 640×480 實機圖）
+- [第三百四十四輪 AREA 俯視地圖與倚天字形](./344-area-overhead-map.md)（`READY`：限 GEO projection、JSON resource、16×15 ETen adapter 與 640×480 實機圖）
