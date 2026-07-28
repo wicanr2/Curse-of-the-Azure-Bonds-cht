@@ -2,15 +2,14 @@
 
 更新日期：2026-07-28
 
-最新成果：摩貢祭壇已接通到首戰。ECL3 block `0x12` SearchLocation selector
-`0x0C` 對應共用 GEO3 block `0x11` 下層 `(11,3)` terrain `0x8C`。同一
-real-session 現可顯示 PICTURE 17、四項 encounter menu，完整跑過藍光癱瘓、
-藤蔓束縛、異次元窗口、摩安德穢物滲出與 Moander bond 解除，再由
-ATTACK/FLEE 選單進戰鬥。MON3 roster 為摩貢 `0x18` ×1（60 HP）、教徒
-`0x11` ×6、蔓生怪 `0x19` ×5，Alias／Dragonbait 以 party side 參戰。
-所有儀式文字與怪物名已繁中；並修正 ECL menu index 0 被 world-menu switch
-誤顯示為「進入城市」的通用 State 問題。成果收進 READY spec 337、繁中攻略
-與 Gold Box state 知識。
+最新成果：摩貢首戰、三塊摩安德殘軀與護手已接通。首戰勝利會沿同一 ECL3
+block `0x12` runtime 關閉異次元裂隙；三塊已穿越的殘軀長出數百張嘴尖叫後，
+以 MON3 `0x1A BIT O' MOANDER` 進入第二戰。每塊 140 HP、CombatSize `4`
+（2×2），名稱繁中為「摩安德殘軀」。勝利後找到摩安德護手，下一個
+continuation 寫入 `4C5B=1`，證實神器是 plot flag 而非普通 inventory item；
+祭司隨後高喊「他們殺了神」。post-combat runtime budget 由 180 提升為 bounded
+500，修復長連戰 script 在 payload offset 7078 中止的問題。成果收進 READY
+spec 338、繁中攻略與 Gold Box state 知識。
 
 先前成果：主線已從尤拉什跨入摩安德之坑。取得指揮官通行後，隊伍可抵達
 `(11,0,N)` 的 terrain `0x26`，看到原版巨坑警告與 picture pause；向北跨界

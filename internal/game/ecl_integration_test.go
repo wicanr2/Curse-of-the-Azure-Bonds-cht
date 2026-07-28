@@ -4044,6 +4044,76 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Pit Mogion roster Mogion=%d cultists=%d mounds=%d Alias=%v Dragonbait=%v fighters=%#v",
 			mogionCount, cultistCount, moundCount, aliasPresent, dragonbaitPresent, mogionBattle)
 	}
+	for turn := 0; turn < 120 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent || !strings.Contains(state.Message, "異次元裂隙猛然閉合") {
+		t.Fatalf("Pit Mogion victory mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "三塊已穿過裂隙的摩安德殘軀") ||
+		!strings.Contains(state.Message, "你們殺了我") {
+		t.Fatalf("Pit Moander remnants emerge originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	moanderRemnants := state.CombatFighters()
+	if state.Mode != ModeCombat || len(moanderRemnants) != 6 ||
+		!strings.Contains(state.Message, "滲著黏液的殘軀") {
+		t.Fatalf("Pit Moander remnants mode=%v block=0x%02x message=%q fighters=%#v",
+			state.Mode, state.session.CurrentBlockID(), state.Message, moanderRemnants)
+	}
+	remnantCount := 0
+	for _, fighter := range moanderRemnants {
+		if fighter.Name != "摩安德殘軀" {
+			continue
+		}
+		remnantCount++
+		if fighter.HitPoints != 140 || fighter.SpriteBlock != 0x1A ||
+			fighter.CombatSize != 4 {
+			t.Fatalf("Pit Moander remnant record=%+v", fighter)
+		}
+	}
+	if remnantCount != 3 {
+		t.Fatalf("Pit Moander remnant count=%d fighters=%#v", remnantCount, moanderRemnants)
+	}
+	for turn := 0; turn < 60 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !strings.Contains(state.Message, "找到摩安德護手") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit Moander gauntlet mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
+			state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	moanderGauntletFlag, _ := state.session.MemoryValue(0x4C5B)
+	if moanderGauntletFlag != 1 {
+		t.Fatalf("Pit Moander gauntlet flag4C5B=%#x", moanderGauntletFlag)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !strings.Contains(state.Message, "他們殺了神") {
+		t.Fatalf("Pit Moander gauntlet continuation mode=%v block=0x%02x flag4C5B=%#x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), moanderGauntletFlag,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
