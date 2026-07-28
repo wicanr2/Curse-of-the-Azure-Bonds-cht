@@ -2,6 +2,11 @@
 
 這是 SSI《Curse of the Azure Bonds》（青色枷的詛咒）的反組譯、繁體中文化與 remake 研究專案。目前是**可執行的初步 prototype**，不是完整重製版；GitHub 上的每輪提交都保留可測試的成果與驗證邊界。
 
+> 可重用引擎已拆分至
+> [`wicanr2/golden-box-remake-engine`](https://github.com/wicanr2/golden-box-remake-engine)。
+> 本 repo 現為 CoAB game pack、繁中資料、原始素材轉換、攻略及 real-image
+> integration。新劇情旗標、座標、NPC 名稱與翻譯不得再寫入共用 Go engine。
+
 ## 目前成果
 
 最新畫面已依原版 DOS 截圖重新校正版面，不再沿用先前置中的 prototype：

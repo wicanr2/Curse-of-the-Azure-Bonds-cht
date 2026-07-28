@@ -10,3 +10,6 @@ workplace/output/
 *.pyc
 __pycache__/
 *.test
+
+# 獨立 Git history；不可誤加為本 repo 的 gitlink
+/golden-box-remake-engine/

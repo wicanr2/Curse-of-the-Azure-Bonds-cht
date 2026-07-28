@@ -1,9 +1,12 @@
 module github.com/wicanr2/Curse-of-the-Azure-Bonds-cht
 
-go 1.22
+go 1.24
+
+toolchain go1.24.13
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.6.6
+	github.com/wicanr2/golden-box-remake-engine v0.0.0-20260728105151-83063cde4894
 	golang.org/x/image v0.12.0
 )
 

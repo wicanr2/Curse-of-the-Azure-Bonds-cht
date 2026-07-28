@@ -2,6 +2,41 @@
 
 更新日期：2026-07-28
 
+## 架構轉向：獨立 Golden Box engine + JSON game pack
+
+使用者要求停止把 CoAB 劇情資料直接 hardcode 在 `internal/game/state.go`。
+已建立並推送獨立 repo
+[`wicanr2/golden-box-remake-engine`](https://github.com/wicanr2/golden-box-remake-engine)：
+通用 Go／Ebiten
+engine、ECL/DAX/GEO codec、戰鬥規則、JSON schema 與 declarative event runtime
+放在該 repo；本 repo 僅保留 CoAB 原版證據、繁中翻譯、素材、攻略、截圖、
+JSON game pack 與端到端整合測試。
+
+禁止新增 CoAB 專屬旗標、block mapping、座標、敵人編成、NPC 離隊、英文文字
+比對或繁中敘事到共用 Go engine。若 JSON 尚無法表達，先擴充獨立 engine
+schema/runtime，再以 CoAB JSON 描述。
+
+第一個遷移驗證是摩安德之坑離場：`block 51 + 4C5B=FF + 7F12=1`、依 script
+name 移除 ALIAS／DRAGONBAIT、Alias 生死告別分支及返回 pending world menu。
+上述資料已移至 `gamepack/events/pit-of-moander.json`；舊的
+`applyPitOfMoanderDeparture` 已刪除，由通用 `applyDataPackEvent` adapter
+投影 engine runtime。散提爾堡巡邏、城外、盤問、伏筆、內城繁中與手札 32
+也由 JSON `text_rules` 驅動，不再新增 Go 字串分支。
+
+目前另有尚未提交的散提爾堡 continuation：真實 ECL session 已由離坑後
+`JOURNEY ON → ZHENTIL KEEP → TRAIL` 經巡邏放行，抵達 world value `12`，
+`ENTER CITY` 切入 ECL4/GEO4 block `0x20`，盤問並解鎖手札 32，最後在
+`(2,0,S)` 進入 Dungeon mode。保留此成果，但新增劇情文字必須改由 JSON 驅動。
+
+詳細協作限制見根目錄 [`AGENTS.md`](AGENTS.md)。兩個 repo 必須維持獨立歷史，
+仍採重大成果才集中 commit + push。
+
+使用者另確認「地圖畫面也必須 remake」：範圍同時包含 GEO/WALLDEF/8X8D
+組成的第一人稱城市／地城探索視窗，以及荒野／世界旅程地圖。現有 Far/Mid/Near
+wall traversal、碰撞、門與 sky 只是初步證據；完整牆面拼圖、遮擋、door overlay、
+camera 與 640×480 nearest-neighbour 呈現應遷入獨立 engine renderer，CoAB JSON
+只保存 map set/block、素材 manifest 與作品規則。
+
 最新成果：摩安德之坑已可完整撤離。祭壇藏寶後回到上層 `(0,12)` 會觸發
 10 名教徒、5 名蕈人與 5 名蔓生怪的最後阻擊；勝利返回地城後在 `(0,11,W)`
 執行原出口 handler，寫入 `4C5B=FF／7F12=1` 並 `NEWECL 0x51`。愛麗雅絲與
