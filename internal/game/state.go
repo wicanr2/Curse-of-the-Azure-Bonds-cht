@@ -1043,6 +1043,17 @@ func (s *State) Select(index int) error {
 				s.session.SetMemoryValue(0x7ED5, 0)
 				s.session.SetMemoryValue(0x7EC9, 0)
 			}
+			if blockBefore == 0x11 && s.session.CurrentBlockID() == 0x12 &&
+				s.Area.InDungeon && s.Area.GameArea == 3 {
+				// Pit of Moander levels share GEO3 block 0x11. The
+				// destination ECL initial entry places the party on the
+				// lower-level landing at (15,14), facing south.
+				s.DungeonX, s.DungeonY, s.DungeonDirection = 15, 14, 4
+				s.MapX, s.MapY = 15, 14
+				s.session.SetMemoryValue(0xC04B, 15)
+				s.session.SetMemoryValue(0xC04C, 14)
+				s.session.SetMemoryValue(0xC04D, 2)
+			}
 			// Hap ENTER CITY is an engine-level area transition wrapped
 			// around ECL's NEWECL 0x31. The script loads its map pieces, while
 			// the DOS dispatcher selects Area 5 and dungeon exploration.
@@ -5042,6 +5053,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("attack", "攻擊")
 	case "LEAVE", "Leave":
 		return catalog.Text("leave", "離開")
+	case "EXAMINE CORPSE":
+		return catalog.Text("examine_corpse", "檢查屍體")
 	case "SHADOWDALE":
 		return catalog.Text("shadowdale", "Shadowdale")
 	case "ASHABENFORD":
@@ -5618,6 +5631,31 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_pit_alias_dragonbait_joined",
 			"愛麗雅絲與龍餌加入隊伍。愛麗雅絲挖苦地補充：「另外，摩貢大祭司藏在祭壇後方的財寶也值得處理。」",
+		)
+	case strings.Contains(joined, "YOU SEE STAIRS LEADING DOWN TO THE SOUTH") &&
+		strings.Contains(joined, "DO YOU WISH TO GO DOWN"):
+		return catalog.Text(
+			"ecl_pit_stairs_down",
+			"你們看見一道通往南方下層的階梯。要往下走嗎？",
+		)
+	case strings.Contains(joined, "YOU SEE STAIRS GOING UP IN THE NORTH WALL") &&
+		strings.Contains(joined, "DO YOU WISH TO GO UP"):
+		return catalog.Text(
+			"ecl_pit_stairs_up",
+			"北側牆邊有一道向上的階梯。要回到上層嗎？",
+		)
+	case strings.Contains(joined, "MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER") &&
+		strings.Contains(joined, "WHAT DO YOU DO"):
+		return catalog.Text(
+			"ecl_pit_dead_zhentrim",
+			"你們看見一名死去的散塔林戰士，遺體已殘破不堪。要怎麼做？",
+		)
+	case strings.Contains(joined, "GRASPED IN THE FIGHTER'S FIST") &&
+		strings.Contains(joined, "SEAL OF ZHENTIL") &&
+		strings.Contains(joined, "JOURNAL ENTRY 46"):
+		return catalog.Text(
+			"ecl_pit_zhentrim_scroll",
+			"戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。",
 		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):

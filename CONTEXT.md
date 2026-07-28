@@ -2,14 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：摩安德之坑第一層的愛麗雅絲與龍餌主線已接通。`(1,4)` terrain
-`0x85` 依 ECL3 block `0x11:+0x09DC` 顯示 PICTURE 18，走
-PARLAY→NICE→TELL HER YOUR STORY 可解鎖三頁繁中手札 3；YES 會以 MON3
-`0x16/0x17` 的 CHA/SPC/ITM 原始資料加入愛麗雅絲（fighter 6）與龍餌
-（saurial paladin 7），顯示名繁中而 ScriptName 保留英文。party parser 新增
-Dragonbait raw race `0x00` 的 context-specific saurial 投影，並釐清原版 NPC
-不應套用玩家創角最低能力門檻。`4C2E` 防止重複招募。成果收進 READY spec
-335、中文攻略與 Gold Box state／party 知識。
+最新成果：摩安德之坑第一層至第二層已接通。第一層 `(15,11)` terrain `0x86`
+選 YES 後執行 `NEWECL 0x12`；兩層共用 GEO3 block `0x11`，目的 ECL initial
+落點為 `(15,14,4)`，不能把 script block 錯當 GEO block。下層樓梯選 NO 後，
+在 `(14,15)` terrain `0x11` 可調查死去的 ZHENTRIM fighter；選
+`EXAMINE CORPSE` 取得帶散提爾堡印璽的命令並解鎖手札 46，事件不重播。
+樓梯、屍體、選單與手札提示均已繁中。另由 subagent 交叉 SSI Clue Book、
+GameBanshee、RPG Gamers 與 GameFAQs，把繁中攻略延伸到摩貢、散塔林堡、
+德克薩姆洞穴、神話卓諾與結局，並明確區分 remake 已實作／原版攻略參考。
+成果收進 READY spec 336、中文攻略與 Gold Box state 知識。
 
 先前成果：主線已從尤拉什跨入摩安德之坑。取得指揮官通行後，隊伍可抵達
 `(11,0,N)` 的 terrain `0x26`，看到原版巨坑警告與 picture pause；向北跨界
