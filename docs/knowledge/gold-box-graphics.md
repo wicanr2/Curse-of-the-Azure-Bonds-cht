@@ -210,6 +210,13 @@ DOS 戰鬥畫面的可重用 native geometry 是 `8 + 168 + 8 + 128 + 8 = 320`�
 640×480 多出的 80px 可放中文戰鬥紀錄，但不能改變上方 320×184 的 2× 拓撲。
 移動格是隱藏座標，畫面不應顯示 checkerboard；斜視感來自 terrain artwork。
 
+CoAB combat chrome 在不同 DOS 戰鬥截圖中使用完全相同的裂紋位置，而且發行檔
+沒有獨立 frame DAX。可重用 boundary 是先生成 320×184 固定 panel raster：
+8px top／left／center／right／bottom regions，內緣由 1px EGA
+white/light-gray/dark-gray/black bevel 與 alternating dotted pixels 組成，再由
+作品 renderer nearest-neighbour 2×。panel interiors 必須透明；不要以 640px
+任意線寬重畫，也不要把 DUNGCOM terrain 誤稱為 UI border source。
+
 戰鬥 terrain 不在一般 `TILES.DAX`：`DUNGCOM`／`WILDCOM`／`RANDCOM` 是共用
 17-byte picture header 加多張 24×24 4bpp items，CoAB 分別有 25／34／6 張。
 palette 0 是 overlay transparency。地城的 `BackgroundTile.TileIndex` 可直接查
