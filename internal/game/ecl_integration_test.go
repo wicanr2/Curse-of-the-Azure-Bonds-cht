@@ -1011,6 +1011,10 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Yulash Pit entrance continue mode=%v return=%v message=%q",
+			state.Mode, state.eventReturnMode, state.Message)
+	}
 	if err := state.RunDungeonExitLifecycle(); err != nil {
 		t.Fatal(err)
 	}
@@ -3663,6 +3667,91 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeDungeon || len(state.Choices) != 0 {
 		t.Fatalf("Yulash consumed spy event replayed mode=%v choices=%#v message=%q",
 			state.Mode, state.Choices, state.Message)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 11, 0, 0
+	state.DungeonWallType, _ = yulashGrid.WallWrapped(11, 0, 0)
+	state.DungeonWallRoof = yulashGrid.CellWrapped(11, 0).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x26 || state.Mode != ModeEvent ||
+		!strings.Contains(state.Message, "摩安德上次降臨時留下的巨坑") {
+		t.Fatalf("Yulash Pit entrance terrain=%#x wall=%#x mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode == ModeWilderness &&
+		reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Yulash Pit entrance continuation mode=%v return=%v picture=%v originals=%#v message=%q",
+			state.Mode, state.eventReturnMode, state.PictureRequested,
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || session.CurrentBlockID() != 0x11 ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x11 || !state.geoMapPending ||
+		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 ||
+		!strings.Contains(state.Message, "三名邪教徒") ||
+		!strings.Contains(state.Message, "牧師喘著氣") {
+		t.Fatalf("Yulash Pit transition terrain=%#x wall=%#x mode=%v block=0x%02x geo=%d/%d pending=%v coords=%d,%d,%d originals=%#v choices=%#v message=%q",
+			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
+			state.GeoMapSet, state.GeoMapBlock, state.geoMapPending,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "被選中之人") {
+		t.Fatalf("Pit wounded cleric mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "被困在摩安德之坑") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit collapse mode=%v block=0x%02x coords=%d,%d,%d originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "倒斃在眾人腳邊") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit cleric death mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(),
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "烤麵包的氣味") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit ambience mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(),
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x11 ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x11 ||
+		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 {
+		t.Fatalf("Pit opening return mode=%v block=0x%02x geo=%d/%d coords=%d,%d,%d originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
 	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)

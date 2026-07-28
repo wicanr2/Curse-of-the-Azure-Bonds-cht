@@ -5545,6 +5545,30 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_yulash_commander_side_door",
 			"指揮官親自帶你們從側門離開。",
 		)
+	case strings.Contains(joined, "THE PIT CREATED BY MOANDER") &&
+		strings.Contains(joined, "STEP FORWARD TO ENTER THE DARK DEMESNE"):
+		return catalog.Text(
+			"ecl_yulash_pit_entrance",
+			"眼前就是摩安德上次降臨時留下的巨坑。再向前一步，便會進入那片黑暗領域。",
+		)
+	case strings.Contains(joined, "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK") &&
+		strings.Contains(joined, "YOU ARE TRAPPED IN THE PIT OF MOANDER"):
+		return catalog.Text(
+			"ecl_pit_of_moander_trapped",
+			"牧師猛力擊打一塊突出的岩石；你們身後的洞頂隨即崩塌。隊伍已被困在摩安德之坑裡。",
+		)
+	case strings.Contains(joined, "THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE") &&
+		strings.Contains(joined, "COUGHS BLOOD AND DIES AT YOUR FEET"):
+		return catalog.Text(
+			"ecl_pit_of_moander_cleric_dies",
+			"牧師最後得意地瞪了你們一眼，隨即咳出鮮血，倒斃在眾人腳邊。",
+		)
+	case strings.Contains(joined, "YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE") &&
+		strings.Contains(joined, "SMELL OF BAKED BREAD"):
+		return catalog.Text(
+			"ecl_pit_of_moander_ambience",
+			"遠處傳來戰鬥聲，空氣中隱約飄著烤麵包的氣味。",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -6233,7 +6257,9 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 	case "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC":
 		return catalog.Text("ecl_cleric_fanatic", "受傷牧師的雙眼因狂熱而睜大。")
 	case "TRIUMPH. HE HOWLS,":
-		return catalog.Text("ecl_cleric_howl", "勝利。他嚎叫著：")
+		return catalog.Text("ecl_cleric_howl", "露出勝利神情，接著嚎叫：")
+	case "'THE CHOSEN ONES!'":
+		return catalog.Text("ecl_cleric_chosen_ones", "「被選中之人！」")
 	case "YOU FIND A WAR BLASTED SECTION OF THE CITY.":
 		return catalog.Text("ecl_war_blasted_city", "你們找到城市中一片遭戰火摧毀的區域。")
 	case "YOU DISCOVER A SMALL MAGIC SHOP.":

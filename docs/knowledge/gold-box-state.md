@@ -47,6 +47,12 @@ map registers；只在 `Continue` 路徑做同步會漏掉這種 direct lifecycl
 只在 picture、service、treasure、combat、menu 或至少一段非空白文字出現時中止。
 修正後，`(0,3,E)→(1,3)` 會依原版觸發 `4C41` exactly-once 間諜事件。
 
+同一 GameArea 內也會發生完整的 ECL/GEO boundary transaction。尤拉什
+`(11,0,N)` 先由 terrain `0x26` 顯示巨坑警告，下一次 boundary lifecycle 以
+`7ED5` 讓 ECL3 `0x10` 切入 `0x11`；`LOAD FILES` 同步發布 GEO3 block
+`0x11`，map registers 變為 `(0,0,E)`。因此 block switch、GEO request、
+座標與 resumable opening text 必須一起驗證，不能只以 chapter 未變就沿用舊 map。
+
 SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
 selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
 並在同一 runtime 返回探索。`4BC9 > 14` 的 gate 已由原始 ECL 證實，但在
