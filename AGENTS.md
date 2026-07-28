@@ -59,3 +59,18 @@ Journal 32 text is JSON-backed.
 Run focused Go tests during development. Before pushing a milestone, run
 `go test ./...` under Docker/Xvfb for every affected repository and
 `git diff --check`.
+
+## Current pause and reverse-engineering tool
+
+As of 2026-07-28 the user requested a pause after the DOS adventure-layout
+milestone. Do not resume new reverse engineering or feature work until asked.
+The authoritative outcome inventory is `docs/project-status.md`.
+
+When work resumes, an IDA Pro installation is available at:
+
+`/home/anr2/ida_94_official/dist`
+
+Keep the existing SDD boundary: record IDA evidence in `docs/spec/`, mark the
+spec READY, then implement. Do not treat decompiler output as proof without
+cross-checking original bytes, runtime behavior, or another authoritative
+source.
