@@ -1352,3 +1352,12 @@ State 因此改為逐 spawn 依 monster ID range 選擇 MON*CHA／MON*SPC，ECL 
 只作 fallback。MON5 record 解出 66 HP、raw AC 66→AC -6、3d8，並使用 CPIC5
 原版小人。勝利後正式抵達艾森布拉城外。新增 READY spec 321、real-image 與
 法師塔至艾森布拉長流程 regression，並更新 640×480 README 實機圖。
+
+第三百二十二輪成果：依 DOS 原版城市／戰鬥截圖重建 640×480 畫面拓撲。
+冒險畫面恢復左圖、右隊伍 AC／HP、下方敘事與最底命令列；戰鬥恢復左戰術格、
+右 active／target 狀態、下方訊息與命令列。reference `draw_head_and_body`
+的 `row+5` 已由錯誤 5px 修正為五個 8px 列（40px），並以 HEAD→BODY layering
+修復臉貼在胸口。戰場改為 clipping target，不讓大型怪物越入狀態欄；在
+combat terrain selector 尚未解出前使用中性戰術格，不再誤鋪 TILES icon atlas。
+新增 READY spec 322、Docker DOSBox reference captures、兩張 Xvfb 實機圖，
+並把可沿用規則寫入 Gold Box graphics knowledge。

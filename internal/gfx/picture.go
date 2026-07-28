@@ -58,10 +58,11 @@ func MergePicturesAt(destination, source Picture, offsetX, offsetY int) (Picture
 	return result, nil
 }
 
-// ComposeHeadBody creates the reference scene-character canvas: BODY is
-// positioned bodyY pixels lower, then masked HEAD pixels are drawn at the
-// origin. Unlike MergePicturesAt this grows the destination, so a short HEAD
-// record cannot clip the BODY.
+// ComposeHeadBody creates the reference scene-character canvas: HEAD is drawn
+// first, then BODY is drawn bodyY pixels lower. The order matters because
+// BODY's shoulders/neck must cover the lower head layer; reversing it makes
+// the face appear pasted inside the torso. Unlike MergePicturesAt this grows
+// the destination, so a short HEAD record cannot clip the BODY.
 func ComposeHeadBody(head, body Picture, bodyY int) (Picture, error) {
 	if head.ItemCount == 0 || body.ItemCount == 0 {
 		return Picture{}, fmt.Errorf("cannot compose empty HEAD/BODY picture")
@@ -99,15 +100,18 @@ func ComposeHeadBody(head, body Picture, bodyY int) (Picture, error) {
 				for x := 0; x < source.Width(); x++ {
 					sourceValue := source.Pixels[item*source.ItemSize()+y*source.Width()+x]
 					destinationIndex := item*result.ItemSize() + (y+offsetY)*width + x
-					if sourceValue != 16 {
+					// HEAD/BODY records are loaded through the reference
+					// unmasked picture path, but palette index 0 still acts as
+					// transparent during the layered scene draw.
+					if sourceValue != 16 && sourceValue != 0 {
 						result.Pixels[destinationIndex] = sourceValue
 					}
 				}
 			}
 		}
 	}
-	overlay(body, bodyY)
 	overlay(head, 0)
+	overlay(body, bodyY)
 	return result, nil
 }
 

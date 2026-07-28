@@ -1208,6 +1208,10 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 			if programID == 0 || programID == 3 || programID == 8 || programID == 9 {
 				result.ProgramExit = true
 				result.PC = next
+				// PROGRAM is a resumable external-engine boundary just like
+				// COMBAT/SHOP/TEMPLE. Preserve the instruction after PROGRAM
+				// so closing CAMP does not execute PROGRAM 9 a second time.
+				saveState(next)
 				return result, nil
 			}
 		case 0x0B: // LOAD MONSTER

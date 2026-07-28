@@ -225,6 +225,7 @@ type State struct {
 	barTales               []string
 	barTaleIndex           int
 	campMenu               bool
+	campECLService         bool
 	campReturnMode         Mode
 	campRestMenu           bool
 	restHours              int
@@ -2667,6 +2668,16 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 	}
 	if originalChoice == "EXIT" {
 		s.campMenu = false
+		if s.campECLService {
+			s.campECLService = false
+			continued, err := s.continueECLAfterEngineBoundary()
+			if err != nil {
+				return err
+			}
+			if continued {
+				return nil
+			}
+		}
 		if s.campReturnMode == ModeDungeon {
 			s.Mode = ModeDungeon
 			s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　S：搜索　E：紮營")
@@ -3169,6 +3180,7 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 		s.Message = "全隊已恢復，是否在結束前保存？"
 		return true, nil
 	case 9:
+		s.campECLService = s.session != nil && len(s.eclBlock) > 0
 		return true, s.Camp()
 	default:
 		return false, nil
@@ -4783,11 +4795,17 @@ func (s *State) placePrompt() string {
 // bytes, then retains the observed opening sequence as a compatibility
 // fallback for synthetic sessions.
 func (s *State) applyCitySelection() {
-	if s.session != nil {
+	if s.session != nil && s.session.CurrentBlockID() == 0x50 {
 		for _, address := range []uint16{0x4C9B, 0x4C9C} {
 			if value, ok := s.session.MemoryValue(address); ok &&
 				((value >= 1 && value <= 4) || value == 8 || value == 9) {
 				s.setWorldLocation(value)
+				// The global ECL1 dispatcher owns city edges, city services,
+				// and wilderness travel. A party may arrive here through an
+				// Area 5 DEPART continuation, so clear the old dungeon
+				// namespace instead of leaking its GEO/CPIC state into town.
+				s.Area.GameArea = 1
+				s.Area.InDungeon = false
 				return
 			}
 		}
@@ -5292,6 +5310,17 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_essembra_edge",
 			"你們來到艾森布拉城外。要進城，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "YOU ARE IN ESSEMBRA") &&
+		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
+		return catalog.Text(
+			"ecl_essembra_places",
+			"你們身在艾森布拉。要前往哪個場所？",
+		)
+	case strings.Contains(joined, "WELCOME TO THE BRANCHING OAK"):
+		return catalog.Text(
+			"ecl_essembra_branching_oak",
+			"「歡迎光臨枝椏橡樹客棧。」",
 		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
 		return catalog.Text(

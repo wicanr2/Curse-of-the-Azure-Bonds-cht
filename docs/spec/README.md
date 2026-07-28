@@ -299,3 +299,4 @@
 - [第三百一十九輪法師塔屋頂出口與祕道](./319-wizard-tower-roof-exits.md)（`READY`：限 `(7,15,E)` terrain 1、CAVES/WILDERNESS/STAY HERE、村莊／離區 NEWECL）
 - [第三百二十輪 Area 5 離場清理與阿卡巴告別](./320-area5-departure-cleanup.md)（`READY`：限 block 0x30 NPC／黑暗精靈裝備清理與 NEWECL 0x50 世界返回）
 - [第三百二十一輪巫師塔後龍巫妖遭遇](./321-post-wizard-dracolich.md)（`READY`：限哈普→艾森布拉 TRAIL、MON5 0x3C 跨章 encounter 與勝利抵達）
+- [第三百二十二輪原版 GUI 與戰鬥版面忠實度](./322-original-gui-layout-fidelity.md)（`READY`：限冒險四區 layout、HEAD/BODY row offset、戰場裁切與 640×480 CJK 分層）

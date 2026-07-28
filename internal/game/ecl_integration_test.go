@@ -3090,6 +3090,63 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("post-dracolich arrival mode=%v location=%v originals=%#v message=%q",
 			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || session.CurrentBlockID() != 0x50 ||
+		state.Area.InDungeon || state.Area.GameArea != 1 ||
+		!state.PictureRequested || state.PictureBlock != 80 ||
+		!strings.Contains(state.Message, "身在艾森布拉") {
+		t.Fatalf("Essembra enter mode=%v block=0x%02X area=%+v originals=%#v message=%q picture=%v/%d",
+			state.Mode, session.CurrentBlockID(), state.Area,
+			state.currentOriginalChoices, state.Message, state.PictureRequested, state.PictureBlock)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
+		!strings.Contains(state.Message, "艾森布拉") {
+		t.Fatalf("Essembra places mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "枝椏橡樹客棧") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Essembra inn welcome originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"SAVE", "VIEW", "MAGIC", "REST", "ALTER", "FIX", "EXIT"}) {
+		t.Fatalf("Essembra inn camp services originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(6); err != nil {
+		t.Fatal(err)
+	}
+	if state.PictureRequested {
+		if state.PictureBlock != 80 {
+			t.Fatalf("Essembra inn return picture=%d, want PIC1 80", state.PictureBlock)
+		}
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || session.CurrentBlockID() != 0x50 ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
+		!strings.Contains(state.Message, "艾森布拉") {
+		t.Fatalf("Essembra inn return mode=%v block=0x%02X originals=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

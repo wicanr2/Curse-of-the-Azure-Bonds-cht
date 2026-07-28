@@ -4,6 +4,17 @@
 
 ## 目前成果
 
+最新畫面已依原版 DOS 截圖重新校正版面，不再沿用先前置中的 prototype：
+
+![原版四區配置的 640×480 繁中冒險畫面](docs/screenshots/gold-box-layout-adventure.png)
+
+![原版左右配置的 640×480 繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)
+
+冒險畫面恢復左上事件圖、右上隊伍／AC／HP、下方敘事與最底命令列；戰鬥畫面
+恢復左側戰術格、右側角色狀態、下方訊息與命令列。原始像素素材維持 2×
+nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／BODY 的
+`row + 5` 也已修正為五個 8px 列（40px），人物頭像不再被錯貼進胸口。
+
 以下圖片由原始 `curseoftheazurebonds.zip`，透過專案目前的 DAX／GFX／GEO parser 離線產生，證明圖像資料管線已經接通：
 
 ![TILES.DAX 原始圖塊 gallery](docs/screenshots/tiles-gallery.png)
@@ -16,10 +27,8 @@
 
 ![原始 CPIC 戰鬥小人與效果 sprite sheet](docs/screenshots/combat-sprites.png)
 
-![Ebiten 繁中 direct-entry 戰鬥畫面](docs/screenshots/combat-game.png)
-
-上圖是目前 remake 使用原始 MON1CHA／CPIC 素材進入可操作戰鬥的實際畫面（headless
-Xvfb capture）；它是可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
+舊版 direct-entry 戰鬥圖已由上方原版比例校正版取代；它仍是 headless Xvfb
+可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
 
 ![正式序幕後的提爾佛頓 640×480 地城畫面](docs/screenshots/tilverton-opening.png)
 

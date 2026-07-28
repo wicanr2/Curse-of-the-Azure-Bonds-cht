@@ -867,14 +867,15 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	if a.state.SceneCharacterRequested {
 		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
-			const pixelScale = 3
+			a.drawAdventureChrome(screen)
+			const pixelScale = 2
 			op := &ebiten.DrawImageOptions{}
 			op.Filter = ebiten.FilterNearest
 			op.GeoM.Scale(pixelScale, pixelScale)
-			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 70)
+			op.GeoM.Translate(float64(16+(256-sprite.Bounds().Dx()*pixelScale)/2), float64(16+(256-sprite.Bounds().Dy()*pixelScale)/2))
 			screen.DrawImage(sprite, op)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, "人物場景　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
+			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		text.Draw(screen, "人物圖層素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
@@ -910,13 +911,14 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
 	op := &ebiten.DrawImageOptions{}
-	const pixelScale = 3
+	a.drawAdventureChrome(screen)
+	const pixelScale = 2
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(pixelScale, pixelScale)
-	op.GeoM.Translate(float64((logicalWidth-frame.image.Bounds().Dx()*pixelScale)/2)+float64(frame.x*pixelScale), 42+float64(frame.y*pixelScale))
+	op.GeoM.Translate(float64(16+(256-frame.image.Bounds().Dx()*pixelScale)/2)+float64(frame.x*pixelScale), float64(16+(256-frame.image.Bounds().Dy()*pixelScale)/2)+float64(frame.y*pixelScale))
 	screen.DrawImage(frame.image, op)
 	a.drawPictureMessage(screen)
-	text.Draw(screen, "事件畫面　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
+	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
@@ -924,14 +926,43 @@ func (a *app) drawPictureMessage(screen *ebiten.Image) {
 	// A 24px CJK glyph is much wider than the original 8px Latin cell.
 	// Keep picture captions to 22 Unicode code points so both Traditional
 	// Chinese and mixed ASCII text stay inside the 640px logical canvas.
-	const lineRunes = 22
-	for line := 0; line < 3 && len(runes) > 0; line++ {
+	const lineRunes = 24
+	for line := 0; line < 4 && len(runes) > 0; line++ {
 		count := lineRunes
 		if len(runes) < count {
 			count = len(runes)
 		}
-		text.Draw(screen, string(runes[:count]), a.face, 38, 350+line*28, color.RGBA{92, 220, 255, 255})
+		text.Draw(screen, string(runes[:count]), a.face, 24, 312+line*30, color.RGBA{92, 220, 255, 255})
 		runes = runes[count:]
+	}
+}
+
+func drawPanelFrame(screen *ebiten.Image, x, y, width, height int) {
+	edge := color.RGBA{R: 214, G: 216, B: 208, A: 255}
+	shadow := color.RGBA{R: 92, G: 98, B: 112, A: 255}
+	ebitenutil.DrawRect(screen, float64(x), float64(y), float64(width), 3, edge)
+	ebitenutil.DrawRect(screen, float64(x), float64(y+height-3), float64(width), 3, edge)
+	ebitenutil.DrawRect(screen, float64(x), float64(y), 3, float64(height), edge)
+	ebitenutil.DrawRect(screen, float64(x+width-3), float64(y), 3, float64(height), edge)
+	ebitenutil.DrawRect(screen, float64(x+4), float64(y+4), float64(width-8), 2, shadow)
+}
+
+func (a *app) drawAdventureChrome(screen *ebiten.Image) {
+	drawPanelFrame(screen, 8, 8, 264, 272)
+	drawPanelFrame(screen, 272, 8, 360, 272)
+	drawPanelFrame(screen, 8, 280, 624, 168)
+	drawPanelFrame(screen, 8, 448, 624, 28)
+	text.Draw(screen, "姓名", a.compactFace, 288, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, "AC", a.compactFace, 520, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, "HP", a.compactFace, 578, 38, color.RGBA{232, 238, 255, 255})
+	for index, fighter := range a.state.PartyFighters() {
+		if index >= 8 {
+			break
+		}
+		ink := color.RGBA{R: 92, G: 220, B: 255, A: 255}
+		text.Draw(screen, fighter.Name, a.compactFace, 288, 68+index*25, ink)
+		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 526, 68+index*25, ink)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 580, 68+index*25, ink)
 	}
 }
 
@@ -1187,8 +1218,24 @@ func className(c party.Class) string {
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "戰鬥", a.face, 24, 28, cyan)
-	drawWrappedText(screen, a.state.CombatMessage(), a.face, 24, 68, 24, 27, 1, white)
+	drawPanelFrame(screen, 8, 8, 352, 376)
+	drawPanelFrame(screen, 360, 8, 272, 376)
+	drawPanelFrame(screen, 8, 384, 624, 64)
+	drawPanelFrame(screen, 8, 448, 624, 28)
+	battlefield := ebiten.NewImage(352, 376)
+	for row := 0; row < 7; row++ {
+		for column := 0; column < 7; column++ {
+			cell := color.RGBA{R: 34, G: 46, B: 58, A: 255}
+			if (row+column)%2 == 0 {
+				cell = color.RGBA{R: 40, G: 54, B: 66, A: 255}
+			}
+			ebitenutil.DrawRect(battlefield, float64(16+column*48), float64(16+row*48), 46, 46, cell)
+		}
+	}
+	battlefieldOp := &ebiten.DrawImageOptions{}
+	battlefieldOp.GeoM.Translate(8, 8)
+	screen.DrawImage(battlefield, battlefieldOp)
+	drawWrappedText(screen, a.state.CombatMessage(), a.compactFace, 24, 414, 36, 20, 1, white)
 	if a.state.CombatViewActive() {
 		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
 		for index, line := range a.state.CombatViewLines() {
@@ -1198,11 +1245,30 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		return
 	}
 	active, activeOK := a.state.CombatActiveFighter()
-	useCamera := activeOK && active.HasCombatPosition &&
-		(active.CombatX < 0 || active.CombatX > 10 || active.CombatY < 0 || active.CombatY > 4)
+	cameraFocus := combat.TilePoint{}
+	minX, maxX, minY, maxY := 0, 0, 0, 0
+	havePosition := false
+	for _, fighter := range a.state.CombatFighters() {
+		if !fighter.HasCombatPosition {
+			continue
+		}
+		if !havePosition {
+			minX, maxX, minY, maxY = fighter.CombatX, fighter.CombatX, fighter.CombatY, fighter.CombatY
+			havePosition = true
+		} else {
+			minX, maxX = min(minX, fighter.CombatX), max(maxX, fighter.CombatX)
+			minY, maxY = min(minY, fighter.CombatY), max(maxY, fighter.CombatY)
+		}
+	}
+	useCamera := havePosition && (minX < 0 || maxX > 6 || minY < 0 || maxY > 6)
+	if useCamera {
+		cameraFocus = combat.TilePoint{X: (minX + maxX + 1) / 2, Y: (minY + maxY + 1) / 2}
+	} else if activeOK {
+		cameraFocus = combat.TilePoint{X: active.CombatX, Y: active.CombatY}
+	}
 	camera := combat.NewCombatCamera(
-		combat.TilePoint{X: active.CombatX, Y: active.CombatY},
-		combat.TilePoint{X: 4, Y: 2},
+		cameraFocus,
+		combat.TilePoint{X: 3, Y: 3},
 		useCamera,
 	)
 	partyIndex, enemyIndex := 0, 0
@@ -1220,16 +1286,17 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 				tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 			}
 			tile = camera.Apply(tile)
-			x, y := 24+tile.X*52, 104+tile.Y*52
+			tile.X = 6 - tile.X
+			x, y := 12+tile.X*48, 16+tile.Y*48
 			if !fighter.DownedCorpse && !fighter.DeathOverlay {
-				a.drawFighterSprite(screen, fighter, partyIndex, x, y)
+				a.drawFighterSprite(battlefield, fighter, partyIndex, x, y)
 			}
-			a.drawFighterDeathOverlay(screen, fighter, x, y)
+			a.drawFighterDeathOverlay(battlefield, fighter, x, y)
 			selected := false
 			if (a.state.CombatCastingSpell() == game.CureLightWoundsSpellID || a.state.CombatCastingSpell() == game.ProtectionFromEvilSpellID || (a.state.CombatCastingSpell() == game.ProtectionFromGoodSpellID && !a.state.CombatSpellTargetsEnemy())) && a.state.CombatSpellTargetIndex() < len(spellTargets) && spellTargets[a.state.CombatSpellTargetIndex()].ID == fighter.ID {
 				selected = true
 			}
-			a.drawCombatSpriteMarker(screen, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
+			a.drawCombatSpriteMarker(battlefield, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
 			partyIndex++
 			continue
 		}
@@ -1238,24 +1305,31 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			tile = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
 		}
 		tile = camera.Apply(tile)
-		x, y := 24+tile.X*52, 104+tile.Y*52
+		tile.X = 6 - tile.X
+		x, y := 12+tile.X*48, 16+tile.Y*48
 		if !fighter.DownedCorpse && !fighter.DeathOverlay {
-			a.drawFighterSprite(screen, fighter, enemyIndex, x, y)
+			a.drawFighterSprite(battlefield, fighter, enemyIndex, x, y)
 		}
-		a.drawFighterDeathOverlay(screen, fighter, x, y)
+		a.drawFighterDeathOverlay(battlefield, fighter, x, y)
 		selected := false
 		if (a.state.CombatCastingSpell() == 0 || a.state.CombatSpellTargetsEnemy()) && len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) && targets[a.state.CombatTargetIndex()].ID == fighter.ID {
 			selected = true
 		}
-		a.drawCombatSpriteMarker(screen, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
+		a.drawCombatSpriteMarker(battlefield, fighter, activeOK && active.ID == fighter.ID, selected, x, y)
 		enemyIndex++
 	}
+	screen.DrawImage(battlefield, battlefieldOp)
+	drawPanelFrame(screen, 8, 8, 352, 376)
 	if activeOK {
-		text.Draw(screen, fmt.Sprintf("行動：%s　HP %d/%d", active.Name, active.HitPoints, active.MaxHitPoints), a.face, 24, 375, cyan)
+		text.Draw(screen, active.Name, a.face, 378, 44, cyan)
+		text.Draw(screen, fmt.Sprintf("HP %d/%d", active.HitPoints, active.MaxHitPoints), a.face, 378, 82, white)
+		text.Draw(screen, fmt.Sprintf("AC %d", active.ArmorClass), a.face, 378, 118, white)
 	}
 	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
 		target := targets[a.state.CombatTargetIndex()]
-		text.Draw(screen, fmt.Sprintf("目標：%s　HP %d/%d", target.Name, target.HitPoints, target.MaxHitPoints), a.face, 24, 405, white)
+		text.Draw(screen, "目標："+target.Name, a.face, 378, 190, cyan)
+		text.Draw(screen, fmt.Sprintf("HP %d/%d", target.HitPoints, target.MaxHitPoints), a.face, 378, 228, white)
+		text.Draw(screen, fmt.Sprintf("AC %d", target.ArmorClass), a.face, 378, 264, white)
 	}
 	spellHints := make([]string, 0, 7)
 	if a.state.CombatCastingSpell() != 0 {
@@ -1291,9 +1365,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if a.state.CombatCanCastProtectionFromGood() {
 		spellHints = append(spellHints, "G防善")
 	}
-	text.Draw(screen, "左右：選目標　Enter：攻擊　M：移動　D：結束", a.compactFace, 24, 434, cyan)
+	text.Draw(screen, "移動　查看　瞄準　使用　施法　快速　結束", a.compactFace, 20, 470, cyan)
 	if len(spellHints) > 0 {
-		text.Draw(screen, "法術："+strings.Join(spellHints, "　"), a.compactFace, 24, 458, cyan)
+		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
 	}
 }
 

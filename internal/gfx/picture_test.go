@@ -194,8 +194,28 @@ func TestComposeHeadBodyGrowsCanvasAndOffsetsBody(t *testing.T) {
 	if value, _ := composed.Pixel(0, 0, 0); value != 1 {
 		t.Fatalf("HEAD pixel=%d, want 1 at origin", value)
 	}
+	if value, _ := composed.Pixel(0, 0, 1); value != 2 {
+		t.Fatalf("overlap pixel=%d, want BODY 2 drawn over HEAD", value)
+	}
 	if value, _ := composed.Pixel(0, 0, 3); value != 2 {
 		t.Fatalf("BODY pixel=%d, want 2 at y=3", value)
+	}
+}
+
+func TestComposeHeadBodyTreatsBlackAsTransparentLayerPixel(t *testing.T) {
+	head := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: filledPicturePixels(8, 3)}
+	bodyPixels := filledPicturePixels(8, 0)
+	bodyPixels[1] = 4
+	body := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: bodyPixels}
+	composed, err := ComposeHeadBody(head, body, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if value, _ := composed.Pixel(0, 0, 0); value != 3 {
+		t.Fatalf("black BODY pixel erased HEAD: got %d want 3", value)
+	}
+	if value, _ := composed.Pixel(0, 1, 0); value != 4 {
+		t.Fatalf("non-black BODY pixel=%d, want 4", value)
 	}
 }
 

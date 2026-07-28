@@ -117,9 +117,18 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 	if err != nil {
 		return err
 	}
+	enemyIndex := 0
+	for _, spawn := range result.MonsterSpawns {
+		for count := uint8(0); count < spawn.Count && enemyIndex < len(enemies); count++ {
+			enemies[enemyIndex].SpriteSet = monsterChapterForBlock(spawn.MonsterID)
+			enemyIndex++
+		}
+	}
 	for index := range enemies {
 		enemies[index].Name = localizeMonsterName(s.catalog, enemies[index].Name)
-		enemies[index].SpriteSet = s.Area.GameArea
+		if enemies[index].SpriteSet == 0 {
+			enemies[index].SpriteSet = s.Area.GameArea
+		}
 		if result.MonsterSetup != nil {
 			enemies[index].AnimationBlock = result.MonsterSetup.SpriteID
 			enemies[index].HasAnimation = true
@@ -1562,6 +1571,7 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	}
 
 	if result.PictureRequested {
+		s.Mode = ModeEvent
 		if !s.picturesEnabled {
 			s.PictureRequested = false
 			s.PictureBlock = result.PictureBlock

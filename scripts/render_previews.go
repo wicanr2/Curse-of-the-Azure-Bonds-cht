@@ -12,6 +12,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
@@ -204,16 +205,24 @@ func renderCombatSprites() error {
 		}
 	}
 	// General scene characters use HEAD<area> and BODY<area> pictures. The
-	// reference draws the head at the origin and the body five rows below it.
+	// reference draws the head at the origin and the body five 8-pixel text
+	// rows below it (40 pixels), not five individual pixels.
 	for area := 2; area <= 6; area++ {
 		headLayers := layers[fmt.Sprintf("HEAD%d", area)]
 		bodyLayers := layers[fmt.Sprintf("BODY%d", area)]
-		for id, head := range headLayers {
+		ids := make([]int, 0, len(headLayers))
+		for id := range headLayers {
+			ids = append(ids, int(id))
+		}
+		sort.Ints(ids)
+		for _, rawID := range ids {
+			id := uint8(rawID)
+			head := headLayers[id]
 			body, ok := bodyLayers[id]
 			if !ok {
 				continue
 			}
-			merged, err := gfx.ComposeHeadBody(head, body, 5)
+			merged, err := gfx.ComposeHeadBody(head, body, 5*8)
 			if err != nil {
 				return fmt.Errorf("merge HEAD%d/BODY%d block 0x%02X: %w", area, area, id, err)
 			}
@@ -226,7 +235,7 @@ func renderCombatSprites() error {
 				return err
 			}
 			frames = append(frames, spriteFrame{name: name, img: img})
-			manifest.WriteString(fmt.Sprintf("| `HEAD%d+BODY%d` | `0x%02X` | merged body y+5 | %dx%d | [`%s`](../../assets/sprites/%s) | scene character composition |\n", area, area, id, merged.Width(), merged.Height(), name, name))
+			manifest.WriteString(fmt.Sprintf("| `HEAD%d+BODY%d` | `0x%02X` | BODY y+40 px (5 rows) | %dx%d | [`%s`](../../assets/sprites/%s) | scene character composition |\n", area, area, id, merged.Width(), merged.Height(), name, name))
 		}
 		// ECL may combine independent HEAD/BODY selectors. Tilverton's Gond
 		// altar is the first proven mixed pair: HEAD2 block 9 + BODY2 block 6.
@@ -234,7 +243,7 @@ func renderCombatSprites() error {
 			head, headOK := headLayers[9]
 			body, bodyOK := bodyLayers[6]
 			if headOK && bodyOK {
-				merged, err := gfx.ComposeHeadBody(head, body, 5)
+				merged, err := gfx.ComposeHeadBody(head, body, 5*8)
 				if err != nil {
 					return fmt.Errorf("merge HEAD2 block 0x09/BODY2 block 0x06: %w", err)
 				}
@@ -247,7 +256,7 @@ func renderCombatSprites() error {
 					return err
 				}
 				frames = append(frames, spriteFrame{name: name, img: img})
-				manifest.WriteString(fmt.Sprintf("| `HEAD2 0x09 + BODY2 0x06` | mixed selectors | merged body y+5 | %dx%d | [`%s`](../../assets/sprites/%s) | Gond altar ECL composition |\n", merged.Width(), merged.Height(), name, name))
+				manifest.WriteString(fmt.Sprintf("| `HEAD2 0x09 + BODY2 0x06` | mixed selectors | BODY y+40 px (5 rows) | %dx%d | [`%s`](../../assets/sprites/%s) | Gond altar ECL composition |\n", merged.Width(), merged.Height(), name, name))
 			}
 		}
 	}
