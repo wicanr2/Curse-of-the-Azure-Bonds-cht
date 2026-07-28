@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
@@ -21,6 +22,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
+	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
 // ReportCombatError converts a recoverable combat action failure into a
@@ -144,6 +146,12 @@ type State struct {
 	creationReturnMode     Mode
 	session                *ecl.BlockSession
 	pendingPictureResult   *ecl.RunResult
+	pendingECLMenu         *ecl.Menu
+	pendingECLMenuMessage  string
+	pendingDungeonEntry    bool
+	dataPack               *goldenbox.Pack
+	dataPackError          error
+	appliedDataPackEvents  map[string]bool
 	newGameEntryActive     bool
 	eclMenuReturnMode      Mode
 	party                  []combat.Fighter
@@ -342,6 +350,7 @@ func (s *State) initializeECL() {
 }
 
 func NewState(catalog locale.Catalog) State {
+	dataPack, dataPackErr := gamepack.Default()
 	journalPages := []string{
 		catalog.Text("journal_page_1", "序章：隊伍醒來後必須查明蔚藍枷的來源。"),
 		catalog.Text("journal_page_2", "達倫地區有許多城鎮與荒野等待探索。"),
@@ -365,6 +374,9 @@ func NewState(catalog locale.Catalog) State {
 		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
 		JournalPages:           journalPages,
 		catalog:                catalog,
+		dataPack:               dataPack,
+		dataPackError:          dataPackErr,
+		appliedDataPackEvents:  make(map[string]bool),
 		barTales: []string{
 			catalog.Text("bar_tale_1", "酒客低聲說：公主與國王都喬裝在城中。"),
 			catalog.Text("bar_tale_2", "有人說火焰巨人只怕三件古老神器，其中一件可能在北方瀑布下。"),
@@ -871,7 +883,7 @@ func (s *State) BeginAdventure() error {
 	s.applyECLRobSignals(result)
 	if len(result.Text) > 0 {
 		s.unlockJournalEntries(result.Text)
-		s.Message = localizeECLText(s.catalog, result.Text)
+		s.Message = s.localizeECLText(result.Text)
 	}
 	if result.PictureRequested {
 		s.PictureRequested = true
@@ -1058,13 +1070,18 @@ func (s *State) Select(index int) error {
 				s.session.SetMemoryValue(0xC04C, 14)
 				s.session.SetMemoryValue(0xC04D, 2)
 			}
-			// Hap ENTER CITY is an engine-level area transition wrapped
-			// around ECL's NEWECL 0x31. The script loads its map pieces, while
-			// the DOS dispatcher selects Area 5 and dungeon exploration.
-			if originalChoice == "ENTER CITY" && s.session.CurrentBlockID() == 0x31 {
-				s.Area.GameArea = 5
+			// Global ENTER CITY is an engine-level area transition wrapped
+			// around ECL's NEWECL. The destination namespace selects the
+			// chapter's ECL/GEO resources; its story may pause several times
+			// before an empty EXIT finally hands control to dungeon movement.
+			if originalChoice == "ENTER CITY" && blockBefore >= 0x50 && currentBlock < 0x50 {
+				gameArea := monsterChapterForBlock(currentBlock)
+				s.Area.GameArea = gameArea
 				s.Area.InDungeon = true
-				s.GeoMapSet = 5
+				s.GeoMapSet = gameArea
+				s.GeoMapBlock = currentBlock
+				s.geoMapPending = true
+				s.pendingDungeonEntry = true
 				s.eclMenuReturnMode = ModeDungeon
 				s.eventReturnMode = ModeDungeon
 			}
@@ -1128,7 +1145,7 @@ func (s *State) Select(index int) error {
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.unlockJournalEntries(result.Text)
-			s.Message = localizeECLText(s.catalog, result.Text)
+			s.Message = s.localizeECLText(result.Text)
 		}
 		if len(result.WhoRequests) > 0 {
 			request := result.WhoRequests[len(result.WhoRequests)-1]
@@ -1149,7 +1166,7 @@ func (s *State) Select(index int) error {
 				s.currentOriginalChoices = append(s.currentOriginalChoices, character.ID)
 			}
 			if len(result.WhoRequests) > 0 && result.WhoRequests[len(result.WhoRequests)-1].Prompt != "" {
-				s.Prompt = localizeECLText(s.catalog, []string{result.WhoRequests[len(result.WhoRequests)-1].Prompt})
+				s.Prompt = s.localizeECLText([]string{result.WhoRequests[len(result.WhoRequests)-1].Prompt})
 			} else {
 				s.Prompt = "請選擇角色"
 			}
@@ -1251,6 +1268,10 @@ func (s *State) Select(index int) error {
 			strings.TrimSpace(strings.Join(result.Text, "")) == "" {
 			s.Mode = ModeDungeon
 			s.syncCurrentECLDungeonArea()
+			if s.pendingDungeonEntry {
+				s.syncDungeonStateFromECLRegisters()
+				s.pendingDungeonEntry = false
+			}
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
 			if s.session != nil && s.session.CurrentBlockID() == 0x31 {
@@ -4628,12 +4649,12 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	s.applyECLRobSignals(result)
-	if s.applyPitOfMoanderDeparture() {
-		return true, nil
+	if handled, err := s.applyDataPackEvent(result); handled || err != nil {
+		return handled, err
 	}
 	if hasMeaningfulECLText(result.Text) {
 		s.unlockJournalEntries(result.Text)
-		s.Message = localizeECLText(s.catalog, result.Text)
+		s.Message = s.localizeECLText(result.Text)
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
@@ -4691,44 +4712,54 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	return false, nil
 }
 
-// applyPitOfMoanderDeparture bridges the verified ECL3 block 0x11 exit into
-// persistent party state. The reference script marks the completed escape
-// with 4C5B=FF and 7F12=1 before NEWECL 0x51; its preceding LOAD CHARACTER /
-// DUMP sequence does not retain a stable player index across the block switch.
-// Alias and Dragonbait leave in every observed branch, including the branch
-// where Dragonbait carries Alias's body toward Hillsfar.
-func (s *State) applyPitOfMoanderDeparture() bool {
-	if s.session == nil || s.session.CurrentBlockID() != 0x51 {
-		return false
+// applyDataPackEvent is the title adapter for the reusable declarative engine.
+// It projects only typed runtime inputs requested by the pack, then commits
+// generic outputs back to the persistent roster and UI. Plot flags, character
+// names, messages and destination block IDs remain in JSON.
+func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
+	if s.dataPackError != nil {
+		return true, fmt.Errorf("load CoAB game pack: %w", s.dataPackError)
 	}
-	gauntlet, gauntletOK := s.session.MemoryValue(0x4C5B)
-	progress, progressOK := s.session.MemoryValue(0x7F12)
-	if !gauntletOK || !progressOK || gauntlet != 0xFF || progress != 1 {
-		return false
+	if s.dataPack == nil || s.session == nil {
+		return false, nil
 	}
-
-	aliasAlive := false
-	foundCompanion := false
-	for _, character := range s.partyRoster {
-		if character.ScriptName == "ALIAS" {
-			foundCompanion = true
-			aliasAlive = character.HitPoints > 0
-		} else if character.ScriptName == "DRAGONBAIT" {
-			foundCompanion = true
+	memory := make(map[uint16]uint16)
+	for _, address := range s.dataPack.MemoryAddresses() {
+		if value, ok := s.session.MemoryValue(address); ok {
+			memory[address] = value
 		}
 	}
-	if !foundCompanion {
-		return false
+	roster := make([]goldenbox.Member, 0, len(s.partyRoster))
+	for _, character := range s.partyRoster {
+		roster = append(roster, goldenbox.Member{
+			ID: character.ID, ScriptName: character.ScriptName, HitPoints: character.HitPoints,
+		})
+	}
+	runtime := &goldenbox.Runtime{
+		ECLBlock:      s.session.CurrentBlockID(),
+		Memory:        memory,
+		Roster:        roster,
+		Locale:        s.catalog.Language,
+		PendingMenu:   result.WaitingForMenu && len(result.Menus) > 0,
+		AppliedEvents: s.appliedDataPackEvents,
+	}
+	applied, err := s.dataPack.ApplyFirst(runtime)
+	if err != nil {
+		return true, err
+	}
+	if !applied.Applied {
+		return false, nil
 	}
 
-	removedIDs := make(map[string]bool, 2)
+	removedIDs := make(map[string]bool, len(runtime.RemovedMembers))
+	for _, id := range runtime.RemovedMembers {
+		removedIDs[id] = true
+	}
 	keptRoster := s.partyRoster[:0]
 	for _, character := range s.partyRoster {
-		if character.ScriptName == "ALIAS" || character.ScriptName == "DRAGONBAIT" {
-			removedIDs[character.ID] = true
-			continue
+		if !removedIDs[character.ID] {
+			keptRoster = append(keptRoster, character)
 		}
-		keptRoster = append(keptRoster, character)
 	}
 	s.partyRoster = keptRoster
 	keptFighters := s.party[:0]
@@ -4739,25 +4770,25 @@ func (s *State) applyPitOfMoanderDeparture() bool {
 	}
 	s.party = keptFighters
 	s.whoSelectedIndex = -1
-
-	if aliasAlive {
-		s.Message = s.catalog.Text(
-			"ecl_pit_alias_dragonbait_farewell",
-			"愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。"+
-				"空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
-		)
-	} else {
-		s.Message = s.catalog.Text(
-			"ecl_pit_dragonbait_carries_alias",
-			"龍餌抱起愛麗雅絲的遺體，向眾人沉默地鞠躬，隨後朝希爾斯法的方向離去。",
-		)
-	}
+	s.Message = runtime.Message
 	s.Mode = ModeEvent
-	s.eventReturnMode = ModeWilderness
-	s.eclMenuReturnMode = ModeWilderness
+	switch runtime.Mode {
+	case "world_menu":
+		s.eventReturnMode = ModeWilderness
+		s.eclMenuReturnMode = ModeWilderness
+	default:
+		return true, fmt.Errorf("data-pack event %q returned unsupported mode %q", applied.EventID, runtime.Mode)
+	}
 	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
 	s.Choices = []string{localizeOption(s.catalog, s.currentOriginalChoices[0])}
-	return true
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		menu := result.Menus[len(result.Menus)-1]
+		s.pendingECLMenu = &menu
+		if hasMeaningfulECLText(result.Text) {
+			s.pendingECLMenuMessage = s.localizeECLText(result.Text)
+		}
+	}
+	return true, nil
 }
 
 // Move changes the data-neutral map cursor used by the first navigable map slice.
@@ -4843,6 +4874,14 @@ func (s *State) Continue() error {
 				return nil
 			}
 		}
+	}
+	if s.pendingECLMenu != nil {
+		menu := *s.pendingECLMenu
+		s.pendingECLMenu = nil
+		s.enterECLMenu(menu)
+		s.Message = s.pendingECLMenuMessage
+		s.pendingECLMenuMessage = ""
+		return nil
 	}
 	switch s.eventReturnMode {
 	case ModeWilderness:
@@ -5106,17 +5145,19 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	case "LIE":
 		return catalog.Text("lie", "說謊")
 	case "ENTER CITY":
-		return catalog.Text("enter_city", "Enter city")
+		return catalog.Text("enter_city", "進入城市")
 	case "JOURNEY ON":
-		return catalog.Text("journey_on", "Journey on")
+		return catalog.Text("journey_on", "繼續旅程")
 	case "CAMP":
-		return catalog.Text("camp", "Camp")
+		return catalog.Text("camp", "紮營")
+	case "SEARCH AREA":
+		return catalog.Text("search_area", "搜索此區")
 	case "INN":
-		return catalog.Text("inn", "Inn")
+		return catalog.Text("inn", "客棧")
 	case "STORE":
-		return catalog.Text("store", "Store")
+		return catalog.Text("store", "商店")
 	case "BAR":
-		return catalog.Text("bar", "Bar")
+		return catalog.Text("bar", "酒館")
 	case "HALL":
 		return catalog.Text("training_hall", "訓練場")
 	case "TEMPLE":
@@ -5260,6 +5301,15 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 		return catalog.Text("ecl_hap_dark_elf_patrol", "一隊黑暗精靈巡邏兵出現了")
 	}
 	return prompt
+}
+
+func (s *State) localizeECLText(texts []string) string {
+	if s.dataPack != nil {
+		if result := s.dataPack.MatchText(texts, s.catalog.Language); result.Matched {
+			return result.Message
+		}
+	}
+	return localizeECLText(s.catalog, texts)
 }
 
 func localizeECLText(catalog locale.Catalog, texts []string) string {
@@ -5851,13 +5901,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_pit_exit_last_stand",
 			"大批摩安德教徒發動最後阻擊，企圖阻止你們逃出地底！",
 		)
-	case strings.Contains(joined, "WE MUST LEAVE YOU NOW") &&
-		strings.Contains(joined, "ALIAS THANKS YOU FOR YOUR HELP"):
-		return catalog.Text(
-			"ecl_pit_alias_dragonbait_farewell",
-			"愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。"+
-				"空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
-		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -6240,6 +6283,12 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
+	if s.dataPack != nil {
+		match := s.dataPack.MatchText(texts, s.catalog.Language)
+		for _, page := range match.JournalPages {
+			s.appendJournalPages(page, []string{page})
+		}
+	}
 	if strings.Contains(joined, "YOU HAVE ALSO FOUND A MAP OF THE TEMPLE") &&
 		strings.Contains(joined, "JOURNAL ENTRY 20") {
 		s.appendJournalPages("手札條目 20：", []string{s.catalog.Text(
