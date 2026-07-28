@@ -316,3 +316,4 @@
 - [第三百四十二輪第一人稱地圖共用引擎](./342-first-person-map-engine.md)（`READY`：限 GEO／WALLDEF／8X8D engine、JSON resources、352px viewport 與 640×480 實機圖）
 - [第三百四十三輪原版世界地圖](./343-overland-world-map.md)（`READY`：限 BIGPIC1/0x79、A–N JSON points、繁中 HUD 與 640×480 實機圖）
 - [第三百四十四輪 AREA 俯視地圖與倚天字形](./344-area-overhead-map.md)（`READY`：限 GEO projection、JSON resource、16×15 ETen adapter 與 640×480 實機圖）
+- [第三百四十五輪原版 AREA 8X8D symbol map](./345-original-area-symbol-map.md)（`READY`：限 11×11 camera、wall mask、8X8D1/CA、party arrow 與實機圖）

@@ -45,6 +45,10 @@ func TestParsePieceSetFromOriginalArea2Image(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	globalSymbolBlocks, err := dax.Parse(readMember("8X8D1.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	for setID, selector := range map[uint8]uint8{1: 1, 2: 2, 3: 3} {
 		set, parseErr := ParsePieceSet(setID, selector, wallBlocks, symbolBlocks)
 		if parseErr != nil {
@@ -53,6 +57,23 @@ func TestParsePieceSetFromOriginalArea2Image(t *testing.T) {
 		if len(set.WallDefs) != 1 || len(set.SymbolBlockIDs) != 1 || set.SymbolBlockIDs[0] != selector {
 			t.Fatalf("piece set %d metadata = walls %d symbols %v", setID, len(set.WallDefs), set.SymbolBlockIDs)
 		}
+	}
+	foundArea := false
+	for _, block := range globalSymbolBlocks {
+		if block.Entry.ID != 0xCA {
+			continue
+		}
+		foundArea = true
+		picture, parseErr := ParsePicture(block.Data, true, 13)
+		if parseErr != nil {
+			t.Fatalf("AREA symbol block: %v", parseErr)
+		}
+		if picture.Width() != 8 || picture.Height() != 8 || picture.ItemCount != 40 {
+			t.Fatalf("AREA symbols = %dx%d items=%d", picture.Width(), picture.Height(), picture.ItemCount)
+		}
+	}
+	if !foundArea {
+		t.Fatal("8X8D1 block 0xCA is missing")
 	}
 }
 

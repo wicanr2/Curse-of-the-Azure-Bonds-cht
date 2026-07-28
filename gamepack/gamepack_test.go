@@ -30,8 +30,8 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	areaMap, found := pack.FindMapByKind("area")
 	if !found || areaMap.AreaID != 2 || areaMap.GeometryBlock != 1 ||
-		areaMap.GeometryFile != "GEO2.DAX" || areaMap.SymbolFile != "8X8D2.DAX" ||
-		areaMap.Scale != 2 {
+		areaMap.GeometryFile != "GEO2.DAX" || areaMap.SymbolFile != "8X8D1.DAX" ||
+		areaMap.SymbolBlock != 0xCA || areaMap.Scale != 2 {
 		t.Fatalf("AREA map definition=%+v found=%v", areaMap, found)
 	}
 	result := pack.MatchText([]string{
