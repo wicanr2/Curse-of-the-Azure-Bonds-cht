@@ -317,7 +317,7 @@ func (b *Battle) RestoreCombatant(fighterID string, position TilePoint) error {
 		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition {
 			continue
 		}
-		if other.CombatX == position.X && other.CombatY == position.Y {
+		if FootprintsOverlapAt(fighter, position.X, position.Y, other) {
 			return fmt.Errorf("fighter %q placement (%d,%d) is occupied by %q", fighterID, position.X, position.Y, other.ID)
 		}
 	}
@@ -579,7 +579,7 @@ func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, 
 	old := fighter
 	nextX, nextY := fighter.CombatX+dx, fighter.CombatY+dy
 	for _, other := range b.Fighters() {
-		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition || other.CombatX != nextX || other.CombatY != nextY {
+		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition || !FootprintsOverlapAt(fighter, nextX, nextY, other) {
 			continue
 		}
 		if fighter.Side == SideParty && other.Side == SideEnemy {
@@ -819,15 +819,7 @@ func (b *Battle) CastProtectionFromGood(casterID, targetID string, casterLevel i
 }
 
 func adjacent(first, second Fighter) bool {
-	dx := first.CombatX - second.CombatX
-	if dx < 0 {
-		dx = -dx
-	}
-	dy := first.CombatY - second.CombatY
-	if dy < 0 {
-		dy = -dy
-	}
-	return dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
+	return footprintAdjacent(first, second)
 }
 
 // CastBless applies the verified first-level party-wide attack bonus, using

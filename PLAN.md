@@ -515,8 +515,10 @@
   `row+5` 為 40px、戰場 clipping 與誤用 TILES atlas 的戰鬥背景。
 - [x] 由設計審查逐像素量測 DOS 戰鬥畫面，將戰場校正為 `(16,16,336,336)`、
   16px 中央石框、256px 右欄與兩列 footer；移除 checkerboard、team bars 與 target card。
-- [ ] 反組 combat terrain selector、斜牆／階梯拼接、原始石框 tiles，以及大型
-  怪物 occupancy／anchor；以 corridor aim 與 black dragon DOS 場景做 overlay 驗收。
+- [ ] 反組斜牆／階梯拼接、原始石框 tiles 與 RANDCOM decoration placement；
+  以 corridor aim 與 black dragon DOS 場景持續做 overlay 驗收。
+- [x] 還原 `MON*.DAX field_DE & 7` 的 1×1／1×2／2×1／2×2 怪物 footprint，
+  接入移動／復活碰撞、矩形 adjacency、camera extent 與大型 CPIC 96×96 marker。
 - [x] 解碼 `DUNGCOM/WILDCOM/RANDCOM` 的 17-byte header 與 24×24 4bpp items，
   產生三套 gallery，並由 dungeon background entries 接回 DUNGCOM 實際牆片。
 - [x] 將 50×25 `WildernessFloor` 的 7×7 camera slice 接回 WILDCOM；

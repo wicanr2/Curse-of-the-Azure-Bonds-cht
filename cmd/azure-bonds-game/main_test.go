@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
 
@@ -27,6 +28,13 @@ func TestCombatTerrainEntryUsesWildernessCameraCenter(t *testing.T) {
 func TestCombatTerrainEntryDoesNotTreatRANDCOMAsFloor(t *testing.T) {
 	if _, ok := combatTerrainEntry("RANDCOM", nil, mapdata.WildernessFloor{}, 0, 0, 0, 0); ok {
 		t.Fatal("RANDCOM unexpectedly returned a full-floor entry")
+	}
+}
+
+func TestMirroredCombatPlacementKeepsOriginalCPICAnchor(t *testing.T) {
+	got := mirroredCombatAnchor(combat.TilePoint{X: 0, Y: 2})
+	if got != (combat.TilePoint{X: 6, Y: 2}) {
+		t.Fatalf("mirrored anchor=%+v, want (6,2)", got)
 	}
 }
 

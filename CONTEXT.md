@@ -1388,3 +1388,11 @@ DUNGCOM／WILDCOM，不再使用 `GameArea>1` heuristic；`-combat-terrain`
 只保留作 deterministic visual verification。RANDCOM 六張特殊物件明確保持
 decoration overlay boundary。新增 selector／camera tests、READY spec 325 與
 640×480 野外戰鬥截圖。
+
+第三百二十六輪成果：由 reference `CombatMap.size = player field_DE & 7` 與
+MON1–MON6 原始 records 收斂怪物形狀碼：1／2／3／4 分別是
+1×1／1×2／2×1／2×2。`CombatSize` 現由 monster parser 投影到 fighter，
+移動、復活、鄰接與 camera 均使用完整矩形 footprint。Ebiten marker 依同一
+shape 顯示；2×2 龍巫妖為 96×96，CPIC 鏡像仍保留 `6-x` 左上錨點，避免因
+額外扣除寬度而被戰場 clipping。更新 READY spec 326、Gold Box graphics
+知識庫與 640×480 DUNGCOM 龍巫妖實機圖。
