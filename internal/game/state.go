@@ -5323,6 +5323,23 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_essembra_branching_oak",
 			"「歡迎光臨枝椏橡樹客棧。」",
 		)
+	case strings.Contains(joined, "YOU ARE IN A N OUTDOOR BAR") &&
+		strings.Contains(joined, "OVERLOOKING THE WOODS"):
+		return catalog.Text(
+			"ecl_essembra_outdoor_bar",
+			"你們來到一座俯瞰林地的露天酒館。要做什麼？",
+		)
+	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
+		strings.Contains(joined, "MOTIONS YOU OVER"):
+		return catalog.Text(
+			"ecl_shadowdale_hooded_man",
+			"一名兜帽低垂的灰袍男子坐在昏暗角落。他招手示意你們靠近，低聲說了一番話，隨後便消失無蹤。",
+		)
+	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 60"):
+		return catalog.Text(
+			"tavern_tale_60",
+			"你們無意間聽見酒館傳聞 60。",
+		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
 		return catalog.Text(
 			"ecl_hap_edge",
@@ -5752,6 +5769,15 @@ func (s *State) unlockJournalEntries(texts []string) {
 			"journal_entry_17",
 			"手札條目 17：巷子裡只留下一把華麗匕首。它有深色握柄、寬大的護手，"+
 				"刀刃呈不規則火焰形；原手札在此畫出匕首外觀，這正是追查「火刀」組織的重要線索。",
+		)})
+	}
+	if strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
+		strings.Contains(joined, "18.") {
+		s.appendJournalPages("手札條目 18：", []string{s.catalog.Text(
+			"journal_entry_18",
+			"手札條目 18：你們身上的弦月枷印與伊爾明斯特的徽記極為相似，而他絕不會容忍有人冒稱受他烙印。"+
+				"最好悄悄離開暗影谷，乘船前往阿沙本福德，再一路向南找到那位紅袍法師的高塔，逼他解除枷印；"+
+				"否則留在這裡，恐怕只會被伊爾明斯特變成一隻蠑螈。",
 		)})
 	}
 	if strings.Contains(joined, "REMOVE CURSE SPELL") && strings.Contains(joined, "19.") {
