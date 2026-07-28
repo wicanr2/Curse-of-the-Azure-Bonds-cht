@@ -76,6 +76,7 @@ type app struct {
 	combatSpriteIDs     []string
 	combatTerrain       map[string][]*ebiten.Image
 	combatTerrainMode   string
+	combatFrame         *ebiten.Image
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
@@ -991,33 +992,14 @@ func drawPanelFrame(screen *ebiten.Image, x, y, width, height int) {
 	ebitenutil.DrawRect(screen, float64(x+4), float64(y+4), float64(width-8), 2, shadow)
 }
 
-func drawCombatStoneFrame(screen *ebiten.Image) {
-	stone := color.RGBA{R: 220, G: 220, B: 212, A: 255}
-	light := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	shadow := color.RGBA{R: 112, G: 112, B: 112, A: 255}
-	for _, rect := range [][4]int{
-		{0, 0, 640, 16},
-		{0, 0, 16, 368},
-		{352, 0, 16, 368},
-		{624, 0, 16, 368},
-		{0, 352, 640, 16},
-	} {
-		ebitenutil.DrawRect(screen, float64(rect[0]), float64(rect[1]), float64(rect[2]), float64(rect[3]), stone)
+func (a *app) drawCombatStoneFrame(screen *ebiten.Image) {
+	if a.combatFrame == nil {
+		return
 	}
-	ebitenutil.DrawRect(screen, 0, 0, 640, 3, light)
-	ebitenutil.DrawRect(screen, 0, 365, 640, 3, shadow)
-	ebitenutil.DrawRect(screen, 352, 0, 3, 368, light)
-	ebitenutil.DrawRect(screen, 365, 0, 3, 368, shadow)
-	// Irregular joints keep the frame closer to the cracked SSI stone border
-	// while the exact source border tiles remain an explicit RE boundary.
-	for _, x := range []int{64, 176, 288, 448, 560} {
-		ebitenutil.DrawLine(screen, float64(x), 2, float64(x+8), 14, shadow)
-		ebitenutil.DrawLine(screen, float64(x+2), 354, float64(x+10), 366, shadow)
-	}
-	for _, y := range []int{72, 176, 280} {
-		ebitenutil.DrawLine(screen, 2, float64(y), 14, float64(y+8), shadow)
-		ebitenutil.DrawLine(screen, 626, float64(y+8), 638, float64(y), shadow)
-	}
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(2, 2)
+	screen.DrawImage(a.combatFrame, op)
 }
 
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
@@ -1337,7 +1319,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	battlefieldOp.GeoM.Translate(battlefieldX, battlefieldY)
 	screen.DrawImage(battlefield, battlefieldOp)
 	ebitenutil.DrawRect(screen, 368, 16, 256, 336, color.RGBA{R: 82, G: 82, B: 82, A: 255})
-	drawCombatStoneFrame(screen)
+	a.drawCombatStoneFrame(screen)
 	ebitenutil.DrawRect(screen, 0, combatLogY, 640, 80, color.RGBA{A: 255})
 	ebitenutil.DrawRect(screen, 0, combatFooterY, 640, 32, color.RGBA{A: 255})
 	drawWrappedText(screen, a.state.CombatMessage(), a.compactFace, 8, 392, 39, 20, 3, white)
@@ -1433,7 +1415,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		enemyIndex++
 	}
 	screen.DrawImage(battlefield, battlefieldOp)
-	drawCombatStoneFrame(screen)
+	a.drawCombatStoneFrame(screen)
 	if activeOK {
 		statusGreen := color.RGBA{R: 92, G: 255, B: 92, A: 255}
 		statusYellow := color.RGBA{R: 255, G: 255, B: 82, A: 255}
@@ -2116,7 +2098,7 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }

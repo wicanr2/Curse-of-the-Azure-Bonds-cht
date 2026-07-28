@@ -1417,3 +1417,12 @@ formation fallback；地城查 `(18+x,7+y)`，野外查 MapX/MapY centered floor
 coordinate namespace 在 StartCombat 固定，不會移動途中重新猜測。新增 READY
 spec 328、2×2／2×1 terrain regressions、State budget regression，並更新
 README 與 Gold Box state 知識庫。
+
+第三百二十九輪成果：移除 640×480 renderer 的 3px 仿石紋戰鬥框。兩張公開
+DOS oracle 的 frame／divider／裂紋位置完全相同，原始 ZIP 94 members 又沒有
+獨立 UI frame DAX，因此把 boundary 修正為固定 320×184 panel raster，而非尚待
+尋找的 encounter stone tiles。新增 `gfx.CombatFrame()`：透明 battlefield／
+status interiors、五個 8px frame regions、原生 1px EGA bevel、alternating
+dotted inner edge 與固定 crack pixels；Ebiten 啟動時轉一次並 nearest-neighbour
+2×。新增 native geometry／transparency tests、READY spec 329，更新 Gold Box
+graphics 知識庫與 README 的 640×480 龍巫妖實機圖。

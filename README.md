@@ -19,7 +19,9 @@ nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／B
 幾何，戰場是 `(16,16,336,336)`、中央石框 16px、右欄 256px。畫面不再顯示
 非原版棋盤格、team bars 或右欄 target card；640×480 多出的 80px 只用來容納
 中文戰鬥紀錄。原版 combat terrain atlas 已於下一段接入；完整 terrain-mode
-selector、大型怪物 occupancy 與 RANDCOM decoration 已接通，石框圖塊仍在反組譯中。
+selector、大型怪物 occupancy 與 RANDCOM decoration 已接通。戰鬥框亦已改成
+原生 320×184 raster 的 1px EGA bevel／點狀內緣／固定裂紋，再整數放大 2×，
+不再使用先前的 3px 程序式暫代線。
 
 最新圖中的龍巫妖直接取自 MON5／CPIC5：`field_DE & 7 == 4` 被還原為 2×2
 戰術佔格，選取框因此是 96×96；移動、復活、近戰鄰接與 camera 也使用同一份
