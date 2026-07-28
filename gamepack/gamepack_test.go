@@ -13,14 +13,20 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if pack.ID != "curse-of-the-azure-bonds.pit-of-moander" {
 		t.Fatalf("pack id=%q", pack.ID)
 	}
-	if len(pack.Maps) != 1 || pack.Maps[0].ID != "zhentil-keep.inner-city" ||
-		pack.Maps[0].AreaID != 4 || pack.Maps[0].GeometryBlock != 0x20 ||
-		pack.Maps[0].GeometryFile != "GEO4.DAX" ||
-		pack.Maps[0].WallFile != "WALLDEF4.DAX" ||
-		pack.Maps[0].SymbolFile != "8X8D4.DAX" ||
-		pack.Maps[0].Spawn == nil || pack.Maps[0].Spawn.X != 2 ||
-		pack.Maps[0].Spawn.Y != 0 || pack.Maps[0].Spawn.Direction != 4 {
+	firstPerson, found := pack.FindMap(4, 0x20)
+	if !found || firstPerson.ID != "zhentil-keep.inner-city" ||
+		firstPerson.GeometryFile != "GEO4.DAX" ||
+		firstPerson.WallFile != "WALLDEF4.DAX" ||
+		firstPerson.SymbolFile != "8X8D4.DAX" ||
+		firstPerson.Spawn == nil || firstPerson.Spawn.X != 2 ||
+		firstPerson.Spawn.Y != 0 || firstPerson.Spawn.Direction != 4 {
 		t.Fatalf("Zhentil Keep map definition=%+v", pack.Maps)
+	}
+	overland, found := pack.FindMapByKind("overland")
+	if !found || overland.ImageFile != "BIGPIC1.DAX" ||
+		overland.GeometryBlock != 0x79 || len(overland.Locations) != 14 ||
+		overland.Locations[4].ID != "standing-stone" {
+		t.Fatalf("overland map definition=%+v found=%v", overland, found)
 	}
 	result := pack.MatchText([]string{
 		"YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.",
