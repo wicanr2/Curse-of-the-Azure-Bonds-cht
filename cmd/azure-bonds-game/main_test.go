@@ -58,6 +58,26 @@ func TestCombatTerrainLayersKeepAtlasBoundsSeparate(t *testing.T) {
 	}
 }
 
+func TestCombatMovementTerrainEntryMapsFallbackAndReferenceCoordinates(t *testing.T) {
+	dungeon := &mapdata.DungeonFloor{}
+	dungeon.Tiles[7][18] = 26 // BackgroundTiles table: cost 2, RANDCOM graphic 0x22.
+	fallback, ok := combatMovementTerrainEntry("DUNGCOM", dungeon, mapdata.WildernessFloor{}, 0, 0, false, 0, 0)
+	if !ok || fallback.MoveCost != 2 || fallback.TileIndex != 0x22 {
+		t.Fatalf("fallback dungeon terrain=%+v ok=%v", fallback, ok)
+	}
+	reference, ok := combatMovementTerrainEntry("DUNGCOM", dungeon, mapdata.WildernessFloor{}, 0, 0, true, 18, 7)
+	if !ok || reference != fallback {
+		t.Fatalf("reference dungeon terrain=%+v ok=%v, want %+v", reference, ok, fallback)
+	}
+
+	wilderness := mapdata.GenerateWilderness(0, 1)
+	got, ok := combatMovementTerrainEntry("WILDCOM", nil, wilderness, 25, 12, false, 3, 3)
+	want, wantOK := wilderness.Entry(25, 12)
+	if ok != wantOK || got != want {
+		t.Fatalf("fallback wilderness terrain=(%+v,%v), want (%+v,%v)", got, ok, want, wantOK)
+	}
+}
+
 func TestMirroredCombatPlacementKeepsOriginalCPICAnchor(t *testing.T) {
 	got := mirroredCombatAnchor(combat.TilePoint{X: 0, Y: 2})
 	if got != (combat.TilePoint{X: 6, Y: 2}) {

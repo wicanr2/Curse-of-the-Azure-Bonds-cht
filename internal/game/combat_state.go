@@ -19,6 +19,13 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		return fmt.Errorf("combat needs at least one party member and enemy")
 	}
 	fighters := make([]combat.Fighter, 0, len(party)+len(enemies))
+	s.combatReferenceCoords = false
+	for _, fighter := range append(append([]combat.Fighter(nil), party...), enemies...) {
+		if fighter.HasCombatPosition && (fighter.CombatX >= 16 || fighter.CombatY >= 10) {
+			s.combatReferenceCoords = true
+			break
+		}
+	}
 	partyIndex := 0
 	for _, fighter := range party {
 		if fighter.Side != combat.SideParty {
@@ -269,6 +276,8 @@ func (s *State) CombatMessage() string { return s.combatMessage }
 
 func (s *State) CombatMoveMode() bool { return s.combatMoveMode }
 
+func (s *State) CombatUsesReferenceCoordinates() bool { return s.combatReferenceCoords }
+
 func (s *State) BeginCombatMove() error {
 	if !s.CombatActive() {
 		return fmt.Errorf("combat is not active")
@@ -293,6 +302,10 @@ func (s *State) CancelCombatMove() {
 func (s *State) CombatMoveRemaining() int { return s.combatMoveRemaining }
 
 func (s *State) CombatMove(dx, dy int) error {
+	return s.CombatMoveWithTerrain(dx, dy, nil)
+}
+
+func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain) error {
 	if !s.CombatActive() {
 		return fmt.Errorf("combat is not active")
 	}
@@ -300,11 +313,11 @@ func (s *State) CombatMove(dx, dy int) error {
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
-	moveResult, err := s.battle.MoveWithFreeAttacks(caster.ID, dx, dy)
+	moveResult, err := s.battle.MoveWithTerrainAndFreeAttacks(caster.ID, dx, dy, s.combatMoveRemaining, terrain)
 	if err != nil {
 		return err
 	}
-	s.combatMoveRemaining--
+	s.combatMoveRemaining -= moveResult.MovementCost
 	endTurn := moveResult.Attack != nil || s.combatMoveRemaining <= 0
 	s.combatMoveMode = !endTurn
 	if moveResult.Attack != nil {

@@ -298,6 +298,8 @@
 - [x] 將 ITEMS raw AmmunitionType 投影到 fighter，建立注入式彈藥 mapping、atomic stack consumption 與 CombatAct preflight；保留特殊彈藥、裝填與 ranged line-of-sight boundary。
 - [x] 將 RuleBook Combat Menu `DONE` 接成 D／繁中 no-attack turn transaction，重用 enemy／next-party advancement；保留 hold／delay 與其他 command boundary。
 - [x] 將 RuleBook armor movement table 接入 `Fighter.MovementAllowance` 與多格 MOVE turn transaction；保留負重、地形、邊界與 FLEE speed boundary。
+- [x] 將 BackgroundTiles `MoveCost`／`0xFF` 接入 MOVE transaction；目的地完整
+  footprint 先作 terrain preflight，取最高 cost 並原子扣除 remaining points。
 - [x] 將 RuleBook missile adjacent prohibition 與 dart thrown exception 接入 weapon profile／Battle guard；保留完整 Range、line-of-sight、Aim 與其他 thrown weapon boundary。
 - [x] 將 missile adjacency guard 接到 ammunition transaction 前的 attack preflight，避免無效攻擊消耗彈藥；保留多目標 ranged transaction boundary。
 - [x] 將已投影的 `Fighter.AttacksPerTurn` 套用到 enemy turn；保留 enemy AI、彈藥與額外職業攻擊 boundary。
