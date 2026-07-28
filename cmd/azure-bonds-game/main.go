@@ -947,6 +947,35 @@ func drawPanelFrame(screen *ebiten.Image, x, y, width, height int) {
 	ebitenutil.DrawRect(screen, float64(x+4), float64(y+4), float64(width-8), 2, shadow)
 }
 
+func drawCombatStoneFrame(screen *ebiten.Image) {
+	stone := color.RGBA{R: 220, G: 220, B: 212, A: 255}
+	light := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+	shadow := color.RGBA{R: 112, G: 112, B: 112, A: 255}
+	for _, rect := range [][4]int{
+		{0, 0, 640, 16},
+		{0, 0, 16, 368},
+		{352, 0, 16, 368},
+		{624, 0, 16, 368},
+		{0, 352, 640, 16},
+	} {
+		ebitenutil.DrawRect(screen, float64(rect[0]), float64(rect[1]), float64(rect[2]), float64(rect[3]), stone)
+	}
+	ebitenutil.DrawRect(screen, 0, 0, 640, 3, light)
+	ebitenutil.DrawRect(screen, 0, 365, 640, 3, shadow)
+	ebitenutil.DrawRect(screen, 352, 0, 3, 368, light)
+	ebitenutil.DrawRect(screen, 365, 0, 3, 368, shadow)
+	// Irregular joints keep the frame closer to the cracked SSI stone border
+	// while the exact source border tiles remain an explicit RE boundary.
+	for _, x := range []int{64, 176, 288, 448, 560} {
+		ebitenutil.DrawLine(screen, float64(x), 2, float64(x+8), 14, shadow)
+		ebitenutil.DrawLine(screen, float64(x+2), 354, float64(x+10), 366, shadow)
+	}
+	for _, y := range []int{72, 176, 280} {
+		ebitenutil.DrawLine(screen, 2, float64(y), 14, float64(y+8), shadow)
+		ebitenutil.DrawLine(screen, 626, float64(y+8), 638, float64(y), shadow)
+	}
+}
+
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	drawPanelFrame(screen, 8, 8, 264, 272)
 	drawPanelFrame(screen, 272, 8, 360, 272)
@@ -1218,24 +1247,26 @@ func className(c party.Class) string {
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
-	drawPanelFrame(screen, 8, 8, 352, 376)
-	drawPanelFrame(screen, 360, 8, 272, 376)
-	drawPanelFrame(screen, 8, 384, 624, 64)
-	drawPanelFrame(screen, 8, 448, 624, 28)
-	battlefield := ebiten.NewImage(352, 376)
-	for row := 0; row < 7; row++ {
-		for column := 0; column < 7; column++ {
-			cell := color.RGBA{R: 34, G: 46, B: 58, A: 255}
-			if (row+column)%2 == 0 {
-				cell = color.RGBA{R: 40, G: 54, B: 66, A: 255}
-			}
-			ebitenutil.DrawRect(battlefield, float64(16+column*48), float64(16+row*48), 46, 46, cell)
-		}
-	}
+	// Preserve the original 320x184 upper combat layout at exactly 2x:
+	// 8px frame + 7*24px battlefield + 8px divider + 128px status + 8px
+	// frame. The extra 80 logical pixels belong to the CJK combat log.
+	const (
+		battlefieldX    = 16
+		battlefieldY    = 16
+		battlefieldSize = 336
+		combatLogY      = 368
+		combatFooterY   = 448
+	)
+	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
+	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
 	battlefieldOp := &ebiten.DrawImageOptions{}
-	battlefieldOp.GeoM.Translate(8, 8)
+	battlefieldOp.GeoM.Translate(battlefieldX, battlefieldY)
 	screen.DrawImage(battlefield, battlefieldOp)
-	drawWrappedText(screen, a.state.CombatMessage(), a.compactFace, 24, 414, 36, 20, 1, white)
+	ebitenutil.DrawRect(screen, 368, 16, 256, 336, color.RGBA{R: 82, G: 82, B: 82, A: 255})
+	drawCombatStoneFrame(screen)
+	ebitenutil.DrawRect(screen, 0, combatLogY, 640, 80, color.RGBA{A: 255})
+	ebitenutil.DrawRect(screen, 0, combatFooterY, 640, 32, color.RGBA{A: 255})
+	drawWrappedText(screen, a.state.CombatMessage(), a.compactFace, 8, 392, 39, 20, 3, white)
 	if a.state.CombatViewActive() {
 		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
 		for index, line := range a.state.CombatViewLines() {
@@ -1287,7 +1318,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			}
 			tile = camera.Apply(tile)
 			tile.X = 6 - tile.X
-			x, y := 12+tile.X*48, 16+tile.Y*48
+			x, y := tile.X*48, tile.Y*48
 			if !fighter.DownedCorpse && !fighter.DeathOverlay {
 				a.drawFighterSprite(battlefield, fighter, partyIndex, x, y)
 			}
@@ -1306,7 +1337,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		tile = camera.Apply(tile)
 		tile.X = 6 - tile.X
-		x, y := 12+tile.X*48, 16+tile.Y*48
+		x, y := tile.X*48, tile.Y*48
 		if !fighter.DownedCorpse && !fighter.DeathOverlay {
 			a.drawFighterSprite(battlefield, fighter, enemyIndex, x, y)
 		}
@@ -1319,17 +1350,15 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		enemyIndex++
 	}
 	screen.DrawImage(battlefield, battlefieldOp)
-	drawPanelFrame(screen, 8, 8, 352, 376)
+	drawCombatStoneFrame(screen)
 	if activeOK {
-		text.Draw(screen, active.Name, a.face, 378, 44, cyan)
-		text.Draw(screen, fmt.Sprintf("HP %d/%d", active.HitPoints, active.MaxHitPoints), a.face, 378, 82, white)
-		text.Draw(screen, fmt.Sprintf("AC %d", active.ArmorClass), a.face, 378, 118, white)
-	}
-	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
-		target := targets[a.state.CombatTargetIndex()]
-		text.Draw(screen, "目標："+target.Name, a.face, 378, 190, cyan)
-		text.Draw(screen, fmt.Sprintf("HP %d/%d", target.HitPoints, target.MaxHitPoints), a.face, 378, 228, white)
-		text.Draw(screen, fmt.Sprintf("AC %d", target.ArmorClass), a.face, 378, 264, white)
+		statusGreen := color.RGBA{R: 92, G: 255, B: 92, A: 255}
+		statusYellow := color.RGBA{R: 255, G: 255, B: 82, A: 255}
+		text.Draw(screen, active.Name, a.compactFace, 370, 30, cyan)
+		text.Draw(screen, "生命值", a.compactFace, 370, 62, statusGreen)
+		text.Draw(screen, strconv.Itoa(active.HitPoints), a.compactFace, 450, 62, statusYellow)
+		text.Draw(screen, "防護等級", a.compactFace, 370, 94, statusGreen)
+		text.Draw(screen, strconv.Itoa(active.ArmorClass), a.compactFace, 466, 94, statusYellow)
 	}
 	spellHints := make([]string, 0, 7)
 	if a.state.CombatCastingSpell() != 0 {
@@ -1365,29 +1394,37 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if a.state.CombatCanCastProtectionFromGood() {
 		spellHints = append(spellHints, "G防善")
 	}
-	text.Draw(screen, "移動　查看　瞄準　使用　施法　快速　結束", a.compactFace, 20, 470, cyan)
+	footerStatus := ""
+	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
+		footerStatus = "目標：" + targets[a.state.CombatTargetIndex()].Name
+	}
+	text.Draw(screen, footerStatus, a.compactFace, 8, 462, color.RGBA{R: 255, G: 82, B: 255, A: 255})
+	text.Draw(screen, "移動　查看　瞄準　使用　施法　快速　結束", a.compactFace, 8, 478, cyan)
 	if len(spellHints) > 0 {
 		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
 	}
 }
 
 func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighter, active, selected bool, x, y int) {
-	teamColor := color.RGBA{R: 70, G: 190, B: 255, A: 255}
-	if fighter.Side == combat.SideEnemy {
-		teamColor = color.RGBA{R: 255, G: 82, B: 82, A: 255}
+	// Until the original multi-cell occupancy/anchor table is decoded, keep an
+	// enemy target in the footer instead of drawing a false one-cell box over
+	// only the head of a 2x2 dragon or other large creature.
+	if fighter.Side == combat.SideEnemy && selected && !active {
+		return
 	}
-	ebitenutil.DrawRect(screen, float64(x), float64(y-4), 48, 3, teamColor)
 	if !active && !selected {
 		return
 	}
-	marker := color.RGBA{R: 255, G: 235, B: 80, A: 255}
+	// The reference renderer identifies the cursor with a square tile-sized
+	// frame. It does not draw red/blue team bars across every combatant.
+	marker := color.RGBA{R: 232, G: 232, B: 224, A: 255}
 	if selected {
 		marker = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	}
-	ebitenutil.DrawRect(screen, float64(x-3), float64(y-7), 54, 2, marker)
-	ebitenutil.DrawRect(screen, float64(x-3), float64(y+49), 54, 2, marker)
-	ebitenutil.DrawRect(screen, float64(x-3), float64(y-7), 2, 58, marker)
-	ebitenutil.DrawRect(screen, float64(x+49), float64(y-7), 2, 58, marker)
+	ebitenutil.DrawRect(screen, float64(x), float64(y), 48, 2, marker)
+	ebitenutil.DrawRect(screen, float64(x), float64(y+46), 48, 2, marker)
+	ebitenutil.DrawRect(screen, float64(x), float64(y), 2, 48, marker)
+	ebitenutil.DrawRect(screen, float64(x+46), float64(y), 2, 48, marker)
 }
 
 // drawFighterDeathOverlay is the renderer adapter for the combat-core

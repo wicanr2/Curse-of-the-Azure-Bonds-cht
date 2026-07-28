@@ -26,6 +26,9 @@
 
 ## 640×480 戰鬥版面
 
+本節的初步矩形已由第 323 輪 DOS 截圖逐像素量測取代；保留本輪作為第一次
+修正「自由置中 prototype」的歷史，不再把 352×376 戰場視為正確原版比例。
+
 - 左側 352×376 是 7×7 戰術格與原版 CPIC／CHEAD／CBODY 小人。
 - 右側 272×376 是目前角色與目標的姓名、HP、AC。
 - 下方 624×64 是戰鬥訊息；最底 624×28 是
@@ -41,4 +44,3 @@
 - `docs/screenshots/gold-box-layout-adventure.png` 顯示四區冒險 layout。
 - `docs/screenshots/gold-box-layout-combat.png` 顯示裁切後的四區戰鬥 layout。
 - gfx、ECL、game regression 與完整 `go test ./...` 通過。
-

@@ -15,6 +15,11 @@
 nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／BODY 的
 `row + 5` 也已修正為五個 8px 列（40px），人物頭像不再被錯貼進胸口。
 
+戰鬥圖另經 DOS 原版截圖逐像素設計審查：上方沿用原生 320×184 的精確 2×
+幾何，戰場是 `(16,16,336,336)`、中央石框 16px、右欄 256px。畫面不再顯示
+非原版棋盤格、team bars 或右欄 target card；640×480 多出的 80px 只用來容納
+中文戰鬥紀錄。原版 terrain／石框圖塊與大型怪物 occupancy 仍在反組譯中。
+
 以下圖片由原始 `curseoftheazurebonds.zip`，透過專案目前的 DAX／GFX／GEO parser 離線產生，證明圖像資料管線已經接通：
 
 ![TILES.DAX 原始圖塊 gallery](docs/screenshots/tiles-gallery.png)
