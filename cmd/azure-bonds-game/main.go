@@ -97,6 +97,48 @@ type wallPreviewStamp struct {
 	column int
 }
 
+func (a *app) combatMove(dx, dy int) error {
+	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
+	terrain := func(x, y int) (int, bool) {
+		entry, ok := combatMovementTerrainEntry(
+			mode,
+			a.dungeonFloor,
+			a.state.WildernessFloor,
+			a.state.MapX,
+			a.state.MapY,
+			referenceCoordinates,
+			x,
+			y,
+		)
+		if !ok || !entry.Passable() || entry.MoveCost == 0 {
+			return 0, false
+		}
+		return int(entry.MoveCost), true
+	}
+	return a.state.CombatMoveWithTerrain(dx, dy, terrain)
+}
+
+func combatMovementTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY int, referenceCoordinates bool, x, y int) (mapdata.BackgroundTile, bool) {
+	switch mode {
+	case "DUNGCOM":
+		if dungeon == nil {
+			return mapdata.BackgroundTile{}, false
+		}
+		if !referenceCoordinates {
+			x, y = 18+x, 7+y
+		}
+		return dungeon.Entry(x, y)
+	case "WILDCOM":
+		if !referenceCoordinates {
+			x, y = mapX+x-3, mapY+y-3
+		}
+		return wilderness.Entry(x, y)
+	default:
+		return mapdata.BackgroundTile{}, false
+	}
+}
+
 func (a *app) combatAction(action func() error) error {
 	if err := action(); err != nil {
 		a.state.ReportCombatError(err)
@@ -399,16 +441,16 @@ func (a *app) Update() error {
 				return nil
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-				return a.combatAction(func() error { return a.state.CombatMove(0, -1) })
+				return a.combatAction(func() error { return a.combatMove(0, -1) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-				return a.combatAction(func() error { return a.state.CombatMove(1, 0) })
+				return a.combatAction(func() error { return a.combatMove(1, 0) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-				return a.combatAction(func() error { return a.state.CombatMove(0, 1) })
+				return a.combatAction(func() error { return a.combatMove(0, 1) })
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-				return a.combatAction(func() error { return a.state.CombatMove(-1, 0) })
+				return a.combatAction(func() error { return a.combatMove(-1, 0) })
 			}
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) && a.state.CombatCastingSpell() != 0 {

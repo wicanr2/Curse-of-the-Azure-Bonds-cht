@@ -1950,6 +1950,68 @@ func TestCombatMoveUsesMultipleArmorLimitedSquaresBeforeEndingTurn(t *testing.T)
 	}
 }
 
+func TestCombatMoveConsumesTerrainCostWithoutMutatingOnInsufficientBudget(t *testing.T) {
+	catalog := testCatalog()
+	state := NewState(catalog)
+	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20, MovementAllowance: 3, HasCombatPosition: true, CombatX: 4, CombatY: 3}}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, HasCombatPosition: true, CombatX: 8, CombatY: 3}}
+	if err := state.StartCombat(partyFighters, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatMove(); err != nil {
+		t.Fatal(err)
+	}
+	costTwo := func(_, _ int) (int, bool) { return 2, true }
+	if err := state.CombatMoveWithTerrain(-1, 0, costTwo); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatMoveMode() || state.CombatMoveRemaining() != 1 {
+		t.Fatalf("cost-two move mode=%v remaining=%d, want active with 1", state.CombatMoveMode(), state.CombatMoveRemaining())
+	}
+	if err := state.CombatMoveWithTerrain(-1, 0, costTwo); err == nil {
+		t.Fatal("second cost-two move succeeded with one point remaining")
+	}
+	var fighter combat.Fighter
+	for _, candidate := range state.battle.Fighters() {
+		if candidate.ID == "hero" {
+			fighter = candidate
+		}
+	}
+	if fighter.CombatX != 3 || fighter.CombatY != 3 || state.CombatMoveRemaining() != 1 {
+		t.Fatalf("rejected move mutated fighter=%+v remaining=%d", fighter, state.CombatMoveRemaining())
+	}
+}
+
+func TestStartCombatPreservesPlacementCoordinateNamespace(t *testing.T) {
+	newState := func() *State {
+		state := NewState(testCatalog())
+		return &state
+	}
+	fallback := newState()
+	if err := fallback.StartCombat(
+		[]combat.Fighter{{ID: "hero", Side: combat.SideParty, HitPoints: 5, MaxHitPoints: 5}},
+		[]combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 5, MaxHitPoints: 5}},
+		1,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if fallback.CombatUsesReferenceCoordinates() {
+		t.Fatal("generated formation was mistaken for original CombatMap coordinates")
+	}
+
+	reference := newState()
+	if err := reference.StartCombat(
+		[]combat.Fighter{{ID: "hero", Side: combat.SideParty, HitPoints: 5, MaxHitPoints: 5, HasCombatPosition: true, CombatX: 22, CombatY: 10}},
+		[]combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 5, MaxHitPoints: 5, HasCombatPosition: true, CombatX: 28, CombatY: 10}},
+		1,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if !reference.CombatUsesReferenceCoordinates() {
+		t.Fatal("original placement coordinate namespace was not preserved")
+	}
+}
+
 func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 10, ArmorClass: 6, AttackBonus: 3, InitiativeBonus: 20}}

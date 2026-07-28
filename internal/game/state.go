@@ -155,6 +155,7 @@ type State struct {
 	combatSpellTargetIndex int
 	combatMoveMode         bool
 	combatMoveRemaining    int
+	combatReferenceCoords  bool
 	combatView             bool
 	combatViewFighterID    string
 	combatMessage          string

@@ -23,7 +23,9 @@ selector、大型怪物 occupancy 與 RANDCOM decoration 已接通，石框圖�
 
 最新圖中的龍巫妖直接取自 MON5／CPIC5：`field_DE & 7 == 4` 被還原為 2×2
 戰術佔格，選取框因此是 96×96；移動、復活、近戰鄰接與 camera 也使用同一份
-footprint 規則，不再把大型怪物誤當單格小人。
+footprint 規則，不再把大型怪物誤當單格小人。戰鬥 MOVE 亦已讀取原版
+BackgroundTiles 的 movement cost／不可通行旗標；大型小人的每個目的格都要
+通過，困難地形會消耗超過一點，點數不足時不會先移動再回滾。
 
 戰場現已改讀真正的 combat atlas，而非一般 TILES 圖庫或假格線：
 

@@ -1406,3 +1406,14 @@ RANDCOM `id-0x22`；WILDCOM `0..33` 保持獨立。原始 catalog 掃描與
 `GEO2 block 01, center (13,0), seed 1` 的 640×480 Xvfb 圖均確認桌椅可見。
 新增 READY spec 327、atlas bounds tests、`-dungeon-x/-dungeon-y` deterministic
 visual flags，並同步 README 與 Gold Box graphics 知識庫。
+
+第三百二十八輪成果：將 BackgroundTiles 的 `MoveCost`／`0xFF` 從畫面資料接入
+可玩的 combat MOVE transaction。新增 renderer-neutral `MovementTerrain`
+callback；Battle 在 occupancy／attack／座標 mutation 前檢查目的地完整
+footprint，任一格不可通行即原子拒絕，多格 cost 取最大值，並在 remaining
+points 不足時保持位置與 move mode。State 改依 `MoveResult.MovementCost` 扣點。
+作品 adapter 分流 reference `x≈22,y≈10` 絕對 CombatMap 座標與目前 0..6
+formation fallback；地城查 `(18+x,7+y)`，野外查 MapX/MapY centered floor，
+coordinate namespace 在 StartCombat 固定，不會移動途中重新猜測。新增 READY
+spec 328、2×2／2×1 terrain regressions、State budget regression，並更新
+README 與 Gold Box state 知識庫。

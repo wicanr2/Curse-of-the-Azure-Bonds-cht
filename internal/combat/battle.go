@@ -195,10 +195,16 @@ type AttackResult struct {
 }
 
 type MoveResult struct {
-	Fighter     Fighter
-	Attack      *AttackResult
-	FreeAttacks []AttackResult
+	Fighter      Fighter
+	Attack       *AttackResult
+	FreeAttacks  []AttackResult
+	MovementCost int
 }
+
+// MovementTerrain exposes the original combat background table without
+// coupling Battle to DUNGCOM/WILDCOM assets. ok=false marks an invalid or
+// impassable cell; cost is the number of movement points consumed.
+type MovementTerrain func(x, y int) (cost int, ok bool)
 
 type SpellResult struct {
 	CasterID string
@@ -560,6 +566,13 @@ func (b *Battle) Move(fighterID string, dx, dy int) (Fighter, error) {
 // entering an enemy square resolves an attack without changing squares;
 // facing/rear AC is still left to the future combat-map rules layer.
 func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, error) {
+	return b.MoveWithTerrainAndFreeAttacks(fighterID, dx, dy, 0, nil)
+}
+
+// MoveWithTerrainAndFreeAttacks validates every destination footprint cell
+// before occupancy or attack resolution. maxCost <= 0 keeps the low-level
+// compatibility path unbounded; a supplied terrain must return positive cost.
+func (b *Battle) MoveWithTerrainAndFreeAttacks(fighterID string, dx, dy, maxCost int, terrain MovementTerrain) (MoveResult, error) {
 	fighter, ok := b.fighters[fighterID]
 	if !ok {
 		return MoveResult{}, fmt.Errorf("unknown fighter %q", fighterID)
@@ -578,6 +591,22 @@ func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, 
 	}
 	old := fighter
 	nextX, nextY := fighter.CombatX+dx, fighter.CombatY+dy
+	movementCost := 1
+	if terrain != nil {
+		footprint := FootprintForSize(fighter.CombatSize)
+		for y := nextY; y < nextY+footprint.Height; y++ {
+			for x := nextX; x < nextX+footprint.Width; x++ {
+				cost, passable := terrain(x, y)
+				if !passable || cost < 1 {
+					return MoveResult{}, fmt.Errorf("destination terrain (%d,%d) is impassable", x, y)
+				}
+				movementCost = max(movementCost, cost)
+			}
+		}
+	}
+	if maxCost > 0 && movementCost > maxCost {
+		return MoveResult{}, fmt.Errorf("destination terrain costs %d movement points, only %d remain", movementCost, maxCost)
+	}
 	for _, other := range b.Fighters() {
 		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition || !FootprintsOverlapAt(fighter, nextX, nextY, other) {
 			continue
@@ -587,13 +616,13 @@ func (b *Battle) MoveWithFreeAttacks(fighterID string, dx, dy int) (MoveResult, 
 			if err != nil {
 				return MoveResult{}, err
 			}
-			return MoveResult{Fighter: fighter, Attack: &attack}, nil
+			return MoveResult{Fighter: fighter, Attack: &attack, MovementCost: movementCost}, nil
 		}
 		return MoveResult{}, fmt.Errorf("destination (%d,%d) is occupied", nextX, nextY)
 	}
 	fighter.CombatX, fighter.CombatY = nextX, nextY
 	b.fighters[fighterID] = fighter
-	result := MoveResult{Fighter: fighter}
+	result := MoveResult{Fighter: fighter, MovementCost: movementCost}
 	if old.Side == SideParty {
 		for _, enemy := range b.fighters {
 			if enemy.Side != SideEnemy || enemy.HitPoints <= 0 || !enemy.HasCombatPosition {
