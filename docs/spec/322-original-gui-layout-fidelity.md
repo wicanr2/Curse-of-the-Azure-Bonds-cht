@@ -1,0 +1,44 @@
+# 第三百二十二輪：原版 GUI 與戰鬥版面忠實度
+
+狀態：`READY`
+
+## 證據
+
+- Simeon Pilgrim 的原版 DOS 截圖同時顯示城市事件與戰鬥畫面：
+  <https://simeonpilgrim.com/blog/curse-of-the-azure-bonds-screenshots>
+- MobyGames 的各平台截圖索引用來排除 Amiga／C64 等不同版面：
+  <https://www.mobygames.com/game/503/curse-of-the-azure-bonds/screenshots/>
+- 本地原始 DOS 發行檔已在 Docker 內以 DOSBox 啟動；環境與防拷畫面保存在
+  `docs/reference/original-dos/`。完整遊戲畫面的 layout oracle 以上述 DOS
+  截圖為準，不以 remake 既有畫面反推原版。
+- reference `draw_head_and_body` 將 BODY 畫在 `row + 5`。此處 row 是 8px
+  文字列，因此偏移量是 40px，不是 5px。
+
+## 640×480 冒險版面
+
+- 左上是 264×272 圖像框；原始 PIC 或 HEAD／BODY 合成圖以 nearest-neighbour
+  2× 放大並置中。
+- 右上是 360×272 隊伍表，固定保留姓名、AC、HP 欄。
+- 下方 624×168 是 24px 繁中敘事區，最多四行。
+- 最底 624×28 是 16px compact command line。
+- HEAD 先畫、BODY 在 y+40 後畫；BODY 的肩膀／領口可遮住頭部下緣，
+  palette index 0 與透明 sentinel 不得塗黑 HEAD。
+
+## 640×480 戰鬥版面
+
+- 左側 352×376 是 7×7 戰術格與原版 CPIC／CHEAD／CBODY 小人。
+- 右側 272×376 是目前角色與目標的姓名、HP、AC。
+- 下方 624×64 是戰鬥訊息；最底 624×28 是
+  `移動／查看／瞄準／使用／施法／快速／結束` 命令列。
+- 戰場是獨立 clipping region。大型怪物、死亡效果及 selection marker
+  不得越過右側狀態欄。
+- 尚未解出的原版 terrain selector 不得以整套 TILES icon atlas 依序鋪滿；
+  本輪使用中性的離散戰術格，等待 combat-map selector 證據。
+
+## 驗收
+
+- `assets/sprites/character-area-2-head-09-body-06.png` 是 88×88 正確頭身合成。
+- `docs/screenshots/gold-box-layout-adventure.png` 顯示四區冒險 layout。
+- `docs/screenshots/gold-box-layout-combat.png` 顯示裁切後的四區戰鬥 layout。
+- gfx、ECL、game regression 與完整 `go test ./...` 通過。
+

@@ -15,7 +15,9 @@
 - `CHEAD`：玩家頭部 layer，通常比 body canvas 矮，左上對齊合成。
 - `CBODY`：玩家身體／武器 layer，通常提供 24×24 的 destination canvas。
 
-- `HEAD<area>`／`BODY<area>`：一般場景人物 layer；reference 使用 unmasked DAX pictures，BODY 相對 HEAD 向下 5 rows。
+- `HEAD<area>`／`BODY<area>`：一般場景人物 layer；reference 使用 unmasked DAX
+  pictures，BODY 相對 HEAD 向下 5 個 8-pixel rows，也就是 40 pixels。不可把
+  reference 的 row 單位誤當成 pixel，否則頭像會被塞進胸口。
 
 ### CombatantKilled skull overlay
 
@@ -185,3 +187,18 @@ nearest-neighbour 整數放大，保留清楚像素邊緣；中文字不從 DOS 
 平滑拉大：原素材在圖片層指定 `FilterNearest` 後做整數倍率 transform，24px／16px
 CJK 字則直接 rasterize 到 640×480 文字層。如此原版小人保留硬邊像素，中文也不受
 8px Latin cell 限制。
+
+## 原版畫面拓撲
+
+DOS Gold Box 的冒險畫面不是自由置中的圖片頁：上半部固定為左圖、右隊伍表，
+下半部為敘事列，最底是 command line。戰鬥則改成左戰術地圖、右 active／target
+狀態，下方訊息及 command line。640×480 中文 renderer 應保留這個拓撲，只放大
+區域和文字容量；不能為了中文改成與原版不同的全畫面 card。
+
+HEAD／BODY 的 reference `row + 5` 是五個 8px 顯示列，即 BODY y+40px。
+合成順序為 HEAD 後 BODY，讓肩頸遮住頭部下緣；透明 index 0 不得清除底下 HEAD。
+這個 row-to-pixel 換算可沿用於同系 Gold Box 的人物 scene layer。
+
+戰術地圖必須是 clipping region。CPIC 大型怪物、CHEAD／CBODY 玩家、死亡 overlay
+與 marker 都畫入同一 clipped target，避免 sprite 跨進右側狀態欄。combat terrain
+selector 未證實前應顯示中性格線，不可把 TILES icon atlas 當成地板依序鋪設。

@@ -5,7 +5,9 @@
 ## 已確認
 
 - reference 一般角色場景使用 `HEAD<game_area>.DAX` 與 `BODY<game_area>.DAX`，不走 CHEAD／CBODY combat icon loader。
-- `draw_head_and_body` 先在同一 row/column 畫 HEAD，再以 `row + 5` 畫 BODY；本輪以 destination BODY canvas、source HEAD、pixel y offset 5 重建該 layering。
+- `draw_head_and_body` 先在同一 row/column 畫 HEAD，再以 `row + 5` 畫 BODY。
+  此處 row 是 8-pixel text row，因此實際 BODY offset 是 40 pixels；早期 generator
+  曾誤作 5 pixels，造成頭像落進胸口，已由第 322 輪視覺 oracle 修正。
 - reference 這條路徑呼叫 `LoadDax(0, 0, ...)`，因此 generator 以 unmasked indexed picture 解析 HEAD／BODY。
 
 ## 本輪成果
