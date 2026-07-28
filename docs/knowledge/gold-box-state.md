@@ -590,3 +590,18 @@ ECL menu 必須以 original option text、目前 continuation 與 script 結果�
 
 摩安德護手也證實劇情神器不一定進普通 inventory。原版顯示取得訊息後寫
 `4C5B=1`；作品層應保存 plot identity，不能自行把它變成可丟棄或交易的 item。
+
+#### 劇情出口、跨 block DUMP 與返回 mode
+
+摩安德之坑上層 `(0,12)` 的 selector `0x0F` 先建立 MON3 `0x11×10`、
+`0x1C×5`、`0x19×5` 並進入最後阻擊。戰勝後 `(0,11,W)` 的 per-turn handler
+才是實際出口：它依 Alias／Dragonbait 狀態播放告別，寫入 `4C5B=FF`、
+`7F12=1`，最後 `NEWECL 0x51`。
+
+這條路徑證實「戰鬥結束」與「離開區域」是兩個 engine boundary；combat
+continuation 必須恢復原 dungeon return mode，不能直接回荒野。它也揭露
+跨 `NEWECL` 聚合的限制：reference 的 `LOAD CHARACTER → DUMP` 依賴當下 DOS
+selected-player state，切 block 後只保存分類 signal 未必能重建可靠索引。
+作品 adapter 可用已驗證的 destination block 與 plot flags 提交 NPC departure，
+但必須以 script name 移除 persistent roster／combat projection，不能用畫面順序
+或固定 party slot 猜測。告別事件完成後再切回 world mode。
