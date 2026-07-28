@@ -15,6 +15,9 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	if len(pack.Maps) != 1 || pack.Maps[0].ID != "zhentil-keep.inner-city" ||
 		pack.Maps[0].AreaID != 4 || pack.Maps[0].GeometryBlock != 0x20 ||
+		pack.Maps[0].GeometryFile != "GEO4.DAX" ||
+		pack.Maps[0].WallFile != "WALLDEF4.DAX" ||
+		pack.Maps[0].SymbolFile != "8X8D4.DAX" ||
 		pack.Maps[0].Spawn == nil || pack.Maps[0].Spawn.X != 2 ||
 		pack.Maps[0].Spawn.Y != 0 || pack.Maps[0].Spawn.Direction != 4 {
 		t.Fatalf("Zhentil Keep map definition=%+v", pack.Maps)
