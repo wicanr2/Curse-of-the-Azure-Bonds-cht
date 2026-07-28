@@ -178,6 +178,12 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_zhentrim_fighter", "散塔林戰士")
 	case "ZHENTRIM MAGE":
 		return catalog.Text("monster_zhentrim_mage", "散塔林法師")
+	case "CULTIST":
+		return catalog.Text("monster_moander_cultist", "摩安德教徒")
+	case "MOGION":
+		return catalog.Text("monster_mogion", "摩貢")
+	case "SHAMBLING MOUND":
+		return catalog.Text("monster_shambling_mound", "蔓生怪")
 	default:
 		return name
 	}

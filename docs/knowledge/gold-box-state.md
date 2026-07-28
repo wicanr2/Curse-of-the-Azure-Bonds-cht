@@ -564,3 +564,11 @@ selector 的解讀隨新 script 改變。VM／作品 adapter 必須分別保存 
 identity，不能看到 `NEWECL 0x12` 就猜測載入不存在的 GEO block `0x12`。
 跨層時還要執行或投影目的 block initial entry 寫入的座標與方向；否則 party
 會留在來源樓梯，SearchLocation 也會以錯誤 terrain 觸發。
+
+#### 選單 index 不是語意 identity
+
+摩貢祭壇的 ECL encounter menu 以 index `0` 表示 ATTACK；若 State 共用
+world-menu 的 index switch，會在戰鬥開始時錯顯示「進入城市」。只有沒有 ECL
+continuation 的 world menu 才可將 `0/1/2` 投影為 ENTER CITY／JOURNEY ON／CAMP。
+ECL menu 必須以 original option text、目前 continuation 與 script 結果決定語意，
+不能只看數字位置。
