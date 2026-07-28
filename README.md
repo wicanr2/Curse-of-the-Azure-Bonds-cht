@@ -9,6 +9,11 @@
 
 ## 目前成果
 
+截至 2026-07-28 的完整「已完成／未完成／驗證方式」盤點見
+[`docs/project-status.md`](docs/project-status.md)。目前 checkpoint 為
+CoAB `762c012`、獨立 engine `908cfb7`；這是可執行的多垂直切片 prototype，
+尚未宣稱完整可通關。
+
 最新畫面已依原版 DOS 截圖重新校正版面，不再沿用先前置中的 prototype：
 
 ![原始 BIGPIC 與 Clue Book 座標驅動的 640×480 世界地圖](docs/screenshots/coab-overland-map-remake.png)

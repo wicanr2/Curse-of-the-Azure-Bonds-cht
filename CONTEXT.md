@@ -1607,3 +1607,11 @@ spawn `(7,13,N)` 與 outdoor sky selector 3。獨立 engine `908cfb7` 已推送�
 新增 `FindMapByKindLocation` 與 indoor/outdoor sky schema，使同一 geometry
 block 的 AREA／first-person projections 不再互相誤選。正式 `-opening`
 Docker/Xvfb 圖已更新 `docs/screenshots/tilverton-first-person-remake.png`。
+
+2026-07-28 使用者要求先暫停新增功能並盤點成果。新增
+`docs/project-status.md`，集中列出 engine／CoAB 已完成且可驗證能力、仍未完成
+範圍、測試方式與目前 checkpoints（CoAB `762c012`、engine `908cfb7`）。
+README 已連結此盤點。後續若恢復反組譯，可使用
+`/home/anr2/ida_94_official/dist` 的 IDA Pro；仍須遵守
+反組譯證據 → `docs/spec/` READY → 實作的 SDD 流程。目前不要自行續跑新的
+combat demo／IDA 工作。
