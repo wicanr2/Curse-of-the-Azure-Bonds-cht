@@ -3,6 +3,7 @@ package party
 import (
 	"encoding/binary"
 	"fmt"
+	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
@@ -211,9 +212,17 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 	if nameLength < 1 || nameLength > 15 {
 		return DOSPlayerRecord{}, fmt.Errorf("DOS player name length %d is outside 1..15", nameLength)
 	}
-	rawRace, err := parseDOSRace(data[0x74])
-	if err != nil {
-		return DOSPlayerRecord{}, err
+	name := string(data[1 : 1+nameLength])
+	var rawRace Race
+	var err error
+	if inferNPCClass && data[0x74] == 0 &&
+		strings.EqualFold(strings.TrimSpace(name), "DRAGONBAIT") {
+		rawRace = RaceSaurial
+	} else {
+		rawRace, err = parseDOSRace(data[0x74])
+		if err != nil {
+			return DOSPlayerRecord{}, err
+		}
 	}
 	rawClass, err := parseDOSClass(data[0x75])
 	if err != nil {
@@ -275,7 +284,7 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		copy(spellCastCount[class][:], data[0x12D+class*5:0x132+class*5])
 	}
 	return DOSPlayerRecord{
-		ID: id, Name: string(data[1 : 1+nameLength]), Race: rawRace, Class: rawClass,
+		ID: id, Name: name, Race: rawRace, Class: rawClass,
 		RawRace: data[0x74], RawClass: data[0x75],
 		Abilities: Abilities{
 			Strength: int(data[0x10]), StrengthFull: int(data[0x11]), StrengthExceptional: int(data[0x1C]),

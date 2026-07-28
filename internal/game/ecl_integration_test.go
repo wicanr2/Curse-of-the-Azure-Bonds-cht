@@ -3753,6 +3753,122 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.currentOriginalChoices, state.Choices, state.Message)
 	}
+	pitLevelOne, ok := yulashGeoCatalog.Lookup(geo.MapRef{Set: 3, BlockID: 0x11})
+	if !ok {
+		t.Fatal("Pit of Moander GEO3 block 0x11 is unavailable")
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 2, 4, 0
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(2, 4, 0)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(2, 4).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	for step := 0; step < 6 && state.Mode == ModeWilderness &&
+		reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}); step++ {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Pit monster-remains continuation mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 4, 0
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(1, 4, 0)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(1, 4).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x85 ||
+		!strings.Contains(state.Message, "女戰士") ||
+		!strings.Contains(state.Message, "蜥蜴人") {
+		t.Fatalf("Pit Alias/Dragonbait meeting terrain=%#x wall=%#x mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "也被枷印控制") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "ADVANCE", "WAIT", "FLEE", "PARLAY"}) {
+		t.Fatalf("Pit Alias/Dragonbait encounter mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}) {
+		t.Fatalf("Pit Alias/Dragonbait parlay originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "愛麗雅絲") ||
+		!strings.Contains(state.Message, "龍餌") ||
+		!strings.Contains(state.Message, "說明來歷") {
+		t.Fatalf("Pit Alias/Dragonbait introduction mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"TELL HER YOUR STORY", "TELL HER YOU'RE HUNTING CULTISTS", "TELL HER IT'S NONE OF HER AFFAIR"}) ||
+		!reflect.DeepEqual(state.Choices,
+			[]string{"告訴她你們的經歷", "告訴她你們正在追捕邪教徒", "告訴她這不關她的事"}) {
+		t.Fatalf("Pit Alias/Dragonbait story choices originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "手札第 3 條") ||
+		!strings.Contains(strings.Join(state.JournalPages, "\n"), "手札條目 3（3/3）") {
+		t.Fatalf("Pit Alias/Dragonbait story mode=%v originals=%#v choices=%#v message=%q journals=%#v",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "愛麗雅絲與龍餌加入") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
+		t.Fatalf("Pit Alias/Dragonbait join prompt mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster) != 3 ||
+		state.partyRoster[1].Name != "愛麗雅絲" ||
+		state.partyRoster[1].ScriptName != "ALIAS" ||
+		state.partyRoster[1].Class != party.ClassFighter ||
+		state.partyRoster[2].Name != "龍餌" ||
+		state.partyRoster[2].ScriptName != "DRAGONBAIT" ||
+		state.partyRoster[2].Race != party.RaceSaurial ||
+		state.partyRoster[2].Class != party.ClassPaladin ||
+		!strings.Contains(state.Message, "摩貢大祭司") {
+		t.Fatalf("Pit Alias/Dragonbait joined mode=%v originals=%#v choices=%#v message=%q party=%#v",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.partyRoster)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.partyRoster) != 3 {
+		t.Fatalf("Pit Alias/Dragonbait return mode=%v originals=%#v message=%q party=%#v",
+			state.Mode, state.currentOriginalChoices, state.Message, state.partyRoster)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.partyRoster) != 3 {
+		t.Fatalf("Pit Alias/Dragonbait event replayed mode=%v originals=%#v message=%q party=%#v",
+			state.Mode, state.currentOriginalChoices, state.Message, state.partyRoster)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
