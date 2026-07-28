@@ -21,6 +21,9 @@ const (
 	RaceHalfling
 	RaceHuman
 	RaceHalfOrc
+	// RaceSaurial is the non-player race projection used by Dragonbait's
+	// MON3 player record. It is not exposed by character creation.
+	RaceSaurial
 )
 
 type Class uint8
@@ -892,7 +895,11 @@ func (c Character) CombatIconBlocksFor(attack bool) (head, body uint8) {
 }
 
 func (r Race) String() string {
-	return [...]string{"dwarf", "elf", "gnome", "half-elf", "halfling", "human", "half-orc"}[r]
+	names := [...]string{"dwarf", "elf", "gnome", "half-elf", "halfling", "human", "half-orc", "saurial"}
+	if int(r) >= len(names) {
+		return fmt.Sprintf("race-%d", r)
+	}
+	return names[r]
 }
 
 func (c Class) String() string {
@@ -903,7 +910,7 @@ func (c Character) Validate() error {
 	if c.ID == "" || c.Name == "" {
 		return fmt.Errorf("character ID and name are required")
 	}
-	if c.Race > RaceHalfOrc {
+	if c.Race > RaceSaurial {
 		return fmt.Errorf("unsupported race %d", c.Race)
 	}
 	if c.Class > ClassThief {
@@ -920,6 +927,13 @@ func (c Character) Validate() error {
 	}
 	if !raceAllowsClass(c.Race, c.Class) {
 		return fmt.Errorf("%s cannot be a %s", c.Race, c.Class)
+	}
+	// Original NPC records are authoritative campaign data, not character
+	// creation requests. Their scripted race/class and ability combinations
+	// may sit outside player-creation minimums (Dragonbait is the canonical
+	// saurial paladin example), so retain them after structural validation.
+	if c.NPC {
+		return nil
 	}
 	minimums := []struct {
 		ability string
@@ -950,6 +964,8 @@ func raceAllowsClass(race Race, class Class) bool {
 		return class == ClassFighter || class == ClassMagicUser || class == ClassThief
 	case RaceHalfOrc:
 		return class == ClassCleric || class == ClassFighter || class == ClassThief
+	case RaceSaurial:
+		return class == ClassPaladin
 	default:
 		return false
 	}

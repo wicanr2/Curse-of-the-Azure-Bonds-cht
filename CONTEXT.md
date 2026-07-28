@@ -2,7 +2,16 @@
 
 更新日期：2026-07-28
 
-最新成果：主線已從尤拉什跨入摩安德之坑。取得指揮官通行後，隊伍可抵達
+最新成果：摩安德之坑第一層的愛麗雅絲與龍餌主線已接通。`(1,4)` terrain
+`0x85` 依 ECL3 block `0x11:+0x09DC` 顯示 PICTURE 18，走
+PARLAY→NICE→TELL HER YOUR STORY 可解鎖三頁繁中手札 3；YES 會以 MON3
+`0x16/0x17` 的 CHA/SPC/ITM 原始資料加入愛麗雅絲（fighter 6）與龍餌
+（saurial paladin 7），顯示名繁中而 ScriptName 保留英文。party parser 新增
+Dragonbait raw race `0x00` 的 context-specific saurial 投影，並釐清原版 NPC
+不應套用玩家創角最低能力門檻。`4C2E` 防止重複招募。成果收進 READY spec
+335、中文攻略與 Gold Box state／party 知識。
+
+先前成果：主線已從尤拉什跨入摩安德之坑。取得指揮官通行後，隊伍可抵達
 `(11,0,N)` 的 terrain `0x26`，看到原版巨坑警告與 picture pause；向北跨界
 由 ECL3/GEO3 block `0x10` 切到 `0x11`，同步 `(0,0,E)`。入口的三名死去
 邪教徒、受傷牧師狂熱呼喊、擊石封死入口、咳血死亡與遠方戰鬥／烤麵包氣味

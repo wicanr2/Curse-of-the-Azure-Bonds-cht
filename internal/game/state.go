@@ -3307,6 +3307,12 @@ func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
 		if chapter == 5 && npcID == 0x3B {
 			character.Name = s.catalog.Text("npc_akabar", "阿卡巴・貝爾・阿卡什")
 		}
+		if chapter == 3 && npcID == 0x16 {
+			character.Name = s.catalog.Text("npc_alias", "愛麗雅絲")
+		}
+		if chapter == 3 && npcID == 0x17 {
+			character.Name = s.catalog.Text("npc_dragonbait", "龍餌")
+		}
 		usedIcons := [8]bool{}
 		for _, member := range s.partyRoster {
 			if member.IconID < 8 {
@@ -5078,6 +5084,12 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("fight_the_men", "攔下他們戰鬥")
 	case "LET THEM GO":
 		return catalog.Text("let_them_go", "放他們離開")
+	case "TELL HER YOUR STORY":
+		return catalog.Text("tell_her_your_story", "告訴她你們的經歷")
+	case "TELL HER YOU'RE HUNTING CULTISTS":
+		return catalog.Text("tell_her_hunting_cultists", "告訴她你們正在追捕邪教徒")
+	case "TELL HER IT'S NONE OF HER AFFAIR":
+		return catalog.Text("tell_her_none_of_affair", "告訴她這不關她的事")
 	case "TRY TO TALK FURTHER":
 		return catalog.Text("try_talk_further", "繼續交談")
 	case "WILDERNESS":
@@ -5569,6 +5581,44 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_pit_of_moander_ambience",
 			"遠處傳來戰鬥聲，空氣中隱約飄著烤麵包的氣味。",
 		)
+	case strings.Contains(joined, "YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING LIZARD MAN") &&
+		strings.Contains(joined, "VIOLETS, BRIMSTONE AND HONEYSUCKLE"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_meet",
+			"你們看見一名女戰士與一名外貌奇特的蜥蜴人；紫羅蘭、硫磺與忍冬的強烈氣味接連飄來。",
+		)
+	case strings.Contains(joined, "THE FEMALE FIGHTER GASPS") &&
+		strings.Contains(joined, "THEY'RE BONDED") &&
+		strings.Contains(joined, "WHAT DO YOU DO"):
+		return catalog.Text(
+			"ecl_pit_alias_bonded_reaction",
+			"女戰士倒抽一口氣：「他們也被枷印控制了！」你們要怎麼做？",
+		)
+	case strings.Contains(joined, "THE FIGHTER INTRODUCES HERSELF AS ALIAS") &&
+		strings.Contains(joined, "HER COMPANION AS DRAGONBAIT") &&
+		strings.Contains(joined, "SHE ASKS YOU TO TELL YOUR STORY"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_introduction",
+			"女戰士自稱愛麗雅絲，並介紹她的同伴龍餌。她說自己過去也有與你們相似的刺青，請眾人說明來歷。",
+		)
+	case strings.Contains(joined, "SHE TELLS HER STORY") &&
+		strings.Contains(joined, "JOURNAL ENTRY 3"):
+		return catalog.Text(
+			"ecl_pit_alias_story",
+			"愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。",
+		)
+	case strings.Contains(joined, "DO YOU WANT THEM TO JOIN YOU"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_join",
+			"要讓愛麗雅絲與龍餌加入隊伍嗎？",
+		)
+	case strings.Contains(joined, "ALIAS AND DRAGONBAIT JOIN YOUR PARTY") &&
+		strings.Contains(joined, "TREASURE THAT MOGION") &&
+		strings.Contains(joined, "KEEPS BEHIND HER ALTAR"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_joined",
+			"愛麗雅絲與龍餌加入隊伍。愛麗雅絲挖苦地補充：「另外，摩貢大祭司藏在祭壇後方的財寶也值得處理。」",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -5951,6 +6001,29 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
+	if strings.Contains(joined, "SHE TELLS HER STORY") &&
+		strings.Contains(joined, "JOURNAL ENTRY 3") {
+		s.appendJournalPages("手札條目 3", []string{
+			s.catalog.Text(
+				"journal_entry_3_1",
+				"手札條目 3（1/3）：愛麗雅絲說，她曾同樣受枷印控制。故事始於一名首席豎琴手；"+
+					"他想創造不朽的人形容器，完整保存自己的歌曲與故事，卻在實驗中害死助手。"+
+					"豎琴手議會剝奪他的力量、魔法物品與姓名，抹去世人對其作品的記憶，並把他囚禁在異次元。",
+			),
+			s.catalog.Text(
+				"journal_entry_3_2",
+				"手札條目 3（2/3）：一群法師與怪物找到無名詩人，利用他的研究製造愛麗雅絲。"+
+					"惡魔法爾斯綁架了來自異世界的蜥蜴人聖武士龍餌，企圖以善良生命完成儀式；"+
+					"龍餌卻把部分靈魂贈給愛麗雅絲，無名詩人也犧牲自己，協助兩人逃脫。",
+			),
+			s.catalog.Text(
+				"journal_entry_3_3",
+				"手札條目 3（3/3）：愛麗雅絲醒來時帶著偽造記憶與相似枷印，後來靠反抗每道魔法強制、"+
+					"摧毀製造枷印的人或組織而恢復自由。摩安德教徒也參與過她的束縛；她認為摩安德正企圖復生，"+
+					"其新祭壇就在這座原始神殿中，因此提議與龍餌協助隊伍。",
+			),
+		})
+	}
 	if strings.Contains(joined, "YOU HAVE PLEASED THE COMMANDER") &&
 		strings.Contains(joined, "JOURNAL ENTRY 22") {
 		s.appendJournalPages("手札條目 22", []string{

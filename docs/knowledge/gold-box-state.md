@@ -53,6 +53,13 @@ map registers；只在 `Continue` 路徑做同步會漏掉這種 direct lifecycl
 `0x11`，map registers 變為 `(0,0,E)`。因此 block switch、GEO request、
 座標與 resumable opening text 必須一起驗證，不能只以 chapter 未變就沿用舊 map。
 
+MON*CHA player layout 也包含特殊 campaign NPC。Pit level 1 的 `ADD NPC 0x16`
+是 human fighter Alias；`0x17` Dragonbait 使用 raw race `0x00`、paladin class。
+同一 raw race 在一般 monster records 代表非玩家種類，不能全域解成 saurial；
+CoAB adapter 只在 ADD NPC context 且 canonical name 為 DRAGONBAIT 時投影
+`RaceSaurial`。此外 NPC record 是原版 campaign data，應保留其能力組合，不套用
+玩家創角最低能力門檻；基本欄位、能力範圍與 saurial-paladin 結構仍需驗證。
+
 SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
 selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
 並在同一 runtime 返回探索。`4BC9 > 14` 的 gate 已由原始 ECL 證實，但在

@@ -399,6 +399,31 @@ func TestParseDOSNPCRecordInfersSinglePopulatedClassLevel(t *testing.T) {
 	}
 }
 
+func TestParseDOSDragonbaitNPCProjectsSaurialRace(t *testing.T) {
+	data := make([]byte, DOSPlayerRecordSize)
+	data[0] = 10
+	copy(data[1:], []byte("DRAGONBAIT"))
+	data[0x10], data[0x12], data[0x14] = 18, 9, 12
+	data[0x16], data[0x18], data[0x1A] = 12, 17, 12
+	data[0x74], data[0x75] = 0, 3
+	data[0x10C] = 7
+	data[0x78], data[0x1A4] = 50, 50
+	data[0xF7] = 0xB2
+
+	record, err := ParseDOSNPCRecord(data, "dragonbait")
+	if err != nil {
+		t.Fatal(err)
+	}
+	character, err := record.Character()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if character.Race != RaceSaurial || character.Race.String() != "saurial" ||
+		character.Class != ClassPaladin || character.Level != 7 || !character.NPC {
+		t.Fatalf("Dragonbait character=%+v", character)
+	}
+}
+
 func TestParseDOSHalfOrcRace(t *testing.T) {
 	record := make([]byte, DOSPlayerRecordSize)
 	record[0] = 3
