@@ -41,6 +41,12 @@ CoAB 尤拉什由 world block `0x51` 切到 ECL3/GEO3 block `0x10`；選擇跟�
 ECL EXIT 直接落入 Dungeon mode 的路徑同步 GameArea、InDungeon、GEO block 與
 map registers；只在 `Continue` 路徑做同步會漏掉這種 direct lifecycle exit。
 
+尤拉什也暴露出 lifecycle 的空文字陷阱：block `0x10` per-turn 會留下 CALL 與
+空 packed-text slice。`len(Text)>0` 並不等於有可見事件；若因此提前返回，
+`terrain 0x9A` 的 SearchLocation 永遠不會執行。共用 adapter 應忽略全空白文字，
+只在 picture、service、treasure、combat、menu 或至少一段非空白文字出現時中止。
+修正後，`(0,3,E)→(1,3)` 會依原版觸發 `4C41` exactly-once 間諜事件。
+
 SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
 selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
 並在同一 runtime 返回探索。`4BC9 > 14` 的 gate 已由原始 ECL 證實，但在

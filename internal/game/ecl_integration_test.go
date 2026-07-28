@@ -1748,6 +1748,45 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		monster5Records[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(5, monster5Records)
+	monster3Blocks, err := dax.Parse(zipData(t, image, "MON3CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monster3Records := make(map[uint8]monster.Record, len(monster3Blocks))
+	for _, block := range monster3Blocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster3Records[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(3, monster3Records)
+	monster3Affects := make(map[uint8][]monster.AffectRecord)
+	monster3AffectBlocks, err := dax.Parse(zipData(t, image, "MON3SPC.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range monster3AffectBlocks {
+		parsed, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster3Affects[block.Entry.ID] = parsed
+	}
+	state.SetMonsterAffectsForECL(3, monster3Affects)
+	monster3Items := make(map[uint8][]monster.ItemRecord)
+	monster3ItemBlocks, err := dax.Parse(zipData(t, image, "MON3ITM.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, block := range monster3ItemBlocks {
+		parsed, parseErr := monster.ParseItems(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster3Items[block.Entry.ID] = parsed
+	}
+	state.SetMonsterItemsForECL(3, monster3Items)
 	monster5Affects := make(map[uint8][]monster.AffectRecord)
 	monster5AffectBlocks, err := dax.Parse(zipData(t, image, "MON5SPC.DAX"))
 	if err != nil {
@@ -3528,6 +3567,102 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.Mode, session.CurrentBlockID(), state.Area, state.GeoMapSet, state.GeoMapBlock,
 			state.geoMapPending, state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.Message)
+	}
+	yulashGeoCatalog := geo.NewCatalog()
+	if err := yulashGeoCatalog.AddDAX(3, zipData(t, image, "GEO3.DAX")); err != nil {
+		t.Fatal(err)
+	}
+	yulashGrid, ok := yulashGeoCatalog.Lookup(geo.MapRef{Set: 3, BlockID: 0x10})
+	if !ok {
+		t.Fatal("Yulash GEO3 block 0x10 is unavailable")
+	}
+	state.DungeonX = 1
+	state.DungeonWallType, _ = yulashGrid.WallWrapped(1, 3, 2)
+	state.DungeonWallRoof = yulashGrid.CellWrapped(1, 3).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x9A ||
+		!strings.Contains(state.Message, "散提爾堡的間諜") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"FIGHT THE MEN", "LET THEM GO"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"攔下他們戰鬥", "放他們離開"}) {
+		t.Fatalf("Yulash Zhentarim-spy event terrain=%#x mode=%v originals=%#v choices=%#v message=%q",
+			state.DungeonWallRoof, state.Mode,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	spyFighters := state.CombatFighters()
+	if state.Mode != ModeCombat || len(spyFighters) != 12 {
+		t.Fatalf("Yulash spy fight mode=%v fighters=%+v message=%q",
+			state.Mode, spyFighters, state.Message)
+	}
+	spyCounts := map[string]int{}
+	for _, fighter := range spyFighters[1:] {
+		spyCounts[fighter.Name]++
+	}
+	if !reflect.DeepEqual(spyCounts, map[string]int{
+		"散塔林牧師": 1,
+		"散塔林戰士": 8,
+		"散塔林法師": 2,
+	}) {
+		t.Fatalf("Yulash spy enemy counts=%#v", spyCounts)
+	}
+	for turn := 0; turn < 24 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		!strings.Contains(state.Message, "晉見紅羽衛指揮官") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Yulash post-spy-victory mode=%v block=0x%02X originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(),
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "來尤拉什有何目的") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}) {
+		t.Fatalf("Yulash commander audience mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "手札第 22 條") ||
+		!strings.Contains(strings.Join(state.JournalPages, "\n"), "手札條目 22（1/2）") {
+		t.Fatalf("Yulash commander approval mode=%v originals=%#v choices=%#v message=%q journals=%#v",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	journalText := strings.Join(state.JournalPages, "\n")
+	if !strings.Contains(state.Message, "從側門離開") ||
+		!strings.Contains(journalText, "手札條目 52：") {
+		t.Fatalf("Yulash commander pass mode=%v originals=%#v choices=%#v message=%q journals=%#v",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon ||
+		state.DungeonX != 1 || state.DungeonY != 3 || state.DungeonDirection != 2 ||
+		len(state.Choices) != 0 || state.Message != "" {
+		t.Fatalf("Yulash commander exit mode=%v coords=%d,%d,%d originals=%#v choices=%#v message=%q",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || len(state.Choices) != 0 {
+		t.Fatalf("Yulash consumed spy event replayed mode=%v choices=%#v message=%q",
+			state.Mode, state.Choices, state.Message)
 	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)

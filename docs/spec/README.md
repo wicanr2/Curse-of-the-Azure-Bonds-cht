@@ -310,3 +310,4 @@
 - [第三百三十輪艾森布拉露天酒館與手札 18 定位](./330-essembra-hooded-man.md)（`READY`：限 ECL1 block 0x50 城市 BAR／RELAX、傳聞 60、手札 18 城市歸屬與 continuation）
 - [第三百三十一輪希爾斯法世界轉場與紅羽衛](./331-hillsfar-red-plumes.md)（`READY`：限 Standing Stone→Hillsfar、ECL 0x50→0x51、world value 11、兩場六人戰與城市入口）
 - [第三百三十二輪尤拉什戰區與指揮官等候室](./332-yulash-war-zone-entry.md)（`READY`：限 Hillsfar→Yulash、十二名紅羽衛、ECL3/GEO3 block 16、檢查哨談判與 `(0,3,E)`）
+- [第三百三十三輪尤拉什間諜戰與指揮官通行證](./333-yulash-spies-commander-pass.md)（`READY`：限 terrain `0x9A`、MON3 1/8/2 間諜戰、NICE、手札 22／52 與 `(1,3,E)`）
