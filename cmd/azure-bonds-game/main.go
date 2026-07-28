@@ -30,6 +30,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/etenfont"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/game"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/gfx"
@@ -38,6 +39,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
+	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
 )
 
 const (
@@ -58,6 +60,7 @@ type app struct {
 	tilePreview         bool
 	tileImages          []*ebiten.Image
 	geoPreview          bool
+	areaMapPreview      bool
 	geoGrid             *geo.Grid
 	geoX                int
 	geoY                int
@@ -175,6 +178,12 @@ func (a *app) saveTarget() string {
 }
 
 func (a *app) Update() error {
+	if a.areaMapPreview {
+		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyA) {
+			a.areaMapPreview = false
+		}
+		return nil
+	}
 	a.syncSoundEvents()
 	a.syncGeoMapRequest()
 	a.syncLoadPiecesRequest()
@@ -214,6 +223,10 @@ func (a *app) Update() error {
 			return nil
 		}
 		if productionDungeon {
+			if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+				a.areaMapPreview = true
+				return nil
+			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				a.moveDungeonForward()
 			}
@@ -794,6 +807,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawGeoPreview(screen, white, cyan)
 		return
 	}
+	if a.areaMapPreview {
+		a.drawAreaMap(screen, white, cyan)
+		return
+	}
 	if a.dungeonPreview || a.state.Mode == game.ModeDungeon {
 		a.drawDungeonPreview(screen, white, cyan)
 		return
@@ -817,7 +834,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 		return
 	}
 	if a.state.Mode == game.ModeMap {
-		a.drawWildernessMap(screen, white, cyan)
+		a.drawAreaMap(screen, white, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeWilderness && a.state.Message == "" && a.drawOverlandMap(screen, white, cyan) {
@@ -1089,43 +1106,50 @@ func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	}
 }
 
-func (a *app) drawWildernessMap(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "暗影谷荒野（原版 50×25 floor）", a.face, 24, 28, cyan)
-	text.Draw(screen, a.state.GameTimeText(), a.face, 390, 55, cyan)
-	const (
-		viewWidth  = 7
-		viewHeight = 5
-		scale      = 2
-		tileSize   = 24
-		originX    = 24
-		originY    = 48
-	)
-	for row := 0; row < viewHeight; row++ {
-		for column := 0; column < viewWidth; column++ {
-			x := a.state.MapX + column - viewWidth/2
-			y := a.state.MapY + row - viewHeight/2
-			entry, ok := a.state.WildernessFloor.Entry(x, y)
-			left := originX + column*tileSize*scale
-			top := originY + row*tileSize*scale
-			if ok && int(entry.TileIndex) < len(a.tileImages) {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Scale(scale, scale)
-				op.GeoM.Translate(float64(left), float64(top))
-				screen.DrawImage(a.tileImages[entry.TileIndex], op)
-			} else {
-				ebitenutil.DrawRect(screen, float64(left), float64(top), tileSize*scale, tileSize*scale, color.RGBA{24, 30, 48, 255})
-			}
-			if x == a.state.MapX && y == a.state.MapY {
-				ebitenutil.DrawRect(screen, float64(left+tileSize*scale/2-4), float64(top+tileSize*scale/2-4), 8, 8, color.RGBA{255, 230, 80, 255})
-			}
+func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
+	drawPanelFrame(screen, 8, 8, 352, 352)
+	drawPanelFrame(screen, 360, 8, 272, 352)
+	drawPanelFrame(screen, 8, 360, 624, 88)
+	drawPanelFrame(screen, 8, 448, 624, 28)
+	if a.geoGrid == nil {
+		text.Draw(screen, "尚未載入 GEO 區域資料", a.face, 24, 48, white)
+		return
+	}
+	projection := enginearea.Project(*a.geoGrid)
+	const cellSize, originX, originY = 20, 24, 24
+	for _, cell := range projection.Cells {
+		fill := color.RGBA{18, 28, 66, 255}
+		if cell.Terrain&0x80 != 0 {
+			fill = color.RGBA{28, 44, 92, 255}
 		}
+		ebitenutil.DrawRect(screen,
+			float64(originX+cell.X*cellSize+1), float64(originY+cell.Y*cellSize+1),
+			cellSize-2, cellSize-2, fill)
 	}
-	text.Draw(screen, "位置：（"+strconv.Itoa(a.state.MapX)+"，"+strconv.Itoa(a.state.MapY)+"）", a.face, 390, 90, white)
-	if entry, ok := a.state.WildernessFloor.Entry(a.state.MapX, a.state.MapY); ok {
-		text.Draw(screen, "背景 entry："+strconv.Itoa(int(a.state.WildernessFloor.Tiles[a.state.MapY][a.state.MapX]))+"　tile："+strconv.Itoa(int(entry.TileIndex)), a.face, 390, 125, white)
+	for _, segment := range projection.Segments {
+		ink := cyan
+		if segment.Door {
+			ink = color.RGBA{255, 255, 82, 255}
+		}
+		ebitenutil.DrawLine(screen,
+			float64(originX+segment.X1*cellSize), float64(originY+segment.Y1*cellSize),
+			float64(originX+segment.X2*cellSize), float64(originY+segment.Y2*cellSize), ink)
 	}
-	text.Draw(screen, "方向鍵：移動（依 floor movement cost）", a.face, 390, 180, white)
-	text.Draw(screen, "Enter：場所　Esc：離開", a.face, 390, 215, cyan)
+	x, y, direction := a.state.DungeonGeometryView()
+	if !a.areaMapPreview {
+		x, y = a.state.MapX, a.state.MapY
+	}
+	ebitenutil.DrawRect(screen, float64(originX+x*cellSize+6), float64(originY+y*cellSize+6), 8, 8, color.RGBA{255, 255, 82, 255})
+
+	text.Draw(screen, "區域地圖", a.compactFace, 376, 38, cyan)
+	text.Draw(screen, fmt.Sprintf("GEO%d／%02X", a.geoSet, a.geoBlock), a.compactFace, 376, 66, white)
+	text.Draw(screen, fmt.Sprintf("位置 (%d,%d)", x, y), a.compactFace, 376, 102, white)
+	text.Draw(screen, "方向 "+dungeonDirectionName(direction), a.compactFace, 376, 130, white)
+	text.Draw(screen, "青色：牆壁", a.compactFace, 376, 182, cyan)
+	text.Draw(screen, "黃色：門／隊伍", a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
+	text.Draw(screen, a.state.LocationName, a.compactFace, 24, 390, cyan)
+	text.Draw(screen, "AREA 顯示目前區域的主要阻礙與隊伍位置。", a.compactFace, 24, 422, white)
+	text.Draw(screen, "A／Esc：返回探索", a.compactFace, 24, 470, cyan)
 }
 
 func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
@@ -1831,6 +1855,8 @@ func loadFace(path string, size float64) font.Face {
 
 func main() {
 	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
+	etenFontPath := flag.String("eten-font", "", "ETen STDFONT.15 path; uses bold 16x15 Chinese glyphs")
+	etenSymbolPath := flag.String("eten-symbol-font", "", "optional ETen SPCFONT.15 path for full-width punctuation")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
@@ -1855,6 +1881,7 @@ func main() {
 	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
 	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
+	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
 	encounterStart := flag.Int("encounter-start", 0x1293, "payload offset for -encounter")
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
@@ -2220,7 +2247,16 @@ func main() {
 		log.Fatal(err)
 	}
 	dungeonX, dungeonY, _ := state.DungeonGeometryView()
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: loadFace(*fontPath, 24), compactFace: loadFace(*fontPath, 16), partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	regularFace := loadFace(*fontPath, 24)
+	compactFace := loadFace(*fontPath, 16)
+	if *etenFontPath != "" {
+		etenFace, err := etenfont.Load(*etenFontPath, *etenSymbolPath, compactFace, true)
+		if err != nil {
+			log.Fatal(err)
+		}
+		compactFace = etenFace
+	}
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -55,6 +55,15 @@
   },
   "maps": [
     {
+      "id": "tilverton.area-map",
+      "kind": "area",
+      "area_id": 2,
+      "geometry_block": 1,
+      "geometry_file": "GEO2.DAX",
+      "symbol_file": "8X8D2.DAX",
+      "scale": 2
+    },
+    {
       "id": "moonsea.overland",
       "kind": "overland",
       "area_id": 1,

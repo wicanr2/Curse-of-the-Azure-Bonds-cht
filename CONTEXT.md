@@ -1550,3 +1550,14 @@ WILDCOM 50×25 combat floor 誤稱 overland。使用者提供的 Clue Book PDF �
 地圖、目前位置、旅行選單與繁中 HUD；`-world-map` 的 Docker/Xvfb 實機圖為
 `docs/screenshots/coab-overland-map-remake.png`。route graph 自 ECL 匯出、
 Shadowdale AREA overhead map 與 optional travel encounters 尚待後續。
+
+第三百四十四輪成果：補上與世界地圖、戰鬥地板分離的 AREA 俯視地圖。獨立
+engine `areamap.Project` 由 16×16 GEO grid 產生 terrain cells、去重實體牆段、
+wall type 與 door detail；engine commit 為 `2ef18ca`。CoAB game-pack JSON
+新增 `tilverton.area-map`，指定 Area 2、`GEO2.DAX` block 1、`8X8D2.DAX`
+與 2× scale。正式地城按 A 開啟、A／Esc 返回，舊 `ModeMap` 畫面也不再誤用
+WILDCOM combat floor。中文字改讀本機倚天 `STDFONT.15` Big5 分區字模，
+以 Monkey Island 2 已驗證的逐列水平 1px embolden 顯示 16×15 粗體；
+optional `SPCFONT.15` 處理全形符號，字型檔因著作權不提交。640×480 實機圖為
+`docs/screenshots/coab-area-map-remake.png`。`8X8D2` exact AREA symbol
+composition 尚無足夠 oracle，目前是 GEO 資料正確的向量第一版。

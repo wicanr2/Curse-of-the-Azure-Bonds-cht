@@ -28,6 +28,12 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		overland.Locations[4].ID != "standing-stone" {
 		t.Fatalf("overland map definition=%+v found=%v", overland, found)
 	}
+	areaMap, found := pack.FindMapByKind("area")
+	if !found || areaMap.AreaID != 2 || areaMap.GeometryBlock != 1 ||
+		areaMap.GeometryFile != "GEO2.DAX" || areaMap.SymbolFile != "8X8D2.DAX" ||
+		areaMap.Scale != 2 {
+		t.Fatalf("AREA map definition=%+v found=%v", areaMap, found)
+	}
 	result := pack.MatchText([]string{
 		"YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.",
 		"NOTING THE SIGILS ON YOUR ARMS, THEY LET YOU PASS.",
