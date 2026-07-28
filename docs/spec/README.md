@@ -304,3 +304,4 @@
 - [第三百二十四輪原版 combat terrain atlas](./324-combat-terrain-atlases.md)（`READY`：限 DUNGCOM/WILDCOM/RANDCOM 24×24 codec、gallery 與 dungeon background lookup）
 - [第三百二十五輪野外戰鬥 terrain adapter](./325-wilderness-combat-terrain.md)（`READY`：限 InDungeon selector、WILDCOM camera lookup 與 RANDCOM overlay boundary）
 - [第三百二十六輪怪物戰鬥佔格與大型 CPIC 錨點](./326-monster-combat-footprints.md)（`READY`：限 `field_DE & 7`、1×1／1×2／2×1／2×2 occupancy、碰撞與 96×96 marker）
+- [第三百二十七輪 RANDCOM 地城戰鬥裝飾](./327-randcom-decoration-overlay.md)（`READY`：限全域 graphic ID `0x22..0x27`、DUNGCOM floor＋透明 overlay 與原始 GEO 實機驗收）

@@ -31,6 +31,33 @@ func TestCombatTerrainEntryDoesNotTreatRANDCOMAsFloor(t *testing.T) {
 	}
 }
 
+func TestCombatTerrainLayersDecodeGlobalRANDCOMNamespace(t *testing.T) {
+	got := combatTerrainLayers("DUNGCOM", mapdata.BackgroundTile{TileIndex: 0x22})
+	want := []combatTerrainLayer{
+		{Atlas: "DUNGCOM", Index: 0x16},
+		{Atlas: "RANDCOM", Index: 0},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("table layers=%+v, want %+v", got, want)
+	}
+	got = combatTerrainLayers("DUNGCOM", mapdata.BackgroundTile{TileIndex: 0x27})
+	if len(got) != 2 || got[1] != (combatTerrainLayer{Atlas: "RANDCOM", Index: 5}) {
+		t.Fatalf("last RANDCOM layers=%+v", got)
+	}
+}
+
+func TestCombatTerrainLayersKeepAtlasBoundsSeparate(t *testing.T) {
+	if got := combatTerrainLayers("DUNGCOM", mapdata.BackgroundTile{TileIndex: 24}); !reflect.DeepEqual(got, []combatTerrainLayer{{Atlas: "DUNGCOM", Index: 24}}) {
+		t.Fatalf("last DUNGCOM layer=%+v", got)
+	}
+	if got := combatTerrainLayers("WILDCOM", mapdata.BackgroundTile{TileIndex: 33}); !reflect.DeepEqual(got, []combatTerrainLayer{{Atlas: "WILDCOM", Index: 33}}) {
+		t.Fatalf("last WILDCOM layer=%+v", got)
+	}
+	if got := combatTerrainLayers("DUNGCOM", mapdata.BackgroundTile{TileIndex: 0x21}); got != nil {
+		t.Fatalf("namespace gap unexpectedly resolved: %+v", got)
+	}
+}
+
 func TestMirroredCombatPlacementKeepsOriginalCPICAnchor(t *testing.T) {
 	got := mirroredCombatAnchor(combat.TilePoint{X: 0, Y: 2})
 	if got != (combat.TilePoint{X: 6, Y: 2}) {

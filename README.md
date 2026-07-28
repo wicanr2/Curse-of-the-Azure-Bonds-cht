@@ -19,7 +19,7 @@ nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／B
 幾何，戰場是 `(16,16,336,336)`、中央石框 16px、右欄 256px。畫面不再顯示
 非原版棋盤格、team bars 或右欄 target card；640×480 多出的 80px 只用來容納
 中文戰鬥紀錄。原版 combat terrain atlas 已於下一段接入；完整 terrain-mode
-selector 與大型怪物 occupancy 已接通，石框圖塊與 RANDCOM decoration 仍在反組譯中。
+selector、大型怪物 occupancy 與 RANDCOM decoration 已接通，石框圖塊仍在反組譯中。
 
 最新圖中的龍巫妖直接取自 MON5／CPIC5：`field_DE & 7 == 4` 被還原為 2×2
 戰術佔格，選取框因此是 96×96；移動、復活、近戰鄰接與 camera 也使用同一份
@@ -33,14 +33,20 @@ footprint 規則，不再把大型怪物誤當單格小人。
 
 ![RANDCOM 原版隨機戰鬥裝飾](docs/screenshots/randcom-tiles.png)
 
-上方 atlas 均由原始 DAX parser 離線重建；最新戰鬥圖中的橘色石牆則由 GEO
-dungeon buffer 的 background entry 查回 DUNGCOM tile，不是手工 mock。
+上方 atlas 均由原始 DAX parser 離線重建；實機戰鬥圖中的橘色石牆與桌椅由
+GEO dungeon buffer 的 background entry 查回 DUNGCOM／RANDCOM，不是手工 mock。
 
 ![WILDCOM 50×25 floor 驅動的 640×480 野外實機戰鬥](docs/screenshots/gold-box-layout-combat-wilderness.png)
 
 野外戰場以目前 `MapX/MapY` 為中心查 `SetupWildernessFloor` 的 7×7 slice；
 樹木、倒木、岩石、草與水岸均由 entry 的原版 tile index 決定。地城／野外
 現在依 `Area.InDungeon` 選 DUNGCOM／WILDCOM，不再用章節編號猜測。
+
+![RANDCOM 原版桌椅透明疊在 DUNGCOM 地板](docs/screenshots/gold-box-layout-combat-randcom.png)
+
+地城桌椅也不再只存在於 map generator：BackgroundTiles 全域 graphic ID
+`0x22..0x27` 已接到 RANDCOM `0..5`，先畫 DUNGCOM 開放地板再疊透明物件。
+上圖是原始 `GEO2 block 01, center (13,0), seed 1` 的正式 Xvfb 實機畫面。
 
 以下圖片由原始 `curseoftheazurebonds.zip`，透過專案目前的 DAX／GFX／GEO parser 離線產生，證明圖像資料管線已經接通：
 
