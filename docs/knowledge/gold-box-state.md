@@ -34,6 +34,13 @@ dungeon mode 與對應 graphics namespace 是外層 dispatcher 的責任。共�
 `4C9B/4C9C` world bytes。State location projection 不可綁死單一 block ID，否則
 VM 雖已抵達北方城市，前端仍會顯示上一個南方地點。
 
+世界入口切入地城時，ECL block namespace 可反推出作品 chapter／GameArea，但
+座標 teleport 仍可能屬 DOS area loop，不在 ECL 的 `LOAD PIECES` signal 中。
+CoAB 尤拉什由 world block `0x51` 切到 ECL3/GEO3 block `0x10`；選擇跟紅羽衛前往
+指揮官時，area loop 把 `C04B/C04C/C04D` 設為等候室 `(0,3,E)`。State 必須在
+ECL EXIT 直接落入 Dungeon mode 的路徑同步 GameArea、InDungeon、GEO block 與
+map registers；只在 `Continue` 路徑做同步會漏掉這種 direct lifecycle exit。
+
 SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
 selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
 並在同一 runtime 返回探索。`4BC9 > 14` 的 gate 已由原始 ECL 證實，但在

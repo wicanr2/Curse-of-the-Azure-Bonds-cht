@@ -1009,6 +1009,16 @@ func (s *State) Select(index int) error {
 		var blockBefore uint8
 		if s.session != nil {
 			blockBefore = s.session.CurrentBlockID()
+			if blockBefore == 0x10 && originalChoice == "GO WITH GUARDS" {
+				// Yulash's outer dispatcher teleports the party to the Red
+				// Plume commander's waiting room at (0,3), facing east.
+				// The ECL branch owns the dialogue but the DOS area loop owns
+				// these map registers, so reproduce that engine transaction
+				// before resuming the shared block.
+				s.session.SetMemoryValue(0xC04B, 0)
+				s.session.SetMemoryValue(0xC04C, 3)
+				s.session.SetMemoryValue(0xC04D, 1)
+			}
 			selection := uint16(index)
 			var menuSelection, whoSelection *uint16
 			if whoSelecting {
@@ -1224,6 +1234,7 @@ func (s *State) Select(index int) error {
 		if result.Exited && s.eclMenuReturnMode == ModeDungeon &&
 			strings.TrimSpace(strings.Join(result.Text, "")) == "" {
 			s.Mode = ModeDungeon
+			s.syncCurrentECLDungeonArea()
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
 			if s.session != nil && s.session.CurrentBlockID() == 0x31 {
@@ -4765,10 +4776,28 @@ func (s *State) Continue() error {
 		s.Mode = ModeDungeon
 		s.Message = ""
 		s.eclMenuReturnMode = ModeTitle
+		s.syncCurrentECLDungeonArea()
 		return nil
 	default:
 		return fmt.Errorf("event has no continuation")
 	}
+}
+
+func (s *State) syncCurrentECLDungeonArea() {
+	if s.session == nil || s.Area.InDungeon {
+		return
+	}
+	blockID := s.session.CurrentBlockID()
+	if blockID >= 0x50 {
+		return
+	}
+	gameArea := monsterChapterForBlock(blockID)
+	s.Area.GameArea = gameArea
+	s.Area.InDungeon = true
+	s.GeoMapSet = gameArea
+	s.GeoMapBlock = blockID
+	s.geoMapPending = true
+	s.syncDungeonStateFromECLRegisters()
 }
 
 // SetSceneCharacter selects the reference Area2 HeadBlockId branch for the
@@ -4990,6 +5019,28 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("hap", "哈普")
 	case "HILLSFAR":
 		return catalog.Text("hillsfar", "希爾斯法")
+	case "VOONLAR":
+		return catalog.Text("voonlar", "沃恩拉")
+	case "PHLAN":
+		return catalog.Text("phlan", "弗蘭")
+	case "TESHWAVE":
+		return catalog.Text("teshwave", "泰什浪")
+	case "YULASH":
+		return catalog.Text("yulash", "尤拉什")
+	case "ZHENTIL KEEP":
+		return catalog.Text("zhentil_keep", "散提爾堡")
+	case "MYTH DRANNOR":
+		return catalog.Text("myth_drannor", "迷斯卓諾")
+	case "SNEAK IN":
+		return catalog.Text("sneak_in", "潛入")
+	case "ASK PERMISSION":
+		return catalog.Text("ask_permission", "請求許可")
+	case "RUN AWAY":
+		return catalog.Text("run_away", "逃走")
+	case "FIGHT":
+		return catalog.Text("fight", "戰鬥")
+	case "GO WITH GUARDS":
+		return catalog.Text("go_with_guards", "跟衛兵走")
 	case "TRY TO TALK FURTHER":
 		return catalog.Text("try_talk_further", "繼續交談")
 	case "WILDERNESS":
@@ -5391,6 +5442,44 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_hillsfar_red_plumes_spill_drinks",
 			"幾名紅羽衛走過來，故意打翻你們的酒，命令你們把髒亂清乾淨。要照辦嗎？",
 		)
+	case strings.Contains(joined, "YOU ARE APPROACHED BY A RED PLUME PATROL") &&
+		strings.Contains(joined, "TATOO BETRAYS YOU AS A ZHENTRIM SPY"):
+		return catalog.Text(
+			"ecl_yulash_red_plume_patrol",
+			"一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散塔林間諜的身分！」",
+		)
+	case strings.Contains(joined, "SMOKE RISES FROM BEHIND THE RUINED WALLS") &&
+		strings.Contains(joined, "OF YULASH") &&
+		strings.Contains(joined, "HOW DO YOU ENTER"):
+		return catalog.Text(
+			"ecl_yulash_entry",
+			"煙霧從尤拉什殘破的城牆後升起，裡面不斷傳來戰鬥聲。你們要如何進入？",
+		)
+	case strings.Contains(joined, "JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE") &&
+		strings.Contains(joined, "A WOMAN DRESSED IN PURPLE") &&
+		strings.Contains(joined, "SORRY"):
+		return catalog.Text(
+			"ecl_yulash_riders_burst_out",
+			"正要進城時，一名騎著高大駿馬的男子突然衝出尤拉什，撞倒隊伍成員。"+
+				"駿馬疾馳而過，你們看見一名紫衣女子緊抱在男子背後；兩人迅速遠去，只聽見她高喊：「抱歉！」",
+		)
+	case strings.Contains(joined, "HALT! A GUARD WARILY COMES OUT OF A CHECKPOINT") &&
+		strings.Contains(joined, "OTHER GUARDS GATHER BEHIND HIM"):
+		return catalog.Text(
+			"ecl_yulash_checkpoint_halt",
+			"「站住！」一名衛兵警戒地走出檢查哨，其他紅羽衛也在他身後集結。你們要怎麼做？",
+		)
+	case strings.Contains(joined, "YOU MUST COME WITH US TO SEE THE COMMANDER"):
+		return catalog.Text(
+			"ecl_yulash_see_commander",
+			"「你們必須跟我們去見指揮官。」要怎麼做？",
+		)
+	case strings.Contains(joined, "THIS IS THE COMMANDER'S WAITING ROOM") &&
+		strings.Contains(joined, "REMAIN HERE UNTIL YOU ARE CALLED"):
+		return catalog.Text(
+			"ecl_yulash_waiting_room",
+			"這裡是指揮官的等候室。衛兵命令你們留在此處，等待傳喚。",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -5418,6 +5507,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_hillsfar_edge",
 			"你們來到希爾斯法城外。要進城，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF YULASH"):
+		return catalog.Text(
+			"ecl_yulash_edge",
+			"你們來到尤拉什城外。要進入戰區，還是繼續旅程？",
 		)
 	case strings.Contains(joined, "HOW WILL YOU GET TO ESSEMBRA"):
 		return catalog.Text("ecl_route_essembra", "要如何前往艾森布拉？")

@@ -2,7 +2,14 @@
 
 更新日期：2026-07-28
 
-最新成果：世界主線已由艾森布拉延伸到希爾斯法。隊伍返回立石群後選
+最新成果：主線已由希爾斯法延伸到尤拉什戰區。`YULASH→TRAIL` 因隊伍仍帶
+散塔林枷印，固定遭十二名紅羽衛指控為間諜並開戰；勝利寫入 `4C9B=10`。
+ENTER CITY 由 world ECL `0x51` 切至 ECL3 block `0x10`，走通廢墟入口、
+首次騎士／紫衣女子事件、紅羽衛檢查哨、PARLAY 與護送。等候室 Continue
+現正確同步 Area 3、GEO3 block `0x10` 與 `(0,3,E)`，不再帶著法師塔舊 GEO
+座標進尤拉什。成果收進 READY spec 332 與 Gold Box state 知識庫。
+
+先前成果：世界主線已由艾森布拉延伸到希爾斯法。隊伍返回立石群後選
 HILLSFAR／TRAIL，ECL world dispatcher 由 `0x50` 切入 `0x51`，先遭第二次
 event 12 的六名偽裝火刀伏擊；勝利以 `4C9B=11` 抵達希爾斯法。State 現完整
 投影 Area 1 A–N 的 zero-based `0..13` world values，不再只認南方城市。

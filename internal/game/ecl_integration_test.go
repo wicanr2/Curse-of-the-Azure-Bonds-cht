@@ -3386,6 +3386,149 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hillsfar Red Plume victory mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 80 ||
+		!strings.Contains(state.Message, "身在希爾斯法") {
+		t.Fatalf("Hillsfar bar exit picture=%v/%d message=%q",
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) {
+		t.Fatalf("Hillsfar bar exit places originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(5); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 121 ||
+		!strings.Contains(state.Message, "希爾斯法城外") {
+		t.Fatalf("Hillsfar leave picture=%v/%d message=%q",
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Hillsfar edge return originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"YULASH", "THE STANDING STONE", "PHLAN"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"尤拉什", "立石群", "弗蘭"}) {
+		t.Fatalf("Hillsfar destinations originals=%#v choices=%#v prompt=%q",
+			state.currentOriginalChoices, state.Choices, state.Prompt)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Yulash route choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "紅羽衛巡邏兵") ||
+		!strings.Contains(state.Message, "散塔林間諜") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Yulash Red Plume patrol originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	yulashPatrol := state.CombatFighters()
+	if state.Mode != ModeCombat || len(yulashPatrol) != 13 {
+		t.Fatalf("Yulash Red Plume combat mode=%v fighters=%#v message=%q",
+			state.Mode, yulashPatrol, state.Message)
+	}
+	for _, fighter := range yulashPatrol[1:] {
+		if fighter.Name != "戰士" || fighter.SpriteBlock != 0x20 ||
+			fighter.Side != combat.SideEnemy {
+			t.Fatalf("Yulash Red Plume enemy=%+v", fighter)
+		}
+	}
+	for turn := 0; turn < 24 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationYulash ||
+		state.Area.CurrentCity != 10 ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		!strings.Contains(state.Message, "尤拉什城外") {
+		t.Fatalf("Yulash arrival mode=%v block=0x%02X location=%v currentCity=%d originals=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.Location, state.Area.CurrentCity,
+			state.currentOriginalChoices, state.Message)
+	}
+	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 10 {
+		t.Fatalf("Yulash current-location memory=%#x,%v want 10", got, ok)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x10 ||
+		!strings.Contains(state.Message, "尤拉什殘破的城牆") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"SNEAK IN", "ASK PERMISSION", "LEAVE"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"潛入", "請求許可", "離開"}) {
+		t.Fatalf("Yulash entry mode=%v block=0x%02X area=%+v originals=%#v choices=%#v message=%q",
+			state.Mode, session.CurrentBlockID(), state.Area,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "高大駿馬") ||
+		!strings.Contains(state.Message, "紫衣女子") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Yulash riders originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "檢查哨") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"RUN AWAY", "FIGHT", "PARLAY"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"逃走", "戰鬥", "談判"}) {
+		t.Fatalf("Yulash checkpoint originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "見指揮官") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"GO WITH GUARDS", "FIGHT", "RUN AWAY"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"跟衛兵走", "戰鬥", "逃走"}) {
+		t.Fatalf("Yulash checkpoint parlay originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "指揮官的等候室") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Yulash waiting room originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || session.CurrentBlockID() != 0x10 ||
+		state.Area.GameArea != 3 || !state.Area.InDungeon ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x10 ||
+		!state.geoMapPending ||
+		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
+		t.Fatalf("Yulash waiting room transition mode=%v block=0x%02X area=%+v geo=%d/%d pending=%v coords=%d,%d,%d message=%q",
+			state.Mode, session.CurrentBlockID(), state.Area, state.GeoMapSet, state.GeoMapBlock,
+			state.geoMapPending, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
