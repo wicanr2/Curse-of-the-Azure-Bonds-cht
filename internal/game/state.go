@@ -990,15 +990,19 @@ func (s *State) Select(index int) error {
 		s.Mode = ModeWilderness
 		return nil
 	}
-	switch index {
-	case 0:
-		s.Message = s.catalog.Text("enter_city", "Enter city")
-	case 1:
-		s.Message = s.catalog.Text("journey_on", "Journey on")
-	case 2:
-		s.Message = s.catalog.Text("camp", "Camp")
-	default:
+	if len(s.eclBlock) > 0 {
 		s.Message = s.Choices[index]
+	} else {
+		switch index {
+		case 0:
+			s.Message = s.catalog.Text("enter_city", "Enter city")
+		case 1:
+			s.Message = s.catalog.Text("journey_on", "Journey on")
+		case 2:
+			s.Message = s.catalog.Text("camp", "Camp")
+		default:
+			s.Message = s.Choices[index]
+		}
 	}
 	if len(s.eclBlock) > 0 {
 		if !whoSelecting {
@@ -5656,6 +5660,76 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_pit_zhentrim_scroll",
 			"戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。",
+		)
+	case strings.Contains(joined, "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY") &&
+		strings.Contains(joined, "CULTISTS CHANTING IN A LOW DRONE"):
+		return catalog.Text(
+			"ecl_pit_mogion_altar",
+			"你們看見一名女祭司轉身陰險地微笑。她站在祭壇前，四周的摩安德教徒正低聲吟唱。",
+		)
+	case strings.Contains(joined, "ALIAS MUTTERS") &&
+		strings.Contains(joined, "PRIESTESS OF MOANDER") &&
+		strings.Contains(joined, "SPITS ON THE GROUND"):
+		return catalog.Text(
+			"ecl_pit_alias_identifies_mogion",
+			"愛麗雅絲低聲說：「她就是摩安德的大祭司。」女祭司轉頭朝地上啐了一口。",
+		)
+	case strings.Contains(joined, "MOGION SAYS") &&
+		strings.Contains(joined, "PROPER TOOLS") &&
+		strings.Contains(joined, "WHAT DO YOU DO"):
+		return catalog.Text(
+			"ecl_pit_mogion_greeting",
+			"摩貢說：「真高興你們終於到了。沒有合適的工具，想完成任何大事都很困難，不是嗎？」你們要怎麼做？",
+		)
+	case strings.Contains(joined, "BEFORE YOU CAN ACT") &&
+		strings.Contains(joined, "BLUE FLASH") &&
+		strings.Contains(joined, "YOU CANNOT MOVE"):
+		return catalog.Text(
+			"ecl_pit_moander_bond_paralysis",
+			"你們尚未來得及行動，手臂上的枷印便迸出藍光，將全隊籠罩其中；所有人頓時動彈不得。",
+		)
+	case strings.Contains(joined, "TENDRILS COME UP FROM THE FLOOR") &&
+		strings.Contains(joined, "ALIAS AND DRAGONBAIT"):
+		return catalog.Text(
+			"ecl_pit_alias_dragonbait_tendrils",
+			"藤蔓從地面竄出，緊緊纏住愛麗雅絲與龍餌。",
+		)
+	case strings.Contains(joined, "MOGION TURNS TO THE ALTAR") &&
+		strings.Contains(joined, "CHANTING RISES"):
+		return catalog.Text(
+			"ecl_pit_mogion_ritual",
+			"摩貢轉向祭壇，四周吟唱聲逐漸高昂。",
+		)
+	case strings.Contains(joined, "BLUE LIGHT THAT SURROUNDS YOU") &&
+		strings.Contains(joined, "DIMENSIONAL WINDOW ABOVE THE ALTAR"):
+		return catalog.Text(
+			"ecl_pit_moander_dimensional_window",
+			"籠罩你們的藍光流向摩貢；枷印抽出的力量在祭壇上方撕開一道異次元窗口。",
+		)
+	case strings.Contains(joined, "MOGION SHRIEKS") &&
+		strings.Contains(joined, "MOANDER RETURNS") &&
+		strings.Contains(joined, "DIMENSIONAL RIFT"):
+		return catalog.Text(
+			"ecl_pit_moander_returns",
+			"摩貢尖叫：「摩安德回來了！」一團由黏液、黴菌與腐敗穢物構成的噁心物質開始從異次元裂隙滲出。",
+		)
+	case strings.Contains(joined, "ENERGY IN THE DIMENSIONAL RIFT INCREASES") &&
+		strings.Contains(joined, "BOND OF MOANDER BEGIN TO FADE"):
+		return catalog.Text(
+			"ecl_pit_moander_bond_fades",
+			"裂隙中的能量持續增強，摩安德枷印開始灼燒；隨著開口擴大，枷印也逐漸褪去。",
+		)
+	case strings.Contains(joined, "THE SIGIL DISAPPEARS") &&
+		strings.Contains(joined, "PARALYSIS THAT GRIPPED YOU IS NOW GONE"):
+		return catalog.Text(
+			"ecl_pit_moander_bond_broken",
+			"摩安德枷印消失了！束縛全隊的麻痺也隨之解除。",
+		)
+	case strings.Contains(joined, "ALIAS AND DRAGONBAIT HAVE HACKED THEIR WAY FREE") &&
+		strings.Contains(joined, "UNLESS YOU WISH TO FIGHT A GOD"):
+		return catalog.Text(
+			"ecl_pit_alias_attack_mogion",
+			"愛麗雅絲與龍餌已砍斷藤蔓脫困。她嘶聲喊道：「現在就攻擊他們，除非你們想直接面對一位神！」你們要怎麼做？",
 		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):

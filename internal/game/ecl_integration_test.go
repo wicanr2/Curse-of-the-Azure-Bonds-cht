@@ -3946,6 +3946,104 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Pit Zhentil note replayed mode=%v originals=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)
 	}
+	state.DungeonX = 11
+	state.DungeonY = 3
+	state.DungeonDirection = 4
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(11, 3, 4)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(11, 3).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "女祭司轉身陰險地微笑") ||
+		!strings.Contains(state.Message, "摩安德教徒正低聲吟唱") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit Mogion altar arrival mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x picture=%v/%d originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.DungeonWallRoof, state.PictureRequested, state.PictureBlock,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "摩安德的大祭司") ||
+		!strings.Contains(state.Message, "朝地上啐了一口") {
+		t.Fatalf("Pit Alias identifies Mogion originals=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !state.PictureRequested || state.PictureBlock != 17 ||
+		!strings.Contains(state.Message, "摩貢說") {
+		t.Fatalf("Pit Mogion introduction picture=%v/%d originals=%#v message=%q",
+			state.PictureRequested, state.PictureBlock, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ATTACK", "FLEE", "WAIT", "PARLAY"}) {
+		t.Fatalf("Pit Mogion encounter originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	var mogionCeremony []string
+	for step := 0; step < 20 &&
+		reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}); step++ {
+		mogionCeremony = append(mogionCeremony, state.Message)
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		} else {
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	mogionCeremonyText := strings.Join(mogionCeremony, " ")
+	if !strings.Contains(mogionCeremonyText, "枷印便迸出藍光") ||
+		!strings.Contains(mogionCeremonyText, "異次元窗口") ||
+		!strings.Contains(mogionCeremonyText, "摩安德回來了") ||
+		!strings.Contains(mogionCeremonyText, "摩安德枷印消失了") ||
+		!strings.Contains(mogionCeremonyText, "愛麗雅絲與龍餌已砍斷藤蔓") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ATTACK", "FLEE"}) {
+		t.Fatalf("Pit Mogion ceremony originals=%#v choices=%#v message=%q stages=%q",
+			state.currentOriginalChoices, state.Choices, state.Message, mogionCeremony)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	mogionBattle := state.CombatFighters()
+	if state.Mode != ModeCombat || len(mogionBattle) != 15 || state.Message != "攻擊" {
+		t.Fatalf("Pit Mogion combat mode=%v fighters=%#v message=%q",
+			state.Mode, mogionBattle, state.Message)
+	}
+	mogionCount, cultistCount, moundCount := 0, 0, 0
+	aliasPresent, dragonbaitPresent := false, false
+	for _, fighter := range mogionBattle {
+		switch fighter.Name {
+		case "摩貢":
+			mogionCount++
+			if fighter.HitPoints != 60 || fighter.SpriteBlock != 0x18 {
+				t.Fatalf("Pit Mogion record=%+v", fighter)
+			}
+		case "摩安德教徒":
+			cultistCount++
+		case "蔓生怪":
+			moundCount++
+		case "愛麗雅絲":
+			aliasPresent = fighter.Side == combat.SideParty
+		case "龍餌":
+			dragonbaitPresent = fighter.Side == combat.SideParty
+		}
+	}
+	if mogionCount != 1 || cultistCount != 6 || moundCount != 5 ||
+		!aliasPresent || !dragonbaitPresent {
+		t.Fatalf("Pit Mogion roster Mogion=%d cultists=%d mounds=%d Alias=%v Dragonbait=%v fighters=%#v",
+			mogionCount, cultistCount, moundCount, aliasPresent, dragonbaitPresent, mogionBattle)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}

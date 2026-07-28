@@ -2,15 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：摩安德之坑第一層至第二層已接通。第一層 `(15,11)` terrain `0x86`
-選 YES 後執行 `NEWECL 0x12`；兩層共用 GEO3 block `0x11`，目的 ECL initial
-落點為 `(15,14,4)`，不能把 script block 錯當 GEO block。下層樓梯選 NO 後，
-在 `(14,15)` terrain `0x11` 可調查死去的 ZHENTRIM fighter；選
-`EXAMINE CORPSE` 取得帶散提爾堡印璽的命令並解鎖手札 46，事件不重播。
-樓梯、屍體、選單與手札提示均已繁中。另由 subagent 交叉 SSI Clue Book、
-GameBanshee、RPG Gamers 與 GameFAQs，把繁中攻略延伸到摩貢、散塔林堡、
-德克薩姆洞穴、神話卓諾與結局，並明確區分 remake 已實作／原版攻略參考。
-成果收進 READY spec 336、中文攻略與 Gold Box state 知識。
+最新成果：摩貢祭壇已接通到首戰。ECL3 block `0x12` SearchLocation selector
+`0x0C` 對應共用 GEO3 block `0x11` 下層 `(11,3)` terrain `0x8C`。同一
+real-session 現可顯示 PICTURE 17、四項 encounter menu，完整跑過藍光癱瘓、
+藤蔓束縛、異次元窗口、摩安德穢物滲出與 Moander bond 解除，再由
+ATTACK/FLEE 選單進戰鬥。MON3 roster 為摩貢 `0x18` ×1（60 HP）、教徒
+`0x11` ×6、蔓生怪 `0x19` ×5，Alias／Dragonbait 以 party side 參戰。
+所有儀式文字與怪物名已繁中；並修正 ECL menu index 0 被 world-menu switch
+誤顯示為「進入城市」的通用 State 問題。成果收進 READY spec 337、繁中攻略
+與 Gold Box state 知識。
 
 先前成果：主線已從尤拉什跨入摩安德之坑。取得指揮官通行後，隊伍可抵達
 `(11,0,N)` 的 terrain `0x26`，看到原版巨坑警告與 picture pause；向北跨界
