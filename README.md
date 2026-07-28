@@ -18,7 +18,19 @@ nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／B
 戰鬥圖另經 DOS 原版截圖逐像素設計審查：上方沿用原生 320×184 的精確 2×
 幾何，戰場是 `(16,16,336,336)`、中央石框 16px、右欄 256px。畫面不再顯示
 非原版棋盤格、team bars 或右欄 target card；640×480 多出的 80px 只用來容納
-中文戰鬥紀錄。原版 terrain／石框圖塊與大型怪物 occupancy 仍在反組譯中。
+中文戰鬥紀錄。原版 combat terrain atlas 已於下一段接入；完整 terrain-mode
+selector、石框圖塊與大型怪物 occupancy 仍在反組譯中。
+
+戰場現已改讀真正的 combat atlas，而非一般 TILES 圖庫或假格線：
+
+![DUNGCOM 原版地城戰鬥牆面](docs/screenshots/dungcom-tiles.png)
+
+![WILDCOM 原版野外戰鬥地形](docs/screenshots/wildcom-tiles.png)
+
+![RANDCOM 原版隨機戰鬥裝飾](docs/screenshots/randcom-tiles.png)
+
+上方 atlas 均由原始 DAX parser 離線重建；最新戰鬥圖中的橘色石牆則由 GEO
+dungeon buffer 的 background entry 查回 DUNGCOM tile，不是手工 mock。
 
 以下圖片由原始 `curseoftheazurebonds.zip`，透過專案目前的 DAX／GFX／GEO parser 離線產生，證明圖像資料管線已經接通：
 

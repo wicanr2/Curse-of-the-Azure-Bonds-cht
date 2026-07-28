@@ -301,3 +301,4 @@
 - [第三百二十一輪巫師塔後龍巫妖遭遇](./321-post-wizard-dracolich.md)（`READY`：限哈普→艾森布拉 TRAIL、MON5 0x3C 跨章 encounter 與勝利抵達）
 - [第三百二十二輪原版 GUI 與戰鬥版面忠實度](./322-original-gui-layout-fidelity.md)（`READY`：限冒險四區 layout、HEAD/BODY row offset、戰場裁切與 640×480 CJK 分層）
 - [第三百二十三輪 DOS 戰鬥畫面量測校正](./323-dos-combat-screen-measurement.md)（`READY`：限 320×200→640×480 exact combat geometry、palette、footer 與 visual RE boundaries）
+- [第三百二十四輪原版 combat terrain atlas](./324-combat-terrain-atlases.md)（`READY`：限 DUNGCOM/WILDCOM/RANDCOM 24×24 codec、gallery 與 dungeon background lookup）

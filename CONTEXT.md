@@ -1370,3 +1370,12 @@ checkerboard、紅藍 team bars 與右欄 target card，改用 EGA 灰底、青�
 資訊層級及 48×48 active cursor。大型敵人 occupancy 未解出前不顯示錯誤的一格
 target box。新增 READY spec 323；terrain、原始 stone-frame tiles 與大型怪物
 anchor 明確保留為下一輪 visual RE boundary。
+
+第三百二十四輪成果：確認原版戰鬥 terrain 不在一般 TILES，而是
+`DUNGCOM/WILDCOM/RANDCOM`。三個單 block payload 均為 17-byte SSI header 加
+24×24 4bpp items，CoAB 分別為 25／34／6 張；新增 bounded codec、原始檔
+regression 與三套 gallery。Ebiten 地城戰場現由既有 `GenerateDungeon`
+50×25 background buffer 取 7×7 slice，再依 `BackgroundTile.TileIndex`
+繪製真正 DUNGCOM 石牆／斜牆／轉角，取代單色 placeholder。完整 encounter
+terrain-mode selector、WILDCOM procedural placement、RANDCOM decoration、
+原始 stone-frame tiles 與大型怪物 occupancy 仍保留為後續 RE boundary。

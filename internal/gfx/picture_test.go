@@ -202,6 +202,66 @@ func TestComposeHeadBodyGrowsCanvasAndOffsetsBody(t *testing.T) {
 	}
 }
 
+func TestParseOriginalCombatTileSets(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		count int
+	}{
+		{name: "DUNGCOM.DAX", count: 25},
+		{name: "WILDCOM.DAX", count: 34},
+		{name: "RANDCOM.DAX", count: 6},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			blocks, err := dax.Parse(readOriginalMember(t, test.name))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(blocks) != 1 {
+				t.Fatalf("blocks=%d, want 1", len(blocks))
+			}
+			tiles, err := ParseCombatTiles(blocks[0].Data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(tiles.Tiles) != test.count {
+				t.Fatalf("tiles=%d, want %d", len(tiles.Tiles), test.count)
+			}
+			if tiles.Tiles[0].Width() != 24 || tiles.Tiles[0].Height() != 24 {
+				t.Fatalf("tile dimensions=%dx%d, want 24x24", tiles.Tiles[0].Width(), tiles.Tiles[0].Height())
+			}
+		})
+	}
+}
+
+func readOriginalMember(t *testing.T, name string) []byte {
+	t.Helper()
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		if os.IsNotExist(err) {
+			t.Skipf("original image is not available: %v", err)
+		}
+		t.Fatal(err)
+	}
+	defer archive.Close()
+	for _, file := range archive.File {
+		if file.Name != name {
+			continue
+		}
+		reader, err := file.Open()
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer reader.Close()
+		data, err := io.ReadAll(reader)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	t.Fatalf("archive member %s is missing", name)
+	return nil
+}
+
 func TestComposeHeadBodyTreatsBlackAsTransparentLayerPixel(t *testing.T) {
 	head := Picture{WidthUnits: 1, HeightUnits: 1, ItemCount: 1, Pixels: filledPicturePixels(8, 3)}
 	bodyPixels := filledPicturePixels(8, 0)

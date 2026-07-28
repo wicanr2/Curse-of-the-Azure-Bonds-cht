@@ -59,6 +59,9 @@ func main() {
 	if err := renderCombatSprites(); err != nil {
 		panic(err)
 	}
+	if err := renderCombatTerrain(); err != nil {
+		panic(err)
+	}
 	if err := renderWilderness(pictures); err != nil {
 		panic(err)
 	}
@@ -80,6 +83,39 @@ func main() {
 	if err := renderDungeon(grid, pictures); err != nil {
 		panic(err)
 	}
+}
+
+func renderCombatTerrain() error {
+	for _, source := range []string{"DUNGCOM.DAX", "WILDCOM.DAX", "RANDCOM.DAX"} {
+		data, err := readMember("curseoftheazurebonds.zip", source)
+		if err != nil {
+			return err
+		}
+		blocks, err := dax.Parse(data)
+		if err != nil || len(blocks) != 1 {
+			return fmt.Errorf("parse %s: blocks=%d err=%v", source, len(blocks), err)
+		}
+		set, err := gfx.ParseCombatTiles(blocks[0].Data)
+		if err != nil {
+			return fmt.Errorf("parse %s combat tiles: %w", source, err)
+		}
+		const columns, cell, scale = 8, 56, 2
+		rows := (len(set.Tiles) + columns - 1) / columns
+		dst := image.NewRGBA(image.Rect(0, 0, columns*cell, rows*cell))
+		fill(dst, color.RGBA{A: 255})
+		for index, tile := range set.Tiles {
+			rgba, err := tile.RGBA(0, gfx.EGA16)
+			if err != nil {
+				return err
+			}
+			drawScaled(dst, rgba, (index%columns)*cell+4, (index/columns)*cell+4, scale)
+		}
+		name := strings.ToLower(strings.TrimSuffix(source, ".DAX")) + "-tiles.png"
+		if err := writePNG(filepath.Join("docs/screenshots", name), dst); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // renderCombatSprites extracts the small masked combat figures from the

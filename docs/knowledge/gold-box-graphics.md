@@ -209,3 +209,9 @@ DOS 戰鬥畫面的可重用 native geometry 是 `8 + 168 + 8 + 128 + 8 = 320`�
 `(16,16,336,336)`、中央框 `x=352..367`、右欄 `(368,16,256,336)`。
 640×480 多出的 80px 可放中文戰鬥紀錄，但不能改變上方 320×184 的 2× 拓撲。
 移動格是隱藏座標，畫面不應顯示 checkerboard；斜視感來自 terrain artwork。
+
+戰鬥 terrain 不在一般 `TILES.DAX`：`DUNGCOM`／`WILDCOM`／`RANDCOM` 是共用
+17-byte picture header 加多張 24×24 4bpp items，CoAB 分別有 25／34／6 張。
+palette 0 是 overlay transparency。地城的 `BackgroundTile.TileIndex` 可直接查
+DUNGCOM atlas；WILDCOM 與 RANDCOM 的選擇／擺放仍應由作品 engine adapter
+提供，不能用 atlas index 當地圖順序。
