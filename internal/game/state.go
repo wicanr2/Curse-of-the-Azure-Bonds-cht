@@ -4450,11 +4450,44 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		if s.session.CurrentBlockID() != blockBefore {
 			s.syncDungeonStateFromECLRegisters()
 		}
-		if handled, err := s.applyDungeonLifecycleResult(result); handled || err != nil {
+		handled, err := s.applyDungeonLifecycleResult(result)
+		if err != nil {
 			return err
+		}
+		// The reference loop always runs SearchLocation after a quiet
+		// per-turn invocation. Some CALL-only entries retain an empty packed
+		// text element; that is not a player-visible boundary and must not
+		// suppress the terrain dispatcher.
+		if entry == 0 {
+			if dungeonLifecycleResultBlocksSearch(result) {
+				return nil
+			}
+			continue
+		}
+		if handled {
+			return nil
 		}
 	}
 	return nil
+}
+
+func dungeonLifecycleResultBlocksSearch(result ecl.RunResult) bool {
+	return result.PictureRequested ||
+		result.ShopRequested ||
+		result.TempleRequested ||
+		len(result.TreasureRequests) > 0 ||
+		result.CombatRequested ||
+		(result.WaitingForMenu && len(result.Menus) > 0) ||
+		hasMeaningfulECLText(result.Text)
+}
+
+func hasMeaningfulECLText(texts []string) bool {
+	for _, text := range texts {
+		if strings.TrimSpace(text) != "" {
+			return true
+		}
+	}
+	return false
 }
 
 // RunDungeonExitLifecycle supplies the boundary-crossing signal before running
@@ -4573,7 +4606,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	s.applyECLRobSignals(result)
-	if len(result.Text) > 0 {
+	if hasMeaningfulECLText(result.Text) {
 		s.unlockJournalEntries(result.Text)
 		s.Message = localizeECLText(s.catalog, result.Text)
 	}
@@ -4625,7 +4658,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 		s.enterECLMenu(result.Menus[len(result.Menus)-1])
 		return true, nil
 	}
-	if len(result.Text) > 0 {
+	if hasMeaningfulECLText(result.Text) {
 		s.Mode = ModeEvent
 		return true, nil
 	}
@@ -5041,6 +5074,10 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("fight", "戰鬥")
 	case "GO WITH GUARDS":
 		return catalog.Text("go_with_guards", "跟衛兵走")
+	case "FIGHT THE MEN":
+		return catalog.Text("fight_the_men", "攔下他們戰鬥")
+	case "LET THEM GO":
+		return catalog.Text("let_them_go", "放他們離開")
 	case "TRY TO TALK FURTHER":
 		return catalog.Text("try_talk_further", "繼續交談")
 	case "WILDERNESS":
@@ -5480,6 +5517,34 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_yulash_waiting_room",
 			"這裡是指揮官的等候室。衛兵命令你們留在此處，等待傳喚。",
 		)
+	case strings.Contains(joined, "TROOPS COME BURSTING OUT OF THE COMMANDER'S OFFICE") &&
+		strings.Contains(joined, "THEY'RE SPIES FOR ZHENTIL KEEP"):
+		return catalog.Text(
+			"ecl_yulash_zhentarim_spies",
+			"一群人突然從指揮官辦公室衝出來。有人大喊：「攔住他們！他們是散提爾堡的間諜！」你們要怎麼做？",
+		)
+	case strings.Contains(joined, "YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"):
+		return catalog.Text(
+			"ecl_yulash_led_to_commander",
+			"衛兵領你們進去晉見紅羽衛指揮官。",
+		)
+	case strings.Contains(joined, "THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH") &&
+		strings.Contains(joined, "HOW DO YOU RESPOND"):
+		return catalog.Text(
+			"ecl_yulash_commander_business",
+			"指揮官厲聲質問你們來尤拉什有何目的。你們要用什麼態度回答？",
+		)
+	case strings.Contains(joined, "YOU HAVE PLEASED THE COMMANDER") &&
+		strings.Contains(joined, "JOURNAL ENTRY 22"):
+		return catalog.Text(
+			"ecl_yulash_commander_pleased",
+			"你們的表現令指揮官滿意。他的說明已記入冒險手札第 22 條。",
+		)
+	case strings.Contains(joined, "THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"):
+		return catalog.Text(
+			"ecl_yulash_commander_side_door",
+			"指揮官親自帶你們從側門離開。",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(
@@ -5862,6 +5927,28 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 // clues prematurely.
 func (s *State) unlockJournalEntries(texts []string) {
 	joined := strings.Join(texts, " ")
+	if strings.Contains(joined, "YOU HAVE PLEASED THE COMMANDER") &&
+		strings.Contains(joined, "JOURNAL ENTRY 22") {
+		s.appendJournalPages("手札條目 22", []string{
+			s.catalog.Text(
+				"journal_entry_22_1",
+				"手札條目 22（1/2）：紅羽衛指揮官說，他不明白你們為何執意進入摩安德之坑，"+
+					"但願意准許隊伍自由通過尤拉什。紅羽衛不會找你們麻煩；然而城市仍在圍攻之中，"+
+					"他無法派人一路護送。據報散提爾堡派出了恐怖小隊，東側也有人目擊蔓生怪。",
+			),
+			s.catalog.Text(
+				"journal_entry_22_2",
+				"手札條目 22（2/2）：指揮官提供摩安德之坑、檢查哨、營房與士兵食堂的位置圖（手札 52）。"+
+					"隊伍可在營房休息並到食堂用餐。他警告尤拉什的城牆與路面歷經重創，許多區域可能不穩。",
+			),
+		})
+		s.appendJournalPages("手札條目 52：", []string{s.catalog.Text(
+			"journal_entry_52",
+			"手札條目 52：紅羽衛提供的尤拉什城區地圖。北側入口附近是指揮官辦公室；"+
+				"圖上標出各處檢查哨、士兵食堂、營房，以及通往城市中央「摩安德之坑」的單向入口。"+
+				"原始地圖圖像保存於 Adventurer's Journal 第 15 頁。",
+		)})
+	}
 	if strings.Contains(joined, "THE GUILDMASTER GASPS") &&
 		strings.Contains(joined, "JOURNAL ENTRY 4") {
 		s.appendJournalPages("手札條目 4：", []string{s.catalog.Text(
