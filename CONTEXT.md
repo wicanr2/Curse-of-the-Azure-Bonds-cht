@@ -1361,3 +1361,12 @@ State 因此改為逐 spawn 依 monster ID range 選擇 MON*CHA／MON*SPC，ECL 
 combat terrain selector 尚未解出前使用中性戰術格，不再誤鋪 TILES icon atlas。
 新增 READY spec 322、Docker DOSBox reference captures、兩張 Xvfb 實機圖，
 並把可沿用規則寫入 Gold Box graphics knowledge。
+
+第三百二十三輪成果：設計審查以 DOS `combat-aim`／`fight-black-dragon`
+逐像素量測，推翻第 322 輪仍過高的戰鬥面板。上方改回原生 320×184 的精確
+2× geometry：戰場 `(16,16,336,336)`、16px 中央石框、256px active status；
+640×480 多出的 80px 僅作中文 log，最後 32px 保留兩列 footer。移除可見
+checkerboard、紅藍 team bars 與右欄 target card，改用 EGA 灰底、青／綠／黃
+資訊層級及 48×48 active cursor。大型敵人 occupancy 未解出前不顯示錯誤的一格
+target box。新增 READY spec 323；terrain、原始 stone-frame tiles 與大型怪物
+anchor 明確保留為下一輪 visual RE boundary。

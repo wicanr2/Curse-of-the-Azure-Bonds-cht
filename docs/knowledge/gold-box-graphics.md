@@ -202,3 +202,10 @@ HEAD／BODY 的 reference `row + 5` 是五個 8px 顯示列，即 BODY y+40px。
 戰術地圖必須是 clipping region。CPIC 大型怪物、CHEAD／CBODY 玩家、死亡 overlay
 與 marker 都畫入同一 clipped target，避免 sprite 跨進右側狀態欄。combat terrain
 selector 未證實前應顯示中性格線，不可把 TILES icon atlas 當成地板依序鋪設。
+
+DOS 戰鬥畫面的可重用 native geometry 是 `8 + 168 + 8 + 128 + 8 = 320`：
+168×168 戰場正好容納 7×7 個 24px movement cells，中央與外框各 8px，右欄
+128px；底部 `y=184..199` 是兩列 8px 文字。2× renderer 對應戰場
+`(16,16,336,336)`、中央框 `x=352..367`、右欄 `(368,16,256,336)`。
+640×480 多出的 80px 可放中文戰鬥紀錄，但不能改變上方 320×184 的 2× 拓撲。
+移動格是隱藏座標，畫面不應顯示 checkerboard；斜視感來自 terrain artwork。
