@@ -1532,3 +1532,12 @@ Draw3dWorld 遠中近視角走訪，已移至獨立 `golden-box-remake-engine`
 schema 新增 `maps`，散提爾堡內城以 JSON 宣告 area 4、GEO block `0x20`、
 spawn `(2,0,S)`、wrapped 與 2× nearest-neighbour。下一步是 WALLDEF/8X8D
 composition/resource loader 搬移，以及 640×480 第一人稱地圖實機截圖。
+
+第三百四十二輪成果：獨立 engine 新增 `graphics`，接管 SSI indexed picture、
+EGA RGBA、WALLDEF、LOAD PIECES global offsets 與 8X8D stamps；中立 block map
+消除對 CoAB `internal/dax` 的反向依賴。CoAB map JSON 現指定 GEO/WALLDEF/8X8D
+檔名並驗證 base filename。正式地城 layout 依 recovered `-5..15` logical
+columns 保留原生 176px／2× 352px 第一人稱 viewport，右側 roster、下方繁中
+敘事及 footer；舊 debug floor 不再混入 production。Docker/Xvfb 實機圖為
+`docs/screenshots/tilverton-first-person-remake.png`。door／roof overlays、
+斜向逐像素 DOS oracle 與 wilderness world map 仍是後續 map fidelity 邊界。

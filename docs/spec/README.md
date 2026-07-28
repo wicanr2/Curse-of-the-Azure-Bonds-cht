@@ -313,3 +313,4 @@
 - [第三百三十三輪尤拉什間諜戰與指揮官通行證](./333-yulash-spies-commander-pass.md)（`READY`：限 terrain `0x9A`、MON3 1/8/2 間諜戰、NICE、手札 22／52 與 `(1,3,E)`）
 - [第三百三十四輪摩安德之坑入口](./334-pit-of-moander-entry.md)（`READY`：限尤拉什 `(11,0,N)` terrain `0x26`、ECL/GEO3 `0x10→0x11`、入口崩塌與 `(0,0,E)`）
 - [第三百三十五輪愛麗雅絲與龍餌入隊](./335-alias-dragonbait-recruitment.md)（`READY`：限 Pit level 1 terrain `0x85`、PICTURE 18、手札 3、MON3 `0x16/0x17` 與 saurial NPC）
+- [第三百四十二輪第一人稱地圖共用引擎](./342-first-person-map-engine.md)（`READY`：限 GEO／WALLDEF／8X8D engine、JSON resources、352px viewport 與 640×480 實機圖）

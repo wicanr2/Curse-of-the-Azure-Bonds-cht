@@ -244,3 +244,18 @@ extent 都應讀同一 shape，不能由 CPIC bitmap 寬高反推。
 footprint marker 從該點向右、下展開；不要因寬度為 2 再向左平移，否則位於
 左緣的大型怪物會被 clipping target 切掉。640×480 的 2× pixel pass 中，
 單格為 48×48，size 4 marker 因此是 96×96。
+
+## 第一人稱地圖的可重用邊界
+
+GEO、WALLDEF 與 8X8D 不應留在單一作品的 renderer。共用 engine 現以
+`geometry` 解 16×16 cell planes，以 `viewport` 產生 Far／Mid／Near draw
+calls，再由 `graphics` 將 WALLDEF window 展開成 indexed 8X8D stamps。
+`ParsePieceSet` 的輸入是中立的 `map[blockID][]byte`；DAX container 與作品 ZIP
+名稱留在外層 adapter。game-pack JSON 可指定 `geometry_file`、`wall_file`、
+`symbol_file`，且 filename 必須是 base name，避免資源路徑逃逸。
+
+reference wall layout 的橫向範圍是 logical column `-5..15`，以 column 5 為
+中心，共 22 個 8px cells：原生 176px、2× 後 352px。正式 640×480 地城畫面
+應保留完整 352px viewport，右側另放 roster；把同一組 stamps 放入 290px
+debug 區會造成錯誤裁切與「三片牆」錯位。原始 8px bitmap 只做 nearest-neighbour
+整數放大，繁中 HUD 才在 640×480 canvas 以 16／24px 重新 rasterize。

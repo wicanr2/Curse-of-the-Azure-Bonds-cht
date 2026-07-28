@@ -31,6 +31,9 @@
       "kind": "first_person",
       "area_id": 4,
       "geometry_block": 32,
+      "geometry_file": "GEO4.DAX",
+      "wall_file": "WALLDEF4.DAX",
+      "symbol_file": "8X8D4.DAX",
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 2, "y": 0, "direction": 4}

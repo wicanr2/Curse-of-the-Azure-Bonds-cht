@@ -72,10 +72,13 @@ GEO dungeon buffer 的 background entry 查回 DUNGCOM／RANDCOM，不是手工 
 舊版 direct-entry 戰鬥圖已由上方原版比例校正版取代；它仍是 headless Xvfb
 可重現的 `-encounter` vertical slice，不代表完整玩家流程已完成。
 
-![正式序幕後的提爾佛頓 640×480 地城畫面](docs/screenshots/tilverton-opening.png)
+![正式序幕後的提爾佛頓 640×480 第一人稱地圖](docs/screenshots/tilverton-first-person-remake.png)
 
-上圖由 `-opening` 走過真實 block `0x01` 的兩段 Continue 後擷取：使用 TTC 24px
-繁中字型、原始 TILES／GEO2 block 1／WALLDEF／8X8D 素材，位置 `(7,13)`、面東。
+上圖由 `-opening` 走過真實 block `0x01` 後，以 Docker／Xvfb 擷取。第一人稱
+視窗保留原生 `22×8px = 176px` 的完整 WALLDEF 橫向座標，再以 nearest-neighbour
+放大為 352px；右側是隊伍 AC／HP，下方是 24px 繁中敘事與命令列。素材來自
+GEO2 block 1／WALLDEF2／8X8D2，位置 `(7,13)`、面東，不再把 debug 平面圖與
+3-D 牆面硬擠在同一區。
 
 本重製版以 `640×480` 為固定邏輯畫布：原版像素圖片採 nearest-neighbor
 整數倍放大，繁中則獨立使用 24px 高解析正文與 16px 緊湊 HUD，不把
@@ -457,10 +460,12 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。
-- ECL `LOAD PIECES` 現在會保存三個 map-piece selectors 並繼續執行；State request 會由 `WALLDEF{area}`／`8X8D{area}` raw adapter 消費，完整地城／牆面／碰撞副作用仍待完成。
-- `LOAD PIECES` 現在會依反組譯證據載入 `WALLDEF{area}.DAX`／`8X8D{area}.DAX` selector，套用三組 global symbol offset，並在 dungeon preview 顯示素材 adapter 已就緒；牆面拼圖與完整 3D renderer 仍待完成。
-- dungeon preview 現在會從目前 GEO wall 找出一組 reference 3D viewport layout，顯示原始 8×8D wall stamp sample；完整方向遍歷、遮擋與 camera 仍待完成。
-- dungeon preview 現在會依 party facing 執行 Far／Mid／Near GEO wall traversal，展開有順序的 8×8D wall stamps；dungeon context 已套用 reference 16×16 coordinate wrap，sky／roof、door、遮擋與 camera 仍待完成。
+- ECL `LOAD PIECES` 保存三個 selector；可重用 engine 的 `graphics` package 解析
+  indexed picture／WALLDEF／8X8D、global symbol offset 與 wall stamps，
+  CoAB 只把 DAX blocks 轉成 `ID → bytes` 並由 JSON 指定資源檔名。
+- 正式地城依 party facing 執行 Far／Mid／Near GEO traversal，按照 reference
+  draw order 展開 8X8D stamps；16×16 wrap、牆壁碰撞、門狀態與 2× camera
+  已接入。尚待收斂的是 door／roof 專用 overlay 與斜向視角的逐像素 DOS 比對。
 - dungeon preview 方向鍵現在會依 GEO 雙側 wall collision（含 wrapped edge）移動 map position，Q/E 依 reference 八方向順序轉動 facing，並重建 floor／Far/Mid/Near wall view；正式 Area camera、scroll、movement cost 與 encounter 仍待完成。
 - remake game save version 4 現在會保存 dungeon preview 的 `(x,y)`、八方向 facing 與 reference map wall cache；v1/v2/v3 舊版 save 可載入並安全回到相容預設，F9／啟動載入後會重建 floor 與 wall view。
 - dungeon preview 已依 Area1 `outdoor_sky_colour`／`indoor_sky_colour` 與 GEO roof high bit 選擇 reference EGA sky background，raw wall stamps 會疊在 sky layer 上；完整 roof geometry／door overlay 仍待完成。

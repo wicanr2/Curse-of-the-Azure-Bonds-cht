@@ -24,6 +24,7 @@ import (
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/font/opentype"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
@@ -538,7 +539,13 @@ func (a *app) syncLoadPiecesRequest() {
 	if !ok {
 		return
 	}
-	sets, err := loadMapPieceSets(a.imagePath, a.state.GeoMapSet, selectors)
+	wallFile, symbolFile := "", ""
+	if pack, packErr := gamepack.Default(); packErr == nil {
+		if definition, found := pack.FindMap(a.state.GeoMapSet, a.state.GeoMapBlock); found {
+			wallFile, symbolFile = definition.WallFile, definition.SymbolFile
+		}
+	}
+	sets, err := loadMapPieceSets(a.imagePath, a.state.GeoMapSet, wallFile, symbolFile, selectors)
 	if err != nil {
 		// Asset diagnostics belong to the renderer label. ECL event text is
 		// authoritative story state and must survive a missing optional wall
@@ -1115,10 +1122,11 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
 	production := a.state.Mode == game.ModeDungeon
-	title := "地城結構預覽"
 	if production {
-		title = a.state.LocationName + "・地城探索"
+		a.drawDungeonGame(screen, white, cyan)
+		return
 	}
+	title := "地城結構預覽"
 	text.Draw(screen, title, a.face, 24, 30, cyan)
 	if a.dungeonFloor == nil {
 		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
@@ -1194,11 +1202,51 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			screen.DrawImage(stamp.image, op)
 		}
 	}
-	controls := "↑ 前進　K/M 轉向　E 紮營　P 撬鎖　N 敲擊　B 撞門"
-	if !production {
-		controls = "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
-	}
+	controls := "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
 	drawWrappedText(screen, controls, a.compactFace, 24, 434, 36, 20, 2, cyan)
+}
+
+func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
+	// The recovered 3-D layout spans columns -5..15 around native column 5:
+	// 22 8px cells = 176px, exactly 352px at the remake's integer 2x scale.
+	// Keep that viewport intact instead of squeezing it beside a debug map.
+	drawPanelFrame(screen, 8, 8, 352, 272)
+	drawPanelFrame(screen, 360, 8, 272, 272)
+	drawPanelFrame(screen, 8, 280, 624, 168)
+	drawPanelFrame(screen, 8, 448, 624, 28)
+	ebitenutil.DrawRect(screen, 14, 14, 340, 260, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
+
+	for _, stamp := range a.wallPreview {
+		op := &ebiten.DrawImageOptions{}
+		op.Filter = ebiten.FilterNearest
+		op.GeoM.Scale(2, 2)
+		op.GeoM.Translate(float64(96+stamp.column*16), float64(16+stamp.row*16))
+		screen.DrawImage(stamp.image, op)
+	}
+
+	text.Draw(screen, "姓名", a.compactFace, 376, 36, white)
+	text.Draw(screen, "AC", a.compactFace, 526, 36, white)
+	text.Draw(screen, "HP", a.compactFace, 582, 36, white)
+	for index, fighter := range a.state.PartyFighters() {
+		if index >= 8 {
+			break
+		}
+		text.Draw(screen, fighter.Name, a.compactFace, 376, 66+index*25, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 530, 66+index*25, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 584, 66+index*25, cyan)
+	}
+
+	_, _, direction := a.state.DungeonGeometryView()
+	text.Draw(screen, a.state.LocationName, a.face, 24, 312, cyan)
+	status := fmt.Sprintf("位置 (%d,%d)　方向 %s", a.dungeonX, a.dungeonY, dungeonDirectionName(direction))
+	text.Draw(screen, status, a.compactFace, 24, 340, white)
+	if a.state.Message != "" {
+		drawWrappedText(screen, a.state.Message, a.face, 24, 372, 24, 28, 2, white)
+	}
+	if a.dungeonDoorMenu {
+		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 24, 430, color.RGBA{255, 255, 82, 255})
+	}
+	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 24, 470, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -2411,25 +2459,31 @@ func loadCombatTerrainImages(imagePath string) (map[string][]*ebiten.Image, erro
 
 // loadMapPieceSets mirrors the verified reference LoadWalldef mapping while
 // keeping selector interpretation out of the ECL VM and State packages.
-func loadMapPieceSets(imagePath string, areaID uint8, selectors [3]uint16) (map[uint8]gfx.PieceSet, error) {
+func loadMapPieceSets(imagePath string, areaID uint8, wallFile, symbolFile string, selectors [3]uint16) (map[uint8]gfx.PieceSet, error) {
 	if areaID < 1 || areaID > 6 {
 		return nil, fmt.Errorf("map piece area %d is outside original range 1..6", areaID)
 	}
-	wallData, err := zipMember(imagePath, fmt.Sprintf("WALLDEF%d.DAX", areaID))
+	if wallFile == "" {
+		wallFile = fmt.Sprintf("WALLDEF%d.DAX", areaID)
+	}
+	if symbolFile == "" {
+		symbolFile = fmt.Sprintf("8X8D%d.DAX", areaID)
+	}
+	wallData, err := zipMember(imagePath, wallFile)
 	if err != nil {
 		return nil, err
 	}
-	symbolData, err := zipMember(imagePath, fmt.Sprintf("8X8D%d.DAX", areaID))
+	symbolData, err := zipMember(imagePath, symbolFile)
 	if err != nil {
 		return nil, err
 	}
 	wallBlocks, err := dax.Parse(wallData)
 	if err != nil {
-		return nil, fmt.Errorf("parse WALLDEF%d.DAX: %w", areaID, err)
+		return nil, fmt.Errorf("parse %s: %w", wallFile, err)
 	}
 	symbolBlocks, err := dax.Parse(symbolData)
 	if err != nil {
-		return nil, fmt.Errorf("parse 8X8D%d.DAX: %w", areaID, err)
+		return nil, fmt.Errorf("parse %s: %w", symbolFile, err)
 	}
 	result := make(map[uint8]gfx.PieceSet, 3)
 	for index, rawSelector := range selectors {
