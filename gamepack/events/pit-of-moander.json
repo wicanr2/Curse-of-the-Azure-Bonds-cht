@@ -96,6 +96,8 @@
       "geometry_file": "GEO4.DAX",
       "wall_file": "WALLDEF4.DAX",
       "symbol_file": "8X8D4.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 2, "y": 0, "direction": 4}

@@ -105,3 +105,20 @@ func TestSelectCombatTerrainNameUsesDungeonStateWithoutAreaHeuristic(t *testing.
 		t.Fatalf("override terrain=%q, want RANDCOM", got)
 	}
 }
+
+func TestWallStampNativePositionMatchesReferenceThreeCellOrigin(t *testing.T) {
+	x, y, ok := wallStampNativePosition(0, 0)
+	if !ok || x != 24 || y != 24 {
+		t.Fatalf("origin=(%d,%d,%v), want (24,24,true)", x, y, ok)
+	}
+	x, y, ok = wallStampNativePosition(10, 10)
+	if !ok || x != 104 || y != 104 {
+		t.Fatalf("last=(%d,%d,%v), want (104,104,true)", x, y, ok)
+	}
+	if _, _, ok := wallStampNativePosition(0, -1); ok {
+		t.Fatal("negative reference column was not clipped")
+	}
+	if _, _, ok := wallStampNativePosition(11, 0); ok {
+		t.Fatal("reference row 11 was not clipped")
+	}
+}

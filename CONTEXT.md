@@ -1572,3 +1572,15 @@ reference door pass 是 cheat。獨立 engine `443281a` 新增
 2× nearest-neighbour 畫 8×8 EGA 灰牆與白色方向箭頭，取代向量 16×16 全圖；
 JSON 指定 `8X8D1.DAX/CA`。更新後的 640×480 倚天粗體實機圖仍為
 `docs/screenshots/coab-area-map-remake.png`。
+
+第三百四十六輪成果：修復正式第一人稱 viewport 的背景與 screen transform。
+公開 reference `ovr031.Draw3dWorldBackground`／`seg040.DrawColorBlock` 證實
+native sky/horizon/ground 為 `(24,24,88,44)`、`(24,68,88,2)`、
+`(24,70,88,42)`；SKY FA／FB 依戶外 palette、hour、方向顯示，FC 固定地面
+overlay。獨立 engine `8ea72d9` 新增 reusable projection 與 schema
+`sky_file/sky_blocks`；CoAB JSON 指定 `SKY.DAX [250,251,252]`，原始 image
+regression 驗證 88×16／24×24／88×48。另修正 wall stamp：只保留 logical
+row/column 0..10，native position 是 `(column+3,row+3)×8`；舊 renderer
+錯誤右移 48px、上移 32px，才形成 README 舊圖的三片巨牆。`-eten-font`
+現在同時接管 regular/compact face，全畫面使用倚天 16×15 embolden。最新
+Docker/Xvfb 圖已覆寫 `docs/screenshots/tilverton-first-person-remake.png`。

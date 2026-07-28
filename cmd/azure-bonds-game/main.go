@@ -62,6 +62,7 @@ type app struct {
 	geoPreview          bool
 	areaMapPreview      bool
 	areaMapSymbols      []*ebiten.Image
+	skyImages           [3]*ebiten.Image
 	geoGrid             *geo.Grid
 	geoX                int
 	geoY                int
@@ -101,6 +102,13 @@ type wallPreviewStamp struct {
 	image  *ebiten.Image
 	row    int
 	column int
+}
+
+func wallStampNativePosition(row, column int) (x, y int, ok bool) {
+	if row < 0 || row > 10 || column < 0 || column > 10 {
+		return 0, 0, false
+	}
+	return (column + 3) * 8, (row + 3) * 8, true
 }
 
 func (a *app) combatMove(dx, dy int) error {
@@ -715,6 +723,9 @@ func (a *app) prepareWallPreview() {
 			continue
 		}
 		for _, stamp := range stamps {
+			if _, _, ok := wallStampNativePosition(stamp.Row, stamp.Column); !ok {
+				continue
+			}
 			rgba, err := stamp.Picture.RGBA(stamp.Item, gfx.EGA16)
 			if err != nil {
 				continue
@@ -1298,13 +1309,44 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	drawPanelFrame(screen, 360, 8, 272, 272)
 	drawPanelFrame(screen, 8, 280, 624, 168)
 	drawPanelFrame(screen, 8, 448, 624, 28)
-	ebitenutil.DrawRect(screen, 14, 14, 340, 260, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
+	ebitenutil.DrawRect(screen, 14, 14, 340, 260, color.RGBA{0, 0, 0, 255})
+	_, _, direction := a.state.DungeonGeometryView()
+	background, backgroundErr := gfx.BuildBackground(
+		a.state.Area.OutdoorSkyColor,
+		a.state.Area.IndoorSkyColor,
+		a.state.DungeonWallRoof,
+		int(a.state.GameTimeDisplay().Hour),
+		direction,
+	)
+	if backgroundErr == nil {
+		for _, rectangle := range background.Rects {
+			ebitenutil.DrawRect(screen,
+				float64(rectangle.X*2), float64(rectangle.Y*2),
+				float64(rectangle.Width*2), float64(rectangle.Height*2),
+				gfx.EGA16[rectangle.PaletteIndex])
+		}
+		for _, overlay := range background.Overlays {
+			index := int(overlay.Kind)
+			if index < 0 || index >= len(a.skyImages) || a.skyImages[index] == nil {
+				continue
+			}
+			options := &ebiten.DrawImageOptions{}
+			options.Filter = ebiten.FilterNearest
+			options.GeoM.Scale(2, 2)
+			options.GeoM.Translate(float64((overlay.Column+1)*16), float64((overlay.Row+1)*16))
+			screen.DrawImage(a.skyImages[index], options)
+		}
+	}
 
 	for _, stamp := range a.wallPreview {
+		nativeX, nativeY, ok := wallStampNativePosition(stamp.row, stamp.column)
+		if !ok {
+			continue
+		}
 		op := &ebiten.DrawImageOptions{}
 		op.Filter = ebiten.FilterNearest
 		op.GeoM.Scale(2, 2)
-		op.GeoM.Translate(float64(96+stamp.column*16), float64(16+stamp.row*16))
+		op.GeoM.Translate(float64(nativeX*2), float64(nativeY*2))
 		screen.DrawImage(stamp.image, op)
 	}
 
@@ -1320,7 +1362,6 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 584, 66+index*25, cyan)
 	}
 
-	_, _, direction := a.state.DungeonGeometryView()
 	text.Draw(screen, a.state.LocationName, a.face, 24, 312, cyan)
 	status := fmt.Sprintf("位置 (%d,%d)　方向 %s", a.dungeonX, a.dungeonY, dungeonDirectionName(direction))
 	text.Draw(screen, status, a.compactFace, 24, 340, white)
@@ -2053,6 +2094,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	firstPersonDefinition, ok := pack.FindMapByKind("first_person")
+	if !ok {
+		log.Fatal("game pack has no first-person map definition")
+	}
+	skyImages, err := loadSkyImages(*imagePath, firstPersonDefinition.SkyFile, firstPersonDefinition.SkyBlocks)
+	if err != nil {
+		log.Fatal(err)
+	}
 	geoCatalog, err := loadGEOCatalog(*imagePath)
 	if err != nil {
 		log.Fatal(err)
@@ -2265,9 +2314,10 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		regularFace = etenFace
 		compactFace = etenFace
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -2612,6 +2662,41 @@ func loadAreaMapSymbols(imagePath, symbolFile string, blockID uint8) ([]*ebiten.
 		return images, nil
 	}
 	return nil, fmt.Errorf("%s has no AREA symbol block 0x%02X", symbolFile, blockID)
+}
+
+func loadSkyImages(imagePath, skyFile string, blockIDs [3]uint8) ([3]*ebiten.Image, error) {
+	var result [3]*ebiten.Image
+	if skyFile == "" {
+		return result, fmt.Errorf("first-person SKY file is empty")
+	}
+	data, err := zipMember(imagePath, skyFile)
+	if err != nil {
+		return result, err
+	}
+	blocks, err := dax.Parse(data)
+	if err != nil {
+		return result, fmt.Errorf("parse %s: %w", skyFile, err)
+	}
+	byID := make(map[uint8]dax.Block, len(blocks))
+	for _, block := range blocks {
+		byID[block.Entry.ID] = block
+	}
+	for index, blockID := range blockIDs {
+		block, ok := byID[blockID]
+		if !ok {
+			return result, fmt.Errorf("%s has no SKY block 0x%02X", skyFile, blockID)
+		}
+		picture, err := gfx.ParsePicture(block.Data, true, 13)
+		if err != nil {
+			return result, fmt.Errorf("%s block 0x%02X: %w", skyFile, blockID, err)
+		}
+		rgba, err := picture.RGBA(0, gfx.EGA16)
+		if err != nil {
+			return result, err
+		}
+		result[index] = ebiten.NewImageFromImage(rgba)
+	}
+	return result, nil
 }
 
 // loadMapPieceSets mirrors the verified reference LoadWalldef mapping while
