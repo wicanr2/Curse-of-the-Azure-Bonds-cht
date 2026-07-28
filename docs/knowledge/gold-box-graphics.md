@@ -215,3 +215,9 @@ DOS 戰鬥畫面的可重用 native geometry 是 `8 + 168 + 8 + 128 + 8 = 320`�
 palette 0 是 overlay transparency。地城的 `BackgroundTile.TileIndex` 可直接查
 DUNGCOM atlas；WILDCOM 與 RANDCOM 的選擇／擺放仍應由作品 engine adapter
 提供，不能用 atlas index 當地圖順序。
+
+CoAB 的 wilderness background table 已提供直接映射：WILDCOM 有 34 張，
+而 wilderness entries 的 `TileIndex` 正好落在 `0..33`。7×7 renderer 以
+`MapX/MapY` 為中心查 50×25 `WildernessFloor` 即可。terrain family 應由
+`Area.InDungeon` 選 DUNGCOM／WILDCOM，不可用 ECL chapter 或 GameArea 猜測。
+RANDCOM 只有六張特殊物件，是後續 decoration pass，不能替代完整 floor。

@@ -32,6 +32,12 @@ selector、石框圖塊與大型怪物 occupancy 仍在反組譯中。
 上方 atlas 均由原始 DAX parser 離線重建；最新戰鬥圖中的橘色石牆則由 GEO
 dungeon buffer 的 background entry 查回 DUNGCOM tile，不是手工 mock。
 
+![WILDCOM 50×25 floor 驅動的 640×480 野外實機戰鬥](docs/screenshots/gold-box-layout-combat-wilderness.png)
+
+野外戰場以目前 `MapX/MapY` 為中心查 `SetupWildernessFloor` 的 7×7 slice；
+樹木、倒木、岩石、草與水岸均由 entry 的原版 tile index 決定。地城／野外
+現在依 `Area.InDungeon` 選 DUNGCOM／WILDCOM，不再用章節編號猜測。
+
 以下圖片由原始 `curseoftheazurebonds.zip`，透過專案目前的 DAX／GFX／GEO parser 離線產生，證明圖像資料管線已經接通：
 
 ![TILES.DAX 原始圖塊 gallery](docs/screenshots/tiles-gallery.png)
