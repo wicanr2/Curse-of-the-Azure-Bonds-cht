@@ -25,6 +25,17 @@
       "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」"
     }
   },
+  "maps": [
+    {
+      "id": "zhentil-keep.inner-city",
+      "kind": "first_person",
+      "area_id": 4,
+      "geometry_block": 32,
+      "wrap": true,
+      "scale": 2,
+      "spawn": {"x": 2, "y": 0, "direction": 4}
+    }
+  ],
   "text_rules": [
     {
       "id": "zhentil.patrol_pass",

@@ -1524,3 +1524,11 @@ status interiors、五個 8px frame regions、原生 1px EGA bevel、alternating
 dotted inner edge 與固定 crack pixels；Ebiten 啟動時轉一次並 nearest-neighbour
 2×。新增 native geometry／transparency tests、READY spec 329，更新 Gold Box
 graphics 知識庫與 README 的 640×480 龍巫妖實機圖。
+
+第三百三十輪成果：地圖引擎拆分。原本位於 CoAB `internal/geo` 的完整
+16×16 GEO decoder／牆／門／移動規則，以及 `internal/gfx` 的原版
+Draw3dWorld 遠中近視角走訪，已移至獨立 `golden-box-remake-engine`
+的 `geometry`／`viewport` package；CoAB 僅保留相容 wrapper。game-pack
+schema 新增 `maps`，散提爾堡內城以 JSON 宣告 area 4、GEO block `0x20`、
+spawn `(2,0,S)`、wrapped 與 2× nearest-neighbour。下一步是 WALLDEF/8X8D
+composition/resource loader 搬移，以及 640×480 第一人稱地圖實機截圖。
