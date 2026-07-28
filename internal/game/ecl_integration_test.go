@@ -3158,16 +3158,60 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "酒館傳聞 60") ||
+	journalCountBeforeEssembraBar := len(state.JournalPages)
+	if !strings.Contains(state.Message, "龐大身影飛越森林") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Essembra tavern tale originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if len(state.JournalPages) != journalCountBeforeEssembraBar {
+		t.Fatalf("Essembra tavern tale incorrectly unlocked journal pages: before=%d after=%d",
+			journalCountBeforeEssembraBar, len(state.JournalPages))
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
 		t.Fatalf("Essembra bar continuation stalled mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "要喝什麼") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"BEER", "ALE", "PORT", "MEAD", "WHISKEY", "EXIT"}) ||
+		!reflect.DeepEqual(state.Choices, []string{"啤酒", "愛爾啤酒", "波特酒", "蜂蜜酒", "威士忌", "離開"}) {
+		t.Fatalf("Essembra drink menu prompt=%q originals=%#v choices=%#v message=%q",
+			state.Prompt, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "紅袍法師喜愛火焰生物") ||
+		!strings.Contains(state.Message, "寒冷攻擊") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Essembra beer tale originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
+		t.Fatalf("Essembra beer continuation mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
+		!strings.Contains(state.Message, "艾森布拉") {
+		t.Fatalf("Essembra bar exit mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)

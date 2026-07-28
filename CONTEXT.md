@@ -2,7 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：哈普 ECL5 block `0x31` terrain `0x88` 的伊弗利特頭目主線已接通。
+最新成果：艾森布拉 ECL1 block `0x50` 的露天酒館已走通完整
+`BAR → RELAX／HAVE A DRINK → Continue → EXIT`。`RELAX` 依原 script
+觸發 Tavern Tale 60，手冊正文為龐大身影飛越森林向南；飲酒選單解出
+`BEER/ALE/PORT/MEAD/WHISKEY/EXIT`，選啤酒觸發 Tale 44，提示以寒冷攻擊
+對付紅袍法師偏好的火焰生物。兩則已由 Adventure Journal 正文補成繁中，
+EXIT 可返回艾森布拉六場所選單。另以攻略交叉確認灰袍人／手札 18 屬暗影谷
+酒館，清除「DAX 相鄰字串即同城市分支」的錯誤推論。
+
+先前成果：哈普 ECL5 block `0x31` terrain `0x88` 的伊弗利特頭目主線已接通。
 新支援的 `APPROACH (0x0D)` 以 renderer-neutral count 保存兩次靠近動畫；
 State 不再吞掉 ECL runner error。正式戰鬥包含 MON5 `0x34` 伊弗利特一名、
 `0x32` 法師六名與 `0x33` 牧師六名。勝利後寫入 `4C01=5`、`4C5E=1`，
