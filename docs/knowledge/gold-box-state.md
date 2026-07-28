@@ -555,3 +555,12 @@ index，不是 renderer 或 State 應提前攔截的 COMBAT action。法師塔 b
 證實選定分支後還會依序執行 PICTURE、龍群與德拉坎德羅斯敘事、monster build
 與 COMBAT。勝利 continuation 必須保存原 PC，才能顯示安全屋頂文字並由 EXIT
 回地城；按 label 猜 action 會跳過整段原始控制流。
+
+#### ECL 與 GEO identity 不一定一對一
+
+摩安德之坑證實兩個 script block 可以共用一張 GEO grid。ECL3 block
+`0x11→0x12` 分別代表上下層，但都使用 GEO3 block `0x11`；NEWECL 後 terrain
+selector 的解讀隨新 script 改變。VM／作品 adapter 必須分別保存 ECL 與 GEO
+identity，不能看到 `NEWECL 0x12` 就猜測載入不存在的 GEO block `0x12`。
+跨層時還要執行或投影目的 block initial entry 寫入的座標與方向；否則 party
+會留在來源樓梯，SearchLocation 也會以錯誤 terrain 觸發。

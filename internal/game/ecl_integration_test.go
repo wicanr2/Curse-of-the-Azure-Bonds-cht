@@ -3869,6 +3869,83 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Pit Alias/Dragonbait event replayed mode=%v originals=%#v message=%q party=%#v",
 			state.Mode, state.currentOriginalChoices, state.Message, state.partyRoster)
 	}
+	state.DungeonX = 15
+	state.DungeonY = 11
+	state.DungeonDirection = 4
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(15, 11, 4)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(15, 11).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 0x11 ||
+		!strings.Contains(state.Message, "通往南方下層的階梯") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
+		t.Fatalf("Pit stairs prompt mode=%v block=0x%02x geo=%d pos=(%d,%d,%d) terrain=%#x wall=%#x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.DungeonWallRoof, state.DungeonWallType,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x12 ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x11 ||
+		state.DungeonX != 15 || state.DungeonY != 14 || state.DungeonDirection != 4 {
+		t.Fatalf("Pit stairs transition mode=%v block=0x%02x geo=%d/%d pos=(%d,%d,%d) originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(15, 14, 4)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(15, 14).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "北側牆邊有一道向上的階梯") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
+		t.Fatalf("Pit lower stairs mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.DungeonWallRoof,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	state.DungeonX = 14
+	state.DungeonY = 15
+	state.DungeonWallType, _ = pitLevelOne.WallWrapped(14, 15, 4)
+	state.DungeonWallRoof = pitLevelOne.CellWrapped(14, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"LEAVE", "EXAMINE CORPSE"}) {
+		t.Fatalf("Pit Zhentil corpse mode=%v originals=%#v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "散提爾堡的印璽") ||
+		!strings.Contains(state.Message, "冒險手札第 46 條") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Pit Zhentil note mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x originals=%#v choices=%#v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, state.DungeonWallRoof,
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Pit Zhentil note return mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.Message != "" {
+		t.Fatalf("Pit Zhentil note replayed mode=%v originals=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
