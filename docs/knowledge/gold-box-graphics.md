@@ -255,9 +255,10 @@ calls，再由 `graphics` 將 WALLDEF window 展開成 indexed 8X8D stamps。
 `symbol_file`，且 filename 必須是 base name，避免資源路徑逃逸。
 
 reference wall layout 的橫向範圍是 logical column `-5..15`，以 column 5 為
-中心，共 22 個 8px cells：原生 176px、2× 後 352px。正式 640×480 地城畫面
-應保留完整 352px viewport，右側另放 roster；把同一組 stamps 放入 290px
-debug 區會造成錯誤裁切與「三片牆」錯位。原始 8px bitmap 只做 nearest-neighbour
+中心，共 22 個 8px logical cells。這是 traversal domain，不是 GUI panel
+寬度；第 347 輪 DOSBox oracle 證實 top chrome 是原生左 128px／右 192px
+（2× 後 256／384）。把同一組 stamps 放入任意 debug 寬度會造成錯誤裁切與
+錯位。原始 8px bitmap 只做 nearest-neighbour
 整數放大，繁中 HUD 才在 640×480 canvas 以 16／24px 重新 rasterize。
 
 ## AREA 俯視地圖的可重用邊界
@@ -282,7 +283,7 @@ Big5 A440 起算，次常用區接在第 5401 字後，全形符號則來自 `SP
 加粗方式是每列 bitmap 與向右平移 1px 的結果 OR，不做平滑縮放。字模檔本身
 有著作權，不應提交到公開 engine 或作品 repo；只提交讀取器並由使用者指定路徑。
 
-`Draw3dWorldBackground` 並不填滿整個 176px viewport：native sky、horizon、
+`Draw3dWorldBackground` 並不填滿整個左側 panel：native sky、horizon、
 ground rectangles 分別是 `(24,24,88,44)`、`(24,68,88,2)`、
 `(24,70,88,42)`。SKY masked pictures FA／FB／FC 是 88×16、24×24、88×48；
 FC 固定在 row 7／column 2，FA／FB 只在 outdoor sky palette 11 下依方向與

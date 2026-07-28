@@ -13,6 +13,14 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if pack.ID != "curse-of-the-azure-bonds.pit-of-moander" {
 		t.Fatalf("pack id=%q", pack.ID)
 	}
+	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
+	if !found || tilverton.ID != "tilverton.first-person" ||
+		tilverton.GeometryFile != "GEO2.DAX" ||
+		tilverton.OutdoorSkyColor == nil || *tilverton.OutdoorSkyColor != 3 ||
+		tilverton.Spawn == nil || tilverton.Spawn.X != 7 ||
+		tilverton.Spawn.Y != 13 || tilverton.Spawn.Direction != 0 {
+		t.Fatalf("Tilverton first-person definition=%+v found=%v", tilverton, found)
+	}
 	firstPerson, found := pack.FindMap(4, 0x20)
 	if !found || firstPerson.ID != "zhentil-keep.inner-city" ||
 		firstPerson.GeometryFile != "GEO4.DAX" ||

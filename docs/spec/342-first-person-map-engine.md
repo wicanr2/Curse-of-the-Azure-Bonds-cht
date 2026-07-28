@@ -18,9 +18,10 @@ CoAB JSON 的散提爾堡內城宣告 area 4、GEO block `0x20`、spawn `(2,0,S)
 
 ## 版面
 
-WALLDEF logical columns `-5..15` 共 22 格，原生寬 176px，2× 後為 352px。
-正式地城畫面因此使用左側 352px 第一人稱 viewport、右側 roster、下方繁中
-敘事與最底命令列。debug floor 不再混入 production layout。
+WALLDEF traversal 的 logical columns 為 `-5..15`；本輪曾將 22×8=176px
+誤認為 GUI panel 寬度。第 347 輪 DOSBox oracle 已推翻這個推論：實際 top
+chrome 是左 128px、右 192px（2× 後 256／384）。traversal coordinate domain
+仍保留，但不能再用來決定 panel 分割。debug floor 不再混入 production layout。
 
 實機圖：
 [`tilverton-first-person-remake.png`](../screenshots/tilverton-first-person-remake.png)。
