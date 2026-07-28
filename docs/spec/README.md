@@ -307,3 +307,4 @@
 - [第三百二十七輪 RANDCOM 地城戰鬥裝飾](./327-randcom-decoration-overlay.md)（`READY`：限全域 graphic ID `0x22..0x27`、DUNGCOM floor＋透明 overlay 與原始 GEO 實機驗收）
 - [第三百二十八輪戰鬥地形移動成本](./328-combat-terrain-movement.md)（`READY`：限 BackgroundTile MoveCost／0xFF、完整 footprint preflight、movement budget 與座標 adapter）
 - [第三百二十九輪原生戰鬥框 raster](./329-native-combat-frame.md)（`READY`：限 320×184 固定 frame geometry、1px EGA bevel／點狀內緣、固定裂紋與 2× nearest-neighbour）
+- [第三百三十輪艾森布拉露天酒館與手札 18 定位](./330-essembra-hooded-man.md)（`READY`：限 ECL1 block 0x50 城市 BAR／RELAX、傳聞 60、手札 18 城市歸屬與 continuation）

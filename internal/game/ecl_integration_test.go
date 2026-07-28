@@ -3147,6 +3147,28 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Essembra inn return mode=%v block=0x%02X originals=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
 	}
+	if err := state.Select(4); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "俯瞰林地的露天酒館") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
+		t.Fatalf("Essembra outdoor bar originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(state.Message, "酒館傳聞 60") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Essembra tavern tale originals=%#v choices=%#v message=%q",
+			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
+		t.Fatalf("Essembra bar continuation stalled mode=%v message=%q", state.Mode, state.Message)
+	}
 	if err := session.Reset(1); err != nil {
 		t.Fatal(err)
 	}
