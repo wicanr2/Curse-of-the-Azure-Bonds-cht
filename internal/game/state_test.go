@@ -42,6 +42,38 @@ func TestLocalizedOpeningFlow(t *testing.T) {
 	}
 }
 
+func TestWorldLocationProjectionCoversAreaOneCities(t *testing.T) {
+	state := NewState(testCatalog())
+	tests := []struct {
+		value    uint16
+		location Location
+		original string
+	}{
+		{0, LocationTilverton, "TILVERTON"},
+		{1, LocationShadowdale, "SHADOWDALE"},
+		{2, LocationAshabenford, "ASHABENFORD"},
+		{3, LocationDaggerFalls, "DAGGER FALLS"},
+		{4, LocationStandingStone, "THE STANDING STONE"},
+		{5, LocationVoonlar, "VOONLAR"},
+		{6, LocationPhlan, "PHLAN"},
+		{7, LocationTeshwave, "TESHWAVE"},
+		{8, LocationEssembra, "ESSEMBRA"},
+		{9, LocationHap, "HAP"},
+		{10, LocationYulash, "YULASH"},
+		{11, LocationHillsfar, "HILLSFAR"},
+		{12, LocationZhentilKeep, "ZHENTIL KEEP"},
+		{13, LocationMythDrannor, "MYTH DRANNOR"},
+	}
+	for _, test := range tests {
+		state.setWorldLocation(test.value)
+		if state.Location != test.location || state.OriginalLocation != test.original ||
+			state.Area.CurrentCity != uint8(test.value) {
+			t.Fatalf("world location %d projected location=%v original=%q currentCity=%d",
+				test.value, state.Location, state.OriginalLocation, state.Area.CurrentCity)
+		}
+	}
+}
+
 func TestECLClockAdvancesSharedGameTime(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.applyECLClockSignals(ecl.RunResult{ClockRequests: []ecl.ClockRequest{{TimeStep: 3, TimeSlot: 1}}}); err != nil {

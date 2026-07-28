@@ -2,7 +2,15 @@
 
 更新日期：2026-07-28
 
-最新成果：艾森布拉 ECL1 block `0x50` 的露天酒館已走通完整
+最新成果：世界主線已由艾森布拉延伸到希爾斯法。隊伍返回立石群後選
+HILLSFAR／TRAIL，ECL world dispatcher 由 `0x50` 切入 `0x51`，先遭第二次
+event 12 的六名偽裝火刀伏擊；勝利以 `4C9B=11` 抵達希爾斯法。State 現完整
+投影 Area 1 A–N 的 zero-based `0..13` world values，不再只認南方城市。
+PICTURE 80 城市入口、六場所與碼頭酒館已接通；仍帶 Fzoul 枷印時，RELAX
+會遭紅羽衛打翻酒水挑釁，拒絕後與六名原版 fighter 戰鬥並返回酒館。成果收進
+READY spec 331、跨區 real-session regression 與 Gold Box state 知識庫。
+
+先前成果：艾森布拉 ECL1 block `0x50` 的露天酒館已走通完整
 `BAR → RELAX／HAVE A DRINK → Continue → EXIT`。`RELAX` 依原 script
 觸發 Tavern Tale 60，手冊正文為龐大身影飛越森林向南；飲酒選單解出
 `BEER/ALE/PORT/MEAD/WHISKEY/EXIT`，選啤酒觸發 Tale 44，提示以寒冷攻擊

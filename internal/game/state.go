@@ -71,6 +71,13 @@ const (
 	LocationStandingStone
 	LocationEssembra
 	LocationHap
+	LocationVoonlar
+	LocationPhlan
+	LocationTeshwave
+	LocationYulash
+	LocationHillsfar
+	LocationZhentilKeep
+	LocationMythDrannor
 )
 
 type State struct {
@@ -4796,10 +4803,10 @@ func (s *State) placePrompt() string {
 // bytes, then retains the observed opening sequence as a compatibility
 // fallback for synthetic sessions.
 func (s *State) applyCitySelection() {
-	if s.session != nil && s.session.CurrentBlockID() == 0x50 {
+	if s.session != nil &&
+		(s.session.CurrentBlockID() == 0x50 || s.session.CurrentBlockID() == 0x51) {
 		for _, address := range []uint16{0x4C9B, 0x4C9C} {
-			if value, ok := s.session.MemoryValue(address); ok &&
-				((value >= 1 && value <= 4) || value == 8 || value == 9) {
+			if value, ok := s.session.MemoryValue(address); ok && value <= 13 {
 				s.setWorldLocation(value)
 				// The global ECL1 dispatcher owns city edges, city services,
 				// and wilderness travel. A party may arrive here through an
@@ -4822,8 +4829,16 @@ func (s *State) applyCitySelection() {
 }
 
 func (s *State) setWorldLocation(value uint16) {
+	s.Area.CurrentCity = uint8(value)
+	if value == 0 {
+		s.Location = LocationTilverton
+		s.LocationName = s.catalog.Text("tilverton", "提爾佛頓")
+		s.OriginalLocation = "TILVERTON"
+		return
+	}
 	if value >= 1 && value <= 3 {
 		s.setNamedLocation(int(value - 1))
+		s.Area.CurrentCity = uint8(value)
 		return
 	}
 	if value == 4 {
@@ -4842,6 +4857,25 @@ func (s *State) setWorldLocation(value uint16) {
 		s.Location = LocationHap
 		s.LocationName = s.catalog.Text("hap", "哈普")
 		s.OriginalLocation = "HAP"
+		return
+	}
+	worldLocations := map[uint16]struct {
+		location Location
+		key      string
+		original string
+	}{
+		5:  {LocationVoonlar, "voonlar", "VOONLAR"},
+		6:  {LocationPhlan, "phlan", "PHLAN"},
+		7:  {LocationTeshwave, "teshwave", "TESHWAVE"},
+		10: {LocationYulash, "yulash", "YULASH"},
+		11: {LocationHillsfar, "hillsfar", "HILLSFAR"},
+		12: {LocationZhentilKeep, "zhentil_keep", "ZHENTIL KEEP"},
+		13: {LocationMythDrannor, "myth_drannor", "MYTH DRANNOR"},
+	}
+	if selected, ok := worldLocations[value]; ok {
+		s.Location = selected.location
+		s.LocationName = s.catalog.Text(selected.key, selected.original)
+		s.OriginalLocation = selected.original
 	}
 }
 
@@ -5329,6 +5363,12 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_essembra_places",
 			"你們身在艾森布拉。要前往哪個場所？",
 		)
+	case strings.Contains(joined, "YOU ARE IN HILLSFAR") &&
+		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
+		return catalog.Text(
+			"ecl_hillsfar_places",
+			"你們身在希爾斯法。要前往哪個場所？",
+		)
 	case strings.Contains(joined, "WELCOME TO THE BRANCHING OAK"):
 		return catalog.Text(
 			"ecl_essembra_branching_oak",
@@ -5339,6 +5379,17 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_essembra_outdoor_bar",
 			"你們來到一座俯瞰林地的露天酒館。要做什麼？",
+		)
+	case strings.Contains(joined, "YOU ARE IN A DOCKSIDE BAR"):
+		return catalog.Text(
+			"ecl_hillsfar_dockside_bar",
+			"你們來到碼頭邊的酒館。要做什麼？",
+		)
+	case strings.Contains(joined, "SOME RED PLUMES COME OVER") &&
+		strings.Contains(joined, "ORDER YOU TO CLEAN UP THE MESS"):
+		return catalog.Text(
+			"ecl_hillsfar_red_plumes_spill_drinks",
+			"幾名紅羽衛走過來，故意打翻你們的酒，命令你們把髒亂清乾淨。要照辦嗎？",
 		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
@@ -5362,6 +5413,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_hap_edge",
 			"你們來到哈普村外。要進村，還是繼續旅程？",
+		)
+	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HILLSFAR"):
+		return catalog.Text(
+			"ecl_hillsfar_edge",
+			"你們來到希爾斯法城外。要進城，還是繼續旅程？",
 		)
 	case strings.Contains(joined, "HOW WILL YOU GET TO ESSEMBRA"):
 		return catalog.Text("ecl_route_essembra", "要如何前往艾森布拉？")
@@ -5388,6 +5444,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_shadow_gap_fire_knife_patrol",
 			"一隊偽裝成巡邏兵的火刀突然伏擊你們！",
+		)
+	case strings.Contains(joined, "AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS"):
+		return catalog.Text(
+			"ecl_fire_knives_disguised_fighters",
+			"一群偽裝成戰士的火刀突然伏擊你們！",
 		)
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 28"):
 		return catalog.Text(

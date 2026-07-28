@@ -9,8 +9,12 @@ Dungeon boss battle 的返回 owner 必須在建立 Battle 時 snapshot。哈普
 ## 世界地點值與旅途戰鬥 continuation
 
 CoAB 的 world current-location byte 是作品資料值，不是連續的 remake enum。
-目前真實流程已鎖定 Standing Stone=`4`、Essembra=`8`、Hap=`9`；其他 Gold Box
-作品應保留自己的原始值與顯示名稱 mapping，不能按旅途順序自行遞增。
+Area 1 已證實採世界地圖 A–N 的 zero-based ordinal：
+Tilverton=`0`、Shadowdale=`1`、Ashabenford=`2`、Dagger Falls=`3`、
+Standing Stone=`4`、Voonlar=`5`、Phlan=`6`、Teshwave=`7`、Essembra=`8`、
+Hap=`9`、Yulash=`10`、Hillsfar=`11`、Zhentil Keep=`12`、
+Myth Drannor=`13`。其他 Gold Box 作品應保留自己的原始值與顯示名稱 mapping，
+不能按 remake enum 或目前旅途順序自行遞增。
 
 旅途上的 `COMBAT` 屬 ECL transaction 中斷點。勝利後必須恢復同一份 runtime，
 才能執行抵達地點、寫入 world byte 與顯示 edge menu。複合英文 menu label 也可能
@@ -24,6 +28,11 @@ CoAB 的 world current-location byte 是作品資料值，不是連續的 remake
 村外進入 global block `0x31` 時，ECL 只發出 `LOAD PIECES 12,FF,FF`；Area 5、
 dungeon mode 與對應 graphics namespace 是外層 dispatcher 的責任。共用 VM
 不可猜 area，作品 adapter 則不能因缺少 `LOAD FILES` 而沿用上一區域。
+
+同一作品的世界 dispatcher 也可能分散在多個 ECL block。CoAB 南方 A–J 城市主要
+使用 block `0x50`，前往 Hillsfar 時由 `NEWECL` 切入北方 block `0x51`；兩者共享
+`4C9B/4C9C` world bytes。State location projection 不可綁死單一 block ID，否則
+VM 雖已抵達北方城市，前端仍會顯示上一個南方地點。
 
 SearchLocation 常以 `C04F & 0x7F` 將帶 roof high bit 的 terrain 轉成 dispatch
 selector。Hap 的 `0x84` 民宅會寫 visited byte `4C02=1`、顯示 PICTURE 50，
