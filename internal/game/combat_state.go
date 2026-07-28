@@ -184,6 +184,8 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_mogion", "摩貢")
 	case "SHAMBLING MOUND":
 		return catalog.Text("monster_shambling_mound", "蔓生怪")
+	case "BIT O' MOANDER":
+		return catalog.Text("monster_bit_of_moander", "摩安德殘軀")
 	default:
 		return name
 	}
@@ -1550,7 +1552,10 @@ func (s *State) continueECLAfterEngineBoundary() (bool, error) {
 	if s.session == nil || len(s.eclBlock) == 0 {
 		return false, nil
 	}
-	result, err := s.session.RunInteractiveSeed(180, nil, s.eclSeed)
+	// Long post-combat scripts can build the next encounter before reaching
+	// their next player-visible boundary. Mogion's victory continuation is
+	// one such sequence and exceeds the short menu-resume budget.
+	result, err := s.session.RunInteractiveSeed(500, nil, s.eclSeed)
 	if err != nil {
 		return false, err
 	}

@@ -5731,6 +5731,35 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_pit_alias_attack_mogion",
 			"愛麗雅絲與龍餌已砍斷藤蔓脫困。她嘶聲喊道：「現在就攻擊他們，除非你們想直接面對一位神！」你們要怎麼做？",
 		)
+	case strings.Contains(joined, "THE DIMENSIONAL RIFT SNAPS SHUT"):
+		return catalog.Text(
+			"ecl_pit_moander_rift_closes",
+			"異次元裂隙猛然閉合。",
+		)
+	case strings.Contains(joined, "THREE PSUEDOPODS OF MOANDER") &&
+		strings.Contains(joined, "HUNDREDS OF MOUTHS") &&
+		strings.Contains(joined, "YOU HAVE KILLED ME"):
+		return catalog.Text(
+			"ecl_pit_moander_remnants_scream",
+			"三塊已穿過裂隙的摩安德殘軀突然長出數百張嘴，齊聲尖叫：「你們殺了我！」",
+		)
+	case strings.Contains(joined, "THE OOZING MOUNDS TURN AND ATTACK YOU"):
+		return catalog.Text(
+			"ecl_pit_moander_remnants_attack",
+			"滲著黏液的殘軀轉身向你們撲來！",
+		)
+	case strings.Contains(joined, "YOU FIND THE GAUNTLET OF MOANDER") &&
+		strings.Contains(joined, "SLIMY REMAINS"):
+		return catalog.Text(
+			"ecl_pit_gauntlet_of_moander",
+			"你們在黏滑的殘骸中找到摩安德護手。",
+		)
+	case strings.Contains(joined, "A PRIEST BURSTS INTO THE ROOM") &&
+		strings.Contains(joined, "THEY HAVE KILLED THE GOD"):
+		return catalog.Text(
+			"ecl_pit_priest_flees_after_moander",
+			"一名祭司衝進房間，驚恐地環顧四周，隨即逃回走廊並高喊：「他們殺了神！」",
+		)
 	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
 		strings.Contains(joined, "MOTIONS YOU OVER"):
 		return catalog.Text(

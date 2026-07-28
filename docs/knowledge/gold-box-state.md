@@ -572,3 +572,13 @@ world-menu 的 index switch，會在戰鬥開始時錯顯示「進入城市」�
 continuation 的 world menu 才可將 `0/1/2` 投影為 ENTER CITY／JOURNEY ON／CAMP。
 ECL menu 必須以 original option text、目前 continuation 與 script 結果決定語意，
 不能只看數字位置。
+
+#### 長 post-combat continuation 與劇情神器
+
+摩貢首戰後，ECL 在下一個穩定 boundary 前還會關閉裂隙、顯示殘軀敘事、建立
+三隻 MON3 `0x1A` 並發出第二次 COMBAT。180-step menu budget 會在此路徑中途
+中止；post-combat resume 應採與 dungeon lifecycle 同級的 bounded budget，
+並保留 session PC、memory 與 monster setup，不能當作新事件重跑。
+
+摩安德護手也證實劇情神器不一定進普通 inventory。原版顯示取得訊息後寫
+`4C5B=1`；作品層應保存 plot identity，不能自行把它變成可丟棄或交易的 item。
