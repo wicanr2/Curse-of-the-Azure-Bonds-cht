@@ -1705,3 +1705,11 @@ deterministic screenshot 已改為凍結指定 timeline elapsed；不可再直�
 `00:42:25.20–25.40` 顯示 Stinking Cloud 的同形青色 projectile，
 `25.50` 清除後約 `25.60` 才出現文字與雲格。這證明 travel→effect ordering，
 但弓箭與各距離 wall-clock cadence 尚未完成，spec 354 仍 IN PROGRESS。
+
+同輪第三階段把 COMSPR 對照移出 frontend。獨立 engine commit `511ef40`
+新增 `combat_visuals` schema、八方向／逐格驗證、trigger/phase 查詢；
+CoAB JSON 宣告 arrow、Magic Missile travel 與 magic impact 的 source
+block、flip、scale、原始 delay。三張 deterministic 戰鬥圖已由 Docker／
+Xvfb 重拍且完整遊戲／核心測試通過。下一步仍以 DOS／網路實機影片建立
+弓箭逐距離 timing，以及 Fireball、Lightning Bolt、Stinking Cloud／
+Cloudkill 等不同法術的 travel、area effect、impact oracle。
