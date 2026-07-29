@@ -171,7 +171,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 基底：`06fbf96`（本輪音樂 cue milestone 之前的 HEAD）。
+- CoAB 基底：`cd87046`（本輪音樂 bridge milestone 之前的 HEAD）。
 - Engine dependency：`a81b963`（含中立 `combat_visuals` 與
   `music_tracks`／`music_bindings`／`music_cues` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
@@ -263,6 +263,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   selector 6。第 363 輪已將 `PICTURE 0x50/0x79` 做成作品資料化 cue；
   阿沙本福德 block `0x50` 與希爾斯法 block `0x51` 的正常 ECL 玩家路徑
   均證明 `5→6→5`，相同 track 不重播。仍不可先猜曲名。
+- 第 364 輪已用指定 IDA Pro 9.4 與 raw bytes 證明 `MSCDRV.EXE` 直接把
+  IVT `7Eh` (`0000:01F8`) 設成自身 `CS:0080`；public ABI 是
+  `AH=0/AL=0-based track` play、`AH=1` stop，再由內部 D2h clients 接到
+  `CEE0` 低階服務。六個 anchors 都位於 file `0x0280..0x1376` 或 GAME
+  `0x9410..0x95D9`，不與 MSCDRV 缺口 `0x4000..0x43FF` 重疊。
+  `cmd/pc98-music-audit`、兩支 `scripts/ida/pc98_*music*` 與 READY spec 364
+  是可重現入口；`CEE0` provider、完整 D2h dispatch、YM trace 仍未完成。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -270,8 +277,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - selector 規格 `docs/spec/355-pc98-ecl-bgm-selector.md` 已 READY；來源媒體
   規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
   `docs/spec/362-pc98-disk-b-dax-and-wldtwn.md` 已 READY；作品中立 cue 與
-  正常玩家路徑已完成。下一步確認 IVT `7Eh` 到 `MSCDRV.EXE`／INT D2h 的
-  轉送及 runtime YM trace；曲名與播放器只能在音序列證據完整後接入。
+  正常玩家路徑已完成；`docs/spec/364-pc98-music-vector-bridge.md` 也已
+  READY。下一步追 `CEE0:0004/0006` producer、D2h dispatch 與 runtime YM
+  trace；曲名與播放器只能在音序列證據完整後接入。
 
 ## 10. Compact 後恢復工作清單
 

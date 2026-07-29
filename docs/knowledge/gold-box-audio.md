@@ -42,10 +42,17 @@ IVT vector `7Eh` 的 far-call wrapper 送出。這說明 literal `CD D2` 掃描
 為零並不代表沒有音樂呼叫；追蹤 DOS／PC-98 老引擎時，應把「遊戲 wrapper
 vector」與「TSR driver service interrupt」分成兩層 contract。
 
-本作 area-code switch 已證明 selector 值 `3/4/5/6/8/9/12`，但 area code
-尚未全部對回人類可讀場景。跨作品可沿用的是 symbol-table parser、IVT
-wrapper 模式與 track intent；CoAB area code 表仍只屬 game pack，不進
-共用 engine hardcode。
+`MSCDRV.EXE` 已證明會把 IVT `7Eh` 直接設成自身 `CS:0080`。public ABI
+是 `AH=0, AL=0-based track` 播放，`AH=1` 停止；handler 再透過 D2h client
+操作固定 `CEE0` 低階服務。這些 anchors 全位於 driver file `0x0280..0x1376`，
+不與缺失的 `0x4000..0x43FF` 重疊。可重用方法是「IDA 定位＋原始 file
+offset byte audit＋缺口隔離」，不能因缺檔便放棄所有位於完整區段的 ABI
+結論，也不能反過來宣稱整份 driver 已恢復。
+
+本作 `CURRENTECL` switch 已證明 selector 值 `3/4/5/6/8/9/12`，selector
+5／6 又已對回戶外導航／城鎮服務場景。跨作品可沿用的是 symbol-table
+parser、IVT wrapper 模式與 track intent；CoAB ECL block 表仍只屬 game
+pack，不進共用 engine hardcode。
 
 正式 remake 保留兩種來源：
 
