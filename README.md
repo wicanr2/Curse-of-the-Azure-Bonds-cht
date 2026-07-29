@@ -74,12 +74,19 @@ renderer-neutral transaction 在固定 phase 的 Docker／Xvfb 實機 frame：
 
 ![Magic Missile 飛行 phase](docs/screenshots/combat-timeline-magic.png)
 
+![Magic Missile 原版命中爆點](docs/screenshots/combat-timeline-magic-impact.png)
+
 ![原版 COMSPR 骷髏死亡 phase](docs/screenshots/combat-timeline-kill.png)
 
-弓箭與 Magic Missile 圖形目前是 architecture checkpoint 的明確 fallback，
-不是原版 projectile pixel-exact 宣稱；`SoundMissile`、hit/miss、magic-hit、
-death 已依 phase 送出，敵方 AI 也改成一個 action 播完才 handoff。下一步是
-依 DOSBox 與 gameplay video 時間碼定位真正 projectile block、色盤與 duration。
+弓箭現使用原版 COMSPR `0x00/01/02` 與方向 variants；Magic Missile
+travel 使用原版 `0x05/0x85` 四格，命中使用 `0x0A/0x8A` 四格，不再用
+renderer primitive。`SoundMissile`、hit/miss、magic-hit、death 已依 phase
+送出，敵方 AI 也改成一個 action 播完才 handoff。公開 DOS 影片
+[`00:42:25.20–25.40`](docs/reference/original-dos/combat-video-oracle.md)
+已逐格交叉驗證 generic spell projectile；弓箭 wall-clock cadence 與其餘
+法術 timing 仍待 DOSBox／影片補齊，不能宣稱整套戰鬥 pixel/timing exact。
+
+![DOS 影片中的原版 spell projectile](docs/reference/original-dos/combat-spell-projectile-422530.png)
 
 ![DUNGCOM 原版地城戰鬥牆面](docs/screenshots/dungcom-tiles.png)
 

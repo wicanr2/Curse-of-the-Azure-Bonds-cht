@@ -167,13 +167,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 ### 目前未提交 milestone（不可遺忘）
 
-- 第 353 輪洞窟離場已 push。dirty milestone 是 spec 354 第一階段：
+- 第 354 輪第一階段時間軸已 push。dirty milestone 是 spec 354 第二階段：
   `combat.VisualEvent` 已建立 windup→handoff 時間軸，Ebiten 每次只播放一個
   actor action；melee、bow、Magic Missile、death 已接入 phase-aligned
-  renderer／sound，並有四張 deterministic Xvfb frame。
-- 箭與 Magic Missile projectile 目前仍是 fallback primitive，不是 DOS
-  pixel-exact；spec 354 保持 IN PROGRESS，下一步用 DOSBox／gameplay video
-  時間碼定位真正素材、色盤與 duration。
+  renderer／sound，現在共有五張 deterministic Xvfb frame。
+- 箭與 Magic Missile fallback 已由原版 COMSPR 取代：箭使用
+  `0x00/01/02`＋attack/flip 八方向；generic spell travel 使用
+  `0x05/0x85` 四格，Magic damage impact 使用 `0x0A/0x8A` 四格。
+  DOS 影片 `wwYsij1wDC4` `00:42:25.20–25.40` 已證實 travel 先於文字／area
+  effect。spec 354 仍 IN PROGRESS，下一步補弓箭、Magic Missile、melee、
+  kill 的完整時間碼與逐距離 duration。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 完整驗證後把本階段集中一次 commit＋push；不要為文件或單張圖拆 commit。

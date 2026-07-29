@@ -1696,3 +1696,12 @@ Magic Missile 保存飛彈數與路徑，致死 target 在畫面 commit 前維�
 DOSBox／影片時間碼與原始 projectile block 定位後才能宣稱 fidelity 完成。
 deterministic screenshot 已改為凍結指定 timeline elapsed；不可再直接用
 `time.Since(start)` 截 phase，否則 Ebiten／Xvfb 啟動延遲會吞掉箭矢 travel。
+
+同輪第二階段由 COMSPR raw blocks、reference consumer 與 DOS 公開影片
+交叉定位 projectile。弓箭八方向使用 `0x00/01/02`、`0x80/81/82` 與 flip；
+共同 spell missile 使用 `0x05/0x85` 四格，Magic damage impact 使用
+`0x0A/0x8A` 四格。renderer 的線段／方塊 fallback 已移除，新增
+`magic-impact` deterministic screenshot。影片 `wwYsij1wDC4`
+`00:42:25.20–25.40` 顯示 Stinking Cloud 的同形青色 projectile，
+`25.50` 清除後約 `25.60` 才出現文字與雲格。這證明 travel→effect ordering，
+但弓箭與各距離 wall-clock cadence 尚未完成，spec 354 仍 IN PROGRESS。

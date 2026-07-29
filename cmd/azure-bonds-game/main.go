@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"io"
 	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"sort"
@@ -1822,34 +1823,21 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 	case combat.VisualTravel:
 		switch event.Kind {
 		case combat.VisualMissile:
-			// The line is the renderer fallback until the DOS projectile block
-			// is assigned by the title asset pack.
-			shaft := color.RGBA{R: 255, G: 244, B: 180, A: 255}
-			ebitenutil.DrawLine(screen, fromX, fromY, x, y, shaft)
-			ebitenutil.DrawLine(screen, fromX, fromY+1, x, y+1, shaft)
-			ebitenutil.DrawLine(screen, fromX, fromY+2, x, y+2, shaft)
-			ebitenutil.DrawRect(screen, x-7, y-3, 14, 6, shaft)
-			// A high-contrast arrowhead keeps the temporary renderer readable
-			// over both light EGA terrain and the dark combat floor.
-			head := color.RGBA{R: 196, G: 44, B: 44, A: 255}
-			ebitenutil.DrawRect(screen, x-9, y-5, 5, 10, head)
-		case combat.VisualMagicMissile:
-			count := event.Projectiles
-			if count < 1 {
-				count = 1
+			key, flip := combatArrowSprite(event, camera)
+			if !a.drawCombatProjectileSprite(screen, key, flip, x, y) {
+				ebitenutil.DrawLine(screen, fromX, fromY, x, y, color.RGBA{R: 255, G: 244, B: 180, A: 255})
 			}
-			for index := 0; index < count; index++ {
-				offset := float64(index*6 - (count-1)*3)
-				ebitenutil.DrawRect(screen, x-4, y-4+offset, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
+		case combat.VisualMagicMissile:
+			key, flip := combatMagicMissileSprite(event, frame)
+			if !a.drawCombatProjectileSprite(screen, key, flip, x, y) {
+				ebitenutil.DrawRect(screen, x-4, y-4, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
 			}
 		}
 	case combat.VisualImpact:
-		impact := color.RGBA{R: 255, G: 238, B: 110, A: 210}
-		if !event.Hit {
-			impact = color.RGBA{R: 180, G: 180, B: 180, A: 180}
+		if event.Kind == combat.VisualMagicMissile && event.Hit {
+			key, flip := combatMagicImpactSprite(frame)
+			a.drawCombatProjectileSprite(screen, key, flip, toX, toY)
 		}
-		size := 12 + 12*frame.Progress
-		ebitenutil.DrawRect(screen, toX-size/2, toY-size/2, size, size, impact)
 	case combat.VisualDeath:
 		iconKey := "comspr-block-8B-item-00.png"
 		if int(frame.Progress*9)%2 == 1 {
@@ -1862,6 +1850,96 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 			screen.DrawImage(icon, op)
 		}
 	}
+}
+
+func (a *app) drawCombatProjectileSprite(screen *ebiten.Image, key string, flip bool, x, y float64) bool {
+	sprite := a.combatSprites[key]
+	if sprite == nil {
+		return false
+	}
+	op := &ebiten.DrawImageOptions{}
+	if flip {
+		op.GeoM.Scale(-2, 2)
+		op.GeoM.Translate(x+24, y-24)
+	} else {
+		op.GeoM.Scale(2, 2)
+		op.GeoM.Translate(x-24, y-24)
+	}
+	screen.DrawImage(sprite, op)
+	return true
+}
+
+func combatArrowSprite(event combat.VisualEvent, camera combat.CombatCamera) (key string, flip bool) {
+	from := mirroredCombatAnchor(camera.Apply(event.From))
+	to := mirroredCombatAnchor(camera.Apply(event.To))
+	switch combatProjectileDirection(to.X-from.X, to.Y-from.Y) {
+	case 0:
+		return "comspr-block-00-item-00.png", false
+	case 1:
+		return "comspr-block-01-item-00.png", false
+	case 2:
+		return "comspr-block-02-item-00.png", false
+	case 3:
+		return "comspr-block-81-item-00.png", false
+	case 4:
+		return "comspr-block-80-item-00.png", false
+	case 5:
+		return "comspr-block-81-item-00.png", true
+	case 6:
+		return "comspr-block-82-item-00.png", false
+	default:
+		return "comspr-block-01-item-00.png", true
+	}
+}
+
+// combatProjectileDirection matches the original clockwise numbering:
+// north=0, north-east=1, east=2 ... north-west=7.
+func combatProjectileDirection(dx, dy int) int {
+	if dx == 0 && dy == 0 {
+		return 0
+	}
+	angle := math.Atan2(float64(dx), float64(-dy))
+	if angle < 0 {
+		angle += 2 * math.Pi
+	}
+	return int(math.Floor(angle/(math.Pi/4)+0.5)) % 8
+}
+
+func combatMagicMissileSprite(event combat.VisualEvent, frame combat.VisualFrame) (key string, flip bool) {
+	steps := max(absInt(event.To.X-event.From.X), absInt(event.To.Y-event.From.Y)) * 3
+	if steps < 1 {
+		steps = 1
+	}
+	switch int(frame.Progress*float64(steps)) % 4 {
+	case 0:
+		return "comspr-block-05-item-00.png", false
+	case 1:
+		return "comspr-block-05-item-00.png", true
+	case 2:
+		return "comspr-block-85-item-00.png", true
+	default:
+		return "comspr-block-85-item-00.png", false
+	}
+}
+
+func combatMagicImpactSprite(frame combat.VisualFrame) (key string, flip bool) {
+	switch min(int(frame.Progress*4), 3) {
+	case 0:
+		return "comspr-block-0A-item-00.png", false
+	case 1:
+		return "comspr-block-0A-item-00.png", true
+	case 2:
+		return "comspr-block-8A-item-00.png", true
+	default:
+		return "comspr-block-8A-item-00.png", false
+	}
+}
+
+func absInt(value int) int {
+	if value < 0 {
+		return -value
+	}
+	return value
 }
 
 func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
@@ -1902,7 +1980,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	case "kill":
 		hero.Name = "戰士艾琳"
 		enemy.HitPoints, enemy.MaxHitPoints = 1, 1
-	case "magic":
+	case "magic", "magic-impact":
 		hero.InitiativeBonus = -20
 		enemy.Name = "散提爾法師"
 		enemy.InitiativeBonus = 30
@@ -1914,7 +1992,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 37); err != nil {
 		return 0, err
 	}
-	if kind != "magic" {
+	if kind != "magic" && kind != "magic-impact" {
 		if err := state.CombatAct(); err != nil {
 			return 0, err
 		}
@@ -1928,6 +2006,9 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		return combat.VisualWindupDuration / 2, nil
 	case "bow", "magic":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
+	case "magic-impact":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			3*combat.VisualImpactDuration/4, nil
 	case "kill":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
 			combat.VisualImpactDuration + combat.VisualCommitDuration +
@@ -2139,7 +2220,7 @@ func main() {
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
-	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, or kill")
+	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, magic-impact, or kill")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -2157,8 +2238,8 @@ func main() {
 	}
 	*combatVisualDemo = strings.ToLower(strings.TrimSpace(*combatVisualDemo))
 	if *combatVisualDemo != "" && *combatVisualDemo != "melee" && *combatVisualDemo != "bow" &&
-		*combatVisualDemo != "magic" && *combatVisualDemo != "kill" {
-		log.Fatal("-combat-visual-demo must be melee, bow, magic, kill, or empty")
+		*combatVisualDemo != "magic" && *combatVisualDemo != "magic-impact" && *combatVisualDemo != "kill" {
+		log.Fatal("-combat-visual-demo must be melee, bow, magic, magic-impact, kill, or empty")
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")

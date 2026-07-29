@@ -287,8 +287,15 @@ projectile count、hit／death，再由 renderer clock 推進 phase。規則可�
 deterministic resolve，但致死 target 必須以 snapshot 留在格上直到 death，
 否則 projectile 會射向空格。聲音也屬 phase commit：弓箭在 travel 送 selector
 2、hit/miss 在 impact、death 在 skull phase。這個 transaction 可跨作品沿用。
-目前箭矢與藍色飛彈仍是 fallback primitive；沒有 DOS projectile block／影片
-時間碼前不得標成原版 exact。
+CoAB COMSPR consumer 已進一步定位：弓箭以 combat icon `13..15` 選
+`0x00/01/02`、`0x80/81/82` 與 horizontal flip 組成八方向；共同目標型
+法術以 icon `0x12` 將 `0x05/0x85` 組成
+`normal → flip(normal) → flip(attack) → attack` 四格 travel。Magic
+damage feedback 另以 icon `0x17` 播放 `0x0A/0x8A` 四格爆點，不能拿爆點
+取代飛行物。DOS 公開影片 `wwYsij1wDC4` 的 `00:42:25.20–25.40` 顯示
+Stinking Cloud 共用的同形青色 projectile，證實 projectile 先於文字與 area
+effect；完整速度仍需按距離與 `SysDelay` 另行校準。詳細 raw offsets 與
+證據等級見 `docs/research/comspr-projectile-audit.md`。
 
 Derived CPIC／COMSPR／SPRIT PNG 若保留 EGA RGB 卻遺失 masked-blit alpha，
 不能直接當 opaque texture 載入；否則小人與骷髏會變成 24×24 色塊。frontend
