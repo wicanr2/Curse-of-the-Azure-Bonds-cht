@@ -1947,3 +1947,24 @@ trace、曲名與播放器。
 `cmd/pc98-music-audit` 現會逐 byte 驗證命令與兩個 `0x188/0x18A` helper。
 所有新 anchors 都早於缺失 `0x4000..0x43FF`。READY spec 365 保存來源
 URL、官方 PDF SHA-256、命令 register contract 與剩餘 runtime trace 邊界。
+
+2026-07-29 第 366 輪完成 PC-98 十二首 track table 與 runtime import
+邊界。IDA `sub_1021E` 證明 `DS:0330` 是 track pointer table，前十二筆
+依序指向 `038A..064A`；`sub_10253` 證明每筆 64-byte descriptor 是
+8-byte header 加七組 8-byte channel record，其中前兩個 word 是
+sequence offset／length。
+
+`internal/pc98music` 現會將 84 個 sequence 映回 driver file range並計算
+SHA-256。真實 binary audit 證明十二首完整聯集是
+`0x1B61..0x3C58`，完全早於缺失 `0x4000..0x4400`；所以缺 sector 沒有
+切斷公開十二首 sequence，但整份 driver／後段工作區仍不可宣稱完整。
+`ExtractTrackSequences` 只接受 exact driver SHA 與 selector 1–12，回傳
+七聲道資料副本，不提交商業 bytes。
+
+本機 Hoot `ponyca.xml`（SHA-256
+`aae112a387d3e163273c191d8b0d826e0cd85b0a02fd4ee615d4ebab81e89b8d`）
+的 CoAB entry 以 Shift-JIS 保存 0-based code→十二首曲名，與公開
+register-log 清單交叉一致。獨立 engine `5363177` 新增跨 locale 驗證的
+可選 `music_tracks.title_id`；CoAB JSON 現保存 selector 1–12、driver
+index 0–11 及中英文曲名。仍缺 `sub_10410` stream interpreter、後段參數
+consumer、YM register runtime trace 與實際播放器。

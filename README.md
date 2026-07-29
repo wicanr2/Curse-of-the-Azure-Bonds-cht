@@ -42,6 +42,11 @@ selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙�
 第 365 輪再由 NEC 官方 PC-9800 BIOS 手冊證明 `CEE0` 是 Sound BIOS
 固定介面表，並以 IDA＋raw bytes 命名本作 17 組 D2h client；auditor 也會
 驗證 direct YM2203 `0x188/0x18A` helper。這仍不是曲目資料或可播放音樂。
+第 366 輪進一步解出 `DS:0330` 十二筆 track descriptor 與 84 個 channel
+stream：所有 sequence 最晚在 file `0x3C58` 結束，沒有碰到
+`0x4000..0x43FF` 缺口。Hoot 的 Shift-JIS metadata 又補齊十二首
+selector 的中英文曲名；game pack 現可從使用者媒體驗證並匯入七聲道
+sequence，但 stream interpreter／YM2203 播放器仍待完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -51,7 +56,9 @@ Disk B／codec／場景語意則見
 7Eh／D2h bridge 則見
 [`docs/spec/364-pc98-music-vector-bridge.md`](docs/spec/364-pc98-music-vector-bridge.md)，
 Sound BIOS ABI 則見
-[`docs/spec/365-pc98-sound-bios-d2-api.md`](docs/spec/365-pc98-sound-bios-d2-api.md)。
+[`docs/spec/365-pc98-sound-bios-d2-api.md`](docs/spec/365-pc98-sound-bios-d2-api.md)，
+曲目表與 runtime import 則見
+[`docs/spec/366-pc98-track-table-and-runtime-import.md`](docs/spec/366-pc98-track-table-and-runtime-import.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

@@ -65,6 +65,44 @@ func TestSoundBIOSServiceTableMatchesObservedCommandSet(t *testing.T) {
 	}
 }
 
+func TestAuditTrackDescriptorsRejectsOutOfRangePointer(t *testing.T) {
+	data := make([]byte, driverTrackTableFile+driverPublicTracks*2)
+	data[driverTrackTableFile] = 0xFF
+	data[driverTrackTableFile+1] = 0x7F
+	if _, err := auditTrackDescriptors(data); err == nil ||
+		!strings.Contains(err.Error(), "maps outside input") {
+		t.Fatalf("out-of-range descriptor err=%v", err)
+	}
+}
+
+func TestRangeCompleteUsesHalfOpenMissingInterval(t *testing.T) {
+	tests := []struct {
+		start, end int
+		want       bool
+	}{
+		{DriverMissingStart - 1, DriverMissingStart, true},
+		{DriverMissingStart - 1, DriverMissingStart + 1, false},
+		{DriverMissingEnd - 1, DriverMissingEnd, false},
+		{DriverMissingEnd, DriverMissingEnd + 1, true},
+	}
+	for _, test := range tests {
+		if got := rangeComplete(test.start, test.end); got != test.want {
+			t.Fatalf("rangeComplete(0x%X,0x%X)=%v, want %v", test.start, test.end, got, test.want)
+		}
+	}
+}
+
+func TestExtractTrackSequencesRejectsWrongDriverAndSelector(t *testing.T) {
+	if _, err := ExtractTrackSequences([]byte("wrong driver"), 1); err == nil ||
+		!strings.Contains(err.Error(), "SHA-256") {
+		t.Fatalf("wrong driver err=%v", err)
+	}
+	if _, err := ExtractTrackSequences(nil, 0); err == nil ||
+		!strings.Contains(err.Error(), "outside 1..12") {
+		t.Fatalf("selector bounds err=%v", err)
+	}
+}
+
 func TestAuditBridgeRejectsUnidentifiedInputs(t *testing.T) {
 	if _, err := AuditBridge([]byte("not GAME.EXE"), []byte("not MSCDRV.EXE")); err == nil ||
 		!strings.Contains(err.Error(), "GAME.EXE SHA-256") {

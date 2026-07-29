@@ -229,6 +229,9 @@ Dungeon 1、Wilderness、Village、Dungeon 2、City、Dungeon 3、Ending。
 
 `GAME.EXE` 的 7Eh wrapper 與 `MSCDRV.EXE`／D2h bridge 已由 spec 364
 完成，不再列為缺口；但 bridge 本身不能代替曲目 runtime 映射。
+spec 366 又證明十二首、84 個 channel sequence 均未跨缺 sector，並由
+Hoot metadata 取得 exact driver index 曲名；目前真正缺口已收斂為 stream
+interpreter、後段參數依賴與 YM runtime trace。
 
 來源：
 
@@ -253,7 +256,8 @@ PC-98 音樂不能 hardcode 在 Go scene switch：
 
 本規格只有在下列證據齊全後才能改為 `READY`：
 
-- 找回或交叉重建 `MSCDRV.EXE 0x4000..0x43FF`，並記錄來源與雜湊。
+- 找回或交叉重建 `MSCDRV.EXE 0x4000..0x43FF`，並記錄來源與雜湊；spec 366
+  已證明十二首 sequence 不在此範圍，但不能因此宣稱整份 driver 完整。
 - 以 MAME `azurebnd` Disk A／B 身分雜湊核對第二份合法 dump，或證明 VFD
   absent-sector semantics 與其可逆對應。
 - `INT D2h` Sound BIOS client 已由 spec 365 命名；仍需 runtime trace 對回
