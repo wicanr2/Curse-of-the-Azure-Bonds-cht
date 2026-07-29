@@ -97,3 +97,21 @@ driver data、命令 budget 與 event budget 限制 trace；不可為了記憶�
 假造會改變節奏的 descriptor end。84 組 stream 已各跑 256 個 timed
 events；下一層仍須把 note／參數語意交叉成 Sound BIOS／YM2203 register
 events，才可選定合成後端。
+
+2026-07-30 第 368 輪完成正常配樂路徑的事件 runtime。可重用邊界不是
+「note 直接變 PCM」，而是先保留三種事件：
+
+- YM2203 `register_write`；
+- Sound BIOS `set_volume`；
+- Sound BIOS `set_parameter_block`。
+
+FM 音高讀 verified driver 的 DS `0210h` 12-word F-number table；PSG
+音高讀 DS `0228h` 71-word period table，不能只擷取最前面的 24 words。
+71 的邊界由 `00h..60h` note consumer 算式直接決定。Timer scheduler
+同時維護 duration、PSG envelope pointer、`91/92` modulation 與 register
+shadow。十二首各 4,096 ticks 的 event count／SHA 已進 auditor，商業表與
+sequence 仍只在使用者媒體通過 SHA 後 runtime import。
+
+這仍不能直接宣稱「PC-98 音樂已還原」。下一個獨立 oracle 必須是
+NP2kai／Hoot 的實際 register log；之後才展開 Sound BIOS parameter
+blocks 並選擇有明確授權的 YM2203 合成器。

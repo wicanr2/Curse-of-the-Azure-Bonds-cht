@@ -90,6 +90,10 @@ commit 內保存不可能自我引用的 hash。
   `A0–A4` 控制流與原版 16-entry stack；84 組 stream 各驗證 256 個
   timed events。Timing channel 依原驅動採有界 read-through，不假造
   descriptor end gate。
+  第 368 輪已把正常配樂路徑推進為 deterministic Sound BIOS／YM2203
+  events：FM 12-word F-number、PSG 71-word period、duration、envelope、
+  modulation 與 tempo 均由 verified driver data 驅動；十二首各驗證
+  4,096 ticks，共 68,291 events。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -112,9 +116,10 @@ commit 內保存不可能自我引用的 hash。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
-  曲目尚缺 note／參數到 register event 的完整語意、runtime YM trace 與
-  播放器。曲名、十二首 sequence 與控制流 framing 已交叉驗證；driver
-  sector 仍需恢復，但已證明不與 84 個 channel stream 重疊。
+  曲目尚缺 fade／sound-effect 共存路徑、外部 runtime YM trace、
+  Sound BIOS parameter block 展開與播放器。曲名、十二首 sequence、
+  控制流及正常配樂 deterministic events 已交叉驗證；driver sector 仍需
+  恢復，但已證明不與 84 個 channel stream 重疊。
   `WLDTWN` scene-role、ECL block → selector 與同 block 內 selector 5↔6
   context cue、7Eh play／stop → D2h bridge，以及 Sound BIOS command ABI
   已完成，不再列為缺口。

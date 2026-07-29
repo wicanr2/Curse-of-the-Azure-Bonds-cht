@@ -50,7 +50,10 @@ sequence。第 367 輪再由 IDA `sub_10410` 還原 FM／PSG 指令寬度、
 `A0–A4` jump／call／loop 與 16-entry stack；84 組 stream 各完成
 256 個 timed events 的有界驗證。第七個 timing channel 會略過控制 opcode
 並讀過 descriptor 宣告尾端，auditor 已用獨立 read-through mode 忠實且
-有界地處理。note／參數到 YM2203 register event 與播放器仍待完成。
+有界地處理。第 368 輪再把正常配樂路徑的 FM note、PSG period／envelope、
+tempo、Sound BIOS volume／parameter intent 轉成 deterministic events；
+十二首各跑 4,096 ticks，共驗證 68,291 events。尚缺外部 register trace
+交叉驗證、Sound BIOS parameter block 展開與實際 YM2203 播放器。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -64,7 +67,9 @@ Sound BIOS ABI 則見
 曲目表與 runtime import 則見
 [`docs/spec/366-pc98-track-table-and-runtime-import.md`](docs/spec/366-pc98-track-table-and-runtime-import.md)，
 音序列指令集則見
-[`docs/spec/367-pc98-stream-bytecode.md`](docs/spec/367-pc98-stream-bytecode.md)。
+[`docs/spec/367-pc98-stream-bytecode.md`](docs/spec/367-pc98-stream-bytecode.md)，
+OPN 事件 runtime 則見
+[`docs/spec/368-pc98-opn-event-runtime.md`](docs/spec/368-pc98-opn-event-runtime.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

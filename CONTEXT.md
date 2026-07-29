@@ -1979,3 +1979,15 @@ family-only `90/91/92`、`A0–A4` 控制流與 `B0`；call／loop stack 各為
 現分開執行 FM／PSG strict range audit 與 timing bounded read-through；
 真實十二首 84 組 sequence 各通過 256 個 timed events，共 21,504 events。
 READY spec 367 保存語法、邊界與尚未完成的 register-event／YM 播放層。
+
+2026-07-30 第 368 輪完成 PC-98 正常配樂 OPN event runtime。指定 IDA Pro
+9.4 batch script `pc98_music_event_audit.py` 重證 `sub_10410`、
+direct write、tempo、SETVOLUME／SETPARABLOCK helpers，並定位 DS `0210h`
+12-word FM F-number 與 DS `0228h` 71-word PSG period tables。
+
+`internal/pc98music.TrackPlayback` 現從 exact-hash driver runtime import
+七聲道，逐 timer tick 產生 register write／Sound BIOS intent，包含 FM
+key on/off、PSG envelope／`91/92` modulation、`B0`、tempo 與 duration。
+十二首各跑 4,096 ticks，共 68,291 events，auditor 保存各 selector 的 count
+與 SHA-256。仍缺 fade／SFX 共存、NP2kai／Hoot 外部 register trace、
+parameter block 展開及實際 YM2203 合成器；spec 368 已 READY。
