@@ -11,7 +11,7 @@
 
 截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為 `b8b6418`，依賴的獨立 engine 為 `d0bf86b`；實際最新版本以 GitHub
+CoAB 本輪基底為 `04422f9`，依賴的獨立 engine 為 `09714e0`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -118,8 +118,22 @@ Lightning Bolt（閃電束）也已走通正常 memorized `0x33` 玩家路徑：
 公開 DOS 影片 `07:40:22.50–25.60` 已逐格證明「電弧抵達目標 → damage/save
 → 從命中格繼續前進」，並與 COMSPR `0x06/0x86` 電弧、
 `0x0A/0x8A` damage impact 交叉吻合。牆面反彈目前是 executable/reference
-code-backed，仍待 DOS runtime 取得同角度逐幀 oracle；Stinking
-Cloud／Cloudkill 的 persistent area effect 仍是下一個獨立缺口。
+code-backed，仍待 DOS runtime 取得同角度逐幀 oracle。
+
+Stinking Cloud（惡臭雲霧）`0x22` 現在也走正常 memorized 玩家路徑：按
+`N` 後以方向鍵指定 2×2 雲霧的西北角。四格依原版
+`{center,east,south-east,south}` 建立，阻擋格會略過；每個 combatant
+footprint 只作一次 Poison save，成功咳嗽一回合，失敗則因噁心 helpless
+`d4+1` 回合。雲霧會跨 action／round 留在戰場，多片重疊時各自到期：
+
+![Stinking Cloud 共用 spell projectile](docs/screenshots/combat-timeline-stinking-cloud-travel.png)
+
+![Stinking Cloud 原版四格持續區域](docs/screenshots/combat-timeline-stinking-cloud-persistent.png)
+
+DOS 影片 `00:42:25.20–27.00` 已證明 projectile→建立文字→四格綠白雲→
+下一段 action 仍保留；原版 raster 由全域 background entry `0x1E` 解析到
+RANDCOM item 4。Cloudkill 的 3×3、HD 4–6 即死與移動入雲逐步觸發仍是
+下一個獨立缺口。
 
 ![DOS 影片中的原版 spell projectile](docs/reference/original-dos/combat-spell-projectile-422530.png)
 

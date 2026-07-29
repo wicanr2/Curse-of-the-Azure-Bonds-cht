@@ -107,6 +107,11 @@ type Fighter struct {
 	// poison, petrification, rod/staff/wand, breath weapon and spell.
 	SavingThrows     []uint8
 	SavingThrowBonus int
+	// CoughingTurns and HelplessTurns are action-counted combat effects.
+	// Persistent-area rules set them; the game adapter consumes one turn only
+	// when the affected combatant actually reaches its initiative.
+	CoughingTurns int
+	HelplessTurns int
 	// MonsterSpellIDs mirrors the raw MON*CHA spell-list slots. The bounded
 	// monster-turn adapter currently consumes only Magic Missile (0x0F).
 	MonsterSpellIDs  []uint8
@@ -241,6 +246,8 @@ type Battle struct {
 	rng      *rand.Rand
 	round    int
 	status   Status
+	areas    []PersistentArea
+	nextArea uint64
 }
 
 const FireballSpellID uint8 = 0x2F
@@ -291,6 +298,11 @@ func (b *Battle) Fighters() []Fighter {
 	}
 	sort.Slice(output, func(i, j int) bool { return output[i].ID < output[j].ID })
 	return output
+}
+
+func (b *Battle) Fighter(id string) (Fighter, bool) {
+	fighter, ok := b.fighters[id]
+	return fighter, ok
 }
 
 // SetHitPoints applies an external damage/healing adapter to a combatant and
@@ -387,6 +399,7 @@ func (b *Battle) StartRound() ([]Turn, error) {
 		return nil, fmt.Errorf("battle is already over")
 	}
 	b.round++
+	b.expirePersistentAreas()
 	b.advanceBlessDurations()
 	b.advanceCurseDurations()
 	b.advanceProtectionDurations()

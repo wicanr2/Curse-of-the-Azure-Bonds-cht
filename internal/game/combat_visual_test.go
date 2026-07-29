@@ -261,6 +261,97 @@ func TestCombatLightningBoltRestoresSlotWhenTerrainIsUnavailable(t *testing.T) {
 	}
 }
 
+func TestCombatStinkingCloudPlayerPathConsumesSlotAndCreatesPersistentArea(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		SpellSlots: []uint8{StinkingCloudSpellID},
+	}}
+	saves := []uint8{10, 10, 10, 10, 10}
+	if err := state.StartCombat([]combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 0, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 1, CombatY: 2, SavingThrows: saves,
+	}}, []combat.Fighter{{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: -20,
+		HasCombatPosition: true, CombatX: 4, CombatY: 2, SavingThrows: saves,
+	}}, 41); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastStinkingCloud() {
+		t.Fatal("memorized Stinking Cloud was not exposed on the normal combat turn")
+	}
+	if err := state.BeginCombatCast(StinkingCloudSpellID); err != nil {
+		t.Fatal(err)
+	}
+	terrain := func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 8 && y >= 0 && y < 7}
+	}
+	if err := state.CombatCastWithTerrain(StinkingCloudSpellID, terrain); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualAreaSpell || event.Effect != "stinking_cloud" ||
+		event.PersistentAreaID == 0 || len(event.Impacts) != 1 {
+		t.Fatalf("Stinking Cloud visual=%+v ok=%v", event, ok)
+	}
+	areas := state.CombatPersistentAreas()
+	if len(areas) != 1 || len(areas[0].Cells) != 4 || areas[0].ID != event.PersistentAreaID {
+		t.Fatalf("persistent areas=%+v", areas)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Stinking Cloud slot not consumed: %v", state.partyRoster[0].SpellSlots)
+	}
+	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("Stinking Cloud must not reuse magic damage sound: %v", sounds)
+	}
+	if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "mage" {
+		t.Fatalf("cloud-affected enemy turn was not skipped: active=%+v ok=%v", active, ok)
+	}
+}
+
+func TestCombatStinkingCloudRestoresSlotWhenEveryCellIsBlocked(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		SpellSlots: []uint8{StinkingCloudSpellID},
+	}}
+	saves := []uint8{10, 10, 10, 10, 10}
+	if err := state.StartCombat([]combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 0, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 1, CombatY: 2, SavingThrows: saves,
+	}}, []combat.Fighter{{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: -20,
+		HasCombatPosition: true, CombatX: 4, CombatY: 2, SavingThrows: saves,
+	}}, 43); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(StinkingCloudSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCastWithTerrain(StinkingCloudSpellID, func(int, int) combat.LineCell {
+		return combat.LineCell{Valid: true, Reflect: true}
+	}); err == nil {
+		t.Fatal("Stinking Cloud unexpectedly cast into four walls")
+	}
+	if slots := state.partyRoster[0].SpellSlots; len(slots) != 1 || slots[0] != StinkingCloudSpellID {
+		t.Fatalf("Stinking Cloud slot rollback=%v", slots)
+	}
+	if len(state.CombatPersistentAreas()) != 0 {
+		t.Fatal("failed cast left a persistent area")
+	}
+}
+
 func TestCombatVisualEnemyTurnStopsAtOneActionUntilHandoff(t *testing.T) {
 	state := NewState(testCatalog())
 	state.EnableCombatVisualTimeline(true)

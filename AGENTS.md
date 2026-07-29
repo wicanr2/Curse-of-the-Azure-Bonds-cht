@@ -165,8 +165,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 基底：`b8b6418`（含眼魔洞窟離場與先前戰鬥時間軸成果）。
-- Engine dependency：`d0bf86b`（含中立 `line` phase 與既有
+- CoAB 基底：`04422f9`（含 Lightning Bolt 玩家 vertical slice）。
+- Engine dependency：`09714e0`（含中立 `line`／`area` phase 與
   `combat_visuals` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
@@ -200,8 +200,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   COMSPR `05/85` travel、`06/86` 電弧、`0A/8A` damage impact；三張 remake
   與五張原版關鍵幀已保存。牆角／多次反彈的 DOS runtime 動畫與敵方
   `throws lightning` 仍未完成。
-- spec 354 仍 IN PROGRESS；下一步優先建立 Stinking Cloud／Cloudkill 的
-  persistent area-effect contract，也要補 terrain-aware Fireball
+- 第 356 輪 Stinking Cloud dirty milestone 已完成 `0x22` 正常 slot／
+  tile cursor、target-anchored 2×2 cells、terrain filter、Poison save、
+  cough／`d4+1` helpless、重疊 instance、caster-level expiry、RANDCOM
+  item 4 與兩張 remake 畫面；原版影片 `00:42:25.20–27.00` 三張後續關鍵幀
+  已保存。移動入雲逐步觸發與 coughing AC 仍未完成。
+- spec 354 仍 IN PROGRESS；下一步建立 Cloudkill 的 3×3、HD 4–6 即死與
+  獨立消散，同時補 terrain-aware Fireball
   range／tie order、弓箭／Magic Missile／melee／kill 完整時間碼與逐距離
   duration。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb

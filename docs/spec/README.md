@@ -327,3 +327,4 @@
 - [第三百五十三輪眼魔洞窟離場](./353-beholder-cave-departure.md)（`READY`：boundary terrain `0x93`、Olive／Dimswart 告別、物品銷毀 signal 與 `0x22→0x51`）
 - [第三百五十四輪戰鬥動作時間軸](./354-combat-action-timeline.md)（`IN PROGRESS`：transaction 與原版 arrow/spell COMSPR 已接入；完整 timing 尚待驗證）
 - [第三百五十五輪閃電束反射線](./355-lightning-bolt-reflecting-line.md)（`READY`：原版加權射線、牆面反射、逐目標傷害／豁免與 travel→impact→continue 時間軸）
+- [第三百五十六輪 Stinking Cloud 持續區域](./356-stinking-cloud-persistent-area.md)（`READY`：限 `0x22` 四格雲、Poison save、重疊 instance、消散與正常玩家路徑）

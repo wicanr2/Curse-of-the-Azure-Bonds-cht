@@ -57,6 +57,16 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		lightningImpact.Frames[0].Block != 0x0A || lightningImpact.Frames[3].Block != 0x8A {
 		t.Fatalf("lightning impact combat visual=%+v found=%v", lightningImpact, found)
 	}
+	stinkingTravel, found := pack.FindCombatVisual("stinking_cloud", "travel")
+	if !found || stinkingTravel.ReferenceDelay != 30 || len(stinkingTravel.Frames) != 4 ||
+		stinkingTravel.Frames[0].Block != 0x05 || stinkingTravel.Frames[3].Block != 0x85 {
+		t.Fatalf("Stinking Cloud travel combat visual=%+v found=%v", stinkingTravel, found)
+	}
+	stinkingArea, found := pack.FindCombatVisual("stinking_cloud", "area")
+	if !found || len(stinkingArea.Frames) != 1 ||
+		stinkingArea.Frames[0].SourceFile != "RANDCOM.DAX" || stinkingArea.Frames[0].Block != 4 {
+		t.Fatalf("Stinking Cloud area combat visual=%+v found=%v", stinkingArea, found)
+	}
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||

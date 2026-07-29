@@ -283,8 +283,12 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	if impact, ok := event.Impact(frame); ok {
 		if frame.Phase >= combat.VisualImpact && frame.ImpactIndex > s.combatVisualImpactSent {
 			switch event.Kind {
-			case combat.VisualMagicMissile, combat.VisualAreaSpell, combat.VisualLineSpell:
+			case combat.VisualMagicMissile, combat.VisualLineSpell:
 				s.requestSound(SoundMagicHit)
+			case combat.VisualAreaSpell:
+				if event.Effect != "stinking_cloud" {
+					s.requestSound(SoundMagicHit)
+				}
 			default:
 				if impact.Hit {
 					s.requestSound(SoundHit)
@@ -336,6 +340,13 @@ func (s *State) CombatFighters() []combat.Fighter {
 		return nil
 	}
 	return s.battle.Fighters()
+}
+
+func (s *State) CombatPersistentAreas() []combat.PersistentArea {
+	if s.battle == nil {
+		return nil
+	}
+	return s.battle.PersistentAreas()
 }
 
 func (s *State) CombatTurns() []combat.Turn {
@@ -562,6 +573,27 @@ func (s *State) CombatCanCastLightningBolt() bool {
 		}
 		for _, spellID := range character.SpellSlots {
 			if spellID == LightningBoltSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (s *State) CombatCanCastStinkingCloud() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || !character.HasClass(party.ClassMagicUser) {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == StinkingCloudSpellID {
 				return true
 			}
 		}
@@ -813,10 +845,13 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == LightningBoltSpellID && !s.CombatCanCastLightningBolt() {
 		return fmt.Errorf("Lightning Bolt is unavailable")
 	}
+	if spellID == StinkingCloudSpellID && !s.CombatCanCastStinkingCloud() {
+		return fmt.Errorf("Stinking Cloud is unavailable")
+	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != StinkingCloudSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
@@ -872,7 +907,7 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
-	if spellID == FireballSpellID || spellID == LightningBoltSpellID {
+	if spellID == StinkingCloudSpellID || spellID == FireballSpellID || spellID == LightningBoltSpellID {
 		targets := s.livingBySide(combat.SideEnemy)
 		if len(targets) == 0 {
 			return fmt.Errorf("combat has no living enemies")
@@ -938,7 +973,7 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 // combat map. It is separate from fighter target cycling because Fireball may
 // intentionally be centered on an empty tile and can harm either side.
 func (s *State) CombatMoveSpellTarget(dx, dy int) error {
-	if (s.combatCastingSpell != FireballSpellID && s.combatCastingSpell != LightningBoltSpellID) || !s.combatSpellTargetsPoint {
+	if (s.combatCastingSpell != StinkingCloudSpellID && s.combatCastingSpell != FireballSpellID && s.combatCastingSpell != LightningBoltSpellID) || !s.combatSpellTargetsPoint {
 		return fmt.Errorf("no area spell target is being selected")
 	}
 	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
@@ -985,6 +1020,9 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 	}
 	if spellID == LightningBoltSpellID {
 		return s.combatCastLightningBolt(terrain)
+	}
+	if spellID == StinkingCloudSpellID {
+		return s.combatCastStinkingCloud(terrain)
 	}
 	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
 		return fmt.Errorf("a different spell target is being selected")
@@ -1130,6 +1168,85 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastStinkingCloud(terrain combat.LineTerrain) error {
+	if s.combatCastingSpell != StinkingCloudSpellID || !s.combatSpellTargetsPoint {
+		return fmt.Errorf("Stinking Cloud target is not being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.HasClass(party.ClassMagicUser) {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a magic-user in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == StinkingCloudSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Stinking Cloud", caster.ID)
+	}
+	center := s.combatSpellTargetPoint
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...,
+	)
+	var areaTerrain combat.AreaTerrain
+	if terrain != nil {
+		areaTerrain = func(x, y int) bool {
+			cell := terrain(x, y)
+			return cell.Valid && !cell.Reflect
+		}
+	}
+	result, err := s.battle.CastStinkingCloud(
+		caster.ID, center, casterLevel(s.partyRoster[characterIndex]), areaTerrain,
+	)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots, StinkingCloudSpellID,
+		)
+		return err
+	}
+	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
+	for _, impact := range result.Impacts {
+		target, found := s.fighter(impact.TargetID)
+		if !found {
+			continue
+		}
+		impacts = append(impacts, combat.VisualImpactTarget{
+			TargetID: impact.TargetID,
+			To:       combat.TilePoint{X: target.CombatX, Y: target.CombatY},
+			Hit:      true,
+			Saved:    impact.Saved,
+			Damage:   impact.HelplessTurns,
+		})
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_stinking_cloud", "%s 製造一片惡臭雲霧，籠罩 %d 名目標。"),
+		caster.Name, len(result.Impacts),
+	)
+	if s.queueCombatVisual(combat.VisualEvent{
+		Kind: combat.VisualAreaSpell, Effect: "stinking_cloud", ActorID: caster.ID,
+		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}, To: center,
+		Hit: len(impacts) != 0, Impacts: impacts, PersistentAreaID: result.Area.ID,
+	}) {
+		return nil
+	}
+	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
 
@@ -1781,13 +1898,26 @@ func (s *State) advanceCombatToParty() error {
 			s.combatTurnIndex++
 			continue
 		}
-		if fighter.Side == combat.SideParty && !fighter.QuickFight {
-			return nil
-		}
 		if fighter.MonsterIsHeld() {
 			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_held", "%s 無法行動。"), fighter.Name)
 			s.combatTurnIndex++
 			continue
+		}
+		if fighter.CloudIncapacitated() {
+			helpless := fighter.HelplessTurns > 0
+			if _, err := s.battle.ConsumeCloudIncapacitation(fighter.ID); err != nil {
+				return err
+			}
+			if helpless {
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_helpless", "%s 因噁心而動彈不得。"), fighter.Name)
+			} else {
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_coughing", "%s 不斷咳嗽，無法行動。"), fighter.Name)
+			}
+			s.combatTurnIndex++
+			continue
+		}
+		if fighter.Side == combat.SideParty && !fighter.QuickFight {
+			return nil
 		}
 		targetSide := combat.SideParty
 		if fighter.Side == combat.SideParty {
