@@ -60,6 +60,10 @@ commit 內保存不可能自我引用的 hash。
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
+- PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與缺失 CHRN 已建立；NP2kai
+  Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
+  `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動，但原始映像缺少 driver
+  中間 1 KiB，尚未宣稱音樂可播放。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -81,7 +85,8 @@ commit 內保存不可能自我引用的 hash。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
   Clue Book／攻略的完整繁中化。
-- 原版音樂與 PC Speaker／AdLib 音效的完整還原。
+- 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
+  曲目尚缺完整 driver sector、scene caller mapping 與 runtime 匯入播放器。
 - 完整 DOS save serialization、未知欄位、所有 sidecar 副作用與跨 Gold Box
   作品角色轉移。
 - Windows／Linux／macOS 發行包、長時間遊玩、全路線通關及回歸驗證。
