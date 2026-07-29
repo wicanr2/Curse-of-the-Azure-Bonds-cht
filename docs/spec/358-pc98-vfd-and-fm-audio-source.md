@@ -183,9 +183,10 @@ IVT `7Eh` (`0000:01F8`) 直接設為自身 `CS:0080` handler。該 handler 接�
 `AH=0/AL=0-based track` 作 play、`AH=1` 作 stop，再經內部 clients 使用
 `INT D2h`。driver file `0x12CA` 會把 D2h 設為固定低階服務
 `CEE0:[0006]`；`CEE0:0004` 必須先含 signature `0x00D2`。`CEE0` provider
-仍待 runtime trace，不能誤標成 MSCDRV 自身 segment。完整 READY ABI 與
-raw-byte anchors 見
-[`364-pc98-music-vector-bridge.md`](364-pc98-music-vector-bridge.md)。
+已由 NEC 官方《PC-9800 Technical Databook BIOS 1992》辨識為 Sound BIOS
+固定介面表，不能誤標成 MSCDRV 自身 segment。完整 bridge 與命令 ABI 見
+[`364-pc98-music-vector-bridge.md`](364-pc98-music-vector-bridge.md)及
+[`365-pc98-sound-bios-d2-api.md`](365-pc98-sound-bios-d2-api.md)。
 
 ### 4.2 已反組譯的 CURRENTECL → track selector
 
@@ -255,7 +256,8 @@ PC-98 音樂不能 hardcode 在 Go scene switch：
 - 找回或交叉重建 `MSCDRV.EXE 0x4000..0x43FF`，並記錄來源與雜湊。
 - 以 MAME `azurebnd` Disk A／B 身分雜湊核對第二份合法 dump，或證明 VFD
   absent-sector semantics 與其可逆對應。
-- 逐一命名 `INT D2h` dispatch，至少確認 play、stop、status、track select。
+- `INT D2h` Sound BIOS client 已由 spec 365 命名；仍需 runtime trace 對回
+  每首曲目的實際命令與 YM register stream。
 - 對 12 個曲目建立 caller／scene／runtime YM trace 三方映射。
 - 成功從標題進入正常遊戲路徑，擷取 title、town、combat 三次轉場。
 - 在不提交原始音軌的前提下，確立合法且可重現的 runtime import／播放方案。

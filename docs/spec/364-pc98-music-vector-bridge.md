@@ -4,7 +4,7 @@
 
 本規格只回答 `GAME.EXE` 如何把 play／stop intent 交給
 `MSCDRV.EXE`，以及後者如何建立低階 `INT D2h` 服務。它不代表缺失的音樂
-序列、曲名、完整 D2h dispatch、YM2203 runtime trace 或 remake 播放器
+序列、曲名、YM2203 runtime trace 或 remake 播放器
 已完成。
 
 ## 1. 證據與缺失邊界
@@ -90,16 +90,18 @@ track consumer `sub_1021E` 會再次抑制同一 track，從 `track × 2 + 0x330
 2. 讀取固定服務段 `CEE0:0006` 的 handler offset。
 3. `INT 21h AX=25D2h` 將 D2h 設成該 handler。
 
-啟用前 `sub_100CC` 會檢查 `CEE0:0004 == 0x00D2`。目前只可稱它是
-`MSCDRV` 期待的低階服務 header；其 producer／固定載入時序尚未由 runtime
-trace 證明，不可把 `CEE0` 誤寫成 driver 自身 code segment。
+啟用前 `sub_100CC` 會檢查 `CEE0:0004 == 0x00D2`。NEC 官方
+《PC-9800 Technical Databook BIOS 1992》第 357–377 頁已證明 `CEE0` 是
+Sound BIOS 固定介面表，`CEE0:[0006]` 是 entry offset；N88-BASIC 預設以
+D2h 呼叫。它不是 driver 自身 code segment。命令表與本作 client 的完整
+交叉驗證見 spec 365。
 
 安裝後可見的 exact D2h client：
 
 - `AH=00h`：初始化六組 channel descriptor；
 - `AH=02h`：shutdown／restore 路徑使用；
-- `AH=10h..14h`、`16h..1Fh`：讀寫 register、channel、timer 與序列服務，
-  個別名稱仍待 consumer／runtime trace。
+- `AH=10h..14h`、`16h..1Fh`：官方命名及 register contract 已由 spec 365
+  確認；本作沒有觀察到 `AH=01h PLAY` 與 `AH=15h SETTEMPO` wrapper。
 
 因此完整鏈已證明為：
 
@@ -110,7 +112,7 @@ CoAB BGM selector
   → GAME.EXE IVT trampoline
   → MSCDRV IVT 7Eh handler（AH=0 play／AH=1 stop）
   → MSCDRV 內部 D2h clients
-  → CEE0 low-level service
+  → CEE0 PC-9801 Sound BIOS entry
   → YM2203 0x188／0x18A
 ```
 
@@ -134,8 +136,8 @@ auditor 先拒絕錯誤 SHA-256，再逐 byte 驗證：
 
 ## 6. 後續
 
-- 用 emulator memory trace 證明 `CEE0:0004/0006` 的 producer 與安裝時序。
-- 命名 D2h `10h..1Fh` 各服務，追到 YM register write consumer。
+- 用 emulator memory trace 記錄 `CEE0:0000..0007` 與 D2h 安裝時序。
+- 追蹤 `SETINTCOND`、timer 與 direct YM register helper 的完整 consumers。
 - 找回 `MSCDRV.EXE 0x4000..0x43FF` 或以第二份合法 dump 交叉核對。
 - 完成 title／town／combat 的 selector、D2h、YM write 三方 runtime trace。
 - 音序列與 loop metadata 證明後，才實作 runtime import 與跨平台播放器。

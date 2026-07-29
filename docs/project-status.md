@@ -80,8 +80,10 @@ commit 內保存不可能自我引用的 hash。
   `5→6→5`，且同曲不重播。第 364 輪又證明 MSCDRV 直接安裝
   `IVT 7Eh → CS:0080`，public ABI 是 `AH=0/AL=track` play、`AH=1` stop，
   再透過內部 clients 接到 D2h。`cmd/pc98-music-audit` 會以 executable
-  雜湊與 raw bytes 驗證六個 anchors；它們全在 driver 缺口前。曲名、
-  `CEE0` 低階服務 producer、runtime YM trace 與播放器尚未完成。
+  雜湊與 raw bytes 驗證 bridge、17 組 Sound BIOS 命令及 direct YM2203
+  helper；它們全在 driver 缺口前。NEC 官方 BIOS 手冊已證明 `CEE0` 是
+  Sound BIOS 固定介面表，而非未知 provider。曲名、runtime YM trace 與
+  播放器尚未完成。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -106,7 +108,8 @@ commit 內保存不可能自我引用的 hash。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目尚缺完整 driver sector、runtime YM trace、曲名交叉驗證與匯入播放器。
   `WLDTWN` scene-role、ECL block → selector 與同 block 內 selector 5↔6
-  context cue，以及 7Eh play／stop → D2h bridge 已完成，不再列為缺口。
+  context cue、7Eh play／stop → D2h bridge，以及 Sound BIOS command ABI
+  已完成，不再列為缺口。
 - 完整 DOS save serialization、未知欄位、所有 sidecar 副作用與跨 Gold Box
   作品角色轉移。
 - Windows／Linux／macOS 發行包、長時間遊玩、全路線通關及回歸驗證。

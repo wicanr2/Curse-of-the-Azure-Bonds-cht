@@ -39,6 +39,9 @@ selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙�
 `AH=0/AL=track` 播放、`AH=1` 停止，再由內部 clients 接到低階
 `INT D2h`。所有 bridge byte anchors 均早於 driver 的 `0x4000..0x43FF`
 缺口；`cmd/pc98-music-audit` 可用原 executable 雜湊與 bytes 重現驗證。
+第 365 輪再由 NEC 官方 PC-9800 BIOS 手冊證明 `CEE0` 是 Sound BIOS
+固定介面表，並以 IDA＋raw bytes 命名本作 17 組 D2h client；auditor 也會
+驗證 direct YM2203 `0x188/0x18A` helper。這仍不是曲目資料或可播放音樂。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -46,7 +49,9 @@ selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙�
 Disk B／codec／場景語意則見
 [`docs/spec/362-pc98-disk-b-dax-and-wldtwn.md`](docs/spec/362-pc98-disk-b-dax-and-wldtwn.md)，
 7Eh／D2h bridge 則見
-[`docs/spec/364-pc98-music-vector-bridge.md`](docs/spec/364-pc98-music-vector-bridge.md)。
+[`docs/spec/364-pc98-music-vector-bridge.md`](docs/spec/364-pc98-music-vector-bridge.md)，
+Sound BIOS ABI 則見
+[`docs/spec/365-pc98-sound-bios-d2-api.md`](docs/spec/365-pc98-sound-bios-d2-api.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

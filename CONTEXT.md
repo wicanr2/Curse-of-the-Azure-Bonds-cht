@@ -1931,3 +1931,19 @@ handler 因而以 `AH=0/AL=0-based track` 播放、`AH=1` 停止。driver
 driver 已恢復。READY spec 364 與 Gold Box audio 知識庫已同步；剩餘缺口
 是 `CEE0` provider、D2h `10h..1Fh` 命名、完整 driver sector、YM runtime
 trace、曲名與播放器。
+
+2026-07-29 第 365 輪完成 PC-9801 Sound BIOS／INT D2h ABI。NEC 官方
+《PC-9800 Technical Databook BIOS 1992》「サウンド BIOS」章證明實體
+`CEE00h` 是固定介面表、entry offset 位於 `CEE0:[0006]`，N88-BASIC
+預設使用 D2h；因此第 364 輪的「CEE0 producer 未知」已被新證據取代。
+
+依 AGENTS 規定在 Docker 內優先使用 IDA Pro 9.4，
+`scripts/ida/pc98_sound_bios_audit.py` 列出本作 17 組 D2h client：
+`INITIALIZE`、`CLEAR`、`READREG/WRITEREG`、`SETTOUCH`、`NOTE`、
+`SETLENGTH`、`SETPARABLOCK`、`READPARA/WRITEPARA`、`ALLSTOP`、
+`CONTPLAY`、`MODUON/OFF`、`SETINTCOND`、`HOLDSTATE`、`SETVOLUME`。
+官方 `PLAY` 與 `SETTEMPO` 沒有出現在 wrapper 區，故不自行補寫。IDA 另
+定位 direct YM2203 read/write helper；`internal/pc98music` 與
+`cmd/pc98-music-audit` 現會逐 byte 驗證命令與兩個 `0x188/0x18A` helper。
+所有新 anchors 都早於缺失 `0x4000..0x43FF`。READY spec 365 保存來源
+URL、官方 PDF SHA-256、命令 register contract 與剩餘 runtime trace 邊界。
