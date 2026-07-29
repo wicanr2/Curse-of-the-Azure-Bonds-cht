@@ -266,10 +266,17 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 364 輪已用指定 IDA Pro 9.4 與 raw bytes 證明 `MSCDRV.EXE` 直接把
   IVT `7Eh` (`0000:01F8`) 設成自身 `CS:0080`；public ABI 是
   `AH=0/AL=0-based track` play、`AH=1` stop，再由內部 D2h clients 接到
-  `CEE0` 低階服務。六個 anchors 都位於 file `0x0280..0x1376` 或 GAME
+  `CEE0` Sound BIOS 服務。六個 bridge anchors 都位於 file
+  `0x0280..0x1376` 或 GAME
   `0x9410..0x95D9`，不與 MSCDRV 缺口 `0x4000..0x43FF` 重疊。
   `cmd/pc98-music-audit`、兩支 `scripts/ida/pc98_*music*` 與 READY spec 364
-  是可重現入口；`CEE0` provider、完整 D2h dispatch、YM trace 仍未完成。
+  是可重現入口。
+- 第 365 輪以 NEC 官方《PC-9800 Technical Databook BIOS 1992》證明
+  `CEE0` 是 Sound BIOS 固定介面表、N88-BASIC 預設用 D2h；IDA＋raw bytes
+  又確認本作 17 組命令 client 與兩個 direct YM2203 helper。新增
+  `scripts/ida/pc98_sound_bios_audit.py`、READY spec 365；`cmd/pc98-music-audit`
+  現會逐 byte 驗證命令集合。`AH=01 PLAY`、`AH=15 SETTEMPO` 在本作 wrapper
+  區未出現，不可因官方 API 有定義便假設使用。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -278,8 +285,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
   `docs/spec/362-pc98-disk-b-dax-and-wldtwn.md` 已 READY；作品中立 cue 與
   正常玩家路徑已完成；`docs/spec/364-pc98-music-vector-bridge.md` 也已
-  READY。下一步追 `CEE0:0004/0006` producer、D2h dispatch 與 runtime YM
-  trace；曲名與播放器只能在音序列證據完整後接入。
+  READY，Sound BIOS 規格 `docs/spec/365-pc98-sound-bios-d2-api.md` 也已
+  READY。下一步追 D2h／direct OPN runtime YM trace、缺失 driver sector
+  與曲目映射；曲名與播放器只能在音序列證據完整後接入。
 
 ## 10. Compact 後恢復工作清單
 

@@ -34,6 +34,35 @@ func TestDriverBridgeAnchorsDoNotOverlapMissingSector(t *testing.T) {
 			t.Fatalf("%s overlaps missing range: 0x%X..0x%X", anchor.Label, anchor.FileOffset, end)
 		}
 	}
+	for _, service := range soundBIOSServices {
+		end := service.FileOffset + 4
+		if service.FileOffset < DriverMissingEnd && end > DriverMissingStart {
+			t.Fatalf("%s overlaps missing range: 0x%X..0x%X", service.Name, service.FileOffset, end)
+		}
+	}
+}
+
+func TestSoundBIOSServiceTableMatchesObservedCommandSet(t *testing.T) {
+	want := []byte{
+		0x00, 0x02,
+		0x10, 0x11, 0x12, 0x13, 0x14,
+		0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
+	}
+	if len(soundBIOSServices) != len(want) {
+		t.Fatalf("services=%d, want %d", len(soundBIOSServices), len(want))
+	}
+	seen := make(map[byte]bool, len(soundBIOSServices))
+	for _, service := range soundBIOSServices {
+		seen[service.Command] = true
+	}
+	for _, command := range want {
+		if !seen[command] {
+			t.Fatalf("missing Sound BIOS command AH=%02X", command)
+		}
+	}
+	if seen[0x15] {
+		t.Fatal("MSCDRV has no observed INT D2h SETTEMPO wrapper")
+	}
 }
 
 func TestAuditBridgeRejectsUnidentifiedInputs(t *testing.T) {

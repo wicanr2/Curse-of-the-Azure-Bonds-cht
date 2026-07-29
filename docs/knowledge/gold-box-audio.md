@@ -44,10 +44,20 @@ vector」與「TSR driver service interrupt」分成兩層 contract。
 
 `MSCDRV.EXE` 已證明會把 IVT `7Eh` 直接設成自身 `CS:0080`。public ABI
 是 `AH=0, AL=0-based track` 播放，`AH=1` 停止；handler 再透過 D2h client
-操作固定 `CEE0` 低階服務。這些 anchors 全位於 driver file `0x0280..0x1376`，
+操作 PC-9801 Sound BIOS。NEC 官方 BIOS 手冊證明 `CEE0` 是固定介面表，
+`CEE0:[0006]` 是 entry offset，N88-BASIC 預設使用 D2h。這些 anchors
+全位於 driver file `0x0280..0x14A1`，
 不與缺失的 `0x4000..0x43FF` 重疊。可重用方法是「IDA 定位＋原始 file
 offset byte audit＋缺口隔離」，不能因缺檔便放棄所有位於完整區段的 ABI
 結論，也不能反過來宣稱整份 driver 已恢復。
+
+本作實際有 `INITIALIZE`、`CLEAR`、`READREG`、`WRITEREG`、
+`SETTOUCH`、`NOTE`、`SETLENGTH`、`SETPARABLOCK`、`READPARA`、
+`WRITEPARA`、`ALLSTOP`、`CONTPLAY`、`MODUON/OFF`、`SETINTCOND`、
+`HOLDSTATE` 與 `SETVOLUME` client，但沒有觀察到官方 `PLAY` 或
+`SETTEMPO` wrapper。另有直接讀寫 YM2203 `0x188/0x18A` 的 helper。
+可重用的音訊擷取器因此必須同時觀察 BIOS 命令與硬體 I/O，不能假設所有
+狀態變更都經過單一 interrupt。
 
 本作 `CURRENTECL` switch 已證明 selector 值 `3/4/5/6/8/9/12`，selector
 5／6 又已對回戶外導航／城鎮服務場景。跨作品可沿用的是 symbol-table
