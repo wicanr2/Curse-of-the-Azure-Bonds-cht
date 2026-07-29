@@ -53,6 +53,23 @@ func TestParseFMParameterBlockMapsOfficialWordFields(t *testing.T) {
 	}
 }
 
+func TestYM2203SignatureAppliesSoundBIOSTransforms(t *testing.T) {
+	block, err := parseFMParameterBlock(validFMParameterFixture())
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := block.YM2203Signature()
+	if got[0] != block.FeedbackAlgorithm ||
+		got[1] != byte(block.Detune[0])<<4|block.Multiple[0] ||
+		got[2] != byte(block.Detune[2])<<4|block.Multiple[2] ||
+		got[5] != block.KeyScale[0]<<6|(0x1f-block.AttackRate[0]) ||
+		got[9] != 0x1f-block.DecayRate[0] ||
+		got[13] != 0x1f-block.SustainRate[0] ||
+		got[17] != (0x0f-block.SustainLevel[0])<<4|(0x0f-block.ReleaseRate[0]) {
+		t.Fatalf("unexpected YM2203 signature: %x", got)
+	}
+}
+
 func TestParseFMParameterBlockRejectsInvalidFieldAndLength(t *testing.T) {
 	if _, err := parseFMParameterBlock(make([]byte, 99)); err == nil ||
 		!strings.Contains(err.Error(), "99 bytes") {

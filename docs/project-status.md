@@ -82,8 +82,9 @@ commit 內保存不可能自我引用的 hash。
   再透過內部 clients 接到 D2h。`cmd/pc98-music-audit` 會以 executable
   雜湊與 raw bytes 驗證 bridge、17 組 Sound BIOS 命令及 direct YM2203
   helper；它們全在 driver 缺口前。NEC 官方 BIOS 手冊已證明 `CEE0` 是
-  Sound BIOS 固定介面表，而非未知 provider。曲名、runtime YM trace 與
-  播放器尚未完成。第 366 輪另證明十二首、84 個 channel sequence 全在
+  Sound BIOS 固定介面表，而非未知 provider。曲名已建立，完整曲長／
+  fade／SFX trace 與播放器尚未完成。第 366 輪另證明十二首、84 個
+  channel sequence 全在
   file `0x1B61..0x3C58`，沒有跨越 `0x4000..0x4400` 缺口；Hoot metadata
   已補齊十二首中英文曲名，runtime importer 會驗證 driver 雜湊與每段範圍。
   第 367 輪另完成 `sub_10410` 的 family-aware bytecode framing、
@@ -96,8 +97,13 @@ commit 內保存不可能自我引用的 hash。
   4,096 ticks，共 68,291 events。
   第 369 輪另由 IDA 證明 FM 音色表位於
   `seg003:0542`／file `0x45A2`，typed parser 已驗證二十組 NEC 50-WORD
-  內嵌音色並逐曲列出使用索引。十二曲還引用
-  `20,21,23,24,25,26,27,58`，來源不在內嵌 bank；目前不可補零展開。
+  內嵌音色並逐曲列出所有呼叫索引。第 370 輪以修正游標後的十二首 Hoot
+  S98 v3 trace 證明 NEC rate／level 反相、operator 寫入順序及 signed
+  DETUNE shift；共用 engine `1a6a252` 已提供 S98／YM2203 parser。
+  `20,21,23,24,25,26,27,58` 只在 descriptor 初始化短暫載入，第一個
+  stream `85h` 會在首次 key-on 前改回內嵌 `0..19`。十二首的可聽音色
+  現均可由二十組 bank 覆蓋；仍缺 total-level 完整公式、fade／SFX、
+  loop、合成器與遊戲內播放器。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -120,9 +126,10 @@ commit 內保存不可能自我引用的 hash。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
-  曲目尚缺 fade／sound-effect 共存路徑、外部 runtime YM trace、
-  Sound BIOS parameter block 展開與播放器。曲名、十二首 sequence、
-  控制流及正常配樂 deterministic events 已交叉驗證；driver sector 仍需
+  曲目尚缺 fade／sound-effect 共存路徑、完整曲長／loop trace、
+  total-level 公式、合成器與播放器。曲名、十二首 sequence、控制流、
+  正常配樂 deterministic events 及啟動 S98 register trace 已交叉驗證；
+  driver sector 仍需
   恢復，但已證明不與 84 個 channel stream 重疊。
   `WLDTWN` scene-role、ECL block → selector 與同 block 內 selector 5↔6
   context cue、7Eh play／stop → D2h bridge，以及 Sound BIOS command ABI

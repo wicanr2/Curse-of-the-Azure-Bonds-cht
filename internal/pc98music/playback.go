@@ -57,6 +57,8 @@ type PlaybackAudit struct {
 	EventSHA256                string `json:"event_sha256"`
 	ParameterIndices           []int  `json:"parameter_indices"`
 	EmbeddedParametersComplete bool   `json:"embedded_parameters_complete"`
+	AudibleParameterIndices    []int  `json:"audible_parameter_indices"`
+	AudibleParametersComplete  bool   `json:"audible_parameters_complete"`
 }
 
 func NewTrackPlayback(driver []byte, selector int) (*TrackPlayback, []MusicEvent, error) {
@@ -195,9 +197,23 @@ func auditTrackPlayback(
 	digest := sha256.New()
 	eventCount := 0
 	parameterSet := make(map[int]bool)
+	audibleParameterSet := make(map[int]bool)
+	currentParameters := [3]int{-1, -1, -1}
+	recordEvent := func(event MusicEvent) {
+		if event.Channel >= 0 && event.Channel < len(currentParameters) {
+			if event.Kind == EventSetParameterBlock {
+				currentParameters[event.Channel] = int(event.Parameter)
+			}
+			if event.Kind == EventRegisterWrite && event.Register == 0x28 &&
+				event.Value&0xf0 != 0 && currentParameters[event.Channel] >= 0 {
+				audibleParameterSet[currentParameters[event.Channel]] = true
+			}
+		}
+	}
 	for _, event := range initial {
 		writeEventDigest(digest, event)
 		eventCount++
+		recordEvent(event)
 		if event.Kind == EventSetParameterBlock {
 			parameterSet[int(event.Parameter)] = true
 		}
@@ -210,6 +226,7 @@ func auditTrackPlayback(
 		for _, event := range events {
 			writeEventDigest(digest, event)
 			eventCount++
+			recordEvent(event)
 			if event.Kind == EventSetParameterBlock {
 				parameterSet[int(event.Parameter)] = true
 			}
@@ -220,11 +237,18 @@ func auditTrackPlayback(
 		parameterIndices = append(parameterIndices, index)
 	}
 	sort.Ints(parameterIndices)
+	audibleParameterIndices := make([]int, 0, len(audibleParameterSet))
+	for index := range audibleParameterSet {
+		audibleParameterIndices = append(audibleParameterIndices, index)
+	}
+	sort.Ints(audibleParameterIndices)
 	return PlaybackAudit{
 		Selector: track.Selector, Ticks: ticks, EventCount: eventCount,
 		EventSHA256:                hex.EncodeToString(digest.Sum(nil)),
 		ParameterIndices:           parameterIndices,
 		EmbeddedParametersComplete: parametersWithinEmbeddedBank(parameterIndices),
+		AudibleParameterIndices:    audibleParameterIndices,
+		AudibleParametersComplete:  parametersWithinEmbeddedBank(audibleParameterIndices),
 	}, nil
 }
 

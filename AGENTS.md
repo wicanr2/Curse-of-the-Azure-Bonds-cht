@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`97ebaa9`；第 369 輪 FM 音色 bank 稽核 milestone 會由
+- CoAB 本輪基底：`15da11a`；第 370 輪 S98／YM2203 runtime 稽核 milestone 會由
   本文件所在 commit 完成。
-- Engine dependency：`5363177`（含中立 `combat_visuals`、
+- Engine dependency：`1a6a252`（含中立 `audio/s98`、`combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
   `title_id` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
@@ -299,10 +299,18 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 369 輪以指定 IDA Pro 9.4 修正音色表位址：
   `sub_112B0` 使用 `seg003:0542 + index×100`，對應 file `0x45A2`，不是
   舊假設 `dseg:0542`。NEC 50-WORD typed parser 已驗證二十組內嵌音色；
-  十二曲 corpus 另引用 `20,21,23,24,25,26,27,58`，只有 selector
-  3、5、11、12 能由現有 bank 完整覆蓋。不得以零值、取模或鄰近音色偽造
-  缺失 parameter block；DETUNE 的 sign-extended／3-bit 混合值也須等待
-  Sound BIOS consumer／register trace 才能正規化。
+  十二曲所有呼叫另含 `20,21,23,24,25,26,27,58`。
+- 第 370 輪使用 Hoot 2023、Wine／Xvfb 與修正後 `Home` 絕對游標流程，
+  各自擷取十二首約五秒 S98 v3。最初相對游標 corpus 有重複曲目，已作廢。
+  engine `1a6a252` 提供作品中立 S98 parser、YM2203 tone-load 與 key-on
+  snapshot；CoAB `cmd/pc98-s98-audit` 以 exact driver、stream intent、
+  內嵌 signature 與 trace 四方驗證。NEC rate／level 需反相，operator
+  canonical 順序是 1,3,2,4，signed DETUNE 採 8-bit left shift。
+- 高索引全部只在 descriptor 初始化短暫載入，第一個 stream `85h` 隨即
+  改用內嵌 `0..19`，之後才首次 key-on；十二首
+  `audible_parameters_complete` 均為 true。不得刪除高索引副作用，也不得
+  再追假設中的外部音色 bank。下一個真實缺口是 total-level／carrier 公式、
+  LFO、fade／SFX、完整 loop、合成器與遊戲內播放器。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -315,11 +323,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   READY，track/import 規格
   `docs/spec/366-pc98-track-table-and-runtime-import.md` 也已 READY，
   stream bytecode 規格 `docs/spec/367-pc98-stream-bytecode.md` 與 OPN
-  event 規格 `docs/spec/368-pc98-opn-event-runtime.md` 與音色 bank 規格
-  `docs/spec/369-pc98-fm-parameter-bank.md` 也已 READY。
-  下一步先找出額外八個音色索引的合法 producer／完整 bank，再取得
-  NP2kai／Hoot Sound BIOS register trace，補 fade／SFX 與 parameter
-  block 展開；播放器只能在外部 event 交叉驗證後接入。
+  event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
+  `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
+  `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
+  下一步先解 total-level／carrier 音量公式，再補 LFO、fade／SFX 與完整
+  loop；播放器只能在對應外部 event 持續交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單
 

@@ -11,7 +11,7 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `5363177`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `1a6a252`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -33,7 +33,7 @@ game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證�
 IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
 selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙本福德與
 希爾斯法的正常 ECL 玩家路徑現已驗證同 block 內 `5→6→5`，同曲返回不會
-重播。缺失 driver sector、runtime YM trace 與實際播放器仍未完成，因此
+重播。缺失 driver sector、完整曲長／fade／SFX trace 與實際播放器仍未完成，因此
 雖已由 Hoot metadata 建立 12 首中英文曲名 JSON，仍不宣稱音樂已可播放。
 第 364 輪另已證明 `MSCDRV.EXE` 直接安裝 IVT `7Eh → CS:0080`：
 `AH=0/AL=track` 播放、`AH=1` 停止，再由內部 clients 接到低階
@@ -52,13 +52,15 @@ sequence。第 367 輪再由 IDA `sub_10410` 還原 FM／PSG 指令寬度、
 並讀過 descriptor 宣告尾端，auditor 已用獨立 read-through mode 忠實且
 有界地處理。第 368 輪再把正常配樂路徑的 FM note、PSG period／envelope、
 tempo、Sound BIOS volume／parameter intent 轉成 deterministic events；
-十二首各跑 4,096 ticks，共驗證 68,291 events。尚缺外部 register trace
-交叉驗證與實際 YM2203 播放器。第 369 輪用 IDA 修正音色表位址為
+十二首各跑 4,096 ticks，共驗證 68,291 events。第 369 輪用 IDA 修正音色表位址為
 `seg003:0542`／file `0x45A2`，並依 NEC 官方 50-WORD 格式解析二十組
-內嵌音色。十二曲實際使用 `0..21, 23..27, 58`，其中
-`20, 21, 23..27, 58` 不在內嵌 bank；只有 selector 3、5、11、12 可由現有
-二十組完整覆蓋。auditor 現會明列每曲索引與缺失來源，不以零值或鄰近音色
-偽造 parameter block 展開。
+內嵌音色。第 370 輪再以 Hoot S98 v3 外部 register trace 交叉驗證十二首：
+Sound BIOS 會反相 rate／level、重排 operator，並保留 signed DETUNE shift。
+`20,21,23..27,58` 只在 descriptor 初始化時短暫載入，第一個 stream
+`85h` 會先改回 `0..19`，之後才 key-on；因此二十組 bank 可覆蓋十二首
+目前所有實際可聽音色。共用 engine `audio/s98` 與 CoAB
+`pc98-s98-audit` 可重現這項結論，但 total level、fade／SFX、完整 loop、
+合成器與遊戲內播放器仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -76,7 +78,9 @@ Sound BIOS ABI 則見
 OPN 事件 runtime 則見
 [`docs/spec/368-pc98-opn-event-runtime.md`](docs/spec/368-pc98-opn-event-runtime.md)，
 FM 音色庫與缺失索引則見
-[`docs/spec/369-pc98-fm-parameter-bank.md`](docs/spec/369-pc98-fm-parameter-bank.md)。
+[`docs/spec/369-pc98-fm-parameter-bank.md`](docs/spec/369-pc98-fm-parameter-bank.md)，
+S98／YM2203 執行期驗證則見
+[`docs/spec/370-pc98-s98-ym2203-runtime.md`](docs/spec/370-pc98-s98-ym2203-runtime.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
