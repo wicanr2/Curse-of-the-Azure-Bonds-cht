@@ -9,6 +9,7 @@ type PersistentAreaKind uint8
 
 const (
 	PersistentAreaStinkingCloud PersistentAreaKind = iota + 1
+	PersistentAreaCloudkill
 )
 
 // AreaTerrain keeps title-specific background tables outside the combat core.
@@ -33,6 +34,8 @@ type PersistentArea struct {
 type PersistentAreaImpact struct {
 	TargetID      string
 	Saved         bool
+	SaveRequired  bool
+	Killed        bool
 	CoughingTurns int
 	HelplessTurns int
 }
@@ -47,6 +50,86 @@ var stinkingCloudOffsets = [...]TilePoint{
 	{X: 1, Y: 0},
 	{X: 1, Y: 1},
 	{X: 0, Y: 1},
+}
+
+var cloudkillOffsets = [...]TilePoint{
+	{X: 0, Y: 0},
+	{X: 0, Y: -1}, {X: 1, Y: -1}, {X: 1, Y: 0}, {X: 1, Y: 1},
+	{X: 0, Y: 1}, {X: -1, Y: 1}, {X: -1, Y: 0}, {X: -1, Y: -1},
+}
+
+// CastCloudkill creates the reference target-centred 3x3 poisonous cloud.
+// Hit Dice 0-4 die automatically, 5 save versus Poison at -4, 6 save
+// unmodified, and 7+ are unaffected.
+func (b *Battle) CastCloudkill(casterID string, center TilePoint, level int, terrain AreaTerrain) (PersistentAreaResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return PersistentAreaResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return PersistentAreaResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return PersistentAreaResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if level < 1 {
+		return PersistentAreaResult{}, fmt.Errorf("caster level must be positive")
+	}
+	cells := make([]PersistentAreaCell, 0, len(cloudkillOffsets))
+	for _, offset := range cloudkillOffsets {
+		cell := PersistentAreaCell{X: center.X + offset.X, Y: center.Y + offset.Y}
+		if terrain == nil || terrain(cell.X, cell.Y) {
+			cells = append(cells, cell)
+		}
+	}
+	if len(cells) == 0 {
+		return PersistentAreaResult{}, fmt.Errorf("cloudkill has no passable cells")
+	}
+	b.nextArea++
+	area := PersistentArea{
+		ID: b.nextArea, Kind: PersistentAreaCloudkill, CasterID: casterID,
+		Center: center, CreatedRound: b.round, ExpiresRound: b.round + level,
+		Cells: append([]PersistentAreaCell(nil), cells...),
+	}
+	b.areas = append(b.areas, area)
+
+	targets := make([]Fighter, 0)
+	for _, fighter := range b.fighters {
+		if fighter.HitPoints > 0 && fighter.HasCombatPosition &&
+			fighter.HitDice < 7 && areaIntersectsFighter(cells, fighter) {
+			if fighter.HitDice >= 5 && len(fighter.SavingThrows) == 0 {
+				b.areas = b.areas[:len(b.areas)-1]
+				return PersistentAreaResult{}, fmt.Errorf("fighter %q has no poison saving throw", fighter.ID)
+			}
+			targets = append(targets, fighter)
+		}
+	}
+	sort.SliceStable(targets, func(i, j int) bool { return targets[i].ID < targets[j].ID })
+	result := PersistentAreaResult{Area: area, Impacts: make([]PersistentAreaImpact, 0, len(targets))}
+	for _, target := range targets {
+		impact := PersistentAreaImpact{TargetID: target.ID}
+		switch target.HitDice {
+		case 0, 1, 2, 3, 4:
+			impact.Killed = true
+		case 5, 6:
+			modifier := 0
+			if target.HitDice == 5 {
+				modifier = -4
+			}
+			impact.SaveRequired = true
+			roll := b.rng.Intn(20) + 1
+			impact.Saved = roll == 20 || roll != 1 &&
+				roll+modifier+target.SavingThrowBonus >= int(target.SavingThrows[0])
+			impact.Killed = !impact.Saved
+		}
+		if impact.Killed {
+			if err := b.SetHitPoints(target.ID, 0); err != nil {
+				return PersistentAreaResult{}, err
+			}
+		}
+		result.Impacts = append(result.Impacts, impact)
+	}
+	return result, nil
 }
 
 // CastStinkingCloud creates the reference target-anchored 2x2 noxious cloud.
@@ -176,6 +259,16 @@ func areaIntersectsFighter(cells []PersistentAreaCell, fighter Fighter) bool {
 	for _, cell := range cells {
 		if cell.X >= fighter.CombatX && cell.X < fighter.CombatX+footprint.Width &&
 			cell.Y >= fighter.CombatY && cell.Y < fighter.CombatY+footprint.Height {
+			return true
+		}
+	}
+	return false
+}
+
+func (b *Battle) cloudkillIntersectsAt(fighter Fighter, x, y int) bool {
+	fighter.CombatX, fighter.CombatY = x, y
+	for _, area := range b.areas {
+		if area.Kind == PersistentAreaCloudkill && areaIntersectsFighter(area.Cells, fighter) {
 			return true
 		}
 	}

@@ -352,6 +352,51 @@ func TestCombatStinkingCloudRestoresSlotWhenEveryCellIsBlocked(t *testing.T) {
 	}
 }
 
+func TestCombatCloudkillPlayerPathConsumesSlotAndKillsLowHitDiceTarget(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 7,
+		SpellSlots: []uint8{CloudkillSpellID},
+	}}
+	saves := []uint8{10, 10, 10, 10, 10}
+	if err := state.StartCombat([]combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty, HitDice: 7,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 0, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 1, CombatY: 2, SavingThrows: saves,
+	}}, []combat.Fighter{{
+		ID: "enemy", Name: "半獸人", Side: combat.SideEnemy, HitDice: 4,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: -20,
+		HasCombatPosition: true, CombatX: 4, CombatY: 2, SavingThrows: saves,
+	}}, 47); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastCloudkill() {
+		t.Fatal("memorized Cloudkill was not exposed on the normal combat turn")
+	}
+	if err := state.BeginCombatCast(CloudkillSpellID); err != nil {
+		t.Fatal(err)
+	}
+	terrain := func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 8 && y >= 0 && y < 7}
+	}
+	if err := state.CombatCastWithTerrain(CloudkillSpellID, terrain); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Effect != "cloudkill" || event.PersistentAreaID == 0 ||
+		len(event.Impacts) != 1 || !event.Impacts[0].Killed {
+		t.Fatalf("Cloudkill visual=%+v ok=%v", event, ok)
+	}
+	areas := state.CombatPersistentAreas()
+	if len(areas) != 1 || len(areas[0].Cells) != 9 {
+		t.Fatalf("Cloudkill persistent areas=%+v", areas)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Cloudkill slot not consumed: %v", state.partyRoster[0].SpellSlots)
+	}
+}
+
 func TestCombatVisualEnemyTurnStopsAtOneActionUntilHandoff(t *testing.T) {
 	state := NewState(testCatalog())
 	state.EnableCombatVisualTimeline(true)

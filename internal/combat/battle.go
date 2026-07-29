@@ -79,10 +79,13 @@ type Fighter struct {
 	// reference Tile_DownPlayer (0x1F). Ordinary healing clears the overlay
 	// flash but does not restore combat placement; combat_heal/placement must
 	// clear this marker separately.
-	DownedCorpse         bool
-	CombatAction         ActionState
-	HitPoints            int
-	MaxHitPoints         int
+	DownedCorpse bool
+	CombatAction ActionState
+	HitPoints    int
+	MaxHitPoints int
+	// HitDice preserves the original Player/MON*CHA byte at offset 0xE5.
+	// Poisonous-cloud rules consume it directly.
+	HitDice              uint8
 	ArmorClass           int
 	AttackBonus          int
 	Blessed              bool
@@ -640,6 +643,9 @@ func (b *Battle) MoveWithTerrainAndFreeAttacks(fighterID string, dx, dy, maxCost
 	}
 	if maxCost > 0 && movementCost > maxCost {
 		return MoveResult{}, fmt.Errorf("destination terrain costs %d movement points, only %d remain", movementCost, maxCost)
+	}
+	if fighter.HitDice < 7 && b.cloudkillIntersectsAt(fighter, nextX, nextY) {
+		return MoveResult{}, fmt.Errorf("fighter %q cannot enter poisonous cloud", fighterID)
 	}
 	for _, other := range b.Fighters() {
 		if other.ID == fighterID || other.HitPoints <= 0 || !other.HasCombatPosition || !FootprintsOverlapAt(fighter, nextX, nextY, other) {

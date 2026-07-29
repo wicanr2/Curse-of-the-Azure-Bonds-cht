@@ -1769,3 +1769,20 @@ BackgroundTiles `0x1E→graphic 0x26→RANDCOM item 4` 綠白雲 raster。正常
 Enter 才消耗；四格全阻擋會 rollback。兩張 640×480 倚天／原版素材畫面已
 保存。仍缺移動入雲逐步觸發、coughing AC 內部值換算、Cloudkill 3×3／
 HD 4–6 即死與 exact DOS timing。
+
+2026-07-29 第 357 輪完成 Cloudkill 3×3 持續毒雲 vertical slice。
+`SpellCloudKill`、`in_poison_cloud`、`CloudKillAffect`、`CanMove` 與
+`BattleRoundChecks` 交叉證實 spell ID `0x5B`、target 加八方向、passable
+cell filter、caster-level instance，以及 HD 0–4 自動死亡、HD 5 的 `-4`
+Poison save、HD 6 無修正、HD 7+ 無效果。低於 7 HD 的未受保護角色不能
+主動踏入 Cloudkill；每回合重複判定則留待完整 affect 免疫接線。
+
+party offset `0xE5` 與 MON*CHA offset `0xE5` 的 HitDice 已投影到共用
+combat Fighter。CoAB JSON 宣告 generic `05/85` travel 與
+`Tile_CloudKill 0x1C→graphic 0x24→RANDCOM item 2` 藍白雲；持續區 renderer
+改由 JSON `source_file/block/scale` 選 atlas，連 Stinking Cloud 的 item 4
+硬編碼也一併移除。正常玩家必須 memorized `0x5B`，按 K、方向鍵指定中心、
+Enter 才消耗。Docker/Xvfb 640×480 checkpoint
+`combat-timeline-cloudkill-persistent.png` 已保存。PC-98 screenshot 目前只
+支持 layout；DOS 動態時間碼、protect magic／未命名 affect 免疫及每回合
+重複毒雲死亡時序仍未完成。

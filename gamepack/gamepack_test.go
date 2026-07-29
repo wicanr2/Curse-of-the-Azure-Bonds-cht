@@ -67,6 +67,11 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		stinkingArea.Frames[0].SourceFile != "RANDCOM.DAX" || stinkingArea.Frames[0].Block != 4 {
 		t.Fatalf("Stinking Cloud area combat visual=%+v found=%v", stinkingArea, found)
 	}
+	cloudkillArea, found := pack.FindCombatVisual("cloudkill", "area")
+	if !found || len(cloudkillArea.Frames) != 1 ||
+		cloudkillArea.Frames[0].SourceFile != "RANDCOM.DAX" || cloudkillArea.Frames[0].Block != 2 {
+		t.Fatalf("Cloudkill area combat visual=%+v found=%v", cloudkillArea, found)
+	}
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||

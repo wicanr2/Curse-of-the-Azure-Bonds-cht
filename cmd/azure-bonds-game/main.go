@@ -496,7 +496,7 @@ func (a *app) Update() error {
 			}
 			if a.state.CombatCastingSpell() != 0 {
 				spellID := a.state.CombatCastingSpell()
-				if spellID == game.LightningBoltSpellID || spellID == game.StinkingCloudSpellID {
+				if spellID == game.LightningBoltSpellID || spellID == game.StinkingCloudSpellID || spellID == game.CloudkillSpellID {
 					return a.combatAction(func() error {
 						return a.state.CombatCastWithTerrain(spellID, a.combatLineTerrain())
 					})
@@ -536,6 +536,7 @@ func (a *app) Update() error {
 			return nil
 		}
 		if a.state.CombatCastingSpell() == game.StinkingCloudSpellID ||
+			a.state.CombatCastingSpell() == game.CloudkillSpellID ||
 			a.state.CombatCastingSpell() == game.FireballSpellID ||
 			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
@@ -562,6 +563,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyN) && a.state.CombatCanCastStinkingCloud() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.StinkingCloudSpellID) })
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyK) && a.state.CombatCanCastCloudkill() {
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CloudkillSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CureLightWoundsSpellID) })
@@ -1770,6 +1774,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			return
 		}
 		if a.state.CombatCastingSpell() == game.StinkingCloudSpellID ||
+			a.state.CombatCastingSpell() == game.CloudkillSpellID ||
 			a.state.CombatCastingSpell() == game.FireballSpellID ||
 			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
 			prompt := "選擇火球中心"
@@ -1777,6 +1782,8 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 				prompt = "選擇閃電方向格"
 			} else if a.state.CombatCastingSpell() == game.StinkingCloudSpellID {
 				prompt = "選擇惡臭雲霧西北角"
+			} else if a.state.CombatCastingSpell() == game.CloudkillSpellID {
+				prompt = "選擇致命毒雲中心"
 			}
 			text.Draw(screen, prompt+"：方向鍵移動　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
 			return
@@ -1799,6 +1806,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastStinkingCloud() {
 		spellHints = append(spellHints, "N臭雲")
+	}
+	if a.state.CombatCanCastCloudkill() {
+		spellHints = append(spellHints, "K毒雲")
 	}
 	if a.state.CombatCanCastCureLightWounds() {
 		spellHints = append(spellHints, "H治療")
@@ -1837,21 +1847,38 @@ func (a *app) drawCombatPersistentAreas(screen *ebiten.Image, camera combat.Comb
 			hiddenAreaID = event.PersistentAreaID
 		}
 	}
-	tiles := a.combatTerrain["RANDCOM"]
-	if len(tiles) <= 4 || tiles[4] == nil {
-		return
-	}
 	for _, area := range a.state.CombatPersistentAreas() {
-		if area.ID == hiddenAreaID || area.Kind != combat.PersistentAreaStinkingCloud {
+		if area.ID == hiddenAreaID {
 			continue
+		}
+		trigger := ""
+		switch area.Kind {
+		case combat.PersistentAreaStinkingCloud:
+			trigger = "stinking_cloud"
+		case combat.PersistentAreaCloudkill:
+			trigger = "cloudkill"
+		}
+		definition, found := a.findCombatVisual(trigger, "area")
+		if !found || len(definition.Frames) == 0 {
+			continue
+		}
+		frame := definition.Frames[0]
+		atlas := strings.ToUpper(strings.TrimSuffix(frame.SourceFile, filepath.Ext(frame.SourceFile)))
+		tiles := a.combatTerrain[atlas]
+		if int(frame.Block) >= len(tiles) || tiles[frame.Block] == nil {
+			continue
+		}
+		scale := definition.Scale
+		if scale < 1 {
+			scale = 1
 		}
 		for _, cell := range area.Cells {
 			tile := mirroredCombatAnchor(camera.Apply(combat.TilePoint{X: cell.X, Y: cell.Y}))
 			op := &ebiten.DrawImageOptions{}
 			op.Filter = ebiten.FilterNearest
-			op.GeoM.Scale(2, 2)
+			op.GeoM.Scale(float64(scale), float64(scale))
 			op.GeoM.Translate(float64(tile.X*48), float64(tile.Y*48))
-			screen.DrawImage(tiles[4], op)
+			screen.DrawImage(tiles[frame.Block], op)
 		}
 	}
 }
@@ -2134,6 +2161,23 @@ func combatVisualPreservedImpact(event combat.VisualEvent, frame combat.VisualFr
 }
 
 func (a *app) combatVisualMessage(event combat.VisualEvent, frame combat.VisualFrame, fallback string) string {
+	if event.Effect == "cloudkill" {
+		impact, ok := event.Impact(frame)
+		if !ok || (frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit && frame.Phase != combat.VisualDeath) {
+			return fallback
+		}
+		name := impact.TargetID
+		for _, fighter := range a.state.CombatFighters() {
+			if fighter.ID == impact.TargetID {
+				name = fighter.Name
+				break
+			}
+		}
+		if impact.Saved {
+			return name + " 抵抗了致命毒氣。"
+		}
+		return name + " 中毒身亡。"
+	}
 	if event.Effect == "stinking_cloud" {
 		impact, ok := event.Impact(frame)
 		if !ok || (frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit) {
@@ -2182,6 +2226,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	fireballDemo := strings.HasPrefix(kind, "fireball-")
 	lightningDemo := strings.HasPrefix(kind, "lightning-")
 	stinkingCloudDemo := strings.HasPrefix(kind, "stinking-cloud-")
+	cloudkillDemo := strings.HasPrefix(kind, "cloudkill-")
 	hero := combat.Fighter{
 		ID: "demo-hero", Name: "弓手艾琳", Side: combat.SideParty,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 0,
@@ -2218,12 +2263,16 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		hero.Name = "法師艾琳"
 	case "stinking-cloud-travel", "stinking-cloud-persistent":
 		hero.Name = "法師艾琳"
+	case "cloudkill-travel", "cloudkill-persistent":
+		hero.Name = "法師艾琳"
+		hero.HitDice = 7
+		enemy.HitDice = 4
 	default:
 		return 0, fmt.Errorf("unknown combat visual demo %q", kind)
 	}
 	heroes := []combat.Fighter{hero}
 	enemies := []combat.Fighter{enemy}
-	if fireballDemo || lightningDemo || stinkingCloudDemo {
+	if fireballDemo || lightningDemo || stinkingCloudDemo || cloudkillDemo {
 		ally := combat.Fighter{
 			ID: "demo-ally", Name: "戰士布蘭", Side: combat.SideParty,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 2,
@@ -2249,6 +2298,8 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 			spellID = game.LightningBoltSpellID
 		} else if stinkingCloudDemo {
 			spellID = game.StinkingCloudSpellID
+		} else if cloudkillDemo {
+			spellID = game.CloudkillSpellID
 		}
 		if err := state.SetPartyRoster(party.Roster{
 			{ID: hero.ID, Name: hero.Name, Race: party.RaceHuman, Class: party.ClassMagicUser,
@@ -2294,6 +2345,16 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		if err := state.CombatCastWithTerrain(game.StinkingCloudSpellID, terrain); err != nil {
 			return 0, err
 		}
+	} else if cloudkillDemo {
+		if err := state.BeginCombatCast(game.CloudkillSpellID); err != nil {
+			return 0, err
+		}
+		terrain := func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x < 8 && y >= 0 && y < 7}
+		}
+		if err := state.CombatCastWithTerrain(game.CloudkillSpellID, terrain); err != nil {
+			return 0, err
+		}
 	} else if kind != "magic" && kind != "magic-impact" {
 		if err := state.CombatAct(); err != nil {
 			return 0, err
@@ -2316,6 +2377,11 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	case "stinking-cloud-travel":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
 	case "stinking-cloud-persistent":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			combat.VisualImpactDuration/2, nil
+	case "cloudkill-travel":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
+	case "cloudkill-persistent":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
 			combat.VisualImpactDuration/2, nil
 	case "fireball-impact-1":
@@ -2550,7 +2616,7 @@ func main() {
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
-	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, fireball, lightning, stinking-cloud, or kill checkpoints")
+	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, fireball, lightning, stinking-cloud, cloudkill, or kill checkpoints")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -2576,6 +2642,8 @@ func main() {
 		*combatVisualDemo != "lightning-reflect" &&
 		*combatVisualDemo != "stinking-cloud-travel" &&
 		*combatVisualDemo != "stinking-cloud-persistent" &&
+		*combatVisualDemo != "cloudkill-travel" &&
+		*combatVisualDemo != "cloudkill-persistent" &&
 		*combatVisualDemo != "kill" {
 		log.Fatal("-combat-visual-demo has an unknown value")
 	}

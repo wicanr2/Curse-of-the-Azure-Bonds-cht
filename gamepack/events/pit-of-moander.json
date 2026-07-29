@@ -276,6 +276,29 @@
       "frames": [
         {"source_file": "RANDCOM.DAX", "block": 4}
       ]
+    },
+    {
+      "id": "coab.cloudkill-travel",
+      "trigger": "cloudkill",
+      "phase": "travel",
+      "scale": 2,
+      "reference_delay": 30,
+      "frames": [
+        {"source_file": "COMSPR.DAX", "block": 5},
+        {"source_file": "COMSPR.DAX", "block": 5, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 133, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 133}
+      ]
+    },
+    {
+      "id": "coab.cloudkill-area",
+      "trigger": "cloudkill",
+      "phase": "area",
+      "scale": 2,
+      "reference_delay": 0,
+      "frames": [
+        {"source_file": "RANDCOM.DAX", "block": 2}
+      ]
     }
   ],
   "maps": [

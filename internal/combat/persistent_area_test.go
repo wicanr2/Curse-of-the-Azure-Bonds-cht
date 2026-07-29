@@ -22,6 +22,66 @@ func TestCastStinkingCloudUsesTargetAnchoredTwoByTwoAndDeduplicatesFootprint(t *
 	}
 }
 
+func TestCloudkillUsesThreeByThreeHitDiceRulesAndBlocksLowHDMovement(t *testing.T) {
+	saves := []uint8{10, 10, 10, 10, 10}
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, HitDice: 7,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+		{ID: "hd4", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, HitDice: 4,
+			HasCombatPosition: true, CombatX: 4, CombatY: 4, SavingThrows: saves},
+		{ID: "hd5", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, HitDice: 5,
+			HasCombatPosition: true, CombatX: 5, CombatY: 4, SavingThrows: saves},
+		{ID: "hd7", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, HitDice: 7,
+			HasCombatPosition: true, CombatX: 6, CombatY: 4, SavingThrows: saves},
+		{ID: "walker", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, HitDice: 6,
+			HasCombatPosition: true, CombatX: 2, CombatY: 4, SavingThrows: saves},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCloudkill("caster", TilePoint{X: 4, Y: 4}, 7, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Area.Cells) != 9 || result.Area.Kind != PersistentAreaCloudkill {
+		t.Fatalf("cloudkill area = %+v", result.Area)
+	}
+	if fighter, _ := battle.Fighter("hd4"); fighter.HitPoints != 0 {
+		t.Fatalf("HD 4 target survived: %+v", fighter)
+	}
+	if fighter, _ := battle.Fighter("hd7"); fighter.HitPoints != 10 {
+		t.Fatalf("HD 7 target was affected: %+v", fighter)
+	}
+	if _, err := battle.MoveWithFreeAttacks("walker", 1, 0); err == nil {
+		t.Fatal("HD 6 fighter entered Cloudkill")
+	}
+}
+
+func TestCloudkillFiltersTerrainAndAppliesSaveModifier(t *testing.T) {
+	saves := []uint8{10, 10, 10, 10, 10}
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, HitDice: 7,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+		{ID: "hd5", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, HitDice: 5,
+			HasCombatPosition: true, CombatX: 4, CombatY: 4, SavingThrows: saves},
+	}, 1) // first d20 is 2: 2-4 cannot meet save 10.
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastCloudkill("caster", TilePoint{X: 4, Y: 4}, 5, func(x, y int) bool {
+		return !(x == 3 && y == 3)
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Area.Cells) != 8 {
+		t.Fatalf("filtered cells = %d, want 8", len(result.Area.Cells))
+	}
+	if len(result.Impacts) != 1 || !result.Impacts[0].SaveRequired || result.Impacts[0].Saved || !result.Impacts[0].Killed {
+		t.Fatalf("HD 5 impact = %+v", result.Impacts)
+	}
+}
+
 func TestCastStinkingCloudFiltersWallsAndRejectsEmptyArea(t *testing.T) {
 	battle := newCloudBattle(t, 2)
 	result, err := battle.CastStinkingCloud("mage", TilePoint{X: 4, Y: 3}, 3, func(x, y int) bool {

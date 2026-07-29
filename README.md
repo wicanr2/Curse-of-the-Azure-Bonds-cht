@@ -132,8 +132,17 @@ footprint 只作一次 Poison save，成功咳嗽一回合，失敗則因噁心 
 
 DOS 影片 `00:42:25.20–27.00` 已證明 projectile→建立文字→四格綠白雲→
 下一段 action 仍保留；原版 raster 由全域 background entry `0x1E` 解析到
-RANDCOM item 4。Cloudkill 的 3×3、HD 4–6 即死與移動入雲逐步觸發仍是
-下一個獨立缺口。
+RANDCOM item 4。
+
+Cloudkill（致命毒雲）`0x5B` 也已成為獨立的正常玩家路徑：按 `K` 後指定
+3×3 中心。它使用 RANDCOM item 2 藍白雲；HD 0–4 自動死亡、HD 5 作
+`-4` Poison save、HD 6 無修正、HD 7+ 不受影響。低於 7 HD 的角色也不能
+主動踏入毒雲，且 party／MON*CHA 的原始 `HitDice` 已接進戰鬥模型：
+
+![Cloudkill 原版藍白 3×3 持續區域](docs/screenshots/combat-timeline-cloudkill-persistent.png)
+
+這張是 `material-exact/layout-reconstructed` remake checkpoint；Cloudkill
+DOS 動態影片時間碼、魔法保護例外與每回合重複毒雲判定仍未完成。
 
 ![DOS 影片中的原版 spell projectile](docs/reference/original-dos/combat-spell-projectile-422530.png)
 

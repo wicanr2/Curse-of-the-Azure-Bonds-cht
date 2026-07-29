@@ -18,6 +18,7 @@ const (
 	StinkingCloudSpellID      uint8 = 0x22
 	FireballSpellID           uint8 = 0x2F
 	LightningBoltSpellID      uint8 = 0x33
+	CloudkillSpellID          uint8 = 0x5B
 )
 
 // firstLevelSpellKeys contains only spell names whose class table order is

@@ -328,3 +328,4 @@
 - [第三百五十四輪戰鬥動作時間軸](./354-combat-action-timeline.md)（`IN PROGRESS`：transaction 與原版 arrow/spell COMSPR 已接入；完整 timing 尚待驗證）
 - [第三百五十五輪閃電束反射線](./355-lightning-bolt-reflecting-line.md)（`READY`：原版加權射線、牆面反射、逐目標傷害／豁免與 travel→impact→continue 時間軸）
 - [第三百五十六輪 Stinking Cloud 持續區域](./356-stinking-cloud-persistent-area.md)（`READY`：限 `0x22` 四格雲、Poison save、重疊 instance、消散與正常玩家路徑）
+- [第三百五十七輪 Cloudkill 持續區域](./357-cloudkill-persistent-area.md)（`READY`：限 `0x5B` 九格毒雲、Hit Dice 致死／豁免、低 HD 入格限制與正常玩家路徑）
