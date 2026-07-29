@@ -31,6 +31,13 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		firstPerson.Spawn.Y != 0 || firstPerson.Spawn.Direction != 4 {
 		t.Fatalf("Zhentil Keep map definition=%+v", pack.Maps)
 	}
+	shrine, found := pack.FindMap(4, 0x21)
+	if !found || shrine.ID != "zhentil-keep.dark-shrine" ||
+		shrine.GeometryFile != "GEO4.DAX" || shrine.GeometryBlock != 0x21 ||
+		shrine.Spawn == nil || shrine.Spawn.X != 10 || shrine.Spawn.Y != 6 ||
+		shrine.Spawn.Direction != 0 {
+		t.Fatalf("Zhentil Dark Shrine map definition=%+v found=%v", shrine, found)
+	}
 	overland, found := pack.FindMapByKind("overland")
 	if !found || overland.ImageFile != "BIGPIC1.DAX" ||
 		overland.GeometryBlock != 0x79 || len(overland.Locations) != 14 ||

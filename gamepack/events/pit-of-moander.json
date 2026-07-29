@@ -12,7 +12,17 @@
       "zhentil.guards_question": "The guards take the party aside for questioning and record Journal Entry 32.",
       "zhentil.guards_warning": "A guard says the party matches the little thief's description; the commander says they will get theirs inside.",
       "zhentil.inner_city": "You join the teeming masses of the inner city.",
-      "journal.32": "Journal Entry 32: Two guards and their commander compile a detailed file on the party and insist that it is strictly routine."
+      "journal.32": "Journal Entry 32: Two guards and their commander compile a detailed file on the party and insist that it is strictly routine.",
+      "zhentil.olive_appears": "A female halfling appears from a hidden niche. You enter her statement as Journal Entry 50.",
+      "zhentil.olive_follow": "Do you follow her?",
+      "zhentil.dark_shrine_entry": "You enter the Dark Shrine through a hole in the wall made by the halfling's magical device. The walls close behind you as the device smokes and disappears.",
+      "zhentil.olive_explains": "As Olive leads you through the dungeon, she explains about Dimswart the Sage. You record Journal Entry 51.",
+      "zhentil.dimswart_door": "Dimswart is just beyond this door.",
+      "zhentil.olive_leaves": "Olive smiles and disappears.",
+      "journal.50.1": "Journal Entry 50 (1/2): Olive says, “Well now, aren't we a fine bunch of adventurers. My name is Olive Ruskettle, and I know a bit about those tattoos on your arms. A friend of mine had similar marks a while back. I wonder where she is...”",
+      "journal.50.2": "Journal Entry 50 (2/2): “Listen, you must get hold of the Amulet of Lathander. A man who can help you has been captured inside the temple. His name is Dimswart the Sage, and he helped that friend I mentioned. I know a secret way into the temple. What do you say?”",
+      "journal.51.1": "Journal Entry 51 (1/2): “The human you seek is Dimswart. He is a very good sage and a music lover, which is why we get along. Did you know I was a bard? Yes sir, my harp is right here and I could sing for you—well, perhaps now is not the time.”",
+      "journal.51.2": "Journal Entry 51 (2/2): “Anyway, Fzoul Chembryl captured Dimswart to learn about the other bonds. I can get you to his cell, but I need your help to free him. I'll slip out my own way; I cannot let any Banite priests see me. Only someone as slippery as I am can squeeze through the route I know.”"
       ,"world.tilverton": "Tilverton"
       ,"world.shadowdale": "Shadowdale"
       ,"world.ashabenford": "Ashabenford"
@@ -36,7 +46,17 @@
       "zhentil.guards_question": "「站住！到這裡來！我們有些問題要問你們！」衛兵把隊伍帶到一旁盤問；你們將此事記入冒險手札第 32 條。",
       "zhentil.guards_warning": "離開時，你們聽見一名衛兵說：「果然和那個小賊說的一樣。」指揮官回答：「別擔心，他們進城後自然會吃到苦頭。」",
       "zhentil.inner_city": "你們匯入熙來攘往的人群，進入散提爾堡內城。",
-      "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」"
+      "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」",
+      "zhentil.olive_appears": "一名半身人女子從隱密壁龕中現身。你們將她的話記入冒險手札第 50 條。",
+      "zhentil.olive_follow": "要跟她走嗎？",
+      "zhentil.dark_shrine_entry": "半身人帶著的魔法裝置在牆上開出洞口，你們就此穿牆進入幽暗神殿。身後牆壁重新閉合；裝置冒出白煙，隨即消失無蹤。",
+      "zhentil.olive_explains": "奧莉芙領著你們穿過地牢，一路說明賢者迪姆斯沃特的遭遇。你們將此事記入冒險手札第 51 條。",
+      "zhentil.dimswart_door": "迪姆斯沃特就在這扇門的另一頭。",
+      "zhentil.olive_leaves": "奧莉芙微微一笑，轉眼便消失了。",
+      "journal.50.1": "手札條目 50（1/2）：奧莉芙說：「唷，這可真是一群了不起的冒險者。我叫奧莉芙・魯斯克特爾；你們手臂上的刺青，我倒知道一點。前陣子我有個朋友也帶著相似的印記。不曉得她如今人在何方……」",
+      "journal.50.2": "手札條目 50（2/2）：「聽著，你們一定得拿到洛山達護符。有個人能幫忙，可是他被抓進神殿囚禁了。他叫賢者迪姆斯沃特，也曾幫過我剛才提到的那位朋友。我知道一條進神殿的密道。你們意下如何？」",
+      "journal.51.1": "手札條目 51（1/2）：「你們要找的人類名叫迪姆斯沃特。他是位非常出色的賢者，而且熱愛音樂，所以我們才這麼投緣。你們知道我是吟遊詩人嗎？真的，我的豎琴就在身邊，本來還能唱一曲給你們聽——唔，現在或許不是時候。」",
+      "journal.51.2": "手札條目 51（2/2）：「總之，弗佐爾・錢布瑞爾抓走迪姆斯沃特，是為了逼問其他枷印的事。我能帶你們到牢房，但救他出來得靠你們。我會用自己的辦法溜走，絕不能讓貝恩祭司看見我。那條路狹窄得很，只有像我這般滑溜的人才鑽得過去。」"
       ,"world.tilverton": "提爾佛頓"
       ,"world.shadowdale": "暗影谷"
       ,"world.ashabenford": "阿沙本福德"
@@ -117,6 +137,20 @@
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 2, "y": 0, "direction": 4}
+    },
+    {
+      "id": "zhentil-keep.dark-shrine",
+      "kind": "first_person",
+      "area_id": 4,
+      "geometry_block": 33,
+      "geometry_file": "GEO4.DAX",
+      "wall_file": "WALLDEF4.DAX",
+      "symbol_file": "8X8D4.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "wrap": true,
+      "scale": 2,
+      "spawn": {"x": 10, "y": 6, "direction": 0}
     }
   ],
   "text_rules": [
@@ -163,6 +197,47 @@
         "YOU JOIN THE TEEMING MASSES OF THE INNER CITY"
       ],
       "message_id": "zhentil.inner_city"
+    },
+    {
+      "id": "zhentil.olive_appears",
+      "all_contains": [
+        "A FEMALE HALFLING APPEARS FROM A HIDDEN NICHE",
+        "JOURNAL ENTRY 50"
+      ],
+      "message_id": "zhentil.olive_appears",
+      "journal_message_ids": ["journal.50.1", "journal.50.2"]
+    },
+    {
+      "id": "zhentil.olive_follow",
+      "all_contains": ["DO YOU FOLLOW HER"],
+      "message_id": "zhentil.olive_follow"
+    },
+    {
+      "id": "zhentil.dark_shrine_entry",
+      "all_contains": [
+        "YOU HAVE ENTERED THE DARK SHRINE THROUGH A HOLE IN THE WALL",
+        "DEVICE SMOKE AND DISAPPEAR"
+      ],
+      "message_id": "zhentil.dark_shrine_entry"
+    },
+    {
+      "id": "zhentil.olive_explains",
+      "all_contains": [
+        "AS OLIVE LEADS YOU THROUGH THE DUNGEON",
+        "JOURNAL ENTRY 51"
+      ],
+      "message_id": "zhentil.olive_explains",
+      "journal_message_ids": ["journal.51.1", "journal.51.2"]
+    },
+    {
+      "id": "zhentil.dimswart_door",
+      "all_contains": ["DIMSWART IS JUST BEYOND THIS DOOR"],
+      "message_id": "zhentil.dimswart_door"
+    },
+    {
+      "id": "zhentil.olive_leaves",
+      "all_contains": ["OLIVE SMILES AND DISAPPEARS"],
+      "message_id": "zhentil.olive_leaves"
     }
   ],
   "events": [

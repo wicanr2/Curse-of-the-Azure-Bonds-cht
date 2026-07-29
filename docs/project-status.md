@@ -42,6 +42,8 @@ Golden Box engine checkpoint：`908cfb7`
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
+- 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
+  `ECL4/GEO4 0x20→0x21` 密道與神殿 `(10,6,N)` 操作權已有 regression。
 
 ## 尚未完成
 
@@ -50,7 +52,8 @@ Golden Box engine checkpoint：`908cfb7`
 - 戰鬥畫面的完整 DOS oracle 校準、所有方向 placement、AI、法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
-- 全英文文本、59 則 Journal、Tavern Tales、Clue Book／攻略的完整繁中化。
+- 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
+  Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／AdLib 音效的完整還原。
 - 完整 DOS save serialization、未知欄位、所有 sidecar 副作用與跨 Gold Box
   作品角色轉移。

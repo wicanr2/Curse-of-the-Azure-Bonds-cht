@@ -231,6 +231,11 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   5 名蕈人與 5 名蔓生怪的最後阻擊；勝利後由 `(0,11,W)` 離坑，原 ECL 寫入
   `4C5B=FF／7F12=1` 並切回 world block `0x51`。愛麗雅絲與龍餌會以繁中告別、
   從 persistent party 離隊，玩家再回到 640×480 世界選單。
+- 主線已從摩安德之坑繼續抵達散塔林堡內城。隊伍可在 `(10,11,N)` 遇見
+  奧莉芙・魯斯克特爾，閱讀完整繁中手札 50，選擇跟隨她的密道；真實 ECL4
+  session 會由 block `0x20` 切入 `0x21`，在魔法裝置封牆後解鎖繁中手札 51，
+  最後於 `GEO4/0x21 (10,6,N)` 取得神殿內操作權。人物、手札、文字 matching
+  與兩張地圖都由 CoAB JSON game pack 宣告，未寫進共用 engine。
 
 ![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
 

@@ -1093,6 +1093,22 @@ func (s *State) Select(index int) error {
 		}
 		s.applyGeoMapLoad(result)
 		if s.session != nil && blockBefore != s.session.CurrentBlockID() &&
+			s.Area.InDungeon && s.dataPack != nil {
+			currentBlock := s.session.CurrentBlockID()
+			// A title pack can prove that a NEWECL destination owns a
+			// matching first-person geometry block. Prefer that declaration
+			// over stale LOAD FILES aggregation from the source ECL; areas
+			// whose ECL blocks intentionally share one GEO map simply omit
+			// the destination definition.
+			if definition, found := s.dataPack.FindMapByKindLocation(
+				"first_person", s.Area.GameArea, currentBlock,
+			); found {
+				s.GeoMapSet = definition.AreaID
+				s.GeoMapBlock = definition.GeometryBlock
+				s.geoMapPending = true
+			}
+		}
+		if s.session != nil && blockBefore != s.session.CurrentBlockID() &&
 			s.Area.InDungeon && s.Area.GameArea == 5 {
 			currentBlock := s.session.CurrentBlockID()
 			if currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33 {
