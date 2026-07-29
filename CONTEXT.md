@@ -1857,3 +1857,21 @@ INT D2h 關係，才能建立正式 scene-role JSON。
 來源 SHA-256／權利備註及可重用解析流程；skill 驗證通過並已 push
 `wicanr2/my_skill` commit `b2a1497`。商業遊戲 binary／磁碟與工具沒有放入
 skill。
+
+2026-07-29 第 361 輪完成 PC-98 `CURRENTECL → BGMPLAY` 資料流與第一階段
+音樂 contract。IDA／Borland symbol 校準證明 `CURRENTECL=0C29:BDF0`、
+`WLDTWN=0C29:7F11`；TPOV overlay 2 `INTERPET` 的 loader writer 保存、
+寫入及恢復 `CURRENTECL`，BGMPLAY far call bytes
+`9A 77 01 93 08` 則只在 overlay 26 local `0x160` 出現一次。legacy debug
+parser 另新增 53 筆 16-byte compiler module table，可列出 `GAME`、
+`INTERPET`、`MENUS`、`COMBAT` 等 unit；overlay/module 對應目前只把有實例
+支持的部分標為 nearby。
+
+exact selector 表已寫入 `docs/spec/355-pc98-ecl-bgm-selector.md` 與 CoAB
+game-pack JSON。獨立 engine commit `272e53c` 新增嚴格驗證的
+`music_tracks`／`music_bindings` 及 exact-context fallback resolver，文件
+維持繁體中文；CoAB State 會在初始 ECL 與 block transition 發出一次性
+`MusicEvent`。`0x30` 不換曲、`0x52` 無分支，`0x50/0x51` 仍須
+`WLDTWN` opaque context，因此目前不猜曲名、不宣稱音樂可播放。下一步優先
+用 Docker 內 IDA Pro 追 `WLDTWN` writer，再處理 IVT 7Eh／INT D2h 與
+runtime YM trace。

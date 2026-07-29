@@ -3,6 +3,7 @@
 package pc98ovr
 
 import (
+	"bytes"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -120,6 +121,39 @@ func InterruptOffsets(code []byte, interrupt byte) []int {
 		if code[offset] == 0xcd && code[offset+1] == interrupt {
 			offsets = append(offsets, offset)
 		}
+	}
+	return offsets
+}
+
+// WordOffsets returns offsets of a literal little-endian 16-bit value in code.
+// A match is only a candidate operand; callers must disassemble the surrounding
+// instruction before assigning semantics.
+func WordOffsets(code []byte, value uint16) []int {
+	low := byte(value)
+	high := byte(value >> 8)
+	var offsets []int
+	for offset := 0; offset+1 < len(code); offset++ {
+		if code[offset] == low && code[offset+1] == high {
+			offsets = append(offsets, offset)
+		}
+	}
+	return offsets
+}
+
+// PatternOffsets returns every overlapping occurrence of pattern in code.
+func PatternOffsets(code, pattern []byte) []int {
+	if len(pattern) == 0 {
+		return nil
+	}
+	var offsets []int
+	for start := 0; start+len(pattern) <= len(code); {
+		next := bytes.Index(code[start:], pattern)
+		if next < 0 {
+			break
+		}
+		offset := start + next
+		offsets = append(offsets, offset)
+		start = offset + 1
 	}
 	return offsets
 }

@@ -11,6 +11,7 @@ import (
 const (
 	legacyHeaderSize = 0x30
 	legacySymbolSize = 9
+	legacyModuleSize = 16
 )
 
 // Header is the 0x30-byte debug header used by the Turbo Pascal executable
@@ -49,11 +50,27 @@ type Symbol struct {
 	Name      string
 }
 
+// Module is one legacy 16-byte compiler-unit record.
+type Module struct {
+	Index            int
+	NameIndex        uint16
+	Language         byte
+	ModelFlags       byte
+	SymbolIndex      uint16
+	SymbolCount      uint16
+	SourceIndex      uint16
+	SourceCount      uint16
+	CorrelationIndex uint16
+	CorrelationCount uint16
+	Name             string
+}
+
 // Table contains the validated header, symbols, and Pascal-string name pool.
 type Table struct {
 	Header  Header
 	Names   []string
 	Symbols []Symbol
+	Modules []Module
 }
 
 // MZLoadImageSize returns the file boundary declared by an MZ header.
@@ -114,8 +131,9 @@ func ParseLegacy(executable []byte) (Table, error) {
 	}
 	symbolStart := debugOffset + legacyHeaderSize
 	symbolEnd := symbolStart + int(header.SymbolCount)*legacySymbolSize
+	moduleEnd := symbolEnd + int(header.ModuleCount)*legacyModuleSize
 	nameStart := len(executable) - int(header.NamePoolSize)
-	if symbolEnd > nameStart || nameStart < debugOffset+legacyHeaderSize {
+	if moduleEnd > nameStart || nameStart < debugOffset+legacyHeaderSize {
 		return Table{}, errors.New("legacy Borland table spans overlap or exceed file")
 	}
 	names, err := parseASCIIZNames(executable[nameStart:], int(header.NameCount))
@@ -138,7 +156,27 @@ func ParseLegacy(executable []byte) (Table, error) {
 		}
 		symbols[index] = symbol
 	}
-	return Table{Header: header, Names: names, Symbols: symbols}, nil
+	modules := make([]Module, int(header.ModuleCount))
+	for index := range modules {
+		record := executable[symbolEnd+index*legacyModuleSize : symbolEnd+(index+1)*legacyModuleSize]
+		module := Module{
+			Index:            index,
+			NameIndex:        binary.LittleEndian.Uint16(record[0:2]),
+			Language:         record[2],
+			ModelFlags:       record[3],
+			SymbolIndex:      binary.LittleEndian.Uint16(record[4:6]),
+			SymbolCount:      binary.LittleEndian.Uint16(record[6:8]),
+			SourceIndex:      binary.LittleEndian.Uint16(record[8:10]),
+			SourceCount:      binary.LittleEndian.Uint16(record[10:12]),
+			CorrelationIndex: binary.LittleEndian.Uint16(record[12:14]),
+			CorrelationCount: binary.LittleEndian.Uint16(record[14:16]),
+		}
+		if module.NameIndex > 0 && int(module.NameIndex) <= len(names) {
+			module.Name = names[module.NameIndex-1]
+		}
+		modules[index] = module
+	}
+	return Table{Header: header, Names: names, Symbols: symbols, Modules: modules}, nil
 }
 
 func parseASCIIZNames(pool []byte, count int) ([]string, error) {

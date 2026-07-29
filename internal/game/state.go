@@ -159,6 +159,7 @@ type State struct {
 	savgamPrefix            *partySave.SAVGAMContainer
 	savgamPlayers           map[string]party.DOSPlayerFiles
 	pendingSoundEvents      []SoundEvent
+	pendingMusicEvents      []MusicEvent
 	pendingECLCalls         []uint16
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn
@@ -846,6 +847,7 @@ func (s *State) BeginAdventure() error {
 	if err := s.session.Reset(0x01); err != nil {
 		return err
 	}
+	s.requestMusicForCurrentBlock("")
 	s.eclBlock = s.session.CurrentData()
 	start, err := s.session.InitialEntry()
 	if err != nil {
@@ -1057,6 +1059,7 @@ func (s *State) Select(index int) error {
 				s.eclStart = start
 			}
 			currentBlock := s.session.CurrentBlockID()
+			s.requestMusicIfBlockChanged(blockBefore)
 			if blockBefore != currentBlock && s.Area.InDungeon && s.Area.GameArea == 5 &&
 				(currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33) {
 				s.syncDungeonStateFromECLRegisters()
@@ -2144,12 +2147,14 @@ func (s *State) EnterDungeonCamp() error {
 		return fmt.Errorf("dungeon camp requires an ECL session")
 	}
 	s.syncDungeonECLRegisters()
+	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		2, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 	)
 	if err != nil {
 		return err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	if period, ok := s.session.MemoryValue(0x7ED2); ok {
 		s.restEncounterPeriod = period
 	}
@@ -2171,12 +2176,14 @@ func (s *State) RunCampInterrupted() error {
 	if s.session == nil {
 		return fmt.Errorf("camp interruption requires an ECL session")
 	}
+	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		3, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 	)
 	if err != nil {
 		return err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	_, err = s.applyDungeonLifecycleResult(result)
 	return err
 }
@@ -4500,12 +4507,14 @@ func (s *State) SearchDungeonLocation() error {
 	s.syncDungeonECLRegisters()
 	s.session.SetMemoryValue(0x7ECA, 1)
 	defer s.session.SetMemoryValue(0x7ECA, 0)
+	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		1, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 	)
 	if err != nil {
 		return err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	_, err = s.applyDungeonLifecycleResult(result)
 	return err
 }
@@ -4540,6 +4549,7 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		if s.session.CurrentBlockID() != blockBefore {
 			s.syncDungeonStateFromECLRegisters()
 		}
+		s.requestMusicIfBlockChanged(blockBefore)
 		handled, err := s.applyDungeonLifecycleResult(result)
 		if err != nil {
 			return err
@@ -4599,9 +4609,11 @@ func (s *State) StartDungeonStoryPreview(blockID, previousBlockID, gameArea uint
 	if s.session == nil {
 		return fmt.Errorf("dungeon story preview requires an ECL session")
 	}
+	blockBefore := s.session.CurrentBlockID()
 	if err := s.session.Switch(blockID); err != nil {
 		return err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	s.eclBlock = s.session.CurrentData()
 	start, err := s.session.InitialEntry()
 	if err != nil {
@@ -4615,12 +4627,14 @@ func (s *State) StartDungeonStoryPreview(blockID, previousBlockID, gameArea uint
 	s.Area.InDungeon = true
 	s.GeoMapSet = gameArea
 	s.Mode = ModeDungeon
+	blockBefore = s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		4, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 	)
 	if err != nil {
 		return err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	s.applyGeoMapLoad(result)
 	s.applyLoadPieces(result)
 	s.syncDungeonStateFromECLRegisters()

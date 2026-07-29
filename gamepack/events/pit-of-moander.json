@@ -145,6 +145,82 @@
       ,"world.myth-drannor": "迷斯卓諾"
     }
   },
+  "music_tracks": [
+    {
+      "id": "pc98-bgm-selector-03",
+      "source_platform": "pc-9801",
+      "reference_selector": 3,
+      "driver_index": 2
+    },
+    {
+      "id": "pc98-bgm-selector-04",
+      "source_platform": "pc-9801",
+      "reference_selector": 4,
+      "driver_index": 3
+    },
+    {
+      "id": "pc98-bgm-selector-05",
+      "source_platform": "pc-9801",
+      "reference_selector": 5,
+      "driver_index": 4
+    },
+    {
+      "id": "pc98-bgm-selector-06",
+      "source_platform": "pc-9801",
+      "reference_selector": 6,
+      "driver_index": 5
+    },
+    {
+      "id": "pc98-bgm-selector-08",
+      "source_platform": "pc-9801",
+      "reference_selector": 8,
+      "driver_index": 7
+    },
+    {
+      "id": "pc98-bgm-selector-09",
+      "source_platform": "pc-9801",
+      "reference_selector": 9,
+      "driver_index": 8
+    },
+    {
+      "id": "pc98-bgm-selector-0c",
+      "source_platform": "pc-9801",
+      "reference_selector": 12,
+      "driver_index": 11
+    }
+  ],
+  "music_bindings": [
+    {
+      "ecl_blocks": [1, 49],
+      "track_id": "pc98-bgm-selector-03"
+    },
+    {
+      "ecl_blocks": [17, 18, 33, 34, 35, 21, 67, 69],
+      "track_id": "pc98-bgm-selector-04"
+    },
+    {
+      "ecl_blocks": [80, 81],
+      "context": "pc98-wldtwn-zero",
+      "track_id": "pc98-bgm-selector-05"
+    },
+    {
+      "ecl_blocks": [80, 81],
+      "context": "pc98-wldtwn-nonzero",
+      "track_id": "pc98-bgm-selector-06"
+    },
+    {
+      "ecl_blocks": [32, 64, 66],
+      "track_id": "pc98-bgm-selector-08"
+    },
+    {
+      "ecl_blocks": [2, 16, 5, 53],
+      "track_id": "pc98-bgm-selector-09"
+    },
+    {
+      "ecl_blocks": [3, 4, 37, 50, 51],
+      "track_id": "pc98-bgm-selector-0c"
+    }
+  ],
   "combat_visuals": [
     {
       "id": "coab.arrow",

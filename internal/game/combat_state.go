@@ -2217,10 +2217,12 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 	// Long post-combat scripts can build the next encounter before reaching
 	// their next player-visible boundary. Mogion's victory continuation is
 	// one such sequence and exceeds the short menu-resume budget.
+	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunInteractiveSeed(500, nil, s.eclSeed)
 	if err != nil {
 		return false, err
 	}
+	s.requestMusicIfBlockChanged(blockBefore)
 	s.eclBlock = s.session.CurrentData()
 	if start, startErr := s.session.InitialEntry(); startErr == nil {
 		s.eclStart = start

@@ -2,6 +2,7 @@ package pc98ovr
 
 import (
 	"encoding/binary"
+	"reflect"
 	"testing"
 )
 
@@ -47,5 +48,23 @@ func TestParseControlsRejectsUnchainedCoincidence(t *testing.T) {
 
 	if _, err := ParseControls(exe, ovr); err == nil {
 		t.Fatal("accepted a control that does not begin the TPOV chain")
+	}
+}
+
+func TestWordOffsets(t *testing.T) {
+	t.Parallel()
+
+	got := WordOffsets([]byte{0x30, 0x7c, 0x90, 0x30, 0x7c}, 0x7c30)
+	if !reflect.DeepEqual(got, []int{0, 3}) {
+		t.Fatalf("WordOffsets = %v, want [0 3]", got)
+	}
+}
+
+func TestPatternOffsetsIncludesOverlaps(t *testing.T) {
+	t.Parallel()
+
+	got := PatternOffsets([]byte{0xaa, 0xaa, 0xaa}, []byte{0xaa, 0xaa})
+	if !reflect.DeepEqual(got, []int{0, 1}) {
+		t.Fatalf("PatternOffsets = %v, want [0 1]", got)
 	}
 }
