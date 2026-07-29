@@ -281,6 +281,21 @@ action/effect timeline，而不是只看戰鬥結算後 state。也不能替所�
 `windup → travel/contact → impact → commit → death → handoff`
 的 renderer-neutral action timeline；詳細 READY 規格見 spec 354。
 
+同日第一版 timeline 已落地：frontend opt-in 後，State 不再在同一 update
+連跑所有敵人；每個 attack／Magic Missile 保存 actor、target、原座標、
+projectile count、hit／death，再由 renderer clock 推進 phase。規則可先
+deterministic resolve，但致死 target 必須以 snapshot 留在格上直到 death，
+否則 projectile 會射向空格。聲音也屬 phase commit：弓箭在 travel 送 selector
+2、hit/miss 在 impact、death 在 skull phase。這個 transaction 可跨作品沿用。
+目前箭矢與藍色飛彈仍是 fallback primitive；沒有 DOS projectile block／影片
+時間碼前不得標成原版 exact。
+
+Derived CPIC／COMSPR／SPRIT PNG 若保留 EGA RGB 卻遺失 masked-blit alpha，
+不能直接當 opaque texture 載入；否則小人與骷髏會變成 24×24 色塊。frontend
+只在 top-left key 本身不透明時套用同色 chroma key；已含 alpha 的
+CHEAD／CBODY 不重複處理。這是原版 mask semantic 的 runtime restoration，
+不是把任意背景顏色猜成透明。
+
 ## 第一人稱地圖的可重用邊界
 
 GEO、WALLDEF 與 8X8D 不應留在單一作品的 renderer。共用 engine 現以

@@ -1684,3 +1684,15 @@ CoAB JSON，不寫入共用引擎。
 `SoundMissile` 尚未送出，敵方回合仍在一次 update 同步結算。spec 354 將下一個
 戰鬥重大 milestone 定義為 renderer-neutral Combat Action Timeline，先完成
 melee、bow、Magic Missile、death 四條可錄影的端到端視聽路徑。
+
+2026-07-29 第 354 輪第一階段建立 `combat.VisualEvent` 時間軸：
+windup／travel／impact／commit／death／handoff 有 deterministic duration；
+Ebiten opt-in 後鎖住輸入，State 每次只執行一個敵方 action，播放完成才推進
+turn。近戰接入 attack icon 與 impact，弓箭開始送 `SoundMissile` 並畫 travel，
+Magic Missile 保存飛彈數與路徑，致死 target 在畫面 commit 前維持原格，
+死亡 phase 使用 COMSPR `0x8B/0x19`。新增 core/state/frontend geometry tests，
+以及 `-combat-visual-demo melee|bow|magic|kill` 四張 640×480 Xvfb frame。
+箭與法術 projectile 仍明確標為 fallback；spec 354 保持 IN PROGRESS，待
+DOSBox／影片時間碼與原始 projectile block 定位後才能宣稱 fidelity 完成。
+deterministic screenshot 已改為凍結指定 timeline elapsed；不可再直接用
+`time.Since(start)` 截 phase，否則 Ebiten／Xvfb 啟動延遲會吞掉箭矢 travel。

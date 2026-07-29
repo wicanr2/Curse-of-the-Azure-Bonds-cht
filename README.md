@@ -64,6 +64,23 @@ BackgroundTiles 的 movement cost／不可通行旗標；大型小人的每個�
 
 戰場現已改讀真正的 combat atlas，而非一般 TILES 圖庫或假格線：
 
+第一版戰鬥動作時間軸已把「按下攻擊後立即跳到最終結果」拆成 attack pose、
+travel/contact、impact、commit、death 與 handoff。以下四張是同一套
+renderer-neutral transaction 在固定 phase 的 Docker／Xvfb 實機 frame：
+
+![近戰 attack pose](docs/screenshots/combat-timeline-melee.png)
+
+![弓箭飛行 phase](docs/screenshots/combat-timeline-bow.png)
+
+![Magic Missile 飛行 phase](docs/screenshots/combat-timeline-magic.png)
+
+![原版 COMSPR 骷髏死亡 phase](docs/screenshots/combat-timeline-kill.png)
+
+弓箭與 Magic Missile 圖形目前是 architecture checkpoint 的明確 fallback，
+不是原版 projectile pixel-exact 宣稱；`SoundMissile`、hit/miss、magic-hit、
+death 已依 phase 送出，敵方 AI 也改成一個 action 播完才 handoff。下一步是
+依 DOSBox 與 gameplay video 時間碼定位真正 projectile block、色盤與 duration。
+
 ![DUNGCOM 原版地城戰鬥牆面](docs/screenshots/dungcom-tiles.png)
 
 ![WILDCOM 原版野外戰鬥地形](docs/screenshots/wildcom-tiles.png)

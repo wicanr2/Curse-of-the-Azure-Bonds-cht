@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
@@ -75,6 +76,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatTurns = turns
 	s.combatTurnIndex = 0
 	s.combatTargetIndex = 0
+	s.combatVisual = nil
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
@@ -228,6 +230,84 @@ func applyCombatTeamWrites(spawns []ecl.MonsterSpawn, writes []ecl.CombatTeamWri
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }
+
+// EnableCombatVisualTimeline makes actor handoff wait for renderer playback.
+// It is opt-in so headless rules tests and non-visual adapters retain their
+// deterministic synchronous behavior.
+func (s *State) EnableCombatVisualTimeline(enabled bool) {
+	s.combatVisualEnabled = enabled
+	if !enabled {
+		s.combatVisual = nil
+	}
+}
+
+func (s *State) CombatVisualEvent() (combat.VisualEvent, bool) {
+	if s.combatVisual == nil {
+		return combat.VisualEvent{}, false
+	}
+	return *s.combatVisual, true
+}
+
+func (s *State) CombatVisualPending() bool { return s.combatVisual != nil }
+
+func (s *State) queueCombatVisual(event combat.VisualEvent) bool {
+	if !s.combatVisualEnabled {
+		return false
+	}
+	s.combatVisualSerial++
+	event.Serial = s.combatVisualSerial
+	s.combatVisual = &event
+	s.combatVisualTravelSent = false
+	s.combatVisualImpactSent = false
+	s.combatVisualDeathSent = false
+	s.combatVisualAdvanceTurn = true
+	return true
+}
+
+// AdvanceCombatVisual commits phase-associated sound and releases the next
+// actor only after the renderer has presented the complete action.
+func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
+	if s.combatVisual == nil {
+		return nil
+	}
+	event := *s.combatVisual
+	frame := event.FrameAt(elapsed)
+	if !s.combatVisualTravelSent && frame.Phase >= combat.VisualTravel {
+		if event.Kind == combat.VisualMissile {
+			s.requestSound(SoundMissile)
+		}
+		s.combatVisualTravelSent = true
+	}
+	if !s.combatVisualImpactSent && frame.Phase >= combat.VisualImpact {
+		switch event.Kind {
+		case combat.VisualMagicMissile:
+			s.requestSound(SoundMagicHit)
+		default:
+			if event.Hit {
+				s.requestSound(SoundHit)
+			} else {
+				s.requestSound(SoundMiss)
+			}
+		}
+		s.combatVisualImpactSent = true
+	}
+	if event.Killed && !s.combatVisualDeathSent && frame.Phase >= combat.VisualDeath {
+		s.requestSound(SoundDeath)
+		s.combatVisualDeathSent = true
+	}
+	if !frame.Done {
+		return nil
+	}
+	s.combatVisual = nil
+	if s.combatVisualAdvanceTurn {
+		s.combatTurnIndex++
+		s.combatVisualAdvanceTurn = false
+	}
+	if s.battle == nil || s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	return s.advanceCombatToParty()
+}
 
 func (s *State) CombatStatus() combat.Status {
 	if s.battle == nil {
@@ -843,11 +923,14 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if s.queueMagicMissileVisual(caster, target, result.Missiles, result.TargetHP <= 0) {
+		return nil
+	}
+	s.combatTurnIndex++
 	s.requestSound(SoundMagicHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
-	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
 
@@ -1318,11 +1401,15 @@ func (s *State) CombatAct() error {
 	} else {
 		s.combatMessage = formatMultiAttackMessage(s.catalog, attacker, results)
 	}
+	target, _ := s.fighter(results[0].TargetID)
+	if s.queueAttackVisual(attacker, target, results) {
+		return nil
+	}
+	s.combatTurnIndex++
 	s.requestAttackSounds(results)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
-	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
 
@@ -1437,14 +1524,18 @@ func (s *State) advanceCombatToParty() error {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
 			if spellErr == nil {
 				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_magic_missile", "%s 施放魔法飛彈攻擊 %s，造成 %d 點傷害。"), fighter.Name, target.Name, result.Damage)
+				if s.queueMagicMissileVisual(fighter, target, result.Missiles, result.TargetHP <= 0) {
+					return nil
+				}
+				s.combatTurnIndex++
 				s.requestSound(SoundMagicHit)
 				if s.battle.Status() != combat.StatusActive {
 					return s.finishCombat()
 				}
-				s.combatTurnIndex++
 				return s.advanceCombatToParty()
 			}
 		}
+		var resolvedResults []combat.AttackResult
 		if fighter.AttacksPerTurn > 1 {
 			results, err := s.battle.AttackSequence(fighter.ID, target.ID)
 			if err != nil {
@@ -1459,7 +1550,7 @@ func (s *State) advanceCombatToParty() error {
 			} else {
 				s.combatMessage = formatMultiAttackMessage(s.catalog, fighter, results)
 			}
-			s.requestAttackSounds(results)
+			resolvedResults = results
 		} else {
 			result, err := s.battle.Attack(fighter.ID, target.ID)
 			if err != nil {
@@ -1470,9 +1561,13 @@ func (s *State) advanceCombatToParty() error {
 				return fmt.Errorf("enemy attack target %q disappeared", result.TargetID)
 			}
 			s.combatMessage = formatAttackMessage(s.catalog, fighter, resolvedTarget, result)
-			s.requestAttackSounds([]combat.AttackResult{result})
+			resolvedResults = []combat.AttackResult{result}
+		}
+		if s.queueAttackVisual(fighter, target, resolvedResults) {
+			return nil
 		}
 		s.combatTurnIndex++
+		s.requestAttackSounds(resolvedResults)
 	}
 	return s.finishCombat()
 }
@@ -1502,6 +1597,36 @@ func (s *State) requestAttackSounds(results []combat.AttackResult) {
 	}
 }
 
+func (s *State) queueAttackVisual(attacker, target combat.Fighter, results []combat.AttackResult) bool {
+	if len(results) == 0 {
+		return false
+	}
+	kind := combat.VisualMelee
+	if attacker.MissileWeapon {
+		kind = combat.VisualMissile
+	}
+	hit, killed := false, false
+	for _, result := range results {
+		hit = hit || result.Hit
+		killed = killed || result.TargetHP <= 0
+	}
+	return s.queueCombatVisual(combat.VisualEvent{
+		Kind: kind, ActorID: attacker.ID, TargetID: target.ID,
+		From: combat.TilePoint{X: attacker.CombatX, Y: attacker.CombatY},
+		To:   combat.TilePoint{X: target.CombatX, Y: target.CombatY},
+		Hit:  hit, Killed: killed, Projectiles: len(results),
+	})
+}
+
+func (s *State) queueMagicMissileVisual(caster, target combat.Fighter, missiles int, killed bool) bool {
+	return s.queueCombatVisual(combat.VisualEvent{
+		Kind: combat.VisualMagicMissile, ActorID: caster.ID, TargetID: target.ID,
+		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY},
+		To:   combat.TilePoint{X: target.CombatX, Y: target.CombatY},
+		Hit:  true, Killed: killed, Projectiles: missiles,
+	})
+}
+
 func (s *State) advanceCombatRound() error {
 	turns, err := s.battle.StartRound()
 	if err != nil {
@@ -1516,6 +1641,8 @@ func (s *State) finishCombat() error {
 	if s.battle == nil {
 		return fmt.Errorf("combat is not initialized")
 	}
+	s.combatVisual = nil
+	s.combatVisualAdvanceTurn = false
 	s.CancelCombatCast()
 	s.CancelCombatMove()
 	s.EndCombatView()

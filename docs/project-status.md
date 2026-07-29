@@ -38,6 +38,9 @@ commit 內保存不可能自我引用的 hash。
   cover 填滿左上內格。PC-98 640×400 gallery 已建立字級密度參考索引。
 - CHEAD／CBODY 頭身合成、CPIC／SPRIT／COMSPR 戰鬥小人及 animation metadata。
 - DUNGCOM、WILDCOM、RANDCOM combat terrain 與桌椅 overlay。
+- renderer-neutral 戰鬥動作時間軸已接入 attack pose、近戰 impact、弓箭與
+  Magic Missile travel、phase-aligned 聲音、死亡 overlay，以及逐 action
+  敵方回合；目前 projectile 圖形仍是待原版素材替換的 fallback。
 - 角色建立、繁中姓名、能力值、種族／職業、基礎隊伍、裝備與多項法術。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
@@ -51,12 +54,15 @@ commit 內保存不可能自我引用的 hash。
   第四枷印解除及 `0x21→0x22` 眼魔洞穴入口已有 regression。洞穴
   `(15,1,N)` 的德克薩姆／梅杜莎／眼魔／牛頭人決戰、四件普通戰利品、
   取回洛山達護符，以及 19 名散提爾堡部隊第二戰也已有真實檔案 regression。
+  洞窟 boundary terrain `0x93` 的奧莉芙／迪姆斯沃特告別與
+  `NEWECL 0x51` 暗影谷返回亦已接通。
 
 ## 尚未完成
 
 - 全部 ECL opcode、外部 routine、副作用及由開場到結局的完整可通關流程。
 - 所有城市、地城、門、屋頂、斜向視角與每張地圖的 DOS 像素級校準。
-- 戰鬥畫面的完整 DOS oracle 校準、所有方向 placement、AI、法術、物品、
+- 戰鬥畫面的完整 DOS oracle 校準、原版弓箭／法術 projectile 素材與 timing、
+  所有方向 placement、AI、法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
