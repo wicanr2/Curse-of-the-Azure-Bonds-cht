@@ -43,7 +43,8 @@ Golden Box engine checkpoint：`908cfb7`
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
-  `ECL4/GEO4 0x20→0x21` 密道與神殿 `(10,6,N)` 操作權已有 regression。
+  `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
+  迪姆斯沃特同行與手札 12 六頁已有 regression。
 
 ## 尚未完成
 

@@ -57,4 +57,14 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if !result.Matched || !strings.Contains(result.Message, "手臂上的枷印") {
 		t.Fatalf("text result=%+v", result)
 	}
+	dimswart := pack.MatchText([]string{
+		"YOU SEE AN OLD MAN IN THE CELL.",
+		"HE INTRODUCES HIMSELF AND YOU RECORD HIS REMARKS AS JOURNAL ENTRY 12.",
+	}, "zh-TW")
+	if !dimswart.Matched || !strings.Contains(dimswart.Message, "牢房裡有一位老人") ||
+		len(dimswart.JournalPages) != 6 ||
+		!strings.Contains(dimswart.JournalPages[0], "手札條目 12（1/6）") ||
+		!strings.Contains(dimswart.JournalPages[5], "摩安德護手") {
+		t.Fatalf("Dimswart text result=%+v", dimswart)
+	}
 }
