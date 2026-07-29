@@ -1,8 +1,11 @@
 # 專案成果盤點
 
 更新日期：2026-07-29
-本輪之前的 CoAB checkpoint：`762c012`
-Golden Box engine checkpoint：`908cfb7`
+本 milestone 的 CoAB 基底：`d9718a1`
+依賴的 Golden Box engine checkpoint：`051cd71`
+
+實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
+commit 內保存不可能自我引用的 hash。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -45,7 +48,9 @@ Golden Box engine checkpoint：`908cfb7`
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
-  第四枷印解除及 `0x21→0x22` 眼魔洞穴入口已有 regression。
+  第四枷印解除及 `0x21→0x22` 眼魔洞穴入口已有 regression。洞穴
+  `(15,1,N)` 的德克薩姆／梅杜莎／眼魔／牛頭人決戰、四件普通戰利品、
+  取回洛山達護符，以及 19 名散提爾堡部隊第二戰也已有真實檔案 regression。
 
 ## 尚未完成
 

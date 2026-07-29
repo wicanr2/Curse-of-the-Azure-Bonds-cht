@@ -1100,7 +1100,7 @@ func (s *State) Select(index int) error {
 			// over stale LOAD FILES aggregation from the source ECL; areas
 			// whose ECL blocks intentionally share one GEO map simply omit
 			// the destination definition.
-			if definition, found := s.dataPack.FindMapByKindLocation(
+			if definition, found := s.dataPack.FindMapByKindScript(
 				"first_person", s.Area.GameArea, currentBlock,
 			); found {
 				s.GeoMapSet = definition.AreaID

@@ -1,9 +1,10 @@
 # Codex working agreement — Curse of the Azure Bonds 中文化／Remake
 
-本檔是 compact／交接後的第一閱讀入口。它整合 `CLAUDE.md` 的原始需求與目前
-已確認的專案決策；詳細歷史在 `CONTEXT.md`，可驗證完成度在
-`docs/project-status.md`。若三者衝突，以目前 worktree、實機證據與較新的
-READY spec 為準，並修掉被推翻的舊斷言。
+本檔是 compact／交接後的第一閱讀入口，也是 agent 工作規則的單一權威來源。
+它已融合 `CLAUDE.md` 中仍有效的原始需求；後者只保留人類可讀的目標與資料
+索引，不應再複製易過期的 checkpoint。詳細歷史在 `CONTEXT.md`，可驗證完成度
+在 `docs/project-status.md`。若文件衝突，以目前 worktree、原始 bytes／實機
+證據與較新的 READY spec 為準，並主動修掉被推翻的舊斷言。
 
 ## 1. 不可縮減的最終目標
 
@@ -128,6 +129,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - Engine 使用：
   `git -C golden-box-remake-engine`
 - 不丟棄使用者或不相關變更；先檢查 dirty worktree。
+- compact 後若看到 probe、暫存 regression 或未完成 spec，先讀 diff 與
+  `CONTEXT.md` 尾端；它們可能是正在累積的 milestone，不可因尚未提交而刪除。
 - 每個 milestone 更新 README、`docs/project-status.md`、READY spec／知識庫
   與本檔或 `CONTEXT.md` 的延續資訊。
 
@@ -141,28 +144,48 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - deterministic screenshot 或 runtime trace。
 - 真正玩家路徑驗證，而不只 direct-entry debug flag。
 - 原版／remake 對照，明確標示 exact／reconstructed／未完成。
+- 戰鬥不能只驗證靜態 layout 與數值；原版 DOS runtime／遊戲影片還要逐項
+  對照近戰、弓箭／投射物、法術施放與命中、死亡動畫、音效及回合節奏。
 
 不得用窄測試支撐「完整可通關」「完整中文化」「完整戰鬥」等廣泛聲明。
 
-## 9. 目前權威狀態與下一步
+## 9. 目前權威狀態
+
+### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- 最新已公開的工作交接 milestone：`c70be0d`；目前工作從 spec 349
-  「散塔林堡奧莉芙密道」繼續。
-- 前一個 engine checkpoint：`908cfb7`；實際以 nested repo HEAD 為準。
+- CoAB 基底：`d9718a1`（兜帽女子、手札 30／7、弗佐爾死亡、第四枷印解除）。
+- Engine dependency：`051cd71`（ECL `script_block` 與 GEO `geometry_block`
+  可獨立宣告）。
+- 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
+  實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
 - 專案仍是多 vertical slices prototype，尚未完整可通關。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
-- 目前已補到兜帽女子帶隊進入 `ECL4/GEO4 0x22`，弗佐爾死亡與第四枷印解除
-  已驗證；下一個最早主線缺口是眼魔洞穴探索、德克薩姆決戰與取得洛山達護符。
-  仍以 evidence → READY spec → JSON/engine 實作 → player-path test 補齊。
+
+### 目前未提交 milestone（不可遺忘）
+
+- 真實檔案已證實眼魔洞穴是 ECL4 script block `0x22` 對 GEO4 geometry block
+  `0x25`；`GEO4.DAX` 根本沒有 `0x22` geometry。舊稱 `GEO4 0x22` 必須修正。
+- Engine 的分離能力已 push；CoAB dependency、map JSON、lookup、測試與文件的
+  對應修正仍在 dirty worktree，應和德克薩姆戰鬥成果合併為一次 milestone。
+- focused regression `internal/game/beholder_cave_dexam_test.go` 已定位決戰：
+  `(15,1)` terrain `0x90`／`(15,2)` terrain `0x8F`，敵方為兜帽梅杜莎 1、
+  眼魔 1、牛頭人 10；勝利後可取得洛山達護符。
+- 護符後的 11 fighter、4 mage、3 cleric、1 high priest 已由 raw ECL 確認為
+  真實第二戰；單英雄敗北只是敵方先攻造成。READY spec 352、繁中 JSON 與
+  雙戰 player-path regression 已完成 focused 驗證。
+- 下一步：完整測試與 diff audit → 更新最終 checkpoint → 一次 CoAB
+  commit＋push；之後最早主線缺口須由洞穴出口／散提爾堡離場繼續定位。
 
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。
-2. 檢查兩個 repo 的 status、HEAD、remote，保留 dirty changes。
+2. 檢查兩個 repo 的 status、diff、HEAD、remote，完整保留 dirty changes。
 3. 查看目前 READY spec 與最後一次 player-path test。
 4. 不重做已 push 的 milestone，不沿用已 supersede 的推論。
-5. 更新計畫，繼續縮短完整可通關與完整中文化的真實差距。
+5. 若本節「未提交 milestone」仍存在，先延續它；完成後再把成果移入
+   `CONTEXT.md` 並刷新本節。
+6. 更新計畫，繼續縮短完整可通關與完整中文化的真實差距。

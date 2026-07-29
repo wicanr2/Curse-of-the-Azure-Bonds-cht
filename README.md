@@ -10,8 +10,9 @@
 ## 目前成果
 
 截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。本輪之前的 checkpoint 為
-CoAB `762c012`、獨立 engine `908cfb7`；這是可執行的多垂直切片 prototype，
+[`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
+CoAB `d9718a1`，依賴的獨立 engine 為 `051cd71`；實際最新版本以 GitHub
+`main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
 最新畫面已依原版 DOS 截圖重新校正版面，並以 PC-9801 日文版校準中文資訊
@@ -239,9 +240,14 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   以六頁保留五道枷印與三件神器的小說式說明。接受同行會寫入原 ECL
   一次性旗標，但不會虛構 fighter 或占用隊伍欄。同行後在 `(4,12)` 答應
   兜帽女子帶路，真實 session 會解鎖繁中手札 30／7，演出德克薩姆殺死
-  弗佐爾、第四道枷印消退與兩派混戰，再由 `ECL4/GEO4 0x21→0x22` 抵達
+  弗佐爾、第四道枷印消退與兩派混戰，再由 ECL4 `0x21→0x22`、GEO4
+  `0x21→0x25` 抵達
   眼魔洞穴 `(4,5,N)`。人物、手札、文字 matching 與三張地圖都由 CoAB
-  JSON game pack 宣告，未寫進共用 engine。
+  JSON game pack 宣告，未寫進共用 engine。洞穴 `(15,1,N)` 的固定決戰也已
+  接通：兜帽女子揭露為梅杜莎，第一戰為梅杜莎 1、眼魔 1、牛頭人 10；
+  勝利並取回洛山達護符後，還要迎戰散提爾堡 11 戰士、4 法師、3 牧師與
+  1 大祭司，第二戰勝利才回到洞穴操作。兩場遭遇與戰後文字都有真實
+  ECL／MON4／GEO4 regression。
 
 ![法師塔 14 黑龍的 640×480 繁中實機戰鬥與原版小人](docs/screenshots/wizard-tower-black-dragons.png)
 
