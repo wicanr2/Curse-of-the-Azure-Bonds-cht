@@ -1,6 +1,6 @@
 # 第三百二十九輪：原生 320×184 戰鬥框 raster
 
-狀態：`READY`
+狀態：`SUPERSEDED`（由第 348 輪的本機 DOS runtime 素材證據取代）
 
 ## Oracle
 

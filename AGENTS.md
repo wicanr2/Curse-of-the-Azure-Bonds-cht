@@ -1,5 +1,16 @@
 # Codex working agreement
 
+## Current visual/typography direction (2026-07-29)
+
+- Original-faithful theme is baseline; later beautification must be selectable.
+- Adventure chrome comes from the local DOS runtime raster, not generic frames.
+- Upper-left event/character art uses clipped cover scaling to fill the panel.
+- PC-98 640×400 captures are the CJK density oracle: bold ETen 16×15 is the
+  ordinary game font; 24px is for headings/emphasis.
+- Preserve walkthrough prose as readable adventure narrative, with separate
+  step-by-step and spoiler-light layers.
+- Accumulate major progress before one commit/push.
+
 ## Architecture decision
 
 The project is being split into two repositories:

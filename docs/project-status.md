@@ -1,7 +1,7 @@
 # 專案成果盤點
 
-更新日期：2026-07-28  
-CoAB checkpoint：`762c012`  
+更新日期：2026-07-29
+本輪之前的 CoAB checkpoint：`762c012`
 Golden Box engine checkpoint：`908cfb7`
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
@@ -31,6 +31,8 @@ Golden Box engine checkpoint：`908cfb7`
   GEO／WALLDEF／8X8D／SKY viewport。
 - DOSBox 原生 320×200 冒險 layout oracle；正式 top split 已修正為
   native 128／192，即 remake 256／384。
+- DOS runtime cracked stone chrome 已抽成透明 native raster；事件／人物圖
+  cover 填滿左上內格。PC-98 640×400 gallery 已建立字級密度參考索引。
 - CHEAD／CBODY 頭身合成、CPIC／SPRIT／COMSPR 戰鬥小人及 animation metadata。
 - DUNGCOM、WILDCOM、RANDCOM combat terrain 與桌椅 overlay。
 - 角色建立、繁中姓名、能力值、種族／職業、基礎隊伍、裝備與多項法術。
@@ -69,4 +71,4 @@ Golden Box engine checkpoint：`908cfb7`
 `/home/anr2/ida_94_official/dist`
 
 優先把 IDA 發現整理成 `docs/spec/` 的 READY 規格，再修改 engine／game-pack。
-目前依使用者要求暫停新增功能。
+目前已恢復作業；重大畫面進度集中 commit／push。

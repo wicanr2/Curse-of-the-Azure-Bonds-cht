@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"image"
 	"image/color"
 	"image/png"
 	"io"
@@ -83,12 +84,15 @@ type app struct {
 	combatTerrain       map[string][]*ebiten.Image
 	combatTerrainMode   string
 	combatFrame         *ebiten.Image
+	adventureFrame      *ebiten.Image
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
 	messageSnapshot     string
 	messageStart        time.Time
 	soundPlayer         *sound.Player
+	screenshotPath      string
+	screenshotDone      bool
 }
 
 type combatAnimation struct {
@@ -808,6 +812,30 @@ func (a *app) tryDungeonBash() {
 }
 
 func (a *app) Draw(screen *ebiten.Image) {
+	if a.screenshotPath != "" && !a.screenshotDone {
+		defer func() {
+			a.screenshotDone = true
+			output, err := os.Create(a.screenshotPath)
+			if err != nil {
+				log.Printf("create screenshot: %v", err)
+				return
+			}
+			pixels := make([]byte, logicalWidth*logicalHeight*4)
+			screen.ReadPixels(pixels)
+			captured := &image.RGBA{
+				Pix:    pixels,
+				Stride: logicalWidth * 4,
+				Rect:   image.Rect(0, 0, logicalWidth, logicalHeight),
+			}
+			if err := png.Encode(output, captured); err != nil {
+				log.Printf("encode screenshot: %v", err)
+			}
+			if err := output.Close(); err != nil {
+				log.Printf("close screenshot: %v", err)
+			}
+			os.Exit(0)
+		}()
+	}
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
 	cyan := color.RGBA{92, 220, 255, 255}
@@ -985,6 +1013,9 @@ func wrapTextLines(value string, lineRunes, maxLines int) []string {
 }
 
 func (a *app) revealedMessage() string {
+	if a.screenshotPath != "" {
+		return a.state.Message
+	}
 	if a.messageSnapshot != a.state.Message {
 		a.messageSnapshot = a.state.Message
 		a.messageStart = time.Now()
@@ -1010,12 +1041,8 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
 			a.drawAdventureChrome(screen)
-			const pixelScale = 2
-			op := &ebiten.DrawImageOptions{}
-			op.Filter = ebiten.FilterNearest
-			op.GeoM.Scale(pixelScale, pixelScale)
-			op.GeoM.Translate(float64(16+(256-sprite.Bounds().Dx()*pixelScale)/2), float64(16+(256-sprite.Bounds().Dy()*pixelScale)/2))
-			screen.DrawImage(sprite, op)
+			drawImageCover(screen, sprite, image.Rect(16, 16, 256, 256))
+			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
 			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
 			return
@@ -1052,15 +1079,31 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	if a.state.AnimationsEnabled() {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
-	op := &ebiten.DrawImageOptions{}
 	a.drawAdventureChrome(screen)
-	const pixelScale = 2
-	op.Filter = ebiten.FilterNearest
-	op.GeoM.Scale(pixelScale, pixelScale)
-	op.GeoM.Translate(float64(16+(256-frame.image.Bounds().Dx()*pixelScale)/2)+float64(frame.x*pixelScale), float64(16+(256-frame.image.Bounds().Dy()*pixelScale)/2)+float64(frame.y*pixelScale))
-	screen.DrawImage(frame.image, op)
+	drawImageCover(screen, frame.image, image.Rect(16, 16, 256, 256))
+	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
 	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
+}
+
+func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
+	if source == nil || destination.Empty() {
+		return
+	}
+	sourceWidth, sourceHeight := source.Bounds().Dx(), source.Bounds().Dy()
+	scale := max(
+		float64(destination.Dx())/float64(sourceWidth),
+		float64(destination.Dy())/float64(sourceHeight),
+	)
+	target := screen.SubImage(destination).(*ebiten.Image)
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(scale, scale)
+	op.GeoM.Translate(
+		float64(destination.Dx()-int(float64(sourceWidth)*scale))/2,
+		float64(destination.Dy()-int(float64(sourceHeight)*scale))/2,
+	)
+	target.DrawImage(source, op)
 }
 
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
@@ -1099,11 +1142,19 @@ func (a *app) drawCombatStoneFrame(screen *ebiten.Image) {
 	screen.DrawImage(a.combatFrame, op)
 }
 
+func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
+	if a.adventureFrame == nil {
+		return
+	}
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(2, 2)
+	screen.DrawImage(a.adventureFrame, op)
+}
+
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
-	drawPanelFrame(screen, 8, 8, 264, 272)
-	drawPanelFrame(screen, 272, 8, 360, 272)
-	drawPanelFrame(screen, 8, 280, 624, 168)
-	drawPanelFrame(screen, 8, 448, 624, 28)
+	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{A: 255})
+	a.drawOriginalAdventureFrame(screen)
 	text.Draw(screen, "姓名", a.compactFace, 288, 38, color.RGBA{232, 238, 255, 255})
 	text.Draw(screen, "AC", a.compactFace, 520, 38, color.RGBA{232, 238, 255, 255})
 	text.Draw(screen, "HP", a.compactFace, 578, 38, color.RGBA{232, 238, 255, 255})
@@ -1305,11 +1356,7 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	// DOS oracle: the native 320px top row is split at x=128, not near the
 	// centre. At 2x the first-person panel is 256px and the roster is 384px.
 	// The extra 80 vertical remake pixels enlarge only the text region.
-	drawPanelFrame(screen, 0, 0, 256, 272)
-	drawPanelFrame(screen, 256, 0, 384, 272)
-	drawPanelFrame(screen, 0, 272, 640, 176)
-	drawPanelFrame(screen, 0, 448, 640, 32)
-	ebitenutil.DrawRect(screen, 6, 6, 244, 260, color.RGBA{0, 0, 0, 255})
+	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{0, 0, 0, 255})
 	_, _, direction := a.state.DungeonGeometryView()
 	background, backgroundErr := gfx.BuildBackground(
 		a.state.Area.OutdoorSkyColor,
@@ -1374,6 +1421,7 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
 	}
 	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 8, 472, cyan)
+	a.drawOriginalAdventureFrame(screen)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -1938,6 +1986,7 @@ func main() {
 	dosCharacterRecord := flag.String("dos-character-record", "", "DOS .SAV/.GUY path to load directly into the remake")
 	dosCharacterEffects := flag.String("dos-character-effects", "", "optional DOS .FX path for direct character import")
 	dosCharacterInventory := flag.String("dos-character-inventory", "", "optional DOS .SWG path for direct character import")
+	screenshotPath := flag.String("screenshot", "", "write one deterministic 640x480 frame to PNG and exit")
 	flag.Parse()
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
@@ -2333,7 +2382,7 @@ func main() {
 		regularFace = etenFace
 		compactFace = etenFace
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), combatAnimations: combatAnimations, animationStart: time.Now()}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }

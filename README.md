@@ -9,12 +9,13 @@
 
 ## 目前成果
 
-截至 2026-07-28 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。目前 checkpoint 為
+截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
+[`docs/project-status.md`](docs/project-status.md)。本輪之前的 checkpoint 為
 CoAB `762c012`、獨立 engine `908cfb7`；這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
-最新畫面已依原版 DOS 截圖重新校正版面，不再沿用先前置中的 prototype：
+最新畫面已依原版 DOS 截圖重新校正版面，並以 PC-9801 日文版校準中文資訊
+密度，不再沿用先前置中的 prototype：
 
 ![原始 BIGPIC 與 Clue Book 座標驅動的 640×480 世界地圖](docs/screenshots/coab-overland-map-remake.png)
 
@@ -36,18 +37,23 @@ CoAB `762c012`、獨立 engine `908cfb7`；這是可執行的多垂直切片 pro
 
 ![原版左右配置的 640×480 繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)
 
-冒險畫面恢復左上事件圖、右上隊伍／AC／HP、下方敘事與最底命令列；戰鬥畫面
+冒險畫面現在直接使用本機 DOS 320×200 runtime oracle 抽出的 cracked stone
+透明邊框，不再用一般灰色矩形模擬。左上人物／事件圖以等比例 cover 放大並
+裁切，填滿完整內格，不再把小頭像置中留出大片黑邊。右上隊伍／AC／HP、下方
+敘事與最底命令列均保留；戰鬥畫面
 恢復左側戰術格、右側角色狀態、下方訊息與命令列。原始像素素材維持 2×
-nearest-neighbour，24px／16px 中文直接在 640×480 畫布重繪。HEAD／BODY 的
+nearest-neighbour，遊戲正文與 HUD 以粗體倚天 16×15 為主，24px 僅留給標題
+或強調。HEAD／BODY 的
 `row + 5` 也已修正為五個 8px 列（40px），人物頭像不再被錯貼進胸口。
 
 戰鬥圖另經 DOS 原版截圖逐像素設計審查：上方沿用原生 320×184 的精確 2×
 幾何，戰場是 `(16,16,336,336)`、中央石框 16px、右欄 256px。畫面不再顯示
 非原版棋盤格、team bars 或右欄 target card；640×480 多出的 80px 只用來容納
 中文戰鬥紀錄。原版 combat terrain atlas 已於下一段接入；完整 terrain-mode
-selector、大型怪物 occupancy 與 RANDCOM decoration 已接通。戰鬥框亦已改成
-原生 320×184 raster 的 1px EGA bevel／點狀內緣／固定裂紋，再整數放大 2×，
-不再使用先前的 3px 程序式暫代線。
+selector、大型怪物 occupancy 與 RANDCOM decoration 已接通。戰鬥框目前以
+DOS runtime 抽出的真實石框像素，依已量測的 320×184 combat geometry 重組；
+因此是「材質 exact／layout reconstructed」，不再使用手繪 3px 暫代線，但在
+取得本機 DOS 戰鬥 capture 前不宣稱整張 combat frame pixel-exact。
 
 最新圖中的龍巫妖直接取自 MON5／CPIC5：`field_DE & 7 == 4` 被還原為 2×2
 戰術佔格，選取框因此是 96×96；移動、復活、近戰鄰接與 camera 也使用同一份
@@ -110,7 +116,7 @@ GEO2/01、WALLDEF2、8X8D2 與 SKY/FA–FC，位置 `(7,13)`、面北；右側�
 下方與命令列統一使用本機倚天 16×15 粗體，不再依賴系統 CJK TTF。
 
 本重製版以 `640×480` 為固定邏輯畫布：原版像素圖片採 nearest-neighbor
-整數倍放大，繁中則獨立使用 24px 高解析正文與 16px 緊湊 HUD，不把
+整數倍放大，繁中則以 16×15 倚天粗體作一般正文與緊湊 HUD，不把
 320×240 的 8px 英文字格直接套給中文，因此小人仍保留原味、中文字也能清楚排版。
 正式 dungeon floor 的原始 24×24 tile 也以 2× 顯示；戰鬥法術與地城操作列
 使用獨立 compact line，長中文訊息按 Unicode 字元換行。
