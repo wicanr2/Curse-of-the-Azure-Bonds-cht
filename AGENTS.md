@@ -233,9 +233,27 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 已從殘缺驅動交叉確認 YM2203 I/O ports 0x188/0x18A、timer handler 與
   INT D2 hook；公開 soundtrack 資料只作曲名／作曲者及平台交叉參考，不提交
   受著作權保護的錄音。
+- MAME 官方 `azurebnd` FDI 雜湊與原 `LOADER.COM` 已交叉驗證；loader exact
+  順序是 SETUP→MSCDRV→GAME。保留 absent sectors 的副本可進 MEGDOS，
+  修改 sector topology、FAT root 或 loader 則在 banner 前停止，故 absent
+  sectors 可能參與早期完整性／防拷；目前只能標 `hypothesis`。
+- `GAME.OVR` 已確認是 TPOV；`cmd/pc98-ovr-audit` 由 resident control
+  records 重建 36 段完整 chain，分離 code／relocation 後仍無 literal
+  `CD D2`。`GAME.EXE` 的 Borland `0x52FB`／version `0x0208` 表則已由
+  `cmd/pc98-symbol-audit` 解析為 1,725 筆 9-byte symbols、2,305 names。
+- 音訊 symbols exact：`SOUNDFX 0893:0000`、`INITSOUND 0893:010D`、
+  `MSCPLAY 0893:0114`、`MSCSTOP 0893:015E`、`BGMPLAY 0893:0177`。
+  `MSCPLAY` 透過 IVT vector `7Eh` wrapper 送 0-based track；`BGMPLAY`
+  已證明 selector `3/4/5/6/8/9/12`，但 internal area code 尚未全部對回
+  scene role，不得先寫曲名 JSON。
+- NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
+  not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
+  `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
+  Trace 見 `docs/reference/original-pc98/vfd-runtime-trace.md`。
 - 規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
-  下一步優先找同系列完整 `MSCDRV.EXE` 或從 `GAME.EXE` callers 建立 INT D2
-  呼叫契約，補齊曲目 ID、音效命令與場景切換，再進 engine JSON/runtime。
+  下一步把 `BGMPLAY` area codes 對回 ECL／map identifiers，確認 IVT
+  `7Eh` 到 `MSCDRV.EXE`／INT D2h 的轉送，並補 runtime YM trace；只有
+  scene role 證據完整後才進 engine contract 與 CoAB JSON。
 
 ## 10. Compact 後恢復工作清單
 

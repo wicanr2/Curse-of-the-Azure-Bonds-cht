@@ -1804,3 +1804,56 @@ Dungeon 1、Wilderness、Village、Dungeon 2、City、Dungeon 3、Ending
 12 首，但 scene→track number 尚未證實。完整限制與 READY gate 已寫入
 spec 358；下一步優先找回同版 driver 缺失 sector，再做 caller／runtime
 YM trace，不以補零結果冒充原版。
+
+2026-07-29 第 359 輪確認 PC-98 開機保護與 loader 音訊鏈。MAME 官方
+`pc98.xml` 的 `azurebnd` 提供 Disk A／B 1,265,664-byte FDI CRC32／SHA-1
+身分，可作第二份合法 dump oracle。原 `LOADER.COM` SHA-256
+`290e1031aea90a76b644f84175556ab0eba85897bc3204a181fcac2f339b18f3`；
+三次 `INT 21h/AH=4Bh` exact 順序為 `setup.exe`、`mscdrv.exe`、
+`game.exe`，第二段位於 file offset `0x3E..0x6D`。
+
+同條件 NP2kai 對照顯示：保留 absent sectors 的未修改 D88 可進 MEGDOS；
+補 sector、縮短 FAT entry、改 loader 或在開機過程過早覆寫副本，均在
+MEGDOS banner 前停止。這支持 early integrity／copy-protection
+`hypothesis`，尚未定位 routine。`GAME.EXE`／`GAME.OVR` raw bytes 無裸露
+`CD D2`；因本作使用 VROOMM `INT 3Fh` overlays，不能推論無音訊呼叫。
+下一步改做 emulator memory／interrupt instrumentation 或 VROOMM 解包。
+一次性 no-op TSR／磁碟改寫 probe 已刪除，未提交、未修改使用者 VFD。
+
+NP2kai D88 backend trace 隨後抓到 `C3/H0/R8/N3` baseline 共四次 read。
+CPU soft-interrupt probe 在這之前尚未看到 `INT 21h/AH=4Bh`，所以不能把它們
+誤標成 loader 的 EXEC。只讓首讀 not-found、第二讀起合成零 sector 時，
+read 降為兩次，但畫面停在 MEGDOS banner、沒有 `loader.com` 或 EXEC trace。
+這排除「永久零填」及「第一次缺失、重試回零」兩個簡化模型；可提交 trace
+在 `docs/reference/original-pc98/vfd-runtime-trace.md`。
+
+同輪依使用者提醒，唯讀回查 `~/.claude` 的 PC-98／retro 抽取記憶。採納
+「先盤點既有解碼器與原生無損截圖，再決定是否硬解格式」的工作順序，以及
+商業媒體／抽取素材不上公開 repo 的界線；但既有記憶沒有本作
+`VFD1.00` absent-sector 的可直接套用解法，故四次 sector read trace 與
+第二份合法 dump 仍是本作判讀的必要證據。
+
+2026-07-29 第 360 輪建立 PC-98 Borland symbol／TPOV 可重現工具鏈。
+`GAME.OVR` 以 `TPOV` 開頭；`cmd/pc98-ovr-audit` 由 resident
+`GAME.EXE` control records 重建 36 段連續 code＋relocation chain，且只掃
+code 後確認 literal `INT D2h` 為零。`GAME.EXE` MZ load image 截止
+`0x144B0`，其後是 `0x52FB`／version `0x0208` legacy debug data。
+
+`internal/borlanddebug`／`cmd/pc98-symbol-audit` 已以 9-byte record、
+ASCIIZ name pool、count 與 EOF 邊界解析 1,725 symbols／2,305 names／
+53 modules。錯用 10-byte stride 只會每九筆偶然重新對齊，已由 regression
+排除。精確 symbols 為 `SOUNDFX 0893:0000`、`INITSOUND 0893:010D`、
+`MSCPLAY 0893:0114`、`MSCSTOP 0893:015E`、`BGMPLAY 0893:0177`。
+
+`MSCPLAY` 接受 1-based byte、減一、抑制同曲重播，再經通用 IVT `7Eh`
+far-call wrapper 送出；`BGMPLAY` 已還原 area-code switch，會選
+`3/4/5/6/8/9/12`。目前只可稱 internal area→selector exact；仍須將 area
+寫入點對回 ECL／map scene，並證明 vector `7Eh` 與殘缺 `MSCDRV.EXE` 的
+INT D2h 關係，才能建立正式 scene-role JSON。
+
+同輪依使用者要求建立
+`/home/anr2/my_skill/knowledge-base/retro-cht/reverse-engineer-borland-dos-pc98`，
+保存 Borland Open Architecture ZIP／文字版、Turbo Pascal 7 原廠手冊、
+來源 SHA-256／權利備註及可重用解析流程；skill 驗證通過並已 push
+`wicanr2/my_skill` commit `b2a1497`。商業遊戲 binary／磁碟與工具沒有放入
+skill。
