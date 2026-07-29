@@ -64,6 +64,16 @@ offset byte audit＋缺口隔離」，不能因缺檔便放棄所有位於完整
 parser、IVT wrapper 模式與 track intent；CoAB ECL block 表仍只屬 game
 pack，不進共用 engine hardcode。
 
+CoAB driver 的 `DS:0330` 是公開 track pointer table。前十二筆各指向
+64-byte descriptor，內含七組 sequence offset／length；84 個 stream 全在
+file `0x1B61..0x3C58`，早於缺失的 `0x4000..0x4400`。因此「driver 有缺
+sector」不能再泛化成「十二首音符資料都殘缺」。可重用匯入原則是逐 track、
+逐 channel 計算 half-open range 與 SHA-256，只開放沒有跨媒體缺口的資料。
+
+曲名與音訊 bytes 也要分層。Hoot 的本作設定提供 0-based code→曲名，
+game pack 以跨 locale `title_id` 保存 metadata；商業 sequence 仍只從
+使用者媒體 runtime import。引擎 schema 不保存作品曲名，也不提交抽出資料。
+
 正式 remake 保留兩種來源：
 
 - DOS 忠實 theme：既有 selector 與後續 PC Speaker／Tandy 行為。

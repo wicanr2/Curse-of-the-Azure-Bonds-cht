@@ -14,6 +14,11 @@ const (
 
 	DriverMissingStart = 0x4000
 	DriverMissingEnd   = 0x4400
+
+	driverDataFileBase   = 0x14D0
+	driverTrackTableFile = 0x1800
+	driverPublicTracks   = 12
+	driverTrackChannels  = 7
 )
 
 // Anchor is a short instruction sequence independently located by IDA Pro and
@@ -41,6 +46,31 @@ type SoundBIOSService struct {
 	Arguments  string `json:"arguments"`
 }
 
+// TrackChannel reports one raw eight-byte channel record. SequenceOffset is
+// relative to the driver's data segment; the remaining two words stay raw
+// until both producer and playback consumers are fully traced.
+type TrackChannel struct {
+	Channel        int    `json:"channel"`
+	SequenceOffset int    `json:"sequence_offset"`
+	SequenceLength int    `json:"sequence_length"`
+	RawParameter1  int    `json:"raw_parameter_1"`
+	RawParameter2  int    `json:"raw_parameter_2"`
+	FileStart      int    `json:"file_start"`
+	FileEnd        int    `json:"file_end"`
+	Complete       bool   `json:"complete"`
+	SHA256         string `json:"sha256"`
+}
+
+type TrackDescriptor struct {
+	Selector         int            `json:"selector"`
+	DriverIndex      int            `json:"driver_index"`
+	DescriptorOffset int            `json:"descriptor_offset"`
+	DescriptorFile   int            `json:"descriptor_file"`
+	HeaderWords      [4]int         `json:"header_words"`
+	Channels         []TrackChannel `json:"channels"`
+	Complete         bool           `json:"complete"`
+}
+
 type BridgeReport struct {
 	GameSHA256        string             `json:"game_sha256"`
 	DriverSHA256      string             `json:"driver_sha256"`
@@ -48,6 +78,7 @@ type BridgeReport struct {
 	DriverMissingTo   int                `json:"driver_missing_to"`
 	Anchors           []AnchorResult     `json:"anchors"`
 	SoundBIOSServices []SoundBIOSService `json:"sound_bios_services"`
+	Tracks            []TrackDescriptor  `json:"tracks"`
 }
 
 var gameAnchors = []Anchor{
@@ -202,6 +233,119 @@ func verifySoundBIOSServices(data []byte) error {
 	return nil
 }
 
+func wordAt(data []byte, offset int) (int, error) {
+	if offset < 0 || offset+2 > len(data) {
+		return 0, fmt.Errorf("word at file offset 0x%X is outside %d-byte input", offset, len(data))
+	}
+	return int(data[offset]) | int(data[offset+1])<<8, nil
+}
+
+func rangeComplete(start, end int) bool {
+	return !(start < DriverMissingEnd && end > DriverMissingStart)
+}
+
+func auditTrackDescriptors(data []byte) ([]TrackDescriptor, error) {
+	tracks := make([]TrackDescriptor, 0, driverPublicTracks)
+	for index := 0; index < driverPublicTracks; index++ {
+		descriptorOffset, err := wordAt(data, driverTrackTableFile+index*2)
+		if err != nil {
+			return nil, fmt.Errorf("track index %d pointer: %w", index, err)
+		}
+		descriptorFile := driverDataFileBase + descriptorOffset
+		if descriptorFile < 0 || descriptorFile+64 > len(data) {
+			return nil, fmt.Errorf(
+				"track index %d descriptor 0x%X maps outside input at 0x%X",
+				index, descriptorOffset, descriptorFile,
+			)
+		}
+		track := TrackDescriptor{
+			Selector:         index + 1,
+			DriverIndex:      index,
+			DescriptorOffset: descriptorOffset,
+			DescriptorFile:   descriptorFile,
+			Complete:         rangeComplete(descriptorFile, descriptorFile+64),
+		}
+		for headerIndex := range track.HeaderWords {
+			value, err := wordAt(data, descriptorFile+headerIndex*2)
+			if err != nil {
+				return nil, err
+			}
+			track.HeaderWords[headerIndex] = value
+		}
+		track.Channels = make([]TrackChannel, 0, driverTrackChannels)
+		for channel := 0; channel < driverTrackChannels; channel++ {
+			record := descriptorFile + 8 + channel*8
+			sequenceOffset, err := wordAt(data, record)
+			if err != nil {
+				return nil, err
+			}
+			sequenceLength, err := wordAt(data, record+2)
+			if err != nil {
+				return nil, err
+			}
+			raw1, err := wordAt(data, record+4)
+			if err != nil {
+				return nil, err
+			}
+			raw2, err := wordAt(data, record+6)
+			if err != nil {
+				return nil, err
+			}
+			fileStart := driverDataFileBase + sequenceOffset
+			fileEnd := fileStart + sequenceLength
+			if fileStart < 0 || fileEnd < fileStart || fileEnd > len(data) {
+				return nil, fmt.Errorf(
+					"track %d channel %d sequence 0x%X+0x%X maps outside input",
+					index+1, channel, sequenceOffset, sequenceLength,
+				)
+			}
+			complete := rangeComplete(fileStart, fileEnd)
+			track.Complete = track.Complete && complete
+			track.Channels = append(track.Channels, TrackChannel{
+				Channel:        channel,
+				SequenceOffset: sequenceOffset,
+				SequenceLength: sequenceLength,
+				RawParameter1:  raw1,
+				RawParameter2:  raw2,
+				FileStart:      fileStart,
+				FileEnd:        fileEnd,
+				Complete:       complete,
+				SHA256:         fileSHA256(data[fileStart:fileEnd]),
+			})
+		}
+		tracks = append(tracks, track)
+	}
+	return tracks, nil
+}
+
+// ExtractTrackSequences returns copies of the seven channel byte streams for
+// one 1-based public selector. It accepts only the identified user-media
+// driver and refuses any stream touching the absent-sector range.
+func ExtractTrackSequences(driver []byte, selector int) ([][]byte, error) {
+	if selector < 1 || selector > driverPublicTracks {
+		return nil, fmt.Errorf("track selector %d is outside 1..%d", selector, driverPublicTracks)
+	}
+	if hash := fileSHA256(driver); hash != DriverSHA256 {
+		return nil, fmt.Errorf("MSCDRV.EXE SHA-256 %s, want %s", hash, DriverSHA256)
+	}
+	tracks, err := auditTrackDescriptors(driver)
+	if err != nil {
+		return nil, err
+	}
+	track := tracks[selector-1]
+	if !track.Complete {
+		return nil, fmt.Errorf("track selector %d overlaps absent-sector range", selector)
+	}
+	sequences := make([][]byte, 0, len(track.Channels))
+	for _, channel := range track.Channels {
+		sequences = append(
+			sequences,
+			append([]byte(nil), driver[channel.FileStart:channel.FileEnd]...),
+		)
+	}
+	return sequences, nil
+}
+
 // AuditBridge verifies the exact supplied GAME.EXE and incomplete MSCDRV.EXE.
 // It deliberately rejects other dumps so evidence from the known missing
 // sector cannot be silently generalized.
@@ -225,6 +369,10 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 	if err := verifySoundBIOSServices(driver); err != nil {
 		return BridgeReport{}, err
 	}
+	tracks, err := auditTrackDescriptors(driver)
+	if err != nil {
+		return BridgeReport{}, err
+	}
 	return BridgeReport{
 		GameSHA256:        gameHash,
 		DriverSHA256:      driverHash,
@@ -232,5 +380,6 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 		DriverMissingTo:   DriverMissingEnd,
 		Anchors:           append(gameResults, driverResults...),
 		SoundBIOSServices: append([]SoundBIOSService(nil), soundBIOSServices...),
+		Tracks:            tracks,
 	}, nil
 }

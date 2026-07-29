@@ -172,8 +172,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
 - CoAB 基底：`cd87046`（本輪音樂 bridge milestone 之前的 HEAD）。
-- Engine dependency：`a81b963`（含中立 `combat_visuals` 與
-  `music_tracks`／`music_bindings`／`music_cues` schema）。
+- Engine dependency：`5363177`（含中立 `combat_visuals`、
+  `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
+  `title_id` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
@@ -277,6 +278,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `scripts/ida/pc98_sound_bios_audit.py`、READY spec 365；`cmd/pc98-music-audit`
   現會逐 byte 驗證命令集合。`AH=01 PLAY`、`AH=15 SETTEMPO` 在本作 wrapper
   區未出現，不可因官方 API 有定義便假設使用。
+- 第 366 輪由 IDA＋raw bytes 解出 `DS:0330` 十二筆 64-byte descriptor
+  與 84 個 channel stream；所有 sequence 位於 file
+  `0x1B61..0x3C58`，沒有跨 `0x4000..0x4400` 缺口。Hoot `ponyca.xml`
+  的 Shift-JIS code 又提供 exact 0-based 曲名 metadata；CoAB JSON 現有
+  十二首中英文 `title_id`。`internal/pc98music.ExtractTrackSequences`
+  只接受已辨識 driver SHA、selector 1–12，並複製完整七聲道 bytes，
+  不把商業 sequence 放進 repo。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -286,8 +294,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `docs/spec/362-pc98-disk-b-dax-and-wldtwn.md` 已 READY；作品中立 cue 與
   正常玩家路徑已完成；`docs/spec/364-pc98-music-vector-bridge.md` 也已
   READY，Sound BIOS 規格 `docs/spec/365-pc98-sound-bios-d2-api.md` 也已
-  READY。下一步追 D2h／direct OPN runtime YM trace、缺失 driver sector
-  與曲目映射；曲名與播放器只能在音序列證據完整後接入。
+  READY，track/import 規格
+  `docs/spec/366-pc98-track-table-and-runtime-import.md` 也已 READY。
+  下一步解 `sub_10410` stream opcode、追 D2h／direct OPN runtime YM
+  trace 與缺失工作區；播放器只能在 register event 交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單
 

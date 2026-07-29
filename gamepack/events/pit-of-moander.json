@@ -5,6 +5,18 @@
   "default_locale": "en",
   "locales": {
     "en": {
+      "music.pc98.00.title": "Title",
+      "music.pc98.01.title": "Character Creation",
+      "music.pc98.02.title": "Town",
+      "music.pc98.03.title": "Dungeon 3",
+      "music.pc98.04.title": "Wilderness",
+      "music.pc98.05.title": "Village",
+      "music.pc98.06.title": "Combat",
+      "music.pc98.07.title": "Zhentil Keep Walls",
+      "music.pc98.08.title": "Thieves Guild",
+      "music.pc98.09.title": "Ending",
+      "music.pc98.0a.title": "Dungeon 2",
+      "music.pc98.0b.title": "Dungeon",
       "pit.departure.alias_alive": "Alias thanks the party and leaves. The scent of honeysuckle fills the air as Dragonbait bows and follows her.",
       "pit.departure.alias_dead": "Dragonbait carries Alias's body toward Hillsfar.",
       "zhentil.patrol_pass": "A Zhentil Keep patrol notices the sigils on the party's arms and lets them pass.",
@@ -75,6 +87,18 @@
       ,"world.myth-drannor": "Myth Drannor"
     },
     "zh-TW": {
+      "music.pc98.00.title": "標題",
+      "music.pc98.01.title": "角色建立",
+      "music.pc98.02.title": "城鎮",
+      "music.pc98.03.title": "地城三",
+      "music.pc98.04.title": "荒野",
+      "music.pc98.05.title": "村莊",
+      "music.pc98.06.title": "戰鬥",
+      "music.pc98.07.title": "散提爾堡城壁",
+      "music.pc98.08.title": "盜賊公會",
+      "music.pc98.09.title": "結局",
+      "music.pc98.0a.title": "地城二",
+      "music.pc98.0b.title": "地城",
       "pit.departure.alias_alive": "愛麗雅絲說：「我們必須在此分別了。」她感謝你們一路相助，祝眾人好運後轉身離去。空氣中瀰漫著忍冬花香；龍餌靜靜看過每一位夥伴，鞠躬致意，隨後跟上愛麗雅絲。",
       "pit.departure.alias_dead": "龍餌抱起愛麗雅絲的遺體，向眾人沉默地鞠躬，隨後朝希爾斯法的方向離去。",
       "zhentil.patrol_pass": "一隊散提爾堡巡邏兵攔住你們。他們注意到眾人手臂上的枷印後，隨即放行。",
@@ -147,43 +171,85 @@
   },
   "music_tracks": [
     {
+      "id": "pc98-bgm-selector-01",
+      "title_id": "music.pc98.00.title",
+      "source_platform": "pc-9801",
+      "reference_selector": 1,
+      "driver_index": 0
+    },
+    {
+      "id": "pc98-bgm-selector-02",
+      "title_id": "music.pc98.01.title",
+      "source_platform": "pc-9801",
+      "reference_selector": 2,
+      "driver_index": 1
+    },
+    {
       "id": "pc98-bgm-selector-03",
+      "title_id": "music.pc98.02.title",
       "source_platform": "pc-9801",
       "reference_selector": 3,
       "driver_index": 2
     },
     {
       "id": "pc98-bgm-selector-04",
+      "title_id": "music.pc98.03.title",
       "source_platform": "pc-9801",
       "reference_selector": 4,
       "driver_index": 3
     },
     {
       "id": "pc98-bgm-selector-05",
+      "title_id": "music.pc98.04.title",
       "source_platform": "pc-9801",
       "reference_selector": 5,
       "driver_index": 4
     },
     {
       "id": "pc98-bgm-selector-06",
+      "title_id": "music.pc98.05.title",
       "source_platform": "pc-9801",
       "reference_selector": 6,
       "driver_index": 5
     },
     {
+      "id": "pc98-bgm-selector-07",
+      "title_id": "music.pc98.06.title",
+      "source_platform": "pc-9801",
+      "reference_selector": 7,
+      "driver_index": 6
+    },
+    {
       "id": "pc98-bgm-selector-08",
+      "title_id": "music.pc98.07.title",
       "source_platform": "pc-9801",
       "reference_selector": 8,
       "driver_index": 7
     },
     {
       "id": "pc98-bgm-selector-09",
+      "title_id": "music.pc98.08.title",
       "source_platform": "pc-9801",
       "reference_selector": 9,
       "driver_index": 8
     },
     {
+      "id": "pc98-bgm-selector-0a",
+      "title_id": "music.pc98.09.title",
+      "source_platform": "pc-9801",
+      "reference_selector": 10,
+      "driver_index": 9
+    },
+    {
+      "id": "pc98-bgm-selector-0b",
+      "title_id": "music.pc98.0a.title",
+      "source_platform": "pc-9801",
+      "reference_selector": 11,
+      "driver_index": 10
+    },
+    {
       "id": "pc98-bgm-selector-0c",
+      "title_id": "music.pc98.0b.title",
       "source_platform": "pc-9801",
       "reference_selector": 12,
       "driver_index": 11

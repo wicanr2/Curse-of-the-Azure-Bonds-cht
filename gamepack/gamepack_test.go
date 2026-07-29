@@ -13,6 +13,18 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if pack.ID != "curse-of-the-azure-bonds.pit-of-moander" {
 		t.Fatalf("pack id=%q", pack.ID)
 	}
+	if len(pack.MusicTracks) != 12 {
+		t.Fatalf("music tracks=%d, want 12", len(pack.MusicTracks))
+	}
+	for index, track := range pack.MusicTracks {
+		if track.ReferenceSelector != uint8(index+1) ||
+			track.DriverIndex != uint8(index) || track.TitleID == "" {
+			t.Fatalf("music track[%d]=%+v", index, track)
+		}
+		if pack.Locales["en"][track.TitleID] == "" || pack.Locales["zh-TW"][track.TitleID] == "" {
+			t.Fatalf("music track[%d] title %q is not localized", index, track.TitleID)
+		}
+	}
 	arrow, found := pack.FindCombatVisual("missile", "travel")
 	if !found || arrow.ID != "coab.arrow" || arrow.Scale != 2 ||
 		arrow.ReferenceDelay != 10 || len(arrow.Frames) != 8 {
