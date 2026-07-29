@@ -52,6 +52,10 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	}
 
 	state := NewStateFromECLBlocks(testCatalog(), all, 0x22)
+	// Carry the real Shrine path state into this focused cave regression:
+	// 4C00 marks the Olive path and 4C01 marks Dimswart's escort.
+	state.session.SetMemoryValue(0x4C00, 1)
+	state.session.SetMemoryValue(0x4C01, 1)
 	state.SetMonsterRecordsForECL(4, records)
 	testParty := make([]combat.Fighter, 6)
 	for index := range testParty {
@@ -141,6 +145,60 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 		t.Fatalf("post-battle cave mode=%v ecl=%02x geo=%d/%02x coords=%d,%d",
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY)
+	}
+	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 3, 2
+	state.DungeonWallType, _ = grid.WallWrapped(6, 3, 2)
+	state.DungeonWallRoof = grid.CellWrapped(6, 3).Terrain
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x93 || state.Mode != ModeEvent ||
+		!state.PictureRequested || state.PictureBlock != 42 ||
+		!strings.Contains(state.Message, "奧莉芙") ||
+		!strings.Contains(state.Message, "真令我意外") {
+		t.Fatalf("cave exit terrain=%02x mode=%v picture=%v/%d message=%q",
+			state.DungeonWallRoof, state.Mode, state.PictureRequested,
+			state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{
+		"暗影谷有個人想問你幾個問題",
+		"一聲彷彿「嘉莉——」",
+		"身穿紫衣的女子",
+	} {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(state.Message, want) {
+			t.Fatalf("departure stage missing %q: %q", want, state.Message)
+		}
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.session.CurrentBlockID() != 0x51 ||
+		state.Area.InDungeon || state.Area.GameArea != 1 ||
+		!strings.Contains(state.Message, "暗影谷") {
+		t.Fatalf("world return mode=%v block=%02x area=%+v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.Area, state.Message)
+	}
+	for address, want := range map[uint16]uint16{0x4CE2: 1, 0x7F12: 1} {
+		if got, ok := state.session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("departure flag %04x=%04x ok=%v, want %04x", address, got, ok, want)
+		}
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		strings.Join(state.currentOriginalChoices, "/") != "ENTER CITY/JOURNEY ON/CAMP/SEARCH AREA" {
+		t.Fatalf("Shadowdale world menu mode=%v originals=%q message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
 	}
 }
 

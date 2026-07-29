@@ -167,18 +167,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 ### 目前未提交 milestone（不可遺忘）
 
-- 真實檔案已證實眼魔洞穴是 ECL4 script block `0x22` 對 GEO4 geometry block
-  `0x25`；`GEO4.DAX` 根本沒有 `0x22` geometry。舊稱 `GEO4 0x22` 必須修正。
-- Engine 的分離能力已 push；CoAB dependency、map JSON、lookup、測試與文件的
-  對應修正仍在 dirty worktree，應和德克薩姆戰鬥成果合併為一次 milestone。
-- focused regression `internal/game/beholder_cave_dexam_test.go` 已定位決戰：
-  `(15,1)` terrain `0x90`／`(15,2)` terrain `0x8F`，敵方為兜帽梅杜莎 1、
-  眼魔 1、牛頭人 10；勝利後可取得洛山達護符。
-- 護符後的 11 fighter、4 mage、3 cleric、1 high priest 已由 raw ECL 確認為
-  真實第二戰；單英雄敗北只是敵方先攻造成。READY spec 352、繁中 JSON 與
-  雙戰 player-path regression 已完成 focused 驗證。
-- 下一步：完整測試與 diff audit → 更新最終 checkpoint → 一次 CoAB
-  commit＋push；之後最早主線缺口須由洞穴出口／散提爾堡離場繼續定位。
+- 第 352 輪雙戰已 push。dirty milestone 是第 353 輪洞窟離場：
+  GEO4/`0x25 (6,3)` terrain `0x93` 必須走 boundary lifecycle，依序顯示
+  Olive／Dimswart、騎士與紫衣女子，寫 `4CE2/7F12`、銷毀 item type
+  `0x60/0x61`，再 `NEWECL 0x51` 回暗影谷。
+- spec 354 已記錄下一個戰鬥視覺里程碑：建立 renderer-neutral action
+  timeline，先完成 melee、bow、Magic Missile、death；目前只有死亡 overlay
+  有時間相位，弓箭／法術 projectile 與逐 action 敵方回合尚未完成。
+- 完成第 353 輪完整驗證後集中一次 commit＋push；不要為文件或小修拆 commit。
 
 ## 10. Compact 後恢復工作清單
 
