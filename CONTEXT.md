@@ -1655,6 +1655,18 @@ persistent party NPC 的區別。下一個主線缺口是帶著迪姆斯沃特�
 真實 session 依序通過弗佐爾闖入、ECL `0x21→0x22`、德克薩姆與牛頭人、
 手札 30、迪姆斯沃特指出洛山達護符、五項 encounter menu、手札 7、德克薩姆
 殺死弗佐爾、第四枷印消退、護符離場與兩派混戰，最後在
-`GEO4/0x22 (4,5,N)` 恢復地城。CoAB JSON 新增洞穴 exact map definition、
+`GEO4/0x25 (4,5,N)` 恢復地城。CoAB JSON 以 `script_block=0x22`、
+`geometry_block=0x25` 新增洞穴 exact map definition，
 全段繁中與四頁手札；下一個缺口是洞穴探索、德克薩姆／梅杜莎／牛頭人決戰
 及取得洛山達護符。
+
+2026-07-29 第 352 輪完成眼魔洞穴雙戰：真實 GEO4 `0x25 (15,1,N)` terrain
+`0x90` 觸發 PICTURE 49，兜帽女子揭露為梅杜莎；第一戰精確建立 MON4
+`0x27×1／0x28×1／0x29×10`。勝利後先處理四件普通戰利品，再從德克薩姆
+遺骸取回洛山達護符；raw continuation 明確輸出散提爾堡部隊攻擊，第二戰為
+`0x20×11／0x21×4／0x22×3／0x48×1`，勝利後回到 ECL `0x22`／GEO `0x25`。
+先前單英雄 probe 的「戰鬥失敗」已證實是兩批敵方合法先攻造成，不是 DAMAGE
+重複或 HP sync bug。研究 probe 已換成 focused real-image regression，戰後
+localization 修正為走 JSON pack。另依使用者要求，Gold Box graphics 知識庫
+新增 gameplay video temporal-oracle 規則與 DOS／C64／Amiga／PC-98 來源；
+弓箭、投射物、法術與死亡效果須逐幀驗證，不能以數值正確代替畫面完成。

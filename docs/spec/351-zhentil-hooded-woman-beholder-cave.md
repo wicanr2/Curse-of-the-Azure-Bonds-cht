@@ -21,7 +21,7 @@ Status: `READY`
   - 玩家尚未行動，弗佐爾率眾闖入並解鎖手札 7。
   - 德克薩姆殺死弗佐爾；PICTURE 33 顯示弗佐爾枷印消退。
   - 德克薩姆帶走護符，兩派人馬混戰，最後回到 `ModeDungeon`。
-- runtime 最終狀態為 ECL4 block `0x22`、`GEO4/0x22 (4,5,N)`。作品 pack
+- runtime 最終狀態為 ECL4 block `0x22`、`GEO4/0x25 (4,5,N)`。作品 pack
   必須宣告該 map，否則跨 block 聚合會殘留來源 GEO `0x21`。
 
 ## 交叉參考
@@ -59,7 +59,7 @@ Status: `READY`
 4. 真實 `0x21→0x22` 後顯示德克薩姆、牛頭人與手札 30 兩頁。
 5. 五項 encounter menu 與迪姆斯沃特護符提示為繁中。
 6. 解鎖手札 7 兩頁，顯示弗佐爾死亡與枷印消退。
-7. 完成護符離場／混戰後，回到 `GEO4/0x22 (4,5,N)`。
+7. 完成護符離場／混戰後，回到 `GEO4/0x25 (4,5,N)`。
 8. focused real-image test、game-pack test 與完整 Docker/Xvfb regression 通過。
 
 ## 本輪邊界

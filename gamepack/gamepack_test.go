@@ -38,9 +38,10 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		shrine.Spawn.Direction != 0 {
 		t.Fatalf("Zhentil Dark Shrine map definition=%+v found=%v", shrine, found)
 	}
-	cave, found := pack.FindMap(4, 0x22)
+	cave, found := pack.FindMapByKindScript("first_person", 4, 0x22)
 	if !found || cave.ID != "zhentil-keep.beholder-cave" ||
-		cave.GeometryFile != "GEO4.DAX" || cave.GeometryBlock != 0x22 ||
+		cave.GeometryFile != "GEO4.DAX" || cave.ScriptBlock == nil ||
+		*cave.ScriptBlock != 0x22 || cave.GeometryBlock != 0x25 ||
 		cave.Spawn == nil || cave.Spawn.X != 4 || cave.Spawn.Y != 5 ||
 		cave.Spawn.Direction != 0 {
 		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)

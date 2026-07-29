@@ -172,6 +172,20 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_salamander", "火蜥蜴")
 	case "DRACOLICH":
 		return catalog.Text("monster_dracolich", "龍巫妖")
+	case "HOODED MEDUSA":
+		return catalog.Text("monster_hooded_medusa", "兜帽梅杜莎")
+	case "BEHOLDER":
+		return catalog.Text("monster_beholder", "眼魔")
+	case "MINOTAUR":
+		return catalog.Text("monster_minotaur", "牛頭人")
+	case "ZHENTIL FIGHTER":
+		return catalog.Text("monster_zhentil_fighter", "散提爾堡戰士")
+	case "ZHENTIL MAGE":
+		return catalog.Text("monster_zhentil_mage", "散提爾堡法師")
+	case "ZHENTIL CLERIC":
+		return catalog.Text("monster_zhentil_cleric", "散提爾堡牧師")
+	case "HIGH PRIEST":
+		return catalog.Text("monster_high_priest", "大祭司")
 	case "ZHENTRIM CLERIC":
 		return catalog.Text("monster_zhentrim_cleric", "散塔林牧師")
 	case "ZHENTRIM FGHTR":
@@ -1604,7 +1618,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 	s.applyCitySelection()
 	if len(result.Text) > 0 {
 		s.unlockJournalEntries(result.Text)
-		s.Message = localizeECLText(s.catalog, result.Text)
+		s.Message = s.localizeECLText(result.Text)
 	}
 
 	if result.PictureRequested {

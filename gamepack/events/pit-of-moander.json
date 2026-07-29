@@ -46,6 +46,10 @@
       ,"dexam.kill_order": "“Now that the bond is gone, they are of no use to me. Kill them.”"
       ,"dexam.amulet_rises": "Dexam turns toward the altar and starts to leave. You notice the amulet rising to meet him."
       ,"dexam.altar_melee": "As Dexam leaves, his forces and Fzoul's remaining troops begin to melee around you."
+      ,"dexam.final_reveal": "You have caught up with Dexam and his minions. The hooded woman casts off her disguise—she is a medusa!"
+      ,"dexam.attack": "They attack!"
+      ,"dexam.amulet_retrieved": "You retrieve the Amulet of Lathander from Dexam's mangled remains."
+      ,"dexam.zhentil_attack": "Forces of Zhentil Keep attack you!"
       ,"journal.30.1": "Journal Entry 30 (1/2): Dexam says, “So, these are Fzoul's little secret. Very interesting. As the representative of the TRUE priests of Bane, I shall deliver you to Mulmaster and the grand Imperceptor.”"
       ,"journal.30.2": "Journal Entry 30 (2/2): “In Mulmaster I will examine these bonds in my laboratory—to your extreme discomfort. During the final procedure, the one resulting in your death, the pain should last no more than two or perhaps three weeks. Once I uncover their secret, the Imperceptor will be most angry with dear little Fzoul, and we may finally be rid of this heretic and his precious mages.”"
       ,"journal.7.1": "Journal Entry 7 (1/2): “I am Fzoul Chembryl, high lord of the Dark Shrine. My precious mages, as you call them, allowed me to follow your minion. Dexam, you overstep your authority. My mark is on these people, and the Imperceptor will know of my work in due time.”"
@@ -107,6 +111,10 @@
       ,"dexam.kill_order": "「枷印既已消失，他們對我再無用處。殺了他們。」"
       ,"dexam.amulet_rises": "德克薩姆轉向祭壇，準備離去。你們注意到護符正飄向他。"
       ,"dexam.altar_melee": "德克薩姆離開時，他的部隊與弗佐爾殘存的人馬在你們四周陷入混戰。"
+      ,"dexam.final_reveal": "你們追上德克薩姆與他的爪牙；兜帽女子卸下偽裝——她竟是一名梅杜莎！"
+      ,"dexam.attack": "牠們發動攻擊！"
+      ,"dexam.amulet_retrieved": "你們從德克薩姆殘破的遺骸中取回洛山達護符。"
+      ,"dexam.zhentil_attack": "散提爾堡的部隊向你們發動攻擊！"
       ,"journal.30.1": "手札條目 30（1/2）：德克薩姆說：「原來這就是弗佐爾藏著的小祕密。有意思。身為貝恩正統祭司的代表，我要把你們送到穆爾馬斯特，交給總督察長。」"
       ,"journal.30.2": "手札條目 30（2/2）：「到了穆爾馬斯特，我會在實驗室研究這些枷印——只怕你們會非常不舒服。最後一道程序將奪走你們的性命；放心，痛苦頂多持續兩三個星期。等我揭開枷印的祕密，總督察長必會對他親愛的小弗佐爾大發雷霆，我們也終於能除掉這名異端和他珍愛的法師。」"
       ,"journal.7.1": "手札條目 7（1/2）：「我是弗佐爾・錢布瑞爾，幽暗神殿的最高領主。你口中那些『寶貝法師』讓我得以追蹤你的手下。德克薩姆，你已越權。這些人身上有我的印記；到了適當時候，總督察長自然會知道我的功績。」"
@@ -210,7 +218,8 @@
       "id": "zhentil-keep.beholder-cave",
       "kind": "first_person",
       "area_id": 4,
-      "geometry_block": 34,
+      "script_block": 34,
+      "geometry_block": 37,
       "geometry_file": "GEO4.DAX",
       "wall_file": "WALLDEF4.DAX",
       "symbol_file": "8X8D4.DAX",
@@ -411,6 +420,26 @@
       "id": "dexam.altar_melee",
       "all_contains": ["AS DEXAM LEAVES", "START TO MELEE IN THE ROOM AROUND YOU"],
       "message_id": "dexam.altar_melee"
+    },
+    {
+      "id": "dexam.final_reveal",
+      "all_contains": ["YOU HAVE MET UP WITH DEXAM AND HIS MINIONS", "HOODED WOMAN REVEALS HERSELF TO BE A MEDUSA"],
+      "message_id": "dexam.final_reveal"
+    },
+    {
+      "id": "dexam.attack",
+      "all_contains": ["THEY ATTACK"],
+      "message_id": "dexam.attack"
+    },
+    {
+      "id": "dexam.amulet_retrieved",
+      "all_contains": ["YOU RETRIEVE THE AMULET OF LATHANDER", "MANGLED REMAINS OF DEXAM"],
+      "message_id": "dexam.amulet_retrieved"
+    },
+    {
+      "id": "dexam.zhentil_attack",
+      "all_contains": ["YOU ARE ATTACKED BY FORCES OF ZHENTIL KEEP"],
+      "message_id": "dexam.zhentil_attack"
     }
   ],
   "events": [

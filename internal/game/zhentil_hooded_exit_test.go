@@ -156,7 +156,7 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x22 ||
-		state.GeoMapSet != 4 || state.GeoMapBlock != 0x22 ||
+		state.GeoMapSet != 4 || state.GeoMapBlock != 0x25 ||
 		state.DungeonX != 4 || state.DungeonY != 5 || state.DungeonDirection != 0 {
 		t.Fatalf("beholder cave handoff mode=%v block=0x%02x geo=%d/%02x coords=%d,%d,%d message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,

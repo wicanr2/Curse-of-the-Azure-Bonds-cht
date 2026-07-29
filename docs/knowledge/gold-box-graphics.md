@@ -245,6 +245,34 @@ footprint marker 從該點向右、下展開；不要因寬度為 2 再向左平
 左緣的大型怪物會被 clipping target 切掉。640×480 的 2× pixel pass 中，
 單格為 48×48，size 4 marker 因此是 96×96。
 
+## 戰鬥動態效果的影片 oracle
+
+靜態截圖只能證明 frame、位置、sprite 與某一瞬間的 effect，不能證明完整
+時間序列。戰鬥 fidelity audit 必須把原版 DOS runtime capture 與公開 gameplay
+影片當作 temporal oracle，至少拆成：
+
+1. command confirmation 到 actor attack pose；
+2. 近戰接觸或弓箭／投射物由 source tile 飛向 target tile；
+3. 法術 caster pose、projectile／area overlay、命中 frame 與清除時機；
+4. hit／miss／save／damage 文字和聲音相對於動畫的順序；
+5. 倒地／死亡 overlay、回合游標與 camera 捲動何時接手。
+
+不能以「HP 有扣、法術規則測試通過」宣稱畫面完成；renderer 必須接收明確的
+action/effect timeline，而不是只看戰鬥結算後 state。也不能替所有法術套同一
+閃光：Magic Missile、Cloudkill、Fireball、Lightning Bolt、弓箭和投擲武器
+需要各自的原版證據、素材／色盤、路徑與 duration。
+
+已建立的公開參考入口：
+
+- [DOS gameplay Part 1（YouTube，影片 ID wwYsij1wDC4）](https://www.youtube.com/watch?v=wwYsij1wDC4)
+- [Commodore 64 longplay（含章節，影片 ID tQi2yAz6Nxw）](https://www.youtube.com/watch?v=tQi2yAz6Nxw)
+- [Amiga longplay（含章節，影片 ID bzth9mcwWqE）](https://www.youtube.com/watch?v=bzth9mcwWqE)
+- [MobyGames PC-98：Enemy mage casts CloudKill](https://www.mobygames.com/game/503/curse-of-the-azure-bonds/screenshots/pc98/464696/)
+
+跨平台影片只能支持共通 choreography 或提供待查線索；DOS remake 的像素、
+色盤、frame timing 與音效仍以本機 DOSBox capture 為最高視覺證據。後續每種
+攻擊／法術應保存影片時間碼、平台、輸入、前後 frame 與 confidence。
+
 ## 第一人稱地圖的可重用邊界
 
 GEO、WALLDEF 與 8X8D 不應留在單一作品的 renderer。共用 engine 現以

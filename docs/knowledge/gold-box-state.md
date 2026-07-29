@@ -638,12 +638,30 @@ terrain `0x85` 顯示 PICTURE、手札與 `YES/NO`；接受後 work memory 令�
 work memory gate。
 
 接受帶路後，原 session 連續執行多個 PICTURE／PRINT RETURN／menu，並由
-ECL4 `0x21→0x22`。`LOAD FILES` aggregation 仍可能帶著來源 map signal；若
-title pack 已明確宣告 Area 4 block `0x22` 的 first-person map，State 應以 exact
-definition 選目的 GEO。這和摩安德之坑 `0x11→0x12` 共用 GEO 的案例並不衝突：
+ECL4 `0x21→0x22`。`LOAD FILES` aggregation 仍可能帶著來源 map signal；本例
+title pack 明確宣告 `script_block=0x22` 對應 `geometry_block=0x25`，State 應以
+exact definition 選目的 GEO。這和摩安德之坑 `0x11→0x12` 共用 GEO 的案例並不衝突：
 共用 map 的目的 block刻意不宣告另一張 geometry，獨立 map 則有 exact 定義。
 
 此外，跨區敘事不是一個原子字串。兜帽女子、弗佐爾、德克薩姆、兩篇手札、
 五項 encounter menu、死亡、枷印解除與部隊混戰各自形成 pause。player-path
 regression 必須逐一 resume 同一 session，直到目的 block 的 `ModeDungeon`，
 不可看到 `NEWECL` 或第一張洞穴圖便宣稱轉場完成。
+
+### 2026-07-29：戰利品後仍可立即銜接第二場戰鬥
+
+眼魔洞穴 `(15,1,N)` 證明 `COMBAT → TREASURE → PRINT RETURN → COMBAT`
+是單一 resumable ECL transaction 的合法形狀。第一戰的 1 梅杜莎、1 眼魔與
+10 牛頭人死亡後，普通 loot menu 不是事件終點；離開該 menu 才顯示取得
+洛山達護符，下一次 resume 又建立 11 戰士、4 法師、3 牧師與 1 大祭司。
+
+因此 treasure UI 必須保存 `treasureResumeECL` 與同一 session PC；不能把
+`TREASURE_EXIT` 解讀為離開地圖，也不能在第一個 `StatusPartyWon` 清掉
+monster records、combat return mode 或 ECL memory。戰後文字也必須走
+data-pack-aware localization，否則一般 dungeon 事件已繁中，combat
+continuation 卻會洩漏原始英文。
+
+研究測試若只放一名角色，兩場 `StartCombat` 期間合法的 enemy initiative／AI
+可能在玩家取得回合前擊倒他；這只能證明該測試隊伍戰敗，不能推論
+continuation 或 HP sync 有 bug。跨戰 regression 應用完整 deterministic party，
+並分別驗證兩組原始 monster IDs/counts。
