@@ -147,15 +147,17 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ## 9. 目前權威狀態與下一步
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- 最新公開 CoAB milestone：`c8165f9`。
+- 最新已公開的工作交接 milestone：`c70be0d`；目前工作從 spec 349
+  「散塔林堡奧莉芙密道」繼續。
 - 前一個 engine checkpoint：`908cfb7`；實際以 nested repo HEAD 為準。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
 - 專案仍是多 vertical slices prototype，尚未完整可通關。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
-- 下一輪優先找出「現有可玩 continuation 到結局」中最早的主線缺口，以
-  evidence → READY spec → JSON/engine 實作 → player-path test 的順序補齊。
+- 目前已補到奧莉芙帶隊進入 `ECL4/GEO4 0x21`；下一個最早主線缺口是神殿內
+  找到並帶走迪姆斯沃特。仍以 evidence → READY spec → JSON/engine 實作 →
+  player-path test 的順序補齊。
 
 ## 10. Compact 後恢復工作清單
 
