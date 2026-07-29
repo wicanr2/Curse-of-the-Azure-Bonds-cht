@@ -258,8 +258,8 @@ func (s *State) queueCombatVisual(event combat.VisualEvent) bool {
 	event.Serial = s.combatVisualSerial
 	s.combatVisual = &event
 	s.combatVisualTravelSent = false
-	s.combatVisualImpactSent = false
-	s.combatVisualDeathSent = false
+	s.combatVisualImpactSent = -1
+	s.combatVisualDeathSent = -1
 	s.combatVisualAdvanceTurn = true
 	return true
 }
@@ -278,22 +278,35 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 		}
 		s.combatVisualTravelSent = true
 	}
-	if !s.combatVisualImpactSent && frame.Phase >= combat.VisualImpact {
-		switch event.Kind {
-		case combat.VisualMagicMissile:
-			s.requestSound(SoundMagicHit)
-		default:
-			if event.Hit {
-				s.requestSound(SoundHit)
-			} else {
-				s.requestSound(SoundMiss)
+	if impact, ok := event.Impact(frame); ok {
+		if frame.Phase >= combat.VisualImpact && frame.ImpactIndex > s.combatVisualImpactSent {
+			switch event.Kind {
+			case combat.VisualMagicMissile, combat.VisualAreaSpell:
+				s.requestSound(SoundMagicHit)
+			default:
+				if impact.Hit {
+					s.requestSound(SoundHit)
+				} else {
+					s.requestSound(SoundMiss)
+				}
+			}
+			s.combatVisualImpactSent = frame.ImpactIndex
+		}
+		if impact.Killed && frame.Phase >= combat.VisualDeath && frame.ImpactIndex > s.combatVisualDeathSent {
+			s.requestSound(SoundDeath)
+			s.combatVisualDeathSent = frame.ImpactIndex
+		}
+	} else if frame.Phase == combat.VisualHandoff {
+		// A renderer may advance directly to the terminal frame. Keep the
+		// timeline release deterministic; phase sounds are presentation cues
+		// and are intentionally not replayed in a burst after being skipped.
+		s.combatVisualImpactSent = event.ImpactCount() - 1
+		for index := 0; index < event.ImpactCount(); index++ {
+			impact, _ := event.ImpactAt(index)
+			if impact.Killed {
+				s.combatVisualDeathSent = index
 			}
 		}
-		s.combatVisualImpactSent = true
-	}
-	if event.Killed && !s.combatVisualDeathSent && frame.Phase >= combat.VisualDeath {
-		s.requestSound(SoundDeath)
-		s.combatVisualDeathSent = true
 	}
 	if !frame.Done {
 		return nil
@@ -512,6 +525,27 @@ func (s *State) CombatCanCastMagicMissile() bool {
 	return false
 }
 
+func (s *State) CombatCanCastFireball() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || !character.HasClass(party.ClassMagicUser) {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == FireballSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCanCastCureLightWounds() bool {
 	if !s.CombatActive() {
 		return false
@@ -654,6 +688,10 @@ func (s *State) CombatCastingSpell() uint8 { return s.combatCastingSpell }
 
 func (s *State) CombatSpellTargetIndex() int { return s.combatSpellTargetIndex }
 
+func (s *State) CombatSpellTargetPoint() (combat.TilePoint, bool) {
+	return s.combatSpellTargetPoint, s.combatSpellTargetsPoint
+}
+
 func (s *State) CombatSpellTargets() []combat.Fighter {
 	switch s.combatCastingSpell {
 	case CureLightWoundsSpellID:
@@ -746,13 +784,17 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() && !s.CombatCanCastProtectionFromGood() {
 		return fmt.Errorf("spell 0x%02X is unavailable for this caster", spellID)
 	}
+	if spellID == FireballSpellID && !s.CombatCanCastFireball() {
+		return fmt.Errorf("Fireball is unavailable")
+	}
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != FireballSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
+	s.combatSpellTargetsPoint = false
 	if spellID == ProtectionFromGoodSpellID {
 		caster, ok := s.combatPartyTurn()
 		if !ok {
@@ -804,6 +846,19 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
+	if spellID == FireballSpellID {
+		targets := s.livingBySide(combat.SideEnemy)
+		if len(targets) == 0 {
+			return fmt.Errorf("combat has no living enemies")
+		}
+		if s.combatTargetIndex >= len(targets) {
+			s.combatTargetIndex = 0
+		}
+		target := targets[s.combatTargetIndex]
+		s.combatSpellTargetPoint = combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+		s.combatSpellTargetsPoint = true
+		return nil
+	}
 	targets := s.combatHealingTargets()
 	s.combatSpellTargetIndex = 0
 	for index, target := range targets {
@@ -819,6 +874,7 @@ func (s *State) CancelCombatCast() {
 	s.combatCastingSpell = 0
 	s.combatCastingClassSet = false
 	s.combatSpellTargetIndex = 0
+	s.combatSpellTargetsPoint = false
 }
 
 // clearCombatActionFor mirrors the reference per-player Action.Clear call
@@ -852,6 +908,21 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 	return nil
 }
 
+// CombatMoveSpellTarget moves an area-spell center on the original 32x16
+// combat map. It is separate from fighter target cycling because Fireball may
+// intentionally be centered on an empty tile and can harm either side.
+func (s *State) CombatMoveSpellTarget(dx, dy int) error {
+	if s.combatCastingSpell != FireballSpellID || !s.combatSpellTargetsPoint {
+		return fmt.Errorf("no area spell target is being selected")
+	}
+	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
+	if next.X < 0 || next.X >= 32 || next.Y < 0 || next.Y >= 16 {
+		return fmt.Errorf("spell target (%d,%d) is outside the combat map", next.X, next.Y)
+	}
+	s.combatSpellTargetPoint = next
+	return nil
+}
+
 // CombatCast applies the verified first-level Magic Missile path. It consumes
 // exactly one memorized slot, targets the current enemy selection, and then
 // advances the same deterministic enemy-turn boundary as a weapon attack.
@@ -876,6 +947,9 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	if spellID == CureLightWoundsSpellID {
 		return s.combatCastCureLightWounds()
+	}
+	if spellID == FireballSpellID {
+		return s.combatCastFireball()
 	}
 	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
 		return fmt.Errorf("a different spell target is being selected")
@@ -928,6 +1002,88 @@ func (s *State) CombatCast(spellID uint8) error {
 	}
 	s.combatTurnIndex++
 	s.requestSound(SoundMagicHit)
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastFireball() error {
+	if s.combatCastingSpell != FireballSpellID || !s.combatSpellTargetsPoint {
+		return fmt.Errorf("Fireball target is not being selected")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.HasClass(party.ClassMagicUser) {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a magic-user in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == FireballSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Fireball", caster.ID)
+	}
+	positions := make(map[string]combat.TilePoint)
+	for _, fighter := range s.battle.Fighters() {
+		if fighter.HasCombatPosition {
+			positions[fighter.ID] = combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}
+		}
+	}
+	center := s.combatSpellTargetPoint
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...,
+	)
+	result, err := s.battle.CastFireball(caster.ID, center, casterLevel(s.partyRoster[characterIndex]))
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(s.partyRoster[characterIndex].SpellSlots, FireballSpellID)
+		return err
+	}
+	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
+	totalDamage := 0
+	for _, impact := range result.Impacts {
+		impacts = append(impacts, combat.VisualImpactTarget{
+			TargetID: impact.TargetID,
+			To:       positions[impact.TargetID],
+			Hit:      true,
+			Killed:   impact.TargetHP <= 0,
+		})
+		totalDamage += impact.Damage
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_fireball", "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。"),
+		caster.Name, len(result.Impacts), totalDamage,
+	)
+	if s.queueCombatVisual(combat.VisualEvent{
+		Kind: combat.VisualAreaSpell, Effect: "fireball", ActorID: caster.ID,
+		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY},
+		To:   center, Hit: len(impacts) != 0, Impacts: impacts,
+	}) {
+		return nil
+	}
+	s.combatTurnIndex++
+	for range impacts {
+		s.requestSound(SoundMagicHit)
+	}
+	for _, impact := range impacts {
+		if impact.Killed {
+			s.requestSound(SoundDeath)
+		}
+	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}

@@ -103,6 +103,10 @@ type Fighter struct {
 	MissileWeapon        bool
 	ThrownWeapon         bool
 	InitiativeBonus      int
+	// SavingThrows preserves the five reference saveVerse thresholds:
+	// poison, petrification, rod/staff/wand, breath weapon and spell.
+	SavingThrows     []uint8
+	SavingThrowBonus int
 	// MonsterSpellIDs mirrors the raw MON*CHA spell-list slots. The bounded
 	// monster-turn adapter currently consumes only Magic Missile (0x0F).
 	MonsterSpellIDs  []uint8
@@ -217,12 +221,29 @@ type SpellResult struct {
 	Targets  int
 }
 
+type AreaSpellImpact struct {
+	TargetID string
+	Damage   int
+	TargetHP int
+	Saved    bool
+}
+
+type AreaSpellResult struct {
+	CasterID   string
+	SpellID    uint8
+	Center     TilePoint
+	BaseDamage int
+	Impacts    []AreaSpellImpact
+}
+
 type Battle struct {
 	fighters map[string]Fighter
 	rng      *rand.Rand
 	round    int
 	status   Status
 }
+
+const FireballSpellID uint8 = 0x2F
 
 func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 	if len(fighters) == 0 {
@@ -715,6 +736,113 @@ func (b *Battle) castMagicMissile(casterID, targetID string, level int, spellID 
 	b.fighters[targetID] = target
 	b.updateStatus()
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: spellID, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
+}
+
+// CastFireball applies the reference 0x2F area spell: one level-d6 damage
+// roll is shared by every living combatant within the radius-two target
+// list; each target independently saves versus Spell for half damage. The
+// original path-distance implementation also consults combat terrain. This
+// bounded core uses the equivalent unobstructed two-tile footprint distance;
+// terrain occlusion remains an explicit adapter boundary.
+func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (AreaSpellResult, error) {
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return AreaSpellResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return AreaSpellResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return AreaSpellResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if level < 1 {
+		return AreaSpellResult{}, fmt.Errorf("caster level must be positive")
+	}
+	targets := make([]Fighter, 0)
+	for _, fighter := range b.Fighters() {
+		if fighter.HitPoints <= 0 || !fighter.HasCombatPosition ||
+			!fighterFootprintWithinRadius(fighter, center, 2) {
+			continue
+		}
+		if len(fighter.SavingThrows) <= 4 {
+			return AreaSpellResult{}, fmt.Errorf("fighter %q has no spell saving throw", fighter.ID)
+		}
+		targets = append(targets, fighter)
+	}
+	sort.SliceStable(targets, func(i, j int) bool {
+		left := fireballSortKey(targets[i], center)
+		right := fireballSortKey(targets[j], center)
+		if left != right {
+			return left < right
+		}
+		return targets[i].ID < targets[j].ID
+	})
+	damage := 0
+	for roll := 0; roll < level; roll++ {
+		damage += b.rng.Intn(6) + 1
+	}
+	result := AreaSpellResult{
+		CasterID: casterID, SpellID: FireballSpellID, Center: center, BaseDamage: damage,
+		Impacts: make([]AreaSpellImpact, 0, len(targets)),
+	}
+	for _, target := range targets {
+		saveRoll := b.rng.Intn(20) + 1
+		saved := saveRoll == 20 ||
+			saveRoll != 1 && saveRoll+target.SavingThrowBonus >= int(target.SavingThrows[4])
+		applied := damage
+		if saved {
+			applied /= 2
+		}
+		if applied > target.HitPoints {
+			applied = target.HitPoints
+		}
+		target.HitPoints -= applied
+		b.fighters[target.ID] = target
+		result.Impacts = append(result.Impacts, AreaSpellImpact{
+			TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
+		})
+	}
+	b.updateStatus()
+	return result, nil
+}
+
+func fighterFootprintWithinRadius(fighter Fighter, center TilePoint, radius int) bool {
+	footprint := FootprintForSize(fighter.CombatSize)
+	for y := fighter.CombatY; y < fighter.CombatY+footprint.Height; y++ {
+		for x := fighter.CombatX; x < fighter.CombatX+footprint.Width; x++ {
+			dx := abs(x - center.X)
+			dy := abs(y - center.Y)
+			// Reference canReachTarget accepts path steps <= range*2+1;
+			// cardinal movement costs 2 and diagonal movement costs 3.
+			if 2*max(dx, dy)+min(dx, dy) <= radius*2+1 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// fireballSortKey follows the reference list's cardinal=2, diagonal=3 step
+// metric. Direction tie-breaking is approximated by stable fighter ID until
+// the raw combatant-array order is retained by Battle.
+func fireballSortKey(fighter Fighter, center TilePoint) int {
+	footprint := FootprintForSize(fighter.CombatSize)
+	best := int(^uint(0) >> 1)
+	for y := fighter.CombatY; y < fighter.CombatY+footprint.Height; y++ {
+		for x := fighter.CombatX; x < fighter.CombatX+footprint.Width; x++ {
+			dx := abs(x - center.X)
+			dy := abs(y - center.Y)
+			best = min(best, 2*max(dx, dy)+min(dx, dy))
+		}
+	}
+	return best
+}
+
+func abs(value int) int {
+	if value < 0 {
+		return -value
+	}
+	return value
 }
 
 // CastCureLightWounds applies the verified 1-8 HP touch-heal effect. The

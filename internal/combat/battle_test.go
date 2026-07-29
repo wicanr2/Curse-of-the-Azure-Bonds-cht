@@ -391,6 +391,60 @@ func TestCastMagicMissileUsesVerifiedDamageAndLevelScaling(t *testing.T) {
 	}
 }
 
+func TestCastFireballUsesOneDamageRollAndHitsBothSidesInRadius(t *testing.T) {
+	saves := []uint8{20, 20, 20, 20, 20}
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage", Name: "Mage", Side: SideParty, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+		{ID: "ally", Name: "Ally", Side: SideParty, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves},
+		{ID: "near", Name: "Near", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 3, SavingThrows: saves},
+		{ID: "large", Name: "Large", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 5, CombatY: 4, CombatSize: 2, SavingThrows: saves},
+		{ID: "far", Name: "Far", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 8, CombatY: 8, SavingThrows: saves},
+		{ID: "corner", Name: "Corner", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 6, CombatY: 5, SavingThrows: saves},
+	}, 17)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastFireball("mage", TilePoint{X: 4, Y: 3}, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.SpellID != FireballSpellID || result.BaseDamage < 5 || result.BaseDamage > 30 ||
+		len(result.Impacts) != 3 {
+		t.Fatalf("fireball result=%+v", result)
+	}
+	hit := map[string]AreaSpellImpact{}
+	for _, impact := range result.Impacts {
+		hit[impact.TargetID] = impact
+		wantDamage := result.BaseDamage
+		if impact.Saved {
+			wantDamage /= 2
+		}
+		if impact.Damage != wantDamage {
+			t.Fatalf("impact=%+v, shared damage=%d", impact, result.BaseDamage)
+		}
+	}
+	if _, ok := hit["ally"]; !ok {
+		t.Fatal("friendly combatant inside Fireball was not hit")
+	}
+	if _, ok := hit["near"]; !ok {
+		t.Fatal("enemy at center was not hit")
+	}
+	if _, ok := hit["large"]; !ok {
+		t.Fatal("large target footprint intersecting radius was not hit")
+	}
+	for _, fighter := range battle.Fighters() {
+		if (fighter.ID == "mage" || fighter.ID == "far" || fighter.ID == "corner") && fighter.HitPoints != 40 {
+			t.Fatalf("outside fighter was hit: %+v", fighter)
+		}
+	}
+}
+
 func TestCastMonsterMagicMissileConsumesRawLevelOneUse(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "mage-monster", Name: "施法怪", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10,

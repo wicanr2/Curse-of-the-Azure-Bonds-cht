@@ -10,6 +10,7 @@ const (
 	VisualMelee VisualKind = iota + 1
 	VisualMissile
 	VisualMagicMissile
+	VisualAreaSpell
 )
 
 // VisualPhase is the player-visible ordering contract for one resolved action.
@@ -38,6 +39,7 @@ const (
 type VisualEvent struct {
 	Serial      uint64
 	Kind        VisualKind
+	Effect      string
 	ActorID     string
 	TargetID    string
 	From        TilePoint
@@ -45,19 +47,34 @@ type VisualEvent struct {
 	Hit         bool
 	Killed      bool
 	Projectiles int
+	Impacts     []VisualImpactTarget
+}
+
+// VisualImpactTarget describes one resolved target in an ordered area or chained
+// effect. Single-target callers may keep using VisualEvent's legacy target
+// fields; Impacts is the title-neutral extension used by effects such as an
+// area spell which presents each affected combatant in sequence.
+type VisualImpactTarget struct {
+	TargetID string
+	To       TilePoint
+	Hit      bool
+	Killed   bool
 }
 
 type VisualFrame struct {
-	Phase    VisualPhase
-	Progress float64
-	Done     bool
+	Phase       VisualPhase
+	ImpactIndex int
+	Progress    float64
+	Done        bool
 }
 
 func (event VisualEvent) Duration() time.Duration {
-	duration := VisualWindupDuration + VisualTravelDuration + VisualImpactDuration +
-		VisualCommitDuration + VisualHandoffDuration
-	if event.Killed {
-		duration += 9 * DeathOverlayPhaseDuration
+	duration := VisualWindupDuration + VisualTravelDuration + VisualHandoffDuration
+	for _, impact := range event.visualImpacts() {
+		duration += VisualImpactDuration + VisualCommitDuration
+		if impact.Killed {
+			duration += 9 * DeathOverlayPhaseDuration
+		}
 	}
 	return duration
 }
@@ -68,33 +85,69 @@ func (event VisualEvent) FrameAt(elapsed time.Duration) VisualFrame {
 	if elapsed < 0 {
 		elapsed = 0
 	}
-	phases := []struct {
-		phase    VisualPhase
-		duration time.Duration
-	}{
-		{VisualWindup, VisualWindupDuration},
-		{VisualTravel, VisualTravelDuration},
-		{VisualImpact, VisualImpactDuration},
-		{VisualCommit, VisualCommitDuration},
+	if elapsed < VisualWindupDuration {
+		return visualFrame(VisualWindup, -1, elapsed, VisualWindupDuration)
 	}
-	if event.Killed {
-		phases = append(phases, struct {
-			phase    VisualPhase
-			duration time.Duration
-		}{VisualDeath, 9 * DeathOverlayPhaseDuration})
+	elapsed -= VisualWindupDuration
+	if elapsed < VisualTravelDuration {
+		return visualFrame(VisualTravel, -1, elapsed, VisualTravelDuration)
 	}
-	phases = append(phases, struct {
-		phase    VisualPhase
-		duration time.Duration
-	}{VisualHandoff, VisualHandoffDuration})
-	for _, entry := range phases {
-		if elapsed < entry.duration {
-			return VisualFrame{
-				Phase:    entry.phase,
-				Progress: float64(elapsed) / float64(entry.duration),
-			}
+	elapsed -= VisualTravelDuration
+	for index, impact := range event.visualImpacts() {
+		if elapsed < VisualImpactDuration {
+			return visualFrame(VisualImpact, index, elapsed, VisualImpactDuration)
 		}
-		elapsed -= entry.duration
+		elapsed -= VisualImpactDuration
+		if elapsed < VisualCommitDuration {
+			return visualFrame(VisualCommit, index, elapsed, VisualCommitDuration)
+		}
+		elapsed -= VisualCommitDuration
+		if impact.Killed {
+			deathDuration := 9 * DeathOverlayPhaseDuration
+			if elapsed < deathDuration {
+				return visualFrame(VisualDeath, index, elapsed, deathDuration)
+			}
+			elapsed -= deathDuration
+		}
+	}
+	if elapsed < VisualHandoffDuration {
+		return visualFrame(VisualHandoff, -1, elapsed, VisualHandoffDuration)
 	}
 	return VisualFrame{Phase: VisualHandoff, Progress: 1, Done: true}
+}
+
+// Impact returns the target associated with frame. During windup, travel and
+// handoff no target impact is active.
+func (event VisualEvent) Impact(frame VisualFrame) (VisualImpactTarget, bool) {
+	return event.ImpactAt(frame.ImpactIndex)
+}
+
+func (event VisualEvent) ImpactAt(index int) (VisualImpactTarget, bool) {
+	impacts := event.visualImpacts()
+	if index < 0 || index >= len(impacts) {
+		return VisualImpactTarget{}, false
+	}
+	return impacts[index], true
+}
+
+func (event VisualEvent) ImpactCount() int { return len(event.visualImpacts()) }
+
+func (event VisualEvent) visualImpacts() []VisualImpactTarget {
+	if event.Impacts != nil {
+		return event.Impacts
+	}
+	return []VisualImpactTarget{{
+		TargetID: event.TargetID,
+		To:       event.To,
+		Hit:      event.Hit,
+		Killed:   event.Killed,
+	}}
+}
+
+func visualFrame(phase VisualPhase, impactIndex int, elapsed, duration time.Duration) VisualFrame {
+	return VisualFrame{
+		Phase:       phase,
+		ImpactIndex: impactIndex,
+		Progress:    float64(elapsed) / float64(duration),
+	}
 }

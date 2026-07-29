@@ -99,6 +99,7 @@ type app struct {
 	soundPlayer         *sound.Player
 	screenshotPath      string
 	screenshotDone      bool
+	screenshotFrames    int
 }
 
 type combatAnimation struct {
@@ -507,8 +508,25 @@ func (a *app) Update() error {
 			a.state.CancelCombatCast()
 			return nil
 		}
+		if a.state.CombatCastingSpell() == game.FireballSpellID {
+			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, -1) })
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(1, 0) })
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, 1) })
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(-1, 0) })
+			}
+		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.MagicMissileSpellID) })
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyF) && a.state.CombatCanCastFireball() {
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.FireballSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CureLightWoundsSpellID) })
@@ -835,28 +853,31 @@ func (a *app) tryDungeonBash() {
 
 func (a *app) Draw(screen *ebiten.Image) {
 	if a.screenshotPath != "" && !a.screenshotDone {
-		defer func() {
-			a.screenshotDone = true
-			output, err := os.Create(a.screenshotPath)
-			if err != nil {
-				log.Printf("create screenshot: %v", err)
-				return
-			}
-			pixels := make([]byte, logicalWidth*logicalHeight*4)
-			screen.ReadPixels(pixels)
-			captured := &image.RGBA{
-				Pix:    pixels,
-				Stride: logicalWidth * 4,
-				Rect:   image.Rect(0, 0, logicalWidth, logicalHeight),
-			}
-			if err := png.Encode(output, captured); err != nil {
-				log.Printf("encode screenshot: %v", err)
-			}
-			if err := output.Close(); err != nil {
-				log.Printf("close screenshot: %v", err)
-			}
-			os.Exit(0)
-		}()
+		a.screenshotFrames++
+		if a.screenshotFrames >= 3 {
+			defer func() {
+				a.screenshotDone = true
+				output, err := os.Create(a.screenshotPath)
+				if err != nil {
+					log.Printf("create screenshot: %v", err)
+					return
+				}
+				pixels := make([]byte, logicalWidth*logicalHeight*4)
+				screen.ReadPixels(pixels)
+				captured := &image.RGBA{
+					Pix:    pixels,
+					Stride: logicalWidth * 4,
+					Rect:   image.Rect(0, 0, logicalWidth, logicalHeight),
+				}
+				if err := png.Encode(output, captured); err != nil {
+					log.Printf("encode screenshot: %v", err)
+				}
+				if err := output.Close(); err != nil {
+					log.Printf("close screenshot: %v", err)
+				}
+				os.Exit(0)
+			}()
+		}
 	}
 	screen.Fill(color.RGBA{12, 18, 42, 255})
 	white := color.RGBA{232, 238, 255, 255}
@@ -1612,14 +1633,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	for _, fighter := range a.state.CombatFighters() {
 		if event, ok := a.state.CombatVisualEvent(); ok {
 			frame := a.combatVisualFrame(event)
-			if event.Killed && event.TargetID == fighter.ID && frame.Phase < combat.VisualDeath {
+			if impact, preserve := combatVisualPreservedImpact(event, frame, fighter.ID); preserve {
 				// Battle rules have already resolved HP. Preserve the target's
 				// pre-impact map presence until the visual commit reaches death.
 				fighter.HitPoints = 1
 				fighter.DeathOverlay = false
 				fighter.DownedCorpse = false
 				fighter.HasCombatPosition = true
-				fighter.CombatX, fighter.CombatY = event.To.X, event.To.Y
+				fighter.CombatX, fighter.CombatY = impact.To.X, impact.To.Y
 			}
 		}
 		if fighter.HitPoints <= 0 && !fighter.DownedCorpse {
@@ -1679,6 +1700,15 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		a.drawCombatSpriteMarker(battlefield, fighter, isActive, selected, x, y)
 		enemyIndex++
 	}
+	if point, ok := a.state.CombatSpellTargetPoint(); ok {
+		tile := mirroredCombatAnchor(camera.Apply(point))
+		x, y := tile.X*48, tile.Y*48
+		marker := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+		ebitenutil.DrawRect(battlefield, float64(x+2), float64(y+2), 44, 2, marker)
+		ebitenutil.DrawRect(battlefield, float64(x+2), float64(y+44), 44, 2, marker)
+		ebitenutil.DrawRect(battlefield, float64(x+2), float64(y+2), 2, 44, marker)
+		ebitenutil.DrawRect(battlefield, float64(x+44), float64(y+2), 2, 44, marker)
+	}
 	if event, ok := a.state.CombatVisualEvent(); ok {
 		a.drawCombatVisual(battlefield, event, a.combatVisualFrame(event), camera)
 	}
@@ -1699,6 +1729,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			text.Draw(screen, "確認施法：Enter　取消：Esc", a.face, 32, 350, cyan)
 			return
 		}
+		if a.state.CombatCastingSpell() == game.FireballSpellID {
+			text.Draw(screen, "選擇火球中心：方向鍵移動　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
+			return
+		}
 		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
 		return
 	}
@@ -1708,6 +1742,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastMagicMissile() {
 		spellHints = append(spellHints, "S飛彈")
+	}
+	if a.state.CombatCanCastFireball() {
+		spellHints = append(spellHints, "F火球")
 	}
 	if a.state.CombatCanCastCureLightWounds() {
 		spellHints = append(spellHints, "H治療")
@@ -1830,16 +1867,24 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 			if !a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y) {
 				ebitenutil.DrawLine(screen, fromX, fromY, x, y, color.RGBA{R: 255, G: 244, B: 180, A: 255})
 			}
-		case combat.VisualMagicMissile:
-			definition, _ := a.findCombatVisual("magic_missile", "travel")
+		case combat.VisualMagicMissile, combat.VisualAreaSpell:
+			trigger := "magic_missile"
+			if event.Effect != "" {
+				trigger = event.Effect
+			}
+			definition, _ := a.findCombatVisual(trigger, "travel")
 			key, flip := combatMagicMissileSprite(definition, event, frame)
 			if !a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y) {
 				ebitenutil.DrawRect(screen, x-4, y-4, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
 			}
 		}
 	case combat.VisualImpact:
-		if event.Kind == combat.VisualMagicMissile && event.Hit {
-			definition, _ := a.findCombatVisual("magic_missile", "impact")
+		if (event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell) && event.Hit {
+			trigger := "magic_missile"
+			if event.Effect != "" {
+				trigger = event.Effect
+			}
+			definition, _ := a.findCombatVisual(trigger, "impact")
 			key, flip := combatMagicImpactSprite(definition, frame)
 			a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, toX, toY)
 		}
@@ -1950,7 +1995,11 @@ func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
 
 func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {
 	from := mirroredCombatAnchor(camera.Apply(event.From))
-	to := mirroredCombatAnchor(camera.Apply(event.To))
+	target := event.To
+	if impact, ok := event.Impact(frame); ok && frame.Phase != combat.VisualTravel {
+		target = impact.To
+	}
+	to := mirroredCombatAnchor(camera.Apply(target))
 	fromX, fromY = float64(from.X*48+24), float64(from.Y*48+24)
 	toX, toY = float64(to.X*48+24), float64(to.Y*48+24)
 	x = fromX + (toX-fromX)*frame.Progress
@@ -1958,18 +2007,44 @@ func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camer
 	return
 }
 
+func combatVisualPreservedImpact(event combat.VisualEvent, frame combat.VisualFrame, targetID string) (combat.VisualImpactTarget, bool) {
+	for index := 0; index < event.ImpactCount(); index++ {
+		impact, _ := event.ImpactAt(index)
+		if impact.TargetID != targetID || !impact.Killed {
+			continue
+		}
+		switch {
+		case frame.Phase == combat.VisualHandoff:
+			return combat.VisualImpactTarget{}, false
+		case frame.ImpactIndex < 0:
+			return impact, true
+		case frame.ImpactIndex < index:
+			return impact, true
+		case frame.ImpactIndex == index && frame.Phase < combat.VisualDeath:
+			return impact, true
+		default:
+			return combat.VisualImpactTarget{}, false
+		}
+	}
+	return combat.VisualImpactTarget{}, false
+}
+
 func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, error) {
+	fireballDemo := strings.HasPrefix(kind, "fireball-")
 	hero := combat.Fighter{
 		ID: "demo-hero", Name: "弓手艾琳", Side: combat.SideParty,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 0,
 		AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 4,
 		InitiativeBonus: 30, HasCombatPosition: true, CombatX: 1, CombatY: 2,
+		SavingThrows: []uint8{10, 10, 10, 10, 10},
+		HasPartyIcon: true, PartyIconSize: 2,
 	}
 	enemy := combat.Fighter{
 		ID: "demo-orc", Name: "半獸人", Side: combat.SideEnemy,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10,
 		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 4,
 		InitiativeBonus: -20, HasCombatPosition: true, CombatX: 5, CombatY: 2,
+		SavingThrows: []uint8{10, 10, 10, 10, 10},
 	}
 	switch kind {
 	case "melee":
@@ -1985,13 +2060,51 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		enemy.InitiativeBonus = 30
 		enemy.MonsterSpellUses[0] = 1
 		enemy.MonsterSpellIDs = []uint8{combat.MonsterMagicMissileSpellID}
+	case "fireball-travel", "fireball-impact-1", "fireball-impact-2":
+		hero.Name = "法師艾琳"
 	default:
 		return 0, fmt.Errorf("unknown combat visual demo %q", kind)
 	}
-	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 37); err != nil {
+	heroes := []combat.Fighter{hero}
+	enemies := []combat.Fighter{enemy}
+	if fireballDemo {
+		ally := combat.Fighter{
+			ID: "demo-ally", Name: "戰士布蘭", Side: combat.SideParty,
+			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 2,
+			InitiativeBonus: -10, HasCombatPosition: true, CombatX: 3, CombatY: 2,
+			SavingThrows: []uint8{10, 10, 10, 10, 10},
+			HasPartyIcon: true, PartyHeadBlock: 1, PartyBodyBlock: 1, PartyIconSize: 2,
+		}
+		enemy.HitPoints, enemy.MaxHitPoints = 100, 100
+		enemy.ID = "demo-orc-a"
+		secondEnemy := enemy
+		secondEnemy.ID, secondEnemy.Name = "demo-orc-b", "半獸人隊長"
+		secondEnemy.CombatX, secondEnemy.CombatY = 4, 3
+		heroes = append(heroes, ally)
+		enemies = append(enemies, secondEnemy)
+		abilities := party.Abilities{Strength: 12, Intelligence: 16, Wisdom: 12, Dexterity: 14, Constitution: 12, Charisma: 12}
+		if err := state.SetPartyRoster(party.Roster{
+			{ID: hero.ID, Name: hero.Name, Race: party.RaceHuman, Class: party.ClassMagicUser,
+				Abilities: abilities, Level: 5, HitPoints: 30, MaxHitPoints: 30,
+				SpellSlots: []uint8{game.FireballSpellID}, SavingThrows: hero.SavingThrows},
+			{ID: ally.ID, Name: ally.Name, Race: party.RaceHuman, Class: party.ClassFighter,
+				Abilities: abilities, Level: 5, HitPoints: 100, MaxHitPoints: 100,
+				SavingThrows: ally.SavingThrows},
+		}); err != nil {
+			return 0, err
+		}
+	}
+	if err := state.StartCombat(heroes, enemies, 37); err != nil {
 		return 0, err
 	}
-	if kind != "magic" && kind != "magic-impact" {
+	if fireballDemo {
+		if err := state.BeginCombatCast(game.FireballSpellID); err != nil {
+			return 0, err
+		}
+		if err := state.CombatCast(game.FireballSpellID); err != nil {
+			return 0, err
+		}
+	} else if kind != "magic" && kind != "magic-impact" {
 		if err := state.CombatAct(); err != nil {
 			return 0, err
 		}
@@ -2007,6 +2120,15 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
 	case "magic-impact":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			3*combat.VisualImpactDuration/4, nil
+	case "fireball-travel":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
+	case "fireball-impact-1":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			3*combat.VisualImpactDuration/4, nil
+	case "fireball-impact-2":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			combat.VisualImpactDuration + combat.VisualCommitDuration +
 			3*combat.VisualImpactDuration/4, nil
 	case "kill":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
@@ -2219,7 +2341,7 @@ func main() {
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
-	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, magic-impact, or kill")
+	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, magic-impact, fireball-travel, fireball-impact-1, fireball-impact-2, or kill")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -2237,8 +2359,10 @@ func main() {
 	}
 	*combatVisualDemo = strings.ToLower(strings.TrimSpace(*combatVisualDemo))
 	if *combatVisualDemo != "" && *combatVisualDemo != "melee" && *combatVisualDemo != "bow" &&
-		*combatVisualDemo != "magic" && *combatVisualDemo != "magic-impact" && *combatVisualDemo != "kill" {
-		log.Fatal("-combat-visual-demo must be melee, bow, magic, magic-impact, kill, or empty")
+		*combatVisualDemo != "magic" && *combatVisualDemo != "magic-impact" &&
+		*combatVisualDemo != "fireball-travel" && *combatVisualDemo != "fireball-impact-1" &&
+		*combatVisualDemo != "fireball-impact-2" && *combatVisualDemo != "kill" {
+		log.Fatal("-combat-visual-demo has an unknown value")
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")

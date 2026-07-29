@@ -21,7 +21,9 @@
   Missile 實際沿用的四格飛行素材來源，不應再以 renderer primitive 代替。
 - `0x05/0x85` 是多種目標型魔法共用的 spell missile，不是只供 Magic
   Missile 專用。文件與程式應稱為「generic spell missile（Magic Missile
-  會使用）」；不能反推每一種法術都有獨立 projectile。
+  會使用）」；不能反推每一種法術都有獨立 projectile。公開 DOS 影片另在
+  `00:36:15.40` 直接拍到 Fireball 使用相同青色 travel，之後才逐目標播放
+  `0x0A/0x8A` 外觀的紅白 impact 與必要的死亡骷髏。
 
 以上 consumer mapping 是 **code-backed strong inference**：它由公開的
 CoAB decompile、DAX 初始化關係及本機原始圖形三者互相吻合；本次沒有把
@@ -135,7 +137,7 @@ projectile consumer 中，它們代表方向或 animation phase，不應依欄�
 | `00/80`, `01/81`, `02/82` | 綠色箭桿與箭頭，垂直／斜向／水平 | `DrawRangedAttack` (`ovr014.cs:1590-1631`) 對 `Arrow` 等選 icon `13..15`，依 8-direction 選 Normal/Attack/flip | **code-backed strong inference：箭、矢、標槍等共用方向 projectile** |
 | `03/83` | 旋轉中的帶柄刃器 | `ovr014.cs:1633-1640` 對 Hand Axe／Club／Glaive 載 icon `16` 的四格 | **code-backed strong inference：旋轉投擲武器** |
 | `04/84` | 小型青白彈體／容器的兩個角度 | `ovr014.cs:1642-1648` 對 Flask of Oil／unknown `Type_85` 載 icon `17` | **code-backed strong inference：油瓶 projectile**；具體 `Type_85` 名稱仍 unknown |
-| `05/85` | 青色四叉／飛散形，黃點綴；兩張是不同 phase | 施法共同路徑 `ovr023.cs:739-762` 固定載 icon `0x12`；`SpellMagicMissile` 在 `ovr023.cs:1166-1171` 進入該結算流程 | **code-backed strong inference：generic spell missile；Magic Missile 直接使用** |
+| `05/85` | 青色四叉／飛散形，黃點綴；兩張是不同 phase | 施法共同路徑 `ovr023.cs:739-762` 固定載 icon `0x12`；`SpellMagicMissile` 在 `ovr023.cs:1166-1171` 進入該結算流程；DOS 影片 `00:36:15.40` 亦直接顯示 Fireball 使用同形 travel | **code-backed + video-backed：generic spell missile；Magic Missile、Fireball 直接使用** |
 | `06/86` | 青白分叉電弧 | electrical damage 路徑在 `ovr023.cs:1951-1961` 載 icon `0x13`，Lightning Bolt／dragon electricity 亦使用 | **code-backed strong inference：電擊／Lightning Bolt projectile** |
 | `07/87` | 灰色圓盤／石塊的旋轉 phase | ranged default branch `ovr014.cs:1661-1667` 載 icon `20` 的 Normal/Attack | **code-backed strong inference：未分類 ranged fallback**；不能只靠外觀命名為石頭 |
 | `08/88` | 4×4 小彈丸 | Sling／Staff Sling／Spine branch `ovr014.cs:1650-1659` 載 icon `21` 的兩格 | **code-backed strong inference：投石索／spine pellet** |
@@ -222,4 +224,6 @@ SpellCastFunction succeeds
    灰色圓盤只憑外觀命名成 stone。
 5. 驗證 Magic Missile 多 projectile／多 target 的重播次數；目前 source
    只足以證明每次共同施法 travel 使用 `0x05/0x85` 四格。
-
+6. Fireball 影片證明單次 travel 後逐一 impact／death；下一步把
+   `sub_5F782` 的 radius target ordering、saving throw 與 damage dice
+   對回 raw overlay instructions，再建立可玩的多目標 timeline。
