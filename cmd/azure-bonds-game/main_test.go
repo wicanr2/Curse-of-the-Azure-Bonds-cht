@@ -65,6 +65,22 @@ func TestCombatVisualPointUsesAreaCenterThenOrderedImpactTarget(t *testing.T) {
 	}
 }
 
+func TestCombatVisualPointUsesCurrentLineSegment(t *testing.T) {
+	event := combat.VisualEvent{
+		From: combat.TilePoint{X: 1, Y: 1},
+		To:   combat.TilePoint{X: 3, Y: 1},
+		Segments: []combat.VisualPathSegment{
+			{From: combat.TilePoint{X: 3, Y: 1}, To: combat.TilePoint{X: 5, Y: 1}},
+		},
+	}
+	fromX, fromY, toX, toY, x, y := combatVisualPoint(event, combat.VisualFrame{
+		Phase: combat.VisualSegmentTravel, SegmentIndex: 0, Progress: 0.5,
+	}, combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{}, false))
+	if fromX != 168 || fromY != 72 || toX != 72 || toY != 72 || x != 120 || y != 72 {
+		t.Fatalf("line points=(%v,%v)->(%v,%v) at (%v,%v)", fromX, fromY, toX, toY, x, y)
+	}
+}
+
 func TestCombatVisualPreservesEachKilledTargetUntilItsDeathPhase(t *testing.T) {
 	event := combat.VisualEvent{
 		Impacts: []combat.VisualImpactTarget{
@@ -182,6 +198,37 @@ func TestCombatMagicImpactCyclesOriginalCOMSPRHitFrames(t *testing.T) {
 		})
 		if key != expected.key || flip != expected.flip {
 			t.Fatalf("impact %d=(%q,%v), want (%q,%v)", index, key, flip, expected.key, expected.flip)
+		}
+	}
+}
+
+func TestCombatLightningLineCyclesOriginalElectricalFrames(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition, found := pack.FindCombatVisual("lightning_bolt", "line")
+	if !found {
+		t.Fatal("missing lightning_bolt/line combat visual")
+	}
+	want := []struct {
+		key  string
+		flip bool
+	}{
+		{"comspr-block-06-item-00.png", false},
+		{"comspr-block-06-item-00.png", true},
+		{"comspr-block-86-item-00.png", true},
+		{"comspr-block-86-item-00.png", false},
+	}
+	for index, expected := range want {
+		key, flip := combatPathSequenceSprite(
+			definition,
+			combat.TilePoint{X: 2, Y: 1},
+			combat.TilePoint{X: 6, Y: 1},
+			float64(index)/12,
+		)
+		if key != expected.key || flip != expected.flip {
+			t.Fatalf("electrical frame %d=(%q,%v), want (%q,%v)", index, key, flip, expected.key, expected.flip)
 		}
 	}
 }

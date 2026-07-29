@@ -92,3 +92,35 @@ combatant-array／direction tie order 尚未完成。
 弓箭方向與素材目前由 raw COMSPR＋consumer mapping 證明，詳見
 [`comspr-projectile-audit.md`](../../research/comspr-projectile-audit.md)；
 仍需再加入一筆公開影片或 DOSBox 的逐格弓箭時間碼，才能校準速度。
+
+## Lightning Bolt：命中後繼續延伸
+
+同一 DOS/EGA 影片 `07:40:22.50–25.60`：
+
+```text
+22.50  COMSPR 06/86 青白電弧移向指定 dark elf mage
+22.70  電弧與目標重疊
+23.10  COMSPR 0A/8A 紅白 damage impact + 電擊傷害文字
+23.60  saving throw 文字
+24.70  COMSPR 06/86 由命中格繼續向右
+25.30  電弧抵達更遠格
+```
+
+關鍵幀：
+
+- [`combat-lightning-target-travel-074022500.png`](combat-lightning-target-travel-074022500.png)
+- [`combat-lightning-target-hit-074022700.png`](combat-lightning-target-hit-074022700.png)
+- [`combat-lightning-damage-impact-074023100.png`](combat-lightning-damage-impact-074023100.png)
+- [`combat-lightning-line-continue-074024700.png`](combat-lightning-line-continue-074024700.png)
+- [`combat-lightning-line-end-074025300.png`](combat-lightning-line-end-074025300.png)
+
+這段是 **video-backed** 的 travel→impact/damage/save→continue ordering。
+牆面反彈未出現在該場戰鬥；目前只標為 executable/reference
+**code-backed strong inference**。完整規則、證據邊界與 remake mapping 見
+[`355-lightning-bolt-reflecting-line.md`](../../spec/355-lightning-bolt-reflecting-line.md)。
+
+對應 remake checkpoints：
+
+- [`combat-timeline-lightning-target-hit.png`](../../screenshots/combat-timeline-lightning-target-hit.png)
+- [`combat-timeline-lightning-line-continue.png`](../../screenshots/combat-timeline-lightning-line-continue.png)
+- [`combat-timeline-lightning-reflect.png`](../../screenshots/combat-timeline-lightning-reflect.png)

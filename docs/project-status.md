@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-29
-本 milestone 的 CoAB 基底：`d9718a1`
-依賴的 Golden Box engine checkpoint：`051cd71`
+本 milestone 的 CoAB 基底：`b8b6418`
+依賴的 Golden Box engine checkpoint：`d0bf86b`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -42,6 +42,12 @@ commit 內保存不可能自我引用的 hash。
   Magic Missile travel、phase-aligned 聲音、死亡 overlay，以及逐 action
   敵方回合；弓箭、generic spell projectile 與 magic impact 已改用原版
   COMSPR blocks，並有 DOS 公開影片逐格 oracle。
+- Lightning Bolt `0x33` 已接入正常 memorized slot／32×16 tile cursor；
+  共用 line-spell 規則支援正交／對角 2／3 step cost、地城牆反向、
+  large footprint 去重、反彈重複命中、共用等級 d6 與逐目標 Spell save
+  半傷。時間軸可交錯 primary travel、ordered segment、damage impact、
+  commit／death；CoAB JSON 宣告 COMSPR `05/85`、`06/86`、`0A/8A`。
+  DOS 影片 `07:40:22.50–25.60` 與三張 remake checkpoint 已保存。
 - 角色建立、繁中姓名、能力值、種族／職業、基礎隊伍、裝備與多項法術。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
@@ -63,8 +69,9 @@ commit 內保存不可能自我引用的 hash。
 - 全部 ECL opcode、外部 routine、副作用及由開場到結局的完整可通關流程。
 - 所有城市、地城、門、屋頂、斜向視角與每張地圖的 DOS 像素級校準。
 - 戰鬥畫面的完整 DOS oracle 校準、弓箭／法術 projectile 的逐距離 timing、
-  所有方向 placement、Fireball 牆面阻擋／同距排序、Lightning Bolt／雲霧等
-  獨立法術效果、AI、其餘法術、物品、
+  所有方向 placement、Fireball 牆面阻擋／同距排序、Lightning Bolt
+  牆角／多次反彈 runtime oracle、雲霧 persistent area effect、AI、
+  其餘法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、

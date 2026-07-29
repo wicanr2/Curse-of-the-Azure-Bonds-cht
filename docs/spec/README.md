@@ -326,3 +326,4 @@
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）
 - [第三百五十三輪眼魔洞窟離場](./353-beholder-cave-departure.md)（`READY`：boundary terrain `0x93`、Olive／Dimswart 告別、物品銷毀 signal 與 `0x22→0x51`）
 - [第三百五十四輪戰鬥動作時間軸](./354-combat-action-timeline.md)（`IN PROGRESS`：transaction 與原版 arrow/spell COMSPR 已接入；完整 timing 尚待驗證）
+- [第三百五十五輪閃電束反射線](./355-lightning-bolt-reflecting-line.md)（`READY`：原版加權射線、牆面反射、逐目標傷害／豁免與 travel→impact→continue 時間軸）

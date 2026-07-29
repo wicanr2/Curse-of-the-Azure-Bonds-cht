@@ -91,3 +91,41 @@ func TestVisualTimelineLegacyTargetIsOneImpact(t *testing.T) {
 		t.Fatalf("legacy impact=(%+v,%v), event=%+v", impact, ok, event)
 	}
 }
+
+func TestVisualTimelineInterleavesLeadingImpactAndLineSegments(t *testing.T) {
+	event := VisualEvent{
+		Kind: VisualLineSpell,
+		Impacts: []VisualImpactTarget{
+			{TargetID: "target", To: TilePoint{X: 2, Y: 1}, Hit: true},
+			{TargetID: "far", To: TilePoint{X: 4, Y: 1}, Hit: true},
+		},
+		TravelImpacts: 1,
+		Segments: []VisualPathSegment{
+			{From: TilePoint{X: 2, Y: 1}, To: TilePoint{X: 4, Y: 1}, HasImpact: true, ImpactIndex: 1},
+			{From: TilePoint{X: 4, Y: 1}, To: TilePoint{X: 6, Y: 1}},
+		},
+	}
+	leadingImpact := VisualWindupDuration + VisualTravelDuration
+	firstSegment := leadingImpact + VisualImpactDuration + VisualCommitDuration
+	secondImpact := firstSegment + VisualTravelDuration
+	secondSegment := secondImpact + VisualImpactDuration + VisualCommitDuration
+	checks := []struct {
+		at           time.Duration
+		phase        VisualPhase
+		impactIndex  int
+		segmentIndex int
+		resolved     int
+	}{
+		{leadingImpact, VisualImpact, 0, -1, 0},
+		{firstSegment, VisualSegmentTravel, -1, 0, 1},
+		{secondImpact, VisualImpact, 1, 0, 1},
+		{secondSegment, VisualSegmentTravel, -1, 1, 2},
+	}
+	for _, check := range checks {
+		frame := event.FrameAt(check.at)
+		if frame.Phase != check.phase || frame.ImpactIndex != check.impactIndex ||
+			frame.SegmentIndex != check.segmentIndex || frame.ResolvedImpacts != check.resolved {
+			t.Fatalf("FrameAt(%s)=%+v", check.at, frame)
+		}
+	}
+}

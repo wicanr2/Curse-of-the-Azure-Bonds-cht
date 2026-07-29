@@ -6,13 +6,16 @@ package game
 type SoundEvent int8
 
 const (
-	SoundStop      SoundEvent = 0
-	SoundNoOp      SoundEvent = 1
-	SoundMissile   SoundEvent = 2
-	SoundMagicHit  SoundEvent = 3
-	SoundDeath     SoundEvent = 5
-	SoundGeneric5  SoundEvent = 6
-	SoundHit       SoundEvent = 7
+	SoundStop     SoundEvent = 0
+	SoundNoOp     SoundEvent = 1
+	SoundMissile  SoundEvent = 2
+	SoundMagicHit SoundEvent = 3
+	SoundDeath    SoundEvent = 5
+	SoundGeneric5 SoundEvent = 6
+	SoundHit      SoundEvent = 7
+	// SoundLightning preserves the reference sound_8 selector even though the
+	// recovered PC resource table has no WAV sample for it.
+	SoundLightning SoundEvent = 8
 	SoundMiss      SoundEvent = 9
 	SoundStep      SoundEvent = 10
 	SoundGeneric10 SoundEvent = 11

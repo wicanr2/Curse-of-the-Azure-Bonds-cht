@@ -42,6 +42,21 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		fireballImpact.Frames[0].Block != 0x0A || fireballImpact.Frames[3].Block != 0x8A {
 		t.Fatalf("fireball impact combat visual=%+v found=%v", fireballImpact, found)
 	}
+	lightningTravel, found := pack.FindCombatVisual("lightning_bolt", "travel")
+	if !found || len(lightningTravel.Frames) != 4 ||
+		lightningTravel.Frames[0].Block != 0x05 || lightningTravel.Frames[3].Block != 0x85 {
+		t.Fatalf("lightning travel combat visual=%+v found=%v", lightningTravel, found)
+	}
+	lightningLine, found := pack.FindCombatVisual("lightning_bolt", "line")
+	if !found || len(lightningLine.Frames) != 4 ||
+		lightningLine.Frames[0].Block != 0x06 || lightningLine.Frames[3].Block != 0x86 {
+		t.Fatalf("lightning line combat visual=%+v found=%v", lightningLine, found)
+	}
+	lightningImpact, found := pack.FindCombatVisual("lightning_bolt", "impact")
+	if !found || lightningImpact.ReferenceDelay != 70 || len(lightningImpact.Frames) != 4 ||
+		lightningImpact.Frames[0].Block != 0x0A || lightningImpact.Frames[3].Block != 0x8A {
+		t.Fatalf("lightning impact combat visual=%+v found=%v", lightningImpact, found)
+	}
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||

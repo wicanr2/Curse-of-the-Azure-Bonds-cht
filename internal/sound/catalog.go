@@ -10,15 +10,16 @@ const (
 	Stop ID = 0
 	NoOp ID = 1
 
-	Missile  ID = 2
-	MagicHit ID = 3
-	Death    ID = 5
-	Sound5   ID = 6
-	Hit      ID = 7
-	Miss     ID = 9
-	Step     ID = 10
-	Sound10  ID = 11
-	Start    ID = 13
+	Missile   ID = 2
+	MagicHit  ID = 3
+	Death     ID = 5
+	Sound5    ID = 6
+	Hit       ID = 7
+	Lightning ID = 8
+	Miss      ID = 9
+	Step      ID = 10
+	Sound10   ID = 11
+	Start     ID = 13
 )
 
 // AssetName returns the extracted WAV corresponding to the reference sound

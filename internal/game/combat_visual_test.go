@@ -164,6 +164,103 @@ func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	}
 }
 
+func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		SpellSlots: []uint8{LightningBoltSpellID},
+	}}
+	saves := []uint8{30, 30, 30, 30, 30}
+	heroes := []combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 0, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 1, CombatY: 2, SavingThrows: saves,
+	}}
+	enemies := []combat.Fighter{
+		{ID: "near", Name: "近敵", Side: combat.SideEnemy,
+			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves},
+		{ID: "far", Name: "遠敵", Side: combat.SideEnemy,
+			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 5, CombatY: 2, SavingThrows: saves},
+	}
+	if err := state.StartCombat(heroes, enemies, 29); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanCastLightningBolt() {
+		t.Fatal("memorized Lightning Bolt was not exposed on the normal combat turn")
+	}
+	if err := state.CombatSelectTarget(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(LightningBoltSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if point, ok := state.CombatSpellTargetPoint(); !ok || point != (combat.TilePoint{X: 3, Y: 2}) {
+		t.Fatalf("initial Lightning Bolt point=(%+v,%v)", point, ok)
+	}
+	terrain := func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 10 && y >= 0 && y < 6}
+	}
+	if err := state.CombatCastWithTerrain(LightningBoltSpellID, terrain); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualLineSpell || event.Effect != "lightning_bolt" ||
+		event.To != (combat.TilePoint{X: 3, Y: 2}) || event.TravelImpacts != 1 ||
+		len(event.Impacts) != 2 || len(event.Segments) < 2 {
+		t.Fatalf("Lightning Bolt visual=%+v ok=%v", event, ok)
+	}
+	if event.Impacts[0].TargetID != "near" || event.Impacts[1].TargetID != "far" {
+		t.Fatalf("Lightning Bolt impacts=%+v", event.Impacts)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Lightning Bolt slot not consumed: %v", state.partyRoster[0].SpellSlots)
+	}
+	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundLightning {
+		t.Fatalf("Lightning Bolt travel sounds=%v", sounds)
+	}
+	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundMagicHit {
+		t.Fatalf("Lightning Bolt impact sounds=%v", sounds)
+	}
+}
+
+func TestCombatLightningBoltRestoresSlotWhenTerrainIsUnavailable(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
+		SpellSlots: []uint8{LightningBoltSpellID},
+	}}
+	saves := []uint8{30, 30, 30, 30, 30}
+	if err := state.StartCombat([]combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 0, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 1, CombatY: 2, SavingThrows: saves,
+	}}, []combat.Fighter{{
+		ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
+		HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves,
+	}}, 31); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(LightningBoltSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCastWithTerrain(LightningBoltSpellID, nil); err == nil {
+		t.Fatal("Lightning Bolt unexpectedly cast without terrain")
+	}
+	if slots := state.partyRoster[0].SpellSlots; len(slots) != 1 || slots[0] != LightningBoltSpellID {
+		t.Fatalf("Lightning Bolt slot rollback=%v", slots)
+	}
+}
+
 func TestCombatVisualEnemyTurnStopsAtOneActionUntilHandoff(t *testing.T) {
 	state := NewState(testCatalog())
 	state.EnableCombatVisualTimeline(true)
