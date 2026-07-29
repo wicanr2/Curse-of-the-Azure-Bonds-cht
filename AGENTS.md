@@ -171,7 +171,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 基底：`cd87046`（本輪音樂 bridge milestone 之前的 HEAD）。
+- CoAB 本輪基底：`6101bd8`；第 367 輪音序列 bytecode milestone 會由
+  本文件所在 commit 完成。
 - Engine dependency：`5363177`（含中立 `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
   `title_id` schema）。
@@ -285,6 +286,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   十二首中英文 `title_id`。`internal/pc98music.ExtractTrackSequences`
   只接受已辨識 driver SHA、selector 1–12，並複製完整七聲道 bytes，
   不把商業 sequence 放進 repo。
+- 第 367 輪已解出 `sub_10410` 的 FM／PSG family-aware 指令寬度、
+  `A0–A4` 控制流、16-entry call／loop stack 與 overflow／underflow
+  no-op。84 組 sequence 各通過 256 timed events；channel 6 timing 分支
+  會忽略控制 opcode 並 read-through descriptor end，auditor 必須維持
+  `bounded-runtime-read-through`，不可誤套 FM／PSG range gate。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -295,9 +301,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   正常玩家路徑已完成；`docs/spec/364-pc98-music-vector-bridge.md` 也已
   READY，Sound BIOS 規格 `docs/spec/365-pc98-sound-bios-d2-api.md` 也已
   READY，track/import 規格
-  `docs/spec/366-pc98-track-table-and-runtime-import.md` 也已 READY。
-  下一步解 `sub_10410` stream opcode、追 D2h／direct OPN runtime YM
-  trace 與缺失工作區；播放器只能在 register event 交叉驗證後接入。
+  `docs/spec/366-pc98-track-table-and-runtime-import.md` 也已 READY，
+  stream bytecode 規格 `docs/spec/367-pc98-stream-bytecode.md` 也已 READY。
+  下一步追 note／參數到 D2h／direct OPN register event、runtime YM trace
+  與缺失工作區；播放器只能在 register event 交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單
 
