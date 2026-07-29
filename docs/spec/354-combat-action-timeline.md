@@ -99,5 +99,6 @@ evidence，但原版 `SysDelay(10/30/70)` 尚不能直接換算 wall-clock。完
 capture，並把逐距離 cadence 寫成經影片驗證的 duration 規則。Fireball
 仍缺 terrain-aware path reachability 與原 combatant-array tie order；
 Lightning Bolt 的玩家 vertical slice 與影片 oracle 已建立，但牆角／多次反彈
-仍缺 DOS runtime 動態畫面；Stinking Cloud／Cloudkill 的 persistent area
-effect 仍須獨立建立，不能因共用投射物已出現就視為完整法術動畫。
+仍缺 DOS runtime 動態畫面；Stinking Cloud 的四格 persistent area 已於
+spec 356 建立，仍缺移動入雲逐步觸發。Cloudkill 的 3×3 與 HD 即死規則仍須
+獨立建立，不能因共用投射物已出現就視為完整法術動畫。

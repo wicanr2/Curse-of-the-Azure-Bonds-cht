@@ -124,3 +124,28 @@ combatant-array／direction tie order 尚未完成。
 - [`combat-timeline-lightning-target-hit.png`](../../screenshots/combat-timeline-lightning-target-hit.png)
 - [`combat-timeline-lightning-line-continue.png`](../../screenshots/combat-timeline-lightning-line-continue.png)
 - [`combat-timeline-lightning-reflect.png`](../../screenshots/combat-timeline-lightning-reflect.png)
+
+## Stinking Cloud：四格建立後持續存在
+
+同一 DOS/EGA 影片 `00:42:25.20–27.00` 補齊 generic projectile 後續：
+
+```text
+25.20–25.40  COMSPR 05/85 projectile
+25.60        projectile 清除，CREATES A NOXIOUS CLOUD
+26.20        目標西北角、東、東南、南四個綠白雲格出現
+27.00        下一段 choking/gagging 文字出現時四格仍存在
+```
+
+關鍵幀：
+
+- [`combat-stinking-cloud-created-004225600.png`](combat-stinking-cloud-created-004225600.png)
+- [`combat-stinking-cloud-persistent-004226200.png`](combat-stinking-cloud-persistent-004226200.png)
+- [`combat-stinking-cloud-next-action-004227000.png`](combat-stinking-cloud-next-action-004227000.png)
+
+影片是四格形狀、人物畫在雲上、跨 action 持續與
+travel→message→area ordering 的 **video-backed** 證據；持續回合、重疊
+還原與 Poison save 仍由 reference consumer／Clue Book 交叉驗證。對應
+remake：
+
+- [`combat-timeline-stinking-cloud-travel.png`](../../screenshots/combat-timeline-stinking-cloud-travel.png)
+- [`combat-timeline-stinking-cloud-persistent.png`](../../screenshots/combat-timeline-stinking-cloud-persistent.png)

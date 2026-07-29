@@ -56,6 +56,10 @@ type VisualEvent struct {
 	// behavior in which every impact follows primary travel.
 	TravelImpacts int
 	Segments      []VisualPathSegment
+	// PersistentAreaID associates a reveal animation with the already
+	// resolved rules object. Renderers can hide only that new area during
+	// travel without suppressing older overlapping effects.
+	PersistentAreaID uint64
 }
 
 // VisualPathSegment is one ordered continuation or reflected part of an

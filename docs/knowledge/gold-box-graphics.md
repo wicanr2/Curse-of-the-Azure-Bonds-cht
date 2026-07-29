@@ -350,6 +350,20 @@ travel→impact／damage→continue 的順序播放，而不是讓 renderer 重�
 牆面反射動畫目前只有反組譯證據，因此不得標成 runtime exact。完整位址、
 時間碼與信心等級見 spec 355。
 
+## 持續戰場區域不是一次性 impact
+
+Stinking Cloud 的 target 是 2×2 西北角，不是一般 radius center：
+reference direction `{8,2,3,4}` 對應 center／east／south-east／south。
+每片雲必須是獨立 instance，保存 cells、caster、建立／到期 round 與原地板；
+兩片重疊時，先到期者只能移除自己的覆蓋，不能清掉仍存在的另一片。
+
+規則層回傳 area ID、有效 cells 與逐 combatant save 結果。呈現層只依
+windup→travel→area reveal→handoff 播放，並把 RANDCOM 原版雲 raster 畫在
+地板之上、人物之下。共用 engine 的 `area` phase 只綁素材，不知道
+Stinking Cloud、Poison save 或 `d4+1` helpless。DOS 影片
+`00:42:25.20–27.00` 已證實四格在下一段 action 仍存在；完整證據邊界見
+spec 356。
+
 繁中緊湊 HUD 可讀倚天 `STDFONT.15` 的原生 Big5 16×15 點陣；其常用區由
 Big5 A440 起算，次常用區接在第 5401 字後，全形符號則來自 `SPCFONT.15`。
 加粗方式是每列 bitmap 與向右平移 1px 的結果 OR，不做平滑縮放。字模檔本身

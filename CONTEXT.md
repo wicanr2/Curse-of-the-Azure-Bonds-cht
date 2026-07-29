@@ -1749,3 +1749,23 @@ lightning_bolt travel `05/85`、line `06/86`、impact `0A/8A`。正常玩家必�
 reflection。牆角／多次反彈 DOS runtime 畫面、敵方 throws-lightning、
 原版逐距離 wall-clock timing 尚未完成；下一個戰鬥效果是
 Stinking Cloud／Cloudkill persistent area。
+
+2026-07-29 第 356 輪完成 Stinking Cloud 持續區域 vertical slice。DOS
+影片 `wwYsij1wDC4` `00:42:25.20–27.00` 補得 projectile 清除、建立文字、
+四格綠白雲與下一段 action 仍持續的三張關鍵幀。reference
+`SpellStinkingCloud`／`in_poison_cloud`／`StinkingCloudAffect` 交叉證實
+spell ID `0x22`、target-anchored `{8,2,3,4}` 2×2、passable-cell filter、
+Poison save、成功 cough 一回合、失敗 `d4+1` helpless、caster-level
+duration 與重疊雲先還原再重畫的 instance semantics。Clue Book 另支持
+「持續數回合、導引敵人、使怪物 helpless」。
+
+共用 combat core 新增作品中立 `PersistentArea`、area terrain callback、
+stable footprint dedup、action-counted coughing／helpless、overlap query
+與 round expiry；`VisualEvent.PersistentAreaID` 讓 renderer 在 travel
+期間只隱藏新雲，不誤隱藏舊的重疊區。獨立 engine `combat_visuals` 新增
+`area` phase；CoAB JSON 宣告 generic `05/85` travel 與全域
+BackgroundTiles `0x1E→graphic 0x26→RANDCOM item 4` 綠白雲 raster。正常
+玩家必須 memorized `0x22`，按 N、以 32×16 tile cursor 選 2×2 西北角、
+Enter 才消耗；四格全阻擋會 rollback。兩張 640×480 倚天／原版素材畫面已
+保存。仍缺移動入雲逐步觸發、coughing AC 內部值換算、Cloudkill 3×3／
+HD 4–6 即死與 exact DOS timing。
