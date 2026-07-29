@@ -1626,3 +1626,10 @@ pixel-exact。MobyGames PC-98 640×400 gallery（adventure 464680、combat
 `docs/knowledge/golden-box-remake-for-chinese-readers.md`，規定原版／美化
 theme 分離、長文分頁與攻略的冒險紀行／逐區／無雷三層。使用者仍要求重大
 進度才集中 commit/push。
+
+2026-07-29 使用者要求先整理 compact 後記憶。`AGENTS.md` 已重寫為單一工作
+入口，整合最終目標、雙 repo 邊界、SDD／證據標籤、原始資料與工具、DOS／
+PC-98 視覺職責、倚天 16×15、長文／攻略三層、Git／驗證門檻、目前 milestone
+與 compact 恢復清單。舊的「暫停」及「每小輪 commit」已移除。`CLAUDE.md`
+縮成原始需求／資料索引並明確指向 `AGENTS.md`，避免兩份規則漂移。專案專屬
+資訊留在 repo，沒有寫入全域 `~/.codex`。
