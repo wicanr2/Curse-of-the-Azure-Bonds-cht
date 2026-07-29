@@ -19,12 +19,22 @@ func TestCombatFrameNativeGeometryAndTransparency(t *testing.T) {
 	}
 }
 
-func TestCombatFrameUsesNativeDottedInnerEdgeAndFixedCracks(t *testing.T) {
+func TestCombatFrameUsesOracleSampledStonePixels(t *testing.T) {
 	frame := CombatFrame()
-	if frame.RGBAAt(8, 7) == frame.RGBAAt(9, 7) {
-		t.Fatal("top inner edge is not the alternating DOS pixel pattern")
+	oracle := AdventureFrame()
+	equal := func(x1, y1, x2, y2 int) bool {
+		r1, g1, b1, a1 := frame.At(x1, y1).RGBA()
+		r2, g2, b2, a2 := oracle.At(x2, y2).RGBA()
+		return r1 == r2 && g1 == g2 && b1 == b2 && a1 == a2
 	}
-	if frame.RGBAAt(14, 0) != frameBlack || frame.RGBAAt(17, 5) != frameDarkGray {
-		t.Fatalf("top crack pixels do not match fixed pattern: start=%v end=%v", frame.RGBAAt(14, 0), frame.RGBAAt(17, 5))
+	for _, point := range [][2]int{{0, 0}, {14, 0}, {319, 7}, {0, 80}, {319, 80}} {
+		if !equal(point[0], point[1], point[0], point[1]) {
+			t.Fatalf("frame pixel %v does not match oracle", point)
+		}
+	}
+	for y := 0; y < 176; y++ {
+		if !equal(176, y, 0, y) {
+			t.Fatalf("divider y=%d does not match oracle strip", y)
+		}
 	}
 }

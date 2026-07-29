@@ -1615,3 +1615,14 @@ README 已連結此盤點。後續若恢復反組譯，可使用
 `/home/anr2/ida_94_official/dist` 的 IDA Pro；仍須遵守
 反組譯證據 → `docs/spec/` READY → 實作的 SDD 流程。目前不要自行續跑新的
 combat demo／IDA 工作。
+
+2026-07-29 已恢復作業。第 348 輪以本機 DOS 320×200 runtime capture 抽出
+透明 cracked stone chrome，取代 generic 灰框；事件／人物圖以 cover＋clip
+填滿左上內格。戰鬥框改用同一 oracle 的真實石框 strip，依已量測 x=176
+divider 重組，證據標籤為 material-exact/layout-reconstructed，不冒充整框
+pixel-exact。MobyGames PC-98 640×400 gallery（adventure 464680、combat
+464695）納入 typography density oracle；一般正文／roster／HUD 以倚天
+16×15 水平加粗為主，24px 僅留給標題。新增
+`docs/knowledge/golden-box-remake-for-chinese-readers.md`，規定原版／美化
+theme 分離、長文分頁與攻略的冒險紀行／逐區／無雷三層。使用者仍要求重大
+進度才集中 commit/push。
