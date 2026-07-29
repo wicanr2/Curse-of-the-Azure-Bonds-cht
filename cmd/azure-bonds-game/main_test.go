@@ -40,6 +40,79 @@ func TestDrawCombatVisualRendersMissileTravelAndImpact(t *testing.T) {
 	}
 }
 
+func TestCombatProjectileDirectionUsesOriginalClockwiseOctants(t *testing.T) {
+	tests := []struct {
+		dx, dy int
+		want   int
+	}{
+		{0, -4, 0}, {4, -4, 1}, {4, 0, 2}, {4, 4, 3},
+		{0, 4, 4}, {-4, 4, 5}, {-4, 0, 6}, {-4, -4, 7},
+	}
+	for _, test := range tests {
+		if got := combatProjectileDirection(test.dx, test.dy); got != test.want {
+			t.Fatalf("direction(%d,%d)=%d, want %d", test.dx, test.dy, got, test.want)
+		}
+	}
+}
+
+func TestCombatArrowSpriteUsesCOMSPRDirectionBlocks(t *testing.T) {
+	camera := combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{}, false)
+	event := combat.VisualEvent{
+		From: combat.TilePoint{X: 5, Y: 2},
+		To:   combat.TilePoint{X: 1, Y: 2},
+	}
+	if key, flip := combatArrowSprite(event, camera); key != "comspr-block-02-item-00.png" || flip {
+		t.Fatalf("east arrow=(%q,%v)", key, flip)
+	}
+	event.From, event.To = event.To, event.From
+	if key, flip := combatArrowSprite(event, camera); key != "comspr-block-82-item-00.png" || flip {
+		t.Fatalf("west arrow=(%q,%v)", key, flip)
+	}
+}
+
+func TestCombatMagicMissileCyclesOriginalFourCOMSPRFrames(t *testing.T) {
+	event := combat.VisualEvent{
+		From: combat.TilePoint{X: 0, Y: 0},
+		To:   combat.TilePoint{X: 4, Y: 0},
+	}
+	want := []struct {
+		key  string
+		flip bool
+	}{
+		{"comspr-block-05-item-00.png", false},
+		{"comspr-block-05-item-00.png", true},
+		{"comspr-block-85-item-00.png", true},
+		{"comspr-block-85-item-00.png", false},
+	}
+	for index, expected := range want {
+		frame := combat.VisualFrame{Phase: combat.VisualTravel, Progress: float64(index) / 12}
+		key, flip := combatMagicMissileSprite(event, frame)
+		if key != expected.key || flip != expected.flip {
+			t.Fatalf("frame %d=(%q,%v), want (%q,%v)", index, key, flip, expected.key, expected.flip)
+		}
+	}
+}
+
+func TestCombatMagicImpactCyclesOriginalCOMSPRHitFrames(t *testing.T) {
+	want := []struct {
+		key  string
+		flip bool
+	}{
+		{"comspr-block-0A-item-00.png", false},
+		{"comspr-block-0A-item-00.png", true},
+		{"comspr-block-8A-item-00.png", true},
+		{"comspr-block-8A-item-00.png", false},
+	}
+	for index, expected := range want {
+		key, flip := combatMagicImpactSprite(combat.VisualFrame{
+			Phase: combat.VisualImpact, Progress: float64(index) / 4,
+		})
+		if key != expected.key || flip != expected.flip {
+			t.Fatalf("impact %d=(%q,%v), want (%q,%v)", index, key, flip, expected.key, expected.flip)
+		}
+	}
+}
+
 func TestWrapTextLinesUsesUnicodeRunesAndLineLimit(t *testing.T) {
 	got := wrapTextLines("熔岩池中有火蜥蜴\n第二段", 4, 3)
 	want := []string{"熔岩池中", "有火蜥蜴", "第二段"}

@@ -1,7 +1,7 @@
 # 第三百五十四輪：戰鬥動作時間軸
 
-狀態：`IN PROGRESS`（共用時間軸與第一批 renderer adapter 已完成；原版
-projectile 素材／逐影片 timing 尚待驗證）
+狀態：`IN PROGRESS`（共用時間軸與原版 arrow／generic spell projectile
+已接入；完整逐影片 timing 與其他法術尚待驗證）
 
 ## 問題
 
@@ -48,13 +48,23 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
   九相死亡 overlay 已按 phase 排序；`SoundMissile` 不再是未使用 selector。
 - 規則層仍立即計算結果，但致死目標會在 renderer 中保存到 impact/death
   phase，避免攻擊一按下就消失。
-- `-combat-visual-demo melee|bow|magic|kill` 可輸出四張固定 phase 的
+- `-combat-visual-demo melee|bow|magic|magic-impact|kill` 可輸出五張固定 phase 的
   640×480 Xvfb frame。
 - screenshot oracle 會凍結在指定的 timeline elapsed，不受 Ebiten／Xvfb
   啟動時間影響；弓箭 travel checkpoint 因而能穩定顯示箭身與箭頭。
 - CPIC／COMSPR／SPRIT 遺失的 masked-blit alpha 由不透明 top-left chroma key
   恢復；骷髏與動畫不再顯示成整塊底色。
+- COMSPR consumer audit 證實弓箭使用 `0x00/01/02` 與 attack/flip
+  directions；Magic Missile 經共同施法入口使用 `0x05/0x85` 四格 travel，
+  傷害 feedback 使用 `0x0A/0x8A` 四格 impact。renderer fallback 已移除。
+- `-combat-visual-demo magic-impact` 新增固定命中 phase；五張 checkpoint
+  都直接使用原始 DOS asset。
+- DOS 公開影片 `wwYsij1wDC4` 的 `00:42:25.20–25.40` 逐格顯示
+  Stinking Cloud 共用的青色 spell projectile，約 `25.50` 清除、`25.60`
+  才出現文字與雲格；與 `0x05/0x85` consumer 路徑交叉吻合。
 
-目前弓箭與 Magic Missile 是明確標示的 renderer fallback，不是原版 projectile
-pixel-exact 素材。完成本規格仍需 DOSBox／影片時間碼、原始 projectile block
-定位，以及將 fallback 替換為 title asset-pack 定義。
+目前 projectile pixel source 與方向／frame ordering 已有 code-backed
+evidence，但原版 `SysDelay(10/30/70)` 尚不能直接換算 wall-clock。完成本規格
+仍需弓箭、Magic Missile、melee、kill 的 DOSBox／公開影片完整時間碼與短
+capture，並把逐距離 cadence 與目前 frontend 中的 COMSPR key mapping 移入
+共用 engine schema 支援的 title JSON asset-pack。
