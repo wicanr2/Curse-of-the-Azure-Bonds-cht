@@ -37,3 +37,38 @@ func TestParameterTraceHashesAndMatchesKnownTone(t *testing.T) {
 		t.Fatalf("parameter trace = %+v", got)
 	}
 }
+
+func TestAuditStartupOutputLevelsMatchesBaseAndCarrierRewrites(t *testing.T) {
+	block := FMParameterBlock{
+		FeedbackAlgorithm: 4,
+		OutputLevel:       [4]byte{102, 107, 102, 107},
+	}
+	signature := [21]byte(block.YM2203Signature())
+	sequence, err := block.YM2203LevelSequence(105)
+	if err != nil {
+		t.Fatal(err)
+	}
+	loads := make([]s98.YM2203ToneLoad, len(sequence))
+	for index, levels := range sequence {
+		loads[index] = s98.YM2203ToneLoad{
+			Tick: 7, Channel: 0, Signature: signature, Levels: levels,
+		}
+	}
+	controls := [3][]startupParameterVolume{
+		{{parameter: 0, volume: 105, hasVolume: true}},
+	}
+	reports, err := auditStartupOutputLevels(loads, 7, []FMParameterBlock{block}, controls)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(reports) != 1 || !reports[0].BaseLevelMatches ||
+		!reports[0].CarrierOrderMatches || !reports[0].CompleteSequenceSeen ||
+		reports[0].ExpectedToneLoads != 3 {
+		t.Fatalf("output-level report=%+v", reports)
+	}
+
+	loads[2].Levels[2]++
+	if _, err := auditStartupOutputLevels(loads, 7, []FMParameterBlock{block}, controls); err == nil {
+		t.Fatal("bad second-carrier rewrite unexpectedly accepted")
+	}
+}

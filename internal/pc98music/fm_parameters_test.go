@@ -2,6 +2,7 @@ package pc98music
 
 import (
 	"encoding/binary"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -67,6 +68,25 @@ func TestYM2203SignatureAppliesSoundBIOSTransforms(t *testing.T) {
 		got[13] != 0x1f-block.SustainRate[0] ||
 		got[17] != (0x0f-block.SustainLevel[0])<<4|(0x0f-block.ReleaseRate[0]) {
 		t.Fatalf("unexpected YM2203 signature: %x", got)
+	}
+}
+
+func TestYM2203LevelSequenceUsesAlgorithmCarriers(t *testing.T) {
+	block := FMParameterBlock{
+		FeedbackAlgorithm: 4,
+		OutputLevel:       [4]byte{102, 107, 102, 107},
+	}
+	got, err := block.YM2203LevelSequence(105)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := [][4]byte{
+		{25, 25, 20, 20},
+		{25, 25, 20, 22},
+		{25, 25, 22, 22},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("level sequence=%v, want %v", got, want)
 	}
 }
 

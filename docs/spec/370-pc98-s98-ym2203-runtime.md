@@ -12,8 +12,10 @@ key-on）
    然後才發生該聲道第一次 key-on。
 
 因此二十組內嵌 bank 足以覆蓋目前十二首 4,096-tick 正常播放路徑中所有
-實際 key-on 音色。這不代表整個音樂系統已完成：fade、SFX 共存、LFO、
-carrier total-level 音量公式、完整曲長、合成器與遊戲內播放器仍待完成。
+實際 key-on 音色。這不代表整個音樂系統已完成。carrier total-level、
+algorithm 與 operator-mask 已由後續
+[第 371 輪規格](371-pc98-sound-bios-total-level-and-key-on.md)補完；
+fade、SFX 共存、LFO、完整曲長、合成器與遊戲內播放器仍待完成。
 
 ## 1. 證據與保存邊界
 
@@ -147,7 +149,8 @@ DETUNE 的 sign-extended negative 不應先截成 3-bit。S98 證明 Sound BIOS
 consumer 才能判定的 bit 7 行為現已解開。
 
 total level 另受 track volume、operator mask 與 algorithm carrier 選擇影響；
-本輪只將它排除於 timbre signature，尚未宣稱完整公式 READY。
+本輪只將它排除於 timbre signature。其 consumer 與完整公式已在第 371 輪
+以 IDA、raw bytes 及同一批 S98 補證。
 
 ## 5. 高索引的真實作用
 
@@ -201,11 +204,10 @@ descriptor SETPARABLOCK
 
 仍未完成：
 
-1. total-level／operator-mask／algorithm carrier 的完整 Sound BIOS 公式；
-2. LFO、MODUON／OFF、fade 與 SFX／BGM 共存；
-3. 十二首完整曲長與 loop boundary trace；
-4. 作品中立 YM2203 合成器與 PCM mixer；
-5. CoAB 遊戲內音樂播放、pause／resume、save／load；
-6. DOS 音效與 PC-98 配樂的 theme／平台選擇政策。
+1. LFO、MODUON／OFF、fade 與 SFX／BGM 共存；
+2. 十二首完整曲長與 loop boundary trace；
+3. 作品中立 YM2203 合成器與 PCM mixer；
+4. CoAB 遊戲內音樂播放、pause／resume、save／load；
+5. DOS 音效與 PC-98 配樂的 theme／平台選擇政策。
 
 因此本規格不能用來宣稱「音樂完成」或「PC-98 driver 完整復原」。

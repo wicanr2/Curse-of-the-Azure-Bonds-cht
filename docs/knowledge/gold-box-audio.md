@@ -131,6 +131,19 @@ CoAB 二十組 NEC WORD parameter 與全部十二首 trace 證明：
 SETPARABLOCK 呼叫」與「key-on 當下有效音色」，並以 runtime trace 判定，
 不能只看靜態 index 聯集便推論缺 bank。
 
-目前仍不能宣稱「PC-98 音樂已還原」。下一步是 total-level／carrier 公式、
-LFO、fade／SFX 共存、完整 loop trace，再選擇有明確授權的 YM2203
-合成器並接入 PCM mixer。
+2026-07-30 第 371 輪再用指定 IDA Pro 9.4 正確以 8086／16-bit 載入
+`SOUND.ROM`，並與同一批 S98 交叉驗證：
+
+- parameter `OUTPUT_LEVEL` 寫晶片時是 `127-parameter`；
+- `SETVOLUME` 只依 algorithm 改 carrier，順序是 operator `4,2,3,1`；
+- algorithm 0–3／4／5–6／7 分別有 1／2／3／4 個 carrier；
+- 欄位 5 `OPERATOR_MASK` 左移四位後形成 YM2203 `28h` key-on 高 nibble；
+- 十二首共 72 組 descriptor／first-stream output-level sequence 全部相符。
+
+可重用的 algorithm/carrier 與 logical→physical operator 拓樸放在 engine
+`audio/ym2203`；NEC 50-WORD block 與作品 driver offset 仍留在作品端。
+遇到其他 PC-98 Gold Box，不應把 FM key-on 固定寫成 `F0h`，也不能把
+total level 當作 volume-independent timbre signature。
+
+目前仍不能宣稱「PC-98 音樂已還原」。下一步是 LFO、fade／SFX 共存、
+完整 loop trace，再選擇有明確授權的 YM2203 合成器並接入 PCM mixer。
