@@ -50,6 +50,28 @@ func TestPC98WorldTownMusicContextsUseProvenSceneRoles(t *testing.T) {
 	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, want) {
 		t.Fatalf("world/town music events=%+v, want %+v", got, want)
 	}
+	state.requestMusicForCurrentBlock("pc98-town-services-menu")
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("unchanged town context replayed music: %+v", got)
+	}
+}
+
+func TestPC98PictureCueSwitchesWorldAndTownMusic(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{
+		0x50: {},
+	}, 0x50)
+	state.requestMusicForCurrentBlock("")
+	state.requestMusicForSignal("picture", 80)
+	state.requestMusicForSignal("picture", 80)
+	state.requestMusicForSignal("picture", 121)
+	want := []MusicEvent{
+		{Action: "play", TrackID: "pc98-bgm-selector-05"},
+		{Action: "play", TrackID: "pc98-bgm-selector-06"},
+		{Action: "play", TrackID: "pc98-bgm-selector-05"},
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("picture cue music events=%+v, want %+v", got, want)
+	}
 }
 
 func TestECLBlockTransitionRequestsDestinationMusicOnce(t *testing.T) {

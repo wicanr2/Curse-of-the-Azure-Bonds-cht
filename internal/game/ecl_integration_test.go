@@ -1942,6 +1942,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatalf("Ashabenford memory[%#x]=%#x,%v want %#x", address, got, ok, want)
 		}
 	}
+	state.ConsumeMusicEvents()
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
@@ -1949,6 +1950,11 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		!strings.Contains(state.Message, "阿沙本福德") {
 		t.Fatalf("Ashabenford entry mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, []MusicEvent{{
+		Action: "play", TrackID: "pc98-bgm-selector-06",
+	}}) {
+		t.Fatalf("Ashabenford enter music=%+v", got)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
@@ -1995,6 +2001,11 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if !state.PictureRequested || !state.BigPictureRequested || state.PictureBlock != 121 {
 		t.Fatalf("Ashabenford leave picture=%v big=%v block=%d", state.PictureRequested, state.BigPictureRequested, state.PictureBlock)
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, []MusicEvent{{
+		Action: "play", TrackID: "pc98-bgm-selector-05",
+	}}) {
+		t.Fatalf("Ashabenford leave music=%+v", got)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
@@ -3380,6 +3391,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 11 {
 		t.Fatalf("Hillsfar current-location memory=%#x,%v want 11", got, ok)
 	}
+	state.ConsumeMusicEvents()
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
@@ -3388,6 +3400,11 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hillsfar enter mode=%v block=0x%02X location=%v originals=%#v message=%q picture=%v/%d",
 			state.Mode, session.CurrentBlockID(), state.Location, state.currentOriginalChoices,
 			state.Message, state.PictureRequested, state.PictureBlock)
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, []MusicEvent{{
+		Action: "play", TrackID: "pc98-bgm-selector-06",
+	}}) {
+		t.Fatalf("Hillsfar enter music=%+v", got)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
@@ -3449,6 +3466,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hillsfar bar exit picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
+	if got := state.ConsumeMusicEvents(); len(got) != 0 {
+		t.Fatalf("Hillsfar bar exit replayed town music=%+v", got)
+	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
@@ -3463,6 +3483,11 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		!strings.Contains(state.Message, "希爾斯法城外") {
 		t.Fatalf("Hillsfar leave picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, []MusicEvent{{
+		Action: "play", TrackID: "pc98-bgm-selector-05",
+	}}) {
+		t.Fatalf("Hillsfar leave music=%+v", got)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)

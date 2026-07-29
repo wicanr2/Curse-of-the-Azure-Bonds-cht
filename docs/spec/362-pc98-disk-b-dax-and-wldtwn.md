@@ -126,9 +126,26 @@ value=0 writer 則返回 block 的主要區域／戶外導航入口；`0x51` 還
 
 CoAB JSON 因而讓 `0x50/0x51` 的 context-free 初始 binding 指向 selector 5；
 這與 `INITECL` 必定先清零一致。selector 6 的 context 改為
-`pc98-town-services-menu`。目前 State 可直接解析兩者，但正常 DOS ECL
-玩家路徑尚未把 `PICTURE 0x50`／選單返回宣告成作品資料化 music cue，
-所以不能聲稱同 block 內的 5↔6 動態切換已完成。
+`pc98-town-services-menu`。
+
+第 363 輪進一步在作品中立 engine 加入 `music_cues`：它只接受
+`ECL block + signal + raw value → opaque context`，不認識城市、選單文字或
+作品旗標。CoAB JSON 宣告：
+
+| ECL blocks | signal | raw value | context | binding 結果 |
+| --- | --- | ---: | --- | --- |
+| `0x50/0x51` | `picture` | `0x50` | `pc98-town-services-menu` | selector 6 |
+| `0x50/0x51` | `picture` | `0x79` | `pc98-world-navigation` | context-free fallback → selector 5 |
+
+State 會在處理真實 `PICTURE` signal 時解析 cue，並依 `MSCPLAY` 已證實的
+行為抑制同一 track 重播。正常 ECL 玩家路徑已驗證：
+
+- block `0x50`：阿沙本福德入城 `5→6`，離城 `6→5`；
+- block `0x51`：希爾斯法入城 `5→6`，酒館返回服務選單不重播 6，離城
+  `6→5`。
+
+這只證明選曲 intent 時序；缺失 driver、音序列、YM trace 與播放 adapter
+仍未完成。
 
 ## 6. 驗證
 
@@ -140,10 +157,14 @@ azure-bonds -input-file ECL.DAX -pc98-dax \
 
 真實 corpus 結果必須是 24 blocks，且只有上表四個 decoded candidates。
 
+同 block 音樂 cue 的正常玩家路徑 regression：
+
+```text
+go test ./internal/game \
+  -run '^TestFireKnifeLeaderStateVictoryReturnsToTilverton$' -count=1
+```
+
 ## 7. 後續
 
-- 在 engine schema 建立作品中立的 ECL signal → music context cue，讓
-  `PICTURE 0x50` 進入 selector 6、設施選單退出後恢復 selector 5。
-- 由正常玩家路徑驗證 `0x50` 與 `0x51` 兩座城的 5↔6 intent 時序。
 - 繼續 spec 358 的 IVT `7Eh`／INT D2h、缺失 driver sector 與 YM runtime
   trace；在音序列證據完成前仍不填曲名。

@@ -11,7 +11,7 @@
 
 截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `272e53c`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `a81b963`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -27,12 +27,14 @@ symbol table 精確定位 `SOUNDFX`、`INITSOUND`、`MSCPLAY`、`MSCSTOP` 與
 `BGMPLAY`。目前已由 writer／consumer 證明該 selector 輸入就是全域
 `CURRENTECL`，並將 exact ECL block → selector／driver index 放進
 game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證與
-選擇，遊戲規則層會在初始 ECL 與 block transition 發出一次性
+選擇，`music_cues` 另把原始 `PICTURE` 訊號資料化為不透明場景情境；
+遊戲規則層會在初始 ECL、block transition 與同 block 場景切換發出一次性
 `MusicEvent`。Disk B 的無 BPB FAT12 配置與 PC-98 專用 DAX codec 已由
 IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
-selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。缺失 driver
-sector、同 block 內 5↔6 正常玩家路徑 cue、runtime YM trace 與實際播放器
-仍未完成，因此不把 12 首曲名硬套進 JSON，也不宣稱音樂已可播放。
+selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙本福德與
+希爾斯法的正常 ECL 玩家路徑現已驗證同 block 內 `5→6→5`，同曲返回不會
+重播。缺失 driver sector、runtime YM trace 與實際播放器仍未完成，因此
+不把 12 首曲名硬套進 JSON，也不宣稱音樂已可播放。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與

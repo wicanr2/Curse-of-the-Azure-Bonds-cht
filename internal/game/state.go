@@ -160,6 +160,7 @@ type State struct {
 	savgamPlayers           map[string]party.DOSPlayerFiles
 	pendingSoundEvents      []SoundEvent
 	pendingMusicEvents      []MusicEvent
+	activeMusicTrackID      string
 	pendingECLCalls         []uint16
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn
@@ -897,6 +898,7 @@ func (s *State) BeginAdventure() error {
 		s.Message = s.localizeECLText(result.Text)
 	}
 	if result.PictureRequested {
+		s.requestMusicForSignal("picture", result.PictureBlock)
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
 		s.BigPictureRequested = result.BigPictureRequested
@@ -1202,6 +1204,7 @@ func (s *State) Select(index int) error {
 			return nil
 		}
 		if result.PictureRequested {
+			s.requestMusicForSignal("picture", result.PictureBlock)
 			if !s.picturesEnabled {
 				s.PictureRequested = false
 				s.PictureBlock = result.PictureBlock
@@ -4720,6 +4723,7 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
 	if result.PictureRequested {
+		s.requestMusicForSignal("picture", result.PictureBlock)
 		s.Mode = ModeEvent
 		s.PictureRequested = true
 		s.PictureBlock = result.PictureBlock
