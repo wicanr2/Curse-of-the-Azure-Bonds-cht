@@ -273,6 +273,14 @@ action/effect timeline，而不是只看戰鬥結算後 state。也不能替所�
 色盤、frame timing 與音效仍以本機 DOSBox capture 為最高視覺證據。後續每種
 攻擊／法術應保存影片時間碼、平台、輸入、前後 frame 與 confidence。
 
+2026-07-29 code audit 顯示目前只有死亡骷髏 overlay 具明確時間相位。近戰會
+立即結算，party `IconAttack` 沒有 action-side write；弓箭雖有彈藥與射速規則，
+卻沒有 projectile，既有 `SoundMissile` 也未送出；Magic Missile 直接扣 HP
+並播放通用 magic-hit，沒有 caster／travel／impact。敵方 AI 還會在一次 update
+同步跑到下一位玩家，使中間動作只留下最後 state。下一個共用邊界因此是
+`windup → travel/contact → impact → commit → death → handoff`
+的 renderer-neutral action timeline；詳細 READY 規格見 spec 354。
+
 ## 第一人稱地圖的可重用邊界
 
 GEO、WALLDEF 與 8X8D 不應留在單一作品的 renderer。共用 engine 現以

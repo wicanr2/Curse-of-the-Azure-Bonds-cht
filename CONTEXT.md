@@ -1670,3 +1670,17 @@ persistent party NPC 的區別。下一個主線缺口是帶著迪姆斯沃特�
 localization 修正為走 JSON pack。另依使用者要求，Gold Box graphics 知識庫
 新增 gameplay video temporal-oracle 規則與 DOS／C64／Amiga／PC-98 來源；
 弓箭、投射物、法術與死亡效果須逐幀驗證，不能以數值正確代替畫面完成。
+
+2026-07-29 第 353 輪完成眼魔洞窟離場。ECL4 block `0x22` entry 0 證實
+離場 gate 是 `(C04F&0x3F)==0x13 && 7ED5==1`；runtime 出口為
+GEO4/`0x25 (6,3)` terrain `0x93`，攻略 `(11,15)` 屬不同座標系。正式
+regression 從雙戰勝利延伸，依序驗證 PICTURE 42、奧莉芙／迪姆斯沃特告別、
+「Gharri」騎士與紫衣女子、`4CE2=1`、`7F12=1`、DESTROY ITEMS
+`0x61/0x60` 的原 ECL 路徑，以及 `NEWECL 0x51` 暗影谷世界選單。繁中放在
+CoAB JSON，不寫入共用引擎。
+
+同輪完成戰鬥視覺唯讀 audit：近戰、弓箭與 Magic Missile 的規則已有部分
+實作，但 renderer 缺 attack pose write、projectile、caster/impact、一般受擊；
+`SoundMissile` 尚未送出，敵方回合仍在一次 update 同步結算。spec 354 將下一個
+戰鬥重大 milestone 定義為 renderer-neutral Combat Action Timeline，先完成
+melee、bow、Magic Missile、death 四條可錄影的端到端視聽路徑。

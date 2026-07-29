@@ -50,6 +50,11 @@
       ,"dexam.attack": "They attack!"
       ,"dexam.amulet_retrieved": "You retrieve the Amulet of Lathander from Dexam's mangled remains."
       ,"dexam.zhentil_attack": "Forces of Zhentil Keep attack you!"
+      ,"dexam.departure.olive": "Olive Ruskettle appears just outside the door. She says, “So, you made it. I'm surprised.”"
+      ,"dexam.departure.dimswart": "“Dimswart, you come with me. A man from Shadowdale has some questions for you.” Olive and Dimswart leave."
+      ,"dexam.departure.gharri": "You see a rider in the distance. He stops suddenly, and a moment later you hear something like “Gharriiii” drifting through the air."
+      ,"dexam.departure.riders": "The rider changes direction and gallops to a woman dressed in purple. They embrace; she climbs onto the horse, and they ride away."
+      ,"world.shadowdale.edge": "You are at the edge of Shadowdale. Will you enter or continue your journey?"
       ,"journal.30.1": "Journal Entry 30 (1/2): Dexam says, “So, these are Fzoul's little secret. Very interesting. As the representative of the TRUE priests of Bane, I shall deliver you to Mulmaster and the grand Imperceptor.”"
       ,"journal.30.2": "Journal Entry 30 (2/2): “In Mulmaster I will examine these bonds in my laboratory—to your extreme discomfort. During the final procedure, the one resulting in your death, the pain should last no more than two or perhaps three weeks. Once I uncover their secret, the Imperceptor will be most angry with dear little Fzoul, and we may finally be rid of this heretic and his precious mages.”"
       ,"journal.7.1": "Journal Entry 7 (1/2): “I am Fzoul Chembryl, high lord of the Dark Shrine. My precious mages, as you call them, allowed me to follow your minion. Dexam, you overstep your authority. My mark is on these people, and the Imperceptor will know of my work in due time.”"
@@ -115,6 +120,11 @@
       ,"dexam.attack": "牠們發動攻擊！"
       ,"dexam.amulet_retrieved": "你們從德克薩姆殘破的遺骸中取回洛山達護符。"
       ,"dexam.zhentil_attack": "散提爾堡的部隊向你們發動攻擊！"
+      ,"dexam.departure.olive": "奧莉芙・魯斯克特爾出現在門外。她說：「你們居然成功了，真令我意外。」"
+      ,"dexam.departure.dimswart": "「迪姆斯沃特，跟我來。暗影谷有個人想問你幾個問題。」奧莉芙與迪姆斯沃特隨即離去。"
+      ,"dexam.departure.gharri": "你們看見遠處有一名騎士。他忽然停下；片刻後，一聲彷彿「嘉莉——」的呼喊隨風傳來。"
+      ,"dexam.departure.riders": "騎士改變方向，策馬奔向一名身穿紫衣的女子。兩人相擁；女子躍上馬背，隨後一同遠去。"
+      ,"world.shadowdale.edge": "你們來到暗影谷外。要進城，還是繼續旅程？"
       ,"journal.30.1": "手札條目 30（1/2）：德克薩姆說：「原來這就是弗佐爾藏著的小祕密。有意思。身為貝恩正統祭司的代表，我要把你們送到穆爾馬斯特，交給總督察長。」"
       ,"journal.30.2": "手札條目 30（2/2）：「到了穆爾馬斯特，我會在實驗室研究這些枷印——只怕你們會非常不舒服。最後一道程序將奪走你們的性命；放心，痛苦頂多持續兩三個星期。等我揭開枷印的祕密，總督察長必會對他親愛的小弗佐爾大發雷霆，我們也終於能除掉這名異端和他珍愛的法師。」"
       ,"journal.7.1": "手札條目 7（1/2）：「我是弗佐爾・錢布瑞爾，幽暗神殿的最高領主。你口中那些『寶貝法師』讓我得以追蹤你的手下。德克薩姆，你已越權。這些人身上有我的印記；到了適當時候，總督察長自然會知道我的功績。」"
@@ -440,6 +450,31 @@
       "id": "dexam.zhentil_attack",
       "all_contains": ["YOU ARE ATTACKED BY FORCES OF ZHENTIL KEEP"],
       "message_id": "dexam.zhentil_attack"
+    },
+    {
+      "id": "dexam.departure.olive",
+      "all_contains": ["OLIVE RUSKETTLE APPEARS JUST OUTSIDE THE DOOR", "SO, YOU MADE IT"],
+      "message_id": "dexam.departure.olive"
+    },
+    {
+      "id": "dexam.departure.dimswart",
+      "all_contains": ["DIMSWART, YOU COME WITH ME", "OLIVE AND DIMSWART LEAVE"],
+      "message_id": "dexam.departure.dimswart"
+    },
+    {
+      "id": "dexam.departure.gharri",
+      "all_contains": ["YOU SEE A RIDER IN THE DISTANCE", "GHARRIIII"],
+      "message_id": "dexam.departure.gharri"
+    },
+    {
+      "id": "dexam.departure.riders",
+      "all_contains": ["THE RIDER CHANGES DIRECTION", "THEY RIDE AWAY"],
+      "message_id": "dexam.departure.riders"
+    },
+    {
+      "id": "world.shadowdale.edge",
+      "all_contains": ["YOU ARE AT THE EDGE OF SHADOWDALE", "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"],
+      "message_id": "world.shadowdale.edge"
     }
   ],
   "events": [

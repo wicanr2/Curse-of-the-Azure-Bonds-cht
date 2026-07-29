@@ -324,3 +324,5 @@
 - [第三百四十九輪散塔林堡奧莉芙密道](./349-zhentil-olive-secret-passage.md)（`READY`：真實 ECL4/GEO4 `0x20→0x21`、手札 50／51 與繁中玩家路徑）
 - [第三百五十輪散塔林堡迪姆斯沃特同行](./350-zhentil-dimswart-escort.md)（`READY`：神殿 `(6,13)→(2,14)`、手札 12 六頁與 story escort flag）
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）
+- [第三百五十三輪眼魔洞窟離場](./353-beholder-cave-departure.md)（`READY`：boundary terrain `0x93`、Olive／Dimswart 告別、物品銷毀 signal 與 `0x22→0x51`）
+- [第三百五十四輪戰鬥動作時間軸](./354-combat-action-timeline.md)（`READY`：近戰、弓箭、Magic Missile、死亡的逐相位視聽 transaction）
