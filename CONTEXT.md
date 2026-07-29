@@ -1649,3 +1649,12 @@ CoAB JSON game pack；State 只新增通用規則：若 title pack 明確宣告 
 ECL 沒有 `ADD NPC`，fighter roster 不變，故知識庫新增 story escort 與
 persistent party NPC 的區別。下一個主線缺口是帶著迪姆斯沃特探索神殿，
 觸發兜帽女子與離場路徑。
+
+2026-07-29 第 351 輪延伸至眼魔洞穴：迪姆斯沃特 escort flag 成立後，
+`GEO4/0x21 (4,12)` terrain `0x86` 觸發 PICTURE 39 兜帽女子。選 YES 後
+真實 session 依序通過弗佐爾闖入、ECL `0x21→0x22`、德克薩姆與牛頭人、
+手札 30、迪姆斯沃特指出洛山達護符、五項 encounter menu、手札 7、德克薩姆
+殺死弗佐爾、第四枷印消退、護符離場與兩派混戰，最後在
+`GEO4/0x22 (4,5,N)` 恢復地城。CoAB JSON 新增洞穴 exact map definition、
+全段繁中與四頁手札；下一個缺口是洞穴探索、德克薩姆／梅杜莎／牛頭人決戰
+及取得洛山達護符。

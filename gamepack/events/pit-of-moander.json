@@ -33,6 +33,23 @@
       ,"journal.12.4": "Journal Entry 12 (4/6): “The ornate Z inside a circle on a triangular field is the Zhentrim's mark—our hosts, I fear. They are said to hide a great hoard of lawful-good weapons and magic. I learned it is not in Zhentil Keep. Fzoul Chembryl seeks to place good people under his power so he can use these devices.”"
       ,"journal.12.5": "Journal Entry 12 (5/6): “The half moon crossed by three bars belongs to Dracandros, a powerful but banished Red Wizard of Thay obsessed with dragons. The flaming claws belong to Tyranthraxus. He is the greatest threat: he seeks dominion over the entire Prime Material Plane and controls the Pool of Radiance.”"
       ,"journal.12.6": "Journal Entry 12 (6/6): “To finish Tyranthraxus you need three artifacts divided among the powers that bonded you: the Amulet of Lathander here in Zhentil Keep, Dracandros's Helm of Dragons near Haptooth, and Mogion's Gauntlet of Moander at Yulash. I cannot offer much fighting power, but I know how to stay out of the way.”"
+      ,"zhentil.hooded_offer": "A hooded woman suddenly appears. “Follow me. I can get you out of here! You are trapped here! My master can help you.”"
+      ,"zhentil.hooded_follow": "Do you follow?"
+      ,"zhentil.fzoul_interrupts": "A strange shimmer surrounds you and the room begins to fade. A band of clerics bursts in, led by Fzoul Chembryl. He shouts, “Woman, you go too far!”"
+      ,"zhentil.fzoul_retreats": "As the room fades away, Fzoul turns and rushes out."
+      ,"dexam.arrival": "You are led along a dark corridor and see Dexam the beholder. The hooded woman walks toward a milling group of armored minotaurs; they immediately snap to attention."
+      ,"dexam.journal_30": "Dexam speaks. You record his speech as Journal Entry 30."
+      ,"dexam.amulet_choice": "Dimswart the Sage whispers, “Look on the altar. That is the Amulet of Lathander.” What do you do?"
+      ,"dexam.fzoul_journal_7": "Before you can act, an impressive man backed by troops, priests and mages rushes in. His statement is recorded as Journal Entry 7."
+      ,"dexam.kills_fzoul": "Dexam roars, “Then die, heretic!” and blasts Fzoul into a heap of ash. The bonds on your arms begin to writhe."
+      ,"dexam.fzoul_bond_fades": "Fzoul's bond fades."
+      ,"dexam.kill_order": "“Now that the bond is gone, they are of no use to me. Kill them.”"
+      ,"dexam.amulet_rises": "Dexam turns toward the altar and starts to leave. You notice the amulet rising to meet him."
+      ,"dexam.altar_melee": "As Dexam leaves, his forces and Fzoul's remaining troops begin to melee around you."
+      ,"journal.30.1": "Journal Entry 30 (1/2): Dexam says, “So, these are Fzoul's little secret. Very interesting. As the representative of the TRUE priests of Bane, I shall deliver you to Mulmaster and the grand Imperceptor.”"
+      ,"journal.30.2": "Journal Entry 30 (2/2): “In Mulmaster I will examine these bonds in my laboratory—to your extreme discomfort. During the final procedure, the one resulting in your death, the pain should last no more than two or perhaps three weeks. Once I uncover their secret, the Imperceptor will be most angry with dear little Fzoul, and we may finally be rid of this heretic and his precious mages.”"
+      ,"journal.7.1": "Journal Entry 7 (1/2): “I am Fzoul Chembryl, high lord of the Dark Shrine. My precious mages, as you call them, allowed me to follow your minion. Dexam, you overstep your authority. My mark is on these people, and the Imperceptor will know of my work in due time.”"
+      ,"journal.7.2": "Journal Entry 7 (2/2): “I work for the greater glory of Bane. The powers Bane granted us, joined with secular magic-users, will establish a Banite hegemony in the Realms. These bonded tools are central to our power and will let me control and evade the traps of lawful and good magic. They are under my authority and shall remain so for as long as I live.”"
       ,"world.tilverton": "Tilverton"
       ,"world.shadowdale": "Shadowdale"
       ,"world.ashabenford": "Ashabenford"
@@ -77,6 +94,23 @@
       ,"journal.12.4": "手札條目 12（4/6）：「三角形底紋、圓圈裡的華麗 Z 字，代表散塔林會——也就是我們眼下的『東道主』。據說他們藏有大批守序善良陣營的武器與魔法物品。我被捕前正追查此事，已確定寶藏不在散塔林堡。傳聞首領弗佐爾・錢布瑞爾企圖控制善良之人，好讓自己能夠運用那些寶物。」"
       ,"journal.12.5": "手札條目 12（5/6）：「三道橫槓穿過半月，是德拉坎德羅斯的標誌。他是力量強大的塞爾紅袍法師，卻因野心過盛又不懂時機與手腕而遭放逐，並且對龍異常著迷。燃燒的利爪則屬於烈焰之主提朗瑟克斯；他的威脅最大，野心是支配整個主物質位面，而且掌握著光芒之池。」"
       ,"journal.12.6": "手札條目 12（6/6）：「要徹底消滅提朗瑟克斯，你們需要三件分散在枷印勢力手中的神器：散塔林堡某處的洛山達護符、哈普附近德拉坎德羅斯持有的龍之頭盔，以及尤拉什摩貢掌控的摩安德護手。至於戰力，我恐怕幫不上太多；不過我也曾冒險，知道如何不礙你們的手腳。」"
+      ,"zhentil.hooded_offer": "一名兜帽女子忽然現身。「跟我來，我能帶你們離開！你們已被困在這裡；我的主人能幫助你們。」"
+      ,"zhentil.hooded_follow": "要跟她走嗎？"
+      ,"zhentil.fzoul_interrupts": "奇異的微光籠罩眾人，房間開始淡去。就在消失前一刻，一群祭司闖入房內，領頭的是弗佐爾・錢布瑞爾。他怒喝：「女人，你太過分了！」"
+      ,"zhentil.fzoul_retreats": "房間逐漸淡去；弗佐爾轉身衝出房間。"
+      ,"dexam.arrival": "你們被領過一條幽暗長廊，眼前赫然是眼魔德克薩姆！兜帽女子走向一群來回走動的披甲牛頭人；牠們立刻挺身肅立。"
+      ,"dexam.journal_30": "德克薩姆開口說話；你們將他的演說記入冒險手札第 30 條。"
+      ,"dexam.amulet_choice": "賢者迪姆斯沃特低聲說：「看祭壇上，那就是洛山達護符。」你們要怎麼做？"
+      ,"dexam.fzoul_journal_7": "你們還來不及行動，一名氣勢逼人的男子便率領士兵、祭司與法師衝入房內。他的發言已記入冒險手札第 7 條。"
+      ,"dexam.kills_fzoul": "德克薩姆咆哮：「那就去死吧，異端！」接著把弗佐爾轟成一堆灰燼。你們感到手臂上的枷印開始扭動。"
+      ,"dexam.fzoul_bond_fades": "弗佐爾的枷印消退了。"
+      ,"dexam.kill_order": "「枷印既已消失，他們對我再無用處。殺了他們。」"
+      ,"dexam.amulet_rises": "德克薩姆轉向祭壇，準備離去。你們注意到護符正飄向他。"
+      ,"dexam.altar_melee": "德克薩姆離開時，他的部隊與弗佐爾殘存的人馬在你們四周陷入混戰。"
+      ,"journal.30.1": "手札條目 30（1/2）：德克薩姆說：「原來這就是弗佐爾藏著的小祕密。有意思。身為貝恩正統祭司的代表，我要把你們送到穆爾馬斯特，交給總督察長。」"
+      ,"journal.30.2": "手札條目 30（2/2）：「到了穆爾馬斯特，我會在實驗室研究這些枷印——只怕你們會非常不舒服。最後一道程序將奪走你們的性命；放心，痛苦頂多持續兩三個星期。等我揭開枷印的祕密，總督察長必會對他親愛的小弗佐爾大發雷霆，我們也終於能除掉這名異端和他珍愛的法師。」"
+      ,"journal.7.1": "手札條目 7（1/2）：「我是弗佐爾・錢布瑞爾，幽暗神殿的最高領主。你口中那些『寶貝法師』讓我得以追蹤你的手下。德克薩姆，你已越權。這些人身上有我的印記；到了適當時候，總督察長自然會知道我的功績。」"
+      ,"journal.7.2": "手札條目 7（2/2）：「真正為貝恩至高榮耀效力的人是我。貝恩賜予我們的力量，加上世俗法師的魔法，將在諸國建立貝恩霸權；這些受枷印控制的工具正是鞏固權力的核心，也能讓我駕馭並避開善良與守序者藏在魔法物品裡的陷阱。他們受我支配，而且只要我還活著，就永遠如此。」"
       ,"world.tilverton": "提爾佛頓"
       ,"world.shadowdale": "暗影谷"
       ,"world.ashabenford": "阿沙本福德"
@@ -171,6 +205,20 @@
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 10, "y": 6, "direction": 0}
+    },
+    {
+      "id": "zhentil-keep.beholder-cave",
+      "kind": "first_person",
+      "area_id": 4,
+      "geometry_block": 34,
+      "geometry_file": "GEO4.DAX",
+      "wall_file": "WALLDEF4.DAX",
+      "symbol_file": "8X8D4.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "wrap": true,
+      "scale": 2,
+      "spawn": {"x": 4, "y": 5, "direction": 0}
     }
   ],
   "text_rules": [
@@ -296,6 +344,73 @@
       "id": "zhentil.dimswart_join",
       "all_contains": ["WILL YOU TAKE DIMSWART ALONG"],
       "message_id": "zhentil.dimswart_join"
+    },
+    {
+      "id": "zhentil.hooded_offer",
+      "all_contains": ["A HOODED WOMAN SUDDENLY APPEARS", "MY MASTER CAN HELP YOU"],
+      "message_id": "zhentil.hooded_offer"
+    },
+    {
+      "id": "zhentil.hooded_follow",
+      "all_contains": ["DO YOU FOLLOW"],
+      "message_id": "zhentil.hooded_follow"
+    },
+    {
+      "id": "zhentil.fzoul_interrupts",
+      "all_contains": ["A STRANGE SHIMMER SURROUNDS YOU", "FZOUL CHEMBRYL", "WOMAN, YOU GO TO FAR"],
+      "message_id": "zhentil.fzoul_interrupts"
+    },
+    {
+      "id": "zhentil.fzoul_retreats",
+      "all_contains": ["AS THE ROOM FADES AWAY", "RUSHES OUT OF THE ROOM"],
+      "message_id": "zhentil.fzoul_retreats"
+    },
+    {
+      "id": "dexam.arrival",
+      "all_contains": ["DEXAM THE BEHOLDER", "ARMORED MINOTAURS"],
+      "message_id": "dexam.arrival"
+    },
+    {
+      "id": "dexam.journal_30",
+      "all_contains": ["DEXAM SPEAKS", "JOURNAL ENTRY 30"],
+      "message_id": "dexam.journal_30",
+      "journal_message_ids": ["journal.30.1", "journal.30.2"]
+    },
+    {
+      "id": "dexam.amulet_choice",
+      "all_contains": ["DIMSWART THE SAGE WHISPERS", "AMULET OF LATHANDER", "WHAT DO YOU DO"],
+      "message_id": "dexam.amulet_choice"
+    },
+    {
+      "id": "dexam.fzoul_journal_7",
+      "all_contains": ["BEFORE YOU CAN ACT", "HIS STATEMENT IS IN JOURNAL ENTRY 7"],
+      "message_id": "dexam.fzoul_journal_7",
+      "journal_message_ids": ["journal.7.1", "journal.7.2"]
+    },
+    {
+      "id": "dexam.kills_fzoul",
+      "all_contains": ["DEXAM ROARS", "BLASTS FZOUL INTO A HEAP OF ASH"],
+      "message_id": "dexam.kills_fzoul"
+    },
+    {
+      "id": "dexam.fzoul_bond_fades",
+      "all_contains": ["THE BOND OF FZOUL FADES"],
+      "message_id": "dexam.fzoul_bond_fades"
+    },
+    {
+      "id": "dexam.kill_order",
+      "all_contains": ["NOW THAT THE BOND IS GONE", "KILL THEM"],
+      "message_id": "dexam.kill_order"
+    },
+    {
+      "id": "dexam.amulet_rises",
+      "all_contains": ["DEXAM TURNS TO THE ALTAR", "AMULET RISING TO MEET HIM"],
+      "message_id": "dexam.amulet_rises"
+    },
+    {
+      "id": "dexam.altar_melee",
+      "all_contains": ["AS DEXAM LEAVES", "START TO MELEE IN THE ROOM AROUND YOU"],
+      "message_id": "dexam.altar_melee"
     }
   ],
   "events": [
