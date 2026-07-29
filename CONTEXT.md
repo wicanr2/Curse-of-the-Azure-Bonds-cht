@@ -2069,3 +2069,30 @@ carrier 次序及 first-key mask；`TrackPlayback` 不再固定寫 `F0h`，而�
 active parameter mask 驅動。READY spec 371 與 native IDC 腳本已保存。
 音樂仍缺 LFO、fade／SFX 共存、完整 loop、合成器、PCM mixer、遊戲內播放
 及 save/resume，不能宣稱完成。
+
+2026-07-30 第 372 輪完成 PC-98 Sound BIOS 軟體 LFO 靜態核心與動態
+可觀測性稽核。指定 IDA Pro 9.4 證明 timer ISR `CF47Ah` 透過 register-held
+near offsets `06C3h/0701h/07F3h` 跳到 `CF4C3h/CF501h/CF5F3h`；一般
+auto-analysis 因 `jmp bx` 把後段誤留為 `db`。native IDC 現會手動建立三條
+路徑，以及 `CF817h` pitch、`CF847h` TL、`CFAB9h` phase accumulator 與
+六個 waveform 函式。
+
+`SETPARABLOCK` 與 `MODUON` 都設定聲道 flag bit 7 並重算
+`LFO_PITCH_COARSE × LFO_PITCH_DEPTH`；`MODUOFF` 只清 bit 7。MSCDRV 的
+正常播放路徑沒有 MODUON/OFF caller，FM stream `90h` 仍只是 tempo +4，
+不能與 LFO 混為一談。waveform 0..5 分別位於
+`CFA49/CFA67/CFA10/CFA8A/CFA55/CFA24`，使用 signed 16-bit phase／step、
+shared timer／noise 與原 8086 boundary quirks。pitch 依 sample、depth、
+base F-number 做兩次 `/32767`；amplitude LFO 保留 byte-sized
+`IMUL/IDIV` 與 wrapping。
+
+獨立 engine commit `77683a3` 新增 `audio/pc98soundbios` 的 oscillator、
+Pitch、TotalLevel，
+`audio/s98` 新增一般 note／tone-load 排除後的 software-LFO update
+extractor。CoAB `FMParameterBlock.YM2203Modulation` 映射 NEC parameter。
+十二首 first-stream 共 18 個聲道使用非零 LFO 參數，但現有約五秒 S98
+每首 `observed_lfo_pitch_updates=0`、`observed_lfo_level_updates=0`、
+`dynamic_lfo_observed=false`。這只表示目前 Hoot capture 無動態觀測，
+不能推論原作關閉 LFO。spec 372 已 READY；仍需長時間 Hoot 或
+NP2kai／test harness 證明 cadence、sync delay，之後才能接 TrackPlayback
+scheduler、合成器與遊戲內播放器。

@@ -106,8 +106,13 @@ commit 內保存不可能自我引用的 hash。
   `SOUND.ROM` 的 16-bit consumer 及十二首共 72 組 S98 啟動序列，證明
   `TL=127-OUTPUT_LEVEL`、algorithm carrier `4→2→3→1` 與
   `OPERATOR_MASK` key-on；事件 runtime 不再固定強制四個 operator。
-  共用 engine `6a0852c` 提供 `audio/ym2203` 拓樸與帶 mask 的 key-on snapshot。
-  仍缺 LFO、fade／SFX、loop、合成器與遊戲內播放器。
+  共用 engine `77683a3` 提供 `audio/ym2203` 拓樸、帶 mask 的 key-on
+  snapshot 與 `audio/pc98soundbios` LFO 核心。
+  第 372 輪又恢復 `SOUND.ROM` timer ISR 的 register-held 間接分支，
+  完成六種軟體 LFO waveform、pitch／TL 投影及 S98 動態 extractor；
+  十二首有 18 個 first-stream 非零 LFO 聲道，但目前短 trace 的動態更新
+  皆為零，scheduler cadence 尚未取得外部證據。仍缺 fade／SFX、loop、
+  合成器與遊戲內播放器。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -131,7 +136,8 @@ commit 內保存不可能自我引用的 hash。
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目尚缺 fade／sound-effect 共存路徑、完整曲長／loop trace、
-  LFO、合成器與播放器。曲名、十二首 sequence、控制流、total-level、
+  LFO scheduler 外部 cadence、合成器與播放器。六種 LFO waveform 與
+  pitch／TL 數學核心已完成；曲名、十二首 sequence、控制流、total-level、
   algorithm carrier、operator-mask key-on、正常配樂 deterministic
   events 及啟動 S98 register trace 已交叉驗證；
   driver sector 仍需

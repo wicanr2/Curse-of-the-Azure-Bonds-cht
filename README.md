@@ -11,7 +11,7 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `6a0852c`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `77683a3`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -62,8 +62,12 @@ Sound BIOS 會反相 rate／level、重排 operator，並保留 signed DETUNE sh
 `SOUND.ROM`，並用十二首共 72 組啟動序列證明
 `TL=127-OUTPUT_LEVEL`、algorithm carrier `4→2→3→1` 及
 `OPERATOR_MASK` key-on；正常配樂事件層不再固定寫 `F0h`。
-共用 engine `audio/s98`／`audio/ym2203` 與 CoAB `pc98-s98-audit`
-可重現這些結論，但 fade／SFX、完整 loop、合成器與遊戲內播放器仍未完成。
+第 372 輪再手動恢復 IDA 漏掉的 `SOUND.ROM` timer ISR 間接分支，
+完成六種 signed 16-bit 軟體 LFO waveform、pitch 與 total-level 投影；
+共用 engine 使用 `audio/s98`／`audio/ym2203`／`audio/pc98soundbios`。
+十二首 first-stream 共 18 個聲道帶非零 LFO 參數，但現有約五秒 S98
+沒有獨立動態更新，因此 scheduler 仍等待長時間 Hoot 或 NP2kai 外部證據。
+fade／SFX、完整 loop、合成器與遊戲內播放器也仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -85,7 +89,9 @@ FM 音色庫與缺失索引則見
 S98／YM2203 執行期驗證則見
 [`docs/spec/370-pc98-s98-ym2203-runtime.md`](docs/spec/370-pc98-s98-ym2203-runtime.md)，
 總音量、載波與 key-on 則見
-[`docs/spec/371-pc98-sound-bios-total-level-and-key-on.md`](docs/spec/371-pc98-sound-bios-total-level-and-key-on.md)。
+[`docs/spec/371-pc98-sound-bios-total-level-and-key-on.md`](docs/spec/371-pc98-sound-bios-total-level-and-key-on.md)，
+軟體 LFO 核心與動態 trace 邊界則見
+[`docs/spec/372-pc98-sound-bios-software-lfo.md`](docs/spec/372-pc98-sound-bios-software-lfo.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

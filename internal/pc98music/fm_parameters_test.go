@@ -90,6 +90,25 @@ func TestYM2203LevelSequenceUsesAlgorithmCarriers(t *testing.T) {
 	}
 }
 
+func TestYM2203ModulationUsesLogicalOperatorDepths(t *testing.T) {
+	block := FMParameterBlock{
+		LFOPitchDepth:           30,
+		LFOPitchDepthCoarse:     1,
+		LFOAmplitudeDepth:       12,
+		LFOAmplitudeDepthCoarse: [4]byte{15, 0, 5, 10},
+	}
+	pitch, levels := block.YM2203Modulation(
+		0x4000, 0x2000, [4]byte{40, 50, 60, 70},
+	)
+	if pitch != 0x2003 {
+		t.Fatalf("pitch=%04x, want 2003", pitch)
+	}
+	// Physical order is logical 1,3,2,4.
+	if levels != [4]byte{41, 50, 60, 72} {
+		t.Fatalf("levels=%v, want [41 50 60 72]", levels)
+	}
+}
+
 func TestParseFMParameterBlockRejectsInvalidFieldAndLength(t *testing.T) {
 	if _, err := parseFMParameterBlock(make([]byte, 99)); err == nil ||
 		!strings.Contains(err.Error(), "99 bytes") {
