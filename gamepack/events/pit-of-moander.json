@@ -200,12 +200,11 @@
     },
     {
       "ecl_blocks": [80, 81],
-      "context": "pc98-wldtwn-zero",
       "track_id": "pc98-bgm-selector-05"
     },
     {
       "ecl_blocks": [80, 81],
-      "context": "pc98-wldtwn-nonzero",
+      "context": "pc98-town-services-menu",
       "track_id": "pc98-bgm-selector-06"
     },
     {

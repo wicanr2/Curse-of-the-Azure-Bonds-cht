@@ -1871,7 +1871,26 @@ exact selector 表已寫入 `docs/spec/355-pc98-ecl-bgm-selector.md` 與 CoAB
 game-pack JSON。獨立 engine commit `272e53c` 新增嚴格驗證的
 `music_tracks`／`music_bindings` 及 exact-context fallback resolver，文件
 維持繁體中文；CoAB State 會在初始 ECL 與 block transition 發出一次性
-`MusicEvent`。`0x30` 不換曲、`0x52` 無分支，`0x50/0x51` 仍須
-`WLDTWN` opaque context，因此目前不猜曲名、不宣稱音樂可播放。下一步優先
-用 Docker 內 IDA Pro 追 `WLDTWN` writer，再處理 IVT 7Eh／INT D2h 與
-runtime YM trace。
+`MusicEvent`。`0x30` 不換曲、`0x52` 無分支；第 361 輪當時尚未解開
+`0x50/0x51` 的 `WLDTWN` context。這個歷史缺口已由下方第 362 輪取代，
+但曲名與實際播放仍未完成。
+
+2026-07-29 第 362 輪完成 PC-98 Disk B／DAX codec 與 `WLDTWN` 語意證據。
+Disk B 雖無標準 BPB，原 bytes 仍證明兩份相同 FAT12、32-byte root entries、
+data start `0x2C00`；`ECL.DAX` 是 cluster 212–341、file offset `0x37400`、
+size `0x20636`。先前 `0x1C00` data-start 假設已被推翻。
+
+官方 IDA Pro 9.4 反組譯 `GETDATABLOCK 0723:0824`／IDA `0x17A54` 與
+decoder `0x17DD5`，證明 PC-98 沿用 9-byte DAX index，但每個 block 有
+raw／專用三分支 RLE flag。`internal/dax.ParsePC98` 對真實 24 個 ECL blocks
+全部精確符合 decoded size，稽核 script 保存於
+`scripts/ida/pc98_dax_codec_audit.py`。
+
+overlay `INITECL`／`STOREVALUE`、decoded ECL 全 corpus 與 BGMPLAY consumer
+三方證明 `WLDTWN` 特殊 ECL address 是 `0x5208`。block 0x50 在
+`+0x063B/+0x0740` 寫 1/0，block 0x51 在 `+0x038B/+0x046D` 寫 1/0。
+兩個 value=1 流程與 DOS 的 `YOU ARE IN ... WHAT PLACE WILL YOU VISIT?`
+及 INN／STORE／BAR 完整對齊；value=0 回到主要區域／世界導航。因此 selector
+5 是區域／戶外導航、selector 6 是城鎮設施選單。JSON 已移除 zero opaque
+context，非零改名 `pc98-town-services-menu`；正常 DOS 玩家路徑的同 block
+5↔6 cue 尚未完成，音樂與曲名仍不可宣稱完成。

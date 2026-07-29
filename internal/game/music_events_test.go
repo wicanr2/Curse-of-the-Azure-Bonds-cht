@@ -25,8 +25,8 @@ func TestActiveECLBlockRequestsPC98MusicSelector(t *testing.T) {
 	}
 }
 
-func TestUnmappedAndContextualECLBlocksDoNotGuessMusic(t *testing.T) {
-	for _, block := range []uint8{0x30, 0x50, 0x52} {
+func TestUnmappedECLBlocksDoNotGuessMusic(t *testing.T) {
+	for _, block := range []uint8{0x30, 0x52} {
 		state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{
 			block: {},
 		}, block)
@@ -34,6 +34,21 @@ func TestUnmappedAndContextualECLBlocksDoNotGuessMusic(t *testing.T) {
 		if got := state.ConsumeMusicEvents(); len(got) != 0 {
 			t.Fatalf("block 0x%02X guessed music events %+v", block, got)
 		}
+	}
+}
+
+func TestPC98WorldTownMusicContextsUseProvenSceneRoles(t *testing.T) {
+	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{
+		0x50: {},
+	}, 0x50)
+	state.requestMusicForCurrentBlock("")
+	state.requestMusicForCurrentBlock("pc98-town-services-menu")
+	want := []MusicEvent{
+		{Action: "play", TrackID: "pc98-bgm-selector-05"},
+		{Action: "play", TrackID: "pc98-bgm-selector-06"},
+	}
+	if got := state.ConsumeMusicEvents(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("world/town music events=%+v, want %+v", got, want)
 	}
 }
 

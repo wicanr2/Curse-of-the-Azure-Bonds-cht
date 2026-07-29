@@ -53,3 +53,24 @@ func TestParseStringMemoryOperandConsumesWord(t *testing.T) {
 		t.Fatalf("next=%d, want 4", next)
 	}
 }
+
+func TestFindSaveDestinationCandidatesChecksEveryByte(t *testing.T) {
+	// Payload offset 0 also decodes as a longer PRINT candidate. A
+	// resynchronizing linear scan would skip the real SAVE at offset 1.
+	block := []byte{
+		0, 0,
+		0x11,
+		0x09, 0x00, 0x01, 0x01, 0x08, 0x52,
+	}
+	instructions, err := FindSaveDestinationCandidates(block, 0x5208)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(instructions) != 1 || instructions[0].Offset != 1 ||
+		instructions[0].Operands[0].Low != 1 {
+		t.Fatalf("SAVE candidates=%+v", instructions)
+	}
+	if other, err := FindSaveDestinationCandidates(block, 0x5209); err != nil || len(other) != 0 {
+		t.Fatalf("unexpected other destination=%+v err=%v", other, err)
+	}
+}

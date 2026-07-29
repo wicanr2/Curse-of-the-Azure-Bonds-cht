@@ -20,6 +20,7 @@ import (
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
+	inputFile := flag.String("input-file", "", "直接讀取 DAX 檔案；非空時不使用 -image／-member")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	traceStart := flag.Int("trace-start", -1, "decoded payload offset for -trace (default 0)")
 	runStart := flag.Int("run-start", -1, "decoded payload offset for -run-subset (default initial entry)")
@@ -29,6 +30,8 @@ func main() {
 	allEntries := flag.Bool("all-entries", false, "use all five ECL initialization entries with -graph")
 	findOpcode := flag.Int("find-opcode", -1, "print reachable instructions with this opcode when used with -graph")
 	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
+	findSaveDestination := flag.String("find-save-destination", "", "搜尋寫入指定 16-bit address 的 SAVE candidates（十六進位）")
+	pc98DAX := flag.Bool("pc98-dax", false, "以 IDA 驗證的 PC-9801 DAX block codec 解碼")
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
@@ -50,6 +53,18 @@ func main() {
 	setAge := flag.String("set-age", "", "set the signed DOS player age when used with -character-record")
 	outRecord := flag.String("out-record", "", "write a patched DOS .SAV/.GUY record to this new path")
 	flag.Parse()
+	var saveDestination uint64
+	if strings.TrimSpace(*findSaveDestination) != "" {
+		var err error
+		saveDestination, err = strconv.ParseUint(
+			strings.TrimPrefix(strings.TrimSpace(*findSaveDestination), "0x"),
+			16,
+			16,
+		)
+		if err != nil {
+			log.Fatalf("invalid -find-save-destination %q: %v", *findSaveDestination, err)
+		}
+	}
 	if strings.TrimSpace(*setAge) != "" {
 		if strings.TrimSpace(*characterRecord) == "" {
 			log.Fatal("-character-record is required with -set-age")
@@ -141,15 +156,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	data, err := zipMember(*image, *member)
+	var data []byte
+	sourceName := *member
+	if strings.TrimSpace(*inputFile) != "" {
+		data, err = os.ReadFile(*inputFile)
+		sourceName = *inputFile
+	} else {
+		data, err = zipMember(*image, *member)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	blocks, err := dax.Parse(data)
+	var blocks []dax.Block
+	if *pc98DAX {
+		blocks, err = dax.ParsePC98(data)
+	} else {
+		blocks, err = dax.Parse(data)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s: %d blocks\n", *member, len(blocks))
+	fmt.Printf("%s: %d blocks\n", sourceName, len(blocks))
 	if *sessionInfo {
 		byID := make(map[uint8][]byte, len(blocks))
 		for _, block := range blocks {
@@ -272,6 +299,21 @@ func main() {
 			}
 			if scanErr != nil {
 				fmt.Printf("  scan stopped safely: %v\n", scanErr)
+			}
+		}
+		if strings.TrimSpace(*findSaveDestination) != "" {
+			instructions, scanErr := ecl.FindSaveDestinationCandidates(
+				block.Data,
+				uint16(saveDestination),
+			)
+			for _, instruction := range instructions {
+				fmt.Printf(
+					"  SAVE destination 0x%04X candidate at +0x%04X value=%#v next=+0x%04X\n",
+					saveDestination, instruction.Offset, instruction.Operands[0], instruction.Next,
+				)
+			}
+			if scanErr != nil {
+				fmt.Printf("  SAVE destination scan stopped safely: %v\n", scanErr)
 			}
 		}
 		if *trace {

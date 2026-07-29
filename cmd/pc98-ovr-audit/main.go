@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -18,6 +19,7 @@ func main() {
 	interruptText := flag.String("interrupt", "d2", "hexadecimal interrupt number to scan")
 	wordText := flag.String("word", "", "另搜尋 little-endian 16-bit 值（十六進位）")
 	bytesText := flag.String("bytes", "", "另搜尋連續 hex bytes，例如 9a77019308")
+	extractCodeDir := flag.String("extract-code-dir", "", "將每段已驗證 code 匯出至指定目錄，供 IDA 載入")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
 		flag.PrintDefaults()
@@ -55,6 +57,11 @@ func main() {
 	fmt.Printf("exe_sha256=%x\n", sha256.Sum256(executable))
 	fmt.Printf("ovr_sha256=%x\n", sha256.Sum256(overlayFile))
 	fmt.Printf("overlay_count=%d interrupt=%02X\n", len(overlays), interruptValue)
+	if *extractCodeDir != "" {
+		if err := os.MkdirAll(*extractCodeDir, 0o755); err != nil {
+			fatalf("建立 code 匯出目錄失敗：%v", err)
+		}
+	}
 	total := 0
 	for index, overlay := range overlays {
 		offsets := pc98ovr.InterruptOffsets(overlay.Code, byte(interruptValue))
@@ -79,6 +86,12 @@ func main() {
 			fmt.Printf(" bytes_%X_offsets=%s", bytePattern, formatOffsets(byteOffsets))
 		}
 		fmt.Println()
+		if *extractCodeDir != "" {
+			path := filepath.Join(*extractCodeDir, fmt.Sprintf("overlay-%02d.bin", index))
+			if err := os.WriteFile(path, overlay.Code, 0o644); err != nil {
+				fatalf("匯出 overlay %d code 失敗：%v", index, err)
+			}
+		}
 	}
 	fmt.Printf("interrupt_matches=%d\n", total)
 }
