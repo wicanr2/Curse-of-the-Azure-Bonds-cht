@@ -1786,3 +1786,21 @@ Enter 才消耗。Docker/Xvfb 640×480 checkpoint
 `combat-timeline-cloudkill-persistent.png` 已保存。PC-98 screenshot 目前只
 支持 layout；DOS 動態時間碼、protect magic／未命名 affect 免疫及每回合
 重複毒雲死亡時序仍未完成。
+
+2026-07-29 第 358 輪開始 PC-98 音樂來源研究。使用者提供兩張
+`VFD1.00` FDD；新增唯讀 `internal/pc98vfd` 與 `cmd/pc98-vfd-audit`，
+可重現 77×2×8×1024 geometry、媒體 SHA-256 與缺失 CHRN。Disk 1 的
+`3/0/8` 對應 FAT12 cluster 46、`MSCDRV.EXE 0x4000..0x43FF`；`42/0/2`
+對應 `CED3.DAX 0x10000..0x103FF`。Disk 2 尾端另缺 24 sectors。原始 FDD
+已加入 `.gitignore`，不可提交。
+
+Docker 內建置 NP2kai `0.86.0.22 e2dc904`，以可拋棄的可寫 2HD 研究副本及
+Reset 成功進入 MEGDOS 0.25／`shell=loader.com`；唯讀副本會黑畫面，原始
+媒體仍未修改。由於 music driver 正好遺失 1 KiB，loader／driver 後停止，
+尚未進入標題。IDA 與 bytes 已證實 `MSCDRV.EXE` 是 `INT D2h` TSR，使用
+YM2203 ports `0x188/0x18A` 與 timer playback；公開 register-log pack
+另列出 Title、Character Creation、Town、Thieves Guild、Combat、
+Dungeon 1、Wilderness、Village、Dungeon 2、City、Dungeon 3、Ending
+12 首，但 scene→track number 尚未證實。完整限制與 READY gate 已寫入
+spec 358；下一步優先找回同版 driver 缺失 sector，再做 caller／runtime
+YM trace，不以補零結果冒充原版。

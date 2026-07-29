@@ -219,6 +219,24 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。
 
+### 目前 PC-98 音訊研究 milestone（不可遺忘）
+
+- 使用者提供的 `pc98/` 兩片原始 VFD 已完成唯讀稽核；來源檔必須保持
+  untracked，不得修改或提交。兩片皆為 VFD1.00、77×2×8×1024 幾何。
+- Disk 1 有兩個缺失 sector，其中一個正落在 `MSCDRV.EXE` 內，造成 1024
+  bytes 缺口；另一個落在 `CED3.DAX`。Disk 2 尾端另缺 24 sectors。因此目前
+  不可把抽出的 `MSCDRV.EXE` 宣稱為完整驅動，也不可用零填內容推論其 API。
+- 已建立 read-only `internal/pc98vfd` parser 與 `cmd/pc98-vfd-audit`，保留
+  缺 sector 狀態而不靜默補零。NP2kai 可從省略缺 sector 的可寫暫存 D88
+  進入 MEGDOS 0.25 loader，但遊戲尚未成功啟動；該畫面只屬啟動鏈 exact
+  證據，不是遊戲 GUI。
+- 已從殘缺驅動交叉確認 YM2203 I/O ports 0x188/0x18A、timer handler 與
+  INT D2 hook；公開 soundtrack 資料只作曲名／作曲者及平台交叉參考，不提交
+  受著作權保護的錄音。
+- 規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
+  下一步優先找同系列完整 `MSCDRV.EXE` 或從 `GAME.EXE` callers 建立 INT D2
+  呼叫契約，補齊曲目 ID、音效命令與場景切換，再進 engine JSON/runtime。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。

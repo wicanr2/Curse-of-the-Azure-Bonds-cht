@@ -15,6 +15,16 @@ CoAB 本輪基底為 `04422f9`，依賴的獨立 engine 為 `09714e0`；實際�
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
+使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
+`pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與缺失 sector，而不把缺資料
+靜默補零。目前 Disk 1 的缺口正落在 `MSCDRV.EXE` 與 `CED3.DAX`，Disk 2
+尾端也有缺失，因此尚不能宣稱 PC-98 音樂驅動已完整復原。殘存 bytes 已交叉
+確認 YM2203 I/O 與 INT D2 hook；詳細證據與後續工作見
+[`docs/spec/358-pc98-vfd-and-fm-audio-source.md`](docs/spec/358-pc98-vfd-and-fm-audio-source.md)。
+NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
+[`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
+只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
+
 最新畫面已依原版 DOS 截圖重新校正版面，並以 PC-9801 日文版校準中文資訊
 密度，不再沿用先前置中的 prototype：
 

@@ -2,6 +2,7 @@
 *.zip
 *.rar
 *.pdf
+/pc98/
 
 # 本地解包與分析輸出
 workplace/original/
