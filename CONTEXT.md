@@ -2010,3 +2010,36 @@ words；auditor 會在十二首各 4,096 ticks execution 中收集初始化及 o
 不補零、不取模、不複製鄰近音色。DETUNE 真實值同時有 sign-extended
 negative 與 `4..7`，在 Sound BIOS consumer／register trace 前不強行
 正規化。READY spec 369 記錄證據與下一步。
+
+2026-07-30 第 370 輪完成 PC-98 Hoot S98／YM2203 執行期音色驗證。先建立
+Wine 8、Xvfb、Mesa software GL、PulseAudio null sink 的有界 Docker
+工具鏈；Hoot 2023 需官方 x86 VC runtime，且原 Shift-JIS XML 在 Wine
+MSXML 下必須轉成 UTF-8。指定 IDA Pro 9.4 native batch assembly 又證明
+Hoot 的「device initialization failed」位於 display backend，Wine D3DX
+trace 最後定位缺少 `skin/monotone/back.bmp`，補齊 skin 後可正常載入
+PC-98 driver。所有工具、archive、runtime、S98、Wine prefix、IDA database
+與 log 只留 `/tmp`，未提交 repository。
+
+最初以相對 Down 擷取的十二檔因 Hoot 保存上次游標而有重複曲目，已作廢。
+修正版每次重新搜尋遊戲、進曲目表、先送 Home，再走到絕對 row；十二首各用
+獨立 `docker run --rm` 擷取約五秒 S98 v3。`ponyca.xml` row code 順序是
+`00,01,02,08,06,0B,04,05,0A,07,03,09`，不能把 S98 流水號誤作 selector。
+
+獨立 engine commit `1a6a252` 新增作品中立 `audio/s98`：嚴格解碼 S98 v3
+header、device、write／wait／end，並抽取 YM2203 Sound BIOS tone burst
+與 key-on signature。CoAB 新增 `cmd/pc98-s98-audit`，以 exact MSCDRV、
+deterministic stream intent、二十組內嵌 signature 與十二首外部 trace
+四方驗證。全部二十組證明 NEC rate／level 欄位要反相，logical operator
+到 YM register slot 是 1,3,2,4，Sound BIOS burst 寫入順序是 4,2,3,1；
+signed DETUNE 採 8-bit left shift，不應先截成 3-bit。
+
+第 369 輪的「額外八組可聽音色／外部 bank producer」推論已被推翻。
+`20,21,23,24,25,26,27,58` 全部只在 FM descriptor 初始化短暫載入，
+第一個 stream `85h` 隨即改用內嵌 `0..19`，其後才首次 key-on。它們仍是
+真實 register 副作用，不能刪除或取模；但十二首可聽音色均由二十組 bank
+覆蓋，`PlaybackAudit` 現分開輸出所有呼叫與 audible indices。READY spec
+370 保存 archive／trace hash、row→selector、轉換公式與完成邊界。
+
+音樂仍未完成：total-level／operator-mask／algorithm carrier 公式、LFO、
+fade／SFX 共存、完整 loop、YM2203 合成器、遊戲內播放及 save/resume
+仍是下一階段。

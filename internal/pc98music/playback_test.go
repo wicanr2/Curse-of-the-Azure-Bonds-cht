@@ -119,3 +119,26 @@ func TestTrackPlaybackRejectsPSGPeriodOutsideTable(t *testing.T) {
 		t.Fatal("PSG note below table was accepted")
 	}
 }
+
+func TestPlaybackAuditSeparatesCalledAndAudibleParameters(t *testing.T) {
+	playback, _ := syntheticPlayback(t)
+	track := TrackDescriptor{Selector: 99}
+	for channel := range playback.channels {
+		state := playback.channels[channel]
+		track.Channels = append(track.Channels, TrackChannel{
+			Channel: channel, SequenceOffset: state.machine.Start,
+			SequenceLength: state.machine.End - state.machine.Start,
+			RawParameter1:  1, RawParameter2: 100,
+		})
+	}
+	audit, err := auditTrackPlayback(playback.driverData, track, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(audit.ParameterIndices) != 2 || audit.ParameterIndices[0] != 1 ||
+		audit.ParameterIndices[1] != 2 ||
+		len(audit.AudibleParameterIndices) != 1 || audit.AudibleParameterIndices[0] != 2 ||
+		!audit.AudibleParametersComplete {
+		t.Fatalf("playback audit = %+v", audit)
+	}
+}

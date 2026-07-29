@@ -1,12 +1,18 @@
 # 第三百六十九輪 PC-98 FM 音色參數庫
 
-狀態：`READY`（限內嵌二十組 NEC WORD 音色區塊、十二曲索引覆蓋與缺失來源）
+狀態：`READY`（限內嵌二十組 NEC WORD 音色區塊與所有參數呼叫索引）
+
+> 第 370 輪 S98 runtime trace 已取代本文件對「額外八組可聽音色／外部
+> producer」的推論，並修正 NEC rate／level 到 YM2203 的轉換。高索引只在
+> descriptor 初始化時出現，第一個 stream `85h` 會在 key-on 前覆蓋；詳見
+> [`370-pc98-s98-ym2203-runtime.md`](370-pc98-s98-ym2203-runtime.md)。
 
 本規格修正第 368 輪尚未驗證的假設：FM 音色區塊不在音序所在的 `dseg`，
 而在 `seg003`。使用者提供的 `MSCDRV.EXE` 只內嵌二十組完整音色；十二首
-曲目實際還會引用八個不在此內嵌區域的索引。因此目前不能把全部
+曲目實際還會引用八個不在此內嵌區域的索引。因此第 369 輪當時不能把全部
 `SETPARABLOCK` intent 展開成真實 YM2203 暫存器，也不能以零值或鄰近音色
-代替。
+代替。第 370 輪已證明可聽音色均由二十組 bank 覆蓋，但仍保留高索引
+初始化副作用。
 
 ## 1. 證據來源
 
@@ -108,24 +114,25 @@ consumer 或 register trace 前，只能把這項差異列為未解，不可任�
 `20, 21, 23, 24, 25, 26, 27, 58`。只有 selector 3、5、11、12 可由這二十
 組完整覆蓋。
 
-這不證明原版執行時缺音色。Hoot metadata 明列
+以下是第 369 輪當時的未決推論，現已由第 370 輪 supersede。Hoot metadata 明列
 `SOUND.ROM`、`MSCDRV.EXE`、`MSCD_98.COM` 三個必要檔，強烈暗示額外來源
 會補入資料，但目前本機沒有合法 `MSCD_98.COM`、Hoot game archive 或
-可執行的 Sound BIOS register oracle。來源仍標為 `unknown`。
+可執行的 Sound BIOS register oracle。第 370 輪 register trace 已證明它們
+不是額外 bank producer；高索引會讀到 table 後方相鄰記憶體，且在首個
+key-on 前被內嵌音色覆蓋。
 
 ## 5. 實作邊界
 
 - `EmbeddedFMParameterBlocks` 只接受 exact driver SHA，解析二十組真實資料。
-- `PlaybackAudit.ParameterIndices` 保存每首實際使用聯集。
-- `EmbeddedParametersComplete` 明示該曲是否只依賴內嵌 bank。
+- `PlaybackAudit.ParameterIndices` 保存每首所有參數呼叫聯集。
+- `EmbeddedParametersComplete` 明示所有呼叫是否只落在內嵌 bank；可聽
+  key-on 完整性由第 370 輪新增的 `AudibleParametersComplete` 表示。
 - `BridgeReport.FMParameterBank` 只輸出 file offset、大小、雜湊、使用及缺失
   索引，不洩漏音色 bytes。
 - 不對缺失索引補零、循環取模、複製鄰近音色或聲稱十二首已可忠實合成。
 
 ## 6. 尚未完成
 
-1. 從使用者合法媒體找回額外八個索引的 producer／完整 bank。
-2. 取得 Sound BIOS `AH=16h/1Fh` 的 YM2203 register trace，解開
-   DETUNE、carrier 音量縮放、LFO 及寫入順序。
-3. 再把完整 parameter block 展開為 verified register events。
-4. 接上作品中立 YM2203 合成器、PCM buffer、遊戲內播放與 save/resume。
+1. 完成 carrier total-level／operator mask／algorithm 音量公式。
+2. 補 LFO、fade、SFX 共存與完整 loop trace。
+3. 接上作品中立 YM2203 合成器、PCM buffer、遊戲內播放與 save/resume。

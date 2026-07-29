@@ -45,6 +45,33 @@ type FMParameterBlock struct {
 	LFOAmplitudeDepthCoarse [4]byte
 }
 
+// YM2203ToneSignature is the stable, volume-independent FM timbre state
+// written by NEC Sound BIOS. Operator order follows the physical YM2203
+// register slots (1, 3, 2, 4). Total-level values are excluded because the
+// track volume modifies carrier levels after loading a parameter block.
+type YM2203ToneSignature [21]byte
+
+var ym2203OperatorOrder = [...]int{0, 2, 1, 3}
+
+// YM2203Signature projects the NEC WORD-format parameters to the register
+// values verified against Hoot S98 traces. NEC rate and sustain-level fields
+// are attenuation/delay parameters, so Sound BIOS complements them before
+// writing the chip. Signed DETUNE is shifted as an 8-bit value; this preserves
+// bit 7 for negative inputs exactly as the runtime trace does.
+func (block FMParameterBlock) YM2203Signature() YM2203ToneSignature {
+	var result YM2203ToneSignature
+	result[0] = block.FeedbackAlgorithm
+	for physical, operator := range ym2203OperatorOrder {
+		result[1+physical] = byte(block.Detune[operator])<<4 | block.Multiple[operator]
+		result[5+physical] = block.KeyScale[operator]<<6 | (0x1f - block.AttackRate[operator])
+		result[9+physical] = 0x1f - block.DecayRate[operator]
+		result[13+physical] = 0x1f - block.SustainRate[operator]
+		result[17+physical] = (0x0f-block.SustainLevel[operator])<<4 |
+			(0x0f - block.ReleaseRate[operator])
+	}
+	return result
+}
+
 // FMParameterBankAudit reports only provenance, hashes and index coverage.
 // The proprietary tone values stay in the user's local media.
 type FMParameterBankAudit struct {

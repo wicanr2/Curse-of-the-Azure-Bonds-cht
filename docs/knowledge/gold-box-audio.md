@@ -112,6 +112,25 @@ FM 音高讀 verified driver 的 DS `0210h` 12-word F-number table；PSG
 shadow。十二首各 4,096 ticks 的 event count／SHA 已進 auditor，商業表與
 sequence 仍只在使用者媒體通過 SHA 後 runtime import。
 
-這仍不能直接宣稱「PC-98 音樂已還原」。下一個獨立 oracle 必須是
-NP2kai／Hoot 的實際 register log；之後才展開 Sound BIOS parameter
-blocks 並選擇有明確授權的 YM2203 合成器。
+2026-07-30 第 370 輪已取得 Hoot S98 v3 外部 register oracle。跨作品可
+沿用的工具放在 engine `audio/s98`：嚴格驗證 header／device／wait／end，
+並抽取 YM2203 tone burst 與 key-on snapshot；作品端只保存 selector
+對映、input hash 與稽核結論。Hoot 會保存上次游標，批次擷取必須每次
+`Home` 後使用絕對 row；S98 流水號不是 XML track code。
+
+CoAB 二十組 NEC WORD parameter 與全部十二首 trace 證明：
+
+- logical operator 1,2,3,4 要按 YM register slot 1,3,2,4 重排；
+- rate 與 sustain-level 是反向 parameter，寫晶片前分別以 31／15 相減；
+- signed DETUNE 採 8-bit left shift，不能先截成 3-bit；
+- total level 會被 volume／carrier 規則改寫，timbre signature 應排除它；
+- descriptor 的超範圍 parameter index 仍會形成真實 register 副作用，
+  但若第一個 stream `85h` 在 note 前覆蓋，就不能誤列為可聽音色需求。
+
+這項方法適用其他使用 NEC Sound BIOS 的 PC-98 Gold Box：分開追蹤「所有
+SETPARABLOCK 呼叫」與「key-on 當下有效音色」，並以 runtime trace 判定，
+不能只看靜態 index 聯集便推論缺 bank。
+
+目前仍不能宣稱「PC-98 音樂已還原」。下一步是 total-level／carrier 公式、
+LFO、fade／SFX 共存、完整 loop trace，再選擇有明確授權的 YM2203
+合成器並接入 PCM mixer。
