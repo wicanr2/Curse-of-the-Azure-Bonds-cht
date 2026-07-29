@@ -15,10 +15,25 @@ func (s *State) requestMusicForCurrentBlock(context string) {
 	if !found {
 		return
 	}
+	if binding.TrackID == s.activeMusicTrackID {
+		return
+	}
+	s.activeMusicTrackID = binding.TrackID
 	s.pendingMusicEvents = append(s.pendingMusicEvents, MusicEvent{
 		Action:  "play",
 		TrackID: binding.TrackID,
 	})
+}
+
+func (s *State) requestMusicForSignal(signal string, value uint16) {
+	if s.dataPack == nil || s.session == nil {
+		return
+	}
+	cue, found := s.dataPack.FindMusicCue(s.session.CurrentBlockID(), signal, value)
+	if !found {
+		return
+	}
+	s.requestMusicForCurrentBlock(cue.Context)
 }
 
 func (s *State) requestMusicIfBlockChanged(previous uint8) {

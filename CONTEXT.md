@@ -1894,3 +1894,18 @@ overlay `INITECL`／`STOREVALUE`、decoded ECL 全 corpus 與 BGMPLAY consumer
 5 是區域／戶外導航、selector 6 是城鎮設施選單。JSON 已移除 zero opaque
 context，非零改名 `pc98-town-services-menu`；正常 DOS 玩家路徑的同 block
 5↔6 cue 尚未完成，音樂與曲名仍不可宣稱完成。
+
+2026-07-29 第 363 輪完成 PC-98 同一 ECL block 內的 selector 5↔6 音樂
+情境切換。獨立 engine commit `a81b963` 新增嚴格驗證的 `music_cues`：
+只將 `ECL block + signal + raw value` 映射成作品自訂 context，拒絕重複
+cue、未知 signal 與沒有 binding 的 context，不讀城市名稱、選單文字或
+作品旗標。CoAB JSON 將 blocks `0x50/0x51` 的 `PICTURE 0x50` 映射到
+`pc98-town-services-menu`／selector 6，`PICTURE 0x79` 映射到
+`pc98-world-navigation`，再由 context-free fallback 選 selector 5。
+
+State 已在三個正式 `RunResult.PictureRequested` 入口解析 cue，並依 IDA
+證實的 `MSCPLAY` 行為抑制相同 track 重播。真實
+`TestFireKnifeLeaderStateVictoryReturnsToTilverton` 玩家路徑同時鎖定
+阿沙本福德 block `0x50` 與希爾斯法 block `0x51`：入城 `5→6`、服務選單
+內返回不重播、離城 `6→5`。這只完成選曲 intent；缺失 driver sector、
+IVT `7Eh`／INT D2h 轉送、YM runtime trace、曲名與實際播放器仍未完成。

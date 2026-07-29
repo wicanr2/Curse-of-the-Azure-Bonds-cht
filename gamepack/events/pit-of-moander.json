@@ -220,6 +220,20 @@
       "track_id": "pc98-bgm-selector-0c"
     }
   ],
+  "music_cues": [
+    {
+      "ecl_blocks": [80, 81],
+      "signal": "picture",
+      "value": 80,
+      "context": "pc98-town-services-menu"
+    },
+    {
+      "ecl_blocks": [80, 81],
+      "signal": "picture",
+      "value": 121,
+      "context": "pc98-world-navigation"
+    }
+  ],
   "combat_visuals": [
     {
       "id": "coab.arrow",
