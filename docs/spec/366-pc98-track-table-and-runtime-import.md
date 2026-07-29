@@ -131,9 +131,9 @@ Hoot code 只命名 driver index，不證明每個 ECL block 的場景。既有 
   只接受 selector 1–12，且拒絕任何跨缺口 stream；
 - API 回傳七聲道 bytes 的副本，原商業資料不寫入 repository。
 
-這是 runtime import 的第一層，不是播放器。下一層必須把
-`sub_10410` stream interpreter 解成有界、deterministic 的 OPN register
-events，再交給作品中立 YM2203 adapter。
+這是 runtime import 的第一層，不是播放器。第 367／368 輪已接續把
+`sub_10410` 解成有界 bytecode 與正常配樂路徑的 deterministic OPN
+events；作品中立 YM2203 合成 adapter 仍待完成。
 
 ## 6. 可重現驗證
 

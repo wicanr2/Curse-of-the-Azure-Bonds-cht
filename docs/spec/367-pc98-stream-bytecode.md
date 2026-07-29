@@ -89,10 +89,12 @@ go run ./cmd/pc98-music-audit GAME.EXE MSCDRV.EXE
 - 12 組 timing channel 均明確標為 read-through mode；
 - 未使用缺失的 file `0x4000..0x43FF` 作為 sequence 證據。
 
-## 5. 尚未完成
+## 5. 後續狀態
 
-- 由 note／參數命令產生精確 Sound BIOS／YM2203 register event。
-- timer tick、tempo、FM／PSG 音色與 envelope 的 runtime trace。
+第 368 輪已完成正常配樂路徑的 note／參數、timer sustain 與 deterministic
+Sound BIOS／YM2203 events；以下剩餘項目以 spec 368 為準。
+
+- fade／sound-effect 共存路徑與外部 register trace。
+- Sound BIOS parameter block 到 register 的展開。
 - 合法授權、可跨平台的 YM2203 合成後端及實際音訊播放。
 - 缺失 driver sector 與工作區的合法第二份 dump。
-

@@ -83,6 +83,7 @@ type BridgeReport struct {
 	Anchors           []AnchorResult     `json:"anchors"`
 	SoundBIOSServices []SoundBIOSService `json:"sound_bios_services"`
 	Tracks            []TrackDescriptor  `json:"tracks"`
+	PlaybackAudits    []PlaybackAudit    `json:"playback_audits"`
 }
 
 var gameAnchors = []Anchor{
@@ -431,6 +432,16 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 	if err != nil {
 		return BridgeReport{}, err
 	}
+	playbackAudits := make([]PlaybackAudit, 0, len(tracks))
+	for _, track := range tracks {
+		audit, err := auditTrackPlayback(driver[driverDataFileBase:], track, 4096)
+		if err != nil {
+			return BridgeReport{}, fmt.Errorf(
+				"track %d playback audit: %w", track.Selector, err,
+			)
+		}
+		playbackAudits = append(playbackAudits, audit)
+	}
 	return BridgeReport{
 		GameSHA256:        gameHash,
 		DriverSHA256:      driverHash,
@@ -439,5 +450,6 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 		Anchors:           append(gameResults, driverResults...),
 		SoundBIOSServices: append([]SoundBIOSService(nil), soundBIOSServices...),
 		Tracks:            tracks,
+		PlaybackAudits:    playbackAudits,
 	}, nil
 }
