@@ -155,9 +155,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
-- 目前已補到奧莉芙帶隊進入 `ECL4/GEO4 0x21`；下一個最早主線缺口是神殿內
-  找到並帶走迪姆斯沃特。仍以 evidence → READY spec → JSON/engine 實作 →
-  player-path test 的順序補齊。
+- 目前已補到 `ECL4/GEO4 0x21` 找到並接受迪姆斯沃特同行；下一個最早主線
+  缺口是帶著他完成神殿探索、觸發兜帽女子的離場引導。仍以 evidence →
+  READY spec → JSON/engine 實作 → player-path test 的順序補齊。
 
 ## 10. Compact 後恢復工作清單
 

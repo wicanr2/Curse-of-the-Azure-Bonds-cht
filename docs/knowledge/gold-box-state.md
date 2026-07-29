@@ -611,3 +611,21 @@ selected-player state，切 block 後只保存分類 signal 未必能重建可�
 作品 adapter 可用已驗證的 destination block 與 plot flags 提交 NPC departure，
 但必須以 script name 移除 persistent roster／combat projection，不能用畫面順序
 或固定 party slot 猜測。告別事件完成後再切回 world mode。
+
+### 2026-07-29：story escort 不等於戰鬥 NPC
+
+散塔林堡神殿的迪姆斯沃特事件提供另一種同行者模型。`ECL4/GEO4 0x21`
+terrain `0x85` 顯示 PICTURE、手札與 `YES/NO`；接受後 work memory 令事件
+成為一次性，但 ECL 沒有產生 `ADD NPC` signal，正式 fighter roster 也不變。
+
+因此 Gold Box remake 至少要區分：
+
+- persistent party NPC：有角色 record、裝備、fighter projection，通常由
+  `ADD NPC`／`LOAD CHARACTER` 驅動；
+- story escort：由 plot/work flag 表示「與隊伍同行」，能影響出口或事件
+  gate，卻不占 roster、戰鬥位置或角色 UI。
+
+不能因攻略寫著「joins」就製造 fighter；也不能因 roster 沒增加便遺失同行
+狀態。通用 VM 保存原始 memory 與一次性 gate，作品 game pack 只負責人物
+名稱、文本與手札。若後續作品證實 escort 需要可序列化的 stable identity，
+應在通用 schema 增加 renderer-neutral plot companion，而非 title hardcode。

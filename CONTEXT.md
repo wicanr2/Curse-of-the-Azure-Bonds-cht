@@ -1641,3 +1641,11 @@ PC-98 視覺職責、倚天 16×15、長文／攻略三層、Git／驗證門檻�
 CoAB JSON game pack；State 只新增通用規則：若 title pack 明確宣告 NEWECL
 目的地的 first-person map，就以該定義修正可能殘留來源 block 的 LOAD FILES
 結果。下一個最早主線缺口是神殿內救出迪姆斯沃特。
+
+2026-07-29 第 350 輪接續神殿主線：真實 `ECL4/GEO4 0x21` terrain sweep
+定位 `(6,13)` 奧莉芙南方牢房提示與 `(2,14)` terrain `0x85`／PICTURE 35
+迪姆斯沃特事件。完整手札 12 依附帶 Adventure Journal 譯為六頁，保存五道
+枷印、五方勢力與三件終局神器說明；接受同行後回到同一神殿、重訪不重播。
+ECL 沒有 `ADD NPC`，fighter roster 不變，故知識庫新增 story escort 與
+persistent party NPC 的區別。下一個主線缺口是帶著迪姆斯沃特探索神殿，
+觸發兜帽女子與離場路徑。
