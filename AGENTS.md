@@ -200,15 +200,21 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   COMSPR `05/85` travel、`06/86` 電弧、`0A/8A` damage impact；三張 remake
   與五張原版關鍵幀已保存。牆角／多次反彈的 DOS runtime 動畫與敵方
   `throws lightning` 仍未完成。
-- 第 356 輪 Stinking Cloud dirty milestone 已完成 `0x22` 正常 slot／
+- 第 356 輪 Stinking Cloud milestone 已完成 `0x22` 正常 slot／
   tile cursor、target-anchored 2×2 cells、terrain filter、Poison save、
   cough／`d4+1` helpless、重疊 instance、caster-level expiry、RANDCOM
   item 4 與兩張 remake 畫面；原版影片 `00:42:25.20–27.00` 三張後續關鍵幀
-  已保存。移動入雲逐步觸發與 coughing AC 仍未完成。
-- spec 354 仍 IN PROGRESS；下一步建立 Cloudkill 的 3×3、HD 4–6 即死與
-  獨立消散，同時補 terrain-aware Fireball
-  range／tie order、弓箭／Magic Missile／melee／kill 完整時間碼與逐距離
-  duration。
+  已保存。coughing AC 仍未完成。
+- 第 357 輪 Cloudkill milestone 已完成 `0x5B` 正常 slot／tile cursor、
+  target-centred 3×3、HD 0–4 自動死亡、HD 5 的 `-4` Poison save、HD 6
+  無修正、HD 7+ 無效果，以及低 HD 入格限制。party／MON*CHA offset
+  `0xE5` 已投影到 runtime；RANDCOM item 2 由 CoAB JSON 驅動，持續區
+  renderer 不再硬編碼作品 block。640×480 remake checkpoint 已保存。
+  DOS 動態時間碼、protect magic／未命名 affect 免疫與每回合重複毒雲判定
+  仍未完成。
+- spec 354 仍 IN PROGRESS；下一步補 terrain-aware Fireball range／tie
+  order、弓箭／Magic Missile／melee／kill 完整時間碼與逐距離 duration，
+  並尋找 Cloudkill 的 DOS 動態影片 oracle。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。

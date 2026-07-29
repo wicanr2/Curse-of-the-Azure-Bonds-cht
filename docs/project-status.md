@@ -75,8 +75,8 @@ commit 內保存不可能自我引用的 hash。
 - 所有城市、地城、門、屋頂、斜向視角與每張地圖的 DOS 像素級校準。
 - 戰鬥畫面的完整 DOS oracle 校準、弓箭／法術 projectile 的逐距離 timing、
   所有方向 placement、Fireball 牆面阻擋／同距排序、Lightning Bolt
-  牆角／多次反彈 runtime oracle、雲霧 persistent area effect、AI、
-  Cloudkill、移動入雲逐步觸發、其餘法術、物品、
+  牆角／多次反彈 runtime oracle、毒雲每回合重複判定與魔法保護例外、AI、
+  Cloudkill DOS 動態時間碼、其餘法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、

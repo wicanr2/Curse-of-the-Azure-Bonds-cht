@@ -21,20 +21,21 @@ func TestParseMonsterRecordOffsets(t *testing.T) {
 	data[0x1A5] = 2
 	data[0xA1] = 3
 	data[0xDE] = 0x84
+	data[0xE5] = 6
 	data[0x33] = combat.MonsterMagicMissileSpellID
 	data[0xB5] = 1
 	record, err := Parse(data)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ORC!!" || record.MaxHitPoints != 12 || record.HitPoints != 9 || record.ArmorClass != 10 || record.AttackBonus != 3 || record.DamageDiceSides != 8 || record.DamageBonus != 2 || record.AttacksPerTurn != 3 || record.CombatSize != 4 {
+	if record.Name != "ORC!!" || record.MaxHitPoints != 12 || record.HitPoints != 9 || record.HitDice != 6 || record.ArmorClass != 10 || record.AttackBonus != 3 || record.DamageDiceSides != 8 || record.DamageBonus != 2 || record.AttacksPerTurn != 3 || record.CombatSize != 4 {
 		t.Fatalf("record=%#v", record)
 	}
 	if len(record.SpellIDs) != 1 || record.SpellIDs[0] != combat.MonsterMagicMissileSpellID || record.MonsterSpellUses[0] != 1 {
 		t.Fatalf("monster spell fields=%#v uses=%#v", record.SpellIDs, record.MonsterSpellUses)
 	}
 	fighter := record.Fighter("orc-1", combat.SideEnemy)
-	if fighter.ID != "orc-1" || fighter.Side != combat.SideEnemy || fighter.HitPoints != 9 || fighter.AttacksPerTurn != 3 || fighter.CombatSize != 4 || len(fighter.MonsterSpellIDs) != 1 || fighter.MonsterSpellUses[0] != 1 {
+	if fighter.ID != "orc-1" || fighter.Side != combat.SideEnemy || fighter.HitPoints != 9 || fighter.HitDice != 6 || fighter.AttacksPerTurn != 3 || fighter.CombatSize != 4 || len(fighter.MonsterSpellIDs) != 1 || fighter.MonsterSpellUses[0] != 1 {
 		t.Fatalf("fighter=%#v", fighter)
 	}
 }
