@@ -138,14 +138,25 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 開發中跑 focused tests。提交前至少：
 
-- affected repo 的 `go test ./...`；Ebiten package 在 Docker/Xvfb 或先
-  `go test -c` 驗證。
+- affected repo 的正式套件測試；CoAB 目前用
+  `go test ./cmd/... ./gamepack ./internal/...`，Ebiten package 在
+  Docker/Xvfb 驗證。`go test ./...` 會因 `scripts/` 兩個獨立 main 同目錄
+  的既存結構失敗，修正該 gate 前要如實分開報告。
 - `git diff --check`。
 - deterministic screenshot 或 runtime trace。
 - 真正玩家路徑驗證，而不只 direct-entry debug flag。
 - 原版／remake 對照，明確標示 exact／reconstructed／未完成。
 - 戰鬥不能只驗證靜態 layout 與數值；原版 DOS runtime／遊戲影片還要逐項
   對照近戰、弓箭／投射物、法術施放與命中、死亡動畫、音效及回合節奏。
+- 公開遊戲影片是動態演出的 oracle：每個遠程／法術能力至少記錄影片 URL、
+  平台、絕對時間碼、逐幀順序與對應原始 sprite block；截圖只是關鍵幀，
+  不能單靠截圖推論動畫、等待時間或聲音次序。
+- 戰鬥驗收表必須分開追蹤 caster windup、travel、impact、damage text、
+  saving throw、death、area／persistent effect、sound cue 與 handoff。弓箭、
+  Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等
+  不得因共用 projectile 素材而省略各自的後續效果。
+- 若網路影片無法證明規則數值、範圍或目標順序，回到 DOSBox 重現及 executable
+  反組譯；影片只能證明實際看見／聽見的演出，不可越界宣稱規則已還原。
 
 不得用窄測試支撐「完整可通關」「完整中文化」「完整戰鬥」等廣泛聲明。
 
@@ -171,9 +182,19 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   的 source block、flip、scale、原始 delay 已移入 CoAB `combat_visuals`，
   frontend 不再寫死這三組作品素材表。
 - DOS 影片 `wwYsij1wDC4` `00:42:25.20–25.40` 已證實 generic spell travel
-  先於文字／area effect。spec 354 仍 IN PROGRESS；下一步補弓箭、
-  Magic Missile、melee、kill 的完整時間碼與逐距離 duration，並逐項建立
-  Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 的影片 oracle。
+  先於文字／area effect。`00:36:15.40–17.00` 另證實 Fireball 是一次 cyan
+  travel，之後依序對每名受影響目標播放 red-white impact、damage、選擇性
+  death；不是一張大型圓形爆炸圖。相關關鍵幀與時間碼已存入
+  `docs/reference/original-dos/` 與 `combat-video-oracle.md`。
+- 目前 dirty milestone 已完成 Fireball travel／target-impact JSON、
+  通用 multi-impact timeline、正常玩家 slot／tile cursor 施法、敵我範圍、
+  共用傷害骰、Spell save、逐目標聲音及三張 remake 對照畫面。仍缺有牆
+  terrain path reachability、原 combatant-array／direction tie order 與
+  原版 wall-clock timing，不可把這個 vertical slice 寫成全部 Fireball
+  fidelity 或完整戰鬥。
+- spec 354 仍 IN PROGRESS；下一步補 terrain-aware Fireball range／tie
+  order，同時補弓箭、Magic Missile、melee、kill 的完整時間碼與逐距離
+  duration，並建立 Lightning Bolt、Stinking Cloud／Cloudkill 的影片 oracle。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。

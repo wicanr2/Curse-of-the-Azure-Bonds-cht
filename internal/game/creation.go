@@ -607,18 +607,9 @@ func (s *State) LoadPartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	fighters := make([]combat.Fighter, 0, len(file.Characters))
-	for _, character := range file.Characters {
-		fighter, err := s.fighterForCharacter(character)
-		if err != nil {
-			return err
-		}
-		fighters = append(fighters, fighter)
-	}
-	if err := s.SetParty(fighters); err != nil {
+	if err := s.SetPartyRoster(file.Characters); err != nil {
 		return err
 	}
-	s.partyRoster = append(party.Roster(nil), file.Characters...)
 	if file.Version >= 5 {
 		s.gameClock = file.GameTime
 		s.gameAgeCycles = file.GameAgeCycles

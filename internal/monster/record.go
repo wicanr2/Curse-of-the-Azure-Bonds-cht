@@ -34,6 +34,8 @@ type Record struct {
 	ModID            uint8
 	SpellIDs         []uint8
 	MonsterSpellUses [3]uint8
+	SavingThrows     []uint8
+	SavingThrowBonus int
 }
 
 // CombatArmorClass converts the packed MON*CHA armor value used by the
@@ -107,6 +109,8 @@ func Parse(data []byte) (Record, error) {
 		ModID:            data[0x126],
 		SpellIDs:         spellIDs,
 		MonsterSpellUses: spellUses,
+		SavingThrows:     append([]uint8(nil), data[0xDF:0xE4]...),
+		SavingThrowBonus: int(int8(data[0x186])),
 	}, nil
 }
 
@@ -117,8 +121,9 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		ArmorClass: CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
-		AttacksPerTurn:  r.AttacksPerTurn,
-		CombatSize:      r.CombatSize,
+		AttacksPerTurn: r.AttacksPerTurn,
+		CombatSize:     r.CombatSize,
+		SavingThrows:   append([]uint8(nil), r.SavingThrows...), SavingThrowBonus: r.SavingThrowBonus,
 		MonsterSpellIDs: append([]uint8(nil), r.SpellIDs...), MonsterSpellUses: r.MonsterSpellUses,
 	}
 }

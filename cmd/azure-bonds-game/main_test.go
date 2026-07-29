@@ -41,6 +41,54 @@ func TestDrawCombatVisualRendersMissileTravelAndImpact(t *testing.T) {
 	}
 }
 
+func TestCombatVisualPointUsesAreaCenterThenOrderedImpactTarget(t *testing.T) {
+	event := combat.VisualEvent{
+		From: combat.TilePoint{X: 1, Y: 1},
+		To:   combat.TilePoint{X: 4, Y: 3},
+		Impacts: []combat.VisualImpactTarget{
+			{TargetID: "orc-1", To: combat.TilePoint{X: 3, Y: 2}, Hit: true},
+			{TargetID: "orc-2", To: combat.TilePoint{X: 5, Y: 4}, Hit: true},
+		},
+	}
+	camera := combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{}, false)
+	_, _, travelToX, travelToY, _, _ := combatVisualPoint(event, combat.VisualFrame{
+		Phase: combat.VisualTravel, ImpactIndex: -1, Progress: 1,
+	}, camera)
+	if travelToX != 120 || travelToY != 168 {
+		t.Fatalf("travel target=(%v,%v), want area center (120,168)", travelToX, travelToY)
+	}
+	_, _, impactToX, impactToY, _, _ := combatVisualPoint(event, combat.VisualFrame{
+		Phase: combat.VisualImpact, ImpactIndex: 1,
+	}, camera)
+	if impactToX != 72 || impactToY != 216 {
+		t.Fatalf("impact target=(%v,%v), want second target (72,216)", impactToX, impactToY)
+	}
+}
+
+func TestCombatVisualPreservesEachKilledTargetUntilItsDeathPhase(t *testing.T) {
+	event := combat.VisualEvent{
+		Impacts: []combat.VisualImpactTarget{
+			{TargetID: "orc-1", To: combat.TilePoint{X: 4, Y: 2}, Hit: true, Killed: true},
+			{TargetID: "orc-2", To: combat.TilePoint{X: 5, Y: 3}, Hit: true, Killed: true},
+		},
+	}
+	if _, ok := combatVisualPreservedImpact(event, combat.VisualFrame{
+		Phase: combat.VisualTravel, ImpactIndex: -1,
+	}, "orc-2"); !ok {
+		t.Fatal("second target was removed before area travel")
+	}
+	if _, ok := combatVisualPreservedImpact(event, combat.VisualFrame{
+		Phase: combat.VisualDeath, ImpactIndex: 0,
+	}, "orc-1"); ok {
+		t.Fatal("first target survived into its death phase")
+	}
+	if _, ok := combatVisualPreservedImpact(event, combat.VisualFrame{
+		Phase: combat.VisualDeath, ImpactIndex: 0,
+	}, "orc-2"); !ok {
+		t.Fatal("second target was removed during first target death")
+	}
+}
+
 func TestCombatProjectileDirectionUsesOriginalClockwiseOctants(t *testing.T) {
 	tests := []struct {
 		dx, dy int

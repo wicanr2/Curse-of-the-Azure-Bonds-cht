@@ -36,3 +36,58 @@ func TestVisualTimelineSkipsDeathForSurvivor(t *testing.T) {
 		t.Fatalf("nonlethal frame=%+v, want handoff", got)
 	}
 }
+
+func TestVisualTimelinePresentsAreaImpactsAndDeathsInOrder(t *testing.T) {
+	event := VisualEvent{
+		Kind: VisualMagicMissile,
+		Impacts: []VisualImpactTarget{
+			{TargetID: "orc-1", To: TilePoint{X: 4, Y: 2}, Hit: true},
+			{TargetID: "orc-2", To: TilePoint{X: 5, Y: 3}, Hit: true, Killed: true},
+			{TargetID: "orc-3", To: TilePoint{X: 6, Y: 4}, Hit: true},
+		},
+	}
+	firstImpact := VisualWindupDuration + VisualTravelDuration
+	secondImpact := firstImpact + VisualImpactDuration + VisualCommitDuration
+	secondDeath := secondImpact + VisualImpactDuration + VisualCommitDuration
+	thirdImpact := secondDeath + 9*DeathOverlayPhaseDuration
+
+	checks := []struct {
+		at          time.Duration
+		phase       VisualPhase
+		impactIndex int
+		targetID    string
+	}{
+		{firstImpact, VisualImpact, 0, "orc-1"},
+		{secondImpact, VisualImpact, 1, "orc-2"},
+		{secondDeath, VisualDeath, 1, "orc-2"},
+		{thirdImpact, VisualImpact, 2, "orc-3"},
+	}
+	for _, check := range checks {
+		frame := event.FrameAt(check.at)
+		if frame.Phase != check.phase || frame.ImpactIndex != check.impactIndex {
+			t.Fatalf("FrameAt(%s)=%+v, want phase %v impact %d", check.at, frame, check.phase, check.impactIndex)
+		}
+		impact, ok := event.Impact(frame)
+		if !ok || impact.TargetID != check.targetID {
+			t.Fatalf("Impact(%+v)=(%+v,%v), want %q", frame, impact, ok, check.targetID)
+		}
+	}
+	if got := event.FrameAt(event.Duration() - VisualHandoffDuration); got.Phase != VisualHandoff || got.ImpactIndex != -1 {
+		t.Fatalf("handoff frame=%+v", got)
+	}
+}
+
+func TestVisualTimelineLegacyTargetIsOneImpact(t *testing.T) {
+	event := VisualEvent{
+		TargetID: "ogre",
+		To:       TilePoint{X: 5, Y: 4},
+		Hit:      true,
+		Killed:   true,
+	}
+	frame := event.FrameAt(VisualWindupDuration + VisualTravelDuration)
+	impact, ok := event.Impact(frame)
+	if !ok || impact.TargetID != event.TargetID || impact.To != event.To ||
+		impact.Hit != event.Hit || impact.Killed != event.Killed {
+		t.Fatalf("legacy impact=(%+v,%v), event=%+v", impact, ok, event)
+	}
+}

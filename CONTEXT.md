@@ -1713,3 +1713,16 @@ block、flip、scale、原始 delay。三張 deterministic 戰鬥圖已由 Docke
 Xvfb 重拍且完整遊戲／核心測試通過。下一步仍以 DOS／網路實機影片建立
 弓箭逐距離 timing，以及 Fireball、Lightning Bolt、Stinking Cloud／
 Cloudkill 等不同法術的 travel、area effect、impact oracle。
+
+同輪第四階段依 DOS 影片 `00:36:15.40–17.00` 完成 Fireball vertical
+slice。`VisualEvent` 新增向後相容的 ordered multi-impact contract，一次
+travel 後可逐名 impact／commit／optional death；前端會保留尚未輪到死亡的
+目標，聲音也按 impact index 發送。反組譯 `sub_5F782`、`SpellEntry(0x2F)`、
+`DoSpellCastingWork`、`RollSavingThrow` 證實 radius 2、敵我皆中、一次
+caster-level d6 與每名 Spell save 半傷。正常玩家路徑現可由 memorized
+`0x2F` slot 按 F、方向鍵指定 32×16 任意中心、Enter 消耗 slot 並施放。
+三張 640×480 倚天／原版 COMSPR screenshot 顯示 travel、impact[0]、
+impact[1]；deterministic screenshot 延後到第三個 Draw 讀回，避免 offscreen
+battlefield 半幀。尚未完成 terrain-aware wall reachability、同距離原
+combatant-array／direction tie order 與原版 wall-clock timing，spec 354
+保持 IN PROGRESS。

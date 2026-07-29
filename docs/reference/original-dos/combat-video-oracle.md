@@ -29,6 +29,40 @@
 Cloud tiles。以公開影片的 29.97fps encode 只能保守判定可見 travel 約
 `0.3s`；不能把壓縮影片 frame boundary 當成 DOS `SysDelay` 的精準單位。
 
+## `00:36:15.40–00:36:17.00`：Fireball 是單次飛行、多目標逐一結算
+
+同一部影片的 Tilverton royal-guard 戰鬥清楚保留 `SPELL: FIREBALL`：
+
+| 影片時間 | 畫面 | 判讀 |
+|---|---|---|
+| `00:36:15.40` | [青色 travel projectile](./combat-fireball-travel-003615400.png) | `0x05/0x85` generic spell missile 正飛向選定中心 |
+| `00:36:16.00` | [第一名目標的紅白爆點](./combat-fireball-impact-003616000.png) | travel 清除後，`0x0A/0x8A` family 在目標格播放 |
+| `00:36:17.00` | [爆點後接死亡骷髏](./combat-fireball-death-003617000.png) | 同一名 Royal Guard 顯示傷害、倒地與 dying |
+
+後續數秒可看到同一顆 Fireball 的影響目標依序重複「紅白 impact → 傷害文字
+→ 必要時死亡骷髏」，而不是在中心畫一次大型圓形爆炸後同步扣除所有 HP。
+因此 remake 的 Fireball choreography 必須是：
+
+```text
+caster windup
+  -> generic spell travel（一次）
+  -> impact[0] / damage / optional death
+  -> impact[1] / damage / optional death
+  -> ...
+  -> handoff
+```
+
+這段影片直接證明播放順序與素材外觀，但不能單靠畫面確定 saving throw、
+傷害骰、影響半徑或目標排序公式。規則仍須以 raw binary／反組譯交叉驗證。
+CoAB game pack 已加入 `fireball/travel` 與 `fireball/impact` 的原始 COMSPR
+frame mapping；remake 的 `VisualEvent.Impacts` 也已實作一次 travel 後逐名
+impact／optional death。正常玩家路徑會檢查並消耗 `0x2F` memorized slot，
+以 tile cursor 指定中心；三張 remake checkpoint 位於：
+
+- [`combat-timeline-fireball-travel.png`](../../screenshots/combat-timeline-fireball-travel.png)
+- [`combat-timeline-fireball-impact-1.png`](../../screenshots/combat-timeline-fireball-impact-1.png)
+- [`combat-timeline-fireball-impact-2.png`](../../screenshots/combat-timeline-fireball-impact-2.png)
+
 ## 與反組譯的交叉驗證
 
 Reference decompile 的共同施法路徑在 resolver 前呼叫：
@@ -49,7 +83,12 @@ Magic Missile 與其他使用共同目標型施法入口的法術，travel 必�
 原版四格素材；Magic Missile 傷害回饋另使用 `0x0A/0x8A` 的 target-local
 四格爆點。
 
+Fireball resolver `sub_5F782` 另交叉證實：`Rebuild_SortedCombatantList`
+以目標中心、size 1、max range 2 收集敵我所有 combatant；傷害只擲一次
+caster-level d6，`SpellEntry(0x2F)` 指定 Spell save、成功減半。remake
+目前精確保留這些可證明部分；有牆地形的 path reachability 與同距離時原始
+combatant-array／direction tie order 尚未完成。
+
 弓箭方向與素材目前由 raw COMSPR＋consumer mapping 證明，詳見
 [`comspr-projectile-audit.md`](../../research/comspr-projectile-audit.md)；
 仍需再加入一筆公開影片或 DOSBox 的逐格弓箭時間碼，才能校準速度。
-

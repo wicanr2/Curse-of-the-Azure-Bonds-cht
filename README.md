@@ -78,6 +78,17 @@ renderer-neutral transaction 在固定 phase 的 Docker／Xvfb 實機 frame：
 
 ![原版 COMSPR 骷髏死亡 phase](docs/screenshots/combat-timeline-kill.png)
 
+Fireball 已不再是單體 Magic Missile 的改名版本。玩家角色必須真的記憶
+`0x2F`，在正常戰鬥回合按 `F`、用方向鍵指定任意地圖中心再確認；規則會以
+同一次等級 d6 擲骰波及半徑內敵我雙方，各自進行 Spell saving throw，並按
+原版影片順序逐名播放 impact／傷害／必要時死亡：
+
+![Fireball 單次青色 travel](docs/screenshots/combat-timeline-fireball-travel.png)
+
+![Fireball 第一名目標的原版紅白 impact](docs/screenshots/combat-timeline-fireball-impact-1.png)
+
+![Fireball 下一名目標的逐序 impact](docs/screenshots/combat-timeline-fireball-impact-2.png)
+
 弓箭現使用原版 COMSPR `0x00/01/02` 與方向 variants；Magic Missile
 travel 使用原版 `0x05/0x85` 四格，命中使用 `0x0A/0x8A` 四格，不再用
 renderer primitive。這些 source block、八方向與 flip 已移至 CoAB JSON
@@ -87,8 +98,10 @@ game pack，由獨立 Golden Box engine schema 驗證，frontend 不再寫死作
 [`00:42:25.20–25.40`](docs/reference/original-dos/combat-video-oracle.md)
 已逐格交叉驗證 generic spell projectile；弓箭 wall-clock cadence 與其餘
 法術 timing 仍待 DOSBox／影片補齊，不能宣稱整套戰鬥 pixel/timing exact。
-Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等法術也會依公開實機
-影片逐項補齊 travel、area effect 與命中時序，不會用 Magic Missile 爆點代替。
+Fireball 的無牆半徑、save、共用傷害骰與逐目標演出已有 code-backed
+evidence；牆面路徑阻擋及同距離 tie order 尚待原始 combatant-array／DOS
+runtime 驗證。Lightning Bolt、Stinking Cloud／Cloudkill 仍會依公開實機
+影片逐項補齊 travel、area effect 與命中時序，不會用 Fireball 爆點代替。
 
 ![DOS 影片中的原版 spell projectile](docs/reference/original-dos/combat-spell-projectile-422530.png)
 

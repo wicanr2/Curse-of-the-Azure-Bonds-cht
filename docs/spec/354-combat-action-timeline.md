@@ -48,8 +48,10 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
   九相死亡 overlay 已按 phase 排序；`SoundMissile` 不再是未使用 selector。
 - 規則層仍立即計算結果，但致死目標會在 renderer 中保存到 impact/death
   phase，避免攻擊一按下就消失。
-- `-combat-visual-demo melee|bow|magic|magic-impact|kill` 可輸出五張固定 phase 的
-  640×480 Xvfb frame。
+- `-combat-visual-demo melee|bow|magic|magic-impact|fireball-travel|
+  fireball-impact-1|fireball-impact-2|kill` 可輸出固定 phase 的 640×480
+  Xvfb frame；Fireball oracle 仍經過 roster slot、BeginCombatCast 與
+  CombatCast，不直接偽造 visual event。
 - screenshot oracle 會凍結在指定的 timeline elapsed，不受 Ebiten／Xvfb
   啟動時間影響；弓箭 travel checkpoint 因而能穩定顯示箭身與箭頭。
 - CPIC／COMSPR／SPRIT 遺失的 masked-blit alpha 由不透明 top-left chroma key
@@ -69,10 +71,26 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
 - JSON 驅動後重新由 Docker／Xvfb 擷取 bow、magic、magic-impact 三張
   640×480 checkpoint，並由 frontend 與 game-pack regression 直接驗證
   圖片 key 是從 pack frame 產生。
+- DOS 影片 `00:36:15.40–17.00` 證明 Fireball 是一次 generic spell
+  travel，抵達後依序對每名範圍目標播放紅白 impact、傷害文字與 optional
+  death；不是單一中心爆點或同步扣血。game pack 已加入 fireball
+  travel／impact frame mapping。
+- `VisualEvent.Impacts` 現以作品中立 contract 保存多目標順序；每名目標有
+  獨立 impact／commit／optional death，renderer 會保留尚未輪到死亡的
+  resolved combatant。單體箭與 Magic Missile 仍由 legacy fields 合成一個
+  impact，原時間軸不變。
+- Fireball `0x2F` 已接入正常玩家回合：記憶 slot、任意 32×16 combat tile
+  cursor、友軍誤傷、一次 caster-level d6 共用 damage、每名 Spell save
+  成功減半、slot 消耗與逐目標音畫 handoff。`sub_5F782`、
+  `SpellEntry(0x2F)`、`DoSpellCastingWork` 與 `RollSavingThrow` 是規則證據。
+- 三張 remake checkpoint 對應 travel、impact[0]、impact[1]，使用原版
+  `0x05/0x85` 與 `0x0A/0x8A`。screenshot 在第三個完整 Draw 才讀回，
+  避免 offscreen battlefield 尚未 flush 的半幀。
 
 目前 projectile pixel source 與方向／frame ordering 已有 code-backed
 evidence，但原版 `SysDelay(10/30/70)` 尚不能直接換算 wall-clock。完成本規格
 仍需弓箭、Magic Missile、melee、kill 的 DOSBox／公開影片完整時間碼與短
-capture，並把逐距離 cadence 寫成經影片驗證的 duration 規則。Fireball、
+capture，並把逐距離 cadence 寫成經影片驗證的 duration 規則。Fireball
+仍缺 terrain-aware path reachability 與原 combatant-array tie order；
 Lightning Bolt、Stinking Cloud／Cloudkill 等效果仍須各自建立影片 oracle
 與 JSON 定義，不能因共用投射物已出現就視為完整法術動畫。

@@ -32,6 +32,16 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		magicImpact.Frames[3].Block != 0x8A || magicImpact.Frames[3].FlipX {
 		t.Fatalf("magic impact combat visual=%+v found=%v", magicImpact, found)
 	}
+	fireballTravel, found := pack.FindCombatVisual("fireball", "travel")
+	if !found || fireballTravel.ReferenceDelay != 30 || len(fireballTravel.Frames) != 4 ||
+		fireballTravel.Frames[0].Block != 0x05 || fireballTravel.Frames[3].Block != 0x85 {
+		t.Fatalf("fireball travel combat visual=%+v found=%v", fireballTravel, found)
+	}
+	fireballImpact, found := pack.FindCombatVisual("fireball", "impact")
+	if !found || fireballImpact.ReferenceDelay != 70 || len(fireballImpact.Frames) != 4 ||
+		fireballImpact.Frames[0].Block != 0x0A || fireballImpact.Frames[3].Block != 0x8A {
+		t.Fatalf("fireball impact combat visual=%+v found=%v", fireballImpact, found)
+	}
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||

@@ -168,6 +168,8 @@ type State struct {
 	combatCastingClass      party.Class
 	combatCastingClassSet   bool
 	combatSpellTargetIndex  int
+	combatSpellTargetPoint  combat.TilePoint
+	combatSpellTargetsPoint bool
 	combatMoveMode          bool
 	combatMoveRemaining     int
 	combatReferenceCoords   bool
@@ -179,8 +181,8 @@ type State struct {
 	combatVisualSerial      uint64
 	combatVisual            *combat.VisualEvent
 	combatVisualTravelSent  bool
-	combatVisualImpactSent  bool
-	combatVisualDeathSent   bool
+	combatVisualImpactSent  int
+	combatVisualDeathSent   int
 	combatVisualAdvanceTurn bool
 	monsterRecords          map[uint8]monster.Record
 	monsterRecordsByECL     map[uint8]map[uint8]monster.Record
@@ -3689,6 +3691,28 @@ func (s *State) SetParty(party []combat.Fighter) error {
 			}
 		}
 	}
+	return nil
+}
+
+// SetPartyRoster installs typed characters through the same conversion used
+// by save loading. Frontends and deterministic integration oracles can use
+// this boundary without reaching into State's roster internals.
+func (s *State) SetPartyRoster(roster party.Roster) error {
+	if len(roster) == 0 {
+		return fmt.Errorf("party roster cannot be empty")
+	}
+	fighters := make([]combat.Fighter, 0, len(roster))
+	for _, character := range roster {
+		fighter, err := s.fighterForCharacter(character)
+		if err != nil {
+			return err
+		}
+		fighters = append(fighters, fighter)
+	}
+	if err := s.SetParty(fighters); err != nil {
+		return err
+	}
+	s.partyRoster = append(party.Roster(nil), roster...)
 	return nil
 }
 

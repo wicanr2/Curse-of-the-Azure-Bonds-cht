@@ -787,6 +787,7 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
 		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
+		SavingThrows:    append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
 	}
 	return c.applyKnownEffects(fighter), nil
 }
