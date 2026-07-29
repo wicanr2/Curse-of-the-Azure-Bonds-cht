@@ -1909,3 +1909,25 @@ State 已在三個正式 `RunResult.PictureRequested` 入口解析 cue，並依 
 阿沙本福德 block `0x50` 與希爾斯法 block `0x51`：入城 `5→6`、服務選單
 內返回不重播、離城 `6→5`。這只完成選曲 intent；缺失 driver sector、
 IVT `7Eh`／INT D2h 轉送、YM runtime trace、曲名與實際播放器仍未完成。
+
+2026-07-29 第 364 輪完成 PC-98 `GAME.EXE → IVT 7Eh → MSCDRV → INT D2h`
+bridge。依 AGENTS 規範優先使用
+`/home/anr2/ida_94_official/dist` 的 IDA Pro 9.4 Docker 映像；
+`scripts/ida/pc98_music_wrapper_audit.py` 還原 GAME 的 18-byte register
+image trampoline 與 IRET 後 writeback，
+`scripts/ida/pc98_mscdrv_bridge_audit.py` 則證明 MSCDRV file `0x02E3`
+把 `0000:01F8`（vector `7Eh × 4`）直接設為自身 `CS:0080`。
+
+GAME play buffer 是 `AX=0x00TT`，stop 是 `AX=0x01TT`；driver public
+handler 因而以 `AH=0/AL=0-based track` 播放、`AH=1` 停止。driver
+`sub_110CA` 保存舊 D2h vector，再把 D2h 設為固定低階服務
+`CEE0:[0006]`；啟用前會檢查 `CEE0:0004 == 0x00D2`。目前不能把
+`CEE0` 誤認為 MSCDRV 自身 segment，其 producer 仍待 runtime memory trace。
+
+新增 `internal/pc98music` 與 `cmd/pc98-music-audit`，以 GAME／殘缺 MSCDRV
+精確 SHA-256 驗證六個 raw-byte anchors。driver anchors 位於
+`0x0280..0x1376`，均早於缺失 sector 對應的 file
+`0x4000..0x43FF`，所以 bridge ABI 不受該缺口影響；這不代表音序列或整份
+driver 已恢復。READY spec 364 與 Gold Box audio 知識庫已同步；剩餘缺口
+是 `CEE0` provider、D2h `10h..1Fh` 命名、完整 driver sector、YM runtime
+trace、曲名與播放器。

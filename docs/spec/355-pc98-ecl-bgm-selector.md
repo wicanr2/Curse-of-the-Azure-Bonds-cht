@@ -90,6 +90,7 @@ DOS DAX inventory 與既有 spec 198／273 證明 25 個實際 block：
 
 - `music_tracks`：穩定 track ID、來源平台、wrapper selector、driver index。
 - `music_bindings`：ECL block、可選 opaque context、track ID。
+- `music_cues`：ECL signal raw value、opaque context。
 - `FindMusicBinding`：先找 exact context，再找 context-free fallback。
 
 CoAB game-pack 使用 `pc98-bgm-selector-*` 作穩定 ID。曲名在音序列或 runtime
@@ -101,13 +102,16 @@ CoAB game-pack 使用 `pc98-bgm-selector-*` 作穩定 ID。曲名在音序列或
 [`362-pc98-disk-b-dax-and-wldtwn.md`](362-pc98-disk-b-dax-and-wldtwn.md)。
 
 遊戲規則層在初始 ECL 與 NEWECL block 改變時產生一次 `MusicEvent`。事件
-不依賴 Ebiten 或音訊裝置；實際播放 adapter 與音樂資產解碼屬下一階段。
+也會依 `PICTURE 0x50/0x79` cue 在同 block 內切換 selector 6／5，並抑制
+同曲重播。block `0x50/0x51` 的正常 ECL 玩家路徑已驗證。事件不依賴
+Ebiten 或音訊裝置；實際播放 adapter 與音樂資產解碼屬下一階段。
 
 ## 待完成
 
-- 將 `PICTURE 0x50` 與設施選單返回資料化為正常玩家路徑的 context cue，
-  完成同一 ECL block 內 selector 5↔6 動態切換。
 - 補齊 PC-98 `MSCDRV` 缺少的 1 KiB 或由 runtime capture 取得完整 driver
   input/output。
+- 依
+  [`364-pc98-music-vector-bridge.md`](364-pc98-music-vector-bridge.md)
+  的 READY 7Eh／D2h ABI，繼續命名低階 D2h dispatch 與 `CEE0` provider。
 - 對每個 selector 錄製可重現音訊，與公開播放清單及遊戲場景交叉驗證。
 - 實作循環、切換、停止及存檔恢復語意，再接上跨平台播放 adapter。

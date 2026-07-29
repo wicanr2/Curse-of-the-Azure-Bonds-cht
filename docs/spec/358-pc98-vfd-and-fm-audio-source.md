@@ -176,8 +176,16 @@ record；不能回退採用錯誤的 10-byte stride。全域資料另包含 `MUS
 `MSCPLAY` 的底層 `sub_18BDB` 不是 literal `INT D2h`：它以呼叫參數
 `7Eh` 索引 IVT、載入該 interrupt vector，恢復一組 register buffer 後
 `retf` 進 handler。這解釋了 resident 與全部 overlay code 都找不到
-`CD D2`；下一步需確認 `MSCDRV.EXE` 是否另外把 `INT 7Eh` 作為遊戲 wrapper，
-再轉送其 `INT D2h` TSR contract。
+`CD D2`。
+
+第 364 輪已由 IDA 與 raw bytes 證明 `MSCDRV.EXE` file `0x02E3` 將
+IVT `7Eh` (`0000:01F8`) 直接設為自身 `CS:0080` handler。該 handler 接受
+`AH=0/AL=0-based track` 作 play、`AH=1` 作 stop，再經內部 clients 使用
+`INT D2h`。driver file `0x12CA` 會把 D2h 設為固定低階服務
+`CEE0:[0006]`；`CEE0:0004` 必須先含 signature `0x00D2`。`CEE0` provider
+仍待 runtime trace，不能誤標成 MSCDRV 自身 segment。完整 READY ABI 與
+raw-byte anchors 見
+[`364-pc98-music-vector-bridge.md`](364-pc98-music-vector-bridge.md)。
 
 ### 4.2 已反組譯的 CURRENTECL → track selector
 
@@ -200,8 +208,8 @@ record；不能回退採用錯誤的 10-byte stride。全域資料另包含 `MUS
 
 `23` 在原 code 先命中 selector 4，因此較晚的 selector 8 比較不可達；
 正式表只列實際結果。ECL block mapping 已寫入 JSON，但 `WLDTWN` 零／非零
-與 Town、Wilderness 等人類場景角色仍須由 writer 及 runtime transition
-證明，不能依播放清單順序猜測。
+場景角色與同 block cue 已由 spec 362／正常玩家路徑證明；曲名與 selector
+的公開播放清單順序仍不能在缺少音序列／runtime YM trace 時猜測。
 
 IDA output 只是輔助；上述結論需以原 bytes 與 runtime I/O trace 維持
 `exact`。IDA 的通用 interrupt 註解不是本作語意證據。
@@ -216,8 +224,10 @@ Dungeon 1、Wilderness、Village、Dungeon 2、City、Dungeon 3、Ending。
 `INT D2h` 曲目編號。它也不能直接提交成 remake 音訊資產。正式映射仍需：
 
 1. 完整 `MSCDRV.EXE` 或等價共用 driver。
-2. `GAME.EXE` 的 `INT 7Eh` wrapper 與 `MSCDRV.EXE`／`INT D2h` 轉送關係。
-3. NP2kai runtime 的 scene transition 與 YM register trace。
+2. NP2kai runtime 的 scene transition、D2h call 與 YM register trace。
+
+`GAME.EXE` 的 7Eh wrapper 與 `MSCDRV.EXE`／D2h bridge 已由 spec 364
+完成，不再列為缺口；但 bridge 本身不能代替曲目 runtime 映射。
 
 來源：
 
