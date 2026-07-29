@@ -72,8 +72,11 @@ commit 內保存不可能自我引用的 hash。
   wrapper 與七組 selector 已由 bytes 證實；`INTERPET` 的 writer 又證明
   selector 輸入是全域 `CURRENTECL`。exact ECL block mapping 已放進 CoAB
   JSON，獨立 engine 提供 `music_tracks`／`music_bindings` contract，State
-  會發出一次性音樂 intent。曲名、`WLDTWN` 場景語意、完整 `INT D2h`
-  轉送、runtime YM trace 與播放器尚未完成。
+  會發出一次性音樂 intent。Disk B 的無 BPB FAT12 配置與 PC-98 DAX
+  codec 也已由 IDA／24-block corpus 驗證；`WLDTWN` 四個 ECL writer 進一步
+  證明 selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。曲名、
+  同 block 內 5↔6 正常玩家路徑 cue、完整 `INT D2h` 轉送、runtime YM
+  trace 與播放器尚未完成。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -96,9 +99,9 @@ commit 內保存不可能自我引用的 hash。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
-  曲目尚缺完整 driver sector、`WLDTWN` scene-role mapping、runtime YM
-  trace、曲名交叉驗證與匯入播放器。ECL block → selector 已完成，不再列為
-  缺口。
+  曲目尚缺完整 driver sector、同 block 內 selector 5↔6 context cue、
+  runtime YM trace、曲名交叉驗證與匯入播放器。`WLDTWN` scene-role 與
+  ECL block → selector 已完成，不再列為缺口。
 - 完整 DOS save serialization、未知欄位、所有 sidecar 副作用與跨 Gold Box
   作品角色轉移。
 - Windows／Linux／macOS 發行包、長時間遊玩、全路線通關及回歸驗證。

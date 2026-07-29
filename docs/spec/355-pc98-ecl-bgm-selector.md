@@ -94,15 +94,19 @@ DOS DAX inventory 與既有 spec 198／273 證明 25 個實際 block：
 
 CoAB game-pack 使用 `pc98-bgm-selector-*` 作穩定 ID。曲名在音序列或 runtime
 聲音被交叉驗證前不得加入；`WLDTWN` 的兩支以
-`pc98-wldtwn-zero/nonzero` 保存原始條件，frontend 暫不猜測哪一支代表城鎮或
-荒野。
+第 362 輪已由 IDA writer、PC-98 decoded ECL 與 DOS 同場景英文流程三方
+證明：`WLDTWN == 0` 是區域／戶外導航，非零是
+`pc98-town-services-menu`（城鎮設施選單）。`0x50/0x51` 初始 binding
+可直接使用 selector 5；selector 6 保留 exact context。完整證據見
+[`362-pc98-disk-b-dax-and-wldtwn.md`](362-pc98-disk-b-dax-and-wldtwn.md)。
 
 遊戲規則層在初始 ECL 與 NEWECL block 改變時產生一次 `MusicEvent`。事件
 不依賴 Ebiten 或音訊裝置；實際播放 adapter 與音樂資產解碼屬下一階段。
 
 ## 待完成
 
-- 在 IDA Pro 中追蹤 `WLDTWN` 所有 writer，確認零／非零的人類場景語意。
+- 將 `PICTURE 0x50` 與設施選單返回資料化為正常玩家路徑的 context cue，
+  完成同一 ECL block 內 selector 5↔6 動態切換。
 - 補齊 PC-98 `MSCDRV` 缺少的 1 KiB 或由 runtime capture 取得完整 driver
   input/output。
 - 對每個 selector 錄製可重現音訊，與公開播放清單及遊戲場景交叉驗證。

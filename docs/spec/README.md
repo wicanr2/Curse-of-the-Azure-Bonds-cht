@@ -329,3 +329,5 @@
 - [第三百五十五輪閃電束反射線](./355-lightning-bolt-reflecting-line.md)（`READY`：原版加權射線、牆面反射、逐目標傷害／豁免與 travel→impact→continue 時間軸）
 - [第三百五十六輪 Stinking Cloud 持續區域](./356-stinking-cloud-persistent-area.md)（`READY`：限 `0x22` 四格雲、Poison save、重疊 instance、消散與正常玩家路徑）
 - [第三百五十七輪 Cloudkill 持續區域](./357-cloudkill-persistent-area.md)（`READY`：限 `0x5B` 九格毒雲、Hit Dice 致死／豁免、低 HD 入格限制與正常玩家路徑）
+- [第三百五十八輪 PC-98 VFD 與 FM 音訊來源](./358-pc98-vfd-and-fm-audio-source.md)（`IN PROGRESS`：媒體、loader、YM2203 與 selector 已證明；完整 driver／runtime YM trace 尚缺）
+- [第三百六十二輪 PC-98 Disk B、DAX codec 與 WLDTWN](./362-pc98-disk-b-dax-and-wldtwn.md)（`READY`：限無 BPB FAT12 配置、PC-98 block codec、四個 writer 與區域導航／城鎮設施語意）

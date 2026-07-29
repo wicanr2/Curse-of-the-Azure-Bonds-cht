@@ -186,6 +186,30 @@ func ScanKnownInstructions(block []byte) ([]Instruction, error) {
 	return output, nil
 }
 
+// FindSaveDestinationCandidates checks every payload byte as a possible SAVE
+// instruction and returns records whose second operand is the requested
+// destination. Unlike ScanKnownInstructions it never skips over a candidate
+// because unrelated bytes happened to decode as a longer instruction first.
+// Results are still linear-scan evidence and require control-flow validation.
+func FindSaveDestinationCandidates(block []byte, destination uint16) ([]Instruction, error) {
+	if len(block) < 2 {
+		return nil, fmt.Errorf("ECL block is shorter than two-byte prefix")
+	}
+	payload := block[2:]
+	var output []Instruction
+	for offset := range payload {
+		instruction, err := decodeInstruction(payload, offset)
+		if err != nil || instruction.Command.Opcode != 0x09 ||
+			len(instruction.Operands) != 2 ||
+			!instruction.Operands[1].WordSet ||
+			instruction.Operands[1].Word != destination {
+			continue
+		}
+		output = append(output, instruction)
+	}
+	return output, nil
+}
+
 func decodeInstruction(payload []byte, offset int) (Instruction, error) {
 	if offset < 0 || offset >= len(payload) {
 		return Instruction{}, fmt.Errorf("instruction offset %d is outside payload", offset)

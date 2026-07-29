@@ -256,18 +256,20 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   0C29:BDF0`；完整 ECL block → selector／driver index 已寫入 CoAB JSON，
   engine `272e53c` 提供作品中立 `music_tracks`／`music_bindings`。
 - State 會在初始 ECL 與 block transition 發出一次性 `MusicEvent`。`0x30`
-  維持目前曲目、`0x52` 無分支；`0x50/0x51` 仍依 opaque
-  `pc98-wldtwn-zero/nonzero` 保存條件，在 `WLDTWN` writer 尚未證明前不得
-  猜成人類場景或先寫曲名。
+  維持目前曲目、`0x52` 無分支。第 362 輪已由 IDA、PC-98 decoded ECL 與
+  DOS 英文事件證明 `WLDTWN==0` 是區域／戶外導航、非零是城鎮設施選單；
+  JSON 初始 binding 使用 selector 5，`pc98-town-services-menu` 使用
+  selector 6。同 block 內 5↔6 正常玩家路徑 cue 尚未接入，仍不可先猜曲名。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
   Trace 見 `docs/reference/original-pc98/vfd-runtime-trace.md`。
 - selector 規格 `docs/spec/355-pc98-ecl-bgm-selector.md` 已 READY；來源媒體
   規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
-  下一步用 IDA Pro 追 `WLDTWN` writer，確認 IVT `7Eh` 到
-  `MSCDRV.EXE`／INT D2h 的轉送並補 runtime YM trace；曲名與播放器只能在
-  scene role／音序列證據完整後接入。
+  `docs/spec/362-pc98-disk-b-dax-and-wldtwn.md` 已 READY；下一步把
+  `PICTURE 0x50`／選單返回做成作品中立 music cue，並確認 IVT `7Eh` 到
+  `MSCDRV.EXE`／INT D2h 的轉送及 runtime YM trace；曲名與播放器只能在
+  音序列證據完整後接入。
 
 ## 10. Compact 後恢復工作清單
 

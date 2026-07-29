@@ -28,13 +28,17 @@ symbol table 精確定位 `SOUNDFX`、`INITSOUND`、`MSCPLAY`、`MSCSTOP` 與
 `CURRENTECL`，並將 exact ECL block → selector／driver index 放進
 game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證與
 選擇，遊戲規則層會在初始 ECL 與 block transition 發出一次性
-`MusicEvent`。`WLDTWN` 的零／非零場景語意、缺失 driver sector、runtime
-YM trace 與實際播放器仍未完成，因此不把 12 首曲名硬套進 JSON，也不宣稱
-音樂已可播放。
+`MusicEvent`。Disk B 的無 BPB FAT12 配置與 PC-98 專用 DAX codec 已由
+IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
+selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。缺失 driver
+sector、同 block 內 5↔6 正常玩家路徑 cue、runtime YM trace 與實際播放器
+仍未完成，因此不把 12 首曲名硬套進 JSON，也不宣稱音樂已可播放。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
-[`docs/spec/358-pc98-vfd-and-fm-audio-source.md`](docs/spec/358-pc98-vfd-and-fm-audio-source.md)。
+[`docs/spec/358-pc98-vfd-and-fm-audio-source.md`](docs/spec/358-pc98-vfd-and-fm-audio-source.md)，
+Disk B／codec／場景語意則見
+[`docs/spec/362-pc98-disk-b-dax-and-wldtwn.md`](docs/spec/362-pc98-disk-b-dax-and-wldtwn.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
