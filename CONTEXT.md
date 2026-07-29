@@ -1968,3 +1968,14 @@ register-log 清單交叉一致。獨立 engine `5363177` 新增跨 locale 驗�
 可選 `music_tracks.title_id`；CoAB JSON 現保存 selector 1–12、driver
 index 0–11 及中英文曲名。仍缺 `sub_10410` stream interpreter、後段參數
 consumer、YM register runtime trace 與實際播放器。
+
+2026-07-30 第 367 輪完成 PC-98 `sub_10410` sequence bytecode 第一層。
+IDA 與 raw bytes 證明 FM 0–2、PSG 3–5 的 note/rest width、`85/8A`、
+family-only `90/91/92`、`A0–A4` 控制流與 `B0`；call／loop stack 各為
+16 entries，overflow／underflow 依原版 no-op。
+
+第七個 timing channel 不是一般聲部：只消耗 `85/8A` 參數，其他高 opcode
+逐 byte 略過，而且會 read-through descriptor end。`internal/pc98music`
+現分開執行 FM／PSG strict range audit 與 timing bounded read-through；
+真實十二首 84 組 sequence 各通過 256 個 timed events，共 21,504 events。
+READY spec 367 保存語法、邊界與尚未完成的 register-event／YM 播放層。

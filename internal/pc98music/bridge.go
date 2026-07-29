@@ -50,15 +50,19 @@ type SoundBIOSService struct {
 // relative to the driver's data segment; the remaining two words stay raw
 // until both producer and playback consumers are fully traced.
 type TrackChannel struct {
-	Channel        int    `json:"channel"`
-	SequenceOffset int    `json:"sequence_offset"`
-	SequenceLength int    `json:"sequence_length"`
-	RawParameter1  int    `json:"raw_parameter_1"`
-	RawParameter2  int    `json:"raw_parameter_2"`
-	FileStart      int    `json:"file_start"`
-	FileEnd        int    `json:"file_end"`
-	Complete       bool   `json:"complete"`
-	SHA256         string `json:"sha256"`
+	Channel              int            `json:"channel"`
+	SequenceOffset       int            `json:"sequence_offset"`
+	SequenceLength       int            `json:"sequence_length"`
+	RawParameter1        int            `json:"raw_parameter_1"`
+	RawParameter2        int            `json:"raw_parameter_2"`
+	FileStart            int            `json:"file_start"`
+	FileEnd              int            `json:"file_end"`
+	Complete             bool           `json:"complete"`
+	SHA256               string         `json:"sha256"`
+	CommandCount         int            `json:"command_count"`
+	OpcodeCounts         map[string]int `json:"opcode_counts"`
+	ValidatedTimedEvents int            `json:"validated_timed_events"`
+	ValidationMode       string         `json:"validation_mode"`
 }
 
 type TrackDescriptor struct {
@@ -301,16 +305,70 @@ func auditTrackDescriptors(data []byte) ([]TrackDescriptor, error) {
 			}
 			complete := rangeComplete(fileStart, fileEnd)
 			track.Complete = track.Complete && complete
+			stream := data[fileStart:fileEnd]
+			opcodeCounts := make(map[string]int)
+			commandCount := 0
+			validationMode := "declared-range-static-and-control"
+			machineEnd := sequenceOffset + sequenceLength
+			if channel == 6 {
+				// sub_10410's timing branch does not honor the descriptor end
+				// or execute A0-A4. It reads onward until a timed byte occurs.
+				validationMode = "bounded-runtime-read-through"
+				machineEnd = len(data) - driverDataFileBase
+			} else {
+				commands, err := DecodeStreamStructure(channel, stream)
+				if err != nil {
+					return nil, fmt.Errorf(
+						"track %d channel %d decode structure: %w",
+						index+1, channel, err,
+					)
+				}
+				commandCount = len(commands)
+				for _, command := range commands {
+					opcodeCounts[command.Name]++
+				}
+			}
+			machine, err := NewSequenceMachine(
+				channel, sequenceOffset, machineEnd,
+			)
+			if err != nil {
+				return nil, err
+			}
+			validatedTimedEvents := 0
+			driverData := data[driverDataFileBase:]
+			for validatedTimedEvents < 256 &&
+				(channel == 6 || machine.PC != machine.End) {
+				commands, err := machine.NextTimed(driverData, 4096)
+				if IsSequenceEnd(err) {
+					break
+				} else if err != nil {
+					return nil, fmt.Errorf(
+						"track %d channel %d control flow after %d timed events: %w",
+						index+1, channel, validatedTimedEvents, err,
+					)
+				}
+				if channel == 6 {
+					commandCount += len(commands)
+					for _, command := range commands {
+						opcodeCounts[command.Name]++
+					}
+				}
+				validatedTimedEvents++
+			}
 			track.Channels = append(track.Channels, TrackChannel{
-				Channel:        channel,
-				SequenceOffset: sequenceOffset,
-				SequenceLength: sequenceLength,
-				RawParameter1:  raw1,
-				RawParameter2:  raw2,
-				FileStart:      fileStart,
-				FileEnd:        fileEnd,
-				Complete:       complete,
-				SHA256:         fileSHA256(data[fileStart:fileEnd]),
+				Channel:              channel,
+				SequenceOffset:       sequenceOffset,
+				SequenceLength:       sequenceLength,
+				RawParameter1:        raw1,
+				RawParameter2:        raw2,
+				FileStart:            fileStart,
+				FileEnd:              fileEnd,
+				Complete:             complete,
+				SHA256:               fileSHA256(stream),
+				CommandCount:         commandCount,
+				OpcodeCounts:         opcodeCounts,
+				ValidatedTimedEvents: validatedTimedEvents,
+				ValidationMode:       validationMode,
 			})
 		}
 		tracks = append(tracks, track)

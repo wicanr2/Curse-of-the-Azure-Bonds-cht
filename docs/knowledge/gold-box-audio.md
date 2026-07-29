@@ -83,3 +83,17 @@ game pack 以跨 locale `title_id` 保存 metadata；商業 sequence 仍只從
 scene role → stable track ID、loop、來源與 confidence 屬 game-pack JSON；
 play／stop／fade／resume、獨立 music／effect volume 與 save/load resume
 屬共用 engine。
+
+2026-07-30 第 367 輪由 IDA `sub_10410` 證明音序列不是單一共用 grammar：
+FM 0–2、PSG 3–5 共用 `A0–A4` jump／call／return／counted loop，但
+`90` 只屬 FM、`91/92` 只屬 PSG，`B0` 在 FM 只跳過兩參數、PSG 則直接
+寫 OPN register。兩種 stack 均為 16 entries；overflow／underflow 是
+no-op，不是 fatal error。
+
+Timing channel 6 更不能套一般 range parser。它只特別消耗 `85/8A`，
+其他高 opcode 逐 byte 略過，而且原驅動不檢查 descriptor end。真實曲目
+因此會 read-through 到相鄰資料。可重用安全模式是先驗證原檔雜湊，再以完整
+driver data、命令 budget 與 event budget 限制 trace；不可為了記憶體安全
+假造會改變節奏的 descriptor end。84 組 stream 已各跑 256 個 timed
+events；下一層仍須把 note／參數語意交叉成 Sound BIOS／YM2203 register
+events，才可選定合成後端。

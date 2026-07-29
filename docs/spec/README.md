@@ -12,6 +12,7 @@
 目前規格：
 
 - [第三百五十二輪眼魔洞穴德克薩姆雙戰](./352-beholder-cave-dexam-double-battle.md)（`READY`）
+- [第三百六十七輪 PC-98 音序列 bytecode](./367-pc98-stream-bytecode.md)（`READY`：限 `sub_10410` framing、控制流與 84-stream 有界驗證）
 - [第一輪素材與格式盤點](./round-01-inventory.md)（`DRAFT`）
 - [第二輪 DAX 容器與 ECL 文字取樣](./round-02-dax-container.md)（`DRAFT`）
 - [第三輪 DOS loader 與 GAME.OVR](./round-03-loader-and-overlay.md)（`DRAFT`）

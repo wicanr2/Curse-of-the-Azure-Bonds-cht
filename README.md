@@ -9,9 +9,9 @@
 
 ## 目前成果
 
-截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
+截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `a81b963`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `5363177`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -34,7 +34,7 @@ IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
 selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙本福德與
 希爾斯法的正常 ECL 玩家路徑現已驗證同 block 內 `5→6→5`，同曲返回不會
 重播。缺失 driver sector、runtime YM trace 與實際播放器仍未完成，因此
-不把 12 首曲名硬套進 JSON，也不宣稱音樂已可播放。
+雖已由 Hoot metadata 建立 12 首中英文曲名 JSON，仍不宣稱音樂已可播放。
 第 364 輪另已證明 `MSCDRV.EXE` 直接安裝 IVT `7Eh → CS:0080`：
 `AH=0/AL=track` 播放、`AH=1` 停止，再由內部 clients 接到低階
 `INT D2h`。所有 bridge byte anchors 均早於 driver 的 `0x4000..0x43FF`
@@ -46,7 +46,11 @@ selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙�
 stream：所有 sequence 最晚在 file `0x3C58` 結束，沒有碰到
 `0x4000..0x43FF` 缺口。Hoot 的 Shift-JIS metadata 又補齊十二首
 selector 的中英文曲名；game pack 現可從使用者媒體驗證並匯入七聲道
-sequence，但 stream interpreter／YM2203 播放器仍待完成。
+sequence。第 367 輪再由 IDA `sub_10410` 還原 FM／PSG 指令寬度、
+`A0–A4` jump／call／loop 與 16-entry stack；84 組 stream 各完成
+256 個 timed events 的有界驗證。第七個 timing channel 會略過控制 opcode
+並讀過 descriptor 宣告尾端，auditor 已用獨立 read-through mode 忠實且
+有界地處理。note／參數到 YM2203 register event 與播放器仍待完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -58,7 +62,9 @@ Disk B／codec／場景語意則見
 Sound BIOS ABI 則見
 [`docs/spec/365-pc98-sound-bios-d2-api.md`](docs/spec/365-pc98-sound-bios-d2-api.md)，
 曲目表與 runtime import 則見
-[`docs/spec/366-pc98-track-table-and-runtime-import.md`](docs/spec/366-pc98-track-table-and-runtime-import.md)。
+[`docs/spec/366-pc98-track-table-and-runtime-import.md`](docs/spec/366-pc98-track-table-and-runtime-import.md)，
+音序列指令集則見
+[`docs/spec/367-pc98-stream-bytecode.md`](docs/spec/367-pc98-stream-bytecode.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
