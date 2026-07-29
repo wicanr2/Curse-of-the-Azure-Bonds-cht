@@ -82,6 +82,12 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 允許使用 Docker 內 DOSBox／Xvfb 取得原版與 remake runtime 截圖。原版
 executable 是行為 oracle；網路資料不能取代可取得的本機實機驗證。
 
+凡有反組譯（reverse engineering）需求，優先在 Docker 隔離環境內使用
+`/home/anr2/ida_94_official/dist` 的 IDA Pro。其他反組譯器、反編譯器或
+自製掃描工具只能作補充與交叉驗證，不得在 IDA Pro 可用時逕自取代主要分析
+流程；IDA 結論仍須依本文件第 3 節，以原始 bytes、runtime trace 或另一項
+權威證據交叉驗證。
+
 ## 5. 視覺、版面與中文字體
 
 - 固定 logical canvas 為 640×480。
@@ -165,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 基底：`04422f9`（含 Lightning Bolt 玩家 vertical slice）。
-- Engine dependency：`09714e0`（含中立 `line`／`area` phase 與
-  `combat_visuals` schema）。
+- CoAB 基底：`1e7b3df`（本輪 PC-98 音樂資料流 milestone 之前的 HEAD）。
+- Engine dependency：`272e53c`（含中立 `combat_visuals` 與
+  `music_tracks`／`music_bindings` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
@@ -240,20 +246,28 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - `GAME.OVR` 已確認是 TPOV；`cmd/pc98-ovr-audit` 由 resident control
   records 重建 36 段完整 chain，分離 code／relocation 後仍無 literal
   `CD D2`。`GAME.EXE` 的 Borland `0x52FB`／version `0x0208` 表則已由
-  `cmd/pc98-symbol-audit` 解析為 1,725 筆 9-byte symbols、2,305 names。
+  `cmd/pc98-symbol-audit` 解析為 1,725 筆 9-byte symbols、2,305 names 與
+  53 筆 16-byte compiler modules。
 - 音訊 symbols exact：`SOUNDFX 0893:0000`、`INITSOUND 0893:010D`、
   `MSCPLAY 0893:0114`、`MSCSTOP 0893:015E`、`BGMPLAY 0893:0177`。
   `MSCPLAY` 透過 IVT vector `7Eh` wrapper 送 0-based track；`BGMPLAY`
-  已證明 selector `3/4/5/6/8/9/12`，但 internal area code 尚未全部對回
-  scene role，不得先寫曲名 JSON。
+  已證明 selector `3/4/5/6/8/9/12`。IDA data-segment 校準與
+  `INTERPET` writer／BGMPLAY consumer 已證明輸入是 `CURRENTECL
+  0C29:BDF0`；完整 ECL block → selector／driver index 已寫入 CoAB JSON，
+  engine `272e53c` 提供作品中立 `music_tracks`／`music_bindings`。
+- State 會在初始 ECL 與 block transition 發出一次性 `MusicEvent`。`0x30`
+  維持目前曲目、`0x52` 無分支；`0x50/0x51` 仍依 opaque
+  `pc98-wldtwn-zero/nonzero` 保存條件，在 `WLDTWN` writer 尚未證明前不得
+  猜成人類場景或先寫曲名。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
   Trace 見 `docs/reference/original-pc98/vfd-runtime-trace.md`。
-- 規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
-  下一步把 `BGMPLAY` area codes 對回 ECL／map identifiers，確認 IVT
-  `7Eh` 到 `MSCDRV.EXE`／INT D2h 的轉送，並補 runtime YM trace；只有
-  scene role 證據完整後才進 engine contract 與 CoAB JSON。
+- selector 規格 `docs/spec/355-pc98-ecl-bgm-selector.md` 已 READY；來源媒體
+  規格 `docs/spec/358-pc98-vfd-and-fm-audio-source.md` 仍為 IN PROGRESS。
+  下一步用 IDA Pro 追 `WLDTWN` writer，確認 IVT `7Eh` 到
+  `MSCDRV.EXE`／INT D2h 的轉送並補 runtime YM trace；曲名與播放器只能在
+  scene role／音序列證據完整後接入。
 
 ## 10. Compact 後恢復工作清單
 

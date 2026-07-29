@@ -166,7 +166,7 @@ count、name count、name-pool byte size 與 EOF 邊界驗證。輸入
 | `INITSOUND` | `0893:010D` | `sub_18A3D` | 目前是空 routine |
 | `MSCPLAY` | `0893:0114` | `sub_18A44` | 接受 1-based track byte、轉為 0-based、抑制重播同曲、送至 vector `7Eh` |
 | `MSCSTOP` | `0893:015E` | `sub_18A8E` | 寫 stop command，再送至 vector `7Eh` |
-| `BGMPLAY` | `0893:0177` | `sub_18AA7` | 依 internal area code 選曲，再呼叫 `MSCPLAY` |
+| `BGMPLAY` | `0893:0177` | `sub_18AA7` | 依全域 `CURRENTECL` 選曲，再呼叫 `MSCPLAY` |
 | `SOUND` | `08EE:03A6` | 待 caller 交叉驗證 | symbol address exact；尚未宣稱是音效播放入口 |
 
 9-byte record 修正後，以上五個音訊 procedure 都有連續、可重現的 symbol
@@ -179,28 +179,29 @@ record；不能回退採用錯誤的 10-byte stride。全域資料另包含 `MUS
 `CD D2`；下一步需確認 `MSCDRV.EXE` 是否另外把 `INT 7Eh` 作為遊戲 wrapper，
 再轉送其 `INT D2h` TSR contract。
 
-### 4.2 已反組譯的 area code → track selector
+### 4.2 已反組譯的 CURRENTECL → track selector
 
-`BGMPLAY`／`sub_18AA7` 讀 `byte_28080`，在若干 game state 下選出 track byte，再呼叫
-`MSCPLAY`。目前可逐 instruction 重現的 selector 是：
+後續 writer／consumer 與 Borland symbol 交叉驗證已證明
+`byte_28080 = CURRENTECL 0C29:BDF0`，不是未命名 area code；
+`byte_241A1 = WLDTWN 0C29:7F11`。完整地址校準、唯一 far callsite、可達性
+修正與 game-pack contract 以
+[`355-pc98-ecl-bgm-selector.md`](355-pc98-ecl-bgm-selector.md) 為權威。
+本表只保留摘要：
 
-| area code | 傳入 `MSCPLAY` 的 1-based 值 | driver buffer 的 0-based 值 |
+| CURRENTECL | 傳入 `MSCPLAY` 的 1-based 值 | driver buffer 的 0-based 值 |
 | --- | ---: | ---: |
 | `01`, `31` | 3 | 2 |
 | `11`, `12`, `15`, `21`, `22`, `23`, `43`, `45` | 4 | 3 |
-| `50`, `51` 且 `byte_241A1 == 0` | 5 | 4 |
-| `50`, `51` 且 `byte_241A1 != 0` | 6 | 5 |
-| `20`, `23`, `40`, `42` | 8 | 7 |
+| `50`, `51` 且 `WLDTWN == 0` | 5 | 4 |
+| `50`, `51` 且 `WLDTWN != 0` | 6 | 5 |
+| `20`, `40`, `42` | 8 | 7 |
 | `02`, `05`, `10`, `35` | 9 | 8 |
 | `03`, `04`, `25`, `32`, `33` | 12 | 11 |
 
-area `23` 在原 code 先命中 track 4 分支，因此後面的 track 8 比較實際上
-不可達；表格保留兩處比較以反映 bytes，不自行「修正」原程式。
-
-這張表目前只證明 internal area code 與 selector，不證明 Town、Combat、
-Dungeon 等人類場景名稱。必須把 `byte_28080` 的寫入點對回 ECL／map
-identifier，並以 runtime scene transition 驗證後，才能產生正式
-scene-role JSON。
+`23` 在原 code 先命中 selector 4，因此較晚的 selector 8 比較不可達；
+正式表只列實際結果。ECL block mapping 已寫入 JSON，但 `WLDTWN` 零／非零
+與 Town、Wilderness 等人類場景角色仍須由 writer 及 runtime transition
+證明，不能依播放清單順序猜測。
 
 IDA output 只是輔助；上述結論需以原 bytes 與 runtime I/O trace 維持
 `exact`。IDA 的通用 interrupt 註解不是本作語意證據。

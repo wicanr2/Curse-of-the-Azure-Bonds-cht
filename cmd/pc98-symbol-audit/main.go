@@ -14,6 +14,7 @@ import (
 
 func main() {
 	match := flag.String("match", "", "不分大小寫的名稱子字串；空白表示全部")
+	showModules := flag.Bool("modules", false, "列出 compiler modules，不列 symbols")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-symbol-audit [選項] GAME.EXE")
 		flag.PrintDefaults()
@@ -39,6 +40,22 @@ func main() {
 	)
 	needle := strings.ToUpper(*match)
 	matches := 0
+	if *showModules {
+		for _, module := range table.Modules {
+			if needle != "" && !strings.Contains(strings.ToUpper(module.Name), needle) {
+				continue
+			}
+			fmt.Printf(
+				"module=%d name_index=%d name=%q language=%d model_flags=0x%02X symbols=%d+%d sources=%d+%d correlations=%d+%d\n",
+				module.Index, module.NameIndex, module.Name, module.Language, module.ModelFlags,
+				module.SymbolIndex, module.SymbolCount, module.SourceIndex, module.SourceCount,
+				module.CorrelationIndex, module.CorrelationCount,
+			)
+			matches++
+		}
+		fmt.Printf("matches=%d\n", matches)
+		return
+	}
 	for _, symbol := range table.Symbols {
 		if symbol.Name == "" || (needle != "" && !strings.Contains(strings.ToUpper(symbol.Name), needle)) {
 			continue

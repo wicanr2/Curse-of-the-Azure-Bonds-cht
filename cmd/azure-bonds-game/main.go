@@ -97,6 +97,7 @@ type app struct {
 	messageSnapshot     string
 	messageStart        time.Time
 	soundPlayer         *sound.Player
+	currentMusicTrack   string
 	screenshotPath      string
 	screenshotDone      bool
 	screenshotFrames    int
@@ -201,6 +202,14 @@ func (a *app) playSound(id sound.ID) {
 func (a *app) syncSoundEvents() {
 	for _, event := range a.state.ConsumeSoundEvents() {
 		a.playSound(sound.ID(event))
+	}
+	// Track the latest renderer-neutral music intent even before the PC-98
+	// sequence decoder/player is available. This consumes stale transitions
+	// once per frame and leaves the eventual audio adapter one stable track ID.
+	for _, event := range a.state.ConsumeMusicEvents() {
+		if event.Action == "play" {
+			a.currentMusicTrack = event.TrackID
+		}
 	}
 }
 

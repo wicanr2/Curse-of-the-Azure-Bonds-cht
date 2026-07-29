@@ -4,6 +4,7 @@ package main
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"os"
@@ -15,6 +16,8 @@ import (
 
 func main() {
 	interruptText := flag.String("interrupt", "d2", "hexadecimal interrupt number to scan")
+	wordText := flag.String("word", "", "另搜尋 little-endian 16-bit 值（十六進位）")
+	bytesText := flag.String("bytes", "", "另搜尋連續 hex bytes，例如 9a77019308")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
 		flag.PrintDefaults()
@@ -27,6 +30,20 @@ func main() {
 	interruptValue, err := strconv.ParseUint(strings.TrimPrefix(*interruptText, "0x"), 16, 8)
 	if err != nil {
 		fatalf("無效 interrupt：%v", err)
+	}
+	var wordValue uint64
+	if *wordText != "" {
+		wordValue, err = strconv.ParseUint(strings.TrimPrefix(*wordText, "0x"), 16, 16)
+		if err != nil {
+			fatalf("無效 word：%v", err)
+		}
+	}
+	var bytePattern []byte
+	if *bytesText != "" {
+		bytePattern, err = hex.DecodeString(strings.TrimPrefix(*bytesText, "0x"))
+		if err != nil || len(bytePattern) == 0 {
+			fatalf("無效 bytes：%q", *bytesText)
+		}
 	}
 	executable := read(flag.Arg(0))
 	overlayFile := read(flag.Arg(1))
@@ -42,11 +59,26 @@ func main() {
 	for index, overlay := range overlays {
 		offsets := pc98ovr.InterruptOffsets(overlay.Code, byte(interruptValue))
 		total += len(offsets)
+		wordOffsets := []int(nil)
+		if *wordText != "" {
+			wordOffsets = pc98ovr.WordOffsets(overlay.Code, uint16(wordValue))
+		}
+		byteOffsets := []int(nil)
+		if len(bytePattern) != 0 {
+			byteOffsets = pc98ovr.PatternOffsets(overlay.Code, bytePattern)
+		}
 		fmt.Printf(
-			"index=%d entries=%d exe_offset=0x%X file_offset=0x%X code=0x%X reloc=0x%X int_offsets=%s\n",
+			"index=%d entries=%d exe_offset=0x%X file_offset=0x%X code=0x%X reloc=0x%X int_offsets=%s",
 			index, overlay.EntryCount, overlay.ExecutableOffset, overlay.FileOffset,
 			overlay.CodeSize, overlay.RelocationSize, formatOffsets(offsets),
 		)
+		if *wordText != "" {
+			fmt.Printf(" word_%04X_offsets=%s", wordValue, formatOffsets(wordOffsets))
+		}
+		if len(bytePattern) != 0 {
+			fmt.Printf(" bytes_%X_offsets=%s", bytePattern, formatOffsets(byteOffsets))
+		}
+		fmt.Println()
 	}
 	fmt.Printf("interrupt_matches=%d\n", total)
 }

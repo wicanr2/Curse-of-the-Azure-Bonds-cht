@@ -11,7 +11,7 @@
 
 截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為 `04422f9`，依賴的獨立 engine 為 `09714e0`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `272e53c`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -24,10 +24,16 @@ CoAB 本輪基底為 `04422f9`，依賴的獨立 engine 為 `09714e0`；實際�
 PC-98 音樂驅動已完整復原。殘存 bytes 已確認 YM2203 I/O 與 INT D2 hook；
 `GAME.OVR` 的 36 段 TPOV code 已完整切出，另由 `GAME.EXE` 內嵌 Borland
 symbol table 精確定位 `SOUNDFX`、`INITSOUND`、`MSCPLAY`、`MSCSTOP` 與
-`BGMPLAY`。目前已還原 internal area-code → track selector 與 IVT `7Eh`
-wrapper，但 area code 尚未全部對回人類場景，缺失 driver sector 也仍未
-取回，因此不把 12 首曲名硬套進 game-pack JSON。
+`BGMPLAY`。目前已由 writer／consumer 證明該 selector 輸入就是全域
+`CURRENTECL`，並將 exact ECL block → selector／driver index 放進
+game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證與
+選擇，遊戲規則層會在初始 ECL 與 block transition 發出一次性
+`MusicEvent`。`WLDTWN` 的零／非零場景語意、缺失 driver sector、runtime
+YM trace 與實際播放器仍未完成，因此不把 12 首曲名硬套進 JSON，也不宣稱
+音樂已可播放。
 詳細證據與後續工作見
+[`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
+與
 [`docs/spec/358-pc98-vfd-and-fm-audio-source.md`](docs/spec/358-pc98-vfd-and-fm-audio-source.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
