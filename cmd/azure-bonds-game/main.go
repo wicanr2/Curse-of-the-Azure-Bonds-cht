@@ -88,6 +88,9 @@ type app struct {
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
+	combatVisualSerial  uint64
+	combatVisualStarted time.Time
+	combatVisualElapsed time.Duration
 	messageSnapshot     string
 	messageStart        time.Time
 	soundPlayer         *sound.Player
@@ -201,6 +204,22 @@ func (a *app) Update() error {
 	a.syncGeoMapRequest()
 	a.syncLoadPiecesRequest()
 	a.syncECLCallRequests()
+	if event, ok := a.state.CombatVisualEvent(); ok {
+		if a.combatVisualSerial != event.Serial {
+			a.combatVisualSerial = event.Serial
+			a.combatVisualStarted = time.Now()
+		}
+		if a.screenshotPath != "" {
+			return nil
+		}
+		if err := a.state.AdvanceCombatVisual(time.Since(a.combatVisualStarted)); err != nil {
+			return err
+		}
+		a.syncSoundEvents()
+		if a.state.CombatVisualPending() {
+			return nil
+		}
+	}
 	if a.tilePreview {
 		if inpututil.IsKeyJustPressed(ebiten.KeyT) || inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			a.tilePreview = false
@@ -1588,6 +1607,18 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	targets := a.state.CombatTargets()
 	spellTargets := a.state.CombatSpellTargets()
 	for _, fighter := range a.state.CombatFighters() {
+		if event, ok := a.state.CombatVisualEvent(); ok {
+			frame := a.combatVisualFrame(event)
+			if event.Killed && event.TargetID == fighter.ID && frame.Phase < combat.VisualDeath {
+				// Battle rules have already resolved HP. Preserve the target's
+				// pre-impact map presence until the visual commit reaches death.
+				fighter.HitPoints = 1
+				fighter.DeathOverlay = false
+				fighter.DownedCorpse = false
+				fighter.HasCombatPosition = true
+				fighter.CombatX, fighter.CombatY = event.To.X, event.To.Y
+			}
+		}
 		if fighter.HitPoints <= 0 && !fighter.DownedCorpse {
 			if _, active := a.deathOverlayFrame(fighter); !active {
 				continue
@@ -1602,6 +1633,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			tile = mirroredCombatAnchor(tile)
 			x, y := tile.X*48, tile.Y*48
 			if !fighter.DownedCorpse && !fighter.DeathOverlay {
+				if event, ok := a.state.CombatVisualEvent(); ok {
+					frame := a.combatVisualFrame(event)
+					fighter.IconAttack = event.ActorID == fighter.ID && frame.Phase == combat.VisualWindup
+				}
 				a.drawFighterSprite(battlefield, fighter, partyIndex, x, y)
 			}
 			a.drawFighterDeathOverlay(battlefield, fighter, x, y)
@@ -1624,6 +1659,10 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		tile = mirroredCombatAnchor(tile)
 		x, y := tile.X*48, tile.Y*48
 		if !fighter.DownedCorpse && !fighter.DeathOverlay {
+			if event, ok := a.state.CombatVisualEvent(); ok {
+				frame := a.combatVisualFrame(event)
+				fighter.IconAttack = event.ActorID == fighter.ID && frame.Phase == combat.VisualWindup
+			}
 			a.drawFighterSprite(battlefield, fighter, enemyIndex, x, y)
 		}
 		a.drawFighterDeathOverlay(battlefield, fighter, x, y)
@@ -1636,6 +1675,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 				active.CombatX == fighter.CombatX && active.CombatY == fighter.CombatY))
 		a.drawCombatSpriteMarker(battlefield, fighter, isActive, selected, x, y)
 		enemyIndex++
+	}
+	if event, ok := a.state.CombatVisualEvent(); ok {
+		a.drawCombatVisual(battlefield, event, a.combatVisualFrame(event), camera)
 	}
 	screen.DrawImage(battlefield, battlefieldOp)
 	a.drawCombatStoneFrame(screen)
@@ -1772,6 +1814,126 @@ func (a *app) drawCombatSpriteMarker(screen *ebiten.Image, fighter combat.Fighte
 	ebitenutil.DrawRect(screen, float64(x), float64(y+height-2), float64(width), 2, marker)
 	ebitenutil.DrawRect(screen, float64(x), float64(y), 2, float64(height), marker)
 	ebitenutil.DrawRect(screen, float64(x+width-2), float64(y), 2, float64(height), marker)
+}
+
+func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) {
+	fromX, fromY, toX, toY, x, y := combatVisualPoint(event, frame, camera)
+	switch frame.Phase {
+	case combat.VisualTravel:
+		switch event.Kind {
+		case combat.VisualMissile:
+			// The line is the renderer fallback until the DOS projectile block
+			// is assigned by the title asset pack.
+			shaft := color.RGBA{R: 255, G: 244, B: 180, A: 255}
+			ebitenutil.DrawLine(screen, fromX, fromY, x, y, shaft)
+			ebitenutil.DrawLine(screen, fromX, fromY+1, x, y+1, shaft)
+			ebitenutil.DrawLine(screen, fromX, fromY+2, x, y+2, shaft)
+			ebitenutil.DrawRect(screen, x-7, y-3, 14, 6, shaft)
+			// A high-contrast arrowhead keeps the temporary renderer readable
+			// over both light EGA terrain and the dark combat floor.
+			head := color.RGBA{R: 196, G: 44, B: 44, A: 255}
+			ebitenutil.DrawRect(screen, x-9, y-5, 5, 10, head)
+		case combat.VisualMagicMissile:
+			count := event.Projectiles
+			if count < 1 {
+				count = 1
+			}
+			for index := 0; index < count; index++ {
+				offset := float64(index*6 - (count-1)*3)
+				ebitenutil.DrawRect(screen, x-4, y-4+offset, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
+			}
+		}
+	case combat.VisualImpact:
+		impact := color.RGBA{R: 255, G: 238, B: 110, A: 210}
+		if !event.Hit {
+			impact = color.RGBA{R: 180, G: 180, B: 180, A: 180}
+		}
+		size := 12 + 12*frame.Progress
+		ebitenutil.DrawRect(screen, toX-size/2, toY-size/2, size, size, impact)
+	case combat.VisualDeath:
+		iconKey := "comspr-block-8B-item-00.png"
+		if int(frame.Progress*9)%2 == 1 {
+			iconKey = "comspr-block-19-item-00.png"
+		}
+		if icon := a.combatSprites[iconKey]; icon != nil {
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Scale(2, 2)
+			op.GeoM.Translate(toX-24, toY-24)
+			screen.DrawImage(icon, op)
+		}
+	}
+}
+
+func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
+	if a.screenshotPath != "" {
+		return event.FrameAt(a.combatVisualElapsed)
+	}
+	return event.FrameAt(time.Since(a.combatVisualStarted))
+}
+
+func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {
+	from := mirroredCombatAnchor(camera.Apply(event.From))
+	to := mirroredCombatAnchor(camera.Apply(event.To))
+	fromX, fromY = float64(from.X*48+24), float64(from.Y*48+24)
+	toX, toY = float64(to.X*48+24), float64(to.Y*48+24)
+	x = fromX + (toX-fromX)*frame.Progress
+	y = fromY + (toY-fromY)*frame.Progress
+	return
+}
+
+func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, error) {
+	hero := combat.Fighter{
+		ID: "demo-hero", Name: "弓手艾琳", Side: combat.SideParty,
+		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 0,
+		AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 4,
+		InitiativeBonus: 30, HasCombatPosition: true, CombatX: 1, CombatY: 2,
+	}
+	enemy := combat.Fighter{
+		ID: "demo-orc", Name: "半獸人", Side: combat.SideEnemy,
+		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10,
+		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 4,
+		InitiativeBonus: -20, HasCombatPosition: true, CombatX: 5, CombatY: 2,
+	}
+	switch kind {
+	case "melee":
+		hero.Name = "戰士艾琳"
+	case "bow":
+		hero.MissileWeapon = true
+	case "kill":
+		hero.Name = "戰士艾琳"
+		enemy.HitPoints, enemy.MaxHitPoints = 1, 1
+	case "magic":
+		hero.InitiativeBonus = -20
+		enemy.Name = "散提爾法師"
+		enemy.InitiativeBonus = 30
+		enemy.MonsterSpellUses[0] = 1
+		enemy.MonsterSpellIDs = []uint8{combat.MonsterMagicMissileSpellID}
+	default:
+		return 0, fmt.Errorf("unknown combat visual demo %q", kind)
+	}
+	if err := state.StartCombat([]combat.Fighter{hero}, []combat.Fighter{enemy}, 37); err != nil {
+		return 0, err
+	}
+	if kind != "magic" {
+		if err := state.CombatAct(); err != nil {
+			return 0, err
+		}
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok {
+		return 0, fmt.Errorf("combat visual demo %q did not queue an event", kind)
+	}
+	switch kind {
+	case "melee":
+		return combat.VisualWindupDuration / 2, nil
+	case "bow", "magic":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration/2, nil
+	case "kill":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			combat.VisualImpactDuration + combat.VisualCommitDuration +
+			2*combat.DeathOverlayPhaseDuration, nil
+	}
+	return event.Duration() / 2, nil
 }
 
 // drawFighterDeathOverlay is the renderer adapter for the combat-core
@@ -1977,6 +2139,7 @@ func main() {
 	encounterMonsterMember := flag.String("encounter-monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter")
 	encounterArea := flag.Int("encounter-area", 1, "original graphics area used by -encounter sprites (1..6)")
 	combatTerrainMode := flag.String("combat-terrain", "", "override combat terrain atlas for visual verification: DUNGCOM, WILDCOM, or RANDCOM")
+	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, or kill")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
@@ -1991,6 +2154,11 @@ func main() {
 	*combatTerrainMode = strings.ToUpper(*combatTerrainMode)
 	if *combatTerrainMode != "" && *combatTerrainMode != "DUNGCOM" && *combatTerrainMode != "WILDCOM" && *combatTerrainMode != "RANDCOM" {
 		log.Fatal("-combat-terrain must be DUNGCOM, WILDCOM, RANDCOM, or empty for automatic selection")
+	}
+	*combatVisualDemo = strings.ToLower(strings.TrimSpace(*combatVisualDemo))
+	if *combatVisualDemo != "" && *combatVisualDemo != "melee" && *combatVisualDemo != "bow" &&
+		*combatVisualDemo != "magic" && *combatVisualDemo != "kill" {
+		log.Fatal("-combat-visual-demo must be melee, bow, magic, kill, or empty")
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
@@ -2382,7 +2550,19 @@ func main() {
 		regularFace = etenFace
 		compactFace = etenFace
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), screenshotPath: *screenshotPath}); err != nil {
+	state.EnableCombatVisualTimeline(true)
+	visualSerial := uint64(0)
+	visualStarted := time.Time{}
+	if *combatVisualDemo != "" {
+		offset, err := prepareCombatVisualDemo(&state, *combatVisualDemo)
+		if err != nil {
+			log.Fatal(err)
+		}
+		event, _ := state.CombatVisualEvent()
+		visualSerial = event.Serial
+		visualStarted = time.Now().Add(-offset)
+	}
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -2595,6 +2775,11 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 			return nil, nil, nil, fmt.Errorf("decode combat sprite %s: %w", path, err)
 		}
 		name := filepath.Base(path)
+		if strings.HasPrefix(name, "cpic") || strings.HasPrefix(name, "comspr") ||
+			strings.HasPrefix(name, "party") || strings.HasPrefix(name, "chead") ||
+			strings.HasPrefix(name, "cbody") {
+			decoded = chromaKeyTopLeft(decoded)
+		}
 		images[name] = ebiten.NewImageFromImage(decoded)
 		if strings.HasPrefix(name, "cpic") {
 			ids = append(ids, name)
@@ -2624,6 +2809,7 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("decode combat animation %s: %w", record.Name, err)
 		}
+		decoded = chromaKeyTopLeft(decoded)
 		frameMarker := strings.Index(record.Name, "-frame-")
 		if frameMarker < 0 {
 			return nil, nil, nil, fmt.Errorf("animation asset %q has no frame marker", record.Name)
@@ -2632,6 +2818,28 @@ func loadCombatSprites() (map[string]*ebiten.Image, []string, map[string][]comba
 		animations[key] = append(animations[key], combatAnimation{image: ebiten.NewImageFromImage(decoded), delay: record.Delay, x: record.X, y: record.Y})
 	}
 	return images, ids, animations, nil
+}
+
+// chromaKeyTopLeft applies the indexed-picture transparent color used by
+// combat sprites. Derived PNGs preserve the EGA RGB value but not the original
+// masked blit operation, so loading them as opaque rectangles is incorrect.
+func chromaKeyTopLeft(source image.Image) image.Image {
+	bounds := source.Bounds()
+	output := image.NewNRGBA(bounds)
+	key := color.NRGBAModel.Convert(source.At(bounds.Min.X, bounds.Min.Y)).(color.NRGBA)
+	if key.A == 0 {
+		return source
+	}
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			pixel := color.NRGBAModel.Convert(source.At(x, y)).(color.NRGBA)
+			if pixel.R == key.R && pixel.G == key.G && pixel.B == key.B {
+				pixel.A = 0
+			}
+			output.SetNRGBA(x, y, pixel)
+		}
+	}
+	return output
 }
 
 func loadDungeonPreview(grid *geo.Grid) *mapdata.DungeonFloor {

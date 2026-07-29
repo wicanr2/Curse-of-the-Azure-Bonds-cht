@@ -167,14 +167,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 ### 目前未提交 milestone（不可遺忘）
 
-- 第 352 輪雙戰已 push。dirty milestone 是第 353 輪洞窟離場：
-  GEO4/`0x25 (6,3)` terrain `0x93` 必須走 boundary lifecycle，依序顯示
-  Olive／Dimswart、騎士與紫衣女子，寫 `4CE2/7F12`、銷毀 item type
-  `0x60/0x61`，再 `NEWECL 0x51` 回暗影谷。
-- spec 354 已記錄下一個戰鬥視覺里程碑：建立 renderer-neutral action
-  timeline，先完成 melee、bow、Magic Missile、death；目前只有死亡 overlay
-  有時間相位，弓箭／法術 projectile 與逐 action 敵方回合尚未完成。
-- 完成第 353 輪完整驗證後集中一次 commit＋push；不要為文件或小修拆 commit。
+- 第 353 輪洞窟離場已 push。dirty milestone 是 spec 354 第一階段：
+  `combat.VisualEvent` 已建立 windup→handoff 時間軸，Ebiten 每次只播放一個
+  actor action；melee、bow、Magic Missile、death 已接入 phase-aligned
+  renderer／sound，並有四張 deterministic Xvfb frame。
+- 箭與 Magic Missile projectile 目前仍是 fallback primitive，不是 DOS
+  pixel-exact；spec 354 保持 IN PROGRESS，下一步用 DOSBox／gameplay video
+  時間碼定位真正素材、色盤與 duration。
+- screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
+  啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
+- 完整驗證後把本階段集中一次 commit＋push；不要為文件或單張圖拆 commit。
 
 ## 10. Compact 後恢復工作清單
 

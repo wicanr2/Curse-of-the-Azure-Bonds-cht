@@ -1,12 +1,44 @@
 package main
 
 import (
+	"image"
+	"image/color"
 	"reflect"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
+
+func TestChromaKeyTopLeftRestoresMaskedCombatSprite(t *testing.T) {
+	source := image.NewNRGBA(image.Rect(0, 0, 2, 2))
+	key := color.NRGBA{R: 255, G: 82, B: 82, A: 255}
+	source.SetNRGBA(0, 0, key)
+	source.SetNRGBA(1, 0, key)
+	source.SetNRGBA(0, 1, color.NRGBA{R: 0, G: 255, B: 255, A: 255})
+	got := chromaKeyTopLeft(source)
+	if _, _, _, alpha := got.At(1, 0).RGBA(); alpha != 0 {
+		t.Fatalf("key pixel alpha=%#x", alpha)
+	}
+	if _, _, _, alpha := got.At(0, 1).RGBA(); alpha != 0xFFFF {
+		t.Fatalf("sprite pixel alpha=%#x", alpha)
+	}
+}
+
+func TestDrawCombatVisualRendersMissileTravelAndImpact(t *testing.T) {
+	event := combat.VisualEvent{
+		Kind: combat.VisualMissile,
+		From: combat.TilePoint{X: 1, Y: 3},
+		To:   combat.TilePoint{X: 5, Y: 3},
+		Hit:  true,
+	}
+	fromX, fromY, toX, toY, x, y := combatVisualPoint(event, combat.VisualFrame{
+		Phase: combat.VisualTravel, Progress: 0.5,
+	}, combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{}, false))
+	if fromX != 264 || fromY != 168 || toX != 72 || toY != 168 || x != 168 || y != 168 {
+		t.Fatalf("travel points=(%v,%v)->(%v,%v) at (%v,%v)", fromX, fromY, toX, toY, x, y)
+	}
+}
 
 func TestWrapTextLinesUsesUnicodeRunesAndLineLimit(t *testing.T) {
 	got := wrapTextLines("熔岩池中有火蜥蜴\n第二段", 4, 3)
