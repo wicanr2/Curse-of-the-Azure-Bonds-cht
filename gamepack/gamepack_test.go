@@ -38,6 +38,13 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		shrine.Spawn.Direction != 0 {
 		t.Fatalf("Zhentil Dark Shrine map definition=%+v found=%v", shrine, found)
 	}
+	cave, found := pack.FindMap(4, 0x22)
+	if !found || cave.ID != "zhentil-keep.beholder-cave" ||
+		cave.GeometryFile != "GEO4.DAX" || cave.GeometryBlock != 0x22 ||
+		cave.Spawn == nil || cave.Spawn.X != 4 || cave.Spawn.Y != 5 ||
+		cave.Spawn.Direction != 0 {
+		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)
+	}
 	overland, found := pack.FindMapByKind("overland")
 	if !found || overland.ImageFile != "BIGPIC1.DAX" ||
 		overland.GeometryBlock != 0x79 || len(overland.Locations) != 14 ||
@@ -66,5 +73,14 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		!strings.Contains(dimswart.JournalPages[0], "手札條目 12（1/6）") ||
 		!strings.Contains(dimswart.JournalPages[5], "摩安德護手") {
 		t.Fatalf("Dimswart text result=%+v", dimswart)
+	}
+	dexam := pack.MatchText([]string{
+		"DEXAM SPEAKS.",
+		"YOU RECORD HIS SPEECH AS JOURNAL ENTRY 30.",
+	}, "zh-TW")
+	if !dexam.Matched || !strings.Contains(dexam.Message, "手札第 30 條") ||
+		len(dexam.JournalPages) != 2 ||
+		!strings.Contains(dexam.JournalPages[1], "兩三個星期") {
+		t.Fatalf("Dexam text result=%+v", dexam)
 	}
 }

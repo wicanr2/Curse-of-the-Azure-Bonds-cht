@@ -629,3 +629,21 @@ terrain `0x85` 顯示 PICTURE、手札與 `YES/NO`；接受後 work memory 令�
 狀態。通用 VM 保存原始 memory 與一次性 gate，作品 game pack 只負責人物
 名稱、文本與手札。若後續作品證實 escort 需要可序列化的 stable identity，
 應在通用 schema 增加 renderer-neutral plot companion，而非 title hardcode。
+
+### 2026-07-29：escort-gated 出口與跨 ECL 地圖 identity
+
+幽暗神殿 terrain `0x86` 只有在迪姆斯沃特 escort flag 成立後才顯示兜帽女子；
+因此「地圖上有出口事件」不代表它是無條件可用的 map transition。作品測試要
+先走完前置 ECL choice，再執行 terrain dispatch，不能靠 direct-entry 跳過
+work memory gate。
+
+接受帶路後，原 session 連續執行多個 PICTURE／PRINT RETURN／menu，並由
+ECL4 `0x21→0x22`。`LOAD FILES` aggregation 仍可能帶著來源 map signal；若
+title pack 已明確宣告 Area 4 block `0x22` 的 first-person map，State 應以 exact
+definition 選目的 GEO。這和摩安德之坑 `0x11→0x12` 共用 GEO 的案例並不衝突：
+共用 map 的目的 block刻意不宣告另一張 geometry，獨立 map 則有 exact 定義。
+
+此外，跨區敘事不是一個原子字串。兜帽女子、弗佐爾、德克薩姆、兩篇手札、
+五項 encounter menu、死亡、枷印解除與部隊混戰各自形成 pause。player-path
+regression 必須逐一 resume 同一 session，直到目的 block 的 `ModeDungeon`，
+不可看到 `NEWECL` 或第一張洞穴圖便宣稱轉場完成。
