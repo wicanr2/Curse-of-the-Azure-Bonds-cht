@@ -37,6 +37,7 @@ type playbackChannel struct {
 	currentVolume   uint16
 	envelopePointer int
 	mode            byte
+	operatorMask    byte
 }
 
 // TrackPlayback deterministically executes the normal (non-fade, non-SFX)
@@ -94,8 +95,14 @@ func newTrackPlayback(driverData []byte, track TrackDescriptor) (*TrackPlayback,
 		}
 		state := &playback.channels[channel]
 		state.machine = machine
+		state.operatorMask = 0x0f
 		switch {
 		case channel < 3:
+			if mask, ok, err := playback.parameterOperatorMask(descriptor.RawParameter1); err != nil {
+				return nil, nil, fmt.Errorf("channel %d descriptor parameter: %w", channel, err)
+			} else if ok {
+				state.operatorMask = mask
+			}
 			initial = append(initial,
 				MusicEvent{
 					Channel: channel, Kind: EventSetParameterBlock,
@@ -269,6 +276,11 @@ func (playback *TrackPlayback) applyCommand(
 		}
 	case "parameter_85":
 		if channel < 3 {
+			if mask, ok, err := playback.parameterOperatorMask(int(command.Operands[0])); err != nil {
+				return err
+			} else if ok {
+				state.operatorMask = mask
+			}
 			*events = append(*events, MusicEvent{
 				Tick: playback.tick, Channel: channel,
 				Kind: EventSetParameterBlock, Parameter: command.Operands[0],
@@ -344,9 +356,22 @@ func (playback *TrackPlayback) startFM(
 		byte(fnumber), command.Offset, command.Opcode,
 	)
 	playback.writeRegister(
-		events, channel, 0x28, byte(channel+0xF0), command.Offset, command.Opcode,
+		events, channel, 0x28, playback.channels[channel].operatorMask<<4|byte(channel),
+		command.Offset, command.Opcode,
 	)
 	return nil
+}
+
+func (playback *TrackPlayback) parameterOperatorMask(index int) (byte, bool, error) {
+	offset := fmParameterTableFile - driverDataFileBase + index*fmParameterBlockBytes
+	if index < 0 || offset < 0 || offset+fmParameterBlockBytes > len(playback.driverData) {
+		return 0, false, nil
+	}
+	block, err := parseFMParameterBlock(playback.driverData[offset : offset+fmParameterBlockBytes])
+	if err != nil {
+		return 0, false, fmt.Errorf("parameter %d: %w", index, err)
+	}
+	return block.OperatorMask, true, nil
 }
 
 func (playback *TrackPlayback) startPSG(

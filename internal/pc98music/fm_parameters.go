@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"sort"
+
+	"github.com/wicanr2/golden-box-remake-engine/audio/ym2203"
 )
 
 const (
@@ -70,6 +72,31 @@ func (block FMParameterBlock) YM2203Signature() YM2203ToneSignature {
 			(0x0f - block.ReleaseRate[operator])
 	}
 	return result
+}
+
+// YM2203LevelSequence reproduces NEC Sound BIOS AH=16h SETPARABLOCK followed
+// by AH=1Fh SETVOLUME. The first item is the parameter block's four output
+// levels in physical register order. Each following item is one complete
+// re-render after replacing the next carrier's output level with volume.
+func (block FMParameterBlock) YM2203LevelSequence(volume byte) ([][4]byte, error) {
+	var levels [4]byte
+	for physical, operator := range ym2203OperatorOrder {
+		levels[physical] = 0x7f - block.OutputLevel[operator]
+	}
+	result := [][4]byte{levels}
+	carriers, err := ym2203.CarrierOperators(block.FeedbackAlgorithm & 7)
+	if err != nil {
+		return nil, err
+	}
+	for _, operator := range carriers {
+		physical, err := ym2203.PhysicalOperatorIndex(operator)
+		if err != nil {
+			return nil, err
+		}
+		levels[physical] = 0x7f - volume
+		result = append(result, levels)
+	}
+	return result, nil
 }
 
 // FMParameterBankAudit reports only provenance, hashes and index coverage.

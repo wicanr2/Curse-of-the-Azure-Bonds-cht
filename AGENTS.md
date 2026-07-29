@@ -171,9 +171,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`15da11a`；第 370 輪 S98／YM2203 runtime 稽核 milestone 會由
-  本文件所在 commit 完成。
-- Engine dependency：`1a6a252`（含中立 `audio/s98`、`combat_visuals`、
+- CoAB 本輪基底：`e4a0231`；第 371 輪 Sound BIOS total-level／key-on
+  milestone 會由本文件所在 commit 完成。
+- Engine dependency：`6a0852c`（含中立 `audio/s98`、`audio/ym2203`、
+  `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
   `title_id` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
@@ -226,6 +227,19 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。
+
+### 目前 PC-98 音樂 milestone（不可遺忘）
+
+- 第 371 輪已用指定 IDA Pro 9.4 正確以 8086／16-bit 分析 `SOUND.ROM`，
+  並由十二首 S98 的 72 組啟動序列證明
+  `TL=127-OUTPUT_LEVEL`、algorithm carrier `4→2→3→1` 及
+  `OPERATOR_MASK` key-on。舊的 64-bit raw ROM IDA 結果作廢。
+- engine `audio/ym2203` 保存作品中立 carrier／operator 拓樸；
+  CoAB `TrackPlayback` 已由 active parameter mask 產生 key-on，不再固定
+  `F0h`。spec 371 是本部分最新 READY 規格。
+- 下一步補 LFO／MODUON／MODUOFF、fade 與 SFX 共存、完整曲長／loop，
+  再接有明確授權的 YM2203 合成器、PCM mixer 與遊戲內播放。不得因音色
+  register path 已還原而宣稱音樂完成。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -309,8 +323,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 高索引全部只在 descriptor 初始化短暫載入，第一個 stream `85h` 隨即
   改用內嵌 `0..19`，之後才首次 key-on；十二首
   `audible_parameters_complete` 均為 true。不得刪除高索引副作用，也不得
-  再追假設中的外部音色 bank。下一個真實缺口是 total-level／carrier 公式、
-  LFO、fade／SFX、完整 loop、合成器與遊戲內播放器。
+  再追假設中的外部音色 bank。第 371 輪已補完 total-level／carrier 與
+  operator-mask key-on；下一個真實缺口是 LFO、fade／SFX、完整 loop、
+  合成器與遊戲內播放器。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。

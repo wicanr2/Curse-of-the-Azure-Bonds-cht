@@ -102,8 +102,12 @@ commit 內保存不可能自我引用的 hash。
   DETUNE shift；共用 engine `1a6a252` 已提供 S98／YM2203 parser。
   `20,21,23,24,25,26,27,58` 只在 descriptor 初始化短暫載入，第一個
   stream `85h` 會在首次 key-on 前改回內嵌 `0..19`。十二首的可聽音色
-  現均可由二十組 bank 覆蓋；仍缺 total-level 完整公式、fade／SFX、
-  loop、合成器與遊戲內播放器。
+  現均可由二十組 bank 覆蓋。第 371 輪又用指定 IDA Pro 9.4 對
+  `SOUND.ROM` 的 16-bit consumer 及十二首共 72 組 S98 啟動序列，證明
+  `TL=127-OUTPUT_LEVEL`、algorithm carrier `4→2→3→1` 與
+  `OPERATOR_MASK` key-on；事件 runtime 不再固定強制四個 operator。
+  共用 engine `6a0852c` 提供 `audio/ym2203` 拓樸與帶 mask 的 key-on snapshot。
+  仍缺 LFO、fade／SFX、loop、合成器與遊戲內播放器。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -127,8 +131,9 @@ commit 內保存不可能自我引用的 hash。
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目尚缺 fade／sound-effect 共存路徑、完整曲長／loop trace、
-  total-level 公式、合成器與播放器。曲名、十二首 sequence、控制流、
-  正常配樂 deterministic events 及啟動 S98 register trace 已交叉驗證；
+  LFO、合成器與播放器。曲名、十二首 sequence、控制流、total-level、
+  algorithm carrier、operator-mask key-on、正常配樂 deterministic
+  events 及啟動 S98 register trace 已交叉驗證；
   driver sector 仍需
   恢復，但已證明不與 84 個 channel stream 重疊。
   `WLDTWN` scene-role、ECL block → selector 與同 block 內 selector 5↔6

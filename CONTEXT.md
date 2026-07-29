@@ -2043,3 +2043,29 @@ signed DETUNE 採 8-bit left shift，不應先截成 3-bit。
 音樂仍未完成：total-level／operator-mask／algorithm carrier 公式、LFO、
 fade／SFX 共存、完整 loop、YM2203 合成器、遊戲內播放及 save/resume
 仍是下一階段。
+
+2026-07-30 第 371 輪完成 PC-98 Sound BIOS total-level、algorithm carrier
+與 operator-mask key-on。指定 `/home/anr2/ida_94_official/dist` 的 IDA Pro
+9.4 在 Docker 內把 16 KiB `SOUND.ROM` 正確載為 CC000h 的 8086／16-bit
+raw image；先前 IDA 預設 64-bit 所產生的 qword 分析已明確作廢。
+公開 entry `CEE08h` 經 `CEF3Dh` dispatch 到 `SETPARABLOCK CF309h` 與
+`SETVOLUME CF41Fh`。`CFB94h` 的欄位反相表 index-0 哨兵位於 ROM file
+`3BEFh`／raw-load linear `CFBEFh`，欄位 1 從 `3BF0h` 開始，證明
+AR／DR／SR 以 31、SL／RR 以 15、TL 以 127 相減；`CFD72h` 依
+`00,08,04,0C` operator offset 重繪 tone。
+
+`SETVOLUME` 依 algorithm 0–3／4／5–6／7 選 1／2／3／4 個 carrier，
+以 logical operator `4→2→3→1` 順序逐一把 OutputLevel parameter 換成
+track volume，每次均重繪完整 tone。十二首修正版 S98 的
+12×3×2=72 組 descriptor／first-stream 序列全部符合
+`TL=127-OutputLevel` 與上述更新順序。`CFC69h` 另證明 parameter 欄位 5
+的低四位左移後形成 YM2203 register `28h` key-on；十二首 first-key
+operator mask 稽核全數通過。
+
+獨立 engine 新增 `audio/ym2203` algorithm/carrier 與 logical→physical
+operator 拓樸，`audio/s98.YM2203KeyOn` 保存 operator mask。CoAB
+`FMParameterBlock.YM2203LevelSequence` 與 `pc98-s98-audit` 現驗證 base TL、
+carrier 次序及 first-key mask；`TrackPlayback` 不再固定寫 `F0h`，而由
+active parameter mask 驅動。READY spec 371 與 native IDC 腳本已保存。
+音樂仍缺 LFO、fade／SFX 共存、完整 loop、合成器、PCM mixer、遊戲內播放
+及 save/resume，不能宣稱完成。
