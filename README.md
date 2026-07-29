@@ -16,10 +16,18 @@ CoAB 本輪基底為 `04422f9`，依賴的獨立 engine 為 `09714e0`；實際�
 尚未宣稱完整可通關。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
-`pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與缺失 sector，而不把缺資料
-靜默補零。目前 Disk 1 的缺口正落在 `MSCDRV.EXE` 與 `CED3.DAX`，Disk 2
-尾端也有缺失，因此尚不能宣稱 PC-98 音樂驅動已完整復原。殘存 bytes 已交叉
-確認 YM2203 I/O 與 INT D2 hook；詳細證據與後續工作見
+`pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存
+資料靜默補零。目前 Disk 1 的缺口對應 `MSCDRV.EXE` 與 `CED3.DAX`，Disk 2
+尾端也有 absent descriptors；NP2kai 又證實其中一個 sector 會被重讀四次，
+簡單補零反而改變開機行為，因此它可能同時包含防拷／低階磁片語意。MAME
+官方 FDI 身分雜湊、loader 順序與 runtime trace 已納入規格；尚不能宣稱
+PC-98 音樂驅動已完整復原。殘存 bytes 已確認 YM2203 I/O 與 INT D2 hook；
+`GAME.OVR` 的 36 段 TPOV code 已完整切出，另由 `GAME.EXE` 內嵌 Borland
+symbol table 精確定位 `SOUNDFX`、`INITSOUND`、`MSCPLAY`、`MSCSTOP` 與
+`BGMPLAY`。目前已還原 internal area-code → track selector 與 IVT `7Eh`
+wrapper，但 area code 尚未全部對回人類場景，缺失 driver sector 也仍未
+取回，因此不把 12 首曲名硬套進 game-pack JSON。
+詳細證據與後續工作見
 [`docs/spec/358-pc98-vfd-and-fm-audio-source.md`](docs/spec/358-pc98-vfd-and-fm-audio-source.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)

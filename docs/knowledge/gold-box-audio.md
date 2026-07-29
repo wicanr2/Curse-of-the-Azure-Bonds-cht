@@ -19,6 +19,34 @@ CoAB 場景判斷寫進播放器。
 只能算 hypothesis。媒體稽核、缺失 CHRN、目前可證明的 `INT D2h` dispatch
 與 12 首公開曲目目錄見 `docs/spec/358-pc98-vfd-and-fm-audio-source.md`。
 
+MAME 官方 `pc98.xml` 已提供本作兩片 1,265,664-byte FDI 的身分雜湊，可供
+第二份合法 dump 交叉驗證。VFD 的 absent sector 不能先當成一般壞軌補零：
+保留缺 sector 的副本可進 MEGDOS，改變 sector topology、FAT root 或
+`LOADER.COM` 則在 banner 前停止，顯示它可能同時承載早期完整性／防拷語意。
+音訊工具必須分開保存媒體物理狀態與檔案系統 bytes。
+
+Emulator trace 又確認目標 CHRN 在 baseline 被讀四次；「首讀 not-found、
+第二讀起補零」仍無法進入 loader EXEC。這代表匯入器未來若只接受 flat raw
+sector bytes，會遺失可能影響啟動與音訊驅動載入的多重讀取／sector-status
+資訊。
+
+`LOADER.COM` 的原 bytes 已確認依序 EXEC `SETUP.EXE`、`MSCDRV.EXE`、
+`GAME.EXE`。磁碟內跳過第二步會破壞開機驗證；後續應在 NP2kai 加入有界、
+只記錄研究 trace 的 guest interrupt／overlay instrumentation，而不是改寫
+原始或研究磁碟。
+
+PC-98 `GAME.EXE` 另保留 Borland `0x52FB` legacy symbol table。由完整
+symbol／name-pool 邊界驗證後，已把 `MSCPLAY` 定位到 `0893:0114`：
+它接受 1-based track byte、抑制重播同曲，轉為 0-based buffer 後透過
+IVT vector `7Eh` 的 far-call wrapper 送出。這說明 literal `CD D2` 掃描
+為零並不代表沒有音樂呼叫；追蹤 DOS／PC-98 老引擎時，應把「遊戲 wrapper
+vector」與「TSR driver service interrupt」分成兩層 contract。
+
+本作 area-code switch 已證明 selector 值 `3/4/5/6/8/9/12`，但 area code
+尚未全部對回人類可讀場景。跨作品可沿用的是 symbol-table parser、IVT
+wrapper 模式與 track intent；CoAB area code 表仍只屬 game pack，不進
+共用 engine hardcode。
+
 正式 remake 保留兩種來源：
 
 - DOS 忠實 theme：既有 selector 與後續 PC Speaker／Tandy 行為。
