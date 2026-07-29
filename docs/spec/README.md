@@ -333,3 +333,9 @@
 - [第三百五十七輪 Cloudkill 持續區域](./357-cloudkill-persistent-area.md)（`READY`：限 `0x5B` 九格毒雲、Hit Dice 致死／豁免、低 HD 入格限制與正常玩家路徑）
 - [第三百五十八輪 PC-98 VFD 與 FM 音訊來源](./358-pc98-vfd-and-fm-audio-source.md)（`IN PROGRESS`：媒體、loader、YM2203 與 selector 已證明；完整 driver／runtime YM trace 尚缺）
 - [第三百六十二輪 PC-98 Disk B、DAX codec 與 WLDTWN](./362-pc98-disk-b-dax-and-wldtwn.md)（`READY`：限無 BPB FAT12 配置、PC-98 block codec、四個 writer 與區域導航／城鎮設施語意）
+- [第三百六十四輪 PC-98 音樂向量橋](./364-pc98-music-vector-bridge.md)（`READY`：限 GAME→IVT 7Eh→MSCDRV→INT D2h）
+- [第三百六十五輪 PC-98 Sound BIOS ABI](./365-pc98-sound-bios-d2-api.md)（`READY`：限 NEC CEE0 介面、17 組 D2h client 與 direct YM helper）
+- [第三百六十六輪 PC-98 十二曲與 runtime import](./366-pc98-track-table-and-runtime-import.md)（`READY`：限 12 descriptors、84 streams、曲名 metadata 與使用者媒體匯入）
+- [第三百六十七輪 PC-98 音序列指令集](./367-pc98-stream-bytecode.md)（`READY`：限 FM／PSG／timing family grammar、有界控制流與真實 corpus）
+- [第三百六十八輪 PC-98 OPN 事件 runtime](./368-pc98-opn-event-runtime.md)（`READY`：限正常配樂 tick、FM／PSG／tempo 及 Sound BIOS intents）
+- [第三百六十九輪 PC-98 FM 音色參數庫](./369-pc98-fm-parameter-bank.md)（`READY`：限 seg003 內嵌二十組、十二曲索引覆蓋與八個缺失來源）

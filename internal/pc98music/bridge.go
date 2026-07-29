@@ -76,14 +76,15 @@ type TrackDescriptor struct {
 }
 
 type BridgeReport struct {
-	GameSHA256        string             `json:"game_sha256"`
-	DriverSHA256      string             `json:"driver_sha256"`
-	DriverMissingFrom int                `json:"driver_missing_from"`
-	DriverMissingTo   int                `json:"driver_missing_to"`
-	Anchors           []AnchorResult     `json:"anchors"`
-	SoundBIOSServices []SoundBIOSService `json:"sound_bios_services"`
-	Tracks            []TrackDescriptor  `json:"tracks"`
-	PlaybackAudits    []PlaybackAudit    `json:"playback_audits"`
+	GameSHA256        string               `json:"game_sha256"`
+	DriverSHA256      string               `json:"driver_sha256"`
+	DriverMissingFrom int                  `json:"driver_missing_from"`
+	DriverMissingTo   int                  `json:"driver_missing_to"`
+	Anchors           []AnchorResult       `json:"anchors"`
+	SoundBIOSServices []SoundBIOSService   `json:"sound_bios_services"`
+	Tracks            []TrackDescriptor    `json:"tracks"`
+	PlaybackAudits    []PlaybackAudit      `json:"playback_audits"`
+	FMParameterBank   FMParameterBankAudit `json:"fm_parameter_bank"`
 }
 
 var gameAnchors = []Anchor{
@@ -442,6 +443,10 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 		}
 		playbackAudits = append(playbackAudits, audit)
 	}
+	parameterBank, err := auditFMParameterBank(driver, playbackAudits)
+	if err != nil {
+		return BridgeReport{}, fmt.Errorf("FM parameter bank: %w", err)
+	}
 	return BridgeReport{
 		GameSHA256:        gameHash,
 		DriverSHA256:      driverHash,
@@ -451,5 +456,6 @@ func AuditBridge(game, driver []byte) (BridgeReport, error) {
 		SoundBIOSServices: append([]SoundBIOSService(nil), soundBIOSServices...),
 		Tracks:            tracks,
 		PlaybackAudits:    playbackAudits,
+		FMParameterBank:   parameterBank,
 	}, nil
 }

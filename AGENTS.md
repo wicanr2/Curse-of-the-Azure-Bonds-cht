@@ -171,7 +171,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ea9917a`；第 368 輪 OPN event runtime milestone 會由
+- CoAB 本輪基底：`97ebaa9`；第 369 輪 FM 音色 bank 稽核 milestone 會由
   本文件所在 commit 完成。
 - Engine dependency：`5363177`（含中立 `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -296,6 +296,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   皆由 verified driver bytes 驅動。十二首各通過 4,096 ticks，共 68,291
   deterministic events；這尚未包含 fade／SFX 共存、外部 YM trace、
   parameter block 展開或合成器，不可宣稱音樂已可播放。
+- 第 369 輪以指定 IDA Pro 9.4 修正音色表位址：
+  `sub_112B0` 使用 `seg003:0542 + index×100`，對應 file `0x45A2`，不是
+  舊假設 `dseg:0542`。NEC 50-WORD typed parser 已驗證二十組內嵌音色；
+  十二曲 corpus 另引用 `20,21,23,24,25,26,27,58`，只有 selector
+  3、5、11、12 能由現有 bank 完整覆蓋。不得以零值、取模或鄰近音色偽造
+  缺失 parameter block；DETUNE 的 sign-extended／3-bit 混合值也須等待
+  Sound BIOS consumer／register trace 才能正規化。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -308,9 +315,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   READY，track/import 規格
   `docs/spec/366-pc98-track-table-and-runtime-import.md` 也已 READY，
   stream bytecode 規格 `docs/spec/367-pc98-stream-bytecode.md` 與 OPN
-  event 規格 `docs/spec/368-pc98-opn-event-runtime.md` 也已 READY。
-  下一步取得 NP2kai／Hoot register trace，補 fade／SFX 與 Sound BIOS
-  parameter block 展開；播放器只能在外部 event 交叉驗證後接入。
+  event 規格 `docs/spec/368-pc98-opn-event-runtime.md` 與音色 bank 規格
+  `docs/spec/369-pc98-fm-parameter-bank.md` 也已 READY。
+  下一步先找出額外八個音色索引的合法 producer／完整 bank，再取得
+  NP2kai／Hoot Sound BIOS register trace，補 fade／SFX 與 parameter
+  block 展開；播放器只能在外部 event 交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單
 

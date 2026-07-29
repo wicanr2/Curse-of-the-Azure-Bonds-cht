@@ -152,7 +152,8 @@ JSON report 會列出：
 ## 7. 尚未完成
 
 - 解出 `sub_10410` 全部 stream opcode、等待／loop／tempo 語意。
-- 確認 `0x4400` 後音色／參數表與缺口工作區的完整 consumer。
+- 第 369 輪已確認音色表從 file `0x45A2` 開始，內嵌二十組；仍須找出曲目
+  另引用八個索引的外部 producer。
 - 以 Hoot、NP2kai 或另一實作交叉比對每首 YM register event。
 - 實作可取消、可調音量、可 save/load resume 的 YM2203 playback adapter。
 - 由正常玩家路徑擷取 title、town、combat 三次實際轉場與聲音。

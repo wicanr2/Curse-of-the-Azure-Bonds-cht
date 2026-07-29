@@ -94,6 +94,10 @@ commit 內保存不可能自我引用的 hash。
   events：FM 12-word F-number、PSG 71-word period、duration、envelope、
   modulation 與 tempo 均由 verified driver data 驅動；十二首各驗證
   4,096 ticks，共 68,291 events。
+  第 369 輪另由 IDA 證明 FM 音色表位於
+  `seg003:0542`／file `0x45A2`，typed parser 已驗證二十組 NEC 50-WORD
+  內嵌音色並逐曲列出使用索引。十二曲還引用
+  `20,21,23,24,25,26,27,58`，來源不在內嵌 bank；目前不可補零展開。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、

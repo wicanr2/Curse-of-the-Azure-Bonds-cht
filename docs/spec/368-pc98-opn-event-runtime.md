@@ -110,7 +110,7 @@ Timing channel 沿用第 367 輪的有界 read-through，不產生音高 registe
 
 - fade／track transition 與插入式 sound-effect channel 的完整共存路徑。
 - NP2kai／Hoot 實機 YM2203 register trace 逐事件交叉驗證。
-- Sound BIOS parameter block 對實際 YM registers 的展開。
+- Sound BIOS parameter block 對實際 YM registers 的展開；第 369 輪已證明
+  內嵌 bank 只有二十組，十二曲另引用八個未取得索引，不得補零展開。
 - YM2203 合成器、PCM buffer、音量／暫停／save-resume 與遊戲內播放。
 - 缺失 `MSCDRV.EXE 0x4000..0x43FF` 的合法第二份 dump。
-
