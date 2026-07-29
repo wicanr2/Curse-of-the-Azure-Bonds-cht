@@ -13,6 +13,25 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if pack.ID != "curse-of-the-azure-bonds.pit-of-moander" {
 		t.Fatalf("pack id=%q", pack.ID)
 	}
+	arrow, found := pack.FindCombatVisual("missile", "travel")
+	if !found || arrow.ID != "coab.arrow" || arrow.Scale != 2 ||
+		arrow.ReferenceDelay != 10 || len(arrow.Frames) != 8 {
+		t.Fatalf("arrow combat visual=%+v found=%v", arrow, found)
+	}
+	west, found := arrow.FrameForDirection(6)
+	if !found || west.SourceFile != "COMSPR.DAX" || west.Block != 0x82 || west.FlipX {
+		t.Fatalf("west arrow frame=%+v found=%v", west, found)
+	}
+	magicTravel, found := pack.FindCombatVisual("magic_missile", "travel")
+	if !found || magicTravel.ReferenceDelay != 30 || len(magicTravel.Frames) != 4 ||
+		magicTravel.Frames[2].Block != 0x85 || !magicTravel.Frames[2].FlipX {
+		t.Fatalf("magic travel combat visual=%+v found=%v", magicTravel, found)
+	}
+	magicImpact, found := pack.FindCombatVisual("magic_missile", "impact")
+	if !found || magicImpact.ReferenceDelay != 70 || len(magicImpact.Frames) != 4 ||
+		magicImpact.Frames[3].Block != 0x8A || magicImpact.Frames[3].FlipX {
+		t.Fatalf("magic impact combat visual=%+v found=%v", magicImpact, found)
+	}
 	tilverton, found := pack.FindMapByKindLocation("first_person", 2, 1)
 	if !found || tilverton.ID != "tilverton.first-person" ||
 		tilverton.GeometryFile != "GEO2.DAX" ||

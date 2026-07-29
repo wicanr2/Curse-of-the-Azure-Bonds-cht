@@ -62,9 +62,17 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
 - DOS 公開影片 `wwYsij1wDC4` 的 `00:42:25.20–25.40` 逐格顯示
   Stinking Cloud 共用的青色 spell projectile，約 `25.50` 清除、`25.60`
   才出現文字與雲格；與 `0x05/0x85` consumer 路徑交叉吻合。
+- 共用 engine `combat_visuals` schema 現可驗證 trigger／phase、逐格 frame
+  及完整八方向 frame；CoAB game pack 宣告 arrow、Magic Missile travel
+  與 magic-damage impact 的 COMSPR source、block、flip、scale 及原始
+  `SysDelay` 參考值。frontend 不再保存這三組 title-specific block table。
+- JSON 驅動後重新由 Docker／Xvfb 擷取 bow、magic、magic-impact 三張
+  640×480 checkpoint，並由 frontend 與 game-pack regression 直接驗證
+  圖片 key 是從 pack frame 產生。
 
 目前 projectile pixel source 與方向／frame ordering 已有 code-backed
 evidence，但原版 `SysDelay(10/30/70)` 尚不能直接換算 wall-clock。完成本規格
 仍需弓箭、Magic Missile、melee、kill 的 DOSBox／公開影片完整時間碼與短
-capture，並把逐距離 cadence 與目前 frontend 中的 COMSPR key mapping 移入
-共用 engine schema 支援的 title JSON asset-pack。
+capture，並把逐距離 cadence 寫成經影片驗證的 duration 規則。Fireball、
+Lightning Bolt、Stinking Cloud／Cloudkill 等效果仍須各自建立影片 oracle
+與 JSON 定義，不能因共用投射物已出現就視為完整法術動畫。

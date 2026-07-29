@@ -145,6 +145,51 @@
       ,"world.myth-drannor": "迷斯卓諾"
     }
   },
+  "combat_visuals": [
+    {
+      "id": "coab.arrow",
+      "trigger": "missile",
+      "phase": "travel",
+      "scale": 2,
+      "reference_delay": 10,
+      "frames": [
+        {"direction": 0, "source_file": "COMSPR.DAX", "block": 0},
+        {"direction": 1, "source_file": "COMSPR.DAX", "block": 1},
+        {"direction": 2, "source_file": "COMSPR.DAX", "block": 2},
+        {"direction": 3, "source_file": "COMSPR.DAX", "block": 129},
+        {"direction": 4, "source_file": "COMSPR.DAX", "block": 128},
+        {"direction": 5, "source_file": "COMSPR.DAX", "block": 129, "flip_x": true},
+        {"direction": 6, "source_file": "COMSPR.DAX", "block": 130},
+        {"direction": 7, "source_file": "COMSPR.DAX", "block": 1, "flip_x": true}
+      ]
+    },
+    {
+      "id": "coab.generic-spell-missile",
+      "trigger": "magic_missile",
+      "phase": "travel",
+      "scale": 2,
+      "reference_delay": 30,
+      "frames": [
+        {"source_file": "COMSPR.DAX", "block": 5},
+        {"source_file": "COMSPR.DAX", "block": 5, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 133, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 133}
+      ]
+    },
+    {
+      "id": "coab.magic-damage-impact",
+      "trigger": "magic_missile",
+      "phase": "impact",
+      "scale": 2,
+      "reference_delay": 70,
+      "frames": [
+        {"source_file": "COMSPR.DAX", "block": 10},
+        {"source_file": "COMSPR.DAX", "block": 10, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 138, "flip_x": true},
+        {"source_file": "COMSPR.DAX", "block": 138}
+      ]
+    }
+  ],
   "maps": [
     {
       "id": "tilverton.first-person",

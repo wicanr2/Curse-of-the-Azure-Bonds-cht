@@ -63,7 +63,7 @@ commit 內保存不可能自我引用的 hash。
 - 全部 ECL opcode、外部 routine、副作用及由開場到結局的完整可通關流程。
 - 所有城市、地城、門、屋頂、斜向視角與每張地圖的 DOS 像素級校準。
 - 戰鬥畫面的完整 DOS oracle 校準、弓箭／法術 projectile 的逐距離 timing、
-  所有方向 placement、AI、法術、物品、
+  所有方向 placement、Fireball／Lightning Bolt／雲霧等獨立法術效果、AI、法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、

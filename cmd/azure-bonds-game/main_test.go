@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
@@ -56,21 +57,37 @@ func TestCombatProjectileDirectionUsesOriginalClockwiseOctants(t *testing.T) {
 }
 
 func TestCombatArrowSpriteUsesCOMSPRDirectionBlocks(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition, found := pack.FindCombatVisual("missile", "travel")
+	if !found {
+		t.Fatal("missing missile/travel combat visual")
+	}
 	camera := combat.NewCombatCamera(combat.TilePoint{}, combat.TilePoint{}, false)
 	event := combat.VisualEvent{
 		From: combat.TilePoint{X: 5, Y: 2},
 		To:   combat.TilePoint{X: 1, Y: 2},
 	}
-	if key, flip := combatArrowSprite(event, camera); key != "comspr-block-02-item-00.png" || flip {
+	if key, flip := combatArrowSprite(definition, event, camera); key != "comspr-block-02-item-00.png" || flip {
 		t.Fatalf("east arrow=(%q,%v)", key, flip)
 	}
 	event.From, event.To = event.To, event.From
-	if key, flip := combatArrowSprite(event, camera); key != "comspr-block-82-item-00.png" || flip {
+	if key, flip := combatArrowSprite(definition, event, camera); key != "comspr-block-82-item-00.png" || flip {
 		t.Fatalf("west arrow=(%q,%v)", key, flip)
 	}
 }
 
 func TestCombatMagicMissileCyclesOriginalFourCOMSPRFrames(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition, found := pack.FindCombatVisual("magic_missile", "travel")
+	if !found {
+		t.Fatal("missing magic_missile/travel combat visual")
+	}
 	event := combat.VisualEvent{
 		From: combat.TilePoint{X: 0, Y: 0},
 		To:   combat.TilePoint{X: 4, Y: 0},
@@ -86,7 +103,7 @@ func TestCombatMagicMissileCyclesOriginalFourCOMSPRFrames(t *testing.T) {
 	}
 	for index, expected := range want {
 		frame := combat.VisualFrame{Phase: combat.VisualTravel, Progress: float64(index) / 12}
-		key, flip := combatMagicMissileSprite(event, frame)
+		key, flip := combatMagicMissileSprite(definition, event, frame)
 		if key != expected.key || flip != expected.flip {
 			t.Fatalf("frame %d=(%q,%v), want (%q,%v)", index, key, flip, expected.key, expected.flip)
 		}
@@ -94,6 +111,14 @@ func TestCombatMagicMissileCyclesOriginalFourCOMSPRFrames(t *testing.T) {
 }
 
 func TestCombatMagicImpactCyclesOriginalCOMSPRHitFrames(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition, found := pack.FindCombatVisual("magic_missile", "impact")
+	if !found {
+		t.Fatal("missing magic_missile/impact combat visual")
+	}
 	want := []struct {
 		key  string
 		flip bool
@@ -104,7 +129,7 @@ func TestCombatMagicImpactCyclesOriginalCOMSPRHitFrames(t *testing.T) {
 		{"comspr-block-8A-item-00.png", false},
 	}
 	for index, expected := range want {
-		key, flip := combatMagicImpactSprite(combat.VisualFrame{
+		key, flip := combatMagicImpactSprite(definition, combat.VisualFrame{
 			Phase: combat.VisualImpact, Progress: float64(index) / 4,
 		})
 		if key != expected.key || flip != expected.flip {

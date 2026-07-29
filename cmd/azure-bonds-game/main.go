@@ -42,6 +42,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
 	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
+	goldenengine "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
 const (
@@ -84,6 +85,7 @@ type app struct {
 	combatSpriteIDs     []string
 	combatTerrain       map[string][]*ebiten.Image
 	combatTerrainMode   string
+	gamePack            *goldenengine.Pack
 	combatFrame         *ebiten.Image
 	adventureFrame      *ebiten.Image
 	combatAnimations    map[string][]combatAnimation
@@ -1823,20 +1825,23 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 	case combat.VisualTravel:
 		switch event.Kind {
 		case combat.VisualMissile:
-			key, flip := combatArrowSprite(event, camera)
-			if !a.drawCombatProjectileSprite(screen, key, flip, x, y) {
+			definition, _ := a.findCombatVisual("missile", "travel")
+			key, flip := combatArrowSprite(definition, event, camera)
+			if !a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y) {
 				ebitenutil.DrawLine(screen, fromX, fromY, x, y, color.RGBA{R: 255, G: 244, B: 180, A: 255})
 			}
 		case combat.VisualMagicMissile:
-			key, flip := combatMagicMissileSprite(event, frame)
-			if !a.drawCombatProjectileSprite(screen, key, flip, x, y) {
+			definition, _ := a.findCombatVisual("magic_missile", "travel")
+			key, flip := combatMagicMissileSprite(definition, event, frame)
+			if !a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y) {
 				ebitenutil.DrawRect(screen, x-4, y-4, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
 			}
 		}
 	case combat.VisualImpact:
 		if event.Kind == combat.VisualMagicMissile && event.Hit {
-			key, flip := combatMagicImpactSprite(frame)
-			a.drawCombatProjectileSprite(screen, key, flip, toX, toY)
+			definition, _ := a.findCombatVisual("magic_missile", "impact")
+			key, flip := combatMagicImpactSprite(definition, frame)
+			a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, toX, toY)
 		}
 	case combat.VisualDeath:
 		iconKey := "comspr-block-8B-item-00.png"
@@ -1852,44 +1857,43 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 	}
 }
 
-func (a *app) drawCombatProjectileSprite(screen *ebiten.Image, key string, flip bool, x, y float64) bool {
+func (a *app) findCombatVisual(trigger, phase string) (goldenengine.CombatVisualDefinition, bool) {
+	if a.gamePack == nil {
+		return goldenengine.CombatVisualDefinition{}, false
+	}
+	return a.gamePack.FindCombatVisual(trigger, phase)
+}
+
+func (a *app) drawCombatProjectileSprite(screen *ebiten.Image, key string, flip bool, scale int, x, y float64) bool {
 	sprite := a.combatSprites[key]
 	if sprite == nil {
 		return false
 	}
+	if scale < 1 {
+		scale = 1
+	}
+	width := float64(sprite.Bounds().Dx() * scale)
+	height := float64(sprite.Bounds().Dy() * scale)
 	op := &ebiten.DrawImageOptions{}
 	if flip {
-		op.GeoM.Scale(-2, 2)
-		op.GeoM.Translate(x+24, y-24)
+		op.GeoM.Scale(float64(-scale), float64(scale))
+		op.GeoM.Translate(x+width/2, y-height/2)
 	} else {
-		op.GeoM.Scale(2, 2)
-		op.GeoM.Translate(x-24, y-24)
+		op.GeoM.Scale(float64(scale), float64(scale))
+		op.GeoM.Translate(x-width/2, y-height/2)
 	}
 	screen.DrawImage(sprite, op)
 	return true
 }
 
-func combatArrowSprite(event combat.VisualEvent, camera combat.CombatCamera) (key string, flip bool) {
+func combatArrowSprite(definition goldenengine.CombatVisualDefinition, event combat.VisualEvent, camera combat.CombatCamera) (key string, flip bool) {
 	from := mirroredCombatAnchor(camera.Apply(event.From))
 	to := mirroredCombatAnchor(camera.Apply(event.To))
-	switch combatProjectileDirection(to.X-from.X, to.Y-from.Y) {
-	case 0:
-		return "comspr-block-00-item-00.png", false
-	case 1:
-		return "comspr-block-01-item-00.png", false
-	case 2:
-		return "comspr-block-02-item-00.png", false
-	case 3:
-		return "comspr-block-81-item-00.png", false
-	case 4:
-		return "comspr-block-80-item-00.png", false
-	case 5:
-		return "comspr-block-81-item-00.png", true
-	case 6:
-		return "comspr-block-82-item-00.png", false
-	default:
-		return "comspr-block-01-item-00.png", true
+	frame, ok := definition.FrameForDirection(uint8(combatProjectileDirection(to.X-from.X, to.Y-from.Y)))
+	if !ok {
+		return "", false
 	}
+	return combatVisualSpriteKey(frame)
 }
 
 // combatProjectileDirection matches the original clockwise numbering:
@@ -1905,34 +1909,29 @@ func combatProjectileDirection(dx, dy int) int {
 	return int(math.Floor(angle/(math.Pi/4)+0.5)) % 8
 }
 
-func combatMagicMissileSprite(event combat.VisualEvent, frame combat.VisualFrame) (key string, flip bool) {
+func combatMagicMissileSprite(definition goldenengine.CombatVisualDefinition, event combat.VisualEvent, frame combat.VisualFrame) (key string, flip bool) {
 	steps := max(absInt(event.To.X-event.From.X), absInt(event.To.Y-event.From.Y)) * 3
 	if steps < 1 {
 		steps = 1
 	}
-	switch int(frame.Progress*float64(steps)) % 4 {
-	case 0:
-		return "comspr-block-05-item-00.png", false
-	case 1:
-		return "comspr-block-05-item-00.png", true
-	case 2:
-		return "comspr-block-85-item-00.png", true
-	default:
-		return "comspr-block-85-item-00.png", false
+	if len(definition.Frames) == 0 {
+		return "", false
 	}
+	return combatVisualSpriteKey(definition.Frames[int(frame.Progress*float64(steps))%len(definition.Frames)])
 }
 
-func combatMagicImpactSprite(frame combat.VisualFrame) (key string, flip bool) {
-	switch min(int(frame.Progress*4), 3) {
-	case 0:
-		return "comspr-block-0A-item-00.png", false
-	case 1:
-		return "comspr-block-0A-item-00.png", true
-	case 2:
-		return "comspr-block-8A-item-00.png", true
-	default:
-		return "comspr-block-8A-item-00.png", false
+func combatMagicImpactSprite(definition goldenengine.CombatVisualDefinition, frame combat.VisualFrame) (key string, flip bool) {
+	if len(definition.Frames) == 0 {
+		return "", false
 	}
+	index := min(int(frame.Progress*float64(len(definition.Frames))), len(definition.Frames)-1)
+	return combatVisualSpriteKey(definition.Frames[index])
+}
+
+func combatVisualSpriteKey(frame goldenengine.CombatVisualFrame) (key string, flip bool) {
+	extension := filepath.Ext(frame.SourceFile)
+	stem := strings.ToLower(strings.TrimSuffix(frame.SourceFile, extension))
+	return fmt.Sprintf("%s-block-%02X-item-00.png", stem, frame.Block), frame.FlipX
 }
 
 func absInt(value int) int {
@@ -2643,7 +2642,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }

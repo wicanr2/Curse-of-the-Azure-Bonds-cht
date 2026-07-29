@@ -155,8 +155,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
 - CoAB 基底：`d9718a1`（兜帽女子、手札 30／7、弗佐爾死亡、第四枷印解除）。
-- Engine dependency：`051cd71`（ECL `script_block` 與 GEO `geometry_block`
-  可獨立宣告）。
+- Engine dependency：`511ef40`（含 ECL/GEO 分離與 `combat_visuals` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
@@ -165,21 +164,19 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
 
-### 目前未提交 milestone（不可遺忘）
+### 目前戰鬥 milestone（不可遺忘）
 
-- 第 354 輪第一階段時間軸已 push。dirty milestone 是 spec 354 第二階段：
-  `combat.VisualEvent` 已建立 windup→handoff 時間軸，Ebiten 每次只播放一個
-  actor action；melee、bow、Magic Missile、death 已接入 phase-aligned
-  renderer／sound，現在共有五張 deterministic Xvfb frame。
-- 箭與 Magic Missile fallback 已由原版 COMSPR 取代：箭使用
-  `0x00/01/02`＋attack/flip 八方向；generic spell travel 使用
-  `0x05/0x85` 四格，Magic damage impact 使用 `0x0A/0x8A` 四格。
-  DOS 影片 `wwYsij1wDC4` `00:42:25.20–25.40` 已證實 travel 先於文字／area
-  effect。spec 354 仍 IN PROGRESS，下一步補弓箭、Magic Missile、melee、
-  kill 的完整時間碼與逐距離 duration。
+- 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
+  `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact
+  的 source block、flip、scale、原始 delay 已移入 CoAB `combat_visuals`，
+  frontend 不再寫死這三組作品素材表。
+- DOS 影片 `wwYsij1wDC4` `00:42:25.20–25.40` 已證實 generic spell travel
+  先於文字／area effect。spec 354 仍 IN PROGRESS；下一步補弓箭、
+  Magic Missile、melee、kill 的完整時間碼與逐距離 duration，並逐項建立
+  Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 的影片 oracle。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
-- 完整驗證後把本階段集中一次 commit＋push；不要為文件或單張圖拆 commit。
+- 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。
 
 ## 10. Compact 後恢復工作清單
 
