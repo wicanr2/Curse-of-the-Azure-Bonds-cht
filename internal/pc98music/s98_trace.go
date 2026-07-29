@@ -42,20 +42,24 @@ type S98OutputLevelStartup struct {
 // S98TrackAudit contains non-copyrighted metadata and hashes only. The source
 // register trace remains in the user's local evidence workspace.
 type S98TrackAudit struct {
-	Selector           int                     `json:"selector"`
-	S98SHA256          string                  `json:"s98_sha256"`
-	Bytes              int                     `json:"bytes"`
-	TimerNumerator     uint32                  `json:"timer_numerator"`
-	TimerDenominator   uint32                  `json:"timer_denominator"`
-	YM2203Clock        uint32                  `json:"ym2203_clock"`
-	DurationTicks      uint64                  `json:"duration_ticks"`
-	RegisterWrites     int                     `json:"register_writes"`
-	ToneLoads          int                     `json:"tone_loads"`
-	FirstKeyOns        int                     `json:"first_key_ons"`
-	OperatorMaskChecks int                     `json:"operator_mask_checks"`
-	OperatorMasksMatch bool                    `json:"operator_masks_match"`
-	Startup            []S98ParameterStartup   `json:"startup"`
-	OutputLevels       []S98OutputLevelStartup `json:"output_levels"`
+	Selector                int                     `json:"selector"`
+	S98SHA256               string                  `json:"s98_sha256"`
+	Bytes                   int                     `json:"bytes"`
+	TimerNumerator          uint32                  `json:"timer_numerator"`
+	TimerDenominator        uint32                  `json:"timer_denominator"`
+	YM2203Clock             uint32                  `json:"ym2203_clock"`
+	DurationTicks           uint64                  `json:"duration_ticks"`
+	RegisterWrites          int                     `json:"register_writes"`
+	ToneLoads               int                     `json:"tone_loads"`
+	FirstKeyOns             int                     `json:"first_key_ons"`
+	OperatorMaskChecks      int                     `json:"operator_mask_checks"`
+	OperatorMasksMatch      bool                    `json:"operator_masks_match"`
+	LFOParameterChannels    int                     `json:"lfo_parameter_channels"`
+	ObservedLFOPitchUpdates int                     `json:"observed_lfo_pitch_updates"`
+	ObservedLFOLevelUpdates int                     `json:"observed_lfo_level_updates"`
+	DynamicLFOObserved      bool                    `json:"dynamic_lfo_observed"`
+	Startup                 []S98ParameterStartup   `json:"startup"`
+	OutputLevels            []S98OutputLevelStartup `json:"output_levels"`
 }
 
 // AuditS98Track cross-checks one local Hoot S98 v3 trace against the exact
@@ -101,6 +105,12 @@ func AuditS98Track(driver, raw []byte, selector int) (S98TrackAudit, error) {
 	transitions := collapseToneLoads(loads, trackStart)
 	firstKeys := firstKeyOnByChannel(keyOns, trackStart)
 	controls, err := startupParameterVolumeEvents(driver, selector)
+	if err != nil {
+		return S98TrackAudit{}, err
+	}
+	pitchUpdates, levelUpdates, err := s98.YM2203SoftwareLFOUpdates(
+		file.Events, 0, trackStart,
+	)
 	if err != nil {
 		return S98TrackAudit{}, err
 	}
@@ -189,13 +199,22 @@ func AuditS98Track(driver, raw []byte, selector int) (S98TrackAudit, error) {
 		return S98TrackAudit{}, fmt.Errorf("selector %d output levels: %w", selector, err)
 	}
 	report.OutputLevels = levelReports
+	report.ObservedLFOPitchUpdates = len(pitchUpdates)
+	report.ObservedLFOLevelUpdates = len(levelUpdates)
+	report.DynamicLFOObserved = len(pitchUpdates) != 0 || len(levelUpdates) != 0
 	report.OperatorMasksMatch = true
 	for channel := 0; channel < 3; channel++ {
+		parameter := controls[channel][1].parameter
+		if parameter >= 0 && parameter < len(blocks) {
+			block := blocks[parameter]
+			if block.LFOPitchDepth != 0 || block.LFOAmplitudeDepth != 0 {
+				report.LFOParameterChannels++
+			}
+		}
 		key, ok := firstKeys[channel]
 		if !ok {
 			continue
 		}
-		parameter := controls[channel][1].parameter
 		if parameter < 0 || parameter >= len(blocks) {
 			return S98TrackAudit{}, fmt.Errorf(
 				"selector %d channel %d first-key parameter %d is unavailable",

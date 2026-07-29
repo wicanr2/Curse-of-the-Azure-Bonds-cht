@@ -187,7 +187,9 @@ S98 驗證器。
 
 仍未完成：
 
-1. LFO、`MODUON`／`MODUOFF` 的全部執行期狀態；
+1. LFO timer cadence 與 key-on sync 的外部 runtime 驗證；六種 waveform、
+   `MODUON`／`MODUOFF` 及投影公式已由
+   [第 372 輪](372-pc98-sound-bios-software-lfo.md)補完；
 2. fade 與 SFX／BGM 共存；
 3. 十二首完整曲長與 loop boundary；
 4. YM2203 合成器、PCM mixer 與遊戲內播放器；

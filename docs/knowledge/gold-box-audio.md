@@ -147,3 +147,22 @@ total level 當作 volume-independent timbre signature。
 
 目前仍不能宣稱「PC-98 音樂已還原」。下一步是 LFO、fade／SFX 共存、
 完整 loop trace，再選擇有明確授權的 YM2203 合成器並接入 PCM mixer。
+
+2026-07-30 第 372 輪進一步還原 `SOUND.ROM` 的軟體 LFO。IDA 的一般分析
+會漏掉 timer ISR `CF47Ah` 透過 `jmp bx` 前往 `CF4C3h`、`CF501h`、
+`CF5F3h` 的三條路徑；做 PC-98 ROM 反組譯時，遇到 register-held near
+offset 必須手動建立 code path，不能把後段 `db` 當成資料。
+
+可沿用的結論：
+
+- MSCDRV FM opcode `90h` 是 tempo `+4`，與 LFO 無關；
+- `SETPARABLOCK` 會自動開啟 modulation，`MODUON/OFF` 只切換聲道 bit 7；
+- 六種 waveform 使用 signed WORD phase／step，不是浮點 sine；
+- pitch 依 sample、有效 depth 與 base F-number 做兩次 `/32767`；
+- amplitude LFO 保留 8086 的 byte-sized signed multiply/divide 與 wrapping；
+- 共用核心放在 engine `audio/pc98soundbios`，作品端只映射 NEC parameter。
+
+S98 稽核也要保存「沒有觀測到」的限制。十二首 first-stream 共 18 個聲道
+使用非零 LFO 參數，但現有約五秒 Hoot capture 的獨立 pitch／TL update
+皆為零。這不能推論原作 LFO 關閉；在 timer cadence 取得 Hoot 長時間 trace
+或 NP2kai／test harness 外部證據前，不應把 scheduler 接成假精確。

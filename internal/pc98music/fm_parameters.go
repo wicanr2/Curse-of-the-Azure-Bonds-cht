@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/wicanr2/golden-box-remake-engine/audio/pc98soundbios"
 	"github.com/wicanr2/golden-box-remake-engine/audio/ym2203"
 )
 
@@ -97,6 +98,23 @@ func (block FMParameterBlock) YM2203LevelSequence(volume byte) ([][4]byte, error
 		result = append(result, levels)
 	}
 	return result, nil
+}
+
+// YM2203Modulation projects one signed Sound BIOS software-LFO sample onto
+// the current F-number and four physical-register total levels.
+func (block FMParameterBlock) YM2203Modulation(
+	sample int16, baseFNumber uint16, baseLevels [4]byte,
+) (uint16, [4]byte) {
+	pitchDepth := int16(block.LFOPitchDepth) * int16(block.LFOPitchDepthCoarse)
+	pitch := pc98soundbios.Pitch(baseFNumber, sample, pitchDepth)
+	levels := baseLevels
+	for physical, operator := range ym2203OperatorOrder {
+		levels[physical] = pc98soundbios.TotalLevel(
+			baseLevels[physical], sample, block.LFOAmplitudeDepth,
+			block.LFOAmplitudeDepthCoarse[operator],
+		)
+	}
+	return pitch, levels
 }
 
 // FMParameterBankAudit reports only provenance, hashes and index coverage.
