@@ -53,7 +53,12 @@ sequence。第 367 輪再由 IDA `sub_10410` 還原 FM／PSG 指令寬度、
 有界地處理。第 368 輪再把正常配樂路徑的 FM note、PSG period／envelope、
 tempo、Sound BIOS volume／parameter intent 轉成 deterministic events；
 十二首各跑 4,096 ticks，共驗證 68,291 events。尚缺外部 register trace
-交叉驗證、Sound BIOS parameter block 展開與實際 YM2203 播放器。
+交叉驗證與實際 YM2203 播放器。第 369 輪用 IDA 修正音色表位址為
+`seg003:0542`／file `0x45A2`，並依 NEC 官方 50-WORD 格式解析二十組
+內嵌音色。十二曲實際使用 `0..21, 23..27, 58`，其中
+`20, 21, 23..27, 58` 不在內嵌 bank；只有 selector 3、5、11、12 可由現有
+二十組完整覆蓋。auditor 現會明列每曲索引與缺失來源，不以零值或鄰近音色
+偽造 parameter block 展開。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -69,7 +74,9 @@ Sound BIOS ABI 則見
 音序列指令集則見
 [`docs/spec/367-pc98-stream-bytecode.md`](docs/spec/367-pc98-stream-bytecode.md)，
 OPN 事件 runtime 則見
-[`docs/spec/368-pc98-opn-event-runtime.md`](docs/spec/368-pc98-opn-event-runtime.md)。
+[`docs/spec/368-pc98-opn-event-runtime.md`](docs/spec/368-pc98-opn-event-runtime.md)，
+FM 音色庫與缺失索引則見
+[`docs/spec/369-pc98-fm-parameter-bank.md`](docs/spec/369-pc98-fm-parameter-bank.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

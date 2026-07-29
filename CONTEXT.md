@@ -1991,3 +1991,22 @@ key on/off、PSG envelope／`91/92` modulation、`B0`、tempo 與 duration。
 十二首各跑 4,096 ticks，共 68,291 events，auditor 保存各 selector 的 count
 與 SHA-256。仍缺 fade／SFX 共存、NP2kai／Hoot 外部 register trace、
 parameter block 展開及實際 YM2203 合成器；spec 368 已 READY。
+
+2026-07-30 第 369 輪完成 PC-98 FM 音色 bank 的位址修正與完整性稽核。
+指定 IDA Pro 9.4 證明 `sub_112B0` 以
+`seg003:0542 + parameter_index×100` 呼叫 NEC Sound BIOS
+`AH=16h/DL=0`；正確 file base 是 `0x45A2`，不是先前未驗證的
+`dseg:0542`／`0x1A12`。IDA 可重現範圍恰有二十組 100-byte／50-WORD
+參數，整體 SHA-256
+`7bd538f4b80856aa67195f2ddcfe66226632d2f35e6e0d46d04bccfd2031d113`。
+
+`internal/pc98music.FMParameterBlock` 現依 NEC 官方欄位解析並保留 raw
+words；auditor 會在十二首各 4,096 ticks execution 中收集初始化及 opcode
+`85h` 的全部音色索引。聯集為 `0..21,23..27,58`，內嵌 bank 缺
+`20,21,23,24,25,26,27,58`；只有 selector 3、5、11、12 完整。
+`BridgeReport` 現輸出 bank provenance/hash、逐曲索引及
+`embedded_parameters_complete`。Hoot metadata 雖要求 `MSCD_98.COM`，
+本機尚無合法可執行來源可證明它就是額外 bank producer，故維持 unknown，
+不補零、不取模、不複製鄰近音色。DETUNE 真實值同時有 sign-extended
+negative 與 `4..7`，在 Sound BIOS consumer／register trace 前不強行
+正規化。READY spec 369 記錄證據與下一步。

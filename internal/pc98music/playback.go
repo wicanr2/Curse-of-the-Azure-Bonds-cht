@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"hash"
+	"sort"
 )
 
 type MusicEventKind string
@@ -50,10 +51,12 @@ type TrackPlayback struct {
 }
 
 type PlaybackAudit struct {
-	Selector    int    `json:"selector"`
-	Ticks       int    `json:"ticks"`
-	EventCount  int    `json:"event_count"`
-	EventSHA256 string `json:"event_sha256"`
+	Selector                   int    `json:"selector"`
+	Ticks                      int    `json:"ticks"`
+	EventCount                 int    `json:"event_count"`
+	EventSHA256                string `json:"event_sha256"`
+	ParameterIndices           []int  `json:"parameter_indices"`
+	EmbeddedParametersComplete bool   `json:"embedded_parameters_complete"`
 }
 
 func NewTrackPlayback(driver []byte, selector int) (*TrackPlayback, []MusicEvent, error) {
@@ -191,9 +194,13 @@ func auditTrackPlayback(
 	}
 	digest := sha256.New()
 	eventCount := 0
+	parameterSet := make(map[int]bool)
 	for _, event := range initial {
 		writeEventDigest(digest, event)
 		eventCount++
+		if event.Kind == EventSetParameterBlock {
+			parameterSet[int(event.Parameter)] = true
+		}
 	}
 	for tick := 0; tick < ticks; tick++ {
 		events, err := playback.Tick(4096)
@@ -203,11 +210,21 @@ func auditTrackPlayback(
 		for _, event := range events {
 			writeEventDigest(digest, event)
 			eventCount++
+			if event.Kind == EventSetParameterBlock {
+				parameterSet[int(event.Parameter)] = true
+			}
 		}
 	}
+	parameterIndices := make([]int, 0, len(parameterSet))
+	for index := range parameterSet {
+		parameterIndices = append(parameterIndices, index)
+	}
+	sort.Ints(parameterIndices)
 	return PlaybackAudit{
 		Selector: track.Selector, Ticks: ticks, EventCount: eventCount,
-		EventSHA256: hex.EncodeToString(digest.Sum(nil)),
+		EventSHA256:                hex.EncodeToString(digest.Sum(nil)),
+		ParameterIndices:           parameterIndices,
+		EmbeddedParametersComplete: parametersWithinEmbeddedBank(parameterIndices),
 	}, nil
 }
 

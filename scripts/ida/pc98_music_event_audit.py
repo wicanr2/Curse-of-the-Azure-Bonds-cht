@@ -17,7 +17,11 @@ import idc
 
 
 FUNCTIONS = {
+    "TRACK_START": 0x10175,
+    "TRACK_INITIALIZE": 0x10253,
+    "TRACK_STOP": 0x1037E,
     "STREAM_INTERPRETER": 0x10410,
+    "SFX_START": 0x10D3A,
     "PSG_REGISTER_ADAPTER": 0x10CBD,
     "DIRECT_OPN_WRITE_ADAPTER": 0x11189,
     "TEMPO_REGISTER_ADAPTER": 0x111E2,
@@ -30,6 +34,10 @@ DATA_RANGES = {
     "FM_FNUMBER_TABLE_DS_0210": (0x114E0, 0x114F8),
     "PSG_PERIOD_TABLE_DS_0228": (0x114F8, 0x11586),
     "TRACK_POINTER_TABLE_DS_0330": (0x11600, 0x11618),
+    # sub_112B0 selects seg003:0542 + instrument*100.  seg003 contains
+    # exactly twenty complete NEC WORD-format parameter blocks; no commercial
+    # bytes are checked in, only this reproducible extraction rule.
+    "FM_PARAMETER_BLOCKS_SEG003_0542": (0x143A2, 0x14B72),
 }
 
 
