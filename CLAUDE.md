@@ -1,48 +1,46 @@
-# Curse-of-the-Azure-Bonds SSI 青色枷的詛咒 中文化 & remake
+# Curse of the Azure Bonds（青色枷的詛咒）中文化／Remake
 
-## GOLDEN_BOX 金盒子系統重製評估
-
-@./GOLDEN_BOX_RE.md
-
+> 目前所有 agent／compact 後工作規則以 [`AGENTS.md`](AGENTS.md) 為單一入口。
+> 本檔保留使用者最初需求與資料索引，不再重複可能過期的 checkpoint。
 
 ## 原始目標
 
-1. 我想透過反組譯還原青色枷的詛咒遊戲引擎, 建立類似 scummvm-like VM bytes code, 建立冬之魔引擎  
- - 希望在 golang /ebitain 環境下可以還原執行
- - 音樂 / 音效 都要還原
-2. 基於先前 VM bytecode引擎 完成 中文化, 讓界面與 message 都能用中文顯示, 讓經典用中文說明
-3. 以前遊戲需要參考遊戲手札才能知道劇情, 手札都紀錄在說明書內, 希望這次 remake能把手札訊息一起放入遊戲 不用在查詢手冊
-4. 中文說明書也要整理成 markdown 保存中文金盒子遊戲歷史
-5. 可以上網先蒐集相關資料 遊戲畫面作為 orcale
+1. 透過反組譯還原 SSI Golden Box 引擎，建立類似 ScummVM 的 bytecode VM，
+   以 Go／Ebiten 完成可玩的跨平台 remake。
+2. 完整繁體中文化 UI、message、規則、物品、法術與劇情。
+3. 將原作需要翻閱手冊的 Journal／手札整合進遊戲內。
+4. 整理中文說明書、攻略與 Golden Box 歷史／技術知識庫。
+5. 還原音樂、音效、戰鬥、地圖、存檔與由開場到結局的完整玩家路徑。
+6. 把可重用部分集中在獨立 `golden-box-remake-engine` repo，遊戲內容以 JSON
+   game pack 提供，不能 hardcode 在共用引擎。
 
-請先評估建立 PLAN.md , 簡易的工作請安排 subagent 執行
+## 核心工作法
 
+反組譯／實機證據 → `docs/spec/` 規格 → 標記 `READY` → 實作 → 測試與
+玩家路徑驗證 → 更新 Markdown／截圖 → 重大進度集中 commit＋push。
 
-## 工作方式：SDD
+必須清掉被新證據推翻的斷言。IDA/decompiler 輸出本身不等於證明；需以原始
+bytes、runtime capture 或另一權威來源交叉驗證。
 
-反組譯 → 收攏成規格（`docs/spec/`）→ 才實作。
-**只有標 READY 的規格可以動手。** 目前刻意還沒開始寫引擎本體。
+## 原始資料
 
-每一輪都要：更新 markdown → **清掉被推翻的斷言** → commit + push → 更新 CONTEXT.md 現況。
+- 遊戲 image：`curseoftheazurebonds.zip`
+- 中文資料：`珍020-青色枷的詛咒.rar`
+- DOS Manual：`Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf`
+- Adventurer's Journal：
+  `Curse-of-the-Azure-Bonds_Misc_DOS_EN_Adventurers-Journal.pdf`
+- Clue Book：`Curse-of-the-Azure-Bonds_Misc_DOS_EN_Clue-Book.pdf`
+- 工作目錄：`workplace/`
+- Golden Box 評估：`GOLDEN_BOX_RE.md`
 
-# 遊戲 image
-- @./'curseoftheazurebonds.zip'
+## Repositories 與工具
 
-# github repo
-- https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht.git
+- CoAB GitHub：<https://github.com/wicanr2/Curse-of-the-Azure-Bonds-cht>
+- 共用 engine：`golden-box-remake-engine/`
+- IDA Pro：`/home/anr2/ida_94_official/dist`
+- 倚天字型：`/home/anr2/cht/etan_font`
+- 倚天粗體參考：`/home/anr2/scummvm/monkey_island2`
+- 其他 remake 參考：`/home/anr2/cht/daemon_winter`
 
-# 遊戲手冊
-- @./珍020-青色枷的詛咒.rar
-- @Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf
-- @Curse-of-the-Azure-Bonds_Misc_DOS_EN_Adventurers-Journal.pdf
-- @Curse-of-the-Azure-Bonds_Misc_DOS_EN_Clue-Book.pdf
-
-# 工作目錄
- - @./workplace
-
-# 參考專案 
- - @~/cht/daemon_winter (冬之魔 中文化)
-
-# 反組譯工具
- - @~/.claude/knowledge-base/retro-cht
- - @~/ida_94_official/dist
+完成狀態、Git 操作、視覺/字型方向、證據標籤、驗證門檻與 compact 恢復流程
+均見 [`AGENTS.md`](AGENTS.md)；歷史紀錄見 [`CONTEXT.md`](CONTEXT.md)。
