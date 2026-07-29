@@ -16,6 +16,7 @@ const (
 	ProtectionFromGoodSpellID uint8 = 7
 	MagicMissileSpellID       uint8 = 7
 	FireballSpellID           uint8 = 0x2F
+	LightningBoltSpellID      uint8 = 0x33
 )
 
 // firstLevelSpellKeys contains only spell names whose class table order is

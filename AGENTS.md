@@ -165,8 +165,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 基底：`d9718a1`（兜帽女子、手札 30／7、弗佐爾死亡、第四枷印解除）。
-- Engine dependency：`511ef40`（含 ECL/GEO 分離與 `combat_visuals` schema）。
+- CoAB 基底：`b8b6418`（含眼魔洞窟離場與先前戰鬥時間軸成果）。
+- Engine dependency：`d0bf86b`（含中立 `line` phase 與既有
+  `combat_visuals` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
@@ -186,15 +187,23 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   travel，之後依序對每名受影響目標播放 red-white impact、damage、選擇性
   death；不是一張大型圓形爆炸圖。相關關鍵幀與時間碼已存入
   `docs/reference/original-dos/` 與 `combat-video-oracle.md`。
-- 目前 dirty milestone 已完成 Fireball travel／target-impact JSON、
+- Fireball milestone 已完成 travel／target-impact JSON、
   通用 multi-impact timeline、正常玩家 slot／tile cursor 施法、敵我範圍、
   共用傷害骰、Spell save、逐目標聲音及三張 remake 對照畫面。仍缺有牆
   terrain path reachability、原 combatant-array／direction tie order 與
   原版 wall-clock timing，不可把這個 vertical slice 寫成全部 Fireball
   fidelity 或完整戰鬥。
-- spec 354 仍 IN PROGRESS；下一步補 terrain-aware Fireball range／tie
-  order，同時補弓箭、Magic Missile、melee、kill 的完整時間碼與逐距離
-  duration，並建立 Lightning Bolt、Stinking Cloud／Cloudkill 的影片 oracle。
+- 第 355 輪 Lightning Bolt milestone 已找到 DOS 影片
+  `07:40:22.50–25.60`；正常 memorized `0x33`／tile cursor、weighted line、
+  地城牆反向、large footprint 去重、反彈重複命中、共用等級 d6、逐目標
+  Spell save 與 interleaved segment timeline 已實作。CoAB JSON 宣告
+  COMSPR `05/85` travel、`06/86` 電弧、`0A/8A` damage impact；三張 remake
+  與五張原版關鍵幀已保存。牆角／多次反彈的 DOS runtime 動畫與敵方
+  `throws lightning` 仍未完成。
+- spec 354 仍 IN PROGRESS；下一步優先建立 Stinking Cloud／Cloudkill 的
+  persistent area-effect contract，也要補 terrain-aware Fireball
+  range／tie order、弓箭／Magic Missile／melee／kill 完整時間碼與逐距離
+  duration。
 - screenshot demo 必須凍結 `combatVisualElapsed`，不能讓 Ebiten／Xvfb
   啟動耗時推進 timeline；這是戰鬥影片時間碼比對的固定基線。
 - 每個新增戰鬥效果完成影片核對、測試與畫面後才集中 commit＋push。

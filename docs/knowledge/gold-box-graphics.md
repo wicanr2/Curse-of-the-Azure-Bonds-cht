@@ -336,6 +336,20 @@ GEO2–6 沿用，不能依目前 area 改抓 `8X8D2–6`。原始 8×8 bitmap �
 證據為公開 reference commit `9dc46f1` 的 `engine/ovr031.cs` 與
 `engine/seg001.cs`。
 
+## 可反射線型法術的共用模型
+
+Lightning Bolt 證明 Gold Box 的法術動畫不能只建模成「起點到單一目標」。
+原版以 cardinal 2、diagonal 3 的加權步長沿格線前進，遇到阻擋格反射；命中
+並不終止射線，同一 combatant footprint 連續覆蓋時只算一次，但離開後再次
+進入可重新命中。所有目標共用一次傷害骰，每名目標各自作豁免。
+
+呈現層應接收 ordered path segments 與 impacts，依
+travel→impact／damage→continue 的順序播放，而不是讓 renderer 重算規則。
+`combat_visuals` 的中立 `line` phase 只描述素材；牆面、距離、反射與目標
+順序仍由規則層決定。DOS 影片 `07:40:22.50–25.30` 已證實命中後續行，
+牆面反射動畫目前只有反組譯證據，因此不得標成 runtime exact。完整位址、
+時間碼與信心等級見 spec 355。
+
 繁中緊湊 HUD 可讀倚天 `STDFONT.15` 的原生 Big5 16×15 點陣；其常用區由
 Big5 A440 起算，次常用區接在第 5401 字後，全形符號則來自 `SPCFONT.15`。
 加粗方式是每列 bitmap 與向右平移 1px 的結果 OR，不做平滑縮放。字模檔本身

@@ -49,7 +49,8 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
 - 規則層仍立即計算結果，但致死目標會在 renderer 中保存到 impact/death
   phase，避免攻擊一按下就消失。
 - `-combat-visual-demo melee|bow|magic|magic-impact|fireball-travel|
-  fireball-impact-1|fireball-impact-2|kill` 可輸出固定 phase 的 640×480
+  fireball-impact-1|fireball-impact-2|lightning-target-hit|
+  lightning-line-continue|lightning-reflect|kill` 可輸出固定 phase 的 640×480
   Xvfb frame；Fireball oracle 仍經過 roster slot、BeginCombatCast 與
   CombatCast，不直接偽造 visual event。
 - screenshot oracle 會凍結在指定的 timeline elapsed，不受 Ebiten／Xvfb
@@ -86,11 +87,17 @@ Fireball、Lightning Bolt、Cloudkill 等範圍法術要在此共同時間軸通
 - 三張 remake checkpoint 對應 travel、impact[0]、impact[1]，使用原版
   `0x05/0x85` 與 `0x0A/0x8A`。screenshot 在第三個完整 Draw 才讀回，
   避免 offscreen battlefield 尚未 flush 的半幀。
+- 第 355 輪另以 `VisualEvent.Segments` 擴充 interleaved line travel；
+  Lightning Bolt `0x33` 已有正常 memorized slot／tile cursor、weighted
+  14-step path、地城牆反向、large footprint 去重、反彈重複命中、逐目標
+  save／damage／impact 與 `sound_8` intent。DOS 影片
+  `07:40:22.50–25.60` 證明 target hit 後繼續延伸；完整證據見 spec 355。
 
 目前 projectile pixel source 與方向／frame ordering 已有 code-backed
 evidence，但原版 `SysDelay(10/30/70)` 尚不能直接換算 wall-clock。完成本規格
 仍需弓箭、Magic Missile、melee、kill 的 DOSBox／公開影片完整時間碼與短
 capture，並把逐距離 cadence 寫成經影片驗證的 duration 規則。Fireball
 仍缺 terrain-aware path reachability 與原 combatant-array tie order；
-Lightning Bolt、Stinking Cloud／Cloudkill 等效果仍須各自建立影片 oracle
-與 JSON 定義，不能因共用投射物已出現就視為完整法術動畫。
+Lightning Bolt 的玩家 vertical slice 與影片 oracle 已建立，但牆角／多次反彈
+仍缺 DOS runtime 動態畫面；Stinking Cloud／Cloudkill 的 persistent area
+effect 仍須獨立建立，不能因共用投射物已出現就視為完整法術動畫。

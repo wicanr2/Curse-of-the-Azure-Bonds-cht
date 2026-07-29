@@ -1726,3 +1726,26 @@ impact[1]；deterministic screenshot 延後到第三個 Draw 讀回，避免 off
 battlefield 半幀。尚未完成 terrain-aware wall reachability、同距離原
 combatant-array／direction tie order 與原版 wall-clock timing，spec 354
 保持 IN PROGRESS。
+
+2026-07-29 第 355 輪完成 Lightning Bolt 玩家 vertical slice。公開 DOS/EGA
+影片 `wwYsij1wDC4` 的 `07:40:22.50–25.60` 清楚顯示 COMSPR `06/86`
+青白電弧抵達 dark elf mage、`0A/8A` 紅白 damage impact／電擊傷害／
+saving throw，再由命中格繼續前進；五張原版關鍵幀已保存。reference
+`SpellLightningBolt`／`sub_5FA44`／`SteppingPath` 交叉證實全域 ID `0x33`、
+一次 caster-level d6、逐目標 Spell save 半傷、正交／對角 2／3 weighted
+step、玩家 budget 14、地城 `move_cost=0xFF` 首次牆面反向、近施法者首次
+反彈 8-step penalty、large footprint 連續格不重傷及離開後重入可再命中。
+
+共用 combat 時間軸新增作品中立 `VisualPathSegment`／
+`VisualSegmentTravel`，可在 primary travel、ordered impact 與 continuation／
+reflection segment 間交錯；line spell 規則由 `LineTerrain` 注入 valid／
+reflect cell，不知道 CoAB DUNGCOM 或 spell ID。獨立 engine 的
+`combat_visuals` schema 新增 `line` phase；CoAB JSON 宣告
+lightning_bolt travel `05/85`、line `06/86`、impact `0A/8A`。正常玩家必須
+真的 memorized `0x33`，戰鬥按 L、用 32×16 tile cursor 指定方向、Enter
+才消耗 slot；失敗會回復。`sound_8` intent 被保留，但 recovered PC resource
+無 WAV，不虛構音檔；damage impact 使用原 `sound_3`。三張 640×480 倚天／
+原版素材 remake checkpoint 顯示 target impact、continued line、wall
+reflection。牆角／多次反彈 DOS runtime 畫面、敵方 throws-lightning、
+原版逐距離 wall-clock timing 尚未完成；下一個戰鬥效果是
+Stinking Cloud／Cloudkill persistent area。

@@ -11,7 +11,7 @@
 
 截至 2026-07-29 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB `d9718a1`，依賴的獨立 engine 為 `051cd71`；實際最新版本以 GitHub
+CoAB 本輪基底為 `b8b6418`，依賴的獨立 engine 為 `d0bf86b`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -100,8 +100,26 @@ game pack，由獨立 Golden Box engine schema 驗證，frontend 不再寫死作
 法術 timing 仍待 DOSBox／影片補齊，不能宣稱整套戰鬥 pixel/timing exact。
 Fireball 的無牆半徑、save、共用傷害骰與逐目標演出已有 code-backed
 evidence；牆面路徑阻擋及同距離 tie order 尚待原始 combatant-array／DOS
-runtime 驗證。Lightning Bolt、Stinking Cloud／Cloudkill 仍會依公開實機
-影片逐項補齊 travel、area effect 與命中時序，不會用 Fireball 爆點代替。
+runtime 驗證。
+
+Lightning Bolt（閃電束）也已走通正常 memorized `0x33` 玩家路徑：戰鬥按
+`L` 後用 32×16 tile cursor 指定方向格。它使用同一次 caster-level d6，
+路徑上每名角色各自作 Spell save；正交／對角步成本為 2／3，地城
+`move_cost=0xFF` 牆會讓電弧反向，離開 footprint 後再穿回同一角色可再次
+命中。`VisualEvent.Segments` 依序播放共同施法 travel、目標 impact、後續
+電弧與反彈，不再把閃電做成 Fireball：
+
+![Lightning Bolt 命中與原版紅白 damage impact](docs/screenshots/combat-timeline-lightning-target-hit.png)
+
+![Lightning Bolt 命中後繼續沿路徑前進](docs/screenshots/combat-timeline-lightning-line-continue.png)
+
+![Lightning Bolt 觸牆後折返](docs/screenshots/combat-timeline-lightning-reflect.png)
+
+公開 DOS 影片 `07:40:22.50–25.60` 已逐格證明「電弧抵達目標 → damage/save
+→ 從命中格繼續前進」，並與 COMSPR `0x06/0x86` 電弧、
+`0x0A/0x8A` damage impact 交叉吻合。牆面反彈目前是 executable/reference
+code-backed，仍待 DOS runtime 取得同角度逐幀 oracle；Stinking
+Cloud／Cloudkill 的 persistent area effect 仍是下一個獨立缺口。
 
 ![DOS 影片中的原版 spell projectile](docs/reference/original-dos/combat-spell-projectile-422530.png)
 

@@ -144,6 +144,27 @@ func (a *app) combatMove(dx, dy int) error {
 	return a.state.CombatMoveWithTerrain(dx, dy, terrain)
 }
 
+func (a *app) combatLineTerrain() combat.LineTerrain {
+	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
+	return func(x, y int) combat.LineCell {
+		entry, ok := combatMovementTerrainEntry(
+			mode,
+			a.dungeonFloor,
+			a.state.WildernessFloor,
+			a.state.MapX,
+			a.state.MapY,
+			referenceCoordinates,
+			x,
+			y,
+		)
+		return combat.LineCell{
+			Valid:   ok,
+			Reflect: ok && mode == "DUNGCOM" && entry.MoveCost == 0xFF,
+		}
+	}
+}
+
 func combatMovementTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY int, referenceCoordinates bool, x, y int) (mapdata.BackgroundTile, bool) {
 	switch mode {
 	case "DUNGCOM":
@@ -474,7 +495,13 @@ func (a *app) Update() error {
 				return nil
 			}
 			if a.state.CombatCastingSpell() != 0 {
-				return a.combatAction(func() error { return a.state.CombatCast(a.state.CombatCastingSpell()) })
+				spellID := a.state.CombatCastingSpell()
+				if spellID == game.LightningBoltSpellID {
+					return a.combatAction(func() error {
+						return a.state.CombatCastWithTerrain(spellID, a.combatLineTerrain())
+					})
+				}
+				return a.combatAction(func() error { return a.state.CombatCast(spellID) })
 			}
 			return a.combatAction(a.state.CombatAct)
 		}
@@ -508,7 +535,8 @@ func (a *app) Update() error {
 			a.state.CancelCombatCast()
 			return nil
 		}
-		if a.state.CombatCastingSpell() == game.FireballSpellID {
+		if a.state.CombatCastingSpell() == game.FireballSpellID ||
+			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, -1) })
 			}
@@ -527,6 +555,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyF) && a.state.CombatCanCastFireball() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.FireballSpellID) })
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyL) && a.state.CombatCanCastLightningBolt() {
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.LightningBoltSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyH) && a.state.CombatCanCastCureLightWounds() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.CureLightWoundsSpellID) })
@@ -1588,7 +1619,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	a.drawCombatStoneFrame(screen)
 	ebitenutil.DrawRect(screen, 0, combatLogY, 640, 80, color.RGBA{A: 255})
 	ebitenutil.DrawRect(screen, 0, combatFooterY, 640, 32, color.RGBA{A: 255})
-	drawWrappedText(screen, a.state.CombatMessage(), a.compactFace, 8, 392, 39, 20, 3, white)
+	combatMessage := a.state.CombatMessage()
+	if event, ok := a.state.CombatVisualEvent(); ok {
+		combatMessage = a.combatVisualMessage(event, a.combatVisualFrame(event), combatMessage)
+	}
+	drawWrappedText(screen, combatMessage, a.compactFace, 8, 392, 39, 20, 3, white)
 	if a.state.CombatViewActive() {
 		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
 		for index, line := range a.state.CombatViewLines() {
@@ -1729,8 +1764,13 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 			text.Draw(screen, "確認施法：Enter　取消：Esc", a.face, 32, 350, cyan)
 			return
 		}
-		if a.state.CombatCastingSpell() == game.FireballSpellID {
-			text.Draw(screen, "選擇火球中心：方向鍵移動　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
+		if a.state.CombatCastingSpell() == game.FireballSpellID ||
+			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
+			prompt := "選擇火球中心"
+			if a.state.CombatCastingSpell() == game.LightningBoltSpellID {
+				prompt = "選擇閃電方向格"
+			}
+			text.Draw(screen, prompt+"：方向鍵移動　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
 			return
 		}
 		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
@@ -1745,6 +1785,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastFireball() {
 		spellHints = append(spellHints, "F火球")
+	}
+	if a.state.CombatCanCastLightningBolt() {
+		spellHints = append(spellHints, "L閃電")
 	}
 	if a.state.CombatCanCastCureLightWounds() {
 		spellHints = append(spellHints, "H治療")
@@ -1867,7 +1910,7 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 			if !a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y) {
 				ebitenutil.DrawLine(screen, fromX, fromY, x, y, color.RGBA{R: 255, G: 244, B: 180, A: 255})
 			}
-		case combat.VisualMagicMissile, combat.VisualAreaSpell:
+		case combat.VisualMagicMissile, combat.VisualAreaSpell, combat.VisualLineSpell:
 			trigger := "magic_missile"
 			if event.Effect != "" {
 				trigger = event.Effect
@@ -1878,8 +1921,17 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 				ebitenutil.DrawRect(screen, x-4, y-4, 8, 8, color.RGBA{R: 126, G: 205, B: 255, A: 255})
 			}
 		}
+	case combat.VisualSegmentTravel:
+		if event.Kind == combat.VisualLineSpell && frame.SegmentIndex >= 0 &&
+			frame.SegmentIndex < len(event.Segments) {
+			definition, _ := a.findCombatVisual(event.Effect, "line")
+			segment := event.Segments[frame.SegmentIndex]
+			key, flip := combatPathSequenceSprite(definition, segment.From, segment.To, frame.Progress)
+			a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y)
+		}
 	case combat.VisualImpact:
-		if (event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell) && event.Hit {
+		if (event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell ||
+			event.Kind == combat.VisualLineSpell) && event.Hit {
 			trigger := "magic_missile"
 			if event.Effect != "" {
 				trigger = event.Effect
@@ -1973,6 +2025,17 @@ func combatMagicImpactSprite(definition goldenengine.CombatVisualDefinition, fra
 	return combatVisualSpriteKey(definition.Frames[index])
 }
 
+func combatPathSequenceSprite(definition goldenengine.CombatVisualDefinition, from, to combat.TilePoint, progress float64) (key string, flip bool) {
+	if len(definition.Frames) == 0 {
+		return "", false
+	}
+	steps := max(absInt(to.X-from.X), absInt(to.Y-from.Y)) * 3
+	if steps < 1 {
+		steps = 1
+	}
+	return combatVisualSpriteKey(definition.Frames[int(progress*float64(steps))%len(definition.Frames)])
+}
+
 func combatVisualSpriteKey(frame goldenengine.CombatVisualFrame) (key string, flip bool) {
 	extension := filepath.Ext(frame.SourceFile)
 	stem := strings.ToLower(strings.TrimSuffix(frame.SourceFile, extension))
@@ -1994,11 +2057,16 @@ func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
 }
 
 func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {
-	from := mirroredCombatAnchor(camera.Apply(event.From))
+	source := event.From
 	target := event.To
-	if impact, ok := event.Impact(frame); ok && frame.Phase != combat.VisualTravel {
+	if frame.Phase == combat.VisualSegmentTravel && frame.SegmentIndex >= 0 &&
+		frame.SegmentIndex < len(event.Segments) {
+		source = event.Segments[frame.SegmentIndex].From
+		target = event.Segments[frame.SegmentIndex].To
+	} else if impact, ok := event.Impact(frame); ok && frame.Phase != combat.VisualTravel {
 		target = impact.To
 	}
+	from := mirroredCombatAnchor(camera.Apply(source))
 	to := mirroredCombatAnchor(camera.Apply(target))
 	fromX, fromY = float64(from.X*48+24), float64(from.Y*48+24)
 	toX, toY = float64(to.X*48+24), float64(to.Y*48+24)
@@ -2014,23 +2082,50 @@ func combatVisualPreservedImpact(event combat.VisualEvent, frame combat.VisualFr
 			continue
 		}
 		switch {
-		case frame.Phase == combat.VisualHandoff:
+		case frame.Phase == combat.VisualHandoff || frame.Done:
 			return combat.VisualImpactTarget{}, false
-		case frame.ImpactIndex < 0:
-			return impact, true
-		case frame.ImpactIndex < index:
-			return impact, true
-		case frame.ImpactIndex == index && frame.Phase < combat.VisualDeath:
-			return impact, true
+		case index < frame.ResolvedImpacts:
+			return combat.VisualImpactTarget{}, false
+		case frame.ImpactIndex == index && frame.Phase == combat.VisualDeath:
+			return combat.VisualImpactTarget{}, false
 		default:
-			return combat.VisualImpactTarget{}, false
+			return impact, true
 		}
 	}
 	return combat.VisualImpactTarget{}, false
 }
 
+func (a *app) combatVisualMessage(event combat.VisualEvent, frame combat.VisualFrame, fallback string) string {
+	if event.Kind != combat.VisualLineSpell {
+		return fallback
+	}
+	impact, ok := event.Impact(frame)
+	if !ok {
+		return fallback
+	}
+	name := impact.TargetID
+	for _, fighter := range a.state.CombatFighters() {
+		if fighter.ID == impact.TargetID {
+			name = fighter.Name
+			break
+		}
+	}
+	switch frame.Phase {
+	case combat.VisualImpact:
+		return fmt.Sprintf("%s 受到 %d 點電擊傷害。", name, impact.Damage)
+	case combat.VisualCommit:
+		if impact.Saved {
+			return name + " 的法術豁免成功，傷害減半。"
+		}
+		return name + " 的法術豁免失敗。"
+	default:
+		return fallback
+	}
+}
+
 func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, error) {
 	fireballDemo := strings.HasPrefix(kind, "fireball-")
+	lightningDemo := strings.HasPrefix(kind, "lightning-")
 	hero := combat.Fighter{
 		ID: "demo-hero", Name: "弓手艾琳", Side: combat.SideParty,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 0,
@@ -2045,6 +2140,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 4,
 		InitiativeBonus: -20, HasCombatPosition: true, CombatX: 5, CombatY: 2,
 		SavingThrows: []uint8{10, 10, 10, 10, 10},
+		SpriteSet:    1, SpriteBlock: 1,
 	}
 	switch kind {
 	case "melee":
@@ -2062,31 +2158,42 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		enemy.MonsterSpellIDs = []uint8{combat.MonsterMagicMissileSpellID}
 	case "fireball-travel", "fireball-impact-1", "fireball-impact-2":
 		hero.Name = "法師艾琳"
+	case "lightning-target-hit", "lightning-line-continue", "lightning-reflect":
+		hero.Name = "法師艾琳"
 	default:
 		return 0, fmt.Errorf("unknown combat visual demo %q", kind)
 	}
 	heroes := []combat.Fighter{hero}
 	enemies := []combat.Fighter{enemy}
-	if fireballDemo {
+	if fireballDemo || lightningDemo {
 		ally := combat.Fighter{
 			ID: "demo-ally", Name: "戰士布蘭", Side: combat.SideParty,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 2,
-			InitiativeBonus: -10, HasCombatPosition: true, CombatX: 3, CombatY: 2,
+			InitiativeBonus: -10, HasCombatPosition: true, CombatX: 2, CombatY: 4,
 			SavingThrows: []uint8{10, 10, 10, 10, 10},
 			HasPartyIcon: true, PartyHeadBlock: 1, PartyBodyBlock: 1, PartyIconSize: 2,
 		}
 		enemy.HitPoints, enemy.MaxHitPoints = 100, 100
 		enemy.ID = "demo-orc-a"
+		enemy.CombatX, enemy.CombatY = 3, 2
 		secondEnemy := enemy
 		secondEnemy.ID, secondEnemy.Name = "demo-orc-b", "半獸人隊長"
-		secondEnemy.CombatX, secondEnemy.CombatY = 4, 3
+		if lightningDemo {
+			secondEnemy.CombatX, secondEnemy.CombatY = 5, 2
+		} else {
+			secondEnemy.CombatX, secondEnemy.CombatY = 4, 3
+		}
 		heroes = append(heroes, ally)
 		enemies = append(enemies, secondEnemy)
 		abilities := party.Abilities{Strength: 12, Intelligence: 16, Wisdom: 12, Dexterity: 14, Constitution: 12, Charisma: 12}
+		spellID := game.FireballSpellID
+		if lightningDemo {
+			spellID = game.LightningBoltSpellID
+		}
 		if err := state.SetPartyRoster(party.Roster{
 			{ID: hero.ID, Name: hero.Name, Race: party.RaceHuman, Class: party.ClassMagicUser,
 				Abilities: abilities, Level: 5, HitPoints: 30, MaxHitPoints: 30,
-				SpellSlots: []uint8{game.FireballSpellID}, SavingThrows: hero.SavingThrows},
+				SpellSlots: []uint8{spellID}, SavingThrows: hero.SavingThrows},
 			{ID: ally.ID, Name: ally.Name, Race: party.RaceHuman, Class: party.ClassFighter,
 				Abilities: abilities, Level: 5, HitPoints: 100, MaxHitPoints: 100,
 				SavingThrows: ally.SavingThrows},
@@ -2102,6 +2209,19 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 			return 0, err
 		}
 		if err := state.CombatCast(game.FireballSpellID); err != nil {
+			return 0, err
+		}
+	} else if lightningDemo {
+		if err := state.BeginCombatCast(game.LightningBoltSpellID); err != nil {
+			return 0, err
+		}
+		terrain := func(x, y int) combat.LineCell {
+			return combat.LineCell{
+				Valid:   x >= 0 && x < 8 && y >= 0 && y < 7,
+				Reflect: x == 6,
+			}
+		}
+		if err := state.CombatCastWithTerrain(game.LightningBoltSpellID, terrain); err != nil {
 			return 0, err
 		}
 	} else if kind != "magic" && kind != "magic-impact" {
@@ -2130,6 +2250,20 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
 			combat.VisualImpactDuration + combat.VisualCommitDuration +
 			3*combat.VisualImpactDuration/4, nil
+	case "lightning-target-hit":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			3*combat.VisualImpactDuration/4, nil
+	case "lightning-line-continue":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			combat.VisualImpactDuration + combat.VisualCommitDuration +
+			combat.VisualTravelDuration/2, nil
+	case "lightning-reflect":
+		return combat.VisualWindupDuration + combat.VisualTravelDuration +
+			combat.VisualImpactDuration + combat.VisualCommitDuration +
+			combat.VisualTravelDuration +
+			combat.VisualImpactDuration + combat.VisualCommitDuration +
+			combat.VisualTravelDuration +
+			combat.VisualTravelDuration/2, nil
 	case "kill":
 		return combat.VisualWindupDuration + combat.VisualTravelDuration +
 			combat.VisualImpactDuration + combat.VisualCommitDuration +
@@ -2361,7 +2495,10 @@ func main() {
 	if *combatVisualDemo != "" && *combatVisualDemo != "melee" && *combatVisualDemo != "bow" &&
 		*combatVisualDemo != "magic" && *combatVisualDemo != "magic-impact" &&
 		*combatVisualDemo != "fireball-travel" && *combatVisualDemo != "fireball-impact-1" &&
-		*combatVisualDemo != "fireball-impact-2" && *combatVisualDemo != "kill" {
+		*combatVisualDemo != "fireball-impact-2" &&
+		*combatVisualDemo != "lightning-target-hit" &&
+		*combatVisualDemo != "lightning-line-continue" &&
+		*combatVisualDemo != "lightning-reflect" && *combatVisualDemo != "kill" {
 		log.Fatal("-combat-visual-demo has an unknown value")
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {

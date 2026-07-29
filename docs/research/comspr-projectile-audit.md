@@ -138,11 +138,11 @@ projectile consumer 中，它們代表方向或 animation phase，不應依欄�
 | `03/83` | 旋轉中的帶柄刃器 | `ovr014.cs:1633-1640` 對 Hand Axe／Club／Glaive 載 icon `16` 的四格 | **code-backed strong inference：旋轉投擲武器** |
 | `04/84` | 小型青白彈體／容器的兩個角度 | `ovr014.cs:1642-1648` 對 Flask of Oil／unknown `Type_85` 載 icon `17` | **code-backed strong inference：油瓶 projectile**；具體 `Type_85` 名稱仍 unknown |
 | `05/85` | 青色四叉／飛散形，黃點綴；兩張是不同 phase | 施法共同路徑 `ovr023.cs:739-762` 固定載 icon `0x12`；`SpellMagicMissile` 在 `ovr023.cs:1166-1171` 進入該結算流程；DOS 影片 `00:36:15.40` 亦直接顯示 Fireball 使用同形 travel | **code-backed + video-backed：generic spell missile；Magic Missile、Fireball 直接使用** |
-| `06/86` | 青白分叉電弧 | electrical damage 路徑在 `ovr023.cs:1951-1961` 載 icon `0x13`，Lightning Bolt／dragon electricity 亦使用 | **code-backed strong inference：電擊／Lightning Bolt projectile** |
+| `06/86` | 青白分叉電弧 | electrical damage 路徑在 `ovr023.cs:1951-1961` 載 icon `0x13`；DOS 影片 `07:40:22.50–25.30` 顯示 Lightning Bolt 命中後仍沿同一路徑繼續 | **code-backed + video-backed：Lightning Bolt／電擊線段**；牆面反射仍只有程式證據 |
 | `07/87` | 灰色圓盤／石塊的旋轉 phase | ranged default branch `ovr014.cs:1661-1667` 載 icon `20` 的 Normal/Attack | **code-backed strong inference：未分類 ranged fallback**；不能只靠外觀命名為石頭 |
 | `08/88` | 4×4 小彈丸 | Sling／Staff Sling／Spine branch `ovr014.cs:1650-1659` 載 icon `21` 的兩格 | **code-backed strong inference：投石索／spine pellet** |
 | `09/89` | 散佈的青白星芒，兩格有位移 | `MagicAttackDisplay(showMagicStars=true)` 選 icon `0x16`，原地反覆播放四格（`ovr025.cs:1118-1158`） | **code-backed strong inference：magic status/heal stars**，不是 Magic Missile 飛行彈 |
-| `0A/8A` | 小紅命中叉 → 大型紅白爆點 | 同 routine 在 `showMagicStars=false` 時選 icon `0x17` | **code-backed strong inference：magic hit/status burst**；不是 Magic Missile 飛行彈 |
+| `0A/8A` | 小紅命中叉 → 大型紅白爆點 | 同 routine 在 `showMagicStars=false` 時選 icon `0x17`；DOS 影片 `07:40:23.10` 顯示 Lightning Bolt 傷害文字出現時疊在目標上 | **code-backed + video-backed：Lightning Bolt magic hit burst**；不是飛行彈 |
 | `0B/8B` | 紅／亮紅底的骷髏 | `CombatantKilled` 只取 combat icon `24` 的 Attack（即 `0x8B`），並與 icon `25` Normal（即 `0x19` 灰底）交替，見 `ovr033.cs:548-568` | **code-backed strong inference：死亡 skull family**；本次沒有找到 `0x0B` 的 runtime consumer |
 
 ## 弓箭方向 mapping
