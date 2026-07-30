@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`159102c`（第 396 輪 Burial Glen 西側精靈王庭）；
-  第 397 輪紅羽戰士羅剎妖陷阱 milestone
+- CoAB 本輪基底：`825de71`（第 397 輪 Burial Glen 紅羽戰士陷阱）；
+  第 398 輪手札 56 與東界遺跡出口 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -369,9 +369,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   terrain `05h`。紅羽戰士 `WAIT` 會解鎖手札 33；同行陷阱的單條
   `DAMAGE(2,1d6+6,35h)` 是兩次隨機目標箭擊，之後載入
   PHASE SPIDER ×6 與 RAKSHASA ×1。raw 三分支、拒絕繼續、資料化提示／
-  選項／手札及 Standing Stone 起始戰後骸骨選單均已回歸。下一步優先
-  terrain `07h`、`0Ch` 與區域出口；`COMBAT／FLEE` encounter action、
+  選項／手札及 Standing Stone 起始戰後骸骨選單均已回歸。
+  `COMBAT／FLEE` encounter action、
   羅剎妖完整能力／戰利品／弓箭演出仍是明確缺口。
+- 第 398 輪證明 terrain `07h` 沒有完成旗標，會重複建立六相位蜘蛛與一
+  羅剎妖；不可自行改成一次性。正常玩家路徑已接通 terrain `0Ch`，
+  `WAIT／PARLAY` 寫 `4CC7=1` 並解鎖完整繁中手札 56。Burial Glen
+  東界 `PATH／WOODS／TURN BACK` 也已接通；`PATH` 由原 ECL register
+  進入 block `42h` `(0,12,E)`。State 對地城內所有 `NEWECL` 投影
+  `C04B／C04C／C04D`，不得為作品座標另寫 Go 特例。下一步探索完整
+  block `42h` 遺跡，之後才是神殿與結局。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

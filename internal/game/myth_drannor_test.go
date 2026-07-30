@@ -1093,6 +1093,121 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.CombatActive())
 	}
 
+	// Detour west to the one-shot terrain 0Ch figure before entering the
+	// spider mausoleums. This keeps Journal 56 on the ordinary GEO/player
+	// path rather than granting it through a direct ECL entry.
+	clanFigureRoute := []dungeonStep{
+		{x: 7, y: 9, direction: 6},
+		{x: 7, y: 8, direction: 0},
+		{x: 7, y: 7, direction: 0},
+		{x: 8, y: 7, direction: 2},
+		{x: 8, y: 6, direction: 0},
+		{x: 7, y: 6, direction: 6},
+		{x: 6, y: 6, direction: 6},
+		{x: 6, y: 7, direction: 4},
+		{x: 6, y: 8, direction: 4},
+		{x: 5, y: 8, direction: 6},
+		{x: 4, y: 8, direction: 6},
+	}
+	previousX, previousY = 8, 9
+	for index, step := range clanFigureRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("clan-figure route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if index < len(clanFigureRoute)-1 &&
+				reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		if index < len(clanFigureRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("quiet clan-figure route cell (%d,%d) mode=%v choices=%v message=%q",
+				step.x, step.y, state.Mode, state.currentOriginalChoices, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x0C || state.Mode != ModeWilderness ||
+		state.Prompt != gamePackText(t, state, "myth-drannor.clan-figure.greeting") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+		t.Fatalf("clan figure terrain=%02x mode=%v prompt=%q choices=%v",
+			state.DungeonWallRoof, state.Mode, state.Prompt, state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.clan-figure.journal") {
+		t.Fatalf("clan figure journal message=%q", state.Message)
+	}
+	if journals := state.JournalPages; len(journals) == 0 ||
+		journals[len(journals)-1] != gamePackText(t, state, "journal.56") {
+		t.Fatalf("Journal 56 was not unlocked from game-pack: %v", journals)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("clan figure continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("completed clan figure retriggered mode=%v prompt=%q",
+			state.Mode, state.Prompt)
+	}
+
+	// Return to the bivouac cell without crossing a geometry boundary, then
+	// resume the already-proven mausoleum route.
+	clanFigureReturnRoute := []dungeonStep{
+		{x: 5, y: 8, direction: 2},
+		{x: 6, y: 8, direction: 2},
+		{x: 6, y: 7, direction: 0},
+		{x: 6, y: 6, direction: 0},
+		{x: 7, y: 6, direction: 2},
+		{x: 8, y: 6, direction: 2},
+		{x: 8, y: 7, direction: 4},
+		{x: 7, y: 7, direction: 6},
+		{x: 7, y: 8, direction: 4},
+		{x: 7, y: 9, direction: 4},
+		{x: 8, y: 9, direction: 2},
+	}
+	previousX, previousY = 4, 8
+	for _, step := range clanFigureReturnRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("clan-figure return (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("clan-figure return cell (%d,%d) mode=%v choices=%v message=%q",
+				step.x, step.y, state.Mode, state.currentOriginalChoices, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+
 	// Continue from the bivouac to terrain 0x91 at (9,2). The legal route
 	// deliberately crosses already-cleared 0x8F and 0x8E cells; neither may
 	// replay while random encounters still use their normal pause→FLEE path.
@@ -1709,6 +1824,79 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		state.Message != gamePackText(t, state, "myth-drannor.grave.skeleton") {
 		t.Fatalf("red-plume victory mode=%v status=%v message=%q",
 			state.Mode, state.CombatStatus(), state.Message)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("red-plume grave GO mode=%v message=%q", state.Mode, state.Message)
+	}
+
+	// The mainline leaves Burial Glen by walking east to the real wrapped
+	// boundary. A normal movement attempt at x=15 invokes entry 0; it is not
+	// a terrain event or a hard-coded coordinate switch.
+	burialExitRoute := []dungeonStep{
+		{x: 14, y: 6, direction: 2},
+		{x: 15, y: 6, direction: 2},
+	}
+	previousX, previousY = 13, 6
+	for _, step := range burialExitRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("Burial Glen exit route (%d,%d)->(%d,%d) is not passable",
+				previousX, previousY, step.x, step.y)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("Burial Glen exit route cell (%d,%d) mode=%v choices=%v",
+				step.x, step.y, state.Mode, state.currentOriginalChoices)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.more-ruins") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PATH", "WOODS", "TURN BACK"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "myth-drannor.path"),
+			gamePackText(t, state, "myth-drannor.woods"),
+			gamePackText(t, state, "myth-drannor.turn-back"),
+		}) {
+		t.Fatalf("more-ruins menu mode=%v message=%q choices=%v originals=%v",
+			state.Mode, state.Message, state.Choices, state.currentOriginalChoices)
+	}
+	if err := state.Select(2); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x40 {
+		t.Fatalf("more-ruins TURN BACK mode=%v block=%02x",
+			state.Mode, state.session.CurrentBlockID())
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 0x42 ||
+		state.DungeonX != 0 || state.DungeonY != 12 ||
+		state.Message != gamePackText(t, state, "myth-drannor.helm-north") {
+		t.Fatalf("more-ruins PATH block=%02x position=(%d,%d) mode=%v message=%q",
+			state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.Mode, state.Message)
 	}
 
 	boundaryHero := hero
