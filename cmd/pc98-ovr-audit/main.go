@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98ovr"
 )
 
@@ -59,6 +60,13 @@ func main() {
 	overlays, err := pc98ovr.Decode(executable, overlayFile)
 	if err != nil {
 		fatalf("解析失敗：%v", err)
+	}
+	var debugTable borlanddebug.Table
+	if *soundFX {
+		debugTable, err = borlanddebug.ParseLegacy(executable)
+		if err != nil {
+			fatalf("解析 Borland symbols 失敗：%v", err)
+		}
 	}
 
 	fmt.Printf("exe_sha256=%x\n", sha256.Sum256(executable))
@@ -131,10 +139,13 @@ func main() {
 					)
 				}
 				fmt.Printf(
-					"soundfx_call overlay=%d local=0x%X file=0x%X ds=0x%04X selector=%d\n",
-					index, call.CallOffset,
+					"soundfx_call overlay=%d module=%s function=%s local=0x%X file=0x%X ds=0x%04X selector=%d symbol=%s\n",
+					index, soundFXModuleName(debugTable, index),
+					soundFXFunctionName(debugTable, index, call.CallOffset),
+					call.CallOffset,
 					int(overlay.FileOffset)+call.CallOffset,
 					call.ArgumentAddress, selector,
+					soundFXSelectorName(debugTable, call.ArgumentAddress),
 				)
 				soundFXTotal++
 				soundFXCounts[selector]++
@@ -154,6 +165,58 @@ func main() {
 		}
 		fmt.Println()
 	}
+}
+
+func soundFXModuleName(table borlanddebug.Table, overlayIndex int) string {
+	moduleIndex := overlayIndex + 1
+	if moduleIndex < 0 || moduleIndex >= len(table.Modules) {
+		return "?"
+	}
+	return table.Modules[moduleIndex].Name
+}
+
+func soundFXFunctionName(
+	table borlanddebug.Table, overlayIndex, callOffset int,
+) string {
+	moduleName := soundFXModuleName(table, overlayIndex)
+	if moduleName == "?" {
+		return "?"
+	}
+	loadName := "LOAD" + strings.ToUpper(moduleName)
+	var segment uint16
+	foundSegment := false
+	for _, symbol := range table.Symbols {
+		if strings.ToUpper(symbol.Name) == loadName && symbol.Segment != 0 {
+			segment = symbol.Segment
+			foundSegment = true
+			break
+		}
+	}
+	if !foundSegment {
+		return "?"
+	}
+	bestName := "?"
+	bestOffset := -1
+	for _, symbol := range table.Symbols {
+		if symbol.Segment != segment || symbol.Name == "" ||
+			symbol.Offset == 0xFFFF || int(symbol.Offset) > callOffset {
+			continue
+		}
+		if int(symbol.Offset) >= bestOffset {
+			bestName = symbol.Name
+			bestOffset = int(symbol.Offset)
+		}
+	}
+	return bestName
+}
+
+func soundFXSelectorName(table borlanddebug.Table, address uint16) string {
+	for _, symbol := range table.Symbols {
+		if symbol.Segment == 0x0C29 && symbol.Offset == address {
+			return symbol.Name
+		}
+	}
+	return "?"
 }
 
 func soundFXSelectorTable() []byte {

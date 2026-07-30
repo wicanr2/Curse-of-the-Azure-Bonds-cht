@@ -2234,3 +2234,33 @@ direct-call typed auditor、focused tests、兩支 native IDC 與 READY
 spec 378。商業表格、IDA DB、log 均未提交。下一步先追 selector 3–12
 逐 caller 事件，再用 V30／8086 cycle 或 NP2kai audio trace 校準
 port 37h pulse→PCM，最後接 Ebiten one-shot mixer；原 WORD 不可誤稱 Hz。
+
+2026-07-30 第 379 輪完成 PC-98 SOUNDFX 具名語意與第一條可播放短音效
+路徑。`GAME.EXE` Borland symbols exact 證明 `SOUNDHALT=255`、
+`SOUNDOFF=0`、`SOUNDON=1`，以及 `CASTFX=2` 到 `CRASHFX=15`。
+指定 IDA Pro 9.4 以 MZ load base `10000h` 在 `20AC8h..20AE8h` 逐 WORD
+驗證；raw TPOV auditor 的 42 個 caller 總數不變，並命名
+`REALMOVE／ANYUNDEAD／SHOWARROW／CASTSPELL／TWINKLE／SCAN`。
+
+State 的 sound queue 已由數字 selector 改為平台中立語意。DOS adapter
+保留既有 WAV selector；PC-98 adapter 使用 exact symbols，因此不再把
+DOS arrow 2 誤套到 PC-98 `ARROWFX=12`，也不再把 DOS magic-hit 3 誤套到
+PC-98 `SPELLHITFX=4`。
+
+獨立 engine `fcf9b46` 新增作品中立 `audio/cyclepcm`，以整數 duty-cycle
+積分 cycles＋level segments，窄 pulse 不會因落在 sample edge 間而消失。
+CoAB `pc98sfx.RenderPCM` 依 NEC V30 `LOOP taken=13/final=5` 與 exact
+GAME 指令路徑提供可替換 profile；目前 8 MHz、prefetched、no-wait 只標
+timing-reconstructed。`cmd/pc98-render-sfx` 的 ARROWFX 兩次 WAV hash
+均為 `06fa7417f83ef6109af2f7ab05431f9e5d918d0f7ca5d0ea37f362a7422e51a8`，
+4,778 frames／0.108345s／peak -14.7dB；FIREBALLFX 為 1,897 frames／
+0.043016s。
+
+Ebiten `sound.Player` 可由 `-pc98-sfx-game GAME.EXE
+-pc98-sfx-clock 8000000` 建立 one-shot players，並與 YM2203 music 共用
+audio context。正式 `-opening` 已在 Docker／Xvfb／ALSA null device
+載入 backend，640×480 screenshot hash 仍為
+`8ab3e88ed74668788dfb3d37e5d6fdafbccf672de365fe827a933a5213c30fdd`。
+READY spec 379 保存證據與邊界。下一步是 NP2kai／原機 port 37h edge
+trace、不同 machine wait profile、analog mixer gain、save/resume 及
+Timer B reload phase；不可把目前 8 MHz profile 寫成原機 cycle-perfect。

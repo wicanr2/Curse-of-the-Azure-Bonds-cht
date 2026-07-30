@@ -812,7 +812,7 @@ func (s *State) TurnDungeon(delta int) {
 func (s *State) Apply(action Action) error {
 	switch {
 	case s.Mode == ModeTitle && action == ActionStart:
-		s.requestSound(SoundStart)
+		s.requestSound(SoundOverture)
 		if s.session != nil && s.session.HasBlock(0x01) && len(s.party) == 0 {
 			return s.OpenCharacterCreation()
 		}

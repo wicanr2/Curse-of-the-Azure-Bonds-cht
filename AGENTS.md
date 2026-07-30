@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`b590947`；第 378 輪 PC-98 正常短音效程式／caller
+- CoAB 本輪基底：`1f8411c`；第 379 輪 PC-98 具名短音效與 cycle PCM
   milestone 會由本文件所在 commit 完成。
-- Engine dependency：`6f959cb`（含中立 `audio/s98`、`audio/ym2203`、
+- Engine dependency：`fcf9b46`（含中立 `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -263,9 +263,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   frames 且不推進音序列。正常 loop count 0 轉成 `0xFF` 無限循環。
   driver 內部 40-tick fade／FM0 SFX 沒有正常 GAME caller，不可擅自接入。
   spec 377 是最新 READY 規格。
-- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、SFX 真實
-  caller／完整 mapping、save/resume 與 analog mixer gain。不得把目前
-  可播放路徑宣稱成完整音樂還原。
+- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、以
+  NP2kai／原機 edge trace 校準 SFX machine profile、save/resume 與
+  analog mixer gain。不得把目前可播放路徑宣稱成完整音樂／音效還原。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -361,9 +361,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `GAME.EXE` file `E66Ch` 的 20-WORD 音序表。`MOVEMENT` 三處皆為
   selector 10，與 DOS `step.wav` 共同證明腳步語意。作品端
   `internal/pc98sfx` 只從 exact 本機 executable 匯入 typed
-  pulse／delay，不提交商業 bytes。下一個真實缺口是逐 caller 事件命名、
-  V30／8086 cycle→PCM、one-shot mixer、reload phase、save/resume 與
-  analog mixer gain；原 WORD 不是已證明的 Hz，不可先接成任意 tone。
+  pulse／delay，不提交商業 bytes。第 379 輪由 Borland symbols 證明
+  `CASTFX` 到 `CRASHFX` 全 selector，並命名 `REALMOVE／ANYUNDEAD／
+  SHOWARROW／CASTSPELL／TWINKLE／SCAN` caller。State 現發平台中立
+  intent；engine `audio/cyclepcm` 與 CoAB V30 8 MHz profile 已接入
+  deterministic one-shot mixer。該 profile 仍是 timing-reconstructed；
+  下一個真實缺口是原機 edge／wait 校準、reload phase、save/resume 與
+  analog mixer gain。原 WORD 不是已證明的 Hz。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -379,8 +383,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371–378 輪規格也已 READY。下一步追 SOUNDFX 逐 caller 語意與
-  port `37h` cycle→PCM，再補 MSCDRV Timer B reload phase、save/resume
+  第 371–379 輪規格也已 READY。下一步用 NP2kai／原機 audio edge trace
+  校準 port `37h` profile，再補 MSCDRV Timer B reload phase、save/resume
   與 analog mixer gain。
 
 ## 10. Compact 後恢復工作清單

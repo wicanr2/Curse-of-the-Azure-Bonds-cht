@@ -38,9 +38,47 @@ type Step struct {
 // Effect is one selector accepted by GAME.EXE SOUNDFX.
 type Effect struct {
 	Selector int    `json:"selector"`
+	Symbol   string `json:"symbol"`
+	Event    string `json:"event,omitempty"`
 	NoOp     bool   `json:"no_op,omitempty"`
 	Source   string `json:"source"`
 	Steps    []Step `json:"steps,omitempty"`
+}
+
+var selectorMetadata = [...]struct {
+	symbol string
+	event  string
+}{
+	{"SOUNDOFF", ""},
+	{"SOUNDON", ""},
+	{"CASTFX", "cast"},
+	{"MISSFX", "miss"},
+	{"SPELLHITFX", "spell_hit"},
+	{"DEADFX", "dead"},
+	{"WHISTLEFX", "whistle"},
+	{"HITFX", "hit"},
+	{"LIGHTNINGFX", "lightning"},
+	{"SWISHFX", "swish"},
+	{"PADFX", "step"},
+	{"FIREBALLFX", "fireball"},
+	{"ARROWFX", "arrow"},
+	{"OVERTUREFX", "overture"},
+	{"COMBATFX", "combat"},
+	{"CRASHFX", "crash"},
+}
+
+// SelectorForEvent maps a renderer-neutral gameplay event to the exact PC-98
+// SOUNDFX selector named by the Borland symbol table.
+func SelectorForEvent(event string) (int, bool) {
+	if event == "stop" {
+		return 255, true
+	}
+	for selector, metadata := range selectorMetadata {
+		if metadata.event == event {
+			return selector, true
+		}
+	}
+	return 0, false
 }
 
 // Import verifies GAME.EXE and reconstructs all selectors without retaining
@@ -63,7 +101,12 @@ func Import(game []byte) ([]Effect, error) {
 }
 
 func decodeEffect(game []byte, selector int) Effect {
-	effect := Effect{Selector: selector}
+	metadata := selectorMetadata[selector]
+	effect := Effect{
+		Selector: selector,
+		Symbol:   metadata.symbol,
+		Event:    metadata.event,
+	}
 	switch selector {
 	case 0, 1, 13, 14, 15:
 		effect.NoOp = true

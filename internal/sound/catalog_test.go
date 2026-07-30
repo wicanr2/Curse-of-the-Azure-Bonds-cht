@@ -28,6 +28,50 @@ func TestReferenceSoundAssetMapping(t *testing.T) {
 	}
 }
 
+func TestDOSIDKeepsPlatformMappingSeparateFromSemanticEvents(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		event Event
+		want  ID
+	}{
+		{"cast", Missile},
+		{"arrow", Missile},
+		{"miss", Miss},
+		{"spell_hit", MagicHit},
+		{"dead", Death},
+		{"whistle", Sound5},
+		{"hit", Hit},
+		{"lightning", Lightning},
+		{"swish", Miss},
+		{"step", Step},
+		{"fireball", Sound10},
+		{"overture", Start},
+	}
+	for _, test := range tests {
+		got, ok := DOSID(test.event)
+		if !ok || got != test.want {
+			t.Errorf("DOSID(%q)=(%d,%v), want (%d,true)", test.event, got, ok, test.want)
+		}
+	}
+	if _, ok := DOSID("combat"); ok {
+		t.Fatal("unmapped DOS combat event was accepted")
+	}
+}
+
+func TestStereoPCMDuplicatesSignedMonoSamples(t *testing.T) {
+	got := stereoPCM([]int16{-32768, -1, 0, 32767})
+	want := []byte{
+		0x00, 0x80, 0x00, 0x80,
+		0xFF, 0xFF, 0xFF, 0xFF,
+		0x00, 0x00, 0x00, 0x00,
+		0xFF, 0x7F, 0xFF, 0x7F,
+	}
+	if !bytes.Equal(got, want) {
+		t.Fatalf("stereo PCM=% X, want % X", got, want)
+	}
+}
+
 func TestReferenceWAVAssetsDecode(t *testing.T) {
 	for _, id := range []ID{Missile, MagicHit, Death, Sound5, Hit, Miss, Step, Sound10, Start} {
 		name, _ := AssetName(id)

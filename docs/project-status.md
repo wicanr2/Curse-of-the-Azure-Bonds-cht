@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`b590947`
-依賴的 Golden Box engine checkpoint：`6f959cb`
+本 milestone 的 CoAB 基底：`1f8411c`
+依賴的 Golden Box engine checkpoint：`fcf9b46`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -129,7 +129,12 @@ commit 內保存不可能自我引用的 hash。
   找到正常 `GAME.OVR → SOUNDFX` 的 42 個直接 caller、selector 分布、
   port `37h` pulse routine 與 `GAME.EXE` file `E66Ch` 的 16×20 WORD
   音序表；作品端 importer 會驗證 exact executable 後輸出 typed
-  pulse／delay steps，不提交商業 bytes。仍缺 pulse cycle→PCM 校準、
+  pulse／delay steps，不提交商業 bytes。第 379 輪再由 Borland exact
+  symbols 證明 `CASTFX` 到 `CRASHFX` 的 selector，State 改發平台中立
+  sound intent；DOS WAV 與 PC-98 mapping 不再混用。共用 engine
+  `audio/cyclepcm` 會積分 pulse duty cycle，作品 adapter 可用 V30 8 MHz
+  profile 重建 deterministic one-shot；正式 Ebiten 開場已在
+  Docker／Xvfb／ALSA null device 載入。仍缺原機 wall-clock／wait 校準、
   `27h` reload phase、save/resume 與 analog mixer gain。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
@@ -156,7 +161,8 @@ commit 內保存不可能自我引用的 hash。
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
   已證明；PC-98 正常短音效的 42 個 GAME.OVR caller、selector 分布、
   音序表與 port `37h` pulse 程式也已證明並可由本機 GAME.EXE 匯入，
-  但仍缺逐 caller 事件命名、CPU cycle→PCM、遊戲內 one-shot mixer、
+  第 379 輪已補具名 caller／事件、V30 timing-reconstructed cycle→PCM
+  與遊戲內 one-shot mixer，但仍缺原機 edge trace／機型 wait 校準、
   driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
   Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -39,7 +40,7 @@ func TestCombatVisualMissileDefersVictoryAndOrdersSounds(t *testing.T) {
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundMissile {
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundArrow {
 		t.Fatalf("travel sounds=%v", sounds)
 	}
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
@@ -53,7 +54,7 @@ func TestCombatVisualMissileDefersVictoryAndOrdersSounds(t *testing.T) {
 	if err := state.AdvanceCombatVisual(deathAt); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundDeath {
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundDead {
 		t.Fatalf("death sounds=%v", sounds)
 	}
 	if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
@@ -96,7 +97,8 @@ func TestCombatVisualMagicMissileCarriesProjectileCount(t *testing.T) {
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundMagicHit {
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 2 ||
+		sounds[0] != SoundCast || sounds[1] != SoundSpellHit {
 		t.Fatalf("magic impact sounds=%v", sounds)
 	}
 }
@@ -227,7 +229,7 @@ func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundMagicHit {
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 1 || sounds[0] != SoundSpellHit {
 		t.Fatalf("Lightning Bolt impact sounds=%v", sounds)
 	}
 }
@@ -307,8 +309,8 @@ func TestCombatStinkingCloudPlayerPathConsumesSlotAndCreatesPersistentArea(t *te
 	if err := state.AdvanceCombatVisual(combat.VisualWindupDuration + combat.VisualTravelDuration); err != nil {
 		t.Fatal(err)
 	}
-	if sounds := state.ConsumeSoundEvents(); len(sounds) != 0 {
-		t.Fatalf("Stinking Cloud must not reuse magic damage sound: %v", sounds)
+	if sounds := state.ConsumeSoundEvents(); !reflect.DeepEqual(sounds, []SoundEvent{SoundCast}) {
+		t.Fatalf("Stinking Cloud cast sound=%v, want [%s]", sounds, SoundCast)
 	}
 	if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
 		t.Fatal(err)

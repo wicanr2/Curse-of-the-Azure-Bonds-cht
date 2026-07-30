@@ -92,9 +92,11 @@ overlay index 對應既有 Borland compiler module index 減一：
 ```
 
 `MOVEMENT` 三處只送 selector 10，與既有 DOS 資源名稱 `step.wav` 交叉後，
-selector 10「腳步」可標為模組級實證。`SPELLS`、`COMSTUFF` 等只證明
-功能群，尚未逐一追到每個 spell／attack caller；因此本規格不擅自替
-selector 3–12 全部命名。
+selector 10「腳步」可標為模組級實證。本輪當時尚未替 selector 3–12
+全部命名；後續第 379 輪已由 Borland exact symbols 證明完整名稱，現行語意
+與平台分離 contract 以
+[`379-pc98-soundfx-symbols-and-cycle-pcm.md`](379-pc98-soundfx-symbols-and-cycle-pcm.md)
+為準。
 
 ## 5. Remake contract
 
@@ -120,11 +122,14 @@ machine-profile cycle model 或 NP2kai 音訊 trace 前，任意指定 tone Hz
 - exact `GAME.EXE` 可輸出 16 selectors；
 - IDA 8086 與 raw overlay auditor 共同確認 42 個 callers。
 
-尚未完成：
+本輪結束時尚未完成、其後第 379 輪已關閉：
 
 - 逐 caller 的函式名稱、遊戲事件與 selector 3–12 完整語意；
 - PC-9801 CPU／port 37h cycle timing 與可聽 PCM；
 - Ebiten 正常玩家路徑的 PC-98 one-shot mixer；
+
+第 379 輪仍未關閉：
+
 - 音樂與短音效同時播放的 gain／priority；
 - 原版實機或影片的聲音時間碼與聽感對照；
 - MSCDRV dormant FM SFX 是否有目前尚未取得的外部 producer。

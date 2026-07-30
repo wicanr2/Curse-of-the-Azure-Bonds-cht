@@ -57,3 +57,23 @@ func TestKnownDigestConstantIsCanonicalHex(t *testing.T) {
 		t.Fatalf("GameSHA256=%q err=%v", GameSHA256, err)
 	}
 }
+
+func TestSelectorForEventUsesBorlandSemanticNames(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]int{
+		"cast": 2, "miss": 3, "spell_hit": 4, "dead": 5,
+		"whistle": 6, "hit": 7, "lightning": 8, "swish": 9,
+		"step": 10, "fireball": 11, "arrow": 12,
+		"overture": 13, "combat": 14, "crash": 15, "stop": 255,
+	}
+	for event, want := range tests {
+		got, ok := SelectorForEvent(event)
+		if !ok || got != want {
+			t.Errorf("SelectorForEvent(%q)=(%d,%v), want (%d,true)", event, got, ok, want)
+		}
+	}
+	if _, ok := SelectorForEvent("unknown"); ok {
+		t.Fatal("unknown event was accepted")
+	}
+}

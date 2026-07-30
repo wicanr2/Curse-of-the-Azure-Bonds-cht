@@ -251,11 +251,26 @@ PC-98 port `37h` 寫 `06h／07h`。
   應從 IDA 匯出資料視窗，再回搜 raw bytes 與整段雜湊。
 
 CoAB 的 42 個直接 caller 分布於 `INTRO／INTERPET／PROTECT／COMSTUFF／
-MOVEMENT／SPELLS／GENERIC／LOS`。`MOVEMENT` 三處都送 selector 10，
-因此可與 DOS `step.wav` 交叉確認腳步；其他 selector 仍應追到具名函式與
-實際事件，不能只憑 module 名稱猜成某一招法術。
+MOVEMENT／SPELLS／GENERIC／LOS`。第 379 輪進一步解析同一份 Borland
+symbol table，證明 selector 2–15 分別是 `CASTFX` 到 `CRASHFX`，並把
+caller 收斂到 `REALMOVE／ANYUNDEAD／SHOWARROW／CASTSPELL／TWINKLE／
+SCAN` 等具名函式。證據鏈應同時包含常數符號、DS address、consumer 與
+caller，不能只憑 module 名稱猜成某一招法術。
 
 聲音重建時也要保留語意邊界。原 WORD 是 busy-loop period／count 參數，
-不是已證明的 Hz。要跨平台合成，應把「作品端 selector 與 sequence import」
-和「共用 PC-9801 CPU／speaker cycle renderer」拆開；前者本輪已完成，
-後者需以 V30／8086 timing 或 emulator audio trace 校準後再放入 engine。
+不是已證明的 Hz。DOS 的箭矢 selector 2 與 PC-98 `ARROWFX=12` 已直接證明
+數字不能跨平台共用；遊戲規則只發 `arrow／spell_hit／step` 等 intent，
+平台 adapter 才映射 native selector。
+
+共用 engine 第 379 輪加入 `audio/cyclepcm`，只把 cycles＋level 區段做
+duty-cycle 積分，不知道作品 selector。CoAB adapter 依 NEC V30 文件的
+`LOOP taken=13／final=5` 與 exact 指令路徑建立可替換 profile，再把
+port `37h` 6／7 gate edge 轉成 PCM。這是值得跨作品沿用的分層：
+
+1. 作品 executable importer 保存 selector、sequence 與 cycle intent；
+2. 平台 profile 保存 CPU clock、instruction／I/O wait 假設；
+3. 共用 renderer 只做無 drift 的 sample integration；
+4. runtime mixer 使用語意事件選擇平台 backend。
+
+目前 8 MHz profile 已可播放且 deterministic，但原機／emulator edge trace
+尚未校準，必須標為 timing-reconstructed。
