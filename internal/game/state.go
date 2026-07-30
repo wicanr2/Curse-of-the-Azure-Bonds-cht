@@ -1350,6 +1350,9 @@ func (s *State) Select(index int) error {
 			} else {
 				s.enterTreasureMenu()
 			}
+			if len(result.Text) > 0 {
+				s.Message = s.localizeECLText(result.Text)
+			}
 			return nil
 		}
 		if result.CombatRequested {

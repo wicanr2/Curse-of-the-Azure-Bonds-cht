@@ -126,6 +126,12 @@
       ,"myth-drannor.bones.loot": "Loot"
       ,"myth-drannor.bones.replace": "Replace in crypts"
       ,"myth-drannor.bones.ignore": "Ignore"
+      ,"myth-drannor.thri-kreen.entrance": "A party of thri-kreen bars your entrance."
+      ,"myth-drannor.thri-kreen.guards": "Guards here prepare for combat."
+      ,"myth-drannor.thri-kreen.bivouac": "The thri-kreen have bivouacked here. They prepare to make a stand."
+      ,"myth-drannor.thri-kreen.reinforcements": "Other thri-kreen respond to the noise."
+      ,"myth-drannor.thri-kreen.stragglers": "A few more straggle in."
+      ,"myth-drannor.thri-kreen.valuables": "You gather up some valuables."
       ,"option.accept": "Accept"
       ,"option.reject": "Reject"
       ,"option.kill": "Kill"
@@ -245,6 +251,12 @@
       ,"myth-drannor.bones.loot": "搜刮"
       ,"myth-drannor.bones.replace": "放回墓穴"
       ,"myth-drannor.bones.ignore": "不予理會"
+      ,"myth-drannor.thri-kreen.entrance": "一隊螳螂人擋住入口。"
+      ,"myth-drannor.thri-kreen.guards": "此處的守衛已準備迎戰。"
+      ,"myth-drannor.thri-kreen.bivouac": "螳螂人在此紮營，正準備據守到底。"
+      ,"myth-drannor.thri-kreen.reinforcements": "其他螳螂人聽見聲響，趕來增援。"
+      ,"myth-drannor.thri-kreen.stragglers": "又有幾名落後的螳螂人陸續趕到。"
+      ,"myth-drannor.thri-kreen.valuables": "你們收起了一些值錢物品。"
       ,"option.accept": "接受"
       ,"option.reject": "拒絕"
       ,"option.kill": "殺死"
@@ -850,6 +862,36 @@
       "id": "myth-drannor.bones.prompt",
       "all_contains": ["WHAT DO YOU DO", "WITH THE BONES"],
       "message_id": "myth-drannor.bones.prompt"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.entrance",
+      "all_contains": ["A PARTY OF THRI-KREEN BAR YOUR ENTRANCE"],
+      "message_id": "myth-drannor.thri-kreen.entrance"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.guards",
+      "all_contains": ["GUARDS HERE PREPARE FOR COMBAT"],
+      "message_id": "myth-drannor.thri-kreen.guards"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.bivouac",
+      "all_contains": ["THE THRI-KREEN HAVE BIVOUACKED HERE", "PREPARE TO MAKE A STAND"],
+      "message_id": "myth-drannor.thri-kreen.bivouac"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.reinforcements",
+      "all_contains": ["OTHER THRI-KREEN RESPOND TO THE NOISE"],
+      "message_id": "myth-drannor.thri-kreen.reinforcements"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.stragglers",
+      "all_contains": ["A FEW MORE STRAGGLE IN"],
+      "message_id": "myth-drannor.thri-kreen.stragglers"
+    },
+    {
+      "id": "myth-drannor.thri-kreen.valuables",
+      "all_contains": ["YOU GATHER UP SOME VALUABLES"],
+      "message_id": "myth-drannor.thri-kreen.valuables"
     },
     {
       "id": "zhentil.patrol_pass",

@@ -814,6 +814,13 @@ ECL 分支均已驗證；搜刮會降低黛米爾好感並取得一顆寶石，�
 與玩家路徑證據見
 [`spec 393`](docs/spec/393-burial-glen-phase-spider-bone-pile.md)。
 
+繼續深入後，terrain `0x8E／0x8F／0x90` 的螳螂人防線也已依正常 GEO
+路徑接通。營地 `0x90` 會依前兩道防線的 `4CC8／4CC9` 決定是否再出現兩波
+六人增援；不是寫死的三連戰。完整正常路徑會先擊敗十二人、六人，再進營地
+擊敗十二人，最後取得 9500 gold、4 gems、6 jewelry 與一件隨機物品。
+財寶介面現在會保留原 ECL 的繁中「你們收起了一些值錢物品」，完整證據見
+[`spec 394`](docs/spec/394-burial-glen-thri-kreen-defense-waves.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。
