@@ -179,6 +179,12 @@
       ,"myth-drannor.outer.storehouse.guards": "Some margoyles and hell hounds guard the entrance to this building. They prepare for combat. Do you flee?"
       ,"myth-drannor.outer.storehouse.supplies": "Piled within this building is a large array of foodstuffs, clothing, and trinkets."
       ,"myth-drannor.outer.storehouse.valuables": "Piled within this building is a large array of foodstuffs, clothing, and trinkets. Eventually, you find a few valuables."
+      ,"myth-drannor.outer.fugitive.intro": "Ahead, you see a man running near exhaustion, chased by a pack of hell hounds. He stumbles and collapses. Do you go to the rescue?"
+      ,"myth-drannor.outer.fugitive.killed": "The hounds leap upon the man and tear him to shreds. They soon finish their work. Do you attack?"
+      ,"myth-drannor.outer.fugitive.hounds-leave": "The hounds leave the remains."
+      ,"myth-drannor.outer.fugitive.clue": "The man thanks you and whispers, “I hid it before I was captured…a ruined building…northeast. Your reward.” His breathing stops."
+      ,"myth-drannor.outer.fugitive.remains": "The hounds left little that can be recognized as human. You find nothing of value."
+      ,"myth-drannor.outer.fugitive.cache": "Just as the dying man described, you locate a hidden cache."
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -356,6 +362,12 @@
       ,"myth-drannor.outer.storehouse.guards": "一些石像鬼與地獄犬守著這棟建築的入口。牠們擺開架勢，準備交戰。你們要逃走嗎？"
       ,"myth-drannor.outer.storehouse.supplies": "這棟建築裡堆滿大量食物、衣物與各式小物件。"
       ,"myth-drannor.outer.storehouse.valuables": "這棟建築裡堆滿大量食物、衣物與各式小物件。仔細搜索後，你們終於找到了一些值錢物品。"
+      ,"myth-drannor.outer.fugitive.intro": "前方有一名男子在地獄犬群追趕下拚命奔逃，已近力竭。他踉蹌倒地。你們要上前救援嗎？"
+      ,"myth-drannor.outer.fugitive.killed": "地獄犬撲上男子，將他撕成碎片，很快便完成了獵殺。你們要攻擊牠們嗎？"
+      ,"myth-drannor.outer.fugitive.hounds-leave": "地獄犬離開了男子的殘骸。"
+      ,"myth-drannor.outer.fugitive.clue": "男子向你們道謝，低聲說：「我被抓住前……把東西藏好了……東北方……一棟廢墟……是給你們的報酬。」說完，他便停止了呼吸。"
+      ,"myth-drannor.outer.fugitive.remains": "地獄犬留下的殘骸幾乎已看不出人形。你們沒有找到任何值錢物品。"
+      ,"myth-drannor.outer.fugitive.cache": "正如臨終男子所說，你們找到了那處秘密藏寶。"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -1253,6 +1265,36 @@
       "id": "myth-drannor.outer.storehouse.supplies",
       "all_contains": ["PILED WITHIN THIS BUILDING", "FOODSTUFFS", "CLOTHING AND TRINKETS"],
       "message_id": "myth-drannor.outer.storehouse.supplies"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.intro",
+      "all_contains": ["A MAN RUNNING", "PACK OF HELL HOUNDS", "DO YOU GO TO THE RESCUE"],
+      "message_id": "myth-drannor.outer.fugitive.intro"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.killed",
+      "all_contains": ["THE HOUNDS LEAP ON HIM", "TEAR HIM TO SHREDS", "DO YOU ATTACK"],
+      "message_id": "myth-drannor.outer.fugitive.killed"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.hounds-leave",
+      "all_contains": ["THE HOUNDS LEAVE THE REMAINS"],
+      "message_id": "myth-drannor.outer.fugitive.hounds-leave"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.clue",
+      "all_contains": ["THE MAN THANKS YOU", "RUINED BUILDING", "NORTHEAST", "HIS BREATHING STOPS"],
+      "message_id": "myth-drannor.outer.fugitive.clue"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.remains",
+      "all_contains": ["THE HOUNDS LEFT LITTLE", "RECOGNIZABLE AS HUMAN", "NOTHING OF VALUE"],
+      "message_id": "myth-drannor.outer.fugitive.remains"
+    },
+    {
+      "id": "myth-drannor.outer.fugitive.cache",
+      "all_contains": ["JUST AS THE DYING MAN DESCRIBED", "LOCATE A CACHE"],
+      "message_id": "myth-drannor.outer.fugitive.cache"
     },
     {
       "id": "zhentil.patrol_pass",

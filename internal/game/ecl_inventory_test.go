@@ -70,6 +70,9 @@ func TestECLTreasureResolvesMoneyAndItemBlock(t *testing.T) {
 	if state.MoneyPool() != 2 {
 		t.Fatalf("money pool=%d, want 2 GP", state.MoneyPool())
 	}
+	if state.MoneyPoolCopperRemainder() != 21 {
+		t.Fatalf("money remainder=%d copper, want 21", state.MoneyPoolCopperRemainder())
+	}
 	if gems, jewelry := state.TreasurePool(); gems != 3 || jewelry != 4 {
 		t.Fatalf("treasure pool=(%d,%d), want (3,4)", gems, jewelry)
 	}
@@ -81,6 +84,25 @@ func TestECLTreasureResolvesMoneyAndItemBlock(t *testing.T) {
 	}
 	if len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 36 {
 		t.Fatalf("equipment=%#v", state.partyRoster[0].Equipment)
+	}
+}
+
+func TestECLTreasureCarriesSubGoldTypedCoinValue(t *testing.T) {
+	state := NewState(testCatalog())
+	for count := 0; count < 2; count++ {
+		state.applyECLTreasureSignals(ecl.RunResult{
+			TreasureRequests: []ecl.TreasureRequest{{
+				Coins:     [7]uint16{0, 0, 1, 0, 0, 0, 0},
+				ItemBlock: 0xFF,
+			}},
+		})
+		if err := state.ResolveTreasureRequests(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.MoneyPool() != 1 || state.MoneyPoolCopperRemainder() != 0 {
+		t.Fatalf("two electrum pieces pool=%d GP remainder=%d copper, want 1/0",
+			state.MoneyPool(), state.MoneyPoolCopperRemainder())
 	}
 }
 

@@ -213,6 +213,7 @@ type State struct {
 	pendingTreasure         []ecl.TreasureRequest
 	treasureItemBlocks      map[uint16][]monster.ItemRecord
 	pendingTreasureItems    []monster.ItemRecord
+	pendingTreasureMessage  string
 	treasureMenu            bool
 	treasureTakeMenu        bool
 	treasureItemIndex       int
@@ -234,6 +235,7 @@ type State struct {
 	trainingResult          string
 	shopOffers              []ShopOffer
 	moneyPool               uint32
+	moneyCopperRemainder    uint16
 	treasureGems            uint32
 	treasureJewelry         uint32
 	appraisalOffers         AppraisalOffers
@@ -1038,6 +1040,7 @@ func (s *State) Select(index int) error {
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
 	}
+	messageBeforeSelection := s.Message
 	if s.dataPack != nil {
 		if definition, found := s.dataPack.FindMapByKind("overland"); found {
 			if point, ok := s.worldPointForOriginalOption(definition, originalChoice); ok {
@@ -1401,8 +1404,10 @@ func (s *State) Select(index int) error {
 			} else {
 				s.enterTreasureMenu()
 			}
-			if len(result.Text) > 0 {
+			if hasMeaningfulECLText(result.Text) {
 				s.Message = s.localizeECLText(result.Text)
+			} else if strings.TrimSpace(messageBeforeSelection) != "" {
+				s.Message = messageBeforeSelection
 			}
 			return nil
 		}
@@ -1538,6 +1543,8 @@ func (s *State) enterTreasureMenu() {
 }
 
 func (s *State) enterTreasureMenuFor(returnMode Mode) {
+	eventMessage := s.pendingTreasureMessage
+	s.pendingTreasureMessage = ""
 	s.treasureMenu = true
 	s.treasureTakeMenu = false
 	s.treasureReturnMode = returnMode
@@ -1552,6 +1559,9 @@ func (s *State) enterTreasureMenuFor(returnMode Mode) {
 	s.Choices = append(s.Choices, s.catalog.Text("treasure_exit", "暫不收下／繼續"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_EXIT")
 	s.Message = s.catalog.Text("treasure_ready", "發現財寶。")
+	if strings.TrimSpace(eventMessage) != "" {
+		s.Message = eventMessage
+	}
 }
 
 func (s *State) enterTreasureTakeMenu() {
@@ -1941,15 +1951,18 @@ func (s *State) ResolveTreasureRequests() error {
 		return nil
 	}
 	type resolved struct {
-		gold          uint32
+		copper        uint64
 		gems, jewelry uint32
 		items         []monster.ItemRecord
 	}
 	var total resolved
 	rng := rand.New(rand.NewSource(s.eclSeed))
 	for _, request := range s.pendingTreasure {
-		copper := uint64(request.Coins[0]) + uint64(request.Coins[1])*10 + uint64(request.Coins[2])*100 + uint64(request.Coins[3])*200 + uint64(request.Coins[4])*1000
-		total.gold += uint32(copper / 200)
+		total.copper += uint64(request.Coins[0]) +
+			uint64(request.Coins[1])*10 +
+			uint64(request.Coins[2])*100 +
+			uint64(request.Coins[3])*200 +
+			uint64(request.Coins[4])*1000
 		total.gems += uint32(request.Coins[5])
 		total.jewelry += uint32(request.Coins[6])
 		if request.ItemBlock == 0xFF {
@@ -1974,7 +1987,9 @@ func (s *State) ResolveTreasureRequests() error {
 		}
 		total.items = append(total.items, items...)
 	}
-	s.moneyPool += total.gold
+	total.copper += uint64(s.moneyCopperRemainder)
+	s.moneyPool += uint32(total.copper / 200)
+	s.moneyCopperRemainder = uint16(total.copper % 200)
 	s.treasureGems += total.gems
 	s.treasureJewelry += total.jewelry
 	s.pendingTreasureItems = append(s.pendingTreasureItems, total.items...)
@@ -4925,6 +4940,11 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	if hasMeaningfulECLText(result.Text) {
 		s.unlockJournalEntries(result.Text)
 		s.Message = s.localizeECLText(result.Text)
+		if result.WaitingForMenu && len(result.Menus) > 0 &&
+			slices.Equal(result.Menus[len(result.Menus)-1].Options,
+				[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+			s.pendingTreasureMessage = s.Message
+		}
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon

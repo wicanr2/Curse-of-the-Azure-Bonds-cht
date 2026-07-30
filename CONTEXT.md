@@ -2582,3 +2582,24 @@ game-pack stable ID 提供繁中，地城財寶選單也會保留事件訊息。
 每一步，又不在普通移動時誤清同 block 流程。raw ECL 與 Standing Stone
 起始長玩家路徑均有回歸；READY spec 400 保存證據。下一步接續 terrain
 `04h／05h` 逃亡男子及 block `42h` 其餘事件。
+
+2026-07-30 第四百零一輪完成 block `42h` terrain `04h／05h／06h`
+逃亡男子與東北藏寶。terrain `04h` 初見寫 `4CD3=1`；救援會建立
+MON6CHA `44h` HELL HOUND ×6，戰勝後顯示 `HEAD6 40h + BODY6 40h`，
+男子臨終說明東北廢墟藏寶，最後 `4CD4／4CD5=1`。若不救援，地獄犬會
+將他撕碎，玩家仍可追擊同一批六犬或任其離開；terrain `05h` 的殘骸由
+`4CD4` 控制，只顯示一次且沒有財寶。
+
+terrain `06h` 普通踏入安靜；只有 `4CD5=1` 且主動 `SEARCH`
+(`7ECA=1`) 才發出 exact
+`TREASURE [0,0,1,0,0,0,0], ItemBlock=43h`。第三欄是一枚 electrum；
+ITEM6 `43h` exact 三件物品是 Gauntlets +2、Girdle +1、Long Sword +5。
+取得前 `4CD5` 清零，重搜不複製。State 的通用財寶投影新增
+`moneyCopperRemainder`，先以 copper 精確累積再按 200 copper／GP
+換算，因此單枚 electrum 的 100 copper 不會消失，兩枚可累成一 GP。
+跨 `PRESS BUTTON` 的繁中藏寶敘事也會保存，空白 packed text 不再覆蓋。
+
+raw ECL 已覆蓋救援、拒絕後追擊／離開、屍骸重訪與藏寶邊界；Standing
+Stone 起始長玩家路徑從第 400 輪倉庫逐格走到 `(3,7)` 救援，再經合法
+wrap 路線到 `(14,3)` 搜索並驗證三件真實裝備、幣值餘數與重搜。READY
+spec 401 保存完整證據；下一步接續 terrain `07h／08h／09h`。

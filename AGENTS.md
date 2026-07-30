@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`4f62f98`（第 399 輪外圍遺跡提爾雪雅結盟）；
-  第 400 輪外圍遺跡倉庫 milestone
+- CoAB 本輪基底：`e29964f`（第 400 輪外圍遺跡倉庫）；
+  第 401 輪外圍遺跡逃亡男子與藏寶 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -391,8 +391,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `SEARCH (7ECA=1)` 才發出 9,500 gold、8 gems、8 jewelry 與 ITEM6
   `82h` 兩件裝備，服務返回後 `4CD2=1`，重搜不複製。State 現追蹤
   boundary transaction，只在來源分支 `NEWECL／EXIT` 後清除 `7ED5`，
-  避免污染目的 block 又不影響同 block 事件。READY spec 400 是權威；
-  下一步接續 terrain `04h／05h` 逃亡男子及 block `42h` 其餘事件。
+  避免污染目的 block 又不影響同 block 事件。READY spec 400 是權威。
+- 第 401 輪已接通 terrain `04h／05h／06h` 完整事件鏈。救援男子會打
+  HELL HOUND ×6，臨終使用 `HEAD6／BODY6 40h` 並設
+  `4CD3／4CD4／4CD5=1`；拒絕救援仍可追擊或離開，屍骸由 `4CD4`
+  一次性控制。有線索且主動 `SEARCH` 才取得一枚 electrum 與 ITEM6
+  `43h` 三件裝備，之後清除 `4CD5`。財寶 GP 投影新增 0–199 copper
+  餘數，空白 ECL text 不再覆蓋跨 pause 的繁中藏寶敘事。READY spec 401
+  是權威；下一步接續 terrain `07h／08h／09h`。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

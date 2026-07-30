@@ -47,6 +47,13 @@ func (s *State) ShopOffers() []ShopOffer {
 
 func (s *State) MoneyPool() uint32 { return s.moneyPool }
 
+// MoneyPoolCopperRemainder preserves typed-coin value below one GP. The
+// existing shop UI spends whole GP, but TREASURE must not silently discard a
+// lone copper, silver, or electrum piece while projecting into that pool.
+func (s *State) MoneyPoolCopperRemainder() uint16 {
+	return s.moneyCopperRemainder
+}
+
 // PoolPartyGold implements the manual's POOL command. All five typed coin
 // fields contribute their reference gold worth before being cleared.
 func (s *State) PoolPartyGold() error {

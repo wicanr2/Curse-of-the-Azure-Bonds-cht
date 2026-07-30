@@ -2355,7 +2355,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		} else {
 			s.enterTreasureMenu()
 		}
-		if len(result.Text) > 0 {
+		if hasMeaningfulECLText(result.Text) {
 			s.Message = s.localizeECLText(result.Text)
 		}
 		return true, nil

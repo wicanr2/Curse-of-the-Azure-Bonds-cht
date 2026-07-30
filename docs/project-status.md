@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`4f62f98`
+本 milestone 的 CoAB 基底：`e29964f`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -240,7 +240,13 @@ commit 內保存不可能自我引用的 hash。
   物資，主動 `SEARCH` 才取得 9,500 gold、8 gems、8 jewelry 與
   ITEM6 `82h` 兩件裝備，並在服務返回後寫 `4CD2=1` 防止重複。來源地圖
   boundary `7ED5` 不再污染目的 block 的下一步事件。raw ECL 與 Standing
-  Stone 起始玩家路徑均已回歸；其餘外圍遺跡、神殿與結局尚未完成。
+  Stone 起始玩家路徑均已回歸。
+- 第 401 輪已接通 terrain `04h／05h／06h`。救援逃亡男子會迎戰六隻
+  HELL HOUND，顯示 `HEAD6／BODY6 40h` 並取得東北藏寶線索；放棄救援的
+  追擊／離開及一次性屍骸也有 raw 分支。正常玩家會沿合法 wrap 路線到
+  `(14,3)`，主動 `SEARCH` 取得一枚 electrum 與 ITEM6 `43h` 的
+  Gauntlets +2、Girdle +1、Long Sword +5。通用財寶投影會保存不足一 GP
+  的 copper 餘數；其餘外圍遺跡、神殿與結局尚未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
