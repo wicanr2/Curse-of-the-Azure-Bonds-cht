@@ -148,6 +148,9 @@ type State struct {
 	pendingPictureResult    *ecl.RunResult
 	pendingECLMenu          *ecl.Menu
 	pendingECLMenuMessage   string
+	eclStringEditing        bool
+	eclStringValue          string
+	eclStringMaxLength      int
 	pendingDungeonEntry     bool
 	pendingWorldDestination uint8
 	pendingWorldTravel      bool
@@ -899,6 +902,10 @@ func (s *State) BeginAdventure() error {
 		s.unlockJournalEntries(result.Text)
 		s.Message = s.localizeECLText(result.Text)
 	}
+	if result.WaitingForString && len(result.StringInputRequests) > 0 {
+		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
+		return nil
+	}
 	if result.PictureRequested {
 		s.requestMusicForSignal("picture", result.PictureBlock)
 		s.PictureRequested = true
@@ -912,7 +919,7 @@ func (s *State) BeginAdventure() error {
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.WaitingForMenu {
+		if result.CombatRequested || result.WaitingForMenu || result.WaitingForString {
 			pending := result
 			pending.PictureRequested = false
 			s.pendingPictureResult = &pending
@@ -1272,6 +1279,10 @@ func (s *State) Select(index int) error {
 			s.Mode = ModeWilderness
 			return nil
 		}
+		if result.WaitingForString && len(result.StringInputRequests) > 0 {
+			s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
+			return nil
+		}
 		if result.PictureRequested {
 			s.requestMusicForSignal("picture", result.PictureBlock)
 			if !s.picturesEnabled {
@@ -1408,6 +1419,10 @@ func isWorldTravelRouteChoice(choice string) bool {
 }
 
 func (s *State) continueAfterSuppressedPicture(result ecl.RunResult) (bool, error) {
+	if result.WaitingForString && len(result.StringInputRequests) > 0 {
+		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
+		return true, nil
+	}
 	if result.ShopRequested {
 		return true, s.enterECLShop(result)
 	}
@@ -4663,6 +4678,7 @@ func dungeonLifecycleResultBlocksSearch(result ecl.RunResult) bool {
 		len(result.TreasureRequests) > 0 ||
 		result.CombatRequested ||
 		(result.WaitingForMenu && len(result.Menus) > 0) ||
+		result.WaitingForString ||
 		hasMeaningfulECLText(result.Text)
 }
 
@@ -4804,6 +4820,10 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	}
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
+	if result.WaitingForString && len(result.StringInputRequests) > 0 {
+		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
+		return true, nil
+	}
 	if result.PictureRequested {
 		s.requestMusicForSignal("picture", result.PictureBlock)
 		s.Mode = ModeEvent
@@ -4818,7 +4838,8 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
+		if result.CombatRequested || result.ShopRequested || result.TempleRequested ||
+			result.WaitingForMenu || result.WaitingForString {
 			pending := result
 			pending.PictureRequested = false
 			s.pendingPictureResult = &pending
@@ -5059,6 +5080,10 @@ func (s *State) Continue() error {
 				s.OriginalEvent = "COMBAT"
 				s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
 				s.eventReturnMode = ModeWilderness
+				return nil
+			}
+			if result.WaitingForString && len(result.StringInputRequests) > 0 {
+				s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
 				return nil
 			}
 			if result.WaitingForMenu && len(result.Menus) > 0 {
@@ -5372,6 +5397,12 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("thank_him", "向他道謝")
 	case "ATTACK":
 		return catalog.Text("attack", "攻擊")
+	case "ENTER IT":
+		return catalog.Text("enter_it", "走進去")
+	case "SPEAK":
+		return catalog.Text("speak", "說話")
+	case "HACK IT":
+		return catalog.Text("hack_it", "砍斷它")
 	case "GREET":
 		return catalog.Text("greet", "致意")
 	case "LEAVE", "Leave":

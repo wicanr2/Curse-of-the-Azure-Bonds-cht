@@ -11,6 +11,7 @@ type BlockSession struct {
 	states             map[uint8]*RuntimeState
 	selectionOffset    int
 	whoSelectionOffset int
+	stringInputOffset  int
 }
 
 func NewBlockSession(blocks map[uint8][]byte, current uint8) (*BlockSession, error) {
@@ -92,6 +93,7 @@ func (s *BlockSession) Reset(id uint8) error {
 	s.current = id
 	s.selectionOffset = 0
 	s.whoSelectionOffset = 0
+	s.stringInputOffset = 0
 	s.loadCurrentCodeMemory()
 	return nil
 }
@@ -183,12 +185,16 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContext(maxSteps int, selectio
 }
 
 func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
+	return s.RunInteractiveSeedWithPartyContextAndInputs(maxSteps, selections, whoSelections, nil, seed, context)
+}
+
+func (s *BlockSession) RunInteractiveSeedWithPartyContextAndInputs(maxSteps int, selections, whoSelections []uint16, stringInputs []string, seed int64, context PartyContext) (RunResult, error) {
 	start, err := s.InitialEntry()
 	if err != nil {
 		return RunResult{}, err
 	}
 	owned := context.clone()
-	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &owned)
+	return s.runFromSeedWithPartyContextAndInputs(start, maxSteps, selections, whoSelections, stringInputs, seed, &owned)
 }
 
 // ResumeInteractiveSelectionSeed supplies only the choices made at the
@@ -196,6 +202,14 @@ func (s *BlockSession) RunInteractiveSeedWithPartyContextAndWhoSelections(maxSte
 // callers must not reconstruct a growing history of synthetic Continue,
 // menu, and WHO inputs themselves.
 func (s *BlockSession) ResumeInteractiveSelectionSeed(maxSteps int, selection, whoSelection *uint16, seed int64, context PartyContext) (RunResult, error) {
+	return s.ResumeInteractiveInputSeed(maxSteps, selection, whoSelection, nil, seed, context)
+}
+
+// ResumeInteractiveInputSeed supplies at most one value for each currently
+// paused UI kind. The session retains cumulative offsets so a resumed opcode
+// consumes the new value exactly once without replaying prior menu, WHO, or
+// INPUT STRING transactions.
+func (s *BlockSession) ResumeInteractiveInputSeed(maxSteps int, selection, whoSelection *uint16, stringInput *string, seed int64, context PartyContext) (RunResult, error) {
 	selections := make([]uint16, s.selectionOffset)
 	if selection != nil {
 		selections = append(selections, *selection)
@@ -204,7 +218,11 @@ func (s *BlockSession) ResumeInteractiveSelectionSeed(maxSteps int, selection, w
 	if whoSelection != nil {
 		whoSelections = append(whoSelections, *whoSelection)
 	}
-	return s.RunInteractiveSeedWithPartyContextAndWhoSelections(maxSteps, selections, whoSelections, seed, context)
+	stringInputs := make([]string, s.stringInputOffset)
+	if stringInput != nil {
+		stringInputs = append(stringInputs, *stringInput)
+	}
+	return s.RunInteractiveSeedWithPartyContextAndInputs(maxSteps, selections, whoSelections, stringInputs, seed, context)
 }
 
 // RunFrom executes an explicit event entry in the current block. After a
@@ -244,6 +262,10 @@ func (s *BlockSession) runFromSeedWithPartyContext(start, maxSteps int, selectio
 }
 
 func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSteps int, selections, whoSelections []uint16, seed int64, partyContext *PartyContext) (RunResult, error) {
+	return s.runFromSeedWithPartyContextAndInputs(start, maxSteps, selections, whoSelections, nil, seed, partyContext)
+}
+
+func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int, selections, whoSelections []uint16, stringInputs []string, seed int64, partyContext *PartyContext) (RunResult, error) {
 	var aggregate RunResult
 	var err error
 	selectionOffset := s.selectionOffset
@@ -260,6 +282,12 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		} else {
 			remainingWho = nil
 		}
+		remainingStrings := stringInputs
+		if s.stringInputOffset < len(stringInputs) {
+			remainingStrings = stringInputs[s.stringInputOffset:]
+		} else {
+			remainingStrings = nil
+		}
 		runtime := s.states[s.current]
 		if !runtime.Started {
 			runtime.PC = start
@@ -269,7 +297,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 			// silently replacing it with a fresh empty map.
 			runtime.Started = true
 		}
-		result, runErr := runSubsetWithStateContextAndWhoSelections(s.CurrentData(), start, maxSteps, remaining, remainingWho, true, seed, runtime, partyContext)
+		result, runErr := runSubsetWithStateContextAndInputs(s.CurrentData(), start, maxSteps, remaining, remainingWho, remainingStrings, true, seed, runtime, partyContext)
 		aggregate.Text = append(aggregate.Text, result.Text...)
 		aggregate.Menus = append(aggregate.Menus, result.Menus...)
 		aggregate.Steps += result.Steps
@@ -329,8 +357,10 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		aggregate.PartySurpriseRequests = append(aggregate.PartySurpriseRequests, result.PartySurpriseRequests...)
 		aggregate.CheckPartyRequests = append(aggregate.CheckPartyRequests, result.CheckPartyRequests...)
 		aggregate.WhoRequests = append(aggregate.WhoRequests, result.WhoRequests...)
+		aggregate.StringInputRequests = append(aggregate.StringInputRequests, result.StringInputRequests...)
 		selectionOffset += result.SelectionsConsumed
 		s.whoSelectionOffset += result.WhoSelectionsConsumed
+		s.stringInputOffset += result.StringInputsConsumed
 		s.selectionOffset = selectionOffset
 		if runErr != nil {
 			return aggregate, runErr
@@ -338,6 +368,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		if result.NewECLBlockID == nil {
 			aggregate.WaitingForMenu = result.WaitingForMenu
 			aggregate.WaitingForWho = result.WaitingForWho
+			aggregate.WaitingForString = result.WaitingForString
 			return aggregate, nil
 		}
 		if err := s.ApplyResult(result); err != nil {

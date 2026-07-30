@@ -65,6 +65,32 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - `layout-only`：只能證明區塊與比例。
 - `hypothesis`：待 runtime/bytes 驗證，不可寫成完成事實。
 
+### 容易重犯的反組譯與實作錯誤
+
+- 不得因目前 runtime 尚未支援某個 ECL opcode，就把它猜成最接近的既有
+  UI。例：`INPUT STRING` 是可輸入、可退格、可確認且會寫入指定 ECL 字串
+  記憶體的互動，不是預先列出答案的選單；若暫時無法實作，應以
+  unsupported／pending 如實封鎖玩家路徑。
+- 指令名稱、operand 數量或攻略敘述只能形成假說，不能單獨決定 runtime
+  語意。至少要記錄 opcode bytes、operand decoding、目的位址、分支 trace，
+  並以 IDA 與原版 runtime／另一項權威證據交叉驗證。
+- 不得為了讓單一劇情點通過，在 frontend、State 或 VM 寫死本作密語、座標、
+  怪物、文字、旗標或分支。互動機制放作品中立 runtime；`Krrkik` 等作品
+  資料仍由原始 ECL 或 CoAB game-pack 驅動。
+- probe 測試可暫時輸出未知分支，但不能被誤當 regression test 或完成證據。
+  milestone 完成前要把 probe 轉成具名斷言，或在保留研究價值時移入明確的
+  audit 工具；不得留下只會列印結果、沒有驗證條件的常態測試。
+- direct-entry、直接設定 PC／旗標或注入戰鬥只適合縮小問題；完成驗收必須
+  再從正常地圖移動、事件互動與戰後續跑抵達同一狀態。否則只能聲稱局部
+  opcode／事件測試通過。
+- 看見第一場戰鬥或第一段文字不代表事件完成。必須追蹤戰後 ECL continuation、
+  後續戰鬥、旗標寫入、地圖持久狀態、Journal／獎勵及離開再進入的結果。
+- 不得把解碼器「可以讀」誤寫成遊戲「已可玩」，也不得把靜態數學核心、短秒
+  trace 或單張畫面擴大宣稱為 scheduler、完整動畫、音訊播放或完整玩家路徑。
+- 若新 bytes、IDA 或 runtime 證據推翻舊文件，必須在同一 milestone 更新或
+  supersede 舊 spec、README、狀態表與 `CONTEXT.md`；不能同時留下互相矛盾
+  的「完成」敘述供 compact 後誤用。
+
 ## 4. 可用原始資料與工具
 
 - DOS game image：`curseoftheazurebonds.zip`
@@ -143,6 +169,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 既有測試仍有歷史技術債：部分 `internal/game/*_test.go` 直接以繁中字串
   `Contains` 驗證。碰到相關功能時要逐步改成穩定 ID，不得照抄其模式新增
   債務；一次遷移一個真實玩家 vertical slice，並保留原始 ECL oracle 測試。
+- 測試 fixture 不得另造一份會與正式 JSON 漂移的裝備、法術、怪物或翻譯
+  catalog。除非測試目標就是 schema／parser 的最小合成資料，否則應載入
+  版本化 game pack，再以 stable ID 找資料；合成 fixture 也只能斷言結構，
+  不可冒充 CoAB 正式內容。
 
 - 只有重大、已測試、可展示的 milestone 才集中 commit＋push；不要每個小改
   都提交。
@@ -188,7 +218,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e301642`；第 385 輪 Burial Glen 精靈幽魂與 Journal 25
+- CoAB 本輪基底：`2921842`；第 386 輪 Burial Glen 紅網與 `INPUT STRING`
   milestone 會由本文件所在 commit 完成。
 - Engine dependency：`7ba2f8e`（含世界目的地有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
@@ -209,7 +239,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   文字 `NEWECL` 的 pending 座標 handoff，並沿兩步可通行 GEO 路徑完成
   terrain `01h` PICTURE 72 精靈幽魂、三分支 oracle 與 JSON Journal 25。
   下一步是 Journal 25 指向的 terrain `82h` 紅網、`Krrkik`、蜘蛛與
-  rakshasa；不得宣稱 Burial Glen 或最終章已完成。
+  rakshasa。
+- 第 386 輪已證明 terrain `82h` 的 `SPEAK` 是
+  `INPUT STRING 8,[7F79h]`，且紅網 branch 不比較 `Krrkik`；它是 Journal
+  提示而非程式密碼 gate。VM／State／Ebiten 已提供可續跑 Unicode 字串輸入，
+  正常 GEO 玩家路徑可抵達紅網；ENTER 的蜘蛛→PICTURE 72→rakshasa 兩戰
+  continuation、HACK 與 RETREAT 有 real-image regression。兩場戰鬥的完整
+  State 勝敗路徑及 Burial Glen 後續仍未完成，不得宣稱本區或最終章完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

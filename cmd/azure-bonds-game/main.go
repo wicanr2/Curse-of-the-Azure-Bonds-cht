@@ -353,6 +353,20 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
+	if a.state.ECLStringEditing() {
+		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			return a.state.BackspaceECLString()
+		}
+		if chars := ebiten.InputChars(); len(chars) > 0 {
+			if err := a.state.AppendECLString(chars); err != nil {
+				a.state.Message = err.Error()
+			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			return a.state.SubmitECLString()
+		}
+		return nil
+	}
 	if a.state.RenameEditing() {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 			return a.state.CancelRename()
@@ -968,6 +982,24 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 		text.Draw(screen, "名稱："+a.state.RenameText()+"_", a.face, 56, 220, cyan)
 		text.Draw(screen, "Enter：確認　Backspace：刪除　Esc：取消", a.face, 56, 330, white)
+		return
+	}
+	if a.state.ECLStringEditing() {
+		if a.state.Area.InDungeon {
+			a.drawDungeonGame(screen, white, cyan)
+			ebitenutil.DrawRect(screen, 8, 290, 624, 190, color.RGBA{0, 0, 0, 255})
+			drawWrappedText(screen, a.state.Message, a.compactFace, 16, 316, 36, 20, 2, cyan)
+			text.Draw(screen, "回答："+a.state.ECLStringValue()+"_", a.compactFace, 16, 360, white)
+			text.Draw(screen, fmt.Sprintf("Enter：確認　Backspace：刪除　最多 %d 字", a.state.ECLStringMaxLength()), a.compactFace, 16, 438, cyan)
+			a.drawOriginalAdventureFrame(screen)
+			return
+		}
+		text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
+		text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
+		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
+		drawWrappedText(screen, a.state.Message, a.face, 56, 190, 22, 32, 4, cyan)
+		text.Draw(screen, "回答："+a.state.ECLStringValue()+"_", a.face, 56, 340, white)
+		text.Draw(screen, fmt.Sprintf("Enter：確認　Backspace：刪除　最多 %d 字", a.state.ECLStringMaxLength()), a.face, 56, 410, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
@@ -2635,6 +2667,7 @@ func main() {
 	wizardTowerBattle := flag.Bool("wizard-tower-battle", false, "start at Dracandros' original wizard-tower patrol battle")
 	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
 	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
+	burialRedWeb := flag.Bool("burial-red-web", false, "show the Burial Glen red-web INPUT STRING checkpoint")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -2678,6 +2711,10 @@ func main() {
 	}
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
+	}
+	if *burialRedWeb {
+		*geoSet = 6
+		*geoBlock = 0x40
 	}
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -2904,6 +2941,33 @@ func main() {
 			log.Fatal(runErr)
 		}
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
+			log.Fatal(err)
+		}
+	} else if *burialRedWeb {
+		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.AddCreationCharacter(0); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.FinishCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.StartDungeonStoryPreview(0x40, 0x50, 6); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.Continue(); err != nil {
+			log.Fatal(err)
+		}
+		state.SetDungeonGeometryView(6, 14, 2)
+		state.DungeonWallRoof = 0x82
+		if err := state.RunDungeonLifecycle(); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.Select(1); err != nil {
+			log.Fatal(err)
+		}
+		if err := state.AppendECLString([]rune("Krrkik")); err != nil {
 			log.Fatal(err)
 		}
 	} else if *lavaTube {

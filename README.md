@@ -767,7 +767,13 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 - Burial Glen 現會採用 ECL 寫入的 `(2,15,E)` 出生點，而非沿用前區域座標。
   從入口按原始 GEO 牆面走東一步、轉北一步，可遇到 PICTURE 72 的精靈幽魂；
   向它致意會在遊戲內解鎖繁中手札 25，得到紅色蛛網與通關詞
-  `Krrkik` 的提示。後續紅網陷阱、蜘蛛與 rakshasa 尚待接通。
+  `Krrkik` 的提示。玩家可再沿 GEO 通道走到紅網，使用真正可輸入、退格、
+  依 ECL 最大長度限制並可同 PC 續跑的字串欄位；原腳本其實不檢查
+  `Krrkik`，而是任何回答都讓網變亮後返回選單。ENTER／HACK／RETREAT、
+  四隻蜘蛛、幽魂揭露 rakshasa、第二戰及完成旗標已有原始 ECL 回歸；
+  兩戰完整勝敗玩家路徑與 Burial Glen 後續仍待完成。
+
+![Burial Glen 紅網的 640×480 原版石框與 16×15 倚天字串輸入](docs/screenshots/burial-glen-red-web-input.png)
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

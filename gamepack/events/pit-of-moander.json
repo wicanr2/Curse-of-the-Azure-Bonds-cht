@@ -92,6 +92,14 @@
       ,"myth-drannor.elf-spirit.journal-25": "The spirit tells you about the glen. You record Journal Entry 25, and then the spirit fades."
       ,"myth-drannor.elf-spirit.flee": "“So, you are sheep! Then you shall feed me.” The spirit fades."
       ,"myth-drannor.spirit-disappears": "The spirit disappears."
+      ,"myth-drannor.red-web": "A red web stretches across the passage, glowing dully."
+      ,"myth-drannor.red-web.word": "What word do you say?"
+      ,"myth-drannor.red-web.brighter": "The web glows more brightly."
+      ,"myth-drannor.red-web.stuck": "You find yourself stuck fast."
+      ,"myth-drannor.red-web.hack": "As you strike, the glow fades from the webs, revealing several wire snares as well. In the distance you hear cursing, then running feet."
+      ,"myth-drannor.red-web.spiders": "Some spiders investigate the noise."
+      ,"myth-drannor.red-web.rakshasa": "The spirit appears laughing. It fades, revealing a rakshasa."
+      ,"myth-drannor.red-web.free": "You eventually free yourself."
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
     },
     "zh-TW": {
@@ -182,6 +190,14 @@
       ,"myth-drannor.elf-spirit.journal-25": "幽魂講述葬林的往事；你們將內容記入手札第 25 條，隨後它逐漸消失。"
       ,"myth-drannor.elf-spirit.flee": "「原來你們是羊！那就成為我的食物吧。」幽魂逐漸消失。"
       ,"myth-drannor.spirit-disappears": "幽魂消失了。"
+      ,"myth-drannor.red-web": "一張散發黯淡紅光的巨網橫亙在通道上。"
+      ,"myth-drannor.red-web.word": "你們要說出什麼詞？"
+      ,"myth-drannor.red-web.brighter": "巨網發出的光變得更加明亮。"
+      ,"myth-drannor.red-web.stuck": "你們一踏入網中，立刻被牢牢黏住。"
+      ,"myth-drannor.red-web.hack": "你們揮砍巨網，紅光隨即消退，露出藏在其中的數道金屬套索。遠處傳來一陣咒罵，接著是急促離去的腳步聲。"
+      ,"myth-drannor.red-web.spiders": "幾隻巨蛛循著聲響前來查看。"
+      ,"myth-drannor.red-web.rakshasa": "幽魂大笑著現身，隨即消散，露出一名羅剎妖。"
+      ,"myth-drannor.red-web.free": "你們終於掙脫巨網。"
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
     }
   },
@@ -617,6 +633,46 @@
       "id": "myth-drannor.spirit-disappears",
       "all_contains": ["THE SPIRIT DISAPPEARS"],
       "message_id": "myth-drannor.spirit-disappears"
+    },
+    {
+      "id": "myth-drannor.red-web",
+      "all_contains": ["A RED WEB STRETCHES ACROSS THE PASSAGE", "GLOWING DULLY"],
+      "message_id": "myth-drannor.red-web"
+    },
+    {
+      "id": "myth-drannor.red-web.word",
+      "all_contains": ["WHAT WORD DO YOU SAY"],
+      "message_id": "myth-drannor.red-web.word"
+    },
+    {
+      "id": "myth-drannor.red-web.brighter",
+      "all_contains": ["THE WEB GLOWS MORE BRIGHTLY"],
+      "message_id": "myth-drannor.red-web.brighter"
+    },
+    {
+      "id": "myth-drannor.red-web.stuck",
+      "all_contains": ["YOU FIND YOURSELF STUCK FAST"],
+      "message_id": "myth-drannor.red-web.stuck"
+    },
+    {
+      "id": "myth-drannor.red-web.hack",
+      "all_contains": ["AS YOU STRIKE", "WIRE SNARES AS WELL", "THEN RUNNING FEET"],
+      "message_id": "myth-drannor.red-web.hack"
+    },
+    {
+      "id": "myth-drannor.red-web.spiders",
+      "all_contains": ["SOME SPIDERS INVESTIGATE THE NOISE"],
+      "message_id": "myth-drannor.red-web.spiders"
+    },
+    {
+      "id": "myth-drannor.red-web.rakshasa",
+      "all_contains": ["THE SPIRIT APPEARS LAUGHING", "A RAKSHASA"],
+      "message_id": "myth-drannor.red-web.rakshasa"
+    },
+    {
+      "id": "myth-drannor.red-web.free",
+      "all_contains": ["YOU EVENTUALLY FREE YOURSELF"],
+      "message_id": "myth-drannor.red-web.free"
     },
     {
       "id": "zhentil.patrol_pass",

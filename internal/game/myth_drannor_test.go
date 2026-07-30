@@ -122,8 +122,21 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.Area,
 			state.GeoMapSet, state.GeoMapBlock, state.Message)
 	}
-	if err := state.Continue(); err != nil {
-		t.Fatal(err)
+	for step := 0; step < 4 && state.Mode != ModeDungeon; step++ {
+		switch {
+		case state.Mode == ModeEvent:
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		case state.Mode == ModeWilderness &&
+			reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}):
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		default:
+			t.Fatalf("unexpected Burial Glen entry continuation mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
 	}
 	if state.Mode != ModeDungeon {
 		t.Fatalf("Burial Glen continuation mode=%v, want dungeon", state.Mode)
@@ -198,6 +211,73 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	if !found {
 		t.Fatalf("Journal 25 not unlocked: %v", state.JournalPages)
+	}
+	for step := 0; step < 4 && state.Mode != ModeDungeon; step++ {
+		switch {
+		case state.Mode == ModeEvent:
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		case state.Mode == ModeWilderness &&
+			reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}):
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		default:
+			t.Fatalf("unexpected post-spirit continuation mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-spirit mode=%v, want dungeon", state.Mode)
+	}
+
+	// The same GEO6 block has a passable eastward route from the spirit at
+	// (3,14) to terrain 0x82 at (6,14); exercise each normal lifecycle rather
+	// than jumping directly to the event program counter.
+	for x := 4; x <= 6; x++ {
+		if !burialGlen.CanMoveDungeonWrapped(x-1, 14, 2) {
+			t.Fatalf("Burial Glen route (%d,14)->(%d,14) is not passable", x-1, x)
+		}
+		state.SetDungeonGeometryView(x, 14, 2)
+		state.DungeonWallRoof = burialGlen.CellWrapped(x, 14).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.DungeonWallRoof != 0x82 ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-web") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER IT", "SPEAK", "HACK IT", "RETREAT"}) {
+		t.Fatalf("red web terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if !state.ECLStringEditing() || state.ECLStringMaxLength() != 8 ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-web.word") {
+		t.Fatalf("red web input editing=%v max=%d message=%q",
+			state.ECLStringEditing(), state.ECLStringMaxLength(), state.Message)
+	}
+	if err := state.AppendECLString([]rune("Krrkik")); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.SubmitECLString(); err != nil {
+		t.Fatal(err)
+	}
+	if state.ECLStringEditing() ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-web.brighter") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("red web answer editing=%v choices=%v message=%q",
+			state.ECLStringEditing(), state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.red-web") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER IT", "SPEAK", "HACK IT", "RETREAT"}) {
+		t.Fatalf("red web resumed choices=%v message=%q",
+			state.currentOriginalChoices, state.Message)
 	}
 }
 
