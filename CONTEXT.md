@@ -2328,3 +2328,14 @@ ECL5 `0x33:+0FB6`、ECL4 `0x22:+0C8E`、ECL3
 `0x11:+04E7`，並確認 `4C5B` 採非零判定。READY spec 383 保存證據與
 邊界。下一步接通 JOURNEY ON 後的 ECL6/GEO6 block `0x40` 正常玩家路徑；
 本輪未宣稱 Burial Glen、最終神殿或結局已完成。
+
+2026-07-30 第 384 輪接通 Standing Stone→JOURNEY ON→MYTH DRANNOR→
+WILDERNESS→AREA arrival→ENTER CITY→ECL6/GEO6 block `0x40` 的正常玩家
+路徑。ECL1 尾端 14×4 adjacency table 已移入 JSON；共用 engine
+`7ba2f8e` 提供中立 destination graph schema／validation。
+
+測試同時釐清 destination work cell 必須複製原始 location byte，不能一律
+減一；條件式縮短目的地表則保留 ECL 自有 work cells。新增測試不硬編碼
+繁中劇情文字，而以 `message_id` 從受測 game pack 取得期望值。既有
+Ashabenford→Standing Stone→Essembra→Hap 長回歸路徑與新 Burial Glen
+入口路徑同時通過。完整 AREA travel、Burial Glen 事件與結局仍未完成。

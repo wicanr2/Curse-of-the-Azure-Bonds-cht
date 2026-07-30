@@ -149,6 +149,8 @@ type State struct {
 	pendingECLMenu          *ecl.Menu
 	pendingECLMenuMessage   string
 	pendingDungeonEntry     bool
+	pendingWorldDestination uint8
+	pendingWorldTravel      bool
 	dataPack                *goldenbox.Pack
 	dataPackError           error
 	appliedDataPackEvents   map[string]bool
@@ -937,6 +939,10 @@ func (s *State) enterECLMenu(menu ecl.Menu) {
 	if slices.Equal(menu.Options, []string{"PATROL", "FOREST", "JOURNEY ON", "CAMP"}) {
 		menu.Options = []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}
 	}
+	if slices.Contains(menu.Options, "ENTER CITY") {
+		s.pendingWorldTravel = false
+	}
+	s.syncWorldDestinationSelectors(menu.Options)
 	s.Choices = make([]string, 0, len(menu.Options))
 	s.currentOriginalChoices = append([]string(nil), menu.Options...)
 	for _, option := range menu.Options {
@@ -948,6 +954,50 @@ func (s *State) enterECLMenu(menu ecl.Menu) {
 		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
 	}
 	s.Mode = ModeWilderness
+}
+
+// syncWorldDestinationSelectors projects the title-declared route graph into
+// the four legacy work cells consumed by ECL1's route dispatcher. The UI
+// keeps zero-based menu indices; each work value is the original world
+// location byte copied from ECL1's adjacency row.
+func (s *State) syncWorldDestinationSelectors(options []string) {
+	if s.session == nil || s.dataPack == nil {
+		return
+	}
+	definition, found := s.dataPack.FindMapByKind("overland")
+	if !found {
+		return
+	}
+	var current goldenbox.MapPoint
+	for _, point := range definition.Locations {
+		if point.Value == s.Area.CurrentCity {
+			current = point
+			break
+		}
+	}
+	// Conditional ECL branches may deliberately hide destinations. Their
+	// compact selector table is already supplied by the original program;
+	// only project JSON when the complete declared adjacency row is visible.
+	if len(options) != len(current.Destinations) {
+		return
+	}
+	for index, option := range options {
+		point, ok := s.worldPointForOriginalOption(definition, option)
+		if !ok {
+			return
+		}
+		s.session.SetMemoryValue(0x4C02+uint16(index), uint16(point.Value))
+	}
+}
+
+func (s *State) worldPointForOriginalOption(definition goldenbox.MapDefinition, option string) (goldenbox.MapPoint, bool) {
+	english := s.dataPack.Locales["en"]
+	for _, point := range definition.Locations {
+		if strings.EqualFold(strings.TrimSpace(english[point.MessageID]), strings.TrimSpace(option)) {
+			return point, true
+		}
+	}
+	return goldenbox.MapPoint{}, false
 }
 
 // Select applies a localized opening choice and, when the state came from an
@@ -963,6 +1013,19 @@ func (s *State) Select(index int) error {
 	originalChoice := ""
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
+	}
+	if s.dataPack != nil {
+		if definition, found := s.dataPack.FindMapByKind("overland"); found {
+			if point, ok := s.worldPointForOriginalOption(definition, originalChoice); ok {
+				s.pendingWorldDestination = point.Value
+				s.pendingWorldTravel = true
+			}
+		}
+	}
+	if s.session != nil && s.pendingWorldTravel && isWorldTravelRouteChoice(originalChoice) {
+		// AREA publishes the selected destination through this separate
+		// arrival cell. ECL may overwrite 4C9B while dispatching the route.
+		s.session.SetMemoryValue(0x4C9C, uint16(s.pendingWorldDestination))
 	}
 	if s.treasureMenu {
 		return s.selectTreasure(index, originalChoice)
@@ -1172,6 +1235,12 @@ func (s *State) Select(index int) error {
 				treasureReady = true
 			}
 		}
+		if s.session != nil && s.pendingWorldTravel && isWorldTravelRouteChoice(originalChoice) {
+			// AREA owns the actual movement. ECL1 may reuse its route-selector
+			// work value while dispatching a trail encounter, so project the
+			// chosen location only after that ECL dispatch returns.
+			s.session.SetMemoryValue(0x4C9B, uint16(s.pendingWorldDestination))
+		}
 		s.applyCitySelection()
 		if len(result.Text) > 0 {
 			s.unlockJournalEntries(result.Text)
@@ -1327,6 +1396,15 @@ func (s *State) Select(index int) error {
 		s.leaveLocation()
 	}
 	return nil
+}
+
+func isWorldTravelRouteChoice(choice string) bool {
+	switch choice {
+	case "TRAIL", "ROAD", "RIVER", "WILDERNESS":
+		return true
+	default:
+		return false
+	}
 }
 
 func (s *State) continueAfterSuppressedPicture(result ecl.RunResult) (bool, error) {
@@ -4460,7 +4538,11 @@ func (s *State) enterMapAt(x, y int) {
 	}
 	s.WildernessFloor = mapdata.GenerateWilderness(cityFlags, s.mapSeed)
 	s.Choices = nil
-	s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+	if s.pendingWorldTravel {
+		s.Prompt = s.catalog.Text("world_travel_map_prompt", "荒野旅程　方向鍵：移動　Enter：抵達目的地　Esc：返回")
+	} else {
+		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+	}
 	s.Message = ""
 }
 
@@ -4890,6 +4972,9 @@ func (s *State) EnterPlaces() error {
 	if s.Mode != ModeMap || s.Location == LocationWilderness {
 		return fmt.Errorf("place menu is invalid in mode %d at location %d", s.Mode, s.Location)
 	}
+	if s.pendingWorldTravel {
+		return s.completeWildernessTravel()
+	}
 	s.Mode = ModePlace
 	s.Prompt = s.placePrompt()
 	s.Choices = []string{
@@ -4901,6 +4986,48 @@ func (s *State) EnterPlaces() error {
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
 	s.Message = ""
 	return nil
+}
+
+func (s *State) completeWildernessTravel() error {
+	if s.session == nil {
+		return fmt.Errorf("wilderness travel requires an ECL session")
+	}
+	destination := s.pendingWorldDestination
+	s.pendingWorldTravel = false
+	return s.arriveAtWorldLocation(destination)
+}
+
+func (s *State) arriveAtWorldLocation(destination uint8) error {
+	if s.session == nil {
+		return fmt.Errorf("world arrival requires an ECL session")
+	}
+	s.session.SetMemoryValue(0x4C9C, uint16(destination))
+	blockBefore := s.session.CurrentBlockID()
+	result, err := s.session.RunEntrySeedWithPartyContext(
+		1, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
+	)
+	if err != nil {
+		return err
+	}
+	s.requestMusicIfBlockChanged(blockBefore)
+	s.eclBlock = s.session.CurrentData()
+	s.setWorldLocation(uint16(destination))
+	s.Area.GameArea = 1
+	s.Area.InDungeon = false
+	s.applyGeoMapLoad(result)
+	s.applyLoadPieces(result)
+	s.applyECLCallSignals(result)
+	if hasMeaningfulECLText(result.Text) {
+		s.Message = s.localizeECLText(result.Text)
+	}
+	s.Mode = ModeWilderness
+	s.eventReturnMode = ModeWilderness
+	s.eclMenuReturnMode = ModeWilderness
+	if result.WaitingForMenu && len(result.Menus) > 0 {
+		s.enterECLMenu(result.Menus[len(result.Menus)-1])
+		return nil
+	}
+	return fmt.Errorf("wilderness arrival at %d did not produce a world menu", destination)
 }
 
 // Continue advances a localized place event back to its observed parent
@@ -5066,6 +5193,12 @@ func (s *State) placePrompt() string {
 func (s *State) applyCitySelection() {
 	if s.session != nil &&
 		(s.session.CurrentBlockID() == 0x50 || s.session.CurrentBlockID() == 0x51) {
+		if s.pendingWorldTravel {
+			s.setWorldLocation(uint16(s.pendingWorldDestination))
+			s.Area.GameArea = 1
+			s.Area.InDungeon = false
+			return
+		}
 		for _, address := range []uint16{0x4C9B, 0x4C9C} {
 			if value, ok := s.session.MemoryValue(address); ok && value <= 13 {
 				s.setWorldLocation(value)
