@@ -65,8 +65,11 @@ Sound BIOS 會反相 rate／level、重排 operator，並保留 signed DETUNE sh
 第 372 輪再手動恢復 IDA 漏掉的 `SOUND.ROM` timer ISR 間接分支，
 完成六種 signed 16-bit 軟體 LFO waveform、pitch 與 total-level 投影；
 共用 engine 使用 `audio/s98`／`audio/ym2203`／`audio/pc98soundbios`。
-十二首 first-stream 共 18 個聲道帶非零 LFO 參數，但現有約五秒 S98
-沒有獨立動態更新，因此 scheduler 仍等待長時間 Hoot 或 NP2kai 外部證據。
+第 373 輪把 selector 9 的 Hoot trace 延長至 45.01 秒，確認三個
+parameter 3 聲道都 key-on 但 Hoot 仍未執行 ROM LFO；隨後以 Unicorn
+直接執行 exact `SOUND.ROM` 80 次 Timer B path，動態證明 sync 8 在第
+30 tick 首次輸出，至第 80 tick 共 51 組 pitch／TL。共用 engine 現有
+Timer B scheduler，CoAB adapter 只映射 NEC waveform／sync／speed。
 fade／SFX、完整 loop、合成器與遊戲內播放器也仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
@@ -91,7 +94,9 @@ S98／YM2203 執行期驗證則見
 總音量、載波與 key-on 則見
 [`docs/spec/371-pc98-sound-bios-total-level-and-key-on.md`](docs/spec/371-pc98-sound-bios-total-level-and-key-on.md)，
 軟體 LFO 核心與動態 trace 邊界則見
-[`docs/spec/372-pc98-sound-bios-software-lfo.md`](docs/spec/372-pc98-sound-bios-software-lfo.md)。
+[`docs/spec/372-pc98-sound-bios-software-lfo.md`](docs/spec/372-pc98-sound-bios-software-lfo.md)，
+Timer B cadence、sync 狀態機與 ROM 動態 harness 則見
+[`docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md`](docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

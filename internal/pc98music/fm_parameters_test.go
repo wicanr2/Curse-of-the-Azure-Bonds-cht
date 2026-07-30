@@ -109,6 +109,18 @@ func TestYM2203ModulationUsesLogicalOperatorDepths(t *testing.T) {
 	}
 }
 
+func TestSoundBIOSModulationConfigMapsSchedulerFields(t *testing.T) {
+	block := FMParameterBlock{
+		LFOWaveform:  4,
+		LFOSyncDelay: 8,
+		LFOSpeed:     8870,
+	}
+	config := block.SoundBIOSModulationConfig()
+	if config.Waveform != 4 || config.SyncDelay != 8 || config.Speed != 8870 {
+		t.Fatalf("unexpected scheduler config: %+v", config)
+	}
+}
+
 func TestParseFMParameterBlockRejectsInvalidFieldAndLength(t *testing.T) {
 	if _, err := parseFMParameterBlock(make([]byte, 99)); err == nil ||
 		!strings.Contains(err.Error(), "99 bytes") {
