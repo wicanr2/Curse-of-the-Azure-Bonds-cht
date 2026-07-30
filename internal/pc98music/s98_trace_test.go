@@ -72,3 +72,21 @@ func TestAuditStartupOutputLevelsMatchesBaseAndCarrierRewrites(t *testing.T) {
 		t.Fatal("bad second-carrier rewrite unexpectedly accepted")
 	}
 }
+
+func TestAuditS98TimerRegistersSeparatesPrescalerAndTimerB(t *testing.T) {
+	report := auditS98TimerRegisters([]s98.Event{
+		{Kind: s98.EventWrite, Device: 0, Port: 0, Register: 0x26},
+		{Kind: s98.EventWrite, Device: 0, Port: 0, Register: 0x27},
+		{Kind: s98.EventWrite, Device: 0, Port: 0, Register: 0x2D},
+		{Kind: s98.EventWrite, Device: 0, Port: 0, Register: 0x2E},
+		{Kind: s98.EventWrite, Device: 0, Port: 0, Register: 0x2F},
+		{Kind: s98.EventWrite, Device: 1, Port: 0, Register: 0x2D},
+		{Kind: s98.EventWrite, Device: 0, Port: 1, Register: 0x2D},
+		{Kind: s98.EventWait},
+	}, 0)
+	if report.timerBDataWrites != 1 || report.timerBControlWrites != 1 ||
+		report.prescalerWrites != 3 || report.timerBDataValues["00"] != 1 ||
+		report.timerBControlValues["00"] != 1 {
+		t.Fatalf("timer register audit=%+v", report)
+	}
+}

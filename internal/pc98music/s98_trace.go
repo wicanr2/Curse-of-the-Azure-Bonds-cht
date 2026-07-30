@@ -48,6 +48,11 @@ type S98TrackAudit struct {
 	TimerNumerator          uint32                  `json:"timer_numerator"`
 	TimerDenominator        uint32                  `json:"timer_denominator"`
 	YM2203Clock             uint32                  `json:"ym2203_clock"`
+	PrescalerWrites         int                     `json:"prescaler_writes"`
+	TimerBDataWrites        int                     `json:"timer_b_data_writes"`
+	TimerBControlWrites     int                     `json:"timer_b_control_writes"`
+	TimerBDataValues        map[string]int          `json:"timer_b_data_values"`
+	TimerBControlValues     map[string]int          `json:"timer_b_control_values"`
 	DurationTicks           uint64                  `json:"duration_ticks"`
 	RegisterWrites          int                     `json:"register_writes"`
 	ToneLoads               int                     `json:"tone_loads"`
@@ -60,6 +65,39 @@ type S98TrackAudit struct {
 	DynamicLFOObserved      bool                    `json:"dynamic_lfo_observed"`
 	Startup                 []S98ParameterStartup   `json:"startup"`
 	OutputLevels            []S98OutputLevelStartup `json:"output_levels"`
+}
+
+type s98TimerRegisterAudit struct {
+	prescalerWrites     int
+	timerBDataWrites    int
+	timerBControlWrites int
+	timerBDataValues    map[string]int
+	timerBControlValues map[string]int
+}
+
+func auditS98TimerRegisters(
+	events []s98.Event, device int,
+) s98TimerRegisterAudit {
+	report := s98TimerRegisterAudit{
+		timerBDataValues:    make(map[string]int),
+		timerBControlValues: make(map[string]int),
+	}
+	for _, event := range events {
+		if event.Kind != s98.EventWrite || event.Device != device || event.Port != 0 {
+			continue
+		}
+		switch event.Register {
+		case 0x26:
+			report.timerBDataWrites++
+			report.timerBDataValues[fmt.Sprintf("%02X", event.Value)]++
+		case 0x27:
+			report.timerBControlWrites++
+			report.timerBControlValues[fmt.Sprintf("%02X", event.Value)]++
+		case 0x2D, 0x2E, 0x2F:
+			report.prescalerWrites++
+		}
+	}
+	return report
 }
 
 // AuditS98Track cross-checks one local Hoot S98 v3 trace against the exact
@@ -120,6 +158,12 @@ func AuditS98Track(driver, raw []byte, selector int) (S98TrackAudit, error) {
 		TimerNumerator: file.TimerNumerator, TimerDenominator: file.TimerDenominator,
 		YM2203Clock: file.Devices[0].Clock, ToneLoads: len(loads),
 	}
+	timerRegisters := auditS98TimerRegisters(file.Events, 0)
+	report.PrescalerWrites = timerRegisters.prescalerWrites
+	report.TimerBDataWrites = timerRegisters.timerBDataWrites
+	report.TimerBControlWrites = timerRegisters.timerBControlWrites
+	report.TimerBDataValues = timerRegisters.timerBDataValues
+	report.TimerBControlValues = timerRegisters.timerBControlValues
 	for _, event := range file.Events {
 		if event.Kind == s98.EventWrite {
 			report.RegisterWrites++
