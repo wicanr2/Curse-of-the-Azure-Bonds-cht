@@ -11,7 +11,7 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `77683a3`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `6f959cb`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -33,8 +33,9 @@ game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證�
 IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
 selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙本福德與
 希爾斯法的正常 ECL 玩家路徑現已驗證同 block 內 `5→6→5`，同曲返回不會
-重播。缺失 driver sector、完整曲長／fade／SFX trace 與實際播放器仍未完成，因此
-雖已由 Hoot metadata 建立 12 首中英文曲名 JSON，仍不宣稱音樂已可播放。
+重播。缺失 driver sector與完整曲長／fade／SFX trace 仍未完成；十二首
+中英文曲名已由 Hoot metadata 建立，正常配樂則在第 376 輪首次接成可播放
+PCM。
 第 364 輪另已證明 `MSCDRV.EXE` 直接安裝 IVT `7Eh → CS:0080`：
 `AH=0/AL=track` 播放、`AH=1` 停止，再由內部 clients 接到低階
 `INT D2h`。所有 bridge byte anchors 均早於 driver 的 `0x4000..0x43FF`
@@ -78,7 +79,16 @@ ISR；因此 CoAB 原版正常 BGM 本來就不執行該軟體 LFO，重製忠�
 沒有 prescaler write；共用 engine 已依 Timer B 完整 count period 公式
 建立有理數 PCM sample accumulator，可跨 tick 保留餘數而不累積 rounding
 drift。`27h` reload 的 free-running divide-by-16 phase 仍未完成。
-fade／SFX、完整 loop、合成器與遊戲內播放器也仍未完成。
+第 376 輪已固定 BSD 授權 `ymfm`，把 Sound BIOS 音色／音量 intent 展開成
+原版 register order，再依 Timer B period 合成並以有理數 phase 重取樣為
+44.1 kHz stereo PCM。遊戲可用
+`-pc98-music-driver /path/to/MSCDRV.EXE`，由 game-pack track ID／selector
+在場景切換時播放；`cmd/pc98-render-track` 也能在 Docker 內輸出本機 WAV。
+selector 5 的兩次十秒輸出 SHA-256 均為
+`fded75fe89d5e5af860e92e1541f83f14738c228fe7d792506c282c6bd5847c0`，
+已證明非靜音且無 clipping。商業 driver 與 WAV 不進 repository。
+fade／SFX arbitration、完整 loop、save/resume、類比 mixer gain 與
+`27h` reload phase仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -108,7 +118,9 @@ Timer B cadence、sync 狀態機與 ROM 動態 harness 則見
 MSCDRV 的 Timer B 中斷所有權與 faithful BGM 邊界則見
 [`docs/spec/374-pc98-mscdrv-timer-b-ownership.md`](docs/spec/374-pc98-mscdrv-timer-b-ownership.md)，
 Timer B 完整週期與 PCM 有理數排程則見
-[`docs/spec/375-pc98-ym2203-timer-b-clock.md`](docs/spec/375-pc98-ym2203-timer-b-clock.md)。
+[`docs/spec/375-pc98-ym2203-timer-b-clock.md`](docs/spec/375-pc98-ym2203-timer-b-clock.md)，
+合成器、PCM 串流與遊戲播放器見
+[`docs/spec/376-pc98-ym2203-synth-and-game-player.md`](docs/spec/376-pc98-ym2203-synth-and-game-player.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
@@ -502,7 +514,12 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 - 真實 ECL1 JOURNEY ON／STORE 路徑已驗證 `PICTURE → Enter → COMBAT opcode →
   CityShop` continuation；這裡的 `COMBAT` 是原版 engine service dispatcher，不是戰鬥。
 - ECL `COMBAT (0x24)` 現在會保存 next-PC；可玩戰鬥勝利後，State 會恢復同一個 ECL runtime，繼續跑原版的文字、menu、picture 或 `NEWECL`，不再丟回 stale wilderness menu。
-- 已依 reference `seg044`／`Resource.resx` 保存 9 個 PC WAV sound assets，`internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊與已實作法術 intent 播放對應音效；背景音樂仍待接入。
+- 已依 reference `seg044`／`Resource.resx` 保存 9 個 PC WAV sound assets，
+  `internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、
+  荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊
+  與已實作法術 intent 播放對應音效。另可由使用者本機 PC-98
+  `MSCDRV.EXE` 即時合成 YM2203 背景音樂；fade、SFX 共存與完整 loop 尚待
+  還原。
 - PICTURE block `>= 0x78` 已分流到 BIGPIC 靜態大圖；目前從 BIGPIC1／2／6 抽出 4 張原始大圖並在事件畫面置中顯示。
 - 一般場景人物的 `HEAD2–6`／`BODY2–6` 也已抽出並依 reference body `y+5` 合成 30 張 PNG，後續城鎮／事件 renderer 可直接載入。
 - PICTURE 的 Area2 head sentinel 分支也已接入：有 head block 時改顯示 HEAD/BODY scene composite，無 head block 時維持 PIC／BIGPIC。

@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ef66160`；第 375 輪 YM2203 Timer B clock bridge
+- CoAB 本輪基底：`8c4c5db`；第 376 輪 YM2203 合成器／播放器
   milestone 會由本文件所在 commit 完成。
-- Engine dependency：`88be6c0`（含中立 `audio/s98`、`audio/ym2203`、
+- Engine dependency：`6f959cb`（含中立 `audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -251,8 +251,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   的 READY 規格。
   第 375 輪又由 S98 證明 3,993,600 Hz／prescale 6；engine 已完成 Timer B
   完整 count period 與無 rounding drift 的 PCM sample accumulator，
-  spec 375 是最新 READY 規格。
-- 下一步還原 `27h` reload 的 free-running divide-by-16 phase 與 YM2203
+  spec 375 是 READY 規格。
+- 第 376 輪已固定 BSD 授權 `ymfm`，完成作品中立 YM2203 native PCM 與
+  有理數 phase 線性重取樣；CoAB 已把 Sound BIOS intent 依 S98 exact
+  register order 展開，接成 Timer B → PCM → Ebiten player。
+  `-pc98-music-driver` 可由使用者本機 driver 播放，`pc98-render-track`
+  可輸出 deterministic WAV。selector 5 兩次十秒輸出 hash 一致、非靜音且
+  無 clipping；spec 376 是最新 READY 規格。
+- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、fade／SFX
+  arbitration、完整 loop、save/resume 與 analog mixer gain。不得把目前
+  可播放路徑宣稱成完整音樂還原。
   合成器，再做 fade、SFX 共存、完整曲長／loop、mixer 與遊戲內播放；
   不得把完整 period accumulator 說成 cycle-perfect IRQ，也不得把 Sound
   BIOS LFO 擅自接進 CoAB 正常配樂。
@@ -343,8 +351,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   operator-mask key-on；第 372 輪已補 LFO 靜態核心，第 373 輪已補
   Sound BIOS Timer B cadence、sync state 與 ROM 動態 harness。第 374 輪
   證明本作 MSCDRV 接管 IRQ 並繞過該 LFO。第 375 輪已補 Timer B 完整
-  count period 與 PCM 有理數 accumulator。下一個真實缺口是 reload
-  phase、fade／SFX、完整 loop、合成器與遊戲內播放器。
+  count period 與 PCM 有理數 accumulator；第 376 輪已接入 `ymfm`、
+  PCM stream 與遊戲播放器。下一個真實缺口是 reload phase、
+  fade／SFX arbitration、完整 loop、save/resume 與 analog mixer gain。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
