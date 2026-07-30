@@ -2670,6 +2670,7 @@ func main() {
 	burialRedWeb := flag.Bool("burial-red-web", false, "show the Burial Glen red-web INPUT STRING checkpoint")
 	burialRedWebBattle := flag.Bool("burial-red-web-battle", false, "show the first Burial Glen red-web spider battle")
 	burialGraveBattle := flag.Bool("burial-grave-battle", false, "show the Burial Glen grave-looter thri-kreen battle")
+	burialDaemir := flag.Bool("burial-daemir", false, "show Princess Daemir's Burial Glen blessing choice")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -2714,7 +2715,7 @@ func main() {
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
 	}
-	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle {
+	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir {
 		*geoSet = 6
 		*geoBlock = 0x40
 	}
@@ -2945,7 +2946,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle {
+	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir {
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
@@ -2961,7 +2962,13 @@ func main() {
 		if err := state.Continue(); err != nil {
 			log.Fatal(err)
 		}
-		if *burialGraveBattle {
+		if *burialDaemir {
+			state.SetDungeonGeometryView(13, 14, 4)
+			state.DungeonWallRoof = 0x03
+			if err := state.RunDungeonLifecycle(); err != nil {
+				log.Fatal(err)
+			}
+		} else if *burialGraveBattle {
 			state.SetECLSeed(1)
 			for attempt := 0; attempt < 8 && !state.CombatActive(); attempt++ {
 				for _, y := range []int{13, 12} {

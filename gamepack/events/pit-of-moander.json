@@ -104,6 +104,15 @@
       ,"myth-drannor.grave.skeleton": "You see a partially excavated elf skeleton. Jewelry glitters on its wrist. What will you do?"
       ,"myth-drannor.grave.loot": "Loot grave"
       ,"myth-drannor.grave.rebury": "Rebury skeleton"
+      ,"myth-drannor.daemir.offer": "A spirit appears before you. “I am the spirit of Princess Daemir. You seem good people. Will you accept my blessing?”"
+      ,"myth-drannor.daemir.forgiveness-offer": "A spirit appears before you. “I am the spirit of Princess Daemir. You have despoiled the glen—perhaps from ignorance. If you kneel now, you may accept my forgiveness.”"
+      ,"myth-drannor.daemir.forgiven": "“You are forgiven.” She fades away."
+      ,"myth-drannor.daemir.blessing": "“Go forth with my blessing.” She fades away."
+      ,"myth-drannor.daemir.curse": "“You presume too much! As long as you are in Myth Drannor, your weapons will twist in your hands.” She fades away."
+      ,"option.accept": "Accept"
+      ,"option.reject": "Reject"
+      ,"option.kill": "Kill"
+      ,"option.flee": "Flee"
       ,"option.go": "Go"
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
     },
@@ -207,6 +216,15 @@
       ,"myth-drannor.grave.skeleton": "你們看見一具只挖出一部分的精靈骸骨，腕上的珠寶閃閃發光。要怎麼做？"
       ,"myth-drannor.grave.loot": "搜刮墳墓"
       ,"myth-drannor.grave.rebury": "重新安葬骸骨"
+      ,"myth-drannor.daemir.offer": "一個幽魂出現在你們面前。「我是黛米爾公主的幽魂。你們看來是善良的人，願意接受我的祝福嗎？」"
+      ,"myth-drannor.daemir.forgiveness-offer": "一個幽魂出現在你們面前。「我是黛米爾公主的幽魂。你們褻瀆了這片葬林——或許只是出於無知。現在跪下，便可接受我的寬恕。」"
+      ,"myth-drannor.daemir.forgiven": "「你們已獲得寬恕。」她的身影隨即消散。"
+      ,"myth-drannor.daemir.blessing": "「帶著我的祝福前行吧。」她的身影隨即消散。"
+      ,"myth-drannor.daemir.curse": "「你們太放肆了！只要身在迷斯卓諾，你們手中的武器就會自行扭轉。」她的身影隨即消散。"
+      ,"option.accept": "接受"
+      ,"option.reject": "拒絕"
+      ,"option.kill": "殺死"
+      ,"option.flee": "撤退"
       ,"option.go": "繼續前進"
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
     }
@@ -619,6 +637,26 @@
       "message_id": "myth-drannor.grave.rebury"
     },
     {
+      "id": "option.accept",
+      "source": "ACCEPT",
+      "message_id": "option.accept"
+    },
+    {
+      "id": "option.reject",
+      "source": "REJECT",
+      "message_id": "option.reject"
+    },
+    {
+      "id": "option.kill",
+      "source": "KILL",
+      "message_id": "option.kill"
+    },
+    {
+      "id": "option.flee",
+      "source": "FLEE",
+      "message_id": "option.flee"
+    },
+    {
       "id": "option.go",
       "source": "GO",
       "message_id": "option.go"
@@ -710,6 +748,31 @@
       "id": "myth-drannor.grave.skeleton",
       "all_contains": ["YOU SEE A PARTIALLY EXCAVATED ELF SKELETON", "JEWELRY GLITTERS ON ITS WRIST", "WHAT WILL YOU DO"],
       "message_id": "myth-drannor.grave.skeleton"
+    },
+    {
+      "id": "myth-drannor.daemir.offer",
+      "all_contains": ["I AM THE SPIRIT OF", "PRINCESS DAEMIR", "YOU SEEM GOOD PEOPLE", "ACCEPT MY BLESSING"],
+      "message_id": "myth-drannor.daemir.offer"
+    },
+    {
+      "id": "myth-drannor.daemir.forgiveness-offer",
+      "all_contains": ["I AM THE SPIRIT OF", "PRINCESS DAEMIR", "YOU HAVE DESPOILED THE GLEN", "ACCEPT MY FORGIVENESS"],
+      "message_id": "myth-drannor.daemir.forgiveness-offer"
+    },
+    {
+      "id": "myth-drannor.daemir.forgiven",
+      "all_contains": ["YOU ARE FORGIVEN", "SHE FADES AWAY"],
+      "message_id": "myth-drannor.daemir.forgiven"
+    },
+    {
+      "id": "myth-drannor.daemir.blessing",
+      "all_contains": ["GO FORTH WITH MY BLESSING", "SHE FADES AWAY"],
+      "message_id": "myth-drannor.daemir.blessing"
+    },
+    {
+      "id": "myth-drannor.daemir.curse",
+      "all_contains": ["YOU PRESUME TOO MUCH", "YOUR WEAPONS WILL TWIST IN YOUR HANDS", "SHE FADES AWAY"],
+      "message_id": "myth-drannor.daemir.curse"
     },
     {
       "id": "zhentil.patrol_pass",

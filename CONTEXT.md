@@ -2402,3 +2402,20 @@ stable ID 驅動。正常玩家 regression 已連續驗證 REBURY 後再 LOOT，
 正式全套測試證明它會改變 Hap 與散提爾堡既有遭遇數量，故未提交該設計。
 最終實作由 session shared `RuntimeState` 保存持續 PRNG stream；固定基底
 seed 可重現，跨 ECL invocation 會自然取下一值。PRNG save/resume 尚未完成。
+
+2026-07-30 第 389 輪由新增的作品中立 GEO 最短路徑 auditor，證明
+Burial Glen 墳墓 `(6,12)` 可沿九步原始牆／門路徑抵達 `(13,14)`
+terrain `03h`。正常玩家 regression 由 Standing Stone 一路完成前置事件後
+逐格抵達黛米爾公主幽魂，而不是 direct-entry。
+
+real-image ECL 測試鎖定 ACCEPT／REJECT／KILL／FLEE：認可度 `80h`
+以上接受會寫 `4CBAh=85h／4CBBh=02h`；`7Fh` 接受只恢復中立；拒絕與
+KILL 共用 `4CBAh=76h／4CBBh=FEh`；逃離不改值。`4CC0h=1` 使事件只出現
+一次。全部提問、結果與選項已由 game-pack stable ID 資料化，正式
+640×480 原版石框／PICTURE 72／16×15 倚天截圖已保存。
+
+指定 IDA Pro 9.4 fresh load START.EXE 得到 21 個 `4CBAh／4CC0h`
+instruction hits，但 START／raw GAME.OVR 都沒有 `4CBBh` literal consumer；
+這不排除 interpreter 基底指標的間接存取。故本輪只保留 `4CBBh` raw
+work cell，不把攻略所稱命中 `+2／-2` 寫進 runtime。READY spec 389
+保存 writer、陰性 IDA 結果與下一步 DOS 相鄰值實驗邊界。

@@ -197,6 +197,122 @@ func TestRealBurialGlenElfSpiritChoices(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenPrincessDaemirChoices(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T, approval uint16) *BlockSession {
+		t.Helper()
+		session, err := NewBlockSession(all, 0x40)
+		if err != nil {
+			t.Fatal(err)
+		}
+		session.SetMemoryValue(0xC04B, 13)
+		session.SetMemoryValue(0xC04C, 14)
+		session.SetMemoryValue(0xC04D, 4)
+		session.SetMemoryValue(0xC04F, 0x03)
+		session.SetMemoryValue(0x4CBA, approval)
+		return session
+	}
+	runPrompt := func(t *testing.T, session *BlockSession, wantFragment string) RunResult {
+		t.Helper()
+		initial, err := session.RunEntry(1, 1000, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !initial.PictureRequested || initial.PictureBlock != 72 ||
+			!initial.WaitingForMenu ||
+			!reflect.DeepEqual(initial.Menus[len(initial.Menus)-1].Options,
+				[]string{"ACCEPT", "REJECT", "KILL", "FLEE"}) ||
+			!strings.Contains(strings.Join(initial.Text, " "), "PRINCESS DAEMIR") ||
+			!strings.Contains(strings.Join(initial.Text, " "), wantFragment) ||
+			mustMemory(t, session, 0x4CC0) != 1 {
+			t.Fatalf("initial=%+v approval=%d", initial, mustMemory(t, session, 0x4CBA))
+		}
+		return initial
+	}
+
+	t.Run("positive acceptance grants blessing cells", func(t *testing.T) {
+		session := newSession(t, 0x80)
+		runPrompt(t, session, "ACCEPT MY BLESSING")
+		accept := uint16(0)
+		result, err := session.ResumeInteractiveSelectionSeed(1000, &accept, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(strings.Join(result.Text, " "), "GO FORTH WITH MY BLESSING") ||
+			mustMemory(t, session, 0x4CBA) != 0x85 ||
+			mustMemory(t, session, 0x4CBB) != 0x02 {
+			t.Fatalf("result=%+v approval=%02x modifier=%02x",
+				result, mustMemory(t, session, 0x4CBA), mustMemory(t, session, 0x4CBB))
+		}
+	})
+
+	t.Run("despoiler acceptance restores neutral without blessing", func(t *testing.T) {
+		session := newSession(t, 0x7F)
+		runPrompt(t, session, "ACCEPT MY FORGIVENESS")
+		accept := uint16(0)
+		result, err := session.ResumeInteractiveSelectionSeed(1000, &accept, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(strings.Join(result.Text, " "), "YOU ARE FORGIVEN") ||
+			mustMemory(t, session, 0x4CBA) != 0x80 {
+			t.Fatalf("result=%+v approval=%02x", result, mustMemory(t, session, 0x4CBA))
+		}
+		if _, ok := session.MemoryValue(0x4CBB); ok {
+			t.Fatalf("forgiveness unexpectedly wrote 4CBB=%02x", mustMemory(t, session, 0x4CBB))
+		}
+	})
+
+	for _, selection := range []uint16{1, 2} {
+		name := "reject"
+		if selection == 2 {
+			name = "kill"
+		}
+		t.Run(name+" shares the weapon curse branch", func(t *testing.T) {
+			session := newSession(t, 0x80)
+			runPrompt(t, session, "ACCEPT MY BLESSING")
+			result, err := session.ResumeInteractiveSelectionSeed(1000, &selection, nil, 1, PartyContext{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(strings.Join(result.Text, " "), "YOUR WEAPONS WILL TWIST IN YOUR HANDS") ||
+				mustMemory(t, session, 0x4CBA) != 0x76 ||
+				mustMemory(t, session, 0x4CBB) != 0xFE {
+				t.Fatalf("result=%+v approval=%02x modifier=%02x",
+					result, mustMemory(t, session, 0x4CBA), mustMemory(t, session, 0x4CBB))
+			}
+		})
+	}
+
+	t.Run("flee exits without changing approval or modifier", func(t *testing.T) {
+		session := newSession(t, 0x80)
+		runPrompt(t, session, "ACCEPT MY BLESSING")
+		flee := uint16(3)
+		result, err := session.ResumeInteractiveSelectionSeed(1000, &flee, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !result.Exited || mustMemory(t, session, 0x4CBA) != 0x80 {
+			t.Fatalf("result=%+v approval=%02x", result, mustMemory(t, session, 0x4CBA))
+		}
+		if _, ok := session.MemoryValue(0x4CBB); ok {
+			t.Fatalf("flee unexpectedly wrote 4CBB=%02x", mustMemory(t, session, 0x4CBB))
+		}
+	})
+}
+
 func TestRealBurialGlenRedWebChoicesAndCombatContinuation(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {

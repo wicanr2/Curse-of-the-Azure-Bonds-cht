@@ -36,6 +36,7 @@ func main() {
 	findSaveDestination := flag.String("find-save-destination", "", "搜尋寫入指定 16-bit address 的 SAVE candidates（十六進位）")
 	pc98DAX := flag.Bool("pc98-dax", false, "以 IDA 驗證的 PC-9801 DAX block codec 解碼")
 	geoGrid := flag.Bool("geo-grid", false, "將所選 GEO DAX block 解碼為 16×16 terrain 座標表")
+	geoPath := flag.String("geo-path", "", "搜尋 GEO 最短可行路徑，格式為 起點X,起點Y:終點X,終點Y")
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
@@ -248,6 +249,24 @@ func main() {
 						}
 						fmt.Printf("  terrain=0x%02X at (%d,%d) walls=% X details=% X\n",
 							cell.Terrain, x, y, cell.WallDirections, cell.DetailDirections)
+					}
+				}
+				if strings.TrimSpace(*geoPath) != "" {
+					start, target, pathErr := parseGEOPathRequest(*geoPath)
+					if pathErr != nil {
+						log.Fatal(pathErr)
+					}
+					path, found := shortestGEOPath(grid, start, target)
+					if !found {
+						fmt.Printf("  GEO path (%d,%d) -> (%d,%d): unreachable\n",
+							start.X, start.Y, target.X, target.Y)
+					} else {
+						fmt.Printf("  GEO path (%d,%d) -> (%d,%d): %d steps",
+							start.X, start.Y, target.X, target.Y, len(path)-1)
+						for _, step := range path {
+							fmt.Printf(" (%d,%d,%s)", step.X, step.Y, directionName(step.Direction))
+						}
+						fmt.Println()
 					}
 				}
 			}
@@ -487,6 +506,123 @@ func main() {
 				fmt.Printf("  subset stopped safely: %v\n", runErr)
 			}
 		}
+	}
+}
+
+type geoPathStep struct {
+	X         int
+	Y         int
+	Direction int
+}
+
+func parseGEOPathRequest(raw string) (geoPathStep, geoPathStep, error) {
+	var start, target geoPathStep
+	halves := strings.Split(strings.TrimSpace(raw), ":")
+	if len(halves) != 2 {
+		return start, target, fmt.Errorf("invalid -geo-path %q: expected startX,startY:targetX,targetY", raw)
+	}
+	points := []*geoPathStep{&start, &target}
+	for index, half := range halves {
+		coordinates := strings.Split(half, ",")
+		if len(coordinates) != 2 {
+			return start, target, fmt.Errorf("invalid -geo-path %q: expected startX,startY:targetX,targetY", raw)
+		}
+		x, xErr := strconv.Atoi(strings.TrimSpace(coordinates[0]))
+		y, yErr := strconv.Atoi(strings.TrimSpace(coordinates[1]))
+		if xErr != nil || yErr != nil {
+			return start, target, fmt.Errorf("invalid -geo-path %q: coordinates must be decimal integers", raw)
+		}
+		points[index].X = x
+		points[index].Y = y
+	}
+	for _, point := range []geoPathStep{start, target} {
+		if point.X < 0 || point.X >= geo.Width || point.Y < 0 || point.Y >= geo.Height {
+			return start, target, fmt.Errorf("invalid -geo-path %q: coordinates must be 0..15", raw)
+		}
+	}
+	return start, target, nil
+}
+
+func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, bool) {
+	type coordinate struct {
+		X int
+		Y int
+	}
+	startCoordinate := coordinate{X: start.X, Y: start.Y}
+	targetCoordinate := coordinate{X: target.X, Y: target.Y}
+	queue := []coordinate{startCoordinate}
+	visited := map[coordinate]bool{startCoordinate: true}
+	previous := make(map[coordinate]coordinate)
+	arrivalDirection := make(map[coordinate]int)
+	deltas := []struct {
+		Direction int
+		DX        int
+		DY        int
+	}{
+		{Direction: 0, DY: -1},
+		{Direction: 2, DX: 1},
+		{Direction: 4, DY: 1},
+		{Direction: 6, DX: -1},
+	}
+	for len(queue) != 0 {
+		current := queue[0]
+		queue = queue[1:]
+		if current == targetCoordinate {
+			break
+		}
+		for _, delta := range deltas {
+			if !grid.CanMoveDungeonWrapped(current.X, current.Y, delta.Direction) {
+				continue
+			}
+			next := coordinate{
+				X: (current.X + delta.DX + geo.Width) % geo.Width,
+				Y: (current.Y + delta.DY + geo.Height) % geo.Height,
+			}
+			if visited[next] {
+				continue
+			}
+			visited[next] = true
+			previous[next] = current
+			arrivalDirection[next] = delta.Direction
+			queue = append(queue, next)
+		}
+	}
+	if !visited[targetCoordinate] {
+		return nil, false
+	}
+	reversed := []geoPathStep{{
+		X:         targetCoordinate.X,
+		Y:         targetCoordinate.Y,
+		Direction: arrivalDirection[targetCoordinate],
+	}}
+	for current := targetCoordinate; current != startCoordinate; {
+		current = previous[current]
+		reversed = append(reversed, geoPathStep{
+			X:         current.X,
+			Y:         current.Y,
+			Direction: arrivalDirection[current],
+		})
+	}
+	path := make([]geoPathStep, len(reversed))
+	for index := range reversed {
+		path[len(reversed)-1-index] = reversed[index]
+	}
+	path[0].Direction = -1
+	return path, true
+}
+
+func directionName(direction int) string {
+	switch direction {
+	case 0:
+		return "N"
+	case 2:
+		return "E"
+	case 4:
+		return "S"
+	case 6:
+		return "W"
+	default:
+		return "START"
 	}
 }
 
