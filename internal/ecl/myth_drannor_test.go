@@ -2371,6 +2371,120 @@ func TestRealOuterRuinsRakshasaRoomsAndSewer(t *testing.T) {
 	})
 }
 
+func TestRealInnerRuinsKitchenOfficeAndBedroom(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(terrain uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x43)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, terrain)
+		return session
+	}
+	press := uint16(0)
+
+	for _, room := range []struct {
+		name      string
+		terrain   uint16
+		flag      uint16
+		fragments []string
+	}{
+		{
+			name: "office", terrain: 0x8B, flag: 0x4C05,
+			fragments: []string{"CONVERTED TO AN OFFICE", "ICONS OF BANE"},
+		},
+		{
+			name: "kitchen", terrain: 0x8C, flag: 0x4C06,
+			fragments: []string{"COME INTO THE KITCHEN", "NO THREAT TO YOU"},
+		},
+	} {
+		t.Run(room.name+" is descriptive and one-shot", func(t *testing.T) {
+			session := newSession(room.terrain)
+			intro, runErr := session.RunEntry(1, 30000, nil)
+			joined := strings.Join(intro.Text, " ")
+			if runErr != nil || !intro.WaitingForMenu ||
+				mustMemory(t, session, room.flag) != 1 {
+				t.Fatalf("%s intro=%+v err=%v", room.name, intro, runErr)
+			}
+			for _, fragment := range room.fragments {
+				if !strings.Contains(joined, fragment) {
+					t.Fatalf("%s text=%q lacks %q", room.name, joined, fragment)
+				}
+			}
+			done, runErr := session.ResumeInteractiveSelectionSeed(
+				30000, &press, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !done.Exited {
+				t.Fatalf("%s done=%+v err=%v", room.name, done, runErr)
+			}
+			revisit, runErr := session.RunEntry(1, 30000, nil)
+			if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+				t.Fatalf("%s revisit=%+v err=%v", room.name, revisit, runErr)
+			}
+		})
+	}
+
+	t.Run("bedroom loot is optional but the room is one-shot", func(t *testing.T) {
+		session := newSession(0x8A)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "),
+				"DO YOU WANT TO LOOT THE ROOM") ||
+			mustMemory(t, session, 0x4C04) != 1 {
+			t.Fatalf("bedroom intro=%+v err=%v", intro, runErr)
+		}
+		yes := uint16(0)
+		loot, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !loot.CombatRequested ||
+			len(loot.MonsterSpawns) != 0 ||
+			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{{
+				Coins:     [7]uint16{0, 0, 0, 5000, 5000, 12, 15},
+				ItemBlock: 0xFF,
+			}}) {
+			t.Fatalf("bedroom loot=%+v err=%v", loot, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("bedroom service=%+v err=%v", done, runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+			t.Fatalf("bedroom revisit=%+v err=%v", revisit, runErr)
+		}
+
+		decline := newSession(0x8A)
+		if _, runErr = decline.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		no := uint16(1)
+		left, runErr := decline.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !left.Exited ||
+			left.CombatRequested || len(left.TreasureRequests) != 0 ||
+			mustMemory(t, decline, 0x4C04) != 1 {
+			t.Fatalf("bedroom decline=%+v err=%v", left, runErr)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

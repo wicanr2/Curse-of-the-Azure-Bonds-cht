@@ -885,6 +885,14 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 `(15,15,N)`。十七段繁中、raw ECL 分支與 Standing Stone 起始玩家路徑見
 [`spec 403`](docs/spec/403-outer-ruins-rakshasa-rooms-and-sewer.md)。
 
+內部遺跡的合法玩家路徑已再延伸至 `(10,12)`。豪華臥房可選擇是否搜刮；
+答應後取得 30,000 gold、12 gems 與 15 jewelry。廚房與辦公室的兩段繁中
+也已資料化，但完整前置支線分別會由 block `42h` 與 `40h` 先寫入相同的
+全域 `4C06／4C05` one-shot 位址，因此原作在這條路徑會讓兩段敘事靜默。
+remake 忠實保留這個跨 block 旗標碰撞，不用自動清零掩蓋原始行為；raw
+branch、writer 位址、GEO 路線與財寶見
+[`spec 404`](docs/spec/404-inner-ruins-kitchen-office-bedroom.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

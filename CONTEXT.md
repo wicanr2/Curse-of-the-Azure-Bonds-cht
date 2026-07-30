@@ -2641,3 +2641,19 @@ MARGOYLE ×5、RAKSHASA ×6。石像鬼門廊陷阱造成全隊 exact
 出生點。十七段繁中、raw ECL 全分支、手札解鎖、財寶、部分座標 regression
 與正式玩家路徑均已通過；READY spec 403 保存完整證據。下一步接續
 block `43h` 內部。
+
+2026-07-31 第四百零四輪完成 block `43h` 出生點附近 terrain
+`8Ah／8Bh／8Ch`。GEO exact 路線由 `(15,15)` 經 `(13,14)` 廚房、
+`(12,12)` 辦公室抵達 `(10,12)` 豪華臥房；每一步都通過雙側牆面檢查。
+三段繁中以 stable ID 資料化。臥房在詢問前寫 `4C04=1`，拒絕也會消耗；
+同意則透過無怪物 COMBAT 財寶服務取得 5,000 GP、5,000 PP、12 gems、
+15 jewelry，ItemBlock `FFh`，共 30,000 gold。
+
+同輪由全 ECL6 writer 稽核發現原始跨 block 旗標碰撞：block
+`40h:+0F52h` 與 `43h:+0D8Ch` 共用 `4C05`，block `42h:+0F70h` 與
+`43h:+0DEAh` 共用 `4C06`。因此走遍前置支線後，辦公室與廚房 one-shot
+原本就會靜默；乾淨 session 則能顯示文字。沒有 `LOAD FILES` 建立
+block-local bank 的證據，故 remake 忠實保留 SAVGAM ECL 全域位址，不擅自
+清零。raw ECL、YES／NO、重訪、exact 財寶與 Standing Stone 起始玩家路徑
+均已回歸；READY spec 404 保存證據。下一步接續犬舍、活動雕像與私人
+禮拜堂。
