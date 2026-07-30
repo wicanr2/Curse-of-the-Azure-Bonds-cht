@@ -126,6 +126,77 @@ func TestRealStandingStoneToMythDrannorBurialGlen(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenElfSpiritChoices(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	tests := []struct {
+		name      string
+		selection uint16
+		contains  []string
+	}{
+		{
+			name:      "greet",
+			selection: 0,
+			contains:  []string{"THE SPIRIT TALKS OF THE GLEN", "JOURNAL ENTRY", "25. THEN, THE SPIRIT FADES"},
+		},
+		{
+			name:      "flee",
+			selection: 1,
+			contains:  []string{"SO, YOU ARE SHEEP", "THEN YOU SHALL FEED ME", "THE SPIRIT FADES"},
+		},
+		{
+			name:      "attack",
+			selection: 2,
+			contains:  []string{"THE SPIRIT DISAPPEARS"},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			session, err := NewBlockSession(all, 0x40)
+			if err != nil {
+				t.Fatal(err)
+			}
+			session.SetMemoryValue(0xC04B, 3)
+			session.SetMemoryValue(0xC04C, 14)
+			session.SetMemoryValue(0xC04D, 0)
+			session.SetMemoryValue(0xC04F, 1)
+			initial, err := session.RunEntry(1, 1000, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !initial.PictureRequested || initial.PictureBlock != 72 ||
+				!initial.WaitingForMenu ||
+				!reflect.DeepEqual(initial.Menus[len(initial.Menus)-1].Options, []string{"GREET", "FLEE", "ATTACK"}) ||
+				!strings.Contains(strings.Join(initial.Text, " "), "AN ELFISH SPIRIT APPEARS AND GREETS YOU") {
+				t.Fatalf("initial=%+v", initial)
+			}
+			result, err := session.ResumeInteractiveSelectionSeed(
+				1000, &test.selection, nil, 1, PartyContext{},
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+			joined := strings.Join(result.Text, " ")
+			for _, fragment := range test.contains {
+				if !strings.Contains(joined, fragment) {
+					t.Fatalf("selection %d text=%q, missing %q", test.selection, joined, fragment)
+				}
+			}
+		})
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

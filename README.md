@@ -764,6 +764,10 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
   線索後，玩家可在 Standing Stone 看見提朗瑟克斯揭露身分，依正常
   Journey On→Myth Drannor→Wilderness→Enter City 操作進入 ECL6／GEO6
   Burial Glen block `0x40`；完整 AREA 行程、遺跡事件與結局仍待完成。
+- Burial Glen 現會採用 ECL 寫入的 `(2,15,E)` 出生點，而非沿用前區域座標。
+  從入口按原始 GEO 牆面走東一步、轉北一步，可遇到 PICTURE 72 的精靈幽魂；
+  向它致意會在遊戲內解鎖繁中手札 25，得到紅色蛛網與通關詞
+  `Krrkik` 的提示。後續紅網陷阱、蜘蛛與 rakshasa 尚待接通。
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

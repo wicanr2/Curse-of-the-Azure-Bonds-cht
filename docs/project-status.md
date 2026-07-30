@@ -60,6 +60,10 @@ commit 內保存不可能自我引用的 hash。
   Journey On／Wilderness／AREA 抵達 Myth Drannor，選擇 Enter City 後
   進入 ECL6／GEO6 Burial Glen block `0x40`。這只證明入口 vertical slice，
   尚非完整 AREA travel 或 Myth Drannor 章節。
+- Burial Glen 入口會採 ECL exact 出生點 `(2,15,E)`；玩家可依 GEO 牆面
+  正常走兩步到 terrain `01h`，觸發 PICTURE 72 精靈幽魂。`GREET` 會把
+  JSON 版 Journal 25 加入遊戲內手札，`FLEE／ATTACK` 原始分支也有 ECL
+  oracle；紅網、rakshasa 與後續區域仍未完成。
 - remake JSON save，以及原版 SAVGAM／CHRDAT／FX／SWG 的已驗證欄位
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
@@ -151,8 +155,9 @@ commit 內保存不可能自我引用的 hash。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
-  提朗瑟克斯，並要求隊伍前往 Myth Drannor。這只完成最終章解鎖條件；
-  ECL6／GEO6 的正常路徑與最終章仍未完成。
+  提朗瑟克斯，並要求隊伍前往 Myth Drannor。第 384／385 輪已接通
+  ECL6／GEO6 正常入口與第一個精靈幽魂事件；其餘 Burial Glen、迷斯卓諾
+  遺跡、最終神殿與結局仍未完成。
 
 ## 尚未完成
 

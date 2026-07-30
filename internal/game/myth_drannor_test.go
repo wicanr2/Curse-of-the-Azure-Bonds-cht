@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 )
 
 func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
@@ -126,6 +127,77 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	if state.Mode != ModeDungeon {
 		t.Fatalf("Burial Glen continuation mode=%v, want dungeon", state.Mode)
+	}
+	if state.DungeonX != 2 || state.DungeonY != 15 || state.DungeonDirection != 2 {
+		t.Fatalf("Burial Glen spawn=(%d,%d,%d), want (2,15,2)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+
+	blocks, err := dax.Parse(zipData(t, image, "GEO6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var burialGlen geo.Grid
+	found := false
+	for _, block := range blocks {
+		if block.Entry.ID == 0x40 {
+			burialGlen, err = geo.Parse(block.Entry.ID, block.Data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatal("GEO6 block 0x40 not found")
+	}
+	if !burialGlen.CanMoveDungeonWrapped(2, 15, 2) {
+		t.Fatal("Burial Glen spawn cannot move east to (3,15)")
+	}
+	state.SetDungeonGeometryView(3, 15, 2)
+	state.DungeonWallRoof = burialGlen.CellWrapped(3, 15).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("quiet Burial Glen step mode=%v, want dungeon", state.Mode)
+	}
+	if !burialGlen.CanMoveDungeonWrapped(3, 15, 0) {
+		t.Fatal("Burial Glen (3,15) cannot move north to spirit at (3,14)")
+	}
+	state.SetDungeonGeometryView(3, 14, 0)
+	state.DungeonWallRoof = burialGlen.CellWrapped(3, 14).Terrain
+	if state.DungeonWallRoof != 0x01 {
+		t.Fatalf("Burial Glen spirit terrain=%02x, want 01", state.DungeonWallRoof)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 72 ||
+		state.Message != gamePackText(t, state, "myth-drannor.elf-spirit.greeting") {
+		t.Fatalf("elf spirit mode=%v picture=%v/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"GREET", "FLEE", "ATTACK"}) {
+		t.Fatalf("elf spirit choices=%v", state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.elf-spirit.journal-25") {
+		t.Fatalf("elf spirit greeting result=%q", state.Message)
+	}
+	wantJournal := gamePackText(t, state, "journal.25")
+	found = false
+	for _, page := range state.JournalPages {
+		found = found || page == wantJournal
+	}
+	if !found {
+		t.Fatalf("Journal 25 not unlocked: %v", state.JournalPages)
 	}
 }
 

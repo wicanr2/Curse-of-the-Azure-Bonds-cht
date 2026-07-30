@@ -88,6 +88,11 @@
       ,"myth-drannor.tyranthraxus-reveal": "The bonds reveal Tyranthraxus. He commands you to meet him at Myth Drannor."
       ,"myth-drannor.edge": "You are at the edge of Myth Drannor. Will you enter or continue your journey?"
       ,"myth-drannor.helm-north": "The Helm of Dragons reports that Tyranthraxus is to the north."
+      ,"myth-drannor.elf-spirit.greeting": "An elfish spirit appears and greets you. What do you do?"
+      ,"myth-drannor.elf-spirit.journal-25": "The spirit tells you about the glen. You record Journal Entry 25, and then the spirit fades."
+      ,"myth-drannor.elf-spirit.flee": "“So, you are sheep! Then you shall feed me.” The spirit fades."
+      ,"myth-drannor.spirit-disappears": "The spirit disappears."
+      ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -173,6 +178,11 @@
       ,"myth-drannor.tyranthraxus-reveal": "枷印揭露出烈焰之主提朗瑟克斯；他命令你們前往迷斯卓諾與他會面。"
       ,"myth-drannor.edge": "你們來到迷斯卓諾邊緣。要進入遺跡，還是繼續旅程？"
       ,"myth-drannor.helm-north": "龍盔傳來感應：提朗瑟克斯就在北方。"
+      ,"myth-drannor.elf-spirit.greeting": "一名精靈幽魂現身，向你們致意。你們要怎麼做？"
+      ,"myth-drannor.elf-spirit.journal-25": "幽魂講述葬林的往事；你們將內容記入手札第 25 條，隨後它逐漸消失。"
+      ,"myth-drannor.elf-spirit.flee": "「原來你們是羊！那就成為我的食物吧。」幽魂逐漸消失。"
+      ,"myth-drannor.spirit-disappears": "幽魂消失了。"
+      ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
     }
   },
   "music_tracks": [
@@ -586,6 +596,27 @@
       "id": "myth-drannor.helm-north",
       "all_contains": ["THE HELM OF DRAGONS REPORTS", "TYRANTHRAXUS IS TO", "THE NORTH"],
       "message_id": "myth-drannor.helm-north"
+    },
+    {
+      "id": "myth-drannor.elf-spirit.greeting",
+      "all_contains": ["AN ELFISH SPIRIT APPEARS AND GREETS YOU", "WHAT DO YOU DO"],
+      "message_id": "myth-drannor.elf-spirit.greeting"
+    },
+    {
+      "id": "myth-drannor.elf-spirit.journal-25",
+      "all_contains": ["THE SPIRIT TALKS OF THE GLEN", "JOURNAL ENTRY", "25. THEN, THE SPIRIT FADES"],
+      "message_id": "myth-drannor.elf-spirit.journal-25",
+      "journal_message_ids": ["journal.25"]
+    },
+    {
+      "id": "myth-drannor.elf-spirit.flee",
+      "all_contains": ["SO, YOU ARE SHEEP", "THEN YOU SHALL FEED ME", "THE SPIRIT FADES"],
+      "message_id": "myth-drannor.elf-spirit.flee"
+    },
+    {
+      "id": "myth-drannor.spirit-disappears",
+      "all_contains": ["THE SPIRIT DISAPPEARS"],
+      "message_id": "myth-drannor.spirit-disappears"
     },
     {
       "id": "zhentil.patrol_pass",

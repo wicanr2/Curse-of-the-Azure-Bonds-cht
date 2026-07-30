@@ -2339,3 +2339,14 @@ WILDERNESS→AREA arrival→ENTER CITY→ECL6/GEO6 block `0x40` 的正常玩家
 繁中劇情文字，而以 `message_id` 從受測 game pack 取得期望值。既有
 Ashabenford→Standing Stone→Essembra→Hap 長回歸路徑與新 Burial Glen
 入口路徑同時通過。完整 AREA travel、Burial Glen 事件與結局仍未完成。
+
+2026-07-30 第 385 輪由 ECL6 block `0x40:+0014` 證明 Burial Glen exact
+出生點是 `(2,15,E)`。修正帶文字的 `NEWECL` 入口：Continue 回到地城時也
+會完成 pending map-register handoff，不再沿用 `(7,13,N)`。
+
+GEO6 證明 `(2,15)→(3,15)→(3,14)` 兩步可通行，終點 terrain `01h` 會
+觸發 PICTURE 72 精靈幽魂。原始 ECL 三分支 oracle 已驗證
+`GREET／FLEE／ATTACK`；正常玩家路徑選 GREET 後，State 由 game-pack
+stable ID 顯示繁中事件並解鎖 Journal 25。Journal 英文由公開文件轉錄與
+Burial Glen 攻略交叉核對；本地 PDF 是純影像，OCR 本輪未可靠抽出該條。
+紅網 terrain `82h`、`Krrkik`、蜘蛛／rakshasa 與後續章節仍未完成。

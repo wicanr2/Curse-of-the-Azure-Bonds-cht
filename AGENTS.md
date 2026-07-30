@@ -188,9 +188,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ff944bf`；第 383 輪 ECL 首輪記憶體生命週期與
-  Myth Drannor 解鎖 milestone 會由本文件所在 commit 完成。
-- Engine dependency：`031d4ea`（含繁體中文音訊架構知識庫及中立
+- CoAB 本輪基底：`e301642`；第 385 輪 Burial Glen 精靈幽魂與 Journal 25
+  milestone 會由本文件所在 commit 完成。
+- Engine dependency：`7ba2f8e`（含世界目的地有向圖 schema／validation、
+  繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
@@ -203,11 +204,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
-- 第 383 輪已證明 Standing Stone 以 `4C59=1／4C5A=1／4C5B!=0`
-  計數三個已解除主人，接著揭露 Tyranthraxus 並要求前往 Myth Drannor。
-  `BlockSession.RunFrom` 首輪遺失預載 memory 的缺陷已修正並有合成與真實
-  ECL regression。下一步接通 `JOURNEY ON → MYTH DRANNOR → ECL6/GEO6
-  block 0x40` 的正常玩家路徑；不得宣稱最終章已完成。
+- 第 384 輪已接通 Standing Stone→Myth Drannor→ECL6/GEO6 block `0x40`
+  的正常玩家路徑。第 385 輪進一步證明 exact 出生點 `(2,15,E)`，修正帶
+  文字 `NEWECL` 的 pending 座標 handoff，並沿兩步可通行 GEO 路徑完成
+  terrain `01h` PICTURE 72 精靈幽魂、三分支 oracle 與 JSON Journal 25。
+  下一步是 Journal 25 指向的 terrain `82h` 紅網、`Krrkik`、蜘蛛與
+  rakshasa；不得宣稱 Burial Glen 或最終章已完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
