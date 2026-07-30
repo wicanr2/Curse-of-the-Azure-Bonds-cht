@@ -1298,6 +1298,129 @@ func TestRealBurialGlenElvenCourtApprovalBranches(t *testing.T) {
 	})
 }
 
+func TestRealBurialGlenRedPlumeTrapBranches(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T, approval uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 13)
+		session.SetMemoryValue(0xC04C, 6)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, 0x05)
+		session.SetMemoryValue(0x4CBA, approval)
+		return session
+	}
+	resume := func(t *testing.T, session *BlockSession, choice uint16) RunResult {
+		t.Helper()
+		result, runErr := session.ResumeInteractiveSelectionSeed(
+			10000, &choice, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		return result
+	}
+	press := uint16(0)
+
+	t.Run("journal offer and three decisions", func(t *testing.T) {
+		for decision := uint16(0); decision < 3; decision++ {
+			session := newSession(t, 0x85)
+			intro, runErr := session.RunEntry(1, 10000, nil)
+			if runErr != nil || !intro.WaitingForMenu ||
+				!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) ||
+				intro.Menus[len(intro.Menus)-1].Prompt != "HE MAKES A GESTURE OF FRIENDSHIP" {
+				t.Fatalf("decision=%d intro=%+v err=%v", decision, intro, runErr)
+			}
+			journal := resume(t, session, 1)
+			if !journal.WaitingForMenu ||
+				!strings.Contains(strings.Join(journal.Text, " "), "JOURNAL ENTRY 33") ||
+				!reflect.DeepEqual(journal.Menus[len(journal.Menus)-1].Options,
+					[]string{"AGREE", "REFUSE PAYMENT", "DISAGREE"}) ||
+				mustMemory(t, session, 0x4CC2) != 1 {
+				t.Fatalf("decision=%d journal=%+v", decision, journal)
+			}
+			branch := resume(t, session, decision)
+			if decision < 2 {
+				if !branch.WaitingForMenu ||
+					!strings.Contains(strings.Join(branch.Text, " "), "FOLLOW ME") {
+					t.Fatalf("decision=%d branch=%+v", decision, branch)
+				}
+			} else if !branch.WaitingForMenu ||
+				!strings.Contains(strings.Join(branch.Text, " "), "SCREAM PIERCES THE AIR") {
+				t.Fatalf("decision=%d branch=%+v", decision, branch)
+			}
+		}
+	})
+
+	t.Run("agree warning two arrows and seven monsters", func(t *testing.T) {
+		session := newSession(t, 0x85)
+		if _, runErr := session.RunEntry(1, 10000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		resume(t, session, 1)
+		resume(t, session, 0)
+		prompt := resume(t, session, press)
+		if !prompt.WaitingForMenu ||
+			!reflect.DeepEqual(prompt.Menus[len(prompt.Menus)-1].Options, []string{"YES", "NO"}) {
+			t.Fatalf("continue prompt=%+v", prompt)
+		}
+		reveal := resume(t, session, 0)
+		if reveal.PictureBlock != 0x43 ||
+			!strings.Contains(strings.Join(reveal.Text, " "), "HIS SHAPE CHANGES") {
+			t.Fatalf("reveal=%+v", reveal)
+		}
+		damage := resume(t, session, press)
+		if !reflect.DeepEqual(damage.DamageRequests, []DamageRequest{{
+			Flags: 2, DiceCount: 1, DiceSize: 6, Bonus: 6, SaveFlags: 0x35,
+		}}) {
+			t.Fatalf("damage=%+v", damage)
+		}
+		fight := resume(t, session, press)
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x41, Count: 6, IconBlock: 0x41},
+				{MonsterID: 0x49, Count: 1, IconBlock: 0x43},
+			}) {
+			t.Fatalf("fight=%+v", fight)
+		}
+	})
+
+	t.Run("warning and investigation can both be declined", func(t *testing.T) {
+		agree := newSession(t, 0x85)
+		agree.RunEntry(1, 10000, nil)
+		resume(t, agree, 1)
+		resume(t, agree, 0)
+		resume(t, agree, press)
+		if done := resume(t, agree, 1); !done.Exited || done.CombatRequested {
+			t.Fatalf("declined trap=%+v", done)
+		}
+
+		disagree := newSession(t, 0x85)
+		disagree.RunEntry(1, 10000, nil)
+		resume(t, disagree, 1)
+		resume(t, disagree, 2)
+		if done := resume(t, disagree, 1); !done.Exited || done.CombatRequested {
+			t.Fatalf("declined investigation=%+v", done)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

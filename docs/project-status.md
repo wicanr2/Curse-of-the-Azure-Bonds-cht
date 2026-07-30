@@ -213,6 +213,15 @@ commit 內保存不可能自我引用的 hash。
   三個完成旗標、繁中 stable IDs、ITEM6 真實解碼與 Standing Stone 起始
   玩家路徑均已回歸。使用者提供的角色資訊實機圖也已納入 spec 391，
   固定人物舞台／右側 roster／下方長文三區 layout oracle。
+- 第 397 輪已證明王庭不是出口，並由 `(1,3)` 沿 19 步合法 GEO 路徑抵達
+  terrain `05h` 的紅羽戰士。`WAIT` 解鎖資料化手札 33；`AGREE／
+  REFUSE PAYMENT／DISAGREE`、幽魂警告與可中止分支均有 raw ECL 回歸。
+  同行陷阱會用一條 `DAMAGE flags=2,1d6+6,saveFlags=35h` 解析成兩次
+  隨機目標箭擊，再進入六隻 PHASE SPIDER 與一隻 RAKSHASA 的戰鬥；
+  Standing Stone 起始玩家路徑已接回戰後精靈骸骨選單。手札內容由使用者
+  提供 PDF 第 10 頁核對；提示、敘事及選項均由 JSON stable ID 驅動。
+  遭遇 `COMBAT／FLEE` 外部語意、羅剎妖完整能力與戰利品、terrain
+  `07h／0Ch`、區域出口及最終神殿仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

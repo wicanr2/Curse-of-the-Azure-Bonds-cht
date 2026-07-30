@@ -2517,3 +2517,22 @@ YES 給 4 gems、2 jewelry 與 block `40h`，NO 不給財寶，兩者都倒塔�
 並更新 spec 391：左上是黃色裂紋 HEAD／BODY 專用舞台，右側 roster 與
 下方長文各有獨立石框；不可把角色圖當一般 PIC cover，也不可把頭像塞入
 身體或縮成 roster icon。
+
+2026-07-30 第三百九十七輪證明精靈王庭不是 Burial Glen 出口。GEO6
+block `40h` 從王后 `(1,3)` 到 terrain `05h` `(13,6)` 有 19 步合法路徑；
+Standing Stone 起始正常玩家 regression 已逐格走完，途中共用隨機遭遇
+會從正常 `FLEE` 選單返回原座標。
+
+terrain `05h` 的紅羽戰士在 `WAIT` 後寫 `4CC2=1`、解鎖手札 33，並提供
+`AGREE／REFUSE PAYMENT／DISAGREE`。使用者提供的 Adventurer’s Journal
+PDF 第 10 頁（印刷頁 17–18）直接證明 Caemir 的祖父墓穴與魔法弓說詞；
+英文、繁中、選項及事件提示都已移入 game-pack stable IDs。
+
+答應同行並無視幽魂警告時，`PICTURE 43h` 顯示變形成羅剎妖。ECL 只發出
+一條 `DAMAGE flags=2,dice=1d6+6,saveFlags=35h`；既有 random-target
+consumer 證明它代表兩次帶命中判定的箭擊。之後載入 MON6CHA
+`41h` PHASE SPIDER ×6 與 `49h` RAKSHASA ×1，勝利後接回精靈骸骨選單。
+State 的 menu prompt 現會先查作品 JSON text rules，未命中才使用舊共用
+fallback，避免把新作品提示硬寫入 Go。READY spec 397 保存完整證據與
+限制；terrain `07h／0Ch`、區域出口、encounter `COMBAT／FLEE` 外部語意、
+羅剎妖完整能力／戰利品／弓箭演出仍待後續。

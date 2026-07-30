@@ -963,11 +963,20 @@ func (s *State) enterECLMenu(menu ecl.Menu) {
 		s.Choices = append(s.Choices, s.localizeOption(option))
 	}
 	if menu.Prompt != "" {
-		s.Prompt = localizePrompt(s.catalog, menu.Prompt)
+		s.Prompt = s.localizeECLPrompt(menu.Prompt)
 	} else {
 		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
 	}
 	s.Mode = ModeWilderness
+}
+
+func (s *State) localizeECLPrompt(prompt string) string {
+	if s.dataPack != nil {
+		if result := s.dataPack.MatchText([]string{prompt}, s.catalog.Language); result.Matched {
+			return result.Message
+		}
+	}
+	return localizePrompt(s.catalog, prompt)
 }
 
 // syncWorldDestinationSelectors projects the title-declared route graph into

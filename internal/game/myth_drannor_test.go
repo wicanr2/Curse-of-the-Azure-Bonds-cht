@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
@@ -40,6 +41,14 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
 		t.Fatal(err)
 	}
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 10, HitPoints: 999, MaxHitPoints: 999,
+		Abilities: party.Abilities{
+			Strength: 18, Intelligence: 18, Wisdom: 18,
+			Dexterity: 18, Constitution: 18, Charisma: 18,
+		},
+	}}
 	monsterBlocks, err := dax.Parse(zipData(t, image, "MON6CHA.DAX"))
 	if err != nil {
 		t.Fatal(err)
@@ -1571,6 +1580,135 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		if value, found := state.session.MemoryValue(address); !found || value != 1 {
 			t.Fatalf("court completion flag %04x=%d,%v", address, value, found)
 		}
+	}
+
+	// Leave the court by its real doorway and cross the northern ruins to
+	// terrain 05h. The court is a side chamber, not a chapter exit.
+	redPlumeRoute := []dungeonStep{
+		{x: 1, y: 2, direction: 0},
+		{x: 1, y: 1, direction: 0},
+		{x: 2, y: 1, direction: 2},
+		{x: 3, y: 1, direction: 2},
+		{x: 4, y: 1, direction: 2},
+		{x: 4, y: 2, direction: 4},
+		{x: 5, y: 2, direction: 2},
+		{x: 6, y: 2, direction: 2},
+		{x: 7, y: 2, direction: 2},
+		{x: 7, y: 3, direction: 4},
+		{x: 8, y: 3, direction: 2},
+		{x: 9, y: 3, direction: 2},
+		{x: 10, y: 3, direction: 2},
+		{x: 11, y: 3, direction: 2},
+		{x: 12, y: 3, direction: 2},
+		{x: 12, y: 4, direction: 4},
+		{x: 12, y: 5, direction: 4},
+		{x: 12, y: 6, direction: 4},
+		{x: 13, y: 6, direction: 2},
+	}
+	previousX, previousY = 1, 3
+	for index, step := range redPlumeRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("red-plume route %d (%d,%d)->(%d,%d) is not passable",
+				index, previousX, previousY, step.x, step.y)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(redPlumeRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(redPlumeRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("red-plume route %d interrupted mode=%v terrain=%02x message=%q",
+				index, state.Mode, state.DungeonWallRoof, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x05 || state.Mode != ModeWilderness ||
+		state.Prompt != gamePackText(t, state, "myth-drannor.red-plume.gesture") {
+		t.Fatalf("red-plume arrival terrain=%02x mode=%v prompt=%q choices=%v",
+			state.DungeonWallRoof, state.Mode, state.Prompt, state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-plume.journal") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"AGREE", "REFUSE PAYMENT", "DISAGREE"}) {
+		t.Fatalf("red-plume journal mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	if journals := state.JournalPages; len(journals) == 0 ||
+		journals[len(journals)-1] != gamePackText(t, state, "journal.33") {
+		t.Fatalf("Journal 33 was not unlocked from game-pack: %v", journals)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.red-plume.warning") {
+		t.Fatalf("red-plume warning=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("red-plume continue choices=%v", state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.PictureBlock != 0x43 ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-plume.reveal") {
+		t.Fatalf("red-plume reveal picture=%d message=%q", state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	outcomes, err := state.ResolvePendingECLDamageWithDefaultHitResolver(
+		-1,
+		func(sides int) int {
+			if sides == 20 {
+				return 20
+			}
+			return 1
+		},
+		func(int) int { return 1 },
+	)
+	if err != nil || len(outcomes) != 2 {
+		t.Fatalf("red-plume two-arrow damage outcomes=%v err=%v", outcomes, err)
+	}
+	for step := 0; step < 4 && state.Mode == ModeWilderness &&
+		reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}); step++ {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 7 {
+		t.Fatalf("red-plume combat mode=%v active=%v enemies=%d message=%q choices=%v pending-damage=%v",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideEnemy)), state.Message,
+			state.currentOriginalChoices, state.pendingDamageRequests)
+	}
+	for action := 0; action < 96 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.grave.skeleton") {
+		t.Fatalf("red-plume victory mode=%v status=%v message=%q",
+			state.Mode, state.CombatStatus(), state.Message)
 	}
 
 	boundaryHero := hero

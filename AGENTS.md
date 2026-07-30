@@ -272,9 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ae3a270`（第 395 輪 Burial Glen terrain
-  `91h／92h` 蜘蛛陵墓）；
-  第 396 輪西側精靈王庭 milestone
+- CoAB 本輪基底：`159102c`（第 396 輪 Burial Glen 西側精靈王庭）；
+  第 397 輪紅羽戰士羅剎妖陷阱 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -366,6 +365,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   敵對分支先扣五點，再依 YES／NO 給較少財寶或拒絕，最後倒塔傳送
   `(5,2,S)`。友善獎勵測試必須載入真正 ITEM6 blocks，不能把未載素材的
   零怪物 COMBAT fallback 當作通過。READY spec 396 是權威細節。
+- 第 397 輪證明王庭不是出口，並由 `(1,3)` 沿 19 步合法 GEO 路徑抵達
+  terrain `05h`。紅羽戰士 `WAIT` 會解鎖手札 33；同行陷阱的單條
+  `DAMAGE(2,1d6+6,35h)` 是兩次隨機目標箭擊，之後載入
+  PHASE SPIDER ×6 與 RAKSHASA ×1。raw 三分支、拒絕繼續、資料化提示／
+  選項／手札及 Standing Stone 起始戰後骸骨選單均已回歸。下一步優先
+  terrain `07h`、`0Ch` 與區域出口；`COMBAT／FLEE` encounter action、
+  羅剎妖完整能力／戰利品／弓箭演出仍是明確缺口。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

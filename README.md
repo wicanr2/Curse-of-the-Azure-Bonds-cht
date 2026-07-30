@@ -827,6 +827,17 @@ terrain `0x91／0x92` 的蜘蛛陵墓也已接入同一條玩家路徑。第一�
 繁中警告、YES／NO、旗標時序與低好感直接開戰分支均有原始 ECL 回歸，詳見
 [`spec 395`](docs/spec/395-burial-glen-spider-mausoleums.md)。
 
+西側精靈王庭的門口幽魂、魔法盔甲、十四名敵對守衛與王后獎勵也已接通。
+友善王后會給 12 gems、8 jewelry 與六筆原始 ITEM6 物品；敵對結果則依
+選擇給較少財寶或使高塔崩塌。完整好感門檻、四個盔甲選項與三個完成旗標見
+[`spec 396`](docs/spec/396-burial-glen-elven-court.md)。
+
+王庭並非章節出口。正常玩家現在可從王后所在地沿 19 步原始 GEO 路徑抵達
+terrain `0x05` 的紅羽戰士，解鎖由原版手冊核對的繁中手札 33。答應同行會
+觸發羅剎妖的兩次 `1d6+6` 箭擊，再迎戰六隻相位蜘蛛與一隻羅剎妖；勝利後
+回到精靈骸骨處置選單。事件提示、三個決定與手札都由 game-pack JSON
+驅動，詳見 [`spec 397`](docs/spec/397-burial-glen-red-plume-trap.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。
