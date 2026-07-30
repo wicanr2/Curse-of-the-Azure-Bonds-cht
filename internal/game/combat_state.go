@@ -162,7 +162,7 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 			resolvedAffects[spawn.MonsterID] = list
 		}
 	}
-	applyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites, len(party))
+	ecl.ApplyCombatTeamWrites(result.MonsterSpawns, result.CombatTeamWrites)
 	enemies, err := monster.BuildEnemiesWithAffects(result.MonsterSpawns, resolvedRecords, resolvedAffects)
 	if err != nil {
 		return err
@@ -245,28 +245,6 @@ func localizeMonsterName(catalog locale.Catalog, name string) string {
 		return catalog.Text("monster_bit_of_moander", "摩安德殘軀")
 	default:
 		return name
-	}
-}
-
-func applyCombatTeamWrites(spawns []ecl.MonsterSpawn, writes []ecl.CombatTeamWrite, partyCount int) {
-	for _, write := range writes {
-		monsterIndex := write.TeamListIndex - partyCount
-		for spawnIndex := range spawns {
-			count := int(spawns[spawnIndex].Count)
-			if count == 0 {
-				count = 1
-			}
-			if monsterIndex >= 0 && monsterIndex < count {
-				mask := uint64(1) << monsterIndex
-				if write.Value == 0 || write.Value == 0x80 {
-					spawns[spawnIndex].PartyMask |= mask
-				} else if write.Value == 0x81 {
-					spawns[spawnIndex].PartyMask &^= mask
-				}
-				break
-			}
-			monsterIndex -= count
-		}
 	}
 }
 

@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`825de71`（第 397 輪 Burial Glen 紅羽戰士陷阱）；
-  第 398 輪手札 56 與東界遺跡出口 milestone
+- CoAB 本輪基底：`fa21f5b`（第 398 輪手札 56 與東界出口）；
+  第 399 輪外圍遺跡提爾雪雅結盟 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -379,6 +379,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   進入 block `42h` `(0,12,E)`。State 對地城內所有 `NEWECL` 投影
   `C04B／C04C／C04D`，不得為作品座標另寫 Go 特例。下一步探索完整
   block `42h` 遺跡，之後才是神殿與結局。
+- 第 399 輪已接通 block `42h` terrain `01h`。`4CD0` 控制一次性提爾雪雅
+  事件，`WAIT` 解鎖手札 5；第一戰是 HELL HOUND `44h`×5＋MARGOYLE
+  `45h`×5。選擇攻擊貝爾哈時，第二戰是 RAKSHASA `43h`×1＋兩種隨從
+  各六，且 `LOAD CHARACTER 8 → team 80h → ADD NPC 43h` 將第一隻
+  RAKSHASA 設為 QuickFight 臨時盟友。DOS combatant array 固定保留
+  index `0..7`，不得用 active party 長度計算 monster index，也不得把
+  這種 monster ally 解析成永久 player record。READY spec 399 是權威
+  細節；下一步接續倉庫與 block `42h` 其餘 terrain。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

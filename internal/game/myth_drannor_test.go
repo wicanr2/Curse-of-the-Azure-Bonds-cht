@@ -1898,6 +1898,144 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
 			state.Mode, state.Message)
 	}
+	for step := 0; step < 4 && state.Mode != ModeDungeon; step++ {
+		switch {
+		case state.Mode == ModeEvent:
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		case state.Mode == ModeWilderness &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}):
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		default:
+			t.Fatalf("unexpected outer-ruins entry mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
+	}
+	var outerRuins geo.Grid
+	found = false
+	for _, block := range blocks {
+		if block.Entry.ID == 0x42 {
+			outerRuins, err = geo.Parse(block.Entry.ID, block.Data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatal("GEO6 block 0x42 not found")
+	}
+	if state.Mode != ModeDungeon ||
+		!outerRuins.CanMoveDungeonWrapped(0, 12, 2) {
+		t.Fatalf("outer-ruins spawn mode=%v cannot move east", state.Mode)
+	}
+	state.SetDungeonGeometryView(1, 12, 2)
+	state.DungeonWallRoof = outerRuins.CellWrapped(1, 12).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x01 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.greeting") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"WAIT", "ATTACK", "FLEE"}) {
+		t.Fatalf("Tirsheya intro terrain=%02x mode=%v message=%q choices=%v",
+			state.DungeonWallRoof, state.Mode, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.tale") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("Tirsheya tale message=%q choices=%v",
+			state.Message, state.currentOriginalChoices)
+	}
+	if journals := state.JournalPages; len(journals) == 0 ||
+		journals[len(journals)-1] != gamePackText(t, state, "journal.5") {
+		t.Fatalf("Journal 5 was not unlocked from game-pack: %v", journals)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.guards") {
+		t.Fatalf("Tirsheya guard message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 10 {
+		t.Fatalf("Tirsheya first combat mode=%v active=%v enemies=%d",
+			state.Mode, state.CombatActive(), len(state.livingBySide(combat.SideEnemy)))
+	}
+	for action := 0; action < 128 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.beyrha-arrives") {
+		t.Fatalf("Beyrha arrival mode=%v status=%v message=%q",
+			state.Mode, state.CombatStatus(), state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.ultimatum") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"TIRSHEYA", "BEYRHA", "FLEE"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "myth-drannor.outer.tirsheya.name"),
+			gamePackText(t, state, "myth-drannor.outer.beyrha.name"),
+			gamePackText(t, state, "option.flee"),
+		}) {
+		t.Fatalf("Beyrha ultimatum mode=%v message=%q choices=%v originals=%v",
+			state.Mode, state.Message, state.Choices, state.currentOriginalChoices)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.tirsheya.attack-beyrha") {
+		t.Fatalf("attack Beyrha message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 12 ||
+		len(state.livingBySide(combat.SideParty)) != 2 {
+		t.Fatalf("Beyrha combat mode=%v active=%v party=%d enemies=%d",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideParty)),
+			len(state.livingBySide(combat.SideEnemy)))
+	}
+	for action := 0; action < 160 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if completed, ok := state.session.MemoryValue(0x4CD1); !ok || completed != 1 ||
+		state.Mode != ModeDungeon || len(state.partyRoster) != 1 {
+		t.Fatalf("Tirsheya alliance completion mode=%v party=%d 4CD1=%d,%v message=%q",
+			state.Mode, len(state.partyRoster), completed, ok, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("completed Tirsheya event retriggered mode=%v message=%q",
+			state.Mode, state.Message)
+	}
 
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23

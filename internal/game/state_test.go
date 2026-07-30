@@ -2374,6 +2374,46 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	}
 }
 
+func TestStartEncounterUsesEightReservedPlayerSlotsForTemporaryMonsterAlly(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{{
+		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+	}}
+	records := map[uint8]monster.Record{
+		0x43: {Name: "RAKSHASA", HitPoints: 35, MaxHitPoints: 35},
+		0x44: {Name: "HELL HOUND", HitPoints: 20, MaxHitPoints: 20},
+	}
+	result := ecl.RunResult{
+		CombatRequested: true,
+		MonsterSpawns: []ecl.MonsterSpawn{
+			{MonsterID: 0x43, Count: 1, IconBlock: 0x43},
+			{MonsterID: 0x44, Count: 2, IconBlock: 0x44},
+		},
+		CombatTeamWrites: []ecl.CombatTeamWrite{{TeamListIndex: 8, Value: 0x80}},
+	}
+	if err := state.StartEncounter(result, records, partyFighters, 11); err != nil {
+		t.Fatal(err)
+	}
+	fighters := state.CombatFighters()
+	partyCount, enemyCount := 0, 0
+	temporaryFound := false
+	for _, fighter := range fighters {
+		if fighter.Side == combat.SideParty {
+			partyCount++
+			if fighter.Name == "RAKSHASA" && fighter.QuickFight && fighter.TemporaryAlly {
+				temporaryFound = true
+			}
+		} else {
+			enemyCount++
+		}
+	}
+	if partyCount != 2 || enemyCount != 2 || !temporaryFound {
+		t.Fatalf("fighters=%+v party=%d enemies=%d temporary=%v",
+			fighters, partyCount, enemyCount, temporaryFound)
+	}
+}
+
 func TestMonsterRecordsFollowCurrentECLChapter(t *testing.T) {
 	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{
 		3: append([]byte{0, 0}, make([]byte, 32)...),
