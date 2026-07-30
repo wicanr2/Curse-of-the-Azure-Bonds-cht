@@ -338,6 +338,7 @@
 - [第三百九十六輪 Burial Glen 精靈王庭](./396-burial-glen-elven-court.md)（`READY`：terrain 08h／89h／8Ah／8Bh、認可值門檻、十四名敵人、王后兩級財寶與倒塔傳送）
 - [第四百輪外圍遺跡倉庫](./400-outer-ruins-storehouse.md)（`READY`：terrain 02h／83h、入口守軍、主動 SEARCH、4CD1／4CD2 與 exact 財寶）
 - [第四百零一輪外圍遺跡逃亡男子與藏寶](./401-outer-ruins-fugitive-cache.md)（`READY`：terrain 04h／05h／06h、六犬救援、HEAD／BODY 40h、主動 SEARCH 與 ITEM6/43h）
+- [第四百零二輪外圍遺跡無名者與灌木伏擊](./402-outer-ruins-nameless-brush-ambush.md)（`READY`：terrain 07h／08h／09h、同 block 傳送、2d8 落石、十一名敵人與正常玩家路徑）
 - [第三百四十九輪散塔林堡奧莉芙密道](./349-zhentil-olive-secret-passage.md)（`READY`：真實 ECL4/GEO4 `0x20→0x21`、手札 50／51 與繁中玩家路徑）
 - [第三百五十輪散塔林堡迪姆斯沃特同行](./350-zhentil-dimswart-escort.md)（`READY`：神殿 `(6,13)→(2,14)`、手札 12 六頁與 story escort flag）
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）

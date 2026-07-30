@@ -49,3 +49,110 @@ func TestApplyECLCallSignalsPreservesOrderAndDefaultSound(t *testing.T) {
 		t.Fatalf("sound=%#v, want %#v", got, want)
 	}
 }
+
+func TestApplyECLCallSignalsRedrawProjectsSameBlockDungeonRegisters(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{
+		0x42: {0, 0},
+	}, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 11)
+	session.SetMemoryValue(0xC04C, 10)
+	session.SetMemoryValue(0xC04D, 2)
+	state := State{
+		session:          session,
+		DungeonX:         12,
+		DungeonY:         9,
+		DungeonDirection: 6,
+	}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x2E10},
+		SessionStartBlockID:  0x42,
+		SessionEndBlockID:    0x42,
+		SessionBlockRangeSet: true,
+		CallRequests: []ecl.CallRequest{
+			{Address: 0x2E10, PC: 0x1096, BlockID: 0x42},
+		},
+		SaveWrites: []ecl.MemoryWrite{
+			{Address: 0xC04B, Value: 11, PC: 0x1084, BlockID: 0x42},
+			{Address: 0xC04C, Value: 10, PC: 0x108A, BlockID: 0x42},
+			{Address: 0xC04D, Value: 2, PC: 0x1090, BlockID: 0x42},
+		},
+	})
+
+	if state.DungeonX != 11 || state.DungeonY != 10 ||
+		state.DungeonDirection != 4 || state.MapX != 11 || state.MapY != 10 {
+		t.Fatalf("redraw position=(%d,%d,%d) map=(%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.MapX, state.MapY)
+	}
+}
+
+func TestApplyECLCallSignalsRedrawIgnoresStaleDungeonRegisters(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{
+		0x42: {0, 0},
+	}, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 11)
+	session.SetMemoryValue(0xC04C, 10)
+	session.SetMemoryValue(0xC04D, 2)
+	state := State{
+		session:          session,
+		DungeonX:         3,
+		DungeonY:         4,
+		DungeonDirection: 6,
+	}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{CallAddresses: []uint16{0x2E10}})
+
+	if state.DungeonX != 3 || state.DungeonY != 4 || state.DungeonDirection != 6 {
+		t.Fatalf("stale redraw changed position=(%d,%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}
+
+func TestApplyECLCallSignalsRedrawIgnoresPriorBlockTransaction(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{
+		0x42: {0, 0},
+		0x43: {0, 0},
+	}, 0x43)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 11)
+	session.SetMemoryValue(0xC04C, 10)
+	session.SetMemoryValue(0xC04D, 2)
+	state := State{
+		session:          session,
+		DungeonX:         3,
+		DungeonY:         4,
+		DungeonDirection: 6,
+	}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x2E10},
+		SessionStartBlockID:  0x42,
+		SessionEndBlockID:    0x43,
+		SessionBlockRangeSet: true,
+		CallRequests: []ecl.CallRequest{
+			{Address: 0x2E10, PC: 0x1096, BlockID: 0x42},
+		},
+		SaveWrites: []ecl.MemoryWrite{
+			{Address: 0xC04B, Value: 11, PC: 0x1084, BlockID: 0x42},
+			{Address: 0xC04C, Value: 10, PC: 0x108A, BlockID: 0x42},
+			{Address: 0xC04D, Value: 2, PC: 0x1090, BlockID: 0x42},
+		},
+	})
+
+	if state.DungeonX != 3 || state.DungeonY != 4 || state.DungeonDirection != 6 {
+		t.Fatalf("prior-block redraw changed position=(%d,%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}

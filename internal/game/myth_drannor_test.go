@@ -2322,6 +2322,229 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			len(state.PendingTreasureItems()))
 	}
 
+	namelessRoute := []dungeonStep{
+		{x: 15, y: 3, direction: 2},
+		{x: 15, y: 4, direction: 4},
+		{x: 15, y: 5, direction: 4},
+		{x: 15, y: 6, direction: 4},
+		{x: 15, y: 7, direction: 4},
+		{x: 14, y: 7, direction: 6},
+		{x: 13, y: 7, direction: 6},
+	}
+	previousX, previousY = 14, 3
+	for index, step := range namelessRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal Nameless route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(namelessRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(namelessRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("Nameless route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x07 || state.Mode != ModeEvent ||
+		state.PictureBlock != 0x46 || state.SceneHeadBlock != 0x43 ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.nameless-warning") {
+		t.Fatalf("Nameless warning mode=%v terrain=%02x picture=%02x/%02x message=%q",
+			state.Mode, state.DungeonWallRoof, state.PictureBlock,
+			state.SceneHeadBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Nameless continuation mode=%v choices=%v",
+			state.Mode, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Nameless return mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Nameless warning retriggered mode=%v message=%q",
+			state.Mode, state.Message)
+	}
+
+	brushRoute := []dungeonStep{
+		{x: 13, y: 8, direction: 4},
+		{x: 13, y: 9, direction: 4},
+		{x: 12, y: 9, direction: 6},
+	}
+	previousX, previousY = 13, 7
+	for index, step := range brushRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal brush route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(brushRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(brushRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("brush route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x08 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-decoy") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("brush decoy mode=%v terrain=%02x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-rescue") ||
+		state.DungeonX != 11 || state.DungeonY != 10 ||
+		state.DungeonDirection != 4 {
+		t.Fatalf("brush rescue mode=%v position=(%d,%d,%d) message=%q choices=%v",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-ambush") {
+		t.Fatalf("brush ambush mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-attack") ||
+		len(state.pendingDamageRequests) != 1 {
+		t.Fatalf("brush rocks mode=%v message=%q pending=%+v choices=%v",
+			state.Mode, state.Message, state.pendingDamageRequests,
+			state.currentOriginalChoices)
+	}
+	rockOutcomes, err := state.ResolvePendingECLDamageWithDefaultHitResolver(
+		-1,
+		func(sides int) int {
+			if sides == 20 {
+				return 20
+			}
+			return 1
+		},
+		func(int) int { return 1 },
+	)
+	if err != nil || len(rockOutcomes) == 0 {
+		t.Fatalf("brush rock damage outcomes=%+v err=%v", rockOutcomes, err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 11 {
+		t.Fatalf("brush combat mode=%v active=%v enemies=%d message=%q",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideEnemy)), state.Message)
+	}
+	for action := 0; action < 192 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("brush victory mode=%v status=%v enemies=%d visual=%v message=%q",
+			state.Mode, state.CombatStatus(),
+			len(state.livingBySide(combat.SideEnemy)),
+			state.CombatVisualPending(), state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("brush victory continuation mode=%v message=%q",
+			state.Mode, state.Message)
+	}
+	if flag, ok := state.session.MemoryValue(0x4CD6); !ok || flag != 1 {
+		t.Fatalf("brush completion 4CD6=%d,%v", flag, ok)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("brush ambush retriggered mode=%v message=%q",
+			state.Mode, state.Message)
+	}
+
+	bloodstainRoute := []dungeonStep{
+		{x: 11, y: 11, direction: 4},
+	}
+	previousX, previousY = 11, 10
+	for index, step := range bloodstainRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal bloodstain route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(bloodstainRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(bloodstainRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("bloodstain route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x09 || state.Mode != ModeEvent ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.brush-bloodstains") {
+		t.Fatalf("bloodstains mode=%v terrain=%02x message=%q",
+			state.Mode, state.DungeonWallRoof, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("bloodstains return mode=%v", state.Mode)
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{

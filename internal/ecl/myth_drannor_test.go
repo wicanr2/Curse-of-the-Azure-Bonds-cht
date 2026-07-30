@@ -1929,6 +1929,154 @@ func TestRealOuterRuinsFugitiveAndCache(t *testing.T) {
 	})
 }
 
+func TestRealOuterRuinsNamelessAndBrushAmbush(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(terrain uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x42)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, terrain)
+		return session
+	}
+	press := uint16(0)
+
+	t.Run("Nameless warning is one shot with exact portrait", func(t *testing.T) {
+		session := newSession(0x07)
+		warning, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !warning.WaitingForMenu ||
+			!warning.PictureRequested || warning.PictureBlock != 0x46 ||
+			!warning.PictureHeadBlockSet || warning.PictureHeadBlock != 0x43 ||
+			!strings.Contains(strings.Join(warning.Text, " "),
+				"NAMELESS SLIDES OUT OF THE SHADOWS") ||
+			mustMemory(t, session, 0x4C06) != 1 {
+			t.Fatalf("Nameless warning=%+v err=%v 4C06=%d",
+				warning, runErr, mustMemory(t, session, 0x4C06))
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("Nameless continuation=%+v err=%v", done, runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || revisit.WaitingForMenu ||
+			len(revisit.Text) != 0 {
+			t.Fatalf("Nameless revisit=%+v err=%v", revisit, runErr)
+		}
+	})
+
+	t.Run("declining rescue leaves the victim to the hound", func(t *testing.T) {
+		session := newSession(0x08)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+				[]string{"YES", "NO"}) ||
+			!strings.Contains(strings.Join(intro.Text, " "), "SMALL CHILD") ||
+			mustMemory(t, session, 0x4CD6) != 1 {
+			t.Fatalf("brush intro=%+v err=%v 4CD6=%d",
+				intro, runErr, mustMemory(t, session, 0x4CD6))
+		}
+		no := uint16(1)
+		victim, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !victim.WaitingForMenu ||
+			!strings.Contains(strings.Join(victim.Text, " "),
+				"SOMETHING BLOODY IN ITS MOUTH") {
+			t.Fatalf("brush decline=%+v err=%v", victim, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited || done.CombatRequested {
+			t.Fatalf("brush decline continuation=%+v err=%v", done, runErr)
+		}
+	})
+
+	t.Run("rescue triggers rocks and exact three-group ambush", func(t *testing.T) {
+		session := newSession(0x08)
+		if _, runErr := session.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		yes := uint16(0)
+		rescue, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !rescue.WaitingForMenu ||
+			!strings.Contains(strings.Join(rescue.Text, " "), "CUT IT DOWN") ||
+			!reflect.DeepEqual(rescue.CallAddresses, []uint16{0x2E10}) {
+			t.Fatalf("brush rescue=%+v err=%v", rescue, runErr)
+		}
+		ambush, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !ambush.WaitingForMenu ||
+			!strings.Contains(strings.Join(ambush.Text, " "),
+				"SUCH KINDNESS SHOULD BE REWARDED") {
+			t.Fatalf("brush ambush=%+v err=%v", ambush, runErr)
+		}
+		rocks, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !rocks.WaitingForMenu ||
+			!reflect.DeepEqual(rocks.DamageRequests, []DamageRequest{{
+				Flags: 0x0C, DiceCount: 2, DiceSize: 8, Bonus: 0, SaveFlags: 0x34,
+			}}) ||
+			!strings.Contains(strings.Join(rocks.Text, " "),
+				"MONSTERS THEN LEAP DOWN TO ATTACK") {
+			t.Fatalf("brush rocks=%+v err=%v", rocks, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x44, Count: 5, IconBlock: 0x44},
+				{MonsterID: 0x45, Count: 5, IconBlock: 0x45},
+				{MonsterID: 0x43, Count: 1, IconBlock: 0x43},
+			}) {
+			t.Fatalf("brush fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("brush victory continuation=%+v err=%v", done, runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+			t.Fatalf("brush revisit=%+v err=%v", revisit, runErr)
+		}
+	})
+
+	t.Run("bloodstained brush remains descriptive", func(t *testing.T) {
+		session := newSession(0x09)
+		for visit := 0; visit < 2; visit++ {
+			result, runErr := session.RunEntry(1, 30000, nil)
+			if runErr != nil || !result.Exited || result.WaitingForMenu ||
+				!strings.Contains(strings.Join(result.Text, " "),
+					"BLOODSTAINS MARK THE LEAVES") {
+				t.Fatalf("bloodstains visit=%d result=%+v err=%v",
+					visit, result, runErr)
+			}
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

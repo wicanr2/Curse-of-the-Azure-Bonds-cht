@@ -185,6 +185,13 @@
       ,"myth-drannor.outer.fugitive.clue": "The man thanks you and whispers, “I hid it before I was captured…a ruined building…northeast. Your reward.” His breathing stops."
       ,"myth-drannor.outer.fugitive.remains": "The hounds left little that can be recognized as human. You find nothing of value."
       ,"myth-drannor.outer.fugitive.cache": "Just as the dying man described, you locate a hidden cache."
+      ,"myth-drannor.outer.nameless-warning": "Nameless slides out of the shadows and says, “This direct approach is dangerous, but the temple is to the north. Now get on with it!” Then he leaves."
+      ,"myth-drannor.outer.brush-decoy": "Dense brush fills the plaza ahead. A small child—or perhaps a halfling—runs over and dives into it as a hell hound tries to leap in after him. Do you go to the rescue?"
+      ,"myth-drannor.outer.brush-rescue": "You arrive before the hell hound can force its way into the brush and cut it down."
+      ,"myth-drannor.outer.brush-ambush": "A rakshasa stands up from the brush and says, “Why, thank you. Such kindness should be rewarded.” At his gesture, margoyles on the nearby roofs pelt you with rocks."
+      ,"myth-drannor.outer.brush-attack": "The monsters then leap down to attack."
+      ,"myth-drannor.outer.brush-victim": "After a moment, the hell hound emerges from the brush with something bloody in its mouth and trots off."
+      ,"myth-drannor.outer.brush-bloodstains": "The brush is dense and filled with rubble. A few bloodstains mark the leaves."
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -368,6 +375,13 @@
       ,"myth-drannor.outer.fugitive.clue": "男子向你們道謝，低聲說：「我被抓住前……把東西藏好了……東北方……一棟廢墟……是給你們的報酬。」說完，他便停止了呼吸。"
       ,"myth-drannor.outer.fugitive.remains": "地獄犬留下的殘骸幾乎已看不出人形。你們沒有找到任何值錢物品。"
       ,"myth-drannor.outer.fugitive.cache": "正如臨終男子所說，你們找到了那處秘密藏寶。"
+      ,"myth-drannor.outer.nameless-warning": "無名者從陰影中悄然現身，說：「這樣直接逼近很危險，不過神殿就在北方。現在，快去辦正事吧！」說完便離開了。"
+      ,"myth-drannor.outer.brush-decoy": "前方廣場長著一片茂密灌木。一名小孩——也可能是半身人——飛奔過來鑽了進去；一隻地獄犬正想跟著撲入。你們要上前救援嗎？"
+      ,"myth-drannor.outer.brush-rescue": "你們搶在地獄犬擠進灌木前趕到，將牠斬殺。"
+      ,"myth-drannor.outer.brush-ambush": "一名羅剎妖從灌木中站了起來，說：「哎呀，多謝各位。如此善心，理當獲得回報。」牠一揮手，附近屋頂上的石像鬼便朝你們投擲石塊。"
+      ,"myth-drannor.outer.brush-attack": "隨後，怪物紛紛躍下發動攻擊。"
+      ,"myth-drannor.outer.brush-victim": "片刻後，地獄犬嘴裡叼著一團血肉，從灌木中鑽出，隨即小跑離去。"
+      ,"myth-drannor.outer.brush-bloodstains": "灌木叢生，裡面堆滿瓦礫；幾片葉子上留有血跡。"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -1295,6 +1309,41 @@
       "id": "myth-drannor.outer.fugitive.cache",
       "all_contains": ["JUST AS THE DYING MAN DESCRIBED", "LOCATE A CACHE"],
       "message_id": "myth-drannor.outer.fugitive.cache"
+    },
+    {
+      "id": "myth-drannor.outer.nameless-warning",
+      "all_contains": ["NAMELESS SLIDES OUT OF THE SHADOWS", "DIRECT APPROACH IS DANGEROUS", "TEMPLE IS TO THE NORTH"],
+      "message_id": "myth-drannor.outer.nameless-warning"
+    },
+    {
+      "id": "myth-drannor.outer.brush-decoy",
+      "all_contains": ["DENSE BRUSH", "SMALL CHILD", "OR HOBBIT", "HELL HOUND", "DO YOU GO TO THE RESCUE"],
+      "message_id": "myth-drannor.outer.brush-decoy"
+    },
+    {
+      "id": "myth-drannor.outer.brush-rescue",
+      "all_contains": ["ARRIVE BEFORE THE HOUND", "FORCE ITS WAY IN", "CUT IT DOWN"],
+      "message_id": "myth-drannor.outer.brush-rescue"
+    },
+    {
+      "id": "myth-drannor.outer.brush-ambush",
+      "all_contains": ["A RAKSHASA STANDS UP FROM THE BUSH", "SUCH KINDNESS SHOULD BE REWARDED", "MARGOYLES ON NEARBY ROOFS"],
+      "message_id": "myth-drannor.outer.brush-ambush"
+    },
+    {
+      "id": "myth-drannor.outer.brush-attack",
+      "all_contains": ["THE MONSTERS THEN LEAP DOWN TO ATTACK"],
+      "message_id": "myth-drannor.outer.brush-attack"
+    },
+    {
+      "id": "myth-drannor.outer.brush-victim",
+      "all_contains": ["THE HOUND EMERGES FROM THE BUSH", "SOMETHING BLOODY IN ITS MOUTH", "TROTS OFF"],
+      "message_id": "myth-drannor.outer.brush-victim"
+    },
+    {
+      "id": "myth-drannor.outer.brush-bloodstains",
+      "all_contains": ["THE BRUSH IS DENSE AND FILLED WITH RUBBLE", "BLOODSTAINS MARK THE LEAVES"],
+      "message_id": "myth-drannor.outer.brush-bloodstains"
     },
     {
       "id": "zhentil.patrol_pass",

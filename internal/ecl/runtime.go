@@ -27,6 +27,11 @@ type RunResult struct {
 	ProgramIDs             []uint8
 	ProgramExit            bool
 	CallAddresses          []uint16
+	CallRequests           []CallRequest
+	SaveWrites             []MemoryWrite
+	SessionStartBlockID    uint8
+	SessionEndBlockID      uint8
+	SessionBlockRangeSet   bool
 	DamageRequests         []DamageRequest
 	PrintReturnCount       int
 	ApproachCount          int
@@ -65,6 +70,24 @@ type RunResult struct {
 	CheckPartyRequests     []CheckPartyRequest
 	WhoRequests            []WhoRequest
 	StringInputRequests    []StringInputRequest
+}
+
+// MemoryWrite preserves one numeric SAVE/SAVE TABLE side effect from the
+// current bounded transaction. The VM owns memory mutation; adapters use this
+// evidence to distinguish fresh script assignments from stale shared values.
+type MemoryWrite struct {
+	Address uint16
+	Value   uint16
+	PC      int
+	BlockID uint8
+}
+
+// CallRequest preserves the bytecode position and block identity of one
+// external CALL while CallAddresses remains the compatibility projection.
+type CallRequest struct {
+	Address uint16
+	PC      int
+	BlockID uint8
 }
 
 // NPCRequest preserves both operands consumed by CMD_AddNPC. Morale is later
@@ -847,6 +870,11 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 					return result, fmt.Errorf("save at %d: %w", pc, err)
 				}
 				memory[instruction.Operands[1].Word] = value
+				result.SaveWrites = append(result.SaveWrites, MemoryWrite{
+					Address: instruction.Operands[1].Word,
+					Value:   value,
+					PC:      pc,
+				})
 				if instruction.Operands[1].Word == 0x7D0C {
 					result.CombatTeamWrites = append(result.CombatTeamWrites, CombatTeamWrite{
 						TeamListIndex: selectedTeamListIndex,
@@ -955,6 +983,10 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			// instruction. Keep the address observable while leaving the
 			// routine-specific DOS side effect to a later adapter.
 			result.CallAddresses = append(result.CallAddresses, address)
+			result.CallRequests = append(result.CallRequests, CallRequest{
+				Address: address,
+				PC:      pc,
+			})
 		case 0x3A: // DELAY
 			// GameDelay is an engine timing boundary with no ECL memory side
 			// effect. Preserve the count for the frontend and continue.
@@ -1011,7 +1043,13 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			}
 			// Reference CMD_SaveTable writes value operand 1 to the address
 			// operand 2.Word + value operand 3.
-			memory[instruction.Operands[1].Word+offset] = value
+			address := instruction.Operands[1].Word + offset
+			memory[address] = value
+			result.SaveWrites = append(result.SaveWrites, MemoryWrite{
+				Address: address,
+				Value:   value,
+				PC:      pc,
+			})
 		case 0x0A: // LOAD CHARACTER
 			address, err := operandAddress(instruction.Operands[0])
 			if err != nil {
