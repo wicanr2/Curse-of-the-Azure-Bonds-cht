@@ -171,10 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`3374b15`；第 381 輪 NP2kai direct V30 core edge
-  trace 與 emulator clock-model 邊界 milestone 會由本文件所在 commit
-  完成。
-- Engine dependency：`fb3bdea`（含繁體中文音訊架構知識庫及中立
+- CoAB 本輪基底：`397d26d`；第 382 輪 YM2203 Timer B 重載相位契約
+  milestone 會由本文件所在 commit 完成。
+- Engine dependency：`031d4ea`（含繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
@@ -265,7 +264,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   frames 且不推進音序列。正常 loop count 0 轉成 `0xFF` 無限循環。
   driver 內部 40-tick fade／FM0 SFX 沒有正常 GAME caller，不可擅自接入。
   spec 377 是最新 READY 規格。
-- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、以原機
+- 第 382 輪已依 ymfm 補上作品中立 `27h` reload 公式、phase `0..15`
+  驗證及 phase-adjusted PCM accumulator；CoAB `20h→0Ah` 間的七聲道
+  interpreter 是資料相依路徑，現行 instant-ISR renderer 維持 phase 0。
+  下一步以 CPU／OPN 共時 trace 還原 CoAB 真實 reload phase，並以原機
   edge／錄音或經 microbenchmark 校準的 V30 emulator 校準 SFX machine
   profile，再處理 save/resume 與 analog mixer gain。第 381 輪已證明
   NP2kai i286c `_loop` 沿用 80286 `8/4` clocks，不得拿其 `CPU_CLOCK`
@@ -393,9 +395,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371–381 輪規格也已 READY。下一步用原機 audio edge／錄音或經
+  第 371–382 輪規格也已 READY。下一步用原機 audio edge／錄音或經
   microbenchmark 校準的 V30 emulator 校準 port `37h` profile，再補
-  MSCDRV Timer B reload phase、save/resume 與 analog mixer gain。
+  MSCDRV 的 CPU／OPN 共時 reload phase、save/resume 與 analog mixer gain。
 
 ## 10. Compact 後恢復工作清單
 

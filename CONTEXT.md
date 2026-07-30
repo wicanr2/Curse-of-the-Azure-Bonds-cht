@@ -2301,3 +2301,16 @@ NP2kai source `i286c_mn.c:_loop` 明確使用 exit 4／taken 8，動態結果也
 sequence，不能作原機 V30 wall-clock oracle，現行 NEC `5/13` profile
 不變且仍標 timing-reconstructed。READY spec 381 保存證據與邊界；
 下一步需原機 edge／錄音或經 microbenchmark 校準的 V30 emulator。
+
+2026-07-30 第 382 輪釐清 YM2203 Timer B register `27h` 重載相位。
+版本化 ymfm 的 `engine_mode_write()` 使用
+`-(m_total_clocks & 15)`，而 `update_timer()` 會再乘
+`12 operators × prescale`；故首次週期是
+`(16×(256−B)−phase)×12×prescale`，不能只減 1–15 個 chip clocks。
+
+獨立 engine 新增 `TimerBReloadClockCycles` 與
+`TimerBSampleAccumulator.AdvanceReload`，驗證 phase `0..15` 並保留有理數
+sample remainder。IDA 既有 ISR listing 則證明 CoAB 在
+`27h=20h→0Ah` 間執行資料相依的七聲道 interpreter，因此不能硬寫固定 CPU
+延遲。現行 instant-ISR PCM renderer 每個完整 period 都回到 phase 0；
+這是模型邊界，仍需 CPU／OPN 共時 trace 才能完成原機 reload phase。
