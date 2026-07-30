@@ -579,6 +579,136 @@ func TestRealBurialGlenPhaseSpidersFromSolidWalls(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenPhaseSpiderBonePileBranches(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+
+	runToBonesMenu := func(t *testing.T) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 15)
+		session.SetMemoryValue(0xC04C, 8)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, 0x95)
+		session.SetMemoryValue(0x4CCF, 0)
+		session.SetMemoryValue(0x4CBA, 0x80)
+
+		prompt, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "),
+				"SPIDERS HAVE GATHERED A PILE OF BONES HERE") {
+			t.Fatalf("prompt=%+v", prompt)
+		}
+		press := uint16(0)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x41, Count: 6, IconBlock: 0x41}}) ||
+			mustMemory(t, session, 0x7F82) != 10 ||
+			mustMemory(t, session, 0x4C01) != 6 {
+			t.Fatalf("fight=%+v", fight)
+		}
+		menu, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !menu.WaitingForMenu ||
+			!reflect.DeepEqual(menu.Menus[len(menu.Menus)-1].Options,
+				[]string{"LOOT", "REPLACE IN CRYPTS", "IGNORE"}) ||
+			!strings.Contains(strings.Join(menu.Text, " "), "WHAT DO YOU DO WITH THE BONES") ||
+			mustMemory(t, session, 0x4CCF) != 1 {
+			t.Fatalf("menu=%+v", menu)
+		}
+		return session
+	}
+
+	t.Run("loot lowers approval and emits original treasure", func(t *testing.T) {
+		session := runToBonesMenu(t)
+		loot := uint16(0)
+		result, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &loot, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if len(result.TreasureRequests) != 1 ||
+			result.TreasureRequests[0] != (TreasureRequest{
+				Coins:     [7]uint16{0, 0, 0, 0, 0, 1, 0},
+				ItemBlock: 0xFF,
+			}) ||
+			mustMemory(t, session, 0x4CBA) != 0x7F {
+			t.Fatalf("loot=%+v approval=%02x", result, mustMemory(t, session, 0x4CBA))
+		}
+	})
+
+	t.Run("replace raises approval", func(t *testing.T) {
+		session := runToBonesMenu(t)
+		replace := uint16(1)
+		result, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &replace, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !result.Exited || len(result.TreasureRequests) != 0 ||
+			mustMemory(t, session, 0x4CBA) != 0x81 {
+			t.Fatalf("replace=%+v approval=%02x", result, mustMemory(t, session, 0x4CBA))
+		}
+	})
+
+	t.Run("ignore preserves approval", func(t *testing.T) {
+		session := runToBonesMenu(t)
+		ignore := uint16(2)
+		result, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &ignore, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !result.Exited || len(result.TreasureRequests) != 0 ||
+			mustMemory(t, session, 0x4CBA) != 0x80 {
+			t.Fatalf("ignore=%+v approval=%02x", result, mustMemory(t, session, 0x4CBA))
+		}
+	})
+
+	revisit := runToBonesMenu(t)
+	ignore := uint16(2)
+	if _, err := revisit.ResumeInteractiveSelectionSeed(3000, &ignore, nil, 1, PartyContext{}); err != nil {
+		t.Fatal(err)
+	}
+	again, err := revisit.RunEntry(1, 3000, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !again.Exited || again.CombatRequested || again.WaitingForMenu {
+		t.Fatalf("revisit=%+v", again)
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

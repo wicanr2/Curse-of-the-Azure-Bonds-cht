@@ -329,6 +329,7 @@
 - [第三百四十八輪原版 DOS 邊框與 PC-9801 字級密度](./348-original-dos-frame-pc98-type-density.md)（`READY`：原版 cracked chrome、左上 cover viewport、16×15 遊戲內正文）
 - [第三百九十一輪 DOS HEAD／BODY 人物舞台](./391-dos-head-body-character-stage.md)（`READY`：原生人物 anchor／clip、黃色裂紋內框、場景 cover 分流）
 - [第三百九十二輪 Burial Glen 相位蜘蛛牆防線](./392-burial-glen-phase-spider-walls.md)（`READY`：terrain 93h／94h、十隻／八隻 PHASE SPIDER、4CCD／4CCE、正常玩家路徑）
+- [第三百九十三輪 Burial Glen 相位蜘蛛骨堆](./393-burial-glen-phase-spider-bone-pile.md)（`READY`：terrain 95h、六隻 PHASE SPIDER、LOOT／REPLACE／IGNORE、gem 與 4CBA）
 - [第三百四十九輪散塔林堡奧莉芙密道](./349-zhentil-olive-secret-passage.md)（`READY`：真實 ECL4/GEO4 `0x20→0x21`、手札 50／51 與繁中玩家路徑）
 - [第三百五十輪散塔林堡迪姆斯沃特同行](./350-zhentil-dimswart-escort.md)（`READY`：神殿 `(6,13)→(2,14)`、手札 12 六頁與 story escort flag）
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）

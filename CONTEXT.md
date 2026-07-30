@@ -2460,3 +2460,17 @@ anchor／clip；CoAB renderer 將 HEAD／BODY 與場景 cover 分流，加入 EG
 LOOT／REPLACE 選單、戰利品與好感副作用仍是下一個邊界；PHASE SPIDER
 毒素／相位能力及原版動態演出也尚未完成。READY spec 392 保存 hashes、
 bytes、路徑與完成範圍。
+
+第三百九十三輪接續 Burial Glen terrain `95h`。GEO6 block `40h`
+證明它位於 `(14,10)`，從上一輪 `94h` `(14,8)` 向南兩步可達。ECL6
+selector `15h` 跳到 payload `+1A03h`：六隻 MON6CHA `41h`
+PHASE SPIDER，combat work `7F82=10／4C01=6`，勝利後
+`4CCF=1`，再顯示骨堆三選一選單。
+
+三個 exact branch 是 `LOOT +1AA9h`、`REPLACE IN CRYPTS +1AC6h`、
+`IGNORE +1ACFh`。LOOT 使黛米爾好感 `4CBA-1`，並執行
+`TREASURE 0,0,0,0,0,1,0,FFh`；第六格是一顆 gem，`FFh` 是無 item
+block，不是隨機裝備。REPLACE 使 `4CBA+1`，IGNORE 不改好感。
+守衛文字、問題與三選項均已移入繁中 game-pack stable IDs；raw ECL 三分支
+及從 Standing Stone 起的正常玩家路徑均驗證戰鬥、treasure service、
+地城 continuation 與重訪 EXIT。詳細證據見 READY spec 393。

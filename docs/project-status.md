@@ -187,7 +187,12 @@ commit 內保存不可能自我引用的 hash。
 - 第 392 輪把正常玩家路徑從黛米爾繼續到 terrain `93h／94h`：
   原始 ECL 分別建立十隻／八隻 `MON6CHA 41h` PHASE SPIDER，勝利後寫
   `4CCD／4CCE=1` 並可正常重踏。兩段繁中由 game-pack stable ID 驅動；
-  terrain `95h` 的六蜘蛛、骨堆選單與戰利品仍待下一輪。
+  terrain `95h` 已由下一輪接續完成。
+- 第 393 輪接通 terrain `95h` `(14,10)` 的六隻 PHASE SPIDER、勝利後
+  `4CCF=1` 與骨堆 `LOOT／REPLACE IN CRYPTS／IGNORE` 三分支。raw ECL
+  證明 LOOT 是 `4CBA-1` 與一顆 gem、`ItemBlock=FFh` 無裝備；
+  REPLACE 是 `4CBA+1`，IGNORE 不改好感。正常玩家路徑、繁中選單、
+  treasure service、地城 continuation 與重訪 EXIT 均已回歸。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

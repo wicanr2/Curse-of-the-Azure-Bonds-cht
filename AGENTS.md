@@ -272,8 +272,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`d66bfbe`（第 391 輪 DOS HEAD／BODY 人物舞台）；
-  第 392 輪 Burial Glen terrain `93h／94h` 相位蜘蛛防線 milestone
+- CoAB 本輪基底：`adf685a`（第 392 輪 Burial Glen terrain
+  `93h／94h` 相位蜘蛛防線）；
+  第 393 輪 terrain `95h` 相位蜘蛛骨堆 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -339,7 +340,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 392 輪已從黛米爾沿正常 GEO 路徑繼續五步到 terrain `93h`、再四步
   到 `94h`。raw ECL 與完整玩家路徑共同證明十隻／八隻 PHASE SPIDER、
   `7F82=8／9`、`4C01=10／8`、勝利後 `4CCD／4CCE=1` 與重訪 EXIT。
-  terrain `95h` 的六蜘蛛、骨堆選單及 treasure 是下一個未完成邊界。
+- 第 393 輪已從 `94h` 沿正常 GEO 路徑回到 `(14,10)` terrain `95h`；
+  六隻 PHASE SPIDER、`7F82=10`、`4C01=6`、`4CCF=1` 與骨堆
+  `LOOT／REPLACE IN CRYPTS／IGNORE` 三分支均已完成。LOOT 的 exact
+  `TREASURE` 是一顆 gem、`ItemBlock=FFh` 無裝備，並使 `4CBA-1`；
+  REPLACE 使 `4CBA+1`，IGNORE 不改好感。raw ECL 與 Standing Stone
+  起始的正常玩家路徑均有回歸；相位蜘蛛特殊能力與 DOS 動態演出仍未完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
