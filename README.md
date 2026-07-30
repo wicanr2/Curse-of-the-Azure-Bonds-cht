@@ -893,6 +893,14 @@ remake 忠實保留這個跨 block 旗標碰撞，不用自動清零掩蓋原始
 branch、writer 位址、GEO 路線與財寶見
 [`spec 404`](docs/spec/404-inner-ruins-kitchen-office-bedroom.md)。
 
+私人禮拜堂也已由同一條正常玩家路徑完成：一名大祭司與四名班恩祭司會
+包圍隊伍，戰勝後可繼續走到 `(7,10)`。犬舍的十隻地獄犬與活動雕像房的
+十隻石像鬼也已由 raw ECL 完整驗證並繁中化；但兩房位於西翼，合法路線
+必經 terrain `82h–85h` 的提朗瑟克斯／無名者最終儀式。本輪明確停在
+terrain `83h` 前，沒有用 direct entry 假裝西翼已正常可達。怪物記錄、
+逐 pause 行為、路線與完成邊界見
+[`spec 405`](docs/spec/405-inner-ruins-kennel-statuary-chapel.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

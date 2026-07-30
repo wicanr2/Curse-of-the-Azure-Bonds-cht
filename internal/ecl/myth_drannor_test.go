@@ -2485,6 +2485,145 @@ func TestRealInnerRuinsKitchenOfficeAndBedroom(t *testing.T) {
 	})
 }
 
+func TestRealInnerRuinsKennelStatuaryAndChapel(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(terrain uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x43)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04F, terrain)
+		return session
+	}
+	press := uint16(0)
+
+	t.Run("kennel has ten hell hounds and the original extra pause", func(t *testing.T) {
+		session := newSession(0x87)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "CONVERTED TO A KENNEL") ||
+			mustMemory(t, session, 0x4C01) != 1 {
+			t.Fatalf("kennel intro=%+v err=%v", intro, runErr)
+		}
+		blank, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !blank.WaitingForMenu ||
+			strings.TrimSpace(strings.Join(blank.Text, " ")) != "" ||
+			blank.CombatRequested {
+			t.Fatalf("kennel blank pause=%+v err=%v", blank, runErr)
+		}
+		warning, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !warning.WaitingForMenu ||
+			!strings.Contains(strings.Join(warning.Text, " "),
+				"MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU") {
+			t.Fatalf("kennel warning=%+v err=%v", warning, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{{
+				MonsterID: 0x44, Count: 10, IconBlock: 0x44,
+			}}) {
+			t.Fatalf("kennel fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("kennel victory=%+v err=%v", done, runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+			t.Fatalf("kennel revisit=%+v err=%v", revisit, runErr)
+		}
+	})
+
+	t.Run("statuary has ten margoyles", func(t *testing.T) {
+		session := newSession(0x88)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "STATUES BEGIN TO MOVE") ||
+			mustMemory(t, session, 0x4C02) != 1 {
+			t.Fatalf("statuary intro=%+v err=%v", intro, runErr)
+		}
+		warning, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !warning.WaitingForMenu ||
+			!strings.Contains(strings.Join(warning.Text, " "),
+				"MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU") {
+			t.Fatalf("statuary warning=%+v err=%v", warning, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{{
+				MonsterID: 0x45, Count: 10, IconBlock: 0x45,
+			}}) {
+			t.Fatalf("statuary fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("statuary victory=%+v err=%v", done, runErr)
+		}
+	})
+
+	t.Run("chapel has one high priest and four priests of Bane", func(t *testing.T) {
+		session := newSession(0x89)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "PRIVATE CHAPEL") ||
+			mustMemory(t, session, 0x4C03) != 1 {
+			t.Fatalf("chapel intro=%+v err=%v", intro, runErr)
+		}
+		speech, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		joined := strings.Join(speech.Text, " ")
+		if runErr != nil || !speech.WaitingForMenu ||
+			!strings.Contains(joined, "TYRANTHRAXUS' GRAND TOOLS") ||
+			!strings.Contains(joined, "OTHER PRIESTS SLIP UP BESIDE HIM") {
+			t.Fatalf("chapel speech=%+v err=%v", speech, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x48, Count: 1, IconBlock: 0x48},
+				{MonsterID: 0x46, Count: 4, IconBlock: 0x46},
+			}) {
+			t.Fatalf("chapel fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("chapel victory=%+v err=%v", done, runErr)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

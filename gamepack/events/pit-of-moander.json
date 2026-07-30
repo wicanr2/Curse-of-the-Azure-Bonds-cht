@@ -209,6 +209,11 @@
       ,"myth-drannor.inner.bedroom": "You enter an elegant bedroom with a four-poster bed, tapestries, and gold fixtures. Do you want to loot the room?"
       ,"myth-drannor.inner.office": "This room has been converted to an office. The walls are covered with icons of Bane."
       ,"myth-drannor.inner.kitchen": "You enter the kitchen. Slaves dive under the tables at your arrival; they are no threat to you."
+      ,"myth-drannor.inner.kennel": "A sulfurous smell assaults your nostrils. This room has been converted into a kennel, and its inhabitants rise at your approach."
+      ,"myth-drannor.inner.statuary": "The room seems filled with bones and hideous statuary—until the statues begin to move."
+      ,"myth-drannor.inner.minions-attack": "Minions of Tyranthraxus rush to attack you."
+      ,"myth-drannor.inner.chapel": "You enter an elegant private chapel. A well-dressed elderly man is seated here."
+      ,"myth-drannor.inner.chapel-priest": "“So you are Tyranthraxus's grand tools. I could ask you to surrender, but Bane has favored him too much of late. It would hurt him more if you died. So sorry.” Other priests slip up beside him."
       ,"myth-drannor.outer.rakshasa-residence": "A rakshasa resides here in splendor."
       ,"myth-drannor.outer.rakshasa-threat": "The rakshasa stands as several more appear. “To disturb one of my rank invites death. Prepare for yours.”"
       ,"myth-drannor.outer.rakshasa-parlay": "The rakshasa smiles. “Your boldness is refreshing.” He tells his story, which you record as Journal Entry 57."
@@ -420,6 +425,11 @@
       ,"myth-drannor.inner.bedroom": "你們走進一間雅致的臥房，裡面擺著四柱床、掛毯與黃金飾件。要搜刮這個房間嗎？"
       ,"myth-drannor.inner.office": "這個房間已被改作辦公室，四面牆上掛滿了邪神班恩的聖徽。"
       ,"myth-drannor.inner.kitchen": "你們走進廚房；奴隸一見有人進來，紛紛鑽到桌下躲藏。他們對你們毫無威脅。"
+      ,"myth-drannor.inner.kennel": "一股刺鼻的硫磺味撲面而來。這個房間已被改成犬舍，裡面的怪物一見你們便紛紛起身。"
+      ,"myth-drannor.inner.statuary": "房內似乎堆滿白骨與猙獰雕像——直到那些雕像開始活動。"
+      ,"myth-drannor.inner.minions-attack": "提朗瑟克斯的爪牙衝上前攻擊！"
+      ,"myth-drannor.inner.chapel": "你們走進一間雅致的私人禮拜堂；一名衣著考究的老者端坐在裡面。"
+      ,"myth-drannor.inner.chapel-priest": "「原來你們就是提朗瑟克斯最得意的工具。我本可要求你們投降，但班恩近來實在太寵愛他了。你們死在這裡，反而更能傷他的心。真是抱歉。」其他祭司悄悄圍到老者身旁。"
       ,"myth-drannor.outer.rakshasa-residence": "一名羅剎妖在此過著奢華生活。"
       ,"myth-drannor.outer.rakshasa-threat": "那名羅剎妖站起身，另有數名同族隨之現身。「膽敢打擾我這等地位者，便是在自尋死路。準備受死吧。」"
       ,"myth-drannor.outer.rakshasa-parlay": "羅剎妖露出微笑。「你們的膽識令人耳目一新。」接著，他講述自己的故事；你們將內容記入手札第 57 條。"
@@ -1485,6 +1495,31 @@
       "id": "myth-drannor.inner.kitchen",
       "all_contains": ["YOU HAVE COME INTO THE KITCHEN", "SLAVES DIVE UNDER", "NO THREAT TO YOU"],
       "message_id": "myth-drannor.inner.kitchen"
+    },
+    {
+      "id": "myth-drannor.inner.kennel",
+      "all_contains": ["A SULFEROUS SMELL ASSAULTS YOUR NOSTRILS", "CONVERTED TO A KENNEL", "INHABITANTS RISE"],
+      "message_id": "myth-drannor.inner.kennel"
+    },
+    {
+      "id": "myth-drannor.inner.statuary",
+      "all_contains": ["ROOM SEEMS FILLED WITH BONES", "HIDEOUS STATUARY", "STATUES BEGIN TO MOVE"],
+      "message_id": "myth-drannor.inner.statuary"
+    },
+    {
+      "id": "myth-drannor.inner.minions-attack",
+      "all_contains": ["MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU"],
+      "message_id": "myth-drannor.inner.minions-attack"
+    },
+    {
+      "id": "myth-drannor.inner.chapel",
+      "all_contains": ["WALKED INTO AN ELEGANT PRIVATE CHAPEL", "WELL-DRESSED, ELDERLY MAN"],
+      "message_id": "myth-drannor.inner.chapel"
+    },
+    {
+      "id": "myth-drannor.inner.chapel-priest",
+      "all_contains": ["TYRANTHRAXUS' GRAND TOOLS", "TOO POPULAR WITH BANE", "OTHER PRIESTS SLIP UP BESIDE HIM"],
+      "message_id": "myth-drannor.inner.chapel-priest"
     },
     {
       "id": "myth-drannor.outer.rakshasa-residence",

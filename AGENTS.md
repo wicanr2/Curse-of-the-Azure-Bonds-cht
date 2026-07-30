@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e45e386`（第 403 輪外圍遺跡羅剎妖房間與下水道入口）；
-  第 404 輪內部遺跡廚房、辦公室與臥房 milestone
+- CoAB 本輪基底：`500e614`（第 404 輪內部遺跡廚房、辦公室與臥房）；
+  第 405 輪內部遺跡犬舍、活動雕像與私人禮拜堂 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -425,7 +425,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   沿合法 GEO 到 `(10,12)` 並驗證財寶返回。ECL6 block `40h:+0F52h`／
   `42h:+0F70h` 會先寫 block `43h` 重用的全域 `4C05／4C06=1`，因此完整
   支線路徑的辦公室與廚房原作即為靜默；不得按 block 自動清旗標。READY
-  spec 404 是權威；下一步接續犬舍、活動雕像與私人禮拜堂。
+  spec 404 是權威。
+- 第 405 輪已接通 terrain `87h／88h／89h` raw ECL：犬舍是 HELL HOUND
+  `44h`×10，活動雕像是 MARGOYLE `45h`×10，私人禮拜堂是 HIGH PRIEST
+  `48h`×1 加 PRIEST OF BANE `46h`×4。五段繁中均在 game-pack；
+  犬舍原始流程另有一個空文字 PRESS pause，不可自行刪掉。正常 Standing
+  Stone 玩家路徑已完成禮拜堂戰並到 `(7,10)`；下一步 `(7,11)` terrain
+  `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
+  因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
+  是權威；下一步先完成最終儀式 gate。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

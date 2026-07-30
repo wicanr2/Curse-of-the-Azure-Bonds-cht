@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-31
-本 milestone 的 CoAB 基底：`e45e386`
+本 milestone 的 CoAB 基底：`500e614`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -268,6 +268,13 @@ commit 內保存不可能自我引用的 hash。
   `40h／42h` 會先寫與內部房間重用的全域 `4C05／4C06=1`，所以完整支線
   路徑上的辦公室與廚房原本就會靜默；remake 未擅自重設。其餘內部遺跡、
   樓梯、神殿、提朗瑟克斯與結局尚未完成。
+- 第 405 輪已接通 block `43h` terrain `87h／88h／89h` raw 分支：
+  犬舍為 10 HELL HOUND，活動雕像為 10 MARGOYLE，私人禮拜堂為
+  1 HIGH PRIEST 與 4 PRIEST OF BANE；五段繁中與三個 one-shot 旗標均
+  已回歸。Standing Stone 起始玩家路徑完成禮拜堂五人戰並走到 `(7,10)`。
+  西翼最短合法路線必經 terrain `82h–85h` 最終儀式，因此犬舍與活動雕像
+  尚未以正常玩家路徑完成；下一個真實缺口是 `83h` 儀式，而不是直接跳入
+  西翼。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
