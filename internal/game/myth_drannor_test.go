@@ -53,6 +53,13 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		monsterRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(6, monsterRecords)
+	treasureBlocks, err := ParseTreasureItemBlocks(map[uint8][]byte{
+		6: zipData(t, image, "ITEM6.DAX"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureBlocks)
 	state.session.SetMemoryValue(0x4C59, 1)
 	state.session.SetMemoryValue(0x4C5A, 1)
 	state.session.SetMemoryValue(0x4C5B, 0xFF)
@@ -1296,6 +1303,274 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if state.Mode != ModeDungeon || state.CombatActive() {
 		t.Fatalf("cleared spider nest retriggered mode=%v active=%v",
 			state.Mode, state.CombatActive())
+	}
+
+	// Continue west through the six-cell terrain 96h corridor to the elven
+	// court entrance at terrain 89h. Terrain 96h has GEO geometry only and
+	// must remain quiet; already-cleared 91h may not replay.
+	courtEntranceRoute := []dungeonStep{
+		{x: 9, y: 1, direction: 6},
+		{x: 9, y: 2, direction: 4},
+		{x: 9, y: 3, direction: 4},
+		{x: 8, y: 3, direction: 6},
+		{x: 7, y: 3, direction: 6},
+		{x: 7, y: 2, direction: 0},
+		{x: 6, y: 2, direction: 6},
+		{x: 5, y: 2, direction: 6},
+	}
+	previousX, previousY = 10, 1
+	for _, step := range courtEntranceRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("spider-nest-to-court route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if step.x == 5 && step.y == 2 {
+				break
+			}
+			if state.Mode == ModeWilderness &&
+				reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+				if err := state.Select(0); err != nil {
+					t.Fatal(err)
+				}
+				if reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+					if err := state.Select(2); err != nil {
+						t.Fatal(err)
+					}
+				}
+				continue
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		if step.x == 5 && step.y == 2 {
+			break
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("quiet court route cell (%d,%d) mode=%v choices=%v message=%q terrain=%02x",
+				step.x, step.y, state.Mode, state.currentOriginalChoices,
+				state.Message, state.DungeonWallRoof)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x08 || state.Mode != ModeEvent ||
+		state.PictureBlock != 72 ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.entry") {
+		t.Fatalf("court entry terrain=%02x mode=%v picture=%d message=%q",
+			state.DungeonWallRoof, state.Mode, state.PictureBlock, state.Message)
+	}
+	for page := 0; page < 4 &&
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}); page++ {
+		switch state.Mode {
+		case ModeEvent:
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		case ModeWilderness:
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		default:
+			t.Fatalf("unexpected court entry continuation mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.enter") {
+		t.Fatalf("court enter choices=%v original=%v message=%q",
+			state.Choices, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.welcome") {
+		t.Fatalf("court welcome mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("court welcome continuation mode=%v", state.Mode)
+	}
+
+	// YES moves the party inside to (4,2,S); two legal steps reach 89h.
+	previousX, previousY = 4, 2
+	for _, step := range []dungeonStep{
+		{x: 4, y: 1, direction: 0},
+		{x: 3, y: 1, direction: 6},
+	} {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("court vestibule route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x89 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.armor") {
+		t.Fatalf("court armor terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	armorApprovalBefore, armorApprovalFound := state.session.MemoryValue(0x4CBA)
+	if !armorApprovalFound {
+		t.Fatal("court armor has no approval value")
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"GO UPSTAIRS", "TAKE ARMOR", "ATTACK", "RETREAT"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "myth-drannor.court.go-upstairs"),
+			gamePackText(t, state, "myth-drannor.court.take-armor"),
+			state.catalog.Text("attack", "攻擊"),
+			state.catalog.Text("retreat", "撤退"),
+		}) {
+		t.Fatalf("court armor choices=%v original=%v", state.Choices, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.court.armor-bows") {
+		t.Fatalf("court armor pass message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("court armor continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if approval, found := state.session.MemoryValue(0x4CBA); !found ||
+		approval != armorApprovalBefore+1 {
+		t.Fatalf("court armor approval=%02x,%v, want %02x+1",
+			approval, found, armorApprovalBefore)
+	}
+
+	// GO UPSTAIRS places the party at (2,1,W). Walk around the inner stair
+	// to terrain 8Ah, then south to Queen Daemir's spirit at terrain 8Bh.
+	courtRoute := []dungeonStep{
+		{x: 2, y: 2, direction: 4},
+		{x: 1, y: 2, direction: 6},
+	}
+	previousX, previousY = 2, 1
+	for _, step := range courtRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("inner-court route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8A || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.greeting") {
+		t.Fatalf("court greeting terrain=%02x mode=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("court greeting continuation mode=%v", state.Mode)
+	}
+
+	if !burialGlen.CanMoveDungeonWrapped(1, 2, 4) {
+		t.Fatal("court greeting-to-queen route is not passable")
+	}
+	gemsBeforeCourtReward, jewelryBeforeCourtReward := state.TreasurePool()
+	itemsBeforeCourtReward := len(state.PendingTreasureItems())
+	state.SetDungeonGeometryView(1, 3, 4)
+	state.DungeonWallRoof = burialGlen.CellWrapped(1, 3).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x8B || state.Mode != ModeEvent ||
+		state.PictureBlock != 72 ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.reward") {
+		t.Fatalf("court reward terrain=%02x mode=%v picture=%d message=%q",
+			state.DungeonWallRoof, state.Mode, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.treasureMenu && state.Mode == ModeWilderness &&
+		reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for step := 0; step < 4 && !state.treasureMenu; step++ {
+		switch state.Mode {
+		case ModeEvent:
+			if err := state.Continue(); err != nil {
+				t.Fatal(err)
+			}
+		case ModeWilderness:
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		default:
+			t.Fatalf("unexpected court reward continuation mode=%v choices=%v",
+				state.Mode, state.currentOriginalChoices)
+		}
+	}
+	gemsAfterCourtReward, jewelryAfterCourtReward := state.TreasurePool()
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		len(state.currentOriginalChoices) == 0 ||
+		state.currentOriginalChoices[len(state.currentOriginalChoices)-1] != "TREASURE_EXIT" ||
+		gemsAfterCourtReward != gemsBeforeCourtReward+12 ||
+		jewelryAfterCourtReward != jewelryBeforeCourtReward+8 ||
+		len(state.PendingTreasureItems()) != itemsBeforeCourtReward+6 {
+		t.Fatalf("court reward treasure mode=%v choices=%v original=%v pending=%d message=%q",
+			state.Mode, state.Choices, state.currentOriginalChoices,
+			len(state.PendingTreasureItems()), state.Message)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent ||
+		state.Message != gamePackText(t, state, "myth-drannor.court.farewell") {
+		t.Fatalf("court farewell mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode == ModeWilderness &&
+		reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		if err := state.Select(0); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("court completed mode=%v message=%q", state.Mode, state.Message)
+	}
+	for _, address := range []uint16{0x4CC4, 0x4CC5, 0x4CC6} {
+		if value, found := state.session.MemoryValue(address); !found || value != 1 {
+			t.Fatalf("court completion flag %04x=%d,%v", address, value, found)
+		}
 	}
 
 	boundaryHero := hero

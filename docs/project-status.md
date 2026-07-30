@@ -204,6 +204,15 @@ commit 內保存不可能自我引用的 hash。
   YES／NO、NO 不消耗事件、YES 戰前 `4CCC=1`、四隻巨蛛與敵方
   `7F70=2` 均由 raw ECL 與正常玩家路徑驗證。低好感直接開戰分支也有
   獨立回歸；蛛卵沒有原作選單或財寶，未自行添加。
+- 第 396 輪把正常玩家路徑延伸至西側精靈王庭：terrain `08h` 門口幽魂
+  YES 會傳送到 `(4,2,S)`；terrain `89h` 的 GO UPSTAIRS／TAKE ARMOR／
+  ATTACK／RETREAT 會正確影響 `4CBA` 與 `4CC4`。terrain `8Ah` 以
+  `80h` 為友善門檻，敵對時建立 `6+4+4` 共十四名敵人；terrain `8Bh`
+  的友善王后給 12 gems、8 jewelry 與 ITEM6 block `41h` 六筆物品，
+  敵對王后則再扣五點並依 YES／NO 給較少財寶或拒絕，最後倒塔傳送。
+  三個完成旗標、繁中 stable IDs、ITEM6 真實解碼與 Standing Stone 起始
+  玩家路徑均已回歸。使用者提供的角色資訊實機圖也已納入 spec 391，
+  固定人物舞台／右側 roster／下方長文三區 layout oracle。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

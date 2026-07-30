@@ -17,6 +17,13 @@
 - 這張來源經顯示縮放後只能把 placement、layering 與 frame geometry
   標為 `material-exact/layout-reconstructed`，不能宣稱來源 RGB
   pixel-exact。抽出的內框已重新量化至 EGA 16 色。
+- 2026-07-30 使用者另指定角色資訊實機圖
+  [`dos-character-info-layout-20260730.png`](../reference/user-provided/dos-character-info-layout-20260730.png)，
+  SHA-256 為
+  `2afa9ba4b37a205571dff582ee69b2a86b305f3f057343bc40dd9ba0ea9320c5`。
+  它再次證明左上角色圖使用同一黃色裂紋人物舞台；右側 NAME／AC／HP
+  roster 與下方角色長文則各有獨立石框。這張圖是使用者提供的實機 layout
+  oracle，不能誤標成 remake 截圖。
 
 ## 必要實作
 
@@ -27,6 +34,8 @@
 4. 人物內框在 sprite 後 overlay；外層 DOS cracked-stone chrome 最後再畫。
 5. PIC／第一人稱場景仍維持既有 `cover＋clip`，不能因本次人物修正退回
    letterbox。
+6. 角色資訊頁沿用人物專用舞台，但右側 roster 與下方敘述必須保持原版三區
+   分割；不能把頭像縮成 roster icon，也不能讓人物圖侵入文字框。
 
 ## 驗證
 

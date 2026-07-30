@@ -136,6 +136,21 @@
       ,"myth-drannor.spider-funnel": "You see a funnel of webs."
       ,"myth-drannor.spider-warning": "A whispery voice calls out, “The spiders will guard their nest fiercely.” Do you continue?"
       ,"myth-drannor.spider-eggs": "Spiders leap forth. You can see some eggs behind them."
+      ,"myth-drannor.court.entry": "Near the building entrance lies a crushed thri-kreen. A ghostly shape stands in the doorway."
+      ,"myth-drannor.court.enter": "Do you want to enter the building?"
+      ,"myth-drannor.court.welcome": "The spirit says, “Welcome, warriors. Enter and meet our Queen.”"
+      ,"myth-drannor.court.armor": "Two suits of armor flank this stairway, radiating faint magic. One says, “The Queen will see you.”"
+      ,"myth-drannor.court.armor-bows": "The armor seems to bow as you pass."
+      ,"myth-drannor.court.armor-crumbles": "The armor crumbles into rusty flakes."
+      ,"myth-drannor.court.greeting": "As you approach the stairs, a voice calls, “The court gives greetings.”"
+      ,"myth-drannor.court.hostile": "As you approach the stairs, a voice calls, “Despoilers shall fight despoilers.”"
+      ,"myth-drannor.court.reward": "A spirit appears. “My heart rejoices to have such defenders. These items may help your quest.”"
+      ,"myth-drannor.court.farewell": "“Alas, my time is short here. My best wishes to you.” She disappears."
+      ,"myth-drannor.court.hostile-offer": "A spirit appears. “This glen has been crushed by your kind. If you leave, you may have the remnants of our treasure. Will you?”"
+      ,"myth-drannor.court.refusal": "“Then lie with us!” The tower begins to collapse around you. You rush outside."
+      ,"myth-drannor.court.collapse": "The tower falls into a pile of rubble."
+      ,"myth-drannor.court.go-upstairs": "Go upstairs"
+      ,"myth-drannor.court.take-armor": "Take armor"
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -267,6 +282,21 @@
       ,"myth-drannor.spider-funnel": "你們看見一道漏斗狀的蛛網。"
       ,"myth-drannor.spider-warning": "一個低沉如耳語的聲音說：「蜘蛛會拚死守護牠們的巢穴。」你們還要繼續嗎？"
       ,"myth-drannor.spider-eggs": "蜘蛛猛然躍出；你們看見牠們身後有一些蛛卵。"
+      ,"myth-drannor.court.entry": "建築入口附近躺著一具被壓碎的螳螂人屍體；門口則立著一道幽靈般的身影。"
+      ,"myth-drannor.court.enter": "你們要進入這棟建築嗎？"
+      ,"myth-drannor.court.welcome": "幽魂說：「歡迎，各位勇士。請進來覲見我們的王后。」"
+      ,"myth-drannor.court.armor": "兩副散發微弱魔力的盔甲分立階梯兩側。其中一副說：「王后願意接見你們。」"
+      ,"myth-drannor.court.armor-bows": "你們經過時，盔甲似乎向眾人躬身行禮。"
+      ,"myth-drannor.court.armor-crumbles": "盔甲隨即崩解成滿地鏽蝕碎片。"
+      ,"myth-drannor.court.greeting": "你們走近階梯時，一個聲音高喊：「王庭向諸位致意。」"
+      ,"myth-drannor.court.hostile": "你們走近階梯時，一個聲音高喊：「褻瀆者就該與褻瀆者交戰。」"
+      ,"myth-drannor.court.reward": "一名幽魂現身。「有諸位守護此地，我心甚慰。這些物品或許能助你們完成使命。」"
+      ,"myth-drannor.court.farewell": "「唉，我能留在此地的時間已經不多。願諸位一路平安。」她隨即消失。"
+      ,"myth-drannor.court.hostile-offer": "一名幽魂現身。「你們的同類已將這片葬林摧殘殆盡。若願意就此離去，便可拿走我們僅存的寶藏。答應嗎？」"
+      ,"myth-drannor.court.refusal": "「那就留下來與我們長眠吧！」高塔開始在你們四周崩塌，眾人連忙衝到外面。"
+      ,"myth-drannor.court.collapse": "高塔坍成了一堆瓦礫。"
+      ,"myth-drannor.court.go-upstairs": "走上階梯"
+      ,"myth-drannor.court.take-armor": "取走盔甲"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -718,6 +748,16 @@
       "message_id": "myth-drannor.bones.ignore"
     },
     {
+      "id": "myth-drannor.court.go-upstairs",
+      "source": "GO UPSTAIRS",
+      "message_id": "myth-drannor.court.go-upstairs"
+    },
+    {
+      "id": "myth-drannor.court.take-armor",
+      "source": "TAKE ARMOR",
+      "message_id": "myth-drannor.court.take-armor"
+    },
+    {
       "id": "option.yes",
       "source": "YES",
       "message_id": "option.yes"
@@ -934,6 +974,71 @@
       "id": "myth-drannor.spider-eggs",
       "all_contains": ["SPIDERS LEAP FORTH", "YOU CAN SEE SOME EGGS", "BEHIND THEM"],
       "message_id": "myth-drannor.spider-eggs"
+    },
+    {
+      "id": "myth-drannor.court.entry",
+      "all_contains": ["NEAR THE ENTRANCE TO THIS BUILDING", "A CRUSHED THRI-KREEN", "IN THE DOORWAY IS A GHOSTLY SHAPE"],
+      "message_id": "myth-drannor.court.entry"
+    },
+    {
+      "id": "myth-drannor.court.enter",
+      "all_contains": ["DO YOU WANT TO ENTER THE BUILDING"],
+      "message_id": "myth-drannor.court.enter"
+    },
+    {
+      "id": "myth-drannor.court.welcome",
+      "all_contains": ["THE SPIRIT SPEAKS", "WELCOME WARRIORS", "ENTER AND MEET OUR QUEEN"],
+      "message_id": "myth-drannor.court.welcome"
+    },
+    {
+      "id": "myth-drannor.court.armor",
+      "all_contains": ["TWO SUITS OF ARMOR FLANK THIS STAIRWAY", "THE QUEEN WILL SEE YOU"],
+      "message_id": "myth-drannor.court.armor"
+    },
+    {
+      "id": "myth-drannor.court.armor-bows",
+      "all_contains": ["THE ARMOR SEEMS TO BOW AS YOU PASS"],
+      "message_id": "myth-drannor.court.armor-bows"
+    },
+    {
+      "id": "myth-drannor.court.armor-crumbles",
+      "all_contains": ["THE ARMOR CRUMBLES INTO RUSTY FLAKES"],
+      "message_id": "myth-drannor.court.armor-crumbles"
+    },
+    {
+      "id": "myth-drannor.court.greeting",
+      "all_contains": ["AS YOU APPROACH THE STAIRS", "THE COURT GIVES GREETINGS"],
+      "message_id": "myth-drannor.court.greeting"
+    },
+    {
+      "id": "myth-drannor.court.hostile",
+      "all_contains": ["AS YOU APPROACH THE STAIRS", "DESPOILERS SHALL FIGHT DESPOILERS"],
+      "message_id": "myth-drannor.court.hostile"
+    },
+    {
+      "id": "myth-drannor.court.reward",
+      "all_contains": ["MY HEART REJOICES TO HAVE SUCH DEFENDERS", "THESE ITEMS MAY HELP YOUR QUEST"],
+      "message_id": "myth-drannor.court.reward"
+    },
+    {
+      "id": "myth-drannor.court.farewell",
+      "all_contains": ["ALAS, MY TIME IS SHORT HERE", "MY BEST WISHES", "SHE DISAPPEARS"],
+      "message_id": "myth-drannor.court.farewell"
+    },
+    {
+      "id": "myth-drannor.court.hostile-offer",
+      "all_contains": ["THIS GLEN HAS BEEN CRUSHED BY YOUR KIND", "REMNANTS OF OUR TREASURE", "WILL YOU"],
+      "message_id": "myth-drannor.court.hostile-offer"
+    },
+    {
+      "id": "myth-drannor.court.refusal",
+      "all_contains": ["THEN LIE WITH US", "THE TOWER BEGINS", "YOU RUSH OUTSIDE"],
+      "message_id": "myth-drannor.court.refusal"
+    },
+    {
+      "id": "myth-drannor.court.collapse",
+      "all_contains": ["THE TOWER FALLS INTO A PILE OF RUBBLE"],
+      "message_id": "myth-drannor.court.collapse"
     },
     {
       "id": "zhentil.patrol_pass",

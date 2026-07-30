@@ -1110,6 +1110,194 @@ func TestRealBurialGlenSpiderMausoleumApprovalBranches(t *testing.T) {
 	})
 }
 
+func TestRealBurialGlenElvenCourtApprovalBranches(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T, terrain, approval uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 3)
+		session.SetMemoryValue(0xC04C, 1)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, terrain)
+		session.SetMemoryValue(0x4CBA, approval)
+		return session
+	}
+	press := uint16(0)
+
+	t.Run("ghostly doorway yes enters and no leaves", func(t *testing.T) {
+		for choice := uint16(0); choice < 2; choice++ {
+			session := newSession(t, 0x08, 0x80)
+			intro, runErr := session.RunEntry(1, 7000, nil)
+			if runErr != nil || intro.PictureBlock != 72 || !intro.WaitingForMenu ||
+				!strings.Contains(strings.Join(intro.Text, " "), "A CRUSHED THRI-KREEN") {
+				t.Fatalf("doorway intro choice=%d result=%+v err=%v", choice, intro, runErr)
+			}
+			prompt, runErr := session.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+			if runErr != nil || !prompt.WaitingForMenu ||
+				!reflect.DeepEqual(prompt.Menus[len(prompt.Menus)-1].Options, []string{"YES", "NO"}) {
+				t.Fatalf("doorway prompt choice=%d result=%+v err=%v", choice, prompt, runErr)
+			}
+			done, runErr := session.ResumeInteractiveSelectionSeed(7000, &choice, nil, 1, PartyContext{})
+			if runErr != nil || !done.Exited {
+				t.Fatalf("doorway choice=%d result=%+v err=%v", choice, done, runErr)
+			}
+			if choice == 0 {
+				if !strings.Contains(strings.Join(done.Text, " "), "ENTER AND MEET OUR QUEEN") ||
+					mustMemory(t, session, 0xC04B) != 4 ||
+					mustMemory(t, session, 0xC04C) != 2 ||
+					mustMemory(t, session, 0xC04D) != 3 {
+					t.Fatalf("doorway YES result=%+v", done)
+				}
+			}
+		}
+	})
+
+	t.Run("armor stairs preserve or reduce approval", func(t *testing.T) {
+		for choice := uint16(0); choice < 4; choice++ {
+			session := newSession(t, 0x89, 0x80)
+			intro, runErr := session.RunEntry(1, 7000, nil)
+			if runErr != nil {
+				t.Fatal(runErr)
+			}
+			menu, runErr := session.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+			if runErr != nil || !menu.WaitingForMenu ||
+				!reflect.DeepEqual(menu.Menus[len(menu.Menus)-1].Options,
+					[]string{"GO UPSTAIRS", "TAKE ARMOR", "ATTACK", "RETREAT"}) {
+				t.Fatalf("choice %d intro=%+v menu=%+v err=%v", choice, intro, menu, runErr)
+			}
+			branch, runErr := session.ResumeInteractiveSelectionSeed(7000, &choice, nil, 1, PartyContext{})
+			if runErr != nil {
+				t.Fatal(runErr)
+			}
+			switch choice {
+			case 0:
+				if !branch.WaitingForMenu ||
+					!strings.Contains(strings.Join(branch.Text, " "), "ARMOR SEEMS TO BOW") {
+					t.Fatalf("upstairs=%+v", branch)
+				}
+				done, resumeErr := session.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+				if resumeErr != nil || !done.Exited ||
+					mustMemory(t, session, 0x4CBA) != 0x81 ||
+					mustMemory(t, session, 0xC04B) != 2 ||
+					mustMemory(t, session, 0xC04C) != 1 ||
+					mustMemory(t, session, 0xC04D) != 3 {
+					t.Fatalf("upstairs continuation=%+v err=%v", done, resumeErr)
+				}
+			case 1, 2:
+				if !branch.WaitingForMenu ||
+					!strings.Contains(strings.Join(branch.Text, " "), "CRUMBLES INTO RUSTY FLAKES") {
+					t.Fatalf("hostile armor choice=%d result=%+v", choice, branch)
+				}
+				done, resumeErr := session.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+				if resumeErr != nil || !done.Exited || mustMemory(t, session, 0x4CBA) != 0x7E {
+					t.Fatalf("hostile armor continuation choice=%d result=%+v approval=%02x err=%v",
+						choice, done, mustMemory(t, session, 0x4CBA), resumeErr)
+				}
+			case 3:
+				if !branch.Exited || mustMemory(t, session, 0x4CBA) != 0x80 {
+					t.Fatalf("retreat=%+v approval=%02x", branch, mustMemory(t, session, 0x4CBA))
+				}
+				if _, found := session.MemoryValue(0x4CC4); found {
+					t.Fatal("retreat unexpectedly consumed terrain 89h")
+				}
+				continue
+			}
+			if mustMemory(t, session, 0x4CC4) != 1 {
+				t.Fatalf("choice %d did not set 4CC4", choice)
+			}
+		}
+	})
+
+	t.Run("court greeting or fourteen-monster punishment", func(t *testing.T) {
+		friendly := newSession(t, 0x8A, 0x80)
+		result, runErr := friendly.RunEntry(1, 7000, nil)
+		if runErr != nil || !result.WaitingForMenu ||
+			!strings.Contains(strings.Join(result.Text, " "), "COURT GIVES GREETINGS") ||
+			mustMemory(t, friendly, 0x4CC5) != 1 {
+			t.Fatalf("friendly=%+v err=%v", result, runErr)
+		}
+
+		hostile := newSession(t, 0x8A, 0x7F)
+		result, runErr = hostile.RunEntry(1, 7000, nil)
+		if runErr != nil || !result.WaitingForMenu ||
+			!strings.Contains(strings.Join(result.Text, " "), "DESPOILERS SHALL FIGHT DESPOILERS") {
+			t.Fatalf("hostile prompt=%+v err=%v", result, runErr)
+		}
+		fight, runErr := hostile.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x42, Count: 6, IconBlock: 0x41},
+				{MonsterID: 0x41, Count: 4, IconBlock: 0x41},
+				{MonsterID: 0x40, Count: 4, IconBlock: 0x40},
+			}) {
+			t.Fatalf("hostile fight=%+v err=%v", fight, runErr)
+		}
+	})
+
+	t.Run("queen rewards defenders or collapses tower", func(t *testing.T) {
+		friendly := newSession(t, 0x8B, 0x80)
+		result, runErr := friendly.RunEntry(1, 7000, nil)
+		if runErr != nil || result.PictureBlock != 72 || !result.WaitingForMenu ||
+			!strings.Contains(strings.Join(result.Text, " "), "MY HEART REJOICES") ||
+			mustMemory(t, friendly, 0x4CC6) != 1 {
+			t.Fatalf("friendly queen=%+v err=%v", result, runErr)
+		}
+		reward, runErr := friendly.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+		if runErr != nil || len(reward.TreasureRequests) != 1 ||
+			reward.TreasureRequests[0].Coins != [7]uint16{0, 0, 0, 0, 0, 12, 8} ||
+			reward.TreasureRequests[0].ItemBlock != 0x41 {
+			t.Fatalf("friendly reward=%+v err=%v", reward, runErr)
+		}
+
+		for choice := uint16(0); choice < 2; choice++ {
+			hostile := newSession(t, 0x8B, 0x7F)
+			offer, offerErr := hostile.RunEntry(1, 7000, nil)
+			if offerErr != nil || !offer.WaitingForMenu ||
+				!reflect.DeepEqual(offer.Menus[len(offer.Menus)-1].Options, []string{"YES", "NO"}) ||
+				mustMemory(t, hostile, 0x4CBA) != 0x7A ||
+				mustMemory(t, hostile, 0x4CC6) != 1 {
+				t.Fatalf("hostile offer choice=%d result=%+v err=%v", choice, offer, offerErr)
+			}
+			next, resumeErr := hostile.ResumeInteractiveSelectionSeed(7000, &choice, nil, 1, PartyContext{})
+			if resumeErr != nil {
+				t.Fatal(resumeErr)
+			}
+			if choice == 0 {
+				if len(next.TreasureRequests) != 1 ||
+					next.TreasureRequests[0].Coins != [7]uint16{0, 0, 0, 0, 0, 4, 2} ||
+					next.TreasureRequests[0].ItemBlock != 0x40 {
+					t.Fatalf("hostile accepted reward=%+v", next)
+				}
+			} else if !next.WaitingForMenu ||
+				!strings.Contains(strings.Join(next.Text, " "), "THEN LIE WITH US") {
+				t.Fatalf("hostile refusal=%+v", next)
+			}
+			collapse, collapseErr := hostile.ResumeInteractiveSelectionSeed(7000, &press, nil, 1, PartyContext{})
+			if collapseErr != nil || !collapse.Exited ||
+				mustMemory(t, hostile, 0xC04B) != 5 ||
+				mustMemory(t, hostile, 0xC04C) != 2 ||
+				mustMemory(t, hostile, 0xC04D) != 3 {
+				t.Fatalf("hostile collapse=%+v err=%v", collapse, collapseErr)
+			}
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)
