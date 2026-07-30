@@ -117,6 +117,17 @@ func (block FMParameterBlock) YM2203Modulation(
 	return pitch, levels
 }
 
+// SoundBIOSModulationConfig maps only the NEC fields consumed by the
+// game-neutral Timer B scheduler. The proprietary parameter bank and its
+// offsets remain in this CoAB adapter.
+func (block FMParameterBlock) SoundBIOSModulationConfig() pc98soundbios.ModulationConfig {
+	return pc98soundbios.ModulationConfig{
+		Waveform:  block.LFOWaveform,
+		SyncDelay: block.LFOSyncDelay,
+		Speed:     block.LFOSpeed,
+	}
+}
+
 // FMParameterBankAudit reports only provenance, hashes and index coverage.
 // The proprietary tone values stay in the user's local media.
 type FMParameterBankAudit struct {

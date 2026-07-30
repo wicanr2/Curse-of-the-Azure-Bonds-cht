@@ -339,3 +339,7 @@
 - [第三百六十七輪 PC-98 音序列指令集](./367-pc98-stream-bytecode.md)（`READY`：限 FM／PSG／timing family grammar、有界控制流與真實 corpus）
 - [第三百六十八輪 PC-98 OPN 事件 runtime](./368-pc98-opn-event-runtime.md)（`READY`：限正常配樂 tick、FM／PSG／tempo 及 Sound BIOS intents）
 - [第三百六十九輪 PC-98 FM 音色參數庫](./369-pc98-fm-parameter-bank.md)（`READY`：限 seg003 內嵌二十組、十二曲索引覆蓋與八個缺失來源）
+- [第三百七十輪 PC-98 S98／YM2203 runtime](./370-pc98-s98-ym2203-runtime.md)（`READY`：限十二曲 register trace、tone load 與 key-on 對照）
+- [第三百七十一輪 PC-98 Sound BIOS 總音量與 Key-on](./371-pc98-sound-bios-total-level-and-key-on.md)（`READY`：限 TL、carrier 與 operator mask）
+- [第三百七十二輪 PC-98 Sound BIOS 軟體 LFO 核心](./372-pc98-sound-bios-software-lfo.md)（`READY`：限 timer ISR、六種 waveform 與 pitch／TL 投影）
+- [第三百七十三輪 PC-98 Sound BIOS LFO Timer B 排程](./373-pc98-sound-bios-lfo-timer-scheduler.md)（`READY`：限 cadence、sync 狀態機與 ROM 動態 harness）

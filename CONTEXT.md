@@ -2096,3 +2096,27 @@ extractor。CoAB `FMParameterBlock.YM2203Modulation` 映射 NEC parameter。
 不能推論原作關閉 LFO。spec 372 已 READY；仍需長時間 Hoot 或
 NP2kai／test harness 證明 cadence、sync delay，之後才能接 TrackPlayback
 scheduler、合成器與遊戲內播放器。
+
+2026-07-30 第 373 輪完成 PC-98 Sound BIOS LFO Timer B cadence、
+sync delay 狀態機與 ROM 動態 harness。先將 Hoot selector 9 capture
+延長至 45.01 秒；三個 FM 聲道都載入 first-stream parameter 3 且 key-on，
+22,743 次 register writes 仍只有正常 note burst，獨立 pitch／TL LFO
+更新皆為零。這把 Hoot `pc98dos` 限制與原機行為明確分開。
+
+指定 IDA Pro 9.4 證明 `CF47Ah` 讀 YM status：bit 0 進 `CF501h` Timer A
+note path，bit 1 進 `CF5F3h` Timer B LFO path。sync state 3 將
+`uint8(sync-1)*4` 寫入 counter，再走共用 increment；state 1 每 tick
+只遞減 counter 低 byte，成零時在同 tick reset oscillator 並輸出。
+
+版本化 `scripts/research/pc98_sound_rom_lfo_harness.py` 使用 Unicorn 2.1.4
+的 8086 mode，驗證 exact ROM／driver SHA 後直接執行 `CF309/CF41F/CF239/
+CF3E7` 及 80 次 `CF5F3`，攔截 `0x188/0x18A`。parameter 3 的
+`note_state=FFh`、flags `83h`；第一組 pitch／TL 在 tick 30，tick 30..80
+共 51 組 `A4/A0` 與 204 筆 TL，final counter 51。
+
+獨立 engine 新增 `audio/pc98soundbios.Modulator`，exact 保存 enable、
+phase state、WORD counter、sync 0／1／2+、低 byte waiting decrement 與
+shared phase；CoAB `FMParameterBlock.SoundBIOSModulationConfig` 只映射
+waveform／sync／speed。engine 全測試、CoAB focused tests 與 ROM harness
+均通過。仍未完成 TrackPlayback／Timer A note-state 接線、Timer B→PCM
+sample clock、fade／SFX、完整 loop、合成器與遊戲內播放器。

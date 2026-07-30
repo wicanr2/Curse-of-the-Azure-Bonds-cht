@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`1cbea69`；第 372 輪 Sound BIOS 軟體 LFO milestone
-  會由本文件所在 commit 完成。
-- Engine dependency：`77683a3`（含中立 `audio/s98`、`audio/ym2203`、
+- CoAB 本輪基底：`df10ac6`；第 373 輪 Sound BIOS LFO Timer B
+  scheduler milestone 會由本文件所在 commit 完成。
+- Engine dependency：`234f1c4`（含中立 `audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -240,11 +240,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `F0h`。
 - 第 372 輪已手動恢復 IDA 漏掉的 timer ISR 間接路徑，完成
   `audio/pc98soundbios` 六種 waveform、pitch／TL 投影及 S98 動態 extractor。
-  十二首 first-stream 有 18 個非零 LFO 聲道，但約五秒 capture 的動態
-  pitch／TL update 全為零；spec 372 是最新 READY 規格。
-- 下一步先用長時間 Hoot 或 NP2kai／test harness 補 LFO cadence 與 key-on
-  sync，再做 fade、SFX 共存、完整曲長／loop、YM2203 合成器、PCM mixer
-  與遊戲內播放。不得把靜態 LFO 數學寫成 scheduler／外部 fidelity 已完成。
+  第 373 輪又用 45.01 秒 selector 9 S98 證明 Hoot 沒執行 ROM Timer B
+  LFO，再以 Unicorn 8086 直接執行 exact `SOUND.ROM`：sync 8 第 30 tick
+  首次輸出、80 tick 共 51 組 pitch／TL。engine Timer B scheduler 與
+  CoAB waveform／sync／speed adapter 已完成，spec 373 是最新 READY 規格。
+- 下一步接 `TrackPlayback`／Timer A note-state 與 YM2203 合成器，再做
+  fade、SFX 共存、完整曲長／loop、PCM mixer 與遊戲內播放；不得把
+  scheduler core 寫成完整 PC-98 音樂。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -329,8 +331,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   改用內嵌 `0..19`，之後才首次 key-on；十二首
   `audible_parameters_complete` 均為 true。不得刪除高索引副作用，也不得
   再追假設中的外部音色 bank。第 371 輪已補完 total-level／carrier 與
-  operator-mask key-on；第 372 輪已補 LFO 靜態核心。下一個真實缺口是
-  LFO 外部 cadence、fade／SFX、完整 loop、合成器與遊戲內播放器。
+  operator-mask key-on；第 372 輪已補 LFO 靜態核心，第 373 輪已補
+  Timer B cadence、sync state 與 ROM 動態 harness。下一個真實缺口是
+  TrackPlayback／Timer A 接線、fade／SFX、完整 loop、合成器與遊戲內播放器。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -346,8 +349,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371／372 輪規格也已 READY。下一步先補 LFO 外部 cadence，再處理
-  fade／SFX 與完整 loop；播放器只能在對應外部 event 持續交叉驗證後接入。
+  第 371／372／373 輪規格也已 READY。下一步先接 Timer A/B runtime 與
+  合成器，再處理 fade／SFX 與完整 loop；播放器只能在對應外部 event
+  持續交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單
 

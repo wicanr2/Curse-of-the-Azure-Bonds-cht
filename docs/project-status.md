@@ -1,8 +1,8 @@
 # 專案成果盤點
 
-更新日期：2026-07-29
-本 milestone 的 CoAB 基底：`cd87046`
-依賴的 Golden Box engine checkpoint：`5363177`
+更新日期：2026-07-30
+本 milestone 的 CoAB 基底：`df10ac6`
+依賴的 Golden Box engine checkpoint：`234f1c4`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -110,9 +110,10 @@ commit 內保存不可能自我引用的 hash。
   snapshot 與 `audio/pc98soundbios` LFO 核心。
   第 372 輪又恢復 `SOUND.ROM` timer ISR 的 register-held 間接分支，
   完成六種軟體 LFO waveform、pitch／TL 投影及 S98 動態 extractor；
-  十二首有 18 個 first-stream 非零 LFO 聲道，但目前短 trace 的動態更新
-  皆為零，scheduler cadence 尚未取得外部證據。仍缺 fade／SFX、loop、
-  合成器與遊戲內播放器。
+  第 373 輪以 45.01 秒 Hoot trace 確認其 Timer B ISR 可觀測性缺口，再以
+  exact ROM 8086 harness 動態證明 sync 8 第 30 tick 首次輸出、80 tick
+  共 51 組。engine Timer B scheduler 與 CoAB parameter adapter 已完成；
+  仍缺 TrackPlayback／合成器接線、fade／SFX、loop 與遊戲內播放器。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -136,8 +137,9 @@ commit 內保存不可能自我引用的 hash。
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目尚缺 fade／sound-effect 共存路徑、完整曲長／loop trace、
-  LFO scheduler 外部 cadence、合成器與播放器。六種 LFO waveform 與
-  pitch／TL 數學核心已完成；曲名、十二首 sequence、控制流、total-level、
+  Timer B→PCM wall-clock bridge、合成器與播放器。六種 LFO waveform、
+  pitch／TL 數學核心、sync delay 與 Timer B scheduler 已由 ROM harness
+  驗證；曲名、十二首 sequence、控制流、total-level、
   algorithm carrier、operator-mask key-on、正常配樂 deterministic
   events 及啟動 S98 register trace 已交叉驗證；
   driver sector 仍需

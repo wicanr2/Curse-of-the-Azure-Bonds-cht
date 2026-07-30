@@ -145,7 +145,7 @@ SETPARABLOCK 呼叫」與「key-on 當下有效音色」，並以 runtime trace 
 遇到其他 PC-98 Gold Box，不應把 FM key-on 固定寫成 `F0h`，也不能把
 total level 當作 volume-independent timbre signature。
 
-目前仍不能宣稱「PC-98 音樂已還原」。下一步是 LFO、fade／SFX 共存、
+目前仍不能宣稱「PC-98 音樂已還原」。下一步是 fade／SFX 共存、
 完整 loop trace，再選擇有明確授權的 YM2203 合成器並接入 PCM mixer。
 
 2026-07-30 第 372 輪進一步還原 `SOUND.ROM` 的軟體 LFO。IDA 的一般分析
@@ -166,3 +166,19 @@ S98 稽核也要保存「沒有觀測到」的限制。十二首 first-stream �
 使用非零 LFO 參數，但現有約五秒 Hoot capture 的獨立 pitch／TL update
 皆為零。這不能推論原作 LFO 關閉；在 timer cadence 取得 Hoot 長時間 trace
 或 NP2kai／test harness 外部證據前，不應把 scheduler 接成假精確。
+
+2026-07-30 第 373 輪補齊上述證據。selector 9 的三個 FM 聲道都使用
+parameter 3 且實際 key-on；45.01 秒 Hoot S98 仍沒有獨立 LFO write，
+證明 Hoot `pc98dos` path 不能當 Timer B oracle。改以 Unicorn 8086
+直接執行 exact `SOUND.ROM` 的 command routines 與 `CF5F3h`：
+
+- YM status bit 0 進 `CF501h` Timer A note path，bit 1 進 `CF5F3h`
+  Timer B LFO path；
+- sync 8 在第 1 tick 建立 29，再由 state 1 低 byte 倒數；
+- 第 30 tick reset oscillator 並首次輸出；
+- tick 30..80 共 51 組 `A4/A0` 與 51×4 組 TL，counter 最後是 51。
+
+可重用 engine scheduler 因此應以「一次 Timer B overflow」為 API，
+不能把 S98 的 10 ms 記錄刻度當成 LFO 固定週期。作品 adapter 只映射
+waveform、sync、speed；Timer B register `26h` 到 PCM sample clock、
+Timer A gate／length、fade／SFX 與播放器仍是下一層工作。

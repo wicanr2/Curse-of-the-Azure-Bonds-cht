@@ -3,6 +3,10 @@
 狀態：`READY`（限 `SOUND.ROM` timer ISR、六種 waveform、pitch／total-level
 投影及現有十二首 S98 的可觀測性邊界）
 
+後續更新：Timer B cadence、sync delay 與 ROM 動態 harness 已由
+[第 373 輪規格](./373-pc98-sound-bios-lfo-timer-scheduler.md)補齊；本檔
+保留第 372 輪當時的可觀測性邊界，不再是 scheduler 的最新狀態。
+
 本規格接續第 371 輪，還原 NEC PC-9801 Sound BIOS 在 YM2203 硬體之外
 執行的軟體 modulation。它不是 MSCDRV stream opcode `90h`：
 
