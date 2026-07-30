@@ -125,9 +125,13 @@ half-wave 視為同長。
 ARROWFX 兩次 hash 一致；FFmpeg 證明 44.1 kHz、stereo、s16、peak
 `-14.7 dB`。
 
-## 7. 仍未完成
+## 7. 後續狀態
 
-- NP2kai 真正 CPU core 的 OUT edge wall-clock trace；
+> 第 381 輪已完成 NP2kai 真正 i286c/V30 core 的 OUT edge trace，但證明
+> 該 core 的 `LOOP` 使用 80286 `taken=8／exit=4`，不能作原機 V30
+> wall-clock oracle。詳見
+> `381-np2kai-v30-speaker-edge-model.md`。
+
 - prefetch／pre-decode；
 - memory／I/O wait 與不同 PC-98 機型；
 - SOUNDFX caller／table interpreter 間的 silence；

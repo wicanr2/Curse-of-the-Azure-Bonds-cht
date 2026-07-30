@@ -273,5 +273,7 @@ PCM。這是值得跨作品沿用的分層：
 3. 共用 renderer 只做無 drift 的 sample integration；
 4. runtime mixer 使用語意事件選擇平台 backend。
 
-目前 8 MHz profile 已可播放且 deterministic，但原機／emulator edge trace
-尚未校準，必須標為 timing-reconstructed。
+目前 8 MHz profile 已可播放且 deterministic。第 381 輪已讓 NP2kai
+i286c/V30 core 直接執行 exact routine，證明 OUT 順序，卻同時證明該 core
+沿用 80286 `LOOP taken=8／exit=4`，不能作原機 V30 wall-clock oracle。
+原機 edge、prefetch 與 wait 仍未校準，必須標為 timing-reconstructed。

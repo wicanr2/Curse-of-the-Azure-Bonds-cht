@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`8bdbb30`；第 380 輪 PC-98 speaker exact routine、
-  V30 timing 校正與雙 repository 音訊知識庫 milestone 會由本文件所在
-  commit 完成。
+- CoAB 本輪基底：`3374b15`；第 381 輪 NP2kai direct V30 core edge
+  trace 與 emulator clock-model 邊界 milestone 會由本文件所在 commit
+  完成。
 - Engine dependency：`fb3bdea`（含繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
@@ -265,9 +265,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   frames 且不推進音序列。正常 loop count 0 轉成 `0xFF` 無限循環。
   driver 內部 40-tick fade／FM0 SFX 沒有正常 GAME caller，不可擅自接入。
   spec 377 是最新 READY 規格。
-- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、以
-  NP2kai／原機 edge trace 校準 SFX machine profile、save/resume 與
-  analog mixer gain。不得把目前可播放路徑宣稱成完整音樂／音效還原。
+- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、以原機
+  edge／錄音或經 microbenchmark 校準的 V30 emulator 校準 SFX machine
+  profile，再處理 save/resume 與 analog mixer gain。第 381 輪已證明
+  NP2kai i286c `_loop` 沿用 80286 `8/4` clocks，不得拿其 `CPU_CLOCK`
+  取代 NEC／原機證據，也不得把目前可播放路徑宣稱成完整音樂／音效還原。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -370,9 +372,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   deterministic one-shot mixer。第 380 輪再以 IDA、raw bytes、Unicorn
   harness 與 NEC 官方表校正 `LOOP taken=5／exit=13`，並分離第一次／
   後續 gate-on 與一般／最後 gate-off overhead；第 379 輪舊 PCM 時長與
-  hash 已作廢。該 profile 仍是 timing-reconstructed；下一個真實缺口是
-  原機 edge／wait／prefetch 校準、reload phase、save/resume 與 analog
-  mixer gain。原 WORD 不是已證明的 Hz。
+  hash 已作廢。第 381 輪已用版本化 probe 讓 NP2kai i286c/V30 core
+  執行 exact routine，重現 `6,6,7,6,7,7`；但 source 與動態 delta
+  都證明它使用 80286 `LOOP taken=8／exit=4`，不能作原機 V30
+  wall-clock oracle。該 profile 仍是 timing-reconstructed；下一個真實
+  缺口是原機 edge／wait／prefetch 校準、reload phase、save/resume 與
+  analog mixer gain。原 WORD 不是已證明的 Hz。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -388,9 +393,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371–379 輪規格也已 READY。下一步用 NP2kai／原機 audio edge trace
-  校準 port `37h` profile，再補 MSCDRV Timer B reload phase、save/resume
-  與 analog mixer gain。
+  第 371–381 輪規格也已 READY。下一步用原機 audio edge／錄音或經
+  microbenchmark 校準的 V30 emulator 校準 port `37h` profile，再補
+  MSCDRV Timer B reload phase、save/resume 與 analog mixer gain。
 
 ## 10. Compact 後恢復工作清單
 
