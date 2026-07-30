@@ -11,7 +11,7 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `fcf9b46`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `fb3bdea`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -112,6 +112,10 @@ cycle duty-cycle PCM integrator；遊戲可用
 Docker／Xvfb 開場亦已載入 backend。8 MHz、無 wait、prefetch 模型仍標為
 timing-reconstructed；原 WORD 不會誤稱為 Hz，原機時鐘、類比音量與濾波
 尚待校準。
+第 380 輪另以 IDA、raw bytes、動態 harness 與 NEC 官方表更正 V30
+`LOOP` 為 taken 5／exit 13 clocks，並分離 routine 的四種 gate overhead；
+第 379 輪舊 WAV 時長與 hash 已作廢，現行結果仍明確標為
+timing-reconstructed。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -150,6 +154,9 @@ Timer B 完整週期與 PCM 有理數排程則見
 [`docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md`](docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md)。
 具名 Borland symbols、平台語意分離與 cycle PCM 見
 [`docs/spec/379-pc98-soundfx-symbols-and-cycle-pcm.md`](docs/spec/379-pc98-soundfx-symbols-and-cycle-pcm.md)。
+PC-98 配樂從 ECL cue、MSCDRV stream、YM2203 register 到 PCM 的完整繁中
+知識庫見
+[`docs/knowledge/pc98-gold-box-music-reconstruction.md`](docs/knowledge/pc98-gold-box-music-reconstruction.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

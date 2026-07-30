@@ -2249,12 +2249,9 @@ PC-98 `SPELLHITFX=4`。
 
 獨立 engine `fcf9b46` 新增作品中立 `audio/cyclepcm`，以整數 duty-cycle
 積分 cycles＋level segments，窄 pulse 不會因落在 sample edge 間而消失。
-CoAB `pc98sfx.RenderPCM` 依 NEC V30 `LOOP taken=13/final=5` 與 exact
-GAME 指令路徑提供可替換 profile；目前 8 MHz、prefetched、no-wait 只標
-timing-reconstructed。`cmd/pc98-render-sfx` 的 ARROWFX 兩次 WAV hash
-均為 `06fa7417f83ef6109af2f7ab05431f9e5d918d0f7ca5d0ea37f362a7422e51a8`，
-4,778 frames／0.108345s／peak -14.7dB；FIREBALLFX 為 1,897 frames／
-0.043016s。
+CoAB `pc98sfx.RenderPCM` 當時使用的 NEC V30 `LOOP taken=13/final=5`
+解讀已於第 380 輪作廢；selector、caller、作品中立事件與 engine
+`audio/cyclepcm` 分層仍有效。更正後數值與 WAV 稽核如下節。
 
 Ebiten `sound.Player` 可由 `-pc98-sfx-game GAME.EXE
 -pc98-sfx-clock 8000000` 建立 one-shot players，並與 YM2203 music 共用
@@ -2264,3 +2261,23 @@ audio context。正式 `-opening` 已在 Docker／Xvfb／ALSA null device
 READY spec 379 保存證據與邊界。下一步是 NP2kai／原機 port 37h edge
 trace、不同 machine wait profile、analog mixer gain、save/resume 及
 Timer B reload phase；不可把目前 8 MHz profile 寫成原機 cycle-perfect。
+
+2026-07-30 第 380 輪以指定 IDA Pro 9.4、raw bytes、Unicorn 8086 動態
+harness 與 NEC V30 官方表，校正 PC-98 software-speaker routine。exact
+輸出順序是 `6,6,7,6,7,7`，位址依序為
+`19D2A／19D3C／19D4B／19D3C／19D4B／19D57`；period 1000、pulse 2
+共執行 4,045 條指令，兩個 busy loop 各 2,000 次。
+
+官方 `BCWZ/LOOP` 執行時間是 branch taken 5、exit 13 clocks，不是第
+379 輪讀反的 13／5。8 MHz、prefetched、no-wait profile 現分離第一次
+gate-on `+98`、後續 gate-on `+30`、一般 gate-off `+56` 與最後 gate-off
+`+28` cycles。ARROWFX 更正為 1,865 frames／0.042290s，兩次 hash 均為
+`b9fc898253a380679e84c2026c84c9725a30302dbb15f7814a411664f2f50a5a`；
+FIREBALLFX 為 736 frames／0.016689s，hash
+`b8922db10390746d5bb5b06f28385c0ca779a17f35bc01fef29a3bbeea7c5be8`。
+這仍是 timing-reconstructed；prefetch、pre-decode、I/O／memory wait、
+caller gap 與原機類比路徑仍需 NP2kai／原機 edge trace 校準。
+
+同輪新增繁體中文音訊知識庫
+`docs/knowledge/pc98-gold-box-music-reconstruction.md`；共用 engine 另以
+`docs/knowledge/golden-box-audio-architecture.md` 保存作品中立分層。

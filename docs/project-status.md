@@ -2,7 +2,7 @@
 
 更新日期：2026-07-30
 本 milestone 的 CoAB 基底：`1f8411c`
-依賴的 Golden Box engine checkpoint：`fcf9b46`
+依賴的 Golden Box engine checkpoint：`fb3bdea`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -161,8 +161,10 @@ commit 內保存不可能自我引用的 hash。
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
   已證明；PC-98 正常短音效的 42 個 GAME.OVR caller、selector 分布、
   音序表與 port `37h` pulse 程式也已證明並可由本機 GAME.EXE 匯入，
-  第 379 輪已補具名 caller／事件、V30 timing-reconstructed cycle→PCM
-  與遊戲內 one-shot mixer，但仍缺原機 edge trace／機型 wait 校準、
+  第 379 輪已補具名 caller／事件、cycle→PCM 與遊戲內 one-shot mixer；
+  第 380 輪再由 exact routine harness 與 NEC 官方表更正 V30
+  `LOOP taken=5／exit=13`、四種 gate overhead 與 deterministic WAV。
+  目前仍缺原機 edge trace／機型 wait／prefetch 校準、
   driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
   Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
