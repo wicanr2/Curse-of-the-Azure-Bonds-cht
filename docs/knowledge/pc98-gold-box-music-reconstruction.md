@@ -133,6 +133,13 @@ busy loop              = 5 × (N - 1) + 13
 此模型仍不含 prefetch、bus wait、caller 與機型 CPU clock，只能標為
 timing-reconstructed；原 WORD 不是 Hz。
 
+第 381 輪讓 NP2kai 的 i286c/V30 core 直接執行同一段 exact routine，
+`period=1／pulse=1` 與 `period=1000／pulse=2` 都重現相同 OUT 順序。
+但 NP2kai `_loop` 實際沿用 80286 `taken=8／exit=4`，period 1000 的
+busy loop 是 7,996 clocks，與 NEC V30 的 5,008 clocks 不同。因此
+NP2kai 是控制流／I/O sequence oracle，不是本題的原機 wall-clock oracle；
+不能拿其輸出覆蓋 NEC profile。
+
 ## 9. 可沿用的 repository 邊界
 
 ```text
@@ -157,9 +164,9 @@ clock 與正常玩家路徑。
 - driver 缺 sector 的可信恢復；
 - Timer B reload phase與 save/resume；
 - speaker／YM2203 類比 mixer gain；
-- NP2kai／原機 port 37h wall-clock trace；
+- 原機 port 37h edge／錄音，或經 microbenchmark 校準的 V30 emulator；
 - dormant FM SFX producer；
 - DOS PC Speaker、Tandy、AdLib backend；
 - 全場景 music cue 與音效驗收。
 
-深入位址與 hash 見 `docs/spec/355`、`364–379` 及後續 timing 規格。
+深入位址與 hash 見 `docs/spec/355`、`364–381` 及後續 timing 規格。

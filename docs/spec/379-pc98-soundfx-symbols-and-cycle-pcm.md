@@ -145,7 +145,9 @@ Docker／Xvfb／ALSA null device 載入 backend、跑進一般開場路徑並輸
 
 ## 6. 仍未完成
 
-- 原機／NP2kai port `37h` edge trace 對 8 MHz profile 的 wall-clock 校準；
+- 原機 port `37h` edge trace 對 8 MHz profile 的 wall-clock 校準；
+  第 381 輪已完成 NP2kai edge trace，但證明其 i286c `LOOP 8/4` 模型不能
+  取代原機 V30 校準；
 - I/O／memory wait、prefetch queue miss 與不同 PC-98 機型 profile；
 - 原版音量、類比濾波與 YM2203＋speaker mixer gain；
 - 每種 effect 的原版錄音／影片時間碼與聽感對照；

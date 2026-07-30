@@ -2276,8 +2276,28 @@ gate-on `+98`、後續 gate-on `+30`、一般 gate-off `+56` 與最後 gate-off
 FIREBALLFX 為 736 frames／0.016689s，hash
 `b8922db10390746d5bb5b06f28385c0ca779a17f35bc01fef29a3bbeea7c5be8`。
 這仍是 timing-reconstructed；prefetch、pre-decode、I/O／memory wait、
-caller gap 與原機類比路徑仍需 NP2kai／原機 edge trace 校準。
+caller gap 與原機類比路徑仍需後續 edge trace 校準。第 381 輪已證明
+NP2kai 的 clock model 不適合承擔這項原機校準。
 
 同輪新增繁體中文音訊知識庫
 `docs/knowledge/pc98-gold-box-music-reconstruction.md`；共用 engine 另以
 `docs/knowledge/golden-box-audio-architecture.md` 保存作品中立分層。
+
+2026-07-30 第 381 輪完成 NP2kai i286c/V30 core 的 exact speaker edge
+probe，並關閉「可否直接用 NP2kai clock 校準原機」的歧義。版本化
+`pc98_speaker_probe_disk.py` 驗證本機 GAME SHA、抽取 file
+`A6BEh..A6FDh` routine，保留 PC-98 IPL header；兩份 NP2kai patch 分別
+記錄 `sysp_o37` 的 `CPU_CLOCK` 與提供 opt-in direct RAM injection，
+repository 不提交商業 routine、probe image、binary 或 runtime log。
+
+`period=1／pulse=1` 的 exact edges 是 clocks
+`142,201,242,282`，values `6,6,7,7`；`period=1000／pulse=2` 是
+`142,201,8234,16282,24315,32347`，values `6,6,7,6,7,7`。版本化
+auditor 驗證 CS、IP、count、sequence 與 delta。
+
+NP2kai source `i286c_mn.c:_loop` 明確使用 exit 4／taken 8，動態結果也
+滿足 `8×(N-1)+4`：period 1000 busy 7,996、`6→7` 為 8,033；NEC V30
+官方 execution busy 則是 5,008。故 NP2kai 本輪只證明控制流與 I/O
+sequence，不能作原機 V30 wall-clock oracle，現行 NEC `5/13` profile
+不變且仍標 timing-reconstructed。READY spec 381 保存證據與邊界；
+下一步需原機 edge／錄音或經 microbenchmark 校準的 V30 emulator。

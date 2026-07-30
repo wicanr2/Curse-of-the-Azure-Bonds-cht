@@ -1,0 +1,26 @@
+diff --git a/io/sysport.c b/io/sysport.c
+index 19646dd..1b47599 100644
+--- a/io/sysport.c
++++ b/io/sysport.c
+@@ -1,4 +1,6 @@
+ #include	<compiler.h>
++#include	<stdio.h>
++#include	<cpucore.h>
+ #include	<pccore.h>
+ #include	<io/iocore.h>
+ #include	<sound/sound.h>
+@@ -39,6 +41,14 @@ static void IOOUTCALL sysp_o35(UINT port, REG8 dat) {
+ static void IOOUTCALL sysp_o37(UINT port, REG8 dat) {
+ 
+ 	REG8	bit;
++	UINT32	clock;
++
++	clock = CPU_CLOCK + CPU_BASECLOCK - CPU_REMCLOCK;
++	fprintf(stderr,
++			"COAB_PORT37 clock=%u base=%d remain=%d cs=%04x ip=%04x data=%02x\n",
++			clock, CPU_BASECLOCK, CPU_REMCLOCK,
++			CPU_CS, CPU_IP, dat);
++	fflush(stderr);
+ 
+ 	if (!(dat & 0xf0)) {
+ 		bit = 1 << (dat >> 1);

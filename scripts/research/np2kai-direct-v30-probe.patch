@@ -1,0 +1,71 @@
+diff --git a/sdl/np2.c b/sdl/np2.c
+index 74636ae..3db8885 100644
+--- a/sdl/np2.c
++++ b/sdl/np2.c
+@@ -1,4 +1,10 @@
+ #include <compiler.h>
++#include <stdio.h>
++#include <stdlib.h>
++#if !defined(CPUCORE_IA32)
++#include <cpucore.h>
++#include <cpumem.h>
++#endif
+ #if defined(__LIBRETRO__)
+ #include	"file_stream.h"
+ #endif
+@@ -415,7 +421,45 @@ static int np2_main_read_m3u(const char *path)
+ extern char lr_game_base_dir[MAX_PATH];
+ extern void attach_disk_swap_interface(void);
+ extern int lr_uselasthddmount;
+ #endif
+ 
++#if !defined(CPUCORE_IA32)
++static void coab_direct_v30_probe(void) {
++	const char *path;
++	FILE *source;
++	size_t size;
++
++	path = getenv("COAB_V30_PROBE");
++	if ((path == NULL) || (path[0] == '\0')) {
++		return;
++	}
++	source = fopen(path, "rb");
++	if (source == NULL) {
++		fprintf(stderr, "COAB_V30_PROBE open failed: %s\n", path);
++		exit(2);
++	}
++	size = fread(mem + 0x1fe00, 1, 1024, source);
++	fclose(source);
++	if (size != 1024) {
++		fprintf(stderr, "COAB_V30_PROBE size=%zu, want 1024\n", size);
++		exit(2);
++	}
++
++	CPU_CS = 0x1fe0;
++	CPU_IP = 0x0000;
++	CPU_DS = 0x1fe0;
++	CPU_SS = 0x1fe0;
++	CPU_SP = 0x03f0;
++	CS_BASE = 0x1fe00;
++	DS_BASE = 0x1fe00;
++	SS_BASE = 0x1fe00;
++	CPU_FLAG = 0x0202;
++	fprintf(stderr,
++			"COAB_V30_PROBE injected cs:ip=%04x:%04x size=%zu\n",
++			CPU_CS, CPU_IP, size);
++	fflush(stderr);
++}
++#endif
++
+ int np2_main(int argc, char *argv[]) {
+ 
+@@ -673,6 +717,9 @@ int np2_main(int argc, char *argv[]) {
+ 			diskdrv_setfdd(i, np2_main_disk_images_paths[i], 0);
+ 		}
+ 	}
++#if !defined(CPUCORE_IA32)
++	coab_direct_v30_probe();
++#endif
+ 
+ //printf("bd:%s\n",base_dir);
+ //printf("fdin:%d\n",drvfdd);

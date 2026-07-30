@@ -116,6 +116,9 @@ timing-reconstructed；原 WORD 不會誤稱為 Hz，原機時鐘、類比音量
 `LOOP` 為 taken 5／exit 13 clocks，並分離 routine 的四種 gate overhead；
 第 379 輪舊 WAV 時長與 hash 已作廢，現行結果仍明確標為
 timing-reconstructed。
+第 381 輪再以版本化 direct probe 讓 NP2kai i286c/V30 core 執行 exact
+routine；OUT 順序吻合，但 NP2kai `_loop` 使用 80286 taken 8／exit 4
+clocks，故只作控制流 oracle，不拿 emulator clock 冒充原機時序。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與

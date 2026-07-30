@@ -164,7 +164,9 @@ commit 內保存不可能自我引用的 hash。
   第 379 輪已補具名 caller／事件、cycle→PCM 與遊戲內 one-shot mixer；
   第 380 輪再由 exact routine harness 與 NEC 官方表更正 V30
   `LOOP taken=5／exit=13`、四種 gate overhead 與 deterministic WAV。
-  目前仍缺原機 edge trace／機型 wait／prefetch 校準、
+  第 381 輪以 NP2kai direct V30 core probe 重現 exact OUT sequence，
+  同時證明其 `_loop` 沿用 80286 `8/4` clocks，不能當原機 wall-clock
+  oracle。目前仍缺原機 edge trace／機型 wait／prefetch 校準、
   driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
   Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
