@@ -33,7 +33,7 @@ game-pack JSON；engine `music_tracks`／`music_bindings` 也已可嚴格驗證�
 IDA Pro 及真實 24-block ECL corpus 驗證；四個 `WLDTWN` writer 又證明
 selector 5 是區域／戶外導航、selector 6 是城鎮設施選單。阿沙本福德與
 希爾斯法的正常 ECL 玩家路徑現已驗證同 block 內 `5→6→5`，同曲返回不會
-重播。缺失 driver sector與完整曲長／fade／SFX trace 仍未完成；十二首
+重播。缺失 driver sector 與完整 SFX trace 仍未完成；十二首
 中英文曲名已由 Hoot metadata 建立，正常配樂則在第 376 輪首次接成可播放
 PCM。
 第 364 輪另已證明 `MSCDRV.EXE` 直接安裝 IVT `7Eh → CS:0080`：
@@ -87,8 +87,13 @@ drift。`27h` reload 的 free-running divide-by-16 phase 仍未完成。
 selector 5 的兩次十秒輸出 SHA-256 均為
 `fded75fe89d5e5af860e92e1541f83f14738c228fe7d792506c282c6bd5847c0`，
 已證明非靜音且無 clipping。商業 driver 與 WAV 不進 repository。
-fade／SFX arbitration、完整 loop、save/resume、類比 mixer gain 與
-`27h` reload phase仍未完成。
+第 377 輪進一步證明正常 `MSCPLAY` 不使用 driver fade：它先 stop，再經
+Borland `DELAY(0x320)` 等待 800ms 才播放新曲。遊戲播放器現會輸出精確
+35,280 frames 靜音且不推進音序列，之後才發聲；normal play 的 loop count
+0 也已證明會轉為 `0xFF` 無限循環。driver 內另有 40-tick fade 與單聲道
+FM SFX interpreter，但尚未找到正常 GAME 非零 request caller，因此不會
+擅自接入。save/resume、類比 mixer gain、`27h` reload phase 與完整
+PC-speaker／FM SFX mapping 仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -120,7 +125,9 @@ MSCDRV 的 Timer B 中斷所有權與 faithful BGM 邊界則見
 Timer B 完整週期與 PCM 有理數排程則見
 [`docs/spec/375-pc98-ym2203-timer-b-clock.md`](docs/spec/375-pc98-ym2203-timer-b-clock.md)，
 合成器、PCM 串流與遊戲播放器見
-[`docs/spec/376-pc98-ym2203-synth-and-game-player.md`](docs/spec/376-pc98-ym2203-synth-and-game-player.md)。
+[`docs/spec/376-pc98-ym2203-synth-and-game-player.md`](docs/spec/376-pc98-ym2203-synth-and-game-player.md)，
+正常換曲、loop 與未使用音效邊界見
+[`docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md`](docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
@@ -518,8 +525,8 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   `internal/sound` 建立原版 selector mapping；Ebiten 目前在標題開始、
   荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊
   與已實作法術 intent 播放對應音效。另可由使用者本機 PC-98
-  `MSCDRV.EXE` 即時合成 YM2203 背景音樂；fade、SFX 共存與完整 loop 尚待
-  還原。
+  `MSCDRV.EXE` 即時合成 YM2203 背景音樂；正常 stop→800ms→play 與無限
+  loop 已還原，完整 PC-speaker／driver FM SFX mapping 尚待完成。
 - PICTURE block `>= 0x78` 已分流到 BIGPIC 靜態大圖；目前從 BIGPIC1／2／6 抽出 4 張原始大圖並在事件畫面置中顯示。
 - 一般場景人物的 `HEAD2–6`／`BODY2–6` 也已抽出並依 reference body `y+5` 合成 30 張 PNG，後續城鎮／事件 renderer 可直接載入。
 - PICTURE 的 Area2 head sentinel 分支也已接入：有 head block 時改顯示 HEAD/BODY scene composite，無 head block 時維持 PIC／BIGPIC。

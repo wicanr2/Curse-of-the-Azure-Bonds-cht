@@ -17,6 +17,11 @@ const sampleRate = 44_100
 
 func main() {
 	seconds := flag.Duration("duration", 10*time.Second, "輸出長度")
+	gameTransition := flag.Bool(
+		"game-transition",
+		false,
+		"套用 GAME.EXE MSCPLAY 的 800ms 換曲靜音",
+	)
 	flag.Parse()
 	if flag.NArg() != 3 {
 		fmt.Fprintln(
@@ -40,7 +45,12 @@ func main() {
 	if frames <= 0 || frames > int64(^uint32(0))/4 {
 		fatal(fmt.Errorf("輸出長度超出 WAV 32-bit 範圍"))
 	}
-	stream, err := pc98music.NewTrackPCMStream(driver, selector, sampleRate)
+	var stream *pc98music.TrackPCMStream
+	if *gameTransition {
+		stream, err = pc98music.NewGameTrackPCMStream(driver, selector, sampleRate)
+	} else {
+		stream, err = pc98music.NewTrackPCMStream(driver, selector, sampleRate)
+	}
 	if err != nil {
 		fatal(err)
 	}

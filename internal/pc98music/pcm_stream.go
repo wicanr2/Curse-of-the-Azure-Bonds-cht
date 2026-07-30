@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/wicanr2/golden-box-remake-engine/audio/pcm"
 	"github.com/wicanr2/golden-box-remake-engine/audio/ym2203"
@@ -11,6 +12,10 @@ import (
 )
 
 const ymfmNativeClockDivisor = 24
+
+// GameMusicStartDelay is the delay used by GAME.EXE MSCPLAY after MSCSTOP and
+// before the new selector is sent through interrupt vector 7Eh.
+const GameMusicStartDelay = 800 * time.Millisecond
 
 // TrackPCMStream renders one verified PC-98 track as signed 16-bit little
 // endian stereo PCM. It implements io.Reader for renderer-side audio players.
@@ -20,10 +25,24 @@ type TrackPCMStream struct {
 	synth    *ymfm.Synth
 	resample *pcm.LinearResampler
 
-	timerValue byte
-	pending    []byte
-	failed     error
-	closed     bool
+	timerValue  byte
+	silentBytes int64
+	pending     []byte
+	failed      error
+	closed      bool
+}
+
+// NewGameTrackPCMStream opens a selector with the GAME.EXE MSCPLAY transition
+// delay. The silence does not advance the driver's Timer B playback state.
+func NewGameTrackPCMStream(
+	driver []byte, selector int, outputSampleRate uint32,
+) (*TrackPCMStream, error) {
+	stream, err := NewTrackPCMStream(driver, selector, outputSampleRate)
+	if err != nil {
+		return nil, err
+	}
+	stream.prependSilence(GameMusicStartDelay, outputSampleRate)
+	return stream, nil
 }
 
 // NewTrackPCMStream opens a selector from the user's exact local MSCDRV.EXE.
@@ -76,6 +95,11 @@ func newTrackPCMStream(
 		return nil, err
 	}
 	return stream, nil
+}
+
+func (stream *TrackPCMStream) prependSilence(duration time.Duration, sampleRate uint32) {
+	frames := int64(duration) * int64(sampleRate) / int64(time.Second)
+	stream.silentBytes += frames * 4
 }
 
 func (stream *TrackPCMStream) apply(events []MusicEvent) error {
@@ -148,6 +172,15 @@ func (stream *TrackPCMStream) Read(destination []byte) (int, error) {
 	if stream == nil || stream.closed {
 		return 0, io.EOF
 	}
+	if stream.silentBytes != 0 {
+		count := int64(len(destination))
+		if count > stream.silentBytes {
+			count = stream.silentBytes
+		}
+		clear(destination[:int(count)])
+		stream.silentBytes -= count
+		return int(count), nil
+	}
 	for len(stream.pending) < len(destination) && stream.failed == nil {
 		stream.failed = stream.renderPeriod()
 	}
@@ -168,6 +201,7 @@ func (stream *TrackPCMStream) Close() error {
 		return nil
 	}
 	stream.closed = true
+	stream.silentBytes = 0
 	stream.pending = nil
 	if stream.synth != nil {
 		stream.synth.Close()

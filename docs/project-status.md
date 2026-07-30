@@ -64,7 +64,8 @@ commit 內保存不可能自我引用的 hash。
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader
   三段 EXEC 順序也已交叉驗證。absent sectors 疑似同時參與早期完整性／
-  防拷，driver 中間 1 KiB 尚未取回，未宣稱音樂可播放。
+  防拷，driver 中間 1 KiB 尚未取回，未宣稱完整 driver 已復原；十二首
+  sequence 已證明不跨該缺口，現可由殘存 exact driver 合成播放。
 - PC-98 `GAME.OVR` 36 段 TPOV code／relocation 已可重現解碼；`GAME.EXE`
   的 Borland `0x52FB`／9-byte legacy symbol table 已解析 1,725 symbols。
   53 筆 compiler modules 也已解析，可辨識 `INTERPET`、`MENUS`、
@@ -82,8 +83,8 @@ commit 內保存不可能自我引用的 hash。
   再透過內部 clients 接到 D2h。`cmd/pc98-music-audit` 會以 executable
   雜湊與 raw bytes 驗證 bridge、17 組 Sound BIOS 命令及 direct YM2203
   helper；它們全在 driver 缺口前。NEC 官方 BIOS 手冊已證明 `CEE0` 是
-  Sound BIOS 固定介面表，而非未知 provider。曲名已建立，完整曲長／
-  fade／SFX trace 與播放器尚未完成。第 366 輪另證明十二首、84 個
+  Sound BIOS 固定介面表，而非未知 provider。曲名、播放器、正常 800ms
+  換曲與無限 loop 已建立；完整 SFX trace 尚未完成。第 366 輪另證明十二首、84 個
   channel sequence 全在
   file `0x1B61..0x3C58`，沒有跨越 `0x4000..0x4400` 缺口；Hoot metadata
   已補齊十二首中英文曲名，runtime importer 會驗證 driver 雜湊與每段範圍。
@@ -121,8 +122,11 @@ commit 內保存不可能自我引用的 hash。
   register writes → YM2203 → 44.1 kHz PCM → Ebiten player；可由
   `-pc98-music-driver` 播放，亦可用 `pc98-render-track` 產生本機 WAV。
   selector 5 兩次十秒輸出 hash 完全一致並通過非靜音／無 clipping 稽核。
-  仍缺 `27h` reload phase、fade／SFX arbitration、完整 loop、save/resume
-  與 analog mixer gain 校準。
+  第 377 輪再證明正常 `MSCPLAY` 是 stop → 800ms delay → play，而不是
+  driver fade；播放器已保留 35,280-frame 靜音且不推進音序列。正常
+  loop count 0 會轉成 `0xFF` 無限循環。driver 內部 40-tick fade／FM SFX
+  沒有正常 GAME caller，仍缺 `27h` reload phase、完整 SFX mapping、
+  save/resume 與 analog mixer gain 校準。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -145,8 +149,9 @@ commit 內保存不可能自我引用的 hash。
 - 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
-  曲目已可由本機 driver 合成播放，但仍缺 fade／sound-effect 共存路徑、
-  完整曲長／loop trace、save/resume、analog mixer gain 與
+  曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
+  已證明，但仍缺 driver 內部 FM SFX 的真實 caller、完整 PC-speaker
+  mapping、save/resume、analog mixer gain 與
   Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
   LFO waveform、完整 Timer B count period 與 PCM 有理數 accumulator

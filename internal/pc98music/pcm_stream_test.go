@@ -3,6 +3,7 @@
 package pc98music
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"io"
@@ -47,4 +48,36 @@ func TestTrackPCMStreamProducesDeterministicStereo(t *testing.T) {
 	if firstHash != expected {
 		t.Fatalf("PCM SHA-256=%s, want %s", firstHash, expected)
 	}
+}
+
+func TestGameTrackPCMStreamStartsWithExactMSCPLAYSilence(t *testing.T) {
+	playback, initial := syntheticPlayback(t)
+	renderer := newYM2203EventRenderer(nil)
+	stream, err := newTrackPCMStream(playback, renderer, initial, 44_100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer stream.Close()
+	stream.prependSilence(GameMusicStartDelay, 44_100)
+
+	const silentFrames = 35_280
+	silence := make([]byte, silentFrames*4)
+	if _, err := io.ReadFull(stream, silence); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(silence, make([]byte, len(silence))) {
+		t.Fatal("GAME.EXE MSCPLAY 800ms pre-roll is not silent")
+	}
+	if playback.tick != 0 {
+		t.Fatalf("playback advanced to tick %d during transition silence", playback.tick)
+	}
+
+	audible := make([]byte, 4096)
+	if _, err := io.ReadFull(stream, audible); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(audible, make([]byte, len(audible))) {
+		return
+	}
+	t.Fatal("track remained silent after the exact 800ms transition")
 }
