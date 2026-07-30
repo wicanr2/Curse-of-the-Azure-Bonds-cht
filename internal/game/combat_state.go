@@ -273,10 +273,15 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	event := *s.combatVisual
 	frame := event.FrameAt(elapsed)
 	if !s.combatVisualTravelSent && frame.Phase >= combat.VisualTravel {
-		if event.Kind == combat.VisualMissile {
-			s.requestSound(SoundMissile)
-		} else if event.Kind == combat.VisualLineSpell {
+		switch {
+		case event.Kind == combat.VisualMissile:
+			s.requestSound(SoundArrow)
+		case event.Kind == combat.VisualLineSpell:
 			s.requestSound(SoundLightning)
+		case event.Kind == combat.VisualAreaSpell && event.Effect == "fireball":
+			s.requestSound(SoundFireball)
+		case event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell:
+			s.requestSound(SoundCast)
 		}
 		s.combatVisualTravelSent = true
 	}
@@ -284,10 +289,10 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 		if frame.Phase >= combat.VisualImpact && frame.ImpactIndex > s.combatVisualImpactSent {
 			switch event.Kind {
 			case combat.VisualMagicMissile, combat.VisualLineSpell:
-				s.requestSound(SoundMagicHit)
+				s.requestSound(SoundSpellHit)
 			case combat.VisualAreaSpell:
 				if event.Effect != "stinking_cloud" && event.Effect != "cloudkill" {
-					s.requestSound(SoundMagicHit)
+					s.requestSound(SoundSpellHit)
 				}
 			default:
 				if impact.Hit {
@@ -299,7 +304,7 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 			s.combatVisualImpactSent = frame.ImpactIndex
 		}
 		if impact.Killed && frame.Phase >= combat.VisualDeath && frame.ImpactIndex > s.combatVisualDeathSent {
-			s.requestSound(SoundDeath)
+			s.requestSound(SoundDead)
 			s.combatVisualDeathSent = frame.ImpactIndex
 		}
 	} else if frame.Phase == combat.VisualHandoff {
@@ -1100,7 +1105,8 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return nil
 	}
 	s.combatTurnIndex++
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -1183,12 +1189,13 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 		return nil
 	}
 	s.combatTurnIndex++
+	s.requestSound(SoundLightning)
 	for range impacts {
-		s.requestSound(SoundMagicHit)
+		s.requestSound(SoundSpellHit)
 	}
 	for _, impact := range impacts {
 		if impact.Killed {
-			s.requestSound(SoundDeath)
+			s.requestSound(SoundDead)
 		}
 	}
 	if s.battle.Status() != combat.StatusActive {
@@ -1421,12 +1428,13 @@ func (s *State) combatCastFireball() error {
 		return nil
 	}
 	s.combatTurnIndex++
+	s.requestSound(SoundFireball)
 	for range impacts {
-		s.requestSound(SoundMagicHit)
+		s.requestSound(SoundSpellHit)
 	}
 	for _, impact := range impacts {
 		if impact.Killed {
-			s.requestSound(SoundDeath)
+			s.requestSound(SoundDead)
 		}
 	}
 	if s.battle.Status() != combat.StatusActive {
@@ -1563,7 +1571,8 @@ func (s *State) combatCastProtectionFromGood() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "%s 對 %s 施放防護善良，效果持續 %d 回合。"), caster.Name, target.Name, duration)
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -1613,7 +1622,8 @@ func (s *State) combatCastProtectionFromEvil() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "%s 對 %s 施放防護邪惡，效果持續 %d 回合。"), caster.Name, target.Name, duration)
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -1688,7 +1698,8 @@ func (s *State) combatCastCauseLightWounds() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cause_light_wounds", "%s 對 %s 施放造成輕傷，造成 %d 點傷害。"), caster.Name, target.Name, result.Damage)
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -1739,7 +1750,8 @@ func (s *State) combatCastCurse() error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	if result.Targets == 0 {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse_immune", "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。"), caster.Name, target.Name)
 	} else {
@@ -1787,7 +1799,8 @@ func (s *State) combatCastBless() error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bless", "%s 施放祝福，隊伍攻擊加值提高 1。"), caster.Name)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -1854,7 +1867,8 @@ func (s *State) combatCastCureLightWounds() error {
 		}
 	}
 	s.CancelCombatCast()
-	s.requestSound(SoundMagicHit)
+	s.requestSound(SoundCast)
+	s.requestSound(SoundSpellHit)
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "%s 對 %s 施放治療輕傷，恢復 %d HP。"), caster.Name, target.Name, result.Healing)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -2042,7 +2056,8 @@ func (s *State) advanceCombatToParty() error {
 					return nil
 				}
 				s.combatTurnIndex++
-				s.requestSound(SoundMagicHit)
+				s.requestSound(SoundCast)
+				s.requestSound(SoundSpellHit)
 				if s.battle.Status() != combat.StatusActive {
 					return s.finishCombat()
 				}
@@ -2106,7 +2121,7 @@ func (s *State) requestAttackSounds(results []combat.AttackResult) {
 			s.requestSound(SoundMiss)
 		}
 		if result.TargetHP <= 0 {
-			s.requestSound(SoundDeath)
+			s.requestSound(SoundDead)
 		}
 	}
 }

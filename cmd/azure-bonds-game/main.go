@@ -200,9 +200,15 @@ func (a *app) playSound(id sound.ID) {
 	}
 }
 
+func (a *app) playSoundEvent(event game.SoundEvent) {
+	if a.soundPlayer != nil {
+		a.soundPlayer.PlayEvent(sound.Event(event))
+	}
+}
+
 func (a *app) syncSoundEvents() {
 	for _, event := range a.state.ConsumeSoundEvents() {
-		a.playSound(sound.ID(event))
+		a.playSoundEvent(event)
 	}
 	for _, event := range a.state.ConsumeMusicEvents() {
 		if event.Action == "play" {
@@ -742,7 +748,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	a.dungeonY = geo.WrapCoordinate(nextY, geo.Height)
 	a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, uint8(direction))
 	a.refreshDungeonPreview()
-	a.playSound(sound.Step)
+	a.playSoundEvent(game.SoundStep)
 	if a.state.Mode == game.ModeDungeon {
 		var err error
 		if exitAttempt {
@@ -2640,6 +2646,8 @@ func main() {
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
 	pc98MusicDriverPath := flag.String("pc98-music-driver", "", "local extracted MSCDRV.EXE used to synthesize the PC-98 soundtrack")
+	pc98SFXGamePath := flag.String("pc98-sfx-game", "", "local exact PC-98 GAME.EXE used to reconstruct software-speaker effects")
+	pc98SFXClock := flag.Uint64("pc98-sfx-clock", 8_000_000, "PC-98 CPU clock for reconstructed software-speaker timing")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	savgamDir := flag.String("savgam-dir", "", "directory containing reference savgam?.dat and CHRDAT player bundles")
 	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load and save with -savgam-dir")
@@ -2764,6 +2772,19 @@ func main() {
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
 		log.Printf("some sound effects are unavailable: %v", soundErr)
+	}
+	if *pc98SFXGamePath != "" {
+		pc98SFXGame, readErr := os.ReadFile(*pc98SFXGamePath)
+		if readErr != nil {
+			log.Fatal(readErr)
+		}
+		if loadErr := soundPlayer.LoadPC98Effects(pc98SFXGame, *pc98SFXClock); loadErr != nil {
+			log.Fatal(loadErr)
+		}
+		log.Printf(
+			"PC-98 software-speaker effects enabled with reconstructed V30 timing at %d Hz",
+			*pc98SFXClock,
+		)
 	}
 	var pc98MusicDriver []byte
 	if *pc98MusicDriverPath != "" {

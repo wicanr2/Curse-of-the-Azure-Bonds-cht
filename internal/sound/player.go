@@ -11,6 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
 )
 
 const sampleRate = 44100
@@ -21,9 +22,59 @@ const sampleRate = 44100
 type Player struct {
 	context     *audio.Context
 	players     map[ID]*audio.Player
+	pc98Players map[Event]*audio.Player
 	enabled     bool
 	musicPlayer *audio.Player
 	musicStream *pc98music.TrackPCMStream
+}
+
+// LoadPC98Effects imports GAME.EXE's exact SOUNDFX program and prepares
+// software-speaker one-shots. The selected CPU clock is explicit because the
+// original busy-loop pitch changes with the PC-98 machine profile.
+func (p *Player) LoadPC98Effects(game []byte, clockHz uint64) error {
+	if p == nil || p.context == nil {
+		return fmt.Errorf("sound player is unavailable")
+	}
+	effects, err := pc98sfx.Import(game)
+	if err != nil {
+		return err
+	}
+	players := make(map[Event]*audio.Player)
+	for _, effect := range effects {
+		if effect.Event == "" || effect.NoOp {
+			continue
+		}
+		mono, renderErr := pc98sfx.RenderPCM(
+			effect,
+			pc98sfx.V30PrefetchedProfile(clockHz),
+			sampleRate,
+		)
+		if renderErr != nil {
+			return fmt.Errorf("%s: %w", effect.Symbol, renderErr)
+		}
+		stream := stereoPCM(mono)
+		if len(stream) == 0 {
+			continue
+		}
+		player, playerErr := p.context.NewPlayer(bytes.NewReader(stream))
+		if playerErr != nil {
+			return fmt.Errorf("%s: %w", effect.Symbol, playerErr)
+		}
+		players[Event(effect.Event)] = player
+	}
+	p.pc98Players = players
+	return nil
+}
+
+func stereoPCM(mono []int16) []byte {
+	stereo := make([]byte, len(mono)*4)
+	for index, sample := range mono {
+		stereo[index*4] = byte(sample)
+		stereo[index*4+1] = byte(uint16(sample) >> 8)
+		stereo[index*4+2] = byte(sample)
+		stereo[index*4+3] = byte(uint16(sample) >> 8)
+	}
+	return stereo
 }
 
 // Load creates a player from the extracted asset directory.
@@ -97,6 +148,9 @@ func (p *Player) StopMusic() {
 func (p *Player) SetEnabled(enabled bool) {
 	if p != nil {
 		p.enabled = enabled
+		if !enabled {
+			p.stopOneShots()
+		}
 		if p.musicPlayer != nil {
 			if enabled {
 				p.musicPlayer.Play()
@@ -114,9 +168,7 @@ func (p *Player) Play(id ID) {
 		return
 	}
 	if id == Stop {
-		for _, player := range p.players {
-			player.Pause()
-		}
+		p.stopOneShots()
 		return
 	}
 	player, ok := p.players[id]
@@ -125,4 +177,37 @@ func (p *Player) Play(id ID) {
 	}
 	_ = player.Rewind()
 	player.Play()
+}
+
+// PlayEvent routes a semantic gameplay intent to the configured PC-98
+// software-speaker effect, falling back to the DOS WAV resource adapter.
+func (p *Player) PlayEvent(event Event) {
+	if p == nil || !p.enabled {
+		return
+	}
+	if event == "stop" {
+		p.stopOneShots()
+		return
+	}
+	if p.pc98Players != nil {
+		player, ok := p.pc98Players[event]
+		if !ok {
+			return
+		}
+		_ = player.Rewind()
+		player.Play()
+		return
+	}
+	if id, ok := DOSID(event); ok {
+		p.Play(id)
+	}
+}
+
+func (p *Player) stopOneShots() {
+	for _, player := range p.players {
+		player.Pause()
+	}
+	for _, player := range p.pc98Players {
+		player.Pause()
+	}
 }

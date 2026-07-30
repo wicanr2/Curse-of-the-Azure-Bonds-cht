@@ -3,8 +3,8 @@
 // deterministic and testable without an audio device.
 package sound
 
-// ID is the byte-sized sound selector used by the reference seg044.PlaySound.
-type ID int8
+// ID is the byte-sized selector used by the DOS WAV reference adapter.
+type ID uint8
 
 const (
 	Stop ID = 0
@@ -21,6 +21,32 @@ const (
 	Sound10   ID = 11
 	Start     ID = 13
 )
+
+// Event is the platform-neutral sound vocabulary accepted by adapters.
+// It mirrors game.SoundEvent without importing game into the renderer package.
+type Event string
+
+// DOSID maps a semantic event to the recovered DOS WAV selector. PC-98 uses a
+// different mapping for several events and must not call this function.
+func DOSID(event Event) (ID, bool) {
+	ids := map[Event]ID{
+		"stop":      Stop,
+		"cast":      Missile,
+		"arrow":     Missile,
+		"miss":      Miss,
+		"spell_hit": MagicHit,
+		"dead":      Death,
+		"whistle":   Sound5,
+		"hit":       Hit,
+		"lightning": Lightning,
+		"swish":     Miss,
+		"step":      Step,
+		"fireball":  Sound10,
+		"overture":  Start,
+	}
+	id, ok := ids[event]
+	return id, ok
+}
 
 // AssetName returns the extracted WAV corresponding to the reference sound
 // selector. Missing reference selectors intentionally return false: the

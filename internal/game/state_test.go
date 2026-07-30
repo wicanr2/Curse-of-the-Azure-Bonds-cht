@@ -109,7 +109,7 @@ func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
 		t.Fatal(err)
 	}
 	events := state.ConsumeSoundEvents()
-	if len(events) != 1 || events[0] != SoundStart {
+	if len(events) != 1 || events[0] != SoundOverture {
 		t.Fatalf("start sound events=%#v", events)
 	}
 	if got := state.ConsumeSoundEvents(); len(got) != 0 {
@@ -119,7 +119,7 @@ func TestSoundEventsAreOneShotAndRendererNeutral(t *testing.T) {
 		{Hit: true, TargetHP: 0},
 		{Hit: false, TargetHP: 4},
 	})
-	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundHit, SoundDeath, SoundMiss}; !reflect.DeepEqual(got, want) {
+	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundHit, SoundDead, SoundMiss}; !reflect.DeepEqual(got, want) {
 		t.Fatalf("attack sound events=%#v want %#v", got, want)
 	}
 }
@@ -2152,6 +2152,9 @@ func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
 	}
 	if err := state.CombatCast(CureLightWoundsSpellID); err != nil {
 		t.Fatal(err)
+	}
+	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundCast, SoundSpellHit}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("cure sound order=%v, want %v", got, want)
 	}
 	heroHP := 0
 	for _, fighter := range state.CombatFighters() {

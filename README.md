@@ -11,7 +11,7 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `6f959cb`；實際最新版本以 GitHub
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `fcf9b46`；實際最新版本以 GitHub
 `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -101,8 +101,17 @@ PC-speaker／FM SFX mapping 仍未完成。
 `GAME.EXE` 的 no-op／公式／20-WORD 音序表和 PC-98 port `37h`
 `06h/07h` pulse routine 已還原；`cmd/pc98-sfx-audit` 可從使用者本機
 exact executable 匯入 typed pulse／delay，不提交商業音序 bytes。
-V30／8086 cycle 到 44.1kHz PCM 的校準與遊戲內 one-shot mixer仍未完成，
-因此目前不把原 WORD 誤稱為 Hz，也不宣稱 PC-98 短音效已可播放。
+第 379 輪再由 Borland exact symbols 證明 `CASTFX／MISSFX／
+SPELLHITFX／DEADFX／WHISTLEFX／HITFX／LIGHTNINGFX／SWISHFX／PADFX／
+FIREBALLFX／ARROWFX` 的 selector，並追到 `REALMOVE／ANYUNDEAD／
+SHOWARROW／CASTSPELL／TWINKLE／SCAN` caller。State 現改發平台中立
+sound intent，不再把 DOS WAV 與 PC-98 數字混用。共用 engine 新增
+cycle duty-cycle PCM integrator；遊戲可用
+`-pc98-sfx-game /path/to/GAME.EXE -pc98-sfx-clock 8000000`
+播放 exact 音序重建的 one-shot。箭矢兩次 WAV hash 完全一致，正式
+Docker／Xvfb 開場亦已載入 backend。8 MHz、無 wait、prefetch 模型仍標為
+timing-reconstructed；原 WORD 不會誤稱為 Hz，原機時鐘、類比音量與濾波
+尚待校準。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -139,6 +148,8 @@ Timer B 完整週期與 PCM 有理數排程則見
 [`docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md`](docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md)，
 正常 GAME 短音效 selector、caller 與 port `37h` 程式見
 [`docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md`](docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md)。
+具名 Borland symbols、平台語意分離與 cycle PCM 見
+[`docs/spec/379-pc98-soundfx-symbols-and-cycle-pcm.md`](docs/spec/379-pc98-soundfx-symbols-and-cycle-pcm.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
@@ -537,7 +548,9 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   荒野／dungeon 移動，以及 State 發出的戰鬥命中、未命中、擊倒、免費反擊
   與已實作法術 intent 播放對應音效。另可由使用者本機 PC-98
   `MSCDRV.EXE` 即時合成 YM2203 背景音樂；正常 stop→800ms→play 與無限
-  loop 已還原，完整 PC-speaker／driver FM SFX mapping 尚待完成。
+  loop 已還原；PC-98 `GAME.EXE SOUNDFX` one-shot 亦可由本機原始檔重建
+  播放，但原機 timing／類比 mixer、DOS PC-speaker／Tandy 與 dormant
+  driver FM SFX producer 尚待完成。
 - PICTURE block `>= 0x78` 已分流到 BIGPIC 靜態大圖；目前從 BIGPIC1／2／6 抽出 4 張原始大圖並在事件畫面置中顯示。
 - 一般場景人物的 `HEAD2–6`／`BODY2–6` 也已抽出並依 reference body `y+5` 合成 30 張 PNG，後續城鎮／事件 renderer 可直接載入。
 - PICTURE 的 Area2 head sentinel 分支也已接入：有 head block 時改顯示 HEAD/BODY scene composite，無 head block 時維持 PIC／BIGPIC。

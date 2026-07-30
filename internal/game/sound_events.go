@@ -1,25 +1,26 @@
 package game
 
-// SoundEvent is the reference seg044 sound selector exposed as a renderer-
-// neutral intent. Keeping this type in game avoids making deterministic rules
-// depend on Ebiten or an audio device.
-type SoundEvent int8
+// SoundEvent is a renderer-neutral gameplay sound intent. Platform adapters
+// map the semantic event to DOS WAV, PC-98 SOUNDFX, or another audio backend;
+// the game rules must not assume that different ports share selector numbers.
+type SoundEvent string
 
 const (
-	SoundStop     SoundEvent = 0
-	SoundNoOp     SoundEvent = 1
-	SoundMissile  SoundEvent = 2
-	SoundMagicHit SoundEvent = 3
-	SoundDeath    SoundEvent = 5
-	SoundGeneric5 SoundEvent = 6
-	SoundHit      SoundEvent = 7
-	// SoundLightning preserves the reference sound_8 selector even though the
-	// recovered PC resource table has no WAV sample for it.
-	SoundLightning SoundEvent = 8
-	SoundMiss      SoundEvent = 9
-	SoundStep      SoundEvent = 10
-	SoundGeneric10 SoundEvent = 11
-	SoundStart     SoundEvent = 13
+	SoundStop      SoundEvent = "stop"
+	SoundCast      SoundEvent = "cast"
+	SoundMiss      SoundEvent = "miss"
+	SoundSpellHit  SoundEvent = "spell_hit"
+	SoundDead      SoundEvent = "dead"
+	SoundWhistle   SoundEvent = "whistle"
+	SoundHit       SoundEvent = "hit"
+	SoundLightning SoundEvent = "lightning"
+	SoundSwish     SoundEvent = "swish"
+	SoundStep      SoundEvent = "step"
+	SoundFireball  SoundEvent = "fireball"
+	SoundArrow     SoundEvent = "arrow"
+	SoundOverture  SoundEvent = "overture"
+	SoundCombat    SoundEvent = "combat"
+	SoundCrash     SoundEvent = "crash"
 )
 
 func (s *State) requestSound(event SoundEvent) {

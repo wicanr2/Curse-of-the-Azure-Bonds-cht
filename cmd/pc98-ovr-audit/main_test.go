@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/binary"
 	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
 )
 
 func TestSoundFXSelectorTableAndAddressMapping(t *testing.T) {
@@ -29,5 +31,44 @@ func TestSoundFXSelectorTableAndAddressMapping(t *testing.T) {
 		if _, ok := soundFXSelector(address); ok {
 			t.Fatalf("accepted out-of-table DS:%04X", address)
 		}
+	}
+}
+
+func TestSoundFXNamesUseBorlandModuleAndSymbols(t *testing.T) {
+	t.Parallel()
+
+	table := borlanddebug.Table{
+		Modules: []borlanddebug.Module{
+			{Index: 0, Name: "PROGRAM"},
+			{Index: 1, Name: "INTRO"},
+			{Index: 2, Name: "INTERPET"},
+			{Index: 3, Name: "PROTECT"},
+			{Index: 4, Name: "COMBAT"},
+			{Index: 5, Name: "COMPTACT"},
+			{Index: 6, Name: "COMPREP"},
+			{Index: 7, Name: "TREASURE"},
+			{Index: 8, Name: "ENCAMP"},
+			{Index: 9, Name: "MENU"},
+			{Index: 10, Name: "DISPLAY"},
+			{Index: 11, Name: "CHARACT"},
+			{Index: 12, Name: "MONSTER"},
+			{Index: 13, Name: "ITEM"},
+			{Index: 14, Name: "COMSTUFF"},
+		},
+		Symbols: []borlanddebug.Symbol{
+			{Name: "LOADCOMSTUFF", Segment: 0x00B8, Offset: 0},
+			{Name: "REALMOVE", Segment: 0x00B8, Offset: 0x078E},
+			{Name: "CHECKPARTINGBLOWS", Segment: 0x00B8, Offset: 0x0999},
+			{Name: "PADFX", Segment: 0x0C29, Offset: 0x484E},
+		},
+	}
+	if got := soundFXModuleName(table, 13); got != "COMSTUFF" {
+		t.Fatalf("module=%q", got)
+	}
+	if got := soundFXFunctionName(table, 13, 0x095D); got != "REALMOVE" {
+		t.Fatalf("function=%q", got)
+	}
+	if got := soundFXSelectorName(table, 0x484E); got != "PADFX" {
+		t.Fatalf("selector symbol=%q", got)
 	}
 }
