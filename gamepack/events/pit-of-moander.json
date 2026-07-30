@@ -3,6 +3,16 @@
   "schema_version": 1,
   "id": "curse-of-the-azure-bonds.pit-of-moander",
   "default_locale": "en",
+  "presentation": {
+    "native_width": 320,
+    "native_height": 200,
+    "native_scale": 2,
+    "scene_character": {
+      "sprite_x": 28,
+      "sprite_y": 24,
+      "clip": {"x": 27, "y": 22, "width": 90, "height": 90}
+    }
+  },
   "locales": {
     "en": {
       "music.pc98.00.title": "Title",
