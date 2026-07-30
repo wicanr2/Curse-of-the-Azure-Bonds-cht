@@ -151,6 +151,17 @@
       ,"myth-drannor.court.collapse": "The tower falls into a pile of rubble."
       ,"myth-drannor.court.go-upstairs": "Go upstairs"
       ,"myth-drannor.court.take-armor": "Take armor"
+      ,"myth-drannor.red-plume.gesture": "A Red Plume makes a gesture of friendship."
+      ,"myth-drannor.red-plume.journal": "The Red Plume tells you his tale. You record Journal Entry 33. What will you do?"
+      ,"myth-drannor.red-plume.follow": "“Follow me.”"
+      ,"myth-drannor.red-plume.no-payment": "“Thank you for your magnanimous gesture.”"
+      ,"myth-drannor.red-plume.warning": "“Follow me.” A whispery voice cries, “Beware—a trap!” The Red Plume snarls and silences the voice with a gesture."
+      ,"myth-drannor.red-plume.refusal": "“Then I shall try myself.” He goes through the gate. Suddenly, a scream pierces the air. Will you investigate?"
+      ,"myth-drannor.red-plume.spiders": "Within an unearthed grave, glowing spiders swarm out to protect their eggs."
+      ,"myth-drannor.red-plume.reveal": "Within an unearthed grave, glowing spiders swarm out to protect their eggs. The Red Plume steps away and fires at you—his shape changes."
+      ,"myth-drannor.red-plume.agree": "Agree"
+      ,"myth-drannor.red-plume.refuse-payment": "Refuse payment"
+      ,"myth-drannor.red-plume.disagree": "Disagree"
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -159,6 +170,7 @@
       ,"option.flee": "Flee"
       ,"option.go": "Go"
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
+      ,"journal.33": "Journal Entry 33: “I am Caemir, and my ancestors lived and died here in Myth Drannor. Evil dreams have shown my grandfather's tomb turned into a nest for foul spider creatures. Help me lay his spirit to rest, and I will give you the bow he made.” He shows you an exquisitely crafted bow radiating powerful magic."
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -297,6 +309,17 @@
       ,"myth-drannor.court.collapse": "高塔坍成了一堆瓦礫。"
       ,"myth-drannor.court.go-upstairs": "走上階梯"
       ,"myth-drannor.court.take-armor": "取走盔甲"
+      ,"myth-drannor.red-plume.gesture": "一名紅羽戰士做出表示友好的手勢。"
+      ,"myth-drannor.red-plume.journal": "紅羽戰士講述了他的遭遇；你們將內容記入手札第 33 條。接下來要怎麼做？"
+      ,"myth-drannor.red-plume.follow": "「跟我來。」"
+      ,"myth-drannor.red-plume.no-payment": "「感謝各位如此慷慨。」"
+      ,"myth-drannor.red-plume.warning": "「跟我來。」一個低沉如耳語的聲音喊道：「小心，是陷阱！」紅羽戰士怒吼一聲，揮手使那聲音戛然而止。"
+      ,"myth-drannor.red-plume.refusal": "「那我自己來。」他穿過大門。忽然，一聲慘叫劃破寂靜。你們要前去查看嗎？"
+      ,"myth-drannor.red-plume.spiders": "一座被挖開的墳墓中，發著幽光的蜘蛛蜂擁而出，守護牠們的卵。"
+      ,"myth-drannor.red-plume.reveal": "一座被挖開的墳墓中，發著幽光的蜘蛛蜂擁而出，守護牠們的卵。紅羽戰士退到一旁，朝你們放箭——他的外形隨即開始改變。"
+      ,"myth-drannor.red-plume.agree": "答應"
+      ,"myth-drannor.red-plume.refuse-payment": "不收報酬"
+      ,"myth-drannor.red-plume.disagree": "拒絕"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -305,6 +328,7 @@
       ,"option.flee": "撤退"
       ,"option.go": "繼續前進"
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
+      ,"journal.33": "手札條目 33：「我是凱米爾，我的祖先世世代代都在迷斯卓諾生活，最後也長眠於此。近來，邪惡夢境不斷侵擾我；夢中，祖父的墓穴被那些骯髒的蜘蛛怪物占據，成了牠們的巢穴。若你們願意幫助我，讓他的靈魂重歸安寧，我便把這把由他親手打造的弓送給你們。」他展示一把工藝極其精美、散發強大魔力的長弓。"
     }
   },
   "music_tracks": [
@@ -791,6 +815,21 @@
       "id": "option.go",
       "source": "GO",
       "message_id": "option.go"
+    },
+    {
+      "id": "myth-drannor.red-plume.agree",
+      "source": "AGREE",
+      "message_id": "myth-drannor.red-plume.agree"
+    },
+    {
+      "id": "myth-drannor.red-plume.refuse-payment",
+      "source": "REFUSE PAYMENT",
+      "message_id": "myth-drannor.red-plume.refuse-payment"
+    },
+    {
+      "id": "myth-drannor.red-plume.disagree",
+      "source": "DISAGREE",
+      "message_id": "myth-drannor.red-plume.disagree"
     }
   ],
   "text_rules": [
@@ -1039,6 +1078,42 @@
       "id": "myth-drannor.court.collapse",
       "all_contains": ["THE TOWER FALLS INTO A PILE OF RUBBLE"],
       "message_id": "myth-drannor.court.collapse"
+    },
+    {
+      "id": "myth-drannor.red-plume.gesture",
+      "all_contains": ["HE MAKES A GESTURE OF FRIENDSHIP"],
+      "message_id": "myth-drannor.red-plume.gesture"
+    },
+    {
+      "id": "myth-drannor.red-plume.journal",
+      "all_contains": ["THE RED PLUME TELLS YOU HIS TALE", "JOURNAL ENTRY", "33.", "WHAT DO YOU DO"],
+      "message_id": "myth-drannor.red-plume.journal",
+      "journal_message_ids": ["journal.33"]
+    },
+    {
+      "id": "myth-drannor.red-plume.no-payment",
+      "all_contains": ["THANK YOU FOR YOUR MAGNANAMOUS GESTURE"],
+      "message_id": "myth-drannor.red-plume.no-payment"
+    },
+    {
+      "id": "myth-drannor.red-plume.warning",
+      "all_contains": ["BEWARE, A TRAP", "THE RED PLUME SNARLS", "CUTS OFF THE VOICE"],
+      "message_id": "myth-drannor.red-plume.warning"
+    },
+    {
+      "id": "myth-drannor.red-plume.refusal",
+      "all_contains": ["THEN I SHALL TRY MYSELF", "A SCREAM PIERCES THE AIR", "INVESTIGATE"],
+      "message_id": "myth-drannor.red-plume.refusal"
+    },
+    {
+      "id": "myth-drannor.red-plume.reveal",
+      "all_contains": ["WITHIN AN UNEARTHED GRAVE ARE GLOWING SPIDERS", "THE RED PLUME STEPS AWAY", "HIS SHAPE CHANGES"],
+      "message_id": "myth-drannor.red-plume.reveal"
+    },
+    {
+      "id": "myth-drannor.red-plume.spiders",
+      "all_contains": ["WITHIN AN UNEARTHED GRAVE ARE GLOWING SPIDERS", "PROTECT THEIR EGGS"],
+      "message_id": "myth-drannor.red-plume.spiders"
     },
     {
       "id": "zhentil.patrol_pass",
