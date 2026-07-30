@@ -272,9 +272,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`4ac550b`（第 394 輪 Burial Glen terrain
-  `8Eh／8Fh／90h` 螳螂人防線）；
-  第 395 輪 terrain `91h／92h` 蜘蛛陵墓 milestone
+- CoAB 本輪基底：`ae3a270`（第 395 輪 Burial Glen terrain
+  `91h／92h` 蜘蛛陵墓）；
+  第 396 輪西側精靈王庭 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -358,7 +358,18 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   才顯示 YES／NO。NO 不寫 `4CCC` 且可重訪；YES 在戰前寫
   `4CCC=1`，建立四隻巨蛛並把敵方 attack-roll work `7F70=2`。raw
   高／低好感與正常 Standing Stone 玩家路徑均有回歸。蛛卵只有敘事，
-  原 ECL 沒有額外選單／財寶；下一步稽核更西側 terrain 與區域出口。
+  原 ECL 沒有額外選單／財寶。
+- 第 396 輪已沿正常玩家路徑接通西側王庭。terrain `08h` 門口幽魂 YES
+  傳送 `(4,2,S)`；`89h` 四個盔甲選項造成好感 `+1／-2／-2／不變`；
+  `8Ah` 以 `4CBA >= 80h` 為友善門檻，敵對時建立 `6+4+4` 十四名敵人；
+  `8Bh` 友善王后給 12 gems、8 jewelry 與 ITEM6 block `41h` 六筆物品，
+  敵對分支先扣五點，再依 YES／NO 給較少財寶或拒絕，最後倒塔傳送
+  `(5,2,S)`。友善獎勵測試必須載入真正 ITEM6 blocks，不能把未載素材的
+  零怪物 COMBAT fallback 當作通過。READY spec 396 是權威細節。
+- 使用者指定的角色資訊 DOS 實機圖已保存於
+  `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
+  它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、
+  右側 roster 與下方長文是三個獨立石框區域。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

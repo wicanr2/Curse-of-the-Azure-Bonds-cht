@@ -2501,3 +2501,19 @@ GIANT SPIDER，並寫敵方 attack-roll work `7F70=2`、`7F82=0／4C00=4`。
 raw session 已覆蓋高好感 NO／YES 與低好感無警告；Standing Stone 起始的
 正常路徑則先選 NO、重踏再選 YES，驗證繁中選項、敵方命中修正與完成後
 不重播。READY spec 395 保存 exact bytes、GEO 路徑與未完成邊界。
+
+第三百九十六輪從蜘蛛巢 `(10,1)` 沿合法 GEO 路徑進入西側精靈王庭。
+必經 terrain `08h` 的門口幽魂，YES 傳送至 `(4,2,S)`；terrain `89h`
+四選項分別造成好感 `+1／-2／-2／不變`，RETREAT 不消耗 `4CC4`。
+terrain `8Ah` 以 `4CBA >= 80h` 判斷友善，低於門檻會建立
+MON6CHA `42h×6／41h×4／40h×4`；terrain `8Bh` 的友善王后給
+12 gems、8 jewelry 與 ITEM6 block `41h` 六筆物品，敵對分支則先扣五點，
+YES 給 4 gems、2 jewelry 與 block `40h`，NO 不給財寶，兩者都倒塔並
+傳送 `(5,2,S)`。raw ECL 與 Standing Stone 起始正常玩家路徑均已通過，
+所有繁中來自 stable ID／JSON。READY spec 396 是權威細節。
+
+同輪保存使用者指定的 1014×759 DOS 角色資訊實機圖於
+`docs/reference/user-provided/dos-character-info-layout-20260730.png`，
+並更新 spec 391：左上是黃色裂紋 HEAD／BODY 專用舞台，右側 roster 與
+下方長文各有獨立石框；不可把角色圖當一般 PIC cover，也不可把頭像塞入
+身體或縮成 roster icon。
