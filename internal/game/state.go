@@ -5136,6 +5136,10 @@ func (s *State) Continue() error {
 		s.Message = ""
 		s.eclMenuReturnMode = ModeTitle
 		s.syncCurrentECLDungeonArea()
+		if s.pendingDungeonEntry {
+			s.syncDungeonStateFromECLRegisters()
+			s.pendingDungeonEntry = false
+		}
 		return nil
 	default:
 		return fmt.Errorf("event has no continuation")
@@ -5368,6 +5372,8 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("thank_him", "向他道謝")
 	case "ATTACK":
 		return catalog.Text("attack", "攻擊")
+	case "GREET":
+		return catalog.Text("greet", "致意")
 	case "LEAVE", "Leave":
 		return catalog.Text("leave", "離開")
 	case "EXAMINE CORPSE":
