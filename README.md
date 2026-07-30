@@ -859,6 +859,13 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 一次。繁中敘事、原始旗標、邊界 transaction 修正與 Standing Stone 起始
 玩家路徑見 [`spec 400`](docs/spec/400-outer-ruins-storehouse.md)。
 
+同一條玩家路徑已繼續接通逃亡男子事件。玩家可救援他並迎戰六隻地獄犬，
+從 `HEAD6／BODY6 40h` 的臨終對話得知東北廢墟藏寶；若袖手旁觀，仍可
+選擇追擊犬群或留下屍骸。只有取得線索後在 terrain `06h` 主動搜索，
+才會找到一枚 electrum、`+2` 護手、`+1` 腰帶與 `+5` 長劍；取得後無法
+重複領取。零碎 electrum 的 100 copper 餘值也不再被整數 GP pool 丟棄。
+詳見 [`spec 401`](docs/spec/401-outer-ruins-fugitive-cache.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

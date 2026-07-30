@@ -521,6 +521,13 @@ resume 同一 session，才會執行神殿地圖與 Journal Entry 20，再返回
 應以 `(area << 8) | block` 保存，並在整個 request 可解析後才原子加入 coin、
 gems、jewelry 與 items，避免素材缺失後重試造成重複結算。
 
+五種 coin 不能在 `TREASURE` 邊界直接各自整除為 GP。CoAB ECL6 block
+`42h` terrain `06h` 的藏寶只有一枚 electrum；它值 100 copper，也就是
+半枚 GP。通用投影應先把五欄換算成 copper，與先前 0–199 copper 餘數
+相加，再以 200 copper 轉成整數 GP。否則這枚 electrum 會無聲消失，兩次
+相同的小額財寶也無法正確累積成一 GP。帶 `PRESS BUTTON` 暫停的財寶敘事
+還要跨 selection 保存；只有空白 packed text 的下一段不能清掉前一頁訊息。
+
 selectors `0x1C–0x20` 證實常見的一次性房間模板可跨 Gold Box 作品重用：
 `COMPARE flag,1 → IF= EXIT → SAVE 1 → PRINT/GOSUB Continue → dungeon return`。
 但 pause 數仍由 script 決定；例如焚毀圖書館先描述焦屍，再於第二個 pause 取得

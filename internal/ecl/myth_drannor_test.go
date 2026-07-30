@@ -1750,6 +1750,185 @@ func TestRealOuterRuinsStorehouse(t *testing.T) {
 	})
 }
 
+func TestRealOuterRuinsFugitiveAndCache(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func() *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x42)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		for address := uint16(0x4CD3); address <= 0x4CD5; address++ {
+			session.SetMemoryValue(address, 0)
+		}
+		return session
+	}
+
+	t.Run("rescue earns dying clue", func(t *testing.T) {
+		session := newSession()
+		session.SetMemoryValue(0xC04F, 0x04)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "DO YOU GO TO THE RESCUE") ||
+			!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+				[]string{"YES", "NO"}) ||
+			mustMemory(t, session, 0x4CD3) != 1 {
+			t.Fatalf("fugitive intro=%+v err=%v 4CD3=%d",
+				intro, runErr, mustMemory(t, session, 0x4CD3))
+		}
+		yes := uint16(0)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x44, Count: 6, IconBlock: 0x44}}) {
+			t.Fatalf("rescue fight=%+v err=%v", fight, runErr)
+		}
+		clue, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !clue.PictureRequested ||
+			clue.PictureBlock != 0x40 || !clue.PictureHeadBlockSet ||
+			clue.PictureHeadBlock != 0x40 || !clue.WaitingForMenu ||
+			!strings.Contains(strings.Join(clue.Text, " "), "RUINED BUILDING") {
+			t.Fatalf("dying clue=%+v err=%v", clue, runErr)
+		}
+		press := uint16(0)
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited ||
+			mustMemory(t, session, 0x4CD4) != 1 ||
+			mustMemory(t, session, 0x4CD5) != 1 {
+			t.Fatalf("rescue done=%+v err=%v flags=%d/%d",
+				done, runErr, mustMemory(t, session, 0x4CD4),
+				mustMemory(t, session, 0x4CD5))
+		}
+	})
+
+	t.Run("decline may attack or leave remains", func(t *testing.T) {
+		for attack := uint16(0); attack < 2; attack++ {
+			session := newSession()
+			session.SetMemoryValue(0xC04F, 0x04)
+			if _, runErr := session.RunEntry(1, 30000, nil); runErr != nil {
+				t.Fatal(runErr)
+			}
+			no := uint16(1)
+			killed, runErr := session.ResumeInteractiveSelectionSeed(
+				30000, &no, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !killed.WaitingForMenu ||
+				!strings.Contains(strings.Join(killed.Text, " "), "TEAR HIM TO SHREDS") {
+				t.Fatalf("attack=%d killed=%+v err=%v", attack, killed, runErr)
+			}
+			result, runErr := session.ResumeInteractiveSelectionSeed(
+				30000, &attack, nil, 1, PartyContext{},
+			)
+			if runErr != nil {
+				t.Fatal(runErr)
+			}
+			if attack == 0 {
+				if !result.CombatRequested ||
+					!reflect.DeepEqual(result.MonsterSpawns,
+						[]MonsterSpawn{{MonsterID: 0x44, Count: 6, IconBlock: 0x44}}) {
+					t.Fatalf("decline then attack=%+v", result)
+				}
+				result, runErr = session.ResumeInteractiveSelectionSeed(
+					30000, nil, nil, 1, PartyContext{},
+				)
+			} else if !result.WaitingForMenu ||
+				!strings.Contains(strings.Join(result.Text, " "), "LEAVE THE REMAINS") {
+				t.Fatalf("decline and leave=%+v", result)
+			}
+			if runErr != nil || !result.WaitingForMenu {
+				t.Fatalf("attack=%d remains=%+v err=%v", attack, result, runErr)
+			}
+			press := uint16(0)
+			done, runErr := session.ResumeInteractiveSelectionSeed(
+				30000, &press, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !done.Exited || mustMemory(t, session, 0x4CD5) != 0 {
+				t.Fatalf("attack=%d done=%+v err=%v 4CD5=%d",
+					attack, done, runErr, mustMemory(t, session, 0x4CD5))
+			}
+		}
+	})
+
+	t.Run("remains are one shot", func(t *testing.T) {
+		session := newSession()
+		session.SetMemoryValue(0xC04F, 0x05)
+		remains, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !remains.WaitingForMenu ||
+			!strings.Contains(strings.Join(remains.Text, " "), "NOTHING OF VALUE") ||
+			mustMemory(t, session, 0x4CD4) != 1 {
+			t.Fatalf("remains=%+v err=%v 4CD4=%d",
+				remains, runErr, mustMemory(t, session, 0x4CD4))
+		}
+		press := uint16(0)
+		if _, runErr = session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		); runErr != nil {
+			t.Fatal(runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+			t.Fatalf("remains revisit=%+v err=%v", revisit, runErr)
+		}
+	})
+
+	t.Run("active search consumes cache clue", func(t *testing.T) {
+		session := newSession()
+		session.SetMemoryValue(0xC04F, 0x06)
+		session.SetMemoryValue(0x4CD5, 1)
+		ordinary, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !ordinary.Exited || len(ordinary.Text) != 0 {
+			t.Fatalf("ordinary cache cell=%+v err=%v", ordinary, runErr)
+		}
+		session.SetMemoryValue(0x7ECA, 1)
+		found, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !found.WaitingForMenu ||
+			!strings.Contains(strings.Join(found.Text, " "), "LOCATE A CACHE") {
+			t.Fatalf("cache found=%+v err=%v", found, runErr)
+		}
+		press := uint16(0)
+		treasure, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !treasure.CombatRequested ||
+			!reflect.DeepEqual(treasure.TreasureRequests, []TreasureRequest{{
+				Coins:     [7]uint16{0, 0, 1, 0, 0, 0, 0},
+				ItemBlock: 0x43,
+			}}) {
+			t.Fatalf("cache treasure=%+v err=%v", treasure, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited || mustMemory(t, session, 0x4CD5) != 0 {
+			t.Fatalf("cache done=%+v err=%v 4CD5=%d",
+				done, runErr, mustMemory(t, session, 0x4CD5))
+		}
+		repeat, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !repeat.Exited || repeat.CombatRequested ||
+			len(repeat.TreasureRequests) != 0 {
+			t.Fatalf("cache repeat=%+v err=%v", repeat, runErr)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

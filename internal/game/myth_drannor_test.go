@@ -2137,6 +2137,191 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			len(state.PendingTreasureItems()))
 	}
 
+	fugitiveRoute := []struct {
+		x, y      int
+		direction int
+	}{
+		{3, 14, 2},
+		{3, 13, 0},
+		{3, 12, 0},
+		{3, 11, 0},
+		{3, 10, 0},
+		{3, 9, 0},
+		{3, 8, 0},
+		{3, 7, 0},
+	}
+	previousX, previousY = 2, 14
+	for index, step := range fugitiveRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, step.direction) {
+			t.Fatalf("illegal fugitive route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, uint8(step.direction))
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(fugitiveRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("fugitive route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x04 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.fugitive.intro") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("fugitive intro mode=%v terrain=%02x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 6 {
+		t.Fatalf("fugitive rescue combat mode=%v active=%v enemies=%d",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideEnemy)))
+	}
+	for action := 0; action < 96 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested ||
+		state.PictureBlock != 0x40 || state.SceneHeadBlock != 0x40 ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.fugitive.clue") {
+		t.Fatalf("fugitive clue mode=%v picture=%v/%02x head=%02x message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock,
+			state.SceneHeadBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("fugitive clue continuation mode=%v choices=%v",
+			state.Mode, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("fugitive clue return mode=%v message=%q", state.Mode, state.Message)
+	}
+	for address, want := range map[uint16]uint16{
+		0x4CD3: 1,
+		0x4CD4: 1,
+		0x4CD5: 1,
+	} {
+		if got, ok := state.session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("fugitive memory[%04X]=%d,%v want %d,true",
+				address, got, ok, want)
+		}
+	}
+
+	cacheRoute := []struct {
+		x, y      int
+		direction int
+	}{
+		{3, 6, 0},
+		{2, 6, 6},
+		{1, 6, 6},
+		{0, 6, 6},
+		{15, 6, 6},
+		{15, 5, 0},
+		{15, 4, 0},
+		{15, 3, 0},
+		{14, 3, 6},
+	}
+	previousX, previousY = 3, 7
+	for _, step := range cacheRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, step.direction) {
+			t.Fatalf("illegal cache route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, uint8(step.direction))
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("cache route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x06 {
+		t.Fatalf("cache terrain=%02x, want 06", state.DungeonWallRoof)
+	}
+	cacheMoney := state.MoneyPool()
+	cacheRemainder := state.MoneyPoolCopperRemainder()
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.fugitive.cache") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("cache discovery mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	if state.pendingTreasureMessage != state.Message {
+		t.Fatalf("cache pending treasure message=%q, want %q",
+			state.pendingTreasureMessage, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	cacheItems := state.PendingTreasureItems()
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.fugitive.cache") ||
+		state.MoneyPool() != cacheMoney ||
+		state.MoneyPoolCopperRemainder() != cacheRemainder+100 ||
+		len(cacheItems) != 3 ||
+		cacheItems[0].Type != 0x3F || cacheItems[0].Plus != 2 ||
+		cacheItems[1].Type != 0x41 || cacheItems[1].Plus != 1 ||
+		cacheItems[2].Type != 0x24 || cacheItems[2].Plus != 5 {
+		t.Fatalf("cache treasure mode=%v menu=%v money=%d/%d remainder=%d/%d items=%+v message=%q",
+			state.Mode, state.treasureMenu, state.MoneyPool(), cacheMoney,
+			state.MoneyPoolCopperRemainder(), cacheRemainder, cacheItems,
+			state.Message)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("cache treasure return mode=%v", state.Mode)
+	}
+	if clue, ok := state.session.MemoryValue(0x4CD5); !ok || clue != 0 {
+		t.Fatalf("cache clue after treasure=%d,%v want 0,true", clue, ok)
+	}
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.MoneyPool() != cacheMoney ||
+		state.MoneyPoolCopperRemainder() != cacheRemainder+100 ||
+		len(state.PendingTreasureItems()) != 0 {
+		t.Fatalf("cache repeat mode=%v money=%d remainder=%d items=%d",
+			state.Mode, state.MoneyPool(), state.MoneyPoolCopperRemainder(),
+			len(state.PendingTreasureItems()))
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{
