@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`2921842`
-依賴的 Golden Box engine checkpoint：`7ba2f8e`
+本 milestone 的 CoAB 基底：`11b26ee`
+依賴的 Golden Box engine checkpoint：`9826632`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -166,6 +166,14 @@ commit 內保存不可能自我引用的 hash。
   raw `+1／-1`。只有一件珠寶、`ItemBlock=FFh` 的 TREASURE 現會進入
   寶物 service，不再誤成零怪物戰鬥；選項翻譯已移入 game-pack
   `option_rules`。四批上限長回歸、完整怪物規則與後續區域仍未完成。
+- 第 389 輪新增作品中立 `-geo-path` auditor，證明墳墓 `(6,12)` 到
+  黛米爾 `(13,14)` terrain `03h` 有九步正常可行路徑。正常玩家 regression
+  已逐格抵達 PICTURE 72；real-image ECL 測試涵蓋 ACCEPT／REJECT／KILL／
+  FLEE、祝福／寬恕、一次性 `4CC0h`、`4CBAh +5／-10` 與
+  `4CBBh=02h／FEh`。繁中提問與四選項均由 stable ID／JSON 驅動，並有
+  原版石框、原始人物圖與 16×15 倚天的 640×480 checkpoint。
+  `4CBBh` 仍只有 writer 與事件文字，IDA fresh load 未找到 literal
+  consumer；命中 `+2／-2` 尚未接入，不能宣稱黛米爾的戰鬥效果已完整。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

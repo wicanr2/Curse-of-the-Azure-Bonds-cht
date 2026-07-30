@@ -514,6 +514,95 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("post-loot continuation mode=%v choices=%v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)
 	}
+
+	// The original GEO has a nine-step passable route from the grave at
+	// (6,12) to Princess Daemir's terrain 0x03 at (13,14). Walk every cell
+	// through the normal dungeon lifecycle; random encounters may interrupt
+	// the route, but fleeing resumes the same ECL session and coordinate.
+	type dungeonStep struct {
+		x         int
+		y         int
+		direction uint8
+	}
+	daemirRoute := []dungeonStep{
+		{x: 7, y: 12, direction: 2},
+		{x: 8, y: 12, direction: 2},
+		{x: 9, y: 12, direction: 2},
+		{x: 10, y: 12, direction: 2},
+		{x: 11, y: 12, direction: 2},
+		{x: 12, y: 12, direction: 2},
+		{x: 13, y: 12, direction: 2},
+		{x: 13, y: 13, direction: 4},
+		{x: 13, y: 14, direction: 4},
+	}
+	previousX, previousY := 6, 12
+	for _, step := range daemirRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("Burial Glen route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x03 || state.Mode != ModeEvent ||
+		!state.PictureRequested || state.PictureBlock != 72 ||
+		state.Message != gamePackText(t, state, "myth-drannor.daemir.offer") {
+		t.Fatalf("Daemir arrival terrain=%02x mode=%v picture=%v/%d message=%q choices=%v",
+			state.DungeonWallRoof, state.Mode, state.PictureRequested, state.PictureBlock,
+			state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ACCEPT", "REJECT", "KILL", "FLEE"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "option.accept"),
+			gamePackText(t, state, "option.reject"),
+			gamePackText(t, state, "option.kill"),
+			gamePackText(t, state, "option.flee"),
+		}) {
+		t.Fatalf("Daemir choices=%v originals=%v", state.Choices, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	visitedDaemir, visitedDaemirSet := state.session.MemoryValue(0x4CC0)
+	spiritApproval, spiritApprovalSet = state.session.MemoryValue(0x4CBA)
+	weaponModifier, weaponModifierSet := state.session.MemoryValue(0x4CBB)
+	if state.Message != gamePackText(t, state, "myth-drannor.daemir.blessing") ||
+		!visitedDaemirSet || visitedDaemir != 1 ||
+		!spiritApprovalSet || spiritApproval != 0x85 ||
+		!weaponModifierSet || weaponModifier != 0x02 {
+		t.Fatalf("Daemir blessing message=%q visited=%d,%v approval=%d,%v modifier=%02x,%v",
+			state.Message, visitedDaemir, visitedDaemirSet,
+			spiritApproval, spiritApprovalSet, weaponModifier, weaponModifierSet)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-Daemir continuation mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("visited Daemir terrain retriggered mode=%v message=%q", state.Mode, state.Message)
+	}
 }
 
 func gamePackText(t *testing.T, state State, messageID string) string {

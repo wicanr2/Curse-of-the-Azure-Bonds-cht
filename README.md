@@ -778,14 +778,21 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
   可遇到 2 隻巨型蜘蛛、3 隻相位蜘蛛及 1 名 thri-kreen；勝利後可重新
   安葬骸骨，使偏移好感 `4CBAh` 加一，或搜刮墳墓使其減一並取得一件珠寶。
   純珠寶 TREASURE 現在會進入寶物 service，不再誤顯示零怪物戰鬥。
-  戰敗路徑、蜘蛛毒素／羅剎妖／thri-kreen 完整規則與 Burial Glen 後續
-  仍待完成。
+  從墳墓再沿原始 GEO 九步通道可正常抵達 terrain `03h` 的黛米爾公主幽魂。
+  她會依 `4CBAh` 顯示祝福或寬恕提問；ACCEPT／REJECT／KILL／FLEE 四分支、
+  一次性 `4CC0h`、認可度 `+5／-10` 與 `4CBBh=02h／FEh` 原始寫入均有
+  real-image ECL 測試。`4CBBh` 的戰鬥 consumer 尚未找到，因此不會只憑
+  攻略就把它硬接成命中 `+2／-2`。
+  戰敗路徑、蜘蛛毒素／羅剎妖／thri-kreen 完整規則、黛米爾武器修正
+  consumer 與 Burial Glen 後續仍待完成。
 
 ![Burial Glen 紅網的 640×480 原版石框與 16×15 倚天字串輸入](docs/screenshots/burial-glen-red-web-input.png)
 
 ![Burial Glen 紅網四隻巨型蜘蛛的原版 CPIC 小人與戰鬥框](docs/screenshots/burial-glen-red-web-spiders.png)
 
 ![Burial Glen 墳墓掠奪者的蜘蛛小人、thri-kreen 目標與原版戰鬥框](docs/screenshots/burial-glen-grave-looters.png)
+
+![Burial Glen 黛米爾公主幽魂的原版人物圖、石框與 16×15 倚天繁中](docs/screenshots/burial-glen-princess-daemir.png)
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

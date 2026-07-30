@@ -95,6 +95,15 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - 指令名稱、operand 數量或攻略敘述只能形成假說，不能單獨決定 runtime
   語意。至少要記錄 opcode bytes、operand decoding、目的位址、分支 trace，
   並以 IDA 與原版 runtime／另一項權威證據交叉驗證。
+- ECL 對某個 work address 寫入 `02h`、`FEh` 等值，只能證明「事件寫了
+  什麼」，不能單憑文字或攻略把該位址命名成命中、AC、年齡等規則欄位。
+  必須再找到讀取端／consumer、角色資料投影或原版 runtime 效果；在此之前
+  schema、spec 與測試都要標為 `hypothesis`，不得先把推測做成正式規則。
+- IDA 沒有找到某個位址的 literal xref，不代表該欄位未使用；ECL work
+  memory 常由基底指標、索引或通用 interpreter 間接存取。反過來，找到一個
+  raw little-endian byte pattern 也不等於找到 consumer。必須區分 code
+  operand、data coincidence、間接存取與真正執行 trace，避免 compact 後把
+  掃描命中數誤讀成已完成語意。
 - 不得為了讓單一劇情點通過，在 frontend、State 或 VM 寫死本作密語、座標、
   怪物、文字、旗標或分支。互動機制放作品中立 runtime；`Krrkik` 等作品
   資料仍由原始 ECL 或 CoAB game-pack 驅動。
@@ -245,8 +254,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`cf20315`；第 388 輪 Burial Glen 墳墓掠奪者、
-  純珠寶 TREASURE 與選項資料化 milestone 會由本文件所在 commit 完成。
+- CoAB 本輪基底：`11b26ee`；第 389 輪 Burial Glen 黛米爾公主、
+  GEO 最短路徑 auditor、四分支與資料化繁中 milestone 會由本文件所在
+  commit 完成。
 - Engine dependency：`9826632`（含作品中立 `option_rules`、世界目的地
   有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
@@ -285,6 +295,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   不再誤成零怪物 COMBAT；三個選項已由 engine `option_rules`＋CoAB JSON
   stable ID 驅動。四批上限長回歸、完整怪物規則、treasure TAKE／SHARE、
   thri-kreen 清楚可見的 placement 及後續 Burial Glen 仍未完成。
+- 第 389 輪已由墳墓 `(6,12)` 沿 GEO auditor 證明的九步可行路徑抵達
+  `(13,14)` terrain `03h`。黛米爾的 ACCEPT／REJECT／KILL／FLEE、正面
+  祝福、負面寬恕、`4CBAh +5／-10`、`4CBBh 02h／FEh` 與一次性
+  `4CC0h` 均有 real-image／正常玩家路徑回歸。IDA fresh load 沒有找到
+  `4CBBh` literal consumer，所以目前只保存 raw work cell，不把攻略所稱
+  命中 `+2／-2` 寫進戰鬥規則；下一步須追間接 consumer 或做 DOS 相鄰值
+  runtime 實驗。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
