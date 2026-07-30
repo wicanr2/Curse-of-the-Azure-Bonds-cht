@@ -2377,6 +2377,9 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		} else {
 			s.enterTreasureMenu()
 		}
+		if len(result.Text) > 0 {
+			s.Message = s.localizeECLText(result.Text)
+		}
 		return true, nil
 	}
 	if result.CombatRequested {

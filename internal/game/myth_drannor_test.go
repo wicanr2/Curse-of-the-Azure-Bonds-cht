@@ -856,6 +856,227 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.CombatActive())
 	}
 
+	// Continue along the shortest legal GEO route to the thri-kreen defence
+	// cluster. Terrain 0x8E attacks immediately with twelve guards and marks
+	// 4CC8h, including the duplicate 0x8E cell later on this route.
+	entranceGuardRoute := []dungeonStep{
+		{x: 14, y: 9, direction: 0},
+		{x: 13, y: 9, direction: 6},
+		{x: 12, y: 9, direction: 6},
+		{x: 12, y: 8, direction: 0},
+		{x: 12, y: 7, direction: 0},
+		{x: 11, y: 7, direction: 6},
+		{x: 10, y: 7, direction: 6},
+	}
+	previousX, previousY = 14, 10
+	for _, step := range entranceGuardRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("bone-pile-to-entrance-guard route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if !(step.x == 10 && step.y == 7) &&
+				reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+				if err := state.Select(0); err != nil {
+					t.Fatal(err)
+				}
+				if reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+					if err := state.Select(2); err != nil {
+						t.Fatal(err)
+					}
+				}
+				continue
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		if !(step.x == 10 && step.y == 7) && state.Mode != ModeDungeon {
+			t.Fatalf("quiet entrance-guard route cell (%d,%d) mode=%v choices=%v message=%q terrain=%02x",
+				step.x, step.y, state.Mode, state.currentOriginalChoices,
+				state.Message, state.DungeonWallRoof)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8E || state.Mode != ModeCombat ||
+		!state.CombatActive() || len(state.CombatTargets()) != 12 ||
+		state.Message != gamePackText(t, state, "myth-drannor.thri-kreen.entrance") {
+		t.Fatalf("entrance guards terrain=%02x mode=%v active=%v targets=%d message=%q",
+			state.DungeonWallRoof, state.Mode, state.CombatActive(),
+			len(state.CombatTargets()), state.Message)
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
+		t.Fatalf("entrance-guard victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if entranceCleared, found := state.session.MemoryValue(0x4CC8); state.Mode != ModeDungeon || !found || entranceCleared != 1 {
+		t.Fatalf("entrance-guard continuation mode=%v 4CC8=%d,%v",
+			state.Mode, entranceCleared, found)
+	}
+
+	// The route to terrain 0x8F crosses the second 0x8E cell at (9,8).
+	// Because 4CC8h is already set, it must not create another battle.
+	innerGuardRoute := []dungeonStep{
+		{x: 10, y: 8, direction: 4},
+		{x: 9, y: 8, direction: 6},
+		{x: 9, y: 9, direction: 4},
+	}
+	previousX, previousY = 10, 7
+	for _, step := range innerGuardRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("entrance-to-inner-guard route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if !(step.x == 9 && step.y == 9) &&
+				reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+				if err := state.Select(0); err != nil {
+					t.Fatal(err)
+				}
+				if reflect.DeepEqual(state.currentOriginalChoices,
+					[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+					if err := state.Select(2); err != nil {
+						t.Fatal(err)
+					}
+				}
+				continue
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		if step.x == 9 && step.y == 8 && state.Mode != ModeDungeon {
+			t.Fatalf("cleared duplicate terrain 0x8E retriggered mode=%v message=%q",
+				state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8F || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.thri-kreen.guards") {
+		t.Fatalf("inner guards terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatTargets()) != 6 {
+		t.Fatalf("inner-guard combat mode=%v active=%v targets=%d",
+			state.Mode, state.CombatActive(), len(state.CombatTargets()))
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
+		t.Fatalf("inner-guard victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if innerCleared, found := state.session.MemoryValue(0x4CC9); state.Mode != ModeDungeon || !found || innerCleared != 1 {
+		t.Fatalf("inner-guard continuation mode=%v 4CC9=%d,%v",
+			state.Mode, innerCleared, found)
+	}
+
+	// One step west reaches terrain 0x90. Since the normal path has already
+	// set 4CC8h and 4CC9h, the source ECL suppresses both six-warrior
+	// reinforcement waves after the twelve-warrior bivouac battle.
+	if !burialGlen.CanMoveDungeonWrapped(9, 9, 6) {
+		t.Fatal("inner guards cannot move west to the bivouac")
+	}
+	moneyBeforeBivouac := state.MoneyPool()
+	gemsBeforeBivouac, jewelryBeforeBivouac := state.TreasurePool()
+	itemsBeforeBivouac := len(state.PendingTreasureItems())
+	state.SetDungeonGeometryView(8, 9, 6)
+	state.DungeonWallRoof = burialGlen.CellWrapped(8, 9).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonWallRoof != 0x90 || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.thri-kreen.bivouac") {
+		t.Fatalf("bivouac arrival terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatTargets()) != 12 {
+		t.Fatalf("bivouac combat mode=%v active=%v targets=%d",
+			state.Mode, state.CombatActive(), len(state.CombatTargets()))
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	bivouacCleared, bivouacClearedSet := state.session.MemoryValue(0x4CCA)
+	gemsAfterBivouac, jewelryAfterBivouac := state.TreasurePool()
+	if state.CombatStatus() != combat.StatusPartyWon ||
+		state.Mode != ModeWilderness || !state.treasureMenu ||
+		state.Message != gamePackText(t, state, "myth-drannor.thri-kreen.valuables") ||
+		!bivouacClearedSet || bivouacCleared != 1 ||
+		state.MoneyPool() != moneyBeforeBivouac+9500 ||
+		gemsAfterBivouac != gemsBeforeBivouac+4 ||
+		jewelryAfterBivouac != jewelryBeforeBivouac+6 ||
+		len(state.PendingTreasureItems()) != itemsBeforeBivouac+1 {
+		t.Fatalf("bivouac loot status=%v mode=%v menu=%v message=%q 4CCA=%d,%v money=%d→%d gems=%d→%d jewelry=%d→%d items=%d→%d",
+			state.CombatStatus(), state.Mode, state.treasureMenu, state.Message,
+			bivouacCleared, bivouacClearedSet,
+			moneyBeforeBivouac, state.MoneyPool(),
+			gemsBeforeBivouac, gemsAfterBivouac,
+			jewelryBeforeBivouac, jewelryAfterBivouac,
+			itemsBeforeBivouac, len(state.PendingTreasureItems()))
+	}
+	for state.treasureMenu {
+		if err := state.Select(len(state.Choices) - 1); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-bivouac continuation mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.CombatActive() {
+		t.Fatalf("cleared bivouac retriggered mode=%v active=%v",
+			state.Mode, state.CombatActive())
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{

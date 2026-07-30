@@ -665,3 +665,20 @@ continuation 卻會洩漏原始英文。
 可能在玩家取得回合前擊倒他；這只能證明該測試隊伍戰敗，不能推論
 continuation 或 HP sync 有 bug。跨戰 regression 應用完整 deterministic party，
 並分別驗證兩組原始 monster IDs/counts。
+
+### 2026-07-30：相鄰戰鬥旗標可動態裁剪後續增援
+
+Burial Glen 的三道螳螂人防線證明，地圖上的相鄰 encounter 不是必然互相
+獨立。terrain `8Eh` 與 `8Fh` 勝利後分別寫 `4CC8／4CC9`；營地
+terrain `90h` 完成第一波後會讀這兩格，只為尚未清除的外圍防線各追加一波。
+因此直接進營地是 `12→6→6`，正常依序清場後則只有十二名營地守軍。
+
+可重用 runtime 應保存同一區域 work memory，讓 ECL 原始 COMPARE／GOTO
+決定波次。不得根據單一次實機觀察，把「三波」或「一波」寫成 encounter
+JSON 的固定陣容；作品資料只負責 stable text／monster identity，條件控制流
+仍由 VM 執行。回歸測試至少要覆蓋乾淨狀態與前置旗標皆成立兩種情境。
+
+同一事件最後的 `PRINTCLEAR → TREASURE → COMBAT` 也顯示，無 monster 的
+COMBAT 是財寶服務 boundary，但 PRINTCLEAR 文字仍是該畫面的敘事。進入通用
+treasure menu 時應保留當次已資料化的 ECL 文字；只有當結果沒有文字時才使用
+通用「發現財寶」提示，不能讓 UI helper 無條件蓋掉劇情。

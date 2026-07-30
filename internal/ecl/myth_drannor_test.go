@@ -709,6 +709,216 @@ func TestRealBurialGlenPhaseSpiderBonePileBranches(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenThriKreenDefenseFlagsAndWaves(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T, terrain uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 0)
+		session.SetMemoryValue(0xC04C, 0)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, terrain)
+		return session
+	}
+
+	t.Run("entrance force is immediate and marks 4CC8", func(t *testing.T) {
+		session := newSession(t, 0x8E)
+		fight, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x40, Count: 12, IconBlock: 0x40}}) ||
+			!strings.Contains(strings.Join(fight.Text, " "), "BAR YOUR ENTRANCE") ||
+			mustMemory(t, session, 0x7F82) != 1 ||
+			mustMemory(t, session, 0x4C02) != 12 {
+			t.Fatalf("entrance fight=%+v", fight)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !done.Exited || mustMemory(t, session, 0x4CC8) != 1 {
+			t.Fatalf("entrance done=%+v", done)
+		}
+		revisit, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !revisit.Exited || revisit.CombatRequested {
+			t.Fatalf("entrance revisit=%+v", revisit)
+		}
+	})
+
+	t.Run("inner guards pause then mark 4CC9", func(t *testing.T) {
+		session := newSession(t, 0x8F)
+		prompt, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "GUARDS HERE PREPARE FOR COMBAT") {
+			t.Fatalf("guards prompt=%+v", prompt)
+		}
+		press := uint16(0)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x40, Count: 6, IconBlock: 0x40}}) ||
+			mustMemory(t, session, 0x7F82) != 2 ||
+			mustMemory(t, session, 0x4C02) != 6 {
+			t.Fatalf("guards fight=%+v", fight)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !done.Exited || mustMemory(t, session, 0x4CC9) != 1 {
+			t.Fatalf("guards done=%+v", done)
+		}
+	})
+
+	runBivouacStart := func(t *testing.T, session *BlockSession) RunResult {
+		t.Helper()
+		prompt, runErr := session.RunEntry(1, 5000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "PREPARE TO MAKE A STAND") {
+			t.Fatalf("bivouac prompt=%+v", prompt)
+		}
+		press := uint16(0)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x40, Count: 12, IconBlock: 0x40}}) ||
+			mustMemory(t, session, 0x7F82) != 3 ||
+			mustMemory(t, session, 0x4C02) != 12 {
+			t.Fatalf("bivouac fight=%+v", fight)
+		}
+		return fight
+	}
+	wantTreasure := TreasureRequest{
+		Coins:     [7]uint16{0, 0, 0, 2000, 1500, 4, 6},
+		ItemBlock: 0x81,
+	}
+
+	t.Run("uncleared guards produce all three waves", func(t *testing.T) {
+		session := newSession(t, 0x90)
+		runBivouacStart(t, session)
+		reinforcements, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !reinforcements.WaitingForMenu ||
+			!strings.Contains(strings.Join(reinforcements.Text, " "),
+				"OTHER THRI-KREEN RESPOND TO THE NOISE") {
+			t.Fatalf("reinforcements=%+v", reinforcements)
+		}
+		press := uint16(0)
+		secondFight, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !secondFight.CombatRequested ||
+			!reflect.DeepEqual(secondFight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x40, Count: 6, IconBlock: 0x40}}) ||
+			mustMemory(t, session, 0x7F82) != 5 {
+			t.Fatalf("second fight=%+v", secondFight)
+		}
+		stragglers, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !stragglers.WaitingForMenu ||
+			!strings.Contains(strings.Join(stragglers.Text, " "), "A FEW MORE STRAGGLE IN") {
+			t.Fatalf("stragglers=%+v", stragglers)
+		}
+		thirdFight, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !thirdFight.CombatRequested ||
+			!reflect.DeepEqual(thirdFight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x40, Count: 6, IconBlock: 0x40}}) ||
+			mustMemory(t, session, 0x7F82) != 6 {
+			t.Fatalf("third fight=%+v", thirdFight)
+		}
+		loot, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !loot.CombatRequested ||
+			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{wantTreasure}) ||
+			!strings.Contains(strings.Join(loot.Text, " "), "YOU GATHER UP SOME VALUABLES") ||
+			mustMemory(t, session, 0x4CC8) != 1 ||
+			mustMemory(t, session, 0x4CC9) != 1 ||
+			mustMemory(t, session, 0x4CCA) != 1 {
+			t.Fatalf("loot=%+v", loot)
+		}
+	})
+
+	t.Run("cleared outer guards suppress matching reinforcements", func(t *testing.T) {
+		session := newSession(t, 0x90)
+		session.SetMemoryValue(0x4CC8, 1)
+		session.SetMemoryValue(0x4CC9, 1)
+		runBivouacStart(t, session)
+		loot, runErr := session.ResumeInteractiveSelectionSeed(
+			5000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !loot.CombatRequested || loot.WaitingForMenu ||
+			!reflect.DeepEqual(loot.TreasureRequests, []TreasureRequest{wantTreasure}) ||
+			!strings.Contains(strings.Join(loot.Text, " "), "YOU GATHER UP SOME VALUABLES") ||
+			mustMemory(t, session, 0x4CCA) != 1 {
+			t.Fatalf("suppressed reinforcement loot=%+v", loot)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

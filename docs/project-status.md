@@ -193,6 +193,12 @@ commit 內保存不可能自我引用的 hash。
   證明 LOOT 是 `4CBA-1` 與一顆 gem、`ItemBlock=FFh` 無裝備；
   REPLACE 是 `4CBA+1`，IGNORE 不改好感。正常玩家路徑、繁中選單、
   treasure service、地城 continuation 與重訪 EXIT 均已回歸。
+- 第 394 輪把正常玩家路徑延伸至 terrain `8Eh／8Fh／90h` 的螳螂人防線。
+  `8Eh` 十二人寫 `4CC8`、`8Fh` 六人寫 `4CC9`；營地 `90h` 首波十二人
+  寫 `4CCA`，再依前兩旗標決定是否追加兩波六人。乾淨 raw session
+  `12→6→6` 與已清外圍後只剩十二人的正常路徑均已驗證。最終財寶為
+  9500 gold、4 gems、6 jewelry 與一件 random item；treasure menu 會保留
+  當次 ECL 的資料包繁中文字。terrain `91h／92h` 仍待後續。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

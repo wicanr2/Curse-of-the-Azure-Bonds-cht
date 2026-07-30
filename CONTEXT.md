@@ -2474,3 +2474,18 @@ block，不是隨機裝備。REPLACE 使 `4CBA+1`，IGNORE 不改好感。
 守衛文字、問題與三選項均已移入繁中 game-pack stable IDs；raw ECL 三分支
 及從 Standing Stone 起的正常玩家路徑均驗證戰鬥、treasure service、
 地城 continuation 與重訪 EXIT。詳細證據見 READY spec 393。
+
+第三百九十四輪由 terrain `95h` `(14,10)` 沿最短合法 GEO 路徑推進到
+`8Eh` `(10,7)`、`8Fh` `(9,9)` 與 `90h` `(8,9)`。ECL6 payload
+`+1687／+16CE／+1713` 分別以 `4CC8／4CC9／4CCA` 控制三道螳螂人防線。
+`8Eh` 是十二人、`8Fh` 是六人；`90h` 先打十二人，再檢查前兩旗標，
+只在外圍守軍尚未清除時追加兩波各六人。
+
+raw ECL regression 同時鎖定乾淨狀態的 `12→6→6` 與預設
+`4CC8=4CC9=1` 時只剩首波。正常玩家路徑會穿過第二個共用 `4CC8` 的
+terrain `8Eh` 而不重播，再在營地取得 exact
+`TREASURE 0,0,0,2000,1500,4,6,81h`：9500 gold、4 gems、6 jewelry
+與一件 deterministic random item。六段文字已移入繁中 game pack。
+State／combat continuation 的通用 treasure service 也改為保留當次
+`result.Text`，避免原 ECL 的「收起值錢物品」被通用提示覆蓋。
+READY spec 394 保存 bytes、路徑、條件波次與未完成邊界。

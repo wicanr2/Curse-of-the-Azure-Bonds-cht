@@ -272,9 +272,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`adf685a`（第 392 輪 Burial Glen terrain
-  `93h／94h` 相位蜘蛛防線）；
-  第 393 輪 terrain `95h` 相位蜘蛛骨堆 milestone
+- CoAB 本輪基底：`ea71b9c`（第 393 輪 Burial Glen terrain
+  `95h` 相位蜘蛛骨堆）；
+  第 394 輪 terrain `8Eh／8Fh／90h` 螳螂人防線 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -346,6 +346,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `TREASURE` 是一顆 gem、`ItemBlock=FFh` 無裝備，並使 `4CBA-1`；
   REPLACE 使 `4CBA+1`，IGNORE 不改好感。raw ECL 與 Standing Stone
   起始的正常玩家路徑均有回歸；相位蜘蛛特殊能力與 DOS 動態演出仍未完成。
+- 第 394 輪已沿正常 GEO 路徑接通 terrain `8Eh／8Fh／90h`。前兩道
+  十二人／六人守軍分別寫 `4CC8／4CC9`；營地先打十二人並寫 `4CCA`，
+  再依這兩旗標決定是否追加兩波六人。raw session 的完整 `12→6→6`
+  與正常玩家路徑只剩首波均有回歸。原始財寶 exact 為 9500 gold、
+  4 gems、6 jewelry、`ItemBlock=81h` 一件 random item；treasure menu
+  現保留當次資料包翻譯文字。下一個主路徑缺口是 terrain `91h／92h`；
+  THRI-KREEN 特殊戰鬥能力與 DOS 動態演出仍未完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
