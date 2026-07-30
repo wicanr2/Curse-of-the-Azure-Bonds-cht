@@ -2549,3 +2549,17 @@ Journal PDF 印刷頁 23–24 核對的完整繁中手札 56，重訪直接離�
 State 現會對所有地城內 NEWECL 轉換投影原始 `C04B／C04C／C04D`，
 沒有加入本作座標 hardcode。READY spec 398 保存證據；下一步接續
 block `42h` 遺跡，最終神殿與結局仍未完成。
+
+2026-07-30 第三百九十九輪把 Standing Stone 起始正常玩家路徑延伸至
+ECL／GEO6 block `42h` terrain `01h`。初見寫 `4CD0=1`；`WAIT` 會解鎖
+由使用者 Adventurer's Journal 與公開逐字稿交叉核對的完整繁中手札 5。
+答應提爾雪雅後，第一戰是 HELL HOUND `44h`×5＋MARGOYLE `45h`×5。
+貝爾哈其後率眾現身；選擇與提爾雪雅並肩時，第二戰載入 RAKSHASA
+`43h`×1、地獄犬×6、石像鬼×6，寫 `4CD1=1`。
+
+該分支另關閉一項通用 ECL 戰鬥缺陷：`LOAD CHARACTER 8` 指的是固定保留
+八個玩家槽後的第一個怪物，不是 `8-len(activeParty)`。runtime／session
+現會把跨 pause 的 team write 投影到第一隻 RAKSHASA 的 `PartyMask`；
+State 把他建立成 QuickFight／TemporaryAlly，不再把怪物 MON*CHA 誤解析
+成永久玩家 record。raw ECL、單人 adapter 與正常玩家路徑均已通過。
+READY spec 399 保存證據；下一步接續倉庫及其餘 block `42h` terrain。

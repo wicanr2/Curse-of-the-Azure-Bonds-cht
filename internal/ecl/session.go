@@ -382,6 +382,7 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 			return aggregate, runErr
 		}
 		if result.NewECLBlockID == nil {
+			ApplyCombatTeamWrites(aggregate.MonsterSpawns, aggregate.CombatTeamWrites)
 			aggregate.WaitingForMenu = result.WaitingForMenu
 			aggregate.WaitingForWho = result.WaitingForWho
 			aggregate.WaitingForString = result.WaitingForString

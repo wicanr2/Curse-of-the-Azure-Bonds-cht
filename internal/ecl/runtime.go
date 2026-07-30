@@ -857,24 +857,9 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				// the reference VM. Scripts use LOAD CHARACTER followed by a
 				// write to +0x10C to move loaded NPC copies between combat
 				// teams. Preserve that side effect on the spawn descriptor.
-				if instruction.Operands[1].Word == 0x7D0C && workingPartyContext != nil {
-					monsterIndex := selectedTeamListIndex - len(workingPartyContext.Members)
-					for spawnIndex := range result.MonsterSpawns {
-						count := int(result.MonsterSpawns[spawnIndex].Count)
-						if count == 0 {
-							count = 1
-						}
-						if monsterIndex >= 0 && monsterIndex < count {
-							mask := uint64(1) << monsterIndex
-							if value == 0 || value == 0x80 {
-								result.MonsterSpawns[spawnIndex].PartyMask |= mask
-							} else if value == 0x81 {
-								result.MonsterSpawns[spawnIndex].PartyMask &^= mask
-							}
-							break
-						}
-						monsterIndex -= count
-					}
+				if instruction.Operands[1].Word == 0x7D0C {
+					ApplyCombatTeamWrites(result.MonsterSpawns,
+						[]CombatTeamWrite{{TeamListIndex: selectedTeamListIndex, Value: value}})
 				}
 			}
 		case 0x10: // INPUT STRING

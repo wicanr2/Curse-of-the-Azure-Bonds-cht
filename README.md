@@ -845,6 +845,13 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 蜘蛛／羅剎妖墓穴，未擅自改成一次性。完整證據與限制見
 [`spec 398`](docs/spec/398-burial-glen-journal56-and-more-ruins-exit.md)。
 
+外圍遺跡入口旁的 terrain `0x01` 也已接入同一條正常玩家路徑。玩家可聽
+提爾雪雅講述羅剎妖賭局與倉庫作弊案，解鎖完整繁中手札 5，先攻打五隻
+地獄犬與五隻石像鬼，再選擇與提爾雪雅並肩對抗貝爾哈的十二名隨從。
+原 ECL 以固定 combatant index `8` 把第一隻羅剎妖設為臨時盟友；remake
+現已修正成不受 active party 人數影響，也不會把怪物誤塞進永久 roster。
+詳見 [`spec 399`](docs/spec/399-outer-ruins-tirsheya-alliance.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

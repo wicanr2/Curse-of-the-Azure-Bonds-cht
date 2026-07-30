@@ -196,6 +196,15 @@ ECL encounter 的 `PartyMask` 不代表永久加入隊伍。公會戰的四名 Q
 是 temporary allies；戰鬥結束後必須從 active fighter projection 移除（包括屍體），
 否則下一場犬舍戰會污染隊伍人數與 `PARTYSTRENGTH`。
 
+CoAB ECL6 block `42h` 的提爾雪雅戰又證明 combatant array 固定保留
+index `0..7` 給八個玩家槽；怪物永遠從 index `8` 開始，不能減去當前
+active party 人數。腳本先載入 RAKSHASA、HELL HOUND、MARGOYLE，再以
+`LOAD CHARACTER 8 → SAVE 80h,[7D0Ch]` 把第一個怪物 copy 改成我方，
+接著 `ADD NPC 43h,100`。這個 RAKSHASA 是 `QuickFight／TemporaryAlly`，
+不能把 MON*CHA 怪物 record 強行解析成永久玩家角色。team write 若晚於
+`LOAD MONSTER`、中間又隔著 UI pause，session 聚合後仍須重套
+`PartyMask`。
+
 ## 五入口 lifecycle ABI 與 terrain dispatch
 
 CoAB block 3 再次證實五個 initialization command-set address 具有固定角色：

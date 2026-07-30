@@ -168,6 +168,14 @@
       ,"myth-drannor.path": "Path"
       ,"myth-drannor.woods": "Woods"
       ,"myth-drannor.turn-back": "Turn back"
+      ,"myth-drannor.outer.tirsheya.greeting": "A rakshasa with matted fur and a dour expression comes around the corner and makes a gesture of peace. What do you do?"
+      ,"myth-drannor.outer.tirsheya.tale": "The rakshasa says, “I am Tirsheya.” He tells his tale, which you record as Journal Entry 5. Will you go with him?"
+      ,"myth-drannor.outer.tirsheya.guards": "“Then come with me.” The entrance is guarded. Do you attack?"
+      ,"myth-drannor.outer.tirsheya.beyrha-arrives": "The battle draws another rakshasa and his retinue. He accuses Tirsheya of robbing the clan."
+      ,"myth-drannor.outer.tirsheya.ultimatum": "Beyrha says, “Humans, bring me Tirsheya's head and you will be forgiven; otherwise you will be tonight's main dish.” Whom do you attack?"
+      ,"myth-drannor.outer.tirsheya.attack-beyrha": "“You are fools, but we will thank you at dinner.”"
+      ,"myth-drannor.outer.tirsheya.name": "Tirsheya"
+      ,"myth-drannor.outer.beyrha.name": "Beyrha"
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -178,6 +186,7 @@
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
       ,"journal.33": "Journal Entry 33: “I am Caemir, and my ancestors lived and died here in Myth Drannor. Evil dreams have shown my grandfather's tomb turned into a nest for foul spider creatures. Help me lay his spirit to rest, and I will give you the bow he made.” He shows you an exquisitely crafted bow radiating powerful magic."
       ,"journal.56": "Journal Entry 56: The man refuses to give his name, saying that names are labels for things people do not understand. He knows of the bonds and the party's struggle because he helped create the first bonds long ago. The final bond, Tyranthraxus's, is the most dangerous: Tyranthraxus no longer shares control and can devote his full fury to preventing escape. The party must surprise and defeat him before he invokes the bonds. The man's clan is resting here for several mortal lifetimes, but Tyranthraxus stole their followers and threatened them. They hate him yet cannot attack his temple directly. When the party attacks, the clan will reclaim its followers, perhaps weakening Tyranthraxus enough for victory."
+      ,"journal.5": "Journal Entry 5: “We rakshasas are very fond of gambling. I suffered a streak of bad luck and lost most of my possessions. Recently I discovered that Birsheya had been cheating, but the clan lord will not act without proof. Birsheya guards the clan storehouse, and I know evidence is hidden there. Help me break in and you may choose whatever you want from the storehouse; I want only proof of Birsheya's cheating.”"
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -333,6 +342,14 @@
       ,"myth-drannor.path": "沿小徑"
       ,"myth-drannor.woods": "穿越樹林"
       ,"myth-drannor.turn-back": "回頭"
+      ,"myth-drannor.outer.tirsheya.greeting": "一名毛髮糾結、神色陰鬱的羅剎妖從轉角現身，向你們做出和平的手勢。你們要怎麼做？"
+      ,"myth-drannor.outer.tirsheya.tale": "羅剎妖說：「我是提爾雪雅。」接著，他講述自己的遭遇；你們將內容記入手札第 5 條。你們願意跟他走嗎？"
+      ,"myth-drannor.outer.tirsheya.guards": "「那就跟我來。」入口有守衛把守。你們要發動攻擊嗎？"
+      ,"myth-drannor.outer.tirsheya.beyrha-arrives": "戰鬥聲引來另一名羅剎妖與他的隨從；他指責提爾雪雅劫掠自己的氏族。"
+      ,"myth-drannor.outer.tirsheya.ultimatum": "貝爾哈說：「人類，把提爾雪雅的首級交給我，你們便能獲得寬恕；否則，今晚的主菜就是你們。」你們要攻擊誰？"
+      ,"myth-drannor.outer.tirsheya.attack-beyrha": "「真是一群蠢貨，不過晚餐時我們會好好感謝你們。」"
+      ,"myth-drannor.outer.tirsheya.name": "提爾雪雅"
+      ,"myth-drannor.outer.beyrha.name": "貝爾哈"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -343,6 +360,7 @@
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
       ,"journal.33": "手札條目 33：「我是凱米爾，我的祖先世世代代都在迷斯卓諾生活，最後也長眠於此。近來，邪惡夢境不斷侵擾我；夢中，祖父的墓穴被那些骯髒的蜘蛛怪物占據，成了牠們的巢穴。若你們願意幫助我，讓他的靈魂重歸安寧，我便把這把由他親手打造的弓送給你們。」他展示一把工藝極其精美、散發強大魔力的長弓。"
       ,"journal.56": "手札條目 56：那人說：「別問我的名字；名字不過是人們貼在自己無法理解之物上的標籤。我知道你們身上的枷印，也知道你們為了重獲自由所作的掙扎，因為在彷彿已十分久遠的往昔，我曾協助創造最初的枷印。你們最後一道枷印——烈焰之主提朗瑟克斯的枷印——是最危險的一道。不論你們是否明白，如今你們比以往任何時候都更接近永恆的奴役；提朗瑟克斯不必再與其他人分享對你們的控制權，他能以全部怒火阻止你們逃脫。你們唯一的希望，是攻其不備，在烈焰之主來得及喚起枷印力量前解決他。能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
+      ,"journal.5": "手札條目 5：「我們羅剎妖非常熱衷賭博。我先前手氣連番不順，幾乎輸光了所有財物。最近，我發現貝爾雪雅一直在賭局中作弊；然而沒有證據，氏族領主便不肯處置他。貝爾雪雅負責看守氏族倉庫，我知道裡面藏著能證明他作弊的證據。只要協助我闖進去，你們可從倉庫任取所需；我只要貝爾雪雅作弊的證據。」"
     }
   },
   "music_tracks": [
@@ -873,6 +891,16 @@
       "id": "myth-drannor.turn-back",
       "source": "TURN BACK",
       "message_id": "myth-drannor.turn-back"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.name",
+      "source": "TIRSHEYA",
+      "message_id": "myth-drannor.outer.tirsheya.name"
+    },
+    {
+      "id": "myth-drannor.outer.beyrha.name",
+      "source": "BEYRHA",
+      "message_id": "myth-drannor.outer.beyrha.name"
     }
   ],
   "text_rules": [
@@ -1173,6 +1201,37 @@
       "id": "myth-drannor.more-ruins",
       "all_contains": ["YOU ARE HEADING TOWARD MORE RUINS", "VIA A PATH OR THROUGH THE WOODS"],
       "message_id": "myth-drannor.more-ruins"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.greeting",
+      "all_contains": ["A RAKSHASA WITH MATTED FUR", "GESTURE OF PEACE", "WHAT DO YOU DO"],
+      "message_id": "myth-drannor.outer.tirsheya.greeting"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.tale",
+      "all_contains": ["I AM TIRSHEYA", "JOURNAL ENTRY", "5. WILL YOU GO WITH HIM"],
+      "message_id": "myth-drannor.outer.tirsheya.tale",
+      "journal_message_ids": ["journal.5"]
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.guards",
+      "all_contains": ["THEN COME WITH ME", "THE ENTRANCE IS GUARDED", "DO YOU ATTACK"],
+      "message_id": "myth-drannor.outer.tirsheya.guards"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.beyrha-arrives",
+      "all_contains": ["THE SOUNDS OF BATTLE HAVE BROUGHT ANOTHER RAKSHASA", "SO TIRSHEYA", "ROBBING THE CLAN"],
+      "message_id": "myth-drannor.outer.tirsheya.beyrha-arrives"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.ultimatum",
+      "all_contains": ["KNOW HUMANS", "BRING ME HIS HEAD", "PROMISE OF BEYRHA", "WHO DO YOU ATTACK"],
+      "message_id": "myth-drannor.outer.tirsheya.ultimatum"
+    },
+    {
+      "id": "myth-drannor.outer.tirsheya.attack-beyrha",
+      "all_contains": ["YOU ARE FOOLS", "THANK YOU AT DINNER"],
+      "message_id": "myth-drannor.outer.tirsheya.attack-beyrha"
     },
     {
       "id": "zhentil.patrol_pass",

@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`825de71`
+本 milestone 的 CoAB 基底：`fa21f5b`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -229,6 +229,13 @@ commit 內保存不可能自我引用的 hash。
   lifecycle 選 `PATH／WOODS／TURN BACK`；`PATH` 現依 ECL register
   正確進入 block `42h` `(0,12,E)`。完整 block `42h` 遺跡、神殿與結局
   仍未完成。
+- 第 399 輪已把正常玩家路徑延伸到 block `42h` `(1,12)` terrain `01h`。
+  提爾雪雅會解鎖完整繁中手札 5；玩家先迎戰五地獄犬＋五石像鬼，再可與
+  他共同迎戰六地獄犬＋六石像鬼。ECL 的 `LOAD CHARACTER 8` 證明
+  combatant array 固定保留八個玩家槽；第一隻 RAKSHASA 會成為
+  QuickFight 臨時盟友，戰後不污染 roster。raw ECL、單人隊伍 adapter
+  與 Standing Stone 起始玩家路徑均已回歸。倉庫、其餘外圍遺跡與神殿
+  尚未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

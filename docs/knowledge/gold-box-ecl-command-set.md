@@ -205,6 +205,14 @@ CoAB `ADD NPC (0x36)` 是 ID＋morale 兩 operands。真實 block 的第二 oper
 corpus gate除「無 unsupported opcode」外，也應鎖定 steps、PC、signal sequence 與後續文字／
 COMBAT，才能抓出這類 framing 錯誤。`DELAY (0x3A)` 是無 ECL-memory side effect 的 engine
 timing signal，runner應計數並繼續，renderer再決定實時呈現。
+
+`LOAD CHARACTER (0x0A)` 在 combat setup 中的 index 是固定
+combatant-array index，不是壓縮後的 active roster index。玩家區固定佔
+`0..7`，index `8` 是第一個 `LOAD MONSTER` copy。若之後寫 SelectedPlayer
+的 team byte `7D0Ch`，runtime 應把該寫入投影成 ordered spawn 的
+`PartyMask`。即使 `LOAD MONSTER` 與 team write 被 UI pause 分開，
+BlockSession 聚合後仍須重套一次；不能用 `len(party)` 計算，否則非八人
+隊伍會選錯怪物。
 # 場所限定 PROGRAM service
 
 CoAB ECL2 的 Hall of Training 證明 `PROGRAM 0` 不能只按 ID 全域解讀：terrain

@@ -3512,6 +3512,13 @@ func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
 	affects := s.monsterAffectsForCurrentECL()
 	items := s.monsterItemsForCurrentECL()
 	for _, request := range result.NPCRequests {
+		if resultUsesTemporaryMonsterAlly(result, uint8(request.ID)) {
+			// Some scripts ADD NPC only to assign morale after loading the
+			// same MON*CHA record into reserved combatant slot 8 and changing
+			// its team. StartEncounter owns that encounter-scoped monster
+			// fighter; it must not be parsed as a persistent player record.
+			continue
+		}
 		if len(s.partyRoster) > 7 {
 			continue
 		}
@@ -3560,6 +3567,17 @@ func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
 		s.whoSelectedIndex = len(s.partyRoster) - 1
 	}
 	return nil
+}
+
+func resultUsesTemporaryMonsterAlly(result ecl.RunResult, npcID uint8) bool {
+	spawns := append([]ecl.MonsterSpawn(nil), result.MonsterSpawns...)
+	ecl.ApplyCombatTeamWrites(spawns, result.CombatTeamWrites)
+	for _, spawn := range spawns {
+		if spawn.MonsterID == npcID && spawn.PartyMask != 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // ConsumeECLCallRequests transfers ordered redraw/external-call intents to the

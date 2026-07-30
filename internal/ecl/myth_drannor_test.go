@@ -1527,6 +1527,119 @@ func TestRealBurialGlenJournal56AndMoreRuinsExit(t *testing.T) {
 	})
 }
 
+func TestRealOuterRuinsTirsheyaAlliance(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	session, err := NewBlockSession(all, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 1)
+	session.SetMemoryValue(0xC04C, 12)
+	session.SetMemoryValue(0xC04D, 1)
+	session.SetMemoryValue(0xC04F, 0x01)
+
+	intro, err := session.RunEntry(1, 30000, nil)
+	if err != nil || !intro.WaitingForMenu ||
+		!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+			[]string{"WAIT", "ATTACK", "FLEE"}) ||
+		!strings.Contains(strings.Join(intro.Text, " "), "A RAKSHASA WITH MATTED FUR") ||
+		mustMemory(t, session, 0x4CD0) != 1 {
+		t.Fatalf("intro=%+v err=%v 4CD0=%d", intro, err, mustMemory(t, session, 0x4CD0))
+	}
+	wait := uint16(0)
+	tale, err := session.ResumeInteractiveSelectionSeed(
+		30000, &wait, nil, 1, PartyContext{},
+	)
+	if err != nil || !tale.WaitingForMenu ||
+		!reflect.DeepEqual(tale.Menus[len(tale.Menus)-1].Options,
+			[]string{"YES", "NO"}) ||
+		!strings.Contains(strings.Join(tale.Text, " "), "JOURNAL ENTRY 5") {
+		t.Fatalf("tale=%+v err=%v", tale, err)
+	}
+	yes := uint16(0)
+	guards, err := session.ResumeInteractiveSelectionSeed(
+		30000, &yes, nil, 1, PartyContext{},
+	)
+	if err != nil || !guards.WaitingForMenu ||
+		!strings.Contains(strings.Join(guards.Text, " "), "THE ENTRANCE IS GUARDED") {
+		t.Fatalf("guards=%+v err=%v", guards, err)
+	}
+	firstFight, err := session.ResumeInteractiveSelectionSeed(
+		30000, &yes, nil, 1, PartyContext{},
+	)
+	if err != nil || !firstFight.CombatRequested ||
+		!reflect.DeepEqual(firstFight.MonsterSpawns, []MonsterSpawn{
+			{MonsterID: 0x44, Count: 5, IconBlock: 0x44},
+			{MonsterID: 0x45, Count: 5, IconBlock: 0x45},
+		}) {
+		t.Fatalf("first fight=%+v err=%v", firstFight, err)
+	}
+
+	arrival, err := session.ResumeInteractiveSelectionSeed(
+		30000, nil, nil, 1, PartyContext{},
+	)
+	if err != nil || !arrival.WaitingForMenu ||
+		!strings.Contains(strings.Join(arrival.Text, " "), "ANOTHER RAKSHASA") {
+		t.Fatalf("arrival=%+v err=%v", arrival, err)
+	}
+	press := uint16(0)
+	ultimatum, err := session.ResumeInteractiveSelectionSeed(
+		30000, &press, nil, 1, PartyContext{},
+	)
+	if err != nil || !ultimatum.WaitingForMenu ||
+		!reflect.DeepEqual(ultimatum.Menus[len(ultimatum.Menus)-1].Options,
+			[]string{"TIRSHEYA", "BEYRHA", "FLEE"}) {
+		t.Fatalf("ultimatum=%+v err=%v", ultimatum, err)
+	}
+	attackBeyrha := uint16(1)
+	threat, err := session.ResumeInteractiveSelectionSeed(
+		30000, &attackBeyrha, nil, 1, PartyContext{},
+	)
+	if err != nil || !threat.WaitingForMenu ||
+		!strings.Contains(strings.Join(threat.Text, " "), "THANK YOU AT DINNER") {
+		t.Fatalf("threat=%+v err=%v", threat, err)
+	}
+	secondFight, err := session.ResumeInteractiveSelectionSeed(
+		30000, &press, nil, 1, PartyContext{},
+	)
+	if err != nil || !secondFight.CombatRequested ||
+		!reflect.DeepEqual(secondFight.MonsterSpawns, []MonsterSpawn{
+			{MonsterID: 0x43, Count: 1, IconBlock: 0x43, PartyMask: 1},
+			{MonsterID: 0x44, Count: 6, IconBlock: 0x44},
+			{MonsterID: 0x45, Count: 6, IconBlock: 0x45},
+		}) ||
+		!reflect.DeepEqual(secondFight.NPCRequests,
+			[]NPCRequest{{ID: 0x43, Morale: 100}}) ||
+		!reflect.DeepEqual(secondFight.CombatTeamWrites,
+			[]CombatTeamWrite{{TeamListIndex: 8, Value: 0x80}}) {
+		t.Fatalf("second fight=%+v err=%v", secondFight, err)
+	}
+	done, err := session.ResumeInteractiveSelectionSeed(
+		30000, nil, nil, 1, PartyContext{},
+	)
+	if err != nil || !done.Exited || len(done.DumpRequests) != 1 ||
+		mustMemory(t, session, 0x4CD1) != 1 {
+		t.Fatalf("done=%+v err=%v 4CD1=%d", done, err, mustMemory(t, session, 0x4CD1))
+	}
+	revisit, err := session.RunEntry(1, 30000, nil)
+	if err != nil || !revisit.Exited || revisit.WaitingForMenu ||
+		revisit.CombatRequested || len(revisit.Text) != 0 {
+		t.Fatalf("revisit=%+v err=%v", revisit, err)
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

@@ -15,6 +15,35 @@ type MonsterSpawn struct {
 	PartyMask uint64
 }
 
+// ReservedPlayerCombatSlots is the fixed DOS combatant-array prefix reserved
+// for the eight possible player characters. Monster list indices begin at 8
+// even when fewer party members are currently active.
+const ReservedPlayerCombatSlots = 8
+
+// ApplyCombatTeamWrites projects writes to the fixed combatant array onto
+// copies produced by ordered LOAD MONSTER descriptors.
+func ApplyCombatTeamWrites(spawns []MonsterSpawn, writes []CombatTeamWrite) {
+	for _, write := range writes {
+		monsterIndex := write.TeamListIndex - ReservedPlayerCombatSlots
+		for spawnIndex := range spawns {
+			count := int(spawns[spawnIndex].Count)
+			if count == 0 {
+				count = 1
+			}
+			if monsterIndex >= 0 && monsterIndex < count {
+				mask := uint64(1) << monsterIndex
+				if write.Value == 0 || write.Value == 0x80 {
+					spawns[spawnIndex].PartyMask |= mask
+				} else if write.Value == 0x81 {
+					spawns[spawnIndex].PartyMask &^= mask
+				}
+				break
+			}
+			monsterIndex -= count
+		}
+	}
+}
+
 type MonsterSetup struct {
 	SpriteID    uint8
 	MaxDistance uint8
