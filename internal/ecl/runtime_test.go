@@ -2,6 +2,7 @@ package ecl
 
 import (
 	"math/rand"
+	"reflect"
 	"testing"
 )
 
@@ -153,6 +154,11 @@ func TestRunSubsetGetTableReadsIndexedMemory(t *testing.T) {
 	}
 	if len(result.Text) != 1 || result.Text[0] != "7" {
 		t.Fatalf("text=%q, want [7]", result.Text)
+	}
+	if !reflect.DeepEqual(result.SaveWrites, []MemoryWrite{
+		{Address: 0x9001, Value: 7, PC: 0},
+	}) {
+		t.Fatalf("save writes=%+v", result.SaveWrites)
 	}
 }
 

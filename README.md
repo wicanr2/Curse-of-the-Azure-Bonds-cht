@@ -9,9 +9,9 @@
 
 ## 目前成果
 
-截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
+截至 2026-07-31 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `625c77b`；實際
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `f9fbcaf`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -865,6 +865,15 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 才會找到一枚 electrum、`+2` 護手、`+1` 腰帶與 `+5` 長劍；取得後無法
 重複領取。零碎 electrum 的 100 copper 餘值也不再被整數 GP pool 丟棄。
 詳見 [`spec 401`](docs/spec/401-outer-ruins-fugitive-cache.md)。
+
+同一路徑現已再向神殿方向推進：terrain `07h` 會以原始
+`HEAD6 43h／BODY6 46h` 顯示無名者的北方警告；terrain `08h` 則以小孩／
+半身人作為誘餌。救援會先殺死一隻地獄犬，隨即遭屋頂石像鬼以 `2d8`
+落石襲擊，再迎戰五隻地獄犬、五隻石像鬼與一隻羅剎妖。原 ECL 還會在
+同 block 把隊伍移到 `(11,10,S)`，remake 現已在 `CALL 2E10h` 重繪前同步
+座標，玩家可正常向南走到 terrain `09h` 的血跡灌木。拒絕救援、兩個
+一次性旗標、繁中敘事與完整玩家路徑見
+[`spec 402`](docs/spec/402-outer-ruins-nameless-brush-ambush.md)。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

@@ -282,10 +282,15 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 }
 
 func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int, selections, whoSelections []uint16, stringInputs []string, seed int64, partyContext *PartyContext) (RunResult, error) {
-	var aggregate RunResult
+	aggregate := RunResult{
+		SessionStartBlockID:  s.current,
+		SessionEndBlockID:    s.current,
+		SessionBlockRangeSet: true,
+	}
 	var err error
 	selectionOffset := s.selectionOffset
 	for transitions := 0; transitions < 8; transitions++ {
+		aggregate.SessionEndBlockID = s.current
 		remaining := selections
 		if selectionOffset < len(selections) {
 			remaining = selections[selectionOffset:]
@@ -333,6 +338,14 @@ func (s *BlockSession) runFromSeedWithPartyContextAndInputs(start, maxSteps int,
 		aggregate.ProgramIDs = append(aggregate.ProgramIDs, result.ProgramIDs...)
 		aggregate.ProgramExit = aggregate.ProgramExit || result.ProgramExit
 		aggregate.CallAddresses = append(aggregate.CallAddresses, result.CallAddresses...)
+		for _, request := range result.CallRequests {
+			request.BlockID = s.current
+			aggregate.CallRequests = append(aggregate.CallRequests, request)
+		}
+		for _, write := range result.SaveWrites {
+			write.BlockID = s.current
+			aggregate.SaveWrites = append(aggregate.SaveWrites, write)
+		}
 		aggregate.DamageRequests = append(aggregate.DamageRequests, result.DamageRequests...)
 		aggregate.PrintReturnCount += result.PrintReturnCount
 		aggregate.ApproachCount += result.ApproachCount

@@ -2603,3 +2603,20 @@ raw ECL 已覆蓋救援、拒絕後追擊／離開、屍骸重訪與藏寶邊界
 Stone 起始長玩家路徑從第 400 輪倉庫逐格走到 `(3,7)` 救援，再經合法
 wrap 路線到 `(14,3)` 搜索並驗證三件真實裝備、幣值餘數與重搜。READY
 spec 401 保存完整證據；下一步接續 terrain `07h／08h／09h`。
+
+2026-07-31 第四百零二輪完成 block `42h` terrain `07h／08h／09h`。
+terrain `07h` 以原始 `4C06=1` 控制無名者的一次性北方神殿警告，人物圖
+是 HEAD `43h`／BODY `46h`。terrain `08h` 首次即寫 `4CD6=1`；拒絕救援
+會讓地獄犬叼走受害者，救援則先殺死追犬，再遭 exact
+`DAMAGE flags=0Ch,2d8,saveFlags=34h` 落石，最後迎戰五地獄犬、五石像鬼
+與一羅剎妖。terrain `09h` 只有可重複的灌木、瓦礫與血跡敘事。
+
+同輪修正 `CALL 2E10h` 的作品中立 State transaction：ECL 在同 block
+先寫 `C04B／C04C／C04D=(11,10,2)` 再要求 redraw；VM 保存有 block／PC
+的 SAVE 與 CALL trace，State 只在整次 session 未跨 block 且三者均於
+CALL 前新寫入時投影為 `(11,10,S)`，不再只發 renderer dirty signal，也
+不會覆蓋跨 `NEWECL` 的目的地出生點。Standing Stone 起始長玩家
+路徑從上一輪 `(14,3)` 經合法 GEO 看完無名者、救援、落石與十一人戰，
+再從真正傳送目的地向南一步到血跡灌木。七段繁中均來自 game-pack stable
+IDs；raw ECL、CALL regression 與正常玩家路徑已通過。READY spec 402
+保存完整證據；下一步接續 terrain `0Bh／0Ch／8Ah／8Dh`。

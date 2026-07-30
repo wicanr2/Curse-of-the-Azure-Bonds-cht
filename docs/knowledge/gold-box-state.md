@@ -709,3 +709,24 @@ biased neutral `80h`。高好感時，友善幽魂會警告危險並提供 YES�
 完成旗標可能表示「巢穴已被驚動／事件已消耗」，不一定等於玩家獲勝。
 combat continuation 與 save 系統必須保存 writer 的原始時序；不得把所有
 一次性 encounter 統一延後到 `StatusPartyWon`。
+
+### 2026-07-31：重繪 CALL 也是座標 register 的提交點
+
+外圍遺跡灌木伏擊先在同一 ECL block 寫入
+`C04B／C04C／C04D=(11,10,2)`，緊接著呼叫 CoAB `2E10h` 重算牆面與重繪。
+若 adapter 只發 renderer dirty signal、不把 register 投影到 State，畫面可能
+短暫看似更新，但下一次移動、AREA map、存檔與事件判定仍會從舊座標開始。
+
+可沿用的 transaction 是：
+
+1. VM 保存 numeric `SAVE`／`SAVE TABLE` 與 CALL 的 block、PC 及值。
+2. 只有同次 session 未跨 block，且三個座標／方向 registers 都在 redraw
+   CALL 前新寫入，作品 adapter 才把它們投影至 renderer-neutral map state。
+3. 再發一次性重繪 request；renderer 不自行猜傳送目的地。
+4. 正常玩家路徑必須從新座標走下一步，不能由測試再次指定舊座標來掩蓋缺口。
+
+這與跨 `NEWECL` spawn 同步不同：同 block 不會改 script identity，不能只在
+block ID 改變時才檢查座標。另一方面，也不能把「任何 CALL 都同步位置」寫成
+通則；只有已由 executable／runtime 證明會消費地圖 register 的 routine，
+加上同區塊的新鮮有序 writer 證據，才可成為提交點。跨 `NEWECL` 流程必須
+交給目的地出生點 transaction，不能讓來源 block 的 trace 覆蓋它。

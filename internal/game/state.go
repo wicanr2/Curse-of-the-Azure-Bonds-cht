@@ -3499,9 +3499,25 @@ func (s *State) enterProgramTitle(message string) {
 // The renderer still consumes the ordered calls so redraw can use its loaded
 // GEO/piece assets.
 func (s *State) applyECLCallSignals(result ecl.RunResult) {
-	for _, address := range result.CallAddresses {
+	for index, address := range result.CallAddresses {
 		s.pendingECLCalls = append(s.pendingECLCalls, address)
 		switch address {
+		case 0x2E10:
+			// The reference redraw routine consumes the current dungeon
+			// registers. Some same-block ECL events assign a new position
+			// immediately before this CALL, so project those registers before
+			// the renderer rebuilds the view.
+			if s.session != nil && s.Area.InDungeon &&
+				index < len(result.CallRequests) &&
+				result.SessionBlockRangeSet &&
+				result.SessionStartBlockID == result.CallRequests[index].BlockID &&
+				result.SessionEndBlockID == result.CallRequests[index].BlockID &&
+				result.CallRequests[index].BlockID == s.session.CurrentBlockID() &&
+				resultSavesAllDungeonCoordinatesBeforeCall(
+					result, result.CallRequests[index],
+				) {
+				s.syncDungeonStateFromECLRegisters()
+			}
 		case 0xC01E:
 			switch s.DungeonDirection {
 			case 0:
@@ -3520,6 +3536,27 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 			s.requestSound(SoundStep)
 		}
 	}
+}
+
+func resultSavesAllDungeonCoordinatesBeforeCall(
+	result ecl.RunResult,
+	call ecl.CallRequest,
+) bool {
+	var mask uint8
+	for _, write := range result.SaveWrites {
+		if write.BlockID != call.BlockID || write.PC >= call.PC {
+			continue
+		}
+		switch write.Address {
+		case 0xC04B:
+			mask |= 1
+		case 0xC04C:
+			mask |= 2
+		case 0xC04D:
+			mask |= 4
+		}
+	}
+	return mask == 7
 }
 
 // applyECLNPCSignals mirrors load_npc: resolve the current chapter's shared

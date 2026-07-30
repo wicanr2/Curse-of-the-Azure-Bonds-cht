@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e29964f`（第 400 輪外圍遺跡倉庫）；
-  第 401 輪外圍遺跡逃亡男子與藏寶 milestone
+- CoAB 本輪基底：`d29a038`（第 401 輪外圍遺跡逃亡男子與藏寶）；
+  第 402 輪外圍遺跡無名者與灌木伏擊 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -398,7 +398,17 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   一次性控制。有線索且主動 `SEARCH` 才取得一枚 electrum 與 ITEM6
   `43h` 三件裝備，之後清除 `4CD5`。財寶 GP 投影新增 0–199 copper
   餘數，空白 ECL text 不再覆蓋跨 pause 的繁中藏寶敘事。READY spec 401
-  是權威；下一步接續 terrain `07h／08h／09h`。
+  是權威。
+- 第 402 輪已接通 terrain `07h／08h／09h`。無名者事件由原始
+  `4C06=1` 一次性控制，顯示 HEAD `43h`／BODY `46h`；灌木誘餌由
+  `4CD6=1` 控制，拒絕會讓地獄犬帶走受害者，救援則先套用
+  `DAMAGE 0Ch,2d8,34h`，再建立 HELL HOUND `44h`×5、MARGOYLE
+  `45h`×5、RAKSHASA `43h`×1。ECL 在 `CALL 2E10h` 前寫入
+  `(11,10,S)`；VM 保留 block／PC 有序 SAVE 與 CALL trace，State 只在
+  session 未跨 block 且三個 registers 都於 CALL 前新寫入時同步，玩家可
+  從新座標向南進 terrain `09h`，且不覆蓋跨 `NEWECL` 出生點。READY
+  spec 402 是權威；下一步
+  接續 terrain `0Bh／0Ch／8Ah／8Dh`。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、
