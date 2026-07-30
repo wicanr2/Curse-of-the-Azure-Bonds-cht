@@ -192,6 +192,23 @@
       ,"myth-drannor.outer.brush-attack": "The monsters then leap down to attack."
       ,"myth-drannor.outer.brush-victim": "After a moment, the hell hound emerges from the brush with something bloody in its mouth and trots off."
       ,"myth-drannor.outer.brush-bloodstains": "The brush is dense and filled with rubble. A few bloodstains mark the leaves."
+      ,"myth-drannor.outer.margoyle-trap": "Two margoyles are torturing a small animal in a doorway just ahead. They are unaware of you. Do you attack?"
+      ,"myth-drannor.outer.margoyle-collapse": "You swiftly kill them. Laughter sounds behind you, and the doorway collapses onto the party."
+      ,"myth-drannor.outer.margoyle-rakshasa": "A rakshasa approaches while you are buried. Do you play dead?"
+      ,"myth-drannor.outer.margoyle-surprise": "You surprise him as he reaches for you."
+      ,"myth-drannor.outer.margoyle-retreat": "Seeing that the collapse failed to finish you, he turns and disappears."
+      ,"myth-drannor.outer.sewer-margoyle": "A lone margoyle skitters away, uncovering a sewer grate. It seems to be trying to flee. Do you let it?"
+      ,"myth-drannor.outer.sewer-escape": "It runs down through the sewer and disappears."
+      ,"myth-drannor.outer.sewer-kill": "You slaughter it where it stands."
+      ,"myth-drannor.outer.sewer-grate": "There is a sewer grate here. Do you want to enter?"
+      ,"myth-drannor.outer.sewer-warning": "A dreamlike voice in your head warns, “Great danger lies before you. Be fully prepared!” Do you still continue?"
+      ,"myth-drannor.kitchen-arrival": "The sewer ends in a darkened kitchen. A rumble and cloud of dust force you from the tunnel."
+      ,"myth-drannor.outer.gambling-room": "In this opulent room, male rakshasas gamble with dice while females lounge on pillows and margoyles watch intently."
+      ,"myth-drannor.outer.gambling-rise": "They finally notice you and slowly rise. Do you flee?"
+      ,"myth-drannor.outer.gambling-treasure": "You gather the valuables."
+      ,"myth-drannor.outer.rakshasa-residence": "A rakshasa resides here in splendor."
+      ,"myth-drannor.outer.rakshasa-threat": "The rakshasa stands as several more appear. “To disturb one of my rank invites death. Prepare for yours.”"
+      ,"myth-drannor.outer.rakshasa-parlay": "The rakshasa smiles. “Your boldness is refreshing.” He tells his story, which you record as Journal Entry 57."
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -202,6 +219,7 @@
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
       ,"journal.33": "Journal Entry 33: “I am Caemir, and my ancestors lived and died here in Myth Drannor. Evil dreams have shown my grandfather's tomb turned into a nest for foul spider creatures. Help me lay his spirit to rest, and I will give you the bow he made.” He shows you an exquisitely crafted bow radiating powerful magic."
       ,"journal.56": "Journal Entry 56: The man refuses to give his name, saying that names are labels for things people do not understand. He knows of the bonds and the party's struggle because he helped create the first bonds long ago. The final bond, Tyranthraxus's, is the most dangerous: Tyranthraxus no longer shares control and can devote his full fury to preventing escape. The party must surprise and defeat him before he invokes the bonds. The man's clan is resting here for several mortal lifetimes, but Tyranthraxus stole their followers and threatened them. They hate him yet cannot attack his temple directly. When the party attacks, the clan will reclaim its followers, perhaps weakening Tyranthraxus enough for victory."
+      ,"journal.57": "Journal Entry 57: “It is good to speak with those with confidence enough to deal. My clan has taken this spot as a place to rest for a few mortal lifetimes. But Tyranthraxus, the Flamed One, has stolen our followers and threatened my clan. His power is such that we cannot attack his temple directly, though we hate him with great passion. Now to our deal. You wear the Flamed One's mark, but I have been told you are his enemy. When you attack his temple we will bend our power to reclaim our followers. That may weaken him enough for you to be victorious.”"
       ,"journal.5": "Journal Entry 5: “We rakshasas are very fond of gambling. I suffered a streak of bad luck and lost most of my possessions. Recently I discovered that Birsheya had been cheating, but the clan lord will not act without proof. Birsheya guards the clan storehouse, and I know evidence is hidden there. Help me break in and you may choose whatever you want from the storehouse; I want only proof of Birsheya's cheating.”"
     },
     "zh-TW": {
@@ -382,6 +400,23 @@
       ,"myth-drannor.outer.brush-attack": "隨後，怪物紛紛躍下發動攻擊。"
       ,"myth-drannor.outer.brush-victim": "片刻後，地獄犬嘴裡叼著一團血肉，從灌木中鑽出，隨即小跑離去。"
       ,"myth-drannor.outer.brush-bloodstains": "灌木叢生，裡面堆滿瓦礫；幾片葉子上留有血跡。"
+      ,"myth-drannor.outer.margoyle-trap": "前方門口有兩隻石像鬼正在折磨一頭小動物，尚未發現你們。要發動攻擊嗎？"
+      ,"myth-drannor.outer.margoyle-collapse": "你們迅速殺死了牠們。背後忽然傳來笑聲，隨即整座門廊崩塌，砸在隊伍身上。"
+      ,"myth-drannor.outer.margoyle-rakshasa": "你們仍被埋在瓦礫下時，一名羅剎妖走了過來。要裝死嗎？"
+      ,"myth-drannor.outer.margoyle-surprise": "羅剎妖伸手抓來時，你們出其不意地發動攻擊。"
+      ,"myth-drannor.outer.margoyle-retreat": "眼看崩塌未能置你們於死地，羅剎妖轉身便消失無蹤。"
+      ,"myth-drannor.outer.sewer-margoyle": "一隻落單的石像鬼慌忙逃開，露出一座下水道柵口。牠似乎正想逃走。要放牠離開嗎？"
+      ,"myth-drannor.outer.sewer-escape": "牠鑽進下水道，轉眼便消失了。"
+      ,"myth-drannor.outer.sewer-kill": "你們當場將牠斬殺。"
+      ,"myth-drannor.outer.sewer-grate": "這裡有一座下水道柵口。你們要進去嗎？"
+      ,"myth-drannor.outer.sewer-warning": "腦海裡響起一個如夢似幻的聲音：「前方危機四伏，務必做好萬全準備！」你們仍要繼續嗎？"
+      ,"myth-drannor.kitchen-arrival": "下水道盡頭通往一間昏暗廚房；一陣轟鳴與揚起的塵霧迫使你們鑽出地道。"
+      ,"myth-drannor.outer.gambling-room": "這間房布置得極為奢華；幾名男性羅剎妖正在擲骰賭博，女性羅剎妖斜倚在軟墊上，石像鬼則聚精會神地觀看賭局。"
+      ,"myth-drannor.outer.gambling-rise": "牠們這才發現你們，緩緩站起身來。你們要逃走嗎？"
+      ,"myth-drannor.outer.gambling-treasure": "你們收起了房內的值錢物品。"
+      ,"myth-drannor.outer.rakshasa-residence": "一名羅剎妖在此過著奢華生活。"
+      ,"myth-drannor.outer.rakshasa-threat": "那名羅剎妖站起身，另有數名同族隨之現身。「膽敢打擾我這等地位者，便是在自尋死路。準備受死吧。」"
+      ,"myth-drannor.outer.rakshasa-parlay": "羅剎妖露出微笑。「你們的膽識令人耳目一新。」接著，他講述自己的故事；你們將內容記入手札第 57 條。"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -392,6 +427,7 @@
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
       ,"journal.33": "手札條目 33：「我是凱米爾，我的祖先世世代代都在迷斯卓諾生活，最後也長眠於此。近來，邪惡夢境不斷侵擾我；夢中，祖父的墓穴被那些骯髒的蜘蛛怪物占據，成了牠們的巢穴。若你們願意幫助我，讓他的靈魂重歸安寧，我便把這把由他親手打造的弓送給你們。」他展示一把工藝極其精美、散發強大魔力的長弓。"
       ,"journal.56": "手札條目 56：那人說：「別問我的名字；名字不過是人們貼在自己無法理解之物上的標籤。我知道你們身上的枷印，也知道你們為了重獲自由所作的掙扎，因為在彷彿已十分久遠的往昔，我曾協助創造最初的枷印。你們最後一道枷印——烈焰之主提朗瑟克斯的枷印——是最危險的一道。不論你們是否明白，如今你們比以往任何時候都更接近永恆的奴役；提朗瑟克斯不必再與其他人分享對你們的控制權，他能以全部怒火阻止你們逃脫。你們唯一的希望，是攻其不備，在烈焰之主來得及喚起枷印力量前解決他。能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
+      ,"journal.57": "手札條目 57：「能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
       ,"journal.5": "手札條目 5：「我們羅剎妖非常熱衷賭博。我先前手氣連番不順，幾乎輸光了所有財物。最近，我發現貝爾雪雅一直在賭局中作弊；然而沒有證據，氏族領主便不肯處置他。貝爾雪雅負責看守氏族倉庫，我知道裡面藏著能證明他作弊的證據。只要協助我闖進去，你們可從倉庫任取所需；我只要貝爾雪雅作弊的證據。」"
     }
   },
@@ -785,6 +821,20 @@
       "area_id": 6,
       "script_block": 66,
       "geometry_block": 66,
+      "geometry_file": "GEO6.DAX",
+      "wall_file": "WALLDEF6.DAX",
+      "symbol_file": "8X8D6.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "wrap": true,
+      "scale": 2
+    },
+    {
+      "id": "myth-drannor.inner-ruins",
+      "kind": "first_person",
+      "area_id": 6,
+      "script_block": 67,
+      "geometry_block": 67,
       "geometry_file": "GEO6.DAX",
       "wall_file": "WALLDEF6.DAX",
       "symbol_file": "8X8D6.DAX",
@@ -1344,6 +1394,92 @@
       "id": "myth-drannor.outer.brush-bloodstains",
       "all_contains": ["THE BRUSH IS DENSE AND FILLED WITH RUBBLE", "BLOODSTAINS MARK THE LEAVES"],
       "message_id": "myth-drannor.outer.brush-bloodstains"
+    },
+    {
+      "id": "myth-drannor.outer.margoyle-trap",
+      "all_contains": ["TWO MARGOYLES ARE TORTURING A SMALL ANIMAL", "THEY ARE UNAWARE OF YOU", "DO YOU WANT TO ATTACK"],
+      "message_id": "myth-drannor.outer.margoyle-trap"
+    },
+    {
+      "id": "myth-drannor.outer.margoyle-collapse",
+      "all_contains": ["YOU SWIFTLY KILL THEM", "THE DOORWAY COLLAPSES ONTO YOU"],
+      "message_id": "myth-drannor.outer.margoyle-collapse"
+    },
+    {
+      "id": "myth-drannor.outer.margoyle-rakshasa",
+      "all_contains": ["A RAKSHASA COMES UP WHILE YOU ARE BURIED", "DO YOU PLAY DEAD"],
+      "message_id": "myth-drannor.outer.margoyle-rakshasa"
+    },
+    {
+      "id": "myth-drannor.outer.margoyle-surprise",
+      "all_contains": ["YOU SURPRISE HIM AS HE REACHES FOR YOU"],
+      "message_id": "myth-drannor.outer.margoyle-surprise"
+    },
+    {
+      "id": "myth-drannor.outer.margoyle-retreat",
+      "all_contains": ["THE COLLAPSE FAILED TO FINISH YOU OFF", "TURNS ON HIS HEEL AND DISAPPEARS"],
+      "message_id": "myth-drannor.outer.margoyle-retreat"
+    },
+    {
+      "id": "myth-drannor.outer.sewer-margoyle",
+      "all_contains": ["A LONE MARGOYLE SKITTERS AWAY", "UNCOVERING A SEWER GRATE", "DO YOU LET IT"],
+      "message_id": "myth-drannor.outer.sewer-margoyle"
+    },
+    {
+      "id": "myth-drannor.outer.sewer-escape",
+      "all_contains": ["IT RUNS DOWN THROUGH THE SEWER AND DISAPPEARS"],
+      "message_id": "myth-drannor.outer.sewer-escape"
+    },
+    {
+      "id": "myth-drannor.outer.sewer-kill",
+      "all_contains": ["YOU SLAUGHTER IT WHERE IT STANDS"],
+      "message_id": "myth-drannor.outer.sewer-kill"
+    },
+    {
+      "id": "myth-drannor.outer.sewer-grate",
+      "all_contains": ["THERE IS A SEWER GRATE HERE", "DO YOU WANT TO ENTER"],
+      "message_id": "myth-drannor.outer.sewer-grate"
+    },
+    {
+      "id": "myth-drannor.outer.sewer-warning",
+      "all_contains": ["A DREAM-LIKE VOICE IN YOUR HEAD", "GREAT DANGER LIES BEFORE YOU", "DO YOU STILL CONTINUE"],
+      "message_id": "myth-drannor.outer.sewer-warning"
+    },
+    {
+      "id": "myth-drannor.kitchen-arrival",
+      "all_contains": ["THE SEWER ENDS IN A DARKENED KITCHEN", "A RUMBLE AND A CLOUD OF DUST"],
+      "message_id": "myth-drannor.kitchen-arrival"
+    },
+    {
+      "id": "myth-drannor.outer.gambling-room",
+      "all_contains": ["AS YOU STEP INTO THIS OPULENT ROOM", "RAKSHASAS GAMBLING WITH DICE", "MARGOYLES ARE WATCHING"],
+      "message_id": "myth-drannor.outer.gambling-room"
+    },
+    {
+      "id": "myth-drannor.outer.gambling-rise",
+      "all_contains": ["THEY NOTICE YOU ONLY NOW", "SLOWLY RISE TO THEIR FEET", "DO YOU FLEE"],
+      "message_id": "myth-drannor.outer.gambling-rise"
+    },
+    {
+      "id": "myth-drannor.outer.gambling-treasure",
+      "all_contains": ["YOU GATHER THE VALUABLES"],
+      "message_id": "myth-drannor.outer.gambling-treasure"
+    },
+    {
+      "id": "myth-drannor.outer.rakshasa-residence",
+      "all_contains": ["A RAKSHASA RESIDES HERE IN SPLENDOR"],
+      "message_id": "myth-drannor.outer.rakshasa-residence"
+    },
+    {
+      "id": "myth-drannor.outer.rakshasa-threat",
+      "all_contains": ["THE RAKSHASA STANDS", "TO HAVE DISTURBED ONE OF MY RANK INVITES DEATH"],
+      "message_id": "myth-drannor.outer.rakshasa-threat"
+    },
+    {
+      "id": "myth-drannor.outer.rakshasa-parlay",
+      "all_contains": ["YOU HAVE A BOLDNESS THAT IS REFRESHING", "JOURNAL ENTRY 57"],
+      "message_id": "myth-drannor.outer.rakshasa-parlay",
+      "journal_message_ids": ["journal.57"]
     },
     {
       "id": "zhentil.patrol_pass",

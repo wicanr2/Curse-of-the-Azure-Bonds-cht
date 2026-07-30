@@ -156,3 +156,80 @@ func TestApplyECLCallSignalsRedrawIgnoresPriorBlockTransaction(t *testing.T) {
 			state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
 }
+
+func TestApplyECLCallSignalsRedrawProjectsOnlyFreshRegisters(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{
+		0x42: {0, 0},
+	}, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 10)
+	session.SetMemoryValue(0xC04C, 2)
+	session.SetMemoryValue(0xC04D, 0)
+	state := State{
+		session:          session,
+		DungeonX:         9,
+		DungeonY:         2,
+		DungeonDirection: 6,
+	}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x2E10},
+		SessionStartBlockID:  0x42,
+		SessionEndBlockID:    0x42,
+		SessionBlockRangeSet: true,
+		CallRequests: []ecl.CallRequest{
+			{Address: 0x2E10, PC: 0x13DB, BlockID: 0x42},
+		},
+		SaveWrites: []ecl.MemoryWrite{
+			{Address: 0xC04B, Value: 10, PC: 0x13CF, BlockID: 0x42},
+			{Address: 0xC04D, Value: 0, PC: 0x13D5, BlockID: 0x42},
+		},
+	})
+
+	if state.DungeonX != 10 || state.DungeonY != 2 ||
+		state.DungeonDirection != 0 || state.MapX != 10 || state.MapY != 2 {
+		t.Fatalf("partial redraw position=(%d,%d,%d) map=(%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.MapX, state.MapY)
+	}
+}
+
+func TestApplyECLCallSignalsRedrawRequiresFreshDirectionCommit(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{
+		0x01: {0, 0},
+	}, 0x01)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 0)
+	session.SetMemoryValue(0xC04C, 0)
+	state := State{
+		session:          session,
+		DungeonX:         6,
+		DungeonY:         5,
+		DungeonDirection: 2,
+	}
+	state.Area.InDungeon = true
+
+	state.applyECLCallSignals(ecl.RunResult{
+		CallAddresses:        []uint16{0x2E10},
+		SessionStartBlockID:  0x01,
+		SessionEndBlockID:    0x01,
+		SessionBlockRangeSet: true,
+		CallRequests: []ecl.CallRequest{
+			{Address: 0x2E10, PC: 0x1452, BlockID: 0x01},
+		},
+		SaveWrites: []ecl.MemoryWrite{
+			{Address: 0xC04B, Value: 0, PC: 0x1444, BlockID: 0x01},
+			{Address: 0xC04C, Value: 0, PC: 0x144B, BlockID: 0x01},
+		},
+	})
+
+	if state.DungeonX != 6 || state.DungeonY != 5 || state.DungeonDirection != 2 {
+		t.Fatalf("scratch coordinates changed position=(%d,%d,%d)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+}

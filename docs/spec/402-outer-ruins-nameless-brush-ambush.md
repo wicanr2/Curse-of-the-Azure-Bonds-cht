@@ -72,9 +72,11 @@ terrain `07h／08h／09h` 分別前往 payload
 同 block 傳送揭露既有 adapter 缺口：`CALL 2E10h` 不只要求 renderer
 重繪，也會使用 ECL 剛寫入的地城 register。bounded VM 現保留每筆 numeric
 `SAVE`／`SAVE TABLE` 的 block、PC、address 與 value，以及每筆 CALL 的
-block／PC。只有整次 session 未跨 block，且 `C04B／C04C／C04D` 都在該
-CALL 前新寫入，`State.applyECLCallSignals` 才先投影
-`DungeonX／DungeonY／DungeonDirection`，再保留 one-shot redraw request。
+block／PC。第 403 輪以部分座標傳送及 Filani scratch-coordinate 反例進一步
+收斂條件：只有整次 session 未跨 block，且 CALL 前新寫 `C04D` 作為
+facing commit，`State.applyECLCallSignals` 才投影同批實際新寫的
+`DungeonX／DungeonY／DungeonDirection` 欄位，再保留 one-shot redraw
+request。
 這是作品中立的 CALL transaction，不含 terrain 或 CoAB 座標 hardcode；
 跨 `NEWECL` 的公會與眼魔洞穴玩家路徑另有回歸，防止舊 work registers
 覆蓋目的地出生點。
