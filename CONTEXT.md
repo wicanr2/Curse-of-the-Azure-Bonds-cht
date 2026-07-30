@@ -2447,3 +2447,16 @@ anchor／clip；CoAB renderer 將 HEAD／BODY 與場景 cover 分流，加入 EG
 量化的黃色裂紋人物內框，並以 `-inn`、`-temple` 正常玩家路徑更新兩張
 640×480 畫面。詳細證據見 READY spec 391；提交 hash 於本 milestone push
 後補記。
+
+第三百九十二輪從黛米爾 `(13,14)` 沿原始 GEO6 wrapped movement 正常步行
+到 `(12,10)` terrain `93h` 與 `(14,8)` terrain `94h`。ECL6 SearchLocation
+先做 `C04F & 7Fh`，selector `13h／14h` 分別跳到 payload
+`+195Eh／+19B1h`；兩段使用真實 MON6CHA `41h` PHASE SPIDER，數量為
+十隻／八隻，勝利後寫 `4CCD／4CCE=1`。
+
+繁中敘事已移入 game-pack stable IDs；raw ECL session 與從 Standing Stone
+開始的完整 State 玩家路徑均驗證 pause、combat、victory continuation 與
+重訪不重播。沒有新增 Go 劇情分支。terrain `95h` 的六蜘蛛、骨堆
+LOOT／REPLACE 選單、戰利品與好感副作用仍是下一個邊界；PHASE SPIDER
+毒素／相位能力及原版動態演出也尚未完成。READY spec 392 保存 hashes、
+bytes、路徑與完成範圍。

@@ -799,6 +799,13 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 
 ![Burial Glen 黛米爾公主幽魂的原版人物圖、石框與 16×15 倚天繁中](docs/screenshots/burial-glen-princess-daemir.png)
 
+黛米爾之後的正常 GEO 路徑也已繼續接通：往北五步抵達 terrain `0x93`
+時，十隻相位蜘蛛會從實心牆中湧出；勝利後再走四步，terrain `0x94`
+會出現八隻發著幽光的相位蜘蛛。兩場均使用真實 `MON6CHA 0x41`、
+原始 pause→combat→victory continuation，並分別以 `4CCD／4CCE`
+防止重播。繁中敘事由 game-pack stable ID 驅動，完整證據見
+[`spec 392`](docs/spec/392-burial-glen-phase-spider-walls.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

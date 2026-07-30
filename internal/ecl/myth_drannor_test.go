@@ -476,6 +476,109 @@ func TestRealBurialGlenRedWebChoicesAndCombatContinuation(t *testing.T) {
 	})
 }
 
+func TestRealBurialGlenPhaseSpidersFromSolidWalls(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	session, err := NewBlockSession(all, 0x40)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0xC04B, 12)
+	session.SetMemoryValue(0xC04C, 10)
+	session.SetMemoryValue(0xC04D, 0)
+	session.SetMemoryValue(0xC04F, 0x93)
+	session.SetMemoryValue(0x4CCD, 0)
+
+	prompt, err := session.RunEntry(1, 2000, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !prompt.WaitingForMenu ||
+		!strings.Contains(strings.Join(prompt.Text, " "), "SPIDERS COME OUT OF THE SOLID WALLS") ||
+		mustMemory(t, session, 0x4CCD) != 0 {
+		t.Fatalf("prompt=%+v", prompt)
+	}
+	press := uint16(0)
+	fight, err := session.ResumeInteractiveSelectionSeed(2000, &press, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !fight.CombatRequested ||
+		!reflect.DeepEqual(fight.MonsterSpawns,
+			[]MonsterSpawn{{MonsterID: 0x41, Count: 10, IconBlock: 0x41}}) ||
+		mustMemory(t, session, 0x7F82) != 8 ||
+		mustMemory(t, session, 0x4C01) != 10 {
+		t.Fatalf("fight=%+v", fight)
+	}
+	done, err := session.ResumeInteractiveSelectionSeed(2000, nil, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !done.Exited || mustMemory(t, session, 0x4CCD) != 1 {
+		t.Fatalf("done=%+v", done)
+	}
+
+	revisit, err := session.RunEntry(1, 2000, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !revisit.Exited || revisit.CombatRequested || revisit.WaitingForMenu {
+		t.Fatalf("revisit=%+v", revisit)
+	}
+
+	glowingSession, err := NewBlockSession(all, 0x40)
+	if err != nil {
+		t.Fatal(err)
+	}
+	glowingSession.SetMemoryValue(0xC04B, 14)
+	glowingSession.SetMemoryValue(0xC04C, 8)
+	glowingSession.SetMemoryValue(0xC04D, 0)
+	glowingSession.SetMemoryValue(0xC04F, 0x94)
+	glowingSession.SetMemoryValue(0x4CCE, 0)
+	glowingPrompt, err := glowingSession.RunEntry(1, 2000, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !glowingPrompt.WaitingForMenu ||
+		!strings.Contains(strings.Join(glowingPrompt.Text, " "),
+			"GLOWING SPIDERS SKITTER FORWARD AT YOUR APPROACH") {
+		t.Fatalf("glowing prompt=%+v", glowingPrompt)
+	}
+	glowingFight, err := glowingSession.ResumeInteractiveSelectionSeed(
+		2000, &press, nil, 1, PartyContext{},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !glowingFight.CombatRequested ||
+		!reflect.DeepEqual(glowingFight.MonsterSpawns,
+			[]MonsterSpawn{{MonsterID: 0x41, Count: 8, IconBlock: 0x41}}) ||
+		mustMemory(t, glowingSession, 0x7F82) != 9 ||
+		mustMemory(t, glowingSession, 0x4C01) != 8 {
+		t.Fatalf("glowing fight=%+v", glowingFight)
+	}
+	glowingDone, err := glowingSession.ResumeInteractiveSelectionSeed(
+		2000, nil, nil, 1, PartyContext{},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !glowingDone.Exited || mustMemory(t, glowingSession, 0x4CCE) != 1 {
+		t.Fatalf("glowing done=%+v", glowingDone)
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

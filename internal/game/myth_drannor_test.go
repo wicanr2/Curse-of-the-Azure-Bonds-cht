@@ -606,6 +606,151 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if projected, found := state.session.MemoryValue(0x7F71); !found || projected != 0x02 {
 		t.Fatalf("Daemir blessing was not projected to party combat work: 7F71=%02x,%v", projected, found)
 	}
+
+	// Continue through the original wrapped GEO from Daemir to the nearest
+	// uncompleted special terrain. The first terrain 0x93 is at (12,10):
+	// ECL6 masks it to selector 0x13 and dispatches to payload +0x195E.
+	wallSpiderRoute := []dungeonStep{
+		{x: 13, y: 13, direction: 0},
+		{x: 13, y: 12, direction: 0},
+		{x: 12, y: 12, direction: 6},
+		{x: 12, y: 11, direction: 0},
+		{x: 12, y: 10, direction: 0},
+	}
+	previousX, previousY = 13, 14
+	for _, step := range wallSpiderRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("post-Daemir route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x93 || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.phase-spider-wall") {
+		t.Fatalf("wall-spider arrival terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatTargets()) != 10 {
+		t.Fatalf("wall-spider combat mode=%v active=%v targets=%d",
+			state.Mode, state.CombatActive(), len(state.CombatTargets()))
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
+		t.Fatalf("wall-spider victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("wall-spider continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	wallSpiderCleared, wallSpiderClearedSet := state.session.MemoryValue(0x4CCD)
+	if !wallSpiderClearedSet || wallSpiderCleared != 1 {
+		t.Fatalf("wall-spider completion 4CCD=%d,%v", wallSpiderCleared, wallSpiderClearedSet)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.CombatActive() {
+		t.Fatalf("cleared wall-spider terrain retriggered mode=%v active=%v",
+			state.Mode, state.CombatActive())
+	}
+
+	// Continue four more legal steps to terrain 0x94. It is the second entry
+	// in the same original spider defence cluster and uses independent flag
+	// 4CCEh with eight PHASE SPIDER combatants.
+	glowingSpiderRoute := []dungeonStep{
+		{x: 12, y: 9, direction: 0},
+		{x: 13, y: 9, direction: 2},
+		{x: 14, y: 9, direction: 2},
+		{x: 14, y: 8, direction: 0},
+	}
+	previousX, previousY = 12, 10
+	for _, step := range glowingSpiderRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("wall-to-glowing-spider route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x94 || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.phase-spider-glowing") {
+		t.Fatalf("glowing-spider arrival terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatTargets()) != 8 {
+		t.Fatalf("glowing-spider combat mode=%v active=%v targets=%d",
+			state.Mode, state.CombatActive(), len(state.CombatTargets()))
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
+		t.Fatalf("glowing-spider victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("glowing-spider continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	glowingSpiderCleared, glowingSpiderClearedSet := state.session.MemoryValue(0x4CCE)
+	if !glowingSpiderClearedSet || glowingSpiderCleared != 1 {
+		t.Fatalf("glowing-spider completion 4CCE=%d,%v",
+			glowingSpiderCleared, glowingSpiderClearedSet)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.CombatActive() {
+		t.Fatalf("cleared glowing-spider terrain retriggered mode=%v active=%v",
+			state.Mode, state.CombatActive())
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{
