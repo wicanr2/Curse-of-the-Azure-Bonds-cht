@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`fa21f5b`
+本 milestone 的 CoAB 基底：`4f62f98`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -234,8 +234,13 @@ commit 內保存不可能自我引用的 hash。
   他共同迎戰六地獄犬＋六石像鬼。ECL 的 `LOAD CHARACTER 8` 證明
   combatant array 固定保留八個玩家槽；第一隻 RAKSHASA 會成為
   QuickFight 臨時盟友，戰後不污染 roster。raw ECL、單人隊伍 adapter
-  與 Standing Stone 起始玩家路徑均已回歸。倉庫、其餘外圍遺跡與神殿
-  尚未完成。
+  與 Standing Stone 起始玩家路徑均已回歸。
+- 第 400 輪已沿合法 GEO 路線接通倉庫入口 terrain `02h` 與內部 `83h`。
+  `4CD1` 讓結盟戰與直接擊敗六地獄犬＋六石像鬼匯合；普通踏入只顯示
+  物資，主動 `SEARCH` 才取得 9,500 gold、8 gems、8 jewelry 與
+  ITEM6 `82h` 兩件裝備，並在服務返回後寫 `4CD2=1` 防止重複。來源地圖
+  boundary `7ED5` 不再污染目的 block 的下一步事件。raw ECL 與 Standing
+  Stone 起始玩家路徑均已回歸；其餘外圍遺跡、神殿與結局尚未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

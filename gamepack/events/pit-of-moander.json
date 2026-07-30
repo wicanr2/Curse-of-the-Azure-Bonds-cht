@@ -176,6 +176,9 @@
       ,"myth-drannor.outer.tirsheya.attack-beyrha": "“You are fools, but we will thank you at dinner.”"
       ,"myth-drannor.outer.tirsheya.name": "Tirsheya"
       ,"myth-drannor.outer.beyrha.name": "Beyrha"
+      ,"myth-drannor.outer.storehouse.guards": "Some margoyles and hell hounds guard the entrance to this building. They prepare for combat. Do you flee?"
+      ,"myth-drannor.outer.storehouse.supplies": "Piled within this building is a large array of foodstuffs, clothing, and trinkets."
+      ,"myth-drannor.outer.storehouse.valuables": "Piled within this building is a large array of foodstuffs, clothing, and trinkets. Eventually, you find a few valuables."
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -350,6 +353,9 @@
       ,"myth-drannor.outer.tirsheya.attack-beyrha": "「真是一群蠢貨，不過晚餐時我們會好好感謝你們。」"
       ,"myth-drannor.outer.tirsheya.name": "提爾雪雅"
       ,"myth-drannor.outer.beyrha.name": "貝爾哈"
+      ,"myth-drannor.outer.storehouse.guards": "一些石像鬼與地獄犬守著這棟建築的入口。牠們擺開架勢，準備交戰。你們要逃走嗎？"
+      ,"myth-drannor.outer.storehouse.supplies": "這棟建築裡堆滿大量食物、衣物與各式小物件。"
+      ,"myth-drannor.outer.storehouse.valuables": "這棟建築裡堆滿大量食物、衣物與各式小物件。仔細搜索後，你們終於找到了一些值錢物品。"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -1232,6 +1238,21 @@
       "id": "myth-drannor.outer.tirsheya.attack-beyrha",
       "all_contains": ["YOU ARE FOOLS", "THANK YOU AT DINNER"],
       "message_id": "myth-drannor.outer.tirsheya.attack-beyrha"
+    },
+    {
+      "id": "myth-drannor.outer.storehouse.guards",
+      "all_contains": ["SOME MARGOYLES AND HELL HOUNDS", "GUARD THE ENTRANCE", "DO YOU FLEE"],
+      "message_id": "myth-drannor.outer.storehouse.guards"
+    },
+    {
+      "id": "myth-drannor.outer.storehouse.valuables",
+      "all_contains": ["PILED WITHIN THIS BUILDING", "FOODSTUFFS", "EVENTUALLY YOU FIND A FEW VALUABLES"],
+      "message_id": "myth-drannor.outer.storehouse.valuables"
+    },
+    {
+      "id": "myth-drannor.outer.storehouse.supplies",
+      "all_contains": ["PILED WITHIN THIS BUILDING", "FOODSTUFFS", "CLOTHING AND TRINKETS"],
+      "message_id": "myth-drannor.outer.storehouse.supplies"
     },
     {
       "id": "zhentil.patrol_pass",

@@ -2563,3 +2563,22 @@ ECL／GEO6 block `42h` terrain `01h`。初見寫 `4CD0=1`；`WAIT` 會解鎖
 State 把他建立成 QuickFight／TemporaryAlly，不再把怪物 MON*CHA 誤解析
 成永久玩家 record。raw ECL、單人 adapter 與正常玩家路徑均已通過。
 READY spec 399 保存證據；下一步接續倉庫及其餘 block `42h` terrain。
+
+2026-07-30 第四百輪完成外圍遺跡倉庫 terrain `02h／83h`。GEO6 block
+`42h` 證明從提爾雪雅 `(1,12)` 到入口 `(3,14)`、再向西進入 `(2,14)`
+的合法路線。入口未清時可逃跑，或迎戰 MON6CHA `44h` HELL HOUND ×6
+與 `45h` MARGOYLE ×6；勝利後 payload `+0C71h` 寫 `4CD1=1`。第 399 輪
+結盟結果使用同一旗標，因此正常玩家路徑不會重打守衛。
+
+倉庫普通踏入只顯示物資堆；只有玩家主動 `SEARCH` 提供 `7ECA=1` 時，
+才發出 exact `TREASURE [0,0,0,2000,1500,8,8],82h`，也就是 9,500 gold、
+8 gems、8 jewelry 與 ITEM6 block `82h` 的兩件裝備。財寶服務返回後
+payload `+0D00h` 寫 `4CD2=1`，重搜不再取得物品。三段文字皆由
+game-pack stable ID 提供繁中，地城財寶選單也會保留事件訊息。
+
+同輪修正來源地圖 boundary work `7ED5` 的 transaction 生命週期：
+`RunDungeonExitLifecycle` 開始追蹤 boundary attempt，選單分支完成
+`NEWECL` 或 `EXIT` 後才清除，避免 Burial Glen 的問題滲入 block `42h`
+每一步，又不在普通移動時誤清同 block 流程。raw ECL 與 Standing Stone
+起始長玩家路徑均有回歸；READY spec 400 保存證據。下一步接續 terrain
+`04h／05h` 逃亡男子及 block `42h` 其餘事件。

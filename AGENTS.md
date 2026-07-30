@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`fa21f5b`（第 398 輪手札 56 與東界出口）；
-  第 399 輪外圍遺跡提爾雪雅結盟 milestone
+- CoAB 本輪基底：`4f62f98`（第 399 輪外圍遺跡提爾雪雅結盟）；
+  第 400 輪外圍遺跡倉庫 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -385,8 +385,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   各六，且 `LOAD CHARACTER 8 → team 80h → ADD NPC 43h` 將第一隻
   RAKSHASA 設為 QuickFight 臨時盟友。DOS combatant array 固定保留
   index `0..7`，不得用 active party 長度計算 monster index，也不得把
-  這種 monster ally 解析成永久 player record。READY spec 399 是權威
-  細節；下一步接續倉庫與 block `42h` 其餘 terrain。
+  這種 monster ally 解析成永久 player record。READY spec 399 是權威細節。
+- 第 400 輪已接通 terrain `02h／83h` 倉庫。`4CD1` 讓提爾雪雅結盟與
+  直接擊敗六地獄犬＋六石像鬼匯合；普通踏入只顯示物資，真正
+  `SEARCH (7ECA=1)` 才發出 9,500 gold、8 gems、8 jewelry 與 ITEM6
+  `82h` 兩件裝備，服務返回後 `4CD2=1`，重搜不複製。State 現追蹤
+  boundary transaction，只在來源分支 `NEWECL／EXIT` 後清除 `7ED5`，
+  避免污染目的 block 又不影響同 block 事件。READY spec 400 是權威；
+  下一步接續 terrain `04h／05h` 逃亡男子及 block `42h` 其餘事件。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、
