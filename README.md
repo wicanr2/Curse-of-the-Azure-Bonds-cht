@@ -806,6 +806,14 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 防止重播。繁中敘事由 game-pack stable ID 驅動，完整證據見
 [`spec 392`](docs/spec/392-burial-glen-phase-spider-walls.md)。
 
+第三道防線 terrain `0x95` 也已接通：隊伍會在 `(14,10)` 遭遇六隻相位
+蜘蛛，勝利後決定要「搜刮／放回墓穴／不予理會」牠們守護的骸骨。三條原始
+ECL 分支均已驗證；搜刮會降低黛米爾好感並取得一顆寶石，放回墓穴則提高
+好感。繁中事件文字與選項均來自 game pack，沒有在 Go 測試或 frontend
+複製繁中顯示文案；測試中的英文片段只用來核對原始 ECL bytes。完整 bytes
+與玩家路徑證據見
+[`spec 393`](docs/spec/393-burial-glen-phase-spider-bone-pile.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

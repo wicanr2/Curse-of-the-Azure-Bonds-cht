@@ -121,6 +121,11 @@
       ,"myth-drannor.daemir.curse": "“You presume too much! As long as you are in Myth Drannor, your weapons will twist in your hands.” She fades away."
       ,"myth-drannor.phase-spider-wall": "As you enter, spiders come out of the solid walls."
       ,"myth-drannor.phase-spider-glowing": "Glowing spiders skitter forward at your approach."
+      ,"myth-drannor.phase-spider-bones": "Spiders have gathered a pile of bones here and defend it."
+      ,"myth-drannor.bones.prompt": "What do you do with the bones?"
+      ,"myth-drannor.bones.loot": "Loot"
+      ,"myth-drannor.bones.replace": "Replace in crypts"
+      ,"myth-drannor.bones.ignore": "Ignore"
       ,"option.accept": "Accept"
       ,"option.reject": "Reject"
       ,"option.kill": "Kill"
@@ -235,6 +240,11 @@
       ,"myth-drannor.daemir.curse": "「你們太放肆了！只要身在迷斯卓諾，你們手中的武器就會自行扭轉。」她的身影隨即消散。"
       ,"myth-drannor.phase-spider-wall": "你們一踏入此處，蜘蛛便從看似實心的牆壁中湧出。"
       ,"myth-drannor.phase-spider-glowing": "發著幽光的蜘蛛在你們靠近時飛快爬來。"
+      ,"myth-drannor.phase-spider-bones": "蜘蛛在此堆起一堆骸骨，並守在周圍。"
+      ,"myth-drannor.bones.prompt": "你們要如何處置這些骸骨？"
+      ,"myth-drannor.bones.loot": "搜刮"
+      ,"myth-drannor.bones.replace": "放回墓穴"
+      ,"myth-drannor.bones.ignore": "不予理會"
       ,"option.accept": "接受"
       ,"option.reject": "拒絕"
       ,"option.kill": "殺死"
@@ -669,6 +679,21 @@
       "message_id": "myth-drannor.grave.rebury"
     },
     {
+      "id": "myth-drannor.bones.loot",
+      "source": "LOOT",
+      "message_id": "myth-drannor.bones.loot"
+    },
+    {
+      "id": "myth-drannor.bones.replace",
+      "source": "REPLACE IN CRYPTS",
+      "message_id": "myth-drannor.bones.replace"
+    },
+    {
+      "id": "myth-drannor.bones.ignore",
+      "source": "IGNORE",
+      "message_id": "myth-drannor.bones.ignore"
+    },
+    {
       "id": "option.accept",
       "source": "ACCEPT",
       "message_id": "option.accept"
@@ -815,6 +840,16 @@
       "id": "myth-drannor.phase-spider-glowing",
       "all_contains": ["GLOWING SPIDERS SKITTER FORWARD", "AT YOUR APPROACH"],
       "message_id": "myth-drannor.phase-spider-glowing"
+    },
+    {
+      "id": "myth-drannor.phase-spider-bones",
+      "all_contains": ["SPIDERS HAVE GATHERED A PILE OF BONES HERE", "AND DEFEND IT"],
+      "message_id": "myth-drannor.phase-spider-bones"
+    },
+    {
+      "id": "myth-drannor.bones.prompt",
+      "all_contains": ["WHAT DO YOU DO", "WITH THE BONES"],
+      "message_id": "myth-drannor.bones.prompt"
     },
     {
       "id": "zhentil.patrol_pass",

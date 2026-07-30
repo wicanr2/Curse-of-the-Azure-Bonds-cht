@@ -751,6 +751,111 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.CombatActive())
 	}
 
+	// Returning south through (14,9) reaches terrain 0x95 at (14,10). It
+	// completes the original three-part spider defence and continues into a
+	// post-victory bone-pile decision rather than ending at generic combat.
+	approvalBeforeBones, approvalBeforeBonesSet := state.session.MemoryValue(0x4CBA)
+	if !approvalBeforeBonesSet {
+		t.Fatal("Daemir approval is unavailable before the bone-pile event")
+	}
+	gemsBeforeBones, jewelryBeforeBones := state.TreasurePool()
+	pendingItemsBeforeBones := len(state.PendingTreasureItems())
+	boneSpiderRoute := []dungeonStep{
+		{x: 14, y: 9, direction: 4},
+		{x: 14, y: 10, direction: 4},
+	}
+	previousX, previousY = 14, 8
+	for _, step := range boneSpiderRoute {
+		if !burialGlen.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("glowing-to-bone-spider route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = burialGlen.CellWrapped(step.x, step.y).Terrain
+		for attempt := 0; attempt < 8; attempt++ {
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				continue
+			}
+			break
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x95 || state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.phase-spider-bones") {
+		t.Fatalf("bone-spider arrival terrain=%02x mode=%v choices=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || len(state.CombatTargets()) != 6 {
+		t.Fatalf("bone-spider combat mode=%v active=%v targets=%d",
+			state.Mode, state.CombatActive(), len(state.CombatTargets()))
+	}
+	for turn := 0; turn < 4 && state.CombatActive(); turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness {
+		t.Fatalf("bone-spider victory status=%v mode=%v message=%q",
+			state.CombatStatus(), state.Mode, state.Message)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"LOOT", "REPLACE IN CRYPTS", "IGNORE"}) ||
+		state.Message != gamePackText(t, state, "myth-drannor.bones.prompt") ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "myth-drannor.bones.loot"),
+			gamePackText(t, state, "myth-drannor.bones.replace"),
+			gamePackText(t, state, "myth-drannor.bones.ignore"),
+		}) {
+		t.Fatalf("bone-pile menu mode=%v choices=%v original=%v message=%q",
+			state.Mode, state.Choices, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	bonesCleared, bonesClearedSet := state.session.MemoryValue(0x4CCF)
+	approvalAfterBones, approvalAfterBonesSet := state.session.MemoryValue(0x4CBA)
+	gemsAfterBones, jewelryAfterBones := state.TreasurePool()
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		!bonesClearedSet || bonesCleared != 1 ||
+		!approvalAfterBonesSet || uint8(approvalAfterBones) != uint8(approvalBeforeBones-1) ||
+		gemsAfterBones != gemsBeforeBones+1 ||
+		jewelryAfterBones != jewelryBeforeBones ||
+		len(state.PendingTreasureItems()) != pendingItemsBeforeBones {
+		t.Fatalf("bone loot mode=%v treasure-menu=%v cleared=%d,%v approval=%02x→%02x,%v gems=%d→%d jewelry=%d→%d items=%d→%d",
+			state.Mode, state.treasureMenu, bonesCleared, bonesClearedSet,
+			approvalBeforeBones, approvalAfterBones, approvalAfterBonesSet,
+			gemsBeforeBones, gemsAfterBones,
+			jewelryBeforeBones, jewelryAfterBones,
+			pendingItemsBeforeBones, len(state.PendingTreasureItems()))
+	}
+	for state.treasureMenu {
+		if err := state.Select(len(state.Choices) - 1); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-bone-loot continuation mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon || state.CombatActive() {
+		t.Fatalf("cleared bone-spider terrain retriggered mode=%v active=%v",
+			state.Mode, state.CombatActive())
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{
