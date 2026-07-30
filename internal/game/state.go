@@ -152,6 +152,7 @@ type State struct {
 	eclStringValue          string
 	eclStringMaxLength      int
 	pendingDungeonEntry     bool
+	dungeonBoundaryAttempt  bool
 	pendingWorldDestination uint8
 	pendingWorldTravel      bool
 	dataPack                *goldenbox.Pack
@@ -1201,6 +1202,15 @@ func (s *State) Select(index int) error {
 				s.session.SetMemoryValue(0xC04B, 15)
 				s.session.SetMemoryValue(0xC04C, 14)
 				s.session.SetMemoryValue(0xC04D, 2)
+			}
+			if s.dungeonBoundaryAttempt &&
+				(blockBefore != currentBlock || result.Exited) {
+				// The resumed source-map branch has consumed its boundary
+				// attempt. Never expose that work signal to the destination
+				// block's next per-turn entry or to ordinary movement after
+				// TURN BACK.
+				s.session.SetMemoryValue(0x7ED5, 0)
+				s.dungeonBoundaryAttempt = false
 			}
 			// Global ENTER CITY is an engine-level area transition wrapped
 			// around ECL's NEWECL. The destination namespace selects the
@@ -4709,6 +4719,7 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	}
 	s.syncDungeonECLRegisters()
 	if exitAttempt {
+		s.dungeonBoundaryAttempt = true
 		x, y, direction := s.DungeonGeometryView()
 		s.session.SetMemoryValue(0xC04B, uint16(x))
 		s.session.SetMemoryValue(0xC04C, uint16(y))
@@ -4729,6 +4740,10 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		}
 		if s.session.CurrentBlockID() != blockBefore {
 			s.syncDungeonStateFromECLRegisters()
+			if s.dungeonBoundaryAttempt {
+				s.session.SetMemoryValue(0x7ED5, 0)
+				s.dungeonBoundaryAttempt = false
+			}
 		}
 		s.requestMusicIfBlockChanged(blockBefore)
 		handled, err := s.applyDungeonLifecycleResult(result)
@@ -4958,6 +4973,9 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 			len(s.pendingTreasureItems) != beforeItems {
 			s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
 			s.enterTreasureMenuFor(ModeDungeon)
+			if hasMeaningfulECLText(result.Text) {
+				s.Message = s.localizeECLText(result.Text)
+			}
 			return true, nil
 		}
 	}

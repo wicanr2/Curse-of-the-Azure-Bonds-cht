@@ -852,6 +852,13 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 現已修正成不受 active party 人數影響，也不會把怪物誤塞進永久 roster。
 詳見 [`spec 399`](docs/spec/399-outer-ruins-tirsheya-alliance.md)。
 
+結盟後可繼續沿原始 GEO 通道走進倉庫。`4CD1` 會讓已擊敗的入口守軍保持
+清空；若未結盟，也可選擇不逃跑，直接迎戰六隻地獄犬與六隻石像鬼。倉庫
+普通踏入只顯示物資堆，必須執行真正的「搜索」才會取得 9,500 金幣、
+8 顆寶石、8 件珠寶與 ITEM6 `82h` 的兩件裝備；`4CD2` 保證財寶只能取得
+一次。繁中敘事、原始旗標、邊界 transaction 修正與 Standing Stone 起始
+玩家路徑見 [`spec 400`](docs/spec/400-outer-ruins-storehouse.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

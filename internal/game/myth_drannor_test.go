@@ -2036,6 +2036,106 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("completed Tirsheya event retriggered mode=%v message=%q",
 			state.Mode, state.Message)
 	}
+	if searched, ok := state.session.MemoryValue(0x4CD2); ok && searched != 0 {
+		t.Fatalf("storehouse search flag was set before entering: 4CD2=%d", searched)
+	}
+
+	storehouseRoute := []struct {
+		x, y      int
+		direction int
+	}{
+		{2, 12, 2},
+		{3, 12, 2},
+		{3, 13, 4},
+		{3, 14, 4},
+	}
+	previousX, previousY = 1, 12
+	for _, step := range storehouseRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, step.direction) {
+			t.Fatalf("illegal storehouse route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, uint8(step.direction))
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("storehouse route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x02 {
+		t.Fatalf("storehouse entrance terrain=%02x, want 02", state.DungeonWallRoof)
+	}
+	if !outerRuins.CanMoveDungeonWrapped(3, 14, 6) {
+		t.Fatal("storehouse entrance cannot legally move west into the building")
+	}
+	state.SetDungeonGeometryView(2, 14, 6)
+	state.DungeonWallRoof = outerRuins.CellWrapped(2, 14).Terrain
+	if state.DungeonX != 2 || state.DungeonY != 14 {
+		t.Fatalf("storehouse geometry adapter position=(%d,%d)", state.DungeonX, state.DungeonY)
+	}
+	if transient, ok := state.session.MemoryValue(0x7F81); !ok || transient != 0 {
+		t.Fatalf("storehouse movement did not clear transient 7F81=%d,%v", transient, ok)
+	}
+	if boundary, ok := state.session.MemoryValue(0x7ED5); !ok || boundary != 0 {
+		t.Fatalf("storehouse movement did not clear boundary flag 7ED5=%d,%v", boundary, ok)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.DungeonWallRoof != 0x83 ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.storehouse.supplies") {
+		searched, ok := state.session.MemoryValue(0x4CD2)
+		t.Fatalf("storehouse interior block=%02x mode=%v terrain=%02x message=%q 4CD2=%d,%v",
+			state.session.CurrentBlockID(), state.Mode, state.DungeonWallRoof,
+			state.Message, searched, ok)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("storehouse description return mode=%v", state.Mode)
+	}
+	beforeMoney := state.MoneyPool()
+	beforeGems, beforeJewelry := state.TreasurePool()
+	beforeItems := len(state.PendingTreasureItems())
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.storehouse.valuables") ||
+		state.MoneyPool() != beforeMoney+9500 {
+		t.Fatalf("storehouse treasure mode=%v menu=%v money=%d/%d message=%q",
+			state.Mode, state.treasureMenu, state.MoneyPool(), beforeMoney,
+			state.Message)
+	}
+	storehouseGems, storehouseJewelry := state.TreasurePool()
+	if storehouseGems != beforeGems+8 || storehouseJewelry != beforeJewelry+8 ||
+		len(state.PendingTreasureItems()) != beforeItems+2 {
+		t.Fatalf("storehouse treasure gems=%d/%d jewelry=%d/%d items=%d/%d",
+			storehouseGems, beforeGems, storehouseJewelry, beforeJewelry,
+			len(state.PendingTreasureItems()), beforeItems)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("storehouse treasure return mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatal(err)
+	}
+	repeatGems, repeatJewelry := state.TreasurePool()
+	if state.Mode != ModeDungeon || state.MoneyPool() != beforeMoney+9500 ||
+		repeatGems != storehouseGems || repeatJewelry != storehouseJewelry ||
+		len(state.PendingTreasureItems()) != 0 {
+		t.Fatalf("repeated storehouse search mode=%v money=%d gems=%d jewelry=%d items=%d",
+			state.Mode, state.MoneyPool(), repeatGems, repeatJewelry,
+			len(state.PendingTreasureItems()))
+	}
 
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23

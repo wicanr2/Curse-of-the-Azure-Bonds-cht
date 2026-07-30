@@ -1640,6 +1640,116 @@ func TestRealOuterRuinsTirsheyaAlliance(t *testing.T) {
 	}
 }
 
+func TestRealOuterRuinsStorehouse(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func() *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x42)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0x4CD1, 0)
+		session.SetMemoryValue(0x4CD2, 0)
+		return session
+	}
+
+	t.Run("entrance flee or fight converges on cleared flag", func(t *testing.T) {
+		fleeSession := newSession()
+		fleeSession.SetMemoryValue(0xC04F, 0x02)
+		intro, runErr := fleeSession.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "GUARD THE ENTRANCE") ||
+			!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+				[]string{"YES", "NO"}) {
+			t.Fatalf("entrance intro=%+v err=%v", intro, runErr)
+		}
+		yes := uint16(0)
+		fled, runErr := fleeSession.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fled.Exited || mustMemory(t, fleeSession, 0x4CD1) != 0 {
+			t.Fatalf("fled=%+v err=%v 4CD1=%d",
+				fled, runErr, mustMemory(t, fleeSession, 0x4CD1))
+		}
+
+		fightSession := newSession()
+		fightSession.SetMemoryValue(0xC04F, 0x02)
+		if _, runErr = fightSession.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		no := uint16(1)
+		fight, runErr := fightSession.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x44, Count: 6, IconBlock: 0x44},
+				{MonsterID: 0x45, Count: 6, IconBlock: 0x45},
+			}) {
+			t.Fatalf("entrance fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := fightSession.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited || mustMemory(t, fightSession, 0x4CD1) != 1 {
+			t.Fatalf("entrance done=%+v err=%v 4CD1=%d",
+				done, runErr, mustMemory(t, fightSession, 0x4CD1))
+		}
+		revisit, runErr := fightSession.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || revisit.WaitingForMenu ||
+			revisit.CombatRequested || len(revisit.Text) != 0 {
+			t.Fatalf("entrance revisit=%+v err=%v", revisit, runErr)
+		}
+	})
+
+	t.Run("active search yields exact treasure once", func(t *testing.T) {
+		session := newSession()
+		session.SetMemoryValue(0xC04F, 0x83)
+		ordinary, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !ordinary.Exited ||
+			!strings.Contains(strings.Join(ordinary.Text, " "), "FOODSTUFFS") ||
+			mustMemory(t, session, 0x4CD2) != 0 {
+			t.Fatalf("ordinary storehouse=%+v err=%v 4CD2=%d",
+				ordinary, runErr, mustMemory(t, session, 0x4CD2))
+		}
+
+		session.SetMemoryValue(0x7ECA, 1)
+		search, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !search.CombatRequested ||
+			!strings.Contains(strings.Join(search.Text, " "), "FEW VALUABLES") ||
+			!reflect.DeepEqual(search.TreasureRequests, []TreasureRequest{{
+				Coins:     [7]uint16{0, 0, 0, 2000, 1500, 8, 8},
+				ItemBlock: 0x82,
+			}}) {
+			t.Fatalf("storehouse search=%+v err=%v", search, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited || mustMemory(t, session, 0x4CD2) != 1 {
+			t.Fatalf("storehouse treasure continuation=%+v err=%v 4CD2=%d",
+				done, runErr, mustMemory(t, session, 0x4CD2))
+		}
+		repeat, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !repeat.Exited || repeat.CombatRequested ||
+			len(repeat.Text) != 0 || len(repeat.TreasureRequests) != 0 {
+			t.Fatalf("repeated storehouse search=%+v err=%v", repeat, runErr)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)
