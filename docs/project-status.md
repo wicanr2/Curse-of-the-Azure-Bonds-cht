@@ -172,8 +172,14 @@ commit 內保存不可能自我引用的 hash。
   FLEE、祝福／寬恕、一次性 `4CC0h`、`4CBAh +5／-10` 與
   `4CBBh=02h／FEh`。繁中提問與四選項均由 stable ID／JSON 驅動，並有
   原版石框、原始人物圖與 16×15 倚天的 640×480 checkpoint。
-  `4CBBh` 仍只有 writer 與事件文字，IDA fresh load 未找到 literal
-  consumer；命中 `+2／-2` 尚未接入，不能宣稱黛米爾的戰鬥效果已完整。
+  第 390 輪已補上間接 consumer：ECL6 各戰鬥入口 exact
+  `SAVE [4CBBh]→[7F71h]`；PC-98 Borland `VARLISTTYPE=0800h` 證明
+  `VARLIST+06E2h` 對應 `7F71h`，IDA `ATTEMPTTOHIT` 以 `CBW` 將
+  `02h／FEh` 解成 signed `+2／-2` 後加入 attack roll，`DOPOSTCOMBAT`
+  則在戰後清零。engine `combat_modifiers`、CoAB JSON、Battle side-scoped
+  modifier 與正常玩家路徑命中邊界均已接通；角色基礎 AttackBonus 不會被
+  永久改寫。離開 Myth Drannor 後清除此持久效果的 writer、所有特殊武器
+  caller 與完整戰鬥 fidelity 仍待完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -104,6 +104,15 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   raw little-endian byte pattern 也不等於找到 consumer。必須區分 code
   operand、data coincidence、間接存取與真正執行 trace，避免 compact 後把
   掃描命中數誤讀成已完成語意。
+- 相同的十六進位數字不代表相同物件。Borland symbol 的 `segment:offset`、
+  overlay local offset、resident effective address、file offset、ECL work
+  address 與角色／隊伍 record offset 是不同位址空間；例如 symbol 恰好帶有
+  `:4CBB`，不能因此視為 ECL `PARTYBASE+01BBh` 的 consumer。每項命中都要先
+  標明位址空間、載入／重定位方式與所屬 module，再追出實際讀寫資料流。
+- ECL 欄位到戰鬥公式之間若經過複製、投影或暫存結構，找到公式端的加數仍
+  不等於已證明來源。必須追到「事件寫入 → combat preparation／record copy
+  → 公式讀取」的完整橋接，或取得等價 runtime trace；只找到兩端、但沒有
+  中間資料流時，仍須標成 `hypothesis`，不得先新增正式 JSON modifier。
 - 不得為了讓單一劇情點通過，在 frontend、State 或 VM 寫死本作密語、座標、
   怪物、文字、旗標或分支。互動機制放作品中立 runtime；`Krrkik` 等作品
   資料仍由原始 ECL 或 CoAB game-pack 驅動。
@@ -198,6 +207,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   本地化驗收。
 - 測試應驗證「ID 解析、locale fallback、事件綁定與畫面取得同一份資料」，
   使 JSON 改譯文或裝備顯示名時不必同步修改另一份硬編碼測試字串。
+- 若測試需要比對畫面文字，期望值也必須在測試執行時由同一份正式 JSON、
+  stable ID 與 locale resolver 取得；不能先讀一次 JSON，再把當時結果貼成
+  Go 字串常數。修改 JSON 顯示文字後，只應影響內容快照／翻譯審校，不應使
+  驗證資料綁定與遊戲規則的測試失效。
 - 常見錯誤：在測試直接寫「龍盔」「火球術」「長劍」等目前畫面文字，再用
   `Contains` 判斷。即使測試會通過，仍是在複製 JSON 的真相來源；應改查
   `message_id`／`item_id`／`spell_id`，並另測該 ID 經目前 locale 解析出的
@@ -254,10 +267,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`11b26ee`；第 389 輪 Burial Glen 黛米爾公主、
-  GEO 最短路徑 auditor、四分支與資料化繁中 milestone 會由本文件所在
-  commit 完成。
-- Engine dependency：`9826632`（含作品中立 `option_rules`、世界目的地
+- CoAB 本輪基底：`b242e57`（第 389 輪 Burial Glen 黛米爾公主、
+  GEO 最短路徑 auditor、四分支與資料化繁中）；第 390 輪命中 consumer
+  milestone 會由本文件所在 commit 完成。
+- Engine dependency：`625c77b`（含作品中立 `combat_modifiers`、
+  signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
   有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
@@ -298,10 +312,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 389 輪已由墳墓 `(6,12)` 沿 GEO auditor 證明的九步可行路徑抵達
   `(13,14)` terrain `03h`。黛米爾的 ACCEPT／REJECT／KILL／FLEE、正面
   祝福、負面寬恕、`4CBAh +5／-10`、`4CBBh 02h／FEh` 與一次性
-  `4CC0h` 均有 real-image／正常玩家路徑回歸。IDA fresh load 沒有找到
-  `4CBBh` literal consumer，所以目前只保存 raw work cell，不把攻略所稱
-  命中 `+2／-2` 寫進戰鬥規則；下一步須追間接 consumer 或做 DOS 相鄰值
-  runtime 實驗。
+  `4CC0h` 均有 real-image／正常玩家路徑回歸。
+- 第 390 輪已關閉 `4CBBh` consumer：ECL6 戰鬥入口會 exact
+  `SAVE [4CBBh]→[7F71h]`；Borland type table 證明
+  `VARLISTTYPE` 是 `7C00h..7FFFh` 的 1024×2-byte array，故
+  `VARLIST+06E2h=7F71h`。IDA `ATTEMPTTOHIT` 對該 byte 執行 `CBW` 並加入
+  attack roll，確認 `02h／FEh` 是 `+2／-2`；`DOPOSTCOMBAT` 戰後清除
+  `7F70／7F71`。engine `combat_modifiers`、CoAB JSON 與 Battle
+  side-scoped modifier 已接通，正常玩家路徑命中邊界證明生效且不改寫
+  Fighter 基礎 AttackBonus。離開 Myth Drannor 後清除 `4CBBh` 的 writer、
+  所有特殊武器 caller 與完整戰鬥 fidelity 仍未完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

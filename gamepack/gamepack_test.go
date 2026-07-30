@@ -25,6 +25,14 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 			t.Fatalf("music track[%d] title %q is not localized", index, track.TitleID)
 		}
 	}
+	if len(pack.CombatModifiers) != 2 {
+		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
+	}
+	if enemy, party := pack.CombatModifiers[0], pack.CombatModifiers[1];
+		enemy.SourceAddress != 0x7F70 || enemy.Side != "enemy" ||
+			party.SourceAddress != 0x7F71 || party.Side != "party" {
+		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
+	}
 	arrow, found := pack.FindCombatVisual("missile", "travel")
 	if !found || arrow.ID != "coab.arrow" || arrow.Scale != 2 ||
 		arrow.ReferenceDelay != 10 || len(arrow.Frames) != 8 {

@@ -65,6 +65,9 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	if err != nil {
 		return err
 	}
+	if err := s.applyDataPackCombatModifiers(battle); err != nil {
+		return err
+	}
 	turns, err := battle.StartRound()
 	if err != nil {
 		return err
@@ -80,6 +83,44 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
+}
+
+func (s *State) applyDataPackCombatModifiers(battle *combat.Battle) error {
+	if s.dataPack == nil || s.session == nil {
+		return nil
+	}
+	for _, definition := range s.dataPack.CombatModifiers {
+		if definition.SourceNamespace != "ecl_work" {
+			return fmt.Errorf("combat modifier %q uses unsupported source namespace %q",
+				definition.ID, definition.SourceNamespace)
+		}
+		raw, found := s.session.MemoryValue(definition.SourceAddress)
+		if !found {
+			continue
+		}
+		modifier, err := definition.Decode(raw)
+		if err != nil {
+			return err
+		}
+		var side combat.Side
+		switch definition.Side {
+		case "party":
+			side = combat.SideParty
+		case "enemy":
+			side = combat.SideEnemy
+		default:
+			return fmt.Errorf("combat modifier %q uses unsupported side %q", definition.ID, definition.Side)
+		}
+		switch definition.Target {
+		case "attack_roll":
+			if err := battle.SetSideAttackRollModifier(side, modifier); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("combat modifier %q uses unsupported target %q", definition.ID, definition.Target)
+		}
+	}
+	return nil
 }
 
 // StartEncounter is the data bridge from the bounded ECL runner to the

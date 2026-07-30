@@ -360,6 +360,24 @@
       "context": "pc98-world-navigation"
     }
   ],
+  "combat_modifiers": [
+    {
+      "id": "coab.ecl.enemy-attack-roll",
+      "source_namespace": "ecl_work",
+      "source_address": 32624,
+      "value_encoding": "signed_low_byte",
+      "target": "attack_roll",
+      "side": "enemy"
+    },
+    {
+      "id": "coab.ecl.party-attack-roll",
+      "source_namespace": "ecl_work",
+      "source_address": 32625,
+      "value_encoding": "signed_low_byte",
+      "target": "attack_roll",
+      "side": "party"
+    }
+  ],
   "combat_visuals": [
     {
       "id": "coab.arrow",

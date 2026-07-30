@@ -211,6 +211,25 @@ func TestRealBurialGlenPrincessDaemirChoices(t *testing.T) {
 	for _, block := range blocks {
 		all[block.Entry.ID] = block.Data
 	}
+	t.Run("combat initialization projects signed party modifier", func(t *testing.T) {
+		for _, value := range []uint16{0x02, 0xFE} {
+			session, sessionErr := NewBlockSession(all, 0x40)
+			if sessionErr != nil {
+				t.Fatal(sessionErr)
+			}
+			session.SetMemoryValue(0x4CBB, value)
+			session.SetMemoryValue(0xC04B, 0)
+			session.SetMemoryValue(0xC04C, 0)
+			session.SetMemoryValue(0xC04D, 0)
+			session.SetMemoryValue(0xC04F, 0)
+			if _, runErr := session.RunEntry(1, 1000, nil); runErr != nil {
+				t.Fatal(runErr)
+			}
+			if got := mustMemory(t, session, 0x7F71); got != value {
+				t.Fatalf("SAVE [4CBB] -> [7F71] got=%02x want=%02x", got, value)
+			}
+		}
+	})
 	newSession := func(t *testing.T, approval uint16) *BlockSession {
 		t.Helper()
 		session, err := NewBlockSession(all, 0x40)
