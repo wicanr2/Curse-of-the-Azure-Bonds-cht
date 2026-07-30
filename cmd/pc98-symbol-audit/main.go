@@ -15,6 +15,8 @@ import (
 func main() {
 	match := flag.String("match", "", "不分大小寫的名稱子字串；空白表示全部")
 	showModules := flag.Bool("modules", false, "列出 compiler modules，不列 symbols")
+	showTypes := flag.Bool("types", false, "列出 legacy type table，不列 symbols")
+	typeIndex := flag.Int("type-index", -1, "只列出指定的 1-based type index；同時啟用 -types")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-symbol-audit [選項] GAME.EXE")
 		flag.PrintDefaults()
@@ -34,9 +36,14 @@ func main() {
 	}
 	fmt.Printf("exe_sha256=%x\n", sha256.Sum256(executable))
 	fmt.Printf(
-		"debug_offset=0x%X version=0x%04X symbols=%d names=%d modules=%d flags=0x%02X\n",
+		"debug_offset=0x%X version=0x%04X symbols=%d names=%d modules=%d types=%d members=%d flags=0x%02X\n",
 		table.Header.FileOffset, table.Header.Version, len(table.Symbols),
-		len(table.Names), table.Header.ModuleCount, table.Header.ProgramFlags,
+		len(table.Names), table.Header.ModuleCount, len(table.Types), len(table.Members),
+		table.Header.ProgramFlags,
+	)
+	fmt.Printf(
+		"type_table=0x%X member_table=0x%X member_bytes=%d data_pool=0x%X\n",
+		table.TypeTableOffset, table.MemberTableOffset, table.MemberTableSize, table.DataPoolOffset,
 	)
 	needle := strings.ToUpper(*match)
 	matches := 0
@@ -50,6 +57,24 @@ func main() {
 				module.Index, module.NameIndex, module.Name, module.Language, module.ModelFlags,
 				module.SymbolIndex, module.SymbolCount, module.SourceIndex, module.SourceCount,
 				module.CorrelationIndex, module.CorrelationCount,
+			)
+			matches++
+		}
+		fmt.Printf("matches=%d\n", matches)
+		return
+	}
+	if *showTypes || *typeIndex >= 0 {
+		for _, entry := range table.Types {
+			if *typeIndex >= 0 && entry.Index != *typeIndex {
+				continue
+			}
+			if needle != "" && !strings.Contains(strings.ToUpper(entry.Name), needle) {
+				continue
+			}
+			fmt.Printf(
+				"type=%d id=0x%02X name_index=%d name=%q size=0x%04X detail=%02X%02X%02X\n",
+				entry.Index, entry.ID, entry.NameIndex, entry.Name, entry.Size,
+				entry.Detail[0], entry.Detail[1], entry.Detail[2],
 			)
 			matches++
 		}

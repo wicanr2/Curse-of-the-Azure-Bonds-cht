@@ -8,7 +8,7 @@ import (
 func TestParseLegacy(t *testing.T) {
 	const imageSize = 0x40
 	names := []byte{'F', 'O', 'O', 0, 'B', 'A', 'R', 0}
-	executable := make([]byte, imageSize+legacyHeaderSize+legacySymbolSize+legacyModuleSize+len(names))
+	executable := make([]byte, imageSize+legacyHeaderSize+legacySymbolSize+legacyModuleSize+legacyTypeSize+len(names))
 	copy(executable, "MZ")
 	binary.LittleEndian.PutUint16(executable[2:4], imageSize)
 	binary.LittleEndian.PutUint16(executable[4:6], 1)
@@ -17,6 +17,7 @@ func TestParseLegacy(t *testing.T) {
 	binary.LittleEndian.PutUint16(header[2:4], 0x0208)
 	binary.LittleEndian.PutUint32(header[4:8], uint32(len(names)))
 	binary.LittleEndian.PutUint16(header[8:10], 2)
+	binary.LittleEndian.PutUint16(header[10:12], 1)
 	binary.LittleEndian.PutUint16(header[14:16], 1)
 	binary.LittleEndian.PutUint16(header[18:20], 1)
 	record := executable[imageSize+legacyHeaderSize : imageSize+legacyHeaderSize+legacySymbolSize]
@@ -28,13 +29,19 @@ func TestParseLegacy(t *testing.T) {
 	module := executable[imageSize+legacyHeaderSize+legacySymbolSize : imageSize+legacyHeaderSize+legacySymbolSize+legacyModuleSize]
 	binary.LittleEndian.PutUint16(module[0:2], 1)
 	module[2], module[3] = 2, 4
+	typeRecord := executable[imageSize+legacyHeaderSize+legacySymbolSize+legacyModuleSize : imageSize+legacyHeaderSize+legacySymbolSize+legacyModuleSize+legacyTypeSize]
+	typeRecord[0] = 0x16
+	binary.LittleEndian.PutUint16(typeRecord[1:3], 1)
+	binary.LittleEndian.PutUint16(typeRecord[3:5], 4)
+	binary.LittleEndian.PutUint16(typeRecord[6:8], 7)
 	copy(executable[len(executable)-len(names):], names)
 
 	table, err := ParseLegacy(executable)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if table.Header.Version != 0x0208 || len(table.Names) != 2 || len(table.Symbols) != 1 || len(table.Modules) != 1 {
+	if table.Header.Version != 0x0208 || len(table.Names) != 2 || len(table.Symbols) != 1 ||
+		len(table.Modules) != 1 || len(table.Types) != 1 {
 		t.Fatalf("unexpected table: %+v", table)
 	}
 	got := table.Symbols[0]
@@ -43,6 +50,13 @@ func TestParseLegacy(t *testing.T) {
 	}
 	if got := table.Modules[0]; got.Name != "FOO" || got.Language != 2 || got.ModelFlags != 4 {
 		t.Fatalf("unexpected module: %+v", got)
+	}
+	if got := table.Types[0]; got.Index != 1 || got.ID != 0x16 ||
+		got.Name != "FOO" || got.Size != 4 || got.Detail != [3]byte{0, 7, 0} {
+		t.Fatalf("unexpected type: %+v", got)
+	}
+	if table.MemberTableSize != 0 || table.DataPoolOffset != len(executable)-len(names) {
+		t.Fatalf("unexpected table boundaries: %+v", table)
 	}
 }
 

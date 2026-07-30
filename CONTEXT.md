@@ -2419,3 +2419,24 @@ instruction hits，但 START／raw GAME.OVR 都沒有 `4CBBh` literal consumer�
 這不排除 interpreter 基底指標的間接存取。故本輪只保留 `4CBBh` raw
 work cell，不把攻略所稱命中 `+2／-2` 寫進 runtime。READY spec 389
 保存 writer、陰性 IDA 結果與下一步 DOS 相鄰值實驗邊界。
+
+2026-07-30 第 390 輪關閉黛米爾 `4CBBh` 的間接 consumer。ECL6 block
+`40h:+0249h` 及 blocks `42h／43h` 多個戰鬥入口均有 exact
+`SAVE [4CBBh]→[7F71h]`。PC-98 Borland type table parser 新增舊式
+8-byte type slots 與 5-byte members；`VARLISTPTR` 指向
+`VARLISTTYPE size=0800h`，element type size=2，搭配
+`VARLISTBASE=7C00h／END=7FFFh` 證明 `VARLIST+06E0／06E2` 分別是
+work `7F70／7F71`，不是 PARTY offset。
+
+指定 IDA Pro 9.4 對 EFFECTS overlay 23 的 `ATTEMPTTOHIT` 證明 side work
+byte 經 `CBW` 後加入 attack roll；POSTCOM overlay 05 的
+`DOPOSTCOMBAT` 則在戰後清零兩個 word。因此黛米爾 `02h／FEh` 是玩家側
+每場戰鬥 `+2／-2`，不能當 unsigned 254，也不能永久改寫角色 AttackBonus。
+
+獨立 engine 新增資料化 `combat_modifiers` schema、signed low-byte decoder
+與繁中跨作品知識庫；CoAB JSON 宣告 `7F70` enemy／`7F71` party
+attack-roll bindings。Battle 新增 side-scoped modifier；real-image ECL
+正負投影、正常 Standing Stone→Burial Glen→黛米爾 ACCEPT 玩家路徑及
+命中邊界均通過，並證明 Fighter 基礎值不變。READY spec 390 保存 hashes、
+bytes、IDA 公式與未完成邊界；下一步另依使用者提供的原版實機截圖量測
+人物 HEAD／BODY 組合與左上視窗版面。

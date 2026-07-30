@@ -11,8 +11,8 @@
 
 截至 2026-07-30 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `fb3bdea`；實際最新版本以 GitHub
-`main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `625c77b`；實際
+最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
@@ -781,10 +781,13 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
   從墳墓再沿原始 GEO 九步通道可正常抵達 terrain `03h` 的黛米爾公主幽魂。
   她會依 `4CBAh` 顯示祝福或寬恕提問；ACCEPT／REJECT／KILL／FLEE 四分支、
   一次性 `4CC0h`、認可度 `+5／-10` 與 `4CBBh=02h／FEh` 原始寫入均有
-  real-image ECL 測試。`4CBBh` 的戰鬥 consumer 尚未找到，因此不會只憑
-  攻略就把它硬接成命中 `+2／-2`。
-  戰敗路徑、蜘蛛毒素／羅剎妖／thri-kreen 完整規則、黛米爾武器修正
-  consumer 與 Burial Glen 後續仍待完成。
+  real-image ECL 測試。第 390 輪再由原始 ECL 證明每個戰鬥入口會執行
+  `SAVE [4CBBh]→[7F71h]`；PC-98 Borland type table 與 IDA 證明
+  `7F71h` 是玩家側 signed attack-roll 暫存，命中公式會加入
+  `+2／-2`，戰後則清零。該規則已由 engine `combat_modifiers` 與 CoAB
+  JSON 驅動，Battle 不改寫角色基礎 AttackBonus，避免下一場重複累加。
+  戰敗路徑、蜘蛛毒素／羅剎妖／thri-kreen 完整規則、黛米爾效果離開
+  Myth Drannor 後的清除 writer 與 Burial Glen 後續仍待完成。
 
 ![Burial Glen 紅網的 640×480 原版石框與 16×15 倚天字串輸入](docs/screenshots/burial-glen-red-web-input.png)
 

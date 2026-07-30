@@ -603,6 +603,29 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if state.Mode != ModeDungeon {
 		t.Fatalf("visited Daemir terrain retriggered mode=%v message=%q", state.Mode, state.Message)
 	}
+	if projected, found := state.session.MemoryValue(0x7F71); !found || projected != 0x02 {
+		t.Fatalf("Daemir blessing was not projected to party combat work: 7F71=%02x,%v", projected, found)
+	}
+	boundaryHero := hero
+	boundaryHero.AttackBonus = 23
+	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{
+		ID: "modifier-boundary", Name: "命中邊界", Side: combat.SideEnemy,
+		HitPoints: 2, MaxHitPoints: 2, ArmorClass: 30,
+		DamageDiceCount: 1, DamageDiceSides: 1,
+	}}, 1); err != nil {
+		t.Fatal(err)
+	}
+	if modifier := state.battle.SideAttackRollModifier(combat.SideParty); modifier != 2 {
+		t.Fatalf("party battle attack-roll modifier=%d, want 2", modifier)
+	}
+	result, err := state.battle.ResolveAttack("hero", "modifier-boundary", 5, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fighter, _ := state.battle.Fighter("hero")
+	if !result.Hit || result.Total != 30 || fighter.AttackBonus != boundaryHero.AttackBonus {
+		t.Fatalf("Daemir attack result=%+v fighter=%+v", result, fighter)
+	}
 }
 
 func gamePackText(t *testing.T, state State, messageID string) string {

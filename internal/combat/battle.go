@@ -245,12 +245,13 @@ type AreaSpellResult struct {
 }
 
 type Battle struct {
-	fighters map[string]Fighter
-	rng      *rand.Rand
-	round    int
-	status   Status
-	areas    []PersistentArea
-	nextArea uint64
+	fighters           map[string]Fighter
+	attackRollModifier map[Side]int
+	rng                *rand.Rand
+	round              int
+	status             Status
+	areas              []PersistentArea
+	nextArea           uint64
 }
 
 const FireballSpellID uint8 = 0x2F
@@ -259,7 +260,12 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 	if len(fighters) == 0 {
 		return nil, fmt.Errorf("battle needs at least one fighter")
 	}
-	b := &Battle{fighters: make(map[string]Fighter, len(fighters)), rng: rand.New(rand.NewSource(seed)), status: StatusActive}
+	b := &Battle{
+		fighters:           make(map[string]Fighter, len(fighters)),
+		attackRollModifier: make(map[Side]int, 2),
+		rng:                rand.New(rand.NewSource(seed)),
+		status:             StatusActive,
+	}
 	for _, fighter := range fighters {
 		if fighter.ID == "" {
 			return nil, fmt.Errorf("fighter has empty ID")
@@ -306,6 +312,27 @@ func (b *Battle) Fighters() []Fighter {
 func (b *Battle) Fighter(id string) (Fighter, bool) {
 	fighter, ok := b.fighters[id]
 	return fighter, ok
+}
+
+// SetSideAttackRollModifier installs a battle-scoped modifier without
+// mutating persistent fighter statistics. Legacy script work variables use
+// this for encounter-wide blessings, curses, terrain, and faction effects.
+func (b *Battle) SetSideAttackRollModifier(side Side, modifier int) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	if side != SideParty && side != SideEnemy {
+		return fmt.Errorf("unsupported combat side %d", side)
+	}
+	b.attackRollModifier[side] = modifier
+	return nil
+}
+
+func (b *Battle) SideAttackRollModifier(side Side) int {
+	if b == nil {
+		return 0
+	}
+	return b.attackRollModifier[side]
 }
 
 // SetHitPoints applies an external damage/healing adapter to a combatant and
@@ -493,8 +520,9 @@ func (b *Battle) SelectCombatTarget(attackerID string, targetSide Side) (Fighter
 }
 
 // ResolveAttack applies the recovered attack rule with injected dice. A
-// natural 1 misses, a natural 20 always hits, otherwise d20+AttackBonus must
-// meet the target AC. damageRoll is the already rolled weapon-dice total.
+// natural 1 misses, a natural 20 always hits, otherwise d20+AttackBonus plus
+// the battle-scoped side modifier must meet the target AC. damageRoll is the
+// already rolled weapon-dice total.
 func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRoll int) (AttackResult, error) {
 	attacker, ok := b.fighters[attackerID]
 	if !ok {
@@ -528,7 +556,8 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	if attacker.Good && target.ProtectedFromGood {
 		targetArmorClass += 2
 	}
-	hit := target.MonsterIsHeld() || critical || (attackRoll != 1 && attackRoll+attacker.AttackBonus >= targetArmorClass)
+	attackTotal := attackRoll + attacker.AttackBonus + b.attackRollModifier[attacker.Side]
+	hit := target.MonsterIsHeld() || critical || (attackRoll != 1 && attackTotal >= targetArmorClass)
 	damage := 0
 	if hit {
 		damage = damageRoll + attacker.DamageBonus
@@ -542,7 +571,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		b.fighters[targetID] = target
 		b.updateStatus()
 	}
-	return AttackResult{AttackerID: attackerID, TargetID: targetID, AttackRoll: attackRoll, Total: attackRoll + attacker.AttackBonus, Hit: hit, Critical: critical, Damage: damage, TargetHP: target.HitPoints}, nil
+	return AttackResult{AttackerID: attackerID, TargetID: targetID, AttackRoll: attackRoll, Total: attackTotal, Hit: hit, Critical: critical, Damage: damage, TargetHP: target.HitPoints}, nil
 }
 
 // Attack rolls a normal attack using the battle's deterministic RNG. Keeping

@@ -9,9 +9,16 @@ import (
 )
 
 const (
-	legacyHeaderSize = 0x30
-	legacySymbolSize = 9
-	legacyModuleSize = 16
+	legacyHeaderSize      = 0x30
+	legacySymbolSize      = 9
+	legacyModuleSize      = 16
+	legacySourceSize      = 6
+	legacyScopeSize       = 12
+	legacyLineSize        = 4
+	legacySegmentSize     = 16
+	legacyCorrelationSize = 8
+	legacyTypeSize        = 8
+	legacyMemberSize      = 5
 )
 
 // Header is the 0x30-byte debug header used by the Turbo Pascal executable
@@ -39,7 +46,7 @@ type Header struct {
 	ExtensionSize    uint16
 }
 
-// Symbol is one legacy 10-byte symbol record.
+// Symbol is one legacy 9-byte symbol record.
 type Symbol struct {
 	Index     int
 	NameIndex uint16
@@ -65,12 +72,38 @@ type Module struct {
 	Name             string
 }
 
+// Type is one slot in the legacy 8-byte type table. Multi-slot Borland types
+// retain their continuation slots so all symbol TypeIndex values stay stable.
+type Type struct {
+	Index     int
+	ID        byte
+	NameIndex uint16
+	Size      uint16
+	Detail    [3]byte
+	Name      string
+}
+
+// Member is one legacy structure/union/enum member record.
+type Member struct {
+	Index     int
+	Flags     byte
+	NameIndex uint16
+	TypeIndex uint16
+	Name      string
+}
+
 // Table contains the validated header, symbols, and Pascal-string name pool.
 type Table struct {
-	Header  Header
-	Names   []string
-	Symbols []Symbol
-	Modules []Module
+	Header            Header
+	Names             []string
+	Symbols           []Symbol
+	Modules           []Module
+	Types             []Type
+	Members           []Member
+	TypeTableOffset   int
+	MemberTableOffset int
+	MemberTableSize   int
+	DataPoolOffset    int
 }
 
 // MZLoadImageSize returns the file boundary declared by an MZ header.
@@ -133,8 +166,24 @@ func ParseLegacy(executable []byte) (Table, error) {
 	symbolEnd := symbolStart + int(header.SymbolCount)*legacySymbolSize
 	moduleEnd := symbolEnd + int(header.ModuleCount)*legacyModuleSize
 	nameStart := len(executable) - int(header.NamePoolSize)
-	if moduleEnd > nameStart || nameStart < debugOffset+legacyHeaderSize {
+	sourceEnd := moduleEnd + int(header.SourceCount)*legacySourceSize
+	scopeEnd := sourceEnd + int(header.ScopeCount)*legacyScopeSize
+	lineEnd := scopeEnd + int(header.LineCount)*legacyLineSize
+	segmentEnd := lineEnd + int(header.SegmentCount)*legacySegmentSize
+	correlationEnd := segmentEnd + int(header.CorrelationCount)*legacyCorrelationSize
+	typeStart := correlationEnd
+	typeEnd := typeStart + int(header.TypeCount)*legacyTypeSize
+	dataPoolStart := nameStart - int(header.DataPoolSize)
+	if moduleEnd > nameStart || nameStart < debugOffset+legacyHeaderSize ||
+		typeEnd > dataPoolStart || dataPoolStart < 0 {
 		return Table{}, errors.New("legacy Borland table spans overlap or exceed file")
+	}
+	memberTableSize := dataPoolStart - typeEnd
+	if memberTableSize != int(header.MemberCount)*legacyMemberSize {
+		return Table{}, fmt.Errorf(
+			"legacy member table is %d bytes, want %d records x %d bytes",
+			memberTableSize, header.MemberCount, legacyMemberSize,
+		)
 	}
 	names, err := parseASCIIZNames(executable[nameStart:], int(header.NameCount))
 	if err != nil {
@@ -176,7 +225,47 @@ func ParseLegacy(executable []byte) (Table, error) {
 		}
 		modules[index] = module
 	}
-	return Table{Header: header, Names: names, Symbols: symbols, Modules: modules}, nil
+	types := make([]Type, int(header.TypeCount))
+	for index := range types {
+		record := executable[typeStart+index*legacyTypeSize : typeStart+(index+1)*legacyTypeSize]
+		entry := Type{
+			Index:     index + 1,
+			ID:        record[0],
+			NameIndex: binary.LittleEndian.Uint16(record[1:3]),
+			Size:      binary.LittleEndian.Uint16(record[3:5]),
+			Detail:    [3]byte{record[5], record[6], record[7]},
+		}
+		if entry.NameIndex > 0 && int(entry.NameIndex) <= len(names) {
+			entry.Name = names[entry.NameIndex-1]
+		}
+		types[index] = entry
+	}
+	members := make([]Member, int(header.MemberCount))
+	for index := range members {
+		record := executable[typeEnd+index*legacyMemberSize : typeEnd+(index+1)*legacyMemberSize]
+		entry := Member{
+			Index:     index,
+			Flags:     record[0],
+			NameIndex: binary.LittleEndian.Uint16(record[1:3]),
+			TypeIndex: binary.LittleEndian.Uint16(record[3:5]),
+		}
+		if entry.NameIndex > 0 && int(entry.NameIndex) <= len(names) {
+			entry.Name = names[entry.NameIndex-1]
+		}
+		members[index] = entry
+	}
+	return Table{
+		Header:            header,
+		Names:             names,
+		Symbols:           symbols,
+		Modules:           modules,
+		Types:             types,
+		Members:           members,
+		TypeTableOffset:   typeStart,
+		MemberTableOffset: typeEnd,
+		MemberTableSize:   memberTableSize,
+		DataPoolOffset:    dataPoolStart,
+	}, nil
 }
 
 func parseASCIIZNames(pool []byte, count int) ([]string, error) {

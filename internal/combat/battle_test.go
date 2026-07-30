@@ -254,6 +254,30 @@ func TestResolveAttackRequiresArmorClass(t *testing.T) {
 	}
 }
 
+func TestSideAttackRollModifierIsBattleScopedAndSigned(t *testing.T) {
+	battle := testBattle(t)
+	if err := battle.SetSideAttackRollModifier(SideParty, 2); err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.SetSideAttackRollModifier(SideEnemy, -2); err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("hero", "goblin", 5, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.Hit || result.Total != 10 {
+		t.Fatalf("party modifier result=%+v", result)
+	}
+	hero, _ := battle.Fighter("hero")
+	if hero.AttackBonus != 3 || battle.SideAttackRollModifier(SideParty) != 2 {
+		t.Fatalf("persistent fighter was mutated: hero=%+v modifier=%d", hero, battle.SideAttackRollModifier(SideParty))
+	}
+	if err := battle.SetSideAttackRollModifier(Side(99), 1); err == nil {
+		t.Fatal("invalid combat side accepted")
+	}
+}
+
 func TestResolveAttackProjectsMonsterInvisibilityACBonus(t *testing.T) {
 	base := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1},
