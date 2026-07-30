@@ -875,6 +875,16 @@ block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可�
 一次性旗標、繁中敘事與完整玩家路徑見
 [`spec 402`](docs/spec/402-outer-ruins-nameless-brush-ambush.md)。
 
+接著的羅剎妖居所可用高傲態度交涉，解鎖依原手札 PDF 翻譯的完整
+手札 57；其他交涉態度會引發十六敵人戰鬥。石像鬼門廊陷阱則造成全隊
+`3d10` 坍塌傷害，並只改寫 X 與方向，把隊伍推到 `(10,2,N)`；這促使
+`CALL` adapter 正確支援「部分座標提交」，同時以 Filani 對話反例阻止
+無方向的 scratch values 移動玩家。賭局房可迎戰八隻石像鬼與六隻羅剎妖，
+勝利取得 11,200 gold、15 gems、9 jewelry 與一件 ITEM6 `81h` 隨機物品。
+最後，下水道柵口會經兩次確認正式切換到 ECL／GEO `43h` 的昏暗廚房
+`(15,15,N)`。十七段繁中、raw ECL 分支與 Standing Stone 起始玩家路徑見
+[`spec 403`](docs/spec/403-outer-ruins-rakshasa-rooms-and-sewer.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

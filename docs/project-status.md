@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-31
-本 milestone 的 CoAB 基底：`d29a038`
+本 milestone 的 CoAB 基底：`d0489cc`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -252,7 +252,16 @@ commit 內保存不可能自我引用的 hash。
   落石，再迎戰 5 HELL HOUND、5 MARGOYLE 與 1 RAKSHASA。ECL 同 block
   寫入 `(11,10,S)` 後 `CALL 2E10h` 的傳送現會同步 State，玩家可正常向南
   進入可重複的血跡灌木敘事。raw 分支、繁中 stable IDs、合法 GEO 路線與
-  Standing Stone 起始玩家路徑均已回歸；其餘外圍遺跡、神殿與結局尚未完成。
+  Standing Stone 起始玩家路徑均已回歸。
+- 第 403 輪已接通 terrain `0Bh／0Ch／8Ah／8Dh`。羅剎妖居所只有
+  HAUGHTY 交涉能解鎖手札 57，其餘態度會迎戰 5 HELL HOUND、
+  5 MARGOYLE 與 6 RAKSHASA。石像鬼門廊會造成全隊 exact `3d10`
+  坍塌傷害，部分寫入座標並推到 `(10,2,N)`，之後可突襲單一 RAKSHASA。
+  賭局房勝利可取得 11,200 gold、15 gems、9 jewelry 與 ITEM6 `81h`
+  一件隨機物品；下水道柵口則經兩次確認切換至 ECL／GEO `43h`
+  `(15,15,N)`。raw 分支、手札 PDF、繁中 stable IDs、部分座標 transaction
+  與 Standing Stone 起始玩家路徑均已回歸；block `43h` 內部、神殿與結局
+  尚未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

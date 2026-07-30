@@ -720,8 +720,9 @@ combat continuation 與 save 系統必須保存 writer 的原始時序；不得�
 可沿用的 transaction 是：
 
 1. VM 保存 numeric `SAVE`／`SAVE TABLE` 與 CALL 的 block、PC 及值。
-2. 只有同次 session 未跨 block，且三個座標／方向 registers 都在 redraw
-   CALL 前新寫入，作品 adapter 才把它們投影至 renderer-neutral map state。
+2. 只有同次 session 未跨 block，且方向 register 在 redraw CALL 前新寫入
+   作為提交標記，作品 adapter 才把同批實際新寫的座標／方向欄位投影至
+   renderer-neutral map state；未寫欄位維持原值。
 3. 再發一次性重繪 request；renderer 不自行猜傳送目的地。
 4. 正常玩家路徑必須從新座標走下一步，不能由測試再次指定舊座標來掩蓋缺口。
 
@@ -730,3 +731,9 @@ block ID 改變時才檢查座標。另一方面，也不能把「任何 CALL �
 通則；只有已由 executable／runtime 證明會消費地圖 register 的 routine，
 加上同區塊的新鮮有序 writer 證據，才可成為提交點。跨 `NEWECL` 流程必須
 交給目的地出生點 transaction，不能讓來源 block 的 trace 覆蓋它。
+
+第 403 輪補上兩個重要邊界：外圍遺跡門廊陷阱只寫 X 與 facing，證明完整
+三欄不是必要條件；Filani 對話只清 X/Y 而未寫 facing，證明任何座標 writer
+也不是充分條件。現階段只有「新 facing＋同批欄位」具有兩個正例與一個反例
+支持；未來若發現保留 facing 的真正傳送，必須回到 executable consumer
+再擴充，不可移除 guard 後讓所有對話座標污染玩家位置。

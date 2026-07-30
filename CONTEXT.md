@@ -2620,3 +2620,24 @@ CALL 前新寫入時投影為 `(11,10,S)`，不再只發 renderer dirty signal�
 再從真正傳送目的地向南一步到血跡灌木。七段繁中均來自 game-pack stable
 IDs；raw ECL、CALL regression 與正常玩家路徑已通過。READY spec 402
 保存完整證據；下一步接續 terrain `0Bh／0Ch／8Ah／8Dh`。
+
+2026-07-31 第四百零三輪完成 block `42h` terrain
+`0Bh／0Ch／8Ah／8Dh`。羅剎妖居所提供 COMBAT／WAIT／FLEE／PARLAY；
+只有 HAUGHTY 交涉成功並解鎖由使用者 Adventurer's Journal PDF 第 13 頁
+證實的完整手札 57，其他四種態度與直接戰鬥均建立 HELL HOUND ×5、
+MARGOYLE ×5、RAKSHASA ×6。石像鬼門廊陷阱造成全隊 exact
+`DAMAGE flags=C0h,3d10,saveFlags=1`，只寫 `C04B=10／C04D=0`，把隊伍
+由 `(9,2)` 推到 `(10,2,N)`；裝死可突襲單一 RAKSHASA，不裝死則讓牠
+撤退。賭局房拒絕逃跑會迎戰 MARGOYLE ×8、RAKSHASA ×6，勝利取得
+1,200 GP、2,000 PP、15 gems、9 jewelry 與 ITEM6 `81h` 一件隨機物品。
+下水道石像鬼無論放走或殺死都會露出柵口，經兩次確認後由 `NEWECL 43h`
+正式進入昏暗廚房 `(15,15,N)`。
+
+同輪把 `CALL 2E10h` State transaction 修正為欄位選擇性的部分座標提交：
+同 session／同 block、CALL 前新寫入方向才構成位置 commit，X／Y 只投影
+實際新寫欄位；Filani 對話中只把 `C04B／C04C` 當 scratch values 的真實
+反例則不得移動玩家。Standing Stone 起始長玩家路徑以合法 GEO 依序走完
+羅剎妖居所、門廊陷阱、賭局十四人戰與下水道入口，最後驗證 block `43h`
+出生點。十七段繁中、raw ECL 全分支、手札解鎖、財寶、部分座標 regression
+與正式玩家路徑均已通過；READY spec 403 保存完整證據。下一步接續
+block `43h` 內部。

@@ -2077,6 +2077,300 @@ func TestRealOuterRuinsNamelessAndBrushAmbush(t *testing.T) {
 	})
 }
 
+func TestRealOuterRuinsRakshasaRoomsAndSewer(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(terrain uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x42)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 9)
+		session.SetMemoryValue(0xC04C, 2)
+		session.SetMemoryValue(0xC04D, 3)
+		session.SetMemoryValue(0xC04F, terrain)
+		return session
+	}
+	press := uint16(0)
+
+	t.Run("margoyle doorway is optional but attack springs exact trap", func(t *testing.T) {
+		decline := newSession(0x0B)
+		intro, runErr := decline.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "),
+				"TWO MARGOYLES ARE TORTURING A SMALL ANIMAL") {
+			t.Fatalf("doorway intro=%+v err=%v", intro, runErr)
+		}
+		no := uint16(1)
+		left, runErr := decline.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !left.Exited || left.CombatRequested {
+			t.Fatalf("doorway decline=%+v err=%v", left, runErr)
+		}
+		repeat, runErr := decline.RunEntry(1, 30000, nil)
+		if runErr != nil || !repeat.WaitingForMenu ||
+			!strings.Contains(strings.Join(repeat.Text, " "), "TWO MARGOYLES") {
+			t.Fatalf("doorway decline repeat=%+v err=%v", repeat, runErr)
+		}
+
+		session := newSession(0x0B)
+		if _, runErr = session.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		yes := uint16(0)
+		collapse, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !collapse.WaitingForMenu ||
+			!strings.Contains(strings.Join(collapse.Text, " "),
+				"THE DOORWAY COLLAPSES ONTO YOU") ||
+			!reflect.DeepEqual(collapse.CallAddresses, []uint16{0x2E10}) ||
+			mustMemory(t, session, 0x4CD8) != 1 ||
+			mustMemory(t, session, 0xC04B) != 10 ||
+			mustMemory(t, session, 0xC04C) != 2 ||
+			mustMemory(t, session, 0xC04D) != 0 {
+			t.Fatalf("doorway collapse=%+v err=%v", collapse, runErr)
+		}
+		buried, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !buried.WaitingForMenu ||
+			!reflect.DeepEqual(buried.DamageRequests, []DamageRequest{{
+				Flags: 0xC0, DiceCount: 3, DiceSize: 10, Bonus: 0, SaveFlags: 1,
+			}}) ||
+			!strings.Contains(strings.Join(buried.Text, " "), "DO YOU PLAY DEAD") {
+			t.Fatalf("doorway buried=%+v err=%v", buried, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!strings.Contains(strings.Join(fight.Text, " "), "YOU SURPRISE HIM") ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{{
+				MonsterID: 0x43, Count: 1, IconBlock: 0x43,
+			}}) {
+			t.Fatalf("doorway fight=%+v err=%v", fight, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("doorway victory=%+v err=%v", done, runErr)
+		}
+		revisit, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+			t.Fatalf("doorway revisit=%+v err=%v", revisit, runErr)
+		}
+
+		retreat := newSession(0x0B)
+		if _, runErr = retreat.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		if _, runErr = retreat.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		); runErr != nil {
+			t.Fatal(runErr)
+		}
+		if _, runErr = retreat.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		); runErr != nil {
+			t.Fatal(runErr)
+		}
+		escaped, runErr := retreat.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !escaped.WaitingForMenu || escaped.CombatRequested ||
+			!strings.Contains(strings.Join(escaped.Text, " "),
+				"COLLAPSE FAILED TO FINISH YOU OFF") {
+			t.Fatalf("doorway rakshasa retreat=%+v err=%v", escaped, runErr)
+		}
+	})
+
+	t.Run("sewer grate branches and enters block 43 kitchen", func(t *testing.T) {
+		session := newSession(0x0C)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "),
+				"A LONE MARGOYLE SKITTERS AWAY") ||
+			mustMemory(t, session, 0x4CD9) != 1 {
+			t.Fatalf("sewer intro=%+v err=%v", intro, runErr)
+		}
+		yes := uint16(0)
+		fled, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fled.WaitingForMenu ||
+			!strings.Contains(strings.Join(fled.Text, " "), "RUNS DOWN THROUGH THE SEWER") {
+			t.Fatalf("sewer margoyle flee=%+v err=%v", fled, runErr)
+		}
+		grate, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !grate.WaitingForMenu ||
+			!strings.Contains(strings.Join(grate.Text, " "), "DO YOU WANT TO ENTER") {
+			t.Fatalf("sewer grate=%+v err=%v", grate, runErr)
+		}
+		warning, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !warning.WaitingForMenu ||
+			!strings.Contains(strings.Join(warning.Text, " "), "GREAT DANGER LIES BEFORE YOU") {
+			t.Fatalf("sewer warning=%+v err=%v", warning, runErr)
+		}
+		kitchen, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil || session.CurrentBlockID() != 0x43 ||
+			!kitchen.WaitingForMenu ||
+			!kitchen.LoadFilesRequested ||
+			kitchen.LoadFiles != [3]uint16{0x43, 2, 0xFF} ||
+			!kitchen.LoadPiecesRequested ||
+			kitchen.LoadPieces != [3]uint16{13, 16, 3} ||
+			!strings.Contains(strings.Join(kitchen.Text, " "),
+				"THE SEWER ENDS IN A DARKENED KITCHEN") {
+			t.Fatalf("sewer kitchen block=%02x result=%+v err=%v",
+				session.CurrentBlockID(), kitchen, runErr)
+		}
+
+		stay := newSession(0x0C)
+		if _, runErr = stay.RunEntry(1, 30000, nil); runErr != nil {
+			t.Fatal(runErr)
+		}
+		no := uint16(1)
+		killed, runErr := stay.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !killed.WaitingForMenu ||
+			!strings.Contains(strings.Join(killed.Text, " "), "SLAUGHTER IT") {
+			t.Fatalf("sewer kill=%+v err=%v", killed, runErr)
+		}
+		if _, runErr = stay.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		); runErr != nil {
+			t.Fatal(runErr)
+		}
+		declined, runErr := stay.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !declined.Exited || stay.CurrentBlockID() != 0x42 {
+			t.Fatalf("sewer entry decline block=%02x result=%+v err=%v",
+				stay.CurrentBlockID(), declined, runErr)
+		}
+	})
+
+	t.Run("gambling room has exact defenders and treasure", func(t *testing.T) {
+		session := newSession(0x8A)
+		intro, runErr := session.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "),
+				"RAKSHASAS GAMBLING WITH DICE") ||
+			mustMemory(t, session, 0x4CD7) != 1 {
+			t.Fatalf("gambling intro=%+v err=%v", intro, runErr)
+		}
+		rise, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !rise.WaitingForMenu ||
+			!strings.Contains(strings.Join(rise.Text, " "), "DO YOU FLEE") {
+			t.Fatalf("gambling rise=%+v err=%v", rise, runErr)
+		}
+		no := uint16(1)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+				{MonsterID: 0x45, Count: 8, IconBlock: 0x45},
+				{MonsterID: 0x43, Count: 6, IconBlock: 0x43},
+			}) {
+			t.Fatalf("gambling fight=%+v err=%v", fight, runErr)
+		}
+		treasure, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !treasure.CombatRequested ||
+			!strings.Contains(strings.Join(treasure.Text, " "), "GATHER THE VALUABLES") ||
+			!reflect.DeepEqual(treasure.TreasureRequests, []TreasureRequest{{
+				Coins:     [7]uint16{0, 0, 0, 1200, 2000, 15, 9},
+				ItemBlock: 0x81,
+			}}) {
+			t.Fatalf("gambling treasure=%+v err=%v", treasure, runErr)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			30000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !done.Exited {
+			t.Fatalf("gambling done=%+v err=%v", done, runErr)
+		}
+	})
+
+	t.Run("only haughty parlay unlocks journal 57", func(t *testing.T) {
+		haughty := newSession(0x8D)
+		intro, runErr := haughty.RunEntry(1, 30000, nil)
+		if runErr != nil || !intro.WaitingForMenu ||
+			intro.Menus[len(intro.Menus)-1].Prompt !=
+				"A RAKSHASA RESIDES HERE IN SPLENDOR" ||
+			mustMemory(t, haughty, 0x4CDA) != 1 {
+			t.Fatalf("rakshasa residence=%+v err=%v", intro, runErr)
+		}
+		parlay := uint16(3)
+		tactics, runErr := haughty.ResumeInteractiveSelectionSeed(
+			30000, &parlay, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !tactics.WaitingForMenu ||
+			!reflect.DeepEqual(tactics.Menus[len(tactics.Menus)-1].Options,
+				[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK",
+					"PARLAY_NICE", "PARLAY_ABUSIVE"}) {
+			t.Fatalf("rakshasa tactics=%+v err=%v", tactics, runErr)
+		}
+		story, runErr := haughty.ResumeInteractiveSelectionSeed(
+			30000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !story.WaitingForMenu ||
+			!strings.Contains(strings.Join(story.Text, " "), "JOURNAL ENTRY 57") ||
+			mustMemory(t, haughty, 0x4CBD) != 1 {
+			t.Fatalf("rakshasa haughty=%+v err=%v", story, runErr)
+		}
+
+		for tactic := uint16(1); tactic < 5; tactic++ {
+			session := newSession(0x8D)
+			if _, runErr = session.RunEntry(1, 30000, nil); runErr != nil {
+				t.Fatal(runErr)
+			}
+			if _, runErr = session.ResumeInteractiveSelectionSeed(
+				30000, &parlay, nil, 1, PartyContext{},
+			); runErr != nil {
+				t.Fatal(runErr)
+			}
+			fight, fightErr := session.ResumeInteractiveSelectionSeed(
+				30000, &tactic, nil, 1, PartyContext{},
+			)
+			if fightErr != nil || !fight.CombatRequested ||
+				!reflect.DeepEqual(fight.MonsterSpawns, []MonsterSpawn{
+					{MonsterID: 0x44, Count: 5, IconBlock: 0x44},
+					{MonsterID: 0x45, Count: 5, IconBlock: 0x45},
+					{MonsterID: 0x43, Count: 6, IconBlock: 0x43},
+				}) {
+				t.Fatalf("rakshasa tactic=%d fight=%+v err=%v",
+					tactic, fight, fightErr)
+			}
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

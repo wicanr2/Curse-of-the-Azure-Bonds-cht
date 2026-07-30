@@ -3512,11 +3512,10 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 				result.SessionBlockRangeSet &&
 				result.SessionStartBlockID == result.CallRequests[index].BlockID &&
 				result.SessionEndBlockID == result.CallRequests[index].BlockID &&
-				result.CallRequests[index].BlockID == s.session.CurrentBlockID() &&
-				resultSavesAllDungeonCoordinatesBeforeCall(
+				result.CallRequests[index].BlockID == s.session.CurrentBlockID() {
+				s.projectFreshDungeonCoordinatesBeforeCall(
 					result, result.CallRequests[index],
-				) {
-				s.syncDungeonStateFromECLRegisters()
+				)
 			}
 		case 0xC01E:
 			switch s.DungeonDirection {
@@ -3538,25 +3537,47 @@ func (s *State) applyECLCallSignals(result ecl.RunResult) {
 	}
 }
 
-func resultSavesAllDungeonCoordinatesBeforeCall(
+func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	result ecl.RunResult,
 	call ecl.CallRequest,
-) bool {
+) {
 	var mask uint8
+	var x, y uint16
+	var direction uint16
 	for _, write := range result.SaveWrites {
 		if write.BlockID != call.BlockID || write.PC >= call.PC {
 			continue
 		}
 		switch write.Address {
 		case 0xC04B:
+			x = write.Value
 			mask |= 1
 		case 0xC04C:
+			y = write.Value
 			mask |= 2
 		case 0xC04D:
+			direction = write.Value
 			mask |= 4
 		}
 	}
-	return mask == 7
+	// Verified party-position transactions always commit a fresh facing.
+	// Some dialogue events write C04B/C04C as scratch coordinates before the
+	// same redraw CALL without moving the party; do not project those values.
+	if mask&4 == 0 {
+		return
+	}
+	if mask&1 != 0 {
+		s.DungeonX = int(int16(x))
+	}
+	if mask&2 != 0 {
+		s.DungeonY = int(int16(y))
+	}
+	if mask&4 != 0 {
+		s.DungeonDirection = uint8(direction&3) * 2
+	}
+	if mask != 0 {
+		s.MapX, s.MapY = s.DungeonX, s.DungeonY
+	}
 }
 
 // applyECLNPCSignals mirrors load_npc: resolve the current chapter's shared

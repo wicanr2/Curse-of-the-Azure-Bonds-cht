@@ -2545,6 +2545,339 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("bloodstains return mode=%v", state.Mode)
 	}
 
+	rakshasaResidenceRoute := []dungeonStep{
+		{x: 11, y: 10, direction: 0},
+		{x: 12, y: 10, direction: 2},
+		{x: 12, y: 9, direction: 0},
+		{x: 12, y: 8, direction: 0},
+		{x: 12, y: 7, direction: 0},
+		{x: 11, y: 7, direction: 6},
+		{x: 11, y: 6, direction: 0},
+		{x: 10, y: 6, direction: 6},
+		{x: 9, y: 6, direction: 6},
+	}
+	previousX, previousY = 11, 11
+	for index, step := range rakshasaResidenceRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal rakshasa-residence route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(rakshasaResidenceRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(rakshasaResidenceRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("rakshasa-residence route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8D || state.Mode != ModeWilderness ||
+		state.Prompt != gamePackText(t, state, "myth-drannor.outer.rakshasa-residence") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) {
+		t.Fatalf("rakshasa residence mode=%v terrain=%02x prompt=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Prompt,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(3); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices,
+		[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK",
+			"PARLAY_NICE", "PARLAY_ABUSIVE"}) {
+		t.Fatalf("rakshasa parlay choices=%v", state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.rakshasa-parlay") {
+		t.Fatalf("rakshasa parlay mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	if journals := state.JournalPages; len(journals) == 0 ||
+		journals[len(journals)-1] != gamePackText(t, state, "journal.57") {
+		t.Fatalf("Journal 57 was not unlocked from game-pack: %v", journals)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("rakshasa parlay return mode=%v message=%q", state.Mode, state.Message)
+	}
+
+	doorwayTrapRoute := []dungeonStep{
+		{x: 10, y: 6, direction: 2},
+		{x: 10, y: 5, direction: 0},
+		{x: 10, y: 4, direction: 0},
+		{x: 10, y: 3, direction: 0},
+		{x: 9, y: 3, direction: 6},
+		{x: 9, y: 2, direction: 0},
+	}
+	previousX, previousY = 9, 6
+	for index, step := range doorwayTrapRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal doorway-trap route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(doorwayTrapRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(doorwayTrapRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("doorway-trap route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x0B || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.margoyle-trap") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("doorway trap mode=%v terrain=%02x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.margoyle-collapse") ||
+		state.DungeonX != 10 || state.DungeonY != 2 || state.DungeonDirection != 0 {
+		t.Fatalf("doorway collapse mode=%v position=(%d,%d,%d) message=%q",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.margoyle-rakshasa") ||
+		len(state.pendingDamageRequests) != 0 {
+		t.Fatalf("doorway buried mode=%v message=%q pending=%+v",
+			state.Mode, state.Message, state.pendingDamageRequests)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.margoyle-surprise") ||
+		len(state.livingBySide(combat.SideEnemy)) != 1 {
+		t.Fatalf("doorway combat mode=%v active=%v enemies=%d message=%q",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideEnemy)), state.Message)
+	}
+	for action := 0; action < 64 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeDungeon || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("doorway victory mode=%v status=%v message=%q",
+			state.Mode, state.CombatStatus(), state.Message)
+	}
+
+	gamblingRoute := []dungeonStep{
+		{x: 9, y: 2, direction: 6},
+		{x: 8, y: 2, direction: 6},
+		{x: 7, y: 2, direction: 6},
+		{x: 6, y: 2, direction: 6},
+		{x: 5, y: 2, direction: 6},
+		{x: 4, y: 2, direction: 6},
+		{x: 3, y: 2, direction: 6},
+		{x: 2, y: 2, direction: 6},
+		{x: 1, y: 2, direction: 6},
+		{x: 1, y: 3, direction: 4},
+	}
+	previousX, previousY = 10, 2
+	for index, step := range gamblingRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal gambling-room route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(gamblingRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(gamblingRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("gambling-room route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8A || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.gambling-room") ||
+		!reflect.DeepEqual(state.currentOriginalChoices,
+			[]string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("gambling room mode=%v terrain=%02x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.gambling-rise") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("gambling rise mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+	gamblingMoney := state.MoneyPool()
+	gamblingGems, gamblingJewelry := state.TreasurePool()
+	gamblingItems := len(state.PendingTreasureItems())
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(state.livingBySide(combat.SideEnemy)) != 14 {
+		t.Fatalf("gambling combat mode=%v active=%v enemies=%d",
+			state.Mode, state.CombatActive(),
+			len(state.livingBySide(combat.SideEnemy)))
+	}
+	for action := 0; action < 224 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		state.CombatStatus() != combat.StatusPartyWon ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.gambling-treasure") ||
+		state.MoneyPool() != gamblingMoney+11200 {
+		t.Fatalf("gambling treasure mode=%v menu=%v status=%v money=%d/%d message=%q",
+			state.Mode, state.treasureMenu, state.CombatStatus(),
+			state.MoneyPool(), gamblingMoney, state.Message)
+	}
+	afterGamblingGems, afterGamblingJewelry := state.TreasurePool()
+	if afterGamblingGems != gamblingGems+15 ||
+		afterGamblingJewelry != gamblingJewelry+9 ||
+		len(state.PendingTreasureItems()) != gamblingItems+1 {
+		t.Fatalf("gambling treasure gems=%d/%d jewelry=%d/%d items=%d/%d",
+			afterGamblingGems, gamblingGems,
+			afterGamblingJewelry, gamblingJewelry,
+			len(state.PendingTreasureItems()), gamblingItems)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("gambling treasure return mode=%v message=%q", state.Mode, state.Message)
+	}
+
+	sewerRoute := []dungeonStep{
+		{x: 1, y: 4, direction: 4},
+		{x: 2, y: 4, direction: 2},
+		{x: 3, y: 4, direction: 2},
+		{x: 3, y: 5, direction: 4},
+		{x: 3, y: 6, direction: 4},
+		{x: 3, y: 7, direction: 4},
+		{x: 4, y: 7, direction: 2},
+		{x: 5, y: 7, direction: 2},
+		{x: 5, y: 6, direction: 0},
+	}
+	previousX, previousY = 1, 3
+	for index, step := range sewerRoute {
+		if !outerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("illegal sewer route (%d,%d) direction=%d",
+				previousX, previousY, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = outerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		for attempt := 0; index < len(sewerRoute)-1 && attempt < 8 &&
+			reflect.DeepEqual(state.currentOriginalChoices,
+				[]string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}); attempt++ {
+			if err := state.Select(2); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(sewerRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("sewer route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x0C || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.outer.sewer-margoyle") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("sewer margoyle mode=%v terrain=%02x message=%q choices=%v",
+			state.Mode, state.DungeonWallRoof, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.sewer-escape") {
+		t.Fatalf("sewer escape message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.sewer-grate") {
+		t.Fatalf("sewer grate message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.outer.sewer-warning") {
+		t.Fatalf("sewer warning message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.session.CurrentBlockID() != 0x43 ||
+		state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.kitchen-arrival") ||
+		state.GeoMapSet != 6 || state.GeoMapBlock != 0x43 ||
+		state.DungeonX != 15 || state.DungeonY != 15 ||
+		state.DungeonDirection != 0 {
+		t.Fatalf("kitchen arrival block=%02x mode=%v geo=%d/%02x position=(%d,%d,%d) message=%q",
+			state.session.CurrentBlockID(), state.Mode,
+			state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.Message)
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{

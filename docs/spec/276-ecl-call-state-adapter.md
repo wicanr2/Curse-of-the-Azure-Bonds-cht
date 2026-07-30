@@ -22,11 +22,11 @@ routine 本身沒有 collision check，之後才重算 wall/roof。因此 ECL fo
 - `State.applyECLCallSignals` 依序消費 `RunResult.CallAddresses`。
 - `0xC01E` 立即更新 persisted `DungeonX/Y`，四邊均有 wrap regression。
 - `0x2E10` 只有在本次 session 從頭到尾未跨 block，且同 block 的
-  `SAVE`／`SAVE TABLE` trace 證明 `C04B／C04C／C04D` 三者均在 CALL 前
-  新寫入時，才把目前 registers 投影至 State；再由 frontend one-shot
-  request 重新建立 dungeon floor、wall stamps、wall type 與 roof state。
-  這涵蓋同 block ECL 在 redraw 前直接改座標，又不會把跨 `NEWECL` 流程
-  留下的 work registers 誤當成傳送目的地。
+  `SAVE`／`SAVE TABLE` trace 證明 CALL 前新寫 `C04D` 作為 facing commit，
+  才把同批實際新寫的 `C04B／C04C／C04D` 欄位投影至 State；未寫欄位維持
+  原值。frontend 再以 one-shot request 重建 dungeon floor、wall stamps、
+  wall type 與 roof state。這涵蓋完整與部分同 block 傳送，又不會把跨
+  `NEWECL` 流程或無方向對話 scratch registers 誤當成玩家目的地。
 - `0xC01E` 由 State 先完成 forced move，再由 frontend request 重繪。
 - `0xB200` 目前播放 reference default sound A（selector 10／Step）。
 - 未知 CALL 仍保留 ordered request，不猜 side effect。
@@ -43,6 +43,11 @@ ECL6 block `42h` terrain `08h` 在 `+1084h..+1090h` 直接寫
 第 402 輪正常玩家路徑證明救援灌木誘餌後必須移到 `(11,10,S)`；獨立
 State regression 鎖定這項同區塊 register projection，另以跨區塊交易回歸
 證明舊 block 的 CALL／SAVE trace 不得覆蓋新 block 的出生點。
+
+ECL6 block `42h` terrain `0Bh` 又在 `+13CFh` 只寫 `C04B=0Ah`、
+`+13D5h` 寫 `C04D=0`，保留目前 `C04C` 後於 `+13DBh` 呼叫 `2E10h`。
+第 403 輪因此改為 field-selective projection。ECL1 Filani 對話的反例會在
+同一 CALL 前清 `C04B/C04C`，但不寫 `C04D`；回歸鎖定它不得移動玩家。
 
 ## Remaining boundary
 
