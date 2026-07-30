@@ -2668,6 +2668,7 @@ func main() {
 	wizardTowerParlay := flag.Bool("wizard-tower-parlay", false, "start after successfully parlaying with the wizard-tower dragons")
 	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
 	burialRedWeb := flag.Bool("burial-red-web", false, "show the Burial Glen red-web INPUT STRING checkpoint")
+	burialRedWebBattle := flag.Bool("burial-red-web-battle", false, "show the first Burial Glen red-web spider battle")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -2712,7 +2713,7 @@ func main() {
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
 	}
-	if *burialRedWeb {
+	if *burialRedWeb || *burialRedWebBattle {
 		*geoSet = 6
 		*geoBlock = 0x40
 	}
@@ -2943,7 +2944,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *burialRedWeb {
+	} else if *burialRedWeb || *burialRedWebBattle {
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
@@ -2964,11 +2965,17 @@ func main() {
 		if err := state.RunDungeonLifecycle(); err != nil {
 			log.Fatal(err)
 		}
-		if err := state.Select(1); err != nil {
-			log.Fatal(err)
-		}
-		if err := state.AppendECLString([]rune("Krrkik")); err != nil {
-			log.Fatal(err)
+		if *burialRedWebBattle {
+			if err := state.Select(0); err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			if err := state.Select(1); err != nil {
+				log.Fatal(err)
+			}
+			if err := state.AppendECLString([]rune("Krrkik")); err != nil {
+				log.Fatal(err)
+			}
 		}
 	} else if *lavaTube {
 		if len(state.PartyFighters()) != 0 {

@@ -67,7 +67,11 @@ commit 內保存不可能自我引用的 hash。
   `INPUT STRING` 支援 Unicode、退格、ECL 指定長度與同 PC resume，
   `Krrkik` 不再假造成答案選單。四選單、HACK／RETREAT、四隻蜘蛛第一戰、
   PICTURE 72 揭露 rakshasa、第二戰及 `4CBFh` completion 均有 real-image
-  ECL regression；兩場戰鬥的完整 State 勝敗玩家路徑及後續區域仍未完成。
+  ECL regression。正常 State 玩家路徑也已用真實 MON6CHA 完成四蜘蛛勝利、
+  同 ECL continuation、羅剎妖第二戰、`4CBFh` 持久狀態及地城返回；原版
+  CPIC 蜘蛛戰鬥 checkpoint 已保存。Journal 25 的「強大力量」是誘餌，
+  ENTER script 沒有能力值寫入。戰敗路徑、敵人完整 AD&D 能力及後續區域
+  仍未完成。
 - remake JSON save，以及原版 SAVGAM／CHRDAT／FX／SWG 的已驗證欄位
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。

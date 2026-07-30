@@ -79,8 +79,7 @@ destination，而不是 numeric menu location。
 
 - DOS／PC-98 `INPUT STRING` 編輯鍵、游標、空字串、ASCII case conversion
   與畫面逐像素核對；指定 IDA Pro overlay handler 尚未定位。
-- 將兩場戰鬥各自由真正戰鬥勝利／失敗結果完整走完的 State 玩家路徑；
-  本輪 session regression 已證明 ECL continuation，但不等於兩戰規則完整。
-- 紅網所稱「great strength」是否另有 engine side effect；目前 ECL branch
-  沒有相應數值寫入，不可自行發明能力加成。
+- 兩場戰鬥的 State 勝利續跑與「great strength」負面證據已由
+  [第 387 輪規格](./387-burial-glen-red-web-two-battle-state.md)補完；
+  戰敗路徑與完整蜘蛛／羅剎妖規則仍未完成。
 - Burial Glen 其餘 terrain、Tyranthraxus 最終遭遇與結局。

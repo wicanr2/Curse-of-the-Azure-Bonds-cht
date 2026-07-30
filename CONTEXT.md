@@ -2365,3 +2365,19 @@ Unicode、Backspace、Enter、ECL 最大長度及 uppercase literal vocabulary�
 HACK 蜘蛛、RETREAT 與 `4CBFh=1`。新增 640×480 原版石框／16×15 倚天
 截圖及 READY spec 386；兩場戰鬥完整 State 勝敗路徑、逐鍵 DOS fidelity、
 strength side effect 與 Burial Glen 後續仍未完成。
+
+2026-07-30 第 387 輪把紅網 ENTER 接到完整 State 勝利玩家路徑。回歸從
+Standing Stone→Myth Drannor→Burial Glen 正常 GEO 行走進入 terrain
+`82h`，以真實 `MON6CHA.DAX` block `42h` 的四隻 GIANT SPIDER 開戰；
+一般 `CombatAct` 勝利後自動續跑同一 ECL session，顯示 PICTURE 72、
+揭露 block `43h` RAKSHASA 並開始第二戰。第二次勝利顯示脫困文字、
+寫入 `4CBFh=1`、返回地城，重踏事件不再觸發。
+
+ECL6 block `40h:+07E3h..+0894h` trace 也關閉 Journal 25「獲得強大力量」
+的歧義：ENTER 分支只寫 combat work `7F72h`、幽魂狀態 `4CBEh` 與完成
+旗標 `4CBFh`，沒有角色力量／能力／effect destination。該敘述是羅剎妖
+陷阱，remake 不得自行新增 Strength buff；`7F72h` 在外部 ABI 完成前仍保持
+未知 combat work 命名。Docker／Xvfb／ALSA null device 另由正式
+`-burial-red-web-battle` 保存 640×480 原版裂石框、MON6 CPIC 四蜘蛛戰鬥
+checkpoint。READY spec 387 保存證據與邊界；戰敗、蜘蛛毒素、羅剎妖完整
+能力、逐幀音效及 Burial Glen 後續仍未完成。
