@@ -761,8 +761,15 @@ func (s *State) fighterForCharacter(character party.Character) (combat.Fighter, 
 // debug comparisons while leaving the normal startup seed deterministic.
 func (s *State) SetCombatSeed(seed int64) { s.combatSeed = seed }
 
-// SetECLSeed controls RANDOM values while replaying an event sequence.
-func (s *State) SetECLSeed(seed int64) { s.eclSeed = seed }
+// SetECLSeed controls the deterministic RANDOM stream while replaying an
+// event path. BlockSession retains the generator across ECL invocations, so
+// revisiting a random terrain consumes the next roll instead of restarting.
+func (s *State) SetECLSeed(seed int64) {
+	s.eclSeed = seed
+	if s.session != nil {
+		s.session.ResetRandomSeed(seed)
+	}
+}
 
 // SetECLMemoryValue seeds one verified engine/script work word for a
 // reproducible story preview. Normal gameplay obtains these values from ECL.
@@ -953,7 +960,7 @@ func (s *State) enterECLMenu(menu ecl.Menu) {
 	s.Choices = make([]string, 0, len(menu.Options))
 	s.currentOriginalChoices = append([]string(nil), menu.Options...)
 	for _, option := range menu.Options {
-		s.Choices = append(s.Choices, localizeOption(s.catalog, option))
+		s.Choices = append(s.Choices, s.localizeOption(option))
 	}
 	if menu.Prompt != "" {
 		s.Prompt = localizePrompt(s.catalog, menu.Prompt)
@@ -1233,13 +1240,25 @@ func (s *State) Select(index int) error {
 			deferUntilVictory := result.CombatRequested && len(result.MonsterSpawns) > 0
 			if deferUntilVictory {
 				treasureReady = false
-			} else if err := s.ResolveTreasureRequests(); err != nil {
-				// A headless/test adapter may not have loaded ITEM*.DAX yet.
-				// Keep the raw request pending and let the ECL control flow reach
-				// its next command (including COMBAT) instead of aborting it.
-				s.Message = "財寶等待素材載入：" + err.Error()
-			} else if len(s.pendingTreasureItems) > 0 {
-				treasureReady = true
+			} else {
+				beforeMoney := s.moneyPool
+				beforeGems, beforeJewelry := s.treasureGems, s.treasureJewelry
+				beforeItems := len(s.pendingTreasureItems)
+				if err := s.ResolveTreasureRequests(); err != nil {
+					// A headless/test adapter may not have loaded ITEM*.DAX yet.
+					// Keep the raw request pending and let the ECL control flow reach
+					// its next command (including COMBAT) instead of aborting it.
+					s.Message = "財寶等待素材載入：" + err.Error()
+				} else {
+					// TREASURE may contain only coins, gems, or jewelry.
+					// Open the service when actual pooled content changed,
+					// but do not insert an empty page for a zero request.
+					treasureReady = result.CombatRequested &&
+						(s.moneyPool != beforeMoney ||
+							s.treasureGems != beforeGems ||
+							s.treasureJewelry != beforeJewelry ||
+							len(s.pendingTreasureItems) != beforeItems)
+				}
 			}
 		}
 		if s.session != nil && s.pendingWorldTravel && isWorldTravelRouteChoice(originalChoice) {
@@ -1561,7 +1580,7 @@ func (s *State) selectParlay(index int, originalChoice string) error {
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "PARLAY"
-	tactic := localizeOption(s.catalog, originalChoice)
+	tactic := s.localizeOption(originalChoice)
 	s.Message = fmt.Sprintf(s.catalog.Text("encounter_parlay_done", "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。"), tactic)
 	s.Choices = nil
 	s.currentOriginalChoices = nil
@@ -3294,7 +3313,7 @@ func (s *State) alterActionMessage(originalChoice string) string {
 	case "ALTER_PICS":
 		return s.catalog.Text("alter_pics_unavailable", "遭遇圖片設定功能尚待接入。")
 	default:
-		return localizeOption(s.catalog, originalChoice)
+		return s.localizeOption(originalChoice)
 	}
 }
 
@@ -3757,7 +3776,7 @@ func (s *State) campActionMessage(originalChoice string) string {
 	case "FIX":
 		return s.catalog.Text("fix_no_cure", "沒有已記憶的 Cure Light Wounds，隊伍未改變。")
 	default:
-		return localizeOption(s.catalog, originalChoice)
+		return s.localizeOption(originalChoice)
 	}
 }
 
@@ -4263,7 +4282,7 @@ func (s *State) shopActionMessage(originalChoice string) string {
 		s.enterShopIdentifyCharacterMenu()
 		return ""
 	default:
-		return localizeOption(s.catalog, originalChoice)
+		return s.localizeOption(originalChoice)
 	}
 }
 
@@ -4536,7 +4555,7 @@ func (s *State) placeEventMessage(originalChoice string) string {
 	case "BAR":
 		return s.catalog.Text("bar_event", "你來到"+s.LocationName+"的酒館。")
 	default:
-		return localizeOption(s.catalog, originalChoice)
+		return s.localizeOption(originalChoice)
 	}
 }
 
@@ -4782,14 +4801,26 @@ func (s *State) DungeonGeometryView() (x, y int, direction uint8) {
 // SetDungeonGeometryView is the inverse adapter used by renderers after a
 // movement in combined GEO coordinates. ECL continues to see its local map.
 func (s *State) SetDungeonGeometryView(x, y int, direction uint8) {
+	oldX, oldY, _ := s.DungeonGeometryView()
+	moved := oldX != x || oldY != y
 	if s.session != nil && s.session.CurrentBlockID() == 0x02 &&
 		s.GeoMapSet == 2 && s.GeoMapBlock == 1 {
 		s.DungeonX = (x + 8) % geo.Width
 		s.DungeonY = geo.Height - 1 - y
 		s.DungeonDirection = (4 - direction + 8) % 8
+		if moved {
+			s.session.SetMemoryValue(0x7F81, 0)
+		}
 		return
 	}
 	s.DungeonX, s.DungeonY, s.DungeonDirection = x, y, direction
+	if moved && s.session != nil {
+		// SearchLocation uses 7F81h as a per-successful-step event guard:
+		// event branches set it after firing, and later terrain dispatchers
+		// exit while it remains one. The reference movement helper clears
+		// that transient before the next search-location invocation.
+		s.session.SetMemoryValue(0x7F81, 0)
+	}
 }
 
 func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) {
@@ -4853,12 +4884,20 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 		return true, s.enterECLTemple()
 	}
 	if len(result.TreasureRequests) > 0 {
+		beforeMoney := s.moneyPool
+		beforeGems, beforeJewelry := s.treasureGems, s.treasureJewelry
+		beforeItems := len(s.pendingTreasureItems)
 		if err := s.ResolveTreasureRequests(); err != nil {
 			return true, err
 		}
-		s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
-		s.enterTreasureMenuFor(ModeDungeon)
-		return true, nil
+		if s.moneyPool != beforeMoney ||
+			s.treasureGems != beforeGems ||
+			s.treasureJewelry != beforeJewelry ||
+			len(s.pendingTreasureItems) != beforeItems {
+			s.treasureResumeECL = s.session != nil && len(s.eclBlock) > 0
+			s.enterTreasureMenuFor(ModeDungeon)
+			return true, nil
+		}
 	}
 	if result.CombatRequested {
 		records := s.monsterRecordsForCurrentECL()
@@ -4948,7 +4987,7 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 		return true, fmt.Errorf("data-pack event %q returned unsupported mode %q", applied.EventID, runtime.Mode)
 	}
 	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
-	s.Choices = []string{localizeOption(s.catalog, s.currentOriginalChoices[0])}
+	s.Choices = []string{s.localizeOption(s.currentOriginalChoices[0])}
 	if result.WaitingForMenu && len(result.Menus) > 0 {
 		menu := result.Menus[len(result.Menus)-1]
 		s.pendingECLMenu = &menu
@@ -5516,6 +5555,15 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	default:
 		return option
 	}
+}
+
+func (s *State) localizeOption(option string) string {
+	if s != nil && s.dataPack != nil {
+		if value, ok := s.dataPack.LocalizeOption(option, s.catalog.Language); ok {
+			return value
+		}
+	}
+	return localizeOption(s.catalog, option)
 }
 
 func localizePrompt(catalog locale.Catalog, prompt string) string {

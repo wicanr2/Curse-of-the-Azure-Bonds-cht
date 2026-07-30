@@ -2201,7 +2201,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hap peasant event returned mode=%v, want dungeon", state.Mode)
 	}
 	state.DungeonWallRoof = 0x80
-	state.eclSeed = 3
+	state.SetECLSeed(3)
 	session.SetMemoryValue(0x4BC9, 15)
 	if err := state.SearchDungeonLocation(); err != nil {
 		t.Fatal(err)
@@ -2218,15 +2218,15 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	patrolFighters := state.CombatFighters()
 	if len(patrolFighters) != 5 {
-		t.Fatalf("Hap patrol fighters=%d, want hero, three fighters, and one mage", len(patrolFighters))
+		t.Fatalf("Hap patrol fighters=%d, want hero and four fighters", len(patrolFighters))
 	}
-	for _, fighter := range patrolFighters[1:4] {
+	// The menu resume must continue the same seeded PRNG stream. Restarting
+	// seed 3 at the COMBAT choice used to fabricate three fighters plus one
+	// mage; the uninterrupted ECL sequence produces four fighters here.
+	for _, fighter := range patrolFighters[1:] {
 		if fighter.Name != "黑暗精靈戰士" || fighter.SpriteBlock != 0x31 {
 			t.Fatalf("Hap dark elf fighter=%+v", fighter)
 		}
-	}
-	if patrolFighters[4].Name != "黑暗精靈法師" || patrolFighters[4].SpriteBlock != 0x32 {
-		t.Fatalf("Hap dark elf mage=%+v", patrolFighters[4])
 	}
 	for turn := 0; turn < 16 && state.Mode == ModeCombat; turn++ {
 		if err := state.CombatAct(); err != nil {
@@ -2608,6 +2608,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Prompt != "請選擇角色" || len(state.Choices) != 2 {
 		t.Fatalf("lava cask volunteer prompt=%q choices=%#v", state.Prompt, state.Choices)
 	}
+	// This assertion covers the failed heat check. Reset explicitly instead
+	// of relying on the removed per-invocation RNG restart.
+	state.SetECLSeed(3)
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}

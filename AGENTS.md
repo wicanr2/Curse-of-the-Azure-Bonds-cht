@@ -67,6 +67,27 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 
 ### 容易重犯的反組譯與實作錯誤
 
+- ECL 地城事件的 `7F81h` 是「本步已處理」guard，不是整張地圖或整個
+  session 的永久完成旗標。玩家座標真正移到另一格時必須清除；原地重繪、
+  開關選單、戰鬥 handoff 與戰後續跑則不能清除。若處理錯誤，常見症狀是
+  第一個 terrain 事件完成後，後面所有 terrain 都像是失效。
+- 不得讓每次 ECL invocation 都用同一個固定亂數種子重新起跑。這會使同一
+  terrain 的隨機遭遇永遠得到同一結果，玩家來回踩格也不會改變。測試需要
+  可重現性時，`BlockSession` 必須保存同一個由基底 seed 建立的持續 PRNG
+  串流；不能每次改用 `seed+序號`，那會改變既有長路徑的原版遭遇結果。
+  未把 PRNG 狀態納入 save round-trip 前，必須把存讀檔後亂數序列 fidelity
+  列為未完成，不能宣稱完全還原。
+- ECL 選單不是顯示完文字就算解碼完成。必須驗證動態長度字串的真正
+  `stringsEnd`、selection destination、0-based／1-based 編號、branch table、
+  resume PC 與選擇後第一個 opcode。若選 LOOT 卻落入「零怪物 COMBAT」等
+  不合理狀態，先查選單續跑位址與分支解碼；不得用 frontend 特判掩蓋。
+- 每個 ECL boundary（文字、按鍵、選單、字串輸入、戰鬥、寶物）都要保留
+  同一 `BlockSession` 的 continuation。重新從 block 起點執行、錯用新的
+  selection offset，或在戰後遺失 pending PC，可能重播前文、走錯選項或
+  觸發不存在的戰鬥。
+- 攻略只能協助定位與交叉驗證。攻略寫「33% 遭遇」「搜刮得到珠寶」時，
+  仍須回到 ECL bytes、IDA 與 runtime 查出亂數比較、work address、寶物
+  opcode 和旗標副作用；不得直接把攻略數字寫進 Go 程式冒充反組譯結果。
 - 不得因目前 runtime 尚未支援某個 ECL opcode，就把它猜成最接近的既有
   UI。例：`INPUT STRING` 是可輸入、可退格、可確認且會寫入指定 ECL 字串
   記憶體的互動，不是預先列出答案的選單；若暫時無法實作，應以
@@ -79,7 +100,9 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   資料仍由原始 ECL 或 CoAB game-pack 驅動。
 - probe 測試可暫時輸出未知分支，但不能被誤當 regression test 或完成證據。
   milestone 完成前要把 probe 轉成具名斷言，或在保留研究價值時移入明確的
-  audit 工具；不得留下只會列印結果、沒有驗證條件的常態測試。
+  audit 工具；不得留下只會列印結果、沒有驗證條件的常態測試。尤其禁止
+  commit `temporary probe`、刻意 `Fatalf` dump 或只為觀察狀態而永遠失敗的
+  測試。
 - direct-entry、直接設定 PC／旗標或注入戰鬥只適合縮小問題；完成驗收必須
   再從正常地圖移動、事件互動與戰後續跑抵達同一狀態。否則只能聲稱局部
   opcode／事件測試通過。
@@ -157,6 +180,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 - 產品層測試不得複製 JSON 內的翻譯、裝備名、法術名、地名或其他可編輯顯示
   文字作為期望值；必須用穩定 ID 從實際 game pack／catalog 取得期望內容。
+- 選項翻譯同樣屬於 game pack 資料：使用 stable `option_rule.id` 與原始
+  source token 對應 `message_id`，State 只呼叫作品中立的解析介面。不得因
+  新增一個劇情選項就擴大 State 裡的中文 `switch`；舊 fallback 只能作遷移
+  相容層，碰到相關 vertical slice 時要移入 JSON。
 - 原版 ECL 固定英文、原始 bytes、位址與選單 token 只可出現在明確的來源
   oracle／parser 測試，並應同時驗證結構或來源位置；不能拿它們代替產品層
   本地化驗收。
@@ -218,9 +245,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e2a1031`；第 387 輪 Burial Glen 紅網雙戰鬥 State
-  milestone 會由本文件所在 commit 完成。
-- Engine dependency：`7ba2f8e`（含世界目的地有向圖 schema／validation、
+- CoAB 本輪基底：`cf20315`；第 388 輪 Burial Glen 墳墓掠奪者、
+  純珠寶 TREASURE 與選項資料化 milestone 會由本文件所在 commit 完成。
+- Engine dependency：`9826632`（含作品中立 `option_rules`、世界目的地
+  有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
@@ -250,6 +278,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `4CBFh=1`、地城返回及重踏不重播。Journal 25 的「強大力量」是陷阱話術；
   ENTER 指令只寫 combat work `7F72h`、`4CBEh` 與 `4CBFh`，不能自行新增
   Strength buff。戰敗、毒素、羅剎妖完整能力與後續區域仍未完成。
+- 第 388 輪已沿正常 GEO 路徑抵達 terrain `04h` 的隨機墳墓事件，完成
+  2 巨型蜘蛛、3 相位蜘蛛、1 thri-kreen 戰鬥，以及 REBURY／LOOT
+  兩分支。`4CBAh` 的 raw 中立值是 `80h`；重新安葬加一，搜刮減一並取得
+  一件珠寶。純 coin／gem／jewelry TREASURE 現在會進入 service boundary，
+  不再誤成零怪物 COMBAT；三個選項已由 engine `option_rules`＋CoAB JSON
+  stable ID 驅動。四批上限長回歸、完整怪物規則、treasure TAKE／SHARE、
+  thri-kreen 清楚可見的 placement 及後續 Burial Glen 仍未完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

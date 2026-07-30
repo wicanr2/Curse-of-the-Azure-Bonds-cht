@@ -12,6 +12,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -23,6 +24,8 @@ func main() {
 	inputFile := flag.String("input-file", "", "直接讀取 DAX 檔案；非空時不使用 -image／-member")
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	traceStart := flag.Int("trace-start", -1, "decoded payload offset for -trace (default 0)")
+	dumpOffset := flag.Int("dump-offset", -1, "dump decoded block bytes from this payload offset")
+	dumpLength := flag.Int("dump-length", 64, "decoded byte count for -dump-offset")
 	runStart := flag.Int("run-start", -1, "decoded payload offset for -run-subset (default initial entry)")
 	blockID := flag.Int("block-id", -1, "inspect only this decimal DAX block ID")
 	stringsOnly := flag.Bool("strings", false, "print ECL packed-text candidates")
@@ -32,6 +35,7 @@ func main() {
 	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
 	findSaveDestination := flag.String("find-save-destination", "", "搜尋寫入指定 16-bit address 的 SAVE candidates（十六進位）")
 	pc98DAX := flag.Bool("pc98-dax", false, "以 IDA 驗證的 PC-9801 DAX block codec 解碼")
+	geoGrid := flag.Bool("geo-grid", false, "將所選 GEO DAX block 解碼為 16×16 terrain 座標表")
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
@@ -200,6 +204,54 @@ func main() {
 			continue
 		}
 		fmt.Printf("block %d: %d decoded bytes\n", block.Entry.ID, len(block.Data))
+		if *dumpOffset >= 0 {
+			if *dumpLength <= 0 {
+				log.Fatal("-dump-length must be positive")
+			}
+			start := *dumpOffset + 2
+			end := start + *dumpLength
+			if start < 2 || start >= len(block.Data) {
+				log.Fatalf("-dump-offset 0x%X is outside decoded payload length 0x%X", *dumpOffset, len(block.Data)-2)
+			}
+			if end > len(block.Data) {
+				end = len(block.Data)
+			}
+			for row := start; row < end; row += 16 {
+				rowEnd := row + 16
+				if rowEnd > end {
+					rowEnd = end
+				}
+				fmt.Printf("  +0x%04X:", row-2)
+				for _, value := range block.Data[row:rowEnd] {
+					fmt.Printf(" %02X", value)
+				}
+				fmt.Println()
+			}
+		}
+		if *geoGrid {
+			grid, geoErr := geo.Parse(block.Entry.ID, block.Data)
+			if geoErr != nil {
+				fmt.Printf("  GEO grid stopped safely: %v\n", geoErr)
+			} else {
+				for y := 0; y < geo.Height; y++ {
+					fmt.Printf("  y=%02d", y)
+					for x := 0; x < geo.Width; x++ {
+						fmt.Printf(" %02X", grid.Cells[y][x].Terrain)
+					}
+					fmt.Println()
+				}
+				for y := 0; y < geo.Height; y++ {
+					for x := 0; x < geo.Width; x++ {
+						cell := grid.Cells[y][x]
+						if cell.Terrain == 0 {
+							continue
+						}
+						fmt.Printf("  terrain=0x%02X at (%d,%d) walls=% X details=% X\n",
+							cell.Terrain, x, y, cell.WallDirections, cell.DetailDirections)
+					}
+				}
+			}
+		}
 		if *entrySmoke {
 			reports, smokeErr := ecl.SmokeInitializationEntries(block.Data, 5, 500, selections)
 			if smokeErr != nil {
@@ -404,6 +456,9 @@ func main() {
 				result, runErr = ecl.RunSubsetWithSelections(block.Data, start, 500, selections)
 			}
 			fmt.Printf("  subset steps=%d stop=+0x%04X texts=%d\n", result.Steps, result.PC, len(result.Text))
+			if len(result.RandomValues) > 0 {
+				fmt.Printf("  subset RANDOM values=%v\n", result.RandomValues)
+			}
 			if result.WaitingForMenu {
 				fmt.Println("  subset waiting for menu selection")
 			}
