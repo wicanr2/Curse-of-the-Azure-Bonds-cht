@@ -220,6 +220,19 @@ remainder 累加 PCM samples，不能每 tick 各自四捨五入，否則曲長�
 `27h=20h→0Ah`，首週期仍會受 reload phase 與 CPU I/O timing 影響。
 知識庫不可把「長時間無 rounding drift」寫成「每個 IRQ edge cycle-exact」。
 
+2026-07-30 第 382 輪依版本化 ymfm 實作補齊公式：
+
+```text
+reload clocks = (16 × (256 − B) − phase) × 12 × prescale
+phase = total internal clocks & 15
+```
+
+共用 engine 現有 `TimerBReloadClockCycles` 與
+`TimerBSampleAccumulator.AdvanceReload`，可保存 phase-adjusted period
+而不丟失 sample remainder。CoAB 的 `20h→0Ah` 間會執行資料相依的七聲道
+interpreter；未取得 CPU／OPN 共時 trace 前，不得填入固定延遲。現行
+instant-ISR renderer 的相位為 0，這是明示的模型邊界，不是原機量測。
+
 2026-07-30 第 377 輪補上遊戲 wrapper 與 driver 之間的重要分層：
 
 - `GAME.EXE MSCPLAY` 先 `MSCSTOP`，再呼叫 Borland `DELAY(0x320)`，最後

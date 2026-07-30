@@ -119,6 +119,11 @@ timing-reconstructed。
 第 381 輪再以版本化 direct probe 讓 NP2kai i286c/V30 core 執行 exact
 routine；OUT 順序吻合，但 NP2kai `_loop` 使用 80286 taken 8／exit 4
 clocks，故只作控制流 oracle，不拿 emulator clock 冒充原機時序。
+第 382 輪再依版本化 ymfm 補上 Timer B reload 相位契約：
+`(16×(256−B)−phase)×12×prescale`，共用 engine 可把 phase `0..15`
+納入無漂移 PCM accumulator。CoAB ISR 的七聲道 interpreter 時長仍需
+CPU／OPN 共時 trace，現行 phase 0 是明示模型邊界，不宣稱原機
+cycle-exact。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與

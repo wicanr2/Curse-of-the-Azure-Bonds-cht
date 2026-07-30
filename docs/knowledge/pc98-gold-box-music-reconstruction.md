@@ -87,8 +87,12 @@ S98 證明 YM2203 clock 是 3,993,600 Hz、prescale 6。Timer B 完整 period：
 = 1152 × (256 - value) chip clocks
 ```
 
-sample accumulator 必須保存 remainder。`27h` reload 的 free-running
-divide-by-16 phase 尚未完成，所以目前不是 cycle-perfect IRQ edge。
+sample accumulator 必須保存 remainder。第 382 輪已把 `27h` reload 的
+free-running divide-by-16 寫成作品中立契約：
+`(16×(256−B)−phase)×12×prescale`，其中 phase 是 `0..15`；不能只在最後
+減 1–15 個 chip clocks。CoAB ISR 會在 `27h=20h` 與 `0Ah` 間執行資料相依
+的七聲道 interpreter，仍缺 CPU／OPN 共時 trace，所以目前不是
+cycle-perfect IRQ edge。
 
 `SOUND.ROM` 的六種 LFO 與 cadence 已由 exact ROM harness 證明；但本作
 MSCDRV 接管 YM2203 IRQ，不鏈回 Sound BIOS ISR，所以忠實 BGM 不啟用該

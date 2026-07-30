@@ -166,9 +166,13 @@ commit 內保存不可能自我引用的 hash。
   `LOOP taken=5／exit=13`、四種 gate overhead 與 deterministic WAV。
   第 381 輪以 NP2kai direct V30 core probe 重現 exact OUT sequence，
   同時證明其 `_loop` 沿用 80286 `8/4` clocks，不能當原機 wall-clock
-  oracle。目前仍缺原機 edge trace／機型 wait／prefetch 校準、
+  oracle。第 382 輪已依 ymfm 補上 Timer B free-running divide-by-16
+  重載公式、phase `0..15` 驗證與無漂移 PCM accumulator API；但 CoAB
+  `27h=20h→0Ah` 間的七聲道 interpreter 是資料相依路徑，仍缺 CPU／OPN
+  共時 trace，現行 instant-ISR renderer 明確維持 phase 0。目前仍缺原機
+  edge trace／機型 wait／prefetch 校準、
   driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
-  Timer B reload phase。MSCDRV Timer B-only
+  CoAB 真實 Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
   LFO waveform、完整 Timer B count period 與 PCM 有理數 accumulator
   已完成；
