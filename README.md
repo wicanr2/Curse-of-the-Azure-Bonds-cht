@@ -94,6 +94,15 @@ Borland `DELAY(0x320)` 等待 800ms 才播放新曲。遊戲播放器現會輸�
 FM SFX interpreter，但尚未找到正常 GAME 非零 request caller，因此不會
 擅自接入。save/resume、類比 mixer gain、`27h` reload phase 與完整
 PC-speaker／FM SFX mapping 仍未完成。
+第 378 輪另把正常短音效與這條 dormant FM SFX 分開：IDA Pro 9.4 的
+8086／16-bit 分析及 raw TPOV auditor 共同確認 `GAME.OVR` 有 42 個
+`PUSH selector → CALL SOUNDFX` 直接 caller，涵蓋八個 Borland modules。
+`MOVEMENT` 三處固定使用 selector 10，與 DOS `step.wav` 交叉確認為腳步。
+`GAME.EXE` 的 no-op／公式／20-WORD 音序表和 PC-98 port `37h`
+`06h/07h` pulse routine 已還原；`cmd/pc98-sfx-audit` 可從使用者本機
+exact executable 匯入 typed pulse／delay，不提交商業音序 bytes。
+V30／8086 cycle 到 44.1kHz PCM 的校準與遊戲內 one-shot mixer仍未完成，
+因此目前不把原 WORD 誤稱為 Hz，也不宣稱 PC-98 短音效已可播放。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
@@ -127,7 +136,9 @@ Timer B 完整週期與 PCM 有理數排程則見
 合成器、PCM 串流與遊戲播放器見
 [`docs/spec/376-pc98-ym2203-synth-and-game-player.md`](docs/spec/376-pc98-ym2203-synth-and-game-player.md)，
 正常換曲、loop 與未使用音效邊界見
-[`docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md`](docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md)。
+[`docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md`](docs/spec/377-pc98-music-transition-loop-and-sfx-boundary.md)，
+正常 GAME 短音效 selector、caller 與 port `37h` 程式見
+[`docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md`](docs/spec/378-pc98-game-soundfx-selector-and-speaker-program.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

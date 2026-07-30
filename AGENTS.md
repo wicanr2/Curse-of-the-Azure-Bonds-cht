@@ -171,7 +171,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`bd1e0cf`；第 377 輪 PC-98 正常換曲／loop
+- CoAB 本輪基底：`b590947`；第 378 輪 PC-98 正常短音效程式／caller
   milestone 會由本文件所在 commit 完成。
 - Engine dependency：`6f959cb`（含中立 `audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
@@ -355,9 +355,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   證明本作 MSCDRV 接管 IRQ 並繞過該 LFO。第 375 輪已補 Timer B 完整
   count period 與 PCM 有理數 accumulator；第 376 輪已接入 `ymfm`、
   PCM stream 與遊戲播放器。第 377 輪已證明正常換曲 800ms silence 與
-  `0xFF` 無限 loop，並把未使用 driver fade／FM SFX 分離。下一個真實
-  缺口是 reload phase、SFX caller／mapping、save/resume 與 analog
-  mixer gain。
+  `0xFF` 無限 loop，並把未使用 driver fade／FM SFX 分離。第 378 輪已
+  找到正常 `GAME.OVR → SOUNDFX` 的 42 個直接 caller、八個 Borland
+  module 的 selector 分布、port `37h` pulse routine 與
+  `GAME.EXE` file `E66Ch` 的 20-WORD 音序表。`MOVEMENT` 三處皆為
+  selector 10，與 DOS `step.wav` 共同證明腳步語意。作品端
+  `internal/pc98sfx` 只從 exact 本機 executable 匯入 typed
+  pulse／delay，不提交商業 bytes。下一個真實缺口是逐 caller 事件命名、
+  V30／8086 cycle→PCM、one-shot mixer、reload phase、save/resume 與
+  analog mixer gain；原 WORD 不是已證明的 Hz，不可先接成任意 tone。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -373,8 +379,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371–377 輪規格也已 READY。下一步補 MSCDRV Timer B reload phase、
-  SFX 真實 caller／mapping、save/resume 與 analog mixer gain。
+  第 371–378 輪規格也已 READY。下一步追 SOUNDFX 逐 caller 語意與
+  port `37h` cycle→PCM，再補 MSCDRV Timer B reload phase、save/resume
+  與 analog mixer gain。
 
 ## 10. Compact 後恢復工作清單
 

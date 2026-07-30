@@ -2216,3 +2216,21 @@ analog mixer gain。
 Docker／Xvfb／ALSA null device 正常消耗 `MusicEvent`、建立新版 player、
 輸出 deterministic screenshot 後退出；本機 PNG SHA-256 為
 `8ab3e88ed74668788dfb3d37e5d6fdafbccf672de365fe827a933a5213c30fdd`。
+
+2026-07-30 第 378 輪完成 PC-98 正常短音效程式與 caller 分布。指定
+IDA Pro 9.4 以 8086／16-bit 分析 `GAME.EXE` 及八個 raw overlay，並由
+`cmd/pc98-ovr-audit -soundfx` 對 TPOV code bytes 交叉驗證。42 個
+`PUSH DS:[constant] → CALL FAR 0893:0000` caller 完全吻合；selector
+分布涵蓋 1–13、15、255，其中 `MOVEMENT` 三處全為 10。
+
+`SOUNDFX 18930h` 對 `0/1/13/14/15/255` 立即返回；`2/4/6/9` 走公式；
+其餘使用 DS `1A3Ch` 的 20-WORD table。Borland `SOUND` 只保存 WORD，
+`19D1Eh` 依其值忙等並向 PC-98 port `37h` 交替寫 `06h/07h`。IDA 匯出
+640 bytes 後回搜 raw executable，唯一有效 base 是 file `E66Ch`，
+整表 SHA-256 `65e9cf2cd93ae31edb497666415b54f936b98b8d89f87d475ebf3c4815c59ac4`。
+
+新增 `internal/pc98sfx` exact-SHA importer、`cmd/pc98-sfx-audit`、overlay
+direct-call typed auditor、focused tests、兩支 native IDC 與 READY
+spec 378。商業表格、IDA DB、log 均未提交。下一步先追 selector 3–12
+逐 caller 事件，再用 V30／8086 cycle 或 NP2kai audio trace 校準
+port 37h pulse→PCM，最後接 Ebiten one-shot mixer；原 WORD 不可誤稱 Hz。

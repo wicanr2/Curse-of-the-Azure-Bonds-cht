@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`8c4c5db`
+本 milestone 的 CoAB 基底：`b590947`
 依賴的 Golden Box engine checkpoint：`6f959cb`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -125,8 +125,12 @@ commit 內保存不可能自我引用的 hash。
   第 377 輪再證明正常 `MSCPLAY` 是 stop → 800ms delay → play，而不是
   driver fade；播放器已保留 35,280-frame 靜音且不推進音序列。正常
   loop count 0 會轉成 `0xFF` 無限循環。driver 內部 40-tick fade／FM SFX
-  沒有正常 GAME caller，仍缺 `27h` reload phase、完整 SFX mapping、
-  save/resume 與 analog mixer gain 校準。
+  沒有正常 GAME caller。第 378 輪另由 IDA 8086 與 raw TPOV auditor
+  找到正常 `GAME.OVR → SOUNDFX` 的 42 個直接 caller、selector 分布、
+  port `37h` pulse routine 與 `GAME.EXE` file `E66Ch` 的 16×20 WORD
+  音序表；作品端 importer 會驗證 exact executable 後輸出 typed
+  pulse／delay steps，不提交商業 bytes。仍缺 pulse cycle→PCM 校準、
+  `27h` reload phase、save/resume 與 analog mixer gain。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -150,8 +154,10 @@ commit 內保存不可能自我引用的 hash。
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
-  已證明，但仍缺 driver 內部 FM SFX 的真實 caller、完整 PC-speaker
-  mapping、save/resume、analog mixer gain 與
+  已證明；PC-98 正常短音效的 42 個 GAME.OVR caller、selector 分布、
+  音序表與 port `37h` pulse 程式也已證明並可由本機 GAME.EXE 匯入，
+  但仍缺逐 caller 事件命名、CPU cycle→PCM、遊戲內 one-shot mixer、
+  driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
   Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
   LFO waveform、完整 Timer B count period 與 PCM 有理數 accumulator

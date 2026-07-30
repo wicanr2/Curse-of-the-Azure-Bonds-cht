@@ -235,3 +235,27 @@ remainder 累加 PCM samples，不能每 tick 各自四捨五入，否則曲長�
 其他 PC-98 Gold Box 版本即使使用相似 driver，也必須同時追遊戲 wrapper、
 public ABI、request producer 與 driver consumer，不能看到 fade／SFX
 程式碼就假設正常玩家路徑使用。
+
+2026-07-30 第 378 輪把 CoAB 正常短音效追到 `GAME.EXE SOUNDFX` 與
+`GAME.OVR` caller。這條路徑不使用 YM2203，也不使用 IBM PC PIT：
+Borland `SOUND` 只保存一個 WORD，另一 routine 依該值忙等，交替向
+PC-98 port `37h` 寫 `06h／07h`。
+
+可沿用的分析方法：
+
+- 先用 TPOV control chain 分離 code 與 relocation；
+- 以 exact `PUSH DS:[constant] + CALL FAR` 找直接 caller；
+- 再用 Borland symbol module 判讀功能群；
+- raw overlay 載入 IDA 時必須明確設成 8086／16-bit；
+- executable 的 data segment 不能假設全檔共用一個 linear→file 差值；
+  應從 IDA 匯出資料視窗，再回搜 raw bytes 與整段雜湊。
+
+CoAB 的 42 個直接 caller 分布於 `INTRO／INTERPET／PROTECT／COMSTUFF／
+MOVEMENT／SPELLS／GENERIC／LOS`。`MOVEMENT` 三處都送 selector 10，
+因此可與 DOS `step.wav` 交叉確認腳步；其他 selector 仍應追到具名函式與
+實際事件，不能只憑 module 名稱猜成某一招法術。
+
+聲音重建時也要保留語意邊界。原 WORD 是 busy-loop period／count 參數，
+不是已證明的 Hz。要跨平台合成，應把「作品端 selector 與 sequence import」
+和「共用 PC-9801 CPU／speaker cycle renderer」拆開；前者本輪已完成，
+後者需以 V30／8086 timing 或 emulator audio trace 校準後再放入 engine。
