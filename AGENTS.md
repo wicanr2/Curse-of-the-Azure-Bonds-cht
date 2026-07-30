@@ -165,13 +165,18 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   標題或明確強調。
 - Adventure chrome 必須使用本機 DOS runtime 抽出的 cracked stone raster，
   不回退為 generic 灰框。
-- 左上第一人稱／人物／事件圖依畫面 contract 使用 cover＋clip 填滿內格；
-  必須完整可見的素材才用 contain。
+- 左上第一人稱／一般 PIC 事件圖依畫面 contract 使用 cover＋clip 填滿內格；
+  HEAD／BODY 人物另依下列固定舞台 contract。
 - HEAD／BODY 是分層素材；頭不能塞進胸口。戰鬥 CPIC sprite 依原生 24×24
   tile、footprint 與 anchor，不走一般圖片置中。
+- HEAD／BODY 場景人物不能走 PIC／第一人稱場景的 `cover`：依 game-pack
+  `presentation.scene_character` 的 native anchor／clip 整數放大，先畫人物、
+  再覆蓋原版人物內框。場景與人物是兩種不同 renderer contract。
 - 原版忠實 theme 永遠保留；美化只能是額外可切換 theme。
 
-目前最新視覺規格：`docs/spec/348-original-dos-frame-pc98-type-density.md`。
+目前最新視覺規格：`docs/spec/391-dos-head-body-character-stage.md`；
+全域石框與字級基線仍見
+`docs/spec/348-original-dos-frame-pc98-type-density.md`。
 舊 spec 329 的手繪 combat frame 已被 supersede；現況是 DOS 石框素材 exact、
 combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
@@ -267,10 +272,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`b242e57`（第 389 輪 Burial Glen 黛米爾公主、
-  GEO 最短路徑 auditor、四分支與資料化繁中）；第 390 輪命中 consumer
-  milestone 會由本文件所在 commit 完成。
-- Engine dependency：`625c77b`（含作品中立 `combat_modifiers`、
+- CoAB 本輪基底：`71bb3cb`（第 390 輪黛米爾 attack-roll consumer）；
+  第 391 輪 DOS HEAD／BODY 人物舞台 milestone 會由本文件所在 commit 完成。
+- Engine dependency：`f9fbcaf`（含作品中立 game-pack
+  `presentation.scene_character` native geometry、繁中人物版面知識庫、
+  `combat_modifiers`、
   signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
   有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
@@ -322,6 +328,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   side-scoped modifier 已接通，正常玩家路徑命中邊界證明生效且不改寫
   Fighter 基礎 AttackBonus。離開 Myth Drannor 後清除 `4CBBh` 的 writer、
   所有特殊武器 caller 與完整戰鬥 fidelity 仍未完成。
+- 第 391 輪已將使用者提供的 1014×759 DOS 顯示擷取還原至 320×200，
+  確認畫中人物為 `HEAD2 02 + BODY2 02`、88×88、native anchor
+  `(28,24)`。engine game-pack schema 保存 scene-character anchor／clip；
+  CoAB HEAD／BODY 不再走 PIC cover，並恢復 EGA 黃色裂紋人物內框。
+  `-inn` 與不同 selector 的 `-temple` 正常玩家路徑均有 640×480 回歸畫面。
+  來源經顯示縮放，故整體標示為
+  `material-exact/layout-reconstructed`，尚未宣稱 palette-cycle pixel-exact。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

@@ -678,8 +678,9 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 ![正式流程抵達 Windlord's Inn 的 640×480 繁中事件](docs/screenshots/tilverton-inn.png)
 
 上圖由 `-inn` 重現正式角色建立後的序幕，從 `(7,13)` 往西走一格，經原版
-GEO／ECL dispatch 抵達旅店；低解析原圖以整數倍放大，事件人物由 HEAD3／BODY3
-原始像素素材合成，繁中文字則以 24px 高解析字型在 640×480 畫面重新排版。
+GEO／ECL dispatch 抵達旅店。事件人物由 HEAD3／BODY3 原始素材合成，依 DOS
+實機證據在固定人物舞台以 2× nearest-neighbour 顯示，並保留原版黃色裂紋
+內框；不再用場景 `cover` 放大裁掉手臂。繁中正文使用 16×15 倚天粗體。
 - GEO2 `(6,5)` selector `0x8A` 的賢者菲拉妮事件也已接回正式 ECL。PICTURE 5
   顯示 HEAD5／BODY5 原始人物；回答「是 → 如實相告」會執行原版 `ROB 1,50,0`，
   將全隊 Copper／Silver／Electrum／Gold／Platinum 各自減半，再把 PDF/TXT 的
@@ -705,9 +706,10 @@ nearest-neighbor 整數倍放大；繁中以 24px 字型直接畫在 640×480 �
 
 ![剛德神殿 HEAD9／BODY6 的 640×480 原始人物事件](docs/screenshots/tilverton-gond-temple.png)
 
-這個事件證明 HEAD／BODY selectors 並不必同號。素材產生器現在會建立可擴張畫布，
-先把 BODY 放在 `y+5`，再以 masked HEAD 覆蓋；因此神官頭像不再被裁切或落入缺圖
-fallback。畫面仍採原始像素 3× nearest-neighbor，中文字維持 24px 高解析排版。
+這個事件證明 HEAD／BODY selectors 並不必同號。素材產生器建立可擴張畫布，
+先放 HEAD，再讓 `y+5` 個原始文字列（40px）的 BODY 肩頸覆蓋頭部下緣；renderer
+則依 game-pack 的 native anchor／clip 以 2× nearest-neighbour 放進人物舞台。
+人物與一般 PIC 場景已分流，中文正文維持 16×15 倚天粗體。
 - GEO2 `(5,2)` 的訓練場已接通 PICTURE 4 → `PROGRAM 0` 特定場所服務。角色會依
   DOS `0x127` 的 32-bit XP 與六職業原版門檻判定，確認後由該角色支付 1000 GP，
   提升 class level 並按 hit die／Constitution 增加 HP；一般 `PROGRAM 0` 仍返回標題。

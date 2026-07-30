@@ -327,6 +327,7 @@
 - [第三百四十六輪第一人稱背景與 wall 座標](./346-first-person-background-coordinates.md)（`READY`：限 native background、SKY/FA–FC、wall +3 transform 與倚天全 UI）
 - [第三百四十七輪 DOS 冒險畫面 layout oracle](./347-dos-adventure-layout-oracle.md)（`READY`：原生 128／192 top split、640×480 投影、Tilverton first-person JSON）
 - [第三百四十八輪原版 DOS 邊框與 PC-9801 字級密度](./348-original-dos-frame-pc98-type-density.md)（`READY`：原版 cracked chrome、左上 cover viewport、16×15 遊戲內正文）
+- [第三百九十一輪 DOS HEAD／BODY 人物舞台](./391-dos-head-body-character-stage.md)（`READY`：原生人物 anchor／clip、黃色裂紋內框、場景 cover 分流）
 - [第三百四十九輪散塔林堡奧莉芙密道](./349-zhentil-olive-secret-passage.md)（`READY`：真實 ECL4/GEO4 `0x20→0x21`、手札 50／51 與繁中玩家路徑）
 - [第三百五十輪散塔林堡迪姆斯沃特同行](./350-zhentil-dimswart-escort.md)（`READY`：神殿 `(6,13)→(2,14)`、手札 12 六頁與 story escort flag）
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）

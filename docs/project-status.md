@@ -37,6 +37,9 @@ commit 內保存不可能自我引用的 hash。
 - DOS runtime cracked stone chrome 已抽成透明 native raster；事件／人物圖
   cover 填滿左上內格。PC-98 640×400 gallery 已建立字級密度參考索引。
 - CHEAD／CBODY 頭身合成、CPIC／SPRIT／COMSPR 戰鬥小人及 animation metadata。
+- HEAD／BODY 場景人物已依 DOS 320×200 實機量測，使用 game-pack native
+  anchor／clip、2× nearest-neighbour 與原版黃色裂紋內框；不再誤走場景
+  `cover` 裁切。旅店與剛德神殿正常玩家路徑已有 640×480 回歸畫面。
 - DUNGCOM、WILDCOM、RANDCOM combat terrain 與桌椅 overlay。
 - renderer-neutral 戰鬥動作時間軸已接入 attack pose、近戰 impact、弓箭與
   Magic Missile travel、phase-aligned 聲音、死亡 overlay，以及逐 action

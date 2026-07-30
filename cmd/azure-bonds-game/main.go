@@ -88,6 +88,7 @@ type app struct {
 	gamePack            *goldenengine.Pack
 	combatFrame         *ebiten.Image
 	adventureFrame      *ebiten.Image
+	characterStageFrame *ebiten.Image
 	combatAnimations    map[string][]combatAnimation
 	animationStart      time.Time
 	deathOverlayStarted map[string]time.Time
@@ -1181,7 +1182,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		key := fmt.Sprintf("character-area-%d-head-%02X-body-%02X.png", a.state.Area.GameArea, a.state.SceneHeadBlock, a.state.SceneBodyBlock)
 		if sprite := a.combatSprites[key]; sprite != nil {
 			a.drawAdventureChrome(screen)
-			drawImageCover(screen, sprite, image.Rect(16, 16, 256, 256))
+			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
 			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
@@ -1224,6 +1225,37 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
 	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
+}
+
+func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
+	if sprite == nil || a.gamePack == nil || a.gamePack.Presentation == nil ||
+		a.gamePack.Presentation.SceneCharacter == nil {
+		return
+	}
+	presentation := a.gamePack.Presentation
+	layout := presentation.SceneCharacter
+	scale := presentation.NativeScale
+	clip := image.Rect(
+		layout.Clip.X*scale,
+		layout.Clip.Y*scale,
+		(layout.Clip.X+layout.Clip.Width)*scale,
+		(layout.Clip.Y+layout.Clip.Height)*scale,
+	)
+	target := screen.SubImage(clip).(*ebiten.Image)
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(float64(scale), float64(scale))
+	op.GeoM.Translate(
+		float64(layout.SpriteX*scale-clip.Min.X),
+		float64(layout.SpriteY*scale-clip.Min.Y),
+	)
+	target.DrawImage(sprite, op)
+	if a.characterStageFrame != nil {
+		frameOptions := &ebiten.DrawImageOptions{}
+		frameOptions.Filter = ebiten.FilterNearest
+		frameOptions.GeoM.Scale(float64(scale), float64(scale))
+		screen.DrawImage(a.characterStageFrame, frameOptions)
+	}
 }
 
 func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
@@ -3211,7 +3243,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }

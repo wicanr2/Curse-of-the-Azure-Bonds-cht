@@ -2440,3 +2440,10 @@ attack-roll bindings。Battle 新增 side-scoped modifier；real-image ECL
 命中邊界均通過，並證明 Fighter 基礎值不變。READY spec 390 保存 hashes、
 bytes、IDA 公式與未完成邊界；下一步另依使用者提供的原版實機截圖量測
 人物 HEAD／BODY 組合與左上視窗版面。
+第三百九十一輪延續使用者提供的 1014×759 DOS 實機擷取，先還原 320×200
+邏輯座標，再確認畫中人物是 HEAD2 02＋BODY2 02、88×88 素材位於 `(28,24)`。
+共用 engine 新增 game-pack `presentation.scene_character` native
+anchor／clip；CoAB renderer 將 HEAD／BODY 與場景 cover 分流，加入 EGA
+量化的黃色裂紋人物內框，並以 `-inn`、`-temple` 正常玩家路徑更新兩張
+640×480 畫面。詳細證據見 READY spec 391；提交 hash 於本 milestone push
+後補記。
