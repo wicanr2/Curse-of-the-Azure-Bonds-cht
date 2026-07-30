@@ -90,6 +90,24 @@ type BridgeReport struct {
 var gameAnchors = []Anchor{
 	{
 		Binary:     "GAME.EXE",
+		Label:      "MSCPLAY_STOP_DELAY_800MS",
+		FileOffset: 0x93E4,
+		Bytes: mustHex(
+			"5589e5803ee38b017502eb38fe4e06a0e18b3a46067502eb2b" +
+				"8a4606a2e18b0ee82700b82003509a7903ee08",
+		),
+	},
+	{
+		Binary:     "GAME.EXE",
+		Label:      "BORLAND_DELAY_BUSY_LOOP",
+		FileOffset: 0x9BF9,
+		Bytes: mustHex(
+			"8bdc368b47040bc0740b33d28b1e42bef7f3e80300ca0200" +
+				"8bcae302e2fe8bc8e30a8bc133c9e2fe8bc8e2f6c3",
+		),
+	},
+	{
+		Binary:     "GAME.EXE",
 		Label:      "MSCPLAY_MSCSTOP_VECTOR_7E_CALLS",
 		FileOffset: 0x9410,
 		Bytes: mustHex(

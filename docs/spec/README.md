@@ -345,3 +345,5 @@
 - [第三百七十三輪 PC-98 Sound BIOS LFO Timer B 排程](./373-pc98-sound-bios-lfo-timer-scheduler.md)（`READY`：限 cadence、sync 狀態機與 ROM 動態 harness）
 - [第三百七十四輪 PC-98 MSCDRV Timer B 中斷所有權](./374-pc98-mscdrv-timer-b-ownership.md)（`READY`：限 driver ISR 接管、Timer B dispatch 與 CoAB faithful BGM 不執行 Sound BIOS LFO）
 - [第三百七十五輪 PC-98 YM2203 Timer B 時鐘](./375-pc98-ym2203-timer-b-clock.md)（`READY`：限完整 count period、3,993,600 Hz／prescale 6 與無漂移 PCM sample accumulator）
+- [第三百七十六輪 PC-98 YM2203 合成器與遊戲播放器](./376-pc98-ym2203-synth-and-game-player.md)（`READY`：限 Sound BIOS intent→YM2203→44.1 kHz PCM 與正式遊戲播放路徑）
+- [第三百七十七輪 PC-98 換曲延遲、循環與音效邊界](./377-pc98-music-transition-loop-and-sfx-boundary.md)（`READY`：限正常 stop→800ms→play、無限 loop 與未使用 driver fade／FM SFX 邊界）

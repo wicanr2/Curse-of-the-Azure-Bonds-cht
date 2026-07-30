@@ -2186,3 +2186,33 @@ FFmpeg 證明 441,000 samples/channel、非靜音、peak -21.142021 dB、無
 int16 clipping。WAV、driver 與 build cache 都只留本機。READY spec 376
 保存完整邊界；fade／SFX arbitration、完整 loop、save/resume、analog
 mixer gain 與 `27h` reload phase仍未完成。
+
+2026-07-30 第 377 輪完成 PC-98 正常換曲延遲與 loop 邊界。依
+`AGENTS.md` 在 Docker 內使用指定 IDA Pro 9.4 原生 IDC，交叉分析 exact
+`GAME.EXE`／`MSCDRV.EXE`，再由 raw bytes 與 executable auditor 驗證。
+
+`GAME MSCPLAY 18A44h` 對不同 selector 固定先呼叫 `MSCSTOP`，再把
+`0x0320` 傳給 Borland `DELAY 19259h`，800ms 後才經 IVT `7Eh` play。
+正常 public play 將 loop count 0 傳給 driver；初始化轉成 `0xFF`，FM
+`105CCh`／PSG `10952h` end consumer 對它不遞減並重設七聲道 cursor，
+所以正常十二首採無限循環。
+
+MSCDRV 自己雖有 `0x28`／40 Timer-B-tick fade 與 FM0 SFX interpreter，
+但 GAME wrapper 已先 stop，故正常換曲不進 fade。driver 的 SFX request
+只找到清零與 consumer，沒有正常 GAME 非零 producer；GAME `SOUNDFX`
+另走 Borland `SOUND`／`DELAY`。兩條路徑已明確分開，未擅自接入未知 FM
+SFX。
+
+CoAB 新增 `NewGameTrackPCMStream`，在每次新曲前輸出 35,280 frames／
+141,120 bytes 靜音且不推進 TrackPlayback；`internal/sound.Player`
+改用這條 wrapper。`pc98-render-track -game-transition` 以 exact driver
+selector 5 產生三秒 WAV；FFmpeg 證明前 0.8s 共 35,280 samples/channel
+全零，0.8–3.0s min/max `-418/2873` 且已發聲。READY spec 377、兩支
+native IDC、兩個 GAME raw anchors 與 regression 已保存。仍缺 FM SFX
+真實 caller、PC-speaker 完整 mapping、reload phase、save/resume 與
+analog mixer gain。
+
+正式 `cmd/azure-bonds-game -opening -pc98-music-driver` 也已在
+Docker／Xvfb／ALSA null device 正常消耗 `MusicEvent`、建立新版 player、
+輸出 deterministic screenshot 後退出；本機 PNG SHA-256 為
+`8ab3e88ed74668788dfb3d37e5d6fdafbccf672de365fe827a933a5213c30fdd`。

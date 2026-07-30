@@ -145,8 +145,10 @@ SETPARABLOCK 呼叫」與「key-on 當下有效音色」，並以 runtime trace 
 遇到其他 PC-98 Gold Box，不應把 FM key-on 固定寫成 `F0h`，也不能把
 total level 當作 volume-independent timbre signature。
 
-目前仍不能宣稱「PC-98 音樂已還原」。下一步是 fade／SFX 共存、
-完整 loop trace，再選擇有明確授權的 YM2203 合成器並接入 PCM mixer。
+目前仍不能宣稱「PC-98 音樂已還原」。第 376 輪已接入 BSD 授權 `ymfm`
+與 PCM mixer；第 377 輪則證明正常換曲不是 fade，而是 stop 後等待 800ms，
+正常 BGM 的 loop count 0 會轉成 `0xFF` 無限循環。剩餘重點是 SFX 真實
+caller、save/resume、reload phase 與類比 gain。
 
 2026-07-30 第 372 輪進一步還原 `SOUND.ROM` 的軟體 LFO。IDA 的一般分析
 會漏掉 timer ISR `CF47Ah` 透過 `jmp bx` 前往 `CF4C3h`、`CF501h`、
@@ -217,3 +219,19 @@ remainder 累加 PCM samples，不能每 tick 各自四捨五入，否則曲長�
 但 `×16` divider 是 free-running；MSCDRV 每次 IRQ 都寫
 `27h=20h→0Ah`，首週期仍會受 reload phase 與 CPU I/O timing 影響。
 知識庫不可把「長時間無 rounding drift」寫成「每個 IRQ edge cycle-exact」。
+
+2026-07-30 第 377 輪補上遊戲 wrapper 與 driver 之間的重要分層：
+
+- `GAME.EXE MSCPLAY` 先 `MSCSTOP`，再呼叫 Borland `DELAY(0x320)`，最後
+  才送新 selector；`0x320` 是 800 毫秒，不是 fade counter。
+- MSCDRV queue 只有在 active track 非零時才建立 `0x28` fade counter；
+  正常 GAME wrapper 已先 stop，所以不走這條 fade。
+- public play 傳 loop count 0；driver 初始化轉成 `0xFF`，FM／PSG end
+  consumer 對它不遞減並重設七聲道 cursor，形成無限循環。
+- MSCDRV 內部另有 FM0 SFX interpreter 與 request priority，但 request
+  欄位只找到清零、未找到正常 GAME 非零 producer；`GAME SOUNDFX` 則走
+  Borland `SOUND`／`DELAY`，兩者不能混為一談。
+
+其他 PC-98 Gold Box 版本即使使用相似 driver，也必須同時追遊戲 wrapper、
+public ABI、request producer 與 driver consumer，不能看到 fade／SFX
+程式碼就假設正常玩家路徑使用。

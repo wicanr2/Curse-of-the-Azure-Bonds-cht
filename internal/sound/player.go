@@ -60,7 +60,7 @@ func (p *Player) PlayPC98Track(driver []byte, selector int) error {
 		return fmt.Errorf("sound player is unavailable")
 	}
 	p.StopMusic()
-	stream, err := pc98music.NewTrackPCMStream(driver, selector, sampleRate)
+	stream, err := pc98music.NewGameTrackPCMStream(driver, selector, sampleRate)
 	if err != nil {
 		return err
 	}

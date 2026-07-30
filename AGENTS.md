@@ -171,7 +171,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`8c4c5db`；第 376 輪 YM2203 合成器／播放器
+- CoAB 本輪基底：`bd1e0cf`；第 377 輪 PC-98 正常換曲／loop
   milestone 會由本文件所在 commit 完成。
 - Engine dependency：`6f959cb`（含中立 `audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
@@ -257,13 +257,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   register order 展開，接成 Timer B → PCM → Ebiten player。
   `-pc98-music-driver` 可由使用者本機 driver 播放，`pc98-render-track`
   可輸出 deterministic WAV。selector 5 兩次十秒輸出 hash 一致、非靜音且
-  無 clipping；spec 376 是最新 READY 規格。
-- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、fade／SFX
-  arbitration、完整 loop、save/resume 與 analog mixer gain。不得把目前
+  無 clipping；spec 376 保存合成器／播放器 READY 規格。
+- 第 377 輪已由指定 IDA Pro 9.4、raw bytes 與 exact driver PCM 證明正常
+  `MSCPLAY` 是 stop→800ms silence→play；播放器精確輸出 35,280 靜音
+  frames 且不推進音序列。正常 loop count 0 轉成 `0xFF` 無限循環。
+  driver 內部 40-tick fade／FM0 SFX 沒有正常 GAME caller，不可擅自接入。
+  spec 377 是最新 READY 規格。
+- 下一步還原 `27h` reload 的 free-running divide-by-16 phase、SFX 真實
+  caller／完整 mapping、save/resume 與 analog mixer gain。不得把目前
   可播放路徑宣稱成完整音樂還原。
-  合成器，再做 fade、SFX 共存、完整曲長／loop、mixer 與遊戲內播放；
-  不得把完整 period accumulator 說成 cycle-perfect IRQ，也不得把 Sound
-  BIOS LFO 擅自接進 CoAB 正常配樂。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -352,8 +354,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   Sound BIOS Timer B cadence、sync state 與 ROM 動態 harness。第 374 輪
   證明本作 MSCDRV 接管 IRQ 並繞過該 LFO。第 375 輪已補 Timer B 完整
   count period 與 PCM 有理數 accumulator；第 376 輪已接入 `ymfm`、
-  PCM stream 與遊戲播放器。下一個真實缺口是 reload phase、
-  fade／SFX arbitration、完整 loop、save/resume 與 analog mixer gain。
+  PCM stream 與遊戲播放器。第 377 輪已證明正常換曲 800ms silence 與
+  `0xFF` 無限 loop，並把未使用 driver fade／FM SFX 分離。下一個真實
+  缺口是 reload phase、SFX caller／mapping、save/resume 與 analog
+  mixer gain。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -369,9 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371／372／373／374／375 輪規格也已 READY。下一步先補 MSCDRV
-  Timer B reload phase 與合成器，再處理 fade／SFX 與完整 loop；播放器
-  只能在對應外部 event 持續交叉驗證後接入。
+  第 371–377 輪規格也已 READY。下一步補 MSCDRV Timer B reload phase、
+  SFX 真實 caller／mapping、save/resume 與 analog mixer gain。
 
 ## 10. Compact 後恢復工作清單
 

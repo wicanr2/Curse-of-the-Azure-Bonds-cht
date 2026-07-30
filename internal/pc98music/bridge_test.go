@@ -61,6 +61,23 @@ func TestDriverAnchorsCoverTimerBInterruptOwnership(t *testing.T) {
 	}
 }
 
+func TestGameAnchorsCoverMSCPLAYTransitionDelay(t *testing.T) {
+	want := map[string]bool{
+		"MSCPLAY_STOP_DELAY_800MS": false,
+		"BORLAND_DELAY_BUSY_LOOP":  false,
+	}
+	for _, anchor := range gameAnchors {
+		if _, ok := want[anchor.Label]; ok {
+			want[anchor.Label] = true
+		}
+	}
+	for label, found := range want {
+		if !found {
+			t.Fatalf("missing GAME.EXE music transition anchor %s", label)
+		}
+	}
+}
+
 func TestSoundBIOSServiceTableMatchesObservedCommandSet(t *testing.T) {
 	want := []byte{
 		0x00, 0x02,
