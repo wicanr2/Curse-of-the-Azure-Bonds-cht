@@ -1421,6 +1421,112 @@ func TestRealBurialGlenRedPlumeTrapBranches(t *testing.T) {
 	})
 }
 
+func TestRealBurialGlenJournal56AndMoreRuinsExit(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		return session
+	}
+
+	t.Run("terrain 0C is one-shot and wait or parlay unlock journal 56", func(t *testing.T) {
+		for _, choice := range []uint16{1, 3} {
+			session := newSession(t)
+			session.SetMemoryValue(0xC04B, 4)
+			session.SetMemoryValue(0xC04C, 8)
+			session.SetMemoryValue(0xC04D, 3)
+			session.SetMemoryValue(0xC04F, 0x0C)
+			intro, runErr := session.RunEntry(1, 10000, nil)
+			if runErr != nil || !intro.WaitingForMenu ||
+				intro.Menus[len(intro.Menus)-1].Prompt !=
+					"A FIGURE APPEARS FROM THE SHADOWS. 'HAIL BONDED ONES!'" ||
+				!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+					[]string{"COMBAT", "WAIT", "FLEE", "PARLAY"}) ||
+				mustMemory(t, session, 0x4CC7) != 1 {
+				t.Fatalf("choice=%d intro=%+v err=%v", choice, intro, runErr)
+			}
+			journal, runErr := session.ResumeInteractiveSelectionSeed(
+				10000, &choice, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !journal.WaitingForMenu ||
+				!strings.Contains(strings.Join(journal.Text, " "), "JOURNAL ENTRY 56") ||
+				!strings.Contains(strings.Join(journal.Text, " "), "HURRY ON") {
+				t.Fatalf("choice=%d journal=%+v err=%v", choice, journal, runErr)
+			}
+			press := uint16(0)
+			done, runErr := session.ResumeInteractiveSelectionSeed(
+				10000, &press, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !done.Exited {
+				t.Fatalf("choice=%d done=%+v err=%v", choice, done, runErr)
+			}
+			revisit, runErr := session.RunEntry(1, 10000, nil)
+			if runErr != nil || !revisit.Exited || revisit.WaitingForMenu ||
+				len(revisit.Text) != 0 {
+				t.Fatalf("choice=%d revisit=%+v err=%v", choice, revisit, runErr)
+			}
+		}
+	})
+
+	t.Run("east boundary selects path woods or turn back", func(t *testing.T) {
+		for choice := uint16(0); choice < 3; choice++ {
+			session := newSession(t)
+			session.SetMemoryValue(0xC04B, 15)
+			session.SetMemoryValue(0xC04C, 6)
+			session.SetMemoryValue(0xC04D, 1)
+			session.SetMemoryValue(0xC04F, 0)
+			session.SetMemoryValue(0x7ED5, 1)
+			intro, runErr := session.RunEntry(0, 10000, nil)
+			if runErr != nil || !intro.WaitingForMenu ||
+				!strings.Contains(strings.Join(intro.Text, " "), "HEADING TOWARD MORE RUINS") ||
+				!reflect.DeepEqual(intro.Menus[len(intro.Menus)-1].Options,
+					[]string{"PATH", "WOODS", "TURN BACK"}) {
+				t.Fatalf("choice=%d intro=%+v err=%v", choice, intro, runErr)
+			}
+			done, runErr := session.ResumeInteractiveSelectionSeed(
+				10000, &choice, nil, 1, PartyContext{},
+			)
+			if runErr != nil || !done.Exited {
+				t.Fatalf("choice=%d done=%+v err=%v", choice, done, runErr)
+			}
+			if choice == 2 {
+				if session.CurrentBlockID() != 0x40 ||
+					mustMemory(t, session, 0x7EC9) != 0xFF {
+					t.Fatalf("turn-back block=%02x result=%+v", session.CurrentBlockID(), done)
+				}
+				continue
+			}
+			wantY := uint16(12)
+			if choice == 1 {
+				wantY = 6
+			}
+			if session.CurrentBlockID() != 0x42 ||
+				mustMemory(t, session, 0xC04B) != 0 ||
+				mustMemory(t, session, 0xC04C) != wantY ||
+				!strings.Contains(strings.Join(done.Text, " "), "HELM OF DRAGONS REPORTS") {
+				t.Fatalf("choice=%d block=%02x result=%+v coords=(%d,%d)",
+					choice, session.CurrentBlockID(), done,
+					mustMemory(t, session, 0xC04B), mustMemory(t, session, 0xC04C))
+			}
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

@@ -2536,3 +2536,16 @@ State 的 menu prompt 現會先查作品 JSON text rules，未命中才使用舊
 fallback，避免把新作品提示硬寫入 Go。READY spec 397 保存完整證據與
 限制；terrain `07h／0Ch`、區域出口、encounter `COMBAT／FLEE` 外部語意、
 羅剎妖完整能力／戰利品／弓箭演出仍待後續。
+
+2026-07-30 第三百九十八輪完成 Burial Glen 剩餘兩種 terrain 與東界
+handoff。terrain `07h` `(14,3)` 每次都建立六隻 PHASE SPIDER 與一隻
+RAKSHASA，沒有持久完成旗標，不可擅自改成一次性。terrain `0Ch`
+`(4,8)` 初見寫 `4CC7=1`；`WAIT／PARLAY` 解鎖由使用者 Adventurer's
+Journal PDF 印刷頁 23–24 核對的完整繁中手札 56，重訪直接離開。
+
+正常 Standing Stone 起始玩家路徑已繞行 terrain `0Ch`，再完成紅羽戰士
+戰鬥並由 `(15,6,E)` 呼叫真正出口 lifecycle。`PATH／WOODS／TURN BACK`
+分別進入 ECL block `42h` `(0,12,E)`、`42h` `(0,6,E)` 或留在 `40h`。
+State 現會對所有地城內 NEWECL 轉換投影原始 `C04B／C04C／C04D`，
+沒有加入本作座標 hardcode。READY spec 398 保存證據；下一步接續
+block `42h` 遺跡，最終神殿與結局仍未完成。

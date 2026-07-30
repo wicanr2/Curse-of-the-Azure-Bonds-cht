@@ -162,6 +162,12 @@
       ,"myth-drannor.red-plume.agree": "Agree"
       ,"myth-drannor.red-plume.refuse-payment": "Refuse payment"
       ,"myth-drannor.red-plume.disagree": "Disagree"
+      ,"myth-drannor.clan-figure.greeting": "A figure appears from the shadows. “Hail, bonded ones!”"
+      ,"myth-drannor.clan-figure.journal": "The figure launches into rapid speech. You record Journal Entry 56. “Hurry on, hurry, hurry!” He leaves."
+      ,"myth-drannor.more-ruins": "You are heading toward more ruins. Will you travel by a path or through the woods?"
+      ,"myth-drannor.path": "Path"
+      ,"myth-drannor.woods": "Woods"
+      ,"myth-drannor.turn-back": "Turn back"
       ,"option.yes": "Yes"
       ,"option.no": "No"
       ,"option.accept": "Accept"
@@ -171,6 +177,7 @@
       ,"option.go": "Go"
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
       ,"journal.33": "Journal Entry 33: “I am Caemir, and my ancestors lived and died here in Myth Drannor. Evil dreams have shown my grandfather's tomb turned into a nest for foul spider creatures. Help me lay his spirit to rest, and I will give you the bow he made.” He shows you an exquisitely crafted bow radiating powerful magic."
+      ,"journal.56": "Journal Entry 56: The man refuses to give his name, saying that names are labels for things people do not understand. He knows of the bonds and the party's struggle because he helped create the first bonds long ago. The final bond, Tyranthraxus's, is the most dangerous: Tyranthraxus no longer shares control and can devote his full fury to preventing escape. The party must surprise and defeat him before he invokes the bonds. The man's clan is resting here for several mortal lifetimes, but Tyranthraxus stole their followers and threatened them. They hate him yet cannot attack his temple directly. When the party attacks, the clan will reclaim its followers, perhaps weakening Tyranthraxus enough for victory."
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -320,6 +327,12 @@
       ,"myth-drannor.red-plume.agree": "答應"
       ,"myth-drannor.red-plume.refuse-payment": "不收報酬"
       ,"myth-drannor.red-plume.disagree": "拒絕"
+      ,"myth-drannor.clan-figure.greeting": "一道人影從陰影中現身。「向受枷印者致意！」"
+      ,"myth-drannor.clan-figure.journal": "那道人影飛快地說個不停；你們將內容記入手札第 56 條。「快走，快走，快、快！」說完，他便離去了。"
+      ,"myth-drannor.more-ruins": "你們正前往更深處的遺跡。要沿小徑前進，還是穿越樹林？"
+      ,"myth-drannor.path": "沿小徑"
+      ,"myth-drannor.woods": "穿越樹林"
+      ,"myth-drannor.turn-back": "回頭"
       ,"option.yes": "是"
       ,"option.no": "否"
       ,"option.accept": "接受"
@@ -329,6 +342,7 @@
       ,"option.go": "繼續前進"
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
       ,"journal.33": "手札條目 33：「我是凱米爾，我的祖先世世代代都在迷斯卓諾生活，最後也長眠於此。近來，邪惡夢境不斷侵擾我；夢中，祖父的墓穴被那些骯髒的蜘蛛怪物占據，成了牠們的巢穴。若你們願意幫助我，讓他的靈魂重歸安寧，我便把這把由他親手打造的弓送給你們。」他展示一把工藝極其精美、散發強大魔力的長弓。"
+      ,"journal.56": "手札條目 56：那人說：「別問我的名字；名字不過是人們貼在自己無法理解之物上的標籤。我知道你們身上的枷印，也知道你們為了重獲自由所作的掙扎，因為在彷彿已十分久遠的往昔，我曾協助創造最初的枷印。你們最後一道枷印——烈焰之主提朗瑟克斯的枷印——是最危險的一道。不論你們是否明白，如今你們比以往任何時候都更接近永恆的奴役；提朗瑟克斯不必再與其他人分享對你們的控制權，他能以全部怒火阻止你們逃脫。你們唯一的希望，是攻其不備，在烈焰之主來得及喚起枷印力量前解決他。能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
     }
   },
   "music_tracks": [
@@ -716,6 +730,20 @@
       "scale": 2
     },
     {
+      "id": "myth-drannor.outer-ruins",
+      "kind": "first_person",
+      "area_id": 6,
+      "script_block": 66,
+      "geometry_block": 66,
+      "geometry_file": "GEO6.DAX",
+      "wall_file": "WALLDEF6.DAX",
+      "symbol_file": "8X8D6.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "wrap": true,
+      "scale": 2
+    },
+    {
       "id": "zhentil-keep.dark-shrine",
       "kind": "first_person",
       "area_id": 4,
@@ -830,6 +858,21 @@
       "id": "myth-drannor.red-plume.disagree",
       "source": "DISAGREE",
       "message_id": "myth-drannor.red-plume.disagree"
+    },
+    {
+      "id": "myth-drannor.path",
+      "source": "PATH",
+      "message_id": "myth-drannor.path"
+    },
+    {
+      "id": "myth-drannor.woods",
+      "source": "WOODS",
+      "message_id": "myth-drannor.woods"
+    },
+    {
+      "id": "myth-drannor.turn-back",
+      "source": "TURN BACK",
+      "message_id": "myth-drannor.turn-back"
     }
   ],
   "text_rules": [
@@ -845,7 +888,7 @@
     },
     {
       "id": "myth-drannor.helm-north",
-      "all_contains": ["THE HELM OF DRAGONS REPORTS", "TYRANTHRAXUS IS TO", "THE NORTH"],
+      "all_contains": ["THE HELM OF DRAGONS REPORTS", "TYRANTHRAXUS", "TO THE NORTH"],
       "message_id": "myth-drannor.helm-north"
     },
     {
@@ -1114,6 +1157,22 @@
       "id": "myth-drannor.red-plume.spiders",
       "all_contains": ["WITHIN AN UNEARTHED GRAVE ARE GLOWING SPIDERS", "PROTECT THEIR EGGS"],
       "message_id": "myth-drannor.red-plume.spiders"
+    },
+    {
+      "id": "myth-drannor.clan-figure.greeting",
+      "all_contains": ["A FIGURE APPEARS FROM THE SHADOWS", "HAIL BONDED ONES"],
+      "message_id": "myth-drannor.clan-figure.greeting"
+    },
+    {
+      "id": "myth-drannor.clan-figure.journal",
+      "all_contains": ["THE FIGURE BREAKS INTO RAPID SPEECH", "JOURNAL ENTRY", "56.", "HURRY ON"],
+      "message_id": "myth-drannor.clan-figure.journal",
+      "journal_message_ids": ["journal.56"]
+    },
+    {
+      "id": "myth-drannor.more-ruins",
+      "all_contains": ["YOU ARE HEADING TOWARD MORE RUINS", "VIA A PATH OR THROUGH THE WOODS"],
+      "message_id": "myth-drannor.more-ruins"
     },
     {
       "id": "zhentil.patrol_pass",

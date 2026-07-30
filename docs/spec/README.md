@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第三百九十八輪 Burial Glen 手札 56 與東界遺跡出口](./398-burial-glen-journal56-and-more-ruins-exit.md)（`READY`：terrain `07h／0Ch`、完整手札 56、三出口與正常 `NEWECL 42h` handoff）
 - [第三百九十七輪 Burial Glen 紅羽戰士羅剎妖陷阱](./397-burial-glen-red-plume-trap.md)（`READY`：terrain `05h`、手札 33、三分支、兩次 `1d6+6` 箭擊、六相位蜘蛛＋一羅剎妖與正常玩家路徑）
 - [第三百八十七輪 Burial Glen 紅網雙戰鬥 State 玩家路徑](./387-burial-glen-red-web-two-battle-state.md)（`READY`：限正常 GEO 進入、四蜘蛛／羅剎妖勝利續跑、`4CBFh` 持久完成與原版素材戰鬥 checkpoint）
 - [第三百八十六輪 Burial Glen 紅網與 ECL 字串輸入](./386-burial-glen-red-web-input-string.md)（`READY`：限可續跑 `INPUT STRING`、terrain `82h` 分支與兩戰 ECL continuation）

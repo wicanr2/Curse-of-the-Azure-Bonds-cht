@@ -1134,6 +1134,12 @@ func (s *State) Select(index int) error {
 				s.session.SetMemoryValue(0xC04C, 3)
 				s.session.SetMemoryValue(0xC04D, 1)
 			}
+			dungeonRegistersBefore := [3]uint16{}
+			dungeonRegistersKnown := [3]bool{}
+			for i, address := range [...]uint16{0xC04B, 0xC04C, 0xC04D} {
+				dungeonRegistersBefore[i], dungeonRegistersKnown[i] =
+					s.session.MemoryValue(address)
+			}
 			selection := uint16(index)
 			var menuSelection, whoSelection *uint16
 			if whoSelecting {
@@ -1148,9 +1154,35 @@ func (s *State) Select(index int) error {
 			}
 			currentBlock := s.session.CurrentBlockID()
 			s.requestMusicIfBlockChanged(blockBefore)
-			if blockBefore != currentBlock && s.Area.InDungeon && s.Area.GameArea == 5 &&
-				(currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33) {
-				s.syncDungeonStateFromECLRegisters()
+			if blockBefore != currentBlock && s.Area.InDungeon {
+				// NEWECL destinations may assign a new C04B/C04C/C04D
+				// starting position. Only project registers actually changed
+				// by this resumed branch: some destinations intentionally
+				// inherit a location selected by the outer area loop, while
+				// stale work-register values remain visible to the VM.
+				dungeonRegistersChanged := false
+				for i, address := range [...]uint16{0xC04B, 0xC04C, 0xC04D} {
+					value, known := s.session.MemoryValue(address)
+					if known != dungeonRegistersKnown[i] ||
+						(known && value != dungeonRegistersBefore[i]) {
+						dungeonRegistersChanged = true
+						break
+					}
+				}
+				var definition goldenbox.MapDefinition
+				destinationDeclared := false
+				if s.dataPack != nil {
+					definition, destinationDeclared = s.dataPack.FindMapByKindScript(
+						"first_person", s.Area.GameArea, currentBlock,
+					)
+				}
+				registerOwnedDestination := destinationDeclared && definition.Spawn == nil
+				hapRegisterOwnedDestination := s.Area.GameArea == 5 &&
+					(currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33)
+				if dungeonRegistersChanged &&
+					(registerOwnedDestination || hapRegisterOwnedDestination) {
+					s.syncDungeonStateFromECLRegisters()
+				}
 			}
 			if blockBefore == 0x31 && s.session.CurrentBlockID() == 0x32 {
 				// The verified Hap CAVES transition starts a fresh map

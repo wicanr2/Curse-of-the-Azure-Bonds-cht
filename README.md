@@ -838,6 +838,13 @@ terrain `0x05` 的紅羽戰士，解鎖由原版手冊核對的繁中手札 33�
 回到精靈骸骨處置選單。事件提示、三個決定與手札都由 game-pack JSON
 驅動，詳見 [`spec 397`](docs/spec/397-burial-glen-red-plume-trap.md)。
 
+同一路徑現在也會繞到 terrain `0x0C`，從無名人物口中解鎖經原版手札
+印刷頁 23–24 核對的繁中手札 56。紅羽戰士戰後可正常走到 Burial Glen
+東界，選擇「沿小徑／穿越樹林／回頭」；沿小徑會依 ECL register 進入
+block `0x42` 的 `(0,12)`。terrain `0x07` 則確認是沒有完成旗標的可重複
+蜘蛛／羅剎妖墓穴，未擅自改成一次性。完整證據與限制見
+[`spec 398`](docs/spec/398-burial-glen-journal56-and-more-ruins-exit.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

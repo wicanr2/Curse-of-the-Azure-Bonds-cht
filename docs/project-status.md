@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`d66bfbe`
+本 milestone 的 CoAB 基底：`825de71`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -222,6 +222,13 @@ commit 內保存不可能自我引用的 hash。
   提供 PDF 第 10 頁核對；提示、敘事及選項均由 JSON stable ID 驅動。
   遭遇 `COMBAT／FLEE` 外部語意、羅剎妖完整能力與戰利品、terrain
   `07h／0Ch`、區域出口及最終神殿仍未完成。
+- 第 398 輪已由正常 GEO 玩家路徑接通 terrain `0Ch` 的一次性無名人物；
+  `WAIT／PARLAY` 會寫 `4CC7=1` 並解鎖由使用者 PDF 印刷頁 23–24 核對的
+  完整繁中手札 56。terrain `07h` 則證明為沒有完成旗標的可重複六相位
+  蜘蛛＋一羅剎妖遭遇。紅羽戰士戰後可走到 `(15,6,E)`，經真正地城出口
+  lifecycle 選 `PATH／WOODS／TURN BACK`；`PATH` 現依 ECL register
+  正確進入 block `42h` `(0,12,E)`。完整 block `42h` 遺跡、神殿與結局
+  仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
