@@ -2489,3 +2489,15 @@ terrain `8Eh` 而不重播，再在營地取得 exact
 State／combat continuation 的通用 treasure service 也改為保留當次
 `result.Text`，避免原 ECL 的「收起值錢物品」被通用提示覆蓋。
 READY spec 394 保存 bytes、路徑、條件波次與未完成邊界。
+
+第三百九十五輪把同一正常玩家路徑延伸到 GEO6 `(9,2)` terrain `91h`
+與 `(10,1)` terrain `92h`。前者建立八隻 MON6CHA `42h` GIANT SPIDER，
+使用 `7F82=7／4C00=8`，勝利後 `4CCB=1`。後者先顯示漏斗蛛網，再以
+`4CBA < 80h` 判斷幽魂是否願意警告。
+
+高好感會顯示蜘蛛守巢警告與 YES／NO；NO 直接 EXIT、不寫 `4CCC`，所以
+可重訪。YES 或低好感直接分支會在戰前寫 `4CCC=1`，顯示蛛卵，建立四隻
+GIANT SPIDER，並寫敵方 attack-roll work `7F70=2`、`7F82=0／4C00=4`。
+raw session 已覆蓋高好感 NO／YES 與低好感無警告；Standing Stone 起始的
+正常路徑則先選 NO、重踏再選 YES，驗證繁中選項、敵方命中修正與完成後
+不重播。READY spec 395 保存 exact bytes、GEO 路徑與未完成邊界。

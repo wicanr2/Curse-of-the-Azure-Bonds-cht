@@ -132,6 +132,12 @@
       ,"myth-drannor.thri-kreen.reinforcements": "Other thri-kreen respond to the noise."
       ,"myth-drannor.thri-kreen.stragglers": "A few more straggle in."
       ,"myth-drannor.thri-kreen.valuables": "You gather up some valuables."
+      ,"myth-drannor.spider-mausoleum": "Webs festoon this mausoleum. The webs are inhabited."
+      ,"myth-drannor.spider-funnel": "You see a funnel of webs."
+      ,"myth-drannor.spider-warning": "A whispery voice calls out, “The spiders will guard their nest fiercely.” Do you continue?"
+      ,"myth-drannor.spider-eggs": "Spiders leap forth. You can see some eggs behind them."
+      ,"option.yes": "Yes"
+      ,"option.no": "No"
       ,"option.accept": "Accept"
       ,"option.reject": "Reject"
       ,"option.kill": "Kill"
@@ -257,6 +263,12 @@
       ,"myth-drannor.thri-kreen.reinforcements": "其他螳螂人聽見聲響，趕來增援。"
       ,"myth-drannor.thri-kreen.stragglers": "又有幾名落後的螳螂人陸續趕到。"
       ,"myth-drannor.thri-kreen.valuables": "你們收起了一些值錢物品。"
+      ,"myth-drannor.spider-mausoleum": "這座陵墓掛滿蛛網，而且網中有東西棲息。"
+      ,"myth-drannor.spider-funnel": "你們看見一道漏斗狀的蛛網。"
+      ,"myth-drannor.spider-warning": "一個低沉如耳語的聲音說：「蜘蛛會拚死守護牠們的巢穴。」你們還要繼續嗎？"
+      ,"myth-drannor.spider-eggs": "蜘蛛猛然躍出；你們看見牠們身後有一些蛛卵。"
+      ,"option.yes": "是"
+      ,"option.no": "否"
       ,"option.accept": "接受"
       ,"option.reject": "拒絕"
       ,"option.kill": "殺死"
@@ -706,6 +718,16 @@
       "message_id": "myth-drannor.bones.ignore"
     },
     {
+      "id": "option.yes",
+      "source": "YES",
+      "message_id": "option.yes"
+    },
+    {
+      "id": "option.no",
+      "source": "NO",
+      "message_id": "option.no"
+    },
+    {
       "id": "option.accept",
       "source": "ACCEPT",
       "message_id": "option.accept"
@@ -892,6 +914,26 @@
       "id": "myth-drannor.thri-kreen.valuables",
       "all_contains": ["YOU GATHER UP SOME VALUABLES"],
       "message_id": "myth-drannor.thri-kreen.valuables"
+    },
+    {
+      "id": "myth-drannor.spider-mausoleum",
+      "all_contains": ["WEBS FESTOON THIS MAUSOLEUM", "THE WEBS ARE INHABITED"],
+      "message_id": "myth-drannor.spider-mausoleum"
+    },
+    {
+      "id": "myth-drannor.spider-funnel",
+      "all_contains": ["YOU SEE A FUNNEL OF WEBS"],
+      "message_id": "myth-drannor.spider-funnel"
+    },
+    {
+      "id": "myth-drannor.spider-warning",
+      "all_contains": ["A WHISPERY VOICE CALLS OUT", "THE SPIDERS WILL", "GUARD THEIR NEST FIERCELY", "DO YOU CONTINUE"],
+      "message_id": "myth-drannor.spider-warning"
+    },
+    {
+      "id": "myth-drannor.spider-eggs",
+      "all_contains": ["SPIDERS LEAP FORTH", "YOU CAN SEE SOME EGGS", "BEHIND THEM"],
+      "message_id": "myth-drannor.spider-eggs"
     },
     {
       "id": "zhentil.patrol_pass",

@@ -272,9 +272,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ea71b9c`（第 393 輪 Burial Glen terrain
-  `95h` 相位蜘蛛骨堆）；
-  第 394 輪 terrain `8Eh／8Fh／90h` 螳螂人防線 milestone
+- CoAB 本輪基底：`4ac550b`（第 394 輪 Burial Glen terrain
+  `8Eh／8Fh／90h` 螳螂人防線）；
+  第 395 輪 terrain `91h／92h` 蜘蛛陵墓 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -351,8 +351,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   再依這兩旗標決定是否追加兩波六人。raw session 的完整 `12→6→6`
   與正常玩家路徑只剩首波均有回歸。原始財寶 exact 為 9500 gold、
   4 gems、6 jewelry、`ItemBlock=81h` 一件 random item；treasure menu
-  現保留當次資料包翻譯文字。下一個主路徑缺口是 terrain `91h／92h`；
-  THRI-KREEN 特殊戰鬥能力與 DOS 動態演出仍未完成。
+  現保留當次資料包翻譯文字。THRI-KREEN 特殊戰鬥能力與 DOS 動態演出
+  仍未完成。
+- 第 395 輪已接通 terrain `91h／92h`。`91h` 是八隻 GIANT SPIDER、
+  `4CCB=1`；`92h` 先依 `4CBA < 80h` 判定是否略過幽魂警告，高好感
+  才顯示 YES／NO。NO 不寫 `4CCC` 且可重訪；YES 在戰前寫
+  `4CCC=1`，建立四隻巨蛛並把敵方 attack-roll work `7F70=2`。raw
+  高／低好感與正常 Standing Stone 玩家路徑均有回歸。蛛卵只有敘事，
+  原 ECL 沒有額外選單／財寶；下一步稽核更西側 terrain 與區域出口。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
