@@ -2165,3 +2165,24 @@ period regression 不累積逐 tick rounding drift。CoAB adapter 只保存
 3,993,600 Hz 與 prescale 6。仍未完成 `27h` reload 時 free-running
 divide-by-16 phase、CPU I/O timing、YM2203 合成器、fade／SFX、loop 與
 遊戲內播放；完整 period READY 不代表 cycle-perfect IRQ edge。
+
+2026-07-30 第 376 輪完成 PC-98 YM2203 合成與第一條遊戲播放路徑。獨立
+engine 固定 BSD-3-Clause `ymfm` commit
+`81aec25ccbb98f4873a255f7551ac4dadac59b4a`，新增作品中立 register／native
+PCM 封裝及整數有理數 phase 線性重取樣；cgo 關閉時明確回報 backend
+不可用。
+
+CoAB `YM2203EventRenderer` 依 spec 369–371 的 S98 exact order 展開
+SETPARABLOCK／SETVOLUME，`TrackPCMStream` 依 Timer B period 推進
+TrackPlayback、合成、重取樣並輸出 44.1 kHz signed 16-bit dual-mono。
+Ebiten `internal/sound.Player` 可原子切換曲目，game-pack stable track ID
+透過 `reference_selector` 選曲；啟動參數是
+`-pc98-music-driver MSCDRV.EXE`。新增 `cmd/pc98-render-track` 供無 GUI
+稽核。
+
+exact driver selector 5 在 Docker 內兩次輸出十秒 WAV，SHA-256 均為
+`fded75fe89d5e5af860e92e1541f83f14738c228fe7d792506c282c6bd5847c0`；
+FFmpeg 證明 441,000 samples/channel、非靜音、peak -21.142021 dB、無
+int16 clipping。WAV、driver 與 build cache 都只留本機。READY spec 376
+保存完整邊界；fade／SFX arbitration、完整 loop、save/resume、analog
+mixer gain 與 `27h` reload phase仍未完成。

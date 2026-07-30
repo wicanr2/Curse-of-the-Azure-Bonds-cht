@@ -97,6 +97,7 @@ type app struct {
 	messageSnapshot     string
 	messageStart        time.Time
 	soundPlayer         *sound.Player
+	pc98MusicDriver     []byte
 	currentMusicTrack   string
 	screenshotPath      string
 	screenshotDone      bool
@@ -203,12 +204,22 @@ func (a *app) syncSoundEvents() {
 	for _, event := range a.state.ConsumeSoundEvents() {
 		a.playSound(sound.ID(event))
 	}
-	// Track the latest renderer-neutral music intent even before the PC-98
-	// sequence decoder/player is available. This consumes stale transitions
-	// once per frame and leaves the eventual audio adapter one stable track ID.
 	for _, event := range a.state.ConsumeMusicEvents() {
 		if event.Action == "play" {
 			a.currentMusicTrack = event.TrackID
+			if len(a.pc98MusicDriver) != 0 && a.soundPlayer != nil {
+				track, found := a.gamePack.FindMusicTrack(event.TrackID)
+				if !found {
+					log.Printf("music track %q is not in the game pack", event.TrackID)
+					continue
+				}
+				if err := a.soundPlayer.PlayPC98Track(
+					a.pc98MusicDriver,
+					int(track.ReferenceSelector),
+				); err != nil {
+					log.Printf("music track %q disabled: %v", event.TrackID, err)
+				}
+			}
 		}
 	}
 }
@@ -2628,6 +2639,7 @@ func main() {
 	combatVisualDemo := flag.String("combat-visual-demo", "", "deterministic visual oracle: melee, bow, magic, fireball, lightning, stinking-cloud, cloudkill, or kill checkpoints")
 	partyPath := flag.String("party-save", "party.json", "versioned remake party save path")
 	soundDir := flag.String("sound-dir", "assets/audio", "reference WAV asset directory; missing assets disable sound")
+	pc98MusicDriverPath := flag.String("pc98-music-driver", "", "local extracted MSCDRV.EXE used to synthesize the PC-98 soundtrack")
 	partyLoadPath := flag.String("party-load", "", "load a versioned remake party save before starting")
 	savgamDir := flag.String("savgam-dir", "", "directory containing reference savgam?.dat and CHRDAT player bundles")
 	savgamSlot := flag.String("savgam-slot", "", "reference SAVGAM slot key A..J to load and save with -savgam-dir")
@@ -2751,7 +2763,14 @@ func main() {
 	}
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
-		log.Printf("sound disabled: %v", soundErr)
+		log.Printf("some sound effects are unavailable: %v", soundErr)
+	}
+	var pc98MusicDriver []byte
+	if *pc98MusicDriverPath != "" {
+		pc98MusicDriver, err = os.ReadFile(*pc98MusicDriverPath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	var loadedSAVGAMSlot byte
 	if *savgamDir != "" || *savgamSlot != "" {
@@ -3058,7 +3077,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -55,6 +55,13 @@ type FMParameterBlock struct {
 type YM2203ToneSignature [21]byte
 
 var ym2203OperatorOrder = [...]int{0, 2, 1, 3}
+var ym2203PhysicalOffsets = [...]byte{0x0C, 0x04, 0x08, 0x00}
+
+// YM2203RegisterWrite is one address/data write to the title's single OPN.
+type YM2203RegisterWrite struct {
+	Register byte
+	Value    byte
+}
 
 // YM2203Signature projects the NEC WORD-format parameters to the register
 // values verified against Hoot S98 traces. NEC rate and sustain-level fields
@@ -96,6 +103,43 @@ func (block FMParameterBlock) YM2203LevelSequence(volume byte) ([][4]byte, error
 		}
 		levels[physical] = 0x7f - volume
 		result = append(result, levels)
+	}
+	return result, nil
+}
+
+// YM2203ToneWrites expands one complete NEC Sound BIOS tone redraw in the
+// register order proven by the original S98 traces.
+func (block FMParameterBlock) YM2203ToneWrites(
+	channel int, levels [4]byte,
+) ([]YM2203RegisterWrite, error) {
+	if channel < 0 || channel >= 3 {
+		return nil, fmt.Errorf("YM2203 FM channel %d is outside 0..2", channel)
+	}
+	signature := block.YM2203Signature()
+	result := make([]YM2203RegisterWrite, 0, len(signature)+4)
+	result = append(result, YM2203RegisterWrite{
+		Register: byte(0xB0 + channel),
+		Value:    signature[0],
+	})
+	signatureOffset := 5
+	for group, base := range []byte{0x50, 0x60, 0x70, 0x80, 0x40, 0x30} {
+		for physical, operatorOffset := range ym2203PhysicalOffsets {
+			value := levels[physical]
+			if group != 4 {
+				if group == 5 {
+					value = signature[1+physical]
+				} else {
+					value = signature[signatureOffset+physical]
+				}
+			}
+			result = append(result, YM2203RegisterWrite{
+				Register: base + operatorOffset + byte(channel),
+				Value:    value,
+			})
+		}
+		if group < 4 {
+			signatureOffset += 4
+		}
 	}
 	return result, nil
 }
