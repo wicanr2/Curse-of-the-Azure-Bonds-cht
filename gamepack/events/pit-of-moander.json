@@ -119,6 +119,8 @@
       ,"myth-drannor.daemir.forgiven": "“You are forgiven.” She fades away."
       ,"myth-drannor.daemir.blessing": "“Go forth with my blessing.” She fades away."
       ,"myth-drannor.daemir.curse": "“You presume too much! As long as you are in Myth Drannor, your weapons will twist in your hands.” She fades away."
+      ,"myth-drannor.phase-spider-wall": "As you enter, spiders come out of the solid walls."
+      ,"myth-drannor.phase-spider-glowing": "Glowing spiders skitter forward at your approach."
       ,"option.accept": "Accept"
       ,"option.reject": "Reject"
       ,"option.kill": "Kill"
@@ -231,6 +233,8 @@
       ,"myth-drannor.daemir.forgiven": "「你們已獲得寬恕。」她的身影隨即消散。"
       ,"myth-drannor.daemir.blessing": "「帶著我的祝福前行吧。」她的身影隨即消散。"
       ,"myth-drannor.daemir.curse": "「你們太放肆了！只要身在迷斯卓諾，你們手中的武器就會自行扭轉。」她的身影隨即消散。"
+      ,"myth-drannor.phase-spider-wall": "你們一踏入此處，蜘蛛便從看似實心的牆壁中湧出。"
+      ,"myth-drannor.phase-spider-glowing": "發著幽光的蜘蛛在你們靠近時飛快爬來。"
       ,"option.accept": "接受"
       ,"option.reject": "拒絕"
       ,"option.kill": "殺死"
@@ -801,6 +805,16 @@
       "id": "myth-drannor.daemir.curse",
       "all_contains": ["YOU PRESUME TOO MUCH", "YOUR WEAPONS WILL TWIST IN YOUR HANDS", "SHE FADES AWAY"],
       "message_id": "myth-drannor.daemir.curse"
+    },
+    {
+      "id": "myth-drannor.phase-spider-wall",
+      "all_contains": ["AS YOU ENTER", "SPIDERS COME OUT OF THE SOLID WALLS"],
+      "message_id": "myth-drannor.phase-spider-wall"
+    },
+    {
+      "id": "myth-drannor.phase-spider-glowing",
+      "all_contains": ["GLOWING SPIDERS SKITTER FORWARD", "AT YOUR APPROACH"],
+      "message_id": "myth-drannor.phase-spider-glowing"
     },
     {
       "id": "zhentil.patrol_pass",

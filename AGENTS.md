@@ -272,8 +272,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`71bb3cb`（第 390 輪黛米爾 attack-roll consumer）；
-  第 391 輪 DOS HEAD／BODY 人物舞台 milestone 會由本文件所在 commit 完成。
+- CoAB 本輪基底：`d66bfbe`（第 391 輪 DOS HEAD／BODY 人物舞台）；
+  第 392 輪 Burial Glen terrain `93h／94h` 相位蜘蛛防線 milestone
+  會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -335,6 +336,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `-inn` 與不同 selector 的 `-temple` 正常玩家路徑均有 640×480 回歸畫面。
   來源經顯示縮放，故整體標示為
   `material-exact/layout-reconstructed`，尚未宣稱 palette-cycle pixel-exact。
+- 第 392 輪已從黛米爾沿正常 GEO 路徑繼續五步到 terrain `93h`、再四步
+  到 `94h`。raw ECL 與完整玩家路徑共同證明十隻／八隻 PHASE SPIDER、
+  `7F82=8／9`、`4C01=10／8`、勝利後 `4CCD／4CCE=1` 與重訪 EXIT。
+  terrain `95h` 的六蜘蛛、骨堆選單及 treasure 是下一個未完成邊界。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

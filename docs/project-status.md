@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`11b26ee`
-依賴的 Golden Box engine checkpoint：`9826632`
+本 milestone 的 CoAB 基底：`d66bfbe`
+依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -34,8 +34,9 @@ commit 內保存不可能自我引用的 hash。
   GEO／WALLDEF／8X8D／SKY viewport。
 - DOSBox 原生 320×200 冒險 layout oracle；正式 top split 已修正為
   native 128／192，即 remake 256／384。
-- DOS runtime cracked stone chrome 已抽成透明 native raster；事件／人物圖
-  cover 填滿左上內格。PC-98 640×400 gallery 已建立字級密度參考索引。
+- DOS runtime cracked stone chrome 已抽成透明 native raster；一般 PIC／
+  第一人稱場景以 cover 填滿左上內格，HEAD／BODY 人物使用獨立固定舞台。
+  PC-98 640×400 gallery 已建立字級密度參考索引。
 - CHEAD／CBODY 頭身合成、CPIC／SPRIT／COMSPR 戰鬥小人及 animation metadata。
 - HEAD／BODY 場景人物已依 DOS 320×200 實機量測，使用 game-pack native
   anchor／clip、2× nearest-neighbour 與原版黃色裂紋內框；不再誤走場景
@@ -183,6 +184,10 @@ commit 內保存不可能自我引用的 hash。
   modifier 與正常玩家路徑命中邊界均已接通；角色基礎 AttackBonus 不會被
   永久改寫。離開 Myth Drannor 後清除此持久效果的 writer、所有特殊武器
   caller 與完整戰鬥 fidelity 仍待完成。
+- 第 392 輪把正常玩家路徑從黛米爾繼續到 terrain `93h／94h`：
+  原始 ECL 分別建立十隻／八隻 `MON6CHA 41h` PHASE SPIDER，勝利後寫
+  `4CCD／4CCE=1` 並可正常重踏。兩段繁中由 game-pack stable ID 驅動；
+  terrain `95h` 的六蜘蛛、骨堆選單與戰利品仍待下一輪。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
