@@ -3002,6 +3002,105 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("inner bedroom treasure return mode=%v", state.Mode)
 	}
 
+	chapelRoute := []dungeonStep{
+		{x: 9, y: 12, direction: 6},
+		{x: 9, y: 13, direction: 4},
+	}
+	previousX, previousY = 10, 12
+	for _, step := range chapelRoute {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("inner chapel route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x89 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.inner.chapel") {
+		t.Fatalf("inner chapel terrain=%02x mode=%v message=%q",
+			state.DungeonWallRoof, state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.inner.chapel-priest") {
+		t.Fatalf("inner chapel priest message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	chapelEnemies := state.livingBySide(combat.SideEnemy)
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		len(chapelEnemies) != 5 ||
+		chapelEnemies[0].SpriteBlock != 0x46 ||
+		chapelEnemies[4].SpriteBlock != 0x48 {
+		t.Fatalf("inner chapel combat mode=%v active=%v enemies=%+v",
+			state.Mode, state.CombatActive(), chapelEnemies)
+	}
+	for action := 0; action < 96 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeEvent ||
+		state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("inner chapel victory mode=%v status=%v message=%q",
+			state.Mode, state.CombatStatus(), state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("inner chapel victory continuation mode=%v message=%q",
+			state.Mode, state.Message)
+	}
+
+	// Return to the bedroom corridor and approach the west-wing choke point.
+	// The next legal step after (7,10) is terrain 83h, one of the four tiles
+	// that dispatch the Tyranthraxus/Nameless final ritual. Do not bypass it
+	// merely to enter the kennel and statuary rooms behind that story gate.
+	ritualGateApproach := []dungeonStep{
+		{x: 9, y: 12, direction: 0},
+		{x: 10, y: 12, direction: 2},
+		{x: 10, y: 11, direction: 0},
+		{x: 9, y: 11, direction: 6},
+		{x: 8, y: 11, direction: 6},
+		{x: 8, y: 10, direction: 0},
+		{x: 7, y: 10, direction: 6},
+	}
+	previousX, previousY = 9, 13
+	for _, step := range ritualGateApproach {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("ritual-gate route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("ritual-gate approach cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if !innerRuins.CanMoveDungeonWrapped(7, 10, 4) ||
+		innerRuins.CellWrapped(7, 11).Terrain != 0x83 {
+		t.Fatalf("ritual gate from (7,10) south passable=%v terrain=%02x",
+			innerRuins.CanMoveDungeonWrapped(7, 10, 4),
+			innerRuins.CellWrapped(7, 11).Terrain)
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{

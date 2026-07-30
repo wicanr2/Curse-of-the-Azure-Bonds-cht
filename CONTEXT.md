@@ -2657,3 +2657,18 @@ block-local bank 的證據，故 remake 忠實保留 SAVGAM ECL 全域位址，�
 清零。raw ECL、YES／NO、重訪、exact 財寶與 Standing Stone 起始玩家路徑
 均已回歸；READY spec 404 保存證據。下一步接續犬舍、活動雕像與私人
 禮拜堂。
+
+2026-07-31 第四百零五輪完成 block `43h` terrain `87h／88h／89h` 的
+raw ECL 與繁中。犬舍於 `+0AEFh` 寫 `4C01=1`，保留原始空文字 PRESS
+pause，之後建立 HELL HOUND `44h`×10；活動雕像於 `+0B74h` 寫
+`4C02=1`，建立 MARGOYLE `45h`×10。私人禮拜堂於 `+0BD9h` 寫
+`4C03=1`，老者說殺死隊伍更能傷害受班恩寵愛的提朗瑟克斯，隨後建立
+HIGH PRIEST `48h`×1、PRIEST OF BANE `46h`×4。三場戰鬥、重訪與
+MON6CHA 記錄均由 raw regression 鎖定。
+
+Standing Stone 起始長玩家路徑已從臥房走到 `(9,13)`，完成禮拜堂五祭司
+戰，再沿合法 GEO 抵達 `(7,10)`。下一步南行 `(7,11)` 是 terrain `83h`；
+`82h–85h` 四格共同分派提朗瑟克斯／無名者最終儀式，前往西翼犬舍與活動
+雕像的合法最短路線必經其中一格。因此本輪沒有 direct-entry 越過主線，
+犬舍／雕像明確仍是 raw branch 完成、player path 未完成。READY spec 405
+保存證據；下一步正面接通 terrain `83h` 最終儀式。
