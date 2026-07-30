@@ -127,6 +127,23 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 ## 7. Git 與提交紀律
 
+### 測試資料與穩定 ID
+
+- 產品層測試不得複製 JSON 內的翻譯、裝備名、法術名、地名或其他可編輯顯示
+  文字作為期望值；必須用穩定 ID 從實際 game pack／catalog 取得期望內容。
+- 原版 ECL 固定英文、原始 bytes、位址與選單 token 只可出現在明確的來源
+  oracle／parser 測試，並應同時驗證結構或來源位置；不能拿它們代替產品層
+  本地化驗收。
+- 測試應驗證「ID 解析、locale fallback、事件綁定與畫面取得同一份資料」，
+  使 JSON 改譯文或裝備顯示名時不必同步修改另一份硬編碼測試字串。
+- 常見錯誤：在測試直接寫「龍盔」「火球術」「長劍」等目前畫面文字，再用
+  `Contains` 判斷。即使測試會通過，仍是在複製 JSON 的真相來源；應改查
+  `message_id`／`item_id`／`spell_id`，並另測該 ID 經目前 locale 解析出的
+  畫面內容。若 JSON 改名後測試必須手動改同一字串，表示測試分層有誤。
+- 既有測試仍有歷史技術債：部分 `internal/game/*_test.go` 直接以繁中字串
+  `Contains` 驗證。碰到相關功能時要逐步改成穩定 ID，不得照抄其模式新增
+  債務；一次遷移一個真實玩家 vertical slice，並保留原始 ECL oracle 測試。
+
 - 只有重大、已測試、可展示的 milestone 才集中 commit＋push；不要每個小改
   都提交。
 - 兩個 repo 各自 commit／push，歷史保持獨立。

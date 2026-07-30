@@ -3,6 +3,7 @@ package ecl
 import (
 	"archive/zip"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
@@ -10,7 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 )
 
-func TestRealStandingStoneRevealsTyranthraxusAndMythDrannor(t *testing.T) {
+func TestRealStandingStoneToMythDrannorBurialGlen(t *testing.T) {
 	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
 		t.Skipf("original image unavailable: %v", err)
@@ -32,8 +33,9 @@ func TestRealStandingStoneRevealsTyranthraxusAndMythDrannor(t *testing.T) {
 		t.Fatal(err)
 	}
 	session.SetMemoryValue(0x4C59, 1)
-	session.SetMemoryValue(0x4C5B, 0xFF)
 	session.SetMemoryValue(0x4C5A, 1)
+	session.SetMemoryValue(0x4C5B, 0xFF)
+	session.SetMemoryValue(0x4C9B, 4)
 
 	result, err := session.RunFrom(0x01C4, 1000, nil)
 	if err != nil {
@@ -44,9 +46,7 @@ func TestRealStandingStoneRevealsTyranthraxusAndMythDrannor(t *testing.T) {
 	}
 
 	press := uint16(0)
-	reveal, err := session.ResumeInteractiveSelectionSeed(
-		1000, &press, nil, 1, PartyContext{},
-	)
+	reveal, err := session.ResumeInteractiveSelectionSeed(1000, &press, nil, 1, PartyContext{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,14 +59,70 @@ func TestRealStandingStoneRevealsTyranthraxusAndMythDrannor(t *testing.T) {
 	if count := mustMemory(t, session, 0x7F79); count != 3 {
 		t.Fatalf("removed-master count=%d, want 3", count)
 	}
-	for address, want := range map[uint16]uint16{
-		0x4C59: 1,
-		0x4C5A: 1,
-		0x4C5B: 0xFF,
-	} {
-		if got := mustMemory(t, session, address); got != want {
-			t.Fatalf("memory[0x%04X]=0x%X, want 0x%X", address, got, want)
-		}
+
+	actions, err := session.ResumeInteractiveSelectionSeed(1000, &press, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !actions.WaitingForMenu ||
+		!reflect.DeepEqual(actions.Menus[len(actions.Menus)-1].Options, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Standing Stone actions=%+v", actions.Menus)
+	}
+	journeyOn := uint16(1)
+	destinations, err := session.ResumeInteractiveSelectionSeed(1000, &journeyOn, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantDestinations := []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR", "MYTH DRANNOR"}
+	if !destinations.WaitingForMenu ||
+		!reflect.DeepEqual(destinations.Menus[len(destinations.Menus)-1].Options, wantDestinations) {
+		t.Fatalf("destinations=%+v, want %v", destinations.Menus, wantDestinations)
+	}
+
+	// ECL1's world adapter copies the destination bytes from the current
+	// adjacency row into these option-indexed work cells.
+	for index, value := range []uint16{2, 8, 11, 13} {
+		session.SetMemoryValue(0x4C02+uint16(index), value)
+	}
+	mythDrannor := uint16(3)
+	routes, err := session.ResumeInteractiveSelectionSeed(1000, &mythDrannor, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !routes.WaitingForMenu ||
+		!strings.Contains(strings.Join(routes.Text, " "), "HOW WILL YOU GET TO MYTH DRANNOR") ||
+		!reflect.DeepEqual(routes.Menus[len(routes.Menus)-1].Options, []string{"WILDERNESS", "EXIT"}) {
+		t.Fatalf("Myth Drannor routes=%+v text=%q", routes.Menus, routes.Text)
+	}
+
+	wilderness := uint16(0)
+	if _, err := session.ResumeInteractiveSelectionSeed(1000, &wilderness, nil, 1, PartyContext{}); err != nil {
+		t.Fatal(err)
+	}
+	// The AREA wilderness loop supplies the destination through 0x4C9C when
+	// the party reaches the city edge, then invokes SearchLocation.
+	session.SetMemoryValue(0x4C9C, 13)
+	edge, err := session.RunEntry(1, 1000, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !edge.WaitingForMenu ||
+		!strings.Contains(strings.Join(edge.Text, " "), "EDGE OF MYTH DRANNOR") ||
+		!reflect.DeepEqual(edge.Menus[len(edge.Menus)-1].Options, []string{"ENTER CITY", "JOURNEY ON", "CAMP", "SEARCH AREA"}) {
+		t.Fatalf("Myth Drannor edge=%+v text=%q", edge.Menus, edge.Text)
+	}
+
+	enterCity := uint16(0)
+	burialGlen, err := session.ResumeInteractiveSelectionSeed(1000, &enterCity, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.CurrentBlockID() != 0x40 ||
+		!burialGlen.Exited ||
+		!burialGlen.LoadFilesRequested || burialGlen.LoadFiles != [3]uint16{0x40, 2, 0xFF} ||
+		!burialGlen.LoadPiecesRequested || burialGlen.LoadPieces != [3]uint16{17, 18, 16} ||
+		!strings.Contains(strings.Join(burialGlen.Text, " "), "TYRANTHRAXUS IS TO THE NORTH") {
+		t.Fatalf("Burial Glen block=0x%02X result=%+v", session.CurrentBlockID(), burialGlen)
 	}
 }
 

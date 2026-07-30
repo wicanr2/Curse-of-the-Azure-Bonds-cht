@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`ff944bf`
-依賴的 Golden Box engine checkpoint：`031d4ea`
+本 milestone 的 CoAB 基底：`6a3d6da`
+依賴的 Golden Box engine checkpoint：`7ba2f8e`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -56,6 +56,10 @@ commit 內保存不可能自我引用的 hash。
 - 角色建立、繁中姓名、能力值、種族／職業、基礎隊伍、裝備與多項法術。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
+- ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常
+  Journey On／Wilderness／AREA 抵達 Myth Drannor，選擇 Enter City 後
+  進入 ECL6／GEO6 Burial Glen block `0x40`。這只證明入口 vertical slice，
+  尚非完整 AREA travel 或 Myth Drannor 章節。
 - remake JSON save，以及原版 SAVGAM／CHRDAT／FX／SWG 的已驗證欄位
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。

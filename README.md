@@ -760,6 +760,10 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
 - 檢查哨戰後可在 `(13,10)` 遇見迷斯卓諾騎士。三個效忠選項已繁中化；選擇
   「娜卡西亞公主」會得到「別殺拿戰鎚的牧師」提示並建立原版友善／已訪狀態，
   重訪同一 terrain 不會重播事件。
+- ECL1 的 14×4 世界目的地圖已改由 game-pack JSON 宣告。集齊三名枷印主人
+  線索後，玩家可在 Standing Stone 看見提朗瑟克斯揭露身分，依正常
+  Journey On→Myth Drannor→Wilderness→Enter City 操作進入 ECL6／GEO6
+  Burial Glen block `0x40`；完整 AREA 行程、遺跡事件與結局仍待完成。
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

@@ -85,6 +85,9 @@
       ,"world.hillsfar": "Hillsfar"
       ,"world.zhentil-keep": "Zhentil Keep"
       ,"world.myth-drannor": "Myth Drannor"
+      ,"myth-drannor.tyranthraxus-reveal": "The bonds reveal Tyranthraxus. He commands you to meet him at Myth Drannor."
+      ,"myth-drannor.edge": "You are at the edge of Myth Drannor. Will you enter or continue your journey?"
+      ,"myth-drannor.helm-north": "The Helm of Dragons reports that Tyranthraxus is to the north."
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -167,6 +170,9 @@
       ,"world.hillsfar": "希爾斯法"
       ,"world.zhentil-keep": "散提爾堡"
       ,"world.myth-drannor": "迷斯卓諾"
+      ,"myth-drannor.tyranthraxus-reveal": "枷印揭露出烈焰之主提朗瑟克斯；他命令你們前往迷斯卓諾與他會面。"
+      ,"myth-drannor.edge": "你們來到迷斯卓諾邊緣。要進入遺跡，還是繼續旅程？"
+      ,"myth-drannor.helm-north": "龍盔傳來感應：提朗瑟克斯就在北方。"
     }
   },
   "music_tracks": [
@@ -491,20 +497,20 @@
       "geometry_block": 121,
       "scale": 2,
       "locations": [
-        {"value": 0, "id": "tilverton", "message_id": "world.tilverton", "x": 27, "y": 103},
-        {"value": 1, "id": "shadowdale", "message_id": "world.shadowdale", "x": 88, "y": 65},
-        {"value": 2, "id": "ashabenford", "message_id": "world.ashabenford", "x": 151, "y": 83},
-        {"value": 3, "id": "dagger-falls", "message_id": "world.dagger-falls", "x": 78, "y": 37},
-        {"value": 4, "id": "standing-stone", "message_id": "world.standing-stone", "x": 203, "y": 80},
-        {"value": 5, "id": "voonlar", "message_id": "world.voonlar", "x": 136, "y": 43},
-        {"value": 6, "id": "phlan", "message_id": "world.phlan", "x": 299, "y": 7},
-        {"value": 7, "id": "teshwave", "message_id": "world.teshwave", "x": 145, "y": 26},
-        {"value": 8, "id": "essembra", "message_id": "world.essembra", "x": 207, "y": 96},
-        {"value": 9, "id": "hap", "message_id": "world.hap", "x": 218, "y": 113},
-        {"value": 10, "id": "yulash", "message_id": "world.yulash", "x": 175, "y": 35},
-        {"value": 11, "id": "hillsfar", "message_id": "world.hillsfar", "x": 253, "y": 47},
-        {"value": 12, "id": "zhentil-keep", "message_id": "world.zhentil-keep", "x": 195, "y": 19},
-        {"value": 13, "id": "myth-drannor", "message_id": "world.myth-drannor", "x": 204, "y": 65}
+        {"value": 0, "id": "tilverton", "message_id": "world.tilverton", "x": 27, "y": 103, "destinations": [1, 2, 3]},
+        {"value": 1, "id": "shadowdale", "message_id": "world.shadowdale", "x": 88, "y": 65, "destinations": [0, 2, 3, 5]},
+        {"value": 2, "id": "ashabenford", "message_id": "world.ashabenford", "x": 151, "y": 83, "destinations": [0, 1, 4]},
+        {"value": 3, "id": "dagger-falls", "message_id": "world.dagger-falls", "x": 78, "y": 37, "destinations": [1, 7]},
+        {"value": 4, "id": "standing-stone", "message_id": "world.standing-stone", "x": 203, "y": 80, "destinations": [2, 8, 11, 13]},
+        {"value": 5, "id": "voonlar", "message_id": "world.voonlar", "x": 136, "y": 43, "destinations": [1, 7, 10]},
+        {"value": 6, "id": "phlan", "message_id": "world.phlan", "x": 299, "y": 7, "destinations": [12, 11]},
+        {"value": 7, "id": "teshwave", "message_id": "world.teshwave", "x": 145, "y": 26, "destinations": [3, 5, 10, 12]},
+        {"value": 8, "id": "essembra", "message_id": "world.essembra", "x": 207, "y": 96, "destinations": [9, 4]},
+        {"value": 9, "id": "hap", "message_id": "world.hap", "x": 218, "y": 113, "destinations": [8]},
+        {"value": 10, "id": "yulash", "message_id": "world.yulash", "x": 175, "y": 35, "destinations": [5, 7, 12, 11]},
+        {"value": 11, "id": "hillsfar", "message_id": "world.hillsfar", "x": 253, "y": 47, "destinations": [10, 4, 6]},
+        {"value": 12, "id": "zhentil-keep", "message_id": "world.zhentil-keep", "x": 195, "y": 19, "destinations": [7, 10, 6]},
+        {"value": 13, "id": "myth-drannor", "message_id": "world.myth-drannor", "x": 204, "y": 65, "destinations": [4]}
       ]
     },
     {
@@ -520,6 +526,20 @@
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 2, "y": 0, "direction": 4}
+    },
+    {
+      "id": "myth-drannor.burial-glen",
+      "kind": "first_person",
+      "area_id": 6,
+      "script_block": 64,
+      "geometry_block": 64,
+      "geometry_file": "GEO6.DAX",
+      "wall_file": "WALLDEF6.DAX",
+      "symbol_file": "8X8D6.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "wrap": true,
+      "scale": 2
     },
     {
       "id": "zhentil-keep.dark-shrine",
@@ -552,6 +572,21 @@
     }
   ],
   "text_rules": [
+    {
+      "id": "myth-drannor.tyranthraxus-reveal",
+      "all_contains": ["REVEALING TYRANTHRAXUS", "MEET ME AT MYTH DRANNOR"],
+      "message_id": "myth-drannor.tyranthraxus-reveal"
+    },
+    {
+      "id": "myth-drannor.edge",
+      "all_contains": ["YOU ARE AT THE EDGE OF MYTH DRANNOR", "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"],
+      "message_id": "myth-drannor.edge"
+    },
+    {
+      "id": "myth-drannor.helm-north",
+      "all_contains": ["THE HELM OF DRAGONS REPORTS", "TYRANTHRAXUS IS TO", "THE NORTH"],
+      "message_id": "myth-drannor.helm-north"
+    },
     {
       "id": "zhentil.patrol_pass",
       "all_contains": [
