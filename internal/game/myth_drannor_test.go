@@ -7,8 +7,10 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
@@ -29,6 +31,28 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 	}
 	state := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	hero := combat.Fighter{
+		ID: "hero", Name: "英雄", Side: combat.SideParty,
+		HitPoints: 999, MaxHitPoints: 999, ArmorClass: -10,
+		AttackBonus: 100, DamageDiceCount: 1, DamageDiceSides: 1,
+		DamageBonus: 100, AttacksPerTurn: 8, InitiativeBonus: 100,
+	}
+	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
+		t.Fatal(err)
+	}
+	monsterBlocks, err := dax.Parse(zipData(t, image, "MON6CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monsterRecords := make(map[uint8]monster.Record, len(monsterBlocks))
+	for _, block := range monsterBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monsterRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(6, monsterRecords)
 	state.session.SetMemoryValue(0x4C59, 1)
 	state.session.SetMemoryValue(0x4C5A, 1)
 	state.session.SetMemoryValue(0x4C5B, 0xFF)
@@ -278,6 +302,63 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER IT", "SPEAK", "HACK IT", "RETREAT"}) {
 		t.Fatalf("red web resumed choices=%v message=%q",
 			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || state.CombatStatus() != combat.StatusActive ||
+		len(state.livingBySide(combat.SideEnemy)) != 4 {
+		t.Fatalf("spider combat mode=%v status=%v enemies=%#v message=%q",
+			state.Mode, state.CombatStatus(), state.livingBySide(combat.SideEnemy), state.Message)
+	}
+	for _, enemy := range state.livingBySide(combat.SideEnemy) {
+		if enemy.Name != monsterRecords[0x42].Name {
+			t.Fatalf("spider enemy=%q, want source record %q", enemy.Name, monsterRecords[0x42].Name)
+		}
+	}
+	for action := 0; action < 64 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 72 ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-web.rakshasa") {
+		t.Fatalf("rakshasa reveal mode=%v picture=%v/%d message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || state.CombatStatus() != combat.StatusActive ||
+		len(state.livingBySide(combat.SideEnemy)) != 1 ||
+		state.livingBySide(combat.SideEnemy)[0].Name != monsterRecords[0x43].Name {
+		t.Fatalf("rakshasa combat mode=%v status=%v enemies=%#v",
+			state.Mode, state.CombatStatus(), state.livingBySide(combat.SideEnemy))
+	}
+	for action := 0; action < 32 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode != ModeEvent ||
+		state.Message != gamePackText(t, state, "myth-drannor.red-web.free") {
+		t.Fatalf("post-rakshasa mode=%v message=%q status=%v",
+			state.Mode, state.Message, state.CombatStatus())
+	}
+	if value, ok := state.session.MemoryValue(0x4CBF); !ok || value != 1 {
+		t.Fatalf("red-web completion memory=%d,%v want 1,true", value, ok)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-red-web mode=%v, want dungeon", state.Mode)
+	}
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("completed red web retriggered mode=%v message=%q", state.Mode, state.Message)
 	}
 }
 

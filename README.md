@@ -771,9 +771,15 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
   依 ECL 最大長度限制並可同 PC 續跑的字串欄位；原腳本其實不檢查
   `Krrkik`，而是任何回答都讓網變亮後返回選單。ENTER／HACK／RETREAT、
   四隻蜘蛛、幽魂揭露 rakshasa、第二戰及完成旗標已有原始 ECL 回歸；
-  兩戰完整勝敗玩家路徑與 Burial Glen 後續仍待完成。
+  正常玩家路徑現在也會以真實 MON6CHA 敵人完成四蜘蛛勝利、續跑同一 ECL、
+  揭露羅剎妖、完成第二戰、寫入 `4CBFh` 並返回地城，重踏紅網不會重播。
+  手札所稱「獲得強大力量」是陷阱話術；實際 ECL 沒有角色能力加成。
+  戰敗路徑、蜘蛛毒素／羅剎妖完整規則與 Burial Glen 後續仍待完成。
 
 ![Burial Glen 紅網的 640×480 原版石框與 16×15 倚天字串輸入](docs/screenshots/burial-glen-red-web-input.png)
+
+![Burial Glen 紅網四隻巨型蜘蛛的原版 CPIC 小人與戰鬥框](docs/screenshots/burial-glen-red-web-spiders.png)
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

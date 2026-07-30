@@ -218,7 +218,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`2921842`；第 386 輪 Burial Glen 紅網與 `INPUT STRING`
+- CoAB 本輪基底：`e2a1031`；第 387 輪 Burial Glen 紅網雙戰鬥 State
   milestone 會由本文件所在 commit 完成。
 - Engine dependency：`7ba2f8e`（含世界目的地有向圖 schema／validation、
   繁體中文音訊架構知識庫及中立
@@ -244,8 +244,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `INPUT STRING 8,[7F79h]`，且紅網 branch 不比較 `Krrkik`；它是 Journal
   提示而非程式密碼 gate。VM／State／Ebiten 已提供可續跑 Unicode 字串輸入，
   正常 GEO 玩家路徑可抵達紅網；ENTER 的蜘蛛→PICTURE 72→rakshasa 兩戰
-  continuation、HACK 與 RETREAT 有 real-image regression。兩場戰鬥的完整
-  State 勝敗路徑及 Burial Glen 後續仍未完成，不得宣稱本區或最終章完成。
+  continuation、HACK 與 RETREAT 有 real-image regression。
+- 第 387 輪已從上述正常 GEO 路徑選 ENTER，以真實 MON6CHA 完成四蜘蛛
+  勝利、同 ECL session 續跑、PICTURE 72 羅剎妖揭露、第二戰勝利、
+  `4CBFh=1`、地城返回及重踏不重播。Journal 25 的「強大力量」是陷阱話術；
+  ENTER 指令只寫 combat work `7F72h`、`4CBEh` 與 `4CBFh`，不能自行新增
+  Strength buff。戰敗、毒素、羅剎妖完整能力與後續區域仍未完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 
