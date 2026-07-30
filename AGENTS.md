@@ -171,9 +171,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e4ee789`；第 374 輪 MSCDRV Timer B IRQ ownership
+- CoAB 本輪基底：`ef66160`；第 375 輪 YM2203 Timer B clock bridge
   milestone 會由本文件所在 commit 完成。
-- Engine dependency：`234f1c4`（含中立 `audio/s98`、`audio/ym2203`、
+- Engine dependency：`88be6c0`（含中立 `audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -247,11 +247,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   本身的 READY 規格。
   第 374 輪再以指定 IDA、raw bytes 與同一份 S98 證明 MSCDRV 自己接管
   YM2203 IRQ：只在 Timer B 呼叫 `TrackPlayback`，不鏈回 Sound BIOS ISR。
-  因此 CoAB faithful BGM 不執行上述 LFO，spec 374 是最新 READY 規格。
-- 下一步還原 register `26h`／PC-98 clock 到 PCM sample clock 的無漂移
-  Timer B bridge 與 YM2203 合成器，再做 fade、SFX 共存、完整曲長／loop、
-  mixer 與遊戲內播放；不得把 scheduler core 寫成完整 PC-98 音樂，也不得
-  把 Sound BIOS LFO 擅自接進 CoAB 正常配樂。
+  因此 CoAB faithful BGM 不執行上述 LFO，spec 374 保存 IRQ ownership
+  的 READY 規格。
+  第 375 輪又由 S98 證明 3,993,600 Hz／prescale 6；engine 已完成 Timer B
+  完整 count period 與無 rounding drift 的 PCM sample accumulator，
+  spec 375 是最新 READY 規格。
+- 下一步還原 `27h` reload 的 free-running divide-by-16 phase 與 YM2203
+  合成器，再做 fade、SFX 共存、完整曲長／loop、mixer 與遊戲內播放；
+  不得把完整 period accumulator 說成 cycle-perfect IRQ，也不得把 Sound
+  BIOS LFO 擅自接進 CoAB 正常配樂。
 
 ### 目前 PC-98 音訊研究 milestone（不可遺忘）
 
@@ -338,8 +342,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   再追假設中的外部音色 bank。第 371 輪已補完 total-level／carrier 與
   operator-mask key-on；第 372 輪已補 LFO 靜態核心，第 373 輪已補
   Sound BIOS Timer B cadence、sync state 與 ROM 動態 harness。第 374 輪
-  證明本作 MSCDRV 接管 IRQ 並繞過該 LFO。下一個真實缺口是 Timer B
-  wall-clock bridge、fade／SFX、完整 loop、合成器與遊戲內播放器。
+  證明本作 MSCDRV 接管 IRQ 並繞過該 LFO。第 375 輪已補 Timer B 完整
+  count period 與 PCM 有理數 accumulator。下一個真實缺口是 reload
+  phase、fade／SFX、完整 loop、合成器與遊戲內播放器。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
@@ -355,8 +360,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   event 規格 `docs/spec/368-pc98-opn-event-runtime.md`、音色 bank 規格
   `docs/spec/369-pc98-fm-parameter-bank.md` 與 S98 runtime 規格
   `docs/spec/370-pc98-s98-ym2203-runtime.md` 也已 READY。
-  第 371／372／373／374 輪規格也已 READY。下一步先接 MSCDRV Timer B
-  wall-clock runtime 與合成器，再處理 fade／SFX 與完整 loop；播放器
+  第 371／372／373／374／375 輪規格也已 READY。下一步先補 MSCDRV
+  Timer B reload phase 與合成器，再處理 fade／SFX 與完整 loop；播放器
   只能在對應外部 event 持續交叉驗證後接入。
 
 ## 10. Compact 後恢復工作清單

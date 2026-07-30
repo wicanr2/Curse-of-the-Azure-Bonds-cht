@@ -2147,3 +2147,21 @@ READY spec 374 與兩支 native IDC 已保存。下一步是交叉驗證 PC-9801
 YM2203 clock／prescaler 與 register `26h` 的 wall-clock 公式，建立
 Timer B→PCM sample clock 的無漂移 bridge，再做 YM2203 合成器、fade、
 SFX 共存、完整 loop 與遊戲內播放。
+
+2026-07-30 第 375 輪完成 YM2203 Timer B 完整 count period 與 PCM
+有理數排程。selector 9 的 45.01 秒 S98 header exact 指定
+`3,993,600 Hz`；版本化 auditor 證明 `2Dh..2Fh` prescaler writes 為零，
+`26h` 分布是 `00×2／BA×2／D3×1／E3×2`，`27h` 則有
+`20×3558／0A×3561`，與第 374 輪 ISR acknowledge／restart 相符。
+
+BSD 授權官方 ymfm commit
+`81aec25ccbb98f4873a255f7551ac4dadac59b4a` 的 OPN 核心交叉證明
+`16 × (256-data) × 12 operators × prescale`；YM2203 default prescale
+為 6。因此 CoAB 完整 period 是 `1152 × (256-data)` chip clocks。
+
+獨立 engine `audio/ym2203` 新增 `TimerBClockCycles` 與
+`TimerBSampleAccumulator`；後者使用整數 numerator／remainder，1,000 個
+period regression 不累積逐 tick rounding drift。CoAB adapter 只保存
+3,993,600 Hz 與 prescale 6。仍未完成 `27h` reload 時 free-running
+divide-by-16 phase、CPU I/O timing、YM2203 合成器、fade／SFX、loop 與
+遊戲內播放；完整 period READY 不代表 cycle-perfect IRQ edge。

@@ -344,3 +344,4 @@
 - [第三百七十二輪 PC-98 Sound BIOS 軟體 LFO 核心](./372-pc98-sound-bios-software-lfo.md)（`READY`：限 timer ISR、六種 waveform 與 pitch／TL 投影）
 - [第三百七十三輪 PC-98 Sound BIOS LFO Timer B 排程](./373-pc98-sound-bios-lfo-timer-scheduler.md)（`READY`：限 cadence、sync 狀態機與 ROM 動態 harness）
 - [第三百七十四輪 PC-98 MSCDRV Timer B 中斷所有權](./374-pc98-mscdrv-timer-b-ownership.md)（`READY`：限 driver ISR 接管、Timer B dispatch 與 CoAB faithful BGM 不執行 Sound BIOS LFO）
+- [第三百七十五輪 PC-98 YM2203 Timer B 時鐘](./375-pc98-ym2203-timer-b-clock.md)（`READY`：限完整 count period、3,993,600 Hz／prescale 6 與無漂移 PCM sample accumulator）

@@ -198,3 +198,22 @@ track interpreter，結尾寫 `27h=0Ah`。它不測 Timer A、也不鏈回舊 ha
 必須各自追到 interrupt owner，不能只因沿用同一 parameter format 就啟用
 LFO。CoAB 下一步是 register `26h` 與硬體 clock 到 PCM sample clock 的
 無漂移 bridge，不是把第 373 輪 scheduler 接進 `TrackPlayback`。
+
+2026-07-30 第 375 輪把上述 bridge 拆成「已證明的完整 count period」與
+「尚未證明的 reload phase」。selector 9 的 45.01 秒 S98 header 指定
+YM2203 clock `3,993,600 Hz`，且 `2Dh..2Fh` prescaler writes 為零；
+`26h` 實際值包含 `BAh／D3h／E3h`。官方 ymfm OPN 核心則交叉提供：
+
+```text
+Timer B chip clocks =
+  16 × (256 − register26) × 12 operators × prescale
+```
+
+YM2203 reset prescale 是 6，所以 CoAB 的完整 count period 是
+`1152 × (256 − register26)` clocks。共用 engine 使用整數 numerator 與
+remainder 累加 PCM samples，不能每 tick 各自四捨五入，否則曲長會逐步
+漂移。
+
+但 `×16` divider 是 free-running；MSCDRV 每次 IRQ 都寫
+`27h=20h→0Ah`，首週期仍會受 reload phase 與 CPU I/O timing 影響。
+知識庫不可把「長時間無 rounding drift」寫成「每個 IRQ edge cycle-exact」。

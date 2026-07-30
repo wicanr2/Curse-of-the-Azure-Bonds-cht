@@ -74,6 +74,10 @@ Timer B scheduler，CoAB adapter 只映射 NEC waveform／sync／speed。
 硬體中斷，只在 Timer B 呼叫音序列 interpreter，且不鏈回 Sound BIOS
 ISR；因此 CoAB 原版正常 BGM 本來就不執行該軟體 LFO，重製忠實模式也不會
 擅自增加 modulation。
+第 375 輪再由 45.01 秒 S98 證明 YM2203 clock 為 3,993,600 Hz、正常配樂
+沒有 prescaler write；共用 engine 已依 Timer B 完整 count period 公式
+建立有理數 PCM sample accumulator，可跨 tick 保留餘數而不累積 rounding
+drift。`27h` reload 的 free-running divide-by-16 phase 仍未完成。
 fade／SFX、完整 loop、合成器與遊戲內播放器也仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
@@ -102,7 +106,9 @@ S98／YM2203 執行期驗證則見
 Timer B cadence、sync 狀態機與 ROM 動態 harness 則見
 [`docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md`](docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md)，
 MSCDRV 的 Timer B 中斷所有權與 faithful BGM 邊界則見
-[`docs/spec/374-pc98-mscdrv-timer-b-ownership.md`](docs/spec/374-pc98-mscdrv-timer-b-ownership.md)。
+[`docs/spec/374-pc98-mscdrv-timer-b-ownership.md`](docs/spec/374-pc98-mscdrv-timer-b-ownership.md)，
+Timer B 完整週期與 PCM 有理數排程則見
+[`docs/spec/375-pc98-ym2203-timer-b-clock.md`](docs/spec/375-pc98-ym2203-timer-b-clock.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。
