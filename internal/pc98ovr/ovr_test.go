@@ -68,3 +68,21 @@ func TestPatternOffsetsIncludesOverlaps(t *testing.T) {
 		t.Fatalf("PatternOffsets = %v, want [0 1]", got)
 	}
 }
+
+func TestFarCallWordArgumentsRequiresAdjacentDSPush(t *testing.T) {
+	t.Parallel()
+
+	code := []byte{
+		0xFF, 0x36, 0x48, 0x48,
+		0x9A, 0x00, 0x00, 0x93, 0x08,
+		0x90,
+		0x9A, 0x00, 0x00, 0x93, 0x08,
+	}
+	got := FarCallWordArguments(code, 0x0000, 0x0893)
+	if len(got) != 1 {
+		t.Fatalf("calls=%+v", got)
+	}
+	if got[0].CallOffset != 4 || got[0].ArgumentAddress != 0x4848 {
+		t.Fatalf("call=%+v", got[0])
+	}
+}

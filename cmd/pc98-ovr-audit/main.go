@@ -3,7 +3,9 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
+	"encoding/binary"
 	"encoding/hex"
 	"flag"
 	"fmt"
@@ -19,6 +21,8 @@ func main() {
 	interruptText := flag.String("interrupt", "d2", "hexadecimal interrupt number to scan")
 	wordText := flag.String("word", "", "另搜尋 little-endian 16-bit 值（十六進位）")
 	bytesText := flag.String("bytes", "", "另搜尋連續 hex bytes，例如 9a77019308")
+	contextBytes := flag.Int("context", 0, "列出 bytes match 前後各 N bytes（十進位）")
+	soundFX := flag.Bool("soundfx", false, "稽核 SOUNDFX 0893:0000 與 selector 常數")
 	extractCodeDir := flag.String("extract-code-dir", "", "將每段已驗證 code 匯出至指定目錄，供 IDA 載入")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
@@ -28,6 +32,9 @@ func main() {
 	if flag.NArg() != 2 {
 		flag.Usage()
 		os.Exit(2)
+	}
+	if *contextBytes < 0 {
+		fatalf("context 必須大於或等於零")
 	}
 	interruptValue, err := strconv.ParseUint(strings.TrimPrefix(*interruptText, "0x"), 16, 8)
 	if err != nil {
@@ -57,12 +64,24 @@ func main() {
 	fmt.Printf("exe_sha256=%x\n", sha256.Sum256(executable))
 	fmt.Printf("ovr_sha256=%x\n", sha256.Sum256(overlayFile))
 	fmt.Printf("overlay_count=%d interrupt=%02X\n", len(overlays), interruptValue)
+	if *soundFX {
+		table := soundFXSelectorTable()
+		if bytes.Index(executable, table) < 0 {
+			fatalf("SOUNDFX selector table is absent from GAME.EXE")
+		}
+		fmt.Printf(
+			"soundfx_selector_table_files=%s ds_base=0x4838 values=255,0..15\n",
+			formatOffsets(pc98ovr.PatternOffsets(executable, table)),
+		)
+	}
 	if *extractCodeDir != "" {
 		if err := os.MkdirAll(*extractCodeDir, 0o755); err != nil {
 			fatalf("建立 code 匯出目錄失敗：%v", err)
 		}
 	}
 	total := 0
+	soundFXTotal := 0
+	soundFXCounts := make(map[int]int)
 	for index, overlay := range overlays {
 		offsets := pc98ovr.InterruptOffsets(overlay.Code, byte(interruptValue))
 		total += len(offsets)
@@ -86,14 +105,77 @@ func main() {
 			fmt.Printf(" bytes_%X_offsets=%s", bytePattern, formatOffsets(byteOffsets))
 		}
 		fmt.Println()
+		if *contextBytes > 0 {
+			for _, offset := range byteOffsets {
+				start := max(0, offset-*contextBytes)
+				end := min(len(overlay.Code), offset+len(bytePattern)+*contextBytes)
+				fmt.Printf(
+					"  bytes_context local=0x%X range=0x%X..0x%X hex=%X\n",
+					offset, start, end, overlay.Code[start:end],
+				)
+			}
+		}
 		if *extractCodeDir != "" {
 			path := filepath.Join(*extractCodeDir, fmt.Sprintf("overlay-%02d.bin", index))
 			if err := os.WriteFile(path, overlay.Code, 0o644); err != nil {
 				fatalf("匯出 overlay %d code 失敗：%v", index, err)
 			}
 		}
+		if *soundFX {
+			for _, call := range pc98ovr.FarCallWordArguments(overlay.Code, 0x0000, 0x0893) {
+				selector, ok := soundFXSelector(call.ArgumentAddress)
+				if !ok {
+					fatalf(
+						"overlay %d SOUNDFX call 0x%X uses unknown DS:%04X",
+						index, call.CallOffset, call.ArgumentAddress,
+					)
+				}
+				fmt.Printf(
+					"soundfx_call overlay=%d local=0x%X file=0x%X ds=0x%04X selector=%d\n",
+					index, call.CallOffset,
+					int(overlay.FileOffset)+call.CallOffset,
+					call.ArgumentAddress, selector,
+				)
+				soundFXTotal++
+				soundFXCounts[selector]++
+			}
+		}
 	}
 	fmt.Printf("interrupt_matches=%d\n", total)
+	if *soundFX {
+		fmt.Printf("soundfx_calls=%d selector_counts=", soundFXTotal)
+		for selector := 0; selector <= 15; selector++ {
+			if count := soundFXCounts[selector]; count != 0 {
+				fmt.Printf("%d:%d,", selector, count)
+			}
+		}
+		if count := soundFXCounts[255]; count != 0 {
+			fmt.Printf("255:%d,", count)
+		}
+		fmt.Println()
+	}
+}
+
+func soundFXSelectorTable() []byte {
+	table := make([]byte, 17*2)
+	for index, selector := range []uint16{
+		255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+	} {
+		binary.LittleEndian.PutUint16(table[index*2:], selector)
+	}
+	return table
+}
+
+func soundFXSelector(address uint16) (int, bool) {
+	const base = uint16(0x4838)
+	if address < base || address > base+16*2 || (address-base)%2 != 0 {
+		return 0, false
+	}
+	index := int((address - base) / 2)
+	if index == 0 {
+		return 255, true
+	}
+	return index - 1, true
 }
 
 func read(path string) []byte {

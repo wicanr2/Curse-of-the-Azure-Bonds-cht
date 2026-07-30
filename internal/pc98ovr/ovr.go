@@ -33,6 +33,15 @@ type Overlay struct {
 	Relocation []byte
 }
 
+// FarCallWordArgument identifies the Turbo Pascal sequence
+// PUSH word ptr DS:[address]; CALL FAR segment:offset.
+type FarCallWordArgument struct {
+	CallOffset      int
+	ArgumentAddress uint16
+	TargetOffset    uint16
+	TargetSegment   uint16
+}
+
 // ParseControls finds structurally valid Turbo Pascal control records in a
 // resident MZ image. Validation is based on TPOV bounds and record chaining;
 // an isolated CD 3F byte sequence is not accepted as evidence.
@@ -156,4 +165,30 @@ func PatternOffsets(code, pattern []byte) []int {
 		start = offset + 1
 	}
 	return offsets
+}
+
+// FarCallWordArguments returns exact direct far calls whose single argument
+// is loaded from a resident DS word immediately before the call.
+func FarCallWordArguments(
+	code []byte, targetOffset, targetSegment uint16,
+) []FarCallWordArgument {
+	var calls []FarCallWordArgument
+	for callOffset := 4; callOffset+5 <= len(code); callOffset++ {
+		if code[callOffset] != 0x9A ||
+			binary.LittleEndian.Uint16(code[callOffset+1:callOffset+3]) != targetOffset ||
+			binary.LittleEndian.Uint16(code[callOffset+3:callOffset+5]) != targetSegment {
+			continue
+		}
+		pushOffset := callOffset - 4
+		if code[pushOffset] != 0xFF || code[pushOffset+1] != 0x36 {
+			continue
+		}
+		calls = append(calls, FarCallWordArgument{
+			CallOffset:      callOffset,
+			ArgumentAddress: binary.LittleEndian.Uint16(code[pushOffset+2 : callOffset]),
+			TargetOffset:    targetOffset,
+			TargetSegment:   targetSegment,
+		})
+	}
+	return calls
 }

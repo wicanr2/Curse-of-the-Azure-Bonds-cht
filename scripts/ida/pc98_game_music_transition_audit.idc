@@ -44,14 +44,26 @@ static dump_callers(label, target)
   }
 }
 
+static dump_bytes(label, start, size)
+{
+  auto index;
+  msg("BYTES label=%s start=%08X size=%d hex=", label, start, size);
+  for (index = 0; index < size; index = index + 1) {
+    msg("%02X", get_wide_byte(start + index));
+  }
+  msg("\n");
+}
+
 static main()
 {
   auto_wait();
   dump_range("GAME_SOUNDFX", 0x18930, 0x18A3D);
+  dump_bytes("GAME_SOUNDFX_SEQUENCE_TABLE", 0x1DCCC, 16 * 20 * 2);
   dump_range("MSCPLAY", 0x18A44, 0x18A8E);
   dump_range("MSCSTOP", 0x18A8E, 0x18AA7);
   dump_range("BGMPLAY", 0x18AA7, 0x18B8F);
   dump_range("BORLAND_DELAY_SOUND_NOSOUND", 0x19259, 0x1929E);
+  dump_range("PC98_PORT37_PULSE", 0x19D1E, 0x19D6A);
   dump_callers("MSCPLAY", 0x18A44);
   dump_callers("MSCSTOP", 0x18A8E);
   dump_callers("BORLAND_DELAY", 0x19259);
