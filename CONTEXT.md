@@ -2101,7 +2101,9 @@ scheduler、合成器與遊戲內播放器。
 sync delay 狀態機與 ROM 動態 harness。先將 Hoot selector 9 capture
 延長至 45.01 秒；三個 FM 聲道都載入 first-stream parameter 3 且 key-on，
 22,743 次 register writes 仍只有正常 note burst，獨立 pitch／TL LFO
-更新皆為零。這把 Hoot `pc98dos` 限制與原機行為明確分開。
+更新皆為零。第 373 輪當時把它列為 Hoot `pc98dos` 可觀測性限制；第 374
+輪後續 IDA／raw-byte 證據已推翻此原因，證明是 MSCDRV 繞過 Sound BIOS
+timer ISR。
 
 指定 IDA Pro 9.4 證明 `CF47Ah` 讀 YM status：bit 0 進 `CF501h` Timer A
 note path，bit 1 進 `CF5F3h` Timer B LFO path。sync state 3 將
@@ -2118,5 +2120,30 @@ CF3E7` 及 80 次 `CF5F3`，攔截 `0x188/0x18A`。parameter 3 的
 phase state、WORD counter、sync 0／1／2+、低 byte waiting decrement 與
 shared phase；CoAB `FMParameterBlock.SoundBIOSModulationConfig` 只映射
 waveform／sync／speed。engine 全測試、CoAB focused tests 與 ROM harness
-均通過。仍未完成 TrackPlayback／Timer A note-state 接線、Timer B→PCM
-sample clock、fade／SFX、完整 loop、合成器與遊戲內播放器。
+均通過。第 373 輪當時把 TrackPlayback／Timer A note-state 接線列為缺口；
+第 374 輪已取消這個錯誤工作項。Timer B→PCM sample clock、fade／SFX、
+完整 loop、合成器與遊戲內播放器仍未完成。
+
+2026-07-30 第 374 輪推翻「下一步把 Sound BIOS LFO 接進 CoAB
+TrackPlayback」的整合假設。依 AGENTS 規定，在 Docker 內以指定
+`/home/anr2/ida_94_official/dist` 的 IDA Pro 9.4 原生 IDC 分析 exact
+`MSCDRV.EXE` 與 `SOUND.ROM`，再以 raw bytes 交叉驗證。
+
+MSCDRV `10EE0h` 會用 DOS `INT 21h/AH=35h` 保存舊 sound IRQ vector，
+再以 `AH=25h` 安裝自己的 `CS:0F54h`。初始化寫 `26h=BAh`、
+`27h=02h`，接著寫 `27h=0Ah`。新 ISR 讀 `188h` status，只測 bit 1；
+Timer B 到達時寫 `27h=20h`、呼叫 `10175h` TrackPlayback dispatch，
+結尾再寫 `27h=0Ah`。它不測 Timer A，也不鏈回保存的 Sound BIOS ISR；
+舊 vector 只在卸載 `10F37h` 恢復。
+
+因此 `SOUND.ROM CF5F3h` scheduler 雖已由第 373 輪 ROM harness 動態
+證實，CoAB 正常 BGM 並不執行它。selector 9 的 45.01 秒 Hoot S98 中
+三個 parameter 3 聲道已 key-on、卻沒有獨立 LFO writes，現在可由 exact
+driver control flow 解釋，不再歸因為 Hoot 可觀測性限制。faithful
+`TrackPlayback` 不得額外產生 LFO pitch／TL；其 `Tick()` exact 語意是
+一次 MSCDRV Timer B overflow。
+
+READY spec 374 與兩支 native IDC 已保存。下一步是交叉驗證 PC-9801
+YM2203 clock／prescaler 與 register `26h` 的 wall-clock 公式，建立
+Timer B→PCM sample clock 的無漂移 bridge，再做 YM2203 合成器、fade、
+SFX 共存、完整 loop 與遊戲內播放。

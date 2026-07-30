@@ -70,6 +70,10 @@ parameter 3 聲道都 key-on 但 Hoot 仍未執行 ROM LFO；隨後以 Unicorn
 直接執行 exact `SOUND.ROM` 80 次 Timer B path，動態證明 sync 8 在第
 30 tick 首次輸出，至第 80 tick 共 51 組 pitch／TL。共用 engine 現有
 Timer B scheduler，CoAB adapter 只映射 NEC waveform／sync／speed。
+第 374 輪再由指定 IDA Pro 9.4 與 raw bytes 證明 MSCDRV 會接管 YM2203
+硬體中斷，只在 Timer B 呼叫音序列 interpreter，且不鏈回 Sound BIOS
+ISR；因此 CoAB 原版正常 BGM 本來就不執行該軟體 LFO，重製忠實模式也不會
+擅自增加 modulation。
 fade／SFX、完整 loop、合成器與遊戲內播放器也仍未完成。
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
@@ -96,7 +100,9 @@ S98／YM2203 執行期驗證則見
 軟體 LFO 核心與動態 trace 邊界則見
 [`docs/spec/372-pc98-sound-bios-software-lfo.md`](docs/spec/372-pc98-sound-bios-software-lfo.md)，
 Timer B cadence、sync 狀態機與 ROM 動態 harness 則見
-[`docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md`](docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md)。
+[`docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md`](docs/spec/373-pc98-sound-bios-lfo-timer-scheduler.md)，
+MSCDRV 的 Timer B 中斷所有權與 faithful BGM 邊界則見
+[`docs/spec/374-pc98-mscdrv-timer-b-ownership.md`](docs/spec/374-pc98-mscdrv-timer-b-ownership.md)。
 NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這張
 [`啟動鏈實機證據`](docs/reference/original-pc98/megdos-loader-boot.png)
 只證明磁碟與模擬器讀取路徑，並不是遊戲 GUI 或重製完成畫面。

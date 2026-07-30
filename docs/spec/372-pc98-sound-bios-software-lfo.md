@@ -6,6 +6,8 @@
 後續更新：Timer B cadence、sync delay 與 ROM 動態 harness 已由
 [第 373 輪規格](./373-pc98-sound-bios-lfo-timer-scheduler.md)補齊；本檔
 保留第 372 輪當時的可觀測性邊界，不再是 scheduler 的最新狀態。
+[第 374 輪](./374-pc98-mscdrv-timer-b-ownership.md)又證明 CoAB 的 MSCDRV
+接管 Timer B IRQ 且不鏈回 Sound BIOS，故 faithful BGM 不應接此 LFO。
 
 本規格接續第 371 輪，還原 NEC PC-9801 Sound BIOS 在 YM2203 硬體之外
 執行的軟體 modulation。它不是 MSCDRV stream opcode `90h`：
@@ -226,7 +228,8 @@ amplitude depth 與四個 operator coarse depth；並延長 capture、確認該�
 
 1. 外部 runtime 的 LFO tick cadence；
 2. key-on sync delay 與 phase reset 的完整時間驗證；
-3. `TrackPlayback` 與 YM2203 player 的 LFO scheduler；
+3. 其他真正使用 Sound BIOS ISR 的軟體之 LFO adapter；CoAB faithful
+   `TrackPlayback` 明確不啟用；
 4. fade、SFX／BGM 共存；
 5. 完整曲長／loop；
 6. 合成器、PCM mixer、遊戲內播放及 save/resume。
