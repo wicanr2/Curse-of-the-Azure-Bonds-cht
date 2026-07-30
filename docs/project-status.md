@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`1f8411c`
-依賴的 Golden Box engine checkpoint：`fb3bdea`
+本 milestone 的 CoAB 基底：`ff944bf`
+依賴的 Golden Box engine checkpoint：`031d4ea`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -144,6 +144,11 @@ commit 內保存不可能自我引用的 hash。
   取回洛山達護符，以及 19 名散提爾堡部隊第二戰也已有真實檔案 regression。
   洞窟 boundary terrain `0x93` 的奧莉芙／迪姆斯沃特告別與
   `NEWECL 0x51` 暗影谷返回亦已接通。
+- 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
+  記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
+  `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
+  提朗瑟克斯，並要求隊伍前往 Myth Drannor。這只完成最終章解鎖條件；
+  ECL6／GEO6 的正常路徑與最終章仍未完成。
 
 ## 尚未完成
 

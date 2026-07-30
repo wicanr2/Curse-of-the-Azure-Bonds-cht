@@ -171,8 +171,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`397d26d`；第 382 輪 YM2203 Timer B 重載相位契約
-  milestone 會由本文件所在 commit 完成。
+- CoAB 本輪基底：`ff944bf`；第 383 輪 ECL 首輪記憶體生命週期與
+  Myth Drannor 解鎖 milestone 會由本文件所在 commit 完成。
 - Engine dependency：`031d4ea`（含繁體中文音訊架構知識庫及中立
   `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
@@ -186,6 +186,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
+- 第 383 輪已證明 Standing Stone 以 `4C59=1／4C5A=1／4C5B!=0`
+  計數三個已解除主人，接著揭露 Tyranthraxus 並要求前往 Myth Drannor。
+  `BlockSession.RunFrom` 首輪遺失預載 memory 的缺陷已修正並有合成與真實
+  ECL regression。下一步接通 `JOURNEY ON → MYTH DRANNOR → ECL6/GEO6
+  block 0x40` 的正常玩家路徑；不得宣稱最終章已完成。
 
 ### 目前戰鬥 milestone（不可遺忘）
 

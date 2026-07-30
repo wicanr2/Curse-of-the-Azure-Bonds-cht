@@ -124,6 +124,14 @@ clocks，故只作控制流 oracle，不拿 emulator clock 冒充原機時序。
 納入無漂移 PCM accumulator。CoAB ISR 的七聲道 interpreter 時長仍需
 CPU／OPN 共時 trace，現行 phase 0 是明示模型邊界，不宣稱原機
 cycle-exact。
+
+第 383 輪回到最終章玩家路徑，修正 ECL session 第一次明確 `RunFrom`
+會丟失預先載入劇情／存檔記憶體的缺陷。真實 `ECL1.DAX` 測試現在可保存
+三個已解除主人旗標、算出 3，並重現灰袍人揭露自己是提朗瑟克斯、要求隊伍
+前往 Myth Drannor 的事件。這是最終章解鎖條件，不代表 ECL6／GEO6、
+最終神殿或結局已完成；證據見
+[`docs/spec/383-standing-stone-myth-drannor-unlock.md`](docs/spec/383-standing-stone-myth-drannor-unlock.md)。
+
 詳細證據與後續工作見
 [`docs/spec/355-pc98-ecl-bgm-selector.md`](docs/spec/355-pc98-ecl-bgm-selector.md)
 與
