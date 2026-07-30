@@ -263,9 +263,10 @@ caller，不能只憑 module 名稱猜成某一招法術。
 平台 adapter 才映射 native selector。
 
 共用 engine 第 379 輪加入 `audio/cyclepcm`，只把 cycles＋level 區段做
-duty-cycle 積分，不知道作品 selector。CoAB adapter 依 NEC V30 文件的
-`LOOP taken=13／final=5` 與 exact 指令路徑建立可替換 profile，再把
-port `37h` 6／7 gate edge 轉成 PCM。這是值得跨作品沿用的分層：
+duty-cycle 積分，不知道作品 selector。第 380 輪依 NEC V30 官方表更正為
+`LOOP taken=5／final=13`，並以 exact 指令路徑分離第一次／後續 gate-on
+及一般／最後 gate-off overhead，再把 port `37h` 6／7 gate edge 轉成
+PCM。這是值得跨作品沿用的分層：
 
 1. 作品 executable importer 保存 selector、sequence 與 cycle intent；
 2. 平台 profile 保存 CPU clock、instruction／I/O wait 假設；

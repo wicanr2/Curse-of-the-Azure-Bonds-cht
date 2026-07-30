@@ -71,8 +71,12 @@ COMBATFX=14, CRASHFX=15
 
 ## 3. V30 cycle 模型
 
+> 第 380 輪更正：本節最初把 NEC 表的 branch／exit 欄讀反成 `13/5`。
+> exact Unicorn trace 與重新逐列核對後，正確值如下；舊 WAV hash 作廢。
+
 NEC《16-BIT V SERIES Instruction User's Manual》的 V30 timing 表證明
-`LOOP`／`DBNZ` 在 counter 非零時是 13 clocks，歸零時是 5 clocks。
+opcode `E2h`（`BCWZ／LOOP`）在 counter 非零而分支時是 5 clocks，歸零
+離開時是 13 clocks。
 `GAME.EXE 19D1Eh..19D5Dh` 每個 gate interval 都使用：
 
 ```text
@@ -84,9 +88,11 @@ OUT 37h,06h／07h
 指令路徑保存：
 
 ```text
-busy-loop = 13 × (N - 1) + 5
-gate-on interval  = busy-loop + 29 clocks
-gate-off interval = busy-loop + 52 clocks
+busy-loop              = 5 × (N - 1) + 13
+首次 gate-on interval  = busy-loop + 98 clocks
+後續 gate-on interval  = busy-loop + 30 clocks
+非末次 gate-off        = busy-loop + 56 clocks
+末次 gate-off          = busy-loop + 28 clocks
 ```
 
 NP2kai 的 `io/sysport.c` 與 `sound/beepc.c` 交叉證明：
@@ -126,8 +132,8 @@ duty-cycle 積分成 PCM；它不知道 CoAB、selector 或 port `37h`。
 
 | effect | frames | duration | SHA-256 |
 |---|---:|---:|---|
-| `ARROWFX` | 4,778 | 0.108345 s | `06fa7417f83ef6109af2f7ab05431f9e5d918d0f7ca5d0ea37f362a7422e51a8` |
-| `FIREBALLFX` | 1,897 | 0.043016 s | `13d57370550c58c8b3cb908b899dc1876f592818a2aed4bebe645d614847ac20` |
+| `ARROWFX` | 1,865 | 0.042290 s | `b9fc898253a380679e84c2026c84c9725a30302dbb15f7814a411664f2f50a5a` |
+| `FIREBALLFX` | 736 | 0.016689 s | `b8922db10390746d5bb5b06f28385c0ca779a17f35bc01fef29a3bbeea7c5be8` |
 
 箭矢連續兩次輸出 hash 相同；FFmpeg 證明它是
 44.1 kHz／stereo／signed 16-bit PCM，peak `-14.7 dB`，不是靜音。

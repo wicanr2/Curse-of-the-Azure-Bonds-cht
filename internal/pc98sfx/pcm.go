@@ -11,25 +11,29 @@ import (
 // GAME.EXE proves the loop, but the selected machine clock and bus/prefetch
 // timing remain a playback profile until calibrated against original audio.
 type TimingProfile struct {
-	ClockHz               uint64
-	LoopTakenCycles       uint64
-	LoopFinalCycles       uint64
-	GateOnOverheadCycles  uint64
-	GateOffOverheadCycles uint64
-	Amplitude             int16
+	ClockHz                     uint64
+	LoopTakenCycles             uint64
+	LoopFinalCycles             uint64
+	InitialGateOnOverheadCycles uint64
+	GateOnOverheadCycles        uint64
+	GateOffOverheadCycles       uint64
+	FinalGateOffOverheadCycles  uint64
+	Amplitude                   int16
 }
 
-// V30PrefetchedProfile uses NEC's documented V30 LOOP timing (13 clocks while
-// taken, 5 clocks on exit) and the instruction-path overhead reconstructed
+// V30PrefetchedProfile uses NEC's documented V30 BCWZ/LOOP timing (5 clocks
+// while taken, 13 clocks on exit) and the instruction-path overhead reconstructed
 // from GAME.EXE under the no-wait, prefetched-instruction assumption.
 func V30PrefetchedProfile(clockHz uint64) TimingProfile {
 	return TimingProfile{
-		ClockHz:               clockHz,
-		LoopTakenCycles:       13,
-		LoopFinalCycles:       5,
-		GateOnOverheadCycles:  29,
-		GateOffOverheadCycles: 52,
-		Amplitude:             6000,
+		ClockHz:                     clockHz,
+		LoopTakenCycles:             5,
+		LoopFinalCycles:             13,
+		InitialGateOnOverheadCycles: 98,
+		GateOnOverheadCycles:        30,
+		GateOffOverheadCycles:       56,
+		FinalGateOffOverheadCycles:  28,
+		Amplitude:                   6000,
 	}
 }
 
@@ -63,25 +67,33 @@ func RenderPCM(effect Effect, profile TimingProfile, sampleRate uint64) ([]int16
 	for _, step := range effect.Steps {
 		switch step.Kind {
 		case StepPulse:
-			onCycles, cycleErr := PulseHalfCycles(
-				step.FrequencyOrPeriod,
-				profile.LoopTakenCycles,
-				profile.LoopFinalCycles,
-				profile.GateOnOverheadCycles,
-			)
-			if cycleErr != nil {
-				return nil, cycleErr
-			}
-			offCycles, cycleErr := PulseHalfCycles(
-				step.FrequencyOrPeriod,
-				profile.LoopTakenCycles,
-				profile.LoopFinalCycles,
-				profile.GateOffOverheadCycles,
-			)
-			if cycleErr != nil {
-				return nil, cycleErr
-			}
 			for pulse := uint16(0); pulse < step.PulseCount; pulse++ {
+				onOverhead := profile.GateOnOverheadCycles
+				if pulse == 0 {
+					onOverhead = profile.InitialGateOnOverheadCycles
+				}
+				onCycles, cycleErr := PulseHalfCycles(
+					step.FrequencyOrPeriod,
+					profile.LoopTakenCycles,
+					profile.LoopFinalCycles,
+					onOverhead,
+				)
+				if cycleErr != nil {
+					return nil, cycleErr
+				}
+				offOverhead := profile.GateOffOverheadCycles
+				if pulse+1 == step.PulseCount {
+					offOverhead = profile.FinalGateOffOverheadCycles
+				}
+				offCycles, cycleErr := PulseHalfCycles(
+					step.FrequencyOrPeriod,
+					profile.LoopTakenCycles,
+					profile.LoopFinalCycles,
+					offOverhead,
+				)
+				if cycleErr != nil {
+					return nil, cycleErr
+				}
 				if err := appendSegments([]cyclepcm.Segment{
 					{Cycles: onCycles, Level: profile.Amplitude},
 					{Cycles: offCycles, Level: 0},

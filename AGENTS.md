@@ -171,9 +171,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`1f8411c`；第 379 輪 PC-98 具名短音效與 cycle PCM
-  milestone 會由本文件所在 commit 完成。
-- Engine dependency：`fcf9b46`（含中立 `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
+- CoAB 本輪基底：`8bdbb30`；第 380 輪 PC-98 speaker exact routine、
+  V30 timing 校正與雙 repository 音訊知識庫 milestone 會由本文件所在
+  commit 完成。
+- Engine dependency：`fb3bdea`（含繁體中文音訊架構知識庫及中立
+  `audio/cyclepcm`、`audio/s98`、`audio/ym2203`、
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
@@ -365,9 +367,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `CASTFX` 到 `CRASHFX` 全 selector，並命名 `REALMOVE／ANYUNDEAD／
   SHOWARROW／CASTSPELL／TWINKLE／SCAN` caller。State 現發平台中立
   intent；engine `audio/cyclepcm` 與 CoAB V30 8 MHz profile 已接入
-  deterministic one-shot mixer。該 profile 仍是 timing-reconstructed；
-  下一個真實缺口是原機 edge／wait 校準、reload phase、save/resume 與
-  analog mixer gain。原 WORD 不是已證明的 Hz。
+  deterministic one-shot mixer。第 380 輪再以 IDA、raw bytes、Unicorn
+  harness 與 NEC 官方表校正 `LOOP taken=5／exit=13`，並分離第一次／
+  後續 gate-on 與一般／最後 gate-off overhead；第 379 輪舊 PCM 時長與
+  hash 已作廢。該 profile 仍是 timing-reconstructed；下一個真實缺口是
+  原機 edge／wait／prefetch 校準、reload phase、save/resume 與 analog
+  mixer gain。原 WORD 不是已證明的 Hz。
 - NP2kai backend 已證實 `C3/H0/R8/N3` baseline 被要求四次；首讀
   not-found、第二讀起補零仍停在 MEGDOS banner，CPU 尚未進
   `INT 21h/AH=4Bh`。不可把 absent sector 簡化成永久零填或一次性錯誤。
