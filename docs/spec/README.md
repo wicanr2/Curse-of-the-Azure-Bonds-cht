@@ -340,6 +340,7 @@
 - [第四百零一輪外圍遺跡逃亡男子與藏寶](./401-outer-ruins-fugitive-cache.md)（`READY`：terrain 04h／05h／06h、六犬救援、HEAD／BODY 40h、主動 SEARCH 與 ITEM6/43h）
 - [第四百零二輪外圍遺跡無名者與灌木伏擊](./402-outer-ruins-nameless-brush-ambush.md)（`READY`：terrain 07h／08h／09h、同 block 傳送、2d8 落石、十一名敵人與正常玩家路徑）
 - [第四百零三輪外圍遺跡羅剎妖房間、坍塌陷阱與下水道](./403-outer-ruins-rakshasa-rooms-and-sewer.md)（`READY`：terrain 0Bh／0Ch／8Ah／8Dh、手札 57、部分座標提交、戰後財寶與 block 43h handoff）
+- [第四百零四輪內部遺跡廚房、辦公室與臥房](./404-inner-ruins-kitchen-office-bedroom.md)（`READY`：terrain 8Ah／8Bh／8Ch、30,000 gold 財寶、跨 block 4C05／4C06 one-shot 碰撞與正常玩家路徑）
 - [第三百四十九輪散塔林堡奧莉芙密道](./349-zhentil-olive-secret-passage.md)（`READY`：真實 ECL4/GEO4 `0x20→0x21`、手札 50／51 與繁中玩家路徑）
 - [第三百五十輪散塔林堡迪姆斯沃特同行](./350-zhentil-dimswart-escort.md)（`READY`：神殿 `(6,13)→(2,14)`、手札 12 六頁與 story escort flag）
 - [第三百五十一輪兜帽女子與眼魔洞穴轉場](./351-zhentil-hooded-woman-beholder-cave.md)（`READY`：神殿 terrain `0x86`、手札 30／7、弗佐爾死亡與 `0x21→0x22`）

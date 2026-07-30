@@ -272,8 +272,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`d0489cc`（第 402 輪外圍遺跡無名者與灌木伏擊）；
-  第 403 輪外圍遺跡羅剎妖房間與下水道入口 milestone
+- CoAB 本輪基底：`e45e386`（第 403 輪外圍遺跡羅剎妖房間與下水道入口）；
+  第 404 輪內部遺跡廚房、辦公室與臥房 milestone
   會由本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -417,7 +417,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   HAUGHTY 交涉解鎖由使用者 PDF 證實的手札 57；其他態度會迎戰
   HELL HOUND ×5、MARGOYLE ×5、RAKSHASA ×6。下水道柵口經兩次確認
   `NEWECL 43h`，正常玩家抵達昏暗廚房 `(15,15,N)`。READY spec 403
-  是權威；下一步接續 block `43h` 內部。
+  是權威。
+- 第 404 輪已接通 block `43h` terrain `8Ah／8Bh／8Ch`。廚房、班恩
+  辦公室與豪華臥房三段繁中均由 game-pack stable ID 提供；臥房搜刮的
+  exact TREASURE 是 5,000 GP、5,000 PP、12 gems、15 jewelry，
+  ItemBlock `FFh`，合計 30,000 gold。Standing Stone 起始正常玩家路徑
+  沿合法 GEO 到 `(10,12)` 並驗證財寶返回。ECL6 block `40h:+0F52h`／
+  `42h:+0F70h` 會先寫 block `43h` 重用的全域 `4C05／4C06=1`，因此完整
+  支線路徑的辦公室與廚房原作即為靜默；不得按 block 自動清旗標。READY
+  spec 404 是權威；下一步接續犬舍、活動雕像與私人禮拜堂。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-31
-本 milestone 的 CoAB 基底：`d0489cc`
+本 milestone 的 CoAB 基底：`e45e386`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -260,8 +260,14 @@ commit 內保存不可能自我引用的 hash。
   賭局房勝利可取得 11,200 gold、15 gems、9 jewelry 與 ITEM6 `81h`
   一件隨機物品；下水道柵口則經兩次確認切換至 ECL／GEO `43h`
   `(15,15,N)`。raw 分支、手札 PDF、繁中 stable IDs、部分座標 transaction
-  與 Standing Stone 起始玩家路徑均已回歸；block `43h` 內部、神殿與結局
-  尚未完成。
+  與 Standing Stone 起始玩家路徑均已回歸。
+- 第 404 輪已接通 block `43h` terrain `8Ah／8Bh／8Ch`。廚房、班恩辦公室
+  與豪華臥房均有繁中 stable ID；臥房 YES 透過無怪物財寶服務取得
+  5,000 GP、5,000 PP、12 gems、15 jewelry，合計 30,000 gold。正常
+  Standing Stone 玩家路徑沿合法 GEO 抵達 `(10,12)`。同輪證實 block
+  `40h／42h` 會先寫與內部房間重用的全域 `4C05／4C06=1`，所以完整支線
+  路徑上的辦公室與廚房原本就會靜默；remake 未擅自重設。其餘內部遺跡、
+  樓梯、神殿、提朗瑟克斯與結局尚未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

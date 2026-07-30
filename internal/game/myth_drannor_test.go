@@ -2877,6 +2877,130 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.Message)
 	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("inner-ruins arrival continuation mode=%v message=%q",
+			state.Mode, state.Message)
+	}
+	var innerRuins geo.Grid
+	found = false
+	for _, block := range blocks {
+		if block.Entry.ID == 0x43 {
+			innerRuins, err = geo.Parse(block.Entry.ID, block.Data)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatal("GEO6 block 0x43 not found")
+	}
+
+	innerKitchenRoute := []dungeonStep{
+		{x: 15, y: 14, direction: 0},
+		{x: 14, y: 14, direction: 6},
+		{x: 13, y: 14, direction: 6},
+	}
+	previousX, previousY = 15, 15
+	for _, step := range innerKitchenRoute {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("inner kitchen route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	// Outer-ruins Nameless already set global byte 4C06h. Block 43 reuses
+	// that byte for this kitchen description, so the canonical path
+	// intentionally observes a silent one-shot rather than replaying it.
+	if kitchenFlag, ok := state.session.MemoryValue(0x4C06); !ok ||
+		kitchenFlag != 1 || state.DungeonWallRoof != 0x8C ||
+		state.Mode != ModeDungeon || state.Message != "" {
+		t.Fatalf("inner kitchen shared flag=%d,%v terrain=%02x mode=%v message=%q",
+			kitchenFlag, ok, state.DungeonWallRoof, state.Mode, state.Message)
+	}
+
+	innerOfficeRoute := []dungeonStep{
+		{x: 13, y: 13, direction: 0},
+		{x: 13, y: 12, direction: 0},
+		{x: 12, y: 12, direction: 6},
+	}
+	previousX, previousY = 13, 14
+	for _, step := range innerOfficeRoute {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("inner office route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	// Burial Glen block 40h already wrote 4C05h=1. Block 43h reuses that
+	// absolute SAVGAM ECL byte for the office one-shot, so a maximal prior
+	// route also reaches this room silently.
+	if officeFlag, ok := state.session.MemoryValue(0x4C05); !ok ||
+		officeFlag != 1 || state.DungeonWallRoof != 0x8B ||
+		state.Mode != ModeDungeon || state.Message != "" {
+		t.Fatalf("inner office shared flag=%d,%v terrain=%02x mode=%v message=%q",
+			officeFlag, ok, state.DungeonWallRoof, state.Mode, state.Message)
+	}
+
+	beforeBedroomMoney := state.MoneyPool()
+	beforeBedroomGems, beforeBedroomJewelry := state.TreasurePool()
+	previousX, previousY = 12, 12
+	for _, step := range []dungeonStep{
+		{x: 11, y: 12, direction: 6},
+		{x: 10, y: 12, direction: 6},
+	} {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("inner bedroom route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.DungeonWallRoof != 0x8A || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.inner.bedroom") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
+		t.Fatalf("inner bedroom terrain=%02x mode=%v message=%q choices=%v",
+			state.DungeonWallRoof, state.Mode, state.Message,
+			state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	afterBedroomGems, afterBedroomJewelry := state.TreasurePool()
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		state.MoneyPool() != beforeBedroomMoney+30000 ||
+		afterBedroomGems != beforeBedroomGems+12 ||
+		afterBedroomJewelry != beforeBedroomJewelry+15 {
+		t.Fatalf("inner bedroom treasure mode=%v menu=%v money=%d/%d gems=%d/%d jewelry=%d/%d",
+			state.Mode, state.treasureMenu,
+			state.MoneyPool(), beforeBedroomMoney,
+			afterBedroomGems, beforeBedroomGems,
+			afterBedroomJewelry, beforeBedroomJewelry)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("inner bedroom treasure return mode=%v", state.Mode)
+	}
 
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23

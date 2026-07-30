@@ -737,3 +737,19 @@ block ID 改變時才檢查座標。另一方面，也不能把「任何 CALL �
 也不是充分條件。現階段只有「新 facing＋同批欄位」具有兩個正例與一個反例
 支持；未來若發現保留 facing 的真正傳送，必須回到 executable consumer
 再擴充，不可移除 guard 後讓所有對話座標污染玩家位置。
+
+### 2026-07-31：ECL SAVE 位址跨 block 仍是同一全域狀態
+
+CoAB ECL6 提供一個容易被「每張地圖都有自己的事件旗標」直覺誤判的反例：
+
+- block `40h:+0F52h` 與 block `43h:+0D8Ch` 都寫 `4C05h=1`；
+- block `42h:+0F70h` 與 block `43h:+0DEAh` 都寫 `4C06h=1`。
+
+Standing Stone 起始的完整支線路徑因此會讓 block `43h` 辦公室與廚房的
+one-shot 敘事靜默。乾淨 session 仍會顯示兩段文字，證明 handler 本身可達；
+差異來自同一份 SAVGAM ECL 記憶體，而不是 text matcher 或 GEO dispatch。
+
+除非原始 `LOAD FILES／NEWECL` bytes 或 DOS runtime trace 證明另有旗標 bank，
+VM 不得按 block ID 自動清零、換頁或 namespace `SAVE` 位址。作品資料中的
+碰撞即使像原作瑕疵，也要先忠實保存；美化／修正版行為只能成為另行宣告且
+可切換的相容選項。
