@@ -167,9 +167,10 @@ S98 稽核也要保存「沒有觀測到」的限制。十二首 first-stream �
 皆為零。這不能推論原作 LFO 關閉；在 timer cadence 取得 Hoot 長時間 trace
 或 NP2kai／test harness 外部證據前，不應把 scheduler 接成假精確。
 
-2026-07-30 第 373 輪補齊上述證據。selector 9 的三個 FM 聲道都使用
+2026-07-30 第 373 輪先補齊 Sound BIOS 本身的動態證據。selector 9
+的三個 FM 聲道都使用
 parameter 3 且實際 key-on；45.01 秒 Hoot S98 仍沒有獨立 LFO write，
-證明 Hoot `pc98dos` path 不能當 Timer B oracle。改以 Unicorn 8086
+當時只能確認該 BGM path 沒有執行 LFO。改以 Unicorn 8086
 直接執行 exact `SOUND.ROM` 的 command routines 與 `CF5F3h`：
 
 - YM status bit 0 進 `CF501h` Timer A note path，bit 1 進 `CF5F3h`
@@ -182,3 +183,18 @@ parameter 3 且實際 key-on；45.01 秒 Hoot S98 仍沒有獨立 LFO write，
 不能把 S98 的 10 ms 記錄刻度當成 LFO 固定週期。作品 adapter 只映射
 waveform、sync、speed；Timer B register `26h` 到 PCM sample clock、
 Timer A gate／length、fade／SFX 與播放器仍是下一層工作。
+
+2026-07-30 第 374 輪進一步證明 CoAB 正常 BGM 根本不走 Sound BIOS
+Timer ISR。MSCDRV 保存舊硬體中斷向量後，把 vector 改成自己的
+`CS:0F54h`；該 ISR 讀 `188h` status，只測 bit 1，寫 `27h=20h` 後呼叫
+track interpreter，結尾寫 `27h=0Ah`。它不測 Timer A、也不鏈回舊 handler。
+
+因此知識庫必須分清兩層：
+
+- Sound BIOS LFO scheduler 是 ROM 本身的 exact、可重用行為；
+- CoAB MSCDRV 的 faithful 配樂路徑接管 Timer B IRQ，故不執行該 LFO。
+
+非零 LFO 參數不等於實際聽得到 modulation。其他 PC-98 Gold Box／軟體
+必須各自追到 interrupt owner，不能只因沿用同一 parameter format 就啟用
+LFO。CoAB 下一步是 register `26h` 與硬體 clock 到 PCM sample clock 的
+無漂移 bridge，不是把第 373 輪 scheduler 接進 `TrackPlayback`。

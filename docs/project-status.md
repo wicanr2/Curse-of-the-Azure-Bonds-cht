@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`df10ac6`
+本 milestone 的 CoAB 基底：`e4ee789`
 依賴的 Golden Box engine checkpoint：`234f1c4`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -113,7 +113,9 @@ commit 內保存不可能自我引用的 hash。
   第 373 輪以 45.01 秒 Hoot trace 確認其 Timer B ISR 可觀測性缺口，再以
   exact ROM 8086 harness 動態證明 sync 8 第 30 tick 首次輸出、80 tick
   共 51 組。engine Timer B scheduler 與 CoAB parameter adapter 已完成；
-  仍缺 TrackPlayback／合成器接線、fade／SFX、loop 與遊戲內播放器。
+  第 374 輪又證明 MSCDRV 自己接管 YM2203 IRQ，只在 Timer B 呼叫
+  `TrackPlayback` 且不鏈回 Sound BIOS ISR；所以 faithful BGM 不啟用上述
+  LFO。仍缺 Timer B wall-clock／合成器接線、fade／SFX、loop 與遊戲內播放器。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -137,7 +139,9 @@ commit 內保存不可能自我引用的 hash。
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目尚缺 fade／sound-effect 共存路徑、完整曲長／loop trace、
-  Timer B→PCM wall-clock bridge、合成器與播放器。六種 LFO waveform、
+  Timer B→PCM wall-clock bridge、合成器與播放器。MSCDRV Timer B-only
+  IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
+  LFO waveform、
   pitch／TL 數學核心、sync delay 與 Timer B scheduler 已由 ROM harness
   驗證；曲名、十二首 sequence、控制流、total-level、
   algorithm carrier、operator-mask key-on、正常配樂 deterministic

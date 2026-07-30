@@ -158,6 +158,36 @@ var driverAnchors = []Anchor{
 			"515250ba8801eca88075f858eeb90400e2fe504242ba8a01ec8ad8585a59c3",
 		),
 	},
+	{
+		Binary:     "MSCDRV.EXE",
+		Label:      "INSTALL_MUSIC_TIMER_INTERRUPT",
+		FileOffset: 0x10F6,
+		Bytes: mustHex(
+			"b435cd21891e1a038c061c03ba540fa019031e0e1fb425cd21",
+		),
+	},
+	{
+		Binary:     "MSCDRV.EXE",
+		Label:      "INITIALIZE_TIMER_B_26_27",
+		FileOffset: 0x1121,
+		Bytes:      mustHex("b3bae8c702b027b302e8fd00e8e200"),
+	},
+	{
+		Binary:     "MSCDRV.EXE",
+		Label:      "TIMER_B_ONLY_PLAYBACK_DISPATCH",
+		FileOffset: 0x1178,
+		Bytes: mustHex(
+			"ba8801ec2403a2da02a8027417e89a00b82d018ed8833e0000007403e8def1",
+		),
+	},
+	{
+		Binary:     "MSCDRV.EXE",
+		Label:      "TIMER_B_RESTART_AND_ACKNOWLEDGE",
+		FileOffset: 0x1212,
+		Bytes: mustHex(
+			"b30ab027e81100c3b300b027e80900c3b320b027e80100c3",
+		),
+	},
 }
 
 var soundBIOSServices = []SoundBIOSService{

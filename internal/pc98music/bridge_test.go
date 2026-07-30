@@ -42,6 +42,25 @@ func TestDriverBridgeAnchorsDoNotOverlapMissingSector(t *testing.T) {
 	}
 }
 
+func TestDriverAnchorsCoverTimerBInterruptOwnership(t *testing.T) {
+	want := map[string]bool{
+		"INSTALL_MUSIC_TIMER_INTERRUPT":   false,
+		"INITIALIZE_TIMER_B_26_27":        false,
+		"TIMER_B_ONLY_PLAYBACK_DISPATCH":  false,
+		"TIMER_B_RESTART_AND_ACKNOWLEDGE": false,
+	}
+	for _, anchor := range driverAnchors {
+		if _, ok := want[anchor.Label]; ok {
+			want[anchor.Label] = true
+		}
+	}
+	for label, found := range want {
+		if !found {
+			t.Fatalf("missing Timer B ownership anchor %s", label)
+		}
+	}
+}
+
 func TestSoundBIOSServiceTableMatchesObservedCommandSet(t *testing.T) {
 	want := []byte{
 		0x00, 0x02,

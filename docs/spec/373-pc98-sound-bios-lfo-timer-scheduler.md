@@ -2,6 +2,12 @@
 
 狀態：`READY`（限 Timer B cadence、sync delay 狀態機與 ROM 動態 harness）
 
+後續修正：本規格正確描述 `SOUND.ROM` scheduler 本身；但
+[第 374 輪規格](./374-pc98-mscdrv-timer-b-ownership.md)已證明 CoAB 的
+`MSCDRV` 接管硬體中斷且不鏈回 Sound BIOS ISR。故 CoAB faithful BGM
+不得把此 scheduler 接進 `TrackPlayback`。本檔第 2、7 節所稱 Hoot
+可觀測性限制與整合下一步，均由第 374 輪的新證據取代。
+
 本規格接續第 372 輪。第 372 輪已還原六種 waveform 與 pitch／total-level
 投影，但尚未證明何時推進 oscillator。本輪以三層證據補齊：
 
@@ -64,12 +70,13 @@ register 分布另證明三聲道的 `A4/A0` 數量只等於正常 note burst：
 | 2 | 155 | 157 |
 
 多出的兩組是初始化，不是持續 modulation。這證明目前 Hoot `pc98dos`
-曲目 path 沒有記錄 Sound BIOS Timer B 軟體 LFO；不能用這份零結果宣稱
-原機 LFO 關閉，也不能從 Hoot 推導 cadence。
+曲目 path 沒有記錄 Sound BIOS Timer B 軟體 LFO。第 373 輪當時不能從
+零結果判斷原因；第 374 輪已由 MSCDRV ISR ownership 證明這是 CoAB 正常
+BGM 不鏈回 Sound BIOS 的結果。
 
 另建立的 Hoot COM shell probe 可載入自訂 archive，但同樣只看到 driver
-初始化，沒有觸發 ROM Timer B ISR。因此它只證明 Hoot path 的限制，不是
-原 PC-98 的負面行為證據。
+初始化，沒有觸發 ROM Timer B ISR。這項 probe 本身仍不能代表所有 PC-98
+程式；CoAB 的結論改由第 374 輪 MSCDRV exact control flow 支持。
 
 ## 3. IDA Timer B dispatch
 
@@ -197,12 +204,12 @@ sample 套用到目前 F-number／TL。
 
 仍未完成：
 
-1. 把 scheduler 接進 `TrackPlayback` 與 YM2203 合成器；
+1. 不將 scheduler 接進 CoAB faithful `TrackPlayback`；其他使用 Sound
+   BIOS ISR 的軟體仍需獨立 adapter；
 2. Timer B register `26h` 到 PCM wall-clock 的 sample-accurate bridge；
-3. Sound BIOS Timer A gate／length 與 LFO note-state 的共同排程；
-4. fade、SFX/BGM 共存與 track transition；
-5. 完整曲長、loop、pause/save-resume；
-6. 遊戲內播放與三平台音訊驗收。
+3. fade、SFX/BGM 共存與 track transition；
+4. 完整曲長、loop、pause/save-resume；
+5. 遊戲內播放與三平台音訊驗收。
 
 因此本規格只能支持「Timer B LFO scheduler contract READY」，不能支持
 「PC-98 音樂完成」或「遊戲音樂已可播放」。
