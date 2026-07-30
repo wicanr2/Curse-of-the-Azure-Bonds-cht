@@ -60,6 +60,29 @@ func TestBlockSessionMapsPayloadIntoReferenceCodeMemory(t *testing.T) {
 	}
 }
 
+func TestBlockSessionFirstRunFromPreservesSeededMemory(t *testing.T) {
+	block := append([]byte{0, 0},
+		0x11, 0x01, 0x00, 0x90,
+		0x00,
+	)
+	session, err := NewBlockSession(map[uint8][]byte{1: block}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	session.SetMemoryValue(0x9000, 7)
+
+	result, err := session.RunFrom(0, 10, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Text) != 1 || result.Text[0] != "7" {
+		t.Fatalf("text=%q, want first RunFrom to read seeded memory", result.Text)
+	}
+	if value, ok := session.MemoryValue(0x9000); !ok || value != 7 {
+		t.Fatalf("shared memory[0x9000]=%d,%v, want 7,true", value, ok)
+	}
+}
+
 func TestBlockSessionRunInteractiveFollowsNewECL(t *testing.T) {
 	first := sessionBlock(0x8014)
 	// Replace initial entry code at payload +0x14 with NEWECL 0x51.

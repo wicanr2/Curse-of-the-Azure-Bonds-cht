@@ -2314,3 +2314,17 @@ sample remainder。IDA 既有 ISR listing 則證明 CoAB 在
 `27h=20h→0Ah` 間執行資料相依的七聲道 interpreter，因此不能硬寫固定 CPU
 延遲。現行 instant-ISR PCM renderer 每個完整 period 都回到 phase 0；
 這是模型邊界，仍需 CPU／OPN 共時 trace 才能完成原機 reload phase。
+
+2026-07-30 第 383 輪修正 ECL session 第一次明確 `RunFrom` 的記憶體
+生命週期。舊流程只設定 PC，未設定 runtime `Started`，因此
+`SetMemoryValue` 預載的存檔、AREA 與劇情旗標不會匯入 runner，執行後還會
+被空白 memory 覆蓋。現在首次 `RunFrom` 會先啟動 runtime；合成測試以
+`0x9000=7` 驗證首輪讀取與保存。
+
+真實 `ECL1.DAX` block `0x50` 測試以 `4C59=1／4C5A=1／4C5B=FF`
+重現 Standing Stone：工作位址 `7F79` 計數為 3，灰袍人揭露自己是
+Tyranthraxus，並要求隊伍到 Myth Drannor。SAVE writer 掃描另定位
+ECL5 `0x33:+0FB6`、ECL4 `0x22:+0C8E`、ECL3
+`0x11:+04E7`，並確認 `4C5B` 採非零判定。READY spec 383 保存證據與
+邊界。下一步接通 JOURNEY ON 後的 ECL6/GEO6 block `0x40` 正常玩家路徑；
+本輪未宣稱 Burial Glen、最終神殿或結局已完成。

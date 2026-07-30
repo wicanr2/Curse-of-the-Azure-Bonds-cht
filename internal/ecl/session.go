@@ -263,6 +263,11 @@ func (s *BlockSession) runFromSeedWithPartyContextAndWhoSelections(start, maxSte
 		runtime := s.states[s.current]
 		if !runtime.Started {
 			runtime.PC = start
+			// SetMemoryValue may seed Area/player/work memory before the first
+			// explicit RunFrom invocation. Marking the runtime started here
+			// makes the bounded runner import that shared memory instead of
+			// silently replacing it with a fresh empty map.
+			runtime.Started = true
 		}
 		result, runErr := runSubsetWithStateContextAndWhoSelections(s.CurrentData(), start, maxSteps, remaining, remainingWho, true, seed, runtime, partyContext)
 		aggregate.Text = append(aggregate.Text, result.Text...)
