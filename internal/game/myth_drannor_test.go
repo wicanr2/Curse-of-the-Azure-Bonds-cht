@@ -360,6 +360,160 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if state.Mode != ModeDungeon {
 		t.Fatalf("completed red web retriggered mode=%v message=%q", state.Mode, state.Message)
 	}
+
+	// Continue north through the original GEO door to terrain 0x04 at
+	// (6,12). This is the next normally reachable Burial Glen event, not a
+	// direct ECL entry or injected encounter.
+	for y := 13; y >= 12; y-- {
+		if !burialGlen.CanMoveDungeonWrapped(6, y+1, 0) {
+			t.Fatalf("Burial Glen route (6,%d)->(6,%d) is not passable", y+1, y)
+		}
+		state.SetDungeonGeometryView(6, y, 0)
+		state.DungeonWallRoof = burialGlen.CellWrapped(6, y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for attempt := 0; attempt < 8 && state.Mode == ModeDungeon; attempt++ {
+		for _, y := range []int{13, 12} {
+			direction := uint8(4)
+			if y == 12 {
+				direction = 0
+			}
+			state.SetDungeonGeometryView(6, y, direction)
+			state.DungeonWallRoof = burialGlen.CellWrapped(6, y).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				if state.Mode != ModeDungeon {
+					t.Fatalf("random encounter flee mode=%v choices=%v message=%q",
+						state.Mode, state.currentOriginalChoices, state.Message)
+				}
+			}
+			if state.Mode != ModeDungeon {
+				break
+			}
+		}
+	}
+	if state.DungeonWallRoof != 0x04 || state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.grave.thri-kreen") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		graveCount, graveCountSet := state.session.MemoryValue(0x4CC1)
+		stepGuard, stepGuardSet := state.session.MemoryValue(0x7F81)
+		t.Fatalf("grave encounter terrain=%02x mode=%v status=%v message=%q choices=%v enemies=%#v grave-count=%d,%v step-guard=%d,%v",
+			state.DungeonWallRoof, state.Mode, state.CombatStatus(), state.Message,
+			state.currentOriginalChoices, state.livingBySide(combat.SideEnemy),
+			graveCount, graveCountSet, stepGuard, stepGuardSet)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeCombat || state.CombatStatus() != combat.StatusActive ||
+		len(state.livingBySide(combat.SideEnemy)) == 0 {
+		t.Fatalf("grave combat mode=%v status=%v enemies=%#v message=%q",
+			state.Mode, state.CombatStatus(), state.livingBySide(combat.SideEnemy), state.Message)
+	}
+	for action := 0; action < 64 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.grave.skeleton") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"LOOT GRAVE", "REBURY SKELETON", "GO"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			gamePackText(t, state, "myth-drannor.grave.loot"),
+			gamePackText(t, state, "myth-drannor.grave.rebury"),
+			gamePackText(t, state, "option.go"),
+		}) {
+		t.Fatalf("grave menu mode=%v choices=%v original=%v message=%q",
+			state.Mode, state.Choices, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatal(err)
+	}
+	graveCount, graveCountSet := state.session.MemoryValue(0x4CC1)
+	stepGuard, stepGuardSet := state.session.MemoryValue(0x7F81)
+	spiritApproval, spiritApprovalSet := state.session.MemoryValue(0x4CBA)
+	if state.Mode != ModeDungeon || !graveCountSet || graveCount != 1 ||
+		!stepGuardSet || stepGuard != 1 ||
+		// ECL6 initializes 4CBAh to biased neutral 0x80. Reburial adds one
+		// raw point; the later loot branch subtracts it again.
+		!spiritApprovalSet || spiritApproval != 0x81 {
+		t.Fatalf("rebury result mode=%v grave-count=%d,%v step-guard=%d,%v spirit-approval=%d,%v",
+			state.Mode, graveCount, graveCountSet, stepGuard, stepGuardSet,
+			spiritApproval, spiritApprovalSet)
+	}
+
+	for attempt := 0; attempt < 8 && state.Mode == ModeDungeon; attempt++ {
+		for _, y := range []int{13, 12} {
+			direction := uint8(4)
+			if y == 12 {
+				direction = 0
+			}
+			state.SetDungeonGeometryView(6, y, direction)
+			state.DungeonWallRoof = burialGlen.CellWrapped(6, y).Terrain
+			if err := state.RunDungeonLifecycle(); err != nil {
+				t.Fatal(err)
+			}
+			if reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "WAIT", "FLEE", "ADVANCE"}) {
+				if err := state.Select(2); err != nil {
+					t.Fatal(err)
+				}
+				if state.Mode != ModeDungeon {
+					t.Fatalf("second random encounter flee mode=%v choices=%v message=%q",
+						state.Mode, state.currentOriginalChoices, state.Message)
+				}
+			}
+			if state.Mode != ModeDungeon {
+				break
+			}
+		}
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.grave.thri-kreen") {
+		t.Fatalf("second grave event mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	for action := 0; action < 64 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"LOOT GRAVE", "REBURY SKELETON", "GO"}) {
+		t.Fatalf("second grave menu mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	graveCount, graveCountSet = state.session.MemoryValue(0x4CC1)
+	stepGuard, stepGuardSet = state.session.MemoryValue(0x7F81)
+	spiritApproval, spiritApprovalSet = state.session.MemoryValue(0x4CBA)
+	gems, jewelry := state.TreasurePool()
+	if state.Mode != ModeWilderness || !state.treasureMenu ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"TREASURE_EXIT"}) ||
+		!graveCountSet || graveCount != 2 ||
+		!stepGuardSet || stepGuard != 1 ||
+		!spiritApprovalSet || spiritApproval != 0x80 ||
+		gems != 0 || jewelry != 1 {
+		t.Fatalf("loot result mode=%v treasure-menu=%v choices=%v original=%v message=%q grave-count=%d,%v step-guard=%d,%v spirit-approval=%d,%v treasure=%d/%d pending=%d",
+			state.Mode, state.treasureMenu, state.Choices, state.currentOriginalChoices,
+			state.Message, graveCount, graveCountSet, stepGuard, stepGuardSet,
+			spiritApproval, spiritApprovalSet, gems, jewelry, len(state.pendingTreasure))
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("post-loot continuation mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
 }
 
 func gamePackText(t *testing.T, state State, messageID string) string {

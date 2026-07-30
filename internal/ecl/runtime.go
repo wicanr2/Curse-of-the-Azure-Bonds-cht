@@ -348,6 +348,9 @@ type RuntimeState struct {
 	Compare             [6]bool
 	SelectedPlayerIndex int
 	SelectedPlayerSet   bool
+	Random              *rand.Rand
+	RandomSeed          int64
+	RandomSeedSet       bool
 }
 
 func NewRuntimeState(start int) *RuntimeState {
@@ -455,6 +458,17 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 	}
 	rebuildPartyItems()
 	rng := rand.New(rand.NewSource(seed))
+	if runtime != nil {
+		if !runtime.RandomSeedSet || runtime.RandomSeed != seed || runtime.Random == nil {
+			runtime.Random = rand.New(rand.NewSource(seed))
+			runtime.RandomSeed = seed
+			runtime.RandomSeedSet = true
+		}
+		// A BlockSession owns one continuous PRNG stream across separate ECL
+		// entry invocations. Recreating it for every terrain step makes a
+		// fixed replay seed return the same RANDOM result forever.
+		rng = runtime.Random
+	}
 	var compare [6]bool
 	selectedPlayerIndex := -1
 	selectedPlayerSet := false

@@ -160,6 +160,12 @@ commit 內保存不可能自我引用的 hash。
   取回洛山達護符，以及 19 名散提爾堡部隊第二戰也已有真實檔案 regression。
   洞窟 boundary terrain `0x93` 的奧莉芙／迪姆斯沃特告別與
   `NEWECL 0x51` 暗影谷返回亦已接通。
+- 第 388 輪已由正常 GEO 路徑接通 Burial Glen terrain `04h` 的隨機
+  墳墓掠奪者：2 巨型蜘蛛、3 相位蜘蛛、1 thri-kreen 戰鬥後可重新安葬
+  或搜刮。`4CBAh` 已證明是以 `80h` 表示中立的偏移好感；兩分支分別
+  raw `+1／-1`。只有一件珠寶、`ItemBlock=FFh` 的 TREASURE 現會進入
+  寶物 service，不再誤成零怪物戰鬥；選項翻譯已移入 game-pack
+  `option_rules`。四批上限長回歸、完整怪物規則與後續區域仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

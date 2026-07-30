@@ -2381,3 +2381,24 @@ ECL6 block `40h:+07E3h..+0894h` trace 也關閉 Journal 25「獲得強大力量�
 `-burial-red-web-battle` 保存 640×480 原版裂石框、MON6 CPIC 四蜘蛛戰鬥
 checkpoint。READY spec 387 保存證據與邊界；戰敗、蜘蛛毒素、羅剎妖完整
 能力、逐幀音效及 Burial Glen 後續仍未完成。
+
+2026-07-30 第 388 輪沿紅網北方正常 GEO 路徑接通 terrain `04h` 的隨機
+墳墓掠奪者。ECL6 exact 組成是 2 GIANT SPIDER、3 PHASE SPIDER、1
+THRI-KREEN；一般 `CombatAct` 勝利後顯示三選單。動態 HORIZONTAL MENU
+真正結束於 `+0CFCh`，LOOT／REBURY 分別跳到 `+0D0Bh`／`+0D28h`，關閉了
+固定 arity tracer 對內嵌字串的假解碼。
+
+`4CBAh` 由 ECL 初始化為偏移中立 `80h`；重新安葬 raw `+1`，搜刮 raw
+`-1` 並發出一件珠寶、`ItemBlock=FFh` 的 TREASURE。State 現在會為只有
+coin／gem／jewelry 的 request 開啟 treasure-service boundary，不再落入
+零怪物 COMBAT；選項譯文由共用 engine `option_rules` 與 CoAB JSON
+stable ID 驅動。正常玩家 regression 已連續驗證 REBURY 後再 LOOT，
+珠寶 pool 為一且 ECL 回地城。正式 Docker／Xvfb 截圖
+`burial-glen-grave-looters.png` 已保存；thri-kreen 小人目前受地形／佈陣
+遮擋，placement／occlusion 仍是明確缺口。READY spec 388 保存全部 bytes、
+分支、畫面與未完成邊界。
+
+同輪曾短暫嘗試以 `seed+invocation serial` 避免隨機 terrain 永遠重複，
+正式全套測試證明它會改變 Hap 與散提爾堡既有遭遇數量，故未提交該設計。
+最終實作由 session shared `RuntimeState` 保存持續 PRNG stream；固定基底
+seed 可重現，跨 ECL invocation 會自然取下一值。PRNG save/resume 尚未完成。

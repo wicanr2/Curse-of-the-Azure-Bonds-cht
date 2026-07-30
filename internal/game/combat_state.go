@@ -2267,10 +2267,21 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		deferUntilVictory := result.CombatRequested && len(result.MonsterSpawns) > 0
 		if deferUntilVictory {
 			treasureReady = false
-		} else if err := s.ResolveTreasureRequests(); err != nil {
-			s.Message = "財寶等待素材載入：" + err.Error()
-		} else if len(s.pendingTreasureItems) > 0 {
-			treasureReady = true
+		} else {
+			beforeMoney := s.moneyPool
+			beforeGems, beforeJewelry := s.treasureGems, s.treasureJewelry
+			beforeItems := len(s.pendingTreasureItems)
+			if err := s.ResolveTreasureRequests(); err != nil {
+				s.Message = "財寶等待素材載入：" + err.Error()
+			} else {
+				// Pure money/gem/jewelry TREASURE still owns a visible service
+				// boundary, while an all-zero request does not add an empty UI.
+				treasureReady = result.CombatRequested &&
+					(s.moneyPool != beforeMoney ||
+						s.treasureGems != beforeGems ||
+						s.treasureJewelry != beforeJewelry ||
+						len(s.pendingTreasureItems) != beforeItems)
+			}
 		}
 	}
 	s.applyCitySelection()
@@ -2348,7 +2359,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		s.Choices = make([]string, 0, len(menu.Options))
 		s.currentOriginalChoices = append([]string(nil), menu.Options...)
 		for _, option := range menu.Options {
-			s.Choices = append(s.Choices, localizeOption(s.catalog, option))
+			s.Choices = append(s.Choices, s.localizeOption(option))
 		}
 		if menu.Prompt != "" {
 			s.Prompt = localizePrompt(s.catalog, menu.Prompt)

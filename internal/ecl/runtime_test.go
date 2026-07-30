@@ -1,6 +1,9 @@
 package ecl
 
-import "testing"
+import (
+	"math/rand"
+	"testing"
+)
 
 func TestRunSubsetPrintsPackedTextAndStops(t *testing.T) {
 	// payload: PRINT [packed "HI"] ; EXIT
@@ -761,6 +764,26 @@ func TestRunSubsetRandomUsesInclusiveRangeAndSeed(t *testing.T) {
 	}
 	if first.Steps != second.Steps || first.PC != second.PC {
 		t.Fatalf("seeded runs diverged: first=%+v second=%+v", first, second)
+	}
+}
+
+func TestRuntimeStateKeepsRandomStreamAcrossInvocations(t *testing.T) {
+	// RANDOM 0x7FFF, 0x0100; EXIT. Re-entering a session-owned runtime must
+	// consume the next value from one seeded stream, not restart at value 1.
+	block := []byte{0, 0, 0x08, 0x02, 0xFF, 0x7F, 0x01, 0x00, 0x01, 0x00}
+	runtime := NewRuntimeState(0)
+	expected := rand.New(rand.NewSource(99))
+	for invocation := 0; invocation < 4; invocation++ {
+		runtime.PC = 0
+		runtime.Started = true
+		result, err := runSubsetWithState(block, 0, 8, nil, true, 99, runtime)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := uint16(expected.Intn(0x7FFF))
+		if len(result.RandomValues) != 1 || result.RandomValues[0] != want {
+			t.Fatalf("invocation %d random=%v want %d", invocation, result.RandomValues, want)
+		}
 	}
 }
 

@@ -774,11 +774,18 @@ HEAD／BODY 合成圖採 nearest-neighbor 放大；中文則在輸出畫布以 2
   正常玩家路徑現在也會以真實 MON6CHA 敵人完成四蜘蛛勝利、續跑同一 ECL、
   揭露羅剎妖、完成第二戰、寫入 `4CBFh` 並返回地城，重踏紅網不會重播。
   手札所稱「獲得強大力量」是陷阱話術；實際 ECL 沒有角色能力加成。
-  戰敗路徑、蜘蛛毒素／羅剎妖完整規則與 Burial Glen 後續仍待完成。
+  紅網北方的 terrain `04h` 墳墓事件也已接入：正常移動與原始 RANDOM
+  可遇到 2 隻巨型蜘蛛、3 隻相位蜘蛛及 1 名 thri-kreen；勝利後可重新
+  安葬骸骨，使偏移好感 `4CBAh` 加一，或搜刮墳墓使其減一並取得一件珠寶。
+  純珠寶 TREASURE 現在會進入寶物 service，不再誤顯示零怪物戰鬥。
+  戰敗路徑、蜘蛛毒素／羅剎妖／thri-kreen 完整規則與 Burial Glen 後續
+  仍待完成。
 
 ![Burial Glen 紅網的 640×480 原版石框與 16×15 倚天字串輸入](docs/screenshots/burial-glen-red-web-input.png)
 
 ![Burial Glen 紅網四隻巨型蜘蛛的原版 CPIC 小人與戰鬥框](docs/screenshots/burial-glen-red-web-spiders.png)
+
+![Burial Glen 墳墓掠奪者的蜘蛛小人、thri-kreen 目標與原版戰鬥框](docs/screenshots/burial-glen-grave-looters.png)
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

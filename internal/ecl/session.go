@@ -1,6 +1,9 @@
 package ecl
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 // BlockSession owns decoded ECL blocks and the current block identity. It is
 // intentionally separate from RunSubset: VM execution state can be extended
@@ -66,6 +69,19 @@ func (s *BlockSession) SetMemoryValue(address, value uint16) {
 		return
 	}
 	state.Memory[address] = value
+}
+
+// ResetRandomSeed starts a new deterministic PRNG stream without resetting
+// ECL memory or the resumable PC. Normal gameplay does not call this between
+// entries; it exists for an explicit replay/test seed change.
+func (s *BlockSession) ResetRandomSeed(seed int64) {
+	runtime := s.states[s.current]
+	if runtime == nil {
+		return
+	}
+	runtime.Random = rand.New(rand.NewSource(seed))
+	runtime.RandomSeed = seed
+	runtime.RandomSeedSet = true
 }
 
 func (s *BlockSession) Switch(id uint8) error {

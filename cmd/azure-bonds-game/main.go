@@ -2669,6 +2669,7 @@ func main() {
 	wizardTowerExit := flag.Bool("wizard-tower-exit", false, "start at the completed wizard-tower roof exit menu")
 	burialRedWeb := flag.Bool("burial-red-web", false, "show the Burial Glen red-web INPUT STRING checkpoint")
 	burialRedWebBattle := flag.Bool("burial-red-web-battle", false, "show the first Burial Glen red-web spider battle")
+	burialGraveBattle := flag.Bool("burial-grave-battle", false, "show the Burial Glen grave-looter thri-kreen battle")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -2713,7 +2714,7 @@ func main() {
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
 	}
-	if *burialRedWeb || *burialRedWebBattle {
+	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle {
 		*geoSet = 6
 		*geoBlock = 0x40
 	}
@@ -2944,7 +2945,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *burialRedWeb || *burialRedWebBattle {
+	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle {
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
@@ -2960,21 +2961,55 @@ func main() {
 		if err := state.Continue(); err != nil {
 			log.Fatal(err)
 		}
-		state.SetDungeonGeometryView(6, 14, 2)
-		state.DungeonWallRoof = 0x82
-		if err := state.RunDungeonLifecycle(); err != nil {
-			log.Fatal(err)
-		}
-		if *burialRedWebBattle {
-			if err := state.Select(0); err != nil {
-				log.Fatal(err)
+		if *burialGraveBattle {
+			state.SetECLSeed(1)
+			for attempt := 0; attempt < 8 && !state.CombatActive(); attempt++ {
+				for _, y := range []int{13, 12} {
+					direction := uint8(4)
+					if y == 12 {
+						direction = 0
+					}
+					state.SetDungeonGeometryView(6, y, direction)
+					state.DungeonWallRoof = geoGrid.Cells[y][6].Terrain
+					if err := state.RunDungeonLifecycle(); err != nil {
+						log.Fatal(err)
+					}
+					if state.Mode == game.ModeWilderness && len(state.Choices) == 4 {
+						// A normal ECL random encounter can precede the
+						// terrain event; flee and keep walking.
+						if err := state.Select(2); err != nil {
+							log.Fatal(err)
+						}
+					} else if state.Mode == game.ModeWilderness && len(state.Choices) == 1 {
+						if err := state.Select(0); err != nil {
+							log.Fatal(err)
+						}
+					}
+					if state.CombatActive() {
+						break
+					}
+				}
+			}
+			if !state.CombatActive() {
+				log.Fatal("Burial Glen grave battle did not trigger within deterministic preview budget")
 			}
 		} else {
-			if err := state.Select(1); err != nil {
+			state.SetDungeonGeometryView(6, 14, 2)
+			state.DungeonWallRoof = 0x82
+			if err := state.RunDungeonLifecycle(); err != nil {
 				log.Fatal(err)
 			}
-			if err := state.AppendECLString([]rune("Krrkik")); err != nil {
-				log.Fatal(err)
+			if *burialRedWebBattle {
+				if err := state.Select(0); err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				if err := state.Select(1); err != nil {
+					log.Fatal(err)
+				}
+				if err := state.AppendECLString([]rune("Krrkik")); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	} else if *lavaTube {

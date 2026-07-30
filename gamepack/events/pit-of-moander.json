@@ -100,6 +100,11 @@
       ,"myth-drannor.red-web.spiders": "Some spiders investigate the noise."
       ,"myth-drannor.red-web.rakshasa": "The spirit appears laughing. It fades, revealing a rakshasa."
       ,"myth-drannor.red-web.free": "You eventually free yourself."
+      ,"myth-drannor.grave.thri-kreen": "A thri-kreen is excavating a grave. At your approach it turns and attacks."
+      ,"myth-drannor.grave.skeleton": "You see a partially excavated elf skeleton. Jewelry glitters on its wrist. What will you do?"
+      ,"myth-drannor.grave.loot": "Loot grave"
+      ,"myth-drannor.grave.rebury": "Rebury skeleton"
+      ,"option.go": "Go"
       ,"journal.25": "Journal Entry 25: We spirits of Myth Drannor have grown weak over the centuries and can now do little but observe. We ask for your help. In return, here is a secret power of the thri-kreen: within this building is a glowing red web. Speak the word Krrkik while standing before it, then walk into it, and you will gain great strength. I have seen many thri-kreen do this."
     },
     "zh-TW": {
@@ -198,6 +203,11 @@
       ,"myth-drannor.red-web.spiders": "幾隻巨蛛循著聲響前來查看。"
       ,"myth-drannor.red-web.rakshasa": "幽魂大笑著現身，隨即消散，露出一名羅剎妖。"
       ,"myth-drannor.red-web.free": "你們終於掙脫巨網。"
+      ,"myth-drannor.grave.thri-kreen": "一名螳螂人正在挖掘墳墓；你們一靠近，它便轉身發動攻擊。"
+      ,"myth-drannor.grave.skeleton": "你們看見一具只挖出一部分的精靈骸骨，腕上的珠寶閃閃發光。要怎麼做？"
+      ,"myth-drannor.grave.loot": "搜刮墳墓"
+      ,"myth-drannor.grave.rebury": "重新安葬骸骨"
+      ,"option.go": "繼續前進"
       ,"journal.25": "手札條目 25：我們這些迷斯卓諾的幽魂，歷經數百年後已日漸衰弱，如今只能在旁觀望。我們請求你們相助；作為回報，讓我告訴你們螳螂人的一項祕密力量。這棟建築裡有一張發出紅光的蛛網。站在網前說出「Krrkik」，再走進網中，你們便會獲得強大的力量。我曾見過許多螳螂人如此行事。"
     }
   },
@@ -597,6 +607,23 @@
       "spawn": {"x": 4, "y": 5, "direction": 0}
     }
   ],
+  "option_rules": [
+    {
+      "id": "myth-drannor.grave.loot",
+      "source": "LOOT GRAVE",
+      "message_id": "myth-drannor.grave.loot"
+    },
+    {
+      "id": "myth-drannor.grave.rebury",
+      "source": "REBURY SKELETON",
+      "message_id": "myth-drannor.grave.rebury"
+    },
+    {
+      "id": "option.go",
+      "source": "GO",
+      "message_id": "option.go"
+    }
+  ],
   "text_rules": [
     {
       "id": "myth-drannor.tyranthraxus-reveal",
@@ -673,6 +700,16 @@
       "id": "myth-drannor.red-web.free",
       "all_contains": ["YOU EVENTUALLY FREE YOURSELF"],
       "message_id": "myth-drannor.red-web.free"
+    },
+    {
+      "id": "myth-drannor.grave.thri-kreen",
+      "all_contains": ["A THRI-KREEN IS EXCAVATING A GRAVE", "AT YOUR", "APPROACH IT TURNS AND ATTACKS"],
+      "message_id": "myth-drannor.grave.thri-kreen"
+    },
+    {
+      "id": "myth-drannor.grave.skeleton",
+      "all_contains": ["YOU SEE A PARTIALLY EXCAVATED ELF SKELETON", "JEWELRY GLITTERS ON ITS WRIST", "WHAT WILL YOU DO"],
+      "message_id": "myth-drannor.grave.skeleton"
     },
     {
       "id": "zhentil.patrol_pass",
