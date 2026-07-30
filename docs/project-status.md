@@ -198,7 +198,12 @@ commit 內保存不可能自我引用的 hash。
   寫 `4CCA`，再依前兩旗標決定是否追加兩波六人。乾淨 raw session
   `12→6→6` 與已清外圍後只剩十二人的正常路徑均已驗證。最終財寶為
   9500 gold、4 gems、6 jewelry 與一件 random item；treasure menu 會保留
-  當次 ECL 的資料包繁中文字。terrain `91h／92h` 仍待後續。
+  當次 ECL 的資料包繁中文字。terrain `91h／92h` 已由下一輪接續完成。
+- 第 395 輪接通 terrain `91h／92h`：八隻 GIANT SPIDER 的陵墓寫
+  `4CCB`；蛛網巢穴依 `4CBA < 80h` 決定是否略過幽魂警告。高好感
+  YES／NO、NO 不消耗事件、YES 戰前 `4CCC=1`、四隻巨蛛與敵方
+  `7F70=2` 均由 raw ECL 與正常玩家路徑驗證。低好感直接開戰分支也有
+  獨立回歸；蛛卵沒有原作選單或財寶，未自行添加。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

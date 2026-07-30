@@ -821,6 +821,12 @@ ECL 分支均已驗證；搜刮會降低黛米爾好感並取得一顆寶石，�
 財寶介面現在會保留原 ECL 的繁中「你們收起了一些值錢物品」，完整證據見
 [`spec 394`](docs/spec/394-burial-glen-thri-kreen-defense-waves.md)。
 
+terrain `0x91／0x92` 的蜘蛛陵墓也已接入同一條玩家路徑。第一座陵墓有八隻
+巨蛛；第二座會依黛米爾好感決定幽魂是否先警告。好感足夠時可選「否」安全
+離開並稍後重返，選「是」才會看見蛛卵並迎戰四隻取得敵方命中 `+2` 的巨蛛。
+繁中警告、YES／NO、旗標時序與低好感直接開戰分支均有原始 ECL 回歸，詳見
+[`spec 395`](docs/spec/395-burial-glen-spider-mausoleums.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

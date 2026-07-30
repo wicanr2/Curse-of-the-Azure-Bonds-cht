@@ -919,6 +919,197 @@ func TestRealBurialGlenThriKreenDefenseFlagsAndWaves(t *testing.T) {
 	})
 }
 
+func TestRealBurialGlenSpiderMausoleumApprovalBranches(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T, terrain, approval uint16) *BlockSession {
+		t.Helper()
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 0)
+		session.SetMemoryValue(0xC04C, 0)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, terrain)
+		session.SetMemoryValue(0x4CBA, approval)
+		return session
+	}
+
+	t.Run("inhabited mausoleum has eight giant spiders", func(t *testing.T) {
+		session := newSession(t, 0x91, 0x80)
+		prompt, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "),
+				"WEBS FESTOON THIS MAUSOLEUM") {
+			t.Fatalf("mausoleum prompt=%+v", prompt)
+		}
+		press := uint16(0)
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x42, Count: 8, IconBlock: 0x41}}) ||
+			mustMemory(t, session, 0x7F82) != 7 ||
+			mustMemory(t, session, 0x4C00) != 8 {
+			t.Fatalf("mausoleum fight=%+v", fight)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			3000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !done.Exited || mustMemory(t, session, 0x4CCB) != 1 {
+			t.Fatalf("mausoleum done=%+v", done)
+		}
+		revisit, runErr := session.RunEntry(1, 3000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !revisit.Exited || revisit.CombatRequested || revisit.WaitingForMenu {
+			t.Fatalf("mausoleum revisit=%+v", revisit)
+		}
+	})
+
+	runFunnelStart := func(t *testing.T, session *BlockSession) RunResult {
+		t.Helper()
+		prompt, runErr := session.RunEntry(1, 4000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "YOU SEE A FUNNEL OF WEBS") {
+			t.Fatalf("funnel prompt=%+v", prompt)
+		}
+		return prompt
+	}
+
+	t.Run("friendly spirits warn and no leaves event repeatable", func(t *testing.T) {
+		session := newSession(t, 0x92, 0x80)
+		runFunnelStart(t, session)
+		press := uint16(0)
+		warning, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !warning.WaitingForMenu ||
+			!reflect.DeepEqual(warning.Menus[len(warning.Menus)-1].Options,
+				[]string{"YES", "NO"}) ||
+			!strings.Contains(strings.Join(warning.Text, " "), "GUARD THEIR NEST FIERCELY") {
+			t.Fatalf("warning=%+v", warning)
+		}
+		no := uint16(1)
+		retreat, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &no, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !retreat.Exited || retreat.CombatRequested {
+			t.Fatalf("retreat=%+v", retreat)
+		}
+		if _, found := session.MemoryValue(0x4CCC); found {
+			t.Fatalf("NO unexpectedly set 4CCC=%02x", mustMemory(t, session, 0x4CCC))
+		}
+		revisit, runErr := session.RunEntry(1, 4000, nil)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !revisit.WaitingForMenu ||
+			!strings.Contains(strings.Join(revisit.Text, " "), "YOU SEE A FUNNEL OF WEBS") {
+			t.Fatalf("retreat revisit=%+v", revisit)
+		}
+	})
+
+	t.Run("yes marks nest before four-spider combat", func(t *testing.T) {
+		session := newSession(t, 0x92, 0x80)
+		runFunnelStart(t, session)
+		press := uint16(0)
+		warning, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil || !warning.WaitingForMenu {
+			t.Fatalf("warning=%+v err=%v", warning, runErr)
+		}
+		yes := uint16(0)
+		eggs, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &yes, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !eggs.WaitingForMenu ||
+			!strings.Contains(strings.Join(eggs.Text, " "), "YOU CAN SEE SOME EGGS") ||
+			mustMemory(t, session, 0x4CCC) != 1 {
+			t.Fatalf("eggs=%+v", eggs)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !fight.CombatRequested ||
+			!reflect.DeepEqual(fight.MonsterSpawns,
+				[]MonsterSpawn{{MonsterID: 0x42, Count: 4, IconBlock: 0x41}}) ||
+			mustMemory(t, session, 0x7F70) != 2 ||
+			mustMemory(t, session, 0x7F82) != 0 ||
+			mustMemory(t, session, 0x4C00) != 4 {
+			t.Fatalf("nest fight=%+v", fight)
+		}
+		done, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, nil, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !done.Exited {
+			t.Fatalf("nest done=%+v", done)
+		}
+	})
+
+	t.Run("low approval receives no warning or yes-no menu", func(t *testing.T) {
+		session := newSession(t, 0x92, 0x7F)
+		runFunnelStart(t, session)
+		press := uint16(0)
+		eggs, runErr := session.ResumeInteractiveSelectionSeed(
+			4000, &press, nil, 1, PartyContext{},
+		)
+		if runErr != nil {
+			t.Fatal(runErr)
+		}
+		if !eggs.WaitingForMenu ||
+			!strings.Contains(strings.Join(eggs.Text, " "), "YOU CAN SEE SOME EGGS") ||
+			strings.Contains(strings.Join(eggs.Text, " "), "DO YOU CONTINUE") ||
+			reflect.DeepEqual(eggs.Menus[len(eggs.Menus)-1].Options,
+				[]string{"YES", "NO"}) ||
+			mustMemory(t, session, 0x4CCC) != 1 {
+			t.Fatalf("low-approval eggs=%+v", eggs)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

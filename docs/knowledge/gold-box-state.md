@@ -682,3 +682,23 @@ JSON 的固定陣容；作品資料只負責 stable text／monster identity，�
 COMBAT 是財寶服務 boundary，但 PRINTCLEAR 文字仍是該畫面的敘事。進入通用
 treasure menu 時應保留當次已資料化的 ECL 文字；只有當結果沒有文字時才使用
 通用「發現財寶」提示，不能讓 UI helper 無條件蓋掉劇情。
+
+### 2026-07-30：好感可控制警告，而非控制事件本身
+
+Burial Glen terrain `92h` 先顯示漏斗蛛網，再比較區域好感 `4CBAh` 與
+biased neutral `80h`。高好感時，友善幽魂會警告危險並提供 YES／NO；
+低好感時不是禁止進入，而是完全不警告，直接進入蜘蛛攻擊分支。
+
+因此 reputation／approval gate 至少要區分：
+
+- 是否顯示提示或額外情報；
+- 是否提供撤退選項；
+- 是否允許事件本體執行。
+
+不能看到 COMPARE reputation 就一律實作成「好感不足不可進入」。資料包只
+翻譯警告與選項，VM 原始 IF／GOTO 才決定哪一種 UX boundary 存在。
+
+同一事件也在戰鬥開始前寫完成旗標 `4CCC=1`，而不是戰勝後才寫。這代表
+完成旗標可能表示「巢穴已被驚動／事件已消耗」，不一定等於玩家獲勝。
+combat continuation 與 save 系統必須保存 writer 的原始時序；不得把所有
+一次性 encounter 統一延後到 `StatusPartyWon`。
