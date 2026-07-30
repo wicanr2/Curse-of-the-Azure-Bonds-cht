@@ -917,6 +917,48 @@ func TestRuntimeStateResumesAtPausedMenu(t *testing.T) {
 	}
 }
 
+func TestRuntimeStateResumesInputStringAndComparesNormalizedValue(t *testing.T) {
+	// INPUT STRING max 5 -> string[0x7B90]; PRINT the stored value; EXIT.
+	block := []byte{0, 0,
+		0x10, 0x00, 5, 0x81, 0x90, 0x7B,
+		0x11, 0x81, 0x90, 0x7B,
+		0x00,
+	}
+	runtime := NewRuntimeState(0)
+	waiting, err := runSubsetWithStateContextAndInputs(
+		block, 0, 16, nil, nil, nil, true, 1, runtime, nil,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !waiting.WaitingForString || waiting.PC != 0 ||
+		len(waiting.StringInputRequests) != 1 ||
+		waiting.StringInputRequests[0].Destination != 0x7B90 ||
+		waiting.StringInputRequests[0].MaxLength != 5 {
+		t.Fatalf("waiting=%+v", waiting)
+	}
+	resumed, err := runSubsetWithStateContextAndInputs(
+		block, 0, 16, nil, nil, []string{"hello!"}, true, 1, runtime, nil,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resumed.WaitingForString || !resumed.Exited ||
+		runtime.Strings[0x7B90] != "HELLO" ||
+		len(resumed.Text) != 1 || resumed.Text[0] != "HELLO" {
+		t.Fatalf("resumed=%+v strings=%v", resumed, runtime.Strings)
+	}
+}
+
+func TestNormalizeInputStringUsesRuneLength(t *testing.T) {
+	if got := normalizeInputString("Krrkik", 8); got != "KRRKIK" {
+		t.Fatalf("normalized keyword=%q, want KRRKIK", got)
+	}
+	if got := normalizeInputString("青色枷的詛咒", 5); got != "青色枷的詛" {
+		t.Fatalf("normalized CJK=%q, want five runes", got)
+	}
+}
+
 func TestRunSubsetExposesPartyRuleRequestsAndContinues(t *testing.T) {
 	block := []byte{0, 0,
 		0x1D, 0x01, 0x00, 0x90,

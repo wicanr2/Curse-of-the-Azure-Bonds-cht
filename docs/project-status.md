@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-07-30
-本 milestone 的 CoAB 基底：`6a3d6da`
+本 milestone 的 CoAB 基底：`2921842`
 依賴的 Golden Box engine checkpoint：`7ba2f8e`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -63,7 +63,11 @@ commit 內保存不可能自我引用的 hash。
 - Burial Glen 入口會採 ECL exact 出生點 `(2,15,E)`；玩家可依 GEO 牆面
   正常走兩步到 terrain `01h`，觸發 PICTURE 72 精靈幽魂。`GREET` 會把
   JSON 版 Journal 25 加入遊戲內手札，`FLEE／ATTACK` 原始分支也有 ECL
-  oracle；紅網、rakshasa 與後續區域仍未完成。
+  oracle。玩家現可沿正常 GEO 通道抵達 terrain `82h` 紅網；真正的
+  `INPUT STRING` 支援 Unicode、退格、ECL 指定長度與同 PC resume，
+  `Krrkik` 不再假造成答案選單。四選單、HACK／RETREAT、四隻蜘蛛第一戰、
+  PICTURE 72 揭露 rakshasa、第二戰及 `4CBFh` completion 均有 real-image
+  ECL regression；兩場戰鬥的完整 State 勝敗玩家路徑及後續區域仍未完成。
 - remake JSON save，以及原版 SAVGAM／CHRDAT／FX／SWG 的已驗證欄位
   import、raw preservation 與部分 writeback。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。

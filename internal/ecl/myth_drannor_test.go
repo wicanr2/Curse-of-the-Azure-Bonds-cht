@@ -197,6 +197,150 @@ func TestRealBurialGlenElfSpiritChoices(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenRedWebChoicesAndCombatContinuation(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(t *testing.T) *BlockSession {
+		t.Helper()
+		session, err := NewBlockSession(all, 0x40)
+		if err != nil {
+			t.Fatal(err)
+		}
+		session.SetMemoryValue(0xC04B, 6)
+		session.SetMemoryValue(0xC04C, 14)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, 0x82)
+		// The normal path reaches the web after resolving terrain 0x01's
+		// elven-spirit event, which sets this chapter flag.
+		session.SetMemoryValue(0x4CBE, 1)
+		initial, err := session.RunEntry(1, 2000, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !initial.WaitingForMenu ||
+			!reflect.DeepEqual(initial.Menus[len(initial.Menus)-1].Options,
+				[]string{"ENTER IT", "SPEAK", "HACK IT", "RETREAT"}) ||
+			!strings.Contains(strings.Join(initial.Text, " "), "A RED WEB STRETCHES ACROSS THE PASSAGE") {
+			t.Fatalf("initial=%+v", initial)
+		}
+		return session
+	}
+
+	t.Run("speak accepts bounded string then returns to web", func(t *testing.T) {
+		session := newSession(t)
+		speak := uint16(1)
+		prompt, err := session.ResumeInteractiveSelectionSeed(2000, &speak, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !prompt.WaitingForString || len(prompt.StringInputRequests) != 1 ||
+			prompt.StringInputRequests[0].MaxLength != 8 ||
+			prompt.StringInputRequests[0].Destination != 0x7F79 ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "WHAT WORD DO YOU SAY") {
+			t.Fatalf("prompt=%+v", prompt)
+		}
+		word := "Krrkik"
+		brighter, err := session.ResumeInteractiveInputSeed(
+			2000, nil, nil, &word, 1, PartyContext{},
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if brighter.WaitingForString || !brighter.WaitingForMenu ||
+			!strings.Contains(strings.Join(brighter.Text, " "), "THE WEB GLOWS MORE BRIGHTLY") {
+			t.Fatalf("brighter=%+v", brighter)
+		}
+		press := uint16(0)
+		again, err := session.ResumeInteractiveSelectionSeed(2000, &press, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !again.WaitingForMenu ||
+			!reflect.DeepEqual(again.Menus[len(again.Menus)-1].Options,
+				[]string{"ENTER IT", "SPEAK", "HACK IT", "RETREAT"}) {
+			t.Fatalf("again=%+v", again)
+		}
+	})
+
+	t.Run("enter chains spiders then rakshasa and marks web complete", func(t *testing.T) {
+		session := newSession(t)
+		enter := uint16(0)
+		spiders, err := session.ResumeInteractiveSelectionSeed(2000, &enter, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !spiders.CombatRequested ||
+			!reflect.DeepEqual(spiders.MonsterSpawns, []MonsterSpawn{{MonsterID: 0x42, Count: 4, IconBlock: 0x41}}) ||
+			!strings.Contains(strings.Join(spiders.Text, " "), "STUCK FAST") {
+			t.Fatalf("spiders=%+v", spiders)
+		}
+		rakshasa, err := session.ResumeInteractiveSelectionSeed(2000, nil, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !rakshasa.PictureRequested || rakshasa.PictureBlock != 72 ||
+			!rakshasa.CombatRequested ||
+			!reflect.DeepEqual(rakshasa.MonsterSpawns, []MonsterSpawn{{MonsterID: 0x43, Count: 1, IconBlock: 0x43}}) ||
+			!strings.Contains(strings.Join(rakshasa.Text, " "), "A RAKSHASA") {
+			t.Fatalf("rakshasa=%+v", rakshasa)
+		}
+		done, err := session.ResumeInteractiveSelectionSeed(2000, nil, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !done.Exited || mustMemory(t, session, 0x4CBF) != 1 ||
+			!strings.Contains(strings.Join(done.Text, " "), "EVENTUALLY FREE YOURSELF") {
+			t.Fatalf("done=%+v", done)
+		}
+	})
+
+	t.Run("hack draws spiders without rakshasa", func(t *testing.T) {
+		session := newSession(t)
+		hack := uint16(2)
+		strike, err := session.ResumeInteractiveSelectionSeed(2000, &hack, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strike.WaitingForMenu ||
+			!strings.Contains(strings.Join(strike.Text, " "), "WIRE SNARES") {
+			t.Fatalf("strike=%+v", strike)
+		}
+		press := uint16(0)
+		spiders, err := session.ResumeInteractiveSelectionSeed(2000, &press, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !spiders.CombatRequested ||
+			!reflect.DeepEqual(spiders.MonsterSpawns, []MonsterSpawn{{MonsterID: 0x42, Count: 4, IconBlock: 0x41}}) ||
+			!strings.Contains(strings.Join(spiders.Text, " "), "SPIDERS INVESTIGATE THE NOISE") {
+			t.Fatalf("spiders=%+v", spiders)
+		}
+	})
+
+	t.Run("retreat exits without combat", func(t *testing.T) {
+		session := newSession(t)
+		retreat := uint16(3)
+		result, err := session.ResumeInteractiveSelectionSeed(2000, &retreat, nil, 1, PartyContext{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !result.Exited || result.CombatRequested || result.WaitingForString {
+			t.Fatalf("retreat=%+v", result)
+		}
+	})
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

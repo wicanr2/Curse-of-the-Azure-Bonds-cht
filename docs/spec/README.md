@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第三百八十六輪 Burial Glen 紅網與 ECL 字串輸入](./386-burial-glen-red-web-input-string.md)（`READY`：限可續跑 `INPUT STRING`、terrain `82h` 分支與兩戰 ECL continuation）
 - [第三百五十二輪眼魔洞穴德克薩姆雙戰](./352-beholder-cave-dexam-double-battle.md)（`READY`）
 - [第三百六十七輪 PC-98 音序列 bytecode](./367-pc98-stream-bytecode.md)（`READY`：限 `sub_10410` framing、控制流與 84-stream 有界驗證）
 - [第三百六十八輪 PC-98 OPN 事件 runtime](./368-pc98-opn-event-runtime.md)（`READY`：限正常配樂初始化、timer tick 與 deterministic BIOS／YM2203 events）

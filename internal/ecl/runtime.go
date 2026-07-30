@@ -3,6 +3,7 @@ package ecl
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 // RunResult is the observable output of the bounded ECL subset runner.
@@ -15,6 +16,7 @@ type RunResult struct {
 	Exited                 bool
 	WaitingForMenu         bool
 	WaitingForWho          bool
+	WaitingForString       bool
 	NewECLBlockID          *uint8
 	CombatRequested        bool
 	ShopRequested          bool
@@ -41,6 +43,7 @@ type RunResult struct {
 	NPCRequests            []NPCRequest
 	SelectionsConsumed     int
 	WhoSelectionsConsumed  int
+	StringInputsConsumed   int
 	RandomValues           []uint16
 	EncounterActions       []uint16
 	LoadFilesRequested     bool
@@ -61,6 +64,7 @@ type RunResult struct {
 	PartySurpriseRequests  []PartySurpriseRequest
 	CheckPartyRequests     []CheckPartyRequest
 	WhoRequests            []WhoRequest
+	StringInputRequests    []StringInputRequest
 }
 
 // NPCRequest preserves both operands consumed by CMD_AddNPC. Morale is later
@@ -137,6 +141,17 @@ type WhoRequest struct {
 	Prompt            string
 	Selected          uint16
 	SelectionProvided bool
+}
+
+// StringInputRequest is the resumable UI boundary emitted by INPUT STRING.
+// The script owns the maximum length and destination; the frontend only edits
+// and submits text. Value is normalized to the uppercase vocabulary used by
+// verified ECL string literals before it is written to RuntimeState.Strings.
+type StringInputRequest struct {
+	MaxLength     uint16
+	Destination   uint16
+	Value         string
+	InputProvided bool
 }
 
 // PartySurpriseRequest preserves the two destination addresses used by the
@@ -387,7 +402,7 @@ func RunSubsetInteractiveSeedWithPartyContext(block []byte, start, maxSteps int,
 
 func RunSubsetInteractiveSeedWithPartyContextAndWhoSelections(block []byte, start, maxSteps int, selections, whoSelections []uint16, seed int64, context PartyContext) (RunResult, error) {
 	owned := context.clone()
-	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, whoSelections, true, seed, NewRuntimeState(start), &owned)
+	return runSubsetWithStateContextAndInputs(block, start, maxSteps, selections, whoSelections, nil, true, seed, NewRuntimeState(start), &owned)
 }
 
 func runSubset(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64) (RunResult, error) {
@@ -399,10 +414,14 @@ func runSubsetWithState(block []byte, start, maxSteps int, selections []uint16, 
 }
 
 func runSubsetWithStateContext(block []byte, start, maxSteps int, selections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
-	return runSubsetWithStateContextAndWhoSelections(block, start, maxSteps, selections, nil, pauseOnMissing, seed, runtime, partyContext)
+	return runSubsetWithStateContextAndInputs(block, start, maxSteps, selections, nil, nil, pauseOnMissing, seed, runtime, partyContext)
 }
 
 func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int, selections, whoSelections []uint16, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
+	return runSubsetWithStateContextAndInputs(block, start, maxSteps, selections, whoSelections, nil, pauseOnMissing, seed, runtime, partyContext)
+}
+
+func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selections, whoSelections []uint16, stringInputs []string, pauseOnMissing bool, seed int64, runtime *RuntimeState, partyContext *PartyContext) (RunResult, error) {
 	if len(block) < 2 {
 		return RunResult{}, fmt.Errorf("ECL block is shorter than two-byte prefix")
 	}
@@ -480,6 +499,7 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 	}
 	selectionCursor := 0
 	whoSelectionCursor := 0
+	stringInputCursor := 0
 	result := RunResult{PC: pc}
 	for result.Steps < maxSteps {
 		instruction, err := decodeInstruction(payload, pc)
@@ -843,6 +863,35 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 					}
 				}
 			}
+		case 0x10: // INPUT STRING
+			if len(instruction.Operands) != 2 || !instruction.Operands[1].WordSet {
+				return result, fmt.Errorf("INPUT STRING at %d has invalid operands", pc)
+			}
+			maxLength, err := operandValue(instruction.Operands[0], memory)
+			if err != nil {
+				return result, fmt.Errorf("INPUT STRING length at %d: %w", pc, err)
+			}
+			request := StringInputRequest{
+				MaxLength:   maxLength,
+				Destination: instruction.Operands[1].Word,
+			}
+			if pauseOnMissing && stringInputCursor >= len(stringInputs) {
+				result.StringInputRequests = append(result.StringInputRequests, request)
+				result.WaitingForString = true
+				result.PC = pc
+				saveState(pc)
+				return result, nil
+			}
+			value := ""
+			if stringInputCursor < len(stringInputs) {
+				value = normalizeInputString(stringInputs[stringInputCursor], maxLength)
+			}
+			stringInputCursor++
+			result.StringInputsConsumed = stringInputCursor
+			request.Value = value
+			request.InputProvided = true
+			stringsMemory[request.Destination] = value
+			result.StringInputRequests = append(result.StringInputRequests, request)
 		case 0x11, 0x12: // PRINT / PRINTCLEAR
 			if len(instruction.Operands) != 1 {
 				return result, fmt.Errorf("print at %d has unexpected arity", pc)
@@ -1388,6 +1437,15 @@ func runSubsetWithStateContextAndWhoSelections(block []byte, start, maxSteps int
 		result.PC = pc
 	}
 	return result, fmt.Errorf("runtime step limit %d reached at payload offset %d", maxSteps, pc)
+}
+
+func normalizeInputString(value string, maxLength uint16) string {
+	value = strings.ToUpper(value)
+	runes := []rune(value)
+	if len(runes) > int(maxLength) {
+		runes = runes[:maxLength]
+	}
+	return string(runes)
 }
 
 func resolveEncounterAction(selection uint16, behavior, maxDistance uint16) uint16 {

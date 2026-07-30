@@ -2279,6 +2279,10 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		s.Message = s.localizeECLText(result.Text)
 	}
 
+	if result.WaitingForString && len(result.StringInputRequests) > 0 {
+		s.beginECLStringInput(result.StringInputRequests[len(result.StringInputRequests)-1])
+		return true, nil
+	}
 	if result.PictureRequested {
 		s.Mode = ModeEvent
 		if !s.picturesEnabled {
@@ -2301,7 +2305,8 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			s.SceneBodyBlock = uint8(result.PictureBlock)
 		}
 		s.OriginalEvent = "PICTURE"
-		if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
+		if result.CombatRequested || result.ShopRequested || result.TempleRequested ||
+			result.WaitingForMenu || result.WaitingForString {
 			pending := result
 			pending.PictureRequested = false
 			s.pendingPictureResult = &pending
@@ -2355,7 +2360,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		return false, nil
 	}
 	if !hasMeaningfulECLText(result.Text) && !result.PictureRequested && !result.CombatRequested &&
-		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu &&
+		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu && !result.WaitingForString &&
 		len(result.CallAddresses) > 0 {
 		// CALL is an immediate engine adapter boundary. A combat continuation
 		// may reach redraw/cleanup helpers before the next script-visible
@@ -2363,7 +2368,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		return s.continueECLAfterEngineBoundaryDepth(depth + 1)
 	}
 	if !hasMeaningfulECLText(result.Text) && !result.PictureRequested && !result.CombatRequested &&
-		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu {
+		!result.ShopRequested && !result.TempleRequested && !result.WaitingForMenu && !result.WaitingForString {
 		// A quiet continuation is not a new world event. Restore the mode that
 		// owned combat so dungeon encounters remain inside their map.
 		s.Mode = s.combatReturnMode

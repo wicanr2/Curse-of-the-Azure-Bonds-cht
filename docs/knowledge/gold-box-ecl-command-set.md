@@ -38,6 +38,28 @@ external `PROGRAM` routine、monster table 與 save side effect 必須由各作�
 注入。若同一 opcode 在另一作品出現不同 arity 或 operand code，優先保留 raw trace，
 不要覆寫本表的 CoAB assumption。
 
+## `INPUT STRING (0x10)` 的可續跑 contract
+
+`INPUT STRING` 不是 menu。已驗證的兩個 operands 是最大字數與
+string-memory destination；CoAB ECL6 block `40h:+0425h` 把最多 12 字元寫到
+`7B90h`，下一個 `COMPARE` 便以 `0x81` operand 對照 packed
+`TYRANTHRAXUS`。Burial Glen `+08A8h` 則把最多 8 字元寫到 `7F79h`。
+
+可重用 VM 必須把它建模成獨立 input boundary：
+
+- 暫停時保存目前 PC、stack、numeric／string memory 與其他 input cursor。
+- UI 提交後才把文字寫到 instruction 指定的 destination，從同一 opcode
+  續跑且只消耗一次。
+- 最大長度來自 operand，不可由 frontend 為某個密語另寫常數。
+- 作品的答案與比較留在 ECL；不能把 `Krrkik`、`TYRANTHRAXUS` 等詞寫進
+  共用 VM，更不能把未知 opcode 假造成列出答案的選單。
+- remake 可接受 Unicode 並按 rune 截斷；與原 DOS byte editor 的逐鍵差異
+  必須明確標示，不能宣稱逐像素／逐鍵 exact。
+
+Burial Glen 的 `SPEAK` 在輸入後沒有 `COMPARE`，而是無條件顯示網變亮並回到
+原選單。因此 Journal 提供 `Krrkik` 並不代表 script 真的驗證它。這也是
+「攻略敘述不能取代 bytecode control flow」的可跨作品案例。
+
 ## Current evidence boundary
 
 ECL1–ECL6 entry smoke 已實際遇到 `0x1D PARTYSTRENGTH`、`0x22 PARTY SURPRISE`、

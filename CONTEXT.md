@@ -2350,3 +2350,18 @@ GEO6 證明 `(2,15)→(3,15)→(3,14)` 兩步可通行，終點 terrain `01h` �
 stable ID 顯示繁中事件並解鎖 Journal 25。Journal 英文由公開文件轉錄與
 Burial Glen 攻略交叉核對；本地 PDF 是純影像，OCR 本輪未可靠抽出該條。
 紅網 terrain `82h`、`Krrkik`、蜘蛛／rakshasa 與後續章節仍未完成。
+
+2026-07-30 第 386 輪解出 Burial Glen terrain `82h` 紅網。ECL6 block
+`40h:+08A8h` 是 `INPUT STRING 8,[7F79h]`；輸入後沒有字串比較，而是
+無條件顯示紅網更亮並回到四選單，所以 Journal 25 的 `Krrkik` 不可被
+remake 假造成唯一答案選單。另一組 `+0425h` 輸入 12 字元並立即比較
+`TYRANTHRAXUS`，交叉證明 string-memory destination。
+
+VM 新增獨立、可續跑的字串 input request／offset；State 與 Ebiten 支援
+Unicode、Backspace、Enter、ECL 最大長度及 uppercase literal vocabulary。
+正常玩家 regression 從精靈幽魂沿 GEO
+`(4,14)→(5,14)→(6,14)` 抵達紅網並完成輸入回返。real-image session
+另鎖定 ENTER 的四蜘蛛→PICTURE 72→rakshasa 兩戰 continuation、
+HACK 蜘蛛、RETREAT 與 `4CBFh=1`。新增 640×480 原版石框／16×15 倚天
+截圖及 READY spec 386；兩場戰鬥完整 State 勝敗路徑、逐鍵 DOS fidelity、
+strength side effect 與 Burial Glen 後續仍未完成。
