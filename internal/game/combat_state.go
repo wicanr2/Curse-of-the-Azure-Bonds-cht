@@ -808,14 +808,13 @@ func (s *State) CombatSpellTargets() []combat.Fighter {
 	case CureLightWoundsSpellID:
 		return s.combatHealingTargets()
 	case MagicMissileSpellID:
-		if s.combatSpellIsProtectionFromGood() {
-			caster, ok := s.combatPartyTurn()
-			if !ok {
-				return nil
-			}
-			return s.protectionFromGoodTargets(caster)
-		}
 		return s.livingBySide(combat.SideEnemy)
+	case ProtectionFromGoodSpellID:
+		caster, ok := s.combatPartyTurn()
+		if !ok {
+			return nil
+		}
+		return s.protectionFromGoodTargets(caster)
 	case CurseSpellID:
 		return s.livingBySide(combat.SideEnemy)
 	case CauseLightWoundsSpellID:
@@ -863,13 +862,12 @@ func (s *State) combatHealingTargets() []combat.Fighter {
 	return targets
 }
 
-// CombatSpellTargetsEnemy distinguishes the class-specific spell ID 7:
-// Magic Missile is a magic-user enemy target, while Protection from Good is a
-// cleric party target.
+// CombatSpellTargetsEnemy follows the global spell-table identity stored in
+// player records. Magic Missile is 0x0F; cleric Protection from Good is 0x07.
 func (s *State) CombatSpellTargetsEnemy() bool {
 	switch s.combatCastingSpell {
 	case MagicMissileSpellID:
-		return !s.combatSpellIsProtectionFromGood()
+		return true
 	case CurseSpellID, CauseLightWoundsSpellID:
 		return true
 	default:
@@ -892,8 +890,11 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == ProtectionFromEvilSpellID && !s.CombatCanCastProtectionFromEvil() {
 		return fmt.Errorf("Protection from Evil is unavailable")
 	}
-	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() && !s.CombatCanCastProtectionFromGood() {
-		return fmt.Errorf("spell 0x%02X is unavailable for this caster", spellID)
+	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
+		return fmt.Errorf("Magic Missile is unavailable")
+	}
+	if spellID == ProtectionFromGoodSpellID && !s.CombatCanCastProtectionFromGood() {
+		return fmt.Errorf("Protection from Good is unavailable")
 	}
 	if spellID == FireballSpellID && !s.CombatCanCastFireball() {
 		return fmt.Errorf("Fireball is unavailable")
@@ -910,32 +911,18 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != MagicMissileSpellID && spellID != StinkingCloudSpellID && spellID != CloudkillSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != ProtectionFromGoodSpellID && spellID != MagicMissileSpellID && spellID != StinkingCloudSpellID && spellID != CloudkillSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
 	s.combatSpellTargetsPoint = false
 	if spellID == ProtectionFromGoodSpellID {
-		caster, ok := s.combatPartyTurn()
+		_, ok := s.combatPartyTurn()
 		if !ok {
 			return fmt.Errorf("it is not a living party turn")
 		}
-		if _, ok := s.combatCasterClass(caster.ID); !ok {
-			return fmt.Errorf("caster %q has no class", caster.ID)
-		}
-		cleric := s.combatCasterHasClass(caster.ID, party.ClassCleric)
-		if cleric {
-			s.combatCastingClass, s.combatCastingClassSet = party.ClassCleric, true
-			s.combatSpellTargetIndex = 0
-			return nil
-		}
-		class, _ := s.combatCasterClass(caster.ID)
-		s.combatCastingClass, s.combatCastingClassSet = class, true
-		targets := s.livingBySide(combat.SideEnemy)
-		if s.combatTargetIndex >= len(targets) {
-			s.combatTargetIndex = 0
-		}
-		s.combatSpellTargetIndex = s.combatTargetIndex
+		s.combatCastingClass, s.combatCastingClassSet = party.ClassCleric, true
+		s.combatSpellTargetIndex = 0
 		return nil
 	}
 	if spellID == BlessSpellID {

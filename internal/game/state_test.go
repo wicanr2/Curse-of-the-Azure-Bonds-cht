@@ -2829,7 +2829,7 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
-	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, SpellSlots: []uint8{0x12, 0x24}, KnownSpells: []uint8{1, 7}}}
+	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, SpellSlots: []uint8{0x12, 0x24}, KnownSpells: []uint8{0x09, MagicMissileSpellID}}}
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
@@ -2939,7 +2939,7 @@ func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
-	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{1}, KnownSpells: []uint8{1, 7}}}
+	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{0x09}, KnownSpells: []uint8{0x09, MagicMissileSpellID}}}
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
@@ -2967,8 +2967,8 @@ func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 7 {
-		t.Fatalf("memorized slots=%v, want [7] after rest", got)
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != MagicMissileSpellID {
+		t.Fatalf("memorized slots=%v, want [%d] after rest", got, MagicMissileSpellID)
 	}
 	if state.Mode != ModeEvent || state.OriginalEvent != "REST" || !strings.Contains(state.Message, "完成 1 名角色的法術記憶") {
 		t.Fatalf("rest result state=%#v", state)
@@ -2980,18 +2980,18 @@ func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
 		t.Fatalf("one first-level spell requires %d hours, want 5", got)
 	}
 	state := NewState(testCatalog())
-	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{1}}}
-	state.pendingMemorizedSpells = map[int][]uint8{0: {7}}
+	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{0x09}}}
+	state.pendingMemorizedSpells = map[int][]uint8{0: {MagicMissileSpellID}}
 	state.SetRestHours(4)
 	state.enterCampMenu()
 	state.enterCampRestMenu()
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 1 {
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != 0x09 {
 		t.Fatalf("short rest changed slots=%v", got)
 	}
-	if !strings.Contains(state.Message, "至少需要 5 小時") || state.pendingMemorizedSpells[0][0] != 7 {
+	if !strings.Contains(state.Message, "至少需要 5 小時") || state.pendingMemorizedSpells[0][0] != MagicMissileSpellID {
 		t.Fatalf("short rest state=%#v", state)
 	}
 }

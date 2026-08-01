@@ -384,6 +384,13 @@ commit 內保存不可能自我引用的 hash。
   實作，沒有用空 toggle 冒充功能。Standing Stone→紅網正常玩家路徑另抓出
   Space 只清 transient Battle、未同步持久 party 的缺陷；現已修正，第二場
   羅剎妖戰不會錯誤沿用 stale Quick。
+- 第 423 輪由 PC-98 `GAME.EXE` 原始 16-byte spell records 與 overlay 09
+  Quick selector consumer 證明 Player spell bytes 使用全域 ID。牧師
+  Protection From Good 是 `07h`，Magic Missile 是 `0Fh`；舊 spec 134／142
+  的 class-local 重疊 ID 推論已 supersede。camp label、記憶法術與戰鬥
+  targeting／availability／cast 分派現使用同一全域 identity，怪物與玩家
+  Magic Missile 也不再有 `0Fh／07h` 分裂。完整 ALT+M selector、全部 spell
+  metadata／效果與 fail-closed 未支援法術 handoff 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

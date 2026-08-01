@@ -2955,3 +2955,17 @@ overlay 09 Quick AI spell selector 的 PC gate 與 consumer。這證明該旗標
 玩家 Quick AI 是否考慮法術，但完整候選優先序與 suitability predicate 尚未
 關閉；因此本輪不實作無效的 `ALT+M` 空開關。READY spec 422 保存 hashes、
 位址、bytes、推論等級與未完成邊界。
+
+2026-08-02 第四百二十三輪沿 overlay 09 Quick spell selector 追到全域 spell
+table consumer。PC-98 `GAME.EXE` SHA-256
+`8bca0b50f47b5a41193584d3d4d1cd7361562ca3daf5360d3691620cc1b752c0` 的
+`07h @ file 012E54h` 與 `0Fh @ 012ED4h` 是不同 16-byte records；selector
+直接用 Player spell byte 乘 `10h` 讀 record `+0Dh／+0Eh／+0Fh`，沒有職業
+基底轉換。這與 DOS record `+01Eh` 原樣保存 spell bytes、known flags 採全域
+一基底索引交叉一致。
+
+玩家 Magic Missile 已由錯誤 class-local `07h` 修成 `0Fh`；camp 顯示、記憶
+流程與戰鬥分派一併改用全域 ID。舊 spec 134／142 已標 SUPERSEDED，READY
+spec 423 保存 bytes、offset、推論等級與邊界。overlay 09 的三次隨機候選、
+priority tier 與 suitability 雖已 exact 定位，但完整 cast consumer 與所有
+候選法術尚未完成，故 `ALT+M` 仍不開放，不能用空 toggle 冒充 Quick magic。
