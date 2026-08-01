@@ -189,6 +189,10 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   overlay-local offset、resident segment 與 runtime far pointer。在重定位尚未解析前，
   表內 raw addend 只能標為「未解析候選」，不得直接命名成 handler 位址；
   相同數字也不得跨位址空間合併。
+- 第 412 輪已證明本作 PC-98 resident control 是 `20h` header 加
+  `CD 3F + handler-local u16 + flags` 五 byte entry stubs；code 後 relocation
+  是嚴格遞增 `u16` fixup offsets。新分析應使用 typed resolver，且仍須同時
+  證明 control segment；不得退回以 raw addend 或相同數字猜 handler。
 - 目前 `ida-pro-9.4-ver2` image 的 IDAPython 會受主機 Python 路徑影響；本專案
   已驗證 IDC 可用。headless 稽核腳本必須把結果寫入明確檔案並檢查內容，不能
   只依賴 `Message()`／stdout 或 exit code 0 判定成功。
@@ -508,10 +512,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 411 輪以 PC-98 overlay 12 raw bytes／IDA 關閉魔法抗性 common
   routine：`base+(11-casterLevel)*5`，`1d100 <= threshold` 時
   `Protected(0)` 清除傷害。local `23F4h／2404h` 是 50%／15% wrappers；
-  `6Ah → 15%` 由獨立 DOS 反編譯交叉支持，但在 TPOV relocation
-  完整解出前仍標 `strong inference`。Magic Missile 現先擲傷害再擲
+  第 412 輪再以 typed TPOV resolver 證明 `6Ah → entry 100 → 2404h`，升級
+  為 `exact`。Magic Missile 現先擲傷害再擲
   抗性，成功時傷害歸零、施放格與 continuation 仍進行；繁中訊息來自
-  locale stable ID。READY spec 411 是權威；`4Fh／70h／84h／87h`、
+  locale stable ID。READY spec 411／412 是權威；`4Fh` 2d10 fire、`70h`
+  防火、`84h` Lightning Bolt、`87h` 防電雖已靜態關閉，runtime boundary、
   HIGH PRIEST／MARGOYLE 特殊能力、其餘魔法路徑與動態演出仍未完成。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。

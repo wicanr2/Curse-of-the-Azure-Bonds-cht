@@ -75,13 +75,13 @@ node。這是 linked list 的直接資料流證據，推論等級 `exact`。
 `CALLEFFECT` 以傳入 byte 乘 4 後呼叫 `ds:A040h` 的 far-procedure table；
 IDA xref graph 找到 overlay 23 內五個 caller：`0184h／03F5h／0F9Ch／
 104Eh／24DAh`。`INITEFFPROX` 對 `18h／4Fh／6Ah／70h／87h` 的 table slot
-有直接 writes；`84h` slot 在這段初始化中沒有 write，仍列為 `unknown`，
-不可用相鄰 handler 猜補。
+有直接 writes；第 412 輪另在 overlay 22 `SPELLS` 初始化找到 `84h` slot
+writer，並以 typed TPOV entry resolver 關閉六筆 handler。
 
-TPOV table write 中的 raw segment／offset addend 尚未套用 relocation／fixup；
-它們只能證明「某 effect slot 被寫入」，不能直接當成 code-only
-overlay 的 handler local offset。第 411 輪已移除稽核腳本中這些誤導性
-handler 標籤；在 relocation 完整解出前，此部分維持 `hypothesis／unknown`。
+第 412 輪證明 resident control 的五 byte entry stub 是
+`CD 3F + handler-local u16 + flags`，並將 raw far pointer 經 segment／stub
+index 解析到指定 overlay local handler。舊的 `hypothesis／unknown` 位址
+斷言由 spec 412 supersede；原始 pointer 與位址空間仍須並列保存。
 
 ## 實作與驗證
 
@@ -101,6 +101,7 @@ handler 標籤；在 relocation 完整解出前，此部分維持 `hypothesis／
 
 - byte `+4` 在所有 effect phase 的完整正式名稱；目前只證明它不能當
   `MON*SPC` template 的總啟用 gate。
-- `4Fh／6Ah／70h／84h／87h` 的 handler、消費端與 AD&D 語意。
+- `4Fh／6Ah／70h／84h／87h` handler 已由 spec 412 靜態關閉；仍缺其完整
+  runtime boundary、AI、頻率與動態演出。
 - 提朗瑟克斯閃電、魔法抗性、三神器修正、AI、聲音及 DOS 動態演出。
 - HIGH PRIEST 的 `09h／0Ah`、MARGOYLE 的 `77h` 特殊能力。

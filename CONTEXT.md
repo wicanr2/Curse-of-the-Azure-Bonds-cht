@@ -2783,3 +2783,16 @@ READY spec 411 與 `docs/knowledge/gold-box-combat-effects.md` 是本輪權威�
 下一步應完成 TPOV relocation typed decoder，或追蹤 `84h` 閃電施放與
 `87h` 電擊保護；不可在未證明 damage boundary 前將魔法抗性全域套到
 Fireball、Lightning Bolt 或雲霧。
+
+2026-08-02 第四百一十二輪完成 PC-98 TPOV typed entry／fixup 解碼。
+唯讀磁碟抽出的 `GAME.EXE`／`GAME.OVR` hashes 與 36 段 corpus 證明 control
+固定頭 `20h`，entry 是 `CD 3F + handler-local u16 + flags`，code 後 relocation
+是嚴格遞增的 `u16` fixup offsets。auditor 新增 `-resolve-stub`，並以 signature、
+handler bound、fixup bound／排序失敗即關閉。
+
+resident pointer 經 control segment 與 entry index exact 關閉提朗瑟克斯六筆
+效果：`18h` 偵測隱形、`4Fh` 2d10 fire、`6Ah` 15% 魔法抗性、`70h` 防火、
+`84h` Lightning Bolt、`87h` 防電。`84h` 另由 overlay 22 `SPELLS` slot writer
+與 handler push spell `33h` 證實。這是靜態 handler／基本語意完成，不代表
+runtime 已完成；下一步仍須追怪物閃電的頻率、目標、terrain reflection、動畫、
+聲音，以及將防火／防電接到各自 pre-damage boundary。READY spec 412 是權威。

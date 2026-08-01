@@ -78,6 +78,8 @@ static main()
     output_path = "/work/pc98-monster-affect-overlay12.txt";
   else if (strstr(path, "overlay-16.bin") != -1)
     output_path = "/work/pc98-monster-affect-overlay16.txt";
+  else if (strstr(path, "overlay-22.bin") != -1)
+    output_path = "/work/pc98-monster-affect-overlay22.txt";
   else if (strstr(path, "overlay-23.bin") != -1)
     output_path = "/work/pc98-monster-affect-overlay23.txt";
   else
@@ -92,12 +94,21 @@ static main()
   if (strstr(path, "overlay-12.bin") != -1)
   {
     emit_range(out, "PROTECTED_HANDLER", 0x001B, 0x003C);
+    emit_range(out, "EFFECT_4F_RESOLVED_ENTRY", 0x19B3, 0x1A20);
     emit_range(out, "MAGIC_RESISTANCE_HANDLERS", 0x2396, 0x2420);
+    emit_range(out, "EFFECT_70_RESOLVED_ENTRY", 0x249D, 0x24D0);
+    emit_range(out, "EFFECT_87_RESOLVED_ENTRY", 0x2B87, 0x2BC0);
+    emit_range(out, "EFFECT_18_RESOLVED_ENTRY", 0x2ECB, 0x2ED4);
     emit_range(out, "INITEFFPROX", 0x2ED4, 0x3604);
   }
   else if (strstr(path, "overlay-16.bin") != -1)
   {
     emit_range(out, "LOADMONSTER_EFFECT_COPY", 0x3BFF, 0x3C8D);
+  }
+  else if (strstr(path, "overlay-22.bin") != -1)
+  {
+    emit_range(out, "THROWS_LIGHTNING_HANDLER", 0x62D7, 0x6374);
+    emit_range(out, "INITSPELLS_EFFECT_TABLE_TAIL", 0x6C60, 0x6C8C);
   }
   else
   {

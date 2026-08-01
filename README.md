@@ -940,10 +940,12 @@ Borland 紀號、IDA 與 raw bytes 已證明 `MON*SPC` 天生能力不能被
 raw byte 4 的零值停用；提朗瑟克斯的 `18h` 現會偵測隱形，`6Ah`
 則以 15% 為基準，套用 `base+(11-施法者等級)×5` 後抵抗
 Magic Missile。骰子順序是先擲傷害、再擲 d100；成功時傷害歸零，
-但法術格與戰鬥 continuation 仍正常消耗／進行。`6Ah → 15%`
-目前依一次 bytes 與獨立 DOS 轉寫交叉支持，在 TPOV relocation 完整
-解出前誠實標為 `strong inference`；還沒有擴大到火球、閃電束或雲霧。
-證據與限制見 [`spec 411`](docs/spec/411-pc98-tyranthraxus-magic-resistance.md)。
+但法術格與戰鬥 continuation 仍正常消耗／進行。第 412 輪已解出 36 段
+TPOV resident entry／fixup，`6Ah → entry 100 → local 2404h` 因而升級為
+`exact`。同一證據鏈也靜態關閉 `4Fh` 2d10 fire、`70h` 防火、`84h`
+施放 Lightning Bolt 與 `87h` 防電；這些尚未全數接入 runtime，怪物閃電術
+的 AI、地形反彈、動畫與音效仍未完成。證據與限制見
+[`spec 412`](docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

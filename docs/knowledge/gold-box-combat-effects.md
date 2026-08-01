@@ -39,14 +39,33 @@ resisted  = d100 <= threshold
 | overlay-local | base | 狀態 |
 |---|---:|---|
 | `23F4h` | 50 | 公式與 wrapper `exact`，effect mapping 待解 |
-| `2404h` | 15 | 公式與 wrapper `exact`；`6Ah` mapping `strong inference` |
+| `2404h` | 15 | 公式、wrapper 與 `6Ah` mapping 均為 `exact` |
 
 重製時應將公式寫成作品中立純函式，由 game data／decoded affect
 提供 base。每種法術仍要分別證明它的 damage flags、時序、多目標順序與
 visual／sound handoff；不可因 common routine 存在就對所有法術全域套用。
 
+## Turbo Pascal overlay entry 與 fixup
+
+本作 PC-98 TPOV resident control 的固定頭為 `20h` bytes，後接
+`EntryCount` 筆五 byte dispatch stub：
+
+```text
+CD 3F, overlay-local handler offset:u16le, flags:u8
+```
+
+resident far pointer 必須先證明屬於該 control segment，再以
+`(stubOffset-20h)/5` 取得 entry；不能把 far pointer offset、overlay local
+offset 與 file offset 混用。overlay code 後的 relocation span則是嚴格遞增的
+`u16le` segment-fixup offsets，不是 code。decoder 應保留原始 bytes，另外附加
+typed entry／fixup view；signature、bounds 或排序錯誤時失敗即關閉。
+
+這個 grammar 已由 36 段 corpus 驗證；作品特定 effect ID 與 handler 對應仍
+留在 CoAB spec 412，其他 Gold Box 作品不可直接沿用其數值。
+
 ## 可重現入口
 
 - `docs/spec/410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md`
 - `docs/spec/411-pc98-tyranthraxus-magic-resistance.md`
+- `docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`

@@ -13,9 +13,9 @@ Fireball、Lightning Bolt、持續雲霧、所有魔法傷害類型或提朗瑟�
   `1d100`；`roll <= threshold` 時呼叫 `Protected`。
 - `Protected(0)` 清除 damage byte `A02Eh` 與 current affect byte `A02Dh`。
 - local `23F4h` wrapper 傳入 `50`；local `2404h` wrapper 傳入 `15`。
-- effect `6Ah → 15% wrapper` 的連結由同一套反編譯的二次轉寫
-  交叉支持，目前推論等級為 `strong inference`；TPOV relocation 未完整
-  套用前，不把 `INITEFFPROX` raw addend 冒稱為直接 handler 位址。
+- 第 412 輪 typed TPOV resolver 已由 resident `008B:0214` 經 entry 100
+  exact 對應 overlay 12 local `2404h`，故 `6Ah → 15% wrapper` 升級為
+  `exact`；獨立 DOS 反編譯保留為二次交叉 oracle。
 
 ## 輸入與證據等級
 
@@ -97,9 +97,8 @@ headless IDA 本輪曾出現「exit code 0，但新報告沒有持久化」的�
 
 ## 尚未完成
 
-- TPOV relocation／fixup 的完整 typed decoder，以及 `INITEFFPROX` slot 到
-  handler runtime far pointer 的一次證據橋接。
-- 50% wrapper 對應的 effect，以及 `4Fh／70h／84h／87h` 的完整語意。
+- 50% wrapper 對應的 effect。第 412 輪已關閉 `4Fh／70h／84h／87h` 的
+  靜態 handler 與基本語意，但其完整 runtime boundary／AI 尚未完成。
 - Fireball、Lightning Bolt、Cloudkill 與其他 Magic damage 進入同一
   pre-damage affect boundary 的正確時序；在此之前不廣泛套用抗性。
 - 原版「is unaffected」文字、影像時序、sound cue 與終戰實機畫面。
