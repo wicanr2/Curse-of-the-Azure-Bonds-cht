@@ -718,10 +718,11 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want same cell",
 			state.Mode, state.DungeonX, state.DungeonY, state.Message, state.Choices, state.currentOriginalChoices)
 	}
-	// Keep the single generated integration-test hero alive while five real
-	// Royal Guards take their opening turns. A normal campaign has a full party.
+	// Keep the single generated integration-test hero alive across this long
+	// path's many real encounters. A normal campaign has a full party; this
+	// fixture deliberately tests ECL continuation rather than attrition.
 	hero := state.PartyFighters()[0]
-	hero.HitPoints, hero.MaxHitPoints = 200, 200
+	hero.HitPoints, hero.MaxHitPoints = 20000, 20000
 	hero.ArmorClass = -10
 	hero.InitiativeBonus = 100
 	hero.AttackBonus = 100
@@ -4268,6 +4269,26 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.currentOriginalChoices, state.Choices, state.Message)
+	}
+	// This path asserts the explicit alias_alive departure branch. Keep Alias
+	// alive through the real exit encounter instead of relying on the former
+	// approximate initiative order to protect her by accident.
+	aliasID := ""
+	for index := range state.partyRoster {
+		if state.partyRoster[index].ScriptName == "ALIAS" {
+			aliasID = state.partyRoster[index].ID
+			state.partyRoster[index].HitPoints = 20000
+			state.partyRoster[index].MaxHitPoints = 20000
+		}
+	}
+	for index := range state.party {
+		if state.party[index].ID == aliasID {
+			state.party[index].HitPoints = 20000
+			state.party[index].MaxHitPoints = 20000
+		}
+	}
+	if aliasID == "" {
+		t.Fatal("Pit alias_alive fixture has no ALIAS party record")
 	}
 	state.DungeonX = 0
 	state.DungeonY = 12

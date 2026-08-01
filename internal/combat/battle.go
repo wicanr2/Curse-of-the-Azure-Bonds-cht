@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+
+	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 )
 
 // ErrAdjacentMissileTarget identifies the RuleBook's recoverable range
@@ -88,7 +90,14 @@ type Fighter struct {
 	HitDice uint8
 	// MonsterType preserves the original shared Player record byte at +11A.
 	// Effect handlers compare this field against typed creature categories.
-	MonsterType          uint8
+	MonsterType uint8
+	// Dexterity preserves the shared Player byte at +17 used by the original
+	// initiative reaction table. It is deliberately not converted to a modern
+	// ability modifier.
+	Dexterity uint8
+	// CombatTeam preserves the Action scheduler team number. The current CoAB
+	// adapter uses Side while the area surprise-mask writer remains unresolved.
+	CombatTeam           uint8
 	ArmorClass           int
 	AttackBonus          int
 	Blessed              bool
@@ -108,7 +117,11 @@ type Fighter struct {
 	WeaponRange          int
 	MissileWeapon        bool
 	ThrownWeapon         bool
-	InitiativeBonus      int
+	// InitiativeBonus is retained only as a legacy synthetic-fixture ordering
+	// seam. Production party/MON adapters never set it. Nonzero fixture values
+	// replace the rolled delay after the exact d6 draw, while d100 scan traffic
+	// remains unchanged; new tests should assert DEX and RNG directly instead.
+	InitiativeBonus int
 	// SavingThrows preserves the five reference saveVerse thresholds:
 	// poison, petrification, rod/staff/wand, breath weapon and spell.
 	SavingThrows     []uint8
@@ -410,6 +423,7 @@ type AreaSpellResult struct {
 
 type Battle struct {
 	fighters           map[string]Fighter
+	fighterOrder       []string
 	attackRollModifier map[Side]int
 	rng                *rand.Rand
 	round              int
@@ -426,6 +440,7 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 	}
 	b := &Battle{
 		fighters:           make(map[string]Fighter, len(fighters)),
+		fighterOrder:       make([]string, 0, len(fighters)),
 		attackRollModifier: make(map[Side]int, 2),
 		rng:                rand.New(rand.NewSource(seed)),
 		status:             StatusActive,
@@ -456,6 +471,7 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 			fighter.CombatAction = ActionState{}
 		}
 		b.fighters[fighter.ID] = fighter
+		b.fighterOrder = append(b.fighterOrder, fighter.ID)
 	}
 	return b, nil
 }
@@ -586,8 +602,10 @@ func (b *Battle) ValidateAttack(attackerID, targetID string) error {
 	return nil
 }
 
-// StartRound rolls the reference engine's d20-style initiative input for all
-// living fighters. Ties are deterministic by fighter ID for reproducibility.
+// StartRound writes the verified PC-98 Action.delay values, then repeatedly
+// scans stable TeamList order with one d100 per living entry. The current UI
+// exposes one action per fighter; the original DELAY command's same-round
+// reinsertion remains a separate dynamic scheduler boundary.
 func (b *Battle) StartRound() ([]Turn, error) {
 	if b.status != StatusActive {
 		return nil, fmt.Errorf("battle is already over")
@@ -597,34 +615,42 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	b.advanceBlessDurations()
 	b.advanceCurseDurations()
 	b.advanceProtectionDurations()
-	turns := make([]Turn, 0, len(b.fighters))
-	ids := make([]string, 0, len(b.fighters))
-	for id := range b.fighters {
-		ids = append(ids, id)
-	}
-	sort.Strings(ids)
-	for _, id := range ids {
+	entries := make([]engineinitiative.Entry, 0, len(b.fighterOrder))
+	for _, id := range b.fighterOrder {
 		fighter := b.fighters[id]
 		if fighter.HitPoints > 0 {
-			initiative := b.rng.Intn(20) + 1 + fighter.InitiativeBonus
-			turns = append(turns, Turn{FighterID: fighter.ID, Initiative: initiative})
-			// The current scheduler's initiative formula is still a bounded
-			// remake approximation, but every scheduled action must have a
-			// nonzero delay until it completes. Visibility effects inspect this
-			// same lifecycle byte in the original Action record.
-			fighter.CombatAction.Delay = initiative
-			if fighter.CombatAction.Delay <= 0 {
-				fighter.CombatAction.Delay = 1
+			combatTeam := fighter.CombatTeam
+			if fighter.Side == SideEnemy && combatTeam == 0 {
+				combatTeam = 1
 			}
-			b.fighters[id] = fighter
+			entries = append(entries, engineinitiative.Entry{
+				ID: fighter.ID, Dexterity: fighter.Dexterity, CombatTeam: combatTeam,
+			})
 		}
 	}
-	sort.Slice(turns, func(i, j int) bool {
-		if turns[i].Initiative != turns[j].Initiative {
-			return turns[i].Initiative > turns[j].Initiative
+	initialized := engineinitiative.InitializeDelays(b.rng, entries, 0)
+	for index := range initialized {
+		fighter := b.fighters[initialized[index].ID]
+		if fighter.InitiativeBonus == 0 {
+			continue
 		}
-		return turns[i].FighterID < turns[j].FighterID
-	})
+		delay := fighter.InitiativeBonus
+		if delay < 1 {
+			delay = 1
+		}
+		if delay > 20 {
+			delay = 20
+		}
+		initialized[index].ActionDelay = delay
+	}
+	_, selections := engineinitiative.OrderInitialized(b.rng, initialized)
+	turns := make([]Turn, 0, len(selections))
+	for _, selection := range selections {
+		fighter := b.fighters[selection.ID]
+		fighter.CombatAction.Delay = selection.ActionDelay
+		b.fighters[selection.ID] = fighter
+		turns = append(turns, Turn{FighterID: selection.ID, Initiative: selection.ActionDelay})
+	}
 	return turns, nil
 }
 

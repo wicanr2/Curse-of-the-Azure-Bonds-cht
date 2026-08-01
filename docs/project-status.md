@@ -357,8 +357,16 @@ commit 內保存不可能自我引用的 hash。
   MonsterType `13h` observer 生效，`18h` 只取消 hidden、不取消 `-4`。
   `+11Ah` 另由 dragon-slayer `03h` consumer 與 WORG／FIGHTING DOG／MONKEY／
   OWL BEAR 真實 records 證明為 MonsterType。Battle／State 已接通 pending／
-  completed delay lifecycle，Tilverton 犬舍與 Standing Stone 長路徑均通過；
-  exact initiative 數值與完整 effect duration／save 仍未完成。
+  completed delay lifecycle，Tilverton 犬舍與 Standing Stone 長路徑均通過。
+- 第 419 輪由 PC-98 overlay 24 `DEXRABONUS`、overlay 13 initiative writer
+  與 overlay 8 TeamList selector 關閉先攻排程：每人先寫
+  `1d6 + DEX reaction adjustment`，下一人由最大 action delay 與逐節點
+  `1d100` 選出，完全 tie 時後掃到者勝出；全零掃描仍會消耗每節點一骰。
+  `Battle` 現保存建構順序並投影 party／MON shared Player `+17h` Dexterity，
+  不再使用 d20、fighter ID tie-break 或 MON `+1A5h` 假 bonus。可重用核心在
+  engine `combat/initiative`，完整 engine 與 CoAB 31 套件 gate 均通過。
+  `area.field_596` surprise writers、玩家 `DELAY` 的 20→19 同輪重新入列、
+  DOS 等價性與原版底層 PRNG 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

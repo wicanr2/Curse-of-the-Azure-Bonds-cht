@@ -2890,3 +2890,21 @@ scheduled fighter 的 action delay 維持非零，State 在 action 完成後集�
 不新增 PRNG draw，也未宣稱現行 initiative 數值已 exact。core visibility／AC／
 natural-20 regression、Tilverton 犬舍真實 FIGHTING DOG 與 Standing Stone phase
 spider 長路徑均通過。READY spec 418 保存地址、bytes、推論等級與未完成邊界。
+
+2026-08-02 第四百一十九輪以非破壞性 IDA 副本、typed overlay resolver 與
+primary bytes 關閉 PC-98 先攻排程。`DEXRABONUS 014A:1416` 解析為 overlay 24
+local `1416h`；overlay 13 local `0000h` exact 寫入
+`1d6 + DEX reaction adjustment`，先夾 1、依 `area.field_596` team bit 減 6，
+最後把 signed `<0`／`>20` 設零。overlay 8 local `01FBh` 逐一走 TeamList
+`+18Ah`，每節點包含 delay 0 都抽 `1d100`；最大 delay 優先、roll 解 tie、
+完全 tie 後掃者勝，全零掃描最後回 null。
+
+獨立 engine `4545f0b` 新增 `combat/initiative` 與繁中知識庫，已 push。
+CoAB 改以 shared Player `+17h` Dexterity、建構時 TeamList order 與同一 RNG
+串流排程，不再使用 d20／fighter ID tie-break；MON combat team offset 也由
+錯誤 `+197h` 修正為 `+198h`，`+1A5h` raw byte 不再投影成 initiative bonus。
+正式遠端 pseudo-version、Go `h1`、無網路 `GOWORK=off`、明確 Xvfb trap 的
+31 套件 gate 全部通過。長玩家路徑另修正單人英雄 attrition 與 Alias
+alive/dead fixture 前提，不再依舊排序碰運氣。`area.field_596` writers、玩家
+`DELAY` 20→19 同輪重新入列、DOS 等價性及原版底層 PRNG 仍未完成；READY
+spec 419 是權威。

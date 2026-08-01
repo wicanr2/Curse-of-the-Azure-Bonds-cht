@@ -176,6 +176,12 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   位址、所屬 binary／overlay／module、位址空間、候選語意、證據來源與推論
   等級。推論等級統一使用本專案的 `exact／strong inference／hypothesis／
   unknown`；若後續被推翻，刪除或 supersede 舊斷言並留下訂正依據。
+- 上述四級門檻固定如下：`exact` 必須有原始 bytes 加可重現的 consumer／runtime
+  trace，或兩項彼此獨立且能閉合資料流的第一級證據；`strong inference` 是多項
+  證據一致、但仍缺一段 writer→projection→consumer 橋接；`hypothesis` 只能用來
+  指引下一個 probe，不能進正式 schema／規則；`unknown` 表示目前證據不足，不能
+  因名稱、常數相同、單一 xref 或反編譯器型別猜測而升級。每次升級或降級都要在
+  文件中列出新增／失效的證據，不得只改標籤。
 - 即使語意已達 `exact`，文件與工具輸出仍應採「原始位址 → 語意」並列，例如
   `ECL work 4CBBh → side attack-roll modifier`，不能只留下容易漂移的別名。
   結構基底加索引形成的 `[di+offset]`、`es:[di]` 等間接欄位尤其不能靠 IDA
@@ -335,7 +341,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - CoAB 本輪基底：`761f2fd`（第 413 輪提朗瑟克斯防火／防電 runtime）；
   第 414 輪 PC-98 命中後 `4Fh` 火焰效果 milestone 會由本文件所在 commit
   完成。
-- Engine dependency：`720c6ae`（含作品中立 `randomstream`，以及 game-pack
+- Engine dependency：`4545f0b`（含作品中立 `combat/initiative`、
+  `randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
   signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
@@ -520,9 +527,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   Blink 只在 target action delay 0 時 hidden 並覆寫 attack roll `FFh`；
   `45h` 只對 MonsterType `13h` observer 生效，`18h` 可取消 hidden 但不取消
   `-4`。`+11Ah` 又由 dragon-slayer `03h` consumer 與四筆真實 Animal records
-  關閉為 MonsterType。現行 scheduler 已提供 pending 非零／completed 零的 delay
-  lifecycle，但 initiative 數值公式、tie order／PRNG 與完整 effect duration／save
-  尚未 exact；READY spec 418 是權威。
+  關閉為 MonsterType。READY spec 418 是 visibility／effect consumer 的權威。
+- 第 419 輪已由 PC-98 overlay 24 `DEXRABONUS 1416h`、overlay 13 local
+  `0000h` 與 overlay 8 local `01FBh` 關閉 initiative writer／TeamList selector。
+  原版使用 shared Player `+17h` DEX reaction table、`1d6` action delay 與每次
+  全表逐節點 `1d100`；delay 優先、roll 解 tie、完全 tie 後掃者勝。engine
+  `combat/initiative` 保存這套作品中立 primitive，CoAB Battle 保存建構順序，
+  MON parser 也修正 combat team 是 `+198h` 而非 `+197h`。完整 effect
+  duration／save、`area.field_596` surprise writer、玩家 `DELAY` 20→19 同輪
+  重新入列、DOS 等價性及原版底層 PRNG 仍未完成；READY spec 419 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入
