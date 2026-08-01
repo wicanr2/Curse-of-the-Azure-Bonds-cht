@@ -347,6 +347,13 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			t.Fatalf("spider enemy=%q, want source record %q", enemy.Name, monsterRecords[0x42].Name)
 		}
 	}
+	// Exercise ALT+Q semantics from the normal Standing Stone -> GEO -> red-web
+	// route, not from a direct-entry battle fixture. Headless mode intentionally
+	// runs the delegated actions synchronously; the focused visual regression
+	// separately proves that the Ebiten adapter yields and accepts Space.
+	if err := state.CombatQuickAll(); err != nil {
+		t.Fatal(err)
+	}
 	for action := 0; action < 64 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {
 			t.Fatal(err)
@@ -356,6 +363,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		state.Message != gamePackText(t, state, "myth-drannor.red-web.rakshasa") {
 		t.Fatalf("rakshasa reveal mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if changed := state.CombatManualControl(); changed != 1 {
+		t.Fatalf("normal-path Space recovery changed=%d want 1", changed)
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)

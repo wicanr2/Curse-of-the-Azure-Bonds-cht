@@ -273,6 +273,7 @@
     "combat_guard_reaction": "踏入防守範圍，受到 %d 點傷害。",
     "combat_bandage": "%s 包紮了 %s；傷者已止血並陷入昏迷。",
     "combat_manual_control": "玩家角色恢復手動控制。",
+    "combat_quick_all": "全隊進入快速戰鬥；按空白鍵可收回玩家角色控制。",
     "combat_speed_slower": "更慢",
     "combat_speed_faster": "更快",
     "combat_speed_value": "遊戲速度（%d）：%s",

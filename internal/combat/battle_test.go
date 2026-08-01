@@ -336,6 +336,37 @@ func TestQuickFightManualControlUsesControlMoraleNamespace(t *testing.T) {
 	}
 }
 
+func TestAllQuickFightPreservesTeamListAndConsumesTwentyToNineteenHandoff(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "pc", Side: SideParty, ControlMorale: 0, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "npc", Side: SideParty, ControlMorale: 0x80, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+	}, 422)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.SetAllQuickFight("pc"); err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range []string{"pc", "npc", "enemy"} {
+		fighter, _ := battle.Fighter(id)
+		if !fighter.QuickFight {
+			t.Fatalf("%s was not delegated", id)
+		}
+	}
+	pc, _ := battle.Fighter("pc")
+	if pc.CombatAction.Delay != 20 {
+		t.Fatalf("handoff delay=%d want 20", pc.CombatAction.Delay)
+	}
+	if err := battle.BeginQuickFightAction("pc"); err != nil {
+		t.Fatal(err)
+	}
+	pc, _ = battle.Fighter("pc")
+	if pc.CombatAction.Delay != 19 {
+		t.Fatalf("AI entry delay=%d want 19", pc.CombatAction.Delay)
+	}
+}
+
 func TestResolveAttackNaturalOneMissesAndNaturalTwentyHits(t *testing.T) {
 	battle := testBattle(t)
 	miss, err := battle.ResolveAttack("hero", "goblin", 1, 8)

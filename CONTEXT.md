@@ -2932,3 +2932,26 @@ engine 全套與 CoAB `./cmd/... ./gamepack ./internal/...` 31 套件正式 gate
 Docker／Xvfb 通過，並改用遠端 engine pseudo-version。`ALT+Q／ALT+M`、敵方
 命令 AI、per-action target pointer、原版 wall-clock timing 與可用的正式路徑
 截圖仍是明確缺口；本輪 X11 擷取只有黑色緩衝，已刪除且未當成果提交。
+
+2026-08-02 第四百二十二輪以非破壞性 IDA 副本擴大 overlay 08 combat input
+範圍。特殊鍵 `10h` exact 將目前 Action delay 寫 `14h`，沿 `DS:9598h`
+TeamList 對每個 combatant 呼叫 local `1375h` Quick setter；下次 action entry
+把 `14h→13h` 後依 Player `+199h` dispatch AI。Battle／State／Ebiten 接通
+全隊 Quick，並讓視覺 timeline 播放中 Space 仍可收回可控制 PC，保留 NPC／
+怪物 Quick。
+
+正常 Standing Stone→GEO→紅網長路徑首次接入全隊 Quick 時，揭露 Space 原先
+只清 transient Battle，戰後已同步為 Quick 的持久 `State.party` 仍保留舊值，
+使下一場羅剎妖戰在 `Continue` 內被自動打完。`CombatManualControl` 現於成功
+清除後同步 Battle→party；長路徑驗證四巨蛛自動戰、Space 收回與第二戰人工
+停點均通過。
+
+Docker／Xvfb 的 `./cmd/... ./gamepack ./internal/...` 完整套件 gate、locale
+JSON parse 與 `git diff --check` 均為本輪提交門檻；原始 PC-98 overlays 全程
+唯讀，IDA database／raw report 只留在 `/tmp/coab-ida-422`。
+
+同輪追出特殊鍵 `11h` toggle `DS:A86Ch`、overlay 10 combat init 清零，以及
+overlay 09 Quick AI spell selector 的 PC gate 與 consumer。這證明該旗標控制
+玩家 Quick AI 是否考慮法術，但完整候選優先序與 suitability predicate 尚未
+關閉；因此本輪不實作無效的 `ALT+M` 空開關。READY spec 422 保存 hashes、
+位址、bytes、推論等級與未完成邊界。

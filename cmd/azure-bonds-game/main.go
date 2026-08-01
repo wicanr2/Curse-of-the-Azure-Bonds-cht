@@ -261,6 +261,9 @@ func (a *app) Update() error {
 	a.syncLoadPiecesRequest()
 	a.syncECLCallRequests()
 	if event, ok := a.state.CombatVisualEvent(); ok {
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			a.state.CombatManualControl()
+		}
 		if a.combatVisualSerial != event.Serial {
 			a.combatVisualSerial = event.Serial
 			a.combatVisualStarted = time.Now()
@@ -681,6 +684,9 @@ func (a *app) Update() error {
 			return a.combatAction(a.state.BeginCombatMove)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+			if combatAltPressed() {
+				return a.combatAction(a.state.CombatQuickAll)
+			}
 			return a.combatAction(a.state.CombatQuick)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
@@ -737,6 +743,10 @@ func (a *app) Update() error {
 		}
 	}
 	return nil
+}
+
+func combatAltPressed() bool {
+	return ebiten.IsKeyPressed(ebiten.KeyAltLeft) || ebiten.IsKeyPressed(ebiten.KeyAltRight)
 }
 
 func (a *app) syncLoadPiecesRequest() {

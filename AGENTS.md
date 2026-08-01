@@ -344,8 +344,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`a39eb1b`（第 420 輪 PC-98 Delay 與動態排程）；
-  第 421 輪 PC-98 QUICK／GUARD／BANDAGE／SPEED milestone 會由本文件所在
+- CoAB 本輪基底：`8699c30`（第 421 輪 PC-98 戰鬥命令狀態）；
+  第 422 輪 PC-98 全隊 QUICK 與可中斷 handoff milestone 會由本文件所在
   commit 完成。
 - Engine dependency：`930d20c`（含作品中立 `combat/action`、
   `combat/initiative`、
@@ -514,6 +514,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
   與 exact／strong inference。engine `combat/action` 與 CoAB runtime 已接通
   命令狀態；`ALT+Q／ALT+M`、敵方命令 AI、原版逐幀時間仍未完成。
+- 第 422 輪接通 overlay 08 證實的 `ALT+Q` TeamList transaction、目前角色
+  delay `20→19` handoff，以及視覺播放中 Space 收回 PC。overlay 08／09／10
+  已證明 `DS:A86Ch` gate 可控制 PC 的 Quick AI 法術 selector，但 selector
+  優先序尚未關閉，所以 `ALT+M` 仍不得做成只有 UI 的假功能。READY spec 422
+  是權威細節。
 - 第 415 輪已由 PC-98 overlay 9／22 raw bytes 與 IDA 關閉提朗瑟克斯
   effect `84h`：type-14 action phase、`ROUND < 4`、spell `33h`、初始格
   `16d6` 與後續 range 10 路徑另一份獨立 `16d6`。作品中立 line profile、
