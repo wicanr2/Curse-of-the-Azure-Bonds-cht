@@ -1041,6 +1041,16 @@ go run ./scripts
 
 遊戲內快捷鍵：`Enter` 開始、`C` 建立角色、`J` 冒險手札、`T` 圖塊預覽、`G` GEO 預覽、`D` dungeon floor 預覽、`F5/F9` 儲存／載入 remake game。
 
+第 421 輪依 PC-98 `GAME.OVR` 的非破壞性 IDA 報告，補上戰鬥的
+`QUICK／GUARD／BANDAGE／SPEED` 命令狀態。Guard 會維持到角色下一次行動，
+敵人進入鄰接格時依 TeamList 順序觸發一次反應攻擊；Bandage 只把第一名
+`Dying` 隊員改為 `Unconscious` 並停止流血；Speed 保存原版 `0..9` 值，依
+`speed+3` 比例調整動畫時間。快捷鍵 `Q` 交給電腦控制目前角色、空白鍵收回
+可手動控制的我方角色，`D` 子選單新增 Guard、Bandage 與 Speed。原始位址、
+bytes、推論等級及尚未接通的 `ALT+Q／ALT+M` 見
+[`spec 421`](docs/spec/421-pc98-combat-quick-guard-bandage-speed.md)。這是命令
+機制的垂直切片，並不代表完整戰鬥、敵方 AI 或逐幀畫面已還原。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

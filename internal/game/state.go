@@ -22,6 +22,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
+	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -181,6 +182,7 @@ type State struct {
 	combatSpellTargetsPoint bool
 	combatMoveMode          bool
 	combatMoveRemaining     int
+	combatSpeed             engineaction.Speed
 	combatReferenceCoords   bool
 	combatLineTerrain       combat.LineTerrain
 	combatView              bool
@@ -413,6 +415,7 @@ func NewState(catalog locale.Catalog) State {
 		picturesEnabled:   true,
 		animationsEnabled: true,
 		messageSpeed:      3,
+		combatSpeed:       engineaction.DefaultSpeed,
 		fixSeed:           1,
 		dungeonSeed:       1,
 		GeoMapSet:         2,

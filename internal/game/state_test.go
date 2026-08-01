@@ -1820,6 +1820,114 @@ func TestCombatDelayReentersSameRoundAfterOtherActions(t *testing.T) {
 	}
 }
 
+func TestCombatGuardEndsTurnAndArmsReaction(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{
+		{ID: "guard", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20,
+			HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "ally", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10},
+	}
+	enemies := []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1,
+		HasCombatPosition: true, CombatX: 4, CombatY: 2}}
+	if err := state.StartCombat(partyFighters, enemies, 421); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanGuard() {
+		t.Fatal("melee fighter cannot select Guard")
+	}
+	if err := state.CombatGuard(); err != nil {
+		t.Fatal(err)
+	}
+	guard, _ := state.fighter("guard")
+	if !guard.CombatAction.Guarding || guard.CombatAction.Delay != 0 {
+		t.Fatalf("guard action=%+v", guard.CombatAction)
+	}
+	active, ok := state.CombatActiveFighter()
+	if !ok || active.ID != "ally" {
+		t.Fatalf("Guard did not advance turn: active=%+v ok=%v", active, ok)
+	}
+}
+
+func TestCombatBandageChangesOnlyFirstDyingRosterMember(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{
+		{ID: "first", Name: "甲", HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusDying, Bleeding: 3},
+		{ID: "second", Name: "乙", HitPoints: 0, MaxHitPoints: 10, HealthStatus: party.HealthStatusDying, Bleeding: 4},
+		{ID: "actor", Name: "丙", HitPoints: 10, MaxHitPoints: 10},
+	}
+	partyFighters := []combat.Fighter{
+		{ID: "actor", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20},
+		{ID: "first", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "second", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, ArmorClass: 10},
+	}
+	if err := state.StartCombat(partyFighters, []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10}}, 421); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatCanBandage() {
+		t.Fatal("dying roster member did not enable Bandage")
+	}
+	if err := state.CombatBandage(); err != nil {
+		t.Fatal(err)
+	}
+	if state.partyRoster[0].HealthStatus != party.HealthStatusUnconscious || state.partyRoster[0].Bleeding != 0 {
+		t.Fatalf("first candidate=%+v", state.partyRoster[0])
+	}
+	if state.partyRoster[1].HealthStatus != party.HealthStatusDying || state.partyRoster[1].Bleeding != 4 {
+		t.Fatalf("second candidate was also changed: %+v", state.partyRoster[1])
+	}
+}
+
+func TestCombatQuickAndManualControlUseProjectedControlMorale(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{
+		{ID: "pc", Side: combat.SideParty, ControlMorale: 0, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20},
+		{ID: "next", Side: combat.SideParty, ControlMorale: 0, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10},
+	}
+	if err := state.StartCombat(partyFighters, []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1}}, 421); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatQuick(); err != nil {
+		t.Fatal(err)
+	}
+	pc, _ := state.fighter("pc")
+	if !pc.QuickFight {
+		t.Fatal("QUICK did not delegate current PC")
+	}
+	if changed := state.CombatManualControl(); changed != 1 {
+		t.Fatalf("manual changed=%d want 1", changed)
+	}
+	pc, _ = state.fighter("pc")
+	if pc.QuickFight {
+		t.Fatal("Space did not restore PC manual control")
+	}
+}
+
+func TestCombatSpeedBoundsAndMenuUseCatalogEntries(t *testing.T) {
+	catalog := testCatalog()
+	state := NewState(catalog)
+	if state.CombatSpeed() != 4 {
+		t.Fatalf("default speed=%d want 4", state.CombatSpeed())
+	}
+	for state.CombatSpeedSlower() {
+	}
+	if state.CombatSpeed() != 9 || state.CombatSpeedSlower() {
+		t.Fatalf("slow bound=%d", state.CombatSpeed())
+	}
+	if strings.Contains(state.CombatSpeedMenuText(), catalog.Text("combat_speed_slower", "更慢")) {
+		t.Fatalf("slow option remained at upper bound: %q", state.CombatSpeedMenuText())
+	}
+	for state.CombatSpeedFaster() {
+	}
+	if state.CombatSpeed() != 0 || state.CombatSpeedFaster() {
+		t.Fatalf("fast bound=%d", state.CombatSpeed())
+	}
+	if strings.Contains(state.CombatSpeedMenuText(), catalog.Text("combat_speed_faster", "更快")) {
+		t.Fatalf("fast option remained at lower bound: %q", state.CombatSpeedMenuText())
+	}
+}
+
 func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{
