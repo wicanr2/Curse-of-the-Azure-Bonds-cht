@@ -183,6 +183,7 @@ type State struct {
 	combatMoveMode          bool
 	combatMoveRemaining     int
 	combatSpeed             engineaction.Speed
+	combatQuickMagic        bool
 	combatReferenceCoords   bool
 	combatLineTerrain       combat.LineTerrain
 	combatView              bool

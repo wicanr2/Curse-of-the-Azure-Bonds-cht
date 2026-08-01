@@ -53,6 +53,7 @@ static main()
     out = fopen("/work/pc98-quick-magic-overlay09.txt", "w");
     if (out == 0)
       qexit(2);
+    emit_range(out, "QUICK_SPELL_MIN_RANGE_PREDICATE", 0x02D3, 0x03D3);
     emit_range(out, "QUICK_SPELL_SUITABILITY", 0x03B0, 0x0627);
     emit_range(out, "MAGIC_FLAG_QUICK_AI_CONSUMER", 0x0627, 0x07C0);
     emit_range(out, "MAGIC_FLAG_AI_CONSUMER", 0x1290, 0x1340);

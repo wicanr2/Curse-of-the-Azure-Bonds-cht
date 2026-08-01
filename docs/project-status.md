@@ -374,14 +374,15 @@ commit 內保存不可能自我引用的 hash。
   動畫速度；CoAB 接通目前角色 Quick／手動收回、進入鄰接格 Guard 反應攻擊、
   第一名 Dying 隊員包紮，以及 D 子選單速度調整。原始位置保持唯讀，IDA
   名稱只存在報告／規格；spec 421 保存 exact／strong inference 分界。
-  `ALT+Q` 全隊 Quick、`ALT+M` magic toggle、每動作 target pointer、敵方選擇
-  Guard／Bandage 的 AI 與原版 wall-clock timing 仍未完成。
+  `ALT+Q` 全隊 Quick 已由第 422 輪接通，`ALT+M` 與 selector 已由第 424 輪
+  接續；每動作 target pointer、敵方選擇 Guard／Bandage 的 AI 與原版
+  wall-clock timing 仍未完成。
 - 第 422 輪由 overlay 08 exact 關閉 `ALT+Q`：目前 Action delay 先寫 20，
   TeamList 全員經同一 setter 切成 Quick，下一次 action entry 轉為 19 後交給
   AI。Ebiten 視覺播放期間現在仍接受 Space，當前動作後可收回
   `ControlMorale < 80h` 的玩家角色。overlay 08／09／10 也證明 `DS:A86Ch`
-  是玩家 Quick AI 法術選擇 gate；完整 selector 尚未還原，故 `ALT+M` 仍未
-  實作，沒有用空 toggle 冒充功能。Standing Stone→紅網正常玩家路徑另抓出
+  是玩家 Quick AI 法術選擇 gate；當輪未用空 toggle 冒充功能，selector 與
+  `ALT+M` 已由第 424 輪接通。Standing Stone→紅網正常玩家路徑另抓出
   Space 只清 transient Battle、未同步持久 party 的缺陷；現已修正，第二場
   羅剎妖戰不會錯誤沿用 stale Quick。
 - 第 423 輪由 PC-98 `GAME.EXE` 原始 16-byte spell records 與 overlay 09
@@ -389,8 +390,15 @@ commit 內保存不可能自我引用的 hash。
   Protection From Good 是 `07h`，Magic Missile 是 `0Fh`；舊 spec 134／142
   的 class-local 重疊 ID 推論已 supersede。camp label、記憶法術與戰鬥
   targeting／availability／cast 分派現使用同一全域 identity，怪物與玩家
-  Magic Missile 也不再有 `0Fh／07h` 分裂。完整 ALT+M selector、全部 spell
-  metadata／效果與 fail-closed 未支援法術 handoff 仍未完成。
+  Magic Missile 也不再有 `0Fh／07h` 分裂。ALT+M selector 已由第 424 輪
+  接通；全部 spell 效果與未支援法術 handoff 仍未完成。
+- 第 424 輪接通 PC-98 `ALT+M` gate 與 Quick Magic Missile。overlay 09
+  exact 證明 `1d7` priority tiers、每層三次隨機 memorized slot；typed TPOV
+  resolver 把成功 handoff 落到 overlay 13 `CASTCOMBATSPELL 27A1h`。engine
+  `combat/quickspell` 保存中立 selector，CoAB JSON 保存 priority／CastOn／
+  MinRange；全域 `0Fh` Magic Missile 已從 Standing Stone→紅網正常玩家路徑
+  由 ALT+M＋ALT+Q 實際施放並消耗 slot。非零 MinRange 的 area safety helper、
+  casting delay、Cure special 與其餘法術仍 fail-closed，不能宣稱完整 Quick AI。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -11,6 +11,7 @@ import (
 
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
+	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 )
 
 // ErrAdjacentMissileTarget identifies the RuleBook's recoverable range
@@ -802,6 +803,24 @@ func (b *Battle) BeginQuickFightAction(fighterID string) error {
 		b.fighters[fighterID] = fighter
 	}
 	return nil
+}
+
+// SelectQuickSpell keeps the original selector on the Battle PRNG stream.
+// Spell records and title-specific suitability are supplied by the adapter.
+func (b *Battle) SelectQuickSpell(
+	spellIDs []uint8,
+	lookup enginequickspell.Lookup,
+	suitable enginequickspell.Suitable,
+) (uint8, bool, error) {
+	if b == nil || b.rng == nil {
+		return 0, false, fmt.Errorf("battle PRNG is unavailable")
+	}
+	return enginequickspell.Select(spellIDs, func(sides int) (int, error) {
+		if sides < 1 {
+			return 0, fmt.Errorf("quick spell die has %d sides", sides)
+		}
+		return b.rng.Intn(sides) + 1, nil
+	}, lookup, suitable)
 }
 
 // SetPlayerCharactersManual clears quick-fight only for the original PC

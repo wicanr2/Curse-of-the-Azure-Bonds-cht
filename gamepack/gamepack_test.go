@@ -28,10 +28,19 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if len(pack.CombatModifiers) != 2 {
 		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
 	}
-	if enemy, party := pack.CombatModifiers[0], pack.CombatModifiers[1];
-		enemy.SourceAddress != 0x7F70 || enemy.Side != "enemy" ||
-			party.SourceAddress != 0x7F71 || party.Side != "party" {
+	if enemy, party := pack.CombatModifiers[0], pack.CombatModifiers[1]; enemy.SourceAddress != 0x7F70 || enemy.Side != "enemy" ||
+		party.SourceAddress != 0x7F71 || party.Side != "party" {
 		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
+	}
+	magicMissile, found := pack.FindCombatAISpell(0x0F)
+	if !found || magicMissile.Priority != 4 || magicMissile.CastOn != 1 ||
+		magicMissile.MinRange != 0 {
+		t.Fatalf("Magic Missile quick AI metadata=%+v found=%v", magicMissile, found)
+	}
+	fireballAI, found := pack.FindCombatAISpell(0x2F)
+	if !found || fireballAI.Priority != 7 || fireballAI.CastOn != 1 ||
+		fireballAI.MinRange != 3 {
+		t.Fatalf("Fireball quick AI metadata=%+v found=%v", fireballAI, found)
 	}
 	arrow, found := pack.FindCombatVisual("missile", "travel")
 	if !found || arrow.ID != "coab.arrow" || arrow.Scale != 2 ||

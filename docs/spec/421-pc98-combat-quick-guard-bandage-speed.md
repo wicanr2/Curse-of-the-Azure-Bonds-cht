@@ -4,8 +4,8 @@
 
 本規格只關閉戰鬥主選單的單人 QUICK、DONE 子選單的 GUARD／BANDAGE／
 SPEED，以及空白鍵恢復玩家角色手動控制。`ALT+Q` 全隊快速戰鬥與
-`ALT+M` 快速戰鬥施法開關仍列為後續 scheduler／逐幀輸入工作，不得由本輪
-擴大宣稱完整自動戰鬥。
+`ALT+M` 快速戰鬥施法在本輪當時仍列為後續工作；前者已由 spec 422、後者的
+Magic Missile 有界切片已由 spec 424 接續。不得由本輪擴大宣稱完整自動戰鬥。
 
 ## 輸入與可重現工具
 
@@ -90,6 +90,7 @@ SPEED，以及空白鍵恢復玩家角色手動控制。`ALT+Q` 全隊快速戰�
 
 - `ALT+Q` 全隊快速模式需要把 AI 回合拆成可逐幀中斷的 scheduler step，否則
   同步跑完整場戰鬥時無法用 Space 取回控制。
-- `ALT+M`／特殊鍵 2 的快速戰鬥施法開關、原版 AI 全規則、per-action target
-  pointer、純遠程／可近戰武器的完整原始 mode consumer。
+- `ALT+M`／特殊鍵 2 的 gate 與 Magic Missile 已由 spec 424 接通；area
+  suitability、casting delay、原版 AI 全規則、per-action target pointer、
+  純遠程／可近戰武器的完整原始 mode consumer 仍未完成。
 - 所有動作的 DOS／PC-98 wall-clock 與音效逐幀 fidelity。

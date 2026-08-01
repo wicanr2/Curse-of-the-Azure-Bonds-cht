@@ -4,8 +4,8 @@
 
 本規格關閉 `ALT+Q` 的全 TeamList Quick transaction、目前角色
 `Action.delay 14h→13h` handoff，以及視覺時間軸播放中按空白鍵恢復玩家控制。
-`ALT+M` 的旗標 writer／consumer 已定位，但其 consumer 是完整 Quick AI
-法術選擇器；在該選擇器尚未逐項還原前，本輪不提供會誤導玩家的空開關。
+`ALT+M` 的旗標 writer／consumer 在本輪已定位；其 Magic Missile 有界切片
+後續由 spec 424 接通。本文件仍只驗收 ALT+Q 與可中斷 handoff。
 
 ## 輸入與工具
 
@@ -60,7 +60,7 @@ overlay 08 `05B6h..05F2h`：普通 key `20h` 從 `DS:9598h` 掃 TeamList；只�
 Player `+0F7h < 80h` 時把 Player `+199h` 清零。NPC／怪物不被收回。
 writer 與條件是 `exact`；其欄位名稱由既有角色 record consumer 交叉支持。
 
-### `ALT+M` 已定位但尚未實作
+### `ALT+M` 定位結果（實作由 spec 424 接續）
 
 - overlay 08 `0630h 3C 11` 比較特殊鍵 `11h`，`0634h..0641h` toggle
   `DS:A86Ch`，再由兩個 Pascal string 顯示 on／off。
@@ -70,9 +70,9 @@ writer 與條件是 `exact`；其欄位名稱由既有角色 record consumer 交
   memorized spell bytes、呼叫 spell suitability predicate，最後於
   `072Bh..0754h` 回傳選出的 spell ID 或零。
 
-因此 `A86Ch` 是「允許可控制 PC 的 Quick AI 選擇法術」為 `proven`；完整候選
-優先序、四輪掃描、suitability predicate 與 target policy 尚未解析。不能只把
-次級 C 轉寫的 `AutoPCsCastMagic` 名稱做成沒有 consumer 的 UI toggle。
+因此 `A86Ch` 是「允許可控制 PC 的 Quick AI 選擇法術」為 `proven`。候選
+優先序、三次抽選、CASTCOMBATSPELL 與 Magic Missile 路徑已由 spec 424
+接續；area suitability 與完整 target policy 仍未完成。
 
 ## Remake contract
 
@@ -97,6 +97,6 @@ writer 與條件是 `exact`；其欄位名稱由既有角色 record consumer 交
   玩家回合，不能因 stale persistent Quick 自動跳過。
 - Ebiten／完整套件 gate 必須在 Docker/Xvfb 通過。
 
-尚未完成：`ALT+M` Quick spell selector、原版 AI 移動／物品／Guard 策略、
+尚未完成：`ALT+M` 的 area／delay／其餘法術、原版 AI 移動／物品／Guard 策略、
 特殊鍵的 PC-98 runtime scan-code trace、原版每個 Quick action 的 wall-clock
 節奏，以及完整玩家戰鬥到勝利的逐鍵影片 oracle。

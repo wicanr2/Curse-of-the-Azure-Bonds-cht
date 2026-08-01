@@ -2969,3 +2969,18 @@ table consumer。PC-98 `GAME.EXE` SHA-256
 spec 423 保存 bytes、offset、推論等級與邊界。overlay 09 的三次隨機候選、
 priority tier 與 suitability 雖已 exact 定位，但完整 cast consumer 與所有
 候選法術尚未完成，故 `ALT+M` 仍不開放，不能用空 toggle 冒充 Quick magic。
+
+2026-08-02 第四百二十四輪以合法授權的 IDA Pro 9.4 Docker 映像、唯讀
+overlays 與 `/tmp/coab-ida-424` database 接續 ALT+M。overlay 09
+`0627h..0754h` exact 證明 `1d7` tiers、每層三次 slot、priority 7 向下與
+PC `A86Ch` gate；far `00B8:007Fh` 經 typed resolver 落到 overlay 13 entry 19、
+`CASTCOMBATSPELL 27A1h`。該 routine 另證明 casting-time 0 與 pending cast 是
+不同 handoff。
+
+Engine 新增 `combat/quickspell` 與 `combat_ai_spells` schema；CoAB JSON 保存
+十一筆已抽取 spell record selector metadata，State 不再硬編 priority 表。
+Ebiten ALT+M 不與一般 M 移動衝突，每場戰鬥 gate 重設 off。全域 `0Fh` Magic
+Missile 已在 focused visual regression 與 Standing Stone→GEO6→紅網四蜘蛛
+正常玩家路徑由 ALT+M＋ALT+Q 施放並消耗 slot。非零 MinRange helper 已證明
+不是單純距離；area spell、casting delay、Cure special 與其餘法術仍在抽中時
+fail-closed 並收回 PC 控制。READY spec 424 是權威邊界。

@@ -1937,6 +1937,72 @@ func TestCombatQuickAllCanBeInterruptedDuringVisualHandoff(t *testing.T) {
 	}
 }
 
+func TestCombatAltMEnablesQuickMagicMissileFromGlobalSpellSlot(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 128 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1,
+			SpellSlots: []uint8{MagicMissileSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "mage", Name: "法師", Side: combat.SideParty, ControlMorale: 0,
+			HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20,
+			DamageDiceCount: 1, DamageDiceSides: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+			HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10, InitiativeBonus: 1,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualMagicMissile {
+			continue
+		}
+		found = true
+		if event.ActorID != "mage" || event.TargetID != "enemy" ||
+			len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("quick magic event=%+v roster=%+v", event, state.partyRoster)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-4 Magic Missile selection")
+	}
+}
+
+func TestCombatAltMGateResetsAtEachCombatStart(t *testing.T) {
+	state := NewState(testCatalog())
+	heroes := []combat.Fighter{{
+		ID: "hero", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: 20,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+		ArmorClass: 10, InitiativeBonus: 1,
+	}}
+	if err := state.StartCombat(heroes, enemies, 1); err != nil {
+		t.Fatal(err)
+	}
+	if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+		t.Fatalf("enabled=%v err=%v", enabled, err)
+	}
+	if err := state.StartCombat(heroes, enemies, 2); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatQuickMagicEnabled() {
+		t.Fatal("ALT+M gate leaked into the next combat")
+	}
+}
+
 func TestCombatSpeedBoundsAndMenuUseCatalogEntries(t *testing.T) {
 	catalog := testCatalog()
 	state := NewState(catalog)
