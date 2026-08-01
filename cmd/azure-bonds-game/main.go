@@ -1218,7 +1218,9 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		return
 	}
 	frame := frames[0]
-	if a.state.AnimationsEnabled() {
+	// A screenshot checkpoint freezes the source animation on frame zero;
+	// container startup time must not choose a different XOR/delta phase.
+	if a.state.AnimationsEnabled() && a.screenshotPath == "" {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
 	a.drawAdventureChrome(screen)
@@ -1275,19 +1277,22 @@ func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
 		return
 	}
 	sourceWidth, sourceHeight := source.Bounds().Dx(), source.Bounds().Dy()
-	scale := max(
-		float64(destination.Dx())/float64(sourceWidth),
-		float64(destination.Dy())/float64(sourceHeight),
-	)
-	target := screen.SubImage(destination).(*ebiten.Image)
+	scale, translateX, translateY := imageCoverTransform(sourceWidth, sourceHeight, destination)
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(
-		float64(destination.Dx()-int(float64(sourceWidth)*scale))/2,
-		float64(destination.Dy()-int(float64(sourceHeight)*scale))/2,
+	op.GeoM.Translate(translateX, translateY)
+	screen.DrawImage(source, op)
+}
+
+func imageCoverTransform(sourceWidth, sourceHeight int, destination image.Rectangle) (scale, x, y float64) {
+	scale = max(
+		float64(destination.Dx())/float64(sourceWidth),
+		float64(destination.Dy())/float64(sourceHeight),
 	)
-	target.DrawImage(source, op)
+	x = float64(destination.Min.X) + float64(destination.Dx()-int(float64(sourceWidth)*scale))/2
+	y = float64(destination.Min.Y) + float64(destination.Dy()-int(float64(sourceHeight)*scale))/2
+	return scale, x, y
 }
 
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
@@ -2708,6 +2713,7 @@ func main() {
 	burialRedWebBattle := flag.Bool("burial-red-web-battle", false, "show the first Burial Glen red-web spider battle")
 	burialGraveBattle := flag.Bool("burial-grave-battle", false, "show the Burial Glen grave-looter thri-kreen battle")
 	burialDaemir := flag.Bool("burial-daemir", false, "show Princess Daemir's Burial Glen blessing choice")
+	innerRitual := flag.Bool("inner-ritual", false, "show the Tyranthraxus/Nameless inner-ruins ritual checkpoint")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -2752,9 +2758,13 @@ func main() {
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
 	}
-	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir {
+	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual {
 		*geoSet = 6
-		*geoBlock = 0x40
+		if *innerRitual {
+			*geoBlock = 0x43
+		} else {
+			*geoBlock = 0x40
+		}
 	}
 	data, err := os.ReadFile(*localePath)
 	if err != nil {
@@ -2849,6 +2859,11 @@ func main() {
 	soundPlayer, soundErr := sound.Load(*soundDir)
 	if soundErr != nil {
 		log.Printf("some sound effects are unavailable: %v", soundErr)
+	}
+	// Deterministic screenshot runs have no audible output and must not depend
+	// on a host ALSA device being exposed to the isolated Xvfb container.
+	if *screenshotPath != "" {
+		soundPlayer = nil
 	}
 	if *pc98SFXGamePath != "" {
 		pc98SFXGame, readErr := os.ReadFile(*pc98SFXGamePath)
@@ -2983,7 +2998,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir {
+	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual {
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
@@ -2993,13 +3008,45 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if err := state.StartDungeonStoryPreview(0x40, 0x50, 6); err != nil {
+		previewBlock, previousBlock := uint8(0x40), uint8(0x50)
+		if *innerRitual {
+			previewBlock, previousBlock = 0x43, 0x42
+		}
+		if err := state.StartDungeonStoryPreview(previewBlock, previousBlock, 6); err != nil {
 			log.Fatal(err)
 		}
-		if err := state.Continue(); err != nil {
-			log.Fatal(err)
+		if state.Mode == game.ModeEvent {
+			if err := state.Continue(); err != nil {
+				log.Fatal(err)
+			}
 		}
-		if *burialDaemir {
+		if *innerRitual {
+			if state.Mode == game.ModeWilderness {
+				if err := state.Select(0); err != nil {
+					log.Fatal(err)
+				}
+			}
+			if state.Mode != game.ModeDungeon {
+				log.Fatalf("-inner-ritual initialization ended in mode %v", state.Mode)
+			}
+			state.SetECLMemoryValue(0x4C59, 1)
+			state.SetECLMemoryValue(0x4C5A, 1)
+			state.SetECLMemoryValue(0x4C5B, 0xFF)
+			state.SetDungeonGeometryView(7, 11, 4)
+			state.DungeonWallRoof = 0x83
+			if err := state.RunDungeonLifecycle(); err != nil {
+				log.Fatal(err)
+			}
+			for step := 0; step < 2; step++ {
+				if err := state.Select(0); err != nil {
+					log.Fatal(err)
+				}
+			}
+			if state.Mode != game.ModeEvent || state.PictureBlock != 0x47 {
+				log.Fatalf("-inner-ritual did not reach PICTURE 47: mode=%v picture=%02X",
+					state.Mode, state.PictureBlock)
+			}
+		} else if *burialDaemir {
 			state.SetDungeonGeometryView(13, 14, 4)
 			state.DungeonWallRoof = 0x03
 			if err := state.RunDungeonLifecycle(); err != nil {

@@ -901,11 +901,23 @@ branch、writer 位址、GEO 路線與財寶見
 
 私人禮拜堂也已由同一條正常玩家路徑完成：一名大祭司與四名班恩祭司會
 包圍隊伍，戰勝後可繼續走到 `(7,10)`。犬舍的十隻地獄犬與活動雕像房的
-十隻石像鬼也已由 raw ECL 完整驗證並繁中化；但兩房位於西翼，合法路線
-必經 terrain `82h–85h` 的提朗瑟克斯／無名者最終儀式。本輪明確停在
-terrain `83h` 前，沒有用 direct entry 假裝西翼已正常可達。怪物記錄、
-逐 pause 行為、路線與完成邊界見
+十隻石像鬼也已由 raw ECL 完整驗證並繁中化。第 405 輪當時仍停在
+terrain `83h` 前；其原始怪物記錄與逐 pause 行為見
 [`spec 405`](docs/spec/405-inner-ruins-kennel-statuary-chapel.md)。
+
+目前 Standing Stone 起始正常玩家路徑已正式向南進入 terrain `83h`，完整
+走過提朗瑟克斯控制枷印、無名者假扮祭司、三神器失而復得與臨終密語事件，
+並從使用者提供的 Adventurer's Journal PDF 解鎖完整繁中手札 48。提朗瑟克斯
+逃走後留下兩名大祭司、六隻地獄犬與六隻石像鬼；戰勝後 `4C00h=1`，相鄰
+`84h／85h` 不再重播儀式。玩家隨後沿合法 GEO 路線完成西翼活動雕像與犬舍
+兩戰，沒有 direct-entry 越過主線 gate。
+
+![提朗瑟克斯演說與手札 48 的 640×480 繁中實機畫面](docs/screenshots/myth-drannor-final-ritual.png)
+
+六個原版 PICTURE、十三段 ECL pause、十四人敵軍、羅剎妖協議旗標對照與
+正常玩家路徑證據見
+[`spec 407`](docs/spec/407-inner-ruins-final-ritual-west-wing.md)。真正的
+提朗瑟克斯最終戰與結局仍未完成，不能把這場爪牙戰誤寫成遊戲通關。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

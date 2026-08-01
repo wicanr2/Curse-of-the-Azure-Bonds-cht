@@ -3101,6 +3101,244 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			innerRuins.CellWrapped(7, 11).Terrain)
 	}
 
+	state.SetDungeonGeometryView(7, 11, 4)
+	state.DungeonWallRoof = innerRuins.CellWrapped(7, 11).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	ritualMessages := []string{
+		"myth-drannor.inner.ritual.arrival",
+		"myth-drannor.inner.ritual.control",
+		"myth-drannor.inner.ritual.journal",
+		"myth-drannor.inner.ritual.hand-over",
+		"myth-drannor.inner.ritual.dispose-order",
+		"myth-drannor.inner.ritual.pool",
+		"myth-drannor.inner.ritual.parchment",
+		"myth-drannor.inner.ritual.final-spell",
+		"myth-drannor.inner.ritual.nameless-reveal",
+		"myth-drannor.inner.ritual.nameless-falls",
+		"myth-drannor.inner.ritual.bonds-fade",
+		"myth-drannor.inner.ritual.recover",
+		"myth-drannor.inner.minions-attack",
+	}
+	ritualPictureStages := map[int]bool{2: true, 3: true, 4: true, 6: true, 8: true, 9: true}
+	for index, messageID := range ritualMessages {
+		wantMode := ModeWilderness
+		if ritualPictureStages[index] {
+			wantMode = ModeEvent
+		}
+		if state.Mode != wantMode || state.Message != gamePackText(t, state, messageID) {
+			t.Fatalf("ritual stage %d mode=%v message=%q, want %q",
+				index, state.Mode, state.Message, gamePackText(t, state, messageID))
+		}
+		if index == 2 {
+			wantJournal := gamePackText(t, state, "journal.48")
+			found := false
+			for _, page := range state.JournalPages {
+				found = found || page == wantJournal
+			}
+			if !found {
+				t.Fatalf("Journal 48 not unlocked from game-pack: %v", state.JournalPages)
+			}
+		}
+		var advanceErr error
+		if wantMode == ModeEvent {
+			advanceErr = state.Continue()
+			if advanceErr == nil {
+				advanceErr = state.Select(0)
+			}
+		} else {
+			advanceErr = state.Select(0)
+		}
+		if advanceErr != nil {
+			t.Fatalf("ritual stage %d: %v", index, advanceErr)
+		}
+	}
+	ritualEnemies := state.livingBySide(combat.SideEnemy)
+	ritualCounts := make(map[uint8]int)
+	for _, enemy := range ritualEnemies {
+		ritualCounts[enemy.SpriteBlock]++
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() ||
+		!reflect.DeepEqual(ritualCounts, map[uint8]int{0x44: 6, 0x45: 6, 0x48: 2}) {
+		t.Fatalf("ritual combat mode=%v active=%v counts=%v enemies=%+v",
+			state.Mode, state.CombatActive(), ritualCounts, ritualEnemies)
+	}
+	for action := 0; action < 256 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("ritual victory mode=%v status=%v message=%q",
+			state.Mode, state.CombatStatus(), state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("ritual continuation mode=%v message=%q", state.Mode, state.Message)
+	}
+	if completed, ok := state.session.MemoryValue(0x4C00); !ok || completed != 1 {
+		t.Fatalf("ritual completion 4C00=%04X present=%v", completed, ok)
+	}
+
+	// The completed ritual makes the adjacent 84h/85h dispatch cells silent,
+	// opening the normal GEO route to the two west-wing encounters from round 405.
+	westRoute := []dungeonStep{
+		{x: 6, y: 11, direction: 6},
+		{x: 5, y: 11, direction: 6},
+		{x: 5, y: 10, direction: 0},
+		{x: 4, y: 10, direction: 6},
+		{x: 4, y: 9, direction: 0},
+	}
+	previousX, previousY = 7, 11
+	for index, step := range westRoute {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("west route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if index < len(westRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("west route cell (%d,%d) terrain=%02x mode=%v message=%q",
+				step.x, step.y, state.DungeonWallRoof, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.inner.statuary") {
+		t.Fatalf("statuary player path mode=%v terrain=%02x message=%q",
+			state.Mode, state.DungeonWallRoof, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.inner.minions-attack") {
+		t.Fatalf("statuary attack message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	statuaryEnemies := state.livingBySide(combat.SideEnemy)
+	if state.Mode != ModeCombat || len(statuaryEnemies) != 10 {
+		t.Fatalf("statuary combat mode=%v enemies=%+v", state.Mode, statuaryEnemies)
+	}
+	for _, enemy := range statuaryEnemies {
+		if enemy.SpriteBlock != 0x45 {
+			t.Fatalf("statuary enemy=%+v, want MARGOYLE 45h", enemy)
+		}
+	}
+	for action := 0; action < 160 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("statuary victory mode=%v status=%v", state.Mode, state.CombatStatus())
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeDungeon {
+		t.Fatalf("statuary continuation mode=%v err=%v", state.Mode, err)
+	}
+
+	kennelRoute := []dungeonStep{
+		{x: 4, y: 10, direction: 4},
+		{x: 3, y: 10, direction: 6},
+		{x: 2, y: 10, direction: 6},
+		{x: 1, y: 10, direction: 6},
+		{x: 1, y: 9, direction: 0},
+	}
+	previousX, previousY = 4, 9
+	for index, step := range kennelRoute {
+		if !innerRuins.CanMoveDungeonWrapped(previousX, previousY, int(step.direction)) {
+			t.Fatalf("kennel route (%d,%d)->(%d,%d) direction=%d is not passable",
+				previousX, previousY, step.x, step.y, step.direction)
+		}
+		state.SetDungeonGeometryView(step.x, step.y, step.direction)
+		state.DungeonWallRoof = innerRuins.CellWrapped(step.x, step.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatal(err)
+		}
+		if index == 0 && state.Mode == ModeWilderness {
+			if state.Message != gamePackText(t, state, "myth-drannor.inner.helm-northeast") {
+				t.Fatalf("inner Helm direction message=%q", state.Message)
+			}
+			if err := state.Select(0); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if index < len(kennelRoute)-1 && state.Mode != ModeDungeon {
+			t.Fatalf("kennel route cell (%d,%d) mode=%v message=%q",
+				step.x, step.y, state.Mode, state.Message)
+		}
+		previousX, previousY = step.x, step.y
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != gamePackText(t, state, "myth-drannor.inner.kennel") {
+		t.Fatalf("kennel player path mode=%v terrain=%02x message=%q",
+			state.Mode, state.DungeonWallRoof, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	// The original event deliberately has one empty PRESS pause.
+	if state.Mode != ModeWilderness || state.Message != "" {
+		t.Fatalf("kennel blank pause mode=%v message=%q", state.Mode, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != gamePackText(t, state, "myth-drannor.inner.minions-attack") {
+		t.Fatalf("kennel attack message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	kennelEnemies := state.livingBySide(combat.SideEnemy)
+	if state.Mode != ModeCombat || len(kennelEnemies) != 10 {
+		t.Fatalf("kennel combat mode=%v enemies=%+v", state.Mode, kennelEnemies)
+	}
+	for _, enemy := range kennelEnemies {
+		if enemy.SpriteBlock != 0x44 {
+			t.Fatalf("kennel enemy=%+v, want HELL HOUND 44h", enemy)
+		}
+	}
+	for action := 0; action < 160 && state.Mode == ModeCombat; action++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+		if event, ok := state.CombatVisualEvent(); ok {
+			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if state.Mode != ModeEvent || state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("kennel victory mode=%v status=%v", state.Mode, state.CombatStatus())
+	}
+	if err := state.Continue(); err != nil || state.Mode != ModeDungeon {
+		t.Fatalf("kennel continuation mode=%v err=%v", state.Mode, err)
+	}
+	if statuaryDone, _ := state.session.MemoryValue(0x4C02); statuaryDone != 1 {
+		t.Fatalf("statuary completion 4C02=%04X", statuaryDone)
+	}
+	if kennelDone, _ := state.session.MemoryValue(0x4C01); kennelDone != 1 {
+		t.Fatalf("kennel completion 4C01=%04X", kennelDone)
+	}
+
 	boundaryHero := hero
 	boundaryHero.AttackBonus = 23
 	if err := state.StartCombat([]combat.Fighter{boundaryHero}, []combat.Fighter{{
