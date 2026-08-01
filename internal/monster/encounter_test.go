@@ -41,6 +41,9 @@ func TestBuildEnemiesWithAffectsCopiesSPCRecords(t *testing.T) {
 	if len(enemies[0].MonsterAffects) != 1 || len(enemies[1].MonsterAffects) != 1 {
 		t.Fatalf("effects=%#v", enemies)
 	}
+	if !enemies[0].MonsterAffects[0].Innate {
+		t.Fatalf("MON*SPC effect was not marked innate: %#v", enemies[0].MonsterAffects)
+	}
 	affects[7][0].Duration = 99
 	enemies[0].MonsterAffects[0].Duration = 88
 	if enemies[1].MonsterAffects[0].Duration != 4 {
@@ -57,8 +60,8 @@ func TestBuildEnemiesWithAffectsProjectsHasteAttacks(t *testing.T) {
 	}
 	affects[7][0].Active = false
 	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)
-	if err != nil || enemies[0].AttacksPerTurn != 2 {
-		t.Fatalf("inactive haste enemies=%#v err=%v", enemies, err)
+	if err != nil || enemies[0].AttacksPerTurn != 4 {
+		t.Fatalf("raw MON*SPC byte-4 zero suppressed innate haste: enemies=%#v err=%v", enemies, err)
 	}
 	affects[7] = []AffectRecord{{Kind: 0x2A, Active: true}}
 	enemies, err = BuildEnemiesWithAffects([]ecl.MonsterSpawn{{MonsterID: 7}}, records, affects)

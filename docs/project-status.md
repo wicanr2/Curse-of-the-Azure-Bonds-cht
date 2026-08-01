@@ -297,6 +297,12 @@ commit 內保存不可能自我引用的 hash。
   count 恢復 `math/rand` continuation，並有 replay 上限。真實 ECL6
   Burial Glen terrain `04h` 證明存讀檔後 raw random values、怪物與文字
   和不中斷執行相同；這不證明 SSI 原版 RNG，也尚未保存完整 UI／戰鬥 frame。
+- 第 410 輪以 PC-98 Borland symbols 與 IDA 關閉 `MON*SPC` 九 byte 載入
+  邊界：`LOADMONSTER` 複製前五 bytes、清除並重建 `+5..+8` linked-list
+  pointer，且不改 byte `+4`。因此 raw `+4=0` 不再錯誤停用怪物天生效果。
+  正常 Standing Stone 長路徑現載入真實 `MON6SPC`，提朗瑟克斯六筆效果
+  均進入終戰；`18h` 偵測隱形已在命中公式抵消隱形 AC bonus。其餘五筆、
+  閃電、魔法抗性、AI 與演出仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

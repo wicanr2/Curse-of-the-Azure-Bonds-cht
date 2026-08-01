@@ -159,6 +159,11 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 
 ### IDA 非破壞性語意註記
 
+- 原始 binary、overlay、symbol table 與基準 `.i64` 一律唯讀保存；每次分析先
+  記錄輸入檔 SHA-256、檔案版本與載入位址，再複製到本輪 Docker 工作目錄操作。
+  IDC、型別匯入、註解、重新分析或 IDA 自動升級 database 都只能作用於分析
+  副本，不能原地改寫唯一的原始檔或基準 database。分析完成後，以可重現腳本、
+  文字報告與規格保存結論，不以被修改過的 `.i64` 單獨充當證據。
 - IDA database 是程式原貌與交叉參考的證據快取，不是把推測改寫成事實的
   地方。不得以推測名稱取代 `sub_XXXXX`、`word_XXXXX`、Borland symbol、
   原始 segment:offset 或 linear address；尤其不得因一次命名方便，就讓原始
@@ -301,9 +306,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`a9ee134`（第 408 輪二樓、提朗瑟克斯終戰與
-  `PROGRAM 8`）；第 409 輪 ECL session／持續 PRNG save v6 milestone
-  會由本文件所在 commit 完成。
+- CoAB 本輪基底：`4cd743f`（第 409 輪 ECL session／持續 PRNG save v6）；
+  第 410 輪 PC-98 MON*SPC 載入與提朗瑟克斯偵測隱形 milestone 會由本文件
+  所在 commit 完成。
 - Engine dependency：`720c6ae`（含作品中立 `randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -487,6 +492,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   PC、stack、mutable memory、輸入 offset 與 pending monster descriptors，
   並以真實 ECL6 terrain `04h` 驗證讀檔後分支相同。READY spec 409 是權威；
   完整 UI／戰鬥 frame、音訊位置與 SSI 原版 RNG 仍未完成。
+- 第 410 輪以 PC-98 Borland symbols 與 IDA 證明 `EFFECTREC` 是 9 bytes；
+  `LOADMONSTER` 複製每筆後清除並重建 `+5..+8` linked-list pointer，卻不改
+  byte `+4`。因此 MON*SPC raw `+4=0` 不能作為天生效果停用 gate。Battle
+  以作品中立 `Innate` 標記保留 template 能力；Standing Stone 起始正常長
+  路徑載入提朗瑟克斯六筆真實效果，`18h` 偵測隱形已抵消隱形 AC bonus，
+  並完成 37 人終戰與 PROGRAM 8。READY spec 410 是權威；其餘五筆、閃電、
+  魔法抗性、HIGH PRIEST／MARGOYLE 特殊能力與動態演出仍未完成。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

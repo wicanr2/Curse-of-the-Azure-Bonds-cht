@@ -305,6 +305,34 @@ func TestResolveAttackProjectsMonsterInvisibilityACBonus(t *testing.T) {
 	}
 }
 
+func TestResolveAttackInnateDetectInvisibleBypassesInvisibilityACBonus(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "seer", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x18, Innate: true}}},
+		{ID: "invisible", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x19, Active: true}}},
+	}
+	battle, err := NewBattle(fighters, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("seer", "invisible", 10, 1)
+	if err != nil || !result.Hit {
+		t.Fatalf("innate detect-invisible result=%#v err=%v", result, err)
+	}
+
+	fighters[0].MonsterAffects[0].Innate = false
+	battle, err = NewBattle(fighters, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err = battle.ResolveAttack("seer", "invisible", 10, 1)
+	if err != nil || result.Hit {
+		t.Fatalf("inactive non-innate detect-invisible result=%#v err=%v", result, err)
+	}
+}
+
 func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: -20, DamageDiceCount: 1, DamageDiceSides: 1},

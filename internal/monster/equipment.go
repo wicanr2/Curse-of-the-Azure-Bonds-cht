@@ -243,7 +243,11 @@ type AffectRecord struct {
 	Duration uint16
 	Strength uint8
 	Active   bool
-	Data     [4]byte
+	// Data preserves the serialized runtime linked-list pointer at bytes 5..8.
+	// LOADMONSTER copies each nine-byte record, then clears these four bytes and
+	// rebuilds the list. They are not spell parameters and gameplay code must
+	// not assign them effect-specific semantics.
+	Data [4]byte
 }
 
 // ChineseName covers the base item names documented for Curse of the Azure
@@ -433,7 +437,7 @@ func ParseAffects(data []byte) ([]AffectRecord, error) {
 }
 
 // EncodeAffects serializes the documented 9-byte FX records. Data is kept
-// verbatim for the four currently uninterpreted payload bytes.
+// verbatim as the legacy runtime linked-list pointer for round trips.
 func EncodeAffects(affects []AffectRecord) []byte {
 	data := make([]byte, len(affects)*AffectRecordSize)
 	for index, affect := range affects {

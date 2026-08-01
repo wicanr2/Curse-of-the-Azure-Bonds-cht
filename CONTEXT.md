@@ -2749,3 +2749,17 @@ SavePartyFile／LoadPartyFile 與真實 `ECL6.DAX` block `40h` terrain `04h`
 均證明讀檔後下一批 random values、怪物生成與文字等同不中斷執行。舊 v1–v5
 仍可載入，但不能冒稱恢復未曾保存的 RNG 位置。READY spec 409 與雙 repo
 繁中知識庫保存證據；任意 UI／戰鬥 frame、音訊位置及 SSI 原版 RNG 仍未完成。
+
+2026-08-02 第四百一十輪以非破壞性 IDA 副本追蹤 PC-98 `EFFPROCS`、
+`LOADSAVE` 與 `EFFECTS` overlays。Borland `EFFECTREC` type size 是 9；
+`LOADMONSTER 00DC:3AA8` 逐筆複製 9 bytes，將新 node `+5／+7` 清零並重建
+linked list，但保持 byte `+4`。因此先前將 `MON6SPC` byte 4 的零值當成
+`Active=false` 並靜默丟棄全部天生能力，是 remake adapter 的錯誤。
+
+Battle 新增作品中立 `Innate` 來源標記；角色後天效果仍保留既有 Active
+生命週期。提朗瑟克斯 `47h` 六筆真實 `MON6SPC` 現由 Standing Stone 起始
+正常長路徑載入，其中 `18h` 偵測隱形會抵消目標隱形 AC bonus；完整路徑仍
+戰勝並進入 `PROGRAM 8`。READY spec 410 與可重現
+`scripts/ida/pc98_monster_affect_loader_audit.idc` 保存 hashes、位址、xref
+及推論等級。下一步優先追 `4Fh／6Ah／70h／84h／87h` 中的閃電或魔法抗性；
+HIGH PRIEST `09h／0Ah`、MARGOYLE `77h` 也仍未解。
