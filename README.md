@@ -201,8 +201,11 @@ NP2kai 已能從保留缺 sector 的暫存 D88 進入 MEGDOS 0.25 loader；這�
 ![原版左右配置的 640×480 繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)
 
 冒險畫面現在直接使用本機 DOS 320×200 runtime oracle 抽出的 cracked stone
-透明邊框，不再用一般灰色矩形模擬。左上人物／事件圖以等比例 cover 放大並
-裁切，填滿完整內格，不再把小頭像置中留出大片黑邊。右上隊伍／AC／HP、下方
+透明邊框，不再用一般灰色矩形模擬。左上一般事件圖與第一人稱場景使用原版
+灰色內框及 88×88 可見區；HEAD／BODY 人物則使用獨立黃色裂紋舞台，不走
+一般場景的 cover 規則。IDA 已交叉驗證原作先畫 HEAD，再把 BODY 下移五個
+8px 列後繪製；一般 PIC 則依灰色內框裁切並填滿 88×88 可見區，不再把小圖
+置中而留下大片黑邊。右上隊伍／AC／HP、下方
 敘事與最底命令列均保留；戰鬥畫面
 恢復左側戰術格、右側角色狀態、下方訊息與命令列。原始像素素材維持 2×
 nearest-neighbour，遊戲正文與 HUD 以粗體倚天 16×15 為主，24px 僅留給標題
@@ -545,7 +548,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 - SPRIT manifest 的 frame `x/y` placement 也已接入戰鬥 renderer，播放時會依原始 frame canvas offset 顯示。
 - PIC1–PIC6 的 PIC/FINAL-style XOR frame delta 也已解碼並抽出 152 張 PNG；SPRIT 與 PIC 兩種 payload 語意在 parser 中明確分流。
 - ECL `PICTURE` request 已接到繁中事件畫面：game state 保存 block、Ebiten 播放對應 PIC frames，Enter 可返回原流程。
-- Ebiten remake 的邏輯畫布與預設視窗已擴為 `640×480`；88px PIC／人物圖採 nearest-neighbor 3×、304×120 BIGPIC 採 2× 整數像素放大，繁中文字則直接以 24px 高解析字型重繪。新增的垂直空間用於三行敘事與獨立操作提示，避免中文字覆蓋原圖。
+- Ebiten remake 的邏輯畫布與預設視窗為 `640×480`；目前權威契約是 88px
+  第一人稱／PIC 與 HEAD／BODY 人物各自採 2× nearest-neighbour，304×120
+  BIGPIC 採 2×。一般繁中正文使用倚天粗體 16×15；早期 3×／24px 截圖只
+  代表歷史 prototype，不再是 GUI 驗收基準。新增高度用於延伸訊息區。
 - 火刀據點第一個機關房已由 ECL2 block 4 terrain `0x99` 驗證：旋轉刀刃、
   `闖入刀刃／等待／撤退` 三項繁中選單及安全等待後刀刃消散分支均保留原始
   script index；事件沿用 640×480、24px 中文與整數倍像素圖分層。

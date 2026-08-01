@@ -367,3 +367,4 @@
 - [第三百七十六輪 PC-98 YM2203 合成器與遊戲播放器](./376-pc98-ym2203-synth-and-game-player.md)（`READY`：限 Sound BIOS intent→YM2203→44.1 kHz PCM 與正式遊戲播放路徑）
 - [第三百七十七輪 PC-98 換曲延遲、循環與音效邊界](./377-pc98-music-transition-loop-and-sfx-boundary.md)（`READY`：限正常 stop→800ms→play、無限 loop 與未使用 driver fade／FM SFX 邊界）
 - [第三百八十三輪立石群揭露與 Myth Drannor 解鎖](./383-standing-stone-myth-drannor-unlock.md)（`READY`：限三個主人旗標、提朗瑟克斯揭露與首輪 RunFrom 記憶體生命週期）
+- [第四百零六輪 DOS GUI 繪製契約與 IDA 交叉驗證](./406-dos-gui-draw-contract.md)（`READY`：限人物／3D／PIC 舞台與延伸訊息框）

@@ -1,6 +1,6 @@
 # 專案成果盤點
 
-更新日期：2026-07-31
+更新日期：2026-08-01
 本 milestone 的 CoAB 基底：`500e614`
 依賴的 Golden Box engine checkpoint：`f9fbcaf`
 
@@ -35,7 +35,10 @@ commit 內保存不可能自我引用的 hash。
 - DOSBox 原生 320×200 冒險 layout oracle；正式 top split 已修正為
   native 128／192，即 remake 256／384。
 - DOS runtime cracked stone chrome 已抽成透明 native raster；一般 PIC／
-  第一人稱場景以 cover 填滿左上內格，HEAD／BODY 人物使用獨立固定舞台。
+  第一人稱場景使用原版灰色內框與 88×88 可見區，HEAD／BODY 人物使用
+  獨立黃色裂紋舞台。640×480 以插入 40 個原生訊息列延伸，不拉伸上半部
+  或命令帶。IDA／DOS bytes 已交叉證明 HEAD 後 BODY、BODY `row+5` 的
+  原作繪製鏈；第一人稱與旅店正常玩家路徑畫面已重新擷取。
   PC-98 640×400 gallery 已建立字級密度參考索引。
 - CHEAD／CBODY 頭身合成、CPIC／SPRIT／COMSPR 戰鬥小人及 animation metadata。
 - HEAD／BODY 場景人物已依 DOS 320×200 實機量測，使用 game-pack native

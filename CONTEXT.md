@@ -2672,3 +2672,18 @@ Standing Stone 起始長玩家路徑已從臥房走到 `(9,13)`，完成禮拜�
 雕像的合法最短路線必經其中一格。因此本輪沒有 direct-entry 越過主線，
 犬舍／雕像明確仍是 raw branch 完成、player path 未完成。READY spec 405
 保存證據；下一步正面接通 terrain `83h` 最終儀式。
+
+2026-08-01 第四百零六輪先回應 GUI fidelity 稽核。IDA Pro 9.4 依 PC-98
+Borland symbols 定位 `SHOWHEAD 0176:0091`、`SHOWBODY 0176:00B3`、
+`CLEAR3DVIEW 017C:018C`；caller 與 bytes 證明人物先畫 HEAD，再由 BODY
+執行 `ADD AX,5` 後走共同 `SHOWPORTRAIT`，DOS overlay 同 offset 也有相同
+核心 bytes。DOS runtime 另量出第一人稱／一般 PIC 是獨立灰色內框與
+`(24,24)` 起算的 88×88 可見區，不能套用黃色 HEAD／BODY 人物舞台。
+
+renderer 現以原版 raster 建立透明灰框 overlay，一般 PIC／3D 以 2×
+nearest-neighbour 畫入 176×176 logical 區；640×480 石框則保留原生前
+184 列、插入 40 列訊息側牆、把原版命令帶移到原生 `y=224`。旅店與正式
+新遊戲入口第一人稱畫面已重擷取，正文／roster／命令列採倚天粗體 16×15。
+READY spec 406 保存 IDA 位址、bytes、圖像雜湊、exact／reconstructed
+邊界。這只關閉人物／3D／PIC 舞台及延伸訊息框；角色資訊全頁、所有 PIC、
+戰鬥動態仍未完成。下一輪回到 terrain `83h` 最終儀式與 Journal 48。
