@@ -105,5 +105,6 @@ frontend terrain 明確判定無效，則不虛構可走射線，但仍顯示資
 - State regression 覆蓋正常閃電命中，以及唯一對手被牆阻擋時不做物理攻擊、
   不扣 HP、仍消耗 effect `84h` 回合。
 
-本規格只將上述 bounded target selection 標為 `READY`；完整怪物法術 AI、
-隱形／blink runtime、原始 tie order、終戰牆面與逐幀演出仍是後續工作。
+本規格只將上述 bounded target selection 標為 `READY`；status visibility 與
+blink／動物視覺 combat consumer 已由 spec 417／418 接續。完整怪物法術 AI、
+effect 生命週期、原始 tie order、終戰牆面與逐幀演出仍是後續工作。

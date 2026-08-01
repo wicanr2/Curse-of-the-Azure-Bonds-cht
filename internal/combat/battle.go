@@ -85,7 +85,10 @@ type Fighter struct {
 	MaxHitPoints int
 	// HitDice preserves the original Player/MON*CHA byte at offset 0xE5.
 	// Poisonous-cloud rules consume it directly.
-	HitDice              uint8
+	HitDice uint8
+	// MonsterType preserves the original shared Player record byte at +11A.
+	// Effect handlers compare this field against typed creature categories.
+	MonsterType          uint8
 	ArmorClass           int
 	AttackBonus          int
 	Blessed              bool
@@ -224,6 +227,8 @@ func MagicResistanceChance(base, casterLevel int) int {
 	return base + (11-casterLevel)*5
 }
 
+const MonsterTypeAnimal uint8 = 0x13
+
 // VisibleTo reports the status-effect visibility used by the original
 // CHECKTARGET path. Effect 19 can be defeated by an operational effect 18 on
 // the observer; effect 47 sets the target-hidden flag unconditionally.
@@ -232,7 +237,20 @@ func (f Fighter) VisibleTo(observer Fighter) bool {
 		if !affect.operational() {
 			continue
 		}
-		if affect.Kind == 0x47 || (affect.Kind == 0x19 && !observer.MonsterCanDetectInvisible()) {
+		switch affect.Kind {
+		case 0x25:
+			if f.CombatAction.Delay == 0 {
+				return false
+			}
+		case 0x19:
+			if !observer.MonsterCanDetectInvisible() {
+				return false
+			}
+		case 0x45:
+			if observer.MonsterType == MonsterTypeAnimal && !observer.MonsterCanDetectInvisible() {
+				return false
+			}
+		case 0x47:
 			return false
 		}
 	}
@@ -254,9 +272,25 @@ func (f Fighter) MonsterAffectArmorClassBonusAgainst(attacker Fighter) int {
 			}
 		case 0x47:
 			bonus += 4
+		case 0x45:
+			if attacker.MonsterType == MonsterTypeAnimal {
+				bonus += 4
+			}
 		}
 	}
 	return bonus
+}
+
+// MonsterAffectForcesAttackMiss reports effects that replace the attack roll
+// instead of applying an AC modifier. The original blink handler writes FFh
+// after natural-roll handling when the target action delay is zero.
+func (f Fighter) MonsterAffectForcesAttackMiss() bool {
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() && affect.Kind == 0x25 && f.CombatAction.Delay == 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // MonsterAffectAttacksPerTurn projects the verified Haste multiplier over
@@ -572,7 +606,17 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	for _, id := range ids {
 		fighter := b.fighters[id]
 		if fighter.HitPoints > 0 {
-			turns = append(turns, Turn{FighterID: fighter.ID, Initiative: b.rng.Intn(20) + 1 + fighter.InitiativeBonus})
+			initiative := b.rng.Intn(20) + 1 + fighter.InitiativeBonus
+			turns = append(turns, Turn{FighterID: fighter.ID, Initiative: initiative})
+			// The current scheduler's initiative formula is still a bounded
+			// remake approximation, but every scheduled action must have a
+			// nonzero delay until it completes. Visibility effects inspect this
+			// same lifecycle byte in the original Action record.
+			fighter.CombatAction.Delay = initiative
+			if fighter.CombatAction.Delay <= 0 {
+				fighter.CombatAction.Delay = 1
+			}
+			b.fighters[id] = fighter
 		}
 	}
 	sort.Slice(turns, func(i, j int) bool {
@@ -582,6 +626,22 @@ func (b *Battle) StartRound() ([]Turn, error) {
 		return turns[i].FighterID < turns[j].FighterID
 	})
 	return turns, nil
+}
+
+// CompleteAction clears the scheduler delay after a fighter's current turn.
+// Other renderer-neutral action fields remain intact until their owning UI
+// or rule boundary clears them.
+func (b *Battle) CompleteAction(fighterID string) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	fighter.CombatAction.Delay = 0
+	b.fighters[fighterID] = fighter
+	return nil
 }
 
 // AdvanceMonsterAffects applies the reference finite-duration timeout rule to
@@ -677,7 +737,8 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	if err := b.ValidateAttack(attackerID, targetID); err != nil {
 		return AttackResult{}, err
 	}
-	critical := attackRoll == 20
+	forcedMiss := target.MonsterAffectForcesAttackMiss()
+	critical := attackRoll == 20 && !forcedMiss
 	targetArmorClass := target.ArmorClass
 	targetArmorClass += target.MonsterAffectArmorClassBonusAgainst(attacker)
 	if attacker.Evil && target.ProtectedFromEvil {
@@ -687,7 +748,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		targetArmorClass += 2
 	}
 	attackTotal := attackRoll + attacker.AttackBonus + b.attackRollModifier[attacker.Side]
-	hit := target.MonsterIsHeld() || critical || (attackRoll != 1 && attackTotal >= targetArmorClass)
+	hit := !forcedMiss && (target.MonsterIsHeld() || critical || (attackRoll != 1 && attackTotal >= targetArmorClass))
 	damage := 0
 	if hit {
 		damage = damageRoll + attacker.DamageBonus

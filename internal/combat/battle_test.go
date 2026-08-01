@@ -465,6 +465,81 @@ func TestResolveAttackDetectInvisibleDoesNotBypassEffect47(t *testing.T) {
 	}
 }
 
+func TestResolveAttackBlinkOverridesNatural20UntilActionDelay(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "attacker", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+			AttackBonus: 100, DamageDiceCount: 1, DamageDiceSides: 1},
+		{ID: "blinking", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 0,
+			MonsterAffects: []MonsterAffect{{Kind: 0x25, Active: true}}},
+	}
+	battle, err := NewBattle(fighters, 418)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("attacker", "blinking", 20, 1)
+	if err != nil || result.Hit || result.Critical {
+		t.Fatalf("zero-delay blink must override natural 20: result=%#v err=%v", result, err)
+	}
+	fighters[1].CombatAction.Delay = 1
+	battle, err = NewBattle(fighters, 418)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err = battle.ResolveAttack("attacker", "blinking", 20, 1)
+	if err != nil || !result.Hit || !result.Critical {
+		t.Fatalf("nonzero-delay blink result=%#v err=%v", result, err)
+	}
+}
+
+func TestStartRoundAndCompleteActionProjectDelayLifecycle(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "fast", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 10},
+		{ID: "slow", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: -100},
+	}, 418)
+	if err != nil {
+		t.Fatal(err)
+	}
+	turns, err := battle.StartRound()
+	if err != nil || len(turns) != 2 {
+		t.Fatalf("turns=%+v err=%v", turns, err)
+	}
+	for _, turn := range turns {
+		fighter, _ := battle.Fighter(turn.FighterID)
+		if fighter.CombatAction.Delay <= 0 {
+			t.Fatalf("scheduled fighter has zero delay: %+v", fighter)
+		}
+	}
+	if err := battle.CompleteAction(turns[0].FighterID); err != nil {
+		t.Fatal(err)
+	}
+	completed, _ := battle.Fighter(turns[0].FighterID)
+	pending, _ := battle.Fighter(turns[1].FighterID)
+	if completed.CombatAction.Delay != 0 || pending.CombatAction.Delay <= 0 {
+		t.Fatalf("delay lifecycle completed=%+v pending=%+v", completed.CombatAction, pending.CombatAction)
+	}
+}
+
+func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+			MonsterType: MonsterTypeAnimal, AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x18, Innate: true}}},
+		{ID: "hidden", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x45, Active: true}}},
+	}
+	battle, err := NewBattle(fighters, 418)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("animal", "hidden", 10, 1)
+	if err != nil || result.Hit {
+		t.Fatalf("effect 45 must keep -4 against detecting animal: result=%#v err=%v", result, err)
+	}
+	if !fighters[1].VisibleTo(fighters[0]) {
+		t.Fatal("operational effect 18 should prevent effect 45 target-hidden flag")
+	}
+}
+
 func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: -20, DamageDiceCount: 1, DamageDiceSides: 1},

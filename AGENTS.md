@@ -514,7 +514,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   所以 Detect Invisibility 不能抵消 `47h`。法術 ranged selector 與物理 AC
   共用作品中立 visibility 規則，並以真實 MON6 提朗瑟克斯 effect `18h`
   驗證。spec 235 已 superseded，spec 410 過度合併 `19h／47h` 的斷言亦由
-  READY spec 417 修正；blink、動物視覺與完整 effect 生命週期仍未完成。
+  READY spec 417 修正；blink／動物視覺的 combat consumer 已由第 418 輪接續，
+  完整 effect 生命週期仍未完成。
+- 第 418 輪已由 overlay 12 handlers `0BDBh／16C2h` 接通 effect `25h／45h`。
+  Blink 只在 target action delay 0 時 hidden 並覆寫 attack roll `FFh`；
+  `45h` 只對 MonsterType `13h` observer 生效，`18h` 可取消 hidden 但不取消
+  `-4`。`+11Ah` 又由 dragon-slayer `03h` consumer 與四筆真實 Animal records
+  關閉為 MonsterType。現行 scheduler 已提供 pending 非零／completed 零的 delay
+  lifecycle，但 initiative 數值公式、tie order／PRNG 與完整 effect duration／save
+  尚未 exact；READY spec 418 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入

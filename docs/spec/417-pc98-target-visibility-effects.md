@@ -95,7 +95,8 @@ bytes 直接推翻。候選語意名稱仍是附加註記；原位址與 raw eff
 
 - effect `19h／47h` 在角色法術、解除、回合到期及 save round-trip 的完整
   生命週期。
-- effect `25h` blink、`45h` invisible-to-animals 等其他 visibility handlers。
+- effect `25h` blink 與 `45h` invisible-to-animals 已由 spec 418 接續完成 combat
+  consumer；其施法、解除、duration 與 save round-trip 仍未完成。
 - 原始 combatant-array 同距 tie order 與 effect `84h` 無目標 `(0,0)` 的
   DOS／PC-98 動態動畫。
 - 終戰牆面反射、逐幀 timing、聲音順序及 effect `6Ah` 對 `84h` 的時序。

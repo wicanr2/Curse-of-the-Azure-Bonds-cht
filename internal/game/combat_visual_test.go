@@ -212,14 +212,21 @@ func TestMonsterEffect84ConsumesTurnWhenNoRangedTargetIsReachable(t *testing.T) 
 
 func TestMonsterEffect84VisibilityUsesDetectInvisible(t *testing.T) {
 	tests := []struct {
-		name       string
-		casterFX   []combat.MonsterAffect
-		targetKind uint8
-		wantTarget bool
+		name        string
+		casterFX    []combat.MonsterAffect
+		casterType  uint8
+		targetKind  uint8
+		targetDelay int
+		wantTarget  bool
 	}{
 		{name: "ordinary cannot target effect 19", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, targetKind: 0x19},
 		{name: "effect 18 detects effect 19", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}, {Kind: 0x18, Innate: true}}, targetKind: 0x19, wantTarget: true},
 		{name: "effect 18 does not defeat effect 47", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}, {Kind: 0x18, Innate: true}}, targetKind: 0x47},
+		{name: "zero-delay blink is hidden", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, targetKind: 0x25},
+		{name: "nonzero-delay blink is visible", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, targetKind: 0x25, targetDelay: 1, wantTarget: true},
+		{name: "animal cannot target effect 45", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, casterType: combat.MonsterTypeAnimal, targetKind: 0x45},
+		{name: "non-animal can target effect 45", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, targetKind: 0x45, wantTarget: true},
+		{name: "detecting animal can target effect 45", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}, {Kind: 0x18, Innate: true}}, casterType: combat.MonsterTypeAnimal, targetKind: 0x45, wantTarget: true},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -230,9 +237,11 @@ func TestMonsterEffect84VisibilityUsesDetectInvisible(t *testing.T) {
 			})
 			battle, err := combat.NewBattle([]combat.Fighter{
 				{ID: "caster", Side: combat.SideEnemy, HitPoints: 200, MaxHitPoints: 200,
-					HasCombatPosition: true, CombatX: 1, CombatY: 1, MonsterAffects: test.casterFX},
+					HasCombatPosition: true, CombatX: 1, CombatY: 1,
+					MonsterType: test.casterType, MonsterAffects: test.casterFX},
 				{ID: "target", Side: combat.SideParty, HitPoints: 200, MaxHitPoints: 200,
 					HasCombatPosition: true, CombatX: 3, CombatY: 1,
+					CombatAction:   combat.ActionState{Delay: test.targetDelay},
 					SavingThrows:   []uint8{30, 30, 30, 30, 30},
 					MonsterAffects: []combat.MonsterAffect{{Kind: test.targetKind, Active: true}}},
 			}, 417)
@@ -241,6 +250,11 @@ func TestMonsterEffect84VisibilityUsesDetectInvisible(t *testing.T) {
 			}
 			if _, err := battle.StartRound(); err != nil {
 				t.Fatal(err)
+			}
+			if test.targetKind == 0x25 && test.targetDelay == 0 {
+				if err := battle.CompleteAction("target"); err != nil {
+					t.Fatal(err)
+				}
 			}
 			state.battle = battle
 			state.Mode = ModeCombat

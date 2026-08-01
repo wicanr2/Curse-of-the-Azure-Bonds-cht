@@ -2877,3 +2877,16 @@ Standing Stone 起始真實 MON6 提朗瑟克斯長路徑均納入回歸。spec 
 SUPERSEDED，spec 410 將 `19h／47h` 一併略過的舊斷言也由 READY spec 417
 訂正。blink、invisible-to-animals、完整 effect 生命週期、同距原始順序與
 `(0,0)` 動畫仍未完成。
+
+2026-08-02 第四百一十八輪以 typed TPOV resolver 與非破壞性 IDA 副本解析
+effect `25h → overlay12:0BDBh`、`45h → 16C2h`。Blink 讀 target Action `+3`；
+值 0 時設 `A035h=1` 並把 attack roll `A039h=FFh`。effect `45h` 只在 observer
+Player `+11Ah=13h` 時作用，缺 `18h` 才 hidden，但 `-4` 永遠保留。
+
+獨立 dragon-slayer effect `4Bh → 17B5h` 在同一 `+11Ah` 比較 `03h`，六章
+MON*CHA corpus 的 `13h` records 則只有 WORG、FIGHTING DOG、MONKEY、OWL BEAR，
+因此 parser／Fighter 正式投影 raw MonsterType 與 Animal `13h`。Battle 讓每個
+scheduled fighter 的 action delay 維持非零，State 在 action 完成後集中清零；
+不新增 PRNG draw，也未宣稱現行 initiative 數值已 exact。core visibility／AC／
+natural-20 regression、Tilverton 犬舍真實 FIGHTING DOG 與 Standing Stone phase
+spider 長路徑均通過。READY spec 418 保存地址、bytes、推論等級與未完成邊界。

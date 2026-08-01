@@ -2062,6 +2062,14 @@ func (s *State) consumeCombatAmmunition(attacker combat.Fighter, shots int) erro
 }
 
 func (s *State) advanceCombatToParty() error {
+	// Every path that consumes a turn advances combatTurnIndex before coming
+	// back here. Synchronize all completed Action.delay values in one place so
+	// visibility effects do not depend on which UI/AI action ended the turn.
+	for index := 0; s.battle != nil && index < s.combatTurnIndex && index < len(s.combatTurns); index++ {
+		if err := s.battle.CompleteAction(s.combatTurns[index].FighterID); err != nil {
+			return err
+		}
+	}
 	for s.battle != nil && s.battle.Status() == combat.StatusActive {
 		if s.combatTurnIndex >= len(s.combatTurns) {
 			return s.advanceCombatRound()

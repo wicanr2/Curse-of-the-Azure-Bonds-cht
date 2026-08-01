@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`9a66783`
+本 milestone 的 CoAB 基底：`ea5b529`
 依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -351,7 +351,14 @@ commit 內保存不可能自我引用的 hash。
   同一作品中立 `VisibleTo` 契約；物理 AC 也修正為 `18h` 只抵消 `19h`，
   不抵消 `47h`。core／State 正反例與 Standing Stone 起始真實 MON6
   提朗瑟克斯長路徑均為驗收門檻。blink、動物視覺與完整 effect 生命週期
-  仍未完成。
+  由第 418 輪接續；完整 effect 生命週期仍未完成。
+- 第 418 輪由 typed TPOV resolver 與 overlay 12 handlers 關閉 `25h／45h`：
+  blink 在 action delay 0 時 hidden 並把 attack roll 寫 `FFh`；`45h` 只對
+  MonsterType `13h` observer 生效，`18h` 只取消 hidden、不取消 `-4`。
+  `+11Ah` 另由 dragon-slayer `03h` consumer 與 WORG／FIGHTING DOG／MONKEY／
+  OWL BEAR 真實 records 證明為 MonsterType。Battle／State 已接通 pending／
+  completed delay lifecycle，Tilverton 犬舍與 Standing Stone 長路徑均通過；
+  exact initiative 數值與完整 effect duration／save 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
