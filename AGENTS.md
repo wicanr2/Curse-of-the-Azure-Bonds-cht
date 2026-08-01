@@ -534,8 +534,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   全表逐節點 `1d100`；delay 優先、roll 解 tie、完全 tie 後掃者勝。engine
   `combat/initiative` 保存這套作品中立 primitive，CoAB Battle 保存建構順序，
   MON parser 也修正 combat team 是 `+198h` 而非 `+197h`。完整 effect
-  duration／save、`area.field_596` surprise writer、玩家 `DELAY` 20→19 同輪
-  重新入列、DOS 等價性及原版底層 PRNG 仍未完成；READY spec 419 是權威。
+  duration／save、`area.field_596` surprise writer、DOS 等價性及原版底層
+  PRNG 仍未完成。第 420 輪已推翻「一般 DELAY 是 20→19」：頂層 D 先進
+  DONE 子選單，第二層 D exact 寫 delay 1 並由動態 scheduler 同輪重新入列；
+  20→19 是尚未接 UI 的 Quick handoff。READY spec 419／420 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入

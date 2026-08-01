@@ -65,7 +65,7 @@ static main()
   if (strstr(path, "overlay-08.bin") != -1)
   {
     emit_range(out, "TURN_SCHEDULER_CANDIDATE", 0x0180, 0x0480);
-    emit_range(out, "ACTION_DELAY_COMPLETION", 0x0580, 0x0720);
+    emit_range(out, "PLAYER_ACTION_INPUT_AND_DELAY", 0x0410, 0x1300);
   }
   else if (strstr(path, "overlay-09.bin") != -1)
     emit_range(out, "TURN_SCHEDULER_D100_CANDIDATE", 0x09C0, 0x0C20);

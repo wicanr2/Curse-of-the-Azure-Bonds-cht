@@ -171,6 +171,7 @@ type State struct {
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn
 	combatTurnIndex         int
+	combatDelayedTurns      map[int]bool
 	combatTargetIndex       int
 	combatCastingSpell      uint8
 	combatCastingClass      party.Class

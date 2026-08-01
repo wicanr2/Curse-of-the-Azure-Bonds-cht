@@ -134,7 +134,9 @@ local 變數 `bp-1=maxDelay`、`bp-2=maxRoll`、`bp-3=currentRoll`：
 ## 未完成邊界
 
 - `area.field_596` 的所有 writers、ECL surprise opcode 與 party ranger 分支。
-- 玩家 `DELAY` 命令的 UI、20→19 handoff、重新抽 d100 與同輪第二次行動。
+- 玩家 `DELAY` 命令、同輪重新抽 d100 與第二次行動已由 READY spec 420 關閉；
+  本規格原先把 `20→19` 歸入一般 Delay 的假說已被推翻。`20→19` 是 Quick
+  handoff，相關 UI／runtime trace 仍待完成。
 - DOS 版本是否 byte-for-byte 使用相同 routine／PRNG；本輪 exact 只限 PC-98。
 - PC-98 `roll_dice` 底層 PRNG 演算法與 save/load continuation。
 

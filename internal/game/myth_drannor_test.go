@@ -460,8 +460,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			gamePackText(t, state, "myth-drannor.grave.rebury"),
 			gamePackText(t, state, "option.go"),
 		}) {
-		t.Fatalf("grave menu mode=%v choices=%v original=%v message=%q",
-			state.Mode, state.Choices, state.currentOriginalChoices, state.Message)
+		t.Fatalf("grave menu mode=%v choices=%v original=%v message=%q round=%d enemies=%#v",
+			state.Mode, state.Choices, state.currentOriginalChoices, state.Message,
+			state.battle.Round(), state.livingBySide(combat.SideEnemy))
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)

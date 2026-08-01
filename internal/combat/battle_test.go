@@ -543,6 +543,37 @@ func TestStartRoundAndCompleteActionProjectDelayLifecycle(t *testing.T) {
 	}
 }
 
+func TestDynamicRoundDelayActionReentersAtTierOne(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "first", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 20},
+		{ID: "other", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 10},
+	}, 420)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.BeginScheduledRound(); err != nil {
+		t.Fatal(err)
+	}
+	first, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || first.FighterID != "first" {
+		t.Fatalf("first=%+v ok=%v err=%v", first, ok, err)
+	}
+	if err := battle.DelayAction("first"); err != nil {
+		t.Fatal(err)
+	}
+	other, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || other.FighterID != "other" {
+		t.Fatalf("other=%+v ok=%v err=%v", other, ok, err)
+	}
+	if err := battle.CompleteAction("other"); err != nil {
+		t.Fatal(err)
+	}
+	delayed, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || delayed.FighterID != "first" || delayed.Initiative != 1 {
+		t.Fatalf("delayed=%+v ok=%v err=%v", delayed, ok, err)
+	}
+}
+
 func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,
