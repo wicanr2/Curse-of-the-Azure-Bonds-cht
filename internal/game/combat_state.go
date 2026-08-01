@@ -2494,18 +2494,42 @@ func formatAttackMessage(catalog interface{ Text(string, string) string }, attac
 	if !result.Hit {
 		return fmt.Sprintf(catalog.Text("combat_miss", "%s 攻擊 %s 未命中。"), attacker.Name, target.Name)
 	}
+	fireDamage, fireProtected := attackFireEffectSummary(result)
+	if fireProtected {
+		return fmt.Sprintf(catalog.Text("combat_hit_fire_protected", ""), attacker.Name, target.Name, result.Damage)
+	}
+	if fireDamage > 0 {
+		return fmt.Sprintf(catalog.Text("combat_hit_with_fire", ""), attacker.Name, target.Name, result.Damage, fireDamage)
+	}
 	return fmt.Sprintf(catalog.Text("combat_hit", "%s 攻擊 %s，造成 %d 點傷害。"), attacker.Name, target.Name, result.Damage)
 }
 
 func formatMultiAttackMessage(catalog interface{ Text(string, string) string }, attacker combat.Fighter, results []combat.AttackResult) string {
-	hits, damage := 0, 0
+	hits, damage, fireDamage, fireProtected := 0, 0, 0, false
 	for _, result := range results {
 		if result.Hit {
 			hits++
 			damage += result.Damage
 		}
+		effectDamage, effectProtected := attackFireEffectSummary(result)
+		fireDamage += effectDamage
+		fireProtected = fireProtected || effectProtected
+	}
+	if fireDamage > 0 || fireProtected {
+		return fmt.Sprintf(catalog.Text("combat_multi_attack_with_fire", ""), attacker.Name, len(results), hits, damage, fireDamage)
 	}
 	return fmt.Sprintf(catalog.Text("combat_multi_attack", "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。"), attacker.Name, len(results), hits, damage)
+}
+
+func attackFireEffectSummary(result combat.AttackResult) (damage int, protected bool) {
+	for _, effect := range result.Effects {
+		if effect.Kind != 0x4F {
+			continue
+		}
+		damage += effect.Damage
+		protected = protected || effect.Protected
+	}
+	return damage, protected
 }
 
 func combatResultMessage(catalog interface{ Text(string, string) string }, status combat.Status) string {

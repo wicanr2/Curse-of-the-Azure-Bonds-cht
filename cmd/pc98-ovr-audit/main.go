@@ -26,6 +26,7 @@ func main() {
 	soundFX := flag.Bool("soundfx", false, "稽核 SOUNDFX 0893:0000 與 selector 常數")
 	extractCodeDir := flag.String("extract-code-dir", "", "將每段已驗證 code 匯出至指定目錄，供 IDA 載入")
 	resolveStubText := flag.String("resolve-stub", "", "解析 resident stub：OVERLAY:HEX_OFFSET，例如 12:0214")
+	resolveCodeText := flag.String("resolve-code", "", "反查 handler local offset：OVERLAY:HEX_OFFSET，例如 23:03FE")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
 		flag.PrintDefaults()
@@ -79,6 +80,26 @@ func main() {
 			overlayIndex, stubOffset, entry.Index, entry.CodeOffset,
 			entry.Flags, entry.ExecutableOffset,
 		)
+	}
+	if *resolveCodeText != "" {
+		overlayIndex, codeOffset, err := parseOverlayStub(*resolveCodeText)
+		if err != nil {
+			fatalf("無效 resolve-code：%v", err)
+		}
+		if overlayIndex < 0 || overlayIndex >= len(overlays) {
+			fatalf("overlay index %d 超出 0..%d", overlayIndex, len(overlays)-1)
+		}
+		entries := overlays[overlayIndex].ResolveCode(codeOffset)
+		for _, entry := range entries {
+			fmt.Printf(
+				"code_resolution overlay=%d code=0x%04X entry=%d stub=0x%04X flags=0x%02X exe=0x%X\n",
+				overlayIndex, codeOffset, entry.Index, entry.StubOffset,
+				entry.Flags, entry.ExecutableOffset,
+			)
+		}
+		if len(entries) == 0 {
+			fatalf("overlay %d 找不到 handler local 0x%04X", overlayIndex, codeOffset)
+		}
 	}
 	var debugTable borlanddebug.Table
 	if *soundFX {

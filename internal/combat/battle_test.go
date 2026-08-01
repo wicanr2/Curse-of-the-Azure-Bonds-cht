@@ -254,6 +254,108 @@ func TestResolveAttackRequiresArmorClass(t *testing.T) {
 	}
 }
 
+func TestAttackDispatchesOperational4FAfterLivingTargetHit(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "flamed", Side: SideEnemy, HitPoints: 30, MaxHitPoints: 30,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x4F, Innate: true}}},
+		{ID: "hero", Side: SideParty, HitPoints: 50, MaxHitPoints: 50, ArmorClass: 10},
+	}, 414)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.Attack("flamed", "hero")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.Hit || result.Damage != 1 || len(result.Effects) != 1 {
+		t.Fatalf("post-hit result=%+v", result)
+	}
+	effect := result.Effects[0]
+	if effect.Kind != 0x4F || effect.DamageFlags != DamageFlagFire|DamageFlagMagic ||
+		effect.RolledDamage < 2 || effect.RolledDamage > 20 || effect.Damage != effect.RolledDamage || effect.Protected ||
+		result.TargetHP != 49-effect.Damage || effect.TargetHP != result.TargetHP {
+		t.Fatalf("4F effect=%+v result=%+v", effect, result)
+	}
+}
+
+func TestAttack4FRequiresOperationalEffectHitAndLivingTarget(t *testing.T) {
+	tests := []struct {
+		name     string
+		affect   MonsterAffect
+		targetHP int
+		wantHit  bool
+	}{
+		{name: "inactive", affect: MonsterAffect{Kind: 0x4F}, targetHP: 10, wantHit: true},
+		{name: "physical kill", affect: MonsterAffect{Kind: 0x4F, Innate: true}, targetHP: 1, wantHit: true},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			battle, err := NewBattle([]Fighter{
+				{ID: "attacker", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+					AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+					MonsterAffects: []MonsterAffect{test.affect}},
+				{ID: "target", Side: SideParty, HitPoints: test.targetHP, MaxHitPoints: test.targetHP, ArmorClass: 10},
+			}, 414)
+			if err != nil {
+				t.Fatal(err)
+			}
+			result, err := battle.Attack("attacker", "target")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.Hit != test.wantHit || len(result.Effects) != 0 {
+				t.Fatalf("result=%+v", result)
+			}
+		})
+	}
+
+	// ResolveAttack is the injected physical boundary. The original 4F caller
+	// lives in the higher attack-slot scheduler, so a miss there cannot dispatch
+	// a post-hit effect.
+	battle, err := NewBattle([]Fighter{
+		{ID: "attacker", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, AttackBonus: -100,
+			DamageDiceCount: 1, DamageDiceSides: 1, MonsterAffects: []MonsterAffect{{Kind: 0x4F, Innate: true}}},
+		{ID: "target", Side: SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	miss, err := battle.ResolveAttack("attacker", "target", 2, 1)
+	if err != nil || miss.Hit || len(miss.Effects) != 0 {
+		t.Fatalf("miss=%+v err=%v", miss, err)
+	}
+}
+
+func TestAttack4FHonorsFireProtectionAndOnlyFirstTwoSlots(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "flamed", Side: SideEnemy, HitPoints: 30, MaxHitPoints: 30,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, AttacksPerTurn: 3,
+			MonsterAffects: []MonsterAffect{{Kind: 0x4F, Innate: true}}},
+		{ID: "warded", Side: SideParty, HitPoints: 50, MaxHitPoints: 50, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x70, Innate: true}}},
+	}, 414)
+	if err != nil {
+		t.Fatal(err)
+	}
+	results, err := battle.AttackSequence("flamed", "warded")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(results) != 3 || len(results[0].Effects) != 1 || len(results[1].Effects) != 1 || len(results[2].Effects) != 0 {
+		t.Fatalf("slot results=%+v", results)
+	}
+	for index := 0; index < 2; index++ {
+		if !results[index].Effects[0].Protected || results[index].Effects[0].Damage != 0 ||
+			results[index].Effects[0].RolledDamage < 2 || results[index].Effects[0].RolledDamage > 20 {
+			t.Fatalf("slot %d effect=%+v", index+1, results[index].Effects[0])
+		}
+	}
+	if results[2].TargetHP != 47 {
+		t.Fatalf("protected sequence final HP=%d, want 47", results[2].TargetHP)
+	}
+}
+
 func TestSideAttackRollModifierIsBattleScopedAndSigned(t *testing.T) {
 	battle := testBattle(t)
 	if err := battle.SetSideAttackRollModifier(SideParty, 2); err != nil {

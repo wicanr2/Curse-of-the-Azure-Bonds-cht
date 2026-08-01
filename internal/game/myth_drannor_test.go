@@ -3522,6 +3522,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	detectInvisible := false
 	magicResistance := false
+	innateFireAttack := false
 	for _, affect := range tyranthraxus.MonsterAffects {
 		if !affect.Innate {
 			t.Fatalf("Tyranthraxus effect was suppressed by raw byte 4: %+v", affect)
@@ -3531,6 +3532,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 		if affect.Kind == 0x6A {
 			magicResistance = true
+		}
+		if affect.Kind == 0x4F {
+			innateFireAttack = true
 		}
 	}
 	if !detectInvisible || !tyranthraxus.MonsterCanDetectInvisible() {
@@ -3543,6 +3547,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if !tyranthraxus.MonsterProtectedFromDamage(combat.DamageFlagFire) ||
 		!tyranthraxus.MonsterProtectedFromDamage(combat.DamageFlagElectricity) {
 		t.Fatalf("Tyranthraxus elemental protection projection=%+v", tyranthraxus.MonsterAffects)
+	}
+	if !innateFireAttack || len(tyranthraxus.MonsterPostHitAffects(1)) != 1 ||
+		len(tyranthraxus.MonsterPostHitAffects(2)) != 1 || len(tyranthraxus.MonsterPostHitAffects(3)) != 0 {
+		t.Fatalf("Tyranthraxus post-hit effect projection=%+v", tyranthraxus.MonsterAffects)
 	}
 	boundaryTarget := *tyranthraxus
 	boundaryTarget.ID = "tyranthraxus-boundary"
@@ -3577,6 +3585,32 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if err != nil || len(lineResult.Impacts) != 1 || !lineResult.Impacts[0].Protected ||
 		lineResult.Impacts[0].Damage != 0 {
 		t.Fatalf("real MON6 electricity boundary result=%+v err=%v", lineResult, err)
+	}
+	boundaryAttacker := *tyranthraxus
+	boundaryAttacker.ID = "tyranthraxus-attack-boundary"
+	boundaryAttacker.HitPoints = boundaryAttacker.MaxHitPoints
+	boundaryAttacker.AttackBonus = 20
+	boundaryAttacker.DamageDiceCount = 1
+	boundaryAttacker.DamageDiceSides = 1
+	boundaryAttacker.DamageBonus = 0
+	boundaryVictim := combat.Fighter{
+		ID: "boundary-hero", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+		ArmorClass: 10,
+	}
+	attackBattle, err := combat.NewBattle([]combat.Fighter{boundaryAttacker, boundaryVictim}, 414)
+	if err != nil {
+		t.Fatal(err)
+	}
+	attackResult, err := attackBattle.Attack(boundaryAttacker.ID, boundaryVictim.ID)
+	if err != nil || !attackResult.Hit || attackResult.Damage != 1 || len(attackResult.Effects) != 1 {
+		t.Fatalf("real MON6 post-hit result=%+v err=%v", attackResult, err)
+	}
+	fireEffect := attackResult.Effects[0]
+	if fireEffect.Kind != 0x4F || fireEffect.DamageFlags != combat.DamageFlagFire|combat.DamageFlagMagic ||
+		fireEffect.RolledDamage < 2 || fireEffect.RolledDamage > 20 ||
+		fireEffect.Damage != fireEffect.RolledDamage || fireEffect.Protected ||
+		attackResult.TargetHP != 99-fireEffect.Damage {
+		t.Fatalf("real MON6 4F effect=%+v result=%+v", fireEffect, attackResult)
 	}
 	for action := 0; action < 1200 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {

@@ -317,9 +317,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`4cd743f`（第 409 輪 ECL session／持續 PRNG save v6）；
-  第 410 輪 PC-98 MON*SPC 載入與提朗瑟克斯偵測隱形 milestone 會由本文件
-  所在 commit 完成。
+- CoAB 本輪基底：`761f2fd`（第 413 輪提朗瑟克斯防火／防電 runtime）；
+  第 414 輪 PC-98 命中後 `4Fh` 火焰效果 milestone 會由本文件所在 commit
+  完成。
 - Engine dependency：`720c6ae`（含作品中立 `randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -515,15 +515,23 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   第 412 輪再以 typed TPOV resolver 證明 `6Ah → entry 100 → 2404h`，升級
   為 `exact`。Magic Missile 現先擲傷害再擲
   抗性，成功時傷害歸零、施放格與 continuation 仍進行；繁中訊息來自
-  locale stable ID。READY spec 411／412 是權威；`4Fh` 2d10 fire、`70h`
-  防火、`84h` Lightning Bolt、`87h` 防電雖已靜態關閉，runtime boundary、
-  HIGH PRIEST／MARGOYLE 特殊能力、其餘魔法路徑與動態演出仍未完成。
+  locale stable ID。READY spec 411／412 是權威；`70h／87h` runtime 已由
+  spec 413 接通，`4Fh` 命中後 runtime 已由 spec 414 接通。`84h`
+  Lightning Bolt、HIGH PRIEST／MARGOYLE 特殊能力、其餘魔法路徑與動態
+  演出仍未完成。
 - 第 413 輪把 `70h` Fire protection 與 `87h` Electricity protection 接入
   Fireball／Lightning Bolt。共用 core 只讀 raw damage flags；line spell
   呼叫端必須顯式傳入 flags，不得由 spell ID 或怪物名特判。保護成功仍保留
   visual／slot／turn transaction，只將 damage 清零並標 `Protected`。現行
   saving throw 先於 protection 的 PRNG 順序仍待 DOS runtime 驗證，不得把
   HP 結果正確擴大宣稱成完整亂數 fidelity。READY spec 413 是權威。
+- 第 414 輪由 PC-98 overlay 13 post-hit caller、overlay 23 `CHECKFX`
+  type 2／3 與 overlay 12 handler 共同證明：前兩物理攻擊槽命中且目標仍
+  存活時，operational `4Fh` 對同一目標追加 `2d10` Fire＋Magic。Battle
+  以 `AttackEffectResult` 分離武器傷害、擲骰與實際傷害；防火抵消時仍消耗
+  兩顆 d10。真實 MON6 長路徑與繁中 stable IDs 已回歸。原版 4F 動畫／
+  聲音、轉移目標動態 trace、`6Ah` 對 4F 的時序與 `84h` 仍未完成。
+  READY spec 414 是權威。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

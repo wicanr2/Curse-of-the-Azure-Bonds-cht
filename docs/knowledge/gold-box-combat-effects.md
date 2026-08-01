@@ -74,10 +74,33 @@ typed entry／fixup view；signature、bounds 或排序錯誤時失敗即關閉�
 結果同為零，也必須另外以 runtime trace 驗證 draw order，不能只靠最終數值
 宣稱完整 fidelity。
 
+## 物理命中後效果排程
+
+PC-98 的攻擊流程不是把所有怪物能力塞進基本命中公式。物理傷害完成後，
+caller 先確認目標仍在戰鬥，再把 `attackSlotIndex+1` 交給共用 `CHECKFX`。
+本作目前 exact 關閉的 mapping 是：type 2／3 都會搜尋並 dispatch effect
+`4Fh`；handler 對既有 attack target 擲 `2d10` Fire＋Magic。
+
+可沿用的引擎設計原則：
+
+- 武器傷害與後續效果要用不同 result records，不能只合成一個 damage 數字；
+- effect owner、原攻擊 target、attack slot、raw effect ID 與 damage flags 都要
+  明確保存，避免 State 依怪物名稱猜特殊能力；
+- post-hit 表是按 check type 分派，不可假設「怪物有能力就每次攻擊都觸發」；
+- 物理擊殺不再 dispatch；元素防護即使清除實際傷害，也不能回滾 handler
+  先前消耗的傷害骰；
+- effect ID／check-type mapping 目前只證明於 CoAB PC-98，不可直接複製到其他
+  Gold Box 作品；其他作品應重新解析自身 `CHECKFX` table。
+
+原版動畫、sound cue 與 wall-clock timing 是另一條 presentation oracle，不能
+由傷害 handler 自行推定。數值核心完成不等於動態演出完成。
+
 ## 可重現入口
 
 - `docs/spec/410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md`
 - `docs/spec/411-pc98-tyranthraxus-magic-resistance.md`
 - `docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md`
 - `docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md`
+- `docs/spec/414-pc98-post-hit-effect-4f-runtime.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`
+- `scripts/ida/pc98_attack_effect_phase_audit.idc`

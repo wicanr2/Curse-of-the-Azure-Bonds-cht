@@ -75,7 +75,9 @@ resident segment:stub offset
 
 ## 尚未完成
 
-- `4Fh／70h／87h` 尚未接入 remake 所有 pre-damage boundary。
+- `4Fh` 命中後 2d10 runtime 已由 spec 414 接通；`70h／87h` 已由 spec 413
+  接入 Fireball／Lightning Bolt。其他 spell／item pre-damage boundary 仍未
+  全數稽核，不能擴大宣稱全域完成。
 - 怪物 Lightning Bolt 的施放頻率、AI、目標、牆面反彈、逐格動畫與聲音。
 - 三神器對提朗瑟克斯效果的 writer／consumer 與終戰 DOS runtime trace。
 - HIGH PRIEST `09h／0Ah`、MARGOYLE `77h` 與其餘效果表。

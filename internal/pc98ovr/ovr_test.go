@@ -54,6 +54,12 @@ func TestDecodeChainedControls(t *testing.T) {
 	if _, ok := decoded[0].ResolveStub(entryTableOffset + 1); ok {
 		t.Fatal("accepted a pointer between resident stubs")
 	}
+	if got := decoded[0].ResolveCode(2); len(got) != 1 || got[0] != entry {
+		t.Fatalf("reverse code resolution=%+v, want %+v", got, entry)
+	}
+	if got := decoded[0].ResolveCode(0x1234); len(got) != 0 {
+		t.Fatalf("unknown code offset resolved to %+v", got)
+	}
 }
 
 func TestDecodeRejectsMalformedEntryAndRelocation(t *testing.T) {

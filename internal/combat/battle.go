@@ -187,6 +187,24 @@ func (f Fighter) MonsterProtectedFromDamage(flags uint8) bool {
 	return false
 }
 
+// MonsterPostHitAffects returns the operational monster affects dispatched by
+// the reference CHECKFX table after a successful physical attack slot. The
+// PC-98 caller passes attack slot + 1; CHECKFX types 2 and 3 both dispatch
+// effect 4F, while later types do not. Raw affects remain attached to Fighter
+// and this projection adds behavior without renaming or rewriting them.
+func (f Fighter) MonsterPostHitAffects(attackSlot int) []MonsterAffect {
+	if attackSlot < 1 || attackSlot > 2 {
+		return nil
+	}
+	var effects []MonsterAffect
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() && affect.Kind == 0x4F {
+			effects = append(effects, affect)
+		}
+	}
+	return effects
+}
+
 // MagicResistanceChance mirrors the PC-98 EFFPROCS common routine. The
 // original compares a d100 roll directly against this signed expression and
 // does not clamp it before the comparison.
@@ -266,6 +284,19 @@ type AttackResult struct {
 	Critical   bool
 	Damage     int
 	TargetHP   int
+	Effects    []AttackEffectResult
+}
+
+// AttackEffectResult preserves a post-hit effect separately from the weapon
+// result. Kind is the original MON*SPC effect ID; DamageFlags use the decoded
+// reference bitfield instead of a title-specific spell or monster name.
+type AttackEffectResult struct {
+	Kind         uint8
+	DamageFlags  uint8
+	RolledDamage int
+	Damage       int
+	TargetHP     int
+	Protected    bool
 }
 
 type MoveResult struct {
@@ -644,19 +675,55 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 // the dice source inside Battle makes the game adapter reproducible by seed,
 // while ResolveAttack remains available for exact rule regression tests.
 func (b *Battle) Attack(attackerID, targetID string) (AttackResult, error) {
+	return b.attackSlot(attackerID, targetID, 1)
+}
+
+func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (AttackResult, error) {
 	if err := b.ValidateAttack(attackerID, targetID); err != nil {
 		return AttackResult{}, err
 	}
 	attacker := b.fighters[attackerID]
+	var result AttackResult
+	var err error
 	if attacker.DamageDiceCount < 1 || attacker.DamageDiceSides < 1 {
-		return b.ResolveAttack(attackerID, targetID, b.rng.Intn(20)+1, 0)
+		result, err = b.ResolveAttack(attackerID, targetID, b.rng.Intn(20)+1, 0)
+	} else {
+		attackRoll := b.rng.Intn(20) + 1
+		damageRoll := 0
+		for i := 0; i < attacker.DamageDiceCount; i++ {
+			damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
+		}
+		result, err = b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
 	}
-	attackRoll := b.rng.Intn(20) + 1
-	damageRoll := 0
-	for i := 0; i < attacker.DamageDiceCount; i++ {
-		damageRoll += b.rng.Intn(attacker.DamageDiceSides) + 1
+	if err != nil || !result.Hit || result.TargetHP <= 0 {
+		return result, err
 	}
-	return b.ResolveAttack(attackerID, targetID, attackRoll, damageRoll)
+	for _, affect := range attacker.MonsterPostHitAffects(attackSlot) {
+		target := b.fighters[targetID]
+		if target.HitPoints <= 0 {
+			break
+		}
+		flags := DamageFlagFire | DamageFlagMagic
+		rolledDamage := b.rng.Intn(10) + 1 + b.rng.Intn(10) + 1
+		effect := AttackEffectResult{
+			Kind: affect.Kind, DamageFlags: flags, RolledDamage: rolledDamage, TargetHP: target.HitPoints,
+			Protected: target.MonsterProtectedFromDamage(flags),
+		}
+		if !effect.Protected {
+			damage := rolledDamage
+			if damage > target.HitPoints {
+				damage = target.HitPoints
+			}
+			effect.Damage = damage
+			effect.TargetHP = target.HitPoints - damage
+			if setErr := b.SetHitPoints(targetID, effect.TargetHP); setErr != nil {
+				return AttackResult{}, setErr
+			}
+		}
+		result.Effects = append(result.Effects, effect)
+		result.TargetHP = effect.TargetHP
+	}
+	return result, nil
 }
 
 // AttackSequence resolves the number of attacks granted by the readied
@@ -673,7 +740,7 @@ func (b *Battle) AttackSequence(attackerID, targetID string) ([]AttackResult, er
 	}
 	results := make([]AttackResult, 0, attacks)
 	for index := 0; index < attacks && b.status == StatusActive; index++ {
-		result, err := b.Attack(attackerID, targetID)
+		result, err := b.attackSlot(attackerID, targetID, index+1)
 		if err != nil {
 			return nil, err
 		}

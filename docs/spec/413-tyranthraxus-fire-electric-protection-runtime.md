@@ -6,6 +6,9 @@
 Fireball／Lightning Bolt 的實際玩家施法路徑。它不包含 `4Fh` 天生火焰
 攻擊、`84h` 怪物閃電術 AI，也不表示所有 spell／item damage boundary 完成。
 
+> 後續狀態：`4Fh` 已由 READY spec 414 接入命中後攻擊排程器；本文件的
+> 「不包含」描述只界定第 413 輪本身，不再代表目前缺口。
+
 ## 證據鏈
 
 | 證據 | 結論 | 等級 |
@@ -58,5 +61,6 @@ State 由同一份正式 JSON 產生防護次數摘要；visual impact 保存
 
 - 防護與 saving throw 的原版逐次 RNG／文字／sound cue 時序。
 - Fireball terrain-aware range、Lightning Bolt tie order 與完整牆角反彈。
-- `4Fh` 天生 2d10 fire attack、`84h` 怪物 Lightning Bolt scheduler／AI。
+- `4Fh` 天生 2d10 fire attack 已由 spec 414 關閉數值／排程；其原版動畫、
+  聲音仍缺。`84h` 怪物 Lightning Bolt scheduler／AI 仍未完成。
 - `6Ah` 對 Fireball、Lightning Bolt 與其他 Magic damage 的多目標順序。
