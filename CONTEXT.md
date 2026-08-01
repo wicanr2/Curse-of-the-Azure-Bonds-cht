@@ -2846,3 +2846,19 @@ terrain，並沿用資料化 Lightning timeline、effect `87h` 防電、聲音�
 `PROGRAM 8`。READY spec 415 保存 hashes、位址、推論等級與限制。原版
 target range／LOS／tie order、終戰牆面逐幀 oracle、精確時間與 `6Ah` 對
 effect 84 的時序仍未完成。
+
+2026-08-02 第四百一十六輪以非破壞性 IDA 副本繼續追 effect `84h` 選敵。
+Borland `PICKTARGET 00B8:3D7F` 在 overlay 13 exact 設定二十次上限，呼叫
+`014A:00C0`；typed resolver 將它落到 overlay 24 handler `285Bh`，再由
+overlay 32 footprint／combat-background consumer 建立鄰近敵方候選。
+不可見候選會從表內移除後重抽。spell `33h` 的 PC-98 resident record 在
+file `13114h`，fixed/per-level range bytes 是 `4／1`；effect line helper
+另直接使用 range 10。
+
+Battle 新增作品中立 `TargetSelectionOptions`，依 cardinal／diagonal `2／3`
+加權距離、雙方 footprint、range 10 與 `LineTerrain` 牆面建立候選，保留
+二十次 PRNG／可見性 callback。State 在一般 living-target selector 前先走
+此流程；無 ranged target 時仍消耗 effect `84h` action，不改成物理攻擊。
+focused core／State tests 已通過。READY spec 416 保存 exact／strong
+inference 邊界；原 combatant-array 同距 tie order、PC-98 invisibility
+runtime、無目標 `(0,0)` 動畫、終戰牆面逐幀與 `6Ah` 時序仍未完成。

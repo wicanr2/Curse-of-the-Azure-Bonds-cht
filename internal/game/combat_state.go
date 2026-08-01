@@ -2101,15 +2101,26 @@ func (s *State) advanceCombatToParty() error {
 		if len(targets) == 0 {
 			return s.finishCombat()
 		}
-		target, err := s.battle.SelectCombatTarget(fighter.ID, targetSide)
-		if err != nil {
-			return err
-		}
 		if fighter.MonsterThrowsLightning() && s.battle.Round() < 4 && s.combatLineTerrain != nil {
-			if err := s.castMonsterLightning(fighter, target); err != nil {
+			point := combat.TilePoint{}
+			target, found, err := s.battle.SelectRangedCombatTarget(fighter.ID, targetSide, combat.TargetSelectionOptions{
+				MaxRange: 10,
+				Terrain:  s.combatLineTerrain,
+			})
+			if err != nil {
+				return err
+			}
+			if found {
+				point = combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+			}
+			if err := s.castMonsterLightning(fighter, point); err != nil {
 				return err
 			}
 			return nil
+		}
+		target, err := s.battle.SelectCombatTarget(fighter.ID, targetSide)
+		if err != nil {
+			return err
 		}
 		if hasMonsterMagicMissile(fighter) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
@@ -2164,8 +2175,17 @@ func (s *State) advanceCombatToParty() error {
 	return s.finishCombat()
 }
 
-func (s *State) castMonsterLightning(caster, target combat.Fighter) error {
-	point := combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint) error {
+	origin := combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}
+	if point == origin || !s.combatLineTerrain(point.X, point.Y).Valid {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text(
+			"combat_monster_lightning_bolt_no_target",
+			"%s 放出閃電，但沒有找到可用目標。",
+		), caster.Name)
+		s.combatTurnIndex++
+		s.requestSound(SoundLightning)
+		return s.advanceCombatToParty()
+	}
 	result, err := s.battle.CastReflectingLineSpell(
 		caster.ID, LightningBoltSpellID, point, 1,
 		combat.ReflectingLineOptions{
@@ -2208,7 +2228,7 @@ func (s *State) castMonsterLightning(caster, target combat.Fighter) error {
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
 	if s.queueCombatVisual(combat.VisualEvent{
 		Kind: combat.VisualLineSpell, Effect: "lightning_bolt", ActorID: caster.ID,
-		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}, To: point,
+		From: origin, To: point,
 		Hit: len(impacts) != 0, Impacts: impacts, TravelImpacts: result.TravelImpacts,
 		Segments: segments,
 	}) {

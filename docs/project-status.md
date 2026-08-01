@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`1cd73b5`
+本 milestone 的 CoAB 基底：`fbeb25b`
 依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -335,8 +335,15 @@ commit 內保存不可能自我引用的 hash。
   State 則只在第 1–3 回合先於一般攻擊排程怪物閃電，並使用正式 terrain
   callback、元素防護、資料化 timeline 與繁中 stable IDs。Standing Stone
   起始長路徑的真實 MON6 提朗瑟克斯已產生動態閃電事件且仍完成
-  `PROGRAM 8`。原版 target range／LOS／tie order、終戰牆面反射與逐幀
-  timing 仍未完成。
+  `PROGRAM 8`。第 416 輪已接續完成 target range／牆面候選；終戰牆面反射
+  與逐幀 timing 仍未完成。
+- 第 416 輪由 PC-98 `PICKTARGET 00B8:3D7F`、overlay 24 候選建立器、
+  overlay 32 footprint／地形 consumer 與 spell `33h` record，接入 range 10、
+  cardinal／diagonal 2／3 加權距離、牆面阻擋、雙方 footprint 與二十次
+  不可見候選移除重抽。effect `84h` 不再先從所有存活者任選；無候選時仍
+  依原 handler 消耗 action，不回退物理攻擊。core／State tests 覆蓋超距、
+  牆後、大型 footprint、不可見與無目標 continuation。原始 combatant-array
+  同距順序、PC-98 invisibility runtime 與 `(0,0)` fallback 動畫仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
