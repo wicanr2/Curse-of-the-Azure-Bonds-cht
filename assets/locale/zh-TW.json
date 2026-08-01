@@ -260,6 +260,7 @@
     "captured": "你們被俘虜了。",
     "combat_started": "戰鬥開始！",
     "combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
+    "combat_magic_resisted": "%s 對 %s 施放的 %d 枚魔法飛彈遭魔法抗性抵消。",
     "combat_fireball": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。",
     "combat_lightning_bolt": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。",
     "combat_stinking_cloud": "%s 製造一片惡臭雲霧，籠罩 %d 名目標。",

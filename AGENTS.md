@@ -179,9 +179,16 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 - `.asm` 是攤平文字，只適合定位候選，不具有 `.i64` 的 xref graph。查 caller、
   reader／writer 或全域 consumer 時，優先以 IDC 查 `.i64`，再回讀完整指令與
   raw bytes；不得以 grep 命中數冒充引用圖或資料流證據。
+- IDC 對直接 data xref 的讀寫分類應使用 `XrefType()`（例如
+  `dr_W／dr_R／dr_O`），不得用助憶碼字串、空格排版或固定運算元位置猜測。
+  這項分類只能證明 IDA 已建立的直接 xref，不包含指標間接存取。
 - IDA 的直接 xref 不涵蓋先取位址、再經暫存器或指標間接讀寫的路徑。若看到
   讀取很多、寫入異常少，必須追蹤 address-taken、register propagation、record
   base 與 runtime trace，不能直接判定欄位只有一個 writer。
+- 分析 Borland overlay／TPOV 時，必須分開記錄 code bytes、relocation／fixup、
+  overlay-local offset、resident segment 與 runtime far pointer。在重定位尚未解析前，
+  表內 raw addend 只能標為「未解析候選」，不得直接命名成 handler 位址；
+  相同數字也不得跨位址空間合併。
 - 目前 `ida-pro-9.4-ver2` image 的 IDAPython 會受主機 Python 路徑影響；本專案
   已驗證 IDC 可用。headless 稽核腳本必須把結果寫入明確檔案並檢查內容，不能
   只依賴 `Message()`／stdout 或 exit code 0 判定成功。
@@ -497,8 +504,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   byte `+4`。因此 MON*SPC raw `+4=0` 不能作為天生效果停用 gate。Battle
   以作品中立 `Innate` 標記保留 template 能力；Standing Stone 起始正常長
   路徑載入提朗瑟克斯六筆真實效果，`18h` 偵測隱形已抵消隱形 AC bonus，
-  並完成 37 人終戰與 PROGRAM 8。READY spec 410 是權威；其餘五筆、閃電、
-  魔法抗性、HIGH PRIEST／MARGOYLE 特殊能力與動態演出仍未完成。
+  並完成 37 人終戰與 PROGRAM 8。READY spec 410 是權威。
+- 第 411 輪以 PC-98 overlay 12 raw bytes／IDA 關閉魔法抗性 common
+  routine：`base+(11-casterLevel)*5`，`1d100 <= threshold` 時
+  `Protected(0)` 清除傷害。local `23F4h／2404h` 是 50%／15% wrappers；
+  `6Ah → 15%` 由獨立 DOS 反編譯交叉支持，但在 TPOV relocation
+  完整解出前仍標 `strong inference`。Magic Missile 現先擲傷害再擲
+  抗性，成功時傷害歸零、施放格與 continuation 仍進行；繁中訊息來自
+  locale stable ID。READY spec 411 是權威；`4Fh／70h／84h／87h`、
+  HIGH PRIEST／MARGOYLE 特殊能力、其餘魔法路徑與動態演出仍未完成。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

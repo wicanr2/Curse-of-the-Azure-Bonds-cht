@@ -2763,3 +2763,23 @@ Battle 新增作品中立 `Innate` 來源標記；角色後天效果仍保留既
 `scripts/ida/pc98_monster_affect_loader_audit.idc` 保存 hashes、位址、xref
 及推論等級。下一步優先追 `4Fh／6Ah／70h／84h／87h` 中的閃電或魔法抗性；
 HIGH PRIEST `09h／0Ah`、MARGOYLE `77h` 也仍未解。
+
+2026-08-02 第四百一十一輪繼續追蹤 PC-98 EFFPROCS overlay 12。
+raw bytes 與先前已保存的 IDA 報告證明 common routine 以
+`base+(11-casterLevel)*5` 為門檻，在 current affect 存在或 Magic
+damage flag 設定時擲 `1d100`；擲值不大於門檻就呼叫 local `001Bh`
+`Protected(0)` 清除傷害。local `23F4h／2404h` 分別是 50／15 base
+wrappers。`MON6SPC 6Ah → 15%` 由獨立 DOS 反編譯交叉支持；
+由於 TPOV relocation 尚未完整套用，該 mapping 誠實標為
+`strong inference`，不把 table raw addend 當直接 handler 位址。
+
+Battle 現以作品中立 `MonsterMagicResistanceBase`與
+`MagicResistanceChance` 套用此公式。Magic Missile 維持原順序：先擲完
+所有傷害骰，再擲抗性 d100；成功時傷害歸零，但施放格、動畫與
+continuation 仍進行。繁中 `combat_magic_resisted` 從正式 locale JSON
+解析，測試不複製顯示字串。Standing Stone 起始長路徑證明真實
+提朗瑟克斯帶有 operational `6Ah`，並仍可完成 `PROGRAM 8`。
+READY spec 411 與 `docs/knowledge/gold-box-combat-effects.md` 是本輪權威。
+下一步應完成 TPOV relocation typed decoder，或追蹤 `84h` 閃電施放與
+`87h` 電擊保護；不可在未證明 damage boundary 前將魔法抗性全域套到
+Fireball、Lightning Bolt 或雲霧。

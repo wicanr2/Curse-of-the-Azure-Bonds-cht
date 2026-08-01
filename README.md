@@ -935,6 +935,16 @@ COMBAT，現在只在有完整 dungeon ECL session 證據時立即續跑，不�
 完整法術、特殊能力、AI、死亡動畫、音效及 DOS 動態演出也仍未完成。本輪
 嘗試的直接終戰截圖只得到預覽隊伍戰敗頁，因而未放入 README 冒充完成畫面。
 
+第 410／411 輪開始逐項還原這場終戰的真實怪物效果。PC-98
+Borland 紀號、IDA 與 raw bytes 已證明 `MON*SPC` 天生能力不能被
+raw byte 4 的零值停用；提朗瑟克斯的 `18h` 現會偵測隱形，`6Ah`
+則以 15% 為基準，套用 `base+(11-施法者等級)×5` 後抵抗
+Magic Missile。骰子順序是先擲傷害、再擲 d100；成功時傷害歸零，
+但法術格與戰鬥 continuation 仍正常消耗／進行。`6Ah → 15%`
+目前依一次 bytes 與獨立 DOS 轉寫交叉支持，在 TPOV relocation 完整
+解出前誠實標為 `strong inference`；還沒有擴大到火球、閃電束或雲霧。
+證據與限制見 [`spec 411`](docs/spec/411-pc98-tyranthraxus-magic-resistance.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

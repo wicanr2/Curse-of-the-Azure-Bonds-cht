@@ -3521,6 +3521,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("Tyranthraxus MON6SPC effects=%+v", tyranthraxus)
 	}
 	detectInvisible := false
+	magicResistance := false
 	for _, affect := range tyranthraxus.MonsterAffects {
 		if !affect.Innate {
 			t.Fatalf("Tyranthraxus effect was suppressed by raw byte 4: %+v", affect)
@@ -3528,9 +3529,16 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		if affect.Kind == 0x18 {
 			detectInvisible = true
 		}
+		if affect.Kind == 0x6A {
+			magicResistance = true
+		}
 	}
 	if !detectInvisible || !tyranthraxus.MonsterCanDetectInvisible() {
 		t.Fatalf("Tyranthraxus detect-invisible projection=%+v", tyranthraxus.MonsterAffects)
+	}
+	if base, ok := tyranthraxus.MonsterMagicResistanceBase(); !magicResistance || !ok || base != 15 {
+		t.Fatalf("Tyranthraxus magic-resistance projection base=%d ok=%v effects=%+v",
+			base, ok, tyranthraxus.MonsterAffects)
 	}
 	for action := 0; action < 1200 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {

@@ -150,6 +150,25 @@ func (f Fighter) MonsterCanDetectInvisible() bool {
 	return false
 }
 
+// MonsterMagicResistanceBase reports the evidence-backed percentage base
+// supplied by a monster affect handler. Effect 6A maps to the 15-percent
+// wrapper at strong-inference confidence; the shared formula itself is exact.
+func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() && affect.Kind == 0x6A {
+			return 15, true
+		}
+	}
+	return 0, false
+}
+
+// MagicResistanceChance mirrors the PC-98 EFFPROCS common routine. The
+// original compares a d100 roll directly against this signed expression and
+// does not clamp it before the comparison.
+func MagicResistanceChance(base, casterLevel int) int {
+	return base + (11-casterLevel)*5
+}
+
 // MonsterAffectArmorClassBonus projects only the effect kinds whose
 // CanHitTarget behavior is verified in the reference adapter.
 func (f Fighter) MonsterAffectArmorClassBonus() int {
@@ -245,6 +264,7 @@ type SpellResult struct {
 	Healing  int
 	TargetHP int
 	Targets  int
+	Resisted bool
 }
 
 type AreaSpellImpact struct {
@@ -797,13 +817,22 @@ func (b *Battle) castMagicMissile(casterID, targetID string, level int, spellID 
 	for index := 0; index < missiles; index++ {
 		damage += b.rng.Intn(4) + 2
 	}
+	resisted := false
+	if base, ok := target.MonsterMagicResistanceBase(); ok {
+		// Magic Missile reaches the original pre-damage affect boundary with
+		// the Magic damage flag set. Damage dice are consumed before this d100.
+		resisted = b.rng.Intn(100)+1 <= MagicResistanceChance(base, level)
+		if resisted {
+			damage = 0
+		}
+	}
 	if damage > target.HitPoints {
 		damage = target.HitPoints
 	}
 	target.HitPoints -= damage
 	b.fighters[targetID] = target
 	b.updateStatus()
-	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: spellID, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints}, nil
+	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: spellID, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints, Resisted: resisted}, nil
 }
 
 // CastFireball applies the reference 0x2F area spell: one level-d6 damage

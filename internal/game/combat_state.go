@@ -1119,7 +1119,16 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。"), caster.Name, target.Name, result.Missiles, result.Damage)
+	if result.Resisted {
+		format := s.catalog.Text("combat_magic_resisted", "")
+		if format != "" {
+			s.combatMessage = fmt.Sprintf(format, caster.Name, target.Name, result.Missiles)
+		} else {
+			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", ""), caster.Name, target.Name, result.Missiles, result.Damage)
+		}
+	} else {
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_magic_missile", ""), caster.Name, target.Name, result.Missiles, result.Damage)
+	}
 	if s.queueMagicMissileVisual(caster, target, result.Missiles, result.TargetHP <= 0) {
 		return nil
 	}
