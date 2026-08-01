@@ -1059,6 +1059,12 @@ bytes、推論等級及尚未接通的 `ALT+Q／ALT+M` 見
 假開關。證據與缺口見
 [`spec 422`](docs/spec/422-pc98-combat-all-quick-interrupt.md)。
 
+第 423 輪修正一項會污染後續法術與 AI 的基礎資料假設：PC-98 原始 spell
+records 與 Quick consumer 證明角色存檔採全域法術 ID。牧師 Protection From
+Good 是 `07h`，Magic Missile 是 `0Fh`，不是兩個職業共用 `7` 再由程式猜測。
+camp 顯示、法術記憶與戰鬥分派現已一致；原始 bytes、位址、推論等級及仍未
+開放的 ALT+M 邊界見 [`spec 423`](docs/spec/423-pc98-global-spell-id-namespace.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

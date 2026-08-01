@@ -14,33 +14,45 @@ const (
 	CauseLightWoundsSpellID   uint8 = 4
 	ProtectionFromEvilSpellID uint8 = 6
 	ProtectionFromGoodSpellID uint8 = 7
-	MagicMissileSpellID       uint8 = 7
+	MagicMissileSpellID       uint8 = 0x0F
 	StinkingCloudSpellID      uint8 = 0x22
 	FireballSpellID           uint8 = 0x2F
 	LightningBoltSpellID      uint8 = 0x33
 	CloudkillSpellID          uint8 = 0x5B
 )
 
-// firstLevelSpellKeys contains only spell names whose class table order is
-// verified in the supplied RuleBook. Spell IDs outside this bounded catalog
-// remain visible as hex so the DOS slot data is never silently relabeled.
-var firstLevelSpellKeys = map[party.Class][]string{
+// firstLevelSpellKeys contains the bounded spell names whose table order is
+// verified in the supplied RuleBook. Player records store global spell-table
+// IDs: cleric level-one entries begin at 0x01, while the currently translated
+// magic-user entries begin at 0x09. IDs outside this catalog remain visible as
+// hex so imported DOS/PC-98 slot data is never silently relabeled.
+var firstLevelSpellKeys = map[party.Class]struct {
+	base uint8
+	keys []string
+}{
 	party.ClassCleric: {
-		"spell_cleric_1", "spell_cleric_2", "spell_cleric_3", "spell_cleric_4",
-		"spell_cleric_5", "spell_cleric_6", "spell_cleric_7", "spell_cleric_8",
+		base: 0x01,
+		keys: []string{
+			"spell_cleric_1", "spell_cleric_2", "spell_cleric_3", "spell_cleric_4",
+			"spell_cleric_5", "spell_cleric_6", "spell_cleric_7", "spell_cleric_8",
+		},
 	},
 	party.ClassMagicUser: {
-		"spell_magic_user_1", "spell_magic_user_2", "spell_magic_user_3", "spell_magic_user_4",
-		"spell_magic_user_5", "spell_magic_user_6", "spell_magic_user_7", "spell_magic_user_8",
+		base: 0x09,
+		keys: []string{
+			"spell_magic_user_1", "spell_magic_user_2", "spell_magic_user_3", "spell_magic_user_4",
+			"spell_magic_user_5", "spell_magic_user_6", "spell_magic_user_7", "spell_magic_user_8",
+		},
 	},
 }
 
 func campSpellLabel(catalog locale.Catalog, class party.Class, spellID uint8) string {
-	keys := firstLevelSpellKeys[class]
-	if spellID == 0 || int(spellID) > len(keys) {
+	table, ok := firstLevelSpellKeys[class]
+	if !ok || spellID < table.base || int(spellID-table.base) >= len(table.keys) {
 		return fmt.Sprintf(catalog.Text("spell_unknown", "未知法術 0x%02X"), spellID)
 	}
-	return catalog.Text(keys[spellID-1], fmt.Sprintf("法術 0x%02X", spellID))
+	key := table.keys[spellID-table.base]
+	return catalog.Text(key, fmt.Sprintf("法術 0x%02X", spellID))
 }
 
 // firstLevelMemorizedCapacity is the bounded preparation adapter used by the

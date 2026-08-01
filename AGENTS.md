@@ -509,6 +509,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
+  推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
+  ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142
+  已 supersede，camp／記憶／戰鬥分派均已遷移；完整 ALT+M Quick spell AI
+  仍未完成。compact 後不得把手冊職業內排序重新當成 record ID。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
