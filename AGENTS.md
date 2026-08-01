@@ -500,8 +500,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `16d6` 與後續 range 10 路徑另一份獨立 `16d6`。作品中立 line profile、
   第 1–3 回合怪物排程、正式 terrain callback、繁中 stable IDs 與動態
   Lightning timeline 已接通；Standing Stone 起始真實 MON6 終戰仍完成
-  `PROGRAM 8`。原版目標 range／LOS／tie order、終戰牆面逐幀與 timing
-  仍未完成；READY spec 415 是權威。
+  `PROGRAM 8`。目標候選已由第 416 輪接續；終戰牆面逐幀與 timing
+  仍未完成；READY spec 415 是雙傷害池權威。
+- 第 416 輪已由 PC-98 `PICKTARGET 00B8:3D7F`、overlay 24／32 與 spell
+  `33h` record 接通 range 10、cardinal／diagonal `2／3` 加權距離、雙方
+  footprint、牆面候選及二十次不可見移除重抽。effect `84h` 不再先走全體
+  living-opponent selector；無候選仍消耗 action，不回退物理攻擊。原始
+  combatant-array 同距 tie order、PC-98 invisibility runtime 與 `(0,0)`
+  fallback 動畫仍未完成；READY spec 416 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入

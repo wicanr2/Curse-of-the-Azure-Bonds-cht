@@ -376,3 +376,5 @@
 - [第四百一十二輪 PC-98 TPOV entry stub 與提朗瑟克斯效果表](./412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)（`READY`：36 段 typed entry／fixup、六筆效果靜態 handler；不含完整閃電術 AI／演出）
 - [第四百一十三輪提朗瑟克斯防火／防電 runtime](./413-tyranthraxus-fire-electric-protection-runtime.md)（`READY`：`70h／87h` 接入 Fireball／Lightning Bolt 玩家路徑與真實 MON6 終戰；不含怪物施法 AI）
 - [第四百一十四輪 PC-98 命中後 `4Fh` 火焰效果 runtime](./414-pc98-post-hit-effect-4f-runtime.md)（`READY`：前兩物理攻擊槽命中且目標存活時追加同目標 2d10 Fire＋Magic；不含原版動畫／聲音）
+- [第四百一十五輪 PC-98 怪物閃電排程與雙傷害池](./415-pc98-monster-lightning-runtime.md)（`READY`：effect `84h` 前三回合、Lightning Bolt `33h`、initial／path 獨立 `16d6` 與正常 MON6 終戰）
+- [第四百一十六輪 PC-98 怪物法術選敵、射程與牆面](./416-pc98-monster-spell-target-selection.md)（`READY`：range 10、footprint／牆面候選、二十次不可見重抽與無目標回合 continuation；不含 exact tie order）

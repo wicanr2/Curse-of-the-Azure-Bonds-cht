@@ -93,8 +93,9 @@ effect `84h` handler local `62D7h` 的順序如下：
 ## 尚未完成
 
 - 原版 `SpellCastFunction(QuickFight,33h)` 的 reachable／visible candidate、
-  range 與 tie order；目前仍沿用既有 bounded living-opponent selector，故
-  目標選擇只到 `strong inference`，不能宣稱 exact AI。
+  range 與二十次重抽已由第 416 輪接入；原始 combatant-array 同距 tie order、
+  invisibility runtime trace 與無目標 `(0,0)` 動畫仍未完成。細節以
+  `416-pc98-monster-spell-target-selection.md` 為準。
 - 正常長路徑測試使用有界開放 combat terrain，只證明真實 MON6 scheduler；
   正式 frontend 會使用實際地城牆，但終戰專屬牆面反射仍需 deterministic
   screenshot／DOS runtime 對照。

@@ -163,6 +163,53 @@ func TestMonsterEffect84QueuesLightningWithTwoDamagePools(t *testing.T) {
 	}
 }
 
+func TestMonsterEffect84ConsumesTurnWhenNoRangedTargetIsReachable(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.EnableCombatVisualTimeline(true)
+	state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+		if x == 3 && y == 1 {
+			return combat.LineCell{Valid: true, Reflect: true}
+		}
+		return combat.LineCell{Valid: x >= 1 && x < 8 && y >= 1 && y < 5}
+	})
+	battle, err := combat.NewBattle([]combat.Fighter{
+		{ID: "monster", Name: "放電怪物", Side: combat.SideEnemy,
+			HitPoints: 50, MaxHitPoints: 50, ArmorClass: 0,
+			AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}},
+		{ID: "hero", Name: "英雄", Side: combat.SideParty,
+			HitPoints: 50, MaxHitPoints: 50, ArmorClass: 0,
+			HasCombatPosition: true, CombatX: 3, CombatY: 1,
+			SavingThrows: []uint8{30, 30, 30, 30, 30}},
+	}, 416)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := battle.StartRound(); err != nil {
+		t.Fatal(err)
+	}
+	state.battle = battle
+	state.Mode = ModeCombat
+	state.combatTurns = []combat.Turn{{FighterID: "monster"}, {FighterID: "hero"}}
+	if err := state.advanceCombatToParty(); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatVisualPending() {
+		t.Fatalf("unreachable fallback unexpectedly queued visual: %+v", state.combatVisual)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "hero" {
+		t.Fatalf("effect 84 did not consume monster turn: active=%+v ok=%v", active, ok)
+	}
+	if got, _ := battle.Fighter("hero"); got.HitPoints != 50 {
+		t.Fatalf("unreachable target received fallback attack: %+v", got)
+	}
+	want := state.catalog.Text("combat_monster_lightning_bolt_no_target", "")
+	if want == "" || state.combatMessage == "" {
+		t.Fatalf("no-target localization message=%q format=%q", state.combatMessage, want)
+	}
+}
+
 func TestMonsterEffect84StopsBeforeOriginalRoundFour(t *testing.T) {
 	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)
