@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
@@ -92,6 +93,25 @@ func TestDecodeGameAcceptsVersion3DungeonSave(t *testing.T) {
 	}
 	if file.DungeonWallType != 0 || file.DungeonWallRoof != 0 {
 		t.Fatalf("version 3 wall cache=%+v, want zero defaults", file)
+	}
+}
+
+func TestEncodeGameVersionSixCarriesECLSession(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	snapshot := ecl.SessionSnapshot{Version: 1, CurrentBlock: 0x42, PC: 123, Started: true}
+	data, err := EncodeGameWithSession(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, &snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != 6 || file.ECLSession == nil || file.ECLSession.CurrentBlock != 0x42 || file.ECLSession.PC != 123 {
+		t.Fatalf("decoded game=%+v", file)
 	}
 }
 

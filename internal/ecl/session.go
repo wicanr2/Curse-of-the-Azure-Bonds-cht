@@ -2,7 +2,8 @@ package ecl
 
 import (
 	"fmt"
-	"math/rand"
+
+	"github.com/wicanr2/golden-box-remake-engine/randomstream"
 )
 
 // BlockSession owns decoded ECL blocks and the current block identity. It is
@@ -79,9 +80,7 @@ func (s *BlockSession) ResetRandomSeed(seed int64) {
 	if runtime == nil {
 		return
 	}
-	runtime.Random = rand.New(rand.NewSource(seed))
-	runtime.RandomSeed = seed
-	runtime.RandomSeedSet = true
+	runtime.Random = randomstream.New(seed)
 }
 
 func (s *BlockSession) Switch(id uint8) error {

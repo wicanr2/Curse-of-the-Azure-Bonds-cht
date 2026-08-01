@@ -11,7 +11,7 @@
 
 截至 2026-07-31 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `f9fbcaf`；實際
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `720c6ae`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -613,7 +613,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 - `.FX` duration／strength 欄位已依原始格式修正：16-bit 分鐘與 `255=永久`，並提供 `AdvanceEffects` duration tick；effect-specific gameplay 仍由後續 rules layer 處理。
 - State 已接入 reference `timeScales` 七-slot clock；`AdvanceGameTime` 會依 slot 換算 elapsed minutes，同時到期 party／active battle finite effects，保留 `255=永久`；Area1 `0x18C..0x198` 七個 raw clock words 也已接回 SAVGAM codec。
 - 遊戲一般畫面與荒野地圖現在顯示 reference clock 的繁中 HUD：`時間：HH:MM　日期：第D日／第M月／第Y年`；raw clock 與 renderer-neutral display contract 分離，方便後續 Gold Box 共用。
-- remake JSON 存檔版本 5 已保存七-slot game clock 與 age-cycle overflow；舊版 1–4 仍可載入，會以零時鐘開始。
+- remake JSON 存檔版本 6 除七-slot game clock 與 age-cycle overflow，亦保存
+  ECL current block、resume PC、共享 work memory、輸入 offset 與持續 PRNG
+  continuation。舊版 1–5 仍可載入，但因原本沒有 ECL snapshot，不能恢復
+  當時的亂數下一值。
 - DOS player `.SAV/.GUY` 的 signed age `0x76` 已接入匯入、slot-6 年齡增加與 SAVGAM player-record writeback；Pool/Rad `0x30` 變體與 age-based ability modifiers 仍待獨立驗證。
 - 原版五段 race age bracket 與六項 ability delta 已整理為明確的 `Abilities.WithAgeEffects`；既有 DOS 匯入不會重複套用，角色建立 UI 已接入目前可驗證種族／職業限制。
 - 原版 `race_ages` 的 single-class `base_age + dice` 已由 `RollStartingAge` 重現，並在加入隊伍時對 copied character 套用 age ability effects；22 個已驗證單職業選項已接入建立選單，完整原版建立／修改流程仍待擴充。
@@ -942,7 +945,10 @@ COMBAT，現在只在有完整 dungeon ECL session 證據時立即續跑，不�
   draw order 展開 8X8D stamps；16×16 wrap、牆壁碰撞、門狀態與 2× camera
   已接入。尚待收斂的是 door／roof 專用 overlay 與斜向視角的逐像素 DOS 比對。
 - dungeon preview 方向鍵現在會依 GEO 雙側 wall collision（含 wrapped edge）移動 map position，Q/E 依 reference 八方向順序轉動 facing，並重建 floor／Far/Mid/Near wall view；正式 Area camera、scroll、movement cost 與 encounter 仍待完成。
-- remake game save version 4 現在會保存 dungeon preview 的 `(x,y)`、八方向 facing 與 reference map wall cache；v1/v2/v3 舊版 save 可載入並安全回到相容預設，F9／啟動載入後會重建 floor 與 wall view。
+- remake game save 自 version 4 起保存 dungeon `(x,y)`、八方向 facing 與
+  reference map wall cache；version 6 再加入 ECL session／PRNG continuation。
+  v1–v5 仍可載入並採各版本相容預設，F9／啟動載入後會重建 floor 與 wall
+  view。完整 UI／戰鬥中途 frame save 尚未完成。
 - dungeon preview 已依 Area1 `outdoor_sky_colour`／`indoor_sky_colour` 與 GEO roof high bit 選擇 reference EGA sky background，raw wall stamps 會疊在 sky layer 上；完整 roof geometry／door overlay 仍待完成。
 - dungeon preview 會顯示目前 facing 的 reference `WallDoorFlags`／GEO `x3 detail` evidence；P/K/B action 已能解鎖雙側 GEO door，door symbol overlay 與完整 graphics 仍待完成。
 - dungeon preview movement 已辨識 GEO detail `1` 的 unlocked doorway；detail `2/3` 會開啟 locked-door menu，並依 party capability 提供 Pick／Knock／Bash；完整 DOS 視窗樣式與劇情 entry 仍待完成。
@@ -1001,4 +1007,4 @@ Combat Action Timeline 實作。
 
 目前地城 preview 已提供 locked-door menu，以及 P 撬鎖、K Knock、B 撞門：依 detail 2/3 與隊伍能力過濾選項，成功後對 GEO 門雙側解鎖；完整 DOS 視窗樣式、door graphics 與從劇情抵達門的流程仍未完成。
 
-更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/)；可跨 Gold Box 沿用的 ECL 指令集整理見 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md)，存檔欄位與年齡修改邊界見 [`gold-box-save-format.md`](docs/knowledge/gold-box-save-format.md)，以及 [`docs/history.md`](docs/history.md)。
+更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/)；可跨 Gold Box 沿用的 ECL 指令集整理見 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md)，存檔欄位與年齡修改邊界見 [`gold-box-save-format.md`](docs/knowledge/gold-box-save-format.md)，remake session transaction 見 [`gold-box-remake-save-session.md`](docs/knowledge/gold-box-remake-save-session.md)，以及 [`docs/history.md`](docs/history.md)。
