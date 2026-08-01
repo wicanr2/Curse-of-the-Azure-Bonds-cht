@@ -13,6 +13,8 @@ import (
 const (
 	magic             = "TPOV"
 	controlRecordSize = 0x30
+	entryTableOffset  = 0x20
+	entryRecordSize   = 5
 )
 
 // Control describes one Turbo Pascal overlay control record embedded in the
@@ -29,8 +31,39 @@ type Control struct {
 // Overlay is one validated code/fixup span in the overlay file.
 type Overlay struct {
 	Control
-	Code       []byte
-	Relocation []byte
+	Code              []byte
+	Relocation        []byte
+	Entries           []Entry
+	RelocationOffsets []uint16
+}
+
+// Entry describes one resident five-byte overlay dispatch stub. StubOffset is
+// relative to the control segment; CodeOffset is relative to the overlay code
+// span. The on-disk form is CD 3F, code-offset word, flags byte.
+type Entry struct {
+	Index            int
+	ExecutableOffset int
+	StubOffset       uint16
+	CodeOffset       uint16
+	Flags            uint8
+}
+
+// ResolveStub maps a resident far-pointer offset to its overlay entry. The
+// caller must separately prove that the pointer segment is this control's
+// segment; matching a numeric offset alone is insufficient.
+func (o Overlay) ResolveStub(stubOffset uint16) (Entry, bool) {
+	if stubOffset < entryTableOffset {
+		return Entry{}, false
+	}
+	delta := int(stubOffset) - entryTableOffset
+	if delta%entryRecordSize != 0 {
+		return Entry{}, false
+	}
+	index := delta / entryRecordSize
+	if index < 0 || index >= len(o.Entries) {
+		return Entry{}, false
+	}
+	return o.Entries[index], true
 }
 
 // FarCallWordArgument identifies the Turbo Pascal sequence
@@ -113,13 +146,75 @@ func Decode(executable, overlayFile []byte) ([]Overlay, error) {
 		if relocationEnd > uint64(len(overlayFile)) {
 			return nil, fmt.Errorf("overlay at 0x%X exceeds TPOV bounds", control.FileOffset)
 		}
+		entries, err := parseEntries(executable, control)
+		if err != nil {
+			return nil, err
+		}
+		for _, entry := range entries {
+			if entry.CodeOffset != 0xFFFF && int(entry.CodeOffset) >= int(control.CodeSize) {
+				return nil, fmt.Errorf(
+					"overlay at 0x%X entry %d code offset 0x%X exceeds code size 0x%X",
+					control.FileOffset, entry.Index, entry.CodeOffset, control.CodeSize,
+				)
+			}
+		}
+		relocation := overlayFile[codeEnd:relocationEnd]
+		relocationOffsets, err := parseRelocationOffsets(relocation, int(control.CodeSize))
+		if err != nil {
+			return nil, fmt.Errorf("overlay at 0x%X relocation: %w", control.FileOffset, err)
+		}
 		decoded = append(decoded, Overlay{
-			Control:    control,
-			Code:       overlayFile[codeStart:codeEnd],
-			Relocation: overlayFile[codeEnd:relocationEnd],
+			Control:           control,
+			Code:              overlayFile[codeStart:codeEnd],
+			Relocation:        relocation,
+			Entries:           entries,
+			RelocationOffsets: relocationOffsets,
 		})
 	}
 	return decoded, nil
+}
+
+func parseEntries(executable []byte, control Control) ([]Entry, error) {
+	start := control.ExecutableOffset + entryTableOffset
+	end := start + int(control.EntryCount)*entryRecordSize
+	if start < 0 || end > len(executable) {
+		return nil, fmt.Errorf("overlay control at 0x%X entry table exceeds executable", control.ExecutableOffset)
+	}
+	entries := make([]Entry, 0, control.EntryCount)
+	for index := 0; index < int(control.EntryCount); index++ {
+		offset := start + index*entryRecordSize
+		if executable[offset] != 0xCD || executable[offset+1] != 0x3F {
+			return nil, fmt.Errorf("overlay control at 0x%X entry %d lacks CD 3F stub", control.ExecutableOffset, index)
+		}
+		entries = append(entries, Entry{
+			Index:            index,
+			ExecutableOffset: offset,
+			StubOffset:       uint16(entryTableOffset + index*entryRecordSize),
+			CodeOffset:       binary.LittleEndian.Uint16(executable[offset+2 : offset+4]),
+			Flags:            executable[offset+4],
+		})
+	}
+	return entries, nil
+}
+
+func parseRelocationOffsets(relocation []byte, codeSize int) ([]uint16, error) {
+	if len(relocation)%2 != 0 {
+		return nil, fmt.Errorf("odd relocation byte count %d", len(relocation))
+	}
+	offsets := make([]uint16, 0, len(relocation)/2)
+	previous := -1
+	for offset := 0; offset < len(relocation); offset += 2 {
+		value := binary.LittleEndian.Uint16(relocation[offset : offset+2])
+		if int(value)+2 > codeSize {
+			return nil, fmt.Errorf("fixup 0x%X exceeds code size 0x%X", value, codeSize)
+		}
+		if int(value) <= previous {
+			return nil, fmt.Errorf("fixup 0x%X is not strictly increasing", value)
+		}
+		offsets = append(offsets, value)
+		previous = int(value)
+	}
+	return offsets, nil
 }
 
 // InterruptOffsets returns offsets of literal INT interrupt instructions in

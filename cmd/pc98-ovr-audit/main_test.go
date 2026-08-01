@@ -72,3 +72,17 @@ func TestSoundFXNamesUseBorlandModuleAndSymbols(t *testing.T) {
 		t.Fatalf("selector symbol=%q", got)
 	}
 }
+
+func TestParseOverlayStub(t *testing.T) {
+	t.Parallel()
+
+	overlay, stub, err := parseOverlayStub("12:0214")
+	if err != nil || overlay != 12 || stub != 0x0214 {
+		t.Fatalf("parseOverlayStub=(%d,%04X,%v)", overlay, stub, err)
+	}
+	for _, value := range []string{"12", "-1:20", "x:20", "12:xyz"} {
+		if _, _, err := parseOverlayStub(value); err == nil {
+			t.Fatalf("accepted invalid resolve-stub %q", value)
+		}
+	}
+}

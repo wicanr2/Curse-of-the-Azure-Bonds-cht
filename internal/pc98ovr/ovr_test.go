@@ -9,8 +9,8 @@ import (
 func TestDecodeChainedControls(t *testing.T) {
 	t.Parallel()
 
-	ovr := append([]byte("TPOV"), []byte{0x90, 0xcd, 0xd2, 0xc3, 0x01, 0x02}...)
-	ovr = append(ovr, []byte{0xcd, 0x21, 0xc3, 0x03}...)
+	ovr := append([]byte("TPOV"), []byte{0x90, 0xcd, 0xd2, 0xc3, 0x01, 0x00}...)
+	ovr = append(ovr, []byte{0xcd, 0x21, 0xc3, 0x00, 0x00}...)
 	exe := make([]byte, 0x90)
 	writeControl := func(at int, fileOffset uint32, codeSize, relocationSize, entryCount uint16) {
 		exe[at], exe[at+1] = 0xcd, 0x3f
@@ -18,9 +18,18 @@ func TestDecodeChainedControls(t *testing.T) {
 		binary.LittleEndian.PutUint16(exe[at+8:at+10], codeSize)
 		binary.LittleEndian.PutUint16(exe[at+10:at+12], relocationSize)
 		binary.LittleEndian.PutUint16(exe[at+12:at+14], entryCount)
+		for index := 0; index < int(entryCount); index++ {
+			entry := at + entryTableOffset + index*entryRecordSize
+			exe[entry], exe[entry+1] = 0xcd, 0x3f
+			codeOffset := uint16(index)
+			if index >= int(codeSize) {
+				codeOffset = 0xffff
+			}
+			binary.LittleEndian.PutUint16(exe[entry+2:entry+4], codeOffset)
+		}
 	}
 	writeControl(0x10, 4, 4, 2, 3)
-	writeControl(0x50, 10, 3, 1, 5)
+	writeControl(0x50, 10, 3, 2, 5)
 
 	decoded, err := Decode(exe, ovr)
 	if err != nil {
@@ -34,6 +43,52 @@ func TestDecodeChainedControls(t *testing.T) {
 	}
 	if got := InterruptOffsets(decoded[0].Relocation, 0xd2); len(got) != 0 {
 		t.Fatalf("relocation bytes leaked into code scan: %v", got)
+	}
+	if !reflect.DeepEqual(decoded[0].RelocationOffsets, []uint16{1}) {
+		t.Fatalf("relocation offsets=%v, want [1]", decoded[0].RelocationOffsets)
+	}
+	entry, ok := decoded[0].ResolveStub(entryTableOffset + 2*entryRecordSize)
+	if !ok || entry.Index != 2 || entry.CodeOffset != 2 {
+		t.Fatalf("resolved entry=%+v ok=%v", entry, ok)
+	}
+	if _, ok := decoded[0].ResolveStub(entryTableOffset + 1); ok {
+		t.Fatal("accepted a pointer between resident stubs")
+	}
+}
+
+func TestDecodeRejectsMalformedEntryAndRelocation(t *testing.T) {
+	t.Parallel()
+
+	build := func() ([]byte, []byte) {
+		exe := make([]byte, 0x50)
+		exe[0x10], exe[0x11] = 0xcd, 0x3f
+		binary.LittleEndian.PutUint32(exe[0x14:0x18], 4)
+		binary.LittleEndian.PutUint16(exe[0x18:0x1a], 4)
+		binary.LittleEndian.PutUint16(exe[0x1a:0x1c], 2)
+		binary.LittleEndian.PutUint16(exe[0x1c:0x1e], 1)
+		exe[0x30], exe[0x31] = 0xcd, 0x3f
+		binary.LittleEndian.PutUint16(exe[0x32:0x34], 1)
+		return exe, append([]byte("TPOV"), []byte{0x90, 0x90, 0x90, 0xc3, 0x01, 0x00}...)
+	}
+
+	tests := []struct {
+		name   string
+		mutate func([]byte, []byte)
+	}{
+		{"entry signature", func(exe, _ []byte) { exe[0x30] = 0x90 }},
+		{"entry code offset", func(exe, _ []byte) { binary.LittleEndian.PutUint16(exe[0x32:0x34], 4) }},
+		{"fixup outside code", func(_, ovr []byte) { binary.LittleEndian.PutUint16(ovr[8:10], 3) }},
+	}
+	for _, test := range tests {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			exe, ovr := build()
+			test.mutate(exe, ovr)
+			if _, err := Decode(exe, ovr); err == nil {
+				t.Fatal("accepted malformed overlay metadata")
+			}
+		})
 	}
 }
 

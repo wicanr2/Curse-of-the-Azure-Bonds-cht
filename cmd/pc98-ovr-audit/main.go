@@ -25,6 +25,7 @@ func main() {
 	contextBytes := flag.Int("context", 0, "列出 bytes match 前後各 N bytes（十進位）")
 	soundFX := flag.Bool("soundfx", false, "稽核 SOUNDFX 0893:0000 與 selector 常數")
 	extractCodeDir := flag.String("extract-code-dir", "", "將每段已驗證 code 匯出至指定目錄，供 IDA 載入")
+	resolveStubText := flag.String("resolve-stub", "", "解析 resident stub：OVERLAY:HEX_OFFSET，例如 12:0214")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
 		flag.PrintDefaults()
@@ -60,6 +61,24 @@ func main() {
 	overlays, err := pc98ovr.Decode(executable, overlayFile)
 	if err != nil {
 		fatalf("解析失敗：%v", err)
+	}
+	if *resolveStubText != "" {
+		overlayIndex, stubOffset, err := parseOverlayStub(*resolveStubText)
+		if err != nil {
+			fatalf("無效 resolve-stub：%v", err)
+		}
+		if overlayIndex < 0 || overlayIndex >= len(overlays) {
+			fatalf("overlay index %d 超出 0..%d", overlayIndex, len(overlays)-1)
+		}
+		entry, ok := overlays[overlayIndex].ResolveStub(stubOffset)
+		if !ok {
+			fatalf("overlay %d 無法解析 resident stub 0x%04X", overlayIndex, stubOffset)
+		}
+		fmt.Printf(
+			"stub_resolution overlay=%d stub=0x%04X entry=%d code=0x%04X flags=0x%02X exe=0x%X\n",
+			overlayIndex, stubOffset, entry.Index, entry.CodeOffset,
+			entry.Flags, entry.ExecutableOffset,
+		)
 	}
 	var debugTable borlanddebug.Table
 	if *soundFX {
@@ -102,8 +121,9 @@ func main() {
 			byteOffsets = pc98ovr.PatternOffsets(overlay.Code, bytePattern)
 		}
 		fmt.Printf(
-			"index=%d entries=%d exe_offset=0x%X file_offset=0x%X code=0x%X reloc=0x%X int_offsets=%s",
-			index, overlay.EntryCount, overlay.ExecutableOffset, overlay.FileOffset,
+			"index=%d entries=%d fixups=%d exe_offset=0x%X file_offset=0x%X code=0x%X reloc=0x%X int_offsets=%s",
+			index, overlay.EntryCount, len(overlay.RelocationOffsets),
+			overlay.ExecutableOffset, overlay.FileOffset,
 			overlay.CodeSize, overlay.RelocationSize, formatOffsets(offsets),
 		)
 		if *wordText != "" {
@@ -165,6 +185,22 @@ func main() {
 		}
 		fmt.Println()
 	}
+}
+
+func parseOverlayStub(value string) (int, uint16, error) {
+	parts := strings.Split(value, ":")
+	if len(parts) != 2 {
+		return 0, 0, fmt.Errorf("格式必須是 OVERLAY:HEX_OFFSET")
+	}
+	overlayIndex, err := strconv.ParseInt(parts[0], 10, 32)
+	if err != nil || overlayIndex < 0 {
+		return 0, 0, fmt.Errorf("無效 overlay index %q", parts[0])
+	}
+	stubOffset, err := strconv.ParseUint(strings.TrimPrefix(parts[1], "0x"), 16, 16)
+	if err != nil {
+		return 0, 0, fmt.Errorf("無效 stub offset %q", parts[1])
+	}
+	return int(overlayIndex), uint16(stubOffset), nil
 }
 
 func soundFXModuleName(table borlanddebug.Table, overlayIndex int) string {

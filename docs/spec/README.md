@@ -373,3 +373,4 @@
 - [第四百零九輪 ECL session 存檔與持續亂數 continuation](./409-ecl-session-save-random-continuation.md)（`READY`）
 - [第四百一十輪 PC-98 怪物效果載入與提朗瑟克斯偵測隱形](./410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md)（`READY`：限九 byte linked-list 邊界、MON*SPC innate 投影與 `18h`）
 - [第四百一十一輪 PC-98 提朗瑟克斯魔法抗性](./411-pc98-tyranthraxus-magic-resistance.md)（`READY`：限 `6Ah` 15% 基準、等級調整公式與 Magic Missile）
+- [第四百一十二輪 PC-98 TPOV entry stub 與提朗瑟克斯效果表](./412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)（`READY`：36 段 typed entry／fixup、六筆效果靜態 handler；不含完整閃電術 AI／演出）
