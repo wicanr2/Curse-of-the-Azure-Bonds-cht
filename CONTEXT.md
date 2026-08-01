@@ -2809,3 +2809,22 @@ Tyranthraxus fighter 關閉兩種 damage boundary，之後原 37 人終戰仍進
 `PROGRAM 8`。現行 save draw 先於 protection 的 RNG 順序尚缺 DOS runtime
 trace；`4Fh` 天生 fire、`84h` 怪物 Lightning Bolt AI／terrain／演出也仍未
 完成。READY spec 413 是本輪權威。
+
+2026-08-02 第四百一十四輪以非破壞性 IDA 副本與 raw bytes 關閉 effect
+`4Fh` 的命中後 caller。PC-98 overlay 13 local `18A2h–18B7h` 先確認物理
+傷害後目標仍在戰鬥，再把 `attackIndex+1` 連同攻擊者 far pointer 交給
+overlay 23 `CHECKFX`；type 2、3 分支均 exact dispatch `4Fh`。overlay 12
+local `19B3h` 則對攻擊者現有 target 擲 `2d10` Fire＋Magic，沒有 saving
+throw，也不重新選目標。typed resolver 新增 handler-local reverse lookup，
+`23:03FE` 可重現 entry 4／resident stub `0034h`，原始位址空間仍分離保存。
+
+Battle 現在只在前兩個物理 attack slots 成功命中且目標存活時投影
+operational `4Fh`；miss、物理擊殺、inactive effect 均不觸發。
+`AttackEffectResult` 分開原始 effect ID、damage flags、`RolledDamage`、實際
+damage 與 protection；`70h` 防火即使清除實際傷害，仍會先消耗兩顆 d10，
+保持 PRNG continuation。單擊／多擊／防護繁中訊息全部由正式 locale stable
+IDs 驅動。Standing Stone 起始長玩家路徑取得真實 MON6SPC
+Tyranthraxus fighter，驗證 `4Fh` boundary 後原 37 人終戰仍完成
+`PROGRAM 8`。原版火焰動畫／sound cue／wall-clock timing、轉移目標與自由
+攻擊動態 trace、`6Ah` 對 4F 的時序，以及 `84h` 怪物閃電仍未完成。
+READY spec 414 是本輪權威。

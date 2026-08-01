@@ -66,6 +66,19 @@ func (o Overlay) ResolveStub(stubOffset uint16) (Entry, bool) {
 	return o.Entries[index], true
 }
 
+// ResolveCode returns every resident entry that dispatches to a handler-local
+// code offset. Multiple stubs may legitimately share one handler, so reverse
+// lookup returns a slice and preserves each original stub and entry index.
+func (o Overlay) ResolveCode(codeOffset uint16) []Entry {
+	entries := make([]Entry, 0, 1)
+	for _, entry := range o.Entries {
+		if entry.CodeOffset == codeOffset {
+			entries = append(entries, entry)
+		}
+	}
+	return entries
+}
+
 // FarCallWordArgument identifies the Turbo Pascal sequence
 // PUSH word ptr DS:[address]; CALL FAR segment:offset.
 type FarCallWordArgument struct {

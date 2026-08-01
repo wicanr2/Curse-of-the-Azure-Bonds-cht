@@ -114,6 +114,10 @@ static main()
   {
     decode_all();
     emit_range(out, "CALLEFFECT", 0x00C9, 0x010E);
+    emit_range(out, "EFFECT_PHASE_CALLER_0184", 0x0110, 0x01B0);
+    emit_range(out, "CHECKFX_TYPE_2_3", 0x03FE, 0x0600);
+    emit_range(out, "EFFECT_PHASE_CALLERS_0F9C_104E", 0x0F20, 0x1070);
+    emit_range(out, "EFFECT_PHASE_CALLER_24DA", 0x2440, 0x2520);
     target = base + 0x00C9;
     count = 0;
     for (x = get_first_cref_to(target); x != BADADDR;

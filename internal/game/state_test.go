@@ -2193,6 +2193,44 @@ func TestCombatCastMagicMissileUsesLocalizedResistanceMessage(t *testing.T) {
 	t.Fatal("deterministic seeds did not produce a resisted Magic Missile")
 }
 
+func TestAttackEffectMessagesResolveStableLocaleIDs(t *testing.T) {
+	data, err := os.ReadFile("../../assets/locale/zh-TW.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	attacker := combat.Fighter{Name: "烈焰者"}
+	target := combat.Fighter{Name: "戰士"}
+	hit := combat.AttackResult{
+		Hit: true, Damage: 3,
+		Effects: []combat.AttackEffectResult{{
+			Kind: 0x4F, DamageFlags: combat.DamageFlagFire | combat.DamageFlagMagic, Damage: 9,
+		}},
+	}
+	wantHit := fmt.Sprintf(catalog.Text("combat_hit_with_fire", ""), attacker.Name, target.Name, 3, 9)
+	if got := formatAttackMessage(catalog, attacker, target, hit); got != wantHit || wantHit == "" {
+		t.Fatalf("fire hit message=%q want=%q", got, wantHit)
+	}
+
+	protected := hit
+	protected.Effects = []combat.AttackEffectResult{{
+		Kind: 0x4F, DamageFlags: combat.DamageFlagFire | combat.DamageFlagMagic, Protected: true,
+	}}
+	wantProtected := fmt.Sprintf(catalog.Text("combat_hit_fire_protected", ""), attacker.Name, target.Name, 3)
+	if got := formatAttackMessage(catalog, attacker, target, protected); got != wantProtected || wantProtected == "" {
+		t.Fatalf("protected fire message=%q want=%q", got, wantProtected)
+	}
+
+	results := []combat.AttackResult{hit, {Hit: false}}
+	wantMulti := fmt.Sprintf(catalog.Text("combat_multi_attack_with_fire", ""), attacker.Name, 2, 1, 3, 9)
+	if got := formatMultiAttackMessage(catalog, attacker, results); got != wantMulti || wantMulti == "" {
+		t.Fatalf("multi fire message=%q want=%q", got, wantMulti)
+	}
+}
+
 func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CureLightWoundsSpellID}}}

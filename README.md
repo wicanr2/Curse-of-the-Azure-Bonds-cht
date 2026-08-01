@@ -9,7 +9,7 @@
 
 ## 目前成果
 
-截至 2026-07-31 的完整「已完成／未完成／驗證方式」盤點見
+截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
 CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `720c6ae`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
@@ -950,8 +950,16 @@ TPOV resident entry／fixup，`6Ah → entry 100 → local 2404h` 因而升級�
 第 413 輪已把其中 `70h` 防火與 `87h` 防電接入正常玩家的 Fireball／
 Lightning Bolt 路徑。真實 MON6 提朗瑟克斯會保留 HP，visual timeline 仍
 播放命中 transaction，並由正式繁中 JSON 顯示元素防護抵消次數。怪物
-`84h` 閃電術 AI、`4Fh` 天生火焰攻擊及 saving throw／防護的原版 RNG 時序
-仍未完成；範圍見 [`spec 413`](docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md)。
+`84h` 閃電術 AI 及 saving throw／防護的原版 RNG 時序仍未完成；範圍見
+[`spec 413`](docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md)。
+
+第 414 輪再由 PC-98 IDA／raw bytes 關閉 `4Fh` 的實際攻擊 caller：前兩個
+物理攻擊槽命中且目標在物理傷害後仍存活，便對同一目標追加 `2d10`
+Fire＋Magic。重製 runtime 分開保存武器傷害、火焰擲骰與實際傷害；即使
+防火效果抵消傷害，兩顆 d10 仍會消耗，避免後續亂數漂移。真實 MON6
+提朗瑟克斯與正式繁中訊息均有回歸；原版火焰動畫、音效與精確時間仍待
+影片／DOSBox oracle。證據與限制見
+[`spec 414`](docs/spec/414-pc98-post-hit-effect-4f-runtime.md)。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

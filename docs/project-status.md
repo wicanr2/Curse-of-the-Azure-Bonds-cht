@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`a9ee134`
+本 milestone 的 CoAB 基底：`761f2fd`
 依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -319,8 +319,16 @@ commit 內保存不可能自我引用的 hash。
   damage flags boundary；inactive effect 反例仍受傷。正常 memorized spell／
   tile cursor／visual timeline 顯示資料化繁中防護摘要，Standing Stone 起始
   長路徑取得的真實提朗瑟克斯也在兩種攻擊下保持 HP，原終戰仍可完成
-  `PROGRAM 8`。saving throw 與 protection 的原版 RNG 順序、`4Fh／84h`
-  怪物能力、完整 AI／演出仍未完成。
+  `PROGRAM 8`。saving throw 與 protection 的原版 RNG 順序、`84h`
+  怪物 Lightning Bolt、完整 AI／演出仍未完成。
+- 第 414 輪由 PC-98 overlay 13 的 post-hit caller 與 overlay 23
+  `CHECKFX` table 證明：第一、第二物理攻擊槽命中且同一目標仍存活時，
+  operational `4Fh` 會追加同目標 `2d10` Fire＋Magic；物理擊殺不觸發，
+  沒有 saving throw。Battle 以結構化 `AttackEffectResult` 分開武器傷害、
+  擲骰傷害、實際傷害與元素防護，防火時仍消耗兩顆 d10。正式繁中 stable
+  IDs、slot／miss／kill／inactive／protected regression 與 Standing Stone
+  長路徑真實 `MON6SPC` 邊界均已通過。4F 原版動畫／聲音、自由攻擊與轉移
+  目標動態 trace、`6Ah` 對 4F 的時序及 `84h` 怪物閃電仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

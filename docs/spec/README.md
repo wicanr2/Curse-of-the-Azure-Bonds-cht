@@ -375,3 +375,4 @@
 - [第四百一十一輪 PC-98 提朗瑟克斯魔法抗性](./411-pc98-tyranthraxus-magic-resistance.md)（`READY`：限 `6Ah` 15% 基準、等級調整公式與 Magic Missile）
 - [第四百一十二輪 PC-98 TPOV entry stub 與提朗瑟克斯效果表](./412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)（`READY`：36 段 typed entry／fixup、六筆效果靜態 handler；不含完整閃電術 AI／演出）
 - [第四百一十三輪提朗瑟克斯防火／防電 runtime](./413-tyranthraxus-fire-electric-protection-runtime.md)（`READY`：`70h／87h` 接入 Fireball／Lightning Bolt 玩家路徑與真實 MON6 終戰；不含怪物施法 AI）
+- [第四百一十四輪 PC-98 命中後 `4Fh` 火焰效果 runtime](./414-pc98-post-hit-effect-4f-runtime.md)（`READY`：前兩物理攻擊槽命中且目標存活時追加同目標 2d10 Fire＋Magic；不含原版動畫／聲音）
