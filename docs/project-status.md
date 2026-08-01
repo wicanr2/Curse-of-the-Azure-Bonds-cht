@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`761f2fd`
+本 milestone 的 CoAB 基底：`1cd73b5`
 依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -329,6 +329,14 @@ commit 內保存不可能自我引用的 hash。
   IDs、slot／miss／kill／inactive／protected regression 與 Standing Stone
   長路徑真實 `MON6SPC` 邊界均已通過。4F 原版動畫／聲音、自由攻擊與轉移
   目標動態 trace、`6Ah` 對 4F 的時序及 `84h` 怪物閃電仍未完成。
+- 第 415 輪由 PC-98 overlay 9／22 關閉 effect `84h` 的 type-14 action
+  phase、`ROUND < 4`、spell `33h`、初始格 `16d6` 與後續 range 10 路徑
+  另一份獨立 `16d6`。Battle 的中立 line profile 保留玩家法術既有共用骰，
+  State 則只在第 1–3 回合先於一般攻擊排程怪物閃電，並使用正式 terrain
+  callback、元素防護、資料化 timeline 與繁中 stable IDs。Standing Stone
+  起始長路徑的真實 MON6 提朗瑟克斯已產生動態閃電事件且仍完成
+  `PROGRAM 8`。原版 target range／LOS／tie order、終戰牆面反射與逐幀
+  timing 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

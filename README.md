@@ -943,8 +943,8 @@ Magic Missile。骰子順序是先擲傷害、再擲 d100；成功時傷害歸�
 但法術格與戰鬥 continuation 仍正常消耗／進行。第 412 輪已解出 36 段
 TPOV resident entry／fixup，`6Ah → entry 100 → local 2404h` 因而升級為
 `exact`。同一證據鏈也靜態關閉 `4Fh` 2d10 fire、`70h` 防火、`84h`
-施放 Lightning Bolt 與 `87h` 防電；這些尚未全數接入 runtime，怪物閃電術
-的 AI、地形反彈、動畫與音效仍未完成。證據與限制見
+施放 Lightning Bolt 與 `87h` 防電；第 415 輪已接入怪物閃電 vertical slice，
+但原版目標候選、終戰牆面反彈逐幀 oracle 與精確時間仍未完成。證據與限制見
 [`spec 412`](docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)。
 
 第 413 輪已把其中 `70h` 防火與 `87h` 防電接入正常玩家的 Fireball／
@@ -960,6 +960,16 @@ Fire＋Magic。重製 runtime 分開保存武器傷害、火焰擲骰與實際�
 提朗瑟克斯與正式繁中訊息均有回歸；原版火焰動畫、音效與精確時間仍待
 影片／DOSBox oracle。證據與限制見
 [`spec 414`](docs/spec/414-pc98-post-hit-effect-4f-runtime.md)。
+
+第 415 輪由 PC-98 overlay 9／22 證明 effect `84h` 在一般攻擊前的 type-14
+階段執行，且只在原版 `ROUND < 4` 時施放 spell `33h`。初始目標格先獨立擲
+`16d6` 並完成 Spell save，後續 range 10 直線／反射再擲另一份 `16d6`；不能
+誤用玩家 Lightning Bolt 的單一共用傷害。重製排程已沿用資料化 COMSPR
+Lightning timeline、真實地形 callback、元素防護與正式繁中 stable IDs。
+Standing Stone 起始長路徑載入真正 MON6 提朗瑟克斯，終戰會排入怪物閃電
+並仍完成 `PROGRAM 8`。原版 target range／LOS／tie order 與敵方逐幀影片
+時間碼仍待補，詳見
+[`spec 415`](docs/spec/415-pc98-monster-lightning-runtime.md)。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

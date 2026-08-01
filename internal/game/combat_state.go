@@ -85,6 +85,13 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	return s.advanceCombatToParty()
 }
 
+// SetCombatLineTerrain installs the renderer-owned combat map projection used
+// by autonomous reflecting line effects. The callback is title-neutral and
+// deliberately not serialized; frontends restore it when constructing State.
+func (s *State) SetCombatLineTerrain(terrain combat.LineTerrain) {
+	s.combatLineTerrain = terrain
+}
+
 func (s *State) applyDataPackCombatModifiers(battle *combat.Battle) error {
 	if s.dataPack == nil || s.session == nil {
 		return nil
@@ -2098,6 +2105,12 @@ func (s *State) advanceCombatToParty() error {
 		if err != nil {
 			return err
 		}
+		if fighter.MonsterThrowsLightning() && s.battle.Round() < 4 && s.combatLineTerrain != nil {
+			if err := s.castMonsterLightning(fighter, target); err != nil {
+				return err
+			}
+			return nil
+		}
 		if hasMonsterMagicMissile(fighter) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
 			if spellErr == nil {
@@ -2149,6 +2162,72 @@ func (s *State) advanceCombatToParty() error {
 		s.requestAttackSounds(resolvedResults)
 	}
 	return s.finishCombat()
+}
+
+func (s *State) castMonsterLightning(caster, target combat.Fighter) error {
+	point := combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+	result, err := s.battle.CastReflectingLineSpell(
+		caster.ID, LightningBoltSpellID, point, 1,
+		combat.ReflectingLineOptions{
+			WeightedBudget: 10, FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
+			DamageFlags:       combat.DamageFlagElectricity | combat.DamageFlagMagic,
+			InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6,
+		},
+		s.combatLineTerrain,
+	)
+	if err != nil {
+		return err
+	}
+	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
+	totalDamage, protectedCount := 0, 0
+	for _, impact := range result.Impacts {
+		impacts = append(impacts, combat.VisualImpactTarget{
+			TargetID: impact.TargetID, To: impact.Point, Hit: true, Killed: impact.TargetHP <= 0,
+			Damage: impact.Damage, Saved: impact.Saved, Protected: impact.Protected,
+		})
+		totalDamage += impact.Damage
+		if impact.Protected {
+			protectedCount++
+		}
+	}
+	segments := make([]combat.VisualPathSegment, 0, len(result.Segments))
+	for _, segment := range result.Segments {
+		segments = append(segments, combat.VisualPathSegment{
+			From: segment.From, To: segment.To,
+			HasImpact: segment.HasImpact, ImpactIndex: segment.ImpactIndex,
+		})
+	}
+	messageID := "combat_monster_lightning_bolt"
+	fallback := "%s 放出閃電，命中 %d 次，共造成 %d 點傷害。"
+	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
+	if protectedCount > 0 {
+		messageID = "combat_monster_lightning_bolt_protected"
+		fallback = "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。"
+		arguments = append(arguments, protectedCount)
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
+	if s.queueCombatVisual(combat.VisualEvent{
+		Kind: combat.VisualLineSpell, Effect: "lightning_bolt", ActorID: caster.ID,
+		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}, To: point,
+		Hit: len(impacts) != 0, Impacts: impacts, TravelImpacts: result.TravelImpacts,
+		Segments: segments,
+	}) {
+		return nil
+	}
+	s.combatTurnIndex++
+	s.requestSound(SoundLightning)
+	for range impacts {
+		s.requestSound(SoundSpellHit)
+	}
+	for _, impact := range impacts {
+		if impact.Killed {
+			s.requestSound(SoundDead)
+		}
+	}
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	return s.advanceCombatToParty()
 }
 
 func hasMonsterMagicMissile(fighter combat.Fighter) bool {

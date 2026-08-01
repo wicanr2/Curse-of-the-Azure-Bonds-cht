@@ -119,6 +119,83 @@ func TestCombatVisualMagicMissileCarriesProjectileCount(t *testing.T) {
 	}
 }
 
+func TestMonsterEffect84QueuesLightningWithTwoDamagePools(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.EnableCombatVisualTimeline(true)
+	state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 12 && y >= 0 && y < 6}
+	})
+	fighters := []combat.Fighter{
+		{ID: "tyranthraxus", Name: "提朗瑟克斯", Side: combat.SideEnemy,
+			HitPoints: 200, MaxHitPoints: 200, ArmorClass: 0,
+			HasCombatPosition: true, CombatX: 1, CombatY: 2,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}},
+		{ID: "hero", Name: "英雄", Side: combat.SideParty,
+			HitPoints: 200, MaxHitPoints: 200, ArmorClass: 0,
+			HasCombatPosition: true, CombatX: 3, CombatY: 2,
+			SavingThrows: []uint8{30, 30, 30, 30, 30}},
+	}
+	battle, err := combat.NewBattle(fighters, 415)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := battle.StartRound(); err != nil {
+		t.Fatal(err)
+	}
+	state.battle = battle
+	state.Mode = ModeCombat
+	state.combatTurns = []combat.Turn{{FighterID: "tyranthraxus"}, {FighterID: "hero"}}
+	if err := state.advanceCombatToParty(); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualLineSpell || event.Effect != "lightning_bolt" ||
+		event.ActorID != "tyranthraxus" || event.To != (combat.TilePoint{X: 3, Y: 2}) ||
+		len(event.Impacts) == 0 || event.Impacts[0].TargetID != "hero" {
+		t.Fatalf("monster lightning visual=%+v ok=%v", event, ok)
+	}
+	if got, _ := battle.Fighter("hero"); got.HitPoints >= 200 {
+		t.Fatalf("monster lightning did not damage target: %+v", got)
+	}
+	wantMessage := state.catalog.Text("combat_monster_lightning_bolt", "")
+	if wantMessage == "" || state.combatMessage == "" {
+		t.Fatalf("monster lightning localization message=%q format=%q", state.combatMessage, wantMessage)
+	}
+}
+
+func TestMonsterEffect84StopsBeforeOriginalRoundFour(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.EnableCombatVisualTimeline(true)
+	state.SetCombatLineTerrain(func(x, y int) combat.LineCell { return combat.LineCell{Valid: true} })
+	battle, err := combat.NewBattle([]combat.Fighter{
+		{ID: "monster", Name: "怪物", Side: combat.SideEnemy, HitPoints: 50, MaxHitPoints: 50,
+			AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 1,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}},
+		{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 50, MaxHitPoints: 50,
+			ArmorClass: 0, HasCombatPosition: true, CombatX: 3, CombatY: 1,
+			SavingThrows: []uint8{30, 30, 30, 30, 30}},
+	}, 415)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for round := 0; round < 4; round++ {
+		if _, err := battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	state.battle = battle
+	state.Mode = ModeCombat
+	state.combatTurns = []combat.Turn{{FighterID: "monster"}, {FighterID: "hero"}}
+	if err := state.advanceCombatToParty(); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualMelee {
+		t.Fatalf("round-four action=%+v ok=%v", event, ok)
+	}
+}
+
 func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)

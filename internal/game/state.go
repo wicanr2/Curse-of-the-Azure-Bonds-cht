@@ -181,6 +181,7 @@ type State struct {
 	combatMoveMode          bool
 	combatMoveRemaining     int
 	combatReferenceCoords   bool
+	combatLineTerrain       combat.LineTerrain
 	combatView              bool
 	combatViewFighterID     string
 	combatMessage           string

@@ -37,6 +37,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		HitPoints: 999, MaxHitPoints: 999, ArmorClass: -10,
 		AttackBonus: 100, DamageDiceCount: 1, DamageDiceSides: 1,
 		DamageBonus: 100, AttacksPerTurn: 8, InitiativeBonus: 100,
+		SavingThrows: []uint8{1, 1, 1, 1, 1},
 	}
 	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
 		t.Fatal(err)
@@ -44,6 +45,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
 		Level: 10, HitPoints: 999, MaxHitPoints: 999,
+		SavingThrows: []uint8{1, 1, 1, 1, 1},
 		Abilities: party.Abilities{
 			Strength: 18, Intelligence: 18, Wisdom: 18,
 			Dexterity: 18, Constitution: 18, Charisma: 18,
@@ -3489,6 +3491,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		}
 		previousX, previousY = step.x, step.y
 	}
+	state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 40 && y >= 0 && y < 25}
+	})
+	state.EnableCombatVisualTimeline(true)
 	for _, messageID := range []string{
 		"myth-drannor.inner.final-compulsion",
 		"myth-drannor.inner.final-defiance",
@@ -3552,6 +3558,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		len(tyranthraxus.MonsterPostHitAffects(2)) != 1 || len(tyranthraxus.MonsterPostHitAffects(3)) != 0 {
 		t.Fatalf("Tyranthraxus post-hit effect projection=%+v", tyranthraxus.MonsterAffects)
 	}
+	if !tyranthraxus.MonsterThrowsLightning() {
+		t.Fatalf("Tyranthraxus effect 84 projection=%+v", tyranthraxus.MonsterAffects)
+	}
 	boundaryTarget := *tyranthraxus
 	boundaryTarget.ID = "tyranthraxus-boundary"
 	boundaryTarget.HitPoints = boundaryTarget.MaxHitPoints
@@ -3612,15 +3621,23 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		attackResult.TargetHP != 99-fireEffect.Damage {
 		t.Fatalf("real MON6 4F effect=%+v result=%+v", fireEffect, attackResult)
 	}
+	sawTyranthraxusLightning := false
 	for action := 0; action < 1200 && state.Mode == ModeCombat; action++ {
-		if err := state.CombatAct(); err != nil {
-			t.Fatal(err)
-		}
 		if event, ok := state.CombatVisualEvent(); ok {
+			if event.ActorID == tyranthraxus.ID && event.Kind == combat.VisualLineSpell && event.Effect == "lightning_bolt" {
+				sawTyranthraxusLightning = true
+			}
 			if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
 				t.Fatal(err)
 			}
+			continue
 		}
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if !sawTyranthraxusLightning {
+		t.Fatal("normal MON6 final-battle path did not schedule Tyranthraxus effect 84")
 	}
 	if state.CombatStatus() != combat.StatusPartyWon || !state.GameWon() ||
 		state.Mode != ModeWilderness || state.OriginalEvent != "PROGRAM 8" {

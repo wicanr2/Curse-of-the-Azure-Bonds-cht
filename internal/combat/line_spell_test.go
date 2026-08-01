@@ -160,6 +160,46 @@ func TestCastReflectingLineSpellUsesSharedDamageAndIndependentSaves(t *testing.T
 	}
 }
 
+func TestCastReflectingLineSpellSupportsIndependentInitialAndPathDamage(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		lineSpellFighter("caster", SideEnemy, 1, 1, 200, 0),
+		lineSpellFighter("initial", SideParty, 2, 1, 200, 0),
+		lineSpellFighter("path", SideParty, 4, 1, 200, 0),
+	}, 41)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastReflectingLineSpell(
+		"caster", 0x33, TilePoint{X: 2, Y: 1}, 1,
+		ReflectingLineOptions{
+			WeightedBudget: 10, InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6,
+		},
+		func(x, y int) LineCell { return LineCell{Valid: x >= 0 && x < 8 && y == 1} },
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.InitialDamage < 16 || result.InitialDamage > 96 ||
+		result.PathDamage < 16 || result.PathDamage > 96 {
+		t.Fatalf("damage pools initial=%d path=%d", result.InitialDamage, result.PathDamage)
+	}
+	if result.InitialDamage == result.PathDamage {
+		t.Fatalf("seed did not distinguish independent pools: %+v", result)
+	}
+	if len(result.Impacts) != 2 || result.Impacts[0].TargetID != "initial" || result.Impacts[1].TargetID != "path" {
+		t.Fatalf("impacts=%+v", result.Impacts)
+	}
+	for index, wantBase := range []int{result.InitialDamage, result.PathDamage} {
+		want := wantBase
+		if result.Impacts[index].Saved {
+			want /= 2
+		}
+		if result.Impacts[index].Damage != want {
+			t.Fatalf("impact[%d]=%+v base=%d", index, result.Impacts[index], wantBase)
+		}
+	}
+}
+
 func lineSpellFighter(id string, side Side, x, y, hp int, size uint8) Fighter {
 	return Fighter{
 		ID: id, Name: id, Side: side, HitPoints: hp, MaxHitPoints: hp,
