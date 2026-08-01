@@ -1789,6 +1789,37 @@ func TestCombatDoneEndsPartyTurnWithoutAttacking(t *testing.T) {
 	}
 }
 
+func TestCombatDelayReentersSameRoundAfterOtherActions(t *testing.T) {
+	state := NewState(testCatalog())
+	partyFighters := []combat.Fighter{
+		{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20},
+		{ID: "ally", Name: "隊友", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10},
+	}
+	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1}}
+	if err := state.StartCombat(partyFighters, enemies, 420); err != nil {
+		t.Fatal(err)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "hero" {
+		t.Fatalf("first active=%+v ok=%v", active, ok)
+	}
+	if err := state.CombatDelay(); err != nil {
+		t.Fatal(err)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "ally" {
+		t.Fatalf("after delay active=%+v ok=%v", active, ok)
+	}
+	if err := state.CombatDone(); err != nil {
+		t.Fatal(err)
+	}
+	if active, ok := state.CombatActiveFighter(); !ok || active.ID != "hero" {
+		t.Fatalf("delayed fighter did not reenter same round: active=%+v ok=%v", active, ok)
+	}
+	fighter, _ := state.fighter("hero")
+	if fighter.CombatAction.Delay != 1 {
+		t.Fatalf("delayed action=%+v want delay 1", fighter.CombatAction)
+	}
+}
+
 func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{

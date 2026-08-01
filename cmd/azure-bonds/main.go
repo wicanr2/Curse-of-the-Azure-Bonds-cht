@@ -289,7 +289,7 @@ func main() {
 			if recordErr != nil {
 				fmt.Printf("  monster record stopped safely: %v\n", recordErr)
 			} else {
-				fmt.Printf("  monster name=%q mod=0x%02X team=%d hp=%d/%d ac=%d attack-bonus=%d damage=%dd%d%+d initiative=%d\n", record.Name, record.ModID, record.CombatTeam, record.HitPoints, record.MaxHitPoints, record.ArmorClass, record.AttackBonus, record.DamageDiceCount, record.DamageDiceSides, record.DamageBonus, record.InitiativeBonus)
+				fmt.Printf("  monster name=%q mod=0x%02X team=%d dex=%d hp=%d/%d ac=%d attack-bonus=%d damage=%dd%d%+d\n", record.Name, record.ModID, record.CombatTeam, record.Dexterity, record.HitPoints, record.MaxHitPoints, record.ArmorClass, record.AttackBonus, record.DamageDiceCount, record.DamageDiceSides, record.DamageBonus)
 				if len(record.Raw) >= monster.RecordSize {
 					fmt.Printf("  player race=0x%02X class=0x%02X multiclass-level=%d levels=%v control-morale=0x%02X\n",
 						record.Raw[0x74], record.Raw[0x75], record.Raw[0xE6],

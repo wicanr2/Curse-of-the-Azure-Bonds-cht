@@ -530,8 +530,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   依建構時 TeamList 原順序全掃描，每個節點（含 delay 0）都抽 `1d100`，先比
   最大 delay、再比最大 roll，完全同值由後掃到者勝出。作品中立實作已移入
   獨立 engine `combat/initiative`；CoAB 不再使用 d20、字串 ID 排 tie，或把
-  MON*CHA `+1A5h` 猜成 initiative bonus。surprise-mask writer 與玩家
-  `DELAY` 同輪重新入列仍是明確缺口，詳見 READY spec 419。
+  MON*CHA `+1A5h` 猜成 initiative bonus。第 420 輪進一步接通動態 scheduler：
+  頂層 `D` 開啟原版 DONE 子選單，子選單 `D` 寫 Action.delay=1 並在同輪
+  重新入列；先前把 `20→19` 視為一般 Delay 的假說已推翻，它屬於尚未接 UI
+  的 Quick handoff。surprise-mask writer、DOS 等價性與原版 PRNG 仍是缺口。
 - `MON*CHA` 的 raw spell-list slots（`0x33..0x6A`）與 magic-user level-use counts（`0xB5..0xB7`）已保存到 enemy fighter；目前依 reference 接入第一個敵方法術 Magic Missile（`0x0F`），一級單枚、2–5 傷害，施放後回到敵方 physical-turn fallback。
 - `MON1SPC`–`MON6SPC` 已依同一 monster ID 載入並掛到 enemy fighter 的 raw `MonsterAffects`；目前只保存九-byte effects，不宣稱已完成隱形／加速／睡眠等規則投影。
 - 已依 reference `CanHitTarget` 將 active monster affect `0x19`／`0x47` 投影為目標 AC +4；其餘 `MON*SPC` effects 仍保留 raw-only boundary。
@@ -654,7 +656,8 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
 - `CAMP → VIEW` 現在可選角色查看職業、HP、金幣、寶石、珠寶與裝備摘要，並可返回 CAMP Menu。
 - 已接入已裝備弓／飛鏢的 RuleBook 多次攻擊：ITEMS RateOfFire raw `4/6` 分別投影為每回合 2/3 次攻擊；目標倒下時會依 target cursor 改攻下一個存活敵人。
 - 已建立彈藥 transaction：保存武器 raw `AmmunitionType`，由資料層注入 raw code→inventory type mapping 後，CombatAct 會 atomic 扣除本回合箭／弩矢／飛鏢數量；未注入 mapping 時不臆測對應。
-- 戰鬥中按 `D` 可執行 RuleBook `DONE`，不攻擊、不消耗彈藥，直接結束目前角色回合並進入敵方／下一位隊友回合。
+- 戰鬥中按 `D` 先開啟原版結束子選單；再按 `D` 可延後至本輪稍後行動，按
+  `Q` 則不攻擊、不消耗彈藥並結束目前角色回合。
 - 戰鬥結束時 battle fighter 的 HP 會同步回 party roster，CAMP `VIEW/FIX/SAVE` 與原版 slot writeback 不會再讀到戰鬥前的舊 HP。
 - 戰鬥結果按 Enter 返回荒野時，會重建繁中 `進入城市／繼續旅程／紮營` 主選單，不會把戰鬥前的 ECL menu 留在輸入狀態。
 - `CAMP → MAGIC` 現在提供原版已證實的 `CAST／MEMORIZE／SCRIBE／DISPLAY／REST／EXIT` command menu；`CAST` 已能選施法者、已記憶 Cure Light Wounds 與受傷目標，消耗 slot、擲 `1d8` 並同步 party／戰鬥 HP；`DISPLAY`、`MEMORIZE` 與 `REST` 也已接入，SCRIBE、其他法術與完整 slot／時間規則仍待接入。

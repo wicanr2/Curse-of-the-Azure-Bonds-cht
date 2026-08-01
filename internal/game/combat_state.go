@@ -68,16 +68,16 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err
 	}
-	turns, err := battle.StartRound()
-	if err != nil {
+	if err := battle.BeginScheduledRound(); err != nil {
 		return err
 	}
 	s.battle = battle
 	if err := s.SetParty(party); err != nil {
 		return err
 	}
-	s.combatTurns = turns
+	s.combatTurns = nil
 	s.combatTurnIndex = 0
+	s.combatDelayedTurns = make(map[int]bool)
 	s.combatTargetIndex = 0
 	s.combatVisual = nil
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
@@ -2004,6 +2004,40 @@ func (s *State) CombatDone() error {
 	return s.advanceCombatToParty()
 }
 
+func (s *State) CombatMainMenuText() string {
+	return s.catalog.Text("combat_menu_main", "移動　查看　瞄準　使用　施法　快速　結束")
+}
+
+func (s *State) CombatDoneMenuText() string {
+	return s.catalog.Text("combat_menu_done", "防守　延後　結束回合　包紮　速度　返回")
+}
+
+// CombatDelay defers the active party fighter to delay tier one while keeping
+// the action in the current round. This is the D choice inside the original
+// combat DONE submenu, not the top-level DONE action itself.
+func (s *State) CombatDelay() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	if s.combatMoveMode || s.combatCastingSpell != 0 || s.combatView {
+		return fmt.Errorf("combat action is still being selected")
+	}
+	attacker, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	if err := s.battle.DelayAction(attacker.ID); err != nil {
+		return err
+	}
+	if s.combatDelayedTurns == nil {
+		s.combatDelayedTurns = make(map[int]bool)
+	}
+	s.combatDelayedTurns[s.combatTurnIndex] = true
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_delay", "%s 延後至本輪稍後行動。"), attacker.Name)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
 // combatAttackSequence keeps the game adapter responsible for target cursor
 // policy. If a target falls, remaining weapon attacks use the next living
 // enemy at the same cursor position, matching the RuleBook's Aim behavior.
@@ -2065,13 +2099,26 @@ func (s *State) advanceCombatToParty() error {
 	// Every path that consumes a turn advances combatTurnIndex before coming
 	// back here. Synchronize all completed Action.delay values in one place so
 	// visibility effects do not depend on which UI/AI action ended the turn.
-	for index := 0; s.battle != nil && index < s.combatTurnIndex && index < len(s.combatTurns); index++ {
-		if err := s.battle.CompleteAction(s.combatTurns[index].FighterID); err != nil {
-			return err
-		}
-	}
 	for s.battle != nil && s.battle.Status() == combat.StatusActive {
+		for index := 0; index < s.combatTurnIndex && index < len(s.combatTurns); index++ {
+			if s.combatDelayedTurns[index] {
+				continue
+			}
+			if err := s.battle.CompleteAction(s.combatTurns[index].FighterID); err != nil {
+				return err
+			}
+		}
 		if s.combatTurnIndex >= len(s.combatTurns) {
+			if s.battle.DynamicInitiativeActive() {
+				turn, ok, err := s.battle.NextScheduledTurn()
+				if err != nil {
+					return err
+				}
+				if ok {
+					s.combatTurns = append(s.combatTurns, turn)
+					continue
+				}
+			}
 			return s.advanceCombatRound()
 		}
 		turn := s.combatTurns[s.combatTurnIndex]
@@ -2317,12 +2364,12 @@ func (s *State) queueMagicMissileVisual(caster, target combat.Fighter, missiles 
 }
 
 func (s *State) advanceCombatRound() error {
-	turns, err := s.battle.StartRound()
-	if err != nil {
+	if err := s.battle.BeginScheduledRound(); err != nil {
 		return err
 	}
-	s.combatTurns = turns
+	s.combatTurns = nil
 	s.combatTurnIndex = 0
+	s.combatDelayedTurns = make(map[int]bool)
 	return s.advanceCombatToParty()
 }
 

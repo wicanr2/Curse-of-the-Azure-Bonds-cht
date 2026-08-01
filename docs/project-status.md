@@ -365,8 +365,10 @@ commit 內保存不可能自我引用的 hash。
   `Battle` 現保存建構順序並投影 party／MON shared Player `+17h` Dexterity，
   不再使用 d20、fighter ID tie-break 或 MON `+1A5h` 假 bonus。可重用核心在
   engine `combat/initiative`，完整 engine 與 CoAB 31 套件 gate 均通過。
-  `area.field_596` surprise writers、玩家 `DELAY` 的 20→19 同輪重新入列、
-  DOS 等價性與原版底層 PRNG 仍未完成。
+  第 420 輪已證明頂層 D 進入第二層、一般 Delay 寫 1 並同輪重新入列，且
+  動態 scheduler 不預抽未來 d100；`20→19` 其實是 Quick handoff。後者 UI／
+  runtime trace、`area.field_596` surprise writers、DOS 等價性與原版底層
+  PRNG 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

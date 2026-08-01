@@ -96,6 +96,7 @@ type app struct {
 	combatVisualSerial    uint64
 	combatVisualStarted   time.Time
 	combatVisualElapsed   time.Duration
+	combatDoneMenu        bool
 	messageSnapshot       string
 	messageStart          time.Time
 	soundPlayer           *sound.Player
@@ -532,6 +533,9 @@ func (a *app) Update() error {
 		case game.ModeEvent:
 			return a.state.Continue()
 		case game.ModeCombat:
+			if a.combatDoneMenu {
+				return nil
+			}
 			if a.state.CombatViewActive() {
 				a.state.EndCombatView()
 				return nil
@@ -549,6 +553,21 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if a.combatDoneMenu {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyE) {
+				a.combatDoneMenu = false
+				return nil
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+				a.combatDoneMenu = false
+				return a.combatAction(a.state.CombatDelay)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+				a.combatDoneMenu = false
+				return a.combatAction(a.state.CombatDone)
+			}
+			return nil
+		}
 		if a.state.CombatViewActive() {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 				a.state.EndCombatView()
@@ -631,7 +650,8 @@ func (a *app) Update() error {
 			return a.combatAction(a.state.BeginCombatMove)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-			return a.combatAction(a.state.CombatDone)
+			a.combatDoneMenu = true
+			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyV) {
 			return a.combatAction(a.state.BeginCombatView)
@@ -1932,7 +1952,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		footerStatus = "目標：" + targets[a.state.CombatTargetIndex()].Name
 	}
 	text.Draw(screen, footerStatus, a.compactFace, 8, 462, color.RGBA{R: 255, G: 82, B: 255, A: 255})
-	text.Draw(screen, "移動　查看　瞄準　使用　施法　快速　結束", a.compactFace, 8, 478, cyan)
+	combatMenu := a.state.CombatMainMenuText()
+	if a.combatDoneMenu {
+		combatMenu = a.state.CombatDoneMenuText()
+	}
+	text.Draw(screen, combatMenu, a.compactFace, 8, 478, cyan)
 	if len(spellHints) > 0 {
 		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
 	}

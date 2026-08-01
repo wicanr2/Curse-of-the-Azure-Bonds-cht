@@ -422,14 +422,17 @@ type AreaSpellResult struct {
 }
 
 type Battle struct {
-	fighters           map[string]Fighter
-	fighterOrder       []string
-	attackRollModifier map[Side]int
-	rng                *rand.Rand
-	round              int
-	status             Status
-	areas              []PersistentArea
-	nextArea           uint64
+	fighters            map[string]Fighter
+	fighterOrder        []string
+	attackRollModifier  map[Side]int
+	rng                 *rand.Rand
+	round               int
+	status              Status
+	areas               []PersistentArea
+	nextArea            uint64
+	initiativeScheduler *engineinitiative.Scheduler
+	initiativeSelection engineinitiative.Selection
+	initiativeSelected  bool
 }
 
 const FireballSpellID uint8 = 0x2F
@@ -479,6 +482,8 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 func (b *Battle) Round() int { return b.round }
 
 func (b *Battle) Status() Status { return b.status }
+
+func (b *Battle) DynamicInitiativeActive() bool { return b != nil && b.initiativeScheduler != nil }
 
 func (b *Battle) Fighters() []Fighter {
 	output := make([]Fighter, 0, len(b.fighters))
@@ -610,6 +615,21 @@ func (b *Battle) StartRound() ([]Turn, error) {
 	if b.status != StatusActive {
 		return nil, fmt.Errorf("battle is already over")
 	}
+	initialized := b.initializeRoundDelays()
+	b.initiativeScheduler = nil
+	b.initiativeSelected = false
+	_, selections := engineinitiative.OrderInitialized(b.rng, initialized)
+	turns := make([]Turn, 0, len(selections))
+	for _, selection := range selections {
+		fighter := b.fighters[selection.ID]
+		fighter.CombatAction.Delay = selection.ActionDelay
+		b.fighters[selection.ID] = fighter
+		turns = append(turns, Turn{FighterID: selection.ID, Initiative: selection.ActionDelay})
+	}
+	return turns, nil
+}
+
+func (b *Battle) initializeRoundDelays() []engineinitiative.Entry {
 	b.round++
 	b.expirePersistentAreas()
 	b.advanceBlessDurations()
@@ -643,15 +663,61 @@ func (b *Battle) StartRound() ([]Turn, error) {
 		}
 		initialized[index].ActionDelay = delay
 	}
-	_, selections := engineinitiative.OrderInitialized(b.rng, initialized)
-	turns := make([]Turn, 0, len(selections))
-	for _, selection := range selections {
-		fighter := b.fighters[selection.ID]
-		fighter.CombatAction.Delay = selection.ActionDelay
-		b.fighters[selection.ID] = fighter
-		turns = append(turns, Turn{FighterID: selection.ID, Initiative: selection.ActionDelay})
+	for _, entry := range initialized {
+		fighter := b.fighters[entry.ID]
+		fighter.CombatAction.Delay = entry.ActionDelay
+		b.fighters[entry.ID] = fighter
 	}
-	return turns, nil
+	return initialized
+}
+
+// BeginScheduledRound starts the dynamic original-style scheduler. Unlike
+// StartRound it does not pre-roll future d100 scans, so DELAY can change the
+// current round without consuming a different random continuation.
+func (b *Battle) BeginScheduledRound() error {
+	if b.status != StatusActive {
+		return fmt.Errorf("battle is already over")
+	}
+	initialized := b.initializeRoundDelays()
+	b.initiativeScheduler = engineinitiative.NewScheduler(initialized)
+	b.initiativeSelected = false
+	return nil
+}
+
+// NextScheduledTurn performs exactly one full TeamList selection scan.
+func (b *Battle) NextScheduledTurn() (Turn, bool, error) {
+	if b.initiativeScheduler == nil {
+		return Turn{}, false, fmt.Errorf("dynamic initiative round is not initialized")
+	}
+	if b.initiativeSelected {
+		return Turn{}, false, fmt.Errorf("scheduled action has not been completed or delayed")
+	}
+	selection, ok := b.initiativeScheduler.SelectNext(b.rng)
+	if !ok {
+		return Turn{}, false, nil
+	}
+	b.initiativeSelection = selection
+	b.initiativeSelected = true
+	fighter := b.fighters[selection.ID]
+	fighter.CombatAction.Delay = selection.ActionDelay
+	b.fighters[selection.ID] = fighter
+	return Turn{FighterID: selection.ID, Initiative: selection.ActionDelay}, true, nil
+}
+
+// DelayAction implements the verified combat submenu operation: write delay
+// one, retain the action in this round, and release the current selection.
+func (b *Battle) DelayAction(fighterID string) error {
+	if !b.initiativeSelected || b.initiativeSelection.ID != fighterID {
+		return fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
+	}
+	if !b.initiativeScheduler.SetDelay(fighterID, 1) {
+		return fmt.Errorf("unknown scheduled fighter %q", fighterID)
+	}
+	fighter := b.fighters[fighterID]
+	fighter.CombatAction.Delay = 1
+	b.fighters[fighterID] = fighter
+	b.initiativeSelected = false
+	return nil
 }
 
 // CompleteAction clears the scheduler delay after a fighter's current turn.
@@ -667,6 +733,12 @@ func (b *Battle) CompleteAction(fighterID string) error {
 	}
 	fighter.CombatAction.Delay = 0
 	b.fighters[fighterID] = fighter
+	if b.initiativeScheduler != nil && b.initiativeSelected && b.initiativeSelection.ID == fighterID {
+		if !b.initiativeScheduler.Complete(b.initiativeSelection) {
+			return fmt.Errorf("stale scheduled action for fighter %q", fighterID)
+		}
+		b.initiativeSelected = false
+	}
 	return nil
 }
 

@@ -2908,3 +2908,12 @@ CoAB 改以 shared Player `+17h` Dexterity、建構時 TeamList order 與同一 
 alive/dead fixture 前提，不再依舊排序碰運氣。`area.field_596` writers、玩家
 `DELAY` 20→19 同輪重新入列、DOS 等價性及原版底層 PRNG 仍未完成；READY
 spec 419 是權威。
+
+2026-08-02 第四百二十輪重新稽核 overlay 08 完整人工 combat input。primary
+bytes 證明頂層 `D` 呼叫 local `1028h` 子選單，第二層 `D` 在 local
+`1173h–1187h` exact 寫 Action.delay=1 並結束當次人工操作；同一輪 selector
+之後會重新選到該角色。先前把 `20→19` 視為一般 Delay 的假說已推翻：它是
+ALT+Q 全員 Quick 的 handoff。engine 新增 mutable scheduler，CoAB 改成逐次
+TeamList scan，並先把全體初始化 delay 投影回 Fighter，避免尚未行動的 Blink
+怪物被誤判成 delay 0。頂層 D 現開啟資料化繁中子選單，D 延後、Q 結束回合；
+READY spec 420 保存 bytes、位址、推論等級與未完成邊界。

@@ -380,3 +380,5 @@
 - [第四百一十六輪 PC-98 怪物法術選敵、射程與牆面](./416-pc98-monster-spell-target-selection.md)（`READY`：range 10、footprint／牆面候選、二十次不可見重抽與無目標回合 continuation；不含 exact tie order）
 - [第四百一十七輪 PC-98 目標可見性與效果](./417-pc98-target-visibility-effects.md)（`READY`：`18h／19h／47h` 的 CHECKTARGET、法術選敵與物理 AC 投影；不含完整效果生命週期）
 - [第四百一十八輪 PC-98 Blink、動物視覺與 action delay](./418-pc98-blink-animal-visibility.md)（`READY`：`25h／45h`、MonsterType `+11Ah` 與 scheduled／completed delay 生命週期；不含 exact initiative 公式）
+- [第四百一十九輪 PC-98 先攻與 action delay 排程](./419-pc98-initiative-action-delay-scheduler.md)（`READY`：DEX reaction、1d6、TeamList 全掃描 d100 與 tie-break）
+- [第四百二十輪 PC-98 戰鬥延後與動態排程](./420-pc98-combat-delay-dynamic-scheduler.md)（`READY`：DONE 子選單、Delay=1 同輪重新入列；Quick 20→19 另保留）
