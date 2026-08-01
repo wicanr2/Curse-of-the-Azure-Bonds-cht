@@ -823,6 +823,46 @@ func (b *Battle) SelectQuickSpell(
 	}, lookup, suitable)
 }
 
+// BeginPendingSpellAction mirrors CASTCOMBATSPELL's nonzero casting-delay
+// handoff. The same action remains in this round at max(1, delay-units).
+func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castingDelay int) error {
+	if b == nil || b.initiativeScheduler == nil || !b.initiativeSelected ||
+		b.initiativeSelection.ID != fighterID {
+		return fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if !fighter.CombatAction.BeginSpell(spellID, castingDelay) {
+		return fmt.Errorf("spell 0x%02X has invalid casting delay %d", spellID, castingDelay)
+	}
+	if !b.initiativeScheduler.SetDelay(fighterID, fighter.CombatAction.Delay) {
+		return fmt.Errorf("unknown scheduled fighter %q", fighterID)
+	}
+	b.fighters[fighterID] = fighter
+	b.initiativeSelected = false
+	return nil
+}
+
+// TakePendingSpellAction clears the spell byte when its delayed action is
+// selected again. Delay completion remains owned by CompleteAction.
+func (b *Battle) TakePendingSpellAction(fighterID string) (uint8, error) {
+	if b == nil || !b.initiativeSelected || b.initiativeSelection.ID != fighterID {
+		return 0, fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return 0, fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	spellID := fighter.CombatAction.TakeSpell()
+	if spellID == 0 {
+		return 0, fmt.Errorf("fighter %q has no pending spell", fighterID)
+	}
+	b.fighters[fighterID] = fighter
+	return spellID, nil
+}
+
 // SetPlayerCharactersManual clears quick-fight only for the original PC
 // control namespace. NPC and temporary monster allies remain automated.
 func (b *Battle) SetPlayerCharactersManual() int {

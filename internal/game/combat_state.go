@@ -1950,6 +1950,9 @@ func (s *State) CombatAct() error {
 	if !ok || attacker.Side != combat.SideParty {
 		return s.advanceCombatToParty()
 	}
+	if attacker.QuickFight || attacker.CombatAction.SpellID != 0 {
+		return s.advanceCombatToParty()
+	}
 	enemies := s.livingBySide(combat.SideEnemy)
 	if len(enemies) == 0 {
 		return s.finishCombat()
@@ -2315,6 +2318,9 @@ func (s *State) advanceCombatToParty() error {
 			s.combatTurnIndex++
 			continue
 		}
+		if fighter.CombatAction.SpellID != 0 {
+			return s.resolvePendingQuickSpell(fighter)
+		}
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
 		}
@@ -2440,6 +2446,7 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			return enginequickspell.Spell{
 				ID: definition.SpellID, Priority: definition.Priority,
 				CastOn: definition.CastOn, MinRange: definition.MinRange,
+				CastingTime: definition.CastingTime,
 			}, ok
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
@@ -2448,6 +2455,9 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 					"quick spell 0x%02X requires unresolved area-safety predicate %d",
 					spell.ID, spell.MinRange,
 				)
+			}
+			if spell.ID == BlessSpellID {
+				return s.CombatCanCastBless(), nil
 			}
 			if spell.ID != MagicMissileSpellID {
 				// Preserve the original choice probability. Unsupported cast
@@ -2472,6 +2482,26 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 	}
 	if !found {
 		return false, nil
+	}
+	definition, _ := s.dataPack.FindCombatAISpell(spellID)
+	selected := enginequickspell.Spell{CastingTime: definition.CastingTime}
+	if spellID == BlessSpellID {
+		if err := s.BeginCombatCast(spellID); err != nil {
+			return false, err
+		}
+		if err := s.battle.BeginPendingSpellAction(fighter.ID, spellID, selected.CastingDelayUnits()); err != nil {
+			return false, err
+		}
+		s.CancelCombatCast()
+		if s.combatDelayedTurns == nil {
+			s.combatDelayedTurns = make(map[int]bool)
+		}
+		s.combatDelayedTurns[s.combatTurnIndex] = true
+		s.combatTurnIndex++
+		s.combatMessage = fmt.Sprintf(s.catalog.Text(
+			"combat_quick_magic_casting", "%s 開始吟唱%s。",
+		), fighter.Name, s.catalog.Text("spell_cleric_1", "祝福術"))
+		return true, nil
 	}
 	if spellID != MagicMissileSpellID {
 		if fighter.ControlMorale < 0x80 {
@@ -2500,6 +2530,24 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		return false, err
 	}
 	return true, s.CombatCast(spellID)
+}
+
+func (s *State) resolvePendingQuickSpell(fighter combat.Fighter) error {
+	spellID := fighter.CombatAction.SpellID
+	if spellID != BlessSpellID {
+		return fmt.Errorf("pending quick spell 0x%02X is not implemented", spellID)
+	}
+	if err := s.BeginCombatCast(spellID); err != nil {
+		return err
+	}
+	resolved, err := s.battle.TakePendingSpellAction(fighter.ID)
+	if err != nil {
+		return err
+	}
+	if resolved != spellID {
+		return fmt.Errorf("pending quick spell changed from 0x%02X to 0x%02X", spellID, resolved)
+	}
+	return s.CombatCast(spellID)
 }
 
 func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint) error {

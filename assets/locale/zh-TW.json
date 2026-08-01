@@ -278,6 +278,7 @@
     "combat_quick_magic_off": "快速戰鬥施法已關閉。",
     "combat_quick_magic_metadata_missing": "快速戰鬥缺少法術資料，已收回玩家角色控制：%s",
     "combat_quick_magic_unsupported": "快速戰鬥選到尚未接通的法術 0x%02X，已收回玩家角色控制。",
+    "combat_quick_magic_casting": "%s 開始吟唱%s。",
     "combat_speed_slower": "更慢",
     "combat_speed_faster": "更快",
     "combat_speed_value": "遊戲速度（%d）：%s",

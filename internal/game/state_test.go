@@ -1979,6 +1979,71 @@ func TestCombatAltMEnablesQuickMagicMissileFromGlobalSpellSlot(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickBlessWaitsForPendingCastingAction(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{{
+			ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1,
+			SpellSlots: []uint8{BlessSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "cleric", Name: "牧師", Side: combat.SideParty, ControlMorale: 0,
+			HitPoints: 100, MaxHitPoints: 100, ArmorClass: -10, InitiativeBonus: 8,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: 6,
+			DamageDiceCount: 1, DamageDiceSides: 1,
+			HasCombatPosition: true, CombatX: 10, CombatY: 10,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, _ := state.fighter("cleric")
+		if caster.CombatAction.SpellID != BlessSpellID {
+			continue
+		}
+		found = true
+		if caster.Blessed || len(state.partyRoster[0].SpellSlots) != 1 ||
+			caster.CombatAction.Delay != 5 {
+			t.Fatalf("pre-resolution caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending cast manual handoff changed=%d want 1", changed)
+		}
+		for action := 0; action < 8; action++ {
+			if !state.CombatActive() {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+			caster, _ = state.fighter("cleric")
+			if caster.Blessed {
+				break
+			}
+		}
+		if !caster.Blessed || caster.CombatAction.SpellID != 0 ||
+			len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("resolved mode=%v status=%v caster=%+v slots=%v message=%q turns=%+v index=%d",
+				state.Mode, state.CombatStatus(), caster, state.partyRoster[0].SpellSlots,
+				state.CombatMessage(), state.CombatTurns(), state.combatTurnIndex)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-1 Bless selection")
+	}
+}
+
 func TestCombatAltMGateResetsAtEachCombatStart(t *testing.T) {
 	state := NewState(testCatalog())
 	heroes := []combat.Fighter{{

@@ -386,3 +386,4 @@
 - [第四百二十二輪 PC-98 全隊 QUICK 與可中斷 handoff](./422-pc98-combat-all-quick-interrupt.md)（`READY`：ALT+Q TeamList transaction、20→19、視覺播放中 Space 收回；ALT+M selector 待續）
 - [第四百二十三輪 PC-98 全域法術 ID 命名空間](./423-pc98-global-spell-id-namespace.md)（`READY`：Player global spell IDs、Protection From Good `07h`、Magic Missile `0Fh`）
 - [第四百二十四輪 PC-98 ALT+M 與 Quick Magic Missile](./424-pc98-alt-m-quick-magic-missile.md)（`READY`：限 ALT+M gate、priority selector 與全域 `0Fh` instant cast；area suitability 待續）
+- [第四百二十五輪 PC-98 Quick Bless 與非即時施法排程](./425-pc98-quick-bless-casting-delay.md)（`READY`：限 casting-delay action handoff 與 Quick Bless；其他法術／中斷待續）

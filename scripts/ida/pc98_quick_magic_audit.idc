@@ -46,6 +46,7 @@ static main()
     if (out == 0)
       qexit(2);
     emit_range(out, "COMBAT_INPUT_AND_QUICK_HANDOFF", 0x0200, 0x0780);
+    emit_range(out, "PENDING_SPELL_ACTION_CONSUMER", 0x0414, 0x0475);
     emit_range(out, "SET_QUICK_FIGHT", 0x1375, 0x13C6);
   }
   else if (strstr(get_input_file_path(), "overlay-09.bin") != -1)

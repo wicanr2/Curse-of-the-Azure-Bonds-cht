@@ -651,17 +651,17 @@
     }
   ],
   "combat_ai_spells": [
-    {"spell_id": 1, "priority": 1, "cast_on": 0, "min_range": 0},
-    {"spell_id": 2, "priority": 3, "cast_on": 1, "min_range": 0},
-    {"spell_id": 3, "priority": 1, "cast_on": 0, "min_range": 0},
-    {"spell_id": 4, "priority": 2, "cast_on": 1, "min_range": 0},
-    {"spell_id": 6, "priority": 1, "cast_on": 0, "min_range": 0},
-    {"spell_id": 7, "priority": 1, "cast_on": 0, "min_range": 0},
-    {"spell_id": 15, "priority": 4, "cast_on": 1, "min_range": 0},
-    {"spell_id": 34, "priority": 5, "cast_on": 1, "min_range": 1},
-    {"spell_id": 47, "priority": 7, "cast_on": 1, "min_range": 3},
-    {"spell_id": 51, "priority": 6, "cast_on": 1, "min_range": 0},
-    {"spell_id": 91, "priority": 5, "cast_on": 1, "min_range": 0}
+    {"spell_id": 1, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 10},
+    {"spell_id": 2, "priority": 3, "cast_on": 1, "min_range": 0, "casting_time": 10},
+    {"spell_id": 3, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 5},
+    {"spell_id": 4, "priority": 2, "cast_on": 1, "min_range": 0, "casting_time": 5},
+    {"spell_id": 6, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 4},
+    {"spell_id": 7, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 4},
+    {"spell_id": 15, "priority": 4, "cast_on": 1, "min_range": 0, "casting_time": 1},
+    {"spell_id": 34, "priority": 5, "cast_on": 1, "min_range": 1, "casting_time": 2},
+    {"spell_id": 47, "priority": 7, "cast_on": 1, "min_range": 3, "casting_time": 3},
+    {"spell_id": 51, "priority": 6, "cast_on": 1, "min_range": 0, "casting_time": 3},
+    {"spell_id": 91, "priority": 5, "cast_on": 1, "min_range": 0, "casting_time": 5}
   ],
   "combat_visuals": [
     {
