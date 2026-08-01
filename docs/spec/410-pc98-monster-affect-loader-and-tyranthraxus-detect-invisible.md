@@ -78,6 +78,11 @@ IDA xref graph 找到 overlay 23 內五個 caller：`0184h／03F5h／0F9Ch／
 有直接 writes；`84h` slot 在這段初始化中沒有 write，仍列為 `unknown`，
 不可用相鄰 handler 猜補。
 
+TPOV table write 中的 raw segment／offset addend 尚未套用 relocation／fixup；
+它們只能證明「某 effect slot 被寫入」，不能直接當成 code-only
+overlay 的 handler local offset。第 411 輪已移除稽核腳本中這些誤導性
+handler 標籤；在 relocation 完整解出前，此部分維持 `hypothesis／unknown`。
+
 ## 實作與驗證
 
 - `combat.MonsterAffect.Innate` 記錄來源，不覆寫 raw byte `+4`。

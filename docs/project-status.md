@@ -301,8 +301,15 @@ commit 內保存不可能自我引用的 hash。
   邊界：`LOADMONSTER` 複製前五 bytes、清除並重建 `+5..+8` linked-list
   pointer，且不改 byte `+4`。因此 raw `+4=0` 不再錯誤停用怪物天生效果。
   正常 Standing Stone 長路徑現載入真實 `MON6SPC`，提朗瑟克斯六筆效果
-  均進入終戰；`18h` 偵測隱形已在命中公式抵消隱形 AC bonus。其餘五筆、
-  閃電、魔法抗性、AI 與演出仍未完成。
+  均進入終戰；`18h` 偵測隱形已在命中公式抵消隱形 AC bonus。
+- 第 411 輪以 PC-98 overlay 12 raw bytes／IDA 證明魔法抗性 common
+  routine 的 `base + (11-casterLevel)*5`、`1d100 <= threshold` 與
+  `Protected(0)` 傷害清除；50%／15% wrappers 分別在 local
+  `23F4h／2404h`。結合二次 DOS 反編譯交叉點，`6Ah → 15%`
+  標為 `strong inference`。Magic Missile 現先擲傷害、再擲抗性，
+  成功時傷害歸零，施放格與 continuation 仍消耗／進行；繁中訊息
+  來自 locale stable ID。其餘四筆效果、所有魔法幾何、AI 與演出
+  仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

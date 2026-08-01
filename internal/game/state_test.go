@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -2137,6 +2138,59 @@ func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	if len(state.partyRoster[0].SpellSlots) != 0 || targetHP >= 20 {
 		t.Fatalf("cast state=%#v fighters=%#v", state, state.CombatFighters())
 	}
+}
+
+func TestCombatCastMagicMissileUsesLocalizedResistanceMessage(t *testing.T) {
+	data, err := os.ReadFile("../../assets/locale/zh-TW.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	format := catalog.Text("combat_magic_resisted", "")
+	if format == "" {
+		t.Fatal("combat_magic_resisted stable message ID is unavailable")
+	}
+
+	for seed := int64(1); seed <= 128; seed++ {
+		state := NewState(catalog)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 11,
+			SpellSlots: []uint8{MagicMissileSpellID},
+		}}
+		if err := state.StartCombat(
+			[]combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+				HitPoints: 20, MaxHitPoints: 20, InitiativeBonus: 20},
+				{ID: "witness", Name: "見證者", Side: combat.SideParty,
+					HitPoints: 20, MaxHitPoints: 20, InitiativeBonus: 10}},
+			[]combat.Fighter{{ID: "tyranthraxus", Name: "提朗瑟克斯", Side: combat.SideEnemy,
+				HitPoints: 30, MaxHitPoints: 30,
+				MonsterAffects: []combat.MonsterAffect{{Kind: 0x6A, Innate: true}}}},
+			seed,
+		); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.CombatCast(MagicMissileSpellID); err != nil {
+			t.Fatal(err)
+		}
+		targetHP := 0
+		for _, fighter := range state.CombatFighters() {
+			if fighter.ID == "tyranthraxus" {
+				targetHP = fighter.HitPoints
+			}
+		}
+		if targetHP != 30 {
+			continue
+		}
+		want := fmt.Sprintf(format, "法師", "提朗瑟克斯", 6)
+		if state.CombatMessage() != want || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("resisted message=%q want=%q slots=%v", state.CombatMessage(), want, state.partyRoster[0].SpellSlots)
+		}
+		return
+	}
+	t.Fatal("deterministic seeds did not produce a resisted Magic Missile")
 }
 
 func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {

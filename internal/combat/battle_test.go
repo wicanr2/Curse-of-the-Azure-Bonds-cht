@@ -443,6 +443,68 @@ func TestCastMagicMissileUsesVerifiedDamageAndLevelScaling(t *testing.T) {
 	}
 }
 
+func TestMagicResistanceChanceUsesPC98LevelAdjustment(t *testing.T) {
+	tests := []struct {
+		level int
+		want  int
+	}{
+		{level: 10, want: 20},
+		{level: 11, want: 15},
+		{level: 12, want: 10},
+	}
+	for _, test := range tests {
+		if got := MagicResistanceChance(15, test.level); got != test.want {
+			t.Fatalf("level %d chance=%d, want %d", test.level, got, test.want)
+		}
+	}
+}
+
+func TestCastMagicMissileHonorsOperationalEffect6A(t *testing.T) {
+	resisted := false
+	notResisted := false
+	for seed := int64(1); seed <= 128 && (!resisted || !notResisted); seed++ {
+		battle, err := NewBattle([]Fighter{
+			{ID: "mage", Side: SideParty, HitPoints: 20, MaxHitPoints: 20},
+			{ID: "tyranthraxus", Side: SideEnemy, HitPoints: 30, MaxHitPoints: 30,
+				MonsterAffects: []MonsterAffect{{Kind: 0x6A, Innate: true}}},
+		}, seed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		result, err := battle.CastMagicMissile("mage", "tyranthraxus", 11)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if result.Resisted {
+			resisted = true
+			if result.Damage != 0 || result.TargetHP != 30 {
+				t.Fatalf("resisted result=%+v", result)
+			}
+		} else {
+			notResisted = true
+			if result.Damage == 0 || result.TargetHP >= 30 {
+				t.Fatalf("unresisted result=%+v", result)
+			}
+		}
+	}
+	if !resisted || !notResisted {
+		t.Fatalf("deterministic seeds did not cover both outcomes: resisted=%v unresisted=%v", resisted, notResisted)
+	}
+
+	inactive, err := NewBattle([]Fighter{
+		{ID: "mage", Side: SideParty, HitPoints: 20, MaxHitPoints: 20},
+		{ID: "target", Side: SideEnemy, HitPoints: 30, MaxHitPoints: 30,
+			MonsterAffects: []MonsterAffect{{Kind: 0x6A}}},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := inactive.CastMagicMissile("mage", "target", 1)
+	if err != nil || result.Resisted || result.Damage == 0 {
+		t.Fatalf("inactive effect 6A result=%+v err=%v", result, err)
+	}
+}
+
 func TestCastFireballUsesOneDamageRollAndHitsBothSidesInRadius(t *testing.T) {
 	saves := []uint8{20, 20, 20, 20, 20}
 	battle, err := NewBattle([]Fighter{

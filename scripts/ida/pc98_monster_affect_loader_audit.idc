@@ -91,6 +91,8 @@ static main()
 
   if (strstr(path, "overlay-12.bin") != -1)
   {
+    emit_range(out, "PROTECTED_HANDLER", 0x001B, 0x003C);
+    emit_range(out, "MAGIC_RESISTANCE_HANDLERS", 0x2396, 0x2420);
     emit_range(out, "INITEFFPROX", 0x2ED4, 0x3604);
   }
   else if (strstr(path, "overlay-16.bin") != -1)
