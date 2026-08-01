@@ -1885,6 +1885,9 @@ func TestCombatQuickAndManualControlUseProjectedControlMorale(t *testing.T) {
 			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20},
 		{ID: "next", Side: combat.SideParty, ControlMorale: 0, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10},
 	}
+	if err := state.SetParty(partyFighters); err != nil {
+		t.Fatal(err)
+	}
 	if err := state.StartCombat(partyFighters, []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1}}, 421); err != nil {
 		t.Fatal(err)
 	}
@@ -1901,6 +1904,36 @@ func TestCombatQuickAndManualControlUseProjectedControlMorale(t *testing.T) {
 	pc, _ = state.fighter("pc")
 	if pc.QuickFight {
 		t.Fatal("Space did not restore PC manual control")
+	}
+	if state.PartyFighters()[0].QuickFight {
+		t.Fatal("Space did not synchronize manual control to the next-combat party projection")
+	}
+}
+
+func TestCombatQuickAllCanBeInterruptedDuringVisualHandoff(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	partyFighters := []combat.Fighter{
+		{ID: "pc", Side: combat.SideParty, ControlMorale: 0, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 20},
+		{ID: "npc", Side: combat.SideParty, ControlMorale: 0x80, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10},
+	}
+	if err := state.StartCombat(partyFighters, []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1}}, 422); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatQuickAll(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.CombatVisualPending() {
+		t.Fatal("all-Quick did not yield at the first action timeline")
+	}
+	if changed := state.CombatManualControl(); changed != 1 {
+		t.Fatalf("manual changed=%d want 1", changed)
+	}
+	pc, _ := state.fighter("pc")
+	npc, _ := state.fighter("npc")
+	if pc.QuickFight || !npc.QuickFight {
+		t.Fatalf("manual interruption pc=%v npc=%v", pc.QuickFight, npc.QuickFight)
 	}
 }
 

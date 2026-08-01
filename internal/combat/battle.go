@@ -764,6 +764,46 @@ func (b *Battle) SetQuickFight(fighterID string) error {
 	return nil
 }
 
+// SetAllQuickFight mirrors the original ALT+Q transaction: the currently
+// selected action is marked with delay 20, then every TeamList combatant is
+// delegated through the same per-fighter Quick setter.  The 20 marker is a
+// handoff state, not a new initiative tier.
+func (b *Battle) SetAllQuickFight(currentID string) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	current, ok := b.fighters[currentID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", currentID)
+	}
+	current.CombatAction.Delay = 20
+	b.fighters[currentID] = current
+	for _, fighterID := range b.fighterOrder {
+		if err := b.SetQuickFight(fighterID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// BeginQuickFightAction consumes the original ALT+Q handoff marker before AI
+// processes the selected combatant. Ordinary Quick actions leave their delay
+// unchanged.
+func (b *Battle) BeginQuickFightAction(fighterID string) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if fighter.QuickFight && fighter.CombatAction.Delay == 20 {
+		fighter.CombatAction.Delay = 19
+		b.fighters[fighterID] = fighter
+	}
+	return nil
+}
+
 // SetPlayerCharactersManual clears quick-fight only for the original PC
 // control namespace. NPC and temporary monster allies remain automated.
 func (b *Battle) SetPlayerCharactersManual() int {

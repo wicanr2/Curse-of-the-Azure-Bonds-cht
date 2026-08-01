@@ -1051,6 +1051,14 @@ bytes、推論等級及尚未接通的 `ALT+Q／ALT+M` 見
 [`spec 421`](docs/spec/421-pc98-combat-quick-guard-bandage-speed.md)。這是命令
 機制的垂直切片，並不代表完整戰鬥、敵方 AI 或逐幀畫面已還原。
 
+第 422 輪進一步接通 `ALT+Q`：目前角色以原版 delay `20→19` 交給 AI，並
+依 TeamList 將全體切成 Quick。自動戰鬥的每個攻擊仍經既有視覺時間軸交回
+前端，因此播放中按空白鍵可在當前動作結束後收回玩家角色，不會一路同步跑到
+戰鬥結束。IDA 另證明 `ALT+M` 旗標會 gate 玩家 Quick AI 的完整法術選擇器；
+因候選優先序尚未還原，目前明確保留未實作，不提供只有文字、沒有真正作用的
+假開關。證據與缺口見
+[`spec 422`](docs/spec/422-pc98-combat-all-quick-interrupt.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

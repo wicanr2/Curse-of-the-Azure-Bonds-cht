@@ -2119,12 +2119,35 @@ func (s *State) CombatQuick() error {
 	return s.advanceCombatToParty()
 }
 
+// CombatQuickAll performs the original ALT+Q handoff. The currently selected
+// fighter receives delay 20 and the complete TeamList becomes AI-controlled;
+// Space may restore manually controllable PCs even while an action timeline
+// is playing.
+func (s *State) CombatQuickAll() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	fighter, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	if err := s.battle.SetAllQuickFight(fighter.ID); err != nil {
+		return err
+	}
+	s.combatMessage = s.catalog.Text("combat_quick_all", "全隊進入快速戰鬥；按空白鍵可收回玩家角色控制。")
+	return s.advanceCombatToParty()
+}
+
 func (s *State) CombatManualControl() int {
 	if s.battle == nil {
 		return 0
 	}
 	changed := s.battle.SetPlayerCharactersManual()
 	if changed > 0 {
+		// QuickFight is stored on the Player record, not only the transient
+		// Battle view. Keep the persistent party projection aligned so a combat
+		// continuation cannot silently re-enable Quick in the next encounter.
+		s.syncPartyFromBattle()
 		s.combatMessage = s.catalog.Text("combat_manual_control", "玩家角色恢復手動控制。")
 	}
 	return changed
@@ -2287,6 +2310,12 @@ func (s *State) advanceCombatToParty() error {
 		}
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
+		}
+		if fighter.QuickFight {
+			if err := s.battle.BeginQuickFightAction(fighter.ID); err != nil {
+				return err
+			}
+			fighter, _ = s.fighter(fighter.ID)
 		}
 		targetSide := combat.SideParty
 		if fighter.Side == combat.SideParty {

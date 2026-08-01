@@ -376,6 +376,14 @@ commit 內保存不可能自我引用的 hash。
   名稱只存在報告／規格；spec 421 保存 exact／strong inference 分界。
   `ALT+Q` 全隊 Quick、`ALT+M` magic toggle、每動作 target pointer、敵方選擇
   Guard／Bandage 的 AI 與原版 wall-clock timing 仍未完成。
+- 第 422 輪由 overlay 08 exact 關閉 `ALT+Q`：目前 Action delay 先寫 20，
+  TeamList 全員經同一 setter 切成 Quick，下一次 action entry 轉為 19 後交給
+  AI。Ebiten 視覺播放期間現在仍接受 Space，當前動作後可收回
+  `ControlMorale < 80h` 的玩家角色。overlay 08／09／10 也證明 `DS:A86Ch`
+  是玩家 Quick AI 法術選擇 gate；完整 selector 尚未還原，故 `ALT+M` 仍未
+  實作，沒有用空 toggle 冒充功能。Standing Stone→紅網正常玩家路徑另抓出
+  Space 只清 transient Battle、未同步持久 party 的缺陷；現已修正，第二場
+  羅剎妖戰不會錯誤沿用 stale Quick。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

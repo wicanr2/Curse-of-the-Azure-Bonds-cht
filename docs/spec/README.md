@@ -382,3 +382,5 @@
 - [第四百一十八輪 PC-98 Blink、動物視覺與 action delay](./418-pc98-blink-animal-visibility.md)（`READY`：`25h／45h`、MonsterType `+11Ah` 與 scheduled／completed delay 生命週期；不含 exact initiative 公式）
 - [第四百一十九輪 PC-98 先攻與 action delay 排程](./419-pc98-initiative-action-delay-scheduler.md)（`READY`：DEX reaction、1d6、TeamList 全掃描 d100 與 tie-break）
 - [第四百二十輪 PC-98 戰鬥延後與動態排程](./420-pc98-combat-delay-dynamic-scheduler.md)（`READY`：DONE 子選單、Delay=1 同輪重新入列；Quick 20→19 另保留）
+- [第四百二十一輪 PC-98 戰鬥命令狀態](./421-pc98-combat-quick-guard-bandage-speed.md)（`READY`：單人 QUICK、GUARD、BANDAGE、SPEED 與 Space 人工控制）
+- [第四百二十二輪 PC-98 全隊 QUICK 與可中斷 handoff](./422-pc98-combat-all-quick-interrupt.md)（`READY`：ALT+Q TeamList transaction、20→19、視覺播放中 Space 收回；ALT+M selector 待續）
