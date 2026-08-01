@@ -165,6 +165,30 @@ func TestStartRoundIsDeterministicAndCoversLivingFighters(t *testing.T) {
 	}
 }
 
+func TestStartRoundPreservesConstructionTeamListOrder(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "z-first", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, Dexterity: 15},
+		{ID: "a-second", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, Dexterity: 15},
+		{ID: "m-third", Side: SideEnemy, HitPoints: 0, MaxHitPoints: 10, Dexterity: 15},
+	}, 419)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := battle.fighterOrder; len(got) != 3 || got[0] != "z-first" || got[1] != "a-second" || got[2] != "m-third" {
+		t.Fatalf("TeamList order=%v", got)
+	}
+	turns, err := battle.StartRound()
+	if err != nil || len(turns) != 2 {
+		t.Fatalf("turns=%v err=%v", turns, err)
+	}
+	for _, turn := range turns {
+		fighter, _ := battle.Fighter(turn.FighterID)
+		if fighter.CombatAction.Delay != turn.Initiative || turn.Initiative < 1 || turn.Initiative > 6 {
+			t.Fatalf("turn=%+v fighter=%+v", turn, fighter)
+		}
+	}
+}
+
 func TestMoveChangesPositionAndRejectsOccupiedDestination(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "hero", Name: "Hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, HasCombatPosition: true, CombatX: 2, CombatY: 2},

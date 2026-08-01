@@ -2234,7 +2234,7 @@ func TestAttackEffectMessagesResolveStableLocaleIDs(t *testing.T) {
 func TestCombatCastCureLightWoundsConsumesSlotAndHealsParty(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CureLightWoundsSpellID}}}
-	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20}, {ID: "hero", Name: "戰士", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10, ArmorClass: 10}}
+	partyFighters := []combat.Fighter{{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 20}, {ID: "hero", Name: "戰士", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 19}}
 	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
 	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
 		t.Fatal(err)

@@ -16,20 +16,23 @@ type Record struct {
 	// Raw preserves the shared 0x1A6 Player record used by load_npc. Combat
 	// parsing reads only a subset; the party adapter needs race/class/icon and
 	// other verified player fields without reparsing the DAX container.
-	Raw              []byte
-	Name             string
-	THAC0            int
-	MaxHitPoints     int
-	HitPoints        int
-	HitDice          uint8
-	MonsterType      uint8
-	BaseArmorClass   int
-	ArmorClass       int
-	AttackBonus      int
-	DamageDiceCount  int
-	DamageDiceSides  int
-	DamageBonus      int
-	InitiativeBonus  int
+	Raw             []byte
+	Name            string
+	THAC0           int
+	MaxHitPoints    int
+	HitPoints       int
+	HitDice         uint8
+	MonsterType     uint8
+	Dexterity       uint8
+	BaseArmorClass  int
+	ArmorClass      int
+	AttackBonus     int
+	DamageDiceCount int
+	DamageDiceSides int
+	DamageBonus     int
+	// Raw1A5 preserves an unresolved byte without assigning the disproven
+	// initiative-bonus name. Initiative is derived from Dexterity +17.
+	Raw1A5           uint8
 	AttacksPerTurn   int
 	CombatTeam       uint8
 	CombatSize       uint8
@@ -104,9 +107,9 @@ func Parse(data []byte) (Record, error) {
 		DamageDiceCount:  diceCount,
 		DamageDiceSides:  diceSides,
 		DamageBonus:      damageBonus,
-		InitiativeBonus:  int(data[0x1A5]),
+		Raw1A5:           data[0x1A5],
 		AttacksPerTurn:   int(data[0xA1]),
-		CombatTeam:       data[0x197],
+		CombatTeam:       data[0x198],
 		CombatSize:       data[0xDE] & 7,
 		ModID:            data[0x126],
 		SpellIDs:         spellIDs,
@@ -115,6 +118,7 @@ func Parse(data []byte) (Record, error) {
 		SavingThrowBonus: int(int8(data[0x186])),
 		HitDice:          data[0xE5],
 		MonsterType:      data[0x11A],
+		Dexterity:        data[0x17],
 	}, nil
 }
 
@@ -124,9 +128,11 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 		HitPoints: r.HitPoints, MaxHitPoints: r.MaxHitPoints,
 		HitDice:     r.HitDice,
 		MonsterType: r.MonsterType,
+		Dexterity:   r.Dexterity,
+		CombatTeam:  r.CombatTeam,
 		ArmorClass:  CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
-		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
+		DamageBonus:    r.DamageBonus,
 		AttacksPerTurn: r.AttacksPerTurn,
 		CombatSize:     r.CombatSize,
 		SavingThrows:   append([]uint8(nil), r.SavingThrows...), SavingThrowBonus: r.SavingThrowBonus,

@@ -786,9 +786,9 @@ func (c Character) Fighter() (combat.Fighter, error) {
 		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		HitDice:     c.HitDice,
+		Dexterity:   uint8(c.Abilities.Dexterity),
 		AttackBonus: attackBonus, DamageDiceCount: 1, DamageDiceSides: damageSides,
-		InitiativeBonus: (c.Abilities.Dexterity - 10) / 2,
-		SavingThrows:    append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
+		SavingThrows: append([]uint8(nil), c.SavingThrows...), SavingThrowBonus: int(c.SavingThrowBonus),
 	}
 	return c.applyKnownEffects(fighter), nil
 }
