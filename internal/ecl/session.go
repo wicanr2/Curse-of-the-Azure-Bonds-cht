@@ -265,6 +265,10 @@ func (s *BlockSession) RunEntrySeedWithPartyContext(index, maxSteps int, selecti
 	runtime.PC = start
 	runtime.Started = true
 	runtime.Stack = runtime.Stack[:0]
+	runtime.Compare = [6]bool{}
+	s.selectionOffset = 0
+	s.whoSelectionOffset = 0
+	s.stringInputOffset = 0
 	owned := context.clone()
 	return s.runFromSeedWithPartyContextAndWhoSelections(start, maxSteps, selections, whoSelections, seed, &owned)
 }

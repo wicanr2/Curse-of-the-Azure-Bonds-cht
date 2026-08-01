@@ -916,8 +916,21 @@ terrain `83h` 前；其原始怪物記錄與逐 pause 行為見
 
 六個原版 PICTURE、十三段 ECL pause、十四人敵軍、羅剎妖協議旗標對照與
 正常玩家路徑證據見
-[`spec 407`](docs/spec/407-inner-ruins-final-ritual-west-wing.md)。真正的
-提朗瑟克斯最終戰與結局仍未完成，不能把這場爪牙戰誤寫成遊戲通關。
+[`spec 407`](docs/spec/407-inner-ruins-final-ritual-west-wing.md)。
+
+第 408 輪再由犬舍沿十五步合法 GEO 路線抵達樓梯，進入二樓 `(2,5,N)`，
+再走十步抵達東北角 terrain `9Ah`。原始 ECL 證明真正終戰是 28 隻
+MARGOYLE、提朗瑟克斯本人與 8 名 HIGH PRIEST，共 37 名敵人；正式 combat
+scheduler 戰勝後，同一 ECL continuation 立即呼叫 `PROGRAM 8`，進入原版
+勝利存檔選單。途中盟友已清除的 minion encounter 會留下真實零敵人
+COMBAT，現在只在有完整 dungeon ECL session 證據時立即續跑，不會把其他
+未知零敵人事件一律吞掉。房間、樓梯、旗標、完整路線與限制見
+[`spec 408`](docs/spec/408-inner-ruins-upper-floor-final-battle.md)。
+
+這表示 Standing Stone 起始的累積長回歸已完成迷斯卓諾章節與終戰 handoff；
+它仍不是「全新角色從開場一路通關」的證據。提朗瑟克斯、祭司與石像鬼的
+完整法術、特殊能力、AI、死亡動畫、音效及 DOS 動態演出也仍未完成。本輪
+嘗試的直接終戰截圖只得到預覽隊伍戰敗頁，因而未放入 README 冒充完成畫面。
 
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示

@@ -371,6 +371,8 @@ type RuntimeState struct {
 	Compare             [6]bool
 	SelectedPlayerIndex int
 	SelectedPlayerSet   bool
+	MonsterSetup        *MonsterSetup
+	MonsterSpawns       []MonsterSpawn
 	Random              *rand.Rand
 	RandomSeed          int64
 	RandomSeedSet       bool
@@ -970,6 +972,17 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				memory[0x7EE2] = 0
 			} else {
 				result.CombatRequested = true
+				if runtime != nil {
+					if len(result.MonsterSpawns) == 0 {
+						result.MonsterSpawns = append([]MonsterSpawn(nil), runtime.MonsterSpawns...)
+					}
+					if result.MonsterSetup == nil && runtime.MonsterSetup != nil {
+						setup := *runtime.MonsterSetup
+						result.MonsterSetup = &setup
+					}
+					runtime.MonsterSpawns = nil
+					runtime.MonsterSetup = nil
+				}
 			}
 			result.PC = next
 			saveState(next)
@@ -1306,12 +1319,19 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 				return result, fmt.Errorf("LOAD MONSTER at %d: %w", pc, err)
 			}
 			result.MonsterSpawns = append(result.MonsterSpawns, spawn)
+			if runtime != nil {
+				runtime.MonsterSpawns = append(runtime.MonsterSpawns, spawn)
+			}
 		case 0x0C: // SETUP MONSTER
 			setup, err := DecodeMonsterSetupFromMemory(instruction, memory)
 			if err != nil {
 				return result, fmt.Errorf("SETUP MONSTER at %d: %w", pc, err)
 			}
 			result.MonsterSetup = &setup
+			if runtime != nil {
+				owned := setup
+				runtime.MonsterSetup = &owned
+			}
 		case 0x36: // ADD NPC
 			npcID, err := operandValue(instruction.Operands[0], memory)
 			if err != nil {
@@ -1427,6 +1447,10 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			if instruction.Command.Opcode == 0x1C {
 				result.MonsterSetup = nil
 				result.MonsterSpawns = nil
+				if runtime != nil {
+					runtime.MonsterSetup = nil
+					runtime.MonsterSpawns = nil
+				}
 			}
 			if instruction.Command.Opcode == 0x27 {
 				request := TreasureRequest{}

@@ -2716,3 +2716,23 @@ IDA 經驗，將已驗證且可泛化的非破壞性規則納入 AGENTS.md：保
 位址，語意只附加並帶推論等級；`.i64` xref 優先於 `.asm` grep；直接 xref
 不涵蓋指標間接存取；headless IDC 必須寫檔驗證。來源仍在試驗期的自動
 語意 dump 方法未升格為本專案硬規則。
+
+2026-08-01 第四百零八輪證明 block `43h` terrain `86h` 不是終戰，而是
+`(0,10)` 的共用 redraw。犬舍後沿十五步合法 GEO 路線可抵達 `(10,7)`
+terrain `97h`，上樓 transaction 寫入 `(2,5,N)`；二樓再沿十步抵達
+`(6,1)` terrain `9Ah`。終戰 raw ECL 三段台詞後 exact 載入 MARGOYLE
+`45h`×28、TYRANTHRAXUS `47h`×1、HIGH PRIEST `48h`×8，戰勝後立即
+呼叫 `PROGRAM 8`。
+
+Standing Stone 起始累積長回歸已正常走完一樓、西翼、樓梯、二樓與 37 人
+終戰，正式 scheduler 勝利後在同一 ECL session 進入勝利存檔選單。途中
+盟友旗標使共用 minion encounter 的四組 count 為零；runtime 現只對有真實
+dungeon ECL session 與 dungeon return 的零敵人 COMBAT 立即續跑，未知
+synthetic case 仍失敗即關閉。`RuntimeState` 也保存跨 UI boundary 的 monster
+setup，fresh entry 清理互動 registers 而保留 ECL memory／持續 PRNG。
+
+READY spec 408 保存房間、樓梯、旗標、終戰與限制。直接視覺 checkpoint
+因預覽隊伍先被擊敗，只得到戰敗結果頁，故已刪除且未放入 README。下一輪
+需建立不影響戰鬥結果、可凍結時間軸的終戰 capture，補齊三類敵人的法術、
+特殊能力、AI、音效與 DOS 動態演出；全新隊伍由開場至結局的單一通關仍未
+完成。

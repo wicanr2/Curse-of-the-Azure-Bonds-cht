@@ -369,3 +369,4 @@
 - [第三百八十三輪立石群揭露與 Myth Drannor 解鎖](./383-standing-stone-myth-drannor-unlock.md)（`READY`：限三個主人旗標、提朗瑟克斯揭露與首輪 RunFrom 記憶體生命週期）
 - [第四百零六輪 DOS GUI 繪製契約與 IDA 交叉驗證](./406-dos-gui-draw-contract.md)（`READY`：限人物／3D／PIC 舞台與延伸訊息框）
 - [第四百零七輪提朗瑟克斯／無名者最終儀式與西翼正常路徑](./407-inner-ruins-final-ritual-west-wing.md)（`READY`）
+- [第四百零八輪內部遺跡二樓、提朗瑟克斯終戰與 PROGRAM 8](./408-inner-ruins-upper-floor-final-battle.md)（`READY`）
