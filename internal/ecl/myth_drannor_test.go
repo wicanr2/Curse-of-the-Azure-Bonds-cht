@@ -2866,6 +2866,71 @@ func TestRealInnerRuinsUpperFloorAndTyranthraxusFinalBattle(t *testing.T) {
 	}
 }
 
+func TestRealBurialGlenRandomStreamSnapshotContinuation(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte, len(blocks))
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func() *BlockSession {
+		session, sessionErr := NewBlockSession(all, 0x40)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		session.SetMemoryValue(0xC04B, 6)
+		session.SetMemoryValue(0xC04C, 12)
+		session.SetMemoryValue(0xC04D, 0)
+		session.SetMemoryValue(0xC04F, 0x04)
+		return session
+	}
+
+	const seed = int64(0x408)
+	original := newSession()
+	first, err := original.RunEntrySeedWithPartyContext(1, 4000, nil, nil, seed, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(first.RandomValues) == 0 {
+		t.Fatalf("real terrain 04h did not consume random: %+v", first)
+	}
+	snapshot, err := original.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// A real movement transaction clears the per-step guard before the next
+	// terrain invocation. Preserve all other shared chapter state.
+	original.SetMemoryValue(0x7F81, 0)
+	want, err := original.RunEntrySeedWithPartyContext(1, 4000, nil, nil, seed, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	restored := newSession()
+	if err := restored.RestoreSnapshot(snapshot); err != nil {
+		t.Fatal(err)
+	}
+	restored.SetMemoryValue(0x7F81, 0)
+	got, err := restored.RunEntrySeedWithPartyContext(1, 4000, nil, nil, seed, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(got.RandomValues, want.RandomValues) ||
+		!reflect.DeepEqual(got.MonsterSpawns, want.MonsterSpawns) ||
+		!reflect.DeepEqual(got.Text, want.Text) {
+		t.Fatalf("restored real event random=%v spawns=%v text=%q; want random=%v spawns=%v text=%q",
+			got.RandomValues, got.MonsterSpawns, got.Text,
+			want.RandomValues, want.MonsterSpawns, want.Text)
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

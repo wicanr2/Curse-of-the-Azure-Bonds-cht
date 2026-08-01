@@ -75,8 +75,10 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   terrain 的隨機遭遇永遠得到同一結果，玩家來回踩格也不會改變。測試需要
   可重現性時，`BlockSession` 必須保存同一個由基底 seed 建立的持續 PRNG
   串流；不能每次改用 `seed+序號`，那會改變既有長路徑的原版遭遇結果。
-  未把 PRNG 狀態納入 save round-trip 前，必須把存讀檔後亂數序列 fidelity
-  列為未完成，不能宣稱完全還原。
+  remake save v6 已以 seed＋底層 source draw count 保存這條持續串流；任何
+  新 save path 都必須沿用同一 snapshot，不得只保存 seed。v1–v5 沒有該欄位，
+  載入相容不等於恢復原亂數位置。這只證明 remake continuation，不能冒稱
+  已還原 DOS／PC-98 原版 RNG 演算法。
 - ECL 選單不是顯示完文字就算解碼完成。必須驗證動態長度字串的真正
   `stringsEnd`、selection destination、0-based／1-based 編號、branch table、
   resume PC 與選擇後第一個 opcode。若選 LOOT 卻落入「零怪物 COMBAT」等
@@ -299,10 +301,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`0cc97a8`（第 407 輪最終儀式、手札 48 與西翼正常玩家
-  路徑）；第 408 輪二樓、提朗瑟克斯終戰與 `PROGRAM 8` milestone 會由
-  本文件所在 commit 完成。
-- Engine dependency：`f9fbcaf`（含作品中立 game-pack
+- CoAB 本輪基底：`a9ee134`（第 408 輪二樓、提朗瑟克斯終戰與
+  `PROGRAM 8`）；第 409 輪 ECL session／持續 PRNG save v6 milestone
+  會由本文件所在 commit 完成。
+- Engine dependency：`720c6ae`（含作品中立 `randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
   signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
@@ -480,6 +482,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   boundary monster setup 已修正並回歸。READY spec 408 是權威；下一步應
   建立不改寫結果的終戰動態 capture，補齊提朗瑟克斯／祭司／石像鬼能力，
   並繼續關閉全新隊伍由開場至結局的單一通關缺口。
+- 第 409 輪完成 remake save v6 的 ECL session／持續 PRNG snapshot。
+  engine `randomstream` 保存 seed 與底層 draw count；CoAB 保存 current block、
+  PC、stack、mutable memory、輸入 offset 與 pending monster descriptors，
+  並以真實 ECL6 terrain `04h` 驗證讀檔後分支相同。READY spec 409 是權威；
+  完整 UI／戰鬥 frame、音訊位置與 SSI 原版 RNG 仍未完成。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

@@ -1,8 +1,8 @@
 # 專案成果盤點
 
-更新日期：2026-08-01
-本 milestone 的 CoAB 基底：`500e614`
-依賴的 Golden Box engine checkpoint：`f9fbcaf`
+更新日期：2026-08-02
+本 milestone 的 CoAB 基底：`a9ee134`
+依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -79,8 +79,9 @@ commit 內保存不可能自我引用的 hash。
   CPIC 蜘蛛戰鬥 checkpoint 已保存。Journal 25 的「強大力量」是誘餌，
   ENTER script 沒有能力值寫入。戰敗路徑、敵人完整 AD&D 能力及後續區域
   仍未完成。
-- remake JSON save，以及原版 SAVGAM／CHRDAT／FX／SWG 的已驗證欄位
-  import、raw preservation 與部分 writeback。
+- remake JSON save v6 已保存地圖、時鐘與 ECL session／持續 PRNG
+  continuation；原版 SAVGAM／CHRDAT／FX／SWG 則有已驗證欄位 import、raw
+  preservation 與部分 writeback。任意 UI／戰鬥 frame 的完整續存仍未完成。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
@@ -290,6 +291,12 @@ commit 內保存不可能自我引用的 hash。
   IDs 均有回歸。這完成 Standing Stone 累積狀態的迷斯卓諾章節路徑，仍不
   等於由新建隊伍自開場至結局的單一完整通關，也不代表終戰特殊能力與
   DOS 動態演出已完成。
+- 第 409 輪將 remake save 升至 v6，保存 ECL current block、resume PC、
+  stack、mutable memory、字串／compare state、輸入 offset、pending monster
+  descriptors 與持續 PRNG。獨立 engine `randomstream` 以 seed＋底層 draw
+  count 恢復 `math/rand` continuation，並有 replay 上限。真實 ECL6
+  Burial Glen terrain `04h` 證明存讀檔後 raw random values、怪物與文字
+  和不中斷執行相同；這不證明 SSI 原版 RNG，也尚未保存完整 UI／戰鬥 frame。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

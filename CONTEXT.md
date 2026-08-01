@@ -2736,3 +2736,16 @@ READY spec 408 保存房間、樓梯、旗標、終戰與限制。直接視覺 c
 需建立不影響戰鬥結果、可凍結時間軸的終戰 capture，補齊三類敵人的法術、
 特殊能力、AI、音效與 DOS 動態演出；全新隊伍由開場至結局的單一通關仍未
 完成。
+
+2026-08-02 第四百零九輪把 remake JSON save 升至 version 6。先稽核發現
+只保存 seed 不足：ECL current block、resume PC、shared work memory 與
+input offsets 也都會共同決定下一分支。`BlockSession.Snapshot` 因此保存
+mutable continuation；code window 只保存相對玩家自備 block 的 runtime
+差異，不把完整商業 ECL bytes 寫入 JSON。
+
+獨立 engine 新增 `randomstream`，以 seed＋底層 Source draw count 保持現行
+`math/rand` 序列，Restore 設有 replay 上限。合成 PROGRAM boundary、State
+SavePartyFile／LoadPartyFile 與真實 `ECL6.DAX` block `40h` terrain `04h`
+均證明讀檔後下一批 random values、怪物生成與文字等同不中斷執行。舊 v1–v5
+仍可載入，但不能冒稱恢復未曾保存的 RNG 位置。READY spec 409 與雙 repo
+繁中知識庫保存證據；任意 UI／戰鬥 frame、音訊位置及 SSI 原版 RNG 仍未完成。

@@ -8,6 +8,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -292,7 +293,15 @@ func (s *State) SavePartyFile(path string) error {
 	}
 	areaState := s.Area
 	areaState.GameTime = s.gameClock
-	data, err := partySave.EncodeGameWithTime(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles)
+	var sessionSnapshot *ecl.SessionSnapshot
+	if s.session != nil {
+		snapshot, snapshotErr := s.session.Snapshot()
+		if snapshotErr != nil {
+			return snapshotErr
+		}
+		sessionSnapshot = &snapshot
+	}
+	data, err := partySave.EncodeGameWithSession(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot)
 	if err != nil {
 		return err
 	}
@@ -655,6 +664,19 @@ func (s *State) LoadPartyFile(path string) error {
 	}
 	if s.Mode == ModeMap && s.Location != LocationShadowdale {
 		s.Mode = ModeWilderness
+	}
+	if file.Version >= 6 && file.ECLSession != nil {
+		if s.session == nil {
+			return fmt.Errorf("game save contains an ECL session but no original ECL blocks are loaded")
+		}
+		if err := s.session.RestoreSnapshot(*file.ECLSession); err != nil {
+			return fmt.Errorf("restore game ECL session: %w", err)
+		}
+		s.eclBlock = s.session.CurrentData()
+		s.eclStart, err = s.session.InitialEntry()
+		if err != nil {
+			return err
+		}
 	}
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}

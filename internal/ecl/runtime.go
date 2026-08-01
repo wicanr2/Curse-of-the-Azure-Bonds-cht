@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+
+	"github.com/wicanr2/golden-box-remake-engine/randomstream"
 )
 
 // RunResult is the observable output of the bounded ECL subset runner.
@@ -373,9 +375,7 @@ type RuntimeState struct {
 	SelectedPlayerSet   bool
 	MonsterSetup        *MonsterSetup
 	MonsterSpawns       []MonsterSpawn
-	Random              *rand.Rand
-	RandomSeed          int64
-	RandomSeedSet       bool
+	Random              *randomstream.Stream
 }
 
 func NewRuntimeState(start int) *RuntimeState {
@@ -484,15 +484,13 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 	rebuildPartyItems()
 	rng := rand.New(rand.NewSource(seed))
 	if runtime != nil {
-		if !runtime.RandomSeedSet || runtime.RandomSeed != seed || runtime.Random == nil {
-			runtime.Random = rand.New(rand.NewSource(seed))
-			runtime.RandomSeed = seed
-			runtime.RandomSeedSet = true
+		if runtime.Random == nil {
+			runtime.Random = randomstream.New(seed)
 		}
 		// A BlockSession owns one continuous PRNG stream across separate ECL
 		// entry invocations. Recreating it for every terrain step makes a
 		// fixed replay seed return the same RANDOM result forever.
-		rng = runtime.Random
+		rng = runtime.Random.Rand()
 	}
 	var compare [6]bool
 	selectedPlayerIndex := -1
