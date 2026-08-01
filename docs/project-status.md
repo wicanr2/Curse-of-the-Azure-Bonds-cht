@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`fbeb25b`
+本 milestone 的 CoAB 基底：`9a66783`
 依賴的 Golden Box engine checkpoint：`720c6ae`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -342,8 +342,16 @@ commit 內保存不可能自我引用的 hash。
   cardinal／diagonal 2／3 加權距離、牆面阻擋、雙方 footprint 與二十次
   不可見候選移除重抽。effect `84h` 不再先從所有存活者任選；無候選時仍
   依原 handler 消耗 action，不回退物理攻擊。core／State tests 覆蓋超距、
-  牆後、大型 footprint、不可見與無目標 continuation。原始 combatant-array
-  同距順序、PC-98 invisibility runtime 與 `(0,0)` fallback 動畫仍未完成。
+  牆後、大型 footprint、不可見與無目標 continuation。第 417 輪已接通
+  PC-98 status visibility；原始 combatant-array 同距順序與 `(0,0)` fallback
+  動畫仍未完成。
+- 第 417 輪由 PC-98 `CHECKTARGET 00B8:11AF` 與 overlay 12 effect handlers
+  證明：`19h` 只在觀察者缺少 operational `18h` 時隱藏並給 attack roll
+  `-4`，`47h` 則無條件隱藏並給 `-4`。State 的怪物 ranged selector 現使用
+  同一作品中立 `VisibleTo` 契約；物理 AC 也修正為 `18h` 只抵消 `19h`，
+  不抵消 `47h`。core／State 正反例與 Standing Stone 起始真實 MON6
+  提朗瑟克斯長路徑均為驗收門檻。blink、動物視覺與完整 effect 生命週期
+  仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

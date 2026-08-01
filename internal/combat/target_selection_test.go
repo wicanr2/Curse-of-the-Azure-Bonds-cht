@@ -75,3 +75,22 @@ func TestSelectRangedCombatTargetReturnsNormalMissWhenEveryCandidateIsHidden(t *
 		t.Fatalf("target=%+v found=%v err=%v", target, found, err)
 	}
 }
+
+func TestFighterVisibilityProjectsEffects18_19And47(t *testing.T) {
+	ordinary := Fighter{ID: "ordinary"}
+	detector := Fighter{ID: "detector", MonsterAffects: []MonsterAffect{{Kind: 0x18, Innate: true}}}
+	inactiveDetector := Fighter{ID: "inactive", MonsterAffects: []MonsterAffect{{Kind: 0x18}}}
+	effect19 := Fighter{ID: "effect-19", MonsterAffects: []MonsterAffect{{Kind: 0x19, Active: true}}}
+	effect47 := Fighter{ID: "effect-47", MonsterAffects: []MonsterAffect{{Kind: 0x47, Active: true}}}
+	inactive := Fighter{ID: "inactive-hidden", MonsterAffects: []MonsterAffect{{Kind: 0x19}}}
+
+	if effect19.VisibleTo(ordinary) || !effect19.VisibleTo(detector) || effect19.VisibleTo(inactiveDetector) {
+		t.Fatal("effect 19 visibility did not follow operational effect 18")
+	}
+	if effect47.VisibleTo(ordinary) || effect47.VisibleTo(detector) {
+		t.Fatal("effect 47 must remain hidden even from effect 18")
+	}
+	if !inactive.VisibleTo(ordinary) {
+		t.Fatal("inactive non-innate visibility effect became operational")
+	}
+}

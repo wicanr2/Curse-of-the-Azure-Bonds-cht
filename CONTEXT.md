@@ -2862,3 +2862,18 @@ Battle 新增作品中立 `TargetSelectionOptions`，依 cardinal／diagonal `2�
 focused core／State tests 已通過。READY spec 416 保存 exact／strong
 inference 邊界；原 combatant-array 同距 tie order、PC-98 invisibility
 runtime、無目標 `(0,0)` 動畫、終戰牆面逐幀與 `6Ah` 時序仍未完成。
+
+2026-08-02 第四百一十七輪以 typed TPOV resolver 與非破壞性 IDA 副本關閉
+PC-98 status visibility。effect table 的 `008B:00AC／017E` 分別解析為
+overlay 12 handlers `06F9h／1713h`；前者只在觀察者缺少 operational `18h`
+時設定 `DS:A035h` hidden 並使 attack roll `-4`，後者則無條件執行兩者。
+`CHECKTARGET 00B8:11AF` 會清 hidden、分兩 phase dispatch 並暫時交換 action
+target，最後只在 hidden 仍為零時回 true。
+
+Battle 新增作品中立 `Fighter.VisibleTo(observer)`，物理 AC 改用同一差異化
+投影；State effect `84h` ranged selector 正式注入 visibility callback。一般
+怪物／effect `18h`／inactive／`19h`／`47h` 的 core 與 State 正反例，以及
+Standing Stone 起始真實 MON6 提朗瑟克斯長路徑均納入回歸。spec 235 已標
+SUPERSEDED，spec 410 將 `19h／47h` 一併略過的舊斷言也由 READY spec 417
+訂正。blink、invisible-to-animals、完整 effect 生命週期、同距原始順序與
+`(0,0)` 動畫仍未完成。

@@ -378,3 +378,4 @@
 - [第四百一十四輪 PC-98 命中後 `4Fh` 火焰效果 runtime](./414-pc98-post-hit-effect-4f-runtime.md)（`READY`：前兩物理攻擊槽命中且目標存活時追加同目標 2d10 Fire＋Magic；不含原版動畫／聲音）
 - [第四百一十五輪 PC-98 怪物閃電排程與雙傷害池](./415-pc98-monster-lightning-runtime.md)（`READY`：effect `84h` 前三回合、Lightning Bolt `33h`、initial／path 獨立 `16d6` 與正常 MON6 終戰）
 - [第四百一十六輪 PC-98 怪物法術選敵、射程與牆面](./416-pc98-monster-spell-target-selection.md)（`READY`：range 10、footprint／牆面候選、二十次不可見重抽與無目標回合 continuation；不含 exact tie order）
+- [第四百一十七輪 PC-98 目標可見性與效果](./417-pc98-target-visibility-effects.md)（`READY`：`18h／19h／47h` 的 CHECKTARGET、法術選敵與物理 AC 投影；不含完整效果生命週期）

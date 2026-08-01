@@ -16,8 +16,9 @@
   Battle 以作品中立的 `Innate` 來源標記讓 `MON*SPC` 效果可運作；角色後天
   effect 原有的 `Active` 生命週期仍保留。
 - 提朗瑟克斯 `MON6CHA 47h` 的六筆 `MON6SPC` 皆進入正常最終戰，其中
-  kind `18h` 依既有效果表為 Detect Invisibility。攻擊者有此能力時，目標
-  `19h／47h` 隱形效果不再提供 +4 AC。
+  kind `18h` 依既有效果表為 Detect Invisibility。spec 417 已以 PC-98
+  `CHECKTARGET` 與兩個原始 handler 修正本輪過度斷言：`18h` 只抵消目標
+  `19h` 的隱藏與 +4 AC；`47h` 仍無條件生效。
 
 ## 原始資料
 
@@ -88,8 +89,8 @@ index 解析到指定 overlay local handler。舊的 `hypothesis／unknown` 位�
 - `combat.MonsterAffect.Innate` 記錄來源，不覆寫 raw byte `+4`。
 - 隱形、加速／緩慢與定身判定共用 `Active || Innate`；只有從
   `BuildEnemiesWithAffects` 載入的 `MON*SPC` 會自動標成 innate。
-- `MonsterCanDetectInvisible` 只認 kind `18h`，並在命中公式略過目標的
-  隱形 AC bonus。
+- `MonsterCanDetectInvisible` 只認 kind `18h`；其精確可見性與命中投影由
+  spec 417 supersede 本規格原先把 `19h／47h` 合併處理的斷言。
 - `TestResolveAttackInnateDetectInvisibleBypassesInvisibilityACBonus` 鎖定
   命中邊界，並以非 innate、inactive 反例避免所有 `18h` 無條件生效。
 - `TestRealPlayerPathStandingStoneToBurialGlen` 現在載入真實 `MON6SPC.DAX`；

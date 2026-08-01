@@ -2106,6 +2106,9 @@ func (s *State) advanceCombatToParty() error {
 			target, found, err := s.battle.SelectRangedCombatTarget(fighter.ID, targetSide, combat.TargetSelectionOptions{
 				MaxRange: 10,
 				Terrain:  s.combatLineTerrain,
+				VisibleTo: func(observer, target combat.Fighter) bool {
+					return target.VisibleTo(observer)
+				},
 			})
 			if err != nil {
 				return err

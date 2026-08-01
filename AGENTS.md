@@ -506,8 +506,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `33h` record 接通 range 10、cardinal／diagonal `2／3` 加權距離、雙方
   footprint、牆面候選及二十次不可見移除重抽。effect `84h` 不再先走全體
   living-opponent selector；無候選仍消耗 action，不回退物理攻擊。原始
-  combatant-array 同距 tie order、PC-98 invisibility runtime 與 `(0,0)`
-  fallback 動畫仍未完成；READY spec 416 是權威。
+  combatant-array 同距 tie order 與 `(0,0)` fallback 動畫仍未完成；
+  READY spec 416 是權威。
+- 第 417 輪已由 PC-98 `CHECKTARGET 00B8:11AF` 與 overlay 12 handlers
+  `06F9h／1713h` 關閉 status visibility：`19h` 只在觀察者沒有 operational
+  `18h` 時設 hidden 並使 attack roll `-4`；`47h` 無條件 hidden／`-4`，
+  所以 Detect Invisibility 不能抵消 `47h`。法術 ranged selector 與物理 AC
+  共用作品中立 visibility 規則，並以真實 MON6 提朗瑟克斯 effect `18h`
+  驗證。spec 235 已 superseded，spec 410 過度合併 `19h／47h` 的斷言亦由
+  READY spec 417 修正；blink、動物視覺與完整 effect 生命週期仍未完成。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入

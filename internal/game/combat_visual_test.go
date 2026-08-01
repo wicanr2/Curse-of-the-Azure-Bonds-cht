@@ -210,6 +210,67 @@ func TestMonsterEffect84ConsumesTurnWhenNoRangedTargetIsReachable(t *testing.T) 
 	}
 }
 
+func TestMonsterEffect84VisibilityUsesDetectInvisible(t *testing.T) {
+	tests := []struct {
+		name       string
+		casterFX   []combat.MonsterAffect
+		targetKind uint8
+		wantTarget bool
+	}{
+		{name: "ordinary cannot target effect 19", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}}, targetKind: 0x19},
+		{name: "effect 18 detects effect 19", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}, {Kind: 0x18, Innate: true}}, targetKind: 0x19, wantTarget: true},
+		{name: "effect 18 does not defeat effect 47", casterFX: []combat.MonsterAffect{{Kind: 0x84, Innate: true}, {Kind: 0x18, Innate: true}}, targetKind: 0x47},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			state := NewState(combatVisualCatalog(t))
+			state.EnableCombatVisualTimeline(true)
+			state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+				return combat.LineCell{Valid: x >= 1 && x < 8 && y >= 1 && y < 5}
+			})
+			battle, err := combat.NewBattle([]combat.Fighter{
+				{ID: "caster", Side: combat.SideEnemy, HitPoints: 200, MaxHitPoints: 200,
+					HasCombatPosition: true, CombatX: 1, CombatY: 1, MonsterAffects: test.casterFX},
+				{ID: "target", Side: combat.SideParty, HitPoints: 200, MaxHitPoints: 200,
+					HasCombatPosition: true, CombatX: 3, CombatY: 1,
+					SavingThrows:   []uint8{30, 30, 30, 30, 30},
+					MonsterAffects: []combat.MonsterAffect{{Kind: test.targetKind, Active: true}}},
+			}, 417)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := battle.StartRound(); err != nil {
+				t.Fatal(err)
+			}
+			state.battle = battle
+			state.Mode = ModeCombat
+			state.combatTurns = []combat.Turn{{FighterID: "caster"}, {FighterID: "target"}}
+			if err := state.advanceCombatToParty(); err != nil {
+				t.Fatal(err)
+			}
+			event, queued := state.CombatVisualEvent()
+			if test.wantTarget {
+				if !queued || event.Kind != combat.VisualLineSpell || event.To != (combat.TilePoint{X: 3, Y: 1}) {
+					t.Fatalf("detected target visual=%+v queued=%v", event, queued)
+				}
+				if got, _ := battle.Fighter("target"); got.HitPoints >= 200 {
+					t.Fatalf("detected target was not damaged: %+v", got)
+				}
+				return
+			}
+			if queued {
+				t.Fatalf("hidden target unexpectedly queued visual: %+v", event)
+			}
+			if got, _ := battle.Fighter("target"); got.HitPoints != 200 {
+				t.Fatalf("hidden target received damage: %+v", got)
+			}
+			if active, ok := state.CombatActiveFighter(); !ok || active.ID != "target" {
+				t.Fatalf("no-target action did not consume caster turn: active=%+v ok=%v", active, ok)
+			}
+		})
+	}
+}
+
 func TestMonsterEffect84StopsBeforeOriginalRoundFour(t *testing.T) {
 	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)
