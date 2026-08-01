@@ -1178,6 +1178,7 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 		caster.ID, LightningBoltSpellID, target, casterLevel(s.partyRoster[characterIndex]),
 		combat.ReflectingLineOptions{
 			WeightedBudget: 14, FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
+			DamageFlags: combat.DamageFlagElectricity | combat.DamageFlagMagic,
 		},
 		terrain,
 	)
@@ -1189,12 +1190,16 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 	}
 	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
 	totalDamage := 0
+	protectedCount := 0
 	for _, impact := range result.Impacts {
 		impacts = append(impacts, combat.VisualImpactTarget{
 			TargetID: impact.TargetID, To: impact.Point, Hit: true, Killed: impact.TargetHP <= 0,
-			Damage: impact.Damage, Saved: impact.Saved,
+			Damage: impact.Damage, Saved: impact.Saved, Protected: impact.Protected,
 		})
 		totalDamage += impact.Damage
+		if impact.Protected {
+			protectedCount++
+		}
 	}
 	segments := make([]combat.VisualPathSegment, 0, len(result.Segments))
 	for _, segment := range result.Segments {
@@ -1204,10 +1209,15 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 		})
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(
-		s.catalog.Text("combat_lightning_bolt", "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。"),
-		caster.Name, len(result.Impacts), totalDamage,
-	)
+	messageID := "combat_lightning_bolt"
+	fallback := "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。"
+	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
+	if protectedCount > 0 {
+		messageID = "combat_lightning_bolt_protected"
+		fallback = "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。"
+		arguments = append(arguments, protectedCount)
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
 	if s.queueCombatVisual(combat.VisualEvent{
 		Kind: combat.VisualLineSpell, Effect: "lightning_bolt", ActorID: caster.ID,
 		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}, To: target,
@@ -1434,20 +1444,32 @@ func (s *State) combatCastFireball() error {
 	}
 	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
 	totalDamage := 0
+	protectedCount := 0
 	for _, impact := range result.Impacts {
 		impacts = append(impacts, combat.VisualImpactTarget{
-			TargetID: impact.TargetID,
-			To:       positions[impact.TargetID],
-			Hit:      true,
-			Killed:   impact.TargetHP <= 0,
+			TargetID:  impact.TargetID,
+			To:        positions[impact.TargetID],
+			Hit:       true,
+			Killed:    impact.TargetHP <= 0,
+			Damage:    impact.Damage,
+			Saved:     impact.Saved,
+			Protected: impact.Protected,
 		})
 		totalDamage += impact.Damage
+		if impact.Protected {
+			protectedCount++
+		}
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(
-		s.catalog.Text("combat_fireball", "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。"),
-		caster.Name, len(result.Impacts), totalDamage,
-	)
+	messageID := "combat_fireball"
+	fallback := "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。"
+	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
+	if protectedCount > 0 {
+		messageID = "combat_fireball_protected"
+		fallback = "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。"
+		arguments = append(arguments, protectedCount)
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
 	if s.queueCombatVisual(combat.VisualEvent{
 		Kind: combat.VisualAreaSpell, Effect: "fireball", ActorID: caster.ID,
 		From: combat.TilePoint{X: caster.CombatX, Y: caster.CombatY},

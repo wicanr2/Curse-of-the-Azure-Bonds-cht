@@ -62,6 +62,35 @@ func TestCastReflectingLineSpellHitsLargeFootprintOnceUntilReentry(t *testing.T)
 	}
 }
 
+func TestCastReflectingLineSpellHonorsOperationalEffect87ElectricProtection(t *testing.T) {
+	protected := lineSpellFighter("protected", SideEnemy, 2, 1, 40, 0)
+	protected.MonsterAffects = []MonsterAffect{{Kind: 0x87, Innate: true}}
+	battle, err := NewBattle([]Fighter{
+		lineSpellFighter("caster", SideParty, 1, 1, 40, 0),
+		protected,
+	}, 29)
+	if err != nil {
+		t.Fatal(err)
+	}
+	terrain := func(x, y int) LineCell {
+		return LineCell{Valid: x >= 0 && x <= 5 && y == 1}
+	}
+	result, err := battle.CastReflectingLineSpell(
+		"caster", 0x33, TilePoint{X: 2, Y: 1}, 3,
+		ReflectingLineOptions{
+			WeightedBudget: 8,
+			DamageFlags:    DamageFlagElectricity | DamageFlagMagic,
+		}, terrain,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Impacts) != 1 || !result.Impacts[0].Protected ||
+		result.Impacts[0].Damage != 0 || result.Impacts[0].TargetHP != 40 {
+		t.Fatalf("electric protection impacts=%+v", result.Impacts)
+	}
+}
+
 func TestCastReflectingLineSpellAppliesCloseFirstReflectionPenalty(t *testing.T) {
 	newBattle := func() *Battle {
 		battle, err := NewBattle([]Fighter{

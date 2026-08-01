@@ -315,6 +315,12 @@ commit 內保存不可能自我引用的 hash。
   成功時傷害歸零，施放格與 continuation 仍消耗／進行；繁中訊息
   來自 locale stable ID。其餘四筆效果的 runtime boundary、所有魔法幾何、
   AI 與演出仍未完成。
+- 第 413 輪將 `70h` 防火與 `87h` 防電接入 Fireball／Lightning Bolt 的
+  damage flags boundary；inactive effect 反例仍受傷。正常 memorized spell／
+  tile cursor／visual timeline 顯示資料化繁中防護摘要，Standing Stone 起始
+  長路徑取得的真實提朗瑟克斯也在兩種攻擊下保持 HP，原終戰仍可完成
+  `PROGRAM 8`。saving throw 與 protection 的原版 RNG 順序、`4Fh／84h`
+  怪物能力、完整 AI／演出仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -947,6 +947,12 @@ TPOV resident entry／fixup，`6Ah → entry 100 → local 2404h` 因而升級�
 的 AI、地形反彈、動畫與音效仍未完成。證據與限制見
 [`spec 412`](docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md)。
 
+第 413 輪已把其中 `70h` 防火與 `87h` 防電接入正常玩家的 Fireball／
+Lightning Bolt 路徑。真實 MON6 提朗瑟克斯會保留 HP，visual timeline 仍
+播放命中 transaction，並由正式繁中 JSON 顯示元素防護抵消次數。怪物
+`84h` 閃電術 AI、`4Fh` 天生火焰攻擊及 saving throw／防護的原版 RNG 時序
+仍未完成；範圍見 [`spec 413`](docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md)。
+
 - 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
   ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
   「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。

@@ -2796,3 +2796,16 @@ resident pointer 經 control segment 與 entry index exact 關閉提朗瑟克斯
 與 handler push spell `33h` 證實。這是靜態 handler／基本語意完成，不代表
 runtime 已完成；下一步仍須追怪物閃電的頻率、目標、terrain reflection、動畫、
 聲音，以及將防火／防電接到各自 pre-damage boundary。READY spec 412 是權威。
+
+2026-08-02 第四百一十三輪把 effect `70h／87h` 從靜態 exact handler 推進到
+可玩 runtime。Battle 新增作品中立 raw damage flags 與
+`MonsterProtectedFromDamage`；Fireball 傳 Fire＋Magic，reflecting line 由
+呼叫端傳 Electricity＋Magic。保護命中仍保存 visual impact、法術格及回合
+transaction，但 damage 歸零、HP 不變並標記 `Protected`。
+
+正常 memorized Fireball／Lightning Bolt tile-cursor 測試載入正式 zh-TW JSON，
+驗證防護摘要 stable IDs；Standing Stone 起始長路徑則用真實 MON6
+Tyranthraxus fighter 關閉兩種 damage boundary，之後原 37 人終戰仍進入
+`PROGRAM 8`。現行 save draw 先於 protection 的 RNG 順序尚缺 DOS runtime
+trace；`4Fh` 天生 fire、`84h` 怪物 Lightning Bolt AI／terrain／演出也仍未
+完成。READY spec 413 是本輪權威。

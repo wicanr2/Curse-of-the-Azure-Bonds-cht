@@ -2301,6 +2301,9 @@ func (a *app) combatVisualMessage(event combat.VisualEvent, frame combat.VisualF
 	if !ok {
 		return fallback
 	}
+	if impact.Protected {
+		return fallback
+	}
 	name := impact.TargetID
 	for _, fighter := range a.state.CombatFighters() {
 		if fighter.ID == impact.TargetID {

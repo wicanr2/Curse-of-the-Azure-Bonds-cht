@@ -151,8 +151,8 @@ func (f Fighter) MonsterCanDetectInvisible() bool {
 }
 
 // MonsterMagicResistanceBase reports the evidence-backed percentage base
-// supplied by a monster affect handler. Effect 6A maps to the 15-percent
-// wrapper at strong-inference confidence; the shared formula itself is exact.
+// supplied by a monster affect handler. Effect 6A maps exactly to the
+// 15-percent wrapper; the shared formula is also exact.
 func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
 	for _, affect := range f.MonsterAffects {
 		if affect.operational() && affect.Kind == 0x6A {
@@ -160,6 +160,31 @@ func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
 		}
 	}
 	return 0, false
+}
+
+const (
+	DamageFlagFire        uint8 = 0x01
+	DamageFlagElectricity uint8 = 0x04
+	DamageFlagMagic       uint8 = 0x08
+)
+
+// MonsterProtectedFromDamage reports the two exact elemental protection
+// handlers resolved from the PC-98 EFFPROCS table. Effect 70 consumes Fire;
+// effect 87 consumes Electricity. Magic resistance remains a separate,
+// probabilistic pre-damage handler.
+func (f Fighter) MonsterProtectedFromDamage(flags uint8) bool {
+	for _, affect := range f.MonsterAffects {
+		if !affect.operational() {
+			continue
+		}
+		if affect.Kind == 0x70 && flags&DamageFlagFire != 0 {
+			return true
+		}
+		if affect.Kind == 0x87 && flags&DamageFlagElectricity != 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // MagicResistanceChance mirrors the PC-98 EFFPROCS common routine. The
@@ -268,10 +293,11 @@ type SpellResult struct {
 }
 
 type AreaSpellImpact struct {
-	TargetID string
-	Damage   int
-	TargetHP int
-	Saved    bool
+	TargetID  string
+	Damage    int
+	TargetHP  int
+	Saved     bool
+	Protected bool
 }
 
 type AreaSpellResult struct {
@@ -890,6 +916,10 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 		if saved {
 			applied /= 2
 		}
+		protected := target.MonsterProtectedFromDamage(DamageFlagFire | DamageFlagMagic)
+		if protected {
+			applied = 0
+		}
 		if applied > target.HitPoints {
 			applied = target.HitPoints
 		}
@@ -897,6 +927,7 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 		b.fighters[target.ID] = target
 		result.Impacts = append(result.Impacts, AreaSpellImpact{
 			TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
+			Protected: protected,
 		})
 	}
 	b.updateStatus()
