@@ -59,7 +59,8 @@ resident segment:stub offset
 `84h` 不在 overlay 12 `INITEFFPROX` 初始化；Borland module 23 `SPELLS`
 於 overlay 22 local `6C74h` 寫入 slot 84。其 handler local `62D7h` 在
 `6323h` push `33h` 後透過 spell dispatch 呼叫。這只證明能力及 dispatch；
-`ds:A81F < 4` 的完整頻率語意、目標選擇與 terrain line 尚未由 runtime 關閉。
+`ds:A81F < 4`、雙 `16d6` 與 terrain line runtime 已由 spec 415 接通；原版
+目標候選與逐幀 timing 仍未關閉。
 
 ## 工具與驗證契約
 
@@ -78,6 +79,7 @@ resident segment:stub offset
 - `4Fh` 命中後 2d10 runtime 已由 spec 414 接通；`70h／87h` 已由 spec 413
   接入 Fireball／Lightning Bolt。其他 spell／item pre-damage boundary 仍未
   全數稽核，不能擴大宣稱全域完成。
-- 怪物 Lightning Bolt 的施放頻率、AI、目標、牆面反彈、逐格動畫與聲音。
+- 怪物 Lightning Bolt 的頻率與雙傷害池已由 spec 415 supersede；目標
+  range／LOS／tie order、終戰牆面反彈逐幀 oracle 與精確聲音 timing 仍未完成。
 - 三神器對提朗瑟克斯效果的 writer／consumer 與終戰 DOS runtime trace。
 - HIGH PRIEST `09h／0Ah`、MARGOYLE `77h` 與其餘效果表。

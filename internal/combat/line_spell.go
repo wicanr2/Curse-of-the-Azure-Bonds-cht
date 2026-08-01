@@ -17,6 +17,11 @@ type ReflectingLineOptions struct {
 	FirstReflectionOriginThreshold int
 	FirstReflectionPenalty         int
 	DamageFlags                    uint8
+	// InitialDamageDice and PathDamageDice opt into two independently rolled
+	// damage pools. Zero preserves the ordinary shared level-d6 spell rule.
+	InitialDamageDice int
+	PathDamageDice    int
+	DamageDiceSides   int
 }
 
 type LineSpellSegment struct {
@@ -32,6 +37,8 @@ type LineSpellResult struct {
 	SpellID       uint8
 	Target        TilePoint
 	BaseDamage    int
+	InitialDamage int
+	PathDamage    int
 	TravelImpacts int
 	Impacts       []LineSpellImpact
 	Segments      []LineSpellSegment
@@ -74,18 +81,26 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		return LineSpellResult{}, fmt.Errorf("line spell target (%d,%d) is invalid", target.X, target.Y)
 	}
 
-	damage := 0
-	for roll := 0; roll < level; roll++ {
-		damage += b.rng.Intn(6) + 1
+	initialDamage, pathDamage := 0, 0
+	separateDamage := options.InitialDamageDice > 0 || options.PathDamageDice > 0
+	if separateDamage {
+		if options.InitialDamageDice < 1 || options.PathDamageDice < 1 || options.DamageDiceSides < 1 {
+			return LineSpellResult{}, fmt.Errorf("separate line damage requires positive initial, path, and side dice")
+		}
+		initialDamage = b.rollDamage(options.InitialDamageDice, options.DamageDiceSides)
+	} else {
+		initialDamage = b.rollDamage(level, 6)
+		pathDamage = initialDamage
 	}
 	result := LineSpellResult{
-		CasterID: casterID, SpellID: spellID, Target: target, BaseDamage: damage,
-		Impacts: make([]LineSpellImpact, 0), Segments: make([]LineSpellSegment, 0),
+		CasterID: casterID, SpellID: spellID, Target: target, BaseDamage: initialDamage,
+		InitialDamage: initialDamage,
+		Impacts:       make([]LineSpellImpact, 0), Segments: make([]LineSpellSegment, 0),
 	}
 
 	lastFighterID := ""
 	if fighter, found := b.livingFighterAt(target); found {
-		impact, err := b.applyLineSpellDamage(fighter, damage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, initialDamage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -93,6 +108,10 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		result.TravelImpacts = 1
 		lastFighterID = fighter.ID
 	}
+	if separateDamage {
+		pathDamage = b.rollDamage(options.PathDamageDice, options.DamageDiceSides)
+	}
+	result.PathDamage = pathDamage
 
 	dx, dy := target.X-origin.X, target.Y-origin.Y
 	direction := 1
@@ -143,7 +162,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		if fighter.ID == lastFighterID {
 			continue
 		}
-		impact, err := b.applyLineSpellDamage(fighter, damage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, pathDamage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -160,6 +179,14 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 	}
 	b.updateStatus()
 	return result, nil
+}
+
+func (b *Battle) rollDamage(count, sides int) int {
+	damage := 0
+	for roll := 0; roll < count; roll++ {
+		damage += b.rng.Intn(sides) + 1
+	}
+	return damage
 }
 
 func weightedTileDistance(left, right TilePoint) int {

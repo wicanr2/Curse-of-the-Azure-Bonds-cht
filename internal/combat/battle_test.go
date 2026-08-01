@@ -356,6 +356,18 @@ func TestAttack4FHonorsFireProtectionAndOnlyFirstTwoSlots(t *testing.T) {
 	}
 }
 
+func TestMonsterThrowsLightningRequiresOperationalEffect84(t *testing.T) {
+	if (Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84}}}).MonsterThrowsLightning() {
+		t.Fatal("inactive effect 84 became operational")
+	}
+	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Innate: true}}}).MonsterThrowsLightning() {
+		t.Fatal("innate effect 84 was not projected")
+	}
+	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Active: true}}}).MonsterThrowsLightning() {
+		t.Fatal("active effect 84 was not projected")
+	}
+}
+
 func TestSideAttackRollModifierIsBattleScopedAndSigned(t *testing.T) {
 	battle := testBattle(t)
 	if err := battle.SetSideAttackRollModifier(SideParty, 2); err != nil {

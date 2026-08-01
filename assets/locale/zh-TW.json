@@ -265,6 +265,8 @@
     "combat_fireball_protected": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。",
     "combat_lightning_bolt": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。",
     "combat_lightning_bolt_protected": "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
+    "combat_monster_lightning_bolt": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害。",
+    "combat_monster_lightning_bolt_protected": "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。",
     "combat_stinking_cloud": "%s 製造一片惡臭雲霧，籠罩 %d 名目標。",
     "combat_cloud_coughing": "%s 不斷咳嗽，無法行動。",
     "combat_cloud_helpless": "%s 因噁心而動彈不得。",

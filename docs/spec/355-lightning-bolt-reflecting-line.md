@@ -148,7 +148,8 @@ impact 另使用已有 `sound_3`／`magic_hit.wav`。
 - 反彈時 `path_a.steps += 8` 的近距離 self-protection 分支在所有角度的完整
   原始組語語意。
 - 牆角、多次反彈與 camera handoff 的 DOS 逐幀畫面。
-- 敵方 `throws lightning` 的 16d6／range 10 特殊能力接線。
+- 敵方 `throws lightning` 的雙 16d6／range 10 特殊能力已由 spec 415 接線；
+  原版目標候選與動態影片時間碼仍未完成。
 
 這些項目不能因本輪完成玩家 Lightning Bolt vertical slice 而寫成「完整法術
 系統」或「完整戰鬥」。

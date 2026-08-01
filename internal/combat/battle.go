@@ -205,6 +205,18 @@ func (f Fighter) MonsterPostHitAffects(attackSlot int) []MonsterAffect {
 	return effects
 }
 
+// MonsterThrowsLightning reports the operational MON*SPC effect dispatched
+// by the reference CHECKFX type-14 action phase. The raw effect remains on
+// Fighter; this method only exposes the title-neutral runtime capability.
+func (f Fighter) MonsterThrowsLightning() bool {
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() && affect.Kind == 0x84 {
+			return true
+		}
+	}
+	return false
+}
+
 // MagicResistanceChance mirrors the PC-98 EFFPROCS common routine. The
 // original compares a d100 roll directly against this signed expression and
 // does not clamp it before the comparison.

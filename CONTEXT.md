@@ -2828,3 +2828,21 @@ Tyranthraxus fighter，驗證 `4Fh` boundary 後原 37 人終戰仍完成
 `PROGRAM 8`。原版火焰動畫／sound cue／wall-clock timing、轉移目標與自由
 攻擊動態 trace、`6Ah` 對 4F 的時序，以及 `84h` 怪物閃電仍未完成。
 READY spec 414 是本輪權威。
+
+2026-08-02 第四百一十五輪以非破壞性 IDA 副本與 raw bytes 關閉 effect
+`84h` 的怪物 action phase。overlay 9 在一般行動前以 type 14 呼叫
+`CHECKFX`；overlay 22 handler exact 比較 `ROUND < 4`、dispatch spell
+`33h`，先對初始目標格擲 `16d6` 並處理 Spell save，再獨立擲第二份
+`16d6` 處理 range 10 的後續直線／反射，最後清除施法者 actions。
+獨立 DOS 重寫只用來交叉確認 battle setup 先設 round 0、每輪 action 前遞增，
+所以 remake 第 1–3 回合與 raw gate 對齊。
+
+Battle 的作品中立 line profile 現可分開 initial／path damage pool；零值仍保留
+玩家 Lightning Bolt 的單一等級 d6 共用行為。State 在 Magic Missile／物理
+攻擊前排程 operational `84h`，正式 Ebiten frontend 注入 DUNGCOM／WILDCOM
+terrain，並沿用資料化 Lightning timeline、effect `87h` 防電、聲音階段與
+繁中 stable IDs。focused tests 與 Standing Stone 起始正常 GEO／ECL 長路徑
+均通過；真實 MON6 提朗瑟克斯在 37 人終戰產生動態閃電事件，之後仍完成
+`PROGRAM 8`。READY spec 415 保存 hashes、位址、推論等級與限制。原版
+target range／LOS／tie order、終戰牆面逐幀 oracle、精確時間與 `6Ah` 對
+effect 84 的時序仍未完成。

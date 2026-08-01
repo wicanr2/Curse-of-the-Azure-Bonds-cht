@@ -159,6 +159,10 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 
 ### IDA 非破壞性語意註記
 
+- 開始解讀函式或欄位前，先以原始函式名、位址、offset、symbol 與已知 bytes
+  搜尋 `docs/`、`CONTEXT.md`、既有 IDC 報告及 READY spec。搜尋零命中只能表示
+  「目前索引沒有答案」，不能自動升格為 `unknown`，更不能據此重新猜一套語意；
+  必須再查相鄰位址、基底加 offset、caller／consumer 與不同位址空間的對照。
 - 原始 binary、overlay、symbol table 與基準 `.i64` 一律唯讀保存；每次分析先
   記錄輸入檔 SHA-256、檔案版本與載入位址，再複製到本輪 Docker 工作目錄操作。
   IDC、型別匯入、註解、重新分析或 IDA 自動升級 database 都只能作用於分析
@@ -176,9 +180,16 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   `ECL work 4CBBh → side attack-roll modifier`，不能只留下容易漂移的別名。
   結構基底加索引形成的 `[di+offset]`、`es:[di]` 等間接欄位尤其不能靠 IDA
   全域 rename 解決；應由外部 typed ledger／規格在不改原始表示的前提下註記。
+- 可重現的函式 dump／xref 報告應在每筆組合語言旁附加外部 ledger 命中的候選
+  語意、來源文件與推論等級，但不得把註記回寫成 IDA symbol rename。外部 ledger
+  的每列同樣必須保留原始位址空間與等級；不能從 Markdown 自動抽取後，把
+  `hypothesis` 與 `exact` 混成同一種可直接採信的名稱。
 - `.asm` 是攤平文字，只適合定位候選，不具有 `.i64` 的 xref graph。查 caller、
   reader／writer 或全域 consumer 時，優先以 IDC 查 `.i64`，再回讀完整指令與
   raw bytes；不得以 grep 命中數冒充引用圖或資料流證據。
+- 擷取反組譯片段時不得用負向過濾刪掉看似樣板的 `mov`、`add`、`shl`、
+  register copy 或跳躍；這些指令常是 record base、索引、迴圈入口與間接欄位
+  的唯一證據。需要縮短輸出時只能保留連續位址範圍，並在結論旁引用完整 dump。
 - IDC 對直接 data xref 的讀寫分類應使用 `XrefType()`（例如
   `dr_W／dr_R／dr_O`），不得用助憶碼字串、空格排版或固定運算元位置猜測。
   這項分類只能證明 IDA 已建立的直接 xref，不包含指標間接存取。
@@ -199,6 +210,10 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 - 來源專案仍在試驗的自動語意 dump／反向索引方法，不因看起來有用就升格為
   本專案硬規則。只有在本專案以實際誤判案例、round-trip 與持續回歸證明有效
   後，才可另行納入工具鏈；未驗證前只能是候選方法。
+- 訂正既有語意時，要先引用舊結論原本依賴的證據，再說明新 bytes、xref、
+  runtime trace 或 consumer 為何足以推翻它；不能只換一個較順眼的新名稱。
+  被推翻的別名不得繼續留在目前索引中冒充並存答案，訂正歷史則移入明確的
+  superseded／推翻紀錄，避免 compact 後再次採用。
 
 ## 5. 視覺、版面與中文字體
 
@@ -480,6 +495,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 415 輪已由 PC-98 overlay 9／22 raw bytes 與 IDA 關閉提朗瑟克斯
+  effect `84h`：type-14 action phase、`ROUND < 4`、spell `33h`、初始格
+  `16d6` 與後續 range 10 路徑另一份獨立 `16d6`。作品中立 line profile、
+  第 1–3 回合怪物排程、正式 terrain callback、繁中 stable IDs 與動態
+  Lightning timeline 已接通；Standing Stone 起始真實 MON6 終戰仍完成
+  `PROGRAM 8`。原版目標 range／LOS／tie order、終戰牆面逐幀與 timing
+  仍未完成；READY spec 415 是權威。
 - 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
   BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入
