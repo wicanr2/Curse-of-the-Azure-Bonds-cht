@@ -371,3 +371,4 @@
 - [第四百零七輪提朗瑟克斯／無名者最終儀式與西翼正常路徑](./407-inner-ruins-final-ritual-west-wing.md)（`READY`）
 - [第四百零八輪內部遺跡二樓、提朗瑟克斯終戰與 PROGRAM 8](./408-inner-ruins-upper-floor-final-battle.md)（`READY`）
 - [第四百零九輪 ECL session 存檔與持續亂數 continuation](./409-ecl-session-save-random-continuation.md)（`READY`）
+- [第四百一十輪 PC-98 怪物效果載入與提朗瑟克斯偵測隱形](./410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md)（`READY`：限九 byte linked-list 邊界、MON*SPC innate 投影與 `18h`）

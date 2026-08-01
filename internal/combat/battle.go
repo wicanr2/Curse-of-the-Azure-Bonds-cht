@@ -129,7 +129,25 @@ type MonsterAffect struct {
 	Duration uint16
 	Strength uint8
 	Active   bool
-	Data     [4]byte
+	// Innate marks an effect loaded from a MON*SPC monster template. The
+	// reference LOADMONSTER preserves byte 4 as zero while retaining every
+	// template effect in the runtime list, so that byte cannot be used to
+	// suppress a monster's innate effects in the combat projection.
+	Innate bool
+	Data   [4]byte
+}
+
+func (a MonsterAffect) operational() bool { return a.Active || a.Innate }
+
+// MonsterCanDetectInvisible reports the verified effect-18 capability used by
+// the original CanHitTarget path.
+func (f Fighter) MonsterCanDetectInvisible() bool {
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() && affect.Kind == 0x18 {
+			return true
+		}
+	}
+	return false
 }
 
 // MonsterAffectArmorClassBonus projects only the effect kinds whose
@@ -137,7 +155,7 @@ type MonsterAffect struct {
 func (f Fighter) MonsterAffectArmorClassBonus() int {
 	bonus := 0
 	for _, affect := range f.MonsterAffects {
-		if affect.Active && (affect.Kind == 0x19 || affect.Kind == 0x47) {
+		if affect.operational() && (affect.Kind == 0x19 || affect.Kind == 0x47) {
 			bonus += 4
 		}
 	}
@@ -152,7 +170,7 @@ func (f Fighter) MonsterAffectAttacksPerTurn() int {
 		attacks = 1
 	}
 	for _, affect := range f.MonsterAffects {
-		if !affect.Active {
+		if !affect.operational() {
 			continue
 		}
 		switch affect.Kind {
@@ -171,7 +189,7 @@ func (f Fighter) MonsterAffectAttacksPerTurn() int {
 // MonsterIsHeld mirrors the reference Player.IsHeld affect set.
 func (f Fighter) MonsterIsHeld() bool {
 	for _, affect := range f.MonsterAffects {
-		if affect.Active && (affect.Kind == 0x1F || affect.Kind == 0x33 || affect.Kind == 0x34 || affect.Kind == 0x35) {
+		if affect.operational() && (affect.Kind == 0x1F || affect.Kind == 0x33 || affect.Kind == 0x34 || affect.Kind == 0x35) {
 			return true
 		}
 	}
@@ -549,7 +567,9 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	}
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
-	targetArmorClass += target.MonsterAffectArmorClassBonus()
+	if !attacker.MonsterCanDetectInvisible() {
+		targetArmorClass += target.MonsterAffectArmorClassBonus()
+	}
 	if attacker.Evil && target.ProtectedFromEvil {
 		targetArmorClass += 2
 	}

@@ -62,6 +62,19 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		monsterRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(6, monsterRecords)
+	affectBlocks, err := dax.Parse(zipData(t, image, "MON6SPC.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monsterAffects := make(map[uint8][]monster.AffectRecord, len(affectBlocks))
+	for _, block := range affectBlocks {
+		affects, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monsterAffects[block.Entry.ID] = affects
+	}
+	state.SetMonsterAffectsForECL(6, monsterAffects)
 	treasureBlocks, err := ParseTreasureItemBlocks(map[uint8][]byte{
 		6: zipData(t, image, "ITEM6.DAX"),
 	})
@@ -3491,13 +3504,33 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	finalEnemies := state.livingBySide(combat.SideEnemy)
 	finalCounts := make(map[uint8]int)
+	var tyranthraxus *combat.Fighter
 	for _, enemy := range finalEnemies {
 		finalCounts[enemy.SpriteBlock]++
+		if enemy.SpriteBlock == 0x47 {
+			copy := enemy
+			tyranthraxus = &copy
+		}
 	}
 	if state.Mode != ModeCombat || !state.CombatActive() ||
 		!reflect.DeepEqual(finalCounts, map[uint8]int{0x45: 28, 0x47: 1, 0x48: 8}) {
 		t.Fatalf("final combat mode=%v active=%v counts=%v enemies=%+v",
 			state.Mode, state.CombatActive(), finalCounts, finalEnemies)
+	}
+	if tyranthraxus == nil || len(tyranthraxus.MonsterAffects) != 6 {
+		t.Fatalf("Tyranthraxus MON6SPC effects=%+v", tyranthraxus)
+	}
+	detectInvisible := false
+	for _, affect := range tyranthraxus.MonsterAffects {
+		if !affect.Innate {
+			t.Fatalf("Tyranthraxus effect was suppressed by raw byte 4: %+v", affect)
+		}
+		if affect.Kind == 0x18 {
+			detectInvisible = true
+		}
+	}
+	if !detectInvisible || !tyranthraxus.MonsterCanDetectInvisible() {
+		t.Fatalf("Tyranthraxus detect-invisible projection=%+v", tyranthraxus.MonsterAffects)
 	}
 	for action := 0; action < 1200 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {
