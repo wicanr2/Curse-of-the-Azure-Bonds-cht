@@ -94,3 +94,23 @@ func TestFighterVisibilityProjectsEffects18_19And47(t *testing.T) {
 		t.Fatal("inactive non-innate visibility effect became operational")
 	}
 }
+
+func TestFighterVisibilityProjectsBlinkAndAnimalInvisibility(t *testing.T) {
+	nonAnimal := Fighter{ID: "humanoid"}
+	animal := Fighter{ID: "animal", MonsterType: MonsterTypeAnimal}
+	detectingAnimal := Fighter{ID: "detecting-animal", MonsterType: MonsterTypeAnimal,
+		MonsterAffects: []MonsterAffect{{Kind: 0x18, Innate: true}}}
+	blink := Fighter{ID: "blink", MonsterAffects: []MonsterAffect{{Kind: 0x25, Active: true}}}
+	animalHidden := Fighter{ID: "animal-hidden", MonsterAffects: []MonsterAffect{{Kind: 0x45, Active: true}}}
+
+	if blink.VisibleTo(nonAnimal) {
+		t.Fatal("zero-delay blink target remained visible")
+	}
+	blink.CombatAction.Delay = 1
+	if !blink.VisibleTo(nonAnimal) {
+		t.Fatal("nonzero-delay blink target remained hidden")
+	}
+	if !animalHidden.VisibleTo(nonAnimal) || animalHidden.VisibleTo(animal) || !animalHidden.VisibleTo(detectingAnimal) {
+		t.Fatal("effect 45 did not follow animal type and effect 18")
+	}
+}

@@ -22,6 +22,7 @@ type Record struct {
 	MaxHitPoints     int
 	HitPoints        int
 	HitDice          uint8
+	MonsterType      uint8
 	BaseArmorClass   int
 	ArmorClass       int
 	AttackBonus      int
@@ -113,6 +114,7 @@ func Parse(data []byte) (Record, error) {
 		SavingThrows:     append([]uint8(nil), data[0xDF:0xE4]...),
 		SavingThrowBonus: int(int8(data[0x186])),
 		HitDice:          data[0xE5],
+		MonsterType:      data[0x11A],
 	}, nil
 }
 
@@ -120,8 +122,9 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 	return combat.Fighter{
 		ID: id, Name: r.Name, Side: side,
 		HitPoints: r.HitPoints, MaxHitPoints: r.MaxHitPoints,
-		HitDice:    r.HitDice,
-		ArmorClass: CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
+		HitDice:     r.HitDice,
+		MonsterType: r.MonsterType,
+		ArmorClass:  CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus: r.DamageBonus, InitiativeBonus: r.InitiativeBonus,
 		AttacksPerTurn: r.AttacksPerTurn,

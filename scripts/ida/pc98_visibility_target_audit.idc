@@ -65,7 +65,10 @@ static main()
   if (strstr(path, "overlay-12.bin") != -1)
   {
     emit_range(out, "EFFECT_19_HANDLER", 0x06D0, 0x0780);
+    emit_range(out, "EFFECT_25_HANDLER", 0x0BA0, 0x0C50);
+    emit_range(out, "EFFECT_45_HANDLER", 0x1680, 0x1700);
     emit_range(out, "EFFECT_47_HANDLER", 0x16E0, 0x17B0);
+    emit_range(out, "EFFECT_4B_MONSTER_TYPE_CROSSCHECK", 0x17B0, 0x1840);
   }
   else
     emit_range(out, "CHECKTARGET", 0x11A0, 0x1260);

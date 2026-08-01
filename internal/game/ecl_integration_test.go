@@ -956,6 +956,9 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			kennelFireKnives++
 		case fighter.Name == "FIGHTING DOG":
 			kennelDogs++
+			if fighter.MonsterType != combat.MonsterTypeAnimal {
+				t.Fatalf("FIGHTING DOG monster type=%#x, want animal", fighter.MonsterType)
+			}
 		}
 	}
 	if kennelParty != 1 || kennelFireKnives != 1 || kennelDogs < 8 {
