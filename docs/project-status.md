@@ -369,6 +369,13 @@ commit 內保存不可能自我引用的 hash。
   動態 scheduler 不預抽未來 d100；`20→19` 其實是 Quick handoff。後者 UI／
   runtime trace、`area.field_596` surprise writers、DOS 等價性與原版底層
   PRNG 仍未完成。
+- 第 421 輪由 PC-98 overlays `08／13／18／24` 關閉 QUICK、GUARD、BANDAGE
+  與 SPEED 的核心語意。作品中立 `combat/action` 保存清除、守備與 `0..9`
+  動畫速度；CoAB 接通目前角色 Quick／手動收回、進入鄰接格 Guard 反應攻擊、
+  第一名 Dying 隊員包紮，以及 D 子選單速度調整。原始位置保持唯讀，IDA
+  名稱只存在報告／規格；spec 421 保存 exact／strong inference 分界。
+  `ALT+Q` 全隊 Quick、`ALT+M` magic toggle、每動作 target pointer、敵方選擇
+  Guard／Bandage 的 AI 與原版 wall-clock timing 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

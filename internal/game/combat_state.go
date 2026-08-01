@@ -494,6 +494,11 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 		s.requestAttackSounds([]combat.AttackResult{*moveResult.Attack})
 	} else {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
+		if len(moveResult.GuardAttacks) > 0 {
+			last := moveResult.GuardAttacks[len(moveResult.GuardAttacks)-1]
+			s.requestAttackSounds(moveResult.GuardAttacks)
+			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_guard_reaction", "踏入防守範圍，受到 %d 點傷害。"), last.Damage)
+		}
 		if len(moveResult.FreeAttacks) > 0 {
 			last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
 			s.requestAttackSounds(moveResult.FreeAttacks)
@@ -1999,6 +2004,9 @@ func (s *State) CombatDone() error {
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
+	if err := s.battle.ClearAction(attacker.ID); err != nil {
+		return err
+	}
 	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_done", "%s 結束回合。"), attacker.Name)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
@@ -2009,7 +2017,139 @@ func (s *State) CombatMainMenuText() string {
 }
 
 func (s *State) CombatDoneMenuText() string {
-	return s.catalog.Text("combat_menu_done", "防守　延後　結束回合　包紮　速度　返回")
+	options := make([]string, 0, 6)
+	if s.CombatCanGuard() {
+		options = append(options, s.catalog.Text("combat_menu_guard", "防守"))
+	}
+	options = append(options,
+		s.catalog.Text("combat_menu_delay", "延後"),
+		s.catalog.Text("combat_menu_quit", "結束回合"),
+	)
+	if s.CombatCanBandage() {
+		options = append(options, s.catalog.Text("combat_menu_bandage", "包紮"))
+	}
+	options = append(options,
+		s.catalog.Text("combat_menu_speed", "速度"),
+		s.catalog.Text("combat_menu_exit", "返回"),
+	)
+	return strings.Join(options, "　")
+}
+
+func (s *State) CombatCanGuard() bool {
+	fighter, ok := s.combatPartyTurn()
+	return ok && s.battle.CanGuard(fighter.ID)
+}
+
+// CombatGuard arms the original one-shot adjacent-entry reaction and ends
+// the selected fighter's current action.
+func (s *State) CombatGuard() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	attacker, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	if err := s.battle.GuardAction(attacker.ID); err != nil {
+		return err
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_guard", "%s 進入防守。"), attacker.Name)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+func (s *State) CombatCanBandage() bool {
+	if !s.CombatActive() {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.HealthStatus != party.HealthStatusDying {
+			continue
+		}
+		if fighter, ok := s.fighter(character.ID); ok && fighter.Side == combat.SideParty {
+			return true
+		}
+	}
+	return false
+}
+
+// CombatBandage changes only the first TeamList-order dying party member to
+// unconscious, clears bleeding, then consumes the acting character's turn.
+func (s *State) CombatBandage() error {
+	if !s.CombatCanBandage() {
+		return fmt.Errorf("no dying party member can be bandaged")
+	}
+	attacker, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	bandaged := ""
+	for index := range s.partyRoster {
+		character := &s.partyRoster[index]
+		fighter, exists := s.fighter(character.ID)
+		if !exists || fighter.Side != combat.SideParty || character.HealthStatus != party.HealthStatusDying {
+			continue
+		}
+		character.HealthStatus = party.HealthStatusUnconscious
+		character.Bleeding = 0
+		bandaged = character.Name
+		break
+	}
+	if err := s.battle.ClearAction(attacker.ID); err != nil {
+		return err
+	}
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bandage", "%s 包紮了 %s；傷者已止血並陷入昏迷。"), attacker.Name, bandaged)
+	s.combatTurnIndex++
+	return s.advanceCombatToParty()
+}
+
+// CombatQuick delegates the currently selected PC to the existing combat AI
+// without consuming a separate action.
+func (s *State) CombatQuick() error {
+	if !s.CombatActive() {
+		return fmt.Errorf("combat is not active")
+	}
+	fighter, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	if err := s.battle.SetQuickFight(fighter.ID); err != nil {
+		return err
+	}
+	return s.advanceCombatToParty()
+}
+
+func (s *State) CombatManualControl() int {
+	if s.battle == nil {
+		return 0
+	}
+	changed := s.battle.SetPlayerCharactersManual()
+	if changed > 0 {
+		s.combatMessage = s.catalog.Text("combat_manual_control", "玩家角色恢復手動控制。")
+	}
+	return changed
+}
+
+func (s *State) CombatSpeed() uint8 { return uint8(s.combatSpeed) }
+
+func (s *State) CombatSpeedSlower() bool {
+	return s.combatSpeed.Slower()
+}
+
+func (s *State) CombatSpeedFaster() bool {
+	return s.combatSpeed.Faster()
+}
+
+func (s *State) CombatSpeedMenuText() string {
+	options := make([]string, 0, 3)
+	if s.combatSpeed < 9 {
+		options = append(options, s.catalog.Text("combat_speed_slower", "更慢"))
+	}
+	if s.combatSpeed > 0 {
+		options = append(options, s.catalog.Text("combat_speed_faster", "更快"))
+	}
+	options = append(options, s.catalog.Text("combat_menu_exit", "返回"))
+	return fmt.Sprintf(s.catalog.Text("combat_speed_value", "遊戲速度（%d）：%s"), s.combatSpeed, strings.Join(options, "　"))
 }
 
 // CombatDelay defers the active party fighter to delay tier one while keeping

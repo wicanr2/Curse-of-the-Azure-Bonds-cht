@@ -249,6 +249,93 @@ func TestMoveWithFreeAttacksTriggersWhenLeavingEnemyAdjacency(t *testing.T) {
 	}
 }
 
+func TestGuardActionAttacksOnceWhenEnemyEntersAdjacency(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "guard", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+			HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 2},
+	}, 421)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.GuardAction("guard"); err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.MoveWithFreeAttacks("enemy", -1, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.GuardAttacks) != 1 || result.GuardAttacks[0].AttackerID != "guard" || result.GuardAttacks[0].TargetID != "enemy" {
+		t.Fatalf("guard attacks=%+v", result.GuardAttacks)
+	}
+	guard, _ := battle.Fighter("guard")
+	if guard.CombatAction.Guarding {
+		t.Fatal("guard flag was not consumed before reaction attack")
+	}
+	result, err = battle.MoveWithFreeAttacks("enemy", 0, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.GuardAttacks) != 0 {
+		t.Fatalf("guard reacted twice: %+v", result.GuardAttacks)
+	}
+}
+
+func TestGuardActionHeldSuppressionAndMissileEligibility(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "held", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1,
+			MonsterAffects:    []MonsterAffect{{Kind: 0x1F, Active: true}},
+			HasCombatPosition: true, CombatX: 2, CombatY: 2},
+		{ID: "archer", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MissileWeapon: true, HasCombatPosition: true, CombatX: 2, CombatY: 4},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 2},
+	}, 421)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.GuardAction("archer"); err == nil {
+		t.Fatal("pure missile weapon unexpectedly allowed Guard")
+	}
+	if err := battle.GuardAction("held"); err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.MoveWithFreeAttacks("enemy", -1, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.GuardAttacks) != 0 {
+		t.Fatalf("held guard reacted: %+v", result.GuardAttacks)
+	}
+	guard, _ := battle.Fighter("held")
+	if !guard.CombatAction.Guarding {
+		t.Fatal("suppressed guard should remain armed until its next turn")
+	}
+}
+
+func TestQuickFightManualControlUsesControlMoraleNamespace(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "pc", Side: SideParty, QuickFight: true, ControlMorale: 0x00, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "npc", Side: SideParty, QuickFight: true, ControlMorale: 0x80, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+		{ID: "enemy", Side: SideEnemy, QuickFight: true, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10},
+	}, 421)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if changed := battle.SetPlayerCharactersManual(); changed != 1 {
+		t.Fatalf("changed=%d want 1", changed)
+	}
+	pc, _ := battle.Fighter("pc")
+	npc, _ := battle.Fighter("npc")
+	enemy, _ := battle.Fighter("enemy")
+	if pc.QuickFight || !npc.QuickFight || !enemy.QuickFight {
+		t.Fatalf("control projection pc=%v npc=%v enemy=%v", pc.QuickFight, npc.QuickFight, enemy.QuickFight)
+	}
+}
+
 func TestResolveAttackNaturalOneMissesAndNaturalTwentyHits(t *testing.T) {
 	battle := testBattle(t)
 	miss, err := battle.ResolveAttack("hero", "goblin", 1, 8)

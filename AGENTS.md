@@ -196,6 +196,12 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 - 擷取反組譯片段時不得用負向過濾刪掉看似樣板的 `mov`、`add`、`shl`、
   register copy 或跳躍；這些指令常是 record base、索引、迴圈入口與間接欄位
   的唯一證據。需要縮短輸出時只能保留連續位址範圍，並在結論旁引用完整 dump。
+- 每個 executable／overlay／module 都要先辨識編譯器、記憶體模型、呼叫慣例、
+  參數順序、清理堆疊責任與字串表示，再解讀 caller。不得把 C 的右至左壓棧
+  直覺套到 Pascal 的左至右壓棧與被呼叫者清棧，也不得把長度前綴字串誤讀成
+  NUL 結尾字串；不同 binary 即使同屬 Borland 工具鏈，也不能未驗證就共用
+  prototype。IDA 自動辨識的函式名與 prototype 是重要候選，但仍須以 call-site
+  指令、stack delta、raw bytes 或 runtime 行為交叉驗證，並帶推論等級。
 - IDC 對直接 data xref 的讀寫分類應使用 `XrefType()`（例如
   `dr_W／dr_R／dr_O`），不得用助憶碼字串、空格排版或固定運算元位置猜測。
   這項分類只能證明 IDA 已建立的直接 xref，不包含指標間接存取。
@@ -338,10 +344,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`761f2fd`（第 413 輪提朗瑟克斯防火／防電 runtime）；
-  第 414 輪 PC-98 命中後 `4Fh` 火焰效果 milestone 會由本文件所在 commit
-  完成。
-- Engine dependency：`4545f0b`（含作品中立 `combat/initiative`、
+- CoAB 本輪基底：`a39eb1b`（第 420 輪 PC-98 Delay 與動態排程）；
+  第 421 輪 PC-98 QUICK／GUARD／BANDAGE／SPEED milestone 會由本文件所在
+  commit 完成。
+- Engine dependency：`930d20c`（含作品中立 `combat/action`、
+  `combat/initiative`、
   `randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -502,6 +509,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
+  QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
+  database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
+  與 exact／strong inference。engine `combat/action` 與 CoAB runtime 已接通
+  命令狀態；`ALT+Q／ALT+M`、敵方命令 AI、原版逐幀時間仍未完成。
 - 第 415 輪已由 PC-98 overlay 9／22 raw bytes 與 IDA 關閉提朗瑟克斯
   effect `84h`：type-14 action phase、`ROUND < 4`、spell `33h`、初始格
   `16d6` 與後續 range 10 路徑另一份獨立 `16d6`。作品中立 line profile、

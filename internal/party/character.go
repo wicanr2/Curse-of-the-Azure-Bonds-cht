@@ -783,7 +783,8 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	headBlock, bodyBlock := c.CombatIconBlocks()
 	fighter := combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
-		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
+		ControlMorale: c.ControlMorale,
+		HasPartyIcon:  true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		HitDice:     c.HitDice,
 		Dexterity:   uint8(c.Abilities.Dexterity),

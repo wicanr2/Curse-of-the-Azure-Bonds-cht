@@ -2917,3 +2917,18 @@ ALT+Q 全員 Quick 的 handoff。engine 新增 mutable scheduler，CoAB 改成�
 TeamList scan，並先把全體初始化 delay 投影回 Fighter，避免尚未行動的 Blink
 怪物被誤判成 delay 0。頂層 D 現開啟資料化繁中子選單，D 延後、Q 結束回合；
 READY spec 420 保存 bytes、位址、推論等級與未完成邊界。
+
+2026-08-02 第四百二十一輪以非破壞性 IDA 副本稽核 PC-98 overlays
+`08／13／18／24`。`CLEAR_ACTIONS` 清除 delay／move／guard 等 action bytes；
+GUARD 設 Action `+07=1`，敵人移入鄰接後 consumer 先清旗標再攻擊；BANDAGE
+依 TeamList 找第一名同隊 raw status 5，改為 4 並清 Action `+0E`；QUICK 寫
+Player `+199=1`；S／F 將 `DS:7F16` 限制在 `0..9`，動畫 consumer 使用
+`speed+3` 乘上 frame delay。命令名稱與位址是附加語意，原始 bytes／位置
+未改動；spec 421 對每項結論標示 exact 或 strong inference。
+
+Engine 新增作品中立 `combat/action` 狀態與速度比例，CoAB 接通 Guard 反應
+攻擊、Bandage、目前角色 Quick、Space 手動收回及資料化繁中速度子選單。
+engine 全套與 CoAB `./cmd/... ./gamepack ./internal/...` 31 套件正式 gate 已在
+Docker／Xvfb 通過，並改用遠端 engine pseudo-version。`ALT+Q／ALT+M`、敵方
+命令 AI、per-action target pointer、原版 wall-clock timing 與可用的正式路徑
+截圖仍是明確缺口；本輪 X11 擷取只有黑色緩衝，已刪除且未當成果提交。

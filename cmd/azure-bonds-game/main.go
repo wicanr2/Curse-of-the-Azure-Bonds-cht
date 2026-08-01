@@ -42,6 +42,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
 	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
+	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	goldenengine "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -97,6 +98,7 @@ type app struct {
 	combatVisualStarted   time.Time
 	combatVisualElapsed   time.Duration
 	combatDoneMenu        bool
+	combatSpeedMenu       bool
 	messageSnapshot       string
 	messageStart          time.Time
 	soundPlayer           *sound.Player
@@ -266,7 +268,8 @@ func (a *app) Update() error {
 		if a.screenshotPath != "" {
 			return nil
 		}
-		if err := a.state.AdvanceCombatVisual(time.Since(a.combatVisualStarted)); err != nil {
+		elapsed := combatSpeedElapsed(time.Since(a.combatVisualStarted), a.state.CombatSpeed())
+		if err := a.state.AdvanceCombatVisual(elapsed); err != nil {
 			return err
 		}
 		a.syncSoundEvents()
@@ -505,7 +508,8 @@ func (a *app) Update() error {
 		}
 		return nil
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) ||
+		(inpututil.IsKeyJustPressed(ebiten.KeySpace) && a.state.Mode != game.ModeCombat) {
 		switch a.state.Mode {
 		case game.ModeTitle:
 			return a.state.Apply(game.ActionStart)
@@ -553,6 +557,21 @@ func (a *app) Update() error {
 		}
 	}
 	if a.state.Mode == game.ModeCombat {
+		if a.combatSpeedMenu {
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyE) {
+				a.combatSpeedMenu = false
+				return nil
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+				a.state.CombatSpeedSlower()
+				return nil
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+				a.state.CombatSpeedFaster()
+				return nil
+			}
+			return nil
+		}
 		if a.combatDoneMenu {
 			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyE) {
 				a.combatDoneMenu = false
@@ -565,6 +584,18 @@ func (a *app) Update() error {
 			if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
 				a.combatDoneMenu = false
 				return a.combatAction(a.state.CombatDone)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyG) && a.state.CombatCanGuard() {
+				a.combatDoneMenu = false
+				return a.combatAction(a.state.CombatGuard)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyB) && a.state.CombatCanBandage() {
+				a.combatDoneMenu = false
+				return a.combatAction(a.state.CombatBandage)
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
+				a.combatSpeedMenu = true
+				return nil
 			}
 			return nil
 		}
@@ -648,6 +679,13 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
 			return a.combatAction(a.state.BeginCombatMove)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+			return a.combatAction(a.state.CombatQuick)
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			a.state.CombatManualControl()
+			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
 			a.combatDoneMenu = true
@@ -1953,7 +1991,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	text.Draw(screen, footerStatus, a.compactFace, 8, 462, color.RGBA{R: 255, G: 82, B: 255, A: 255})
 	combatMenu := a.state.CombatMainMenuText()
-	if a.combatDoneMenu {
+	if a.combatSpeedMenu {
+		combatMenu = a.state.CombatSpeedMenuText()
+	} else if a.combatDoneMenu {
 		combatMenu = a.state.CombatDoneMenuText()
 	}
 	text.Draw(screen, combatMenu, a.compactFace, 8, 478, cyan)
@@ -2241,7 +2281,11 @@ func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
 	if a.screenshotPath != "" {
 		return event.FrameAt(a.combatVisualElapsed)
 	}
-	return event.FrameAt(time.Since(a.combatVisualStarted))
+	return event.FrameAt(combatSpeedElapsed(time.Since(a.combatVisualStarted), a.state.CombatSpeed()))
+}
+
+func combatSpeedElapsed(elapsed time.Duration, speed uint8) time.Duration {
+	return engineaction.Speed(speed).ScaleElapsed(elapsed)
 }
 
 func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {

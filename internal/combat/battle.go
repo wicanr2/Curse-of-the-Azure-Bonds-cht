@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"sort"
 
+	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 )
 
@@ -39,6 +40,9 @@ type Fighter struct {
 	// QuickFight delegates this fighter's turn to combat AI even when it is
 	// on the party side. ECL uses this for allied NPCs in mixed-team battles.
 	QuickFight bool
+	// ControlMorale preserves the player record control byte. Values below
+	// 0x80 are manually controllable PCs; values at or above 0x80 are NPCs.
+	ControlMorale uint8
 	// TemporaryAlly is encounter-scoped and must not enter the persistent
 	// adventuring party after combat continuation.
 	TemporaryAlly bool
@@ -345,12 +349,7 @@ const MonsterMagicMissileSpellID uint8 = 0x0F
 // ActionState mirrors the per-player fields cleared by the reference
 // CombatantKilled routine. It is deliberately data-only so ECL, UI and other
 // Gold Box frontends can share the reset contract.
-type ActionState struct {
-	Delay    int
-	Move     int
-	SpellID  uint8
-	Guarding bool
-}
+type ActionState = engineaction.State
 
 type Turn struct {
 	FighterID  string
@@ -385,6 +384,7 @@ type MoveResult struct {
 	Fighter      Fighter
 	Attack       *AttackResult
 	FreeAttacks  []AttackResult
+	GuardAttacks []AttackResult
 	MovementCost int
 }
 
@@ -699,9 +699,85 @@ func (b *Battle) NextScheduledTurn() (Turn, bool, error) {
 	b.initiativeSelection = selection
 	b.initiativeSelected = true
 	fighter := b.fighters[selection.ID]
+	// The reference turn entry clears guarding before processing restraint,
+	// quick-fight or the player menu. A guard therefore survives until this
+	// fighter's next selected turn, including enemy movement earlier in a new
+	// round.
+	fighter.CombatAction.Guarding = false
 	fighter.CombatAction.Delay = selection.ActionDelay
 	b.fighters[selection.ID] = fighter
 	return Turn{FighterID: selection.ID, Initiative: selection.ActionDelay}, true, nil
+}
+
+// ClearAction mirrors the reference clear_actions boundary and consumes the
+// currently selected scheduler action when this fighter owns it.
+func (b *Battle) ClearAction(fighterID string) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	fighter.CombatAction.Clear()
+	b.fighters[fighterID] = fighter
+	if b.initiativeScheduler != nil && b.initiativeSelected && b.initiativeSelection.ID == fighterID {
+		if !b.initiativeScheduler.Complete(b.initiativeSelection) {
+			return fmt.Errorf("stale scheduled action for fighter %q", fighterID)
+		}
+		b.initiativeSelected = false
+	}
+	return nil
+}
+
+// CanGuard reports the current typed weapon-mode boundary. Pure missile
+// weapons cannot guard; thrown weapons retain their verified melee use.
+func (b *Battle) CanGuard(fighterID string) bool {
+	fighter, ok := b.fighters[fighterID]
+	return ok && fighter.HitPoints > 0 && (!fighter.MissileWeapon || fighter.ThrownWeapon)
+}
+
+// GuardAction clears the selected action and arms one adjacent-entry attack.
+func (b *Battle) GuardAction(fighterID string) error {
+	if !b.CanGuard(fighterID) {
+		return fmt.Errorf("fighter %q cannot guard with the readied weapon", fighterID)
+	}
+	if err := b.ClearAction(fighterID); err != nil {
+		return err
+	}
+	fighter := b.fighters[fighterID]
+	fighter.CombatAction.Guard()
+	b.fighters[fighterID] = fighter
+	return nil
+}
+
+// SetQuickFight gives one combatant to the AI. The original also clears a
+// same-team per-action target; that target pointer is not yet represented by
+// the typed ActionState and remains an explicit adapter gap.
+func (b *Battle) SetQuickFight(fighterID string) error {
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	fighter.QuickFight = true
+	b.fighters[fighterID] = fighter
+	return nil
+}
+
+// SetPlayerCharactersManual clears quick-fight only for the original PC
+// control namespace. NPC and temporary monster allies remain automated.
+func (b *Battle) SetPlayerCharactersManual() int {
+	changed := 0
+	for _, id := range b.fighterOrder {
+		fighter := b.fighters[id]
+		if fighter.Side != SideParty || fighter.ControlMorale >= 0x80 || !fighter.QuickFight {
+			continue
+		}
+		fighter.QuickFight = false
+		b.fighters[id] = fighter
+		changed++
+	}
+	return changed
 }
 
 // DelayAction implements the verified combat submenu operation: write delay
@@ -1017,6 +1093,28 @@ func (b *Battle) MoveWithTerrainAndFreeAttacks(fighterID string, dx, dy, maxCost
 	fighter.CombatX, fighter.CombatY = nextX, nextY
 	b.fighters[fighterID] = fighter
 	result := MoveResult{Fighter: fighter, MovementCost: movementCost}
+	// Guard is distinct from the RuleBook free attack below: it triggers when
+	// an opposing combatant enters the guarder's new adjacency, is consumed
+	// before the attack, and is suppressed while the guarder is held.
+	for _, guardID := range b.fighterOrder {
+		guarder := b.fighters[guardID]
+		if guarder.Side == fighter.Side || guarder.HitPoints <= 0 || !guarder.HasCombatPosition ||
+			!guarder.CombatAction.Guarding || guarder.MonsterIsHeld() || !adjacent(fighter, guarder) {
+			continue
+		}
+		guarder.CombatAction.Guarding = false
+		b.fighters[guardID] = guarder
+		attack, err := b.Attack(guardID, fighterID)
+		if err != nil {
+			return MoveResult{}, err
+		}
+		result.GuardAttacks = append(result.GuardAttacks, attack)
+		fighter = b.fighters[fighterID]
+		result.Fighter = fighter
+		if fighter.HitPoints <= 0 || b.status != StatusActive {
+			return result, nil
+		}
+	}
 	if old.Side == SideParty {
 		for _, enemy := range b.fighters {
 			if enemy.Side != SideEnemy || enemy.HitPoints <= 0 || !enemy.HasCombatPosition {

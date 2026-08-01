@@ -5,11 +5,25 @@ import (
 	"image/color"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
+
+func TestCombatSpeedElapsedMatchesReferenceMultiplier(t *testing.T) {
+	second := time.Second
+	if got := combatSpeedElapsed(second, 4); got != second {
+		t.Fatalf("default speed elapsed=%v want %v", got, second)
+	}
+	if fast, slow := combatSpeedElapsed(second, 0), combatSpeedElapsed(second, 9); fast <= second || slow >= second {
+		t.Fatalf("speed ordering fast=%v default=%v slow=%v", fast, second, slow)
+	}
+	if got := combatSpeedElapsed(second, 255); got != combatSpeedElapsed(second, 9) {
+		t.Fatalf("out-of-range speed was not clamped: %v", got)
+	}
+}
 
 func TestImageCoverTransformUsesGlobalDestinationOrigin(t *testing.T) {
 	scale, x, y := imageCoverTransform(88, 88, image.Rect(48, 48, 224, 224))
