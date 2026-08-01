@@ -1,12 +1,28 @@
 package game
 
 import (
+	"fmt"
+	"os"
 	"reflect"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
+
+func combatVisualCatalog(t *testing.T) locale.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../assets/locale/zh-TW.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
 
 func TestCombatVisualMissileDefersVictoryAndOrdersSounds(t *testing.T) {
 	state := NewState(testCatalog())
@@ -104,7 +120,7 @@ func TestCombatVisualMagicMissileCarriesProjectileCount(t *testing.T) {
 }
 
 func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)
 	state.partyRoster = party.Roster{
 		{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
@@ -123,7 +139,8 @@ func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	enemies := []combat.Fighter{
 		{ID: "orc-near", Name: "半獸人", Side: combat.SideEnemy,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
-			HasCombatPosition: true, CombatX: 5, CombatY: 2, SavingThrows: saves},
+			HasCombatPosition: true, CombatX: 5, CombatY: 2, SavingThrows: saves,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x70, Innate: true}}},
 		{ID: "orc-far", Name: "半獸人", Side: combat.SideEnemy,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
 			HasCombatPosition: true, CombatX: 8, CombatY: 2, SavingThrows: saves},
@@ -157,6 +174,9 @@ func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	gotTargets := map[string]bool{}
 	for _, impact := range event.Impacts {
 		gotTargets[impact.TargetID] = true
+		if impact.TargetID == "orc-near" && (!impact.Protected || impact.Damage != 0) {
+			t.Fatalf("Fireball protected impact=%+v", impact)
+		}
 	}
 	if !gotTargets["ally"] || !gotTargets["orc-near"] || gotTargets["mage"] || gotTargets["orc-far"] {
 		t.Fatalf("Fireball targets=%v", gotTargets)
@@ -164,10 +184,16 @@ func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	if len(state.partyRoster[0].SpellSlots) != 0 {
 		t.Fatalf("Fireball slot not consumed: %v", state.partyRoster[0].SpellSlots)
 	}
+	wantMessage := fmt.Sprintf(
+		state.catalog.Text("combat_fireball_protected", ""), "法師", 2, event.Impacts[0].Damage+event.Impacts[1].Damage, 1,
+	)
+	if state.CombatMessage() != wantMessage {
+		t.Fatalf("Fireball protected message=%q want=%q", state.CombatMessage(), wantMessage)
+	}
 }
 
 func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)
 	state.partyRoster = party.Roster{{
 		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5,
@@ -182,7 +208,8 @@ func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T
 	enemies := []combat.Fighter{
 		{ID: "near", Name: "近敵", Side: combat.SideEnemy,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
-			HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves},
+			HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves,
+			MonsterAffects: []combat.MonsterAffect{{Kind: 0x87, Innate: true}}},
 		{ID: "far", Name: "遠敵", Side: combat.SideEnemy,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10,
 			HasCombatPosition: true, CombatX: 5, CombatY: 2, SavingThrows: saves},
@@ -216,6 +243,16 @@ func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T
 	}
 	if event.Impacts[0].TargetID != "near" || event.Impacts[1].TargetID != "far" {
 		t.Fatalf("Lightning Bolt impacts=%+v", event.Impacts)
+	}
+	if !event.Impacts[0].Protected || event.Impacts[0].Damage != 0 || event.Impacts[1].Protected {
+		t.Fatalf("Lightning Bolt elemental protection impacts=%+v", event.Impacts)
+	}
+	wantMessage := fmt.Sprintf(
+		state.catalog.Text("combat_lightning_bolt_protected", ""), "法師", 2,
+		event.Impacts[0].Damage+event.Impacts[1].Damage, 1,
+	)
+	if state.CombatMessage() != wantMessage {
+		t.Fatalf("Lightning Bolt protected message=%q want=%q", state.CombatMessage(), wantMessage)
 	}
 	if len(state.partyRoster[0].SpellSlots) != 0 {
 		t.Fatalf("Lightning Bolt slot not consumed: %v", state.partyRoster[0].SpellSlots)

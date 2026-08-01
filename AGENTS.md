@@ -518,6 +518,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   locale stable ID。READY spec 411／412 是權威；`4Fh` 2d10 fire、`70h`
   防火、`84h` Lightning Bolt、`87h` 防電雖已靜態關閉，runtime boundary、
   HIGH PRIEST／MARGOYLE 特殊能力、其餘魔法路徑與動態演出仍未完成。
+- 第 413 輪把 `70h` Fire protection 與 `87h` Electricity protection 接入
+  Fireball／Lightning Bolt。共用 core 只讀 raw damage flags；line spell
+  呼叫端必須顯式傳入 flags，不得由 spell ID 或怪物名特判。保護成功仍保留
+  visual／slot／turn transaction，只將 damage 清零並標 `Protected`。現行
+  saving throw 先於 protection 的 PRNG 順序仍待 DOS runtime 驗證，不得把
+  HP 結果正確擴大宣稱成完整亂數 fidelity。READY spec 413 是權威。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

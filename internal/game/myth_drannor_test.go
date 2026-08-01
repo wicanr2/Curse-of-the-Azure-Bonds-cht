@@ -3540,6 +3540,44 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("Tyranthraxus magic-resistance projection base=%d ok=%v effects=%+v",
 			base, ok, tyranthraxus.MonsterAffects)
 	}
+	if !tyranthraxus.MonsterProtectedFromDamage(combat.DamageFlagFire) ||
+		!tyranthraxus.MonsterProtectedFromDamage(combat.DamageFlagElectricity) {
+		t.Fatalf("Tyranthraxus elemental protection projection=%+v", tyranthraxus.MonsterAffects)
+	}
+	boundaryTarget := *tyranthraxus
+	boundaryTarget.ID = "tyranthraxus-boundary"
+	boundaryTarget.HitPoints = boundaryTarget.MaxHitPoints
+	boundaryTarget.HasCombatPosition = true
+	boundaryTarget.CombatX, boundaryTarget.CombatY = 4, 1
+	boundaryCaster := combat.Fighter{
+		ID: "boundary-mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1,
+		SavingThrows: []uint8{20, 20, 20, 20, 20},
+	}
+	boundaryBattle, err := combat.NewBattle([]combat.Fighter{boundaryCaster, boundaryTarget}, 412)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fireResult, err := boundaryBattle.CastFireball(
+		boundaryCaster.ID, combat.TilePoint{X: 4, Y: 1}, 3,
+	)
+	if err != nil || len(fireResult.Impacts) != 1 || !fireResult.Impacts[0].Protected ||
+		fireResult.Impacts[0].Damage != 0 {
+		t.Fatalf("real MON6 fire boundary result=%+v err=%v", fireResult, err)
+	}
+	lineResult, err := boundaryBattle.CastReflectingLineSpell(
+		boundaryCaster.ID, 0x33, combat.TilePoint{X: 4, Y: 1}, 3,
+		combat.ReflectingLineOptions{
+			WeightedBudget: 8,
+			DamageFlags:    combat.DamageFlagElectricity | combat.DamageFlagMagic,
+		}, func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x <= 8 && y == 1}
+		},
+	)
+	if err != nil || len(lineResult.Impacts) != 1 || !lineResult.Impacts[0].Protected ||
+		lineResult.Impacts[0].Damage != 0 {
+		t.Fatalf("real MON6 electricity boundary result=%+v err=%v", lineResult, err)
+	}
 	for action := 0; action < 1200 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {
 			t.Fatal(err)

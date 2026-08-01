@@ -76,12 +76,13 @@ type VisualPathSegment struct {
 // fields; Impacts is the title-neutral extension used by effects such as an
 // area spell which presents each affected combatant in sequence.
 type VisualImpactTarget struct {
-	TargetID string
-	To       TilePoint
-	Hit      bool
-	Killed   bool
-	Damage   int
-	Saved    bool
+	TargetID  string
+	To        TilePoint
+	Hit       bool
+	Killed    bool
+	Damage    int
+	Saved     bool
+	Protected bool
 }
 
 type VisualFrame struct {

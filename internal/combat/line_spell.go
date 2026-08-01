@@ -16,6 +16,7 @@ type ReflectingLineOptions struct {
 	WeightedBudget                 int
 	FirstReflectionOriginThreshold int
 	FirstReflectionPenalty         int
+	DamageFlags                    uint8
 }
 
 type LineSpellSegment struct {
@@ -84,7 +85,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 
 	lastFighterID := ""
 	if fighter, found := b.livingFighterAt(target); found {
-		impact, err := b.applyLineSpellDamage(fighter, damage)
+		impact, err := b.applyLineSpellDamage(fighter, damage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -142,7 +143,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		if fighter.ID == lastFighterID {
 			continue
 		}
-		impact, err := b.applyLineSpellDamage(fighter, damage)
+		impact, err := b.applyLineSpellDamage(fighter, damage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -180,7 +181,7 @@ func (b *Battle) livingFighterAt(point TilePoint) (Fighter, bool) {
 	return Fighter{}, false
 }
 
-func (b *Battle) applyLineSpellDamage(target Fighter, damage int) (AreaSpellImpact, error) {
+func (b *Battle) applyLineSpellDamage(target Fighter, damage int, damageFlags uint8) (AreaSpellImpact, error) {
 	if len(target.SavingThrows) <= 4 {
 		return AreaSpellImpact{}, fmt.Errorf("fighter %q has no spell saving throw", target.ID)
 	}
@@ -191,6 +192,10 @@ func (b *Battle) applyLineSpellDamage(target Fighter, damage int) (AreaSpellImpa
 	if saved {
 		applied /= 2
 	}
+	protected := target.MonsterProtectedFromDamage(damageFlags)
+	if protected {
+		applied = 0
+	}
 	if applied > target.HitPoints {
 		applied = target.HitPoints
 	}
@@ -198,6 +203,7 @@ func (b *Battle) applyLineSpellDamage(target Fighter, damage int) (AreaSpellImpa
 	b.fighters[target.ID] = target
 	return AreaSpellImpact{
 		TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
+		Protected: protected,
 	}, nil
 }
 

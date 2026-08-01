@@ -63,9 +63,21 @@ typed entry／fixup view；signature、bounds 或排序錯誤時失敗即關閉�
 這個 grammar 已由 36 段 corpus 驗證；作品特定 effect ID 與 handler 對應仍
 留在 CoAB spec 412，其他 Gold Box 作品不可直接沿用其數值。
 
+## 元素防護 damage boundary
+
+元素防護應由 raw damage flags 驅動，不可由畫面法術名或怪物名特判。已證明
+的 PC-98 flags 是 Fire `01h`、Electricity `04h`、Magic `08h`；防護 handler
+清除 pending damage，但 visual transaction／施法消耗仍要續行。反射線等
+作品中立 renderer 應由呼叫端傳入 flags，不在 core 寫死 title spell ID。
+
+是否先擲 saving throw、再清除傷害，會影響後續 PRNG continuation；即使 HP
+結果同為零，也必須另外以 runtime trace 驗證 draw order，不能只靠最終數值
+宣稱完整 fidelity。
+
 ## 可重現入口
 
 - `docs/spec/410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md`
 - `docs/spec/411-pc98-tyranthraxus-magic-resistance.md`
 - `docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md`
+- `docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`

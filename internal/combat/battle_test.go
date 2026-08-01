@@ -559,6 +559,37 @@ func TestCastFireballUsesOneDamageRollAndHitsBothSidesInRadius(t *testing.T) {
 	}
 }
 
+func TestCastFireballHonorsOperationalEffect70FireProtection(t *testing.T) {
+	saves := []uint8{20, 20, 20, 20, 20}
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage", Side: SideParty, HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+		{ID: "protected", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40,
+			HasCombatPosition: true, CombatX: 2, CombatY: 2, SavingThrows: saves,
+			MonsterAffects: []MonsterAffect{{Kind: 0x70, Innate: true}}},
+		{ID: "inactive", Side: SideEnemy, HitPoints: 40, MaxHitPoints: 40,
+			HasCombatPosition: true, CombatX: 3, CombatY: 2, SavingThrows: saves,
+			MonsterAffects: []MonsterAffect{{Kind: 0x70}}},
+	}, 23)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastFireball("mage", TilePoint{X: 2, Y: 2}, 3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	impacts := make(map[string]AreaSpellImpact)
+	for _, impact := range result.Impacts {
+		impacts[impact.TargetID] = impact
+	}
+	if impact := impacts["protected"]; !impact.Protected || impact.Damage != 0 || impact.TargetHP != 40 {
+		t.Fatalf("protected fireball impact=%+v", impact)
+	}
+	if impact := impacts["inactive"]; impact.Protected || impact.Damage == 0 || impact.TargetHP == 40 {
+		t.Fatalf("inactive fire protection impact=%+v", impact)
+	}
+}
+
 func TestCastMonsterMagicMissileConsumesRawLevelOneUse(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "mage-monster", Name: "施法怪", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10,
