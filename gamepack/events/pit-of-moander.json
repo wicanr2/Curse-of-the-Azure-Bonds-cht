@@ -98,6 +98,7 @@
       ,"myth-drannor.tyranthraxus-reveal": "The bonds reveal Tyranthraxus. He commands you to meet him at Myth Drannor."
       ,"myth-drannor.edge": "You are at the edge of Myth Drannor. Will you enter or continue your journey?"
       ,"myth-drannor.helm-north": "The Helm of Dragons reports that Tyranthraxus is to the north."
+      ,"myth-drannor.inner.helm-northeast": "The Helm of Dragons shows Tyranthraxus on the second floor, in the northeast corner."
       ,"myth-drannor.elf-spirit.greeting": "An elfish spirit appears and greets you. What do you do?"
       ,"myth-drannor.elf-spirit.journal-25": "The spirit tells you about the glen. You record Journal Entry 25, and then the spirit fades."
       ,"myth-drannor.elf-spirit.flee": "“So, you are sheep! Then you shall feed me.” The spirit fades."
@@ -214,6 +215,18 @@
       ,"myth-drannor.inner.minions-attack": "Minions of Tyranthraxus rush to attack you."
       ,"myth-drannor.inner.chapel": "You enter an elegant private chapel. A well-dressed elderly man is seated here."
       ,"myth-drannor.inner.chapel-priest": "“So you are Tyranthraxus's grand tools. I could ask you to surrender, but Bane has favored him too much of late. It would hurt him more if you died. So sorry.” Other priests slip up beside him."
+      ,"myth-drannor.inner.ritual.arrival": "As you enter, a voice commands you to step forward. Unable to control yourselves, you walk into the center of the room."
+      ,"myth-drannor.inner.ritual.control": "“Through the bonds, you are mine to control. Follow me!”"
+      ,"myth-drannor.inner.ritual.journal": "Tyranthraxus delivers a speech, which you record as Journal Entry 48."
+      ,"myth-drannor.inner.ritual.hand-over": "“Hand your toys over to my priest.” You resist with all your might, but the party is compelled to surrender the three artifacts."
+      ,"myth-drannor.inner.ritual.dispose-order": "“Now, priest, dispose of these unpleasant items through the Pool.”"
+      ,"myth-drannor.inner.ritual.pool": "With a graceful flourish, the priest arcs each artifact into the Pool. It swirls, and the items vanish."
+      ,"myth-drannor.inner.ritual.parchment": "Tyranthraxus produces a parchment bearing the phrase that releases your bonds and orders the priest to dispose of it through the Pool."
+      ,"myth-drannor.inner.ritual.final-spell": "“You bonded ones, come with me. It is time to complete the final spell.”"
+      ,"myth-drannor.inner.ritual.nameless-reveal": "The priest throws back his hood: it is Nameless. Crying, “It won't be that easy!”, he tosses the artifacts back to you."
+      ,"myth-drannor.inner.ritual.nameless-falls": "Tyranthraxus strikes Nameless down with one blow. With his last breath, Nameless mouths the apparently meaningless phrase written on the parchment."
+      ,"myth-drannor.inner.ritual.bonds-fade": "The bonds' control fades, but Tyranthraxus's sigil remains. He warns that only he can remove it and that the party will soon be his again."
+      ,"myth-drannor.inner.ritual.recover": "As you recover the artifacts, Tyranthraxus looks afraid. He orders his pets to kill you, then rushes away."
       ,"myth-drannor.outer.rakshasa-residence": "A rakshasa resides here in splendor."
       ,"myth-drannor.outer.rakshasa-threat": "The rakshasa stands as several more appear. “To disturb one of my rank invites death. Prepare for yours.”"
       ,"myth-drannor.outer.rakshasa-parlay": "The rakshasa smiles. “Your boldness is refreshing.” He tells his story, which you record as Journal Entry 57."
@@ -228,6 +241,7 @@
       ,"journal.33": "Journal Entry 33: “I am Caemir, and my ancestors lived and died here in Myth Drannor. Evil dreams have shown my grandfather's tomb turned into a nest for foul spider creatures. Help me lay his spirit to rest, and I will give you the bow he made.” He shows you an exquisitely crafted bow radiating powerful magic."
       ,"journal.56": "Journal Entry 56: The man refuses to give his name, saying that names are labels for things people do not understand. He knows of the bonds and the party's struggle because he helped create the first bonds long ago. The final bond, Tyranthraxus's, is the most dangerous: Tyranthraxus no longer shares control and can devote his full fury to preventing escape. The party must surprise and defeat him before he invokes the bonds. The man's clan is resting here for several mortal lifetimes, but Tyranthraxus stole their followers and threatened them. They hate him yet cannot attack his temple directly. When the party attacks, the clan will reclaim its followers, perhaps weakening Tyranthraxus enough for victory."
       ,"journal.57": "Journal Entry 57: “It is good to speak with those with confidence enough to deal. My clan has taken this spot as a place to rest for a few mortal lifetimes. But Tyranthraxus, the Flamed One, has stolen our followers and threatened my clan. His power is such that we cannot attack his temple directly, though we hate him with great passion. Now to our deal. You wear the Flamed One's mark, but I have been told you are his enemy. When you attack his temple we will bend our power to reclaim our followers. That may weaken him enough for you to be victorious.”"
+      ,"journal.48": "Journal Entry 48: “You have done well, my pets. The three artifacts that can harm me are now in my possession. More importantly, the bonds you wear can act as the Pool of Radiance does. Through them I can transfer into any of your bodies and use it for as long as I need. If that body is killed, I can transfer through the bond back to the Pool—or into another one of you. I must thank you for the freedom you have given me. Now come along, and we will dispose of those dangerous objects.”"
       ,"journal.5": "Journal Entry 5: “We rakshasas are very fond of gambling. I suffered a streak of bad luck and lost most of my possessions. Recently I discovered that Birsheya had been cheating, but the clan lord will not act without proof. Birsheya guards the clan storehouse, and I know evidence is hidden there. Help me break in and you may choose whatever you want from the storehouse; I want only proof of Birsheya's cheating.”"
     },
     "zh-TW": {
@@ -314,6 +328,7 @@
       ,"myth-drannor.tyranthraxus-reveal": "枷印揭露出烈焰之主提朗瑟克斯；他命令你們前往迷斯卓諾與他會面。"
       ,"myth-drannor.edge": "你們來到迷斯卓諾邊緣。要進入遺跡，還是繼續旅程？"
       ,"myth-drannor.helm-north": "龍盔傳來感應：提朗瑟克斯就在北方。"
+      ,"myth-drannor.inner.helm-northeast": "龍盔映出提朗瑟克斯的所在：二樓東北角。"
       ,"myth-drannor.elf-spirit.greeting": "一名精靈幽魂現身，向你們致意。你們要怎麼做？"
       ,"myth-drannor.elf-spirit.journal-25": "幽魂講述葬林的往事；你們將內容記入手札第 25 條，隨後它逐漸消失。"
       ,"myth-drannor.elf-spirit.flee": "「原來你們是羊！那就成為我的食物吧。」幽魂逐漸消失。"
@@ -430,6 +445,18 @@
       ,"myth-drannor.inner.minions-attack": "提朗瑟克斯的爪牙衝上前攻擊！"
       ,"myth-drannor.inner.chapel": "你們走進一間雅致的私人禮拜堂；一名衣著考究的老者端坐在裡面。"
       ,"myth-drannor.inner.chapel-priest": "「原來你們就是提朗瑟克斯最得意的工具。我本可要求你們投降，但班恩近來實在太寵愛他了。你們死在這裡，反而更能傷他的心。真是抱歉。」其他祭司悄悄圍到老者身旁。"
+      ,"myth-drannor.inner.ritual.arrival": "你們一踏進房間，便聽見一個聲音命令眾人向前。身體完全不聽使喚，你們被迫走到房間中央。"
+      ,"myth-drannor.inner.ritual.control": "「透過枷印，我可以隨意操縱你們。跟我來！」"
+      ,"myth-drannor.inner.ritual.journal": "提朗瑟克斯發表了一番演說；你們將內容記入手札第 48 條。"
+      ,"myth-drannor.inner.ritual.hand-over": "「把你們的小玩具交給我的祭司。」眾人竭力抵抗，身體卻仍受枷印操縱，被迫交出三件神器。"
+      ,"myth-drannor.inner.ritual.dispose-order": "「祭司，現在把這些討厭的東西扔進光芒之池處理掉。」"
+      ,"myth-drannor.inner.ritual.pool": "祭司優雅地揮動手臂，逐一把神器拋入光芒之池。池水旋動片刻，三件神器便消失無蹤。"
+      ,"myth-drannor.inner.ritual.parchment": "提朗瑟克斯拿出一張寫有解除枷印密語的羊皮紙，命令祭司也把它扔進光芒之池。"
+      ,"myth-drannor.inner.ritual.final-spell": "「受枷印束縛的人，跟我來。該完成最後的法術了。」"
+      ,"myth-drannor.inner.ritual.nameless-reveal": "祭司掀開兜帽——原來是無名者！他高喊：「沒那麼容易！」隨即把三件神器拋還給你們。"
+      ,"myth-drannor.inner.ritual.nameless-falls": "提朗瑟克斯一擊便將無名者打倒。無名者用盡最後一口氣，無聲念出羊皮紙上看似毫無意義的密語。"
+      ,"myth-drannor.inner.ritual.bonds-fade": "你們感覺枷印的控制力消退了，但提朗瑟克斯的印記依然沒有消失。他警告只有自己能除去枷印，而且你們很快仍會成為他的奴僕。"
+      ,"myth-drannor.inner.ritual.recover": "你們取回三件神器時，提朗瑟克斯露出懼色。他命令爪牙殺死你們，隨即倉皇離去。"
       ,"myth-drannor.outer.rakshasa-residence": "一名羅剎妖在此過著奢華生活。"
       ,"myth-drannor.outer.rakshasa-threat": "那名羅剎妖站起身，另有數名同族隨之現身。「膽敢打擾我這等地位者，便是在自尋死路。準備受死吧。」"
       ,"myth-drannor.outer.rakshasa-parlay": "羅剎妖露出微笑。「你們的膽識令人耳目一新。」接著，他講述自己的故事；你們將內容記入手札第 57 條。"
@@ -444,6 +471,7 @@
       ,"journal.33": "手札條目 33：「我是凱米爾，我的祖先世世代代都在迷斯卓諾生活，最後也長眠於此。近來，邪惡夢境不斷侵擾我；夢中，祖父的墓穴被那些骯髒的蜘蛛怪物占據，成了牠們的巢穴。若你們願意幫助我，讓他的靈魂重歸安寧，我便把這把由他親手打造的弓送給你們。」他展示一把工藝極其精美、散發強大魔力的長弓。"
       ,"journal.56": "手札條目 56：那人說：「別問我的名字；名字不過是人們貼在自己無法理解之物上的標籤。我知道你們身上的枷印，也知道你們為了重獲自由所作的掙扎，因為在彷彿已十分久遠的往昔，我曾協助創造最初的枷印。你們最後一道枷印——烈焰之主提朗瑟克斯的枷印——是最危險的一道。不論你們是否明白，如今你們比以往任何時候都更接近永恆的奴役；提朗瑟克斯不必再與其他人分享對你們的控制權，他能以全部怒火阻止你們逃脫。你們唯一的希望，是攻其不備，在烈焰之主來得及喚起枷印力量前解決他。能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
       ,"journal.57": "手札條目 57：「能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
+      ,"journal.48": "手札條目 48：「做得很好，我的寵物們。那三件能傷害我的神器，如今都已落入我的掌握。更重要的是，你們身上的枷印能發揮與光芒之池相同的作用；我可以透過枷印轉移到你們任何一人的身體裡，想用多久便用多久。即使那具身體遭到殺害，我也能沿著枷印返回光芒之池，或轉入你們另一人的身體。我得感謝你們賜予我如此自由。現在跟我來，我們要處理掉那些危險物品。」"
       ,"journal.5": "手札條目 5：「我們羅剎妖非常熱衷賭博。我先前手氣連番不順，幾乎輸光了所有財物。最近，我發現貝爾雪雅一直在賭局中作弊；然而沒有證據，氏族領主便不肯處置他。貝爾雪雅負責看守氏族倉庫，我知道裡面藏著能證明他作弊的證據。只要協助我闖進去，你們可從倉庫任取所需；我只要貝爾雪雅作弊的證據。」"
     }
   },
@@ -1018,6 +1046,11 @@
       "message_id": "myth-drannor.helm-north"
     },
     {
+      "id": "myth-drannor.inner.helm-northeast",
+      "all_contains": ["THE HELM OF DRAGONS SHOWS TYRANTHRAXUS", "SECOND FLOOR", "NORTHEAST CORNER"],
+      "message_id": "myth-drannor.inner.helm-northeast"
+    },
+    {
       "id": "myth-drannor.elf-spirit.greeting",
       "all_contains": ["AN ELFISH SPIRIT APPEARS AND GREETS YOU", "WHAT DO YOU DO"],
       "message_id": "myth-drannor.elf-spirit.greeting"
@@ -1520,6 +1553,67 @@
       "id": "myth-drannor.inner.chapel-priest",
       "all_contains": ["TYRANTHRAXUS' GRAND TOOLS", "TOO POPULAR WITH BANE", "OTHER PRIESTS SLIP UP BESIDE HIM"],
       "message_id": "myth-drannor.inner.chapel-priest"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.arrival",
+      "all_contains": ["AS YOU ENTER, YOU HEAR A VOICE", "UNABLE TO CONTROL YOURSELF", "CENTER OF THE ROOM"],
+      "message_id": "myth-drannor.inner.ritual.arrival"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.control",
+      "all_contains": ["THROUGH THE BONDS", "MINE TO CONTROL", "FOLLOW ME"],
+      "message_id": "myth-drannor.inner.ritual.control"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.journal",
+      "all_contains": ["TYRANTHRAXUS MAKES A SPEECH", "JOURNAL ENTRY 48"],
+      "message_id": "myth-drannor.inner.ritual.journal",
+      "journal_message_ids": ["journal.48"]
+    },
+    {
+      "id": "myth-drannor.inner.ritual.hand-over",
+      "all_contains": ["HAND YOUR TOYS OVER TO MY PRIEST", "HANDS OVER THE THREE ARTIFACTS", "RESIST WITH ALL THEIR MIGHT"],
+      "message_id": "myth-drannor.inner.ritual.hand-over"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.dispose-order",
+      "all_contains": ["NOW PRIEST", "DISPOSE OF THESE UNPLEASANT ITEMS", "THROUGH THE POOL"],
+      "message_id": "myth-drannor.inner.ritual.dispose-order"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.pool",
+      "all_contains": ["PRIEST MOVES WITH GREAT FLOURISH", "ARCS EACH ARTIFACT INTO THE POOL", "ITEMS ARE GONE"],
+      "message_id": "myth-drannor.inner.ritual.pool"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.parchment",
+      "all_contains": ["PARCHMENT WITH THE PHRASE TO RELEASE YOUR BONDS", "HANDS THE PARCHMENT TO THE PRIEST", "DISPOSE OF THIS THROUGH THE POOL"],
+      "message_id": "myth-drannor.inner.ritual.parchment"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.final-spell",
+      "all_contains": ["YOU BONDED ONES COME WITH ME", "COMPLETE THE FINAL SPELL"],
+      "message_id": "myth-drannor.inner.ritual.final-spell"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.nameless-reveal",
+      "all_contains": ["PRIEST THROWS BACK HIS HOOD", "REVEALING HIMSELF AS NAMELESS", "TOSSES THE ARTIFACTS BACK TO YOU"],
+      "message_id": "myth-drannor.inner.ritual.nameless-reveal"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.nameless-falls",
+      "all_contains": ["STRIKES NAMELESS DOWN WITH A SINGLE BLOW", "WITH HIS LAST BREATH", "MEANINGLESS PHRASE ON THE PARCHMENT"],
+      "message_id": "myth-drannor.inner.ritual.nameless-falls"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.bonds-fade",
+      "all_contains": ["BOND'S CONTROL FADE", "TYRANTHRAXUS' SIGIL DOES NOT GO AWAY", "ONLY I CAN REMOVE THOSE BONDS"],
+      "message_id": "myth-drannor.inner.ritual.bonds-fade"
+    },
+    {
+      "id": "myth-drannor.inner.ritual.recover",
+      "all_contains": ["PARTY RETRIEVES THE ARTIFACTS", "TYRANTHRAXUS LOOKS AFRAID", "KILL THEM MY PETS"],
+      "message_id": "myth-drannor.inner.ritual.recover"
     },
     {
       "id": "myth-drannor.outer.rakshasa-residence",

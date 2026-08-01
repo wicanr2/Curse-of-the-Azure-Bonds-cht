@@ -11,6 +11,13 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 )
 
+func TestImageCoverTransformUsesGlobalDestinationOrigin(t *testing.T) {
+	scale, x, y := imageCoverTransform(88, 88, image.Rect(48, 48, 224, 224))
+	if scale != 2 || x != 48 || y != 48 {
+		t.Fatalf("transform=(%v,%v,%v), want (2,48,48)", scale, x, y)
+	}
+}
+
 func TestChromaKeyTopLeftRestoresMaskedCombatSprite(t *testing.T) {
 	source := image.NewNRGBA(image.Rect(0, 0, 2, 2))
 	key := color.NRGBA{R: 255, G: 82, B: 82, A: 255}

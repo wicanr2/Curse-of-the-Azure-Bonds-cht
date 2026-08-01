@@ -269,15 +269,19 @@ commit 內保存不可能自我引用的 hash。
   5,000 GP、5,000 PP、12 gems、15 jewelry，合計 30,000 gold。正常
   Standing Stone 玩家路徑沿合法 GEO 抵達 `(10,12)`。同輪證實 block
   `40h／42h` 會先寫與內部房間重用的全域 `4C05／4C06=1`，所以完整支線
-  路徑上的辦公室與廚房原本就會靜默；remake 未擅自重設。其餘內部遺跡、
-  樓梯、神殿、提朗瑟克斯與結局尚未完成。
+  路徑上的辦公室與廚房原本就會靜默；remake 未擅自重設。
 - 第 405 輪已接通 block `43h` terrain `87h／88h／89h` raw 分支：
   犬舍為 10 HELL HOUND，活動雕像為 10 MARGOYLE，私人禮拜堂為
   1 HIGH PRIEST 與 4 PRIEST OF BANE；五段繁中與三個 one-shot 旗標均
   已回歸。Standing Stone 起始玩家路徑完成禮拜堂五人戰並走到 `(7,10)`。
   西翼最短合法路線必經 terrain `82h–85h` 最終儀式，因此犬舍與活動雕像
-  尚未以正常玩家路徑完成；下一個真實缺口是 `83h` 儀式，而不是直接跳入
-  西翼。
+  在第 405 輪尚未以正常玩家路徑完成。
+- 第 407 輪已由 `(7,10)` 正常南行進 terrain `83h`，逐段完成提朗瑟克斯
+  控制枷印、手札 48、三神器交付、無名者揭露與臨終密語。敵軍 exact 為
+  2 HIGH PRIEST、6 HELL HOUND、6 MARGOYLE；勝利後 `4C00=1`，相鄰
+  `84h／85h` 靜默。Standing Stone 起始長路徑隨後完成西翼活動雕像與
+  犬舍兩戰，`4C02／4C01=1`，第 405 輪的 player-path 缺口已關閉。
+  提朗瑟克斯真正最終戰、結局與其餘內部區域仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
@@ -295,7 +299,7 @@ commit 內保存不可能自我引用的 hash。
   Cloudkill DOS 動態時間碼、其餘法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
-- 全英文文本、59 則 Journal（目前新增完成 50／51）、Tavern Tales、
+- 全英文文本、59 則 Journal、Tavern Tales、
   Clue Book／攻略的完整繁中化。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop

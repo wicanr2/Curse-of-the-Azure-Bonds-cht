@@ -155,6 +155,33 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 流程；IDA 結論仍須依本文件第 3 節，以原始 bytes、runtime trace 或另一項
 權威證據交叉驗證。
 
+### IDA 非破壞性語意註記
+
+- IDA database 是程式原貌與交叉參考的證據快取，不是把推測改寫成事實的
+  地方。不得以推測名稱取代 `sub_XXXXX`、`word_XXXXX`、Borland symbol、
+  原始 segment:offset 或 linear address；尤其不得因一次命名方便，就讓原始
+  位址從後續輸出消失。
+- 新語意只能「附加」，不能「覆蓋」。每筆註記至少同時保存：原始識別字／
+  位址、所屬 binary／overlay／module、位址空間、候選語意、證據來源與推論
+  等級。推論等級統一使用本專案的 `exact／strong inference／hypothesis／
+  unknown`；若後續被推翻，刪除或 supersede 舊斷言並留下訂正依據。
+- 即使語意已達 `exact`，文件與工具輸出仍應採「原始位址 → 語意」並列，例如
+  `ECL work 4CBBh → side attack-roll modifier`，不能只留下容易漂移的別名。
+  結構基底加索引形成的 `[di+offset]`、`es:[di]` 等間接欄位尤其不能靠 IDA
+  全域 rename 解決；應由外部 typed ledger／規格在不改原始表示的前提下註記。
+- `.asm` 是攤平文字，只適合定位候選，不具有 `.i64` 的 xref graph。查 caller、
+  reader／writer 或全域 consumer 時，優先以 IDC 查 `.i64`，再回讀完整指令與
+  raw bytes；不得以 grep 命中數冒充引用圖或資料流證據。
+- IDA 的直接 xref 不涵蓋先取位址、再經暫存器或指標間接讀寫的路徑。若看到
+  讀取很多、寫入異常少，必須追蹤 address-taken、register propagation、record
+  base 與 runtime trace，不能直接判定欄位只有一個 writer。
+- 目前 `ida-pro-9.4-ver2` image 的 IDAPython 會受主機 Python 路徑影響；本專案
+  已驗證 IDC 可用。headless 稽核腳本必須把結果寫入明確檔案並檢查內容，不能
+  只依賴 `Message()`／stdout 或 exit code 0 判定成功。
+- 來源專案仍在試驗的自動語意 dump／反向索引方法，不因看起來有用就升格為
+  本專案硬規則。只有在本專案以實際誤判案例、round-trip 與持續回歸證明有效
+  後，才可另行納入工具鏈；未驗證前只能是候選方法。
+
 ## 5. 視覺、版面與中文字體
 
 - 固定 logical canvas 為 640×480。
@@ -272,9 +299,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`500e614`（第 404 輪內部遺跡廚房、辦公室與臥房）；
-  第 405 輪內部遺跡犬舍、活動雕像與私人禮拜堂 milestone
-  會由本文件所在 commit 完成。
+- CoAB 本輪基底：`a4b012a`（第 406 輪 DOS GUI 繪製契約）；第 407 輪
+  最終儀式、手札 48 與西翼正常玩家路徑 milestone 會由本文件所在 commit
+  完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -288,7 +315,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `title_id` schema）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
-- GUI 邊框、左上 cover、16×15 倚天、PC-98 typography study 已完成並 push。
+- GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
+  study 已完成並 push；角色資訊全頁與所有畫面逐張 fidelity 尚未完成。
 - 專案仍是多 vertical slices prototype，尚未完整可通關。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
@@ -439,7 +467,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入
   40 個原生列；第一人稱與旅店正常玩家路徑畫面已更新。READY spec 406
   只涵蓋這些繪製契約，角色資訊全頁、所有事件圖與戰鬥畫面仍未完成。
-  下一步回到 terrain `83h` 最終儀式與 Journal 48。
+- 第 407 輪已從正常 Standing Stone 長路徑進入 terrain `83h`，完成十三段
+  提朗瑟克斯／無名者儀式、六個 PICTURE 與完整繁中手札 48。敵軍是
+  HIGH PRIEST `48h`×2、HELL HOUND `44h`×6、MARGOYLE `45h`×6；戰後
+  `4C00=1`。同一路徑再穿越靜默 `84h／85h`，完成活動雕像與犬舍兩戰，
+  `4C02／4C01=1`。`4CBD=0／1` 的 raw 儀式輸出相同，但這不能擴大成整章
+  無效果。READY spec 407 是權威；下一步追蹤 terrain `86h`、東北角、
+  提朗瑟克斯真正最終戰與結局。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、

@@ -2687,3 +2687,32 @@ nearest-neighbour 畫入 176×176 logical 區；640×480 石框則保留原生�
 READY spec 406 保存 IDA 位址、bytes、圖像雜湊、exact／reconstructed
 邊界。這只關閉人物／3D／PIC 舞台及延伸訊息框；角色資訊全頁、所有 PIC、
 戰鬥動態仍未完成。下一輪回到 terrain `83h` 最終儀式與 Journal 48。
+
+2026-08-01 第四百零七輪完成 block `43h` terrain `82h–85h` 共用的
+提朗瑟克斯／無名者最終儀式。ECL 首次即於 `+0537h` 寫 `4C00=1`，依序
+經過十三段文字／pause 與六個 PICTURE：提朗瑟克斯利用枷印操縱隊伍、
+演說並解鎖使用者 PDF 核對的完整繁中手札 48、迫使隊伍交出三神器；假扮
+祭司的無名者把神器拋回，臨終默念羊皮紙上的解除密語，使控制力消退。
+ECL 沒有發出 FIND／DESTROY／TREASURE，故 frontend 不得自行刪除神器。
+
+儀式戰 exact 為 HIGH PRIEST `48h`×2、HELL HOUND `44h`×6、MARGOYLE
+`45h`×6。`4CBD=0／1` 兩組 raw session 到戰鬥 boundary 的輸出相同，
+只證明此段不因該值改怪，不能擴大到整章。Standing Stone 起始正常玩家
+長路徑已從 `(7,10)` 南行觸發儀式、戰勝十四人、續跑回地城，再穿越靜默
+`84h／85h`，沿合法 GEO 完成 `(4,9)` 十石像鬼與 `(1,9)` 十地獄犬，
+確認 `4C02／4C01=1`；途中龍盔的二樓東北角提示也已資料化繁中。
+
+READY spec 407、deterministic `-inner-ritual` PICTURE 47 截圖、raw regression
+與正常玩家長回歸共同保存證據。下一步追 terrain `86h`、東北角、真正
+提朗瑟克斯最終戰與結局；目前仍不可聲稱完整可通關。
+
+PICTURE 47 抓圖同時揭露一般 PIC blit 曾把非零 bounds 的 Ebiten sub-image
+誤當局部 `(0,0)`，造成事件圖右／下側被裁掉。renderer 現直接以 destination
+全域原點做 2× nearest-neighbour blit，並以 scale／全域原點回歸鎖定；screenshot
+另固定 PIC frame 0、停用音訊裝置，避免容器啟動時間與 ALSA 影響圖像證據。
+
+同輪依使用者指定，唯讀評估 `/home/anr2/cht/大時代的故事/CLAUDE.md` 的
+IDA 經驗，將已驗證且可泛化的非破壞性規則納入 AGENTS.md：保留原始名稱／
+位址，語意只附加並帶推論等級；`.i64` xref 優先於 `.asm` grep；直接 xref
+不涵蓋指標間接存取；headless IDC 必須寫檔驗證。來源仍在試驗期的自動
+語意 dump 方法未升格為本專案硬規則。

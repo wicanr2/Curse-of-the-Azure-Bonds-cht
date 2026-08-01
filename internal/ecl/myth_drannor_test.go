@@ -2,6 +2,7 @@ package ecl
 
 import (
 	"archive/zip"
+	"fmt"
 	"path/filepath"
 	"reflect"
 	"strconv"
@@ -2622,6 +2623,106 @@ func TestRealInnerRuinsKennelStatuaryAndChapel(t *testing.T) {
 			t.Fatalf("chapel victory=%+v err=%v", done, runErr)
 		}
 	})
+}
+
+func TestRealInnerRuinsTyranthraxusAndNamelessFinalRitual(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+
+	for _, allied := range []bool{false, true} {
+		t.Run(fmt.Sprintf("rakshasa-alliance-%v", allied), func(t *testing.T) {
+			session, sessionErr := NewBlockSession(all, 0x43)
+			if sessionErr != nil {
+				t.Fatal(sessionErr)
+			}
+			for address, value := range map[uint16]uint16{
+				0xC04F: 0x83,
+				0x4C59: 1,
+				0x4C5A: 1,
+				0x4C5B: 0xFF,
+			} {
+				session.SetMemoryValue(address, value)
+			}
+			if allied {
+				session.SetMemoryValue(0x4CBD, 1)
+			}
+			context := PartyContext{Members: []PartyMemberContext{{Name: "HERO"}}}
+			press := uint16(0)
+			result, runErr := session.RunEntrySeedWithPartyContext(
+				1, 30000, nil, nil, 1, context,
+			)
+			if runErr != nil {
+				t.Fatal(runErr)
+			}
+			expected := []struct {
+				fragment string
+				picture  int
+			}{
+				{"UNABLE TO CONTROL YOURSELF", -1},
+				{"THROUGH THE BONDS", -1},
+				{"JOURNAL ENTRY 48", 0x47},
+				{"HANDS OVER THE THREE ARTIFACTS", 0x46},
+				{"DISPOSE OF THESE UNPLEASANT ITEMS", 0x4C},
+				{"ARCS EACH ARTIFACT INTO THE POOL", -1},
+				{"PARCHMENT WITH THE PHRASE TO RELEASE YOUR BONDS", 0x47},
+				{"COMPLETE THE FINAL SPELL", -1},
+				{"REVEALING HIMSELF AS NAMELESS", 0x46},
+				{"STRIKES NAMELESS DOWN WITH A SINGLE BLOW", 0x47},
+				{"BOND'S CONTROL FADE", -1},
+				{"PARTY RETRIEVES THE ARTIFACTS", -1},
+				{"MINIONS OF TYRANTHRAXUS RUSH TO ATTACK YOU", -1},
+			}
+			for index, want := range expected {
+				joined := strings.Join(result.Text, " ")
+				if !result.WaitingForMenu || !strings.Contains(joined, want.fragment) {
+					t.Fatalf("stage %d result=%+v, want %q", index, result, want.fragment)
+				}
+				if want.picture >= 0 && (!result.PictureRequested ||
+					int(result.PictureBlock) != want.picture) {
+					t.Fatalf("stage %d picture=%v/%02X, want %02X",
+						index, result.PictureRequested, result.PictureBlock, want.picture)
+				}
+				result, runErr = session.ResumeInteractiveSelectionSeed(
+					30000, &press, nil, 1, context,
+				)
+				if runErr != nil {
+					t.Fatalf("resume stage %d: %v", index, runErr)
+				}
+			}
+			wantSpawns := []MonsterSpawn{
+				{MonsterID: 0x48, Count: 2, IconBlock: 0x48},
+				{MonsterID: 0x44, Count: 6, IconBlock: 0x44},
+				{MonsterID: 0x45, Count: 6, IconBlock: 0x45},
+			}
+			if !result.CombatRequested || !reflect.DeepEqual(result.MonsterSpawns, wantSpawns) {
+				t.Fatalf("ritual combat=%+v, want %+v", result, wantSpawns)
+			}
+			if mustMemory(t, session, 0x4C00) != 1 {
+				t.Fatalf("ritual completion 4C00=%04X", mustMemory(t, session, 0x4C00))
+			}
+			done, runErr := session.ResumeInteractiveSelectionSeed(
+				30000, nil, nil, 1, context,
+			)
+			if runErr != nil || !done.Exited {
+				t.Fatalf("ritual victory=%+v err=%v", done, runErr)
+			}
+			revisit, runErr := session.RunEntry(1, 30000, nil)
+			if runErr != nil || !revisit.Exited || len(revisit.Text) != 0 {
+				t.Fatalf("ritual revisit=%+v err=%v", revisit, runErr)
+			}
+		})
+	}
 }
 
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {

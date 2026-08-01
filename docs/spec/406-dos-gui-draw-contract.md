@@ -58,6 +58,10 @@ overlay 29 中 `SHOWHEAD` 直接轉送列座標；`SHOWBODY` 在呼叫共同的
 - `gfx.ExtendedAdventureFrame` 保留／移動原版 raster，沒有縮放或重畫石紋。
 - `gfx.FirstPersonStageFrame` 是原版灰色內框的透明 overlay；3D 與 PIC 先畫
   88×88 內容，再覆蓋該框。HEAD／BODY 仍走 `scene_character` 契約。
+- PIC 的 2× blit 直接使用 logical destination 的全域原點；不得先建立帶
+  非零 bounds 的 Ebiten sub-image、再以 `(0,0)` 當局部原點，否則 88×88
+  事件圖會在內格右／下側被錯誤裁掉。前端 transform 回歸鎖定 88×88 →
+  176×176 的 2× scale 與 `(48,48)` 全域目的原點，正式截圖再驗收完整圖像。
 - `-tilverton-dungeon` 由正式建立角色、序幕選項與地圖入口抵達第一人稱
   模式，不直接注入地城 state。
 - `internal/gfx` 與 `cmd/azure-bonds-game` 測試已在 Docker／Xvfb 通過。
