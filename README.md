@@ -1068,9 +1068,17 @@ camp 顯示、法術記憶與戰鬥分派現已一致；原始 bytes、位址、
 第 424 輪正式接通 `ALT+M`：Quick AI 依原版 `1d7` priority tiers、每層三次
 隨機已記憶 slot 搜尋，資料由 game-pack `combat_ai_spells` 提供。Magic Missile
 `0Fh` 已在正常 Standing Stone→Myth Drannor→紅網玩家路徑由 ALT+M＋ALT+Q
-施放、播放既有視覺並消耗 slot。非零 MinRange 的 area safety 與延遲施法仍
-明確 fail-closed，因此這是 Magic Missile 垂直切片，不是完整法術 AI；證據見
+施放、播放既有視覺並消耗 slot。非零 MinRange 的 area safety 與當輪尚未接通
+的延遲施法明確 fail-closed；延遲 handoff 已由第 425 輪接續，因此這仍不是
+完整法術 AI。證據見
 [`spec 424`](docs/spec/424-pc98-alt-m-quick-magic-missile.md)。
+
+第 425 輪接通非即時施法的同輪 action handoff：PC-98 原版將 raw
+`CastingTime/3` 從目前 `Action.delay` 扣除（最低為 1），保存 spell ID，待
+scheduler 再次選到角色才真正施法。Quick Bless 的 raw `10→3` 已接通，
+Magic Missile 的 raw `1→0` 仍維持即時；其他法術、手動 CAST 與中斷規則仍
+未完成。證據見
+[`spec 425`](docs/spec/425-pc98-quick-bless-casting-delay.md)。
 
 ## 尚未完成
 

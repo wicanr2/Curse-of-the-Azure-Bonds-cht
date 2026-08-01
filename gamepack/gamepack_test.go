@@ -34,8 +34,13 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	magicMissile, found := pack.FindCombatAISpell(0x0F)
 	if !found || magicMissile.Priority != 4 || magicMissile.CastOn != 1 ||
-		magicMissile.MinRange != 0 {
+		magicMissile.MinRange != 0 || magicMissile.CastingTime != 1 {
 		t.Fatalf("Magic Missile quick AI metadata=%+v found=%v", magicMissile, found)
+	}
+	blessAI, found := pack.FindCombatAISpell(0x01)
+	if !found || blessAI.Priority != 1 || blessAI.CastOn != 0 ||
+		blessAI.MinRange != 0 || blessAI.CastingTime != 10 {
+		t.Fatalf("Bless quick AI metadata=%+v found=%v", blessAI, found)
 	}
 	fireballAI, found := pack.FindCombatAISpell(0x2F)
 	if !found || fireballAI.Priority != 7 || fireballAI.CastOn != 1 ||

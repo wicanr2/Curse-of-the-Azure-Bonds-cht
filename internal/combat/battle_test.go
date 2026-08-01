@@ -692,6 +692,45 @@ func TestDynamicRoundDelayActionReentersAtTierOne(t *testing.T) {
 	}
 }
 
+func TestPendingSpellActionSubtractsCastingDelayAndReenters(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 8},
+		{ID: "other", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 6},
+	}, 425)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.BeginScheduledRound(); err != nil {
+		t.Fatal(err)
+	}
+	first, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || first.FighterID != "caster" || first.Initiative != 8 {
+		t.Fatalf("first=%+v ok=%v err=%v", first, ok, err)
+	}
+	if err := battle.BeginPendingSpellAction("caster", 1, 3); err != nil {
+		t.Fatal(err)
+	}
+	pending, _ := battle.Fighter("caster")
+	if pending.CombatAction.SpellID != 1 || pending.CombatAction.Delay != 5 {
+		t.Fatalf("pending action=%+v", pending.CombatAction)
+	}
+	other, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || other.FighterID != "other" {
+		t.Fatalf("other=%+v ok=%v err=%v", other, ok, err)
+	}
+	if err := battle.CompleteAction("other"); err != nil {
+		t.Fatal(err)
+	}
+	resumed, ok, err := battle.NextScheduledTurn()
+	if err != nil || !ok || resumed.FighterID != "caster" || resumed.Initiative != 5 {
+		t.Fatalf("resumed=%+v ok=%v err=%v", resumed, ok, err)
+	}
+	spellID, err := battle.TakePendingSpellAction("caster")
+	if err != nil || spellID != 1 {
+		t.Fatalf("take spell=0x%02X err=%v", spellID, err)
+	}
+}
+
 func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,

@@ -398,7 +398,14 @@ commit 內保存不可能自我引用的 hash。
   `combat/quickspell` 保存中立 selector，CoAB JSON 保存 priority／CastOn／
   MinRange；全域 `0Fh` Magic Missile 已從 Standing Stone→紅網正常玩家路徑
   由 ALT+M＋ALT+Q 實際施放並消耗 slot。非零 MinRange 的 area safety helper、
-  casting delay、Cure special 與其餘法術仍 fail-closed，不能宣稱完整 Quick AI。
+  當輪 casting delay、Cure special 與其餘法術仍 fail-closed；casting delay／
+  Bless 已由第 425 輪接續，仍不能宣稱完整 Quick AI。
+- 第 425 輪由 overlay 13 `CASTCOMBATSPELL` 與 overlay 08 pending consumer
+  關閉非即時施法排程：raw `CastingTime/3` 非零時保存 Action spell ID，delay
+  改為 `max(1,delay-units)` 並同輪重新入列。engine action／quickspell 與
+  CoAB 十一筆 JSON metadata 已接通；Quick Bless raw `10→3` 有 scheduler／
+  State regression。手動 CAST、其他 Quick 法術、目標指標與 interruption
+  fidelity 仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

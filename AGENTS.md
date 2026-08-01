@@ -344,10 +344,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`3c5bccb`（第 423 輪 PC-98 全域法術 ID）；
-  第 424 輪 PC-98 ALT+M 與 Quick Magic Missile milestone 會由本文件所在
+- CoAB 本輪基底：`8df7c97`（第 424 輪 PC-98 ALT+M 與 Quick Magic Missile）；
+  第 425 輪 PC-98 Quick Bless 與非即時施法 milestone 會由本文件所在
   commit 完成。
-- Engine dependency：`c50855f`（含作品中立 `combat/action`、
+- Engine dependency：`dd99d29`（含作品中立 `combat/action`、
   `combat/initiative`、
   `combat/quickspell`、`randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -517,8 +517,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 424 輪已接通 `ALT+M` gate、作品中立 `1d7`／每層三次 Quick selector、
   CoAB JSON metadata 與全域 `0Fh` Magic Missile；Standing Stone→紅網正常
   玩家路徑已實際消耗 slot。非零 MinRange helper 會檢查落點範圍、team、save
-  與 effect，不得簡化成距離。area spell、casting delay、Cure special 與其餘
-  Quick 法術仍 fail-closed；spec 424 是權威。
+  與 effect，不得簡化成距離。非即時 action handoff／Bless 已由第 425 輪
+  接續；area spell、Cure special 與其餘 Quick 法術仍 fail-closed。
+- 第 425 輪已由 overlay 13／08 exact 關閉非即時施法 action handoff：raw
+  `CastingTime/3` 非零時保存 spell ID，delay 改為
+  `max(1,delay-units)`，同輪再選中才 CASTSPELL。engine `dd99d29` 與 CoAB
+  JSON 已保存 raw casting_time；Quick Bless `01h` raw 10→3 已接通。slot
+  中斷消耗、手動 CAST、Cure special、其他 Quick 法術與 per-action target
+  pointer 仍未完成；spec 425 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

@@ -2968,7 +2968,8 @@ table consumer。PC-98 `GAME.EXE` SHA-256
 流程與戰鬥分派一併改用全域 ID。舊 spec 134／142 已標 SUPERSEDED，READY
 spec 423 保存 bytes、offset、推論等級與邊界。overlay 09 的三次隨機候選、
 priority tier 與 suitability 雖已 exact 定位，但完整 cast consumer 與所有
-候選法術尚未完成，故 `ALT+M` 仍不開放，不能用空 toggle 冒充 Quick magic。
+候選法術在第 423 輪尚未完成，故當輪 `ALT+M` 不開放；第 424 輪已接續，
+不能把這段歷史狀態誤讀成目前功能仍關閉。
 
 2026-08-02 第四百二十四輪以合法授權的 IDA Pro 9.4 Docker 映像、唯讀
 overlays 與 `/tmp/coab-ida-424` database 接續 ALT+M。overlay 09
@@ -2982,5 +2983,15 @@ Engine 新增 `combat/quickspell` 與 `combat_ai_spells` schema；CoAB JSON 保�
 Ebiten ALT+M 不與一般 M 移動衝突，每場戰鬥 gate 重設 off。全域 `0Fh` Magic
 Missile 已在 focused visual regression 與 Standing Stone→GEO6→紅網四蜘蛛
 正常玩家路徑由 ALT+M＋ALT+Q 施放並消耗 slot。非零 MinRange helper 已證明
-不是單純距離；area spell、casting delay、Cure special 與其餘法術仍在抽中時
-fail-closed 並收回 PC 控制。READY spec 424 是權威邊界。
+不是單純距離；當輪 area spell、casting delay、Cure special 與其餘法術在抽中
+時 fail-closed 並收回 PC 控制。casting delay／Bless 已由第 425 輪接續；
+READY spec 424 只代表當輪邊界。
+
+2026-08-02 第四百二十五輪以唯讀 IDA Pro 9.4 database 關閉
+`CASTCOMBATSPELL` 非即時 handoff。overlay 13 exact 將 raw CastingTime
+整除 3；非零時保存 Action spell ID，delay 改為 `max(1,delay-units)`；
+overlay 08 在同輪重新選中後先清 spell ID 再呼叫 CASTSPELL。engine
+`dd99d29` 新增作品中立 pending spell transaction，CoAB JSON 十一筆 record
+補 raw casting_time。Quick Bless `01h` raw 10→delay 3 已接通；slot 消耗時點、
+手動 CAST、Cure special、其他 Quick 法術與中斷仍未完成。READY spec 425
+是權威邊界。
