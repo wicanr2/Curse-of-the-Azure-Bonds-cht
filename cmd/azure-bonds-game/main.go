@@ -51,58 +51,59 @@ const (
 )
 
 type app struct {
-	state               game.State
-	imagePath           string
-	face                font.Face
-	compactFace         font.Face
-	choiceCursor        int
-	partyPath           string
-	savgamDir           string
-	savgamSlot          byte
-	savgamSlotSave      bool
-	tilePreview         bool
-	tileImages          []*ebiten.Image
-	geoPreview          bool
-	areaMapPreview      bool
-	areaMapSymbols      []*ebiten.Image
-	skyImages           [3]*ebiten.Image
-	geoGrid             *geo.Grid
-	geoX                int
-	geoY                int
-	geoLabel            string
-	geoCatalog          geo.Catalog
-	geoSet              uint8
-	geoBlock            uint8
-	dungeonPreview      bool
-	dungeonFloor        *mapdata.DungeonFloor
-	dungeonX            int
-	dungeonY            int
-	dungeonDoorMenu     bool
-	pieceSets           map[uint8]gfx.PieceSet
-	pieceLabel          string
-	wallPreview         []wallPreviewStamp
-	combatSprites       map[string]*ebiten.Image
-	combatSpriteIDs     []string
-	combatTerrain       map[string][]*ebiten.Image
-	combatTerrainMode   string
-	gamePack            *goldenengine.Pack
-	combatFrame         *ebiten.Image
-	adventureFrame      *ebiten.Image
-	characterStageFrame *ebiten.Image
-	combatAnimations    map[string][]combatAnimation
-	animationStart      time.Time
-	deathOverlayStarted map[string]time.Time
-	combatVisualSerial  uint64
-	combatVisualStarted time.Time
-	combatVisualElapsed time.Duration
-	messageSnapshot     string
-	messageStart        time.Time
-	soundPlayer         *sound.Player
-	pc98MusicDriver     []byte
-	currentMusicTrack   string
-	screenshotPath      string
-	screenshotDone      bool
-	screenshotFrames    int
+	state                 game.State
+	imagePath             string
+	face                  font.Face
+	compactFace           font.Face
+	choiceCursor          int
+	partyPath             string
+	savgamDir             string
+	savgamSlot            byte
+	savgamSlotSave        bool
+	tilePreview           bool
+	tileImages            []*ebiten.Image
+	geoPreview            bool
+	areaMapPreview        bool
+	areaMapSymbols        []*ebiten.Image
+	skyImages             [3]*ebiten.Image
+	geoGrid               *geo.Grid
+	geoX                  int
+	geoY                  int
+	geoLabel              string
+	geoCatalog            geo.Catalog
+	geoSet                uint8
+	geoBlock              uint8
+	dungeonPreview        bool
+	dungeonFloor          *mapdata.DungeonFloor
+	dungeonX              int
+	dungeonY              int
+	dungeonDoorMenu       bool
+	pieceSets             map[uint8]gfx.PieceSet
+	pieceLabel            string
+	wallPreview           []wallPreviewStamp
+	combatSprites         map[string]*ebiten.Image
+	combatSpriteIDs       []string
+	combatTerrain         map[string][]*ebiten.Image
+	combatTerrainMode     string
+	gamePack              *goldenengine.Pack
+	combatFrame           *ebiten.Image
+	adventureFrame        *ebiten.Image
+	characterStageFrame   *ebiten.Image
+	firstPersonStageFrame *ebiten.Image
+	combatAnimations      map[string][]combatAnimation
+	animationStart        time.Time
+	deathOverlayStarted   map[string]time.Time
+	combatVisualSerial    uint64
+	combatVisualStarted   time.Time
+	combatVisualElapsed   time.Duration
+	messageSnapshot       string
+	messageStart          time.Time
+	soundPlayer           *sound.Player
+	pc98MusicDriver       []byte
+	currentMusicTrack     string
+	screenshotPath        string
+	screenshotDone        bool
+	screenshotFrames      int
 }
 
 type combatAnimation struct {
@@ -1185,7 +1186,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
+			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		text.Draw(screen, "人物圖層素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
@@ -1221,10 +1222,11 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
 	a.drawAdventureChrome(screen)
-	drawImageCover(screen, frame.image, image.Rect(16, 16, 256, 256))
+	drawImageCover(screen, frame.image, image.Rect(48, 48, 224, 224))
+	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
-	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 470, color.RGBA{255, 255, 255, 255})
+	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
@@ -1258,6 +1260,16 @@ func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
 	}
 }
 
+func (a *app) drawFirstPersonStageFrame(screen *ebiten.Image) {
+	if a.firstPersonStageFrame == nil {
+		return
+	}
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(2, 2)
+	screen.DrawImage(a.firstPersonStageFrame, op)
+}
+
 func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
 	if source == nil || destination.Empty() {
 		return
@@ -1279,19 +1291,10 @@ func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
 }
 
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
-	runes := []rune(a.revealedMessage())
-	// A 24px CJK glyph is much wider than the original 8px Latin cell.
-	// Keep picture captions to 22 Unicode code points so both Traditional
-	// Chinese and mixed ASCII text stay inside the 640px logical canvas.
-	const lineRunes = 24
-	for line := 0; line < 4 && len(runes) > 0; line++ {
-		count := lineRunes
-		if len(runes) < count {
-			count = len(runes)
-		}
-		text.Draw(screen, string(runes[:count]), a.face, 24, 312+line*30, color.RGBA{92, 220, 255, 255})
-		runes = runes[count:]
-	}
+	drawWrappedText(
+		screen, a.revealedMessage(), a.compactFace,
+		24, 282, 36, 24, 6, color.RGBA{92, 220, 255, 255},
+	)
 }
 
 func drawPanelFrame(screen *ebiten.Image, x, y, width, height int) {
@@ -1327,17 +1330,17 @@ func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{A: 255})
 	a.drawOriginalAdventureFrame(screen)
-	text.Draw(screen, "姓名", a.compactFace, 288, 38, color.RGBA{232, 238, 255, 255})
-	text.Draw(screen, "AC", a.compactFace, 520, 38, color.RGBA{232, 238, 255, 255})
-	text.Draw(screen, "HP", a.compactFace, 578, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, "姓名", a.compactFace, 280, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, "AC", a.compactFace, 528, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, "HP", a.compactFace, 600, 38, color.RGBA{232, 238, 255, 255})
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
 		ink := color.RGBA{R: 92, G: 220, B: 255, A: 255}
-		text.Draw(screen, fighter.Name, a.compactFace, 288, 68+index*25, ink)
-		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 526, 68+index*25, ink)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 580, 68+index*25, ink)
+		text.Draw(screen, fighter.Name, a.compactFace, 280, 68+index*20, ink)
+		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, ink)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, ink)
 	}
 }
 
@@ -1382,7 +1385,7 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 	text.Draw(screen, "方向標記：隊伍位置", a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
 	text.Draw(screen, a.state.LocationName, a.compactFace, 24, 390, cyan)
 	text.Draw(screen, "AREA 顯示目前區域的牆面與隊伍方向。", a.compactFace, 24, 422, white)
-	text.Draw(screen, "A／Esc：返回探索", a.compactFace, 24, 470, cyan)
+	text.Draw(screen, "A／Esc：返回探索", a.compactFace, 24, 468, cyan)
 }
 
 func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
@@ -1568,31 +1571,32 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		op.GeoM.Translate(float64(nativeX*2), float64(nativeY*2))
 		screen.DrawImage(stamp.image, op)
 	}
+	a.drawFirstPersonStageFrame(screen)
 
-	text.Draw(screen, "姓名", a.compactFace, 272, 38, white)
-	text.Draw(screen, "AC", a.compactFace, 468, 38, white)
-	text.Draw(screen, "HP", a.compactFace, 586, 38, white)
+	text.Draw(screen, "姓名", a.compactFace, 280, 38, white)
+	text.Draw(screen, "AC", a.compactFace, 528, 38, white)
+	text.Draw(screen, "HP", a.compactFace, 600, 38, white)
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
-		text.Draw(screen, fighter.Name, a.compactFace, 272, 68+index*20, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 472, 68+index*20, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 588, 68+index*20, cyan)
+		text.Draw(screen, fighter.Name, a.compactFace, 280, 68+index*20, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, cyan)
+		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, cyan)
 	}
 
 	status := fmt.Sprintf("(%d,%d) %s %02d:%02d", a.dungeonX, a.dungeonY,
 		dungeonDirectionName(direction), a.state.GameTimeDisplay().Hour, a.state.GameTimeDisplay().Minute)
-	text.Draw(screen, status, a.compactFace, 272, 254, cyan)
+	text.Draw(screen, status, a.compactFace, 280, 254, cyan)
 	if a.state.Message != "" {
-		drawWrappedText(screen, a.state.Message, a.face, 8, 302, 38, 24, 5, white)
+		drawWrappedText(screen, a.state.Message, a.compactFace, 24, 282, 36, 24, 6, white)
 	} else {
-		text.Draw(screen, a.state.LocationName, a.face, 8, 302, cyan)
+		text.Draw(screen, a.state.LocationName, a.compactFace, 24, 282, cyan)
 	}
 	if a.dungeonDoorMenu {
 		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
 	}
-	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 8, 472, cyan)
+	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 8, 468, cyan)
 	a.drawOriginalAdventureFrame(screen)
 }
 
@@ -2684,6 +2688,7 @@ func main() {
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
+	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
 	weaponShop := flag.Bool("weapon-shop", false, "start at Weaponers of Cormyr through the formal Tilverton ECL flow")
@@ -3145,7 +3150,7 @@ func main() {
 				log.Fatal("-wizard-tower-parlay did not reach the original successful parlay text")
 			}
 		}
-	} else if *opening || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
+	} else if *opening || *tilvertonDungeon || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
 		if len(state.PartyFighters()) != 0 {
 			log.Fatal("story preview flags cannot be combined with a loaded party")
 		}
@@ -3158,7 +3163,7 @@ func main() {
 		if err := state.FinishCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
-		if *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
+		if *tilvertonDungeon || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
 			}
@@ -3167,6 +3172,11 @@ func main() {
 			}
 			if err := state.Select(0); err != nil {
 				log.Fatal(err)
+			}
+			if *tilvertonDungeon {
+				if state.Mode != game.ModeDungeon {
+					log.Fatalf("-tilverton-dungeon normal flow ended in mode %v", state.Mode)
+				}
 			}
 			if *carriage || *guildmaster || *sewers {
 				if err := prepareCarriagePreview(&state, geoGrid); err != nil {
@@ -3203,7 +3213,7 @@ func main() {
 			} else if *carriage || *guildmaster || *sewers {
 				x, y, direction = state.DungeonX, state.DungeonY, state.DungeonDirection
 			}
-			if !*carriage && !*guildmaster && !*sewers {
+			if !*tilvertonDungeon && !*carriage && !*guildmaster && !*sewers {
 				state.DungeonX, state.DungeonY, state.DungeonDirection = x, y, direction
 				state.DungeonWallType, _ = geoGrid.WallWrapped(x, y, int(direction))
 				state.DungeonWallRoof = geoGrid.CellWrapped(x, y).Terrain
@@ -3243,7 +3253,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.AdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
+	if err := ebiten.RunGame(&app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}); err != nil {
 		log.Fatal(err)
 	}
 }

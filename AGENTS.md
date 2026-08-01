@@ -434,6 +434,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 406 輪先完成 GUI fidelity 稽核：IDA／DOS bytes 證明 HEAD 後 BODY，
+  BODY 執行 `row+5`；DOS runtime 則證明第一人稱／一般 PIC 使用獨立灰色
+  88×88 舞台。640×480 frame 現保留原版上半部與命令帶，只在訊息區插入
+  40 個原生列；第一人稱與旅店正常玩家路徑畫面已更新。READY spec 406
+  只涵蓋這些繪製契約，角色資訊全頁、所有事件圖與戰鬥畫面仍未完成。
+  下一步回到 terrain `83h` 最終儀式與 Journal 48。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、
