@@ -447,6 +447,24 @@ func TestResolveAttackInnateDetectInvisibleBypassesInvisibilityACBonus(t *testin
 	}
 }
 
+func TestResolveAttackDetectInvisibleDoesNotBypassEffect47(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "seer", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			AttackBonus: 0, DamageDiceCount: 1, DamageDiceSides: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x18, Innate: true}}},
+		{ID: "hidden", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x47, Active: true}}},
+	}
+	battle, err := NewBattle(fighters, 417)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.ResolveAttack("seer", "hidden", 10, 1)
+	if err != nil || result.Hit {
+		t.Fatalf("effect 47 must retain its AC bonus against effect 18: result=%#v err=%v", result, err)
+	}
+}
+
 func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: -20, DamageDiceCount: 1, DamageDiceSides: 1},

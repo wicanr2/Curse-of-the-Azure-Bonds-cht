@@ -3546,6 +3546,12 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if !detectInvisible || !tyranthraxus.MonsterCanDetectInvisible() {
 		t.Fatalf("Tyranthraxus detect-invisible projection=%+v", tyranthraxus.MonsterAffects)
 	}
+	effect19Target := combat.Fighter{MonsterAffects: []combat.MonsterAffect{{Kind: 0x19, Active: true}}}
+	effect47Target := combat.Fighter{MonsterAffects: []combat.MonsterAffect{{Kind: 0x47, Active: true}}}
+	if !effect19Target.VisibleTo(*tyranthraxus) || effect47Target.VisibleTo(*tyranthraxus) {
+		t.Fatalf("Tyranthraxus real MON6 visibility projection: effect19=%v effect47=%v effects=%+v",
+			effect19Target.VisibleTo(*tyranthraxus), effect47Target.VisibleTo(*tyranthraxus), tyranthraxus.MonsterAffects)
+	}
 	if base, ok := tyranthraxus.MonsterMagicResistanceBase(); !magicResistance || !ok || base != 15 {
 		t.Fatalf("Tyranthraxus magic-resistance projection base=%d ok=%v effects=%+v",
 			base, ok, tyranthraxus.MonsterAffects)

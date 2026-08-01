@@ -224,12 +224,35 @@ func MagicResistanceChance(base, casterLevel int) int {
 	return base + (11-casterLevel)*5
 }
 
-// MonsterAffectArmorClassBonus projects only the effect kinds whose
-// CanHitTarget behavior is verified in the reference adapter.
-func (f Fighter) MonsterAffectArmorClassBonus() int {
+// VisibleTo reports the status-effect visibility used by the original
+// CHECKTARGET path. Effect 19 can be defeated by an operational effect 18 on
+// the observer; effect 47 sets the target-hidden flag unconditionally.
+func (f Fighter) VisibleTo(observer Fighter) bool {
+	for _, affect := range f.MonsterAffects {
+		if !affect.operational() {
+			continue
+		}
+		if affect.Kind == 0x47 || (affect.Kind == 0x19 && !observer.MonsterCanDetectInvisible()) {
+			return false
+		}
+	}
+	return true
+}
+
+// MonsterAffectArmorClassBonusAgainst projects only the effect kinds whose
+// attack-roll behavior is verified in the original effect handlers.
+func (f Fighter) MonsterAffectArmorClassBonusAgainst(attacker Fighter) int {
 	bonus := 0
 	for _, affect := range f.MonsterAffects {
-		if affect.operational() && (affect.Kind == 0x19 || affect.Kind == 0x47) {
+		if !affect.operational() {
+			continue
+		}
+		switch affect.Kind {
+		case 0x19:
+			if !attacker.MonsterCanDetectInvisible() {
+				bonus += 4
+			}
+		case 0x47:
 			bonus += 4
 		}
 	}
@@ -656,9 +679,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	}
 	critical := attackRoll == 20
 	targetArmorClass := target.ArmorClass
-	if !attacker.MonsterCanDetectInvisible() {
-		targetArmorClass += target.MonsterAffectArmorClassBonus()
-	}
+	targetArmorClass += target.MonsterAffectArmorClassBonusAgainst(attacker)
 	if attacker.Evil && target.ProtectedFromEvil {
 		targetArmorClass += 2
 	}
