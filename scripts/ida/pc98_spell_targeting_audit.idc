@@ -71,6 +71,7 @@ static main()
   else if (strstr(path, "overlay-13.bin") != -1)
   {
     emit_range(out, "CHECKTARGET", 0x1160, 0x1280);
+    emit_range(out, "CASTCOMBATSPELL", 0x27A1, 0x2915);
     emit_range(out, "PICKTARGET", 0x3D20, 0x3FA0);
   }
   else if (strstr(path, "overlay-22.bin") != -1)

@@ -681,6 +681,12 @@ func (a *app) Update() error {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.ProtectionFromGoodSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyM) {
+			if combatAltPressed() {
+				return a.combatAction(func() error {
+					_, err := a.state.CombatToggleQuickMagic()
+					return err
+				})
+			}
 			return a.combatAction(a.state.BeginCombatMove)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyQ) {

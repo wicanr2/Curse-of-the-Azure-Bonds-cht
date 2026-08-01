@@ -47,6 +47,6 @@ record `+01Eh` 原樣保存 memorized bytes，known flags 則以全域一基底�
   分派不再依相同 `07h` 加 caster class 猜測。
 - 原始未知 ID 仍顯示十六進位，不自行重編號。
 
-本輪不宣稱 ALT+M Quick spell AI 已完成。雖已 exact 解出三次隨機候選、
-priority tier 與 `+0Eh／+0Fh` suitability，完整 spell cast consumer、所有法術
-效果及未支援法術的 fail-closed handoff 尚未完成，因此 UI 繼續不開放 ALT+M。
+本輪本身不宣稱 ALT+M Quick spell AI 完成。其 gate、priority selector 與
+Magic Missile `0Fh` 有界切片已由 spec 424 接續；area suitability、casting
+delay、其餘法術與 exact target ordering 仍未完成。

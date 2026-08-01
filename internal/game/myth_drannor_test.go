@@ -43,8 +43,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatal(err)
 	}
 	state.partyRoster = party.Roster{{
-		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassMagicUser,
 		Level: 10, HitPoints: 999, MaxHitPoints: 999,
+		SpellSlots:   []uint8{MagicMissileSpellID},
 		SavingThrows: []uint8{1, 1, 1, 1, 1},
 		Abilities: party.Abilities{
 			Strength: 18, Intelligence: 18, Wisdom: 18,
@@ -351,6 +352,9 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	// route, not from a direct-entry battle fixture. Headless mode intentionally
 	// runs the delegated actions synchronously; the focused visual regression
 	// separately proves that the Ebiten adapter yields and accepts Space.
+	if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+		t.Fatalf("normal-path ALT+M enabled=%v err=%v", enabled, err)
+	}
 	if err := state.CombatQuickAll(); err != nil {
 		t.Fatal(err)
 	}
@@ -363,6 +367,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		state.Message != gamePackText(t, state, "myth-drannor.red-web.rakshasa") {
 		t.Fatalf("rakshasa reveal mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("normal-path Quick Magic did not consume global spell 0x%02X: %v",
+			MagicMissileSpellID, state.partyRoster[0].SpellSlots)
 	}
 	if changed := state.CombatManualControl(); changed != 1 {
 		t.Fatalf("normal-path Space recovery changed=%d want 1", changed)

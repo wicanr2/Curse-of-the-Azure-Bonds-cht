@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 )
 
 // StartCombat creates the first playable battle adapter. Party and encounter
@@ -79,6 +80,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatTurnIndex = 0
 	s.combatDelayedTurns = make(map[int]bool)
 	s.combatTargetIndex = 0
+	s.combatQuickMagic = false
 	s.combatVisual = nil
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
 	s.Mode = ModeCombat
@@ -2125,6 +2127,24 @@ func (s *State) CombatQuickAll() error {
 	return s.advanceCombatToParty()
 }
 
+// CombatToggleQuickMagic mirrors the ALT+M combat flag. It permits manually
+// controllable Quick fighters to enter the original spell-priority selector;
+// NPCs bypass this flag in the reference runtime.
+func (s *State) CombatToggleQuickMagic() (bool, error) {
+	if !s.CombatActive() {
+		return false, fmt.Errorf("combat is not active")
+	}
+	s.combatQuickMagic = !s.combatQuickMagic
+	messageID, fallback := "combat_quick_magic_off", "快速戰鬥施法已關閉。"
+	if s.combatQuickMagic {
+		messageID, fallback = "combat_quick_magic_on", "快速戰鬥施法已開啟。"
+	}
+	s.combatMessage = s.catalog.Text(messageID, fallback)
+	return s.combatQuickMagic, nil
+}
+
+func (s *State) CombatQuickMagicEnabled() bool { return s.combatQuickMagic }
+
 func (s *State) CombatManualControl() int {
 	if s.battle == nil {
 		return 0
@@ -2303,6 +2323,13 @@ func (s *State) advanceCombatToParty() error {
 				return err
 			}
 			fighter, _ = s.fighter(fighter.ID)
+			handled, err := s.tryQuickSpell(fighter)
+			if err != nil {
+				return err
+			}
+			if handled {
+				return nil
+			}
 		}
 		targetSide := combat.SideParty
 		if fighter.Side == combat.SideParty {
@@ -2387,6 +2414,92 @@ func (s *State) advanceCombatToParty() error {
 		s.requestAttackSounds(resolvedResults)
 	}
 	return s.finishCombat()
+}
+
+func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
+	if fighter.Side != combat.SideParty || (fighter.ControlMorale < 0x80 && !s.combatQuickMagic) {
+		return false, nil
+	}
+	characterIndex := -1
+	for index := range s.partyRoster {
+		if s.partyRoster[index].ID == fighter.ID {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 || len(s.partyRoster[characterIndex].SpellSlots) == 0 {
+		return false, nil
+	}
+	if s.dataPack == nil {
+		return false, fmt.Errorf("quick spell game-pack metadata is unavailable")
+	}
+	spellID, found, err := s.battle.SelectQuickSpell(
+		s.partyRoster[characterIndex].SpellSlots,
+		func(id uint8) (enginequickspell.Spell, bool) {
+			definition, ok := s.dataPack.FindCombatAISpell(id)
+			return enginequickspell.Spell{
+				ID: definition.SpellID, Priority: definition.Priority,
+				CastOn: definition.CastOn, MinRange: definition.MinRange,
+			}, ok
+		},
+		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
+			if spell.MinRange != 0 {
+				return false, fmt.Errorf(
+					"quick spell 0x%02X requires unresolved area-safety predicate %d",
+					spell.ID, spell.MinRange,
+				)
+			}
+			if spell.ID != MagicMissileSpellID {
+				// Preserve the original choice probability. Unsupported cast
+				// handoff is handled after selection instead of silently making
+				// the spell unsuitable and changing later PRNG traffic.
+				return len(s.livingBySide(combat.SideEnemy)) > 0, nil
+			}
+			return s.CombatCanCastMagicMissile(), nil
+		},
+	)
+	if err != nil {
+		if fighter.ControlMorale < 0x80 {
+			s.battle.SetPlayerCharactersManual()
+			s.syncPartyFromBattle()
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_metadata_missing",
+				"快速戰鬥缺少法術資料，已收回玩家角色控制：%s",
+			), err.Error())
+			return true, nil
+		}
+		return false, err
+	}
+	if !found {
+		return false, nil
+	}
+	if spellID != MagicMissileSpellID {
+		if fighter.ControlMorale < 0x80 {
+			s.battle.SetPlayerCharactersManual()
+			s.syncPartyFromBattle()
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_unsupported",
+				"快速戰鬥選到尚未接通的法術 0x%02X，已收回玩家角色控制。",
+			), spellID)
+			return true, nil
+		}
+		return false, fmt.Errorf("NPC quick spell 0x%02X is not implemented", spellID)
+	}
+	target, err := s.battle.SelectCombatTarget(fighter.ID, combat.SideEnemy)
+	if err != nil {
+		return false, err
+	}
+	enemies := s.livingBySide(combat.SideEnemy)
+	for index := range enemies {
+		if enemies[index].ID == target.ID {
+			s.combatTargetIndex = index
+			break
+		}
+	}
+	if err := s.BeginCombatCast(spellID); err != nil {
+		return false, err
+	}
+	return true, s.CombatCast(spellID)
 }
 
 func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint) error {

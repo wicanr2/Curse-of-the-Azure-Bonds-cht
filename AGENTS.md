@@ -344,12 +344,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`8699c30`（第 421 輪 PC-98 戰鬥命令狀態）；
-  第 422 輪 PC-98 全隊 QUICK 與可中斷 handoff milestone 會由本文件所在
+- CoAB 本輪基底：`3c5bccb`（第 423 輪 PC-98 全域法術 ID）；
+  第 424 輪 PC-98 ALT+M 與 Quick Magic Missile milestone 會由本文件所在
   commit 完成。
-- Engine dependency：`930d20c`（含作品中立 `combat/action`、
+- Engine dependency：`c50855f`（含作品中立 `combat/action`、
   `combat/initiative`、
-  `randomstream`，以及 game-pack
+  `combat/quickspell`、`randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
   signed low-byte decoder、繁中 ECL 戰鬥修正知識庫、`option_rules`、世界目的地
@@ -514,6 +514,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142
   已 supersede，camp／記憶／戰鬥分派均已遷移；完整 ALT+M Quick spell AI
   仍未完成。compact 後不得把手冊職業內排序重新當成 record ID。
+- 第 424 輪已接通 `ALT+M` gate、作品中立 `1d7`／每層三次 Quick selector、
+  CoAB JSON metadata 與全域 `0Fh` Magic Missile；Standing Stone→紅網正常
+  玩家路徑已實際消耗 slot。非零 MinRange helper 會檢查落點範圍、team、save
+  與 effect，不得簡化成距離。area spell、casting delay、Cure special 與其餘
+  Quick 法術仍 fail-closed；spec 424 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

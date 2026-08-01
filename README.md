@@ -1065,6 +1065,13 @@ Good 是 `07h`，Magic Missile 是 `0Fh`，不是兩個職業共用 `7` 再由�
 camp 顯示、法術記憶與戰鬥分派現已一致；原始 bytes、位址、推論等級及仍未
 開放的 ALT+M 邊界見 [`spec 423`](docs/spec/423-pc98-global-spell-id-namespace.md)。
 
+第 424 輪正式接通 `ALT+M`：Quick AI 依原版 `1d7` priority tiers、每層三次
+隨機已記憶 slot 搜尋，資料由 game-pack `combat_ai_spells` 提供。Magic Missile
+`0Fh` 已在正常 Standing Stone→Myth Drannor→紅網玩家路徑由 ALT+M＋ALT+Q
+施放、播放既有視覺並消耗 slot。非零 MinRange 的 area safety 與延遲施法仍
+明確 fail-closed，因此這是 Magic Missile 垂直切片，不是完整法術 AI；證據見
+[`spec 424`](docs/spec/424-pc98-alt-m-quick-magic-missile.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。
