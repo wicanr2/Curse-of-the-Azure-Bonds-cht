@@ -2725,6 +2725,147 @@ func TestRealInnerRuinsTyranthraxusAndNamelessFinalRitual(t *testing.T) {
 	}
 }
 
+func TestRealInnerRuinsUpperFloorAndTyranthraxusFinalBattle(t *testing.T) {
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL6.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := make(map[uint8][]byte)
+	for _, block := range blocks {
+		all[block.Entry.ID] = block.Data
+	}
+	newSession := func(terrain uint16) *BlockSession {
+		session, sessionErr := NewBlockSession(all, 0x43)
+		if sessionErr != nil {
+			t.Fatal(sessionErr)
+		}
+		for address, value := range map[uint16]uint16{
+			0xC04F: terrain, 0x4C00: 1, 0x4C01: 1, 0x4C02: 1, 0x4C03: 1,
+			0x4C59: 1, 0x4C5A: 1, 0x4C5B: 0xFF,
+		} {
+			session.SetMemoryValue(address, value)
+		}
+		return session
+	}
+	press := uint16(0)
+	context := PartyContext{Members: []PartyMemberContext{{Name: "HERO"}}}
+
+	t.Run("magic circle has one high priest and three priests of Bane", func(t *testing.T) {
+		session := newSession(0x90)
+		intro, runErr := session.RunEntrySeedWithPartyContext(1, 30000, nil, nil, 1, context)
+		if runErr != nil || !intro.WaitingForMenu ||
+			!strings.Contains(strings.Join(intro.Text, " "), "BLUE LIGHTNING ARCS AT YOU") ||
+			mustMemory(t, session, 0x4C0A) != 1 {
+			t.Fatalf("magic-circle intro=%+v err=%v", intro, runErr)
+		}
+		disrupted, runErr := session.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+		if runErr != nil || !disrupted.WaitingForMenu ||
+			!strings.Contains(strings.Join(disrupted.Text, " "), "DISRUPTED THE CEREMONY") {
+			t.Fatalf("magic-circle disrupted=%+v err=%v", disrupted, runErr)
+		}
+		attack, runErr := session.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+		if runErr != nil || !attack.WaitingForMenu ||
+			!strings.Contains(strings.Join(attack.Text, " "), "MINIONS OF TYRANTHRAXUS") {
+			t.Fatalf("magic-circle attack=%+v err=%v", attack, runErr)
+		}
+		fight, runErr := session.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+		want := []MonsterSpawn{
+			{MonsterID: 0x48, Count: 1, IconBlock: 0x48},
+			{MonsterID: 0x46, Count: 3, IconBlock: 0x46},
+		}
+		if runErr != nil || !fight.CombatRequested || !reflect.DeepEqual(fight.MonsterSpawns, want) {
+			t.Fatalf("magic-circle fight=%+v err=%v", fight, runErr)
+		}
+	})
+
+	for _, room := range []struct {
+		terrain uint16
+		text    string
+		flag    uint16
+	}{
+		{0x91, "FOOD STOREROOM", 0x4C0B},
+		{0x92, "MOULDERING BOOKS", 0},
+		{0x95, "OLD BIERS AND CASKETS", 0x4C0F},
+		{0x96, "STENCH OF PRESERVING FLUIDS", 0x4C10},
+	} {
+		t.Run(fmt.Sprintf("room-%02X", room.terrain), func(t *testing.T) {
+			session := newSession(room.terrain)
+			result, runErr := session.RunEntrySeedWithPartyContext(1, 30000, nil, nil, 1, context)
+			if runErr != nil || !result.WaitingForMenu ||
+				!strings.Contains(strings.Join(result.Text, " "), room.text) {
+				t.Fatalf("room %02X result=%+v err=%v", room.terrain, result, runErr)
+			}
+			if room.flag != 0 && mustMemory(t, session, room.flag) != 1 {
+				t.Fatalf("room %02X flag %04X=%04X", room.terrain, room.flag, mustMemory(t, session, room.flag))
+			}
+		})
+	}
+
+	t.Run("stairs connect first and second floor", func(t *testing.T) {
+		up := newSession(0x97)
+		prompt, runErr := up.RunEntrySeedWithPartyContext(1, 30000, nil, nil, 1, context)
+		if runErr != nil || !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "STAIRS LEAD UP HERE") {
+			t.Fatalf("stairs-up prompt=%+v err=%v", prompt, runErr)
+		}
+		moved, runErr := up.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+		if runErr != nil || !moved.Exited || mustMemory(t, up, 0xC04B) != 2 ||
+			mustMemory(t, up, 0xC04C) != 5 || mustMemory(t, up, 0xC04D) != 0 {
+			t.Fatalf("stairs-up moved=%+v err=%v", moved, runErr)
+		}
+		down := newSession(0x98)
+		prompt, runErr = down.RunEntrySeedWithPartyContext(1, 30000, nil, nil, 1, context)
+		if runErr != nil || !prompt.WaitingForMenu ||
+			!strings.Contains(strings.Join(prompt.Text, " "), "STAIRS LEAD DOWN HERE") {
+			t.Fatalf("stairs-down prompt=%+v err=%v", prompt, runErr)
+		}
+		moved, runErr = down.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+		if runErr != nil || !moved.Exited || mustMemory(t, down, 0xC04B) != 10 ||
+			mustMemory(t, down, 0xC04C) != 7 || mustMemory(t, down, 0xC04D) != 2 {
+			t.Fatalf("stairs-down moved=%+v err=%v", moved, runErr)
+		}
+	})
+
+	for _, allied := range []bool{false, true} {
+		t.Run(fmt.Sprintf("final-battle-allies-%v", allied), func(t *testing.T) {
+			session := newSession(0x9A)
+			if allied {
+				session.SetMemoryValue(0x4CBD, 1)
+				session.SetMemoryValue(0x4CC7, 1)
+			}
+			result, runErr := session.RunEntrySeedWithPartyContext(1, 30000, nil, nil, 1, context)
+			for _, fragment := range []string{
+				"POWER OF YOUR BONDS HAS RETURNED",
+				"GREAT FORCE OF WILL",
+				"THAT AMULET WILL LET YOU SCRATCH ME",
+			} {
+				if runErr != nil || !result.WaitingForMenu ||
+					!strings.Contains(strings.Join(result.Text, " "), fragment) {
+					t.Fatalf("final %q result=%+v err=%v", fragment, result, runErr)
+				}
+				result, runErr = session.ResumeInteractiveSelectionSeed(30000, &press, nil, 1, context)
+			}
+			want := []MonsterSpawn{
+				{MonsterID: 0x45, Count: 28, IconBlock: 0x45},
+				{MonsterID: 0x47, Count: 1, IconBlock: 0x47},
+				{MonsterID: 0x48, Count: 8, IconBlock: 0x48},
+			}
+			if runErr != nil || !result.CombatRequested || !reflect.DeepEqual(result.MonsterSpawns, want) {
+				t.Fatalf("final battle=%+v err=%v", result, runErr)
+			}
+			victory, runErr := session.ResumeInteractiveSelectionSeed(30000, nil, nil, 1, context)
+			if runErr != nil || !victory.ProgramExit || !reflect.DeepEqual(victory.ProgramIDs, []uint8{8}) {
+				t.Fatalf("final victory=%+v err=%v", victory, runErr)
+			}
+		})
+	}
+}
+
 func mustMemory(t *testing.T, session *BlockSession, address uint16) uint16 {
 	t.Helper()
 	value, ok := session.MemoryValue(address)

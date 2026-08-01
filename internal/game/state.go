@@ -1419,6 +1419,26 @@ func (s *State) Select(index int) error {
 				}
 				return nil
 			}
+			if len(result.MonsterSpawns) == 0 && s.session != nil &&
+				s.eclMenuReturnMode == ModeDungeon {
+				// A real dungeon script may deliberately reduce every encounter
+				// group count to zero before COMBAT (for example after allies
+				// remove the opposition). The DOS scheduler wins that empty
+				// battle immediately; resume the saved ECL PC instead of showing
+				// the unsupported-combat fallback. Synthetic/no-session combat
+				// remains fail-closed below.
+				s.combatReturnMode = ModeDungeon
+				continued, continueErr := s.continueECLAfterEngineBoundary()
+				if continueErr != nil {
+					return continueErr
+				}
+				if !continued {
+					s.Mode = ModeDungeon
+					s.eventReturnMode = ModeDungeon
+					s.Message = ""
+				}
+				return nil
+			}
 			s.OriginalEvent = "COMBAT"
 			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
 			s.eventReturnMode = ModeWilderness
@@ -4790,6 +4810,13 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	if s.session == nil {
 		return fmt.Errorf("dungeon lifecycle requires an ECL session")
 	}
+	// A new movement transaction must not inherit text or menu labels from the
+	// previous terrain boundary. Some original events deliberately emit an
+	// empty PRESS pause; leaving Message untouched would display stale combat
+	// or story text as though that blank pause repeated it.
+	s.Message = ""
+	s.Choices = nil
+	s.currentOriginalChoices = nil
 	s.syncDungeonECLRegisters()
 	if exitAttempt {
 		s.dungeonBoundaryAttempt = true

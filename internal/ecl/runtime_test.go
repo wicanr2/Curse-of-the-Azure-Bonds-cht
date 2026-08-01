@@ -324,6 +324,29 @@ func TestRunSubsetCarriesEncounterDescriptorsToCombat(t *testing.T) {
 	}
 }
 
+func TestBlockSessionCarriesEncounterDescriptorsAcrossEngineBoundary(t *testing.T) {
+	// LOAD MONSTER 0x39,8,0x39; PROGRAM 9; COMBAT. The external boundary
+	// separates setup from COMBAT just as a PRESS pause does in real ECL.
+	block := []byte{0, 0,
+		0x0B, 0, 0x39, 0, 8, 0, 0x39,
+		0x38, 0, 9,
+		0x24,
+	}
+	session, err := NewBlockSession(map[uint8][]byte{1: block}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	boundary, err := session.RunFrom(0, 10, nil)
+	if err != nil || !boundary.ProgramExit || len(boundary.MonsterSpawns) != 1 {
+		t.Fatalf("setup boundary=%+v err=%v", boundary, err)
+	}
+	fight, err := session.runFromSeed(0, 10, nil, 1)
+	if err != nil || !fight.CombatRequested || len(fight.MonsterSpawns) != 1 ||
+		fight.MonsterSpawns[0].MonsterID != 0x39 || fight.MonsterSpawns[0].Count != 8 {
+		t.Fatalf("resumed fight=%+v err=%v", fight, err)
+	}
+}
+
 func TestRunSubsetRecordsProgramAndContinuesBoundedTrace(t *testing.T) {
 	// PROGRAM 9; the external routine is an explicit VM boundary.
 	result, err := RunSubset([]byte{0, 0, 0x38, 0, 9, 0x00}, 0, 10)

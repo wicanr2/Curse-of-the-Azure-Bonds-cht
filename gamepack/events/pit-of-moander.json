@@ -227,6 +227,19 @@
       ,"myth-drannor.inner.ritual.nameless-falls": "Tyranthraxus strikes Nameless down with one blow. With his last breath, Nameless mouths the apparently meaningless phrase written on the parchment."
       ,"myth-drannor.inner.ritual.bonds-fade": "The bonds' control fades, but Tyranthraxus's sigil remains. He warns that only he can remove it and that the party will soon be his again."
       ,"myth-drannor.inner.ritual.recover": "As you recover the artifacts, Tyranthraxus looks afraid. He orders his pets to kill you, then rushes away."
+      ,"myth-drannor.inner.magic-circle": "A high priest is summoning Bane's power here. Blue lightning strikes as you enter the magic circle."
+      ,"myth-drannor.inner.magic-circle-disrupted": "You have disrupted the ceremony."
+      ,"myth-drannor.inner.food-storeroom": "Rats skitter beneath the sacks as you open this food storeroom."
+      ,"myth-drannor.inner.library": "Shelves of mouldering books line this room."
+      ,"myth-drannor.inner.biers": "The room contains old biers and caskets."
+      ,"myth-drannor.inner.preservation-room": "The stench of preserving fluid is strong. Wrapped forms on the northern tables seem to shift and rise."
+      ,"myth-drannor.inner.preservation-illusion": "You soon realize the light is playing tricks on your eyes."
+      ,"myth-drannor.inner.stairs-up": "Stairs lead upward here. Do you want to go up?"
+      ,"myth-drannor.inner.stairs-down": "Stairs lead downward here. Do you want to descend?"
+      ,"myth-drannor.inner.final-compulsion": "“The power of your bonds has returned. Grovel at my feet this instant!” Your bodies begin to bow."
+      ,"myth-drannor.inner.final-defiance": "With a tremendous effort of will, you overcome the compulsion. Tyranthraxus roars, “So be it! Here is your destiny—ground to dust beneath my feet!”"
+      ,"myth-drannor.inner.final-amulet": "He scowls. “That amulet will let you scratch me, but it is far from enough to defeat me. For my greater glory, let your lives be forfeit!”"
+      ,"myth-drannor.inner.bonds-returning": "The bonds writhe beneath your skin. Their power is slowly returning."
       ,"myth-drannor.outer.rakshasa-residence": "A rakshasa resides here in splendor."
       ,"myth-drannor.outer.rakshasa-threat": "The rakshasa stands as several more appear. “To disturb one of my rank invites death. Prepare for yours.”"
       ,"myth-drannor.outer.rakshasa-parlay": "The rakshasa smiles. “Your boldness is refreshing.” He tells his story, which you record as Journal Entry 57."
@@ -457,6 +470,19 @@
       ,"myth-drannor.inner.ritual.nameless-falls": "提朗瑟克斯一擊便將無名者打倒。無名者用盡最後一口氣，無聲念出羊皮紙上看似毫無意義的密語。"
       ,"myth-drannor.inner.ritual.bonds-fade": "你們感覺枷印的控制力消退了，但提朗瑟克斯的印記依然沒有消失。他警告只有自己能除去枷印，而且你們很快仍會成為他的奴僕。"
       ,"myth-drannor.inner.ritual.recover": "你們取回三件神器時，提朗瑟克斯露出懼色。他命令爪牙殺死你們，隨即倉皇離去。"
+      ,"myth-drannor.inner.magic-circle": "一名高階祭司正在這裡召喚班恩的神力。你們踏入魔法陣時，藍色閃電立刻迎面劈來。"
+      ,"myth-drannor.inner.magic-circle-disrupted": "值得慶幸的是，你們已打斷了這場儀式。"
+      ,"myth-drannor.inner.food-storeroom": "你們推開食品儲藏室的門，老鼠立刻在一袋袋糧食下四處竄逃。"
+      ,"myth-drannor.inner.library": "這間房的四壁排滿書架，上面的書籍早已受潮腐朽。"
+      ,"myth-drannor.inner.biers": "房內擺著陳舊的停屍架與棺木。"
+      ,"myth-drannor.inner.preservation-room": "刺鼻的防腐藥水味瀰漫房間。北側幾張桌上躺著裹布的人形，彷彿在你們進門時開始扭動起身。"
+      ,"myth-drannor.inner.preservation-illusion": "但你們很快便發現，那只是光影造成的錯覺。"
+      ,"myth-drannor.inner.stairs-up": "這裡有一道向上的階梯。要上樓嗎？"
+      ,"myth-drannor.inner.stairs-down": "這裡有一道向下的階梯。要下樓嗎？"
+      ,"myth-drannor.inner.final-compulsion": "「枷印的力量已經恢復。立刻跪伏在我腳下！」你們的身體不由自主地彎了下去。"
+      ,"myth-drannor.inner.final-defiance": "你們以驚人的意志力掙脫強制力。提朗瑟克斯怒吼：「那就受死吧！你們的命運，就是在我腳下化為齏粉！」"
+      ,"myth-drannor.inner.final-amulet": "他沉下臉來。「那枚護符或許能讓你們傷我一點皮毛，但遠不足以擊敗我。為了我更偉大的榮耀，獻上你們的性命吧！」"
+      ,"myth-drannor.inner.bonds-returning": "枷印正在你們皮膚下蠕動；它們的力量正逐漸恢復。"
       ,"myth-drannor.outer.rakshasa-residence": "一名羅剎妖在此過著奢華生活。"
       ,"myth-drannor.outer.rakshasa-threat": "那名羅剎妖站起身，另有數名同族隨之現身。「膽敢打擾我這等地位者，便是在自尋死路。準備受死吧。」"
       ,"myth-drannor.outer.rakshasa-parlay": "羅剎妖露出微笑。「你們的膽識令人耳目一新。」接著，他講述自己的故事；你們將內容記入手札第 57 條。"
@@ -1614,6 +1640,71 @@
       "id": "myth-drannor.inner.ritual.recover",
       "all_contains": ["PARTY RETRIEVES THE ARTIFACTS", "TYRANTHRAXUS LOOKS AFRAID", "KILL THEM MY PETS"],
       "message_id": "myth-drannor.inner.ritual.recover"
+    },
+    {
+      "id": "myth-drannor.inner.magic-circle",
+      "all_contains": ["A HIGH PRIEST IS HERE", "SUMMONING UP THE POWER OF BANE", "BLUE LIGHTNING ARCS AT YOU"],
+      "message_id": "myth-drannor.inner.magic-circle"
+    },
+    {
+      "id": "myth-drannor.inner.magic-circle-disrupted",
+      "all_contains": ["ON THE POSITIVE SIDE", "YOU HAVE DISRUPTED THE CEREMONY"],
+      "message_id": "myth-drannor.inner.magic-circle-disrupted"
+    },
+    {
+      "id": "myth-drannor.inner.food-storeroom",
+      "all_contains": ["RATS SKITTER UNDER BAGS", "FOOD STOREROOM"],
+      "message_id": "myth-drannor.inner.food-storeroom"
+    },
+    {
+      "id": "myth-drannor.inner.library",
+      "all_contains": ["ROOM IS LINED WITH SHELVES", "MOULDERING BOOKS"],
+      "message_id": "myth-drannor.inner.library"
+    },
+    {
+      "id": "myth-drannor.inner.biers",
+      "all_contains": ["ROOM CONTAINS OLD BIERS AND CASKETS"],
+      "message_id": "myth-drannor.inner.biers"
+    },
+    {
+      "id": "myth-drannor.inner.preservation-room",
+      "all_contains": ["STENCH OF PRESERVING FLUIDS", "TABLES WITH WRAPPED FORMS", "SHIFT AND RISE"],
+      "message_id": "myth-drannor.inner.preservation-room"
+    },
+    {
+      "id": "myth-drannor.inner.preservation-illusion",
+      "all_contains": ["LIGHT IS PLAYING TRICKS ON YOUR EYES"],
+      "message_id": "myth-drannor.inner.preservation-illusion"
+    },
+    {
+      "id": "myth-drannor.inner.stairs-up",
+      "all_contains": ["STAIRS LEAD UP HERE", "DO YOU WANT TO GO UP"],
+      "message_id": "myth-drannor.inner.stairs-up"
+    },
+    {
+      "id": "myth-drannor.inner.stairs-down",
+      "all_contains": ["STAIRS LEAD DOWN HERE", "DO YOU WANT TO DESCEND"],
+      "message_id": "myth-drannor.inner.stairs-down"
+    },
+    {
+      "id": "myth-drannor.inner.final-compulsion",
+      "all_contains": ["POWER OF YOUR BONDS HAS RETURNED", "GROVEL AT MY FEET", "BODY BEGINS TO BOW DOWN"],
+      "message_id": "myth-drannor.inner.final-compulsion"
+    },
+    {
+      "id": "myth-drannor.inner.final-defiance",
+      "all_contains": ["GREAT FORCE OF WILL", "OVERCOME THE COMPULSION", "GROUND TO DUST BENEATH MY FEET"],
+      "message_id": "myth-drannor.inner.final-defiance"
+    },
+    {
+      "id": "myth-drannor.inner.final-amulet",
+      "all_contains": ["THAT AMULET WILL LET YOU SCRATCH ME", "FAR FROM ENOUGH TO DEFEAT ME", "LET YOUR LIVES BE FORFEIT"],
+      "message_id": "myth-drannor.inner.final-amulet"
+    },
+    {
+      "id": "myth-drannor.inner.bonds-returning",
+      "all_contains": ["BONDS ARE WIGGLING BENEATH THE SKIN", "POWER IS SLOWLY RETURNING"],
+      "message_id": "myth-drannor.inner.bonds-returning"
     },
     {
       "id": "myth-drannor.outer.rakshasa-residence",

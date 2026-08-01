@@ -281,13 +281,21 @@ commit 內保存不可能自我引用的 hash。
   2 HIGH PRIEST、6 HELL HOUND、6 MARGOYLE；勝利後 `4C00=1`，相鄰
   `84h／85h` 靜默。Standing Stone 起始長路徑隨後完成西翼活動雕像與
   犬舍兩戰，`4C02／4C01=1`，第 405 輪的 player-path 缺口已關閉。
-  提朗瑟克斯真正最終戰、結局與其餘內部區域仍未完成。
+  當輪尚未完成真正終戰與二樓區域。
+- 第 408 輪已由犬舍沿合法 GEO 路徑走完一樓、terrain `97h` 樓梯與二樓，
+  抵達 `(6,1)` terrain `9Ah`。終戰 exact 為 MARGOYLE `45h`×28、
+  TYRANTHRAXUS `47h`×1、HIGH PRIEST `48h`×8；正式 scheduler 戰勝後，
+  同一 ECL session 立即抵達 `PROGRAM 8` 勝利存檔選單。盟友造成的真實
+  零敵人 minion COMBAT、跨 boundary monster setup、二樓房間與繁中 stable
+  IDs 均有回歸。這完成 Standing Stone 累積狀態的迷斯卓諾章節路徑，仍不
+  等於由新建隊伍自開場至結局的單一完整通關，也不代表終戰特殊能力與
+  DOS 動態演出已完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
   提朗瑟克斯，並要求隊伍前往 Myth Drannor。第 384／385 輪已接通
-  ECL6／GEO6 正常入口與第一個精靈幽魂事件；其餘 Burial Glen、迷斯卓諾
-  遺跡、最終神殿與結局仍未完成。
+  ECL6／GEO6 正常入口與第一個精靈幽魂事件；其後 Burial Glen 至終戰已由
+  第 385–408 輪逐段接通，但全遊戲開場至結局的單一通關仍未完成。
 
 ## 尚未完成
 

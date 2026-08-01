@@ -299,9 +299,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`a4b012a`（第 406 輪 DOS GUI 繪製契約）；第 407 輪
-  最終儀式、手札 48 與西翼正常玩家路徑 milestone 會由本文件所在 commit
-  完成。
+- CoAB 本輪基底：`0cc97a8`（第 407 輪最終儀式、手札 48 與西翼正常玩家
+  路徑）；第 408 輪二樓、提朗瑟克斯終戰與 `PROGRAM 8` milestone 會由
+  本文件所在 commit 完成。
 - Engine dependency：`f9fbcaf`（含作品中立 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
   `combat_modifiers`、
@@ -472,8 +472,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   HIGH PRIEST `48h`×2、HELL HOUND `44h`×6、MARGOYLE `45h`×6；戰後
   `4C00=1`。同一路徑再穿越靜默 `84h／85h`，完成活動雕像與犬舍兩戰，
   `4C02／4C01=1`。`4CBD=0／1` 的 raw 儀式輸出相同，但這不能擴大成整章
-  無效果。READY spec 407 是權威；下一步追蹤 terrain `86h`、東北角、
-  提朗瑟克斯真正最終戰與結局。
+  無效果。READY spec 407 是權威。
+- 第 408 輪證明 terrain `86h` 不是終戰；正常長路徑由犬舍沿合法 GEO 經
+  terrain `97h` 上二樓，抵達 `(6,1)` terrain `9Ah`。終戰 exact 為
+  MARGOYLE ×28、TYRANTHRAXUS ×1、HIGH PRIEST ×8；正式 scheduler 勝利後
+  同一 ECL continuation 呼叫 `PROGRAM 8`。真實零敵人 minion COMBAT 與跨
+  boundary monster setup 已修正並回歸。READY spec 408 是權威；下一步應
+  建立不改寫結果的終戰動態 capture，補齊提朗瑟克斯／祭司／石像鬼能力，
+  並繼續關閉全新隊伍由開場至結局的單一通關缺口。
 - 使用者指定的角色資訊 DOS 實機圖已保存於
   `docs/reference/user-provided/dos-character-info-layout-20260730.png`。
   它是原版 layout oracle，不是 remake 截圖；左上 HEAD／BODY 人物舞台、
