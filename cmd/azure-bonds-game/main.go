@@ -896,12 +896,12 @@ func (a *app) syncLoadPiecesRequest() {
 		// Asset diagnostics belong to the renderer label. ECL event text is
 		// authoritative story state and must survive a missing optional wall
 		// selector (the wizard-tower PICTURE is still independently usable).
-		a.pieceLabel = "LOAD PIECES 未載入：" + err.Error()
+		a.pieceLabel = a.state.PreviewPiecesFailedText(err)
 		return
 	}
 	a.pieceSets = sets
 	a.prepareWallPreview()
-	a.pieceLabel = fmt.Sprintf("LOAD PIECES [%d,%d,%d]：WALLDEF／8X8D 已載入", selectors[0], selectors[1], selectors[2])
+	a.pieceLabel = a.state.PreviewPiecesLoadedText(selectors[0], selectors[1], selectors[2])
 }
 
 func (a *app) syncGeoMapRequest() {
@@ -911,7 +911,7 @@ func (a *app) syncGeoMapRequest() {
 	}
 	grid, found := a.geoCatalog.Lookup(geo.MapRef{Set: set, BlockID: block})
 	if !found {
-		a.state.Message = fmt.Sprintf("找不到 GEO%d block 0x%02X", set, block)
+		a.state.Message = a.state.PreviewGeoMapMissingText(set, block)
 		return
 	}
 	a.geoGrid = &grid
@@ -1307,7 +1307,7 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 	drawPanelFrame(screen, 8, 448, 624, 28)
 	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandTitle), a.face, 24, 296, cyan)
 	text.Draw(screen, a.state.OverlandCurrentLocationText(currentName), a.face, 24, 328, white)
-	timeLabel := strings.Split(a.state.GameTimeText(), "　")[0]
+	timeLabel := a.state.OverlandDateText()
 	text.Draw(screen, timeLabel, a.compactFace, 468, 294, cyan)
 	for index, choice := range a.state.Choices {
 		prefix := "  "
@@ -1554,7 +1554,7 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 	drawPanelFrame(screen, 8, 360, 624, 88)
 	drawPanelFrame(screen, 8, 448, 624, 28)
 	if a.geoGrid == nil {
-		text.Draw(screen, "尚未載入 GEO 區域資料", a.face, 24, 48, white)
+		text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaGeoMissing), a.face, 24, 48, white)
 		return
 	}
 	x, y, direction := a.state.DungeonGeometryView()
@@ -1563,7 +1563,7 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	view, err := enginearea.BuildOriginal(*a.geoGrid, x, y, int(direction))
 	if err != nil || len(a.areaMapSymbols) < 20 {
-		text.Draw(screen, "AREA 原始符號資料無法使用", a.compactFace, 24, 48, white)
+		text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaSymbolsMissing), a.compactFace, 24, 48, white)
 		return
 	}
 	const tileSize, originX, originY = 16, 32, 32
@@ -1581,19 +1581,19 @@ func (a *app) drawAreaMap(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	drawSymbol(view.PartyItem, view.PartyScreenX, view.PartyScreenY)
 
-	text.Draw(screen, "區域地圖", a.compactFace, 376, 38, cyan)
-	text.Draw(screen, fmt.Sprintf("GEO%d／%02X　8X8D／CA", a.geoSet, a.geoBlock), a.compactFace, 376, 66, white)
-	text.Draw(screen, fmt.Sprintf("位置 (%d,%d)", x, y), a.compactFace, 376, 102, white)
-	text.Draw(screen, "方向 "+dungeonDirectionName(direction), a.compactFace, 376, 130, white)
-	text.Draw(screen, "原版 11×11 AREA 視窗", a.compactFace, 376, 182, cyan)
-	text.Draw(screen, "方向標記：隊伍位置", a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaTitle), a.compactFace, 376, 38, cyan)
+	text.Draw(screen, a.state.PreviewAreaSourceText(a.geoSet, a.geoBlock), a.compactFace, 376, 66, white)
+	text.Draw(screen, a.state.PreviewAreaPositionText(x, y), a.compactFace, 376, 102, white)
+	text.Draw(screen, a.state.PreviewAreaDirectionText(dungeonDirectionName(direction)), a.compactFace, 376, 130, white)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaOriginalViewport), a.compactFace, 376, 182, cyan)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaPartyMarker), a.compactFace, 376, 210, color.RGBA{255, 255, 82, 255})
 	text.Draw(screen, a.state.LocationName, a.compactFace, 24, 390, cyan)
-	text.Draw(screen, "AREA 顯示目前區域的牆面與隊伍方向。", a.compactFace, 24, 422, white)
-	text.Draw(screen, "A／Esc：返回探索", a.compactFace, 24, 468, cyan)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaDescription), a.compactFace, 24, 422, white)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelAreaReturn), a.compactFace, 24, 468, cyan)
 }
 
 func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "原始圖塊預覽（T／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelTileTitle), a.face, 24, 28, cyan)
 	for index, tile := range a.tileImages {
 		column := index % 8
 		row := index / 8
@@ -1606,9 +1606,9 @@ func (a *app) drawTilePreview(screen *ebiten.Image, white, cyan color.Color) {
 }
 
 func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, a.geoLabel+" 原始幾何預覽（G／Esc：返回）", a.face, 24, 28, cyan)
+	text.Draw(screen, a.state.PreviewGeoTitleText(a.geoLabel), a.face, 24, 28, cyan)
 	if a.geoGrid == nil {
-		text.Draw(screen, "沒有載入 GEO geometry", a.face, 24, 70, white)
+		text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelGeoMissing), a.face, 24, 70, white)
 		return
 	}
 	const cellSize = 20
@@ -1642,7 +1642,7 @@ func (a *app) drawGeoPreview(screen *ebiten.Image, white, cyan color.Color) {
 		}
 	}
 	ebitenutil.DrawRect(screen, float64(originX+a.geoX*cellSize+5), float64(originY+a.geoY*cellSize+5), cellSize-10, cellSize-10, color.RGBA{255, 255, 82, 255})
-	text.Draw(screen, "黃點：GEO wall 可通行游標；方向鍵移動　（不是完整 tile collision）", a.face, 24, 382, white)
+	text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelGeoCursorHelp), a.face, 24, 382, white)
 }
 
 func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) {
@@ -1651,10 +1651,10 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 		a.drawDungeonGame(screen, white, cyan)
 		return
 	}
-	title := "地城結構預覽"
+	title := a.state.PreviewLabelText(game.PreviewLabelDungeonTitle)
 	text.Draw(screen, title, a.face, 24, 30, cyan)
 	if a.dungeonFloor == nil {
-		text.Draw(screen, "沒有載入 dungeon floor", a.face, 24, 70, white)
+		text.Draw(screen, a.state.PreviewLabelText(game.PreviewLabelDungeonFloorMissing), a.face, 24, 70, white)
 		return
 	}
 	ebitenutil.DrawRect(screen, 350, 64, 290, 145, dungeonSkyColor(a.state.Area, a.state.DungeonWallRoof))
@@ -1688,33 +1688,22 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			}
 		}
 	}
-	text.Draw(screen, fmt.Sprintf("位置：(%d,%d)　方向：%s　地圖：GEO%d/%02X",
-		a.dungeonX, a.dungeonY, dungeonDirectionName(geometryDirection), a.geoSet, a.geoBlock), a.face, 24, 242, white)
-	text.Draw(screen, fmt.Sprintf("牆面：%02X　地形／屋頂：%02X", a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 278, white)
+	text.Draw(screen, a.state.PreviewDungeonStatusText(a.dungeonX, a.dungeonY, dungeonDirectionName(geometryDirection), a.geoSet, a.geoBlock), a.face, 24, 242, white)
+	text.Draw(screen, a.state.PreviewDungeonWallText(a.state.DungeonWallType, a.state.DungeonWallRoof), a.face, 24, 278, white)
 	if a.state.DungeonWallType != 0 && doorFlagsOK {
-		text.Draw(screen, fmt.Sprintf("門狀態：%d", doorFlags), a.face, 360, 278, white)
+		text.Draw(screen, a.state.PreviewDungeonDoorStatusText(doorFlags), a.face, 360, 278, white)
 	}
 	if a.state.Message != "" {
 		drawWrappedText(screen, a.state.Message, a.face, 24, 342, 22, 30, 2, white)
 	}
 	if a.dungeonDoorMenu && doorFlagsOK {
 		options := a.state.DungeonDoorMenuOptions(doorFlags)
-		items := "B Bash　Esc Exit"
-		if options.Pick {
-			items = "B Bash　P Pick　"
-			if options.Knock {
-				items += "K Knock　"
-			}
-			items += "Esc Exit"
-		} else if options.Knock {
-			items = "B Bash　K Knock　Esc Exit"
-		}
-		text.Draw(screen, "上鎖的門："+items, a.compactFace, 24, 404, color.RGBA{255, 220, 110, 255})
+		text.Draw(screen, a.state.PreviewDungeonDoorHelpText(options.Pick, options.Knock), a.compactFace, 24, 404, color.RGBA{255, 220, 110, 255})
 	}
 	if a.pieceLabel != "" {
 		label := a.pieceLabel
 		if production {
-			label = fmt.Sprintf("地城牆面素材已載入：%d／%d／%d", a.state.LoadPieces[0], a.state.LoadPieces[1], a.state.LoadPieces[2])
+			label = a.state.PreviewDungeonPiecesText(a.state.LoadPieces[0], a.state.LoadPieces[1], a.state.LoadPieces[2])
 		}
 		text.Draw(screen, label, a.face, 24, 314, cyan)
 	}
@@ -1727,7 +1716,7 @@ func (a *app) drawDungeonPreview(screen *ebiten.Image, white, cyan color.Color) 
 			screen.DrawImage(stamp.image, op)
 		}
 	}
-	controls := "方向鍵：移動　Q／R：轉向　P：撬鎖　K：敲擊術　B：撞門　D／Esc：返回"
+	controls := a.state.PreviewLabelText(game.PreviewLabelDungeonControls)
 	drawWrappedText(screen, controls, a.compactFace, 24, 434, 36, 20, 2, cyan)
 }
 
