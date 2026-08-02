@@ -223,10 +223,7 @@ func (b *Battle) applyLineSpellDamage(target Fighter, damage int, damageFlags ui
 	if protected {
 		applied = 0
 	}
-	if applied > target.HitPoints {
-		applied = target.HitPoints
-	}
-	target.HitPoints -= applied
+	applied = b.applyPositiveDamage(&target, applied)
 	b.fighters[target.ID] = target
 	return AreaSpellImpact{
 		TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,

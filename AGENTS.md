@@ -540,11 +540,18 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   保留先掃到者，自身低於半血可覆蓋，active HP `>=8` 才讓合法倒地者優先。
   raw status `DEAD=6／STONED=7／GONE=8` 均被 set predicate 排除；remake
   `HealthStatus` ordinal 不同，compact 後不可直接用 raw 數字比較。spec 427
-  是權威；同格多 corpse ordering、完整 raw status round-trip 與施法中斷仍未完成。
+  是權威；同格多 corpse ordering、完整 raw status round-trip 與非正傷害施法
+  中斷仍未完成。正傷害中斷由 429 接續。
 - 第 428 輪已讓手動 CAST 與 Quick 共用 PC-98 `CASTCOMBATSPELL` 延遲交易。
   非零 delay 的單體法術保存 stable target ID，區域／直線法術保存 32×16
   格點；resume 後才結算並消耗 slot。這是 typed remake transaction，不得
-  誤寫成原作 Action raw layout 已全部證明。施法中斷與原版 slot 時點仍未完成。
+  誤寫成原作 Action raw layout 已全部證明。正傷害中斷與 slot 時點由 429
+  接續；其他中斷仍未完成。
+- 第 429 輪已由 overlay 23 `PUTDAMAGE` 與 overlay 24 memorized-byte consumer
+  證明：最終 applied damage `>0` 會中斷 pending spell、移除第一個 matching
+  slot 並保留 Action delay；零傷害不觸發。remake 必須在所有傷害來源共用
+  positive-damage boundary，不能只修近戰。Cloudkill 直接死亡與非傷害狀態
+  中斷仍未證明，不得自行套用同規則；READY spec 429 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

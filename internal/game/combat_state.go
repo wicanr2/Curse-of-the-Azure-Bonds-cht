@@ -2365,6 +2365,13 @@ func (s *State) advanceCombatToParty() error {
 	// Every path that consumes a turn advances combatTurnIndex before coming
 	// back here. Synchronize all completed Action.delay values in one place so
 	// visibility effects do not depend on which UI/AI action ended the turn.
+	if interrupted := s.consumeCombatSpellInterruptions(); interrupted != "" {
+		if s.combatMessage == "" {
+			s.combatMessage = interrupted
+		} else {
+			s.combatMessage += "\n" + interrupted
+		}
+	}
 	for s.battle != nil && s.battle.Status() == combat.StatusActive {
 		for index := 0; index < s.combatTurnIndex && index < len(s.combatTurns); index++ {
 			if s.combatDelayedTurns[index] {
@@ -2838,6 +2845,7 @@ func (s *State) finishCombat() error {
 	if s.battle == nil {
 		return fmt.Errorf("combat is not initialized")
 	}
+	interrupted := s.consumeCombatSpellInterruptions()
 	s.combatVisual = nil
 	s.combatVisualAdvanceTurn = false
 	s.CancelCombatCast()
@@ -2852,6 +2860,9 @@ func (s *State) finishCombat() error {
 	}
 	s.OriginalEvent = "COMBAT"
 	s.combatMessage = combatResultMessage(s.catalog, s.battle.Status())
+	if interrupted != "" {
+		s.combatMessage = interrupted + "\n" + s.combatMessage
+	}
 	s.Message = s.combatMessage
 	if s.battle.Status() == combat.StatusPartyWon {
 		if len(s.pendingTreasure) > 0 {
@@ -2871,6 +2882,44 @@ func (s *State) finishCombat() error {
 		}
 	}
 	return nil
+}
+
+// consumeCombatSpellInterruptions projects the original positive-damage
+// PUTDAMAGE transaction into the title-owned memorized spell roster. Battle
+// has already atomically cleared the pending action and target.
+func (s *State) consumeCombatSpellInterruptions() string {
+	if s.battle == nil {
+		return ""
+	}
+	events := s.battle.TakeSpellInterruptions()
+	if len(events) == 0 {
+		return ""
+	}
+	messages := make([]string, 0, len(events))
+	for _, event := range events {
+		name := event.FighterID
+		for index := range s.partyRoster {
+			if s.partyRoster[index].ID != event.FighterID {
+				continue
+			}
+			name = s.partyRoster[index].Name
+			for slot, spellID := range s.partyRoster[index].SpellSlots {
+				if spellID != event.SpellID {
+					continue
+				}
+				s.partyRoster[index].SpellSlots = append(
+					s.partyRoster[index].SpellSlots[:slot],
+					s.partyRoster[index].SpellSlots[slot+1:]...,
+				)
+				break
+			}
+			break
+		}
+		messages = append(messages, fmt.Sprintf(s.catalog.Text(
+			"combat_spell_interrupted", "%s 受傷，已無法繼續吟唱法術。",
+		), name))
+	}
+	return strings.Join(messages, "\n")
 }
 
 func (s *State) removeTemporaryCombatAllies() {

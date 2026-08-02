@@ -3029,4 +3029,18 @@ GONE=8`；overlay 13 `+1E10h` set bytes `C0 01` 與 membership branch exact
 combatant ID 或 32×16 格點，resume 後才執行既有 spell effect。手動 Bless
 證明 pending 階段不先耗 slot／套效果；Fireball 證明 delay=1 即使同一呼叫
 重新入列，仍使用玩家選定 `(7,6)`。原始 binary／IDA database 全程未修改，
-typed target 欄位只屬 remake projection；施法中斷與原版 slot 時點仍未完成。
+typed target 欄位只屬 remake projection；正傷害中斷與 slot 時點由第 429 輪
+接續，其他中斷仍未完成。
+
+2026-08-02 第四百二十九輪以合法 IDA Pro 9.4 在 Docker 對唯讀 overlay
+23／24 產生附加 ledger。`PUTDAMAGE 013E:1FFDh` 只在最終 `DS:A02Eh>0`
+且 combat mode 時檢查 Action spell；CP932 short string `1F76h` 是「已無法
+繼續吟唱法術」。typed `014A:0070h` 落到 overlay24 entry16 `1739h`，exact
+掃描 `Player+1Eh..71h` 並清第一個 matching memorized byte，之後
+`PUTDAMAGE 21FCh` 清 pending spell。
+
+Engine action 新增 title-neutral interruption clear；CoAB Battle 所有已接通
+正傷害來源共用 event queue，State 依 stable fighter／spell ID 修改正式 roster
+並從 locale `combat_spell_interrupted` 顯示繁中。正傷害／零傷害、第一個重複
+slot、既有手動 Bless／Fireball regressions 是 focused gate。Cloudkill 直接
+死亡、非傷害狀態、monster raw writeback 與原版動態時間仍未完成。

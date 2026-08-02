@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -2806,6 +2807,48 @@ func TestManualCombatBlessUsesOriginalCastingDelayHandoff(t *testing.T) {
 	}
 	if !found {
 		t.Fatal("no deterministic initiative ordering exposed pending manual Bless")
+	}
+}
+
+func TestCombatPositiveDamageConsumesInterruptedPendingSpellByStableID(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1,
+		SpellSlots: []uint8{BlessSpellID, CurseSpellID, BlessSpellID},
+	}}
+	heroes := []combat.Fighter{{
+		ID: "cleric", Name: "牧師", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 8,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "attacker", Name: "敵人", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, AttackBonus: 20, InitiativeBonus: 6,
+	}}
+	if err := state.StartCombat(heroes, enemies, 429); err != nil {
+		t.Fatal(err)
+	}
+	turn, ok := state.combatPartyTurn()
+	if !ok || turn.ID != "cleric" {
+		t.Fatalf("party turn=%+v ok=%v", turn, ok)
+	}
+	if err := state.battle.BeginPendingSpellAction("cleric", BlessSpellID, 3); err != nil {
+		t.Fatal(err)
+	}
+	if result, err := state.battle.ResolveAttack("attacker", "cleric", 20, 1); err != nil || result.Damage != 1 {
+		t.Fatalf("attack=%+v err=%v", result, err)
+	}
+	message := state.consumeCombatSpellInterruptions()
+	wantMessage := fmt.Sprintf(state.catalog.Text("combat_spell_interrupted", ""), "牧師")
+	if message != wantMessage {
+		t.Fatalf("message=%q want=%q", message, wantMessage)
+	}
+	wantSlots := []uint8{CurseSpellID, BlessSpellID}
+	if !slices.Equal(state.partyRoster[0].SpellSlots, wantSlots) {
+		t.Fatalf("slots=%v want=%v", state.partyRoster[0].SpellSlots, wantSlots)
+	}
+	caster, _ := state.fighter("cleric")
+	if caster.CombatAction.SpellID != 0 || caster.CombatAction.Delay != 5 {
+		t.Fatalf("caster action=%+v", caster.CombatAction)
 	}
 }
 

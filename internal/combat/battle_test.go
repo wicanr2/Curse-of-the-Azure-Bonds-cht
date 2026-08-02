@@ -788,6 +788,57 @@ func TestPendingPointSpellActionPreservesCoordinateAcrossSchedulerHandoff(t *tes
 	}
 }
 
+func TestPositiveDamageInterruptsPendingSpellButZeroDamageDoesNot(t *testing.T) {
+	newPendingBattle := func(t *testing.T) *Battle {
+		t.Helper()
+		battle, err := NewBattle([]Fighter{
+			{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 8},
+			{ID: "attacker", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, AttackBonus: 20, InitiativeBonus: 6},
+		}, 429)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := battle.BeginScheduledRound(); err != nil {
+			t.Fatal(err)
+		}
+		if turn, ok, err := battle.NextScheduledTurn(); err != nil || !ok || turn.FighterID != "caster" {
+			t.Fatalf("first=%+v ok=%v err=%v", turn, ok, err)
+		}
+		if err := battle.BeginPendingTargetedSpellAction("caster", 1, 3, ""); err != nil {
+			t.Fatal(err)
+		}
+		return battle
+	}
+
+	t.Run("positive damage", func(t *testing.T) {
+		battle := newPendingBattle(t)
+		result, err := battle.ResolveAttack("attacker", "caster", 20, 1)
+		if err != nil || result.Damage != 1 {
+			t.Fatalf("result=%+v err=%v", result, err)
+		}
+		caster, _ := battle.Fighter("caster")
+		if caster.CombatAction.SpellID != 0 || caster.CombatAction.Delay != 5 {
+			t.Fatalf("caster action=%+v", caster.CombatAction)
+		}
+		events := battle.TakeSpellInterruptions()
+		if len(events) != 1 || events[0] != (SpellInterruption{FighterID: "caster", SpellID: 1}) {
+			t.Fatalf("interruptions=%+v", events)
+		}
+	})
+
+	t.Run("zero damage", func(t *testing.T) {
+		battle := newPendingBattle(t)
+		result, err := battle.ResolveAttack("attacker", "caster", 20, 0)
+		if err != nil || !result.Hit || result.Damage != 0 {
+			t.Fatalf("result=%+v err=%v", result, err)
+		}
+		caster, _ := battle.Fighter("caster")
+		if caster.CombatAction.SpellID != 1 || len(battle.TakeSpellInterruptions()) != 0 {
+			t.Fatalf("caster action=%+v", caster.CombatAction)
+		}
+	})
+}
+
 func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,
