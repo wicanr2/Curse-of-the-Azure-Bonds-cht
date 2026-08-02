@@ -3538,3 +3538,14 @@ source audit 655→651：localization 160→156，frontend 135、runtime 360 不
 dockside bar 舊分支只有 locale key，故五事件只下降四次。READY spec 465 是
 權威；Docker／Xvfb／`--network none` 正式 gate 已通過，marker
 `ROUND465_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十六輪完成 Yulash 戰區與指揮官事件資料化。trail 紅羽衛
+巡邏、edge、城牆入口、騎士與紫衣女子、檢查哨、等候室、散提爾間諜、指揮官
+晉見／詢問／側門及摩安德巨坑入口十二條 source rules 與 en／zh-TW messages
+已移入 game-pack；Go fallback 與七筆 UI locale 複本移除。Hillsfar 起始正常
+玩家路徑完成十二敵人巡邏戰、GEO3 terrain `9Ah` 十一敵人間諜戰、手札
+22／52、側門返回、一次性事件不重播與 terrain `26h` 巨坑 handoff；巨坑離場
+回 Yulash edge 也由同一 stable ID 解析。source audit 651→638：localization
+156→143，frontend 135、runtime 360 不變。READY spec 466 是權威；正式 gate、
+Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND466_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

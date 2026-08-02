@@ -416,6 +416,18 @@
       ,"hillsfar.places": "You are in Hillsfar. What place will you visit?"
       ,"hillsfar.dockside-bar": "You are in a dockside bar. What will you do?"
       ,"hillsfar.red-plumes-spill-drinks": "Some Red Plumes deliberately spill your drinks and order you to clean up the mess. Will you comply?"
+      ,"yulash.red-plume-patrol": "A Red Plume patrol approaches. One guard claims your tattoos reveal you as Zhentil spies."
+      ,"yulash.edge": "You are at the edge of Yulash. Will you enter the war zone or continue your journey?"
+      ,"yulash.entry": "Smoke rises behind Yulash's ruined walls and battle sounds from within. How will you enter?"
+      ,"yulash.riders-burst-out": "Before you enter, a man on a large horse bursts from Yulash and knocks a party member down. A woman in purple clings behind him and calls an apology as they race away."
+      ,"yulash.checkpoint-halt": "A wary guard emerges from a checkpoint as more Red Plumes gather behind him. What will you do?"
+      ,"yulash.see-commander": "The guards insist that you come with them to see the commander. What will you do?"
+      ,"yulash.waiting-room": "This is the commander's waiting room. The guards order you to remain until called."
+      ,"yulash.zhentarim-spies": "Troops burst from the commander's office as someone shouts that they are spies for Zhentil Keep. What will you do?"
+      ,"yulash.led-to-commander": "You are led in to see the Red Plume commander."
+      ,"yulash.commander-business": "The commander demands to know your business in Yulash. How will you respond?"
+      ,"yulash.commander-side-door": "The commander shows you out through the side door."
+      ,"yulash.pit-entrance": "Before you lies the pit created during Moander's last appearance. Step forward to enter the dark demesne."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -857,6 +869,18 @@
       ,"hillsfar.places": "你們身在希爾斯法。要前往哪個場所？"
       ,"hillsfar.dockside-bar": "你們來到碼頭邊的酒館。要做什麼？"
       ,"hillsfar.red-plumes-spill-drinks": "幾名紅羽衛走過來，故意打翻你們的酒，命令你們把髒亂清乾淨。要照辦嗎？"
+      ,"yulash.red-plume-patrol": "一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散塔林間諜的身分！」"
+      ,"yulash.edge": "你們來到尤拉什城外。要進入戰區，還是繼續旅程？"
+      ,"yulash.entry": "煙霧從尤拉什殘破的城牆後升起，裡面不斷傳來戰鬥聲。你們要如何進入？"
+      ,"yulash.riders-burst-out": "正要進城時，一名騎著高大駿馬的男子突然衝出尤拉什，撞倒隊伍成員。駿馬疾馳而過，你們看見一名紫衣女子緊抱在男子背後；兩人迅速遠去，只聽見她高喊：「抱歉！」"
+      ,"yulash.checkpoint-halt": "「站住！」一名衛兵警戒地走出檢查哨，其他紅羽衛也在他身後集結。你們要怎麼做？"
+      ,"yulash.see-commander": "「你們必須跟我們去見指揮官。」要怎麼做？"
+      ,"yulash.waiting-room": "這裡是指揮官的等候室。衛兵命令你們留在此處，等待傳喚。"
+      ,"yulash.zhentarim-spies": "一群人突然從指揮官辦公室衝出來。有人大喊：「攔住他們！他們是散提爾堡的間諜！」你們要怎麼做？"
+      ,"yulash.led-to-commander": "衛兵領你們進去晉見紅羽衛指揮官。"
+      ,"yulash.commander-business": "指揮官厲聲質問你們來尤拉什有何目的。你們要用什麼態度回答？"
+      ,"yulash.commander-side-door": "指揮官親自帶你們從側門離開。"
+      ,"yulash.pit-entrance": "眼前就是摩安德上次降臨時留下的巨坑。再向前一步，便會進入那片黑暗領域。"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2649,6 +2673,18 @@
     {"id": "hillsfar.places", "all_contains": ["YOU ARE IN HILLSFAR", "WHAT PLACE WILL YOU VISIT"], "message_id": "hillsfar.places"},
     {"id": "hillsfar.dockside-bar", "all_contains": ["YOU ARE IN A DOCKSIDE BAR"], "message_id": "hillsfar.dockside-bar"},
     {"id": "hillsfar.red-plumes-spill-drinks", "all_contains": ["SOME RED PLUMES COME OVER", "ORDER YOU TO CLEAN UP THE MESS"], "message_id": "hillsfar.red-plumes-spill-drinks"},
+    {"id": "yulash.red-plume-patrol", "all_contains": ["YOU ARE APPROACHED BY A RED PLUME PATROL", "TATOO BETRAYS YOU AS A ZHENTRIM SPY"], "message_id": "yulash.red-plume-patrol"},
+    {"id": "yulash.edge", "all_contains": ["YOU ARE AT THE EDGE OF YULASH"], "message_id": "yulash.edge"},
+    {"id": "yulash.entry", "all_contains": ["SMOKE RISES FROM BEHIND THE RUINED WALLS", "OF YULASH", "HOW DO YOU ENTER"], "message_id": "yulash.entry"},
+    {"id": "yulash.riders-burst-out", "all_contains": ["JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE", "A WOMAN DRESSED IN PURPLE", "SORRY"], "message_id": "yulash.riders-burst-out"},
+    {"id": "yulash.checkpoint-halt", "all_contains": ["HALT! A GUARD WARILY COMES OUT OF A CHECKPOINT", "OTHER GUARDS GATHER BEHIND HIM"], "message_id": "yulash.checkpoint-halt"},
+    {"id": "yulash.see-commander", "all_contains": ["YOU MUST COME WITH US TO SEE THE COMMANDER"], "message_id": "yulash.see-commander"},
+    {"id": "yulash.waiting-room", "all_contains": ["THIS IS THE COMMANDER'S WAITING ROOM", "REMAIN HERE UNTIL YOU ARE CALLED"], "message_id": "yulash.waiting-room"},
+    {"id": "yulash.zhentarim-spies", "all_contains": ["TROOPS COME BURSTING OUT OF THE COMMANDER'S OFFICE", "THEY'RE SPIES FOR ZHENTIL KEEP"], "message_id": "yulash.zhentarim-spies"},
+    {"id": "yulash.led-to-commander", "all_contains": ["YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"], "message_id": "yulash.led-to-commander"},
+    {"id": "yulash.commander-business", "all_contains": ["THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH", "HOW DO YOU RESPOND"], "message_id": "yulash.commander-business"},
+    {"id": "yulash.commander-side-door", "all_contains": ["THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"], "message_id": "yulash.commander-side-door"},
+    {"id": "yulash.pit-entrance", "all_contains": ["THE PIT CREATED BY MOANDER", "STEP FORWARD TO ENTER THE DARK DEMESNE"], "message_id": "yulash.pit-entrance"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

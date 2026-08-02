@@ -875,3 +875,16 @@ edge 才切換 wilderness cue。資料化 city／bar 文字時，若 frontend �
 可沿用的回歸應同時檢查原始 choices、stable message ID、picture block、進入
 時的 music event、service return 的零 music event，以及離城後的 wilderness
 event。音訊狀態是 continuation 的一部分，不是單純畫面裝飾。
+
+### 2026-08-02：占領城市的指揮鏈是跨模式 transaction
+
+尤拉什不是單一城市選單：玩家先在 world trail 遭巡邏兵攔截，抵達 edge 後由
+entry menu 切進 ECL／GEO，再經檢查哨、等候室、terrain 戰鬥、指揮官交涉、
+手札解鎖與側門，最後才抵達下一章入口。把這些文字移入 game-pack 時，不能讓
+stable message 規則取代原有的旗標、出生點或 continuation。
+
+可沿用到其他 Gold Box 作品的驗收方式，是把一條城市鏈視為跨模式 transaction：
+逐段檢查 world location、block／GEO、原始 choices、敵人組成、一次性事件旗標、
+手札 stable ID、戰後續跑、側門座標與下一區入口。這也適合 Wasteland 或
+《冬之魔》一類資料驅動 RPG 的據點／關卡遷移；共用引擎只保存流程能力，作品
+名稱、劇情、座標與敵人仍留在各自 game pack。
