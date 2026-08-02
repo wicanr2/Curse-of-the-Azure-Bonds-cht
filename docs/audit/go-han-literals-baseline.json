@@ -3,48 +3,6 @@
   "findings": [
     {
       "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "211cbd3dfe03372677c1836e54d69370879a764656838710b8661372a4115171",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "332cec9e3df43f662bf0fbb306e79db61a57ab81cf3127d6d8e87b7b4f78af4f",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "7b69c82aac538c46f9e07e95d721b8a3ca18d03bbb64396eaaf2748501d1422b",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "7e2e47a3d80bb8942fef5d6a1c018ca4e525455736ab164313679a3f4e1adade",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "b9a04e2c1b6a276ce559b6b2dec7db4b02f3de180f7738250a7724e4a8370d24",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "c21ef9921dd8f8e780c40ed90a21d3396206e17596f00699edd76dff46af80e6",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
       "function": "demoParty",
       "sha256": "5647ca8c82fa756e47ab201db9dbec77ef5bf2955207059c13038d0c25e6bac3",
       "occurrences": 1,
@@ -68,13 +26,6 @@
       "path": "cmd/azure-bonds-game/main.go",
       "function": "demoParty",
       "sha256": "e938ba32208cf5f2361e8b58e79bd812207a736333a251c9567f3ccea37fee95",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawAdventureChrome",
-      "sha256": "50b5b1d2abefbca67243017fe7ccbc794bdc226218465c24e3d7a1793fb76965",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },
@@ -143,29 +94,8 @@
     },
     {
       "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawCombat",
-      "sha256": "5cf1507681af7a50cded372a22bdfe5d9c86dbaa07dbef769c8d046a440735b8",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawCombat",
-      "sha256": "b0fb7b19f3ea0afbaacbab440b4cecc6fb1671241eaf4223c0422f4002859d8f",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
       "function": "drawDungeonGame",
       "sha256": "50314b56876fca1c44afae03a85cbdfb554412d7ad9a840b288f5a78a3d29ceb",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawDungeonGame",
-      "sha256": "50b5b1d2abefbca67243017fe7ccbc794bdc226218465c24e3d7a1793fb76965",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },
@@ -234,13 +164,6 @@
     },
     {
       "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawFighterDeathOverlay",
-      "sha256": "b031a23374f47434b1cdff426ca6d10fede885b840f5bf26cc2d305d52e2f0ea",
-      "occurrences": 3,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
       "function": "drawGeoPreview",
       "sha256": "7cb1ed3b5b467d856233eec3d821f869534bc49531536f9ff2993460747c8a73",
       "occurrences": 1,
@@ -257,62 +180,6 @@
       "path": "cmd/azure-bonds-game/main.go",
       "function": "drawGeoPreview",
       "sha256": "c89d31e636fd08925a65fc8d6222180267034513df8d9a024a4458d3f1529437",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawOverlandMap",
-      "sha256": "618bb72bc880a2e50b0e41b913fdf87ac0048497e68b34b1c5a77fc0d462411b",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawOverlandMap",
-      "sha256": "88abd82f977fc23c35179f7ae1f98b6d5145c7c89cf767d88c83b96f9797a68e",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawOverlandMap",
-      "sha256": "dd4434241317fb6a18a9953a487b93daa6f2b361619d76f3b7cf2d879857ae8a",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawPictureAnimation",
-      "sha256": "332cec9e3df43f662bf0fbb306e79db61a57ab81cf3127d6d8e87b7b4f78af4f",
-      "occurrences": 5,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawPictureAnimation",
-      "sha256": "a45c12cfcb0c7511c33e8ebdef6d4c2574c8432764aaea0ba1291c05bd204109",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawPictureAnimation",
-      "sha256": "d1cbb1fe47120cbab36104361e9da106fbf703899c95a469df7a20fb1dedb3f5",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawPictureAnimation",
-      "sha256": "e98b68712acc41fac2d6879b08ef29cfa52bf760c3833c3f5be304e019799ae3",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawPictureAnimation",
-      "sha256": "f6686fb4eeecbc0d86663fb6b7ae8ccaaa29fb86bb6574f7fcae260bc4faba4a",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },

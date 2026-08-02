@@ -3719,3 +3719,13 @@ source audit `313→300`，frontend `101→88`、runtime 212、localization 0
 不變。READY spec 482 與玩家操作介面資料化知識庫是權威；CoAB
 Docker／Xvfb 正式全套 gate 已通過，marker `ROUND482_FORMAL_EXIT=0`；
 commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百八十三輪將冒險選單、存讀提示、事件與 PICTURE 繼續、
+暗影谷 AREA、月海世界地圖、缺素材提示、角色姓名欄、戰鬥角色檢視與三條倒地
+renderer branch 共二十五筆中文移入 typed `PlayerUILabel`。AREA 座標與目前地名
+由 State format contract 插入；世界地圖 game-pack lookup 改跟隨 catalog
+language，不再固定 `zh-TW`。正式 catalog test 覆蓋十五種 label、兩個動態
+format 與語系投影。source audit `300→275`，frontend `88→63`、runtime 212、
+localization 0 不變。READY spec 483 與玩家操作介面資料化知識庫是權威；CoAB
+Docker／Xvfb 正式全套 gate 已通過，marker `ROUND483_FORMAL_EXIT=0`；
+commit／push 與暫存清理待本輪收尾。

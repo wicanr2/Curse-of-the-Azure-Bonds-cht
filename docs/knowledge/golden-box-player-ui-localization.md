@@ -27,3 +27,18 @@ renderer：字型、座標、顏色、裁切
 
 這套方法可沿用於其他 Gold Box、冬之魔與後續《Wasteland》中文化；但按鍵、
 存檔格式、字數限制與 editor 生命週期仍須由各作品 executable／runtime 證明。
+
+## 冒險 chrome 與地圖
+
+同一句「繼續」可能出現在純文字事件、HEAD／BODY 人物、一般 PIC 與 BIGPIC，
+但這不代表 renderer 應保存四份譯文。應共用 stable identity，由各 layout 選擇
+自己的座標、字型與顏色。只有文字內容本身不同，例如 BIGPIC 把畫面類型與操作
+合成一句時，才建立另一個 ID。
+
+世界地圖另有一個常見陷阱：renderer 直接以固定 locale 查 game-pack 地名。
+這會讓主 State 已切換語系、地圖卻仍顯示舊語系。正確做法是讓 State catalog
+持有語系身分，所有 game-pack overlay 使用同一語系查詢。若目的地沒有翻譯，
+才保留既有 State location fallback；不要在 renderer 補一份作品地名表。
+
+角色欄標題、倒地標記與缺素材診斷也屬玩家可見文字。即使缺素材只在異常狀態
+出現，仍應通過正式 locale coverage；診斷狀態不能成為前端硬編碼的豁免區。
