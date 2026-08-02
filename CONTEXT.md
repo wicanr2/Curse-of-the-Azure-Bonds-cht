@@ -3657,3 +3657,14 @@ IDs；補齊角色列、施法與錯誤格式，刪除七筆重複職業中文 s
 `v0.0.0-20260802101532-f3c652a3882e`。Docker／Xvfb／`--network none` 全套 gate
 已通過，marker `ROUND476_FORMAL_EXIT=0`。本輪未改 renderer，不新增 README
 截圖；READY spec 476 是權威，commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十七輪進行 PROGRAM 終局介面資料分離。PROGRAM 0／3／8
+的主選單、全滅、返回標題、解除詛咒、保存／不保存與結束訊息十筆已移入正式
+locale；State 只保留 PROGRAM side effect 與 stable choice token。fixture 驗證
+全滅、保存勝利與不保存三條 transaction。Standing Stone 起始的正常長路徑首次
+加入終局 locale 斷言時，揭露兩次 save／restore harness 使用最小 `testCatalog`；
+初始、一般 restore 與臨時盟友 restore 均改注入正式 catalog 後，37 人終戰自然
+抵達繁中勝利選單。source audit `388→378`，runtime `230→220`，frontend 135、
+localization 23 不變。READY spec 477 是權威；Docker／Xvfb／`--network none`
+全套 gate 已通過，marker `ROUND477_FORMAL_EXIT=0`；commit／push 與暫存清理待
+本輪收尾。

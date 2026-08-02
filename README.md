@@ -136,6 +136,13 @@ Go 漢字 baseline 由 518 降至 388。正式 gate 同時抓出 `go.mod` 的過
 checkpoint，現已對齊實際需要的 `f3c652a`。詳見
 [`docs/spec/476-camp-alter-locale-data-separation.md`](docs/spec/476-camp-alter-locale-data-separation.md)。
 
+第 477 輪把 PROGRAM 0／3／8 的主選單、全滅、解除詛咒、保存勝利與不保存結束
+文字移入正式 locale；typed PROGRAM side effect 與原始 choice token 維持在 State。
+PROGRAM fixture 覆蓋兩條勝利 transaction，Standing Stone 起始的正常長路徑也在
+兩次 save／restore 後以正式 catalog 完成 37 人終戰並抵達繁中勝利選單。Go 漢字
+baseline 由 388 降至 378。詳見
+[`docs/spec/477-program-terminal-locale-data-separation.md`](docs/spec/477-program-terminal-locale-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

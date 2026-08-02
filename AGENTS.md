@@ -680,6 +680,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   漂移。`go.mod` checkpoint 也屬正式 gate：本輪證明 `f06493f` 缺目前使用的
   `CharacterCreation` schema，已改鎖 exact `f3c652a`；不能任選相容 Engine HEAD
   冒充 pinned dependency。READY spec 476 是權威。
+- 第 477 輪將 PROGRAM 0／3／8 的十筆終局文字移入正式 locale，baseline
+  `388→378`。locale catalog 不屬於 save payload；凡長路徑建立新的 State 再
+  `LoadPartyFile`，初始、一般 restore 與臨時盟友 restore 都必須重新注入同一
+  正式 catalog。若後段顯示 stable ID，不能把譯文塞回 handler 或把 catalog
+  序列化進 save。PROGRAM side effect 與 `PROGRAM_WIN_SAVE／PROGRAM_END` token
+  保持 typed；READY spec 477 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
