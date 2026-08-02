@@ -295,6 +295,85 @@
       ,"creation.class.cleric-fighter-magic-user": "Cleric/Fighter/Magic-User"
       ,"creation.class.cleric-magic-user": "Cleric/Magic-User"
       ,"creation.class.cleric-thief": "Cleric/Thief"
+      ,"press_button": "PRESS BUTTON OR RETURN TO CONTINUE."
+      ,"tell_truth": "TELL THE TRUTH"
+      ,"tavern_punch": "PUNCH BARKEEP"
+      ,"tavern_drink": "HAVE A DRINK"
+      ,"tavern_dragon_breath": "DRAGON'S BREATH"
+      ,"tavern_basilisk": "BASILISK"
+      ,"tavern_lemonade": "LEMONADE"
+      ,"tavern_whiskey": "WHISKEY"
+      ,"tavern_beer": "BEER"
+      ,"tavern_ale": "ALE"
+      ,"tavern_port": "PORT"
+      ,"tavern_mead": "MEAD"
+      ,"lie": "LIE"
+      ,"enter_city": "ENTER CITY"
+      ,"journey_on": "JOURNEY ON"
+      ,"camp": "CAMP"
+      ,"search_area": "SEARCH AREA"
+      ,"inn": "INN"
+      ,"store": "STORE"
+      ,"bar": "BAR"
+      ,"training_hall": "HALL"
+      ,"temple": "TEMPLE"
+      ,"relax": "RELAX"
+      ,"patrol_forest": "PATROL FOREST"
+      ,"thank_him": "THANK HIM"
+      ,"attack": "ATTACK"
+      ,"enter_it": "ENTER IT"
+      ,"speak": "SPEAK"
+      ,"hack_it": "HACK IT"
+      ,"greet": "GREET"
+      ,"leave": "LEAVE"
+      ,"examine_corpse": "EXAMINE CORPSE"
+      ,"shadowdale": "SHADOWDALE"
+      ,"ashabenford": "ASHABENFORD"
+      ,"dagger_falls": "DAGGER FALLS"
+      ,"tilverton": "TILVERTON"
+      ,"standing_stone": "THE STANDING STONE"
+      ,"essembra": "ESSEMBRA"
+      ,"hap": "HAP"
+      ,"hillsfar": "HILLSFAR"
+      ,"voonlar": "VOONLAR"
+      ,"phlan": "PHLAN"
+      ,"teshwave": "TESHWAVE"
+      ,"yulash": "YULASH"
+      ,"zhentil_keep": "ZHENTIL KEEP"
+      ,"myth_drannor": "MYTH DRANNOR"
+      ,"sneak_in": "SNEAK IN"
+      ,"ask_permission": "ASK PERMISSION"
+      ,"run_away": "RUN AWAY"
+      ,"fight": "FIGHT"
+      ,"go_with_guards": "GO WITH GUARDS"
+      ,"fight_the_men": "FIGHT THE MEN"
+      ,"let_them_go": "LET THEM GO"
+      ,"tell_her_your_story": "TELL HER YOUR STORY"
+      ,"tell_her_hunting_cultists": "TELL HER YOU'RE HUNTING CULTISTS"
+      ,"tell_her_none_of_affair": "TELL HER IT'S NONE OF HER AFFAIR"
+      ,"try_talk_further": "TRY TO TALK FURTHER"
+      ,"wilderness": "WILDERNESS"
+      ,"caves": "CAVES"
+      ,"stay_here": "STAY HERE"
+      ,"village": "VILLAGE"
+      ,"depart": "DEPART"
+      ,"trail": "TRAIL"
+      ,"encounter_combat": "COMBAT"
+      ,"encounter_wait": "WAIT"
+      ,"enter_blades": "ENTER THE BLADES"
+      ,"retreat": "RETREAT"
+      ,"interrogate": "INTERROGATE"
+      ,"encounter_advance": "ADVANCE"
+      ,"encounter_parlay": "PARLAY"
+      ,"parlay_haughty": "PARLAY_HAUGHTY"
+      ,"parlay_sly": "PARLAY_SLY"
+      ,"parlay_meek": "PARLAY_MEEK"
+      ,"parlay_nice": "PARLAY_NICE"
+      ,"parlay_abusive": "PARLAY_ABUSIVE"
+      ,"fire_knives": "FIRE KNIVES"
+      ,"princess_nacacia": "PRINCESS NACACIA"
+      ,"no_one": "NO ONE"
+      ,"exit": "EXIT"
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -577,6 +656,85 @@
       ,"creation.class.cleric-fighter-magic-user": "牧師／戰士／魔法師"
       ,"creation.class.cleric-magic-user": "牧師／魔法師"
       ,"creation.class.cleric-thief": "牧師／盜賊"
+      ,"press_button": "請按任意鍵或 Enter 繼續"
+      ,"tell_truth": "如實相告"
+      ,"tavern_punch": "揍酒保"
+      ,"tavern_drink": "喝一杯"
+      ,"tavern_dragon_breath": "龍息酒"
+      ,"tavern_basilisk": "石化蜥蜴酒"
+      ,"tavern_lemonade": "檸檬水"
+      ,"tavern_whiskey": "威士忌"
+      ,"tavern_beer": "啤酒"
+      ,"tavern_ale": "愛爾啤酒"
+      ,"tavern_port": "波特酒"
+      ,"tavern_mead": "蜂蜜酒"
+      ,"lie": "說謊"
+      ,"enter_city": "進入城市"
+      ,"journey_on": "繼續旅程"
+      ,"camp": "紮營"
+      ,"search_area": "搜索此區"
+      ,"inn": "客棧"
+      ,"store": "商店"
+      ,"bar": "酒館"
+      ,"training_hall": "訓練場"
+      ,"temple": "神殿"
+      ,"relax": "休息並聽取傳聞"
+      ,"patrol_forest": "巡查森林"
+      ,"thank_him": "向他道謝"
+      ,"attack": "攻擊"
+      ,"enter_it": "走進去"
+      ,"speak": "說話"
+      ,"hack_it": "砍斷它"
+      ,"greet": "致意"
+      ,"leave": "離開"
+      ,"examine_corpse": "檢查屍體"
+      ,"shadowdale": "暗影谷"
+      ,"ashabenford": "阿沙本福德"
+      ,"dagger_falls": "匕首瀑布"
+      ,"tilverton": "提爾佛頓"
+      ,"standing_stone": "立石群"
+      ,"essembra": "艾森布拉"
+      ,"hap": "哈普"
+      ,"hillsfar": "希爾斯法"
+      ,"voonlar": "沃恩拉"
+      ,"phlan": "弗蘭"
+      ,"teshwave": "泰什浪"
+      ,"yulash": "尤拉什"
+      ,"zhentil_keep": "散提爾堡"
+      ,"myth_drannor": "迷斯卓諾"
+      ,"sneak_in": "潛入"
+      ,"ask_permission": "請求許可"
+      ,"run_away": "逃走"
+      ,"fight": "戰鬥"
+      ,"go_with_guards": "跟衛兵走"
+      ,"fight_the_men": "攔下他們戰鬥"
+      ,"let_them_go": "放他們離開"
+      ,"tell_her_your_story": "告訴她你們的經歷"
+      ,"tell_her_hunting_cultists": "告訴她你們正在追捕邪教徒"
+      ,"tell_her_none_of_affair": "告訴她這不關她的事"
+      ,"try_talk_further": "繼續交談"
+      ,"wilderness": "荒野"
+      ,"caves": "洞穴"
+      ,"stay_here": "留在這裡"
+      ,"village": "村莊"
+      ,"depart": "離開此區"
+      ,"trail": "小徑"
+      ,"encounter_combat": "戰鬥"
+      ,"encounter_wait": "等待"
+      ,"enter_blades": "闖入刀刃"
+      ,"retreat": "撤退"
+      ,"interrogate": "審問"
+      ,"encounter_advance": "接近"
+      ,"encounter_parlay": "談判"
+      ,"parlay_haughty": "傲慢"
+      ,"parlay_sly": "狡猾"
+      ,"parlay_meek": "謙卑"
+      ,"parlay_nice": "友善"
+      ,"parlay_abusive": "威嚇"
+      ,"fire_knives": "火刀"
+      ,"princess_nacacia": "娜卡西亞公主"
+      ,"no_one": "不效忠任何人"
+      ,"exit": "離開"
     }
   },
   "character_creation": {
@@ -1204,7 +1362,87 @@
       "id": "myth-drannor.outer.beyrha.name",
       "source": "BEYRHA",
       "message_id": "myth-drannor.outer.beyrha.name"
-    }
+    },
+    {"id": "ecl-option.press-button-or-return-to-continue", "source": "PRESS BUTTON OR RETURN TO CONTINUE.", "message_id": "press_button"},
+    {"id": "ecl-option.tell-the-truth", "source": "TELL THE TRUTH", "message_id": "tell_truth"},
+    {"id": "ecl-option.punch-barkeep", "source": "PUNCH BARKEEP", "message_id": "tavern_punch"},
+    {"id": "ecl-option.have-a-drink", "source": "HAVE A DRINK", "message_id": "tavern_drink"},
+    {"id": "ecl-option.dragon-s-breath", "source": "DRAGON'S BREATH", "message_id": "tavern_dragon_breath"},
+    {"id": "ecl-option.basilisk", "source": "BASILISK", "message_id": "tavern_basilisk"},
+    {"id": "ecl-option.lemonade", "source": "LEMONADE", "message_id": "tavern_lemonade"},
+    {"id": "ecl-option.whiskey", "source": "WHISKEY", "message_id": "tavern_whiskey"},
+    {"id": "ecl-option.beer", "source": "BEER", "message_id": "tavern_beer"},
+    {"id": "ecl-option.ale", "source": "ALE", "message_id": "tavern_ale"},
+    {"id": "ecl-option.port", "source": "PORT", "message_id": "tavern_port"},
+    {"id": "ecl-option.mead", "source": "MEAD", "message_id": "tavern_mead"},
+    {"id": "ecl-option.lie", "source": "LIE", "message_id": "lie"},
+    {"id": "ecl-option.enter-city", "source": "ENTER CITY", "message_id": "enter_city"},
+    {"id": "ecl-option.journey-on", "source": "JOURNEY ON", "message_id": "journey_on"},
+    {"id": "ecl-option.camp", "source": "CAMP", "message_id": "camp"},
+    {"id": "ecl-option.search-area", "source": "SEARCH AREA", "message_id": "search_area"},
+    {"id": "ecl-option.inn", "source": "INN", "message_id": "inn"},
+    {"id": "ecl-option.store", "source": "STORE", "message_id": "store"},
+    {"id": "ecl-option.bar", "source": "BAR", "message_id": "bar"},
+    {"id": "ecl-option.hall", "source": "HALL", "message_id": "training_hall"},
+    {"id": "ecl-option.temple", "source": "TEMPLE", "message_id": "temple"},
+    {"id": "ecl-option.relax", "source": "RELAX", "message_id": "relax"},
+    {"id": "ecl-option.patrol-forest", "source": "PATROL FOREST", "message_id": "patrol_forest"},
+    {"id": "ecl-option.thank-him", "source": "THANK HIM", "message_id": "thank_him"},
+    {"id": "ecl-option.attack", "source": "ATTACK", "message_id": "attack"},
+    {"id": "ecl-option.enter-it", "source": "ENTER IT", "message_id": "enter_it"},
+    {"id": "ecl-option.speak", "source": "SPEAK", "message_id": "speak"},
+    {"id": "ecl-option.hack-it", "source": "HACK IT", "message_id": "hack_it"},
+    {"id": "ecl-option.greet", "source": "GREET", "message_id": "greet"},
+    {"id": "ecl-option.leave", "source": "LEAVE", "message_id": "leave"},
+    {"id": "ecl-option.leave-title-case", "source": "Leave", "message_id": "leave"},
+    {"id": "ecl-option.examine-corpse", "source": "EXAMINE CORPSE", "message_id": "examine_corpse"},
+    {"id": "ecl-option.shadowdale", "source": "SHADOWDALE", "message_id": "shadowdale"},
+    {"id": "ecl-option.ashabenford", "source": "ASHABENFORD", "message_id": "ashabenford"},
+    {"id": "ecl-option.dagger-falls", "source": "DAGGER FALLS", "message_id": "dagger_falls"},
+    {"id": "ecl-option.tilverton", "source": "TILVERTON", "message_id": "tilverton"},
+    {"id": "ecl-option.the-standing-stone", "source": "THE STANDING STONE", "message_id": "standing_stone"},
+    {"id": "ecl-option.essembra", "source": "ESSEMBRA", "message_id": "essembra"},
+    {"id": "ecl-option.hap", "source": "HAP", "message_id": "hap"},
+    {"id": "ecl-option.hillsfar", "source": "HILLSFAR", "message_id": "hillsfar"},
+    {"id": "ecl-option.voonlar", "source": "VOONLAR", "message_id": "voonlar"},
+    {"id": "ecl-option.phlan", "source": "PHLAN", "message_id": "phlan"},
+    {"id": "ecl-option.teshwave", "source": "TESHWAVE", "message_id": "teshwave"},
+    {"id": "ecl-option.yulash", "source": "YULASH", "message_id": "yulash"},
+    {"id": "ecl-option.zhentil-keep", "source": "ZHENTIL KEEP", "message_id": "zhentil_keep"},
+    {"id": "ecl-option.myth-drannor", "source": "MYTH DRANNOR", "message_id": "myth_drannor"},
+    {"id": "ecl-option.sneak-in", "source": "SNEAK IN", "message_id": "sneak_in"},
+    {"id": "ecl-option.ask-permission", "source": "ASK PERMISSION", "message_id": "ask_permission"},
+    {"id": "ecl-option.run-away", "source": "RUN AWAY", "message_id": "run_away"},
+    {"id": "ecl-option.fight", "source": "FIGHT", "message_id": "fight"},
+    {"id": "ecl-option.go-with-guards", "source": "GO WITH GUARDS", "message_id": "go_with_guards"},
+    {"id": "ecl-option.fight-the-men", "source": "FIGHT THE MEN", "message_id": "fight_the_men"},
+    {"id": "ecl-option.let-them-go", "source": "LET THEM GO", "message_id": "let_them_go"},
+    {"id": "ecl-option.tell-her-your-story", "source": "TELL HER YOUR STORY", "message_id": "tell_her_your_story"},
+    {"id": "ecl-option.tell-her-you-re-hunting-cultists", "source": "TELL HER YOU'RE HUNTING CULTISTS", "message_id": "tell_her_hunting_cultists"},
+    {"id": "ecl-option.tell-her-it-s-none-of-her-affair", "source": "TELL HER IT'S NONE OF HER AFFAIR", "message_id": "tell_her_none_of_affair"},
+    {"id": "ecl-option.try-to-talk-further", "source": "TRY TO TALK FURTHER", "message_id": "try_talk_further"},
+    {"id": "ecl-option.wilderness", "source": "WILDERNESS", "message_id": "wilderness"},
+    {"id": "ecl-option.caves", "source": "CAVES", "message_id": "caves"},
+    {"id": "ecl-option.stay-here", "source": "STAY HERE", "message_id": "stay_here"},
+    {"id": "ecl-option.village", "source": "VILLAGE", "message_id": "village"},
+    {"id": "ecl-option.depart", "source": "DEPART", "message_id": "depart"},
+    {"id": "ecl-option.trail", "source": "TRAIL", "message_id": "trail"},
+    {"id": "ecl-option.combat", "source": "COMBAT", "message_id": "encounter_combat"},
+    {"id": "ecl-option.wait", "source": "WAIT", "message_id": "encounter_wait"},
+    {"id": "ecl-option.enter-the-blades", "source": "ENTER THE BLADES", "message_id": "enter_blades"},
+    {"id": "ecl-option.retreat", "source": "RETREAT", "message_id": "retreat"},
+    {"id": "ecl-option.interrogate", "source": "INTERROGATE", "message_id": "interrogate"},
+    {"id": "ecl-option.advance", "source": "ADVANCE", "message_id": "encounter_advance"},
+    {"id": "ecl-option.parlay", "source": "PARLAY", "message_id": "encounter_parlay"},
+    {"id": "ecl-option.parlay-haughty", "source": "PARLAY_HAUGHTY", "message_id": "parlay_haughty"},
+    {"id": "ecl-option.parlay-sly", "source": "PARLAY_SLY", "message_id": "parlay_sly"},
+    {"id": "ecl-option.parlay-meek", "source": "PARLAY_MEEK", "message_id": "parlay_meek"},
+    {"id": "ecl-option.parlay-nice", "source": "PARLAY_NICE", "message_id": "parlay_nice"},
+    {"id": "ecl-option.parlay-abusive", "source": "PARLAY_ABUSIVE", "message_id": "parlay_abusive"},
+    {"id": "ecl-option.fire-knives", "source": "FIRE KNIVES", "message_id": "fire_knives"},
+    {"id": "ecl-option.princess-nacacia", "source": "PRINCESS NACACIA", "message_id": "princess_nacacia"},
+    {"id": "ecl-option.no-one", "source": "NO ONE", "message_id": "no_one"},
+    {"id": "ecl-option.exit", "source": "EXIT", "message_id": "exit"}
   ],
   "text_rules": [
     {

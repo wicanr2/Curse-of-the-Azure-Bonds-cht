@@ -321,24 +321,26 @@ func TestStateUsesECLInitialMenuChoices(t *testing.T) {
 
 func TestLocalizedCityMenuOptions(t *testing.T) {
 	catalog := testCatalog()
-	catalog.Strings["shadowdale"] = "暗影谷"
-	catalog.Strings["ashabenford"] = "阿沙本福德"
-	catalog.Strings["dagger_falls"] = "匕首瀑布"
-	if got := localizeOption(catalog, "DAGGER FALLS"); got != "匕首瀑布" {
-		t.Fatalf("localized city=%q", got)
+	state := NewState(catalog)
+	want, ok := state.dataPack.Text("dagger_falls", catalog.Language)
+	if !ok {
+		t.Fatal("game pack is missing dagger_falls")
+	}
+	if got := state.localizeOption("DAGGER FALLS"); got != want {
+		t.Fatalf("localized city=%q, want pack value %q", got, want)
 	}
 }
 
 func TestLocalizedEncounterMenuOptions(t *testing.T) {
 	catalog := testCatalog()
-	catalog.Strings["encounter_combat"] = "戰鬥"
-	catalog.Strings["encounter_wait"] = "等待"
-	catalog.Strings["encounter_flee"] = "撤退"
-	catalog.Strings["encounter_advance"] = "接近"
-	catalog.Strings["encounter_parlay"] = "談判"
-	for original, want := range map[string]string{"COMBAT": "戰鬥", "WAIT": "等待", "FLEE": "撤退", "ADVANCE": "接近", "PARLAY": "談判"} {
-		if got := localizeOption(catalog, original); got != want {
-			t.Fatalf("%s localized as %q, want %q", original, got, want)
+	state := NewState(catalog)
+	for _, original := range []string{"COMBAT", "WAIT", "FLEE", "ADVANCE", "PARLAY"} {
+		want, ok := state.dataPack.LocalizeOption(original, catalog.Language)
+		if !ok {
+			t.Fatalf("game pack is missing option %q", original)
+		}
+		if got := state.localizeOption(original); got != want {
+			t.Fatalf("%s localized as %q, want pack value %q", original, got, want)
 		}
 	}
 }

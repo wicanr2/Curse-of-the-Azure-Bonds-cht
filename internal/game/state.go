@@ -993,7 +993,7 @@ func (s *State) localizeECLPrompt(prompt string) string {
 			return result.Message
 		}
 	}
-	return localizePrompt(s.catalog, prompt)
+	return s.localizePrompt(prompt)
 }
 
 // syncWorldDestinationSelectors projects the title-declared route graph into
@@ -5573,181 +5573,8 @@ func (s *State) restoreWildernessMenu() {
 		s.catalog.Text("camp", "紮營"),
 	}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
-	s.Prompt = s.catalog.Text("press_button", "Press any button or Enter to continue")
+	s.Prompt = s.catalog.Text("press_button", "press_button")
 	s.Message = ""
-}
-
-func localizeOption(catalog locale.Catalog, option string) string {
-	switch option {
-	case "PRESS BUTTON OR RETURN TO CONTINUE.":
-		return catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
-	case "YES":
-		return catalog.Text("yes", "是")
-	case "NO":
-		return catalog.Text("no", "否")
-	case "TELL THE TRUTH":
-		return catalog.Text("tell_truth", "如實相告")
-	case "PUNCH BARKEEP":
-		return catalog.Text("tavern_punch", "tavern_punch")
-	case "HAVE A DRINK":
-		return catalog.Text("tavern_drink", "tavern_drink")
-	case "DRAGON'S BREATH":
-		return catalog.Text("tavern_dragon_breath", "tavern_dragon_breath")
-	case "BASILISK":
-		return catalog.Text("tavern_basilisk", "tavern_basilisk")
-	case "LEMONADE":
-		return catalog.Text("tavern_lemonade", "tavern_lemonade")
-	case "WHISKEY":
-		return catalog.Text("tavern_whiskey", "tavern_whiskey")
-	case "BEER":
-		return catalog.Text("tavern_beer", "tavern_beer")
-	case "ALE":
-		return catalog.Text("tavern_ale", "tavern_ale")
-	case "PORT":
-		return catalog.Text("tavern_port", "tavern_port")
-	case "MEAD":
-		return catalog.Text("tavern_mead", "tavern_mead")
-	case "LIE":
-		return catalog.Text("lie", "說謊")
-	case "ENTER CITY":
-		return catalog.Text("enter_city", "進入城市")
-	case "JOURNEY ON":
-		return catalog.Text("journey_on", "繼續旅程")
-	case "CAMP":
-		return catalog.Text("camp", "紮營")
-	case "SEARCH AREA":
-		return catalog.Text("search_area", "搜索此區")
-	case "INN":
-		return catalog.Text("inn", "客棧")
-	case "STORE":
-		return catalog.Text("store", "store")
-	case "BAR":
-		return catalog.Text("bar", "bar")
-	case "HALL":
-		return catalog.Text("training_hall", "訓練場")
-	case "TEMPLE":
-		return catalog.Text("temple", "神殿")
-	case "RELAX":
-		return catalog.Text("relax", "休息並聽取傳聞")
-	case "PATROL FOREST":
-		return catalog.Text("patrol_forest", "巡查森林")
-	case "THANK HIM":
-		return catalog.Text("thank_him", "向他道謝")
-	case "ATTACK":
-		return catalog.Text("attack", "攻擊")
-	case "ENTER IT":
-		return catalog.Text("enter_it", "走進去")
-	case "SPEAK":
-		return catalog.Text("speak", "說話")
-	case "HACK IT":
-		return catalog.Text("hack_it", "砍斷它")
-	case "GREET":
-		return catalog.Text("greet", "致意")
-	case "LEAVE", "Leave":
-		return catalog.Text("leave", "離開")
-	case "EXAMINE CORPSE":
-		return catalog.Text("examine_corpse", "檢查屍體")
-	case "SHADOWDALE":
-		return catalog.Text("shadowdale", "Shadowdale")
-	case "ASHABENFORD":
-		return catalog.Text("ashabenford", "Ashabenford")
-	case "DAGGER FALLS":
-		return catalog.Text("dagger_falls", "Dagger Falls")
-	case "TILVERTON":
-		return catalog.Text("tilverton", "提爾佛頓")
-	case "THE STANDING STONE":
-		return catalog.Text("standing_stone", "立石群")
-	case "ESSEMBRA":
-		return catalog.Text("essembra", "艾森布拉")
-	case "HAP":
-		return catalog.Text("hap", "哈普")
-	case "HILLSFAR":
-		return catalog.Text("hillsfar", "希爾斯法")
-	case "VOONLAR":
-		return catalog.Text("voonlar", "沃恩拉")
-	case "PHLAN":
-		return catalog.Text("phlan", "弗蘭")
-	case "TESHWAVE":
-		return catalog.Text("teshwave", "泰什浪")
-	case "YULASH":
-		return catalog.Text("yulash", "尤拉什")
-	case "ZHENTIL KEEP":
-		return catalog.Text("zhentil_keep", "散提爾堡")
-	case "MYTH DRANNOR":
-		return catalog.Text("myth_drannor", "迷斯卓諾")
-	case "SNEAK IN":
-		return catalog.Text("sneak_in", "潛入")
-	case "ASK PERMISSION":
-		return catalog.Text("ask_permission", "請求許可")
-	case "RUN AWAY":
-		return catalog.Text("run_away", "逃走")
-	case "FIGHT":
-		return catalog.Text("fight", "戰鬥")
-	case "GO WITH GUARDS":
-		return catalog.Text("go_with_guards", "跟衛兵走")
-	case "FIGHT THE MEN":
-		return catalog.Text("fight_the_men", "攔下他們戰鬥")
-	case "LET THEM GO":
-		return catalog.Text("let_them_go", "放他們離開")
-	case "TELL HER YOUR STORY":
-		return catalog.Text("tell_her_your_story", "告訴她你們的經歷")
-	case "TELL HER YOU'RE HUNTING CULTISTS":
-		return catalog.Text("tell_her_hunting_cultists", "告訴她你們正在追捕邪教徒")
-	case "TELL HER IT'S NONE OF HER AFFAIR":
-		return catalog.Text("tell_her_none_of_affair", "告訴她這不關她的事")
-	case "TRY TO TALK FURTHER":
-		return catalog.Text("try_talk_further", "繼續交談")
-	case "WILDERNESS":
-		return catalog.Text("wilderness", "Wilderness")
-	case "CAVES":
-		return catalog.Text("caves", "洞穴")
-	case "STAY HERE":
-		return catalog.Text("stay_here", "留在這裡")
-	case "VILLAGE":
-		return catalog.Text("village", "村莊")
-	case "DEPART":
-		return catalog.Text("depart", "離開此區")
-	case "TRAIL":
-		return catalog.Text("trail", "小徑")
-	case "COMBAT":
-		return catalog.Text("encounter_combat", "戰鬥")
-	case "WAIT":
-		return catalog.Text("encounter_wait", "等待")
-	case "ENTER THE BLADES":
-		return catalog.Text("enter_blades", "闖入刀刃")
-	case "RETREAT":
-		return catalog.Text("retreat", "撤退")
-	case "INTERROGATE":
-		return catalog.Text("interrogate", "審問")
-	case "KILL":
-		return catalog.Text("kill", "殺死")
-	case "FLEE":
-		return catalog.Text("encounter_flee", "撤退")
-	case "ADVANCE":
-		return catalog.Text("encounter_advance", "接近")
-	case "PARLAY":
-		return catalog.Text("encounter_parlay", "談判")
-	case "PARLAY_HAUGHTY":
-		return catalog.Text("parlay_haughty", "傲慢")
-	case "PARLAY_SLY":
-		return catalog.Text("parlay_sly", "狡猾")
-	case "PARLAY_MEEK":
-		return catalog.Text("parlay_meek", "謙卑")
-	case "PARLAY_NICE":
-		return catalog.Text("parlay_nice", "友善")
-	case "PARLAY_ABUSIVE":
-		return catalog.Text("parlay_abusive", "威嚇")
-	case "FIRE KNIVES":
-		return catalog.Text("fire_knives", "火刀")
-	case "PRINCESS NACACIA":
-		return catalog.Text("princess_nacacia", "娜卡西亞公主")
-	case "NO ONE":
-		return catalog.Text("no_one", "不效忠任何人")
-	case "EXIT":
-		return catalog.Text("exit", "離開")
-	default:
-		return option
-	}
 }
 
 func (s *State) localizeOption(option string) string {
@@ -5756,25 +5583,25 @@ func (s *State) localizeOption(option string) string {
 			return value
 		}
 	}
-	return localizeOption(s.catalog, option)
+	return option
 }
 
-func localizePrompt(catalog locale.Catalog, prompt string) string {
+func (s *State) localizePrompt(prompt string) string {
 	if prompt == "PRESS BUTTON OR RETURN TO CONTINUE." {
-		return catalog.Text("press_button", "Press any button or Enter to continue")
+		return s.catalog.Text("press_button", "press_button")
 	}
 	if strings.HasPrefix(prompt, "HOW WILL YOU GET TO ") {
 		destination := strings.TrimSpace(strings.TrimSuffix(strings.TrimPrefix(prompt, "HOW WILL YOU GET TO "), "?"))
-		return fmt.Sprintf(catalog.Text("route_prompt", "要如何前往%s？"), localizeOption(catalog, destination))
+		return fmt.Sprintf(s.catalog.Text("route_prompt", "route_prompt"), s.localizeOption(destination))
 	}
 	if prompt == "FROM HERE YOU MAY JOURNEY TO" {
-		return catalog.Text("journey_destination_prompt", "從這裡可以前往")
+		return s.catalog.Text("journey_destination_prompt", "journey_destination_prompt")
 	}
 	if prompt == "WHAT WILL YOU DRINK?" {
-		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
+		return s.catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
 	}
 	if prompt == "A DARK ELF PATROL ARRIVES" {
-		return catalog.Text("ecl_hap_dark_elf_patrol", "一隊黑暗精靈巡邏兵出現了")
+		return s.catalog.Text("ecl_hap_dark_elf_patrol", "ecl_hap_dark_elf_patrol")
 	}
 	return prompt
 }

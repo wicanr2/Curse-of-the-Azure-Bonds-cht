@@ -34,6 +34,12 @@ engine 新增不解讀作品 enum 的 `character_creation.templates` schema。�
 代表性別、alignment、完整多職規則或原版完整建角 UX 已完成。證據見
 [`docs/spec/459-character-creation-game-pack-data-separation.md`](docs/spec/459-character-creation-game-pack-data-separation.md)。
 
+第 460 輪把舊 Go switch 的 84 個 ECL 選項 token 全部交由 CoAB game-pack
+`option_rules` 驅動；已知選項不再把繁中複製進 runtime，未知 token 則保留原文
+供診斷。新遊戲、世界旅程／商店、火刀刀刃房與定身房真實 ECL 路徑均通過，
+Go 漢字 literal exact baseline 由 867 降至 797。詳見
+[`docs/spec/460-ecl-option-game-pack-data-separation.md`](docs/spec/460-ecl-option-game-pack-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

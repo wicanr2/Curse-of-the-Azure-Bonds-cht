@@ -3467,3 +3467,18 @@ block `01h`、40 筆 pack coverage 與 save/load round-trip 通過。source audi
 通過，marker `ROUND459_COAB_EXIT=0`；一次性容器均以 `--rm` 完成。Engine
 `f3c652a` 已 commit／push；CoAB commit／push 待本輪收尾。READY spec 459
 是權威。
+
+2026-08-02 第四百六十輪完成 ECL 選項 game-pack 資料分離。舊
+`localizeOption` switch 的 84 個來源 token 已全由 105 條 CoAB
+`option_rules` 覆蓋；新增的 80 條均有唯一 stable rule／message ID 與
+en／zh-TW。未知 token 保留原文，不猜譯。測試逐項驗證 84-token coverage、
+兩語系與 65 個 pack／UI shared stable IDs 不漂移；產品層測試不再複製選項
+中文。真實 ECL1 新遊戲、Journey／General Store、火刀刀刃房及定身房路徑
+通過，marker `ROUND460_PLAYER_PATH_EXIT=0`。source audit 867→797：
+localization 372→302，frontend 135、runtime 360 不變；marker
+`ROUND460_AUDIT_EXIT=0`。正式 Docker／Xvfb／`--network none` 全套 gate
+通過，marker `ROUND460_FORMAL_EXIT=0`；一次性容器均以 `--rm` 完成，engine
+repo 本輪無變更。CoAB commit／push 待收尾；READY spec 460 是權威。下一步
+先補 `text_rules`／journal coverage，再移除
+仍有 279 次繁中 fallback 的 `localizeECLText／localizeECLLine／
+unlockJournalEntries`，不得直接刪除未證明分支。
