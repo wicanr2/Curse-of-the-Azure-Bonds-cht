@@ -727,6 +727,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `UnlockDoorWrapped` 或 Bash 規則；先得到 typed result，再解析顯示文字。
   未經第二款作品驗證，不得把 CoAB 門旗標抽成共用 engine 格式。READY spec
   484 是權威。
+- 第 485 輪把素材載入、AREA、GEO geometry、地城研究 preview 與世界地圖日期
+  二十四筆前端中文移入 typed diagnostic locale contract，baseline `262→238`、
+  frontend `50→26`。`LOAD PIECES` selectors／State `LoadPieces` 是 `uint16`，
+  禁止因樣本值小就 cast／縮窄成 `uint8`。Preview 門選項選完整 stable ID，
+  不拼接局部譯文；日期從 typed clock 格式化，不切割已翻譯時間全文。READY
+  spec 485 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

@@ -3739,3 +3739,14 @@ source audit `275→262`，frontend `63→50`、runtime 212、localization 0 不
 READY spec 484 與玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式
 全套 gate 已通過，marker `ROUND484_FORMAL_EXIT=0`；commit／push 與暫存清理
 待本輪收尾。
+
+2026-08-02 第四百八十五輪將 LOAD PIECES、缺 GEO、AREA 11×11、tile／geometry、
+地城結構 preview 與世界地圖日期共二十四筆前端中文移入 State typed diagnostic
+locale contract。Dynamic selectors、set／block、座標、方向、wall／roof、door
+flags 與 error 保持 runtime argument；門 options 由 Pick／Knock booleans 選四個
+完整 stable ID。Focused compile gate 證明 selectors／`LoadPieces` 是 `uint16`，
+helper 已修正而未 cast 縮窄。日期由 typed clock 產生，不再以全形空白切割譯文。
+source audit `262→238`，frontend `50→26`、runtime 212、localization 0 不變。
+READY spec 485 與玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式
+全套 gate 已通過，marker `ROUND485_FORMAL_EXIT=0`；commit／push 與暫存清理
+待本輪收尾。

@@ -54,3 +54,18 @@ renderer 最後只顯示 State 解析出的文字。動態錯誤與 spell ID 是
 門旗標、法術消耗及 geometry mutation 則永遠留在 typed state。這個分層方法可
 沿用其他 SSI RPG，但 `flags=2／3`、spell ID 與雙側牆面表示法仍是作品證據，
 未經第二款遊戲驗證前不能抽成 Golden Box 共用格式。
+
+## 研究預覽器與診斷
+
+素材 atlas、AREA、GEO 與地城 preview 常被視為「開發工具」，因而留下大量
+硬編碼文字。這會讓研究截圖無法切換語系，也容易把數值格式、錯誤與 renderer
+綁死。診斷 UI 應遵守和正式遊戲相同的 stable ID／format argument 原則，但要
+明確標為 preview，不得讓玩家誤認為原版畫面。
+
+動態 selector 必須保留來源型別。CoAB `LOAD PIECES` selector 是 `uint16`；即使
+已知值目前都很小，也不能為了配合顯示 helper 改成 `uint8`。另外，已翻譯的時間
+全文不是資料 API：世界地圖若只需日期，應從 typed clock 欄位重新格式化，而非
+依全形空白或中文字切割 `GameTimeText`。
+
+門選項等組合式診斷應由 typed booleans 選完整 stable ID，不在 renderer 拼接
+「撬鎖」「Knock」「離開」等局部片段。這能讓每個語系自行決定順序與標點。

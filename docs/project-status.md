@@ -113,7 +113,10 @@ commit 內保存不可能自我引用的 hash。
   language，不再在 renderer 固定 `zh-TW`。baseline 275、frontend debt 63。
   第 484 輪再把鎖門提示、地城 lifecycle 錯誤、Pick／Knock／Bash 結果與正常
   地城操作列移入 State typed locale contract；原門旗標、法術消耗與雙側解鎖
-  流程不變。baseline 262、frontend debt 50。
+  流程不變。baseline 262、frontend debt 50。第 485 輪再把素材載入、AREA、
+  GEO geometry、地城研究 preview 與世界地圖日期二十四筆文字移入 typed
+  diagnostic contract；`LOAD PIECES` selectors 保留 `uint16`，preview 不再拼接
+  門選項或切割翻譯後時間全文。baseline 238、frontend debt 26。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

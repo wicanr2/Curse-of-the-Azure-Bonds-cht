@@ -125,3 +125,76 @@ func TestDungeonOperationMessagesUseTypedFormalCatalog(t *testing.T) {
 		t.Fatalf("Knock unavailable=%q want=%q", got, want)
 	}
 }
+
+func TestPreviewDiagnosticContractUsesFormalCatalog(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	labels := []struct {
+		label PreviewLabel
+		key   string
+	}{
+		{PreviewLabelAreaGeoMissing, "preview_area_geo_missing"},
+		{PreviewLabelAreaSymbolsMissing, "preview_area_symbols_missing"},
+		{PreviewLabelAreaTitle, "preview_area_title"},
+		{PreviewLabelAreaOriginalViewport, "preview_area_original_viewport"},
+		{PreviewLabelAreaPartyMarker, "preview_area_party_marker"},
+		{PreviewLabelAreaDescription, "preview_area_description"},
+		{PreviewLabelAreaReturn, "preview_area_return"},
+		{PreviewLabelTileTitle, "preview_tile_title"},
+		{PreviewLabelGeoMissing, "preview_geo_missing"},
+		{PreviewLabelGeoCursorHelp, "preview_geo_cursor_help"},
+		{PreviewLabelDungeonTitle, "preview_dungeon_title"},
+		{PreviewLabelDungeonFloorMissing, "preview_dungeon_floor_missing"},
+		{PreviewLabelDungeonControls, "preview_dungeon_controls"},
+	}
+	for _, test := range labels {
+		if got, want := state.PreviewLabelText(test.label), catalog.Text(test.key, ""); got != want {
+			t.Errorf("preview label %d=%q want=%q", test.label, got, want)
+		}
+	}
+
+	err := fmt.Errorf("MISSING ASSET")
+	formats := []struct {
+		name string
+		got  string
+		key  string
+		args []any
+	}{
+		{"pieces failed", state.PreviewPiecesFailedText(err), "preview_pieces_failed", []any{err}},
+		{"pieces loaded", state.PreviewPiecesLoadedText(1, 2, 3), "preview_pieces_loaded", []any{uint16(1), uint16(2), uint16(3)}},
+		{"GEO missing", state.PreviewGeoMapMissingText(4, 0x2A), "preview_geo_map_missing", []any{uint8(4), uint8(0x2A)}},
+		{"AREA source", state.PreviewAreaSourceText(4, 0x2A), "preview_area_source", []any{uint8(4), uint8(0x2A)}},
+		{"AREA position", state.PreviewAreaPositionText(7, 9), "preview_area_position", []any{7, 9}},
+		{"AREA direction", state.PreviewAreaDirectionText("NORTH"), "preview_area_direction", []any{"NORTH"}},
+		{"GEO title", state.PreviewGeoTitleText("GEO4"), "preview_geo_title", []any{"GEO4"}},
+		{"dungeon status", state.PreviewDungeonStatusText(7, 9, "NORTH", 4, 0x2A), "preview_dungeon_status", []any{7, 9, "NORTH", uint8(4), uint8(0x2A)}},
+		{"dungeon wall", state.PreviewDungeonWallText(0x11, 0x82), "preview_dungeon_wall", []any{uint8(0x11), uint8(0x82)}},
+		{"door status", state.PreviewDungeonDoorStatusText(3), "preview_dungeon_door_status", []any{uint8(3)}},
+		{"dungeon pieces", state.PreviewDungeonPiecesText(1, 2, 3), "preview_dungeon_pieces", []any{uint16(1), uint16(2), uint16(3)}},
+	}
+	for _, test := range formats {
+		if want := fmt.Sprintf(catalog.Text(test.key, ""), test.args...); test.got != want {
+			t.Errorf("%s=%q want=%q", test.name, test.got, want)
+		}
+	}
+
+	doorCases := []struct {
+		pick, knock bool
+		key         string
+	}{
+		{false, false, "preview_dungeon_door_bash"},
+		{true, false, "preview_dungeon_door_pick"},
+		{false, true, "preview_dungeon_door_knock"},
+		{true, true, "preview_dungeon_door_pick_knock"},
+	}
+	for _, test := range doorCases {
+		if got, want := state.PreviewDungeonDoorHelpText(test.pick, test.knock), catalog.Text(test.key, ""); got != want {
+			t.Errorf("door pick=%v knock=%v got=%q want=%q", test.pick, test.knock, got, want)
+		}
+	}
+
+	state.gameClock[4], state.gameClock[5], state.gameClock[6] = 12, 3, 1362
+	if got, want := state.OverlandDateText(), fmt.Sprintf(catalog.Text("overland_date", ""), 12, 3, 1362); got != want {
+		t.Fatalf("overland date=%q want=%q", got, want)
+	}
+}

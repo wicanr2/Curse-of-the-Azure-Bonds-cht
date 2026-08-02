@@ -129,6 +129,120 @@ func (s *State) DungeonKnockUnavailableText(spellID uint8) string {
 	return fmt.Sprintf(s.catalog.Text("dungeon_knock_spell_unavailable", "dungeon_knock_spell_unavailable: 0x%02X"), spellID)
 }
 
+// PreviewLabel identifies research and asset-diagnostic chrome. These labels
+// remain localized even though they are not part of the original game UI.
+type PreviewLabel uint8
+
+const (
+	PreviewLabelAreaGeoMissing PreviewLabel = iota
+	PreviewLabelAreaSymbolsMissing
+	PreviewLabelAreaTitle
+	PreviewLabelAreaOriginalViewport
+	PreviewLabelAreaPartyMarker
+	PreviewLabelAreaDescription
+	PreviewLabelAreaReturn
+	PreviewLabelTileTitle
+	PreviewLabelGeoMissing
+	PreviewLabelGeoCursorHelp
+	PreviewLabelDungeonTitle
+	PreviewLabelDungeonFloorMissing
+	PreviewLabelDungeonControls
+)
+
+func (s *State) PreviewLabelText(label PreviewLabel) string {
+	key := "preview_unknown"
+	switch label {
+	case PreviewLabelAreaGeoMissing:
+		key = "preview_area_geo_missing"
+	case PreviewLabelAreaSymbolsMissing:
+		key = "preview_area_symbols_missing"
+	case PreviewLabelAreaTitle:
+		key = "preview_area_title"
+	case PreviewLabelAreaOriginalViewport:
+		key = "preview_area_original_viewport"
+	case PreviewLabelAreaPartyMarker:
+		key = "preview_area_party_marker"
+	case PreviewLabelAreaDescription:
+		key = "preview_area_description"
+	case PreviewLabelAreaReturn:
+		key = "preview_area_return"
+	case PreviewLabelTileTitle:
+		key = "preview_tile_title"
+	case PreviewLabelGeoMissing:
+		key = "preview_geo_missing"
+	case PreviewLabelGeoCursorHelp:
+		key = "preview_geo_cursor_help"
+	case PreviewLabelDungeonTitle:
+		key = "preview_dungeon_title"
+	case PreviewLabelDungeonFloorMissing:
+		key = "preview_dungeon_floor_missing"
+	case PreviewLabelDungeonControls:
+		key = "preview_dungeon_controls"
+	}
+	return s.catalog.Text(key, key)
+}
+
+func (s *State) PreviewPiecesFailedText(err error) string {
+	return fmt.Sprintf(s.catalog.Text("preview_pieces_failed", "preview_pieces_failed: %s"), err)
+}
+
+func (s *State) PreviewPiecesLoadedText(first, second, third uint16) string {
+	return fmt.Sprintf(s.catalog.Text("preview_pieces_loaded", "preview_pieces_loaded: %d/%d/%d"), first, second, third)
+}
+
+func (s *State) PreviewGeoMapMissingText(set, block uint8) string {
+	return fmt.Sprintf(s.catalog.Text("preview_geo_map_missing", "preview_geo_map_missing: %d/%02X"), set, block)
+}
+
+func (s *State) PreviewAreaSourceText(set, block uint8) string {
+	return fmt.Sprintf(s.catalog.Text("preview_area_source", "GEO%d/%02X"), set, block)
+}
+
+func (s *State) PreviewAreaPositionText(x, y int) string {
+	return fmt.Sprintf(s.catalog.Text("preview_area_position", "(%d,%d)"), x, y)
+}
+
+func (s *State) PreviewAreaDirectionText(direction string) string {
+	return fmt.Sprintf(s.catalog.Text("preview_area_direction", "%s"), direction)
+}
+
+func (s *State) PreviewGeoTitleText(label string) string {
+	return fmt.Sprintf(s.catalog.Text("preview_geo_title", "%s"), label)
+}
+
+func (s *State) PreviewDungeonStatusText(x, y int, direction string, set, block uint8) string {
+	return fmt.Sprintf(s.catalog.Text("preview_dungeon_status", "(%d,%d) %s GEO%d/%02X"), x, y, direction, set, block)
+}
+
+func (s *State) PreviewDungeonWallText(wall, roof uint8) string {
+	return fmt.Sprintf(s.catalog.Text("preview_dungeon_wall", "%02X/%02X"), wall, roof)
+}
+
+func (s *State) PreviewDungeonDoorStatusText(flags uint8) string {
+	return fmt.Sprintf(s.catalog.Text("preview_dungeon_door_status", "%d"), flags)
+}
+
+func (s *State) PreviewDungeonDoorHelpText(pick, knock bool) string {
+	key := "preview_dungeon_door_bash"
+	if pick && knock {
+		key = "preview_dungeon_door_pick_knock"
+	} else if pick {
+		key = "preview_dungeon_door_pick"
+	} else if knock {
+		key = "preview_dungeon_door_knock"
+	}
+	return s.catalog.Text(key, key)
+}
+
+func (s *State) PreviewDungeonPiecesText(first, second, third uint16) string {
+	return fmt.Sprintf(s.catalog.Text("preview_dungeon_pieces", "%d/%d/%d"), first, second, third)
+}
+
+func (s *State) OverlandDateText() string {
+	clock := s.GameTimeDisplay()
+	return fmt.Sprintf(s.catalog.Text("overland_date", "%d/%d/%d"), clock.Day, clock.Month, clock.Year)
+}
+
 // FileOperation identifies a player-facing persistence operation without
 // exposing locale keys to the platform adapter.
 type FileOperation uint8
