@@ -698,6 +698,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   並在讀檔時重解。測試用 source 經正式 pack 取得期望名稱，不可再複製「黑龍」
   等當前譯名。Exact overlay 不證明其他 SSI 遊戲共用 MON 格式；READY spec 479
   是權威。
+- 第 480 輪把 `drawCombat` 的 HP／AC、施法／移動 prompt、十二個法術快捷提示、
+  target／quick status 共 25 筆中文移入 State locale contract，baseline
+  `345→320`、frontend `133→108`。Renderer 只負責原版石框上的座標、字型、
+  顏色與顯示時機；typed casting／move／target state 決定 stable ID。測試必須
+  從正式 catalog 取得期望值，不能把當前提示全文貼入 frontend test。
+  READY spec 480 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

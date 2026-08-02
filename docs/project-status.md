@@ -99,7 +99,10 @@ commit 內保存不可能自我引用的 hash。
   MON 戰鬥者名稱移入 Engine `combatant_name_rules` 與 CoAB game-pack；save v11
   保存 `SourceName` 並依讀檔語系重解 active-combat 顯示名。真實鷹馬、黑龍、
   龍巫妖、散塔林與摩安德戰鬥路徑均改由 stable source 驗收。最新 baseline
-  為 345，`localization_debt` 已降為 0。
+  為 345，`localization_debt` 已降為 0。第 480 輪再把戰鬥 HUD 的 HP／AC、
+  施法／移動 prompts、十二個快捷提示與 target／quick status 移入正式 locale
+  contract；Ebiten `drawCombat` 只保留版面與顏色，baseline 降為 320、frontend
+  debt 108。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

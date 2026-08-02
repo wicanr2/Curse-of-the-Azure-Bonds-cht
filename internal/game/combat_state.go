@@ -2205,6 +2205,72 @@ func (s *State) CombatMainMenuText() string {
 	return s.catalog.Text("combat_menu_main", "移動　查看　瞄準　使用　施法　快速　結束")
 }
 
+func (s *State) CombatHitPointsLabel() string {
+	return s.catalog.Text("combat_hud_hit_points", "combat_hud_hit_points")
+}
+
+func (s *State) CombatArmorClassLabel() string {
+	return s.catalog.Text("combat_hud_armor_class", "combat_hud_armor_class")
+}
+
+// CombatSelectionPrompt owns the localized selection transaction while the
+// renderer remains responsible only for placement and color.
+func (s *State) CombatSelectionPrompt() (string, bool) {
+	if s.combatCastingSpell != 0 {
+		if s.combatCastingSpell == BlessSpellID {
+			return s.catalog.Text("combat_prompt_confirm_spell", "combat_prompt_confirm_spell"), true
+		}
+		key := "combat_prompt_select_fighter_target"
+		switch s.combatCastingSpell {
+		case FireballSpellID:
+			key = "combat_prompt_select_fireball_center"
+		case SleepSpellID:
+			key = "combat_prompt_select_sleep_center"
+		case LightningBoltSpellID:
+			key = "combat_prompt_select_lightning_direction"
+		case StinkingCloudSpellID:
+			key = "combat_prompt_select_stinking_cloud_corner"
+		case CloudkillSpellID:
+			key = "combat_prompt_select_cloudkill_center"
+		}
+		return s.catalog.Text(key, key), true
+	}
+	if s.combatMoveMode {
+		return fmt.Sprintf(s.catalog.Text("combat_prompt_move", "combat_prompt_move"), s.combatMoveRemaining), true
+	}
+	return "", false
+}
+
+func (s *State) CombatQuickSpellHints() []string {
+	hints := make([]string, 0, 12)
+	appendHint := func(available bool, key string) {
+		if available {
+			hints = append(hints, s.catalog.Text(key, key))
+		}
+	}
+	appendHint(s.CombatCanCastMagicMissile(), "combat_hint_magic_missile")
+	appendHint(s.CombatCanCastSleep(), "combat_hint_sleep")
+	appendHint(s.CombatCanCastFireball(), "combat_hint_fireball")
+	appendHint(s.CombatCanCastLightningBolt(), "combat_hint_lightning_bolt")
+	appendHint(s.CombatCanCastStinkingCloud(), "combat_hint_stinking_cloud")
+	appendHint(s.CombatCanCastCloudkill(), "combat_hint_cloudkill")
+	appendHint(s.CombatCanCastCureLightWounds(), "combat_hint_cure_light_wounds")
+	appendHint(s.CombatCanCastBless(), "combat_hint_bless")
+	appendHint(s.CombatCanCastCurse(), "combat_hint_curse")
+	appendHint(s.CombatCanCastCauseLightWounds(), "combat_hint_cause_light_wounds")
+	appendHint(s.CombatCanCastProtectionFromEvil(), "combat_hint_protection_from_evil")
+	appendHint(s.CombatCanCastProtectionFromGood(), "combat_hint_protection_from_good")
+	return hints
+}
+
+func (s *State) CombatTargetStatus(name string) string {
+	return fmt.Sprintf(s.catalog.Text("combat_target_status", "combat_target_status"), name)
+}
+
+func (s *State) CombatQuickStatus(hints []string) string {
+	return fmt.Sprintf(s.catalog.Text("combat_quick_status", "combat_quick_status"), strings.Join(hints, "　"))
+}
+
 func (s *State) CombatDoneMenuText() string {
 	options := make([]string, 0, 6)
 	if s.CombatCanGuard() {
