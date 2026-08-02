@@ -528,6 +528,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 449 輪已建立可重現的提朗瑟克斯 37 人終戰畫面：正常初始化 block
+  `43h`、經 terrain `97h` 樓梯與十步 GEO 路線抵達 terrain `9Ah`，並以
+  runtime 斷言 `45h×28／47h×1／48h×8`。大型 CombatMap 正式鏡頭依
+  RuleBook 跟隨主動角色；README 圖片的 `47h` 首領焦點只在
+  `-inner-final-battle`＋`-screenshot` 啟用，不可誤搬進正式玩法。日常回歸
+  依使用者指示採代表性 vertical slice／高風險狀態抽樣，不必每輪從開場
+  marathon 到結局；完整端到端仍是發行前驗收門檻。READY spec 449 是權威。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

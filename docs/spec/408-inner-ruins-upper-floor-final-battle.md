@@ -93,9 +93,10 @@ terrain `97h` 上樓至 `(2,5,N)`；再沿十步合法路線抵達 `(6,1)`：
   boundary 保留 LOAD MONSTER setup。
 - `TestRealPlayerPathStandingStoneToBurialGlen`：Standing Stone 起始長路徑、
   一樓、西翼、樓梯、二樓、正式終戰 scheduler 與勝利選單。
-- 曾以 exact ECL 起點 `ECL6 block 43h:+13C5h` 直接進入視覺 checkpoint，
-  但目前預覽隊伍會先被擊敗，所得結果頁不能作為終戰畫面證據，故未納入
-  README。視覺驗收仍待建立可重現、凍結時間軸且不改寫戰鬥結果的 capture。
+- 第 449 輪已由正常 block 初始化、terrain `97h` 樓梯與十步 GEO 路線建立
+  可重現的 37 人終戰 checkpoint，並保存 640×480 首領觀察畫面；它取代早期
+  直接 ECL 起點且只得到戰敗頁的嘗試。證據等級與 capture-only 鏡頭限制見
+  [`spec 449`](449-tyranthraxus-final-battle-camera-checkpoint.md)。
 
 ## 尚未完成
 

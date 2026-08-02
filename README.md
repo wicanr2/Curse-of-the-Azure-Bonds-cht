@@ -978,10 +978,18 @@ COMBAT，現在只在有完整 dungeon ECL session 證據時立即續跑，不�
 未知零敵人事件一律吞掉。房間、樓梯、旗標、完整路線與限制見
 [`spec 408`](docs/spec/408-inner-ruins-upper-floor-final-battle.md)。
 
+第 449 輪另以正常 block 初始化、原版樓梯 transaction 與上述十步路線建立
+可重現終戰畫面。下圖啟用截圖專用的提朗瑟克斯觀察鏡頭，因此能直接看見
+原始 37 人陣形；正式遊戲鏡頭仍依 RuleBook 跟隨目前主動角色。觀察鏡頭只
+改變 renderer transform，沒有搬動敵軍、跳過 ECL 或改寫 AI。
+
+![迷斯卓諾提朗瑟克斯終戰 37 人原始陣形與 640×480 繁中介面](docs/screenshots/myth-drannor-tyranthraxus-final-battle.png)
+
 這表示 Standing Stone 起始的累積長回歸已完成迷斯卓諾章節與終戰 handoff；
 它仍不是「全新角色從開場一路通關」的證據。提朗瑟克斯、祭司與石像鬼的
-完整法術、特殊能力、AI、死亡動畫、音效及 DOS 動態演出也仍未完成。本輪
-嘗試的直接終戰截圖只得到預覽隊伍戰敗頁，因而未放入 README 冒充完成畫面。
+完整法術、特殊能力、AI、死亡動畫、音效及 DOS 動態演出也仍未完成。畫面
+證據等級、預覽隊伍限制與鏡頭修正見
+[`spec 449`](docs/spec/449-tyranthraxus-final-battle-camera-checkpoint.md)。
 
 第 410／411 輪開始逐項還原這場終戰的真實怪物效果。PC-98
 Borland 紀號、IDA 與 raw bytes 已證明 `MON*SPC` 天生能力不能被

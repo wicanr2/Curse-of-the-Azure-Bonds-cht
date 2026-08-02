@@ -87,6 +87,7 @@ type app struct {
 	combatSpriteIDs       []string
 	combatTerrain         map[string][]*ebiten.Image
 	combatTerrainMode     string
+	combatPreviewFocus    uint8
 	gamePack              *goldenengine.Pack
 	combatFrame           *ebiten.Image
 	adventureFrame        *ebiten.Image
@@ -1958,9 +1959,12 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	useCamera := havePosition && (minX < 0 || maxX > 6 || minY < 0 || maxY > 6)
 	if useCamera {
-		cameraFocus = combat.TilePoint{X: (minX + maxX + 1) / 2, Y: (minY + maxY + 1) / 2}
+		cameraFocus = combatCameraFocus(active, activeOK, minX, maxX, minY, maxY)
 	} else if activeOK {
 		cameraFocus = combat.TilePoint{X: active.CombatX, Y: active.CombatY}
+	}
+	if focus, ok := combatPreviewFocus(a.state.CombatFighters(), a.combatPreviewFocus); ok {
+		cameraFocus = focus
 	}
 	camera := combat.NewCombatCamera(
 		cameraFocus,
@@ -2146,6 +2150,25 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if len(spellHints) > 0 {
 		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
 	}
+}
+
+func combatCameraFocus(active combat.Fighter, activeOK bool, minX, maxX, minY, maxY int) combat.TilePoint {
+	if activeOK && active.HasCombatPosition {
+		return combat.TilePoint{X: active.CombatX, Y: active.CombatY}
+	}
+	return combat.TilePoint{X: (minX + maxX + 1) / 2, Y: (minY + maxY + 1) / 2}
+}
+
+func combatPreviewFocus(fighters []combat.Fighter, spriteBlock uint8) (combat.TilePoint, bool) {
+	if spriteBlock == 0 {
+		return combat.TilePoint{}, false
+	}
+	for _, fighter := range fighters {
+		if fighter.Side == combat.SideEnemy && fighter.SpriteBlock == spriteBlock && fighter.HasCombatPosition {
+			return combat.TilePoint{X: fighter.CombatX, Y: fighter.CombatY}, true
+		}
+	}
+	return combat.TilePoint{}, false
 }
 
 func (a *app) drawCombatPersistentAreas(screen *ebiten.Image, camera combat.CombatCamera) {
@@ -2962,6 +2985,7 @@ func main() {
 	burialGraveBattle := flag.Bool("burial-grave-battle", false, "show the Burial Glen grave-looter thri-kreen battle")
 	burialDaemir := flag.Bool("burial-daemir", false, "show Princess Daemir's Burial Glen blessing choice")
 	innerRitual := flag.Bool("inner-ritual", false, "show the Tyranthraxus/Nameless inner-ruins ritual checkpoint")
+	innerFinalBattle := flag.Bool("inner-final-battle", false, "show the original 37-enemy Tyranthraxus final-battle boundary")
 	worldMapPreview := flag.Bool("world-map", false, "show the original BIGPIC overland map for deterministic visual verification")
 	areaMapPreview := flag.Bool("area-map", false, "show the GEO overhead AREA map for deterministic visual verification")
 	encounterBlock := flag.Int("encounter-block", 81, "ECL block for -encounter")
@@ -3006,9 +3030,9 @@ func main() {
 	if (*dungeonXOverride == -1) != (*dungeonYOverride == -1) || *dungeonXOverride < -1 || *dungeonXOverride >= geo.Width || *dungeonYOverride < -1 || *dungeonYOverride >= geo.Height {
 		log.Fatal("-dungeon-x and -dungeon-y must both be omitted or both be 0..15")
 	}
-	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual {
+	if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual || *innerFinalBattle {
 		*geoSet = 6
-		if *innerRitual {
+		if *innerRitual || *innerFinalBattle {
 			*geoBlock = 0x43
 		} else {
 			*geoBlock = 0x40
@@ -3246,7 +3270,7 @@ func main() {
 		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
 			log.Fatal(err)
 		}
-	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual {
+	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual || *innerFinalBattle {
 		if err := state.OpenCharacterCreation(); err != nil {
 			log.Fatal(err)
 		}
@@ -3257,7 +3281,7 @@ func main() {
 			log.Fatal(err)
 		}
 		previewBlock, previousBlock := uint8(0x40), uint8(0x50)
-		if *innerRitual {
+		if *innerRitual || *innerFinalBattle {
 			previewBlock, previousBlock = 0x43, 0x42
 		}
 		if err := state.StartDungeonStoryPreview(previewBlock, previousBlock, 6); err != nil {
@@ -3268,7 +3292,11 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-		if *innerRitual {
+		if *innerFinalBattle {
+			if err := prepareInnerFinalBattlePreview(&state, geoGrid); err != nil {
+				log.Fatal(err)
+			}
+		} else if *innerRitual {
 			if state.Mode == game.ModeWilderness {
 				if err := state.Select(0); err != nil {
 					log.Fatal(err)
@@ -3549,6 +3577,11 @@ func main() {
 		visualStarted = time.Now().Add(-offset)
 	}
 	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	if *innerFinalBattle && *screenshotPath != "" {
+		// Capture-only boss observation camera. Formal play keeps the RuleBook
+		// active-fighter camera established above.
+		gameApp.combatPreviewFocus = 0x47
+	}
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if *partyLoadPath != "" {
@@ -3593,6 +3626,133 @@ func prepareSewerCheckpoint(state *game.State, guildGrid, sewerGrid *geo.Grid) e
 	state.DungeonWallRoof = sewerGrid.CellWrapped(1, 8).Terrain
 	if err := state.RunDungeonLifecycle(); err != nil {
 		return fmt.Errorf("enter Fire Knife checkpoint: %w", err)
+	}
+	return nil
+}
+
+func prepareInnerFinalBattlePreview(state *game.State, grid *geo.Grid) error {
+	if state.Mode == game.ModeWilderness {
+		if err := state.Select(0); err != nil {
+			return fmt.Errorf("enter inner ruins for final-battle preview: %w", err)
+		}
+	}
+	if state.Mode != game.ModeDungeon {
+		return fmt.Errorf("final-battle preview initialization ended in mode %v", state.Mode)
+	}
+	previewParty := state.PartyFighters()
+	if len(previewParty) == 0 {
+		return fmt.Errorf("final-battle preview has no party")
+	}
+	for index := range previewParty {
+		previewParty[index].HitPoints, previewParty[index].MaxHitPoints = 999, 999
+		previewParty[index].ArmorClass = -10
+		previewParty[index].AttackBonus = 100
+		previewParty[index].DamageDiceCount, previewParty[index].DamageDiceSides = 1, 1
+		previewParty[index].DamageBonus = 100
+		previewParty[index].AttacksPerTurn = 8
+		previewParty[index].InitiativeBonus = 100
+	}
+	if err := state.SetParty(previewParty); err != nil {
+		return fmt.Errorf("install bounded final-battle preview party: %w", err)
+	}
+	// The direct visual checkpoint starts after the separately verified final
+	// ritual. This is preview context only: terrain 9Ah still dispatches the
+	// original ECL text, monster records and combat boundary.
+	state.SetECLMemoryValue(0x4C00, 1)
+	state.SetECLMemoryValue(0x4CBD, 1)
+	state.SetECLMemoryValue(0x4CC7, 1)
+	// Enter the second floor through terrain 97h so the original staircase
+	// transaction establishes its floor-local context. The remaining ten
+	// steps are the shortest legal route recorded by READY spec 408.
+	state.SetDungeonGeometryView(10, 7, 2)
+	state.DungeonWallRoof = grid.CellWrapped(10, 7).Terrain
+	if err := state.RunDungeonLifecycle(); err != nil {
+		return fmt.Errorf("enter inner-ruins staircase terrain 97: %w", err)
+	}
+	if state.Mode != game.ModeWilderness || len(state.Choices) == 0 {
+		return fmt.Errorf("inner-ruins staircase did not request ascent: mode=%v choices=%v", state.Mode, state.Choices)
+	}
+	if err := state.Select(0); err != nil {
+		return fmt.Errorf("ascend inner-ruins staircase: %w", err)
+	}
+	route := []struct {
+		x, y      int
+		direction uint8
+	}{
+		{2, 4, 0}, {2, 3, 0}, {2, 2, 0}, {2, 1, 0}, {2, 0, 0},
+		{3, 0, 2}, {4, 0, 2}, {5, 0, 2}, {6, 0, 2}, {6, 1, 4},
+	}
+	for index, point := range route {
+		state.SetDungeonGeometryView(point.x, point.y, point.direction)
+		state.DungeonWallRoof = grid.CellWrapped(point.x, point.y).Terrain
+		if err := state.RunDungeonLifecycle(); err != nil {
+			return fmt.Errorf("final route step %d: %w", index, err)
+		}
+		for boundary := 0; index < len(route)-1 && state.Mode != game.ModeDungeon && boundary < 6; boundary++ {
+			if state.CombatActive() {
+				for action := 0; action < 256 && state.CombatActive(); action++ {
+					if err := state.CombatAct(); err != nil {
+						return fmt.Errorf("resolve final route step %d combat: %w", index, err)
+					}
+					if event, ok := state.CombatVisualEvent(); ok {
+						if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+							return fmt.Errorf("advance final route step %d combat visual: %w", index, err)
+						}
+					}
+				}
+				if state.CombatActive() || state.CombatStatus() != combat.StatusPartyWon {
+					return fmt.Errorf("final route step %d combat status=%v active=%v", index, state.CombatStatus(), state.CombatActive())
+				}
+				continue
+			}
+			switch state.Mode {
+			case game.ModeEvent:
+				if err := state.Continue(); err != nil {
+					return fmt.Errorf("continue final route step %d: %w", index, err)
+				}
+			case game.ModeWilderness:
+				if len(state.Choices) == 0 {
+					return fmt.Errorf("final route step %d pause has no choice", index)
+				}
+				if err := state.Select(0); err != nil {
+					return fmt.Errorf("advance final route step %d: %w", index, err)
+				}
+			default:
+				return fmt.Errorf("final route step %d stopped in mode %v", index, state.Mode)
+			}
+		}
+		if index < len(route)-1 && state.Mode != game.ModeDungeon {
+			return fmt.Errorf("final route step %d did not resume dungeon mode", index)
+		}
+	}
+	for step := 0; step < 8 && !state.CombatActive(); step++ {
+		switch state.Mode {
+		case game.ModeEvent:
+			if err := state.Continue(); err != nil {
+				return fmt.Errorf("continue final confrontation: %w", err)
+			}
+		case game.ModeWilderness:
+			if len(state.Choices) == 0 {
+				return fmt.Errorf("final confrontation pause has no choice")
+			}
+			if err := state.Select(0); err != nil {
+				return fmt.Errorf("advance final confrontation: %w", err)
+			}
+		default:
+			return fmt.Errorf("final confrontation stalled in mode %v", state.Mode)
+		}
+	}
+	if !state.CombatActive() {
+		return fmt.Errorf("final confrontation did not reach combat")
+	}
+	counts := map[uint8]int{}
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			counts[fighter.SpriteBlock]++
+		}
+	}
+	if counts[0x45] != 28 || counts[0x47] != 1 || counts[0x48] != 8 {
+		return fmt.Errorf("final confrontation enemies=%v", counts)
 	}
 	return nil
 }
