@@ -162,7 +162,8 @@ commit 內保存不可能自我引用的 hash。
   `audio/cyclepcm` 會積分 pulse duty cycle，作品 adapter 可用 V30 8 MHz
   profile 重建 deterministic one-shot；正式 Ebiten 開場已在
   Docker／Xvfb／ALSA null device 載入。仍缺原機 wall-clock／wait 校準、
-  `27h` reload phase、save/resume 與 analog mixer gain。
+  `27h` reload phase、實體裝置 loopback 與 analog mixer gain；remake BGM／
+  one-shot save/resume 已由 spec 447／448 完成。
 - 真實連續主線已由開場延伸到散塔林堡：內城奧莉芙事件、手札 50／51、
   `ECL4/GEO4 0x20→0x21` 密道、神殿 `(10,6,N)` 操作權、南方牢房導航、
   迪姆斯沃特同行、手札 12 六頁、兜帽女子離場、手札 30／7、弗佐爾死亡、
@@ -540,9 +541,14 @@ commit 內保存不可能自我引用的 hash。
   YM2203 full state、resampler remainder、Timer B、transition silence、pending
   PCM 與 Ebiten audible/read-ahead backlog 均可 round-trip。engine `f06493f`
   提供作品中立 ymfm／resampler snapshot。合成七聲道 fixture 從第一個 audible
-  sample續跑一致；本機缺 exact 完整 MSCDRV，故十二首真實曲目 runtime oracle、
-  active one-shot sample position及原版 SAVGAM audio仍未完成。READY spec 447
+  sample續跑一致；本機缺 exact 完整 MSCDRV，故十二首真實曲目 runtime oracle
+  與原版 SAVGAM audio仍未完成。READY spec 447
   是權威。
+- 第 448 輪將 remake JSON save 升至 v9：DOS WAV 與 PC-98 software-speaker
+  會保存仍在播放的 stable selector／event、enabled 狀態與 44,100 Hz audible
+  sample frame。多音效可同時續跑；自然結束、停用或舊版未保存的音效不復活；
+  backend／asset／seek 錯誤會先停止 pre-load 聲音並失敗即關閉。這是 remake
+  player continuation，不代表原版 SAVGAM audio 已解；READY spec 448 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
@@ -576,7 +582,8 @@ commit 內保存不可能自我引用的 hash。
   `27h=20h→0Ah` 間的七聲道 interpreter 是資料相依路徑，仍缺 CPU／OPN
   共時 trace，現行 instant-ISR renderer 明確維持 phase 0。目前仍缺原機
   edge trace／機型 wait／prefetch 校準、
-  driver 內部 FM SFX 的真實 producer、save/resume、analog mixer gain 與
+  driver 內部 FM SFX 的真實 producer、十二曲 exact-driver runtime
+  save/resume oracle、analog mixer gain 與
   CoAB 真實 Timer B reload phase。MSCDRV Timer B-only
   IRQ ownership 及 faithful BGM 不執行 Sound BIOS LFO 已證明；六種
   LFO waveform、完整 Timer B count period 與 PCM 有理數 accumulator

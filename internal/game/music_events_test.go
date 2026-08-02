@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 )
@@ -26,6 +27,37 @@ func TestActiveECLBlockRequestsPC98MusicSelector(t *testing.T) {
 	}
 	if got := state.ConsumeMusicEvents(); len(got) != 0 {
 		t.Fatalf("music events were not consumed: %+v", got)
+	}
+}
+
+func TestRemakeSaveRestoresDefensiveOneShotSnapshot(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Abilities: party.Abilities{Strength: 12, Intelligence: 10, Wisdom: 10, Dexterity: 11, Constitution: 12, Charisma: 10},
+	}}
+	want := audiostate.Snapshot{Version: audiostate.CurrentVersion, Enabled: true, OneShots: []audiostate.OneShot{{
+		Backend: audiostate.BackendPC98Speaker, Key: "spell_hit", PositionFrames: 777,
+	}}}
+	if err := state.SetOneShotPlaybackSnapshot(&want); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "audio-save-v9.json")
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(testCatalog())
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	got, ok := loaded.OneShotPlaybackSnapshot()
+	if !ok || !reflect.DeepEqual(*got, want) {
+		t.Fatalf("loaded one-shot snapshot=%+v ok=%v", got, ok)
+	}
+	got.OneShots[0].Key = "mutated"
+	second, _ := loaded.OneShotPlaybackSnapshot()
+	if second.OneShots[0].Key != "spell_hit" {
+		t.Fatal("one-shot snapshot getter leaked mutable records")
 	}
 }
 

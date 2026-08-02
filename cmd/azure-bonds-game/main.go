@@ -311,8 +311,32 @@ func (a *app) saveCurrentGame() error {
 		if err := a.state.SetMusicPlaybackSnapshot(snapshot); err != nil {
 			return err
 		}
+		oneShots, err := a.soundPlayer.SnapshotOneShots()
+		if err != nil {
+			return fmt.Errorf("snapshot one-shot audio: %w", err)
+		}
+		if err := a.state.SetOneShotPlaybackSnapshot(&oneShots); err != nil {
+			return err
+		}
+	} else if err := a.state.SetOneShotPlaybackSnapshot(nil); err != nil {
+		return err
 	}
 	return a.state.SavePartyFile(a.partyPath)
+}
+
+func (a *app) restoreAudioSnapshot() error {
+	if a.soundPlayer != nil {
+		if snapshot, ok := a.state.OneShotPlaybackSnapshot(); ok {
+			if err := a.soundPlayer.RestoreOneShots(*snapshot); err != nil {
+				return fmt.Errorf("restore one-shot audio: %w", err)
+			}
+		} else {
+			// Saves before v9 cannot identify an audible one-shot position. Stop
+			// pre-load effects instead of leaking them into the restored world.
+			a.soundPlayer.StopOneShots()
+		}
+	}
+	return a.restoreMusicSnapshot()
 }
 
 func (a *app) restoreMusicSnapshot() error {
@@ -605,8 +629,8 @@ func (a *app) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
 		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
 			a.state.Message = "載入失敗：" + err.Error()
-		} else if err := a.restoreMusicSnapshot(); err != nil {
-			a.state.Message = "音樂續跑失敗：" + err.Error()
+		} else if err := a.restoreAudioSnapshot(); err != nil {
+			a.state.Message = "音訊續跑失敗：" + err.Error()
 		} else {
 			a.state.Message = "隊伍已載入：" + a.partyPath
 			a.choiceCursor = 0
@@ -3528,7 +3552,7 @@ func main() {
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if *partyLoadPath != "" {
-		if err := gameApp.restoreMusicSnapshot(); err != nil {
+		if err := gameApp.restoreAudioSnapshot(); err != nil {
 			log.Fatal(err)
 		}
 	}

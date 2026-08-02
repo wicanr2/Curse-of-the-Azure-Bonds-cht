@@ -286,6 +286,12 @@ PCM。這是值得跨作品沿用的分層：
 3. 共用 renderer 只做無 drift 的 sample integration；
 4. runtime mixer 使用語意事件選擇平台 backend。
 
+存檔也必須維持同一分層。第 448 輪只保存 backend identity、stable selector／
+event、enabled 與 audible sample frame，不把 WAV、PC-98 program 或作品素材塞進
+JSON。自然結束的 voice 不得復活；若 backend 不吻合，要先停止 pre-load voice
+再失敗即關閉。這讓後續 Gold Box 作品可以沿用 persistence contract，但每款作品
+仍需自行證明 selector／event 對映。CoAB 細節見 READY spec 448。
+
 目前 8 MHz profile 已可播放且 deterministic。第 381 輪已讓 NP2kai
 i286c/V30 core 直接執行 exact routine，證明 OUT 順序，卻同時證明該 core
 沿用 80286 `LOOP taken=8／exit=4`，不能作原機 V30 wall-clock oracle。

@@ -575,8 +575,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   sequence machine、renderer parameter、YM2203 opaque full state、resampler
   remainder、Timer B、silence、pending PCM 與 audible/read-ahead backlog。只存
   selector／tick 或 decoder current position 都會錯。engine `f06493f` 是作品
-  中立 synth／resampler 基底；active one-shot 與 exact driver 十二曲 runtime
-  oracle仍未完成。READY spec 447 是權威。
+  中立 synth／resampler 基底；exact driver 十二曲 runtime oracle仍未完成。
+  READY spec 447 是權威。
+- 第 448 輪把 remake JSON save 升至 v9；DOS WAV／PC-98 speaker active one-shot
+  以 backend＋stable selector／event＋44,100 Hz audible frame保存，並連同 enabled
+  狀態 round-trip。只保存 `IsPlaying` 在 Position 前後都成立的 voice；自然結束、
+  停用及舊版未保存的音效不能復活。backend／asset／seek 不符必須先停止 pre-load
+  voice 並失敗即關閉。這是 remake continuation，不是原版 SAVGAM audio；READY
+  spec 448 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

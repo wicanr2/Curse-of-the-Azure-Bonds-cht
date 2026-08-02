@@ -8,6 +8,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
@@ -307,7 +308,7 @@ func (s *State) SavePartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	data, err := partySave.EncodeGameWithAudio(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot())
+	data, err := partySave.EncodeGameWithAudioState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot())
 	if err != nil {
 		return err
 	}
@@ -737,7 +738,12 @@ func (s *State) LoadPartyFile(path string) error {
 	}
 	s.activeMusicTrackID = ""
 	s.musicPlaybackSnapshot = nil
+	s.oneShotPlaybackSnapshot = nil
 	s.pendingMusicEvents = nil
+	if file.OneShotAudio != nil {
+		copy := audiostate.Clone(*file.OneShotAudio)
+		s.oneShotPlaybackSnapshot = &copy
+	}
 	if file.Music != nil {
 		if s.dataPack != nil {
 			track, found := s.dataPack.FindMusicTrack(file.Music.TrackID)

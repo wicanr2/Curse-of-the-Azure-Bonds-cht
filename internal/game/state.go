@@ -14,6 +14,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dungeon"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
@@ -172,6 +173,7 @@ type State struct {
 	pendingMusicEvents      []MusicEvent
 	activeMusicTrackID      string
 	musicPlaybackSnapshot   *pc98music.TrackPCMStreamSnapshot
+	oneShotPlaybackSnapshot *audiostate.Snapshot
 	pendingECLCalls         []uint16
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn
