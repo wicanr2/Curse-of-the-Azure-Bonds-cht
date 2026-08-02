@@ -11,7 +11,7 @@
 
 截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `134f036`；實際
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `73c0144`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -27,6 +27,14 @@ CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `134f036`�
 remake scheduler 已按四個 raw IDs 接通，沒有把所有施法取消錯誤合併成毒雲術
 規則；Sleep／Hold 等動態法術 writer 仍未完成。證據見
 [`docs/spec/431-pc98-held-effects-clear-action-without-slot-consumption.md`](docs/spec/431-pc98-held-effects-clear-action-without-slot-consumption.md)。
+
+第 432 輪已把動態 Sleep writer 向前推進到可重用規則：PC-98 全域法術
+`15h` exact dispatch 到 overlay 22 entry 41，先擲 `4d4`，再按原候選順序
+以 HD 成本 `1／2／4／6／10或20／20` 篩選，已有 effect `35h` 或容量不足者
+略過但不中止後續掃描。獨立 engine 已保存這個作品中立 primitive；原版目標
+幾何、豁免、duration、動畫／音效與正常玩家施法路徑仍未完成，因此 UI 尚不
+會把睡眠術冒充完整可用。證據見
+[`docs/spec/432-pc98-sleep-hd-capacity-filter.md`](docs/spec/432-pc98-sleep-hd-capacity-filter.md)。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
 `pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存
