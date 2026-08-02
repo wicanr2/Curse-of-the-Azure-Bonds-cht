@@ -95,6 +95,24 @@ caller 先確認目標仍在戰鬥，再把 `attackSlotIndex+1` 交給共用 `CH
 原版動畫、sound cue 與 wall-clock timing 是另一條 presentation oracle，不能
 由傷害 handler 自行推定。數值核心完成不等於動態演出完成。
 
+## 持續效果 writer 與魔抗順序
+
+CoAB PC-98 `EFFECTS` module 的 resident `013E:0089h` 必須以 overlay 23
+control segment 解析；exact 落到 entry 21、local `2325h PUTEFFECT`。相同
+stub offset 若套到 overlay 12 會得到無關 handler，不能跨 module 合併。
+
+對 Sleep 這類已先建立 ordered targets 的持續效果，原版順序是：
+
+1. 專屬 handler 先消耗容量／篩選候選；
+2. `PUTEFFECT` 設 current effect，再以 `CHECKFX(target,9)` 觸發既有防護；
+3. 魔抗成功只阻止 record 寫入，不退還已消耗的容量；
+4. 成功才由 `ADDEFFECT` 寫九 byte record 並連入效果鏈。
+
+這形成可重用的 transaction boundary：作品中立引擎可保存「filter → resist →
+write」順序，但 effect ID、duration、`CASTON`、record payload、訊息與動畫都要由
+各 game pack 的 bytes／規格提供。不得把 CoAB 的 `35h` 或五倍等級直接當成
+所有 Gold Box 的共同常數。
+
 ## 可重現入口
 
 - `docs/spec/410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md`
@@ -102,5 +120,6 @@ caller 先確認目標仍在戰鬥，再把 `attackSlotIndex+1` 交給共用 `CH
 - `docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md`
 - `docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md`
 - `docs/spec/414-pc98-post-hit-effect-4f-runtime.md`
+- `docs/spec/434-pc98-sleep-puteffect-magic-resistance.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`
 - `scripts/ida/pc98_attack_effect_phase_audit.idc`

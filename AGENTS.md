@@ -586,6 +586,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   exact 為 `5×caster level`。`SCAN` 幾何欄位、large footprint／tie order、
   magic resistance、完整 `PUTEFFECT`、解除與演出仍未閉合；不得提前開放
   Sleep。READY spec 433 是權威，spec 432 的舊 targeting 敘述已 supersede。
+- 第 434 輪以 `EFFECTS 013E:0089h → overlay 23 entry 21 → PUTEFFECT
+  2325h` 關閉上一輪 module projection。Sleep 的順序是先完成 `4d4`／HD
+  容量，再按 selected order 進 `CHECKFX(target,9)`；`6Ah` 魔抗成功會清
+  current effect 並跳過 writer，但不退容量。成功 exact 寫 `35h`、
+  `5×caster level`、`CASTON=1` 與 raw `+4=caster level`。remake 只新增接受
+  上游 ordered IDs 的 bounded core，不自行猜 `SCAN` 幾何；手動／Quick UI、
+  解除、save round-trip 與演出仍未完成。READY spec 434 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

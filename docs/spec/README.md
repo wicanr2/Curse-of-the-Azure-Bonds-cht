@@ -395,3 +395,4 @@
 - [第四百三十一輪 PC-98 held effects 清除 Action](./431-pc98-held-effects-clear-action-without-slot-consumption.md)（`READY`：`1Fh／33h／34h／35h` 共用 CLEARACTION、不消耗 memorized slot；動態法術 writer 待續）
 - [第四百三十二輪 PC-98 睡眠術 HD 容量篩選](./432-pc98-sleep-hd-capacity-filter.md)（`READY`：限全域 `15h` dispatch、`4d4` 與 ordered HD 成本；目標幾何／豁免／演出待續）
 - [第四百三十三輪 PC-98 睡眠術戰鬥目標入口與持續時間](./433-pc98-sleep-combat-targeting-and-duration.md)（`READY`：combat targeting dispatch、`AOECOMBAT=9`、無豁免與 `5×施法者等級`；魔抗／完整 effect writer／演出待續）
+- [第四百三十四輪 PC-98 睡眠術 PUTEFFECT 與魔法抗性](./434-pc98-sleep-puteffect-magic-resistance.md)（`READY`：ordered targets 後的魔抗、raw effect `35h` writer 與 bounded core；SCAN 實機幾何／UI／解除／演出待續）

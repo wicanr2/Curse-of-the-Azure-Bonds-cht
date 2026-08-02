@@ -458,6 +458,13 @@ commit 內保存不可能自我引用的 hash。
   targeting dispatch／排序骨架與 writer 參數的 bounded READY milestone；
   `SCAN` 幾何欄位、large footprint／tie order runtime、magic resistance、
   完整 `PUTEFFECT`、解除條件、動畫／音效及正常施法路徑仍未完成。
+- 第 434 輪 exact 解析 `013E:0089h` 為 overlay 23 `PUTEFFECT 2325h`，並
+  閉合 Sleep 在容量篩選後的 `CHECKFX type 9 → 6Ah` 魔抗與
+  `ADDEFFECT 35h` writer。bounded `CastSleepOrdered` 保留四次 d4、target
+  order、魔抗 d100、容量不退還及 raw `+0..+4`；未知／重複 target
+  失敗即關閉，隊伍／死亡仍留在上游。這不是 UI 完成：`SCAN`
+  terrain／footprint／tie 實機、
+  手動／Quick delayed cast、效果解除、存檔、twinkle／聲音與玩家路徑仍待續。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -1,7 +1,8 @@
 # 第 433 輪：PC-98 睡眠術戰鬥目標入口與持續時間
 
 狀態：`READY`（限 combat targeting dispatch、`AOECOMBAT=9` 分支、無豁免與
-`5 × caster level` 持續時間；魔法抗性、完整 `PUTEFFECT` 與畫面演出待續）
+`5 × caster level` 持續時間；魔法抗性與 `PUTEFFECT` 已由 spec 434 接續，
+畫面演出仍待續）
 
 ## 結論
 
@@ -123,4 +124,3 @@ Sleep handler `2656h..2676h` 以 spell `15h` 和四個零參數進入 common wri
    第二／三欄、large footprint 與 tie order。
 3. 證據閉合後才接 engine target-order adapter、Battle effect lifecycle、
    手動／Quick delayed cast、法術格消耗、繁中訊息、動畫與聲音。
-

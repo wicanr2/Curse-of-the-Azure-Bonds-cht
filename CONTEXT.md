@@ -3119,3 +3119,25 @@ tie order runtime、magic resistance、`PUTEFFECT` 完整 record、解除與演�
 全新唯讀 overlay 工作副本重建：overlay 13／31 ledger 分別為 959／443 行，
 並核對 SHA-256；原始 overlays 與既有 IDA database 均未修改。READY spec 433
 是本輪權威，spec 432 的舊 targeting 敘述已明確 supersede。
+
+2026-08-02 第四百三十四輪由 Borland `EFFECTS` symbols、typed TPOV resolver
+及唯讀 IDA ledger 訂正 `PUTEFFECT` projection：`013E:0089h` 應以 overlay 23
+解析，exact 為 entry 21／local `2325h`；先前 `12:0089h` 的 local `043Ah`
+屬另一 control segment，已推翻。新 `/tmp/coab-ida-434` overlay 23 工作副本
+輸出 729 行非空報告，SHA-256 為
+`a3ea0d9528be57a92c33fc345baa3e27eef375c84822afba0cfbb141c2faabc9`，
+原始 binary 與既有 database 未修改。
+
+Sleep 在四次 d4／ordered HD filter 後逐 target 進 `PUTEFFECT`：先寫
+`A02D=CASTON(1)`，呼叫 `CHECKFX(target,9)`；operational `6Ah` 依既有 exact
+公式擲 d100，成功清 `A02D`、顯示 CP932「には影響がなかった。」並跳過
+`ADDEFFECT`，但不退容量。成功 record exact 為 kind `35h`、duration
+`5×caster level`、raw `+3=1`、`+4=caster level`。CoAB 新增
+`CastSleepOrdered` bounded core 與 raw `+4／Player+74h` 保存；它不猜 SCAN
+幾何，也未開手動／Quick UI。focused `internal/combat`／`internal/monster`
+測試已通過。private engine pseudo-version 的 go.sum 已透過唯讀 credential
+mount 取得；正式 gate 暫以同一 `73c0144` nested engine replace 驗證後移除，
+Docker／Xvfb／`--network none` 的 `go test -count=1 ./cmd/... ./gamepack
+./internal/...` 全數通過。隊伍／死亡 predicate 尚屬上游 `SCAN`，bounded core
+不自行排除。engine 繁中知識庫 commit `7c3acd7` 已推送；CoAB 狀態文件已
+同步，待本 repo 集中提交與推送。

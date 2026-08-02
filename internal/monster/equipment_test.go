@@ -50,7 +50,7 @@ func TestEncodeEquipmentSidecarsRoundTripKnownFields(t *testing.T) {
 	if err != nil || len(decoded) != 1 || decoded[0] != items[0] {
 		t.Fatalf("item round trip=%#v err=%v", decoded, err)
 	}
-	affects := []AffectRecord{{Kind: 0x27, Value: 3, Duration: 3, Strength: 2, Active: true, Data: [4]byte{1, 2, 3, 4}}}
+	affects := []AffectRecord{{Kind: 0x27, Value: 3, Duration: 3, Strength: 2, Raw4: 1, Active: true, Data: [4]byte{1, 2, 3, 4}}}
 	data = EncodeAffects(affects)
 	parsed, err := ParseAffects(data)
 	if len(data) != AffectRecordSize || err != nil || len(parsed) != 1 || parsed[0] != affects[0] || parsed[0].Value != 3 {
