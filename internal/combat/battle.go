@@ -832,6 +832,19 @@ func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castin
 // BeginPendingTargetedSpellAction preserves an adapter-selected target across
 // the same delayed scheduler handoff as an untargeted spell.
 func (b *Battle) BeginPendingTargetedSpellAction(fighterID string, spellID uint8, castingDelay int, targetID string) error {
+	return b.beginPendingSpellAction(fighterID, spellID, castingDelay, func(state *engineaction.State) bool {
+		return state.BeginTargetedSpell(spellID, castingDelay, targetID)
+	})
+}
+
+// BeginPendingPointSpellAction preserves an adapter-selected grid coordinate.
+func (b *Battle) BeginPendingPointSpellAction(fighterID string, spellID uint8, castingDelay, x, y int) error {
+	return b.beginPendingSpellAction(fighterID, spellID, castingDelay, func(state *engineaction.State) bool {
+		return state.BeginPointSpell(spellID, castingDelay, x, y)
+	})
+}
+
+func (b *Battle) beginPendingSpellAction(fighterID string, spellID uint8, castingDelay int, begin func(*engineaction.State) bool) error {
 	if b == nil || b.initiativeScheduler == nil || !b.initiativeSelected ||
 		b.initiativeSelection.ID != fighterID {
 		return fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
@@ -840,7 +853,7 @@ func (b *Battle) BeginPendingTargetedSpellAction(fighterID string, spellID uint8
 	if !ok {
 		return fmt.Errorf("unknown fighter %q", fighterID)
 	}
-	if !fighter.CombatAction.BeginTargetedSpell(spellID, castingDelay, targetID) {
+	if !begin(&fighter.CombatAction) {
 		return fmt.Errorf("spell 0x%02X has invalid casting delay %d", spellID, castingDelay)
 	}
 	if !b.initiativeScheduler.SetDelay(fighterID, fighter.CombatAction.Delay) {
@@ -849,6 +862,23 @@ func (b *Battle) BeginPendingTargetedSpellAction(fighterID string, spellID uint8
 	b.fighters[fighterID] = fighter
 	b.initiativeSelected = false
 	return nil
+}
+
+// TakePendingPointSpellAction atomically consumes a spell and grid coordinate.
+func (b *Battle) TakePendingPointSpellAction(fighterID string) (uint8, int, int, bool, error) {
+	if b == nil || !b.initiativeSelected || b.initiativeSelection.ID != fighterID {
+		return 0, 0, 0, false, fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
+	}
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return 0, 0, 0, false, fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	spellID, x, y, hasPoint := fighter.CombatAction.TakePointSpell()
+	if spellID == 0 {
+		return 0, 0, 0, false, fmt.Errorf("fighter %q has no pending spell", fighterID)
+	}
+	b.fighters[fighterID] = fighter
+	return spellID, x, y, hasPoint, nil
 }
 
 // TakePendingSpellAction clears the spell byte when its delayed action is

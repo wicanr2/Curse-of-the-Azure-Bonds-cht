@@ -762,6 +762,32 @@ func TestPendingTargetedSpellActionPreservesTargetAcrossSchedulerHandoff(t *test
 	}
 }
 
+func TestPendingPointSpellActionPreservesCoordinateAcrossSchedulerHandoff(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 8},
+		{ID: "other", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 6},
+	}, 428)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.BeginScheduledRound(); err != nil {
+		t.Fatal(err)
+	}
+	if turn, ok, err := battle.NextScheduledTurn(); err != nil || !ok || turn.FighterID != "caster" {
+		t.Fatalf("first=%+v ok=%v err=%v", turn, ok, err)
+	}
+	if err := battle.BeginPendingPointSpellAction("caster", 0x2F, 1, 17, 9); err != nil {
+		t.Fatal(err)
+	}
+	if turn, ok, err := battle.NextScheduledTurn(); err != nil || !ok || turn.FighterID != "caster" {
+		t.Fatalf("resumed=%+v ok=%v err=%v", turn, ok, err)
+	}
+	spellID, x, y, hasPoint, err := battle.TakePendingPointSpellAction("caster")
+	if err != nil || spellID != 0x2F || !hasPoint || x != 17 || y != 9 {
+		t.Fatalf("take spell=0x%02X point=(%d,%d) has=%v err=%v", spellID, x, y, hasPoint, err)
+	}
+}
+
 func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,

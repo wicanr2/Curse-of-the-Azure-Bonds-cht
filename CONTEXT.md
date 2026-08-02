@@ -2993,8 +2993,8 @@ READY spec 424 只代表當輪邊界。
 overlay 08 在同輪重新選中後先清 spell ID 再呼叫 CASTSPELL。engine
 `dd99d29` 新增作品中立 pending spell transaction，CoAB JSON 十一筆 record
 補 raw casting_time。Quick Bless `01h` raw 10→delay 3 已接通；slot 消耗時點、
-手動 CAST、Cure special、其他 Quick 法術與中斷仍未完成。READY spec 425
-是權威邊界。
+當輪手動 CAST、Cure special、其他 Quick 法術與中斷仍未完成；Cure 已由
+426–427 接續，手動 CAST delay 已由 428 接續。READY spec 425 只代表當輪邊界。
 
 2026-08-02 第四百二十六輪以 typed TPOV resolver 與唯讀 IDA Pro 9.4
 關閉 Quick Cure target handoff。`00B8:0075h` 的正確型別對應是 overlay 13、
@@ -3021,4 +3021,12 @@ GONE=8`；overlay 13 `+1E10h` set bytes `C0 01` 與 membership branch exact
 排除 `{6,7,8}`。CoAB 不再按全候選 HP 排序，並修正 Stoned 不可 Cure；auditor
 新增唯讀 `-members` 模式。四組 focused boundary 與既有 Red Plume 正常路徑
 是本輪驗收。READY spec 427 是權威；同格多 corpse ordering、完整 raw status
-投影、手動 CAST delay／中斷仍未完成。
+投影與中斷仍未完成；手動 CAST delay 已由第 428 輪接續。
+
+2026-08-02 第四百二十八輪沿第 425 輪 exact `CASTCOMBATSPELL` 證據，把
+手動 CAST 接入與 Quick 相同的 mutable scheduler transaction。engine action
+新增 renderer-neutral point target；CoAB Battle／State 分別保存 stable
+combatant ID 或 32×16 格點，resume 後才執行既有 spell effect。手動 Bless
+證明 pending 階段不先耗 slot／套效果；Fireball 證明 delay=1 即使同一呼叫
+重新入列，仍使用玩家選定 `(7,6)`。原始 binary／IDA database 全程未修改，
+typed target 欄位只屬 remake projection；施法中斷與原版 slot 時點仍未完成。

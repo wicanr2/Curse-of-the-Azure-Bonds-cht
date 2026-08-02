@@ -548,13 +548,7 @@ func (a *app) Update() error {
 				return nil
 			}
 			if a.state.CombatCastingSpell() != 0 {
-				spellID := a.state.CombatCastingSpell()
-				if spellID == game.LightningBoltSpellID || spellID == game.StinkingCloudSpellID || spellID == game.CloudkillSpellID {
-					return a.combatAction(func() error {
-						return a.state.CombatCastWithTerrain(spellID, a.combatLineTerrain())
-					})
-				}
-				return a.combatAction(func() error { return a.state.CombatCast(spellID) })
+				return a.combatAction(func() error { return a.state.ConfirmCombatCast(a.combatLineTerrain()) })
 			}
 			return a.combatAction(a.state.CombatAct)
 		}

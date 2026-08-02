@@ -524,21 +524,27 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `CastingTime/3` 非零時保存 spell ID，delay 改為
   `max(1,delay-units)`，同輪再選中才 CASTSPELL。engine `dd99d29` 與 CoAB
   JSON 已保存 raw casting_time；Quick Bless `01h` raw 10→3 已接通。slot
-  中斷消耗、手動 CAST、Cure special、其他 Quick 法術與 per-action target
-  pointer 仍未完成；spec 425 是權威。
+  中斷消耗、其他 Quick 法術與原作 per-action target pointer layout 仍未完成；
+  Cure 由 426–427、手動 CAST typed transaction 由 428 接續。spec 425 只代表
+  當輪邊界。
 - 第 426 輪已由 overlay 09 與 typed
   `00B8:0075h → overlay 13 entry 17 → +1E30h` 關閉 Quick Cure 指定目標
   handoff。注意 `entry 17` 不是 overlay 17；compact 後不可再次混淆位址
   空間。engine action 保存 opaque `TargetID`，CoAB `03h` 由鄰近受傷／倒地
   selector、scheduler delay 與 Standing Stone→Red Plume 真實箭傷正常路徑
-  驗證。equal-HP exact tie、down-player status predicate、手動 CAST delay、
-  interruption 與其餘 Quick 法術仍未完成；READY spec 426 是權威細節。
+  驗證。equal-HP exact tie 與 down-player status predicate 由 427 接續，手動
+  CAST delay 由 428 接續；interruption 與其餘 Quick 法術仍未完成。READY
+  spec 426 只代表當輪邊界。
 - 第 427 輪由 Borland `COMPTARGCURE／CHARSTATUS／DXDIR／DYDIR` 與 raw bytes
   關閉 Quick Cure exact 順序：N→NE→E→SE→S→SW→W→NW→self；equal HP
   保留先掃到者，自身低於半血可覆蓋，active HP `>=8` 才讓合法倒地者優先。
   raw status `DEAD=6／STONED=7／GONE=8` 均被 set predicate 排除；remake
   `HealthStatus` ordinal 不同，compact 後不可直接用 raw 數字比較。spec 427
   是權威；同格多 corpse ordering、完整 raw status round-trip 與施法中斷仍未完成。
+- 第 428 輪已讓手動 CAST 與 Quick 共用 PC-98 `CASTCOMBATSPELL` 延遲交易。
+  非零 delay 的單體法術保存 stable target ID，區域／直線法術保存 32×16
+  格點；resume 後才結算並消耗 slot。這是 typed remake transaction，不得
+  誤寫成原作 Action raw layout 已全部證明。施法中斷與原版 slot 時點仍未完成。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

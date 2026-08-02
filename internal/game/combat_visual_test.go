@@ -391,6 +391,54 @@ func TestCombatFireballPlayerPathQueuesOrderedAreaImpacts(t *testing.T) {
 	}
 }
 
+func TestManualFireballPreservesTileCursorAcrossCastingDelay(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 256 && !found; seed++ {
+		state := NewState(combatVisualCatalog(t))
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{
+			{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 5, SpellSlots: []uint8{FireballSpellID}},
+			{ID: "ally", Name: "隊友", Class: party.ClassFighter, Level: 1},
+		}
+		heroes := []combat.Fighter{
+			{ID: "mage", Name: "法師", Side: combat.SideParty, HitPoints: 30, MaxHitPoints: 30, ArmorClass: -10, InitiativeBonus: 8, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "ally", Name: "隊友", Side: combat.SideParty, HitPoints: 30, MaxHitPoints: 30, ArmorClass: -10, InitiativeBonus: 6, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 1, CombatY: 2},
+		}
+		enemies := []combat.Fighter{{ID: "enemy", Name: "敵人", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 10, CombatY: 10}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		turn, ok := state.combatPartyTurn()
+		if !ok || turn.ID != "mage" {
+			continue
+		}
+		if err := state.BeginCombatCast(FireballSpellID); err != nil {
+			t.Fatal(err)
+		}
+		state.combatSpellTargetPoint = combat.TilePoint{X: 7, Y: 6}
+		if err := state.ConfirmCombatCast(nil); err != nil {
+			t.Fatal(err)
+		}
+		found = true
+		for action := 0; action < 8; action++ {
+			if _, ok := state.CombatVisualEvent(); ok {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualAreaSpell || event.Effect != "fireball" ||
+			event.To != (combat.TilePoint{X: 7, Y: 6}) || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("event=%+v ok=%v slots=%v", event, ok, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic initiative ordering exposed pending manual Fireball")
+	}
+}
+
 func TestCombatLightningBoltPlayerPathConsumesSlotAndQueuesSegments(t *testing.T) {
 	state := NewState(combatVisualCatalog(t))
 	state.EnableCombatVisualTimeline(true)

@@ -77,5 +77,5 @@ overlay 09 local `03F4h..042Ah` 對 spell `03h` 走 Cure special；其他
 
 目前在「實際結算時」消耗 Bless slot；原版在施法中斷／死亡時是否已消耗仍缺
 consumer 與 runtime trace，因此標為 `hypothesis`，不可宣稱 interruption
-fidelity。手動 CAST 尚未採用 casting delay；Cure special、per-action target
-pointer、其他 Quick 法術、施法中斷文字／動畫／音效也都未完成。
+fidelity。手動 CAST 的 casting delay 與 typed target transaction 已由 READY
+spec 428 接續；Quick 的其餘 suitability、施法中斷文字／動畫／音效仍未完成。

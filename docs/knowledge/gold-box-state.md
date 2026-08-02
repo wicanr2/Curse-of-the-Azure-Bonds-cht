@@ -385,6 +385,14 @@ status `DEAD／STONED／GONE` 不可治療。共用 engine 只保存 opaque targ
 方向、HP 門檻與 status mapping 都是 CoAB adapter 規則，不能硬編進 renderer
 或作品中立 scheduler。
 
+## 手動與 Quick 共用施法交易
+
+PC-98 手動 CAST 與 Quick AI 最後都進 `CASTCOMBATSPELL`。只要
+`CastingTime/3` 非零，就要把法術與目標保存進 Action，調整目前 delay，待同輪
+重新選回施法者才結算。單體目標可投影為 stable combatant ID；區域與直線法術
+需保存格點，不能 resume 時重新拿目前游標或第一名敵人。法術時間只讀正式
+game-pack metadata，測試也不可複製另一份常數表。
+
 ## 中文化注意
 
 Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、

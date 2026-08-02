@@ -2760,6 +2760,55 @@ func TestCombatCastBlessConsumesSlotAndRaisesPartyAttackBonus(t *testing.T) {
 	}
 }
 
+func TestManualCombatBlessUsesOriginalCastingDelayHandoff(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 256 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{
+			{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{BlessSpellID}},
+			{ID: "ally", Name: "隊友", Class: party.ClassFighter, Level: 1},
+		}
+		heroes := []combat.Fighter{
+			{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: -10, InitiativeBonus: 8, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1},
+			{ID: "ally", Name: "隊友", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: -10, InitiativeBonus: 6, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1},
+		}
+		enemies := []combat.Fighter{{ID: "enemy", Name: "敵人", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, DamageDiceCount: 1, DamageDiceSides: 1}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		turn, ok := state.combatPartyTurn()
+		if !ok || turn.ID != "cleric" {
+			continue
+		}
+		if err := state.BeginCombatCast(BlessSpellID); err != nil {
+			t.Fatal(err)
+		}
+		if err := state.ConfirmCombatCast(nil); err != nil {
+			t.Fatal(err)
+		}
+		caster, _ := state.fighter("cleric")
+		if caster.CombatAction.SpellID == 0 {
+			continue
+		}
+		found = true
+		if caster.Blessed || caster.CombatAction.SpellID != BlessSpellID || len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		for action := 0; action < 8 && !caster.Blessed; action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+			caster, _ = state.fighter("cleric")
+		}
+		if !caster.Blessed || caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("resolved caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic initiative ordering exposed pending manual Bless")
+	}
+}
+
 func TestCombatCastCurseConsumesSlotAndDebuffsSelectedEnemy(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CurseSpellID}}}
