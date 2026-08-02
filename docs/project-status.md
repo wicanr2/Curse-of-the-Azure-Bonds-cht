@@ -431,12 +431,20 @@ commit 內保存不可能自我引用的 hash。
   memorized-slot consumer 關閉正傷害中斷：最終傷害 `>0` 才清 pending spell
   並消耗第一個 matching slot，零傷害／防護不觸發，Action delay 保留。
   engine action、Battle 全傷害邊界、正式 roster 與繁中 stable ID 已接通。
-  Cloudkill 直接死亡由第 430 輪接續；沉默／麻痺等其他非傷害中斷仍未完成。
+  Cloudkill 直接死亡由第 430 輪接續，held 麻痺／睡眠的不同 Action-clear
+  政策再由第 431 輪接續；沉默／石化仍未完成。
 - 第 430 輪由 PC-98 overlay 22 毒雲術 writer、overlay 12 effect table 與
   effect `44h` handler、overlay 24 memorized-slot consumer 閉合獨立中斷鏈。
   HD 0–4 自動死亡及 HD 5–6 豁免失敗現在會先中斷 pending spell，再進死亡
   handoff；HD 7+／豁免成功不消耗 slot。Battle／State regression 使用 stable
-  fighter／spell ID 與正式 locale；沉默、麻痺、睡眠、石化仍未泛化。
+  fighter／spell ID 與正式 locale；held 麻痺／睡眠的 Action consumer 由第
+  431 輪接續，沉默／石化仍未解析。
+- 第 431 輪關閉 held effects 的不同取消政策：overlay 12 table slots
+  `1Fh／33h／34h／35h` 全指向同一 handler，再呼叫 overlay 24
+  `CLEARACTION 2A5Bh`；它清 pending spell／delay／guard，但沒有呼叫
+  memorized-slot consumer。正常 scheduler 四例會清 Action、跳過回合且保留
+  roster slot。六章正式 MON*SPC 沒有這四種 innate effect，Sleep／Hold 動態
+  writer 尚未實作，因此不宣稱完整法術玩家路徑。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

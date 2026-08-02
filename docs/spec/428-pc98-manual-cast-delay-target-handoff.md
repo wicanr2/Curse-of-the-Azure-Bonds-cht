@@ -55,7 +55,9 @@ stable ID／`TargetX／TargetY` 欄位聲稱為原始記憶體 layout。
 ## 未完成邊界
 
 - `PUTDAMAGE` 正傷害中斷與第一個 matching slot 消耗已由 READY spec 429
-  接續；直接死亡、沉默、麻痺等非此 consumer 的中斷與動畫／音效仍未完成。
+  接續；Cloudkill 直接死亡由 spec 430、held `1Fh／33h／34h／35h` 的
+  no-slot-consumption Action clear 由 spec 431 接續。沉默／石化與各路徑的
+  動畫／音效仍未完成。
 - 尚未實作法術的 CAST 效果與 Quick suitability。
 - 原作 pointer 的 raw layout、save round-trip 與同格多 target ordering。
 - Fireball／Lightning Bolt／Cloudkill 各自仍有第 354–357 輪列出的規則與

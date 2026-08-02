@@ -353,8 +353,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`cd91719`（第 429 輪 PC-98 正傷害施法中斷）；第 430 輪
-  毒雲術 effect `44h` 獨立中斷 milestone 會由本文件所在 commit 完成。
+- CoAB 本輪基底：`7fe1209`（第 430 輪 PC-98 毒雲術 effect `44h` 中斷）；
+  第 431 輪 held-effect Action clear milestone 會由本文件所在 commit 完成。
 - Engine dependency：`134f036`（含作品中立 `combat/action` 的 delayed
   spell `TargetID`／point-target transaction 與 interruption clear、
   `combat/initiative`、
@@ -566,6 +566,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `CastCloudkill` 必須在 direct-death handoff 清 Action 前建立 stable interruption
   event；HD 7+／豁免成功不觸發。這不證明沉默、麻痺、睡眠或石化，後者仍須
   分別閉合 writer→effect table→consumer。READY spec 430 是權威。
+- 第 431 輪證明 held effects `1Fh／33h／34h／35h` 全指向 overlay 12
+  `0075h`，再呼叫 overlay 24 `CLEARACTION 2A5Bh`。它清 pending spell、
+  delay、guard 與 unknown `Action+06h`，但不呼叫 memorized-slot consumer；
+  remake 不得建立 `SpellInterruption` 或消耗 slot。六章 MON*SPC 沒有這四種
+  innate effect，動態 Sleep／Hold writer 仍未完成。READY spec 431 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

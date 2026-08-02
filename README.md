@@ -22,6 +22,12 @@ CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `134f036`�
 石化或全部戰鬥法術已完成。證據見
 [`docs/spec/430-pc98-cloudkill-effect44-casting-interruption.md`](docs/spec/430-pc98-cloudkill-effect44-casting-interruption.md)。
 
+第 431 輪進一步證明 held effects `1Fh／33h／34h／35h` 採用另一種政策：
+它們會取消完整 Action、讓角色跳過回合，但不消耗 memorized spell slot。
+remake scheduler 已按四個 raw IDs 接通，沒有把所有施法取消錯誤合併成毒雲術
+規則；Sleep／Hold 等動態法術 writer 仍未完成。證據見
+[`docs/spec/431-pc98-held-effects-clear-action-without-slot-consumption.md`](docs/spec/431-pc98-held-effects-clear-action-without-slot-consumption.md)。
+
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
 `pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存
 資料靜默補零。目前 Disk 1 的缺口對應 `MSCDRV.EXE` 與 `CED3.DAX`，Disk 2

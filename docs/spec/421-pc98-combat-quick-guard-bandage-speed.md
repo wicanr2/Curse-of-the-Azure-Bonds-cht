@@ -25,7 +25,9 @@ Magic Missile 有界切片已由 spec 424 接續。不得由本輪擴大宣稱�
 
 - overlay 24 local `2A5Bh..2AADh`（resident `014A:00CA`）先取得
   `Player+18Eh` 的 Action，再把 `Action+03h` delay、`+00h`、`+07h`
-  guarding 與 `+06h` 清零。尚未關閉的 `+00h／+06h` 不另取語意名稱。
+  guarding 與 `+06h` 清零。`+00h` 已由第 425／429 輪證明是 pending spell；
+  `+06h` 仍不另取語意名稱。第 431 輪另證明 held effects 會呼叫此 consumer，
+  但不呼叫 memorized-slot consumer。
 - overlay 24 local `2AAEh..2B2Fh`（symbol `GUARD`、resident
   `014A:00CF`）先呼叫上述 clear，再把 `Action+07h=1`。
 - overlay 13 local `0684h..078Bh` 是移動後的 consumer：建立新位置的

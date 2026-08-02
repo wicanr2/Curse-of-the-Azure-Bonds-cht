@@ -409,15 +409,24 @@ effect `44h`；其 effect-table handler 在戰鬥模式獨立檢查 Action pendi
 「清除 pending transaction」與「何種 effect 觸發」分層：共用 action 提供原子
 clear，作品 adapter 依已證明的 writer／consumer 建立 stable interruption event。
 
-這項結論目前只適用毒雲術 effect `44h` 的死亡 impact。沉默、麻痺、睡眠、石化
-即使在玩法上也可能阻止施法，仍不能沿用名稱直覺；每一類都要重新閉合
-writer → effect table → Action consumer → memorized-slot consumer，並保存位址空間
-與推論等級。READY spec 430 是 CoAB 的完整證據鏈。
+第 431 輪證明「取消施法」不必然等於「消耗法術格」。held effects
+`1Fh／33h／34h／35h` 共用的 PC-98 handler 只呼叫完整 `CLEARACTION`，沒有
+呼叫 memorized-slot consumer；pending spell／target／delay／guard 清除，但
+slot 保留。作品 adapter 因此至少要區分兩種 cancellation policy：
+
+- 正傷害與毒雲術 `44h`：清 pending transaction，並建立 stable interruption
+  event，由 roster 消耗第一個 matching slot；
+- held `1Fh／33h／34h／35h`：完整清 Action，但不建立 interruption event。
+
+沉默與石化仍不能沿用名稱直覺；每一類都要重新閉合 writer → effect table →
+Action consumer，並確認有沒有另走 memorized-slot consumer。READY spec
+429／430／431 分別保存三種已證明的原作邊界。
 
 ## 中文化注意
 
 Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、
-paralyze、sleep（`0x1F`／`0x33`／`0x34`／`0x35`）會讓怪物跳過整個回合；`AttackTarget01`
+paralyze、sleep（`0x1F`／`0x33`／`0x34`／`0x35`）會先完整清除 Action、保留
+memorized slot，再讓角色跳過整個回合；`AttackTarget01`
 的 `target.IsHeld()` 例外則讓攻擊 held target 必定命中。這只處理 combat action boundary，
 不代表已完成解除、豁免、持續時間或治療流程。
 

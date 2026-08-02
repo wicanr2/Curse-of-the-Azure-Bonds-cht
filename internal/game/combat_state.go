@@ -2401,6 +2401,14 @@ func (s *State) advanceCombatToParty() error {
 			continue
 		}
 		if fighter.MonsterIsHeld() {
+			// PC-98 effects 1Fh/33h/34h/35h share the effect-table
+			// handler that calls CLEARACTION. Unlike PUTDAMAGE and Cloudkill
+			// effect 44h, this path does not call the memorized-slot consumer
+			// and therefore must not enqueue a SpellInterruption.
+			if err := s.battle.ClearAction(fighter.ID); err != nil {
+				return err
+			}
+			s.clearCombatActionFor(fighter.ID)
 			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_held", "%s 無法行動。"), fighter.Name)
 			s.combatTurnIndex++
 			continue
