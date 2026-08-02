@@ -129,6 +129,13 @@ HEAD／BODY 救援人物、盜賊公會 handoff 及騎士重訪消耗；Go 漢�
 基線由 545 降至 518。詳見
 [`docs/spec/475-essembra-tavern-tales-state-fallbacks.md`](docs/spec/475-essembra-tavern-tales-state-fallbacks.md)。
 
+第 476 輪把 CAMP／REST／FIX／VIEW／MAGIC 與 ALTER 的玩家文字改為正式 locale
+stable IDs，補齊角色列、改名、頭身 block、排序與 Cure Light Wounds 施法格式，
+並讓行為測試直接載入正式繁中 JSON。重複職業名稱 switch 也改用既有 resolver；
+Go 漢字 baseline 由 518 降至 388。正式 gate 同時抓出 `go.mod` 的過期 Engine
+checkpoint，現已對齊實際需要的 `f3c652a`。詳見
+[`docs/spec/476-camp-alter-locale-data-separation.md`](docs/spec/476-camp-alter-locale-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

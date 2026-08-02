@@ -556,12 +556,12 @@ func (s *State) selectBar(originalChoice string) error {
 func (s *State) enterCampRestMenu() {
 	s.campRestMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_rest_menu_prompt", "休息設定")
+	s.Prompt = s.catalog.Text("camp_rest_menu_prompt", "camp_rest_menu_prompt")
 	s.Choices = []string{
-		fmt.Sprintf(s.catalog.Text("camp_rest_start", "開始休息（%d 小時）"), s.restHours),
-		s.catalog.Text("camp_rest_add", "增加 24 小時"),
-		s.catalog.Text("camp_rest_subtract", "減少 24 小時"),
-		s.catalog.Text("camp_rest_exit", "返回紮營選單"),
+		fmt.Sprintf(s.catalog.Text("camp_rest_start", "camp_rest_start"), s.restHours),
+		s.catalog.Text("camp_rest_add", "camp_rest_add"),
+		s.catalog.Text("camp_rest_subtract", "camp_rest_subtract"),
+		s.catalog.Text("camp_rest_exit", "camp_rest_exit"),
 	}
 	s.currentOriginalChoices = []string{"REST_START", "REST_ADD", "REST_SUBTRACT", "REST_EXIT"}
 	s.Message = ""
@@ -2436,7 +2436,7 @@ func (s *State) Fix() (healed, casts int, err error) {
 		s.eventReturnMode = ModeWilderness
 		s.Mode = ModeEvent
 		s.OriginalEvent = "FIX"
-		s.Message = s.catalog.Text("fix_no_cure", "沒有已記憶的 Cure Light Wounds，隊伍未改變。")
+		s.Message = s.catalog.Text("fix_no_cure", "fix_no_cure")
 		return 0, 0, nil
 	}
 	rng := rand.New(rand.NewSource(s.fixSeed))
@@ -2468,7 +2468,7 @@ func (s *State) Fix() (healed, casts int, err error) {
 	s.eventReturnMode = ModeWilderness
 	s.Mode = ModeEvent
 	s.OriginalEvent = "FIX"
-	s.Message = fmt.Sprintf(s.catalog.Text("fix_done", "FIX 完成：施放 %d 次 Cure Light Wounds，共恢復 %d HP。"), casts, healed)
+	s.Message = fmt.Sprintf(s.catalog.Text("fix_done", "fix_done"), casts, healed)
 	return healed, casts, nil
 }
 
@@ -2499,15 +2499,15 @@ func (s *State) enterCampMenu() {
 	s.alterIconMenu = false
 	s.alterIconEdit = false
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_menu_prompt", "紮營選單")
+	s.Prompt = s.catalog.Text("camp_menu_prompt", "camp_menu_prompt")
 	s.Choices = []string{
-		s.catalog.Text("camp_save", "儲存"),
-		s.catalog.Text("camp_view", "查看"),
-		s.catalog.Text("camp_magic", "法術"),
-		s.catalog.Text("camp_rest", "休息"),
-		s.catalog.Text("camp_alter", "修改"),
-		s.catalog.Text("camp_fix", "修理"),
-		s.catalog.Text("camp_exit", "離開"),
+		s.catalog.Text("camp_save", "camp_save"),
+		s.catalog.Text("camp_view", "camp_view"),
+		s.catalog.Text("camp_magic", "camp_magic"),
+		s.catalog.Text("camp_rest", "camp_rest"),
+		s.catalog.Text("camp_alter", "camp_alter"),
+		s.catalog.Text("camp_fix", "camp_fix"),
+		s.catalog.Text("camp_exit", "camp_exit"),
 	}
 	s.currentOriginalChoices = []string{"SAVE", "VIEW", "MAGIC", "REST", "ALTER", "FIX", "EXIT"}
 	s.Message = ""
@@ -2536,7 +2536,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = "REST"
-				s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_insufficient", "休息 %d 小時不足以完成法術記憶（至少需要 %d 小時）；法術選擇仍保留。"), s.restHours, requiredHours)
+				s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_insufficient", "camp_rest_insufficient"), s.restHours, requiredHours)
 				return nil
 			}
 			completedHours, interrupted := s.restInterruption(s.restHours)
@@ -2552,7 +2552,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				if err := s.RunCampInterrupted(); err != nil {
 					return err
 				}
-				prefix := s.catalog.Text("camp_rest_interrupted", "你們的休息突然中斷！")
+				prefix := s.catalog.Text("camp_rest_interrupted", "camp_rest_interrupted")
 				if s.Message == "" {
 					s.Mode = ModeEvent
 					s.Message = prefix
@@ -2566,7 +2566,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "REST"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_done", "休息 %d 小時完成，隊伍自然恢復 %d HP，完成 %d 名角色的法術記憶。"), s.restHours, healed, memorized)
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_rest_done", "camp_rest_done"), s.restHours, healed, memorized)
 			return nil
 		default:
 			return fmt.Errorf("unknown camp rest choice %q", originalChoice)
@@ -2678,7 +2678,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "ALTER ORDER"
-			s.Message = s.catalog.Text("alter_order_done", "隊伍順序已更新。")
+			s.Message = s.catalog.Text("alter_order_done", "alter_order_done")
 			return nil
 		}
 	}
@@ -2698,7 +2698,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = "ALTER DROP"
-				s.Message = "移除失敗：" + err.Error()
+				s.Message = fmt.Sprintf(s.catalog.Text("alter_drop_failed", "alter_drop_failed"), err)
 				return nil
 			}
 			s.alterDropMenu = false
@@ -2707,7 +2707,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "ALTER DROP"
-			s.Message = s.catalog.Text("alter_drop_done", "角色已從隊伍移除。此操作無法復原。")
+			s.Message = s.catalog.Text("alter_drop_done", "alter_drop_done")
 			return nil
 		}
 		if strings.HasPrefix(originalChoice, "ALTER_DROP_CHARACTER_") {
@@ -2747,7 +2747,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = originalChoice
-				s.Message = s.catalog.Text("alter_order_unavailable", "至少需要兩名角色才能調整順序。")
+				s.Message = s.catalog.Text("alter_order_unavailable", "alter_order_unavailable")
 				return nil
 			}
 			s.enterAlterOrderMenu()
@@ -2758,7 +2758,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = originalChoice
-				s.Message = s.catalog.Text("alter_drop_unavailable", "至少需要兩名角色才能移除角色。")
+				s.Message = s.catalog.Text("alter_drop_unavailable", "alter_drop_unavailable")
 				return nil
 			}
 			s.enterAlterDropMenu()
@@ -2777,7 +2777,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = originalChoice
-				s.Message = s.catalog.Text("alter_icon_unavailable", "目前沒有可設定小人的角色。")
+				s.Message = s.catalog.Text("alter_icon_unavailable", "alter_icon_unavailable")
 				return nil
 			}
 			s.enterAlterIconMenu()
@@ -2816,7 +2816,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "MAGIC"
-			s.Message = s.catalog.Text("camp_magic_pending", "此法術功能已進入資料邊界，完整規則仍待接入。")
+			s.Message = s.catalog.Text("camp_magic_pending", "camp_magic_pending")
 			return nil
 		}
 	}
@@ -2849,7 +2849,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				s.Mode = ModeEvent
 				s.eventReturnMode = ModeWilderness
 				s.OriginalEvent = "MAGIC CAST"
-				s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_unknown", "目前只能在紮營施放 Cure Light Wounds；法術 0x%02X 尚待接入。"), s.campMagicCastSpell)
+				s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_unknown", "camp_magic_cast_unknown"), s.campMagicCastSpell)
 				return nil
 			}
 			s.enterCampMagicCastTargetMenu()
@@ -2883,7 +2883,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		}
 		if originalChoice == "CAMP_MAGIC_MEM_DONE" {
 			s.enterCampMagicMemorizeCharacterMenu()
-			s.Message = s.catalog.Text("camp_magic_memorize_selected", "法術選擇已暫存，請在 REST 後完成記憶。")
+			s.Message = s.catalog.Text("camp_magic_memorize_selected", "camp_magic_memorize_selected")
 			return nil
 		}
 		if originalChoice == "CAMP_MAGIC_MEM_CANCEL" {
@@ -2913,7 +2913,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			if !removed {
 				capacity := firstLevelMemorizedCapacity(character)
 				if len(selected) >= capacity {
-					s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_full", "最多可選 %d 個法術。"), capacity)
+					s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_full", "camp_magic_memorize_full"), capacity)
 					return nil
 				}
 				selected = append(selected, spellID)
@@ -2940,12 +2940,12 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 				slots = append(slots, campSpellLabel(s.catalog, character.Class, spellID))
 			}
 			if len(slots) == 0 {
-				slots = append(slots, s.catalog.Text("camp_magic_none", "目前沒有已記憶法術"))
+				slots = append(slots, s.catalog.Text("camp_magic_none", "camp_magic_none"))
 			}
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "MAGIC"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_summary", "%s　法術欄位：%s　可用法術：%d 個"), character.Name, strings.Join(slots, "、"), len(character.KnownSpells))
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_summary", "camp_magic_summary"), character.Name, strings.Join(slots, "、"), len(character.KnownSpells))
 			return nil
 		}
 	}
@@ -2968,7 +2968,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = "VIEW"
-			s.Message = fmt.Sprintf(s.catalog.Text("camp_view_summary", "%s　%s　HP %d/%d　金幣 %d　寶石 %d　珠寶 %d　裝備：%s"), character.Name, characterClassName(character.Class), character.HitPoints, character.MaxHitPoints, character.Gold, character.Gems, character.Jewelry, strings.Join(equipment, "、"))
+			s.Message = fmt.Sprintf(s.catalog.Text("camp_view_summary", "camp_view_summary"), character.Name, s.localizedCharacterClassName(character.Class), character.HitPoints, character.MaxHitPoints, character.Gold, character.Gems, character.Jewelry, strings.Join(equipment, "、"))
 			return nil
 		}
 	}
@@ -2986,7 +2986,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		}
 		if s.campReturnMode == ModeDungeon {
 			s.Mode = ModeDungeon
-			s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　S：搜索　E：紮營")
+			s.Prompt = s.catalog.Text("dungeon_prompt", "dungeon_prompt")
 			s.Choices = nil
 			s.currentOriginalChoices = nil
 			s.Message = ""
@@ -2994,8 +2994,8 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			return nil
 		}
 		s.Mode = ModeWilderness
-		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
-		s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+		s.Prompt = s.catalog.Text("press_button", "press_button")
+		s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
 		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 		s.Message = ""
 		return nil
@@ -3009,11 +3009,11 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		s.eventReturnMode = ModeWilderness
 		s.OriginalEvent = originalChoice
 		if len(s.partyRoster) == 0 {
-			s.Message = s.catalog.Text("camp_save_unavailable", "目前沒有可儲存的角色隊伍。")
+			s.Message = s.catalog.Text("camp_save_unavailable", "camp_save_unavailable")
 			return nil
 		}
 		s.saveRequested = true
-		s.Message = s.catalog.Text("camp_save_requested", "已要求儲存目前隊伍。")
+		s.Message = s.catalog.Text("camp_save_requested", "camp_save_requested")
 		return nil
 	}
 	if originalChoice == "VIEW" {
@@ -3021,7 +3021,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = originalChoice
-			s.Message = s.catalog.Text("camp_view_unavailable", "目前沒有可查看的角色。")
+			s.Message = s.catalog.Text("camp_view_unavailable", "camp_view_unavailable")
 			return nil
 		}
 		s.enterCampViewMenu()
@@ -3032,7 +3032,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
 			s.OriginalEvent = originalChoice
-			s.Message = s.catalog.Text("camp_magic_unavailable", "目前沒有可查看法術的角色。")
+			s.Message = s.catalog.Text("camp_magic_unavailable", "camp_magic_unavailable")
 			return nil
 		}
 		s.enterCampMagicMenu()
@@ -3068,15 +3068,15 @@ func (s *State) enterAlterMenu() {
 	s.alterIconMenu = false
 	s.alterIconEdit = false
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_prompt", "修改隊伍與遊戲設定")
+	s.Prompt = s.catalog.Text("alter_prompt", "alter_prompt")
 	s.Choices = []string{
-		s.catalog.Text("alter_order", "順序"),
-		s.catalog.Text("alter_drop", "移除"),
-		s.catalog.Text("alter_speed", "速度"),
-		s.catalog.Text("alter_icon", "小人"),
-		s.catalog.Text("alter_pics", "圖片"),
-		s.catalog.Text("alter_exit", "離開"),
-		s.catalog.Text("alter_rename", "改名"),
+		s.catalog.Text("alter_order", "alter_order"),
+		s.catalog.Text("alter_drop", "alter_drop"),
+		s.catalog.Text("alter_speed", "alter_speed"),
+		s.catalog.Text("alter_icon", "alter_icon"),
+		s.catalog.Text("alter_pics", "alter_pics"),
+		s.catalog.Text("alter_exit", "alter_exit"),
+		s.catalog.Text("alter_rename", "alter_rename"),
 	}
 	s.currentOriginalChoices = []string{"ALTER_ORDER", "ALTER_DROP", "ALTER_SPEED", "ALTER_ICON", "ALTER_PICS", "ALTER_EXIT", "ALTER_RENAME"}
 	s.Message = ""
@@ -3088,14 +3088,14 @@ func (s *State) enterAlterRenameMenu() {
 	s.alterRenameMenu = true
 	s.alterRenameChar = -1
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_rename_prompt", "選擇要改名的角色")
+	s.Prompt = s.catalog.Text("alter_rename_prompt", "alter_rename_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%s）", character.Name, character.ID))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("alter_rename_character", "alter_rename_character"), character.Name, character.ID))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_RENAME_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("alter_rename_exit", "返回修改選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("alter_rename_exit", "alter_rename_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_RENAME_EXIT")
 	s.Message = ""
 }
@@ -3114,7 +3114,7 @@ func (s *State) BeginRenameCharacter(index int) error {
 	s.renameCharacter = index
 	s.renameName = s.partyRoster[index].Name
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_rename_edit_prompt", "輸入 %s 的新名稱"), s.partyRoster[index].Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_rename_edit_prompt", "alter_rename_edit_prompt"), s.partyRoster[index].Name)
 	s.Message = ""
 	return nil
 }
@@ -3177,7 +3177,7 @@ func (s *State) CommitRename() error {
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "ALTER RENAME"
-	s.Message = fmt.Sprintf(s.catalog.Text("alter_rename_done", "%s 已改名為 %s。"), oldName, s.partyRoster[index].Name)
+	s.Message = fmt.Sprintf(s.catalog.Text("alter_rename_done", "alter_rename_done"), oldName, s.partyRoster[index].Name)
 	return nil
 }
 
@@ -3186,11 +3186,11 @@ func (s *State) enterAlterSpeedMenu() {
 	s.alterMenu = true
 	s.alterSpeedMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_speed_prompt", "訊息速度：第%d級"), s.messageSpeed)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_speed_prompt", "alter_speed_prompt"), s.messageSpeed)
 	s.Choices = []string{
-		s.catalog.Text("alter_speed_slower", "較慢"),
-		s.catalog.Text("alter_speed_faster", "較快"),
-		s.catalog.Text("alter_speed_exit", "返回修改選單"),
+		s.catalog.Text("alter_speed_slower", "alter_speed_slower"),
+		s.catalog.Text("alter_speed_faster", "alter_speed_faster"),
+		s.catalog.Text("alter_speed_exit", "alter_speed_exit"),
 	}
 	s.currentOriginalChoices = []string{"ALTER_SPEED_SLOWER", "ALTER_SPEED_FASTER", "ALTER_SPEED_EXIT"}
 	s.Message = ""
@@ -3205,14 +3205,14 @@ func (s *State) enterAlterIconMenu() {
 	s.alterIconMenu = true
 	s.alterIconEdit = false
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_icon_prompt", "選擇要設定小人的角色")
+	s.Prompt = s.catalog.Text("alter_icon_prompt", "alter_icon_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（頭部 %02X／身體 %02X）", character.Name, character.IconHeadBlock, character.IconWeaponBlock))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("alter_icon_character", "alter_icon_character"), character.Name, character.IconHeadBlock, character.IconWeaponBlock))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ICON_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("alter_icon_exit", "返回修改選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("alter_icon_exit", "alter_icon_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ICON_EXIT")
 	s.Message = ""
 }
@@ -3223,15 +3223,15 @@ func (s *State) enterAlterIconEditMenu() {
 	s.alterIconHeadIndex = iconBlockIndex(character.IconHeadBlock)
 	s.alterIconBodyIndex = iconBlockIndex(character.IconWeaponBlock)
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_icon_edit_prompt", "設定%s的小人"), character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_icon_edit_prompt", "alter_icon_edit_prompt"), character.Name)
 	s.Choices = []string{
-		fmt.Sprintf(s.catalog.Text("alter_icon_head", "頭部：%02X"), playerIconBlocks[s.alterIconHeadIndex]),
-		s.catalog.Text("alter_icon_head_prev", "頭部上一個"),
-		s.catalog.Text("alter_icon_head_next", "頭部下一個"),
-		fmt.Sprintf(s.catalog.Text("alter_icon_body", "身體：%02X"), playerIconBlocks[s.alterIconBodyIndex]),
-		s.catalog.Text("alter_icon_body_prev", "身體上一個"),
-		s.catalog.Text("alter_icon_body_next", "身體下一個"),
-		s.catalog.Text("alter_icon_done", "完成"),
+		fmt.Sprintf(s.catalog.Text("alter_icon_head", "alter_icon_head"), playerIconBlocks[s.alterIconHeadIndex]),
+		s.catalog.Text("alter_icon_head_prev", "alter_icon_head_prev"),
+		s.catalog.Text("alter_icon_head_next", "alter_icon_head_next"),
+		fmt.Sprintf(s.catalog.Text("alter_icon_body", "alter_icon_body"), playerIconBlocks[s.alterIconBodyIndex]),
+		s.catalog.Text("alter_icon_body_prev", "alter_icon_body_prev"),
+		s.catalog.Text("alter_icon_body_next", "alter_icon_body_next"),
+		s.catalog.Text("alter_icon_done", "alter_icon_done"),
 	}
 	s.currentOriginalChoices = []string{"ALTER_ICON_HEAD_STATUS", "ALTER_ICON_HEAD_PREV", "ALTER_ICON_HEAD_NEXT", "ALTER_ICON_BODY_STATUS", "ALTER_ICON_BODY_PREV", "ALTER_ICON_BODY_NEXT", "ALTER_ICON_DONE"}
 	s.Message = ""
@@ -3270,19 +3270,19 @@ func (s *State) enterAlterPicsMenu() {
 	s.alterMenu = true
 	s.alterPicsMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_pics_prompt", "遭遇圖片設定")
-	monsterState := s.catalog.Text("alter_pics_on", "開啟")
+	s.Prompt = s.catalog.Text("alter_pics_prompt", "alter_pics_prompt")
+	monsterState := s.catalog.Text("alter_pics_on", "alter_pics_on")
 	if !s.picturesEnabled {
-		monsterState = s.catalog.Text("alter_pics_off", "關閉")
+		monsterState = s.catalog.Text("alter_pics_off", "alter_pics_off")
 	}
-	animationState := s.catalog.Text("alter_pics_on", "開啟")
+	animationState := s.catalog.Text("alter_pics_on", "alter_pics_on")
 	if !s.animationsEnabled {
-		animationState = s.catalog.Text("alter_pics_off", "關閉")
+		animationState = s.catalog.Text("alter_pics_off", "alter_pics_off")
 	}
 	s.Choices = []string{
-		fmt.Sprintf(s.catalog.Text("alter_pics_monsters", "怪物圖片：%s"), monsterState),
-		fmt.Sprintf(s.catalog.Text("alter_pics_animations", "動畫：%s"), animationState),
-		s.catalog.Text("alter_pics_exit", "返回修改選單"),
+		fmt.Sprintf(s.catalog.Text("alter_pics_monsters", "alter_pics_monsters"), monsterState),
+		fmt.Sprintf(s.catalog.Text("alter_pics_animations", "alter_pics_animations"), animationState),
+		s.catalog.Text("alter_pics_exit", "alter_pics_exit"),
 	}
 	s.currentOriginalChoices = []string{"ALTER_PICS_MONSTERS", "ALTER_PICS_ANIMATIONS", "ALTER_PICS_EXIT"}
 	s.Message = ""
@@ -3300,14 +3300,14 @@ func (s *State) enterAlterDropMenu() {
 	s.alterDropConfirm = false
 	s.alterDropSelected = -1
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_drop_prompt", "選擇要移除的角色")
+	s.Prompt = s.catalog.Text("alter_drop_prompt", "alter_drop_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("alter_drop_character", "alter_drop_character"), character.Name, character.HitPoints, character.MaxHitPoints))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_DROP_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("alter_drop_exit", "返回修改選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("alter_drop_exit", "alter_drop_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_DROP_EXIT")
 	s.Message = ""
 }
@@ -3316,10 +3316,10 @@ func (s *State) enterAlterDropConfirmMenu() {
 	character := s.partyRoster[s.alterDropSelected]
 	s.alterDropConfirm = true
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_drop_confirm_prompt", "確定要永久移除%s？"), character.Name)
-	s.Choices = []string{s.catalog.Text("alter_drop_confirm", "確認移除"), s.catalog.Text("alter_drop_cancel", "取消")}
+	s.Prompt = fmt.Sprintf(s.catalog.Text("alter_drop_confirm_prompt", "alter_drop_confirm_prompt"), character.Name)
+	s.Choices = []string{s.catalog.Text("alter_drop_confirm", "alter_drop_confirm"), s.catalog.Text("alter_drop_cancel", "alter_drop_cancel")}
 	s.currentOriginalChoices = []string{"ALTER_DROP_CONFIRM", "ALTER_DROP_CANCEL"}
-	s.Message = s.catalog.Text("alter_drop_warning", "移除後角色將從隊伍與存檔中刪除，無法復原。")
+	s.Message = s.catalog.Text("alter_drop_warning", "alter_drop_warning")
 }
 
 func (s *State) dropPartyCharacter(index int) error {
@@ -3346,27 +3346,27 @@ func (s *State) enterAlterOrderMenu() {
 	s.alterOrderMenu = true
 	s.alterOrderSelected = -1
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("alter_order_prompt", "選擇要移動的角色")
+	s.Prompt = s.catalog.Text("alter_order_prompt", "alter_order_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
 		s.Choices = append(s.Choices, fmt.Sprintf("%d. %s", index+1, character.Name))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ORDER_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("alter_order_exit", "返回修改選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("alter_order_exit", "alter_order_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "ALTER_ORDER_EXIT")
 	s.Message = ""
 }
 
 func (s *State) enterAlterOrderDestinationMenu() {
-	s.Prompt = s.catalog.Text("alter_order_destination_prompt", "選擇新的位置")
+	s.Prompt = s.catalog.Text("alter_order_destination_prompt", "alter_order_destination_prompt")
 	for index, character := range s.partyRoster {
-		s.Choices[index] = fmt.Sprintf("第%d位：%s", index+1, character.Name)
+		s.Choices[index] = fmt.Sprintf(s.catalog.Text("alter_order_destination", "alter_order_destination"), index+1, character.Name)
 		s.currentOriginalChoices[index] = "ALTER_ORDER_CHARACTER_" + strconv.Itoa(index)
 	}
-	s.Choices[len(s.Choices)-1] = s.catalog.Text("alter_order_cancel", "取消")
+	s.Choices[len(s.Choices)-1] = s.catalog.Text("alter_order_cancel", "alter_order_cancel")
 	s.currentOriginalChoices[len(s.currentOriginalChoices)-1] = "ALTER_ORDER_EXIT"
-	s.Message = s.catalog.Text("alter_order_selected", "已選取角色，請選擇新的位置。")
+	s.Message = s.catalog.Text("alter_order_selected", "alter_order_selected")
 }
 
 func (s *State) movePartyCharacter(from, to int) error {
@@ -3408,13 +3408,13 @@ func (s *State) movePartyCharacter(from, to int) error {
 func (s *State) alterActionMessage(originalChoice string) string {
 	switch originalChoice {
 	case "ALTER_DROP":
-		return s.catalog.Text("alter_drop_unavailable", "角色移除功能尚待接入。")
+		return s.catalog.Text("alter_drop_unavailable", "alter_drop_unavailable")
 	case "ALTER_SPEED":
-		return s.catalog.Text("alter_speed_unavailable", "遊戲速度設定功能尚待接入。")
+		return s.catalog.Text("alter_speed_unavailable", "alter_speed_unavailable")
 	case "ALTER_ICON":
-		return s.catalog.Text("alter_icon_unavailable", "戰鬥小人設定功能尚待接入。")
+		return s.catalog.Text("alter_icon_unavailable", "alter_icon_unavailable")
 	case "ALTER_PICS":
-		return s.catalog.Text("alter_pics_unavailable", "遭遇圖片設定功能尚待接入。")
+		return s.catalog.Text("alter_pics_unavailable", "alter_pics_unavailable")
 	default:
 		return s.localizeOption(originalChoice)
 	}
@@ -3710,14 +3710,14 @@ func (s *State) enterCampViewMenu() {
 	s.campMenu = true
 	s.campViewMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_view_prompt", "選擇要查看的角色")
+	s.Prompt = s.catalog.Text("camp_view_prompt", "camp_view_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
 		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "返回紮營選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "camp_view_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_EXIT")
 	s.Message = ""
 }
@@ -3730,14 +3730,14 @@ func (s *State) enterCampMagicMenu() {
 	s.campMagicCastChar = -1
 	s.campMagicCastSpell = 0
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_magic_menu_prompt", "法術選單")
+	s.Prompt = s.catalog.Text("camp_magic_menu_prompt", "camp_magic_menu_prompt")
 	s.Choices = []string{
-		s.catalog.Text("camp_magic_cast", "施法"),
-		s.catalog.Text("camp_magic_memorize", "記憶法術"),
-		s.catalog.Text("camp_magic_scribe", "抄錄"),
-		s.catalog.Text("camp_magic_display", "查看已記憶法術"),
-		s.catalog.Text("camp_magic_rest", "休息"),
-		s.catalog.Text("camp_magic_exit", "返回紮營選單"),
+		s.catalog.Text("camp_magic_cast", "camp_magic_cast"),
+		s.catalog.Text("camp_magic_memorize", "camp_magic_memorize"),
+		s.catalog.Text("camp_magic_scribe", "camp_magic_scribe"),
+		s.catalog.Text("camp_magic_display", "camp_magic_display"),
+		s.catalog.Text("camp_magic_rest", "camp_magic_rest"),
+		s.catalog.Text("camp_magic_exit", "camp_magic_exit"),
 	}
 	s.currentOriginalChoices = []string{"CAMP_MAGIC_CAST", "CAMP_MAGIC_MEMORIZE", "CAMP_MAGIC_SCRIBE", "CAMP_MAGIC_DISPLAY", "CAMP_MAGIC_REST", "CAMP_MAGIC_EXIT"}
 	s.Message = ""
@@ -3752,17 +3752,17 @@ func (s *State) enterCampMagicCastCharacterMenu() {
 	s.campMagicCastChar = -1
 	s.campMagicCastSpell = 0
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_magic_cast_character_prompt", "選擇施法者")
+	s.Prompt = s.catalog.Text("camp_magic_cast_character_prompt", "camp_magic_cast_character_prompt")
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	for index, character := range s.partyRoster {
 		if (!character.HasClass(party.ClassCleric) && !character.HasClass(party.ClassMagicUser)) || len(character.SpellSlots) == 0 {
 			continue
 		}
-		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_cast_character", "%s（已記憶 %d 個法術）"), character.Name, len(character.SpellSlots)))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_cast_character", "camp_magic_cast_character"), character.Name, len(character.SpellSlots)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_CHAR_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "camp_magic_cast_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
 	s.Message = ""
 }
@@ -3771,21 +3771,21 @@ func (s *State) enterCampMagicCastSpellMenu(characterIndex int) {
 	character := s.partyRoster[characterIndex]
 	s.campMagicCastChar = characterIndex
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_cast_spell_prompt", "%s 要施放哪個法術？"), character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_cast_spell_prompt", "camp_magic_cast_spell_prompt"), character.Name)
 	s.Choices = make([]string, 0, len(character.SpellSlots)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.SpellSlots)+1)
 	for index, spellID := range character.SpellSlots {
 		s.Choices = append(s.Choices, campSpellLabel(s.catalog, character.Class, spellID))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_SPELL_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "camp_magic_cast_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
 	s.Message = ""
 }
 
 func (s *State) enterCampMagicCastTargetMenu() {
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_magic_cast_target_prompt", "選擇 Cure Light Wounds 目標")
+	s.Prompt = s.catalog.Text("camp_magic_cast_target_prompt", "camp_magic_cast_target_prompt")
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	for index, character := range s.partyRoster {
@@ -3801,10 +3801,10 @@ func (s *State) enterCampMagicCastTargetMenu() {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModeWilderness
 		s.OriginalEvent = "MAGIC CAST"
-		s.Message = s.catalog.Text("camp_magic_cast_no_target", "沒有需要治療的隊員，法術未消耗。")
+		s.Message = s.catalog.Text("camp_magic_cast_no_target", "camp_magic_cast_no_target")
 		return
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "返回法術選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_cast_exit", "camp_magic_cast_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_EXIT")
 	s.Message = ""
 }
@@ -3857,7 +3857,7 @@ func (s *State) castCampCureLightWounds(targetIndex int) error {
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "MAGIC CAST"
-	s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_done", "%s 對 %s 施放 Cure Light Wounds，恢復 %d HP。"), casterName, targetName, actual)
+	s.Message = fmt.Sprintf(s.catalog.Text("camp_magic_cast_done", "camp_magic_cast_done"), casterName, targetName, actual)
 	return nil
 }
 
@@ -3866,14 +3866,14 @@ func (s *State) enterCampMagicViewMenu() {
 	s.campMagicMenu = false
 	s.campMagicViewMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_magic_prompt", "選擇要查看法術的角色")
+	s.Prompt = s.catalog.Text("camp_magic_prompt", "camp_magic_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_character", "%s（已記憶 %d 個法術／可用 %d 個）"), character.Name, len(character.SpellSlots), len(character.KnownSpells)))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_character", "camp_magic_character"), character.Name, len(character.SpellSlots), len(character.KnownSpells)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_VIEW_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_view_exit", "返回法術選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_view_exit", "camp_magic_view_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_VIEW_EXIT")
 	s.Message = ""
 }
@@ -3885,16 +3885,16 @@ func (s *State) enterCampMagicMemorizeCharacterMenu() {
 	s.campMagicMemorizeMenu = true
 	s.campMagicMemorizeChar = -1
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("camp_magic_memorize_prompt", "選擇要準備法術的角色")
+	s.Prompt = s.catalog.Text("camp_magic_memorize_prompt", "camp_magic_memorize_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
 		capacity := firstLevelMemorizedCapacity(character)
 		selected := len(s.pendingMemorizedSpells[index])
-		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_memorize_character", "%s（已選 %d/%d）"), character.Name, selected, capacity))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("camp_magic_memorize_character", "camp_magic_memorize_character"), character.Name, selected, capacity))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_CHAR_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_memorize_exit", "返回法術選單"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_memorize_exit", "camp_magic_memorize_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEMORIZE_EXIT")
 	s.Message = ""
 }
@@ -3903,7 +3903,7 @@ func (s *State) enterCampMagicMemorizeSpellMenu(characterIndex int) {
 	character := s.partyRoster[characterIndex]
 	s.campMagicMemorizeChar = characterIndex
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_spell_prompt", "%s 的可用法術"), character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("camp_magic_memorize_spell_prompt", "camp_magic_memorize_spell_prompt"), character.Name)
 	s.Choices = make([]string, 0, len(character.KnownSpells)+2)
 	s.currentOriginalChoices = make([]string, 0, len(character.KnownSpells)+2)
 	selected := s.pendingMemorizedSpells[characterIndex]
@@ -3918,42 +3918,23 @@ func (s *State) enterCampMagicMemorizeSpellMenu(characterIndex int) {
 		s.Choices = append(s.Choices, fmt.Sprintf("%s %s", mark, campSpellLabel(s.catalog, character.Class, spellID)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_SPELL_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_mem_done", "完成選擇"), s.catalog.Text("camp_magic_mem_cancel", "取消此角色"))
+	s.Choices = append(s.Choices, s.catalog.Text("camp_magic_mem_done", "camp_magic_mem_done"), s.catalog.Text("camp_magic_mem_cancel", "camp_magic_mem_cancel"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_MEM_DONE", "CAMP_MAGIC_MEM_CANCEL")
 	s.Message = ""
-}
-
-func characterClassName(class party.Class) string {
-	switch class {
-	case party.ClassCleric:
-		return "牧師"
-	case party.ClassFighter:
-		return "戰士"
-	case party.ClassRanger:
-		return "遊俠"
-	case party.ClassPaladin:
-		return "聖武士"
-	case party.ClassMagicUser:
-		return "魔法師"
-	case party.ClassThief:
-		return "盜賊"
-	default:
-		return "未知職業"
-	}
 }
 
 func (s *State) campActionMessage(originalChoice string) string {
 	switch originalChoice {
 	case "SAVE":
-		return s.catalog.Text("camp_save_unavailable", "請使用 F5 儲存目前隊伍；完整原版儲存選單尚待接入。")
+		return s.catalog.Text("camp_save_unavailable", "camp_save_unavailable")
 	case "VIEW":
-		return s.catalog.Text("camp_view_unavailable", "角色查看功能尚待接入。")
+		return s.catalog.Text("camp_view_unavailable", "camp_view_unavailable")
 	case "MAGIC":
-		return s.catalog.Text("camp_magic_unavailable", "法術準備功能尚待接入。")
+		return s.catalog.Text("camp_magic_unavailable", "camp_magic_unavailable")
 	case "ALTER":
-		return s.catalog.Text("camp_alter_unavailable", "角色修改功能尚待接入。")
+		return s.catalog.Text("camp_alter_unavailable", "camp_alter_unavailable")
 	case "FIX":
-		return s.catalog.Text("fix_no_cure", "沒有已記憶的 Cure Light Wounds，隊伍未改變。")
+		return s.catalog.Text("fix_no_cure", "fix_no_cure")
 	default:
 		return s.localizeOption(originalChoice)
 	}

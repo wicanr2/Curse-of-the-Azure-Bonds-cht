@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`122a470`（第 440 輪）
+本 milestone 的 CoAB 基底：`92e4e4d`（第 475 輪）
 依賴的 Golden Box engine checkpoint：`f3c652a`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -88,7 +88,9 @@ commit 內保存不可能自我引用的 hash。
   高階祭司、火刀戰後四段夢境及返城禁止入城另七個 boundary 已資料化；玩家
   回歸會實際走完阻擋與返回選單。
   艾森布拉 Tale 44／60 已由既有真實酒館鏈改成 game-pack stable-ID 驗收；State
-  line localizer 的 27 筆中文 fallback 副本已移除，最新 baseline 為 518。
+  line localizer 的 27 筆中文 fallback 副本已移除。第 476 輪再將 CAMP／REST／
+  FIX／VIEW／MAGIC 與 ALTER 的顯示文字改由正式 locale stable IDs 驅動，移除
+  128 次 Go 漢字並讓行為測試載入正式 catalog；最新 baseline 為 388。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

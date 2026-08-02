@@ -990,3 +990,22 @@ locale resolver 若帶完整中文 fallback，JSON 缺 key 時測試與畫面仍
 第二份譯文長期漂移。對已由 coverage 與玩家路徑保護的 stable ID，adapter 應以
 ID 作顯式 fallback，使缺資料可見；但 source line→ID 映射本身仍是遷移層，不能
 因移除中文就宣稱 engine／data 分離已全部完成。
+
+### 2026-08-02：共用服務測試也必須使用正式 catalog
+
+紮營、法術與 ALTER 看似是作品中立 UI，但只要測試以四鍵合成 catalog 搭配完整
+中文 fallback，正式 JSON 缺 key、格式參數少一個或提示語意過期時仍會通過。
+遷移一個服務垂直切片時，應同時完成三件事：fallback 改成 stable ID、逐鍵
+coverage 載入正式 JSON、完整互動測試也改用同一 catalog。
+
+格式化文字要把模板本身資料化，而不只按鈕。例如角色名稱／ID、頭身 block、
+HP、排序位置與錯誤原因都應由 stable format key 組合；Go 只提供 typed 參數。
+職業、種族、物品與法術名稱則重用既有 ID resolver，不能在每個服務再建立一份
+中文 switch。
+
+### 2026-08-02：module checkpoint 必須是可編譯證據的一部分
+
+README 記載 Engine HEAD、nested worktree 與 `go.mod` pseudo-version 可能漂移。
+正式 gate 不能任選一個本機相容 commit：先以 pinned commit 編譯；若它缺少目前
+schema，這就是依賴宣告過期的直接證據。修正後要以 exact commit、乾淨 cache 與
+離線完整 gate 驗證，並分清「工具鏈依賴解析失敗」與「產品測試斷言失敗」。

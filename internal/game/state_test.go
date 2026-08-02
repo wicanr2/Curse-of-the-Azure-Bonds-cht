@@ -3559,8 +3559,52 @@ func TestMonsterRecordsFollowCurrentECLChapter(t *testing.T) {
 	}
 }
 
+func TestCampAndAlterCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	keys := []string{
+		"camp_rest_menu_prompt", "camp_rest_start", "camp_rest_add", "camp_rest_subtract",
+		"camp_rest_exit", "camp_rest_insufficient", "camp_rest_interrupted", "camp_rest_done",
+		"fix_no_cure", "fix_done", "camp_menu_prompt", "camp_save", "camp_view",
+		"camp_magic", "camp_rest", "camp_alter", "camp_fix", "camp_exit",
+		"camp_magic_pending", "camp_magic_cast_unknown", "camp_magic_memorize_selected",
+		"camp_magic_memorize_full", "camp_magic_none", "camp_magic_summary",
+		"camp_view_prompt", "camp_view_exit", "camp_magic_menu_prompt", "camp_magic_cast",
+		"camp_magic_memorize", "camp_magic_scribe", "camp_magic_display", "camp_magic_rest",
+		"camp_magic_exit", "camp_magic_cast_character_prompt", "camp_magic_cast_character",
+		"camp_magic_cast_exit", "camp_magic_cast_spell_prompt", "camp_magic_cast_target_prompt",
+		"camp_magic_cast_no_target", "camp_magic_cast_done", "camp_magic_prompt",
+		"camp_magic_character", "camp_magic_view_exit", "camp_magic_memorize_prompt",
+		"camp_magic_memorize_character", "camp_magic_memorize_spell_prompt",
+		"camp_magic_mem_done", "camp_magic_mem_cancel", "camp_magic_memorize_exit",
+		"camp_view_summary", "dungeon_prompt", "press_button", "enter_city", "journey_on",
+		"camp", "camp_save_unavailable", "camp_save_requested", "camp_view_unavailable",
+		"camp_magic_unavailable", "alter_prompt", "alter_order", "alter_drop", "alter_speed",
+		"alter_icon", "alter_pics", "alter_exit", "alter_rename", "alter_order_done",
+		"alter_order_unavailable", "alter_drop_unavailable", "alter_icon_unavailable",
+		"alter_rename_prompt", "alter_rename_character", "alter_rename_exit",
+		"alter_rename_edit_prompt", "alter_rename_done", "alter_speed_prompt",
+		"alter_speed_slower", "alter_speed_faster", "alter_speed_exit", "alter_icon_prompt",
+		"alter_icon_character", "alter_icon_exit", "alter_icon_edit_prompt", "alter_icon_head",
+		"alter_icon_head_prev", "alter_icon_head_next", "alter_icon_body", "alter_icon_body_prev",
+		"alter_icon_body_next", "alter_icon_done", "alter_pics_prompt", "alter_pics_on",
+		"alter_pics_off", "alter_pics_monsters", "alter_pics_animations", "alter_pics_exit",
+		"alter_drop_prompt", "alter_drop_character", "alter_drop_exit", "alter_drop_failed",
+		"alter_drop_confirm_prompt", "alter_drop_confirm", "alter_drop_cancel",
+		"alter_drop_warning", "alter_drop_done", "alter_order_prompt",
+		"alter_order_destination_prompt", "alter_order_destination", "alter_order_exit",
+		"alter_order_cancel", "alter_order_selected", "alter_speed_unavailable",
+		"alter_pics_unavailable", "camp_alter_unavailable", "class_cleric", "class_fighter",
+		"class_ranger", "class_paladin", "class_magic_user", "class_thief", "class_unknown",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, key); got == key {
+			t.Fatalf("camp/ALTER locale ID %q is absent", key)
+		}
+	}
+}
+
 func TestCampBoundaryAndInGameJournal(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	if err := state.Camp(); err != nil {
 		t.Fatal(err)
@@ -3621,7 +3665,7 @@ func TestECLRobScalesPartyGoldAndUsesReferenceWeightPenalty(t *testing.T) {
 }
 
 func TestCampMenuRestAndExit(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3658,7 +3702,7 @@ func TestCampMenuRestAndExit(t *testing.T) {
 }
 
 func TestCampMenuViewCharacterAndReturn(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3693,7 +3737,7 @@ func TestCampMenuViewCharacterAndReturn(t *testing.T) {
 }
 
 func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3731,7 +3775,7 @@ func TestCampMenuMagicListsMemorizedSlots(t *testing.T) {
 }
 
 func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.catalog.Strings["spell_cleric_1"] = "祝福"
 	state.catalog.Strings["spell_cleric_3"] = "治療輕傷"
 	state.Mode = ModeWilderness
@@ -3752,7 +3796,7 @@ func TestCampMagicLocalizesVerifiedFirstLevelSpellNames(t *testing.T) {
 }
 
 func TestCampMagicCastCureLightWoundsConsumesSlotAndSyncsHP(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3803,7 +3847,7 @@ func TestCampMagicCastCureLightWoundsConsumesSlotAndSyncsHP(t *testing.T) {
 }
 
 func TestCampMagicMemorizeAppliesAtRest(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3847,7 +3891,7 @@ func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
 	if got := firstLevelMemorizationHours(map[int][]uint8{0: {1}}); got != 5 {
 		t.Fatalf("one first-level spell requires %d hours, want 5", got)
 	}
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{0x09}}}
 	state.pendingMemorizedSpells = map[int][]uint8{0: {MagicMissileSpellID}}
 	state.SetRestHours(4)
@@ -3865,7 +3909,7 @@ func TestCampMagicMemorizeRequiresPreparationTime(t *testing.T) {
 }
 
 func TestCampMenuSaveEmitsRequest(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3888,7 +3932,7 @@ func TestCampMenuSaveEmitsRequest(t *testing.T) {
 }
 
 func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3931,7 +3975,7 @@ func TestCampAlterOrderReordersRosterAndFighters(t *testing.T) {
 }
 
 func TestCampAlterRenameUpdatesRosterAndFighter(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -3967,7 +4011,7 @@ func TestCampAlterRenameUpdatesRosterAndFighter(t *testing.T) {
 }
 
 func TestCampAlterDropRequiresConfirmationAndRemovesCharacter(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -4015,7 +4059,7 @@ func TestCampAlterDropRequiresConfirmationAndRemovesCharacter(t *testing.T) {
 }
 
 func TestCampAlterPicsTogglesRendererPreferences(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -4052,7 +4096,7 @@ func TestCampAlterPicsTogglesRendererPreferences(t *testing.T) {
 }
 
 func TestCampAlterSpeedAdjustsMessageRevealRate(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -4089,7 +4133,7 @@ func TestCampAlterSpeedAdjustsMessageRevealRate(t *testing.T) {
 }
 
 func TestCampAlterIconUpdatesRosterAndFighter(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -4134,7 +4178,7 @@ func TestCampAlterIconUpdatesRosterAndFighter(t *testing.T) {
 }
 
 func TestCampFixUsesMemorizedCureLightWounds(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.Choices = []string{"進入城市", "繼續旅程", "紮營"}
 	state.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
@@ -4159,7 +4203,7 @@ func TestCampFixUsesMemorizedCureLightWounds(t *testing.T) {
 }
 
 func TestCampOpensMenuWithoutInstantHealing(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	party := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
 	if err := state.SetParty(party); err != nil {
 		t.Fatal(err)
@@ -4174,7 +4218,7 @@ func TestCampOpensMenuWithoutInstantHealing(t *testing.T) {
 }
 
 func TestCampRestNaturallyHealsOneHPPer24Hours(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 3, MaxHitPoints: 10}}
 	state.party = []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10}}
@@ -4192,7 +4236,7 @@ func TestCampRestNaturallyHealsOneHPPer24Hours(t *testing.T) {
 }
 
 func TestCampRestAdvancesGameTimeBeforeHealing(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeWilderness
 	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 3, MaxHitPoints: 10,
 		Effects: []monster.AffectRecord{{Kind: 0x27, Duration: 30, Value: 30, Strength: 1}}}}
