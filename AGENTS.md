@@ -739,6 +739,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   locale，不得在 Go 複製中文 fragment。Demo fighter technical ID 與 locale
   顯示名分離。Frontend 歸零不代表 runtime 212 筆或全翻譯已完成。READY spec
   486 是權威。
+- 第 487 輪將建角完成、手札框、荒野選單、世界地點、NPC 名稱與城鎮／地城
+  提示的三十九筆執行期中文 fallback 移回正式 catalog，baseline `212→173`。
+  `catalog.Text` 的中文 fallback 仍是重複真相；正式玩家流程以 stable ID
+  fallback 並由 coverage test 封鎖缺鍵。產品測試載入正式 catalog、動態解析
+  期望文字，不能靠膨脹最小 fixture 或複製 JSON 中文通過。READY spec 487
+  是權威；runtime 仍有 173 筆待清理。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

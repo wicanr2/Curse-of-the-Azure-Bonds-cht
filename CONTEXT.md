@@ -3761,3 +3761,12 @@ automation 不再比較繁中選項，改用 `WAIT`、`ATTACK WIZARD`、
 `238→212`，frontend `26→0`、runtime 212、localization 0。READY spec 486 與
 玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式全套 gate 已通過，
 marker `ROUND486_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百八十七輪將建角完成、手札框、荒野選單、世界地點、NPC
+名稱與城鎮／地城入口的三十九筆中文 fallback 移回正式 locale catalog。動態
+所在地提示使用 `place_prompt` 格式 ID，荒野控制流仍保存原始 option identity。
+正式 coverage 覆蓋 23 個 ID；撤退回歸以任意顯示 choice 驗證 `FLEE` 控制流，
+期望訊息由正式 catalog 動態解析。source audit `212→173`，frontend 0、runtime
+173、localization 0。READY spec 487 是權威；Docker／Xvfb／`--network none`
+正式全套 gate 已通過，marker `ROUND487_FORMAL_EXIT=0`；commit／push 與暫存
+清理待本輪收尾。

@@ -346,14 +346,15 @@ func TestLocalizedEncounterMenuOptions(t *testing.T) {
 }
 
 func TestEncounterFleeReturnsToWildernessEvent(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	state.Mode = ModeWilderness
-	state.Choices = []string{"撤退"}
+	state.Choices = []string{"DISPLAY"}
 	state.currentOriginalChoices = []string{"FLEE"}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "FLEE" || state.Message != "你們成功撤退，返回荒野。" {
+	if state.Mode != ModeEvent || state.OriginalEvent != "FLEE" || state.Message != catalog.Text("encounter_flee_done", "") {
 		t.Fatalf("flee state=%+v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {
