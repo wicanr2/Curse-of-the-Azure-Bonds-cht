@@ -183,26 +183,31 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		"YOU ARE CONFRONTED BY A PATROL FROM ZHENTIL KEEP.",
 		"NOTING THE SIGILS ON YOUR ARMS, THEY LET YOU PASS.",
 	}, "zh-TW")
-	if !result.Matched || !strings.Contains(result.Message, "手臂上的枷印") {
+	wantPatrol, _ := pack.Text("zhentil.patrol_pass", "zh-TW")
+	if !result.Matched || result.RuleID != "zhentil.patrol_pass" || result.Message != wantPatrol {
 		t.Fatalf("text result=%+v", result)
 	}
 	dimswart := pack.MatchText([]string{
 		"YOU SEE AN OLD MAN IN THE CELL.",
 		"HE INTRODUCES HIMSELF AND YOU RECORD HIS REMARKS AS JOURNAL ENTRY 12.",
 	}, "zh-TW")
-	if !dimswart.Matched || !strings.Contains(dimswart.Message, "牢房裡有一位老人") ||
-		len(dimswart.JournalPages) != 6 ||
-		!strings.Contains(dimswart.JournalPages[0], "手札條目 12（1/6）") ||
-		!strings.Contains(dimswart.JournalPages[5], "摩安德護手") {
+	wantDimswart, _ := pack.Text("zhentil.dimswart_appears", "zh-TW")
+	wantJournal121, _ := pack.Text("journal.12.1", "zh-TW")
+	wantJournal126, _ := pack.Text("journal.12.6", "zh-TW")
+	if !dimswart.Matched || dimswart.RuleID != "zhentil.dimswart_appears" ||
+		dimswart.Message != wantDimswart || len(dimswart.JournalPages) != 6 ||
+		dimswart.JournalPages[0] != wantJournal121 || dimswart.JournalPages[5] != wantJournal126 {
 		t.Fatalf("Dimswart text result=%+v", dimswart)
 	}
 	dexam := pack.MatchText([]string{
 		"DEXAM SPEAKS.",
 		"YOU RECORD HIS SPEECH AS JOURNAL ENTRY 30.",
 	}, "zh-TW")
-	if !dexam.Matched || !strings.Contains(dexam.Message, "手札第 30 條") ||
-		len(dexam.JournalPages) != 2 ||
-		!strings.Contains(dexam.JournalPages[1], "兩三個星期") {
+	wantDexam, _ := pack.Text("dexam.journal_30", "zh-TW")
+	wantJournal302, _ := pack.Text("journal.30.2", "zh-TW")
+	if !dexam.Matched || dexam.RuleID != "dexam.journal_30" ||
+		dexam.Message != wantDexam || len(dexam.JournalPages) != 2 ||
+		dexam.JournalPages[1] != wantJournal302 {
 		t.Fatalf("Dexam text result=%+v", dexam)
 	}
 }

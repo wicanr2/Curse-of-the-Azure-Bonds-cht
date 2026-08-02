@@ -4383,8 +4383,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "散提爾堡巡邏兵") ||
-		!strings.Contains(state.Message, "手臂上的枷印") ||
+	if state.Message != requireGamePackText(t, &state, "zhentil.patrol_pass") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Zhentil patrol mode=%v block=0x%02x originals=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
@@ -4395,7 +4394,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Location != LocationZhentilKeep || state.Area.CurrentCity != 12 ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP", "SEARCH AREA"}) ||
 		!reflect.DeepEqual(state.Choices, []string{"進入城市", "繼續旅程", "紮營", "搜索此區"}) ||
-		!strings.Contains(state.Message, "散提爾堡城外") {
+		state.Message != requireGamePackText(t, &state, "zhentil.edge") {
 		t.Fatalf("Zhentil arrival mode=%v block=0x%02x location=%v currentCity=%d originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.Location, state.Area.CurrentCity,
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -4405,8 +4404,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.session.CurrentBlockID() != 0x20 ||
 		!state.PictureRequested || state.PictureBlock != 32 ||
-		!strings.Contains(state.Message, "衛兵把隊伍帶到一旁盤問") ||
-		!strings.Contains(state.Message, "手札第 32 條") {
+		state.Message != requireGamePackText(t, &state, "zhentil.guards_question") {
 		t.Fatalf("Zhentil enter mode=%v block=0x%02x area=%+v location=%v message=%q picture=%v/%d",
 			state.Mode, state.session.CurrentBlockID(), state.Area, state.Location,
 			state.Message, state.PictureRequested, state.PictureBlock)
@@ -4421,8 +4419,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "小賊說的一樣") ||
-		!strings.Contains(state.Message, "進城後") ||
+	if state.Message != requireGamePackText(t, &state, "zhentil.guards_warning") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Zhentil guards warning originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
@@ -4430,7 +4427,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "進入散提爾堡內城") ||
+	if state.Message != requireGamePackText(t, &state, "zhentil.inner_city") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Zhentil inner city originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
@@ -4448,7 +4445,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.GeoMapSet, state.GeoMapBlock, state.DungeonX, state.DungeonY, state.DungeonDirection,
 			state.currentOriginalChoices, state.Message)
 	}
-	if journals := strings.Join(state.JournalPages, "\n"); !strings.Contains(journals, "手札條目 32：") {
+	if !slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.32")) {
 		t.Fatalf("Zhentil entry did not unlock Journal 32: %#v", state.JournalPages)
 	}
 	if err := session.Reset(1); err != nil {

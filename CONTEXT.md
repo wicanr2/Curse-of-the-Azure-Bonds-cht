@@ -3571,3 +3571,14 @@ item block、手札 20、財寶不重複、`10+5+5` 離場敵人、Alias alive �
 126→108，frontend 135、runtime 360 不變。READY spec 468 是權威；正式 gate、
 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND468_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十九輪強化散提爾堡至眼魔洞窟驗收。world trail／edge／
+城門、奧莉芙密道、幽暗神殿、迪姆斯沃特、兜帽女子、弗佐爾、德克薩姆、護符、
+四段離場與 Shadowdale 返回的訊息及手札期望均改由正式 game-pack stable ID
+取得，不再複製繁中片段。`forceEnemyDefeat` 已移除；德克薩姆／梅杜莎／十牛頭人
+與散提爾堡 `11+4+3+1` 兩戰改以 `CombatAct` 在 500 回合上限內真正完成，戰後
+護符、`4CE2／7F12=1` 與 world handoff 保持成立。測試使用高能力 party，且仍由
+數條 focused path 組成，不能擴大成開場至此單一路徑或完整戰鬥 fidelity。
+產品 source audit 無變更，baseline 維持 603。READY spec 469 是權威；正式
+Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND469_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

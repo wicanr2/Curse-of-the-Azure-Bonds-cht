@@ -1,6 +1,7 @@
 package game
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -28,8 +29,7 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 39 ||
-		!strings.Contains(state.Message, "兜帽女子忽然現身") ||
-		!strings.Contains(state.Message, "主人能幫助你們") {
+		state.Message != requireGamePackText(t, state, "zhentil.hooded_offer") {
 		t.Fatalf("hooded offer mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -40,15 +40,14 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if got := strings.Join(state.Choices, "/"); got != "是/否" ||
-		!strings.Contains(state.Message, "跟她走") {
+		state.Message != requireGamePackText(t, state, "zhentil.hooded_follow") {
 		t.Fatalf("hooded follow choices=%q message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 33 ||
-		!strings.Contains(state.Message, "奇異的微光") ||
-		!strings.Contains(state.Message, "弗佐爾・錢布瑞爾") {
+		state.Message != requireGamePackText(t, state, "zhentil.fzoul_interrupts") {
 		t.Fatalf("Fzoul interruption picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -58,7 +57,7 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "轉身衝出房間") {
+	if state.Message != requireGamePackText(t, state, "zhentil.fzoul_retreats") {
 		t.Fatalf("Fzoul retreat message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -66,8 +65,7 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 	}
 
 	if state.session.CurrentBlockID() != 0x22 || !state.PictureRequested ||
-		state.PictureBlock != 40 || !strings.Contains(state.Message, "眼魔德克薩姆") ||
-		!strings.Contains(state.Message, "披甲牛頭人") {
+		state.PictureBlock != 40 || state.Message != requireGamePackText(t, state, "dexam.arrival") {
 		t.Fatalf("Dexam arrival block=0x%02x picture=%v/%d message=%q",
 			state.session.CurrentBlockID(), state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -77,20 +75,19 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "手札第 30 條") {
+	if state.Message != requireGamePackText(t, state, "dexam.journal_30") {
 		t.Fatalf("Dexam journal prompt=%q", state.Message)
 	}
-	journals := strings.Join(state.JournalPages, "\n")
-	if !strings.Contains(journals, "手札條目 30（1/2）") ||
-		!strings.Contains(journals, "總督察長") ||
-		!strings.Contains(journals, "兩三個星期") {
-		t.Fatalf("Journal 30 was not unlocked: %q", journals)
+	for _, id := range []string{"journal.30.1", "journal.30.2"} {
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, state, id)) {
+			t.Fatalf("Journal 30 missing %s: %q", id, state.JournalPages)
+		}
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if got := strings.Join(state.Choices, "/"); got != "戰鬥/等待/撤退/接近/談判" ||
-		!strings.Contains(state.Message, "洛山達護符") {
+		state.Message != requireGamePackText(t, state, "dexam.amulet_choice") {
 		t.Fatalf("Dexam encounter choices=%q message=%q", state.Choices, state.Message)
 	}
 
@@ -99,15 +96,14 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 33 ||
-		!strings.Contains(state.Message, "手札第 7 條") {
+		state.Message != requireGamePackText(t, state, "dexam.fzoul_journal_7") {
 		t.Fatalf("Fzoul arrival picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
-	journals = strings.Join(state.JournalPages, "\n")
-	if !strings.Contains(journals, "手札條目 7（1/2）") ||
-		!strings.Contains(journals, "貝恩霸權") ||
-		!strings.Contains(journals, "只要我還活著") {
-		t.Fatalf("Journal 7 was not unlocked: %q", journals)
+	for _, id := range []string{"journal.7.1", "journal.7.2"} {
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, state, id)) {
+			t.Fatalf("Journal 7 missing %s: %q", id, state.JournalPages)
+		}
 	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
@@ -115,14 +111,14 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "轟成一堆灰燼") {
+	if state.Message != requireGamePackText(t, state, "dexam.kills_fzoul") {
 		t.Fatalf("Fzoul death message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 33 ||
-		!strings.Contains(state.Message, "弗佐爾的枷印消退") {
+		state.Message != requireGamePackText(t, state, "dexam.fzoul_bond_fades") {
 		t.Fatalf("bond fade picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -133,7 +129,7 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 40 ||
-		!strings.Contains(state.Message, "殺了他們") {
+		state.Message != requireGamePackText(t, state, "dexam.kill_order") {
 		t.Fatalf("Dexam order picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -143,13 +139,13 @@ func TestRealZhentilHoodedWomanReachesBeholderCave(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "護符正飄向他") {
+	if state.Message != requireGamePackText(t, state, "dexam.amulet_rises") {
 		t.Fatalf("amulet departure message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "混戰") {
+	if state.Message != requireGamePackText(t, state, "dexam.altar_melee") {
 		t.Fatalf("altar melee message=%q", state.Message)
 	}
 	if err := state.Continue(); err != nil {

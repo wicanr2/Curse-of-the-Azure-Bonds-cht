@@ -3,6 +3,7 @@ package game
 import (
 	"archive/zip"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -21,7 +22,7 @@ func TestRealZhentilRecruitDimswart(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 42 ||
-		!strings.Contains(state.Message, "南邊的牢房") {
+		state.Message != requireGamePackText(t, state, "zhentil.olive_cell_hint") {
 		t.Fatalf("Olive direction mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -31,7 +32,7 @@ func TestRealZhentilRecruitDimswart(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "手札第 51 條") {
+	if state.Message != requireGamePackText(t, state, "zhentil.olive_repeats_dimswart") {
 		t.Fatalf("Olive repeated explanation message=%q", state.Message)
 	}
 	for step := 0; step < 8 && state.Mode != ModeDungeon; step++ {
@@ -54,26 +55,16 @@ func TestRealZhentilRecruitDimswart(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 35 ||
-		!strings.Contains(state.Message, "牢房裡有一位老人") ||
-		!strings.Contains(state.Message, "手札第 12 條") {
+		state.Message != requireGamePackText(t, state, "zhentil.dimswart_appears") {
 		t.Fatalf("Dimswart meeting mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
-	journals := strings.Join(state.JournalPages, "\n")
-	for _, want := range []string{
-		"手札條目 12（1/6）",
-		"五個強大勢力",
-		"摩安德",
-		"散塔林會",
-		"德拉坎德羅斯",
-		"提朗瑟克斯",
-		"洛山達護符",
-		"龍之頭盔",
-		"摩安德護手",
-		"手札條目 12（6/6）",
+	for _, id := range []string{
+		"journal.12.1", "journal.12.2", "journal.12.3",
+		"journal.12.4", "journal.12.5", "journal.12.6",
 	} {
-		if !strings.Contains(journals, want) {
-			t.Fatalf("Journal 12 missing %q: %q", want, journals)
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, state, id)) {
+			t.Fatalf("Journal 12 missing %s: %q", id, state.JournalPages)
 		}
 	}
 
@@ -84,7 +75,7 @@ func TestRealZhentilRecruitDimswart(t *testing.T) {
 		t.Fatal(err)
 	}
 	if got := strings.Join(state.Choices, "/"); got != "是/否" ||
-		!strings.Contains(state.Message, "讓迪姆斯沃特同行") {
+		state.Message != requireGamePackText(t, state, "zhentil.dimswart_join") {
 		t.Fatalf("Dimswart choice=%q message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {

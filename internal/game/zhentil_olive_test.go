@@ -3,6 +3,7 @@ package game
 import (
 	"archive/zip"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -74,15 +75,14 @@ func TestRealZhentilOliveSecretPassage(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 42 ||
-		!strings.Contains(state.Message, "半身人女子從隱密壁龕中現身") {
+		state.Message != requireGamePackText(t, &state, "zhentil.olive_appears") {
 		t.Fatalf("Olive meeting mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
-	journals := strings.Join(state.JournalPages, "\n")
-	if !strings.Contains(journals, "手札條目 50（1/2）") ||
-		!strings.Contains(journals, "洛山達護符") ||
-		!strings.Contains(journals, "迪姆斯沃特") {
-		t.Fatalf("Journal 50 was not unlocked as readable Chinese pages: %q", journals)
+	for _, id := range []string{"journal.50.1", "journal.50.2"} {
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, &state, id)) {
+			t.Fatalf("Journal 50 missing %s: %q", id, state.JournalPages)
+		}
 	}
 
 	if err := state.Continue(); err != nil {
@@ -92,14 +92,14 @@ func TestRealZhentilOliveSecretPassage(t *testing.T) {
 		t.Fatal(err)
 	}
 	if got := strings.Join(state.Choices, "/"); got != "是/否" ||
-		!strings.Contains(state.Message, "跟她走") {
+		state.Message != requireGamePackText(t, &state, "zhentil.olive_follow") {
 		t.Fatalf("follow prompt choices=%q message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	if state.session.CurrentBlockID() != 0x21 || !state.PictureRequested ||
-		state.PictureBlock != 42 || !strings.Contains(state.Message, "穿牆進入幽暗神殿") {
+		state.PictureBlock != 42 || state.Message != requireGamePackText(t, &state, "zhentil.dark_shrine_entry") {
 		t.Fatalf("shrine transition block=0x%02x picture=%v/%d message=%q",
 			state.session.CurrentBlockID(), state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -110,25 +110,24 @@ func TestRealZhentilOliveSecretPassage(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "手札第 51 條") {
+	if state.Message != requireGamePackText(t, &state, "zhentil.olive_explains") {
 		t.Fatalf("Olive explanation message=%q", state.Message)
 	}
-	journals = strings.Join(state.JournalPages, "\n")
-	if !strings.Contains(journals, "手札條目 51（1/2）") ||
-		!strings.Contains(journals, "弗佐爾・錢布瑞爾") ||
-		!strings.Contains(journals, "貝恩祭司") {
-		t.Fatalf("Journal 51 was not unlocked as readable Chinese pages: %q", journals)
+	for _, id := range []string{"journal.51.1", "journal.51.2"} {
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, &state, id)) {
+			t.Fatalf("Journal 51 missing %s: %q", id, state.JournalPages)
+		}
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "門的另一頭") {
+	if state.Message != requireGamePackText(t, &state, "zhentil.dimswart_door") {
 		t.Fatalf("Dimswart door message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "微微一笑") {
+	if state.Message != requireGamePackText(t, &state, "zhentil.olive_leaves") {
 		t.Fatalf("Olive departure message=%q", state.Message)
 	}
 	if err := state.Continue(); err != nil {
