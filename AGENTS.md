@@ -534,6 +534,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   slot transaction。32×16 fallback placement 仍是 reconstructed；Quick、
   wall/corner 動態、解除／save、twinkle／音效未完成。READY spec 439 是
   權威，compact 後不得再把 Sleep 掃描中心改回施法者。
+- 第 440 輪已證明 overlay 23 `PUTDAMAGE` 的正傷害路徑呼叫 `REMOVEFX`，
+  resident `DS:159Eh..15B1h` 的 19-byte effect table exact 含 `35h`，因此
+  動態 Sleep 受至少一點傷害後解除，零傷害不解除。`[di+159Dh]` 是 DS
+  位址，不是 overlay 同 offset 的 CS bytes；compact 後不得混淆兩個位址
+  空間。duration、save 與醒來演出仍未完成；READY spec 440 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

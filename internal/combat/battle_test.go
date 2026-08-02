@@ -923,7 +923,7 @@ func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	}
 }
 
-func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
+func TestResolveAttackWakesHeldMonsterAfterPositiveDamage(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: -20, DamageDiceCount: 1, DamageDiceSides: 1},
 		{ID: "sleeping", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
@@ -936,8 +936,36 @@ func TestResolveAttackHeldMonsterIsAlwaysHit(t *testing.T) {
 	if err != nil || !result.Hit || result.Damage != 1 {
 		t.Fatalf("held target result=%#v err=%v", result, err)
 	}
-	if !battle.Fighters()[1].MonsterIsHeld() {
-		t.Fatal("held effect was unexpectedly consumed")
+	if battle.Fighters()[1].MonsterIsHeld() {
+		t.Fatal("positive damage did not remove dynamic sleep effect")
+	}
+}
+
+func TestZeroDamageDoesNotWakeSleepAndDamageKeepsInnateEffect35(t *testing.T) {
+	fighters := []Fighter{
+		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1},
+		{ID: "dynamic", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
+		{ID: "innate", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			MonsterAffects: []MonsterAffect{{Kind: 0x35, Innate: true}}},
+	}
+	battle, err := NewBattle(fighters, 440)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result, err := battle.ResolveAttack("hero", "dynamic", 20, 0); err != nil || result.Damage != 0 {
+		t.Fatalf("zero damage result=%#v err=%v", result, err)
+	}
+	dynamic, ok := battle.Fighter("dynamic")
+	if !ok || !dynamic.MonsterIsHeld() {
+		t.Fatal("zero damage unexpectedly removed sleep")
+	}
+	if result, err := battle.ResolveAttack("hero", "innate", 20, 1); err != nil || result.Damage != 1 {
+		t.Fatalf("innate result=%#v err=%v", result, err)
+	}
+	innate, ok := battle.Fighter("innate")
+	if !ok || !innate.MonsterIsHeld() {
+		t.Fatal("dynamic REMOVEFX boundary removed innate MON*SPC effect")
 	}
 }
 
