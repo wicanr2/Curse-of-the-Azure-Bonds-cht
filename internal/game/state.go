@@ -1550,13 +1550,13 @@ func (s *State) continueAfterSuppressedPicture(result ecl.RunResult) (bool, erro
 func (s *State) enterParlayMenu() {
 	s.parlayMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("parlay_menu_prompt", "選擇談判策略")
+	s.Prompt = s.catalog.Text("parlay_menu_prompt", "parlay_menu_prompt")
 	s.Choices = []string{
-		s.catalog.Text("parlay_haughty", "傲慢"),
-		s.catalog.Text("parlay_sly", "狡猾"),
-		s.catalog.Text("parlay_meek", "謙卑"),
-		s.catalog.Text("parlay_nice", "友善"),
-		s.catalog.Text("parlay_abusive", "威嚇"),
+		s.catalog.Text("parlay_haughty", "parlay_haughty"),
+		s.catalog.Text("parlay_sly", "parlay_sly"),
+		s.catalog.Text("parlay_meek", "parlay_meek"),
+		s.catalog.Text("parlay_nice", "parlay_nice"),
+		s.catalog.Text("parlay_abusive", "parlay_abusive"),
 	}
 	s.currentOriginalChoices = []string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}
 	s.Message = ""
@@ -1669,7 +1669,7 @@ func (s *State) selectParlay(index int, originalChoice string) error {
 	s.eventReturnMode = ModeWilderness
 	s.OriginalEvent = "PARLAY"
 	tactic := s.localizeOption(originalChoice)
-	s.Message = fmt.Sprintf(s.catalog.Text("encounter_parlay_done", "你選擇以%s與怪物交涉；對方的反應仍待 encounter script。"), tactic)
+	s.Message = fmt.Sprintf(s.catalog.Text("encounter_parlay_done", "encounter_parlay_done"), tactic)
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	return nil

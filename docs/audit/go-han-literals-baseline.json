@@ -962,55 +962,6 @@
     },
     {
       "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "16e3b4c5c04a244b75e2993f51f175e419657f132615072f15b4ffba8ce31966",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "1db1add7aece7fe6e3be93b3b46e2efba507eb532914fdc4f28c640ef69b8a99",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "5a2e1b649bcaad1e53e23a2dbda3468cb1974004f284b8d5d6dd273a732d7594",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "dcc1a99cdda6b9222b06726dd17634b616d40d73475f1cdf8d76b7cd35acad99",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "f21ea57bdf0dd0299590115838cf64fbf66e43104b79bf7f12454e3ca9fc27d0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterParlayMenu",
-      "sha256": "f5d79f96f47e53fba9ffd508260420335035761a1b860ea29b2eda96bc3dc70b",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "selectParlay",
-      "sha256": "c5102fd20377bba9875eaa0be6e8a671427f871d5bd48d5391a1a06b13dbd45c",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
       "function": "selectPlace",
       "sha256": "0635f8c0f51a0012fedabbe4c7b6ccc6c44717db22b092abc774276c84ab2c80",
       "occurrences": 1,

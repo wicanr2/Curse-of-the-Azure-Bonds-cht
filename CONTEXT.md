@@ -3780,3 +3780,13 @@ prompt 與 exit choice，原 3,000 gold、3 gems、2 jewelry、ITEM block `82h`
 localization 0。READY spec 488 是權威；Docker／Xvfb／`--network none` 正式
 全套 gate 已通過，marker `ROUND488_FORMAL_EXIT=0`；commit／push 與暫存清理
 待本輪收尾。
+
+2026-08-03 第四百八十九輪將 PARLAY prompt、五種 tactic 與 generic 結果七筆
+中文 fallback 移回正式 locale catalog。控制 identity 保持
+`PARLAY_HAUGHTY／SLY／MEEK／NICE／ABUSIVE`；generic 測試以 `DISPLAY` 入口
+證明顯示不控制流程，期望訊息由正式 catalog 動態組成。法師塔與 Myth Drannor
+羅剎妖居所正常長路徑移除中文策略陣列，並同時驗證原 tactic identity、目前
+locale projection 與原 ECL 後果。source audit `164→157`，frontend 0、runtime
+157、localization 0。READY spec 489 是權威；Docker／Xvfb／`--network none`
+正式全套 gate 已通過，marker `ROUND489_FORMAL_EXIT=0`；commit／push 與暫存
+清理待本輪收尾。
