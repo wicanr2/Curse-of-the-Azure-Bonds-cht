@@ -5929,51 +5929,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_lava_tube_cask_heat_retreat",
 			"熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？",
 		)
-	case strings.Contains(joined, "HEADING UP INTO THE WIZARD'S TOWER") ||
-		(strings.Contains(joined, "COURTYARD OF A FIVE") &&
-			strings.Contains(joined, "SURROUNDING THE TOWER ARE HIGH MOUNTAINS")):
-		return catalog.Text(
-			"ecl_wizard_tower_courtyard",
-			"你們走入法師塔，來到一座五層高塔的庭院。塔身受魔法保護，石工無瑕而美麗，四周盡是高山。",
-		)
-	case strings.Contains(joined, "AN IMPRESSIVE ROBED FIGURE APPROACHES YOU") &&
-		strings.Contains(joined, "I AM DRACANDROS"):
-		return catalog.Text(
-			"ecl_dracandros_arrival",
-			"一名氣勢逼人的長袍人物走近：「我是德拉坎德羅斯。很高興你們終於到了。時間緊迫，你們必須扮演好自己的角色。」",
-		)
-	case strings.Contains(joined, "FREEZE WHERE YOU STAND") &&
-		strings.Contains(joined, "THE BONDS PARALYZE YOU"):
-		return catalog.Text(
-			"ecl_dracandros_freezes_party",
-			"「站住！我沒時間陪你們胡鬧！」枷印發出力量，令你們全身動彈不得。",
-		)
-	case strings.Contains(joined, "ROOF OF THE TOWER") &&
-		strings.Contains(joined, "HUGE HOST OF BLACK DRAGONS"):
-		return catalog.Text("ecl_wizard_tower_dragon_roof", "轉瞬之間，你們已站在塔頂，四周聚集著一大群黑龍。")
-	case strings.Contains(joined, "ONE OF THE DRAGONS DISENGAGES HIMSELF"):
-		return catalog.Text("ecl_wizard_tower_dragon_steps_out", "其中一隻黑龍離開龍群，獨自走上前來。")
-	case strings.Contains(joined, "ATTACK THE DRAGON AS ELMINSTER TOLD YOU"):
-		return catalog.Text("ecl_dracandros_attack_order", "德拉坎德羅斯喝令：「照伊爾明斯特的命令，攻擊那條龍！」")
-	case strings.Contains(joined, "UNDER THE FORCE OF THE BONDS") &&
-		strings.Contains(joined, "DRAGON WAS ONLY AN ILLUSION"):
-		return catalog.Text(
-			"ecl_dracandros_dragon_illusion",
-			"枷印強迫你們衝上前攻擊；那條龍挨了一擊便化為煙霧——它只是一道幻象！",
-		)
-	case strings.Contains(joined, "FREEZE, BASE SLAYERS OF DRAGONKIND") &&
-		strings.Contains(joined, "JOURNAL ENTRY 15"):
-		return catalog.Text(
-			"ecl_dracandros_journal_15",
-			"「站住，你們這些卑劣的屠龍者！」德拉坎德羅斯再次令你們動彈不得，轉身向龍群發表一番演說；內容已記入手札條目 15。",
-		)
-	case strings.Contains(joined, "DRACANDROS' MUMBLED PHRASE") &&
-		strings.Contains(joined, "BONDS TO") &&
-		strings.Contains(joined, "FADE"):
-		return catalog.Text(
-			"ecl_dracandros_bond_fades",
-			"德拉坎德羅斯含糊念出一段咒語，你們身上的一枚枷印逐漸消退。",
-		)
 	case strings.Contains(joined, "THIS IS A MATTER BETWEEN MEN") &&
 		strings.Contains(joined, "WE LEAVE YOU TO YOUR SQUABBLES"):
 		return catalog.Text(
@@ -6947,23 +6902,6 @@ func (s *State) unlockJournalEntries(texts []string) {
 			"手札條目 29：未被燒毀的部分寫著：「……我們的盟友能控制火焰、從一具軀體掠入另一具軀體，"+
 				"並展現多種異次元力量。我的結論是，『烈焰之主』不可能是別人，只會是泰蘭索斯……」",
 		)})
-	}
-	if strings.Contains(joined, "SLAYERS OF DRAGONKIND") &&
-		strings.Contains(joined, "JOURNAL ENTRY 15") {
-		s.appendJournalPages("手札條目 15", []string{
-			s.catalog.Text(
-				"journal_entry_15_1",
-				"手札條目 15（1/2）：德拉坎德羅斯對龍群宣稱，你們是伊爾明斯特為報復龍群飛襲、"+
-					"意圖消滅所有龍族的棋子；他願把這些「刺客」交給龍群，以證明自己的善意。"+
-					"他又指著你們手臂上的印記，誣稱那是奴役巨龍的泰蘭索斯之標誌。",
-			),
-			s.catalog.Text(
-				"journal_entry_15_2",
-				"手札條目 15（2/2）：一隻黑龍並不相信。牠見過相似的發光枷印控制戰士，"+
-					"認定真正操縱你們的人是德拉坎德羅斯，要求先解除枷印再審判你們。"+
-					"黑龍以冒煙的酸液威嚇他；德拉坎德羅斯只得念咒，讓自己那枚枷印逐漸消失。",
-			),
-		})
 	}
 }
 

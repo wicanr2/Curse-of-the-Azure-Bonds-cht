@@ -463,6 +463,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   載入 PICTURE 51 五層庭院、德拉坎德羅斯與塔頂黑龍幻象。WAIT 分支一路
   保留每個 PRINT RETURN，依使用者 Adventure Journal 解鎖完整繁中手札 15，
   原 ECL 再次寫入 `4CFF=1` 並令德拉坎德羅斯的枷印消退，最後停在原版四項選擇。
+  第 450 輪已把這段九個故事 pause 與手札兩頁完全移入 CoAB game-pack JSON；
+  事件發生後手札直接加入遊戲內 `J` 選單，不必另查 PDF。State 與舊 locale
+  的重複中文均已刪除，資料契約見
+  [`spec 450`](docs/spec/450-wizard-tower-json-story-journal.md)。
 - 選擇「攻擊法師」後，黑龍離開人類紛爭；德拉坎德羅斯逃下樓並留下
   1 名伊弗利特、2 名黑暗精靈戰士與 1 名法師。四名守軍均取自 MON5 原始
   record／小人 sprite；勝利後原 ECL 續接「屋頂可安全休息」，再回塔頂探索。

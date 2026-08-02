@@ -1,6 +1,8 @@
 package gamepack
 
 import (
+	"reflect"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -177,4 +179,57 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		!strings.Contains(dexam.JournalPages[1], "兩三個星期") {
 		t.Fatalf("Dexam text result=%+v", dexam)
 	}
+}
+
+func TestWizardTowerDracandrosStoryAndJournalAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+		want      string
+	}{
+		{"wizard-tower.courtyard.entering", []string{"HEADING UP INTO THE WIZARD'S TOWER"}, "五層高塔"},
+		{"wizard-tower.courtyard.description", []string{"COURTYARD OF A FIVE", "SURROUNDING THE TOWER ARE HIGH MOUNTAINS"}, "五層高塔"},
+		{"wizard-tower.dracandros.arrival", []string{"AN IMPRESSIVE ROBED FIGURE APPROACHES YOU", "I AM DRACANDROS"}, "德拉坎德羅斯"},
+		{"wizard-tower.dracandros.freezes-party", []string{"FREEZE WHERE YOU STAND", "THE BONDS PARALYZE YOU"}, "動彈不得"},
+		{"wizard-tower.dragon-roof", []string{"ROOF OF THE TOWER", "HUGE HOST OF BLACK DRAGONS"}, "黑龍"},
+		{"wizard-tower.dragon-steps-out", []string{"ONE OF THE DRAGONS DISENGAGES HIMSELF"}, "走上前"},
+		{"wizard-tower.dracandros.attack-order", []string{"ATTACK THE DRAGON AS ELMINSTER TOLD YOU"}, "伊爾明斯特"},
+		{"wizard-tower.dragon-illusion", []string{"UNDER THE FORCE OF THE BONDS", "DRAGON WAS ONLY AN ILLUSION"}, "幻象"},
+		{"wizard-tower.dracandros.bond-fades", []string{"DRACANDROS' MUMBLED PHRASE", "BONDS TO", "FADE"}, "枷印逐漸消退"},
+	}
+	for _, test := range tests {
+		t.Run(test.id, func(t *testing.T) {
+			result := pack.MatchText(test.fragments, "zh-TW")
+			if !result.Matched || result.RuleID != test.id || !strings.Contains(result.Message, test.want) {
+				t.Fatalf("result=%+v", result)
+			}
+		})
+	}
+	journal := pack.MatchText([]string{
+		"FREEZE, BASE SLAYERS OF DRAGONKIND",
+		"JOURNAL ENTRY 15",
+	}, "zh-TW")
+	if !journal.Matched || journal.RuleID != "wizard-tower.dracandros.journal-15" ||
+		!strings.Contains(journal.Message, "手札條目 15") ||
+		len(journal.JournalPages) != 2 ||
+		!strings.HasPrefix(journal.JournalPages[0], "手札條目 15（1/2）") ||
+		!strings.HasPrefix(journal.JournalPages[1], "手札條目 15（2/2）") {
+		t.Fatalf("journal result=%+v", journal)
+	}
+	if got, want := sortedLocaleKeys(pack.Locales["zh-TW"]), sortedLocaleKeys(pack.Locales["en"]); !reflect.DeepEqual(got, want) {
+		t.Fatalf("zh-TW/en stable ID coverage differs:\nzh-TW=%v\nen=%v", got, want)
+	}
+}
+
+func sortedLocaleKeys(messages map[string]string) []string {
+	keys := make([]string, 0, len(messages))
+	for key := range messages {
+		keys = append(keys, key)
+	}
+	slices.Sort(keys)
+	return keys
 }

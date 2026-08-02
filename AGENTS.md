@@ -535,6 +535,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `-inner-final-battle`＋`-screenshot` 啟用，不可誤搬進正式玩法。日常回歸
   依使用者指示採代表性 vertical slice／高風險狀態抽樣，不必每輪從開場
   marathon 到結局；完整端到端仍是發行前驗收門檻。READY spec 449 是權威。
+- 第 450 輪已把法師塔庭院→德拉坎德羅斯→龍群幻象→手札 15→枷印消退
+  從 State／舊 locale 複本遷移至 CoAB game-pack stable IDs。手札兩頁必須在
+  原 ECL 事件觸發後直接加入遊戲內 `JournalPages`，PDF 只作證據，絕不能叫
+  玩家離開遊戲查閱。後續遷移故事時沿用 `text_rules + message_id +
+  journal_message_ids`，並同步刪除被取代的 Go／locale fallback；READY
+  spec 450 是權威。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`
