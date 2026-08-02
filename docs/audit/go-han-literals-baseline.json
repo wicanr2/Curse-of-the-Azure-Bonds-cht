@@ -863,90 +863,6 @@
       "category": "runtime_ui_debt"
     },
     {
-      "path": "internal/game/creation.go",
-      "function": "LoadDOSCharacterFiles",
-      "sha256": "04381ba6f2e3c0e4bab4fbc3890f2fdae4f811ed993c974c1094d76d72022eae",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadDOSCharacterFiles",
-      "sha256": "1c06135c2e0d4a3b2509e97e299489516f2c3cee77ae6c9fced4e4991bb21ec0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadDOSCharacterFiles",
-      "sha256": "1d9671e91a00fdb27c39b7547831e4c04951395df8aedbb8dbed33ca99ca8cca",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadDOSCharacterFiles",
-      "sha256": "3e934e903d6c5ca78cb9cf20f579e4fe275f95f5d5654373c59a7af38be16fa9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadPartyFile",
-      "sha256": "04381ba6f2e3c0e4bab4fbc3890f2fdae4f811ed993c974c1094d76d72022eae",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadPartyFile",
-      "sha256": "1c06135c2e0d4a3b2509e97e299489516f2c3cee77ae6c9fced4e4991bb21ec0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadPartyFile",
-      "sha256": "1d9671e91a00fdb27c39b7547831e4c04951395df8aedbb8dbed33ca99ca8cca",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadPartyFile",
-      "sha256": "3e934e903d6c5ca78cb9cf20f579e4fe275f95f5d5654373c59a7af38be16fa9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadSAVGAMSlot",
-      "sha256": "04381ba6f2e3c0e4bab4fbc3890f2fdae4f811ed993c974c1094d76d72022eae",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadSAVGAMSlot",
-      "sha256": "1c06135c2e0d4a3b2509e97e299489516f2c3cee77ae6c9fced4e4991bb21ec0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadSAVGAMSlot",
-      "sha256": "1d9671e91a00fdb27c39b7547831e4c04951395df8aedbb8dbed33ca99ca8cca",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/creation.go",
-      "function": "LoadSAVGAMSlot",
-      "sha256": "3e934e903d6c5ca78cb9cf20f579e4fe275f95f5d5654373c59a7af38be16fa9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
       "path": "internal/game/ecl_string_input.go",
       "function": "AppendECLString",
       "sha256": "ce09c56fa0b09dee8f9288e71b143da02828521e9143ef8c45a4ec8bbe11eabe",
@@ -1011,55 +927,6 @@
     },
     {
       "path": "internal/game/state.go",
-      "function": "Continue",
-      "sha256": "211cbd3dfe03372677c1836e54d69370879a764656838710b8661372a4115171",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "EnterPlaces",
-      "sha256": "16431b9a14f689f71a797dcf4077b8d25c8a65be6901740048d092150d99ab16",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "EnterPlaces",
-      "sha256": "70fbb6a5dbfa6a8dad6043025ea9041b57d8b4dffd66b94d300a47236c081bd0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "EnterPlacesFromEvent",
-      "sha256": "16431b9a14f689f71a797dcf4077b8d25c8a65be6901740048d092150d99ab16",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "EnterPlacesFromEvent",
-      "sha256": "70fbb6a5dbfa6a8dad6043025ea9041b57d8b4dffd66b94d300a47236c081bd0",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "c9c21c52f49ce66786a85f14abe1464d72acca68c8684bc94191e86317ff200c",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "ded19f842d6a4a67e6c497ae8cf540108d4a605bb0010fa1fd04149ba8eec0e5",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
       "function": "ReportCombatError",
       "sha256": "607b11f9be87e8d85968ba8145f9e905544ead69accd4d5cabfc84403b4dac67",
       "occurrences": 1,
@@ -1076,13 +943,6 @@
       "path": "internal/game/state.go",
       "function": "Select",
       "sha256": "02125e0a6ccab85bdfe634da4a3f8849850b132b2cbd67d4c8cf5065c561f9fe",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "Select",
-      "sha256": "3f45e3e26fc93907a672e2dbf3c89a7f9201d9f6e17f2846228c5bc732420ff7",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1110,63 +970,7 @@
     {
       "path": "internal/game/state.go",
       "function": "Select",
-      "sha256": "5f0a0f39f4847e09aa9130f16383cbffdf47b3b54b76f8cfcb3314585e36297a",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "Select",
       "sha256": "8d3b7547648ecd279db57eb7dc027f80736ee4bef9dd914ac7a38789acff7be6",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "Select",
-      "sha256": "b339fa53547066446f0db29aadb8fb5fcb2bb5f873419d19b19b59df20753bf1",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLNPCSignals",
-      "sha256": "45aa92b96e72e37bee18f86c6ee6756d02c45ddb63417d209e8040a126024a7e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLNPCSignals",
-      "sha256": "58fc155c8c2cd45ed122698e786967b430152f1f0d799b46467b8f611477e9e8",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLNPCSignals",
-      "sha256": "a729a6a489f226b9155014d4fc58eb874f6774ec66a5bc43a793ce6427a34379",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterECLMenu",
-      "sha256": "1f2fe6e79f148cc96027b54e5d32560d5b66b279a926ff2a8dcf86f0b220efe9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterMapAt",
-      "sha256": "211cbd3dfe03372677c1836e54d69370879a764656838710b8661372a4115171",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterMapAt",
-      "sha256": "34062befde2c6b2e1bd2d344ba12bbf3d761dfc6b4c788c2403a702e46a16f79",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
@@ -1249,55 +1053,6 @@
     },
     {
       "path": "internal/game/state.go",
-      "function": "finishNewGameEntry",
-      "sha256": "3eed760e0023f810815752575f5f74f351b3e6d4b5a7f776f09ef6e73d25fa14",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "finishNewGameEntry",
-      "sha256": "fc64f175675cefc2af941d32cb8477830f059f7626a25c5bdf3811750ea867b1",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "placePrompt",
-      "sha256": "1ee3b47f70e9bfce9611345e8ddf1929db4aa2f7d34ade070877fd28ef97a755",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "placePrompt",
-      "sha256": "a956d53162e418bf8a80bbfeac6b1f79c60e3a9c90ff61044e96df951c6a5201",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "restoreWildernessMenu",
-      "sha256": "04381ba6f2e3c0e4bab4fbc3890f2fdae4f811ed993c974c1094d76d72022eae",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "restoreWildernessMenu",
-      "sha256": "1d9671e91a00fdb27c39b7547831e4c04951395df8aedbb8dbed33ca99ca8cca",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "restoreWildernessMenu",
-      "sha256": "3e934e903d6c5ca78cb9cf20f579e4fe275f95f5d5654373c59a7af38be16fa9",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
       "function": "selectParlay",
       "sha256": "c5102fd20377bba9875eaa0be6e8a671427f871d5bd48d5391a1a06b13dbd45c",
       "occurrences": 1,
@@ -1321,34 +1076,6 @@
       "path": "internal/game/state.go",
       "function": "selectTreasure",
       "sha256": "fbeea79872f5657e763d29e1d020f5c136b8bae06ddbde522d3a897b7d265585",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "setWorldLocation",
-      "sha256": "2ed5f4eb3e5831e19abb5d31b23c2b7f219842f3266d6f49e00829622e293628",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "setWorldLocation",
-      "sha256": "3eed760e0023f810815752575f5f74f351b3e6d4b5a7f776f09ef6e73d25fa14",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "setWorldLocation",
-      "sha256": "581fb47fe9d6697c26899093a5b26ef8f41acff750dbc69fc1e063d428a8241d",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "setWorldLocation",
-      "sha256": "96c89c10cec09adcd26bcbccff831ec4bbc014f8084f543fd36c1c17b4b70869",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

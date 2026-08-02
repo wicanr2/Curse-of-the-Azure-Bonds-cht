@@ -85,3 +85,15 @@ projection；在該 identity 完成續存前，不可假稱所有訊息已完全
 Demo／fixture 名稱也屬顯示資料。Technical fighter ID 可固定在程式，名稱則由
 stable locale ID 取得；否則 README 截圖或跨語系 smoke test 會悄悄保存繁中
 作為戰鬥身分。
+
+## 中文 fallback 仍是重複真相
+
+呼叫 `catalog.Text("key", "目前中文")` 並不等於完成資料分離：第二個參數仍是
+會隨 JSON 審校而漂移的另一份真相來源。正式玩家流程應以 stable ID 作缺鍵
+fallback，並由 catalog coverage 測試保證正式資料完整；缺鍵時顯示 ID 也比
+悄悄顯示過期中文更容易被驗收發現。
+
+產品行為測試應載入正式 game pack／catalog，再於執行當下由 stable ID 取得
+期望文字。最小合成 catalog 只適合 parser 或缺鍵結構測試，不能拿來證明正式
+世界地名、NPC 名稱與選單內容。控制流仍應使用原始 ECL token、stable option
+ID 或 typed result；即使顯示 choice 被換成任意文字，行為也不應改變。

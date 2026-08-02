@@ -119,7 +119,10 @@ commit 內保存不可能自我引用的 hash。
   門選項或切割翻譯後時間全文。baseline 238、frontend debt 26。第 486 輪再把
   demo fighter、世界地圖 preview 與法師塔自動路徑最後二十六筆前端漢字移除；
   選項改依 exact ECL source token，劇情抵達改依 stable game-pack message ID，
-  demo 名稱改讀 locale。baseline 212、frontend debt 0；runtime 212 仍待清理。
+  demo 名稱改讀 locale。baseline 212、frontend debt 0。第 487 輪再將建角完成、
+  手札框、荒野選單、世界地點、NPC 名稱與城鎮／地城提示的中文 fallback 移回
+  正式 catalog；動態所在地提示也改用格式 ID。baseline 173、frontend debt 0；
+  runtime 173 仍待清理。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

@@ -451,8 +451,8 @@ func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
 	}
 	s.partyRoster = roster
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
-	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.Prompt = s.catalog.Text("party_ready", "party_ready")
+	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
@@ -758,8 +758,8 @@ func (s *State) LoadPartyFile(path string) error {
 	if s.Mode == ModeCombat {
 		return fmt.Errorf("game save mode is combat but no active-combat snapshot is present")
 	}
-	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
-	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.Prompt = s.catalog.Text("party_ready", "party_ready")
+	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
@@ -907,8 +907,8 @@ func (s *State) LoadDOSCharacterFiles(id string, files party.DOSPlayerFiles) err
 	}
 	s.partyRoster = party.Roster{character}
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
-	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+	s.Prompt = s.catalog.Text("party_ready", "party_ready")
+	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }

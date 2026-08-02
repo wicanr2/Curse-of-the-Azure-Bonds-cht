@@ -392,9 +392,9 @@ func NewState(catalog locale.Catalog) State {
 		LocationName:           catalog.Text("wilderness", "Wilderness"),
 		SceneHeadBlock:         0xFF,
 		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
-		JournalTitle:           catalog.Text("journal_title", "冒險手札"),
+		JournalTitle:           catalog.Text("journal_title", "journal_title"),
 		JournalText:            catalog.Text("journal_empty", "journal_empty"),
-		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
+		JournalCloseText:       catalog.Text("journal_close", "journal_close"),
 		catalog:                catalog,
 		dataPack:               dataPack,
 		dataPackError:          dataPackErr,
@@ -972,7 +972,7 @@ func (s *State) enterECLMenu(menu ecl.Menu) {
 	if menu.Prompt != "" {
 		s.Prompt = s.localizeECLPrompt(menu.Prompt)
 	} else {
-		s.Prompt = s.catalog.Text("press_button", "請按任意鍵或 Enter 繼續")
+		s.Prompt = s.catalog.Text("press_button", "press_button")
 	}
 	s.Mode = ModeWilderness
 }
@@ -1101,7 +1101,7 @@ func (s *State) Select(index int) error {
 	}
 	if len(s.eclBlock) == 0 && originalChoice == "FLEE" {
 		s.OriginalEvent = "FLEE"
-		s.Message = s.catalog.Text("encounter_flee_done", "你們成功撤退，返回荒野。")
+		s.Message = s.catalog.Text("encounter_flee_done", "encounter_flee_done")
 		return nil
 	}
 	if len(s.eclBlock) == 0 && originalChoice == "PARLAY" {
@@ -1366,7 +1366,7 @@ func (s *State) Select(index int) error {
 				s.PictureRequested = false
 				s.PictureBlock = result.PictureBlock
 				s.OriginalEvent = "PICTURE"
-				s.Message = s.catalog.Text("pics_monsters_off_message", "遭遇圖片已關閉。")
+				s.Message = s.catalog.Text("pics_monsters_off_message", "pics_monsters_off_message")
 				if handled, err := s.continueAfterSuppressedPicture(result); handled || err != nil {
 					return err
 				}
@@ -1488,7 +1488,7 @@ func (s *State) Select(index int) error {
 			s.eclMenuReturnMode = ModeTitle
 			s.Message = ""
 			if s.session != nil && s.session.CurrentBlockID() == 0x31 {
-				s.Prompt = s.catalog.Text("hap_dungeon_prompt", "哈普村　↑：前進　K／M：轉向　S：搜索　E：紮營")
+				s.Prompt = s.catalog.Text("hap_dungeon_prompt", "hap_dungeon_prompt")
 			} else {
 				s.Prompt = ""
 			}
@@ -3650,13 +3650,13 @@ func (s *State) applyECLNPCSignals(result ecl.RunResult) error {
 			return fmt.Errorf("ADD NPC 0x%02X character: %w", npcID, err)
 		}
 		if chapter == 5 && npcID == 0x3B {
-			character.Name = s.catalog.Text("npc_akabar", "阿卡巴・貝爾・阿卡什")
+			character.Name = s.catalog.Text("npc_akabar", "npc_akabar")
 		}
 		if chapter == 3 && npcID == 0x16 {
-			character.Name = s.catalog.Text("npc_alias", "愛麗雅絲")
+			character.Name = s.catalog.Text("npc_alias", "npc_alias")
 		}
 		if chapter == 3 && npcID == 0x17 {
-			character.Name = s.catalog.Text("npc_dragonbait", "龍餌")
+			character.Name = s.catalog.Text("npc_dragonbait", "npc_dragonbait")
 		}
 		usedIcons := [8]bool{}
 		for _, member := range s.partyRoster {
@@ -4737,9 +4737,9 @@ func (s *State) enterMapAt(x, y int) {
 	s.WildernessFloor = mapdata.GenerateWilderness(cityFlags, s.mapSeed)
 	s.Choices = nil
 	if s.pendingWorldTravel {
-		s.Prompt = s.catalog.Text("world_travel_map_prompt", "荒野旅程　方向鍵：移動　Enter：抵達目的地　Esc：返回")
+		s.Prompt = s.catalog.Text("world_travel_map_prompt", "world_travel_map_prompt")
 	} else {
-		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "shadowdale_map_prompt")
 	}
 	s.Message = ""
 }
@@ -4762,11 +4762,11 @@ func (s *State) finishNewGameEntry() {
 	s.DungeonX, s.DungeonY = int(x), int(y)
 	s.MapX, s.MapY = int(x), int(y)
 	s.Location = LocationTilverton
-	s.LocationName = s.catalog.Text("tilverton", "提爾佛頓")
+	s.LocationName = s.catalog.Text("tilverton", "tilverton")
 	s.OriginalLocation = "TILVERTON"
 	s.Mode = ModeDungeon
 	s.Choices = nil
-	s.Prompt = s.catalog.Text("dungeon_prompt", "↑：前進　K／M：轉向　S：搜索　E：紮營")
+	s.Prompt = s.catalog.Text("dungeon_prompt", "dungeon_prompt")
 	s.Message = ""
 }
 
@@ -5222,10 +5222,10 @@ func (s *State) EnterPlaces() error {
 	s.Mode = ModePlace
 	s.Prompt = s.placePrompt()
 	s.Choices = []string{
-		s.catalog.Text("inn", "客棧"),
+		s.catalog.Text("inn", "inn"),
 		s.catalog.Text("store", "store"),
 		s.catalog.Text("bar", "bar"),
-		s.catalog.Text("leave", "離開"),
+		s.catalog.Text("leave", "leave"),
 	}
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
 	s.Message = ""
@@ -5376,7 +5376,7 @@ func (s *State) Continue() error {
 		return s.EnterPlacesFromEvent()
 	case ModeMap:
 		s.Mode = ModeMap
-		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "暗影谷荒野")
+		s.Prompt = s.catalog.Text("shadowdale_map_prompt", "shadowdale_map_prompt")
 		s.Message = ""
 		return nil
 	case ModeDungeon:
@@ -5425,10 +5425,10 @@ func (s *State) EnterPlacesFromEvent() error {
 	s.Mode = ModePlace
 	s.Prompt = s.placePrompt()
 	s.Choices = []string{
-		s.catalog.Text("inn", "客棧"),
+		s.catalog.Text("inn", "inn"),
 		s.catalog.Text("store", "store"),
 		s.catalog.Text("bar", "bar"),
-		s.catalog.Text("leave", "離開"),
+		s.catalog.Text("leave", "leave"),
 	}
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
 	s.Message = ""
@@ -5436,7 +5436,7 @@ func (s *State) EnterPlacesFromEvent() error {
 }
 
 func (s *State) placePrompt() string {
-	return "你在" + s.LocationName + "。要去哪裡？"
+	return fmt.Sprintf(s.catalog.Text("place_prompt", "place_prompt"), s.LocationName)
 }
 
 // applyCitySelection prefers the ECL world dispatcher's current/destination
@@ -5478,7 +5478,7 @@ func (s *State) setWorldLocation(value uint16) {
 	s.Area.CurrentCity = uint8(value)
 	if value == 0 {
 		s.Location = LocationTilverton
-		s.LocationName = s.catalog.Text("tilverton", "提爾佛頓")
+		s.LocationName = s.catalog.Text("tilverton", "tilverton")
 		s.OriginalLocation = "TILVERTON"
 		return
 	}
@@ -5489,19 +5489,19 @@ func (s *State) setWorldLocation(value uint16) {
 	}
 	if value == 4 {
 		s.Location = LocationStandingStone
-		s.LocationName = s.catalog.Text("standing_stone", "立石群")
+		s.LocationName = s.catalog.Text("standing_stone", "standing_stone")
 		s.OriginalLocation = "THE STANDING STONE"
 		return
 	}
 	if value == 8 {
 		s.Location = LocationEssembra
-		s.LocationName = s.catalog.Text("essembra", "艾森布拉")
+		s.LocationName = s.catalog.Text("essembra", "essembra")
 		s.OriginalLocation = "ESSEMBRA"
 		return
 	}
 	if value == 9 {
 		s.Location = LocationHap
-		s.LocationName = s.catalog.Text("hap", "哈普")
+		s.LocationName = s.catalog.Text("hap", "hap")
 		s.OriginalLocation = "HAP"
 		return
 	}
@@ -5553,9 +5553,9 @@ func (s *State) leaveLocation() {
 func (s *State) restoreWildernessMenu() {
 	s.Mode = ModeWilderness
 	s.Choices = []string{
-		s.catalog.Text("enter_city", "進入城市"),
-		s.catalog.Text("journey_on", "繼續旅程"),
-		s.catalog.Text("camp", "紮營"),
+		s.catalog.Text("enter_city", "enter_city"),
+		s.catalog.Text("journey_on", "journey_on"),
+		s.catalog.Text("camp", "camp"),
 	}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.Prompt = s.catalog.Text("press_button", "press_button")
