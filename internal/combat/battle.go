@@ -6,13 +6,13 @@ package combat
 import (
 	"errors"
 	"fmt"
-	"math/rand"
 	"sort"
 
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
+	enginerandom "github.com/wicanr2/golden-box-remake-engine/randomstream"
 )
 
 // ErrAdjacentMissileTarget identifies the RuleBook's recoverable range
@@ -534,10 +534,13 @@ type SpellInterruption struct {
 }
 
 type Battle struct {
-	fighters            map[string]Fighter
-	fighterOrder        []string
-	attackRollModifier  map[Side]int
-	rng                 *rand.Rand
+	fighters           map[string]Fighter
+	fighterOrder       []string
+	attackRollModifier map[Side]int
+	rngStream          *enginerandom.Stream
+	rng                interface {
+		Intn(int) int
+	}
 	round               int
 	status              Status
 	areas               []PersistentArea
@@ -615,11 +618,13 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 	if len(fighters) == 0 {
 		return nil, fmt.Errorf("battle needs at least one fighter")
 	}
+	rngStream := enginerandom.New(seed)
 	b := &Battle{
 		fighters:           make(map[string]Fighter, len(fighters)),
 		fighterOrder:       make([]string, 0, len(fighters)),
 		attackRollModifier: make(map[Side]int, 2),
-		rng:                rand.New(rand.NewSource(seed)),
+		rngStream:          rngStream,
+		rng:                rngStream.Rand(),
 		status:             StatusActive,
 	}
 	for _, fighter := range fighters {

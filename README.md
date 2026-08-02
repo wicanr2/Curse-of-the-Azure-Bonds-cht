@@ -1148,6 +1148,14 @@ delay-only 時間為每人 1,440ms。四格 24×6 幾何有 IDA bytes 證據，�
 palette／圖元仍標為 `layout-reconstructed`，待實機擷取升級。
 證據見 [`spec 442`](docs/spec/442-pc98-sleep-action-clear-and-twinkle.md)。
 
+第 443 輪將 remake JSON save 升至 version 7，首次可恢復 active combat：
+完整 Fighter／effect／Action、stable TeamList、dynamic scheduler selection、
+回合、持續區域、戰鬥修正、待處理中斷與戰鬥 PRNG continuation 都會保存。
+正常手動 Sleep 在 TWINKLE 第一幀前存檔後，讀檔可完成相同 handoff，並在同一
+第 15 tick 自然解除；另一分支由正傷害喚醒且不重複消耗法術格。尚未擁有
+renderer elapsed 的 mid-animation save 明確 fail-closed，不假裝無縫續播。
+證據見 [`spec 443`](docs/spec/443-active-combat-save-sleep-continuation.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

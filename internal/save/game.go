@@ -5,12 +5,46 @@ import (
 	"fmt"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 6
+const CurrentGameVersion = 7
+
+// CombatSnapshot preserves the game-adapter side of an active Battle. Map
+// callbacks and decoded source assets are intentionally excluded and are
+// reconstructed by the frontend before the next action is resolved.
+type CombatSnapshot struct {
+	Battle            combat.BattleSnapshot `json:"battle"`
+	Turns             []combat.Turn         `json:"turns,omitempty"`
+	TurnIndex         int                   `json:"turn_index"`
+	DelayedTurns      map[int]bool          `json:"delayed_turns,omitempty"`
+	TargetIndex       int                   `json:"target_index"`
+	CastingSpell      uint8                 `json:"casting_spell"`
+	CastingClass      uint8                 `json:"casting_class"`
+	CastingClassSet   bool                  `json:"casting_class_set"`
+	SpellTargetIndex  int                   `json:"spell_target_index"`
+	SpellTargetPoint  combat.TilePoint      `json:"spell_target_point"`
+	SpellTargetsPoint bool                  `json:"spell_targets_point"`
+	MoveMode          bool                  `json:"move_mode"`
+	MoveRemaining     int                   `json:"move_remaining"`
+	Speed             uint8                 `json:"speed"`
+	QuickMagic        bool                  `json:"quick_magic"`
+	ReferenceCoords   bool                  `json:"reference_coordinates"`
+	View              bool                  `json:"view"`
+	ViewFighterID     string                `json:"view_fighter_id,omitempty"`
+	Message           string                `json:"message,omitempty"`
+	ReturnMode        uint8                 `json:"return_mode"`
+	VisualSerial      uint64                `json:"visual_serial"`
+	VisualEnabled     bool                  `json:"visual_enabled"`
+	Visual            *combat.VisualEvent   `json:"visual,omitempty"`
+	VisualTravelSent  bool                  `json:"visual_travel_sent"`
+	VisualImpactSent  int                   `json:"visual_impact_sent"`
+	VisualDeathSent   int                   `json:"visual_death_sent"`
+	VisualAdvanceTurn bool                  `json:"visual_advance_turn"`
+}
 
 // GameFile contains the party plus the platform-neutral adventure state that
 // the remake can currently restore. Numeric mode/location values are kept
@@ -31,6 +65,7 @@ type GameFile struct {
 	GameTime        [7]uint16            `json:"game_time"`
 	GameAgeCycles   uint32               `json:"game_age_cycles"`
 	ECLSession      *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
+	Combat          *CombatSnapshot      `json:"combat,omitempty"`
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
@@ -62,6 +97,11 @@ func EncodeGameWithTime(roster party.Roster, areaState area.State, mode, locatio
 // only runtime state and code-memory differences; original ECL bytes remain in
 // the player-supplied game image.
 func EncodeGameWithSession(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot) ([]byte, error) {
+	return EncodeGameWithCombat(roster, areaState, mode, location, mapX, mapY, dungeonX, dungeonY, dungeonDirection, dungeonWallType, dungeonWallRoof, gameTime, gameAgeCycles, session, nil)
+}
+
+// EncodeGameWithCombat adds a bounded active-battle continuation to save v7.
+func EncodeGameWithCombat(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
 		return nil, err
 	}
@@ -71,6 +111,7 @@ func EncodeGameWithSession(roster party.Roster, areaState area.State, mode, loca
 		DungeonX: dungeonX, DungeonY: dungeonY, DungeonDir: dungeonDirection,
 		DungeonWallType: dungeonWallType, DungeonWallRoof: dungeonWallRoof,
 		GameTime: gameTime, GameAgeCycles: gameAgeCycles, ECLSession: session,
+		Combat: activeCombat,
 	}, "", "  ")
 }
 
@@ -83,6 +124,9 @@ func DecodeGame(data []byte) (GameFile, error) {
 	// fields introduced by the resumable game format.
 	if file.Version < 1 || file.Version > CurrentGameVersion {
 		return GameFile{}, fmt.Errorf("unsupported game save version %d", file.Version)
+	}
+	if file.Combat != nil && file.Version < 7 {
+		return GameFile{}, fmt.Errorf("game save version %d cannot contain active combat", file.Version)
 	}
 	if err := file.Characters.Validate(); err != nil {
 		return GameFile{}, err

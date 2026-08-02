@@ -514,6 +514,12 @@ commit 內保存不可能自我引用的 hash。
   target 播放四格 `VisualTwinkle`、每人 1440ms、施法聲與 `SPELLHITFX`；
   抵抗／醒來不播放。24×6 geometry exact，palette pixels 尚為 reconstructed；
   active battle save 與 PC-98 runtime capture 未完成。READY spec 442 是權威。
+- 第 443 輪完成 remake save v7 active-combat snapshot：Fighter／effect／Action、
+  scheduler selection、turn cursor、persistent areas、battle modifiers、pending
+  interruption、visual 起點與 battle PRNG 均可 round-trip。正常 Sleep 讀檔後
+  自然到期／傷害喚醒與不中斷分支一致；mid-animation 因 elapsed 尚未歸 State
+  所有而 fail-closed。原版 SAVGAM combat records 仍未反組譯。READY spec 443
+  是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
