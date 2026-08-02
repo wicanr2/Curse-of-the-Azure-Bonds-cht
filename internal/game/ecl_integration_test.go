@@ -3987,8 +3987,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "女祭司轉身陰險地微笑") ||
-		!strings.Contains(state.Message, "摩安德教徒正低聲吟唱") ||
+	if state.Message != requireGamePackText(t, &state, "pit.mogion-altar") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit Mogion altar arrival mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x picture=%v/%d originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
@@ -3998,8 +3997,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "摩安德的大祭司") ||
-		!strings.Contains(state.Message, "朝地上啐了一口") {
+	if state.Message != requireGamePackText(t, &state, "pit.alias-identifies-mogion") {
 		t.Fatalf("Pit Alias identifies Mogion originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
 	}
@@ -4007,7 +4005,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 17 ||
-		!strings.Contains(state.Message, "摩貢說") {
+		state.Message != requireGamePackText(t, &state, "pit.mogion-greeting") {
 		t.Fatalf("Pit Mogion introduction picture=%v/%d originals=%#v message=%q",
 			state.PictureRequested, state.PictureBlock, state.currentOriginalChoices, state.Message)
 	}
@@ -4035,13 +4033,21 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			}
 		}
 	}
-	mogionCeremonyText := strings.Join(mogionCeremony, " ")
-	if !strings.Contains(mogionCeremonyText, "枷印便迸出藍光") ||
-		!strings.Contains(mogionCeremonyText, "異次元窗口") ||
-		!strings.Contains(mogionCeremonyText, "摩安德回來了") ||
-		!strings.Contains(mogionCeremonyText, "摩安德枷印消失了") ||
-		!strings.Contains(mogionCeremonyText, "愛麗雅絲與龍餌已砍斷藤蔓") ||
-		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ATTACK", "FLEE"}) {
+	for _, messageID := range []string{
+		"pit.bond-paralysis",
+		"pit.alias-dragonbait-tendrils",
+		"pit.mogion-ritual",
+		"pit.dimensional-window",
+		"pit.moander-returns",
+		"pit.bond-fades",
+		"pit.bond-broken",
+		"pit.alias-attack-mogion",
+	} {
+		if !slices.Contains(mogionCeremony, requireGamePackText(t, &state, messageID)) {
+			t.Fatalf("Pit Mogion ceremony missing %s stages=%q", messageID, mogionCeremony)
+		}
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ATTACK", "FLEE"}) {
 		t.Fatalf("Pit Mogion ceremony originals=%#v choices=%#v message=%q stages=%q",
 			state.currentOriginalChoices, state.Choices, state.Message, mogionCeremony)
 	}
@@ -4082,7 +4088,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.Mode != ModeEvent || !strings.Contains(state.Message, "異次元裂隙猛然閉合") {
+	if state.Mode != ModeEvent || state.Message != requireGamePackText(t, &state, "pit.rift-closes") {
 		t.Fatalf("Pit Mogion victory mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
 			state.Choices, state.Message)
@@ -4093,8 +4099,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "三塊已穿過裂隙的摩安德殘軀") ||
-		!strings.Contains(state.Message, "你們殺了我") {
+	if state.Message != requireGamePackText(t, &state, "pit.remnants-scream") {
 		t.Fatalf("Pit Moander remnants emerge originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
 	}
@@ -4103,7 +4108,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	moanderRemnants := state.CombatFighters()
 	if state.Mode != ModeCombat || len(moanderRemnants) != 6 ||
-		!strings.Contains(state.Message, "滲著黏液的殘軀") {
+		state.Message != requireGamePackText(t, &state, "pit.remnants-attack") {
 		t.Fatalf("Pit Moander remnants mode=%v block=0x%02x message=%q fighters=%#v",
 			state.Mode, state.session.CurrentBlockID(), state.Message, moanderRemnants)
 	}
@@ -4126,7 +4131,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if !strings.Contains(state.Message, "找到摩安德護手") ||
+	if state.Message != requireGamePackText(t, &state, "pit.gauntlet") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit Moander gauntlet mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
@@ -4142,7 +4147,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || !strings.Contains(state.Message, "他們殺了神") {
+	if state.Mode != ModeEvent || state.Message != requireGamePackText(t, &state, "pit.priest-flees") {
 		t.Fatalf("Pit Moander gauntlet continuation mode=%v block=0x%02x flag4C5B=%#x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), moanderGauntletFlag,
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -4177,7 +4182,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.SearchDungeonLocation(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "祭壇中找到一批珠寶與寶石") {
+	if state.Message != requireGamePackText(t, &state, "pit.altar-treasure") {
 		t.Fatalf("Pit altar search mode=%v originals=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)
 	}
@@ -4217,7 +4222,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.SearchDungeonLocation(); err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(state.Message, "祭壇中找到一批珠寶與寶石") {
+	if state.Message == requireGamePackText(t, &state, "pit.altar-treasure") {
 		t.Fatalf("Pit altar treasure repeated after one-time search: %q", state.Message)
 	}
 	state.DungeonX = 15
@@ -4284,7 +4289,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "最後阻擊") ||
+	if state.Message != requireGamePackText(t, &state, "pit.exit-last-stand") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit exit battle warning mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,

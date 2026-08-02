@@ -636,6 +636,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   「被選中之人」之間有 PRESS，必須由 runtime boundary 決定 stable message。
   同伴文字資料化也要驗證 roster stable identity、職業／種族、手札、樓層
   handoff 與一次性事件，不能只看愛麗雅絲／龍餌姓名是否顯示。
+- 第 468 輪 Pit 摩貢祭壇至離場十八個 boundary 再移除 18 次，baseline 現為
+  603 occurrences。多段儀式不能只串接後用 `Contains` 抽樣；每個 pause 都要
+  對應 stable ID，並在同一 session 繼續驗證兩戰、護手旗標、一次性財寶、
+  手札、最後阻擊、NPC 離隊與下一 world edge。只有其中一段通過不能宣稱章節
+  transaction 完成。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

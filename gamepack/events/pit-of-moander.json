@@ -442,6 +442,24 @@
       ,"pit.stairs-up": "Stairs in the north wall lead upward. Will you ascend?"
       ,"pit.dead-zhentrim": "You find the mangled remains of a dead Zhentrim fighter. What will you do?"
       ,"pit.zhentrim-scroll": "A formal document bearing Zhentil Keep's seal is clenched in the fighter's fist. You copy it as Journal Entry 46."
+      ,"pit.mogion-altar": "A priestess turns and smiles wickedly before an altar while cultists chant in a low drone."
+      ,"pit.alias-identifies-mogion": "Alias mutters that this is Moander's high priestess. The priestess turns and spits on the ground."
+      ,"pit.mogion-greeting": "Mogion welcomes you and remarks that nothing can be accomplished without the proper tools. What will you do?"
+      ,"pit.bond-paralysis": "Before you can act, the bonds on your arms flash blue and surround the party. You cannot move."
+      ,"pit.alias-dragonbait-tendrils": "Tendrils rise from the floor and bind Alias and Dragonbait."
+      ,"pit.mogion-ritual": "Mogion turns toward the altar as the chanting rises."
+      ,"pit.dimensional-window": "The blue light surrounding you flows to Mogion. Power drawn from the bonds opens a dimensional window above the altar."
+      ,"pit.moander-returns": "Mogion shrieks that Moander returns as a mass of slime, mold, and corruption begins to ooze through the dimensional rift."
+      ,"pit.bond-fades": "Energy in the rift increases. Moander's bond burns and begins to fade as the opening grows."
+      ,"pit.bond-broken": "Moander's sigil disappears, and the paralysis gripping the party is gone."
+      ,"pit.alias-attack-mogion": "Alias and Dragonbait hack free of the tendrils. Alias urges you to attack unless you wish to fight a god. What will you do?"
+      ,"pit.rift-closes": "The dimensional rift snaps shut."
+      ,"pit.remnants-scream": "Three pseudopods of Moander that crossed the rift sprout hundreds of mouths and scream, 'You have killed me!'"
+      ,"pit.remnants-attack": "The oozing mounds turn and attack you."
+      ,"pit.gauntlet": "You find the Gauntlet of Moander among the slimy remains."
+      ,"pit.priest-flees": "A priest bursts into the room, sees the aftermath, and flees into the corridor shouting, 'They have killed the god!'"
+      ,"pit.altar-treasure": "You find a cache of jewels and gems in the altar."
+      ,"pit.exit-last-stand": "A large force of Moander's cultists attacks in a last-ditch effort to stop your escape."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -909,6 +927,24 @@
       ,"pit.stairs-up": "北側牆邊有一道向上的階梯。要回到上層嗎？"
       ,"pit.dead-zhentrim": "你們看見一名死去的散塔林戰士，遺體已殘破不堪。要怎麼做？"
       ,"pit.zhentrim-scroll": "戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。"
+      ,"pit.mogion-altar": "你們看見一名女祭司轉身陰險地微笑。她站在祭壇前，四周的摩安德教徒正低聲吟唱。"
+      ,"pit.alias-identifies-mogion": "愛麗雅絲低聲說：「她就是摩安德的大祭司。」女祭司轉頭朝地上啐了一口。"
+      ,"pit.mogion-greeting": "摩貢說：「真高興你們終於到了。沒有合適的工具，想完成任何大事都很困難，不是嗎？」你們要怎麼做？"
+      ,"pit.bond-paralysis": "你們尚未來得及行動，手臂上的枷印便迸出藍光，將全隊籠罩其中；所有人頓時動彈不得。"
+      ,"pit.alias-dragonbait-tendrils": "藤蔓從地面竄出，緊緊纏住愛麗雅絲與龍餌。"
+      ,"pit.mogion-ritual": "摩貢轉向祭壇，四周吟唱聲逐漸高昂。"
+      ,"pit.dimensional-window": "籠罩你們的藍光流向摩貢；枷印抽出的力量在祭壇上方撕開一道異次元窗口。"
+      ,"pit.moander-returns": "摩貢尖叫：「摩安德回來了！」一團由黏液、黴菌與腐敗穢物構成的噁心物質開始從異次元裂隙滲出。"
+      ,"pit.bond-fades": "裂隙中的能量持續增強，摩安德枷印開始灼燒；隨著開口擴大，枷印也逐漸褪去。"
+      ,"pit.bond-broken": "摩安德枷印消失了！束縛全隊的麻痺也隨之解除。"
+      ,"pit.alias-attack-mogion": "愛麗雅絲與龍餌已砍斷藤蔓脫困。她嘶聲喊道：「現在就攻擊他們，除非你們想直接面對一位神！」你們要怎麼做？"
+      ,"pit.rift-closes": "異次元裂隙猛然閉合。"
+      ,"pit.remnants-scream": "三塊已穿過裂隙的摩安德殘軀突然長出數百張嘴，齊聲尖叫：「你們殺了我！」"
+      ,"pit.remnants-attack": "滲著黏液的殘軀轉身向你們撲來！"
+      ,"pit.gauntlet": "你們在黏滑的殘骸中找到摩安德護手。"
+      ,"pit.priest-flees": "一名祭司衝進房間，驚恐地環顧四周，隨即逃回走廊並高喊：「他們殺了神！」"
+      ,"pit.altar-treasure": "你們在祭壇中找到一批珠寶與寶石！"
+      ,"pit.exit-last-stand": "大批摩安德教徒發動最後阻擊，企圖阻止你們逃出地底！"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2727,6 +2763,24 @@
     {"id": "pit.stairs-up", "all_contains": ["YOU SEE STAIRS GOING UP IN THE NORTH WALL", "DO YOU WISH TO GO UP"], "message_id": "pit.stairs-up"},
     {"id": "pit.dead-zhentrim", "all_contains": ["MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER", "WHAT DO YOU DO"], "message_id": "pit.dead-zhentrim"},
     {"id": "pit.zhentrim-scroll", "all_contains": ["GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"], "message_id": "pit.zhentrim-scroll"},
+    {"id": "pit.mogion-altar", "all_contains": ["YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY", "CULTISTS CHANTING IN A LOW DRONE"], "message_id": "pit.mogion-altar"},
+    {"id": "pit.alias-identifies-mogion", "all_contains": ["ALIAS MUTTERS", "PRIESTESS OF MOANDER", "SPITS ON THE GROUND"], "message_id": "pit.alias-identifies-mogion"},
+    {"id": "pit.mogion-greeting", "all_contains": ["MOGION SAYS", "PROPER TOOLS", "WHAT DO YOU DO"], "message_id": "pit.mogion-greeting"},
+    {"id": "pit.bond-paralysis", "all_contains": ["BEFORE YOU CAN ACT", "BLUE FLASH", "YOU CANNOT MOVE"], "message_id": "pit.bond-paralysis"},
+    {"id": "pit.alias-dragonbait-tendrils", "all_contains": ["TENDRILS COME UP FROM THE FLOOR", "ALIAS AND DRAGONBAIT"], "message_id": "pit.alias-dragonbait-tendrils"},
+    {"id": "pit.mogion-ritual", "all_contains": ["MOGION TURNS TO THE ALTAR", "CHANTING RISES"], "message_id": "pit.mogion-ritual"},
+    {"id": "pit.dimensional-window", "all_contains": ["BLUE LIGHT THAT SURROUNDS YOU", "DIMENSIONAL WINDOW ABOVE THE ALTAR"], "message_id": "pit.dimensional-window"},
+    {"id": "pit.moander-returns", "all_contains": ["MOGION SHRIEKS", "MOANDER RETURNS", "DIMENSIONAL RIFT"], "message_id": "pit.moander-returns"},
+    {"id": "pit.bond-fades", "all_contains": ["ENERGY IN THE DIMENSIONAL RIFT INCREASES", "BOND OF MOANDER BEGIN TO FADE"], "message_id": "pit.bond-fades"},
+    {"id": "pit.bond-broken", "all_contains": ["THE SIGIL DISAPPEARS", "PARALYSIS THAT GRIPPED YOU IS NOW GONE"], "message_id": "pit.bond-broken"},
+    {"id": "pit.alias-attack-mogion", "all_contains": ["ALIAS AND DRAGONBAIT HAVE HACKED THEIR WAY FREE", "UNLESS YOU WISH TO FIGHT A GOD"], "message_id": "pit.alias-attack-mogion"},
+    {"id": "pit.rift-closes", "all_contains": ["THE DIMENSIONAL RIFT SNAPS SHUT"], "message_id": "pit.rift-closes"},
+    {"id": "pit.remnants-scream", "all_contains": ["THREE PSUEDOPODS OF MOANDER", "HUNDREDS OF MOUTHS", "YOU HAVE KILLED ME"], "message_id": "pit.remnants-scream"},
+    {"id": "pit.remnants-attack", "all_contains": ["THE OOZING MOUNDS TURN AND ATTACK YOU"], "message_id": "pit.remnants-attack"},
+    {"id": "pit.gauntlet", "all_contains": ["YOU FIND THE GAUNTLET OF MOANDER", "SLIMY REMAINS"], "message_id": "pit.gauntlet"},
+    {"id": "pit.priest-flees", "all_contains": ["A PRIEST BURSTS INTO THE ROOM", "THEY HAVE KILLED THE GOD"], "message_id": "pit.priest-flees"},
+    {"id": "pit.altar-treasure", "all_contains": ["YOU HAVE FOUND A CACHE OF JEWELS AND GEMS"], "message_id": "pit.altar-treasure"},
+    {"id": "pit.exit-last-stand", "all_contains": ["YOU ARE ATTACKED BY A LARGE FORCE OF", "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"], "message_id": "pit.exit-last-stand"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},
