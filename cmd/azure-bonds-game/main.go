@@ -1923,7 +1923,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	ebitenutil.DrawRect(screen, 0, combatFooterY, 640, 32, color.RGBA{A: 255})
 	combatMessage := a.state.CombatMessage()
 	if event, ok := a.state.CombatVisualEvent(); ok {
-		combatMessage = a.combatVisualMessage(event, a.combatVisualFrame(event), combatMessage)
+		combatMessage = a.state.CombatVisualMessage(event, a.combatVisualFrame(event), combatMessage)
 	}
 	drawWrappedText(screen, combatMessage, a.compactFace, 8, 392, 39, 20, 3, white)
 	if a.state.CombatViewActive() {
@@ -2459,71 +2459,6 @@ func combatVisualPreservedImpact(event combat.VisualEvent, frame combat.VisualFr
 		}
 	}
 	return combat.VisualImpactTarget{}, false
-}
-
-func (a *app) combatVisualMessage(event combat.VisualEvent, frame combat.VisualFrame, fallback string) string {
-	if event.Effect == "cloudkill" {
-		impact, ok := event.Impact(frame)
-		if !ok || (frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit && frame.Phase != combat.VisualDeath) {
-			return fallback
-		}
-		name := impact.TargetID
-		for _, fighter := range a.state.CombatFighters() {
-			if fighter.ID == impact.TargetID {
-				name = fighter.Name
-				break
-			}
-		}
-		if impact.Saved {
-			return name + " 抵抗了致命毒氣。"
-		}
-		return name + " 中毒身亡。"
-	}
-	if event.Effect == "stinking_cloud" {
-		impact, ok := event.Impact(frame)
-		if !ok || (frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit) {
-			return fallback
-		}
-		name := impact.TargetID
-		for _, fighter := range a.state.CombatFighters() {
-			if fighter.ID == impact.TargetID {
-				name = fighter.Name
-				break
-			}
-		}
-		if impact.Saved {
-			return name + " 開始咳嗽。"
-		}
-		return fmt.Sprintf("%s 因噁心而窒息乾嘔，將有 %d 回合無法行動。", name, impact.Damage)
-	}
-	if event.Kind != combat.VisualLineSpell {
-		return fallback
-	}
-	impact, ok := event.Impact(frame)
-	if !ok {
-		return fallback
-	}
-	if impact.Protected {
-		return fallback
-	}
-	name := impact.TargetID
-	for _, fighter := range a.state.CombatFighters() {
-		if fighter.ID == impact.TargetID {
-			name = fighter.Name
-			break
-		}
-	}
-	switch frame.Phase {
-	case combat.VisualImpact:
-		return fmt.Sprintf("%s 受到 %d 點電擊傷害。", name, impact.Damage)
-	case combat.VisualCommit:
-		if impact.Saved {
-			return name + " 的法術豁免成功，傷害減半。"
-		}
-		return name + " 的法術豁免失敗。"
-	default:
-		return fallback
-	}
 }
 
 func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, error) {

@@ -26,6 +26,52 @@ func combatVisualCatalog(t *testing.T) locale.Catalog {
 	return catalog
 }
 
+func TestCombatVisualMessageUsesTypedPhaseAndFormalLocale(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "hero", Name: "HERO", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 30}},
+		[]combat.Fighter{{ID: "target", Name: "TARGET", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10}},
+		11,
+	); err != nil {
+		t.Fatal(err)
+	}
+	fallback := "FALLBACK"
+	tests := []struct {
+		name     string
+		event    combat.VisualEvent
+		frame    combat.VisualFrame
+		key      string
+		args     []any
+		fallback bool
+	}{
+		{"cloudkill saved", combat.VisualEvent{Effect: "cloudkill", Impacts: []combat.VisualImpactTarget{{TargetID: "target", Saved: true}}}, combat.VisualFrame{Phase: combat.VisualImpact, ImpactIndex: 0}, "combat_visual_cloudkill_saved", []any{"TARGET"}, false},
+		{"cloudkill killed", combat.VisualEvent{Effect: "cloudkill", Impacts: []combat.VisualImpactTarget{{TargetID: "target", Killed: true}}}, combat.VisualFrame{Phase: combat.VisualDeath, ImpactIndex: 0}, "combat_visual_cloudkill_killed", []any{"TARGET"}, false},
+		{"stinking saved", combat.VisualEvent{Effect: "stinking_cloud", Impacts: []combat.VisualImpactTarget{{TargetID: "target", Saved: true}}}, combat.VisualFrame{Phase: combat.VisualCommit, ImpactIndex: 0}, "combat_visual_stinking_cloud_saved", []any{"TARGET"}, false},
+		{"stinking failed", combat.VisualEvent{Effect: "stinking_cloud", Impacts: []combat.VisualImpactTarget{{TargetID: "target", Damage: 3}}}, combat.VisualFrame{Phase: combat.VisualImpact, ImpactIndex: 0}, "combat_visual_stinking_cloud_failed", []any{"TARGET", 3}, false},
+		{"line damage", combat.VisualEvent{Kind: combat.VisualLineSpell, Impacts: []combat.VisualImpactTarget{{TargetID: "target", Damage: 12}}}, combat.VisualFrame{Phase: combat.VisualImpact, ImpactIndex: 0}, "combat_visual_line_damage", []any{"TARGET", 12}, false},
+		{"line saved", combat.VisualEvent{Kind: combat.VisualLineSpell, Impacts: []combat.VisualImpactTarget{{TargetID: "target", Saved: true}}}, combat.VisualFrame{Phase: combat.VisualCommit, ImpactIndex: 0}, "combat_visual_line_save_succeeded", []any{"TARGET"}, false},
+		{"line failed", combat.VisualEvent{Kind: combat.VisualLineSpell, Impacts: []combat.VisualImpactTarget{{TargetID: "target"}}}, combat.VisualFrame{Phase: combat.VisualCommit, ImpactIndex: 0}, "combat_visual_line_save_failed", []any{"TARGET"}, false},
+		{"protected line", combat.VisualEvent{Kind: combat.VisualLineSpell, Impacts: []combat.VisualImpactTarget{{TargetID: "target", Protected: true}}}, combat.VisualFrame{Phase: combat.VisualImpact, ImpactIndex: 0}, "", nil, true},
+		{"travel phase", combat.VisualEvent{Effect: "cloudkill", Impacts: []combat.VisualImpactTarget{{TargetID: "target"}}}, combat.VisualFrame{Phase: combat.VisualTravel, ImpactIndex: 0}, "", nil, true},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got := state.CombatVisualMessage(test.event, test.frame, fallback)
+			if test.fallback {
+				if got != fallback {
+					t.Fatalf("message=%q want fallback", got)
+				}
+				return
+			}
+			want := fmt.Sprintf(catalog.Text(test.key, test.key), test.args...)
+			if got != want {
+				t.Fatalf("message=%q want=%q", got, want)
+			}
+		})
+	}
+}
+
 func TestCombatVisualSleepTwinklesOnlySuccessfulTargetsAndOrdersSounds(t *testing.T) {
 	state := NewState(testCatalog())
 	state.EnableCombatVisualTimeline(true)

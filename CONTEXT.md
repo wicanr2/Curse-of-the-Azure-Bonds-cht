@@ -3699,3 +3699,13 @@ Bolt、Stinking Cloud、Cloudkill 與移動格式。source audit `345→320`，f
 `133→108`、runtime 212、localization 0 不變。READY spec 480 是權威；CoAB
 Docker／Xvfb 正式全套 gate 已通過，marker `ROUND480_FORMAL_EXIT=0`；
 commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百八十一輪將 Ebiten `combatVisualMessage` 的 Cloudkill、
+Stinking Cloud 與 Lightning Bolt 七筆逐目標中文移入 State visual-result
+locale contract。Adapter 依 typed effect、impact、phase、save 與 protected
+選 stable ID，renderer 只傳入事件／frame 並繪製；錯誤 phase 與 protected
+保留 fallback。正式 table test 覆蓋 impact／commit／death、動態 fighter 名稱、
+豁免與 fallback。source audit `320→313`，frontend `108→101`、runtime 212、
+localization 0 不變。READY spec 481 與繁中戰鬥動畫本地化知識庫是權威；CoAB
+Docker／Xvfb 正式全套 gate 已通過，marker `ROUND481_FORMAL_EXIT=0`；
+commit／push 與暫存清理待本輪收尾。

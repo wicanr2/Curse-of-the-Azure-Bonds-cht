@@ -102,7 +102,9 @@ commit 內保存不可能自我引用的 hash。
   為 345，`localization_debt` 已降為 0。第 480 輪再把戰鬥 HUD 的 HP／AC、
   施法／移動 prompts、十二個快捷提示與 target／quick status 移入正式 locale
   contract；Ebiten `drawCombat` 只保留版面與顏色，baseline 降為 320、frontend
-  debt 108。
+  debt 108。第 481 輪再將 Cloudkill、Stinking Cloud 與 Lightning Bolt 的逐
+  impact／commit／death 訊息移到 State visual-result locale contract；renderer
+  不再推論豁免／死亡文字，baseline 313、frontend debt 101。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

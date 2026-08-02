@@ -704,6 +704,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   顏色與顯示時機；typed casting／move／target state 決定 stable ID。測試必須
   從正式 catalog 取得期望值，不能把當前提示全文貼入 frontend test。
   READY spec 480 是權威。
+- 第 481 輪把 Cloudkill、Stinking Cloud、Lightning Bolt 七筆逐目標動畫訊息移到
+  State visual-result locale contract，baseline `320→313`、frontend
+  `108→101`。Renderer 只能傳入 typed `VisualEvent／VisualFrame` 並繪製；effect、
+  impact、save、protected 與 phase 的文字選擇留在 adapter。錯誤 phase 或
+  protected 必須保留 fallback，不能因資料化改變 travel→impact→commit→death
+  →handoff 與聲音順序。READY spec 481 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
