@@ -116,6 +116,12 @@ commit 內保存不可能自我引用的 hash。
   terrain `92h`→PICTURE 6→service boundary→治療→返回 `(0,7)` 的玩家路徑
   仍通過。exact baseline 再由 1,251 降至 1,223，移除 28 次 runtime UI
   漢字 literal；神殿完整原版功能與其餘債務仍未完成。
+- 第 455 輪完成 BAR 傳聞服務及提爾佛頓原始酒館事件的資料分離；六則預設
+  傳聞、動作／飲品、紫帶女子、騷動、匕首與手札 17 提示均由正式 locale
+  stable IDs 取得。提爾佛頓、阿沙本福德 Tale 28、艾森布拉 Tale 60 真實
+  ECL 路徑均改讀正式 JSON；手札 17 的 prefix／全文也不再硬編碼於 Go。
+  baseline 從 1,223 降至 1,169，移除 54 次；
+  其他酒館事件與飲酒規則仍未宣稱完整。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader

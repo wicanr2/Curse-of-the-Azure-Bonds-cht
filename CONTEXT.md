@@ -3409,3 +3409,14 @@ coverage 測試遍歷 19 個 UI keys 與十個 cure keys；Cure Light Wounds 測
 降至 650，無新增漢字 literal。正式 Docker／Xvfb／`--network none` 全套
 gate 通過，marker `ROUND454_FORMAL_EXIT=0`；commit／push 與容器清理待
 收尾。READY spec 454 是權威。
+
+2026-08-02 第四百五十五輪接續 BAR 與酒館資料分離。一般傳聞服務的選單、
+六則預設 tale、結束／空結果，以及提爾佛頓 ECL 的酒保、四飲品、特別客人、
+紫帶女子、騷動、匕首與手札 17 提示均由 locale stable IDs 解析。英文 option、
+prompt、fragment 仍保留作原始來源 identity。coverage 驗證 41 keys；提爾佛頓
+terrain `88h` 正常路徑完成飲品→事件→遊戲內手札→返回 `(6,10)`，Ashabenford
+Tale 28、Essembra Tale 60 與手札 17 prefix／全文也改讀正式 locale。source
+audit 從 1,223 降至 1,169：localization 409→375、runtime 650→630、frontend 164
+不變。正式 Docker／Xvfb／`--network none` 全套 gate 通過，marker
+`ROUND455_FORMAL_EXIT=0`；commit／push 與容器清理待收尾；READY spec 455
+是權威。

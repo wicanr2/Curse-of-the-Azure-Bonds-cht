@@ -32,6 +32,8 @@ AST＋hash exact baseline 先凍結 1,315 次現存債務，之後每批遷移�
 複製譯文假裝完成資料分離。
 第 454 輪神殿又證明帶價格與效果的服務表也應只保存 typed rule＋stable key；
 顯示名稱、格式與選項留在 locale，基線進一步下降至 1,223。
+第 455 輪酒館則保留原英文 token／fragment 作來源身分，只讓映射結果指向
+stable ID；這能同時維持逆向證據、ECL continuation 與單一繁中真相來源。
 
 ## 目前不可共用的內容
 

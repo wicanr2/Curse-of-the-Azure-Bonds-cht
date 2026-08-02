@@ -1087,7 +1087,8 @@ func TestShadowdalePlaceMenuAndEvents(t *testing.T) {
 }
 
 func TestBarMenuReadsTavernTalesAndReturnsToPlaces(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.Location = LocationShadowdale
 	state.Mode = ModePlace
 	state.Choices = []string{"客棧", "商店", "酒館", "離開"}
@@ -1096,7 +1097,8 @@ func TestBarMenuReadsTavernTalesAndReturnsToPlaces(t *testing.T) {
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.barMenu || len(state.Choices) != 2 || state.Choices[0] != "聽酒館傳聞" {
+	if state.Mode != ModePlace || !state.barMenu || len(state.Choices) != 2 ||
+		state.Choices[0] != catalog.Text("bar_listen", "") {
 		t.Fatalf("bar menu=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -1116,6 +1118,28 @@ func TestBarMenuReadsTavernTalesAndReturnsToPlaces(t *testing.T) {
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModePlace || state.barMenu {
 		t.Fatalf("place return state=%#v err=%v", state, err)
+	}
+}
+
+func TestTavernCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	keys := []string{
+		"bar_event", "bar_menu_prompt", "bar_listen", "bar_exit", "bar_exit_message",
+		"bar_no_tales", "bar_tale", "bar_tale_1", "bar_tale_2", "bar_tale_3",
+		"bar_tale_4", "bar_tale_5", "bar_tale_6", "tavern_drink_prompt",
+		"tavern_punch", "tavern_drink", "tavern_dragon_breath", "tavern_basilisk",
+		"tavern_lemonade", "tavern_whiskey", "tavern_beer", "tavern_ale",
+		"tavern_port", "tavern_mead", "tavern_tale_28", "tavern_tale_44",
+		"tavern_tale_60", "ecl_tavern_pleasure", "ecl_tavern_special_1",
+		"ecl_tavern_special_2", "ecl_tavern_purple_1", "ecl_tavern_purple_2",
+		"ecl_tavern_purple_3", "ecl_tavern_commotion_1", "ecl_tavern_commotion_2",
+		"ecl_tavern_commotion_3", "ecl_tavern_knife_1", "ecl_tavern_knife_2",
+		"ecl_tavern_journal_17", "journal_entry_17_prefix", "journal_entry_17",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Fatalf("tavern locale ID %q is absent", key)
+		}
 	}
 }
 

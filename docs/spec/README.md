@@ -407,3 +407,4 @@
 - [第四百五十二輪 Go 漢字字串與資料分離 gate](./452-go-han-literal-data-separation-gate.md)（`READY`：AST exact baseline、1,315 次初始債務與正式 regression gate）
 - [第四百五十三輪訓練場玩家文字與法術名稱資料分離](./453-training-hall-locale-data-separation.md)（`READY`：64 個 Go 漢字 literal 移除、stable locale ID 與正式 JSON 測試解析）
 - [第四百五十四輪神殿服務玩家文字與治療項目資料分離](./454-temple-locale-data-separation.md)（`READY`：28 個 Go 漢字 literal 移除、十種 cure stable keys 與真實 ECL／GEO 路徑）
+- [第四百五十五輪酒館、飲品、傳聞與提爾佛頓事件資料分離](./455-tavern-locale-data-separation.md)（`READY`：54 個 Go 漢字 literal 移除、41 個 locale IDs 與三城市 ECL 路徑）

@@ -610,7 +610,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
-		!strings.Contains(state.Message, "幾位想來點什麼") {
+		state.Message != facilityCatalog.Text("ecl_tavern_pleasure", "") {
 		t.Fatalf("tavern picture mode=%v picture=%v:%d head/body=%d/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock,
 			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
@@ -619,47 +619,57 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 3 ||
-		state.Choices[0] != "揍酒保" || state.Choices[1] != "喝一杯" || state.Choices[2] != "離開" {
+		state.Choices[0] != facilityCatalog.Text("tavern_punch", "") ||
+		state.Choices[1] != facilityCatalog.Text("tavern_drink", "") ||
+		state.Choices[2] != facilityCatalog.Text("leave", "") {
 		t.Fatalf("tavern action menu mode=%v choices=%v", state.Mode, state.Choices)
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 4 ||
-		state.Choices[0] != "龍息酒" || state.Choices[1] != "石化蜥蜴酒" ||
-		state.Choices[2] != "檸檬水" || state.Choices[3] != "威士忌" {
+		state.Choices[0] != facilityCatalog.Text("tavern_dragon_breath", "") ||
+		state.Choices[1] != facilityCatalog.Text("tavern_basilisk", "") ||
+		state.Choices[2] != facilityCatalog.Text("tavern_lemonade", "") ||
+		state.Choices[3] != facilityCatalog.Text("tavern_whiskey", "") {
 		t.Fatalf("tavern drink menu mode=%v choices=%v", state.Mode, state.Choices)
 	}
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
-		!strings.Contains(state.Message, "特別的客人") {
+	if len(state.Choices) != 2 || state.Choices[0] != facilityCatalog.Text("yes", "") ||
+		state.Choices[1] != facilityCatalog.Text("no", "") ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_special_1", "")) {
 		t.Fatalf("tavern special-customer prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 1 || !strings.Contains(state.Message, "紫色腰帶") {
+	if len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_purple_2", "")) {
 		t.Fatalf("tavern purple-sash pause choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
-		!strings.Contains(state.Message, "騷動") || !strings.Contains(state.Message, "調查") {
+	if len(state.Choices) != 2 || state.Choices[0] != facilityCatalog.Text("yes", "") ||
+		state.Choices[1] != facilityCatalog.Text("no", "") ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_commotion_2", "")) ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_commotion_3", "")) {
 		t.Fatalf("tavern investigate prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 1 || !strings.Contains(state.Message, "華麗") ||
-		!strings.Contains(state.Message, "匕首") || !strings.Contains(state.Message, "第 17 條") {
+	if len(state.Choices) != 1 ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_knife_1", "")) ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_knife_2", "")) ||
+		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_journal_17", "")) {
 		t.Fatalf("tavern knife pause choices=%v message=%q", state.Choices, state.Message)
 	}
 	foundJournal17 := false
 	for _, page := range state.JournalPages {
-		if strings.HasPrefix(page, "手札條目 17：") && strings.Contains(page, "火刀") {
+		if page == facilityCatalog.Text("journal_entry_17", "") {
 			foundJournal17 = true
 			break
 		}
@@ -1726,7 +1736,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.session = session
 	state.eclBlock = session.CurrentData()
 	state.eclStart, err = session.InitialEntry()

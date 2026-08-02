@@ -410,12 +410,12 @@ func NewState(catalog locale.Catalog) State {
 		dataPackError:          dataPackErr,
 		appliedDataPackEvents:  make(map[string]bool),
 		barTales: []string{
-			catalog.Text("bar_tale_1", "酒客低聲說：公主與國王都喬裝在城中。"),
-			catalog.Text("bar_tale_2", "有人說火焰巨人只怕三件古老神器，其中一件可能在北方瀑布下。"),
-			catalog.Text("bar_tale_3", "許多士兵覺得深坑不祥，有人寧可逃亡也不願去守衛。"),
-			catalog.Text("bar_tale_4", "這座城市的下水道，是達倫地區最危險的地方之一。"),
-			catalog.Text("bar_tale_5", "有人看見紅袍刺客在森林小徑巡邏。"),
-			catalog.Text("bar_tale_6", "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。"),
+			catalog.Text("bar_tale_1", "bar_tale_1"),
+			catalog.Text("bar_tale_2", "bar_tale_2"),
+			catalog.Text("bar_tale_3", "bar_tale_3"),
+			catalog.Text("bar_tale_4", "bar_tale_4"),
+			catalog.Text("bar_tale_5", "bar_tale_5"),
+			catalog.Text("bar_tale_6", "bar_tale_6"),
 		},
 		restHours:         24,
 		combatSeed:        1,
@@ -521,10 +521,10 @@ func (s *State) enterBarMenu() {
 	s.barMenu = true
 	s.shopMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("bar_menu_prompt", "酒館裡，你想做什麼？")
+	s.Prompt = s.catalog.Text("bar_menu_prompt", "bar_menu_prompt")
 	s.Choices = []string{
-		s.catalog.Text("bar_listen", "聽酒館傳聞"),
-		s.catalog.Text("bar_exit", "離開酒館"),
+		s.catalog.Text("bar_listen", "bar_listen"),
+		s.catalog.Text("bar_exit", "bar_exit"),
 	}
 	s.currentOriginalChoices = []string{"BAR_LISTEN", "BAR_EXIT"}
 	s.Message = ""
@@ -537,16 +537,16 @@ func (s *State) selectBar(originalChoice string) error {
 	switch originalChoice {
 	case "BAR_LISTEN":
 		if s.barTaleIndex >= len(s.barTales) {
-			s.Message = s.catalog.Text("bar_no_tales", "目前沒有新的酒館傳聞。")
+			s.Message = s.catalog.Text("bar_no_tales", "bar_no_tales")
 			return nil
 		}
 		taleNumber := s.barTaleIndex + 1
-		s.Message = fmt.Sprintf(s.catalog.Text("bar_tale", "酒客傳聞 %d：%s"), taleNumber, s.barTales[s.barTaleIndex])
+		s.Message = fmt.Sprintf(s.catalog.Text("bar_tale", "bar_tale"), taleNumber, s.barTales[s.barTaleIndex])
 		s.barTaleIndex++
 		return nil
 	case "BAR_EXIT":
 		s.barMenu = false
-		s.Message = s.catalog.Text("bar_exit_message", "你離開酒館，回到城市場所選單。")
+		s.Message = s.catalog.Text("bar_exit_message", "bar_exit_message")
 		return nil
 	default:
 		return fmt.Errorf("unknown bar choice %q", originalChoice)
@@ -4728,11 +4728,11 @@ func (s *State) restorePartyAtInn() {
 func (s *State) placeEventMessage(originalChoice string) string {
 	switch originalChoice {
 	case "INN":
-		return s.catalog.Text("inn_event", "你來到"+s.LocationName+"的客棧。住宿與休息功能尚待接入。")
+		return s.catalog.Text("inn_event", "inn_event")
 	case "STORE":
-		return s.catalog.Text("store_event", "你來到"+s.LocationName+"的商店。原版商店功能尚待接入。")
+		return s.catalog.Text("store_event", "store_event")
 	case "BAR":
-		return s.catalog.Text("bar_event", "你來到"+s.LocationName+"的酒館。")
+		return s.catalog.Text("bar_event", "bar_event")
 	default:
 		return s.localizeOption(originalChoice)
 	}
@@ -5239,7 +5239,7 @@ func (s *State) EnterPlaces() error {
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
 		s.catalog.Text("store", "商店"),
-		s.catalog.Text("bar", "酒館"),
+		s.catalog.Text("bar", "bar"),
 		s.catalog.Text("leave", "離開"),
 	}
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
@@ -5442,7 +5442,7 @@ func (s *State) EnterPlacesFromEvent() error {
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
 		s.catalog.Text("store", "商店"),
-		s.catalog.Text("bar", "酒館"),
+		s.catalog.Text("bar", "bar"),
 		s.catalog.Text("leave", "離開"),
 	}
 	s.currentOriginalChoices = []string{"INN", "STORE", "BAR", "LEAVE"}
@@ -5588,25 +5588,25 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	case "TELL THE TRUTH":
 		return catalog.Text("tell_truth", "如實相告")
 	case "PUNCH BARKEEP":
-		return catalog.Text("tavern_punch", "揍酒保")
+		return catalog.Text("tavern_punch", "tavern_punch")
 	case "HAVE A DRINK":
-		return catalog.Text("tavern_drink", "喝一杯")
+		return catalog.Text("tavern_drink", "tavern_drink")
 	case "DRAGON'S BREATH":
-		return catalog.Text("tavern_dragon_breath", "龍息酒")
+		return catalog.Text("tavern_dragon_breath", "tavern_dragon_breath")
 	case "BASILISK":
-		return catalog.Text("tavern_basilisk", "石化蜥蜴酒")
+		return catalog.Text("tavern_basilisk", "tavern_basilisk")
 	case "LEMONADE":
-		return catalog.Text("tavern_lemonade", "檸檬水")
+		return catalog.Text("tavern_lemonade", "tavern_lemonade")
 	case "WHISKEY":
-		return catalog.Text("tavern_whiskey", "威士忌")
+		return catalog.Text("tavern_whiskey", "tavern_whiskey")
 	case "BEER":
-		return catalog.Text("tavern_beer", "啤酒")
+		return catalog.Text("tavern_beer", "tavern_beer")
 	case "ALE":
-		return catalog.Text("tavern_ale", "愛爾啤酒")
+		return catalog.Text("tavern_ale", "tavern_ale")
 	case "PORT":
-		return catalog.Text("tavern_port", "波特酒")
+		return catalog.Text("tavern_port", "tavern_port")
 	case "MEAD":
-		return catalog.Text("tavern_mead", "蜂蜜酒")
+		return catalog.Text("tavern_mead", "tavern_mead")
 	case "LIE":
 		return catalog.Text("lie", "說謊")
 	case "ENTER CITY":
@@ -5622,7 +5622,7 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	case "STORE":
 		return catalog.Text("store", "商店")
 	case "BAR":
-		return catalog.Text("bar", "酒館")
+		return catalog.Text("bar", "bar")
 	case "HALL":
 		return catalog.Text("training_hall", "訓練場")
 	case "TEMPLE":
@@ -5771,7 +5771,7 @@ func localizePrompt(catalog locale.Catalog, prompt string) string {
 		return catalog.Text("journey_destination_prompt", "從這裡可以前往")
 	}
 	if prompt == "WHAT WILL YOU DRINK?" {
-		return catalog.Text("tavern_drink_prompt", "要喝什麼？")
+		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
 	}
 	if prompt == "A DARK ELF PATROL ARRIVES" {
 		return catalog.Text("ecl_hap_dark_elf_patrol", "一隊黑暗精靈巡邏兵出現了")
@@ -5986,12 +5986,12 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		strings.Contains(joined, "OVERLOOKING THE WOODS"):
 		return catalog.Text(
 			"ecl_essembra_outdoor_bar",
-			"你們來到一座俯瞰林地的露天酒館。要做什麼？",
+			"ecl_essembra_outdoor_bar",
 		)
 	case strings.Contains(joined, "YOU ARE IN A DOCKSIDE BAR"):
 		return catalog.Text(
 			"ecl_hillsfar_dockside_bar",
-			"你們來到碼頭邊的酒館。要做什麼？",
+			"ecl_hillsfar_dockside_bar",
 		)
 	case strings.Contains(joined, "SOME RED PLUMES COME OVER") &&
 		strings.Contains(joined, "ORDER YOU TO CLEAN UP THE MESS"):
@@ -6275,16 +6275,16 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"一名兜帽低垂的灰袍男子坐在昏暗角落。他招手示意你們靠近，低聲說了一番話，隨後便消失無蹤。",
 		)
 	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
-		return catalog.Text("tavern_drink_prompt", "要喝什麼？")
+		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 44"):
 		return catalog.Text(
 			"tavern_tale_44",
-			"酒客說：「紅袍法師喜愛火焰生物；面對他們時，寒冷攻擊往往是最好的防禦。」",
+			"tavern_tale_44",
 		)
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 60"):
 		return catalog.Text(
 			"tavern_tale_60",
-			"酒客說：「有幾道龐大身影飛越森林，朝南方去了。」",
+			"tavern_tale_60",
 		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
 		return catalog.Text(
@@ -6335,13 +6335,13 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 28"):
 		return catalog.Text(
 			"tavern_tale_28",
-			"你們無意間聽見一則酒館傳聞：已有兩艘前往暗影谷的船失蹤，河道變得非常危險。",
+			"tavern_tale_28",
 		)
 	case strings.Contains(joined, "YOU ARE IN A RIVERSIDE ALE HOUSE") &&
 		strings.Contains(joined, "WHAT WILL YOU DO"):
 		return catalog.Text(
 			"ecl_ashabenford_ale_house",
-			"你們身在河畔酒館。要做什麼？",
+			"ecl_ashabenford_ale_house",
 		)
 	case strings.Contains(joined, "YOU ARE IN ASHABENFORD") &&
 		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
@@ -6786,10 +6786,9 @@ func (s *State) unlockJournalEntries(texts []string) {
 		})
 	}
 	if strings.Contains(joined, "ORNATE KNIFE") && strings.Contains(joined, "17.") {
-		s.appendJournalPages("手札條目 17：", []string{s.catalog.Text(
+		s.appendJournalPages(s.catalog.Text("journal_entry_17_prefix", "journal_entry_17_prefix"), []string{s.catalog.Text(
 			"journal_entry_17",
-			"手札條目 17：巷子裡只留下一把華麗匕首。它有深色握柄、寬大的護手，"+
-				"刀刃呈不規則火焰形；原手札在此畫出匕首外觀，這正是追查「火刀」組織的重要線索。",
+			"journal_entry_17",
 		)})
 	}
 	if strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
@@ -6853,29 +6852,29 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 	case "YOU ARE READY.' YOU EXIT THE HALL.":
 		return catalog.Text("ecl_training_exit", "你們離開了訓練場。")
 	case "'WHAT'S YOUR PLEASURE?'":
-		return catalog.Text("ecl_tavern_pleasure", "「幾位想來點什麼？」")
+		return catalog.Text("ecl_tavern_pleasure", "ecl_tavern_pleasure")
 	case "'A SPECIAL CUSTOMER'S ARRIVED. YOU HAVE TO SLIP":
-		return catalog.Text("ecl_tavern_special_1", "「有位特別的客人到了。你們得暫時")
+		return catalog.Text("ecl_tavern_special_1", "ecl_tavern_special_1")
 	case "OUTSIDE FOR A MOMENT.' DO YOU GO?":
-		return catalog.Text("ecl_tavern_special_2", "到外面等一下。」你們要出去嗎？")
+		return catalog.Text("ecl_tavern_special_2", "ecl_tavern_special_2")
 	case "AS YOU BEGIN TO WALK OUT THE DOOR, YOU SEE A":
-		return catalog.Text("ecl_tavern_purple_1", "你們正要走出門時，看見一名")
+		return catalog.Text("ecl_tavern_purple_1", "ecl_tavern_purple_1")
 	case "YOUNG WOMAN WITH A PURPLE SASH SLIP IN THE SIDE DOOR.":
-		return catalog.Text("ecl_tavern_purple_2", "繫著紫色腰帶的年輕女子溜進側門。")
+		return catalog.Text("ecl_tavern_purple_2", "ecl_tavern_purple_2")
 	case "A FEW OF THE OTHER PATRONS HANG BACK, AS IF TO MEET HER.":
-		return catalog.Text("ecl_tavern_purple_3", "另有幾名酒客刻意留下，似乎正等著與她會面。")
+		return catalog.Text("ecl_tavern_purple_3", "ecl_tavern_purple_3")
 	case "AS YOU CONSIDER YOUR NEXT MOVE, YOU HEAR A":
-		return catalog.Text("ecl_tavern_commotion_1", "你們正盤算下一步時，聽見")
+		return catalog.Text("ecl_tavern_commotion_1", "ecl_tavern_commotion_1")
 	case "COMMOTION AROUND THE SIDE OF THE BUILDING. DO YOU GO":
-		return catalog.Text("ecl_tavern_commotion_2", "建築側邊傳來騷動。要前去")
+		return catalog.Text("ecl_tavern_commotion_2", "ecl_tavern_commotion_2")
 	case "TO INVESTIGATE?":
-		return catalog.Text("ecl_tavern_commotion_3", "調查嗎？")
+		return catalog.Text("ecl_tavern_commotion_3", "ecl_tavern_commotion_3")
 	case "THERE IS NOTHING HERE NOW, EXCEPT FOR AN ORNATE":
-		return catalog.Text("ecl_tavern_knife_1", "這裡如今空無一人，只留下一把華麗")
+		return catalog.Text("ecl_tavern_knife_1", "ecl_tavern_knife_1")
 	case "KNIFE":
-		return catalog.Text("ecl_tavern_knife_2", "匕首")
+		return catalog.Text("ecl_tavern_knife_2", "ecl_tavern_knife_2")
 	case "17.":
-		return catalog.Text("ecl_tavern_journal_17", "第 17 條。")
+		return catalog.Text("ecl_tavern_journal_17", "ecl_tavern_journal_17")
 	case "'I AM THE HIGH PRIEST. YOU LOOK TROUBLED, MY CHILDREN. DO YOU WISH TO TELL ME YOUR STORY?'":
 		return catalog.Text("ecl_high_priest_intro", "「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」")
 	case "HE LISTENS SYMPATHETICALLY AND CASTS A REMOVE CURSE SPELL":
