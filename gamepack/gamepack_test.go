@@ -409,6 +409,35 @@ func TestLavaTubeStoryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestAreaFiveDepartureIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"area5.depart-akabar", []string{"YOUR HELP WAS INVALUABLE TO ME", "BUSINESS TO ATTEND TO"}},
+		{"area5.dark-elf-gear-decays", []string{"DARK ELF", "DECAY TO USELESSNESS"}},
+		{"post-wizard.dracolich", []string{"OUT OF A COPSE OF TREES COMES A SKELETAL", "YOU HAVE DEPRIVED ME OF MY TUTOR", "I CAN AVENGE MYSELF"}},
+		{"essembra.edge", []string{"YOU ARE AT THE EDGE OF ESSEMBRA"}},
+		{"essembra.places", []string{"YOU ARE IN ESSEMBRA", "WHAT PLACE WILL YOU VISIT"}},
+		{"essembra.branching-oak", []string{"WELCOME TO THE BRANCHING OAK"}},
+		{"essembra.outdoor-bar", []string{"YOU ARE IN A N OUTDOOR BAR", "OVERLOOKING THE WOODS"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

@@ -3517,3 +3517,14 @@ nice 交涉、十五火蜥蜴與防火桶失敗耐熱檢查，共覆蓋 26 個 b
 source audit 688→661：localization 193→166，frontend 135、runtime 360 不變。
 READY spec 463 是權威；Docker／Xvfb／`--network none` 正式全套 gate 已通過，
 marker `ROUND463_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十四輪完成 Area 5 離場與 Essembra 銜接資料化。阿卡巴
+離隊、黑暗精靈裝備日光腐朽、法師塔後龍巫妖，以及 Essembra edge／places／
+Branching Oak／outdoor bar 七條 source rules 與 en／zh-TW messages 已移入
+game-pack。第 463 輪正常長路徑接續驗證 roster 只剩 hero、item types
+`5E／60／61h` 消失而 `09h` 保留、世界 block `50h`、龍巫妖戰後 Essembra
+位置，以及旅店／酒館返回同一城市選單。source audit 661→655：localization
+166→160，frontend 135、runtime 360 不變；outdoor bar 舊分支原本只有 locale
+key，故七事件只下降六次漢字。READY spec 464 是權威；正式 gate、commit／
+Docker／Xvfb／`--network none` 正式 gate 已通過，marker
+`ROUND464_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

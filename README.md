@@ -60,6 +60,12 @@ NPC roster 與 continuation；`sly` 火蜥蜴交涉目前僅有資料規則 cove
 Go 漢字基線由 688 降至 661。詳見
 [`docs/spec/463-hap-lava-tube-game-pack-story.md`](docs/spec/463-hap-lava-tube-game-pack-story.md)。
 
+第 464 輪接續收束法師塔離場：阿卡巴離隊、黑暗精靈裝備日光腐朽、龍巫妖
+復仇，以及 Essembra edge／places／Branching Oak／露天酒館共七個事件均移入
+game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 continuation、城市
+設施進出與返回選單。Go 漢字基線由 661 降至 655。詳見
+[`docs/spec/464-area5-departure-essembra-game-pack.md`](docs/spec/464-area5-departure-essembra-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

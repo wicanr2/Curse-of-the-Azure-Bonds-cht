@@ -2093,7 +2093,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Location != LocationEssembra || !strings.Contains(state.Message, "艾森布拉城外") {
+	if state.Location != LocationEssembra || state.Message != requireGamePackText(t, &state, "essembra.edge") {
 		t.Fatalf("Essembra arrival location=%v message=%q", state.Location, state.Message)
 	}
 	if got, ok := session.MemoryValue(0x4C9B); !ok || got != 8 {
@@ -3077,7 +3077,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if session.CurrentBlockID() != 0x30 ||
-		!strings.Contains(state.Message, "阿卡巴") ||
+		state.Message != requireGamePackText(t, &state, "area5.depart-akabar") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("wizard-tower Akabar farewell block=%#x mode=%v originals=%#v message=%q",
 			session.CurrentBlockID(), state.Mode, state.currentOriginalChoices, state.Message)
@@ -3089,8 +3089,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if session.CurrentBlockID() != 0x30 ||
-		!strings.Contains(state.Message, "日光") ||
-		!strings.Contains(state.Message, "腐朽") ||
+		state.Message != requireGamePackText(t, &state, "area5.dark-elf-gear-decays") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("wizard-tower dark-elf decay block=%#x mode=%v originals=%#v message=%q",
 			session.CurrentBlockID(), state.Mode, state.currentOriginalChoices, state.Message)
@@ -3131,8 +3130,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "骷髏") ||
-		!strings.Contains(state.Message, "導師") ||
+	if state.Message != requireGamePackText(t, &state, "post-wizard.dracolich") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("post-wizard skeletal encounter originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
@@ -3155,7 +3153,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness || state.Location != LocationEssembra ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
-		!strings.Contains(state.Message, "艾森布拉城外") {
+		state.Message != requireGamePackText(t, &state, "essembra.edge") {
 		t.Fatalf("post-dracolich arrival mode=%v location=%v originals=%#v message=%q",
 			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
 	}
@@ -3165,7 +3163,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeEvent || session.CurrentBlockID() != 0x50 ||
 		state.Area.InDungeon || state.Area.GameArea != 1 ||
 		!state.PictureRequested || state.PictureBlock != 80 ||
-		!strings.Contains(state.Message, "身在艾森布拉") {
+		state.Message != requireGamePackText(t, &state, "essembra.places") {
 		t.Fatalf("Essembra enter mode=%v block=0x%02X area=%+v originals=%#v message=%q picture=%v/%d",
 			state.Mode, session.CurrentBlockID(), state.Area,
 			state.currentOriginalChoices, state.Message, state.PictureRequested, state.PictureBlock)
@@ -3175,14 +3173,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
-		!strings.Contains(state.Message, "艾森布拉") {
+		state.Message != requireGamePackText(t, &state, "essembra.places") {
 		t.Fatalf("Essembra places mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "枝椏橡樹客棧") ||
+	if state.Message != requireGamePackText(t, &state, "essembra.branching-oak") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Essembra inn welcome originals=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
@@ -3212,14 +3210,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness || session.CurrentBlockID() != 0x50 ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
-		!strings.Contains(state.Message, "艾森布拉") {
+		state.Message != requireGamePackText(t, &state, "essembra.places") {
 		t.Fatalf("Essembra inn return mode=%v block=0x%02X originals=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(4); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "俯瞰林地的露天酒館") ||
+	if state.Message != requireGamePackText(t, &state, "essembra.outdoor-bar") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
 		t.Fatalf("Essembra outdoor bar originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3278,7 +3276,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
-		!strings.Contains(state.Message, "艾森布拉") {
+		state.Message != requireGamePackText(t, &state, "essembra.places") {
 		t.Fatalf("Essembra bar exit mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
@@ -3286,7 +3284,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 121 ||
-		!strings.Contains(state.Message, "艾森布拉城外") {
+		state.Message != requireGamePackText(t, &state, "essembra.edge") {
 		t.Fatalf("Essembra leave picture mode=%v block=0x%02X originals=%#v message=%q picture=%v/%d",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices,
 			state.Message, state.PictureRequested, state.PictureBlock)

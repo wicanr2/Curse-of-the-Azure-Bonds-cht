@@ -5625,52 +5625,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
-	case strings.Contains(joined, "YOUR HELP WAS INVALUABLE TO ME") &&
-		strings.Contains(joined, "BUSINESS TO ATTEND TO"):
-		return catalog.Text(
-			"ecl_area5_depart_akabar",
-			"阿卡巴向你們道別，隨後離隊處理自己的事務。",
-		)
-	case strings.Contains(joined, "DARK ELF") &&
-		strings.Contains(joined, "DECAY TO USELESSNESS"):
-		return catalog.Text(
-			"ecl_area5_depart_dark_elf_decay",
-			"日光使黑暗精靈的武器與護甲腐朽失效。",
-		)
-	case strings.Contains(joined, "OUT OF A COPSE OF TREES COMES A SKELETAL") &&
-		strings.Contains(joined, "YOU HAVE DEPRIVED ME OF MY TUTOR") &&
-		strings.Contains(joined, "I CAN AVENGE MYSELF"):
-		return catalog.Text(
-			"ecl_post_wizard_dracolich",
-			"一具骷髏身影從樹叢現身，誓言為導師復仇。",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ESSEMBRA"):
-		return catalog.Text(
-			"ecl_essembra_edge",
-			"你們來到艾森布拉城外。要進城，還是繼續旅程？",
-		)
-	case strings.Contains(joined, "YOU ARE IN ESSEMBRA") &&
-		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
-		return catalog.Text(
-			"ecl_essembra_places",
-			"你們身在艾森布拉。要前往哪個場所？",
-		)
 	case strings.Contains(joined, "YOU ARE IN HILLSFAR") &&
 		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
 		return catalog.Text(
 			"ecl_hillsfar_places",
 			"你們身在希爾斯法。要前往哪個場所？",
-		)
-	case strings.Contains(joined, "WELCOME TO THE BRANCHING OAK"):
-		return catalog.Text(
-			"ecl_essembra_branching_oak",
-			"「歡迎光臨枝椏橡樹客棧。」",
-		)
-	case strings.Contains(joined, "YOU ARE IN A N OUTDOOR BAR") &&
-		strings.Contains(joined, "OVERLOOKING THE WOODS"):
-		return catalog.Text(
-			"ecl_essembra_outdoor_bar",
-			"ecl_essembra_outdoor_bar",
 		)
 	case strings.Contains(joined, "YOU ARE IN A DOCKSIDE BAR"):
 		return catalog.Text(
