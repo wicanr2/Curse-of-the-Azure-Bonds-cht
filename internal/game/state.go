@@ -22,6 +22,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
@@ -170,6 +171,7 @@ type State struct {
 	pendingSoundEvents      []SoundEvent
 	pendingMusicEvents      []MusicEvent
 	activeMusicTrackID      string
+	musicPlaybackSnapshot   *pc98music.TrackPCMStreamSnapshot
 	pendingECLCalls         []uint16
 	battle                  *combat.Battle
 	combatTurns             []combat.Turn

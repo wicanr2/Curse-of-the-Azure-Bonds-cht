@@ -1,11 +1,14 @@
 package save
 
 import (
+	"bytes"
+	"reflect"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 )
 
 func TestPartyJSONRoundTrip(t *testing.T) {
@@ -125,5 +128,39 @@ func TestDecodeGameRejectsCombatPayloadBeforeVersionSeven(t *testing.T) {
 	data := []byte(`{"version":6,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}],"combat":{"battle":{"version":1}}}`)
 	if _, err := DecodeGame(data); err == nil {
 		t.Fatal("version 6 combat payload unexpectedly decoded")
+	}
+}
+
+func TestGameVersionEightRoundTripsMusicContinuation(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	want := &MusicSnapshot{
+		TrackID: "pc98-bgm-selector-05",
+		Stream: &pc98music.TrackPCMStreamSnapshot{
+			Version: 1, Selector: 5, OutputSampleRate: 44_100,
+			Playback:   pc98music.TrackPlaybackSnapshot{Version: 1},
+			SynthState: []byte{1, 2, 3}, Pending: []byte{4, 5, 6, 7},
+		},
+	}
+	data, err := EncodeGameWithAudio(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, nil, nil, want)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != 8 || !reflect.DeepEqual(file.Music, want) {
+		t.Fatalf("decoded music=%+v want=%+v", file.Music, want)
+	}
+	legacy := bytes.Replace(data, []byte(`"version": 8`), []byte(`"version": 7`), 1)
+	if _, err := DecodeGame(legacy); err == nil {
+		t.Fatal("version 7 music continuation unexpectedly decoded")
+	}
+	badRate := bytes.Replace(data, []byte(`"output_sample_rate": 44100`), []byte(`"output_sample_rate": 1`), 1)
+	if _, err := DecodeGame(badRate); err == nil {
+		t.Fatal("out-of-range music sample rate unexpectedly decoded")
 	}
 }

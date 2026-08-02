@@ -307,7 +307,7 @@ func (s *State) SavePartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	data, err := partySave.EncodeGameWithCombat(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot)
+	data, err := partySave.EncodeGameWithAudio(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot())
 	if err != nil {
 		return err
 	}
@@ -733,6 +733,34 @@ func (s *State) LoadPartyFile(path string) error {
 		s.eclStart, err = s.session.InitialEntry()
 		if err != nil {
 			return err
+		}
+	}
+	s.activeMusicTrackID = ""
+	s.musicPlaybackSnapshot = nil
+	s.pendingMusicEvents = nil
+	if file.Music != nil {
+		if s.dataPack != nil {
+			track, found := s.dataPack.FindMusicTrack(file.Music.TrackID)
+			if !found {
+				return fmt.Errorf("game save music track %q is not in the data pack", file.Music.TrackID)
+			}
+			if file.Music.Stream != nil && file.Music.Stream.Selector != int(track.ReferenceSelector) {
+				return fmt.Errorf("game save music track %q selector %d does not match data-pack selector %d", file.Music.TrackID, file.Music.Stream.Selector, track.ReferenceSelector)
+			}
+		}
+		s.activeMusicTrackID = file.Music.TrackID
+		if file.Music.Stream != nil {
+			copy := cloneTrackPCMStreamSnapshot(*file.Music.Stream)
+			s.musicPlaybackSnapshot = &copy
+		}
+	} else if file.Version < 8 {
+		// Legacy saves never recorded an active track. Restart the verified
+		// binding for the restored ECL block instead of preserving a stale
+		// pre-load frontend event or pretending an unknown sample position.
+		if s.dataPack != nil && s.session != nil {
+			if binding, found := s.dataPack.FindMusicBinding(s.session.CurrentBlockID(), ""); found {
+				s.activeMusicTrackID = binding.TrackID
+			}
 		}
 	}
 	if file.Combat != nil {
