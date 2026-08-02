@@ -674,6 +674,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   作顯式 fallback，不能保留第二份 Go 中文譯文掩蓋 JSON 缺 key。移除 fallback
   後若測試顯示 ID，應補正式 locale／coverage 並讓產品長測試載正式 catalog；
   不得把中文塞回 Go 或擴大合成 fixture。
+- 第 476 輪將 CAMP／REST／FIX／VIEW／MAGIC 與 ALTER 的 128 次 Go 漢字移除，
+  baseline `518→388`。共用服務的行為測試也必須載入正式 catalog；只做逐鍵
+  coverage、但互動測試仍靠合成 catalog＋Go fallback，仍會掩蓋格式參數與語意
+  漂移。`go.mod` checkpoint 也屬正式 gate：本輪證明 `f06493f` 缺目前使用的
+  `CharacterCreation` schema，已改鎖 exact `f3c652a`；不能任選相容 Engine HEAD
+  冒充 pinned dependency。READY spec 476 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

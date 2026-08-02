@@ -3647,3 +3647,13 @@ frontend 135、runtime 360 不變。首次正式 gate 揭露十個正式 locale 
 測試 catalog 缺口；已補十筆 locale、37-ID coverage，並將真實新遊戲長回歸改用
 正式 catalog。READY spec 475 是權威；Docker／Xvfb／`--network none` 全套 gate
 已通過，marker `ROUND475_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十六輪進行紮營與 ALTER 介面資料分離。CAMP／REST／FIX／
+VIEW／MAGIC、改名、排序、移除、速度、圖片與頭身小人顯示改用正式 locale stable
+IDs；補齊角色列、施法與錯誤格式，刪除七筆重複職業中文 switch，行為測試改讀
+正式繁中 JSON，另有完整 key coverage。source audit `518→388`，runtime
+`360→230`，frontend 135、localization 23 不變。正式 gate 發現 `go.mod` 舊鎖定
+`f06493f` 缺 `CharacterCreation` schema；已改為 exact Engine `f3c652a` 的
+`v0.0.0-20260802101532-f3c652a3882e`。Docker／Xvfb／`--network none` 全套 gate
+已通過，marker `ROUND476_FORMAL_EXIT=0`。本輪未改 renderer，不新增 README
+截圖；READY spec 476 是權威，commit／push 與暫存清理待本輪收尾。
