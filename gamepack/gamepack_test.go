@@ -30,6 +30,28 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if len(pack.CombatModifiers) != 2 {
 		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
 	}
+	if pack.CharacterCreation == nil || len(pack.CharacterCreation.Templates) != 40 {
+		t.Fatalf("character creation templates=%+v", pack.CharacterCreation)
+	}
+	first := pack.CharacterCreation.Templates[0]
+	last := pack.CharacterCreation.Templates[len(pack.CharacterCreation.Templates)-1]
+	if first.ID != "human.fighter" || first.DisplayID != "creation.class.fighter" ||
+		first.RaceID != 5 || first.PrimaryClassID != 1 || first.RawClassID != 2 ||
+		len(first.ClassLevels) != 8 || first.ClassLevels[2] != 1 ||
+		len(first.BaseAbilities) != 6 || first.BaseAbilities[0] != 16 {
+		t.Fatalf("first character creation template=%+v", first)
+	}
+	if last.ID != "half-orc.fighter-thief" || last.RawClassID != 14 ||
+		last.ClassLevels[2] != 1 || last.ClassLevels[6] != 1 {
+		t.Fatalf("last character creation template=%+v", last)
+	}
+	for _, language := range []string{"en", "zh-TW"} {
+		for _, template := range pack.CharacterCreation.Templates {
+			if text, ok := pack.Text(template.DisplayID, language); !ok || text == "" {
+				t.Fatalf("template %q display %q missing from %s", template.ID, template.DisplayID, language)
+			}
+		}
+	}
 	if enemy, party := pack.CombatModifiers[0], pack.CombatModifiers[1]; enemy.SourceAddress != 0x7F70 || enemy.Side != "enemy" ||
 		party.SourceAddress != 0x7F71 || party.Side != "party" {
 		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)

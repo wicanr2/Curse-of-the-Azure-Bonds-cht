@@ -411,3 +411,4 @@
 - [第四百五十六輪商店服務玩家介面資料分離](./456-shop-ui-locale-data-separation.md)（`READY`：69 個 Go 漢字 literal 移除、63 個 locale IDs 與 Weaponers 真實玩家路徑）
 - [第四百五十七輪物品名稱與修飾詞資料分離](./457-item-name-locale-data-separation.md)（`READY`：126 個 Go 漢字 literal 移除、typed item fields 與 locale catalog 分層）
 - [第四百五十八輪角色／怪物效果名稱資料分離](./458-affect-name-locale-data-separation.md)（`READY`：21 個 Go 漢字 literal 移除、raw affect kind 與 locale 顯示分層）
+- [第四百五十九輪角色建立模板與前端文字資料分離](./459-character-creation-game-pack-data-separation.md)（`READY`：40 筆 JSON 模板、正常 ECL1 新遊戲路徑與 86 個 Go 漢字 literal 移除）

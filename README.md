@@ -11,7 +11,7 @@
 
 截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，依賴的獨立 engine 為 `3142ae0`；實際
+目前 GitHub `main`，依賴的獨立 engine 為 `f3c652a`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -26,6 +26,13 @@ literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的�
 953。這只完成顯示資料分層，不能擴大解讀為所有效果規則、動畫或音效均已還原；
 真實 MON6SPC block 67 的未命名 `82h／81h／3Ch` 仍保留 raw 診斷。證據見
 [`docs/spec/458-affect-name-locale-data-separation.md`](docs/spec/458-affect-name-locale-data-separation.md)。
+
+第 459 輪把 22 個單職與 18 個多職角色建立模板移入 CoAB game-pack；獨立
+engine 新增不解讀作品 enum 的 `character_creation.templates` schema。建立畫面
+提示、能力、種族與職業顯示也改由 stable IDs 解析，Go 漢字基線由 953 降至
+867。正常 title→角色建立→ECL1 block `01h` 與 save round-trip 已驗證；這不
+代表性別、alignment、完整多職規則或原版完整建角 UX 已完成。證據見
+[`docs/spec/459-character-creation-game-pack-data-separation.md`](docs/spec/459-character-creation-game-pack-data-separation.md)。
 
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式

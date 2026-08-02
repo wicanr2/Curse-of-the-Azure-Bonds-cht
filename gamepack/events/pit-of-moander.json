@@ -280,6 +280,21 @@
       ,"journal.57": "Journal Entry 57: “It is good to speak with those with confidence enough to deal. My clan has taken this spot as a place to rest for a few mortal lifetimes. But Tyranthraxus, the Flamed One, has stolen our followers and threatened my clan. His power is such that we cannot attack his temple directly, though we hate him with great passion. Now to our deal. You wear the Flamed One's mark, but I have been told you are his enemy. When you attack his temple we will bend our power to reclaim our followers. That may weaken him enough for you to be victorious.”"
       ,"journal.48": "Journal Entry 48: “You have done well, my pets. The three artifacts that can harm me are now in my possession. More importantly, the bonds you wear can act as the Pool of Radiance does. Through them I can transfer into any of your bodies and use it for as long as I need. If that body is killed, I can transfer through the bond back to the Pool—or into another one of you. I must thank you for the freedom you have given me. Now come along, and we will dispose of those dangerous objects.”"
       ,"journal.5": "Journal Entry 5: “We rakshasas are very fond of gambling. I suffered a streak of bad luck and lost most of my possessions. Recently I discovered that Birsheya had been cheating, but the clan lord will not act without proof. Birsheya guards the clan storehouse, and I know evidence is hidden there. Help me break in and you may choose whatever you want from the storehouse; I want only proof of Birsheya's cheating.”"
+      ,"creation.class.cleric": "Cleric"
+      ,"creation.class.fighter": "Fighter"
+      ,"creation.class.ranger": "Ranger"
+      ,"creation.class.paladin": "Paladin"
+      ,"creation.class.magic-user": "Magic-User"
+      ,"creation.class.thief": "Thief"
+      ,"creation.class.fighter-thief": "Fighter/Thief"
+      ,"creation.class.fighter-magic-user": "Fighter/Magic-User"
+      ,"creation.class.fighter-magic-user-thief": "Fighter/Magic-User/Thief"
+      ,"creation.class.magic-user-thief": "Magic-User/Thief"
+      ,"creation.class.cleric-fighter": "Cleric/Fighter"
+      ,"creation.class.cleric-ranger": "Cleric/Ranger"
+      ,"creation.class.cleric-fighter-magic-user": "Cleric/Fighter/Magic-User"
+      ,"creation.class.cleric-magic-user": "Cleric/Magic-User"
+      ,"creation.class.cleric-thief": "Cleric/Thief"
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -547,7 +562,66 @@
       ,"journal.57": "手札條目 57：「能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
       ,"journal.48": "手札條目 48：「做得很好，我的寵物們。那三件能傷害我的神器，如今都已落入我的掌握。更重要的是，你們身上的枷印能發揮與光芒之池相同的作用；我可以透過枷印轉移到你們任何一人的身體裡，想用多久便用多久。即使那具身體遭到殺害，我也能沿著枷印返回光芒之池，或轉入你們另一人的身體。我得感謝你們賜予我如此自由。現在跟我來，我們要處理掉那些危險物品。」"
       ,"journal.5": "手札條目 5：「我們羅剎妖非常熱衷賭博。我先前手氣連番不順，幾乎輸光了所有財物。最近，我發現貝爾雪雅一直在賭局中作弊；然而沒有證據，氏族領主便不肯處置他。貝爾雪雅負責看守氏族倉庫，我知道裡面藏著能證明他作弊的證據。只要協助我闖進去，你們可從倉庫任取所需；我只要貝爾雪雅作弊的證據。」"
+      ,"creation.class.cleric": "牧師"
+      ,"creation.class.fighter": "戰士"
+      ,"creation.class.ranger": "遊俠"
+      ,"creation.class.paladin": "聖武士"
+      ,"creation.class.magic-user": "魔法師"
+      ,"creation.class.thief": "盜賊"
+      ,"creation.class.fighter-thief": "戰士／盜賊"
+      ,"creation.class.fighter-magic-user": "戰士／魔法師"
+      ,"creation.class.fighter-magic-user-thief": "戰士／魔法師／盜賊"
+      ,"creation.class.magic-user-thief": "魔法師／盜賊"
+      ,"creation.class.cleric-fighter": "牧師／戰士"
+      ,"creation.class.cleric-ranger": "牧師／遊俠"
+      ,"creation.class.cleric-fighter-magic-user": "牧師／戰士／魔法師"
+      ,"creation.class.cleric-magic-user": "牧師／魔法師"
+      ,"creation.class.cleric-thief": "牧師／盜賊"
     }
+  },
+  "character_creation": {
+    "templates": [
+      {"id":"human.fighter","display_id":"creation.class.fighter","race_id":5,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"human.cleric","display_id":"creation.class.cleric","race_id":5,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"human.magic-user","display_id":"creation.class.magic-user","race_id":5,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
+      {"id":"human.ranger","display_id":"creation.class.ranger","race_id":5,"primary_class_id":2,"raw_class_id":4,"level":1,"class_levels":[0,0,0,0,1,0,0,0],"base_abilities":[14,13,14,12,14,10]},
+      {"id":"human.paladin","display_id":"creation.class.paladin","race_id":5,"primary_class_id":3,"raw_class_id":3,"level":1,"class_levels":[0,0,0,1,0,0,0,0],"base_abilities":[16,10,14,12,14,17]},
+      {"id":"human.thief","display_id":"creation.class.thief","race_id":5,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"dwarf.fighter","display_id":"creation.class.fighter","race_id":0,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"dwarf.thief","display_id":"creation.class.thief","race_id":0,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"elf.fighter","display_id":"creation.class.fighter","race_id":1,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"elf.magic-user","display_id":"creation.class.magic-user","race_id":1,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
+      {"id":"elf.thief","display_id":"creation.class.thief","race_id":1,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"gnome.fighter","display_id":"creation.class.fighter","race_id":2,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"gnome.thief","display_id":"creation.class.thief","race_id":2,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"half-elf.cleric","display_id":"creation.class.cleric","race_id":3,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-elf.fighter","display_id":"creation.class.fighter","race_id":3,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-elf.magic-user","display_id":"creation.class.magic-user","race_id":3,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
+      {"id":"half-elf.thief","display_id":"creation.class.thief","race_id":3,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"halfling.fighter","display_id":"creation.class.fighter","race_id":4,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"halfling.thief","display_id":"creation.class.thief","race_id":4,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"half-orc.cleric","display_id":"creation.class.cleric","race_id":6,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-orc.fighter","display_id":"creation.class.fighter","race_id":6,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-orc.thief","display_id":"creation.class.thief","race_id":6,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
+      {"id":"dwarf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":0,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":1,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":1,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":1,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":1,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12]},
+      {"id":"gnome.fighter-thief","display_id":"creation.class.fighter-thief","race_id":2,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-elf.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":3,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-elf.cleric-ranger","display_id":"creation.class.cleric-ranger","race_id":3,"primary_class_id":0,"raw_class_id":10,"level":1,"class_levels":[1,0,0,0,1,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-elf.cleric-fighter-magic-user","display_id":"creation.class.cleric-fighter-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":9,"level":1,"class_levels":[1,0,1,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-elf.cleric-magic-user","display_id":"creation.class.cleric-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":11,"level":1,"class_levels":[1,0,0,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":3,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":3,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":3,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":3,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12]},
+      {"id":"halfling.fighter-thief","display_id":"creation.class.fighter-thief","race_id":4,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
+      {"id":"half-orc.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":6,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-orc.cleric-thief","display_id":"creation.class.cleric-thief","race_id":6,"primary_class_id":0,"raw_class_id":12,"level":1,"class_levels":[1,0,0,0,0,0,1,0],"base_abilities":[10,10,16,10,14,10]},
+      {"id":"half-orc.fighter-thief","display_id":"creation.class.fighter-thief","race_id":6,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]}
+    ]
   },
   "music_tracks": [
     {

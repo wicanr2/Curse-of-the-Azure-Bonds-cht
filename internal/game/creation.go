@@ -15,102 +15,43 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
+	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
-func starterCharacters() []party.Character {
-	// Keep the verified single-class options first, then append the exact
-	// multi-class combinations listed by reference Gbl.RaceClasses.
-	combos := []struct {
-		race   party.Race
-		class  party.Class
-		raw    uint8
-		name   string
-		levels [8]uint8
-	}{
-		{party.RaceHuman, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHuman, party.ClassCleric, 0, "牧師", [8]uint8{1}},
-		{party.RaceHuman, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}}, {party.RaceHuman, party.ClassRanger, 4, "遊俠", [8]uint8{0, 0, 0, 0, 1}},
-		{party.RaceHuman, party.ClassPaladin, 3, "聖武士", [8]uint8{0, 0, 0, 1}}, {party.RaceHuman, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
-		{party.RaceDwarf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceDwarf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
-		{party.RaceElf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceElf, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}},
-		{party.RaceElf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceGnome, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}},
-		{party.RaceGnome, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 0, "牧師", [8]uint8{1}},
-		{party.RaceHalfElf, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHalfElf, party.ClassMagicUser, 5, "法師", [8]uint8{0, 0, 0, 0, 0, 1}},
-		{party.RaceHalfElf, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}}, {party.RaceHalfElf, party.ClassRanger, 4, "遊俠", [8]uint8{0, 0, 0, 0, 1}},
-		{party.RaceHalfling, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}}, {party.RaceHalfling, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
-		{party.RaceHalfOrc, party.ClassCleric, 0, "牧師", [8]uint8{1}}, {party.RaceHalfOrc, party.ClassFighter, 2, "戰士", [8]uint8{0, 0, 1}},
-		{party.RaceHalfOrc, party.ClassThief, 6, "盜賊", [8]uint8{0, 0, 0, 0, 0, 0, 1}},
+func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character, error) {
+	if pack == nil || pack.CharacterCreation == nil {
+		return nil, fmt.Errorf("character creation templates are missing from game pack")
 	}
-	multi := []struct {
-		race    party.Race
-		primary party.Class
-		raw     uint8
-		name    string
-		levels  [8]uint8
-	}{
-		{party.RaceDwarf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-		{party.RaceElf, party.ClassFighter, 13, "戰士／法師", [8]uint8{0, 0, 1, 0, 0, 1}}, {party.RaceElf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-		{party.RaceElf, party.ClassFighter, 15, "戰士／法師／盜賊", [8]uint8{0, 0, 1, 0, 0, 1, 1}}, {party.RaceElf, party.ClassMagicUser, 16, "法師／盜賊", [8]uint8{0, 0, 0, 0, 0, 1, 1}},
-		{party.RaceGnome, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-		{party.RaceHalfElf, party.ClassCleric, 8, "牧師／戰士", [8]uint8{1, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 10, "牧師／遊俠", [8]uint8{1, 0, 0, 0, 1}},
-		{party.RaceHalfElf, party.ClassCleric, 9, "牧師／戰士／法師", [8]uint8{1, 0, 1, 0, 0, 1}}, {party.RaceHalfElf, party.ClassCleric, 11, "牧師／法師", [8]uint8{1, 0, 0, 0, 0, 1}},
-		{party.RaceHalfElf, party.ClassFighter, 13, "戰士／法師", [8]uint8{0, 0, 1, 0, 0, 1}}, {party.RaceHalfElf, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-		{party.RaceHalfElf, party.ClassFighter, 15, "戰士／法師／盜賊", [8]uint8{0, 0, 1, 0, 0, 1, 1}}, {party.RaceHalfElf, party.ClassMagicUser, 16, "法師／盜賊", [8]uint8{0, 0, 0, 0, 0, 1, 1}},
-		{party.RaceHalfling, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-		{party.RaceHalfOrc, party.ClassCleric, 8, "牧師／戰士", [8]uint8{1, 0, 1}}, {party.RaceHalfOrc, party.ClassCleric, 12, "牧師／盜賊", [8]uint8{1, 0, 0, 0, 0, 0, 1}},
-		{party.RaceHalfOrc, party.ClassFighter, 14, "戰士／盜賊", [8]uint8{0, 0, 1, 0, 0, 0, 1}},
-	}
-	for _, option := range multi {
-		combos = append(combos, struct {
-			race   party.Race
-			class  party.Class
-			raw    uint8
-			name   string
-			levels [8]uint8
-		}{option.race, option.primary, option.raw, option.name, option.levels})
-	}
-	result := make([]party.Character, 0, len(combos))
-	for index, combo := range combos {
+	result := make([]party.Character, 0, len(pack.CharacterCreation.Templates))
+	for index, template := range pack.CharacterCreation.Templates {
+		if template.RaceID > uint8(party.RaceHalfOrc) || template.PrimaryClassID > uint8(party.ClassThief) {
+			return nil, fmt.Errorf("character creation template %q has unsupported race/class IDs %d/%d", template.ID, template.RaceID, template.PrimaryClassID)
+		}
+		name, ok := pack.Text(template.DisplayID, language)
+		if !ok || name == "" {
+			return nil, fmt.Errorf("character creation template %q display %q is unavailable", template.ID, template.DisplayID)
+		}
+		var levels [8]uint8
+		copy(levels[:], template.ClassLevels)
+		abilities := template.BaseAbilities
 		character := party.Character{
-			ID: fmt.Sprintf("creation-%02d", index), Name: combo.name,
-			Race: combo.race, Class: combo.class, Level: 1,
-			RawClassID: combo.raw, ClassLevels: combo.levels,
-			Abilities: creationBaseAbilities(combo.class),
+			ID: "creation." + template.ID, Name: name,
+			Race: party.Race(template.RaceID), Class: party.Class(template.PrimaryClassID),
+			RawClassID: template.RawClassID, Level: int(template.Level), ClassLevels: levels,
+			Abilities: party.Abilities{
+				Strength: abilities[0], Intelligence: abilities[1], Wisdom: abilities[2],
+				Dexterity: abilities[3], Constitution: abilities[4], Charisma: abilities[5],
+			},
 		}
 		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
-			continue
+			return nil, fmt.Errorf("character creation template %q age: %w", template.ID, err)
 		}
 		if err := character.Validate(); err != nil {
-			continue
+			return nil, fmt.Errorf("character creation template %d %q: %w", index, template.ID, err)
 		}
 		result = append(result, character)
 	}
-	return result
-}
-
-func creationBaseAbilities(class party.Class) party.Abilities {
-	switch class {
-	case party.ClassCleric:
-		return party.Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}
-	case party.ClassFighter:
-		return party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10}
-	case party.ClassRanger:
-		return party.Abilities{Strength: 14, Intelligence: 13, Wisdom: 14, Dexterity: 12, Constitution: 14, Charisma: 10}
-	case party.ClassPaladin:
-		return party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 14, Dexterity: 12, Constitution: 14, Charisma: 17}
-	case party.ClassMagicUser:
-		return party.Abilities{Strength: 8, Intelligence: 16, Wisdom: 10, Dexterity: 14, Constitution: 10, Charisma: 12}
-	case party.ClassThief:
-		return party.Abilities{Strength: 10, Intelligence: 12, Wisdom: 10, Dexterity: 16, Constitution: 12, Charisma: 10}
-	default:
-		return party.Abilities{}
-	}
-}
-
-func creationClassName(class party.Class) string {
-	return map[party.Class]string{
-		party.ClassCleric: "牧師", party.ClassFighter: "戰士", party.ClassRanger: "遊俠",
-		party.ClassPaladin: "聖武士", party.ClassMagicUser: "法師", party.ClassThief: "盜賊",
-	}[class]
+	return result, nil
 }
 
 func (s *State) OpenCharacterCreation() error {
@@ -118,10 +59,14 @@ func (s *State) OpenCharacterCreation() error {
 		return fmt.Errorf("character creation is unavailable during combat")
 	}
 	s.creationReturnMode = s.Mode
-	s.CreationOptions = starterCharacters()
+	options, err := starterCharacters(s.dataPack, s.catalog.Language)
+	if err != nil {
+		return err
+	}
+	s.CreationOptions = options
 	s.CreationRoster = nil
 	s.CreationCursor = 0
-	s.CreationMessage = s.catalog.Text("creation_prompt", "選擇角色模板，Enter 加入隊伍。")
+	s.CreationMessage = s.catalog.Text("creation_prompt", "creation_prompt")
 	s.Mode = ModeCharacterCreation
 	return nil
 }
@@ -152,7 +97,7 @@ func (s *State) AddCreationCharacter(index int) error {
 	}
 	character.ID = fmt.Sprintf("%s-%d", character.ID, len(s.CreationRoster)+1)
 	s.CreationRoster = append(s.CreationRoster, character)
-	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_added", "已加入：%s（目前 %d 人）"), character.Name, len(s.CreationRoster))
+	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_added", "creation_added"), character.Name, len(s.CreationRoster))
 	return nil
 }
 
@@ -172,7 +117,7 @@ func (s *State) ToggleCreationAbilities() error {
 	s.CreationEditingAbilities = !s.CreationEditingAbilities
 	s.CreationAbility = 0
 	if s.CreationEditingAbilities {
-		s.CreationMessage = s.catalog.Text("creation_ability_prompt", "左右選能力，上下調整數值。")
+		s.CreationMessage = s.catalog.Text("creation_ability_prompt", "creation_ability_prompt")
 	}
 	return nil
 }
@@ -182,7 +127,7 @@ func (s *State) RerollCreationAbilities(seed int64) error {
 		return fmt.Errorf("ability reroll is unavailable")
 	}
 	s.CreationOptions[s.CreationCursor].Abilities = party.RollAbilities(seed)
-	s.CreationMessage = s.catalog.Text("creation_rerolled", "能力值已重擲，請確認職業最低值。")
+	s.CreationMessage = s.catalog.Text("creation_rerolled", "creation_rerolled")
 	return nil
 }
 
@@ -209,7 +154,7 @@ func (s *State) AdjustCreationAbility(delta int) error {
 		return err
 	}
 	value, _ := s.CreationOptions[s.CreationCursor].Abilities.Value(s.CreationAbility)
-	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_ability_updated", "能力值已調整為 %d。"), value)
+	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_ability_updated", "creation_ability_updated"), value)
 	return nil
 }
 
@@ -244,7 +189,7 @@ func (s *State) CommitCreationName() error {
 	}
 	s.CreationOptions[s.CreationCursor].Name = s.CreationName
 	s.CreationEditing = false
-	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_named", "角色名稱：%s"), s.CreationName)
+	s.CreationMessage = fmt.Sprintf(s.catalog.Text("creation_named", "creation_named"), s.CreationName)
 	return nil
 }
 
@@ -282,12 +227,41 @@ func (s *State) FinishCharacterCreation() error {
 		// original image. Production NewStateFromECLBlocks always takes the
 		// verified block-0x01 path below.
 		s.Mode = ModeWilderness
-		s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
-		s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
+		s.Prompt = s.catalog.Text("party_ready", "party_ready")
+		s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
 		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 		return nil
 	}
 	return s.BeginAdventure()
+}
+
+// LocaleText exposes the State-owned catalog to the frontend without letting
+// renderer code maintain a second translation table.
+func (s *State) LocaleText(key string) string { return s.catalog.Text(key, key) }
+
+func (s *State) CharacterRaceName(race party.Race) string {
+	key := "race_unknown"
+	switch race {
+	case party.RaceDwarf:
+		key = "race_dwarf"
+	case party.RaceElf:
+		key = "race_elf"
+	case party.RaceGnome:
+		key = "race_gnome"
+	case party.RaceHalfElf:
+		key = "race_half_elf"
+	case party.RaceHalfling:
+		key = "race_halfling"
+	case party.RaceHuman:
+		key = "race_human"
+	case party.RaceHalfOrc:
+		key = "race_half_orc"
+	}
+	return s.LocaleText(key)
+}
+
+func (s *State) CharacterClassName(class party.Class) string {
+	return s.localizedCharacterClassName(class)
 }
 
 func (s *State) SavePartyFile(path string) error {
