@@ -400,3 +400,4 @@
 - [第四百四十二輪 PC-98 睡眠術 Action 清除與 TWINKLE](./442-pc98-sleep-action-clear-and-twinkle.md)（`READY`：effect 35h add／remove CLEARACTION、逐目標四格 TWINKLE、1440ms 與音效順序；像素 palette 待實機）
 - [第四百四十三輪 active combat 存檔與 Sleep continuation](./443-active-combat-save-sleep-continuation.md)（`READY`：save v7 Battle／scheduler／PRNG／視覺起點 round-trip、自然到期與傷害喚醒；mid-animation fail-closed）
 - [第四百四十四輪紅網 campaign 戰鬥存檔 continuation](./444-red-web-campaign-combat-save-continuation.md)（`READY`：Standing Stone→GEO6→紅網第一戰 save v7、全新 State restore、蜘蛛／羅剎妖二戰與 `4CBF=1`）
+- [第四百四十五輪提爾雪雅臨時盟友戰鬥存檔](./445-tirsheya-temporary-ally-combat-save.md)（`READY`：真實 mixed-team 戰 save v7、QuickFight／TemporaryAlly restore、`4CD1=1` 與 roster 無污染）

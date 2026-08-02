@@ -525,6 +525,11 @@ commit 內保存不可能自我引用的 hash。
   後以全新 State restore，Battle／ECL session 逐欄相同，loaded state 完成
   蜘蛛→Picture 72→羅剎妖二戰、`4CBF=1` 與 dungeon return。高數值英雄只
   加速回歸，不證明 encounter balance；READY spec 444 是權威。
+- 第 445 輪已在真實 outer ruins 提爾雪雅→攻擊貝爾哈第二戰插入 save v7；
+  party-side 羅剎妖的 `QuickFight／TemporaryAlly`、Battle 與 ECL session 在
+  全新 State restore 後逐欄相同，而永久 roster 始終只有英雄。loaded state
+  戰勝、寫 `4CD1=1`、返回 dungeon 後，runtime party／roster 都無盟友污染。
+  READY spec 445 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
