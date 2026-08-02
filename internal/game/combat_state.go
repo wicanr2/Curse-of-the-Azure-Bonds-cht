@@ -88,7 +88,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatQuickMagic = false
 	s.combatVisual = nil
 	s.combatVisualElapsed = 0
-	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
+	s.combatMessage = s.catalog.Text("combat_started", "combat_started")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
 }
@@ -416,10 +416,10 @@ func (s *State) CombatViewLines() []string {
 		return nil
 	}
 	return []string{
-		fmt.Sprintf(s.catalog.Text("combat_view_name", "角色：%s"), fighter.Name),
-		fmt.Sprintf(s.catalog.Text("combat_view_hp", "生命：%d/%d"), fighter.HitPoints, fighter.MaxHitPoints),
-		fmt.Sprintf(s.catalog.Text("combat_view_ac", "護甲等級：%d"), fighter.ArmorClass),
-		fmt.Sprintf(s.catalog.Text("combat_view_attack", "攻擊加值：%d"), fighter.AttackBonus),
+		fmt.Sprintf(s.catalog.Text("combat_view_name", "combat_view_name"), fighter.Name),
+		fmt.Sprintf(s.catalog.Text("combat_view_hp", "combat_view_hp"), fighter.HitPoints, fighter.MaxHitPoints),
+		fmt.Sprintf(s.catalog.Text("combat_view_ac", "combat_view_ac"), fighter.ArmorClass),
+		fmt.Sprintf(s.catalog.Text("combat_view_attack", "combat_view_attack"), fighter.AttackBonus),
 	}
 }
 
@@ -526,16 +526,16 @@ func (s *State) CombatMoveWithTerrain(dx, dy int, terrain combat.MovementTerrain
 		s.combatMessage = formatAttackMessage(s.catalog, moveResult.Fighter, target, *moveResult.Attack)
 		s.requestAttackSounds([]combat.AttackResult{*moveResult.Attack})
 	} else {
-		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "%s 移動到 (%d,%d)。"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_moved", "combat_moved"), moveResult.Fighter.Name, moveResult.Fighter.CombatX, moveResult.Fighter.CombatY)
 		if len(moveResult.GuardAttacks) > 0 {
 			last := moveResult.GuardAttacks[len(moveResult.GuardAttacks)-1]
 			s.requestAttackSounds(moveResult.GuardAttacks)
-			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_guard_reaction", "踏入防守範圍，受到 %d 點傷害。"), last.Damage)
+			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_guard_reaction", "combat_guard_reaction"), last.Damage)
 		}
 		if len(moveResult.FreeAttacks) > 0 {
 			last := moveResult.FreeAttacks[len(moveResult.FreeAttacks)-1]
 			s.requestAttackSounds(moveResult.FreeAttacks)
-			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "移動時遭受免費反擊，受到 %d 點傷害。"), last.Damage)
+			s.combatMessage += " " + fmt.Sprintf(s.catalog.Text("combat_free_attack", "combat_free_attack"), last.Damage)
 		}
 	}
 	if s.battle.Status() != combat.StatusActive {
@@ -1182,8 +1182,8 @@ func (s *State) ConfirmCombatCast(terrain combat.LineTerrain) error {
 	s.combatDelayedTurns[s.combatTurnIndex] = true
 	s.combatTurnIndex++
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(
-		"combat_quick_magic_casting", "%s 開始吟唱%s。",
-	), caster.Name, s.catalog.Text(fmt.Sprintf("spell_cleric_%d", spellID), fmt.Sprintf("法術 0x%02X", spellID)))
+		"combat_quick_magic_casting", "combat_quick_magic_casting",
+	), caster.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 	return s.advanceCombatToParty()
 }
 
@@ -1362,11 +1362,11 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 	}
 	s.CancelCombatCast()
 	messageID := "combat_lightning_bolt"
-	fallback := "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害。"
+	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
 	if protectedCount > 0 {
 		messageID = "combat_lightning_bolt_protected"
-		fallback = "%s 施放閃電束，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。"
+		fallback = messageID
 		arguments = append(arguments, protectedCount)
 	}
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
@@ -1459,7 +1459,7 @@ func (s *State) combatCastStinkingCloud(terrain combat.LineTerrain) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(
-		s.catalog.Text("combat_stinking_cloud", "%s 製造一片惡臭雲霧，籠罩 %d 名目標。"),
+		s.catalog.Text("combat_stinking_cloud", "combat_stinking_cloud"),
 		caster.Name, len(result.Impacts),
 	)
 	if s.queueCombatVisual(combat.VisualEvent{
@@ -1533,7 +1533,7 @@ func (s *State) combatCastCloudkill(terrain combat.LineTerrain) error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(
-		s.catalog.Text("combat_cloudkill", "%s 製造一片致命毒雲，影響 %d 名目標。"),
+		s.catalog.Text("combat_cloudkill", "combat_cloudkill"),
 		caster.Name, len(result.Impacts),
 	)
 	if s.queueCombatVisual(combat.VisualEvent{
@@ -1622,7 +1622,7 @@ func (s *State) combatCastSleep() error {
 	}
 	s.CancelCombatCast()
 	s.combatMessage = fmt.Sprintf(
-		s.catalog.Text("combat_sleep", "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。"),
+		s.catalog.Text("combat_sleep", "combat_sleep"),
 		caster.Name, len(result.Impacts)-resisted, resisted,
 	)
 	if len(visualImpacts) != 0 && s.queueCombatVisual(combat.VisualEvent{
@@ -1707,11 +1707,11 @@ func (s *State) combatCastFireball() error {
 	}
 	s.CancelCombatCast()
 	messageID := "combat_fireball"
-	fallback := "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。"
+	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
 	if protectedCount > 0 {
 		messageID = "combat_fireball_protected"
-		fallback = "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。"
+		fallback = messageID
 		arguments = append(arguments, protectedCount)
 	}
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
@@ -1865,7 +1865,7 @@ func (s *State) combatCastProtectionFromGood() error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "%s 對 %s 施放防護善良，效果持續 %d 回合。"), caster.Name, target.Name, duration)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_good", "combat_protection_from_good"), caster.Name, target.Name, duration)
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -1916,7 +1916,7 @@ func (s *State) combatCastProtectionFromEvil() error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "%s 對 %s 施放防護邪惡，效果持續 %d 回合。"), caster.Name, target.Name, duration)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_protection_from_evil", "combat_protection_from_evil"), caster.Name, target.Name, duration)
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -1992,7 +1992,7 @@ func (s *State) combatCastCauseLightWounds() error {
 		return err
 	}
 	s.CancelCombatCast()
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cause_light_wounds", "%s 對 %s 施放造成輕傷，造成 %d 點傷害。"), caster.Name, target.Name, result.Damage)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cause_light_wounds", "combat_cause_light_wounds"), caster.Name, target.Name, result.Damage)
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if s.battle.Status() != combat.StatusActive {
@@ -2048,9 +2048,9 @@ func (s *State) combatCastCurse() error {
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
 	if result.Targets == 0 {
-		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse_immune", "%s 對 %s 施放詛咒，但目標與我方相鄰，法術未生效。"), caster.Name, target.Name)
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse_immune", "combat_curse_immune"), caster.Name, target.Name)
 	} else {
-		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse", "%s 對 %s 施放詛咒，敵方攻擊加值降低 1。"), caster.Name, target.Name)
+		s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_curse", "combat_curse"), caster.Name, target.Name)
 	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -2096,7 +2096,7 @@ func (s *State) combatCastBless() error {
 	s.CancelCombatCast()
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bless", "%s 施放祝福，隊伍攻擊加值提高 1。"), caster.Name)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bless", "combat_bless"), caster.Name)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -2164,7 +2164,7 @@ func (s *State) combatCastCureLightWounds() error {
 	s.CancelCombatCast()
 	s.requestSound(SoundCast)
 	s.requestSound(SoundSpellHit)
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "%s 對 %s 施放治療輕傷，恢復 %d HP。"), caster.Name, target.Name, result.Healing)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cure_light_wounds", "combat_cure_light_wounds"), caster.Name, target.Name, result.Healing)
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}
@@ -2243,13 +2243,13 @@ func (s *State) CombatDone() error {
 	if err := s.battle.ClearAction(attacker.ID); err != nil {
 		return err
 	}
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_done", "%s 結束回合。"), attacker.Name)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_done", "combat_done"), attacker.Name)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
 
 func (s *State) CombatMainMenuText() string {
-	return s.catalog.Text("combat_menu_main", "移動　查看　瞄準　使用　施法　快速　結束")
+	return s.catalog.Text("combat_menu_main", "combat_menu_main")
 }
 
 func (s *State) CombatHitPointsLabel() string {
@@ -2321,18 +2321,18 @@ func (s *State) CombatQuickStatus(hints []string) string {
 func (s *State) CombatDoneMenuText() string {
 	options := make([]string, 0, 6)
 	if s.CombatCanGuard() {
-		options = append(options, s.catalog.Text("combat_menu_guard", "防守"))
+		options = append(options, s.catalog.Text("combat_menu_guard", "combat_menu_guard"))
 	}
 	options = append(options,
-		s.catalog.Text("combat_menu_delay", "延後"),
-		s.catalog.Text("combat_menu_quit", "結束回合"),
+		s.catalog.Text("combat_menu_delay", "combat_menu_delay"),
+		s.catalog.Text("combat_menu_quit", "combat_menu_quit"),
 	)
 	if s.CombatCanBandage() {
-		options = append(options, s.catalog.Text("combat_menu_bandage", "包紮"))
+		options = append(options, s.catalog.Text("combat_menu_bandage", "combat_menu_bandage"))
 	}
 	options = append(options,
-		s.catalog.Text("combat_menu_speed", "速度"),
-		s.catalog.Text("combat_menu_exit", "返回"),
+		s.catalog.Text("combat_menu_speed", "combat_menu_speed"),
+		s.catalog.Text("combat_menu_exit", "combat_menu_exit"),
 	)
 	return strings.Join(options, "　")
 }
@@ -2355,7 +2355,7 @@ func (s *State) CombatGuard() error {
 	if err := s.battle.GuardAction(attacker.ID); err != nil {
 		return err
 	}
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_guard", "%s 進入防守。"), attacker.Name)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_guard", "combat_guard"), attacker.Name)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
@@ -2400,7 +2400,7 @@ func (s *State) CombatBandage() error {
 	if err := s.battle.ClearAction(attacker.ID); err != nil {
 		return err
 	}
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bandage", "%s 包紮了 %s；傷者已止血並陷入昏迷。"), attacker.Name, bandaged)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_bandage", "combat_bandage"), attacker.Name, bandaged)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
@@ -2436,7 +2436,7 @@ func (s *State) CombatQuickAll() error {
 	if err := s.battle.SetAllQuickFight(fighter.ID); err != nil {
 		return err
 	}
-	s.combatMessage = s.catalog.Text("combat_quick_all", "全隊進入快速戰鬥；按空白鍵可收回玩家角色控制。")
+	s.combatMessage = s.catalog.Text("combat_quick_all", "combat_quick_all")
 	return s.advanceCombatToParty()
 }
 
@@ -2448,9 +2448,9 @@ func (s *State) CombatToggleQuickMagic() (bool, error) {
 		return false, fmt.Errorf("combat is not active")
 	}
 	s.combatQuickMagic = !s.combatQuickMagic
-	messageID, fallback := "combat_quick_magic_off", "快速戰鬥施法已關閉。"
+	messageID, fallback := "combat_quick_magic_off", "combat_quick_magic_off"
 	if s.combatQuickMagic {
-		messageID, fallback = "combat_quick_magic_on", "快速戰鬥施法已開啟。"
+		messageID, fallback = "combat_quick_magic_on", "combat_quick_magic_on"
 	}
 	s.combatMessage = s.catalog.Text(messageID, fallback)
 	return s.combatQuickMagic, nil
@@ -2468,7 +2468,7 @@ func (s *State) CombatManualControl() int {
 		// Battle view. Keep the persistent party projection aligned so a combat
 		// continuation cannot silently re-enable Quick in the next encounter.
 		s.syncPartyFromBattle()
-		s.combatMessage = s.catalog.Text("combat_manual_control", "玩家角色恢復手動控制。")
+		s.combatMessage = s.catalog.Text("combat_manual_control", "combat_manual_control")
 	}
 	return changed
 }
@@ -2486,13 +2486,13 @@ func (s *State) CombatSpeedFaster() bool {
 func (s *State) CombatSpeedMenuText() string {
 	options := make([]string, 0, 3)
 	if s.combatSpeed < 9 {
-		options = append(options, s.catalog.Text("combat_speed_slower", "更慢"))
+		options = append(options, s.catalog.Text("combat_speed_slower", "combat_speed_slower"))
 	}
 	if s.combatSpeed > 0 {
-		options = append(options, s.catalog.Text("combat_speed_faster", "更快"))
+		options = append(options, s.catalog.Text("combat_speed_faster", "combat_speed_faster"))
 	}
-	options = append(options, s.catalog.Text("combat_menu_exit", "返回"))
-	return fmt.Sprintf(s.catalog.Text("combat_speed_value", "遊戲速度（%d）：%s"), s.combatSpeed, strings.Join(options, "　"))
+	options = append(options, s.catalog.Text("combat_menu_exit", "combat_menu_exit"))
+	return fmt.Sprintf(s.catalog.Text("combat_speed_value", "combat_speed_value"), s.combatSpeed, strings.Join(options, "　"))
 }
 
 // CombatDelay defers the active party fighter to delay tier one while keeping
@@ -2516,7 +2516,7 @@ func (s *State) CombatDelay() error {
 		s.combatDelayedTurns = make(map[int]bool)
 	}
 	s.combatDelayedTurns[s.combatTurnIndex] = true
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_delay", "%s 延後至本輪稍後行動。"), attacker.Name)
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_delay", "combat_delay"), attacker.Name)
 	s.combatTurnIndex++
 	return s.advanceCombatToParty()
 }
@@ -2626,7 +2626,7 @@ func (s *State) advanceCombatToParty() error {
 				return err
 			}
 			s.clearCombatActionFor(fighter.ID)
-			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_held", "%s 無法行動。"), fighter.Name)
+			s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_held", "combat_monster_held"), fighter.Name)
 			s.combatTurnIndex++
 			continue
 		}
@@ -2636,9 +2636,9 @@ func (s *State) advanceCombatToParty() error {
 				return err
 			}
 			if helpless {
-				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_helpless", "%s 因噁心而動彈不得。"), fighter.Name)
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_helpless", "combat_cloud_helpless"), fighter.Name)
 			} else {
-				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_coughing", "%s 不斷咳嗽，無法行動。"), fighter.Name)
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_cloud_coughing", "combat_cloud_coughing"), fighter.Name)
 			}
 			s.combatTurnIndex++
 			continue
@@ -2697,7 +2697,7 @@ func (s *State) advanceCombatToParty() error {
 		if hasMonsterMagicMissile(fighter) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)
 			if spellErr == nil {
-				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_magic_missile", "%s 施放魔法飛彈攻擊 %s，造成 %d 點傷害。"), fighter.Name, target.Name, result.Damage)
+				s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_monster_magic_missile", "combat_monster_magic_missile"), fighter.Name, target.Name, result.Damage)
 				if s.queueMagicMissileVisual(fighter, target, result.Missiles, result.TargetHP <= 0) {
 					return nil
 				}
@@ -2803,7 +2803,7 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.syncPartyFromBattle()
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_metadata_missing",
-				"快速戰鬥缺少法術資料，已收回玩家角色控制：%s",
+				"combat_quick_magic_metadata_missing",
 			), err.Error())
 			return true, nil
 		}
@@ -2837,8 +2837,8 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		s.combatDelayedTurns[s.combatTurnIndex] = true
 		s.combatTurnIndex++
 		s.combatMessage = fmt.Sprintf(s.catalog.Text(
-			"combat_quick_magic_casting", "%s 開始吟唱%s。",
-		), fighter.Name, s.catalog.Text(fmt.Sprintf("spell_cleric_%d", spellID), fmt.Sprintf("法術 0x%02X", spellID)))
+			"combat_quick_magic_casting", "combat_quick_magic_casting",
+		), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 		return true, nil
 	}
 	if spellID != MagicMissileSpellID {
@@ -2847,7 +2847,7 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.syncPartyFromBattle()
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_unsupported",
-				"快速戰鬥選到尚未接通的法術 0x%02X，已收回玩家角色控制。",
+				"combat_quick_magic_unsupported",
 			), spellID)
 			return true, nil
 		}
@@ -2931,7 +2931,7 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 	if point == origin || !s.combatLineTerrain(point.X, point.Y).Valid {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text(
 			"combat_monster_lightning_bolt_no_target",
-			"%s 放出閃電，但沒有找到可用目標。",
+			"combat_monster_lightning_bolt_no_target",
 		), caster.Name)
 		s.combatTurnIndex++
 		s.requestSound(SoundLightning)
@@ -2969,11 +2969,11 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 		})
 	}
 	messageID := "combat_monster_lightning_bolt"
-	fallback := "%s 放出閃電，命中 %d 次，共造成 %d 點傷害。"
+	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
 	if protectedCount > 0 {
 		messageID = "combat_monster_lightning_bolt_protected"
-		fallback = "%s 放出閃電，命中 %d 次，共造成 %d 點傷害；其中 %d 次遭元素防護抵消。"
+		fallback = messageID
 		arguments = append(arguments, protectedCount)
 	}
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(messageID, fallback), arguments...)
@@ -3142,7 +3142,7 @@ func (s *State) consumeCombatSpellInterruptions() string {
 			break
 		}
 		messages = append(messages, fmt.Sprintf(s.catalog.Text(
-			"combat_spell_interrupted", "%s 受傷，已無法繼續吟唱法術。",
+			"combat_spell_interrupted", "combat_spell_interrupted",
 		), name))
 	}
 	return strings.Join(messages, "\n")
@@ -3266,7 +3266,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			s.pendingPictureResult = &pending
 		}
 		if s.Message == "" {
-			s.Message = "事件畫面"
+			s.Message = s.catalog.Text("event_picture", "event_picture")
 		}
 		return true, nil
 	}
@@ -3294,7 +3294,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 		}
 		s.Mode = ModeEvent
 		s.OriginalEvent = "COMBAT"
-		s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+		s.Message = s.catalog.Text("combat_started", "combat_started")
 		return true, nil
 	}
 	if handled, err := s.applyECLProgram(result); handled || err != nil {
@@ -3385,7 +3385,7 @@ func (s *State) livingBySide(side combat.Side) []combat.Fighter {
 
 func formatAttackMessage(catalog interface{ Text(string, string) string }, attacker, target combat.Fighter, result combat.AttackResult) string {
 	if !result.Hit {
-		return fmt.Sprintf(catalog.Text("combat_miss", "%s 攻擊 %s 未命中。"), attacker.Name, target.Name)
+		return fmt.Sprintf(catalog.Text("combat_miss", "combat_miss"), attacker.Name, target.Name)
 	}
 	fireDamage, fireProtected := attackFireEffectSummary(result)
 	if fireProtected {
@@ -3394,7 +3394,7 @@ func formatAttackMessage(catalog interface{ Text(string, string) string }, attac
 	if fireDamage > 0 {
 		return fmt.Sprintf(catalog.Text("combat_hit_with_fire", ""), attacker.Name, target.Name, result.Damage, fireDamage)
 	}
-	return fmt.Sprintf(catalog.Text("combat_hit", "%s 攻擊 %s，造成 %d 點傷害。"), attacker.Name, target.Name, result.Damage)
+	return fmt.Sprintf(catalog.Text("combat_hit", "combat_hit"), attacker.Name, target.Name, result.Damage)
 }
 
 func formatMultiAttackMessage(catalog interface{ Text(string, string) string }, attacker combat.Fighter, results []combat.AttackResult) string {
@@ -3411,7 +3411,7 @@ func formatMultiAttackMessage(catalog interface{ Text(string, string) string }, 
 	if fireDamage > 0 || fireProtected {
 		return fmt.Sprintf(catalog.Text("combat_multi_attack_with_fire", ""), attacker.Name, len(results), hits, damage, fireDamage)
 	}
-	return fmt.Sprintf(catalog.Text("combat_multi_attack", "%s 連續攻擊 %d 次，命中 %d 次，造成 %d 點傷害。"), attacker.Name, len(results), hits, damage)
+	return fmt.Sprintf(catalog.Text("combat_multi_attack", "combat_multi_attack"), attacker.Name, len(results), hits, damage)
 }
 
 func attackFireEffectSummary(result combat.AttackResult) (damage int, protected bool) {
@@ -3428,10 +3428,10 @@ func attackFireEffectSummary(result combat.AttackResult) (damage int, protected 
 func combatResultMessage(catalog interface{ Text(string, string) string }, status combat.Status) string {
 	switch status {
 	case combat.StatusPartyWon:
-		return catalog.Text("combat_victory", "戰鬥勝利！")
+		return catalog.Text("combat_victory", "combat_victory")
 	case combat.StatusEnemyWon:
-		return catalog.Text("combat_defeat", "戰鬥失敗。")
+		return catalog.Text("combat_defeat", "combat_defeat")
 	default:
-		return catalog.Text("combat_draw", "戰鬥結束。")
+		return catalog.Text("combat_draw", "combat_draw")
 	}
 }

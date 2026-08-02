@@ -3790,3 +3790,13 @@ locale projection 與原 ECL 後果。source audit `164→157`，frontend 0、ru
 157、localization 0。READY spec 489 是權威；Docker／Xvfb／`--network none`
 正式全套 gate 已通過，marker `ROUND489_FORMAL_EXIT=0`；commit／push 與暫存
 清理待本輪收尾。
+
+2026-08-03 第四百九十輪清除 `combat_state.go` 戰鬥檢視、移動／防守、近戰、
+法術、快速戰鬥、怪物施法、PICTURE fallback 與勝敗等六十三筆中文副本。
+十二個舊 fallback 補成正式 locale key，未知 quick spell 改走既有
+`campSpellLabel`。held、敵方多段攻擊、怪物 Magic Missile 與角色檢視測試
+改載正式 catalog 並由 typed arguments 動態組期望全文。依使用者要求採風險
+分級：本輪沒有改規則／schema／renderer，斷網 Docker 跑
+`internal/combat + internal/game` 抽樣 gate，marker
+`ROUND490_SAMPLED_EXIT=0`。source audit `157→94`，frontend 0、runtime 94、
+localization 0。READY spec 490 是權威；commit／push 與暫存清理待本輪收尾。

@@ -328,12 +328,20 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 
 ## 8. 驗證與完成門檻
 
-開發中跑 focused tests。提交前至少：
+開發中跑 focused tests，提交採風險分級，不得把時間浪費在每輪重跑無關套件：
 
-- affected repo 的正式套件測試；CoAB 目前用
-  `go test ./cmd/... ./gamepack ./internal/...`，Ebiten package 在
-  Docker/Xvfb 驗證。`go test ./...` 會因 `scripts/` 兩個獨立 main 同目錄
-  的既存結構失敗，修正該 gate 前要如實分開報告。
+- 純 locale fallback／測試資料分層且沒有改 typed behavior、schema、save、ECL
+  continuation、renderer 或資產的低風險 milestone：跑受影響套件、audit、至少
+  一條代表性正常玩家路徑；marker 標為 `SAMPLED`，不可寫成全套 gate。
+- 規則、PRNG、ECL、save、engine schema、renderer、GUI、字型、動畫、音訊、
+  資產 pipeline 或跨平台程式碼有變更時，跑 affected repo 正式套件；CoAB 用
+  `go test ./cmd/... ./gamepack ./internal/...`，Ebiten package 在 Docker/Xvfb
+  驗證。
+- 連續低風險抽樣最多四個 milestone；第五個 milestone、重大整合點、README
+  截圖更新、release／完成聲明前必須重跑正式全套 gate。若抽樣曾失敗、碰到
+  非預期跨模組副作用或無法清楚界定影響範圍，立即升級全套，不等週期。
+- `go test ./...` 會因 `scripts/` 兩個獨立 main 同目錄的既存結構失敗，修正該
+  gate 前要如實分開報告。
 - `git diff --check`。
 - deterministic screenshot 或 runtime trace。
 - 真正玩家路徑驗證，而不只 direct-entry debug flag。
@@ -755,6 +763,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   MEEK／NICE／ABUSIVE` identity；測試不能複製中文策略陣列。法師塔與
   Myth Drannor 羅剎妖居所正常長路徑同時驗證 identity／locale projection，
   再追到原 ECL 後果。READY spec 489 是權威。
+- 第 490 輪清除 `combat_state.go` 戰鬥檢視、移動／防守、近戰、法術、快速
+  戰鬥、怪物施法與勝敗等六十三筆中文副本，baseline `157→94`。規則先產生
+  typed result，再選 stable message ID 與 runtime arguments；翻譯不得反推
+  protected／save／damage。依風險分級跑 `internal/combat + internal/game`
+  抽樣 gate，marker `ROUND490_SAMPLED_EXIT=0`。READY spec 490 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
