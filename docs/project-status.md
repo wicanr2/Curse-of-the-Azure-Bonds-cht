@@ -76,15 +76,17 @@ commit 內保存不可能自我引用的 hash。
   也已由正常玩家路徑驗證。摩安德之坑開場至愛麗雅絲／龍餌入隊、樓層切換
   與散塔林屍體的十四個 boundary 亦已資料化。摩貢祭壇至離坑的十八個
   boundary、兩場戰鬥、護手、祭壇財寶、手札 20、
-  離場阻擊與同伴離隊亦已完成同一正常玩家鏈驗證；最新 baseline 為 603。
+  離場阻擊與同伴離隊亦已完成同一正常玩家鏈驗證。
   散提爾堡城門至眼魔洞窟的既有資料規則已改用 stable-ID 驗收；德克薩姆與
   散提爾堡部隊兩戰現在實際跑完回合，不再以直接清除敵方 HP 冒充玩家戰鬥。
   提爾隘口、阿沙本福德、暗影隘口、立石群與 Essembra／Hap 路線十一個文字
   boundary 亦已資料化並由正常長路徑驗證。提爾佛頓公會至火刀據點入口另有
-  十四個 boundary 完成 stable-ID 資料化與真實 image continuation 回歸；最新
+  十四個 boundary 完成 stable-ID 資料化與真實 image continuation 回歸；
   block 4 另有十一個房間 boundary 完成資料化，並保留刀刃傷害、手札 9／26、
   辦公室財寶與五個完成旗標回歸。皇家馬車、監牢救援與下水道騎士另十五個
-  boundary 已由同一新遊戲 integration session 驗證；最新 baseline 為 553。
+  boundary 已由同一新遊戲 integration session 驗證。
+  高階祭司、火刀戰後四段夢境及返城禁止入城另七個 boundary 已資料化；玩家
+  回歸會實際走完阻擋與返回選單，最新 baseline 為 545。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

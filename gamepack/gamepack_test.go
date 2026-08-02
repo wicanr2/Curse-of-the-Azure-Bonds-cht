@@ -719,6 +719,35 @@ func TestTilvertonCarriageAndSewersStoryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestTilvertonBondDreamAndReturnBoundaryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"tilverton.high-priest-intro", []string{"I AM THE HIGH PRIEST", "TELL ME YOUR STORY"}},
+		{"tilverton.edge", []string{"YOU ARE AT THE EDGE OF TILVERTON"}},
+		{"tilverton.entry-barred", []string{"GUARDS BAR YOUR WAY"}},
+		{"bond-dream.first-night", []string{"FIRST NIGHT OUTSIDE THE CITY", "VIVID DREAM"}},
+		{"bond-dream.masters-taunt", []string{"FOUR FACES LEER DOWN", "WEAKEST OF YOUR MASTERS"}},
+		{"bond-dream.masters-prophecy", []string{"WIZARD IN RED", "PAWNS OF THE FLAMED ONE"}},
+		{"bond-dream.ends", []string{"FACES LAUGH WITH EVIL JOY", "AWAKE IN A COLD SWEAT"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

@@ -5617,13 +5617,6 @@ func (s *State) localizeECLText(texts []string) string {
 
 func localizeECLText(catalog locale.Catalog, texts []string) string {
 	joined := strings.Join(texts, " ")
-	if strings.Contains(joined, "I AM THE HIGH PRIEST") &&
-		strings.Contains(joined, "TELL ME YOUR STORY") {
-		return catalog.Text(
-			"ecl_high_priest_intro",
-			"「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」",
-		)
-	}
 	switch {
 	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
 		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
@@ -5636,37 +5629,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"tavern_tale_60",
 			"tavern_tale_60",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF TILVERTON"):
-		return catalog.Text(
-			"ecl_tilverton_edge",
-			"你們來到提爾佛頓城外。要進城，還是繼續旅程？",
-		)
-	case strings.Contains(joined, "GUARDS BAR YOUR WAY"):
-		return catalog.Text("ecl_tilverton_barred", "衛兵擋住你們的去路，不准你們再進入提爾佛頓。")
-	case strings.Contains(joined, "FIRST NIGHT OUTSIDE THE CITY") &&
-		strings.Contains(joined, "VIVID DREAM"):
-		return catalog.Text(
-			"ecl_first_bond_dream",
-			"離城後的第一夜，一股怪異倦意籠罩全隊，連守夜者也沉沉睡去。毫無預兆地，你們墜入一場無比鮮明的夢。",
-		)
-	case strings.Contains(joined, "FOUR FACES LEER DOWN") &&
-		strings.Contains(joined, "WEAKEST OF YOUR MASTERS"):
-		return catalog.Text(
-			"ecl_bond_masters_taunt",
-			"四張面孔鄙夷地俯視你們的勝利。陰沉不祥的聲音宣告：「你們第一位、也是最弱的主人已經倒下；如今你們已踏上奴役之路。」",
-		)
-	case strings.Contains(joined, "WIZARD IN RED") &&
-		strings.Contains(joined, "PAWNS OF THE FLAMED ONE"):
-		return catalog.Text(
-			"ecl_bond_masters_prophecy",
-			"「即使意志反抗，你們仍將依序服侍我們：紅袍法師、綠衣女子與黑暗之主。最後，當靈魂之火熄滅，你們將淪為燃燒者的棋子。」",
-		)
-	case strings.Contains(joined, "FACES LAUGH WITH EVIL JOY") &&
-		strings.Contains(joined, "AWAKE IN A COLD SWEAT"):
-		return catalog.Text(
-			"ecl_bond_dream_ends",
-			"四張面孔邪惡地狂笑。夢境逐漸消退，你們渾身冷汗地驚醒。",
 		)
 	}
 	localized := make([]string, 0, len(texts))
@@ -5725,8 +5687,6 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tavern_commotion_2", "ecl_tavern_commotion_2")
 	case "TO INVESTIGATE?":
 		return catalog.Text("ecl_tavern_commotion_3", "ecl_tavern_commotion_3")
-	case "'I AM THE HIGH PRIEST. YOU LOOK TROUBLED, MY CHILDREN. DO YOU WISH TO TELL ME YOUR STORY?'":
-		return catalog.Text("ecl_high_priest_intro", "「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」")
 	case "A PATROL ARRIVES.":
 		return catalog.Text("ecl_tilverton_patrol_arrives", "一支皇家巡邏隊抵達。")
 	case "ROYAL GUARDS TELL YOU TO MOVE ALONG.":

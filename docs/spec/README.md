@@ -426,3 +426,4 @@
 - [第四百七十一輪提爾佛頓公會至火刀據點文字資料化](./471-tilverton-guild-hideout-game-pack.md)（`READY`：十四條雙語規則、公會六段連續 pause、兩場實戰與 block 2→3→4 handoff）
 - [第四百七十二輪火刀據點房間事件資料化](./472-fire-knife-hideout-rooms-game-pack.md)（`READY`：十一條雙語規則、刀刃屏障、凝固房、辦公室財寶與五個一次性房間）
 - [第四百七十三輪皇家馬車與提爾佛頓下水道資料化](./473-tilverton-carriage-sewers-game-pack.md)（`READY`：十五條雙語規則、皇家衛兵與火刀實戰、監牢救援及騎士三段對話）
+- [第四百七十四輪青色印記夢境與提爾佛頓返城資料化](./474-bond-dream-tilverton-return-game-pack.md)（`READY`：七條雙語規則、高階祭司、四段夢境、禁止返城與世界旅行續跑）
