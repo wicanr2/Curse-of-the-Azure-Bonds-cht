@@ -122,3 +122,16 @@ ECL 或作品 adapter 應保存來源 tactic identity；locale 只負責名稱�
 投影，最後追到劇情文字、Journal／旗標、戰鬥或返回地圖。Generic「對方反應
 尚待 script」只可用於沒有 ECL continuation 的暫時 encounter，不能掩蓋作品
 原本存在的 tactic branch。
+
+## 戰鬥訊息與 typed result
+
+戰鬥文字往往同時含角色名、目標名、座標、傷害、命中次數、豁免與元素防護。
+正確邊界是規則先產生 typed result，再由 adapter 選 message ID 與參數；locale
+只決定語序與措辭。不可從「未受傷」「抵消」等中文反推 protected flag，也不可
+因多數法術共用一句格式就省略各自的 visual／sound／save 流程。
+
+未知法術名稱應走共用 spell label resolver；戰鬥、紮營、商店各自保存
+「法術 0xNN」會形成三份 fallback。測試要載入正式 catalog，使用實際 damage、
+fighter name 與 typed result 動態組期望全文。資料化文字的低風險 milestone 可
+抽樣既有近戰、移動、法術、快速戰鬥與勝敗路徑；但任何規則、PRNG、timeline、
+聲音、ECL continuation 或 renderer 變更仍須提升為完整相關 gate。

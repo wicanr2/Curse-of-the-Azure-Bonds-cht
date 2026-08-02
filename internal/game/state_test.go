@@ -1786,7 +1786,8 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 func TestHeldFighterClearsPendingActionWithoutConsumingSlotBeforePartyInput(t *testing.T) {
 	for _, kind := range []uint8{0x1F, 0x33, 0x34, 0x35} {
 		t.Run(fmt.Sprintf("effect_%02X", kind), func(t *testing.T) {
-			state := NewState(testCatalog())
+			catalog := combatVisualCatalog(t)
+			state := NewState(catalog)
 			state.partyRoster = party.Roster{{
 				ID: "held", Name: "受制牧師", Class: party.ClassCleric, Level: 1,
 				SpellSlots: []uint8{BlessSpellID},
@@ -1813,7 +1814,7 @@ func TestHeldFighterClearsPendingActionWithoutConsumingSlotBeforePartyInput(t *t
 			if !ok || active.ID != "hero" {
 				t.Fatalf("active=%+v ok=%v message=%q", active, ok, state.CombatMessage())
 			}
-			if state.CombatMessage() != "受制牧師 無法行動。" {
+			if state.CombatMessage() != fmt.Sprintf(catalog.Text("combat_monster_held", ""), "受制牧師") {
 				t.Fatalf("held message=%q", state.CombatMessage())
 			}
 			held, ok := state.fighter("held")
@@ -2498,7 +2499,8 @@ func TestCombatHUDContractUsesFormalLocaleStableIDs(t *testing.T) {
 }
 
 func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	partyFighters := []combat.Fighter{{
 		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
 		ArmorClass: 10, InitiativeBonus: 100,
@@ -2518,7 +2520,8 @@ func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
 	if state.Mode != ModeCombat || !ok || active.ID != "hero" {
 		t.Fatalf("enemy turn did not return to party: mode=%v message=%q", state.Mode, state.CombatMessage())
 	}
-	if active.HitPoints != 8 || !strings.Contains(state.CombatMessage(), "連續攻擊 2 次") {
+	wantMessage := fmt.Sprintf(catalog.Text("combat_multi_attack", ""), "敵方弓手", 2, 2, 2)
+	if active.HitPoints != 8 || state.CombatMessage() != wantMessage {
 		t.Fatalf("enemy multi-attack not applied: fighter=%+v message=%q", active, state.CombatMessage())
 	}
 }
@@ -2555,7 +2558,8 @@ func TestEnemyTurnSelectsAmongLivingPartyTargets(t *testing.T) {
 }
 
 func TestEnemyTurnCastsVerifiedMonsterMagicMissile(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	partyFighters := []combat.Fighter{{
 		ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
 		ArmorClass: 10, InitiativeBonus: 100,
@@ -2575,7 +2579,8 @@ func TestEnemyTurnCastsVerifiedMonsterMagicMissile(t *testing.T) {
 	if state.Mode != ModeCombat || !ok || active.ID != "hero" {
 		t.Fatalf("monster spell turn did not return to party: mode=%v active=%+v message=%q", state.Mode, active, state.CombatMessage())
 	}
-	if active.HitPoints < 5 || active.HitPoints > 8 || !strings.Contains(state.CombatMessage(), "魔法飛彈") {
+	wantMessage := fmt.Sprintf(catalog.Text("combat_monster_magic_missile", ""), "施法怪", "英雄", 10-active.HitPoints)
+	if active.HitPoints < 5 || active.HitPoints > 8 || state.CombatMessage() != wantMessage {
 		t.Fatalf("monster spell was not applied: active=%+v message=%q", active, state.CombatMessage())
 	}
 	for _, fighter := range state.CombatFighters() {
@@ -2772,7 +2777,8 @@ func TestStartCombatRebuildsOneBasedLegacyObjectIDsInCharacterListOrder(t *testi
 }
 
 func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 10, ArmorClass: 6, AttackBonus: 3, InitiativeBonus: 20}}
 	enemies := []combat.Fighter{{ID: "goblin", Name: "哥布林", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 10}}
 	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
@@ -2793,7 +2799,12 @@ func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
 		t.Fatalf("viewed=%+v ok=%v", viewed, ok)
 	}
 	lines := strings.Join(state.CombatViewLines(), " ")
-	for _, want := range []string{"角色：英雄", "生命：8/10", "護甲等級：6", "攻擊加值：3"} {
+	for _, want := range []string{
+		fmt.Sprintf(catalog.Text("combat_view_name", ""), "英雄"),
+		fmt.Sprintf(catalog.Text("combat_view_hp", ""), 8, 10),
+		fmt.Sprintf(catalog.Text("combat_view_ac", ""), 6),
+		fmt.Sprintf(catalog.Text("combat_view_attack", ""), 3),
+	} {
 		if !strings.Contains(lines, want) {
 			t.Fatalf("view lines=%q missing %q", lines, want)
 		}
