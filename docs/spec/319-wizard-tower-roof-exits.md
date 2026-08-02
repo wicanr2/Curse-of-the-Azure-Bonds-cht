@@ -42,3 +42,7 @@
   [`wizard-tower-roof-exit.png`](../screenshots/wizard-tower-roof-exit.png)：
   固定 640×480 logical canvas，24px Noto CJK 正文與選項，未使用 DOS 8px
   英文字格或平滑縮放。
+
+更新：第 451 輪已把屋頂出口與荒野第二層提示移入 CoAB JSON；兩層 menu
+tokens 與 NEWECL writes 仍由原 ECL 驅動。見
+[`spec 451`](451-wizard-tower-branches-json.md)。

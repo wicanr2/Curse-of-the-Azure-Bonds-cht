@@ -46,3 +46,7 @@
 - 正式 Ebiten／Xvfb direct-entry 使用 Area 5 CPIC namespace，產生
   [`wizard-tower-black-dragons.png`](../screenshots/wizard-tower-black-dragons.png)；
   640×480 畫面可見 14 隻原版黑龍小人與 compact 繁中戰鬥 HUD。
+
+更新：第 451 輪已把龍群定罪、龍屍、龍心詢問與酸液取心文字，以及
+`ATTACK DRAGONS` 選項移入 CoAB JSON；`4C61`、DAMAGE 與 `4C64` 仍由原 ECL
+continuation 驅動。見 [`spec 451`](451-wizard-tower-branches-json.md)。

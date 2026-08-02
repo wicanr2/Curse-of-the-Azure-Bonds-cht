@@ -467,6 +467,10 @@ Noto CJK 系統字型後擷取，不是離線 mock。後續戰鬥小人仍使用
   事件發生後手札直接加入遊戲內 `J` 選單，不必另查 PDF。State 與舊 locale
   的重複中文均已刪除，資料契約見
   [`spec 450`](docs/spec/450-wizard-tower-json-story-journal.md)。
+- 第 451 輪再把四項選擇後的龍群離去／定罪、召兵、安全屋頂、龍屍／龍心、
+  酸液與雙層屋頂出口十段文字，以及三個法師塔專用選項移入同一 game-pack。
+  因此法師塔從入口到離開的作品文字不再依賴 Go switch；詳見
+  [`spec 451`](docs/spec/451-wizard-tower-branches-json.md)。
 - 選擇「攻擊法師」後，黑龍離開人類紛爭；德拉坎德羅斯逃下樓並留下
   1 名伊弗利特、2 名黑暗精靈戰士與 1 名法師。四名守軍均取自 MON5 原始
   record／小人 sprite；勝利後原 ECL 續接「屋頂可安全休息」，再回塔頂探索。

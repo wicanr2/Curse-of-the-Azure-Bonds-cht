@@ -200,6 +200,16 @@ func TestWizardTowerDracandrosStoryAndJournalAreGamePackDriven(t *testing.T) {
 		{"wizard-tower.dracandros.attack-order", []string{"ATTACK THE DRAGON AS ELMINSTER TOLD YOU"}, "伊爾明斯特"},
 		{"wizard-tower.dragon-illusion", []string{"UNDER THE FORCE OF THE BONDS", "DRAGON WAS ONLY AN ILLUSION"}, "幻象"},
 		{"wizard-tower.dracandros.bond-fades", []string{"DRACANDROS' MUMBLED PHRASE", "BONDS TO", "FADE"}, "枷印逐漸消退"},
+		{"wizard-tower.dragons-depart", []string{"THIS IS A MATTER BETWEEN MEN", "WE LEAVE YOU TO YOUR SQUABBLES"}, "振翅飛離"},
+		{"wizard-tower.dracandros.calls-troops", []string{"TROOPS DEFEND ME", "DRACANDROS FLEES DOWN THE STAIRS"}, "逃下樓梯"},
+		{"wizard-tower.safe-roof", []string{"HOLD THE ROOF WELL ENOUGH", "REST SAFELY"}, "安全休息"},
+		{"wizard-tower.dragons-convinced", []string{"YOU HAVE CONVINCED US", "NO PLOT AGAINST", "DISPUTE WITH DRACANDROS"}, "沒有對付龍族的陰謀"},
+		{"wizard-tower.dragons-condemn", []string{"YOU ARE RIGHT DRACANDROS", "THEY CONDEMN THEMSELVES"}, "自行定罪"},
+		{"wizard-tower.take-dragon-heart", []string{"DRACANDROS ESCAPED DOWNSTAIRS", "DRAGON BODIES LIE STREWN ABOUT", "DO YOU TAKE ONE OF THEIR HEARTS"}, "取走其中一顆龍心"},
+		{"wizard-tower.dragon-bodies", []string{"DRACANDROS ESCAPED DOWNSTAIRS", "DRAGON BODIES LIE STREWN ABOUT"}, "屍體散落"},
+		{"wizard-tower.dragon-heart-acid", []string{"CUT INTO THE DRAGON", "SPRAY OF ACID", "EXTRACT THE HEART"}, "成功取出了龍心"},
+		{"wizard-tower.wilderness-exit", []string{"STOP BY HAPTOOTH VILLAGE", "DEPART THE AREA"}, "哈普圖斯村"},
+		{"wizard-tower.roof-exit", []string{"WAY DOWN TO THE CAVES", "SECRET PASSAGE", "DIRECTLY TO THE WILDERNESS"}, "直達荒野"},
 	}
 	for _, test := range tests {
 		t.Run(test.id, func(t *testing.T) {
@@ -219,6 +229,15 @@ func TestWizardTowerDracandrosStoryAndJournalAreGamePackDriven(t *testing.T) {
 		!strings.HasPrefix(journal.JournalPages[0], "手札條目 15（1/2）") ||
 		!strings.HasPrefix(journal.JournalPages[1], "手札條目 15（2/2）") {
 		t.Fatalf("journal result=%+v", journal)
+	}
+	for source, want := range map[string]string{
+		"ATTACK DRAGONS":          "攻擊龍群",
+		"ATTACK WIZARD":           "攻擊法師",
+		"PARLAY WITH THE DRAGONS": "與龍群交涉",
+	} {
+		if got, ok := pack.LocalizeOption(source, "zh-TW"); !ok || got != want {
+			t.Fatalf("option %q=%q,%v want %q", source, got, ok, want)
+		}
 	}
 	if got, want := sortedLocaleKeys(pack.Locales["zh-TW"]), sortedLocaleKeys(pack.Locales["en"]); !reflect.DeepEqual(got, want) {
 		t.Fatalf("zh-TW/en stable ID coverage differs:\nzh-TW=%v\nen=%v", got, want)

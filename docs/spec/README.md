@@ -401,3 +401,6 @@
 - [第四百四十三輪 active combat 存檔與 Sleep continuation](./443-active-combat-save-sleep-continuation.md)（`READY`：save v7 Battle／scheduler／PRNG／視覺起點 round-trip、自然到期與傷害喚醒；mid-animation fail-closed）
 - [第四百四十四輪紅網 campaign 戰鬥存檔 continuation](./444-red-web-campaign-combat-save-continuation.md)（`READY`：Standing Stone→GEO6→紅網第一戰 save v7、全新 State restore、蜘蛛／羅剎妖二戰與 `4CBF=1`）
 - [第四百四十五輪提爾雪雅臨時盟友戰鬥存檔](./445-tirsheya-temporary-ally-combat-save.md)（`READY`：真實 mixed-team 戰 save v7、QuickFight／TemporaryAlly restore、`4CD1=1` 與 roster 無污染）
+- [第四百四十九輪提朗瑟克斯終戰畫面與戰鬥鏡頭](./449-tyranthraxus-final-battle-camera-checkpoint.md)（`READY`：37 人終戰 checkpoint、主動角色正式鏡頭與 capture-only 首領觀察鏡頭）
+- [第四百五十輪法師塔主線與手札 15 JSON 化](./450-wizard-tower-json-story-journal.md)（`READY`：庭院至枷印消退、遊戲內手札兩頁與 Go／locale 複本移除）
+- [第四百五十一輪法師塔四分支與屋頂出口 JSON 化](./451-wizard-tower-branches-json.md)（`READY`：攻擊／交涉／龍心／屋頂出口十段文字與三個選項資料化）

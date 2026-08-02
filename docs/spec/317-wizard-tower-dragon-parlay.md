@@ -45,3 +45,7 @@
 - `-wizard-tower-parlay` 經正式 Ebiten／Xvfb 產生
   [`wizard-tower-dragon-parlay.png`](../screenshots/wizard-tower-dragon-parlay.png)；
   640×480 畫面同時顯示 nearest-neighbor 原版黑龍圖與 24px 繁中結果。
+
+更新：第 451 輪已把交涉成功／定罪文字及 `PARLAY WITH THE DRAGONS`
+選項移入 CoAB JSON；五態度 mapping 仍完全由 ECL operands 決定。見
+[`spec 451`](451-wizard-tower-branches-json.md)。

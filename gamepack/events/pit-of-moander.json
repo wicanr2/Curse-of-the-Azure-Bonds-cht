@@ -64,6 +64,19 @@
       ,"wizard-tower.dragon-illusion": "The bonds force the party to attack. The dragon dissolves into smoke: it was only an illusion."
       ,"wizard-tower.dracandros.journal-15": "Dracandros freezes the party again and addresses the dragons; the speech is recorded as Journal Entry 15."
       ,"wizard-tower.dracandros.bond-fades": "Dracandros mutters a phrase and one of the party's bonds fades."
+      ,"wizard-tower.dragons-depart": "The black dragons declare that this is a matter between humans, leave the party to its dispute, and fly away."
+      ,"wizard-tower.dracandros.calls-troops": "Dracandros calls for his troops to defend him, then flees down the stairs while the patrol attacks."
+      ,"wizard-tower.safe-roof": "The party can hold the roof well enough to rest safely here."
+      ,"wizard-tower.dragons-convinced": "The dragons accept that there is no plot against dragonkind and leave the party to settle its dispute with Dracandros."
+      ,"wizard-tower.dragons-condemn": "The dragons tell Dracandros that the party has condemned itself."
+      ,"wizard-tower.take-dragon-heart": "Dracandros escaped downstairs during the battle, and black dragon bodies lie across the roof. Will the party take one of their hearts?"
+      ,"wizard-tower.dragon-bodies": "Dracandros escaped downstairs during the battle, and black dragon bodies lie across the roof."
+      ,"wizard-tower.dragon-heart-acid": "The party cuts into a dragon and is sprayed with acid, but succeeds in extracting its heart."
+      ,"wizard-tower.wilderness-exit": "Will the party stop by Haptooth Village or depart the area?"
+      ,"wizard-tower.roof-exit": "A route leads down to the caves, and a secret passage leads directly to the wilderness. Which way will the party go?"
+      ,"wizard-tower.option.attack-dragons": "Attack Dragons"
+      ,"wizard-tower.option.attack-wizard": "Attack Wizard"
+      ,"wizard-tower.option.parlay-dragons": "Parlay with the Dragons"
       ,"journal.15.1": "Journal Entry 15 (1/2): Dracandros tells the dragons that Elminster sent the party to exterminate dragonkind in revenge for their raids. He offers the supposed assassins as proof of his goodwill and falsely identifies the marks on their arms as the sign of Tyranthraxus, who enslaves dragons."
       ,"journal.15.2": "Journal Entry 15 (2/2): One black dragon has seen similar glowing bonds control warriors and accuses Dracandros of being the true master. It threatens him with smoking acid and demands that he remove his bond before the dragons judge the party. Dracandros reluctantly speaks the phrase that makes his mark fade."
       ,"zhentil.hooded_offer": "A hooded woman suddenly appears. “Follow me. I can get you out of here! You are trapped here! My master can help you.”"
@@ -318,6 +331,19 @@
       ,"wizard-tower.dragon-illusion": "枷印強迫你們衝上前攻擊；那條龍挨了一擊便化為煙霧——它只是一道幻象！"
       ,"wizard-tower.dracandros.journal-15": "「站住，你們這些卑劣的屠龍者！」德拉坎德羅斯再次令你們動彈不得，轉身向龍群發表一番演說；內容已記入手札條目 15。"
       ,"wizard-tower.dracandros.bond-fades": "德拉坎德羅斯含糊念出一段咒語，你們身上的一枚枷印逐漸消退。"
+      ,"wizard-tower.dragons-depart": "黑龍說：「這是人類之間的爭端，我們把你們留給自己的內鬥。」龍群隨即振翅飛離。"
+      ,"wizard-tower.dracandros.calls-troops": "德拉坎德羅斯高喊：「部隊，保護我！」一支巡邏隊衝上前來，他則趁機逃下樓梯。"
+      ,"wizard-tower.safe-roof": "看來你們足以守住屋頂，可以在這裡安全休息。"
+      ,"wizard-tower.dragons-convinced": "黑龍說：「你們已使我們相信，這裡並沒有對付龍族的陰謀。我們現在離開，讓你們自行解決與德拉坎德羅斯的爭端。」"
+      ,"wizard-tower.dragons-condemn": "黑龍說：「德拉坎德羅斯，你說得對。他們已自行定罪。」"
+      ,"wizard-tower.take-dragon-heart": "戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。要取走其中一顆龍心嗎？"
+      ,"wizard-tower.dragon-bodies": "戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。"
+      ,"wizard-tower.dragon-heart-acid": "你們剖開黑龍、取出內臟時，被噴濺的酸液淋得滿身，但仍成功取出了龍心。"
+      ,"wizard-tower.wilderness-exit": "要先繞到哈普圖斯村，還是直接離開這一帶？"
+      ,"wizard-tower.roof-exit": "這條路可下到洞穴；你們也發現一條能直達荒野的祕道。要走哪一條路？"
+      ,"wizard-tower.option.attack-dragons": "攻擊龍群"
+      ,"wizard-tower.option.attack-wizard": "攻擊法師"
+      ,"wizard-tower.option.parlay-dragons": "與龍群交涉"
       ,"journal.15.1": "手札條目 15（1/2）：德拉坎德羅斯對龍群宣稱，你們是伊爾明斯特為報復龍群飛襲、意圖消滅所有龍族的棋子；他願把這些「刺客」交給龍群，以證明自己的善意。他又指著你們手臂上的印記，誣稱那是奴役巨龍的泰蘭索斯之標誌。"
       ,"journal.15.2": "手札條目 15（2/2）：一隻黑龍並不相信。牠見過相似的發光枷印控制戰士，認定真正操縱你們的人是德拉坎德羅斯，要求先解除枷印再審判你們。黑龍以冒煙的酸液威嚇他；德拉坎德羅斯只得念咒，讓自己那枚枷印逐漸消失。"
       ,"zhentil.hooded_offer": "一名兜帽女子忽然現身。「跟我來，我能帶你們離開！你們已被困在這裡；我的主人能幫助你們。」"
@@ -981,6 +1007,21 @@
   ],
   "option_rules": [
     {
+      "id": "wizard-tower.option.attack-dragons",
+      "source": "ATTACK DRAGONS",
+      "message_id": "wizard-tower.option.attack-dragons"
+    },
+    {
+      "id": "wizard-tower.option.attack-wizard",
+      "source": "ATTACK WIZARD",
+      "message_id": "wizard-tower.option.attack-wizard"
+    },
+    {
+      "id": "wizard-tower.option.parlay-dragons",
+      "source": "PARLAY WITH THE DRAGONS",
+      "message_id": "wizard-tower.option.parlay-dragons"
+    },
+    {
       "id": "myth-drannor.grave.loot",
       "source": "LOOT GRAVE",
       "message_id": "myth-drannor.grave.loot"
@@ -1142,6 +1183,56 @@
       "id": "wizard-tower.dracandros.bond-fades",
       "all_contains": ["DRACANDROS' MUMBLED PHRASE", "BONDS TO", "FADE"],
       "message_id": "wizard-tower.dracandros.bond-fades"
+    },
+    {
+      "id": "wizard-tower.dragons-depart",
+      "all_contains": ["THIS IS A MATTER BETWEEN MEN", "WE LEAVE YOU TO YOUR SQUABBLES"],
+      "message_id": "wizard-tower.dragons-depart"
+    },
+    {
+      "id": "wizard-tower.dracandros.calls-troops",
+      "all_contains": ["TROOPS DEFEND ME", "DRACANDROS FLEES DOWN THE STAIRS"],
+      "message_id": "wizard-tower.dracandros.calls-troops"
+    },
+    {
+      "id": "wizard-tower.safe-roof",
+      "all_contains": ["HOLD THE ROOF WELL ENOUGH", "REST SAFELY"],
+      "message_id": "wizard-tower.safe-roof"
+    },
+    {
+      "id": "wizard-tower.dragons-convinced",
+      "all_contains": ["YOU HAVE CONVINCED US", "NO PLOT AGAINST", "DISPUTE WITH DRACANDROS"],
+      "message_id": "wizard-tower.dragons-convinced"
+    },
+    {
+      "id": "wizard-tower.dragons-condemn",
+      "all_contains": ["YOU ARE RIGHT DRACANDROS", "THEY CONDEMN THEMSELVES"],
+      "message_id": "wizard-tower.dragons-condemn"
+    },
+    {
+      "id": "wizard-tower.take-dragon-heart",
+      "all_contains": ["DRACANDROS ESCAPED DOWNSTAIRS", "DRAGON BODIES LIE STREWN ABOUT", "DO YOU TAKE ONE OF THEIR HEARTS"],
+      "message_id": "wizard-tower.take-dragon-heart"
+    },
+    {
+      "id": "wizard-tower.dragon-bodies",
+      "all_contains": ["DRACANDROS ESCAPED DOWNSTAIRS", "DRAGON BODIES LIE STREWN ABOUT"],
+      "message_id": "wizard-tower.dragon-bodies"
+    },
+    {
+      "id": "wizard-tower.dragon-heart-acid",
+      "all_contains": ["CUT INTO THE DRAGON", "SPRAY OF ACID", "EXTRACT THE HEART"],
+      "message_id": "wizard-tower.dragon-heart-acid"
+    },
+    {
+      "id": "wizard-tower.wilderness-exit",
+      "all_contains": ["STOP BY HAPTOOTH VILLAGE", "DEPART THE AREA"],
+      "message_id": "wizard-tower.wilderness-exit"
+    },
+    {
+      "id": "wizard-tower.roof-exit",
+      "all_contains": ["WAY DOWN TO THE CAVES", "SECRET PASSAGE", "DIRECTLY TO THE WILDERNESS"],
+      "message_id": "wizard-tower.roof-exit"
     },
     {
       "id": "myth-drannor.tyranthraxus-reveal",
