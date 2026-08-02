@@ -888,3 +888,14 @@ stable message 規則取代原有的旗標、出生點或 continuation。
 手札 stable ID、戰後續跑、側門座標與下一區入口。這也適合 Wasteland 或
 《冬之魔》一類資料驅動 RPG 的據點／關卡遷移；共用引擎只保存流程能力，作品
 名稱、劇情、座標與敵人仍留在各自 game pack。
+
+### 2026-08-02：同伴相遇文字與 roster mutation 必須同鏈驗收
+
+Gold Box 的臨時同伴事件常依序跨過 PICTURE、encounter action、parlay tactic、
+故事選項、手札、加入確認與 `LOAD CHARACTER／ADD NPC`。文字 matcher 命中並不
+證明同伴已正確加入；反過來，直接注入 NPC fixture 也無法證明玩家能走完對話。
+
+摩安德之坑提供可沿用的 contract：從正常 GEO terrain 進入，逐一核對 stable
+message、原始 choices 與 continuation，再驗證 roster 中的 script identity、
+class／race 與 combat projection。後續上／下樓與一次性場景仍要使用同一 session
+回歸，才能發現加入事件錯誤地重播、NPC 遺失或 block handoff 被提前清除。

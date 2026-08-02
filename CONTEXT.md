@@ -3549,3 +3549,14 @@ dockside bar 舊分支只有 locale key，故五事件只下降四次。READY sp
 156→143，frontend 135、runtime 360 不變。READY spec 466 是權威；正式 gate、
 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND466_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十七輪完成摩安德之坑開場與同伴事件資料化。垂死牧師的
+兩個 PRESS boundaries、崩塌陷阱、死亡、ambience、愛麗雅絲／龍餌相遇、枷印
+反應、自我介紹、加入提示／完成、上下樓梯及散塔林屍體／文書共十四條 source
+rules 與 en／zh-TW messages 已移入 game-pack；十二段 Go text fallback、五段
+line fallback 與四筆 UI locale 複本移除。Yulash 起始正常長路徑驗證
+`NEWECL 11h`、GEO 出生點、手札 3、ALIAS／DRAGONBAIT stable roster identity、
+ECL `11h↔12h` 樓層 handoff、屍體一次性消耗與手札 46 提示。source audit
+638→621：localization 143→126，frontend 135、runtime 360 不變。READY spec
+467 是權威；Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND467_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

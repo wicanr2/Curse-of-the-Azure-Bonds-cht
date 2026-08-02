@@ -73,7 +73,8 @@ commit 內保存不可能自我引用的 hash。
   也已資料化；其餘劇情文字 fallback 尚未完成資料分離。Hillsfar 的 trail
   伏擊、edge、places、dockside bar 與 Red Plumes
   挑釁，以及 Yulash 的 trail、城牆、檢查哨、指揮官與巨坑入口十二個事件，
-  也已由正常玩家路徑驗證；最新 baseline 為 638。
+  也已由正常玩家路徑驗證。摩安德之坑開場至愛麗雅絲／龍餌入隊、樓層切換
+  與散塔林屍體的十四個 boundary 亦已資料化；最新 baseline 為 621。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

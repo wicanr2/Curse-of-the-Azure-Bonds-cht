@@ -499,6 +499,42 @@ func TestYulashStoryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestPitOpeningAndCompanionsAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"pit.opening-dead-cultists", []string{"YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR", "JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH"}},
+		{"pit.opening-chosen", []string{"THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC", "TRIUMPH. HE HOWLS", "THE CHOSEN ONES"}},
+		{"pit.trapped", []string{"THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK", "YOU ARE TRAPPED IN THE PIT OF MOANDER"}},
+		{"pit.cleric-dies", []string{"THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE", "COUGHS BLOOD AND DIES AT YOUR FEET"}},
+		{"pit.ambience", []string{"YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE", "SMELL OF BAKED BREAD"}},
+		{"pit.alias-dragonbait-meet", []string{"YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING LIZARD MAN", "VIOLETS, BRIMSTONE AND HONEYSUCKLE"}},
+		{"pit.alias-bonded-reaction", []string{"THE FEMALE FIGHTER GASPS", "THEY'RE BONDED", "WHAT DO YOU DO"}},
+		{"pit.alias-dragonbait-introduction", []string{"THE FIGHTER INTRODUCES HERSELF AS ALIAS", "HER COMPANION AS DRAGONBAIT", "SHE ASKS YOU TO TELL YOUR STORY"}},
+		{"pit.alias-dragonbait-join", []string{"DO YOU WANT THEM TO JOIN YOU"}},
+		{"pit.alias-dragonbait-joined", []string{"ALIAS AND DRAGONBAIT JOIN YOUR PARTY", "TREASURE THAT MOGION", "KEEPS BEHIND HER ALTAR"}},
+		{"pit.stairs-down", []string{"YOU SEE STAIRS LEADING DOWN TO THE SOUTH", "DO YOU WISH TO GO DOWN"}},
+		{"pit.stairs-up", []string{"YOU SEE STAIRS GOING UP IN THE NORTH WALL", "DO YOU WISH TO GO UP"}},
+		{"pit.dead-zhentrim", []string{"MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER", "WHAT DO YOU DO"}},
+		{"pit.zhentrim-scroll", []string{"GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

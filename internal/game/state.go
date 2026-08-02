@@ -5625,81 +5625,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
-	case strings.Contains(joined, "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK") &&
-		strings.Contains(joined, "YOU ARE TRAPPED IN THE PIT OF MOANDER"):
-		return catalog.Text(
-			"ecl_pit_of_moander_trapped",
-			"牧師猛力擊打一塊突出的岩石；你們身後的洞頂隨即崩塌。隊伍已被困在摩安德之坑裡。",
-		)
-	case strings.Contains(joined, "THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE") &&
-		strings.Contains(joined, "COUGHS BLOOD AND DIES AT YOUR FEET"):
-		return catalog.Text(
-			"ecl_pit_of_moander_cleric_dies",
-			"牧師最後得意地瞪了你們一眼，隨即咳出鮮血，倒斃在眾人腳邊。",
-		)
-	case strings.Contains(joined, "YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE") &&
-		strings.Contains(joined, "SMELL OF BAKED BREAD"):
-		return catalog.Text(
-			"ecl_pit_of_moander_ambience",
-			"遠處傳來戰鬥聲，空氣中隱約飄著烤麵包的氣味。",
-		)
-	case strings.Contains(joined, "YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING LIZARD MAN") &&
-		strings.Contains(joined, "VIOLETS, BRIMSTONE AND HONEYSUCKLE"):
-		return catalog.Text(
-			"ecl_pit_alias_dragonbait_meet",
-			"你們看見一名女戰士與一名外貌奇特的蜥蜴人；紫羅蘭、硫磺與忍冬的強烈氣味接連飄來。",
-		)
-	case strings.Contains(joined, "THE FEMALE FIGHTER GASPS") &&
-		strings.Contains(joined, "THEY'RE BONDED") &&
-		strings.Contains(joined, "WHAT DO YOU DO"):
-		return catalog.Text(
-			"ecl_pit_alias_bonded_reaction",
-			"女戰士倒抽一口氣：「他們也被枷印控制了！」你們要怎麼做？",
-		)
-	case strings.Contains(joined, "THE FIGHTER INTRODUCES HERSELF AS ALIAS") &&
-		strings.Contains(joined, "HER COMPANION AS DRAGONBAIT") &&
-		strings.Contains(joined, "SHE ASKS YOU TO TELL YOUR STORY"):
-		return catalog.Text(
-			"ecl_pit_alias_dragonbait_introduction",
-			"女戰士自稱愛麗雅絲，並介紹她的同伴龍餌。她說自己過去也有與你們相似的刺青，請眾人說明來歷。",
-		)
-	case strings.Contains(joined, "DO YOU WANT THEM TO JOIN YOU"):
-		return catalog.Text(
-			"ecl_pit_alias_dragonbait_join",
-			"要讓愛麗雅絲與龍餌加入隊伍嗎？",
-		)
-	case strings.Contains(joined, "ALIAS AND DRAGONBAIT JOIN YOUR PARTY") &&
-		strings.Contains(joined, "TREASURE THAT MOGION") &&
-		strings.Contains(joined, "KEEPS BEHIND HER ALTAR"):
-		return catalog.Text(
-			"ecl_pit_alias_dragonbait_joined",
-			"愛麗雅絲與龍餌加入隊伍。愛麗雅絲挖苦地補充：「另外，摩貢大祭司藏在祭壇後方的財寶也值得處理。」",
-		)
-	case strings.Contains(joined, "YOU SEE STAIRS LEADING DOWN TO THE SOUTH") &&
-		strings.Contains(joined, "DO YOU WISH TO GO DOWN"):
-		return catalog.Text(
-			"ecl_pit_stairs_down",
-			"你們看見一道通往南方下層的階梯。要往下走嗎？",
-		)
-	case strings.Contains(joined, "YOU SEE STAIRS GOING UP IN THE NORTH WALL") &&
-		strings.Contains(joined, "DO YOU WISH TO GO UP"):
-		return catalog.Text(
-			"ecl_pit_stairs_up",
-			"北側牆邊有一道向上的階梯。要回到上層嗎？",
-		)
-	case strings.Contains(joined, "MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER") &&
-		strings.Contains(joined, "WHAT DO YOU DO"):
-		return catalog.Text(
-			"ecl_pit_dead_zhentrim",
-			"你們看見一名死去的散塔林戰士，遺體已殘破不堪。要怎麼做？",
-		)
-	case strings.Contains(joined, "GRASPED IN THE FIGHTER'S FIST") &&
-		strings.Contains(joined, "SEAL OF ZHENTIL") &&
-		strings.Contains(joined, "JOURNAL ENTRY 46"):
-		return catalog.Text(
-			"ecl_pit_zhentrim_scroll",
-			"戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。",
-		)
 	case strings.Contains(joined, "YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY") &&
 		strings.Contains(joined, "CULTISTS CHANTING IN A LOW DRONE"):
 		return catalog.Text(
@@ -6214,16 +6139,6 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_yulash_sound", "尤拉什。聲音")
 	case "OF BATTLE RINGS OUT FROM INSIDE":
 		return catalog.Text("ecl_battle_rings", "從裡面傳來戰鬥聲")
-	case "YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR.":
-		return catalog.Text("ecl_cultists_dead", "你們看見三名邪教徒倒臥在地板上。")
-	case "JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH.":
-		return catalog.Text("ecl_wounded_cleric", "就在前方，另一名牧師喘著氣。")
-	case "THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC":
-		return catalog.Text("ecl_cleric_fanatic", "受傷牧師的雙眼因狂熱而睜大。")
-	case "TRIUMPH. HE HOWLS,":
-		return catalog.Text("ecl_cleric_howl", "露出勝利神情，接著嚎叫：")
-	case "'THE CHOSEN ONES!'":
-		return catalog.Text("ecl_cleric_chosen_ones", "「被選中之人！」")
 	case "YOU FIND A WAR BLASTED SECTION OF THE CITY.":
 		return catalog.Text("ecl_war_blasted_city", "你們找到城市中一片遭戰火摧毀的區域。")
 	case "YOU DISCOVER A SMALL MAGIC SHOP.":
