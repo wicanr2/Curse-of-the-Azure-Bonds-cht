@@ -59,8 +59,10 @@ overlay 22 local `2547h..267Ch`：
 5. `2624h..2634h` 只有 `remaining >= cost` 才扣除；失敗則與上述排除分支
    一樣在 `2636h..2647h` 把該 target pointer 清零。迴圈仍繼續掃下一筆。
 
-`CASTSPELL／GETSPELLTARGETS` 共用路徑在專屬 handler 前建立候選陣列；handler
-結束後再進共用 effect writer。local `0F62h..1118h` 會讀 spell record
+`CASTSPELL` 會經目前場景安裝的 `DOSPELLTARGETING` function pointer，在專屬
+handler 前建立候選陣列；戰鬥中的正確 consumer 是 overlay 13 `225Fh`，不是
+預設／非戰鬥的 `GETSPELLTARGETS 112Ch`。這項第 432 輪舊斷言已由 spec 433
+supersede。handler 結束後再進共用 effect writer。local `0F62h..1118h` 會讀 spell record
 `+0Ah` 並呼叫 effect-list writer，但它同時包含 save、magic resistance、
 動畫與 duration 分支。本輪尚未把這些分支對 `15h` 的所有實際參數閉合，故
 不能把「effect kind 已知」擴大成完整睡眠術結算。
@@ -89,9 +91,9 @@ overlay 22 local `2547h..267Ch`：
 
 ## 下一步
 
-1. 反組 `GETSPELLTARGETS 112Ch` 對 record `15h` 使用的 range／area／team
-   分支，閉合原始候選順序與格點遮蔽。
-2. 追共用 writer 對 `15h` 的 save、magic resistance、duration 與 raw
+1. 沿 spec 433 已定位的 overlay 31 `SCAN`，以 runtime 關閉幾何欄位、
+   large footprint 與 tie order。
+2. 追共用 writer 對 `15h` 的 magic resistance 與 raw
    `35h` record 參數。
 3. 完成後才把全域 `15h` 加入 game-pack metadata、手動／Quick delayed
    cast、效果寫入、held scheduler、繁中訊息、動畫與正常玩家路徑驗收。

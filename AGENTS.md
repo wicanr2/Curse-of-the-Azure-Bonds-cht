@@ -578,6 +578,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   capacity filter。engine 只加入此 primitive；目標幾何、豁免、duration、
   raw effect writer 參數與動畫／音效仍未閉合，不得因已有 package 就把
   Sleep 列為完整可施放法術。READY spec 432 是權威。
+- 第 433 輪訂正第 432 輪的 targeting 位址空間：預設／非戰鬥
+  `0117:0034h` 是 overlay 22 `GETSPELLTARGETS 112Ch`；戰鬥初始化會改寫成
+  `00B8:007Ah`，typed resolver 落到 overlay 13 `225Fh`。Sleep 的
+  `AOECOMBAT=09h` 經 overlay 31 `SCAN 08D8h` 建立並排序三 byte候選表，
+  handler 保留該順序交給 HD 容量篩選。`SAVERESULT=0` 證明無豁免，duration
+  exact 為 `5×caster level`。`SCAN` 幾何欄位、large footprint／tie order、
+  magic resistance、完整 `PUTEFFECT`、解除與演出仍未閉合；不得提前開放
+  Sleep。READY spec 433 是權威，spec 432 的舊 targeting 敘述已 supersede。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
