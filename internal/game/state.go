@@ -4158,17 +4158,17 @@ func (s *State) enterShopMenu() {
 	s.shopAppraiseMenu = false
 	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_menu_prompt", "商店選單")
+	s.Prompt = s.catalog.Text("shop_menu_prompt", "shop_menu_prompt")
 	s.Choices = []string{
-		s.catalog.Text("shop_buy", "購買"),
-		s.catalog.Text("shop_view", "查看"),
-		s.catalog.Text("shop_take", "取出金幣"),
-		s.catalog.Text("shop_pool", "集中金幣"),
-		s.catalog.Text("shop_share", "分配金幣"),
-		s.catalog.Text("shop_appraise", "估價"),
-		s.catalog.Text("shop_sell", "販售"),
-		s.catalog.Text("shop_identify", "鑑定"),
-		s.catalog.Text("shop_exit", "離開商店"),
+		s.catalog.Text("shop_buy", "shop_buy"),
+		s.catalog.Text("shop_view", "shop_view"),
+		s.catalog.Text("shop_take", "shop_take"),
+		s.catalog.Text("shop_pool", "shop_pool"),
+		s.catalog.Text("shop_share", "shop_share"),
+		s.catalog.Text("shop_appraise", "shop_appraise"),
+		s.catalog.Text("shop_sell", "shop_sell"),
+		s.catalog.Text("shop_identify", "shop_identify"),
+		s.catalog.Text("shop_exit", "shop_exit"),
 	}
 	s.currentOriginalChoices = []string{"BUY", "VIEW", "TAKE", "POOL", "SHARE", "APPRAISE", "SELL", "ID", "EXIT"}
 	s.Message = ""
@@ -4183,9 +4183,9 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "APPRAISE"
 		if err != nil {
-			s.Message = "估價失敗：" + err.Error()
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_failed", "shop_appraise_failed: %s"), err)
 		} else {
-			s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_done", "店家支付 %d GP。"), offer)
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_appraise_done", "shop_appraise_done"), offer)
 		}
 		return nil
 	}
@@ -4195,7 +4195,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "APPRAISE"
-		s.Message = s.catalog.Text("shop_appraise_rejected", "你拒絕了報價，財寶仍由隊伍保留。")
+		s.Message = s.catalog.Text("shop_appraise_rejected", "shop_appraise_rejected")
 		return nil
 	}
 	if originalChoice == "SHOP_APPRAISE_CANCEL" {
@@ -4263,7 +4263,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModePlace
 			s.OriginalEvent = "SELL"
-			s.Message = "販售失敗：" + err.Error()
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_sell_failed", "shop_sell_failed: %s"), err)
 			return nil
 		}
 		s.shopSellMenu = false
@@ -4271,7 +4271,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "SELL"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_sale_done", "已販售%s，取得 %d GP。"), monster.ChineseName(item), item.Value)
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_sale_done", "shop_sale_done"), monster.ChineseName(item), item.Value)
 		return nil
 	}
 	if originalChoice == "SHOP_SELL_EXIT" {
@@ -4299,9 +4299,9 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "ID"
 		if identifyErr != nil {
-			s.Message = "鑑定失敗：" + identifyErr.Error()
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_failed", "shop_identify_failed: %s"), identifyErr)
 		} else {
-			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_done", "已支付 %d GP 鑑定%s；完整辨識資料仍待載入。"), party.ShopIdentifyFee, monster.ChineseName(item))
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_done", "shop_identify_done"), party.ShopIdentifyFee, monster.ChineseName(item))
 		}
 		return nil
 	}
@@ -4320,7 +4320,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModePlace
 			s.OriginalEvent = "TAKE"
-			s.Message = "取出金幣失敗：" + err.Error()
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_take_failed", "shop_take_failed: %s"), err)
 			return nil
 		}
 		s.shopTakeMenu = false
@@ -4328,7 +4328,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "TAKE"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_take_done", "已取出 %d GP 給%s。"), value, s.partyRoster[s.shopTakeCharacter].Name)
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_take_done", "shop_take_done"), value, s.partyRoster[s.shopTakeCharacter].Name)
 		return nil
 	}
 	if originalChoice == "SHOP_TAKE_EXIT" {
@@ -4356,7 +4356,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "VIEW"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_view_summary", "%s　HP %d/%d　金幣 %d　裝備：%s"), character.Name, character.HitPoints, character.MaxHitPoints, character.Gold, strings.Join(equipment, "、"))
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_view_summary", "shop_view_summary"), character.Name, character.HitPoints, character.MaxHitPoints, character.Gold, strings.Join(equipment, s.catalog.Text("list_separator", ", ")))
 		return nil
 	}
 	if strings.HasPrefix(originalChoice, "SHOP_OFFER_") {
@@ -4369,7 +4369,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModePlace
 			s.OriginalEvent = "BUY"
-			s.Message = "購買失敗：" + err.Error()
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_failed", "shop_purchase_failed: %s"), err)
 			return nil
 		}
 		item := s.shopOffers[value].Item
@@ -4377,7 +4377,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "BUY"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_done", "已購買%s。"), monster.ChineseName(item))
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_done", "shop_purchase_done"), monster.ChineseName(item))
 		return nil
 	}
 	if originalChoice == "SHOP_EXIT" {
@@ -4415,48 +4415,48 @@ func (s *State) shopActionMessage(originalChoice string) string {
 	switch originalChoice {
 	case "BUY":
 		if len(s.shopOffers) == 0 {
-			return s.catalog.Text("shop_buy_unavailable", "商店庫存尚未載入。")
+			return s.catalog.Text("shop_buy_unavailable", "shop_buy_unavailable")
 		}
 		s.enterShopStockMenu()
 		return ""
 	case "VIEW":
 		if len(s.partyRoster) == 0 {
-			return s.catalog.Text("shop_view_unavailable", "目前沒有可查看的角色。")
+			return s.catalog.Text("shop_view_unavailable", "shop_view_unavailable")
 		}
 		s.enterShopViewMenu()
 		return ""
 	case "TAKE":
 		if len(s.partyRoster) == 0 || s.moneyPool == 0 {
-			return s.catalog.Text("shop_take_unavailable", "目前沒有可提取的 party 金幣。")
+			return s.catalog.Text("shop_take_unavailable", "shop_take_unavailable")
 		}
 		s.enterShopTakeMenu()
 		return ""
 	case "POOL":
 		if err := s.PoolPartyGold(); err != nil {
-			return "集中金幣失敗：" + err.Error()
+			return fmt.Sprintf(s.catalog.Text("shop_pool_failed", "shop_pool_failed: %s"), err)
 		}
-		return fmt.Sprintf(s.catalog.Text("shop_pool_done", "已集中金幣：%d GP。"), s.moneyPool)
+		return fmt.Sprintf(s.catalog.Text("shop_pool_done", "shop_pool_done"), s.moneyPool)
 	case "SHARE":
 		before := s.moneyPool
 		if err := s.ShareGold(); err != nil {
-			return "分配金幣失敗：" + err.Error()
+			return fmt.Sprintf(s.catalog.Text("shop_share_failed", "shop_share_failed: %s"), err)
 		}
-		return fmt.Sprintf(s.catalog.Text("shop_share_done", "已分配金幣：%d GP。"), before)
+		return fmt.Sprintf(s.catalog.Text("shop_share_done", "shop_share_done"), before)
 	case "APPRAISE":
 		if len(s.partyRoster) == 0 {
-			return s.catalog.Text("shop_appraise_unavailable", "目前沒有可估價的角色。")
+			return s.catalog.Text("shop_appraise_unavailable", "shop_appraise_unavailable")
 		}
 		s.enterShopAppraiseCharacterMenu()
 		return ""
 	case "SELL":
 		if len(s.partyRoster) == 0 {
-			return s.catalog.Text("shop_sell_unavailable", "目前沒有可販售物品的角色。")
+			return s.catalog.Text("shop_sell_unavailable", "shop_sell_unavailable")
 		}
 		s.enterShopSellCharacterMenu()
 		return ""
 	case "ID":
 		if len(s.partyRoster) == 0 {
-			return s.catalog.Text("shop_identify_unavailable", "目前沒有可鑑定物品的角色。")
+			return s.catalog.Text("shop_identify_unavailable", "shop_identify_unavailable")
 		}
 		s.enterShopIdentifyCharacterMenu()
 		return ""
@@ -4469,15 +4469,15 @@ func (s *State) enterShopStockMenu() {
 	s.shopMenu = true
 	s.shopStockMenu = true
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_stock_prompt", "選擇要購買的物品")
+	s.Prompt = s.catalog.Text("shop_stock_prompt", "shop_stock_prompt")
 	s.Choices = make([]string, 0, len(s.shopOffers)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.shopOffers)+1)
 	for index, offer := range s.shopOffers {
 		name := monster.ChineseName(offer.Item)
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d GP）", name, offer.Price))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_item_price", "shop_item_price"), name, offer.Price))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_OFFER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_exit", "離開商店商品列表"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_exit", "shop_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_EXIT")
 	s.Message = ""
 }
@@ -4487,14 +4487,14 @@ func (s *State) enterShopViewMenu() {
 	s.shopStockMenu = false
 	s.shopViewMenu = true
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_view_prompt", "選擇要查看的角色")
+	s.Prompt = s.catalog.Text("shop_view_prompt", "shop_view_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d，%d GP）", character.Name, character.HitPoints, character.MaxHitPoints, character.Gold))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_view_character", "shop_view_character"), character.Name, character.HitPoints, character.MaxHitPoints, character.Gold))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_VIEW_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_view_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_view_exit", "shop_view_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_VIEW_EXIT")
 	s.Message = ""
 }
@@ -4506,14 +4506,14 @@ func (s *State) enterShopTakeMenu() {
 	s.shopTakeMenu = true
 	s.shopTakeAmountMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_take_prompt", "選擇要取出金幣的角色")
+	s.Prompt = s.catalog.Text("shop_take_prompt", "shop_take_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（目前 %d GP）", character.Name, character.Gold))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_take_character", "shop_take_character"), character.Name, character.Gold))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "shop_take_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
 	s.Message = ""
 }
@@ -4521,7 +4521,7 @@ func (s *State) enterShopTakeMenu() {
 func (s *State) enterShopTakeAmountMenu() {
 	s.shopTakeAmountMenu = true
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_take_amount_prompt", "選擇要取出的金額")
+	s.Prompt = s.catalog.Text("shop_take_amount_prompt", "shop_take_amount_prompt")
 	amounts := make([]uint32, 0, 4)
 	for _, amount := range []uint32{1, 10, 100, s.moneyPool} {
 		if amount == 0 || amount > s.moneyPool {
@@ -4541,10 +4541,10 @@ func (s *State) enterShopTakeAmountMenu() {
 	s.Choices = make([]string, 0, len(amounts)+1)
 	s.currentOriginalChoices = make([]string, 0, len(amounts)+1)
 	for _, amount := range amounts {
-		s.Choices = append(s.Choices, fmt.Sprintf("%d GP", amount))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_gold_amount", "shop_gold_amount"), amount))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_AMOUNT_"+strconv.FormatUint(uint64(amount), 10))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_take_exit", "shop_take_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_TAKE_EXIT")
 	s.Message = ""
 }
@@ -4559,14 +4559,14 @@ func (s *State) enterShopSellCharacterMenu() {
 	s.shopSellItemMenu = false
 	s.shopAppraiseMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_sell_prompt", "選擇要販售物品的角色")
+	s.Prompt = s.catalog.Text("shop_sell_prompt", "shop_sell_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d 件物品）", character.Name, len(character.Equipment)))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_character_items", "shop_character_items"), character.Name, len(character.Equipment)))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "shop_sell_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_EXIT")
 	s.Message = ""
 }
@@ -4576,14 +4576,14 @@ func (s *State) enterShopSellItemMenu() {
 	s.shopSellItemMenu = true
 	s.Mode = ModePlace
 	character := s.partyRoster[s.shopSellCharacter]
-	s.Prompt = fmt.Sprintf(s.catalog.Text("shop_sell_item_prompt", "選擇%s要販售的物品"), character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("shop_sell_item_prompt", "shop_sell_item_prompt"), character.Name)
 	s.Choices = make([]string, 0, len(character.Equipment)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
 	for index, item := range character.Equipment {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d GP）", monster.ChineseName(item), item.Value))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_item_price", "shop_item_price"), monster.ChineseName(item), item.Value))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_ITEM_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "shop_sell_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_EXIT")
 	s.Message = ""
 }
@@ -4600,14 +4600,14 @@ func (s *State) enterShopIdentifyCharacterMenu() {
 	s.shopIdentifyItemMenu = false
 	s.shopAppraiseMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_identify_prompt", "選擇要鑑定物品的角色")
+	s.Prompt = s.catalog.Text("shop_identify_prompt", "shop_identify_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d 件物品，%d GP）", character.Name, len(character.Equipment), character.Gold))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_identify_character", "shop_identify_character"), character.Name, len(character.Equipment), character.Gold))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_IDENTIFY_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_identify_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_identify_exit", "shop_identify_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_IDENTIFY_EXIT")
 	s.Message = ""
 }
@@ -4617,14 +4617,14 @@ func (s *State) enterShopIdentifyItemMenu() {
 	s.shopIdentifyItemMenu = true
 	s.Mode = ModePlace
 	character := s.partyRoster[s.shopIdentifyCharacter]
-	s.Prompt = fmt.Sprintf(s.catalog.Text("shop_identify_item_prompt", "選擇%s要鑑定的物品"), character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("shop_identify_item_prompt", "shop_identify_item_prompt"), character.Name)
 	s.Choices = make([]string, 0, len(character.Equipment)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
 	for index, item := range character.Equipment {
 		s.Choices = append(s.Choices, monster.ChineseName(item))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_IDENTIFY_ITEM_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_identify_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_identify_exit", "shop_identify_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_IDENTIFY_EXIT")
 	s.Message = ""
 }
@@ -4638,14 +4638,14 @@ func (s *State) enterShopAppraiseCharacterMenu() {
 	s.shopAppraiseMenu = true
 	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_appraise_prompt", "選擇要估價的角色")
+	s.Prompt = s.catalog.Text("shop_appraise_prompt", "shop_appraise_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（寶石 %d、珠寶 %d）", character.Name, character.Gems, character.Jewelry))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_appraise_character", "shop_appraise_character"), character.Name, character.Gems, character.Jewelry))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "shop_appraise_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_EXIT")
 	s.Message = ""
 }
@@ -4655,26 +4655,26 @@ func (s *State) enterShopAppraiseTreasureMenu() {
 	s.shopAppraiseConfirm = false
 	s.Mode = ModePlace
 	character := s.partyRoster[s.shopAppraiseCharacter]
-	s.Prompt = s.catalog.Text("shop_appraise_treasure_prompt", "選擇要估價的財寶")
+	s.Prompt = s.catalog.Text("shop_appraise_treasure_prompt", "shop_appraise_treasure_prompt")
 	s.Choices = make([]string, 0, 3)
 	s.currentOriginalChoices = make([]string, 0, 3)
 	if character.Gems > 0 {
-		label := "寶石（報價未載入）"
+		label := s.catalog.Text("shop_gems_offer_unavailable", "shop_gems_offer_unavailable")
 		if s.appraisalOffers.GemsReady {
-			label = fmt.Sprintf("寶石（報價 %d GP）", s.appraisalOffers.Gems)
+			label = fmt.Sprintf(s.catalog.Text("shop_gems_offer", "shop_gems_offer"), s.appraisalOffers.Gems)
 		}
 		s.Choices = append(s.Choices, label)
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_TREASURE_1")
 	}
 	if character.Jewelry > 0 {
-		label := "珠寶（報價未載入）"
+		label := s.catalog.Text("shop_jewelry_offer_unavailable", "shop_jewelry_offer_unavailable")
 		if s.appraisalOffers.JewelryReady {
-			label = fmt.Sprintf("珠寶（報價 %d GP）", s.appraisalOffers.Jewelry)
+			label = fmt.Sprintf(s.catalog.Text("shop_jewelry_offer", "shop_jewelry_offer"), s.appraisalOffers.Jewelry)
 		}
 		s.Choices = append(s.Choices, label)
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_TREASURE_2")
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "返回商店"))
+	s.Choices = append(s.Choices, s.catalog.Text("shop_appraise_exit", "shop_appraise_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_APPRAISE_EXIT")
 	s.Message = ""
 }
@@ -4683,11 +4683,11 @@ func (s *State) enterShopAppraiseConfirmMenu() {
 	s.shopAppraiseMenu = true
 	s.shopAppraiseConfirm = true
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("shop_appraise_confirm_prompt", "接受店家的報價嗎？")
+	s.Prompt = s.catalog.Text("shop_appraise_confirm_prompt", "shop_appraise_confirm_prompt")
 	s.Choices = []string{
-		s.catalog.Text("shop_appraise_accept", "接受"),
-		s.catalog.Text("shop_appraise_reject", "拒絕"),
-		s.catalog.Text("shop_appraise_cancel", "返回"),
+		s.catalog.Text("shop_appraise_accept", "shop_appraise_accept"),
+		s.catalog.Text("shop_appraise_reject", "shop_appraise_reject"),
+		s.catalog.Text("shop_appraise_cancel", "shop_appraise_cancel"),
 	}
 	s.currentOriginalChoices = []string{"SHOP_APPRAISE_ACCEPT", "SHOP_APPRAISE_REJECT", "SHOP_APPRAISE_CANCEL"}
 	s.Message = ""
@@ -5238,7 +5238,7 @@ func (s *State) EnterPlaces() error {
 	s.Prompt = s.placePrompt()
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
-		s.catalog.Text("store", "商店"),
+		s.catalog.Text("store", "store"),
 		s.catalog.Text("bar", "bar"),
 		s.catalog.Text("leave", "離開"),
 	}
@@ -5441,7 +5441,7 @@ func (s *State) EnterPlacesFromEvent() error {
 	s.Prompt = s.placePrompt()
 	s.Choices = []string{
 		s.catalog.Text("inn", "客棧"),
-		s.catalog.Text("store", "商店"),
+		s.catalog.Text("store", "store"),
 		s.catalog.Text("bar", "bar"),
 		s.catalog.Text("leave", "離開"),
 	}
@@ -5620,7 +5620,7 @@ func localizeOption(catalog locale.Catalog, option string) string {
 	case "INN":
 		return catalog.Text("inn", "客棧")
 	case "STORE":
-		return catalog.Text("store", "商店")
+		return catalog.Text("store", "store")
 	case "BAR":
 		return catalog.Text("bar", "bar")
 	case "HALL":
@@ -6908,7 +6908,7 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 	case "31. 'PERHAPS THE SAGE WILL HELP. YOU CAN GET WEAPONS FROM":
 		return catalog.Text("ecl_tilverton_inn_sage", "第 31 條。「或許賢者能幫上忙；你們也可以到")
 	case "THE SHOP ACROSS THE WAY.'":
-		return catalog.Text("ecl_tilverton_inn_shop", "對街的商店取得武器。」")
+		return catalog.Text("ecl_tilverton_inn_shop", "ecl_tilverton_inn_shop")
 	case "'I AM THE SAGE FILANI. YOU ARE HERE ABOUT THE SIGILS,":
 		return catalog.Text("ecl_filani_intro", "「我是賢者菲拉妮。你們是為了那些印記而來，")
 	case "CORRECT?'":
@@ -6982,7 +6982,7 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 	case "YOU FIND A WAR BLASTED SECTION OF THE CITY.":
 		return catalog.Text("ecl_war_blasted_city", "你們找到城市中一片遭戰火摧毀的區域。")
 	case "YOU DISCOVER A SMALL MAGIC SHOP.":
-		return catalog.Text("ecl_small_magic_shop", "你們發現一間小型魔法商店。")
+		return catalog.Text("ecl_small_magic_shop", "ecl_small_magic_shop")
 	default:
 		return line
 	}

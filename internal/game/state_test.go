@@ -1143,16 +1143,38 @@ func TestTavernCatalogCoversEveryDisplayedStableID(t *testing.T) {
 	}
 }
 
+func TestShopCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	keys := []string{
+		"shop_menu_prompt", "shop_buy", "shop_view", "shop_take", "shop_pool",
+		"shop_share", "shop_appraise", "shop_sell", "shop_identify", "shop_exit",
+		"shop_buy_unavailable", "shop_stock_prompt", "shop_purchase_done",
+		"shop_purchase_failed", "shop_sell_prompt", "shop_sell_item_prompt",
+		"shop_sell_exit", "shop_sale_done", "shop_sell_failed", "shop_sell_unavailable",
+		"shop_identify_prompt", "shop_identify_item_prompt", "shop_identify_exit",
+		"shop_identify_done", "shop_identify_failed", "shop_identify_unavailable",
+		"shop_view_prompt", "shop_view_exit", "shop_view_summary", "shop_view_unavailable",
+		"shop_take_prompt", "shop_take_amount_prompt", "shop_take_exit", "shop_take_done",
+		"shop_take_failed", "shop_take_unavailable", "shop_appraise_prompt",
+		"shop_appraise_treasure_prompt", "shop_appraise_exit", "shop_appraise_done",
+		"shop_appraise_failed", "shop_appraise_confirm_prompt", "shop_appraise_accept",
+		"shop_appraise_reject", "shop_appraise_cancel", "shop_appraise_rejected",
+		"shop_appraise_unavailable", "shop_pool_done", "shop_pool_failed",
+		"shop_share_done", "shop_share_failed", "shop_item_price", "shop_view_character",
+		"shop_take_character", "shop_gold_amount", "shop_character_items",
+		"shop_identify_character", "shop_appraise_character", "shop_gems_offer_unavailable",
+		"shop_gems_offer", "shop_jewelry_offer_unavailable", "shop_jewelry_offer",
+		"list_separator",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Fatalf("shop locale ID %q is absent", key)
+		}
+	}
+}
+
 func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
-	catalog := testCatalog()
-	catalog.Strings["shop_menu_prompt"] = "商店選單"
-	catalog.Strings["shop_buy"] = "購買"
-	catalog.Strings["shop_view"] = "查看"
-	catalog.Strings["shop_take"] = "取出金幣"
-	catalog.Strings["shop_pool"] = "集中金幣"
-	catalog.Strings["shop_share"] = "分配金幣"
-	catalog.Strings["shop_appraise"] = "估價"
-	catalog.Strings["shop_exit"] = "離開商店"
+	catalog := trainingTestCatalog(t)
 	state := NewState(catalog)
 	state.Mode = ModePlace
 	state.Location = LocationShadowdale
@@ -1162,7 +1184,8 @@ func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 9 || state.Choices[0] != "購買" {
+	if state.Mode != ModePlace || !state.shopMenu || len(state.Choices) != 9 ||
+		state.Choices[0] != catalog.Text("shop_buy", "") {
 		t.Fatalf("shop menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -1174,19 +1197,20 @@ func TestStoreOpensLocalizedShopMenuAndReturnsToPlaces(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopMenu || state.Choices[0] != "購買" {
+	if state.Mode != ModePlace || !state.shopMenu || state.Choices[0] != catalog.Text("shop_buy", "") {
 		t.Fatalf("shop continuation state=%#v", state)
 	}
 	if err := state.Select(8); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || state.shopMenu || len(state.Choices) != 4 || state.Choices[1] != "商店" {
+	if state.Mode != ModePlace || state.shopMenu || len(state.Choices) != 4 ||
+		state.Choices[1] != catalog.Text("store", "") {
 		t.Fatalf("shop exit state=%#v", state)
 	}
 }
 
 func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{
 		{ID: "one", Name: "一號", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1, Gold: 100, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10}},
 		{ID: "two", Name: "二號", Race: party.RaceHuman, Class: party.ClassCleric, Level: 1, Gold: 50, Abilities: party.Abilities{Strength: 10, Intelligence: 10, Wisdom: 16, Dexterity: 10, Constitution: 14, Charisma: 10}},
@@ -1210,7 +1234,7 @@ func TestShopMoneyPoolAndInjectedOffer(t *testing.T) {
 }
 
 func TestShopPurchaseUsesTypedCoinsAndDoesNotDepleteStock(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Platinum: 2, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
@@ -1303,7 +1327,8 @@ func TestTempleCatalogCoversEveryDisplayedStableID(t *testing.T) {
 }
 
 func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Gold: 150, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
@@ -1321,7 +1346,8 @@ func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopStockMenu || len(state.Choices) != 2 || state.Choices[0] != "長劍（100 GP）" {
+	wantOffer := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.ChineseName(state.shopOffers[0].Item), 100)
+	if state.Mode != ModePlace || !state.shopStockMenu || len(state.Choices) != 2 || state.Choices[0] != wantOffer {
 		t.Fatalf("stock menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -1339,7 +1365,8 @@ func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 }
 
 func TestShopSellListsItemsAndUsesDocumentedValue(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Equipment: []monster.ItemRecord{{Type: 36, Name: "長劍", Value: 75}},
@@ -1359,7 +1386,8 @@ func TestShopSellListsItemsAndUsesDocumentedValue(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopSellItemMenu || state.Choices[0] != "長劍（75 GP）" {
+	wantItem := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.ChineseName(state.partyRoster[0].Equipment[0]), 75)
+	if state.Mode != ModePlace || !state.shopSellItemMenu || state.Choices[0] != wantItem {
 		t.Fatalf("sell item menu=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -1381,7 +1409,8 @@ func TestShopSellListsItemsAndUsesDocumentedValue(t *testing.T) {
 }
 
 func TestShopIdentifyChargesDocumentedFeeWithoutInventingResult(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Gold: 250,
 		Equipment: []monster.ItemRecord{{Type: 99, Name: "神秘戒指", HiddenNameFlags: 3}},
@@ -1401,19 +1430,24 @@ func TestShopIdentifyChargesDocumentedFeeWithoutInventingResult(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopIdentifyItemMenu || state.Choices[0] != "魔法師戒指" {
+	if state.Mode != ModePlace || !state.shopIdentifyItemMenu ||
+		state.Choices[0] != monster.ChineseName(state.partyRoster[0].Equipment[0]) {
 		t.Fatalf("identify item menu=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "ID" || state.partyRoster[0].Gold != 50 || state.partyRoster[0].Equipment[0].HiddenNameFlags != 3 || !strings.Contains(state.Message, "完整辨識資料仍待載入") {
+	wantMessage := fmt.Sprintf(catalog.Text("shop_identify_done", ""),
+		party.ShopIdentifyFee, monster.ChineseName(state.partyRoster[0].Equipment[0]))
+	if state.Mode != ModeEvent || state.OriginalEvent != "ID" || state.partyRoster[0].Gold != 50 ||
+		state.partyRoster[0].Equipment[0].HiddenNameFlags != 3 || state.Message != wantMessage {
 		t.Fatalf("identify result state=%#v", state)
 	}
 }
 
 func TestShopViewListsCharactersAndEquipment(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Gold: 40, HitPoints: 8, MaxHitPoints: 10,
@@ -1429,13 +1463,16 @@ func TestShopViewListsCharactersAndEquipment(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopViewMenu || len(state.Choices) != 2 || state.Choices[0] != "英雄（HP 8/10，40 GP）" {
+	wantCharacter := fmt.Sprintf(catalog.Text("shop_view_character", ""), state.partyRoster[0].Name, 8, 10, 40)
+	if state.Mode != ModePlace || !state.shopViewMenu || len(state.Choices) != 2 || state.Choices[0] != wantCharacter {
 		t.Fatalf("view menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "VIEW" || !strings.Contains(state.Message, "長劍") || !strings.Contains(state.Message, "HP 8/10") {
+	wantSummary := fmt.Sprintf(catalog.Text("shop_view_summary", ""), state.partyRoster[0].Name,
+		8, 10, 40, monster.ChineseName(state.partyRoster[0].Equipment[0]))
+	if state.Mode != ModeEvent || state.OriginalEvent != "VIEW" || state.Message != wantSummary {
 		t.Fatalf("view summary state=%#v", state)
 	}
 	if err := state.Continue(); err != nil {
@@ -1447,7 +1484,8 @@ func TestShopViewListsCharactersAndEquipment(t *testing.T) {
 }
 
 func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
@@ -1462,13 +1500,16 @@ func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopTakeMenu || len(state.Choices) != 2 || state.Choices[0] != "英雄（目前 0 GP）" {
+	wantCharacter := fmt.Sprintf(catalog.Text("shop_take_character", ""), state.partyRoster[0].Name, 0)
+	if state.Mode != ModePlace || !state.shopTakeMenu || len(state.Choices) != 2 || state.Choices[0] != wantCharacter {
 		t.Fatalf("take character menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopTakeAmountMenu || state.Choices[0] != "1 GP" || state.Choices[len(state.Choices)-1] != "返回商店" {
+	if state.Mode != ModePlace || !state.shopTakeAmountMenu ||
+		state.Choices[0] != fmt.Sprintf(catalog.Text("shop_gold_amount", ""), 1) ||
+		state.Choices[len(state.Choices)-1] != catalog.Text("shop_take_exit", "") {
 		t.Fatalf("take amount menu state=%#v", state)
 	}
 	if err := state.Select(2); err != nil { // 100 GP
@@ -1486,7 +1527,8 @@ func TestShopTakeSelectsCharacterAndAmount(t *testing.T) {
 }
 
 func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Gems:      3,
@@ -1502,19 +1544,22 @@ func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
 	if err := state.Select(5); err != nil { // APPRAISE
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopAppraiseMenu || state.Choices[0] != "英雄（寶石 3、珠寶 0）" {
+	wantCharacter := fmt.Sprintf(catalog.Text("shop_appraise_character", ""), state.partyRoster[0].Name, 3, 0)
+	if state.Mode != ModePlace || !state.shopAppraiseMenu || state.Choices[0] != wantCharacter {
 		t.Fatalf("appraise character menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || len(state.Choices) != 2 || state.Choices[0] != "寶石（報價 75 GP）" {
+	if state.Mode != ModePlace || len(state.Choices) != 2 ||
+		state.Choices[0] != fmt.Sprintf(catalog.Text("shop_gems_offer", ""), 75) {
 		t.Fatalf("appraise treasure menu state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModePlace || !state.shopAppraiseConfirm || len(state.Choices) != 3 || state.Choices[0] != "接受" {
+	if state.Mode != ModePlace || !state.shopAppraiseConfirm || len(state.Choices) != 3 ||
+		state.Choices[0] != catalog.Text("shop_appraise_accept", "") {
 		t.Fatalf("appraise confirmation state=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
@@ -1532,7 +1577,7 @@ func TestShopAppraiseGemsUsesInjectedOffer(t *testing.T) {
 }
 
 func TestShopAppraiseRejectKeepsTreasure(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
 		Gems:      3,
