@@ -36,6 +36,12 @@
     "new_game": "新的遊戲",
     "load_game": "載入遊戲",
     "save_game": "儲存遊戲",
+    "save_succeeded": "隊伍已儲存：%s",
+    "save_failed": "儲存失敗：%s",
+    "load_succeeded": "隊伍已載入：%s",
+    "load_failed": "載入失敗：%s",
+    "audio_restore_failed": "音訊續跑失敗：%s",
+    "file_operation_unknown": "未知檔案操作：%s",
     "quit": "離開",
     "press_enter": "請按 Enter 繼續",
     "you_are_at_the_edge_of": "你已抵達邊界。",
@@ -129,6 +135,8 @@
     "bar_tale_6": "商人冒險者 Akabar 已南下調查 Hap，另有一支女冒險者隊伍同行。",
     "press_button": "請按任意鍵或 Enter 繼續",
     "ecl_string_input_prompt": "請輸入回答",
+    "ecl_string_input_value": "回答：%s_",
+    "ecl_string_input_help": "Enter：確認　Backspace：刪除　最多 %d 字",
     "enter_it": "走進去",
     "speak": "說話",
     "hack_it": "砍斷它",
@@ -519,6 +527,8 @@
 	,"alter_rename_exit": "返回修改選單"
 	,"alter_rename_edit_prompt": "輸入 %s 的新名稱"
 	,"alter_rename_done": "%s 已改名為 %s。"
+	,"rename_input_value": "名稱：%s_"
+	,"rename_input_help": "Enter：確認　Backspace：刪除　Esc：取消"
 	,"pics_monsters_off_message": "遭遇圖片已關閉。"
 	,"item_unknown": "未翻譯物品(0x%02X)"
 	,"item_plus": "+%d %s"

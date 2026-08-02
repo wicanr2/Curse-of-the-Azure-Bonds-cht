@@ -621,19 +621,19 @@ func (a *app) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyF5) {
 		if err := a.saveCurrentGame(); err != nil {
-			a.state.Message = "儲存失敗：" + err.Error()
+			a.state.Message = a.state.FileOperationMessage(game.FileOperationSave, game.FileOperationFailed, err.Error())
 		} else {
-			a.state.Message = "隊伍已儲存：" + a.saveTarget()
+			a.state.Message = a.state.FileOperationMessage(game.FileOperationSave, game.FileOperationSucceeded, a.saveTarget())
 		}
 		return nil
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
 		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
-			a.state.Message = "載入失敗：" + err.Error()
+			a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationFailed, err.Error())
 		} else if err := a.restoreAudioSnapshot(); err != nil {
-			a.state.Message = "音訊續跑失敗：" + err.Error()
+			a.state.Message = a.state.FileOperationMessage(game.FileOperationAudioRestore, game.FileOperationFailed, err.Error())
 		} else {
-			a.state.Message = "隊伍已載入：" + a.partyPath
+			a.state.Message = a.state.FileOperationMessage(game.FileOperationLoad, game.FileOperationSucceeded, a.partyPath)
 			a.choiceCursor = 0
 		}
 		return nil
@@ -647,9 +647,9 @@ func (a *app) Update() error {
 			err := a.state.Select(a.choiceCursor)
 			if a.state.ConsumeSaveRequest() {
 				if saveErr := a.saveCurrentGame(); saveErr != nil {
-					a.state.Message = "儲存失敗：" + saveErr.Error()
+					a.state.Message = a.state.FileOperationMessage(game.FileOperationSave, game.FileOperationFailed, saveErr.Error())
 				} else {
-					a.state.Message = "隊伍已儲存：" + a.saveTarget()
+					a.state.Message = a.state.FileOperationMessage(game.FileOperationSave, game.FileOperationSucceeded, a.saveTarget())
 				}
 			}
 			if a.state.Mode == game.ModeWilderness {
@@ -1181,8 +1181,8 @@ func (a *app) Draw(screen *ebiten.Image) {
 	if a.state.RenameEditing() {
 		text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
 		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
-		text.Draw(screen, "名稱："+a.state.RenameText()+"_", a.face, 56, 220, cyan)
-		text.Draw(screen, "Enter：確認　Backspace：刪除　Esc：取消", a.face, 56, 330, white)
+		text.Draw(screen, a.state.RenameInputText(), a.face, 56, 220, cyan)
+		text.Draw(screen, a.state.RenameInputHelp(), a.face, 56, 330, white)
 		return
 	}
 	if a.state.ECLStringEditing() {
@@ -1190,8 +1190,8 @@ func (a *app) Draw(screen *ebiten.Image) {
 			a.drawDungeonGame(screen, white, cyan)
 			ebitenutil.DrawRect(screen, 8, 290, 624, 190, color.RGBA{0, 0, 0, 255})
 			drawWrappedText(screen, a.state.Message, a.compactFace, 16, 316, 36, 20, 2, cyan)
-			text.Draw(screen, "回答："+a.state.ECLStringValue()+"_", a.compactFace, 16, 360, white)
-			text.Draw(screen, fmt.Sprintf("Enter：確認　Backspace：刪除　最多 %d 字", a.state.ECLStringMaxLength()), a.compactFace, 16, 438, cyan)
+			text.Draw(screen, a.state.ECLStringInputText(), a.compactFace, 16, 360, white)
+			text.Draw(screen, a.state.ECLStringInputHelp(), a.compactFace, 16, 438, cyan)
 			a.drawOriginalAdventureFrame(screen)
 			return
 		}
@@ -1199,8 +1199,8 @@ func (a *app) Draw(screen *ebiten.Image) {
 		text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
 		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
 		drawWrappedText(screen, a.state.Message, a.face, 56, 190, 22, 32, 4, cyan)
-		text.Draw(screen, "回答："+a.state.ECLStringValue()+"_", a.face, 56, 340, white)
-		text.Draw(screen, fmt.Sprintf("Enter：確認　Backspace：刪除　最多 %d 字", a.state.ECLStringMaxLength()), a.face, 56, 410, cyan)
+		text.Draw(screen, a.state.ECLStringInputText(), a.face, 56, 340, white)
+		text.Draw(screen, a.state.ECLStringInputHelp(), a.face, 56, 410, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
