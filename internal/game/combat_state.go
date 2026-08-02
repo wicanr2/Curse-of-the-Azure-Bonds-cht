@@ -425,6 +425,53 @@ func (s *State) CombatViewLines() []string {
 
 func (s *State) CombatMessage() string { return s.combatMessage }
 
+// CombatVisualMessage projects typed visual impacts into localized text while
+// preserving the renderer-neutral phase ordering carried by VisualFrame.
+func (s *State) CombatVisualMessage(event combat.VisualEvent, frame combat.VisualFrame, fallback string) string {
+	impact, ok := event.Impact(frame)
+	if !ok {
+		return fallback
+	}
+	name := impact.TargetID
+	if fighter, found := s.fighter(impact.TargetID); found {
+		name = fighter.Name
+	}
+	if event.Effect == "cloudkill" {
+		if frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit && frame.Phase != combat.VisualDeath {
+			return fallback
+		}
+		key := "combat_visual_cloudkill_killed"
+		if impact.Saved {
+			key = "combat_visual_cloudkill_saved"
+		}
+		return fmt.Sprintf(s.catalog.Text(key, key), name)
+	}
+	if event.Effect == "stinking_cloud" {
+		if frame.Phase != combat.VisualImpact && frame.Phase != combat.VisualCommit {
+			return fallback
+		}
+		if impact.Saved {
+			return fmt.Sprintf(s.catalog.Text("combat_visual_stinking_cloud_saved", "combat_visual_stinking_cloud_saved"), name)
+		}
+		return fmt.Sprintf(s.catalog.Text("combat_visual_stinking_cloud_failed", "combat_visual_stinking_cloud_failed"), name, impact.Damage)
+	}
+	if event.Kind != combat.VisualLineSpell || impact.Protected {
+		return fallback
+	}
+	switch frame.Phase {
+	case combat.VisualImpact:
+		return fmt.Sprintf(s.catalog.Text("combat_visual_line_damage", "combat_visual_line_damage"), name, impact.Damage)
+	case combat.VisualCommit:
+		key := "combat_visual_line_save_failed"
+		if impact.Saved {
+			key = "combat_visual_line_save_succeeded"
+		}
+		return fmt.Sprintf(s.catalog.Text(key, key), name)
+	default:
+		return fallback
+	}
+}
+
 func (s *State) CombatMoveMode() bool { return s.combatMoveMode }
 
 func (s *State) CombatUsesReferenceCoordinates() bool { return s.combatReferenceCoords }
