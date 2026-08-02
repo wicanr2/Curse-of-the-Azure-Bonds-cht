@@ -12,6 +12,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
+	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 )
 
 func starterCharacters() []party.Character {
@@ -301,11 +302,68 @@ func (s *State) SavePartyFile(path string) error {
 		}
 		sessionSnapshot = &snapshot
 	}
-	data, err := partySave.EncodeGameWithSession(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot)
+	combatSnapshot, err := s.activeCombatSnapshot()
+	if err != nil {
+		return err
+	}
+	data, err := partySave.EncodeGameWithCombat(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot)
 	if err != nil {
 		return err
 	}
 	return os.WriteFile(path, data, 0o600)
+}
+
+func (s *State) activeCombatSnapshot() (*partySave.CombatSnapshot, error) {
+	if s.battle == nil {
+		if s.Mode == ModeCombat {
+			return nil, fmt.Errorf("combat mode has no active battle to save")
+		}
+		return nil, nil
+	}
+	if s.Mode != ModeCombat {
+		return nil, fmt.Errorf("active battle cannot be saved from mode %d", s.Mode)
+	}
+	battleSnapshot, err := s.battle.Snapshot()
+	if err != nil {
+		return nil, err
+	}
+	var visual *combat.VisualEvent
+	if s.combatVisual != nil {
+		if s.combatVisualTravelSent || s.combatVisualImpactSent >= 0 || s.combatVisualDeathSent >= 0 {
+			return nil, fmt.Errorf("active combat save during an advanced visual phase is not yet supported")
+		}
+		copy := *s.combatVisual
+		copy.Impacts = append([]combat.VisualImpactTarget(nil), copy.Impacts...)
+		copy.Segments = append([]combat.VisualPathSegment(nil), copy.Segments...)
+		visual = &copy
+	}
+	return &partySave.CombatSnapshot{
+		Battle: battleSnapshot, Turns: append([]combat.Turn(nil), s.combatTurns...),
+		TurnIndex: s.combatTurnIndex, DelayedTurns: cloneDelayedTurns(s.combatDelayedTurns),
+		TargetIndex: s.combatTargetIndex, CastingSpell: s.combatCastingSpell,
+		CastingClass: uint8(s.combatCastingClass), CastingClassSet: s.combatCastingClassSet,
+		SpellTargetIndex: s.combatSpellTargetIndex, SpellTargetPoint: s.combatSpellTargetPoint,
+		SpellTargetsPoint: s.combatSpellTargetsPoint, MoveMode: s.combatMoveMode,
+		MoveRemaining: s.combatMoveRemaining, Speed: uint8(s.combatSpeed),
+		QuickMagic: s.combatQuickMagic, ReferenceCoords: s.combatReferenceCoords,
+		View: s.combatView, ViewFighterID: s.combatViewFighterID,
+		Message: s.combatMessage, ReturnMode: uint8(s.combatReturnMode),
+		VisualSerial: s.combatVisualSerial, VisualEnabled: s.combatVisualEnabled,
+		Visual: visual, VisualTravelSent: s.combatVisualTravelSent,
+		VisualImpactSent: s.combatVisualImpactSent, VisualDeathSent: s.combatVisualDeathSent,
+		VisualAdvanceTurn: s.combatVisualAdvanceTurn,
+	}, nil
+}
+
+func cloneDelayedTurns(source map[int]bool) map[int]bool {
+	if source == nil {
+		return nil
+	}
+	result := make(map[int]bool, len(source))
+	for index, delayed := range source {
+		result[index] = delayed
+	}
+	return result
 }
 
 // SaveSAVGAMPrefix writes only the reference-compatible fixed SAVGAM prefix
@@ -650,14 +708,14 @@ func (s *State) LoadPartyFile(path string) error {
 		s.DungeonX, s.DungeonY, s.DungeonDirection = 7, 13, 0
 		s.DungeonWallType, s.DungeonWallRoof = 0, 0
 	}
-	if file.Location <= uint8(LocationDaggerFalls) {
+	if file.Location <= uint8(LocationMythDrannor) {
 		s.Location = Location(file.Location)
 	}
 	if file.Version == 1 {
 		// Legacy party.json had no adventure-state fields.
 		s.Mode = ModeWilderness
 		s.Location = LocationWilderness
-	} else if file.Mode <= uint8(ModeCharacterCreation) {
+	} else if file.Mode <= uint8(ModeDungeon) {
 		s.Mode = Mode(file.Mode)
 	} else {
 		s.Mode = ModeWilderness
@@ -678,9 +736,101 @@ func (s *State) LoadPartyFile(path string) error {
 			return err
 		}
 	}
+	if file.Combat != nil {
+		if s.Mode != ModeCombat {
+			return fmt.Errorf("game save contains active combat while mode is %d", s.Mode)
+		}
+		if err := s.restoreActiveCombat(*file.Combat); err != nil {
+			return fmt.Errorf("restore active combat: %w", err)
+		}
+		return nil
+	}
+	if s.Mode == ModeCombat {
+		return fmt.Errorf("game save mode is combat but no active-combat snapshot is present")
+	}
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	return nil
+}
+
+func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
+	battle, err := combat.RestoreBattle(snapshot.Battle)
+	if err != nil {
+		return err
+	}
+	if snapshot.TurnIndex < 0 || snapshot.TurnIndex > len(snapshot.Turns) {
+		return fmt.Errorf("combat turn index %d outside 0..%d", snapshot.TurnIndex, len(snapshot.Turns))
+	}
+	for index, turn := range snapshot.Turns {
+		if _, ok := battle.Fighter(turn.FighterID); !ok {
+			return fmt.Errorf("combat turn %d references missing fighter %q", index, turn.FighterID)
+		}
+	}
+	for index, delayed := range snapshot.DelayedTurns {
+		if index < 0 || index >= len(snapshot.Turns) || !delayed {
+			return fmt.Errorf("invalid delayed-turn entry %d=%v", index, delayed)
+		}
+	}
+	if snapshot.TargetIndex < 0 || snapshot.SpellTargetIndex < 0 || snapshot.MoveRemaining < 0 {
+		return fmt.Errorf("negative combat cursor or movement state")
+	}
+	if snapshot.CastingClass > uint8(party.ClassThief) || snapshot.Speed > uint8(engineaction.SlowestSpeed) {
+		return fmt.Errorf("invalid combat class %d or speed %d", snapshot.CastingClass, snapshot.Speed)
+	}
+	if snapshot.ReturnMode > uint8(ModeDungeon) || snapshot.ReturnMode == uint8(ModeCombat) {
+		return fmt.Errorf("invalid combat return mode %d", snapshot.ReturnMode)
+	}
+	if snapshot.ViewFighterID != "" {
+		if _, ok := battle.Fighter(snapshot.ViewFighterID); !ok {
+			return fmt.Errorf("combat view references missing fighter %q", snapshot.ViewFighterID)
+		}
+	}
+	if snapshot.Visual != nil {
+		if snapshot.Visual.ActorID != "" {
+			if _, ok := battle.Fighter(snapshot.Visual.ActorID); !ok {
+				return fmt.Errorf("combat visual references missing actor %q", snapshot.Visual.ActorID)
+			}
+		}
+		for index := 0; index < snapshot.Visual.ImpactCount(); index++ {
+			impact, _ := snapshot.Visual.ImpactAt(index)
+			if impact.TargetID == "" {
+				continue
+			}
+			if _, ok := battle.Fighter(impact.TargetID); !ok {
+				return fmt.Errorf("combat visual impact %d references missing target %q", index, impact.TargetID)
+			}
+		}
+	}
+	s.battle = battle
+	s.combatTurns = append([]combat.Turn(nil), snapshot.Turns...)
+	s.combatTurnIndex = snapshot.TurnIndex
+	s.combatDelayedTurns = cloneDelayedTurns(snapshot.DelayedTurns)
+	s.combatTargetIndex = snapshot.TargetIndex
+	s.combatCastingSpell = snapshot.CastingSpell
+	s.combatCastingClass = party.Class(snapshot.CastingClass)
+	s.combatCastingClassSet = snapshot.CastingClassSet
+	s.combatSpellTargetIndex = snapshot.SpellTargetIndex
+	s.combatSpellTargetPoint = snapshot.SpellTargetPoint
+	s.combatSpellTargetsPoint = snapshot.SpellTargetsPoint
+	s.combatMoveMode, s.combatMoveRemaining = snapshot.MoveMode, snapshot.MoveRemaining
+	s.combatSpeed = engineaction.Speed(snapshot.Speed)
+	s.combatQuickMagic, s.combatReferenceCoords = snapshot.QuickMagic, snapshot.ReferenceCoords
+	s.combatView, s.combatViewFighterID = snapshot.View, snapshot.ViewFighterID
+	s.combatMessage, s.combatReturnMode = snapshot.Message, Mode(snapshot.ReturnMode)
+	s.combatVisualSerial, s.combatVisualEnabled = snapshot.VisualSerial, snapshot.VisualEnabled
+	if snapshot.Visual != nil {
+		copy := *snapshot.Visual
+		copy.Impacts = append([]combat.VisualImpactTarget(nil), copy.Impacts...)
+		copy.Segments = append([]combat.VisualPathSegment(nil), copy.Segments...)
+		s.combatVisual = &copy
+	} else {
+		s.combatVisual = nil
+	}
+	s.combatVisualTravelSent = snapshot.VisualTravelSent
+	s.combatVisualImpactSent = snapshot.VisualImpactSent
+	s.combatVisualDeathSent = snapshot.VisualDeathSent
+	s.combatVisualAdvanceTurn = snapshot.VisualAdvanceTurn
 	return nil
 }
 

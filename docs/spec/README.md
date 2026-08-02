@@ -398,3 +398,4 @@
 - [第四百三十四輪 PC-98 睡眠術 PUTEFFECT 與魔法抗性](./434-pc98-sleep-puteffect-magic-resistance.md)（`READY`：ordered targets 後的魔抗、raw effect `35h` writer 與 bounded core；SCAN 實機幾何／UI／解除／演出待續）
 - [第四百三十五輪 PC-98 SCAN 三欄記錄與原版排序](./435-pc98-scan-record-order.md)（`READY`：object ID、最短 LOS 加權距離、方向 payload 與奇偶排序；terrain／wall 實機、Sleep UI／演出待續）
 - [第四百四十二輪 PC-98 睡眠術 Action 清除與 TWINKLE](./442-pc98-sleep-action-clear-and-twinkle.md)（`READY`：effect 35h add／remove CLEARACTION、逐目標四格 TWINKLE、1440ms 與音效順序；像素 palette 待實機）
+- [第四百四十三輪 active combat 存檔與 Sleep continuation](./443-active-combat-save-sleep-continuation.md)（`READY`：save v7 Battle／scheduler／PRNG／視覺起點 round-trip、自然到期與傷害喚醒；mid-animation fail-closed）

@@ -3240,3 +3240,16 @@ Quick Sleep 與實機 palette／draw overhead 仍未完成；READY spec 442 是�
 正式 Docker／Xvfb／`--network none` gate 已明確驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker 為
 `ROUND442_FORMAL_EXIT=0`，暫存日誌在 `/tmp/coab-round442-formal.log`。
+
+2026-08-02 第四百四十三輪將 remake JSON save 升至 version 7，新增 bounded
+`BattleSnapshot` 與 CoAB `CombatSnapshot`。stable fighter order、effect／Action、
+round、persistent areas、attack modifiers、dynamic scheduler selection、pending
+interruption、battle randomstream、State turn／target／spell／move cursors及尚未
+開始的 visual transaction 均可 round-trip。正常手動 Sleep 以 seed 443 從
+選格施法後存檔；原狀態／loaded 狀態完成 TWINKLE handoff 後 snapshot 相同，
+自然到期與讀檔後正傷害喚醒兩分支通過。mid-animation save 因 renderer elapsed
+未歸 State 所有而明確拒絕；原版 SAVGAM combat layout 仍 unknown。READY
+spec 443 是入口。
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND443_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round443-formal.log`。

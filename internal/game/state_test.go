@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strings"
@@ -2686,6 +2687,116 @@ func TestCombatCastSleepUsesSelectedCellScanAndConsumesSlot(t *testing.T) {
 	selected, _ = state.battle.Fighter("selected")
 	if selected.MonsterIsHeld() {
 		t.Fatal("level-3 Sleep remained held after duration 15")
+	}
+}
+
+func TestActiveCombatSaveRestoresSleepVisualEffectSchedulerAndRandom(t *testing.T) {
+	newSleepState := func() *State {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Name: "法師", Race: party.RaceHuman,
+			Class: party.ClassMagicUser, Level: 3,
+			Abilities: party.Abilities{Strength: 10, Intelligence: 16, Wisdom: 10,
+				Dexterity: 12, Constitution: 10, Charisma: 10}, SpellSlots: []uint8{SleepSpellID},
+		}}
+		state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+			return enginescan.TacticalMap{Width: 3, Height: 1, Tiles: []uint8{1, 1, 1},
+				Definitions: []enginescan.TerrainDefinition{{LOS: 1}}}, nil
+		})
+		return &state
+	}
+	original := newSleepState()
+	original.Location = LocationMythDrannor
+	heroes := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 0, AttackBonus: 30,
+		DamageDiceCount: 1, DamageDiceSides: 1, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 0, CombatY: 0}}
+	enemies := []combat.Fighter{{ID: "orc", Name: "半獸人", Side: combat.SideEnemy,
+		HitPoints: 20, MaxHitPoints: 20, HitDice: 1, ArmorClass: 8,
+		DamageDiceCount: 1, DamageDiceSides: 4, InitiativeBonus: 20,
+		HasCombatPosition: true, CombatX: 2, CombatY: 0}}
+	if err := original.StartCombat(heroes, enemies, 443); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.CombatSelectTarget(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.BeginCombatCast(SleepSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.CombatCastWithTerrain(SleepSpellID, nil); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := original.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualTwinkle {
+		t.Fatalf("pre-save Sleep visual=%+v ok=%v", event, ok)
+	}
+	path := filepath.Join(t.TempDir(), "sleep-active.json")
+	if err := original.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.AdvanceCombatVisual(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.SavePartyFile(filepath.Join(t.TempDir(), "mid-visual.json")); err == nil {
+		t.Fatal("mid-visual active combat save unexpectedly succeeded without elapsed-time ownership")
+	}
+	loaded := newSleepState()
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loadedEvent, ok := loaded.CombatVisualEvent()
+	if !ok || !reflect.DeepEqual(loadedEvent, event) || loaded.Mode != ModeCombat ||
+		loaded.Location != LocationMythDrannor {
+		t.Fatalf("loaded visual=%+v ok=%v mode=%v want=%+v", loadedEvent, ok, loaded.Mode, event)
+	}
+	if err := original.AdvanceCombatVisual(event.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	if err := loaded.AdvanceCombatVisual(loadedEvent.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	want, err := original.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := loaded.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(got, want) || loaded.combatTurnIndex != original.combatTurnIndex ||
+		!reflect.DeepEqual(loaded.combatTurns, original.combatTurns) {
+		t.Fatalf("post-handoff active combat diverged\n got=%#v\nwant=%#v", got, want)
+	}
+	wakeLoaded := newSleepState()
+	if err := wakeLoaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	wakeEvent, _ := wakeLoaded.CombatVisualEvent()
+	if err := wakeLoaded.AdvanceCombatVisual(wakeEvent.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := wakeLoaded.battle.Attack("mage", "orc"); err != nil {
+		t.Fatal(err)
+	}
+	woken, _ := wakeLoaded.battle.Fighter("orc")
+	if woken.MonsterIsHeld() || len(wakeLoaded.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("post-load damage wake fighter=%+v slots=%v", woken, wakeLoaded.partyRoster[0].SpellSlots)
+	}
+	for tick := 0; tick < 14; tick++ {
+		if _, err := original.battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := loaded.battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	originalOrc, _ := original.battle.Fighter("orc")
+	loadedOrc, _ := loaded.battle.Fighter("orc")
+	if originalOrc.MonsterIsHeld() || loadedOrc.MonsterIsHeld() ||
+		!reflect.DeepEqual(originalOrc.MonsterAffects, loadedOrc.MonsterAffects) {
+		t.Fatalf("natural expiry original=%+v loaded=%+v", originalOrc.MonsterAffects, loadedOrc.MonsterAffects)
 	}
 }
 

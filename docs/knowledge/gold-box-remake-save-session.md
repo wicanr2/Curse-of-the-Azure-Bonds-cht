@@ -20,6 +20,22 @@ remake save
 只保存 seed 會讓讀檔後亂數回到開頭；只保存 RNG 而不保存 ECL memory，則會
 讓同一亂數落入不同劇情條件。兩者都不是 faithful continuation。
 
+## Active combat transaction
+
+戰鬥存檔不能只保存 fighter array。可恢復的最小集合還包含 stable TeamList
+order、Action、effect linked-list projection、round、dynamic scheduler entries／
+current selection、持續區域、battle-scoped modifiers、待交付 interruption，以及
+戰鬥自己的 PRNG seed＋底層 draw count。少掉 scheduler 或 PRNG，即使畫面與
+HP 相同，下一次 tie roll、AI 選敵與傷害骰仍會漂移。
+
+作品 adapter 再保存 turn cursor、target／spell／move selection 與尚未開始的
+visual transaction。renderer callback、map buffers 與原始素材由載入時重建，
+不能序列化函式或複製商業資料。若 wall-clock elapsed 不屬於 State，就應拒絕
+mid-animation save，而不是把動畫偷偷從頭播放並聲稱無縫 continuation。
+
+這項 contract 目前由 CoAB Sleep 的自然到期／受傷喚醒雙分支證明；跨作品
+共用仍待第二款 Gold Box 驗證。
+
 ## 商業資料與向下相容
 
 code window 只保存相對於玩家自備 block 的 runtime differences，不複製完整

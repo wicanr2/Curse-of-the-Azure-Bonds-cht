@@ -96,7 +96,7 @@ func TestDecodeGameAcceptsVersion3DungeonSave(t *testing.T) {
 	}
 }
 
-func TestEncodeGameVersionSixCarriesECLSession(t *testing.T) {
+func TestEncodeCurrentGameVersionCarriesECLSession(t *testing.T) {
 	roster := party.Roster{{
 		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
 		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
@@ -110,7 +110,7 @@ func TestEncodeGameVersionSixCarriesECLSession(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if file.Version != 6 || file.ECLSession == nil || file.ECLSession.CurrentBlock != 0x42 || file.ECLSession.PC != 123 {
+	if file.Version != CurrentGameVersion || file.ECLSession == nil || file.ECLSession.CurrentBlock != 0x42 || file.ECLSession.PC != 123 {
 		t.Fatalf("decoded game=%+v", file)
 	}
 }
@@ -118,5 +118,12 @@ func TestEncodeGameVersionSixCarriesECLSession(t *testing.T) {
 func TestPartyJSONRejectsUnknownVersion(t *testing.T) {
 	if _, err := DecodeParty([]byte(`{"version":99,"characters":[]}`)); err == nil {
 		t.Fatal("expected version error")
+	}
+}
+
+func TestDecodeGameRejectsCombatPayloadBeforeVersionSeven(t *testing.T) {
+	data := []byte(`{"version":6,"characters":[{"id":"p1","name":"阿勇","race":5,"class":1,"level":1,"abilities":{"strength":16,"intelligence":10,"wisdom":10,"dexterity":12,"constitution":14,"charisma":10}}],"combat":{"battle":{"version":1}}}`)
+	if _, err := DecodeGame(data); err == nil {
+		t.Fatal("version 6 combat payload unexpectedly decoded")
 	}
 }

@@ -549,6 +549,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   消耗法術格。成功 Sleep 的 `TWINKLE` 是 runtime 建立的四格 24×6 圖示，
   `16h／17h` 不是 DAX block；成功者逐人播放 `SPELLHITFX`，抵抗與醒來不
   播放。現有 palette pixels 仍是 reconstructed，READY spec 442 是權威。
+- 第 443 輪把 remake JSON save 升至 v7；active combat 必須整體保存 Fighter／
+  effect／Action、stable TeamList、scheduler selection、turn cursor、areas、
+  modifiers、pending interruption 與 battle PRNG。不得只存 `MonsterAffects`
+  冒充可恢復戰鬥。frontend wall-clock elapsed 尚未進 State，故已開始的 visual
+  save 必須 fail-closed；第一幀前 transaction 可 round-trip。READY spec 443
+  是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142
