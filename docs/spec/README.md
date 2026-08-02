@@ -389,3 +389,4 @@
 - [第四百二十五輪 PC-98 Quick Bless 與非即時施法排程](./425-pc98-quick-bless-casting-delay.md)（`READY`：限 casting-delay action handoff 與 Quick Bless；其他法術／中斷待續）
 - [第四百二十六輪 PC-98 Quick Cure 指定目標 handoff](./426-pc98-quick-cure-target-handoff.md)（`READY`：限 Cure 鄰近／倒地目標、stable target 與 pending resolution；順序由 427 接續，中斷待續）
 - [第四百二十七輪 PC-98 COMPTARGCURE 順序與 CHARSTATUS](./427-pc98-comptargcure-order-and-charstatus.md)（`READY`：九格方向、equal-HP tie、自身半血、倒地 8 HP 與 status set；同格多 corpse／中斷待續）
+- [第四百二十八輪 PC-98 手動 CAST 延遲與目標續跑](./428-pc98-manual-cast-delay-target-handoff.md)（`READY`：共用 casting handoff、stable combatant／格點目標 transaction；中斷待續）

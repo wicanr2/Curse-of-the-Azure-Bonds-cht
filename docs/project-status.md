@@ -404,22 +404,28 @@ commit 內保存不可能自我引用的 hash。
   關閉非即時施法排程：raw `CastingTime/3` 非零時保存 Action spell ID，delay
   改為 `max(1,delay-units)` 並同輪重新入列。engine action／quickspell 與
   CoAB 十一筆 JSON metadata 已接通；Quick Bless raw `10→3` 有 scheduler／
-  State regression。手動 CAST、其他 Quick 法術、目標指標與 interruption
-  fidelity 仍未完成。
+  State regression。手動 CAST 與 typed 目標交易由第 428 輪接續；其他 Quick
+  法術、原作目標指標 layout 與 interruption fidelity 仍未完成。
 - 第 426 輪由 overlay 09 `03D3h..04C9h`、typed
   `00B8:0075h → overlay 13 entry 17 → +1E30h` 與 IDA 證明 Quick Cure
   先選同隊鄰近受傷／倒地目標，再把 target 帶過 pending action。engine
   action 保存 opaque stable `TargetID`；CoAB `03h` 已由 focused regression
   與 Standing Stone→Red Plume 真實箭傷正常路徑接通。九格 equal-HP exact
   tie order、down-player status predicate、手動 CAST delay 與 interruption
-  已由第 427 輪接續；手動 CAST delay 與 interruption 仍未完成，不能宣稱
-  完整 Quick AI。
+  已由第 427 輪接續；手動 CAST delay 再由第 428 輪接通，interruption 仍未
+  完成，不能宣稱完整 Quick AI。
 - 第 427 輪以 Borland `COMPTARGCURE／CHARSTATUS／DXDIR／DYDIR`、typed
   TACMAP stubs 與 raw bytes 關閉 Quick Cure 選人順序：N→NE→E→SE→S→SW→
   W→NW→self，equal HP 保留先掃者，自身低於半血覆蓋先前候選；active HP
   8 以上才由合法 down-player 取代，raw `DEAD／STONED／GONE` 被排除。
   CoAB selector 與 Stoned gate 已修正，四組 exact boundary regression 通過。
-  同格多 corpse ordering、完整 raw status round-trip、手動 CAST／中斷仍未完成。
+  同格多 corpse ordering、完整 raw status round-trip 與中斷仍未完成；手動
+  CAST delay 由第 428 輪接續。
+- 第 428 輪把手動 CAST 接回第 425 輪已證明的共同 `CASTCOMBATSPELL`
+  handoff。非零 `CastingTime/3` 現保存 stable combatant ID 或 32×16 格點，
+  同輪重新入列後才結算；Bless 可觀察 pending transaction，Fireball 即使
+  delay=1 立即重新入列仍保持玩家選定格。Quick Bless／Cure 共用 resolver
+  回歸亦通過。施法中斷、slot 消耗原版時點與尚未實作法術仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

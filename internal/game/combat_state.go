@@ -1078,6 +1078,60 @@ func (s *State) CombatCast(spellID uint8) error {
 	return s.CombatCastWithTerrain(spellID, nil)
 }
 
+// ConfirmCombatCast commits the current manual CAST selection through the
+// same CASTCOMBATSPELL delay handoff used by Quick combat. Point-targeted
+// spells still require their own coordinate transaction and therefore remain
+// on the immediate path until that original boundary is proven.
+func (s *State) ConfirmCombatCast(terrain combat.LineTerrain) error {
+	spellID := s.combatCastingSpell
+	if spellID == 0 {
+		return fmt.Errorf("no combat spell is being selected")
+	}
+	if s.dataPack == nil {
+		return fmt.Errorf("combat spell casting metadata is unavailable")
+	}
+	definition, found := s.dataPack.FindCombatAISpell(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X has no casting metadata", spellID)
+	}
+	delay := enginequickspell.Spell{CastingTime: definition.CastingTime}.CastingDelayUnits()
+	if delay == 0 {
+		return s.CombatCastWithTerrain(spellID, terrain)
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	targetID := ""
+	var err error
+	if s.combatSpellTargetsPoint {
+		err = s.battle.BeginPendingPointSpellAction(
+			caster.ID, spellID, delay, s.combatSpellTargetPoint.X, s.combatSpellTargetPoint.Y,
+		)
+	} else if targets := s.CombatSpellTargets(); len(targets) > 0 {
+		if s.combatSpellTargetIndex >= len(targets) {
+			return fmt.Errorf("spell target index %d is unavailable", s.combatSpellTargetIndex)
+		}
+		targetID = targets[s.combatSpellTargetIndex].ID
+		err = s.battle.BeginPendingTargetedSpellAction(caster.ID, spellID, delay, targetID)
+	} else {
+		err = s.battle.BeginPendingTargetedSpellAction(caster.ID, spellID, delay, "")
+	}
+	if err != nil {
+		return err
+	}
+	s.CancelCombatCast()
+	if s.combatDelayedTurns == nil {
+		s.combatDelayedTurns = make(map[int]bool)
+	}
+	s.combatDelayedTurns[s.combatTurnIndex] = true
+	s.combatTurnIndex++
+	s.combatMessage = fmt.Sprintf(s.catalog.Text(
+		"combat_quick_magic_casting", "%s 開始吟唱%s。",
+	), caster.Name, s.catalog.Text(fmt.Sprintf("spell_cleric_%d", spellID), fmt.Sprintf("法術 0x%02X", spellID)))
+	return s.advanceCombatToParty()
+}
+
 // CombatCastWithTerrain keeps ordinary target spells terrain-neutral while
 // allowing reflecting line effects to consume a title adapter's combat map.
 func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain) error {
@@ -2358,7 +2412,7 @@ func (s *State) advanceCombatToParty() error {
 			continue
 		}
 		if fighter.CombatAction.SpellID != 0 {
-			return s.resolvePendingQuickSpell(fighter)
+			return s.resolvePendingSpell(fighter)
 		}
 		if fighter.Side == combat.SideParty && !fighter.QuickFight {
 			return nil
@@ -2584,23 +2638,44 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 	return true, s.CombatCast(spellID)
 }
 
-func (s *State) resolvePendingQuickSpell(fighter combat.Fighter) error {
+func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 	spellID := fighter.CombatAction.SpellID
-	if spellID != BlessSpellID && spellID != CureLightWoundsSpellID {
-		return fmt.Errorf("pending quick spell 0x%02X is not implemented", spellID)
+	switch spellID {
+	case BlessSpellID, CurseSpellID, CureLightWoundsSpellID, CauseLightWoundsSpellID,
+		ProtectionFromEvilSpellID, ProtectionFromGoodSpellID, FireballSpellID,
+		LightningBoltSpellID, CloudkillSpellID:
+	default:
+		return fmt.Errorf("pending spell 0x%02X is not implemented", spellID)
 	}
 	if err := s.BeginCombatCast(spellID); err != nil {
 		return err
 	}
-	resolved, targetID, err := s.battle.TakePendingTargetedSpellAction(fighter.ID)
-	if err != nil {
-		return err
+	resolved, targetID := uint8(0), ""
+	if fighter.CombatAction.HasTargetPoint {
+		var x, y int
+		var hasPoint bool
+		var err error
+		resolved, x, y, hasPoint, err = s.battle.TakePendingPointSpellAction(fighter.ID)
+		if err != nil {
+			return err
+		}
+		if !hasPoint {
+			return fmt.Errorf("pending point spell 0x%02X lost its target", spellID)
+		}
+		s.combatSpellTargetPoint = combat.TilePoint{X: x, Y: y}
+		s.combatSpellTargetsPoint = true
+	} else {
+		var err error
+		resolved, targetID, err = s.battle.TakePendingTargetedSpellAction(fighter.ID)
+		if err != nil {
+			return err
+		}
 	}
 	if resolved != spellID {
 		return fmt.Errorf("pending quick spell changed from 0x%02X to 0x%02X", spellID, resolved)
 	}
-	if spellID == CureLightWoundsSpellID {
-		targets := s.combatHealingTargets()
+	if targetID != "" {
+		targets := s.CombatSpellTargets()
 		targetIndex := -1
 		for index := range targets {
 			if targets[index].ID == targetID {
@@ -2609,11 +2684,14 @@ func (s *State) resolvePendingQuickSpell(fighter combat.Fighter) error {
 			}
 		}
 		if targetIndex < 0 {
-			return fmt.Errorf("pending Cure Light Wounds target %q is unavailable", targetID)
+			return fmt.Errorf("pending spell 0x%02X target %q is unavailable", spellID, targetID)
 		}
 		s.combatSpellTargetIndex = targetIndex
+		if s.CombatSpellTargetsEnemy() {
+			s.combatTargetIndex = targetIndex
+		}
 	}
-	return s.CombatCast(spellID)
+	return s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 }
 
 func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint) error {
