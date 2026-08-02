@@ -2456,7 +2456,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	stinkingCloudDemo := strings.HasPrefix(kind, "stinking-cloud-")
 	cloudkillDemo := strings.HasPrefix(kind, "cloudkill-")
 	hero := combat.Fighter{
-		ID: "demo-hero", Name: "弓手艾琳", Side: combat.SideParty,
+		ID: "demo-hero", Name: state.DemoFighterName(game.DemoNameArcherErin), Side: combat.SideParty,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 0,
 		AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 4,
 		InitiativeBonus: 30, HasCombatPosition: true, CombatX: 1, CombatY: 2,
@@ -2464,7 +2464,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		HasPartyIcon: true, PartyIconSize: 2,
 	}
 	enemy := combat.Fighter{
-		ID: "demo-orc", Name: "半獸人", Side: combat.SideEnemy,
+		ID: "demo-orc", Name: state.DemoFighterName(game.DemoNameOrc), Side: combat.SideEnemy,
 		HitPoints: 30, MaxHitPoints: 30, ArmorClass: 10,
 		AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 4,
 		InitiativeBonus: -20, HasCombatPosition: true, CombatX: 5, CombatY: 2,
@@ -2473,26 +2473,26 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	}
 	switch kind {
 	case "melee":
-		hero.Name = "戰士艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameFighterErin)
 	case "bow":
 		hero.MissileWeapon = true
 	case "kill":
-		hero.Name = "戰士艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameFighterErin)
 		enemy.HitPoints, enemy.MaxHitPoints = 1, 1
 	case "magic", "magic-impact":
 		hero.InitiativeBonus = -20
-		enemy.Name = "散提爾法師"
+		enemy.Name = state.DemoFighterName(game.DemoNameZhentMage)
 		enemy.InitiativeBonus = 30
 		enemy.MonsterSpellUses[0] = 1
 		enemy.MonsterSpellIDs = []uint8{combat.MonsterMagicMissileSpellID}
 	case "fireball-travel", "fireball-impact-1", "fireball-impact-2":
-		hero.Name = "法師艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameMageErin)
 	case "lightning-target-hit", "lightning-line-continue", "lightning-reflect":
-		hero.Name = "法師艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameMageErin)
 	case "stinking-cloud-travel", "stinking-cloud-persistent":
-		hero.Name = "法師艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameMageErin)
 	case "cloudkill-travel", "cloudkill-persistent":
-		hero.Name = "法師艾琳"
+		hero.Name = state.DemoFighterName(game.DemoNameMageErin)
 		hero.HitDice = 7
 		enemy.HitDice = 4
 	default:
@@ -2502,7 +2502,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 	enemies := []combat.Fighter{enemy}
 	if fireballDemo || lightningDemo || stinkingCloudDemo || cloudkillDemo {
 		ally := combat.Fighter{
-			ID: "demo-ally", Name: "戰士布蘭", Side: combat.SideParty,
+			ID: "demo-ally", Name: state.DemoFighterName(game.DemoNameFighterBran), Side: combat.SideParty,
 			HitPoints: 100, MaxHitPoints: 100, ArmorClass: 2,
 			InitiativeBonus: -10, HasCombatPosition: true, CombatX: 2, CombatY: 4,
 			SavingThrows: []uint8{10, 10, 10, 10, 10},
@@ -2512,7 +2512,7 @@ func prepareCombatVisualDemo(state *game.State, kind string) (time.Duration, err
 		enemy.ID = "demo-orc-a"
 		enemy.CombatX, enemy.CombatY = 3, 2
 		secondEnemy := enemy
-		secondEnemy.ID, secondEnemy.Name = "demo-orc-b", "半獸人隊長"
+		secondEnemy.ID, secondEnemy.Name = "demo-orc-b", state.DemoFighterName(game.DemoNameOrcCaptain)
 		if lightningDemo {
 			secondEnemy.CombatX, secondEnemy.CombatY = 5, 2
 		} else {
@@ -2910,16 +2910,7 @@ func main() {
 	}
 	state := game.NewStateFromECLBlocks(catalog, eclBlocks, initialECL)
 	if *worldMapPreview {
-		state.Mode = game.ModeWilderness
-		state.Area.CurrentCity = 4
-		state.Location = game.LocationStandingStone
-		state.LocationName = catalog.Text("standing_stone", "立石")
-		state.Choices = []string{
-			catalog.Text("enter_city", "進入城市"),
-			catalog.Text("journey_on", "繼續旅程"),
-			catalog.Text("camp", "紮營"),
-		}
-		state.Prompt = catalog.Text("press_button", "請選擇行動")
+		state.PrepareWorldMapPreview()
 	}
 	if *dungeonXOverride >= 0 {
 		state.DungeonX, state.DungeonY = *dungeonXOverride, *dungeonYOverride
@@ -3125,7 +3116,7 @@ func main() {
 		if runErr != nil {
 			log.Fatal(runErr)
 		}
-		if err := state.StartEncounter(result, monsterRecords, demoParty(), 37); err != nil {
+		if err := state.StartEncounter(result, monsterRecords, demoParty(&state), 37); err != nil {
 			log.Fatal(err)
 		}
 	} else if *burialRedWeb || *burialRedWebBattle || *burialGraveBattle || *burialDaemir || *innerRitual || *innerFinalBattle {
@@ -3291,10 +3282,8 @@ func main() {
 					continue
 				}
 				selection := 0
-				for index, choice := range state.Choices {
-					if choice == "等待" || choice == "攻擊法師" {
-						selection = index
-					}
+				if index, found := state.OriginalChoiceIndex("WAIT", "ATTACK WIZARD"); found {
+					selection = index
 				}
 				if err := state.Select(selection); err != nil {
 					log.Fatal(err)
@@ -3307,7 +3296,7 @@ func main() {
 		if *wizardTowerParlay {
 			reachedParlayText := false
 			for step := 0; step < 40; step++ {
-				if strings.Contains(state.Message, "沒有對付龍族的陰謀") {
+				if state.MessageContainsGamePackText("wizard-tower.dragons-convinced") {
 					reachedParlayText = true
 					break
 				}
@@ -3318,10 +3307,8 @@ func main() {
 					continue
 				}
 				selection := 0
-				for index, choice := range state.Choices {
-					if choice == "等待" || choice == "與龍群交涉" || choice == "狡猾" {
-						selection = index
-					}
+				if index, found := state.OriginalChoiceIndex("WAIT", "PARLAY WITH THE DRAGONS", "PARLAY_SLY"); found {
+					selection = index
 				}
 				if err := state.Select(selection); err != nil {
 					log.Fatal(err)
@@ -4159,12 +4146,12 @@ func loadTreasureItemBlocks(imagePath string) (map[uint16][]monster.ItemRecord, 
 // demoParty is deliberately an explicit debug roster for -encounter. The
 // original party save/creation data is a separate reverse-engineering task;
 // normal startup still uses the opening state and does not silently invent it.
-func demoParty() []combat.Fighter {
+func demoParty(state *game.State) []combat.Fighter {
 	return []combat.Fighter{
-		{ID: "party-1", Name: "戰士", Side: combat.SideParty, HitPoints: 42, MaxHitPoints: 42, ArmorClass: 4, AttackBonus: 16, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 1},
-		{ID: "party-2", Name: "遊俠", Side: combat.SideParty, HitPoints: 34, MaxHitPoints: 34, ArmorClass: 5, AttackBonus: 15, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 2},
-		{ID: "party-3", Name: "牧師", Side: combat.SideParty, HitPoints: 30, MaxHitPoints: 30, ArmorClass: 6, AttackBonus: 12, DamageDiceCount: 1, DamageDiceSides: 6, InitiativeBonus: 0},
-		{ID: "party-4", Name: "法師", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 8, AttackBonus: 10, DamageDiceCount: 1, DamageDiceSides: 4, InitiativeBonus: 1},
+		{ID: "party-1", Name: state.DemoFighterName(game.DemoNamePartyFighter), Side: combat.SideParty, HitPoints: 42, MaxHitPoints: 42, ArmorClass: 4, AttackBonus: 16, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 1},
+		{ID: "party-2", Name: state.DemoFighterName(game.DemoNamePartyRanger), Side: combat.SideParty, HitPoints: 34, MaxHitPoints: 34, ArmorClass: 5, AttackBonus: 15, DamageDiceCount: 1, DamageDiceSides: 8, InitiativeBonus: 2},
+		{ID: "party-3", Name: state.DemoFighterName(game.DemoNamePartyCleric), Side: combat.SideParty, HitPoints: 30, MaxHitPoints: 30, ArmorClass: 6, AttackBonus: 12, DamageDiceCount: 1, DamageDiceSides: 6, InitiativeBonus: 0},
+		{ID: "party-4", Name: state.DemoFighterName(game.DemoNamePartyWizard), Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20, ArmorClass: 8, AttackBonus: 10, DamageDiceCount: 1, DamageDiceSides: 4, InitiativeBonus: 1},
 	}
 }
 

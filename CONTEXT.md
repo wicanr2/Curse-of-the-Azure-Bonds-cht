@@ -3750,3 +3750,14 @@ source audit `262→238`，frontend `50→26`、runtime 212、localization 0 不
 READY spec 485 與玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式
 全套 gate 已通過，marker `ROUND485_FORMAL_EXIT=0`；commit／push 與暫存清理
 待本輪收尾。
+
+2026-08-02 第四百八十六輪清除 Ebiten 前端最後二十六筆漢字。Combat visual
+demo 與 `-encounter` party 的十一種名稱改由 formal locale stable ID；世界地圖
+preview 改由 State catalog 建立，不留繁中 fallback。法師塔 battle／parlay
+automation 不再比較繁中選項，改用 `WAIT`、`ATTACK WIZARD`、
+`PARLAY WITH THE DRAGONS`、`PARLAY_SLY` exact source token；成功訊息改由
+`wizard-tower.dragons-convinced` stable game-pack ID 解析目前 locale。回歸把
+顯示選項替換為 `TRANSLATION A/B/C`，來源 index 仍正確。source audit
+`238→212`，frontend `26→0`、runtime 212、localization 0。READY spec 486 與
+玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式全套 gate 已通過，
+marker `ROUND486_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

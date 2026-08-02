@@ -198,3 +198,38 @@ func TestPreviewDiagnosticContractUsesFormalCatalog(t *testing.T) {
 		t.Fatalf("overland date=%q want=%q", got, want)
 	}
 }
+
+func TestDemoNamesAndWorldMapPreviewUseFormalCatalog(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	names := []struct {
+		name DemoFighterName
+		key  string
+	}{
+		{DemoNameArcherErin, "demo_name_archer_erin"},
+		{DemoNameOrc, "demo_name_orc"},
+		{DemoNameFighterErin, "demo_name_fighter_erin"},
+		{DemoNameZhentMage, "demo_name_zhent_mage"},
+		{DemoNameMageErin, "demo_name_mage_erin"},
+		{DemoNameFighterBran, "demo_name_fighter_bran"},
+		{DemoNameOrcCaptain, "demo_name_orc_captain"},
+		{DemoNamePartyFighter, "demo_name_party_fighter"},
+		{DemoNamePartyRanger, "demo_name_party_ranger"},
+		{DemoNamePartyCleric, "demo_name_party_cleric"},
+		{DemoNamePartyWizard, "demo_name_party_wizard"},
+	}
+	for _, test := range names {
+		if got, want := state.DemoFighterName(test.name), catalog.Text(test.key, ""); got != want {
+			t.Errorf("demo name %d=%q want=%q", test.name, got, want)
+		}
+	}
+
+	state.PrepareWorldMapPreview()
+	if state.Mode != ModeWilderness || state.Area.CurrentCity != 4 || state.Location != LocationStandingStone ||
+		state.LocationName != catalog.Text("standing_stone", "") ||
+		len(state.Choices) != 3 || state.Choices[0] != catalog.Text("enter_city", "") ||
+		state.Choices[1] != catalog.Text("journey_on", "") || state.Choices[2] != catalog.Text("camp", "") ||
+		state.Prompt != catalog.Text("press_button", "") {
+		t.Fatalf("world preview state=%+v", state)
+	}
+}
