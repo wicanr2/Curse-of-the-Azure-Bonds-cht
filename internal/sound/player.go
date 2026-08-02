@@ -6,11 +6,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
 )
@@ -23,11 +26,20 @@ const musicBufferBytes = sampleRate * 4 / 4 // 250 ms of stereo s16 PCM.
 // sound IDs just as the reference engine does.
 type Player struct {
 	context     *audio.Context
-	players     map[ID]*audio.Player
-	pc98Players map[Event]*audio.Player
+	players     map[ID]oneShotPlayer
+	pc98Players map[Event]oneShotPlayer
 	enabled     bool
 	musicPlayer *audio.Player
 	musicStream *pc98music.TrackPCMStream
+}
+
+type oneShotPlayer interface {
+	Rewind() error
+	Play()
+	Pause()
+	IsPlaying() bool
+	Position() time.Duration
+	SetPosition(time.Duration) error
 }
 
 // LoadPC98Effects imports GAME.EXE's exact SOUNDFX program and prepares
@@ -41,7 +53,7 @@ func (p *Player) LoadPC98Effects(game []byte, clockHz uint64) error {
 	if err != nil {
 		return err
 	}
-	players := make(map[Event]*audio.Player)
+	players := make(map[Event]oneShotPlayer)
 	for _, effect := range effects {
 		if effect.Event == "" || effect.NoOp {
 			continue
@@ -82,7 +94,7 @@ func stereoPCM(mono []int16) []byte {
 // Load creates a player from the extracted asset directory.
 func Load(assetDir string) (*Player, error) {
 	context := audio.NewContext(sampleRate)
-	player := &Player{context: context, players: make(map[ID]*audio.Player), enabled: true}
+	player := &Player{context: context, players: make(map[ID]oneShotPlayer), enabled: true}
 	var loadErrors []error
 	for _, id := range []ID{Missile, MagicHit, Death, Sound5, Hit, Miss, Step, Sound10, Start} {
 		name, _ := AssetName(id)
@@ -159,6 +171,141 @@ func durationToSampleFramesCeil(position time.Duration, rate uint64) uint64 {
 	whole := nanos / second * rate
 	remainder := nanos % second
 	return whole + (remainder*rate+second-1)/second
+}
+
+func sampleFramesToDurationFloor(frames, rate uint64) (time.Duration, error) {
+	if frames == 0 {
+		return 0, nil
+	}
+	if rate == 0 {
+		return 0, fmt.Errorf("sample rate is zero")
+	}
+	seconds := frames / rate
+	if seconds > uint64((time.Duration(1<<63-1))/time.Second) {
+		return 0, fmt.Errorf("sample frame position %d overflows duration", frames)
+	}
+	nanos := seconds * uint64(time.Second)
+	remainder := frames % rate
+	if remainder != 0 {
+		if remainder > ^uint64(0)/uint64(time.Second) {
+			return 0, fmt.Errorf("sample rate %d cannot be converted safely", rate)
+		}
+		fraction := remainder * uint64(time.Second) / rate
+		if nanos > uint64(1<<63-1)-fraction {
+			return 0, fmt.Errorf("sample frame position %d overflows duration", frames)
+		}
+		nanos += fraction
+	}
+	return time.Duration(nanos), nil
+}
+
+// SnapshotOneShots records only players that are still active at the audible
+// position. A second IsPlaying check prevents an effect that ended while its
+// position was sampled from being resurrected by a later load.
+func (p *Player) SnapshotOneShots() (audiostate.Snapshot, error) {
+	snapshot := audiostate.Snapshot{Version: audiostate.CurrentVersion}
+	if p == nil {
+		return snapshot, fmt.Errorf("sound player is unavailable")
+	}
+	snapshot.Enabled = p.enabled
+	if !p.enabled {
+		return snapshot, snapshot.Validate()
+	}
+	for id, player := range p.players {
+		if player.IsPlaying() {
+			position := player.Position()
+			if player.IsPlaying() {
+				snapshot.OneShots = append(snapshot.OneShots, audiostate.OneShot{
+					Backend: audiostate.BackendDOSWAV, Key: strconv.Itoa(int(id)),
+					PositionFrames: durationToSampleFramesCeil(position, sampleRate),
+				})
+			}
+		}
+	}
+	for event, player := range p.pc98Players {
+		if player.IsPlaying() {
+			position := player.Position()
+			if player.IsPlaying() {
+				snapshot.OneShots = append(snapshot.OneShots, audiostate.OneShot{
+					Backend: audiostate.BackendPC98Speaker, Key: string(event),
+					PositionFrames: durationToSampleFramesCeil(position, sampleRate),
+				})
+			}
+		}
+	}
+	sort.Slice(snapshot.OneShots, func(i, j int) bool {
+		if snapshot.OneShots[i].Backend != snapshot.OneShots[j].Backend {
+			return snapshot.OneShots[i].Backend < snapshot.OneShots[j].Backend
+		}
+		return snapshot.OneShots[i].Key < snapshot.OneShots[j].Key
+	})
+	return snapshot, snapshot.Validate()
+}
+
+// RestoreOneShots fails closed: all identities and positions are resolved
+// before playback begins, and any seek failure leaves every one-shot stopped.
+func (p *Player) RestoreOneShots(snapshot audiostate.Snapshot) error {
+	if p == nil {
+		return fmt.Errorf("sound player is unavailable")
+	}
+	if err := snapshot.Validate(); err != nil {
+		return err
+	}
+	p.stopOneShots()
+	type resolvedShot struct {
+		player   oneShotPlayer
+		position time.Duration
+	}
+	resolved := make([]resolvedShot, 0, len(snapshot.OneShots))
+	for index, shot := range snapshot.OneShots {
+		position, err := sampleFramesToDurationFloor(shot.PositionFrames, sampleRate)
+		if err != nil {
+			return fmt.Errorf("one-shot %d position: %w", index, err)
+		}
+		var player oneShotPlayer
+		switch shot.Backend {
+		case audiostate.BackendDOSWAV:
+			value, err := strconv.ParseUint(shot.Key, 10, 8)
+			if err != nil {
+				return fmt.Errorf("one-shot %d DOS selector %q: %w", index, shot.Key, err)
+			}
+			player = p.players[ID(value)]
+		case audiostate.BackendPC98Speaker:
+			if p.pc98Players == nil {
+				return fmt.Errorf("one-shot %d PC-98 backend is not loaded", index)
+			}
+			player = p.pc98Players[Event(shot.Key)]
+		}
+		if player == nil {
+			return fmt.Errorf("one-shot %d asset %s/%s is unavailable", index, shot.Backend, shot.Key)
+		}
+		resolved = append(resolved, resolvedShot{player: player, position: position})
+	}
+	p.enabled = snapshot.Enabled
+	for index, shot := range resolved {
+		if err := shot.player.SetPosition(shot.position); err != nil {
+			p.stopOneShots()
+			return fmt.Errorf("seek one-shot %d: %w", index, err)
+		}
+	}
+	for _, shot := range resolved {
+		shot.player.Play()
+	}
+	if p.musicPlayer != nil {
+		if p.enabled {
+			p.musicPlayer.Play()
+		} else {
+			p.musicPlayer.Pause()
+		}
+	}
+	return nil
+}
+
+// StopOneShots prevents sounds from the pre-load state leaking across a load.
+func (p *Player) StopOneShots() {
+	if p != nil {
+		p.stopOneShots()
+	}
 }
 
 func (p *Player) RestorePC98Track(driver []byte, snapshot pc98music.TrackPCMStreamSnapshot) error {

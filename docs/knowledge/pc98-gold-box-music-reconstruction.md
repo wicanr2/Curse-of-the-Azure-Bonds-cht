@@ -175,12 +175,21 @@ engine `ymfm_saved_state` 與 resampler snapshot 是作品中立層；七聲道 
 driver SHA、selector、track ID 與 Oto buffer adapter 留在 CoAB。完整欄位、bounds
 與證據等級見 READY spec 447。
 
-## 11. 尚未完成
+## 11. 短音效存檔續跑
+
+第 448 輪的 remake save v9 另保存正常 `SOUNDFX` software-speaker one-shot。
+gameplay event stable ID 與 audible sample frame是持久資料；`GAME.EXE` importer、
+cycle→PCM 及 Ebiten player仍是平台 adapter。自然結束或 `SetSound(false)` 已停止
+的音效不寫成 active record，載入也不重新發 cue。backend、event 或 seek 不一致
+時要先停止舊聲音再失敗，避免讀檔後混入前一個世界狀態。完整 contract 見
+READY spec 448。
+
+## 12. 尚未完成
 
 - driver 缺 sector 的可信恢復；
 - Timer B reload 的 CPU／OPN 共時 phase；
 - SHA 已驗證完整 driver 的十二曲 runtime save/load oracle；
-- active one-shot sample position；
+- active one-shot 的實體音訊裝置 loopback 逐 sample oracle；
 - speaker／YM2203 類比 mixer gain；
 - 原機 port 37h edge／錄音，或經 microbenchmark 校準的 V30 emulator；
 - dormant FM SFX producer；

@@ -3302,3 +3302,14 @@ active one-shot sample position與原版 SAVGAM audio仍未完成。
 engine 全套 gate marker `ENGINE_ROUND447_FORMAL_EXIT=0`，日誌位於
 `/tmp/engine-round447-formal.log`；CoAB Docker／Xvfb／`--network none` 全套
 marker `ROUND447_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round447-formal.log`。
+
+2026-08-02 第四百四十八輪將 remake JSON save 升至 v9，補齊第 447 輪留下的
+active one-shot sample position。DOS WAV 與 PC-98 software-speaker 以 backend、
+stable selector／event、enabled 與 44,100 Hz audible frame保存；不同音效可重疊
+續跑，自然結束、停用及舊版未保存的音效不復活。backend／asset／seek 錯誤會先
+停止 pre-load voice 並失敗即關閉。frame↔duration 依 Ebiten Position 的 floor
+語意做可逆整數換算。READY spec 448 是權威；這不證明原版 SAVGAM audio，也尚缺
+實體音訊裝置 loopback 逐 sample oracle。
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND448_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round448-formal.log`。

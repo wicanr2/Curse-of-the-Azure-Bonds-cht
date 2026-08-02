@@ -1162,9 +1162,16 @@ fail-closed；此限制已由第 446 輪解除。證據見
 machine、YM2203 FM／SSG phase、resampler remainder、Timer B、800ms pre-roll及
 pending PCM。Ebiten 的實際 audible frame與 decoder 預讀點之間的 PCM 也會由
 bounded history補回，所以載入從第一個尚未聽見的 sample續跑，不是從曲首重播。
-engine `f06493f` 提供作品中立 ymfm／resampler snapshot。active one-shot 尚未
-保存；本機完整 MSCDRV 缺失，十二首真實曲目的 save/load runtime oracle 仍待補。
+engine `f06493f` 提供作品中立 ymfm／resampler snapshot。本機完整 MSCDRV 缺失，
+十二首真實曲目的 save/load runtime oracle 仍待補。
 證據見 [`spec 447`](docs/spec/447-pc98-bgm-sample-continuation-save.md)。
+
+第 448 輪再把 remake JSON save 升至 v9：仍在播放的 DOS WAV 與 PC-98
+software-speaker 短音效，會保存 backend、stable selector／event、音效啟用狀態
+及 44,100 Hz audible sample frame。多個不同音效可同時從原位置續跑；自然結束、
+停用與舊版未保存的音效不會復活，backend／asset／seek 不一致則先停止舊聲音並
+失敗即關閉。這是 remake player 的續跑能力，不是原版 SAVGAM audio 格式聲明。
+證據見 [`spec 448`](docs/spec/448-active-one-shot-sample-continuation-save.md)。
 
 第 444 輪把 save v7 接入真實 campaign：從 Standing Stone 世界旅行至
 Myth Drannor，沿 GEO6 合法路徑經精靈幽魂與紅網字串輸入，在四蜘蛛第一戰的
@@ -1185,8 +1192,9 @@ party 與 roster 都沒有盟友污染。證據見
 Ebiten 載入後以保存位置加上新的縮放時鐘續跑，第一幀不再重置。Sleep
 `TWINKLE` 700ms 與一擊致死弓箭 death frame 都能同幀 round-trip；已送出的
 CAST／SPELLHIT 或 ARROW／HIT／DEAD 不會在載入、同幀重入或 handoff 重播。
-損壞的超時 elapsed、越界 phase marker 會失敗即關閉。這尚不保存播放器內的
-PCM sample offset，不能冒稱音訊取樣點無縫續播。證據見
+損壞的超時 elapsed、越界 phase marker 會失敗即關閉。播放器 PCM sample
+offset 已由 spec 447／448 分別補上 BGM 與 active one-shot，但實體裝置 loopback
+及原版 SAVGAM audio仍未完成，不能冒稱所有音訊輸出 cycle-perfect。證據見
 [`spec 446`](docs/spec/446-mid-visual-combat-save-resume.md)。
 
 ## 尚未完成
