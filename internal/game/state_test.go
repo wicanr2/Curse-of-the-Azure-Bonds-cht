@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -2732,15 +2733,16 @@ func TestActiveCombatSaveRestoresSleepVisualEffectSchedulerAndRandom(t *testing.
 	if !ok || event.Kind != combat.VisualTwinkle {
 		t.Fatalf("pre-save Sleep visual=%+v ok=%v", event, ok)
 	}
+	midElapsed := 700 * time.Millisecond
+	if err := original.AdvanceCombatVisual(midElapsed); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := original.ConsumeSoundEvents(), []SoundEvent{SoundCast, SoundSpellHit}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("mid-Sleep sounds=%v want=%v", got, want)
+	}
 	path := filepath.Join(t.TempDir(), "sleep-active.json")
 	if err := original.SavePartyFile(path); err != nil {
 		t.Fatal(err)
-	}
-	if err := original.AdvanceCombatVisual(0); err != nil {
-		t.Fatal(err)
-	}
-	if err := original.SavePartyFile(filepath.Join(t.TempDir(), "mid-visual.json")); err == nil {
-		t.Fatal("mid-visual active combat save unexpectedly succeeded without elapsed-time ownership")
 	}
 	loaded := newSleepState()
 	if err := loaded.LoadPartyFile(path); err != nil {
@@ -2751,11 +2753,29 @@ func TestActiveCombatSaveRestoresSleepVisualEffectSchedulerAndRandom(t *testing.
 		loaded.Location != LocationMythDrannor {
 		t.Fatalf("loaded visual=%+v ok=%v mode=%v want=%+v", loadedEvent, ok, loaded.Mode, event)
 	}
+	if got := loaded.CombatVisualElapsed(); got != midElapsed {
+		t.Fatalf("loaded visual elapsed=%s want=%s", got, midElapsed)
+	}
+	if got, want := loadedEvent.FrameAt(loaded.CombatVisualElapsed()), event.FrameAt(midElapsed); !reflect.DeepEqual(got, want) {
+		t.Fatalf("loaded visual frame=%+v want=%+v", got, want)
+	}
+	if sounds := loaded.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("load replayed committed visual sounds: %v", sounds)
+	}
+	if err := loaded.AdvanceCombatVisual(midElapsed); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := loaded.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("same-frame resume replayed committed visual sounds: %v", sounds)
+	}
 	if err := original.AdvanceCombatVisual(event.Duration()); err != nil {
 		t.Fatal(err)
 	}
 	if err := loaded.AdvanceCombatVisual(loadedEvent.Duration()); err != nil {
 		t.Fatal(err)
+	}
+	if got := append(original.ConsumeSoundEvents(), loaded.ConsumeSoundEvents()...); len(got) != 0 {
+		t.Fatalf("completed resumed Sleep replayed sounds: %v", got)
 	}
 	want, err := original.battle.Snapshot()
 	if err != nil {
@@ -2797,6 +2817,95 @@ func TestActiveCombatSaveRestoresSleepVisualEffectSchedulerAndRandom(t *testing.
 	if originalOrc.MonsterIsHeld() || loadedOrc.MonsterIsHeld() ||
 		!reflect.DeepEqual(originalOrc.MonsterAffects, loadedOrc.MonsterAffects) {
 		t.Fatalf("natural expiry original=%+v loaded=%+v", originalOrc.MonsterAffects, loadedOrc.MonsterAffects)
+	}
+}
+
+func TestActiveCombatSaveResumesMissileDeathFrameWithoutSoundReplay(t *testing.T) {
+	newArcherState := func() *State {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "archer", Name: "弓手", Race: party.RaceHuman,
+			Class: party.ClassFighter, Level: 3,
+			Abilities: party.Abilities{Strength: 12, Intelligence: 10, Wisdom: 10,
+				Dexterity: 16, Constitution: 12, Charisma: 10},
+		}}
+		return &state
+	}
+	original := newArcherState()
+	heroes := []combat.Fighter{{
+		ID: "archer", Name: "弓手", Side: combat.SideParty,
+		HitPoints: 20, MaxHitPoints: 20, ArmorClass: 0,
+		AttackBonus: 30, DamageDiceCount: 1, DamageDiceSides: 4,
+		InitiativeBonus: 30, MissileWeapon: true,
+		HasCombatPosition: true, CombatX: 1, CombatY: 3,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "goblin", Name: "哥布林", Side: combat.SideEnemy,
+		HitPoints: 1, MaxHitPoints: 1, ArmorClass: 10,
+		HasCombatPosition: true, CombatX: 5, CombatY: 3,
+	}}
+	if err := original.StartCombat(heroes, enemies, 7); err != nil {
+		t.Fatal(err)
+	}
+	if err := original.CombatAct(); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := original.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualMissile || !event.Killed {
+		t.Fatalf("missile visual=%+v ok=%v", event, ok)
+	}
+	deathAt := combat.VisualWindupDuration + combat.VisualTravelDuration +
+		combat.VisualImpactDuration + combat.VisualCommitDuration
+	if err := original.AdvanceCombatVisual(deathAt); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := original.ConsumeSoundEvents(), []SoundEvent{SoundArrow, SoundHit, SoundDead}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("pre-save missile sounds=%v want=%v", got, want)
+	}
+	path := filepath.Join(t.TempDir(), "missile-death.json")
+	if err := original.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	snapshot, err := original.activeCombatSnapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	badElapsed := *snapshot
+	badElapsed.VisualElapsedNanos = int64(event.Duration() + time.Nanosecond)
+	if err := newArcherState().restoreActiveCombat(badElapsed); err == nil {
+		t.Fatal("restore accepted combat visual elapsed beyond event duration")
+	}
+	badMarker := *snapshot
+	badMarker.VisualImpactSent = event.ImpactCount()
+	if err := newArcherState().restoreActiveCombat(badMarker); err == nil {
+		t.Fatal("restore accepted out-of-range combat visual impact marker")
+	}
+	loaded := newArcherState()
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loadedEvent, ok := loaded.CombatVisualEvent()
+	if !ok || !reflect.DeepEqual(loadedEvent.FrameAt(loaded.CombatVisualElapsed()), event.FrameAt(deathAt)) {
+		t.Fatalf("loaded death frame=%+v elapsed=%s ok=%v", loadedEvent.FrameAt(loaded.CombatVisualElapsed()), loaded.CombatVisualElapsed(), ok)
+	}
+	if sounds := loaded.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("load replayed missile sounds: %v", sounds)
+	}
+	if err := loaded.AdvanceCombatVisual(deathAt); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := loaded.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("same death frame replayed missile sounds: %v", sounds)
+	}
+	if err := loaded.AdvanceCombatVisual(loadedEvent.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := loaded.ConsumeSoundEvents(); len(sounds) != 0 {
+		t.Fatalf("handoff replayed missile sounds: %v", sounds)
+	}
+	if loaded.Mode != ModeEvent || loaded.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("loaded handoff mode=%v status=%v", loaded.Mode, loaded.CombatStatus())
 	}
 }
 

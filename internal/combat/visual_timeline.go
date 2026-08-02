@@ -125,8 +125,9 @@ func (event VisualEvent) Duration() time.Duration {
 	return duration
 }
 
-// FrameAt converts elapsed wall-clock time into deterministic choreography.
-// The renderer owns the clock; saved gameplay state remains clock-neutral.
+// FrameAt converts an elapsed timeline position into deterministic
+// choreography. The game State commits that position so save/load can resume
+// the same frame; renderers only provide monotonic clock deltas.
 func (event VisualEvent) FrameAt(elapsed time.Duration) VisualFrame {
 	if elapsed < 0 {
 		elapsed = 0

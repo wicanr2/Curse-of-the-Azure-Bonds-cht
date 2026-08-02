@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
@@ -195,6 +196,7 @@ type State struct {
 	combatVisualEnabled     bool
 	combatVisualSerial      uint64
 	combatVisual            *combat.VisualEvent
+	combatVisualElapsed     time.Duration
 	combatVisualTravelSent  bool
 	combatVisualImpactSent  int
 	combatVisualDeathSent   int

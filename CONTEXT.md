@@ -3275,3 +3275,15 @@ State。Battle／ECL session／TemporaryAlly Fighter 逐欄相同，Characters r
 正式 Docker／Xvfb／`--network none` gate 已驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker
 `ROUND445_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round445-formal.log`。
+
+2026-08-02 第四百四十六輪解除 save v7 的 mid-visual fail-closed。State 新增
+權威 `combatVisualElapsed`，snapshot 以納秒保存，frontend 以 saved base 加新
+wall-clock delta 續跑；travel／impact／death 已送 cue markers 同步 round-trip。
+正常手動 Sleep 在 700ms `TWINKLE` 中段與一擊致死弓箭 death frame 都由全新
+State 載入同一 frame，載入、同幀重入及 handoff 不重播已送離散音效。超時
+elapsed、越界 marker、無 event 的非零 elapsed 及時間倒退均 fail-closed。
+READY spec 446 是權威；播放器 PCM sample offset、BGM driver／synth snapshot
+與原版 SAVGAM combat layout 仍未完成。
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND446_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round446-formal.log`。

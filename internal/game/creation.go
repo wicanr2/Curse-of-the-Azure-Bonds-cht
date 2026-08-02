@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 	"unicode/utf8"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
@@ -329,9 +330,6 @@ func (s *State) activeCombatSnapshot() (*partySave.CombatSnapshot, error) {
 	}
 	var visual *combat.VisualEvent
 	if s.combatVisual != nil {
-		if s.combatVisualTravelSent || s.combatVisualImpactSent >= 0 || s.combatVisualDeathSent >= 0 {
-			return nil, fmt.Errorf("active combat save during an advanced visual phase is not yet supported")
-		}
 		copy := *s.combatVisual
 		copy.Impacts = append([]combat.VisualImpactTarget(nil), copy.Impacts...)
 		copy.Segments = append([]combat.VisualPathSegment(nil), copy.Segments...)
@@ -349,7 +347,8 @@ func (s *State) activeCombatSnapshot() (*partySave.CombatSnapshot, error) {
 		View: s.combatView, ViewFighterID: s.combatViewFighterID,
 		Message: s.combatMessage, ReturnMode: uint8(s.combatReturnMode),
 		VisualSerial: s.combatVisualSerial, VisualEnabled: s.combatVisualEnabled,
-		Visual: visual, VisualTravelSent: s.combatVisualTravelSent,
+		Visual: visual, VisualElapsedNanos: int64(s.combatVisualElapsed),
+		VisualTravelSent: s.combatVisualTravelSent,
 		VisualImpactSent: s.combatVisualImpactSent, VisualDeathSent: s.combatVisualDeathSent,
 		VisualAdvanceTurn: s.combatVisualAdvanceTurn,
 	}, nil
@@ -787,6 +786,16 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 		}
 	}
 	if snapshot.Visual != nil {
+		elapsed := time.Duration(snapshot.VisualElapsedNanos)
+		if snapshot.VisualElapsedNanos < 0 || elapsed > snapshot.Visual.Duration() {
+			return fmt.Errorf("combat visual elapsed time %d outside 0..%d", snapshot.VisualElapsedNanos, snapshot.Visual.Duration())
+		}
+		if snapshot.VisualImpactSent < -1 || snapshot.VisualImpactSent >= snapshot.Visual.ImpactCount() {
+			return fmt.Errorf("combat visual impact marker %d outside -1..%d", snapshot.VisualImpactSent, snapshot.Visual.ImpactCount()-1)
+		}
+		if snapshot.VisualDeathSent < -1 || snapshot.VisualDeathSent >= snapshot.Visual.ImpactCount() {
+			return fmt.Errorf("combat visual death marker %d outside -1..%d", snapshot.VisualDeathSent, snapshot.Visual.ImpactCount()-1)
+		}
 		if snapshot.Visual.ActorID != "" {
 			if _, ok := battle.Fighter(snapshot.Visual.ActorID); !ok {
 				return fmt.Errorf("combat visual references missing actor %q", snapshot.Visual.ActorID)
@@ -801,6 +810,8 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 				return fmt.Errorf("combat visual impact %d references missing target %q", index, impact.TargetID)
 			}
 		}
+	} else if snapshot.VisualElapsedNanos != 0 {
+		return fmt.Errorf("combat visual elapsed time %d has no visual event", snapshot.VisualElapsedNanos)
 	}
 	s.battle = battle
 	s.combatTurns = append([]combat.Turn(nil), snapshot.Turns...)
@@ -827,6 +838,7 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 	} else {
 		s.combatVisual = nil
 	}
+	s.combatVisualElapsed = time.Duration(snapshot.VisualElapsedNanos)
 	s.combatVisualTravelSent = snapshot.VisualTravelSent
 	s.combatVisualImpactSent = snapshot.VisualImpactSent
 	s.combatVisualDeathSent = snapshot.VisualDeathSent

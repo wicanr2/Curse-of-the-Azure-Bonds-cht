@@ -25,6 +25,19 @@ func TestCombatSpeedElapsedMatchesReferenceMultiplier(t *testing.T) {
 	}
 }
 
+func TestCombatVisualResumeElapsedKeepsSavedBaseAtEverySpeed(t *testing.T) {
+	base := 700 * time.Millisecond
+	if got := combatVisualResumeElapsed(base, 0, 4); got != base {
+		t.Fatalf("zero-delta resume=%v want=%v", got, base)
+	}
+	if got, want := combatVisualResumeElapsed(base, time.Second, 4), base+time.Second; got != want {
+		t.Fatalf("default-speed resume=%v want=%v", got, want)
+	}
+	if fast, slow := combatVisualResumeElapsed(base, time.Second, 0), combatVisualResumeElapsed(base, time.Second, 9); fast <= slow {
+		t.Fatalf("resume speed ordering fast=%v slow=%v", fast, slow)
+	}
+}
+
 func TestImageCoverTransformUsesGlobalDestinationOrigin(t *testing.T) {
 	scale, x, y := imageCoverTransform(88, 88, image.Rect(48, 48, 224, 224))
 	if scale != 2 || x != 48 || y != 48 {
