@@ -613,6 +613,42 @@ func TestAshabenfordAndStandingStoneStoryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestTilvertonGuildAndHideoutTransitionIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"tilverton.guildmaster-greeting", []string{"BEFORE YOU STANDS A BURLY MAN", "CARE TO REST"}},
+		{"tilverton.guildmaster-briefing", []string{"THE FIRE KNIVES HAVE THE KING'S DAUGHTER", "I CAN OFFER INFORMATION"}},
+		{"tilverton.guild-breach", []string{"SIDE DOOR EXPLODES INWARD", "DEAFENING CRASH"}},
+		{"tilverton.guild-fire-knife-command", []string{"TRAITOROUS SCUM", "SEIZE THEM ALL"}},
+		{"tilverton.guild-poisoned-dagger", []string{"GUILDMASTER HURLS A POISONED DAGGER", "TWITCHING VIOLENTLY"}},
+		{"tilverton.guild-battle-joined", []string{"ARROW HIT THE GUILDMASTER IN THE CHEST", "THE BATTLE IS JOINED"}},
+		{"tilverton.guild-halfling", []string{"HALFLING WITH A HARP", "DISAPPEAR"}},
+		{"tilverton.guild-kennel-intro", []string{"HUNGRY SNARLS", "RELEASES THE PACK"}},
+		{"tilverton.guild-kennel-aftermath", []string{"GNAWED BONES", "LEASHES"}},
+		{"tilverton.guild-monkey-cages", []string{"CAGES THAT ONCE HELD MONKEYS"}},
+		{"tilverton.guild-guest-book", []string{"OPEN GUEST BOOK", "O.RUSKETTLE"}},
+		{"tilverton.guild-sewer-traces", []string{"GREEN SLIMY MARKS", "MORE DISTINCT NEAR THE DOOR"}},
+		{"tilverton.sewers-entry", []string{"FOUL SMELLING, SLIME COVERED", "FIGHTING WILL BE", "AWKWARD"}},
+		{"fire-knife.hideout-entry", []string{"YOU ARE ENTERING THE HIDEOUT"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

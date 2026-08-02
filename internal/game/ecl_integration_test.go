@@ -889,23 +889,41 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
+	if state.Message != requireGamePackText(t, &state, "tilverton.guildmaster-greeting") {
+		t.Fatalf("guildmaster greeting message=%q", state.Message)
+	}
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if err := state.Select(0); err != nil {
-		t.Fatal(err)
+	if state.Message != requireGamePackText(t, &state, "tilverton.guildmaster-briefing") {
+		t.Fatalf("guildmaster briefing message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if err := state.Select(0); err != nil {
-		t.Fatal(err)
+	if state.Message != requireGamePackText(t, &state, "tilverton.guild-breach") {
+		t.Fatalf("guild breach message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
+	}
+	if state.Message != requireGamePackText(t, &state, "tilverton.guild-fire-knife-command") {
+		t.Fatalf("guild Fire Knife command message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != requireGamePackText(t, &state, "tilverton.guild-poisoned-dagger") {
+		t.Fatalf("guild poisoned dagger message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != requireGamePackText(t, &state, "tilverton.guild-battle-joined") {
+		t.Fatalf("guild battle joined message=%q", state.Message)
 	}
 	guildParty, guildEnemies := 0, 0
 	guildFighters := state.CombatFighters()
@@ -943,7 +961,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "抱著豎琴的半身人") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-halfling") {
 		t.Fatalf("guild halfling event mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
@@ -955,7 +973,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "放出了犬群") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-kennel-intro") {
 		t.Fatalf("guild kennel intro mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
 	}
 	hero = state.PartyFighters()[0]
@@ -994,7 +1012,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		}
 	}
 	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
-		!strings.Contains(state.Message, "被啃咬的骨頭") {
+		state.Message != requireGamePackText(t, &state, "tilverton.guild-kennel-aftermath") {
 		t.Fatalf("guild kennel result mode=%v status=%v message=%q choices=%v",
 			state.Mode, state.CombatStatus(), state.Message, state.Choices)
 	}
@@ -1007,7 +1025,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "關猴子的空籠") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-monkey-cages") {
 		t.Fatalf("guild cages mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
@@ -1019,7 +1037,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "奧莉芙・拉斯凱托") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-guest-book") {
 		t.Fatalf("guild guestbook mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
@@ -1031,7 +1049,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || !strings.Contains(state.Message, "綠色黏液痕跡") {
+	if state.Mode != ModeEvent || state.Message != requireGamePackText(t, &state, "tilverton.guild-sewer-traces") {
 		t.Fatalf("guild sewer door mode=%v message=%q", state.Mode, state.Message)
 	}
 	if err := state.Continue(); err != nil {
@@ -1051,7 +1069,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness || state.GeoMapSet != 2 || state.GeoMapBlock != 3 ||
 		state.DungeonX != 0 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
-		!strings.Contains(state.Message, "提爾佛頓") || !strings.Contains(state.Message, "難在這裡靈活作戰") {
+		state.Message != requireGamePackText(t, &state, "tilverton.sewers-entry") {
 		t.Fatalf("sewer entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
 			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.Message)
@@ -1158,7 +1176,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		state.GeoMapSet != 2 || state.GeoMapBlock != 4 ||
 		state.DungeonX != 6 || state.DungeonY != 1 || state.DungeonDirection != 4 ||
 		state.LoadPieces != [3]uint16{1, 2, 4} ||
-		!strings.Contains(state.Message, "火刀據點") {
+		state.Message != requireGamePackText(t, &state, "fire-knife.hideout-entry") {
 		t.Fatalf("Fire Knife hideout entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q choices=%v",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
 			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.LoadPieces,
