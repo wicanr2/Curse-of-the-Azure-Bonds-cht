@@ -3350,7 +3350,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if session.CurrentBlockID() != 0x51 || !state.PictureRequested || state.PictureBlock != 121 ||
-		!strings.Contains(state.Message, "偽裝成戰士的火刀") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.fire-knives-ambush") {
 		t.Fatalf("Hillsfar trail ambush mode=%v block=0x%02X location=%v originals=%#v message=%q picture=%v/%d",
 			state.Mode, session.CurrentBlockID(), state.Location, state.currentOriginalChoices,
 			state.Message, state.PictureRequested, state.PictureBlock)
@@ -3384,7 +3384,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeWilderness || state.Location != LocationHillsfar ||
 		state.Area.CurrentCity != 11 ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
-		!strings.Contains(state.Message, "希爾斯法城外") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.edge") {
 		t.Fatalf("Hillsfar arrival mode=%v block=0x%02X location=%v currentCity=%d originals=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.Location, state.Area.CurrentCity,
 			state.currentOriginalChoices, state.Message)
@@ -3397,7 +3397,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 80 ||
-		!strings.Contains(state.Message, "身在希爾斯法") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.places") {
 		t.Fatalf("Hillsfar enter mode=%v block=0x%02X location=%v originals=%#v message=%q picture=%v/%d",
 			state.Mode, session.CurrentBlockID(), state.Location, state.currentOriginalChoices,
 			state.Message, state.PictureRequested, state.PictureBlock)
@@ -3412,7 +3412,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"INN", "STORE", "HALL", "TEMPLE", "BAR", "LEAVE"}) ||
-		!strings.Contains(state.Message, "身在希爾斯法") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.places") {
 		t.Fatalf("Hillsfar places mode=%v block=0x%02X originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices,
 			state.Choices, state.Message)
@@ -3420,7 +3420,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(4); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "碼頭邊的酒館") ||
+	if state.Message != requireGamePackText(t, &state, "hillsfar.dockside-bar") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) {
 		t.Fatalf("Hillsfar bar mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
@@ -3428,8 +3428,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "紅羽衛") ||
-		!strings.Contains(state.Message, "打翻") ||
+	if state.Message != requireGamePackText(t, &state, "hillsfar.red-plumes-spill-drinks") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
 		t.Fatalf("Hillsfar Red Plume provocation originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3455,7 +3454,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) ||
-		!strings.Contains(state.Message, "碼頭邊的酒館") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.dockside-bar") {
 		t.Fatalf("Hillsfar Red Plume victory mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
@@ -3463,7 +3462,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 80 ||
-		!strings.Contains(state.Message, "身在希爾斯法") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.places") {
 		t.Fatalf("Hillsfar bar exit picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -3481,7 +3480,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 121 ||
-		!strings.Contains(state.Message, "希爾斯法城外") {
+		state.Message != requireGamePackText(t, &state, "hillsfar.edge") {
 		t.Fatalf("Hillsfar leave picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}

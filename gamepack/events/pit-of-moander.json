@@ -411,6 +411,11 @@
       ,"essembra.places": "You are in Essembra. What place will you visit?"
       ,"essembra.branching-oak": "Welcome to the Branching Oak."
       ,"essembra.outdoor-bar": "You are in an outdoor bar overlooking the woods. What will you do?"
+      ,"hillsfar.fire-knives-ambush": "You are ambushed by Fire Knives disguised as fighters."
+      ,"hillsfar.edge": "You are at the edge of Hillsfar. Will you enter the city or continue your journey?"
+      ,"hillsfar.places": "You are in Hillsfar. What place will you visit?"
+      ,"hillsfar.dockside-bar": "You are in a dockside bar. What will you do?"
+      ,"hillsfar.red-plumes-spill-drinks": "Some Red Plumes deliberately spill your drinks and order you to clean up the mess. Will you comply?"
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -847,6 +852,11 @@
       ,"essembra.places": "你們身在艾森布拉。要前往哪個場所？"
       ,"essembra.branching-oak": "「歡迎光臨枝椏橡樹客棧。」"
       ,"essembra.outdoor-bar": "你們來到一座俯瞰林地的露天酒館。要做什麼？"
+      ,"hillsfar.fire-knives-ambush": "一群偽裝成戰士的火刀突然伏擊你們！"
+      ,"hillsfar.edge": "你們來到希爾斯法城外。要進城，還是繼續旅程？"
+      ,"hillsfar.places": "你們身在希爾斯法。要前往哪個場所？"
+      ,"hillsfar.dockside-bar": "你們來到碼頭邊的酒館。要做什麼？"
+      ,"hillsfar.red-plumes-spill-drinks": "幾名紅羽衛走過來，故意打翻你們的酒，命令你們把髒亂清乾淨。要照辦嗎？"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2634,6 +2644,11 @@
     {"id": "essembra.places", "all_contains": ["YOU ARE IN ESSEMBRA", "WHAT PLACE WILL YOU VISIT"], "message_id": "essembra.places"},
     {"id": "essembra.branching-oak", "all_contains": ["WELCOME TO THE BRANCHING OAK"], "message_id": "essembra.branching-oak"},
     {"id": "essembra.outdoor-bar", "all_contains": ["YOU ARE IN A N OUTDOOR BAR", "OVERLOOKING THE WOODS"], "message_id": "essembra.outdoor-bar"},
+    {"id": "hillsfar.fire-knives-ambush", "all_contains": ["AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS"], "message_id": "hillsfar.fire-knives-ambush"},
+    {"id": "hillsfar.edge", "all_contains": ["YOU ARE AT THE EDGE OF HILLSFAR"], "message_id": "hillsfar.edge"},
+    {"id": "hillsfar.places", "all_contains": ["YOU ARE IN HILLSFAR", "WHAT PLACE WILL YOU VISIT"], "message_id": "hillsfar.places"},
+    {"id": "hillsfar.dockside-bar", "all_contains": ["YOU ARE IN A DOCKSIDE BAR"], "message_id": "hillsfar.dockside-bar"},
+    {"id": "hillsfar.red-plumes-spill-drinks", "all_contains": ["SOME RED PLUMES COME OVER", "ORDER YOU TO CLEAN UP THE MESS"], "message_id": "hillsfar.red-plumes-spill-drinks"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

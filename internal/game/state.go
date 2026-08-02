@@ -5625,23 +5625,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
-	case strings.Contains(joined, "YOU ARE IN HILLSFAR") &&
-		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
-		return catalog.Text(
-			"ecl_hillsfar_places",
-			"你們身在希爾斯法。要前往哪個場所？",
-		)
-	case strings.Contains(joined, "YOU ARE IN A DOCKSIDE BAR"):
-		return catalog.Text(
-			"ecl_hillsfar_dockside_bar",
-			"ecl_hillsfar_dockside_bar",
-		)
-	case strings.Contains(joined, "SOME RED PLUMES COME OVER") &&
-		strings.Contains(joined, "ORDER YOU TO CLEAN UP THE MESS"):
-		return catalog.Text(
-			"ecl_hillsfar_red_plumes_spill_drinks",
-			"幾名紅羽衛走過來，故意打翻你們的酒，命令你們把髒亂清乾淨。要照辦嗎？",
-		)
 	case strings.Contains(joined, "YOU ARE APPROACHED BY A RED PLUME PATROL") &&
 		strings.Contains(joined, "TATOO BETRAYS YOU AS A ZHENTRIM SPY"):
 		return catalog.Text(
@@ -5905,11 +5888,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"tavern_tale_60",
 			"tavern_tale_60",
 		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HILLSFAR"):
-		return catalog.Text(
-			"ecl_hillsfar_edge",
-			"你們來到希爾斯法城外。要進城，還是繼續旅程？",
-		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF YULASH"):
 		return catalog.Text(
 			"ecl_yulash_edge",
@@ -5940,11 +5918,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_shadow_gap_fire_knife_patrol",
 			"一隊偽裝成巡邏兵的火刀突然伏擊你們！",
-		)
-	case strings.Contains(joined, "AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS"):
-		return catalog.Text(
-			"ecl_fire_knives_disguised_fighters",
-			"一群偽裝成戰士的火刀突然伏擊你們！",
 		)
 	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 28"):
 		return catalog.Text(

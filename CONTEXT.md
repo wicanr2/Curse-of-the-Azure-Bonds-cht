@@ -3528,3 +3528,13 @@ game-pack。第 463 輪正常長路徑接續驗證 roster 只剩 hero、item typ
 key，故七事件只下降六次漢字。READY spec 464 是權威；正式 gate、commit／
 Docker／Xvfb／`--network none` 正式 gate 已通過，marker
 `ROUND464_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十五輪完成 Hillsfar 城市與酒館資料化。trail 上偽裝火刀
+伏擊、Hillsfar edge／places／dockside bar、Red Plumes 打翻飲品五條 source
+rules 與 en／zh-TW messages 已移入 game-pack；Go fallback 與 UI locale 複本
+移除。Standing Stone 起始正常路徑完成六火刀戰、進城 selector `06h`、紅羽衛
+NO 分支六人戰、勝利返回酒館、回 places 不重播音樂，以及離城 selector `05h`。
+source audit 655→651：localization 160→156，frontend 135、runtime 360 不變；
+dockside bar 舊分支只有 locale key，故五事件只下降四次。READY spec 465 是
+權威；Docker／Xvfb／`--network none` 正式 gate 已通過，marker
+`ROUND465_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
