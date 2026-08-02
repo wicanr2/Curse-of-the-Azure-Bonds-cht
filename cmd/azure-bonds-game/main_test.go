@@ -324,6 +324,46 @@ func TestCombatMovementTerrainEntryMapsFallbackAndReferenceCoordinates(t *testin
 	}
 }
 
+func TestCombatScanTacticalMapPreservesRawTDAndTDEFBytes(t *testing.T) {
+	dungeon := &mapdata.DungeonFloor{}
+	for y := 7; y < 23; y++ {
+		for x := 18; x < 50; x++ {
+			dungeon.Tiles[y][x] = 22
+		}
+	}
+	app := app{dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
+
+	got, err := app.combatScanTacticalMap()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Width != 32 || got.Height != 16 {
+		t.Fatalf("fallback tactical dimensions=%dx%d, want 32x16", got.Width, got.Height)
+	}
+	if got.Tiles[0] != 22 {
+		t.Fatalf("local TD=%d, want raw floor ID 22", got.Tiles[0])
+	}
+	want := mapdata.BackgroundTiles[22]
+	definition := got.Definitions[21]
+	if definition.HT != want.MoveCost || definition.LOS != want.Height || definition.SYM != want.Field || definition.Raw3 != want.TileIndex {
+		t.Fatalf("TDEF[21]=%+v, want BackgroundTiles[22]=%+v", definition, want)
+	}
+}
+
+func TestCombatScanTacticalMapFailsClosedOnUnknownTD(t *testing.T) {
+	dungeon := &mapdata.DungeonFloor{}
+	for y := 7; y < 23; y++ {
+		for x := 18; x < 50; x++ {
+			dungeon.Tiles[y][x] = 22
+		}
+	}
+	dungeon.Tiles[7][18] = 66
+	app := app{dungeonFloor: dungeon, combatTerrainMode: "DUNGCOM"}
+	if _, err := app.combatScanTacticalMap(); err == nil {
+		t.Fatal("unknown TD unexpectedly accepted")
+	}
+}
+
 func TestMirroredCombatPlacementKeepsOriginalCPICAnchor(t *testing.T) {
 	got := mirroredCombatAnchor(combat.TilePoint{X: 0, Y: 2})
 	if got != (combat.TilePoint{X: 6, Y: 2}) {

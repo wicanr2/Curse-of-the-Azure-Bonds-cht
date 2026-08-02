@@ -152,10 +152,20 @@ func GenerateWilderness(cityFlags int, seed int64) WildernessFloor {
 }
 
 func (floor WildernessFloor) Entry(x, y int) (BackgroundTile, bool) {
-	if x < 0 || x >= WildernessWidth || y < 0 || y >= WildernessHeight {
+	tileID, ok := floor.TileID(x, y)
+	if !ok {
 		return BackgroundTile{}, false
 	}
-	return Lookup(int(floor.Tiles[y][x]))
+	return Lookup(int(tileID))
+}
+
+// TileID returns the original one-based TACTICALMAP.TD value. Entry is for
+// renderer and movement consumers; SCAN must preserve this raw identity.
+func (floor WildernessFloor) TileID(x, y int) (uint8, bool) {
+	if x < 0 || x >= WildernessWidth || y < 0 || y >= WildernessHeight {
+		return 0, false
+	}
+	return floor.Tiles[y][x], true
 }
 
 func (floor WildernessFloor) CanEnter(x, y int) bool {

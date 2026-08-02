@@ -16,6 +16,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
 func testCatalog() locale.Catalog {
@@ -2612,6 +2613,85 @@ func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	}
 	if len(state.partyRoster[0].SpellSlots) != 0 || targetHP >= 20 {
 		t.Fatalf("cast state=%#v fighters=%#v", state, state.CombatFighters())
+	}
+}
+
+func TestCombatCastSleepUsesSelectedCellScanAndConsumesSlot(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 3,
+		SpellSlots: []uint8{SleepSpellID},
+	}}
+	state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+		return enginescan.TacticalMap{
+			Width: 7, Height: 1,
+			Tiles:       []uint8{1, 1, 1, 1, 1, 1, 1},
+			Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+		}, nil
+	})
+	heroes := []combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty, LegacyObjectID: 1,
+		HitPoints: 20, MaxHitPoints: 20, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 0, CombatY: 0,
+	}}
+	enemies := []combat.Fighter{
+		{ID: "near-caster", Side: combat.SideEnemy, LegacyObjectID: 2,
+			HitPoints: 10, MaxHitPoints: 10, HitDice: 1, HasCombatPosition: true, CombatX: 1, CombatY: 0},
+		{ID: "selected", Side: combat.SideEnemy, LegacyObjectID: 3,
+			HitPoints: 10, MaxHitPoints: 10, HitDice: 1, HasCombatPosition: true, CombatX: 5, CombatY: 0},
+	}
+	if err := state.StartCombat(heroes, enemies, 439); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatSelectTarget(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(SleepSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if point, ok := state.CombatSpellTargetPoint(); !ok || point != (combat.TilePoint{X: 5, Y: 0}) {
+		t.Fatalf("Sleep center=%+v ok=%v, want selected enemy", point, ok)
+	}
+	if err := state.CombatCastWithTerrain(SleepSpellID, nil); err != nil {
+		t.Fatal(err)
+	}
+	if len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("Sleep slot not consumed: %v", state.partyRoster[0].SpellSlots)
+	}
+	for _, fighter := range state.CombatFighters() {
+		held := fighter.MonsterIsHeld()
+		if fighter.ID == "near-caster" && held {
+			t.Fatalf("caster-centred enemy was incorrectly put to Sleep: %+v", fighter)
+		}
+		if fighter.ID == "selected" && !held {
+			t.Fatalf("selected-cell enemy did not receive Sleep: %+v", fighter)
+		}
+	}
+}
+
+func TestCombatCastSleepMapFailureDoesNotConsumeSlot(t *testing.T) {
+	state := NewState(testCatalog())
+	state.partyRoster = party.Roster{{
+		ID: "mage", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{SleepSpellID},
+	}}
+	state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+		return enginescan.TacticalMap{Width: 1, Height: 1, Tiles: []uint8{0}}, nil
+	})
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "mage", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8, InitiativeBonus: 30}},
+		[]combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1}},
+		440,
+	); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(SleepSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCastWithTerrain(SleepSpellID, nil); err == nil {
+		t.Fatal("invalid Sleep TACTICALMAP unexpectedly resolved")
+	}
+	if got := state.partyRoster[0].SpellSlots; len(got) != 1 || got[0] != SleepSpellID {
+		t.Fatalf("failed Sleep consumed slot: %v", got)
 	}
 }
 

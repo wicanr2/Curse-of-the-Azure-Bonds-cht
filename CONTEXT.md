@@ -3200,3 +3200,14 @@ CoAB `Fighter.LegacyObjectID`、`StartCombat` 一基底重建、
 `CHARACTERLIST→IDLIST→footprint→INARC/LOS/sort→stable ID` transaction，
 72 筆上限與身份缺損均 fail-closed。frontend 仍缺目前戰場 `TD/TDEF`，正常
 Sleep UI 繼續封鎖；READY spec 438 是續作入口。
+
+2026-08-02 第四百三十九輪閉合 Sleep 的實際 source center 與戰場 terrain
+adapter。overlay 13 Pascal 壓棧及 overlay 31 callee consumer 共同證明
+`A645／A646` 玩家選定格是 SCAN source，`AOECOMBAT&7=1` 是 range，
+`FFh` 是全方向 arc；不得使用 caster footprint。PC-98 65 筆 TDEF 與
+`BackgroundTiles[1:66]` 逐 byte 一致，Dungeon／Wilderness floor bytes 是
+一基底 TD，不是 renderer TileIndex。frontend provider、State 手動 `Z` 選格、
+legacy identity／terrain SCAN、`CastSleepOrdered` 與成功後 slot transaction
+已接通；invalid map 不吃 slot。32×16 fallback placement 仍是 reconstructed，
+Quick Sleep、wall/corner runtime、effect 解除／save、twinkle／音效仍未完成。
+READY spec 439 是續作入口。

@@ -527,6 +527,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `83h` 會觸發 `82h–85h` 提朗瑟克斯／無名者最終儀式，西翼犬舍與雕像
   因此仍只有 raw branch，不可宣稱 player-path 完成。READY spec 405
   是權威；下一步先完成最終儀式 gate。
+- 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
+  footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
+  exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`
+  玩家路徑已接通 terrain-aware order、`4d4`／HD／魔抗／`35h` effect 與
+  slot transaction。32×16 fallback placement 仍是 reconstructed；Quick、
+  wall/corner 動態、解除／save、twinkle／音效未完成。READY spec 439 是
+  權威，compact 後不得再把 Sleep 掃描中心改回施法者。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

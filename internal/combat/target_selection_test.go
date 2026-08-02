@@ -152,6 +152,34 @@ func TestBuildLegacyScanTargetIDsClosesIDListTerrainAndStableIDTransaction(t *te
 	}
 }
 
+func TestBuildLegacyAreaScanTargetIDsUsesSelectedCellInsteadOfCaster(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0},
+		{ID: "near-caster", Side: SideEnemy, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 1, CombatY: 0},
+		{ID: "near-selection", Side: SideEnemy, LegacyObjectID: 3, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0},
+	}, 439)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := enginescan.TacticalMap{
+		Width: 7, Height: 1,
+		Tiles:       []uint8{1, 1, 1, 1, 1, 1, 1},
+		Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+	}
+	ordered, err := battle.BuildLegacyAreaScanTargetIDs(
+		m, "caster", enginescan.Point{X: 4, Y: 0}, SideEnemy, 1, 0xff,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(ordered, []string{"near-selection"}) {
+		t.Fatalf("selected-cell SCAN=%v, want near-selection only", ordered)
+	}
+}
+
 func TestSelectRangedCombatTargetFiltersRangeWallsAndUsesFootprints(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "caster", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, HasCombatPosition: true, CombatX: 1, CombatY: 1, CombatSize: 4},

@@ -284,6 +284,7 @@
     "combat_speed_faster": "更快",
     "combat_speed_value": "遊戲速度（%d）：%s",
     "combat_magic_missile": "%s 施放魔法飛彈攻擊 %s，%d 枚造成 %d 點傷害。",
+    "combat_sleep": "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。",
     "combat_magic_resisted": "%s 對 %s 施放的 %d 枚魔法飛彈遭魔法抗性抵消。",
     "combat_fireball": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害。",
     "combat_fireball_protected": "%s 施放火球術，波及 %d 名目標，共造成 %d 點傷害；其中 %d 名受元素防護而未受傷。",

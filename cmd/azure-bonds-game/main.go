@@ -43,6 +43,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/sound"
 	enginearea "github.com/wicanr2/golden-box-remake-engine/areamap"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 	goldenengine "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -170,6 +171,68 @@ func (a *app) combatLineTerrain() combat.LineTerrain {
 			Reflect: ok && mode == "DUNGCOM" && entry.MoveCost == 0xFF,
 		}
 	}
+}
+
+// combatScanTacticalMap projects the title-owned floor buffer and recovered
+// TDEF table into the reusable engine's TACTICALMAP contract. Floor bytes are
+// already one-based TDEF IDs; they must not be translated through TileIndex,
+// which belongs to the separate renderer-atlas namespace.
+func (a *app) combatScanTacticalMap() (enginescan.TacticalMap, error) {
+	mode := selectCombatTerrainName(a.state.Area.InDungeon, a.combatTerrainMode)
+	referenceCoordinates := a.state.CombatUsesReferenceCoordinates()
+	width, height := mapdata.WildernessWidth, mapdata.WildernessHeight
+	if mode == "DUNGCOM" && !referenceCoordinates {
+		// Existing reconstructed placements use local coordinates whose (0,0)
+		// corresponds to the reference floor's (18,7). Keep the proven 32x16
+		// combat namespace; the remaining floor-buffer rows are not evidence
+		// that local combat placement may enter them.
+		width = mapdata.WildernessWidth - 18
+		height = 16
+	}
+	if mode != "DUNGCOM" && mode != "WILDCOM" {
+		return enginescan.TacticalMap{}, fmt.Errorf("combat mode %q has no recovered TACTICALMAP floor", mode)
+	}
+	if len(mapdata.BackgroundTiles) < 66 {
+		return enginescan.TacticalMap{}, fmt.Errorf("TDEF projection requires 65 records, found %d", len(mapdata.BackgroundTiles)-1)
+	}
+	definitions := make([]enginescan.TerrainDefinition, 65)
+	for index, tile := range mapdata.BackgroundTiles[1:66] {
+		definitions[index] = enginescan.TerrainDefinition{
+			HT: tile.MoveCost, LOS: tile.Height, SYM: tile.Field, Raw3: tile.TileIndex,
+		}
+	}
+	tiles := make([]uint8, width*height)
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			var tileID uint8
+			var ok bool
+			switch mode {
+			case "DUNGCOM":
+				if a.dungeonFloor != nil {
+					sourceX, sourceY := x, y
+					if !referenceCoordinates {
+						sourceX, sourceY = 18+x, 7+y
+					}
+					tileID, ok = a.dungeonFloor.TileID(sourceX, sourceY)
+				}
+			case "WILDCOM":
+				sourceX, sourceY := x, y
+				if !referenceCoordinates {
+					sourceX, sourceY = a.state.MapX+x-3, a.state.MapY+y-3
+				}
+				tileID, ok = a.state.WildernessFloor.TileID(sourceX, sourceY)
+			}
+			if ok {
+				if tileID == 0 || int(tileID) > len(definitions) {
+					return enginescan.TacticalMap{}, fmt.Errorf("TACTICALMAP (%d,%d) has invalid one-based TD %d", x, y, tileID)
+				}
+				tiles[y*width+x] = tileID
+			}
+		}
+	}
+	return enginescan.TacticalMap{
+		Width: width, Height: height, Tiles: tiles, Definitions: definitions,
+	}, nil
 }
 
 func combatMovementTerrainEntry(mode string, dungeon *mapdata.DungeonFloor, wilderness mapdata.WildernessFloor, mapX, mapY int, referenceCoordinates bool, x, y int) (mapdata.BackgroundTile, bool) {
@@ -627,7 +690,8 @@ func (a *app) Update() error {
 		if a.state.CombatCastingSpell() == game.StinkingCloudSpellID ||
 			a.state.CombatCastingSpell() == game.CloudkillSpellID ||
 			a.state.CombatCastingSpell() == game.FireballSpellID ||
-			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
+			a.state.CombatCastingSpell() == game.LightningBoltSpellID ||
+			a.state.CombatCastingSpell() == game.SleepSpellID {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
 				return a.combatAction(func() error { return a.state.CombatMoveSpellTarget(0, -1) })
 			}
@@ -643,6 +707,9 @@ func (a *app) Update() error {
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyS) && a.state.CombatCanCastMagicMissile() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.MagicMissileSpellID) })
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyZ) && a.state.CombatCanCastSleep() {
+			return a.combatAction(func() error { return a.state.BeginCombatCast(game.SleepSpellID) })
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyF) && a.state.CombatCanCastFireball() {
 			return a.combatAction(func() error { return a.state.BeginCombatCast(game.FireballSpellID) })
@@ -1943,9 +2010,12 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		if a.state.CombatCastingSpell() == game.StinkingCloudSpellID ||
 			a.state.CombatCastingSpell() == game.CloudkillSpellID ||
 			a.state.CombatCastingSpell() == game.FireballSpellID ||
-			a.state.CombatCastingSpell() == game.LightningBoltSpellID {
+			a.state.CombatCastingSpell() == game.LightningBoltSpellID ||
+			a.state.CombatCastingSpell() == game.SleepSpellID {
 			prompt := "選擇火球中心"
-			if a.state.CombatCastingSpell() == game.LightningBoltSpellID {
+			if a.state.CombatCastingSpell() == game.SleepSpellID {
+				prompt = "選擇睡眠術中心"
+			} else if a.state.CombatCastingSpell() == game.LightningBoltSpellID {
 				prompt = "選擇閃電方向格"
 			} else if a.state.CombatCastingSpell() == game.StinkingCloudSpellID {
 				prompt = "選擇惡臭雲霧西北角"
@@ -1964,6 +2034,9 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	if a.state.CombatCanCastMagicMissile() {
 		spellHints = append(spellHints, "S飛彈")
+	}
+	if a.state.CombatCanCastSleep() {
+		spellHints = append(spellHints, "Z睡眠")
 	}
 	if a.state.CombatCanCastFireball() {
 		spellHints = append(spellHints, "F火球")
@@ -3383,6 +3456,7 @@ func main() {
 	}
 	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
+	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)
 	}
