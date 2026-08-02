@@ -803,6 +803,10 @@ func (b *Battle) StartRound() ([]Turn, error) {
 
 func (b *Battle) initializeRoundDelays() []engineinitiative.Entry {
 	b.round++
+	// CLOCK_ passes one ROUNDS unit into the shared EFFECTREC reducer at the
+	// combat-round boundary. Effects created during the previous round lose one
+	// duration tick before this round's held/action projection is evaluated.
+	b.AdvanceMonsterAffects(1)
 	b.expirePersistentAreas()
 	b.advanceBlessDurations()
 	b.advanceCurseDurations()
@@ -1131,9 +1135,10 @@ func (b *Battle) CompleteAction(fighterID string) error {
 }
 
 // AdvanceMonsterAffects applies the reference finite-duration timeout rule to
-// raw combat effects. Strength 255 is the permanent marker.
-func (b *Battle) AdvanceMonsterAffects(minutes uint16) int {
-	if minutes == 0 {
+// raw combat effects. The input is EFFECTREC duration ticks (combat rounds),
+// not an arbitrary wall-clock duration. Strength 255 is the permanent marker.
+func (b *Battle) AdvanceMonsterAffects(ticks uint16) int {
+	if ticks == 0 {
 		return 0
 	}
 	removed := 0
@@ -1148,11 +1153,17 @@ func (b *Battle) AdvanceMonsterAffects(minutes uint16) int {
 				if duration == 0 {
 					duration = affect.Value
 				}
-				if duration <= minutes {
+				// CLOCK_ local 0020h treats zero as a non-expiring record and
+				// follows the next linked-list entry without calling SPELLOFF.
+				if duration == 0 {
+					kept = append(kept, affect)
+					continue
+				}
+				if duration <= ticks {
 					removed++
 					continue
 				}
-				affect.Duration = duration - minutes
+				affect.Duration = duration - ticks
 				affect.Value = affect.Duration
 			}
 			kept = append(kept, affect)

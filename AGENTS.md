@@ -360,7 +360,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - CoAB 本輪基底：`ea01be8`（第 437 輪 `INARC／OBJECTLIST`）；第 438 輪
   `CHARACTERLIST／IDLIST` stable identity milestone 會由本文件所在 commit
   完成。
-- Engine dependency：`7f044dc`（含作品中立 `combat/scan` 的
+- Engine dependency：`3142ae0`（含作品中立 `combat/effecttime`、`combat/scan` 的
   `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
   inclusive 扇區、`combat/scanorder`
   的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
@@ -539,6 +539,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   動態 Sleep 受至少一點傷害後解除，零傷害不解除。`[di+159Dh]` 是 DS
   位址，不是 overlay 同 offset 的 CS bytes；compact 後不得混淆兩個位址
   空間。duration、save 與醒來演出仍未完成；READY spec 440 是權威。
+- 第 441 輪已證明 `CLOCK_` local `0020h` 是 effect duration consumer：
+  `TIMEUNITS` 經 `MAXCOUNT DS:6804h` 換成 tick，遍歷 Player effect linked
+  list，duration 零保留、未到期相減、到期呼叫 `SPELLOFF`。戰鬥每個新
+  round 現扣一 tick，正常 level 3 Sleep 在總第 15 tick 解除。active battle
+  save 與到期演出仍未完成；READY spec 441 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

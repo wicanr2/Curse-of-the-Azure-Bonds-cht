@@ -11,7 +11,7 @@
 
 截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，依賴的獨立 engine 為 `9c94ddd`；實際
+目前 GitHub `main`，依賴的獨立 engine 為 `3142ae0`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -1132,6 +1132,13 @@ PC-98 固定戰場動態仍未完成，故這是可玩的規則垂直切片，�
 `Battle.applyPositiveDamage`，現已接通這項醒來規則；duration 遞減、存讀檔、
 文字、閃爍與音效仍待證明。證據見
 [`spec 440`](docs/spec/440-pc98-sleep-damage-wake.md)。
+
+第 441 輪關閉 Sleep 的正常到期：Borland `TIMEUNITS`、resident
+`MAXCOUNT DS:6804h` 與 `CLOCK_` overlay 20 證明 `EFFECTREC+1` 是 duration
+tick，turn／hour／day 等單位依 `10／6／24／30／12` 逐級換算；duration 零
+不會到期。引擎新增 `combat/effecttime`，戰鬥每個新 round 扣一 tick；正常
+level 3 手動 Sleep 從 15 tick 經 handoff 到 14，總第 15 tick 解除 held。
+證據見 [`spec 441`](docs/spec/441-pc98-effect-duration-clock.md)。
 
 ## 尚未完成
 

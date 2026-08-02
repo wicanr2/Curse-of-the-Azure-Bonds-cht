@@ -969,7 +969,7 @@ func TestZeroDamageDoesNotWakeSleepAndDamageKeepsInnateEffect35(t *testing.T) {
 	}
 }
 
-func TestAdvanceMonsterAffectsUsesFiniteMinutesAndPermanentMarker(t *testing.T) {
+func TestAdvanceMonsterAffectsUsesFiniteTicksAndPermanentMarker(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "monster", Side: SideEnemy, HitPoints: 5, MaxHitPoints: 5,
 			MonsterAffects: []MonsterAffect{
@@ -988,6 +988,35 @@ func TestAdvanceMonsterAffectsUsesFiniteMinutesAndPermanentMarker(t *testing.T) 
 	}
 	if removed := battle.AdvanceMonsterAffects(1); removed != 1 || len(battle.Fighters()[0].MonsterAffects) != 1 {
 		t.Fatalf("expiry removed=%d effects=%#v", removed, battle.Fighters()[0].MonsterAffects)
+	}
+}
+
+func TestStartRoundExpiresSleepAfterExactDurationTicks(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
+	}, 441)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := battle.CastSleepOrdered("mage", []string{"enemy"}, 1); err != nil {
+		t.Fatal(err)
+	}
+	for round := 1; round <= 4; round++ {
+		if _, err := battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+		enemy, _ := battle.Fighter("enemy")
+		if !enemy.MonsterIsHeld() {
+			t.Fatalf("Sleep expired at round %d before five ticks", round)
+		}
+	}
+	if _, err := battle.StartRound(); err != nil {
+		t.Fatal(err)
+	}
+	enemy, _ := battle.Fighter("enemy")
+	if enemy.MonsterIsHeld() || len(enemy.MonsterAffects) != 0 {
+		t.Fatalf("Sleep did not expire after five ticks: %+v", enemy.MonsterAffects)
 	}
 }
 

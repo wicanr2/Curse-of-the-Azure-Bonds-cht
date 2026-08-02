@@ -77,7 +77,9 @@ static main()
   fprintf(out, "input=%s min=%08X max=%08X\n", path, base,
           get_inf_attr(INF_MAX_EA));
 
+  emit_range(out, "EFFECTS_PREFIX", 0x0000, 0x010E);
   emit_range(out, "SPELLOFF", 0x010E, 0x03FE);
+  emit_range(out, "CHECKFX", 0x03FE, 0x0E32);
   emit_range(out, "ADDEFFECT_TO_CURE", 0x13D7, 0x1693);
   emit_range(out, "PUTDAMAGE", 0x1FFD, 0x2325);
   emit_range(out, "STANDUP", 0x251A, 0x2600);

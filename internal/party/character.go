@@ -437,12 +437,12 @@ func (c *Character) RemoveCombatAffects() int {
 // AdvanceEffects consumes imported DOS effect durations without applying
 // effect-specific AD&D modifiers. The removed count lets game state surface
 // a localized message when a later rules layer wants to do so.
-func (c *Character) AdvanceEffects(minutes uint16) int {
-	if c == nil || minutes == 0 {
+func (c *Character) AdvanceEffects(ticks uint16) int {
+	if c == nil || ticks == 0 {
 		return 0
 	}
 	before := len(c.Effects)
-	c.Effects = monster.AdvanceAffects(c.Effects, minutes)
+	c.Effects = monster.AdvanceAffects(c.Effects, ticks)
 	return before - len(c.Effects)
 }
 

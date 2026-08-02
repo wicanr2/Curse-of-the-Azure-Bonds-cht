@@ -2667,6 +2667,26 @@ func TestCombatCastSleepUsesSelectedCellScanAndConsumesSlot(t *testing.T) {
 			t.Fatalf("selected-cell enemy did not receive Sleep: %+v", fighter)
 		}
 	}
+	selected, _ := state.battle.Fighter("selected")
+	if len(selected.MonsterAffects) != 1 || selected.MonsterAffects[0].Duration != 14 {
+		t.Fatalf("normal cast handoff duration=%+v, want one of 15 ticks consumed at next-round boundary", selected.MonsterAffects)
+	}
+	for tick := 1; tick <= 13; tick++ {
+		if _, err := state.battle.StartRound(); err != nil {
+			t.Fatal(err)
+		}
+		selected, _ = state.battle.Fighter("selected")
+		if !selected.MonsterIsHeld() {
+			t.Fatalf("level-3 Sleep expired at additional tick %d", tick)
+		}
+	}
+	if _, err := state.battle.StartRound(); err != nil {
+		t.Fatal(err)
+	}
+	selected, _ = state.battle.Fighter("selected")
+	if selected.MonsterIsHeld() {
+		t.Fatal("level-3 Sleep remained held after duration 15")
+	}
 }
 
 func TestCombatCastSleepMapFailureDoesNotConsumeSlot(t *testing.T) {
@@ -3868,7 +3888,7 @@ func TestAdvancePartyEffectsUsesRosterDurationAdapter(t *testing.T) {
 		Effects:   []monster.AffectRecord{{Kind: 1, Duration: 2, Value: 2, Strength: 1}},
 	}}
 	if removed := state.AdvancePartyEffects(1); removed != 0 || state.partyRoster[0].Effects[0].Duration != 1 {
-		t.Fatalf("effects after one minute=%#v removed=%d", state.partyRoster[0].Effects, removed)
+		t.Fatalf("effects after one tick=%#v removed=%d", state.partyRoster[0].Effects, removed)
 	}
 	if removed := state.AdvancePartyEffects(1); removed != 1 || len(state.partyRoster[0].Effects) != 0 {
 		t.Fatalf("effects after expiry=%#v removed=%d", state.partyRoster[0].Effects, removed)
@@ -3883,7 +3903,7 @@ func TestAdvanceGameTimeUsesReferenceSlotScaleAndExpiresEffects(t *testing.T) {
 	}
 	clock := state.GameTimeSlots()
 	if clock[2] != 1 || state.partyRoster[0].Effects[0].Duration != 1 {
-		t.Fatalf("clock=%v effects=%#v, want slot-2=1 and 1 minute remaining", clock, state.partyRoster[0].Effects)
+		t.Fatalf("clock=%v effects=%#v, want slot-2=1 and 1 duration tick remaining", clock, state.partyRoster[0].Effects)
 	}
 	if err := state.AdvanceGameTime(1, 1); err != nil {
 		t.Fatal(err)
