@@ -3398,3 +3398,14 @@ key coverage。source audit exact baseline 由 1,315 降至 1,251 occurrences，
 離開並返回 `(5,2)`，不是直接呼叫服務冒充玩家路徑。正式 Docker／Xvfb／
 `--network none` 全套 gate 通過，marker `ROUND453_FORMAL_EXIT=0`；commit／push
 與容器清理待本輪收尾。READY spec 453 是權威。
+
+2026-08-02 第四百五十四輪接續把剛德神殿完整服務文字移出 Go。十種
+`templeCure` 只留 stable locale key／價格；主選單、治療選單、確認、查看、
+pool／share／appraise、金幣不足與完成訊息均由正式 `zh-TW.json` 解析。
+coverage 測試遍歷 19 個 UI keys 與十個 cure keys；Cure Light Wounds 測試
+由 stable ID 取得確認文字，Remove Curse 仍驗證 `24h` effect／cursed item。
+真實 ECL／GEO 路徑從 terrain `92h`、PICTURE 6 進 service boundary，治療後
+續跑並返回 `(0,7)`。source audit 從 1,251 降至 1,223，runtime 類由 678
+降至 650，無新增漢字 literal。正式 Docker／Xvfb／`--network none` 全套
+gate 通過，marker `ROUND454_FORMAL_EXIT=0`；commit／push 與容器清理待
+收尾。READY spec 454 是權威。

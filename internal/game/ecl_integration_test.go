@@ -459,6 +459,8 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 
 	// The altar at GEO2 (0,7), terrain 0x92, requests PICTURE 6 and then
 	// dispatches temple_shop through the same resumable CMD_COMBAT boundary.
+	facilityCatalog := trainingTestCatalog(t)
+	state.catalog = facilityCatalog
 	state.partyRoster[0].HitPoints = 1
 	state.partyRoster[0].MaxHitPoints = 10
 	state.partyRoster[0].Platinum = 0xFFFF
@@ -483,6 +485,12 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if state.Mode != ModePlace || !state.templeMenu || len(state.Choices) != 6 {
 		t.Fatalf("Gond temple service mode=%v temple=%v choices=%v",
 			state.Mode, state.templeMenu, state.Choices)
+	}
+	if state.Prompt != facilityCatalog.Text("temple_prompt", "") ||
+		state.Choices[0] != facilityCatalog.Text("temple_heal", "") ||
+		state.Choices[5] != facilityCatalog.Text("temple_exit", "") {
+		t.Fatalf("Gond temple did not resolve stable locale IDs: prompt=%q choices=%v",
+			state.Prompt, state.Choices)
 	}
 	beforeWorth = characterCoinGoldWorth(state.partyRoster[0])
 	if err := state.Select(0); err != nil {
@@ -516,8 +524,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 
 	// The Hall of Training at GEO2 (5,2), terrain 0x8C, reuses PICTURE 4
 	// before its YES branch invokes the location-specific PROGRAM 0 service.
-	trainingCatalog := trainingTestCatalog(t)
-	state.catalog = trainingCatalog
+	trainingCatalog := facilityCatalog
 	character := &state.partyRoster[0]
 	character.Class = party.ClassFighter
 	character.Level = 1

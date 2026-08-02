@@ -574,6 +574,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   可學法術名稱改由正式 locale stable ID 解析，測試也從同一 JSON 取值；
   baseline 現為 1,251 occurrences。後續必須讓此數字持續下降，不能重新加入
   Go 中文 fallback，也不能在測試複製目前譯文。
+- 第 454 輪神殿服務再移除 28 次，baseline 現為 1,223 occurrences；十種
+  cure 的 Go 結構只保存 stable key／價格，顯示名稱與選單均由正式 locale
+  取得。後續設施應沿用此「typed rules＋stable display ID」界線。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

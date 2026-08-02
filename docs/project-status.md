@@ -111,6 +111,11 @@ commit 內保存不可能自我引用的 hash。
   Go 規則表不再保存中文 `Name`。測試即時載入正式 JSON 並依 ID 解析期望值。
   exact baseline 從 1,315 降為 1,251，移除 64 次 runtime UI 漢字 literal；
   其餘 1,251 次仍是待清債務，不得宣稱全專案已完成資料分離。
+- 第 454 輪接續完成剛德神殿資料分離：十種治療只在 Go 保存 stable key 與
+  價格，選單、確認、查看、金幣與結果文字全由正式 locale 取得。原始
+  terrain `92h`→PICTURE 6→service boundary→治療→返回 `(0,7)` 的玩家路徑
+  仍通過。exact baseline 再由 1,251 降至 1,223，移除 28 次 runtime UI
+  漢字 literal；神殿完整原版功能與其餘債務仍未完成。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader
