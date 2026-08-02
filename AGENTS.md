@@ -585,7 +585,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 457 輪物品名稱再移除 126 次，baseline 現為 974 occurrences；type 與
   name-number 保留 DOS typed IDs，繁中 base／修飾詞與顯示格式由 locale
   `item_type_XX／item_name_XX` 解析，商店、裝備、戰利品與 CLI 共用同一組字
-  函式。`monster.ChineseAffectName` 仍是下一批效果名稱硬編碼債。
+  函式。
+- 第 458 輪效果名稱再移除 21 次，baseline 現為 953 occurrences；二十個既有
+  已命名 raw affect kinds 與未知格式由 `affect_kind_XX／affect_unknown` 解析，
+  CLI 與測試不再依賴 `ChineseAffectName`。顯示名稱資料化不等於效果規則、
+  動畫、音效或生命週期已完成。真實 MON6SPC block 67 另有未命名
+  `82h／81h／3Ch`，必須保持 raw 診斷直到 consumer 證據成立。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

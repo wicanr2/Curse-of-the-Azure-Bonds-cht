@@ -3442,3 +3442,15 @@ literal。`ChineseAffectName` 仍是下一批獨立債務。正式 Docker／Xvfb
 `--network none` 全套 gate 通過，marker `ROUND457_FORMAL_EXIT=0`；一次性
 容器均以 `--rm` 完成，engine repo 本輪無變更。commit／push 待本輪收尾；
 READY spec 457 是權威。
+
+2026-08-02 第四百五十八輪完成角色／怪物效果名稱資料分離。DOS
+`AffectRecord.Kind` 保留 raw typed ID；二十個既有已命名效果與未知格式移入正式
+`zh-TW.json` 的 `affect_kind_XX／affect_unknown`。`LocalizedAffectName` 只
+依注入的中立 `TextResolver` 查詢，找不到時顯示 raw ID，不猜效果語意；
+`cmd/azure-bonds -monster-affects` 與測試均改用正式 catalog。source audit
+從 974 降至 953，runtime 類 438→417，無新增漢字 literal。真實 MON6SPC
+block 67 smoke 顯示 `18h` 正常解析，未命名 `82h／81h／3Ch` 保持 raw 診斷。
+效果完整規則、生命週期、動畫、音效與未命名 kinds 仍未完成；正式 gate、
+Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND458_FORMAL_EXIT=0`；一次性容器均以 `--rm` 完成，engine repo 本輪無
+變更。commit／push 待本輪收尾。READY spec 458 是權威。

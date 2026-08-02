@@ -86,7 +86,8 @@ commit 內保存不可能自我引用的 hash。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
 - 物品 type／name-number 維持 DOS typed IDs，繁中 base name、修飾詞、加值、
   詛咒與數量格式已由正式 locale stable IDs 驅動；商店、裝備、戰利品、CLI
-  與測試不再依賴 Go 中文物品 catalog。效果名稱 catalog 尚待後續遷移。
+  與測試不再依賴 Go 中文物品 catalog。二十個既有已命名角色／怪物效果也已
+  依 raw affect kind 改由正式 locale 驅動；完整效果規則與演出仍須逐項驗證。
 - 第 450 輪將法師塔正常主線從庭院、德拉坎德羅斯現身、龍群幻象一路到
   枷印消退的九段文字與手札 15 兩頁移入 CoAB game-pack。原文 fragment、
   英文、繁中與 `journal_message_ids` 由 11 個 stable ID 驅動；State 與舊
