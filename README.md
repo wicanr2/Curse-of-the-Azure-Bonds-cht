@@ -77,6 +77,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 由 651 降至 638。詳見
 [`docs/spec/466-yulash-game-pack-story.md`](docs/spec/466-yulash-game-pack-story.md)。
 
+第 467 輪接著把摩安德之坑開場、垂死牧師、愛麗雅絲／龍餌相遇與入隊、上下
+層階梯、散塔林屍體共十四個真實畫面邊界移入 game-pack。正常長路徑保留崩塌
+陷阱、手札 3、NPC stable identity、樓層 handoff 與一次性屍體事件；Go 漢字
+基線由 638 降至 621。詳見
+[`docs/spec/467-pit-opening-companions-game-pack.md`](docs/spec/467-pit-opening-companions-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

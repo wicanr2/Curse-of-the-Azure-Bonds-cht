@@ -3735,8 +3735,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeWilderness || session.CurrentBlockID() != 0x11 ||
 		state.GeoMapSet != 3 || state.GeoMapBlock != 0x11 || !state.geoMapPending ||
 		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 ||
-		!strings.Contains(state.Message, "三名邪教徒") ||
-		!strings.Contains(state.Message, "牧師喘著氣") {
+		state.Message != requireGamePackText(t, &state, "pit.opening-dead-cultists") {
 		t.Fatalf("Yulash Pit transition terrain=%#x wall=%#x mode=%v block=0x%02x geo=%d/%d pending=%v coords=%d,%d,%d originals=%#v choices=%#v message=%q",
 			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
 			state.GeoMapSet, state.GeoMapBlock, state.geoMapPending,
@@ -3746,14 +3745,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "被選中之人") {
+	if state.Message != requireGamePackText(t, &state, "pit.opening-chosen") {
 		t.Fatalf("Pit wounded cleric mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "被困在摩安德之坑") ||
+	if state.Message != requireGamePackText(t, &state, "pit.trapped") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit collapse mode=%v block=0x%02x coords=%d,%d,%d originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.DungeonX, state.DungeonY, state.DungeonDirection,
@@ -3762,7 +3761,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "倒斃在眾人腳邊") ||
+	if state.Message != requireGamePackText(t, &state, "pit.cleric-dies") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit cleric death mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(),
@@ -3771,7 +3770,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "烤麵包的氣味") ||
+	if state.Message != requireGamePackText(t, &state, "pit.ambience") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit ambience mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(),
@@ -3815,8 +3814,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.DungeonWallRoof != 0x85 ||
-		!strings.Contains(state.Message, "女戰士") ||
-		!strings.Contains(state.Message, "蜥蜴人") {
+		state.Message != requireGamePackText(t, &state, "pit.alias-dragonbait-meet") {
 		t.Fatalf("Pit Alias/Dragonbait meeting terrain=%#x wall=%#x mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3827,7 +3825,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "也被枷印控制") ||
+	if state.Message != requireGamePackText(t, &state, "pit.alias-bonded-reaction") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"COMBAT", "ADVANCE", "WAIT", "FLEE", "PARLAY"}) {
 		t.Fatalf("Pit Alias/Dragonbait encounter mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.currentOriginalChoices, state.Choices, state.Message)
@@ -3843,9 +3841,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(3); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "愛麗雅絲") ||
-		!strings.Contains(state.Message, "龍餌") ||
-		!strings.Contains(state.Message, "說明來歷") {
+	if state.Message != requireGamePackText(t, &state, "pit.alias-dragonbait-introduction") {
 		t.Fatalf("Pit Alias/Dragonbait introduction mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
@@ -3872,7 +3868,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "愛麗雅絲與龍餌加入") ||
+	if state.Message != requireGamePackText(t, &state, "pit.alias-dragonbait-join") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
 		t.Fatalf("Pit Alias/Dragonbait join prompt mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
@@ -3888,7 +3884,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		state.partyRoster[2].ScriptName != "DRAGONBAIT" ||
 		state.partyRoster[2].Race != party.RaceSaurial ||
 		state.partyRoster[2].Class != party.ClassPaladin ||
-		!strings.Contains(state.Message, "摩貢大祭司") {
+		state.Message != requireGamePackText(t, &state, "pit.alias-dragonbait-joined") {
 		t.Fatalf("Pit Alias/Dragonbait joined mode=%v originals=%#v choices=%#v message=%q party=%#v",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.partyRoster)
 	}
@@ -3915,7 +3911,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.session.CurrentBlockID() != 0x11 ||
-		!strings.Contains(state.Message, "通往南方下層的階梯") ||
+		state.Message != requireGamePackText(t, &state, "pit.stairs-down") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
 		t.Fatalf("Pit stairs prompt mode=%v block=0x%02x geo=%d pos=(%d,%d,%d) terrain=%#x wall=%#x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.DungeonX, state.DungeonY,
@@ -3938,7 +3934,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "北側牆邊有一道向上的階梯") ||
+	if state.Message != requireGamePackText(t, &state, "pit.stairs-up") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"NO", "YES"}) {
 		t.Fatalf("Pit lower stairs mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
@@ -3955,15 +3951,15 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"LEAVE", "EXAMINE CORPSE"}) {
+	if state.Message != requireGamePackText(t, &state, "pit.dead-zhentrim") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"LEAVE", "EXAMINE CORPSE"}) {
 		t.Fatalf("Pit Zhentil corpse mode=%v originals=%#v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message)
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "散提爾堡的印璽") ||
-		!strings.Contains(state.Message, "冒險手札第 46 條") ||
+	if state.Message != requireGamePackText(t, &state, "pit.zhentrim-scroll") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Pit Zhentil note mode=%v block=0x%02x pos=(%d,%d,%d) terrain=%#x originals=%#v choices=%#v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,

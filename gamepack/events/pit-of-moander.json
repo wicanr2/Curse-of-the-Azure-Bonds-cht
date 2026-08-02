@@ -428,6 +428,20 @@
       ,"yulash.commander-business": "The commander demands to know your business in Yulash. How will you respond?"
       ,"yulash.commander-side-door": "The commander shows you out through the side door."
       ,"yulash.pit-entrance": "Before you lies the pit created during Moander's last appearance. Step forward to enter the dark demesne."
+      ,"pit.opening-dead-cultists": "Three cultists lie dead on the floor. Just ahead, another cleric gasps for breath."
+      ,"pit.opening-chosen": "The wounded cleric's eyes widen with fanatical triumph and he howls, 'The chosen ones!'"
+      ,"pit.trapped": "The cleric slams his fist against a protruding rock. The ceiling collapses behind you, trapping the party in the Pit of Moander."
+      ,"pit.cleric-dies": "The cleric gives you one last triumphant glare, coughs blood, and dies at your feet."
+      ,"pit.ambience": "You hear battle in the distance, while the smell of baked bread drifts through the air."
+      ,"pit.alias-dragonbait-meet": "You see a female fighter and a strange-looking lizard man; strong scents of violets, brimstone, and honeysuckle follow one another."
+      ,"pit.alias-bonded-reaction": "The female fighter gasps that you are bonded too. What will you do?"
+      ,"pit.alias-dragonbait-introduction": "The fighter introduces herself as Alias and her companion as Dragonbait. She once bore tattoos like yours and asks you to tell your story."
+      ,"pit.alias-dragonbait-join": "Will you let Alias and Dragonbait join the party?"
+      ,"pit.alias-dragonbait-joined": "Alias and Dragonbait join the party. Alias adds that the treasure Mogion keeps behind her altar is also worth handling."
+      ,"pit.stairs-down": "Stairs lead down toward the south. Will you descend?"
+      ,"pit.stairs-up": "Stairs in the north wall lead upward. Will you ascend?"
+      ,"pit.dead-zhentrim": "You find the mangled remains of a dead Zhentrim fighter. What will you do?"
+      ,"pit.zhentrim-scroll": "A formal document bearing Zhentil Keep's seal is clenched in the fighter's fist. You copy it as Journal Entry 46."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -881,6 +895,20 @@
       ,"yulash.commander-business": "指揮官厲聲質問你們來尤拉什有何目的。你們要用什麼態度回答？"
       ,"yulash.commander-side-door": "指揮官親自帶你們從側門離開。"
       ,"yulash.pit-entrance": "眼前就是摩安德上次降臨時留下的巨坑。再向前一步，便會進入那片黑暗領域。"
+      ,"pit.opening-dead-cultists": "你們看見三名邪教徒倒臥在地板上。就在前方，另一名牧師喘著氣。"
+      ,"pit.opening-chosen": "受傷牧師的雙眼因狂熱的勝利感而睜大，接著嚎叫：「被選中之人！」"
+      ,"pit.trapped": "牧師猛力擊打一塊突出的岩石；你們身後的洞頂隨即崩塌。隊伍已被困在摩安德之坑裡。"
+      ,"pit.cleric-dies": "牧師最後得意地瞪了你們一眼，隨即咳出鮮血，倒斃在眾人腳邊。"
+      ,"pit.ambience": "遠處傳來戰鬥聲，空氣中隱約飄著烤麵包的氣味。"
+      ,"pit.alias-dragonbait-meet": "你們看見一名女戰士與一名外貌奇特的蜥蜴人；紫羅蘭、硫磺與忍冬的強烈氣味接連飄來。"
+      ,"pit.alias-bonded-reaction": "女戰士倒抽一口氣：「他們也被枷印控制了！」你們要怎麼做？"
+      ,"pit.alias-dragonbait-introduction": "女戰士自稱愛麗雅絲，並介紹她的同伴龍餌。她說自己過去也有與你們相似的刺青，請眾人說明來歷。"
+      ,"pit.alias-dragonbait-join": "要讓愛麗雅絲與龍餌加入隊伍嗎？"
+      ,"pit.alias-dragonbait-joined": "愛麗雅絲與龍餌加入隊伍。愛麗雅絲挖苦地補充：「另外，摩貢大祭司藏在祭壇後方的財寶也值得處理。」"
+      ,"pit.stairs-down": "你們看見一道通往南方下層的階梯。要往下走嗎？"
+      ,"pit.stairs-up": "北側牆邊有一道向上的階梯。要回到上層嗎？"
+      ,"pit.dead-zhentrim": "你們看見一名死去的散塔林戰士，遺體已殘破不堪。要怎麼做？"
+      ,"pit.zhentrim-scroll": "戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2685,6 +2713,20 @@
     {"id": "yulash.commander-business", "all_contains": ["THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH", "HOW DO YOU RESPOND"], "message_id": "yulash.commander-business"},
     {"id": "yulash.commander-side-door", "all_contains": ["THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"], "message_id": "yulash.commander-side-door"},
     {"id": "yulash.pit-entrance", "all_contains": ["THE PIT CREATED BY MOANDER", "STEP FORWARD TO ENTER THE DARK DEMESNE"], "message_id": "yulash.pit-entrance"},
+    {"id": "pit.opening-dead-cultists", "all_contains": ["YOU SEE THREE CULTISTS LYING DEAD ON THE FLOOR", "JUST AHEAD OF YOU, ANOTHER CLERIC GASPS FOR BREATH"], "message_id": "pit.opening-dead-cultists"},
+    {"id": "pit.opening-chosen", "all_contains": ["THE WOUNDED CLERIC'S EYES WIDEN IN FANATIC", "TRIUMPH. HE HOWLS", "THE CHOSEN ONES"], "message_id": "pit.opening-chosen"},
+    {"id": "pit.trapped", "all_contains": ["THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK", "YOU ARE TRAPPED IN THE PIT OF MOANDER"], "message_id": "pit.trapped"},
+    {"id": "pit.cleric-dies", "all_contains": ["THE CLERIC GIVES YOU ONE LAST TRIUMPHANT GLARE", "COUGHS BLOOD AND DIES AT YOUR FEET"], "message_id": "pit.cleric-dies"},
+    {"id": "pit.ambience", "all_contains": ["YOU HEAR THE SOUNDS OF BATTLE IN THE DISTANCE", "SMELL OF BAKED BREAD"], "message_id": "pit.ambience"},
+    {"id": "pit.alias-dragonbait-meet", "all_contains": ["YOU SEE A FEMALE FIGHTER AND A STRANGE-LOOKING LIZARD MAN", "VIOLETS, BRIMSTONE AND HONEYSUCKLE"], "message_id": "pit.alias-dragonbait-meet"},
+    {"id": "pit.alias-bonded-reaction", "all_contains": ["THE FEMALE FIGHTER GASPS", "THEY'RE BONDED", "WHAT DO YOU DO"], "message_id": "pit.alias-bonded-reaction"},
+    {"id": "pit.alias-dragonbait-introduction", "all_contains": ["THE FIGHTER INTRODUCES HERSELF AS ALIAS", "HER COMPANION AS DRAGONBAIT", "SHE ASKS YOU TO TELL YOUR STORY"], "message_id": "pit.alias-dragonbait-introduction"},
+    {"id": "pit.alias-dragonbait-join", "all_contains": ["DO YOU WANT THEM TO JOIN YOU"], "message_id": "pit.alias-dragonbait-join"},
+    {"id": "pit.alias-dragonbait-joined", "all_contains": ["ALIAS AND DRAGONBAIT JOIN YOUR PARTY", "TREASURE THAT MOGION", "KEEPS BEHIND HER ALTAR"], "message_id": "pit.alias-dragonbait-joined"},
+    {"id": "pit.stairs-down", "all_contains": ["YOU SEE STAIRS LEADING DOWN TO THE SOUTH", "DO YOU WISH TO GO DOWN"], "message_id": "pit.stairs-down"},
+    {"id": "pit.stairs-up", "all_contains": ["YOU SEE STAIRS GOING UP IN THE NORTH WALL", "DO YOU WISH TO GO UP"], "message_id": "pit.stairs-up"},
+    {"id": "pit.dead-zhentrim", "all_contains": ["MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER", "WHAT DO YOU DO"], "message_id": "pit.dead-zhentrim"},
+    {"id": "pit.zhentrim-scroll", "all_contains": ["GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"], "message_id": "pit.zhentrim-scroll"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

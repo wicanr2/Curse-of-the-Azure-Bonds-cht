@@ -631,6 +631,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   trail、edge、entry menu、GEO terrain、戰鬥、手札與下一區入口；資料化後
   必須保留完成旗標、戰後 continuation、指揮官側門座標及章節 handoff，不能
   只驗證文字 matcher。
+- 第 467 輪 Pit 開場／同伴／樓梯／屍體十四個 boundary 再移除 17 次，baseline
+  現為 621 occurrences。相鄰原始 ECL 行不一定屬於同一畫面；垂死牧師介紹與
+  「被選中之人」之間有 PRESS，必須由 runtime boundary 決定 stable message。
+  同伴文字資料化也要驗證 roster stable identity、職業／種族、手札、樓層
+  handoff 與一次性事件，不能只看愛麗雅絲／龍餌姓名是否顯示。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`
