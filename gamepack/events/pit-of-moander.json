@@ -374,6 +374,44 @@
       ,"princess_nacacia": "PRINCESS NACACIA"
       ,"no_one": "NO ONE"
       ,"exit": "EXIT"
+      ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
+      ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
+      ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
+      ,"journal-trigger.guildmaster-map-4": "The dying guildmaster reveals a sewer map, which you record as Journal Entry 4."
+      ,"journal-trigger.fire-knives-leader-11": "The Fire Knives' leader speaks; you record his words as Journal Entry 11."
+      ,"journal-trigger.fire-knives-victory-54": "The Fire Knives have been defeated; the princess interrogates their leader in Journal Entry 54."
+      ,"journal-trigger.fire-knives-royal-arrival-53": "As you free Giogi, the roof vanishes; the events are recorded as Journal Entry 53."
+      ,"journal-trigger.tilverton-inn-31": "You record the innkeeper's explanation as Journal Entry 31. She suggests visiting Filani and the shop across the way."
+      ,"journal-trigger.filani-38": "Filani explains the five sigils; you record her findings as Journal Entry 38."
+      ,"journal-trigger.tavern-knife-17": "Only an ornate knife remains; you record its appearance as Journal Entry 17."
+      ,"journal-trigger.shadowdale-warning-18": "The hooded man warns you about the crescent bond; you record his advice as Journal Entry 18."
+      ,"journal-trigger.high-priest-19": "The high priest casts Remove Curse, but the bonds resist; you record the result as Journal Entry 19."
+      ,"journal-trigger.frozen-room-26": "You disarm and question the Fire Knives; their account becomes Journal Entry 26."
+      ,"journal-trigger.fire-knives-office-9": "You find revealing papers in the rosewood desk and record Journal Entry 9."
+      ,"journal-trigger.fire-knives-paper-29": "A charred hand preserved part of a paper; you record it as Journal Entry 29."
+      ,"journal.20": "Journal Entry 20: A map of Moander's original temple, showing the winding passages around the altar, the lower-level entrance, rooms, and dead ends."
+      ,"journal.3.1": "Journal Entry 3 (1/3): Alias says she once bore similar bonds. A Master Harper tried to create an immortal vessel for his work, but an assistant died; the Harpers stripped his power and name and imprisoned him outside the world."
+      ,"journal.3.2": "Journal Entry 3 (2/3): Mages and monsters found the nameless bard and used his research to create Alias. The demon Phalse abducted the saurial paladin Dragonbait, but Dragonbait shared part of his spirit with her, and the bard sacrificed himself to help them escape."
+      ,"journal.3.3": "Journal Entry 3 (3/3): Alias awoke with false memories and bonds like yours. She won freedom by resisting each compulsion and destroying its maker. Moander's cult helped bind her, and she believes its new altar is in this temple; she and Dragonbait offer their aid."
+      ,"journal.22.1": "Journal Entry 22 (1/2): The Red Plume commander grants free passage through Yulash, but warns that the besieged city still contains Zhentil terror teams and shambling mounds."
+      ,"journal.22.2": "Journal Entry 22 (2/2): He provides a map to the Pit and the checkpoints (Journal Entry 52), marks the barracks and mess, and warns that the damaged walls and pavement may be unstable."
+      ,"journal.52": "Journal Entry 52: The Red Plumes' map of Yulash marks headquarters, checkpoints, the mess, barracks, brig, old stables, and the one-way route to the Pit of Moander."
+      ,"journal.4": "Journal Entry 4: A sewer map marked Guild and Hideout shows the narrow route from the Tilverton thieves' guild to the Fire Knives' base."
+      ,"journal.11.1": "Journal Entry 11 (1/2): The Fire Knives' leader says your arrival is well timed, but you attacked the wrong target. He points to two prisoners: a thin bearded man and a young woman wearing a torn purple sash."
+      ,"journal.11.2": "Journal Entry 11 (2/2): The man is Giogi Wyvernspur, a gifted mimic, and the woman is Princess Nacacia. She breaks free, clubs the leader, and urges you to defeat his guards before he invokes your bonds."
+      ,"journal.54": "Journal Entry 54: With a dagger at his throat, the recovering Fire Knives' leader agrees to release you. He mouths a meaningless syllable and the Fire Knives bond fades."
+      ,"journal.53.1": "Journal Entry 53 (1/2): The roof vanishes and King Azoun, Vangerdahast, and royal guards descend. A guard identifies you as the king's attackers, but Nacacia says the Fire Knives controlled you and that you saved her."
+      ,"journal.53.2": "Journal Entry 53 (2/2): The king banishes you from Cormyr because other bonds still control you. Gharri reunites with Nacacia; after the guards escort you out, the pair ride north and she waves farewell."
+      ,"journal.31": "Journal Entry 31: Red-robed people brought you to the inn nearly dead and prepaid your rooms. You already bore the tattoos. The innkeeper recommends Filani the sage, two blocks north."
+      ,"journal.38.1": "Journal Entry 38 (1/3): Filani recognizes three of the five symbols. The flame and dagger belongs to the Fire Knives, assassins once based in Westgate; their old organization was destroyed, so they must have a new base."
+      ,"journal.38.2": "Journal Entry 38 (2/3): The mouth in a palm belongs to Moander, whose brief return devastated part of Yulash. The ornate Z in a triangle represents the Zhentrim, the Black Network."
+      ,"journal.38.3": "Journal Entry 38 (3/3): The Zhentrim are an evil alliance in Zhentil Keep. Filani does not recognize the flaming symbol; the crescent resembles a powerful Shadowdale sage, and she refuses to say more."
+      ,"journal.17": "Journal Entry 17: An ornate knife remains in the alley. It has a dark handle, broad guard, and irregular flame-shaped blade—the mark of the Fire Knives."
+      ,"journal.18": "Journal Entry 18: The crescent bond resembles Elminster's symbol. Quietly leave Shadowdale, sail to Ashabenford, find the red wizard's tower to the south, and force him to remove it—or risk Elminster turning you into a newt."
+      ,"journal.19": "Journal Entry 19: Remove Curse makes the bonds blaze with blue fire and the party writhe in pain. The cleric stops; the bonds resist his power, and he cannot remove them."
+      ,"journal.26": "Journal Entry 26: An invading cleric paralyzed these men while trying to reach the prisoners in the leader's room to the south. The Fire Knives finally overcame him here."
+      ,"journal.9": "Journal Entry 9: Beside a flaming humanoid are three notes: it has a flaming aura, can possess other bodies, and is connected to the Pool of Radiance."
+      ,"journal.29": "Journal Entry 29: The surviving paper says their ally controls flame, moves from body to body, and has extra-dimensional powers. The writer concludes that the Flamed One can only be Tyran…"
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -735,6 +773,44 @@
       ,"princess_nacacia": "娜卡西亞公主"
       ,"no_one": "不效忠任何人"
       ,"exit": "離開"
+      ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
+      ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
+      ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
+      ,"journal-trigger.guildmaster-map-4": "公會首領臨終前交出一幅下水道地圖；你們將它記入冒險手札第 4 條。"
+      ,"journal-trigger.fire-knives-leader-11": "你們遇見火刀首領，並將他的話記入冒險手札第 11 條。"
+      ,"journal-trigger.fire-knives-victory-54": "火刀已被擊敗；公主審問首領的經過記於冒險手札第 54 條。"
+      ,"journal-trigger.fire-knives-royal-arrival-53": "正要替喬吉鬆綁時，屋頂突然消失；後續經過記於冒險手札第 53 條。"
+      ,"journal-trigger.tilverton-inn-31": "你們將旅店老闆娘的說明記入冒險手札第 31 條。她建議拜訪賢者菲拉妮，並到對街商店購買武器。"
+      ,"journal-trigger.filani-38": "菲拉妮說明五種枷印；你們將研究結果記入冒險手札第 38 條。"
+      ,"journal-trigger.tavern-knife-17": "現場只留下一把華麗匕首；你們將外觀記入冒險手札第 17 條。"
+      ,"journal-trigger.shadowdale-warning-18": "兜帽男子警告弦月枷印的危險；你們將建議記入冒險手札第 18 條。"
+      ,"journal-trigger.high-priest-19": "高階祭司施展移除詛咒，但枷印反抗神力；你們將結果記入冒險手札第 19 條。"
+      ,"journal-trigger.frozen-room-26": "你們繳械並審問火刀成員；口供記入冒險手札第 26 條。"
+      ,"journal-trigger.fire-knives-office-9": "你們在花梨木書桌中找到重要文件，並記入冒險手札第 9 條。"
+      ,"journal-trigger.fire-knives-paper-29": "焦屍的手保住了部分紙張；你們將內容記入冒險手札第 29 條。"
+      ,"journal.20": "手札條目 20：摩安德原始神殿的地圖。入口通往環繞祭壇區的曲折通道；地圖標出了中央神殿、下層入口，以及散布各處的房間與死路。原始地圖圖像保存於 Adventurer's Journal。"
+      ,"journal.3.1": "手札條目 3（1/3）：愛麗雅絲說，她曾同樣受枷印控制。故事始於一名首席豎琴手；他想創造不朽的人形容器，完整保存自己的歌曲與故事，卻在實驗中害死助手。豎琴手議會剝奪他的力量、魔法物品與姓名，抹去世人對其作品的記憶，並把他囚禁在異次元。"
+      ,"journal.3.2": "手札條目 3（2/3）：一群法師與怪物找到無名詩人，利用他的研究製造愛麗雅絲。惡魔法爾斯綁架了來自異世界的蜥蜴人聖武士龍餌，企圖以善良生命完成儀式；龍餌卻把部分靈魂贈給愛麗雅絲，無名詩人也犧牲自己，協助兩人逃脫。"
+      ,"journal.3.3": "手札條目 3（3/3）：愛麗雅絲醒來時帶著偽造記憶與相似枷印，後來靠反抗每道魔法強制、摧毀製造枷印的人或組織而恢復自由。摩安德教徒也參與過她的束縛；她認為摩安德正企圖復生，其新祭壇就在這座原始神殿中，因此提議與龍餌協助隊伍。"
+      ,"journal.22.1": "手札條目 22（1/2）：紅羽衛指揮官說，他不明白你們為何執意進入摩安德之坑，但願意准許隊伍自由通過尤拉什。紅羽衛不會找你們麻煩；然而城市仍在圍攻之中，他無法派人一路護送。據報散提爾堡派出了恐怖小隊，東側也有人目擊蔓生怪。"
+      ,"journal.22.2": "手札條目 22（2/2）：指揮官提供摩安德之坑、檢查哨、營房與士兵食堂的位置圖（手札 52）。隊伍可在營房休息並到食堂用餐。他警告尤拉什的城牆與路面歷經重創，許多區域可能不穩。"
+      ,"journal.52": "手札條目 52：紅羽衛提供的尤拉什城區地圖。北側入口附近是指揮官辦公室；圖上標出各處檢查哨、士兵食堂、營房，以及通往城市中央「摩安德之坑」的單向入口。原始地圖圖像保存於 Adventurer's Journal 第 15 頁。"
+      ,"journal.4": "手札條目 4：一幅標有「公會」與「據點」的下水道地圖。它畫出一條狹長、曲折的地下通路，由提爾佛頓盜賊公會一路通往火刀據點；原始地圖圖像保存於 Adventurer's Journal 第 11 頁。"
+      ,"journal.11.1": "手札條目 11（1/2）：火刀首領說，你們來得正是時候；他們預料國王會落入備用陷阱。可惜你們攻擊了錯誤目標。接著他指向兩名被綁在牆邊的俘虜：一名瘦削的鬍鬚男子，以及一名繫著破舊紫色肩帶的年輕女子。"
+      ,"journal.11.2": "手札條目 11（2/2）：那名男子是擅長模仿的喬吉・維文斯普爾；首領命他再次模仿國王的聲音。女子則是讓國王得以來到此地的娜卡西亞公主。就在此刻，公主掙脫束縛，抄起手邊的棍棒重擊首領，並高喊：「快！趁首領還不能喚起你們的枷印前，解決他的守衛！」"
+      ,"journal.54": "手札條目 54：公主正審問稍微恢復意識的首領。她將匕首抵在他喉頭，首領嘶聲答應解除枷印。他吐出一個毫無意義的音節，你們身上的火刀枷印隨之消退。"
+      ,"journal.53.1": "手札條目 53（1/2）：屋頂突然消失，阿祖恩國王、宮廷法師凡格達海斯與皇家衛隊降入房中。衛兵指認你們曾企圖弒君；娜卡西亞公主立刻擋在父王與你們之間，說明你們受火刀控制，不僅無法自主，還救了她。"
+      ,"journal.53.2": "手札條目 53（2/2）：國王仍以你們曾攻擊他、身上又有其他控制枷印為由，將你們逐出科米爾。離開前，剛德祭司加里踉蹌現身，與公主相擁。衛兵把你們帶到城外後離去；不久，加里與娜卡西亞共乘一騎奔向北方，公主在遠處向你們揮手。"
+      ,"journal.31": "手札條目 31：你們是由一群紅袍人送來的。他們說在路上發現你們時，你們已奄奄一息；房錢已預付，所以想住多久都可以。你們來時身上就有那些刺青，旅店老闆娘從未見過類似圖紋。她建議去找賢者菲拉妮，往北兩個街區就能找到她。"
+      ,"journal.38.1": "手札條目 38（1/3）：你們帶著五個不同組織的印記。菲拉妮認得其中三個，一個從未見過，最後一個則令她憂心。火焰與匕首是「火刀」的標誌；這群刺客過去以西門城為據點。舊組織已遭摧毀，如今必定另有新基地，但她不知道位於何處。"
+      ,"journal.38.2": "手札條目 38（2/3）：掌心之口是神祇摩安德的標誌。祂曾被逐出世界，卻短暫化作一堆污穢再現；被擊敗前摧毀了尤拉什城的一部分。其教團偏愛綠色。三角形中的華麗 Z 則代表散塔林會「黑網」。"
+      ,"journal.38.3": "手札條目 38（3/3）：黑網是由散提爾堡的祭司、法師與盜賊組成的邪惡聯盟，甚至有人說他們實際統治著散提爾堡。燃燒印記她從未見過。最後的弦月標誌，與暗影谷一位強大賢者有令人不安的相似之處；為了自身安全，她不願再多說。"
+      ,"journal.17": "手札條目 17：巷子裡只留下一把華麗匕首。它有深色握柄、寬大的護手，刀刃呈不規則火焰形；原手札在此畫出匕首外觀，這正是追查「火刀」組織的重要線索。"
+      ,"journal.18": "手札條目 18：你們身上的弦月枷印與伊爾明斯特的徽記極為相似，而他絕不會容忍有人冒稱受他烙印。最好悄悄離開暗影谷，乘船前往阿沙本福德，再一路向南找到那位紅袍法師的高塔，逼他解除枷印；否則留在這裡，恐怕只會被伊爾明斯特變成一隻蠑螈。"
+      ,"journal.19": "手札條目 19：祭司開始施法時，青色枷突然發出耀眼光芒。藍色火焰自印記竄出，在房內四處迸射；眾人痛苦得扭曲身體，祭司只得停止施法。他說：「這些枷鎖會抵抗我的神力，我無法解除它們。祝你們往後順利，願剛德與你們同在。」"
+      ,"journal.26": "手札條目 26：這些人中了入侵牧師施展的定身法術。那名牧師是為了營救被關在南方首領房裡的囚犯而來；所幸火刀最後在這間房裡制伏了他。"
+      ,"journal.9": "手札條目 9：文件旁畫著一個帶火焰輪廓的人形，軀幹上有三道彎曲符號。註記寫著：一、具有燃燒靈氣；二、能附身其他軀體；三、與光芒之池有所牽連。原始圖像保存於 Adventurer's Journal 第 12 頁。"
+      ,"journal.29": "手札條目 29：未被燒毀的部分寫著：「……我們的盟友能控制火焰、從一具軀體掠入另一具軀體，並展現多種異次元力量。我的結論是，『烈焰之主』不可能是別人，只會是泰蘭索斯……」"
     }
   },
   "character_creation": {
@@ -2446,7 +2522,22 @@
       "id": "world.shadowdale.edge",
       "all_contains": ["YOU ARE AT THE EDGE OF SHADOWDALE", "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"],
       "message_id": "world.shadowdale.edge"
-    }
+    },
+    {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
+    {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
+    {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},
+    {"id": "journal-trigger.guildmaster-map-4", "all_contains": ["THE GUILDMASTER GASPS", "JOURNAL ENTRY 4"], "message_id": "journal-trigger.guildmaster-map-4", "journal_message_ids": ["journal.4"]},
+    {"id": "journal-trigger.fire-knives-leader-11", "all_contains": ["LEADER OF THE FIRE KNIVES", "JOURNAL ENTRY", "11"], "message_id": "journal-trigger.fire-knives-leader-11", "journal_message_ids": ["journal.11.1", "journal.11.2"]},
+    {"id": "journal-trigger.fire-knives-victory-54", "all_contains": ["FIRE KNIVES HAVE BEEN DEFEATED", "JOURNAL ENTRY 54"], "message_id": "journal-trigger.fire-knives-victory-54", "journal_message_ids": ["journal.54"]},
+    {"id": "journal-trigger.fire-knives-royal-arrival-53", "all_contains": ["FREEING GIOGI", "JOURNAL ENTRY 53"], "message_id": "journal-trigger.fire-knives-royal-arrival-53", "journal_message_ids": ["journal.53.1", "journal.53.2"]},
+    {"id": "journal-trigger.tilverton-inn-31", "all_contains": ["JOURNAL ENTRY 31."], "message_id": "journal-trigger.tilverton-inn-31", "journal_message_ids": ["journal.31"]},
+    {"id": "journal-trigger.filani-38", "all_contains": ["SHE TALKS", "38."], "message_id": "journal-trigger.filani-38", "journal_message_ids": ["journal.38.1", "journal.38.2", "journal.38.3"]},
+    {"id": "journal-trigger.tavern-knife-17", "all_contains": ["ORNATE KNIFE", "17."], "message_id": "journal-trigger.tavern-knife-17", "journal_message_ids": ["journal.17"]},
+    {"id": "journal-trigger.shadowdale-warning-18", "all_contains": ["A HOODED, GREY ROBED MAN SITS IN A DARK CORNER", "18."], "message_id": "journal-trigger.shadowdale-warning-18", "journal_message_ids": ["journal.18"]},
+    {"id": "journal-trigger.high-priest-19", "all_contains": ["REMOVE CURSE SPELL", "19."], "message_id": "journal-trigger.high-priest-19", "journal_message_ids": ["journal.19"]},
+    {"id": "journal-trigger.frozen-room-26", "all_contains": ["YOU DISARM THE FIRE KNIVES", "JOURNAL ENTRY 26"], "message_id": "journal-trigger.frozen-room-26", "journal_message_ids": ["journal.26"]},
+    {"id": "journal-trigger.fire-knives-office-9", "all_contains": ["DRAWERS OF A ROSEWOOD DESK", "9. OTHER ITEMS"], "message_id": "journal-trigger.fire-knives-office-9", "journal_message_ids": ["journal.9"]},
+    {"id": "journal-trigger.fire-knives-paper-29", "all_contains": ["HAND KEPT THE PAPER", "JOURNAL ENTRY 29"], "message_id": "journal-trigger.fire-knives-paper-29", "journal_message_ids": ["journal.29"]}
   ],
   "events": [
     {

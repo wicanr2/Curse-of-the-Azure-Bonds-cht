@@ -3482,3 +3482,16 @@ repo 本輪無變更。CoAB commit／push 待收尾；READY spec 460 是權威�
 先補 `text_rules`／journal coverage，再移除
 仍有 279 次繁中 fallback 的 `localizeECLText／localizeECLLine／
 unlockJournalEntries`，不得直接刪除未證明分支。
+
+2026-08-02 第四百六十一輪完成遊戲內手札資料分離。舊
+`unlockJournalEntries` 的 15 組作品專用英文片段判斷與 23 頁繁中內容已移入
+CoAB `text_rules`／en／zh-TW locale；State 現只附加 pack match 回傳的頁面。
+英文頁面以使用者提供 Adventurer's Journal PDF 的 OCR 輔助轉錄，但 ECL
+觸發仍由原始片段與正常玩家路徑驗證。資料包測試逐一覆蓋 15 rules、兩語系
+與頁數；既有提爾佛頓、尤拉什、火刀與摩安德之坑整合測試改由 stable ID
+取得期望頁面，不再複製中文。source audit 797→722：localization 302→227，
+frontend 135、runtime 360 不變。READY spec 461 是權威；正式全套 gate、
+Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND461_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。下一步繼續逐條資料化
+`localizeECLText／localizeECLLine`，不可把 15 個已遷移觸發擴大宣稱為整本
+手札或全部劇情完成。

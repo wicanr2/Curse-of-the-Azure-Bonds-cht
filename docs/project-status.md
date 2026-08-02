@@ -65,8 +65,9 @@ commit 內保存不可能自我引用的 hash。
   至 ECL1 新遊戲與 save round-trip 已回歸；完整原版建角 UX／規則仍未完成。
 - 舊 Go switch 的 84 個既有 ECL menu token 已由 game-pack 105 條
   `option_rules` 完整覆蓋；新遊戲、Journey／商店、刀刃房與定身房真實 ECL
-  路徑均由 stable ID 解析。Go 漢字 baseline 現為 797；劇情文字與手札 fallback
-  尚未完成資料分離。
+  路徑均由 stable ID 解析。另有 15 個既有手札觸發與 23 頁 en／zh-TW 內容
+  已移入 `text_rules`／locale，真實 ECL 路徑與遊戲內重讀均由 stable ID
+  解析。Go 漢字 baseline 現為 722；其餘劇情文字 fallback 尚未完成資料分離。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

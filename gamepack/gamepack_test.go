@@ -270,6 +270,49 @@ func TestWizardTowerDracandrosStoryAndJournalAreGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestLegacyJournalTriggersAndPagesAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+		pages     int
+	}{
+		{"journal-trigger.pit-temple-map-20", []string{"YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"}, 1},
+		{"journal-trigger.alias-story-3", []string{"SHE TELLS HER STORY", "JOURNAL ENTRY 3"}, 3},
+		{"journal-trigger.yulash-commander-22", []string{"YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"}, 3},
+		{"journal-trigger.guildmaster-map-4", []string{"THE GUILDMASTER GASPS", "JOURNAL ENTRY 4"}, 1},
+		{"journal-trigger.fire-knives-leader-11", []string{"LEADER OF THE FIRE KNIVES", "JOURNAL ENTRY", "11"}, 2},
+		{"journal-trigger.fire-knives-victory-54", []string{"FIRE KNIVES HAVE BEEN DEFEATED", "JOURNAL ENTRY 54"}, 1},
+		{"journal-trigger.fire-knives-royal-arrival-53", []string{"FREEING GIOGI", "JOURNAL ENTRY 53"}, 2},
+		{"journal-trigger.tilverton-inn-31", []string{"JOURNAL ENTRY 31."}, 1},
+		{"journal-trigger.filani-38", []string{"SHE TALKS", "38."}, 3},
+		{"journal-trigger.tavern-knife-17", []string{"ORNATE KNIFE", "17."}, 1},
+		{"journal-trigger.shadowdale-warning-18", []string{"A HOODED, GREY ROBED MAN SITS IN A DARK CORNER", "18."}, 1},
+		{"journal-trigger.high-priest-19", []string{"REMOVE CURSE SPELL", "19."}, 1},
+		{"journal-trigger.frozen-room-26", []string{"YOU DISARM THE FIRE KNIVES", "JOURNAL ENTRY 26"}, 1},
+		{"journal-trigger.fire-knives-office-9", []string{"DRAWERS OF A ROSEWOOD DESK", "9. OTHER ITEMS"}, 1},
+		{"journal-trigger.fire-knives-paper-29", []string{"HAND KEPT THE PAPER", "JOURNAL ENTRY 29"}, 1},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != test.pages {
+					t.Fatalf("result=%+v, want rule %q with %d pages", result, test.id, test.pages)
+				}
+				for index, page := range result.JournalPages {
+					if page == "" {
+						t.Fatalf("journal page %d is empty: %+v", index, result)
+					}
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {
