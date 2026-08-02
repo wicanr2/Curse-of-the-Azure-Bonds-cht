@@ -82,8 +82,7 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 49 ||
-		!strings.Contains(state.Message, "兜帽女子卸下偽裝") ||
-		!strings.Contains(state.Message, "梅杜莎") {
+		state.Message != requireGamePackText(t, &state, "dexam.final_reveal") {
 		t.Fatalf("Dexam reveal mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -96,7 +95,7 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !state.CombatActive() || !strings.Contains(state.Message, "發動攻擊") {
+	if !state.CombatActive() || state.Message != requireGamePackText(t, &state, "dexam.attack") {
 		t.Fatalf("Dexam battle active=%v message=%q", state.CombatActive(), state.Message)
 	}
 	assertCombatMonsterCounts(t, state.CombatFighters(), map[string]int{
@@ -105,7 +104,14 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 		"monster-29-": 10,
 	})
 
-	forceEnemyDefeat(t, &state)
+	for turn := 0; turn < 500 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode == ModeCombat {
+		t.Fatalf("Dexam battle did not finish after 500 turns: fighters=%+v", state.CombatFighters())
+	}
 	if !state.treasureMenu || len(state.PendingTreasureItems()) != 4 ||
 		len(state.currentOriginalChoices) != 5 ||
 		state.currentOriginalChoices[4] != "TREASURE_EXIT" {
@@ -115,13 +121,13 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	if err := state.Select(4); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "取回洛山達護符") {
+	if state.Message != requireGamePackText(t, &state, "dexam.amulet_retrieved") {
 		t.Fatalf("amulet retrieval message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !state.CombatActive() || !strings.Contains(state.Message, "散提爾堡的部隊") {
+	if !state.CombatActive() || state.Message != requireGamePackText(t, &state, "dexam.zhentil_attack") {
 		t.Fatalf("Zhentil battle active=%v message=%q", state.CombatActive(), state.Message)
 	}
 	assertCombatMonsterCounts(t, state.CombatFighters(), map[string]int{
@@ -131,7 +137,14 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 		"monster-48-": 1,
 	})
 
-	forceEnemyDefeat(t, &state)
+	for turn := 0; turn < 500 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if state.Mode == ModeCombat {
+		t.Fatalf("Zhentil battle did not finish after 500 turns: fighters=%+v", state.CombatFighters())
+	}
 	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeEvent {
 		t.Fatalf("Zhentil victory mode=%v status=%v message=%q",
 			state.Mode, state.CombatStatus(), state.Message)
@@ -154,8 +167,7 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	}
 	if state.DungeonWallRoof != 0x93 || state.Mode != ModeEvent ||
 		!state.PictureRequested || state.PictureBlock != 42 ||
-		!strings.Contains(state.Message, "奧莉芙") ||
-		!strings.Contains(state.Message, "真令我意外") {
+		state.Message != requireGamePackText(t, &state, "dexam.departure.olive") {
 		t.Fatalf("cave exit terrain=%02x mode=%v picture=%v/%d message=%q",
 			state.DungeonWallRoof, state.Mode, state.PictureRequested,
 			state.PictureBlock, state.Message)
@@ -163,16 +175,16 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	if err := state.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{
-		"暗影谷有個人想問你幾個問題",
-		"一聲彷彿「嘉莉——」",
-		"身穿紫衣的女子",
+	for _, messageID := range []string{
+		"dexam.departure.dimswart",
+		"dexam.departure.gharri",
+		"dexam.departure.riders",
 	} {
 		if err := state.Select(0); err != nil {
 			t.Fatal(err)
 		}
-		if !strings.Contains(state.Message, want) {
-			t.Fatalf("departure stage missing %q: %q", want, state.Message)
+		if state.Message != requireGamePackText(t, &state, messageID) {
+			t.Fatalf("departure stage %s message=%q", messageID, state.Message)
 		}
 	}
 	if err := state.Select(0); err != nil {
@@ -183,7 +195,7 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || state.session.CurrentBlockID() != 0x51 ||
 		state.Area.InDungeon || state.Area.GameArea != 1 ||
-		!strings.Contains(state.Message, "暗影谷") {
+		state.Message != requireGamePackText(t, &state, "world.shadowdale.edge") {
 		t.Fatalf("world return mode=%v block=%02x area=%+v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.Area, state.Message)
 	}
@@ -199,20 +211,6 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 		strings.Join(state.currentOriginalChoices, "/") != "ENTER CITY/JOURNEY ON/CAMP/SEARCH AREA" {
 		t.Fatalf("Shadowdale world menu mode=%v originals=%q message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)
-	}
-}
-
-func forceEnemyDefeat(t *testing.T, state *State) {
-	t.Helper()
-	for _, fighter := range state.CombatFighters() {
-		if fighter.Side == combat.SideEnemy {
-			if err := state.battle.SetHitPoints(fighter.ID, 0); err != nil {
-				t.Fatal(err)
-			}
-		}
-	}
-	if err := state.finishCombat(); err != nil {
-		t.Fatal(err)
 	}
 }
 

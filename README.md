@@ -89,6 +89,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 一條完整 chapter transaction，尚不代表全分支或整款遊戲可通關。詳見
 [`docs/spec/468-pit-mogion-finale-game-pack.md`](docs/spec/468-pit-mogion-finale-game-pack.md)。
 
+第 469 輪強化下一章驗收：散提爾堡城門、奧莉芙、幽暗神殿、迪姆斯沃特、
+兜帽女子、弗佐爾、德克薩姆與離場訊息／手札都改由 stable ID 取得期望；眼魔
+洞窟兩戰不再直接把敵方 HP 歸零，而是實際推進回合至勝利。產品漢字基線維持
+603；本輪消除的是測試的第二份譯文與強制勝利假證據。詳見
+[`docs/spec/469-zhentil-stable-id-combat-path.md`](docs/spec/469-zhentil-stable-id-combat-path.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

@@ -911,3 +911,15 @@ continuation → 第二戰 footprint／數值 → quest item writer → 一次�
 transaction → exit encounter → companion removal → chapter progress flags → world
 edge。其他 SSI／Gold Box 作品與資料驅動 RPG 可沿用此矩陣，但怪物、旗標位址、
 物品與座標都必須留在作品 game pack 或由原始 script 驅動。
+
+### 2026-08-02：戰後 continuation 測試不能替代實際戰鬥
+
+將所有敵人 HP 直接寫成零，再呼叫戰後處理，只能證明 script 能從 victory
+boundary 繼續；它完全繞過 initiative、target、attack resolution、AI 與死亡
+handoff。這種測試可保留為局部 continuation probe，但不可支撐玩家路徑或戰鬥
+完成聲明。
+
+較強的可沿用 gate 是使用資料載入的真實敵人 roster，以有界回合呼叫正式
+combat action；高能力測試隊伍可以縮短時間，但必須明確標示，且不得直接改寫
+敵方 HP。訊息與手札期望仍由 game-pack stable ID 取得，避免戰鬥測試同時成為
+第二份翻譯 catalog。特殊能力、動畫與音效若未覆蓋，必須繼續列為缺口。

@@ -641,6 +641,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   對應 stable ID，並在同一 session 繼續驗證兩戰、護手旗標、一次性財寶、
   手札、最後阻擊、NPC 離隊與下一 world edge。只有其中一段通過不能宣稱章節
   transaction 完成。
+- 第 469 輪 baseline 維持 603，但清除散提爾堡／眼魔洞窟測試中的繁中片段
+  複本與 `forceEnemyDefeat`。資料早已在 JSON 不代表驗收分層正確；測試也必須
+  從 stable ID 取得訊息／手札。直接把敵方 HP 設零只能驗證戰後 continuation，
+  不能支撐「戰鬥可完成」；至少要用有界回合推進目前 combat runtime，並如實
+  記錄高能力 fixture 與尚未還原的特殊能力。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`
