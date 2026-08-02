@@ -421,3 +421,26 @@ func TestWallStampNativePositionMatchesReferenceThreeCellOrigin(t *testing.T) {
 		t.Fatal("reference row 11 was not clipped")
 	}
 }
+
+func TestCombatCameraFocusFollowsActiveFighterOnLargeMap(t *testing.T) {
+	active := combat.Fighter{HasCombatPosition: true, CombatX: 19, CombatY: 11}
+	if got := combatCameraFocus(active, true, 0, 31, 0, 15); got != (combat.TilePoint{X: 19, Y: 11}) {
+		t.Fatalf("active camera focus=%+v", got)
+	}
+	if got := combatCameraFocus(combat.Fighter{}, false, 0, 31, 0, 15); got != (combat.TilePoint{X: 16, Y: 8}) {
+		t.Fatalf("fallback camera focus=%+v", got)
+	}
+}
+
+func TestCombatPreviewFocusFindsOriginalBossSpriteWithoutMovingIt(t *testing.T) {
+	fighters := []combat.Fighter{
+		{Side: combat.SideEnemy, SpriteBlock: 0x45, HasCombatPosition: true, CombatX: 12, CombatY: 4},
+		{Side: combat.SideEnemy, SpriteBlock: 0x47, HasCombatPosition: true, CombatX: 24, CombatY: 9},
+	}
+	if got, ok := combatPreviewFocus(fighters, 0x47); !ok || got != (combat.TilePoint{X: 24, Y: 9}) {
+		t.Fatalf("boss preview focus=%+v ok=%v", got, ok)
+	}
+	if _, ok := combatPreviewFocus(fighters, 0); ok {
+		t.Fatal("disabled preview camera unexpectedly selected a fighter")
+	}
+}

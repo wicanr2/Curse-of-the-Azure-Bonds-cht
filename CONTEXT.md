@@ -3313,3 +3313,22 @@ stable selector／event、enabled 與 44,100 Hz audible frame保存；不同音�
 正式 Docker／Xvfb／`--network none` gate 已驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker
 `ROUND448_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round448-formal.log`。
+
+2026-08-02 第四百四十九輪採使用者指定的代表性抽樣，沒有重跑開場至結局
+marathon。`-inner-final-battle` 由 block `43h` 正常初始化，經 terrain `97h`
+樓梯與 READY spec 408 的十步 GEO 路線抵達 `9Ah`，runtime 斷言原始
+MARGOYLE `45h`×28、TYRANTHRAXUS `47h`×1、HIGH PRIEST `48h`×8。
+renderer 修正大型 CombatMap 使用全體 bounds 中心的回歸，正式鏡頭恢復依
+RuleBook 跟隨主動角色；只有 screenshot capture 啟用 `47h` 首領觀察焦點，
+不改 fighter 座標、ECL 或 AI。640×480 圖片已更新 README，標為
+`material-exact/layout-reconstructed`。READY spec 449 是權威；正式 gate、
+圖片 hash、Docker 清理與 push 狀態待本輪結束補記。
+
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND449_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round449-formal.log`。終戰圖
+SHA-256 為 `e7d2fa5763c95fc53478d4ec78cc230779a68e2375e1b1a0adef635e8ce6e6c7`；
+原始尺寸經 renderer 輸出與人工檢視確認為 640×480。一次性容器均以 `--rm`
+完成，沒有 `coab-round449` 容器殘留；一個 13 日前的未知懸空映像不屬本輪，
+為避免清到其他專案而保留。commit／push 狀態在提交後補入下一輪或以實際
+HEAD／remote 為準。

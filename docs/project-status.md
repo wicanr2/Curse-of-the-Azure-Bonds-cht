@@ -295,6 +295,13 @@ commit 內保存不可能自我引用的 hash。
   IDs 均有回歸。這完成 Standing Stone 累積狀態的迷斯卓諾章節路徑，仍不
   等於由新建隊伍自開場至結局的單一完整通關，也不代表終戰特殊能力與
   DOS 動態演出已完成。
+- 第 449 輪抽樣重建上述終戰 checkpoint：block `43h` 正常初始化後經
+  terrain `97h` 樓梯及十步 GEO 路線抵達 `9Ah`，runtime 再次斷言
+  MARGOYLE `45h`×28、TYRANTHRAXUS `47h`×1、HIGH PRIEST `48h`×8。
+  大型戰場正式鏡頭已由錯誤的全體 bounds 中心改回 RuleBook 的主動角色
+  焦點；README 的 640×480 圖片使用明確隔離的 capture-only 首領觀察鏡頭，
+  不移動敵軍、不改 ECL／AI。這是高風險終戰視覺抽樣，不擴大為完整通關或
+  完整戰鬥 fidelity。
 - 第 409 輪將 remake save 升至 v6，保存 ECL current block、resume PC、
   stack、mutable memory、字串／compare state、輸入 offset、pending monster
   descriptors 與持續 PRNG。獨立 engine `randomstream` 以 seed＋底層 draw
