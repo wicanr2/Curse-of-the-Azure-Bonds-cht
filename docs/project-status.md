@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`56a3dde`（第 435 輪）
-依賴的 Golden Box engine checkpoint：`9c94ddd`
+本 milestone 的 CoAB 基底：`122a470`（第 440 輪）
+依賴的 Golden Box engine checkpoint：`3142ae0`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -504,6 +504,11 @@ commit 內保存不可能自我引用的 hash。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC
   record 不受影響。duration consumer、combat-end／save、醒來文字、twinkle
   與聲音仍未完成；READY spec 440 是權威。
+- 第 441 輪以 `CLOCK_` overlay 20、Borland `TIMEUNITS` 與 resident
+  `MAXCOUNT` 閉合 `EFFECTREC+1` duration consumer。獨立 engine 新增
+  `combat/effecttime`；Battle 每個新 round 扣一 tick，duration 零保留。
+  正常 level 3 手動 Sleep 路徑已驗證 15 tick handoff／到期；active battle
+  save、到期文字、twinkle 與音效仍未完成。READY spec 441 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

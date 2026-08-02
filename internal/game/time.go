@@ -3,6 +3,8 @@ package game
 import (
 	"fmt"
 	"math"
+
+	engineeffecttime "github.com/wicanr2/golden-box-remake-engine/combat/effecttime"
 )
 
 // ReferenceTimeScales are the observed DOS ovr021 timeScales table. Slots
@@ -47,7 +49,7 @@ func (s *State) GameTimeSlots() [7]uint16 { return s.gameClock }
 func (s *State) GameAgeCycles() uint32 { return s.gameAgeCycles }
 
 // AdvanceGameTime mirrors step_game_time: it advances the raw clock and then
-// expires finite party/battle effects using the corresponding elapsed minutes.
+// expires finite party/battle effects using the corresponding EFFECTREC ticks.
 func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 	if timeSlot < 0 || timeSlot >= len(referenceTimeScales) {
 		return fmt.Errorf("game time slot %d is outside 0..6", timeSlot)
@@ -57,17 +59,17 @@ func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 	}
 	s.addGameClock(timeSlot, amount)
 	s.Area.GameTime = s.gameClock
-	minutes := uint64(amount)
-	for slot := timeSlot; slot > 1; slot-- {
-		minutes *= uint64(referenceTimeScales[slot-1])
+	ticks, err := engineeffecttime.DurationTicks(engineeffecttime.Unit(timeSlot), amount)
+	if err != nil {
+		return err
 	}
-	for minutes > 0 {
-		chunk := minutes
+	for ticks > 0 {
+		chunk := ticks
 		if chunk > math.MaxUint16 {
 			chunk = math.MaxUint16
 		}
 		s.advanceEffects(uint16(chunk))
-		minutes -= chunk
+		ticks -= chunk
 	}
 	return nil
 }
@@ -115,20 +117,20 @@ func (s *State) addGameClock(timeSlot int, amount uint16) {
 	}
 }
 
-func (s *State) advanceEffects(minutes uint16) {
+func (s *State) advanceEffects(ticks uint16) {
 	for index := range s.partyRoster {
-		s.partyRoster[index].AdvanceEffects(minutes)
+		s.partyRoster[index].AdvanceEffects(ticks)
 	}
 	if s.battle != nil {
-		s.battle.AdvanceMonsterAffects(minutes)
+		s.battle.AdvanceMonsterAffects(ticks)
 	}
 }
 
 // AdvanceCombatEffects is a small adapter for tests/frontends that already
-// have an elapsed minute count and do not want to mutate the world clock.
-func (s *State) AdvanceCombatEffects(minutes uint16) int {
-	if minutes == 0 || s.battle == nil {
+// have an elapsed EFFECTREC tick count and do not want to mutate the clock.
+func (s *State) AdvanceCombatEffects(ticks uint16) int {
+	if ticks == 0 || s.battle == nil {
 		return 0
 	}
-	return s.battle.AdvanceMonsterAffects(minutes)
+	return s.battle.AdvanceMonsterAffects(ticks)
 }

@@ -3219,3 +3219,12 @@ READY spec 439 是續作入口。
 解除動態睡眠，零傷害不會。`Battle.applyPositiveDamage` 已統一接通，並以
 一般攻擊、零傷害及 innate MON*SPC 邊界回歸。duration 遞減 consumer、
 combat-end／save、醒來文字、twinkle 與音效仍待續；READY spec 440 是入口。
+
+2026-08-02 第四百四十一輪由 PC-98 Borland `TIMEUNITS`、resident
+`MAXCOUNT DS:6804h` 與 `CLOCK_` overlay 20 local `0020h` 關閉
+`EFFECTREC+1` duration consumer。原 routine 遍歷 `CHARACTERLIST`／
+`Player+F2h` linked list，以十 tick chunk 遞減，duration 零保留、到期經
+`SPELLOFF`。engine `combat/effecttime` commit `3142ae0` 已推送；CoAB
+Battle 每個新 round 扣一 tick，正常 level 3 手動 Sleep 已驗證
+`15→handoff 14→總第15 tick解除`。active battle save 與醒來演出仍待續，
+READY spec 441 是入口。

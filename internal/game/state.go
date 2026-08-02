@@ -4063,13 +4063,13 @@ func (s *State) ResolveSpellSearch(request ecl.SpellSearch) (party.SpellMatch, b
 // party roster. It deliberately does not apply effect-specific combat
 // modifiers; those belong to the rules/action layer that knows the current
 // game clock boundary.
-func (s *State) AdvancePartyEffects(minutes uint16) int {
-	if minutes == 0 {
+func (s *State) AdvancePartyEffects(ticks uint16) int {
+	if ticks == 0 {
 		return 0
 	}
 	removed := 0
 	for index := range s.partyRoster {
-		removed += s.partyRoster[index].AdvanceEffects(minutes)
+		removed += s.partyRoster[index].AdvanceEffects(ticks)
 	}
 	return removed
 }
