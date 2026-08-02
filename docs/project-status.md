@@ -122,6 +122,11 @@ commit 內保存不可能自我引用的 hash。
   ECL 路徑均改讀正式 JSON；手札 17 的 prefix／全文也不再硬編碼於 Go。
   baseline 從 1,223 降至 1,169，移除 54 次；
   其他酒館事件與飲酒規則仍未宣稱完整。
+- 第 456 輪完成商店 UI 資料分離：購買、販售、鑑定、估價、查看、金幣操作、
+  選擇與結果格式共 63 個 stable IDs 均由正式 locale 取得；Weaponers
+  terrain `84h` 真實 ECL 路徑仍完成購買與返回 `(2,12)`。baseline 從
+  1,169 降至 1,100，移除 69 次。物品名稱仍由 `monster.ChineseName` 的 Go
+  catalog 產生，是下一個明確資料債，不能把本輪稱為完整 item JSON 化。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader

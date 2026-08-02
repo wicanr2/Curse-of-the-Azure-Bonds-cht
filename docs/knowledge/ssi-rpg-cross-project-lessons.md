@@ -34,6 +34,8 @@ AST＋hash exact baseline 先凍結 1,315 次現存債務，之後每批遷移�
 顯示名稱、格式與選項留在 locale，基線進一步下降至 1,223。
 第 455 輪酒館則保留原英文 token／fragment 作來源身分，只讓映射結果指向
 stable ID；這能同時維持逆向證據、ECL continuation 與單一繁中真相來源。
+第 456 輪商店證明複雜服務的格式字串也屬資料層；typed transaction、價格與
+物品 record 留在規則層，角色／商品／報價格式及錯誤結果由 locale ID 驅動。
 
 ## 目前不可共用的內容
 

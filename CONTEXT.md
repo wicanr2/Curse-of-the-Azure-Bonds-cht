@@ -3420,3 +3420,14 @@ audit 從 1,223 降至 1,169：localization 409→375、runtime 650→630、fron
 不變。正式 Docker／Xvfb／`--network none` 全套 gate 通過，marker
 `ROUND455_FORMAL_EXIT=0`；commit／push 與容器清理待收尾；READY spec 455
 是權威。
+
+2026-08-02 第四百五十六輪完成商店 UI 資料分離。主選單、BUY／VIEW／TAKE／
+POOL／SHARE／APPRAISE／SELL／ID、角色／物品選擇、價格／報價格式、錯誤與
+完成訊息共 63 keys 均由正式 locale 解析；typed ItemRecord／price／coins／
+transaction 不移入翻譯資料。測試改讀正式 JSON 並動態組合期望；Weaponers
+GEO2 terrain `84h`、PICTURE／ECL service boundary、購買、continuation 與
+返回 `(2,12)` 的真實路徑另驗證主選單／商品 prompt stable IDs。source audit
+從 1,169 降至 1,100：localization 375→372、runtime 630→564、frontend 164
+不變。`monster.ChineseName` 仍是物品 catalog 硬編碼債；正式 gate、commit／
+push 與容器清理待收尾。正式 Docker／Xvfb／`--network none` 全套 gate 通過，
+marker `ROUND456_FORMAL_EXIT=0`。READY spec 456 是權威。

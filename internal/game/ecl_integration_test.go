@@ -385,6 +385,8 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 
 	// Weaponers of Cormyr uses CMD_COMBAT as CityShop's engine-service
 	// boundary after setting Area2.EnterShop and loading ITEM2 block 5.
+	facilityCatalog := trainingTestCatalog(t)
+	state.catalog = facilityCatalog
 	state.partyRoster[0].Platinum = 0xFFFF
 	state.DungeonX, state.DungeonY, state.DungeonDirection = 2, 12, 0
 	state.DungeonWallType, _ = grid.WallWrapped(2, 12, 0)
@@ -417,6 +419,12 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Weaponers service mode=%v shop=%v offers=%d choices=%v",
 			state.Mode, state.shopMenu, len(offers), state.Choices)
 	}
+	if state.Prompt != facilityCatalog.Text("shop_menu_prompt", "") ||
+		state.Choices[0] != facilityCatalog.Text("shop_buy", "") ||
+		state.Choices[8] != facilityCatalog.Text("shop_exit", "") {
+		t.Fatalf("Weaponers service did not resolve stable locale IDs: prompt=%q choices=%v",
+			state.Prompt, state.Choices)
+	}
 	beforeWorth := characterCoinGoldWorth(state.partyRoster[0])
 	beforeEquipment := len(state.partyRoster[0].Equipment)
 	if err := state.Select(0); err != nil {
@@ -424,6 +432,9 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if !state.shopStockMenu || len(state.Choices) < 2 {
 		t.Fatalf("Weaponers stock menu=%v choices=%v", state.shopStockMenu, state.Choices)
+	}
+	if state.Prompt != facilityCatalog.Text("shop_stock_prompt", "") {
+		t.Fatalf("Weaponers stock prompt=%q, want locale ID result", state.Prompt)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
@@ -459,8 +470,6 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 
 	// The altar at GEO2 (0,7), terrain 0x92, requests PICTURE 6 and then
 	// dispatches temple_shop through the same resumable CMD_COMBAT boundary.
-	facilityCatalog := trainingTestCatalog(t)
-	state.catalog = facilityCatalog
 	state.partyRoster[0].HitPoints = 1
 	state.partyRoster[0].MaxHitPoints = 10
 	state.partyRoster[0].Platinum = 0xFFFF
