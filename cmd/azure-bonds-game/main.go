@@ -953,7 +953,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	if a.geoGrid == nil || !a.geoGrid.CanMoveDungeonWrapped(a.dungeonX, a.dungeonY, direction) {
 		if flags, ok := a.dungeonDoorFlags(); ok && (flags == 2 || flags == 3) {
 			a.dungeonDoorMenu = true
-			a.state.Message = "門已上鎖，請選擇 Bash／Pick／Knock／Exit"
+			a.state.Message = a.state.DungeonMessageText(game.DungeonMessageLockedPrompt)
 		}
 		return
 	}
@@ -972,7 +972,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 			err = a.state.RunDungeonLifecycle()
 		}
 		if err != nil {
-			a.state.Message = "地城事件執行失敗：" + err.Error()
+			a.state.Message = a.state.DungeonLifecycleErrorText(err)
 		}
 	}
 }
@@ -1085,32 +1085,32 @@ func (a *app) dungeonDoorFlags() (uint8, bool) {
 func (a *app) tryDungeonPickLock() {
 	flags, ok := a.dungeonDoorFlags()
 	if !ok || flags != 2 {
-		a.state.Message = "目前門面不可撬鎖（只有 detail 2 可撬鎖）"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessagePickUnavailable)
 		return
 	}
 	result := a.state.PickDungeonLock()
 	_, _, direction := a.state.DungeonGeometryView()
 	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
-		a.state.Message = "撬鎖成功，門已雙側解鎖"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessagePickSucceeded)
 		a.refreshDungeonPreview()
 		return
 	}
-	a.state.Message = "撬鎖失敗，本次撬鎖機會已消耗"
+	a.state.Message = a.state.DungeonMessageText(game.DungeonMessagePickFailed)
 }
 
 func (a *app) tryDungeonKnock() {
 	flags, ok := a.dungeonDoorFlags()
 	if !ok || (flags != 2 && flags != 3) {
-		a.state.Message = "目前沒有可施放 Knock 的上鎖門面"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessageKnockSurfaceUnavailable)
 		return
 	}
 	if !a.state.ConsumeDungeonKnockSpell() {
-		a.state.Message = fmt.Sprintf("沒有可用的 Knock（0x%02X）", dungeon.KnockSpellID)
+		a.state.Message = a.state.DungeonKnockUnavailableText(dungeon.KnockSpellID)
 		return
 	}
 	_, _, direction := a.state.DungeonGeometryView()
 	if a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
-		a.state.Message = "Knock 成功，門已雙側解鎖"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessageKnockSucceeded)
 		a.refreshDungeonPreview()
 	}
 }
@@ -1118,17 +1118,17 @@ func (a *app) tryDungeonKnock() {
 func (a *app) tryDungeonBash() {
 	flags, ok := a.dungeonDoorFlags()
 	if !ok || (flags != 2 && flags != 3) {
-		a.state.Message = "目前沒有可撞擊的上鎖門面"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessageBashUnavailable)
 		return
 	}
 	result := a.state.BashDungeonDoor(flags)
 	_, _, direction := a.state.DungeonGeometryView()
 	if result.Opened && a.geoGrid.UnlockDoorWrapped(a.dungeonX, a.dungeonY, int(direction)) {
-		a.state.Message = "撞門成功，門已雙側解鎖"
+		a.state.Message = a.state.DungeonMessageText(game.DungeonMessageBashSucceeded)
 		a.refreshDungeonPreview()
 		return
 	}
-	a.state.Message = "撞門失敗"
+	a.state.Message = a.state.DungeonMessageText(game.DungeonMessageBashFailed)
 }
 
 func (a *app) Draw(screen *ebiten.Image) {
@@ -1798,9 +1798,9 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		text.Draw(screen, a.state.LocationName, a.compactFace, 24, 282, cyan)
 	}
 	if a.dungeonDoorMenu {
-		text.Draw(screen, "上鎖的門：B 撞門　P 撬鎖　N 敲擊　Esc 離開", a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonDoorHelp), a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
 	}
-	text.Draw(screen, "↑前進　K/M轉向　S搜索　E紮營　P撬鎖　N敲擊　B撞門", a.compactFace, 8, 468, cyan)
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, 468, cyan)
 	a.drawOriginalAdventureFrame(screen)
 }
 

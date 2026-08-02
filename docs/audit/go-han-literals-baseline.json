@@ -94,20 +94,6 @@
     },
     {
       "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawDungeonGame",
-      "sha256": "50314b56876fca1c44afae03a85cbdfb554412d7ad9a840b288f5a78a3d29ceb",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "drawDungeonGame",
-      "sha256": "ff6f8048277a3e30a1ec8e40a7d7b4c4f51d50895e7bc2011541c50964b7193c",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
       "function": "drawDungeonPreview",
       "sha256": "0e58d7703c37e6d532be265429e80f22c71bca696f95d39a0a042d79b19379e6",
       "occurrences": 1,
@@ -262,20 +248,6 @@
     },
     {
       "path": "cmd/azure-bonds-game/main.go",
-      "function": "moveDungeonPreview",
-      "sha256": "036c5982129e5c4279b2de978dfd2b55d1af7c39ca7d31829405a53b457c6c43",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "moveDungeonPreview",
-      "sha256": "65ecd6859e0e63680b3a68de055149d4c30bb7c91f6ca09e8db54dfcf000da4d",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
       "function": "prepareCombatVisualDemo",
       "sha256": "1cc07e74eb15daf50faba3e43d8f618d19c8e017095d1c112b49a632d748f17e",
       "occurrences": 1,
@@ -341,69 +313,6 @@
       "path": "cmd/azure-bonds-game/main.go",
       "function": "syncLoadPiecesRequest",
       "sha256": "ffc7107338ff336f165ae7e1dbd4f371101f29019212f913d8d74c69ccc5b0e0",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonBash",
-      "sha256": "495af8bc9330a960a639c0f5a9fc0989e286efe429b2a9c40fd9865dfbee74f1",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonBash",
-      "sha256": "6901cf820ae382d078118bc4df730823d3950d51ab695a20edba9d920c2d3980",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonBash",
-      "sha256": "f390a43bf345ac18f01535085fc83373f5e8cd81b69ac0ca745423b6852b3d6e",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonKnock",
-      "sha256": "36cb8ff070ed67ad7bf6b3a436b551aba062118aaa30c26bf13e34a5251ef55b",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonKnock",
-      "sha256": "531299be4b1159d3cea8743502be0b846f8c2b3b5ba2d1ec109e1d5c4edad346",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonKnock",
-      "sha256": "918e5a248a4d54287ba5bcb5f88f8ad4a20ad7757b94bae69e623948bf9e2e96",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonPickLock",
-      "sha256": "1cd960a67da6d36c96ee7bd9b8f8b7ab2d90d59b70b154f8ff01d3c85acacdba",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonPickLock",
-      "sha256": "9f3b0d5839dfc9c4499612f82073a1d86646d9a9eae2b6902867dbe53a7c37f5",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "tryDungeonPickLock",
-      "sha256": "bb5c37be2c5ca5aaee89ce232351ad4457a67a4868727db0725e3996c57d5a88",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },

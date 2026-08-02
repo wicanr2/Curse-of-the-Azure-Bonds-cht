@@ -42,3 +42,15 @@ renderer：字型、座標、顏色、裁切
 
 角色欄標題、倒地標記與缺素材診斷也屬玩家可見文字。即使缺素材只在異常狀態
 出現，仍應通過正式 locale coverage；診斷狀態不能成為前端硬編碼的豁免區。
+
+## 地城門鎖結果
+
+門鎖流程會同時碰到門面 detail、角色能力、一次性撬鎖機會、Knock spell slot、
+撞門結果與雙側 geometry mutation。資料化時不可把這些規則搬成 locale key
+判斷，也不可讓 renderer 根據中文訊息反推門是否打開。
+
+正確方向是：規則先產生 typed result，作品 adapter 再選 stable message ID，
+renderer 最後只顯示 State 解析出的文字。動態錯誤與 spell ID 是 format argument；
+門旗標、法術消耗及 geometry mutation 則永遠留在 typed state。這個分層方法可
+沿用其他 SSI RPG，但 `flags=2／3`、spell ID 與雙側牆面表示法仍是作品證據，
+未經第二款遊戲驗證前不能抽成 Golden Box 共用格式。
