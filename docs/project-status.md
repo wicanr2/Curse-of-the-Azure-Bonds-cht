@@ -445,6 +445,11 @@ commit 內保存不可能自我引用的 hash。
   memorized-slot consumer。正常 scheduler 四例會清 Action、跳過回合且保留
   roster slot。六章正式 MON*SPC 沒有這四種 innate effect，Sleep／Hold 動態
   writer 尚未實作，因此不宣稱完整法術玩家路徑。
+- 第 432 輪閉合全域法術 `15h` 到 overlay 22 entry 41 的 dispatch，以及
+  Sleep 專屬 `4d4` 容量與 ordered HD 成本篩選。engine `combat/sleep`
+  已保存 exact primitive；`+74h` 欄位仍採中立 predicate 名稱。上游目標
+  幾何／排序、save、magic resistance、duration、效果寫入參數與演出尚未
+  全部閉合，因此尚未開放手動或 Quick Sleep。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

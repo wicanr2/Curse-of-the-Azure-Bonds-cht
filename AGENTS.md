@@ -355,7 +355,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
 - CoAB 本輪基底：`7fe1209`（第 430 輪 PC-98 毒雲術 effect `44h` 中斷）；
   第 431 輪 held-effect Action clear milestone 會由本文件所在 commit 完成。
-- Engine dependency：`134f036`（含作品中立 `combat/action` 的 delayed
+- Engine dependency：`73c0144`（含作品中立 `combat/sleep` 的 `4d4`／
+  ordered HD capacity filter、`combat/action` 的 delayed
   spell `TargetID`／point-target transaction 與 interruption clear、
   `combat/initiative`、
   `combat/quickspell`、`randomstream`，以及 game-pack
@@ -571,6 +572,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   delay、guard 與 unknown `Action+06h`，但不呼叫 memorized-slot consumer；
   remake 不得建立 `SpellInterruption` 或消耗 slot。六章 MON*SPC 沒有這四種
   innate effect，動態 Sleep／Hold writer 仍未完成。READY spec 431 是權威。
+- 第 432 輪已證明全域法術 `15h` 經 `INITSPELLS` dispatch 到 overlay 22
+  entry 41／local `2547h`，並 exact 還原 `4d4`、HD
+  `<=1／2／3／4／5／>=6 → 1／2／4／6／10或20／20` 的 ordered
+  capacity filter。engine 只加入此 primitive；目標幾何、豁免、duration、
+  raw effect writer 參數與動畫／音效仍未閉合，不得因已有 package 就把
+  Sleep 列為完整可施放法術。READY spec 432 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

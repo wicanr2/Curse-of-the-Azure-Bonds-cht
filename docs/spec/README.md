@@ -393,3 +393,4 @@
 - [第四百二十九輪 PC-98 正傷害施法中斷](./429-pc98-positive-damage-casting-interruption.md)（`READY`：`PUTDAMAGE>0`、第一個 matching memorized slot、pending transaction clear；非傷害狀態待續）
 - [第四百三十輪 PC-98 毒雲術 effect 44h 施法中斷](./430-pc98-cloudkill-effect44-casting-interruption.md)（`READY`：毒雲術 writer→effect table→pending spell consumer；限直接死亡，不含其他狀態）
 - [第四百三十一輪 PC-98 held effects 清除 Action](./431-pc98-held-effects-clear-action-without-slot-consumption.md)（`READY`：`1Fh／33h／34h／35h` 共用 CLEARACTION、不消耗 memorized slot；動態法術 writer 待續）
+- [第四百三十二輪 PC-98 睡眠術 HD 容量篩選](./432-pc98-sleep-hd-capacity-filter.md)（`READY`：限全域 `15h` dispatch、`4d4` 與 ordered HD 成本；目標幾何／豁免／演出待續）

@@ -3083,3 +3083,21 @@ writer、豁免、解除、動畫與聲音仍未完成；READY spec 431 是權�
 
 提交前 focused `internal/combat`／`internal/game` 與完全離線 Docker／Xvfb
 31 套件 gate 均以 `-count=1` 通過；第 431 輪沒有 engine source 變更。
+
+2026-08-02 第四百三十二輪由 PC-98 全域 spell record `15h`、overlay 22
+`INITSPELLS` 及 typed TPOV resolver 閉合 Sleep dispatch：table slot
+`A3E0h` 寫 `0117:00EDh`，落到 entry 41／local `2547h`。專屬 handler exact
+擲 `4d4`，依既有 target order 用 HD 成本 `1／2／4／6／10或20／20`
+扣除；已有 effect `35h` 或容量不足者清 pointer，但仍繼續掃後續候選。
+
+獨立 engine 新增 `combat/sleep` 與繁中知識庫，只保存上述容量 primitive；
+五 HD target `+74h` 尚未命名。第 432 輪 IDC 在唯讀 overlay 副本產生 397 行
+ledger。GETSPELLTARGETS 幾何／排序、save、magic resistance、duration、
+effect writer 完整參數、手動／Quick cast、動畫與音效仍未完成；下一輪應先
+閉合 `GETSPELLTARGETS 112Ch` 對 record `15h` 的上游分支，再接玩家路徑。
+
+Engine commit `73c0144` 已推送。engine `go test -count=1 ./...` 全數通過；
+CoAB 第一次兩次 formal gate 因 Xvfb socket／display readiness 配置失敗，
+其餘套件通過但不能冒充完整 gate。改用具名 display `:432`、檢查 Xvfb PID
+與 socket 後，Docker／Xvfb／`--network none` 的
+`go test -count=1 ./cmd/... ./gamepack ./internal/...` 共 31 套件正式通過。
