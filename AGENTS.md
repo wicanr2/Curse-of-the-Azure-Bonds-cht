@@ -768,6 +768,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   typed result，再選 stable message ID 與 runtime arguments；翻譯不得反推
   protected／save／damage。依風險分級跑 `internal/combat + internal/game`
   抽樣 gate，marker `ROUND490_SAMPLED_EXIT=0`。READY spec 490 是權威。
+- 第 491 輪資料化 WHO、PICTURE、戰鬥錯誤、紮營 HP 列、未知法術、ECL 字串
+  prompt、旅店與遊戲時間，baseline `94→77`；`internal/game` 抽樣 marker
+  `ROUND491_SAMPLED_EXIT=0`。角色選擇保存 ID／index，時間保存 typed fields，
+  locale 只格式化。READY spec 491 是權威。
+- 使用者於 2026-08-03 要求第 491 輪 push 後暫停，下週再繼續。compact／自動
+  continuation 不得自行開新 milestone；下一次使用者明確恢復後，先以實際
+  HEAD、`docs/project-status.md` 與剩餘 runtime audit 77 為起點。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

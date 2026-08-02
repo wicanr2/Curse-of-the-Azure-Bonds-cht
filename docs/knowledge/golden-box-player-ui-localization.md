@@ -135,3 +135,10 @@ ECL 或作品 adapter 應保存來源 tactic identity；locale 只負責名稱�
 fighter name 與 typed result 動態組期望全文。資料化文字的低風險 milestone 可
 抽樣既有近戰、移動、法術、快速戰鬥與勝敗路徑；但任何規則、PRNG、timeline、
 聲音、ECL continuation 或 renderer 變更仍須提升為完整相關 gate。
+
+## 角色列、未知法術與時間
+
+角色名稱、HP 與 spell ID 是 typed runtime data；「姓名（HP n/m）」與
+「未知法術 0xNN」只是 locale format。WHO、紮營檢視、治療目標等畫面可以共用
+格式，但選擇必須保存角色 ID／index。遊戲時間也應先保存 hour／minute／day／
+month／year，再由 locale 排列，不能讓其他 UI 切割翻譯後全文取得日期。

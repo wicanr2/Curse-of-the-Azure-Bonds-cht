@@ -129,7 +129,9 @@ commit 內保存不可能自我引用的 hash。
   與羅剎妖居所長路徑同時驗證原 tactic identity 和動態顯示。baseline 157、
   frontend debt 0、runtime 157。第 490 輪再清除 `combat_state.go` 的戰鬥檢視、
   動作、法術、快速戰鬥、怪物施法與勝敗等 63 筆中文副本，typed 規則與動畫
-  不變；baseline 94、frontend debt 0、runtime 94。
+  不變；baseline 94、frontend debt 0、runtime 94。第 491 輪再資料化 WHO、
+  PICTURE、紮營角色列、未知法術、ECL 字串 prompt、旅店與遊戲時間，baseline
+  77、frontend debt 0、runtime 77。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

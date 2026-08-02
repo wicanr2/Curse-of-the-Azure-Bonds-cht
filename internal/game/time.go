@@ -38,7 +38,7 @@ func (s *State) GameTimeDisplay() GameTimeDisplay {
 // GameTimeText is the compact Traditional Chinese clock shown by frontends.
 func (s *State) GameTimeText() string {
 	clock := s.GameTimeDisplay()
-	return fmt.Sprintf("時間：%02d:%02d　日期：第%d日／第%d月／第%d年", clock.Hour, clock.Minute, clock.Day, clock.Month, clock.Year)
+	return fmt.Sprintf(s.catalog.Text("game_time", "game_time"), clock.Hour, clock.Minute, clock.Day, clock.Month, clock.Year)
 }
 
 // GameTimeSlots returns a copy of the raw seven-slot clock.
