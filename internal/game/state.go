@@ -5644,61 +5644,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "GUARDS BAR YOUR WAY"):
 		return catalog.Text("ecl_tilverton_barred", "衛兵擋住你們的去路，不准你們再進入提爾佛頓。")
-	case strings.Contains(joined, "BLADES SLOW DOWN") &&
-		strings.Contains(joined, "FADE AWAY"):
-		return catalog.Text(
-			"ecl_fire_knife_blade_barrier_fades",
-			"片刻後，刀刃逐漸放慢並消失；嗡鳴降成低語，最後完全止息。房裡看來已有其他人遭刀刃捲入。",
-		)
-	case strings.Contains(joined, "CLOUD OF BLADES WHIRLING") &&
-		strings.Contains(joined, "METALLIC WHINE"):
-		return catalog.Text(
-			"ecl_fire_knife_blade_barrier",
-			"你們在房間入口停下。前方有一團刀刃彼此盤旋，尖銳的金屬嗡鳴幾乎蓋過所有聲音。你們要怎麼做？",
-		)
-	case strings.Contains(joined, "THE BLADES TEAR INTO YOU"):
-		return catalog.Text("ecl_fire_knife_blades_damage", "旋轉刀刃狠狠撕裂了你們！")
-	case strings.Contains(joined, "YOU SLAUGHTER THEM") &&
-		strings.Contains(joined, "BEING HELD"):
-		return catalog.Text("ecl_fire_knife_frozen_kill", "你們趁他們尚未從定身狀態恢復，將他們全數殺死。")
-	case strings.Contains(joined, "PEOPLE FROZEN IN") &&
-		strings.Contains(joined, "BEGINNING TO MOVE"):
-		return catalog.Text(
-			"ecl_fire_knife_frozen_room",
-			"房裡有許多人凝固在交戰姿勢中；有幾人倒成扭曲的一團，另一些已開始活動。你們要怎麼做？",
-		)
-	case strings.Contains(joined, "ORNATE ROOM") &&
-		strings.Contains(joined, "HIGH UP IN THE FIRE KNIVES"):
-		return catalog.Text(
-			"ecl_fire_knife_office",
-			"這是一間裝飾華麗的房間，看來是火刀某位高層人物的辦公室。",
-		)
-	case strings.Contains(joined, "STRANGE SMOKY SCENT"):
-		return catalog.Text("ecl_fire_knife_smoky_hall", "你們走進走廊時，察覺到一股奇怪的煙味。")
-	case strings.Contains(joined, "EXTREMELY WELL ORDERED BEDROOM") &&
-		strings.Contains(joined, "UNSEEN SERVANTS"):
-		return catalog.Text(
-			"ecl_fire_knife_ordered_bedroom",
-			"這間臥室整齊得異常，一切都精確歸位。搜索後沒有發現值錢物品；你們離開時，看不見的僕人又開始將房間恢復原狀。",
-		)
-	case strings.Contains(joined, "ROOM WAS ONCE A LIBRARY") &&
-		strings.Contains(joined, "CHARRED BODY"):
-		return catalog.Text(
-			"ecl_fire_knife_burned_library",
-			"這裡原是圖書館，如今書架與藏書都化為灰燼，部分仍冒著煙。房間中央有具焦屍，手中緊握一張紙。",
-		)
-	case strings.Contains(joined, "ONCE A LAB") &&
-		strings.Contains(joined, "NOTHING ESCAPED DESTRUCTION"):
-		return catalog.Text(
-			"ecl_fire_knife_burned_lab",
-			"這裡原是一間實驗室，同樣遭猛烈烈焰席捲，沒有任何東西逃過毀滅。",
-		)
-	case strings.Contains(joined, "TWO ROWS OF SHROUDED BODIES") &&
-		strings.Contains(joined, "TO BE RAISED"):
-		return catalog.Text(
-			"ecl_fire_knife_shrouded_bodies",
-			"房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。",
-		)
 	case strings.Contains(joined, "FIRST NIGHT OUTSIDE THE CITY") &&
 		strings.Contains(joined, "VIVID DREAM"):
 		return catalog.Text(

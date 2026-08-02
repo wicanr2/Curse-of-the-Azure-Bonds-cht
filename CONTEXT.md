@@ -3604,3 +3604,12 @@ runtime 360 不變。READY spec 470 是權威；正式 gate、commit／push 與�
 frontend 135、runtime 360 不變。READY spec 471 是權威；正式 gate、commit／push
 已通過 Docker／Xvfb／`--network none` 全套驗證，marker
 `ROUND471_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十二輪進行火刀據點房間資料化。刀刃屏障提示／傷害／消失、
+凝固房提示／殺戮、辦公室、煙味走廊、整齊臥室、燒毀圖書館／實驗室與裹屍房
+共十一條 en／zh-TW source rules 已移入 game-pack，對應 State fallback 已刪除。
+四組真實 ECL focused regression 保留 8d8 全隊傷害、三分支、手札 9／26、辦公室
+財寶、`4C11h..4C15h` 與重訪靜默；產品訊息改由 stable ID 驗收。source audit
+580→569，localization 85→74，frontend 135、runtime 360 不變。READY spec 472
+是權威；正式 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND472_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

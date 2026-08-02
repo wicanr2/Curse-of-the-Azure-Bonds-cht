@@ -107,6 +107,11 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 580。詳見
 [`docs/spec/471-tilverton-guild-hideout-game-pack.md`](docs/spec/471-tilverton-guild-hideout-game-pack.md)。
 
+第 472 輪完成火刀據點內刀刃屏障、凝固房、辦公室及五個灰燼房間共十一個文字
+boundary 的 game-pack 資料化。真實 ECL 回歸保留 8d8 全隊傷害、手札 9／26、
+辦公室財寶與 `4C11h..4C15h` 一次性旗標；Go 漢字基線由 580 降至 569。詳見
+[`docs/spec/472-fire-knife-hideout-rooms-game-pack.md`](docs/spec/472-fire-knife-hideout-rooms-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

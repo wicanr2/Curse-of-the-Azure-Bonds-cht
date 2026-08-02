@@ -649,6 +649,39 @@ func TestTilvertonGuildAndHideoutTransitionIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestFireKnifeHideoutRoomsAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"fire-knife.blade-barrier-fades", []string{"BLADES SLOW DOWN", "FADE AWAY"}},
+		{"fire-knife.blade-barrier", []string{"CLOUD OF BLADES WHIRLING", "METALLIC WHINE"}},
+		{"fire-knife.blade-barrier-damage", []string{"THE BLADES TEAR INTO YOU"}},
+		{"fire-knife.frozen-kill", []string{"YOU SLAUGHTER THEM", "BEING HELD"}},
+		{"fire-knife.frozen-room", []string{"PEOPLE FROZEN IN", "BEGINNING TO MOVE"}},
+		{"fire-knife.office", []string{"ORNATE ROOM", "HIGH UP IN THE FIRE KNIVES"}},
+		{"fire-knife.smoky-hall", []string{"STRANGE SMOKY SCENT"}},
+		{"fire-knife.ordered-bedroom", []string{"EXTREMELY WELL ORDERED BEDROOM", "UNSEEN SERVANTS"}},
+		{"fire-knife.burned-library", []string{"ROOM WAS ONCE A LIBRARY", "CHARRED BODY"}},
+		{"fire-knife.burned-lab", []string{"ONCE A LAB", "NOTHING ESCAPED DESTRUCTION"}},
+		{"fire-knife.shrouded-bodies", []string{"TWO ROWS OF SHROUDED BODIES", "TO BE RAISED"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

@@ -945,3 +945,14 @@ ID，並在每次 `Select／Continue` 後比較由同一 game-pack resolver 取�
 這仍不等於正常移動路徑。測試若在同一真實 session 直接設定 GEO 座標以抽樣多個
 房間，文件必須寫成「coordinate-assisted integration」，並另保留逐步行走的全路線
 完成門檻。資料綁定證據、事件 continuation 證據與可通關證據是三個不同層級。
+
+### 2026-08-02：raw oracle 與本地化驗收必須分層並存
+
+同一事件需要兩組不同斷言。raw VM 測試應保留原 ECL token、menu、傷害／財寶
+request 與 work flag，證明解碼沒有被翻譯層改寫；產品 State 測試則應由 stable
+ID 取得正式訊息，證明目前 locale 顯示與 game-pack 是同一真相來源。
+
+不要把 raw 英文 token 換成中文後便失去 source oracle，也不要因 raw 測試存在，
+就繼續用 `Contains("某段中文")` 當產品驗收。當同一 text batch 同時包含傷害與
+後續消失描述時，規則優先序也屬 game-pack contract，必須以玩家最後看見的完整
+訊息驗證，而不是假設每個 raw line 都會成為獨立畫面。
