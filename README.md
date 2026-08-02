@@ -11,9 +11,16 @@
 
 截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `4545f0b`；實際
+CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `134f036`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
+
+第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
+中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
+角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與
+豁免成功者不受影響。這是毒雲術 vertical slice，不代表沉默、麻痺、睡眠、
+石化或全部戰鬥法術已完成。證據見
+[`docs/spec/430-pc98-cloudkill-effect44-casting-interruption.md`](docs/spec/430-pc98-cloudkill-effect44-casting-interruption.md)。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
 `pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存

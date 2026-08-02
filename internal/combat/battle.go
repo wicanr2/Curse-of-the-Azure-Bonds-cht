@@ -422,9 +422,8 @@ type AreaSpellResult struct {
 	Impacts    []AreaSpellImpact
 }
 
-// SpellInterruption records the title-neutral result of positive damage
-// clearing a pending action spell. Memorized-slot ownership remains in the
-// game adapter.
+// SpellInterruption records a title-neutral original-engine boundary clearing
+// a pending action spell. Memorized-slot ownership remains in the game adapter.
 type SpellInterruption struct {
 	FighterID string
 	SpellID   uint8
@@ -456,16 +455,23 @@ func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
 		return 0
 	}
 	target.HitPoints -= damage
+	b.interruptPendingSpell(target)
+	return damage
+}
+
+func (b *Battle) interruptPendingSpell(target *Fighter) {
+	if b == nil || target == nil {
+		return
+	}
 	if spellID := target.CombatAction.InterruptSpell(); spellID != 0 {
 		b.spellInterruptions = append(b.spellInterruptions, SpellInterruption{
 			FighterID: target.ID, SpellID: spellID,
 		})
 	}
-	return damage
 }
 
-// TakeSpellInterruptions transfers all pending interruption events in damage
-// order and clears the Battle queue.
+// TakeSpellInterruptions transfers all pending interruption events in original
+// execution order and clears the Battle queue.
 func (b *Battle) TakeSpellInterruptions() []SpellInterruption {
 	if b == nil || len(b.spellInterruptions) == 0 {
 		return nil

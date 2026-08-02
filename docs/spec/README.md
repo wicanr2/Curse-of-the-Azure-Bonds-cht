@@ -391,3 +391,4 @@
 - [第四百二十七輪 PC-98 COMPTARGCURE 順序與 CHARSTATUS](./427-pc98-comptargcure-order-and-charstatus.md)（`READY`：九格方向、equal-HP tie、自身半血、倒地 8 HP 與 status set；同格多 corpse／中斷待續）
 - [第四百二十八輪 PC-98 手動 CAST 延遲與目標續跑](./428-pc98-manual-cast-delay-target-handoff.md)（`READY`：共用 casting handoff、stable combatant／格點目標 transaction；中斷待續）
 - [第四百二十九輪 PC-98 正傷害施法中斷](./429-pc98-positive-damage-casting-interruption.md)（`READY`：`PUTDAMAGE>0`、第一個 matching memorized slot、pending transaction clear；非傷害狀態待續）
+- [第四百三十輪 PC-98 毒雲術 effect 44h 施法中斷](./430-pc98-cloudkill-effect44-casting-interruption.md)（`READY`：毒雲術 writer→effect table→pending spell consumer；限直接死亡，不含其他狀態）

@@ -3044,3 +3044,24 @@ Engine action 新增 title-neutral interruption clear；CoAB Battle 所有已接
 並從 locale `combat_spell_interrupted` 顯示繁中。正傷害／零傷害、第一個重複
 slot、既有手動 Bless／Fireball regressions 是 focused gate。Cloudkill 直接
 死亡、非傷害狀態、monster raw writeback 與原版動態時間仍未完成。
+
+2026-08-02 第四百三十輪沿毒雲術的獨立非傷害路徑繼續。overlay 22 的日文
+short string、3×3 tile `1Ch` writer 與 callback exact 加入 raw effect `44h`；
+overlay 12 `INITEFFPROX` 把 zero-based slot 67 解析到 resident `008B:016Fh`、
+overlay-local `1621h`。該 handler 在 combat mode 檢查 pending Action spell，
+顯示「未能完成吟唱法術」，呼叫第 429 輪已證明的 overlay 24 memorized-byte
+consumer，再清 pending spell。原始 executable／overlays 全程唯讀，附加 IDC
+ledger 保留原 offset、bytes、disassembly 與推論等級。
+
+CoAB Battle 抽出共用 interruption event helper；`CastCloudkill` 對 HD 0–4
+自動死亡與 HD 5–6 豁免失敗先建立 event，再進死亡 handoff。State 由正式
+roster stable ID 移除第一個 matching slot，顯示文字由正式 locale 取得。HD 7+
+正反例保留；共用 engine action API 已足夠，因此本輪沒有 engine source 變更。
+沉默、麻痺、睡眠、石化、monster raw writeback、毒雲每回合判定與原版動態
+時間仍未完成；READY spec 430 是權威。
+
+提交前以唯讀 overlays 在乾淨 `/tmp/coab-ida-430-final` 重建 IDA ledger：
+overlay 12／22 分別為 5,136／11,103 行，並以非空檔案作門檻，不能只信 IDA
+exit code。Docker／Xvfb、`--network none`、暫時 local-engine replace 的
+`./cmd/... ./gamepack ./internal/...` 正式 gate 共 31 套件通過；Cloudkill
+三組 core 與兩組 State／玩家路徑測試另以 `-count=1` 通過。

@@ -123,6 +123,12 @@ func (b *Battle) CastCloudkill(casterID string, center TilePoint, level int, ter
 			impact.Killed = !impact.Saved
 		}
 		if impact.Killed {
+			// PC-98 Cloudkill applies raw effect 44h before the direct-death
+			// handoff. Its combat consumer independently cancels a pending
+			// spell and consumes the matching memorized slot; it does not use
+			// PUTDAMAGE's positive-damage branch.
+			b.interruptPendingSpell(&target)
+			b.fighters[target.ID] = target
 			if err := b.SetHitPoints(target.ID, 0); err != nil {
 				return PersistentAreaResult{}, err
 			}

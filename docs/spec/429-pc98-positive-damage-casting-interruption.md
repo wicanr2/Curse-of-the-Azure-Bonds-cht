@@ -69,7 +69,8 @@ spell」是 `exact data/control flow`。哪個現代 typed target 欄位對應�
   locale stable ID 解析。
 - 第 428 輪手動 Bless／Fireball focused regressions 保留。
 
-尚未證明並因此未擴張的範圍：Cloudkill 低 HD 直接死亡 setter 是否仍通過
-`PUTDAMAGE`、沉默／麻痺／石化／睡眠等非傷害中斷、monster memorized slot
-raw writeback、原版中斷訊息的畫面停留時間與聲音。完整正常玩家路徑仍需在
+Cloudkill 低 HD 直接死亡已由 READY spec 430 證明走 raw effect `44h` 的獨立
+中斷 consumer，而不是 `PUTDAMAGE`。仍未證明並因此未擴張的範圍：沉默／
+麻痺／石化／睡眠等其他非傷害中斷、monster memorized slot raw writeback、
+原版中斷訊息的畫面停留時間與聲音。完整正常玩家路徑仍需在
 可穩定控制 initiative 與敵方命中的原版／remake 場景取得動態 oracle。

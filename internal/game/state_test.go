@@ -2852,6 +2852,47 @@ func TestCombatPositiveDamageConsumesInterruptedPendingSpellByStableID(t *testin
 	}
 }
 
+func TestCombatCloudkillDirectDeathConsumesInterruptedPendingSpellByStableID(t *testing.T) {
+	state := NewState(combatVisualCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 4,
+		SpellSlots: []uint8{BlessSpellID, CurseSpellID, BlessSpellID},
+	}}
+	saves := []uint8{10, 10, 10, 10, 10}
+	heroes := []combat.Fighter{{
+		ID: "mage", Name: "法師", Side: combat.SideParty,
+		HitPoints: 10, MaxHitPoints: 10, HitDice: 4, InitiativeBonus: 8,
+		HasCombatPosition: true, CombatX: 4, CombatY: 4, SavingThrows: saves,
+	}}
+	enemies := []combat.Fighter{{
+		ID: "enemy-mage", Name: "敵方法師", Side: combat.SideEnemy,
+		HitPoints: 10, MaxHitPoints: 10, HitDice: 7, InitiativeBonus: 6,
+		HasCombatPosition: true, CombatX: 8, CombatY: 4, SavingThrows: saves,
+	}}
+	if err := state.StartCombat(heroes, enemies, 430); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.battle.BeginPendingSpellAction("mage", BlessSpellID, 3); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := state.battle.CastCloudkill("enemy-mage", combat.TilePoint{X: 4, Y: 4}, 7, nil); err != nil {
+		t.Fatal(err)
+	}
+	message := state.consumeCombatSpellInterruptions()
+	wantMessage := fmt.Sprintf(state.catalog.Text("combat_spell_interrupted", ""), "法師")
+	if message != wantMessage {
+		t.Fatalf("message=%q want=%q", message, wantMessage)
+	}
+	wantSlots := []uint8{CurseSpellID, BlessSpellID}
+	if !slices.Equal(state.partyRoster[0].SpellSlots, wantSlots) {
+		t.Fatalf("slots=%v want=%v", state.partyRoster[0].SpellSlots, wantSlots)
+	}
+	caster, _ := state.fighter("mage")
+	if caster.HitPoints != 0 || caster.CombatAction != (combat.ActionState{}) {
+		t.Fatalf("Cloudkill victim=%+v", caster)
+	}
+}
+
 func TestCombatCastCurseConsumesSlotAndDebuffsSelectedEnemy(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, SpellSlots: []uint8{CurseSpellID}}}

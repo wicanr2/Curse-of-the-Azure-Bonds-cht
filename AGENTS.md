@@ -168,6 +168,15 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   IDC、型別匯入、註解、重新分析或 IDA 自動升級 database 都只能作用於分析
   副本，不能原地改寫唯一的原始檔或基準 database。分析完成後，以可重現腳本、
   文字報告與規格保存結論，不以被修改過的 `.i64` 單獨充當證據。
+- 若執行檔有壓縮、加殼或自解包 stub，必須先保存並雜湊原檔，再把解包結果視為
+  獨立衍生物；記錄解包工具與版本、操作命令、輸入／輸出 SHA-256、載入基址及
+  成功判定。不得以解包檔覆蓋原檔，也不得只因 IDA 顯示出較多函式就宣稱解包
+  正確；至少要以入口控制流、原始 runtime 或另一項權威證據交叉驗證。
+- `.i64`／`.idb`、平面 `.asm`、解包 binary、IDA 暫存檔與本輪可重建的 database
+  都屬工作產物，預設只留在被忽略的 `workplace/` 或 `/tmp`，不得取代原始資料或
+  規格進入版本控制。應版本化的是 IDC／typed resolver、輸入雜湊、可重現命令、
+  外部語意 ledger、必要的連續位址報告與 READY spec；若例外保存 database，仍須
+  同時保留產生流程，且不能把其中的 rename／comment 當成獨立證據。
 - IDA database 是程式原貌與交叉參考的證據快取，不是把推測改寫成事實的
   地方。不得以推測名稱取代 `sub_XXXXX`、`word_XXXXX`、Borland symbol、
   原始 segment:offset 或 linear address；尤其不得因一次命名方便，就讓原始
@@ -344,11 +353,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`8df7c97`（第 424 輪 PC-98 ALT+M 與 Quick Magic Missile）；
-  第 425 輪 PC-98 Quick Bless 與非即時施法 milestone 會由本文件所在
-  commit 完成。
-- Engine dependency：`7be8f7c`（含作品中立 `combat/action` 的 delayed
-  spell `TargetID` transaction、
+- CoAB 本輪基底：`cd91719`（第 429 輪 PC-98 正傷害施法中斷）；第 430 輪
+  毒雲術 effect `44h` 獨立中斷 milestone 會由本文件所在 commit 完成。
+- Engine dependency：`134f036`（含作品中立 `combat/action` 的 delayed
+  spell `TargetID`／point-target transaction 與 interruption clear、
   `combat/initiative`、
   `combat/quickspell`、`randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -550,8 +558,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 429 輪已由 overlay 23 `PUTDAMAGE` 與 overlay 24 memorized-byte consumer
   證明：最終 applied damage `>0` 會中斷 pending spell、移除第一個 matching
   slot 並保留 Action delay；零傷害不觸發。remake 必須在所有傷害來源共用
-  positive-damage boundary，不能只修近戰。Cloudkill 直接死亡與非傷害狀態
-  中斷仍未證明，不得自行套用同規則；READY spec 429 是權威。
+  positive-damage boundary，不能只修近戰。Cloudkill 直接死亡已由第 430 輪
+  證明走 effect `44h` 的獨立 consumer；其他非傷害狀態仍不得自行套用。
+  READY spec 429／430 分別是兩條觸發路徑的權威。
+- 第 430 輪以唯讀 PC-98 overlay 22／12、typed effect-table resolver 與
+  overlay 24 consumer 證明毒雲術 raw effect `44h` 會獨立中斷 pending spell。
+  `CastCloudkill` 必須在 direct-death handoff 清 Action 前建立 stable interruption
+  event；HD 7+／豁免成功不觸發。這不證明沉默、麻痺、睡眠或石化，後者仍須
+  分別閉合 writer→effect table→consumer。READY spec 430 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
