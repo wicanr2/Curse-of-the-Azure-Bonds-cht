@@ -3211,3 +3211,11 @@ legacy identity／terrain SCAN、`CastSleepOrdered` 與成功後 slot transactio
 已接通；invalid map 不吃 slot。32×16 fallback placement 仍是 reconstructed，
 Quick Sleep、wall/corner runtime、effect 解除／save、twinkle／音效仍未完成。
 READY spec 439 是續作入口。
+
+2026-08-02 第四百四十輪以全新 `/tmp` IDA 9.4 副本追蹤 overlay 23
+`PUTDAMAGE 1FFDh → REMOVEFX 158Ah → SPELLOFF 010Eh`。關鍵訂正是
+`REMOVEFX` 的 `[di+159Dh]` 使用 `DS`，不能讀 overlay 同 offset；resident
+`DS:159Eh..15B1h` 19-byte 表 exact 含 Sleep `35h`。因此只有實際正傷害會
+解除動態睡眠，零傷害不會。`Battle.applyPositiveDamage` 已統一接通，並以
+一般攻擊、零傷害及 innate MON*SPC 邊界回歸。duration 遞減 consumer、
+combat-end／save、醒來文字、twinkle 與音效仍待續；READY spec 440 是入口。

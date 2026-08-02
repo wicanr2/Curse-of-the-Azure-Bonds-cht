@@ -50,7 +50,7 @@ transaction 已可把排序後 stable IDs 交給 Sleep。第 437 輪又以 PC-98
 ID 的正式投影已於第 438 輪由 `CHARACTERLIST／IDLIST` pointer identity
 閉合，並接成 stable fighter ID transaction。戰場 `TD/TDEF` frontend
 projection、wall 實機、手動／Quick
-施法、解除、存檔及演出仍未完成，不能宣稱 Sleep 已可正常遊玩。最新證據見
+施法、解除、存檔及演出當時仍未完成。最新 targeting 證據見
 [`docs/spec/438-pc98-idlist-stable-fighter-projection.md`](docs/spec/438-pc98-idlist-stable-fighter-projection.md)。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
@@ -1125,6 +1125,13 @@ PC-98 TDEF、選定格中心與原版 `SCAN`，不是依距離自行猜測或以
 PC-98 固定戰場動態仍未完成，故這是可玩的規則垂直切片，不是完整 Sleep／
 完整戰鬥聲明。證據見
 [`spec 439`](docs/spec/439-pc98-sleep-selected-cell-tactical-map.md)。
+
+第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
+連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`
+受到至少一點傷害會解除，零傷害不會。所有 combat 正傷害入口都經同一
+`Battle.applyPositiveDamage`，現已接通這項醒來規則；duration 遞減、存讀檔、
+文字、閃爍與音效仍待證明。證據見
+[`spec 440`](docs/spec/440-pc98-sleep-damage-wake.md)。
 
 ## 尚未完成
 

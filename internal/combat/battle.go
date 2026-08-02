@@ -556,7 +556,26 @@ func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
 	}
 	target.HitPoints -= damage
 	b.interruptPendingSpell(target)
+	b.removeDamageCancelledAffects(target)
 	return damage
+}
+
+// removeDamageCancelledAffects projects the verified PC-98 PUTDAMAGE →
+// REMOVEFX boundary. Sleep (35h) is one of the dynamic effects removed after
+// strictly positive damage; innate MON*SPC capabilities are not spell records
+// created by PUTEFFECT and must remain attached.
+func (b *Battle) removeDamageCancelledAffects(target *Fighter) {
+	if target == nil || len(target.MonsterAffects) == 0 {
+		return
+	}
+	kept := target.MonsterAffects[:0]
+	for _, affect := range target.MonsterAffects {
+		if affect.Kind == 0x35 && !affect.Innate {
+			continue
+		}
+		kept = append(kept, affect)
+	}
+	target.MonsterAffects = kept
 }
 
 func (b *Battle) interruptPendingSpell(target *Fighter) {

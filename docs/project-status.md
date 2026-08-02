@@ -499,6 +499,11 @@ commit 內保存不可能自我引用的 hash。
   `4d4`／HD／魔抗／`35h` effect 與成功後 slot 消耗；無效 map fail-closed。
   32×16 fallback placement 仍是 reconstructed，Quick Sleep、wall/corner
   動態、解除／save、twinkle／音效未完成；READY spec 439 是權威。
+- 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
+  證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
+  `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC
+  record 不受影響。duration consumer、combat-end／save、醒來文字、twinkle
+  與聲音仍未完成；READY spec 440 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
