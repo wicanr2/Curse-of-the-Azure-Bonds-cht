@@ -50,10 +50,13 @@ var firstLevelSpellKeys = map[party.Class]struct {
 func campSpellLabel(catalog locale.Catalog, class party.Class, spellID uint8) string {
 	table, ok := firstLevelSpellKeys[class]
 	if !ok || spellID < table.base || int(spellID-table.base) >= len(table.keys) {
-		return fmt.Sprintf(catalog.Text("spell_unknown", "未知法術 0x%02X"), spellID)
+		return fmt.Sprintf(catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
 	}
 	key := table.keys[spellID-table.base]
-	return catalog.Text(key, fmt.Sprintf("法術 0x%02X", spellID))
+	if translated := catalog.Text(key, ""); translated != "" {
+		return translated
+	}
+	return fmt.Sprintf(catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
 }
 
 // firstLevelMemorizedCapacity is the bounded preparation adapter used by the

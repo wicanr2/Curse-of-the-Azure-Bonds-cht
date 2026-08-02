@@ -96,14 +96,15 @@ func TestECLClockAdvancesSharedGameTime(t *testing.T) {
 }
 
 func TestGameTimeDisplayUsesReferenceArea1Mapping(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	state.gameClock = [7]uint16{0, 4, 5, 13, 7, 2, 9}
 
 	display := state.GameTimeDisplay()
 	if display.Hour != 13 || display.Minute != 54 || display.Day != 7 || display.Month != 2 || display.Year != 9 {
 		t.Fatalf("display=%+v, want 13:54 day=7 month=2 year=9", display)
 	}
-	if got := state.GameTimeText(); got != "時間：13:54　日期：第7日／第2月／第9年" {
+	if got, want := state.GameTimeText(), fmt.Sprintf(catalog.Text("game_time", ""), 13, 54, 7, 2, 9); got != want {
 		t.Fatalf("text=%q", got)
 	}
 }
@@ -2633,13 +2634,15 @@ func TestCombatAdjacentMissileRejectsBeforeAmmunitionTransaction(t *testing.T) {
 }
 
 func TestReportCombatErrorKeepsLocalizedRecoverableMessage(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	state.ReportCombatError(combat.ErrAdjacentMissileTarget)
-	if state.CombatMessage() != "飛彈武器不能攻擊相鄰目標。" {
+	if state.CombatMessage() != catalog.Text("combat_missile_adjacent_error", "") {
 		t.Fatalf("missile error message=%q", state.CombatMessage())
 	}
-	state.ReportCombatError(errors.New("combat is not active"))
-	if !strings.Contains(state.CombatMessage(), "無法執行戰鬥行動") {
+	err := errors.New("combat is not active")
+	state.ReportCombatError(err)
+	if state.CombatMessage() != fmt.Sprintf(catalog.Text("combat_action_error", ""), err) {
 		t.Fatalf("generic combat error message=%q", state.CombatMessage())
 	}
 }

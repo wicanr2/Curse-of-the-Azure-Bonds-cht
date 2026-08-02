@@ -39,10 +39,10 @@ func (s *State) ReportCombatError(err error) {
 		return
 	}
 	if errors.Is(err, combat.ErrAdjacentMissileTarget) {
-		s.combatMessage = s.catalog.Text("combat_missile_adjacent_error", "飛彈武器不能攻擊相鄰目標。")
+		s.combatMessage = s.catalog.Text("combat_missile_adjacent_error", "combat_missile_adjacent_error")
 		return
 	}
-	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_action_error", "無法執行戰鬥行動：%s"), err.Error())
+	s.combatMessage = fmt.Sprintf(s.catalog.Text("combat_action_error", "combat_action_error"), err.Error())
 }
 
 type Mode uint8
@@ -1088,7 +1088,7 @@ func (s *State) Select(index int) error {
 	if whoSelecting {
 		s.whoMenu = false
 		s.whoSelectionSequence = append(s.whoSelectionSequence, uint16(index))
-		s.Message = fmt.Sprintf("已選擇角色：%s", s.Choices[index])
+		s.Message = fmt.Sprintf(s.catalog.Text("selected_character", "selected_character"), s.Choices[index])
 	}
 	if originalChoice == "CAMP" && len(s.eclBlock) == 0 {
 		s.enterCampMenu()
@@ -1351,7 +1351,7 @@ func (s *State) Select(index int) error {
 			if len(result.WhoRequests) > 0 && result.WhoRequests[len(result.WhoRequests)-1].Prompt != "" {
 				s.Prompt = s.localizeECLText([]string{result.WhoRequests[len(result.WhoRequests)-1].Prompt})
 			} else {
-				s.Prompt = "請選擇角色"
+				s.Prompt = s.catalog.Text("select_character", "select_character")
 			}
 			s.Mode = ModeWilderness
 			return nil
@@ -1384,7 +1384,7 @@ func (s *State) Select(index int) error {
 			}
 			s.OriginalEvent = "PICTURE"
 			if s.Message == "" {
-				s.Message = "事件畫面"
+				s.Message = s.catalog.Text("event_picture", "event_picture")
 			}
 			if result.CombatRequested || result.ShopRequested || result.TempleRequested || result.WaitingForMenu {
 				pending := result
@@ -1444,7 +1444,7 @@ func (s *State) Select(index int) error {
 				return nil
 			}
 			s.OriginalEvent = "COMBAT"
-			s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥規則尚未完成）")
+			s.Message = s.catalog.Text("combat_started", "combat_started")
 			s.eventReturnMode = ModeWilderness
 			s.Mode = ModeEvent
 			return nil
@@ -3114,7 +3114,7 @@ func (s *State) AppendRenameName(chars []rune) error {
 		return fmt.Errorf("rename editor is not active")
 	}
 	if len([]byte(s.renameName+string(chars))) > 15 {
-		return fmt.Errorf("DOS 角色名稱最多 15 bytes")
+		return fmt.Errorf("DOS character name exceeds 15 bytes")
 	}
 	s.renameName += string(chars)
 	return nil
@@ -3707,7 +3707,7 @@ func (s *State) enterCampViewMenu() {
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("character_hp_choice", "character_hp_choice"), character.Name, character.HitPoints, character.MaxHitPoints))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_VIEW_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("camp_view_exit", "camp_view_exit"))
@@ -3785,7 +3785,7 @@ func (s *State) enterCampMagicCastTargetMenu() {
 		if character.HealthStatus == party.HealthStatusDead || character.HitPoints >= character.MaxHitPoints {
 			continue
 		}
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（HP %d/%d）", character.Name, character.HitPoints, character.MaxHitPoints))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("character_hp_choice", "character_hp_choice"), character.Name, character.HitPoints, character.MaxHitPoints))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "CAMP_MAGIC_CAST_TARGET_"+strconv.Itoa(index))
 	}
 	if len(s.Choices) == 0 {
@@ -4121,7 +4121,7 @@ func (s *State) selectPlace(index int, originalChoice string) error {
 	s.Message = s.placeEventMessage(originalChoice)
 	if originalChoice == "INN" {
 		s.restorePartyAtInn()
-		s.Message = s.catalog.Text("inn_restored", "你們在客棧安全休息，隊伍恢復體力。")
+		s.Message = s.catalog.Text("inn_restored", "inn_restored")
 	}
 	if originalChoice == "LEAVE" {
 		s.eventReturnMode = ModeMap
@@ -5301,7 +5301,7 @@ func (s *State) Continue() error {
 					return s.StartEncounterWithAffects(result, records, s.monsterAffectsForCurrentECL(), s.party, s.combatSeed)
 				}
 				s.OriginalEvent = "COMBAT"
-				s.Message = s.catalog.Text("combat_started", "戰鬥開始（戰鬥資料尚未完成）")
+				s.Message = s.catalog.Text("combat_started", "combat_started")
 				s.eventReturnMode = ModeWilderness
 				return nil
 			}

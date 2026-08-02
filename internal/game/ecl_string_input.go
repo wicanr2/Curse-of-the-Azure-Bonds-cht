@@ -12,7 +12,7 @@ func (s *State) beginECLStringInput(request ecl.StringInputRequest) {
 	s.eclStringValue = ""
 	s.eclStringMaxLength = int(request.MaxLength)
 	s.Mode = ModeEvent
-	s.Prompt = s.catalog.Text("ecl_string_input_prompt", "請輸入回答")
+	s.Prompt = s.catalog.Text("ecl_string_input_prompt", "ecl_string_input_prompt")
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 }
@@ -35,7 +35,7 @@ func (s *State) ECLStringMaxLength() int {
 
 func (s *State) AppendECLString(chars []rune) error {
 	if !s.eclStringEditing {
-		return fmt.Errorf("ECL 字串輸入尚未啟用")
+		return fmt.Errorf("ECL string input is not active")
 	}
 	current := []rune(s.eclStringValue)
 	remaining := s.eclStringMaxLength - len(current)
@@ -51,7 +51,7 @@ func (s *State) AppendECLString(chars []rune) error {
 
 func (s *State) BackspaceECLString() error {
 	if !s.eclStringEditing {
-		return fmt.Errorf("ECL 字串輸入尚未啟用")
+		return fmt.Errorf("ECL string input is not active")
 	}
 	if s.eclStringValue == "" {
 		return nil
@@ -63,10 +63,10 @@ func (s *State) BackspaceECLString() error {
 
 func (s *State) SubmitECLString() error {
 	if !s.eclStringEditing {
-		return fmt.Errorf("ECL 字串輸入尚未啟用")
+		return fmt.Errorf("ECL string input is not active")
 	}
 	if s.session == nil {
-		return fmt.Errorf("ECL 字串輸入需要可續跑的 block session")
+		return fmt.Errorf("ECL string input requires a resumable block session")
 	}
 	value := s.eclStringValue
 	blockBefore := s.session.CurrentBlockID()

@@ -3800,3 +3800,11 @@ locale projection 與原 ECL 後果。source audit `164→157`，frontend 0、ru
 `internal/combat + internal/game` 抽樣 gate，marker
 `ROUND490_SAMPLED_EXIT=0`。source audit `157→94`，frontend 0、runtime 94、
 localization 0。READY spec 490 是權威；commit／push 與暫存清理待本輪收尾。
+
+2026-08-03 第四百九十一輪資料化 WHO 選角、ECL PICTURE、戰鬥錯誤、紮營
+角色 HP 列、旅店、未知法術、ECL 字串 prompt 與遊戲時間。角色控制 identity
+與 typed clock 不變，locale 只提供格式。戰鬥錯誤與時間測試改由正式 catalog
+動態組期望值。斷網 `internal/game` 抽樣通過，marker
+`ROUND491_SAMPLED_EXIT=0`；source audit `94→77`，frontend 0、runtime 77、
+localization 0。READY spec 491 是權威。使用者要求本輪 push 後暫停，下週再
+繼續；commit／push 與暫存清理待收尾。
