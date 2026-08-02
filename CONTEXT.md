@@ -3101,3 +3101,21 @@ CoAB 第一次兩次 formal gate 因 Xvfb socket／display readiness 配置失�
 其餘套件通過但不能冒充完整 gate。改用具名 display `:432`、檢查 Xvfb PID
 與 socket 後，Docker／Xvfb／`--network none` 的
 `go test -count=1 ./cmd/... ./gamepack ./internal/...` 共 31 套件正式通過。
+
+2026-08-02 第四百三十三輪訂正第 432 輪把 `DOSPELLTARGETING`
+`0117:0034h` 直接連到錯誤 overlay 的位址空間混用。`INITSPELLS` 的預設值
+經 `22:0034h` typed resolution 是 overlay 22 entry 4、local
+`112Ch GETSPELLTARGETS`，讀 `AOENONCOMBAT`；combat init 另把 pointer 改成
+`00B8:007Ah`，經 `13:007Ah` 落到 overlay 13 entry 18、local `225Fh`，讀
+`AOECOMBAT`。Sleep `15h` 的 `AOECOMBAT=09h` 走選格分支，再以 shape 1 呼叫
+overlay 31 `SCAN 08D8h`；其三 byte候選表經 local `0035h` 排序，overlay 13
+依原順序投影成 `SPELLTARGET`，沒有第二次排序。
+
+共用 writer 對固定 Sleep record 讀 `SAVERESULT=0`，故 exact 不呼叫
+saving-throw helper；duration 是 `DURATIONFIXED(0) + FIGCASTERLEVEL ×
+DURATIONPERLEVEL(5)`。`SCAN` 第二／三欄的正式幾何名稱、large footprint、
+tie order runtime、magic resistance、`PUTEFFECT` 完整 record、解除與演出仍
+未閉合，因此仍 fail-closed，不開放手動／Quick Sleep。收斂後的 IDC 以兩份
+全新唯讀 overlay 工作副本重建：overlay 13／31 ledger 分別為 959／443 行，
+並核對 SHA-256；原始 overlays 與既有 IDA database 均未修改。READY spec 433
+是本輪權威，spec 432 的舊 targeting 敘述已明確 supersede。

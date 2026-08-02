@@ -58,6 +58,8 @@ static main()
     output_path = "/work/pc98-spell-targeting-overlay24.txt";
   else if (strstr(path, "overlay-32.bin") != -1)
     output_path = "/work/pc98-spell-targeting-overlay32.txt";
+  else if (strstr(path, "overlay-31.bin") != -1)
+    output_path = "/work/pc98-spell-targeting-overlay31.txt";
   else
     qexit(1);
 
@@ -71,6 +73,7 @@ static main()
   else if (strstr(path, "overlay-13.bin") != -1)
   {
     emit_range(out, "CHECKTARGET", 0x1160, 0x1280);
+    emit_range(out, "COMBAT_SPELL_TARGETING", 0x225F, 0x27A1);
     emit_range(out, "CASTCOMBATSPELL", 0x27A1, 0x2915);
     emit_range(out, "PICKTARGET", 0x3D20, 0x3FA0);
   }
@@ -82,6 +85,11 @@ static main()
   }
   else if (strstr(path, "overlay-24.bin") != -1)
     emit_range(out, "BUILD_NEAR_TARGETS_CANDIDATE", 0x2820, 0x29C0);
+  else if (strstr(path, "overlay-31.bin") != -1)
+  {
+    emit_range(out, "LOS_SCAN_STABLE_SORT", 0x0035, 0x019D);
+    emit_range(out, "LOS_SCAN_TARGET_LIST", 0x08D8, 0x0BA5);
+  }
   else
     emit_range(out, "REBUILD_SORTED_COMBATANT_LIST_CANDIDATE", 0x00F0, 0x0430);
   fclose(out);

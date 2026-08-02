@@ -450,6 +450,14 @@ commit 內保存不可能自我引用的 hash。
   已保存 exact primitive；`+74h` 欄位仍採中立 predicate 名稱。上游目標
   幾何／排序、save、magic resistance、duration、效果寫入參數與演出尚未
   全部閉合，因此尚未開放手動或 Quick Sleep。
+- 第 433 輪以 combat init writer、typed TPOV resolver 與唯讀 IDA ledger
+  訂正 Sleep 上游：戰鬥 `DOSPELLTARGETING` 是 overlay 13 `225Fh`，不是
+  預設／非戰鬥的 overlay 22 `GETSPELLTARGETS`。`AOECOMBAT=09h` 會呼叫
+  overlay 31 `SCAN`，並依其三 byte候選表順序建立 targets；共用 writer
+  對 Sleep 不做 saving throw，持續時間為 `5×caster level`。這仍只是
+  targeting dispatch／排序骨架與 writer 參數的 bounded READY milestone；
+  `SCAN` 幾何欄位、large footprint／tie order runtime、magic resistance、
+  完整 `PUTEFFECT`、解除條件、動畫／音效及正常施法路徑仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
