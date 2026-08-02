@@ -321,6 +321,8 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 			s.requestSound(SoundLightning)
 		case event.Kind == combat.VisualAreaSpell && event.Effect == "fireball":
 			s.requestSound(SoundFireball)
+		case event.Kind == combat.VisualTwinkle:
+			s.requestSound(SoundCast)
 		case event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell:
 			s.requestSound(SoundCast)
 		}
@@ -329,7 +331,7 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	if impact, ok := event.Impact(frame); ok {
 		if frame.Phase >= combat.VisualImpact && frame.ImpactIndex > s.combatVisualImpactSent {
 			switch event.Kind {
-			case combat.VisualMagicMissile, combat.VisualLineSpell:
+			case combat.VisualMagicMissile, combat.VisualLineSpell, combat.VisualTwinkle:
 				s.requestSound(SoundSpellHit)
 			case combat.VisualAreaSpell:
 				if event.Effect != "stinking_cloud" && event.Effect != "cloudkill" {
@@ -1588,9 +1590,18 @@ func (s *State) combatCastSleep() error {
 		return err
 	}
 	resisted := 0
+	visualImpacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
 	for _, impact := range result.Impacts {
 		if impact.Resisted {
 			resisted++
+			continue
+		}
+		if target, found := s.battle.Fighter(impact.TargetID); found {
+			visualImpacts = append(visualImpacts, combat.VisualImpactTarget{
+				TargetID: target.ID,
+				To:       combat.TilePoint{X: target.CombatX, Y: target.CombatY},
+				Hit:      true,
+			})
 		}
 	}
 	s.CancelCombatCast()
@@ -1598,7 +1609,18 @@ func (s *State) combatCastSleep() error {
 		s.catalog.Text("combat_sleep", "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。"),
 		caster.Name, len(result.Impacts)-resisted, resisted,
 	)
+	if len(visualImpacts) != 0 && s.queueCombatVisual(combat.VisualEvent{
+		Kind: combat.VisualTwinkle, Effect: "sleep", ActorID: caster.ID,
+		From:    combat.TilePoint{X: caster.CombatX, Y: caster.CombatY},
+		Impacts: visualImpacts,
+	}) {
+		return nil
+	}
 	s.combatTurnIndex++
+	s.requestSound(SoundCast)
+	for range visualImpacts {
+		s.requestSound(SoundSpellHit)
+	}
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
 	}

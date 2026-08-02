@@ -50,7 +50,11 @@ static main()
     emit_range(out, "EFFECT_33_35_TABLE_SLOTS", 0x3161, 0x3188);
   }
   else
+  {
+    emit_range(out, "TWINKLE_DYNAMIC_ICON_WRITER", 0x1B2F, 0x1CC3);
+    emit_range(out, "TWINKLE_CONSUMER", 0x240A, 0x25C0);
     emit_range(out, "CLEARACTION_CONSUMER", 0x2A5B, 0x2A9F);
+  }
   fclose(out);
   qexit(0);
 }

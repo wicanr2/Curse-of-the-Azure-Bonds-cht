@@ -19,7 +19,8 @@ func TestCastSleepOrderedWritesEffectAfterCapacityAndMagicResistance(t *testing.
 			MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
 		{ID: "resistant", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1,
 			MonsterAffects: []MonsterAffect{{Kind: 0x6A, Innate: true}}},
-		{ID: "ordinary", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
+		{ID: "ordinary", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1,
+			CombatAction: ActionState{Delay: 4, SpellID: 0x11, TargetID: "mage", Guarding: true}},
 	}, seed)
 	if err != nil {
 		t.Fatal(err)
@@ -39,6 +40,9 @@ func TestCastSleepOrderedWritesEffectAfterCapacityAndMagicResistance(t *testing.
 	last := ordinary.MonsterAffects[len(ordinary.MonsterAffects)-1]
 	if last.Kind != 0x35 || last.Value != 25 || last.Duration != 25 || last.Strength != 1 || last.Raw4 != 5 || !last.Active {
 		t.Fatalf("ordinary Sleep effect=%+v", last)
+	}
+	if ordinary.CombatAction != (ActionState{}) || len(battle.TakeSpellInterruptions()) != 0 {
+		t.Fatalf("Sleep add callback action=%+v interruptions=%+v", ordinary.CombatAction, battle.TakeSpellInterruptions())
 	}
 	resistant, _ := battle.Fighter("resistant")
 	gotSleep := false
@@ -945,6 +949,7 @@ func TestZeroDamageDoesNotWakeSleepAndDamageKeepsInnateEffect35(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "hero", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, AttackBonus: 20, DamageDiceCount: 1, DamageDiceSides: 1},
 		{ID: "dynamic", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
+			CombatAction:   ActionState{Delay: 3, SpellID: 0x22, TargetID: "hero", Guarding: true},
 			MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
 		{ID: "innate", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
 			MonsterAffects: []MonsterAffect{{Kind: 0x35, Innate: true}}},
@@ -959,6 +964,13 @@ func TestZeroDamageDoesNotWakeSleepAndDamageKeepsInnateEffect35(t *testing.T) {
 	dynamic, ok := battle.Fighter("dynamic")
 	if !ok || !dynamic.MonsterIsHeld() {
 		t.Fatal("zero damage unexpectedly removed sleep")
+	}
+	if result, err := battle.ResolveAttack("hero", "dynamic", 20, 1); err != nil || result.Damage != 1 {
+		t.Fatalf("wake result=%#v err=%v", result, err)
+	}
+	dynamic, _ = battle.Fighter("dynamic")
+	if dynamic.MonsterIsHeld() || dynamic.CombatAction != (ActionState{}) || len(battle.TakeSpellInterruptions()) != 0 {
+		t.Fatalf("Sleep remove callback fighter=%+v interruptions=%+v", dynamic, battle.TakeSpellInterruptions())
 	}
 	if result, err := battle.ResolveAttack("hero", "innate", 20, 1); err != nil || result.Damage != 1 {
 		t.Fatalf("innate result=%#v err=%v", result, err)
@@ -994,7 +1006,8 @@ func TestAdvanceMonsterAffectsUsesFiniteTicksAndPermanentMarker(t *testing.T) {
 func TestStartRoundExpiresSleepAfterExactDurationTicks(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "mage", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
-		{ID: "enemy", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1,
+			CombatAction: ActionState{Delay: 2, SpellID: 0x23, TargetID: "mage", Guarding: true}},
 	}, 441)
 	if err != nil {
 		t.Fatal(err)
@@ -1017,6 +1030,11 @@ func TestStartRoundExpiresSleepAfterExactDurationTicks(t *testing.T) {
 	enemy, _ := battle.Fighter("enemy")
 	if enemy.MonsterIsHeld() || len(enemy.MonsterAffects) != 0 {
 		t.Fatalf("Sleep did not expire after five ticks: %+v", enemy.MonsterAffects)
+	}
+	if enemy.CombatAction.SpellID != 0 || enemy.CombatAction.TargetID != "" ||
+		enemy.CombatAction.Move != 0 || enemy.CombatAction.Guarding ||
+		len(battle.TakeSpellInterruptions()) != 0 {
+		t.Fatalf("Sleep expiry callback action=%+v interruptions=%+v", enemy.CombatAction, battle.TakeSpellInterruptions())
 	}
 }
 

@@ -94,6 +94,7 @@ static main()
   if (strstr(path, "overlay-12.bin") != -1)
   {
     emit_range(out, "PROTECTED_HANDLER", 0x001B, 0x003C);
+    emit_range(out, "EFFECT_35_RESOLVED_ENTRY", 0x0060, 0x00C0);
     emit_range(out, "EFFECT_4F_RESOLVED_ENTRY", 0x19B3, 0x1A20);
     emit_range(out, "MAGIC_RESISTANCE_HANDLERS", 0x2396, 0x2420);
     emit_range(out, "EFFECT_70_RESOLVED_ENTRY", 0x249D, 0x24D0);

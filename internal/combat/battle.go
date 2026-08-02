@@ -317,6 +317,10 @@ func (b *Battle) CastSleepOrdered(casterID string, orderedTargetIDs []string, ca
 				Kind: 0x35, Value: duration, Duration: duration,
 				Strength: 1, Raw4: uint8(casterLevel), Active: true,
 			})
+			// Effect 35h dispatches the shared CLEARACTION callback for both
+			// add and remove phases. It does not create a slot-consuming spell
+			// interruption event.
+			b.clearActionState(&target)
 			b.fighters[targetID] = target
 			impact.Duration = duration
 		}
@@ -555,8 +559,8 @@ func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
 		return 0
 	}
 	target.HitPoints -= damage
-	b.interruptPendingSpell(target)
 	b.removeDamageCancelledAffects(target)
+	b.interruptPendingSpell(target)
 	return damage
 }
 
@@ -569,13 +573,18 @@ func (b *Battle) removeDamageCancelledAffects(target *Fighter) {
 		return
 	}
 	kept := target.MonsterAffects[:0]
+	removedSleep := false
 	for _, affect := range target.MonsterAffects {
 		if affect.Kind == 0x35 && !affect.Innate {
+			removedSleep = true
 			continue
 		}
 		kept = append(kept, affect)
 	}
 	target.MonsterAffects = kept
+	if removedSleep {
+		b.clearActionState(target)
+	}
 }
 
 func (b *Battle) interruptPendingSpell(target *Fighter) {
@@ -895,15 +904,25 @@ func (b *Battle) ClearAction(fighterID string) error {
 	if !ok {
 		return fmt.Errorf("unknown fighter %q", fighterID)
 	}
-	fighter.CombatAction.Clear()
+	if !b.clearActionState(&fighter) {
+		return fmt.Errorf("stale scheduled action for fighter %q", fighterID)
+	}
 	b.fighters[fighterID] = fighter
-	if b.initiativeScheduler != nil && b.initiativeSelected && b.initiativeSelection.ID == fighterID {
+	return nil
+}
+
+func (b *Battle) clearActionState(fighter *Fighter) bool {
+	if b == nil || fighter == nil {
+		return false
+	}
+	fighter.CombatAction.Clear()
+	if b.initiativeScheduler != nil && b.initiativeSelected && b.initiativeSelection.ID == fighter.ID {
 		if !b.initiativeScheduler.Complete(b.initiativeSelection) {
-			return fmt.Errorf("stale scheduled action for fighter %q", fighterID)
+			return false
 		}
 		b.initiativeSelected = false
 	}
-	return nil
+	return true
 }
 
 // CanGuard reports the current typed weapon-mode boundary. Pure missile
@@ -1147,6 +1166,7 @@ func (b *Battle) AdvanceMonsterAffects(ticks uint16) int {
 			continue
 		}
 		kept := make([]MonsterAffect, 0, len(fighter.MonsterAffects))
+		removedHeld := false
 		for _, affect := range fighter.MonsterAffects {
 			if affect.Strength != 0xFF {
 				duration := affect.Duration
@@ -1161,6 +1181,7 @@ func (b *Battle) AdvanceMonsterAffects(ticks uint16) int {
 				}
 				if duration <= ticks {
 					removed++
+					removedHeld = removedHeld || affect.Kind == 0x35
 					continue
 				}
 				affect.Duration = duration - ticks
@@ -1169,6 +1190,9 @@ func (b *Battle) AdvanceMonsterAffects(ticks uint16) int {
 			kept = append(kept, affect)
 		}
 		fighter.MonsterAffects = kept
+		if removedHeld {
+			b.clearActionState(&fighter)
+		}
 		b.fighters[id] = fighter
 	}
 	return removed

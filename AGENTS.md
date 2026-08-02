@@ -544,6 +544,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   list，duration 零保留、未到期相減、到期呼叫 `SPELLOFF`。戰鬥每個新
   round 現扣一 tick，正常 level 3 Sleep 在總第 15 tick 解除。active battle
   save 與到期演出仍未完成；READY spec 441 是權威。
+- 第 442 輪已證明 effect `35h` 的 add／remove callback 都走 `CLEARACTION`；
+  `PUTDAMAGE` 必須先移除 Sleep，再做一般 spell interruption，否則會重複
+  消耗法術格。成功 Sleep 的 `TWINKLE` 是 runtime 建立的四格 24×6 圖示，
+  `16h／17h` 不是 DAX block；成功者逐人播放 `SPELLHITFX`，抵抗與醒來不
+  播放。現有 palette pixels 仍是 reconstructed，READY spec 442 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

@@ -509,6 +509,11 @@ commit 內保存不可能自我引用的 hash。
   `combat/effecttime`；Battle 每個新 round 扣一 tick，duration 零保留。
   正常 level 3 手動 Sleep 路徑已驗證 15 tick handoff／到期；active battle
   save、到期文字、twinkle 與音效仍未完成。READY spec 441 是權威。
+- 第 442 輪證明 effect `35h` add／remove callback 都是 `CLEARACTION`，並修正
+  受傷順序，避免睡眠喚醒再走通用 interruption 消耗 slot。成功 Sleep 現逐
+  target 播放四格 `VisualTwinkle`、每人 1440ms、施法聲與 `SPELLHITFX`；
+  抵抗／醒來不播放。24×6 geometry exact，palette pixels 尚為 reconstructed；
+  active battle save 與 PC-98 runtime capture 未完成。READY spec 442 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

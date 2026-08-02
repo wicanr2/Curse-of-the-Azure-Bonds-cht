@@ -82,6 +82,7 @@ static main()
   emit_range(out, "CHECKFX", 0x03FE, 0x0E32);
   emit_range(out, "ADDEFFECT_TO_CURE", 0x13D7, 0x1693);
   emit_range(out, "PUTDAMAGE", 0x1FFD, 0x2325);
+  emit_range(out, "PUTEFFECT", 0x2325, 0x2419);
   emit_range(out, "STANDUP", 0x251A, 0x2600);
   emit_xrefs(out, "SPELLOFF", 0x010E);
   emit_xrefs(out, "REMOVEFX", 0x158A);

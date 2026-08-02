@@ -3228,3 +3228,15 @@ combat-end／save、醒來文字、twinkle 與音效仍待續；READY spec 440 �
 Battle 每個新 round 扣一 tick，正常 level 3 手動 Sleep 已驗證
 `15→handoff 14→總第15 tick解除`。active battle save 與醒來演出仍待續，
 READY spec 441 是入口。
+
+2026-08-02 第四百四十二輪由 `INITEFFPROX` effect slots、typed overlay stub
+與 overlay 24 `CLEARACTION／TWINKLE` 完成 Sleep Action 及演出生命週期。
+effect `35h` 加入、受傷移除與自然到期都清除完整 Action；傷害路徑先移除
+effect，故不會再由一般 interruption 重複消耗 memorized slot。成功目標逐人
+播放 runtime 四格 24×6 `TWINKLE`、`SPELLHITFX` 與每人 1440ms delay-only；
+魔抗者與醒來 callback 無此演出。renderer 幾何／時間 exact，palette pixels
+因尚無 PC-98 runtime capture 標為 layout-reconstructed。active battle save、
+Quick Sleep 與實機 palette／draw overhead 仍未完成；READY spec 442 是入口。
+正式 Docker／Xvfb／`--network none` gate 已明確驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker 為
+`ROUND442_FORMAL_EXIT=0`，暫存日誌在 `/tmp/coab-round442-formal.log`。
