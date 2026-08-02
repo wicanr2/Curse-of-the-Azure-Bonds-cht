@@ -417,3 +417,4 @@
 - [第四百六十二輪開場敘事資料分離](./462-opening-narrative-game-pack-data-separation.md)（`READY`：三個完整事件規則、ECL1 兩個真實 boundary 與 34 個 Go 漢字 literal 移除）
 - [第四百六十三輪哈普圖斯村與熔岩洞穴劇情資料化](./463-hap-lava-tube-game-pack-story.md)（`READY`：27 條 en／zh-TW 事件規則、26 個正常玩家 boundary 與 Area 5 長路徑）
 - [第四百六十四輪 Area 5 離場與艾森布拉銜接資料化](./464-area5-departure-essembra-game-pack.md)（`READY`：七條事件規則、NPC／裝備副作用、龍巫妖戰與城市服務返回）
+- [第四百六十五輪希爾斯法城市與酒館事件資料化](./465-hillsfar-game-pack-story.md)（`READY`：五條事件規則、兩場正常戰鬥、酒館返回與城鎮／荒野音樂切換）

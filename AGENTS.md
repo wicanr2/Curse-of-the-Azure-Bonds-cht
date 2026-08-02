@@ -622,6 +622,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   occurrences；事件數不一定等於漢字下降數，因為舊分支可能只回傳 locale
   key。阿卡巴離隊、黑暗精靈裝備銷毀與龍巫妖文字不可只測畫面；必須同時驗證
   roster、指定 item types、世界 block handoff、戰鬥後位置與城市服務返回。
+- 第 465 輪 Hillsfar 五個事件再移除 4 次，baseline 現為 651 occurrences；
+  dockside bar 舊分支只有 locale key，故事件數與漢字下降數不同。城市資料化
+  除文字與兩場戰鬥外，還要驗證 service return 不重播進城音樂、離城才切回
+  荒野 cue；UI 訊息通過不能替代音訊狀態 handoff。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

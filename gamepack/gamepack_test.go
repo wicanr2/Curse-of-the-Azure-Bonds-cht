@@ -438,6 +438,33 @@ func TestAreaFiveDepartureIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestHillsfarStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"hillsfar.fire-knives-ambush", []string{"AMBUSHED BY FIRE KNIVES DISGUISED AS FIGHTERS"}},
+		{"hillsfar.edge", []string{"YOU ARE AT THE EDGE OF HILLSFAR"}},
+		{"hillsfar.places", []string{"YOU ARE IN HILLSFAR", "WHAT PLACE WILL YOU VISIT"}},
+		{"hillsfar.dockside-bar", []string{"YOU ARE IN A DOCKSIDE BAR"}},
+		{"hillsfar.red-plumes-spill-drinks", []string{"SOME RED PLUMES COME OVER", "ORDER YOU TO CLEAN UP THE MESS"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

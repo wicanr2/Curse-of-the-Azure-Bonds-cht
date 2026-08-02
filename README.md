@@ -66,6 +66,11 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 設施進出與返回選單。Go 漢字基線由 661 降至 655。詳見
 [`docs/spec/464-area5-departure-essembra-game-pack.md`](docs/spec/464-area5-departure-essembra-game-pack.md)。
 
+第 465 輪把 Hillsfar trail 火刀伏擊、edge、places、dockside bar 與 Red Plumes
+挑釁五個事件移入 game-pack。Standing Stone 起始正常路徑完成兩場戰鬥、酒館
+返回、離城與城鎮／荒野音樂切換；Go 漢字基線由 655 降至 651。詳見
+[`docs/spec/465-hillsfar-game-pack-story.md`](docs/spec/465-hillsfar-game-pack-story.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

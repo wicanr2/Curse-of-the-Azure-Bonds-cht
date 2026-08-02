@@ -71,7 +71,8 @@ commit 內保存不可能自我引用的 hash。
   驅動。Area 5 的 Hap 17 個、熔岩洞穴 10 個事件也已資料化，正常長路徑覆蓋
   其中 26 個 boundary。Area 5 離場、龍巫妖與 Essembra 四個城市 boundary
   也已資料化。Go 漢字 baseline 現為 655；其餘劇情文字 fallback 尚未完成
-  資料分離。
+  資料分離。Hillsfar 的 trail 伏擊、edge、places、dockside bar 與 Red Plumes
+  挑釁也已由正常玩家路徑驗證，最新 baseline 為 651。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

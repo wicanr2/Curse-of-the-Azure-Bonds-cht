@@ -864,3 +864,14 @@ coverage」與「player-path coverage」，不能用前者替代後者。
 跨區回歸應逐 boundary 檢查 message ID，也要檢查 roster、精確 item type、
 來源／目的 block、picture、戰鬥 continuation、戰後位置與下一個城市服務的
 返回選單。這種驗證可沿用到其他 Gold Box 作品的臨時 NPC 與章節清場流程。
+
+### 2026-08-02：城市服務返回不等於重新進城
+
+城鎮 places、酒館與離城是不同 continuation。從酒館返回 places 時，畫面可
+重新顯示城市選單，但不應把它當成新一次進城並重播 town music；真正離城到
+edge 才切換 wilderness cue。資料化 city／bar 文字時，若 frontend 依顯示訊息
+猜場景，很容易重複播放音樂或丟失 ECL session。
+
+可沿用的回歸應同時檢查原始 choices、stable message ID、picture block、進入
+時的 music event、service return 的零 music event，以及離城後的 wilderness
+event。音訊狀態是 continuation 的一部分，不是單純畫面裝飾。
