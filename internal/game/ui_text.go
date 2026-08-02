@@ -243,6 +243,64 @@ func (s *State) OverlandDateText() string {
 	return fmt.Sprintf(s.catalog.Text("overland_date", "%d/%d/%d"), clock.Day, clock.Month, clock.Year)
 }
 
+type DemoFighterName uint8
+
+const (
+	DemoNameArcherErin DemoFighterName = iota
+	DemoNameOrc
+	DemoNameFighterErin
+	DemoNameZhentMage
+	DemoNameMageErin
+	DemoNameFighterBran
+	DemoNameOrcCaptain
+	DemoNamePartyFighter
+	DemoNamePartyRanger
+	DemoNamePartyCleric
+	DemoNamePartyWizard
+)
+
+func (s *State) DemoFighterName(name DemoFighterName) string {
+	key := "demo_name_unknown"
+	switch name {
+	case DemoNameArcherErin:
+		key = "demo_name_archer_erin"
+	case DemoNameOrc:
+		key = "demo_name_orc"
+	case DemoNameFighterErin:
+		key = "demo_name_fighter_erin"
+	case DemoNameZhentMage:
+		key = "demo_name_zhent_mage"
+	case DemoNameMageErin:
+		key = "demo_name_mage_erin"
+	case DemoNameFighterBran:
+		key = "demo_name_fighter_bran"
+	case DemoNameOrcCaptain:
+		key = "demo_name_orc_captain"
+	case DemoNamePartyFighter:
+		key = "demo_name_party_fighter"
+	case DemoNamePartyRanger:
+		key = "demo_name_party_ranger"
+	case DemoNamePartyCleric:
+		key = "demo_name_party_cleric"
+	case DemoNamePartyWizard:
+		key = "demo_name_party_wizard"
+	}
+	return s.catalog.Text(key, key)
+}
+
+func (s *State) PrepareWorldMapPreview() {
+	s.Mode = ModeWilderness
+	s.Area.CurrentCity = 4
+	s.Location = LocationStandingStone
+	s.LocationName = s.catalog.Text("standing_stone", "standing_stone")
+	s.Choices = []string{
+		s.catalog.Text("enter_city", "enter_city"),
+		s.catalog.Text("journey_on", "journey_on"),
+		s.catalog.Text("camp", "camp"),
+	}
+	s.Prompt = s.catalog.Text("press_button", "press_button")
+}
+
 // FileOperation identifies a player-facing persistence operation without
 // exposing locale keys to the platform adapter.
 type FileOperation uint8

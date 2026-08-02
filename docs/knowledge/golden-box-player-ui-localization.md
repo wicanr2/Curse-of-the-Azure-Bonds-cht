@@ -69,3 +69,19 @@ renderer 最後只顯示 State 解析出的文字。動態錯誤與 spell ID 是
 
 門選項等組合式診斷應由 typed booleans 選完整 stable ID，不在 renderer 拼接
 「撬鎖」「Knock」「離開」等局部片段。這能讓每個語系自行決定順序與標點。
+
+## 自動路徑不能比較譯文
+
+截圖工具、smoke test 與 preview automation 若用「等待」「攻擊」等目前譯文
+尋找選項，翻譯審校就會改變控制流。正確身分是原始 ECL option token 或正式
+stable option ID；顯示文字只用於畫面。
+
+劇情訊息也不能在 Go 保存一小段中文再 `Contains`。若 runtime 尚未公開目前
+message ID，至少要讓 adapter 以 stable game-pack message ID 在當下語系解析
+全文，再比對目前訊息。如此修改 JSON 譯文時，producer 與 verifier 會讀同一份
+資料。長期更理想的 contract 是 State 直接保存目前 message ID，顯示全文只是
+projection；在該 identity 完成續存前，不可假稱所有訊息已完全脫離文字比對。
+
+Demo／fixture 名稱也屬顯示資料。Technical fighter ID 可固定在程式，名稱則由
+stable locale ID 取得；否則 README 截圖或跨語系 smoke test 會悄悄保存繁中
+作為戰鬥身分。

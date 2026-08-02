@@ -733,6 +733,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   禁止因樣本值小就 cast／縮窄成 `uint8`。Preview 門選項選完整 stable ID，
   不拼接局部譯文；日期從 typed clock 格式化，不切割已翻譯時間全文。READY
   spec 485 是權威。
+- 第 486 輪清除最後二十六筆 Ebiten 前端漢字，baseline `238→212`、frontend
+  `26→0`。Automation 必須用 exact ECL source token／stable option ID 找選項，
+  禁止比較 `Choices` 譯文；劇情抵達至少以 stable game-pack message ID 解析目前
+  locale，不得在 Go 複製中文 fragment。Demo fighter technical ID 與 locale
+  顯示名分離。Frontend 歸零不代表 runtime 212 筆或全翻譯已完成。READY spec
+  486 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
