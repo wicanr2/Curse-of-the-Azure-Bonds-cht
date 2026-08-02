@@ -104,7 +104,10 @@ commit 內保存不可能自我引用的 hash。
   contract；Ebiten `drawCombat` 只保留版面與顏色，baseline 降為 320、frontend
   debt 108。第 481 輪再將 Cloudkill、Stinking Cloud 與 Lightning Bolt 的逐
   impact／commit／death 訊息移到 State visual-result locale contract；renderer
-  不再推論豁免／死亡文字，baseline 313、frontend debt 101。
+  不再推論豁免／死亡文字，baseline 313、frontend debt 101。第 482 輪再將
+  F5／F9 存讀檔結果、音訊續跑錯誤、ALTER 改名與 ECL `INPUT STRING` 的 value／
+  help 文字移入 State typed locale contract；地城與一般事件共用同一輸入文字
+  契約，baseline 300、frontend debt 88。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

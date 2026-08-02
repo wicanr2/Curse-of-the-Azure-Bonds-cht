@@ -710,6 +710,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   impact、save、protected 與 phase 的文字選擇留在 adapter。錯誤 phase 或
   protected 必須保留 fallback，不能因資料化改變 travel→impact→commit→death
   →handoff 與聲音順序。READY spec 481 是權威。
+- 第 482 輪把 F5／F9 存讀檔、音訊續跑錯誤、ALTER 改名與 ECL 字串輸入
+  十三筆前端中文移入 State typed locale contract，baseline `313→300`、frontend
+  `101→88`。Renderer 不得依錯誤是否為 nil、editor 種類或地城模式自行選翻譯；
+  它只繪製 State 提供的 value／help／result。路徑、錯誤與輸入值是 runtime
+  argument，不可寫死到 JSON；save／ECL continuation 與輸入限制也不能因
+  資料化而改變。READY spec 482 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
