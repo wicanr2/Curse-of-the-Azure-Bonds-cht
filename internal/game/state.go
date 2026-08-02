@@ -126,6 +126,7 @@ type State struct {
 	JournalCloseText         string
 	JournalPages             []string
 	JournalPage              int
+	journalMessageIDs        []string
 	CampCount                int
 	CreationOptions          []party.Character
 	CreationRoster           party.Roster
@@ -383,16 +384,6 @@ func (s *State) initializeECL() {
 
 func NewState(catalog locale.Catalog) State {
 	dataPack, dataPackErr := gamepack.Default()
-	journalPages := []string{
-		catalog.Text("journal_page_1", "序章：隊伍醒來後必須查明蔚藍枷的來源。"),
-		catalog.Text("journal_page_2", "達倫地區有許多城鎮與荒野等待探索。"),
-		catalog.Text("journal_page_3", "五個邪惡勢力各自利用枷印。"),
-		catalog.Text("journal_page_4", "解除枷印需要查明並擊破其來源。"),
-		catalog.Text("journal_page_5", "三件神器是對抗火焰之主的關鍵。"),
-		catalog.Text("journal_page_6", "先整裝，再向城鎮居民查詢線索。"),
-		catalog.Text("journal_page_7", "戰鬥時觀察先攻、AC 與攻擊加值。"),
-		catalog.Text("journal_page_8", "本 remake 以 Go／Ebiten 重建 Gold Box 冒險。"),
-	}
 	return State{
 		Mode:                   ModeTitle,
 		Title:                  catalog.Text("title", "Curse of the Azure Bonds"),
@@ -402,9 +393,8 @@ func NewState(catalog locale.Catalog) State {
 		SceneHeadBlock:         0xFF,
 		currentOriginalChoices: []string{"ENTER CITY", "JOURNEY ON", "CAMP"},
 		JournalTitle:           catalog.Text("journal_title", "冒險手札"),
-		JournalText:            journalPages[0],
+		JournalText:            catalog.Text("journal_empty", "journal_empty"),
 		JournalCloseText:       catalog.Text("journal_close", "Esc：返回"),
-		JournalPages:           journalPages,
 		catalog:                catalog,
 		dataPack:               dataPack,
 		dataPackError:          dataPackErr,
@@ -4070,9 +4060,20 @@ func (s *State) OpenJournal() error {
 	}
 	s.journalReturnMode = s.Mode
 	s.JournalPage = 0
-	s.JournalText = s.JournalPages[0]
+	if len(s.JournalPages) == 0 {
+		s.JournalText = s.catalog.Text("journal_empty", "journal_empty")
+	} else {
+		s.JournalText = s.JournalPages[0]
+	}
 	s.Mode = ModeJournal
 	return nil
+}
+
+func (s *State) JournalPageStatus() string {
+	if len(s.JournalPages) == 0 {
+		return ""
+	}
+	return fmt.Sprintf(s.catalog.Text("journal_page_status", "journal_page_status"), s.JournalPage+1, len(s.JournalPages))
 }
 
 func (s *State) NextJournalPage() error {
@@ -5621,18 +5622,21 @@ func (s *State) unlockJournalEntries(texts []string) {
 		return
 	}
 	match := s.dataPack.MatchText(texts, s.catalog.Language)
-	for _, page := range match.JournalPages {
-		s.appendJournalPages(page, []string{page})
+	for index, messageID := range match.JournalMessageIDs {
+		if index < len(match.JournalPages) {
+			s.appendJournalPage(messageID, match.JournalPages[index])
+		}
 	}
 }
 
-func (s *State) appendJournalPages(marker string, pages []string) {
-	for _, page := range s.JournalPages {
-		if strings.HasPrefix(page, marker) {
+func (s *State) appendJournalPage(messageID, page string) {
+	for _, existingID := range s.journalMessageIDs {
+		if existingID == messageID {
 			return
 		}
 	}
-	s.JournalPages = append(s.JournalPages, pages...)
+	s.journalMessageIDs = append(s.journalMessageIDs, messageID)
+	s.JournalPages = append(s.JournalPages, page)
 }
 
 func localizeECLLine(catalog locale.Catalog, line string) string {

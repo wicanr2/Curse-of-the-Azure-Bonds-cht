@@ -252,7 +252,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Windlord's Inn journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
 	wantJournal31 := requireGamePackText(t, &state, "journal.31")
-	if len(state.JournalPages) != 9 || state.JournalPages[8] != wantJournal31 {
+	if len(state.JournalPages) != 1 || state.JournalPages[0] != wantJournal31 {
 		t.Fatalf("Journal Entry 31 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
 	if err := state.OpenJournal(); err != nil {
@@ -263,7 +263,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.JournalPage != 8 || state.JournalText != wantJournal31 {
+	if state.JournalPage != 0 || state.JournalText != wantJournal31 {
 		t.Fatalf("unlocked Journal Entry 31 is not reachable in journal UI: page=%d text=%q",
 			state.JournalPage, state.JournalText)
 	}
@@ -372,10 +372,10 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "38") {
 		t.Fatalf("Filani journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
-	if len(state.JournalPages) != 12 ||
-		state.JournalPages[9] != requireGamePackText(t, &state, "journal.38.1") ||
-		state.JournalPages[10] != requireGamePackText(t, &state, "journal.38.2") ||
-		state.JournalPages[11] != requireGamePackText(t, &state, "journal.38.3") {
+	if len(state.JournalPages) != 4 ||
+		state.JournalPages[1] != requireGamePackText(t, &state, "journal.38.1") ||
+		state.JournalPages[2] != requireGamePackText(t, &state, "journal.38.2") ||
+		state.JournalPages[3] != requireGamePackText(t, &state, "journal.38.3") {
 		t.Fatalf("Journal Entry 38 was not unlocked as three readable pages: pages=%v", state.JournalPages)
 	}
 	if err := state.Select(0); err != nil {

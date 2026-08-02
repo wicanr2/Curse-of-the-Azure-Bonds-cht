@@ -282,7 +282,7 @@ func (s *State) SavePartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	data, err := partySave.EncodeGameWithAudioState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot())
+	data, err := partySave.EncodeGameWithJournalState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot(), s.journalMessageIDs)
 	if err != nil {
 		return err
 	}
@@ -651,6 +651,9 @@ func (s *State) LoadPartyFile(path string) error {
 	if err := s.SetPartyRoster(file.Characters); err != nil {
 		return err
 	}
+	if err := s.restoreJournalMessageIDs(file.JournalMessageIDs); err != nil {
+		return err
+	}
 	if file.Version >= 5 {
 		s.gameClock = file.GameTime
 		s.gameAgeCycles = file.GameAgeCycles
@@ -758,6 +761,28 @@ func (s *State) LoadPartyFile(path string) error {
 	s.Prompt = s.catalog.Text("party_ready", "隊伍已建立。準備開始冒險。")
 	s.Choices = []string{s.catalog.Text("enter_city", "進入城市"), s.catalog.Text("journey_on", "繼續旅程"), s.catalog.Text("camp", "紮營")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
+	return nil
+}
+
+func (s *State) restoreJournalMessageIDs(messageIDs []string) error {
+	s.journalMessageIDs = nil
+	s.JournalPages = nil
+	s.JournalPage = 0
+	if len(messageIDs) == 0 {
+		s.JournalText = s.catalog.Text("journal_empty", "journal_empty")
+		return nil
+	}
+	if s.dataPack == nil {
+		return fmt.Errorf("game save contains journal entries but no game pack is loaded")
+	}
+	for _, messageID := range messageIDs {
+		page, found := s.dataPack.Text(messageID, s.catalog.Language)
+		if !found {
+			return fmt.Errorf("game save journal message ID %q is not in the data pack", messageID)
+		}
+		s.appendJournalPage(messageID, page)
+	}
+	s.JournalText = s.JournalPages[0]
 	return nil
 }
 

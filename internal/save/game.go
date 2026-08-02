@@ -13,7 +13,7 @@ import (
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 9
+const CurrentGameVersion = 10
 
 type MusicSnapshot struct {
 	TrackID string                            `json:"track_id"`
@@ -58,24 +58,25 @@ type CombatSnapshot struct {
 // the remake can currently restore. Numeric mode/location values are kept
 // here to avoid coupling the save package to the game UI package.
 type GameFile struct {
-	Version         int                  `json:"version"`
-	Characters      party.Roster         `json:"characters"`
-	Area            area.State           `json:"area"`
-	Mode            uint8                `json:"mode"`
-	Location        uint8                `json:"location"`
-	MapX            int                  `json:"map_x"`
-	MapY            int                  `json:"map_y"`
-	DungeonX        int                  `json:"dungeon_x"`
-	DungeonY        int                  `json:"dungeon_y"`
-	DungeonDir      uint8                `json:"dungeon_direction"`
-	DungeonWallType uint8                `json:"dungeon_wall_type"`
-	DungeonWallRoof uint8                `json:"dungeon_wall_roof"`
-	GameTime        [7]uint16            `json:"game_time"`
-	GameAgeCycles   uint32               `json:"game_age_cycles"`
-	ECLSession      *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
-	Combat          *CombatSnapshot      `json:"combat,omitempty"`
-	Music           *MusicSnapshot       `json:"music,omitempty"`
-	OneShotAudio    *audiostate.Snapshot `json:"one_shot_audio,omitempty"`
+	Version           int                  `json:"version"`
+	Characters        party.Roster         `json:"characters"`
+	Area              area.State           `json:"area"`
+	Mode              uint8                `json:"mode"`
+	Location          uint8                `json:"location"`
+	MapX              int                  `json:"map_x"`
+	MapY              int                  `json:"map_y"`
+	DungeonX          int                  `json:"dungeon_x"`
+	DungeonY          int                  `json:"dungeon_y"`
+	DungeonDir        uint8                `json:"dungeon_direction"`
+	DungeonWallType   uint8                `json:"dungeon_wall_type"`
+	DungeonWallRoof   uint8                `json:"dungeon_wall_roof"`
+	GameTime          [7]uint16            `json:"game_time"`
+	GameAgeCycles     uint32               `json:"game_age_cycles"`
+	ECLSession        *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
+	Combat            *CombatSnapshot      `json:"combat,omitempty"`
+	Music             *MusicSnapshot       `json:"music,omitempty"`
+	OneShotAudio      *audiostate.Snapshot `json:"one_shot_audio,omitempty"`
+	JournalMessageIDs []string             `json:"journal_message_ids,omitempty"`
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
@@ -125,7 +126,17 @@ func EncodeGameWithAudio(roster party.Roster, areaState area.State, mode, locati
 // by remake save v9. The older signature remains available to data-neutral
 // callers and intentionally writes no platform playback snapshot.
 func EncodeGameWithAudioState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot, oneShots *audiostate.Snapshot) ([]byte, error) {
+	return EncodeGameWithJournalState(roster, areaState, mode, location, mapX, mapY, dungeonX, dungeonY, dungeonDirection, dungeonWallType, dungeonWallRoof, gameTime, gameAgeCycles, session, activeCombat, music, oneShots, nil)
+}
+
+// EncodeGameWithJournalState stores stable game-pack message IDs rather than
+// localized page text, allowing translation updates and locale changes after
+// a save was written.
+func EncodeGameWithJournalState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot, oneShots *audiostate.Snapshot, journalMessageIDs []string) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
+		return nil, err
+	}
+	if err := validateJournalMessageIDs(journalMessageIDs); err != nil {
 		return nil, err
 	}
 	if oneShots != nil {
@@ -142,7 +153,22 @@ func EncodeGameWithAudioState(roster party.Roster, areaState area.State, mode, l
 		DungeonWallType: dungeonWallType, DungeonWallRoof: dungeonWallRoof,
 		GameTime: gameTime, GameAgeCycles: gameAgeCycles, ECLSession: session,
 		Combat: activeCombat, Music: music, OneShotAudio: oneShots,
+		JournalMessageIDs: append([]string(nil), journalMessageIDs...),
 	}, "", "  ")
+}
+
+func validateJournalMessageIDs(messageIDs []string) error {
+	seen := make(map[string]bool, len(messageIDs))
+	for index, messageID := range messageIDs {
+		if messageID == "" {
+			return fmt.Errorf("journal message ID %d is empty", index)
+		}
+		if seen[messageID] {
+			return fmt.Errorf("duplicate journal message ID %q", messageID)
+		}
+		seen[messageID] = true
+	}
+	return nil
 }
 
 func DecodeGame(data []byte) (GameFile, error) {
@@ -177,6 +203,14 @@ func DecodeGame(data []byte) (GameFile, error) {
 		}
 		if err := file.OneShotAudio.Validate(); err != nil {
 			return GameFile{}, fmt.Errorf("game save one-shot audio continuation: %w", err)
+		}
+	}
+	if len(file.JournalMessageIDs) > 0 {
+		if file.Version < 10 {
+			return GameFile{}, fmt.Errorf("game save version %d cannot contain journal message IDs", file.Version)
+		}
+		if err := validateJournalMessageIDs(file.JournalMessageIDs); err != nil {
+			return GameFile{}, fmt.Errorf("game save journal: %w", err)
 		}
 	}
 	if err := file.Characters.Validate(); err != nil {
