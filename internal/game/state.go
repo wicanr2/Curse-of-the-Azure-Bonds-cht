@@ -1306,7 +1306,7 @@ func (s *State) Select(index int) error {
 					// A headless/test adapter may not have loaded ITEM*.DAX yet.
 					// Keep the raw request pending and let the ECL control flow reach
 					// its next command (including COMBAT) instead of aborting it.
-					s.Message = "財寶等待素材載入：" + err.Error()
+					s.Message = fmt.Sprintf(s.catalog.Text("treasure_assets_pending", "treasure_assets_pending"), err)
 				} else {
 					// TREASURE may contain only coins, gems, or jewelry.
 					// Open the service when actual pooled content changed,
@@ -1573,16 +1573,16 @@ func (s *State) enterTreasureMenuFor(returnMode Mode) {
 	s.treasureTakeMenu = false
 	s.treasureReturnMode = returnMode
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("treasure_prompt", "選擇要收下的財寶")
+	s.Prompt = s.catalog.Text("treasure_prompt", "treasure_prompt")
 	s.Choices = make([]string, 0, len(s.pendingTreasureItems)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.pendingTreasureItems)+1)
 	for index, item := range s.pendingTreasureItems {
 		s.Choices = append(s.Choices, monster.LocalizedItemName(item, s.catalog))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_ITEM_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("treasure_exit", "暫不收下／繼續"))
+	s.Choices = append(s.Choices, s.catalog.Text("treasure_exit", "treasure_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_EXIT")
-	s.Message = s.catalog.Text("treasure_ready", "發現財寶。")
+	s.Message = s.catalog.Text("treasure_ready", "treasure_ready")
 	if strings.TrimSpace(eventMessage) != "" {
 		s.Message = eventMessage
 	}
@@ -1591,14 +1591,14 @@ func (s *State) enterTreasureMenuFor(returnMode Mode) {
 func (s *State) enterTreasureTakeMenu() {
 	s.treasureTakeMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = s.catalog.Text("treasure_take_prompt", "選擇由哪位角色收下")
+	s.Prompt = s.catalog.Text("treasure_take_prompt", "treasure_take_prompt")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
 		s.Choices = append(s.Choices, character.Name)
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, s.catalog.Text("treasure_cancel", "返回財寶列表"))
+	s.Choices = append(s.Choices, s.catalog.Text("treasure_cancel", "treasure_cancel"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_CANCEL")
 }
 
@@ -1622,11 +1622,11 @@ func (s *State) selectTreasure(index int, originalChoice string) error {
 			s.enterTreasureMenuFor(s.treasureReturnMode)
 			return nil
 		}
-		return s.leaveTreasureMenu(s.catalog.Text("treasure_taken", "財寶已加入隊伍裝備。"))
+		return s.leaveTreasureMenu(s.catalog.Text("treasure_taken", "treasure_taken"))
 	}
 	if originalChoice == "TREASURE_EXIT" {
 		s.pendingTreasureItems = nil
-		return s.leaveTreasureMenu(s.catalog.Text("treasure_skipped", "隊伍繼續前進，未收下剩餘財寶。"))
+		return s.leaveTreasureMenu(s.catalog.Text("treasure_skipped", "treasure_skipped"))
 	}
 	if !strings.HasPrefix(originalChoice, "TREASURE_ITEM_") {
 		return fmt.Errorf("invalid treasure item command %q", originalChoice)

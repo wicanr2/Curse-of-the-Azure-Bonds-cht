@@ -120,17 +120,48 @@ func TestECLTreasureResolvesReferenceRandomCount(t *testing.T) {
 }
 
 func TestTreasureMenuAssignsSelectedItemToCharacter(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{ID: "fighter", Name: "戰士"}}
 	state.pendingTreasureItems = []monster.ItemRecord{{Type: 36, Count: 1}}
 	state.enterTreasureMenu()
+	if state.Prompt != catalog.Text("treasure_prompt", "") ||
+		state.Message != catalog.Text("treasure_ready", "") ||
+		state.Choices[len(state.Choices)-1] != catalog.Text("treasure_exit", "") {
+		t.Fatalf("treasure menu prompt=%q message=%q choices=%#v", state.Prompt, state.Message, state.Choices)
+	}
 	if err := state.Select(0); err != nil || !state.treasureTakeMenu {
 		t.Fatalf("item selection err=%v takeMenu=%v", err, state.treasureTakeMenu)
+	}
+	if state.Prompt != catalog.Text("treasure_take_prompt", "") ||
+		state.Choices[len(state.Choices)-1] != catalog.Text("treasure_cancel", "") {
+		t.Fatalf("treasure take prompt=%q choices=%#v", state.Prompt, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 36 {
-		t.Fatalf("mode=%d equipment=%#v", state.Mode, state.partyRoster[0].Equipment)
+	if state.Mode != ModeEvent || state.Message != catalog.Text("treasure_taken", "") ||
+		len(state.partyRoster[0].Equipment) != 1 || state.partyRoster[0].Equipment[0].Type != 36 {
+		t.Fatalf("mode=%d message=%q equipment=%#v", state.Mode, state.Message, state.partyRoster[0].Equipment)
+	}
+}
+
+func TestTreasureMenuCancelAndSkipUseStableLocaleContract(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	state.partyRoster = party.Roster{{ID: "fighter", Name: "DISPLAY"}}
+	state.pendingTreasureItems = []monster.ItemRecord{{Type: 36, Count: 1}}
+	state.enterTreasureMenu()
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil || state.treasureTakeMenu {
+		t.Fatalf("cancel err=%v takeMenu=%v", err, state.treasureTakeMenu)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeEvent || state.Message != catalog.Text("treasure_skipped", "") || len(state.pendingTreasureItems) != 0 {
+		t.Fatalf("skip mode=%v message=%q items=%#v", state.Mode, state.Message, state.pendingTreasureItems)
 	}
 }

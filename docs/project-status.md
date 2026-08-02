@@ -122,7 +122,9 @@ commit 內保存不可能自我引用的 hash。
   demo 名稱改讀 locale。baseline 212、frontend debt 0。第 487 輪再將建角完成、
   手札框、荒野選單、世界地點、NPC 名稱與城鎮／地城提示的中文 fallback 移回
   正式 catalog；動態所在地提示也改用格式 ID。baseline 173、frontend debt 0；
-  runtime 173 仍待清理。
+  runtime 173 仍待清理。第 488 輪再把財寶列表、角色收取、取消／略過及缺素材
+  訊息移入正式 catalog；火刀辦公室正常 ECL 路徑改用正式 catalog 驗證，原
+  財寶數量與 continuation 不變。baseline 164、frontend debt 0、runtime 164。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

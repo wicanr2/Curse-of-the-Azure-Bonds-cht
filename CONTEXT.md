@@ -3770,3 +3770,13 @@ marker `ROUND486_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾�
 173、localization 0。READY spec 487 是權威；Docker／Xvfb／`--network none`
 正式全套 gate 已通過，marker `ROUND487_FORMAL_EXIT=0`；commit／push 與暫存
 清理待本輪收尾。
+
+2026-08-03 第四百八十八輪將財寶列表、角色收取、取消／略過及缺 ITEM 素材
+九筆中文副本移入正式 locale catalog。State 仍以 `TREASURE_ITEM_n`、
+`TREASURE_CHARACTER_n`、`TREASURE_CANCEL／EXIT` 控制選擇與 continuation；
+顯示名稱不參與規則。火刀辦公室正常 ECL／地城路徑改用正式 catalog 驗證
+prompt 與 exit choice，原 3,000 gold、3 gems、2 jewelry、ITEM block `82h`
+及一次性搜尋不變。source audit `173→164`，frontend 0、runtime 164、
+localization 0。READY spec 488 是權威；Docker／Xvfb／`--network none` 正式
+全套 gate 已通過，marker `ROUND488_FORMAL_EXIT=0`；commit／push 與暫存清理
+待本輪收尾。

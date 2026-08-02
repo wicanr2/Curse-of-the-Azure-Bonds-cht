@@ -1477,7 +1477,7 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 		t.Fatalf("consumed office search=%+v", consumed)
 	}
 
-	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)
+	state := NewStateFromECLBlocks(combatVisualCatalog(t), map[uint8][]byte{4: hideout}, 4)
 	if err := state.session.Reset(4); err != nil {
 		t.Fatal(err)
 	}
@@ -1514,6 +1514,10 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 		len(state.PendingTreasureItems()) != 2 || len(state.Choices) != 3 {
 		t.Fatalf("office treasure mode=%v menu=%v items=%v choices=%v",
 			state.Mode, state.treasureMenu, state.PendingTreasureItems(), state.Choices)
+	}
+	if state.Prompt != state.catalog.Text("treasure_prompt", "") ||
+		state.Choices[len(state.Choices)-1] != state.catalog.Text("treasure_exit", "") {
+		t.Fatalf("office treasure locale prompt=%q choices=%#v", state.Prompt, state.Choices)
 	}
 	if state.MoneyPool() != 3000 {
 		t.Fatalf("office pooled gold=%d, want 3000", state.MoneyPool())

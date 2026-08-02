@@ -97,3 +97,16 @@ fallback，並由 catalog coverage 測試保證正式資料完整；缺鍵時顯
 期望文字。最小合成 catalog 只適合 parser 或缺鍵結構測試，不能拿來證明正式
 世界地名、NPC 名稱與選單內容。控制流仍應使用原始 ECL token、stable option
 ID 或 typed result；即使顯示 choice 被換成任意文字，行為也不應改變。
+
+## 財寶服務邊界
+
+Gold Box 的 TREASURE 不只是顯示一句文字：它可能先累積 coins／gems／jewelry，
+解析固定或隨機 ITEM block，再於戰後或零怪物服務 boundary 暫停 ECL。資料化
+提示時，不能把「看到財寶 prompt」誤當成財寶規則完成，也不能因翻譯調整而
+改變戰後延遲、take／cancel／skip、角色裝備 mutation 或 continuation PC。
+
+顯示選項與控制 identity 必須平行保存。物品列可顯示 locale item name，但選擇
+應使用 `TREASURE_ITEM_n`；角色列可顯示玩家姓名，但選擇應使用
+`TREASURE_CHARACTER_n`。缺 ITEM 素材時，錯誤物件只是格式參數；正式訊息
+模板放 catalog。正常玩家路徑要同時驗證原始財寶數量、列表 identity、收取或
+略過後的回返模式，以及再次搜索不複製獎勵。

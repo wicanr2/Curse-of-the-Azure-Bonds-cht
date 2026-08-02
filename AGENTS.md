@@ -745,6 +745,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   fallback 並由 coverage test 封鎖缺鍵。產品測試載入正式 catalog、動態解析
   期望文字，不能靠膨脹最小 fixture 或複製 JSON 中文通過。READY spec 487
   是權威；runtime 仍有 173 筆待清理。
+- 第 488 輪把財寶列表、角色收取、取消／略過與缺 ITEM 素材九筆中文副本移入
+  正式 catalog，baseline `173→164`。TREASURE 顯示列使用 locale 物品名／角色
+  名，但控制流必須保存 `TREASURE_ITEM_n`、`TREASURE_CHARACTER_n`、cancel／
+  exit identity；不可用翻譯文字控制 ECL continuation。正常火刀辦公室路徑
+  改載正式 catalog，仍驗證原財寶與一次性搜尋。READY spec 488 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

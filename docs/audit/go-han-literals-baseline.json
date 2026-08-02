@@ -808,13 +808,6 @@
     },
     {
       "path": "internal/game/combat_state.go",
-      "function": "continueECLAfterEngineBoundaryDepth",
-      "sha256": "4554479ac60bd44befb3142f80b12252c1b8a17e824203e1b8f45bcc82112153",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/combat_state.go",
       "function": "formatAttackMessage",
       "sha256": "49623283f6890b7b99b58a741ce4275b04f52d7543bc87062f20cbcb90e57e5a",
       "occurrences": 1,
@@ -949,13 +942,6 @@
     {
       "path": "internal/game/state.go",
       "function": "Select",
-      "sha256": "4554479ac60bd44befb3142f80b12252c1b8a17e824203e1b8f45bcc82112153",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "Select",
       "sha256": "524f4509fa56ea4d4fc1d557b75d0d1a14d83db77b311f0776f513d552d715ff",
       "occurrences": 1,
       "category": "runtime_ui_debt"
@@ -1018,41 +1004,6 @@
     },
     {
       "path": "internal/game/state.go",
-      "function": "enterTreasureMenuFor",
-      "sha256": "41305ab0d414563b2eece49f11a23d2083a7a636617c653deac417b884779a76",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterTreasureMenuFor",
-      "sha256": "c291f4873103b609fcd7f098d14360ce0435c305b392e6406eb8d0425e8030a1",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterTreasureMenuFor",
-      "sha256": "fd621b0fb84d4f31825ca392a1a45758b56cf09a9540edec7e0191dc97322e99",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterTreasureTakeMenu",
-      "sha256": "ec753775f099eddb093710c616ecbb99e23f1fcfeb140ee4f05ab5251f369474",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "enterTreasureTakeMenu",
-      "sha256": "fdfe840ccf5ada9250f9fa0589e625f96091f2a68da9715fdc836ff6e0a36814",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
       "function": "selectParlay",
       "sha256": "c5102fd20377bba9875eaa0be6e8a671427f871d5bd48d5391a1a06b13dbd45c",
       "occurrences": 1,
@@ -1062,20 +1013,6 @@
       "path": "internal/game/state.go",
       "function": "selectPlace",
       "sha256": "0635f8c0f51a0012fedabbe4c7b6ccc6c44717db22b092abc774276c84ab2c80",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "selectTreasure",
-      "sha256": "761d6c7f94299a84e69683b24b453ffadd523eaafdee661528754412779f46dd",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "selectTreasure",
-      "sha256": "fbeea79872f5657e763d29e1d020f5c136b8bae06ddbde522d3a897b7d265585",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },
