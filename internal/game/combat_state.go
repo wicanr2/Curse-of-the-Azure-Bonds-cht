@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
 // StartCombat creates the first playable battle adapter. Party and encounter
@@ -97,6 +98,13 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 // deliberately not serialized; frontends restore it when constructing State.
 func (s *State) SetCombatLineTerrain(terrain combat.LineTerrain) {
 	s.combatLineTerrain = terrain
+}
+
+// SetCombatScanMapProvider installs the current title-owned TACTICALMAP
+// projection. It is intentionally not serialized: the frontend reconstructs
+// floor buffers and restores this read-only adapter when State is created.
+func (s *State) SetCombatScanMapProvider(provider func() (enginescan.TacticalMap, error)) {
+	s.combatScanMapProvider = provider
 }
 
 func (s *State) applyDataPackCombatModifiers(battle *combat.Battle) error {
@@ -581,6 +589,27 @@ func (s *State) CombatCanCastMagicMissile() bool {
 	return false
 }
 
+func (s *State) CombatCanCastSleep() bool {
+	if !s.CombatActive() || s.combatScanMapProvider == nil {
+		return false
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return false
+	}
+	for _, character := range s.partyRoster {
+		if character.ID != caster.ID || !character.HasClass(party.ClassMagicUser) {
+			continue
+		}
+		for _, spellID := range character.SpellSlots {
+			if spellID == SleepSpellID {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (s *State) CombatCanCastFireball() bool {
 	if !s.CombatActive() {
 		return false
@@ -939,6 +968,9 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
 		return fmt.Errorf("Magic Missile is unavailable")
 	}
+	if spellID == SleepSpellID && !s.CombatCanCastSleep() {
+		return fmt.Errorf("Sleep is unavailable")
+	}
 	if spellID == ProtectionFromGoodSpellID && !s.CombatCanCastProtectionFromGood() {
 		return fmt.Errorf("Protection from Good is unavailable")
 	}
@@ -957,7 +989,7 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
 		return fmt.Errorf("Cure Light Wounds is unavailable")
 	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != ProtectionFromGoodSpellID && spellID != MagicMissileSpellID && spellID != StinkingCloudSpellID && spellID != CloudkillSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
+	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != ProtectionFromGoodSpellID && spellID != MagicMissileSpellID && spellID != SleepSpellID && spellID != StinkingCloudSpellID && spellID != CloudkillSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
 	}
 	s.combatCastingSpell = spellID
@@ -999,7 +1031,7 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
-	if spellID == StinkingCloudSpellID || spellID == CloudkillSpellID || spellID == FireballSpellID || spellID == LightningBoltSpellID {
+	if spellID == SleepSpellID || spellID == StinkingCloudSpellID || spellID == CloudkillSpellID || spellID == FireballSpellID || spellID == LightningBoltSpellID {
 		targets := s.livingBySide(combat.SideEnemy)
 		if len(targets) == 0 {
 			return fmt.Errorf("combat has no living enemies")
@@ -1065,7 +1097,7 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 // combat map. It is separate from fighter target cycling because Fireball may
 // intentionally be centered on an empty tile and can harm either side.
 func (s *State) CombatMoveSpellTarget(dx, dy int) error {
-	if (s.combatCastingSpell != StinkingCloudSpellID && s.combatCastingSpell != CloudkillSpellID && s.combatCastingSpell != FireballSpellID && s.combatCastingSpell != LightningBoltSpellID) || !s.combatSpellTargetsPoint {
+	if (s.combatCastingSpell != SleepSpellID && s.combatCastingSpell != StinkingCloudSpellID && s.combatCastingSpell != CloudkillSpellID && s.combatCastingSpell != FireballSpellID && s.combatCastingSpell != LightningBoltSpellID) || !s.combatSpellTargetsPoint {
 		return fmt.Errorf("no area spell target is being selected")
 	}
 	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
@@ -1163,6 +1195,9 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 	}
 	if spellID == FireballSpellID {
 		return s.combatCastFireball()
+	}
+	if spellID == SleepSpellID {
+		return s.combatCastSleep()
 	}
 	if spellID == LightningBoltSpellID {
 		return s.combatCastLightningBolt(terrain)
@@ -1490,6 +1525,79 @@ func (s *State) combatCastCloudkill(terrain combat.LineTerrain) error {
 	}) {
 		return nil
 	}
+	s.combatTurnIndex++
+	if s.battle.Status() != combat.StatusActive {
+		return s.finishCombat()
+	}
+	return s.advanceCombatToParty()
+}
+
+func (s *State) combatCastSleep() error {
+	if s.combatCastingSpell != SleepSpellID || !s.combatSpellTargetsPoint {
+		return fmt.Errorf("Sleep target is not being selected")
+	}
+	if s.combatScanMapProvider == nil {
+		return fmt.Errorf("Sleep TACTICALMAP projection is unavailable")
+	}
+	caster, ok := s.combatPartyTurn()
+	if !ok {
+		return fmt.Errorf("it is not a living party turn")
+	}
+	characterIndex := -1
+	for index, character := range s.partyRoster {
+		if character.ID == caster.ID && character.HasClass(party.ClassMagicUser) {
+			characterIndex = index
+			break
+		}
+	}
+	if characterIndex < 0 {
+		return fmt.Errorf("caster %q is not a magic-user in the party roster", caster.ID)
+	}
+	spellIndex := -1
+	for index, memorized := range s.partyRoster[characterIndex].SpellSlots {
+		if memorized == SleepSpellID {
+			spellIndex = index
+			break
+		}
+	}
+	if spellIndex < 0 {
+		return fmt.Errorf("caster %q has no memorized Sleep", caster.ID)
+	}
+	tacticalMap, err := s.combatScanMapProvider()
+	if err != nil {
+		return fmt.Errorf("build Sleep TACTICALMAP: %w", err)
+	}
+	center := enginescan.Point{X: s.combatSpellTargetPoint.X, Y: s.combatSpellTargetPoint.Y}
+	ordered, err := s.battle.BuildLegacyAreaScanTargetIDs(
+		tacticalMap, caster.ID, center, combat.SideEnemy, 1, 0xff,
+	)
+	if err != nil {
+		return fmt.Errorf("build Sleep SCAN targets: %w", err)
+	}
+	s.partyRoster[characterIndex].SpellSlots = append(
+		s.partyRoster[characterIndex].SpellSlots[:spellIndex],
+		s.partyRoster[characterIndex].SpellSlots[spellIndex+1:]...,
+	)
+	result, err := s.battle.CastSleepOrdered(
+		caster.ID, ordered, casterLevel(s.partyRoster[characterIndex]),
+	)
+	if err != nil {
+		s.partyRoster[characterIndex].SpellSlots = append(
+			s.partyRoster[characterIndex].SpellSlots, SleepSpellID,
+		)
+		return err
+	}
+	resisted := 0
+	for _, impact := range result.Impacts {
+		if impact.Resisted {
+			resisted++
+		}
+	}
+	s.CancelCombatCast()
+	s.combatMessage = fmt.Sprintf(
+		s.catalog.Text("combat_sleep", "%s 施放睡眠術，影響 %d 名目標；%d 名抵抗成功。"),
+		caster.Name, len(result.Impacts)-resisted, resisted,
+	)
 	s.combatTurnIndex++
 	if s.battle.Status() != combat.StatusActive {
 		return s.finishCombat()
@@ -2663,7 +2771,7 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 	switch spellID {
 	case BlessSpellID, CurseSpellID, CureLightWoundsSpellID, CauseLightWoundsSpellID,
 		ProtectionFromEvilSpellID, ProtectionFromGoodSpellID, FireballSpellID,
-		LightningBoltSpellID, CloudkillSpellID:
+		LightningBoltSpellID, CloudkillSpellID, SleepSpellID:
 	default:
 		return fmt.Errorf("pending spell 0x%02X is not implemented", spellID)
 	}

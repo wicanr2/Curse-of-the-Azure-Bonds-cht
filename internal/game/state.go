@@ -23,6 +23,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -186,6 +187,7 @@ type State struct {
 	combatQuickMagic        bool
 	combatReferenceCoords   bool
 	combatLineTerrain       combat.LineTerrain
+	combatScanMapProvider   func() (enginescan.TacticalMap, error)
 	combatView              bool
 	combatViewFighterID     string
 	combatMessage           string

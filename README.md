@@ -1118,6 +1118,14 @@ Magic Missile 的 raw `1→0` 仍維持即時；其他法術、手動 CAST 與�
 未完成。證據見
 [`spec 425`](docs/spec/425-pc98-quick-bless-casting-delay.md)。
 
+第 439 輪接通第一個 terrain-aware Sleep 手動玩家路徑：`Z` 選擇睡眠術
+中心，方向鍵移動後 Enter 施法。目標順序來自目前戰場原始一基底 TD、65 筆
+PC-98 TDEF、選定格中心與原版 `SCAN`，不是依距離自行猜測或以施法者為中心；
+地形投影錯誤時不會消耗法術格。睡眠閃爍、音效、解除／存檔、Quick AI 與
+PC-98 固定戰場動態仍未完成，故這是可玩的規則垂直切片，不是完整 Sleep／
+完整戰鬥聲明。證據見
+[`spec 439`](docs/spec/439-pc98-sleep-selected-cell-tactical-map.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

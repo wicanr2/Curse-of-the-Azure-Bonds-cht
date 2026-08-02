@@ -191,6 +191,28 @@ func (b *Battle) BuildLegacyScanTargetIDs(
 	return BuildScanTargetIDs(tacticalMap, objectID, sourceCells, candidates, maxRange, arc)
 }
 
+// BuildLegacyAreaScanTargetIDs preserves the combat-object identity table but
+// uses an explicitly selected map cell as SCAN's source. PC-98 combat spell
+// targeting writes the selected X/Y separately from the caster pointer before
+// calling SCAN; using the caster footprint here would silently change Sleep's
+// area of effect.
+func (b *Battle) BuildLegacyAreaScanTargetIDs(
+	tacticalMap enginescan.TacticalMap,
+	identitySourceID string,
+	center enginescan.Point,
+	targetSide Side,
+	maxRange int,
+	arc uint8,
+) ([]string, error) {
+	objectID, _, candidates, err := b.LegacyScanObjects(identitySourceID, targetSide)
+	if err != nil {
+		return nil, err
+	}
+	return BuildScanTargetIDs(
+		tacticalMap, objectID, []enginescan.Point{center}, candidates, maxRange, arc,
+	)
+}
+
 // SelectRangedCombatTarget builds the reachable opposing list before using
 // the battle PRNG. It preserves the reference 20-attempt, remove-invisible-
 // candidate loop. found=false is a normal result: some original callers use

@@ -15,6 +15,7 @@ const (
 	ProtectionFromEvilSpellID uint8 = 6
 	ProtectionFromGoodSpellID uint8 = 7
 	MagicMissileSpellID       uint8 = 0x0F
+	SleepSpellID              uint8 = 0x15
 	StinkingCloudSpellID      uint8 = 0x22
 	FireballSpellID           uint8 = 0x2F
 	LightningBoltSpellID      uint8 = 0x33

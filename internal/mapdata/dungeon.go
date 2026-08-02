@@ -97,10 +97,20 @@ func dungeonTileIndex(floor DungeonFloor, x, y int) uint8 {
 func roll(rng *rand.Rand, sides int) int { return rng.Intn(sides) + 1 }
 
 func (floor DungeonFloor) Entry(x, y int) (BackgroundTile, bool) {
-	if x < 0 || x >= WildernessWidth || y < 0 || y >= WildernessHeight {
+	tileID, ok := floor.TileID(x, y)
+	if !ok {
 		return BackgroundTile{}, false
 	}
-	return Lookup(int(floor.Tiles[y][x]))
+	return Lookup(int(tileID))
+}
+
+// TileID returns the original one-based TACTICALMAP.TD value. Entry is for
+// renderer and movement consumers; SCAN must preserve this raw identity.
+func (floor DungeonFloor) TileID(x, y int) (uint8, bool) {
+	if x < 0 || x >= WildernessWidth || y < 0 || y >= WildernessHeight {
+		return 0, false
+	}
+	return floor.Tiles[y][x], true
 }
 
 func (floor DungeonFloor) CanEnter(x, y int) bool {

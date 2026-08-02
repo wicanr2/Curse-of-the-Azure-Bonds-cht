@@ -492,6 +492,13 @@ commit 內保存不可能自我引用的 hash。
   identity 展開真實 footprint，再完整串接 `INARC／LOS／sort`。Ebiten 尚未
   提供原戰場 `TACTICALMAP TD/TDEF`，故正常 Sleep UI、wall／corner runtime
   仍未完成；READY spec 438 是權威。
+- 第 439 輪證明 Sleep `SCAN` 以玩家選定格而非 caster footprint 為中心，
+  range `1`、arc `FFh`；`BackgroundTiles[1:66]` 與 PC-98 65 筆 TDEF
+  逐 byte 對應，Dungeon／Wilderness floor bytes 是原始一基底 TD。
+  frontend→State→Battle 已接通手動 `Z` 選格、terrain-aware ordered targets、
+  `4d4`／HD／魔抗／`35h` effect 與成功後 slot 消耗；無效 map fail-closed。
+  32×16 fallback placement 仍是 reconstructed，Quick Sleep、wall/corner
+  動態、解除／save、twinkle／音效未完成；READY spec 439 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
