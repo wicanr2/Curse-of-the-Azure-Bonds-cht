@@ -1153,8 +1153,10 @@ palette／圖元仍標為 `layout-reconstructed`，待實機擷取升級。
 回合、持續區域、戰鬥修正、待處理中斷與戰鬥 PRNG continuation 都會保存。
 正常手動 Sleep 在 TWINKLE 第一幀前存檔後，讀檔可完成相同 handoff，並在同一
 第 15 tick 自然解除；另一分支由正傷害喚醒且不重複消耗法術格。尚未擁有
-renderer elapsed 的 mid-animation save 明確 fail-closed，不假裝無縫續播。
-證據見 [`spec 443`](docs/spec/443-active-combat-save-sleep-continuation.md)。
+第 443 輪當時因 renderer elapsed 未歸 State 而讓 mid-animation save
+fail-closed；此限制已由第 446 輪解除。證據見
+[`spec 443`](docs/spec/443-active-combat-save-sleep-continuation.md) 與
+[`spec 446`](docs/spec/446-mid-visual-combat-save-resume.md)。
 
 第 444 輪把 save v7 接入真實 campaign：從 Standing Stone 世界旅行至
 Myth Drannor，沿 GEO6 合法路徑經精靈幽魂與紅網字串輸入，在四蜘蛛第一戰的
@@ -1170,6 +1172,14 @@ Battle 與 ECL session snapshot 完全相同；後續只用 loaded state 完成�
 相同，永久 roster 仍只有英雄；loaded state 戰勝並寫 `4CD1=1` 後，runtime
 party 與 roster 都沒有盟友污染。證據見
 [`spec 445`](docs/spec/445-tirsheya-temporary-ally-combat-save.md)。
+
+第 446 輪解除 save v7 的戰鬥動畫中段限制：visual elapsed 改由 State 保存，
+Ebiten 載入後以保存位置加上新的縮放時鐘續跑，第一幀不再重置。Sleep
+`TWINKLE` 700ms 與一擊致死弓箭 death frame 都能同幀 round-trip；已送出的
+CAST／SPELLHIT 或 ARROW／HIT／DEAD 不會在載入、同幀重入或 handoff 重播。
+損壞的超時 elapsed、越界 phase marker 會失敗即關閉。這尚不保存播放器內的
+PCM sample offset，不能冒稱音訊取樣點無縫續播。證據見
+[`spec 446`](docs/spec/446-mid-visual-combat-save-resume.md)。
 
 ## 尚未完成
 

@@ -88,6 +88,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 	s.combatTargetIndex = 0
 	s.combatQuickMagic = false
 	s.combatVisual = nil
+	s.combatVisualElapsed = 0
 	s.combatMessage = s.catalog.Text("combat_started", "戰鬥開始！")
 	s.Mode = ModeCombat
 	return s.advanceCombatToParty()
@@ -279,6 +280,7 @@ func (s *State) EnableCombatVisualTimeline(enabled bool) {
 	s.combatVisualEnabled = enabled
 	if !enabled {
 		s.combatVisual = nil
+		s.combatVisualElapsed = 0
 	}
 }
 
@@ -291,6 +293,11 @@ func (s *State) CombatVisualEvent() (combat.VisualEvent, bool) {
 
 func (s *State) CombatVisualPending() bool { return s.combatVisual != nil }
 
+// CombatVisualElapsed is the authoritative timeline position. The frontend
+// supplies monotonic clock deltas; keeping the committed position in State
+// allows an active visual transaction to survive save/load.
+func (s *State) CombatVisualElapsed() time.Duration { return s.combatVisualElapsed }
+
 func (s *State) queueCombatVisual(event combat.VisualEvent) bool {
 	if !s.combatVisualEnabled {
 		return false
@@ -298,6 +305,7 @@ func (s *State) queueCombatVisual(event combat.VisualEvent) bool {
 	s.combatVisualSerial++
 	event.Serial = s.combatVisualSerial
 	s.combatVisual = &event
+	s.combatVisualElapsed = 0
 	s.combatVisualTravelSent = false
 	s.combatVisualImpactSent = -1
 	s.combatVisualDeathSent = -1
@@ -311,7 +319,17 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 	if s.combatVisual == nil {
 		return nil
 	}
+	if elapsed < 0 {
+		return fmt.Errorf("negative combat visual elapsed time %s", elapsed)
+	}
+	if elapsed < s.combatVisualElapsed {
+		return fmt.Errorf("combat visual elapsed time regressed from %s to %s", s.combatVisualElapsed, elapsed)
+	}
 	event := *s.combatVisual
+	if elapsed > event.Duration() {
+		elapsed = event.Duration()
+	}
+	s.combatVisualElapsed = elapsed
 	frame := event.FrameAt(elapsed)
 	if !s.combatVisualTravelSent && frame.Phase >= combat.VisualTravel {
 		switch {
@@ -366,6 +384,7 @@ func (s *State) AdvanceCombatVisual(elapsed time.Duration) error {
 		return nil
 	}
 	s.combatVisual = nil
+	s.combatVisualElapsed = 0
 	if s.combatVisualAdvanceTurn {
 		s.combatTurnIndex++
 		s.combatVisualAdvanceTurn = false
@@ -2990,6 +3009,7 @@ func (s *State) finishCombat() error {
 	}
 	interrupted := s.consumeCombatSpellInterruptions()
 	s.combatVisual = nil
+	s.combatVisualElapsed = 0
 	s.combatVisualAdvanceTurn = false
 	s.CancelCombatCast()
 	s.CancelCombatMove()

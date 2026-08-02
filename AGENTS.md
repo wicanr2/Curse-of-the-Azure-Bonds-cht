@@ -552,9 +552,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 443 輪把 remake JSON save 升至 v7；active combat 必須整體保存 Fighter／
   effect／Action、stable TeamList、scheduler selection、turn cursor、areas、
   modifiers、pending interruption 與 battle PRNG。不得只存 `MonsterAffects`
-  冒充可恢復戰鬥。frontend wall-clock elapsed 尚未進 State，故已開始的 visual
-  save 必須 fail-closed；第一幀前 transaction 可 round-trip。READY spec 443
-  是權威。
+  冒充可恢復戰鬥。第 446 輪已把 visual elapsed 移入 State 並解除中段限制；
+  READY spec 443 是 active combat 基底，spec 446 是 visual resume 權威。
 - 第 444 輪已把 save v7 接到真實 Standing Stone→Myth Drannor→紅網玩家路徑：
   四蜘蛛第一戰 party-turn 存檔，全新 State 從玩家自備 ECL／MON／ITEM restore，
   再完成蜘蛛、羅剎妖二戰與 `4CBF=1`。這證明 ECL combat handoff，但高數值
@@ -565,6 +564,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `partyRoster` 只能保存永久英雄。讀檔後戰勝要寫 `4CD1=1`，並從 runtime
   party 移除盟友。不得從 Battle party side 全量回寫 roster，也不得只用 roster
   重建 active Battle；READY spec 445 是權威。
+- 第 446 輪已驗證 save v7 的 mid-visual continuation：State 保存納秒 elapsed、
+  travel／impact／death 已送 cue markers，frontend 由 saved base 疊加新的 speed
+  scaled clock delta。Sleep 700ms 與弓箭 death frame 載入後同幀且不重播離散
+  音效；越界 elapsed／marker fail-closed。PCM sample offset 與 BGM driver／
+  synth 狀態仍未保存，不得把「cue 不重播」寫成音訊無縫續播。READY spec 446
+  是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

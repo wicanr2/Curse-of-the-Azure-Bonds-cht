@@ -97,6 +97,7 @@ type app struct {
 	deathOverlayStarted   map[string]time.Time
 	combatVisualSerial    uint64
 	combatVisualStarted   time.Time
+	combatVisualBase      time.Duration
 	combatVisualElapsed   time.Duration
 	combatDoneMenu        bool
 	combatSpeedMenu       bool
@@ -330,11 +331,12 @@ func (a *app) Update() error {
 		if a.combatVisualSerial != event.Serial {
 			a.combatVisualSerial = event.Serial
 			a.combatVisualStarted = time.Now()
+			a.combatVisualBase = a.state.CombatVisualElapsed()
 		}
 		if a.screenshotPath != "" {
 			return nil
 		}
-		elapsed := combatSpeedElapsed(time.Since(a.combatVisualStarted), a.state.CombatSpeed())
+		elapsed := combatVisualResumeElapsed(a.combatVisualBase, time.Since(a.combatVisualStarted), a.state.CombatSpeed())
 		if err := a.state.AdvanceCombatVisual(elapsed); err != nil {
 			return err
 		}
@@ -2391,11 +2393,15 @@ func (a *app) combatVisualFrame(event combat.VisualEvent) combat.VisualFrame {
 	if a.screenshotPath != "" {
 		return event.FrameAt(a.combatVisualElapsed)
 	}
-	return event.FrameAt(combatSpeedElapsed(time.Since(a.combatVisualStarted), a.state.CombatSpeed()))
+	return event.FrameAt(a.state.CombatVisualElapsed())
 }
 
 func combatSpeedElapsed(elapsed time.Duration, speed uint8) time.Duration {
 	return engineaction.Speed(speed).ScaleElapsed(elapsed)
+}
+
+func combatVisualResumeElapsed(base, clockDelta time.Duration, speed uint8) time.Duration {
+	return base + combatSpeedElapsed(clockDelta, speed)
 }
 
 func combatVisualPoint(event combat.VisualEvent, frame combat.VisualFrame, camera combat.CombatCamera) (fromX, fromY, toX, toY, x, y float64) {

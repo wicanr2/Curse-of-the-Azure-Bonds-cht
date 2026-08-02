@@ -17,33 +17,34 @@ const CurrentGameVersion = 7
 // callbacks and decoded source assets are intentionally excluded and are
 // reconstructed by the frontend before the next action is resolved.
 type CombatSnapshot struct {
-	Battle            combat.BattleSnapshot `json:"battle"`
-	Turns             []combat.Turn         `json:"turns,omitempty"`
-	TurnIndex         int                   `json:"turn_index"`
-	DelayedTurns      map[int]bool          `json:"delayed_turns,omitempty"`
-	TargetIndex       int                   `json:"target_index"`
-	CastingSpell      uint8                 `json:"casting_spell"`
-	CastingClass      uint8                 `json:"casting_class"`
-	CastingClassSet   bool                  `json:"casting_class_set"`
-	SpellTargetIndex  int                   `json:"spell_target_index"`
-	SpellTargetPoint  combat.TilePoint      `json:"spell_target_point"`
-	SpellTargetsPoint bool                  `json:"spell_targets_point"`
-	MoveMode          bool                  `json:"move_mode"`
-	MoveRemaining     int                   `json:"move_remaining"`
-	Speed             uint8                 `json:"speed"`
-	QuickMagic        bool                  `json:"quick_magic"`
-	ReferenceCoords   bool                  `json:"reference_coordinates"`
-	View              bool                  `json:"view"`
-	ViewFighterID     string                `json:"view_fighter_id,omitempty"`
-	Message           string                `json:"message,omitempty"`
-	ReturnMode        uint8                 `json:"return_mode"`
-	VisualSerial      uint64                `json:"visual_serial"`
-	VisualEnabled     bool                  `json:"visual_enabled"`
-	Visual            *combat.VisualEvent   `json:"visual,omitempty"`
-	VisualTravelSent  bool                  `json:"visual_travel_sent"`
-	VisualImpactSent  int                   `json:"visual_impact_sent"`
-	VisualDeathSent   int                   `json:"visual_death_sent"`
-	VisualAdvanceTurn bool                  `json:"visual_advance_turn"`
+	Battle             combat.BattleSnapshot `json:"battle"`
+	Turns              []combat.Turn         `json:"turns,omitempty"`
+	TurnIndex          int                   `json:"turn_index"`
+	DelayedTurns       map[int]bool          `json:"delayed_turns,omitempty"`
+	TargetIndex        int                   `json:"target_index"`
+	CastingSpell       uint8                 `json:"casting_spell"`
+	CastingClass       uint8                 `json:"casting_class"`
+	CastingClassSet    bool                  `json:"casting_class_set"`
+	SpellTargetIndex   int                   `json:"spell_target_index"`
+	SpellTargetPoint   combat.TilePoint      `json:"spell_target_point"`
+	SpellTargetsPoint  bool                  `json:"spell_targets_point"`
+	MoveMode           bool                  `json:"move_mode"`
+	MoveRemaining      int                   `json:"move_remaining"`
+	Speed              uint8                 `json:"speed"`
+	QuickMagic         bool                  `json:"quick_magic"`
+	ReferenceCoords    bool                  `json:"reference_coordinates"`
+	View               bool                  `json:"view"`
+	ViewFighterID      string                `json:"view_fighter_id,omitempty"`
+	Message            string                `json:"message,omitempty"`
+	ReturnMode         uint8                 `json:"return_mode"`
+	VisualSerial       uint64                `json:"visual_serial"`
+	VisualEnabled      bool                  `json:"visual_enabled"`
+	Visual             *combat.VisualEvent   `json:"visual,omitempty"`
+	VisualElapsedNanos int64                 `json:"visual_elapsed_nanos"`
+	VisualTravelSent   bool                  `json:"visual_travel_sent"`
+	VisualImpactSent   int                   `json:"visual_impact_sent"`
+	VisualDeathSent    int                   `json:"visual_death_sent"`
+	VisualAdvanceTurn  bool                  `json:"visual_advance_turn"`
 }
 
 // GameFile contains the party plus the platform-neutral adventure state that

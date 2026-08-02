@@ -530,6 +530,12 @@ commit 內保存不可能自我引用的 hash。
   全新 State restore 後逐欄相同，而永久 roster 始終只有英雄。loaded state
   戰勝、寫 `4CD1=1`、返回 dungeon 後，runtime party／roster 都無盟友污染。
   READY spec 445 是權威。
+- 第 446 輪已將 visual elapsed 移入 State／save v7，戰鬥動畫可在 Sleep
+  `TWINKLE` 中段及弓箭 death frame 存檔並由同一幀續跑；travel／impact／death
+  cue markers 會保存，已送出的離散音效不重播。elapsed／marker 損壞資料
+  fail-closed，frontend speed 0／4／9 都保留 saved base。播放器 PCM sample
+  offset、BGM driver／synth 狀態及原版 SAVGAM combat layout 仍未完成；
+  READY spec 446 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
