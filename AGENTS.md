@@ -651,6 +651,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   locale key。作品 Tavern Tale 不屬於共用酒館 UI catalog；遷移後要同步移除
   舊 catalog coverage 要求，並由 game-pack 兩語系 rule 與正常酒館 continuation
   驗證。世界 route prompt 也屬作品 script 資料，不能留在 State。
+- 第 471 輪提爾佛頓公會至火刀據點十四個 boundary 移除後，baseline 為 580
+  occurrences。連續 PRESS 劇情不能只盲目呼叫 `Select` 再驗證最後戰鬥；每個
+  pause 都要以 game-pack stable ID 比對完整訊息。長測試若直接設定 GEO 座標，
+  只能稱 coordinate-assisted integration，不可寫成完整正常移動玩家路徑。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

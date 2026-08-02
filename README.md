@@ -101,6 +101,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 594。詳見
 [`docs/spec/470-ashabenford-standing-stone-game-pack.md`](docs/spec/470-ashabenford-standing-stone-game-pack.md)。
 
+第 471 輪再把提爾佛頓盜賊公會、犬舍、訪客簿、下水道與火刀據點入口十四個
+文字 boundary 移入 game-pack。真實 image 長回歸逐段驗證公會突襲六個 pause、
+兩場實際戰鬥、手札 4 與 ECL block 2→3→4 handoff；Go 漢字基線由 594 降至
+580。詳見
+[`docs/spec/471-tilverton-guild-hideout-game-pack.md`](docs/spec/471-tilverton-guild-hideout-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

@@ -934,3 +934,14 @@ combat action；高能力測試隊伍可以縮短時間，但必須明確標示�
 text batch；測試要從 stable ID 取得期望，並驗證聽完後回到同一酒館 menu。
 世界 route prompt 也採相同原則：共用 engine 保存 travel／destination 機制，
 作品 game pack／script 保存地名、可達關係與提示文字。
+
+### 2026-08-02：連續事件 pause 必須逐段驗證資料綁定
+
+一串 ECL 劇情若以多個 PRESS pause 接到戰鬥，只驗證最後出現戰鬥會漏掉中間
+文字被錯誤規則匹配、合併或跳過的問題。資料化時應為每個 boundary 建立 stable
+ID，並在每次 `Select／Continue` 後比較由同一 game-pack resolver 取得的完整訊息；
+不能只連續呼叫輸入，最後再看戰鬥人數。
+
+這仍不等於正常移動路徑。測試若在同一真實 session 直接設定 GEO 座標以抽樣多個
+房間，文件必須寫成「coordinate-assisted integration」，並另保留逐步行走的全路線
+完成門檻。資料綁定證據、事件 continuation 證據與可通關證據是三個不同層級。

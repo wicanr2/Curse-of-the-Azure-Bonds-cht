@@ -3593,3 +3593,14 @@ Essembra 與 Hap 銜接。source audit 603→594：localization 108→99，front
 runtime 360 不變。READY spec 470 是權威；正式 gate、commit／push 與容器清理
 已通過 Docker／Xvfb／`--network none` 全套驗證，marker
 `ROUND470_FORMAL_EXIT=0`；一次性容器與暫存已清理，commit／push 待本輪收尾。
+
+2026-08-02 第四百七十一輪進行提爾佛頓公會至火刀據點資料化。公會首領問候／
+簡報、側門爆破、火刀命令、淬毒匕首、混戰開始、豎琴半身人、犬舍戰前／戰後、
+猴籠、訪客簿、下水道痕跡／入口與火刀據點入口共十四條 en／zh-TW source rules
+已移入 game-pack，對應 `localizeECLText` 中文 fallback 已刪除。公會六個連續 pause
+新增逐段 stable-ID 斷言；既有真實 image 長回歸覆蓋混合陣營戰、犬舍戰、手札 4
+與 block 2→3→4 continuation，但城市內房間採 coordinate-assisted 定位，不能稱
+完整正常行走。focused tests 已通過；source audit 594→580，localization 99→85，
+frontend 135、runtime 360 不變。READY spec 471 是權威；正式 gate、commit／push
+已通過 Docker／Xvfb／`--network none` 全套驗證，marker
+`ROUND471_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
