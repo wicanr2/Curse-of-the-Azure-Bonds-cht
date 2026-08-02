@@ -646,6 +646,19 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   從 stable ID 取得訊息／手札。直接把敵方 HP 設零只能驗證戰後 continuation，
   不能支撐「戰鬥可完成」；至少要用有界回合推進目前 combat runtime，並如實
   記錄高能力 fixture 與尚未還原的特殊能力。
+- 第 470 輪阿沙本福德／立石群／世界路線十一個 boundary 再移除 9 次，baseline
+  現為 594 occurrences；事件數與下降數不同，是因河畔酒館與傳聞舊分支只回傳
+  locale key。作品 Tavern Tale 不屬於共用酒館 UI catalog；遷移後要同步移除
+  舊 catalog coverage 要求，並由 game-pack 兩語系 rule 與正常酒館 continuation
+  驗證。世界 route prompt 也屬作品 script 資料，不能留在 State。
+- 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
+  第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
+  字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
+  當時 HEAD、可重現且標明證據等級的畫面，錯誤或過期截圖必須替換。
+- 最終經驗要回寫繁中 SSI Gold Box remake 知識庫與可重用 skill。可參考
+  `/home/anr2/cht/daemon_winter` 的 SSI 類 RPG 做法，並為後續《Wasteland》
+  中文化整理可沿用的解碼、資料化、中文字型與測試方法；不同作品的劇情、格式
+  假說與硬編碼不得因此混入 Gold Box 共用 engine。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

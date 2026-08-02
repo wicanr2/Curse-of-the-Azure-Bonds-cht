@@ -1131,7 +1131,7 @@ func TestTavernCatalogCoversEveryDisplayedStableID(t *testing.T) {
 		"bar_tale_4", "bar_tale_5", "bar_tale_6", "tavern_drink_prompt",
 		"tavern_punch", "tavern_drink", "tavern_dragon_breath", "tavern_basilisk",
 		"tavern_lemonade", "tavern_whiskey", "tavern_beer", "tavern_ale",
-		"tavern_port", "tavern_mead", "tavern_tale_28", "tavern_tale_44",
+		"tavern_port", "tavern_mead", "tavern_tale_44",
 		"tavern_tale_60", "ecl_tavern_pleasure", "ecl_tavern_special_1",
 		"ecl_tavern_special_2", "ecl_tavern_purple_1", "ecl_tavern_purple_2",
 		"ecl_tavern_purple_3", "ecl_tavern_commotion_1", "ecl_tavern_commotion_2",

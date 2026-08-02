@@ -95,6 +95,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 603；本輪消除的是測試的第二份譯文與強制勝利假證據。詳見
 [`docs/spec/469-zhentil-stable-id-combat-path.md`](docs/spec/469-zhentil-stable-id-combat-path.md)。
 
+第 470 輪把提爾隘口、阿沙本福德、河畔酒館傳聞 28、暗影隘口火刀伏擊、立石
+群灰袍提示及 Essembra／Hap 路線共十一個文字 boundary 移入 game-pack。正常
+長路徑保留兩場戰鬥、城市音樂返回與世界位置 handoff；Go 漢字基線由 603 降至
+594。詳見
+[`docs/spec/470-ashabenford-standing-stone-game-pack.md`](docs/spec/470-ashabenford-standing-stone-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

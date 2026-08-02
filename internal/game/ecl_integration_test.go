@@ -1904,7 +1904,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "提爾隘口") ||
+	if state.Message != requireGamePackText(t, &state, "ashabenford.tilvers-gap") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Tilver's Gap event choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -1930,7 +1930,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness || state.Location != LocationAshabenford ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
-		!strings.Contains(state.Message, "阿沙本福德城外") {
+		state.Message != requireGamePackText(t, &state, "ashabenford.edge") {
 		t.Fatalf("Ashabenford arrival mode=%v location=%v choices=%#v message=%q",
 			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
 	}
@@ -1947,7 +1947,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 80 ||
-		!strings.Contains(state.Message, "阿沙本福德") {
+		state.Message != requireGamePackText(t, &state, "ashabenford.places") {
 		t.Fatalf("Ashabenford entry mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -1968,14 +1968,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"HAVE A DRINK", "RELAX", "EXIT"}) ||
-		!strings.Contains(state.Message, "河畔酒館") {
+		state.Message != requireGamePackText(t, &state, "ashabenford.ale-house") {
 		t.Fatalf("Ashabenford ale house choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
-		!strings.Contains(state.Message, "兩艘") || !strings.Contains(state.Message, "暗影谷") {
+		state.Message != requireGamePackText(t, &state, "ashabenford.tavern-tale-28") {
 		t.Fatalf("Ashabenford Tavern Tale 28 choices=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
 	}
@@ -2026,7 +2026,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "偽裝成巡邏兵的火刀") ||
+	if state.Message != requireGamePackText(t, &state, "shadow-gap.fire-knives-patrol") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Shadow Gap ambush choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2050,7 +2050,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if !strings.Contains(state.Message, "灰袍男子") ||
+	if state.Message != requireGamePackText(t, &state, "standing-stone.grey-man") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Standing Stone arrival choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2058,13 +2058,13 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"THANK HIM", "ATTACK", "LEAVE"}) ||
-		!strings.Contains(state.Message, "四位主人") {
+		state.Message != requireGamePackText(t, &state, "standing-stone.four-masters") {
 		t.Fatalf("Standing Stone counsel choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "南方") || !strings.Contains(state.Message, "紅色之人") ||
+	if state.Message != requireGamePackText(t, &state, "standing-stone.seek-red") ||
 		state.Location != LocationStandingStone {
 		t.Fatalf("Standing Stone hint location=%v message=%q", state.Location, state.Message)
 	}
@@ -2087,7 +2087,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) ||
-		!strings.Contains(state.Message, "艾森布拉") {
+		state.Message != requireGamePackText(t, &state, "world-route.essembra") {
 		t.Fatalf("Essembra routes=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -2109,7 +2109,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) ||
-		!strings.Contains(state.Message, "哈普") {
+		state.Message != requireGamePackText(t, &state, "world-route.hap") {
 		t.Fatalf("Hap routes=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
