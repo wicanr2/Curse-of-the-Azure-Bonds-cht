@@ -1205,7 +1205,8 @@ func TestShopPurchaseUsesTypedCoinsAndDoesNotDepleteStock(t *testing.T) {
 }
 
 func TestTempleCureLightWoundsUsesReferenceCostAndTypedCoins(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
 		Level: 1, HitPoints: 2, MaxHitPoints: 10, Platinum: 21,
@@ -1221,7 +1222,7 @@ func TestTempleCureLightWoundsUsesReferenceCostAndTypedCoins(t *testing.T) {
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if !state.templeConfirmMenu || state.Choices[0] != "確定" {
+	if !state.templeConfirmMenu || state.Choices[0] != catalog.Text("temple_confirm", "") {
 		t.Fatalf("temple confirmation state=%#v", state)
 	}
 	beforeWorth := characterCoinGoldWorth(state.partyRoster[0])
@@ -1236,7 +1237,7 @@ func TestTempleCureLightWoundsUsesReferenceCostAndTypedCoins(t *testing.T) {
 }
 
 func TestTempleRemoveCurseClearsEffectAndCursedEquipment(t *testing.T) {
-	state := NewState(testCatalog())
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Gold: 4000,
 		Effects:   []monster.AffectRecord{{Kind: 0x24, Active: true}, {Kind: 0x27, Active: true}},
@@ -1248,6 +1249,32 @@ func TestTempleRemoveCurseClearsEffectAndCursedEquipment(t *testing.T) {
 	if len(state.partyRoster[0].Effects) != 1 || state.partyRoster[0].Effects[0].Kind != 0x27 ||
 		state.partyRoster[0].Equipment[0].Cursed {
 		t.Fatalf("remove curse result=%#v", state.partyRoster[0])
+	}
+}
+
+func TestTempleCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	uiKeys := []string{
+		"temple_prompt", "temple_heal", "temple_view", "temple_pool", "temple_share",
+		"temple_appraise", "temple_exit", "temple_heal_prompt", "temple_cure_choice",
+		"temple_cure_exit", "temple_confirm_prompt", "temple_confirm", "temple_cancel",
+		"temple_view_summary", "temple_pool_done", "temple_share_done",
+		"temple_appraise_empty", "temple_insufficient_gold", "temple_cure_done",
+	}
+	for _, key := range uiKeys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Fatalf("temple locale ID %q is absent", key)
+		}
+	}
+	seenCureKeys := make(map[string]bool, len(templeCures))
+	for _, cure := range templeCures {
+		if cure.Key == "" || seenCureKeys[cure.Key] {
+			t.Fatalf("invalid or duplicate temple cure key %q", cure.Key)
+		}
+		seenCureKeys[cure.Key] = true
+		if got := catalog.Text(cure.Key, ""); got == "" {
+			t.Fatalf("temple cure locale ID %q is absent", cure.Key)
+		}
 	}
 }
 

@@ -406,3 +406,4 @@
 - [第四百五十一輪法師塔四分支與屋頂出口 JSON 化](./451-wizard-tower-branches-json.md)（`READY`：攻擊／交涉／龍心／屋頂出口十段文字與三個選項資料化）
 - [第四百五十二輪 Go 漢字字串與資料分離 gate](./452-go-han-literal-data-separation-gate.md)（`READY`：AST exact baseline、1,315 次初始債務與正式 regression gate）
 - [第四百五十三輪訓練場玩家文字與法術名稱資料分離](./453-training-hall-locale-data-separation.md)（`READY`：64 個 Go 漢字 literal 移除、stable locale ID 與正式 JSON 測試解析）
+- [第四百五十四輪神殿服務玩家文字與治療項目資料分離](./454-temple-locale-data-separation.md)（`READY`：28 個 Go 漢字 literal 移除、十種 cure stable keys 與真實 ECL／GEO 路徑）

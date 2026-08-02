@@ -10,21 +10,21 @@ import (
 )
 
 type templeCure struct {
-	Name string
+	Key  string
 	Cost uint16
 }
 
 var templeCures = []templeCure{
-	{Name: "治療目盲", Cost: 1000},
-	{Name: "治療疾病", Cost: 1000},
-	{Name: "治療輕傷", Cost: 100},
-	{Name: "治療重傷", Cost: 350},
-	{Name: "治療致命傷", Cost: 600},
-	{Name: "完全治療", Cost: 5000},
-	{Name: "中和毒素", Cost: 1000},
-	{Name: "死者復生", Cost: 5500},
-	{Name: "解除詛咒", Cost: 3500},
-	{Name: "石化復原", Cost: 2000},
+	{Key: "temple_cure_blindness", Cost: 1000},
+	{Key: "temple_cure_disease", Cost: 1000},
+	{Key: "temple_cure_light_wounds", Cost: 100},
+	{Key: "temple_cure_serious_wounds", Cost: 350},
+	{Key: "temple_cure_critical_wounds", Cost: 600},
+	{Key: "temple_cure_heal", Cost: 5000},
+	{Key: "temple_cure_neutralize_poison", Cost: 1000},
+	{Key: "temple_cure_raise_dead", Cost: 5500},
+	{Key: "temple_cure_remove_curse", Cost: 3500},
+	{Key: "temple_cure_stone_to_flesh", Cost: 2000},
 }
 
 func (s *State) enterECLTemple() error {
@@ -46,8 +46,15 @@ func (s *State) enterTempleMenu() {
 	s.templeConfirmMenu = false
 	s.shopMenu = false
 	s.Mode = ModePlace
-	s.Prompt = s.catalog.Text("temple_prompt", "剛德神殿")
-	s.Choices = []string{"治療", "查看", "集中金幣", "分配金幣", "估價", "離開神殿"}
+	s.Prompt = s.catalog.Text("temple_prompt", "temple_prompt")
+	s.Choices = []string{
+		s.catalog.Text("temple_heal", "temple_heal"),
+		s.catalog.Text("temple_view", "temple_view"),
+		s.catalog.Text("temple_pool", "temple_pool"),
+		s.catalog.Text("temple_share", "temple_share"),
+		s.catalog.Text("temple_appraise", "temple_appraise"),
+		s.catalog.Text("temple_exit", "temple_exit"),
+	}
 	s.currentOriginalChoices = []string{"TEMPLE_HEAL", "TEMPLE_VIEW", "TEMPLE_POOL", "TEMPLE_SHARE", "TEMPLE_APPRAISE", "TEMPLE_EXIT"}
 	s.Message = ""
 }
@@ -58,14 +65,16 @@ func (s *State) enterTempleHealMenu() {
 	s.templeConfirmMenu = false
 	s.Mode = ModePlace
 	character := s.partyRoster[s.templeCharacterIndex]
-	s.Prompt = fmt.Sprintf("%s，需要什麼幫助？", character.Name)
+	s.Prompt = fmt.Sprintf(s.catalog.Text("temple_heal_prompt", "temple_heal_prompt"), character.Name)
 	s.Choices = make([]string, 0, len(templeCures)+1)
 	s.currentOriginalChoices = make([]string, 0, len(templeCures)+1)
 	for index, cure := range templeCures {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%d GP）", cure.Name, cure.Cost))
+		s.Choices = append(s.Choices, fmt.Sprintf(
+			s.catalog.Text("temple_cure_choice", "temple_cure_choice"),
+			s.catalog.Text(cure.Key, cure.Key), cure.Cost))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "TEMPLE_CURE_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, "返回神殿")
+	s.Choices = append(s.Choices, s.catalog.Text("temple_cure_exit", "temple_cure_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "TEMPLE_CURE_EXIT")
 	s.Message = ""
 }
@@ -75,8 +84,12 @@ func (s *State) enterTempleConfirmMenu(cureIndex int) {
 	s.templeConfirmMenu = true
 	s.Mode = ModePlace
 	cure := templeCures[cureIndex]
-	s.Prompt = fmt.Sprintf("%s需要 %d GP。確定施術？", cure.Name, cure.Cost)
-	s.Choices = []string{"確定", "取消"}
+	s.Prompt = fmt.Sprintf(s.catalog.Text("temple_confirm_prompt", "temple_confirm_prompt"),
+		s.catalog.Text(cure.Key, cure.Key), cure.Cost)
+	s.Choices = []string{
+		s.catalog.Text("temple_confirm", "temple_confirm"),
+		s.catalog.Text("temple_cancel", "temple_cancel"),
+	}
 	s.currentOriginalChoices = []string{"TEMPLE_CURE_CONFIRM", "TEMPLE_CURE_CANCEL"}
 	s.Message = ""
 }
@@ -89,7 +102,7 @@ func (s *State) selectTemple(originalChoice string) error {
 		character := s.partyRoster[s.templeCharacterIndex]
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
-		s.Message = fmt.Sprintf("%s　HP %d/%d　金幣價值 %d GP　狀態效果 %d",
+		s.Message = fmt.Sprintf(s.catalog.Text("temple_view_summary", "temple_view_summary"),
 			character.Name, character.HitPoints, character.MaxHitPoints,
 			characterCoinGoldWorth(character), len(character.Effects))
 	case "TEMPLE_POOL":
@@ -98,18 +111,18 @@ func (s *State) selectTemple(originalChoice string) error {
 		}
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
-		s.Message = fmt.Sprintf("已集中隊伍金幣；目前共有 %d GP。", s.moneyPool)
+		s.Message = fmt.Sprintf(s.catalog.Text("temple_pool_done", "temple_pool_done"), s.moneyPool)
 	case "TEMPLE_SHARE":
 		if err := s.ShareGold(); err != nil {
 			return err
 		}
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
-		s.Message = "已將集中金幣平均分配給隊伍。"
+		s.Message = s.catalog.Text("temple_share_done", "temple_share_done")
 	case "TEMPLE_APPRAISE":
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
-		s.Message = "神殿目前沒有可估價的寶石或珠寶。"
+		s.Message = s.catalog.Text("temple_appraise_empty", "temple_appraise_empty")
 	case "TEMPLE_EXIT":
 		s.templeMenu = false
 		s.templeHealMenu = false
@@ -159,7 +172,7 @@ func (s *State) applyTempleCure(cureIndex int) error {
 		s.templeConfirmMenu = false
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
-		s.Message = "金幣不足。"
+		s.Message = s.catalog.Text("temple_insufficient_gold", "temple_insufficient_gold")
 		return nil
 	}
 
@@ -206,7 +219,8 @@ func (s *State) applyTempleCure(cureIndex int) error {
 	s.templeConfirmMenu = false
 	s.Mode = ModeEvent
 	s.eventReturnMode = ModePlace
-	s.Message = fmt.Sprintf("%s已接受%s。", character.Name, cure.Name)
+	s.Message = fmt.Sprintf(s.catalog.Text("temple_cure_done", "temple_cure_done"),
+		character.Name, s.catalog.Text(cure.Key, cure.Key))
 	return nil
 }
 
