@@ -3065,3 +3065,21 @@ overlay 12／22 分別為 5,136／11,103 行，並以非空檔案作門檻，不
 exit code。Docker／Xvfb、`--network none`、暫時 local-engine replace 的
 `./cmd/... ./gamepack ./internal/...` 正式 gate 共 31 套件通過；Cloudkill
 三組 core 與兩組 State／玩家路徑測試另以 `-count=1` 通過。
+
+2026-08-02 第四百三十一輪證明 held effects 與前兩種中斷不同。
+`INITEFFPROX` 的 `1Fh／33h／34h／35h` table slots 全寫入 resident
+`008B:0039h`；typed resolver 落到 overlay 12 entry 5、local `0075h`，再呼叫
+`014A:00CAh → overlay24 entry34 local 2A5Bh`。完整 consumer 清
+`Action+03h delay／+00h pending spell／+07h guard／+06h unknown`，函式內沒有
+call，也沒有抵達 overlay 24 `1739h` memorized-slot consumer。因此 held
+取消 pending cast 但保留法術格，是 exact control flow，不可沿用正傷害／
+毒雲術的 slot-consumption event。
+
+State 正常 mutable scheduler 現對四個 raw IDs 先 `ClearAction`、同步 UI
+selection，再顯示「無法行動」並跳過回合；四例不建立 interruption event，
+正式 roster slot 保留。第 431 輪專用 IDC 由唯讀 overlay 12／24 重建 29＋21
+行 ledger。六章 shipped MON*SPC 無這四種 innate effect，Sleep／Hold 動態
+writer、豁免、解除、動畫與聲音仍未完成；READY spec 431 是權威。
+
+提交前 focused `internal/combat`／`internal/game` 與完全離線 Docker／Xvfb
+31 套件 gate 均以 `-count=1` 通過；第 431 輪沒有 engine source 變更。

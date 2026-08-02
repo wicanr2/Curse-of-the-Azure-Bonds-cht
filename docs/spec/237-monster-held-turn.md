@@ -17,3 +17,6 @@ held target as hit even when the normal `PC_CanHitTarget` check fails.
   natural-one injected roll, matching the reference `... || target.IsHeld()`.
 - The raw effect is preserved and not consumed; save/cure/removal rules remain
   separate tasks.
+- READY spec 431 adds the PC-98 Action consumer: all four effect-table slots
+  call the same full Action clear, but do not call the memorized-spell-slot
+  consumer. The pending cast is cancelled while its memorized slot remains.

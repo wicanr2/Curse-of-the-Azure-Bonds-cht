@@ -1588,26 +1588,50 @@ func TestPlayableCombatStateRunsPartyTurnAndVictory(t *testing.T) {
 	}
 }
 
-func TestHeldEnemySkipsTurnBeforePartyInput(t *testing.T) {
-	state := NewState(testCatalog())
-	partyFighters := []combat.Fighter{{
-		ID: "hero", Name: "英雄", Side: combat.SideParty,
-		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10,
-	}}
-	enemies := []combat.Fighter{{
-		ID: "sleeping", Name: "沉睡哥布林", Side: combat.SideEnemy,
-		HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 100,
-		MonsterAffects: []combat.MonsterAffect{{Kind: 0x35, Active: true}},
-	}}
-	if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
-		t.Fatal(err)
-	}
-	active, ok := state.CombatActiveFighter()
-	if !ok || active.ID != "hero" {
-		t.Fatalf("active=%+v ok=%v message=%q", active, ok, state.CombatMessage())
-	}
-	if state.CombatMessage() != "沉睡哥布林 無法行動。" {
-		t.Fatalf("held message=%q", state.CombatMessage())
+func TestHeldFighterClearsPendingActionWithoutConsumingSlotBeforePartyInput(t *testing.T) {
+	for _, kind := range []uint8{0x1F, 0x33, 0x34, 0x35} {
+		t.Run(fmt.Sprintf("effect_%02X", kind), func(t *testing.T) {
+			state := NewState(testCatalog())
+			state.partyRoster = party.Roster{{
+				ID: "held", Name: "受制牧師", Class: party.ClassCleric, Level: 1,
+				SpellSlots: []uint8{BlessSpellID},
+			}, {ID: "hero", Name: "英雄", Class: party.ClassFighter, Level: 1}}
+			partyFighters := []combat.Fighter{{
+				ID: "held", Name: "受制牧師", Side: combat.SideParty,
+				HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 100,
+				MonsterAffects: []combat.MonsterAffect{{Kind: kind, Active: true}},
+				CombatAction: combat.ActionState{
+					Delay: 5, SpellID: BlessSpellID, TargetID: "held",
+				},
+			}, {
+				ID: "hero", Name: "英雄", Side: combat.SideParty,
+				HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 10,
+			}}
+			enemies := []combat.Fighter{{
+				ID: "enemy", Name: "敵人", Side: combat.SideEnemy,
+				HitPoints: 10, MaxHitPoints: 10, ArmorClass: 10, InitiativeBonus: 1,
+			}}
+			if err := state.StartCombat(partyFighters, enemies, 7); err != nil {
+				t.Fatal(err)
+			}
+			active, ok := state.CombatActiveFighter()
+			if !ok || active.ID != "hero" {
+				t.Fatalf("active=%+v ok=%v message=%q", active, ok, state.CombatMessage())
+			}
+			if state.CombatMessage() != "受制牧師 無法行動。" {
+				t.Fatalf("held message=%q", state.CombatMessage())
+			}
+			held, ok := state.fighter("held")
+			if !ok || held.CombatAction != (combat.ActionState{}) {
+				t.Fatalf("held action=%+v ok=%v", held.CombatAction, ok)
+			}
+			if events := state.battle.TakeSpellInterruptions(); len(events) != 0 {
+				t.Fatalf("held effect incorrectly consumed a memorized slot: %+v", events)
+			}
+			if !slices.Equal(state.partyRoster[0].SpellSlots, []uint8{BlessSpellID}) {
+				t.Fatalf("held caster slots=%v", state.partyRoster[0].SpellSlots)
+			}
+		})
 	}
 }
 
