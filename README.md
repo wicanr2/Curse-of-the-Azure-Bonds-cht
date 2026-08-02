@@ -40,6 +40,12 @@ engine 新增不解讀作品 enum 的 `character_creation.templates` schema。�
 Go 漢字 literal exact baseline 由 867 降至 797。詳見
 [`docs/spec/460-ecl-option-game-pack-data-separation.md`](docs/spec/460-ecl-option-game-pack-data-separation.md)。
 
+第 461 輪再把 `unlockJournalEntries` 的 15 組作品專用判斷與 23 頁手札移入
+CoAB `text_rules`／locale。事件仍由原始 ECL 片段觸發，玩家可在遊戲內重讀；
+runtime 與測試不再複製繁中頁面。Go 漢字 literal exact baseline 由 797 降至
+722。這不代表整本 Adventurer's Journal 或全部劇情文字已完成。詳見
+[`docs/spec/461-journal-game-pack-data-separation.md`](docs/spec/461-journal-game-pack-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

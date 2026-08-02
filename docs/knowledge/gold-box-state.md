@@ -819,3 +819,15 @@ State 另維護中文 switch。
 原始 bytes 的診斷價值，也避免選錯 branch。若 game-pack 與通用 UI locale
 共用同一 stable ID，兩份正式資料需有 parity／value gate；共享標籤不是允許
 漂移的翻譯複本。
+
+### 2026-08-02：手札是事件資料，不是 runtime 中文分支
+
+Gold Box 的手札條目由遊戲事件在特定時點指示玩家閱讀。重製版把內容直接放入
+遊戲時，仍要保留這個解鎖時序：game-pack 的文字規則以原始 ECL 片段辨識事件，
+再以有序 `journal_message_ids` 指向一頁或多頁 locale 內容。通用 State 只負責
+去重、附加與重讀，不能知道「菲拉妮」「火刀」或條目 38 代表什麼。
+
+手冊 PDF／OCR 可提供頁面文字與地圖來源，卻不能單獨證明哪個 ECL branch 會
+解鎖它。測試要分兩層：資料包測試驗證兩語系、rule ID 與頁數；玩家路徑測試
+由同一份 game-pack stable ID 取得期望頁面。直接在測試貼上目前繁中全文，會
+讓譯文改稿錯誤地破壞事件／資料綁定測試，也形成第二份真相來源。

@@ -603,6 +603,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `option_rules` 完整覆蓋。已知 token 不得在 State 恢復作品專用 switch；
   未知 token 要保留原文供診斷，再由真實 ECL 證據補 JSON。若 pack 與 UI
   locale 共用 stable ID，測試必須阻止兩份正式 JSON 漂移。
+- 第 461 輪遊戲內手札再移除 75 次，baseline 現為 722 occurrences；15 個
+  ECL 來源觸發與 23 頁內容由 CoAB `text_rules`／locale 驅動。runtime 只能
+  附加匹配結果，不得依條目編號、人物或中文內容解鎖；產品測試必須從正式
+  game-pack stable ID 取得期望頁面。手冊 OCR 只能協助轉錄，事件可達性仍以
+  原始 ECL 與正常玩家路徑為準，且不得把整本手冊預先解鎖。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

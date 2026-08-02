@@ -413,3 +413,4 @@
 - [第四百五十八輪角色／怪物效果名稱資料分離](./458-affect-name-locale-data-separation.md)（`READY`：21 個 Go 漢字 literal 移除、raw affect kind 與 locale 顯示分層）
 - [第四百五十九輪角色建立模板與前端文字資料分離](./459-character-creation-game-pack-data-separation.md)（`READY`：40 筆 JSON 模板、正常 ECL1 新遊戲路徑與 86 個 Go 漢字 literal 移除）
 - [第四百六十輪 ECL 選項完整 game-pack 資料分離](./460-ecl-option-game-pack-data-separation.md)（`READY`：84 個既有 token 全覆蓋、105 條 option rules、四條真實 ECL 路徑與 70 個 Go 漢字 literal 移除）
+- [第四百六十一輪遊戲內手札資料分離](./461-journal-game-pack-data-separation.md)（`READY`：15 個 ECL 觸發、23 頁 en／zh-TW 手札與 75 個 Go 漢字 literal 移除）

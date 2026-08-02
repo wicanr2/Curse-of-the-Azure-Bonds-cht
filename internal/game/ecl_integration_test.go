@@ -5,6 +5,7 @@ import (
 	"io"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -16,6 +17,15 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
+
+func requireGamePackText(t *testing.T, state *State, messageID string) string {
+	t.Helper()
+	value, ok := state.dataPack.Text(messageID, state.catalog.Language)
+	if !ok || value == "" {
+		t.Fatalf("game-pack message %q is unavailable for locale %q", messageID, state.catalog.Language)
+	}
+	return value
+}
 
 func TestRealECLJourneyDispatchesGeneralStoreService(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
@@ -241,8 +251,8 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "賢者") {
 		t.Fatalf("Windlord's Inn journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
-	if len(state.JournalPages) != 9 || !strings.Contains(state.JournalPages[8], "手札條目 31") ||
-		!strings.Contains(state.JournalPages[8], "菲拉妮") {
+	wantJournal31 := requireGamePackText(t, &state, "journal.31")
+	if len(state.JournalPages) != 9 || state.JournalPages[8] != wantJournal31 {
 		t.Fatalf("Journal Entry 31 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
 	if err := state.OpenJournal(); err != nil {
@@ -253,7 +263,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.JournalPage != 8 || !strings.Contains(state.JournalText, "手札條目 31") {
+	if state.JournalPage != 8 || state.JournalText != wantJournal31 {
 		t.Fatalf("unlocked Journal Entry 31 is not reachable in journal UI: page=%d text=%q",
 			state.JournalPage, state.JournalText)
 	}
@@ -363,8 +373,9 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Filani journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
 	if len(state.JournalPages) != 12 ||
-		!strings.HasPrefix(state.JournalPages[9], "手札條目 38（1/3）") ||
-		!strings.Contains(state.JournalPages[11], "暗影谷") {
+		state.JournalPages[9] != requireGamePackText(t, &state, "journal.38.1") ||
+		state.JournalPages[10] != requireGamePackText(t, &state, "journal.38.2") ||
+		state.JournalPages[11] != requireGamePackText(t, &state, "journal.38.3") {
 		t.Fatalf("Journal Entry 38 was not unlocked as three readable pages: pages=%v", state.JournalPages)
 	}
 	if err := state.Select(0); err != nil {
@@ -671,18 +682,10 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_knife_1", "")) ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_knife_2", "")) ||
-		!strings.Contains(state.Message, facilityCatalog.Text("ecl_tavern_journal_17", "")) {
+		state.Message != requireGamePackText(t, &state, "journal-trigger.tavern-knife-17") {
 		t.Fatalf("tavern knife pause choices=%v message=%q", state.Choices, state.Message)
 	}
-	foundJournal17 := false
-	for _, page := range state.JournalPages {
-		if page == facilityCatalog.Text("journal_entry_17", "") {
-			foundJournal17 = true
-			break
-		}
-	}
+	foundJournal17 := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.17"))
 	if !foundJournal17 {
 		t.Fatalf("Journal Entry 17 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
@@ -724,14 +727,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("high priest remove-curse pause mode=%v choices=%v message=%q",
 			state.Mode, state.Choices, state.Message)
 	}
-	foundJournal19 := false
-	for _, page := range state.JournalPages {
-		if strings.HasPrefix(page, "手札條目 19：") &&
-			strings.Contains(page, "藍色火焰") && strings.Contains(page, "剛德") {
-			foundJournal19 = true
-			break
-		}
-	}
+	foundJournal19 := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.19"))
 	if !foundJournal19 {
 		t.Fatalf("Journal Entry 19 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
@@ -930,18 +926,11 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		}
 	}
 	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
-		!strings.Contains(state.Message, "尤拉什") || !strings.Contains(state.Message, "手札第 4 條") {
+		state.Message != requireGamePackText(t, &state, "journal-trigger.guildmaster-map-4") {
 		t.Fatalf("guild victory mode=%v status=%v message=%q choices=%v",
 			state.Mode, state.CombatStatus(), state.Message, state.Choices)
 	}
-	foundJournal4 := false
-	for _, page := range state.JournalPages {
-		if strings.HasPrefix(page, "手札條目 4：") &&
-			strings.Contains(page, "下水道地圖") && strings.Contains(page, "火刀據點") {
-			foundJournal4 = true
-			break
-		}
-	}
+	foundJournal4 := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.4"))
 	if !foundJournal4 {
 		t.Fatalf("Journal Entry 4 was not unlocked in-game: pages=%v", state.JournalPages)
 	}
@@ -1379,18 +1368,10 @@ func TestRealFireKnifeFrozenRoomBranches(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "有用情報") ||
-		!strings.Contains(state.Message, "第 26 條") {
+	if state.Message != requireGamePackText(t, &state, "journal-trigger.frozen-room-26") {
 		t.Fatalf("playable frozen interrogation message=%q", state.Message)
 	}
-	foundJournal := false
-	for _, page := range state.JournalPages {
-		if strings.HasPrefix(page, "手札條目 26：") &&
-			strings.Contains(page, "入侵牧師") &&
-			strings.Contains(page, "南方首領房") {
-			foundJournal = true
-		}
-	}
+	foundJournal := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.26"))
 	if !foundJournal {
 		t.Fatalf("Journal Entry 26 was not unlocked: %v", state.JournalPages)
 	}
@@ -1497,14 +1478,7 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 		!strings.Contains(state.Message, "手札第 9 條") {
 		t.Fatalf("localized office search=%q", state.Message)
 	}
-	foundJournal := false
-	for _, page := range state.JournalPages {
-		if strings.HasPrefix(page, "手札條目 9：") &&
-			strings.Contains(page, "燃燒靈氣") &&
-			strings.Contains(page, "光芒之池") {
-			foundJournal = true
-		}
-	}
+	foundJournal := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.9"))
 	if !foundJournal {
 		t.Fatalf("Journal Entry 9 was not unlocked: %v", state.JournalPages)
 	}
@@ -1629,14 +1603,7 @@ func TestRealFireKnifeAshenRooms(t *testing.T) {
 				test.terrain, state.Mode, state.Choices, state.Message)
 		}
 		if test.terrain == 0x9E {
-			foundJournal := false
-			for _, page := range state.JournalPages {
-				if strings.HasPrefix(page, "手札條目 29：") &&
-					strings.Contains(page, "異次元力量") &&
-					strings.Contains(page, "泰蘭索斯") {
-					foundJournal = true
-				}
-			}
+			foundJournal := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.29"))
 			if !foundJournal {
 				t.Fatalf("Journal Entry 29 was not unlocked: %v", state.JournalPages)
 			}
@@ -1915,13 +1882,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatalf("memory[%#x]=%#x,%v want %#x", address, got, ok, want)
 		}
 	}
-	for _, entry := range []string{"手札條目 54", "手札條目 53"} {
-		found := false
-		for _, page := range state.JournalPages {
-			found = found || strings.HasPrefix(page, entry)
-		}
-		if !found {
-			t.Fatalf("%s was not unlocked: %v", entry, state.JournalPages)
+	for _, messageID := range []string{"journal.54", "journal.53.1", "journal.53.2"} {
+		if !slices.Contains(state.JournalPages, requireGamePackText(t, &state, messageID)) {
+			t.Fatalf("%s was not unlocked: %v", messageID, state.JournalPages)
 		}
 	}
 	if err := state.Select(1); err != nil {
@@ -3714,17 +3677,17 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(3); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "手札第 22 條") ||
-		!strings.Contains(strings.Join(state.JournalPages, "\n"), "手札條目 22（1/2）") {
+	if state.Message != requireGamePackText(t, &state, "journal-trigger.yulash-commander-22") ||
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.22.1")) ||
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.22.2")) {
 		t.Fatalf("Yulash commander approval mode=%v originals=%#v choices=%#v message=%q journals=%#v",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	journalText := strings.Join(state.JournalPages, "\n")
 	if !strings.Contains(state.Message, "從側門離開") ||
-		!strings.Contains(journalText, "手札條目 52：") {
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.52")) {
 		t.Fatalf("Yulash commander pass mode=%v originals=%#v choices=%#v message=%q journals=%#v",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
 	}
@@ -3905,7 +3868,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !strings.Contains(state.Message, "手札第 3 條") ||
-		!strings.Contains(strings.Join(state.JournalPages, "\n"), "手札條目 3（3/3）") {
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.3.1")) ||
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.3.2")) ||
+		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.3.3")) {
 		t.Fatalf("Pit Alias/Dragonbait story mode=%v originals=%#v choices=%#v message=%q journals=%#v",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
 	}
@@ -4244,10 +4209,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices,
 			state.Choices, state.Message)
 	}
-	foundJournal20 := false
-	for _, page := range state.JournalPages {
-		foundJournal20 = foundJournal20 || strings.HasPrefix(page, "手札條目 20")
-	}
+	foundJournal20 := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.20"))
 	if !foundJournal20 {
 		t.Fatalf("Pit altar Journal 20 was not unlocked: %v", state.JournalPages)
 	}
