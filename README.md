@@ -83,6 +83,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 基線由 638 降至 621。詳見
 [`docs/spec/467-pit-opening-companions-game-pack.md`](docs/spec/467-pit-opening-companions-game-pack.md)。
 
+第 468 輪完成同一章後半段資料化：摩貢祭壇、八段枷印儀式、摩貢與摩安德
+殘軀兩戰、護手、祭壇財寶、手札 20、離場阻擊及同伴離隊都由正常長路徑驗證。
+十八個畫面訊息已移入 game-pack，Go 漢字基線由 621 降至 603。這是 Pit 的
+一條完整 chapter transaction，尚不代表全分支或整款遊戲可通關。詳見
+[`docs/spec/468-pit-mogion-finale-game-pack.md`](docs/spec/468-pit-mogion-finale-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

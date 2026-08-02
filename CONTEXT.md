@@ -3560,3 +3560,14 @@ ECL `11h↔12h` 樓層 handoff、屍體一次性消耗與手札 46 提示。sour
 638→621：localization 143→126，frontend 135、runtime 360 不變。READY spec
 467 是權威；Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND467_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百六十八輪完成摩貢祭壇與摩安德之坑結局資料化。祭壇抵達、
+愛麗雅絲辨認、摩貢招呼、八段枷印儀式、裂隙閉合、殘軀吶喊／攻擊、護手、
+祭司逃跑、祭壇財寶及離場阻擊十八條 source rules 與 en／zh-TW messages 已
+移入 game-pack；對應 Go fallback 全部移除。正常長路徑驗證摩貢／教徒／蔓生怪
+第一戰、三個 140 HP 四格殘軀第二戰、`4C5B` 護手、28 gems／10 jewelry／
+item block、手札 20、財寶不重複、`10+5+5` 離場敵人、Alias alive 離隊、
+`4C5B=FFh／7F12=1` 與返回 Yulash edge。source audit 621→603：localization
+126→108，frontend 135、runtime 360 不變。READY spec 468 是權威；正式 gate、
+Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND468_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

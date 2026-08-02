@@ -899,3 +899,15 @@ Gold Box 的臨時同伴事件常依序跨過 PICTURE、encounter action、parla
 message、原始 choices 與 continuation，再驗證 roster 中的 script identity、
 class／race 與 combat projection。後續上／下樓與一次性場景仍要使用同一 session
 回歸，才能發現加入事件錯誤地重播、NPC 遺失或 block handoff 被提前清除。
+
+### 2026-08-02：章節結局應以完整 transaction 驗證
+
+Gold Box 的章節結局可能由連續 PRESS、PICTURE、選單、多場戰鬥、物品旗標、
+搜尋財寶、手札、離場伏擊、NPC 離隊與 world handoff 組成。只驗證 boss 戰勝利
+或最後一句文字，無法證明章節狀態已正確收束。
+
+摩安德之坑的可沿用驗收順序是：逐 pause stable ID → 第一戰 roster → 戰後
+continuation → 第二戰 footprint／數值 → quest item writer → 一次性 treasure
+transaction → exit encounter → companion removal → chapter progress flags → world
+edge。其他 SSI／Gold Box 作品與資料驅動 RPG 可沿用此矩陣，但怪物、旗標位址、
+物品與座標都必須留在作品 game pack 或由原始 script 驅動。

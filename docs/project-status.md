@@ -74,7 +74,9 @@ commit 內保存不可能自我引用的 hash。
   伏擊、edge、places、dockside bar 與 Red Plumes
   挑釁，以及 Yulash 的 trail、城牆、檢查哨、指揮官與巨坑入口十二個事件，
   也已由正常玩家路徑驗證。摩安德之坑開場至愛麗雅絲／龍餌入隊、樓層切換
-  與散塔林屍體的十四個 boundary 亦已資料化；最新 baseline 為 621。
+  與散塔林屍體的十四個 boundary 亦已資料化。摩貢祭壇至離坑的十八個
+  boundary、兩場戰鬥、護手、祭壇財寶、手札 20、
+  離場阻擊與同伴離隊亦已完成同一正常玩家鏈驗證；最新 baseline 為 603。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

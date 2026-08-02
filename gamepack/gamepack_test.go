@@ -535,6 +535,46 @@ func TestPitOpeningAndCompanionsAreGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestPitMogionFinaleIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"pit.mogion-altar", []string{"YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY", "CULTISTS CHANTING IN A LOW DRONE"}},
+		{"pit.alias-identifies-mogion", []string{"ALIAS MUTTERS", "PRIESTESS OF MOANDER", "SPITS ON THE GROUND"}},
+		{"pit.mogion-greeting", []string{"MOGION SAYS", "PROPER TOOLS", "WHAT DO YOU DO"}},
+		{"pit.bond-paralysis", []string{"BEFORE YOU CAN ACT", "BLUE FLASH", "YOU CANNOT MOVE"}},
+		{"pit.alias-dragonbait-tendrils", []string{"TENDRILS COME UP FROM THE FLOOR", "ALIAS AND DRAGONBAIT"}},
+		{"pit.mogion-ritual", []string{"MOGION TURNS TO THE ALTAR", "CHANTING RISES"}},
+		{"pit.dimensional-window", []string{"BLUE LIGHT THAT SURROUNDS YOU", "DIMENSIONAL WINDOW ABOVE THE ALTAR"}},
+		{"pit.moander-returns", []string{"MOGION SHRIEKS", "MOANDER RETURNS", "DIMENSIONAL RIFT"}},
+		{"pit.bond-fades", []string{"ENERGY IN THE DIMENSIONAL RIFT INCREASES", "BOND OF MOANDER BEGIN TO FADE"}},
+		{"pit.bond-broken", []string{"THE SIGIL DISAPPEARS", "PARALYSIS THAT GRIPPED YOU IS NOW GONE"}},
+		{"pit.alias-attack-mogion", []string{"ALIAS AND DRAGONBAIT HAVE HACKED THEIR WAY FREE", "UNLESS YOU WISH TO FIGHT A GOD"}},
+		{"pit.rift-closes", []string{"THE DIMENSIONAL RIFT SNAPS SHUT"}},
+		{"pit.remnants-scream", []string{"THREE PSUEDOPODS OF MOANDER", "HUNDREDS OF MOUTHS", "YOU HAVE KILLED ME"}},
+		{"pit.remnants-attack", []string{"THE OOZING MOUNDS TURN AND ATTACK YOU"}},
+		{"pit.gauntlet", []string{"YOU FIND THE GAUNTLET OF MOANDER", "SLIMY REMAINS"}},
+		{"pit.priest-flees", []string{"A PRIEST BURSTS INTO THE ROOM", "THEY HAVE KILLED THE GOD"}},
+		{"pit.altar-treasure", []string{"YOU HAVE FOUND A CACHE OF JEWELS AND GEMS"}},
+		{"pit.exit-last-stand", []string{"YOU ARE ATTACKED BY A LARGE FORCE OF", "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {
