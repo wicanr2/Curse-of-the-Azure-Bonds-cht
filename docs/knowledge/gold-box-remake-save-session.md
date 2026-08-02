@@ -33,8 +33,11 @@ visual transaction。renderer callback、map buffers 與原始素材由載入時
 不能序列化函式或複製商業資料。若 wall-clock elapsed 不屬於 State，就應拒絕
 mid-animation save，而不是把動畫偷偷從頭播放並聲稱無縫 continuation。
 
-這項 contract 目前由 CoAB Sleep 的自然到期／受傷喚醒雙分支證明；跨作品
-共用仍待第二款 Gold Box 驗證。
+這項 contract 先由 CoAB Sleep 的自然到期／受傷喚醒雙分支證明；再由真實
+Standing Stone→Myth Drannor 紅網路徑，在四蜘蛛第一戰 save／全新 State load
+後完成同 ECL session 的羅剎妖第二戰與 completion flag。這證明 campaign
+combat handoff，不代表其他 encounter 類型或跨作品已驗證；共用仍待第二款
+Gold Box。
 
 ## 商業資料與向下相容
 

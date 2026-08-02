@@ -85,4 +85,6 @@ Standing Stone／ECL encounter 抵達的完整 campaign 玩家路徑。
   無縫續播。
 - 原版 SAVGAM active-combat record／RNG consumer 的反組譯與雙向匯入。
 - 固定 PC-98 戰場的長局 save corpus、Quick Sleep 與第二款 Gold Box 驗證。
-- 從真實 ECL encounter 正常抵達戰鬥後的 save/load campaign regression。
+
+更新：真實 ECL encounter 的 save/load campaign regression 已由 READY spec 444
+接續完成。

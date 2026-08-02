@@ -520,6 +520,11 @@ commit 內保存不可能自我引用的 hash。
   自然到期／傷害喚醒與不中斷分支一致；mid-animation 因 elapsed 尚未歸 State
   所有而 fail-closed。原版 SAVGAM combat records 仍未反組譯。READY spec 443
   是權威。
+- 第 444 輪已由 Standing Stone 正常世界旅行、GEO6 合法移動、精靈幽魂、
+  紅網 `SPEAK／Krrkik／ENTER` 抵達真實四蜘蛛戰；第一戰 party-turn save v7
+  後以全新 State restore，Battle／ECL session 逐欄相同，loaded state 完成
+  蜘蛛→Picture 72→羅剎妖二戰、`4CBF=1` 與 dungeon return。高數值英雄只
+  加速回歸，不證明 encounter balance；READY spec 444 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是
