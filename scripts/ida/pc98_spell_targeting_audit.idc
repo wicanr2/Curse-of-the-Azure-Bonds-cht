@@ -95,7 +95,11 @@ static main()
     emit_range(out, "LOS_SCAN_TARGET_LIST", 0x08D8, 0x0BA5);
   }
   else
-    emit_range(out, "REBUILD_SORTED_COMBATANT_LIST_CANDIDATE", 0x00F0, 0x0430);
+  {
+    emit_range(out, "COMBAT_MAP_RANGE_00F0", 0x00F0, 0x0430);
+    emit_range(out, "FINDOBJECT", 0x07F5, 0x0A1E);
+    emit_range(out, "FINDOBJECTS", 0x13BB, 0x1530);
+  }
   fclose(out);
   qexit(0);
 }

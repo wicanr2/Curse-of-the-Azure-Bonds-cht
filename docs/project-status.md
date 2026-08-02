@@ -479,6 +479,13 @@ commit 內保存不可能自我引用的 hash。
   ID，並有 `producer → order → CastSleepOrdered` bounded transaction。
   `Raw3`、`INARC` direction sector、COMPOBJ builder、PC-98 wall／corner 動態
   trace、正常手動／Quick Sleep 與演出仍明確未完成。
+
+- 第 437 輪已由 overlay 31 `054Ah..08D5h` 關閉 `INARC` 八方向整數扇區、
+  `FFh→8` 與第一命中方向；engine 以 14,062,500 組全座標語料驗證。Borland
+  symbols 另證明 `LASTOBJECT 9740h`、`OBJECTLIST 9741h` 與 72×4-byte 容量，
+  overlay 10 builder 證明 X／Y／index／footprint-active 欄位及 linked-list
+  建表。linked-list 到 stable fighter ID、正常手動／Quick Sleep、PC-98
+  wall／corner 動態仍未完成；READY spec 437 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

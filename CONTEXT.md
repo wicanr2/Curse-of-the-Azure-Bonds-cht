@@ -3177,3 +3177,14 @@ import paths，再於 Docker／Xvfb／`--network none`／`GOPROXY=off` 逐套件
 執行；去重後 31 行 package pass ledger SHA-256 為
 `04e7594f05582c1e8a5f16d4c8c8b2b1e532a25e9fe2831c976593ebe5d7bf7b`。
 早先 pattern／JSON 嘗試只跑第一 package，均未當作完成證據。
+
+2026-08-02 第四百三十七輪由 PC-98 overlay 31 完整 `INARC 054Ah..08D5h`
+關閉八方向 inclusive 半平面、`FFh→8`、相鄰格捷徑與第一命中方向。engine
+`combat/scan.Build` 改接原始 arc，不再要求 title callback；50×25 全 source／
+target／九 sector 共 14,062,500 組 reference corpus 通過。
+
+Borland symbols exact 命名 `LASTOBJECT 0C29:9740` 與 `OBJECTLIST
+0C29:9741`；型別表證明 72×4-byte。新唯讀 IDA audit 在 overlay 10 找到
+builder 從 object 1 沿 combatant far-pointer linked list 建立 X／Y／自身 index／
+footprint-active 欄位。linked-list→stable fighter ID 尚未閉合，故本輪不開放
+正常 Sleep UI。READY spec 437 與 `/tmp/coab-ida-437` 是續作入口。
