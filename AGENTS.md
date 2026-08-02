@@ -570,6 +570,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   baseline 掩蓋新增中文字串屬於 gate 規避，禁止提交。
 - 分類只是 heuristic；`runtime_ui_debt` 不代表可永久留在 Go。完整規則見
   `docs/audit/README.md`，READY spec 452 是權威。
+- 第 453 輪已用訓練場證明 gate 的下降流程：提示、選項、升級結果、職業與
+  可學法術名稱改由正式 locale stable ID 解析，測試也從同一 JSON 取值；
+  baseline 現為 1,251 occurrences。後續必須讓此數字持續下降，不能重新加入
+  Go 中文 fallback，也不能在測試複製目前譯文。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

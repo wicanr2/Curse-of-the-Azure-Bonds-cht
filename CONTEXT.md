@@ -3386,3 +3386,15 @@ literals，以 path／function／SHA-256／occurrence exact baseline 阻止任�
 `ROUND452_AUDIT_EXIT=0`、`ROUND452_FORMAL_EXIT=0`，日誌位於
 `/tmp/coab-round452-formal.log`。一次性容器均以 `--rm` 完成，沒有
 `coab-round452` 殘留；engine repo 本輪無變更。
+
+2026-08-02 第四百五十三輪選擇訓練場作為 exact baseline 後第一個設施切片。
+訓練提示、角色摘要、離場、三種拒絕原因、確認、升級結果、HP 結果、職業名稱、
+選法術與學會法術訊息均由 locale stable ID 解析；`trainingSpell` 只保留全域
+spell ID／class／level／key，49 筆可學法術中文名稱不再存在於 Go。測試改讀
+正式 `zh-TW.json` 並依 stable ID 取得期望值，另逐一驗證所有 UI／class／spell
+key coverage。source audit exact baseline 由 1,315 降至 1,251 occurrences，
+`runtime_ui_debt` 由 742 降至 678，無新增漢字 literal。既有真實 ECL／GEO
+整合路徑另改用正式 locale，驗證 PICTURE 4→PROGRAM 0→選角→確認→升級→
+離開並返回 `(5,2)`，不是直接呼叫服務冒充玩家路徑。正式 Docker／Xvfb／
+`--network none` 全套 gate 通過，marker `ROUND453_FORMAL_EXIT=0`；commit／push
+與容器清理待本輪收尾。READY spec 453 是權威。

@@ -405,3 +405,4 @@
 - [第四百五十輪法師塔主線與手札 15 JSON 化](./450-wizard-tower-json-story-journal.md)（`READY`：庭院至枷印消退、遊戲內手札兩頁與 Go／locale 複本移除）
 - [第四百五十一輪法師塔四分支與屋頂出口 JSON 化](./451-wizard-tower-branches-json.md)（`READY`：攻擊／交涉／龍心／屋頂出口十段文字與三個選項資料化）
 - [第四百五十二輪 Go 漢字字串與資料分離 gate](./452-go-han-literal-data-separation-gate.md)（`READY`：AST exact baseline、1,315 次初始債務與正式 regression gate）
+- [第四百五十三輪訓練場玩家文字與法術名稱資料分離](./453-training-hall-locale-data-separation.md)（`READY`：64 個 Go 漢字 literal 移除、stable locale ID 與正式 JSON 測試解析）

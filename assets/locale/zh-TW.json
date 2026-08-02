@@ -125,6 +125,27 @@
     "ecl_tilvers_gap_flying_shapes": "群山拔地而起，形成無法翻越的高牆，只有提爾隘口將其劃破。幾道飛行身影從積雪山峰盤旋俯衝而下。",
     "ecl_ashabenford_places": "你們身在阿沙本福德。要前往哪個場所？",
     "training_hall": "訓練場",
+    "training_select_character": "訓練哪一位角色？",
+    "training_character_summary": "%s（%s %d 級／%d XP）",
+    "training_exit": "離開訓練場",
+    "training_requires_healthy": "訓練場只接受神智清醒的人。",
+    "training_insufficient_gold": "訓練費用是 1000 GP。",
+    "training_insufficient_experience": "經驗值不足，現在還不能升級。",
+    "training_confirm_prompt": "%s將成為 %d 級%s。要支付 1000 GP 訓練嗎？",
+    "training_confirm": "確定",
+    "training_cancel": "取消",
+    "training_success": "恭喜！%s成為 %d 級%s",
+    "training_hp_increase": "，最大 HP 增加 %d。",
+    "training_dual_class_no_hp": "；超過原職業等級前不增加 HP。",
+    "training_select_spell": "選擇一個新法術",
+    "training_learned_spell_suffix": " 並學會%s。",
+    "class_cleric": "牧師",
+    "class_fighter": "戰士",
+    "class_ranger": "遊俠",
+    "class_paladin": "聖武士",
+    "class_magic_user": "魔法師",
+    "class_thief": "盜賊",
+    "class_unknown": "未知職業",
     "temple": "神殿",
     "relax": "休息並聽取傳聞",
     "ecl_ashabenford_ale_house": "你們身在河畔酒館。要做什麼？",
@@ -365,11 +386,52 @@
 	,"spell_magic_user_1": "燃燒之手"
 	,"spell_magic_user_2": "魅惑人類"
 	,"spell_magic_user_3": "偵測魔法"
-	,"spell_magic_user_4": "變大術"
+	,"spell_magic_user_4": "變巨術"
 	,"spell_magic_user_5": "縮小術"
-	,"spell_magic_user_6": "友善術"
+	,"spell_magic_user_6": "交友術"
 	,"spell_magic_user_7": "魔法飛彈"
 	,"spell_magic_user_8": "防護邪惡"
+	,"spell_magic_user_9": "防護善良"
+	,"spell_magic_user_10": "閱讀魔法"
+	,"spell_magic_user_11": "護盾術"
+	,"spell_magic_user_12": "電爪"
+	,"spell_magic_user_13": "睡眠術"
+	,"spell_magic_user_29": "偵測隱形"
+	,"spell_magic_user_30": "隱形術"
+	,"spell_magic_user_31": "敲擊術"
+	,"spell_magic_user_32": "鏡影術"
+	,"spell_magic_user_33": "衰弱射線"
+	,"spell_magic_user_34": "惡臭之雲"
+	,"spell_magic_user_35": "力量術"
+	,"spell_magic_user_45": "閃現術"
+	,"spell_magic_user_46": "解除魔法"
+	,"spell_magic_user_47": "火球術"
+	,"spell_magic_user_48": "加速術"
+	,"spell_magic_user_49": "人類定身術"
+	,"spell_magic_user_50": "十呎隱形術"
+	,"spell_magic_user_51": "閃電束"
+	,"spell_magic_user_52": "十呎防護邪惡"
+	,"spell_magic_user_53": "十呎防護善良"
+	,"spell_magic_user_54": "防護普通飛彈"
+	,"spell_magic_user_55": "緩慢術"
+	,"spell_magic_user_81": "魅惑怪物"
+	,"spell_magic_user_82": "困惑術"
+	,"spell_magic_user_83": "次元門"
+	,"spell_magic_user_84": "恐懼術"
+	,"spell_magic_user_85": "火焰護盾"
+	,"spell_magic_user_86": "笨拙術"
+	,"spell_magic_user_87": "冰風暴"
+	,"spell_magic_user_88": "次級法術無效結界"
+	,"spell_magic_user_89": "移除詛咒"
+	,"spell_magic_user_91": "死雲術"
+	,"spell_magic_user_92": "冰錐術"
+	,"spell_magic_user_93": "弱智術"
+	,"spell_magic_user_94": "怪物定身術"
+	,"spell_magic_user_100": "降咒術"
+	,"spell_druid_77": "德魯伊偵測魔法"
+	,"spell_druid_78": "糾纏術"
+	,"spell_druid_79": "妖火術"
+	,"spell_druid_80": "動物隱形術"
     ,"camp_alter_unavailable": "角色修改功能尚待接入。"
 	,"camp_fix_unavailable": "沒有已記憶的 Cure Light Wounds，隊伍未改變。"
 	,"alter_prompt": "修改隊伍與遊戲設定"
