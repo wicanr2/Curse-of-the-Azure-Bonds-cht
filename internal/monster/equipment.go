@@ -251,37 +251,20 @@ type AffectRecord struct {
 	Data [4]byte
 }
 
-// ChineseName covers the base item names documented for Curse of the Azure
-// Bonds and the types observed in the real MON1 encounter record. Unknown
-// types deliberately return a stable diagnostic instead of a fabricated
-// translation.
-func ChineseName(item ItemRecord) string {
-	base, ok := map[uint8]string{
-		1: "戰斧", 2: "手斧", 3: "巴迪什", 4: "科比爾德斧", 5: "比爾鉤斧",
-		6: "木棒", 7: "棍棒", 8: "匕首", 9: "飛鏢", 10: "長柄彎刀",
-		11: "叉刃長柄斧", 12: "連枷", 13: "軍用叉", 14: "長柄刀",
-		15: "長柄鉤刀", 16: "鉤刀", 17: "鉤鐮斧", 18: "長戟",
-		19: "鹿角錘", 20: "錘", 21: "標槍", 22: "喬棒", 23: "釘頭錘",
-		24: "晨星", 25: "帕提讚", 26: "軍用鎬", 27: "錐槍",
-		28: "弩矢", // Quarrel
-		29: "蘭瑟", 30: "彎刀", 31: "矛", 32: "斯佩特姆", 33: "四尺杖",
-		34: "闊刃大劍",
-		35: "闊劍", // Broad Sword
-		36: "長劍", 37: "短劍", 38: "雙手劍", 39: "三叉戟", 40: "沃爾吉",
-		41: "複合長弓", 42: "複合短弓", 43: "長弓", 44: "短弓",
-		46: "輕弩", // Light Crossbow
-		47: "投石索", 50: "皮甲", 51: "軟甲", 52: "鑲釘皮甲", 53: "環甲",
-		54: "鱗甲", 55: "鏈甲", 56: "板條甲", 57: "帶甲", 58: "板甲",
-		59: "盾牌", 60: "防護卷軸", 61: "魔法師卷軸", 62: "牧師卷軸",
-		63: "護手／手套", 64: "帽子", 65: "腰帶", 66: "長袍",
-		69: "隱形戒指", 70: "塵埃／伊奧恩石／項鍊", 71: "藥水／銀鏡",
-		73: "箭", 77: "護腕", 78: "魔法師魔杖", 79: "魔杖",
-		84: "巨力藥水", 86: "油瓶", 92: "偏移斗篷", 93: "防護戒指",
-		94: "卓爾釘頭錘", 95: "精靈鏈甲", 96: "卓爾鏈甲", 97: "卓爾長劍",
-		98: "脊刺", 99: "魔法師戒指", 100: "黃蜂巢飛鏢", 101: "杖投石索",
-	}[item.Type]
-	if !ok {
-		return fmt.Sprintf("未翻譯物品(0x%02X)", item.Type)
+// ItemTextResolver keeps CoAB translations outside the reusable item codec.
+// Locale data uses item_type_XX and item_name_XX keys with hexadecimal IDs.
+type ItemTextResolver interface {
+	Text(key, fallback string) string
+}
+
+// LocalizedItemName composes a display name from typed legacy fields and a
+// game-pack locale. Unknown IDs remain visible diagnostics rather than guessed
+// translations; unknown name-number components are intentionally omitted.
+func LocalizedItemName(item ItemRecord, resolver ItemTextResolver) string {
+	base := resolver.Text(fmt.Sprintf("item_type_%02X", item.Type), "")
+	if base == "" {
+		format := resolver.Text("item_unknown", "item 0x%02X")
+		return fmt.Sprintf(format, item.Type)
 	}
 	parts := make([]string, 0, 3)
 	for slot := 3; slot >= 1; slot-- {
@@ -289,7 +272,7 @@ func ChineseName(item ItemRecord) string {
 		if nameNumber == 0 || item.HiddenNameFlags&(1<<(3-slot)) != 0 {
 			continue
 		}
-		if translated, ok := chineseItemNameNumber(nameNumber); ok {
+		if translated := resolver.Text(fmt.Sprintf("item_name_%02X", nameNumber), ""); translated != "" {
 			// The type's base name is already rendered below; avoid duplicating
 			// the common type token when it is also present in NameNumbers.
 			if translated != base {
@@ -301,38 +284,15 @@ func ChineseName(item ItemRecord) string {
 		base = strings.Join(append(parts, base), " ")
 	}
 	if item.Plus > 0 {
-		base = fmt.Sprintf("+%d %s", item.Plus, base)
+		base = fmt.Sprintf(resolver.Text("item_plus", "+%d %s"), item.Plus, base)
 	}
 	if item.Cursed {
-		base += "（詛咒）"
+		base += resolver.Text("item_cursed_suffix", " [cursed]")
 	}
 	if item.Count > 1 && item.Type == 28 {
-		base = fmt.Sprintf("%s ×%d", base, item.Count)
+		base = fmt.Sprintf(resolver.Text("item_count", "%s x%d"), base, item.Count)
 	}
 	return base
-}
-
-// chineseItemNameNumber covers the reference itemNames entries that affect
-// observed magical equipment. Unknown name numbers remain raw data and are
-// intentionally omitted rather than receiving an invented translation.
-func chineseItemNameNumber(value uint8) (string, bool) {
-	name, ok := map[uint8]string{
-		36: "長劍", 37: "短劍", 38: "雙手劍", 55: "鏈甲", 59: "盾牌",
-		60: "防護卷軸", 61: "魔法師卷軸", 62: "牧師卷軸", 73: "箭",
-		77: "護腕", 79: "魔杖", 81: "魔法", 125: "屠龍者", 128: "霜寒",
-		159: "+1", 160: "+2", 161: "+3", 162: "+4", 163: "+5",
-		164: "的", 167: "偏移", 181: "力量", 182: "治療",
-		197: "尋找", 198: "-1", 199: "-2", 200: "-3",
-		203: "魔法飛彈", 204: "豁免", 205: "牧師卷軸", 206: "魔法師卷軸",
-		210: "防護卷軸", 211: "珠寶", 212: "精製", 213: "巨大",
-		214: "骨製", 215: "黃銅", 217: "AC 2", 218: "AC 6",
-		219: "AC 4", 220: "AC 3", 221: "防護", 222: "麻痺",
-		223: "食人魔力量", 224: "隱形", 226: "精靈之力",
-		232: "馬格魯比耶特", 236: "巨人力量", 238: "火焰舌",
-		246: "泰爾", 247: "坦帕斯", 248: "蘇恩", 250: "對不死生物 +3",
-		252: "詛咒",
-	}[value]
-	return name, ok
 }
 
 func ChineseAffectName(affect AffectRecord) string {

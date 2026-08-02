@@ -3431,3 +3431,14 @@ GEO2 terrain `84h`、PICTURE／ECL service boundary、購買、continuation 與
 不變。`monster.ChineseName` 仍是物品 catalog 硬編碼債；正式 gate、commit／
 push 與容器清理待收尾。正式 Docker／Xvfb／`--network none` 全套 gate 通過，
 marker `ROUND456_FORMAL_EXIT=0`。READY spec 456 是權威。
+
+2026-08-02 第四百五十七輪完成物品名稱資料分離。DOS `ItemRecord.Type` 與
+`NameNumbers` 保持 typed raw IDs，繁中 base name、修飾詞、未知診斷、加值、
+詛咒與數量格式移入正式 `zh-TW.json` 的 `item_type_XX／item_name_XX` stable
+keys。State 的商店、裝備、戰利品與物品選單，以及 `cmd/azure-bonds` ITEMS／
+MON*ITM 診斷均改用 `LocalizedItemName`＋catalog；測試不再複製 CoAB 中文
+catalog。source audit 從 1,100 降至 974，runtime 類 564→438，無新增漢字
+literal。`ChineseAffectName` 仍是下一批獨立債務。正式 Docker／Xvfb／
+`--network none` 全套 gate 通過，marker `ROUND457_FORMAL_EXIT=0`；一次性
+容器均以 `--rm` 完成，engine repo 本輪無變更。commit／push 待本輪收尾；
+READY spec 457 是權威。

@@ -1587,7 +1587,7 @@ func (s *State) enterTreasureMenuFor(returnMode Mode) {
 	s.Choices = make([]string, 0, len(s.pendingTreasureItems)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.pendingTreasureItems)+1)
 	for index, item := range s.pendingTreasureItems {
-		s.Choices = append(s.Choices, monster.ChineseName(item))
+		s.Choices = append(s.Choices, monster.LocalizedItemName(item, s.catalog))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "TREASURE_ITEM_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("treasure_exit", "暫不收下／繼續"))
@@ -2963,7 +2963,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 			character := s.partyRoster[value]
 			equipment := make([]string, 0, len(character.Equipment))
 			for _, item := range character.Equipment {
-				equipment = append(equipment, monster.ChineseName(item))
+				equipment = append(equipment, monster.LocalizedItemName(item, s.catalog))
 			}
 			s.Mode = ModeEvent
 			s.eventReturnMode = ModeWilderness
@@ -4271,7 +4271,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "SELL"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_sale_done", "shop_sale_done"), monster.ChineseName(item), item.Value)
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_sale_done", "shop_sale_done"), monster.LocalizedItemName(item, s.catalog), item.Value)
 		return nil
 	}
 	if originalChoice == "SHOP_SELL_EXIT" {
@@ -4301,7 +4301,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		if identifyErr != nil {
 			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_failed", "shop_identify_failed: %s"), identifyErr)
 		} else {
-			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_done", "shop_identify_done"), party.ShopIdentifyFee, monster.ChineseName(item))
+			s.Message = fmt.Sprintf(s.catalog.Text("shop_identify_done", "shop_identify_done"), party.ShopIdentifyFee, monster.LocalizedItemName(item, s.catalog))
 		}
 		return nil
 	}
@@ -4350,7 +4350,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		character := s.partyRoster[value]
 		equipment := make([]string, 0, len(character.Equipment))
 		for _, item := range character.Equipment {
-			equipment = append(equipment, monster.ChineseName(item))
+			equipment = append(equipment, monster.LocalizedItemName(item, s.catalog))
 		}
 		s.shopViewMenu = false
 		s.Mode = ModeEvent
@@ -4377,7 +4377,7 @@ func (s *State) selectShop(index int, originalChoice string) error {
 		s.Mode = ModeEvent
 		s.eventReturnMode = ModePlace
 		s.OriginalEvent = "BUY"
-		s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_done", "shop_purchase_done"), monster.ChineseName(item))
+		s.Message = fmt.Sprintf(s.catalog.Text("shop_purchase_done", "shop_purchase_done"), monster.LocalizedItemName(item, s.catalog))
 		return nil
 	}
 	if originalChoice == "SHOP_EXIT" {
@@ -4473,7 +4473,7 @@ func (s *State) enterShopStockMenu() {
 	s.Choices = make([]string, 0, len(s.shopOffers)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.shopOffers)+1)
 	for index, offer := range s.shopOffers {
-		name := monster.ChineseName(offer.Item)
+		name := monster.LocalizedItemName(offer.Item, s.catalog)
 		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_item_price", "shop_item_price"), name, offer.Price))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_OFFER_"+strconv.Itoa(index))
 	}
@@ -4580,7 +4580,7 @@ func (s *State) enterShopSellItemMenu() {
 	s.Choices = make([]string, 0, len(character.Equipment)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
 	for index, item := range character.Equipment {
-		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_item_price", "shop_item_price"), monster.ChineseName(item), item.Value))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("shop_item_price", "shop_item_price"), monster.LocalizedItemName(item, s.catalog), item.Value))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_SELL_ITEM_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_sell_exit", "shop_sell_exit"))
@@ -4621,7 +4621,7 @@ func (s *State) enterShopIdentifyItemMenu() {
 	s.Choices = make([]string, 0, len(character.Equipment)+1)
 	s.currentOriginalChoices = make([]string, 0, len(character.Equipment)+1)
 	for index, item := range character.Equipment {
-		s.Choices = append(s.Choices, monster.ChineseName(item))
+		s.Choices = append(s.Choices, monster.LocalizedItemName(item, s.catalog))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "SHOP_IDENTIFY_ITEM_"+strconv.Itoa(index))
 	}
 	s.Choices = append(s.Choices, s.catalog.Text("shop_identify_exit", "shop_identify_exit"))

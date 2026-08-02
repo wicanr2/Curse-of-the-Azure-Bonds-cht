@@ -84,6 +84,9 @@ commit 內保存不可能自我引用的 hash。
   preservation 與部分 writeback。任意 UI／戰鬥 frame 的完整續存仍未完成。
 - 角色年齡 offset `0x76..0x77`、種族／職業 mapping 與 DOS 實機角色頁證據。
 - 中文手冊、攻略、Gold Box 技術知識庫、READY 規格與 README 實機截圖。
+- 物品 type／name-number 維持 DOS typed IDs，繁中 base name、修飾詞、加值、
+  詛咒與數量格式已由正式 locale stable IDs 驅動；商店、裝備、戰利品、CLI
+  與測試不再依賴 Go 中文物品 catalog。效果名稱 catalog 尚待後續遷移。
 - 第 450 輪將法師塔正常主線從庭院、德拉坎德羅斯現身、龍群幻象一路到
   枷印消退的九段文字與手札 15 兩頁移入 CoAB game-pack。原文 fragment、
   英文、繁中與 `journal_message_ids` 由 11 個 stable ID 驅動；State 與舊
