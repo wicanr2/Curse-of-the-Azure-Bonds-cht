@@ -125,6 +125,9 @@ commit 內保存不可能自我引用的 hash。
   runtime 173 仍待清理。第 488 輪再把財寶列表、角色收取、取消／略過及缺素材
   訊息移入正式 catalog；火刀辦公室正常 ECL 路徑改用正式 catalog 驗證，原
   財寶數量與 continuation 不變。baseline 164、frontend debt 0、runtime 164。
+  第 489 輪再把 PARLAY 提示、五種策略與 generic 結果移入正式 catalog；法師塔
+  與羅剎妖居所長路徑同時驗證原 tactic identity 和動態顯示。baseline 157、
+  frontend debt 0、runtime 157。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

@@ -363,9 +363,10 @@ func TestEncounterFleeReturnsToWildernessEvent(t *testing.T) {
 }
 
 func TestEncounterParlayOffersFiveTacticsAndReturnsEvent(t *testing.T) {
-	state := NewState(testCatalog())
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
 	state.Mode = ModeWilderness
-	state.Choices = []string{"談判"}
+	state.Choices = []string{"DISPLAY"}
 	state.currentOriginalChoices = []string{"PARLAY"}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
@@ -373,10 +374,19 @@ func TestEncounterParlayOffersFiveTacticsAndReturnsEvent(t *testing.T) {
 	if state.Mode != ModeWilderness || !state.parlayMenu || len(state.Choices) != 5 {
 		t.Fatalf("parlay menu state=%+v", state)
 	}
+	wantChoices := []string{
+		catalog.Text("parlay_haughty", ""), catalog.Text("parlay_sly", ""),
+		catalog.Text("parlay_meek", ""), catalog.Text("parlay_nice", ""),
+		catalog.Text("parlay_abusive", ""),
+	}
+	if state.Prompt != catalog.Text("parlay_menu_prompt", "") || !reflect.DeepEqual(state.Choices, wantChoices) {
+		t.Fatalf("parlay prompt=%q choices=%#v want=%#v", state.Prompt, state.Choices, wantChoices)
+	}
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.OriginalEvent != "PARLAY" || !strings.Contains(state.Message, "謙卑") {
+	wantMessage := fmt.Sprintf(catalog.Text("encounter_parlay_done", ""), catalog.Text("parlay_meek", ""))
+	if state.Mode != ModeEvent || state.OriginalEvent != "PARLAY" || state.Message != wantMessage {
 		t.Fatalf("parlay result state=%+v", state)
 	}
 	if err := state.Continue(); err != nil || state.Mode != ModeWilderness {

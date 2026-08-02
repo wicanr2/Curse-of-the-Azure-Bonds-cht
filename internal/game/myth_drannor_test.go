@@ -2757,8 +2757,13 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices,
 		[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK",
-			"PARLAY_NICE", "PARLAY_ABUSIVE"}) {
-		t.Fatalf("rakshasa parlay choices=%v", state.currentOriginalChoices)
+			"PARLAY_NICE", "PARLAY_ABUSIVE"}) ||
+		!reflect.DeepEqual(state.Choices, []string{
+			state.catalog.Text("parlay_haughty", ""), state.catalog.Text("parlay_sly", ""),
+			state.catalog.Text("parlay_meek", ""), state.catalog.Text("parlay_nice", ""),
+			state.catalog.Text("parlay_abusive", ""),
+		}) {
+		t.Fatalf("rakshasa parlay originals=%v localized=%v", state.currentOriginalChoices, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)

@@ -2881,7 +2881,11 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		}
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, parlayTactics) ||
-		!reflect.DeepEqual(state.Choices, []string{"傲慢", "狡猾", "謙卑", "友善", "威嚇"}) {
+		!reflect.DeepEqual(state.Choices, []string{
+			state.catalog.Text("parlay_haughty", ""), state.catalog.Text("parlay_sly", ""),
+			state.catalog.Text("parlay_meek", ""), state.catalog.Text("parlay_nice", ""),
+			state.catalog.Text("parlay_abusive", ""),
+		}) {
 		t.Fatalf("wizard-tower parlay originals=%#v localized=%#v",
 			state.currentOriginalChoices, state.Choices)
 	}

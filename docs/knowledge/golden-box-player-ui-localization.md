@@ -110,3 +110,15 @@ Gold Box 的 TREASURE 不只是顯示一句文字：它可能先累積 coins／g
 `TREASURE_CHARACTER_n`。缺 ITEM 素材時，錯誤物件只是格式參數；正式訊息
 模板放 catalog。正常玩家路徑要同時驗證原始財寶數量、列表 identity、收取或
 略過後的回返模式，以及再次搜索不複製獎勵。
+
+## 遭遇談判策略
+
+PARLAY 的「傲慢、狡猾、謙卑、友善、威嚇」是顯示投影，不是 branch key。
+ECL 或作品 adapter 應保存來源 tactic identity；locale 只負責名稱與提示。
+測試若以中文陣列找索引，改譯、同義詞或語序調整就會改變劇情分支。
+
+驗收至少要把入口顯示 choice 換成無關文字，證明 `PARLAY` identity 仍能開啟
+策略選單；再於一條真實 ECL 玩家路徑同時斷言 tactic identity 與當前 locale
+投影，最後追到劇情文字、Journal／旗標、戰鬥或返回地圖。Generic「對方反應
+尚待 script」只可用於沒有 ECL continuation 的暫時 encounter，不能掩蓋作品
+原本存在的 tactic branch。

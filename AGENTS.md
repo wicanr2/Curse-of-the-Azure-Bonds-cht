@@ -750,6 +750,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   名，但控制流必須保存 `TREASURE_ITEM_n`、`TREASURE_CHARACTER_n`、cancel／
   exit identity；不可用翻譯文字控制 ECL continuation。正常火刀辦公室路徑
   改載正式 catalog，仍驗證原財寶與一次性搜尋。READY spec 488 是權威。
+- 第 489 輪把 PARLAY prompt、五種 tactic 與 generic 結果七筆中文副本移入
+  正式 catalog，baseline `164→157`。控制流只使用 `PARLAY_HAUGHTY／SLY／
+  MEEK／NICE／ABUSIVE` identity；測試不能複製中文策略陣列。法師塔與
+  Myth Drannor 羅剎妖居所正常長路徑同時驗證 identity／locale projection，
+  再追到原 ECL 後果。READY spec 489 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
