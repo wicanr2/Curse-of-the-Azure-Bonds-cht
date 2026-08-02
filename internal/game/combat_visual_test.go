@@ -5,10 +5,12 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
 func combatVisualCatalog(t *testing.T) locale.Catalog {
@@ -22,6 +24,62 @@ func combatVisualCatalog(t *testing.T) locale.Catalog {
 		t.Fatal(err)
 	}
 	return catalog
+}
+
+func TestCombatVisualSleepTwinklesOnlySuccessfulTargetsAndOrdersSounds(t *testing.T) {
+	state := NewState(testCatalog())
+	state.EnableCombatVisualTimeline(true)
+	state.partyRoster = party.Roster{{
+		ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 3,
+		SpellSlots: []uint8{SleepSpellID},
+	}}
+	state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+		return enginescan.TacticalMap{Width: 3, Height: 1, Tiles: []uint8{1, 1, 1},
+			Definitions: []enginescan.TerrainDefinition{{LOS: 1}}}, nil
+	})
+	heroes := []combat.Fighter{{ID: "mage", Name: "法師", Side: combat.SideParty,
+		LegacyObjectID: 1, HitPoints: 20, MaxHitPoints: 20, InitiativeBonus: 30,
+		HasCombatPosition: true, CombatX: 0, CombatY: 0}}
+	enemies := []combat.Fighter{{ID: "orc", Name: "半獸人", Side: combat.SideEnemy,
+		LegacyObjectID: 2, HitPoints: 10, MaxHitPoints: 10, HitDice: 1,
+		HasCombatPosition: true, CombatX: 2, CombatY: 0}}
+	if err := state.StartCombat(heroes, enemies, 442); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatSelectTarget(1); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.BeginCombatCast(SleepSpellID); err != nil {
+		t.Fatal(err)
+	}
+	if err := state.CombatCastWithTerrain(SleepSpellID, nil); err != nil {
+		t.Fatal(err)
+	}
+	event, ok := state.CombatVisualEvent()
+	if !ok || event.Kind != combat.VisualTwinkle || event.Effect != "sleep" ||
+		event.ImpactCount() != 1 {
+		t.Fatalf("Sleep visual=%+v ok=%v", event, ok)
+	}
+	impact, _ := event.ImpactAt(0)
+	if impact.TargetID != "orc" || impact.To != (combat.TilePoint{X: 2, Y: 0}) {
+		t.Fatalf("Sleep impact=%+v", impact)
+	}
+	if err := state.AdvanceCombatVisual(0); err != nil {
+		t.Fatal(err)
+	}
+	if sounds := state.ConsumeSoundEvents(); len(sounds) != 2 ||
+		sounds[0] != SoundCast || sounds[1] != SoundSpellHit {
+		t.Fatalf("Sleep initial sounds=%v", sounds)
+	}
+	if err := state.AdvanceCombatVisual(event.Duration()); err != nil {
+		t.Fatal(err)
+	}
+	if state.CombatVisualPending() {
+		t.Fatal("Sleep visual remained pending after handoff")
+	}
+	if got := event.FrameAt(combat.VisualTwinkleDuration - time.Millisecond); got.ImpactIndex != 0 {
+		t.Fatalf("Sleep final twinkle frame=%+v", got)
+	}
 }
 
 func TestCombatVisualMissileDefersVictoryAndOrdersSounds(t *testing.T) {

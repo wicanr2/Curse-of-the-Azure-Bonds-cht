@@ -2241,6 +2241,10 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 			a.drawCombatProjectileSprite(screen, key, flip, definition.Scale, x, y)
 		}
 	case combat.VisualImpact:
+		if event.Kind == combat.VisualTwinkle {
+			drawCombatTwinkle(screen, toX, toY, frame.Progress)
+			break
+		}
 		if (event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell ||
 			event.Kind == combat.VisualLineSpell) && event.Hit {
 			trigger := "magic_missile"
@@ -2262,6 +2266,29 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 			op.GeoM.Translate(toX-24, toY-24)
 			screen.DrawImage(icon, op)
 		}
+	}
+}
+
+// drawCombatTwinkle reconstructs the PC-98 TWINKLE 24x6 dynamic icon contract.
+// Overlay 24 builds four frames at runtime, so there is no DAX block to load.
+// The exact source geometry and four-frame/repeat timing are preserved here;
+// palette-table pixels remain layout-reconstructed pending a runtime capture.
+func drawCombatTwinkle(screen *ebiten.Image, x, y float64, progress float64) {
+	frame := min(int(progress*20)%4, 3)
+	colors := []color.RGBA{
+		{R: 255, G: 255, B: 255, A: 255},
+		{R: 96, G: 224, B: 255, A: 255},
+		{R: 255, G: 240, B: 96, A: 255},
+		{R: 255, G: 255, B: 255, A: 255},
+	}
+	c := colors[frame]
+	halfWidth := float64(6 + frame*2)
+	halfHeight := float64(3 + frame)
+	ebitenutil.DrawLine(screen, x-halfWidth, y, x+halfWidth, y, c)
+	ebitenutil.DrawLine(screen, x, y-halfHeight, x, y+halfHeight, c)
+	if frame == 1 || frame == 2 {
+		ebitenutil.DrawLine(screen, x-halfHeight, y-halfHeight, x+halfHeight, y+halfHeight, c)
+		ebitenutil.DrawLine(screen, x+halfHeight, y-halfHeight, x-halfHeight, y+halfHeight, c)
 	}
 }
 

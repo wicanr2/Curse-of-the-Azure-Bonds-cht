@@ -113,6 +113,25 @@ write」順序，但 effect ID、duration、`CASTON`、record payload、訊息�
 各 game pack 的 bytes／規格提供。不得把 CoAB 的 `35h` 或五倍等級直接當成
 所有 Gold Box 的共同常數。
 
+## held effect 的 Action 與呈現生命週期
+
+持續效果 callback 與 `PUTEFFECT` 的訊息／動畫是兩個不同 boundary。CoAB
+PC-98 effect `33h／34h／35h` 的 add／remove callback 都落到作品中立語意
+`CLEARACTION`；它清 pending spell、target、move、guard，但不處理法術格。
+傷害 transaction 必須先執行 effect removal callback，再決定是否仍有施法可
+中斷，否則會把同一 pending spell 重複消耗。
+
+成功 `PUTEFFECT` 才依 non-empty message 呼叫 `TWINKLE`。成功圖示代號
+`16h`、失敗 `17h` 是 runtime 動態圖示，不是 DAX block；wrapper 以四筆 writer
+建立 24×6 圖示。成功分支逐目標送 `SPELLHITFX`，魔抗提前返回則沒有閃爍。
+移除 callback 也沒有文字／聲音／圖形，因此共用 engine 不應以「狀態解除」
+自行推導醒來特效。作品 adapter 應分別宣告 add presentation、remove callback
+與 natural-expiry transaction。
+
+`GAMESPEED=4` 的成功閃爍 delay-only 是 1440ms；此值不含 draw overhead。
+若缺 runtime capture，幾何與時間可以標 exact，palette pixels 仍只能標
+layout-reconstructed。
+
 ## 可重現入口
 
 - `docs/spec/410-pc98-monster-affect-loader-and-tyranthraxus-detect-invisible.md`
@@ -121,5 +140,6 @@ write」順序，但 effect ID、duration、`CASTON`、record payload、訊息�
 - `docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md`
 - `docs/spec/414-pc98-post-hit-effect-4f-runtime.md`
 - `docs/spec/434-pc98-sleep-puteffect-magic-resistance.md`
+- `docs/spec/442-pc98-sleep-action-clear-and-twinkle.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`
 - `scripts/ida/pc98_attack_effect_phase_audit.idc`

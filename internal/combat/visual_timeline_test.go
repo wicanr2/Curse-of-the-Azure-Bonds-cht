@@ -129,3 +129,22 @@ func TestVisualTimelineInterleavesLeadingImpactAndLineSegments(t *testing.T) {
 		}
 	}
 }
+
+func TestVisualTwinklePresentsEachTargetForExactDefaultDelayBudget(t *testing.T) {
+	event := VisualEvent{Kind: VisualTwinkle, Impacts: []VisualImpactTarget{
+		{TargetID: "orc-1", To: TilePoint{X: 3, Y: 2}, Hit: true},
+		{TargetID: "orc-2", To: TilePoint{X: 4, Y: 2}, Hit: true},
+	}}
+	if got, want := event.Duration(), 2*VisualTwinkleDuration+VisualHandoffDuration; got != want {
+		t.Fatalf("twinkle duration=%s want %s", got, want)
+	}
+	first := event.FrameAt(0)
+	second := event.FrameAt(VisualTwinkleDuration)
+	if first.Phase != VisualImpact || first.ImpactIndex != 0 ||
+		second.Phase != VisualImpact || second.ImpactIndex != 1 {
+		t.Fatalf("twinkle frames first=%+v second=%+v", first, second)
+	}
+	if got := event.FrameAt(2 * VisualTwinkleDuration); got.Phase != VisualHandoff || got.ResolvedImpacts != 2 {
+		t.Fatalf("twinkle handoff=%+v", got)
+	}
+}

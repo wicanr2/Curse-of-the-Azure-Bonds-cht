@@ -1140,6 +1140,14 @@ tick，turn／hour／day 等單位依 `10／6／24／30／12` 逐級換算；dur
 level 3 手動 Sleep 從 15 tick 經 handoff 到 14，總第 15 tick 解除 held。
 證據見 [`spec 441`](docs/spec/441-pc98-effect-duration-clock.md)。
 
+第 442 輪接通 Sleep 的原版生命週期與呈現順序：effect `35h` 加入、受傷移除
+及自然到期都經 `CLEARACTION`，且受傷喚醒不會重複消耗 pending spell slot。
+成功入睡者依原版 target 順序各播放四格 `TWINKLE` 與 `SPELLHITFX`；魔抗者
+不播放，醒來 callback 也沒有虛構文字／聲音。PC-98 `GAMESPEED=4` 的
+delay-only 時間為每人 1,440ms。四格 24×6 幾何有 IDA bytes 證據，目前
+palette／圖元仍標為 `layout-reconstructed`，待實機擷取升級。
+證據見 [`spec 442`](docs/spec/442-pc98-sleep-action-clear-and-twinkle.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

@@ -12,6 +12,7 @@ const (
 	VisualMagicMissile
 	VisualAreaSpell
 	VisualLineSpell
+	VisualTwinkle
 )
 
 // VisualPhase is the player-visible ordering contract for one resolved action.
@@ -33,6 +34,9 @@ const (
 	VisualImpactDuration  = 140 * time.Millisecond
 	VisualCommitDuration  = 120 * time.Millisecond
 	VisualHandoffDuration = 100 * time.Millisecond
+	// VisualTwinkleDuration is the exact PC-98 delay budget at GAMESPEED=4:
+	// (4+1) outer passes * 4 frames * (4*18ms). Drawing overhead is excluded.
+	VisualTwinkleDuration = 1440 * time.Millisecond
 )
 
 // VisualEvent is a renderer-neutral snapshot. Rule resolution may update the
@@ -97,6 +101,9 @@ type VisualFrame struct {
 }
 
 func (event VisualEvent) Duration() time.Duration {
+	if event.Kind == VisualTwinkle {
+		return time.Duration(len(event.visualImpacts()))*VisualTwinkleDuration + VisualHandoffDuration
+	}
 	duration := VisualWindupDuration + VisualTravelDuration + VisualHandoffDuration
 	if event.Segments == nil {
 		for _, impact := range event.visualImpacts() {
@@ -123,6 +130,19 @@ func (event VisualEvent) Duration() time.Duration {
 func (event VisualEvent) FrameAt(elapsed time.Duration) VisualFrame {
 	if elapsed < 0 {
 		elapsed = 0
+	}
+	if event.Kind == VisualTwinkle {
+		impacts := event.visualImpacts()
+		for index := range impacts {
+			if elapsed < VisualTwinkleDuration {
+				return visualFrame(VisualImpact, index, -1, index, elapsed, VisualTwinkleDuration)
+			}
+			elapsed -= VisualTwinkleDuration
+		}
+		if elapsed < VisualHandoffDuration {
+			return visualFrame(VisualHandoff, -1, -1, len(impacts), elapsed, VisualHandoffDuration)
+		}
+		return VisualFrame{Phase: VisualHandoff, ImpactIndex: -1, SegmentIndex: -1, ResolvedImpacts: len(impacts), Progress: 1, Done: true}
 	}
 	if elapsed < VisualWindupDuration {
 		return visualFrame(VisualWindup, -1, -1, 0, elapsed, VisualWindupDuration)
