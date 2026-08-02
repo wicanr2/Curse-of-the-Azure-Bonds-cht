@@ -472,6 +472,36 @@ func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	}
 }
 
+func TestPartySaveRestoresJournalByStableIDInCurrentLocale(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "p1", Name: "亞勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	zhPage, found := state.dataPack.Text("journal.31", "zh-TW")
+	if !found {
+		t.Fatal("journal.31 zh-TW is absent")
+	}
+	state.appendJournalPage("journal.31", zhPage)
+	path := t.TempDir() + "/game.json"
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+
+	loaded := NewState(locale.Catalog{Language: "en", Strings: map[string]string{"title": "test"}})
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	wantEnglish, found := loaded.dataPack.Text("journal.31", "en")
+	if !found {
+		t.Fatal("journal.31 en is absent")
+	}
+	if !reflect.DeepEqual(loaded.journalMessageIDs, []string{"journal.31"}) ||
+		!reflect.DeepEqual(loaded.JournalPages, []string{wantEnglish}) || loaded.JournalPages[0] == zhPage {
+		t.Fatalf("restored journal IDs=%v pages=%q", loaded.journalMessageIDs, loaded.JournalPages)
+	}
+}
+
 func TestSAVGAMPrefixStateAdapterRestoresKnownFieldsAndRawRecords(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "p1", Name: "阿勇"}}
@@ -3615,8 +3645,18 @@ func TestCampBoundaryAndInGameJournal(t *testing.T) {
 	if err := state.OpenJournal(); err != nil || state.Mode != ModeJournal || state.JournalTitle == "" || state.JournalText == "" {
 		t.Fatalf("journal state=%#v err=%v", state, err)
 	}
+	if len(state.JournalPages) != 0 || state.JournalPageStatus() != "" {
+		t.Fatalf("new game must not reveal journal pages: pages=%v status=%q", state.JournalPages, state.JournalPageStatus())
+	}
+	emptyPage := state.JournalText
+	if err := state.NextJournalPage(); err != nil || state.JournalPage != 0 || state.JournalText != emptyPage {
+		t.Fatalf("empty journal next page=%#v err=%v", state, err)
+	}
+	state.appendJournalPage("test.journal.1", "第一頁")
+	state.appendJournalPage("test.journal.2", "第二頁")
+	state.JournalText = state.JournalPages[0]
 	firstPage := state.JournalText
-	if err := state.NextJournalPage(); err != nil || state.JournalPage != 1 || state.JournalText == firstPage {
+	if err := state.NextJournalPage(); err != nil || state.JournalPage != 1 || state.JournalText == firstPage || state.JournalPageStatus() == "" {
 		t.Fatalf("journal next page=%#v err=%v", state, err)
 	}
 	if err := state.PreviousJournalPage(); err != nil || state.JournalPage != 0 || state.JournalText != firstPage {

@@ -3668,3 +3668,14 @@ locale；State 只保留 PROGRAM side effect 與 stable choice token。fixture �
 localization 23 不變。READY spec 477 是權威；Docker／Xvfb／`--network none`
 全套 gate 已通過，marker `ROUND477_FORMAL_EXIT=0`；commit／push 與暫存清理待
 本輪收尾。
+
+2026-08-02 第四百七十八輪修正遊戲內手札的資料邊界與續存。新遊戲不再預載
+八頁開發用中文假手札；空手札、頁碼與操作提示改由正式 locale stable ID 顯示。
+Golden Box engine `TextResult` 新增作品中立的 `JournalMessageIDs`，CoAB State
+依 ID 解鎖與去重，不再以翻譯文字 prefix 判斷。remake save 升至 v10，只保存
+有序 message IDs，讀檔依目前 game-pack／locale 重解全文；繁中保存、英文讀取
+回歸證明沒有把中文全文寫進存檔。真實 ECL Journal 31 與 Filani Journal 38
+測試已移除舊八頁偏移。source audit `378→368`，frontend `135→133`、runtime
+`220→212`、localization 23 不變。Engine `be57f47` 已完整測試、commit／push；
+READY spec 478 是權威。CoAB Docker／Xvfb 正式全套 gate 已通過，marker
+`ROUND478_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

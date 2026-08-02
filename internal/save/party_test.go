@@ -156,7 +156,7 @@ func TestGameVersionNineRoundTripsMusicContinuation(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.Music, want) {
 		t.Fatalf("decoded music=%+v want=%+v", file.Music, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 9`), []byte(`"version": 7`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 7`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 7 music continuation unexpectedly decoded")
 	}
@@ -186,7 +186,7 @@ func TestGameVersionNineRoundTripsBoundedOneShotAudio(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.OneShotAudio, want) {
 		t.Fatalf("decoded one-shot audio=%+v want=%+v", file.OneShotAudio, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 9`), []byte(`"version": 8`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 8`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 8 one-shot continuation unexpectedly decoded")
 	}
@@ -194,5 +194,31 @@ func TestGameVersionNineRoundTripsBoundedOneShotAudio(t *testing.T) {
 	duplicate.OneShots = append(duplicate.OneShots, duplicate.OneShots[0])
 	if _, err := EncodeGameWithAudioState(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, nil, nil, nil, &duplicate); err == nil {
 		t.Fatal("duplicate one-shot continuation unexpectedly encoded")
+	}
+}
+
+func TestGameVersionTenStoresStableJournalMessageIDs(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	want := []string{"journal.31", "journal.38.1"}
+	data, err := EncodeGameWithJournalState(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, nil, nil, nil, nil, want)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.JournalMessageIDs, want) {
+		t.Fatalf("decoded journal IDs=%v want=%v", file.JournalMessageIDs, want)
+	}
+	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 9`), 1)
+	if _, err := DecodeGame(legacy); err == nil {
+		t.Fatal("version 9 journal message IDs unexpectedly decoded")
+	}
+	if _, err := EncodeGameWithJournalState(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, nil, nil, nil, nil, []string{"journal.31", "journal.31"}); err == nil {
+		t.Fatal("duplicate journal message IDs unexpectedly encoded")
 	}
 }

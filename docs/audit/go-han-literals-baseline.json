@@ -53,13 +53,6 @@
     {
       "path": "cmd/azure-bonds-game/main.go",
       "function": "Draw",
-      "sha256": "9552fe3bd366b2149bdf5aae725008d8e0e3d6582dd17d1e5e53279fc3b7585e",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
       "sha256": "aa8a8284bd7b7b977079928b20af27b269ba090683d86299faa500f67b8c381c",
       "occurrences": 2,
       "category": "frontend_ui_debt"
@@ -75,13 +68,6 @@
       "path": "cmd/azure-bonds-game/main.go",
       "function": "Draw",
       "sha256": "c21ef9921dd8f8e780c40ed90a21d3396206e17596f00699edd76dff46af80e6",
-      "occurrences": 1,
-      "category": "frontend_ui_debt"
-    },
-    {
-      "path": "cmd/azure-bonds-game/main.go",
-      "function": "Draw",
-      "sha256": "de72cc00efe5c3814eee2bd8433a1cb58bd17df1c8f0aaa5f38d85a206dd6110",
       "occurrences": 1,
       "category": "frontend_ui_debt"
     },
@@ -2048,63 +2034,7 @@
     {
       "path": "internal/game/state.go",
       "function": "NewState",
-      "sha256": "095ee40f7842cece8b0516d8714b490d267bf6db27d9ca3cb6cc7d0f17732d3d",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "175934fc9098ad2e3d0b482ae55729b1039dc907979b2c19d1738e4c45882fd7",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "18cc179d431bdf81d973df0666e8ef7af1d3bb6720d721369b32d090d0fa7e63",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "393c4af6e91bc91cef22bcdcc89428d4606e36bdc727145cd65ca09981719741",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "5255910018af12fb22111719aae7a21469aa36516b19c08ca61cf56b1d0b1c44",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "6723896af8aa97a4f31c479eb3854dc7fad8396af0db76522445b49d7670af48",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "919e247f659dd142e41b3f539b6d0bb546c2d7c0f6a2fd67df0034d9223c679f",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
       "sha256": "c9c21c52f49ce66786a85f14abe1464d72acca68c8684bc94191e86317ff200c",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "NewState",
-      "sha256": "de51c122fafbab62d3deee7552a3ed1a9d479e75d2abd79b23b065d74a930373",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

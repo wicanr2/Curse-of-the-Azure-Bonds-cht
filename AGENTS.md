@@ -686,6 +686,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   正式 catalog。若後段顯示 stable ID，不能把譯文塞回 handler 或把 catalog
   序列化進 save。PROGRAM side effect 與 `PROGRAM_WIN_SAVE／PROGRAM_END` token
   保持 typed；READY spec 477 是權威。
+- 第 478 輪移除新遊戲預載的八頁開發用假手札，baseline `378→368`。手札的
+  身分是 game-pack `journal_message_ids`，不是翻譯後文字；Engine 必須把 ID
+  與顯示頁面一起交給 adapter，State 以 ID 去重。save v10 只保存有序 ID，
+  讀檔依目前 locale 重新解析，禁止把繁中全文或 locale catalog 寫進存檔。
+  空手札不得顯示 `1 / 0`，也不得為了填畫面預先建立攻略／開發說明頁。
+  READY spec 478 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

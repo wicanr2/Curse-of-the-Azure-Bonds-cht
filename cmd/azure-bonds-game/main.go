@@ -1210,7 +1210,7 @@ func (a *app) Draw(screen *ebiten.Image) {
 	if a.state.Mode == game.ModeJournal {
 		text.Draw(screen, a.state.JournalTitle, a.face, 32, 52, cyan)
 		drawWrappedText(screen, a.state.JournalText, a.face, 32, 100, 22, 32, 7, white)
-		text.Draw(screen, "第 "+strconv.Itoa(a.state.JournalPage+1)+" / "+strconv.Itoa(len(a.state.JournalPages))+" 頁　左右：翻頁", a.face, 32, 350, white)
+		text.Draw(screen, a.state.JournalPageStatus(), a.face, 32, 350, white)
 		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 390, cyan)
 		return
 	}
