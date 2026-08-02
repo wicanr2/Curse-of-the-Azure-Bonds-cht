@@ -3215,7 +3215,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			beforeGems, beforeJewelry := s.treasureGems, s.treasureJewelry
 			beforeItems := len(s.pendingTreasureItems)
 			if err := s.ResolveTreasureRequests(); err != nil {
-				s.Message = "財寶等待素材載入：" + err.Error()
+				s.Message = fmt.Sprintf(s.catalog.Text("treasure_assets_pending", "treasure_assets_pending"), err)
 			} else {
 				// Pure money/gem/jewelry TREASURE still owns a visible service
 				// boundary, while an all-zero request does not add an empty UI.
