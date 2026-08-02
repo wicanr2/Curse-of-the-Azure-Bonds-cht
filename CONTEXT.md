@@ -3624,3 +3624,14 @@ State fallback 已刪除。具體下水道投降規則排在通用 `DO YOU SURRE
 國王舊 fallback 的兩個 literal。READY spec 473 是權威；正式 Docker／Xvfb／
 `--network none` 全套 gate 已通過，marker `ROUND473_FORMAL_EXIT=0`；commit／push
 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十四輪進行青色印記夢境與提爾佛頓返城資料化。高階祭司、
+提爾佛頓 edge／barred、第一夜、主人嘲諷、服侍預言與冷汗驚醒共七條 en／zh-TW
+rules 已移入 game-pack；State fallback 與 edge／barred UI locale 移除。高階祭司
+真實新遊戲事件仍保留 PICTURE／HEAD／BODY 6、手札 19；火刀首領戰後 State
+回歸收集每次顯示並要求四段夢境 stable ID，夢醒後實際 ENTER CITY、遭阻擋、
+PRESS 返回 edge menu 才 JOURNEY ON。raw regression 保留 BIGPIC 120、7F12=1
+與 NEWECL 50h。source audit 553→545，localization 58→50，frontend 135、runtime
+360 不變；差值多一是高階祭司舊 batch／line 雙 fallback。READY spec 474 是
+權威；正式 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
+`ROUND474_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

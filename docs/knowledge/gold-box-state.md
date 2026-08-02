@@ -967,3 +967,14 @@ ECL 不同事件可能共享 `DO YOU SURRENDER` 等片段。若 game-pack 先放
 長 continuation 測試應逐個畫面比較 stable ID，並保留 PICTURE／HEAD／BODY、
 戰鬥人數、NEWECL、選項與重訪副作用。這能同時抓出文字規則優先序與 session
 續跑錯誤，但只要中途直接設定 GEO 座標，仍不能取代逐步移動玩家路徑。
+
+### 2026-08-02：文件中的分支必須轉成玩家輸入回歸
+
+規格已記錄「ENTER CITY 會被衛兵阻擋」仍不等於產品測試真的走過該分支。長路徑
+若為了直達下一地點固定選 JOURNEY ON，可能讓禁止返城文字、返回選單 continuation
+或完成旗標悄悄失效。應先實際選一次被拒絕的行動、驗證 stable ID 與 PRESS
+boundary，再回到同一 menu 選擇後續路線。
+
+多段夢境也不應只驗證首尾 raw token。產品回歸可收集每次 `Continue／Select`
+後玩家實際看到的訊息，再要求所有段落 stable ID 都出現；這比寫死步數與中文
+片段穩定，同時仍須保留 raw BIGPIC、work flag 與 NEWECL oracle。

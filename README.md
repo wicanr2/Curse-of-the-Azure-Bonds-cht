@@ -118,6 +118,11 @@ HEAD／BODY 救援人物、盜賊公會 handoff 及騎士重訪消耗；Go 漢�
 降至 553。詳見
 [`docs/spec/473-tilverton-carriage-sewers-game-pack.md`](docs/spec/473-tilverton-carriage-sewers-game-pack.md)。
 
+第 474 輪完成高階祭司、火刀戰後四段青色印記夢境及提爾佛頓返城兩段 boundary
+資料化。玩家回歸逐段驗證夢境 stable ID，並實際嘗試 ENTER CITY、遭衛兵阻擋、
+返回城外後才繼續世界旅行；Go 漢字基線由 553 降至 545。詳見
+[`docs/spec/474-bond-dream-tilverton-return-game-pack.md`](docs/spec/474-bond-dream-tilverton-return-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

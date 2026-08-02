@@ -706,7 +706,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if state.DungeonWallRoof != 0x8F || state.Mode != ModeEvent || !state.PictureRequested ||
 		state.PictureBlock != 6 || state.SceneHeadBlock != 6 || state.SceneBodyBlock != 6 ||
-		!strings.Contains(state.Message, "高階祭司") {
+		state.Message != requireGamePackText(t, &state, "tilverton.high-priest-intro") {
 		t.Fatalf("high priest introduction selector=%#x mode=%v picture=%v:%d head/body=%d/%d message=%q",
 			state.DungeonWallRoof, state.Mode, state.PictureRequested, state.PictureBlock,
 			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
@@ -1868,11 +1868,15 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if !state.PictureRequested || state.PictureBlock != 14 || !strings.Contains(state.Message, "手札第 54") {
 		t.Fatalf("Journal 54 state mode=%v picture=%d message=%q", state.Mode, state.PictureBlock, state.Message)
 	}
+	dreamMessages := make([]string, 0, 12)
 	for step := 0; step < 6; step++ {
 		if state.PictureRequested {
 			if err := state.Continue(); err != nil {
 				t.Fatal(err)
 			}
+		}
+		if state.Message != "" {
+			dreamMessages = append(dreamMessages, state.Message)
 		}
 		if state.Mode != ModeWilderness || len(state.Choices) == 0 {
 			t.Fatalf("continuation step %d mode=%v picture=%v choices=%v message=%q",
@@ -1880,6 +1884,19 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		}
 		if err := state.Select(0); err != nil {
 			t.Fatal(err)
+		}
+		if state.Message != "" {
+			dreamMessages = append(dreamMessages, state.Message)
+		}
+	}
+	for _, messageID := range []string{
+		"bond-dream.first-night",
+		"bond-dream.masters-taunt",
+		"bond-dream.masters-prophecy",
+		"bond-dream.ends",
+	} {
+		if !slices.Contains(dreamMessages, requireGamePackText(t, &state, messageID)) {
+			t.Fatalf("%s was not displayed during bond dream: %q", messageID, dreamMessages)
 		}
 	}
 	if !state.PictureRequested || !state.BigPictureRequested || state.PictureBlock != 121 {
@@ -1890,7 +1907,8 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness ||
-		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		state.Message != requireGamePackText(t, &state, "tilverton.edge") {
 		t.Fatalf("Tilverton edge mode=%v choices=%#v message=%q", state.Mode, state.currentOriginalChoices, state.Message)
 	}
 	for address, want := range map[uint16]uint16{0x4CFF: 1, 0x4C2A: 1, 0x7F12: 1} {
@@ -1902,6 +1920,22 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		if !slices.Contains(state.JournalPages, requireGamePackText(t, &state, messageID)) {
 			t.Fatalf("%s was not unlocked: %v", messageID, state.JournalPages)
 		}
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Message != requireGamePackText(t, &state, "tilverton.entry-barred") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Tilverton barred choices=%#v message=%q", state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatal(err)
+	}
+	if state.Mode != ModeWilderness ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		state.Message != requireGamePackText(t, &state, "tilverton.edge") {
+		t.Fatalf("Tilverton barred return mode=%v choices=%#v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
