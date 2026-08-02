@@ -1,7 +1,7 @@
 # 第 435 輪：PC-98 `SCAN` 三欄記錄與原版排序
 
-狀態：`READY`（限三欄 producer、footprint cell 展開、最短 LOS metric 與
-原版排序；terrain property 名稱、實機 wall boundary、手動／Quick Sleep UI
+狀態：`READY`（三欄與排序仍有效；terrain property 與地形感知 producer 已由
+spec 436 接續，實機 wall boundary、COMPOBJ 建立順序、手動／Quick Sleep UI
 仍待續）
 
 ## 訂正與結論
@@ -59,8 +59,9 @@ exit code 0 之外另驗證報告非空；原始 overlay、symbol table 與既�
   初次 `INARC` 因 normalized direction 8 接受全部方向；建立 record 前再由
   最佳 pair 依序試 `0..7`，保存第一個符合 sector。
 
-以上 exact 關閉記錄來源與數值流，但 terrain property tables 的正式欄位名、
-阻擋類型及牆角 runtime 邊界仍未閉合，不能把 bounded sorter 寫成「完整 LOS」。
+以上 exact 關閉記錄來源與數值流。terrain property table 的正式 `HT／LOS／
+SYM` 名稱、`TACTICALMAP.XRAY／TD` 與靜態阻擋比較已由 spec 436 接續；牆角
+runtime 邊界仍未閉合，不能把 bounded producer 寫成「完整戰鬥 LOS」。
 
 ## 排序指令
 
@@ -87,6 +88,7 @@ supersede，避免 compact 後再次採用。
 - CoAB 回歸覆蓋 stable ID 映射、輸入不被修改，以及零／重複／空 ID
   fail-closed。
 
-這仍不是正常玩家 Sleep 路徑。下一步必須從手動格點或 Quick transaction
-建立真實 `SCAN` records，以 PC-98／DOSBox 固定戰場交叉驗證 terrain、wall、
-large footprint 與 cursor，再把 ordered IDs 交給既有 `CastSleepOrdered`。
+spec 436 已建立 `terrain producer → ordered stable IDs → CastSleepOrdered` 的
+bounded transaction，但仍不是正常玩家 Sleep 路徑。下一步必須關閉 `INARC`
+與 COMPOBJ builder，並以 PC-98／DOSBox 固定戰場交叉驗證 wall、large
+footprint 與 cursor，才能接入手動／Quick UI。

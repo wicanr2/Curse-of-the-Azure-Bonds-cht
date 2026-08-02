@@ -3,6 +3,8 @@ package combat
 import (
 	"reflect"
 	"testing"
+
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
 func TestOrderScanTargetIDsUsesLegacyObjectDistanceAndIgnoresDirection(t *testing.T) {
@@ -32,6 +34,50 @@ func TestOrderScanTargetIDsRejectsAmbiguousProjection(t *testing.T) {
 	for _, records := range tests {
 		if _, err := OrderScanTargetIDs(records); err == nil {
 			t.Fatalf("accepted ambiguous SCAN records %v", records)
+		}
+	}
+}
+
+func TestBuildScanTargetIDsFeedsSleepWithoutDisplayTextOrSliceIdentity(t *testing.T) {
+	tacticalMap := enginescan.TacticalMap{
+		Width: 6, Height: 1,
+		Tiles: []uint8{1, 1, 1, 2, 1, 1},
+		Definitions: []enginescan.TerrainDefinition{
+			{LOS: 1, SYM: 0},
+			{LOS: 1, SYM: 2},
+		},
+	}
+	ordered, err := BuildScanTargetIDs(
+		tacticalMap,
+		1,
+		[]enginescan.Point{{X: 0}},
+		[]ScanTargetCandidate{
+			{ObjectID: 9, TargetID: "blocked", Cells: []enginescan.Point{{X: 5}}},
+			{ObjectID: 3, TargetID: "near", Cells: []enginescan.Point{{X: 1}}},
+		},
+		6,
+		func(from, to enginescan.Point) (uint8, error) { return 0, nil },
+	)
+	if err != nil || !reflect.DeepEqual(ordered, []string{"near"}) {
+		t.Fatalf("ordered=%v err=%v", ordered, err)
+	}
+
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10},
+		{ID: "near", Side: SideEnemy, HitPoints: 4, MaxHitPoints: 4, HitDice: 1},
+		{ID: "blocked", Side: SideEnemy, HitPoints: 4, MaxHitPoints: 4, HitDice: 1},
+	}, 436)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastSleepOrdered("caster", ordered, 5)
+	if err != nil || len(result.Impacts) != 1 || result.Impacts[0].TargetID != "near" {
+		t.Fatalf("Sleep result=%+v err=%v", result, err)
+	}
+	blocked, _ := battle.Fighter("blocked")
+	for _, effect := range blocked.MonsterAffects {
+		if effect.Kind == 0x35 {
+			t.Fatal("terrain-blocked target received Sleep")
 		}
 	}
 }

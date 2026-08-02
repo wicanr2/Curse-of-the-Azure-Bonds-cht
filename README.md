@@ -11,7 +11,7 @@
 
 截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-CoAB 本輪基底為目前 GitHub `main`，依賴的獨立 engine 為 `b75e169`；實際
+目前 GitHub `main`，依賴的獨立 engine 為 `9c94ddd`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -36,14 +36,18 @@ remake scheduler 已按四個 raw IDs 接通，沒有把所有施法取消錯誤
 會把睡眠術冒充完整可用。證據見
 [`docs/spec/432-pc98-sleep-hd-capacity-filter.md`](docs/spec/432-pc98-sleep-hd-capacity-filter.md)。
 
-第 433–435 輪已繼續關閉 Sleep 的 targeting 與 effect transaction：戰鬥
+第 433–436 輪已繼續關閉 Sleep 的 targeting 與 effect transaction：戰鬥
 handler 由 overlay 31 `SCAN` 建立三 byte候選表；三欄 exact 是 combat
 object ID、最短成功 LOS 加權距離低 byte、方向 sector。原版排序只按距離，
 等距時套用 object ID 奇偶例外；方向不參與排序。獨立 engine 與 CoAB
 stable-ID adapter 已保存這個順序，`CastSleepOrdered` 也完成 `4d4`／HD、
-magic resistance 與 effect `35h` writer。Terrain／wall 實機、手動／Quick
+magic resistance 與 effect `35h` writer。第 436 輪再由 Borland
+`TDEFTYPE／TACTICALMAP` 與 IDA raw table 接通 `LOS／SYM／XRAY／TD`、
+2／3 加權距離、footprint strict minimum 與 terrain-aware producer；bounded
+transaction 已可把排序後 stable IDs 交給 Sleep。`INARC` sector、COMPOBJ
+建立順序、wall 實機、手動／Quick
 施法、解除、存檔及演出仍未完成，不能宣稱 Sleep 已可正常遊玩。最新證據見
-[`docs/spec/435-pc98-scan-record-order.md`](docs/spec/435-pc98-scan-record-order.md)。
+[`docs/spec/436-pc98-scan-terrain-los.md`](docs/spec/436-pc98-scan-terrain-los.md)。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
 `pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存

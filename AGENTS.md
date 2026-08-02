@@ -357,10 +357,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`08e6cca`（第 434 輪 Sleep `PUTEFFECT`／魔抗 transaction）；
-  第 435 輪 `SCAN` 三欄與排序 milestone 會由本文件所在 commit 完成。
-- Engine dependency：`b75e169`（含作品中立 `combat/scanorder` 的三 byte
-  record 原版排序、`combat/sleep` 的 `4d4`／
+- CoAB 本輪基底：`56a3dde`（第 435 輪 `SCAN` 三欄與排序）；第 436 輪
+  terrain-aware `LOSEXISTS`／producer milestone 會由本文件所在 commit 完成。
+- Engine dependency：`9c94ddd`（含作品中立 `combat/scan` 的
+  `TDEFTYPE／TACTICALMAP` 地形視線與 footprint producer、`combat/scanorder`
+  的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
   ordered HD capacity filter、`combat/action` 的 delayed
   spell `TargetID`／point-target transaction 與 interruption clear、
   `combat/initiative`、
@@ -605,6 +606,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `combat/scanorder` 與 CoAB stable-ID adapter 已接通；terrain／wall 實機、
   手動／Quick Sleep 與演出仍待續。READY spec 435 是權威，spec 433 的舊
   第三欄 tie 敘述已 supersede。
+- 第 436 輪已由 Borland symbol／type／member table、全新 IDA raw resident
+  report 與 overlay 31 `LOSEXISTS` 閉合 `TDEFTYPE HT／LOS／SYM`、
+  `TACTICALMAP XRAY／TD`、一基底 tile、2／3 加權距離與
+  `2*range+1` gate。engine `combat/scan` 與 CoAB
+  `BuildScanTargetIDs → CastSleepOrdered` bounded transaction 已接通；第四
+  byte 仍命名 `Raw3`，`INARC` sector、COMPOBJ builder、wall／corner 動態
+  trace、手動／Quick Sleep 與演出仍未完成。READY spec 436 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
