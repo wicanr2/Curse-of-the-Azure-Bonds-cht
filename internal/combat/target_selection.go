@@ -79,6 +79,60 @@ type ScanTargetCandidate struct {
 	Cells    []enginescan.Point
 }
 
+// LegacyScanObjects projects the original OBJECTLIST/IDLIST identity table
+// from Battle's preserved CHARACTERLIST order. It excludes inactive records
+// exactly at the title boundary represented by dead or unplaced fighters.
+func (b *Battle) LegacyScanObjects(sourceID string, targetSide Side) (
+	uint8, []enginescan.Point, []ScanTargetCandidate, error,
+) {
+	if b == nil {
+		return 0, nil, nil, fmt.Errorf("battle is nil")
+	}
+	source, ok := b.fighters[sourceID]
+	if !ok {
+		return 0, nil, nil, fmt.Errorf("unknown SCAN source %q", sourceID)
+	}
+	if source.LegacyObjectID == 0 || !source.HasCombatPosition || source.HitPoints <= 0 {
+		return 0, nil, nil, fmt.Errorf("SCAN source %q has no active legacy object", sourceID)
+	}
+	sourceCells := scanFootprintCells(source)
+	candidates := make([]ScanTargetCandidate, 0, len(b.fighterOrder))
+	seen := make(map[uint8]struct{}, len(b.fighterOrder))
+	for _, fighterID := range b.fighterOrder {
+		fighter := b.fighters[fighterID]
+		if fighter.LegacyObjectID == 0 {
+			return 0, nil, nil, fmt.Errorf("fighter %q has no legacy combat object ID", fighter.ID)
+		}
+		if fighter.LegacyObjectID > 72 {
+			return 0, nil, nil, fmt.Errorf("fighter %q object ID %d exceeds OBJECTLIST capacity", fighter.ID, fighter.LegacyObjectID)
+		}
+		if _, duplicate := seen[fighter.LegacyObjectID]; duplicate {
+			return 0, nil, nil, fmt.Errorf("duplicate legacy combat object ID %d", fighter.LegacyObjectID)
+		}
+		seen[fighter.LegacyObjectID] = struct{}{}
+		if fighter.Side != targetSide || fighter.HitPoints <= 0 || !fighter.HasCombatPosition {
+			continue
+		}
+		candidates = append(candidates, ScanTargetCandidate{
+			ObjectID: fighter.LegacyObjectID,
+			TargetID: fighter.ID,
+			Cells:    scanFootprintCells(fighter),
+		})
+	}
+	return source.LegacyObjectID, sourceCells, candidates, nil
+}
+
+func scanFootprintCells(fighter Fighter) []enginescan.Point {
+	footprint := FootprintForSize(fighter.CombatSize)
+	cells := make([]enginescan.Point, 0, footprint.Width*footprint.Height)
+	for y := fighter.CombatY; y < fighter.CombatY+footprint.Height; y++ {
+		for x := fighter.CombatX; x < fighter.CombatX+footprint.Width; x++ {
+			cells = append(cells, enginescan.Point{X: x, Y: y})
+		}
+	}
+	return cells
+}
+
 // BuildScanTargetIDs runs the recovered terrain-aware producer and returns
 // stable fighter IDs in original SCAN order. Arc is the original INARC sector:
 // 0..7 select one direction and 8/FFh accept every direction.
@@ -118,6 +172,23 @@ func BuildScanTargetIDs(
 		ordered[index] = targetByObject[entry.ObjectID]
 	}
 	return ordered, nil
+}
+
+// BuildLegacyScanTargetIDs closes the title adapter transaction from the
+// original CHARACTERLIST/IDLIST identity projection through SCAN ordering to
+// stable remake fighter IDs.
+func (b *Battle) BuildLegacyScanTargetIDs(
+	tacticalMap enginescan.TacticalMap,
+	sourceID string,
+	targetSide Side,
+	maxRange int,
+	arc uint8,
+) ([]string, error) {
+	objectID, sourceCells, candidates, err := b.LegacyScanObjects(sourceID, targetSide)
+	if err != nil {
+		return nil, err
+	}
+	return BuildScanTargetIDs(tacticalMap, objectID, sourceCells, candidates, maxRange, arc)
 }
 
 // SelectRangedCombatTarget builds the reachable opposing list before using

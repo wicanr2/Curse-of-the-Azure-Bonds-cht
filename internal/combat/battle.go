@@ -39,6 +39,10 @@ type Fighter struct {
 	ID   string
 	Name string
 	Side Side
+	// LegacyObjectID is the one-based OBJECTLIST/IDLIST index rebuilt from the
+	// original CHARACTERLIST traversal at combat start. Zero means the title
+	// adapter has not established that legacy identity.
+	LegacyObjectID uint8
 	// QuickFight delegates this fighter's turn to combat AI even when it is
 	// on the party side. ECL uses this for allied NPCs in mixed-team battles.
 	QuickFight bool
@@ -596,6 +600,13 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 		}
 		if _, exists := b.fighters[fighter.ID]; exists {
 			return nil, fmt.Errorf("duplicate fighter ID %q", fighter.ID)
+		}
+		if fighter.LegacyObjectID != 0 {
+			for _, existingID := range b.fighterOrder {
+				if b.fighters[existingID].LegacyObjectID == fighter.LegacyObjectID {
+					return nil, fmt.Errorf("duplicate legacy combat object ID %d", fighter.LegacyObjectID)
+				}
+			}
 		}
 		if fighter.MaxHitPoints <= 0 || fighter.HitPoints < 0 || fighter.HitPoints > fighter.MaxHitPoints {
 			return nil, fmt.Errorf("fighter %q has invalid hit points", fighter.ID)

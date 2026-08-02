@@ -486,6 +486,12 @@ commit 內保存不可能自我引用的 hash。
   overlay 10 builder 證明 X／Y／index／footprint-active 欄位及 linked-list
   建表。linked-list 到 stable fighter ID、正常手動／Quick Sleep、PC-98
   wall／corner 動態仍未完成；READY spec 437 是權威。
+- 第 438 輪由 Borland symbols/types 閉合 `CHARACTERLIST 9598h`、
+  `IDLIST 9DD3h` 的 72×`CHARRECPTR` 身份表及 `CHARREC.NEXT` linked-list。
+  `StartCombat` 現重建一基底 `LegacyObjectID`，`Battle` 可由 stable fighter
+  identity 展開真實 footprint，再完整串接 `INARC／LOS／sort`。Ebiten 尚未
+  提供原戰場 `TACTICALMAP TD/TDEF`，故正常 Sleep UI、wall／corner runtime
+  仍未完成；READY spec 438 是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

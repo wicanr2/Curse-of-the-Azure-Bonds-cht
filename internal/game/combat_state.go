@@ -21,6 +21,9 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		return fmt.Errorf("combat needs at least one party member and enemy")
 	}
 	fighters := make([]combat.Fighter, 0, len(party)+len(enemies))
+	if len(party)+len(enemies) > 72 {
+		return fmt.Errorf("combat has %d fighters, original OBJECTLIST capacity is 72", len(party)+len(enemies))
+	}
 	s.combatReferenceCoords = false
 	for _, fighter := range append(append([]combat.Fighter(nil), party...), enemies...) {
 		if fighter.HasCombatPosition && (fighter.CombatX >= 16 || fighter.CombatY >= 10) {
@@ -42,6 +45,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		}
 		iconDirection, _ := combat.IconDirectionForTeam(s.combatMapDirection, fighter.Side)
 		fighter.IconDirection = iconDirection
+		fighter.LegacyObjectID = uint8(len(fighters) + 1)
 		fighters = append(fighters, fighter)
 		partyIndex++
 	}
@@ -59,6 +63,7 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 		}
 		iconDirection, _ := combat.IconDirectionForTeam(s.combatMapDirection, fighter.Side)
 		fighter.IconDirection = iconDirection
+		fighter.LegacyObjectID = uint8(len(fighters) + 1)
 		fighters = append(fighters, fighter)
 		enemyIndex++
 	}

@@ -3188,3 +3188,15 @@ Borland symbols exact 命名 `LASTOBJECT 0C29:9740` 與 `OBJECTLIST
 builder 從 object 1 沿 combatant far-pointer linked list 建立 X／Y／自身 index／
 footprint-active 欄位。linked-list→stable fighter ID 尚未閉合，故本輪不開放
 正常 Sleep UI。READY spec 437 與 `/tmp/coab-ida-437` 是續作入口。
+
+2026-08-02 第四百三十八輪由 Borland types 補齊身份橋：`CHARACTERLIST
+9598h` 是 `CHARRECPTR` head；`IDLIST 9DD3h` 是 72×4-byte `CHARRECPTR`，
+overlay 10 builder 把 traversal 中同一 far pointer 寫入 `IDLIST[objectID-1]`，
+再沿 `CHARREC.NEXT +18Ah` 前進。這證明 SCAN object ID 以 pointer identity
+對應角色，不是顯示名稱或偶然 slice index。
+
+CoAB `Fighter.LegacyObjectID`、`StartCombat` 一基底重建、
+`LegacyScanObjects／BuildLegacyScanTargetIDs` 已串成
+`CHARACTERLIST→IDLIST→footprint→INARC/LOS/sort→stable ID` transaction，
+72 筆上限與身份缺損均 fail-closed。frontend 仍缺目前戰場 `TD/TDEF`，正常
+Sleep UI 繼續封鎖；READY spec 438 是續作入口。
