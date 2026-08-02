@@ -2115,7 +2115,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "三隻") || !strings.Contains(state.Message, "黑龍") {
+	if state.Message != requireGamePackText(t, &state, "hap.black-dragons") {
 		t.Fatalf("Hap dragon approach message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -2141,7 +2141,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.Location != LocationHap || !strings.Contains(state.Message, "哈普村外") ||
+	if state.Location != LocationHap || state.Message != requireGamePackText(t, &state, "hap.edge") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) {
 		t.Fatalf("Hap arrival location=%v choices=%#v message=%q",
 			state.Location, state.currentOriginalChoices, state.Message)
@@ -2156,7 +2156,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if session.CurrentBlockID() != 0x31 || state.Area.GameArea != 5 || !state.Area.InDungeon ||
-		state.GeoMapSet != 5 || !strings.Contains(state.Message, "破敗的村莊") ||
+		state.GeoMapSet != 5 || state.Message != requireGamePackText(t, &state, "hap.abandoned-village") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap entry block=%#x area=%+v geo=%d choices=%#v message=%q",
 			session.CurrentBlockID(), state.Area, state.GeoMapSet, state.currentOriginalChoices, state.Message)
@@ -2174,7 +2174,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 50 ||
-		!strings.Contains(state.Message, "幾名村民驚慌退縮") {
+		state.Message != requireGamePackText(t, &state, "hap.hiding-peasants") {
 		t.Fatalf("Hap peasants mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -2190,7 +2190,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "村民奪門而出") ||
+	if state.Message != requireGamePackText(t, &state, "hap.peasants-flee") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap talk choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2213,7 +2213,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeCombat || !strings.Contains(state.Message, "死得痛快") {
+	if state.Mode != ModeCombat || state.Message != requireGamePackText(t, &state, "hap.dark-elf-attack") {
 		t.Fatalf("Hap patrol combat mode=%v message=%q", state.Mode, state.Message)
 	}
 	patrolFighters := state.CombatFighters()
@@ -2254,7 +2254,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 59 ||
-		!strings.Contains(state.Message, "阿卡巴・貝爾・阿卡什") {
+		state.Message != requireGamePackText(t, &state, "hap.akabar-join") {
 		t.Fatalf("Hap Akabar picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
 	}
 	if err := state.Continue(); err != nil {
@@ -2273,7 +2273,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatalf("Hap Akabar roster=%+v", state.partyRoster)
 	}
 	if !state.PictureRequested || state.PictureBlock != 50 ||
-		!strings.Contains(state.Message, "保持低調") {
+		state.Message != requireGamePackText(t, &state, "hap.inn-before-liberation") {
 		t.Fatalf("Hap inn picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
 	}
 	if err := state.Continue(); err != nil {
@@ -2301,7 +2301,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "伊弗利特") ||
+	if state.Message != requireGamePackText(t, &state, "hap.efreet-barn") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap efreet barn choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2309,7 +2309,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) ||
-		!strings.Contains(state.Message, "伊弗利特隆隆吼道") {
+		state.Message != requireGamePackText(t, &state, "hap.efreet-threat") {
 		t.Fatalf("Hap efreet approach choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -2346,7 +2346,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if !strings.Contains(state.Message, "村莊與一處洞穴") ||
+	if state.Message != requireGamePackText(t, &state, "hap.efreet-map") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap efreet map choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2359,7 +2359,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 50 ||
-		!strings.Contains(state.Message, "整座村莊隨即充滿歡呼") {
+		state.Message != requireGamePackText(t, &state, "hap.liberated-crowd") {
 		t.Fatalf("Hap liberation picture=%v/%d message=%q", state.PictureRequested, state.PictureBlock, state.Message)
 	}
 	if err := state.Continue(); err != nil {
@@ -2368,20 +2368,20 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "哈普圖斯永遠歡迎") {
+	if state.Message != requireGamePackText(t, &state, "hap.elder-thanks") {
 		t.Fatalf("Hap elder thanks=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "附近法師塔控制") ||
+	if state.Message != requireGamePackText(t, &state, "hap.elder-wizard-tower") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap elder tower choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "祕密商路") ||
+	if state.Message != requireGamePackText(t, &state, "hap.akabar-secret-routes") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Hap Akabar secret route choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2397,14 +2397,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonExitLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "返回荒野") ||
+	if state.Message != requireGamePackText(t, &state, "hap.leave") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
 		t.Fatalf("Hap exit choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "循著地圖前往洞穴") ||
+	if state.Message != requireGamePackText(t, &state, "hap.map-route") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"CAVES", "WILDERNESS"}) {
 		t.Fatalf("Hap map route choices=%#v message=%q", state.currentOriginalChoices, state.Message)
 	}
@@ -2414,7 +2414,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.session.CurrentBlockID() != 0x32 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 ||
 		state.DungeonX != 15 || state.DungeonY != 5 || state.DungeonDirection != 6 ||
 		state.LoadPieces != [3]uint16{8, 0xFF, 0xFF} ||
-		!strings.Contains(state.Message, "古老的熔岩隧道") {
+		state.Message != requireGamePackText(t, &state, "lava-tube.entry") {
 		t.Fatalf("lava tube entry mode=%v block=%#x script=(%d,%d,%d) geo=%d/%d pieces=%v message=%q",
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
 			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.LoadPieces, state.Message)
@@ -2422,7 +2422,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "火蜥蜴與黑暗精靈") {
+	if state.Message != requireGamePackText(t, &state, "lava-tube.ambush") {
 		t.Fatalf("lava tube ambush message=%q", state.Message)
 	}
 	if state.Mode != ModeCombat {
@@ -2480,7 +2480,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeCombat || !strings.Contains(state.Message, "火蜥蜴率領的巡邏隊") {
+	if state.Mode != ModeCombat || state.Message != requireGamePackText(t, &state, "lava-tube.guarded-door") {
 		flag, _ := session.MemoryValue(0x4C48)
 		boss, _ := session.MemoryValue(0x4C60)
 		t.Fatalf("lava guarded door mode=%v message=%q flags=%#x boss=%#x picture=%v/%d originals=%#v",
@@ -2511,7 +2511,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "前方危機重重") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "lava-tube.dream-warning") {
 		t.Fatalf("guarded-door warning mode=%v message=%q", state.Mode, state.Message)
 	}
 	if got, ok := session.MemoryValue(0x4C48); !ok || got&0x08 == 0 {
@@ -2530,7 +2530,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !state.PictureRequested || state.PictureBlock != 57 ||
-		!strings.Contains(state.Message, "間歇泉與熔岩池") {
+		state.Message != requireGamePackText(t, &state, "lava-tube.salamander-pools") {
 		t.Fatalf("lava pools picture=%v/%d message=%q",
 			state.PictureRequested, state.PictureBlock, state.Message)
 	}
@@ -2553,7 +2553,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(3); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "冰冷") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "lava-tube.nice-parlay") {
 		t.Fatalf("lava pools nice parlay mode=%v message=%q", state.Mode, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -2577,7 +2577,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeCombat || !strings.Contains(state.Message, "灼熱的熱浪") {
+	if state.Mode != ModeCombat || state.Message != requireGamePackText(t, &state, "lava-tube.intense-heat") {
 		t.Fatalf("lava pools combat mode=%v message=%q", state.Mode, state.Message)
 	}
 	poolSalamanders := 0
@@ -2597,7 +2597,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "六只防火桶") ||
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "lava-tube.fireproof-casks") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
 		t.Fatalf("lava pools casks mode=%v message=%q choices=%#v",
 			state.Mode, state.Message, state.currentOriginalChoices)
@@ -2614,7 +2614,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "熱度過於猛烈") ||
+	if state.Message != requireGamePackText(t, &state, "lava-tube.cask-heat-retreat") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"YES", "NO"}) {
 		t.Fatalf("lava cask heat mode=%v choices=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)

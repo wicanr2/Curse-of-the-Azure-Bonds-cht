@@ -842,3 +842,14 @@ CoAB 新遊戲提供直接反例：醒來與裝備消失先形成 PRESS pause；
 PICTURE boundary 顯示全隊手臂印記。合併成單一翻譯會提早洩漏下一畫面，逐行
 翻譯則讓作品文字滲入 runtime。可沿用的驗證是同時檢查 rule ID、每個 boundary
 的完整訊息、picture request、resume 後座標與未知來源的原文 fallback。
+
+### 2026-08-02：區域翻譯應以完整玩家鏈驗證
+
+把文字搬入 game-pack 後，單獨呼叫 matcher 只能證明來源片段與 locale 可解析。
+城鎮主線還可能跨越世界旅行、地城 GEO、NPC 加入、戰鬥、完成旗標、財寶與
+下一 block。至少要保留一條不傳送、不強制勝利的正常長路徑，逐 boundary 從
+stable ID 取得訊息，並同步檢查 continuation 與狀態副作用。
+
+Hap→熔岩洞穴說明另一個常見誤差：同一組規則表可完整覆蓋 `sly／nice／combat`
+來源，但一條玩家回歸只會實際選其中部分分支。知識庫與狀態表應分開寫「pack
+coverage」與「player-path coverage」，不能用前者替代後者。

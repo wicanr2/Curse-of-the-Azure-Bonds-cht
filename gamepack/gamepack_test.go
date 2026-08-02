@@ -338,6 +338,77 @@ func TestOpeningNarrativesAreGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestHapVillageStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"hap.black-dragons", []string{"SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES", "FEARSOME BLACK DRAGONS"}},
+		{"hap.edge", []string{"YOU ARE AT THE EDGE OF HAP"}},
+		{"hap.abandoned-village", []string{"THIS RUN DOWN VILLAGE IS STRANGELY QUIET", "NO ONE IS ABOUT"}},
+		{"hap.hiding-peasants", []string{"YOU BURST IN ON SOME PEASANTS WHO SCUTTLE BACK", "LEAVE BEFORE THE HORDE FINDS YOU WITH US"}},
+		{"hap.peasants-flee", []string{"THE CRINGING PEASANTS FLEE OUT INTO THE STREET"}},
+		{"hap.dark-elf-attack", []string{"YOU UNGRATEFUL SLIME", "BE HAPPY FOR A QUICK DEATH"}},
+		{"hap.akabar-join", []string{"I AM AKABAR BEL AKASH", "WILL YOU LET HIM JOIN YOUR PARTY"}},
+		{"hap.inn-before-liberation", []string{"A SURLY INNKEEPER COMES UP", "DO YOU STAY"}},
+		{"hap.efreet-barn", []string{"THIS BARN IS EMPTY", "EFREET AND HIS DARK ELFIN COHORTS"}},
+		{"hap.efreet-threat", []string{"THE EFREET VOICE BOOMS OUT", "DOOM ON YOUR VILLAGE"}},
+		{"hap.efreet-map", []string{"ON THE BODY OF THE EFREET IS A MAP", "THE TOWN AND A CAVE"}},
+		{"hap.liberated-crowd", []string{"A SHORT TIME AFTER THE SOUNDS OF BATTLE FADE", "LOUD CHEERS AND LAUGHTER"}},
+		{"hap.elder-thanks", []string{"AN ELDER OF THE VILLAGE COMES FORWARD", "ALWAYS BE WELCOME IN HAPTOOTH"}},
+		{"hap.elder-wizard-tower", []string{"THE ELDER LOWERS HIS VOICE", "CONTROLLED FROM THE WIZARD'S TOWER NEARBY"}},
+		{"hap.akabar-secret-routes", []string{"AKABAR MENTIONS THAT HE HAS HEARD OF SECRET TRADE ROUTES", "HAPPY TO GUIDE THE PARTY THERE"}},
+		{"hap.leave", []string{"YOU ARE HEADING BACK TO THE WILDERNESS", "WANT TO CONTINUE"}},
+		{"hap.map-route", []string{"FOLLOW THE MAP TO THE CAVES", "GO INTO THE WILDERNESS"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
+func TestLavaTubeStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"lava-tube.entry", []string{"YOU HAVE ENTERED AN ANCIENT LAVA TUBE", "ASH COVERS THE FLOOR"}},
+		{"lava-tube.ambush", []string{"FROM HIDDEN ALCOVES COMES A WAVE OF HEAT", "SALAMANDERS AND DARK ELVES"}},
+		{"lava-tube.guarded-door", []string{"THE DOOR IS GUARDED BY A SALAMANDER LED PATROL"}},
+		{"lava-tube.dream-warning", []string{"A DREAM-LIKE VOICE IN YOUR HEAD SAYS", "BE FULLY PREPARED"}},
+		{"lava-tube.salamander-pools", []string{"THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS", "SALAMANDERS ARE SPORTING IN THE POOLS"}},
+		{"lava-tube.intense-heat", []string{"INTENSE HEAT WASHES OVER YOU"}},
+		{"lava-tube.sly-parlay", []string{"WE HAVE NO LOVE FOR DARK ELVES", "TAKE ANY TREASURE"}},
+		{"lava-tube.nice-parlay", []string{"YOU COLD THINGS SHOULD LEAVE", "CRIMDRAC FINDS YOU"}},
+		{"lava-tube.fireproof-casks", []string{"AMONGST THE POOLS OF LAVA", "SIX FIREPROOF CASKS", "OPEN ONE"}},
+		{"lava-tube.cask-heat-retreat", []string{"THE HEAT IS TOO INTENSE", "DOES ANYONE WANT TO TRY AGAIN"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

@@ -377,6 +377,33 @@
       ,"opening.curse-summary": "On your way to Tilverton, you are ambushed, captured, and knocked unconscious. You awaken cursed with five azure symbols that bind your will. When the bonds glow, you must obey. Your only hope is to find the alliance that created them and regain control of your destiny. Nowhere in the Realms is completely safe; even a peaceful scene may hide a deadly foe."
       ,"opening.new-game-awakening": "You awaken in a small room. All your gear is gone, along with your memory of recent events."
       ,"opening.new-game-marks": "Adding to your disquiet, strange patterns have been imprinted on every party member's sword arm."
+      ,"hap.black-dragons": "Great black shapes sail across the sky and swoop down: three fearsome black dragons."
+      ,"hap.edge": "You are at the edge of Hap. Will you enter the village or continue your journey?"
+      ,"hap.abandoned-village": "The run-down village is strangely quiet. Wind howls through empty streets and shuttered windows; no one is about."
+      ,"hap.hiding-peasants": "You burst in on peasants who shrink back and beg you to leave before the horde finds you with them. What do you do?"
+      ,"hap.peasants-flee": "The cringing peasants flee into the street."
+      ,"hap.dark-elf-attack": "The dark elves curse your ingratitude and promise you a quick death."
+      ,"hap.akabar-join": "Akabar Bel Akash introduces himself and proposes joining forces against the dark tide. Will you let him join the party?"
+      ,"hap.inn-before-liberation": "A surly innkeeper warns that monsters are outside. You may stay if you keep quiet. Do you stay?"
+      ,"hap.efreet-barn": "The barn is empty except for an efreet and his dark-elven cohorts."
+      ,"hap.efreet-threat": "The efreet roars that it will kill you, burn the village, and make you responsible for its doom."
+      ,"hap.efreet-map": "On the efreet's body you find a map showing the village and a cave."
+      ,"hap.liberated-crowd": "Soon after the battle fades, villagers gather and Haptooth fills with cheers and laughter."
+      ,"hap.elder-thanks": "A village elder thanks you and says you will always be welcome in Haptooth."
+      ,"hap.elder-wizard-tower": "The elder warns that the dark elves are controlled from the nearby wizard's tower; the village will not be safe until that nest is destroyed."
+      ,"hap.akabar-secret-routes": "Akabar knows secret trade routes around the wizard's tower and offers to guide the party."
+      ,"hap.leave": "You are heading back to the wilderness. Do you want to continue?"
+      ,"hap.map-route": "Will you follow the map to the caves or return to the wilderness?"
+      ,"lava-tube.entry": "You enter an ancient lava tube. Ash covers the floor."
+      ,"lava-tube.ambush": "A wave of heat bursts from hidden alcoves, followed by salamanders and dark elves."
+      ,"lava-tube.guarded-door": "The door is guarded by a salamander-led patrol."
+      ,"lava-tube.dream-warning": "A dream-like voice warns you that great danger lies ahead and that you should be fully prepared."
+      ,"lava-tube.salamander-pools": "The room is filled with active geysers and lava pits. Salamanders sport in the pools."
+      ,"lava-tube.intense-heat": "Intense heat washes over the party."
+      ,"lava-tube.sly-parlay": "The salamanders claim no love for dark elves and invite you to take any treasure you want."
+      ,"lava-tube.nice-parlay": "The salamanders tell you cold creatures to leave before Crimdrac finds you."
+      ,"lava-tube.fireproof-casks": "Among the lava pools stand six fireproof casks. Will someone try to open one?"
+      ,"lava-tube.cask-heat-retreat": "The heat is too intense and the volunteer retreats. Does anyone want to try again?"
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -779,6 +806,33 @@
       ,"opening.curse-summary": "前往提爾佛頓途中，你們遭到伏擊、被俘並失去意識。醒來時，隊伍已被五枚青色符印下了詛咒；符印如金屬枷鎖般束縛意志，發光時更會強迫你們服從。唯一的希望，是找出創造枷印的聯盟成員，重新掌握自己的命運。國度中沒有任何地方絕對安全；最平靜的景象也可能藏著致命敵人。"
       ,"opening.new-game-awakening": "你們在一間小房間裡醒來。所有裝備都不見了，最近發生的事情也完全想不起來。"
       ,"opening.new-game-marks": "更令人不安的是，每位隊員持劍的手臂都被烙上完全相同的奇異圖紋。"
+      ,"hap.black-dragons": "巨大的黑影在天際翱翔，突然俯衝而下——竟是三隻駭人的黑龍！"
+      ,"hap.edge": "你們來到哈普村外。要進村，還是繼續旅程？"
+      ,"hap.abandoned-village": "這座破敗的村莊異常寂靜。風沿著空蕩街道呼嘯，掠過一扇扇緊閉的窗戶；四下不見人影。"
+      ,"hap.hiding-peasants": "你們闖進屋裡，幾名村民驚慌退縮，喊道：「快走！別讓那群怪物發現你們和我們在一起！」你們要怎麼做？"
+      ,"hap.peasants-flee": "畏縮的村民奪門而出，逃進街道。"
+      ,"hap.dark-elf-attack": "「忘恩負義的渣滓！你們一再挑戰我們的耐性，就慶幸自己能死得痛快吧！」"
+      ,"hap.akabar-join": "「你們終於來了。我是阿卡巴・貝爾・阿卡什。只要聯手，我們就能粉碎這股黑暗浪潮。」要讓他加入隊伍嗎？"
+      ,"hap.inn-before-liberation": "一名板著臉的旅店老闆走來：「把門關上！怪物正在外頭。你們想住就住，只要保持低調。」要留下嗎？"
+      ,"hap.efreet-barn": "穀倉裡空無一物，只剩伊弗利特與他的黑暗精靈黨羽。"
+      ,"hap.efreet-threat": "伊弗利特隆隆吼道：「可悲的蟲子竟敢反抗！我們會先殺了你們，再燒毀這片破爛村落。是你們把毀滅帶給了自己的村莊！」"
+      ,"hap.efreet-map": "你們在伊弗利特的屍體上找到一張地圖，標出了村莊與一處洞穴。"
+      ,"hap.liberated-crowd": "戰聲平息不久，幾顆膽怯的腦袋探進穀倉。人群很快聚集起來，整座村莊隨即充滿歡呼與笑聲。"
+      ,"hap.elder-thanks": "一位村中長老上前說：「我們永遠感激你們；哈普圖斯永遠歡迎各位。」"
+      ,"hap.elder-wizard-tower": "長老壓低聲音：「我不願顯得忘恩負義，但這些精靈受附近法師塔控制。只有摧毀那個巢穴，我們才真正安全。」"
+      ,"hap.akabar-secret-routes": "阿卡巴提到，他聽說有祕密商路可以繞過法師塔；他很樂意帶領隊伍前往。"
+      ,"hap.leave": "你們正準備返回荒野。要繼續嗎？"
+      ,"hap.map-route": "要循著地圖前往洞穴，還是回到荒野？"
+      ,"lava-tube.entry": "你們進入一條古老的熔岩隧道，地面覆滿火山灰。"
+      ,"lava-tube.ambush": "熱浪從隱蔽凹室中湧出，緊接著火蜥蜴與黑暗精靈一擁而上。"
+      ,"lava-tube.guarded-door": "門前由一支火蜥蜴率領的巡邏隊把守。"
+      ,"lava-tube.dream-warning": "一個夢境般的聲音在腦中響起：「前方危機重重，務必做好萬全準備！」"
+      ,"lava-tube.salamander-pools": "房內遍布活躍的間歇泉與熔岩池，火蜥蜴正在池中嬉戲。"
+      ,"lava-tube.intense-heat": "灼熱的熱浪席捲全隊。"
+      ,"lava-tube.sly-parlay": "「我們對黑暗精靈毫無好感。你們想拿多少財寶，就拿多少吧。」"
+      ,"lava-tube.nice-parlay": "「你們這些冰冷生物，最好趁克林德拉克還沒發現前離開。」"
+      ,"lava-tube.fireproof-casks": "熔岩池之間放著六只防火桶。要派人前去打開其中一只嗎？"
+      ,"lava-tube.cask-heat-retreat": "熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2532,6 +2586,33 @@
     {"id": "opening.curse-summary", "all_contains": ["ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE", "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS", "AND REGAIN CONTROL OF YOUR OWN DESTINY", "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"], "message_id": "opening.curse-summary"},
     {"id": "opening.new-game-awakening", "all_contains": ["YOU AWAKEN IN A SMALL ROOM", "ALL YOUR GEAR IS GONE"], "message_id": "opening.new-game-awakening"},
     {"id": "opening.new-game-marks", "all_contains": ["ADDING TO YOUR DISQUIET", "IMPRINTED WITH STRANGE PATTERNS", "IDENTICALLY MARKED"], "message_id": "opening.new-game-marks"},
+    {"id": "hap.black-dragons", "all_contains": ["SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES", "FEARSOME BLACK DRAGONS"], "message_id": "hap.black-dragons"},
+    {"id": "hap.edge", "all_contains": ["YOU ARE AT THE EDGE OF HAP"], "message_id": "hap.edge"},
+    {"id": "hap.abandoned-village", "all_contains": ["THIS RUN DOWN VILLAGE IS STRANGELY QUIET", "NO ONE IS ABOUT"], "message_id": "hap.abandoned-village"},
+    {"id": "hap.hiding-peasants", "all_contains": ["YOU BURST IN ON SOME PEASANTS WHO SCUTTLE BACK", "LEAVE BEFORE THE HORDE FINDS YOU WITH US"], "message_id": "hap.hiding-peasants"},
+    {"id": "hap.peasants-flee", "all_contains": ["THE CRINGING PEASANTS FLEE OUT INTO THE STREET"], "message_id": "hap.peasants-flee"},
+    {"id": "hap.dark-elf-attack", "all_contains": ["YOU UNGRATEFUL SLIME", "BE HAPPY FOR A QUICK DEATH"], "message_id": "hap.dark-elf-attack"},
+    {"id": "hap.akabar-join", "all_contains": ["I AM AKABAR BEL AKASH", "WILL YOU LET HIM JOIN YOUR PARTY"], "message_id": "hap.akabar-join"},
+    {"id": "hap.inn-before-liberation", "all_contains": ["A SURLY INNKEEPER COMES UP", "DO YOU STAY"], "message_id": "hap.inn-before-liberation"},
+    {"id": "hap.efreet-barn", "all_contains": ["THIS BARN IS EMPTY", "EFREET AND HIS DARK ELFIN COHORTS"], "message_id": "hap.efreet-barn"},
+    {"id": "hap.efreet-threat", "all_contains": ["THE EFREET VOICE BOOMS OUT", "DOOM ON YOUR VILLAGE"], "message_id": "hap.efreet-threat"},
+    {"id": "hap.efreet-map", "all_contains": ["ON THE BODY OF THE EFREET IS A MAP", "THE TOWN AND A CAVE"], "message_id": "hap.efreet-map"},
+    {"id": "hap.liberated-crowd", "all_contains": ["A SHORT TIME AFTER THE SOUNDS OF BATTLE FADE", "LOUD CHEERS AND LAUGHTER"], "message_id": "hap.liberated-crowd"},
+    {"id": "hap.elder-thanks", "all_contains": ["AN ELDER OF THE VILLAGE COMES FORWARD", "ALWAYS BE WELCOME IN HAPTOOTH"], "message_id": "hap.elder-thanks"},
+    {"id": "hap.elder-wizard-tower", "all_contains": ["THE ELDER LOWERS HIS VOICE", "CONTROLLED FROM THE WIZARD'S TOWER NEARBY"], "message_id": "hap.elder-wizard-tower"},
+    {"id": "hap.akabar-secret-routes", "all_contains": ["AKABAR MENTIONS THAT HE HAS HEARD OF SECRET TRADE ROUTES", "HAPPY TO GUIDE THE PARTY THERE"], "message_id": "hap.akabar-secret-routes"},
+    {"id": "hap.leave", "all_contains": ["YOU ARE HEADING BACK TO THE WILDERNESS", "WANT TO CONTINUE"], "message_id": "hap.leave"},
+    {"id": "hap.map-route", "all_contains": ["FOLLOW THE MAP TO THE CAVES", "GO INTO THE WILDERNESS"], "message_id": "hap.map-route"},
+    {"id": "lava-tube.entry", "all_contains": ["YOU HAVE ENTERED AN ANCIENT LAVA TUBE", "ASH COVERS THE FLOOR"], "message_id": "lava-tube.entry"},
+    {"id": "lava-tube.ambush", "all_contains": ["FROM HIDDEN ALCOVES COMES A WAVE OF HEAT", "SALAMANDERS AND DARK ELVES"], "message_id": "lava-tube.ambush"},
+    {"id": "lava-tube.guarded-door", "all_contains": ["THE DOOR IS GUARDED BY A SALAMANDER LED PATROL"], "message_id": "lava-tube.guarded-door"},
+    {"id": "lava-tube.dream-warning", "all_contains": ["A DREAM-LIKE VOICE IN YOUR HEAD SAYS", "BE FULLY PREPARED"], "message_id": "lava-tube.dream-warning"},
+    {"id": "lava-tube.salamander-pools", "all_contains": ["THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS", "SALAMANDERS ARE SPORTING IN THE POOLS"], "message_id": "lava-tube.salamander-pools"},
+    {"id": "lava-tube.intense-heat", "all_contains": ["INTENSE HEAT WASHES OVER YOU"], "message_id": "lava-tube.intense-heat"},
+    {"id": "lava-tube.sly-parlay", "all_contains": ["WE HAVE NO LOVE FOR DARK ELVES", "TAKE ANY TREASURE"], "message_id": "lava-tube.sly-parlay"},
+    {"id": "lava-tube.nice-parlay", "all_contains": ["YOU COLD THINGS SHOULD LEAVE", "CRIMDRAC FINDS YOU"], "message_id": "lava-tube.nice-parlay"},
+    {"id": "lava-tube.fireproof-casks", "all_contains": ["AMONGST THE POOLS OF LAVA", "SIX FIREPROOF CASKS", "OPEN ONE"], "message_id": "lava-tube.fireproof-casks"},
+    {"id": "lava-tube.cask-heat-retreat", "all_contains": ["THE HEAT IS TOO INTENSE", "DOES ANYONE WANT TO TRY AGAIN"], "message_id": "lava-tube.cask-heat-retreat"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},
