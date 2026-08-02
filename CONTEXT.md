@@ -3689,3 +3689,13 @@ source 對應跨 locale message ID，partial 不匹配；真實鷹馬、黑龍�
 localization `23→0`、frontend 133、runtime 212 不變。Engine `2ace47d` 已完整
 測試、commit／push；READY spec 479 是權威。CoAB Docker／Xvfb 正式全套 gate
 已通過，marker `ROUND479_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百八十輪將 Ebiten `drawCombat` 的 HP／AC、施法／移動 prompt、
+十二個法術快捷提示及 target／quick status 共 25 筆中文移入 State locale
+contract。Renderer 現只保留 DOS 石框上的位置、字型與顏色；typed casting、
+move、target 與 spell availability 決定要解析的 stable ID。正式 catalog
+coverage 與 contract mapping 覆蓋 Bless、一般目標、Fireball、Sleep、Lightning
+Bolt、Stinking Cloud、Cloudkill 與移動格式。source audit `345→320`，frontend
+`133→108`、runtime 212、localization 0 不變。READY spec 480 是權威；CoAB
+Docker／Xvfb 正式全套 gate 已通過，marker `ROUND480_FORMAL_EXIT=0`；
+commit／push 與暫存清理待本輪收尾。

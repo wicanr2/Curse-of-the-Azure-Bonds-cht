@@ -2430,6 +2430,62 @@ func TestCombatSpeedBoundsAndMenuUseCatalogEntries(t *testing.T) {
 	}
 }
 
+func TestCombatHUDContractUsesFormalLocaleStableIDs(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
+	keys := []string{
+		"combat_hud_hit_points", "combat_hud_armor_class", "combat_prompt_confirm_spell",
+		"combat_prompt_select_fighter_target", "combat_prompt_select_fireball_center",
+		"combat_prompt_select_sleep_center", "combat_prompt_select_lightning_direction",
+		"combat_prompt_select_stinking_cloud_corner", "combat_prompt_select_cloudkill_center",
+		"combat_prompt_move", "combat_hint_magic_missile", "combat_hint_sleep",
+		"combat_hint_fireball", "combat_hint_lightning_bolt", "combat_hint_stinking_cloud",
+		"combat_hint_cloudkill", "combat_hint_cure_light_wounds", "combat_hint_bless",
+		"combat_hint_curse", "combat_hint_cause_light_wounds", "combat_hint_protection_from_evil",
+		"combat_hint_protection_from_good", "combat_target_status", "combat_quick_status",
+	}
+	for _, key := range keys {
+		if value := catalog.Text(key, key); value == key {
+			t.Fatalf("combat HUD locale ID %q is absent", key)
+		}
+	}
+	if state.CombatHitPointsLabel() != catalog.Text("combat_hud_hit_points", "") ||
+		state.CombatArmorClassLabel() != catalog.Text("combat_hud_armor_class", "") {
+		t.Fatalf("combat HUD labels hp=%q ac=%q", state.CombatHitPointsLabel(), state.CombatArmorClassLabel())
+	}
+	prompts := []struct {
+		spellID uint8
+		key     string
+	}{
+		{BlessSpellID, "combat_prompt_confirm_spell"},
+		{MagicMissileSpellID, "combat_prompt_select_fighter_target"},
+		{FireballSpellID, "combat_prompt_select_fireball_center"},
+		{SleepSpellID, "combat_prompt_select_sleep_center"},
+		{LightningBoltSpellID, "combat_prompt_select_lightning_direction"},
+		{StinkingCloudSpellID, "combat_prompt_select_stinking_cloud_corner"},
+		{CloudkillSpellID, "combat_prompt_select_cloudkill_center"},
+	}
+	for _, prompt := range prompts {
+		state.combatCastingSpell = prompt.spellID
+		value, selecting := state.CombatSelectionPrompt()
+		if !selecting || value != catalog.Text(prompt.key, "") {
+			t.Fatalf("spell 0x%02X prompt=%q selecting=%v", prompt.spellID, value, selecting)
+		}
+	}
+	state.combatCastingSpell = 0
+	state.combatMoveMode, state.combatMoveRemaining = true, 7
+	wantMove := fmt.Sprintf(catalog.Text("combat_prompt_move", ""), 7)
+	if value, selecting := state.CombatSelectionPrompt(); !selecting || value != wantMove {
+		t.Fatalf("move prompt=%q selecting=%v want=%q", value, selecting, wantMove)
+	}
+	if got := state.CombatTargetStatus("TARGET"); got != fmt.Sprintf(catalog.Text("combat_target_status", ""), "TARGET") {
+		t.Fatalf("target status=%q", got)
+	}
+	if got := state.CombatQuickStatus([]string{"A", "B"}); got != fmt.Sprintf(catalog.Text("combat_quick_status", ""), "A　B") {
+		t.Fatalf("quick status=%q", got)
+	}
+}
+
 func TestEnemyTurnUsesWeaponAttackSequence(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{

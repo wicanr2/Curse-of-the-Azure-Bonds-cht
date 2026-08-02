@@ -2059,81 +2059,19 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		statusGreen := color.RGBA{R: 92, G: 255, B: 92, A: 255}
 		statusYellow := color.RGBA{R: 255, G: 255, B: 82, A: 255}
 		text.Draw(screen, active.Name, a.compactFace, 370, 30, cyan)
-		text.Draw(screen, "生命值", a.compactFace, 370, 62, statusGreen)
+		text.Draw(screen, a.state.CombatHitPointsLabel(), a.compactFace, 370, 62, statusGreen)
 		text.Draw(screen, strconv.Itoa(active.HitPoints), a.compactFace, 450, 62, statusYellow)
-		text.Draw(screen, "防護等級", a.compactFace, 370, 94, statusGreen)
+		text.Draw(screen, a.state.CombatArmorClassLabel(), a.compactFace, 370, 94, statusGreen)
 		text.Draw(screen, strconv.Itoa(active.ArmorClass), a.compactFace, 466, 94, statusYellow)
 	}
-	spellHints := make([]string, 0, 7)
-	if a.state.CombatCastingSpell() != 0 {
-		if a.state.CombatCastingSpell() == game.BlessSpellID {
-			text.Draw(screen, "確認施法：Enter　取消：Esc", a.face, 32, 350, cyan)
-			return
-		}
-		if a.state.CombatCastingSpell() == game.StinkingCloudSpellID ||
-			a.state.CombatCastingSpell() == game.CloudkillSpellID ||
-			a.state.CombatCastingSpell() == game.FireballSpellID ||
-			a.state.CombatCastingSpell() == game.LightningBoltSpellID ||
-			a.state.CombatCastingSpell() == game.SleepSpellID {
-			prompt := "選擇火球中心"
-			if a.state.CombatCastingSpell() == game.SleepSpellID {
-				prompt = "選擇睡眠術中心"
-			} else if a.state.CombatCastingSpell() == game.LightningBoltSpellID {
-				prompt = "選擇閃電方向格"
-			} else if a.state.CombatCastingSpell() == game.StinkingCloudSpellID {
-				prompt = "選擇惡臭雲霧西北角"
-			} else if a.state.CombatCastingSpell() == game.CloudkillSpellID {
-				prompt = "選擇致命毒雲中心"
-			}
-			text.Draw(screen, prompt+"：方向鍵移動　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
-			return
-		}
-		text.Draw(screen, "選擇施法目標：左右切換　Enter：確認　Esc：取消", a.face, 32, 350, cyan)
+	if prompt, selecting := a.state.CombatSelectionPrompt(); selecting {
+		text.Draw(screen, prompt, a.face, 32, 350, cyan)
 		return
 	}
-	if a.state.CombatMoveMode() {
-		text.Draw(screen, fmt.Sprintf("移動方向：方向鍵　剩餘 %d 格　取消：Esc", a.state.CombatMoveRemaining()), a.face, 32, 350, cyan)
-		return
-	}
-	if a.state.CombatCanCastMagicMissile() {
-		spellHints = append(spellHints, "S飛彈")
-	}
-	if a.state.CombatCanCastSleep() {
-		spellHints = append(spellHints, "Z睡眠")
-	}
-	if a.state.CombatCanCastFireball() {
-		spellHints = append(spellHints, "F火球")
-	}
-	if a.state.CombatCanCastLightningBolt() {
-		spellHints = append(spellHints, "L閃電")
-	}
-	if a.state.CombatCanCastStinkingCloud() {
-		spellHints = append(spellHints, "N臭雲")
-	}
-	if a.state.CombatCanCastCloudkill() {
-		spellHints = append(spellHints, "K毒雲")
-	}
-	if a.state.CombatCanCastCureLightWounds() {
-		spellHints = append(spellHints, "H治療")
-	}
-	if a.state.CombatCanCastBless() {
-		spellHints = append(spellHints, "B祝福")
-	}
-	if a.state.CombatCanCastCurse() {
-		spellHints = append(spellHints, "C詛咒")
-	}
-	if a.state.CombatCanCastCauseLightWounds() {
-		spellHints = append(spellHints, "W傷害")
-	}
-	if a.state.CombatCanCastProtectionFromEvil() {
-		spellHints = append(spellHints, "P防邪")
-	}
-	if a.state.CombatCanCastProtectionFromGood() {
-		spellHints = append(spellHints, "G防善")
-	}
+	spellHints := a.state.CombatQuickSpellHints()
 	footerStatus := ""
 	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
-		footerStatus = "目標：" + targets[a.state.CombatTargetIndex()].Name
+		footerStatus = a.state.CombatTargetStatus(targets[a.state.CombatTargetIndex()].Name)
 	}
 	text.Draw(screen, footerStatus, a.compactFace, 8, 462, color.RGBA{R: 255, G: 82, B: 255, A: 255})
 	combatMenu := a.state.CombatMainMenuText()
@@ -2144,7 +2082,7 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	text.Draw(screen, combatMenu, a.compactFace, 8, 478, cyan)
 	if len(spellHints) > 0 {
-		text.Draw(screen, "快捷："+strings.Join(spellHints, "　"), a.compactFace, 378, 340, cyan)
+		text.Draw(screen, a.state.CombatQuickStatus(spellHints), a.compactFace, 378, 340, cyan)
 	}
 }
 
