@@ -24,6 +24,10 @@
 | 發行 deny-list 與自備原版資料 | engine／中文資料可發布，原版資料與倚天字型不得夾帶 | 各作品仍需獨立授權與檔案清單 |
 | deterministic replay、save overlay、唯讀 originals | 適合 Gold Box、冬之魔與未來 Wasteland | 存檔 layout 與 RNG consumer 不能跨作品猜測 |
 
+第 452 輪已把第一項落地為 CoAB `cmd/coab-audit`：它不採寬鬆白名單，而以
+AST＋hash exact baseline 先凍結 1,315 次現存債務，之後每批遷移只能同步更新
+下降後基線。操作與分類限制見 [`原始碼資料分離稽核`](../audit/README.md)。
+
 ## 目前不可共用的內容
 
 - ECL VM 與 `DEMON.INT`：一個是 bytecode interpreter input，一個是 native MZ code。

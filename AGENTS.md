@@ -559,6 +559,17 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - `/home/anr2/cht/daemon_winter` 可作 SSI RPG 比較樣本；Wasteland 是後續
   中文化目標。不可只因同為 SSI 就宣稱共用引擎：必須用第二款遊戲的 bytes、
   runtime、格式與 adapter 驗證後，才把真正共通機制提升到獨立 engine／skill。
+
+### Go 玩家文字資料分離 gate
+
+- 第 452 輪 `cmd/coab-audit`／`internal/sourceaudit` 已建立非測試 Go 漢字
+  literal exact baseline；初始 1,260 signatures／1,315 occurrences。正式 gate
+  會阻止新增、改字、搬動、重複或刪除後未更新的漂移。這不是豁免額度。
+- 每個故事／UI milestone 必須先移入 stable ID＋locale／game-pack、刪除 Go
+  與舊資料複本，再於同一 commit 用 `-write-baseline` 更新下降後基線。只改
+  baseline 掩蓋新增中文字串屬於 gate 規避，禁止提交。
+- 分類只是 heuristic；`runtime_ui_debt` 不代表可永久留在 Go。完整規則見
+  `docs/audit/README.md`，READY spec 452 是權威。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

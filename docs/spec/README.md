@@ -404,3 +404,4 @@
 - [第四百四十九輪提朗瑟克斯終戰畫面與戰鬥鏡頭](./449-tyranthraxus-final-battle-camera-checkpoint.md)（`READY`：37 人終戰 checkpoint、主動角色正式鏡頭與 capture-only 首領觀察鏡頭）
 - [第四百五十輪法師塔主線與手札 15 JSON 化](./450-wizard-tower-json-story-journal.md)（`READY`：庭院至枷印消退、遊戲內手札兩頁與 Go／locale 複本移除）
 - [第四百五十一輪法師塔四分支與屋頂出口 JSON 化](./451-wizard-tower-branches-json.md)（`READY`：攻擊／交涉／龍心／屋頂出口十段文字與三個選項資料化）
+- [第四百五十二輪 Go 漢字字串與資料分離 gate](./452-go-han-literal-data-separation-gate.md)（`READY`：AST exact baseline、1,315 次初始債務與正式 regression gate）
