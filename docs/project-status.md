@@ -101,6 +101,11 @@ commit 內保存不可能自我引用的 hash。
   theme／storage／grid／RNG 與 sampled verification 方法；不可直接共用
   Gold Box VM、格式、戰鬥或 save schema。比較結果與 Wasteland 後續入口已寫入
   [`跨專案知識庫`](knowledge/ssi-rpg-cross-project-lessons.md)。
+- 第 452 輪借用冬之魔 `uicheck` 經驗，建立 CoAB AST-based Go 漢字字串
+  exact baseline gate。初始為 1,260 signatures／1,315 occurrences：本地化債
+  409、Ebiten 前端 164、runtime／工具 742。正式 `./internal/...` 測試會阻擋
+  新增、改字、搬動、增加副本及未同步 reduced baseline 的刪除；此數量是待清
+  技術債，不是允許額度。READY spec 452 與 `docs/audit/README.md` 是權威。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader

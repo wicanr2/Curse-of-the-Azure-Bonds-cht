@@ -3372,3 +3372,17 @@ deny-list 可作方法參考；Gold Box ECL／DAX／GEO／combat／save 不可�
 本輪十個舊 ECL catalog IDs 與三個 option catalog IDs 已不再存在於 State／
 舊 locale；一次性容器均以 `--rm` 完成，無 `coab-round451` 殘留，engine repo
 本輪無變更。
+
+2026-08-02 第四百五十二輪借用冬之魔 `uicheck` 經驗，新增
+`cmd/coab-audit`／`internal/sourceaudit`。Go AST scanner 只掃正式非測試 string
+literals，以 path／function／SHA-256／occurrence exact baseline 阻止任何漂移；
+初始 1,260 signatures／1,315 occurrences，分類為 localization 409、frontend
+164、runtime 742。repository regression 已通過；此基線是必須逐輪下降的技術
+債，不是豁免額度。正式全套 gate、commit／push 待本輪收尾；READY spec 452
+與 `docs/audit/README.md` 是權威。
+
+正式 Docker／Xvfb／`--network none` 驗證先執行 `go run ./cmd/coab-audit`，
+再執行 `./cmd/... ./gamepack ./internal/...`，兩者全數通過；marker 為
+`ROUND452_AUDIT_EXIT=0`、`ROUND452_FORMAL_EXIT=0`，日誌位於
+`/tmp/coab-round452-formal.log`。一次性容器均以 `--rm` 完成，沒有
+`coab-round452` 殘留；engine repo 本輪無變更。
