@@ -349,6 +349,45 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			t.Fatalf("spider enemy=%q, want source record %q", enemy.Name, monsterRecords[0x42].Name)
 		}
 	}
+	// Save version 7 at a real campaign combat boundary, then rebuild a fresh
+	// State from the player-supplied image. The rest of this test must continue
+	// through spider victory, the same ECL session's rakshasa handoff, second
+	// victory and completion flag using only the loaded state.
+	beforeBattle, err := state.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	beforeSession, err := state.session.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	savePath := filepath.Join(t.TempDir(), "myth-drannor-red-web-combat.json")
+	if err := state.SavePartyFile(savePath); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	loaded.SetMonsterRecordsForECL(6, monsterRecords)
+	loaded.SetMonsterAffectsForECL(6, monsterAffects)
+	loaded.SetTreasureItemBlocks(treasureBlocks)
+	if err := loaded.LoadPartyFile(savePath); err != nil {
+		t.Fatal(err)
+	}
+	afterBattle, err := loaded.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	afterSession, err := loaded.session.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(afterBattle, beforeBattle) ||
+		!reflect.DeepEqual(afterSession, beforeSession) ||
+		loaded.Location != LocationMythDrannor || loaded.Mode != ModeCombat {
+		t.Fatalf("red-web campaign restore battleEqual=%v sessionEqual=%v location=%v mode=%v",
+			reflect.DeepEqual(afterBattle, beforeBattle),
+			reflect.DeepEqual(afterSession, beforeSession), loaded.Location, loaded.Mode)
+	}
+	state = loaded
 	// Exercise ALT+Q semantics from the normal Standing Stone -> GEO -> red-web
 	// route, not from a direct-entry battle fixture. Headless mode intentionally
 	// runs the delegated actions synchronously; the focused visual regression

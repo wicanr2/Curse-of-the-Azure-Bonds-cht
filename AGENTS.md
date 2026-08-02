@@ -555,6 +555,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   冒充可恢復戰鬥。frontend wall-clock elapsed 尚未進 State，故已開始的 visual
   save 必須 fail-closed；第一幀前 transaction 可 round-trip。READY spec 443
   是權威。
+- 第 444 輪已把 save v7 接到真實 Standing Stone→Myth Drannor→紅網玩家路徑：
+  四蜘蛛第一戰 party-turn 存檔，全新 State 從玩家自備 ECL／MON／ITEM restore，
+  再完成蜘蛛、羅剎妖二戰與 `4CBF=1`。這證明 ECL combat handoff，但高數值
+  測試英雄不代表原版 encounter balance，mid-animation／其他 encounter 類型
+  仍未完成；READY spec 444 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

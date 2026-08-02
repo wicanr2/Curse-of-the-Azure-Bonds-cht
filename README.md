@@ -1156,6 +1156,14 @@ palette／圖元仍標為 `layout-reconstructed`，待實機擷取升級。
 renderer elapsed 的 mid-animation save 明確 fail-closed，不假裝無縫續播。
 證據見 [`spec 443`](docs/spec/443-active-combat-save-sleep-continuation.md)。
 
+第 444 輪把 save v7 接入真實 campaign：從 Standing Stone 世界旅行至
+Myth Drannor，沿 GEO6 合法路徑經精靈幽魂與紅網字串輸入，在四蜘蛛第一戰的
+正常 party-turn 邊界存檔。全新 State 由玩家自備 ECL／MON／ITEM 資料載入後，
+Battle 與 ECL session snapshot 完全相同；後續只用 loaded state 完成蜘蛛戰、
+羅剎妖第二戰、繁中事件、`4CBF=1` 與地城返回。測試英雄高數值只用於縮短
+長路徑，不冒充原版 encounter balance 已完成。
+證據見 [`spec 444`](docs/spec/444-red-web-campaign-combat-save-continuation.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

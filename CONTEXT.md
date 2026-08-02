@@ -3253,3 +3253,15 @@ spec 443 是入口。
 正式 Docker／Xvfb／`--network none` gate 已驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker
 `ROUND443_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round443-formal.log`。
+
+2026-08-02 第四百四十四輪把 save v7 插入既有完整
+`TestRealPlayerPathStandingStoneToBurialGlen`。路徑由 Standing Stone 正常世界
+旅行、GEO6 合法步行、精靈幽魂、紅網字串輸入抵達四蜘蛛第一戰；party-turn
+邊界存檔後，以同一玩家自備 image 建立全新 State，重掛 MON6CHA／MON6SPC／
+ITEM6，Battle 與 ECL session snapshot 逐欄相同。後續只使用 loaded state，
+完成蜘蛛、Picture 72、羅剎妖第二戰、`4CBF=1`、dungeon return 及原長路徑
+後續。高數值英雄只縮短回歸，不支持完整 encounter balance。READY spec 444
+是入口。
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND444_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round444-formal.log`。
