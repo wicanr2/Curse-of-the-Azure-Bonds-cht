@@ -128,7 +128,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			all[block.Entry.ID] = block.Data
 		}
 	}
-	state := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	state := NewStateFromECLBlocks(trainingTestCatalog(t), all, 0x50)
 	guardBlocks, err := dax.Parse(zipData(t, image, "MON2CHA.DAX"))
 	if err != nil {
 		t.Fatal(err)
@@ -3276,7 +3276,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	journalCountBeforeEssembraBar := len(state.JournalPages)
-	if !strings.Contains(state.Message, "龐大身影飛越森林") ||
+	if state.Message != requireGamePackText(t, &state, "essembra.tavern-tale-60") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Essembra tavern tale originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3303,8 +3303,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "紅袍法師喜愛火焰生物") ||
-		!strings.Contains(state.Message, "寒冷攻擊") ||
+	if state.Message != requireGamePackText(t, &state, "essembra.tavern-tale-44") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Essembra beer tale originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)

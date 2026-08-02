@@ -5620,16 +5620,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	switch {
 	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
 		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
-	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 44"):
-		return catalog.Text(
-			"tavern_tale_44",
-			"tavern_tale_44",
-		)
-	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 60"):
-		return catalog.Text(
-			"tavern_tale_60",
-			"tavern_tale_60",
-		)
 	}
 	localized := make([]string, 0, len(texts))
 	for _, text := range texts {
@@ -5664,11 +5654,11 @@ func (s *State) appendJournalPages(marker string, pages []string) {
 func localizeECLLine(catalog locale.Catalog, line string) string {
 	switch strings.TrimSpace(line) {
 	case "DO YOU WANT TO TRAIN?", "'DO YOU WANT TO TRAIN?'":
-		return catalog.Text("ecl_training_prompt", "你們要接受訓練嗎？")
+		return catalog.Text("ecl_training_prompt", "ecl_training_prompt")
 	case "YOU'RE SHOWING GREAT PROGRESS. RETURN AGAIN WHEN":
-		return catalog.Text("ecl_training_progress", "你們的進步很大。準備好時再回來，")
+		return catalog.Text("ecl_training_progress", "ecl_training_progress")
 	case "YOU ARE READY.' YOU EXIT THE HALL.":
-		return catalog.Text("ecl_training_exit", "你們離開了訓練場。")
+		return catalog.Text("ecl_training_exit", "ecl_training_exit")
 	case "'WHAT'S YOUR PLEASURE?'":
 		return catalog.Text("ecl_tavern_pleasure", "ecl_tavern_pleasure")
 	case "'A SPECIAL CUSTOMER'S ARRIVED. YOU HAVE TO SLIP":
@@ -5688,53 +5678,53 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 	case "TO INVESTIGATE?":
 		return catalog.Text("ecl_tavern_commotion_3", "ecl_tavern_commotion_3")
 	case "A PATROL ARRIVES.":
-		return catalog.Text("ecl_tilverton_patrol_arrives", "一支皇家巡邏隊抵達。")
+		return catalog.Text("ecl_tilverton_patrol_arrives", "ecl_tilverton_patrol_arrives")
 	case "ROYAL GUARDS TELL YOU TO MOVE ALONG.":
-		return catalog.Text("ecl_tilverton_guards_move", "皇家衛兵命令你們立刻離開。")
+		return catalog.Text("ecl_tilverton_guards_move", "ecl_tilverton_guards_move")
 	case "'WELCOME TO THE FAIR CITY OF TILVERTON,' BEAMS THE":
-		return catalog.Text("ecl_tilverton_inn_welcome", "「歡迎來到美麗的提爾佛頓！」")
+		return catalog.Text("ecl_tilverton_inn_welcome", "ecl_tilverton_inn_welcome")
 	case "INNKEEPER. THEN SHE NOTICES YOUR COLLECTIVE SCOWLS.":
-		return catalog.Text("ecl_tilverton_inn_scowls", "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。")
+		return catalog.Text("ecl_tilverton_inn_scowls", "ecl_tilverton_inn_scowls")
 	case "'PLEASE CALM DOWN WHILE I EXPLAIN.'":
-		return catalog.Text("ecl_tilverton_inn_calm", "「請先冷靜，讓我解釋。」")
+		return catalog.Text("ecl_tilverton_inn_calm", "ecl_tilverton_inn_calm")
 	case "YOU LISTEN,":
-		return catalog.Text("ecl_tilverton_inn_listen", "你們聽她說明，")
+		return catalog.Text("ecl_tilverton_inn_listen", "ecl_tilverton_inn_listen")
 	case "'I AM THE SAGE FILANI. YOU ARE HERE ABOUT THE SIGILS,":
-		return catalog.Text("ecl_filani_intro", "「我是賢者菲拉妮。你們是為了那些印記而來，")
+		return catalog.Text("ecl_filani_intro", "ecl_filani_intro")
 	case "CORRECT?'":
-		return catalog.Text("ecl_filani_correct", "對吧？」")
+		return catalog.Text("ecl_filani_correct", "ecl_filani_correct")
 	case "'THIS IS AN INTERESTING CASE. I'LL DO IT FOR HALF YOUR":
-		return catalog.Text("ecl_filani_price", "「這個案例很有意思。我可以替你們研究，代價是你們")
+		return catalog.Text("ecl_filani_price", "ecl_filani_price")
 	case "FUNDS. HOW MUCH DO YOU HAVE?'":
-		return catalog.Text("ecl_filani_funds", "一半的財物。你們身上有多少？」")
+		return catalog.Text("ecl_filani_funds", "ecl_filani_funds")
 	case "'DO NOT THINK SAGES ARE FOOLS.' SHE SENDS YOU OUT.":
-		return catalog.Text("ecl_filani_lie", "「別把賢者當成傻瓜。」她把你們趕了出去。")
+		return catalog.Text("ecl_filani_lie", "ecl_filani_lie")
 	case "'THEN WE HAVE NOTHING TO DISCUSS.'":
-		return catalog.Text("ecl_filani_no", "「那我們就沒什麼好談的了。」")
+		return catalog.Text("ecl_filani_no", "ecl_filani_no")
 	case "'WE HAVE A SELECTION OF THE FINEST CORMYR STEEL.":
-		return catalog.Text("ecl_weaponers_intro", "「我們備有最上等的科米爾精鋼武器。")
+		return catalog.Text("ecl_weaponers_intro", "ecl_weaponers_intro")
 	case "INTERESTED?":
-		return catalog.Text("ecl_weaponers_interested", "有興趣嗎？」")
+		return catalog.Text("ecl_weaponers_interested", "ecl_weaponers_interested")
 	case "'MAY YOU ALWAYS STRIKE TRUE.'":
-		return catalog.Text("ecl_weaponers_farewell", "「願你每次出手都準確命中。」")
+		return catalog.Text("ecl_weaponers_farewell", "ecl_weaponers_farewell")
 	case "'GOOD DAY THEN.'":
-		return catalog.Text("ecl_weaponers_decline", "「那麼，祝你今日愉快。」")
+		return catalog.Text("ecl_weaponers_decline", "ecl_weaponers_decline")
 	case "'GOOD DAY TO YOU, GENTLE PERSONS. DO YOU WISH":
-		return catalog.Text("ecl_general_store_intro", "「各位貴客，日安。你們想要")
+		return catalog.Text("ecl_general_store_intro", "ecl_general_store_intro")
 	case "TO MAKE A PURCHASE?'":
-		return catalog.Text("ecl_general_store_purchase", "買些東西嗎？」")
+		return catalog.Text("ecl_general_store_purchase", "ecl_general_store_purchase")
 	case "'THANK YOU. RETURN SOON.'":
-		return catalog.Text("ecl_general_store_farewell", "「多謝惠顧，歡迎再來。」")
+		return catalog.Text("ecl_general_store_farewell", "ecl_general_store_farewell")
 	case "YOU MOVE AWAY.":
-		return catalog.Text("ecl_move_away", "你們離開此處。")
+		return catalog.Text("ecl_move_away", "ecl_move_away")
 	case "SMOKE RISES FROM BEHIND THE RUINED WALLS":
-		return catalog.Text("ecl_smoke_rises", "煙霧從殘破的牆後升起")
+		return catalog.Text("ecl_smoke_rises", "ecl_smoke_rises")
 	case "OF YULASH. THE SOUND":
-		return catalog.Text("ecl_yulash_sound", "尤拉什。聲音")
+		return catalog.Text("ecl_yulash_sound", "ecl_yulash_sound")
 	case "OF BATTLE RINGS OUT FROM INSIDE":
-		return catalog.Text("ecl_battle_rings", "從裡面傳來戰鬥聲")
+		return catalog.Text("ecl_battle_rings", "ecl_battle_rings")
 	case "YOU FIND A WAR BLASTED SECTION OF THE CITY.":
-		return catalog.Text("ecl_war_blasted_city", "你們找到城市中一片遭戰火摧毀的區域。")
+		return catalog.Text("ecl_war_blasted_city", "ecl_war_blasted_city")
 	case "YOU DISCOVER A SMALL MAGIC SHOP.":
 		return catalog.Text("ecl_small_magic_shop", "ecl_small_magic_shop")
 	default:

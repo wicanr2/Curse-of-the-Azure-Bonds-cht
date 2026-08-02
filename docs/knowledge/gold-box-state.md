@@ -978,3 +978,15 @@ boundary，再回到同一 menu 選擇後續路線。
 多段夢境也不應只驗證首尾 raw token。產品回歸可收集每次 `Continue／Select`
 後玩家實際看到的訊息，再要求所有段落 stable ID 都出現；這比寫死步數與中文
 片段穩定，同時仍須保留 raw BIGPIC、work flag 與 NEWECL oracle。
+
+### 2026-08-02：先搜尋既有深層回歸，再判定證據缺失
+
+Tavern Tale 44／60 一開始只在 `State` fallback 與 UI catalog 搜到，看似沒有玩家
+測試；但 READY spec 330 與同一個超長 integration test 後段已完整走過艾森布拉
+RELAX／BEER。判定「缺證據」前，必須同時搜尋 spec 索引、事件 ID、城市名稱與
+長測試的鄰近流程，不能只搜尋 raw token 是否直接出現在測試原始碼。
+
+locale resolver 若帶完整中文 fallback，JSON 缺 key 時測試與畫面仍可能正常，讓
+第二份譯文長期漂移。對已由 coverage 與玩家路徑保護的 stable ID，adapter 應以
+ID 作顯式 fallback，使缺資料可見；但 source line→ID 映射本身仍是遷移層，不能
+因移除中文就宣稱 engine／data 分離已全部完成。

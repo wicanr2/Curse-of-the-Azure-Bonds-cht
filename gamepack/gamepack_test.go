@@ -748,6 +748,30 @@ func TestTilvertonBondDreamAndReturnBoundaryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestEssembraTavernTalesAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"essembra.tavern-tale-60", []string{"YOU OVERHEAR TAVERN TALE 60"}},
+		{"essembra.tavern-tale-44", []string{"YOU OVERHEAR TAVERN TALE 44"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

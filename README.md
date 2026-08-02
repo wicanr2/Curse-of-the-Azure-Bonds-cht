@@ -123,6 +123,12 @@ HEAD／BODY 救援人物、盜賊公會 handoff 及騎士重訪消耗；Go 漢�
 返回城外後才繼續世界旅行；Go 漢字基線由 553 降至 545。詳見
 [`docs/spec/474-bond-dream-tilverton-return-game-pack.md`](docs/spec/474-bond-dream-tilverton-return-game-pack.md)。
 
+第 475 輪依既有 READY spec 330 更正前輪判斷，將艾森布拉 `RELAX` 的 Tale 60
+與 `BEER` 的 Tale 44 移入 game-pack；真實長玩家鏈驗證兩則傳聞、酒館返回與
+不誤解鎖手札 18。同時移除 State line localizer 27 筆重複中文 fallback，Go 漢字
+基線由 545 降至 518。詳見
+[`docs/spec/475-essembra-tavern-tales-state-fallbacks.md`](docs/spec/475-essembra-tavern-tales-state-fallbacks.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與
