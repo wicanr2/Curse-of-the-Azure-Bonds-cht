@@ -3348,3 +3348,27 @@ push 狀態待本輪結束補記。READY spec 450 是權威。
 `./gamepack ./internal/game` 亦先行通過；掃描確認九個舊 ECL catalog IDs 與
 兩個 `journal_entry_15_*` 已不再存在於 State／舊 locale。一次性容器均以
 `--rm` 完成，無 `coab-round450` 容器殘留；engine repo 本輪無變更。
+
+2026-08-02 第四百五十一輪接續法師塔資料分離：READY spec 316–319 的
+ATTACK WIZARD、PARLAY、14 黑龍、龍心與屋頂出口共十段文字，以及三個
+法師塔專用選項，均移入 CoAB JSON。State 十個 story cases、三個 option
+cases 與舊 locale 十三筆複本已刪；en／zh-TW 各 265 stable IDs。聚焦
+`./gamepack ./internal/game` 已通過，正式 gate／commit／push 待本輪收尾。
+使用者另要求發行前全面 UI／README 圖片稽核，並將 SSI Gold Box 經驗整理
+成繁中知識庫與 skill；`daemon_winter` 僅作待驗證比較樣本，Wasteland 為後續
+獨立中文化目標。以上已寫入 AGENTS，不可在 compact 後遺失。
+
+本輪已完成 daemon_winter 唯讀初步比較：該專案 AGENTS 與
+`docs/design/engine-extraction-study.md` 的本機證據指出 `DEMON.INT` 是有
+3,807 relocations 的原生 MZ 8086，不是 bytecode VM。其 `dwstrings uicheck`、
+500／500 coverage、theme 原子切換、唯讀原版資料、sampled A6 與 release
+deny-list 可作方法參考；Gold Box ECL／DAX／GEO／combat／save 不可直接外推。
+繁中比較與 Wasteland 入口已保存於
+`docs/knowledge/ssi-rpg-cross-project-lessons.md`。
+
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND451_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round451-formal.log`。掃描確認
+本輪十個舊 ECL catalog IDs 與三個 option catalog IDs 已不再存在於 State／
+舊 locale；一次性容器均以 `--rm` 完成，無 `coab-round451` 殘留，engine repo
+本輪無變更。

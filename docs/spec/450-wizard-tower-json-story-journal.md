@@ -45,7 +45,7 @@ game-pack 的 stable ID 驅動。
 
 ## 尚未完成
 
-- 四項龍群選單之後的分支文字仍有部分舊 State fallback，下一個相關
-  milestone 應沿相同 stable-ID 模式遷移。
+- 四項龍群選單之後到屋頂出口的分支文字已由 READY
+  [`spec 451`](451-wizard-tower-branches-json.md) 接續遷移完成。
 - 其他章節仍存在歷史硬編碼 ECL translation fallback；不可因本輪完成一段
   主線便宣稱全英文文本或 59 則手札已完整繁中化。

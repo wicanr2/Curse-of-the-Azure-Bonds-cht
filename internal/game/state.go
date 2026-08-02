@@ -5737,12 +5737,6 @@ func localizeOption(catalog locale.Catalog, option string) string {
 		return catalog.Text("parlay_nice", "友善")
 	case "PARLAY_ABUSIVE":
 		return catalog.Text("parlay_abusive", "威嚇")
-	case "ATTACK DRAGONS":
-		return catalog.Text("attack_dragons", "攻擊龍群")
-	case "ATTACK WIZARD":
-		return catalog.Text("attack_wizard", "攻擊法師")
-	case "PARLAY WITH THE DRAGONS":
-		return catalog.Text("parlay_with_dragons", "與龍群交涉")
 	case "FIRE KNIVES":
 		return catalog.Text("fire_knives", "火刀")
 	case "PRINCESS NACACIA":
@@ -5929,63 +5923,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_lava_tube_cask_heat_retreat",
 			"熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？",
 		)
-	case strings.Contains(joined, "THIS IS A MATTER BETWEEN MEN") &&
-		strings.Contains(joined, "WE LEAVE YOU TO YOUR SQUABBLES"):
-		return catalog.Text(
-			"ecl_wizard_tower_dragons_depart",
-			"黑龍說：「這是人類之間的爭端，我們把你們留給自己的內鬥。」龍群隨即振翅飛離。",
-		)
-	case strings.Contains(joined, "TROOPS DEFEND ME") &&
-		strings.Contains(joined, "DRACANDROS FLEES DOWN THE STAIRS"):
-		return catalog.Text(
-			"ecl_dracandros_calls_troops",
-			"德拉坎德羅斯高喊：「部隊，保護我！」一支巡邏隊衝上前來，他則趁機逃下樓梯。",
-		)
-	case strings.Contains(joined, "HOLD THE ROOF WELL ENOUGH") &&
-		strings.Contains(joined, "REST SAFELY"):
-		return catalog.Text(
-			"ecl_wizard_tower_safe_roof",
-			"看來你們足以守住屋頂，可以在這裡安全休息。",
-		)
-	case strings.Contains(joined, "YOU HAVE CONVINCED US") &&
-		strings.Contains(joined, "NO PLOT AGAINST") &&
-		strings.Contains(joined, "DISPUTE WITH DRACANDROS"):
-		return catalog.Text(
-			"ecl_wizard_tower_dragons_convinced",
-			"黑龍說：「你們已使我們相信，這裡並沒有對付龍族的陰謀。我們現在離開，讓你們自行解決與德拉坎德羅斯的爭端。」",
-		)
-	case strings.Contains(joined, "YOU ARE RIGHT DRACANDROS") &&
-		strings.Contains(joined, "THEY CONDEMN THEMSELVES"):
-		return catalog.Text(
-			"ecl_wizard_tower_dragons_condemn",
-			"黑龍說：「德拉坎德羅斯，你說得對。他們已自行定罪。」",
-		)
-	case strings.Contains(joined, "DRACANDROS ESCAPED DOWNSTAIRS") &&
-		strings.Contains(joined, "DRAGON BODIES LIE STREWN ABOUT") &&
-		strings.Contains(joined, "DO YOU TAKE ONE OF THEIR HEARTS"):
-		return catalog.Text(
-			"ecl_wizard_tower_take_dragon_heart",
-			"戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。要取走其中一顆龍心嗎？",
-		)
-	case strings.Contains(joined, "DRACANDROS ESCAPED DOWNSTAIRS") &&
-		strings.Contains(joined, "DRAGON BODIES LIE STREWN ABOUT"):
-		return catalog.Text(
-			"ecl_wizard_tower_dragon_bodies",
-			"戰鬥期間，德拉坎德羅斯逃下樓梯；黑龍的屍體散落在屋頂四周。",
-		)
-	case strings.Contains(joined, "CUT INTO THE DRAGON") &&
-		strings.Contains(joined, "SPRAY OF ACID") &&
-		strings.Contains(joined, "EXTRACT THE HEART"):
-		return catalog.Text(
-			"ecl_wizard_tower_dragon_heart_acid",
-			"你們剖開黑龍、取出內臟時，被噴濺的酸液淋得滿身，但仍成功取出了龍心。",
-		)
-	case strings.Contains(joined, "STOP BY HAPTOOTH VILLAGE") &&
-		strings.Contains(joined, "DEPART THE AREA"):
-		return catalog.Text(
-			"ecl_wizard_tower_wilderness_exit",
-			"要先繞到哈普圖斯村，還是直接離開這一帶？",
-		)
 	case strings.Contains(joined, "YOUR HELP WAS INVALUABLE TO ME") &&
 		strings.Contains(joined, "BUSINESS TO ATTEND TO"):
 		return catalog.Text(
@@ -6004,13 +5941,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_post_wizard_dracolich",
 			"一具骷髏身影從樹叢現身，誓言為導師復仇。",
-		)
-	case strings.Contains(joined, "WAY DOWN TO THE CAVES") &&
-		strings.Contains(joined, "SECRET PASSAGE") &&
-		strings.Contains(joined, "DIRECTLY TO THE WILDERNESS"):
-		return catalog.Text(
-			"ecl_wizard_tower_roof_exit",
-			"這條路可下到洞穴；你們也發現一條能直達荒野的祕道。要走哪一條路？",
 		)
 	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
 		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):

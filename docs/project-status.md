@@ -90,6 +90,17 @@ commit 內保存不可能自我引用的 hash。
   locale 的複本已移除。原 ECL 事件發生後兩頁手札直接寫入遊戲內並可重讀，
   不要求玩家查 PDF。正常 GEO5／ECL 玩家路徑與 en／zh-TW 252-key parity
   均有回歸；後續四選項分支與其他章節仍須繼續遷移。
+- 第 451 輪接續移除法師塔後半段十個 State story cases 與三個專用 option
+  cases；攻擊法師、交涉、14 黑龍、龍心酸液及屋頂雙層出口文字都由 CoAB
+  JSON stable IDs 驅動，en／zh-TW 各 265 keys。規則、怪物、旗標與傷害仍由
+  raw ECL continuation 決定，未移入 Go 或共用 engine。法師塔入口至離開的
+  作品文字已完成資料分離；全遊戲其他章節仍須逐段稽核。
+- 第 451 輪另以唯讀 Docker 盤點 `/home/anr2/cht/daemon_winter`：其
+  `DEMON.INT` 已由該專案證明是具有 3,807 筆 relocation 的原生 MZ 8086
+  executable，而非 ECL 類 VM。可沿用的是零硬編碼中文字串 gate、coverage、
+  theme／storage／grid／RNG 與 sampled verification 方法；不可直接共用
+  Gold Box VM、格式、戰鬥或 save schema。比較結果與 Wasteland 後續入口已寫入
+  [`跨專案知識庫`](knowledge/ssi-rpg-cross-project-lessons.md)。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader

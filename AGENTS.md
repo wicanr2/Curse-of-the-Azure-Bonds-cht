@@ -541,6 +541,24 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   玩家離開遊戲查閱。後續遷移故事時沿用 `text_rules + message_id +
   journal_message_ids`，並同步刪除被取代的 Go／locale fallback；READY
   spec 450 是權威。
+- 第 451 輪已把法師塔四分支、龍心與屋頂出口的十段作品文字及三個專用
+  選項移入 CoAB JSON，State／舊 locale 複本已刪；法師塔入口至離開不再靠
+  Go story switch。後續不能因程式仍有作品中立 UI fallback（例如返回、儲存）
+  就與劇情硬編碼混為一談，但所有本作人名、劇情、地名、選項與手札都必須
+  逐章遷出 Go。READY spec 451 是權威。
+
+### 發行前視覺與跨作品知識稽核（不可遺忘）
+
+- 完成功能清單後，逐張以 DOS／PC-98 oracle 重查 UI 石框、內框、區塊比例、
+  HEAD／BODY 人物組合、人物頭像、第一人稱 viewport、對話框與戰鬥 HUD；
+  原版忠實 layout 是基準，繁中字級／分頁可依 640×480 合理調整。
+- README 所有圖片都要核對目前 HEAD；錯誤 GUI、過期 renderer、debug-only
+  假畫面或落後版本必須重擷取／替換，並保留 exact／reconstructed 標籤。
+- 專案完成前，把 SSI Gold Box 的 RE、ECL／DAX／GEO／save、CJK 排版、戰鬥、
+  音訊與驗證經驗整理成繁中知識庫與可重用 skill，供後續系列作加速。
+- `/home/anr2/cht/daemon_winter` 可作 SSI RPG 比較樣本；Wasteland 是後續
+  中文化目標。不可只因同為 SSI 就宣稱共用引擎：必須用第二款遊戲的 bytes、
+  runtime、格式與 adapter 驗證後，才把真正共通機制提升到獨立 engine／skill。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

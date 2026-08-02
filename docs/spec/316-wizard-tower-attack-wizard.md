@@ -42,3 +42,7 @@
 - `-wizard-tower-battle` 經正式 Ebiten／Xvfb 重現戰場，640×480 畫面保存為
   [`wizard-tower-battle.png`](../screenshots/wizard-tower-battle.png)；中文 HUD
   與原版伊弗利特／黑暗精靈小人同時可見。
+
+更新：第 451 輪已把龍群離去、召兵與安全屋頂文字及 `ATTACK WIZARD`
+選項移入 CoAB JSON；規則仍由原 ECL 驅動。見
+[`spec 451`](451-wizard-tower-branches-json.md)。
