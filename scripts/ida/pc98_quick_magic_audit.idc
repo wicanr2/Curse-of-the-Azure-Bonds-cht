@@ -3,7 +3,7 @@
 /*
  * Non-destructive PC-98 combat QUICK/MAGIC audit.
  *
- * Run only against an extracted copy of overlay-08.bin.  The report preserves
+ * Run only against an extracted copy of an accepted overlay binary.  The report preserves
  * raw local offsets and bytes; labels below are research scopes, not names
  * written back to the pristine GAME.OVR image.
  */
@@ -55,7 +55,8 @@ static main()
     if (out == 0)
       qexit(2);
     emit_range(out, "QUICK_SPELL_MIN_RANGE_PREDICATE", 0x02D3, 0x03D3);
-    emit_range(out, "QUICK_SPELL_SUITABILITY", 0x03B0, 0x0627);
+    emit_range(out, "QUICK_SPELL_SUITABILITY_HYPOTHESIS", 0x03B0, 0x04CC);
+    emit_range(out, "QUICK_TARGET_SELECTION_HYPOTHESIS", 0x04CC, 0x0627);
     emit_range(out, "MAGIC_FLAG_QUICK_AI_CONSUMER", 0x0627, 0x07C0);
     emit_range(out, "MAGIC_FLAG_AI_CONSUMER", 0x1290, 0x1340);
   }
@@ -65,6 +66,21 @@ static main()
     if (out == 0)
       qexit(2);
     emit_range(out, "MAGIC_FLAG_SECONDARY_CONSUMER", 0x1C40, 0x1CD0);
+  }
+  else if (strstr(get_input_file_path(), "overlay-13.bin") != -1)
+  {
+    out = fopen("/work/pc98-quick-magic-overlay13.txt", "w");
+    if (out == 0)
+      qexit(2);
+    emit_range(out, "STUB_00B8_0075_HANDLER_HYPOTHESIS", 0x1E30, 0x2050);
+  }
+  else if (strstr(get_input_file_path(), "overlay-17.bin") != -1)
+  {
+    out = fopen("/work/pc98-quick-magic-overlay17.txt", "w");
+    if (out == 0)
+      qexit(2);
+    emit_range(out, "BORLAND_CANDOCURE", 0x36BD, 0x37AB);
+    emit_range(out, "BORLAND_DOCURE", 0x39CA, 0x3B40);
   }
   else
     qexit(1);

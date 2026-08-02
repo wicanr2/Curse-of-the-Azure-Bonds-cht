@@ -2995,3 +2995,17 @@ overlay 08 在同輪重新選中後先清 spell ID 再呼叫 CASTSPELL。engine
 補 raw casting_time。Quick Bless `01h` raw 10→delay 3 已接通；slot 消耗時點、
 手動 CAST、Cure special、其他 Quick 法術與中斷仍未完成。READY spec 425
 是權威邊界。
+
+2026-08-02 第四百二十六輪以 typed TPOV resolver 與唯讀 IDA Pro 9.4
+關閉 Quick Cure target handoff。`00B8:0075h` 的正確型別對應是 overlay 13、
+entry 17、handler `+1E30h`；entry 編號不可誤讀成 overlay 17。handler 搜尋
+施法者周圍九格同隊受傷者，保留低目前 HP 候選，另處理 `Tile_DownPlayer=1Fh`
+與 8 HP 門檻，最後寫出 far target pointer 並回傳是否成功。原始 bytes／位置
+未修改，所有附加名稱均保存推論等級。
+
+Engine action 新增 opaque `TargetID` 與 targeted spell transaction；CoAB
+Quick Cure `03h` 以 stable fighter ID 跨 scheduler delay，結算時才消耗 slot。
+focused regression 證明鄰近受傷目標、遠方排除、target 保存與治療；正常
+Standing Stone→Myth Drannor→Red Plume 路徑由真實 ECL 箭傷建立目標並完成
+七敵戰。equal-HP exact tie、倒地 status predicate、手動 CAST delay、施法中斷
+與其餘 Quick 法術仍未完成。READY spec 426 是權威邊界。

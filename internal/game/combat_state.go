@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -862,6 +863,40 @@ func (s *State) combatHealingTargets() []combat.Fighter {
 		targets = append(targets, fighter)
 	}
 	return targets
+}
+
+// quickCureTarget projects the PC-98 spell-03 selector into stable fighter
+// identities. The original searches the caster's 3x3 neighbourhood, prefers
+// low current HP, and may choose a downed party marker when active targets are
+// not below eight HP. Exact equal-HP traversal order remains unresolved.
+func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
+	distance := func(a, b int) int {
+		if a < b {
+			return b - a
+		}
+		return a - b
+	}
+	var active, downed []combat.Fighter
+	for _, target := range s.combatHealingTargets() {
+		if distance(target.CombatX, caster.CombatX) > 1 || distance(target.CombatY, caster.CombatY) > 1 {
+			continue
+		}
+		if target.DownedCorpse {
+			downed = append(downed, target)
+		} else {
+			active = append(active, target)
+		}
+	}
+	sort.SliceStable(active, func(i, j int) bool {
+		return active[i].HitPoints < active[j].HitPoints
+	})
+	if len(downed) > 0 && (len(active) == 0 || active[0].HitPoints >= 8) {
+		return downed[0], true
+	}
+	if len(active) > 0 {
+		return active[0], true
+	}
+	return combat.Fighter{}, false
 }
 
 // CombatSpellTargetsEnemy follows the global spell-table identity stored in
@@ -2459,6 +2494,10 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			if spell.ID == BlessSpellID {
 				return s.CombatCanCastBless(), nil
 			}
+			if spell.ID == CureLightWoundsSpellID {
+				_, ok := s.quickCureTarget(fighter)
+				return ok && s.CombatCanCastCureLightWounds(), nil
+			}
 			if spell.ID != MagicMissileSpellID {
 				// Preserve the original choice probability. Unsupported cast
 				// handoff is handled after selection instead of silently making
@@ -2485,11 +2524,20 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 	}
 	definition, _ := s.dataPack.FindCombatAISpell(spellID)
 	selected := enginequickspell.Spell{CastingTime: definition.CastingTime}
-	if spellID == BlessSpellID {
+	if spellID == BlessSpellID || spellID == CureLightWoundsSpellID {
 		if err := s.BeginCombatCast(spellID); err != nil {
 			return false, err
 		}
-		if err := s.battle.BeginPendingSpellAction(fighter.ID, spellID, selected.CastingDelayUnits()); err != nil {
+		targetID := ""
+		if spellID == CureLightWoundsSpellID {
+			target, ok := s.quickCureTarget(fighter)
+			if !ok {
+				s.CancelCombatCast()
+				return false, fmt.Errorf("quick Cure Light Wounds has no eligible target")
+			}
+			targetID = target.ID
+		}
+		if err := s.battle.BeginPendingTargetedSpellAction(fighter.ID, spellID, selected.CastingDelayUnits(), targetID); err != nil {
 			return false, err
 		}
 		s.CancelCombatCast()
@@ -2500,7 +2548,7 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		s.combatTurnIndex++
 		s.combatMessage = fmt.Sprintf(s.catalog.Text(
 			"combat_quick_magic_casting", "%s 開始吟唱%s。",
-		), fighter.Name, s.catalog.Text("spell_cleric_1", "祝福術"))
+		), fighter.Name, s.catalog.Text(fmt.Sprintf("spell_cleric_%d", spellID), fmt.Sprintf("法術 0x%02X", spellID)))
 		return true, nil
 	}
 	if spellID != MagicMissileSpellID {
@@ -2534,18 +2582,32 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 
 func (s *State) resolvePendingQuickSpell(fighter combat.Fighter) error {
 	spellID := fighter.CombatAction.SpellID
-	if spellID != BlessSpellID {
+	if spellID != BlessSpellID && spellID != CureLightWoundsSpellID {
 		return fmt.Errorf("pending quick spell 0x%02X is not implemented", spellID)
 	}
 	if err := s.BeginCombatCast(spellID); err != nil {
 		return err
 	}
-	resolved, err := s.battle.TakePendingSpellAction(fighter.ID)
+	resolved, targetID, err := s.battle.TakePendingTargetedSpellAction(fighter.ID)
 	if err != nil {
 		return err
 	}
 	if resolved != spellID {
 		return fmt.Errorf("pending quick spell changed from 0x%02X to 0x%02X", spellID, resolved)
+	}
+	if spellID == CureLightWoundsSpellID {
+		targets := s.combatHealingTargets()
+		targetIndex := -1
+		for index := range targets {
+			if targets[index].ID == targetID {
+				targetIndex = index
+				break
+			}
+		}
+		if targetIndex < 0 {
+			return fmt.Errorf("pending Cure Light Wounds target %q is unavailable", targetID)
+		}
+		s.combatSpellTargetIndex = targetIndex
 	}
 	return s.CombatCast(spellID)
 }

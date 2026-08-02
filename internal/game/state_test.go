@@ -2044,6 +2044,61 @@ func TestCombatAltMQuickBlessWaitsForPendingCastingAction(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickCurePreservesAdjacentTargetAcrossPendingAction(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{
+			{ID: "cleric", Name: "牧師", Class: party.ClassCleric, Level: 1, HitPoints: 10, MaxHitPoints: 10, SpellSlots: []uint8{CureLightWoundsSpellID}},
+			{ID: "adjacent", Name: "鄰近隊友", Class: party.ClassFighter, Level: 1, HitPoints: 3, MaxHitPoints: 10},
+			{ID: "far", Name: "遠方隊友", Class: party.ClassFighter, Level: 1, HitPoints: 1, MaxHitPoints: 10},
+		}
+		heroes := []combat.Fighter{
+			{ID: "cleric", Name: "牧師", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10, ArmorClass: -10, InitiativeBonus: 8, HasCombatPosition: true, CombatX: 1, CombatY: 1},
+			{ID: "adjacent", Name: "鄰近隊友", Side: combat.SideParty, HitPoints: 3, MaxHitPoints: 10, ArmorClass: -10, InitiativeBonus: 2, HasCombatPosition: true, CombatX: 2, CombatY: 1},
+			{ID: "far", Name: "遠方隊友", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 10, ArmorClass: -10, InitiativeBonus: 1, HasCombatPosition: true, CombatX: 8, CombatY: 8},
+		}
+		enemies := []combat.Fighter{{ID: "enemy", Name: "敵人", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100, ArmorClass: 10, InitiativeBonus: 6, DamageDiceCount: 1, DamageDiceSides: 1, HasCombatPosition: true, CombatX: 10, CombatY: 10}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, _ := state.fighter("cleric")
+		if caster.CombatAction.SpellID != CureLightWoundsSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.TargetID != "adjacent" || len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending=%+v slots=%v", caster.CombatAction, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 8 && state.CombatActive(); action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+			caster, _ = state.fighter("cleric")
+			if caster.CombatAction.SpellID == 0 {
+				break
+			}
+		}
+		adjacent, _ := state.fighter("adjacent")
+		far, _ := state.fighter("far")
+		if adjacent.HitPoints <= 3 || far.HitPoints != 1 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("adjacent=%+v far=%+v slots=%v", adjacent, far, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-1 Cure selection")
+	}
+}
+
 func TestCombatAltMGateResetsAtEachCombatStart(t *testing.T) {
 	state := NewState(testCatalog())
 	heroes := []combat.Fighter{{

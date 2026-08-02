@@ -406,6 +406,13 @@ commit 內保存不可能自我引用的 hash。
   CoAB 十一筆 JSON metadata 已接通；Quick Bless raw `10→3` 有 scheduler／
   State regression。手動 CAST、其他 Quick 法術、目標指標與 interruption
   fidelity 仍未完成。
+- 第 426 輪由 overlay 09 `03D3h..04C9h`、typed
+  `00B8:0075h → overlay 13 entry 17 → +1E30h` 與 IDA 證明 Quick Cure
+  先選同隊鄰近受傷／倒地目標，再把 target 帶過 pending action。engine
+  action 保存 opaque stable `TargetID`；CoAB `03h` 已由 focused regression
+  與 Standing Stone→Red Plume 真實箭傷正常路徑接通。九格 equal-HP exact
+  tie order、down-player status predicate、手動 CAST delay 與 interruption
+  仍未完成，不能宣稱完整 Quick AI。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

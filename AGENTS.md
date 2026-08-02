@@ -347,7 +347,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - CoAB 本輪基底：`8df7c97`（第 424 輪 PC-98 ALT+M 與 Quick Magic Missile）；
   第 425 輪 PC-98 Quick Bless 與非即時施法 milestone 會由本文件所在
   commit 完成。
-- Engine dependency：`dd99d29`（含作品中立 `combat/action`、
+- Engine dependency：`7be8f7c`（含作品中立 `combat/action` 的 delayed
+  spell `TargetID` transaction、
   `combat/initiative`、
   `combat/quickspell`、`randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -525,6 +526,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   JSON 已保存 raw casting_time；Quick Bless `01h` raw 10→3 已接通。slot
   中斷消耗、手動 CAST、Cure special、其他 Quick 法術與 per-action target
   pointer 仍未完成；spec 425 是權威。
+- 第 426 輪已由 overlay 09 與 typed
+  `00B8:0075h → overlay 13 entry 17 → +1E30h` 關閉 Quick Cure 指定目標
+  handoff。注意 `entry 17` 不是 overlay 17；compact 後不可再次混淆位址
+  空間。engine action 保存 opaque `TargetID`，CoAB `03h` 由鄰近受傷／倒地
+  selector、scheduler delay 與 Standing Stone→Red Plume 真實箭傷正常路徑
+  驗證。equal-HP exact tie、down-player status predicate、手動 CAST delay、
+  interruption 與其餘 Quick 法術仍未完成；READY spec 426 是權威細節。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
