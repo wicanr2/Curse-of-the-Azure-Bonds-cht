@@ -357,10 +357,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`56a3dde`（第 435 輪 `SCAN` 三欄與排序）；第 436 輪
-  terrain-aware `LOSEXISTS`／producer milestone 會由本文件所在 commit 完成。
-- Engine dependency：`9c94ddd`（含作品中立 `combat/scan` 的
-  `TDEFTYPE／TACTICALMAP` 地形視線與 footprint producer、`combat/scanorder`
+- CoAB 本輪基底：`e915acc`（第 436 輪 terrain-aware `LOSEXISTS`／producer）；
+  第 437 輪 `INARC／OBJECTLIST` milestone 會由本文件所在 commit 完成。
+- Engine dependency：`7f044dc`（含作品中立 `combat/scan` 的
+  `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
+  inclusive 扇區、`combat/scanorder`
   的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
   ordered HD capacity filter、`combat/action` 的 delayed
   spell `TargetID`／point-target transaction 與 interruption clear、
@@ -613,6 +614,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `BuildScanTargetIDs → CastSleepOrdered` bounded transaction 已接通；第四
   byte 仍命名 `Raw3`，`INARC` sector、COMPOBJ builder、wall／corner 動態
   trace、手動／Quick Sleep 與演出仍未完成。READY spec 436 是權威。
+- 第 437 輪已由 overlay 31 `INARC 054Ah..08D5h` 關閉 `FFh→8`、八方向
+  inclusive 半平面與第一命中方向；engine 以 14,062,500 組全地圖 corpus
+  驗證。Borland symbols exact 命名 `LASTOBJECT／OBJECTLIST`，型別表證明
+  72×4-byte，overlay 10 builder 證明一基底 linked-list 建表與 X／Y／自身
+  index／footprint-active 欄位。combatant linked-list 到 stable fighter ID、
+  正常 Sleep UI 與 wall／corner 動態仍未完成。READY spec 437 是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

@@ -80,16 +80,15 @@ type ScanTargetCandidate struct {
 }
 
 // BuildScanTargetIDs runs the recovered terrain-aware producer and returns
-// stable fighter IDs in original SCAN order. The direction resolver remains an
-// explicit boundary until the PC-98 INARC sector contract is independently
-// exposed by the title adapter.
+// stable fighter IDs in original SCAN order. Arc is the original INARC sector:
+// 0..7 select one direction and 8/FFh accept every direction.
 func BuildScanTargetIDs(
 	tacticalMap enginescan.TacticalMap,
 	sourceID uint8,
 	sourceCells []enginescan.Point,
 	candidates []ScanTargetCandidate,
 	maxRange int,
-	direction enginescan.DirectionResolver,
+	arc uint8,
 ) ([]string, error) {
 	objects := make([]enginescan.Object, len(candidates))
 	targetByObject := make(map[uint8]string, len(candidates))
@@ -109,7 +108,7 @@ func BuildScanTargetIDs(
 		objects[index] = enginescan.Object{ID: candidate.ObjectID, Cells: candidate.Cells}
 	}
 	entries, err := tacticalMap.Build(
-		enginescan.Object{ID: sourceID, Cells: sourceCells}, objects, maxRange, direction,
+		enginescan.Object{ID: sourceID, Cells: sourceCells}, objects, maxRange, arc,
 	)
 	if err != nil {
 		return nil, err

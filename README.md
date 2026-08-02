@@ -44,10 +44,12 @@ stable-ID adapter 已保存這個順序，`CastSleepOrdered` 也完成 `4d4`／H
 magic resistance 與 effect `35h` writer。第 436 輪再由 Borland
 `TDEFTYPE／TACTICALMAP` 與 IDA raw table 接通 `LOS／SYM／XRAY／TD`、
 2／3 加權距離、footprint strict minimum 與 terrain-aware producer；bounded
-transaction 已可把排序後 stable IDs 交給 Sleep。`INARC` sector、COMPOBJ
-建立順序、wall 實機、手動／Quick
+transaction 已可把排序後 stable IDs 交給 Sleep。第 437 輪又以 PC-98
+`INARC` 全指令關閉八方向 inclusive 扇區，並由 Borland symbols 證明
+`LASTOBJECT／OBJECTLIST` 的 72×4-byte 表格。combatant linked-list 到 stable
+ID 的正式投影、wall 實機、手動／Quick
 施法、解除、存檔及演出仍未完成，不能宣稱 Sleep 已可正常遊玩。最新證據見
-[`docs/spec/436-pc98-scan-terrain-los.md`](docs/spec/436-pc98-scan-terrain-los.md)。
+[`docs/spec/437-pc98-inarc-objectlist-boundary.md`](docs/spec/437-pc98-inarc-objectlist-boundary.md)。
 
 使用者提供的 PC-9801 兩片 VFD 原始磁碟也已開始納入證據鏈。專案新增唯讀
 `pc98-vfd-audit`，可驗證 VFD1.00 幾何、雜湊與 absent sectors，而不把未保存

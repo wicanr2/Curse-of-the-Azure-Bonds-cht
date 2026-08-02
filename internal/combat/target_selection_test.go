@@ -56,7 +56,7 @@ func TestBuildScanTargetIDsFeedsSleepWithoutDisplayTextOrSliceIdentity(t *testin
 			{ObjectID: 3, TargetID: "near", Cells: []enginescan.Point{{X: 1}}},
 		},
 		6,
-		func(from, to enginescan.Point) (uint8, error) { return 0, nil },
+		0xff,
 	)
 	if err != nil || !reflect.DeepEqual(ordered, []string{"near"}) {
 		t.Fatalf("ordered=%v err=%v", ordered, err)
