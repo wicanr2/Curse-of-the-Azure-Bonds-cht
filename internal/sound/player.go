@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
@@ -15,6 +16,7 @@ import (
 )
 
 const sampleRate = 44100
+const musicBufferBytes = sampleRate * 4 / 4 // 250 ms of stereo s16 PCM.
 
 // Player is an optional renderer-side sound adapter. It loads only the WAV
 // assets proven by the reference seg044 resource table and ignores unmapped
@@ -115,17 +117,60 @@ func (p *Player) PlayPC98Track(driver []byte, selector int) error {
 	if err != nil {
 		return err
 	}
+	return p.installPC98MusicStream(stream)
+}
+
+func (p *Player) installPC98MusicStream(stream *pc98music.TrackPCMStream) error {
 	player, err := p.context.NewPlayer(stream)
 	if err != nil {
 		_ = stream.Close()
 		return err
 	}
+	player.SetBufferSize(musicBufferBytes)
 	p.musicStream = stream
 	p.musicPlayer = player
 	if p.enabled {
 		player.Play()
 	}
 	return nil
+}
+
+// SnapshotPC98Music captures from the sample frame reported as audible by
+// Ebiten, not from the decoder's read-ahead position.
+func (p *Player) SnapshotPC98Music() (*pc98music.TrackPCMStreamSnapshot, error) {
+	if p == nil || p.musicPlayer == nil || p.musicStream == nil {
+		return nil, nil
+	}
+	position := p.musicPlayer.Position()
+	frames := durationToSampleFramesCeil(position, sampleRate)
+	snapshot, err := p.musicStream.SnapshotAtFrame(frames)
+	if err != nil {
+		return nil, err
+	}
+	return &snapshot, nil
+}
+
+func durationToSampleFramesCeil(position time.Duration, rate uint64) uint64 {
+	if position <= 0 || rate == 0 {
+		return 0
+	}
+	nanos := uint64(position)
+	second := uint64(time.Second)
+	whole := nanos / second * rate
+	remainder := nanos % second
+	return whole + (remainder*rate+second-1)/second
+}
+
+func (p *Player) RestorePC98Track(driver []byte, snapshot pc98music.TrackPCMStreamSnapshot) error {
+	if p == nil || p.context == nil {
+		return fmt.Errorf("sound player is unavailable")
+	}
+	p.StopMusic()
+	stream, err := pc98music.RestoreGameTrackPCMStream(driver, snapshot)
+	if err != nil {
+		return err
+	}
+	return p.installPC98MusicStream(stream)
 }
 
 // StopMusic stops and releases the active PC-98 stream.
@@ -135,6 +180,7 @@ func (p *Player) StopMusic() {
 	}
 	if p.musicPlayer != nil {
 		p.musicPlayer.Pause()
+		_ = p.musicPlayer.Close()
 		p.musicPlayer = nil
 	}
 	if p.musicStream != nil {

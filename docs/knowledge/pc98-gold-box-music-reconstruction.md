@@ -163,10 +163,24 @@ NP2kai 是控制流／I/O sequence oracle，不是本題的原機 wall-clock ora
 下一款作品仍須重新驗證 wrapper、driver SHA、track table、stream bytecode、
 clock 與正常玩家路徑。
 
-## 10. 尚未完成
+## 10. BGM 存檔續跑
+
+save/resume 不能只保存 selector 或 Timer tick。第 447 輪的 remake save v8
+完整保存 sequence machine、parameter renderer、YM2203 opaque state、resampler
+remainder、Timer B、transition silence 與 pending PCM。Ebiten 的 audible position
+落後 decoder read position，因此還要保存 bounded emitted history中的 read-ahead
+backlog；否則載入後會跳過尚未聽見的聲音。
+
+engine `ymfm_saved_state` 與 resampler snapshot 是作品中立層；七聲道 bytecode、
+driver SHA、selector、track ID 與 Oto buffer adapter 留在 CoAB。完整欄位、bounds
+與證據等級見 READY spec 447。
+
+## 11. 尚未完成
 
 - driver 缺 sector 的可信恢復；
-- Timer B reload phase與 save/resume；
+- Timer B reload 的 CPU／OPN 共時 phase；
+- SHA 已驗證完整 driver 的十二曲 runtime save/load oracle；
+- active one-shot sample position；
 - speaker／YM2203 類比 mixer gain；
 - 原機 port 37h edge／錄音，或經 microbenchmark 校準的 V30 emulator；
 - dormant FM SFX producer；

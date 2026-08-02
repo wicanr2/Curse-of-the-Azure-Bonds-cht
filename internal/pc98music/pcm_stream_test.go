@@ -81,3 +81,47 @@ func TestGameTrackPCMStreamStartsWithExactMSCPLAYSilence(t *testing.T) {
 	}
 	t.Fatal("track remained silent after the exact 800ms transition")
 }
+
+func TestTrackPCMStreamSnapshotAtAudibleFramePreservesBufferedContinuation(t *testing.T) {
+	newStream := func() *TrackPCMStream {
+		playback, initial := syntheticPlayback(t)
+		stream, err := newTrackPCMStream(playback, newYM2203EventRenderer(nil), initial, 44_100)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return stream
+	}
+	original := newStream()
+	defer original.Close()
+	emitted := make([]byte, 4096)
+	if _, err := io.ReadFull(original, emitted); err != nil {
+		t.Fatal(err)
+	}
+	const audibleBytes = 2048
+	snapshot, err := original.SnapshotAtFrame(audibleBytes / 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	future := make([]byte, 2048)
+	if _, err := io.ReadFull(original, future); err != nil {
+		t.Fatal(err)
+	}
+	want := append(append([]byte(nil), emitted[audibleBytes:]...), future...)
+	restored := newStream()
+	defer restored.Close()
+	if err := restored.restore(snapshot); err != nil {
+		t.Fatal(err)
+	}
+	got := make([]byte, len(want))
+	if _, err := io.ReadFull(restored, got); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(got, want) {
+		t.Fatal("restored PCM differs at the first audible sample")
+	}
+	bad := snapshot
+	bad.Pending = make([]byte, 44_100*4*8+1)
+	if err := restored.restore(bad); err == nil {
+		t.Fatal("oversized pending PCM was accepted")
+	}
+}

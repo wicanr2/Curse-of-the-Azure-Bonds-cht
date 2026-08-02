@@ -1,6 +1,9 @@
 package pc98music
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func syntheticPlayback(t *testing.T) (*TrackPlayback, []MusicEvent) {
 	t.Helper()
@@ -117,6 +120,47 @@ func TestTrackPlaybackRejectsPSGPeriodOutsideTable(t *testing.T) {
 	}, &events)
 	if err == nil {
 		t.Fatal("PSG note below table was accepted")
+	}
+}
+
+func TestTrackPlaybackSnapshotRestoresExactEventContinuation(t *testing.T) {
+	original, _ := syntheticPlayback(t)
+	for tick := 0; tick < 1; tick++ {
+		if _, err := original.Tick(4096); err != nil {
+			t.Fatal(err)
+		}
+	}
+	snapshot, err := original.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var want []MusicEvent
+	for tick := 0; tick < 1; tick++ {
+		events, err := original.Tick(4096)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want = append(want, events...)
+	}
+	restored, _ := syntheticPlayback(t)
+	if err := restored.Restore(snapshot); err != nil {
+		t.Fatal(err)
+	}
+	var got []MusicEvent
+	for tick := 0; tick < 1; tick++ {
+		events, err := restored.Tick(4096)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got = append(got, events...)
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatal("restored track event continuation differs")
+	}
+	bad := snapshot
+	bad.Channels[0].Machine.PC = bad.Channels[0].Machine.End + 1
+	if err := restored.Restore(bad); err == nil {
+		t.Fatal("out-of-range sequence PC was accepted")
 	}
 }
 

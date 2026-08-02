@@ -360,7 +360,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - CoAB 本輪基底：`ea01be8`（第 437 輪 `INARC／OBJECTLIST`）；第 438 輪
   `CHARACTERLIST／IDLIST` stable identity milestone 會由本文件所在 commit
   完成。
-- Engine dependency：`3142ae0`（含作品中立 `combat/effecttime`、`combat/scan` 的
+- Engine dependency：`f06493f`（含作品中立 YM2203 opaque full-state／PCM
+  resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
   `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
   inclusive 扇區、`combat/scanorder`
   的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
@@ -557,8 +558,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 444 輪已把 save v7 接到真實 Standing Stone→Myth Drannor→紅網玩家路徑：
   四蜘蛛第一戰 party-turn 存檔，全新 State 從玩家自備 ECL／MON／ITEM restore，
   再完成蜘蛛、羅剎妖二戰與 `4CBF=1`。這證明 ECL combat handoff，但高數值
-  測試英雄不代表原版 encounter balance，mid-animation／其他 encounter 類型
-  仍未完成；READY spec 444 是權威。
+  測試英雄不代表原版 encounter balance；mid-animation 已由第 446 輪完成，
+  其他 encounter 類型仍未完成。READY spec 444 是權威。
 - 第 445 輪已驗證真實 mixed-team save：提爾雪雅事件的 party-side 羅剎妖必須
   只存在 Battle snapshot，保留 `QuickFight／TemporaryAlly`；`Characters`／
   `partyRoster` 只能保存永久英雄。讀檔後戰勝要寫 `4CD1=1`，並從 runtime
@@ -570,6 +571,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   音效；越界 elapsed／marker fail-closed。PCM sample offset 與 BGM driver／
   synth 狀態仍未保存，不得把「cue 不重播」寫成音訊無縫續播。READY spec 446
   是權威。
+- 第 447 輪把 remake JSON save 升至 v8；BGM snapshot 必須同時保存 stable track、
+  sequence machine、renderer parameter、YM2203 opaque full state、resampler
+  remainder、Timer B、silence、pending PCM 與 audible/read-ahead backlog。只存
+  selector／tick 或 decoder current position 都會錯。engine `f06493f` 是作品
+  中立 synth／resampler 基底；active one-shot 與 exact driver 十二曲 runtime
+  oracle仍未完成。READY spec 447 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

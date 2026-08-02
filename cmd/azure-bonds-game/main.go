@@ -303,7 +303,42 @@ func (a *app) saveCurrentGame() error {
 	if a.savgamSlotSave {
 		return a.state.SaveSAVGAMSlot(a.savgamDir, a.savgamSlot)
 	}
+	if a.soundPlayer != nil {
+		snapshot, err := a.soundPlayer.SnapshotPC98Music()
+		if err != nil {
+			return fmt.Errorf("snapshot PC-98 music: %w", err)
+		}
+		if err := a.state.SetMusicPlaybackSnapshot(snapshot); err != nil {
+			return err
+		}
+	}
 	return a.state.SavePartyFile(a.partyPath)
+}
+
+func (a *app) restoreMusicSnapshot() error {
+	trackID, snapshot, ok := a.state.MusicPlaybackSnapshot()
+	if !ok {
+		a.currentMusicTrack = ""
+		if a.soundPlayer != nil {
+			a.soundPlayer.StopMusic()
+		}
+		return nil
+	}
+	a.currentMusicTrack = trackID
+	if len(a.pc98MusicDriver) == 0 || a.soundPlayer == nil {
+		return nil
+	}
+	track, found := a.gamePack.FindMusicTrack(trackID)
+	if !found {
+		return fmt.Errorf("music track %q is not in the game pack", trackID)
+	}
+	if snapshot == nil {
+		return a.soundPlayer.PlayPC98Track(a.pc98MusicDriver, int(track.ReferenceSelector))
+	}
+	if snapshot.Selector != int(track.ReferenceSelector) {
+		return fmt.Errorf("music track %q selector %d does not match snapshot selector %d", trackID, track.ReferenceSelector, snapshot.Selector)
+	}
+	return a.soundPlayer.RestorePC98Track(a.pc98MusicDriver, *snapshot)
 }
 
 func (a *app) saveTarget() string {
@@ -570,6 +605,8 @@ func (a *app) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
 		if err := a.state.LoadPartyFile(a.partyPath); err != nil {
 			a.state.Message = "載入失敗：" + err.Error()
+		} else if err := a.restoreMusicSnapshot(); err != nil {
+			a.state.Message = "音樂續跑失敗：" + err.Error()
 		} else {
 			a.state.Message = "隊伍已載入：" + a.partyPath
 			a.choiceCursor = 0
@@ -3490,6 +3527,11 @@ func main() {
 	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	gameApp.state.SetCombatLineTerrain(gameApp.combatLineTerrain())
 	gameApp.state.SetCombatScanMapProvider(gameApp.combatScanTacticalMap)
+	if *partyLoadPath != "" {
+		if err := gameApp.restoreMusicSnapshot(); err != nil {
+			log.Fatal(err)
+		}
+	}
 	if err := ebiten.RunGame(gameApp); err != nil {
 		log.Fatal(err)
 	}

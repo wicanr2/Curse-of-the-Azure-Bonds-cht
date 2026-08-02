@@ -3287,3 +3287,18 @@ READY spec 446 是權威；播放器 PCM sample offset、BGM driver／synth snap
 正式 Docker／Xvfb／`--network none` gate 已驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker
 `ROUND446_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round446-formal.log`。
+
+2026-08-02 第四百四十七輪將 remake JSON save 升至 v8。獨立 engine
+`f06493f` 暴露 vendored `ymfm_saved_state` 與有理數 resampler snapshot；FM＋
+SSG chip 及 resampler 的後續 samples 與不中斷分支逐 sample 相同。CoAB 再保存
+七聲道 SequenceMachine、parameter renderer、Timer B、MSCPLAY silence、pending
+PCM、stable track ID 與 selector。Ebiten `Position()` 是扣除 device buffer 的
+audible frame；TrackPCMStream 以四秒 bounded emitted history補回 decoder
+read-ahead，使 synthetic 七聲道 fixture 從第一個尚未聽見的 byte續跑一致。
+save JSON 會拒絕未知 version、selector／rate、超大 state／pending及 stack。
+READY spec 447 是權威。本機與使用者主目錄找不到 SHA `bddbe63…b12f5` 的完整
+MSCDRV，玩家 VFD 又缺 driver sector，故十二首真實曲目 runtime save/load、
+active one-shot sample position與原版 SAVGAM audio仍未完成。
+engine 全套 gate marker `ENGINE_ROUND447_FORMAL_EXIT=0`，日誌位於
+`/tmp/engine-round447-formal.log`；CoAB Docker／Xvfb／`--network none` 全套
+marker `ROUND447_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round447-formal.log`。

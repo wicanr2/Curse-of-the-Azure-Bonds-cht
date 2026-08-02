@@ -517,9 +517,9 @@ commit 內保存不可能自我引用的 hash。
 - 第 443 輪完成 remake save v7 active-combat snapshot：Fighter／effect／Action、
   scheduler selection、turn cursor、persistent areas、battle modifiers、pending
   interruption、visual 起點與 battle PRNG 均可 round-trip。正常 Sleep 讀檔後
-  自然到期／傷害喚醒與不中斷分支一致；mid-animation 因 elapsed 尚未歸 State
-  所有而 fail-closed。原版 SAVGAM combat records 仍未反組譯。READY spec 443
-  是權威。
+  自然到期／傷害喚醒與不中斷分支一致。第 443 輪當時的 mid-animation
+  fail-closed 已由第 446 輪解除；原版 SAVGAM combat records 仍未反組譯。
+  READY spec 443 是 active-combat 基底，spec 446 是 visual resume 權威。
 - 第 444 輪已由 Standing Stone 正常世界旅行、GEO6 合法移動、精靈幽魂、
   紅網 `SPEAK／Krrkik／ENTER` 抵達真實四蜘蛛戰；第一戰 party-turn save v7
   後以全新 State restore，Battle／ECL session 逐欄相同，loaded state 完成
@@ -536,6 +536,13 @@ commit 內保存不可能自我引用的 hash。
   fail-closed，frontend speed 0／4／9 都保留 saved base。播放器 PCM sample
   offset、BGM driver／synth 狀態及原版 SAVGAM combat layout 仍未完成；
   READY spec 446 是權威。
+- 第 447 輪將 remake JSON save 升至 v8：stable track ID、七聲道 machine、
+  YM2203 full state、resampler remainder、Timer B、transition silence、pending
+  PCM 與 Ebiten audible/read-ahead backlog 均可 round-trip。engine `f06493f`
+  提供作品中立 ymfm／resampler snapshot。合成七聲道 fixture 從第一個 audible
+  sample續跑一致；本機缺 exact 完整 MSCDRV，故十二首真實曲目 runtime oracle、
+  active one-shot sample position及原版 SAVGAM audio仍未完成。READY spec 447
+  是權威。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

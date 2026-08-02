@@ -1158,6 +1158,14 @@ fail-closed；此限制已由第 446 輪解除。證據見
 [`spec 443`](docs/spec/443-active-combat-save-sleep-continuation.md) 與
 [`spec 446`](docs/spec/446-mid-visual-combat-save-resume.md)。
 
+第 447 輪將 remake JSON save 升至 v8，保存 stable BGM track ID、七聲道音序列
+machine、YM2203 FM／SSG phase、resampler remainder、Timer B、800ms pre-roll及
+pending PCM。Ebiten 的實際 audible frame與 decoder 預讀點之間的 PCM 也會由
+bounded history補回，所以載入從第一個尚未聽見的 sample續跑，不是從曲首重播。
+engine `f06493f` 提供作品中立 ymfm／resampler snapshot。active one-shot 尚未
+保存；本機完整 MSCDRV 缺失，十二首真實曲目的 save/load runtime oracle 仍待補。
+證據見 [`spec 447`](docs/spec/447-pc98-bgm-sample-continuation-save.md)。
+
 第 444 輪把 save v7 接入真實 campaign：從 Standing Stone 世界旅行至
 Myth Drannor，沿 GEO6 合法路徑經精靈幽魂與紅網字串輸入，在四蜘蛛第一戰的
 正常 party-turn 邊界存檔。全新 State 由玩家自備 ECL／MON／ITEM 資料載入後，

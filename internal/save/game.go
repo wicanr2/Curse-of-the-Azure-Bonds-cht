@@ -8,10 +8,16 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 7
+const CurrentGameVersion = 8
+
+type MusicSnapshot struct {
+	TrackID string                            `json:"track_id"`
+	Stream  *pc98music.TrackPCMStreamSnapshot `json:"stream,omitempty"`
+}
 
 // CombatSnapshot preserves the game-adapter side of an active Battle. Map
 // callbacks and decoded source assets are intentionally excluded and are
@@ -67,6 +73,7 @@ type GameFile struct {
 	GameAgeCycles   uint32               `json:"game_age_cycles"`
 	ECLSession      *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
 	Combat          *CombatSnapshot      `json:"combat,omitempty"`
+	Music           *MusicSnapshot       `json:"music,omitempty"`
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
@@ -103,6 +110,12 @@ func EncodeGameWithSession(roster party.Roster, areaState area.State, mode, loca
 
 // EncodeGameWithCombat adds a bounded active-battle continuation to save v7.
 func EncodeGameWithCombat(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot) ([]byte, error) {
+	return EncodeGameWithAudio(roster, areaState, mode, location, mapX, mapY, dungeonX, dungeonY, dungeonDirection, dungeonWallType, dungeonWallRoof, gameTime, gameAgeCycles, session, activeCombat, nil)
+}
+
+// EncodeGameWithAudio adds the stable track identity and optional exact PC-98
+// synthesis continuation used by remake save v8.
+func EncodeGameWithAudio(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
 		return nil, err
 	}
@@ -112,7 +125,7 @@ func EncodeGameWithCombat(roster party.Roster, areaState area.State, mode, locat
 		DungeonX: dungeonX, DungeonY: dungeonY, DungeonDir: dungeonDirection,
 		DungeonWallType: dungeonWallType, DungeonWallRoof: dungeonWallRoof,
 		GameTime: gameTime, GameAgeCycles: gameAgeCycles, ECLSession: session,
-		Combat: activeCombat,
+		Combat: activeCombat, Music: music,
 	}, "", "  ")
 }
 
@@ -128,6 +141,19 @@ func DecodeGame(data []byte) (GameFile, error) {
 	}
 	if file.Combat != nil && file.Version < 7 {
 		return GameFile{}, fmt.Errorf("game save version %d cannot contain active combat", file.Version)
+	}
+	if file.Music != nil {
+		if file.Version < 8 {
+			return GameFile{}, fmt.Errorf("game save version %d cannot contain music continuation", file.Version)
+		}
+		if file.Music.TrackID == "" {
+			return GameFile{}, fmt.Errorf("game save music track ID is empty")
+		}
+		if file.Music.Stream != nil {
+			if err := file.Music.Stream.ValidatePersistent(); err != nil {
+				return GameFile{}, fmt.Errorf("game save music continuation: %w", err)
+			}
+		}
 	}
 	if err := file.Characters.Validate(); err != nil {
 		return GameFile{}, err
