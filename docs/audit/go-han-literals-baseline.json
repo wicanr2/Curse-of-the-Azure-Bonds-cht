@@ -2208,62 +2208,6 @@
     },
     {
       "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "89f30d8464ae5a09f4c2b656980cd3ce21b7150f163df21899d6118b2f32a303",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "a624ef413a7904e05dd5b356e60b7b790ba01ec31094e4ada687f36a3757f141",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "bdcf87b9ddd33da14185fd912d25e9f7bb01125f43a567cecc167ae4ef3e909c",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "be25ac52526f31f6577f808fa07246e9b47a828b3b4211b2147799a9443e843e",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "c122e5338599b67b2912a50e909dcda31424535a47cb01527a6f176fb87d4b17",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "c56cd97d3acc11cb016c809f0272960e8062adeb3cae88c7fcdb9f1ff88ba23d",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "c9ef1d0f2e58070e0f74b2b658da16006d4bdd65ed57a6a955cafd5557c4e48c",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "applyECLProgram",
-      "sha256": "d466846b45be5dcb685433637a3913fb4fbb280bbeff43fd6bff23651529c609",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
       "function": "enterECLMenu",
       "sha256": "1f2fe6e79f148cc96027b54e5d32560d5b66b279a926ff2a8dcf86f0b220efe9",
       "occurrences": 1,
@@ -2420,20 +2364,6 @@
       "path": "internal/game/state.go",
       "function": "selectPlace",
       "sha256": "0635f8c0f51a0012fedabbe4c7b6ccc6c44717db22b092abc774276c84ab2c80",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "selectProgramEnd",
-      "sha256": "c8301f5121d1ae161477cb0a58189e7467022d902d67a3d117591adc05217c7a",
-      "occurrences": 1,
-      "category": "runtime_ui_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "selectProgramEnd",
-      "sha256": "f056a44b85595fcc9df65af031cb0f9c1e28b4541e37709f27b44b44c31cdb33",
       "occurrences": 1,
       "category": "runtime_ui_debt"
     },

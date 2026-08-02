@@ -3453,17 +3453,17 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 			s.enterTrainingMenu()
 			return true, nil
 		}
-		s.enterProgramTitle("主選單")
+		s.enterProgramTitle(s.catalog.Text("program_main_menu", "program_main_menu"))
 		return true, nil
 	case 3:
 		s.partyKilled = true
 		s.programEndMenu = true
 		s.Mode = ModeWilderness
 		s.OriginalEvent = "PROGRAM 3"
-		s.Prompt = "隊伍全滅"
-		s.Choices = []string{"返回標題"}
+		s.Prompt = s.catalog.Text("program_party_killed_prompt", "program_party_killed_prompt")
+		s.Choices = []string{s.catalog.Text("program_return_title", "program_return_title")}
 		s.currentOriginalChoices = []string{"PROGRAM_END"}
-		s.Message = "隊伍已全滅。"
+		s.Message = s.catalog.Text("program_party_killed_message", "program_party_killed_message")
 		return true, nil
 	case 8:
 		s.gameWon = true
@@ -3480,10 +3480,13 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 		s.programEndMenu = true
 		s.Mode = ModeWilderness
 		s.OriginalEvent = "PROGRAM 8"
-		s.Prompt = "你們解除了青色枷鎖的詛咒！"
-		s.Choices = []string{"保存勝利進度並結束", "不保存並結束"}
+		s.Prompt = s.catalog.Text("program_victory_prompt", "program_victory_prompt")
+		s.Choices = []string{
+			s.catalog.Text("program_victory_save", "program_victory_save"),
+			s.catalog.Text("program_end_without_save", "program_end_without_save"),
+		}
 		s.currentOriginalChoices = []string{"PROGRAM_WIN_SAVE", "PROGRAM_END"}
-		s.Message = "全隊已恢復，是否在結束前保存？"
+		s.Message = s.catalog.Text("program_victory_message", "program_victory_message")
 		return true, nil
 	case 9:
 		s.campECLService = s.session != nil && len(s.eclBlock) > 0
@@ -3500,10 +3503,10 @@ func (s *State) selectProgramEnd(originalChoice string) error {
 			return fmt.Errorf("cannot save victory without a party roster")
 		}
 		s.saveRequested = true
-		s.enterProgramTitle("勝利進度已要求保存。")
+		s.enterProgramTitle(s.catalog.Text("program_victory_save_requested", "program_victory_save_requested"))
 		return nil
 	case "PROGRAM_END":
-		s.enterProgramTitle("冒險告一段落。")
+		s.enterProgramTitle(s.catalog.Text("program_adventure_ended", "program_adventure_ended"))
 		return nil
 	default:
 		return fmt.Errorf("invalid PROGRAM end choice %q", originalChoice)

@@ -90,7 +90,9 @@ commit 內保存不可能自我引用的 hash。
   艾森布拉 Tale 44／60 已由既有真實酒館鏈改成 game-pack stable-ID 驗收；State
   line localizer 的 27 筆中文 fallback 副本已移除。第 476 輪再將 CAMP／REST／
   FIX／VIEW／MAGIC 與 ALTER 的顯示文字改由正式 locale stable IDs 驅動，移除
-  128 次 Go 漢字並讓行為測試載入正式 catalog；最新 baseline 為 388。
+  128 次 Go 漢字並讓行為測試載入正式 catalog。第 477 輪再將 PROGRAM 0／3／8
+  的主選單、全滅、勝利與保存／不保存結束畫面改由正式 locale 驅動；正常 37 人
+  終戰在兩次 save／restore 後仍取得同一繁中 catalog。最新 baseline 為 378。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

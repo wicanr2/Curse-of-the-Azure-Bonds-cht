@@ -31,7 +31,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			all[block.Entry.ID] = block.Data
 		}
 	}
-	state := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	state := NewStateFromECLBlocks(trainingTestCatalog(t), all, 0x50)
 	hero := combat.Fighter{
 		ID: "hero", Name: "英雄", Side: combat.SideParty,
 		HitPoints: 999, MaxHitPoints: 999, ArmorClass: -10,
@@ -365,7 +365,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if err := state.SavePartyFile(savePath); err != nil {
 		t.Fatal(err)
 	}
-	loaded := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	loaded := NewStateFromECLBlocks(trainingTestCatalog(t), all, 0x50)
 	loaded.SetMonsterRecordsForECL(6, monsterRecords)
 	loaded.SetMonsterAffectsForECL(6, monsterAffects)
 	loaded.SetTreasureItemBlocks(treasureBlocks)
@@ -2145,7 +2145,7 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	if err := state.SavePartyFile(allySavePath); err != nil {
 		t.Fatal(err)
 	}
-	allyLoaded := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	allyLoaded := NewStateFromECLBlocks(trainingTestCatalog(t), all, 0x50)
 	allyLoaded.SetMonsterRecordsForECL(6, monsterRecords)
 	allyLoaded.SetMonsterAffectsForECL(6, monsterAffects)
 	allyLoaded.SetTreasureItemBlocks(treasureBlocks)
@@ -3798,6 +3798,14 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		state.Mode != ModeWilderness || state.OriginalEvent != "PROGRAM 8" {
 		t.Fatalf("PROGRAM 8 game won=%v mode=%v event=%q message=%q choices=%v",
 			state.GameWon(), state.Mode, state.OriginalEvent, state.Message, state.Choices)
+	}
+	if state.Prompt != state.catalog.Text("program_victory_prompt", "") ||
+		len(state.Choices) != 2 ||
+		state.Choices[0] != state.catalog.Text("program_victory_save", "") ||
+		state.Choices[1] != state.catalog.Text("program_end_without_save", "") ||
+		state.Message != state.catalog.Text("program_victory_message", "") {
+		t.Fatalf("normal final-battle PROGRAM 8 locale prompt=%q choices=%v message=%q",
+			state.Prompt, state.Choices, state.Message)
 	}
 
 	boundaryHero := hero

@@ -1009,3 +1009,15 @@ README 記載 Engine HEAD、nested worktree 與 `go.mod` pseudo-version 可能�
 正式 gate 不能任選一個本機相容 commit：先以 pinned commit 編譯；若它缺少目前
 schema，這就是依賴宣告過期的直接證據。修正後要以 exact commit、乾淨 cache 與
 離線完整 gate 驗證，並分清「工具鏈依賴解析失敗」與「產品測試斷言失敗」。
+
+### 2026-08-02：save 不保存 locale，但 restore harness 必須重新注入
+
+語系 catalog 是應用程式依賴，不是遊戲世界狀態，不應寫進 save。長玩家測試若在
+途中建立全新 State 並載入 save，必須以相同正式 locale 建構；改用最小合成
+catalog 會讓後段首次出現的終局 prompt 只顯示 stable ID，即使前段 game-pack
+劇情都正常。
+
+這種失敗不能在終局 handler 重新塞譯文，也不能把 catalog 序列化進存檔。正確
+驗收是：初始 State、每次 restore State 與臨時盟友／戰鬥 continuation State 都
+注入同一正式 resolver；save 只 round-trip 世界、隊伍、VM、戰鬥、PRNG 與音訊等
+可持久狀態。終局選項仍以原始 stable token 驅動，顯示文字改譯不影響 transaction。
