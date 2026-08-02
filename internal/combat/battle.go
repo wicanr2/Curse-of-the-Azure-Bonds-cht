@@ -36,9 +36,10 @@ const (
 )
 
 type Fighter struct {
-	ID   string
-	Name string
-	Side Side
+	ID         string
+	Name       string
+	SourceName string `json:"source_name,omitempty"`
+	Side       Side
 	// LegacyObjectID is the one-based OBJECTLIST/IDLIST index rebuilt from the
 	// original CHARACTERLIST traversal at combat start. Zero means the title
 	// adapter has not established that legacy identity.

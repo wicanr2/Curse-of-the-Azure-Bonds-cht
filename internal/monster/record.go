@@ -126,7 +126,7 @@ func Parse(data []byte) (Record, error) {
 
 func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 	return combat.Fighter{
-		ID: id, Name: r.Name, Side: side,
+		ID: id, Name: r.Name, SourceName: r.Name, Side: side,
 		HitPoints: r.HitPoints, MaxHitPoints: r.MaxHitPoints,
 		HitDice:     r.HitDice,
 		RawPlayer74: r.RawPlayer74,

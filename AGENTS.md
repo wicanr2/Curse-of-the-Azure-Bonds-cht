@@ -692,6 +692,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   讀檔依目前 locale 重新解析，禁止把繁中全文或 locale catalog 寫進存檔。
   空手札不得顯示 `1 / 0`，也不得為了填畫面預先建立攻略／開發說明頁。
   READY spec 478 是權威。
+- 第 479 輪把 23 個 MON 戰鬥者名稱移入 Engine `combatant_name_rules` 與 CoAB
+  game-pack，baseline `368→345`，`localization_debt` 降為 0。名稱身分是原始
+  MON `SourceName`，顯示值才是目前 locale 的 `Name`；save v11 必須保存來源名
+  並在讀檔時重解。測試用 source 經正式 pack 取得期望名稱，不可再複製「黑龍」
+  等當前譯名。Exact overlay 不證明其他 SSI 遊戲共用 MON 格式；READY spec 479
+  是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

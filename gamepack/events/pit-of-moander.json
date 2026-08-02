@@ -558,6 +558,29 @@
       ,"journal.26": "Journal Entry 26: An invading cleric paralyzed these men while trying to reach the prisoners in the leader's room to the south. The Fire Knives finally overcame him here."
       ,"journal.9": "Journal Entry 9: Beside a flaming humanoid are three notes: it has a flaming aura, can possess other bodies, and is connected to the Pool of Radiance."
       ,"journal.29": "Journal Entry 29: The surviving paper says their ally controls flame, moves from body to body, and has extra-dimensional powers. The writer concludes that the Flamed One can only be Tyran…"
+      ,"combatant.hippogriff": "Hippogriff"
+      ,"combatant.fighter": "Fighter"
+      ,"combatant.black-dragon": "Black Dragon"
+      ,"combatant.dark-elf-fighter": "Dark Elf Fighter"
+      ,"combatant.dark-elf-mage": "Dark Elf Mage"
+      ,"combatant.dark-elf-cleric": "Dark Elf Cleric"
+      ,"combatant.efreeti": "Efreeti"
+      ,"combatant.salamander": "Salamander"
+      ,"combatant.dracolich": "Dracolich"
+      ,"combatant.hooded-medusa": "Hooded Medusa"
+      ,"combatant.beholder": "Beholder"
+      ,"combatant.minotaur": "Minotaur"
+      ,"combatant.zhentil-fighter": "Zhentil Fighter"
+      ,"combatant.zhentil-mage": "Zhentil Mage"
+      ,"combatant.zhentil-cleric": "Zhentil Cleric"
+      ,"combatant.high-priest": "High Priest"
+      ,"combatant.zhentrim-cleric": "Zhentrim Cleric"
+      ,"combatant.zhentrim-fighter": "Zhentrim Fighter"
+      ,"combatant.zhentrim-mage": "Zhentrim Mage"
+      ,"combatant.moander-cultist": "Cultist"
+      ,"combatant.mogion": "Mogion"
+      ,"combatant.shambling-mound": "Shambling Mound"
+      ,"combatant.bit-of-moander": "Bit o' Moander"
     },
     "zh-TW": {
       "music.pc98.00.title": "標題",
@@ -1103,6 +1126,29 @@
       ,"journal.26": "手札條目 26：這些人中了入侵牧師施展的定身法術。那名牧師是為了營救被關在南方首領房裡的囚犯而來；所幸火刀最後在這間房裡制伏了他。"
       ,"journal.9": "手札條目 9：文件旁畫著一個帶火焰輪廓的人形，軀幹上有三道彎曲符號。註記寫著：一、具有燃燒靈氣；二、能附身其他軀體；三、與光芒之池有所牽連。原始圖像保存於 Adventurer's Journal 第 12 頁。"
       ,"journal.29": "手札條目 29：未被燒毀的部分寫著：「……我們的盟友能控制火焰、從一具軀體掠入另一具軀體，並展現多種異次元力量。我的結論是，『烈焰之主』不可能是別人，只會是泰蘭索斯……」"
+      ,"combatant.hippogriff": "鷹馬"
+      ,"combatant.fighter": "戰士"
+      ,"combatant.black-dragon": "黑龍"
+      ,"combatant.dark-elf-fighter": "黑暗精靈戰士"
+      ,"combatant.dark-elf-mage": "黑暗精靈法師"
+      ,"combatant.dark-elf-cleric": "黑暗精靈牧師"
+      ,"combatant.efreeti": "伊弗利特"
+      ,"combatant.salamander": "火蜥蜴"
+      ,"combatant.dracolich": "龍巫妖"
+      ,"combatant.hooded-medusa": "兜帽梅杜莎"
+      ,"combatant.beholder": "眼魔"
+      ,"combatant.minotaur": "牛頭人"
+      ,"combatant.zhentil-fighter": "散提爾堡戰士"
+      ,"combatant.zhentil-mage": "散提爾堡法師"
+      ,"combatant.zhentil-cleric": "散提爾堡牧師"
+      ,"combatant.high-priest": "大祭司"
+      ,"combatant.zhentrim-cleric": "散塔林牧師"
+      ,"combatant.zhentrim-fighter": "散塔林戰士"
+      ,"combatant.zhentrim-mage": "散塔林法師"
+      ,"combatant.moander-cultist": "摩安德教徒"
+      ,"combatant.mogion": "摩貢"
+      ,"combatant.shambling-mound": "蔓生怪"
+      ,"combatant.bit-of-moander": "摩安德殘軀"
     }
   },
   "character_creation": {
@@ -1467,6 +1513,31 @@
         {"source_file": "RANDCOM.DAX", "block": 2}
       ]
     }
+  ],
+  "combatant_name_rules": [
+    {"id":"hippogriff","source":"HIPPOGRIFF","message_id":"combatant.hippogriff"},
+    {"id":"fighter","source":"FIGHTER","message_id":"combatant.fighter"},
+    {"id":"black-dragon","source":"BLACK DRAGON","message_id":"combatant.black-dragon"},
+    {"id":"dark-elf-fighter","source":"DK ELF FIGHTER","message_id":"combatant.dark-elf-fighter"},
+    {"id":"dark-elf-mage","source":"DARK ELF MAGE","message_id":"combatant.dark-elf-mage"},
+    {"id":"dark-elf-cleric","source":"DARK ELF CLERIC","message_id":"combatant.dark-elf-cleric"},
+    {"id":"efreeti","source":"EFREETI","message_id":"combatant.efreeti"},
+    {"id":"salamander","source":"SALAMANDER","message_id":"combatant.salamander"},
+    {"id":"dracolich","source":"DRACOLICH","message_id":"combatant.dracolich"},
+    {"id":"hooded-medusa","source":"HOODED MEDUSA","message_id":"combatant.hooded-medusa"},
+    {"id":"beholder","source":"BEHOLDER","message_id":"combatant.beholder"},
+    {"id":"minotaur","source":"MINOTAUR","message_id":"combatant.minotaur"},
+    {"id":"zhentil-fighter","source":"ZHENTIL FIGHTER","message_id":"combatant.zhentil-fighter"},
+    {"id":"zhentil-mage","source":"ZHENTIL MAGE","message_id":"combatant.zhentil-mage"},
+    {"id":"zhentil-cleric","source":"ZHENTIL CLERIC","message_id":"combatant.zhentil-cleric"},
+    {"id":"high-priest","source":"HIGH PRIEST","message_id":"combatant.high-priest"},
+    {"id":"zhentrim-cleric","source":"ZHENTRIM CLERIC","message_id":"combatant.zhentrim-cleric"},
+    {"id":"zhentrim-fighter","source":"ZHENTRIM FGHTR","message_id":"combatant.zhentrim-fighter"},
+    {"id":"zhentrim-mage","source":"ZHENTRIM MAGE","message_id":"combatant.zhentrim-mage"},
+    {"id":"moander-cultist","source":"CULTIST","message_id":"combatant.moander-cultist"},
+    {"id":"mogion","source":"MOGION","message_id":"combatant.mogion"},
+    {"id":"shambling-mound","source":"SHAMBLING MOUND","message_id":"combatant.shambling-mound"},
+    {"id":"bit-of-moander","source":"BIT O' MOANDER","message_id":"combatant.bit-of-moander"}
   ],
   "maps": [
     {

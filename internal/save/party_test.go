@@ -156,7 +156,7 @@ func TestGameVersionNineRoundTripsMusicContinuation(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.Music, want) {
 		t.Fatalf("decoded music=%+v want=%+v", file.Music, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 7`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 7`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 7 music continuation unexpectedly decoded")
 	}
@@ -186,7 +186,7 @@ func TestGameVersionNineRoundTripsBoundedOneShotAudio(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.OneShotAudio, want) {
 		t.Fatalf("decoded one-shot audio=%+v want=%+v", file.OneShotAudio, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 8`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 8`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 8 one-shot continuation unexpectedly decoded")
 	}
@@ -197,7 +197,7 @@ func TestGameVersionNineRoundTripsBoundedOneShotAudio(t *testing.T) {
 	}
 }
 
-func TestGameVersionTenStoresStableJournalMessageIDs(t *testing.T) {
+func TestCurrentGameVersionStoresStableJournalMessageIDs(t *testing.T) {
 	roster := party.Roster{{
 		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
 		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
@@ -214,7 +214,7 @@ func TestGameVersionTenStoresStableJournalMessageIDs(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.JournalMessageIDs, want) {
 		t.Fatalf("decoded journal IDs=%v want=%v", file.JournalMessageIDs, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 10`), []byte(`"version": 9`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 9`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 9 journal message IDs unexpectedly decoded")
 	}

@@ -7,7 +7,6 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
-	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
@@ -198,7 +197,11 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		}
 	}
 	for index := range enemies {
-		enemies[index].Name = localizeMonsterName(s.catalog, enemies[index].Name)
+		if s.dataPack != nil {
+			if localized, found := s.dataPack.LocalizeCombatantName(enemies[index].Name, s.catalog.Language); found {
+				enemies[index].Name = localized
+			}
+		}
 		if enemies[index].SpriteSet == 0 {
 			enemies[index].SpriteSet = s.Area.GameArea
 		}
@@ -216,59 +219,6 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		index++
 	}
 	return s.StartCombat(party, enemies, seed)
-}
-
-func localizeMonsterName(catalog locale.Catalog, name string) string {
-	switch strings.TrimSpace(strings.ToUpper(name)) {
-	case "HIPPOGRIFF":
-		return catalog.Text("monster_hippogriff", "鷹馬")
-	case "FIGHTER":
-		return catalog.Text("monster_fighter", "戰士")
-	case "BLACK DRAGON":
-		return catalog.Text("monster_black_dragon", "黑龍")
-	case "DK ELF FIGHTER":
-		return catalog.Text("monster_dark_elf_fighter", "黑暗精靈戰士")
-	case "DARK ELF MAGE":
-		return catalog.Text("monster_dark_elf_mage", "黑暗精靈法師")
-	case "DARK ELF CLERIC":
-		return catalog.Text("monster_dark_elf_cleric", "黑暗精靈牧師")
-	case "EFREETI":
-		return catalog.Text("monster_efreeti", "伊弗利特")
-	case "SALAMANDER":
-		return catalog.Text("monster_salamander", "火蜥蜴")
-	case "DRACOLICH":
-		return catalog.Text("monster_dracolich", "龍巫妖")
-	case "HOODED MEDUSA":
-		return catalog.Text("monster_hooded_medusa", "兜帽梅杜莎")
-	case "BEHOLDER":
-		return catalog.Text("monster_beholder", "眼魔")
-	case "MINOTAUR":
-		return catalog.Text("monster_minotaur", "牛頭人")
-	case "ZHENTIL FIGHTER":
-		return catalog.Text("monster_zhentil_fighter", "散提爾堡戰士")
-	case "ZHENTIL MAGE":
-		return catalog.Text("monster_zhentil_mage", "散提爾堡法師")
-	case "ZHENTIL CLERIC":
-		return catalog.Text("monster_zhentil_cleric", "散提爾堡牧師")
-	case "HIGH PRIEST":
-		return catalog.Text("monster_high_priest", "大祭司")
-	case "ZHENTRIM CLERIC":
-		return catalog.Text("monster_zhentrim_cleric", "散塔林牧師")
-	case "ZHENTRIM FGHTR":
-		return catalog.Text("monster_zhentrim_fighter", "散塔林戰士")
-	case "ZHENTRIM MAGE":
-		return catalog.Text("monster_zhentrim_mage", "散塔林法師")
-	case "CULTIST":
-		return catalog.Text("monster_moander_cultist", "摩安德教徒")
-	case "MOGION":
-		return catalog.Text("monster_mogion", "摩貢")
-	case "SHAMBLING MOUND":
-		return catalog.Text("monster_shambling_mound", "蔓生怪")
-	case "BIT O' MOANDER":
-		return catalog.Text("monster_bit_of_moander", "摩安德殘軀")
-	default:
-		return name
-	}
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }

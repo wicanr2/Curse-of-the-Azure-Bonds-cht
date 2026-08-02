@@ -27,6 +27,15 @@ func requireGamePackText(t *testing.T, state *State, messageID string) string {
 	return value
 }
 
+func requireCombatantName(t *testing.T, state *State, source string) string {
+	t.Helper()
+	value, ok := state.dataPack.LocalizeCombatantName(source, state.catalog.Language)
+	if !ok || value == "" {
+		t.Fatalf("game-pack combatant name %q is unavailable for locale %q", source, state.catalog.Language)
+	}
+	return value
+}
+
 func TestRealECLJourneyDispatchesGeneralStoreService(t *testing.T) {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
@@ -1968,8 +1977,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if len(fighters) != 9 {
 		t.Fatalf("Tilver's Gap fighters=%d, want hero plus eight hippogriffs", len(fighters))
 	}
+	wantHippogriff := requireCombatantName(t, &state, "HIPPOGRIFF")
 	for _, fighter := range fighters[1:] {
-		if fighter.Name != "鷹馬" || fighter.SpriteBlock != 81 || fighter.Side != combat.SideEnemy {
+		if fighter.Name != wantHippogriff || fighter.SpriteBlock != 81 || fighter.Side != combat.SideEnemy {
 			t.Fatalf("Tilver's Gap enemy=%+v", fighter)
 		}
 	}
@@ -2181,8 +2191,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if len(dragons) != 4 {
 		t.Fatalf("Hap dragon fighters=%d, want hero plus three dragons", len(dragons))
 	}
+	wantBlackDragon := requireCombatantName(t, &state, "BLACK DRAGON")
 	for _, fighter := range dragons[1:] {
-		if fighter.Name != "黑龍" || fighter.SpriteBlock != 0x35 || fighter.Side != combat.SideEnemy {
+		if fighter.Name != wantBlackDragon || fighter.SpriteBlock != 0x35 || fighter.Side != combat.SideEnemy {
 			t.Fatalf("Hap dragon=%+v", fighter)
 		}
 	}
@@ -2977,7 +2988,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	dragonCount := 0
 	for _, fighter := range state.CombatFighters() {
 		if fighter.Side == combat.SideEnemy {
-			if fighter.Name != "黑龍" || fighter.SpriteBlock != 0x35 {
+			if fighter.Name != requireCombatantName(t, &state, "BLACK DRAGON") || fighter.SpriteBlock != 0x35 {
 				t.Fatalf("unexpected wizard-tower dragon=%+v", fighter)
 			}
 			dragonCount++
@@ -3190,7 +3201,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	dracolichFighters := state.CombatFighters()
 	if state.Mode != ModeCombat || len(dracolichFighters) != 2 ||
-		dracolichFighters[1].Name != "龍巫妖" || dracolichFighters[1].SpriteSet != 5 ||
+		dracolichFighters[1].Name != requireCombatantName(t, &state, "DRACOLICH") || dracolichFighters[1].SpriteSet != 5 ||
 		dracolichFighters[1].SpriteBlock != 0x3C || dracolichFighters[1].ArmorClass != -6 ||
 		dracolichFighters[1].HitPoints != 66 {
 		t.Fatalf("post-wizard dracolich combat mode=%v fighters=%#v message=%q",
@@ -3691,9 +3702,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		spyCounts[fighter.Name]++
 	}
 	if !reflect.DeepEqual(spyCounts, map[string]int{
-		"散塔林牧師": 1,
-		"散塔林戰士": 8,
-		"散塔林法師": 2,
+		requireCombatantName(t, &state, "ZHENTRIM CLERIC"): 1,
+		requireCombatantName(t, &state, "ZHENTRIM FGHTR"):  8,
+		requireCombatantName(t, &state, "ZHENTRIM MAGE"):   2,
 	}) {
 		t.Fatalf("Yulash spy enemy counts=%#v", spyCounts)
 	}
@@ -4109,17 +4120,20 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.Mode, mogionBattle, state.Message)
 	}
 	mogionCount, cultistCount, moundCount := 0, 0, 0
+	wantMogion := requireCombatantName(t, &state, "MOGION")
+	wantCultist := requireCombatantName(t, &state, "CULTIST")
+	wantMound := requireCombatantName(t, &state, "SHAMBLING MOUND")
 	aliasPresent, dragonbaitPresent := false, false
 	for _, fighter := range mogionBattle {
 		switch fighter.Name {
-		case "摩貢":
+		case wantMogion:
 			mogionCount++
 			if fighter.HitPoints != 60 || fighter.SpriteBlock != 0x18 {
 				t.Fatalf("Pit Mogion record=%+v", fighter)
 			}
-		case "摩安德教徒":
+		case wantCultist:
 			cultistCount++
-		case "蔓生怪":
+		case wantMound:
 			moundCount++
 		case "愛麗雅絲":
 			aliasPresent = fighter.Side == combat.SideParty
@@ -4162,8 +4176,9 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.Message, moanderRemnants)
 	}
 	remnantCount := 0
+	wantRemnant := requireCombatantName(t, &state, "BIT O' MOANDER")
 	for _, fighter := range moanderRemnants {
-		if fighter.Name != "摩安德殘軀" {
+		if fighter.Name != wantRemnant {
 			continue
 		}
 		remnantCount++
