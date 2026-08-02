@@ -5637,54 +5637,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"tavern_tale_60",
 			"tavern_tale_60",
 		)
-	case strings.Contains(joined, "HOW WILL YOU GET TO ESSEMBRA"):
-		return catalog.Text("ecl_route_essembra", "要如何前往艾森布拉？")
-	case strings.Contains(joined, "HOW WILL YOU GET TO HAP"):
-		return catalog.Text("ecl_route_hap", "要如何前往哈普？")
-	case strings.Contains(joined, "SEEK RED TO THE SOUTH"):
-		return catalog.Text(
-			"ecl_standing_stone_seek_red",
-			"他繼續說：「往南方尋找紅色之人。」",
-		)
-	case strings.Contains(joined, "YOU PRESENTLY SERVE FOUR MASTER") &&
-		strings.Contains(joined, "RETURN TO ME WHEN YOU HAVE SLAIN THREE MORE"):
-		return catalog.Text(
-			"ecl_standing_stone_four_masters",
-			"他開口說：「你們目前仍服侍四位主人。再除掉其中三位後回來找我，屆時你們將成就自己的命運。」你們要怎麼做？",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE STANDING STONES") &&
-		strings.Contains(joined, "GREY ROBED MAN"):
-		return catalog.Text(
-			"ecl_standing_stone_grey_man",
-			"你們來到立石群。一名灰袍男子靠著巨石而坐，臉孔隱沒在陰影裡。",
-		)
-	case strings.Contains(joined, "AMBUSHED BY FIRE KNIVES DISGUISED AS A PATROL"):
-		return catalog.Text(
-			"ecl_shadow_gap_fire_knife_patrol",
-			"一隊偽裝成巡邏兵的火刀突然伏擊你們！",
-		)
-	case strings.Contains(joined, "YOU OVERHEAR TAVERN TALE 28"):
-		return catalog.Text(
-			"tavern_tale_28",
-			"tavern_tale_28",
-		)
-	case strings.Contains(joined, "YOU ARE IN A RIVERSIDE ALE HOUSE") &&
-		strings.Contains(joined, "WHAT WILL YOU DO"):
-		return catalog.Text(
-			"ecl_ashabenford_ale_house",
-			"ecl_ashabenford_ale_house",
-		)
-	case strings.Contains(joined, "YOU ARE IN ASHABENFORD") &&
-		strings.Contains(joined, "WHAT PLACE WILL YOU VISIT"):
-		return catalog.Text(
-			"ecl_ashabenford_places",
-			"你們身在阿沙本福德。要前往哪個場所？",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ASHABENFORD"):
-		return catalog.Text(
-			"ecl_ashabenford_edge",
-			"你們來到阿沙本福德城外。要進城，還是繼續旅程？",
-		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF TILVERTON"):
 		return catalog.Text(
 			"ecl_tilverton_edge",
@@ -5692,13 +5644,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "GUARDS BAR YOUR WAY"):
 		return catalog.Text("ecl_tilverton_barred", "衛兵擋住你們的去路，不准你們再進入提爾佛頓。")
-	case strings.Contains(joined, "MOUNTAINS RISE INTO AN IMPASSABLE WALL") &&
-		strings.Contains(joined, "TILVER'S GAP") &&
-		strings.Contains(joined, "FLYING SHAPES"):
-		return catalog.Text(
-			"ecl_tilvers_gap_flying_shapes",
-			"群山拔地而起，形成無法翻越的高牆，只有提爾隘口將其劃破。幾道飛行身影從積雪山峰盤旋俯衝而下。",
-		)
 	case strings.Contains(joined, "BEFORE YOU STANDS A BURLY MAN") &&
 		strings.Contains(joined, "CARE TO REST"):
 		return catalog.Text(

@@ -460,6 +460,17 @@
       ,"pit.priest-flees": "A priest bursts into the room, sees the aftermath, and flees into the corridor shouting, 'They have killed the god!'"
       ,"pit.altar-treasure": "You find a cache of jewels and gems in the altar."
       ,"pit.exit-last-stand": "A large force of Moander's cultists attacks in a last-ditch effort to stop your escape."
+      ,"ashabenford.tilvers-gap": "Mountains rise into an impassable wall broken only by Tilver's Gap. Flying shapes circle down from the snowy peaks."
+      ,"ashabenford.edge": "You are at the edge of Ashabenford. Will you enter or continue your journey?"
+      ,"ashabenford.places": "You are in Ashabenford. What place will you visit?"
+      ,"ashabenford.ale-house": "You are in a riverside ale house. What will you do?"
+      ,"ashabenford.tavern-tale-28": "You overhear Tavern Tale 28: two ships bound for Shadowdale have disappeared, and the river has become very dangerous."
+      ,"shadow-gap.fire-knives-patrol": "Fire Knives disguised as a patrol ambush you."
+      ,"standing-stone.grey-man": "You are at the Standing Stones. A grey-robed man sits against one of the stones, his face hidden in shadow."
+      ,"standing-stone.four-masters": "The grey-robed man says you presently serve four masters. Return after slaying three more, and you will fulfill your destiny. What will you do?"
+      ,"standing-stone.seek-red": "He continues, 'Seek red to the south.'"
+      ,"world-route.essembra": "How will you get to Essembra?"
+      ,"world-route.hap": "How will you get to Hap?"
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -945,6 +956,17 @@
       ,"pit.priest-flees": "一名祭司衝進房間，驚恐地環顧四周，隨即逃回走廊並高喊：「他們殺了神！」"
       ,"pit.altar-treasure": "你們在祭壇中找到一批珠寶與寶石！"
       ,"pit.exit-last-stand": "大批摩安德教徒發動最後阻擊，企圖阻止你們逃出地底！"
+      ,"ashabenford.tilvers-gap": "群山拔地而起，形成無法翻越的高牆，只有提爾隘口將其劃破。幾道飛行身影從積雪山峰盤旋俯衝而下。"
+      ,"ashabenford.edge": "你們來到阿沙本福德城外。要進城，還是繼續旅程？"
+      ,"ashabenford.places": "你們身在阿沙本福德。要前往哪個場所？"
+      ,"ashabenford.ale-house": "你們身在河畔酒館。要做什麼？"
+      ,"ashabenford.tavern-tale-28": "你們無意間聽見一則酒館傳聞：已有兩艘前往暗影谷的船失蹤，河道變得非常危險。"
+      ,"shadow-gap.fire-knives-patrol": "一隊偽裝成巡邏兵的火刀突然伏擊你們！"
+      ,"standing-stone.grey-man": "你們來到立石群。一名灰袍男子靠著巨石而坐，臉孔隱沒在陰影裡。"
+      ,"standing-stone.four-masters": "他開口說：「你們目前仍服侍四位主人。再除掉其中三位後回來找我，屆時你們將成就自己的命運。」你們要怎麼做？"
+      ,"standing-stone.seek-red": "他繼續說：「往南方尋找紅色之人。」"
+      ,"world-route.essembra": "要如何前往艾森布拉？"
+      ,"world-route.hap": "要如何前往哈普？"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2781,6 +2803,17 @@
     {"id": "pit.priest-flees", "all_contains": ["A PRIEST BURSTS INTO THE ROOM", "THEY HAVE KILLED THE GOD"], "message_id": "pit.priest-flees"},
     {"id": "pit.altar-treasure", "all_contains": ["YOU HAVE FOUND A CACHE OF JEWELS AND GEMS"], "message_id": "pit.altar-treasure"},
     {"id": "pit.exit-last-stand", "all_contains": ["YOU ARE ATTACKED BY A LARGE FORCE OF", "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"], "message_id": "pit.exit-last-stand"},
+    {"id": "ashabenford.tilvers-gap", "all_contains": ["MOUNTAINS RISE INTO AN IMPASSABLE WALL", "TILVER'S GAP", "FLYING SHAPES"], "message_id": "ashabenford.tilvers-gap"},
+    {"id": "ashabenford.edge", "all_contains": ["YOU ARE AT THE EDGE OF ASHABENFORD"], "message_id": "ashabenford.edge"},
+    {"id": "ashabenford.places", "all_contains": ["YOU ARE IN ASHABENFORD", "WHAT PLACE WILL YOU VISIT"], "message_id": "ashabenford.places"},
+    {"id": "ashabenford.ale-house", "all_contains": ["YOU ARE IN A RIVERSIDE ALE HOUSE", "WHAT WILL YOU DO"], "message_id": "ashabenford.ale-house"},
+    {"id": "ashabenford.tavern-tale-28", "all_contains": ["YOU OVERHEAR TAVERN TALE 28"], "message_id": "ashabenford.tavern-tale-28"},
+    {"id": "shadow-gap.fire-knives-patrol", "all_contains": ["AMBUSHED BY FIRE KNIVES DISGUISED AS A PATROL"], "message_id": "shadow-gap.fire-knives-patrol"},
+    {"id": "standing-stone.grey-man", "all_contains": ["YOU ARE AT THE STANDING STONES", "GREY ROBED MAN"], "message_id": "standing-stone.grey-man"},
+    {"id": "standing-stone.four-masters", "all_contains": ["YOU PRESENTLY SERVE FOUR MASTER", "RETURN TO ME WHEN YOU HAVE SLAIN THREE MORE"], "message_id": "standing-stone.four-masters"},
+    {"id": "standing-stone.seek-red", "all_contains": ["SEEK RED TO THE SOUTH"], "message_id": "standing-stone.seek-red"},
+    {"id": "world-route.essembra", "all_contains": ["HOW WILL YOU GET TO ESSEMBRA"], "message_id": "world-route.essembra"},
+    {"id": "world-route.hap", "all_contains": ["HOW WILL YOU GET TO HAP"], "message_id": "world-route.hap"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

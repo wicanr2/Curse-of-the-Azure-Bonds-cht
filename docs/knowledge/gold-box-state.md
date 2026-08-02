@@ -923,3 +923,14 @@ handoff。這種測試可保留為局部 continuation probe，但不可支撐玩
 combat action；高能力測試隊伍可以縮短時間，但必須明確標示，且不得直接改寫
 敵方 HP。訊息與手札期望仍由 game-pack stable ID 取得，避免戰鬥測試同時成為
 第二份翻譯 catalog。特殊能力、動畫與音效若未覆蓋，必須繼續列為缺口。
+
+### 2026-08-02：酒館機制與作品傳聞內容要分層
+
+共用酒館可以擁有 LISTEN／DRINK／EXIT、索引推進與 continuation，但 Tavern Tale
+的編號、原文、翻譯與觸發城市是作品資料。把某則傳聞留在 UI locale，會讓共用
+介面 catalog 悄悄承擔劇情內容，也使其他 Gold Box 遊戲無法替換自己的傳聞表。
+
+遷移時應由 game-pack rule 保存原始 ECL token 與兩語系訊息，State 只轉交當次
+text batch；測試要從 stable ID 取得期望，並驗證聽完後回到同一酒館 menu。
+世界 route prompt 也採相同原則：共用 engine 保存 travel／destination 機制，
+作品 game pack／script 保存地名、可達關係與提示文字。

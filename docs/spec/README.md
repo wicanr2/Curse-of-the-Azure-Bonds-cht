@@ -422,3 +422,4 @@
 - [第四百六十七輪摩安德之坑開場與同伴事件資料化](./467-pit-opening-companions-game-pack.md)（`READY`：十四個畫面邊界、愛麗雅絲／龍餌入隊、樓層切換與散塔林屍體）
 - [第四百六十八輪摩貢祭壇與摩安德之坑結局資料化](./468-pit-mogion-finale-game-pack.md)（`READY`：十八個畫面邊界、兩場戰鬥、護手、祭壇財寶、手札 20 與離場阻擊）
 - [第四百六十九輪散提爾堡 stable-ID 與實戰玩家路徑](./469-zhentil-stable-id-combat-path.md)（`READY`：城門至眼魔洞窟 stable-ID 驗收、手札 7／12／30／32／50／51 與兩場非強制勝利戰鬥）
+- [第四百七十輪阿沙本福德與立石群事件資料化](./470-ashabenford-standing-stone-game-pack.md)（`READY`：十一條雙語規則、兩場正常戰鬥、城市音樂返回、灰袍提示與 Essembra／Hap 路線）

@@ -3582,3 +3582,14 @@ Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 產品 source audit 無變更，baseline 維持 603。READY spec 469 是權威；正式
 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND469_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。
+
+2026-08-02 第四百七十輪完成阿沙本福德與立石群事件資料化。提爾隘口、
+Ashabenford edge／places／河畔酒館、Tavern Tale 28、暗影隘口火刀伏擊、立石群
+灰袍男子／四位主人／紅色提示及 Essembra／Hap route prompts 共十一條 source
+rules 與 en／zh-TW messages 已移入 game-pack；Go fallback 與十一筆舊 UI locale
+keys 移除，酒館 catalog 測試也不再要求作品傳聞。正常長路徑驗證八鷹馬與六
+火刀戰、PICTURE 80、城鎮／荒野音樂 handoff、酒館 continuation、world value 4、
+Essembra 與 Hap 銜接。source audit 603→594：localization 108→99，frontend 135、
+runtime 360 不變。READY spec 470 是權威；正式 gate、commit／push 與容器清理
+已通過 Docker／Xvfb／`--network none` 全套驗證，marker
+`ROUND470_FORMAL_EXIT=0`；一次性容器與暫存已清理，commit／push 待本輪收尾。

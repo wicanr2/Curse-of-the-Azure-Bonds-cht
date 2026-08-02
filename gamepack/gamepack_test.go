@@ -580,6 +580,39 @@ func TestPitMogionFinaleIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestAshabenfordAndStandingStoneStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"ashabenford.tilvers-gap", []string{"MOUNTAINS RISE INTO AN IMPASSABLE WALL", "TILVER'S GAP", "FLYING SHAPES"}},
+		{"ashabenford.edge", []string{"YOU ARE AT THE EDGE OF ASHABENFORD"}},
+		{"ashabenford.places", []string{"YOU ARE IN ASHABENFORD", "WHAT PLACE WILL YOU VISIT"}},
+		{"ashabenford.ale-house", []string{"YOU ARE IN A RIVERSIDE ALE HOUSE", "WHAT WILL YOU DO"}},
+		{"ashabenford.tavern-tale-28", []string{"YOU OVERHEAR TAVERN TALE 28"}},
+		{"shadow-gap.fire-knives-patrol", []string{"AMBUSHED BY FIRE KNIVES DISGUISED AS A PATROL"}},
+		{"standing-stone.grey-man", []string{"YOU ARE AT THE STANDING STONES", "GREY ROBED MAN"}},
+		{"standing-stone.four-masters", []string{"YOU PRESENTLY SERVE FOUR MASTER", "RETURN TO ME WHEN YOU HAVE SLAIN THREE MORE"}},
+		{"standing-stone.seek-red", []string{"SEEK RED TO THE SOUTH"}},
+		{"world-route.essembra", []string{"HOW WILL YOU GET TO ESSEMBRA"}},
+		{"world-route.hap", []string{"HOW WILL YOU GET TO HAP"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {
