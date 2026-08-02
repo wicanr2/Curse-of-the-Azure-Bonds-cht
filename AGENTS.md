@@ -618,6 +618,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   不等於玩家分支 coverage：`lava-tube.sly-parlay` 尚未走正常路徑，文件與完成
   表不得把它和已走過的 `nice／combat` 合併宣稱。區域文字遷移必須同時驗證
   戰鬥 continuation、旗標、NPC roster、GEO handoff 與下一區入口。
+- 第 464 輪 Area 5 離場與 Essembra 七個事件再移除 6 次，baseline 現為 655
+  occurrences；事件數不一定等於漢字下降數，因為舊分支可能只回傳 locale
+  key。阿卡巴離隊、黑暗精靈裝備銷毀與龍巫妖文字不可只測畫面；必須同時驗證
+  roster、指定 item types、世界 block handoff、戰鬥後位置與城市服務返回。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

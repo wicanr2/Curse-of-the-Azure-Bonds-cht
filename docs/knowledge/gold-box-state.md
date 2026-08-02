@@ -853,3 +853,14 @@ stable ID 取得訊息，並同步檢查 continuation 與狀態副作用。
 Hap→熔岩洞穴說明另一個常見誤差：同一組規則表可完整覆蓋 `sly／nice／combat`
 來源，但一條玩家回歸只會實際選其中部分分支。知識庫與狀態表應分開寫「pack
 coverage」與「player-path coverage」，不能用前者替代後者。
+
+### 2026-08-02：跨區文字驗收必須保留資料副作用
+
+離開一個章節的文字往往和資料交易共用同一 continuation。Area 5 的道別會先
+移除臨時 NPC，下一個 pause 才銷毀特定黑暗精靈裝備，之後才返回世界 block 並
+安排龍巫妖遭遇。若只比較翻譯訊息，很容易讓 State 在資料化後提早結束 session、
+漏做副作用或重播文字。
+
+跨區回歸應逐 boundary 檢查 message ID，也要檢查 roster、精確 item type、
+來源／目的 block、picture、戰鬥 continuation、戰後位置與下一個城市服務的
+返回選單。這種驗證可沿用到其他 Gold Box 作品的臨時 NPC 與章節清場流程。
