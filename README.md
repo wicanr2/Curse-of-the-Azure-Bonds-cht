@@ -15,6 +15,12 @@
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
+第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
+商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
+literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
+里程碑，不代表全部物品效果或全遊戲中文化已完成；證據見
+[`docs/spec/457-item-name-locale-data-separation.md`](docs/spec/457-item-name-locale-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

@@ -1346,7 +1346,7 @@ func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	wantOffer := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.ChineseName(state.shopOffers[0].Item), 100)
+	wantOffer := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.LocalizedItemName(state.shopOffers[0].Item, catalog), 100)
 	if state.Mode != ModePlace || !state.shopStockMenu || len(state.Choices) != 2 || state.Choices[0] != wantOffer {
 		t.Fatalf("stock menu state=%#v", state)
 	}
@@ -1386,7 +1386,7 @@ func TestShopSellListsItemsAndUsesDocumentedValue(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	wantItem := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.ChineseName(state.partyRoster[0].Equipment[0]), 75)
+	wantItem := fmt.Sprintf(catalog.Text("shop_item_price", ""), monster.LocalizedItemName(state.partyRoster[0].Equipment[0], catalog), 75)
 	if state.Mode != ModePlace || !state.shopSellItemMenu || state.Choices[0] != wantItem {
 		t.Fatalf("sell item menu=%#v", state)
 	}
@@ -1431,14 +1431,14 @@ func TestShopIdentifyChargesDocumentedFeeWithoutInventingResult(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModePlace || !state.shopIdentifyItemMenu ||
-		state.Choices[0] != monster.ChineseName(state.partyRoster[0].Equipment[0]) {
+		state.Choices[0] != monster.LocalizedItemName(state.partyRoster[0].Equipment[0], catalog) {
 		t.Fatalf("identify item menu=%#v", state)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
 	wantMessage := fmt.Sprintf(catalog.Text("shop_identify_done", ""),
-		party.ShopIdentifyFee, monster.ChineseName(state.partyRoster[0].Equipment[0]))
+		party.ShopIdentifyFee, monster.LocalizedItemName(state.partyRoster[0].Equipment[0], catalog))
 	if state.Mode != ModeEvent || state.OriginalEvent != "ID" || state.partyRoster[0].Gold != 50 ||
 		state.partyRoster[0].Equipment[0].HiddenNameFlags != 3 || state.Message != wantMessage {
 		t.Fatalf("identify result state=%#v", state)
@@ -1471,7 +1471,7 @@ func TestShopViewListsCharactersAndEquipment(t *testing.T) {
 		t.Fatal(err)
 	}
 	wantSummary := fmt.Sprintf(catalog.Text("shop_view_summary", ""), state.partyRoster[0].Name,
-		8, 10, 40, monster.ChineseName(state.partyRoster[0].Equipment[0]))
+		8, 10, 40, monster.LocalizedItemName(state.partyRoster[0].Equipment[0], catalog))
 	if state.Mode != ModeEvent || state.OriginalEvent != "VIEW" || state.Message != wantSummary {
 		t.Fatalf("view summary state=%#v", state)
 	}

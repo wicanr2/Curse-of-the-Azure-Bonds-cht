@@ -13,6 +13,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+	localeData "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
@@ -41,6 +42,7 @@ func main() {
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
 	baseItems := flag.Bool("base-items", false, "decode the standalone ITEMS base-item catalog")
+	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON used for translated diagnostic names")
 	encounterStart := flag.Int("encounter-start", -1, "decode LOAD MONSTER sequence at this payload offset")
 	monsterMember := flag.String("monster-member", "MON1CHA.DAX", "MON*CHA member for -encounter-start")
 	entryPoints := flag.Bool("entrypoints", false, "print five ECL initialization entry points")
@@ -139,6 +141,10 @@ func main() {
 		return
 	}
 	if *baseItems {
+		textCatalog, err := loadLocale(*localePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 		data, err := zipMember(*image, "ITEMS")
 		if err != nil {
 			log.Fatal(err)
@@ -150,7 +156,7 @@ func main() {
 		fmt.Printf("ITEMS: header=0x%04X descriptors=%d\n", catalog.Header, len(catalog.Items))
 		for _, item := range catalog.Items {
 			fmt.Printf("  type=0x%02X zh-name=%q slot=%d hands=%d damage-small=%dd%d%+d damage-large=%dd%d%+d ac-adjust=%d class-mask=0x%02X ammo=%d\n",
-				item.Type, monster.ChineseName(monster.ItemRecord{Type: item.Type}), item.Slot, item.HandsRequired,
+				item.Type, monster.LocalizedItemName(monster.ItemRecord{Type: item.Type}, textCatalog), item.Slot, item.HandsRequired,
 				item.SmallDamageDice, item.SmallDamageSides, item.SmallDamageBonus,
 				item.LargeDamageDice, item.LargeDamageSides, item.LargeDamageBonus,
 				item.ACAdjustment, item.ClassUsabilityMask, item.AmmunitionType)
@@ -302,8 +308,12 @@ func main() {
 			if itemErr != nil {
 				fmt.Printf("  item records stopped safely: %v\n", itemErr)
 			} else {
+				textCatalog, localeErr := loadLocale(*localePath)
+				if localeErr != nil {
+					log.Fatal(localeErr)
+				}
 				for index, item := range items {
-					fmt.Printf("  item[%d] name=%q zh-name=%q type=0x%02X name-numbers=%#v plus=%d count=%d readied=%t cursed=%t affects=%#v\n", index, item.Name, monster.ChineseName(item), item.Type, item.NameNumbers, item.Plus, item.Count, item.Readied, item.Cursed, item.Affects)
+					fmt.Printf("  item[%d] name=%q zh-name=%q type=0x%02X name-numbers=%#v plus=%d count=%d readied=%t cursed=%t affects=%#v\n", index, item.Name, monster.LocalizedItemName(item, textCatalog), item.Type, item.NameNumbers, item.Plus, item.Count, item.Readied, item.Cursed, item.Affects)
 				}
 			}
 		}
@@ -655,6 +665,14 @@ func optionalFile(path string) ([]byte, error) {
 		return nil, nil
 	}
 	return os.ReadFile(path)
+}
+
+func loadLocale(path string) (localeData.Catalog, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return localeData.Catalog{}, err
+	}
+	return localeData.Load(data)
 }
 
 func zipMember(path, member string) ([]byte, error) {

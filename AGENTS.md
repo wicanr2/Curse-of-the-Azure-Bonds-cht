@@ -581,9 +581,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   option／prompt／ECL fragment 仍是來源身分，繁中只能由 locale stable ID
   取得。缺 key 時顯示 ID 可用於 fail-closed 診斷，但不能視為完成中文化。
 - 第 456 輪商店 UI 再移除 69 次，baseline 現為 1,100 occurrences；交易規則
-  保留 typed item／price／coin，顯示格式由 locale 取得。`monster.ChineseName`
-  仍是物品名稱硬編碼債，後續必須以 stable item type／name-number ID 搬入
-  game-pack／locale，不能因商店 UI 已資料化就略過。
+  保留 typed item／price／coin，顯示格式由 locale 取得。
+- 第 457 輪物品名稱再移除 126 次，baseline 現為 974 occurrences；type 與
+  name-number 保留 DOS typed IDs，繁中 base／修飾詞與顯示格式由 locale
+  `item_type_XX／item_name_XX` 解析，商店、裝備、戰利品與 CLI 共用同一組字
+  函式。`monster.ChineseAffectName` 仍是下一批效果名稱硬編碼債。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

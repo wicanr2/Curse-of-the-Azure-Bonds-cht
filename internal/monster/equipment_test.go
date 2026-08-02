@@ -182,28 +182,33 @@ func TestRejectsMisalignedRecords(t *testing.T) {
 	}
 }
 
-func TestChineseNameUsesObservedItemTypes(t *testing.T) {
-	if got := ChineseName(ItemRecord{Type: 28, Count: 9}); got != "弩矢 ×9" {
-		t.Fatalf("quarrel name=%q", got)
+type testItemText map[string]string
+
+func (c testItemText) Text(key, fallback string) string {
+	if value := c[key]; value != "" {
+		return value
 	}
-	if got := ChineseName(ItemRecord{Type: 55}); got != "鏈甲" {
-		t.Fatalf("chain name=%q", got)
-	}
-	if got := ChineseName(ItemRecord{Type: 0xEE}); got != "未翻譯物品(0xEE)" {
-		t.Fatalf("unknown name=%q", got)
-	}
-	if got := ChineseName(ItemRecord{Type: 36}); got != "長劍" {
-		t.Fatalf("long sword name=%q", got)
-	}
+	return fallback
 }
 
-func TestChineseNameProjectsVisibleReferenceNameNumbers(t *testing.T) {
+func TestLocalizedItemNameComposesTypedFields(t *testing.T) {
+	text := testItemText{
+		"item_type_1C": "bolt", "item_type_24": "sword",
+		"item_name_24": "sword", "item_name_9F": "+1",
+		"item_unknown": "unknown(0x%02X)", "item_count": "%s x%d",
+	}
+	if got := LocalizedItemName(ItemRecord{Type: 28, Count: 9}, text); got != "bolt x9" {
+		t.Fatalf("quarrel name=%q", got)
+	}
+	if got := LocalizedItemName(ItemRecord{Type: 0xEE}, text); got != "unknown(0xEE)" {
+		t.Fatalf("unknown name=%q", got)
+	}
 	item := ItemRecord{Type: 36, NameNumbers: [3]uint8{159, 36, 0}}
-	if got := ChineseName(item); got != "+1 長劍" {
+	if got := LocalizedItemName(item, text); got != "+1 sword" {
 		t.Fatalf("visible name numbers=%q", got)
 	}
 	item.HiddenNameFlags = 4 // reference hides namenum1
-	if got := ChineseName(item); got != "長劍" {
+	if got := LocalizedItemName(item, text); got != "sword" {
 		t.Fatalf("hidden name number=%q", got)
 	}
 }

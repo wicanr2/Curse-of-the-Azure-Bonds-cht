@@ -409,3 +409,4 @@
 - [第四百五十四輪神殿服務玩家文字與治療項目資料分離](./454-temple-locale-data-separation.md)（`READY`：28 個 Go 漢字 literal 移除、十種 cure stable keys 與真實 ECL／GEO 路徑）
 - [第四百五十五輪酒館、飲品、傳聞與提爾佛頓事件資料分離](./455-tavern-locale-data-separation.md)（`READY`：54 個 Go 漢字 literal 移除、41 個 locale IDs 與三城市 ECL 路徑）
 - [第四百五十六輪商店服務玩家介面資料分離](./456-shop-ui-locale-data-separation.md)（`READY`：69 個 Go 漢字 literal 移除、63 個 locale IDs 與 Weaponers 真實玩家路徑）
+- [第四百五十七輪物品名稱與修飾詞資料分離](./457-item-name-locale-data-separation.md)（`READY`：126 個 Go 漢字 literal 移除、typed item fields 與 locale catalog 分層）
