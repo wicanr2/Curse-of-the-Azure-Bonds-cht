@@ -5625,72 +5625,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
-	case strings.Contains(joined, "YOU ARE APPROACHED BY A RED PLUME PATROL") &&
-		strings.Contains(joined, "TATOO BETRAYS YOU AS A ZHENTRIM SPY"):
-		return catalog.Text(
-			"ecl_yulash_red_plume_patrol",
-			"一隊紅羽衛巡邏兵走近。其中一人咆哮：「你們身上的刺青暴露了散塔林間諜的身分！」",
-		)
-	case strings.Contains(joined, "SMOKE RISES FROM BEHIND THE RUINED WALLS") &&
-		strings.Contains(joined, "OF YULASH") &&
-		strings.Contains(joined, "HOW DO YOU ENTER"):
-		return catalog.Text(
-			"ecl_yulash_entry",
-			"煙霧從尤拉什殘破的城牆後升起，裡面不斷傳來戰鬥聲。你們要如何進入？",
-		)
-	case strings.Contains(joined, "JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE") &&
-		strings.Contains(joined, "A WOMAN DRESSED IN PURPLE") &&
-		strings.Contains(joined, "SORRY"):
-		return catalog.Text(
-			"ecl_yulash_riders_burst_out",
-			"正要進城時，一名騎著高大駿馬的男子突然衝出尤拉什，撞倒隊伍成員。"+
-				"駿馬疾馳而過，你們看見一名紫衣女子緊抱在男子背後；兩人迅速遠去，只聽見她高喊：「抱歉！」",
-		)
-	case strings.Contains(joined, "HALT! A GUARD WARILY COMES OUT OF A CHECKPOINT") &&
-		strings.Contains(joined, "OTHER GUARDS GATHER BEHIND HIM"):
-		return catalog.Text(
-			"ecl_yulash_checkpoint_halt",
-			"「站住！」一名衛兵警戒地走出檢查哨，其他紅羽衛也在他身後集結。你們要怎麼做？",
-		)
-	case strings.Contains(joined, "YOU MUST COME WITH US TO SEE THE COMMANDER"):
-		return catalog.Text(
-			"ecl_yulash_see_commander",
-			"「你們必須跟我們去見指揮官。」要怎麼做？",
-		)
-	case strings.Contains(joined, "THIS IS THE COMMANDER'S WAITING ROOM") &&
-		strings.Contains(joined, "REMAIN HERE UNTIL YOU ARE CALLED"):
-		return catalog.Text(
-			"ecl_yulash_waiting_room",
-			"這裡是指揮官的等候室。衛兵命令你們留在此處，等待傳喚。",
-		)
-	case strings.Contains(joined, "TROOPS COME BURSTING OUT OF THE COMMANDER'S OFFICE") &&
-		strings.Contains(joined, "THEY'RE SPIES FOR ZHENTIL KEEP"):
-		return catalog.Text(
-			"ecl_yulash_zhentarim_spies",
-			"一群人突然從指揮官辦公室衝出來。有人大喊：「攔住他們！他們是散提爾堡的間諜！」你們要怎麼做？",
-		)
-	case strings.Contains(joined, "YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"):
-		return catalog.Text(
-			"ecl_yulash_led_to_commander",
-			"衛兵領你們進去晉見紅羽衛指揮官。",
-		)
-	case strings.Contains(joined, "THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH") &&
-		strings.Contains(joined, "HOW DO YOU RESPOND"):
-		return catalog.Text(
-			"ecl_yulash_commander_business",
-			"指揮官厲聲質問你們來尤拉什有何目的。你們要用什麼態度回答？",
-		)
-	case strings.Contains(joined, "THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"):
-		return catalog.Text(
-			"ecl_yulash_commander_side_door",
-			"指揮官親自帶你們從側門離開。",
-		)
-	case strings.Contains(joined, "THE PIT CREATED BY MOANDER") &&
-		strings.Contains(joined, "STEP FORWARD TO ENTER THE DARK DEMESNE"):
-		return catalog.Text(
-			"ecl_yulash_pit_entrance",
-			"眼前就是摩安德上次降臨時留下的巨坑。再向前一步，便會進入那片黑暗領域。",
-		)
 	case strings.Contains(joined, "THE CLERIC SLAMS HIS FIST AGAINST A PROTRUDING ROCK") &&
 		strings.Contains(joined, "YOU ARE TRAPPED IN THE PIT OF MOANDER"):
 		return catalog.Text(
@@ -5887,11 +5821,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"tavern_tale_60",
 			"tavern_tale_60",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF YULASH"):
-		return catalog.Text(
-			"ecl_yulash_edge",
-			"你們來到尤拉什城外。要進入戰區，還是繼續旅程？",
 		)
 	case strings.Contains(joined, "HOW WILL YOU GET TO ESSEMBRA"):
 		return catalog.Text("ecl_route_essembra", "要如何前往艾森布拉？")

@@ -465,6 +465,40 @@ func TestHillsfarStoryIsGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestYulashStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"yulash.red-plume-patrol", []string{"YOU ARE APPROACHED BY A RED PLUME PATROL", "TATOO BETRAYS YOU AS A ZHENTRIM SPY"}},
+		{"yulash.edge", []string{"YOU ARE AT THE EDGE OF YULASH"}},
+		{"yulash.entry", []string{"SMOKE RISES FROM BEHIND THE RUINED WALLS", "OF YULASH", "HOW DO YOU ENTER"}},
+		{"yulash.riders-burst-out", []string{"JUST BEFORE YOU ENTER A MAN MOUNTED ON A LARGE HORSE", "A WOMAN DRESSED IN PURPLE", "SORRY"}},
+		{"yulash.checkpoint-halt", []string{"HALT! A GUARD WARILY COMES OUT OF A CHECKPOINT", "OTHER GUARDS GATHER BEHIND HIM"}},
+		{"yulash.see-commander", []string{"YOU MUST COME WITH US TO SEE THE COMMANDER"}},
+		{"yulash.waiting-room", []string{"THIS IS THE COMMANDER'S WAITING ROOM", "REMAIN HERE UNTIL YOU ARE CALLED"}},
+		{"yulash.zhentarim-spies", []string{"TROOPS COME BURSTING OUT OF THE COMMANDER'S OFFICE", "THEY'RE SPIES FOR ZHENTIL KEEP"}},
+		{"yulash.led-to-commander", []string{"YOU HAVE BEEN LED IN TO SEE THE RED PLUME COMMANDER"}},
+		{"yulash.commander-business", []string{"THE COMMANDER DEMANDS TO KNOW YOUR BUSINESS IN YULASH", "HOW DO YOU RESPOND"}},
+		{"yulash.commander-side-door", []string{"THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"}},
+		{"yulash.pit-entrance", []string{"THE PIT CREATED BY MOANDER", "STEP FORWARD TO ENTER THE DARK DEMESNE"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

@@ -626,6 +626,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   dockside bar 舊分支只有 locale key，故事件數與漢字下降數不同。城市資料化
   除文字與兩場戰鬥外，還要驗證 service return 不重播進城音樂、離城才切回
   荒野 cue；UI 訊息通過不能替代音訊狀態 handoff。
+- 第 466 輪 Yulash 十二個事件再移除 13 次，baseline 現為 638 occurrences；
+  事件數與下降數仍可能因舊 UI locale 複本而不同。占領城市鏈可能跨 world
+  trail、edge、entry menu、GEO terrain、戰鬥、手札與下一區入口；資料化後
+  必須保留完成旗標、戰後 continuation、指揮官側門座標及章節 handoff，不能
+  只驗證文字 matcher。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

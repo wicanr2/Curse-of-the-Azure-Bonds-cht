@@ -3514,8 +3514,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "紅羽衛巡邏兵") ||
-		!strings.Contains(state.Message, "散塔林間諜") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.red-plume-patrol") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Yulash Red Plume patrol originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3542,7 +3541,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if state.Mode != ModeWilderness || state.Location != LocationYulash ||
 		state.Area.CurrentCity != 10 ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
-		!strings.Contains(state.Message, "尤拉什城外") {
+		state.Message != requireGamePackText(t, &state, "yulash.edge") {
 		t.Fatalf("Yulash arrival mode=%v block=0x%02X location=%v currentCity=%d originals=%#v message=%q",
 			state.Mode, session.CurrentBlockID(), state.Location, state.Area.CurrentCity,
 			state.currentOriginalChoices, state.Message)
@@ -3554,7 +3553,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if session.CurrentBlockID() != 0x10 ||
-		!strings.Contains(state.Message, "尤拉什殘破的城牆") ||
+		state.Message != requireGamePackText(t, &state, "yulash.entry") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"SNEAK IN", "ASK PERMISSION", "LEAVE"}) ||
 		!reflect.DeepEqual(state.Choices, []string{"潛入", "請求許可", "離開"}) {
 		t.Fatalf("Yulash entry mode=%v block=0x%02X area=%+v originals=%#v choices=%#v message=%q",
@@ -3564,8 +3563,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "高大駿馬") ||
-		!strings.Contains(state.Message, "紫衣女子") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.riders-burst-out") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Yulash riders originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3573,7 +3571,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "檢查哨") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.checkpoint-halt") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"RUN AWAY", "FIGHT", "PARLAY"}) ||
 		!reflect.DeepEqual(state.Choices, []string{"逃走", "戰鬥", "談判"}) {
 		t.Fatalf("Yulash checkpoint originals=%#v choices=%#v message=%q",
@@ -3582,7 +3580,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(2); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "見指揮官") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.see-commander") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"GO WITH GUARDS", "FIGHT", "RUN AWAY"}) ||
 		!reflect.DeepEqual(state.Choices, []string{"跟衛兵走", "戰鬥", "逃走"}) {
 		t.Fatalf("Yulash checkpoint parlay originals=%#v choices=%#v message=%q",
@@ -3591,7 +3589,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "指揮官的等候室") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.waiting-room") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Yulash waiting room originals=%#v choices=%#v message=%q",
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -3624,7 +3622,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.DungeonWallRoof != 0x9A ||
-		!strings.Contains(state.Message, "散提爾堡的間諜") ||
+		state.Message != requireGamePackText(t, &state, "yulash.zhentarim-spies") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"FIGHT THE MEN", "LET THEM GO"}) ||
 		!reflect.DeepEqual(state.Choices, []string{"攔下他們戰鬥", "放他們離開"}) {
 		t.Fatalf("Yulash Zhentarim-spy event terrain=%#x mode=%v originals=%#v choices=%#v message=%q",
@@ -3656,7 +3654,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		}
 	}
 	if state.Mode != ModeWilderness ||
-		!strings.Contains(state.Message, "晉見紅羽衛指揮官") ||
+		state.Message != requireGamePackText(t, &state, "yulash.led-to-commander") ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
 		t.Fatalf("Yulash post-spy-victory mode=%v block=0x%02X originals=%#v choices=%#v message=%q",
 			state.Mode, session.CurrentBlockID(),
@@ -3665,7 +3663,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "來尤拉什有何目的") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.commander-business") ||
 		!reflect.DeepEqual(state.currentOriginalChoices,
 			[]string{"PARLAY_HAUGHTY", "PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE"}) {
 		t.Fatalf("Yulash commander audience mode=%v originals=%#v choices=%#v message=%q",
@@ -3683,7 +3681,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "從側門離開") ||
+	if state.Message != requireGamePackText(t, &state, "yulash.commander-side-door") ||
 		!slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.52")) {
 		t.Fatalf("Yulash commander pass mode=%v originals=%#v choices=%#v message=%q journals=%#v",
 			state.Mode, state.currentOriginalChoices, state.Choices, state.Message, state.JournalPages)
@@ -3712,7 +3710,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.DungeonWallRoof != 0x26 || state.Mode != ModeEvent ||
-		!strings.Contains(state.Message, "摩安德上次降臨時留下的巨坑") {
+		state.Message != requireGamePackText(t, &state, "yulash.pit-entrance") {
 		t.Fatalf("Yulash Pit entrance terrain=%#x wall=%#x mode=%v block=0x%02x originals=%#v choices=%#v message=%q",
 			state.DungeonWallRoof, state.DungeonWallType, state.Mode, session.CurrentBlockID(),
 			state.currentOriginalChoices, state.Choices, state.Message)
@@ -4361,7 +4359,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if state.Mode != ModeWilderness ||
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP", "SEARCH AREA"}) ||
-		!strings.Contains(state.Message, "尤拉什城外") {
+		state.Message != requireGamePackText(t, &state, "yulash.edge") {
 		t.Fatalf("Pit departure return mode=%v originals=%#v message=%q",
 			state.Mode, state.currentOriginalChoices, state.Message)
 	}

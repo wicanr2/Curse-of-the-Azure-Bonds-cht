@@ -71,6 +71,12 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 返回、離城與城鎮／荒野音樂切換；Go 漢字基線由 655 降至 651。詳見
 [`docs/spec/465-hillsfar-game-pack-story.md`](docs/spec/465-hillsfar-game-pack-story.md)。
 
+第 466 輪把 Yulash trail、城牆、檢查哨、指揮官與摩安德巨坑入口十二個事件
+移入 game-pack。正常路徑保留兩場戰鬥、一次性間諜旗標、手札 22／52、側門
+座標與巨坑銜接；測試從 stable ID 取得期望訊息，不再複製譯文。Go 漢字基線
+由 651 降至 638。詳見
+[`docs/spec/466-yulash-game-pack-story.md`](docs/spec/466-yulash-game-pack-story.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與
