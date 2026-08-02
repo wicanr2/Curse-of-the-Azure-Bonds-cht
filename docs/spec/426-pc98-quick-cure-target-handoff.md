@@ -47,8 +47,8 @@ overlay 13 `+1E30h..+2046h`：
   依指標是否為 null 回傳布林值。
 
 上述欄位比較、常數、pointer writer 與回傳是 `exact control flow`。九格實際
-掃描順序、相同 HP tie order，以及 down-player status 字串 predicate 的完整
-名稱仍是 `strong inference`，不得宣稱 exact。
+掃描順序、相同 HP tie order 與 down-player status set 已由 READY spec 427
+supersede；本輪原先的 `strong inference` 不再是目前權威狀態。
 
 overlay 09 `+04CCh..+0624h` 是通用 Quick target helper；它沿 Player
 `+14Eh` linked list、經 `CHECKTARGET` 與 suitability 保存候選。尾端
@@ -73,8 +73,8 @@ resident／runtime pointer operation，不能擅自命名為 gameplay target set
 
 ## 尚未完成
 
-- 原版九格陣列順序、相同 HP tie、施法者低於半血分支與倒地表 status
-  predicate 的逐項 runtime trace。
+- 九格順序、相同 HP tie、施法者半血分支與倒地 status set 已由 spec 427
+  關閉；只剩同格多 corpse table ordering 缺 runtime fixture。
 - Cure 對 unconscious／dying／animated 的完整原版 placement 與 health-status
   轉移；死亡目標仍必須 fail-closed。
 - 手動 CAST 的 casting-time scheduler、施法被攻擊中斷、slot refund／loss。

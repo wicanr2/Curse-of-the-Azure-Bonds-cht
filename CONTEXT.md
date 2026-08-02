@@ -3009,3 +3009,16 @@ focused regression 證明鄰近受傷目標、遠方排除、target 保存與治
 Standing Stone→Myth Drannor→Red Plume 路徑由真實 ECL 箭傷建立目標並完成
 七敵戰。equal-HP exact tie、倒地 status predicate、手動 CAST delay、施法中斷
 與其餘 Quick 法術仍未完成。READY spec 426 是權威邊界。
+
+2026-08-02 第四百二十七輪以 PC-98 Borland debug table、typed TPOV stubs、
+raw bytes 與唯讀 IDA report 關閉 `COMPTARGCURE` 選人順序。`DXDIR／DYDIR`
+exact 證明九格為 N→NE→E→SE→S→SW→W→NW→self；strict-lower branch 讓
+equal HP 保留先掃到者，自身最後且低於半血時覆蓋先前候選。合法 down-player
+只在 active 最佳 HP `>=8` 時取代。
+
+Borland `CHARSTATUS` members 證明 raw `UNCONC=4／DYING=5／DEAD=6／STONED=7／
+GONE=8`；overlay 13 `+1E10h` set bytes `C0 01` 與 membership branch exact
+排除 `{6,7,8}`。CoAB 不再按全候選 HP 排序，並修正 Stoned 不可 Cure；auditor
+新增唯讀 `-members` 模式。四組 focused boundary 與既有 Red Plume 正常路徑
+是本輪驗收。READY spec 427 是權威；同格多 corpse ordering、完整 raw status
+投影、手動 CAST delay／中斷仍未完成。

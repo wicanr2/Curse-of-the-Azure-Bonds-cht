@@ -2099,6 +2099,80 @@ func TestCombatAltMQuickCurePreservesAdjacentTargetAcrossPendingAction(t *testin
 	}
 }
 
+func TestQuickCureTargetMatchesPC98DirectionSelfAndDownedRules(t *testing.T) {
+	makeState := func(t *testing.T, roster party.Roster, heroes []combat.Fighter) (*State, combat.Fighter) {
+		t.Helper()
+		state := NewState(testCatalog())
+		state.partyRoster = roster
+		enemy := combat.Fighter{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+			HasCombatPosition: true, CombatX: 10, CombatY: 10}
+		if err := state.StartCombat(heroes, []combat.Fighter{enemy}, 427); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("caster")
+		if !ok {
+			t.Fatal("caster is absent")
+		}
+		return &state, caster
+	}
+	baseCaster := combat.Fighter{ID: "caster", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+		HasCombatPosition: true, CombatX: 5, CombatY: 5}
+
+	t.Run("equal HP keeps north before east", func(t *testing.T) {
+		heroes := []combat.Fighter{
+			baseCaster,
+			{ID: "north", Side: combat.SideParty, HitPoints: 4, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 5, CombatY: 4},
+			{ID: "east", Side: combat.SideParty, HitPoints: 4, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 6, CombatY: 5},
+		}
+		state, caster := makeState(t, party.Roster{{ID: "caster"}, {ID: "north"}, {ID: "east"}}, heroes)
+		if target, ok := state.quickCureTarget(caster); !ok || target.ID != "north" {
+			t.Fatalf("target=%+v ok=%v", target, ok)
+		}
+	})
+
+	t.Run("caster below half overrides lower HP neighbour", func(t *testing.T) {
+		casterFighter := baseCaster
+		casterFighter.HitPoints, casterFighter.MaxHitPoints = 9, 20
+		heroes := []combat.Fighter{
+			casterFighter,
+			{ID: "north", Side: combat.SideParty, HitPoints: 1, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 5, CombatY: 4},
+		}
+		state, caster := makeState(t, party.Roster{{ID: "caster"}, {ID: "north"}}, heroes)
+		if target, ok := state.quickCureTarget(caster); !ok || target.ID != "caster" {
+			t.Fatalf("target=%+v ok=%v", target, ok)
+		}
+	})
+
+	t.Run("downed target replaces active only at eight HP", func(t *testing.T) {
+		for _, test := range []struct {
+			activeHP int
+			wantID   string
+		}{{activeHP: 8, wantID: "downed"}, {activeHP: 7, wantID: "north"}} {
+			heroes := []combat.Fighter{
+				baseCaster,
+				{ID: "north", Side: combat.SideParty, HitPoints: test.activeHP, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 5, CombatY: 4},
+				{ID: "downed", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 6, CombatY: 5, DownedCorpse: true},
+			}
+			roster := party.Roster{{ID: "caster"}, {ID: "north"}, {ID: "downed", HealthStatus: party.HealthStatusUnconscious}}
+			state, caster := makeState(t, roster, heroes)
+			if target, ok := state.quickCureTarget(caster); !ok || target.ID != test.wantID {
+				t.Fatalf("activeHP=%d target=%+v ok=%v", test.activeHP, target, ok)
+			}
+		}
+	})
+
+	t.Run("stoned down-player is excluded", func(t *testing.T) {
+		heroes := []combat.Fighter{
+			baseCaster,
+			{ID: "stoned", Side: combat.SideParty, HitPoints: 0, MaxHitPoints: 10, HasCombatPosition: true, CombatX: 6, CombatY: 5, DownedCorpse: true},
+		}
+		state, caster := makeState(t, party.Roster{{ID: "caster"}, {ID: "stoned", HealthStatus: party.HealthStatusStoned}}, heroes)
+		if target, ok := state.quickCureTarget(caster); ok {
+			t.Fatalf("stoned target=%+v", target)
+		}
+	})
+}
+
 func TestCombatAltMGateResetsAtEachCombatStart(t *testing.T) {
 	state := NewState(testCatalog())
 	heroes := []combat.Fighter{{

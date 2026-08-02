@@ -376,6 +376,15 @@ selection。State `ResolveDeathEffects` 現可在 caller 明確提供 damage fla
 不會因缺少資料而猜測；`ResolveDragonSlayer` 另要求 caller 明確提供 target monster
 kind、strength damage bonus 與 d12 roller。
 
+## PC-98 Quick Cure 目標順序
+
+CoAB `COMPTARGCURE` 不是「找全隊最低 HP」：它以北、東北、東、東南、南、
+西南、西、西北、自身掃描 3×3。equal HP 保留先掃到者；自身最後且低於半血
+時會覆蓋先前候選。倒地者只有在 active 最佳 HP 大於或等於 8 時優先，raw
+status `DEAD／STONED／GONE` 不可治療。共用 engine 只保存 opaque target ID；
+方向、HP 門檻與 status mapping 都是 CoAB adapter 規則，不能硬編進 renderer
+或作品中立 scheduler。
+
 ## 中文化注意
 
 Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、

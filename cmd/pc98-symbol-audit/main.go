@@ -16,6 +16,7 @@ func main() {
 	match := flag.String("match", "", "不分大小寫的名稱子字串；空白表示全部")
 	showModules := flag.Bool("modules", false, "列出 compiler modules，不列 symbols")
 	showTypes := flag.Bool("types", false, "列出 legacy type table，不列 symbols")
+	showMembers := flag.Bool("members", false, "列出 legacy member table，不列 symbols")
 	typeIndex := flag.Int("type-index", -1, "只列出指定的 1-based type index；同時啟用 -types")
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "用法：pc98-symbol-audit [選項] GAME.EXE")
@@ -47,6 +48,20 @@ func main() {
 	)
 	needle := strings.ToUpper(*match)
 	matches := 0
+	if *showMembers {
+		for _, member := range table.Members {
+			if needle != "" && !strings.Contains(strings.ToUpper(member.Name), needle) {
+				continue
+			}
+			fmt.Printf(
+				"member=%d flags=0x%02X name_index=%d name=%q type=%d\n",
+				member.Index, member.Flags, member.NameIndex, member.Name, member.TypeIndex,
+			)
+			matches++
+		}
+		fmt.Printf("matches=%d\n", matches)
+		return
+	}
 	if *showModules {
 		for _, module := range table.Modules {
 			if needle != "" && !strings.Contains(strings.ToUpper(module.Name), needle) {
