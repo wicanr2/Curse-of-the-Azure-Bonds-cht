@@ -2,7 +2,7 @@
 
 更新日期：2026-08-02
 本 milestone 的 CoAB 基底：`122a470`（第 440 輪）
-依賴的 Golden Box engine checkpoint：`3142ae0`
+依賴的 Golden Box engine checkpoint：`f3c652a`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -60,7 +60,9 @@ commit 內保存不可能自我引用的 hash。
   large footprint 去重、Poison save、成功 cough、失敗 `d4+1` helpless、
   caster-level 到期與重疊雲獨立清除。DOS 影片
   `00:42:25.20–27.00` 的建立／持續關鍵幀及兩張 remake checkpoint 已保存。
-- 角色建立、繁中姓名、能力值、種族／職業、基礎隊伍、裝備與多項法術。
+- 角色建立的 22 個單職／18 個多職模板已移入 game-pack JSON；繁中姓名輸入、
+  能力值、種族／職業顯示、基礎隊伍、裝備與多項法術已有可玩切片。正常 title
+  至 ECL1 新遊戲與 save round-trip 已回歸；完整原版建角 UX／規則仍未完成。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

@@ -360,7 +360,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - CoAB 本輪基底：`ea01be8`（第 437 輪 `INARC／OBJECTLIST`）；第 438 輪
   `CHARACTERLIST／IDLIST` stable identity milestone 會由本文件所在 commit
   完成。
-- Engine dependency：`f06493f`（含作品中立 YM2203 opaque full-state／PCM
+- Engine dependency：`f3c652a`（含作品中立 game-pack
+  `character_creation.templates` schema／validation、繁中角色建立知識庫，
+  以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
   `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
   inclusive 扇區、`combat/scanorder`
@@ -591,6 +593,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   CLI 與測試不再依賴 `ChineseAffectName`。顯示名稱資料化不等於效果規則、
   動畫、音效或生命週期已完成。真實 MON6SPC block 67 另有未命名
   `82h／81h／3Ch`，必須保持 raw 診斷直到 consumer 證據成立。
+- 第 459 輪角色建立再移除 86 次，baseline 現為 867 occurrences；22 個單職與
+  18 個多職模板由 engine `character_creation.templates`＋CoAB JSON 驅動，
+  template display ID、前端提示、種族／職業與能力名稱不再寫死在 Go。錯誤
+  template 必須阻止建立開啟，不得靜默過濾；正常 title→建立→ECL1 block 01h
+  與 save round-trip 已回歸。完整原版建角 UX／規則仍未完成。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

@@ -1822,25 +1822,27 @@ func dungeonDirectionName(direction uint8) string {
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, "建立冒險隊伍", a.face, 32, 52, cyan)
+	text.Draw(screen, a.state.LocaleText("creation_title"), a.face, 32, 52, cyan)
 	text.Draw(screen, a.state.CreationMessage, a.face, 32, 90, white)
 	if a.state.CreationEditing {
-		text.Draw(screen, "姓名："+a.state.CreationName+"_", a.face, 48, 140, white)
-		text.Draw(screen, "輸入文字　Enter：確定　Esc：取消", a.face, 48, 190, cyan)
+		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), a.face, 48, 140, white)
+		text.Draw(screen, a.state.LocaleText("creation_name_help"), a.face, 48, 190, cyan)
 		return
 	}
 	if a.state.CreationEditingAbilities {
 		character := a.state.CreationOptions[a.state.CreationCursor]
-		text.Draw(screen, "編輯："+character.Name+"（左右選能力，上下調整）", a.face, 32, 135, white)
-		for index, name := range []string{"力量", "智力", "智慧", "敏捷", "體質", "魅力"} {
+		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_ability_title"), character.Name), a.face, 32, 135, white)
+		abilityKeys := []string{"ability_strength", "ability_intelligence", "ability_wisdom", "ability_dexterity", "ability_constitution", "ability_charisma"}
+		for index, key := range abilityKeys {
 			value, _ := character.Abilities.Value(index)
 			prefix := "  "
 			if index == a.state.CreationAbility {
 				prefix = "> "
 			}
-			text.Draw(screen, prefix+name+"："+strconv.Itoa(value), a.face, 64, 175+index*25, white)
+			label := fmt.Sprintf(a.state.LocaleText("creation_ability_row"), a.state.LocaleText(key), value)
+			text.Draw(screen, prefix+label, a.face, 64, 175+index*25, white)
 		}
-		text.Draw(screen, "A／Esc：返回　Enter：加入隊伍", a.face, 48, 350, cyan)
+		text.Draw(screen, a.state.LocaleText("creation_ability_help"), a.face, 48, 350, cyan)
 		return
 	}
 	start := a.state.CreationCursor - 3
@@ -1860,19 +1862,13 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		if index == a.state.CreationCursor {
 			prefix = "> "
 		}
-		label := prefix + character.Name + "（" + raceName(character.Race) + "／" + className(character.Class) + "）"
+		label := prefix + fmt.Sprintf(a.state.LocaleText("creation_option_label"), character.Name,
+			a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
 		text.Draw(screen, label, a.face, 48, 150+(index-start)*32, white)
 	}
-	text.Draw(screen, "選項 "+strconv.Itoa(a.state.CreationCursor+1)+"／"+strconv.Itoa(len(a.state.CreationOptions))+"　已加入："+strconv.Itoa(len(a.state.CreationRoster))+" 人", a.face, 48, 325, cyan)
-	text.Draw(screen, "N：改名　A：能力值　R：重擲　Enter：加入　D：完成　Esc：取消", a.face, 48, 340, white)
-}
-
-func raceName(r party.Race) string {
-	return map[party.Race]string{party.RaceDwarf: "矮人", party.RaceElf: "精靈", party.RaceGnome: "侏儒", party.RaceHalfElf: "半精靈", party.RaceHalfling: "半身人", party.RaceHuman: "人類", party.RaceHalfOrc: "半獸人"}[r]
-}
-
-func className(c party.Class) string {
-	return map[party.Class]string{party.ClassCleric: "牧師", party.ClassFighter: "戰士", party.ClassRanger: "遊俠", party.ClassPaladin: "聖武士", party.ClassMagicUser: "魔法師", party.ClassThief: "盜賊"}[c]
+	text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
+		len(a.state.CreationOptions), len(a.state.CreationRoster)), a.face, 48, 325, cyan)
+	text.Draw(screen, a.state.LocaleText("creation_help"), a.face, 48, 340, white)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {

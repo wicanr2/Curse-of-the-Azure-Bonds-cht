@@ -4342,6 +4342,41 @@ func TestCharacterCreationListsVerifiedClassOptions(t *testing.T) {
 	}
 }
 
+func TestCharacterCreationUsesGamePackTemplatesAndFormalLocale(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
+	if err := state.OpenCharacterCreation(); err != nil {
+		t.Fatal(err)
+	}
+	if state.dataPack == nil || state.dataPack.CharacterCreation == nil ||
+		len(state.CreationOptions) != len(state.dataPack.CharacterCreation.Templates) {
+		t.Fatalf("creation options=%d pack=%+v", len(state.CreationOptions), state.dataPack)
+	}
+	for index, template := range state.dataPack.CharacterCreation.Templates {
+		wantName, ok := state.dataPack.Text(template.DisplayID, catalog.Language)
+		if !ok || state.CreationOptions[index].ID != "creation."+template.ID ||
+			state.CreationOptions[index].Name != wantName {
+			t.Fatalf("creation option[%d]=%+v template=%+v want name=%q", index, state.CreationOptions[index], template, wantName)
+		}
+	}
+	keys := []string{
+		"creation_title", "creation_name_input", "creation_name_help",
+		"creation_ability_title", "creation_ability_row", "creation_ability_help",
+		"creation_option_label", "creation_progress", "creation_help",
+		"ability_strength", "ability_intelligence", "ability_wisdom",
+		"ability_dexterity", "ability_constitution", "ability_charisma",
+		"race_dwarf", "race_elf", "race_gnome", "race_half_elf",
+		"race_halfling", "race_human", "race_half_orc", "race_unknown",
+		"class_cleric", "class_fighter", "class_ranger", "class_paladin",
+		"class_magic_user", "class_thief", "class_unknown",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Errorf("missing character creation locale key %q", key)
+		}
+	}
+}
+
 func TestCharacterCreationCustomNameSupportsUnicode(t *testing.T) {
 	state := NewState(testCatalog())
 	if err := state.OpenCharacterCreation(); err != nil {
@@ -4406,6 +4441,7 @@ func TestPartySaveLoadRoundTrip(t *testing.T) {
 	if err := state.OpenCharacterCreation(); err != nil {
 		t.Fatal(err)
 	}
+	wantName := state.CreationOptions[0].Name
 	if err := state.AddCreationCharacter(0); err != nil {
 		t.Fatal(err)
 	}
@@ -4420,7 +4456,7 @@ func TestPartySaveLoadRoundTrip(t *testing.T) {
 	if err := loaded.LoadPartyFile(path); err != nil {
 		t.Fatal(err)
 	}
-	if len(loaded.PartyFighters()) != 1 || loaded.PartyFighters()[0].Name != "戰士" {
+	if len(loaded.PartyFighters()) != 1 || loaded.PartyFighters()[0].Name != wantName {
 		t.Fatalf("loaded party=%#v", loaded.PartyFighters())
 	}
 }

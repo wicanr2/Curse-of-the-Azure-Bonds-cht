@@ -3454,3 +3454,16 @@ block 67 smoke 顯示 `18h` 正常解析，未命名 `82h／81h／3Ch` 保持 ra
 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND458_FORMAL_EXIT=0`；一次性容器均以 `--rm` 完成，engine repo 本輪無
 變更。commit／push 待本輪收尾。READY spec 458 是權威。
+
+2026-08-02 第四百五十九輪完成角色建立模板與前端文字資料分離。Engine
+`f3c652a` 新增 `character_creation.templates` strict schema、跨 locale／8 槽
+levels／6 abilities validation 與繁中知識庫；CoAB JSON 宣告第 249／261 輪
+已證明的 22 單職＋18 多職模板。`starterCharacters` 改成 fail-closed adapter，
+不再以 Go slice 建資料或靜默過濾；Ebiten 建立畫面、種族／單職／能力名稱與
+提示均由正式 locale stable IDs 解析。正常 party-less title→建立→ECL1 global
+block `01h`、40 筆 pack coverage 與 save/load round-trip 通過。source audit
+953→867：frontend 164→135、runtime 417→360、localization 372 不變。完整原版
+建角 UX／多職規則仍未完成。正式 Docker／Xvfb／`--network none` 全套 gate
+通過，marker `ROUND459_COAB_EXIT=0`；一次性容器均以 `--rm` 完成。Engine
+`f3c652a` 已 commit／push；CoAB commit／push 待本輪收尾。READY spec 459
+是權威。

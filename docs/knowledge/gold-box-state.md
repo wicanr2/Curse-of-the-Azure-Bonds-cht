@@ -489,6 +489,13 @@ raw level metadata，規則層依 slot 判定職業；舊資料沒有 metadata �
 高等級 spell capacity 與 UI label 仍須各作品依 reference class-level table 擴充，不能把
 primary-class fallback 當成完整 AD&D multi-class engine。
 
+第 459 輪把上述已證明的 22 個單職與 18 個多職建立選項移入正式 game-pack。
+共用 engine 的 `character_creation.templates` 只驗證 stable display ID、opaque
+race／class IDs、八槽 levels 與六項 abilities；CoAB adapter 才負責 enum、
+起始年齡與角色規則。這個分層可供後續 Gold Box 作品重用，但第二款作品必須
+先以自己的 `RaceClasses`、角色 record、runtime 選單與存檔 round-trip 驗證，
+不可直接沿用 CoAB 的數字或允許組合。
+
 Tavern Tale 的繁中翻譯要保留角色名、地名與線索方向，不以 renderer 的 byte length 截斷中文。訊息顯示仍沿用 Unicode rune reveal；後續若接入完整 62 則，應維持 `bar_tale_<id>` 或獨立 catalog，並以來源編號做 regression。
 
 ### ECL selected-player bridge（CoAB round 269）
