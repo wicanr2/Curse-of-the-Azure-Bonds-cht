@@ -533,6 +533,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   selector、scheduler delay 與 Standing Stone→Red Plume 真實箭傷正常路徑
   驗證。equal-HP exact tie、down-player status predicate、手動 CAST delay、
   interruption 與其餘 Quick 法術仍未完成；READY spec 426 是權威細節。
+- 第 427 輪由 Borland `COMPTARGCURE／CHARSTATUS／DXDIR／DYDIR` 與 raw bytes
+  關閉 Quick Cure exact 順序：N→NE→E→SE→S→SW→W→NW→self；equal HP
+  保留先掃到者，自身低於半血可覆蓋，active HP `>=8` 才讓合法倒地者優先。
+  raw status `DEAD=6／STONED=7／GONE=8` 均被 set predicate 排除；remake
+  `HealthStatus` ordinal 不同，compact 後不可直接用 raw 數字比較。spec 427
+  是權威；同格多 corpse ordering、完整 raw status round-trip 與施法中斷仍未完成。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

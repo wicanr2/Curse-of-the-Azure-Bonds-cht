@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 	"time"
 
@@ -857,7 +856,7 @@ func (s *State) combatHealingTargets() []combat.Fighter {
 				break
 			}
 		}
-		if status == party.HealthStatusDead {
+		if status == party.HealthStatusDead || status == party.HealthStatusStoned {
 			continue
 		}
 		targets = append(targets, fighter)
@@ -865,36 +864,41 @@ func (s *State) combatHealingTargets() []combat.Fighter {
 	return targets
 }
 
-// quickCureTarget projects the PC-98 spell-03 selector into stable fighter
-// identities. The original searches the caster's 3x3 neighbourhood, prefers
-// low current HP, and may choose a downed party marker when active targets are
-// not below eight HP. Exact equal-HP traversal order remains unresolved.
+// quickCureTarget projects PC-98 COMPTARGCURE into stable fighter identities.
+// DXDIR/DYDIR scan N, NE, E, SE, S, SW, W, NW and self. A strictly lower
+// current HP replaces the active candidate; the caster, scanned last, also
+// replaces it when below half HP. A legal down-player marker wins only when
+// the active candidate has at least eight HP.
 func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
-	distance := func(a, b int) int {
-		if a < b {
-			return b - a
-		}
-		return a - b
+	directions := [...]combat.TilePoint{
+		{X: 0, Y: -1}, {X: 1, Y: -1}, {X: 1, Y: 0},
+		{X: 1, Y: 1}, {X: 0, Y: 1}, {X: -1, Y: 1},
+		{X: -1, Y: 0}, {X: -1, Y: -1}, {X: 0, Y: 0},
 	}
-	var active, downed []combat.Fighter
-	for _, target := range s.combatHealingTargets() {
-		if distance(target.CombatX, caster.CombatX) > 1 || distance(target.CombatY, caster.CombatY) > 1 {
-			continue
-		}
-		if target.DownedCorpse {
-			downed = append(downed, target)
-		} else {
-			active = append(active, target)
+	targets := s.combatHealingTargets()
+	var activeTarget, downedTarget combat.Fighter
+	activeFound, downedFound := false, false
+	for _, direction := range directions {
+		x, y := caster.CombatX+direction.X, caster.CombatY+direction.Y
+		for _, target := range targets {
+			if target.CombatX != x || target.CombatY != y {
+				continue
+			}
+			if target.DownedCorpse {
+				downedTarget, downedFound = target, true
+				continue
+			}
+			if !activeFound || target.HitPoints < activeTarget.HitPoints ||
+				(target.ID == caster.ID && target.HitPoints < target.MaxHitPoints/2) {
+				activeTarget, activeFound = target, true
+			}
 		}
 	}
-	sort.SliceStable(active, func(i, j int) bool {
-		return active[i].HitPoints < active[j].HitPoints
-	})
-	if len(downed) > 0 && (len(active) == 0 || active[0].HitPoints >= 8) {
-		return downed[0], true
+	if downedFound && (!activeFound || activeTarget.HitPoints >= 8) {
+		return downedTarget, true
 	}
-	if len(active) > 0 {
-		return active[0], true
+	if activeFound {
+		return activeTarget, true
 	}
 	return combat.Fighter{}, false
 }
