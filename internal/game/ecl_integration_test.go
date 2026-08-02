@@ -158,7 +158,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("new game block=0x%02X, want 0x01", state.session.CurrentBlockID())
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "小房間") || !strings.Contains(state.Message, "所有裝備都不見了") {
+		state.Message != requireGamePackText(t, &state, "opening.new-game-awakening") {
 		t.Fatalf("new game first pause: mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
 	if state.LoadPieces != [3]uint16{1, 2, 3} {
@@ -168,7 +168,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested ||
-		!strings.Contains(state.Message, "持劍的手臂") || !strings.Contains(state.Message, "相同的印記") {
+		state.Message != requireGamePackText(t, &state, "opening.new-game-marks") {
 		t.Fatalf("new game picture text: mode=%v picture=%v message=%q", state.Mode, state.PictureRequested, state.Message)
 	}
 	if err := state.Continue(); err != nil {

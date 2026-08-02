@@ -374,6 +374,9 @@
       ,"princess_nacacia": "PRINCESS NACACIA"
       ,"no_one": "NO ONE"
       ,"exit": "EXIT"
+      ,"opening.curse-summary": "On your way to Tilverton, you are ambushed, captured, and knocked unconscious. You awaken cursed with five azure symbols that bind your will. When the bonds glow, you must obey. Your only hope is to find the alliance that created them and regain control of your destiny. Nowhere in the Realms is completely safe; even a peaceful scene may hide a deadly foe."
+      ,"opening.new-game-awakening": "You awaken in a small room. All your gear is gone, along with your memory of recent events."
+      ,"opening.new-game-marks": "Adding to your disquiet, strange patterns have been imprinted on every party member's sword arm."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -773,6 +776,9 @@
       ,"princess_nacacia": "娜卡西亞公主"
       ,"no_one": "不效忠任何人"
       ,"exit": "離開"
+      ,"opening.curse-summary": "前往提爾佛頓途中，你們遭到伏擊、被俘並失去意識。醒來時，隊伍已被五枚青色符印下了詛咒；符印如金屬枷鎖般束縛意志，發光時更會強迫你們服從。唯一的希望，是找出創造枷印的聯盟成員，重新掌握自己的命運。國度中沒有任何地方絕對安全；最平靜的景象也可能藏著致命敵人。"
+      ,"opening.new-game-awakening": "你們在一間小房間裡醒來。所有裝備都不見了，最近發生的事情也完全想不起來。"
+      ,"opening.new-game-marks": "更令人不安的是，每位隊員持劍的手臂都被烙上完全相同的奇異圖紋。"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2523,6 +2529,9 @@
       "all_contains": ["YOU ARE AT THE EDGE OF SHADOWDALE", "WILL YOU ENTER OR CONTINUE YOUR JOURNEY"],
       "message_id": "world.shadowdale.edge"
     },
+    {"id": "opening.curse-summary", "all_contains": ["ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE", "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS", "AND REGAIN CONTROL OF YOUR OWN DESTINY", "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"], "message_id": "opening.curse-summary"},
+    {"id": "opening.new-game-awakening", "all_contains": ["YOU AWAKEN IN A SMALL ROOM", "ALL YOUR GEAR IS GONE"], "message_id": "opening.new-game-awakening"},
+    {"id": "opening.new-game-marks", "all_contains": ["ADDING TO YOUR DISQUIET", "IMPRINTED WITH STRANGE PATTERNS", "IDENTICALLY MARKED"], "message_id": "opening.new-game-marks"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

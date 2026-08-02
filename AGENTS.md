@@ -608,6 +608,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   附加匹配結果，不得依條目編號、人物或中文內容解鎖；產品測試必須從正式
   game-pack stable ID 取得期望頁面。手冊 OCR 只能協助轉錄，事件可達性仍以
   原始 ECL 與正常玩家路徑為準，且不得把整本手冊預先解鎖。
+- 第 462 輪開場敘事與 shadowed journal fallback 再移除 34 次，baseline 現為
+  688 occurrences。ECL 文字規則必須依實際 service boundary 建模；原始檔的
+  換行不是畫面 boundary。新遊戲醒來 PRESS 與手臂印記 PICTURE 是兩個 stable
+  messages，不能合併後讓 continuation 重播或漏字。刪除 fallback 前必須證明
+  game-pack rule 先命中，並重跑所有受影響正常玩家路徑。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

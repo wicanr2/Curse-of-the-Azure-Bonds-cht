@@ -11,27 +11,11 @@
     "ecl_cleric_howl": "勝利。他嚎叫著：",
     "ecl_war_blasted_city": "你們找到城市中一片遭戰火摧毀的區域。",
     "ecl_small_magic_shop": "你們發現一間小型魔法商店。",
-    "ecl_opening_tilverton": "前往提爾佛頓鎮的途中，你們",
     "tilverton": "提爾佛頓",
     "dungeon_prompt": "↑：前進　K／M：轉向　E：紮營",
     "ecl_tilverton_patrol_arrives": "一支皇家巡邏隊抵達。",
     "ecl_tilverton_guards_move": "皇家衛兵命令你們立刻離開。",
     "camp_rest_interrupted": "你們的休息突然中斷！",
-    "ecl_opening_ambushed": "遭到伏擊、被俘，並被擊昏。當",
-    "ecl_opening_cursed": "你們醒來時，隊伍已被五個青色",
-    "ecl_opening_symbols": "符印下了詛咒。",
-    "ecl_opening_ensnare": "這些符印如金屬枷鎖般束縛你們的意志。",
-    "ecl_opening_command": "當枷印發光時，你們就必須服從它們的命令。",
-    "ecl_opening_only_hope": "唯一的希望，是在被遺忘的國度中尋找",
-    "ecl_opening_alliance": "創造這些枷印的聯盟成員",
-    "ecl_opening_destiny": "並重新掌握自己的命運。",
-    "ecl_opening_nowhere_safe": "國度中沒有任何地方絕對安全。即使",
-    "ecl_opening_deadly_foe": "最平靜的景象，也可能藏著致命敵人。",
-    "ecl_new_game_awaken": "你們在一間小房間裡醒來。環顧四周，你們注意到",
-    "ecl_new_game_gear_gone": "所有裝備都不見了，最近發生的事情也完全想不起來。",
-    "ecl_new_game_disquiet": "更令人不安的是，你們發現持劍的手臂",
-    "ecl_new_game_patterns": "不知為何被烙上了奇異圖紋。隊伍中的其他人",
-    "ecl_new_game_identical": "也都帶著完全相同的印記。",
     "continue": "繼續",
     "new_game": "新的遊戲",
     "load_game": "載入遊戲",
@@ -242,7 +226,6 @@
     "fight": "戰鬥",
     "sneak_in": "潛入",
     "ask_permission": "請求許可",
-    "ecl_shadowdale_hooded_man": "一名兜帽低垂的灰袍男子坐在昏暗角落。他招手示意你們靠近，低聲說了一番話，隨後便消失無蹤。",
     "tavern_tale_44": "酒客說：「紅袍法師喜愛火焰生物；面對他們時，寒冷攻擊往往是最好的防禦。」",
     "tavern_tale_60": "酒客說：「有幾道龐大身影飛越森林，朝南方去了。」",
     "tavern_drink_prompt": "要喝什麼？",
@@ -265,9 +248,6 @@
     "ecl_tavern_commotion_1": "你們正盤算下一步時，聽見",
     "ecl_tavern_commotion_2": "建築側邊傳來騷動。要前去",
     "ecl_tavern_commotion_3": "調查嗎？",
-    "ecl_tavern_knife_1": "這裡如今空無一人，只留下一把華麗",
-    "ecl_tavern_knife_2": "匕首",
-    "ecl_tavern_journal_17": "第 17 條。",
     "ecl_hap_edge": "你們來到哈普村外。要進村，還是繼續旅程？",
     "ecl_hillsfar_edge": "你們來到希爾斯法城外。要進城，還是繼續旅程？",
     "ecl_yulash_edge": "你們來到尤拉什城外。要進入戰區，還是繼續旅程？",
@@ -753,9 +733,6 @@
     ,"ecl_tilverton_inn_scowls": "旅店老闆娘笑容滿面地說，接著才注意到你們全都沉著臉。"
     ,"ecl_tilverton_inn_calm": "「請先冷靜，讓我解釋。」"
     ,"ecl_tilverton_inn_listen": "你們聽她說明，"
-    ,"ecl_tilverton_inn_record": "並將內容記入冒險手札"
-    ,"ecl_tilverton_inn_sage": "第 31 條。「或許賢者能幫上忙；你們也可以到"
-    ,"ecl_tilverton_inn_shop": "對街的商店取得武器。」"
     ,"yes": "是"
     ,"no": "否"
     ,"tell_truth": "如實相告"
@@ -764,8 +741,6 @@
     ,"ecl_filani_correct": "對吧？」"
     ,"ecl_filani_price": "「這個案例很有意思。我可以替你們研究，代價是你們"
     ,"ecl_filani_funds": "一半的財物。你們身上有多少？」"
-    ,"ecl_filani_talks": "她開始解說，內容記於冒險手札"
-    ,"ecl_filani_journal_38": "第 38 條。"
     ,"ecl_filani_lie": "「別把賢者當成傻瓜。」她把你們趕了出去。"
     ,"ecl_filani_no": "「那我們就沒什麼好談的了。」"
     ,"ecl_move_away": "你們離開此處。"

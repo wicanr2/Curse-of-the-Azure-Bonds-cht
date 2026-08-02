@@ -831,3 +831,14 @@ Gold Box 的手札條目由遊戲事件在特定時點指示玩家閱讀。重�
 解鎖它。測試要分兩層：資料包測試驗證兩語系、rule ID 與頁數；玩家路徑測試
 由同一份 game-pack stable ID 取得期望頁面。直接在測試貼上目前繁中全文，會
 讓譯文改稿錯誤地破壞事件／資料綁定測試，也形成第二份真相來源。
+
+### 2026-08-02：ECL 換行不等於畫面 boundary
+
+同一段敘事可能由多個 ECL text fragments 組成，也可能在 PRESS、PICTURE、
+menu 或 combat handoff 被切成數個畫面。資料化時應以 VM 實際回傳的 `texts`
+批次與 continuation PC 建 stable message，而不是替每個原始換行建立翻譯 key。
+
+CoAB 新遊戲提供直接反例：醒來與裝備消失先形成 PRESS pause；繼續後才在
+PICTURE boundary 顯示全隊手臂印記。合併成單一翻譯會提早洩漏下一畫面，逐行
+翻譯則讓作品文字滲入 runtime。可沿用的驗證是同時檢查 rule ID、每個 boundary
+的完整訊息、picture request、resume 後座標與未知來源的原文 fallback。

@@ -3098,20 +3098,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "02a4e0622c75c52ffe1cacd380f1976bc6c527def9d5c718281358d958053b05",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "02b20baffe10d5de60f8da1829614fdce1499bc970904698763812428e47456d",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "0554b6ac7518b8da26433ded780dcec7c739bf32a28fb570ad9fbf98b92108b7",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3140,56 +3126,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "129049989162a36bbc845f418d148bbdfa6cd584dcd92fe458a712019de07b21",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "20aef2d64e20f4e178268e60534d21963417a0b07028e0d07d57f0331343e545",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "20fc678490890feed4c01b0590a50e0283f112fa20f5b4416feca7de31964b75",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "22b497d7a009736701a5b6449da6af383b5804e5510f0285bc47416dff688dba",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "2390be98b56831b62dc883a4260869f1867c113ff7e713071badab749334dc9f",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "2740a28060e99ccc0ccd23640138458904fad4e603db8be34708bc9953733921",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "2a2d1bce643c1a676e5d3aef21ef5cabe89d8c7423ad7e1da727a6eba616d8b0",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "2a8483e124d1669ac21fe6d9b0adc73519c8cd061e129c85ba0141cbcf11de67",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3210,21 +3147,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "3888ac766c8fef599f7bc1661eeb3871de28a2a3a46ade468d96c516769de4a5",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "3b3cd4a88825b33239f2ad22f85052181a6089a95fd5bf9fa48892349aa0eef9",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "3d61e27e369182a403810d89b532bf5a4e897610cad69b84d8b313e796119886",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3259,13 +3182,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "501c8bd2c8f84033a44579a174fd1ce726ebfb09544845631af7c6c97daa16ea",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "541e2467d12e2901eeabaf9f0f23672663ba4e56532b9389613bac1eac9a4ba9",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3273,21 +3189,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "5a9fd8fd284e5bb6965635d198c49a23fe6432f9c0929cf3fb5e5ddfbb108caa",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "6a6f932a132b3111e450325e453e0d1d007b0c607910a1757fc4dd3577171a9e",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "72a52ab17e3f11b0506713b4344392ec12d32f6e2ca6a089e50746ddef192cc3",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3322,13 +3224,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "9372946272f8790c6462db3ccd35f44b15ea0d4f4c28b0257b828f1a4f86540f",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "94bc2ad9ceaef6e38b6c0d28dc3b1b3b369071ec6a09e07fdd9a97e9c92b8b90",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3336,21 +3231,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "980bffac78f9f996fbe3c4750ec6fc2638aac7bc9ec454b725ddb539240bdccb",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "9f426c3fd3ab9e21467b9f70cdf1cb247603a8664bc0561fc1c326f04ff3f3ec",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "9f4f934621a2ddca3012a2a756cc76d2fc30bd3df9274c54ed2b7c7239ad5ec9",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3399,21 +3280,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "cd79d2e59c215af0094221141462ada75bf280e3d434da382c964f78e74e1012",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "cf0a8468d3847d42e69dc8b71884a13d417adcac4bca58d0e56f53a57a55431b",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "d63b5025a7d540d6d6fbc2d467ba11d9b4c9210ea1362d1d8db85ff252b200c1",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3448,20 +3315,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
-      "sha256": "e7a19834de17f28ba51d606978419eb754b89771ff4c577aa26755cc17a77096",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "e88bc4d4ed13ae137f0612e37fa6712a09493d929535c04fa7657b92ba02aa78",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
       "sha256": "ee131521a1e67ea6b15f14c886c9b6e22497dd1ffb486548669cb15cb4f39860",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3470,13 +3323,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLLine",
       "sha256": "f23ed1ea03245b4030d756cbb94dfcd06821fbd09936ab8433a57060203a499a",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLLine",
-      "sha256": "f706f7dc8ce0e6e3cf2be596c492d7d1e0250d61ef897c3f687c3833e21cdc10",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3805,21 +3651,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "443c537bbcc4f91a206a7ba4ed6c098e9f80e5a31a9290dcca3e71d2c5b21460",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "44a4e7123b7d5c2140c8932f249bb75239f507baf03254013de3832af6174371",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "44b47115cb818228c1c433ab589e4b14694bf14ff6e55366640bcb486ce5ef8c",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -4050,20 +3882,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "752834b05f08087278ea59cbe3226b6b2758ddc56d67cdda44f21505b6808203",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "761747aed6ff66b6e336632b97574bbeefa00ab9b6e2b6180237360a56533f1b",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "764c171f7861a1c113e7e0222c2d19aefa3ca024a387da76f6a22eb8c35622a6",
       "occurrences": 1,
       "category": "localization_debt"
@@ -4176,13 +3994,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "93469960afa8334be89c8649cf12835fcf1aadecc5c0c6d7731af4c2858adeab",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "93c1f7839107e1ef9deac25d815d11ff71737804a1ef44d3b4fe30fbf4c554b8",
       "occurrences": 1,
       "category": "localization_debt"
@@ -4198,13 +4009,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "9915c4380852883d43e18f72ee8ef0b54e81d19ee8839b17b9ef7e41b1041841",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "9c4498e4868438a8ca119fad623099df7efaa762d5c6210e1d80715fd233af96",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -4246,13 +4050,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "a7b72e3858375fdc54051fc63398102905beac9f76806f5923b9f8a233fd06d0",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "a96f036426a998471cdef1a7e39e61daad26d7a8ef2e8dbef4f4cb31aba046a5",
       "occurrences": 1,
       "category": "localization_debt"
@@ -4260,21 +4057,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "aeac812033af7fd79bd3734eef28974d048a44791e1fa1309647f8c9b76c3fa6",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "b0a04f56fca6dfc3de40a7eb0c20d098a2a0a16238dc029da857e312fec77fe2",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "b1689a517bf8cac0e6ef45551295078846bdf274b6cfd1114689f6bf97ff4b97",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -4331,13 +4114,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "c2dd21cd903c4a2ea608c6307c81a5ceacf5cde08ce53f0990a402f36b3d3852",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "c36510c22e550c6654e7cef39a97a56f4b9575bee1dc0298db038b2c2b714bc1",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -4456,13 +4232,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "f61c41284a4583ab1da8c0c1d5d09232b0b4280f2ac68f1e3ca97929ac4367e3",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "f634342d0ba0cd6e4cc3ecd3a96886cc0d4980a35211a9d73d38ab5fa3aa4274",
       "occurrences": 1,
       "category": "localization_debt"
@@ -4506,13 +4275,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "fe6e1e33618efd38a754ed5039f702f6e2c72d009b6b9aca7c9cbca7e15d3b9c",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "feba13bdd6ffa2fca6ae96c71b3b5610bb6ed1a6ea67462515583f397b0f6b8e",
       "occurrences": 1,
       "category": "localization_debt"
     },

@@ -5624,13 +5624,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」",
 		)
 	}
-	if strings.Contains(joined, "REMOVE CURSE SPELL") &&
-		strings.Contains(joined, "JOURNAL ENTRY") && strings.Contains(joined, "19.") {
-		return catalog.Text(
-			"ecl_high_priest_spell",
-			"他同情地聽完你們的遭遇，接著施展移除詛咒法術；你們將結果記入冒險手札第 19 條。",
-		)
-	}
 	switch {
 	case strings.Contains(joined, "THIS RUN DOWN VILLAGE IS STRANGELY QUIET") &&
 		strings.Contains(joined, "NO ONE IS ABOUT"):
@@ -5881,12 +5874,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_yulash_commander_business",
 			"指揮官厲聲質問你們來尤拉什有何目的。你們要用什麼態度回答？",
 		)
-	case strings.Contains(joined, "YOU HAVE PLEASED THE COMMANDER") &&
-		strings.Contains(joined, "JOURNAL ENTRY 22"):
-		return catalog.Text(
-			"ecl_yulash_commander_pleased",
-			"你們的表現令指揮官滿意。他的說明已記入冒險手札第 22 條。",
-		)
 	case strings.Contains(joined, "THE COMMANDER SHOWS YOU OUT THE SIDE DOOR"):
 		return catalog.Text(
 			"ecl_yulash_commander_side_door",
@@ -5935,12 +5922,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_pit_alias_dragonbait_introduction",
 			"女戰士自稱愛麗雅絲，並介紹她的同伴龍餌。她說自己過去也有與你們相似的刺青，請眾人說明來歷。",
-		)
-	case strings.Contains(joined, "SHE TELLS HER STORY") &&
-		strings.Contains(joined, "JOURNAL ENTRY 3"):
-		return catalog.Text(
-			"ecl_pit_alias_story",
-			"愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。",
 		)
 	case strings.Contains(joined, "DO YOU WANT THEM TO JOIN YOU"):
 		return catalog.Text(
@@ -6083,23 +6064,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_pit_altar_jewels_gems",
 			"你們在祭壇中找到一批珠寶與寶石！",
 		)
-	case strings.Contains(joined, "YOU HAVE ALSO FOUND A MAP OF THE TEMPLE") &&
-		strings.Contains(joined, "JOURNAL ENTRY 20"):
-		return catalog.Text(
-			"ecl_pit_temple_map_journal_20",
-			"你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。",
-		)
 	case strings.Contains(joined, "YOU ARE ATTACKED BY A LARGE FORCE OF") &&
 		strings.Contains(joined, "CULTISTS IN A LAST-DITCH EFFORT TO STOP YOU"):
 		return catalog.Text(
 			"ecl_pit_exit_last_stand",
 			"大批摩安德教徒發動最後阻擊，企圖阻止你們逃出地底！",
-		)
-	case strings.Contains(joined, "A HOODED, GREY ROBED MAN SITS IN A DARK CORNER") &&
-		strings.Contains(joined, "MOTIONS YOU OVER"):
-		return catalog.Text(
-			"ecl_shadowdale_hooded_man",
-			"一名兜帽低垂的灰袍男子坐在昏暗角落。他招手示意你們靠近，低聲說了一番話，隨後便消失無蹤。",
 		)
 	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
 		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
@@ -6228,12 +6197,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_guild_battle_joined",
 			"你們準備迎戰時，一支箭射中公會首領胸口。四名忠於公會的盜賊與你們並肩作戰，混戰就此爆發！",
 		)
-	case strings.Contains(joined, "THE GUILDMASTER GASPS") &&
-		strings.Contains(joined, "JOURNAL ENTRY 4"):
-		return catalog.Text(
-			"ecl_guildmaster_death",
-			"公會首領奄奄一息地喘道：「權衡之下，我寧可待在尤拉什……」隨即死去。你們在他身上找到一幅通往火刀據點的下水道地圖，記入冒險手札第 4 條。",
-		)
 	case strings.Contains(joined, "HALFLING WITH A HARP") &&
 		strings.Contains(joined, "DISAPPEAR"):
 		return catalog.Text(
@@ -6283,12 +6246,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	case strings.Contains(joined, "THE BLADES TEAR INTO YOU"):
 		return catalog.Text("ecl_fire_knife_blades_damage", "旋轉刀刃狠狠撕裂了你們！")
-	case strings.Contains(joined, "YOU DISARM THE FIRE KNIVES") &&
-		strings.Contains(joined, "JOURNAL ENTRY 26"):
-		return catalog.Text(
-			"ecl_fire_knife_frozen_interrogate",
-			"火刀成員逐漸恢復行動時，你們先繳了他們的械。他們仍神情茫然，你們趁機問出一些有用情報，並記入冒險手札第 26 條。",
-		)
 	case strings.Contains(joined, "YOU SLAUGHTER THEM") &&
 		strings.Contains(joined, "BEING HELD"):
 		return catalog.Text("ecl_fire_knife_frozen_kill", "你們趁他們尚未從定身狀態恢復，將他們全數殺死。")
@@ -6298,23 +6255,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 			"ecl_fire_knife_frozen_room",
 			"房裡有許多人凝固在交戰姿勢中；有幾人倒成扭曲的一團，另一些已開始活動。你們要怎麼做？",
 		)
-	case strings.Contains(joined, "DRAWERS OF A ROSEWOOD DESK") &&
-		strings.Contains(joined, "INTERESTING PAPERS"):
-		return catalog.Text(
-			"ecl_fire_knife_office_search",
-			"你們在花梨木書桌的抽屜裡找到一些值得注意的文件，記入冒險手札第 9 條；此外還有其他物品引起你們注意。",
-		)
 	case strings.Contains(joined, "ORNATE ROOM") &&
 		strings.Contains(joined, "HIGH UP IN THE FIRE KNIVES"):
 		return catalog.Text(
 			"ecl_fire_knife_office",
 			"這是一間裝飾華麗的房間，看來是火刀某位高層人物的辦公室。",
-		)
-	case strings.Contains(joined, "HAND KEPT THE PAPER") &&
-		strings.Contains(joined, "JOURNAL ENTRY 29"):
-		return catalog.Text(
-			"ecl_fire_knife_library_paper",
-			"焦屍的手保住了紙張，使它未被燒毀。你們取走紙張，並將內容記入冒險手札第 29 條。",
 		)
 	case strings.Contains(joined, "STRANGE SMOKY SCENT"):
 		return catalog.Text("ecl_fire_knife_smoky_hall", "你們走進走廊時，察覺到一股奇怪的煙味。")
@@ -6341,25 +6286,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_fire_knife_shrouded_bodies",
 			"房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。",
-		)
-	case strings.Contains(joined, "LEADER OF THE FIRE KNIVES") &&
-		strings.Contains(joined, "JOURNAL ENTRY") &&
-		strings.Contains(joined, "11"):
-		return catalog.Text(
-			"ecl_fire_knife_leader",
-			"你們遇見了火刀首領。他陰險地冷笑著開口；你們將他的話記入冒險手札第 11 條。",
-		)
-	case strings.Contains(joined, "FIRE KNIVES HAVE BEEN DEFEATED") &&
-		strings.Contains(joined, "JOURNAL ENTRY 54"):
-		return catalog.Text(
-			"ecl_fire_knife_victory",
-			"火刀眾已被擊敗。公主以利刃威脅首領；你們將接下來發生的事記入冒險手札第 54 條。",
-		)
-	case strings.Contains(joined, "FREEING GIOGI") &&
-		strings.Contains(joined, "JOURNAL ENTRY 53"):
-		return catalog.Text(
-			"ecl_fire_knife_royal_arrival",
-			"正當你們準備替喬吉鬆綁，整個房間忽然劇烈震動；你們將接下來發生的事記入冒險手札第 53 條。",
 		)
 	case strings.Contains(joined, "FIRST NIGHT OUTSIDE THE CITY") &&
 		strings.Contains(joined, "VIVID DREAM"):
@@ -6520,28 +6446,8 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tavern_commotion_2", "ecl_tavern_commotion_2")
 	case "TO INVESTIGATE?":
 		return catalog.Text("ecl_tavern_commotion_3", "ecl_tavern_commotion_3")
-	case "THERE IS NOTHING HERE NOW, EXCEPT FOR AN ORNATE":
-		return catalog.Text("ecl_tavern_knife_1", "ecl_tavern_knife_1")
-	case "KNIFE":
-		return catalog.Text("ecl_tavern_knife_2", "ecl_tavern_knife_2")
-	case "17.":
-		return catalog.Text("ecl_tavern_journal_17", "ecl_tavern_journal_17")
 	case "'I AM THE HIGH PRIEST. YOU LOOK TROUBLED, MY CHILDREN. DO YOU WISH TO TELL ME YOUR STORY?'":
 		return catalog.Text("ecl_high_priest_intro", "「我是這裡的高階祭司。孩子們，你們看來憂心忡忡，願意告訴我發生了什麼事嗎？」")
-	case "HE LISTENS SYMPATHETICALLY AND CASTS A REMOVE CURSE SPELL":
-		return catalog.Text("ecl_high_priest_spell", "他同情地聽完你們的遭遇，接著施展移除詛咒法術，")
-	case "19.":
-		return catalog.Text("ecl_high_priest_journal_19", "第 19 條。")
-	case "YOU AWAKEN IN A SMALL ROOM. LOOKING AROUND, YOU NOTICE":
-		return catalog.Text("ecl_new_game_awaken", "你們在一間小房間裡醒來。環顧四周，你們注意到")
-	case "THAT ALL YOUR GEAR IS GONE, AS IS YOUR MEMORY OF RECENT EVENTS.":
-		return catalog.Text("ecl_new_game_gear_gone", "所有裝備都不見了，最近發生的事情也完全想不起來。")
-	case "ADDING TO YOUR DISQUIET, YOU NOTICE THAT YOUR SWORD ARM":
-		return catalog.Text("ecl_new_game_disquiet", "更令人不安的是，你們發現持劍的手臂")
-	case "HAS BEEN SOMEHOW IMPRINTED WITH STRANGE PATTERNS. THE REST":
-		return catalog.Text("ecl_new_game_patterns", "不知為何被烙上了奇異圖紋。隊伍中的其他人")
-	case "OF YOUR PARTY ARE IDENTICALLY MARKED.":
-		return catalog.Text("ecl_new_game_identical", "也都帶著完全相同的印記。")
 	case "A PATROL ARRIVES.":
 		return catalog.Text("ecl_tilverton_patrol_arrives", "一支皇家巡邏隊抵達。")
 	case "ROYAL GUARDS TELL YOU TO MOVE ALONG.":
@@ -6554,12 +6460,6 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tilverton_inn_calm", "「請先冷靜，讓我解釋。」")
 	case "YOU LISTEN,":
 		return catalog.Text("ecl_tilverton_inn_listen", "你們聽她說明，")
-	case "AND YOU RECORD IT IN JOURNAL ENTRY":
-		return catalog.Text("ecl_tilverton_inn_record", "並將內容記入冒險手札")
-	case "31. 'PERHAPS THE SAGE WILL HELP. YOU CAN GET WEAPONS FROM":
-		return catalog.Text("ecl_tilverton_inn_sage", "第 31 條。「或許賢者能幫上忙；你們也可以到")
-	case "THE SHOP ACROSS THE WAY.'":
-		return catalog.Text("ecl_tilverton_inn_shop", "ecl_tilverton_inn_shop")
 	case "'I AM THE SAGE FILANI. YOU ARE HERE ABOUT THE SIGILS,":
 		return catalog.Text("ecl_filani_intro", "「我是賢者菲拉妮。你們是為了那些印記而來，")
 	case "CORRECT?'":
@@ -6568,10 +6468,6 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_filani_price", "「這個案例很有意思。我可以替你們研究，代價是你們")
 	case "FUNDS. HOW MUCH DO YOU HAVE?'":
 		return catalog.Text("ecl_filani_funds", "一半的財物。你們身上有多少？」")
-	case "SHE TALKS":
-		return catalog.Text("ecl_filani_talks", "她開始解說，內容記於冒險手札")
-	case "38.":
-		return catalog.Text("ecl_filani_journal_38", "第 38 條。")
 	case "'DO NOT THINK SAGES ARE FOOLS.' SHE SENDS YOU OUT.":
 		return catalog.Text("ecl_filani_lie", "「別把賢者當成傻瓜。」她把你們趕了出去。")
 	case "'THEN WE HAVE NOTHING TO DISCUSS.'":
@@ -6592,28 +6488,6 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_general_store_farewell", "「多謝惠顧，歡迎再來。」")
 	case "YOU MOVE AWAY.":
 		return catalog.Text("ecl_move_away", "你們離開此處。")
-	case "ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE":
-		return catalog.Text("ecl_opening_tilverton", "前往提爾佛頓鎮的途中，你們")
-	case "AMBUSHED, CAPTURED, AND KNOCKED UNCONSCIOUS. WHEN":
-		return catalog.Text("ecl_opening_ambushed", "遭到伏擊、被俘，並被擊昏。當")
-	case "YOU AWAKE YOUR PARTY HAS BEEN CURSED WITH FIVE AZURE":
-		return catalog.Text("ecl_opening_cursed", "你們醒來時，隊伍已被五個青色")
-	case "SYMBOLS.":
-		return catalog.Text("ecl_opening_symbols", "符印下了詛咒。")
-	case "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS.":
-		return catalog.Text("ecl_opening_ensnare", "這些符印如金屬枷鎖般束縛你們的意志。")
-	case "AND WHEN THE BONDS GLOW YOU MUST DO AS THEY COMMAND.":
-		return catalog.Text("ecl_opening_command", "當枷印發光時，你們就必須服從它們的命令。")
-	case "YOUR ONLY HOPE IS TO SEARCH THE FORGOTTEN REALMS":
-		return catalog.Text("ecl_opening_only_hope", "唯一的希望，是在被遺忘的國度中尋找")
-	case "FOR THE MEMBERS OF THE ALLIANCE WHO CREATED THE BONDS":
-		return catalog.Text("ecl_opening_alliance", "創造這些枷印的聯盟成員")
-	case "AND REGAIN CONTROL OF YOUR OWN DESTINY.":
-		return catalog.Text("ecl_opening_destiny", "並重新掌握自己的命運。")
-	case "NOWHERE IN THE REALMS IS COMPLETELY SAFE. EVEN":
-		return catalog.Text("ecl_opening_nowhere_safe", "國度中沒有任何地方絕對安全。即使")
-	case "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE.":
-		return catalog.Text("ecl_opening_deadly_foe", "最平靜的景象，也可能藏著致命敵人。")
 	case "SMOKE RISES FROM BEHIND THE RUINED WALLS":
 		return catalog.Text("ecl_smoke_rises", "煙霧從殘破的牆後升起")
 	case "OF YULASH. THE SOUND":
