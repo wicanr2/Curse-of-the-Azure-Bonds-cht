@@ -731,6 +731,37 @@ func TestPendingSpellActionSubtractsCastingDelayAndReenters(t *testing.T) {
 	}
 }
 
+func TestPendingTargetedSpellActionPreservesTargetAcrossSchedulerHandoff(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 8},
+		{ID: "target", Side: SideParty, HitPoints: 3, MaxHitPoints: 10, InitiativeBonus: 2},
+		{ID: "other", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, InitiativeBonus: 6},
+	}, 426)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := battle.BeginScheduledRound(); err != nil {
+		t.Fatal(err)
+	}
+	if turn, ok, err := battle.NextScheduledTurn(); err != nil || !ok || turn.FighterID != "caster" {
+		t.Fatalf("first=%+v ok=%v err=%v", turn, ok, err)
+	}
+	if err := battle.BeginPendingTargetedSpellAction("caster", 3, 1, "target"); err != nil {
+		t.Fatal(err)
+	}
+	pending, _ := battle.Fighter("caster")
+	if pending.CombatAction.TargetID != "target" {
+		t.Fatalf("pending action=%+v", pending.CombatAction)
+	}
+	if turn, ok, err := battle.NextScheduledTurn(); err != nil || !ok || turn.FighterID != "caster" {
+		t.Fatalf("resumed=%+v ok=%v err=%v", turn, ok, err)
+	}
+	spellID, targetID, err := battle.TakePendingTargetedSpellAction("caster")
+	if err != nil || spellID != 3 || targetID != "target" {
+		t.Fatalf("take spell=0x%02X target=%q err=%v", spellID, targetID, err)
+	}
+}
+
 func TestResolveAttackAnimalInvisibilityKeepsPenaltyWhenDetected(t *testing.T) {
 	fighters := []Fighter{
 		{ID: "animal", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10,

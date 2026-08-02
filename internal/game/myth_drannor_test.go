@@ -45,7 +45,8 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassMagicUser,
 		Level: 10, HitPoints: 999, MaxHitPoints: 999,
-		SpellSlots:   []uint8{MagicMissileSpellID},
+		ClassLevels:  [8]uint8{0: 10, 5: 10},
+		SpellSlots:   []uint8{MagicMissileSpellID, CureLightWoundsSpellID},
 		SavingThrows: []uint8{1, 1, 1, 1, 1},
 		Abilities: party.Abilities{
 			Strength: 18, Intelligence: 18, Wisdom: 18,
@@ -368,8 +369,8 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 		t.Fatalf("rakshasa reveal mode=%v picture=%v/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.Message)
 	}
-	if len(state.partyRoster[0].SpellSlots) != 0 {
-		t.Fatalf("normal-path Quick Magic did not consume global spell 0x%02X: %v",
+	if !reflect.DeepEqual(state.partyRoster[0].SpellSlots, []uint8{CureLightWoundsSpellID}) {
+		t.Fatalf("normal-path Quick Magic did not consume only global spell 0x%02X: %v",
 			MagicMissileSpellID, state.partyRoster[0].SpellSlots)
 	}
 	if changed := state.CombatManualControl(); changed != 1 {
@@ -1848,6 +1849,39 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			state.Mode, state.CombatActive(),
 			len(state.livingBySide(combat.SideEnemy)), state.Message,
 			state.currentOriginalChoices, state.pendingDamageRequests)
+	}
+	arrowHP := state.partyRoster[0].HitPoints
+	if arrowHP >= state.partyRoster[0].MaxHitPoints {
+		t.Fatalf("red-plume arrows did not create a real Cure target: hp=%d/%d outcomes=%v",
+			arrowHP, state.partyRoster[0].MaxHitPoints, outcomes)
+	}
+	if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+		t.Fatalf("red-plume ALT+M enabled=%v err=%v", enabled, err)
+	}
+	if err := state.CombatQuick(); err != nil {
+		t.Fatal(err)
+	}
+	pendingHero, _ := state.fighter("hero")
+	if pendingHero.CombatAction.SpellID != CureLightWoundsSpellID ||
+		pendingHero.CombatAction.TargetID != "hero" {
+		t.Fatalf("red-plume Quick Cure pending=%+v slots=%v",
+			pendingHero.CombatAction, state.partyRoster[0].SpellSlots)
+	}
+	state.CombatManualControl()
+	for action := 0; action < 8 && state.Mode == ModeCombat; action++ {
+		pendingHero, _ = state.fighter("hero")
+		if pendingHero.CombatAction.SpellID == 0 {
+			break
+		}
+		if err := state.CombatAct(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	pendingHero, _ = state.fighter("hero")
+	if pendingHero.CombatAction.SpellID != 0 || pendingHero.CombatAction.TargetID != "" ||
+		len(state.partyRoster[0].SpellSlots) != 0 {
+		t.Fatalf("red-plume normal-path Quick Cure did not consume its pending action: action=%+v slots=%v hp=%d->%d",
+			pendingHero.CombatAction, state.partyRoster[0].SpellSlots, arrowHP, state.partyRoster[0].HitPoints)
 	}
 	for action := 0; action < 96 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {

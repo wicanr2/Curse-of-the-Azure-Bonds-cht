@@ -826,6 +826,12 @@ func (b *Battle) SelectQuickSpell(
 // BeginPendingSpellAction mirrors CASTCOMBATSPELL's nonzero casting-delay
 // handoff. The same action remains in this round at max(1, delay-units).
 func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castingDelay int) error {
+	return b.BeginPendingTargetedSpellAction(fighterID, spellID, castingDelay, "")
+}
+
+// BeginPendingTargetedSpellAction preserves an adapter-selected target across
+// the same delayed scheduler handoff as an untargeted spell.
+func (b *Battle) BeginPendingTargetedSpellAction(fighterID string, spellID uint8, castingDelay int, targetID string) error {
 	if b == nil || b.initiativeScheduler == nil || !b.initiativeSelected ||
 		b.initiativeSelection.ID != fighterID {
 		return fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
@@ -834,7 +840,7 @@ func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castin
 	if !ok {
 		return fmt.Errorf("unknown fighter %q", fighterID)
 	}
-	if !fighter.CombatAction.BeginSpell(spellID, castingDelay) {
+	if !fighter.CombatAction.BeginTargetedSpell(spellID, castingDelay, targetID) {
 		return fmt.Errorf("spell 0x%02X has invalid casting delay %d", spellID, castingDelay)
 	}
 	if !b.initiativeScheduler.SetDelay(fighterID, fighter.CombatAction.Delay) {
@@ -848,19 +854,25 @@ func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castin
 // TakePendingSpellAction clears the spell byte when its delayed action is
 // selected again. Delay completion remains owned by CompleteAction.
 func (b *Battle) TakePendingSpellAction(fighterID string) (uint8, error) {
+	spellID, _, err := b.TakePendingTargetedSpellAction(fighterID)
+	return spellID, err
+}
+
+// TakePendingTargetedSpellAction atomically consumes the spell and target.
+func (b *Battle) TakePendingTargetedSpellAction(fighterID string) (uint8, string, error) {
 	if b == nil || !b.initiativeSelected || b.initiativeSelection.ID != fighterID {
-		return 0, fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
+		return 0, "", fmt.Errorf("fighter %q is not the selected scheduled action", fighterID)
 	}
 	fighter, ok := b.fighters[fighterID]
 	if !ok {
-		return 0, fmt.Errorf("unknown fighter %q", fighterID)
+		return 0, "", fmt.Errorf("unknown fighter %q", fighterID)
 	}
-	spellID := fighter.CombatAction.TakeSpell()
+	spellID, targetID := fighter.CombatAction.TakeTargetedSpell()
 	if spellID == 0 {
-		return 0, fmt.Errorf("fighter %q has no pending spell", fighterID)
+		return 0, "", fmt.Errorf("fighter %q has no pending spell", fighterID)
 	}
 	b.fighters[fighterID] = fighter
-	return spellID, nil
+	return spellID, targetID, nil
 }
 
 // SetPlayerCharactersManual clears quick-fight only for the original PC
