@@ -2121,6 +2121,61 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			len(state.livingBySide(combat.SideParty)),
 			len(state.livingBySide(combat.SideEnemy)))
 	}
+	temporaryAllies := make([]combat.Fighter, 0, 1)
+	for _, fighter := range state.livingBySide(combat.SideParty) {
+		if fighter.TemporaryAlly {
+			temporaryAllies = append(temporaryAllies, fighter)
+		}
+	}
+	if len(temporaryAllies) != 1 || !temporaryAllies[0].QuickFight ||
+		temporaryAllies[0].Name != monsterRecords[0x43].Name ||
+		len(state.partyRoster) != 1 {
+		t.Fatalf("Beyrha temporary ally=%+v persistent roster=%+v",
+			temporaryAllies, state.partyRoster)
+	}
+	beforeAllyBattle, err := state.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	beforeAllySession, err := state.session.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	allySavePath := filepath.Join(t.TempDir(), "outer-ruins-temporary-ally-combat.json")
+	if err := state.SavePartyFile(allySavePath); err != nil {
+		t.Fatal(err)
+	}
+	allyLoaded := NewStateFromECLBlocks(testCatalog(), all, 0x50)
+	allyLoaded.SetMonsterRecordsForECL(6, monsterRecords)
+	allyLoaded.SetMonsterAffectsForECL(6, monsterAffects)
+	allyLoaded.SetTreasureItemBlocks(treasureBlocks)
+	if err := allyLoaded.LoadPartyFile(allySavePath); err != nil {
+		t.Fatal(err)
+	}
+	afterAllyBattle, err := allyLoaded.battle.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	afterAllySession, err := allyLoaded.session.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	loadedTemporaryAllies := make([]combat.Fighter, 0, 1)
+	for _, fighter := range allyLoaded.livingBySide(combat.SideParty) {
+		if fighter.TemporaryAlly {
+			loadedTemporaryAllies = append(loadedTemporaryAllies, fighter)
+		}
+	}
+	if !reflect.DeepEqual(afterAllyBattle, beforeAllyBattle) ||
+		!reflect.DeepEqual(afterAllySession, beforeAllySession) ||
+		!reflect.DeepEqual(loadedTemporaryAllies, temporaryAllies) ||
+		len(allyLoaded.partyRoster) != 1 {
+		t.Fatalf("temporary-ally restore battleEqual=%v sessionEqual=%v allies=%+v roster=%+v",
+			reflect.DeepEqual(afterAllyBattle, beforeAllyBattle),
+			reflect.DeepEqual(afterAllySession, beforeAllySession),
+			loadedTemporaryAllies, allyLoaded.partyRoster)
+	}
+	state = allyLoaded
 	for action := 0; action < 160 && state.Mode == ModeCombat; action++ {
 		if err := state.CombatAct(); err != nil {
 			t.Fatal(err)
@@ -2131,8 +2186,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	persistentParty := state.PartyFighters()
 	if completed, ok := state.session.MemoryValue(0x4CD1); !ok || completed != 1 ||
-		state.Mode != ModeDungeon || len(state.partyRoster) != 1 {
+		state.Mode != ModeDungeon || len(state.partyRoster) != 1 ||
+		len(persistentParty) != 1 || persistentParty[0].TemporaryAlly {
 		t.Fatalf("Tirsheya alliance completion mode=%v party=%d 4CD1=%d,%v message=%q",
 			state.Mode, len(state.partyRoster), completed, ok, state.Message)
 	}

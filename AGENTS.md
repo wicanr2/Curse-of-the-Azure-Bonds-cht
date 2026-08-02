@@ -560,6 +560,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   再完成蜘蛛、羅剎妖二戰與 `4CBF=1`。這證明 ECL combat handoff，但高數值
   測試英雄不代表原版 encounter balance，mid-animation／其他 encounter 類型
   仍未完成；READY spec 444 是權威。
+- 第 445 輪已驗證真實 mixed-team save：提爾雪雅事件的 party-side 羅剎妖必須
+  只存在 Battle snapshot，保留 `QuickFight／TemporaryAlly`；`Characters`／
+  `partyRoster` 只能保存永久英雄。讀檔後戰勝要寫 `4CD1=1`，並從 runtime
+  party 移除盟友。不得從 Battle party side 全量回寫 roster，也不得只用 roster
+  重建 active Battle；READY spec 445 是權威。
 - 第 423 輪由 PC-98 `GAME.EXE` spell records 與 overlay 09 Quick consumer
   推翻舊 class-local spell ID 假設：Player memorized／known bytes 使用全域
   ID，Protection From Good=`07h`、Magic Missile=`0Fh`。舊 spec 134／142

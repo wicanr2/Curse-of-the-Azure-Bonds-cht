@@ -3265,3 +3265,13 @@ ITEM6，Battle 與 ECL session snapshot 逐欄相同。後續只使用 loaded st
 正式 Docker／Xvfb／`--network none` gate 已驗證
 `./cmd/... ./gamepack ./internal/...` 全數通過，marker
 `ROUND444_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round444-formal.log`。
+
+2026-08-02 第四百四十五輪在同一真實 campaign 長路徑繼續至 outer ruins
+terrain `01h`。提爾雪雅第一戰後選擇攻擊貝爾哈，ECL 建立 party-side
+RAKSHASA `43h` 臨時盟友與 12 名敵人；第二戰 party-turn save v7 後建立全新
+State。Battle／ECL session／TemporaryAlly Fighter 逐欄相同，Characters roster
+始終只有英雄。loaded state 戰勝、寫 `4CD1=1`、回 dungeon 後，runtime party
+與 roster 都只留英雄。READY spec 445 是入口。
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND445_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round445-formal.log`。

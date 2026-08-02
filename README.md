@@ -1164,6 +1164,13 @@ Battle 與 ECL session snapshot 完全相同；後續只用 loaded state 完成�
 長路徑，不冒充原版 encounter balance 已完成。
 證據見 [`spec 444`](docs/spec/444-red-web-campaign-combat-save-continuation.md)。
 
+第 445 輪再驗證混合陣營存檔：outer ruins 提爾雪雅事件選擇攻擊貝爾哈後，
+原 ECL 將一隻羅剎妖設為 party-side `QuickFight／TemporaryAlly`，對抗 12 名
+敵人。第二戰開局 save v7、全新 State 載入後，Battle／ECL 與臨時盟友逐欄
+相同，永久 roster 仍只有英雄；loaded state 戰勝並寫 `4CD1=1` 後，runtime
+party 與 roster 都沒有盟友污染。證據見
+[`spec 445`](docs/spec/445-tirsheya-temporary-ally-combat-save.md)。
+
 ## 尚未完成
 
 完整 ECL opcode／routine、三城市各自的副本與城鎮 floor／tile mapping、完整場所與劇情、AD&D 全規則、音效音樂，以及原版 DOS save/import 仍在反組譯與實作中。戰鬥小人素材、CHEAD/CBODY party icon、SPRIT frame timing 與 frame offset 已接入目前 Ebiten combat slice，但方向-specific placement、八方向 placement 與完整戰鬥 UI 仍未完成；設定 `Area.InDungeon` 後，ECL `LOAD FILES` 能驅動 GEO map preview。現有 remake save 已能恢復已實作的 game state，現在也包含 dungeon preview 位置／方向；`SAVGAM?.DAT` 已有 prefix、slot load、已知 player-field writeback 與縮編 stale-file cleanup，但未知欄位／多職業與完整原版 player serialization 仍未完成。

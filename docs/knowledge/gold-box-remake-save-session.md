@@ -39,6 +39,13 @@ Standing Stone→Myth Drannor 紅網路徑，在四蜘蛛第一戰 save／全新
 combat handoff，不代表其他 encounter 類型或跨作品已驗證；共用仍待第二款
 Gold Box。
 
+混合陣營 encounter 還有第二個所有權邊界：ECL 可把 monster combat slot 暫時
+設為 party team／QuickFight，但永久 save roster 不能因此新增角色。CoAB
+提爾雪雅事件已證明 version 7 應把 `TemporaryAlly` 完整保存在 Battle snapshot，
+而 `Characters` 仍只保存冒險隊伍；戰後 continuation 再從 runtime party 移除
+臨時 Fighter。若只從 roster 重建 Battle，盟友會消失；若把 Battle party side
+全部寫回 roster，則會污染永久隊伍。兩層 snapshot 必須保持分離。
+
 ## 商業資料與向下相容
 
 code window 只保存相對於玩家自備 block 的 runtime differences，不複製完整
