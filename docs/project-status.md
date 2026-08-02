@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`ea5b529`
-依賴的 Golden Box engine checkpoint：`720c6ae`
+本 milestone 的 CoAB 基底：`56a3dde`（第 435 輪）
+依賴的 Golden Box engine checkpoint：`9c94ddd`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -471,6 +471,14 @@ commit 內保存不可能自我引用的 hash。
   執行原版巢狀交換。engine `combat/scanorder` 與 CoAB stable-ID adapter 已
   接通並 fail-closed；terrain property、wall／large-footprint 實機、手動／
   Quick Sleep、效果生命週期與演出仍未完成。
+- 第 436 輪以 Borland 0x52FB symbols／types／members、全新非破壞性 IDA
+  resident raw table 與 overlay 31 `LOSEXISTS` 關閉 `TDEFTYPE HT／LOS／SYM`、
+  `TACTICALMAP XRAY／TD`、一基底 tile index、cardinal 2／diagonal 3 metric
+  及 inclusive `2*range+1` gate。engine `combat/scan` 已建立 terrain-aware
+  footprint producer；CoAB adapter 以 explicit object ID 映射 stable fighter
+  ID，並有 `producer → order → CastSleepOrdered` bounded transaction。
+  `Raw3`、`INARC` direction sector、COMPOBJ builder、PC-98 wall／corner 動態
+  trace、正常手動／Quick Sleep 與演出仍明確未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"sort"
 
-	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scanorder"
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
+	enginescanorder "github.com/wicanr2/golden-box-remake-engine/combat/scanorder"
 )
 
 // TargetVisibility supplies title-neutral status visibility. Terrain
@@ -39,7 +40,7 @@ type ScanTargetRecord struct {
 // PC-98 three-byte record order. It does not discover candidates or infer LOS,
 // footprint, terrain, side or spell suitability.
 func OrderScanTargetIDs(records []ScanTargetRecord) ([]string, error) {
-	entries := make([]enginescan.Entry, len(records))
+	entries := make([]enginescanorder.Entry, len(records))
 	targetByObject := make(map[uint8]string, len(records))
 	seenTarget := make(map[string]struct{}, len(records))
 	for index, record := range records {
@@ -57,11 +58,62 @@ func OrderScanTargetIDs(records []ScanTargetRecord) ([]string, error) {
 		}
 		targetByObject[record.ObjectID] = record.TargetID
 		seenTarget[record.TargetID] = struct{}{}
-		entries[index] = enginescan.Entry{
+		entries[index] = enginescanorder.Entry{
 			ObjectID: record.ObjectID, Distance: record.Distance, Direction: record.Direction,
 		}
 	}
-	enginescan.Sort(entries)
+	enginescanorder.Sort(entries)
+	ordered := make([]string, len(entries))
+	for index, entry := range entries {
+		ordered[index] = targetByObject[entry.ObjectID]
+	}
+	return ordered, nil
+}
+
+// ScanTargetCandidate binds one title-owned legacy object identity and exact
+// footprint expansion to the remake fighter identity. Callers must derive the
+// object ID from the original COMPOBJ builder; slice position is not evidence.
+type ScanTargetCandidate struct {
+	ObjectID uint8
+	TargetID string
+	Cells    []enginescan.Point
+}
+
+// BuildScanTargetIDs runs the recovered terrain-aware producer and returns
+// stable fighter IDs in original SCAN order. The direction resolver remains an
+// explicit boundary until the PC-98 INARC sector contract is independently
+// exposed by the title adapter.
+func BuildScanTargetIDs(
+	tacticalMap enginescan.TacticalMap,
+	sourceID uint8,
+	sourceCells []enginescan.Point,
+	candidates []ScanTargetCandidate,
+	maxRange int,
+	direction enginescan.DirectionResolver,
+) ([]string, error) {
+	objects := make([]enginescan.Object, len(candidates))
+	targetByObject := make(map[uint8]string, len(candidates))
+	seenTarget := make(map[string]struct{}, len(candidates))
+	for index, candidate := range candidates {
+		if candidate.TargetID == "" {
+			return nil, fmt.Errorf("SCAN object %d has an empty target ID", candidate.ObjectID)
+		}
+		if _, duplicate := targetByObject[candidate.ObjectID]; duplicate {
+			return nil, fmt.Errorf("duplicate SCAN object ID %d", candidate.ObjectID)
+		}
+		if _, duplicate := seenTarget[candidate.TargetID]; duplicate {
+			return nil, fmt.Errorf("duplicate SCAN target ID %q", candidate.TargetID)
+		}
+		targetByObject[candidate.ObjectID] = candidate.TargetID
+		seenTarget[candidate.TargetID] = struct{}{}
+		objects[index] = enginescan.Object{ID: candidate.ObjectID, Cells: candidate.Cells}
+	}
+	entries, err := tacticalMap.Build(
+		enginescan.Object{ID: sourceID, Cells: sourceCells}, objects, maxRange, direction,
+	)
+	if err != nil {
+		return nil, err
+	}
 	ordered := make([]string, len(entries))
 	for index, entry := range entries {
 		ordered[index] = targetByObject[entry.ObjectID]

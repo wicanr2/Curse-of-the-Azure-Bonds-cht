@@ -3156,3 +3156,24 @@ Quick Sleep；下一輪應由 PC-98／DOSBox 固定戰場驗證 wall、large foo
 全新 `/tmp/coab-ida-435-final` 從唯讀 overlay 重建 1,187 行報告；正式
 Docker／Xvfb／`--network none` gate 以 `-buildvcs=false` 明確列出並驗證
 31 個 CoAB 套件，避免外置 git-dir 讓不完整測試輸出被誤判成全數通過。
+
+2026-08-02 第四百三十六輪以 Borland 0x52FB symbol／type／member table、
+全新非破壞性 IDA raw resident report 與 overlay 31 連續指令閉合
+`TDEFTYPE HT／LOS／SYM`、`TACTICALMAP XRAY／TD`、一基底 tile index、
+cardinal 2／diagonal 3 metric 及 inclusive `2*range+1` gate。`XRAY` 只略過
+`SYM <= source LOS`，不略過距離；TDEF 第四 byte 沒有 Borland member，故
+只保存為 `Raw3`。
+
+Engine `combat/scan` commit `9c94ddd` 已通過 `go test ./...` 並推送；CoAB
+dependency 已升至 `v0.0.0-20260802035038-9c94dddc1dd5`。CoAB
+`BuildScanTargetIDs` 使用 explicit legacy object ID／footprint／direction
+callback，並以 bounded `producer → order → CastSleepOrdered` 回歸證明地形
+阻擋不會誤施睡眠術。`INARC` sector、COMPOBJ builder、PC-98 wall／corner
+動態 trace、正常手動／Quick Sleep、效果生命週期與演出仍未完成；READY
+spec 436 是本輪權威。
+
+Engine 全套與 CoAB focused 測試通過。CoAB formal gate 先明確列出 31 個
+import paths，再於 Docker／Xvfb／`--network none`／`GOPROXY=off` 逐套件
+執行；去重後 31 行 package pass ledger SHA-256 為
+`04e7594f05582c1e8a5f16d4c8c8b2b1e532a25e9fe2831c976593ebe5d7bf7b`。
+早先 pattern／JSON 嘗試只跑第一 package，均未當作完成證據。
