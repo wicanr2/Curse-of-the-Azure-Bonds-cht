@@ -419,13 +419,19 @@ commit 內保存不可能自我引用的 hash。
   W→NW→self，equal HP 保留先掃者，自身低於半血覆蓋先前候選；active HP
   8 以上才由合法 down-player 取代，raw `DEAD／STONED／GONE` 被排除。
   CoAB selector 與 Stoned gate 已修正，四組 exact boundary regression 通過。
-  同格多 corpse ordering、完整 raw status round-trip 與中斷仍未完成；手動
-  CAST delay 由第 428 輪接續。
+  同格多 corpse ordering、完整 raw status round-trip 與非正傷害中斷仍未
+  完成；手動 CAST delay 由第 428、正傷害中斷由第 429 輪接續。
 - 第 428 輪把手動 CAST 接回第 425 輪已證明的共同 `CASTCOMBATSPELL`
   handoff。非零 `CastingTime/3` 現保存 stable combatant ID 或 32×16 格點，
   同輪重新入列後才結算；Bless 可觀察 pending transaction，Fireball 即使
   delay=1 立即重新入列仍保持玩家選定格。Quick Bless／Cure 共用 resolver
-  回歸亦通過。施法中斷、slot 消耗原版時點與尚未實作法術仍未完成。
+  回歸亦通過。正傷害中斷與 slot 消耗由第 429 輪接續；其他中斷與尚未實作
+  法術仍未完成。
+- 第 429 輪由 PC-98 overlay 23 `PUTDAMAGE`、CP932 原文與 overlay 24
+  memorized-slot consumer 關閉正傷害中斷：最終傷害 `>0` 才清 pending spell
+  並消耗第一個 matching slot，零傷害／防護不觸發，Action delay 保留。
+  engine action、Battle 全傷害邊界、正式 roster 與繁中 stable ID 已接通。
+  Cloudkill 直接死亡及沉默／麻痺等非傷害中斷仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

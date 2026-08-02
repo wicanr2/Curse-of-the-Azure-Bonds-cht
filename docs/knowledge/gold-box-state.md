@@ -393,6 +393,14 @@ PC-98 手動 CAST 與 Quick AI 最後都進 `CASTCOMBATSPELL`。只要
 需保存格點，不能 resume 時重新拿目前游標或第一名敵人。法術時間只讀正式
 game-pack metadata，測試也不可複製另一份常數表。
 
+## 正傷害施法中斷
+
+PC-98 `PUTDAMAGE` 在最終 applied damage 大於零且 Action 有 pending spell 時，
+消耗角色 record 中第一個 matching memorized byte，再清 pending spell；零傷害
+不觸發。共用 action 只負責原子清 spell／target 並保留 delay，Battle 發出
+stable fighter／spell event，作品 adapter 才修改正式 roster。不可把「命中」
+直接當成中斷，也不可在防護將傷害歸零時消耗法術格。
+
 ## 中文化注意
 
 Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、

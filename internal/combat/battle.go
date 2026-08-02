@@ -422,6 +422,14 @@ type AreaSpellResult struct {
 	Impacts    []AreaSpellImpact
 }
 
+// SpellInterruption records the title-neutral result of positive damage
+// clearing a pending action spell. Memorized-slot ownership remains in the
+// game adapter.
+type SpellInterruption struct {
+	FighterID string
+	SpellID   uint8
+}
+
 type Battle struct {
 	fighters            map[string]Fighter
 	fighterOrder        []string
@@ -434,6 +442,37 @@ type Battle struct {
 	initiativeScheduler *engineinitiative.Scheduler
 	initiativeSelection engineinitiative.Selection
 	initiativeSelected  bool
+	spellInterruptions  []SpellInterruption
+}
+
+func (b *Battle) applyPositiveDamage(target *Fighter, damage int) int {
+	if b == nil || target == nil || damage <= 0 {
+		return 0
+	}
+	if damage > target.HitPoints {
+		damage = target.HitPoints
+	}
+	if damage <= 0 {
+		return 0
+	}
+	target.HitPoints -= damage
+	if spellID := target.CombatAction.InterruptSpell(); spellID != 0 {
+		b.spellInterruptions = append(b.spellInterruptions, SpellInterruption{
+			FighterID: target.ID, SpellID: spellID,
+		})
+	}
+	return damage
+}
+
+// TakeSpellInterruptions transfers all pending interruption events in damage
+// order and clears the Battle queue.
+func (b *Battle) TakeSpellInterruptions() []SpellInterruption {
+	if b == nil || len(b.spellInterruptions) == 0 {
+		return nil
+	}
+	result := append([]SpellInterruption(nil), b.spellInterruptions...)
+	b.spellInterruptions = nil
+	return result
 }
 
 const FireballSpellID uint8 = 0x2F
@@ -1070,10 +1109,7 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 		if damage < 0 {
 			damage = 0
 		}
-		if damage > target.HitPoints {
-			damage = target.HitPoints
-		}
-		target.HitPoints -= damage
+		damage = b.applyPositiveDamage(&target, damage)
 		b.fighters[targetID] = target
 		b.updateStatus()
 	}
@@ -1120,14 +1156,10 @@ func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (Attack
 		}
 		if !effect.Protected {
 			damage := rolledDamage
-			if damage > target.HitPoints {
-				damage = target.HitPoints
-			}
-			effect.Damage = damage
-			effect.TargetHP = target.HitPoints - damage
-			if setErr := b.SetHitPoints(targetID, effect.TargetHP); setErr != nil {
-				return AttackResult{}, setErr
-			}
+			effect.Damage = b.applyPositiveDamage(&target, damage)
+			effect.TargetHP = target.HitPoints
+			b.fighters[targetID] = target
+			b.updateStatus()
 		}
 		result.Effects = append(result.Effects, effect)
 		result.TargetHP = effect.TargetHP
@@ -1350,10 +1382,7 @@ func (b *Battle) castMagicMissile(casterID, targetID string, level int, spellID 
 			damage = 0
 		}
 	}
-	if damage > target.HitPoints {
-		damage = target.HitPoints
-	}
-	target.HitPoints -= damage
+	damage = b.applyPositiveDamage(&target, damage)
 	b.fighters[targetID] = target
 	b.updateStatus()
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: spellID, Missiles: missiles, Damage: damage, TargetHP: target.HitPoints, Resisted: resisted}, nil
@@ -1418,10 +1447,7 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 		if protected {
 			applied = 0
 		}
-		if applied > target.HitPoints {
-			applied = target.HitPoints
-		}
-		target.HitPoints -= applied
+		applied = b.applyPositiveDamage(&target, applied)
 		b.fighters[target.ID] = target
 		result.Impacts = append(result.Impacts, AreaSpellImpact{
 			TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
@@ -1529,10 +1555,7 @@ func (b *Battle) CastCauseLightWounds(casterID, targetID string) (SpellResult, e
 		return SpellResult{}, fmt.Errorf("Cause Light Wounds target %q is out of touch range", targetID)
 	}
 	damage := b.rng.Intn(8) + 1
-	if damage > target.HitPoints {
-		damage = target.HitPoints
-	}
-	target.HitPoints -= damage
+	damage = b.applyPositiveDamage(&target, damage)
 	b.fighters[targetID] = target
 	b.updateStatus()
 	return SpellResult{CasterID: casterID, TargetID: targetID, SpellID: 4, Damage: damage, TargetHP: target.HitPoints}, nil
