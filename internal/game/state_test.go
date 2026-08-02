@@ -1326,6 +1326,23 @@ func TestTempleCatalogCoversEveryDisplayedStableID(t *testing.T) {
 	}
 }
 
+func TestNamedAffectCatalogCoversEveryStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	keys := []string{
+		"affect_unknown",
+		"affect_kind_01", "affect_kind_02", "affect_kind_08", "affect_kind_09",
+		"affect_kind_0A", "affect_kind_18", "affect_kind_19", "affect_kind_1C",
+		"affect_kind_21", "affect_kind_23", "affect_kind_27", "affect_kind_28",
+		"affect_kind_2A", "affect_kind_31", "affect_kind_34", "affect_kind_35",
+		"affect_kind_37", "affect_kind_3F", "affect_kind_44", "affect_kind_5A",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Errorf("missing named affect locale key %q", key)
+		}
+	}
+}
+
 func TestShopBuyListsOfferAndUpdatesParty(t *testing.T) {
 	catalog := trainingTestCatalog(t)
 	state := NewState(catalog)

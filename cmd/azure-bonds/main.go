@@ -322,8 +322,12 @@ func main() {
 			if affectErr != nil {
 				fmt.Printf("  affect records stopped safely: %v\n", affectErr)
 			} else {
+				textCatalog, localeErr := loadLocale(*localePath)
+				if localeErr != nil {
+					log.Fatal(localeErr)
+				}
 				for index, affect := range affects {
-					fmt.Printf("  affect[%d] zh-name=%q kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, monster.ChineseAffectName(affect), affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
+					fmt.Printf("  affect[%d] zh-name=%q kind=0x%02X value=0x%04X duration=%d active=%t data=%#v\n", index, monster.LocalizedAffectName(affect, textCatalog), affect.Kind, affect.Value, affect.Duration, affect.Active, affect.Data)
 				}
 			}
 		}

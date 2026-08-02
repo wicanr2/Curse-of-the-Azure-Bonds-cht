@@ -251,16 +251,15 @@ type AffectRecord struct {
 	Data [4]byte
 }
 
-// ItemTextResolver keeps CoAB translations outside the reusable item codec.
-// Locale data uses item_type_XX and item_name_XX keys with hexadecimal IDs.
-type ItemTextResolver interface {
+// TextResolver keeps CoAB translations outside the reusable legacy codecs.
+type TextResolver interface {
 	Text(key, fallback string) string
 }
 
 // LocalizedItemName composes a display name from typed legacy fields and a
 // game-pack locale. Unknown IDs remain visible diagnostics rather than guessed
 // translations; unknown name-number components are intentionally omitted.
-func LocalizedItemName(item ItemRecord, resolver ItemTextResolver) string {
+func LocalizedItemName(item ItemRecord, resolver TextResolver) string {
 	base := resolver.Text(fmt.Sprintf("item_type_%02X", item.Type), "")
 	if base == "" {
 		format := resolver.Text("item_unknown", "item 0x%02X")
@@ -295,32 +294,15 @@ func LocalizedItemName(item ItemRecord, resolver ItemTextResolver) string {
 	return base
 }
 
-func ChineseAffectName(affect AffectRecord) string {
-	if name, ok := map[uint8]string{
-		0x01: "祝福",
-		0x02: "詛咒",
-		0x08: "防護邪惡",
-		0x09: "防護善良",
-		0x0A: "抵抗寒冷",
-		0x19: "隱形",
-		0x1C: "鏡像",
-		0x21: "目盲",
-		0x23: "困惑",
-		0x27: "加速",
-		0x28: "在臭雲中",
-		0x2A: "緩慢",
-		0x31: "祈禱",
-		0x34: "定身",
-		0x35: "沉睡",
-		0x37: "中毒",
-		0x3F: "小型無敵法球",
-		0x44: "智力衰退",
-		0x18: "偵測隱形",
-		0x5A: "酸液吐息",
-	}[affect.Kind]; ok {
+// LocalizedAffectName resolves an observed raw effect kind through game-pack
+// locale data. The raw kind remains authoritative and unknown values stay
+// visible diagnostics rather than receiving inferred spell semantics.
+func LocalizedAffectName(affect AffectRecord, resolver TextResolver) string {
+	if name := resolver.Text(fmt.Sprintf("affect_kind_%02X", affect.Kind), ""); name != "" {
 		return name
 	}
-	return fmt.Sprintf("未翻譯效果(0x%02X)", affect.Kind)
+	format := resolver.Text("affect_unknown", "effect 0x%02X")
+	return fmt.Sprintf(format, affect.Kind)
 }
 
 func ParseItems(data []byte) ([]ItemRecord, error) {

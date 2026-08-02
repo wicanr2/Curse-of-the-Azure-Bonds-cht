@@ -21,6 +21,12 @@ literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的�
 里程碑，不代表全部物品效果或全遊戲中文化已完成；證據見
 [`docs/spec/457-item-name-locale-data-separation.md`](docs/spec/457-item-name-locale-data-separation.md)。
 
+第 458 輪接續把二十個既有已命名角色／怪物效果與未知格式移出 Go，改由 raw
+`AffectRecord.Kind` 對應 `affect_kind_XX` locale keys；漢字基線再由 974 降至
+953。這只完成顯示資料分層，不能擴大解讀為所有效果規則、動畫或音效均已還原；
+真實 MON6SPC block 67 的未命名 `82h／81h／3Ch` 仍保留 raw 診斷。證據見
+[`docs/spec/458-affect-name-locale-data-separation.md`](docs/spec/458-affect-name-locale-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

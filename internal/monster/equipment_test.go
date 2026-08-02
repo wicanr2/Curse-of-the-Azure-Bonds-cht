@@ -213,14 +213,19 @@ func TestLocalizedItemNameComposesTypedFields(t *testing.T) {
 	}
 }
 
-func TestChineseAffectNameUsesObservedKinds(t *testing.T) {
-	if got := ChineseAffectName(AffectRecord{Kind: 0x18}); got != "偵測隱形" {
-		t.Fatalf("detect invisibility=%q", got)
+func TestLocalizedAffectNameUsesRawStableKind(t *testing.T) {
+	text := testItemText{
+		"affect_kind_18": "detect",
+		"affect_kind_5A": "acid",
+		"affect_unknown": "unknown(0x%02X)",
 	}
-	if got := ChineseAffectName(AffectRecord{Kind: 0x5A}); got != "酸液吐息" {
-		t.Fatalf("acid breath=%q", got)
+	if got := LocalizedAffectName(AffectRecord{Kind: 0x18}, text); got != "detect" {
+		t.Fatalf("known effect=%q", got)
 	}
-	if got := ChineseAffectName(AffectRecord{Kind: 0x27}); got != "加速" {
-		t.Fatalf("haste=%q", got)
+	if got := LocalizedAffectName(AffectRecord{Kind: 0x5A}, text); got != "acid" {
+		t.Fatalf("second known effect=%q", got)
+	}
+	if got := LocalizedAffectName(AffectRecord{Kind: 0xEE}, text); got != "unknown(0xEE)" {
+		t.Fatalf("unknown effect=%q", got)
 	}
 }
