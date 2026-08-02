@@ -956,3 +956,14 @@ ID 取得正式訊息，證明目前 locale 顯示與 game-pack 是同一真相�
 就繼續用 `Contains("某段中文")` 當產品驗收。當同一 text batch 同時包含傷害與
 後續消失描述時，規則優先序也屬 game-pack contract，必須以玩家最後看見的完整
 訊息驗證，而不是假設每個 raw line 都會成為獨立畫面。
+
+### 2026-08-02：文字規則必須由具體到寬鬆排序
+
+ECL 不同事件可能共享 `DO YOU SURRENDER` 等片段。若 game-pack 先放只含單一片段
+的寬規則，下水道「火刀要求投降」會被錯認成皇家衛兵的一般投降，兩條規則單獨
+測試甚至都可能通過。規則表必須先放含角色／場景限定 token 的具體規則，再放
+通用 fallback；測試也要拿完整 source batch 驗證具體 RuleID，而非只用最小片段。
+
+長 continuation 測試應逐個畫面比較 stable ID，並保留 PICTURE／HEAD／BODY、
+戰鬥人數、NEWECL、選項與重訪副作用。這能同時抓出文字規則優先序與 session
+續跑錯誤，但只要中途直接設定 GEO 座標，仍不能取代逐步移動玩家路徑。

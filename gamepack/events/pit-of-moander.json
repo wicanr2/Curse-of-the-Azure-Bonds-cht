@@ -496,6 +496,21 @@
       ,"fire-knife.burned-library": "This room was once a library, but its shelves and books are now smoking ash. A charred body at the center clutches a sheet of paper."
       ,"fire-knife.burned-lab": "This room was once a laboratory. Fierce flames swept through it, and nothing escaped destruction."
       ,"fire-knife.shrouded-bodies": "Two rows of shrouded bodies lie here. Signs mark one row 'to be raised' and the other 'to be buried.'"
+      ,"tilverton.carriage-gate-closed": "Royal guards tell you this way is closed because the royal carriage is coming soon, and send you back into the city."
+      ,"tilverton.carriage-make-way": "Royal guards shout, 'Make way for the royal carriage!'"
+      ,"tilverton.carriage-bond-compulsion": "The king's voice comes from the carriage. Your azure bonds flare, and an irresistible compulsion forces you to attack."
+      ,"tilverton.carriage-false-king": "As the carriage withdraws, a young man cries that he is not really the king. Seeing your azure markings, he gasps, 'Oh no! Not again!' and faints as the glow fades."
+      ,"tilverton.carriage-alarm": "A loud bell rings behind you as royal guards charge with swords drawn."
+      ,"tilverton.carriage-abduction": "Two red-robed men leap onto the carriage, drag the frail young man out, and haul him into an alleyway."
+      ,"tilverton.carriage-surrender": "A guard demands, 'Do you surrender?'"
+      ,"tilverton.carriage-jailed": "You are thrown in jail."
+      ,"tilverton.carriage-thief-rescue": "Hours later, one wall slides open and a thief appears. He returns your equipment and signals you to follow him."
+      ,"tilverton.carriage-guild-arrival": "The thief leads you through hidden passages to a dark underground area: the thieves' guild of Tilverton."
+      ,"tilverton.sewers-checkpoint": "Fire Knives demand your immediate surrender. Do you surrender?"
+      ,"tilverton.sewers-hide-bodies": "You quickly hide the Fire Knives' bodies."
+      ,"tilverton.sewers-knight-appears": "The slaughtered remains of a Fire Knife checkpoint lie here. A swordsman wearing the uniform of the Knights of Myth Drannor steps from the shadows."
+      ,"tilverton.sewers-knight-allegiance": "The knight notes your Fire Knife markings and asks to whom you owe allegiance, knowing the cursed Flamed One may control people through such brands."
+      ,"tilverton.sewers-knight-princess-friend": "He laughs that the princess is popular, tells you to continue south, and warns you not to kill the cleric with a hammer who is also trying to rescue her."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -1017,6 +1032,21 @@
       ,"fire-knife.burned-library": "這裡原是圖書館，如今書架與藏書都化為灰燼，部分仍冒著煙。房間中央有具焦屍，手中緊握一張紙。"
       ,"fire-knife.burned-lab": "這裡原是一間實驗室，同樣遭猛烈烈焰席捲，沒有任何東西逃過毀滅。"
       ,"fire-knife.shrouded-bodies": "房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。"
+      ,"tilverton.carriage-gate-closed": "你們遇上一隊皇家衛兵。他們說國王的馬車即將抵達，此路暫時封閉，並把你們遣回城內。"
+      ,"tilverton.carriage-make-way": "你們再次遇上皇家衛兵。他們高喊：「讓路！皇家馬車即將通過！」"
+      ,"tilverton.carriage-bond-compulsion": "國王的聲音從馬車裡傳來。你們手臂上的青色印記突然發出強光，一股無法抗拒的力量迫使你們攻擊皇家馬車！"
+      ,"tilverton.carriage-false-king": "馬車撤退時，一名年輕男子探出身子，沙啞地喊：「別殺我，我不是真正的國王！」他看見你們的青色印記後驚叫：「不！怎麼又來了！」隨即昏倒在車內，印記的光芒也逐漸消退。"
+      ,"tilverton.carriage-alarm": "身後響起刺耳警鐘，皇家衛兵拔劍朝你們衝來。"
+      ,"tilverton.carriage-abduction": "越過衝鋒的衛兵，你們看見兩名紅袍人跳上馬車，把那名瘦弱男子拖出來，拉進一條小巷。"
+      ,"tilverton.carriage-surrender": "一名衛兵喝問：「你們投降嗎？」"
+      ,"tilverton.carriage-jailed": "你們被投入牢房。"
+      ,"tilverton.carriage-thief-rescue": "幾個小時後，一面牆悄然滑開，一名盜賊現身。他歸還你們的裝備，示意眾人跟上。"
+      ,"tilverton.carriage-guild-arrival": "那人領著你們穿過隱密通道，最後來到一處陰暗的地下區域——提爾佛頓盜賊公會。"
+      ,"tilverton.sewers-checkpoint": "火刀要求你們立刻投降。你們要投降嗎？"
+      ,"tilverton.sewers-hide-bodies": "你們迅速把火刀的屍體藏了起來。"
+      ,"tilverton.sewers-knight-appears": "這裡躺著一處遭屠滅的火刀檢查哨。你們小心查看時，一名男子從陰影中走出；他手持長劍，身穿迷斯卓諾騎士團的制服。"
+      ,"tilverton.sewers-knight-allegiance": "「你們身上帶著火刀的青色刺青，但我聽說那個受詛咒的烈焰者正用這類印記控制他人。你們效忠誰？」"
+      ,"tilverton.sewers-knight-princess-friend": "他笑道：「那位公主還真受歡迎！繼續往南走，別殺掉拿著戰鎚的牧師；他也正試著營救她。」說完便讓你們通過。"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2889,6 +2919,21 @@
     {"id": "fire-knife.burned-library", "all_contains": ["ROOM WAS ONCE A LIBRARY", "CHARRED BODY"], "message_id": "fire-knife.burned-library"},
     {"id": "fire-knife.burned-lab", "all_contains": ["ONCE A LAB", "NOTHING ESCAPED DESTRUCTION"], "message_id": "fire-knife.burned-lab"},
     {"id": "fire-knife.shrouded-bodies", "all_contains": ["TWO ROWS OF SHROUDED BODIES", "TO BE RAISED"], "message_id": "fire-knife.shrouded-bodies"},
+    {"id": "tilverton.carriage-gate-closed", "all_contains": ["THIS WAY IS CLOSED", "ROYAL CARRIAGE IS COMING SOON"], "message_id": "tilverton.carriage-gate-closed"},
+    {"id": "tilverton.carriage-make-way", "all_contains": ["MAKE WAY FOR THE ROYAL CARRIAGE"], "message_id": "tilverton.carriage-make-way"},
+    {"id": "tilverton.carriage-bond-compulsion", "all_contains": ["KING'S VOICE COMING FROM THE CARRIAGE", "COMPULSION TO ATTACK"], "message_id": "tilverton.carriage-bond-compulsion"},
+    {"id": "tilverton.carriage-false-king", "all_contains": ["I'M NOT REALLY THE KING", "OH NO! NOT AGAIN"], "message_id": "tilverton.carriage-false-king"},
+    {"id": "tilverton.carriage-alarm", "all_contains": ["LOUD BELL STARTS RINGING", "SWORDS DRAWN"], "message_id": "tilverton.carriage-alarm"},
+    {"id": "tilverton.carriage-abduction", "all_contains": ["TWO RED ROBED MEN JUMP THE CARRIAGE", "DRAG HIM INTO AN ALLEYWAY"], "message_id": "tilverton.carriage-abduction"},
+    {"id": "tilverton.sewers-checkpoint", "all_contains": ["FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER", "DO YOU SURRENDER"], "message_id": "tilverton.sewers-checkpoint"},
+    {"id": "tilverton.carriage-surrender", "all_contains": ["DO YOU SURRENDER"], "message_id": "tilverton.carriage-surrender"},
+    {"id": "tilverton.carriage-jailed", "all_contains": ["YOU ARE THROWN IN JAIL"], "message_id": "tilverton.carriage-jailed"},
+    {"id": "tilverton.carriage-thief-rescue", "all_contains": ["ONE WALL SLIDES OPEN AND A THIEF APPEARS", "SIGNALS YOU TO FOLLOW HIM"], "message_id": "tilverton.carriage-thief-rescue"},
+    {"id": "tilverton.carriage-guild-arrival", "all_contains": ["LEADS YOU THROUGH HIDDEN PASSAGES", "THE THIEVES' GUILD"], "message_id": "tilverton.carriage-guild-arrival"},
+    {"id": "tilverton.sewers-hide-bodies", "all_contains": ["YOU QUICKLY HIDE THEIR BODIES"], "message_id": "tilverton.sewers-hide-bodies"},
+    {"id": "tilverton.sewers-knight-appears", "all_contains": ["SLAUGHTERED REMAINS OF A FIRE KNIFE", "KNIGHTS OF MYTH DRANNOR"], "message_id": "tilverton.sewers-knight-appears"},
+    {"id": "tilverton.sewers-knight-allegiance", "all_contains": ["BLUE TATTOO MARKINGS OF THE FIRE KNIVES", "TO WHOM DO YOU OWE ALLEGIANCE"], "message_id": "tilverton.sewers-knight-allegiance"},
+    {"id": "tilverton.sewers-knight-princess-friend", "all_contains": ["THAT PRINCESS IS A POPULAR GIRL", "DON'T KILL THE CLERIC WITH A HAMMER"], "message_id": "tilverton.sewers-knight-princess-friend"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

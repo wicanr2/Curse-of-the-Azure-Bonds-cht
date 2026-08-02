@@ -112,6 +112,12 @@ boundary 的 game-pack 資料化。真實 ECL 回歸保留 8d8 全隊傷害、�
 辦公室財寶與 `4C11h..4C15h` 一次性旗標；Go 漢字基線由 580 降至 569。詳見
 [`docs/spec/472-fire-knife-hideout-rooms-game-pack.md`](docs/spec/472-fire-knife-hideout-rooms-game-pack.md)。
 
+第 473 輪將皇家馬車、監牢／盜賊救援及提爾佛頓下水道騎士事件共十五個文字
+boundary 移入 game-pack。同一真實新遊戲 session 驗證皇家衛兵與五火刀實戰、
+HEAD／BODY 救援人物、盜賊公會 handoff 及騎士重訪消耗；Go 漢字基線由 569
+降至 553。詳見
+[`docs/spec/473-tilverton-carriage-sewers-game-pack.md`](docs/spec/473-tilverton-carriage-sewers-game-pack.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

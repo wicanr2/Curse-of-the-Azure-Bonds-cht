@@ -766,7 +766,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "皇家衛兵") || !strings.Contains(state.Message, "暫時封閉") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-gate-closed") {
 		t.Fatalf("first city-gate block mode=%v choices=%v message=%q",
 			state.Mode, state.Choices, state.Message)
 	}
@@ -781,7 +781,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 11 ||
-		state.SceneHeadBlock != 0xFF || !strings.Contains(state.Message, "皇家馬車") {
+		state.SceneHeadBlock != 0xFF || state.Message != requireGamePackText(t, &state, "tilverton.carriage-make-way") {
 		t.Fatalf("royal carriage picture mode=%v picture=%v:%d head=%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock, state.SceneHeadBlock, state.Message)
 	}
@@ -789,26 +789,26 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "讓路") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-make-way") {
 		t.Fatalf("royal carriage first pause mode=%v choices=%v message=%q",
 			state.Mode, state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "青色印記") || !strings.Contains(state.Message, "迫使") {
+	if state.Message != requireGamePackText(t, &state, "tilverton.carriage-bond-compulsion") {
 		t.Fatalf("royal carriage compulsion message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "不是真正的國王") || !strings.Contains(state.Message, "又來了") {
+	if state.Message != requireGamePackText(t, &state, "tilverton.carriage-false-king") {
 		t.Fatalf("royal carriage false king message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "警鐘") || !strings.Contains(state.Message, "拔劍") {
+	if state.Message != requireGamePackText(t, &state, "tilverton.carriage-alarm") {
 		t.Fatalf("royal carriage alarm message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -825,7 +825,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		}
 	}
 	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
-		!strings.Contains(state.Message, "紅袍人") || !strings.Contains(state.Message, "小巷") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-abduction") {
 		t.Fatalf("Royal Guard victory status=%v mode=%v message=%q",
 			state.CombatStatus(), state.Mode, state.Message)
 	}
@@ -833,13 +833,13 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(state.Choices) != 2 || state.Choices[0] != "是" || state.Choices[1] != "否" ||
-		!strings.Contains(state.Message, "投降") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-surrender") {
 		t.Fatalf("surrender prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 1 || !strings.Contains(state.Message, "牢房") {
+	if len(state.Choices) != 1 || state.Message != requireGamePackText(t, &state, "tilverton.carriage-jailed") {
 		t.Fatalf("jail pause choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -847,7 +847,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 2 ||
 		state.SceneHeadBlock != 2 || state.SceneBodyBlock != 2 ||
-		!strings.Contains(state.Message, "盜賊") || !strings.Contains(state.Message, "裝備") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-thief-rescue") {
 		t.Fatalf("thief rescue picture mode=%v picture=%v:%d head/body=%d/%d message=%q",
 			state.Mode, state.PictureRequested, state.PictureBlock,
 			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
@@ -856,14 +856,14 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "盜賊") {
+		state.Message != requireGamePackText(t, &state, "tilverton.carriage-thief-rescue") {
 		t.Fatalf("thief rescue pause mode=%v choices=%v message=%q",
 			state.Mode, state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "隱密通道") || !strings.Contains(state.Message, "盜賊公會") {
+	if state.Message != requireGamePackText(t, &state, "tilverton.carriage-guild-arrival") {
 		t.Fatalf("thieves guild arrival message=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -1087,7 +1087,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "火刀要求你們立刻投降") ||
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.sewers-checkpoint") ||
 		len(state.Choices) != 2 {
 		t.Fatalf("sewer checkpoint mode=%v terrain=%#x message=%q choices=%v",
 			state.Mode, state.DungeonWallRoof, state.Message, state.Choices)
@@ -1120,7 +1120,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		}
 	}
 	if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeWilderness ||
-		!strings.Contains(state.Message, "火刀的屍體藏了起來") {
+		state.Message != requireGamePackText(t, &state, "tilverton.sewers-hide-bodies") {
 		t.Fatalf("sewer checkpoint status=%v mode=%v message=%q",
 			state.CombatStatus(), state.Mode, state.Message)
 	}
@@ -1133,14 +1133,14 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "迷斯卓諾騎士團") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.sewers-knight-appears") {
 		t.Fatalf("sewer knight first pause mode=%v terrain=%#x message=%q choices=%v",
 			state.Mode, state.DungeonWallRoof, state.Message, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "你們效忠誰") ||
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.sewers-knight-allegiance") ||
 		len(state.Choices) != 3 || state.Choices[1] != "娜卡西亞公主" {
 		t.Fatalf("sewer knight allegiance mode=%v message=%q choices=%v",
 			state.Mode, state.Message, state.Choices)
@@ -1148,8 +1148,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || !strings.Contains(state.Message, "拿著戰鎚的牧師") ||
-		!strings.Contains(state.Message, "讓你們通過") {
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.sewers-knight-princess-friend") {
 		t.Fatalf("sewer knight Princess branch mode=%v message=%q choices=%v",
 			state.Mode, state.Message, state.Choices)
 	}

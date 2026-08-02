@@ -682,6 +682,43 @@ func TestFireKnifeHideoutRoomsAreGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestTilvertonCarriageAndSewersStoryIsGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"tilverton.carriage-gate-closed", []string{"THIS WAY IS CLOSED", "ROYAL CARRIAGE IS COMING SOON"}},
+		{"tilverton.carriage-make-way", []string{"MAKE WAY FOR THE ROYAL CARRIAGE"}},
+		{"tilverton.carriage-bond-compulsion", []string{"KING'S VOICE COMING FROM THE CARRIAGE", "COMPULSION TO ATTACK"}},
+		{"tilverton.carriage-false-king", []string{"I'M NOT REALLY THE KING", "OH NO! NOT AGAIN"}},
+		{"tilverton.carriage-alarm", []string{"LOUD BELL STARTS RINGING", "SWORDS DRAWN"}},
+		{"tilverton.carriage-abduction", []string{"TWO RED ROBED MEN JUMP THE CARRIAGE", "DRAG HIM INTO AN ALLEYWAY"}},
+		{"tilverton.carriage-surrender", []string{"DO YOU SURRENDER"}},
+		{"tilverton.carriage-jailed", []string{"YOU ARE THROWN IN JAIL"}},
+		{"tilverton.carriage-thief-rescue", []string{"ONE WALL SLIDES OPEN AND A THIEF APPEARS", "SIGNALS YOU TO FOLLOW HIM"}},
+		{"tilverton.carriage-guild-arrival", []string{"LEADS YOU THROUGH HIDDEN PASSAGES", "THE THIEVES' GUILD"}},
+		{"tilverton.sewers-checkpoint", []string{"FIRE KNIVES DEMAND YOUR IMMEDIATE SURRENDER", "DO YOU SURRENDER"}},
+		{"tilverton.sewers-hide-bodies", []string{"YOU QUICKLY HIDE THEIR BODIES"}},
+		{"tilverton.sewers-knight-appears", []string{"SLAUGHTERED REMAINS OF A FIRE KNIFE", "KNIGHTS OF MYTH DRANNOR"}},
+		{"tilverton.sewers-knight-allegiance", []string{"BLUE TATTOO MARKINGS OF THE FIRE KNIVES", "TO WHOM DO YOU OWE ALLEGIANCE"}},
+		{"tilverton.sewers-knight-princess-friend", []string{"THAT PRINCESS IS A POPULAR GIRL", "DON'T KILL THE CLERIC WITH A HAMMER"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {
