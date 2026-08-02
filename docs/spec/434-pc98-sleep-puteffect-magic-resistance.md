@@ -112,14 +112,16 @@ selected target order 只對具 operational 魔抗者擲 d100。
   byte `+4` 壓成單一 `Active` bool。
 
 focused tests 覆蓋 deterministic 四次 d4、已有 held 排除、抗性 d100 順序、
-抗拒不寫入、成功 record 五欄，以及未知／重複 target fail-closed。因本輪沒有
-`SCAN` runtime geometry 與 UI，Sleep 仍不得列為正常玩家可施放完成項。
+抗拒不寫入、成功 record 五欄，以及未知／重複 target fail-closed。spec 435
+已閉合 `SCAN` 三欄 producer 與排序並提供 bounded adapter，但 runtime terrain
+geometry 與 UI 仍未完成，Sleep 仍不得列為正常玩家可施放完成項。
 
 ## 下一步
 
-1. 以 PC-98／DOSBox 固定戰鬥場面追 `SCAN` 三 byte record，關閉 footprint、
-   terrain、第二／三欄與 tie order。
-2. 將正確 target adapter 接到手動格點選取與 Quick delayed transaction，使用
+1. 以 PC-98／DOSBox 固定戰鬥場面追 `SCAN`，關閉 terrain property、wall
+   boundary、large footprint runtime 與 target cursor；三欄與 tie 已由
+   spec 435 靜態閉合。
+2. 將 spec 435 的 bounded target adapter 接到手動格點選取與 Quick delayed transaction，使用
    game-pack spell `15h`（十六進位）metadata，不在 State 增加中文特判。
 3. 追 effect `35h` decrement、受傷／喚醒、combat end／save round-trip、
    twinkle、訊息與聲音，再做正常玩家路徑及原版影片對照。

@@ -3,6 +3,8 @@ package combat
 import (
 	"fmt"
 	"sort"
+
+	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scanorder"
 )
 
 // TargetVisibility supplies title-neutral status visibility. Terrain
@@ -21,6 +23,50 @@ type TargetSelectionOptions struct {
 type rangedTargetCandidate struct {
 	fighter  Fighter
 	distance int
+}
+
+// ScanTargetRecord binds one exact legacy SCAN record to the remake fighter
+// identity. ObjectID is the original combat-object index, not a derived map or
+// slice position. Candidate discovery remains the caller's responsibility.
+type ScanTargetRecord struct {
+	ObjectID  uint8
+	TargetID  string
+	Distance  uint8
+	Direction uint8
+}
+
+// OrderScanTargetIDs validates the title projection and applies the recovered
+// PC-98 three-byte record order. It does not discover candidates or infer LOS,
+// footprint, terrain, side or spell suitability.
+func OrderScanTargetIDs(records []ScanTargetRecord) ([]string, error) {
+	entries := make([]enginescan.Entry, len(records))
+	targetByObject := make(map[uint8]string, len(records))
+	seenTarget := make(map[string]struct{}, len(records))
+	for index, record := range records {
+		if record.ObjectID == 0 {
+			return nil, fmt.Errorf("SCAN object ID zero is outside the original one-based list")
+		}
+		if record.TargetID == "" {
+			return nil, fmt.Errorf("SCAN object %d has an empty target ID", record.ObjectID)
+		}
+		if _, duplicate := targetByObject[record.ObjectID]; duplicate {
+			return nil, fmt.Errorf("duplicate SCAN object ID %d", record.ObjectID)
+		}
+		if _, duplicate := seenTarget[record.TargetID]; duplicate {
+			return nil, fmt.Errorf("duplicate SCAN target ID %q", record.TargetID)
+		}
+		targetByObject[record.ObjectID] = record.TargetID
+		seenTarget[record.TargetID] = struct{}{}
+		entries[index] = enginescan.Entry{
+			ObjectID: record.ObjectID, Distance: record.Distance, Direction: record.Direction,
+		}
+	}
+	enginescan.Sort(entries)
+	ordered := make([]string, len(entries))
+	for index, entry := range entries {
+		ordered[index] = targetByObject[entry.ObjectID]
+	}
+	return ordered, nil
 }
 
 // SelectRangedCombatTarget builds the reachable opposing list before using

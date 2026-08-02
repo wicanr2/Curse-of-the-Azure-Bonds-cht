@@ -3141,3 +3141,18 @@ Docker／Xvfb／`--network none` 的 `go test -count=1 ./cmd/... ./gamepack
 ./internal/...` 全數通過。隊伍／死亡 predicate 尚屬上游 `SCAN`，bounded core
 不自行排除。engine 繁中知識庫 commit `7c3acd7` 已推送；CoAB 狀態文件已
 同步，待本 repo 集中提交與推送。
+
+2026-08-02 第四百三十五輪以擴大的非破壞性 IDA audit 關閉 overlay 31
+`SCAN 08D8h`、`LOSEXISTS 03EAh` 與 local `0035h` 排序。三 byte record
+exact 是 object ID、最小成功 LOS 加權距離低 byte、方向 sector；spec 433
+先前把第三欄列入 tie 的說法已被推翻。排序器只按第二欄，再以第一欄 ID
+與奇偶例外作巢狀交換；第三欄只隨整筆搬移。
+
+Engine `combat/scanorder` commit `b75e169` 已通過 `go test ./...` 並推送；
+CoAB `OrderScanTargetIDs` 以一基底 object ID 映射 stable fighter ID，對零、
+空值與重複投影失敗即關閉。這仍未建立真實 terrain records，也未開放手動／
+Quick Sleep；下一輪應由 PC-98／DOSBox 固定戰場驗證 wall、large footprint
+與 cursor，接入既有 `CastSleepOrdered`。READY spec 435 是權威邊界。
+全新 `/tmp/coab-ida-435-final` 從唯讀 overlay 重建 1,187 行報告；正式
+Docker／Xvfb／`--network none` gate 以 `-buildvcs=false` 明確列出並驗證
+31 個 CoAB 套件，避免外置 git-dir 讓不完整測試輸出被誤判成全數通過。
