@@ -313,6 +313,31 @@ func TestLegacyJournalTriggersAndPagesAreGamePackDriven(t *testing.T) {
 	}
 }
 
+func TestOpeningNarrativesAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		id        string
+		fragments []string
+	}{
+		{"opening.curse-summary", []string{"ON YOUR WAY TO THE TOWN OF TILVERTON YOU ARE", "THE SYMBOLS ENSNARE YOUR WILL LIKE METAL BONDS", "AND REGAIN CONTROL OF YOUR OWN DESTINY", "THE MOST PEACEFUL SCENE CAN HIDE A DEADLY FOE"}},
+		{"opening.new-game-awakening", []string{"YOU AWAKEN IN A SMALL ROOM", "ALL YOUR GEAR IS GONE"}},
+		{"opening.new-game-marks", []string{"ADDING TO YOUR DISQUIET", "IMPRINTED WITH STRANGE PATTERNS", "IDENTICALLY MARKED"}},
+	}
+	for _, test := range tests {
+		for _, language := range []string{"en", "zh-TW"} {
+			t.Run(test.id+"/"+language, func(t *testing.T) {
+				result := pack.MatchText(test.fragments, language)
+				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+					t.Fatalf("result=%+v", result)
+				}
+			})
+		}
+	}
+}
+
 func sortedLocaleKeys(messages map[string]string) []string {
 	keys := make([]string, 0, len(messages))
 	for key := range messages {

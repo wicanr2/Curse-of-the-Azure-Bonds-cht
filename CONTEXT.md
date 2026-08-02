@@ -3495,3 +3495,14 @@ Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND461_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。下一步繼續逐條資料化
 `localizeECLText／localizeECLLine`，不可把 15 個已遷移觸發擴大宣稱為整本
 手札或全部劇情完成。
+
+2026-08-02 第四百六十二輪完成開場敘事資料分離。十一行開場概要改為
+`opening.curse-summary`；真實 ECL1 block `01h` 經正常 title→建角路徑證明
+醒來／裝備消失 PRESS 與手臂印記 PICTURE 是兩個 boundary，分別由
+`opening.new-game-awakening／marks` 驅動，之後仍返回提爾佛頓 `(7,13,W)`。
+第 461 輪 15 個手札 rules 已完整遮蔽的 12 組段落與 10 組逐行 fallback 同輪
+移除，相關完整玩家路徑回歸通過。source audit 722→688：localization
+227→193，frontend 135、runtime 360 不變。READY spec 462 是權威；正式全套
+Docker／Xvfb／`--network none` gate 已通過，marker
+`ROUND462_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。下一步按真實 ECL boundary 繼續
+遷移其餘 `localizeECLText／localizeECLLine`，不得把原始換行當成 UI contract。

@@ -46,6 +46,13 @@ runtime 與測試不再複製繁中頁面。Go 漢字 literal exact baseline 由
 722。這不代表整本 Adventurer's Journal 或全部劇情文字已完成。詳見
 [`docs/spec/461-journal-game-pack-data-separation.md`](docs/spec/461-journal-game-pack-data-separation.md)。
 
+第 462 輪把開場概要與新遊戲醒來敘事改成三條完整 game-pack 規則；真實
+ECL1 會先顯示醒來／裝備消失，再於 PICTURE boundary 顯示手臂印記，因此
+資料也保留兩個獨立 stable IDs。title→建角→ECL1→提爾佛頓正常路徑已驗證；
+同輪清除第 461 輪資料規則已遮蔽的舊手札 fallback，Go 漢字基線由 722 降至
+688。詳見
+[`docs/spec/462-opening-narrative-game-pack-data-separation.md`](docs/spec/462-opening-narrative-game-pack-data-separation.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

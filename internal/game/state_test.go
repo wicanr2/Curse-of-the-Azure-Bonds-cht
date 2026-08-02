@@ -1135,8 +1135,7 @@ func TestTavernCatalogCoversEveryDisplayedStableID(t *testing.T) {
 		"tavern_tale_60", "ecl_tavern_pleasure", "ecl_tavern_special_1",
 		"ecl_tavern_special_2", "ecl_tavern_purple_1", "ecl_tavern_purple_2",
 		"ecl_tavern_purple_3", "ecl_tavern_commotion_1", "ecl_tavern_commotion_2",
-		"ecl_tavern_commotion_3", "ecl_tavern_knife_1", "ecl_tavern_knife_2",
-		"ecl_tavern_journal_17",
+		"ecl_tavern_commotion_3",
 	}
 	for _, key := range keys {
 		if got := catalog.Text(key, ""); got == "" {
