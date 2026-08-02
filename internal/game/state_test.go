@@ -502,6 +502,44 @@ func TestPartySaveRestoresJournalByStableIDInCurrentLocale(t *testing.T) {
 	}
 }
 
+func TestActiveCombatSaveRestoresCombatantNameInCurrentLocale(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "p1", Name: "亞勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	result := ecl.RunResult{CombatRequested: true, MonsterSpawns: []ecl.MonsterSpawn{{MonsterID: 7, Count: 1, IconBlock: 81}}}
+	records := map[uint8]monster.Record{7: {Name: "HIPPOGRIFF", HitPoints: 8, MaxHitPoints: 8, AttacksPerTurn: 1}}
+	partyFighters := []combat.Fighter{{ID: "p1", Name: "亞勇", Side: combat.SideParty, HitPoints: 12, MaxHitPoints: 12}}
+	if err := state.StartEncounter(result, records, partyFighters, 11); err != nil {
+		t.Fatal(err)
+	}
+	path := t.TempDir() + "/combat.json"
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+
+	loaded := NewState(locale.Catalog{Language: "en", Strings: map[string]string{"title": "test"}})
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	wantEnglish, found := loaded.dataPack.LocalizeCombatantName("HIPPOGRIFF", "en")
+	if !found {
+		t.Fatal("HIPPOGRIFF English combatant name is absent")
+	}
+	fighters := loaded.CombatFighters()
+	var restoredEnemy *combat.Fighter
+	for index := range fighters {
+		if fighters[index].SourceName == "HIPPOGRIFF" {
+			restoredEnemy = &fighters[index]
+			break
+		}
+	}
+	if loaded.Mode != ModeCombat || len(fighters) != 2 || restoredEnemy == nil || restoredEnemy.Name != wantEnglish {
+		t.Fatalf("restored combat mode=%v fighters=%+v", loaded.Mode, fighters)
+	}
+}
+
 func TestSAVGAMPrefixStateAdapterRestoresKnownFieldsAndRawRecords(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "p1", Name: "阿勇"}}

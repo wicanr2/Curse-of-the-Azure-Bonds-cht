@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`9ddbe24`（第 477 輪）
-依賴的 Golden Box engine checkpoint：`be57f47`
+本 milestone 的 CoAB 基底：`d825164`（第 478 輪）
+依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -95,7 +95,11 @@ commit 內保存不可能自我引用的 hash。
   終戰在兩次 save／restore 後仍取得同一繁中 catalog。第 478 輪移除新遊戲
   預載的八頁開發用假手札；Engine 現回傳 `journal_message_ids`，CoAB 以穩定 ID
   解鎖／去重，save v10 只保存 ID 並依讀檔時語系重解全文。空手札不再顯示
-  `1 / 0`，繁中保存後以英文讀取的跨語系回歸也已通過。最新 baseline 為 368。
+  `1 / 0`，繁中保存後以英文讀取的跨語系回歸也已通過。第 479 輪再把 23 個
+  MON 戰鬥者名稱移入 Engine `combatant_name_rules` 與 CoAB game-pack；save v11
+  保存 `SourceName` 並依讀檔語系重解 active-combat 顯示名。真實鷹馬、黑龍、
+  龍巫妖、散塔林與摩安德戰鬥路徑均改由 stable source 驗收。最新 baseline
+  為 345，`localization_debt` 已降為 0。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常
@@ -114,7 +118,7 @@ commit 內保存不可能自我引用的 hash。
   CPIC 蜘蛛戰鬥 checkpoint 已保存。Journal 25 的「強大力量」是誘餌，
   ENTER script 沒有能力值寫入。戰敗路徑、敵人完整 AD&D 能力及後續區域
   仍未完成。
-- remake JSON save v10 已保存地圖、時鐘、ECL session／持續 PRNG、戰鬥、
+- remake JSON save v11 已保存地圖、時鐘、ECL session／持續 PRNG、戰鬥、
   音訊 continuation 與手札穩定 message IDs；原版 SAVGAM／CHRDAT／FX／SWG
   則有已驗證欄位 import、raw
   preservation 與部分 writeback。任意 UI／戰鬥 frame 的完整續存仍未完成。

@@ -787,6 +787,17 @@ func (s *State) restoreJournalMessageIDs(messageIDs []string) error {
 }
 
 func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
+	for index := range snapshot.Battle.Fighters {
+		fighter := &snapshot.Battle.Fighters[index]
+		if fighter.SourceName == "" || s.dataPack == nil {
+			continue
+		}
+		if localized, found := s.dataPack.LocalizeCombatantName(fighter.SourceName, s.catalog.Language); found {
+			fighter.Name = localized
+		} else {
+			fighter.Name = fighter.SourceName
+		}
+	}
 	battle, err := combat.RestoreBattle(snapshot.Battle)
 	if err != nil {
 		return err

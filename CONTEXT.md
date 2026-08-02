@@ -3679,3 +3679,13 @@ Golden Box engine `TextResult` 新增作品中立的 `JournalMessageIDs`，CoAB 
 `220→212`、localization 23 不變。Engine `be57f47` 已完整測試、commit／push；
 READY spec 478 是權威。CoAB Docker／Xvfb 正式全套 gate 已通過，marker
 `ROUND478_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十九輪將 23 個怪物／戰鬥者名稱從 State 中文 switch 遷移
+至 Engine `combatant_name_rules` 與 CoAB game-pack。規則以 exact 原始 MON
+source 對應跨 locale message ID，partial 不匹配；真實鷹馬、黑龍、龍巫妖、
+散塔林與摩安德長路徑測試改由 source 經正式 pack 解析期望名稱。Fighter 新增
+原始 `SourceName`，remake save 升至 v11；繁中 active combat 存檔以英文 State
+讀取後會重解英文名稱，不再保存中文為永久身分。source audit `368→345`，
+localization `23→0`、frontend 133、runtime 212 不變。Engine `2ace47d` 已完整
+測試、commit／push；READY spec 479 是權威。CoAB Docker／Xvfb 正式全套 gate
+已通過，marker `ROUND479_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

@@ -13,7 +13,7 @@ import (
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 10
+const CurrentGameVersion = 11
 
 type MusicSnapshot struct {
 	TrackID string                            `json:"track_id"`
