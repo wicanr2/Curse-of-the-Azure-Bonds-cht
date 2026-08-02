@@ -1236,15 +1236,13 @@ func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 		!strings.Contains(joined, "FADE AWAY") {
 		t.Fatalf("blade barrier wait branch=%+v", wait)
 	}
-	if got := localizeECLText(testCatalog(), prompt.Text); !strings.Contains(got, "刀刃") ||
-		!strings.Contains(got, "金屬嗡鳴") {
+	localizer := NewState(testCatalog())
+	if got := localizer.localizeECLText(prompt.Text); got != requireGamePackText(t, &localizer, "fire-knife.blade-barrier") {
 		t.Fatalf("localized blade barrier=%q", got)
 	}
-	if got := localizeECLText(testCatalog(), wait.Text); !strings.Contains(got, "逐漸放慢") ||
-		!strings.Contains(got, "完全止息") {
+	if got := localizer.localizeECLText(wait.Text); got != requireGamePackText(t, &localizer, "fire-knife.blade-barrier-fades") {
 		t.Fatalf("localized blade barrier aftermath=%q", got)
 	}
-	localizer := NewState(testCatalog())
 	for _, source := range []string{"ENTER THE BLADES", "WAIT", "RETREAT"} {
 		want, ok := localizer.dataPack.LocalizeOption(source, localizer.catalog.Language)
 		if !ok || localizer.localizeOption(source) != want {
@@ -1277,7 +1275,8 @@ func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if len(state.Choices) != 3 || state.Choices[0] != "闖入刀刃" {
+	if len(state.Choices) != 3 || state.Choices[0] != "闖入刀刃" ||
+		state.Message != requireGamePackText(t, &state, "fire-knife.blade-barrier") {
 		t.Fatalf("playable blade barrier prompt choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -1288,7 +1287,7 @@ func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 	}
 	if state.partyRoster[0].HitPoints != 62 || state.partyRoster[1].HitPoints != 62 ||
 		state.party[0].HitPoints != 62 || state.party[1].HitPoints != 62 ||
-		!strings.Contains(state.Message, "完全止息") {
+		state.Message != requireGamePackText(t, &state, "fire-knife.blade-barrier-fades") {
 		t.Fatalf("playable blade damage roster=%+v fighters=%+v message=%q choices=%v",
 			state.partyRoster, state.party, state.Message, state.Choices)
 	}
@@ -1380,7 +1379,7 @@ func TestRealFireKnifeFrozenRoomBranches(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(state.Choices) != 3 || state.Choices[1] != "審問" ||
-		!strings.Contains(state.Message, "交戰姿勢") {
+		state.Message != requireGamePackText(t, &state, "fire-knife.frozen-room") {
 		t.Fatalf("playable frozen room choices=%v message=%q", state.Choices, state.Message)
 	}
 	if err := state.Select(1); err != nil {
@@ -1480,7 +1479,7 @@ func TestRealFireKnifeOfficeStages(t *testing.T) {
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(state.Message, "火刀") || !strings.Contains(state.Message, "辦公室") {
+	if state.Message != requireGamePackText(t, &state, "fire-knife.office") {
 		t.Fatalf("playable office intro=%q", state.Message)
 	}
 	if err := state.Select(0); err != nil {
@@ -1567,14 +1566,14 @@ func TestRealFireKnifeAshenRooms(t *testing.T) {
 		terrain       uint16
 		flag          uint16
 		raw           string
-		localized     string
+		messageID     string
 		continuations []uint16
 	}{
-		{0x9C, 0x4C11, "STRANGE SMOKY SCENT", "奇怪的煙味", []uint16{0}},
-		{0x9D, 0x4C12, "UNSEEN SERVANTS", "看不見的僕人", []uint16{0}},
-		{0x9E, 0x4C13, "CHARRED BODY", "焦屍", []uint16{0, 0}},
-		{0x9F, 0x4C14, "NOTHING ESCAPED DESTRUCTION", "逃過毀滅", []uint16{0}},
-		{0xA0, 0x4C15, "TWO ROWS OF SHROUDED BODIES", "待復活", []uint16{0}},
+		{0x9C, 0x4C11, "STRANGE SMOKY SCENT", "fire-knife.smoky-hall", []uint16{0}},
+		{0x9D, 0x4C12, "UNSEEN SERVANTS", "fire-knife.ordered-bedroom", []uint16{0}},
+		{0x9E, 0x4C13, "CHARRED BODY", "fire-knife.burned-library", []uint16{0, 0}},
+		{0x9F, 0x4C14, "NOTHING ESCAPED DESTRUCTION", "fire-knife.burned-lab", []uint16{0}},
+		{0xA0, 0x4C15, "TWO ROWS OF SHROUDED BODIES", "fire-knife.shrouded-bodies", []uint16{0}},
 	}
 	for _, test := range cases {
 		first := run(test.terrain, nil)
@@ -1596,7 +1595,7 @@ func TestRealFireKnifeAshenRooms(t *testing.T) {
 		if err := state.RunDungeonLifecycle(); err != nil {
 			t.Fatal(err)
 		}
-		if !strings.Contains(state.Message, test.localized) {
+		if state.Message != requireGamePackText(t, &state, test.messageID) {
 			t.Fatalf("localized terrain %#x message=%q", test.terrain, state.Message)
 		}
 		for range test.continuations {

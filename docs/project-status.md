@@ -82,7 +82,8 @@ commit 內保存不可能自我引用的 hash。
   提爾隘口、阿沙本福德、暗影隘口、立石群與 Essembra／Hap 路線十一個文字
   boundary 亦已資料化並由正常長路徑驗證。提爾佛頓公會至火刀據點入口另有
   十四個 boundary 完成 stable-ID 資料化與真實 image continuation 回歸；最新
-  baseline 為 580。
+  block 4 另有十一個房間 boundary 完成資料化，並保留刀刃傷害、手札 9／26、
+  辦公室財寶與五個完成旗標回歸；最新 baseline 為 569。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

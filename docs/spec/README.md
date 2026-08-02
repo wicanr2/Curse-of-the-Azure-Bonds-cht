@@ -424,3 +424,4 @@
 - [第四百六十九輪散提爾堡 stable-ID 與實戰玩家路徑](./469-zhentil-stable-id-combat-path.md)（`READY`：城門至眼魔洞窟 stable-ID 驗收、手札 7／12／30／32／50／51 與兩場非強制勝利戰鬥）
 - [第四百七十輪阿沙本福德與立石群事件資料化](./470-ashabenford-standing-stone-game-pack.md)（`READY`：十一條雙語規則、兩場正常戰鬥、城市音樂返回、灰袍提示與 Essembra／Hap 路線）
 - [第四百七十一輪提爾佛頓公會至火刀據點文字資料化](./471-tilverton-guild-hideout-game-pack.md)（`READY`：十四條雙語規則、公會六段連續 pause、兩場實戰與 block 2→3→4 handoff）
+- [第四百七十二輪火刀據點房間事件資料化](./472-fire-knife-hideout-rooms-game-pack.md)（`READY`：十一條雙語規則、刀刃屏障、凝固房、辦公室財寶與五個一次性房間）

@@ -655,6 +655,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   occurrences。連續 PRESS 劇情不能只盲目呼叫 `Select` 再驗證最後戰鬥；每個
   pause 都要以 game-pack stable ID 比對完整訊息。長測試若直接設定 GEO 座標，
   只能稱 coordinate-assisted integration，不可寫成完整正常移動玩家路徑。
+- 第 472 輪火刀據點十一個房間 boundary 移除後，baseline 為 569。raw ECL
+  regression 要保留英文 token、menu、傷害／財寶與 work flag；產品 State
+  regression 則由 game-pack stable ID 取得完整顯示文字。兩層測試不可互相取代，
+  也不得把 direct terrain selector 誇大成逐步行走玩家路徑。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

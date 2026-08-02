@@ -3322,28 +3322,7 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "1375558d2e45cfae5ebeaf0944f2706fa32edf76f25dd35870d6492bd887bb7f",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "2029604de2c2e5c34a70de782db58cb40970c375bda4c8cd8680eebf886c7b9f",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "27e27ade58db18a8b58590c01721bc75c43c204186b342bd8b07a76e213f5ffe",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "2c997181870efe67632a004430c042f31f08c14fe05803b2163ccb70931ec677",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3385,20 +3364,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "51e5f7e34d5d636a4da2160048393969b1427afc0d3fd045037765f5882edd6b",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "526bd398fb9a89cd9afde87a066aaead99016e30a9028114bfe90b343d7005dd",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "58c94cd1b2d3431912b3770fb6babaf00ff4ef7ed090938e862193de91e523db",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3413,27 +3378,6 @@
     {
       "path": "internal/game/state.go",
       "function": "localizeECLText",
-      "sha256": "6c554e00640f25313cbc34abb8efeb5cdfd80ec0849ee8777fcdbab60d577309",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "6c8bdf07f70a0c58fad36a1e9ebcb2ef0813e212f95bf062da92e0028bc5510a",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "764c171f7861a1c113e7e0222c2d19aefa3ca024a387da76f6a22eb8c35622a6",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
       "sha256": "7b69b98e1e3643ab6c412ef54a1a6a782d6a458cfccceff61503f9796969d32a",
       "occurrences": 1,
       "category": "localization_debt"
@@ -3442,13 +3386,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "7cc9f80f4a4e0f6686f3071cb0f6e1618e332381e8589094844543e8885f4d12",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "7f240916007a8e223c57601fddb83074bdcd0642f16424af04161b4ba86ed055",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3470,13 +3407,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "8f5fd9d298aafad18aa1c73a795ec3d1b697d1cebbc19ba7cbfcebadf41a472c",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "93c1f7839107e1ef9deac25d815d11ff71737804a1ef44d3b4fe30fbf4c554b8",
       "occurrences": 1,
       "category": "localization_debt"
     },
@@ -3505,13 +3435,6 @@
       "path": "internal/game/state.go",
       "function": "localizeECLText",
       "sha256": "e143f7bf5afd6c0b1296e02245c0b08cea84bbcd3748c2ee373ec09050cce3da",
-      "occurrences": 1,
-      "category": "localization_debt"
-    },
-    {
-      "path": "internal/game/state.go",
-      "function": "localizeECLText",
-      "sha256": "e7462e2ae32c1baf5d19dbf9bb182f8db2865ba4cfeaa7ed83180a287b5ad91a",
       "occurrences": 1,
       "category": "localization_debt"
     },

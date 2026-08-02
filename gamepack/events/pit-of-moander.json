@@ -485,6 +485,17 @@
       ,"tilverton.guild-sewer-traces": "Green slimy marks on the floor become more distinct near the door."
       ,"tilverton.sewers-entry": "You enter Tilverton's foul-smelling, slime-covered sewers. The slick floor and low ceiling will make fighting awkward."
       ,"fire-knife.hideout-entry": "You are entering the Fire Knife hideout."
+      ,"fire-knife.blade-barrier": "A cloud of whirling blades fills the doorway, its metallic whine drowning out nearly every other sound. What will you do?"
+      ,"fire-knife.blade-barrier-damage": "The whirling blades tear into you."
+      ,"fire-knife.blade-barrier-fades": "The blades slow and fade away; their whine falls to a whisper and then silence. Others seem to have been caught here before you."
+      ,"fire-knife.frozen-room": "People are frozen in fighting poses; some lie twisted together while others are beginning to move. What will you do?"
+      ,"fire-knife.frozen-kill": "You slaughter them before they recover from being held."
+      ,"fire-knife.office": "This ornate room appears to be the office of someone high in the Fire Knives."
+      ,"fire-knife.smoky-hall": "As you enter the corridor, you notice a strange smoky scent."
+      ,"fire-knife.ordered-bedroom": "The bedroom is extremely well ordered. You find nothing valuable; as you leave, unseen servants begin restoring everything to its exact place."
+      ,"fire-knife.burned-library": "This room was once a library, but its shelves and books are now smoking ash. A charred body at the center clutches a sheet of paper."
+      ,"fire-knife.burned-lab": "This room was once a laboratory. Fierce flames swept through it, and nothing escaped destruction."
+      ,"fire-knife.shrouded-bodies": "Two rows of shrouded bodies lie here. Signs mark one row 'to be raised' and the other 'to be buried.'"
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -995,6 +1006,17 @@
       ,"tilverton.guild-sewer-traces": "地面留有綠色黏液痕跡，越靠近門越清晰。"
       ,"tilverton.sewers-entry": "你們進入提爾佛頓惡臭撲鼻、覆滿黏液的下水道。地面濕滑、天花板低矮，顯然很難在這裡靈活作戰。"
       ,"fire-knife.hideout-entry": "你們進入了火刀據點。"
+      ,"fire-knife.blade-barrier": "你們在房間入口停下。前方有一團刀刃彼此盤旋，尖銳的金屬嗡鳴幾乎蓋過所有聲音。你們要怎麼做？"
+      ,"fire-knife.blade-barrier-damage": "旋轉刀刃狠狠撕裂了你們！"
+      ,"fire-knife.blade-barrier-fades": "片刻後，刀刃逐漸放慢並消失；嗡鳴降成低語，最後完全止息。房裡看來已有其他人遭刀刃捲入。"
+      ,"fire-knife.frozen-room": "房裡有許多人凝固在交戰姿勢中；有幾人倒成扭曲的一團，另一些已開始活動。你們要怎麼做？"
+      ,"fire-knife.frozen-kill": "你們趁他們尚未從定身狀態恢復，將他們全數殺死。"
+      ,"fire-knife.office": "這是一間裝飾華麗的房間，看來是火刀某位高層人物的辦公室。"
+      ,"fire-knife.smoky-hall": "你們走進走廊時，察覺到一股奇怪的煙味。"
+      ,"fire-knife.ordered-bedroom": "這間臥室整齊得異常，一切都精確歸位。搜索後沒有發現值錢物品；你們離開時，看不見的僕人又開始將房間恢復原狀。"
+      ,"fire-knife.burned-library": "這裡原是圖書館，如今書架與藏書都化為灰燼，部分仍冒著煙。房間中央有具焦屍，手中緊握一張紙。"
+      ,"fire-knife.burned-lab": "這裡原是一間實驗室，同樣遭猛烈烈焰席捲，沒有任何東西逃過毀滅。"
+      ,"fire-knife.shrouded-bodies": "房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2856,6 +2878,17 @@
     {"id": "tilverton.guild-sewer-traces", "all_contains": ["GREEN SLIMY MARKS", "MORE DISTINCT NEAR THE DOOR"], "message_id": "tilverton.guild-sewer-traces"},
     {"id": "tilverton.sewers-entry", "all_contains": ["FOUL SMELLING, SLIME COVERED", "FIGHTING WILL BE", "AWKWARD"], "message_id": "tilverton.sewers-entry"},
     {"id": "fire-knife.hideout-entry", "all_contains": ["YOU ARE ENTERING THE HIDEOUT"], "message_id": "fire-knife.hideout-entry"},
+    {"id": "fire-knife.blade-barrier-fades", "all_contains": ["BLADES SLOW DOWN", "FADE AWAY"], "message_id": "fire-knife.blade-barrier-fades"},
+    {"id": "fire-knife.blade-barrier", "all_contains": ["CLOUD OF BLADES WHIRLING", "METALLIC WHINE"], "message_id": "fire-knife.blade-barrier"},
+    {"id": "fire-knife.blade-barrier-damage", "all_contains": ["THE BLADES TEAR INTO YOU"], "message_id": "fire-knife.blade-barrier-damage"},
+    {"id": "fire-knife.frozen-kill", "all_contains": ["YOU SLAUGHTER THEM", "BEING HELD"], "message_id": "fire-knife.frozen-kill"},
+    {"id": "fire-knife.frozen-room", "all_contains": ["PEOPLE FROZEN IN", "BEGINNING TO MOVE"], "message_id": "fire-knife.frozen-room"},
+    {"id": "fire-knife.office", "all_contains": ["ORNATE ROOM", "HIGH UP IN THE FIRE KNIVES"], "message_id": "fire-knife.office"},
+    {"id": "fire-knife.smoky-hall", "all_contains": ["STRANGE SMOKY SCENT"], "message_id": "fire-knife.smoky-hall"},
+    {"id": "fire-knife.ordered-bedroom", "all_contains": ["EXTREMELY WELL ORDERED BEDROOM", "UNSEEN SERVANTS"], "message_id": "fire-knife.ordered-bedroom"},
+    {"id": "fire-knife.burned-library", "all_contains": ["ROOM WAS ONCE A LIBRARY", "CHARRED BODY"], "message_id": "fire-knife.burned-library"},
+    {"id": "fire-knife.burned-lab", "all_contains": ["ONCE A LAB", "NOTHING ESCAPED DESTRUCTION"], "message_id": "fire-knife.burned-lab"},
+    {"id": "fire-knife.shrouded-bodies", "all_contains": ["TWO ROWS OF SHROUDED BODIES", "TO BE RAISED"], "message_id": "fire-knife.shrouded-bodies"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},
