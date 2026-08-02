@@ -3245,7 +3245,7 @@ func (s *State) continueECLAfterEngineBoundaryDepth(depth int) (bool, error) {
 			s.Choices = append(s.Choices, s.localizeOption(option))
 		}
 		if menu.Prompt != "" {
-			s.Prompt = localizePrompt(s.catalog, menu.Prompt)
+			s.Prompt = s.localizeECLPrompt(menu.Prompt)
 		}
 		s.Mode = ModeWilderness
 		return true, nil

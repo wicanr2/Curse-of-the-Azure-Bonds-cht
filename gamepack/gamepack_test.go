@@ -1,10 +1,14 @@
 package gamepack
 
 import (
+	"os"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 )
 
 func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
@@ -273,4 +277,72 @@ func sortedLocaleKeys(messages map[string]string) []string {
 	}
 	slices.Sort(keys)
 	return keys
+}
+
+func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	legacySources := []string{
+		"PRESS BUTTON OR RETURN TO CONTINUE.", "YES", "NO", "TELL THE TRUTH",
+		"PUNCH BARKEEP", "HAVE A DRINK", "DRAGON'S BREATH", "BASILISK",
+		"LEMONADE", "WHISKEY", "BEER", "ALE", "PORT", "MEAD", "LIE",
+		"ENTER CITY", "JOURNEY ON", "CAMP", "SEARCH AREA", "INN", "STORE",
+		"BAR", "HALL", "TEMPLE", "RELAX", "PATROL FOREST", "THANK HIM",
+		"ATTACK", "ENTER IT", "SPEAK", "HACK IT", "GREET", "LEAVE", "Leave",
+		"EXAMINE CORPSE", "SHADOWDALE", "ASHABENFORD", "DAGGER FALLS",
+		"TILVERTON", "THE STANDING STONE", "ESSEMBRA", "HAP", "HILLSFAR",
+		"VOONLAR", "PHLAN", "TESHWAVE", "YULASH", "ZHENTIL KEEP", "MYTH DRANNOR",
+		"SNEAK IN", "ASK PERMISSION", "RUN AWAY", "FIGHT", "GO WITH GUARDS",
+		"FIGHT THE MEN", "LET THEM GO", "TELL HER YOUR STORY",
+		"TELL HER YOU'RE HUNTING CULTISTS", "TELL HER IT'S NONE OF HER AFFAIR",
+		"TRY TO TALK FURTHER", "WILDERNESS", "CAVES", "STAY HERE", "VILLAGE",
+		"DEPART", "TRAIL", "COMBAT", "WAIT", "ENTER THE BLADES", "RETREAT",
+		"INTERROGATE", "KILL", "FLEE", "ADVANCE", "PARLAY", "PARLAY_HAUGHTY",
+		"PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE",
+		"FIRE KNIVES", "PRINCESS NACACIA", "NO ONE", "EXIT",
+	}
+	if len(legacySources) != 84 {
+		t.Fatalf("legacy source oracle count=%d", len(legacySources))
+	}
+	for _, source := range legacySources {
+		for _, language := range []string{"en", "zh-TW"} {
+			if value, ok := pack.LocalizeOption(source, language); !ok || value == "" {
+				t.Fatalf("option %q missing from %s", source, language)
+			}
+		}
+	}
+	if len(pack.OptionRules) != 105 {
+		t.Fatalf("option rules=%d, want 25 existing + 80 migrated", len(pack.OptionRules))
+	}
+}
+
+func TestPackAndUILocaleSharedStableIDsDoNotDrift(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join("..", "assets", "locale", "zh-TW.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	compared := 0
+	for messageID, packValue := range pack.Locales["zh-TW"] {
+		uiValue, ok := catalog.Strings[messageID]
+		if !ok {
+			continue
+		}
+		compared++
+		if uiValue != packValue {
+			t.Fatalf("shared stable ID %q drifted: pack=%q ui=%q", messageID, packValue, uiValue)
+		}
+	}
+	if compared != 65 {
+		t.Fatalf("shared stable IDs compared=%d, want the 65 current pack/UI overlaps", compared)
+	}
 }

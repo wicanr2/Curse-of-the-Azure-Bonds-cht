@@ -598,6 +598,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   template display ID、前端提示、種族／職業與能力名稱不再寫死在 Go。錯誤
   template 必須阻止建立開啟，不得靜默過濾；正常 title→建立→ECL1 block 01h
   與 save round-trip 已回歸。完整原版建角 UX／規則仍未完成。
+- 第 460 輪 ECL 選項再移除 70 次，baseline 現為 797 occurrences；舊
+  `localizeOption` switch 的 84 個 source tokens 已由 CoAB game-pack
+  `option_rules` 完整覆蓋。已知 token 不得在 State 恢復作品專用 switch；
+  未知 token 要保留原文供診斷，再由真實 ECL 證據補 JSON。若 pack 與 UI
+  locale 共用 stable ID，測試必須阻止兩份正式 JSON 漂移。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

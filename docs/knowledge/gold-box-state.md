@@ -807,3 +807,15 @@ one-shot 敘事靜默。乾淨 session 仍會顯示兩段文字，證明 handler
 VM 不得按 block ID 自動清零、換頁或 namespace `SAVE` 位址。作品資料中的
 碰撞即使像原作瑕疵，也要先忠實保存；美化／修正版行為只能成為另行宣告且
 可切換的相容選項。
+
+### 2026-08-02：ECL 選項的來源身分與顯示文字必須分層
+
+ECL menu 的英文 token 同時是分支來源身分與玩家畫面的原始內容。Runtime
+必須保存原 token 供 selection continuation 使用；翻譯只能由作品 game-pack
+的 exact `source → message_id` 規則取得，不能把翻譯後文字送回 VM，也不能在
+State 另維護中文 switch。
+
+未知 token 應原樣顯示並讓稽核可發現，不能猜成語意相近的既有選項。這保留了
+原始 bytes 的診斷價值，也避免選錯 branch。若 game-pack 與通用 UI locale
+共用同一 stable ID，兩份正式資料需有 parity／value gate；共享標籤不是允許
+漂移的翻譯複本。

@@ -1237,12 +1237,12 @@ func TestRealFireKnifeBladeBarrierBranches(t *testing.T) {
 		!strings.Contains(got, "完全止息") {
 		t.Fatalf("localized blade barrier aftermath=%q", got)
 	}
-	if got := []string{
-		localizeOption(testCatalog(), "ENTER THE BLADES"),
-		localizeOption(testCatalog(), "WAIT"),
-		localizeOption(testCatalog(), "RETREAT"),
-	}; strings.Join(got, "/") != "闖入刀刃/等待/撤退" {
-		t.Fatalf("localized blade barrier choices=%v", got)
+	localizer := NewState(testCatalog())
+	for _, source := range []string{"ENTER THE BLADES", "WAIT", "RETREAT"} {
+		want, ok := localizer.dataPack.LocalizeOption(source, localizer.catalog.Language)
+		if !ok || localizer.localizeOption(source) != want {
+			t.Fatalf("blade barrier option %q is not game-pack driven", source)
+		}
 	}
 	enter := run([]uint16{0, 0})
 	if len(enter.DamageRequests) != 1 ||
@@ -1355,12 +1355,12 @@ func TestRealFireKnifeFrozenRoomBranches(t *testing.T) {
 		!strings.Contains(strings.Join(kill.Text, " "), "YOU SLAUGHTER THEM") {
 		t.Fatalf("frozen room kill=%+v", kill)
 	}
-	if got := []string{
-		localizeOption(testCatalog(), "RETREAT"),
-		localizeOption(testCatalog(), "INTERROGATE"),
-		localizeOption(testCatalog(), "KILL"),
-	}; strings.Join(got, "/") != "撤退/審問/殺死" {
-		t.Fatalf("localized frozen-room choices=%v", got)
+	localizer := NewState(testCatalog())
+	for _, source := range []string{"RETREAT", "INTERROGATE", "KILL"} {
+		want, ok := localizer.dataPack.LocalizeOption(source, localizer.catalog.Language)
+		if !ok || localizer.localizeOption(source) != want {
+			t.Fatalf("frozen-room option %q is not game-pack driven", source)
+		}
 	}
 
 	state := NewStateFromECLBlocks(testCatalog(), map[uint8][]byte{4: hideout}, 4)

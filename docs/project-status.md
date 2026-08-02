@@ -63,6 +63,10 @@ commit 內保存不可能自我引用的 hash。
 - 角色建立的 22 個單職／18 個多職模板已移入 game-pack JSON；繁中姓名輸入、
   能力值、種族／職業顯示、基礎隊伍、裝備與多項法術已有可玩切片。正常 title
   至 ECL1 新遊戲與 save round-trip 已回歸；完整原版建角 UX／規則仍未完成。
+- 舊 Go switch 的 84 個既有 ECL menu token 已由 game-pack 105 條
+  `option_rules` 完整覆蓋；新遊戲、Journey／商店、刀刃房與定身房真實 ECL
+  路徑均由 stable ID 解析。Go 漢字 baseline 現為 797；劇情文字與手札 fallback
+  尚未完成資料分離。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常
