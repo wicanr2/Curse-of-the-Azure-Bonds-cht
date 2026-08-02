@@ -1,6 +1,69 @@
 package combat
 
-import "testing"
+import (
+	"math/rand"
+	"testing"
+)
+
+func TestCastSleepOrderedWritesEffectAfterCapacityAndMagicResistance(t *testing.T) {
+	const seed int64 = 434
+	reference := rand.New(rand.NewSource(seed))
+	capacity := 0
+	for index := 0; index < 4; index++ {
+		capacity += reference.Intn(4) + 1
+	}
+	wantResisted := reference.Intn(100)+1 <= MagicResistanceChance(15, 5)
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage", Side: SideParty, HitPoints: 8, MaxHitPoints: 8, HitDice: 5},
+		{ID: "held", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x35, Active: true}}},
+		{ID: "resistant", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1,
+			MonsterAffects: []MonsterAffect{{Kind: 0x6A, Innate: true}}},
+		{ID: "ordinary", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HitDice: 1},
+	}, seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := battle.CastSleepOrdered("mage", []string{"held", "resistant", "ordinary"}, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.InitialCapacity != capacity || result.RemainingCapacity != capacity-2 || len(result.Impacts) != 2 {
+		t.Fatalf("Sleep result=%+v capacity=%d", result, capacity)
+	}
+	if result.Impacts[0].TargetID != "resistant" || result.Impacts[0].Resisted != wantResisted ||
+		result.Impacts[1] != (SleepImpact{TargetID: "ordinary", Duration: 25}) {
+		t.Fatalf("Sleep impacts=%+v want resistant=%v", result.Impacts, wantResisted)
+	}
+	ordinary, _ := battle.Fighter("ordinary")
+	last := ordinary.MonsterAffects[len(ordinary.MonsterAffects)-1]
+	if last.Kind != 0x35 || last.Value != 25 || last.Duration != 25 || last.Strength != 1 || last.Raw4 != 5 || !last.Active {
+		t.Fatalf("ordinary Sleep effect=%+v", last)
+	}
+	resistant, _ := battle.Fighter("resistant")
+	gotSleep := false
+	for _, affect := range resistant.MonsterAffects {
+		gotSleep = gotSleep || affect.Kind == 0x35
+	}
+	if gotSleep == wantResisted {
+		t.Fatalf("resistant effects=%+v resisted=%v", resistant.MonsterAffects, wantResisted)
+	}
+}
+
+func TestCastSleepOrderedRejectsUnknownOrDuplicateTargets(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "mage", Side: SideParty, HitPoints: 8, MaxHitPoints: 8},
+		{ID: "enemy", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8},
+	}, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, targets := range [][]string{{"missing"}, {"enemy", "enemy"}} {
+		if _, err := battle.CastSleepOrdered("mage", targets, 5); err == nil {
+			t.Fatalf("accepted invalid ordered targets %v", targets)
+		}
+	}
+}
 
 func TestSelectCombatTargetUsesSeededCandidateSelection(t *testing.T) {
 	newBattle := func(seed int64) *Battle {

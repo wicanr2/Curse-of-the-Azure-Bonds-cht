@@ -32,14 +32,14 @@ func TestParseMonsterRecordOffsets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ORC!!" || record.MaxHitPoints != 12 || record.HitPoints != 9 || record.HitDice != 6 || record.MonsterType != combat.MonsterTypeAnimal || record.Dexterity != 18 || record.CombatTeam != 3 || record.Raw1A5 != 2 || record.ArmorClass != 10 || record.AttackBonus != 3 || record.DamageDiceSides != 8 || record.DamageBonus != 2 || record.AttacksPerTurn != 3 || record.CombatSize != 4 {
+	if record.Name != "ORC!!" || record.MaxHitPoints != 12 || record.HitPoints != 9 || record.HitDice != 6 || record.RawPlayer74 != data[0x74] || record.MonsterType != combat.MonsterTypeAnimal || record.Dexterity != 18 || record.CombatTeam != 3 || record.Raw1A5 != 2 || record.ArmorClass != 10 || record.AttackBonus != 3 || record.DamageDiceSides != 8 || record.DamageBonus != 2 || record.AttacksPerTurn != 3 || record.CombatSize != 4 {
 		t.Fatalf("record=%#v", record)
 	}
 	if len(record.SpellIDs) != 1 || record.SpellIDs[0] != combat.MonsterMagicMissileSpellID || record.MonsterSpellUses[0] != 1 {
 		t.Fatalf("monster spell fields=%#v uses=%#v", record.SpellIDs, record.MonsterSpellUses)
 	}
 	fighter := record.Fighter("orc-1", combat.SideEnemy)
-	if fighter.ID != "orc-1" || fighter.Side != combat.SideEnemy || fighter.HitPoints != 9 || fighter.HitDice != 6 || fighter.MonsterType != combat.MonsterTypeAnimal || fighter.Dexterity != 18 || fighter.CombatTeam != 3 || fighter.InitiativeBonus != 0 || fighter.AttacksPerTurn != 3 || fighter.CombatSize != 4 || len(fighter.MonsterSpellIDs) != 1 || fighter.MonsterSpellUses[0] != 1 {
+	if fighter.ID != "orc-1" || fighter.Side != combat.SideEnemy || fighter.HitPoints != 9 || fighter.HitDice != 6 || fighter.RawPlayer74 != data[0x74] || fighter.MonsterType != combat.MonsterTypeAnimal || fighter.Dexterity != 18 || fighter.CombatTeam != 3 || fighter.InitiativeBonus != 0 || fighter.AttacksPerTurn != 3 || fighter.CombatSize != 4 || len(fighter.MonsterSpellIDs) != 1 || fighter.MonsterSpellUses[0] != 1 {
 		t.Fatalf("fighter=%#v", fighter)
 	}
 }

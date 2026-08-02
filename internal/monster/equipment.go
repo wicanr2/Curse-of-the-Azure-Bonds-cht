@@ -242,6 +242,7 @@ type AffectRecord struct {
 	Value    uint16
 	Duration uint16
 	Strength uint8
+	Raw4     uint8
 	Active   bool
 	// Data preserves the serialized runtime linked-list pointer at bytes 5..8.
 	// LOADMONSTER copies each nine-byte record, then clears these four bytes and
@@ -428,7 +429,7 @@ func ParseAffects(data []byte) ([]AffectRecord, error) {
 		duration := binary.LittleEndian.Uint16(data[offset+1 : offset+3])
 		record := AffectRecord{
 			Kind: data[offset], Value: duration, Duration: duration,
-			Strength: data[offset+3], Active: data[offset+4] != 0,
+			Strength: data[offset+3], Raw4: data[offset+4], Active: data[offset+4] != 0,
 		}
 		copy(record.Data[:], data[offset+5:offset+9])
 		affects = append(affects, record)
@@ -449,7 +450,8 @@ func EncodeAffects(affects []AffectRecord) []byte {
 		data[offset] = affect.Kind
 		binary.LittleEndian.PutUint16(data[offset+1:offset+3], duration)
 		data[offset+3] = affect.Strength
-		if affect.Active {
+		data[offset+4] = affect.Raw4
+		if data[offset+4] == 0 && affect.Active {
 			data[offset+4] = 1
 		}
 		copy(data[offset+5:offset+9], affect.Data[:])

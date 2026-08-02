@@ -12,6 +12,7 @@ import (
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
 )
 
 // ErrAdjacentMissileTarget identifies the RuleBook's recoverable range
@@ -93,6 +94,10 @@ type Fighter struct {
 	// HitDice preserves the original Player/MON*CHA byte at offset 0xE5.
 	// Poisonous-cloud rules consume it directly.
 	HitDice uint8
+	// RawPlayer74 preserves the shared Player record byte consumed by the
+	// original Sleep handler's five-HD cost branch. Its gameplay name remains
+	// unresolved; adapters must not substitute race or another inferred field.
+	RawPlayer74 uint8
 	// MonsterType preserves the original shared Player record byte at +11A.
 	// Effect handlers compare this field against typed creature categories.
 	MonsterType uint8
@@ -149,7 +154,10 @@ type MonsterAffect struct {
 	Value    uint16
 	Duration uint16
 	Strength uint8
-	Active   bool
+	// Raw4 preserves EFFECTREC byte +4. Dynamic spell effects write caster
+	// level here; MON*SPC templates commonly contain zero without being inert.
+	Raw4   uint8
+	Active bool
 	// Innate marks an effect loaded from a MON*SPC monster template. The
 	// reference LOADMONSTER preserves byte 4 as zero while retaining every
 	// template effect in the runtime list, so that byte cannot be used to
@@ -243,6 +251,74 @@ func (f Fighter) MonsterThrowsLightning() bool {
 // does not clamp it before the comparison.
 func MagicResistanceChance(base, casterLevel int) int {
 	return base + (11-casterLevel)*5
+}
+
+// CastSleepOrdered applies only the evidence-backed post-targeting Sleep
+// transaction. orderedTargetIDs must come from the title adapter's verified
+// geometry; this method never discovers, sorts, or broadens candidates.
+func (b *Battle) CastSleepOrdered(casterID string, orderedTargetIDs []string, casterLevel int) (SleepResult, error) {
+	if b == nil {
+		return SleepResult{}, fmt.Errorf("battle is nil")
+	}
+	caster, ok := b.fighters[casterID]
+	if !ok {
+		return SleepResult{}, fmt.Errorf("unknown caster %q", casterID)
+	}
+	if b.status != StatusActive {
+		return SleepResult{}, fmt.Errorf("battle is already over")
+	}
+	if caster.HitPoints <= 0 {
+		return SleepResult{}, fmt.Errorf("dead fighter cannot cast")
+	}
+	if casterLevel < 1 || casterLevel > 255 || casterLevel*5 > int(^uint16(0)) {
+		return SleepResult{}, fmt.Errorf("caster level %d is outside the effect record range", casterLevel)
+	}
+	candidates := make([]enginesleep.Candidate, 0, len(orderedTargetIDs))
+	seen := make(map[string]struct{}, len(orderedTargetIDs))
+	for _, targetID := range orderedTargetIDs {
+		if _, duplicate := seen[targetID]; duplicate {
+			return SleepResult{}, fmt.Errorf("duplicate Sleep target %q", targetID)
+		}
+		seen[targetID] = struct{}{}
+		target, exists := b.fighters[targetID]
+		if !exists {
+			return SleepResult{}, fmt.Errorf("unknown Sleep target %q", targetID)
+		}
+		candidates = append(candidates, enginesleep.Candidate{
+			ID: targetID, HitDice: int(target.HitDice), AlreadyHeld: target.MonsterIsHeld(),
+			DoubleFiveHitDiceCost: target.HitDice == 5 && target.RawPlayer74 != 0,
+		})
+	}
+	capacity, err := enginesleep.RollCapacity(func(sides int) (int, error) {
+		return b.rng.Intn(sides) + 1, nil
+	})
+	if err != nil {
+		return SleepResult{}, err
+	}
+	filtered := enginesleep.Filter(capacity, candidates)
+	result := SleepResult{
+		CasterID: casterID, SpellID: SleepSpellID, InitialCapacity: capacity,
+		RemainingCapacity: filtered.RemainingCapacity,
+	}
+	duration := uint16(casterLevel * 5)
+	for _, targetID := range filtered.Selected {
+		target := b.fighters[targetID]
+		resisted := false
+		if base, protected := target.MonsterMagicResistanceBase(); protected {
+			resisted = b.rng.Intn(100)+1 <= MagicResistanceChance(base, casterLevel)
+		}
+		impact := SleepImpact{TargetID: targetID, Resisted: resisted}
+		if !resisted {
+			target.MonsterAffects = append(target.MonsterAffects, MonsterAffect{
+				Kind: 0x35, Value: duration, Duration: duration,
+				Strength: 1, Raw4: uint8(casterLevel), Active: true,
+			})
+			b.fighters[targetID] = target
+			impact.Duration = duration
+		}
+		result.Impacts = append(result.Impacts, impact)
+	}
+	return result, nil
 }
 
 const MonsterTypeAnimal uint8 = 0x13
@@ -420,6 +496,26 @@ type AreaSpellResult struct {
 	Center     TilePoint
 	BaseDamage int
 	Impacts    []AreaSpellImpact
+}
+
+const SleepSpellID uint8 = 0x15
+
+// SleepImpact records one target that passed the ordered HD-capacity filter.
+// Resisted targets consumed capacity but did not receive effect 35h.
+type SleepImpact struct {
+	TargetID string
+	Resisted bool
+	Duration uint16
+}
+
+// SleepResult deliberately receives an already ordered target list. Combat
+// geometry and SCAN tie order remain a separate, fail-closed adapter boundary.
+type SleepResult struct {
+	CasterID          string
+	SpellID           uint8
+	InitialCapacity   int
+	RemainingCapacity int
+	Impacts           []SleepImpact
 }
 
 // SpellInterruption records a title-neutral original-engine boundary clearing
