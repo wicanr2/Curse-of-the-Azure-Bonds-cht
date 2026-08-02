@@ -3506,3 +3506,14 @@ Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 Docker／Xvfb／`--network none` gate 已通過，marker
 `ROUND462_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。下一步按真實 ECL boundary 繼續
 遷移其餘 `localizeECLText／localizeECLLine`，不得把原始換行當成 UI contract。
+
+2026-08-02 第四百六十三輪完成 Area 5 哈普圖斯村與熔岩洞穴文字資料化。
+Hap 17 個、lava tube 10 個 ECL source rules 與 en／zh-TW messages 已移入
+CoAB game-pack；Go fallback 與 UI locale 複本移除。Standing Stone 起始正常
+長路徑經 Essembra、三黑龍、ECL5 `31h` 廢村、阿卡巴、黑暗精靈、伊弗利特、
+村莊解放、洞穴地圖，再進 `32h` 完成伏擊、守門巡邏、夢境警告、熔岩池、
+nice 交涉、十五火蜥蜴與防火桶失敗耐熱檢查，共覆蓋 26 個 boundary。
+`lava-tube.sly-parlay` 只有 source／兩語系 pack coverage，未宣稱正常玩家路徑。
+source audit 688→661：localization 193→166，frontend 135、runtime 360 不變。
+READY spec 463 是權威；Docker／Xvfb／`--network none` 正式全套 gate 已通過，
+marker `ROUND463_FORMAL_EXIT=0`；commit／push 與容器清理待本輪收尾。

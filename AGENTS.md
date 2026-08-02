@@ -613,6 +613,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   換行不是畫面 boundary。新遊戲醒來 PRESS 與手臂印記 PICTURE 是兩個 stable
   messages，不能合併後讓 continuation 重播或漏字。刪除 fallback 前必須證明
   game-pack rule 先命中，並重跑所有受影響正常玩家路徑。
+- 第 463 輪 Hap／熔岩洞穴 27 個作品事件再移除 27 次，baseline 現為 661
+  occurrences；Area 5 長路徑正常覆蓋其中 26 個 boundary。資料規則 coverage
+  不等於玩家分支 coverage：`lava-tube.sly-parlay` 尚未走正常路徑，文件與完成
+  表不得把它和已走過的 `nice／combat` 合併宣稱。區域文字遷移必須同時驗證
+  戰鬥 continuation、旗標、NPC roster、GEO handoff 與下一區入口。
 - 第 439 輪已證明 Sleep 的 `SCAN` source 是玩家／Quick 選定格，不是 caster
   footprint；`AOECOMBAT&7=1` 是 range，`FFh` 是 arc。PC-98 65 筆 TDEF
   exact 對應 `BackgroundTiles[1:66]`，floor byte 是一基底 TD。手動 `Z`

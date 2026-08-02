@@ -5625,124 +5625,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		)
 	}
 	switch {
-	case strings.Contains(joined, "THIS RUN DOWN VILLAGE IS STRANGELY QUIET") &&
-		strings.Contains(joined, "NO ONE IS ABOUT"):
-		return catalog.Text(
-			"ecl_hap_abandoned_village",
-			"這座破敗的村莊異常寂靜。風沿著空蕩街道呼嘯，掠過一扇扇緊閉的窗戶；四下不見人影。",
-		)
-	case strings.Contains(joined, "YOU BURST IN ON SOME PEASANTS WHO SCUTTLE BACK") &&
-		strings.Contains(joined, "LEAVE BEFORE THE HORDE FINDS YOU WITH US"):
-		return catalog.Text(
-			"ecl_hap_hiding_peasants",
-			"你們闖進屋裡，幾名村民驚慌退縮，喊道：「快走！別讓那群怪物發現你們和我們在一起！」你們要怎麼做？",
-		)
-	case strings.Contains(joined, "THE CRINGING PEASANTS FLEE OUT INTO THE STREET"):
-		return catalog.Text("ecl_hap_peasants_flee", "畏縮的村民奪門而出，逃進街道。")
-	case strings.Contains(joined, "YOU UNGRATEFUL SLIME") &&
-		strings.Contains(joined, "BE HAPPY FOR A QUICK DEATH"):
-		return catalog.Text(
-			"ecl_hap_dark_elf_attack",
-			"「忘恩負義的渣滓！你們一再挑戰我們的耐性，就慶幸自己能死得痛快吧！」",
-		)
-	case strings.Contains(joined, "THIS BARN IS EMPTY") &&
-		strings.Contains(joined, "EFREET AND HIS DARK ELFIN COHORTS"):
-		return catalog.Text(
-			"ecl_hap_efreet_barn",
-			"穀倉裡空無一物，只剩伊弗利特與他的黑暗精靈黨羽。",
-		)
-	case strings.Contains(joined, "THE EFREET VOICE BOOMS OUT") &&
-		strings.Contains(joined, "DOOM ON YOUR VILLAGE"):
-		return catalog.Text(
-			"ecl_hap_efreet_threat",
-			"伊弗利特隆隆吼道：「可悲的蟲子竟敢反抗！我們會先殺了你們，再燒毀這片破爛村落。是你們把毀滅帶給了自己的村莊！」",
-		)
-	case strings.Contains(joined, "ON THE BODY OF THE EFREET IS A MAP") &&
-		strings.Contains(joined, "THE TOWN AND A CAVE"):
-		return catalog.Text(
-			"ecl_hap_efreet_map",
-			"你們在伊弗利特的屍體上找到一張地圖，標出了村莊與一處洞穴。",
-		)
-	case strings.Contains(joined, "A SHORT TIME AFTER THE SOUNDS OF BATTLE FADE") &&
-		strings.Contains(joined, "LOUD CHEERS AND LAUGHTER"):
-		return catalog.Text(
-			"ecl_hap_liberated_crowd",
-			"戰聲平息不久，幾顆膽怯的腦袋探進穀倉。人群很快聚集起來，整座村莊隨即充滿歡呼與笑聲。",
-		)
-	case strings.Contains(joined, "AN ELDER OF THE VILLAGE COMES FORWARD") &&
-		strings.Contains(joined, "ALWAYS BE WELCOME IN HAPTOOTH"):
-		return catalog.Text(
-			"ecl_hap_elder_thanks",
-			"一位村中長老上前說：「我們永遠感激你們；哈普圖斯永遠歡迎各位。」",
-		)
-	case strings.Contains(joined, "THE ELDER LOWERS HIS VOICE") &&
-		strings.Contains(joined, "CONTROLLED FROM THE WIZARD'S TOWER NEARBY"):
-		return catalog.Text(
-			"ecl_hap_elder_wizard_tower",
-			"長老壓低聲音：「我不願顯得忘恩負義，但這些精靈受附近法師塔控制。只有摧毀那個巢穴，我們才真正安全。」",
-		)
-	case strings.Contains(joined, "AKABAR MENTIONS THAT HE HAS HEARD OF SECRET TRADE ROUTES") &&
-		strings.Contains(joined, "HAPPY TO GUIDE THE PARTY THERE"):
-		return catalog.Text(
-			"ecl_hap_akabar_secret_routes",
-			"阿卡巴提到，他聽說有祕密商路可以繞過法師塔；他很樂意帶領隊伍前往。",
-		)
-	case strings.Contains(joined, "YOU ARE HEADING BACK TO THE WILDERNESS") &&
-		strings.Contains(joined, "WANT TO CONTINUE"):
-		return catalog.Text("ecl_hap_leave", "你們正準備返回荒野。要繼續嗎？")
-	case strings.Contains(joined, "FOLLOW THE MAP TO THE CAVES") &&
-		strings.Contains(joined, "GO INTO THE WILDERNESS"):
-		return catalog.Text("ecl_hap_map_route", "要循著地圖前往洞穴，還是回到荒野？")
-	case strings.Contains(joined, "YOU HAVE ENTERED AN ANCIENT LAVA TUBE") &&
-		strings.Contains(joined, "ASH COVERS THE FLOOR"):
-		return catalog.Text("ecl_lava_tube_entry", "你們進入一條古老的熔岩隧道，地面覆滿火山灰。")
-	case strings.Contains(joined, "FROM HIDDEN ALCOVES COMES A WAVE OF HEAT") &&
-		strings.Contains(joined, "SALAMANDERS AND DARK ELVES"):
-		return catalog.Text(
-			"ecl_lava_tube_ambush",
-			"熱浪從隱蔽凹室中湧出，緊接著火蜥蜴與黑暗精靈一擁而上。",
-		)
-	case strings.Contains(joined, "THE DOOR IS GUARDED BY A SALAMANDER LED PATROL"):
-		return catalog.Text("ecl_lava_tube_guarded_door", "門前由一支火蜥蜴率領的巡邏隊把守。")
-	case strings.Contains(joined, "A DREAM-LIKE VOICE IN YOUR HEAD SAYS") &&
-		strings.Contains(joined, "BE FULLY PREPARED"):
-		return catalog.Text(
-			"ecl_lava_tube_dream_warning",
-			"一個夢境般的聲音在腦中響起：「前方危機重重，務必做好萬全準備！」",
-		)
-	case strings.Contains(joined, "THE ROOM IS FILLED WITH ACTIVE GEYSERS AND LAVA PITS") &&
-		strings.Contains(joined, "SALAMANDERS ARE SPORTING IN THE POOLS"):
-		return catalog.Text(
-			"ecl_lava_tube_salamander_pools",
-			"房內遍布活躍的間歇泉與熔岩池，火蜥蜴正在池中嬉戲。",
-		)
-	case strings.Contains(joined, "INTENSE HEAT WASHES OVER YOU"):
-		return catalog.Text("ecl_lava_tube_intense_heat", "灼熱的熱浪席捲全隊。")
-	case strings.Contains(joined, "WE HAVE NO LOVE FOR DARK ELVES") &&
-		strings.Contains(joined, "TAKE ANY TREASURE"):
-		return catalog.Text(
-			"ecl_lava_tube_sly_parlay",
-			"「我們對黑暗精靈毫無好感。你們想拿多少財寶，就拿多少吧。」",
-		)
-	case strings.Contains(joined, "YOU COLD THINGS SHOULD LEAVE") &&
-		strings.Contains(joined, "CRIMDRAC FINDS YOU"):
-		return catalog.Text(
-			"ecl_lava_tube_nice_parlay",
-			"「你們這些冰冷生物，最好趁克林德拉克還沒發現前離開。」",
-		)
-	case strings.Contains(joined, "AMONGST THE POOLS OF LAVA") &&
-		strings.Contains(joined, "SIX FIREPROOF CASKS") &&
-		strings.Contains(joined, "OPEN ONE"):
-		return catalog.Text(
-			"ecl_lava_tube_fireproof_casks",
-			"熔岩池之間放著六只防火桶。要派人前去打開其中一只嗎？",
-		)
-	case strings.Contains(joined, "THE HEAT IS TOO INTENSE") &&
-		strings.Contains(joined, "DOES ANYONE WANT TO TRY AGAIN"):
-		return catalog.Text(
-			"ecl_lava_tube_cask_heat_retreat",
-			"熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？",
-		)
 	case strings.Contains(joined, "YOUR HELP WAS INVALUABLE TO ME") &&
 		strings.Contains(joined, "BUSINESS TO ATTEND TO"):
 		return catalog.Text(
@@ -5761,24 +5643,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"ecl_post_wizard_dracolich",
 			"一具骷髏身影從樹叢現身，誓言為導師復仇。",
-		)
-	case strings.Contains(joined, "I AM AKABAR BEL AKASH") &&
-		strings.Contains(joined, "WILL YOU LET HIM JOIN YOUR PARTY"):
-		return catalog.Text(
-			"ecl_hap_akabar_join",
-			"「你們終於來了。我是阿卡巴・貝爾・阿卡什。只要聯手，我們就能粉碎這股黑暗浪潮。」要讓他加入隊伍嗎？",
-		)
-	case strings.Contains(joined, "A SURLY INNKEEPER COMES UP") &&
-		strings.Contains(joined, "DO YOU STAY"):
-		return catalog.Text(
-			"ecl_hap_inn_before_liberation",
-			"一名板著臉的旅店老闆走來：「把門關上！怪物正在外頭。你們想住就住，只要保持低調。」要留下嗎？",
-		)
-	case strings.Contains(joined, "SAILING ACROSS THE SKY ARE GREAT BLACK SHAPES") &&
-		strings.Contains(joined, "FEARSOME BLACK DRAGONS"):
-		return catalog.Text(
-			"ecl_hap_black_dragons",
-			"巨大的黑影在天際翱翔，突然俯衝而下——竟是三隻駭人的黑龍！",
 		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF ESSEMBRA"):
 		return catalog.Text(
@@ -6081,11 +5945,6 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 		return catalog.Text(
 			"tavern_tale_60",
 			"tavern_tale_60",
-		)
-	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HAP"):
-		return catalog.Text(
-			"ecl_hap_edge",
-			"你們來到哈普村外。要進村，還是繼續旅程？",
 		)
 	case strings.Contains(joined, "YOU ARE AT THE EDGE OF HILLSFAR"):
 		return catalog.Text(

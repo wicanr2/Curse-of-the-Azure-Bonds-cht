@@ -53,6 +53,13 @@ ECL1 會先顯示醒來／裝備消失，再於 PICTURE boundary 顯示手臂印
 688。詳見
 [`docs/spec/462-opening-narrative-game-pack-data-separation.md`](docs/spec/462-opening-narrative-game-pack-data-separation.md)。
 
+第 463 輪把哈普圖斯村 17 個、熔岩洞穴 10 個作品事件移入 game-pack。正常
+玩家路徑從 Standing Stone 經 Essembra、三黑龍、廢村、阿卡巴、伊弗利特與
+村莊解放，一路依地圖進入熔岩洞穴，驗證其中 26 個文字 boundary、戰鬥、旗標、
+NPC roster 與 continuation；`sly` 火蜥蜴交涉目前僅有資料規則 coverage。
+Go 漢字基線由 688 降至 661。詳見
+[`docs/spec/463-hap-lava-tube-game-pack-story.md`](docs/spec/463-hap-lava-tube-game-pack-story.md)。
+
 第 430 輪已由 PC-98 原始 overlay 閉合毒雲術 raw effect `44h` 的獨立施法
 中斷鏈：低 HD 角色被毒雲直接殺死時，現在會先中斷 pending spell、消耗正式
 角色資料中第一個 matching memorized slot，再完成死亡 handoff；HD 7+ 與

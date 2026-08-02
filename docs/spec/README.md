@@ -415,3 +415,4 @@
 - [第四百六十輪 ECL 選項完整 game-pack 資料分離](./460-ecl-option-game-pack-data-separation.md)（`READY`：84 個既有 token 全覆蓋、105 條 option rules、四條真實 ECL 路徑與 70 個 Go 漢字 literal 移除）
 - [第四百六十一輪遊戲內手札資料分離](./461-journal-game-pack-data-separation.md)（`READY`：15 個 ECL 觸發、23 頁 en／zh-TW 手札與 75 個 Go 漢字 literal 移除）
 - [第四百六十二輪開場敘事資料分離](./462-opening-narrative-game-pack-data-separation.md)（`READY`：三個完整事件規則、ECL1 兩個真實 boundary 與 34 個 Go 漢字 literal 移除）
+- [第四百六十三輪哈普圖斯村與熔岩洞穴劇情資料化](./463-hap-lava-tube-game-pack-story.md)（`READY`：27 條 en／zh-TW 事件規則、26 個正常玩家 boundary 與 Area 5 長路徑）
