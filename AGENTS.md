@@ -721,6 +721,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `300→275`、frontend `88→63`。同一「繼續」identity 可由不同 layout 放在
   不同座標，不能因此複製譯文；game-pack 地名必須跟隨 State catalog language，
   禁止 renderer 固定 `zh-TW` 或另存作品地名表。READY spec 483 是權威。
+- 第 484 輪把鎖門、地城 lifecycle、Pick／Knock／Bash 結果與正常探索操作列
+  十三筆前端中文移入 State typed locale contract，baseline `275→262`、frontend
+  `63→50`。Locale identity 不能取代 `flags=2／3`、一次撬鎖、spell slot 消耗、
+  `UnlockDoorWrapped` 或 Bash 規則；先得到 typed result，再解析顯示文字。
+  未經第二款作品驗證，不得把 CoAB 門旗標抽成共用 engine 格式。READY spec
+  484 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

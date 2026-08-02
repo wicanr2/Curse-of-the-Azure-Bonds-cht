@@ -73,6 +73,8 @@ func TestAdventureChromeContractUsesFormalCatalog(t *testing.T) {
 		{PlayerUILabelCombatViewTitle, "combat_view_title"},
 		{PlayerUILabelCombatViewReturn, "combat_view_return"},
 		{PlayerUILabelFallen, "combat_fallen"},
+		{PlayerUILabelDungeonDoorHelp, "dungeon_door_help"},
+		{PlayerUILabelDungeonExploreHelp, "dungeon_explore_help"},
 	}
 	for _, test := range labels {
 		if got, want := state.PlayerUILabel(test.label), catalog.Text(test.key, ""); got != want {
@@ -89,5 +91,37 @@ func TestAdventureChromeContractUsesFormalCatalog(t *testing.T) {
 	}
 	if got := state.LocaleLanguage(); got != catalog.Language {
 		t.Fatalf("locale language=%q want=%q", got, catalog.Language)
+	}
+}
+
+func TestDungeonOperationMessagesUseTypedFormalCatalog(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	messages := []struct {
+		message DungeonMessage
+		key     string
+	}{
+		{DungeonMessageLockedPrompt, "dungeon_door_locked_prompt"},
+		{DungeonMessagePickUnavailable, "dungeon_pick_unavailable"},
+		{DungeonMessagePickSucceeded, "dungeon_pick_succeeded"},
+		{DungeonMessagePickFailed, "dungeon_pick_failed"},
+		{DungeonMessageKnockSurfaceUnavailable, "dungeon_knock_surface_unavailable"},
+		{DungeonMessageKnockSucceeded, "dungeon_knock_succeeded"},
+		{DungeonMessageBashUnavailable, "dungeon_bash_unavailable"},
+		{DungeonMessageBashSucceeded, "dungeon_bash_succeeded"},
+		{DungeonMessageBashFailed, "dungeon_bash_failed"},
+	}
+	for _, test := range messages {
+		if got, want := state.DungeonMessageText(test.message), catalog.Text(test.key, ""); got != want {
+			t.Errorf("message %d=%q want=%q", test.message, got, want)
+		}
+	}
+
+	err := fmt.Errorf("BROKEN EVENT")
+	if got, want := state.DungeonLifecycleErrorText(err), fmt.Sprintf(catalog.Text("dungeon_lifecycle_failed", ""), err); got != want {
+		t.Fatalf("lifecycle error=%q want=%q", got, want)
+	}
+	if got, want := state.DungeonKnockUnavailableText(0x29), fmt.Sprintf(catalog.Text("dungeon_knock_spell_unavailable", ""), 0x29); got != want {
+		t.Fatalf("Knock unavailable=%q want=%q", got, want)
 	}
 }

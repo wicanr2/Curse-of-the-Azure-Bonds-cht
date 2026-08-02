@@ -3729,3 +3729,13 @@ format 與語系投影。source audit `300→275`，frontend `88→63`、runtime
 localization 0 不變。READY spec 483 與玩家操作介面資料化知識庫是權威；CoAB
 Docker／Xvfb 正式全套 gate 已通過，marker `ROUND483_FORMAL_EXIT=0`；
 commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百八十四輪將鎖門提示、地城 lifecycle error、Pick／Knock／
+Bash 九種結果、Knock spell ID format 與兩條正常地城操作列共十三筆前端中文
+移入 State typed locale contract。Ebiten 仍依 `flags=2／3`、既有規則結果、
+spell slot 與 `UnlockDoorWrapped` 決定 outcome；文字 identity 不改寫一次撬鎖、
+雙側解鎖、選單或聲音生命週期。正式 catalog test 覆蓋所有 result 與動態參數。
+source audit `275→262`，frontend `63→50`、runtime 212、localization 0 不變。
+READY spec 484 與玩家操作介面資料化知識庫是權威；CoAB Docker／Xvfb 正式
+全套 gate 已通過，marker `ROUND484_FORMAL_EXIT=0`；commit／push 與暫存清理
+待本輪收尾。

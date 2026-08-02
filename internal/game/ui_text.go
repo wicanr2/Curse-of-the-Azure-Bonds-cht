@@ -22,6 +22,8 @@ const (
 	PlayerUILabelCombatViewTitle
 	PlayerUILabelCombatViewReturn
 	PlayerUILabelFallen
+	PlayerUILabelDungeonDoorHelp
+	PlayerUILabelDungeonExploreHelp
 )
 
 func (s *State) PlayerUILabel(label PlayerUILabel) string {
@@ -57,6 +59,10 @@ func (s *State) PlayerUILabel(label PlayerUILabel) string {
 		key = "combat_view_return"
 	case PlayerUILabelFallen:
 		key = "combat_fallen"
+	case PlayerUILabelDungeonDoorHelp:
+		key = "dungeon_door_help"
+	case PlayerUILabelDungeonExploreHelp:
+		key = "dungeon_explore_help"
 	}
 	return s.catalog.Text(key, key)
 }
@@ -72,6 +78,56 @@ func (s *State) OverlandCurrentLocationText(name string) string {
 // LocaleLanguage lets game-pack overlays follow the State-owned catalog
 // instead of hard-coding a locale in the renderer.
 func (s *State) LocaleLanguage() string { return s.catalog.Language }
+
+// DungeonMessage identifies the player-visible outcome of a typed dungeon
+// operation. Door flags, spell consumption, and unlock mutation remain in the
+// existing rules; this enum controls presentation only.
+type DungeonMessage uint8
+
+const (
+	DungeonMessageLockedPrompt DungeonMessage = iota
+	DungeonMessagePickUnavailable
+	DungeonMessagePickSucceeded
+	DungeonMessagePickFailed
+	DungeonMessageKnockSurfaceUnavailable
+	DungeonMessageKnockSucceeded
+	DungeonMessageBashUnavailable
+	DungeonMessageBashSucceeded
+	DungeonMessageBashFailed
+)
+
+func (s *State) DungeonMessageText(message DungeonMessage) string {
+	key := "dungeon_message_unknown"
+	switch message {
+	case DungeonMessageLockedPrompt:
+		key = "dungeon_door_locked_prompt"
+	case DungeonMessagePickUnavailable:
+		key = "dungeon_pick_unavailable"
+	case DungeonMessagePickSucceeded:
+		key = "dungeon_pick_succeeded"
+	case DungeonMessagePickFailed:
+		key = "dungeon_pick_failed"
+	case DungeonMessageKnockSurfaceUnavailable:
+		key = "dungeon_knock_surface_unavailable"
+	case DungeonMessageKnockSucceeded:
+		key = "dungeon_knock_succeeded"
+	case DungeonMessageBashUnavailable:
+		key = "dungeon_bash_unavailable"
+	case DungeonMessageBashSucceeded:
+		key = "dungeon_bash_succeeded"
+	case DungeonMessageBashFailed:
+		key = "dungeon_bash_failed"
+	}
+	return s.catalog.Text(key, key)
+}
+
+func (s *State) DungeonLifecycleErrorText(err error) string {
+	return fmt.Sprintf(s.catalog.Text("dungeon_lifecycle_failed", "dungeon_lifecycle_failed: %s"), err)
+}
+
+func (s *State) DungeonKnockUnavailableText(spellID uint8) string {
+	return fmt.Sprintf(s.catalog.Text("dungeon_knock_spell_unavailable", "dungeon_knock_spell_unavailable: 0x%02X"), spellID)
+}
 
 // FileOperation identifies a player-facing persistence operation without
 // exposing locale keys to the platform adapter.
