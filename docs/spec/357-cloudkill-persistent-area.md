@@ -62,6 +62,9 @@ cough／helpless 規則，戰術與畫面都會錯。
 - `CastCloudkill` 先建立最多九個有效格，再依穩定 fighter ID 順序各處理一次：
   0–4 自動死亡、5 用 `-4` Poison save、6 用 `0`、7+ 無 impact。
 - 死亡使用既有戰鬥死亡狀態與 `VisualImpactTarget.Killed`，不可只顯示文字。
+- READY spec 430 已證明毒雲術 raw effect `44h` 在戰鬥模式另有 pending spell
+  consumer；落點造成直接死亡時，必須先建立施法中斷／memorized-slot 事件，
+  再進入會清除 typed Action 的死亡 handoff。HD 7+ 與豁免成功者不觸發。
 - 呈現為 `windup → generic travel → persistent area reveal → per-target
   death → handoff`；CoAB JSON 指定 travel 與 RANDCOM item 2，renderer
   不寫死作品 block。

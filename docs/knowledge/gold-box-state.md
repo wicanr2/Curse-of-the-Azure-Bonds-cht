@@ -401,6 +401,19 @@ PC-98 `PUTDAMAGE` 在最終 applied damage 大於零且 Action 有 pending spell
 stable fighter／spell event，作品 adapter 才修改正式 roster。不可把「命中」
 直接當成中斷，也不可在防護將傷害歸零時消耗法術格。
 
+## 非傷害 effect 的施法中斷
+
+不能把 `PUTDAMAGE > 0` 誤當所有施法中斷的唯一入口。PC-98 毒雲術會寫入 raw
+effect `44h`；其 effect-table handler 在戰鬥模式獨立檢查 Action pending spell，
+呼叫同一 memorized-slot consumer，再清 pending spell。故作品中立 runtime 應把
+「清除 pending transaction」與「何種 effect 觸發」分層：共用 action 提供原子
+clear，作品 adapter 依已證明的 writer／consumer 建立 stable interruption event。
+
+這項結論目前只適用毒雲術 effect `44h` 的死亡 impact。沉默、麻痺、睡眠、石化
+即使在玩法上也可能阻止施法，仍不能沿用名稱直覺；每一類都要重新閉合
+writer → effect table → Action consumer → memorized-slot consumer，並保存位址空間
+與推論等級。READY spec 430 是 CoAB 的完整證據鏈。
+
 ## 中文化注意
 
 Held effects 也已接到 enemy turn：reference `Player.IsHeld` 的 helpless、snake charm、

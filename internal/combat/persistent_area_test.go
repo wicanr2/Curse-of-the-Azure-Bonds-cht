@@ -82,6 +82,38 @@ func TestCloudkillFiltersTerrainAndAppliesSaveModifier(t *testing.T) {
 	}
 }
 
+func TestCloudkillDirectDeathInterruptsPendingSpellWithoutPositiveDamage(t *testing.T) {
+	saves := []uint8{10, 10, 10, 10, 10}
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideEnemy, HitPoints: 10, MaxHitPoints: 10, HitDice: 7,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+		{ID: "hd4", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, HitDice: 4,
+			HasCombatPosition: true, CombatX: 4, CombatY: 4, SavingThrows: saves,
+			CombatAction: ActionState{Delay: 3, SpellID: 0x01}},
+		{ID: "hd7", Side: SideParty, HitPoints: 10, MaxHitPoints: 10, HitDice: 7,
+			HasCombatPosition: true, CombatX: 5, CombatY: 4, SavingThrows: saves,
+			CombatAction: ActionState{Delay: 3, SpellID: 0x02}},
+	}, 430)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := battle.CastCloudkill("caster", TilePoint{X: 4, Y: 4}, 7, nil); err != nil {
+		t.Fatal(err)
+	}
+	events := battle.TakeSpellInterruptions()
+	if len(events) != 1 || events[0] != (SpellInterruption{FighterID: "hd4", SpellID: 0x01}) {
+		t.Fatalf("Cloudkill interruptions=%+v", events)
+	}
+	hd4, _ := battle.Fighter("hd4")
+	if hd4.HitPoints != 0 || hd4.CombatAction != (ActionState{}) {
+		t.Fatalf("Cloudkill victim=%+v", hd4)
+	}
+	hd7, _ := battle.Fighter("hd7")
+	if hd7.HitPoints != 10 || hd7.CombatAction.SpellID != 0x02 {
+		t.Fatalf("unaffected HD 7 target=%+v", hd7)
+	}
+}
+
 func TestCastStinkingCloudFiltersWallsAndRejectsEmptyArea(t *testing.T) {
 	battle := newCloudBattle(t, 2)
 	result, err := battle.CastStinkingCloud("mage", TilePoint{X: 4, Y: 3}, 3, func(x, y int) bool {
