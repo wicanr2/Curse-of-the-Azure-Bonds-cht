@@ -86,7 +86,9 @@ commit 內保存不可能自我引用的 hash。
   辦公室財寶與五個完成旗標回歸。皇家馬車、監牢救援與下水道騎士另十五個
   boundary 已由同一新遊戲 integration session 驗證。
   高階祭司、火刀戰後四段夢境及返城禁止入城另七個 boundary 已資料化；玩家
-  回歸會實際走完阻擋與返回選單，最新 baseline 為 545。
+  回歸會實際走完阻擋與返回選單。
+  艾森布拉 Tale 44／60 已由既有真實酒館鏈改成 game-pack stable-ID 驗收；State
+  line localizer 的 27 筆中文 fallback 副本已移除，最新 baseline 為 518。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

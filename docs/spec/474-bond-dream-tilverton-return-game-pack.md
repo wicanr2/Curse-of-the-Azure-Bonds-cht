@@ -9,8 +9,9 @@
 預言與冷汗驚醒四段青色印記夢境。每條規則保存 raw ECL token 與 en／zh-TW
 訊息；舊 State fallback 與提爾佛頓兩筆 UI locale 副本已移除。
 
-酒館傳聞 44／60 仍暫留舊 UI catalog，因目前沒有對應的實際 ECL 玩家觸發回歸。
-它們是明確技術債，不應只靠單元 rule 測試便宣稱已完成資料化。
+> 第 475 輪更正：本段原先誤判酒館傳聞 44／60 缺少實際 ECL 玩家觸發回歸；
+> READY spec 330 與既有長測試已覆蓋艾森布拉 RELAX／BEER。兩則傳聞已於
+> spec 475 資料化，本段由後者 supersede。
 
 ## 行為證據
 

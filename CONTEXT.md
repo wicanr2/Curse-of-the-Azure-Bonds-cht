@@ -3635,3 +3635,15 @@ PRESS 返回 edge menu 才 JOURNEY ON。raw regression 保留 BIGPIC 120、7F12=
 360 不變；差值多一是高階祭司舊 batch／line 雙 fallback。READY spec 474 是
 權威；正式 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND474_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十五輪進行艾森布拉酒館傳聞與 State 中文 fallback 清理。
+重新查閱 READY spec 330 與既有火刀首領長測試後，更正第 474 輪「Tale 44／60
+缺實際 ECL 回歸」的誤判：同一真實 session 已完整走 `BAR→RELAX→Tale 60`、
+返回、`HAVE A DRINK→BEER→Tale 44`、返回及 EXIT。兩則 en／zh-TW rules 已移入
+game-pack，UI locale／State fallback／共用 catalog coverage 移除，產品訊息改用
+stable ID 且不誤加手札 18。`localizeECLLine` 另移除 27 筆中文 fallback，保留
+source token→locale ID adapter；source audit 545→518，localization 50→23，
+frontend 135、runtime 360 不變。首次正式 gate 揭露十個正式 locale key 與新遊戲
+測試 catalog 缺口；已補十筆 locale、37-ID coverage，並將真實新遊戲長回歸改用
+正式 catalog。READY spec 475 是權威；Docker／Xvfb／`--network none` 全套 gate
+已通過，marker `ROUND475_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。

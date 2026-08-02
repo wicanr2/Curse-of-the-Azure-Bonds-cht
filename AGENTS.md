@@ -666,7 +666,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 474 輪高階祭司／四段夢境／返城七個 boundary 移除八次後，baseline 為
   545；高階祭司舊譯文原有 batch 與 line 兩份。規格寫明某分支不代表玩家回歸
   已走過；應實際選擇被拒絕的 ENTER CITY、驗證 stable ID／PRESS／返回 menu，
-  再繼續世界旅行。沒有真實 ECL 觸發回歸的 Tavern Tale 不能只為降基線搬移。
+  再繼續世界旅行。第 474 輪曾誤稱 Tavern Tale 44／60 無真實 ECL 回歸；spec
+  330 與長測試其實已有艾森布拉 RELAX／BEER 證據，該斷言由第 475 輪 supersede。
+- 第 475 輪 Tale 44／60 資料化並移除 State line localizer 27 筆中文 fallback 後，
+  baseline 為 518。判定證據缺失前要搜尋 READY spec 與長測試鄰近城市流程，不能
+  只搜 raw token。已由 coverage／玩家路徑保護的 locale adapter 使用 stable ID
+  作顯式 fallback，不能保留第二份 Go 中文譯文掩蓋 JSON 缺 key。移除 fallback
+  後若測試顯示 ID，應補正式 locale／coverage 並讓產品長測試載正式 catalog；
+  不得把中文塞回 Go 或擴大合成 fixture。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

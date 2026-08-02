@@ -518,6 +518,8 @@
       ,"bond-dream.masters-taunt": "Four faces leer down at your victory. An ominous voice declares that the first and weakest of your masters has fallen, and your path of servitude has begun."
       ,"bond-dream.masters-prophecy": "You will serve them in turn despite your will: the wizard in red, the woman in green, and the lord of darkness—until you become pawns of the Flamed One."
       ,"bond-dream.ends": "The four faces laugh with evil joy. The dream fades, and you awake in a cold sweat."
+      ,"essembra.tavern-tale-60": "You overhear Tavern Tale 60: several huge shapes were seen flying over the forest toward the south."
+      ,"essembra.tavern-tale-44": "You overhear Tavern Tale 44: the wizard in red favors creatures of flame, and cold attacks are often the best defense."
       ,"journal-trigger.pit-temple-map-20": "You also find a map of the temple and record it as Journal Entry 20."
       ,"journal-trigger.alias-story-3": "Alias tells her story; you record it as Journal Entry 3."
       ,"journal-trigger.yulash-commander-22": "The commander is pleased and gives you free passage; you record Journal Entries 22 and 52."
@@ -1061,6 +1063,8 @@
       ,"bond-dream.masters-taunt": "四張面孔鄙夷地俯視你們的勝利。陰沉不祥的聲音宣告：「你們第一位、也是最弱的主人已經倒下；如今你們已踏上奴役之路。」"
       ,"bond-dream.masters-prophecy": "「即使意志反抗，你們仍將依序服侍我們：紅袍法師、綠衣女子與黑暗之主。最後，當靈魂之火熄滅，你們將淪為燃燒者的棋子。」"
       ,"bond-dream.ends": "四張面孔邪惡地狂笑。夢境逐漸消退，你們渾身冷汗地驚醒。"
+      ,"essembra.tavern-tale-60": "酒客說：「有幾道龐大身影飛越森林，朝南方去了。」"
+      ,"essembra.tavern-tale-44": "酒客說：「紅袍法師喜愛火焰生物；面對他們時，寒冷攻擊往往是最好的防禦。」"
       ,"journal-trigger.pit-temple-map-20": "你們還找到一張神殿地圖，並將內容記為冒險手札第 20 條。"
       ,"journal-trigger.alias-story-3": "愛麗雅絲說出自己的過往；你們將故事記入冒險手札第 3 條。"
       ,"journal-trigger.yulash-commander-22": "你們的表現令指揮官滿意。他准許隊伍自由通行，並提供冒險手札第 22 與 52 條。"
@@ -2955,6 +2959,8 @@
     {"id": "bond-dream.masters-taunt", "all_contains": ["FOUR FACES LEER DOWN", "WEAKEST OF YOUR MASTERS"], "message_id": "bond-dream.masters-taunt"},
     {"id": "bond-dream.masters-prophecy", "all_contains": ["WIZARD IN RED", "PAWNS OF THE FLAMED ONE"], "message_id": "bond-dream.masters-prophecy"},
     {"id": "bond-dream.ends", "all_contains": ["FACES LAUGH WITH EVIL JOY", "AWAKE IN A COLD SWEAT"], "message_id": "bond-dream.ends"},
+    {"id": "essembra.tavern-tale-60", "all_contains": ["YOU OVERHEAR TAVERN TALE 60"], "message_id": "essembra.tavern-tale-60"},
+    {"id": "essembra.tavern-tale-44", "all_contains": ["YOU OVERHEAR TAVERN TALE 44"], "message_id": "essembra.tavern-tale-44"},
     {"id": "journal-trigger.pit-temple-map-20", "all_contains": ["YOU HAVE ALSO FOUND A MAP OF THE TEMPLE", "JOURNAL ENTRY 20"], "message_id": "journal-trigger.pit-temple-map-20", "journal_message_ids": ["journal.20"]},
     {"id": "journal-trigger.alias-story-3", "all_contains": ["SHE TELLS HER STORY", "JOURNAL ENTRY 3"], "message_id": "journal-trigger.alias-story-3", "journal_message_ids": ["journal.3.1", "journal.3.2", "journal.3.3"]},
     {"id": "journal-trigger.yulash-commander-22", "all_contains": ["YOU HAVE PLEASED THE COMMANDER", "JOURNAL ENTRY 22"], "message_id": "journal-trigger.yulash-commander-22", "journal_message_ids": ["journal.22.1", "journal.22.2", "journal.52"]},

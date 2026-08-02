@@ -1131,8 +1131,7 @@ func TestTavernCatalogCoversEveryDisplayedStableID(t *testing.T) {
 		"bar_tale_4", "bar_tale_5", "bar_tale_6", "tavern_drink_prompt",
 		"tavern_punch", "tavern_drink", "tavern_dragon_breath", "tavern_basilisk",
 		"tavern_lemonade", "tavern_whiskey", "tavern_beer", "tavern_ale",
-		"tavern_port", "tavern_mead", "tavern_tale_44",
-		"tavern_tale_60", "ecl_tavern_pleasure", "ecl_tavern_special_1",
+		"tavern_port", "tavern_mead", "ecl_tavern_pleasure", "ecl_tavern_special_1",
 		"ecl_tavern_special_2", "ecl_tavern_purple_1", "ecl_tavern_purple_2",
 		"ecl_tavern_purple_3", "ecl_tavern_commotion_1", "ecl_tavern_commotion_2",
 		"ecl_tavern_commotion_3",
@@ -4509,6 +4508,8 @@ func TestItemCatalogFeedsCharacterCreationFighterProjection(t *testing.T) {
 
 func TestLocalizeECLTextUsesCatalogAndPreservesUnknownLines(t *testing.T) {
 	catalog := testCatalog()
+	catalog.Strings["ecl_smoke_rises"] = "煙霧從殘破的牆後升起"
+	catalog.Strings["ecl_move_away"] = "你們離開此處。"
 	message := localizeECLText(catalog, []string{
 		"SMOKE RISES FROM BEHIND THE RUINED WALLS",
 		"YOU MOVE AWAY.",
@@ -4516,5 +4517,29 @@ func TestLocalizeECLTextUsesCatalogAndPreservesUnknownLines(t *testing.T) {
 	})
 	if message != "煙霧從殘破的牆後升起 你們離開此處。 UNMAPPED ECL LINE" {
 		t.Fatalf("message=%q", message)
+	}
+}
+
+func TestECLLineCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	keys := []string{
+		"ecl_training_prompt", "ecl_training_progress", "ecl_training_exit",
+		"ecl_tavern_pleasure", "ecl_tavern_special_1", "ecl_tavern_special_2",
+		"ecl_tavern_purple_1", "ecl_tavern_purple_2", "ecl_tavern_purple_3",
+		"ecl_tavern_commotion_1", "ecl_tavern_commotion_2", "ecl_tavern_commotion_3",
+		"ecl_tilverton_patrol_arrives", "ecl_tilverton_guards_move",
+		"ecl_tilverton_inn_welcome", "ecl_tilverton_inn_scowls",
+		"ecl_tilverton_inn_calm", "ecl_tilverton_inn_listen",
+		"ecl_filani_intro", "ecl_filani_correct", "ecl_filani_price", "ecl_filani_funds",
+		"ecl_filani_lie", "ecl_filani_no", "ecl_weaponers_intro",
+		"ecl_weaponers_interested", "ecl_weaponers_farewell", "ecl_weaponers_decline",
+		"ecl_general_store_intro", "ecl_general_store_purchase", "ecl_general_store_farewell",
+		"ecl_move_away", "ecl_smoke_rises", "ecl_yulash_sound", "ecl_battle_rings",
+		"ecl_war_blasted_city", "ecl_small_magic_shop",
+	}
+	for _, key := range keys {
+		if got := catalog.Text(key, key); got == key {
+			t.Fatalf("ECL line locale ID %q is absent or unresolved", key)
+		}
 	}
 }
