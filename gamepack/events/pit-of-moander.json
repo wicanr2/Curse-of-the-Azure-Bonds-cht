@@ -55,6 +55,17 @@
       ,"journal.12.4": "Journal Entry 12 (4/6): “The ornate Z inside a circle on a triangular field is the Zhentrim's mark—our hosts, I fear. They are said to hide a great hoard of lawful-good weapons and magic. I learned it is not in Zhentil Keep. Fzoul Chembryl seeks to place good people under his power so he can use these devices.”"
       ,"journal.12.5": "Journal Entry 12 (5/6): “The half moon crossed by three bars belongs to Dracandros, a powerful but banished Red Wizard of Thay obsessed with dragons. The flaming claws belong to Tyranthraxus. He is the greatest threat: he seeks dominion over the entire Prime Material Plane and controls the Pool of Radiance.”"
       ,"journal.12.6": "Journal Entry 12 (6/6): “To finish Tyranthraxus you need three artifacts divided among the powers that bonded you: the Amulet of Lathander here in Zhentil Keep, Dracandros's Helm of Dragons near Haptooth, and Mogion's Gauntlet of Moander at Yulash. I cannot offer much fighting power, but I know how to stay out of the way.”"
+      ,"wizard-tower.courtyard": "You enter the wizard's tower courtyard. A magically protected five-story tower of flawless stonework rises among high mountains."
+      ,"wizard-tower.dracandros.arrival": "An impressive robed figure approaches. Dracandros says he has waited for the party and that time is short."
+      ,"wizard-tower.dracandros.freezes-party": "Dracandros orders the party to freeze; the bonds paralyze everyone."
+      ,"wizard-tower.dragon-roof": "The party suddenly stands on the tower roof amid a huge host of black dragons."
+      ,"wizard-tower.dragon-steps-out": "One black dragon disengages from the host and steps forward."
+      ,"wizard-tower.dracandros.attack-order": "Dracandros orders the party to attack the dragon as Elminster supposedly commanded."
+      ,"wizard-tower.dragon-illusion": "The bonds force the party to attack. The dragon dissolves into smoke: it was only an illusion."
+      ,"wizard-tower.dracandros.journal-15": "Dracandros freezes the party again and addresses the dragons; the speech is recorded as Journal Entry 15."
+      ,"wizard-tower.dracandros.bond-fades": "Dracandros mutters a phrase and one of the party's bonds fades."
+      ,"journal.15.1": "Journal Entry 15 (1/2): Dracandros tells the dragons that Elminster sent the party to exterminate dragonkind in revenge for their raids. He offers the supposed assassins as proof of his goodwill and falsely identifies the marks on their arms as the sign of Tyranthraxus, who enslaves dragons."
+      ,"journal.15.2": "Journal Entry 15 (2/2): One black dragon has seen similar glowing bonds control warriors and accuses Dracandros of being the true master. It threatens him with smoking acid and demands that he remove his bond before the dragons judge the party. Dracandros reluctantly speaks the phrase that makes his mark fade."
       ,"zhentil.hooded_offer": "A hooded woman suddenly appears. “Follow me. I can get you out of here! You are trapped here! My master can help you.”"
       ,"zhentil.hooded_follow": "Do you follow?"
       ,"zhentil.fzoul_interrupts": "A strange shimmer surrounds you and the room begins to fade. A band of clerics bursts in, led by Fzoul Chembryl. He shouts, “Woman, you go too far!”"
@@ -298,6 +309,17 @@
       ,"journal.12.4": "手札條目 12（4/6）：「三角形底紋、圓圈裡的華麗 Z 字，代表散塔林會——也就是我們眼下的『東道主』。據說他們藏有大批守序善良陣營的武器與魔法物品。我被捕前正追查此事，已確定寶藏不在散塔林堡。傳聞首領弗佐爾・錢布瑞爾企圖控制善良之人，好讓自己能夠運用那些寶物。」"
       ,"journal.12.5": "手札條目 12（5/6）：「三道橫槓穿過半月，是德拉坎德羅斯的標誌。他是力量強大的塞爾紅袍法師，卻因野心過盛又不懂時機與手腕而遭放逐，並且對龍異常著迷。燃燒的利爪則屬於烈焰之主提朗瑟克斯；他的威脅最大，野心是支配整個主物質位面，而且掌握著光芒之池。」"
       ,"journal.12.6": "手札條目 12（6/6）：「要徹底消滅提朗瑟克斯，你們需要三件分散在枷印勢力手中的神器：散塔林堡某處的洛山達護符、哈普附近德拉坎德羅斯持有的龍之頭盔，以及尤拉什摩貢掌控的摩安德護手。至於戰力，我恐怕幫不上太多；不過我也曾冒險，知道如何不礙你們的手腳。」"
+      ,"wizard-tower.courtyard": "你們走入法師塔，來到一座五層高塔的庭院。塔身受魔法保護，石工無瑕而美麗，四周盡是高山。"
+      ,"wizard-tower.dracandros.arrival": "一名氣勢逼人的長袍人物走近：「我是德拉坎德羅斯。很高興你們終於到了。時間緊迫，你們必須扮演好自己的角色。」"
+      ,"wizard-tower.dracandros.freezes-party": "「站住！我沒時間陪你們胡鬧！」枷印發出力量，令你們全身動彈不得。"
+      ,"wizard-tower.dragon-roof": "轉瞬之間，你們已站在塔頂，四周聚集著一大群黑龍。"
+      ,"wizard-tower.dragon-steps-out": "其中一隻黑龍離開龍群，獨自走上前來。"
+      ,"wizard-tower.dracandros.attack-order": "德拉坎德羅斯喝令：「照伊爾明斯特的命令，攻擊那條龍！」"
+      ,"wizard-tower.dragon-illusion": "枷印強迫你們衝上前攻擊；那條龍挨了一擊便化為煙霧——它只是一道幻象！"
+      ,"wizard-tower.dracandros.journal-15": "「站住，你們這些卑劣的屠龍者！」德拉坎德羅斯再次令你們動彈不得，轉身向龍群發表一番演說；內容已記入手札條目 15。"
+      ,"wizard-tower.dracandros.bond-fades": "德拉坎德羅斯含糊念出一段咒語，你們身上的一枚枷印逐漸消退。"
+      ,"journal.15.1": "手札條目 15（1/2）：德拉坎德羅斯對龍群宣稱，你們是伊爾明斯特為報復龍群飛襲、意圖消滅所有龍族的棋子；他願把這些「刺客」交給龍群，以證明自己的善意。他又指著你們手臂上的印記，誣稱那是奴役巨龍的泰蘭索斯之標誌。"
+      ,"journal.15.2": "手札條目 15（2/2）：一隻黑龍並不相信。牠見過相似的發光枷印控制戰士，認定真正操縱你們的人是德拉坎德羅斯，要求先解除枷印再審判你們。黑龍以冒煙的酸液威嚇他；德拉坎德羅斯只得念咒，讓自己那枚枷印逐漸消失。"
       ,"zhentil.hooded_offer": "一名兜帽女子忽然現身。「跟我來，我能帶你們離開！你們已被困在這裡；我的主人能幫助你們。」"
       ,"zhentil.hooded_follow": "要跟她走嗎？"
       ,"zhentil.fzoul_interrupts": "奇異的微光籠罩眾人，房間開始淡去。就在消失前一刻，一群祭司闖入房內，領頭的是弗佐爾・錢布瑞爾。他怒喝：「女人，你太過分了！」"
@@ -1070,6 +1092,57 @@
     }
   ],
   "text_rules": [
+    {
+      "id": "wizard-tower.courtyard.entering",
+      "all_contains": ["HEADING UP INTO THE WIZARD'S TOWER"],
+      "message_id": "wizard-tower.courtyard"
+    },
+    {
+      "id": "wizard-tower.courtyard.description",
+      "all_contains": ["COURTYARD OF A FIVE", "SURROUNDING THE TOWER ARE HIGH MOUNTAINS"],
+      "message_id": "wizard-tower.courtyard"
+    },
+    {
+      "id": "wizard-tower.dracandros.arrival",
+      "all_contains": ["AN IMPRESSIVE ROBED FIGURE APPROACHES YOU", "I AM DRACANDROS"],
+      "message_id": "wizard-tower.dracandros.arrival"
+    },
+    {
+      "id": "wizard-tower.dracandros.freezes-party",
+      "all_contains": ["FREEZE WHERE YOU STAND", "THE BONDS PARALYZE YOU"],
+      "message_id": "wizard-tower.dracandros.freezes-party"
+    },
+    {
+      "id": "wizard-tower.dragon-roof",
+      "all_contains": ["ROOF OF THE TOWER", "HUGE HOST OF BLACK DRAGONS"],
+      "message_id": "wizard-tower.dragon-roof"
+    },
+    {
+      "id": "wizard-tower.dragon-steps-out",
+      "all_contains": ["ONE OF THE DRAGONS DISENGAGES HIMSELF"],
+      "message_id": "wizard-tower.dragon-steps-out"
+    },
+    {
+      "id": "wizard-tower.dracandros.attack-order",
+      "all_contains": ["ATTACK THE DRAGON AS ELMINSTER TOLD YOU"],
+      "message_id": "wizard-tower.dracandros.attack-order"
+    },
+    {
+      "id": "wizard-tower.dragon-illusion",
+      "all_contains": ["UNDER THE FORCE OF THE BONDS", "DRAGON WAS ONLY AN ILLUSION"],
+      "message_id": "wizard-tower.dragon-illusion"
+    },
+    {
+      "id": "wizard-tower.dracandros.journal-15",
+      "all_contains": ["FREEZE, BASE SLAYERS OF DRAGONKIND", "JOURNAL ENTRY 15"],
+      "message_id": "wizard-tower.dracandros.journal-15",
+      "journal_message_ids": ["journal.15.1", "journal.15.2"]
+    },
+    {
+      "id": "wizard-tower.dracandros.bond-fades",
+      "all_contains": ["DRACANDROS' MUMBLED PHRASE", "BONDS TO", "FADE"],
+      "message_id": "wizard-tower.dracandros.bond-fades"
+    },
     {
       "id": "myth-drannor.tyranthraxus-reveal",
       "all_contains": ["REVEALING TYRANTHRAXUS", "MEET ME AT MYTH DRANNOR"],

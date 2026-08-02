@@ -3332,3 +3332,19 @@ SHA-256 為 `e7d2fa5763c95fc53478d4ec78cc230779a68e2375e1b1a0adef635e8ce6e6c7`�
 完成，沒有 `coab-round449` 容器殘留；一個 13 日前的未知懸空映像不屬本輪，
 為避免清到其他專案而保留。commit／push 狀態在提交後補入下一輪或以實際
 HEAD／remote 為準。
+
+2026-08-02 第四百五十輪依「故事與手札不可硬編碼」原則，將 READY spec 315
+涵蓋的法師塔庭院、德拉坎德羅斯現身與定身、黑龍塔頂、幻象攻擊、手札 15
+及枷印消退遷入 CoAB game-pack。新增九段事件 stable message IDs、兩頁
+`journal.15.*` 與十個原 ECL fragment rules；en／zh-TW 各 252 keys 且完全
+對齊。State 的九個 switch cases、手札特判及舊 locale 11 筆複本已刪除。
+手札仍只在原 ECL 事件後直接寫入遊戲內 `JournalPages`，不要求玩家查 PDF。
+聚焦 `./gamepack ./internal/game` Docker 測試已通過；正式 gate、commit 與
+push 狀態待本輪結束補記。READY spec 450 是權威。
+
+正式 Docker／Xvfb／`--network none` gate 已驗證
+`./cmd/... ./gamepack ./internal/...` 全數通過，marker
+`ROUND450_FORMAL_EXIT=0`，日誌位於 `/tmp/coab-round450-formal.log`。聚焦
+`./gamepack ./internal/game` 亦先行通過；掃描確認九個舊 ECL catalog IDs 與
+兩個 `journal_entry_15_*` 已不再存在於 State／舊 locale。一次性容器均以
+`--rm` 完成，無 `coab-round450` 容器殘留；engine repo 本輪無變更。

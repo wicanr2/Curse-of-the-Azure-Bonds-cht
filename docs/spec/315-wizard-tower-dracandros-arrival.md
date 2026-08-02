@@ -38,6 +38,10 @@
   PRINT RETURN cursor 與 target block must survive the same session.
 - 中文敘事按每個原始 pause 分段；手札 15 只在 ECL 真正輸出
   `JOURNAL ENTRY 15` 後解鎖，不可由進塔或先讀 README 提前加入。
+- 第 450 輪已把本規格涵蓋的庭院、德拉坎德羅斯、龍群幻象、枷印消退及
+  手札 15 全部移入 CoAB game-pack stable IDs；State 不再保存這段英文辨識
+  句或繁中複本。詳細唯一真相來源與 key parity 見
+  [`spec 450`](450-wizard-tower-json-story-journal.md)。
 - 缺少 optional WALLDEF piece 的 frontend 診斷只能寫入 renderer label，
   不得覆蓋已在 State 保存的 ECL 中文敘事。
 - 640×480 畫面沿用 24px 正文；PICTURE 51／53／54／55／58 與原始人物素材採
