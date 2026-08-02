@@ -3613,3 +3613,14 @@ frontend 135、runtime 360 不變。READY spec 471 是權威；正式 gate、com
 580→569，localization 85→74，frontend 135、runtime 360 不變。READY spec 472
 是權威；正式 Docker／Xvfb／`--network none` 全套 gate 已通過，marker
 `ROUND472_FORMAL_EXIT=0`；commit／push 與暫存清理待本輪收尾。
+
+2026-08-02 第四百七十三輪進行皇家馬車與下水道事件資料化。封路、讓路、印記
+強迫、假國王、警鐘、紅袍綁架、投降、入獄、盜賊救援／公會抵達、下水道火刀
+投降／藏屍與迷斯卓諾騎士三段對話共十五條 en／zh-TW rules 已移入 game-pack，
+State fallback 已刪除。具體下水道投降規則排在通用 `DO YOU SURRENDER` 前；同一
+真實新遊戲 integration session 的十五個顯示 boundary 改用 stable ID，並保留
+皇家衛兵與五火刀實戰、HEAD／BODY 2、NEWECL 2 及騎士重訪。source audit
+569→553，localization 74→58，frontend 135、runtime 360 不變；差值多一來自假
+國王舊 fallback 的兩個 literal。READY spec 473 是權威；正式 Docker／Xvfb／
+`--network none` 全套 gate 已通過，marker `ROUND473_FORMAL_EXIT=0`；commit／push
+與暫存清理待本輪收尾。

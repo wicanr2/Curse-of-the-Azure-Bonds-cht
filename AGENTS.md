@@ -659,6 +659,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   regression 要保留英文 token、menu、傷害／財寶與 work flag；產品 State
   regression 則由 game-pack stable ID 取得完整顯示文字。兩層測試不可互相取代，
   也不得把 direct terrain selector 誇大成逐步行走玩家路徑。
+- 第 473 輪皇家馬車／監牢／下水道十五個 boundary 移除十六次後，baseline
+  為 553；次數多一是舊假國王 fallback 由兩個 literal 串接。共享
+  `DO YOU SURRENDER` 等 token 時，game-pack text rules 必須具體規則在前、寬
+  fallback 在後，並以完整 source batch 驗證 RuleID，不能只測最小片段。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應
