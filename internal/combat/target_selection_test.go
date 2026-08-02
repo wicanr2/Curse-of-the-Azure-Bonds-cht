@@ -82,6 +82,76 @@ func TestBuildScanTargetIDsFeedsSleepWithoutDisplayTextOrSliceIdentity(t *testin
 	}
 }
 
+func TestLegacyScanObjectsUsesObjectIdentityAndExactFootprints(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		{ID: "wide", Side: SideEnemy, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 4, CombatY: 2, CombatSize: 3},
+		{ID: "dead", Side: SideEnemy, LegacyObjectID: 3, HitPoints: 0, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 7, CombatY: 2},
+	}, 438)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sourceObject, sourceCells, candidates, err := battle.LegacyScanObjects("caster", SideEnemy)
+	if err != nil || sourceObject != 1 || !reflect.DeepEqual(sourceCells, []enginescan.Point{{X: 1, Y: 1}}) {
+		t.Fatalf("source=%d cells=%v err=%v", sourceObject, sourceCells, err)
+	}
+	want := []ScanTargetCandidate{{
+		ObjectID: 2, TargetID: "wide",
+		Cells: []enginescan.Point{{X: 4, Y: 2}, {X: 5, Y: 2}},
+	}}
+	if !reflect.DeepEqual(candidates, want) {
+		t.Fatalf("candidates=%+v want=%+v", candidates, want)
+	}
+}
+
+func TestLegacyScanObjectsFailsClosedWithoutCompleteIdentityTable(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8, HasCombatPosition: true},
+		{ID: "unknown", Side: SideEnemy, HitPoints: 8, MaxHitPoints: 8, HasCombatPosition: true},
+	}, 438)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, _, _, err := battle.LegacyScanObjects("caster", SideEnemy); err == nil {
+		t.Fatal("incomplete IDLIST projection was accepted")
+	}
+	if _, err := NewBattle([]Fighter{
+		{ID: "one", LegacyObjectID: 1, HitPoints: 1, MaxHitPoints: 1},
+		{ID: "two", LegacyObjectID: 1, HitPoints: 1, MaxHitPoints: 1},
+	}, 438); err == nil {
+		t.Fatal("duplicate IDLIST projection was accepted")
+	}
+}
+
+func TestBuildLegacyScanTargetIDsClosesIDListTerrainAndStableIDTransaction(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideParty, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0},
+		{ID: "blocked", Side: SideEnemy, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0},
+		{ID: "near", Side: SideEnemy, LegacyObjectID: 3, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 1, CombatY: 0},
+	}, 438)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := enginescan.TacticalMap{
+		Width: 6, Height: 1,
+		Tiles: []uint8{1, 1, 1, 2, 1, 1},
+		Definitions: []enginescan.TerrainDefinition{
+			{LOS: 1, SYM: 0},
+			{LOS: 1, SYM: 2},
+		},
+	}
+	ordered, err := battle.BuildLegacyScanTargetIDs(m, "caster", SideEnemy, 6, 0xff)
+	if err != nil || !reflect.DeepEqual(ordered, []string{"near"}) {
+		t.Fatalf("ordered=%v err=%v", ordered, err)
+	}
+}
+
 func TestSelectRangedCombatTargetFiltersRangeWallsAndUsesFootprints(t *testing.T) {
 	battle, err := NewBattle([]Fighter{
 		{ID: "caster", Side: SideEnemy, HitPoints: 20, MaxHitPoints: 20, HasCombatPosition: true, CombatX: 1, CombatY: 1, CombatSize: 4},

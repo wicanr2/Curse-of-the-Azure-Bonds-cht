@@ -357,8 +357,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`e915acc`（第 436 輪 terrain-aware `LOSEXISTS`／producer）；
-  第 437 輪 `INARC／OBJECTLIST` milestone 會由本文件所在 commit 完成。
+- CoAB 本輪基底：`ea01be8`（第 437 輪 `INARC／OBJECTLIST`）；第 438 輪
+  `CHARACTERLIST／IDLIST` stable identity milestone 會由本文件所在 commit
+  完成。
 - Engine dependency：`7f044dc`（含作品中立 `combat/scan` 的
   `TDEFTYPE／TACTICALMAP` 地形視線、footprint producer 與 `INARC` 八方向
   inclusive 扇區、`combat/scanorder`
@@ -620,6 +621,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   72×4-byte，overlay 10 builder 證明一基底 linked-list 建表與 X／Y／自身
   index／footprint-active 欄位。combatant linked-list 到 stable fighter ID、
   正常 Sleep UI 與 wall／corner 動態仍未完成。READY spec 437 是權威。
+- 第 438 輪已由 Borland `CHARACTERLIST／IDLIST／CHARRECPTR／CHARREC.NEXT`
+  與 overlay 10 builder 閉合 object ID 的 pointer identity。State 重建
+  `LegacyObjectID=1..N`，Battle 依 stable fighter identity 建立 footprint 並
+  串接完整 SCAN producer；72 筆上限與身份缺損 fail-closed。Ebiten 尚缺原
+  戰場 `TD/TDEF` projection，故正常 Sleep UI 不得提前開放。READY spec 438
+  是權威。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes

@@ -2502,6 +2502,24 @@ func TestStartCombatPreservesPlacementCoordinateNamespace(t *testing.T) {
 	}
 }
 
+func TestStartCombatRebuildsOneBasedLegacyObjectIDsInCharacterListOrder(t *testing.T) {
+	state := NewState(testCatalog())
+	partyMembers := []combat.Fighter{
+		{ID: "hero", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, LegacyObjectID: 70},
+		{ID: "temporary-ally", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10, QuickFight: true, TemporaryAlly: true},
+	}
+	enemies := []combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 8, MaxHitPoints: 8, ArmorClass: 10}}
+	if err := state.StartCombat(partyMembers, enemies, 438); err != nil {
+		t.Fatal(err)
+	}
+	for id, want := range map[string]uint8{"hero": 1, "temporary-ally": 2, "enemy": 3} {
+		fighter, ok := state.battle.Fighter(id)
+		if !ok || fighter.LegacyObjectID != want {
+			t.Fatalf("fighter %q object ID=%d found=%v want=%d", id, fighter.LegacyObjectID, ok, want)
+		}
+	}
+}
+
 func TestCombatViewIsReadOnlyAndLocalized(t *testing.T) {
 	state := NewState(testCatalog())
 	partyFighters := []combat.Fighter{{ID: "hero", Name: "英雄", Side: combat.SideParty, HitPoints: 8, MaxHitPoints: 10, ArmorClass: 6, AttackBonus: 3, InitiativeBonus: 20}}
