@@ -37,15 +37,15 @@ func (s *State) enterTrainingMenu() {
 	s.Mode = ModeWilderness
 	s.eclMenuReturnMode = ModeDungeon
 	s.eventReturnMode = ModeDungeon
-	s.Prompt = "訓練哪一位角色？"
+	s.Prompt = s.catalog.Text("training_select_character", "training_select_character")
 	s.Choices = make([]string, 0, len(s.partyRoster)+1)
 	s.currentOriginalChoices = make([]string, 0, len(s.partyRoster)+1)
 	for index, character := range s.partyRoster {
-		s.Choices = append(s.Choices, fmt.Sprintf("%s（%s %d 級／%d XP）",
-			character.Name, characterClassName(character.Class), character.Level, character.Experience))
+		s.Choices = append(s.Choices, fmt.Sprintf(s.catalog.Text("training_character_summary", "training_character_summary"),
+			character.Name, s.localizedCharacterClassName(character.Class), character.Level, character.Experience))
 		s.currentOriginalChoices = append(s.currentOriginalChoices, "TRAIN_CHARACTER_"+strconv.Itoa(index))
 	}
-	s.Choices = append(s.Choices, "離開訓練場")
+	s.Choices = append(s.Choices, s.catalog.Text("training_exit", "training_exit"))
 	s.currentOriginalChoices = append(s.currentOriginalChoices, "TRAIN_EXIT")
 	s.Message = ""
 }
@@ -76,7 +76,9 @@ func (s *State) selectTraining(originalChoice string) error {
 			return err
 		}
 		s.trainingSpellMenu = false
-		return s.finishTrainingResult(s.trainingResult + fmt.Sprintf(" 並學會%s。", trainingSpellName(uint8(spellID))))
+		return s.finishTrainingResult(s.trainingResult + fmt.Sprintf(
+			s.catalog.Text("training_learned_spell_suffix", "training_learned_spell_suffix"),
+			s.trainingSpellName(uint8(spellID))))
 	}
 	switch originalChoice {
 	case "TRAIN_EXIT":
@@ -106,20 +108,23 @@ func (s *State) selectTraining(originalChoice string) error {
 	character := s.partyRoster[index]
 	info, level, eligible := trainableClass(character, 0xFF)
 	if character.HealthStatus != party.HealthStatusOK {
-		return s.trainingFailure("訓練場只接受神智清醒的人。")
+		return s.trainingFailure(s.catalog.Text("training_requires_healthy", "training_requires_healthy"))
 	}
 	if characterCoinGoldWorth(character) < trainingCost {
-		return s.trainingFailure("訓練費用是 1000 GP。")
+		return s.trainingFailure(s.catalog.Text("training_insufficient_gold", "training_insufficient_gold"))
 	}
 	if !eligible {
-		return s.trainingFailure("經驗值不足，現在還不能升級。")
+		return s.trainingFailure(s.catalog.Text("training_insufficient_experience", "training_insufficient_experience"))
 	}
 	s.trainingCharacterIndex = index
 	s.trainingConfirmMenu = true
 	s.Mode = ModeWilderness
-	s.Prompt = fmt.Sprintf("%s將成為 %d 級%s。要支付 1000 GP 訓練嗎？",
-		character.Name, level+1, characterClassName(info.Class))
-	s.Choices = []string{"確定", "取消"}
+	s.Prompt = fmt.Sprintf(s.catalog.Text("training_confirm_prompt", "training_confirm_prompt"),
+		character.Name, level+1, s.localizedCharacterClassName(info.Class))
+	s.Choices = []string{
+		s.catalog.Text("training_confirm", "training_confirm"),
+		s.catalog.Text("training_cancel", "training_cancel"),
+	}
 	s.currentOriginalChoices = []string{"TRAIN_CONFIRM", "TRAIN_CANCEL"}
 	s.Message = ""
 	return nil
@@ -130,6 +135,25 @@ func (s *State) trainingFailure(message string) error {
 	s.eventReturnMode = ModeWilderness
 	s.Message = message
 	return nil
+}
+
+func (s *State) localizedCharacterClassName(class party.Class) string {
+	key := "class_unknown"
+	switch class {
+	case party.ClassCleric:
+		key = "class_cleric"
+	case party.ClassFighter:
+		key = "class_fighter"
+	case party.ClassRanger:
+		key = "class_ranger"
+	case party.ClassPaladin:
+		key = "class_paladin"
+	case party.ClassMagicUser:
+		key = "class_magic_user"
+	case party.ClassThief:
+		key = "class_thief"
+	}
+	return s.catalog.Text(key, key)
 }
 
 func trainableClass(character party.Character, trainerMask uint8) (trainingClass, int, bool) {
@@ -218,11 +242,12 @@ func (s *State) applyTraining(index int) error {
 	if err := s.syncTempleCharacter(index); err != nil {
 		return err
 	}
-	result := fmt.Sprintf("恭喜！%s成為 %d 級%s", character.Name, oldLevel+1, characterClassName(info.Class))
+	result := fmt.Sprintf(s.catalog.Text("training_success", "training_success"),
+		character.Name, oldLevel+1, s.localizedCharacterClassName(info.Class))
 	if increase > 0 {
-		result += fmt.Sprintf("，最大 HP 增加 %d。", increase)
+		result += fmt.Sprintf(s.catalog.Text("training_hp_increase", "training_hp_increase"), increase)
 	} else {
-		result += "；超過原職業等級前不增加 HP。"
+		result += s.catalog.Text("training_dual_class_no_hp", "training_dual_class_no_hp")
 	}
 	if info.Class == party.ClassMagicUser || info.Class == party.ClassRanger && oldLevel+1 > 8 {
 		if candidates := trainingSpellCandidates(*character); len(candidates) > 0 {
@@ -230,11 +255,11 @@ func (s *State) applyTraining(index int) error {
 			s.trainingSpellChoices = candidates
 			s.trainingResult = result
 			s.Mode = ModeWilderness
-			s.Prompt = "選擇一個新法術"
+			s.Prompt = s.catalog.Text("training_select_spell", "training_select_spell")
 			s.Choices = make([]string, 0, len(candidates))
 			s.currentOriginalChoices = make([]string, 0, len(candidates))
 			for _, spellID := range candidates {
-				s.Choices = append(s.Choices, trainingSpellName(spellID))
+				s.Choices = append(s.Choices, s.trainingSpellName(spellID))
 				s.currentOriginalChoices = append(s.currentOriginalChoices, trainingSpellCommandPrefix+strconv.Itoa(int(spellID)))
 			}
 			return nil
@@ -330,30 +355,30 @@ type trainingSpell struct {
 	ID    uint8
 	Class int
 	Level int
-	Name  string
+	Key   string
 }
 
 var trainingSpells = []trainingSpell{
-	{9, 2, 1, "燃燒之手"}, {10, 2, 1, "魅惑人類"}, {11, 2, 1, "偵測魔法"},
-	{12, 2, 1, "變巨術"}, {13, 2, 1, "縮小術"}, {14, 2, 1, "交友術"},
-	{15, 2, 1, "魔法飛彈"}, {16, 2, 1, "防護邪惡"}, {17, 2, 1, "防護善良"},
-	{18, 2, 1, "閱讀魔法"}, {19, 2, 1, "護盾術"}, {20, 2, 1, "電爪"},
-	{21, 2, 1, "睡眠術"},
-	{29, 2, 2, "偵測隱形"}, {30, 2, 2, "隱形術"}, {31, 2, 2, "敲擊術"},
-	{32, 2, 2, "鏡影術"}, {33, 2, 2, "衰弱射線"}, {34, 2, 2, "惡臭之雲"},
-	{35, 2, 2, "力量術"},
-	{45, 2, 3, "閃現術"}, {46, 2, 3, "解除魔法"}, {47, 2, 3, "火球術"},
-	{48, 2, 3, "加速術"}, {49, 2, 3, "人類定身術"}, {50, 2, 3, "十呎隱形術"},
-	{51, 2, 3, "閃電束"}, {52, 2, 3, "十呎防護邪惡"}, {53, 2, 3, "十呎防護善良"},
-	{54, 2, 3, "防護普通飛彈"}, {55, 2, 3, "緩慢術"},
-	{81, 2, 4, "魅惑怪物"}, {82, 2, 4, "困惑術"}, {83, 2, 4, "次元門"},
-	{84, 2, 4, "恐懼術"}, {85, 2, 4, "火焰護盾"}, {86, 2, 4, "笨拙術"},
-	{87, 2, 4, "冰風暴"}, {88, 2, 4, "次級法術無效結界"}, {89, 2, 4, "移除詛咒"},
-	{100, 2, 4, "降咒術"},
-	{91, 2, 5, "死雲術"}, {92, 2, 5, "冰錐術"}, {93, 2, 5, "弱智術"},
-	{94, 2, 5, "怪物定身術"},
-	{77, 1, 1, "德魯伊偵測魔法"}, {78, 1, 1, "糾纏術"},
-	{79, 1, 1, "妖火術"}, {80, 1, 1, "動物隱形術"},
+	{9, 2, 1, "spell_magic_user_1"}, {10, 2, 1, "spell_magic_user_2"}, {11, 2, 1, "spell_magic_user_3"},
+	{12, 2, 1, "spell_magic_user_4"}, {13, 2, 1, "spell_magic_user_5"}, {14, 2, 1, "spell_magic_user_6"},
+	{15, 2, 1, "spell_magic_user_7"}, {16, 2, 1, "spell_magic_user_8"}, {17, 2, 1, "spell_magic_user_9"},
+	{18, 2, 1, "spell_magic_user_10"}, {19, 2, 1, "spell_magic_user_11"}, {20, 2, 1, "spell_magic_user_12"},
+	{21, 2, 1, "spell_magic_user_13"},
+	{29, 2, 2, "spell_magic_user_29"}, {30, 2, 2, "spell_magic_user_30"}, {31, 2, 2, "spell_magic_user_31"},
+	{32, 2, 2, "spell_magic_user_32"}, {33, 2, 2, "spell_magic_user_33"}, {34, 2, 2, "spell_magic_user_34"},
+	{35, 2, 2, "spell_magic_user_35"},
+	{45, 2, 3, "spell_magic_user_45"}, {46, 2, 3, "spell_magic_user_46"}, {47, 2, 3, "spell_magic_user_47"},
+	{48, 2, 3, "spell_magic_user_48"}, {49, 2, 3, "spell_magic_user_49"}, {50, 2, 3, "spell_magic_user_50"},
+	{51, 2, 3, "spell_magic_user_51"}, {52, 2, 3, "spell_magic_user_52"}, {53, 2, 3, "spell_magic_user_53"},
+	{54, 2, 3, "spell_magic_user_54"}, {55, 2, 3, "spell_magic_user_55"},
+	{81, 2, 4, "spell_magic_user_81"}, {82, 2, 4, "spell_magic_user_82"}, {83, 2, 4, "spell_magic_user_83"},
+	{84, 2, 4, "spell_magic_user_84"}, {85, 2, 4, "spell_magic_user_85"}, {86, 2, 4, "spell_magic_user_86"},
+	{87, 2, 4, "spell_magic_user_87"}, {88, 2, 4, "spell_magic_user_88"}, {89, 2, 4, "spell_magic_user_89"},
+	{100, 2, 4, "spell_magic_user_100"},
+	{91, 2, 5, "spell_magic_user_91"}, {92, 2, 5, "spell_magic_user_92"}, {93, 2, 5, "spell_magic_user_93"},
+	{94, 2, 5, "spell_magic_user_94"},
+	{77, 1, 1, "spell_druid_77"}, {78, 1, 1, "spell_druid_78"},
+	{79, 1, 1, "spell_druid_79"}, {80, 1, 1, "spell_druid_80"},
 }
 
 func trainingSpellCandidates(character party.Character) []uint8 {
@@ -371,13 +396,13 @@ func trainingSpellCandidates(character party.Character) []uint8 {
 	return result
 }
 
-func trainingSpellName(spellID uint8) string {
+func (s *State) trainingSpellName(spellID uint8) string {
 	for _, spell := range trainingSpells {
 		if spell.ID == spellID {
-			return spell.Name
+			return s.catalog.Text(spell.Key, spell.Key)
 		}
 	}
-	return fmt.Sprintf("未知法術 0x%02X", spellID)
+	return fmt.Sprintf(s.catalog.Text("spell_unknown", "spell_unknown 0x%02X"), spellID)
 }
 
 func recalculateTrainingSpellCounts(character *party.Character) {

@@ -106,6 +106,11 @@ commit 內保存不可能自我引用的 hash。
   409、Ebiten 前端 164、runtime／工具 742。正式 `./internal/...` 測試會阻擋
   新增、改字、搬動、增加副本及未同步 reduced baseline 的刪除；此數量是待清
   技術債，不是允許額度。READY spec 452 與 `docs/audit/README.md` 是權威。
+- 第 453 輪完成第一個由該 gate 驗收的設施切片：訓練場提示、確認、失敗、
+  升級結果、職業與 49 筆可學法術名稱均改由正式 locale stable ID 取得；
+  Go 規則表不再保存中文 `Name`。測試即時載入正式 JSON 並依 ID 解析期望值。
+  exact baseline 從 1,315 降為 1,251，移除 64 次 runtime UI 漢字 literal；
+  其餘 1,251 次仍是待清債務，不得宣稱全專案已完成資料分離。
 - PC-98 `VFD1.00` 唯讀稽核工具、兩張磁碟雜湊與 absent CHRN 已建立；
   NP2kai Docker 實機可開機至 MEGDOS／`loader.com`。`MSCDRV.EXE` 已確認為
   `INT D2h`／YM2203 (`0x188/0x18A`) 常駐驅動；MAME FDI 身分雜湊與 loader

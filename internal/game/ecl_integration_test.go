@@ -516,6 +516,8 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 
 	// The Hall of Training at GEO2 (5,2), terrain 0x8C, reuses PICTURE 4
 	// before its YES branch invokes the location-specific PROGRAM 0 service.
+	trainingCatalog := trainingTestCatalog(t)
+	state.catalog = trainingCatalog
 	character := &state.partyRoster[0]
 	character.Class = party.ClassFighter
 	character.Level = 1
@@ -551,6 +553,11 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if state.Mode != ModeWilderness || !state.trainingMenu || len(state.Choices) != 2 {
 		t.Fatalf("training service mode=%v menu=%v choices=%v",
 			state.Mode, state.trainingMenu, state.Choices)
+	}
+	if state.Prompt != trainingCatalog.Text("training_select_character", "") ||
+		state.Choices[1] != trainingCatalog.Text("training_exit", "") {
+		t.Fatalf("training service did not resolve stable locale IDs: prompt=%q choices=%v",
+			state.Prompt, state.Choices)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)

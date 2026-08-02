@@ -1,14 +1,55 @@
 package game
 
 import (
+	"os"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 )
 
+func trainingTestCatalog(t *testing.T) locale.Catalog {
+	t.Helper()
+	data, err := os.ReadFile("../../assets/locale/zh-TW.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := locale.Load(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
+func TestTrainingCatalogCoversEveryDisplayedStableID(t *testing.T) {
+	catalog := trainingTestCatalog(t)
+	uiKeys := []string{
+		"training_select_character", "training_character_summary", "training_exit",
+		"training_requires_healthy", "training_insufficient_gold", "training_insufficient_experience",
+		"training_confirm_prompt", "training_confirm", "training_cancel", "training_success",
+		"training_hp_increase", "training_dual_class_no_hp", "training_select_spell",
+		"training_learned_spell_suffix", "class_cleric", "class_fighter", "class_ranger",
+		"class_paladin", "class_magic_user", "class_thief", "class_unknown", "spell_unknown",
+	}
+	for _, key := range uiKeys {
+		if got := catalog.Text(key, ""); got == "" {
+			t.Fatalf("training locale ID %q is absent", key)
+		}
+	}
+	seenSpellIDs := make(map[uint8]bool, len(trainingSpells))
+	for _, spell := range trainingSpells {
+		if seenSpellIDs[spell.ID] {
+			t.Fatalf("duplicate training spell ID 0x%02X", spell.ID)
+		}
+		seenSpellIDs[spell.ID] = true
+		if got := catalog.Text(spell.Key, ""); got == "" {
+			t.Fatalf("training spell 0x%02X locale ID %q is absent", spell.ID, spell.Key)
+		}
+	}
+}
+
 func TestTrainingHallLevelsFighterAndChargesCharacter(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	state := NewState(trainingTestCatalog(t))
 	state.fixSeed = 7
 	state.partyRoster = party.Roster{{
 		ID: "hero", Name: "亞倫", Class: party.ClassFighter, Level: 1,
@@ -44,7 +85,8 @@ func TestTrainingHallLevelsFighterAndChargesCharacter(t *testing.T) {
 }
 
 func TestTrainingHallRejectsInsufficientExperience(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		Name: "亞倫", Class: party.ClassFighter, Level: 1, Experience: 2000,
 		Platinum: 400, HealthStatus: party.HealthStatusOK,
@@ -53,13 +95,13 @@ func TestTrainingHallRejectsInsufficientExperience(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.Message != "經驗值不足，現在還不能升級。" {
+	if state.Mode != ModeEvent || state.Message != catalog.Text("training_insufficient_experience", "") {
 		t.Fatalf("mode=%v message=%q", state.Mode, state.Message)
 	}
 }
 
 func TestTrainingUsesFixedHPAfterMaximumHitDice(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		Name: "老兵", Race: party.RaceHuman, Class: party.ClassFighter, Level: 10,
 		ClassLevels: [8]uint8{2: 10}, Experience: 750001,
@@ -96,7 +138,7 @@ func TestTrainingEnforcesRaceClassLevelLimit(t *testing.T) {
 }
 
 func TestDualClassTrainingSuppressesHPUntilOldLevelExceeded(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		Name: "轉職者", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 2,
 		ClassLevels: [8]uint8{5: 2}, Experience: 5001,
@@ -120,7 +162,7 @@ func TestDualClassTrainingSuppressesHPUntilOldLevelExceeded(t *testing.T) {
 }
 
 func TestDualClassTrainingRestoresHPAfterOldLevelExceeded(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	state := NewState(trainingTestCatalog(t))
 	state.fixSeed = 11
 	state.partyRoster = party.Roster{{
 		Name: "轉職者", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 5,
@@ -145,7 +187,8 @@ func TestDualClassTrainingRestoresHPAfterOldLevelExceeded(t *testing.T) {
 }
 
 func TestMagicUserTrainingChoosesOneNewKnownSpell(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	catalog := trainingTestCatalog(t)
+	state := NewState(catalog)
 	state.partyRoster = party.Roster{{
 		Name: "米拉", Race: party.RaceHuman, Class: party.ClassMagicUser, Level: 1,
 		ClassLevels: [8]uint8{5: 1}, Experience: 2501,
@@ -166,7 +209,7 @@ func TestMagicUserTrainingChoosesOneNewKnownSpell(t *testing.T) {
 	}
 	magicMissile := -1
 	for index, choice := range state.Choices {
-		if choice == "魔法飛彈" {
+		if choice == catalog.Text("spell_magic_user_7", "") {
 			magicMissile = index
 			break
 		}
@@ -184,7 +227,7 @@ func TestMagicUserTrainingChoosesOneNewKnownSpell(t *testing.T) {
 }
 
 func TestNinthLevelRangerChoosesFromDruidAndMagicUserSpells(t *testing.T) {
-	state := NewState(locale.Catalog{})
+	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{
 		Name: "凱拉", Race: party.RaceHuman, Class: party.ClassRanger, Level: 8,
 		ClassLevels: [8]uint8{4: 8}, Experience: 225001,
