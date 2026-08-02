@@ -1,6 +1,40 @@
 package combat
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
+
+func TestOrderScanTargetIDsUsesLegacyObjectDistanceAndIgnoresDirection(t *testing.T) {
+	records := []ScanTargetRecord{
+		{ObjectID: 8, TargetID: "eight", Distance: 5, Direction: 0},
+		{ObjectID: 7, TargetID: "seven", Distance: 5, Direction: 7},
+		{ObjectID: 6, TargetID: "six", Distance: 5, Direction: 6},
+		{ObjectID: 3, TargetID: "near", Distance: 2, Direction: 5},
+	}
+	got, err := OrderScanTargetIDs(records)
+	want := []string{"near", "six", "eight", "seven"}
+	if err != nil || !reflect.DeepEqual(got, want) {
+		t.Fatalf("ordered=%v want=%v err=%v", got, want, err)
+	}
+	if records[0].TargetID != "eight" {
+		t.Fatalf("input records mutated: %v", records)
+	}
+}
+
+func TestOrderScanTargetIDsRejectsAmbiguousProjection(t *testing.T) {
+	tests := [][]ScanTargetRecord{
+		{{ObjectID: 0, TargetID: "zero"}},
+		{{ObjectID: 1, TargetID: ""}},
+		{{ObjectID: 1, TargetID: "one"}, {ObjectID: 1, TargetID: "two"}},
+		{{ObjectID: 1, TargetID: "same"}, {ObjectID: 2, TargetID: "same"}},
+	}
+	for _, records := range tests {
+		if _, err := OrderScanTargetIDs(records); err == nil {
+			t.Fatalf("accepted ambiguous SCAN records %v", records)
+		}
+	}
+}
 
 func TestSelectRangedCombatTargetFiltersRangeWallsAndUsesFootprints(t *testing.T) {
 	battle, err := NewBattle([]Fighter{

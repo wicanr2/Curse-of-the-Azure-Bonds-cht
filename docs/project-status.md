@@ -465,6 +465,12 @@ commit 內保存不可能自我引用的 hash。
   失敗即關閉，隊伍／死亡仍留在上游。這不是 UI 完成：`SCAN`
   terrain／footprint／tie 實機、
   手動／Quick delayed cast、效果解除、存檔、twinkle／聲音與玩家路徑仍待續。
+- 第 435 輪以 overlay 31 完整 `SCAN／LOSEXISTS／INARC／sort` 指令訂正
+  三 byte候選表：第一欄是 object ID、第二欄是最小成功 LOS 加權距離低 byte、
+  第三欄是方向 payload；排序器不讀第三欄。等距時只依 object ID 與奇偶例外
+  執行原版巢狀交換。engine `combat/scanorder` 與 CoAB stable-ID adapter 已
+  接通並 fail-closed；terrain property、wall／large-footprint 實機、手動／
+  Quick Sleep、效果生命週期與演出仍未完成。
 - 第 383 輪修正 ECL session 第一次明確 `RunFrom` 會遺失預載存檔／區域
   記憶體的生命週期缺陷。原始 ECL1 block `0x50` 回歸已證明
   `4C59=1／4C5A=1／4C5B=FF` 時工作計數為 3，灰袍人會揭露自己是

@@ -2,7 +2,7 @@
 
 狀態：`READY`（限 combat targeting dispatch、`AOECOMBAT=9` 分支、無豁免與
 `5 × caster level` 持續時間；魔法抗性與 `PUTEFFECT` 已由 spec 434 接續，
-畫面演出仍待續）
+畫面演出仍待續；`SCAN` 三欄與排序已由 spec 435 訂正並接續）
 
 ## 結論
 
@@ -87,18 +87,18 @@ Borland `SPELLREC` 已證明 `+06h=AOECOMBAT`。戰鬥 handler `225Fh`：
 overlay 31 `31:003Eh → entry 6 → 08D8h SCAN` 的輸出 record 是三 bytes。
 `0945h` 清 count，`0B04h` 每接受一名 candidate 加一，`0B17h／0B2Ah／
 0B8Ch` 依序寫 object ID 與兩個排序欄位，最後呼叫 local `0035h` 排序。
-排序以第二欄為主要遞增鍵，等值時再使用第三欄與其奇偶 tie 邏輯；完整幾何
-欄位名稱尚未由 type table 關閉，所以規格保留 raw 三欄，不擅自命名成
-「距離／方向」。
+本輪原先把等距時的奇偶邏輯歸到第三欄，已被 spec 435 的完整連續指令推翻：
+排序以第二欄為主要遞增鍵，等值時只比較第一欄 object ID 與其奇偶；第三欄
+是方向 payload，排序器完全不讀。欄位 producer、footprint 展開與 exact
+巢狀排序見 spec 435；本節只保留 dispatch 與 copy order。
 
 ### 推論等級
 
 - `exact`：兩次 `DOSPELLTARGETING` writer、兩個 typed stub resolution、
   `AOECOMBAT=09h` 分派、`SCAN` call、三 byte list 建立／排序、
   `SPELLTARGET` copy order、`SAVERESULT=0` 跳過 save，以及 duration 公式。
-- `strong inference`：`SCAN` record 的第二、三欄分別反映幾何距離與方向；
-  指令資料流支持排序用途，但正式欄位名與全部 tie 語意仍缺 type／runtime
-  trace。
+- `exact`（由 spec 435 接續）：三欄依序是 object ID、最小成功 LOS 加權
+  距離低 byte、方向 sector；第三欄不參與排序。
 - `unknown`：terrain／large-footprint 對 Sleep list 的所有邊界、
   `PUTEFFECT` magic-resistance 行為、效果解除、動畫與音訊。
 
@@ -120,7 +120,8 @@ Sleep handler `2656h..2676h` 以 spell `15h` 和四個零參數進入 common wri
 
 1. 追 `PUTEFFECT 013E:2325h` 的正確 overlay/module projection，閉合 magic
    resistance、effect record 欄位與 raw `35h` writer。
-2. 以 DOSBox／PC-98 runtime 固定場面取得 Sleep 候選 list，驗證 `SCAN`
-   第二／三欄、large footprint 與 tie order。
-3. 證據閉合後才接 engine target-order adapter、Battle effect lifecycle、
+2. 以 DOSBox／PC-98 runtime 固定場面取得 Sleep 候選 list，驗證 terrain
+   property、large footprint 與畫面 target cursor；三欄 producer／sort 已由
+   spec 435 靜態閉合。
+3. 接續 spec 435 的 target-order adapter，再完成 Battle effect lifecycle、
    手動／Quick delayed cast、法術格消耗、繁中訊息、動畫與聲音。

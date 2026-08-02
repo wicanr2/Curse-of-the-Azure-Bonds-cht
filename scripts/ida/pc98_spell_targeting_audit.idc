@@ -88,6 +88,10 @@ static main()
   else if (strstr(path, "overlay-31.bin") != -1)
   {
     emit_range(out, "LOS_SCAN_STABLE_SORT", 0x0035, 0x019D);
+    emit_range(out, "LOS_STARTVECTOR", 0x019D, 0x0246);
+    emit_range(out, "LOS_STEPVECTOR", 0x0246, 0x03EA);
+    emit_range(out, "LOS_EXISTS", 0x03EA, 0x054A);
+    emit_range(out, "LOS_IN_ARC", 0x054A, 0x08D8);
     emit_range(out, "LOS_SCAN_TARGET_LIST", 0x08D8, 0x0BA5);
   }
   else

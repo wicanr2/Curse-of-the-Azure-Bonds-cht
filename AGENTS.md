@@ -159,6 +159,10 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 
 ### IDA 非破壞性語意註記
 
+- 本節已參考 `/home/anr2/cht/大時代的故事/CLAUDE.md` 的實務經驗；來源檔只作
+  唯讀參考並保留原位，不複製或反向改寫。吸收的是經本專案重新核對後可泛用的
+  原則：「原始識別與位址永遠保留、語意只作外部附加、每筆語意必帶推論等級」；
+  來源專案仍在驗證中的自動反向索引／語意 dump，不因此視為本專案已驗證工具。
 - 開始解讀函式或欄位前，先以原始函式名、位址、offset、symbol 與已知 bytes
   搜尋 `docs/`、`CONTEXT.md`、既有 IDC 報告及 READY spec。搜尋零命中只能表示
   「目前索引沒有答案」，不能自動升格為 `unknown`，更不能據此重新猜一套語意；
@@ -353,9 +357,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`7fe1209`（第 430 輪 PC-98 毒雲術 effect `44h` 中斷）；
-  第 431 輪 held-effect Action clear milestone 會由本文件所在 commit 完成。
-- Engine dependency：`73c0144`（含作品中立 `combat/sleep` 的 `4d4`／
+- CoAB 本輪基底：`08e6cca`（第 434 輪 Sleep `PUTEFFECT`／魔抗 transaction）；
+  第 435 輪 `SCAN` 三欄與排序 milestone 會由本文件所在 commit 完成。
+- Engine dependency：`b75e169`（含作品中立 `combat/scanorder` 的三 byte
+  record 原版排序、`combat/sleep` 的 `4d4`／
   ordered HD capacity filter、`combat/action` 的 delayed
   spell `TargetID`／point-target transaction 與 interruption clear、
   `combat/initiative`、
@@ -593,6 +598,13 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `5×caster level`、`CASTON=1` 與 raw `+4=caster level`。remake 只新增接受
   上游 ordered IDs 的 bounded core，不自行猜 `SCAN` 幾何；手動／Quick UI、
   解除、save round-trip 與演出仍未完成。READY spec 434 是權威。
+- 第 435 輪已由 overlay 31 連續 IDA 指令與 raw bytes 關閉 `SCAN` 三欄及
+  local `0035h` 排序：`+0=object ID`、`+1=最短成功 LOS 加權距離低 byte`、
+  `+2=方向 payload`。第三欄完全不參與排序；等距時只比較 object ID 與
+  奇偶例外，且必須逐迴圈重現，不能換成一般 comparator。engine
+  `combat/scanorder` 與 CoAB stable-ID adapter 已接通；terrain／wall 實機、
+  手動／Quick Sleep 與演出仍待續。READY spec 435 是權威，spec 433 的舊
+  第三欄 tie 敘述已 supersede。
 - 第 421 輪以 PC-98 overlays `08／13／18／24` 的非破壞性 IDA 副本完成
   QUICK／GUARD／BANDAGE／SPEED 命令核心。新增的符號與型別只存在分析
   database／報告，不回寫原始檔；每項結論在 READY spec 421 保留地址、bytes
