@@ -50,3 +50,44 @@ func TestPlayerFileAndTextInputContractUsesFormalCatalog(t *testing.T) {
 		t.Fatalf("ECL help=%q want=%q", got, want)
 	}
 }
+
+func TestAdventureChromeContractUsesFormalCatalog(t *testing.T) {
+	catalog := combatVisualCatalog(t)
+	state := NewState(catalog)
+	labels := []struct {
+		label PlayerUILabel
+		key   string
+	}{
+		{PlayerUILabelSelectHelp, "player_select_help"},
+		{PlayerUILabelSaveLoadHelp, "player_save_load_help"},
+		{PlayerUILabelContinueHelp, "player_continue_help"},
+		{PlayerUILabelShadowdaleMapTitle, "shadowdale_map_title"},
+		{PlayerUILabelMapControls, "area_navigation_help"},
+		{PlayerUILabelOverlandTitle, "overland_map_title"},
+		{PlayerUILabelOverlandControls, "overland_map_help"},
+		{PlayerUILabelSceneCharacterMissing, "scene_character_missing"},
+		{PlayerUILabelBigPictureContinue, "big_picture_continue"},
+		{PlayerUILabelBigPictureMissing, "big_picture_missing"},
+		{PlayerUILabelPictureMissing, "event_picture_missing"},
+		{PlayerUILabelCharacterNameHeader, "character_name_header"},
+		{PlayerUILabelCombatViewTitle, "combat_view_title"},
+		{PlayerUILabelCombatViewReturn, "combat_view_return"},
+		{PlayerUILabelFallen, "combat_fallen"},
+	}
+	for _, test := range labels {
+		if got, want := state.PlayerUILabel(test.label), catalog.Text(test.key, ""); got != want {
+			t.Errorf("label %d=%q want=%q", test.label, got, want)
+		}
+	}
+
+	state.MapX, state.MapY = 3, 11
+	if got, want := state.AreaMapPositionText(), fmt.Sprintf(catalog.Text("area_map_position", ""), 3, 11); got != want {
+		t.Fatalf("map position=%q want=%q", got, want)
+	}
+	if got, want := state.OverlandCurrentLocationText("LOCATION"), fmt.Sprintf(catalog.Text("overland_current_location", ""), "LOCATION"); got != want {
+		t.Fatalf("current location=%q want=%q", got, want)
+	}
+	if got := state.LocaleLanguage(); got != catalog.Language {
+		t.Fatalf("locale language=%q want=%q", got, catalog.Language)
+	}
+}

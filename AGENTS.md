@@ -716,6 +716,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   它只繪製 State 提供的 value／help／result。路徑、錯誤與輸入值是 runtime
   argument，不可寫死到 JSON；save／ECL continuation 與輸入限制也不能因
   資料化而改變。READY spec 482 是權威。
+- 第 483 輪把冒險選單、事件／圖片繼續、暗影谷 AREA、世界地圖、角色欄、
+  戰鬥檢視與倒地標記二十五筆前端中文移入 typed `PlayerUILabel`，baseline
+  `300→275`、frontend `88→63`。同一「繼續」identity 可由不同 layout 放在
+  不同座標，不能因此複製譯文；game-pack 地名必須跟隨 State catalog language，
+  禁止 renderer 固定 `zh-TW` 或另存作品地名表。READY spec 483 是權威。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

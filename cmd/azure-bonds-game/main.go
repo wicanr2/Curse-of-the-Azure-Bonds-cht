@@ -1247,18 +1247,18 @@ func (a *app) Draw(screen *ebiten.Image) {
 			text.Draw(screen, prefix+choice, a.face, 56, choiceTop+index*40, white)
 		}
 		if a.state.Message == "" {
-			text.Draw(screen, "Enter：選擇", a.face, 56, 330, cyan)
-			text.Draw(screen, "F5：儲存隊伍　F9：載入隊伍", a.face, 56, 370, white)
+			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSelectHelp), a.face, 56, 330, cyan)
+			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSaveLoadHelp), a.face, 56, 370, white)
 		}
 	}
 	if a.state.Mode == game.ModeEvent {
 		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
-		text.Draw(screen, "Enter：繼續", a.face, 56, 410, white)
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 410, white)
 	}
 	if a.state.Mode == game.ModeMap {
-		text.Draw(screen, "暗影谷荒野", a.face, 56, 220, cyan)
-		text.Draw(screen, "位置：("+strconv.Itoa(a.state.MapX)+", "+strconv.Itoa(a.state.MapY)+")", a.face, 56, 260, white)
-		text.Draw(screen, "Enter：場所　方向鍵：移動　Esc：離開", a.face, 56, 330, white)
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelShadowdaleMapTitle), a.face, 56, 220, cyan)
+		text.Draw(screen, a.state.AreaMapPositionText(), a.face, 56, 260, white)
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelMapControls), a.face, 56, 330, white)
 	}
 }
 
@@ -1297,7 +1297,7 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 		ebitenutil.DrawRect(screen, float64(x-7), float64(y+5), 15, 3, ink)
 		ebitenutil.DrawRect(screen, float64(x-7), float64(y-7), 3, 15, ink)
 		ebitenutil.DrawRect(screen, float64(x+5), float64(y-7), 3, 15, ink)
-		if localized, found := pack.Text(point.MessageID, "zh-TW"); found {
+		if localized, found := pack.Text(point.MessageID, a.state.LocaleLanguage()); found {
 			currentName = localized
 		}
 		break
@@ -1305,8 +1305,8 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 
 	drawPanelFrame(screen, 8, 264, 624, 184)
 	drawPanelFrame(screen, 8, 448, 624, 28)
-	text.Draw(screen, "月海諸地・世界地圖", a.face, 24, 296, cyan)
-	text.Draw(screen, "目前位置："+currentName, a.face, 24, 328, white)
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandTitle), a.face, 24, 296, cyan)
+	text.Draw(screen, a.state.OverlandCurrentLocationText(currentName), a.face, 24, 328, white)
 	timeLabel := strings.Split(a.state.GameTimeText(), "　")[0]
 	text.Draw(screen, timeLabel, a.compactFace, 468, 294, cyan)
 	for index, choice := range a.state.Choices {
@@ -1316,7 +1316,7 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 		}
 		text.Draw(screen, prefix+choice, a.face, 40, 366+index*30, white)
 	}
-	text.Draw(screen, "方向鍵選擇　Enter 確認", a.compactFace, 344, 470, cyan)
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, 470, cyan)
 	return true
 }
 
@@ -1385,11 +1385,11 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, "Enter：繼續", a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
+			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
 			return
 		}
-		text.Draw(screen, "人物圖層素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSceneCharacterMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	if a.state.BigPictureRequested {
@@ -1402,18 +1402,18 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 44)
 			screen.DrawImage(sprite, op)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, "大幅事件畫面　Enter：繼續", a.face, 56, 446, color.RGBA{255, 255, 255, 255})
+			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureContinue), a.face, 56, 446, color.RGBA{255, 255, 255, 255})
 			return
 		}
-		text.Draw(screen, "大幅事件圖片素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	key := fmt.Sprintf("pic%d-block-%02X", a.state.Area.GameArea, a.state.PictureBlock)
 	frames := a.combatAnimations[key]
 	if len(frames) == 0 {
-		text.Draw(screen, "事件圖片素材尚未載入", a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, "Enter：繼續", a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelPictureMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	frame := frames[0]
@@ -1427,7 +1427,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
-	text.Draw(screen, "Enter：繼續", a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
@@ -1534,7 +1534,7 @@ func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{A: 255})
 	a.drawOriginalAdventureFrame(screen)
-	text.Draw(screen, "姓名", a.compactFace, 280, 38, color.RGBA{232, 238, 255, 255})
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, color.RGBA{232, 238, 255, 255})
 	text.Draw(screen, "AC", a.compactFace, 528, 38, color.RGBA{232, 238, 255, 255})
 	text.Draw(screen, "HP", a.compactFace, 600, 38, color.RGBA{232, 238, 255, 255})
 	for index, fighter := range a.state.PartyFighters() {
@@ -1777,7 +1777,7 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	a.drawFirstPersonStageFrame(screen)
 
-	text.Draw(screen, "姓名", a.compactFace, 280, 38, white)
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, white)
 	text.Draw(screen, "AC", a.compactFace, 528, 38, white)
 	text.Draw(screen, "HP", a.compactFace, 600, 38, white)
 	for index, fighter := range a.state.PartyFighters() {
@@ -1927,11 +1927,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	drawWrappedText(screen, combatMessage, a.compactFace, 8, 392, 39, 20, 3, white)
 	if a.state.CombatViewActive() {
-		text.Draw(screen, "角色檢視", a.face, 64, 145, cyan)
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewTitle), a.face, 64, 145, cyan)
 		for index, line := range a.state.CombatViewLines() {
 			text.Draw(screen, line, a.face, 64, 185+index*30, white)
 		}
-		text.Draw(screen, "Enter／Esc：返回戰鬥", a.face, 64, 350, cyan)
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewReturn), a.face, 64, 350, cyan)
 		return
 	}
 	active, activeOK := a.state.CombatActiveFighter()
@@ -2665,14 +2665,14 @@ func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fight
 	}
 	if fighter.DownedCorpse && !fighter.DeathOverlay {
 		ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 58, G: 38, B: 28, A: 220})
-		text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
+		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelFallen), a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 		return
 	}
 	frame, active := a.deathOverlayFrame(fighter)
 	if !active {
 		if fighter.DownedCorpse {
 			ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 58, G: 38, B: 28, A: 220})
-			text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
+			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelFallen), a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 		}
 		return
 	}
@@ -2689,7 +2689,7 @@ func (a *app) drawFighterDeathOverlay(screen *ebiten.Image, fighter combat.Fight
 	}
 	// Keep a visible diagnostic fallback if a derived sprite was not packaged.
 	ebitenutil.DrawRect(screen, float64(x-4), float64(y-4), 36, 44, color.RGBA{R: 80, G: 12, B: 20, A: 220})
-	text.Draw(screen, "倒下", a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
+	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelFallen), a.face, x, y+22, color.RGBA{R: 255, G: 220, B: 180, A: 255})
 }
 
 func (a *app) deathOverlayFrame(fighter combat.Fighter) (uint8, bool) {
