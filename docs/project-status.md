@@ -7,6 +7,16 @@
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
+第 505 輪補上 PC-98 Quick target 的 caller 邊界：IDA／TPOV resolver 證明
+`04CCh` 是 overlay 09 entry 4，但其唯一直接 caller `0164h` 是通用戰鬥 action
+分派點，不是所有 Quick 法術的共同入口；overlay 13 `PICKTARGET` 則證明候選
+抽樣、`CHECKTARGET`、失敗移除與最多 `14h` 重試的控制流。engine 新增
+`combat/quicktarget.SelectOne`，CoAB Quick Magic Missile 改用 JSON 宣告的
+`LegacyObjectID` 候選順序與同一 Battle PRNG 做一次抽樣，修正字典序偏差。候選
+producer、完整 range／visibility、tie、原版 RNG 與其他法術 consumer 仍未關閉；
+這是 bounded target-consumer milestone，不是完整 Quick AI、完整戰鬥或整作通關
+聲明。權威規格為 [`docs/spec/505-pc98-quick-target-caller-and-single-draw.md`](spec/505-pc98-quick-target-caller-and-single-draw.md)。
+
 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續 bytes，關閉 Quick 目標
 helper 的 bounded priority retry：從 `7` 起始，以 raw helper 的 `1..7` 範圍
 決定最多掃幾個 threshold，無候選才逐級降低。engine `combat/quicktarget` 的

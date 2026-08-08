@@ -23,6 +23,15 @@ bounded priority-retry slice；`3E01:142Dh` helper 身分、完整 far-pointer c
 tie、Magic Missile／Cure 專用規則、敵方 Quick AI 與整作通關仍未完成。權威規格見
 [`docs/spec/504-pc98-quick-target-priority-retry.md`](docs/spec/504-pc98-quick-target-priority-retry.md)。
 
+第 505 輪補上 Quick target caller audit：`04CCh` 是 overlay 09 entry 4，但
+唯一直接 caller `0164h` 是通用 action fallback；overlay 13 `PICKTARGET` 則
+明確展示候選抽樣、`CHECKTARGET`、失敗移除與最多 20 次重試。共用 engine 新增
+`combat/quicktarget.SelectOne`，Quick Magic Missile 改依 JSON 宣告的
+`LegacyObjectID` 順序與同一 Battle PRNG 做一次抽樣，修正原先依字典序選敵的
+偏差。候選 producer、完整 tie／range／visibility／RNG 仍未閉合；這是 bounded
+target-consumer 修正，不是完整 Quick AI 或整作完成聲明。規格見
+[`docs/spec/505-pc98-quick-target-caller-and-single-draw.md`](docs/spec/505-pc98-quick-target-caller-and-single-draw.md)。
+
 第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
 角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON
 catalog。工具 help、錯誤與 Sound BIOS 參數報告仍維持原輸出語意；`cmd/coab-audit`

@@ -1376,6 +1376,19 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   microbenchmark 校準的 V30 emulator 校準 port `37h` profile，再補
   MSCDRV 的 CPU／OPN 共時 reload phase、save/resume 與 analog mixer gain。
 
+### 第 505 輪 Quick target caller 補充
+
+- overlay 09 `04CCh` 雖是 TPOV entry 4，但目前 IDA audit 找到的唯一直接
+  caller 是通用 action dispatcher `0164h`；`0164h` 不是 TPOV handler。後續
+  不得把 `04CCh` 的控制流自動套成所有 Quick 法術的共同入口。
+- overlay 13 `PICKTARGET` `3D7Fh..3F5Ch` 可證明「已投影候選的一次抽樣、
+  `CHECKTARGET`、失敗移除、最多 `14h` 重試」形狀；候選 producer、range、
+  visibility、tie 與 RNG 仍須分開標示。engine `combat/quicktarget.SelectOne`
+  只負責 legacy order 後的一次抽樣，CoAB adapter 才能提供候選。
+- 這輪的完整輸入 hash、IDA image、report hash 與 resolver 輸出以
+  `docs/spec/505-pc98-quick-target-caller-and-single-draw.md` 為準；不得以
+  `0164h`、`04CCh` 或 `4A00:1568h` 的相同數字跨位址空間推導正式欄位名稱。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。

@@ -1257,6 +1257,25 @@ func (b *Battle) SelectQuickTarget(
 	}, suitable)
 }
 
+// SelectQuickTargetOne performs the single-draw target boundary used by
+// Quick consumers such as Magic Missile after the title adapter has projected
+// its candidate list. It keeps the draw on the Battle PRNG and lets the
+// engine rule preserve the recovered legacy object order.
+func (b *Battle) SelectQuickTargetOne(
+	candidates []enginequicktarget.Candidate,
+	rule enginequicktarget.Rule,
+) (enginequicktarget.Candidate, bool, error) {
+	if b == nil || b.rng == nil {
+		return enginequicktarget.Candidate{}, false, fmt.Errorf("battle PRNG is unavailable")
+	}
+	return enginequicktarget.SelectOne(candidates, rule, func(sides int) (int, error) {
+		if sides < 1 {
+			return 0, fmt.Errorf("quick target die has %d sides", sides)
+		}
+		return b.rng.Intn(sides) + 1, nil
+	})
+}
+
 // BeginPendingSpellAction mirrors CASTCOMBATSPELL's nonzero casting-delay
 // handoff. The same action remains in this round at max(1, delay-units).
 func (b *Battle) BeginPendingSpellAction(fighterID string, spellID uint8, castingDelay int) error {
