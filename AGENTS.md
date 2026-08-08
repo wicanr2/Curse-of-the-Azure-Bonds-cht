@@ -814,6 +814,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `strong inference` 暫時 adapter，不得升格為 exact。READY spec 496 是權威；
   focused regression、Docker／Xvfb 正式 gate `ROUND496_FORMAL_EXIT=0` 與
   `coab-audit total=0` 已通過，完整遊戲仍不可宣稱完成。
+- 第 497 輪接通 Quick 牧師 targeted spells：`02h` Curse、`04h` Cause Light
+  Wounds、`06h／07h` Protection from Evil／Good。以既有敵方、鄰接敵人或自身
+  party target contract 建立 stable target，raw `CastingTime=10／5／4` 先走
+  pending targeted action，再重用 effect／音效／slot pipeline。原版 object
+  pointer 的候選順序、完整 `cast_on` consumer、敵方 Quick AI 與完整遊戲仍未
+  完成；stable 第一筆只是 `strong inference` bounded adapter，不得升格為 exact。
+  READY spec 497 是權威；focused regression、Docker／Xvfb 正式 gate
+  `ROUND497_FORMAL_EXIT=0` 與 `coab-audit total=0` 已通過。
 - 使用者已於 2026-08-09 恢復作業；compact／自動 continuation 應以第 493 輪
   的實際 HEAD、`docs/project-status.md` 與 `CONTEXT.md` 尾端為起點，不要把
   舊的「暫停」文字當成目前狀態。

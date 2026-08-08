@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 496 輪）
+本 milestone 的 CoAB 基底：GitHub `main`（第 497 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -44,6 +44,16 @@ tie／random、牆角反彈與完整 Quick AI 仍未完成；本輪為 strong-in
 adapter，不是完整遊戲完成聲明。Docker／Xvfb 正式 gate 為
 `ROUND496_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
 [`docs/spec/496-pc98-quick-lightning-line-target.md`](spec/496-pc98-quick-lightning-line-target.md)。
+
+第 497 輪接通四個 Quick 牧師指定目標法術：Curse `02h`、Cause Light Wounds
+`04h`、Protection from Evil `06h`、Protection from Good `07h`。依正式
+game-pack 的 casting time 保存 pending targeted action，續跑後重用既有敵方、
+鄰接／自身 party target contract、curse／傷害／protection effect、音效與 slot
+transaction；Cause 沒有鄰接敵人時 fail-closed。原版 object-pointer 候選順序、
+完整 `cast_on` consumer、敵方 Quick AI 與完整遊戲仍未完成；本輪為
+strong-inference bounded adapter。Docker／Xvfb 正式 gate 為
+`ROUND497_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
+[`docs/spec/497-pc98-quick-cleric-targeted-spells.md`](spec/497-pc98-quick-cleric-targeted-spells.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -699,6 +709,14 @@ adapter，不是完整遊戲完成聲明。Docker／Xvfb 正式 gate 為
   tie／random、牆角反彈與完整 Quick AI 仍未完成；這是 strong inference bounded
   slice。focused regression、Docker／Xvfb 正式 gate `ROUND496_FORMAL_EXIT=0` 與
   `coab-audit total=0` 已通過；READY spec 496 是權威。
+- 第 497 輪接通 Quick 牧師 targeted spells：`02h` Curse、`04h` Cause Light
+  Wounds、`06h／07h` Protection from Evil／Good。以既有 target contract 選取
+  stable 敵人、鄰接敵人或 party 自身，raw `CastingTime=10／5／4` 先保存
+  pending target，再由正常 scheduler 進既有 effect／音效／slot pipeline；
+  object-pointer 候選順序、完整 `cast_on` consumer、敵方 Quick AI 與完整遊戲仍
+  未完成，這是 strong inference bounded slice。focused regression、Docker／Xvfb
+  正式 gate `ROUND497_FORMAL_EXIT=0` 與 `coab-audit total=0` 已通過；READY spec
+  497 是權威。
 - 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
   證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC

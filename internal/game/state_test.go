@@ -3169,6 +3169,202 @@ func TestCombatAltMQuickLightningBoltUsesLineTargetAndPendingDelay(t *testing.T)
 	}
 }
 
+func TestCombatAltMQuickCurseUsesPendingEnemyTarget(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{{
+			ID: "cleric", Class: party.ClassCleric, Level: 1,
+			SpellSlots: []uint8{CurseSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "cleric", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 10, AttackBonus: 3, InitiativeBonus: 1,
+			HasCombatPosition: true, CombatX: 4, CombatY: 1,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("cleric")
+		if !ok || caster.CombatAction.SpellID != CurseSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || caster.CombatAction.TargetID != "enemy" ||
+			len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending Quick Curse caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Curse manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 8 && state.CombatActive(); action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+			caster, _ = state.fighter("cleric")
+			if target, ok := state.fighter("enemy"); ok && target.Cursed {
+				break
+			}
+		}
+		target, _ := state.fighter("enemy")
+		if !target.Cursed || target.AttackBonus != 2 || target.CurseRounds != 5 ||
+			caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Curse target=%+v caster=%+v slots=%v", target, caster, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-3 Quick Curse selection")
+	}
+}
+
+func TestCombatAltMQuickCauseLightWoundsUsesPendingAdjacentTarget(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.partyRoster = party.Roster{{
+			ID: "cleric", Class: party.ClassCleric, Level: 1,
+			SpellSlots: []uint8{CauseLightWoundsSpellID},
+		}}
+		heroes := []combat.Fighter{{
+			ID: "cleric", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{
+			{ID: "a-adjacent", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+				ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+				CombatX: 2, CombatY: 1},
+			{ID: "z-far", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+				ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+				CombatX: 8, CombatY: 8},
+		}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("cleric")
+		if !ok || caster.CombatAction.SpellID != CauseLightWoundsSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || caster.CombatAction.TargetID != "a-adjacent" ||
+			len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending Quick Cause Light Wounds caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Cause Light Wounds manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 8 && state.CombatActive(); action++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+			caster, _ = state.fighter("cleric")
+			if target, ok := state.fighter("a-adjacent"); ok && target.HitPoints < 100 {
+				break
+			}
+		}
+		target, _ := state.fighter("a-adjacent")
+		far, _ := state.fighter("z-far")
+		if target.HitPoints >= 100 || far.HitPoints != 100 ||
+			caster.CombatAction.SpellID != 0 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Cause Light Wounds target=%+v far=%+v caster=%+v slots=%v", target, far, caster, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-2 Quick Cause Light Wounds selection")
+	}
+}
+
+func TestCombatAltMQuickProtectionSpellsUsePendingPartyTarget(t *testing.T) {
+	tests := []struct {
+		name   string
+		spell  uint8
+		active func(combat.Fighter) bool
+	}{
+		{name: "protection-from-evil", spell: ProtectionFromEvilSpellID, active: func(f combat.Fighter) bool {
+			return f.ProtectedFromEvil
+		}},
+		{name: "protection-from-good", spell: ProtectionFromGoodSpellID, active: func(f combat.Fighter) bool {
+			return f.ProtectedFromGood
+		}},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			found := false
+			for seed := int64(0); seed < 512 && !found; seed++ {
+				state := NewState(testCatalog())
+				state.partyRoster = party.Roster{{
+					ID: "cleric", Class: party.ClassCleric, Level: 2,
+					SpellSlots: []uint8{test.spell},
+				}}
+				heroes := []combat.Fighter{{
+					ID: "cleric", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+					ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+					CombatX: 1, CombatY: 1,
+				}}
+				enemies := []combat.Fighter{{
+					ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+					ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+					CombatX: 8, CombatY: 8,
+				}}
+				if err := state.StartCombat(heroes, enemies, seed); err != nil {
+					t.Fatal(err)
+				}
+				if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+					t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+				}
+				if err := state.CombatQuick(); err != nil {
+					t.Fatal(err)
+				}
+				caster, ok := state.fighter("cleric")
+				if !ok || caster.CombatAction.SpellID != test.spell {
+					continue
+				}
+				found = true
+				if caster.CombatAction.Delay <= 0 || caster.CombatAction.TargetID != "cleric" ||
+					len(state.partyRoster[0].SpellSlots) != 1 {
+					t.Fatalf("pending Quick %s caster=%+v slots=%v", test.name, caster, state.partyRoster[0].SpellSlots)
+				}
+				if changed := state.CombatManualControl(); changed != 1 {
+					t.Fatalf("pending %s manual handoff changed=%d", test.name, changed)
+				}
+				for action := 0; action < 8 && state.CombatActive(); action++ {
+					if err := state.CombatAct(); err != nil {
+						t.Fatal(err)
+					}
+					caster, _ = state.fighter("cleric")
+					if test.active(caster) {
+						break
+					}
+				}
+				if !test.active(caster) || caster.CombatAction.SpellID != 0 ||
+					len(state.partyRoster[0].SpellSlots) != 0 {
+					t.Fatalf("Quick %s caster=%+v slots=%v", test.name, caster, state.partyRoster[0].SpellSlots)
+				}
+			}
+			if !found {
+				t.Fatalf("no deterministic seed reached Quick %s selection", test.name)
+			}
+		})
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}

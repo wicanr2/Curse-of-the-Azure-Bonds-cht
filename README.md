@@ -59,6 +59,15 @@ save／電擊保護、音效與 slot pipeline。候選 pointer projection、tie�
 Docker／Xvfb 正式 gate 為 `ROUND496_FORMAL_EXIT=0`、`coab-audit total=0`，
 證據見 [`docs/spec/496-pc98-quick-lightning-line-target.md`](docs/spec/496-pc98-quick-lightning-line-target.md)。
 
+第 497 輪接通 Quick 牧師指定目標法術：`Curse (02h)`、`Cause Light Wounds
+(04h)`、`Protection from Evil (06h)`、`Protection from Good (07h)`。四者
+依 game-pack casting time 保存 targeted pending action，續跑後重用既有敵方／
+鄰接／自身 party target contract、效果 writer、音效與法術格交易；Cause Light
+Wounds 沒有鄰接敵人時維持 fail-closed。原版 object-pointer 候選順序、
+`cast_on` consumer 與 Quick AI 仍未逐指令閉合。Docker／Xvfb 正式 gate 為
+`ROUND497_FORMAL_EXIT=0`、`coab-audit total=0`，證據見
+[`docs/spec/497-pc98-quick-cleric-targeted-spells.md`](docs/spec/497-pc98-quick-cleric-targeted-spells.md)。
+
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
 literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
@@ -1356,6 +1365,15 @@ strong-inference bounded adapter；target pointer projection、候選 tie／rand
 牆角反彈與完整 Quick AI 未完成。正式 gate 為 `ROUND496_FORMAL_EXIT=0`，
 `coab-audit` 為 `total=0`。證據見
 [`spec 496`](docs/spec/496-pc98-quick-lightning-line-target.md)。
+
+第 497 輪接通 Quick 牧師 targeted spells：`02h` Curse、`04h` Cause Light Wounds、
+`06h／07h` Protection from Evil／Good。以既有手動 target contract 選取 stable
+敵人、鄰接敵人或 party 自身，raw `CastingTime=10／5／4` 先交給 pending targeted
+action，再由正常 scheduler 寫入 curse／傷害／protection effect 與 slot transaction。
+這仍是 strong-inference bounded adapter；候選 pointer 順序、完整 `cast_on`
+語意、敵方 Quick AI 與完整遊戲仍未完成。正式 gate 為
+`ROUND497_FORMAL_EXIT=0`，`coab-audit` 為 `total=0`。證據見
+[`spec 497`](docs/spec/497-pc98-quick-cleric-targeted-spells.md)。
 
 第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
 連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`
