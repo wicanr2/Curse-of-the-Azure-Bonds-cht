@@ -1,4 +1,10 @@
-# 第四百一十八輪：PC-98 Blink、動物視覺與 action delay（READY）
+# 第四百一十八輪：PC-98 Blink、動物視覺與 action delay（SUPERSEDED）
+
+> **欄位命名勘誤：** 本規格的 visibility handler bytes、`13h` 比較與 action
+> delay 結論仍可查考；但 spec 499 以 Borland `CHARREC` member table 證明
+> `+11Ah` 是 `RACETYPE`、`+11Bh` 是 `ALIGNMENT`、`+14Ch` 才是
+> `MONSTERTYPE`。本文件所有把 `+11Ah` 稱作 `MonsterType` 的文字均已被
+> spec 499 supersede，不得作為目前欄位語意。
 
 ## 範圍與結論
 
@@ -7,12 +13,13 @@
 
 - operational `25h` 在目標 `Action +3 == 0` 時設定 target hidden，並把
   attack roll 直接寫成 `FFh`；因此 natural 20 仍會 miss。非零 delay 時不作用。
-- operational `45h` 只在觀察者 `MonsterType == 13h` 時作用。觀察者沒有
+- operational `45h` 只在觀察者 `RACETYPE == 13h` 時作用。觀察者沒有
   operational `18h` 便設定 target hidden；不論有沒有 `18h`，attack roll
   都會再減 4。
 - `+11Ah == 03h` 由獨立 effect `4Bh` dragon-slayer handler 消費；六章真實
   MON*CHA corpus 中 `13h` records 是 WORG、FIGHTING DOG、MONKEY、OWL BEAR。
-  因而 `+11Ah` 可投影為 `MonsterType`，`13h` 可命名為 Animal。
+  這只能說明 handler 消費 `RACETYPE=13h`；欄位名稱與真正的
+  `MONSTERTYPE` offset 由 spec 499 修正。
 - 原版每輪會配置非零 action delay，行動完成後歸零。remake 現把相同生命週期
   接到現行 scheduler，避免 blink 怪物因 delay 永遠維持零而永久無敵。
 
@@ -91,8 +98,8 @@ effect `4Bh` local `17B5h` 獨立讀同一 `+11Ah`，比較 `03h` 後擲 `1d12`�
 
 ## remake 契約與驗收
 
-- `monster.Record` 從 raw `0x11A` 解析 `MonsterType`，並投影到
-  renderer-neutral `combat.Fighter`；Animal constant 是 `13h`。
+- `monster.Record` 從 raw `0x11A` 解析 `RaceType`，並以相容別名投影到
+  renderer-neutral `combat.Fighter`；Animal `RACETYPE` constant 是 `13h`。
 - `Fighter.VisibleTo` 加入 delay-aware `25h` 與 observer-type-aware `45h`。
 - 物理命中以 `MonsterAffectForcesAttackMiss` 讓 `25h` 覆寫 natural 20；
   `45h` 對 Animal observer 保留 AC `+4`，即使 `18h` 已避免 hidden。
@@ -102,7 +109,7 @@ effect `4Bh` local `17B5h` 獨立讀同一 `+11Ah`，比較 `03h` 後擲 `1d12`�
 - core tests 覆蓋 blink natural 20、delay 0／非零、Animal／非 Animal、
   `18h` 與 `45h` 的 hidden／AC 差異，以及 action completion lifecycle。
 - Tilverton 正常玩家路徑的犬舍戰從真實 `MON2CHA` 載入 FIGHTING DOG，驗證
-  `MonsterType=13h`；Standing Stone→Myth Drannor 長路徑則證明真實 phase
+  `RACETYPE=13h`；Standing Stone→Myth Drannor 長路徑則證明真實 phase
   spider 戰鬥仍可完成，沒有因 blink delay 永遠為零而卡死。
 
 ## 尚未完成

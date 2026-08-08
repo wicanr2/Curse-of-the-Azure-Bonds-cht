@@ -3941,3 +3941,20 @@ CoAB JSON 宣告 stable IDs：`0Ah→cold/half`、`70h→fire/immune`、
 採兩個 repository 各一個重大里程碑 commit；本輪仍不代表寒冷法術入口、effect `08h／09h`、
 完整戰鬥或全作 remake 完成。規格：
 `docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`。
+
+2026-08-09 第四百九十九輪接續 PC-98 `MON*SPC` effect 條件修正。IDA Pro 9.4
+Docker 分析副本與 Borland symbol parser 共同關閉 overlay 12 local `022Dh`
+與 `0264h`：effect `08h` 讀 active character `+11Bh` 的 `{2,5,8}`，effect
+`09h` 讀 `{0,3,6}`；命中時 exact 寫 `SAVEROLL DS:A02Ch += 2`、
+`ROLLTOHIT DS:A039h -= 2`。`CHARREC` type table 另證明 `+11Ah=RACETYPE`、
+`+11Bh=ALIGNMENT`、`+14Ch=MONSTERTYPE`，修正 spec 418 舊欄位命名。
+
+Golden Box engine 新增 `combat/modifier` 與 `combat_conditional_modifiers`
+schema／Pack loader；CoAB JSON 宣告 effect `08h／09h` stable rules。CoAB
+`monster.Record`、DOS player parser／Character／Fighter 保存 alignment known bit
+與三個 raw field；Battle 在物理攻擊、Fireball、反射線、Stinking Cloud、
+Cloudkill save boundary 以「防禦方 effect＋互動角色 alignment」解析，未知值
+fail-closed，規則於開戰／active-combat restore 重掛且不進 save JSON。Engine
+focused `./combat/modifier ./engine` 與 CoAB focused package gate 已通過；Docker／Xvfb
+正式全套 gate 亦通過，marker 為 `ROUND499_FORMAL_EXIT=0`、`coab-audit total=0`。
+完整 effect lifecycle、完整遊戲與通關仍未完成；本輪採兩 repo 各一個集中 commit／push。

@@ -11,6 +11,7 @@ import (
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
+	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
 	enginerandom "github.com/wicanr2/golden-box-remake-engine/randomstream"
@@ -104,9 +105,19 @@ type Fighter struct {
 	// original Sleep handler's five-HD cost branch. Its gameplay name remains
 	// unresolved; adapters must not substitute race or another inferred field.
 	RawPlayer74 uint8
-	// MonsterType preserves the original shared Player record byte at +11A.
-	// Effect handlers compare this field against typed creature categories.
-	MonsterType uint8
+	// RaceType preserves the Borland CHARREC.RACETYPE byte at +11A. The
+	// historical MonsterType field remains as a compatibility alias for old
+	// saves and synthetic fixtures; it is not the CHARREC.MONSTERTYPE byte.
+	RaceType      uint8 `json:"race_type,omitempty"`
+	RaceTypeKnown bool  `json:"race_type_known,omitempty"`
+	MonsterType   uint8
+	// Alignment is CHARREC.ALIGNMENT at +11B. Zero is LAWFUL_GOOD, so the
+	// explicit known bit is required before a conditional effect may match.
+	Alignment      uint8 `json:"alignment,omitempty"`
+	AlignmentKnown bool  `json:"alignment_known,omitempty"`
+	// RawMonsterType preserves CHARREC.MONSTERTYPE at +14C without assigning
+	// a gameplay meaning that belongs to a later evidence-backed adapter.
+	RawMonsterType uint8 `json:"raw_monster_type,omitempty"`
 	// Dexterity preserves the shared Player byte at +17 used by the original
 	// initiative reaction table. It is deliberately not converted to a modern
 	// ability modifier.
@@ -154,6 +165,9 @@ type Fighter struct {
 	// DamageRules are immutable title-pack capabilities. They are deliberately
 	// excluded from save JSON and reattached by the game adapter after load.
 	DamageRules []enginedamage.Rule `json:"-"`
+	// ConditionalModifierRules are immutable game-pack capabilities. They are
+	// excluded from save JSON and reattached after loading the active battle.
+	ConditionalModifierRules []enginemodifier.Rule `json:"-"`
 }
 
 // MonsterAffect mirrors one nine-byte MON*SPC record without importing the
@@ -176,6 +190,55 @@ type MonsterAffect struct {
 }
 
 func (a MonsterAffect) operational() bool { return a.Active || a.Innate }
+
+const (
+	AlignmentLawfulGood     uint8 = 0
+	AlignmentLawfulNeutral  uint8 = 1
+	AlignmentLawfulEvil     uint8 = 2
+	AlignmentNeutralGood    uint8 = 3
+	AlignmentTrueNeutral    uint8 = 4
+	AlignmentNeutralEvil    uint8 = 5
+	AlignmentChaoticGood    uint8 = 6
+	AlignmentChaoticNeutral uint8 = 7
+	AlignmentChaoticEvil    uint8 = 8
+)
+
+func (f Fighter) isEvil() bool {
+	if f.AlignmentKnown {
+		return f.Alignment == AlignmentLawfulEvil || f.Alignment == AlignmentNeutralEvil || f.Alignment == AlignmentChaoticEvil
+	}
+	return f.Evil
+}
+
+func (f Fighter) isGood() bool {
+	if f.AlignmentKnown {
+		return f.Alignment == AlignmentLawfulGood || f.Alignment == AlignmentNeutralGood || f.Alignment == AlignmentChaoticGood
+	}
+	return f.Good
+}
+
+func (f Fighter) raceType() uint8 {
+	if f.RaceTypeKnown {
+		return f.RaceType
+	}
+	return f.MonsterType
+}
+
+// MonsterConditionalModifierAgainst evaluates effects owned by f against the
+// character currently interacting with f. PC-98 effect 08h/09h reads the
+// active character's alignment while updating shared SAVE/TO-HIT cells; the
+// owner and the interacting character therefore remain separate inputs.
+func (f Fighter) MonsterConditionalModifierAgainst(interacting Fighter) enginemodifier.Result {
+	active := make([]uint8, 0, len(f.MonsterAffects))
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() {
+			active = append(active, affect.Kind)
+		}
+	}
+	return enginemodifier.Resolve(active, enginemodifier.Subject{
+		Value: interacting.Alignment, Known: interacting.AlignmentKnown,
+	}, f.ConditionalModifierRules)
+}
 
 // MonsterCanDetectInvisible reports the verified effect-18 capability used by
 // the original CanHitTarget path.
@@ -336,7 +399,12 @@ func (b *Battle) CastSleepOrdered(casterID string, orderedTargetIDs []string, ca
 	return result, nil
 }
 
-const MonsterTypeAnimal uint8 = 0x13
+// RaceTypeAnimal is the verified RACETYPE category used by the effect-45
+// visibility branch. MonsterTypeAnimal remains as a source-compatible alias
+// for callers written before the Borland member table corrected +11A.
+const RaceTypeAnimal uint8 = 0x13
+
+const MonsterTypeAnimal uint8 = RaceTypeAnimal
 
 // VisibleTo reports the status-effect visibility used by the original
 // CHECKTARGET path. Effect 19 can be defeated by an operational effect 18 on
@@ -356,7 +424,7 @@ func (f Fighter) VisibleTo(observer Fighter) bool {
 				return false
 			}
 		case 0x45:
-			if observer.MonsterType == MonsterTypeAnimal && !observer.MonsterCanDetectInvisible() {
+			if observer.raceType() == RaceTypeAnimal && !observer.MonsterCanDetectInvisible() {
 				return false
 			}
 		case 0x47:
@@ -382,7 +450,7 @@ func (f Fighter) MonsterAffectArmorClassBonusAgainst(attacker Fighter) int {
 		case 0x47:
 			bonus += 4
 		case 0x45:
-			if attacker.MonsterType == MonsterTypeAnimal {
+			if attacker.raceType() == RaceTypeAnimal {
 				bonus += 4
 			}
 		}
@@ -681,6 +749,21 @@ func (b *Battle) SetDamageRules(rules []enginedamage.Rule) {
 	}
 	for id, fighter := range b.fighters {
 		fighter.DamageRules = append([]enginedamage.Rule(nil), rules...)
+		b.fighters[id] = fighter
+	}
+}
+
+// SetConditionalModifierRules attaches immutable game-pack interaction rules
+// to every fighter. The rules are configuration, not mutable combat state.
+func (b *Battle) SetConditionalModifierRules(rules []enginemodifier.Rule) {
+	if b == nil {
+		return
+	}
+	for id, fighter := range b.fighters {
+		fighter.ConditionalModifierRules = append([]enginemodifier.Rule(nil), rules...)
+		for index := range fighter.ConditionalModifierRules {
+			fighter.ConditionalModifierRules[index].Values = append([]uint8(nil), rules[index].Values...)
+		}
 		b.fighters[id] = fighter
 	}
 }
@@ -1287,13 +1370,14 @@ func (b *Battle) ResolveAttack(attackerID, targetID string, attackRoll, damageRo
 	critical := attackRoll == 20 && !forcedMiss
 	targetArmorClass := target.ArmorClass
 	targetArmorClass += target.MonsterAffectArmorClassBonusAgainst(attacker)
-	if attacker.Evil && target.ProtectedFromEvil {
+	if attacker.isEvil() && target.ProtectedFromEvil {
 		targetArmorClass += 2
 	}
-	if attacker.Good && target.ProtectedFromGood {
+	if attacker.isGood() && target.ProtectedFromGood {
 		targetArmorClass += 2
 	}
-	attackTotal := attackRoll + attacker.AttackBonus + b.attackRollModifier[attacker.Side]
+	conditional := target.MonsterConditionalModifierAgainst(attacker)
+	attackTotal := attackRoll + attacker.AttackBonus + b.attackRollModifier[attacker.Side] + conditional.AttackRollDelta
 	hit := !forcedMiss && (target.MonsterIsHeld() || critical || (attackRoll != 1 && attackTotal >= targetArmorClass))
 	damage := 0
 	if hit {
@@ -1630,8 +1714,9 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 	}
 	for _, target := range targets {
 		saveRoll := b.rng.Intn(20) + 1
+		conditional := target.MonsterConditionalModifierAgainst(caster)
 		saved := saveRoll == 20 ||
-			saveRoll != 1 && saveRoll+target.SavingThrowBonus >= int(target.SavingThrows[4])
+			saveRoll != 1 && saveRoll+target.SavingThrowBonus+conditional.SavingThrowDelta >= int(target.SavingThrows[4])
 		applied := damage
 		if saved {
 			applied /= 2

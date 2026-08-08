@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`cad6608`（第 497 輪 Quick 牧師指定目標法術）；第 498 輪
-  資料驅動 monster damage effect 會由本文件所在 commit 完成。
-- Engine dependency：`6ca3189`（含作品中立 game-pack
+- CoAB 本輪基底：第 499 輪 PC-98 alignment／條件式 effect milestone（本文件所在
+  commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
+- Engine dependency：`d0a4970`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -1029,9 +1029,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   完整 effect 生命週期仍未完成。
 - 第 418 輪已由 overlay 12 handlers `0BDBh／16C2h` 接通 effect `25h／45h`。
   Blink 只在 target action delay 0 時 hidden 並覆寫 attack roll `FFh`；
-  `45h` 只對 MonsterType `13h` observer 生效，`18h` 可取消 hidden 但不取消
+  `45h` 只對 `RACETYPE` `13h` observer 生效，`18h` 可取消 hidden 但不取消
   `-4`。`+11Ah` 又由 dragon-slayer `03h` consumer 與四筆真實 Animal records
-  關閉為 MonsterType。READY spec 418 是 visibility／effect consumer 的權威。
+  關閉為 `RACETYPE`；`ALIGNMENT` 是 `+11Bh`，真正 `MONSTERTYPE` 是 `+14Ch`。
+  READY spec 499 supersede spec 418 的欄位命名，visibility bytes 本身仍可回查。
 - 第 419 輪已由 PC-98 overlay 24 `DEXRABONUS 1416h`、overlay 13 local
   `0000h` 與 overlay 8 local `01FBh` 關閉 initiative writer／TeamList selector。
   原版使用 shared Player `+17h` DEX reaction table、`1d6` action delay 與每次
@@ -1108,6 +1109,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   能力必須保持 engine＋game-pack 分層，`Protected` 只代表完全清除傷害。
   effect `08h／09h`、寒冷法術 caller、完整演出與完整遊戲仍未完成；詳見
   `docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`。
+
+- 第 499 輪已由 overlay 12 local `022Dh／0264h` 與 Borland type/member table
+  關閉 effect `08h／09h`：active character `+11Bh` 的 evil／good 集合命中時，
+  `SAVEROLL A02Ch += 2`、`ROLLTOHIT A039h -= 2`。新增 engine
+  `combat/modifier` 與 CoAB `combat_conditional_modifiers` JSON；`Battle` 將
+  防禦方 raw effect 與攻擊者／施法者 alignment 分開，套入物理攻擊、Fireball、
+  反射線、Stinking Cloud、Cloudkill 的 save boundary。`+11Ah=RACETYPE`、
+  `+14Ch=MONSTERTYPE` 的舊命名已 supersede；未知 alignment fail-closed。
+  focused Docker gate 已通過，正式 gate、完整 effect lifecycle、完整戰鬥與全作
+  通關仍未完成。權威規格為 `docs/spec/499-pc98-alignment-conditional-effects.md`。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

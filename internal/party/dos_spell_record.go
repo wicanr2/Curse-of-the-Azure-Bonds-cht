@@ -57,6 +57,9 @@ func PatchDOSPlayerRecord(data []byte, character Character) ([]byte, error) {
 	}
 	out[0xE5] = character.HitDice
 	out[0xE6] = character.MulticlassLevel
+	if character.AlignmentKnown {
+		out[0x11B] = character.Alignment
+	}
 	binary.LittleEndian.PutUint16(out[0x76:0x78], uint16(character.Age))
 	binary.LittleEndian.PutUint32(out[0x127:0x12B], character.Experience)
 	for class := 0; class < 3; class++ {
@@ -149,6 +152,8 @@ type DOSPlayerRecord struct {
 	ThiefSkills      []uint8
 	SavingThrows     []uint8
 	SavingThrowBonus int8
+	Alignment        uint8
+	AlignmentKnown   bool
 	ClassLevels      [8]uint8
 	HitDice          uint8
 	MulticlassLevel  uint8
@@ -308,7 +313,8 @@ func parseDOSPlayerRecord(data []byte, id string, inferNPCClass bool) (DOSPlayer
 		ThiefSkills:      append([]uint8(nil), data[DOSThiefSkillsOffset:DOSThiefSkillsEnd]...),
 		SavingThrows:     append([]uint8(nil), data[DOSSavingThrowsOffset:DOSSavingThrowsEnd]...),
 		SavingThrowBonus: int8(data[0x186]),
-		MemorizedSpells:  spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
+		Alignment:        data[0x11B], AlignmentKnown: true,
+		MemorizedSpells: spells.MemorizedSpells, KnownSpells: spells.KnownSpells,
 		SpellCastCount: spellCastCount,
 		ClassLevels:    classLevels, HitDice: data[0xE5], MulticlassLevel: data[0xE6],
 	}, nil
@@ -336,6 +342,7 @@ func (r DOSPlayerRecord) Character() (Character, error) {
 		ThiefSkills:      append([]uint8(nil), r.ThiefSkills...),
 		SavingThrows:     append([]uint8(nil), r.SavingThrows...),
 		SavingThrowBonus: r.SavingThrowBonus,
+		Alignment:        r.Alignment, AlignmentKnown: r.AlignmentKnown,
 	}
 	if err := character.Validate(); err != nil {
 		return Character{}, err

@@ -1364,6 +1364,24 @@
       "mode": "immune"
     }
   ],
+  "combat_conditional_modifiers": [
+    {
+      "id": "coab.monster_affect_08.protection-from-good",
+      "effect_kind": 8,
+      "predicate": "value_in",
+      "values": [2, 5, 8],
+      "attack_roll_delta": -2,
+      "saving_throw_delta": 2
+    },
+    {
+      "id": "coab.monster_affect_09.protection-from-evil",
+      "effect_kind": 9,
+      "predicate": "value_in",
+      "values": [0, 3, 6],
+      "attack_roll_delta": -2,
+      "saving_throw_delta": 2
+    }
+  ],
   "combat_ai_spells": [
     {"spell_id": 1, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 10},
     {"spell_id": 2, "priority": 3, "cast_on": 1, "min_range": 0, "casting_time": 10},

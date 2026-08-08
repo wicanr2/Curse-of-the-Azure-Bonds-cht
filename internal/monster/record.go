@@ -16,14 +16,22 @@ type Record struct {
 	// Raw preserves the shared 0x1A6 Player record used by load_npc. Combat
 	// parsing reads only a subset; the party adapter needs race/class/icon and
 	// other verified player fields without reparsing the DAX container.
-	Raw             []byte
-	Name            string
-	THAC0           int
-	MaxHitPoints    int
-	HitPoints       int
-	HitDice         uint8
-	RawPlayer74     uint8
-	MonsterType     uint8
+	Raw          []byte
+	Name         string
+	THAC0        int
+	MaxHitPoints int
+	HitPoints    int
+	HitDice      uint8
+	RawPlayer74  uint8
+	// RaceType is CHARREC.RACETYPE at +11A. MonsterType remains a
+	// source-compatible alias for callers that used the old field name.
+	RaceType       uint8
+	MonsterType    uint8
+	Alignment      uint8
+	AlignmentKnown bool
+	// RawMonsterType is CHARREC.MONSTERTYPE at +14C; its gameplay meaning is
+	// intentionally not inferred by this record decoder.
+	RawMonsterType  uint8
 	Dexterity       uint8
 	BaseArmorClass  int
 	ArmorClass      int
@@ -119,7 +127,11 @@ func Parse(data []byte) (Record, error) {
 		SavingThrowBonus: int(int8(data[0x186])),
 		HitDice:          data[0xE5],
 		RawPlayer74:      data[0x74],
+		RaceType:         data[0x11A],
 		MonsterType:      data[0x11A],
+		Alignment:        data[0x11B],
+		AlignmentKnown:   true,
+		RawMonsterType:   data[0x14C],
 		Dexterity:        data[0x17],
 	}, nil
 }
@@ -128,12 +140,16 @@ func (r Record) Fighter(id string, side combat.Side) combat.Fighter {
 	return combat.Fighter{
 		ID: id, Name: r.Name, SourceName: r.Name, Side: side,
 		HitPoints: r.HitPoints, MaxHitPoints: r.MaxHitPoints,
-		HitDice:     r.HitDice,
-		RawPlayer74: r.RawPlayer74,
-		MonsterType: r.MonsterType,
-		Dexterity:   r.Dexterity,
-		CombatTeam:  r.CombatTeam,
-		ArmorClass:  CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
+		HitDice:       r.HitDice,
+		RawPlayer74:   r.RawPlayer74,
+		RaceType:      r.RaceType,
+		RaceTypeKnown: true,
+		MonsterType:   r.MonsterType,
+		Alignment:     r.Alignment, AlignmentKnown: r.AlignmentKnown,
+		RawMonsterType: r.RawMonsterType,
+		Dexterity:      r.Dexterity,
+		CombatTeam:     r.CombatTeam,
+		ArmorClass:     CombatArmorClass(r.ArmorClass), AttackBonus: r.AttackBonus,
 		DamageDiceCount: r.DamageDiceCount, DamageDiceSides: r.DamageDiceSides,
 		DamageBonus:    r.DamageBonus,
 		AttacksPerTurn: r.AttacksPerTurn,

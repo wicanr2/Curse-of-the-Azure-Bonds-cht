@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 498 輪）
-依賴的 Golden Box engine checkpoint：`6ca31895abed`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 499 輪，兩 repo 各一個集中提交）
+依賴的 Golden Box engine checkpoint：`d0a4970`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -65,6 +65,17 @@ effect `0Ah` 是寒冷半傷而非完全免疫；另將既有 effect `70h` 火�
 `ROUND498_FORMAL_EXIT=0`、`coab-audit total=0`。effect `08h／09h`、寒冷法術入口、完整
 動畫／音效、完整 ECL／地圖／翻譯與全作通關仍未完成。權威規格為
 [`docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`](spec/498-pc98-resist-cold-data-driven-affect-rule.md)。
+
+第 499 輪由 PC-98 overlay 12 effect `08h／09h` handler 與 Borland `CHARREC`
+symbol／member table 關閉條件式防護資料流。`+11Ah` 修正為 `RACETYPE`、
+`+11Bh` 為 `ALIGNMENT`、`+14Ch` 為 `MONSTERTYPE`；effect `08h` 對互動
+evil alignment `{2,5,8}`、effect `09h` 對 good alignment `{0,3,6}`，各自寫入
+`SAVEROLL +2` 與 `ROLLTOHIT -2`。CoAB 新增 engine `combat/modifier`、
+`combat_conditional_modifiers` JSON，並在物理攻擊、Fireball、反射線、Stinking
+Cloud、Cloudkill 的存豁免 transaction 套用；未知 alignment fail-closed，
+effect owner 與 active character 分離。focused Docker gate 已通過；正式 gate、
+截圖／長路徑與完整 effect 生命週期仍待本輪收尾，不能宣稱完整遊戲。權威規格為
+[`docs/spec/499-pc98-alignment-conditional-effects.md`](spec/499-pc98-alignment-conditional-effects.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -545,10 +556,12 @@ effect `0Ah` 是寒冷半傷而非完全免疫；另將既有 effect `70h` 火�
   由第 418 輪接續；完整 effect 生命週期仍未完成。
 - 第 418 輪由 typed TPOV resolver 與 overlay 12 handlers 關閉 `25h／45h`：
   blink 在 action delay 0 時 hidden 並把 attack roll 寫 `FFh`；`45h` 只對
-  MonsterType `13h` observer 生效，`18h` 只取消 hidden、不取消 `-4`。
+  `RACETYPE` `13h` observer 生效，`18h` 只取消 hidden、不取消 `-4`。
   `+11Ah` 另由 dragon-slayer `03h` consumer 與 WORG／FIGHTING DOG／MONKEY／
-  OWL BEAR 真實 records 證明為 MonsterType。Battle／State 已接通 pending／
-  completed delay lifecycle，Tilverton 犬舍與 Standing Stone 長路徑均通過。
+  OWL BEAR 真實 records 證明為 `RACETYPE`；`ALIGNMENT` 是 `+11Bh`，
+  `MONSTERTYPE` 是 `+14Ch`。Battle／State 已接通 pending／completed delay
+  lifecycle，Tilverton 犬舍與 Standing Stone 長路徑均通過；spec 499 是欄位
+  命名與 effect `08h／09h` 的較新權威。
 - 第 419 輪由 PC-98 overlay 24 `DEXRABONUS`、overlay 13 initiative writer
   與 overlay 8 TeamList selector 關閉先攻排程：每人先寫
   `1d6 + DEX reaction adjustment`，下一人由最大 action delay 與逐節點
