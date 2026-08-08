@@ -67,6 +67,14 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 
 ### 容易重犯的反組譯與實作錯誤
 
+- 已閉合的 `MON*SPC` 傷害能力也必須遵守 engine＋game-pack 分層：raw effect
+  kind、damage flag 與 operation 由版本化 JSON 宣告，不能把 `0Ah／70h／87h`
+  或中文名稱硬編進共用 engine、State 或測試 fixture。`half` 與 `immune` 必須
+  是不同結果；只有完整清除傷害才可標 `Protected`。若 handler、save restore
+  或法術 caller 尚未閉合，應保留 `unknown／hypothesis`，不可因同一 cold flag
+  或最終 HP 結果相同就合併。參考 engine 知識庫
+  `golden-box-remake-engine/docs/knowledge/golden-box-combat-damage-rules.md`。
+
 - ECL 地城事件的 `7F81h` 是「本步已處理」guard，不是整張地圖或整個
   session 的永久完成旗標。玩家座標真正移到另一格時必須清除；原地重繪、
   開關選單、戰鬥 handoff 與戰後續跑則不能清除。若處理錯誤，常見症狀是
@@ -365,10 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：`ea01be8`（第 437 輪 `INARC／OBJECTLIST`）；第 438 輪
-  `CHARACTERLIST／IDLIST` stable identity milestone 會由本文件所在 commit
-  完成。
-- Engine dependency：`f3c652a`（含作品中立 game-pack
+- CoAB 本輪基底：`cad6608`（第 497 輪 Quick 牧師指定目標法術）；第 498 輪
+  資料驅動 monster damage effect 會由本文件所在 commit 完成。
+- Engine dependency：`6ca3189`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -388,7 +395,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `audio/pc98soundbios`、
   `combat_visuals`、
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
-  `title_id` schema）。
+  `title_id` schema，以及 `combat/damage` 的 `ModeHalf／ModeImmune`、
+  `combat_affect_rules` schema／loader 與繁中傷害效果知識庫）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
@@ -1092,6 +1100,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   右側 roster 與下方長文是三個獨立石框區域。
 
 ### 目前戰鬥 milestone（不可遺忘）
+
+- 第 498 輪已由 PC-98 overlay 12 local `029Bh` 閉合 effect `0Ah`：
+  `DAMAGEFLAG & COLDFLG(02h)` 後 `DAMAGE/2`，這是半傷，不是 immune；另將
+  已閉合 `70h` fire immune、`87h` electricity immune 移入 CoAB JSON 的
+  `combat_affect_rules`，由 StartCombat／active save restore 重新注入。這些
+  能力必須保持 engine＋game-pack 分層，`Protected` 只代表完全清除傷害。
+  effect `08h／09h`、寒冷法術 caller、完整演出與完整遊戲仍未完成；詳見
+  `docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

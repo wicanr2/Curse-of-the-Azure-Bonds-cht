@@ -3922,3 +3922,22 @@ Docker focused 與正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/
 均通過，`go run ./cmd/coab-audit -root .` 回報 `total=0`，marker 為
 `ROUND497_FORMAL_EXIT=0`。這是 bounded Quick cleric slice，不是完整 target AI、
 敵方 Quick、完整戰鬥或完整 remake 完成聲明；文件、commit 與 push 待本輪收尾。
+
+2026-08-09 第四百九十八輪接續 PC-98 怪物能力資料流。Borland symbol parser
+證明 `FIREFLG=0001h`、`COLDFLG=0002h`、`ELECFLG=0004h`、`MAGICFLG=0008h` 是
+絕對旗標常數，不是 resident dseg global。overlay 12 `INITEFFPROX` 的
+`DS:A040h + 4×effectID` table 對 effect `0Ah` 寫入 `008B:006Bh`；TPOV
+resolver 解析到 overlay-local `029Bh`。連續 bytes 在 `DAMAGEFLAG & 02h` 成功
+後把 `DAMAGE` 除以二，故 effect `0Ah` 是 `exact` 寒冷半傷；同段 `A02Ch+3`
+用途仍為 `unknown`。overlay 12 local `2461h` 是另一個完全清除 cold damage
+helper，不能與 effect `0Ah` 合併。
+
+本輪新增 engine `combat/damage` 與 game-pack schema `combat_affect_rules`，
+CoAB JSON 宣告 stable IDs：`0Ah→cold/half`、`70h→fire/immune`、
+`87h→electricity/immune`。`State.StartCombat` 與 active-combat restore 會
+重新注入規則，`Fighter.DamageRules` 不進 save JSON。focused Docker tests 已
+通過，新增測試驗證 17→8、半傷不標 `Protected` 與讀檔後重掛；正式 gate 已有
+`ROUND498_FORMAL_EXIT=0`、`coab-audit total=0`。文件、兩 repo commit／push
+採兩個 repository 各一個重大里程碑 commit；本輪仍不代表寒冷法術入口、effect `08h／09h`、
+完整戰鬥或全作 remake 完成。規格：
+`docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`。

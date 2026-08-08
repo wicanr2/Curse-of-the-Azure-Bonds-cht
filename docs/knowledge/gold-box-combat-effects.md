@@ -66,13 +66,41 @@ typed entry／fixup view；signature、bounds 或排序錯誤時失敗即關閉�
 ## 元素防護 damage boundary
 
 元素防護應由 raw damage flags 驅動，不可由畫面法術名或怪物名特判。已證明
-的 PC-98 flags 是 Fire `01h`、Electricity `04h`、Magic `08h`；防護 handler
+的 PC-98 flags 是 Fire `01h`、Cold `02h`、Electricity `04h`、Magic `08h`；防護 handler
 清除 pending damage，但 visual transaction／施法消耗仍要續行。反射線等
 作品中立 renderer 應由呼叫端傳入 flags，不在 core 寫死 title spell ID。
 
 是否先擲 saving throw、再清除傷害，會影響後續 PRNG continuation；即使 HP
 結果同為零，也必須另外以 runtime trace 驗證 draw order，不能只靠最終數值
 宣稱完整 fidelity。
+
+## effect `0Ah` 寒冷抗性：半傷不是免疫
+
+PC-98 Borland symbol `COLDFLG=0002h` 是絕對旗標常數，不是 resident dseg
+變數。overlay 12 的 `INITEFFPROX` 以 `DS:A040h + 4 × effectID` 建立 handler
+table；effect `0Ah` 寫入 `008B:006Bh`，TPOV resolver 解析到 overlay-local
+`029Bh`。該 handler 讀 raw `DAMAGEFLAG`、以 `02h` mask 比較，再把 raw
+`DAMAGE` 做整數除二。上述 bytes／table／consumer 閉合為 `exact`；`A02Ch`
+同段的加三用途仍是 `unknown`。
+
+同一 overlay 另有 local `2461h` 的 cold damage clear helper，這是完全免疫
+邊界，不能和 effect `0Ah` 混成同一規則。這個差異是重製最容易錯的地方：
+`Protected=true` 只能表示 damage 被完全清除；effect `0Ah` 應回傳
+「已減少、但仍可造成傷害」。
+
+CoAB 現把已閉合的能力宣告在 game pack `combat_affect_rules`：
+
+| stable ID | effect | damage mask | operation |
+|---|---:|---:|---|
+| `coab.monster_affect_0a.resist_cold` | `0Ah` | `02h` | half |
+| `coab.monster_affect_70.fire_immunity` | `70h` | `01h` | immune |
+| `coab.monster_affect_87.electricity_immunity` | `87h` | `04h` | immune |
+
+共用 engine `combat/damage` 不解讀作品名稱，只做 raw effect kind、mask 與
+operation 的資料驅動比對。Battle 建立與讀檔重建都由 title adapter 重新掛入
+規則；save 不保存 engine rule slice。未來其他 SSI Gold Box 作品可沿用 schema
+與 pure resolver，但必須重新證明自己的 effect table、旗標常數與 handler，不能
+直接複製 CoAB 的數字。
 
 ## 物理命中後效果排程
 
@@ -139,6 +167,7 @@ layout-reconstructed。
 - `docs/spec/412-pc98-tpov-entry-stubs-and-tyranthraxus-effects.md`
 - `docs/spec/413-tyranthraxus-fire-electric-protection-runtime.md`
 - `docs/spec/414-pc98-post-hit-effect-4f-runtime.md`
+- `docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`
 - `docs/spec/434-pc98-sleep-puteffect-magic-resistance.md`
 - `docs/spec/442-pc98-sleep-action-clear-and-twinkle.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`

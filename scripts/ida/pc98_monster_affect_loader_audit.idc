@@ -95,6 +95,7 @@ static main()
   {
     emit_range(out, "PROTECTED_HANDLER", 0x001B, 0x003C);
     emit_range(out, "EFFECT_35_RESOLVED_ENTRY", 0x0060, 0x00C0);
+    emit_range(out, "EFFECT_01_TO_0A_HANDLERS", 0x009E, 0x0300);
     emit_range(out, "EFFECT_4F_RESOLVED_ENTRY", 0x19B3, 0x1A20);
     emit_range(out, "MAGIC_RESISTANCE_HANDLERS", 0x2396, 0x2420);
     emit_range(out, "EFFECT_70_RESOLVED_ENTRY", 0x249D, 0x24D0);
@@ -116,7 +117,9 @@ static main()
     decode_all();
     emit_range(out, "CALLEFFECT", 0x00C9, 0x010E);
     emit_range(out, "EFFECT_PHASE_CALLER_0184", 0x0110, 0x01B0);
+    emit_range(out, "EFFECT_CHECK_HELPER_0268_03FE", 0x0268, 0x03FE);
     emit_range(out, "CHECKFX_TYPE_2_3", 0x03FE, 0x0600);
+    emit_range(out, "CHECKFX_TAIL_0600_0CE7", 0x0600, 0x0CE7);
     emit_range(out, "EFFECT_PHASE_CALLERS_0F9C_104E", 0x0F20, 0x1070);
     emit_range(out, "PUTEFFECT", 0x2325, 0x2419);
     emit_range(out, "EFFECT_PHASE_CALLER_24DA", 0x2440, 0x2520);

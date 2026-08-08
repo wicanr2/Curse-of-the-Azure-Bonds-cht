@@ -9,6 +9,7 @@ import (
 	"sort"
 
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
+	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
@@ -150,6 +151,9 @@ type Fighter struct {
 	// monster-turn adapter currently consumes only Magic Missile (0x0F).
 	MonsterSpellIDs  []uint8
 	MonsterSpellUses [3]uint8
+	// DamageRules are immutable title-pack capabilities. They are deliberately
+	// excluded from save JSON and reattached by the game adapter after load.
+	DamageRules []enginedamage.Rule `json:"-"`
 }
 
 // MonsterAffect mirrors one nine-byte MON*SPC record without importing the
@@ -198,27 +202,29 @@ func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
 
 const (
 	DamageFlagFire        uint8 = 0x01
+	DamageFlagCold        uint8 = 0x02
 	DamageFlagElectricity uint8 = 0x04
 	DamageFlagMagic       uint8 = 0x08
 )
 
-// MonsterProtectedFromDamage reports the two exact elemental protection
-// handlers resolved from the PC-98 EFFPROCS table. Effect 70 consumes Fire;
-// effect 87 consumes Electricity. Magic resistance remains a separate,
-// probabilistic pre-damage handler.
-func (f Fighter) MonsterProtectedFromDamage(flags uint8) bool {
+// MonsterDamageAdjustment applies the evidence-backed title-pack effect rules
+// to one pending damage value. The raw effect list remains the source of
+// active kinds; the operation itself comes from JSON through DamageRules.
+func (f Fighter) MonsterDamageAdjustment(flags uint8, damage int) enginedamage.Result {
+	active := make([]uint8, 0, len(f.MonsterAffects))
 	for _, affect := range f.MonsterAffects {
-		if !affect.operational() {
-			continue
-		}
-		if affect.Kind == 0x70 && flags&DamageFlagFire != 0 {
-			return true
-		}
-		if affect.Kind == 0x87 && flags&DamageFlagElectricity != 0 {
-			return true
+		if affect.operational() {
+			active = append(active, affect.Kind)
 		}
 	}
-	return false
+	return enginedamage.Resolve(damage, flags, active, f.DamageRules)
+}
+
+// MonsterProtectedFromDamage preserves the legacy boolean query for callers
+// that only need complete immunity. Half damage (effect 0Ah) is not reported
+// as protected.
+func (f Fighter) MonsterProtectedFromDamage(flags uint8) bool {
+	return f.MonsterDamageAdjustment(flags, 0).Immune
 }
 
 // MonsterPostHitAffects returns the operational monster affects dispatched by
@@ -664,6 +670,19 @@ func NewBattle(fighters []Fighter, seed int64) (*Battle, error) {
 		b.fighterOrder = append(b.fighterOrder, fighter.ID)
 	}
 	return b, nil
+}
+
+// SetDamageRules attaches immutable game-pack capabilities to every fighter
+// in the battle. Rules are configuration, not mutable combat state, so save
+// restore calls this again after rebuilding the Battle.
+func (b *Battle) SetDamageRules(rules []enginedamage.Rule) {
+	if b == nil {
+		return
+	}
+	for id, fighter := range b.fighters {
+		fighter.DamageRules = append([]enginedamage.Rule(nil), rules...)
+		b.fighters[id] = fighter
+	}
 }
 
 func (b *Battle) Round() int { return b.round }
@@ -1323,12 +1342,13 @@ func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (Attack
 		}
 		flags := DamageFlagFire | DamageFlagMagic
 		rolledDamage := b.rng.Intn(10) + 1 + b.rng.Intn(10) + 1
+		adjustment := target.MonsterDamageAdjustment(flags, rolledDamage)
 		effect := AttackEffectResult{
 			Kind: affect.Kind, DamageFlags: flags, RolledDamage: rolledDamage, TargetHP: target.HitPoints,
-			Protected: target.MonsterProtectedFromDamage(flags),
+			Protected: adjustment.Immune,
 		}
 		if !effect.Protected {
-			damage := rolledDamage
+			damage := adjustment.Damage
 			effect.Damage = b.applyPositiveDamage(&target, damage)
 			effect.TargetHP = target.HitPoints
 			b.fighters[targetID] = target
@@ -1616,10 +1636,9 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 		if saved {
 			applied /= 2
 		}
-		protected := target.MonsterProtectedFromDamage(DamageFlagFire | DamageFlagMagic)
-		if protected {
-			applied = 0
-		}
+		adjustment := target.MonsterDamageAdjustment(DamageFlagFire|DamageFlagMagic, applied)
+		protected := adjustment.Immune
+		applied = adjustment.Damage
 		applied = b.applyPositiveDamage(&target, applied)
 		b.fighters[target.ID] = target
 		result.Impacts = append(result.Impacts, AreaSpellImpact{

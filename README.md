@@ -11,7 +11,7 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，依賴的獨立 engine 為 `2ace47d`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `6ca31895abed`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -67,6 +67,14 @@ Wounds 沒有鄰接敵人時維持 fail-closed。原版 object-pointer 候選順
 `cast_on` consumer 與 Quick AI 仍未逐指令閉合。Docker／Xvfb 正式 gate 為
 `ROUND497_FORMAL_EXIT=0`、`coab-audit total=0`，證據見
 [`docs/spec/497-pc98-quick-cleric-targeted-spells.md`](docs/spec/497-pc98-quick-cleric-targeted-spells.md)。
+
+第 498 輪把 PC-98 overlay 12 local `029Bh` 已閉合的 effect `0Ah` 接到共用
+`combat/damage`：`COLDFLG=02h` 時 raw damage 整除二，明確不是完全免疫；同輪
+把既有 effect `70h` 火焰免疫與 `87h` 電擊免疫移入 CoAB
+`combat_affect_rules` JSON。開戰與 active-combat save restore 都會由 game pack
+重新注入規則，測試確認 17→8 與讀檔後仍有效。這是資料／規則邊界的有界里程碑，
+不是完整寒冷法術、完整戰鬥或完整 remake 完成聲明；證據見
+[`docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`](docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

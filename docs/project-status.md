@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 497 輪）
-依賴的 Golden Box engine checkpoint：`2ace47d`
+本 milestone 的 CoAB 基底：GitHub `main`（第 498 輪）
+依賴的 Golden Box engine checkpoint：`6ca31895abed`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -54,6 +54,17 @@ transaction；Cause 沒有鄰接敵人時 fail-closed。原版 object-pointer �
 strong-inference bounded adapter。Docker／Xvfb 正式 gate 為
 `ROUND497_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
 [`docs/spec/497-pc98-quick-cleric-targeted-spells.md`](spec/497-pc98-quick-cleric-targeted-spells.md)。
+
+第 498 輪完成一個已由 PC-98 原始 bytes 閉合的資料／規則切片。overlay 12
+local `029Bh` 讀 `DAMAGEFLAG` 的 `COLDFLG=02h` 後將 `DAMAGE` 整除二，證明
+effect `0Ah` 是寒冷半傷而非完全免疫；另將既有 effect `70h` 火焰免疫與 `87h`
+電擊免疫從 CoAB 戰鬥判斷移入共用 engine `combat/damage` 與
+`gamepack/events/pit-of-moander.json` 的 `combat_affect_rules`。`StartCombat`
+與 active-combat restore 都重新解析 title pack，測試覆蓋 17→8、half 不標記
+`Protected`、以及讀檔後規則重掛。Docker／Xvfb 正式全套 gate 已通過，marker 為
+`ROUND498_FORMAL_EXIT=0`、`coab-audit total=0`。effect `08h／09h`、寒冷法術入口、完整
+動畫／音效、完整 ECL／地圖／翻譯與全作通關仍未完成。權威規格為
+[`docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`](spec/498-pc98-resist-cold-data-driven-affect-rule.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
