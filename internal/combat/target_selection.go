@@ -248,14 +248,16 @@ func (b *Battle) SelectRangedCombatTarget(attackerID string, targetSide Side, op
 			candidates = append(candidates, rangedTargetCandidate{fighter: fighter, distance: distance})
 		}
 	}
-	// The reference list is distance-sorted before random selection. ID is the
-	// stable remake tie-break until the original combatant-array tie order is
-	// represented explicitly by the battle adapter.
+	// The reference list is distance-sorted before random selection. The
+	// recovered OBJECTLIST/IDLIST projection is the closest available title
+	// ordering for equal-distance candidates when both records carry it. This
+	// does not claim that the complete PICKTARGET producer comparator is closed;
+	// candidates without a complete legacy projection use the stable remake ID.
 	sort.Slice(candidates, func(i, j int) bool {
 		if candidates[i].distance != candidates[j].distance {
 			return candidates[i].distance < candidates[j].distance
 		}
-		return candidates[i].fighter.ID < candidates[j].fighter.ID
+		return rangedTargetTieLess(candidates[i].fighter, candidates[j].fighter)
 	})
 
 	for attempts := 0; attempts < 20 && len(candidates) > 0; attempts++ {
@@ -267,6 +269,14 @@ func (b *Battle) SelectRangedCombatTarget(attackerID string, targetSide Side, op
 		candidates = append(candidates[:index], candidates[index+1:]...)
 	}
 	return Fighter{}, false, nil
+}
+
+func rangedTargetTieLess(left, right Fighter) bool {
+	if left.LegacyObjectID != 0 && right.LegacyObjectID != 0 &&
+		left.LegacyObjectID != right.LegacyObjectID {
+		return left.LegacyObjectID < right.LegacyObjectID
+	}
+	return left.ID < right.ID
 }
 
 func rangedTargetDistance(attacker, target Fighter, maxRange int, terrain LineTerrain) (int, bool) {

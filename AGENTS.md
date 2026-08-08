@@ -1387,7 +1387,22 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   只負責 legacy order 後的一次抽樣，CoAB adapter 才能提供候選。
 - 這輪的完整輸入 hash、IDA image、report hash 與 resolver 輸出以
   `docs/spec/505-pc98-quick-target-caller-and-single-draw.md` 為準；不得以
-  `0164h`、`04CCh` 或 `4A00:1568h` 的相同數字跨位址空間推導正式欄位名稱。
+  `0164h`、`04CCh` 或 IDA label 的相同數字跨位址空間推導正式欄位名稱；
+  raw far call 必須保留完整 bytes 與解碼後的 `014A:00CAh`／`014A:00C0h`
+  位址基準。
+
+### 第 506 輪 ranged target tie 補充
+
+- `PICKTARGET` 的同距候選排序目前只能作 bounded adapter：兩個候選均有完整、
+  非零且不同的 `LegacyObjectID` 時使用原始一基底 combat-object 身分；任一方缺
+  少投影時回到 stable fighter ID。這是 `strong inference`，不是完整原版
+  comparator 的 `exact` 證明。
+- `SelectRangedCombatTarget` 不得因這項 tie 修正額外抽亂數，也不得把候選
+  producer、pointer chain 或 `3E01:142Dh` 的亂數演算法硬編進 core；完整證據仍要
+  以原始 bytes、consumer 與 runtime trace 閉合。
+- 第 506 輪規格與回歸測試是
+  `docs/spec/506-pc98-ranged-target-object-order-tie.md` 與
+  `TestSelectRangedCombatTargetUsesLegacyObjectOrderForEqualDistance`。
 
 ## 10. Compact 後恢復工作清單
 

@@ -1,6 +1,7 @@
 package combat
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 
@@ -204,6 +205,35 @@ func TestSelectRangedCombatTargetFiltersRangeWallsAndUsesFootprints(t *testing.T
 	}
 	if !found || target.ID != "footprint-edge" {
 		t.Fatalf("ranged target=%+v found=%v", target, found)
+	}
+}
+
+func TestSelectRangedCombatTargetUsesLegacyObjectOrderForEqualDistance(t *testing.T) {
+	const seed int64 = 1
+	battle, err := NewBattle([]Fighter{
+		{ID: "caster", Side: SideEnemy, LegacyObjectID: 1, HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1},
+		// The stable IDs intentionally sort in the opposite direction from the
+		// recovered one-based combat-object order.
+		{ID: "z-first", Side: SideParty, LegacyObjectID: 2, HitPoints: 10, MaxHitPoints: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 1},
+		{ID: "a-second", Side: SideParty, LegacyObjectID: 3, HitPoints: 10, MaxHitPoints: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 1},
+	}, seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, found, err := battle.SelectRangedCombatTarget("caster", SideParty, TargetSelectionOptions{
+		MaxRange: 10,
+		Terrain:  func(x, y int) LineCell { return LineCell{Valid: true} },
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	legacyOrder := []string{"z-first", "a-second"}
+	want := legacyOrder[rand.New(rand.NewSource(seed)).Intn(len(legacyOrder))]
+	if !found || target.ID != want {
+		t.Fatalf("equal-distance target=%+v found=%v want=%q", target, found, want)
 	}
 }
 

@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百零六輪 PC-98 遠程目標同距物件順序邊界](./506-pc98-ranged-target-object-order-tie.md)（`READY`：已投影 ranged 候選的 `LegacyObjectID` 同距排序；不含完整 producer／原版 comparator／RNG）
+
 - [第五百零五輪 PC-98 Quick 目標 caller 與單次抽樣邊界](./505-pc98-quick-target-caller-and-single-draw.md)（`READY`：`04CCh` caller／TPOV 邊界、`PICKTARGET` 20 次重抽形狀與 Quick Magic Missile 單次抽樣 adapter；不含完整 producer／tie／RNG）
 
 - [第五百零四輪 PC-98 Quick 目標優先級重試邊界](./504-pc98-quick-target-priority-retry.md)（`READY`：`04CCh` 的 `1..7` 重試範圍、優先級下降與 engine＋JSON handoff；不含 RNG helper 身分／完整 tie）

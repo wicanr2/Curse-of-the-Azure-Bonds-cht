@@ -22,6 +22,12 @@ threshold 掃到第一個合法候選就交接。這是 `04CCh..0624h` 的控制
 caller 內再重抽一遍。CoAB Quick Magic Missile 已使用這個 bounded adapter；
 手動 target、候選 producer、visibility／range 與 tie 仍不應搬進 engine。
 
+對 ranged target consumer，CoAB adapter 可在距離排序後使用已完整投影的
+`LegacyObjectID` 作同距 tie-break；只要任一候選缺少原始身分，就回到 stable ID，
+維持 deterministic 且不把不完整資料偽裝成原版順序。這是第 506 輪的
+`strong inference` 邊界，不代表 `PICKTARGET` 的完整 producer 或 comparator 已
+還原。
+
 實作時應遵守：
 
 - 候選建立、visibility、距離、地形、陣營與法術效果留在 CoAB adapter；
