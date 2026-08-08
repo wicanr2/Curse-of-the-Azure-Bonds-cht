@@ -234,3 +234,22 @@ UI 應使用 typed result 再取 locale message ID。
 閃電是否走同一 wrapper、Cloudkill／Stinking Cloud 的所有 caller、或其他 SSI
 作品的相同 effect byte。後續作品必須重新保存 executable hash、位址空間、
 handler table 與 consumer 證據。
+
+## 物理命中後效果：`combat/posthit`
+
+PC-98 effect `4Fh` 是第一個接入共用 post-hit 契約的 CoAB consumer。第 414 輪
+由 overlay 13 的 caller、overlay 23 的 `CHECKFX` dispatch 與 overlay 12 的
+連續 bytes 閉合：物理命中且目標仍存活後，第一、第二攻擊槽各可 dispatch 一次
+`4Fh`；效果擲 `2d10`，傷害旗標是 Fire＋Magic（`01h | 08h = 09h`）。骰點在
+火焰免疫判定前消耗，物理擊殺、未啟用 effect 或第三槽不 dispatch。
+
+這些值現在由 CoAB game pack 的 `combat_post_hit_rules` 宣告，engine 的
+`combat/posthit` 只負責依 active raw effect kind 與一基底 attack slot 解析
+規則。Battle 不再把 `4Fh`、`1..2`、`2d10` 或 `09h` 寫死；`AttackEffectResult`
+仍把原始 kind、骰值、實際傷害與保護結果獨立保存，方便後續接動畫／音效／戰後
+handoff。
+
+跨作品套用前必須重新提供 caller、slot base、effect dispatch、骰池與保護順序
+的 bytes／runtime 證據。不能因另一款作品也出現 `4Fh`，或因 `6Ah` 也是法術／
+效果防護，就自動把魔法抗性套到 `4Fh`；目前該順序仍是 `unknown`。完整效果
+動畫、音效與 wall-clock timing 也不因規則 package 存在而視為完成。

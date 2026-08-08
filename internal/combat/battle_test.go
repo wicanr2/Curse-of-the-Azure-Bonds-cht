@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
+	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
 
@@ -20,6 +21,14 @@ func testMagicResistanceRules() []engineresistance.Rule {
 	return []engineresistance.Rule{{
 		ID: "coab.monster_affect_6a.magic-resistance-15", EffectKind: 0x6A,
 		Formula: engineresistance.FormulaLevelAdjustedD100, Base: 15,
+	}}
+}
+
+func testPostHitRules() []engineposthit.Rule {
+	return []engineposthit.Rule{{
+		ID: "coab.monster_affect_4f.fire-magic-2d10-slots-1-2", EffectKind: 0x4F,
+		MinAttackSlot: 1, MaxAttackSlot: 2, DamageDiceCount: 2, DamageDiceSides: 10,
+		DamageMask: DamageFlagFire | DamageFlagMagic,
 	}}
 }
 
@@ -506,6 +515,7 @@ func TestAttackDispatchesOperational4FAfterLivingTargetHit(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetPostHitRules(testPostHitRules())
 	result, err := battle.Attack("flamed", "hero")
 	if err != nil {
 		t.Fatal(err)
@@ -542,6 +552,7 @@ func TestAttack4FRequiresOperationalEffectHitAndLivingTarget(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			battle.SetPostHitRules(testPostHitRules())
 			result, err := battle.Attack("attacker", "target")
 			if err != nil {
 				t.Fatal(err)
@@ -563,6 +574,7 @@ func TestAttack4FRequiresOperationalEffectHitAndLivingTarget(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetPostHitRules(testPostHitRules())
 	miss, err := battle.ResolveAttack("attacker", "target", 2, 1)
 	if err != nil || miss.Hit || len(miss.Effects) != 0 {
 		t.Fatalf("miss=%+v err=%v", miss, err)
@@ -581,6 +593,7 @@ func TestAttack4FHonorsFireProtectionAndOnlyFirstTwoSlots(t *testing.T) {
 		t.Fatal(err)
 	}
 	battle.SetDamageRules(testCombatAffectRules())
+	battle.SetPostHitRules(testPostHitRules())
 	results, err := battle.AttackSequence("flamed", "warded")
 	if err != nil {
 		t.Fatal(err)

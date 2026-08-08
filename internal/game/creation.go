@@ -15,6 +15,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
 	engineaction "github.com/wicanr2/golden-box-remake-engine/combat/action"
+	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
@@ -818,6 +819,11 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 			return fmt.Errorf("resolve combat magic resistance rules after load: %w", err)
 		}
 		battle.SetMagicResistanceRules(magicResistanceRules)
+		postHitRules, err := s.dataPack.ResolveCombatPostHitRules()
+		if err != nil {
+			return fmt.Errorf("resolve combat post-hit rules after load: %w", err)
+		}
+		battle.SetPostHitRules(postHitRules)
 	}
 	if snapshot.TurnIndex < 0 || snapshot.TurnIndex > len(snapshot.Turns) {
 		return fmt.Errorf("combat turn index %d outside 0..%d", snapshot.TurnIndex, len(snapshot.Turns))

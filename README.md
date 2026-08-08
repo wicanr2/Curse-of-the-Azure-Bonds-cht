@@ -11,7 +11,7 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `036643f`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `15bc9e9`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -93,6 +93,14 @@ overlay 12 證明 `base=15` 與 `base + (11-casterLevel)*5`，CoAB game pack
 正式全套 gate 已通過，marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；
 里程碑規格見
 [`docs/spec/500-pc98-spell-magic-resistance-boundary.md`](docs/spec/500-pc98-spell-magic-resistance-boundary.md)。
+
+第 501 輪把 PC-98 物理命中後 effect `4Fh` 的已證明行為移入共用
+`combat/posthit` 與 CoAB game-pack `combat_post_hit_rules`：第一、第二攻擊槽、
+`2d10`、Fire＋Magic `damage_mask=09h`、目標存活條件與「先耗骰再判保護」順序
+均由原始 bytes／第 414 輪規格支持。Battle 不再硬編這些值，active-combat
+restore 也重新掛入設定；`4Fh` 的完整動畫／音效、`84h` 與 `6Ah` 是否介入仍未
+閉合。這是資料分層與可重用規則 milestone，不是完整戰鬥或整作通關聲明；規格見
+[`docs/spec/501-pc98-post-hit-effect-data-contract.md`](docs/spec/501-pc98-post-hit-effect-data-contract.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

@@ -29,6 +29,10 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 	if len(fighter.MagicResistanceRules) != 1 || fighter.MagicResistanceRules[0].Base != 15 {
 		t.Fatalf("start combat magic resistance rules=%+v", fighter.MagicResistanceRules)
 	}
+	if len(fighter.PostHitRules) != 1 || fighter.PostHitRules[0].EffectKind != 0x4F ||
+		fighter.PostHitRules[0].DamageDiceCount != 2 || fighter.PostHitRules[0].DamageDiceSides != 10 {
+		t.Fatalf("start combat post-hit rules=%+v", fighter.PostHitRules)
+	}
 	if result := fighter.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("start combat conditional result=%+v", result)
 	}
@@ -53,6 +57,10 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 	}
 	if len(restored.MagicResistanceRules) != 1 || restored.MagicResistanceRules[0].Base != 15 {
 		t.Fatalf("restored magic resistance rules=%+v", restored.MagicResistanceRules)
+	}
+	if len(restored.PostHitRules) != 1 || restored.PostHitRules[0].EffectKind != 0x4F ||
+		restored.PostHitRules[0].DamageDiceCount != 2 || restored.PostHitRules[0].DamageDiceSides != 10 {
+		t.Fatalf("restored post-hit rules=%+v", restored.PostHitRules)
 	}
 	if result := restored.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("restored conditional result=%+v", result)
