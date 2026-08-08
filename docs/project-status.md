@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 507 輪；實際 HEAD 以遠端核對為準）
-依賴的 Golden Box engine checkpoint：`760a41e`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 508 輪；實際 HEAD 以遠端核對為準）
+依賴的 Golden Box engine checkpoint：`011dd91`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -17,10 +17,20 @@ PRNG 的抽樣仍一致。這是 `strong inference` 的 adapter 修正，不是�
 
 第 507 輪將相同的完整 `LegacyObjectID` 順序投影延伸到一般敵方物理選敵；候選集合
 仍維持第 231 輪的 bounded「存活且指定 side」，identity table 不完整時回到 stable
-ID，並由 seed regression 證明不增加 PRNG draw。新建的 IDA 延伸工具只匯出 overlay 24
-`2820h..2C80h` raw bytes，未知 producer 欄位仍未命名。這是 target consumer 修正，
-不是完整可達／visibility／AI、完整戰鬥或整作通關聲明。權威規格為
+ID，並由 seed regression 證明不增加 PRNG draw。第 508 輪已將其 producer 接線與有限
+抽樣邊界接續完成；本段只保留第 507 輪的歷史順序投影。新建的 IDA 延伸工具只匯出
+overlay 24 `2820h..2C80h` raw bytes，未知 producer 欄位仍未命名。權威規格為
 [`docs/spec/507-pc98-general-target-object-order-projection.md`](spec/507-pc98-general-target-object-order-projection.md)。
+
+第 508 輪把 PC-98 overlay-24 的 terrain／footprint／SCAN producer 接到一般敵方
+physical turn：正式 game pack 新增 `combat_target_rules`，宣告全方向、`0xFF`
+射程、20 次不可見移除抽樣與第二輪 `XRay`；engine 新增中立
+`combat/targetselect`，CoAB State 以 `CHARACTERLIST／LegacyObjectID`、TacticalMap
+與 `Fighter.VisibleTo` 完成 JSON→engine→game adapter 的 bounded transaction。第一輪
+caller audit 保留 overlay-09 `014A:00C0h` raw far-call 與位址空間，但一般 caller
+對應與 direction comparator 仍是 `strong inference／hypothesis`，移動、flee／guard、
+persistent action target、完整 AI、動畫音效與整作通關仍未完成。權威規格為
+[`docs/spec/508-pc98-general-target-scan-producer.md`](spec/508-pc98-general-target-scan-producer.md)。
 
 第 505 輪補上 PC-98 Quick target 的 caller 邊界：IDA／TPOV resolver 證明
 `04CCh` 是 overlay 09 entry 4，但其唯一直接 caller `0164h` 是通用戰鬥 action
