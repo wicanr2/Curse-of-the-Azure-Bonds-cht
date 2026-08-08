@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
@@ -90,10 +91,16 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("resolve combat magic resistance rules: %w", err)
 		}
 		battle.SetMagicResistanceRules(magicResistanceRules)
+		postHitRules, err := s.dataPack.ResolveCombatPostHitRules()
+		if err != nil {
+			return fmt.Errorf("resolve combat post-hit rules: %w", err)
+		}
+		battle.SetPostHitRules(postHitRules)
 	} else {
 		battle.SetDamageRules([]enginedamage.Rule(nil))
 		battle.SetConditionalModifierRules([]enginemodifier.Rule(nil))
 		battle.SetMagicResistanceRules([]engineresistance.Rule(nil))
+		battle.SetPostHitRules([]engineposthit.Rule(nil))
 	}
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err
@@ -3725,7 +3732,7 @@ func formatMultiAttackMessage(catalog interface{ Text(string, string) string }, 
 
 func attackFireEffectSummary(result combat.AttackResult) (damage int, protected bool) {
 	for _, effect := range result.Effects {
-		if effect.Kind != 0x4F {
+		if effect.DamageFlags&combat.DamageFlagFire == 0 {
 			continue
 		}
 		damage += effect.Damage

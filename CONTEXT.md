@@ -3975,3 +3975,14 @@ restore 都由 JSON 重掛規則。Fireball 與 reflecting line core 現會保�
 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件／README 與兩 repo 將以各一個
 集中 commit／push 收尾。這仍不是完整戰鬥、完整魔法抗性
 或完整遊戲通關聲明。
+
+2026-08-09 第五百零一輪接續 PC-98 `CHECKFX` effect `4Fh`。沿用第 414 輪的
+overlay 13 caller、overlay 23 dispatch 與 overlay 12 `2d10`／Fire＋Magic bytes，
+將第一、第二攻擊槽、目標存活條件、物理擊殺／未啟用／第三槽不 dispatch，以及
+先耗骰再判火焰保護的 exact 行為移入 engine `combat/posthit` 與 CoAB
+`combat_post_hit_rules`。`AttackEffectResult` 保留 raw kind、damage mask、原始
+骰值、實際傷害與 Protected；Battle、StartCombat、active save restore 均由 JSON
+重掛規則。新增 READY spec
+`docs/spec/501-pc98-post-hit-effect-data-contract.md`。`6Ah` 是否介入 `4Fh`、
+effect `84h`、完整動畫／音效／wall-clock timing 仍未知；本輪仍不是完整戰鬥或
+完整遊戲通關聲明。

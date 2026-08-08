@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
 
@@ -56,6 +57,21 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}}
 	if !reflect.DeepEqual(magicResistanceRules, wantMagicResistanceRules) {
 		t.Fatalf("combat magic resistance rules=%+v want=%+v", magicResistanceRules, wantMagicResistanceRules)
+	}
+	if len(pack.CombatPostHitRules) != 1 {
+		t.Fatalf("combat post-hit rules=%+v", pack.CombatPostHitRules)
+	}
+	postHitRules, err := pack.ResolveCombatPostHitRules()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantPostHitRules := []engineposthit.Rule{{
+		ID: "coab.monster_affect_4f.fire-magic-2d10-slots-1-2", EffectKind: 0x4F,
+		MinAttackSlot: 1, MaxAttackSlot: 2, DamageDiceCount: 2, DamageDiceSides: 10,
+		DamageMask: 0x09,
+	}}
+	if !reflect.DeepEqual(postHitRules, wantPostHitRules) {
+		t.Fatalf("combat post-hit rules=%+v want=%+v", postHitRules, wantPostHitRules)
 	}
 	conditionalRules, err := pack.ResolveCombatConditionalModifiers()
 	if err != nil {

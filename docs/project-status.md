@@ -1,11 +1,19 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 499 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`036643f`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 501 輪，兩 repo 各一個集中提交）
+依賴的 Golden Box engine checkpoint：`15bc9e9`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 501 輪把 PC-98 物理命中後 effect `4Fh` 的已證明行為移入共用
+`combat/posthit` 與 CoAB game-pack `combat_post_hit_rules`：第一、第二攻擊槽、
+`2d10`、Fire＋Magic `damage_mask=09h`、目標存活條件與「先耗骰再判保護」順序
+均由原始 bytes／第 414 輪規格支持。Battle 不再硬編這些值，active-combat
+restore 也重新掛入設定；`4Fh` 的完整動畫／音效、`84h` 與 `6Ah` 是否介入仍未
+閉合。這是資料分層與可重用規則 milestone，不是完整戰鬥或整作通關聲明。權威
+規格為 [`docs/spec/501-pc98-post-hit-effect-data-contract.md`](spec/501-pc98-post-hit-effect-data-contract.md)。
 
 第 493 輪接通 PC-98 Quick AI 的第一個區域法術 bounded slice：`Sleep (15h)`。
 Quick selector 抽中 Sleep 時，CoAB 以 game-pack `min_range`、目前

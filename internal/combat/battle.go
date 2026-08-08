@@ -12,6 +12,7 @@ import (
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
@@ -172,6 +173,9 @@ type Fighter struct {
 	// MagicResistanceRules are immutable game-pack capabilities. They are
 	// excluded from save JSON and reattached after loading the active battle.
 	MagicResistanceRules []engineresistance.Rule `json:"-"`
+	// PostHitRules are immutable game-pack capabilities. They are excluded from
+	// save JSON and reattached after loading the active battle.
+	PostHitRules []engineposthit.Rule `json:"-"`
 }
 
 // MonsterAffect mirrors one nine-byte MON*SPC record without importing the
@@ -307,18 +311,34 @@ func (f Fighter) MonsterProtectedFromDamage(flags uint8) bool {
 	return f.MonsterDamageAdjustment(flags, 0).Immune
 }
 
-// MonsterPostHitAffects returns the operational monster affects dispatched by
-// the reference CHECKFX table after a successful physical attack slot. The
-// PC-98 caller passes attack slot + 1; CHECKFX types 2 and 3 both dispatch
-// effect 4F, while later types do not. Raw affects remain attached to Fighter
-// and this projection adds behavior without renaming or rewriting them.
+// MonsterPostHitRules resolves operational raw effects through the title-owned
+// post-hit contract. The raw MON*SPC effects remain the source of active kinds;
+// slot ranges and damage behavior come from the game pack.
+func (f Fighter) MonsterPostHitRules(attackSlot int) []engineposthit.Rule {
+	active := make([]uint8, 0, len(f.MonsterAffects))
+	for _, affect := range f.MonsterAffects {
+		if affect.operational() {
+			active = append(active, affect.Kind)
+		}
+	}
+	return engineposthit.Resolve(active, attackSlot, f.PostHitRules)
+}
+
+// MonsterPostHitAffects preserves the legacy raw-affect projection for callers
+// that need to inspect the original MON*SPC records. Dispatch eligibility is
+// now supplied by PostHitRules rather than a hardcoded effect kind or slot.
 func (f Fighter) MonsterPostHitAffects(attackSlot int) []MonsterAffect {
-	if attackSlot < 1 || attackSlot > 2 {
+	rules := f.MonsterPostHitRules(attackSlot)
+	if len(rules) == 0 {
 		return nil
+	}
+	matched := make(map[uint8]bool, len(rules))
+	for _, rule := range rules {
+		matched[rule.EffectKind] = true
 	}
 	var effects []MonsterAffect
 	for _, affect := range f.MonsterAffects {
-		if affect.operational() && affect.Kind == 0x4F {
+		if affect.operational() && matched[affect.Kind] {
 			effects = append(effects, affect)
 		}
 	}
@@ -803,6 +823,18 @@ func (b *Battle) SetMagicResistanceRules(rules []engineresistance.Rule) {
 	}
 	for id, fighter := range b.fighters {
 		fighter.MagicResistanceRules = append([]engineresistance.Rule(nil), rules...)
+		b.fighters[id] = fighter
+	}
+}
+
+// SetPostHitRules attaches immutable game-pack post-hit capabilities to every
+// fighter. Rules are configuration, not mutable combat state.
+func (b *Battle) SetPostHitRules(rules []engineposthit.Rule) {
+	if b == nil {
+		return
+	}
+	for id, fighter := range b.fighters {
+		fighter.PostHitRules = append([]engineposthit.Rule(nil), rules...)
 		b.fighters[id] = fighter
 	}
 }
@@ -1458,16 +1490,18 @@ func (b *Battle) attackSlot(attackerID, targetID string, attackSlot int) (Attack
 	if err != nil || !result.Hit || result.TargetHP <= 0 {
 		return result, err
 	}
-	for _, affect := range attacker.MonsterPostHitAffects(attackSlot) {
+	for _, rule := range attacker.MonsterPostHitRules(attackSlot) {
 		target := b.fighters[targetID]
 		if target.HitPoints <= 0 {
 			break
 		}
-		flags := DamageFlagFire | DamageFlagMagic
-		rolledDamage := b.rng.Intn(10) + 1 + b.rng.Intn(10) + 1
-		adjustment := target.MonsterDamageAdjustment(flags, rolledDamage)
+		rolledDamage := 0
+		for index := 0; index < rule.DamageDiceCount; index++ {
+			rolledDamage += b.rng.Intn(rule.DamageDiceSides) + 1
+		}
+		adjustment := target.MonsterDamageAdjustment(rule.DamageMask, rolledDamage)
 		effect := AttackEffectResult{
-			Kind: affect.Kind, DamageFlags: flags, RolledDamage: rolledDamage, TargetHP: target.HitPoints,
+			Kind: rule.EffectKind, DamageFlags: rule.DamageMask, RolledDamage: rolledDamage, TargetHP: target.HitPoints,
 			Protected: adjustment.Immune,
 		}
 		if !effect.Protected {

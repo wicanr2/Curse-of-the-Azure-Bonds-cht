@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百零一輪 PC-98 物理命中後 `4Fh` 資料契約](./501-pc98-post-hit-effect-data-contract.md)（`READY`：第一、第二攻擊槽、`2d10`、Fire＋Magic 與資料分層）
+
 - [第五百輪 PC-98 6Ah 魔法抗性資料契約與區域法術邊界](./500-pc98-spell-magic-resistance-boundary.md)（`READY`：effect `6Ah`→15% exact、Fireball／Lightning bounded adapter 與明確 RNG 未知邊界）
 
 - [第三百九十九輪外圍遺跡提爾雪雅結盟](./399-outer-ruins-tirsheya-alliance.md)（`READY`：terrain `01h`、手札 5、兩場氏族戰與固定八個玩家戰鬥槽）
