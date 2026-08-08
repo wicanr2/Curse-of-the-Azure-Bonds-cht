@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
@@ -96,11 +97,17 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("resolve combat post-hit rules: %w", err)
 		}
 		battle.SetPostHitRules(postHitRules)
+		monsterSpellRules, err := s.dataPack.ResolveCombatMonsterSpellRules()
+		if err != nil {
+			return fmt.Errorf("resolve combat monster spell rules: %w", err)
+		}
+		battle.SetMonsterSpellRules(monsterSpellRules)
 	} else {
 		battle.SetDamageRules([]enginedamage.Rule(nil))
 		battle.SetConditionalModifierRules([]enginemodifier.Rule(nil))
 		battle.SetMagicResistanceRules([]engineresistance.Rule(nil))
 		battle.SetPostHitRules([]engineposthit.Rule(nil))
+		battle.SetMonsterSpellRules([]enginespell.Rule(nil))
 	}
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err
@@ -2840,22 +2847,26 @@ func (s *State) advanceCombatToParty() error {
 		if len(targets) == 0 {
 			return s.finishCombat()
 		}
-		if fighter.MonsterThrowsLightning() && s.battle.Round() < 4 && s.combatLineTerrain != nil {
+		monsterSpellRules := fighter.MonsterSpecialSpellRules(s.battle.Round())
+		if len(monsterSpellRules) > 0 {
+			monsterSpellRule := monsterSpellRules[0]
 			point := combat.TilePoint{}
-			target, found, err := s.battle.SelectRangedCombatTarget(fighter.ID, targetSide, combat.TargetSelectionOptions{
-				MaxRange: 10,
-				Terrain:  s.combatLineTerrain,
-				VisibleTo: func(observer, target combat.Fighter) bool {
-					return target.VisibleTo(observer)
-				},
-			})
-			if err != nil {
-				return err
+			if s.combatLineTerrain != nil {
+				target, found, err := s.battle.SelectRangedCombatTarget(fighter.ID, targetSide, combat.TargetSelectionOptions{
+					MaxRange: monsterSpellRule.TargetRange,
+					Terrain:  s.combatLineTerrain,
+					VisibleTo: func(observer, target combat.Fighter) bool {
+						return target.VisibleTo(observer)
+					},
+				})
+				if err != nil {
+					return err
+				}
+				if found {
+					point = combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+				}
 			}
-			if found {
-				point = combat.TilePoint{X: target.CombatX, Y: target.CombatY}
-			}
-			if err := s.castMonsterLightning(fighter, point); err != nil {
+			if err := s.castMonsterLightning(fighter, point, monsterSpellRule); err != nil {
 				return err
 			}
 			return nil
@@ -3231,9 +3242,9 @@ func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 	return s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 }
 
-func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint) error {
+func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoint, rule enginespell.Rule) error {
 	origin := combat.TilePoint{X: caster.CombatX, Y: caster.CombatY}
-	if point == origin || !s.combatLineTerrain(point.X, point.Y).Valid {
+	if s.combatLineTerrain == nil || point == origin || !s.combatLineTerrain(point.X, point.Y).Valid {
 		s.combatMessage = fmt.Sprintf(s.catalog.Text(
 			"combat_monster_lightning_bolt_no_target",
 			"combat_monster_lightning_bolt_no_target",
@@ -3243,11 +3254,13 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 		return s.advanceCombatToParty()
 	}
 	result, err := s.battle.CastReflectingLineSpell(
-		caster.ID, LightningBoltSpellID, point, 1,
+		caster.ID, rule.SpellID, point, rule.CasterLevel,
 		combat.ReflectingLineOptions{
-			WeightedBudget: 10, FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
-			DamageFlags:       combat.DamageFlagElectricity | combat.DamageFlagMagic,
-			InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6,
+			WeightedBudget: rule.LineBudget, FirstReflectionOriginThreshold: rule.FirstReflectionOriginThreshold,
+			FirstReflectionPenalty: rule.FirstReflectionPenalty,
+			DamageFlags:            rule.DamageMask,
+			InitialDamageDice:      rule.InitialDamageDice, PathDamageDice: rule.PathDamageDice,
+			DamageDiceSides: rule.DamageDiceSides,
 		},
 		s.combatLineTerrain,
 	)

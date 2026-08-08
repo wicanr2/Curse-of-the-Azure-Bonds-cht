@@ -12,6 +12,7 @@ import (
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
@@ -176,6 +177,9 @@ type Fighter struct {
 	// PostHitRules are immutable game-pack capabilities. They are excluded from
 	// save JSON and reattached after loading the active battle.
 	PostHitRules []engineposthit.Rule `json:"-"`
+	// MonsterSpellRules are immutable game-pack capabilities for innate special
+	// spell actions. They are excluded from save JSON and reattached after load.
+	MonsterSpellRules []enginespell.Rule `json:"-"`
 }
 
 // MonsterAffect mirrors one nine-byte MON*SPC record without importing the
@@ -345,16 +349,24 @@ func (f Fighter) MonsterPostHitAffects(attackSlot int) []MonsterAffect {
 	return effects
 }
 
-// MonsterThrowsLightning reports the operational MON*SPC effect dispatched
-// by the reference CHECKFX type-14 action phase. The raw effect remains on
-// Fighter; this method only exposes the title-neutral runtime capability.
-func (f Fighter) MonsterThrowsLightning() bool {
+// MonsterSpecialSpellRules resolves innate special spell actions from active
+// raw effects and the current combat round. The title pack owns effect kind,
+// spell ID, round window and payload.
+func (f Fighter) MonsterSpecialSpellRules(round int) []enginespell.Rule {
+	active := make([]uint8, 0, len(f.MonsterAffects))
 	for _, affect := range f.MonsterAffects {
-		if affect.operational() && affect.Kind == 0x84 {
-			return true
+		if affect.operational() {
+			active = append(active, affect.Kind)
 		}
 	}
-	return false
+	return enginespell.Resolve(active, round, f.MonsterSpellRules)
+}
+
+// MonsterThrowsLightning preserves the legacy capability query for the first
+// combat round. Dispatch itself must use MonsterSpecialSpellRules with the
+// actual round, so the method does not infer behavior from a hardcoded kind.
+func (f Fighter) MonsterThrowsLightning() bool {
+	return len(f.MonsterSpecialSpellRules(1)) != 0
 }
 
 // MagicResistanceChance mirrors the PC-98 EFFPROCS common routine. The
@@ -835,6 +847,18 @@ func (b *Battle) SetPostHitRules(rules []engineposthit.Rule) {
 	}
 	for id, fighter := range b.fighters {
 		fighter.PostHitRules = append([]engineposthit.Rule(nil), rules...)
+		b.fighters[id] = fighter
+	}
+}
+
+// SetMonsterSpellRules attaches immutable game-pack innate spell capabilities
+// to every fighter. Rules are configuration, not mutable combat state.
+func (b *Battle) SetMonsterSpellRules(rules []enginespell.Rule) {
+	if b == nil {
+		return
+	}
+	for id, fighter := range b.fighters {
+		fighter.MonsterSpellRules = append([]enginespell.Rule(nil), rules...)
 		b.fighters[id] = fighter
 	}
 }
