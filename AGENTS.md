@@ -778,9 +778,17 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   控制流、原始 bytes、位址與報告欄位不變。exact AST baseline `77→0`，
   `ROUND492_SOURCE_AUDIT=0`、`ROUND492_FORMAL_EXIT=0`；READY spec 492 是
   權威。這只表示工具鏈資料分離完成，不代表完整遊戲已通關或完整中文化。
-- 使用者於 2026-08-03 要求第 491 輪 push 後暫停，下週再繼續。compact／自動
-  continuation 不得自行開新 milestone；下一次使用者明確恢復後，先以實際
-  HEAD、`docs/project-status.md` 與剩餘 runtime audit 77 為起點。
+- 第 493 輪依 PC-98 overlay 09 的非破壞性 IDA report 接通 Quick AI 第一個
+  `MinRange>0` 區域法術 `Sleep (15h)`：State 以 game-pack `min_range`、
+  `TACTICALMAP`、敵人格建立 bounded `SCAN` center，重用既有 Sleep effect／
+  TWINKLE／slot／active-save pipeline；無合法候選時 fail-closed。Quick target
+  linked-list 的 tie／random 細節標為 `strong inference／unknown`，Fireball、
+  Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick Area 仍未接通。READY
+  spec 493 是權威；本輪 focused regression 已通過，完整 Quick AI／完整遊戲
+  仍不可宣稱完成。
+- 使用者已於 2026-08-09 恢復作業；compact／自動 continuation 應以第 493 輪
+  的實際 HEAD、`docs/project-status.md` 與 `CONTEXT.md` 尾端為起點，不要把
+  舊的「暫停」文字當成目前狀態。
 - 完整玩家事項收斂後必須另做一次原版忠實 UI 終驗：逐畫面核對石框、內框、
   第一人稱視窗、HEAD／BODY 人物組合、頭像 anchor、戰鬥配置與中文排版；文字
   字級與換行可以為繁中調整，但不能藉此改掉原版區塊關係。README 只保留對應

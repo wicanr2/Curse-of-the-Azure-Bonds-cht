@@ -2848,6 +2848,61 @@ func TestCombatMoveIntoEnemySquareResolvesAttack(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickSleepUsesAreaCenterAndConsumesSlot(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Class: party.ClassMagicUser, Level: 1,
+			SpellSlots: []uint8{SleepSpellID},
+		}}
+		state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+			return enginescan.TacticalMap{
+				Width: 7, Height: 1,
+				Tiles:       []uint8{1, 1, 1, 1, 1, 1, 1},
+				Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+			}, nil
+		})
+		heroes := []combat.Fighter{{
+			ID: "mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 0, CombatY: 0,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+			ArmorClass: 10, HitDice: 1, InitiativeBonus: 1,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0,
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualTwinkle {
+			continue
+		}
+		enemy, ok := state.fighter("enemy")
+		if !ok || !enemy.MonsterIsHeld() {
+			continue
+		}
+		found = true
+		if len(state.partyRoster[0].SpellSlots) != 0 || len(event.Impacts) != 1 ||
+			event.Impacts[0].TargetID != "enemy" ||
+			event.Impacts[0].To != (combat.TilePoint{X: 5, Y: 0}) {
+			t.Fatalf("Quick Sleep event=%+v slots=%v enemy=%+v", event, state.partyRoster[0].SpellSlots, enemy)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-2 Quick Sleep selection")
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}

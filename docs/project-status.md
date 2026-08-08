@@ -1,11 +1,20 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 492 輪）
+本 milestone 的 CoAB 基底：GitHub `main`（第 493 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 493 輪接通 PC-98 Quick AI 的第一個區域法術 bounded slice：`Sleep (15h)`。
+Quick selector 抽中 Sleep 時，CoAB 以 game-pack `min_range`、目前
+`TACTICALMAP` 與敵人戰鬥格建立原版 `SCAN` candidate，再重用已完成的
+Sleep `35h` effect、TWINKLE、聲音、法術格與 active-save pipeline。沒有合法
+地形／IDLIST／候選時 fail-closed；Fireball、Lightning Bolt、Stinking Cloud、
+Cloudkill 的 Quick Area 與原版 target linked-list tie／random 細節仍未完成。
+此輪是可玩的戰鬥進度，不是完整 Quick AI 或完整遊戲完成聲明。權威規格為
+[`docs/spec/493-pc98-quick-sleep-area-target.md`](spec/493-pc98-quick-sleep-area-target.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -631,6 +640,13 @@ commit 內保存不可能自我引用的 hash。
   `4d4`／HD／魔抗／`35h` effect 與成功後 slot 消耗；無效 map fail-closed。
   32×16 fallback placement 仍是 reconstructed，Quick Sleep、wall/corner
   動態、解除／save、twinkle／音效未完成；READY spec 439 是權威。
+- 第 493 輪接續 Quick Sleep：ALT+M 開啟後，selector 抽到 `Sleep (15h)` 時，
+  CoAB 以 game-pack `min_range`、目前 `TACTICALMAP` 與敵人戰鬥格建立
+  bounded `SCAN` candidate，並重用已完成的 `35h` effect／TWINKLE／聲音／
+  slot／active-save pipeline。無合法地形、IDLIST 或 candidate 時維持
+  fail-closed；Fireball、Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick
+  Area 與原版 target linked-list tie／random 細節仍未完成。這是 strong
+  inference bounded slice，不是完整 Quick AI。READY spec 493 是權威。
 - 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
   證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC
