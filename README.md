@@ -22,6 +22,15 @@ catalog。工具 help、錯誤與 Sound BIOS 參數報告仍維持原輸出語�
 gate 為 `ROUND492_FORMAL_EXIT=0`；這是工具鏈資料分離里程碑，不代表完整遊戲
 已完成。規格見 [`docs/spec/492-tooling-locale-data-separation.md`](docs/spec/492-tooling-locale-data-separation.md)。
 
+第 493 輪接通 PC-98 Quick AI 的第一個區域法術：`Sleep (15h)`。Quick selector
+抽中 Sleep 後，CoAB 以 game-pack `min_range` 和目前 `TACTICALMAP`，依敵人
+戰鬥格建立原版 `SCAN` bounded candidate，再沿既有 Sleep effect／TWINKLE／
+法術格交易完成；沒有地形或合法候選時仍 fail-closed。這只關閉 Sleep 的
+Quick slice，Fireball、Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick
+Area 仍未開放；Quick target linked-list 的 tie／random 細節也仍標為
+`strong inference／unknown`。Docker focused regression 已通過，證據見
+[`docs/spec/493-pc98-quick-sleep-area-target.md`](docs/spec/493-pc98-quick-sleep-area-target.md)。
+
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
 literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
@@ -1286,6 +1295,12 @@ PC-98 TDEF、選定格中心與原版 `SCAN`，不是依距離自行猜測或以
 PC-98 固定戰場動態仍未完成，故這是可玩的規則垂直切片，不是完整 Sleep／
 完整戰鬥聲明。證據見
 [`spec 439`](docs/spec/439-pc98-sleep-selected-cell-tactical-map.md)。
+
+第 493 輪已接續上段的 Quick AI 缺口，但只限 `Sleep (15h)`：以原版 overlay 09
+證據建立候選落點，並把 point 保存到同一個 delayed-action contract。Sleep 的
+raw `CastingTime=1` 目前立即結算；其他非零 `MinRange` 法術仍由 fail-closed
+分支保護，不把 bounded 推論擴大成完整 Quick 法術 AI。證據見
+[`spec 493`](docs/spec/493-pc98-quick-sleep-area-target.md)。
 
 第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
 連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`

@@ -3819,3 +3819,27 @@ overlay、Borland symbol 與 DOS 角色匯入工具，以及 Sound BIOS 報告�
 `ROUND492_FORMAL_EXIT=0`。READY spec 492 是權威；這是工具鏈資料分離里程碑，
 不是完整開場到結局、完整戰鬥或完整中文化聲明。CoAB commit／push 與暫存清理
 待本輪收尾；engine 本輪沒有修改。
+
+2026-08-09 第四百九十三輪接續遊戲本體戰鬥缺口，不把文件工作誤當完成：以
+指定 IDA Pro 9.4 image 的 default entrypoint，在唯讀 PC-98 overlay 09 副本
+上執行既有 `scripts/ida/pc98_quick_magic_audit.idc`。輸入 overlay SHA-256
+為 `c014bcbf9faf3acc4877386529d3b0aa74beac81f05d48e87d7f01de61031c20`，連續
+指令報告 SHA-256 為 `3f7f6160e9aac8140ecf320ae45f34572b6d77a39bc7b5f1eb6c8f417c30b36c`；
+原始 binary／既有 database／Borland symbol／位址均未改寫。`02D3h..03D0h`
+的 Quick MinRange helper 會建立 SCAN candidate、比較隊伍與角色狀態、讀
+spell record `+61BCh/+61BDh` 並呼叫效果／豁免 predicate；`03D3h..04C9h`
+只對非零 MinRange 進入它，`04CCh..0627h` 再巡覽 target pointer chain。
+完整 linked-list tie／`1..7` random helper 語意仍是 strong inference／unknown。
+
+CoAB 現只將已有完整 Sleep pipeline 的全域法術 `15h` 接入 Quick：
+`quickSleepAreaTarget` 以正式 game-pack `min_range`、前端提供的
+`TACTICALMAP` 與每一名有位置敵人的戰鬥格建立 `BuildLegacyAreaScanTargetIDs`；
+成功後保存 point，立即 raw `CastingTime=1` 走既有 `CastSleepOrdered`，若資料
+日後證明非零 delay 則同一路徑使用 `BeginPendingPointSpellAction`。Fireball、
+Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick Area 仍 fail-closed，沒有
+以普通攻擊代替。新增 `TestCombatAltMQuickSleepUsesAreaCenterAndConsumesSlot`
+與 spec 493；Docker focused `internal/game` tests（Quick Sleep／既有 Sleep）
+通過。PC-98 磁片只完成 DOSBox-X Docker 啟動／標題畫面擷取，尚未把 Quick
+Area 戰鬥的原機逐鍵／逐幀結果冒稱 exact。這是 bounded combat milestone，
+不是完整 Quick AI、完整 ECL 玩家路徑或完整 remake 完成聲明；本輪待集中
+commit＋push。

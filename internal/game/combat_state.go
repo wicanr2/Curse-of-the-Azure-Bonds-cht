@@ -955,6 +955,42 @@ func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
 	return combat.Fighter{}, false
 }
 
+// quickSleepAreaTarget is the bounded CoAB adapter for the PC-98 Quick
+// MinRange path. The reference suitability routine builds a SCAN candidate
+// list around each possible combat target before it accepts the spell. The
+// exact linked-list tie/random policy is still outside this adapter; the
+// stable fighter order is retained until that consumer is closed.
+func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
+	if minRange == 0 {
+		return combat.TilePoint{}, false, fmt.Errorf("Quick Sleep requires a nonzero scan range")
+	}
+	if s.combatScanMapProvider == nil {
+		return combat.TilePoint{}, false, fmt.Errorf("Quick Sleep TACTICALMAP projection is unavailable")
+	}
+	tacticalMap, err := s.combatScanMapProvider()
+	if err != nil {
+		return combat.TilePoint{}, false, fmt.Errorf("build Quick Sleep TACTICALMAP: %w", err)
+	}
+	for _, target := range s.livingBySide(combat.SideEnemy) {
+		if !target.HasCombatPosition {
+			continue
+		}
+		center := combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+		ordered, err := s.battle.BuildLegacyAreaScanTargetIDs(
+			tacticalMap, caster.ID,
+			enginescan.Point{X: center.X, Y: center.Y}, combat.SideEnemy,
+			int(minRange), 0xff,
+		)
+		if err != nil {
+			return combat.TilePoint{}, false, fmt.Errorf("build Quick Sleep SCAN targets: %w", err)
+		}
+		if len(ordered) != 0 {
+			return center, true, nil
+		}
+	}
+	return combat.TilePoint{}, false, nil
+}
+
 // CombatSpellTargetsEnemy follows the global spell-table identity stored in
 // player records. Magic Missile is 0x0F; cleric Protection from Good is 0x07.
 func (s *State) CombatSpellTargetsEnemy() bool {
@@ -2776,6 +2812,10 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
 			if spell.MinRange != 0 {
+				if spell.ID == SleepSpellID {
+					_, ok, err := s.quickSleepAreaTarget(fighter, spell.MinRange)
+					return ok, err
+				}
 				return false, fmt.Errorf(
 					"quick spell 0x%02X requires unresolved area-safety predicate %d",
 					spell.ID, spell.MinRange,
@@ -2840,6 +2880,38 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			"combat_quick_magic_casting", "combat_quick_magic_casting",
 		), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 		return true, nil
+	}
+	if spellID == SleepSpellID {
+		center, ok, err := s.quickSleepAreaTarget(fighter, definition.MinRange)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			return false, fmt.Errorf("Quick Sleep has no legal area target")
+		}
+		if err := s.BeginCombatCast(spellID); err != nil {
+			return false, err
+		}
+		s.combatSpellTargetPoint = center
+		s.combatSpellTargetsPoint = true
+		if delay := selected.CastingDelayUnits(); delay > 0 {
+			if err := s.battle.BeginPendingPointSpellAction(
+				fighter.ID, spellID, delay, center.X, center.Y,
+			); err != nil {
+				return false, err
+			}
+			s.CancelCombatCast()
+			if s.combatDelayedTurns == nil {
+				s.combatDelayedTurns = make(map[int]bool)
+			}
+			s.combatDelayedTurns[s.combatTurnIndex] = true
+			s.combatTurnIndex++
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_casting", "combat_quick_magic_casting",
+			), fighter.Name, campSpellLabel(s.catalog, party.ClassMagicUser, spellID))
+			return true, nil
+		}
+		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 	}
 	if spellID != MagicMissileSpellID {
 		if fighter.ControlMorale < 0x80 {
