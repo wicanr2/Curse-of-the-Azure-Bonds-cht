@@ -772,6 +772,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   prompt、旅店與遊戲時間，baseline `94→77`；`internal/game` 抽樣 marker
   `ROUND491_SAMPLED_EXIT=0`。角色選擇保存 ID／index，時間保存 typed fields，
   locale 只格式化。READY spec 491 是權威。
+- 第 492 輪把反組譯／PC-98／VFD／overlay／Borland symbol／DOS 角色工具的
+  最後 77 次 Go 漢字 literal 移到 `internal/tooltext/messages/zh-TW.json`；
+  help、error 與 Sound BIOS 報告參數改用 stable ID＋embedded catalog，工具
+  控制流、原始 bytes、位址與報告欄位不變。exact AST baseline `77→0`，
+  `ROUND492_SOURCE_AUDIT=0`、`ROUND492_FORMAL_EXIT=0`；READY spec 492 是
+  權威。這只表示工具鏈資料分離完成，不代表完整遊戲已通關或完整中文化。
 - 使用者於 2026-08-03 要求第 491 輪 push 後暫停，下週再繼續。compact／自動
   continuation 不得自行開新 milestone；下一次使用者明確恢復後，先以實際
   HEAD、`docs/project-status.md` 與剩餘 runtime audit 77 為起點。

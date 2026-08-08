@@ -1,7 +1,7 @@
 # 專案成果盤點
 
-更新日期：2026-08-02
-本 milestone 的 CoAB 基底：`d825164`（第 478 輪）
+更新日期：2026-08-09
+本 milestone 的 CoAB 基底：GitHub `main`（第 492 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -131,7 +131,12 @@ commit 內保存不可能自我引用的 hash。
   動作、法術、快速戰鬥、怪物施法與勝敗等 63 筆中文副本，typed 規則與動畫
   不變；baseline 94、frontend debt 0、runtime 94。第 491 輪再資料化 WHO、
   PICTURE、紮營角色列、未知法術、ECL 字串 prompt、旅店與遊戲時間，baseline
-  77、frontend debt 0、runtime 77。
+  77、frontend debt 0、runtime 77。第 492 輪再把反組譯／PC-98／VFD／
+  overlay／Borland symbol 與 DOS 角色工具的最後 77 次漢字 literal 移入
+  `internal/tooltext/messages/zh-TW.json`；工具訊息以 stable ID＋embedded
+  catalog 取得，Sound BIOS 報告仍保留原欄位。baseline 降為 0、frontend debt 0、
+  runtime debt 0。這只清除工具文字資料複本，不等於遊戲劇情、規則或完整中文化
+  已完成；READY spec 492 是權威。
 - 商店、旅店、酒館、神殿、訓練、紮營及多段真實 ECL 主線／支線 vertical
   slices。
 - ECL1 14×4 世界目的地圖已移入 JSON；Standing Stone 揭露後可經正常

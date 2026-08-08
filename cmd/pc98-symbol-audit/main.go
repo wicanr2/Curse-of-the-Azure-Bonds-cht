@@ -10,16 +10,17 @@ import (
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
-	match := flag.String("match", "", "不分大小寫的名稱子字串；空白表示全部")
-	showModules := flag.Bool("modules", false, "列出 compiler modules，不列 symbols")
-	showTypes := flag.Bool("types", false, "列出 legacy type table，不列 symbols")
-	showMembers := flag.Bool("members", false, "列出 legacy member table，不列 symbols")
-	typeIndex := flag.Int("type-index", -1, "只列出指定的 1-based type index；同時啟用 -types")
+	match := flag.String("match", "", tooltext.Text("pc98_symbol_audit.match"))
+	showModules := flag.Bool("modules", false, tooltext.Text("pc98_symbol_audit.modules"))
+	showTypes := flag.Bool("types", false, tooltext.Text("pc98_symbol_audit.types"))
+	showMembers := flag.Bool("members", false, tooltext.Text("pc98_symbol_audit.members"))
+	typeIndex := flag.Int("type-index", -1, tooltext.Text("pc98_symbol_audit.type_index"))
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "用法：pc98-symbol-audit [選項] GAME.EXE")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_symbol_audit.usage"))
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -29,11 +30,11 @@ func main() {
 	}
 	executable, err := os.ReadFile(flag.Arg(0))
 	if err != nil {
-		fatalf("讀取失敗：%v", err)
+		fatalf(tooltext.Text("pc98_symbol_audit.read_failed"), err)
 	}
 	table, err := borlanddebug.ParseLegacy(executable)
 	if err != nil {
-		fatalf("解析失敗：%v", err)
+		fatalf(tooltext.Text("pc98_symbol_audit.parse_failed"), err)
 	}
 	fmt.Printf("exe_sha256=%x\n", sha256.Sum256(executable))
 	fmt.Printf(

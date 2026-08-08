@@ -3808,3 +3808,14 @@ localization 0。READY spec 490 是權威；commit／push 與暫存清理待本�
 `ROUND491_SAMPLED_EXIT=0`；source audit `94→77`，frontend 0、runtime 77、
 localization 0。READY spec 491 是權威。使用者要求本輪 push 後暫停，下週再
 繼續；commit／push 與暫存清理待收尾。
+
+2026-08-09 第四百九十二輪把剩餘 77 次正式 Go 漢字 literal 收斂到
+`internal/tooltext/messages/zh-TW.json`：涵蓋反組譯、PC-98 音樂／音效、VFD、
+overlay、Borland symbol 與 DOS 角色匯入工具，以及 Sound BIOS 報告的參數說明。
+工具控制流、格式參數、原始 bytes、位址與報告欄位保持不變；只是把可編輯文字
+從程式碼移到 stable ID＋embedded catalog。`cmd/coab-audit` exact baseline
+為 0，Docker 網路關閉並以 Xvfb 執行 `go test -count=1 ./cmd/... ./gamepack
+./internal/...` 通過，marker `ROUND492_SOURCE_AUDIT=0`、
+`ROUND492_FORMAL_EXIT=0`。READY spec 492 是權威；這是工具鏈資料分離里程碑，
+不是完整開場到結局、完整戰鬥或完整中文化聲明。CoAB commit／push 與暫存清理
+待本輪收尾；engine 本輪沒有修改。

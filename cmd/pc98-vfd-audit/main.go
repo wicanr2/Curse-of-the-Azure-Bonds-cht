@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98vfd"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 type missingSector struct {
@@ -30,12 +31,12 @@ type report struct {
 }
 
 func main() {
-	cylinders := flag.Int("cylinders", 77, "磁柱數")
-	heads := flag.Int("heads", 2, "磁頭數")
-	sectors := flag.Int("sectors", 8, "每軌磁區數")
+	cylinders := flag.Int("cylinders", 77, tooltext.Text("pc98_vfd_audit.cylinders"))
+	heads := flag.Int("heads", 2, tooltext.Text("pc98_vfd_audit.heads"))
+	sectors := flag.Int("sectors", 8, tooltext.Text("pc98_vfd_audit.sectors"))
 	flag.Parse()
 	if flag.NArg() != 1 {
-		fmt.Fprintln(os.Stderr, "用法：pc98-vfd-audit [選項] DISK.fdd")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_vfd_audit.usage"))
 		os.Exit(2)
 	}
 

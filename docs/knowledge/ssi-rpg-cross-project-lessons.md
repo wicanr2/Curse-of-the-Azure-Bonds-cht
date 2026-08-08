@@ -37,6 +37,12 @@ stable ID；這能同時維持逆向證據、ECL continuation 與單一繁中真
 第 456 輪商店證明複雜服務的格式字串也屬資料層；typed transaction、價格與
 物品 record 留在規則層，角色／商品／報價格式及錯誤結果由 locale ID 驅動。
 
+第 492 輪把同一原則延伸到研究工具：反組譯、音訊、VFD、overlay、Borland
+symbol 與角色匯入 CLI 的 help／error／參數說明移入 embedded `tooltext` catalog，
+Go AST 漢字 exact baseline 由 77 降為 0。這不把工具訊息混進遊戲 game-pack，
+也不把工具輸出的中文當作原版證據；它只是讓後續作品可以沿用「stable ID＋locale
+資料＋格式契約」的工具鏈邊界。
+
 ## 目前不可共用的內容
 
 - ECL VM 與 `DEMON.INT`：一個是 bytecode interpreter input，一個是 native MZ code。

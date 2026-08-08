@@ -11,22 +11,23 @@ import (
 	"time"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 const sampleRate = 44_100
 
 func main() {
-	seconds := flag.Duration("duration", 10*time.Second, "輸出長度")
+	seconds := flag.Duration("duration", 10*time.Second, tooltext.Text("pc98_render_track.duration"))
 	gameTransition := flag.Bool(
 		"game-transition",
 		false,
-		"套用 GAME.EXE MSCPLAY 的 800ms 換曲靜音",
+		tooltext.Text("pc98_render_track.transition"),
 	)
 	flag.Parse()
 	if flag.NArg() != 3 {
 		fmt.Fprintln(
 			os.Stderr,
-			"用法：pc98-render-track [-duration 10s] MSCDRV.EXE SELECTOR OUTPUT.wav",
+			tooltext.Text("pc98_render_track.usage"),
 		)
 		os.Exit(2)
 	}
@@ -36,14 +37,14 @@ func main() {
 	}
 	var selector int
 	if _, err := fmt.Sscanf(flag.Arg(1), "%d", &selector); err != nil {
-		fatal(fmt.Errorf("selector：%w", err))
+		fatal(tooltext.Errorf("pc98_render_track.selector_parse", err))
 	}
 	if *seconds <= 0 {
-		fatal(fmt.Errorf("duration 必須大於零"))
+		fatal(tooltext.Error("pc98_render_track.duration_positive"))
 	}
 	frames := int64(*seconds) * sampleRate / int64(time.Second)
 	if frames <= 0 || frames > int64(^uint32(0))/4 {
-		fatal(fmt.Errorf("輸出長度超出 WAV 32-bit 範圍"))
+		fatal(tooltext.Error("pc98_render_track.wav_range"))
 	}
 	var stream *pc98music.TrackPCMStream
 	if *gameTransition {

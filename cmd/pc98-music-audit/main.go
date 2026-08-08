@@ -7,11 +7,12 @@ import (
 	"os"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
 	if len(os.Args) != 3 {
-		fmt.Fprintln(os.Stderr, "用法：pc98-music-audit GAME.EXE MSCDRV.EXE")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_music_audit.usage"))
 		os.Exit(2)
 	}
 	game, err := os.ReadFile(os.Args[1])

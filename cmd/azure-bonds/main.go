@@ -17,12 +17,13 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	partySave "github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/save"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
 	image := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	member := flag.String("member", "ECL1.DAX", "DAX member to inspect")
-	inputFile := flag.String("input-file", "", "直接讀取 DAX 檔案；非空時不使用 -image／-member")
+	inputFile := flag.String("input-file", "", tooltext.Text("azure_bonds.input_file"))
 	trace := flag.Bool("trace", false, "trace known ECL cursor commands")
 	traceStart := flag.Int("trace-start", -1, "decoded payload offset for -trace (default 0)")
 	dumpOffset := flag.Int("dump-offset", -1, "dump decoded block bytes from this payload offset")
@@ -34,10 +35,10 @@ func main() {
 	allEntries := flag.Bool("all-entries", false, "use all five ECL initialization entries with -graph")
 	findOpcode := flag.Int("find-opcode", -1, "print reachable instructions with this opcode when used with -graph")
 	scanOpcode := flag.Int("scan-opcode", -1, "print linearly scanned instruction candidates with this opcode")
-	findSaveDestination := flag.String("find-save-destination", "", "搜尋寫入指定 16-bit address 的 SAVE candidates（十六進位）")
-	pc98DAX := flag.Bool("pc98-dax", false, "以 IDA 驗證的 PC-9801 DAX block codec 解碼")
-	geoGrid := flag.Bool("geo-grid", false, "將所選 GEO DAX block 解碼為 16×16 terrain 座標表")
-	geoPath := flag.String("geo-path", "", "搜尋 GEO 最短可行路徑，格式為 起點X,起點Y:終點X,終點Y")
+	findSaveDestination := flag.String("find-save-destination", "", tooltext.Text("azure_bonds.find_save_destination"))
+	pc98DAX := flag.Bool("pc98-dax", false, tooltext.Text("azure_bonds.pc98_dax"))
+	geoGrid := flag.Bool("geo-grid", false, tooltext.Text("azure_bonds.geo_grid"))
+	geoPath := flag.String("geo-path", "", tooltext.Text("azure_bonds.geo_path"))
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
@@ -104,7 +105,7 @@ func main() {
 		if err := os.WriteFile(*outRecord, patched, 0o600); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("已修改 DOS 角色 %q 年齡：%d → %d，輸出：%s\n", character.Name, before, projected.Age, *outRecord)
+		fmt.Print(tooltext.Format("azure_bonds.age_patched", character.Name, before, projected.Age, *outRecord))
 		return
 	}
 	if *importCharacter {
@@ -136,7 +137,7 @@ func main() {
 		} else if err := os.WriteFile(*outParty, data, 0o600); err != nil {
 			log.Fatal(err)
 		} else {
-			fmt.Printf("已匯入 DOS 角色 %q，輸出：%s\n", character.Name, *outParty)
+			fmt.Print(tooltext.Format("azure_bonds.character_imported", character.Name, *outParty))
 		}
 		return
 	}

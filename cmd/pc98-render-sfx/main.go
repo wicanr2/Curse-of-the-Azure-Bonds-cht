@@ -9,17 +9,18 @@ import (
 	"os"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 const sampleRate = 44_100
 
 func main() {
-	clockHz := flag.Uint64("clock", 8_000_000, "重建使用的 PC-98 CPU clock")
+	clockHz := flag.Uint64("clock", 8_000_000, tooltext.Text("pc98_render_sfx.clock"))
 	flag.Parse()
 	if flag.NArg() != 3 {
 		fmt.Fprintln(
 			os.Stderr,
-			"用法：pc98-render-sfx [-clock 8000000] GAME.EXE SELECTOR OUTPUT.wav",
+			tooltext.Text("pc98_render_sfx.usage"),
 		)
 		os.Exit(2)
 	}
@@ -29,14 +30,14 @@ func main() {
 	}
 	var selector int
 	if _, err := fmt.Sscanf(flag.Arg(1), "%d", &selector); err != nil {
-		fatal(fmt.Errorf("selector：%w", err))
+		fatal(tooltext.Errorf("pc98_render_sfx.selector_parse", err))
 	}
 	effects, err := pc98sfx.Import(game)
 	if err != nil {
 		fatal(err)
 	}
 	if selector < 0 || selector >= len(effects) {
-		fatal(fmt.Errorf("selector 必須介於 0 與 %d", len(effects)-1))
+		fatal(tooltext.Errorf("pc98_render_sfx.selector_range", len(effects)-1))
 	}
 	mono, err := pc98sfx.RenderPCM(
 		effects[selector],

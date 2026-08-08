@@ -9,11 +9,12 @@ import (
 	"os"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98sfx"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "用法：pc98-sfx-audit GAME.EXE")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_sfx_audit.usage"))
 	}
 	flag.Parse()
 	if flag.NArg() != 1 {
@@ -22,11 +23,11 @@ func main() {
 	}
 	game, err := os.ReadFile(flag.Arg(0))
 	if err != nil {
-		fatalf("讀取失敗：%v", err)
+		fatalf(tooltext.Text("pc98_sfx_audit.read_failed"), err)
 	}
 	effects, err := pc98sfx.Import(game)
 	if err != nil {
-		fatalf("解析失敗：%v", err)
+		fatalf(tooltext.Text("pc98_sfx_audit.parse_failed"), err)
 	}
 	report := struct {
 		GameSHA256 string           `json:"game_sha256"`
@@ -37,7 +38,7 @@ func main() {
 	}
 	output, err := json.MarshalIndent(report, "", "  ")
 	if err != nil {
-		fatalf("建立報告失敗：%v", err)
+		fatalf(tooltext.Text("pc98_sfx_audit.report_failed"), err)
 	}
 	fmt.Println(string(output))
 }

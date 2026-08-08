@@ -6,6 +6,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 const (
@@ -209,23 +211,23 @@ var driverAnchors = []Anchor{
 }
 
 var soundBIOSServices = []SoundBIOSService{
-	{0x00, "INITIALIZE", 0x135D, "ES=控制／工作區段"},
-	{0x02, "CLEAR", 0x1372, "無"},
-	{0x10, "READREG", 0x1384, "AL=OPN 暫存器；回傳 BX"},
-	{0x11, "WRITEREG", 0x13A1, "AL=OPN 暫存器，BL=資料"},
-	{0x12, "SETTOUCH", 0x13B4, "AL=聲道，BL=觸鍵／閘門比"},
-	{0x13, "NOTE", 0x13CA, "AL=聲道，BH=音高，BL=音長"},
-	{0x14, "SETLENGTH", 0x13DD, "AL=聲道，BL=預設音長"},
-	{0x16, "SETPARABLOCK", 0x140D, "AL=聲道，ES:BX=參數塊，DL=種類"},
-	{0x17, "READPARA", 0x1420, "AL=聲道，BL=參數編號；回傳 BX"},
-	{0x18, "WRITEPARA", 0x1438, "AL=聲道，BL=參數編號，DX=值"},
-	{0x19, "ALLSTOP", 0x143D, "無"},
-	{0x1A, "CONTPLAY", 0x1442, "無"},
-	{0x1B, "MODUON", 0x1462, "AL=聲道"},
-	{0x1C, "MODUOFF", 0x1472, "AL=聲道"},
-	{0x1D, "SETINTCOND", 0x148A, "AL=聲道，ES:BX=回呼，CX=條件"},
-	{0x1E, "HOLDSTATE", 0x1452, "AL=聲道，BL=維持音長"},
-	{0x1F, "SETVOLUME", 0x149D, "AL=聲道，BL=音量"},
+	{0x00, "INITIALIZE", 0x135D, tooltext.Text("pc98_sound_bios.arguments.00")},
+	{0x02, "CLEAR", 0x1372, tooltext.Text("pc98_sound_bios.arguments.02")},
+	{0x10, "READREG", 0x1384, tooltext.Text("pc98_sound_bios.arguments.10")},
+	{0x11, "WRITEREG", 0x13A1, tooltext.Text("pc98_sound_bios.arguments.11")},
+	{0x12, "SETTOUCH", 0x13B4, tooltext.Text("pc98_sound_bios.arguments.12")},
+	{0x13, "NOTE", 0x13CA, tooltext.Text("pc98_sound_bios.arguments.13")},
+	{0x14, "SETLENGTH", 0x13DD, tooltext.Text("pc98_sound_bios.arguments.14")},
+	{0x16, "SETPARABLOCK", 0x140D, tooltext.Text("pc98_sound_bios.arguments.16")},
+	{0x17, "READPARA", 0x1420, tooltext.Text("pc98_sound_bios.arguments.17")},
+	{0x18, "WRITEPARA", 0x1438, tooltext.Text("pc98_sound_bios.arguments.18")},
+	{0x19, "ALLSTOP", 0x143D, tooltext.Text("pc98_sound_bios.arguments.19")},
+	{0x1A, "CONTPLAY", 0x1442, tooltext.Text("pc98_sound_bios.arguments.1A")},
+	{0x1B, "MODUON", 0x1462, tooltext.Text("pc98_sound_bios.arguments.1B")},
+	{0x1C, "MODUOFF", 0x1472, tooltext.Text("pc98_sound_bios.arguments.1C")},
+	{0x1D, "SETINTCOND", 0x148A, tooltext.Text("pc98_sound_bios.arguments.1D")},
+	{0x1E, "HOLDSTATE", 0x1452, tooltext.Text("pc98_sound_bios.arguments.1E")},
+	{0x1F, "SETVOLUME", 0x149D, tooltext.Text("pc98_sound_bios.arguments.1F")},
 }
 
 func mustHex(value string) []byte {
