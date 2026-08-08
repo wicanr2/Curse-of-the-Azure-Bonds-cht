@@ -2973,6 +2973,132 @@ func TestCombatAltMQuickFireballUsesAreaCenterAndPendingDelay(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickStinkingCloudUsesAreaCenterAndPersistentArea(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Class: party.ClassMagicUser, Level: 5,
+			SpellSlots: []uint8{StinkingCloudSpellID},
+		}}
+		tiles := make([]uint8, 12*12)
+		for index := range tiles {
+			tiles[index] = 1
+		}
+		state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+			return enginescan.TacticalMap{
+				Width: 12, Height: 12, Tiles: tiles,
+				Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+			}, nil
+		})
+		state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x < 12 && y >= 0 && y < 12}
+		})
+		heroes := []combat.Fighter{{
+			ID: "mage", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 1, SavingThrows: []uint8{20, 20, 20, 20, 20},
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 10, HitDice: 1, InitiativeBonus: 1,
+			HasCombatPosition: true, CombatX: 4, CombatY: 2,
+			SavingThrows: []uint8{20, 20, 20, 20, 20},
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualAreaSpell || event.Effect != "stinking_cloud" {
+			continue
+		}
+		found = true
+		areas := state.CombatPersistentAreas()
+		if event.ActorID != "mage" || event.To != (combat.TilePoint{X: 4, Y: 2}) ||
+			event.PersistentAreaID == 0 || len(event.Impacts) != 1 ||
+			event.Impacts[0].TargetID != "enemy" || len(areas) != 1 ||
+			len(areas[0].Cells) != 4 || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Stinking Cloud event=%+v areas=%+v slots=%v", event, areas, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-5 Quick Stinking Cloud selection")
+	}
+}
+
+func TestCombatAltMQuickCloudkillUsesAreaCenterAndPendingDelay(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Class: party.ClassMagicUser, Level: 7,
+			SpellSlots: []uint8{CloudkillSpellID},
+		}}
+		state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x < 12 && y >= 0 && y < 12}
+		})
+		heroes := []combat.Fighter{{
+			ID: "mage", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			HitDice: 7, ArmorClass: 0, InitiativeBonus: 30,
+			HasCombatPosition: true, CombatX: 1, CombatY: 1,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			HitDice: 4, ArmorClass: 10, InitiativeBonus: 1,
+			HasCombatPosition: true, CombatX: 4, CombatY: 2,
+			SavingThrows: []uint8{20, 20, 20, 20, 20},
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("mage")
+		if !ok || caster.CombatAction.SpellID != CloudkillSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || !caster.CombatAction.HasTargetPoint ||
+			caster.CombatAction.TargetX != 4 || caster.CombatAction.TargetY != 2 ||
+			len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending Quick Cloudkill caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Cloudkill manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 16; action++ {
+			if _, ok := state.CombatVisualEvent(); ok {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualAreaSpell || event.Effect != "cloudkill" ||
+			event.ActorID != "mage" || event.To != (combat.TilePoint{X: 4, Y: 2}) ||
+			event.PersistentAreaID == 0 || len(event.Impacts) != 1 ||
+			!event.Impacts[0].Killed || len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Cloudkill event=%+v ok=%v slots=%v", event, ok, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-6 Quick Cloudkill selection")
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}

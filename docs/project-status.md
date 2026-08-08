@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 494 輪）
+本 milestone 的 CoAB 基底：GitHub `main`（第 495 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -24,6 +24,17 @@ Fireball area-safety、候選 linked-list tie／random、Lightning Bolt、Stinki
 Cloud、Cloudkill 的 Quick Area 仍 fail-closed。此輪是可玩的 Quick Fireball
 進度，不是完整 Quick AI 或完整遊戲完成聲明。權威規格為
 [`docs/spec/494-pc98-quick-fireball-area-target.md`](spec/494-pc98-quick-fireball-area-target.md)。
+
+第 495 輪接通兩個 Quick 毒雲 bounded slice：Stinking Cloud `22h` 的正式
+game-pack `min_range=1` 會以 `TACTICALMAP／SCAN` 從敵人格建立中心，續用既有
+2×2 persistent-area、毒素豁免與地面生命週期；Cloudkill `5Bh` 的
+`min_range=0` 會以 line-terrain 合法敵人格建立中心，依 raw `CastingTime=05h`
+保存 pending point action，續跑後重用既有 3×3 persistent-area、低 HD 直接死亡
+與中斷 pipeline。候選 linked-list tie／random、完整 area-safety、Lightning Bolt
+line target 與完整 Quick AI 仍未完成；本輪為 strong-inference bounded adapter，
+不是完整遊戲完成聲明。Docker／Xvfb 正式 gate 為
+`ROUND495_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
+[`docs/spec/495-pc98-quick-poison-cloud-area-target.md`](spec/495-pc98-quick-poison-cloud-area-target.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -664,6 +675,14 @@ Cloud、Cloudkill 的 Quick Area 仍 fail-closed。此輪是可玩的 Quick Fire
   linked-list tie／random、完整 area-safety 與其餘 Quick Area 仍未完成。這是
   strong inference bounded slice，不是完整 Quick AI。Docker／Xvfb 正式 gate
   `ROUND494_FORMAL_EXIT=0`、`coab-audit total=0`；READY spec 494 是權威。
+- 第 495 輪接通 Quick `Stinking Cloud (22h)` 與 `Cloudkill (5Bh)`：前者依
+  `min_range=1` 走 `TACTICALMAP／SCAN` 並重用既有 2×2 persistent-area；後者依
+  `min_range=0` 與 line-terrain 合法敵人格建立 point，依 raw `CastingTime=05h`
+  保存 pending action，再重用既有 3×3 persistent-area、低 HD 直接死亡與施法
+  中斷 pipeline。候選 linked-list tie／random、完整 area-safety、Lightning Bolt
+  line target 與完整 Quick AI 仍未完成；這是 strong inference bounded slice。
+  focused regression、Docker／Xvfb 正式 gate `ROUND495_FORMAL_EXIT=0` 與
+  `coab-audit total=0` 已通過；READY spec 495 是權威。
 - 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
   證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC
