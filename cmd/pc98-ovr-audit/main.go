@@ -16,19 +16,20 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/borlanddebug"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98ovr"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
 	interruptText := flag.String("interrupt", "d2", "hexadecimal interrupt number to scan")
-	wordText := flag.String("word", "", "另搜尋 little-endian 16-bit 值（十六進位）")
-	bytesText := flag.String("bytes", "", "另搜尋連續 hex bytes，例如 9a77019308")
-	contextBytes := flag.Int("context", 0, "列出 bytes match 前後各 N bytes（十進位）")
-	soundFX := flag.Bool("soundfx", false, "稽核 SOUNDFX 0893:0000 與 selector 常數")
-	extractCodeDir := flag.String("extract-code-dir", "", "將每段已驗證 code 匯出至指定目錄，供 IDA 載入")
-	resolveStubText := flag.String("resolve-stub", "", "解析 resident stub：OVERLAY:HEX_OFFSET，例如 12:0214")
-	resolveCodeText := flag.String("resolve-code", "", "反查 handler local offset：OVERLAY:HEX_OFFSET，例如 23:03FE")
+	wordText := flag.String("word", "", tooltext.Text("pc98_ovr_audit.word"))
+	bytesText := flag.String("bytes", "", tooltext.Text("pc98_ovr_audit.bytes"))
+	contextBytes := flag.Int("context", 0, tooltext.Text("pc98_ovr_audit.context"))
+	soundFX := flag.Bool("soundfx", false, tooltext.Text("pc98_ovr_audit.soundfx"))
+	extractCodeDir := flag.String("extract-code-dir", "", tooltext.Text("pc98_ovr_audit.extract_code"))
+	resolveStubText := flag.String("resolve-stub", "", tooltext.Text("pc98_ovr_audit.resolve_stub"))
+	resolveCodeText := flag.String("resolve-code", "", tooltext.Text("pc98_ovr_audit.resolve_code"))
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "用法：pc98-ovr-audit [選項] GAME.EXE GAME.OVR")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_ovr_audit.usage"))
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -37,43 +38,43 @@ func main() {
 		os.Exit(2)
 	}
 	if *contextBytes < 0 {
-		fatalf("context 必須大於或等於零")
+		fatalf(tooltext.Text("pc98_ovr_audit.context_nonnegative"))
 	}
 	interruptValue, err := strconv.ParseUint(strings.TrimPrefix(*interruptText, "0x"), 16, 8)
 	if err != nil {
-		fatalf("無效 interrupt：%v", err)
+		fatalf(tooltext.Text("pc98_ovr_audit.interrupt_invalid"), err)
 	}
 	var wordValue uint64
 	if *wordText != "" {
 		wordValue, err = strconv.ParseUint(strings.TrimPrefix(*wordText, "0x"), 16, 16)
 		if err != nil {
-			fatalf("無效 word：%v", err)
+			fatalf(tooltext.Text("pc98_ovr_audit.word_invalid"), err)
 		}
 	}
 	var bytePattern []byte
 	if *bytesText != "" {
 		bytePattern, err = hex.DecodeString(strings.TrimPrefix(*bytesText, "0x"))
 		if err != nil || len(bytePattern) == 0 {
-			fatalf("無效 bytes：%q", *bytesText)
+			fatalf(tooltext.Text("pc98_ovr_audit.bytes_invalid"), *bytesText)
 		}
 	}
 	executable := read(flag.Arg(0))
 	overlayFile := read(flag.Arg(1))
 	overlays, err := pc98ovr.Decode(executable, overlayFile)
 	if err != nil {
-		fatalf("解析失敗：%v", err)
+		fatalf(tooltext.Text("pc98_ovr_audit.decode_failed"), err)
 	}
 	if *resolveStubText != "" {
 		overlayIndex, stubOffset, err := parseOverlayStub(*resolveStubText)
 		if err != nil {
-			fatalf("無效 resolve-stub：%v", err)
+			fatalf(tooltext.Text("pc98_ovr_audit.resolve_stub_invalid"), err)
 		}
 		if overlayIndex < 0 || overlayIndex >= len(overlays) {
-			fatalf("overlay index %d 超出 0..%d", overlayIndex, len(overlays)-1)
+			fatalf(tooltext.Text("pc98_ovr_audit.overlay_range"), overlayIndex, len(overlays)-1)
 		}
 		entry, ok := overlays[overlayIndex].ResolveStub(stubOffset)
 		if !ok {
-			fatalf("overlay %d 無法解析 resident stub 0x%04X", overlayIndex, stubOffset)
+			fatalf(tooltext.Text("pc98_ovr_audit.stub_missing"), overlayIndex, stubOffset)
 		}
 		fmt.Printf(
 			"stub_resolution overlay=%d stub=0x%04X entry=%d code=0x%04X flags=0x%02X exe=0x%X\n",
@@ -84,10 +85,10 @@ func main() {
 	if *resolveCodeText != "" {
 		overlayIndex, codeOffset, err := parseOverlayStub(*resolveCodeText)
 		if err != nil {
-			fatalf("無效 resolve-code：%v", err)
+			fatalf(tooltext.Text("pc98_ovr_audit.resolve_code_invalid"), err)
 		}
 		if overlayIndex < 0 || overlayIndex >= len(overlays) {
-			fatalf("overlay index %d 超出 0..%d", overlayIndex, len(overlays)-1)
+			fatalf(tooltext.Text("pc98_ovr_audit.overlay_range"), overlayIndex, len(overlays)-1)
 		}
 		entries := overlays[overlayIndex].ResolveCode(codeOffset)
 		for _, entry := range entries {
@@ -98,14 +99,14 @@ func main() {
 			)
 		}
 		if len(entries) == 0 {
-			fatalf("overlay %d 找不到 handler local 0x%04X", overlayIndex, codeOffset)
+			fatalf(tooltext.Text("pc98_ovr_audit.code_missing"), overlayIndex, codeOffset)
 		}
 	}
 	var debugTable borlanddebug.Table
 	if *soundFX {
 		debugTable, err = borlanddebug.ParseLegacy(executable)
 		if err != nil {
-			fatalf("解析 Borland symbols 失敗：%v", err)
+			fatalf(tooltext.Text("pc98_ovr_audit.symbols_failed"), err)
 		}
 	}
 
@@ -115,7 +116,7 @@ func main() {
 	if *soundFX {
 		table := soundFXSelectorTable()
 		if bytes.Index(executable, table) < 0 {
-			fatalf("SOUNDFX selector table is absent from GAME.EXE")
+			fatalf(tooltext.Text("pc98_ovr_audit.soundfx_table_missing"))
 		}
 		fmt.Printf(
 			"soundfx_selector_table_files=%s ds_base=0x4838 values=255,0..15\n",
@@ -124,7 +125,7 @@ func main() {
 	}
 	if *extractCodeDir != "" {
 		if err := os.MkdirAll(*extractCodeDir, 0o755); err != nil {
-			fatalf("建立 code 匯出目錄失敗：%v", err)
+			fatalf(tooltext.Text("pc98_ovr_audit.extract_dir_failed"), err)
 		}
 	}
 	total := 0
@@ -167,7 +168,7 @@ func main() {
 		if *extractCodeDir != "" {
 			path := filepath.Join(*extractCodeDir, fmt.Sprintf("overlay-%02d.bin", index))
 			if err := os.WriteFile(path, overlay.Code, 0o644); err != nil {
-				fatalf("匯出 overlay %d code 失敗：%v", index, err)
+				fatalf(tooltext.Text("pc98_ovr_audit.extract_code_failed"), index, err)
 			}
 		}
 		if *soundFX {
@@ -211,15 +212,15 @@ func main() {
 func parseOverlayStub(value string) (int, uint16, error) {
 	parts := strings.Split(value, ":")
 	if len(parts) != 2 {
-		return 0, 0, fmt.Errorf("格式必須是 OVERLAY:HEX_OFFSET")
+		return 0, 0, tooltext.Error("pc98_ovr_audit.stub_format")
 	}
 	overlayIndex, err := strconv.ParseInt(parts[0], 10, 32)
 	if err != nil || overlayIndex < 0 {
-		return 0, 0, fmt.Errorf("無效 overlay index %q", parts[0])
+		return 0, 0, tooltext.Errorf("pc98_ovr_audit.overlay_invalid", parts[0])
 	}
 	stubOffset, err := strconv.ParseUint(strings.TrimPrefix(parts[1], "0x"), 16, 16)
 	if err != nil {
-		return 0, 0, fmt.Errorf("無效 stub offset %q", parts[1])
+		return 0, 0, tooltext.Errorf("pc98_ovr_audit.offset_invalid", parts[1])
 	}
 	return int(overlayIndex), uint16(stubOffset), nil
 }
@@ -301,7 +302,7 @@ func soundFXSelector(address uint16) (int, bool) {
 func read(path string) []byte {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		fatalf("讀取 %s 失敗：%v", path, err)
+		fatalf(tooltext.Text("pc98_ovr_audit.read_failed"), path, err)
 	}
 	return data
 }

@@ -9,11 +9,18 @@
 
 ## 目前成果
 
-截至 2026-08-02 的完整「已完成／未完成／驗證方式」盤點見
+截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，依賴的獨立 engine 為 `f3c652a`；實際
+目前 GitHub `main`，依賴的獨立 engine 為 `2ace47d`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
+
+第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
+角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON
+catalog。工具 help、錯誤與 Sound BIOS 參數報告仍維持原輸出語意；`cmd/coab-audit`
+現在以 exact AST baseline 證明 Go 正式原始碼為 0 筆。Docker／Xvfb 正式套件
+gate 為 `ROUND492_FORMAL_EXIT=0`；這是工具鏈資料分離里程碑，不代表完整遊戲
+已完成。規格見 [`docs/spec/492-tooling-locale-data-separation.md`](docs/spec/492-tooling-locale-data-separation.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

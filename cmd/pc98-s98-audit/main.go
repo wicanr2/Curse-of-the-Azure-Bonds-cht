@@ -9,11 +9,12 @@ import (
 	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/pc98music"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "用法：pc98-s98-audit MSCDRV.EXE SELECTOR:TRACE.s98 [...]")
+		fmt.Fprintln(os.Stderr, tooltext.Text("pc98_s98_audit.usage"))
 		os.Exit(2)
 	}
 	driver, err := os.ReadFile(os.Args[1])
@@ -24,11 +25,11 @@ func main() {
 	for _, argument := range os.Args[2:] {
 		parts := strings.SplitN(argument, ":", 2)
 		if len(parts) != 2 {
-			fatal(fmt.Errorf("trace 參數 %q 必須是 SELECTOR:PATH", argument))
+			fatal(tooltext.Errorf("pc98_s98_audit.trace_argument", argument))
 		}
 		selector, err := strconv.Atoi(parts[0])
 		if err != nil {
-			fatal(fmt.Errorf("selector %q：%w", parts[0], err))
+			fatal(tooltext.Errorf("pc98_s98_audit.selector_parse", parts[0], err))
 		}
 		raw, err := os.ReadFile(parts[1])
 		if err != nil {
@@ -36,7 +37,7 @@ func main() {
 		}
 		report, err := pc98music.AuditS98Track(driver, raw, selector)
 		if err != nil {
-			fatal(fmt.Errorf("selector %d：%w", selector, err))
+			fatal(tooltext.Errorf("pc98_s98_audit.selector_audit", selector, err))
 		}
 		reports = append(reports, report)
 	}
