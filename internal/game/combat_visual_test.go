@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
+	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
@@ -24,6 +25,15 @@ func combatVisualCatalog(t *testing.T) locale.Catalog {
 		t.Fatal(err)
 	}
 	return catalog
+}
+
+func testMonsterSpellRules() []enginespell.Rule {
+	return []enginespell.Rule{{
+		ID: "coab.monster_affect_84.lightning-bolt-rounds-1-3", EffectKind: 0x84, SpellID: 0x33,
+		MaxRound: 3, CasterLevel: 1, TargetRange: 10, LineBudget: 10,
+		InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6, DamageMask: combat.DamageFlagElectricity | combat.DamageFlagMagic,
+		FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
+	}}
 }
 
 func TestCombatVisualMessageUsesTypedPhaseAndFormalLocale(t *testing.T) {
@@ -245,6 +255,7 @@ func TestMonsterEffect84QueuesLightningWithTwoDamagePools(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetMonsterSpellRules(testMonsterSpellRules())
 	if _, err := battle.StartRound(); err != nil {
 		t.Fatal(err)
 	}
@@ -292,6 +303,7 @@ func TestMonsterEffect84ConsumesTurnWhenNoRangedTargetIsReachable(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetMonsterSpellRules(testMonsterSpellRules())
 	if _, err := battle.StartRound(); err != nil {
 		t.Fatal(err)
 	}
@@ -354,6 +366,7 @@ func TestMonsterEffect84VisibilityUsesDetectInvisible(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			battle.SetMonsterSpellRules(testMonsterSpellRules())
 			if _, err := battle.StartRound(); err != nil {
 				t.Fatal(err)
 			}
@@ -407,6 +420,7 @@ func TestMonsterEffect84StopsBeforeOriginalRoundFour(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetMonsterSpellRules(testMonsterSpellRules())
 	for round := 0; round < 4; round++ {
 		if _, err := battle.StartRound(); err != nil {
 			t.Fatal(err)

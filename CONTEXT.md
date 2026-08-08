@@ -3986,3 +3986,13 @@ overlay 13 caller、overlay 23 dispatch 與 overlay 12 `2d10`／Fire＋Magic byt
 `docs/spec/501-pc98-post-hit-effect-data-contract.md`。`6Ah` 是否介入 `4Fh`、
 effect `84h`、完整動畫／音效／wall-clock timing 仍未知；本輪仍不是完整戰鬥或
 完整遊戲通關聲明。
+
+2026-08-09 第五百零二輪接續 PC-98 effect `84h`。第 415／416 輪已以非破壞性
+IDA／raw／runtime 關閉 type-14、前三回合、Lightning Bolt `33h`、兩份獨立
+`16d6`、target range／line budget 10、footprint／牆面／visibility bounded
+selection 與 no-target action clear；本輪新增 engine `combat/monsterspell` 與
+CoAB `combat_monster_spell_rules`，State／Battle／active save restore 由 JSON
+重掛。`caster_level=1` 保留目前 remake adapter boundary，不宣稱原版 save／魔抗
+順序；同距 tie、6Ah 介入、逐幀演出與聲音仍未知。新增 READY spec
+`docs/spec/502-pc98-monster-spell-data-contract.md`，本輪仍不是完整怪物 AI、
+完整戰鬥或整作通關。

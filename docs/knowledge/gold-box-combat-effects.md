@@ -253,3 +253,18 @@ handoff。
 的 bytes／runtime 證據。不能因另一款作品也出現 `4Fh`，或因 `6Ah` 也是法術／
 效果防護，就自動把魔法抗性套到 `4Fh`；目前該順序仍是 `unknown`。完整效果
 動畫、音效與 wall-clock timing 也不因規則 package 存在而視為完成。
+
+## 怪物特殊法術：`combat/monsterspell`
+
+第 415／416 輪已把 PC-98 effect `84h` 的 bounded runtime 關閉：type-14 在一般
+行動前檢查，前三回合可選 Lightning Bolt `33h`，初始格與後續折線／反射各自
+使用一份 `16d6`，傷害旗標為 Electricity＋Magic；成功或無目標都清掉怪物當回合
+action。第 416 輪的 candidate builder 經 footprint、加權射程、牆面與 visibility
+重抽後才交給施法 core。
+
+這些參數現在由 `combat_monster_spell_rules` 宣告，engine resolver 只依 active
+raw effect kind 與 round window 選 rule。CoAB State 再把 rule 投影給目標選擇與
+`ReflectingLineOptions`，因此下一款作品可以提供不同 spell、回合窗口、骰池或
+mask，而不必改共用 engine。`caster_level`、`6Ah` 魔抗順序、同距 tie、逐幀
+演出與聲音仍是獨立 evidence boundary；不能因 JSON 已有 `84h` rule 就宣稱
+怪物施法 AI 或完整戰鬥完成。

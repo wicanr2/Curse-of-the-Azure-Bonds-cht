@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
@@ -72,6 +73,22 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}}
 	if !reflect.DeepEqual(postHitRules, wantPostHitRules) {
 		t.Fatalf("combat post-hit rules=%+v want=%+v", postHitRules, wantPostHitRules)
+	}
+	if len(pack.CombatMonsterSpellRules) != 1 {
+		t.Fatalf("combat monster spell rules=%+v", pack.CombatMonsterSpellRules)
+	}
+	monsterSpellRules, err := pack.ResolveCombatMonsterSpellRules()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantMonsterSpellRules := []enginespell.Rule{{
+		ID: "coab.monster_affect_84.lightning-bolt-rounds-1-3", EffectKind: 0x84, SpellID: 0x33,
+		MaxRound: 3, CasterLevel: 1, TargetRange: 10, LineBudget: 10,
+		InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6, DamageMask: 0x0C,
+		FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
+	}}
+	if !reflect.DeepEqual(monsterSpellRules, wantMonsterSpellRules) {
+		t.Fatalf("combat monster spell rules=%+v want=%+v", monsterSpellRules, wantMonsterSpellRules)
 	}
 	conditionalRules, err := pack.ResolveCombatConditionalModifiers()
 	if err != nil {

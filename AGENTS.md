@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 501 輪 PC-98 `4Fh` post-hit／資料契約 milestone（本文件所在
+- CoAB 本輪基底：第 502 輪 PC-98 `84h` monster-spell／資料契約 milestone（本文件所在
   commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`15bc9e9`（含作品中立 game-pack
+- Engine dependency：`d3d54d5`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -1139,8 +1139,15 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   物理擊殺／未啟用效果／第三槽不 dispatch，以及先耗骰再判火焰保護均有 Battle
   與 save-restore 測試；生產邏輯不再硬編這組 kind／slot／dice／mask。`6Ah` 是否
   介入 `4Fh`、`84h`、完整動畫／音效／wall-clock timing 仍未知，不得升格。權威
-  規格為 `docs/spec/501-pc98-post-hit-effect-data-contract.md`，本輪完整遊戲仍未
-  完成。
+規格為 `docs/spec/501-pc98-post-hit-effect-data-contract.md`，本輪完整遊戲仍未
+完成。
+
+- 第 502 輪沿用第 415／416 輪 PC-98 effect `84h` 證據，新增 engine
+  `combat/monsterspell` 與 CoAB `combat_monster_spell_rules`。State／Battle 不再
+  硬編 `33h`、round 1..3、range／line budget 10、兩份 `16d6`、`0Ch` mask 與
+  reflection parameters；active save restore 重新掛入資料。原版 caster level、
+  `6Ah` 魔抗順序、同距 tie、逐幀動畫／音效仍不可升格；權威規格為
+  `docs/spec/502-pc98-monster-spell-data-contract.md`，完整遊戲仍未完成。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

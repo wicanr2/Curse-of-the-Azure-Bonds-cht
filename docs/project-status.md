@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 501 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`15bc9e9`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 502 輪，兩 repo 各一個集中提交）
+依賴的 Golden Box engine checkpoint：`d3d54d5`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -14,6 +14,15 @@ commit 內保存不可能自我引用的 hash。
 restore 也重新掛入設定；`4Fh` 的完整動畫／音效、`84h` 與 `6Ah` 是否介入仍未
 閉合。這是資料分層與可重用規則 milestone，不是完整戰鬥或整作通關聲明。權威
 規格為 [`docs/spec/501-pc98-post-hit-effect-data-contract.md`](spec/501-pc98-post-hit-effect-data-contract.md)。
+
+第 502 輪把第 415／416 輪已完成 bounded runtime 的 PC-98 怪物 effect `84h` 從
+CoAB Battle／State 常數移入 engine `combat/monsterspell` 與
+`combat_monster_spell_rules`：`33h`、前三回合、target range／line budget 10、
+初始與路徑各自 `16d6`、Electricity＋Magic mask 及反射線參數均由 JSON 驅動，
+active-combat restore 重新掛入。原版 caster level、`6Ah` 魔抗順序、同距 tie、
+逐幀演出與聲音仍未閉合；這是資料分層 milestone，不是完整怪物 AI、完整戰鬥或
+整作通關聲明。權威規格為
+[`docs/spec/502-pc98-monster-spell-data-contract.md`](spec/502-pc98-monster-spell-data-contract.md)。
 
 第 493 輪接通 PC-98 Quick AI 的第一個區域法術 bounded slice：`Sleep (15h)`。
 Quick selector 抽中 Sleep 時，CoAB 以 game-pack `min_range`、目前

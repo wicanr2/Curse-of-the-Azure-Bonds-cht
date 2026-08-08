@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
+	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
@@ -29,6 +30,15 @@ func testPostHitRules() []engineposthit.Rule {
 		ID: "coab.monster_affect_4f.fire-magic-2d10-slots-1-2", EffectKind: 0x4F,
 		MinAttackSlot: 1, MaxAttackSlot: 2, DamageDiceCount: 2, DamageDiceSides: 10,
 		DamageMask: DamageFlagFire | DamageFlagMagic,
+	}}
+}
+
+func testMonsterSpellRules() []enginespell.Rule {
+	return []enginespell.Rule{{
+		ID: "coab.monster_affect_84.lightning-bolt-rounds-1-3", EffectKind: 0x84, SpellID: 0x33,
+		MaxRound: 3, CasterLevel: 1, TargetRange: 10, LineBudget: 10,
+		InitialDamageDice: 16, PathDamageDice: 16, DamageDiceSides: 6, DamageMask: DamageFlagElectricity | DamageFlagMagic,
+		FirstReflectionOriginThreshold: 8, FirstReflectionPenalty: 8,
 	}}
 }
 
@@ -613,13 +623,13 @@ func TestAttack4FHonorsFireProtectionAndOnlyFirstTwoSlots(t *testing.T) {
 }
 
 func TestMonsterThrowsLightningRequiresOperationalEffect84(t *testing.T) {
-	if (Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84}}}).MonsterThrowsLightning() {
+	if (Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84}}, MonsterSpellRules: testMonsterSpellRules()}).MonsterThrowsLightning() {
 		t.Fatal("inactive effect 84 became operational")
 	}
-	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Innate: true}}}).MonsterThrowsLightning() {
+	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Innate: true}}, MonsterSpellRules: testMonsterSpellRules()}).MonsterThrowsLightning() {
 		t.Fatal("innate effect 84 was not projected")
 	}
-	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Active: true}}}).MonsterThrowsLightning() {
+	if !(Fighter{MonsterAffects: []MonsterAffect{{Kind: 0x84, Active: true}}, MonsterSpellRules: testMonsterSpellRules()}).MonsterThrowsLightning() {
 		t.Fatal("active effect 84 was not projected")
 	}
 }

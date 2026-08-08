@@ -33,6 +33,10 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 		fighter.PostHitRules[0].DamageDiceCount != 2 || fighter.PostHitRules[0].DamageDiceSides != 10 {
 		t.Fatalf("start combat post-hit rules=%+v", fighter.PostHitRules)
 	}
+	if len(fighter.MonsterSpellRules) != 1 || fighter.MonsterSpellRules[0].EffectKind != 0x84 ||
+		fighter.MonsterSpellRules[0].InitialDamageDice != 16 || fighter.MonsterSpellRules[0].PathDamageDice != 16 {
+		t.Fatalf("start combat monster spell rules=%+v", fighter.MonsterSpellRules)
+	}
 	if result := fighter.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("start combat conditional result=%+v", result)
 	}
@@ -61,6 +65,10 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 	if len(restored.PostHitRules) != 1 || restored.PostHitRules[0].EffectKind != 0x4F ||
 		restored.PostHitRules[0].DamageDiceCount != 2 || restored.PostHitRules[0].DamageDiceSides != 10 {
 		t.Fatalf("restored post-hit rules=%+v", restored.PostHitRules)
+	}
+	if len(restored.MonsterSpellRules) != 1 || restored.MonsterSpellRules[0].EffectKind != 0x84 ||
+		restored.MonsterSpellRules[0].InitialDamageDice != 16 || restored.MonsterSpellRules[0].PathDamageDice != 16 {
+		t.Fatalf("restored monster spell rules=%+v", restored.MonsterSpellRules)
 	}
 	if result := restored.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("restored conditional result=%+v", result)

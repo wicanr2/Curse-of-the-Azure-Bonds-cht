@@ -3726,6 +3726,10 @@ func TestRealPlayerPathStandingStoneToBurialGlen(t *testing.T) {
 	boundaryTarget.HitPoints = boundaryTarget.MaxHitPoints
 	boundaryTarget.HasCombatPosition = true
 	boundaryTarget.CombatX, boundaryTarget.CombatY = 4, 1
+	// This direct boundary isolates the exact effect-87 elemental protection
+	// consumer. Magic-resistance caller ordering for monster spell effects is a
+	// separate evidence boundary and is intentionally not part of this oracle.
+	boundaryTarget.MagicResistanceRules = nil
 	boundaryCaster := combat.Fighter{
 		ID: "boundary-mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
 		HasCombatPosition: true, CombatX: 1, CombatY: 1,
