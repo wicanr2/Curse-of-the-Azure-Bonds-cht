@@ -1007,6 +1007,29 @@ func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange ui
 	return combat.TilePoint{}, false, nil
 }
 
+// quickLineSpellTarget is the bounded CoAB adapter for a Quick line spell.
+// The PC-98 target helper carries a candidate object pointer, while the
+// complete pointer-to-grid projection and candidate tie/random policy remain
+// unresolved. Until that consumer is closed, retain the stable living-enemy
+// order and require the line-terrain projection before handing a point to the
+// existing reflecting-line runtime.
+func (s *State) quickLineSpellTarget(caster combat.Fighter) (combat.TilePoint, bool, error) {
+	if s.combatLineTerrain == nil {
+		return combat.TilePoint{}, false, fmt.Errorf("Quick Lightning Bolt combat terrain projection is unavailable")
+	}
+	for _, target := range s.livingBySide(combat.SideEnemy) {
+		if !target.HasCombatPosition {
+			continue
+		}
+		point := combat.TilePoint{X: target.CombatX, Y: target.CombatY}
+		if !s.combatLineTerrain(point.X, point.Y).Valid {
+			continue
+		}
+		return point, true, nil
+	}
+	return combat.TilePoint{}, false, nil
+}
+
 func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
 	return s.quickAreaSpellTarget(caster, SleepSpellID, minRange)
 }
@@ -2831,6 +2854,10 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			}, ok
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
+			if spell.ID == LightningBoltSpellID {
+				_, ok, err := s.quickLineSpellTarget(fighter)
+				return ok, err
+			}
 			if spell.MinRange != 0 || spell.ID == StinkingCloudSpellID || spell.ID == CloudkillSpellID {
 				switch spell.ID {
 				case SleepSpellID, FireballSpellID, StinkingCloudSpellID, CloudkillSpellID:
@@ -2919,6 +2946,38 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		if delay := selected.CastingDelayUnits(); delay > 0 {
 			if err := s.battle.BeginPendingPointSpellAction(
 				fighter.ID, spellID, delay, center.X, center.Y,
+			); err != nil {
+				return false, err
+			}
+			s.CancelCombatCast()
+			if s.combatDelayedTurns == nil {
+				s.combatDelayedTurns = make(map[int]bool)
+			}
+			s.combatDelayedTurns[s.combatTurnIndex] = true
+			s.combatTurnIndex++
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_casting", "combat_quick_magic_casting",
+			), fighter.Name, campSpellLabel(s.catalog, party.ClassMagicUser, spellID))
+			return true, nil
+		}
+		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
+	}
+	if spellID == LightningBoltSpellID {
+		point, ok, err := s.quickLineSpellTarget(fighter)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			return false, fmt.Errorf("Quick Lightning Bolt has no legal line target")
+		}
+		if err := s.BeginCombatCast(spellID); err != nil {
+			return false, err
+		}
+		s.combatSpellTargetPoint = point
+		s.combatSpellTargetsPoint = true
+		if delay := selected.CastingDelayUnits(); delay > 0 {
+			if err := s.battle.BeginPendingPointSpellAction(
+				fighter.ID, spellID, delay, point.X, point.Y,
 			); err != nil {
 				return false, err
 			}

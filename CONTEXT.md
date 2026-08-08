@@ -3888,3 +3888,20 @@ pending point action。兩者都重用既有 persistent-area、豁免／低 HD�
 Lightning Bolt line target 與完整 Quick AI 仍是 strong inference／unknown 或
 未接通；本輪仍不是完整 ECL 玩家路徑、完整戰鬥或完整 remake 完成聲明。文件、
 commit 與 push 待本輪收尾。
+
+2026-08-09 第四百九十六輪接續 Quick AI 的 Lightning Bolt 缺口。沿用第 493 輪
+PC-98 overlay 09 非破壞性 IDA report；raw `03D3h..04C9h` 的 `MinRange=0`
+dispatch、`04CCh..0627h` target pointer chain 與 `072Bh..0754h`
+`CASTCOMBATSPELL` handoff 仍保留原始 overlay-local 位址，pointer projection／
+tie／random 為 unknown。正式 game-pack `spell_id=51 (33h)` 是 priority 6、
+`min_range=0`、`casting_time=3`。CoAB 新增 `quickLineSpellTarget`，要求
+line-terrain、合法戰鬥格與存活敵人，再用 stable living-enemy order 建立 point；
+raw delay 先保存 `BeginPendingPointSpellAction`，scheduler 續跑後重用既有
+`CastReflectingLineSpell` 的折線／反彈、逐段 impact、save／電擊保護、音效與
+slot pipeline。新增 `TestCombatAltMQuickLightningBoltUsesLineTargetAndPendingDelay`。
+
+Docker focused 與正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/...`
+均通過，`go run ./cmd/coab-audit -root .` 回報 `total=0`，marker 為
+`ROUND496_FORMAL_EXIT=0`。這是 bounded Quick Lightning slice，不是完整 target
+projection、完整 Quick AI、完整戰鬥或完整 remake 完成聲明；文件、commit 與
+push 待本輪收尾。
