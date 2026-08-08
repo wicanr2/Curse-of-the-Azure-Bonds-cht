@@ -813,6 +813,11 @@ func (s *State) restoreActiveCombat(snapshot partySave.CombatSnapshot) error {
 			return fmt.Errorf("resolve combat conditional modifiers after load: %w", err)
 		}
 		battle.SetConditionalModifierRules(conditionalRules)
+		magicResistanceRules, err := s.dataPack.ResolveCombatMagicResistanceRules()
+		if err != nil {
+			return fmt.Errorf("resolve combat magic resistance rules after load: %w", err)
+		}
+		battle.SetMagicResistanceRules(magicResistanceRules)
 	}
 	if snapshot.TurnIndex < 0 || snapshot.TurnIndex > len(snapshot.Turns) {
 		return fmt.Errorf("combat turn index %d outside 0..%d", snapshot.TurnIndex, len(snapshot.Turns))

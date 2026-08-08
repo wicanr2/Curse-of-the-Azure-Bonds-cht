@@ -3958,3 +3958,20 @@ fail-closed，規則於開戰／active-combat restore 重掛且不進 save JSON�
 focused `./combat/modifier ./engine` 與 CoAB focused package gate 已通過；Docker／Xvfb
 正式全套 gate 亦通過，marker 為 `ROUND499_FORMAL_EXIT=0`、`coab-audit total=0`。
 完整 effect lifecycle、完整遊戲與通關仍未完成；本輪採兩 repo 各一個集中 commit／push。
+
+2026-08-09 第五百輪接續 PC-98 effect `6Ah` 的 magic-resistance 邊界。沿用
+overlay 12 local `2396h..23F3h／2404h`、overlay 23 `PUTEFFECT` 與 type-9
+list 的非破壞性 IDA reports；`6Ah → base 15` 與
+`base + (11-casterLevel)*5` 保持 `exact`，但 Fireball／Lightning Bolt 多目標
+caller 的完整 draw order 仍是 `strong inference／unknown`。Engine 新增中立
+`combat/resistance` package、`level_adjusted_d100` formula、Pack schema／
+validation／resolver；CoAB game pack 宣告
+`coab.monster_affect_6a.magic-resistance-15`，Battle／State／active save
+restore 都由 JSON 重掛規則。Fireball 與 reflecting line core 現會保存 typed
+`Resisted`，與元素 `Protected` 分開，並沿 visual timeline 使用 stable locale
+訊息；Sleep／Magic Missile 的既有抗性測試改用同一資料契約。新增 READY spec
+`docs/spec/500-pc98-spell-magic-resistance-boundary.md`，記錄四個輸入 hash、
+位址空間、證據等級與未完成邊界。Docker／Xvfb 正式全套 gate 已通過，marker 為
+`ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件／README 與兩 repo 將以各一個
+集中 commit／push 收尾。這仍不是完整戰鬥、完整魔法抗性
+或完整遊戲通關聲明。

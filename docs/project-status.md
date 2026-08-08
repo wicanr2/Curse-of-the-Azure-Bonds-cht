@@ -2,7 +2,7 @@
 
 更新日期：2026-08-09
 本 milestone 的 CoAB 基底：GitHub `main`（第 499 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`d0a4970`（engine repo 已推送）
+依賴的 Golden Box engine checkpoint：`036643f`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -76,6 +76,19 @@ Cloud、Cloudkill 的存豁免 transaction 套用；未知 alignment fail-closed
 effect owner 與 active character 分離。focused Docker gate 已通過；正式 gate、
 截圖／長路徑與完整 effect 生命週期仍待本輪收尾，不能宣稱完整遊戲。權威規格為
 [`docs/spec/499-pc98-alignment-conditional-effects.md`](spec/499-pc98-alignment-conditional-effects.md)。
+
+第 500 輪把已由 PC-98 raw bytes 閉合的 effect `6Ah` 魔法抗性移入可重用
+engine `combat/resistance` 與 CoAB game-pack JSON。overlay 12 local
+`2396h..23F3h／2404h` 證明 base `15` 與
+`base + (11-casterLevel)*5`；overlay 23 `PUTEFFECT`／type-9 list 證明它是
+active effect protection boundary。Fireball／Lightning Bolt bounded core 現在由
+同一份 JSON rule 逐目標判定，`Resisted` 與元素 `Protected` 分開，視覺 timeline
+也使用 stable locale message。多目標／反射路徑在原版的完整 save、魔抗、元素防護
+與 damage draw order 仍是 `strong inference／unknown`，`4Fh`、`84h`、Cloudkill
+與 Stinking Cloud 的所有 caller 不在本輪範圍。Docker／Xvfb 正式全套 gate 已通過，
+marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／知識庫與
+兩 repo 將以各一個集中提交完成本輪。權威規格為
+[`docs/spec/500-pc98-spell-magic-resistance-boundary.md`](spec/500-pc98-spell-magic-resistance-boundary.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。

@@ -198,3 +198,39 @@ layout-reconstructed。
 - `docs/spec/442-pc98-sleep-action-clear-and-twinkle.md`
 - `scripts/ida/pc98_monster_affect_loader_audit.idc`
 - `scripts/ida/pc98_attack_effect_phase_audit.idc`
+
+## effect `6Ah` 魔法抗性：資料驅動但不要假裝已閉合亂數順序
+
+PC-98 overlay 12 local `2396h..23F3h` 的 common routine 與 local `2404h`
+wrapper，配合 overlay 23 `PUTEFFECT` local `2325h`／`2341h..234Eh` 和 type-9
+list，已把 `6Ah` 的 base `15` 與公式
+`base + (11 - casterLevel) * 5` 關閉為 `exact`。原始比較是 d100 對該表達式，
+沒有可直接證明的先行 clamp。
+
+重製時應拆成三層：
+
+```text
+raw active effect kinds + game-pack resistance rules
+    -> reusable resistance resolver
+    -> title adapter 的 d100 transaction
+    -> resisted／damage／elemental-protected distinct result
+```
+
+共用 engine 的 `combat/resistance` 只知道 `EffectKind`、`Formula`、`Base`，不
+知道 Tyranthraxus、MON6SPC 或法術名稱。CoAB pack 目前宣告：
+
+| stable ID | effect | formula | base |
+|---|---:|---|---:|
+| `coab.monster_affect_6a.magic-resistance-15` | `6Ah` | `level_adjusted_d100` | 15 |
+
+Sleep 與 Magic Missile 已有原本的 effect boundary；本輪 Fireball／Lightning
+Bolt 只在 bounded core 中把抗性放在逐目標 Spell save 後、元素防護前，並保存
+`Resisted`。這個位置是 `strong inference`，因為多目標／反射路徑的原版
+save、抗性、元素防護與 damage draw order 尚未由 DOS／PC-98 runtime trace
+閉合。抵抗不應以「damage == 0」猜測，否則免疫、魔抗、零骰傷害會混在一起；
+UI 應使用 typed result 再取 locale message ID。
+
+不能從本規格推導：`4Fh` innate `2d10` fire attack 是否走 `6Ah`、`84h` 怪物
+閃電是否走同一 wrapper、Cloudkill／Stinking Cloud 的所有 caller、或其他 SSI
+作品的相同 effect byte。後續作品必須重新保存 executable hash、位址空間、
+handler table 與 consumer 證據。

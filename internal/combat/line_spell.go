@@ -100,7 +100,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 
 	lastFighterID := ""
 	if fighter, found := b.livingFighterAt(target); found {
-		impact, err := b.applyLineSpellDamage(fighter, caster, initialDamage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, caster, initialDamage, level, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -162,7 +162,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		if fighter.ID == lastFighterID {
 			continue
 		}
-		impact, err := b.applyLineSpellDamage(fighter, caster, pathDamage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, caster, pathDamage, level, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -208,7 +208,7 @@ func (b *Battle) livingFighterAt(point TilePoint) (Fighter, bool) {
 	return Fighter{}, false
 }
 
-func (b *Battle) applyLineSpellDamage(target Fighter, caster Fighter, damage int, damageFlags uint8) (AreaSpellImpact, error) {
+func (b *Battle) applyLineSpellDamage(target Fighter, caster Fighter, damage, casterLevel int, damageFlags uint8) (AreaSpellImpact, error) {
 	if len(target.SavingThrows) <= 4 {
 		return AreaSpellImpact{}, fmt.Errorf("fighter %q has no spell saving throw", target.ID)
 	}
@@ -220,14 +220,18 @@ func (b *Battle) applyLineSpellDamage(target Fighter, caster Fighter, damage int
 	if saved {
 		applied /= 2
 	}
+	resisted := b.rollMagicResistance(target, casterLevel)
+	if resisted {
+		applied = 0
+	}
 	adjustment := target.MonsterDamageAdjustment(damageFlags, applied)
-	protected := adjustment.Immune
+	protected := !resisted && adjustment.Immune
 	applied = adjustment.Damage
 	applied = b.applyPositiveDamage(&target, applied)
 	b.fighters[target.ID] = target
 	return AreaSpellImpact{
 		TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
-		Protected: protected,
+		Resisted: resisted, Protected: protected,
 	}, nil
 }
 

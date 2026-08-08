@@ -86,6 +86,7 @@ type VisualImpactTarget struct {
 	Killed    bool
 	Damage    int
 	Saved     bool
+	Resisted  bool
 	Protected bool
 }
 

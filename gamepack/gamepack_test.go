@@ -11,6 +11,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
+	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
 
 func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
@@ -41,6 +42,20 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	if len(pack.CombatConditionalModifiers) != 2 {
 		t.Fatalf("combat conditional modifiers=%+v", pack.CombatConditionalModifiers)
+	}
+	if len(pack.CombatMagicResistanceRules) != 1 {
+		t.Fatalf("combat magic resistance rules=%+v", pack.CombatMagicResistanceRules)
+	}
+	magicResistanceRules, err := pack.ResolveCombatMagicResistanceRules()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantMagicResistanceRules := []engineresistance.Rule{{
+		ID: "coab.monster_affect_6a.magic-resistance-15", EffectKind: 0x6A,
+		Formula: engineresistance.FormulaLevelAdjustedD100, Base: 15,
+	}}
+	if !reflect.DeepEqual(magicResistanceRules, wantMagicResistanceRules) {
+		t.Fatalf("combat magic resistance rules=%+v want=%+v", magicResistanceRules, wantMagicResistanceRules)
 	}
 	conditionalRules, err := pack.ResolveCombatConditionalModifiers()
 	if err != nil {
