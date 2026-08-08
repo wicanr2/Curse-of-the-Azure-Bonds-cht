@@ -1030,6 +1030,30 @@ func (s *State) quickLineSpellTarget(caster combat.Fighter) (combat.TilePoint, b
 	return combat.TilePoint{}, false, nil
 }
 
+// quickTargetedSpellTarget projects the existing targeted cleric spell
+// contracts into Quick. The original PC-98 object-pointer candidate order is
+// not closed; the current adapter keeps the target list already used by the
+// manual spell path and selects its first legal stable entry.
+func (s *State) quickTargetedSpellTarget(caster combat.Fighter, spellID uint8) (combat.Fighter, bool, error) {
+	var targets []combat.Fighter
+	switch spellID {
+	case CurseSpellID:
+		targets = s.livingBySide(combat.SideEnemy)
+	case CauseLightWoundsSpellID:
+		targets = s.causeLightWoundsTargets(caster)
+	case ProtectionFromEvilSpellID:
+		targets = s.protectionFromEvilTargets(caster)
+	case ProtectionFromGoodSpellID:
+		targets = s.protectionFromGoodTargets(caster)
+	default:
+		return combat.Fighter{}, false, fmt.Errorf("Quick spell 0x%02X is not a targeted cleric spell", spellID)
+	}
+	if len(targets) == 0 {
+		return combat.Fighter{}, false, nil
+	}
+	return targets[0], true, nil
+}
+
 func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
 	return s.quickAreaSpellTarget(caster, SleepSpellID, minRange)
 }
@@ -2876,6 +2900,20 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 				_, ok := s.quickCureTarget(fighter)
 				return ok && s.CombatCanCastCureLightWounds(), nil
 			}
+			switch spell.ID {
+			case CurseSpellID:
+				_, ok, err := s.quickTargetedSpellTarget(fighter, spell.ID)
+				return ok && s.CombatCanCastCurse(), err
+			case CauseLightWoundsSpellID:
+				_, ok, err := s.quickTargetedSpellTarget(fighter, spell.ID)
+				return ok && s.CombatCanCastCauseLightWounds(), err
+			case ProtectionFromEvilSpellID:
+				_, ok, err := s.quickTargetedSpellTarget(fighter, spell.ID)
+				return ok && s.CombatCanCastProtectionFromEvil(), err
+			case ProtectionFromGoodSpellID:
+				_, ok, err := s.quickTargetedSpellTarget(fighter, spell.ID)
+				return ok && s.CombatCanCastProtectionFromGood(), err
+			}
 			if spell.ID != MagicMissileSpellID {
 				// Preserve the original choice probability. Unsupported cast
 				// handoff is handled after selection instead of silently making
@@ -2958,6 +2996,53 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_casting", "combat_quick_magic_casting",
 			), fighter.Name, campSpellLabel(s.catalog, party.ClassMagicUser, spellID))
+			return true, nil
+		}
+		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
+	}
+	if spellID == CurseSpellID || spellID == CauseLightWoundsSpellID ||
+		spellID == ProtectionFromEvilSpellID || spellID == ProtectionFromGoodSpellID {
+		target, ok, err := s.quickTargetedSpellTarget(fighter, spellID)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			return false, fmt.Errorf("Quick spell 0x%02X has no legal targeted recipient", spellID)
+		}
+		if err := s.BeginCombatCast(spellID); err != nil {
+			return false, err
+		}
+		targets := s.CombatSpellTargets()
+		targetIndex := -1
+		for index := range targets {
+			if targets[index].ID == target.ID {
+				targetIndex = index
+				break
+			}
+		}
+		if targetIndex < 0 {
+			s.CancelCombatCast()
+			return false, fmt.Errorf("Quick spell 0x%02X target %q is unavailable", spellID, target.ID)
+		}
+		s.combatSpellTargetIndex = targetIndex
+		if s.CombatSpellTargetsEnemy() {
+			s.combatTargetIndex = targetIndex
+		}
+		if delay := selected.CastingDelayUnits(); delay > 0 {
+			if err := s.battle.BeginPendingTargetedSpellAction(
+				fighter.ID, spellID, delay, target.ID,
+			); err != nil {
+				return false, err
+			}
+			s.CancelCombatCast()
+			if s.combatDelayedTurns == nil {
+				s.combatDelayedTurns = make(map[int]bool)
+			}
+			s.combatDelayedTurns[s.combatTurnIndex] = true
+			s.combatTurnIndex++
+			s.combatMessage = fmt.Sprintf(s.catalog.Text(
+				"combat_quick_magic_casting", "combat_quick_magic_casting",
+			), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 			return true, nil
 		}
 		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)

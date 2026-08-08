@@ -3905,3 +3905,20 @@ Docker focused 與正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/
 `ROUND496_FORMAL_EXIT=0`。這是 bounded Quick Lightning slice，不是完整 target
 projection、完整 Quick AI、完整戰鬥或完整 remake 完成聲明；文件、commit 與
 push 待本輪收尾。
+
+2026-08-09 第四百九十七輪接續 Quick 的牧師 targeted spell 缺口。正式 game-pack
+`combat_ai_spells` 的 `02h／04h／06h／07h` 分別是 Curse、Cause Light Wounds、
+Protection from Evil／Good，casting time 為 `10／5／4／4`；PC-98 overlay 09
+的 selector／target pointer chain 與 `CASTCOMBATSPELL` handoff 仍以原始
+overlay-local 位址保存，候選 priority／pointer order／`cast_on` consumer 未閉合。
+CoAB 新增 `quickTargetedSpellTarget`，重用既有 enemy、adjacent enemy、party
+self target contract；四者均先以 `BeginPendingTargetedSpellAction` 保存 stable
+target，scheduler 續跑後進既有效果 writer、音效與 slot transaction。新增
+`TestCombatAltMQuickCurseUsesPendingEnemyTarget`、
+`TestCombatAltMQuickCauseLightWoundsUsesPendingAdjacentTarget`、
+`TestCombatAltMQuickProtectionSpellsUsePendingPartyTarget`。
+
+Docker focused 與正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/...`
+均通過，`go run ./cmd/coab-audit -root .` 回報 `total=0`，marker 為
+`ROUND497_FORMAL_EXIT=0`。這是 bounded Quick cleric slice，不是完整 target AI、
+敵方 Quick、完整戰鬥或完整 remake 完成聲明；文件、commit 與 push 待本輪收尾。
