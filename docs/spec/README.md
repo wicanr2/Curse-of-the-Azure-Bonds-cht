@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百零三輪 PC-98 Quick 目標候選鏈與 legacy object 順序邊界](./503-pc98-quick-target-object-chain-boundary.md)（`READY`：`04CCh` candidate chain、`LegacyObjectID` bounded order 與 engine＋JSON 契約；不含 exact tie／亂數）
+
 - [第五百零二輪 PC-98 怪物特殊法術 `84h` 資料契約](./502-pc98-monster-spell-data-contract.md)（`READY`：前三回合、`33h`、雙 `16d6`、射程／反射線參數與存檔重掛）
 
 - [第五百零一輪 PC-98 物理命中後 `4Fh` 資料契約](./501-pc98-post-hit-effect-data-contract.md)（`READY`：第一、第二攻擊槽、`2d10`、Fire＋Magic 與資料分層）

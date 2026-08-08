@@ -3996,3 +3996,14 @@ CoAB `combat_monster_spell_rules`，State／Battle／active save restore 由 JSO
 順序；同距 tie、6Ah 介入、逐幀演出與聲音仍未知。新增 READY spec
 `docs/spec/502-pc98-monster-spell-data-contract.md`，本輪仍不是完整怪物 AI、
 完整戰鬥或整作通關。
+
+2026-08-09 第五百零三輪接續 PC-98 Quick target consumer。Docker 內以 IDA Pro
+9.4 讀取唯讀副本 `overlay-09.bin`，保留 overlay-local `04CCh..0624h` 的
+far-pointer candidate chain、`+52h` next pointer、`03D3h` suitability 與
+`00FA:0048h` handoff；`3E01:142Dh` 的 `1..7` helper、候選欄位正式語意與
+完整 retry／tie／random 仍標 `unknown`。CoAB 新增 engine
+`combat/quicktarget`、game-pack `combat_ai_target_rules` 與
+`LegacyObjectID` order adapter；Quick area／line／四種 targeted cleric 先用
+此 bounded order，Magic Missile 隨機目標與 Cure 九格規則不改。新增 READY spec
+`docs/spec/503-pc98-quick-target-object-chain-boundary.md`；engine commit
+`3b9cc6f` 已推送，CoAB focused tests 已通過，完整遊戲仍未完成。

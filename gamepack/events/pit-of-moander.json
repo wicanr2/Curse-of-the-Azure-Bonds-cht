@@ -1432,6 +1432,9 @@
     {"spell_id": 51, "priority": 6, "cast_on": 1, "min_range": 0, "casting_time": 3},
     {"spell_id": 91, "priority": 5, "cast_on": 1, "min_range": 0, "casting_time": 5}
   ],
+  "combat_ai_target_rules": [
+    {"id": "coab.pc98.quick-target-candidate-chain", "candidate_order": "legacy_object_id"}
+  ],
   "combat_visuals": [
     {
       "id": "coab.arrow",

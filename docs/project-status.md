@@ -1,11 +1,21 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 502 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`d3d54d5`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 503 輪，兩 repo 各一個集中提交）
+依賴的 Golden Box engine checkpoint：`3b9cc6f`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 503 輪沿用 PC-98 overlay 09 local `04CCh..0624h` 的 Quick far-pointer
+candidate chain、`03D3h` suitability 與 `00FA:0048h` handoff，新增 engine
+`combat/quicktarget` 與 CoAB `combat_ai_target_rules`。Quick area、line 與四種
+targeted cleric adapter 先依 JSON 宣告的 `legacy_object_id`，使用原始
+`CHARACTERLIST／OBJECTLIST` 投影保存的 one-based `LegacyObjectID` 排序，不再依
+fighter stable ID；完整 pointer-chain retry／tie／random、Magic Missile 目標與
+Cure 專用規則仍未知。這是 `strong inference` bounded adapter，不是完整 Quick AI、
+完整戰鬥或整作通關聲明。權威規格為
+[`docs/spec/503-pc98-quick-target-object-chain-boundary.md`](spec/503-pc98-quick-target-object-chain-boundary.md)。
 
 第 501 輪把 PC-98 物理命中後 effect `4Fh` 的已證明行為移入共用
 `combat/posthit` 與 CoAB game-pack `combat_post_hit_rules`：第一、第二攻擊槽、

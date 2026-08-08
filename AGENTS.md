@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 502 輪 PC-98 `84h` monster-spell／資料契約 milestone（本文件所在
+- CoAB 本輪基底：第 503 輪 PC-98 Quick 目標候選鏈／legacy object 順序 milestone（本文件所在
   commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`d3d54d5`（含作品中立 game-pack
+- Engine dependency：`3b9cc6f`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -397,7 +397,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `music_tracks`／`music_bindings`／`music_cues` 與跨 locale
   `title_id` schema，以及 `combat/damage` 的 `ModeHalf／ModeImmune`、
   `combat_affect_rules` schema／loader、`combat/posthit`、
-  `combat_post_hit_rules` schema／loader 與繁中傷害效果知識庫）。
+  `combat_post_hit_rules` schema／loader、`combat/quicktarget`、
+  `combat_ai_target_rules` schema／loader 與繁中傷害效果知識庫）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
@@ -1148,6 +1149,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   reflection parameters；active save restore 重新掛入資料。原版 caster level、
   `6Ah` 魔抗順序、同距 tie、逐幀動畫／音效仍不可升格；權威規格為
   `docs/spec/502-pc98-monster-spell-data-contract.md`，完整遊戲仍未完成。
+
+- 第 503 輪沿用 PC-98 overlay 09 local `04CCh..0624h` 的 Quick far-pointer
+  candidate chain、`03D3h` suitability 與 `00FA:0048h` handoff，新增 engine
+  `combat/quicktarget` 與 CoAB `combat_ai_target_rules`。Quick area、line 與四種
+  targeted cleric adapter 現依保留的 one-based `LegacyObjectID` 排序；pointer-chain
+  的完整 retry／tie／random、Magic Missile 目標與 Cure 專用規則仍不得升格，權威
+  規格為 `docs/spec/503-pc98-quick-target-object-chain-boundary.md`，完整遊戲仍未
+  完成。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

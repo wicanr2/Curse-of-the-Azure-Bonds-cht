@@ -385,6 +385,22 @@ status `DEAD／STONED／GONE` 不可治療。共用 engine 只保存 opaque targ
 方向、HP 門檻與 status mapping 都是 CoAB adapter 規則，不能硬編進 renderer
 或作品中立 scheduler。
 
+## PC-98 Quick 目標候選鏈
+
+overlay 09 local `04CCh..0624h` 的 Quick 目標函式會從 action record 的
+far pointer 沿候選 `+52h` next pointer 走訪，逐項經過 `03D3h` suitability，
+再以 best pointer 交給 `00FA:0048h`。`04E2h..04E8h` 的 `1..7` helper、
+候選 `+65h／+56h／+66h／+5Ch` 欄位正式語意，以及完整 retry／tie／亂數仍是
+`unknown`；不能因 raw predicate 看似 HP、距離或陣營就替它命名。
+
+CoAB 目前把已由 `CHARACTERLIST／IDLIST` 投影保存的 one-based
+`LegacyObjectID` 做成 engine `combat/quicktarget` 的
+`legacy_object_id` bounded order，並由 game pack `combat_ai_target_rules`
+宣告。這只取代 Quick area、line 與四種 targeted cleric adapter 原先的
+lexicographic stable fighter order；Magic Missile 的獨立隨機 target 與 Cure
+的九格／HP／倒地規則仍走各自契約。詳細位址與證據等級見
+`docs/spec/503-pc98-quick-target-object-chain-boundary.md`。
+
 ## 手動與 Quick 共用施法交易
 
 PC-98 手動 CAST 與 Quick AI 最後都進 `CASTCOMBATSPELL`。只要

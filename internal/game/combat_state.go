@@ -14,6 +14,7 @@ import (
 	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	enginequicktarget "github.com/wicanr2/golden-box-remake-engine/combat/quicktarget"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
@@ -1006,12 +1007,67 @@ func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
 	return combat.Fighter{}, false
 }
 
+const quickTargetRuleID = "coab.pc98.quick-target-candidate-chain"
+
+// orderQuickTargetCandidates applies the data-pack-declared portion of the
+// recovered PC-98 target boundary. The original pointer-chain tie/retry/
+// random policy remains unresolved, so this function only orders legal
+// candidates by their preserved one-based legacy combat object identity.
+func (s *State) orderQuickTargetCandidates(targets []combat.Fighter) ([]combat.Fighter, error) {
+	if len(targets) == 0 {
+		return nil, nil
+	}
+	if s.dataPack == nil {
+		return append([]combat.Fighter(nil), targets...), nil
+	}
+	definition, found := s.dataPack.FindCombatAITargetRule(quickTargetRuleID)
+	if !found {
+		return nil, fmt.Errorf("Quick target game-pack rule %q is unavailable", quickTargetRuleID)
+	}
+	rule, err := definition.ToRule()
+	if err != nil {
+		return nil, err
+	}
+	candidates := make([]enginequicktarget.Candidate, len(targets))
+	byID := make(map[string]combat.Fighter, len(targets))
+	for index, target := range targets {
+		candidates[index] = enginequicktarget.Candidate{ID: target.ID, LegacyObjectID: target.LegacyObjectID}
+		byID[target.ID] = target
+	}
+	ordered, err := enginequicktarget.Order(candidates, rule)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]combat.Fighter, len(ordered))
+	for index, candidate := range ordered {
+		result[index] = byID[candidate.ID]
+	}
+	return result, nil
+}
+
+func (s *State) quickTargetCandidates(side combat.Side) ([]combat.Fighter, error) {
+	if s.battle == nil {
+		return nil, nil
+	}
+	candidates := make([]combat.Fighter, 0)
+	for _, fighter := range s.battle.FightersInCombatOrder() {
+		if fighter.Side == side && fighter.HitPoints > 0 {
+			candidates = append(candidates, fighter)
+		}
+	}
+	return s.orderQuickTargetCandidates(candidates)
+}
+
 // quickAreaSpellTarget is the bounded CoAB adapter for the PC-98 Quick
 // MinRange path. The reference suitability routine builds a SCAN candidate
 // list around each possible combat target before it accepts the spell. The
 // exact linked-list tie/random policy is still outside this adapter; the
 // stable fighter order is retained until that consumer is closed.
 func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange uint8) (combat.TilePoint, bool, error) {
+	targets, err := s.quickTargetCandidates(combat.SideEnemy)
+	if err != nil {
+		return combat.TilePoint{}, false, err
+	}
 	if minRange == 0 {
 		if spellID != CloudkillSpellID {
 			return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X requires a nonzero scan range", spellID)
@@ -1019,7 +1075,7 @@ func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange ui
 		if s.combatLineTerrain == nil {
 			return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X combat terrain projection is unavailable", spellID)
 		}
-		for _, target := range s.livingBySide(combat.SideEnemy) {
+		for _, target := range targets {
 			if !target.HasCombatPosition || !s.combatLineTerrain(target.CombatX, target.CombatY).Valid {
 				continue
 			}
@@ -1038,7 +1094,7 @@ func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange ui
 	if err != nil {
 		return combat.TilePoint{}, false, fmt.Errorf("build Quick spell 0x%02X TACTICALMAP: %w", spellID, err)
 	}
-	for _, target := range s.livingBySide(combat.SideEnemy) {
+	for _, target := range targets {
 		if !target.HasCombatPosition {
 			continue
 		}
@@ -1068,7 +1124,11 @@ func (s *State) quickLineSpellTarget(caster combat.Fighter) (combat.TilePoint, b
 	if s.combatLineTerrain == nil {
 		return combat.TilePoint{}, false, fmt.Errorf("Quick Lightning Bolt combat terrain projection is unavailable")
 	}
-	for _, target := range s.livingBySide(combat.SideEnemy) {
+	targets, err := s.quickTargetCandidates(combat.SideEnemy)
+	if err != nil {
+		return combat.TilePoint{}, false, err
+	}
+	for _, target := range targets {
 		if !target.HasCombatPosition {
 			continue
 		}
@@ -1099,10 +1159,14 @@ func (s *State) quickTargetedSpellTarget(caster combat.Fighter, spellID uint8) (
 	default:
 		return combat.Fighter{}, false, fmt.Errorf("Quick spell 0x%02X is not a targeted cleric spell", spellID)
 	}
-	if len(targets) == 0 {
+	ordered, err := s.orderQuickTargetCandidates(targets)
+	if err != nil {
+		return combat.Fighter{}, false, err
+	}
+	if len(ordered) == 0 {
 		return combat.Fighter{}, false, nil
 	}
-	return targets[0], true, nil
+	return ordered[0], true, nil
 }
 
 func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
