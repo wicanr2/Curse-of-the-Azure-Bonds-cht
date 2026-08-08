@@ -159,6 +159,28 @@ func TestSelectCombatTargetUsesSeededCandidateSelection(t *testing.T) {
 	}
 }
 
+func TestSelectCombatTargetUsesLegacyObjectOrderForEqualCandidates(t *testing.T) {
+	const seed int64 = 1
+	battle, err := NewBattle([]Fighter{
+		{ID: "ogre", Side: SideEnemy, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8},
+		// Stable IDs intentionally reverse the recovered combat-object order.
+		{ID: "z-first", Side: SideParty, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8},
+		{ID: "a-second", Side: SideParty, LegacyObjectID: 3, HitPoints: 8, MaxHitPoints: 8},
+	}, seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, err := battle.SelectCombatTarget("ogre", SideParty)
+	if err != nil {
+		t.Fatal(err)
+	}
+	legacyOrder := []string{"z-first", "a-second"}
+	want := legacyOrder[rand.New(rand.NewSource(seed)).Intn(len(legacyOrder))]
+	if target.ID != want {
+		t.Fatalf("selected=%q want=%q; legacy object order was not applied", target.ID, want)
+	}
+}
+
 func TestSelectQuickTargetOneUsesLegacyObjectOrder(t *testing.T) {
 	const seed = int64(1)
 	battle, err := NewBattle([]Fighter{

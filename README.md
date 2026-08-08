@@ -10,8 +10,8 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `9b10e78`；實際
+[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 507
+輪 milestone，獨立 engine checkpoint 為 `760a41e`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -38,6 +38,13 @@ target-consumer 修正，不是完整 Quick AI 或整作完成聲明。規格見
 偏差，並保留同一 PRNG、visibility 移除與 20 次上限；原版完整 comparator、
 candidate producer、亂數演算法與完整戰鬥仍未完成。規格見
 [`docs/spec/506-pc98-ranged-target-object-order-tie.md`](docs/spec/506-pc98-ranged-target-object-order-tie.md)。
+
+第 507 輪把完整 `LegacyObjectID` 順序投影延伸到一般敵方物理選敵；沒有完整
+identity table 時仍使用 stable ID fallback，不增加 PRNG draw。這只修正 target
+consumer 的 deterministic order，沒有把 `BuildNearTargets` 的可達／visibility／
+牆面 producer 或 enemy AI 冒稱完成。另新增延伸 overlay 24 raw-byte audit，保留
+`2820h..2C80h` 的連續證據。規格見
+[`docs/spec/507-pc98-general-target-object-order-projection.md`](docs/spec/507-pc98-general-target-object-order-projection.md)。
 
 第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
 角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON

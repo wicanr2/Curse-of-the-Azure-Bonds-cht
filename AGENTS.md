@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 504 輪 PC-98 Quick 目標優先級重試／legacy object 順序 milestone（本文件所在
+- CoAB 本輪基底：第 507 輪 PC-98 一般敵方選敵物件順序投影 milestone（本文件所在
   commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`9b10e78`（含作品中立 game-pack
+- Engine dependency：`760a41e`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的

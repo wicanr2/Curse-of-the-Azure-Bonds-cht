@@ -1485,7 +1485,9 @@ func (b *Battle) SelectCombatTarget(attackerID string, targetSide Side) (Fighter
 	if len(candidates) == 0 {
 		return Fighter{}, fmt.Errorf("no living target on side %d", targetSide)
 	}
-	sort.Slice(candidates, func(i, j int) bool { return candidates[i].ID < candidates[j].ID })
+	sort.Slice(candidates, func(i, j int) bool {
+		return legacyTargetTieLess(candidates[i], candidates[j])
+	})
 	return candidates[b.rng.Intn(len(candidates))], nil
 }
 
