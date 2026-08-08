@@ -257,7 +257,7 @@ func (b *Battle) SelectRangedCombatTarget(attackerID string, targetSide Side, op
 		if candidates[i].distance != candidates[j].distance {
 			return candidates[i].distance < candidates[j].distance
 		}
-		return rangedTargetTieLess(candidates[i].fighter, candidates[j].fighter)
+		return legacyTargetTieLess(candidates[i].fighter, candidates[j].fighter)
 	})
 
 	for attempts := 0; attempts < 20 && len(candidates) > 0; attempts++ {
@@ -271,7 +271,10 @@ func (b *Battle) SelectRangedCombatTarget(attackerID string, targetSide Side, op
 	return Fighter{}, false, nil
 }
 
-func rangedTargetTieLess(left, right Fighter) bool {
+// legacyTargetTieLess projects the recovered one-based combat-object order
+// wherever a target consumer has a complete identity table. Callers keep the
+// stable fighter ID fallback when the legacy projection is partial.
+func legacyTargetTieLess(left, right Fighter) bool {
 	if left.LegacyObjectID != 0 && right.LegacyObjectID != 0 &&
 		left.LegacyObjectID != right.LegacyObjectID {
 		return left.LegacyObjectID < right.LegacyObjectID

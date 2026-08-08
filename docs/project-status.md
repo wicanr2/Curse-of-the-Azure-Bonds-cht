@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 504 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`9b10e78`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 507 輪；實際 HEAD 以遠端核對為準）
+依賴的 Golden Box engine checkpoint：`760a41e`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -14,6 +14,13 @@ PRNG 的抽樣仍一致。這是 `strong inference` 的 adapter 修正，不是�
 原版 comparator；candidate producer、原版 RNG、完整 Quick／敵方 AI、動畫音效與
 整作通關仍未完成。權威規格為
 [`docs/spec/506-pc98-ranged-target-object-order-tie.md`](spec/506-pc98-ranged-target-object-order-tie.md)。
+
+第 507 輪將相同的完整 `LegacyObjectID` 順序投影延伸到一般敵方物理選敵；候選集合
+仍維持第 231 輪的 bounded「存活且指定 side」，identity table 不完整時回到 stable
+ID，並由 seed regression 證明不增加 PRNG draw。新建的 IDA 延伸工具只匯出 overlay 24
+`2820h..2C80h` raw bytes，未知 producer 欄位仍未命名。這是 target consumer 修正，
+不是完整可達／visibility／AI、完整戰鬥或整作通關聲明。權威規格為
+[`docs/spec/507-pc98-general-target-object-order-projection.md`](spec/507-pc98-general-target-object-order-projection.md)。
 
 第 505 輪補上 PC-98 Quick target 的 caller 邊界：IDA／TPOV resolver 證明
 `04CCh` 是 overlay 09 entry 4，但其唯一直接 caller `0164h` 是通用戰鬥 action

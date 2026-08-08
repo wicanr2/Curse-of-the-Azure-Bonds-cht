@@ -12,8 +12,10 @@ CoAB reference `engine/ovr014.cs` 的 `find_target` 會呼叫
 
 - `combat.Battle.SelectCombatTarget(attackerID, targetSide)` 只從存活、指定 side 的
   fighter 中選一個目標。
-- candidate 以 fighter ID 排序後使用 Battle 既有 seeded RNG 選取，確保 replay 可重現，
-  並避免 Go map iteration 造成非 deterministic 結果。
+- candidate 在完整 `LegacyObjectID` projection 存在時依一基底原始 combat-object
+  身分排序；projection 不完整時才以 fighter ID 作 deterministic fallback，使用
+  Battle 既有 seeded RNG 選取，並避免 Go map iteration 造成非 deterministic 結果。
+  這項 bounded tie projection 由第 507 輪補上，不等於完整原始 candidate list。
 - State 的 enemy physical attack 與 multi-attack sequence 在該 enemy turn 開始時選一次
   target；同一回合的剩餘攻擊維持同一 target，target 倒下才沿用既有 next-living
   cursor fallback。

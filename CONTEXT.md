@@ -4041,3 +4041,11 @@ target consumer。`SelectRangedCombatTarget` 現在先依距離排序；距離�
 `strong inference` bounded adapter，不是完整 `PICKTARGET` comparator；candidate
 producer、原版 RNG、完整 ranged／Quick／敵方 AI、動畫音效與整作通關仍未完成。
 規格：`docs/spec/506-pc98-ranged-target-object-order-tie.md`。
+
+2026-08-09 第五百零七輪把完整 `LegacyObjectID` 順序投影延伸到一般敵方物理選敵。
+`Battle.SelectCombatTarget` 保留第 231 輪的存活／指定 side bounded 候選集合；完整
+identity table 時依一基底原始 combat-object 身分排序，不完整時回到 stable fighter
+ID，並以 seed regression 證明不增加 Battle PRNG draw。新增非破壞性
+`pc98_ranged_target_producer_audit.idc`，把 overlay 24 `2820h..2C80h` 連續 bytes
+保留至 report，但未知 producer 欄位與完整可達／visibility／AI 仍未命名。規格：
+`docs/spec/507-pc98-general-target-object-order-projection.md`。

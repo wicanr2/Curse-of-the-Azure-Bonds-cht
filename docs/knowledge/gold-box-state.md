@@ -160,8 +160,9 @@ Monster 的攻擊次數也不再完全依賴 synthetic default：reference `load
 
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
-亂數選一個可見／可達目標；目前 remake 以 sorted fighter ID + Battle seeded RNG
-重現「從存活 party 選目標」這一層，並在同一 enemy turn 固定該 target。牆面／pathfinding、
+亂數選一個可見／可達目標；目前 remake 在 `LegacyObjectID` identity table 完整時依
+一基底原始 combat-object 順序，否則以 sorted fighter ID + Battle seeded RNG 重現
+「從存活 party 選目標」這一層，並在同一 enemy turn 固定該 target。牆面／pathfinding、
 visibility、persistent `Action.target`、AI spell priority 與 guarding 仍由後續 rules／map
 adapter 提供，不能把這個候選清單邊界說成完整 monster AI。
 
