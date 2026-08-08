@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百零八輪 PC-98 一般敵方選敵 SCAN producer 與有限抽樣](./508-pc98-general-target-scan-producer.md)（`READY`：地形／footprint producer、20 次可見性抽樣與第二輪 `XRay` handoff；不含完整 AI／移動／方向 comparator／動畫音效）
+
 - [第五百零七輪 PC-98 一般敵方選敵物件順序投影](./507-pc98-general-target-object-order-projection.md)（`READY`：一般 enemy target consumer 的 `LegacyObjectID` 排序；不含完整可達 producer／LOS／AI／RNG）
 
 - [第五百零六輪 PC-98 遠程目標同距物件順序邊界](./506-pc98-ranged-target-object-order-tie.md)（`READY`：已投影 ranged 候選的 `LegacyObjectID` 同距排序；不含完整 producer／原版 comparator／RNG）

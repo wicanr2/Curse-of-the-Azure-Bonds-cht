@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
+	enginetargetselect "github.com/wicanr2/golden-box-remake-engine/combat/targetselect"
 )
 
 func TestOrderScanTargetIDsUsesLegacyObjectDistanceAndIgnoresDirection(t *testing.T) {
@@ -150,6 +151,63 @@ func TestBuildLegacyScanTargetIDsClosesIDListTerrainAndStableIDTransaction(t *te
 	ordered, err := battle.BuildLegacyScanTargetIDs(m, "caster", SideEnemy, 6, 0xff)
 	if err != nil || !reflect.DeepEqual(ordered, []string{"near"}) {
 		t.Fatalf("ordered=%v err=%v", ordered, err)
+	}
+}
+
+func TestSelectLegacyScanCombatTargetRetriesWithXRayAndRemovesInvisible(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "attacker", Side: SideEnemy, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0},
+		{ID: "hidden", Side: SideParty, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 4, CombatY: 0,
+			MonsterAffects: []MonsterAffect{{Kind: 0x47, Active: true}}},
+		{ID: "visible", Side: SideParty, LegacyObjectID: 3, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0},
+	}, 508)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mapWithWall := enginescan.TacticalMap{
+		Width: 6, Height: 1,
+		Tiles: []uint8{1, 1, 2, 1, 1, 1},
+		Definitions: []enginescan.TerrainDefinition{
+			{LOS: 1, SYM: 0}, {LOS: 1, SYM: 2},
+		},
+	}
+	target, found, err := battle.SelectLegacyScanCombatTarget("attacker", SideParty, LegacyTargetSelectionOptions{
+		TacticalMap: mapWithWall, MaxRange: 255, Arc: 0xff,
+		Rule:          enginetargetselect.Rule{ID: "test.enemy-physical", MaxAttempts: 20},
+		RetryWithXRay: true,
+		VisibleTo:     func(observer, target Fighter) bool { return target.VisibleTo(observer) },
+	})
+	if err != nil || !found || target.ID != "visible" {
+		t.Fatalf("target=%+v found=%v err=%v, want visible target after retry", target, found, err)
+	}
+}
+
+func TestSelectLegacyScanCombatTargetReportsNoTargetWithoutWallBypass(t *testing.T) {
+	battle, err := NewBattle([]Fighter{
+		{ID: "attacker", Side: SideEnemy, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0},
+		{ID: "target", Side: SideParty, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8,
+			HasCombatPosition: true, CombatX: 4, CombatY: 0},
+	}, 509)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mapWithWall := enginescan.TacticalMap{
+		Width: 5, Height: 1,
+		Tiles: []uint8{1, 1, 2, 1, 1},
+		Definitions: []enginescan.TerrainDefinition{
+			{LOS: 1, SYM: 0}, {LOS: 1, SYM: 2},
+		},
+	}
+	_, found, err := battle.SelectLegacyScanCombatTarget("attacker", SideParty, LegacyTargetSelectionOptions{
+		TacticalMap: mapWithWall, MaxRange: 255, Arc: 0xff,
+		Rule: enginetargetselect.Rule{ID: "test.enemy-physical", MaxAttempts: 20},
+	})
+	if err != nil || found {
+		t.Fatalf("found=%v err=%v, want no target when wall bypass is disabled", found, err)
 	}
 }
 

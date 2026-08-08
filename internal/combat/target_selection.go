@@ -6,6 +6,7 @@ import (
 
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 	enginescanorder "github.com/wicanr2/golden-box-remake-engine/combat/scanorder"
+	enginetargetselect "github.com/wicanr2/golden-box-remake-engine/combat/targetselect"
 )
 
 // TargetVisibility supplies title-neutral status visibility. Terrain
@@ -189,6 +190,88 @@ func (b *Battle) BuildLegacyScanTargetIDs(
 		return nil, err
 	}
 	return BuildScanTargetIDs(tacticalMap, objectID, sourceCells, candidates, maxRange, arc)
+}
+
+// LegacyTargetSelectionOptions carries the reusable target-consumer rule and
+// the title-owned tactical map projection. The adapter deliberately keeps the
+// producer and random consumer separate so a second wall-bypass pass can
+// rebuild the candidate list instead of reusing stale candidates.
+type LegacyTargetSelectionOptions struct {
+	TacticalMap   enginescan.TacticalMap
+	MaxRange      int
+	Arc           uint8
+	Rule          enginetargetselect.Rule
+	RetryWithXRay bool
+	VisibleTo     TargetVisibility
+}
+
+// SelectLegacyScanCombatTarget projects the original general find_target
+// boundary: build an ordered SCAN list, draw at most the declared number of
+// times while removing status-invisible candidates, and optionally repeat with
+// XRAY/wall bypass. A false result is a normal no-target continuation.
+func (b *Battle) SelectLegacyScanCombatTarget(
+	attackerID string, targetSide Side, options LegacyTargetSelectionOptions,
+) (Fighter, bool, error) {
+	if b == nil {
+		return Fighter{}, false, fmt.Errorf("battle is nil")
+	}
+	attacker, ok := b.fighters[attackerID]
+	if !ok {
+		return Fighter{}, false, fmt.Errorf("unknown attacker %q", attackerID)
+	}
+	if b.status != StatusActive {
+		return Fighter{}, false, fmt.Errorf("battle is already over")
+	}
+	if attacker.HitPoints <= 0 || !attacker.HasCombatPosition {
+		return Fighter{}, false, fmt.Errorf("dead or unplaced fighter cannot select a SCAN target")
+	}
+	if options.MaxRange < 0 || options.MaxRange > 255 {
+		return Fighter{}, false, fmt.Errorf("SCAN target range %d is outside 0..255", options.MaxRange)
+	}
+
+	selectPass := func(tacticalMap enginescan.TacticalMap) (Fighter, bool, error) {
+		ordered, err := b.BuildLegacyScanTargetIDs(
+			tacticalMap, attackerID, targetSide, options.MaxRange, options.Arc,
+		)
+		if err != nil {
+			return Fighter{}, false, err
+		}
+		candidates := make([]enginetargetselect.Candidate, len(ordered))
+		for index, targetID := range ordered {
+			_, found := b.fighters[targetID]
+			if !found {
+				return Fighter{}, false, fmt.Errorf("SCAN target %q disappeared", targetID)
+			}
+			candidates[index] = enginetargetselect.Candidate{ID: targetID}
+		}
+		selected, found, err := enginetargetselect.Select(
+			candidates,
+			options.Rule,
+			func(sides int) int { return b.rng.Intn(sides) },
+			func(candidate enginetargetselect.Candidate) bool {
+				target := b.fighters[candidate.ID]
+				return options.VisibleTo == nil || options.VisibleTo(attacker, target)
+			},
+		)
+		if err != nil || !found {
+			return Fighter{}, found, err
+		}
+		target, found := b.fighters[selected.ID]
+		if !found {
+			return Fighter{}, false, fmt.Errorf("selected SCAN target %q disappeared", selected.ID)
+		}
+		return target, true, nil
+	}
+
+	firstMap := options.TacticalMap
+	firstMap.XRay = false
+	target, found, err := selectPass(firstMap)
+	if err != nil || found || !options.RetryWithXRay {
+		return target, found, err
+	}
+	secondMap := options.TacticalMap
+	secondMap.XRay = true
+	return selectPass(secondMap)
 }
 
 // BuildLegacyAreaScanTargetIDs preserves the combat-object identity table but

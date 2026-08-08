@@ -1009,6 +1009,49 @@ func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
 
 const quickTargetRuleID = "coab.pc98.quick-target-candidate-chain"
 
+const enemyPhysicalTargetRuleID = "coab.pc98.enemy-physical-target"
+
+func (s *State) selectEnemyPhysicalTarget(attackerID string, targetSide combat.Side) (combat.Fighter, bool, error) {
+	if s.combatScanMapProvider == nil || s.dataPack == nil {
+		// Synthetic tests and packs from before the target producer rule retain
+		// the bounded stable-ID fallback; the production CoAB pack declares the
+		// terrain-aware rule below.
+		if s.battle == nil {
+			return combat.Fighter{}, false, fmt.Errorf("combat battle is unavailable")
+		}
+		target, err := s.battle.SelectCombatTarget(attackerID, targetSide)
+		return target, err == nil, err
+	}
+	definition, found := s.dataPack.FindCombatTargetRule(enemyPhysicalTargetRuleID)
+	if !found {
+		return combat.Fighter{}, false, fmt.Errorf("enemy target game-pack rule %q is unavailable", enemyPhysicalTargetRuleID)
+	}
+	rule, err := definition.ToRule()
+	if err != nil {
+		return combat.Fighter{}, false, err
+	}
+	tacticalMap, err := s.combatScanMapProvider()
+	if err != nil {
+		return combat.Fighter{}, false, fmt.Errorf("build enemy target TACTICALMAP: %w", err)
+	}
+	target, selected, err := s.battle.SelectLegacyScanCombatTarget(
+		attackerID, targetSide, combat.LegacyTargetSelectionOptions{
+			TacticalMap:   tacticalMap,
+			MaxRange:      definition.MaxRange,
+			Arc:           definition.Arc,
+			Rule:          rule,
+			RetryWithXRay: definition.RetryWithXRay,
+			VisibleTo: func(observer, target combat.Fighter) bool {
+				return target.VisibleTo(observer)
+			},
+		},
+	)
+	if err != nil {
+		return combat.Fighter{}, false, fmt.Errorf("select enemy SCAN target: %w", err)
+	}
+	return target, selected, nil
+}
+
 func (s *State) quickTargetRule() (enginequicktarget.Rule, error) {
 	if s.dataPack == nil {
 		return enginequicktarget.Rule{}, fmt.Errorf("Quick target game-pack metadata is unavailable")
@@ -3086,9 +3129,12 @@ func (s *State) advanceCombatToParty() error {
 			}
 			return nil
 		}
-		target, err := s.battle.SelectCombatTarget(fighter.ID, targetSide)
+		target, found, err := s.selectEnemyPhysicalTarget(fighter.ID, targetSide)
 		if err != nil {
 			return err
+		}
+		if !found {
+			return fmt.Errorf("enemy %q has no reachable target", fighter.ID)
 		}
 		if hasMonsterMagicMissile(fighter) {
 			result, spellErr := s.battle.CastMonsterMagicMissile(fighter.ID, target.ID)

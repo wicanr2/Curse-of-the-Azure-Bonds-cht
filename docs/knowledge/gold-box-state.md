@@ -160,11 +160,13 @@ Monster 的攻擊次數也不再完全依賴 synthetic default：reference `load
 
 敵方 physical turn 的 target selection 也必須獨立於 renderer。CoAB reference
 `find_target` 先以 `BuildNearTargets(0xff, player)` 建立對立隊伍候選，再由 bounded
-亂數選一個可見／可達目標；目前 remake 在 `LegacyObjectID` identity table 完整時依
-一基底原始 combat-object 順序，否則以 sorted fighter ID + Battle seeded RNG 重現
-「從存活 party 選目標」這一層，並在同一 enemy turn 固定該 target。牆面／pathfinding、
-visibility、persistent `Action.target`、AI spell priority 與 guarding 仍由後續 rules／map
-adapter 提供，不能把這個候選清單邊界說成完整 monster AI。
+亂數選一個可見／可達目標；正式 CoAB game pack 現在以 `combat_target_rules` 宣告
+PC-98 `TACTICALMAP／SCAN` producer、`LegacyObjectID` 投影、20 次不可見移除與第二輪
+`XRay` wall-bypass。engine `combat/targetselect` 只負責有序 stable ID 的有限抽樣，
+CoAB adapter 負責 terrain／footprint／visibility；同一 enemy turn 仍固定已選 target。
+方向 comparator、persistent `Action.target`、AI spell priority、movement、flee／guard
+與完整動畫音效仍未關閉，不能把這個 bounded producer 接線說成完整 monster AI。
+詳細證據見 `docs/spec/508-pc98-general-target-scan-producer.md`。
 
 玩家輸入造成的 combat error 也應是可恢復 transaction：input adapter 將 `ValidateAttack`／彈藥／target selection 的 error 送到 localized message presenter，保留目前 Mode、turn、HP 與 inventory，不能直接結束 Ebiten game loop。`combat.ErrAdjacentMissileTarget` 可作為跨作品共用的規則錯誤識別；啟動／資料載入錯誤則仍可向上回報。
 

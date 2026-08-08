@@ -4049,3 +4049,22 @@ ID，並以 seed regression 證明不增加 Battle PRNG draw。新增非破壞�
 `pc98_ranged_target_producer_audit.idc`，把 overlay 24 `2820h..2C80h` 連續 bytes
 保留至 report，但未知 producer 欄位與完整可達／visibility／AI 仍未命名。規格：
 `docs/spec/507-pc98-general-target-object-order-projection.md`。
+
+2026-08-09 第五百零八輪把一般敵方物理選敵從第 507 輪的 stable／legacy order
+bounded consumer 推進到 PC-98 terrain-aware producer。Docker 內使用 IDA Pro 9.4
+副本分析 overlay-09／overlay-24，保留 overlay-09 local `0437h／043Dh／101Fh`
+的 raw far-call（包含 `9A C0 00 4A 01` → resident `014A:00C0h`）以及 overlay-24
+local `285Bh` 對 `DS:9F2Eh／9F30h／A820` 的候選表資料流；未知欄位與方向
+comparator 沒有改名。caller input SHA、IDA script／report SHA 與推論等級見
+`docs/spec/508-pc98-general-target-scan-producer.md`。
+
+engine 新增 `combat/targetselect`，只執行有序 stable ID 的有限 random/remove
+consumer；engine pack schema／loader 新增 `combat_target_rules`。CoAB JSON 宣告
+`coab.pc98.enemy-physical-target`：`max_range=255`、`arc=255`、20 次抽樣、
+不可見移除與第二輪 `XRay` wall-bypass。`Battle.SelectLegacyScanCombatTarget`
+先用 `CHARACTERLIST／LegacyObjectID`、footprint、TacticalMap／SCAN 建立候選，
+State 正式 game pack 且有 provider 時將一般 enemy turn 接入，舊 synthetic 狀態
+保留相容 fallback。新增 engine／combat／State regression，證明牆面第一輪無候選、
+第二輪重建及不可見候選移除；這仍不是完整 movement、persistent target、flee／guard、
+AI、方向 tie、戰鬥動畫音效或完整遊戲通關。engine 已以 `011dd91` commit 並 push；
+CoAB root 已通過 Docker／Xvfb 正式 gate，剩餘只是本輪文件與 root commit／push 收尾。

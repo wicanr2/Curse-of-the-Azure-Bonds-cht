@@ -2848,6 +2848,32 @@ func TestCombatMoveIntoEnemySquareResolvesAttack(t *testing.T) {
 	}
 }
 
+func TestEnemyPhysicalTargetUsesPackScanProducerAndWallRetry(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+		return enginescan.TacticalMap{
+			Width: 5, Height: 1,
+			Tiles: []uint8{1, 1, 2, 1, 1},
+			Definitions: []enginescan.TerrainDefinition{
+				{LOS: 1, SYM: 0}, {LOS: 1, SYM: 2},
+			},
+		}, nil
+	})
+	if err := state.StartCombat(
+		[]combat.Fighter{{ID: "hero", Side: combat.SideParty, HitPoints: 10, MaxHitPoints: 10,
+			HasCombatPosition: true, CombatX: 4, CombatY: 0}},
+		[]combat.Fighter{{ID: "enemy", Side: combat.SideEnemy, HitPoints: 10, MaxHitPoints: 10,
+			HasCombatPosition: true, CombatX: 0, CombatY: 0}},
+		510,
+	); err != nil {
+		t.Fatal(err)
+	}
+	target, found, err := state.selectEnemyPhysicalTarget("enemy", combat.SideParty)
+	if err != nil || !found || target.ID != "hero" {
+		t.Fatalf("target=%+v found=%v err=%v, want pack-declared wall-bypass target", target, found, err)
+	}
+}
+
 func TestCombatAltMQuickSleepUsesAreaCenterAndConsumesSlot(t *testing.T) {
 	found := false
 	for seed := int64(0); seed < 512 && !found; seed++ {
