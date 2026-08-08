@@ -95,8 +95,10 @@ frontend terrain 明確判定無效，則不虛構可走射線，但仍顯示資
 
 - `TargetSelectionOptions` 是作品中立介面，注入 max range、`LineTerrain` 與
   可選的 status visibility callback，不含提朗瑟克斯或 CoAB 劇情名稱。
-- 候選依最短加權距離排序；同距暫以 stable fighter ID tie-break，原 combatant
-  array order 尚未投影，所以 deterministic tie fidelity 仍未完成。
+- 候選依最短加權距離排序；同距在雙方都有完整 `LegacyObjectID` 時依原始物件身分，
+  否則以 stable fighter ID 作 deterministic fallback。這是第 506 輪的
+  `strong inference` bounded projection；完整 combatant-array comparator 仍未
+  關閉，不能宣稱原版 tie fidelity 已完成。
 - `SelectRangedCombatTarget` 保留二十次上限與「不可見就移除再抽」的 PRNG
   consumption；候選為空是正常 `found=false`，不是 parser error。
 - effect `84h` 在一般 `SelectCombatTarget` 前使用 range 10 selector，不再先

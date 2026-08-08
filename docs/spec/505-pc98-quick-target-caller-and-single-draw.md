@@ -9,7 +9,8 @@ adapter；不宣稱完整 candidate producer、範圍、同分 tie 或原版 RNG
 它的適用範圍：overlay 09 local `04CCh` 是 TPOV entry 4 的公開 handler，然而
 在該 overlay 內唯一找到的直接 near caller 是 `0164h`。`0164h` 位於一個較大的
 通用戰鬥動作分派函式中；它先嘗試其他 action handler，`04CCh` 回傳非零後才把
-同一組 `[bp+6]／[bp+8]` 傳給另一個 `4A00:1568h` helper。這證明 `04CCh` 是
+同一組 `[bp+6]／[bp+8]` 傳給另一個 raw far-call helper（bytes
+`9A CA 00 4A 01`，解碼為 `014A:00CAh`）。這證明 `04CCh` 是
 可重用的 target/action fallback 邊界，不能反推「所有 Quick 法術都直接從同一
 入口進入」。
 
@@ -54,7 +55,9 @@ resident file/effective resolver 輸出，不能與 overlay-local 數值混讀�
   `9:0627` 對應 entry `5`、stub `0039h`、`exe=0x1139`。`9:0164` 找不到
   handler，支持 `0164h` 是 overlay 內 caller 而非 TPOV entry。
 - `0164h` 的連續 caller 先把 `[bp+8]`、`[bp+6]` 傳入其他 predicate；在
-  `0164h` 呼叫 `04CCh` 後，只有非零結果才於 `016Bh` 呼叫 `4A00:1568h`。
+  `0164h` 呼叫 `04CCh` 後，只有非零結果才於 `016Bh` 呼叫上述 raw far-call
+  helper；此處保留 raw bytes 與 `014A:00CAh` 位址空間，不把 IDA label 當成
+  overlay-local offset。
   這是通用 action fallback 的 `exact` 形狀；參數正式名稱仍為 `unknown`。
 
 ### overlay 13 `PICKTARGET`
@@ -63,8 +66,8 @@ resident file/effective resolver 輸出，不能與 overlay-local 數值混讀�
   `CHECKTARGET` 失敗會清除該 pointer。這是 `exact`，不是完整玩家／怪物
   target policy 的名稱證明。
 - `3E39h` 將嘗試上限設為 `14h`。`3E3Dh..3E47h` 把 caster/action 與
-  `+0Ah` 參數交給 `4A00:1560h` 建立候選資訊；`3E74h` 再依返回候選數做
-  一次抽樣。
+  `+0Ah` 參數交給 raw far call `9A C0 00 4A 01`（解碼為
+  `014A:00C0h`）建立候選資訊；`3E74h` 再依返回候選數做一次抽樣。
 - `3E7Ch..3EAAh` 依抽樣索引取得候選 far pointer；`3EC9h` 呼叫
   `CHECKTARGET`。失敗時 `3EF3h` 移除該候選，`3F05h..3F25h` 依剩餘候選
   重抽；成功時 `3EE2h..3EE6h` 寫回 action target。

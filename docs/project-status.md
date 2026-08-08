@@ -7,6 +7,14 @@
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
+第 506 輪把 PC-98 `PICKTARGET` 的 bounded 證據落到 ranged target consumer：
+同距離候選若都有非零 `LegacyObjectID`，依原始一基底 combat-object 身分排序；
+legacy projection 不完整時才使用 stable ID。Docker 回歸測試驗證排序與同一 Battle
+PRNG 的抽樣仍一致。這是 `strong inference` 的 adapter 修正，不是已證明的完整
+原版 comparator；candidate producer、原版 RNG、完整 Quick／敵方 AI、動畫音效與
+整作通關仍未完成。權威規格為
+[`docs/spec/506-pc98-ranged-target-object-order-tie.md`](spec/506-pc98-ranged-target-object-order-tie.md)。
+
 第 505 輪補上 PC-98 Quick target 的 caller 邊界：IDA／TPOV resolver 證明
 `04CCh` 是 overlay 09 entry 4，但其唯一直接 caller `0164h` 是通用戰鬥 action
 分派點，不是所有 Quick 法術的共同入口；overlay 13 `PICKTARGET` 則證明候選

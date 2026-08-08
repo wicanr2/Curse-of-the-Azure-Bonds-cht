@@ -32,6 +32,13 @@ tie、Magic Missile／Cure 專用規則、敵方 Quick AI 與整作通關仍未�
 target-consumer 修正，不是完整 Quick AI 或整作完成聲明。規格見
 [`docs/spec/505-pc98-quick-target-caller-and-single-draw.md`](docs/spec/505-pc98-quick-target-caller-and-single-draw.md)。
 
+第 506 輪把同一組 `PICKTARGET` 證據延伸到遠程目標 consumer：距離相同時，若兩
+個候選都有完整的 `LegacyObjectID`，先依原始一基底 combat-object 身分排序，
+否則回到 stable ID。這修正了 ranged selector 以字典序作 tie-break 的 remake
+偏差，並保留同一 PRNG、visibility 移除與 20 次上限；原版完整 comparator、
+candidate producer、亂數演算法與完整戰鬥仍未完成。規格見
+[`docs/spec/506-pc98-ranged-target-object-order-tie.md`](docs/spec/506-pc98-ranged-target-object-order-tie.md)。
+
 第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
 角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON
 catalog。工具 help、錯誤與 Sound BIOS 參數報告仍維持原輸出語意；`cmd/coab-audit`

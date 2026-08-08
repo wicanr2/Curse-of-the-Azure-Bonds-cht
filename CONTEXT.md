@@ -4032,3 +4032,12 @@ direct caller 是通用 action dispatcher `0164h`；`0164h` 自身不是 TPOV ha
 受影響測試通過；候選 producer、完整 range／visibility、tie／原版 RNG 與整作
 通關仍未完成。新增 READY spec：
 `docs/spec/505-pc98-quick-target-caller-and-single-draw.md`。
+
+2026-08-09 第五百零六輪把同一組 `PICKTARGET`／OBJECTLIST 證據延伸到 ranged
+target consumer。`SelectRangedCombatTarget` 現在先依距離排序；距離相同且兩個
+候選都有非零、不同的 `LegacyObjectID` 時依原始一基底 combat-object 身分排序，
+不完整投影才回到 stable fighter ID。新增同距離、stable ID 與 legacy order 相反
+的 deterministic regression，證明同一 Battle PRNG 的抽樣沒有被額外消耗。此為
+`strong inference` bounded adapter，不是完整 `PICKTARGET` comparator；candidate
+producer、原版 RNG、完整 ranged／Quick／敵方 AI、動畫音效與整作通關仍未完成。
+規格：`docs/spec/506-pc98-ranged-target-object-order-tie.md`。
