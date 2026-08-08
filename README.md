@@ -31,6 +31,16 @@ Area 仍未開放；Quick target linked-list 的 tie／random 細節也仍標為
 `strong inference／unknown`。Docker focused regression 已通過，證據見
 [`docs/spec/493-pc98-quick-sleep-area-target.md`](docs/spec/493-pc98-quick-sleep-area-target.md)。
 
+第 494 輪接通 PC-98 Quick AI 的 `Fireball (2Fh)` bounded slice：以同一份
+overlay 09 `MinRange`／`SCAN` 證據，從敵人戰鬥格建立合法中心，將中心保存到
+point transaction，並依 raw `CastingTime=03h` 走 pending action；排程續跑後
+重用既有 Fireball 逐目標 travel／impact／傷害／死亡演出與法術格交易。這只
+完成 Quick Fireball 的可玩交接；Fireball area-safety、候選 tie／random、
+Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick AI 仍 fail-closed。Docker
+focused regression 與 Docker／Xvfb 正式 gate `ROUND494_FORMAL_EXIT=0`、
+`coab-audit total=0` 已通過，證據見
+[`docs/spec/494-pc98-quick-fireball-area-target.md`](docs/spec/494-pc98-quick-fireball-area-target.md)。
+
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
 literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
@@ -1301,6 +1311,14 @@ PC-98 固定戰場動態仍未完成，故這是可玩的規則垂直切片，�
 raw `CastingTime=1` 目前立即結算；其他非零 `MinRange` 法術仍由 fail-closed
 分支保護，不把 bounded 推論擴大成完整 Quick 法術 AI。證據見
 [`spec 493`](docs/spec/493-pc98-quick-sleep-area-target.md)。
+
+第 494 輪接通 `Fireball (2Fh)` 的 Quick bounded slice：`min_range=3` 透過
+目前 `TACTICALMAP`／`SCAN` 從敵人格建立中心，先保存 point 與 pending action，
+再由正常 scheduler 續跑至既有 Fireball 多目標視覺與法術格消耗。raw
+`CastingTime=03h` 的延遲交接已由 focused regression 證明；候選 linked-list
+排序、random helper、完整 area-safety 與其餘 Quick Area 仍未宣稱完成。正式
+Docker／Xvfb gate 為 `ROUND494_FORMAL_EXIT=0`，`coab-audit` 為 `total=0`。證據見
+[`spec 494`](docs/spec/494-pc98-quick-fireball-area-target.md)。
 
 第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
 連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`

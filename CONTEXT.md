@@ -3841,5 +3841,32 @@ Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick Area 仍 fail-closed，沒
 與 spec 493；Docker focused `internal/game` tests（Quick Sleep／既有 Sleep）
 通過。PC-98 磁片只完成 DOSBox-X Docker 啟動／標題畫面擷取，尚未把 Quick
 Area 戰鬥的原機逐鍵／逐幀結果冒稱 exact。這是 bounded combat milestone，
-不是完整 Quick AI、完整 ECL 玩家路徑或完整 remake 完成聲明；本輪待集中
-commit＋push。
+不是完整 Quick AI、完整 ECL 玩家路徑或完整 remake 完成聲明；已於本輪前段
+commit `a36a5b1` 並推送 GitHub。
+
+2026-08-09 第四百九十四輪接續 Quick AI 的已驗證遊戲本體缺口。沿用指定
+IDA Pro 9.4 default entrypoint 與第 493 輪 PC-98 overlay 09 report；沒有修改
+原始 binary／database／Borland symbol。raw `02D3h..03D0h` 的非零 MinRange
+SCAN helper、`03D3h..04C9h` 的 MinRange dispatch 與 `04CCh..0627h` 的
+target pointer chain 仍以原始 overlay-local 位址記錄，完整 candidate tie／
+random 仍為 strong inference／unknown。
+
+CoAB 將原本 Sleep 專用的 area candidate adapter 抽成
+`quickAreaSpellTarget(caster, spellID, minRange)`，並只對已有正式效果 pipeline
+的 `Fireball (2Fh)` 開放 Quick：game-pack `min_range=3`、目前 `TACTICALMAP`、
+敵人格與 `BuildLegacyAreaScanTargetIDs` 建立中心；沒有合法 projection／位置／
+candidate 時 fail-closed。Fireball raw `CastingTime=03h` 經既有
+`BeginPendingPointSpellAction` 保存中心與延遲，scheduler 續跑後重用原本逐目標
+travel／impact／damage／death、音效 intent 與 slot transaction。新增
+`TestCombatAltMQuickFireballUsesAreaCenterAndPendingDelay`，並保留 Quick Sleep、
+Quick Bless pending、手動 Fireball focused regressions。
+
+Docker 斷網 focused gate 通過：
+`TestCombatAltMQuickFireballUsesAreaCenterAndPendingDelay`、
+`TestCombatAltMQuickSleepUsesAreaCenterAndConsumesSlot`、
+`TestCombatAltMQuickBlessWaitsForPendingCastingAction`、
+`TestCombatFireballPlayerPathQueuesOrderedAreaImpacts`。這是 bounded Quick
+Fireball milestone，不是完整 Quick AI、完整 ECL 玩家路徑或完整 remake 完成聲明；
+Docker／Xvfb 正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/...`
+與 `go run ./cmd/coab-audit -root .` 亦通過，marker 為
+`ROUND494_FORMAL_EXIT=0`、`total=0`。本輪文件、commit 與 push 待收尾。

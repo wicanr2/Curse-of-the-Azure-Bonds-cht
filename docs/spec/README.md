@@ -430,3 +430,4 @@
 - [第四百七十五輪艾森布拉傳聞與 State 中文 fallback 清理](./475-essembra-tavern-tales-state-fallbacks.md)（`READY`：Tale 44／60 真實酒館鏈、兩條雙語規則與 27 筆 Go 譯文副本移除）
 - [第四百七十六輪紮營與 ALTER 介面資料分離](./476-camp-alter-locale-data-separation.md)（`READY`：正式 catalog、128 筆 Go 漢字移除與 Engine checkpoint 修正）
 - [第四百七十七輪 PROGRAM 終局介面資料分離](./477-program-terminal-locale-data-separation.md)（`READY`：全滅／勝利／存檔 stable IDs、兩條終局 transaction 與 37 人正常終戰）
+- [第四百九十四輪 PC-98 Quick Fireball 範圍落點與延遲交接](./494-pc98-quick-fireball-area-target.md)（`READY`：Quick Fireball bounded area center、pending point handoff、逐目標 visual／slot regression；候選 tie／random 與其他 Quick Area 仍未完成）
