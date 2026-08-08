@@ -41,6 +41,16 @@ focused regression 與 Docker／Xvfb 正式 gate `ROUND494_FORMAL_EXIT=0`、
 `coab-audit total=0` 已通過，證據見
 [`docs/spec/494-pc98-quick-fireball-area-target.md`](docs/spec/494-pc98-quick-fireball-area-target.md)。
 
+第 495 輪接通同一 Quick AI 的兩個毒雲 bounded slice：Stinking Cloud `22h`
+依正式 game-pack 的 `min_range=1` 走 `TACTICALMAP／SCAN`，接上既有 2×2
+persistent-area；Cloudkill `5Bh` 的 `min_range=0` 以合法敵人格建立 point，依
+raw `CastingTime=05h` 保存 pending action，續跑後接上既有 3×3 persistent-area、
+低 HD 直接死亡與中斷 pipeline。候選 linked-list 的 tie／random、完整
+area-safety 與 Lightning Bolt Quick line target 仍未閉合；本輪不把 bounded
+adapter 宣稱成原版逐指令相同。Docker／Xvfb 正式 gate 為
+`ROUND495_FORMAL_EXIT=0`、`coab-audit total=0`，證據見
+[`docs/spec/495-pc98-quick-poison-cloud-area-target.md`](docs/spec/495-pc98-quick-poison-cloud-area-target.md)。
+
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
 literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
@@ -1319,6 +1329,16 @@ raw `CastingTime=1` 目前立即結算；其他非零 `MinRange` 法術仍由 fa
 排序、random helper、完整 area-safety 與其餘 Quick Area 仍未宣稱完成。正式
 Docker／Xvfb gate 為 `ROUND494_FORMAL_EXIT=0`，`coab-audit` 為 `total=0`。證據見
 [`spec 494`](docs/spec/494-pc98-quick-fireball-area-target.md)。
+
+第 495 輪再接通 Quick `Stinking Cloud (22h)` 與 `Cloudkill (5Bh)`：前者依
+`min_range=1` 走目前 `TACTICALMAP／SCAN` 並重用既有 2×2 persistent-area；
+後者依 `min_range=0` 與 line-terrain 合法敵人格建立中心，依 raw
+`CastingTime=05h` 交給 pending point scheduler，再重用既有 3×3 persistent-area、
+低 HD 直接死亡與施法中斷。這仍是 strong-inference bounded adapter；Quick
+target linked-list tie／random、完整 area-safety、Lightning Bolt line target
+與完整 Quick AI 都未完成。正式 gate 為 `ROUND495_FORMAL_EXIT=0`，
+`coab-audit` 為 `total=0`。證據見
+[`spec 495`](docs/spec/495-pc98-quick-poison-cloud-area-target.md)。
 
 第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
 連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`

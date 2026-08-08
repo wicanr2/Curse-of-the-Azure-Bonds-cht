@@ -796,6 +796,16 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   494 是權威；focused regression、Docker／Xvfb 正式 gate
   `ROUND494_FORMAL_EXIT=0` 與 `coab-audit total=0` 已通過，完整 Quick AI／完整
   遊戲仍不可宣稱完成。
+- 第 495 輪沿用同一份 PC-98 overlay 09 證據，接通 Quick `Stinking Cloud (22h)`
+  與 `Cloudkill (5Bh)`：前者依 game-pack `min_range=1` 走
+  `TACTICALMAP／SCAN`，後者依 `min_range=0` 與 line-terrain 合法敵人格建立
+  point；後者 raw `CastingTime=05h` 先走 pending scheduler。兩者都只重用已
+  驗證的 persistent-area、豁免／低 HD／中斷與法術格交易 pipeline。候選
+  linked-list tie／random、完整 area-safety、Lightning Bolt line target 與
+  完整 Quick AI 仍未完成；中心政策是 `strong inference` bounded adapter，
+  不得升格為原版 exact。READY spec 495 是權威；focused regression、
+  Docker／Xvfb 正式 gate `ROUND495_FORMAL_EXIT=0` 與 `coab-audit total=0`
+  已通過，完整遊戲仍不可宣稱完成。
 - 使用者已於 2026-08-09 恢復作業；compact／自動 continuation 應以第 493 輪
   的實際 HEAD、`docs/project-status.md` 與 `CONTEXT.md` 尾端為起點，不要把
   舊的「暫停」文字當成目前狀態。

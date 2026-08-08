@@ -962,7 +962,23 @@ func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
 // stable fighter order is retained until that consumer is closed.
 func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange uint8) (combat.TilePoint, bool, error) {
 	if minRange == 0 {
-		return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X requires a nonzero scan range", spellID)
+		if spellID != CloudkillSpellID {
+			return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X requires a nonzero scan range", spellID)
+		}
+		if s.combatLineTerrain == nil {
+			return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X combat terrain projection is unavailable", spellID)
+		}
+		for _, target := range s.livingBySide(combat.SideEnemy) {
+			if !target.HasCombatPosition || !s.combatLineTerrain(target.CombatX, target.CombatY).Valid {
+				continue
+			}
+			// The PC-98 helper carries a candidate object pointer into
+			// CASTCOMBATSPELL. The complete pointer-to-grid projection and
+			// candidate tie/random policy are not closed yet; stable living
+			// fighter order is the bounded adapter policy for zero MinRange.
+			return combat.TilePoint{X: target.CombatX, Y: target.CombatY}, true, nil
+		}
+		return combat.TilePoint{}, false, nil
 	}
 	if s.combatScanMapProvider == nil {
 		return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X TACTICALMAP projection is unavailable", spellID)
@@ -2815,9 +2831,9 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			}, ok
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
-			if spell.MinRange != 0 {
+			if spell.MinRange != 0 || spell.ID == StinkingCloudSpellID || spell.ID == CloudkillSpellID {
 				switch spell.ID {
-				case SleepSpellID, FireballSpellID:
+				case SleepSpellID, FireballSpellID, StinkingCloudSpellID, CloudkillSpellID:
 					_, ok, err := s.quickAreaSpellTarget(fighter, spell.ID, spell.MinRange)
 					return ok, err
 				}
@@ -2886,7 +2902,8 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 		return true, nil
 	}
-	if spellID == SleepSpellID || spellID == FireballSpellID {
+	if spellID == SleepSpellID || spellID == FireballSpellID ||
+		spellID == StinkingCloudSpellID || spellID == CloudkillSpellID {
 		center, ok, err := s.quickAreaSpellTarget(fighter, spellID, definition.MinRange)
 		if err != nil {
 			return false, err

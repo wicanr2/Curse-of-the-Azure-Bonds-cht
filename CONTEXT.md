@@ -3870,3 +3870,21 @@ Fireball milestone，不是完整 Quick AI、完整 ECL 玩家路徑或完整 re
 Docker／Xvfb 正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/...`
 與 `go run ./cmd/coab-audit -root .` 亦通過，marker 為
 `ROUND494_FORMAL_EXIT=0`、`total=0`。本輪文件、commit 與 push 待收尾。
+
+2026-08-09 第四百九十五輪接續 Quick AI 的毒雲缺口。沿用第 493 輪同一份
+PC-98 overlay 09 非破壞性 IDA report；原始 GAME.EXE／GAME.OVR／overlay、
+database、Borland symbol 與位址均未改寫。Stinking Cloud `22h` 的正式
+game-pack record 是 `min_range=1`、`casting_time=2`，因此走
+`TACTICALMAP／SCAN` bounded candidate；Cloudkill `5Bh` 是 `min_range=0`、
+`casting_time=5`，因此以 line-terrain 合法敵人格建立 bounded point，再保存
+pending point action。兩者都重用既有 persistent-area、豁免／低 HD／中斷、
+音效 intent 與 slot transaction，不另造 Quick 專用規則。
+
+新增 `TestCombatAltMQuickStinkingCloudUsesAreaCenterAndPersistentArea` 與
+`TestCombatAltMQuickCloudkillUsesAreaCenterAndPendingDelay`；Docker focused
+與正式 `go test -count=1 -p 2 ./cmd/... ./gamepack ./internal/...` 均通過，
+`go run ./cmd/coab-audit -root .` 回報 `total=0`，marker 為
+`ROUND495_FORMAL_EXIT=0`。候選 linked-list tie／random、完整 area-safety、
+Lightning Bolt line target 與完整 Quick AI 仍是 strong inference／unknown 或
+未接通；本輪仍不是完整 ECL 玩家路徑、完整戰鬥或完整 remake 完成聲明。文件、
+commit 與 push 待本輪收尾。
