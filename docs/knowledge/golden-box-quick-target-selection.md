@@ -5,10 +5,22 @@ Quick 施法必須分成兩個階段：法術 suitability 只回答「是否有�
 施法 action。把兩者合併成一次 `first target` 查詢，容易在每次候選試驗時多吃
 一段 PRNG，導致後面的法術、命中與遭遇結果漂移。
 
+要另外區分 caller：PC-98 overlay 09 的 `04CCh` 是 entry 4 的公開 handler，
+但已找到的唯一直接 caller 是通用 action dispatcher `0164h`。因此它可支持
+「某類 action 的候選鏈／priority 邊界」，不能單獨證明所有 Quick 法術都走同一
+入口。overlay 13 `PICKTARGET` 的 `3D7Fh..3F5Ch` 則是另一個 target consumer：
+它先檢查既有 target，再抽取候選、呼叫 `CHECKTARGET`，失敗候選移除後最多
+重試 `14h` 次。完整候選 producer 與 target range 仍由作品 adapter 關閉。
+
 目前 PC-98 CoAB 的可重用邊界是：候選以一基底 `LegacyObjectID` 排序，先從
 priority `7` 開始，以 `1..7` 的重試數量限制最多掃幾個 threshold；每個
 threshold 掃到第一個合法候選就交接。這是 `04CCh..0624h` 的控制流重建，
 不是完整 pointer chain 或 random helper 的逐指令還原。
+
+對不需要 priority retry 的 target consumer，可使用 engine
+`combat/quicktarget.SelectOne`：它只保留 legacy order 後做一次抽樣，不得在
+caller 內再重抽一遍。CoAB Quick Magic Missile 已使用這個 bounded adapter；
+手動 target、候選 producer、visibility／range 與 tie 仍不應搬進 engine。
 
 實作時應遵守：
 

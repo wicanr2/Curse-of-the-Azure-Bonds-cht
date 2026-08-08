@@ -7,6 +7,7 @@ import (
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
+	enginequicktarget "github.com/wicanr2/golden-box-remake-engine/combat/quicktarget"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
 
@@ -155,6 +156,33 @@ func TestSelectCombatTargetUsesSeededCandidateSelection(t *testing.T) {
 	}
 	if len(seen) != 2 {
 		t.Fatalf("seeded target selection never varied candidates: %v", seen)
+	}
+}
+
+func TestSelectQuickTargetOneUsesLegacyObjectOrder(t *testing.T) {
+	const seed = int64(1)
+	battle, err := NewBattle([]Fighter{
+		{ID: "z-first", Side: SideEnemy, LegacyObjectID: 2, HitPoints: 8, MaxHitPoints: 8},
+		{ID: "a-second", Side: SideEnemy, LegacyObjectID: 1, HitPoints: 8, MaxHitPoints: 8},
+	}, seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, found, err := battle.SelectQuickTargetOne([]enginequicktarget.Candidate{
+		{ID: "z-first", LegacyObjectID: 2},
+		{ID: "a-second", LegacyObjectID: 1},
+	}, enginequicktarget.Rule{
+		ID:                   "test.quick-target",
+		CandidateOrder:       "legacy_object_id",
+		RetryRollSides:       7,
+		MinimumPriorityStart: 7,
+	})
+	if err != nil || !found {
+		t.Fatalf("selected=%+v found=%v err=%v", got, found, err)
+	}
+	want := []string{"a-second", "z-first"}[rand.New(rand.NewSource(seed)).Intn(2)]
+	if got.ID != want {
+		t.Fatalf("selected=%q want=%q; legacy order was not applied", got.ID, want)
 	}
 }
 

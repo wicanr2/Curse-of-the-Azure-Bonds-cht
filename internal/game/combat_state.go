@@ -1105,6 +1105,36 @@ func (s *State) selectQuickTargetCandidate(
 	return target, true, nil
 }
 
+// selectQuickTargetOne applies the projected legacy candidate order with one
+// random draw. It is deliberately separate from the priority-retry selector:
+// PC-98 Magic Missile uses the general target consumer, while the candidate
+// producer and full pointer-chain tie policy remain outside this bounded
+// adapter.
+func (s *State) selectQuickTargetOne(targets []combat.Fighter) (combat.Fighter, bool, error) {
+	if len(targets) == 0 {
+		return combat.Fighter{}, false, nil
+	}
+	rule, err := s.quickTargetRule()
+	if err != nil {
+		return combat.Fighter{}, false, err
+	}
+	candidates := make([]enginequicktarget.Candidate, len(targets))
+	byID := make(map[string]combat.Fighter, len(targets))
+	for index, target := range targets {
+		candidates[index] = enginequicktarget.Candidate{ID: target.ID, LegacyObjectID: target.LegacyObjectID}
+		byID[target.ID] = target
+	}
+	selected, found, err := s.battle.SelectQuickTargetOne(candidates, rule)
+	if err != nil || !found {
+		return combat.Fighter{}, found, err
+	}
+	target, ok := byID[selected.ID]
+	if !ok {
+		return combat.Fighter{}, false, fmt.Errorf("Quick target candidate %q disappeared after single draw", selected.ID)
+	}
+	return target, true, nil
+}
+
 func (s *State) quickSpellPriority(spellID uint8) (uint8, error) {
 	if s.dataPack == nil {
 		return 0, fmt.Errorf("Quick spell game-pack metadata is unavailable")
@@ -3358,9 +3388,16 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		}
 		return false, fmt.Errorf("NPC quick spell 0x%02X is not implemented", spellID)
 	}
-	target, err := s.battle.SelectCombatTarget(fighter.ID, combat.SideEnemy)
+	candidates, err := s.quickTargetCandidates(combat.SideEnemy)
 	if err != nil {
 		return false, err
+	}
+	target, found, err := s.selectQuickTargetOne(candidates)
+	if err != nil {
+		return false, err
+	}
+	if !found {
+		return false, nil
 	}
 	enemies := s.livingBySide(combat.SideEnemy)
 	for index := range enemies {

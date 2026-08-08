@@ -387,7 +387,7 @@ status `DEAD／STONED／GONE` 不可治療。共用 engine 只保存 opaque targ
 
 ## PC-98 Quick 目標候選鏈
 
-overlay 09 local `04CCh..0624h` 的 Quick 目標函式會從 action record 的
+overlay 09 local `04CCh..0624h` 的 Quick target handler 會從 action record 的
 far pointer 沿候選 `+52h` next pointer 走訪，逐項經過 `03D3h` suitability，
 再以 best pointer 交給 `00FA:0048h`。`04E2h..04E8h` 的 `1..7` helper、
 候選 `+65h／+56h／+66h／+5Ch` 欄位正式語意，以及完整 retry／tie／亂數仍是
@@ -400,6 +400,14 @@ CoAB 目前把已由 `CHARACTERLIST／IDLIST` 投影保存的 one-based
 lexicographic stable fighter order；Magic Missile 的獨立隨機 target 與 Cure
 的九格／HP／倒地規則仍走各自契約。詳細位址與證據等級見
 `docs/spec/503-pc98-quick-target-object-chain-boundary.md`。
+
+caller audit 另證明 `04CCh` 的唯一直接 caller 是 overlay-local `0164h` 通用
+action dispatcher；不能把它當作所有 Quick 法術的共同入口。overlay 13
+`PICKTARGET` 的候選抽樣／`CHECKTARGET`／最多 `14h` 次失敗重抽則支持 engine
+`combat/quicktarget.SelectOne` 的 bounded 形狀。CoAB Quick Magic Missile 已
+依 JSON 宣告的 `LegacyObjectID` 順序做一次 Battle PRNG 抽樣；候選 producer、
+完整 range／visibility／tie 與原版 RNG 仍未知。詳見
+`docs/spec/505-pc98-quick-target-caller-and-single-draw.md`。
 
 ## 手動與 Quick 共用施法交易
 

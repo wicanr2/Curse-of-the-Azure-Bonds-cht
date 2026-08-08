@@ -4019,3 +4019,16 @@ CoAB suitability 只做無亂數 legality probe，法術選定後才在同一 Ba
 `docs/spec/504-pc98-quick-target-priority-retry.md` 與知識庫
 `docs/knowledge/golden-box-quick-target-selection.md`；engine commit `9b10e78`
 已推送，完整遊戲仍未完成。
+
+2026-08-09 第五百零五輪補做 PC-98 Quick target caller audit。IDA Pro 9.4 Docker
+副本確認 overlay 09 local `04CCh` 是 entry 4 的公開 handler，但 overlay 內唯一
+direct caller 是通用 action dispatcher `0164h`；`0164h` 自身不是 TPOV handler，
+故不能把 `04CCh` 宣稱成所有 Quick 法術共同入口。overlay 13 `PICKTARGET`
+`3D7Fh..3F5Ch` 另以 raw bytes 關閉既有 target 檢查、候選抽樣、`CHECKTARGET`、
+候選移除與最多 `14h` 重試。engine `combat/quicktarget.SelectOne` 與 CoAB
+`State.selectQuickTargetOne` 已接通；Quick Magic Missile 現依 JSON 宣告的
+`LegacyObjectID` 候選順序使用同一 Battle PRNG 做一次抽樣，不再使用
+`Fighters()` 字典序。engine quicktarget／CoAB internal/combat／internal/game
+受影響測試通過；候選 producer、完整 range／visibility、tie／原版 RNG 與整作
+通關仍未完成。新增 READY spec：
+`docs/spec/505-pc98-quick-target-caller-and-single-draw.md`。
