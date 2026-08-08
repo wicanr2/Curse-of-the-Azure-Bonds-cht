@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百輪 PC-98 6Ah 魔法抗性資料契約與區域法術邊界](./500-pc98-spell-magic-resistance-boundary.md)（`READY`：effect `6Ah`→15% exact、Fireball／Lightning bounded adapter 與明確 RNG 未知邊界）
+
 - [第三百九十九輪外圍遺跡提爾雪雅結盟](./399-outer-ruins-tirsheya-alliance.md)（`READY`：terrain `01h`、手札 5、兩場氏族戰與固定八個玩家戰鬥槽）
 - [第三百九十八輪 Burial Glen 手札 56 與東界遺跡出口](./398-burial-glen-journal56-and-more-ruins-exit.md)（`READY`：terrain `07h／0Ch`、完整手札 56、三出口與正常 `NEWECL 42h` handoff）
 - [第三百九十七輪 Burial Glen 紅羽戰士羅剎妖陷阱](./397-burial-glen-red-plume-trap.md)（`READY`：terrain `05h`、手札 33、三分支、兩次 `1d6+6` 箭擊、六相位蜘蛛＋一羅剎妖與正常玩家路徑）

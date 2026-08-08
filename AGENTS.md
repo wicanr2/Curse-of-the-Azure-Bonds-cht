@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 499 輪 PC-98 alignment／條件式 effect milestone（本文件所在
+- CoAB 本輪基底：第 500 輪 PC-98 `6Ah` magic-resistance／資料契約 milestone（本文件所在
   commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`d0a4970`（含作品中立 game-pack
+- Engine dependency：`036643f`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -1119,6 +1119,18 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `+14Ch=MONSTERTYPE` 的舊命名已 supersede；未知 alignment fail-closed。
   focused Docker gate 已通過，正式 gate、完整 effect lifecycle、完整戰鬥與全作
   通關仍未完成。權威規格為 `docs/spec/499-pc98-alignment-conditional-effects.md`。
+
+- 第 500 輪已由 PC-98 overlay 12 local `2396h..23F3h／2404h` 與 overlay 23
+  `PUTEFFECT`／type-9 list 關閉 effect `6Ah` 的 base `15` 與
+  `base + (11-casterLevel)*5` 公式；完整多目標 caller draw order 仍標為
+  `strong inference／unknown`。新增 engine `combat/resistance` 與 CoAB
+  `combat_magic_resistance_rules` JSON；Fireball／Lightning bounded core 由
+  rule slice 判定並傳遞 typed `Resisted`，不把零傷害猜成魔抗，active-combat
+  restore 重新掛入配置。`4Fh`、`84h`、Cloudkill／Stinking Cloud 其他 caller
+  不得因本輪擴大解讀。Docker／Xvfb 正式全套 gate 已通過，marker 為
+  `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`。權威規格為
+  `docs/spec/500-pc98-spell-magic-resistance-boundary.md`；本輪以兩 repo 各一個
+  集中 commit／push 收尾，完整遊戲仍未完成。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

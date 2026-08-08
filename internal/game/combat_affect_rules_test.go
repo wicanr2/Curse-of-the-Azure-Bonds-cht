@@ -26,6 +26,9 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 	if len(fighter.ConditionalModifierRules) != 2 {
 		t.Fatalf("start combat conditional rules=%+v", fighter.ConditionalModifierRules)
 	}
+	if len(fighter.MagicResistanceRules) != 1 || fighter.MagicResistanceRules[0].Base != 15 {
+		t.Fatalf("start combat magic resistance rules=%+v", fighter.MagicResistanceRules)
+	}
 	if result := fighter.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("start combat conditional result=%+v", result)
 	}
@@ -47,6 +50,9 @@ func TestCombatAffectRulesLoadFromPackAndReattachAfterRestore(t *testing.T) {
 	}
 	if len(restored.ConditionalModifierRules) != 2 {
 		t.Fatalf("restored conditional rules=%+v", restored.ConditionalModifierRules)
+	}
+	if len(restored.MagicResistanceRules) != 1 || restored.MagicResistanceRules[0].Base != 15 {
+		t.Fatalf("restored magic resistance rules=%+v", restored.MagicResistanceRules)
 	}
 	if result := restored.MonsterConditionalModifierAgainst(party[0]); result.AttackRollDelta != -2 || result.SavingThrowDelta != 2 {
 		t.Fatalf("restored conditional result=%+v", result)

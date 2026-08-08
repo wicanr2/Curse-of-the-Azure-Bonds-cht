@@ -13,6 +13,7 @@ import (
 	engineinitiative "github.com/wicanr2/golden-box-remake-engine/combat/initiative"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
 	enginerandom "github.com/wicanr2/golden-box-remake-engine/randomstream"
 )
@@ -168,6 +169,9 @@ type Fighter struct {
 	// ConditionalModifierRules are immutable game-pack capabilities. They are
 	// excluded from save JSON and reattached after loading the active battle.
 	ConditionalModifierRules []enginemodifier.Rule `json:"-"`
+	// MagicResistanceRules are immutable game-pack capabilities. They are
+	// excluded from save JSON and reattached after loading the active battle.
+	MagicResistanceRules []engineresistance.Rule `json:"-"`
 }
 
 // MonsterAffect mirrors one nine-byte MON*SPC record without importing the
@@ -251,16 +255,29 @@ func (f Fighter) MonsterCanDetectInvisible() bool {
 	return false
 }
 
-// MonsterMagicResistanceBase reports the evidence-backed percentage base
-// supplied by a monster affect handler. Effect 6A maps exactly to the
-// 15-percent wrapper; the shared formula is also exact.
-func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
+// MonsterMagicResistanceRule resolves active raw effects through the
+// title-owned game-pack contract. The combat core does not infer resistance
+// from a monster name or from a hardcoded effect kind.
+func (f Fighter) MonsterMagicResistanceRule() (engineresistance.Result, bool) {
+	active := make([]uint8, 0, len(f.MonsterAffects))
 	for _, affect := range f.MonsterAffects {
-		if affect.operational() && affect.Kind == 0x6A {
-			return 15, true
+		if affect.operational() {
+			active = append(active, affect.Kind)
 		}
 	}
-	return 0, false
+	result := engineresistance.Resolve(active, f.MagicResistanceRules)
+	return result, result.Matched
+}
+
+// MonsterMagicResistanceBase reports the configured percentage base for
+// compatibility with callers that only need the numeric projection. The
+// effect-to-base mapping is supplied by JSON through MagicResistanceRules.
+func (f Fighter) MonsterMagicResistanceBase() (int, bool) {
+	result, matched := f.MonsterMagicResistanceRule()
+	if !matched {
+		return 0, false
+	}
+	return result.Base, true
 }
 
 const (
@@ -324,7 +341,18 @@ func (f Fighter) MonsterThrowsLightning() bool {
 // original compares a d100 roll directly against this signed expression and
 // does not clamp it before the comparison.
 func MagicResistanceChance(base, casterLevel int) int {
-	return base + (11-casterLevel)*5
+	return engineresistance.LevelAdjustedD100Chance(base, casterLevel)
+}
+
+func (b *Battle) rollMagicResistance(target Fighter, casterLevel int) bool {
+	rule, matched := target.MonsterMagicResistanceRule()
+	if !matched {
+		return false
+	}
+	if rule.Formula != engineresistance.FormulaLevelAdjustedD100 {
+		return false
+	}
+	return b.rng.Intn(100)+1 <= engineresistance.LevelAdjustedD100Chance(rule.Base, casterLevel)
 }
 
 // CastSleepOrdered applies only the evidence-backed post-targeting Sleep
@@ -378,9 +406,7 @@ func (b *Battle) CastSleepOrdered(casterID string, orderedTargetIDs []string, ca
 	for _, targetID := range filtered.Selected {
 		target := b.fighters[targetID]
 		resisted := false
-		if base, protected := target.MonsterMagicResistanceBase(); protected {
-			resisted = b.rng.Intn(100)+1 <= MagicResistanceChance(base, casterLevel)
-		}
+		resisted = b.rollMagicResistance(target, casterLevel)
 		impact := SleepImpact{TargetID: targetID, Resisted: resisted}
 		if !resisted {
 			target.MonsterAffects = append(target.MonsterAffects, MonsterAffect{
@@ -570,6 +596,7 @@ type AreaSpellImpact struct {
 	Damage    int
 	TargetHP  int
 	Saved     bool
+	Resisted  bool
 	Protected bool
 }
 
@@ -764,6 +791,18 @@ func (b *Battle) SetConditionalModifierRules(rules []enginemodifier.Rule) {
 		for index := range fighter.ConditionalModifierRules {
 			fighter.ConditionalModifierRules[index].Values = append([]uint8(nil), rules[index].Values...)
 		}
+		b.fighters[id] = fighter
+	}
+}
+
+// SetMagicResistanceRules attaches immutable game-pack resistance rules to
+// every fighter. Rules are configuration, not mutable combat state.
+func (b *Battle) SetMagicResistanceRules(rules []engineresistance.Rule) {
+	if b == nil {
+		return
+	}
+	for id, fighter := range b.fighters {
+		fighter.MagicResistanceRules = append([]engineresistance.Rule(nil), rules...)
 		b.fighters[id] = fighter
 	}
 }
@@ -1651,13 +1690,11 @@ func (b *Battle) castMagicMissile(casterID, targetID string, level int, spellID 
 		damage += b.rng.Intn(4) + 2
 	}
 	resisted := false
-	if base, ok := target.MonsterMagicResistanceBase(); ok {
-		// Magic Missile reaches the original pre-damage affect boundary with
-		// the Magic damage flag set. Damage dice are consumed before this d100.
-		resisted = b.rng.Intn(100)+1 <= MagicResistanceChance(base, level)
-		if resisted {
-			damage = 0
-		}
+	// Magic Missile reaches the original pre-damage affect boundary with the
+	// Magic damage flag set. Damage dice are consumed before this d100.
+	resisted = b.rollMagicResistance(target, level)
+	if resisted {
+		damage = 0
 	}
 	damage = b.applyPositiveDamage(&target, damage)
 	b.fighters[targetID] = target
@@ -1721,14 +1758,18 @@ func (b *Battle) CastFireball(casterID string, center TilePoint, level int) (Are
 		if saved {
 			applied /= 2
 		}
+		resisted := b.rollMagicResistance(target, level)
+		if resisted {
+			applied = 0
+		}
 		adjustment := target.MonsterDamageAdjustment(DamageFlagFire|DamageFlagMagic, applied)
-		protected := adjustment.Immune
+		protected := !resisted && adjustment.Immune
 		applied = adjustment.Damage
 		applied = b.applyPositiveDamage(&target, applied)
 		b.fighters[target.ID] = target
 		result.Impacts = append(result.Impacts, AreaSpellImpact{
 			TargetID: target.ID, Damage: applied, TargetHP: target.HitPoints, Saved: saved,
-			Protected: protected,
+			Resisted: resisted, Protected: protected,
 		})
 	}
 	b.updateStatus()

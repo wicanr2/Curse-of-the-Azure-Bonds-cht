@@ -11,7 +11,7 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `d0a4970`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `036643f`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -83,6 +83,16 @@ CoAB JSON 與 engine `combat/modifier` 已分離保存規則，物理攻擊、Fi
 反射線與毒雲存豁免共用同一資料流；未知 alignment 會 fail-closed。這是已測試的
 有界戰鬥 milestone，不是完整 protection 生命週期或全作通關；證據見
 [`docs/spec/499-pc98-alignment-conditional-effects.md`](docs/spec/499-pc98-alignment-conditional-effects.md)。
+
+第 500 輪把 PC-98 effect `6Ah` 的魔法抗性改成 engine＋JSON 資料契約。原始
+overlay 12 證明 `base=15` 與 `base + (11-casterLevel)*5`，CoAB game pack
+宣告 `combat_magic_resistance_rules`，Battle 與 active save restore 都重新
+掛入同一份規則；Fireball／Lightning Bolt bounded core 會將 `Resisted` 與
+元素 `Protected` 分開傳到戰鬥演出與繁中訊息。多目標原版亂數順序、其他
+`6Ah` caller 與完整戰鬥仍未閉合，因此這不是完整遊戲完成聲明。Docker／Xvfb
+正式全套 gate 已通過，marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；
+里程碑規格見
+[`docs/spec/500-pc98-spell-magic-resistance-boundary.md`](docs/spec/500-pc98-spell-magic-resistance-boundary.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

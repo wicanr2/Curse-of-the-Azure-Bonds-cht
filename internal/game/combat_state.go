@@ -12,6 +12,7 @@ import (
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
 
@@ -84,9 +85,15 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("resolve combat conditional modifiers: %w", err)
 		}
 		battle.SetConditionalModifierRules(conditionalRules)
+		magicResistanceRules, err := s.dataPack.ResolveCombatMagicResistanceRules()
+		if err != nil {
+			return fmt.Errorf("resolve combat magic resistance rules: %w", err)
+		}
+		battle.SetMagicResistanceRules(magicResistanceRules)
 	} else {
 		battle.SetDamageRules([]enginedamage.Rule(nil))
 		battle.SetConditionalModifierRules([]enginemodifier.Rule(nil))
+		battle.SetMagicResistanceRules([]engineresistance.Rule(nil))
 	}
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err
@@ -471,6 +478,19 @@ func (s *State) CombatVisualMessage(event combat.VisualEvent, frame combat.Visua
 			return fmt.Sprintf(s.catalog.Text("combat_visual_stinking_cloud_saved", "combat_visual_stinking_cloud_saved"), name)
 		}
 		return fmt.Sprintf(s.catalog.Text("combat_visual_stinking_cloud_failed", "combat_visual_stinking_cloud_failed"), name, impact.Damage)
+	}
+	if impact.Resisted {
+		if frame.Phase != combat.VisualImpact {
+			return fallback
+		}
+		switch event.Kind {
+		case combat.VisualAreaSpell:
+			if event.Effect == "fireball" {
+				return fmt.Sprintf(s.catalog.Text("combat_visual_fireball_resisted", "combat_visual_fireball_resisted"), name)
+			}
+		case combat.VisualLineSpell:
+			return fmt.Sprintf(s.catalog.Text("combat_visual_line_resisted", "combat_visual_line_resisted"), name)
+		}
 	}
 	if event.Kind != combat.VisualLineSpell || impact.Protected {
 		return fallback
@@ -1462,15 +1482,18 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 	}
 	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
 	totalDamage := 0
-	protectedCount := 0
+	protectedCount, resistedCount := 0, 0
 	for _, impact := range result.Impacts {
 		impacts = append(impacts, combat.VisualImpactTarget{
 			TargetID: impact.TargetID, To: impact.Point, Hit: true, Killed: impact.TargetHP <= 0,
-			Damage: impact.Damage, Saved: impact.Saved, Protected: impact.Protected,
+			Damage: impact.Damage, Saved: impact.Saved, Resisted: impact.Resisted, Protected: impact.Protected,
 		})
 		totalDamage += impact.Damage
 		if impact.Protected {
 			protectedCount++
+		}
+		if impact.Resisted {
+			resistedCount++
 		}
 	}
 	segments := make([]combat.VisualPathSegment, 0, len(result.Segments))
@@ -1484,7 +1507,15 @@ func (s *State) combatCastLightningBolt(terrain combat.LineTerrain) error {
 	messageID := "combat_lightning_bolt"
 	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
-	if protectedCount > 0 {
+	if protectedCount > 0 && resistedCount > 0 {
+		messageID = "combat_lightning_bolt_protected_resisted"
+		fallback = messageID
+		arguments = append(arguments, protectedCount, resistedCount)
+	} else if resistedCount > 0 {
+		messageID = "combat_lightning_bolt_resisted"
+		fallback = messageID
+		arguments = append(arguments, resistedCount)
+	} else if protectedCount > 0 {
 		messageID = "combat_lightning_bolt_protected"
 		fallback = messageID
 		arguments = append(arguments, protectedCount)
@@ -1809,7 +1840,7 @@ func (s *State) combatCastFireball() error {
 	}
 	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
 	totalDamage := 0
-	protectedCount := 0
+	protectedCount, resistedCount := 0, 0
 	for _, impact := range result.Impacts {
 		impacts = append(impacts, combat.VisualImpactTarget{
 			TargetID:  impact.TargetID,
@@ -1818,18 +1849,30 @@ func (s *State) combatCastFireball() error {
 			Killed:    impact.TargetHP <= 0,
 			Damage:    impact.Damage,
 			Saved:     impact.Saved,
+			Resisted:  impact.Resisted,
 			Protected: impact.Protected,
 		})
 		totalDamage += impact.Damage
 		if impact.Protected {
 			protectedCount++
 		}
+		if impact.Resisted {
+			resistedCount++
+		}
 	}
 	s.CancelCombatCast()
 	messageID := "combat_fireball"
 	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
-	if protectedCount > 0 {
+	if protectedCount > 0 && resistedCount > 0 {
+		messageID = "combat_fireball_protected_resisted"
+		fallback = messageID
+		arguments = append(arguments, protectedCount, resistedCount)
+	} else if resistedCount > 0 {
+		messageID = "combat_fireball_resisted"
+		fallback = messageID
+		arguments = append(arguments, resistedCount)
+	} else if protectedCount > 0 {
 		messageID = "combat_fireball_protected"
 		fallback = messageID
 		arguments = append(arguments, protectedCount)
@@ -3205,15 +3248,18 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 		return err
 	}
 	impacts := make([]combat.VisualImpactTarget, 0, len(result.Impacts))
-	totalDamage, protectedCount := 0, 0
+	totalDamage, protectedCount, resistedCount := 0, 0, 0
 	for _, impact := range result.Impacts {
 		impacts = append(impacts, combat.VisualImpactTarget{
 			TargetID: impact.TargetID, To: impact.Point, Hit: true, Killed: impact.TargetHP <= 0,
-			Damage: impact.Damage, Saved: impact.Saved, Protected: impact.Protected,
+			Damage: impact.Damage, Saved: impact.Saved, Resisted: impact.Resisted, Protected: impact.Protected,
 		})
 		totalDamage += impact.Damage
 		if impact.Protected {
 			protectedCount++
+		}
+		if impact.Resisted {
+			resistedCount++
 		}
 	}
 	segments := make([]combat.VisualPathSegment, 0, len(result.Segments))
@@ -3226,7 +3272,15 @@ func (s *State) castMonsterLightning(caster combat.Fighter, point combat.TilePoi
 	messageID := "combat_monster_lightning_bolt"
 	fallback := messageID
 	arguments := []any{caster.Name, len(result.Impacts), totalDamage}
-	if protectedCount > 0 {
+	if protectedCount > 0 && resistedCount > 0 {
+		messageID = "combat_monster_lightning_bolt_protected_resisted"
+		fallback = messageID
+		arguments = append(arguments, protectedCount, resistedCount)
+	} else if resistedCount > 0 {
+		messageID = "combat_monster_lightning_bolt_resisted"
+		fallback = messageID
+		arguments = append(arguments, resistedCount)
+	} else if protectedCount > 0 {
 		messageID = "combat_monster_lightning_bolt_protected"
 		fallback = messageID
 		arguments = append(arguments, protectedCount)

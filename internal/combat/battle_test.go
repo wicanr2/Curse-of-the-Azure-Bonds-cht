@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
+	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
 
 func testCombatAffectRules() []enginedamage.Rule {
@@ -13,6 +14,13 @@ func testCombatAffectRules() []enginedamage.Rule {
 		{ID: "coab.monster_affect_70.fire_immunity", EffectKind: 0x70, DamageMask: DamageFlagFire, Mode: enginedamage.ModeImmune},
 		{ID: "coab.monster_affect_87.electricity_immunity", EffectKind: 0x87, DamageMask: DamageFlagElectricity, Mode: enginedamage.ModeImmune},
 	}
+}
+
+func testMagicResistanceRules() []engineresistance.Rule {
+	return []engineresistance.Rule{{
+		ID: "coab.monster_affect_6a.magic-resistance-15", EffectKind: 0x6A,
+		Formula: engineresistance.FormulaLevelAdjustedD100, Base: 15,
+	}}
 }
 
 func TestMonsterDamageAdjustmentUsesDataDrivenColdResistance(t *testing.T) {
@@ -49,6 +57,7 @@ func TestCastSleepOrderedWritesEffectAfterCapacityAndMagicResistance(t *testing.
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetMagicResistanceRules(testMagicResistanceRules())
 	result, err := battle.CastSleepOrdered("mage", []string{"held", "resistant", "ordinary"}, 5)
 	if err != nil {
 		t.Fatal(err)
@@ -1161,6 +1170,7 @@ func TestCastMagicMissileHonorsOperationalEffect6A(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		battle.SetMagicResistanceRules(testMagicResistanceRules())
 		result, err := battle.CastMagicMissile("mage", "tyranthraxus", 11)
 		if err != nil {
 			t.Fatal(err)
@@ -1189,6 +1199,7 @@ func TestCastMagicMissileHonorsOperationalEffect6A(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	inactive.SetMagicResistanceRules(testMagicResistanceRules())
 	result, err := inactive.CastMagicMissile("mage", "target", 1)
 	if err != nil || result.Resisted || result.Damage == 0 {
 		t.Fatalf("inactive effect 6A result=%+v err=%v", result, err)
@@ -1278,6 +1289,46 @@ func TestCastFireballHonorsOperationalEffect70FireProtection(t *testing.T) {
 	}
 	if impact := impacts["inactive"]; impact.Protected || impact.Damage == 0 || impact.TargetHP == 40 {
 		t.Fatalf("inactive fire protection impact=%+v", impact)
+	}
+}
+
+func TestCastFireballHonorsConfiguredMagicResistance(t *testing.T) {
+	saves := []uint8{30, 30, 30, 30, 30}
+	resisted, notResisted := false, false
+	for seed := int64(1); seed <= 256 && (!resisted || !notResisted); seed++ {
+		battle, err := NewBattle([]Fighter{
+			{ID: "mage", Side: SideParty, HitPoints: 100, MaxHitPoints: 100,
+				HasCombatPosition: true, CombatX: 0, CombatY: 0, SavingThrows: saves},
+			{ID: "tyranthraxus", Side: SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+				HasCombatPosition: true, CombatX: 4, CombatY: 3, SavingThrows: saves,
+				MonsterAffects: []MonsterAffect{{Kind: 0x6A, Innate: true}}},
+		}, seed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		battle.SetMagicResistanceRules(testMagicResistanceRules())
+		result, err := battle.CastFireball("mage", TilePoint{X: 4, Y: 3}, 11)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(result.Impacts) != 1 {
+			t.Fatalf("seed %d impacts=%+v", seed, result.Impacts)
+		}
+		impact := result.Impacts[0]
+		if impact.Resisted {
+			resisted = true
+			if impact.Damage != 0 || impact.TargetHP != 100 || impact.Protected {
+				t.Fatalf("seed %d resisted impact=%+v", seed, impact)
+			}
+		} else {
+			notResisted = true
+			if impact.Damage == 0 || impact.TargetHP >= 100 {
+				t.Fatalf("seed %d unresisted impact=%+v", seed, impact)
+			}
+		}
+	}
+	if !resisted || !notResisted {
+		t.Fatalf("deterministic seeds did not cover fireball resistance outcomes: resisted=%v unresisted=%v", resisted, notResisted)
 	}
 }
 

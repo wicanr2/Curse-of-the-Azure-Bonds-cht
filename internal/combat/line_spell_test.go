@@ -92,6 +92,47 @@ func TestCastReflectingLineSpellHonorsOperationalEffect87ElectricProtection(t *t
 	}
 }
 
+func TestCastReflectingLineSpellHonorsConfiguredMagicResistance(t *testing.T) {
+	resisted, notResisted := false, false
+	for seed := int64(1); seed <= 256 && (!resisted || !notResisted); seed++ {
+		target := lineSpellFighter("tyranthraxus", SideEnemy, 2, 1, 100, 0)
+		target.MonsterAffects = []MonsterAffect{{Kind: 0x6A, Innate: true}}
+		battle, err := NewBattle([]Fighter{
+			lineSpellFighter("caster", SideParty, 0, 0, 100, 0), target,
+		}, seed)
+		if err != nil {
+			t.Fatal(err)
+		}
+		battle.SetMagicResistanceRules(testMagicResistanceRules())
+		result, err := battle.CastReflectingLineSpell(
+			"caster", 0x33, TilePoint{X: 2, Y: 1}, 11,
+			ReflectingLineOptions{WeightedBudget: 1, DamageFlags: DamageFlagElectricity | DamageFlagMagic},
+			func(x, y int) LineCell { return LineCell{Valid: x >= 0 && x < 6 && y >= 0 && y < 4} },
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(result.Impacts) != 1 {
+			t.Fatalf("seed %d impacts=%+v", seed, result.Impacts)
+		}
+		impact := result.Impacts[0]
+		if impact.Resisted {
+			resisted = true
+			if impact.Damage != 0 || impact.TargetHP != 100 || impact.Protected {
+				t.Fatalf("seed %d resisted impact=%+v", seed, impact)
+			}
+		} else {
+			notResisted = true
+			if impact.Damage == 0 || impact.TargetHP >= 100 {
+				t.Fatalf("seed %d unresisted impact=%+v", seed, impact)
+			}
+		}
+	}
+	if !resisted || !notResisted {
+		t.Fatalf("deterministic seeds did not cover line resistance outcomes: resisted=%v unresisted=%v", resisted, notResisted)
+	}
+}
+
 func TestCastReflectingLineSpellAppliesCloseFirstReflectionPenalty(t *testing.T) {
 	newBattle := func() *Battle {
 		battle, err := NewBattle([]Fighter{
