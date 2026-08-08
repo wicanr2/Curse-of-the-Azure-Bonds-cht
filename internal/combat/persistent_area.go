@@ -118,8 +118,9 @@ func (b *Battle) CastCloudkill(casterID string, center TilePoint, level int, ter
 			}
 			impact.SaveRequired = true
 			roll := b.rng.Intn(20) + 1
+			conditional := target.MonsterConditionalModifierAgainst(caster)
 			impact.Saved = roll == 20 || roll != 1 &&
-				roll+modifier+target.SavingThrowBonus >= int(target.SavingThrows[0])
+				roll+modifier+target.SavingThrowBonus+conditional.SavingThrowDelta >= int(target.SavingThrows[0])
 			impact.Killed = !impact.Saved
 		}
 		if impact.Killed {
@@ -189,8 +190,9 @@ func (b *Battle) CastStinkingCloud(casterID string, center TilePoint, level int,
 	result := PersistentAreaResult{Area: area, Impacts: make([]PersistentAreaImpact, 0, len(targets))}
 	for _, target := range targets {
 		roll := b.rng.Intn(20) + 1
+		conditional := target.MonsterConditionalModifierAgainst(caster)
 		saved := roll == 20 || roll != 1 &&
-			roll+target.SavingThrowBonus >= int(target.SavingThrows[0])
+			roll+target.SavingThrowBonus+conditional.SavingThrowDelta >= int(target.SavingThrows[0])
 		impact := PersistentAreaImpact{TargetID: target.ID, Saved: saved}
 		if saved {
 			target.CoughingTurns = max(target.CoughingTurns, 1)

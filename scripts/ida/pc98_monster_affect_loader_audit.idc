@@ -96,6 +96,25 @@ static main()
     emit_range(out, "PROTECTED_HANDLER", 0x001B, 0x003C);
     emit_range(out, "EFFECT_35_RESOLVED_ENTRY", 0x0060, 0x00C0);
     emit_range(out, "EFFECT_01_TO_0A_HANDLERS", 0x009E, 0x0300);
+    /*
+     * Keep the effect work-cell consumers adjacent to the handler evidence.
+     * These are intentionally bounded windows around raw A02C/A039 references;
+     * the flat listing is a search aid only, while the .i64 xref graph remains
+     * the primary relation evidence.
+     */
+    emit_range(out, "EFFECT_WORK_CONSUMER_0400_0500", 0x0400, 0x0500);
+    emit_range(out, "EFFECT_WORK_CONSUMER_0700_0770", 0x0700, 0x0770);
+    emit_range(out, "EFFECT_WORK_CONSUMER_0980_09D0", 0x0980, 0x09D0);
+    emit_range(out, "EFFECT_WORK_CONSUMER_0B90_0C20", 0x0B90, 0x0C20);
+    emit_range(out, "EFFECT_WORK_CONSUMER_0F90_1010", 0x0F90, 0x1010);
+    emit_range(out, "EFFECT_WORK_CONSUMER_11D0_1230", 0x11D0, 0x1230);
+    emit_range(out, "EFFECT_WORK_CONSUMER_1250_12C0", 0x1250, 0x12C0);
+    emit_range(out, "EFFECT_WORK_CONSUMER_13C0_1410", 0x13C0, 0x1410);
+    emit_range(out, "EFFECT_WORK_CONSUMER_16D0_1730", 0x16D0, 0x1730);
+    emit_range(out, "EFFECT_WORK_CONSUMER_17F0_1850", 0x17F0, 0x1850);
+    emit_range(out, "EFFECT_WORK_CONSUMER_1CF0_1D50", 0x1CF0, 0x1D50);
+    emit_range(out, "EFFECT_WORK_CONSUMER_2080_2180", 0x2080, 0x2180);
+    emit_range(out, "EFFECT_WORK_CONSUMER_28D0_2910", 0x28D0, 0x2910);
     emit_range(out, "EFFECT_4F_RESOLVED_ENTRY", 0x19B3, 0x1A20);
     emit_range(out, "MAGIC_RESISTANCE_HANDLERS", 0x2396, 0x2420);
     emit_range(out, "EFFECT_70_RESOLVED_ENTRY", 0x249D, 0x24D0);

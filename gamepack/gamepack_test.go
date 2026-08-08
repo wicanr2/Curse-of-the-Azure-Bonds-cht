@@ -10,6 +10,7 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
+	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
 )
 
 func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
@@ -37,6 +38,20 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	if len(pack.CombatAffectRules) != 3 {
 		t.Fatalf("combat affect rules=%+v", pack.CombatAffectRules)
+	}
+	if len(pack.CombatConditionalModifiers) != 2 {
+		t.Fatalf("combat conditional modifiers=%+v", pack.CombatConditionalModifiers)
+	}
+	conditionalRules, err := pack.ResolveCombatConditionalModifiers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantConditionalRules := []enginemodifier.Rule{
+		{ID: "coab.monster_affect_08.protection-from-good", EffectKind: 0x08, Predicate: enginemodifier.PredicateValueIn, Values: []uint8{2, 5, 8}, AttackRollDelta: -2, SavingThrowDelta: 2},
+		{ID: "coab.monster_affect_09.protection-from-evil", EffectKind: 0x09, Predicate: enginemodifier.PredicateValueIn, Values: []uint8{0, 3, 6}, AttackRollDelta: -2, SavingThrowDelta: 2},
+	}
+	if !reflect.DeepEqual(conditionalRules, wantConditionalRules) {
+		t.Fatalf("combat conditional rules=%+v want=%+v", conditionalRules, wantConditionalRules)
 	}
 	affectRules, err := pack.ResolveCombatAffectRules()
 	if err != nil {

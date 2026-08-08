@@ -272,6 +272,10 @@ type Character struct {
 	// SavingThrowBonus preserves DOS player field_186, including signed item or
 	// effect-derived bonus already present in an imported record.
 	SavingThrowBonus int8 `json:"saving_throw_bonus,omitempty"`
+	// Alignment mirrors CHARREC.ALIGNMENT at +11B. Zero is a valid alignment,
+	// so imported records carry an explicit known bit for conditional effects.
+	Alignment      uint8 `json:"alignment,omitempty"`
+	AlignmentKnown bool  `json:"alignment_known,omitempty"`
 	// ThiefSkills preserves the eight DOS thief percentages; index 1 is
 	// open-locks and remains in original order.
 	ThiefSkills []uint8 `json:"thief_skills,omitempty"`
@@ -784,7 +788,8 @@ func (c Character) Fighter() (combat.Fighter, error) {
 	fighter := combat.Fighter{
 		ID: c.ID, Name: c.Name, Side: combat.SideParty,
 		ControlMorale: c.ControlMorale,
-		HasPartyIcon:  true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
+		Alignment:     c.Alignment, AlignmentKnown: c.AlignmentKnown,
+		HasPartyIcon: true, PartyHeadBlock: headBlock, PartyBodyBlock: bodyBlock, PartyIconID: c.IconID, PartyIconSize: iconSize,
 		HitPoints: hitPoints, MaxHitPoints: maxHitPoints, ArmorClass: armorClass,
 		HitDice:     c.HitDice,
 		Dexterity:   uint8(c.Abilities.Dexterity),

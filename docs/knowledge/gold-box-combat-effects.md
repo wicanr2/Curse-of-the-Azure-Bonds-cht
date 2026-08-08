@@ -102,6 +102,32 @@ operation 的資料驅動比對。Battle 建立與讀檔重建都由 title adapt
 與 pure resolver，但必須重新證明自己的 effect table、旗標常數與 handler，不能
 直接複製 CoAB 的數字。
 
+## `CHARREC` alignment 與條件式 effect
+
+CoAB PC-98 的 Borland symbol／type table 已關閉 shared `CHARREC` 欄位：
+
+| raw offset | member | 可重用提醒 |
+|---:|---|---|
+| `+11Ah` | `RACETYPE` | 不能再命名成 `MonsterType` |
+| `+11Bh` | `ALIGNMENT` | `0..8` enum；零是合法值，必須另存 known bit |
+| `+14Ch` | `MONSTERTYPE` | 與 `RACETYPE` 是不同欄位 |
+
+overlay 12 effect `08h／09h` 讀 `DS:9594h` 的 active character，分別比較
+evil `{2,5,8}`／good `{0,3,6}`；命中後對 `SAVEROLL` `A02Ch` 加二、對
+`ROLLTOHIT` `A039h` 減二。這種 handler 的通用資料流是：
+
+```text
+defender effect list + interacting character value
+    -> conditional rule resolver
+    -> attack-roll / saving-throw transaction delta
+```
+
+因此引擎規則必須把 effect owner 與互動角色分成兩個輸入；未知 alignment
+不得猜成 true neutral 或依怪物名稱推導。共用 engine 的 `combat/modifier`
+只負責 active raw kind、值集合與 delta，CoAB adapter 才把 `CHARREC` offset
+投影進去。下一款 SSI 遊戲若使用相同 effect 編號，仍要重新驗證自己的
+handler table、欄位 offset 與 caller。
+
 ## 物理命中後效果排程
 
 PC-98 的攻擊流程不是把所有怪物能力塞進基本命中公式。物理傷害完成後，

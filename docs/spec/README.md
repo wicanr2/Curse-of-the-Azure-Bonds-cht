@@ -379,7 +379,7 @@
 - [第四百一十五輪 PC-98 怪物閃電排程與雙傷害池](./415-pc98-monster-lightning-runtime.md)（`READY`：effect `84h` 前三回合、Lightning Bolt `33h`、initial／path 獨立 `16d6` 與正常 MON6 終戰）
 - [第四百一十六輪 PC-98 怪物法術選敵、射程與牆面](./416-pc98-monster-spell-target-selection.md)（`READY`：range 10、footprint／牆面候選、二十次不可見重抽與無目標回合 continuation；不含 exact tie order）
 - [第四百一十七輪 PC-98 目標可見性與效果](./417-pc98-target-visibility-effects.md)（`READY`：`18h／19h／47h` 的 CHECKTARGET、法術選敵與物理 AC 投影；不含完整效果生命週期）
-- [第四百一十八輪 PC-98 Blink、動物視覺與 action delay](./418-pc98-blink-animal-visibility.md)（`READY`：`25h／45h`、MonsterType `+11Ah` 與 scheduled／completed delay 生命週期；不含 exact initiative 公式）
+- [第四百一十八輪 PC-98 Blink、動物視覺與 action delay](./418-pc98-blink-animal-visibility.md)（`SUPERSEDED`：保留 `25h／45h` 與 scheduled／completed delay bytes；`+11Ah` 欄位命名由 spec 499 修正為 `RACETYPE`）
 - [第四百一十九輪 PC-98 先攻與 action delay 排程](./419-pc98-initiative-action-delay-scheduler.md)（`READY`：DEX reaction、1d6、TeamList 全掃描 d100 與 tie-break）
 - [第四百二十輪 PC-98 戰鬥延後與動態排程](./420-pc98-combat-delay-dynamic-scheduler.md)（`READY`：DONE 子選單、Delay=1 同輪重新入列；Quick 20→19 另保留）
 - [第四百二十一輪 PC-98 戰鬥命令狀態](./421-pc98-combat-quick-guard-bandage-speed.md)（`READY`：單人 QUICK、GUARD、BANDAGE、SPEED 與 Space 人工控制）
@@ -435,3 +435,4 @@
 - [第四百九十六輪 PC-98 Quick Lightning Bolt 折線目標交接](./496-pc98-quick-lightning-line-target.md)（`READY`：Quick Lightning point、pending casting、折線／反彈、逐段 impact／save／音效 regression；候選 pointer projection、tie／random、牆角反彈與完整 Quick AI 仍未完成）
 - [第四百九十七輪 PC-98 Quick 牧師指定目標法術](./497-pc98-quick-cleric-targeted-spells.md)（`READY`：Curse／Cause Light Wounds／Protection from Evil／Good targeted pending、效果／slot regression；候選 pointer 順序、`cast_on` consumer 與敵方 Quick AI 仍未完成）
 - [第四百九十八輪 PC-98 寒冷抗性與資料驅動傷害效果](./498-pc98-resist-cold-data-driven-affect-rule.md)（`READY`：effect `0Ah` 的寒冷傷害減半、`70h／87h` 免疫規則移入 engine＋CoAB JSON，開戰／讀檔重新注入；寒冷法術入口與完整戰鬥仍未完成）
+- [第四百九十九輪 PC-98 alignment 與條件式 effect `08h／09h`](./499-pc98-alignment-conditional-effects.md)（`READY`：`RACETYPE／ALIGNMENT／MONSTERTYPE` 欄位修正、互動 alignment 條件與 `SAVEROLL／ROLLTOHIT` 資料驅動規則；完整 effect 生命週期與全作通關仍未完成）

@@ -11,7 +11,7 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `6ca31895abed`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `d0a4970`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -75,6 +75,14 @@ Wounds 沒有鄰接敵人時維持 fail-closed。原版 object-pointer 候選順
 重新注入規則，測試確認 17→8 與讀檔後仍有效。這是資料／規則邊界的有界里程碑，
 不是完整寒冷法術、完整戰鬥或完整 remake 完成聲明；證據見
 [`docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md`](docs/spec/498-pc98-resist-cold-data-driven-affect-rule.md)。
+
+第 499 輪再把 PC-98 effect `08h／09h` 做成可重用的條件式 combat modifier：
+Borland `CHARREC` 證明 `+11Ah=RACETYPE`、`+11Bh=ALIGNMENT`、`+14Ch=MONSTERTYPE`，
+handler 對互動的 evil／good alignment 寫入 `SAVEROLL +2` 與 `ROLLTOHIT -2`。
+CoAB JSON 與 engine `combat/modifier` 已分離保存規則，物理攻擊、Fireball、
+反射線與毒雲存豁免共用同一資料流；未知 alignment 會 fail-closed。這是已測試的
+有界戰鬥 milestone，不是完整 protection 生命週期或全作通關；證據見
+[`docs/spec/499-pc98-alignment-conditional-effects.md`](docs/spec/499-pc98-alignment-conditional-effects.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

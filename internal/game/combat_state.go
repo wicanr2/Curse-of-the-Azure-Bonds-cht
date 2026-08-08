@@ -10,6 +10,7 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/party"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
+	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
 )
@@ -78,8 +79,14 @@ func (s *State) StartCombat(party, enemies []combat.Fighter, seed int64) error {
 			return fmt.Errorf("resolve combat affect rules: %w", err)
 		}
 		battle.SetDamageRules(rules)
+		conditionalRules, err := s.dataPack.ResolveCombatConditionalModifiers()
+		if err != nil {
+			return fmt.Errorf("resolve combat conditional modifiers: %w", err)
+		}
+		battle.SetConditionalModifierRules(conditionalRules)
 	} else {
 		battle.SetDamageRules([]enginedamage.Rule(nil))
+		battle.SetConditionalModifierRules([]enginemodifier.Rule(nil))
 	}
 	if err := s.applyDataPackCombatModifiers(battle); err != nil {
 		return err

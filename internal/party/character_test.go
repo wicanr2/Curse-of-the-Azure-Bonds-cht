@@ -279,6 +279,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	data[0x1C] = 75
 	data[0x16], data[0x18], data[0x1A] = 14, 13, 10
 	data[0x74], data[0x75] = 7, 5 // human magic-user
+	data[0x11B] = combat.AlignmentNeutralGood
 	data[0x78], data[0x1A4] = 22, 18
 	data[0xE5], data[0xE6] = 4, 7
 	copy(data[0x12D:0x13C], []byte{3, 2, 1, 0, 0, 1, 0, 0, 0, 0, 4, 3, 2, 1, 0})
@@ -302,7 +303,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 ||
+	if record.Name != "ELLA" || record.Level != 4 || record.Age != 37 || record.Alignment != combat.AlignmentNeutralGood || !record.AlignmentKnown ||
 		record.Copper != 11 || record.Silver != 22 || record.Electrum != 33 ||
 		record.Gold != 123 || record.Platinum != 44 || record.Experience != 2501 ||
 		record.HitDice != 4 || record.MulticlassLevel != 7 ||
@@ -324,7 +325,7 @@ func TestParseDOSPlayerRecordProjectsDocumentedCharacterFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if character.HitPoints != 18 || character.MaxHitPoints != 22 ||
+	if character.HitPoints != 18 || character.MaxHitPoints != 22 || character.Alignment != combat.AlignmentNeutralGood || !character.AlignmentKnown ||
 		character.Copper != 11 || character.Silver != 22 || character.Electrum != 33 ||
 		character.Gold != 123 || character.Platinum != 44 || character.Experience != 2501 ||
 		character.HitDice != 4 || character.MulticlassLevel != 7 ||

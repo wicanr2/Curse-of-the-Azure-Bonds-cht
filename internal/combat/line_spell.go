@@ -100,7 +100,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 
 	lastFighterID := ""
 	if fighter, found := b.livingFighterAt(target); found {
-		impact, err := b.applyLineSpellDamage(fighter, initialDamage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, caster, initialDamage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -162,7 +162,7 @@ func (b *Battle) CastReflectingLineSpell(casterID string, spellID uint8, target 
 		if fighter.ID == lastFighterID {
 			continue
 		}
-		impact, err := b.applyLineSpellDamage(fighter, pathDamage, options.DamageFlags)
+		impact, err := b.applyLineSpellDamage(fighter, caster, pathDamage, options.DamageFlags)
 		if err != nil {
 			return LineSpellResult{}, err
 		}
@@ -208,13 +208,14 @@ func (b *Battle) livingFighterAt(point TilePoint) (Fighter, bool) {
 	return Fighter{}, false
 }
 
-func (b *Battle) applyLineSpellDamage(target Fighter, damage int, damageFlags uint8) (AreaSpellImpact, error) {
+func (b *Battle) applyLineSpellDamage(target Fighter, caster Fighter, damage int, damageFlags uint8) (AreaSpellImpact, error) {
 	if len(target.SavingThrows) <= 4 {
 		return AreaSpellImpact{}, fmt.Errorf("fighter %q has no spell saving throw", target.ID)
 	}
 	saveRoll := b.rng.Intn(20) + 1
+	conditional := target.MonsterConditionalModifierAgainst(caster)
 	saved := saveRoll == 20 ||
-		saveRoll != 1 && saveRoll+target.SavingThrowBonus >= int(target.SavingThrows[4])
+		saveRoll != 1 && saveRoll+target.SavingThrowBonus+conditional.SavingThrowDelta >= int(target.SavingThrows[4])
 	applied := damage
 	if saved {
 		applied /= 2
