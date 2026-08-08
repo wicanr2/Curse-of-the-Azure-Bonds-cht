@@ -373,9 +373,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 503 輪 PC-98 Quick 目標候選鏈／legacy object 順序 milestone（本文件所在
+- CoAB 本輪基底：第 504 輪 PC-98 Quick 目標優先級重試／legacy object 順序 milestone（本文件所在
   commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`3b9cc6f`（含作品中立 game-pack
+- Engine dependency：`9b10e78`（含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -1157,6 +1157,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   的完整 retry／tie／random、Magic Missile 目標與 Cure 專用規則仍不得升格，權威
   規格為 `docs/spec/503-pc98-quick-target-object-chain-boundary.md`，完整遊戲仍未
   完成。
+
+- 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7`
+  retry range、priority `7` 起點與逐級降低移入 engine `combat/quicktarget`
+  及 CoAB JSON。法術 suitability 只做無亂數合法性 probe，最終 area／line／四種
+  targeted cleric handoff 才使用同一 Battle PRNG 一次；無目標時不消耗 spell
+  slot 並回到普通 action。`3E01:142Dh` helper 演算法、完整 pointer-chain
+  producer／tie、Magic Missile／Cure 專用規則與敵方 Quick AI 仍未知；權威規格為
+  `docs/spec/504-pc98-quick-target-priority-retry.md`，完整遊戲仍未完成。
 
 - 第 354 輪時間軸、原版 COMSPR projectile 與 engine JSON 資料化已完成。
   `combat.VisualEvent` 使用 windup→handoff；箭、Magic Missile travel／impact

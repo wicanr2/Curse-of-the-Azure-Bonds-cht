@@ -11,9 +11,17 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `3b9cc6f`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `9b10e78`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
+
+第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7` 重試
+範圍、priority `7` 起始與逐級降低資料化到 engine `combat/quicktarget`。CoAB 的
+Quick suitability 不再重複消耗目標亂數；法術選定後才以同一 Battle PRNG 執行一次
+area／line／牧師 targeted handoff，無目標時保留法術格並回到普通 action。這只關閉
+bounded priority-retry slice；`3E01:142Dh` helper 身分、完整 far-pointer chain、
+tie、Magic Missile／Cure 專用規則、敵方 Quick AI 與整作通關仍未完成。權威規格見
+[`docs/spec/504-pc98-quick-target-priority-retry.md`](docs/spec/504-pc98-quick-target-priority-retry.md)。
 
 第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
 角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON

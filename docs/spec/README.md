@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百零四輪 PC-98 Quick 目標優先級重試邊界](./504-pc98-quick-target-priority-retry.md)（`READY`：`04CCh` 的 `1..7` 重試範圍、優先級下降與 engine＋JSON handoff；不含 RNG helper 身分／完整 tie）
+
 - [第五百零三輪 PC-98 Quick 目標候選鏈與 legacy object 順序邊界](./503-pc98-quick-target-object-chain-boundary.md)（`READY`：`04CCh` candidate chain、`LegacyObjectID` bounded order 與 engine＋JSON 契約；不含 exact tie／亂數）
 
 - [第五百零二輪 PC-98 怪物特殊法術 `84h` 資料契約](./502-pc98-monster-spell-data-contract.md)（`READY`：前三回合、`33h`、雙 `16d6`、射程／反射線參數與存檔重掛）
