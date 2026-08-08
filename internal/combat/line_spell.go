@@ -219,10 +219,9 @@ func (b *Battle) applyLineSpellDamage(target Fighter, damage int, damageFlags ui
 	if saved {
 		applied /= 2
 	}
-	protected := target.MonsterProtectedFromDamage(damageFlags)
-	if protected {
-		applied = 0
-	}
+	adjustment := target.MonsterDamageAdjustment(damageFlags, applied)
+	protected := adjustment.Immune
+	applied = adjustment.Damage
 	applied = b.applyPositiveDamage(&target, applied)
 	b.fighters[target.ID] = target
 	return AreaSpellImpact{

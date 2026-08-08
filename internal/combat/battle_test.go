@@ -3,7 +3,31 @@ package combat
 import (
 	"math/rand"
 	"testing"
+
+	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 )
+
+func testCombatAffectRules() []enginedamage.Rule {
+	return []enginedamage.Rule{
+		{ID: "coab.monster_affect_0a.resist_cold", EffectKind: 0x0A, DamageMask: DamageFlagCold, Mode: enginedamage.ModeHalf},
+		{ID: "coab.monster_affect_70.fire_immunity", EffectKind: 0x70, DamageMask: DamageFlagFire, Mode: enginedamage.ModeImmune},
+		{ID: "coab.monster_affect_87.electricity_immunity", EffectKind: 0x87, DamageMask: DamageFlagElectricity, Mode: enginedamage.ModeImmune},
+	}
+}
+
+func TestMonsterDamageAdjustmentUsesDataDrivenColdResistance(t *testing.T) {
+	fighter := Fighter{
+		MonsterAffects: []MonsterAffect{{Kind: 0x0A, Innate: true}},
+		DamageRules:    testCombatAffectRules(),
+	}
+	result := fighter.MonsterDamageAdjustment(DamageFlagCold, 17)
+	if result.Damage != 8 || !result.Reduced || result.Immune {
+		t.Fatalf("cold resistance result=%+v", result)
+	}
+	if fighter.MonsterProtectedFromDamage(DamageFlagCold) {
+		t.Fatal("half cold resistance was reported as complete immunity")
+	}
+}
 
 func TestCastSleepOrderedWritesEffectAfterCapacityAndMagicResistance(t *testing.T) {
 	const seed int64 = 434
@@ -547,6 +571,7 @@ func TestAttack4FHonorsFireProtectionAndOnlyFirstTwoSlots(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetDamageRules(testCombatAffectRules())
 	results, err := battle.AttackSequence("flamed", "warded")
 	if err != nil {
 		t.Fatal(err)
@@ -1239,6 +1264,7 @@ func TestCastFireballHonorsOperationalEffect70FireProtection(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetDamageRules(testCombatAffectRules())
 	result, err := battle.CastFireball("mage", TilePoint{X: 2, Y: 2}, 3)
 	if err != nil {
 		t.Fatal(err)

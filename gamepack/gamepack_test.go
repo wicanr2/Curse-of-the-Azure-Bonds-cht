@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
+	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 )
 
 func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
@@ -33,6 +34,21 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	}
 	if len(pack.CombatModifiers) != 2 {
 		t.Fatalf("combat modifiers=%+v", pack.CombatModifiers)
+	}
+	if len(pack.CombatAffectRules) != 3 {
+		t.Fatalf("combat affect rules=%+v", pack.CombatAffectRules)
+	}
+	affectRules, err := pack.ResolveCombatAffectRules()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantAffectRules := []enginedamage.Rule{
+		{ID: "coab.monster_affect_0a.resist_cold", EffectKind: 0x0A, DamageMask: 0x02, Mode: enginedamage.ModeHalf},
+		{ID: "coab.monster_affect_70.fire_immunity", EffectKind: 0x70, DamageMask: 0x01, Mode: enginedamage.ModeImmune},
+		{ID: "coab.monster_affect_87.electricity_immunity", EffectKind: 0x87, DamageMask: 0x04, Mode: enginedamage.ModeImmune},
+	}
+	if !reflect.DeepEqual(affectRules, wantAffectRules) {
+		t.Fatalf("combat affect rules=%+v want=%+v", affectRules, wantAffectRules)
 	}
 	if pack.CharacterCreation == nil || len(pack.CharacterCreation.Templates) != 40 {
 		t.Fatalf("character creation templates=%+v", pack.CharacterCreation)

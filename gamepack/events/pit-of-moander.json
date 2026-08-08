@@ -1344,6 +1344,26 @@
       "side": "party"
     }
   ],
+  "combat_affect_rules": [
+    {
+      "id": "coab.monster_affect_0a.resist_cold",
+      "effect_kind": 10,
+      "damage_mask": 2,
+      "mode": "half"
+    },
+    {
+      "id": "coab.monster_affect_70.fire_immunity",
+      "effect_kind": 112,
+      "damage_mask": 1,
+      "mode": "immune"
+    },
+    {
+      "id": "coab.monster_affect_87.electricity_immunity",
+      "effect_kind": 135,
+      "damage_mask": 4,
+      "mode": "immune"
+    }
+  ],
   "combat_ai_spells": [
     {"spell_id": 1, "priority": 1, "cast_on": 0, "min_range": 0, "casting_time": 10},
     {"spell_id": 2, "priority": 3, "cast_on": 1, "min_range": 0, "casting_time": 10},

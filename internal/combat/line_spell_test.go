@@ -72,6 +72,7 @@ func TestCastReflectingLineSpellHonorsOperationalEffect87ElectricProtection(t *t
 	if err != nil {
 		t.Fatal(err)
 	}
+	battle.SetDamageRules(testCombatAffectRules())
 	terrain := func(x, y int) LineCell {
 		return LineCell{Valid: x >= 0 && x <= 5 && y == 1}
 	}
