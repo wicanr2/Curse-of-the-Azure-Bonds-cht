@@ -51,6 +51,14 @@ adapter 宣稱成原版逐指令相同。Docker／Xvfb 正式 gate 為
 `ROUND495_FORMAL_EXIT=0`、`coab-audit total=0`，證據見
 [`docs/spec/495-pc98-quick-poison-cloud-area-target.md`](docs/spec/495-pc98-quick-poison-cloud-area-target.md)。
 
+第 496 輪接通 Quick `Lightning Bolt (33h)` bounded line slice：以正式
+game-pack 的 `min_range=0` 與可用 line terrain 找到敵人 point，依
+`CastingTime=03h` 保存 pending action，續跑後重用既有折線／反彈、逐段命中、
+save／電擊保護、音效與 slot pipeline。候選 pointer projection、tie／random、
+牆角反彈與完整 Quick AI 仍未閉合；本輪不把穩定 ID 順序宣稱成原版 exact。
+Docker／Xvfb 正式 gate 為 `ROUND496_FORMAL_EXIT=0`、`coab-audit total=0`，
+證據見 [`docs/spec/496-pc98-quick-lightning-line-target.md`](docs/spec/496-pc98-quick-lightning-line-target.md)。
+
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字
 literal 基線由 1,100 降至 974，沒有新增硬編碼中文。這完成的是資料／引擎分層
@@ -1339,6 +1347,15 @@ target linked-list tie／random、完整 area-safety、Lightning Bolt line targe
 與完整 Quick AI 都未完成。正式 gate 為 `ROUND495_FORMAL_EXIT=0`，
 `coab-audit` 為 `total=0`。證據見
 [`spec 495`](docs/spec/495-pc98-quick-poison-cloud-area-target.md)。
+
+第 496 輪接通 Quick `Lightning Bolt (33h)`：正式 game-pack 的
+`min_range=0` 先要求 line terrain 與合法敵人格，再把 bounded point 交給同一個
+`BeginPendingPointSpellAction`。raw `CastingTime=03h` 續跑後進入既有折線／反彈、
+逐段 travel／impact、兩名沿線敵人的 save／電擊保護與音效時間軸。這仍是
+strong-inference bounded adapter；target pointer projection、候選 tie／random、
+牆角反彈與完整 Quick AI 未完成。正式 gate 為 `ROUND496_FORMAL_EXIT=0`，
+`coab-audit` 為 `total=0`。證據見
+[`spec 496`](docs/spec/496-pc98-quick-lightning-line-target.md)。
 
 第 440 輪再由 PC-98 overlay 23 的 `PUTDAMAGE → REMOVEFX → SPELLOFF`
 連續指令與 resident `DS:159Eh..15B1h` 原始表格證明：動態 Sleep `35h`

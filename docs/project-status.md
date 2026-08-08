@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 495 輪）
+本 milestone 的 CoAB 基底：GitHub `main`（第 496 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -35,6 +35,15 @@ line target 與完整 Quick AI 仍未完成；本輪為 strong-inference bounded
 不是完整遊戲完成聲明。Docker／Xvfb 正式 gate 為
 `ROUND495_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
 [`docs/spec/495-pc98-quick-poison-cloud-area-target.md`](spec/495-pc98-quick-poison-cloud-area-target.md)。
+
+第 496 輪接通 Quick `Lightning Bolt (33h)` bounded line slice：正式 game-pack
+的 `min_range=0` 先要求 line-terrain 與合法敵人格，再依 raw `CastingTime=03h`
+保存 pending point action；scheduler 續跑後重用既有折線／反彈、逐段 impact、
+save／電擊保護、音效與法術格 transaction。候選 target pointer projection、
+tie／random、牆角反彈與完整 Quick AI 仍未完成；本輪為 strong-inference bounded
+adapter，不是完整遊戲完成聲明。Docker／Xvfb 正式 gate 為
+`ROUND496_FORMAL_EXIT=0`，`coab-audit total=0`。權威規格為
+[`docs/spec/496-pc98-quick-lightning-line-target.md`](spec/496-pc98-quick-lightning-line-target.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -683,6 +692,13 @@ line target 與完整 Quick AI 仍未完成；本輪為 strong-inference bounded
   line target 與完整 Quick AI 仍未完成；這是 strong inference bounded slice。
   focused regression、Docker／Xvfb 正式 gate `ROUND495_FORMAL_EXIT=0` 與
   `coab-audit total=0` 已通過；READY spec 495 是權威。
+- 第 496 輪接通 Quick `Lightning Bolt (33h)`：以 game-pack `min_range=0`、
+  line-terrain 與穩定 living-enemy order 建立 bounded point，raw
+  `CastingTime=03h` 先保存 pending action，再由正常 scheduler 進既有折線／
+  反彈、逐段 impact、save／電擊保護與音效 pipeline。candidate pointer projection、
+  tie／random、牆角反彈與完整 Quick AI 仍未完成；這是 strong inference bounded
+  slice。focused regression、Docker／Xvfb 正式 gate `ROUND496_FORMAL_EXIT=0` 與
+  `coab-audit total=0` 已通過；READY spec 496 是權威。
 - 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
   證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC

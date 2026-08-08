@@ -432,3 +432,4 @@
 - [第四百七十七輪 PROGRAM 終局介面資料分離](./477-program-terminal-locale-data-separation.md)（`READY`：全滅／勝利／存檔 stable IDs、兩條終局 transaction 與 37 人正常終戰）
 - [第四百九十四輪 PC-98 Quick Fireball 範圍落點與延遲交接](./494-pc98-quick-fireball-area-target.md)（`READY`：Quick Fireball bounded area center、pending point handoff、逐目標 visual／slot regression；候選 tie／random 與其他 Quick Area 仍未完成）
 - [第四百九十五輪 PC-98 Quick 毒雲術／死亡雲範圍交接](./495-pc98-quick-poison-cloud-area-target.md)（`READY`：Stinking Cloud／Cloudkill bounded area center、persistent effect、pending point 與低 HD／中斷 regression；候選 tie／random、完整 area-safety 與 Lightning Bolt line target 仍未完成）
+- [第四百九十六輪 PC-98 Quick Lightning Bolt 折線目標交接](./496-pc98-quick-lightning-line-target.md)（`READY`：Quick Lightning point、pending casting、折線／反彈、逐段 impact／save／音效 regression；候選 pointer projection、tie／random、牆角反彈與完整 Quick AI 仍未完成）

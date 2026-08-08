@@ -806,6 +806,14 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   不得升格為原版 exact。READY spec 495 是權威；focused regression、
   Docker／Xvfb 正式 gate `ROUND495_FORMAL_EXIT=0` 與 `coab-audit total=0`
   已通過，完整遊戲仍不可宣稱完成。
+- 第 496 輪沿用同一份 PC-98 overlay 09 證據，接通 Quick `Lightning Bolt (33h)`：
+  以 game-pack `min_range=0`、line-terrain 與有位置敵人建立 bounded point，
+  raw `CastingTime=03h` 先走 pending scheduler，再重用既有折線／反彈、逐段
+  impact、save／電擊保護、音效與法術格 pipeline。candidate pointer projection、
+  tie／random、牆角反彈與完整 Quick AI 仍未完成；stable ID 順序是
+  `strong inference` 暫時 adapter，不得升格為 exact。READY spec 496 是權威；
+  focused regression、Docker／Xvfb 正式 gate `ROUND496_FORMAL_EXIT=0` 與
+  `coab-audit total=0` 已通過，完整遊戲仍不可宣稱完成。
 - 使用者已於 2026-08-09 恢復作業；compact／自動 continuation 應以第 493 輪
   的實際 HEAD、`docs/project-status.md` 與 `CONTEXT.md` 尾端為起點，不要把
   舊的「暫停」文字當成目前狀態。

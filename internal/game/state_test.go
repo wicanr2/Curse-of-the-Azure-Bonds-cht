@@ -3099,6 +3099,76 @@ func TestCombatAltMQuickCloudkillUsesAreaCenterAndPendingDelay(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickLightningBoltUsesLineTargetAndPendingDelay(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Class: party.ClassMagicUser, Level: 5,
+			SpellSlots: []uint8{LightningBoltSpellID},
+		}}
+		state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+			return combat.LineCell{Valid: x >= 0 && x < 12 && y >= 0 && y < 12}
+		})
+		saves := []uint8{30, 30, 30, 30, 30}
+		heroes := []combat.Fighter{{
+			ID: "mage", Side: combat.SideParty, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 1, CombatY: 2, SavingThrows: saves,
+		}}
+		enemies := []combat.Fighter{
+			{ID: "a-near", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+				ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+				CombatX: 3, CombatY: 2, SavingThrows: saves},
+			{ID: "z-far", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+				ArmorClass: 10, InitiativeBonus: 1, HasCombatPosition: true,
+				CombatX: 5, CombatY: 2, SavingThrows: saves},
+		}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("mage")
+		if !ok || caster.CombatAction.SpellID != LightningBoltSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || !caster.CombatAction.HasTargetPoint ||
+			caster.CombatAction.TargetX != 3 || caster.CombatAction.TargetY != 2 ||
+			len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending Quick Lightning Bolt caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Lightning Bolt manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 16; action++ {
+			if _, ok := state.CombatVisualEvent(); ok {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualLineSpell || event.Effect != "lightning_bolt" ||
+			event.ActorID != "mage" || event.To != (combat.TilePoint{X: 3, Y: 2}) ||
+			len(event.Impacts) != 2 || event.Impacts[0].TargetID != "a-near" ||
+			event.Impacts[1].TargetID != "z-far" || len(event.Segments) < 2 ||
+			len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Lightning Bolt event=%+v ok=%v slots=%v", event, ok, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-6 Quick Lightning Bolt selection")
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}
