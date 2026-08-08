@@ -11,7 +11,7 @@
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
 [`docs/project-status.md`](docs/project-status.md)。本 milestone 的基底為
-目前 GitHub `main`，獨立 engine checkpoint 為 `d3d54d5`；實際
+目前 GitHub `main`，獨立 engine checkpoint 為 `3b9cc6f`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -110,6 +110,14 @@ active-combat restore 重新掛入。原版 caster level、`6Ah` 魔抗順序、
 逐幀演出與聲音仍未閉合；這是資料分層 milestone，不是完整怪物 AI、完整戰鬥或
 整作通關聲明。規格見
 [`docs/spec/502-pc98-monster-spell-data-contract.md`](docs/spec/502-pc98-monster-spell-data-contract.md)。
+
+第 503 輪沿用 PC-98 overlay 09 local `04CCh..0624h` 的 Quick candidate chain，
+把已保存的 one-based `LegacyObjectID` 順序移入 engine `combat/quicktarget` 與
+CoAB JSON `combat_ai_target_rules`。Quick area、line 與四種 targeted cleric
+adapter 不再以 stable fighter ID 當候選順序；原版 pointer-chain 的 retry／tie／
+random、Magic Missile 目標與 Cure 專用規則仍未閉合。本輪是可測試的
+`strong inference` bounded adapter，不是完整 Quick AI 或整作完成聲明；規格見
+[`docs/spec/503-pc98-quick-target-object-chain-boundary.md`](docs/spec/503-pc98-quick-target-object-chain-boundary.md)。
 
 第 457 輪已把物品 base name 與 name-number 修飾詞從 Go 移入正式繁中 locale；
 商店、裝備、戰利品與診斷工具現在共用 typed item ID＋locale resolver。Go 漢字

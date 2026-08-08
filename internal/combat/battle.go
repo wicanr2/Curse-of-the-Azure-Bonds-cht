@@ -878,6 +878,23 @@ func (b *Battle) Fighters() []Fighter {
 	return output
 }
 
+// FightersInCombatOrder returns a copy in the preserved
+// CHARACTERLIST/OBJECTLIST order. It is distinct from Fighters, whose
+// lexicographic ordering is useful for deterministic map-facing APIs but is
+// not evidence for legacy Quick target traversal.
+func (b *Battle) FightersInCombatOrder() []Fighter {
+	if b == nil {
+		return nil
+	}
+	output := make([]Fighter, 0, len(b.fighterOrder))
+	for _, id := range b.fighterOrder {
+		if fighter, ok := b.fighters[id]; ok {
+			output = append(output, fighter)
+		}
+	}
+	return output
+}
+
 func (b *Battle) Fighter(id string) (Fighter, bool) {
 	fighter, ok := b.fighters[id]
 	return fighter, ok

@@ -3169,6 +3169,37 @@ func TestCombatAltMQuickLightningBoltUsesLineTargetAndPendingDelay(t *testing.T)
 	}
 }
 
+func TestQuickTargetUsesPreservedLegacyObjectOrder(t *testing.T) {
+	state := NewState(testCatalog())
+	state.SetCombatLineTerrain(func(x, y int) combat.LineCell {
+		return combat.LineCell{Valid: x >= 0 && x < 12 && y >= 0 && y < 12}
+	})
+	heroes := []combat.Fighter{{
+		ID: "caster", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+		HasCombatPosition: true, CombatX: 1, CombatY: 1,
+	}}
+	enemies := []combat.Fighter{
+		{ID: "z-first", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 3, CombatY: 1},
+		{ID: "a-second", Side: combat.SideEnemy, HitPoints: 20, MaxHitPoints: 20,
+			HasCombatPosition: true, CombatX: 5, CombatY: 1},
+	}
+	if err := state.StartCombat(heroes, enemies, 503); err != nil {
+		t.Fatal(err)
+	}
+	caster, ok := state.fighter("caster")
+	if !ok {
+		t.Fatal("caster is absent")
+	}
+	point, found, err := state.quickLineSpellTarget(caster)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !found || point != (combat.TilePoint{X: 3, Y: 1}) {
+		t.Fatalf("point=%+v found=%v; Quick target should follow legacy object order", point, found)
+	}
+}
+
 func TestCombatAltMQuickCurseUsesPendingEnemyTarget(t *testing.T) {
 	found := false
 	for seed := int64(0); seed < 512 && !found; seed++ {
