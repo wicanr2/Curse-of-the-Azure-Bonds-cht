@@ -1433,7 +1433,12 @@
     {"spell_id": 91, "priority": 5, "cast_on": 1, "min_range": 0, "casting_time": 5}
   ],
   "combat_ai_target_rules": [
-    {"id": "coab.pc98.quick-target-candidate-chain", "candidate_order": "legacy_object_id"}
+    {
+      "id": "coab.pc98.quick-target-candidate-chain",
+      "candidate_order": "legacy_object_id",
+      "retry_roll_sides": 7,
+      "minimum_priority_start": 7
+    }
   ],
   "combat_visuals": [
     {

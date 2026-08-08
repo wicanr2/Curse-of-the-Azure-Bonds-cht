@@ -4007,3 +4007,15 @@ far-pointer candidate chain、`+52h` next pointer、`03D3h` suitability 與
 此 bounded order，Magic Missile 隨機目標與 Cure 九格規則不改。新增 READY spec
 `docs/spec/503-pc98-quick-target-object-chain-boundary.md`；engine commit
 `3b9cc6f` 已推送，CoAB focused tests 已通過，完整遊戲仍未完成。
+
+2026-08-09 第五百零四輪接續 PC-98 Quick target consumer。沿用同一份 overlay 09
+IDA report，`04DEh` 的 priority 起點為 `7`，`04E2h..04E8h` 觀察到 `1..7`
+helper 範圍；候選鏈掃描未命中時由 `05F4h..05FFh` 降低門檻並重掃。engine
+`combat/quicktarget.Select` 新增 `retry_roll_sides`／`minimum_priority_start`。
+CoAB suitability 只做無亂數 legality probe，法術選定後才在同一 Battle PRNG
+執行一次 area／line／四種 targeted handoff；有限 retry 無結果時不消耗 slot，
+回到普通 action。`3E01:142Dh` 的 RNG 演算法、pointer-chain producer、tie 與
+候選欄位名稱仍是 `strong inference／unknown`。新增 READY spec
+`docs/spec/504-pc98-quick-target-priority-retry.md` 與知識庫
+`docs/knowledge/golden-box-quick-target-selection.md`；engine commit `9b10e78`
+已推送，完整遊戲仍未完成。

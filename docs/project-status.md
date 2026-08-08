@@ -1,11 +1,21 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 503 輪，兩 repo 各一個集中提交）
-依賴的 Golden Box engine checkpoint：`3b9cc6f`（engine repo 已推送）
+本 milestone 的 CoAB 基底：GitHub `main`（第 504 輪，兩 repo 各一個集中提交）
+依賴的 Golden Box engine checkpoint：`9b10e78`（engine repo 已推送）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續 bytes，關閉 Quick 目標
+helper 的 bounded priority retry：從 `7` 起始，以 raw helper 的 `1..7` 範圍
+決定最多掃幾個 threshold，無候選才逐級降低。engine `combat/quicktarget` 的
+JSON rule 保存面數與起始門檻；CoAB suitability 只做無亂數合法性探測，最終
+area／line／四種牧師 targeted handoff 才在同一 Battle PRNG 上執行一次。若有限
+retry 沒有結果，法術格不消耗並回到普通 action。`3E01:142Dh` 的演算法、完整
+pointer-chain producer／tie、Magic Missile／Cure 專用規則與敵方 Quick AI 仍未
+完成；這是 `strong inference／unknown` 邊界，不是完整戰鬥或整作通關聲明。權威
+規格為 [`docs/spec/504-pc98-quick-target-priority-retry.md`](spec/504-pc98-quick-target-priority-retry.md)。
 
 第 503 輪沿用 PC-98 overlay 09 local `04CCh..0624h` 的 Quick far-pointer
 candidate chain、`03D3h` suitability 與 `00FA:0048h` handoff，新增 engine

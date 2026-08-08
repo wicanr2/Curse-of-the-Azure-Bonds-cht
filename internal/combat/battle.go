@@ -15,6 +15,7 @@ import (
 	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	enginequickspell "github.com/wicanr2/golden-box-remake-engine/combat/quickspell"
+	enginequicktarget "github.com/wicanr2/golden-box-remake-engine/combat/quicktarget"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginesleep "github.com/wicanr2/golden-box-remake-engine/combat/sleep"
 	enginerandom "github.com/wicanr2/golden-box-remake-engine/randomstream"
@@ -1235,6 +1236,25 @@ func (b *Battle) SelectQuickSpell(
 		}
 		return b.rng.Intn(sides) + 1, nil
 	}, lookup, suitable)
+}
+
+// SelectQuickTarget keeps the recovered target retry roll on the same Battle
+// PRNG stream as Quick spell selection. The title adapter supplies legality;
+// this layer does not interpret target records or spell effects.
+func (b *Battle) SelectQuickTarget(
+	candidates []enginequicktarget.Candidate,
+	rule enginequicktarget.Rule,
+	suitable enginequicktarget.Suitable,
+) (enginequicktarget.Candidate, bool, error) {
+	if b == nil || b.rng == nil {
+		return enginequicktarget.Candidate{}, false, fmt.Errorf("battle PRNG is unavailable")
+	}
+	return enginequicktarget.Select(candidates, rule, func(sides int) (int, error) {
+		if sides < 1 {
+			return 0, fmt.Errorf("quick target die has %d sides", sides)
+		}
+		return b.rng.Intn(sides) + 1, nil
+	}, suitable)
 }
 
 // BeginPendingSpellAction mirrors CASTCOMBATSPELL's nonzero casting-delay
