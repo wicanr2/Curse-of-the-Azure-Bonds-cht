@@ -1,7 +1,7 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 493 輪）
+本 milestone 的 CoAB 基底：GitHub `main`（第 494 輪）
 依賴的 Golden Box engine checkpoint：`2ace47d`
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
@@ -15,6 +15,15 @@ Sleep `35h` effect、TWINKLE、聲音、法術格與 active-save pipeline。沒�
 Cloudkill 的 Quick Area 與原版 target linked-list tie／random 細節仍未完成。
 此輪是可玩的戰鬥進度，不是完整 Quick AI 或完整遊戲完成聲明。權威規格為
 [`docs/spec/493-pc98-quick-sleep-area-target.md`](spec/493-pc98-quick-sleep-area-target.md)。
+
+第 494 輪接通 PC-98 Quick AI 的 `Fireball (2Fh)` bounded slice：CoAB 以同一份
+overlay 09 `MinRange`／`SCAN` 證據，從敵人戰鬥格建立合法中心，將中心保存到
+point transaction，並依 raw `CastingTime=03h` 走 pending action；排程續跑後
+重用既有 Fireball 逐目標 travel／impact／damage／death visual 與法術格交易。
+Fireball area-safety、候選 linked-list tie／random、Lightning Bolt、Stinking
+Cloud、Cloudkill 的 Quick Area 仍 fail-closed。此輪是可玩的 Quick Fireball
+進度，不是完整 Quick AI 或完整遊戲完成聲明。權威規格為
+[`docs/spec/494-pc98-quick-fireball-area-target.md`](spec/494-pc98-quick-fireball-area-target.md)。
 
 本文件記錄目前 GitHub 可驗證的成果與尚未完成邊界。專案已是可執行、
 可測試、可展示多個垂直切片的 remake prototype，但仍不是完整可通關版本。
@@ -647,6 +656,14 @@ Cloudkill 的 Quick Area 與原版 target linked-list tie／random 細節仍未�
   fail-closed；Fireball、Lightning Bolt、Stinking Cloud、Cloudkill 的 Quick
   Area 與原版 target linked-list tie／random 細節仍未完成。這是 strong
   inference bounded slice，不是完整 Quick AI。READY spec 493 是權威。
+- 第 494 輪接通 Quick Fireball：selector 抽到 `2Fh` 時，CoAB 以同一份
+  overlay 09 `MinRange`／`SCAN` bounded predicate 從敵人戰鬥格建立中心，保存
+  point 與 pending action，待正常 scheduler 續跑後進入既有 Fireball 多目標
+  travel／impact／damage／death visual 與 slot transaction。raw
+  `CastingTime=03h` 的延遲交接與中心保存有 focused regression；candidate
+  linked-list tie／random、完整 area-safety 與其餘 Quick Area 仍未完成。這是
+  strong inference bounded slice，不是完整 Quick AI。Docker／Xvfb 正式 gate
+  `ROUND494_FORMAL_EXIT=0`、`coab-audit total=0`；READY spec 494 是權威。
 - 第 440 輪以非破壞性 IDA 副本、Borland symbols 與 resident raw bytes
   證明 `PUTDAMAGE` 的正傷害路徑會經 `REMOVEFX` 移除表中的 `35h` Sleep。
   `Battle.applyPositiveDamage` 已統一解除動態睡眠；零傷害與 innate MON*SPC

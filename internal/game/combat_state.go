@@ -955,21 +955,21 @@ func (s *State) quickCureTarget(caster combat.Fighter) (combat.Fighter, bool) {
 	return combat.Fighter{}, false
 }
 
-// quickSleepAreaTarget is the bounded CoAB adapter for the PC-98 Quick
+// quickAreaSpellTarget is the bounded CoAB adapter for the PC-98 Quick
 // MinRange path. The reference suitability routine builds a SCAN candidate
 // list around each possible combat target before it accepts the spell. The
 // exact linked-list tie/random policy is still outside this adapter; the
 // stable fighter order is retained until that consumer is closed.
-func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
+func (s *State) quickAreaSpellTarget(caster combat.Fighter, spellID, minRange uint8) (combat.TilePoint, bool, error) {
 	if minRange == 0 {
-		return combat.TilePoint{}, false, fmt.Errorf("Quick Sleep requires a nonzero scan range")
+		return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X requires a nonzero scan range", spellID)
 	}
 	if s.combatScanMapProvider == nil {
-		return combat.TilePoint{}, false, fmt.Errorf("Quick Sleep TACTICALMAP projection is unavailable")
+		return combat.TilePoint{}, false, fmt.Errorf("Quick spell 0x%02X TACTICALMAP projection is unavailable", spellID)
 	}
 	tacticalMap, err := s.combatScanMapProvider()
 	if err != nil {
-		return combat.TilePoint{}, false, fmt.Errorf("build Quick Sleep TACTICALMAP: %w", err)
+		return combat.TilePoint{}, false, fmt.Errorf("build Quick spell 0x%02X TACTICALMAP: %w", spellID, err)
 	}
 	for _, target := range s.livingBySide(combat.SideEnemy) {
 		if !target.HasCombatPosition {
@@ -982,13 +982,17 @@ func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (com
 			int(minRange), 0xff,
 		)
 		if err != nil {
-			return combat.TilePoint{}, false, fmt.Errorf("build Quick Sleep SCAN targets: %w", err)
+			return combat.TilePoint{}, false, fmt.Errorf("build Quick spell 0x%02X SCAN targets: %w", spellID, err)
 		}
 		if len(ordered) != 0 {
 			return center, true, nil
 		}
 	}
 	return combat.TilePoint{}, false, nil
+}
+
+func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (combat.TilePoint, bool, error) {
+	return s.quickAreaSpellTarget(caster, SleepSpellID, minRange)
 }
 
 // CombatSpellTargetsEnemy follows the global spell-table identity stored in
@@ -2812,8 +2816,9 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
 			if spell.MinRange != 0 {
-				if spell.ID == SleepSpellID {
-					_, ok, err := s.quickSleepAreaTarget(fighter, spell.MinRange)
+				switch spell.ID {
+				case SleepSpellID, FireballSpellID:
+					_, ok, err := s.quickAreaSpellTarget(fighter, spell.ID, spell.MinRange)
 					return ok, err
 				}
 				return false, fmt.Errorf(
@@ -2881,13 +2886,13 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
 		return true, nil
 	}
-	if spellID == SleepSpellID {
-		center, ok, err := s.quickSleepAreaTarget(fighter, definition.MinRange)
+	if spellID == SleepSpellID || spellID == FireballSpellID {
+		center, ok, err := s.quickAreaSpellTarget(fighter, spellID, definition.MinRange)
 		if err != nil {
 			return false, err
 		}
 		if !ok {
-			return false, fmt.Errorf("Quick Sleep has no legal area target")
+			return false, fmt.Errorf("Quick spell 0x%02X has no legal area target", spellID)
 		}
 		if err := s.BeginCombatCast(spellID); err != nil {
 			return false, err

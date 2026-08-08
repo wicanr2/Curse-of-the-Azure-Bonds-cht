@@ -2903,6 +2903,76 @@ func TestCombatAltMQuickSleepUsesAreaCenterAndConsumesSlot(t *testing.T) {
 	}
 }
 
+func TestCombatAltMQuickFireballUsesAreaCenterAndPendingDelay(t *testing.T) {
+	found := false
+	for seed := int64(0); seed < 512 && !found; seed++ {
+		state := NewState(testCatalog())
+		state.EnableCombatVisualTimeline(true)
+		state.partyRoster = party.Roster{{
+			ID: "mage", Class: party.ClassMagicUser, Level: 1,
+			SpellSlots: []uint8{FireballSpellID},
+		}}
+		state.SetCombatScanMapProvider(func() (enginescan.TacticalMap, error) {
+			return enginescan.TacticalMap{
+				Width: 11, Height: 1,
+				Tiles:       []uint8{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+				Definitions: []enginescan.TerrainDefinition{{LOS: 1}},
+			}, nil
+		})
+		heroes := []combat.Fighter{{
+			ID: "mage", Side: combat.SideParty, HitPoints: 20, MaxHitPoints: 20,
+			ArmorClass: 0, InitiativeBonus: 30, HasCombatPosition: true,
+			CombatX: 0, CombatY: 0,
+		}}
+		enemies := []combat.Fighter{{
+			ID: "enemy", Side: combat.SideEnemy, HitPoints: 100, MaxHitPoints: 100,
+			ArmorClass: 10, HitDice: 1, InitiativeBonus: 1,
+			HasCombatPosition: true, CombatX: 5, CombatY: 0,
+			SavingThrows: []uint8{20, 20, 20, 20, 20},
+		}}
+		if err := state.StartCombat(heroes, enemies, seed); err != nil {
+			t.Fatal(err)
+		}
+		if enabled, err := state.CombatToggleQuickMagic(); err != nil || !enabled {
+			t.Fatalf("ALT+M enabled=%v err=%v", enabled, err)
+		}
+		if err := state.CombatQuick(); err != nil {
+			t.Fatal(err)
+		}
+		caster, ok := state.fighter("mage")
+		if !ok || caster.CombatAction.SpellID != FireballSpellID {
+			continue
+		}
+		found = true
+		if caster.CombatAction.Delay <= 0 || !caster.CombatAction.HasTargetPoint ||
+			caster.CombatAction.TargetX != 5 || caster.CombatAction.TargetY != 0 ||
+			len(state.partyRoster[0].SpellSlots) != 1 {
+			t.Fatalf("pending Quick Fireball caster=%+v slots=%v", caster, state.partyRoster[0].SpellSlots)
+		}
+		if changed := state.CombatManualControl(); changed != 1 {
+			t.Fatalf("pending Fireball manual handoff changed=%d", changed)
+		}
+		for action := 0; action < 16; action++ {
+			if _, ok := state.CombatVisualEvent(); ok {
+				break
+			}
+			if err := state.CombatAct(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		event, ok := state.CombatVisualEvent()
+		if !ok || event.Kind != combat.VisualAreaSpell || event.Effect != "fireball" ||
+			event.ActorID != "mage" || event.To != (combat.TilePoint{X: 5, Y: 0}) ||
+			len(event.Impacts) != 1 || event.Impacts[0].TargetID != "enemy" ||
+			len(state.partyRoster[0].SpellSlots) != 0 {
+			t.Fatalf("Quick Fireball event=%+v ok=%v slots=%v", event, ok, state.partyRoster[0].SpellSlots)
+		}
+	}
+	if !found {
+		t.Fatal("no deterministic seed reached the original priority-7 Quick Fireball selection")
+	}
+}
+
 func TestCombatCastMagicMissileConsumesSlotAndDamagesTarget(t *testing.T) {
 	state := NewState(testCatalog())
 	state.partyRoster = party.Roster{{ID: "mage", Name: "法師", Class: party.ClassMagicUser, Level: 1, SpellSlots: []uint8{MagicMissileSpellID}}}
