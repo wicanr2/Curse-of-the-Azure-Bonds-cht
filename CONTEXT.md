@@ -4497,3 +4497,15 @@ DOS selector／consumer／runtime。完整證據見
 `docs/spec/525-pc98-tempsearch-display-state.md`；新增非破壞性工具為
 `scripts/ida/pc98_search_state_xref_audit.idc`。compact 後不要把 `BDF1` 再當成
 秘密門先驗，也不要把 `SEARCHREC`／`SECRET`／`HIDDEN` 名稱直接當作已證實規則。
+
+2026-08-09 第五百二十六輪依使用者新優先級收斂工作範圍：remake 的目標是讓遊戲
+能沿正常玩家路徑繼續進行，反組譯只做到支撐一項可玩功能的最小充分證據；與遊戲
+結果無關的 function、檔案服務與工具 helper 不再深挖。PC-98 `MOVEPARTY`／
+`SEARCHREC` 本輪只作錯誤路由修正：overlay-14 raw writer audit 的 SHA-256 是
+`6deff6952a1235b74d73b141d68a0c501e57aa60de39a0ec0da8fa44e3968c04`，確認 local
+`0x003E` 會在 `THE3DMAP+300h` 清除選定 2-bit field；`SEARCHREC` 則由
+Borland type 與 DOS `FINDFIRST/FINDNEXT` consumer 證明是檔案搜尋 record。兩者
+都沒有把秘密門、detail 或正常 movement 變成已證實規則。README 已拆成短版首頁與
+`README-history.md` 歷史檔；全域 `~/.codex/AGENTS.md` 與專案 `AGENTS.md` 都已
+記錄同一條可玩性優先規則。下一步回到 engine＋CoAB JSON 的可玩路徑串接，不再擴大
+PC-98 檔案服務研究。

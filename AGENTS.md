@@ -1836,18 +1836,32 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 不得再把 `S`→`SHOWLOCATION`、暫時 `+594h=1`、Borland `SEARCHREC` type、
   `SECRET` 或 `HIDDEN` 名稱當成秘密門已開、第三平面 writer 或 `wall=09/detail=0`
   可走。第 525 輪已閉合 `LOAD3DMAP (017C:1253h)`／`BLOCKCODE
-  (017C:04DEh)` 的 loader／普通 reader；P0-2 下一個證據入口是
-  `MOVEPARTY (00C9:0BCCh)` 與 `SEARCHREC` member owner 的
-  writer→projection→movement consumer。第 525 輪已閉合 `LOAD3DMAP` 的 `0402h`
-  gate、named `THE3DMAP (0C29:A2A0h)` 四平面 copy，以及 `BLOCKCODE／WALLCODE`
-  的 `+000／+100／+300` reader；不可重做這段 loader／普通 reader，也不可把它
-  當成秘密門 writer。在 bridge 與 runtime trace 閉合前，
-  `MoveDungeon` 必須維持 fail-closed。
+  (017C:04DEh)` 的 loader／普通 reader；第 526 輪又確認 `SEARCHREC` 是 DOS
+  檔案搜尋記錄，不是地圖 writer。P0-2 若仍阻塞，只追 `MOVEPARTY
+  (00C9:0BCCh)` 的 action trigger、狀態持久化與 movement consumer；不能重做已
+  閉合的 loader／普通 reader，也不能把未驗證的欄位直接寫成秘密門規則。在
+  bridge 與 runtime trace 閉合前，`MoveDungeon` 必須維持 fail-closed。
 - 完整來源／hash／命令見 `docs/spec/525-pc98-tempsearch-display-state.md`；
   新增非破壞性工具 `scripts/ida/pc98_search_state_xref_audit.idc` 與
   `scripts/ida/pc98_load3dmap_dataflow_audit.idc`。本輪沒有修改
   engine、CoAB JSON、movement graph 或 secret-door 規則；11 個行為主題與 4 個
   fidelity／發行主題數量不變。
+
+### 第 526 輪：以可玩性界定反組譯範圍（2026-08-09）
+
+- 反組譯不是逐行翻譯整個 executable。每次只從一個實際玩家阻塞點開始，確認
+  它對應的輸入、資料流、狀態變化與可重播結果；一旦證據足以實作並測試該遊戲
+  功能，就停止對同一區域的無關 function 深挖。
+- 與遊戲可玩結果無關的檔案服務、工具程式、初始化樣板或未被路徑使用的 helper
+  只保留最小位址／用途分類，不列入 P0 worklist。若未來新功能真的需要它，才
+  重新開一個有明確玩家結果的窄任務。
+- `SEARCHREC` 的檔案搜尋結構與 `MOVEPARTY` 的 map-buffer 靜態 writer 只作
+  錯誤路由修正；在沒有玩家路徑、runtime trace 或資料流 consumer 需求前，不再
+  追查其餘 PC-98 檔案服務。完整邊界見
+  `docs/spec/526-pc98-moveparty-map-writer-searchrec-correction.md`。
+- 任何尚未完成的遊戲功能都必須回到 engine＋CoAB JSON 的正常玩家交易；不能以
+  direct-entry、座標注入或未驗證的反組譯名稱冒充可玩完成。反組譯深度降低不會
+  降低原始位址、bytes、位址空間與推論等級的保存要求。
 
 ## 10. Compact 後恢復工作清單
 

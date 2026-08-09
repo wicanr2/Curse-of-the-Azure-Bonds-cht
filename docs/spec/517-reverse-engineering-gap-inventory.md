@@ -139,6 +139,16 @@ vector 7 `0841h` 仍是獨立 path。詳細報告見
 的歷史順序，不再是目前入口。第 525 輪已由 `TEMPSEARCH/BDF1` 的連續 writer／
 reader／`SHOWLOCATION` stub 證明它是角色 `+594h` 的暫存／顯示狀態；同輪又由
 `LOAD3DMAP`、named `THE3DMAP` 與 `BLOCKCODE／WALLCODE` 閉合 loader／buffer／
-普通 movement reader 的靜態邊界。現在應追 `MOVEPARTY`、`SEARCHREC` member
-owner 與第三平面 writer／runtime，而不是重新掃 BDF1。完整本輪證據見
-[`spec 525`](./525-pc98-tempsearch-display-state.md)。
+普通 movement reader 的靜態邊界。第 526 輪又確認 `SEARCHREC` 是 DOS 檔案搜尋
+record；現在只在玩家路徑確實需要時追 `MOVEPARTY` action trigger、第三平面
+writer／runtime consumer，而不是重新掃 BDF1 或檔案服務。完整本輪證據見
+[`spec 525`](./525-pc98-tempsearch-display-state.md) 與
+[`spec 526`](./526-pc98-moveparty-map-writer-searchrec-correction.md)。
+
+### 第 526 輪：逆向範圍收斂
+
+本盤點的工作單位仍以資料流計數，但執行優先級改為「能否讓玩家繼續遊玩」。
+與玩家結果無關的 function 不再列入深挖；`SEARCHREC` 只保留為錯誤路由更正，
+`MOVEPARTY` 只保留足以定位 map-buffer writer 的靜態 boundary。下一步若沒有
+正常輸入、runtime trace 或 consumer 需求，就直接回到 engine＋CoAB JSON 的遊戲
+路徑串接，不新增更深的 PC-98 檔案服務研究。

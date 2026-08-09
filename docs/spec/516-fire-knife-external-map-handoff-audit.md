@@ -71,7 +71,10 @@ PC-98 overlay 30、Borland segment `017Ch` 的 `BLOCKCODE` `0x04DE` 以目前方
 - wall type 非零時 detail `0..3` 由方向對應的 2-bit 欄位取得；
 - `MOVEPARTY` 將結果 `1` 視為可走，`2／3` 交給 BASH／PICK／KNOCK／ENTER
   action；
-- P 成功的 writer 會把選定門的 detail 設為 `1`，並對另一側再寫一次。
+- 舊版曾把 P 成功描述成「把選定門 detail 設為 `1` 並更新另一側」；第 526
+  輪 raw `MOVEPARTY` audit 未證明這個語意，因此該敘述已 `SUPERSEDED`。目前
+  只能保留 `MOVEPARTY` 呼叫 loaded `THE3DMAP+300h` selected 2-bit field writer
+  的靜態邊界；action、另一側更新與 detail 結果仍未知。
 
 所以候選 `wall=09h／detail=0` 目前可證明是普通 movement blocked；它可能是
 秘密門候選，但尚未證明 `S` 會把它改成 detail `1`。

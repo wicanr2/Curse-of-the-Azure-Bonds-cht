@@ -34,8 +34,10 @@ fragment、`0402h` gate 與既有 GEO corpus 閉合來源 record／四平面 pay
 `3BB8h..3BFDh` 的連續 writer→reader→`014A:00DEh` stub 閉合：它暫存目前
 角色 record `+594h` 的低 byte、短暫寫入 `+594h=1`，再還原並呼叫
 `SHOWLOCATION`。因此 `BDF1` 不再是秘密門第三平面 writer 的先驗入口；這不代表
-秘密門不存在，只代表後續應轉向 `LOAD3DMAP／BLOCKCODE／MOVEPARTY` 與
-`SEARCHREC` owner。完整證據見 `docs/spec/525-pc98-tempsearch-display-state.md`。
+秘密門不存在，只代表後續應轉向 `LOAD3DMAP／BLOCKCODE／MOVEPARTY` 的玩家結果
+資料流。第 526 輪確認 `SEARCHREC` 是 DOS 檔案搜尋 record，不再是 map writer
+owner；完整證據見 `docs/spec/525-pc98-tempsearch-display-state.md` 與
+`docs/spec/526-pc98-moveparty-map-writer-searchrec-correction.md`。
 
 目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
 已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
@@ -69,7 +71,7 @@ routine 4、戰鬥／AI 2、存檔／AD&D 規則 2）尚未因本輪靜態稽核
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
 | P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。overlay-07 local `1B3F` 已精確找到 `DS:720F／7210` 的 `0..0Fh` 循環更新與 vector 6／4 呼叫；overlay-11 已精確找到 `DS:7206h`＋`0400h` 的 Borland `GetMem(Pointer &,Word)` call-site 及初始 `7／0Dh／0或2`。第 522 輪又以 overlay-30 `133Ah..1475h` 的四次 `Move` 精確閉合 `DS:7206h +000/+100/+200/+300` 各 `0100h` 的 destination 幾何，並確認暫存 pointer 由 `FreeMem` 回收；第 523 輪再證明 `START.EXE` 的 `006B:00A2h` 是 vector 26，entry bytes `CD 3F 3F 1B 00` 指向 overlay-07 local `1B3Fh`，overlay-02 local `3002h` 在 `401Fh` branch 呼叫該 entry；第 524 輪以 overlay-30 local `1310h` 的 `GEO`／`.dax` Pascal fragments、`DS:5BEEh` area-value input、`0402h` gate 與 GEO2–GEO6 decoded corpus 閉合 `GEO<area>.dax` source／四平面 payload layout。仍未閉合的是 selector producer、正常鍵盤 producer／control-loader runtime、欄位 consumer、map projection 與 runtime consumer。overlay-30 vector 6 仍只精確到 `ES:[DI+0200h]` byte read，overlay-28 另有 `DS:7213h` consumer 與獨立 vector 7 `0841h` 路徑；既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 追 `DS:5BEEh`／`[bp+6]` 的 selector producer、`006B` control-loader 與正常鍵盤 producer、DS:7212／7213 的正式 consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `+300h` 或 `4BF0h`，必須先證明其所屬位址空間與實際 consumer |
-| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `LOAD3DMAP (017C:1253h)` 已精確以 `0402h` gate 將四個 `0100h` plane 複製到 named `THE3DMAP (0C29:A2A0h)`；`BLOCKCODE／WALLCODE` 已精確讀取 `THE3DMAP` 的 `+000／+100／+300` 與 mask／座標公式。`wall=09/detail=0` 仍不能普通通過；`S` 會切換目前角色 record `+594h` bit 0 並呼叫 `SHOWLOCATION`；第 525 輪另證明 `TEMPSEARCH/BDF1` 只是該 record 狀態的暫存／還原，不是第三平面 writer。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到真正 writer；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、`SEARCHREC` member owner、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
+| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `LOAD3DMAP (017C:1253h)` 已精確以 `0402h` gate 將四個 `0100h` plane 複製到 named `THE3DMAP (0C29:A2A0h)`；`BLOCKCODE／WALLCODE` 已精確讀取 `THE3DMAP` 的 `+000／+100／+300` 與 mask／座標公式。`wall=09/detail=0` 仍不能普通通過；`S` 會切換目前角色 record `+594h` bit 0 並呼叫 `SHOWLOCATION`；第 525 輪另證明 `TEMPSEARCH/BDF1` 只是該 record 狀態的暫存／還原，不是第三平面 writer；第 526 輪確認 `SEARCHREC` 是 DOS 檔案搜尋 record。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到真正 action trigger；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search action、`MOVEPARTY` writer 的 runtime consumer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
 P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inference`；P0-2、P0-3
@@ -286,8 +288,9 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 7. 第 525 輪取代「`BDF1/TEMPSEARCH` 是秘密門／第三平面 map writer 候選，應繼續
    從 BDF1 raw word 掃描找 map service」的路由：overlay-02 `3BB8h..3BFDh`
    精確顯示它是目前角色 `+594h` 的暫存／還原，尾端呼叫 `014A:00DEh` 的
-   `SHOWLOCATION` stub；overlay-11 `06BEh..06CDh` 只是初始化清零。仍不可把
-   `SEARCHREC`、`SECRET` 或 `HIDDEN` 名稱升格成 map writer／可走秘密門。
+   `SHOWLOCATION` stub；overlay-11 `06BEh..06CDh` 只是初始化清零。第 526 輪又以
+   Borland type／DOS `INT 21h` consumer 確認 `SEARCHREC` 是檔案搜尋 record；仍
+   不可把 `SEARCHREC`、`SECRET` 或 `HIDDEN` 名稱升格成 map writer／可走秘密門。
 
 ## 每項反組譯工作的完成門檻
 
@@ -299,7 +302,7 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
 5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
 
-第 525 輪後的下一個最有價值工作仍是 P0-1 與 P0-2 的正式 consumer，但不再重做
+第 526 輪後的下一個最有價值工作仍是 P0-1 與 P0-2 的正式 consumer，但不再重做
 vector target、GEO `.dax` payload 或 BDF1 raw word 掃描：P0-1 先追 overlay-30
 `[bp+6]` selector／`DS:5BEEh` producer 與 `DS:7206h` 四平面 runtime consumer，
 再以原版 DOSBox 實際鍵盤輸入追 `006B` control-loader、`401Fh` 與相鄰 selector，
@@ -307,8 +310,8 @@ vector target、GEO `.dax` payload 或 BDF1 raw word 掃描：P0-1 先追 overla
 方向、重繪與戰後續跑 trace。P0-2 的 `LOAD3DMAP (017C:1253h)`、
 `THE3DMAP (0C29:A2A0h)`、`BLOCKCODE (017C:04DEh)`／`WALLCODE (017C:060Dh)`
 loader／buffer／普通 movement reader 靜態邊界已由第 525 輪閉合；下一步只追
-`MOVEPARTY (00C9:0BCCh)` 的 `P/BASH/KNOCK/ENTER` 交易、`SEARCHREC` type/member
-owner 是否寫回 `THE3DMAP` 第三平面，以及同版本 runtime trace。`BDF1` 只保留
+`MOVEPARTY (00C9:0BCCh)` 的 `P/BASH/KNOCK/ENTER` 交易與其 writer→movement
+consumer 的同版本 runtime trace；`SEARCHREC` 不再列為 map owner，`BDF1` 只保留
 為顯示狀態證據。
 overlay 22 `[di+4BF0h]` 仍只作獨立的位址空間候選，不把它當成先驗入口。
 在正式 consumer 與 runtime 閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
