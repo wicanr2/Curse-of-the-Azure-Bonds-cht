@@ -724,6 +724,12 @@ func TestTilvertonGuildAndHideoutTransitionIsGamePackDriven(t *testing.T) {
 		fragments []string
 	}{
 		{"tilverton.guildmaster-greeting", []string{"BEFORE YOU STANDS A BURLY MAN", "CARE TO REST"}},
+		{"tilverton.running-thieves", []string{"YOU COME UPON SOME RUNNING THIEVES", "WHAT DO YOU DO"}},
+		{"tilverton.running-thieves-warning", []string{"THEY YELL", "FIRE KNIVES ARE PUSHING UP FROM THE SOUTH", "BOILING OUT OF THE SEWERS"}},
+		{"tilverton.fire-knives-spot-you", []string{"A PARTY OF FIRE KNIVES SPOTS YOU"}},
+		{"tilverton.guild-assassins-attack", []string{"ASSASSINS LEAP ON YOU"}},
+		{"tilverton.guild-metal-and-animals", []string{"CLANG OF METAL ON METAL", "GROWLS OF ANIMALS", "MORTAL COMBAT"}},
+		{"tilverton.guild-bodies-after-battle", []string{"BODIES LIE TWISTED ONE ABOUT ANOTHER", "LOCKED IN COMBAT UNTIL DEATH"}},
 		{"tilverton.guildmaster-briefing", []string{"THE FIRE KNIVES HAVE THE KING'S DAUGHTER", "I CAN OFFER INFORMATION"}},
 		{"tilverton.guild-breach", []string{"SIDE DOOR EXPLODES INWARD", "DEAFENING CRASH"}},
 		{"tilverton.guild-fire-knife-command", []string{"TRAITOROUS SCUM", "SEIZE THEM ALL"}},
@@ -893,7 +899,7 @@ func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
 		"LEMONADE", "WHISKEY", "BEER", "ALE", "PORT", "MEAD", "LIE",
 		"ENTER CITY", "JOURNEY ON", "CAMP", "SEARCH AREA", "INN", "STORE",
 		"BAR", "HALL", "TEMPLE", "RELAX", "PATROL FOREST", "THANK HIM",
-		"ATTACK", "ENTER IT", "SPEAK", "HACK IT", "GREET", "LEAVE", "Leave",
+		"ATTACK", "REMAIN CALM", "ENTER IT", "SPEAK", "HACK IT", "GREET", "LEAVE", "Leave",
 		"EXAMINE CORPSE", "SHADOWDALE", "ASHABENFORD", "DAGGER FALLS",
 		"TILVERTON", "THE STANDING STONE", "ESSEMBRA", "HAP", "HILLSFAR",
 		"VOONLAR", "PHLAN", "TESHWAVE", "YULASH", "ZHENTIL KEEP", "MYTH DRANNOR",
@@ -906,7 +912,7 @@ func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
 		"PARLAY_SLY", "PARLAY_MEEK", "PARLAY_NICE", "PARLAY_ABUSIVE",
 		"FIRE KNIVES", "PRINCESS NACACIA", "NO ONE", "EXIT",
 	}
-	if len(legacySources) != 84 {
+	if len(legacySources) != 85 {
 		t.Fatalf("legacy source oracle count=%d", len(legacySources))
 	}
 	for _, source := range legacySources {
@@ -916,8 +922,8 @@ func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
 			}
 		}
 	}
-	if len(pack.OptionRules) != 105 {
-		t.Fatalf("option rules=%d, want 25 existing + 80 migrated", len(pack.OptionRules))
+	if len(pack.OptionRules) != 106 {
+		t.Fatalf("option rules=%d, want 26 existing + 80 migrated", len(pack.OptionRules))
 	}
 }
 

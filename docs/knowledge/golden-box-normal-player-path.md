@@ -93,6 +93,50 @@ block 1 證明 `(1,10)` 到 `(1,0)` 有一條 16 步可行路徑：向東兩格�
 從 State fallback 拉回資料層的範例；後續新事件應沿用此方式，不在 State 或測試中
 新增中文劇情字串。
 
+## 公會內部與下水道痕跡
+
+第 513 輪從公會 block 2 handoff 的正常回返位置繼續，不再把 `(11,7)`、`(15,7)`、
+`(10,13)` 等事件格直接寫入 State。實際玩家交易是：`MoveDungeon` 驗證 GEO 雙側
+牆／門後移動，`TurnDungeonWithGrid` 只改變面向，下一次正常移動才讓 ECL
+per-turn／search 決定是否出現事件。這個順序很重要；「把角色放到事件格再執行
+lifecycle」只能叫 coordinate-assisted probe，不能列入正常路徑證據。
+
+這段的可重用路徑模型是：
+
+```text
+公會戰後回返
+  → 訪客簿／半身人
+  → detail 2 門：撬門／GEO 雙側解鎖
+  → 犬舍實戰戰鬥與戰後續跑
+  → 猴籠事件
+  → 經回廊繞過實心牆
+  → 公會內部隨機／提示 boundary
+  → detail 2 門
+  → 下水道痕跡
+```
+
+`GEO2.DAX` 在 `(13,7)` 東側是實心牆，不能因畫面上兩格相鄰就假設可以直走；
+正常路徑必須依 cell 的 wall／detail 資料繞行。鎖門的測試使用力量 25 的
+確定性 fixture 以確保撬門成功，這只是在測試中提供可重播輸入，不是把該數值寫成
+原版開門公式。之後仍由 `UnlockDoorWrapped` 更新兩側 detail，不能只改玩家所在
+側的暫存器。
+
+路途中遇到的文字與選項都由 game-pack stable ID 解析：
+`tilverton.running-thieves`、`tilverton.option.remain-calm`、
+`tilverton.running-thieves-warning`、`tilverton.fire-knives-spot-you`、
+`tilverton.guild-assassins-attack`、`tilverton.guild-metal-and-animals` 與
+`tilverton.guild-bodies-after-battle`。測試只要求 ID 命中目前 locale，不複製
+繁中內容；未來改譯文不應迫使測試同步改字串。
+
+隨機戰鬥必須沿同一 dungeon return mode 續跑。若生命週期中間經過 engine-only
+`CALL` 才建立 encounter，單看 `ModeEvent` 的勝利訊息會誤判成戰鬥已回到地城；
+remake 需保留 caller 的 dungeon return context，並在勝利後明確 `Continue()`。
+這是 runtime transaction 的經驗，不是可寫入 CoAB 劇情 JSON 的旗標。
+
+本輪的終點是 `tilverton.guild-sewer-traces`。選擇繼續並進入 block 3 只能證明
+入口 handoff；現有測試在 `(1,8)` 與更深處仍使用座標輔助，因此後續要從 block 3
+入口以相同移動交易重新建立完整下水道路徑，不能把本輪標成下水道完成。
+
 ## 目前 CoAB checkpoint
 
 已由新遊戲進入提爾佛頓 GEO2 block 1，使用原始 west step 抵達 Windlord’s Inn，

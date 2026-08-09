@@ -321,6 +321,7 @@
       ,"patrol_forest": "PATROL FOREST"
       ,"thank_him": "THANK HIM"
       ,"attack": "ATTACK"
+      ,"remain_calm": "REMAIN CALM"
       ,"enter_it": "ENTER IT"
       ,"speak": "SPEAK"
       ,"hack_it": "HACK IT"
@@ -472,6 +473,12 @@
       ,"world-route.essembra": "How will you get to Essembra?"
       ,"world-route.hap": "How will you get to Hap?"
       ,"tilverton.guildmaster-greeting": "A burly man stands before you, surrounded by wary guards. He nervously asks whether you care to rest."
+      ,"tilverton.running-thieves": "You come upon some running thieves. What do you do?"
+      ,"tilverton.running-thieves-warning": "They yell, as they run past, 'The Fire Knives are pushing up from the south. They are boiling out of the sewers.'"
+      ,"tilverton.fire-knives-spot-you": "A party of Fire Knives spots you."
+      ,"tilverton.guild-assassins-attack": "Assassins leap on you."
+      ,"tilverton.guild-metal-and-animals": "The clang of metal on metal and the growls of animals locked in mortal combat echo through the halls."
+      ,"tilverton.guild-bodies-after-battle": "Bodies lie twisted one about another, locked in combat until death."
       ,"tilverton.guildmaster-briefing": "The guildmaster explains that the Fire Knives hold the king's daughter in their hideout as bait, and offers information because he cannot act directly."
       ,"tilverton.guild-breach": "A side door explodes inward with a deafening crash."
       ,"tilverton.guild-fire-knife-command": "A Fire Knife shouts, 'Traitorous scum! Seize them all!' as thieves spread out around you."
@@ -890,6 +897,7 @@
       ,"patrol_forest": "巡查森林"
       ,"thank_him": "向他道謝"
       ,"attack": "攻擊"
+      ,"remain_calm": "保持冷靜"
       ,"enter_it": "走進去"
       ,"speak": "說話"
       ,"hack_it": "砍斷它"
@@ -1041,6 +1049,12 @@
       ,"world-route.essembra": "要如何前往艾森布拉？"
       ,"world-route.hap": "要如何前往哈普？"
       ,"tilverton.guildmaster-greeting": "一名魁梧男子站在你們面前，身旁圍著數名警戒的護衛。他顯得有些緊張，問道：「你們看來不太穩當，要先休息嗎？」"
+      ,"tilverton.running-thieves": "你們遇見幾名奔逃的盜賊。要怎麼做？"
+      ,"tilverton.running-thieves-warning": "他們一邊跑過，一邊大喊：「火刀正從南方逼近！他們正從下水道大量湧出！」"
+      ,"tilverton.fire-knives-spot-you": "一隊火刀發現了你們！"
+      ,"tilverton.guild-assassins-attack": "刺客突然向你們撲來！"
+      ,"tilverton.guild-metal-and-animals": "金屬交擊的鏗鏘聲，以及被鎖在生死搏鬥中的野獸咆哮，在廳堂間迴盪。"
+      ,"tilverton.guild-bodies-after-battle": "屍體彼此扭曲纏疊，彷彿直到死亡仍被鎖在戰鬥之中。"
       ,"tilverton.guildmaster-briefing": "「好，那就繼續。火刀綁架了國王的女兒，把她藏在據點裡，想引國王踏入陷阱。我不能直接介入，但可以提供情報。」"
       ,"tilverton.guild-breach": "突然間，側門伴隨震耳欲聾的巨響向內炸開！"
       ,"tilverton.guild-fire-knife-command": "一名火刀嘶聲喝道：「叛徒渣滓！把他們全抓起來！」大批盜賊隨即散開包圍眾人。"
@@ -1928,6 +1942,7 @@
     {"id": "ecl-option.patrol-forest", "source": "PATROL FOREST", "message_id": "patrol_forest"},
     {"id": "ecl-option.thank-him", "source": "THANK HIM", "message_id": "thank_him"},
     {"id": "ecl-option.attack", "source": "ATTACK", "message_id": "attack"},
+    {"id": "tilverton.option.remain-calm", "source": "REMAIN CALM", "message_id": "remain_calm"},
     {"id": "ecl-option.enter-it", "source": "ENTER IT", "message_id": "enter_it"},
     {"id": "ecl-option.speak", "source": "SPEAK", "message_id": "speak"},
     {"id": "ecl-option.hack-it", "source": "HACK IT", "message_id": "hack_it"},
@@ -3084,6 +3099,12 @@
     {"id": "world-route.essembra", "all_contains": ["HOW WILL YOU GET TO ESSEMBRA"], "message_id": "world-route.essembra"},
     {"id": "world-route.hap", "all_contains": ["HOW WILL YOU GET TO HAP"], "message_id": "world-route.hap"},
     {"id": "tilverton.guildmaster-greeting", "all_contains": ["BEFORE YOU STANDS A BURLY MAN", "CARE TO REST"], "message_id": "tilverton.guildmaster-greeting"},
+    {"id": "tilverton.running-thieves", "all_contains": ["YOU COME UPON SOME RUNNING THIEVES", "WHAT DO YOU DO"], "message_id": "tilverton.running-thieves"},
+    {"id": "tilverton.running-thieves-warning", "all_contains": ["THEY YELL", "FIRE KNIVES ARE PUSHING UP FROM THE SOUTH", "BOILING OUT OF THE SEWERS"], "message_id": "tilverton.running-thieves-warning"},
+    {"id": "tilverton.fire-knives-spot-you", "all_contains": ["A PARTY OF FIRE KNIVES SPOTS YOU"], "message_id": "tilverton.fire-knives-spot-you"},
+    {"id": "tilverton.guild-assassins-attack", "all_contains": ["ASSASSINS LEAP ON YOU"], "message_id": "tilverton.guild-assassins-attack"},
+    {"id": "tilverton.guild-metal-and-animals", "all_contains": ["CLANG OF METAL ON METAL", "GROWLS OF ANIMALS", "MORTAL COMBAT"], "message_id": "tilverton.guild-metal-and-animals"},
+    {"id": "tilverton.guild-bodies-after-battle", "all_contains": ["BODIES LIE TWISTED ONE ABOUT ANOTHER", "LOCKED IN COMBAT UNTIL DEATH"], "message_id": "tilverton.guild-bodies-after-battle"},
     {"id": "tilverton.guildmaster-briefing", "all_contains": ["THE FIRE KNIVES HAVE THE KING'S DAUGHTER", "I CAN OFFER INFORMATION"], "message_id": "tilverton.guildmaster-briefing"},
     {"id": "tilverton.guild-breach", "all_contains": ["SIDE DOOR EXPLODES INWARD", "DEAFENING CRASH"], "message_id": "tilverton.guild-breach"},
     {"id": "tilverton.guild-fire-knife-command", "all_contains": ["TRAITOROUS SCUM", "SEIZE THEM ALL"], "message_id": "tilverton.guild-fire-knife-command"},

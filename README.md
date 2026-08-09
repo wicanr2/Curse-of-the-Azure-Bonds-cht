@@ -10,7 +10,7 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 512
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 513
 輪 milestone，獨立 engine 已推送 `4771299`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
@@ -79,6 +79,15 @@ wrap、ECL 座標同步、單步事件 guard 清除與 per-turn／search continu
 `text_rules`，State 不再增加該事件的中文 fallback。這是正常玩家路徑的有界
 `READY` milestone，尚未代表公會／下水道以至結局全部可通關；規格見
 [`docs/spec/512-normal-tilverton-city-gate-route.md`](docs/spec/512-normal-tilverton-city-gate-route.md)。
+
+第 513 輪接續同一個 ECL session，將盜賊公會入口後直到下水道痕跡事件的段落改成
+真正的 `State.MoveDungeon`／`TurnDungeonWithGrid` 正常走路。路徑會經過訪客簿、半身人、
+犬舍、猴籠、鎖門與公會內部回廊；隨機戰鬥以實際 `CombatAct` 回合完成，奔逃盜賊、
+火刀、刺客、野獸搏鬥與戰後屍體等訊息已由 game-pack stable ID 及 `en`／`zh-TW`
+資料驅動。這是可重播的有界 `READY` milestone；block 3 入口後的下水道仍有
+coordinate-assisted checkpoint，完整戰鬥、音效、UI、中文化與結局仍未完成，且本輪
+沒有新增 README 截圖。規格見
+[`docs/spec/513-normal-tilverton-guild-interior-route.md`](docs/spec/513-normal-tilverton-guild-interior-route.md)。
 
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊
