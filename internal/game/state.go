@@ -1302,6 +1302,11 @@ func (s *State) Select(index int) error {
 		s.applyECLInventorySignals(result)
 		s.applyECLTreasureSignals(result)
 		s.applyECLRobSignals(result)
+		if !result.CombatRequested {
+			if handled, err := s.applyDataPackEvent(result); handled || err != nil {
+				return err
+			}
+		}
 		treasureReady := false
 		if len(result.TreasureRequests) > 0 {
 			// Some encounter scripts queue their reward immediately before
@@ -5096,8 +5101,10 @@ func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) 
 	s.applyECLInventorySignals(result)
 	s.applyECLTreasureSignals(result)
 	s.applyECLRobSignals(result)
-	if handled, err := s.applyDataPackEvent(result); handled || err != nil {
-		return handled, err
+	if !result.CombatRequested {
+		if handled, err := s.applyDataPackEvent(result); handled || err != nil {
+			return handled, err
+		}
 	}
 	if hasMeaningfulECLText(result.Text) {
 		s.unlockJournalEntries(result.Text)
@@ -5239,14 +5246,32 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 	}
 	s.party = keptFighters
 	s.whoSelectedIndex = -1
+	if err := s.applyDataPackMapPositions(runtime.MapPositions); err != nil {
+		return true, fmt.Errorf("data-pack event %q position: %w", applied.EventID, err)
+	}
 	s.Message = runtime.Message
-	s.Mode = ModeEvent
 	switch runtime.Mode {
 	case "world_menu":
+		s.Mode = ModeEvent
 		s.eventReturnMode = ModeWilderness
 		s.eclMenuReturnMode = ModeWilderness
+	case "dungeon":
+		if len(runtime.MapPositions) == 0 {
+			return true, fmt.Errorf("data-pack event %q dungeon mode has no map position", applied.EventID)
+		}
+		s.Mode = ModeDungeon
+		s.eventReturnMode = ModeDungeon
+		s.eclMenuReturnMode = ModeDungeon
+		s.pendingECLMenu = nil
+		s.pendingECLMenuMessage = ""
+		s.currentOriginalChoices = nil
+		s.Choices = nil
+		s.Prompt = ""
 	default:
 		return true, fmt.Errorf("data-pack event %q returned unsupported mode %q", applied.EventID, runtime.Mode)
+	}
+	if runtime.Mode == "dungeon" {
+		return true, nil
 	}
 	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
 	s.Choices = []string{s.localizeOption(s.currentOriginalChoices[0])}
@@ -5258,6 +5283,43 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (s *State) applyDataPackMapPositions(positions []goldenbox.MapPositionTransition) error {
+	for _, position := range positions {
+		if position.MapKind != "first_person" {
+			return fmt.Errorf("unsupported map position kind %q", position.MapKind)
+		}
+		if position.Direction != 0 && position.Direction != 2 &&
+			position.Direction != 4 && position.Direction != 6 {
+			return fmt.Errorf("map position direction %d is not cardinal", position.Direction)
+		}
+		s.Area.GameArea = position.AreaID
+		s.Area.InDungeon = true
+		s.Area.Current3DMapBlockID = position.GeometryBlock
+		s.GeoMapSet = position.AreaID
+		s.GeoMapBlock = position.GeometryBlock
+		s.geoMapPending = true
+		s.DungeonX = position.X
+		s.DungeonY = position.Y
+		s.DungeonDirection = position.Direction
+		s.MapX = position.X
+		s.MapY = position.Y
+		if position.WallType != nil {
+			s.DungeonWallType = *position.WallType
+		}
+		if position.WallRoof != nil {
+			s.DungeonWallRoof = *position.WallRoof
+		}
+		if s.session != nil {
+			s.session.SetMemoryValue(0xC04B, uint16(position.X))
+			s.session.SetMemoryValue(0xC04C, uint16(position.Y))
+			s.session.SetMemoryValue(0xC04D, uint16(position.Direction/2))
+			s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
+			s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
+		}
+	}
+	return nil
 }
 
 // Move changes the data-neutral map cursor used by the first navigable map slice.

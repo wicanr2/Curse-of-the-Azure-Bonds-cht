@@ -10,8 +10,8 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 513
-輪 milestone，獨立 engine 已推送 `4771299`；實際
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 515
+輪 milestone，獨立 engine 已包含本輪資料驅動轉場變更；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -96,6 +96,15 @@ coordinate-assisted checkpoint，完整戰鬥、音效、UI、中文化與結局
 有界 `READY` milestone；火刀戰後通往騎士的 `(13,10)` 仍未證明為可由同一 GEO
 component 正常抵達，完整下水道與整作通關仍未完成。規格見
 [`docs/spec/514-normal-tilverton-sewer-entry-route.md`](docs/spec/514-normal-tilverton-sewer-entry-route.md)。
+
+第 515 輪把火刀戰後的第一個外部地圖位置 handoff 從測試座標注入改成
+engine `set_map_position` action 與 CoAB game-pack JSON：正常戰鬥勝利、按下
+「繼續」後，狀態才會由資料包投影到 Myth Drannor `(13,10,E)`，並可接續騎士事件。
+這條資料流以原始 ECL `CALL 2E10`、真實戰鬥後 ECL session 與斷開的 GEO
+component 交叉驗證，目前是 `strong inference` 的 layout／位置 handoff，並非
+完整外部地圖服務的 `exact` 還原；火刀據點後續 `(8,15)` handoff、完整下水道與
+整作通關仍未完成。規格見
+[`docs/spec/515-fire-knife-map-position-transition.md`](docs/spec/515-fire-knife-map-position-transition.md)。
 
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊

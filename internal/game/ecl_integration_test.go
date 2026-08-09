@@ -1582,9 +1582,13 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 13, 10, 2
-	state.DungeonWallType, _ = sewerGrid.WallWrapped(13, 10, 2)
-	state.DungeonWallRoof = sewerGrid.CellWrapped(13, 10).Terrain
+	if state.Mode != ModeDungeon || state.DungeonX != 13 || state.DungeonY != 10 ||
+		state.DungeonDirection != 2 || state.DungeonWallType != 0x0F ||
+		state.DungeonWallRoof != 0x83 {
+		t.Fatalf("data-pack Fire Knife handoff mode=%v position=(%d,%d,%d) wall=(%#x,%#x)",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.DungeonWallType, state.DungeonWallRoof)
+	}
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
@@ -1610,9 +1614,6 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 13, 10, 2
-	state.DungeonWallType, _ = sewerGrid.WallWrapped(13, 10, 2)
-	state.DungeonWallRoof = sewerGrid.CellWrapped(13, 10).Terrain
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
