@@ -10,8 +10,12 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 524
-輪反組譯盤點 milestone；第 522 輪在第 521 輪 `GetMem(Pointer &,Word)` owner
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 525
+輪反組譯盤點 milestone；本輪以 PC-98 Borland `TEMPSEARCH (0C29:BDF1h)` 與
+overlay-02 `3BB8h..3BFDh` 證明 `BDF1` 是 `+594h` 的暫存／還原並進入
+`SHOWLOCATION`，不再把它當成秘密門第三平面 writer；下一個入口改為
+`MOVEPARTY／SEARCHREC`；本輪也以 `LOAD3DMAP／THE3DMAP／BLOCKCODE` 閉合
+loader／buffer／普通 movement reader 的靜態邊界。第 522 輪在第 521 輪 `GetMem(Pointer &,Word)` owner
 之上，由 resident `Move`／`FreeMem` 與 overlay-30 call-site 證明 `DS:7206h` 的
 `+000/+100/+200/+300` 四段各接收 `0100h` bytes；第 523 輪再由 `START.EXE`
 control vector 26 與 overlay-02 `401Fh` branch 精確接到 overlay-07 local
@@ -43,6 +47,8 @@ local `1B3Fh`；這只閉合靜態 dispatcher，不等於普通鍵盤 producer �
 [`docs/spec/522-dos-buffer-four-plane-fill.md`](docs/spec/522-dos-buffer-four-plane-fill.md) 及
 [`docs/spec/523-dos-overlay07-vector26-entry.md`](docs/spec/523-dos-overlay07-vector26-entry.md) 及
 [`docs/spec/524-dos-overlay30-geo-loader-source.md`](docs/spec/524-dos-overlay30-geo-loader-source.md)。
+本輪 `TEMPSEARCH/BDF1` 證據見
+[`docs/spec/525-pc98-tempsearch-display-state.md`](docs/spec/525-pc98-tempsearch-display-state.md)。
 
 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7` 重試
 範圍、priority `7` 起始與逐級降低資料化到 engine `combat/quicktarget`。CoAB 的

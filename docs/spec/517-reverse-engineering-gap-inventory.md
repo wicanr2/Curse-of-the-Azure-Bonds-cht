@@ -132,3 +132,13 @@ overlay-28 vector 6 consumer；本盤點中「目的地 writer／consumer 未閉
 為完整語意／projection／runtime bridge 未閉合，不是「沒有任何 raw writer」。
 vector 7 `0841h` 仍是獨立 path。詳細報告見
 [`spec 520`](./520-dos-movement-to-overlay-cell-layer-bridge.md)。
+
+### 第 525 輪路由勘誤
+
+本檔上述「回到 PC-98 `BDF1` caller／address-taken map service」是第 517 輪當時
+的歷史順序，不再是目前入口。第 525 輪已由 `TEMPSEARCH/BDF1` 的連續 writer／
+reader／`SHOWLOCATION` stub 證明它是角色 `+594h` 的暫存／顯示狀態；同輪又由
+`LOAD3DMAP`、named `THE3DMAP` 與 `BLOCKCODE／WALLCODE` 閉合 loader／buffer／
+普通 movement reader 的靜態邊界。現在應追 `MOVEPARTY`、`SEARCHREC` member
+owner 與第三平面 writer／runtime，而不是重新掃 BDF1。完整本輪證據見
+[`spec 525`](./525-pc98-tempsearch-display-state.md)。

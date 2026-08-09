@@ -4462,3 +4462,38 @@ selector→consumer→runtime。
 假 direct xref。該 probe／report 沒有進版控，不能用來證明 caller；compact 後若
 看到類似 `0x1338→0x133A` 命中，先按 data/code 混讀丟棄，回到原始函式邊界與
 control-loader／runtime evidence。
+
+2026-08-09 第五百二十五輪沿 P0-2 的 PC-98 symbol／movement 入口繼續抽樣，並
+刪除「`BDF1/TEMPSEARCH` 是秘密門第三平面 writer，應繼續從 BDF1 raw word 掃描
+找 map service」的錯誤路由。原始 `PC98-GAME.EXE` SHA-256 為
+`8bca0b50f47b5a41193584d3d4d1cd7361562ca3daf5360d3691620cc1b752c0`；baseline
+`PC98-GAME.EXE.i64` SHA-256 為
+`0aa83775a39b5bd8cf10b5ed04c0508845127aed5f2f299656ec7f3641249696`；overlay-02
+與 overlay-11 SHA-256 分別為
+`49a35a10c3a08def6fcf7d17cfa48fb58e6ce70d88d754163c54c1d074d338a4` 與
+`6025b37b88c923ead20c61592392684bc2b92880feae1cc2412c9f2bb88d8ba0`。
+
+Borland symbol table 新確認 `TEMPSEARCH=0C29:BDF1h`、`SEARCHREC` type 1458
+size `002Bh`，以及 `LOAD3DMAP=017C:1253h`、`BLOCKCODE=017C:04DEh`、
+`MOVEPARTY=00C9:0BCCh`。overlay-02 local `3BB8h..3BFDh` 的連續 bytes 是：
+從 `ES:[DI+594h]` 讀值並 `AND FFFDh`，寫入 `DS:0BDF1h`，暫時把同一 record
+`+594h` 設為 `1`，中間呼叫狀態／UI流程，之後從 `BDF1` 還原 `+594h`，最後呼叫
+far `014A:00DEh`。TPOV resolver 將該 stub 對到 overlay-24 `SHOWLOCATION`
+local `2E8Ch`；因此這是 `+594h` 的暫存／顯示狀態 bridge（raw writer／reader
+是 `exact`，整體用途為 `strong inference`），不是 map third-plane writer。
+overlay-11 local `06BEh..06CDh` 的 `C606F1BD00`、`F2BD`、`F3BD`、`F4BD` 只是
+初始化清零。
+
+同輪以 `LOAD3DMAP (017C:1253h)` 的 `0402h` gate、named `THE3DMAP (0C29:A2A0h)`
+四平面 copy，以及 `BLOCKCODE／WALLCODE` 對 `THE3DMAP +000／+100／+300` 的
+mask／座標讀取，閉合 loader／buffer／普通 movement reader 的靜態邊界；這仍不
+包含秘密門 writer。完整資料流見新增 `scripts/ida/pc98_load3dmap_dataflow_audit.idc`。
+
+本輪沒有新增 engine／JSON／movement 規則，也沒有完成 `(13,10)`→`(8,15)`。
+worklist 的 P0-2 下一個入口改為 `MOVEPARTY` action transaction、`SEARCHREC`
+member owner 是否寫回 `THE3DMAP` 第三平面，以及 writer→projection→movement
+consumer 的 runtime trace；P0-1 仍追
+DOS selector／consumer／runtime。完整證據見
+`docs/spec/525-pc98-tempsearch-display-state.md`；新增非破壞性工具為
+`scripts/ida/pc98_search_state_xref_audit.idc`。compact 後不要把 `BDF1` 再當成
+秘密門先驗，也不要把 `SEARCHREC`／`SECRET`／`HIDDEN` 名稱直接當作已證實規則。

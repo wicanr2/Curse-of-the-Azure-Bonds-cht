@@ -1822,6 +1822,33 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   round 56／spec 524 閉合的 GEO DAX header／plane parser，下一步只追 selector→
   consumer→runtime。
 
+### 第 525 輪 PC-98 `TEMPSEARCH/BDF1` 邊界（2026-08-09）
+
+- PC-98 `PC98-GAME.EXE` 的 Borland symbol table 以 `TEMPSEARCH=0C29:BDF1h`
+  正式命名該欄位；overlay-02 local `3BB8h..3BFDh` 的連續 bytes 會從目前角色
+  `+594h` 讀值、`AND FFFDh` 後寫入 `BDF1`，暫時把 `+594h` 設成 `1`，再從
+  `BDF1` 還原並呼叫 far stub `014A:00DEh`。TPOV resolver 將 stub 對到
+  overlay-24 `SHOWLOCATION` local `2E8Ch`。這是 `+594h` 暫存／顯示狀態 bridge，
+  不是已證實的秘密門第三平面 writer。
+- overlay-11 local `06BEh..06CDh` 的 `C606F1BD00`、`F2BD`、`F3BD`、`F4BD`
+  只是 `BDF1..BDF4` 初始化清零；resident `.i64` 對 `BDF1` 沒有 direct dref
+  只表示 overlay／間接讀寫不在 resident graph 中，不能寫成「BDF1 沒有 consumer」。
+- 不得再把 `S`→`SHOWLOCATION`、暫時 `+594h=1`、Borland `SEARCHREC` type、
+  `SECRET` 或 `HIDDEN` 名稱當成秘密門已開、第三平面 writer 或 `wall=09/detail=0`
+  可走。第 525 輪已閉合 `LOAD3DMAP (017C:1253h)`／`BLOCKCODE
+  (017C:04DEh)` 的 loader／普通 reader；P0-2 下一個證據入口是
+  `MOVEPARTY (00C9:0BCCh)` 與 `SEARCHREC` member owner 的
+  writer→projection→movement consumer。第 525 輪已閉合 `LOAD3DMAP` 的 `0402h`
+  gate、named `THE3DMAP (0C29:A2A0h)` 四平面 copy，以及 `BLOCKCODE／WALLCODE`
+  的 `+000／+100／+300` reader；不可重做這段 loader／普通 reader，也不可把它
+  當成秘密門 writer。在 bridge 與 runtime trace 閉合前，
+  `MoveDungeon` 必須維持 fail-closed。
+- 完整來源／hash／命令見 `docs/spec/525-pc98-tempsearch-display-state.md`；
+  新增非破壞性工具 `scripts/ida/pc98_search_state_xref_audit.idc` 與
+  `scripts/ida/pc98_load3dmap_dataflow_audit.idc`。本輪沒有修改
+  engine、CoAB JSON、movement graph 或 secret-door 規則；11 個行為主題與 4 個
+  fidelity／發行主題數量不變。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。

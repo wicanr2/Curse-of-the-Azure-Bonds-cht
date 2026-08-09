@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百二十五輪 PC-98 `TEMPSEARCH/BDF1` 暫存狀態與 `SHOWLOCATION` 邊界](./525-pc98-tempsearch-display-state.md)（`READY`：`BDF1` 的暫存／還原與初始化；不含秘密門 writer／正常路徑）
 - [第五百二十四輪 DOS overlay-30 `GEO<區域>.dax` loader 與四平面來源](./524-dos-overlay30-geo-loader-source.md)（`READY`：`GEO`／`.dax` source fragments、`0402h` decoded-size gate、`+002h` 四平面 payload；不含 selector producer／正常移動 handoff）
 - [第五百二十三輪 DOS control vector 26 → overlay-07 `1B3Fh`](./523-dos-overlay07-vector26-entry.md)（`READY`：`006B:00A2h`、vector bytes 與 overlay-02 `401Fh` 靜態 dispatcher caller；不含普通鍵盤 producer／loader runtime／地圖 handoff）
 - [第五百二十二輪 DOS `DS:7206h` 四平面填入與暫存 loader 邊界](./522-dos-buffer-four-plane-fill.md)（`READY`：四次 `Move` 的 `+000/+100/+200/+300` destination、每段 `0100h` 與暫存 `FreeMem`；不含正式 map plane 語意／正常 handoff）
