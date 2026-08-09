@@ -125,3 +125,9 @@ handler，或把 `017F:003Eh` 直接命名成秘密門／座標 writer，應以�
 勘誤；該描述沒有進入正式 JSON、engine 或正常路徑 regression。這個 accessor
 仍只屬 `strong inference` 的 cell-layer candidate，不能升格成 wall／terrain／
 secret-door 語意。
+
+第 520 輪再找到 overlay-07 local `1B3Fh` 的 `DS:720F／7210` update、
+`DS:7213／7212` result writers，以及 overlay-28 的 vector 6 consumer；因此
+「writer 尚未找到」只適用於第 519 輪當時，現在改為「writer 的 raw site 已知，
+正式語意／projection／runtime consumer 未知」。完整 bridge 以
+[`spec 520`](./520-dos-movement-to-overlay-cell-layer-bridge.md) 為準。

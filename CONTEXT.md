@@ -4269,3 +4269,30 @@ IDA report hash：overlay-30
 的 writer／consumer，再接 `C04B..C04F` 與 DOSBox runtime；在資料流閉合前不
 新增 secret-door 規則。完整規格見
 `docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`。
+
+2026-08-09 第五百二十輪沿所有 direct DS operand candidate 做有界 IDA 稽核，
+把 P0-1 的欄位 bridge 再縮小，但沒有新增遊戲規則。overlay-07 local `1B3Fh`
+精確讀取 `DS:7211h` 的 `0／2／4／6`，將 `DS:720Fh／7210h` 在 `0..0Fh`
+循環更新；接著 `017F:003Eh` 的 AL 寫入 `DS:7213h`，
+`017F:0034h` 的 AL 寫入 `DS:7212h`，並設 `DS:8B68h=1`。該 local routine
+在同一 overlay 的 direct IDA code xref 為 0，正常輸入／間接 entry 未完成。
+
+overlay-11 local `00E9h` 將 `DS:7206h` 與 `0400h` 傳給 `0A54:0329h`；
+`03F2..03FCh`／`078Eh..0798h` 寫入 `DS:720F=07h`、`DS:7210=0Dh`、
+`DS:7211=00h／02h`。overlay-30 vector 4 `06BDh` 讀 `+000／+100` high／low
+nibble，vector 6 `07C6h` 讀 `+200h` byte；overlay-28 local `00CCh` 呼叫
+vector 6、比較 `DS:7213h` 與 `7Fh`，稍後另呼叫 vector 7
+`017F:0043h → 0841h`。因此 `0841h` 的確是獨立 vector 7 路徑，不能混入
+ECL `2E10h` target。overlay-14 control segment `00D2h` 的 vector 4 `003Eh`
+另有 `+300h` mask read/write candidate，不能跨 module 合併。
+
+本輪仍維持 11 個行為逆向主題與 4 個 fidelity／發行主題；沒有修改 engine、
+JSON 或 movement predicate。新增 `docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`、
+`scripts/ida/dos_overlay07_movement_audit.idc`、
+`scripts/ida/dos_overlay_ds_field_audit.idc`、
+`scripts/ida/dos_overlay_ds_context_audit.idc`，並更新 worklist、spec index、
+README、`docs/project-status.md` 與 AGENTS。下一步追 `0A54:0329h` owner／
+呼叫慣例、overlay-07 間接 entry、`DS:7212／7213` 正式 consumer、
+`C04B..C04F` projection 與 DOSBox runtime；在資料流閉合前不新增
+secret-door／search JSON。完整規格見
+`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`。

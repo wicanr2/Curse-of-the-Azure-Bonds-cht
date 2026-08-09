@@ -33,7 +33,7 @@ projection、runtime redraw／位置 consumer 仍未閉合，所以 11＋4 的�
 
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
-| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。`07C6h` 只精確到兩個 word、`0..0Fh` bounded 16×16 index、`DS:7206h` far pointer 與 `ES:[DI+0200h]` byte read；其 map plane／writer／consumer 未知。既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 `DS:7206h` 初始化／owner、`DS:720F／7210／7213` writer／consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `4BF0h`，必須先證明它所屬位址空間與實際 consumer |
+| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。overlay-07 local `1B3F` 已精確找到 `DS:720F／7210` 的 `0..0Fh` 循環更新與 vector 6／4 呼叫；overlay-11 已精確找到 `DS:7206h`＋`0400h` 外部 call-site 及初始 `7／0Dh／0或2`。overlay-30 vector 6 仍只精確到 `ES:[DI+0200h]` byte read，overlay-28 另有 `DS:7213h` consumer 與獨立 vector 7 `0841h` 路徑；map plane／規則／consumer 仍未知。既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 解析 `0A54:0329h` 的 DS:7206 owner／呼叫慣例、overlay-07 `1B3Fh` 的正常／間接 entry、DS:7212／7213 的正式 consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `+300h` 或 `4BF0h`，必須先證明其所屬位址空間與實際 consumer |
 | P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明抽樣的 `wall=09/detail=0` 不能普通通過；`S` 只精確到目前角色 record `+594h` bit 0 與 `SHOWLOCATION`。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到第三平面 writer；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
@@ -83,6 +83,27 @@ overlay-30 local `07C6h` 的 raw／IDA 連續指令顯示 `retf 4`，不是 `ret
 2. 分開追 `DS:720F／7210／7213` 及 vector 4 的 `DS:7211／7212` writer／consumer。
 3. 將 `C04B..C04F`、目的地 producer、map projection 與 DOSBox runtime redraw／
    位置 trace 接成同一條資料流。
+
+### 第 520 輪 P0-1 movement／consumer bridge
+
+本輪沿所有 direct DS operand candidate 做有界 IDA 稽核，新增下列可回查資料：
+
+- `overlay-07:1B3Fh` 依 `DS:7211h` 的 `0／2／4／6` 更新 `DS:720Fh／7210h`，
+  兩欄各在 `0..0Fh` 循環；接著 `017F:003Eh` 的 AL 寫入 `DS:7213h`，
+  `017F:0034h` 的 AL 寫入 `DS:7212h`，最後寫 `DS:8B68h=1`。
+- `overlay-11:00E9h` 把 `DS:7206h` 與 `0400h` 傳給 `0A54:0329h`；
+  `03F2..03FCh`／`078Eh..0798h` 將兩欄初始化為 `07h／0Dh`，方向欄為
+  `00h／02h`。這是 call-site／writer exact，不替 callee 命名。
+- `overlay-30:06BDh`（vector 4）讀取 `+000h／+100h` 的高低 nibble；
+  `07C6h`（vector 6）讀取 `+200h` byte。`overlay-28:00CCh` 呼叫 vector 6、
+  比較 `DS:7213h` 與 `7Fh`，稍後另呼叫 vector 7 `017F:0043h → 0841h`。
+- `overlay-14:003Eh` 是另一個 control segment `00D2h` 的 `+300h` mask
+  read/write candidate；不能因 selector 編號相同就與 overlay-30 vector 4
+  合併。
+
+這些 bytes 把 `DS:720F／7210` 的 writer 與 vector consumer 範圍縮小，但沒有
+減少 11 個行為主題；完整 report／hash 見
+[`spec 520`](../spec/520-dos-movement-to-overlay-cell-layer-bridge.md)。
 
 ### P0-1 的新線索（尚未是結論，也不縮小成 `4BF0h`）
 
@@ -167,7 +188,7 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 
 第 519 輪後的下一個最有價值工作仍是 P0-1，但範圍已由「解析 vector target」
 縮小為「解析 vector target 的資料流與 runtime handoff」：先追
-`DS:7206h`、`DS:720F／7210／7213`、vector 4 的 sibling fields，再追
+`0A54:0329h`、overlay-07 `1B3Fh` 的 entry、`DS:7212／7213` consumer，再追
 `C04B..C04F` projection 與 DOSBox map／座標／方向 trace。overlay 22
 `[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98 `S`／`BDF1`
 目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。在 writer
@@ -176,4 +197,5 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`；
 第 518 輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`；
 第 519 輪 overlay vector／cell-layer 邊界見
-`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`。
+`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`；第 520 輪 movement／
+consumer bridge 見 `docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`。
