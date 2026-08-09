@@ -4235,3 +4235,37 @@ AGENTS 已同步。另在 extracted `GAME.OVR overlay-02` 的 local `0x2F23`、
 下一步仍追 ECL／overlay 間接 dispatch 的目的地 producer→
 `C04B..C04F`／map service projection→`CALL 2E10h` consumer，保持 P0-1 的
 `strong inference` 與未知邊界。
+
+2026-08-09 第五百一十九輪完成 DOS overlay vector 的靜態對齊與錯誤摘要勘誤。
+Docker 使用 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610`，以原始
+`START.EXE`（SHA-256
+`dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`）、baseline
+`START.EXE.i64`（SHA-256
+`9df802ee4ef71fb2eda83257e0ed2d87adf0ee2d10241d3bdbdc6bc369fe47eb`）與完整
+`GAME.OVR`（SHA-256
+`53507d95f65e773ebc0934490e8dd180613f10c9cf4bbad3eed1cf90a9858215`）交叉核對。
+MZ header `0x7B0`、image paragraph `017Fh` 對到 raw control block `0x1FA0`；
+`+04=0x3DF87`／`+08=0x147F` 與 extracted overlay-30 對應。vector table
+`+20h` 每筆 5 bytes，`017F:003Eh` 是 vector 6，raw `CD 3F C6 07 00`，
+目標是 overlay-30 local `07C6h`；相鄰 vector 7 的 `CD 3F 41 08 00` 才是
+`0841h`，不得再混用。
+
+overlay-30 `07C6h` 的 raw／IDA 邊界是兩個 word 參數、`0..0Fh` bounded 16×16
+index、`DS:7206h` far pointer、`ES:[DI+0200h]` byte read 與 `retf 4`。此前
+臨時摘要若寫成 `retf 6`／`+0100h`，已在正式文件中勘誤；沒有進 engine、JSON
+或 regression。這只閉合 ECL selector→control vector→overlay routine 的靜態
+子邊界，沒有閉合 map plane、DS work-cell writer、`C04B..C04F` projection、
+runtime handoff 或 secret-door。11 個行為逆向主題與 4 個 fidelity／發行主題
+數量不變。
+
+新增 `docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`、
+`scripts/ida/dos_overlay30_vector_audit.idc`、
+`scripts/ida/dos_start_dseg_offset_audit.idc`；更新 worklist、spec index、
+README、`docs/project-status.md`、AGENTS 與 spec 518 的 current-state 勘誤。
+IDA report hash：overlay-30
+`a5dcac047d3b8174b7e9d7e469501397b8d941f90c1643ae50c3530e37b0d7cf`，START dseg
+`f053842090ddc59c21b5193d2877c6ee76cc36c0bd3135d15582f20c6f454a99`。下一步追
+`DS:7206h` owner／初始化、`DS:720F／7210／7213` 與 vector 4 sibling fields
+的 writer／consumer，再接 `C04B..C04F` 與 DOSBox runtime；在資料流閉合前不
+新增 secret-door 規則。完整規格見
+`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`。

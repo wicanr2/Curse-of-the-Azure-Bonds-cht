@@ -90,7 +90,7 @@ CoAB remake 的 bounded probe 在已知候選位置呼叫 `SearchDungeonLocation
 remake runtime 的 entry observation，不是原版秘密門語意，也不計入正常路徑
 完成證據。probe 留在 `workplace/` 供後續追查，不能移入正式 regression。
 
-## 下一個反組譯順序
+## 第 517 輪當時的下一個反組譯順序
 
 1. 先追 DOS ECL2 block 3 `CALL 2E10h` 的 redraw／位置 consumer，以及它之前
    的目的地 producer；並分開解析 ECL work address 與 overlay 22 的
@@ -105,3 +105,24 @@ remake runtime 的 entry observation，不是原版秘密門語意，也不計�
 
 本輪沒有新增遊戲規則，亦沒有把 direct-entry 或 coordinate-assisted probe
 勾成正常玩家路徑。
+
+## 第 519 輪更新
+
+上述第 517 輪的第一項已完成一個**靜態 dispatch 子邊界**，但不是完成 P0-1：
+`ECL 2E10h → selector AE11h → START control vector 017F:003Eh →
+overlay-30 local 07C6h` 已由 raw control block 與 extracted `GAME.OVR`
+offset 閉合。`07C6h` 只精確到兩個 word 參數、16×16 bounded index、
+`DS:7206h` far pointer 與 `ES:[DI+0200h]` byte read；map plane、座標 writer、
+`C04B..C04F` projection 與 runtime consumer 仍是未知。
+
+因此目前反組譯路由改為：
+
+1. 追 `DS:7206h` far pointer 的初始化／owner 與 overlay relocation。
+2. 追 `DS:720F／7210／7213` 及 vector 4 的 `DS:7211／7212` writer／consumer，
+   不跨位址空間合併相同十六進位數字。
+3. 回到 `C04B..C04F` 與 DOSBox 原版 runtime，閉合目的地 producer → map
+   projection → redraw／位置 consumer。
+4. 只有正常輸入、writer、movement consumer 與 runtime state 同時閉合後，才
+   重評估 `secret_door`／`search` JSON；本輪不新增 movement 特判。
+
+完整證據見 [`spec 519`](./519-dos-overlay-vector-to-cell-layer-accessor.md)。

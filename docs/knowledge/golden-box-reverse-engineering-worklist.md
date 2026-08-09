@@ -1,6 +1,6 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-09（第 518 輪盤點）
+更新日期：2026-08-09（第 519 輪盤點）
 
 本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
@@ -17,6 +17,12 @@
 規則 2 個；另有 4 個以 fidelity／音訊／發行為主的主題。這些是工作流數量，
 不是函式數量或完成百分比；詳見 `docs/spec/517-reverse-engineering-gap-inventory.md`。
 
+第 519 輪只關閉 P0-1 的一個靜態子邊界：ECL selector 已可由 `017F:003Eh`
+對到 START control vector 6 與 overlay-30 local `07C6h`，並確認它是兩參數的
+16×16 indexed layer read candidate。地圖 plane、目的地 writer、`C04B..C04F`
+projection、runtime redraw／位置 consumer 仍未閉合，所以 11＋4 的工作流數量
+不變，也沒有資格新增 secret-door 或 movement 規則。
+
 目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
 已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
 所有外部 routine、所有分支或整條開場到結局路徑都已反組完成。`PLAN.md` 目前只有
@@ -27,7 +33,7 @@
 
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
-| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；既有 `CALL` 規格把 `2E10h` 定位為 redraw／位置 consumer 邊界；同一次 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。IDA 找到的 DOS overlay 22 `[di+4BF0h]` 只是 indexed far-pointer table candidate，目前不能當成地圖或 ECL handoff 證據。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 `2E10h` 前的目的地 producer、`C04B..C04F`／map service projection 與 consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `4BF0h`，必須先證明它所屬位址空間與實際 consumer |
+| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。`07C6h` 只精確到兩個 word、`0..0Fh` bounded 16×16 index、`DS:7206h` far pointer 與 `ES:[DI+0200h]` byte read；其 map plane／writer／consumer 未知。既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 `DS:7206h` 初始化／owner、`DS:720F／7210／7213` writer／consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `4BF0h`，必須先證明它所屬位址空間與實際 consumer |
 | P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明抽樣的 `wall=09/detail=0` 不能普通通過；`S` 只精確到目前角色 record `+594h` bit 0 與 `SHOWLOCATION`。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到第三平面 writer；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
@@ -55,6 +61,28 @@ sub ax,7FFFh`、`0x2F2C cmp ax,AE11h`、`0x2F39 call far 017F:003Eh`。
 尋找 `2E10h` literal，而是解析 `017F:003Eh` 的 module／重定位與後續 consumer。
 抽取檔名 `overlay-02` 與公開 reference 的 `ovr003` 標籤尚未證明是同一編號，
 兩者暫不合併。
+
+### 第 519 輪 P0-1 靜態 dispatch 子邊界
+
+第 519 輪以 `START.EXE` MZ header `0x7B0`、control image paragraph `017Fh`
+與 raw offset `0x1FA0` 重新對齊 overlay manager control block。`+04` 的
+`0x3DF87` 與 `+08` 的 `0x147F` 分別吻合 `GAME.OVR` 的 overlay-30 起點與
+長度；vector table 在 raw `0x1FC0`，`017F:003Eh = +20h + 6×5`，因此 vector
+6 的 bytes 是 `CD 3F C6 07 00`，目標是 local `07C6h`。相鄰 vector 7 的
+`CD 3F 41 08 00` 才是 `0841h`；`0841h` 不得再當成 ECL `2E10h` target。
+
+overlay-30 local `07C6h` 的 raw／IDA 連續指令顯示 `retf 4`，不是 `retf 6`；
+其真正 read 是 `ES:[DI+0200h]`，不是 `+0100h`。前置 `local 0556h`／
+`DS:8B5Eh` guard、`DS:7206h` far pointer 與 bounded index 都保留在
+[`spec 519`](../spec/519-dos-overlay-vector-to-cell-layer-accessor.md)。
+這項修訂只清掉臨時位移／摘要誤讀，沒有進入 engine、JSON 或 regression。
+
+因此 P0-1 的下一步不再是「找 `017F:003Eh` 的 module」，而是：
+
+1. 找 `DS:7206h` far pointer 的初始化、owner 與 relocation。
+2. 分開追 `DS:720F／7210／7213` 及 vector 4 的 `DS:7211／7212` writer／consumer。
+3. 將 `C04B..C04F`、目的地 producer、map projection 與 DOSBox runtime redraw／
+   位置 trace 接成同一條資料流。
 
 ### P0-1 的新線索（尚未是結論，也不縮小成 `4BF0h`）
 
@@ -137,12 +165,15 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
 5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
 
-第 518 輪後的下一個最有價值工作仍是 P0-1：改從 ECL／overlay dispatch 或
-間接 map service 追 DOS ECL2 block 3 `CALL 2E10h` 的 redraw／位置 consumer，
-以及它之前的目的地 producer／`C04B..C04F` projection。overlay 22
+第 519 輪後的下一個最有價值工作仍是 P0-1，但範圍已由「解析 vector target」
+縮小為「解析 vector target 的資料流與 runtime handoff」：先追
+`DS:7206h`、`DS:720F／7210／7213`、vector 4 的 sibling fields，再追
+`C04B..C04F` projection 與 DOSBox map／座標／方向 trace。overlay 22
 `[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98 `S`／`BDF1`
 目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。在 writer
 閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
 
 最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`；
-本輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`。
+第 518 輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`；
+第 519 輪 overlay vector／cell-layer 邊界見
+`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`。

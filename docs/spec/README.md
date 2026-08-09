@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百一十九輪 DOS overlay vector → 16×16 cell-layer accessor](./519-dos-overlay-vector-to-cell-layer-accessor.md)（`READY`：`017F:003Eh` → vector 6 → overlay-30 `07C6h` 靜態邊界；不含 map plane／writer／runtime handoff）
 - [第五百一十八輪 DOS `CALL 2E10h` 位址空間稽核](./518-dos-start-ecl-call-address-space-audit.md)（`READY`：`START.EXE` resident direct-code 候選排除；不含 external handler／地圖 handoff）
 - [第五百一十五輪火刀戰後地圖位置轉移資料契約](./515-fire-knife-map-position-transition.md)（`READY`：戰鬥續跑後由 engine＋JSON 將 `(1,8)` 投影到 `(13,10)`；轉移來源為 `strong inference`，不含第二個 block 4 handoff）
 - [第五百一十四輪提爾佛頓下水道入口至火刀檢查站](./514-normal-tilverton-sewer-entry-route.md)（`READY`：10 步正常 GEO 移動、per-turn PRESS／正式 SEARCH、五名火刀戰鬥與戰後續跑；不含騎士後段、block 4 與完整下水道）

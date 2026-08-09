@@ -1652,6 +1652,37 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   P0-1 的間接 dispatch／runtime trace，所有 `unknown／hypothesis` 仍須維持原
   推論等級。
 
+### 第 519 輪 DOS overlay vector → cell-layer 靜態邊界
+
+- 第 519 輪以 Docker 內 `ida-pro-9.4-ver2:uidfix-v1` 的 IDA Pro `9.4.0.260610`
+  重新核對 `START.EXE` MZ control block 與 `GAME.OVR` raw offset。`START.EXE`
+  SHA-256 為 `dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`，
+  baseline `START.EXE.i64` 為
+  `9df802ee4ef71fb2eda83257e0ed2d87adf0ee2d10241d3bdbdc6bc369fe47eb`，完整
+  `GAME.OVR` 為
+  `53507d95f65e773ebc0934490e8dd180613f10c9cf4bbad3eed1cf90a9858215`。
+- MZ header `0x7B0`、image paragraph `017Fh` 對到 raw control block `0x1FA0`；
+  `+04=0x3DF87`、`+08=0x147F` 與 extracted overlay-30 的 raw offset／長度
+  吻合。vector table 從 control `+20h` 開始，每筆 5 bytes；`017F:003Eh`
+  是 zero-based vector 6，raw `CD 3F C6 07 00`，目標為 overlay-30 local
+  `07C6h`。
+- **位移勘誤固定規則：** 相鄰 vector 7 的 raw `CD 3F 41 08 00` 才指向
+  `0841h`；`0841h` 不是 ECL `2E10h` 的 target。若 compact 後看到交接摘要把
+  `0841h` 當成 vector 6，必須回到 raw vector table，不得沿用。
+- overlay-30 local `07C6h` 的 exact static boundary 是：兩個 word 參數、
+  `0..0Fh` bounded 16×16 index、`DS:7206h` far pointer、
+  `ES:[DI+0200h]` byte read 與 `retf 4`。若舊臨時筆記寫成 `retf 6`／`+0100h`，
+  以 raw bytes 與 `docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`
+  為準；該錯誤沒有進正式 engine／JSON／regression。
+- 這只把「ECL selector → control vector → overlay routine」靜態邊界閉合；
+  `DS:7206h` owner／初始化、`DS:720F／7210／7213` writer／consumer、
+  `C04B..C04F` projection、map plane、runtime redraw 與 secret-door 語意仍是
+  `unknown` 或 `strong inference`，不得新增 movement 特判。11 個行為主題與
+  4 個 fidelity／發行主題數量不變。
+- 版本化工具為 `scripts/ida/dos_overlay30_vector_audit.idc` 與
+  `scripts/ida/dos_start_dseg_offset_audit.idc`；只操作 disposable database，
+  不改原始 binary／baseline `.i64`。完整 hash／report 見 spec 519。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。
