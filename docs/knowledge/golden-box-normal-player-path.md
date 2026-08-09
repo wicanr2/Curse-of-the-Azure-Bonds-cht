@@ -159,8 +159,9 @@ per-turn text、按鍵 continuation 與 explicit SEARCH 是三個可追蹤的交
 檢查站與戰後 boundary。第 515 輪已把火刀戰後第一個 `(1,8)`→`(13,10)`
 handoff 移入 engine `MapPositionTransition` 與 CoAB JSON event；State 不再由
 測試直接寫入騎士座標。這筆轉移目前是 `strong inference`：raw ECL
-`CALL 2E10h`、PC-98 movement service、GEO component 分析與既有事件路徑一致，
-但 DOS `4BF0h／4BF1h` writer→consumer 尚未 exact 閉合。不能只因看見同一張
+`CALL 2E10h`、PC-98 movement service、GEO 關閉狀態可行圖分析與既有事件路徑一致，
+但 DOS ECL work address 與 overlay 22 `[di+4BF0h]` indexed table 的
+writer→projection→consumer 尚未 exact 閉合。不能只因看見同一張
 GEO map 就假設左右 component 有開路相連，也不可用 BFS 穿過實心牆。騎士後到
 block 4 `(8,15)` 的第二個外部 handoff 仍待證據與正常輸入驗證。
 

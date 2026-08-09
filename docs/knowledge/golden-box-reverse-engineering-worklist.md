@@ -1,6 +1,6 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-09（第 516 輪盤點）
+更新日期：2026-08-09（第 517 輪盤點）
 
 本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
@@ -12,6 +12,11 @@
 真正缺的是「會改變玩家可玩結果」的資料流：輸入／ECL opcode → 外部 routine 或
 地圖服務 → state／renderer／戰鬥／存檔 consumer → 可重播的 runtime 結果。
 
+以資料流為單位，目前還有 11 個直接影響正常玩家結果的逆向主題：P0 外部地圖／
+正常路徑 3 個、P1 ECL／外部 routine 4 個、戰鬥規則／AI 2 個、存檔／AD&D 角色
+規則 2 個；另有 4 個以 fidelity／音訊／發行為主的主題。這些是工作流數量，
+不是函式數量或完成百分比；詳見 `docs/spec/517-reverse-engineering-gap-inventory.md`。
+
 目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
 已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
 所有外部 routine、所有分支或整條開場到結局路徑都已反組完成。`PLAN.md` 目前只有
@@ -22,13 +27,23 @@
 
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
-| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；同一次 remake trace 沒有 `C04Bh/C04Ch` 寫入；`GEO2.DAX` 兩個 component 不相連。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 DOS `4BF0h／4BF1h` 或等價 producer 的完整 writer → external service → consumer，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器 |
-| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明 wall type 09/detail 0 不能普通通過；`S` 只切換角色 record `+594h` bit 0，再呼叫 PC-98 `014A:00DE` TPOV stub → overlay 24 `SHOWLOCATION` `2E8Ch`。目前沒有 S → 第三平面 writer 的閉合證據；攻略的 `~` 只能算 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能只因 BFS 路徑漂亮就放行 detail 0，也不能直接寫入 `(8,15)` |
+| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；既有 `CALL` 規格把 `2E10h` 定位為 redraw／位置 consumer 邊界；同一次 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。IDA 找到的 DOS overlay 22 `[di+4BF0h]` 只是 indexed far-pointer table candidate，目前不能當成地圖或 ECL handoff 證據。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 `2E10h` 前的目的地 producer、`C04B..C04F`／map service projection 與 consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `4BF0h`，必須先證明它所屬位址空間與實際 consumer |
+| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明抽樣的 `wall=09/detail=0` 不能普通通過；`S` 只精確到目前角色 record `+594h` bit 0 與 `SHOWLOCATION`。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到第三平面 writer；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
 P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inference`；P0-2、P0-3
 不得再新增直接座標注入。任何 probe 都必須在測試名稱與規格中明寫
 `coordinate-assisted`，不能被算入正常玩家路徑。
+
+### P0-1 的新線索（尚未是結論，也不縮小成 `4BF0h`）
+
+DOS extracted `overlay-22.bin` 的 IDA Pro 9.4 disposable report 在 overlay-local
+`0x0969／0x096D` 看見 `[di+4BF0h]／[di+4BF2h]` writer，在 `0x03CF` 看見同形
+far-pointer reader，在 `0x099D` 看見 indexed clear。這只能把「overlay 22 的
+indexed table」列入位址空間稽核，不得把相同數字直接命名成 ECL
+`4BF0h／4BF1h`、地圖座標或 `set_map_position` 來源。這筆命中目前不會把
+P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址基準見
+`docs/spec/517-reverse-engineering-gap-inventory.md`。
 
 ## P1：可重用引擎與完整遊戲行為
 
@@ -101,6 +116,11 @@ P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inferenc
 4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
 5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
 
-下一個最有價值的工作是 P0-2：先用既有 PC-98 `MOVEMENT`／ECL2 證據確認秘密門
-writer 是否存在，再決定是否需要 DOSBox runtime capture；在此之前不改 movement
-規則、不把 detail 0 泛化成可走門。
+第 517 輪的下一個最有價值工作仍是 P0-1：直接追 DOS ECL2 block 3
+`CALL 2E10h` 的 redraw／位置 consumer，以及它之前的目的地 producer／
+`C04B..C04F` projection；overlay 22
+`[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98 `S`／`BDF1`
+目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。在 writer
+閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
+
+最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`。

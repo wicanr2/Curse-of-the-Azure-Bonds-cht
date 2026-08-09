@@ -6,8 +6,9 @@
 ## 目的
 
 第 515 輪已把火刀戰後第一個 `(1,8)`→`(13,10)` 位置轉移改成資料包契約，但
-來源仍是 `strong inference`。本輪不直接猜測第二個 handoff，而是盤點 DOS／PC-98
-目前已能證明的資料流，確認下一個反組譯工作的範圍。
+來源仍是 `strong inference`。目前的 `CALL 2E10h` 規格只把它定位為 redraw／
+位置 consumer 邊界，不能倒推它就是目的地 writer。本輪不直接猜測第二個 handoff，
+而是盤點 DOS／PC-98 目前已能證明的資料流，確認下一個反組譯工作的範圍。
 
 ## 輸入與工具
 
@@ -27,8 +28,10 @@
 
 ECL2 block 3 `+1B5Bh` 的清理 branch 會呼叫 `2E10h`；同一 remake runtime trace
 在火刀戰勝利後 PRESS 續跑到該 PC 時，沒有 `C04Bh／C04Ch` `SAVE`，狀態仍在
-`(1,8,S)`。`GEO2.DAX` block 3 的 `(1,8)` 與 `(13,10)` 不在同一合法 wall
-component，因此「直接沿同一 GEO 走過去」不是解釋。
+`(1,8,S)`。`GEO2.DAX` block 3 在目前第三平面／門狀態未變更時，從 `(1,8)` 到
+`(13,10)` 沒有符合目前 movement predicate 的路徑，因此「直接沿關閉狀態的
+GEO 走過去」不是解釋；這不等於地圖永久不相連，診斷器找到的 `wall=09` 候選
+邊仍需原版 writer／runtime 證據。
 
 DOS extracted overlays 的 raw little-endian candidate scan 沒找到 literal `4C28h`。
 這只證明沒有直接 literal 命中；指標、通用 interpreter 或資料表間接使用仍然可能，
@@ -106,15 +109,20 @@ overlay 24 `SHOWLOCATION` `0x2E8Ch`。它再次支持顯示／位置狀態回饋
   regression crosses `(8,15)`」不成立：測試當時直接寫入座標再呼叫 exit lifecycle。
   現檔已標 `SUPERSEDED`，保留 E2／`NEWECL 4` 的歷史 bytes 與勘誤。
 - `S` 呼叫 `SHOWLOCATION` 不等於 `S` 已開啟秘密門。
+- 「GEO component 永久不相連」不成立；目前只能保留「關閉狀態 movement graph
+  無路徑」的 geometry 觀察，不能用它排除秘密門。
 - PC-98 的 `BDF0/BDF1`、`+594h`、`+300h` 不可因數值相似而直接映射成 DOS
-  `4C28h`、`4BF0h／4BF1h` 或 CoAB GEO 欄位。
+  `4C28h`、ECL work `4BF0h／4BF1h` 或 CoAB GEO 欄位；DOS overlay 22 的
+  `[di+4BF0h]` 也必須先解決自己的 DS／indexed-table 位址空間。
 
 ## 下一個窄工作
 
 1. 以 `BDF1` overlay-2 consumer 的 caller／前後資料流為入口，找是否有 map
    service 的 address-taken writer；先查 writer，再查名字。
-2. 若 PC-98 仍只有顯示／record state，轉回 DOS `GAME.OVR` 的 `2E10h` caller、
-   `4BF0h／4BF1h` 間接取址與 runtime DOSBox trace。
+2. 若 PC-98 仍只有顯示／record state，轉回 DOS `GAME.OVR` 的 `2E10h` caller，
+   先追 consumer 讀取的 register／map state，再找其前置 producer；ECL work
+   `4BF0h／4BF1h` 與 overlay 22 `[di+4BF0h]` 間接取址的 projection／runtime
+   DOSBox trace 必須分開記錄。
 3. 只有找到 writer→projection→movement consumer 後，才新增資料驅動
    `secret_door`／`search` contract；在此之前保持 `MoveDungeon` fail-closed。
 

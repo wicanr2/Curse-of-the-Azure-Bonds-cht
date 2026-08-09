@@ -454,7 +454,8 @@
 - [第四百七十四輪青色印記夢境與提爾佛頓返城資料化](./474-bond-dream-tilverton-return-game-pack.md)（`READY`：七條雙語規則、高階祭司、四段夢境、禁止返城與世界旅行續跑）
 - [第四百七十五輪艾森布拉傳聞與 State 中文 fallback 清理](./475-essembra-tavern-tales-state-fallbacks.md)（`READY`：Tale 44／60 真實酒館鏈、兩條雙語規則與 27 筆 Go 譯文副本移除）
 - [第四百七十六輪紮營與 ALTER 介面資料分離](./476-camp-alter-locale-data-separation.md)（`READY`：正式 catalog、128 筆 Go 漢字移除與 Engine checkpoint 修正）
-- [第五百一十六輪火刀據點外部地圖／秘密門 handoff 盤點](./516-fire-knife-external-map-handoff-audit.md)（`DRAFT`：DOS／PC-98 writer、`S`／`+594h`、`BDF0/BDF1` 與錯誤斷言勘誤）
+- [第五百一十六輪火刀據點外部地圖／秘密門 handoff 盤點](./516-fire-knife-external-map-handoff-audit.md)（`DRAFT`：DOS／PC-98 writer、`S`／`+594h`、`BDF0/BDF1` 與證據邊界）
+- [第五百一十七輪逆向缺口盤點與 GEO 斷言勘誤](./517-reverse-engineering-gap-inventory.md)（`READY`：11 個行為逆向主題、4 個 fidelity／發行主題與 static GEO 斷言修正）
 - [第四百七十七輪 PROGRAM 終局介面資料分離](./477-program-terminal-locale-data-separation.md)（`READY`：全滅／勝利／存檔 stable IDs、兩條終局 transaction 與 37 人正常終戰）
 - [第四百九十四輪 PC-98 Quick Fireball 範圍落點與延遲交接](./494-pc98-quick-fireball-area-target.md)（`READY`：Quick Fireball bounded area center、pending point handoff、逐目標 visual／slot regression；候選 tie／random 與其他 Quick Area 仍未完成）
 - [第四百九十五輪 PC-98 Quick 毒雲術／死亡雲範圍交接](./495-pc98-quick-poison-cloud-area-target.md)（`READY`：Stinking Cloud／Cloudkill bounded area center、persistent effect、pending point 與低 HD／中斷 regression；候選 tie／random、完整 area-safety 與 Lightning Bolt line target 仍未完成）

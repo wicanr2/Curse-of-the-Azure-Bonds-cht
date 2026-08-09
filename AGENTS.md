@@ -380,7 +380,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
   移動交易、第 509 輪 PC-98 Action
   target／QUICK 清除與第 508 輪 SCAN producer
-  milestone；本輪另完成第 516 輪反組譯斷言盤點與 worklist，兩個 repository 的
+  milestone；本輪另完成第 517 輪反組譯缺口盤點與 worklist，兩個 repository 的
   實際 HEAD／remote 才是最終版本依據。
 - Engine dependency：`3bf5f0541cf46285f0fe824edb89caebaf954d9e`（第 515 輪
   GitHub `main` checkpoint；含作品中立 game-pack
@@ -1549,8 +1549,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - Engine 的 `set_map_position`／`Runtime.MapPositions` 是作品中立 contract。
   CoAB JSON predicate（`ECL block 3`、`7F72h=FDh`、`4C2Bh=1`）才宣告目前
   `(1,8)`→`(13,10,E)` handoff；State adapter 投影 GEO set/block、wall／roof
-  與 `C04B..C04F`。這筆轉移是 `strong inference`，不是 DOS `4BF0h／4BF1h`
-  writer→consumer 的 `exact` 結論。
+  與 `C04B..C04F`。這筆轉移是 `strong inference`；DOS ECL work address 與
+  overlay 22 `[di+4BF0h]` indexed table 的 writer→projection→consumer 尚未
+  閉合，不能把兩者當成同一位址空間。
 - `Select` 不得在 `CombatRequested` 時先套用 data-pack event；拒絕投降必須先
   建立五名 Fire Knife 戰鬥，只有戰勝後的 PRESS continuation 才能觸發位置事件。
 - 第 515 輪已把測試中第一個直接座標注入移除。第二個 `(8,15)`→block 4
@@ -1576,8 +1577,9 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   不在測試複製繁中顯示字串。
 - 第 514 輪原本的火刀戰後 `(13,10)` 騎士座標輔助已由第 515 輪
   `set_map_position` event 取代；該外部 handoff 仍標為 `strong inference`。
-  block 3 的靜態 GEO component 不可用 BFS 穿牆假造相連；騎士後到 block 4 的
-  第二個 handoff 仍須追 ECL／NEWECL／邊界 evidence，不得再新增直接座標注入。
+  block 3 在關閉狀態 movement predicate 下沒有合法路徑，不能用 BFS 穿牆假造
+  相連；這不判定地圖永久分成兩個 component，騎士後到 block 4 的第二個 handoff
+  仍須追 ECL／NEWECL／邊界 evidence，不得再新增直接座標注入。
 - 權威規格為 `docs/spec/514-normal-tilverton-sewer-entry-route.md`，知識庫為
   `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
   不得擴大成完整下水道、完整戰鬥、完整中文化或整作通關。
@@ -1585,9 +1587,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 第 516 輪反組譯盤點與斷言清理補充
 
 - 剩餘反組譯工作以 `docs/knowledge/golden-box-reverse-engineering-worklist.md`
-  為權威路由。P0 是火刀戰後第一個外部地圖 handoff 的 DOS writer→consumer、
-  騎士後 `(13,10)` 到 E2 `(8,15)` 的 secret-door／SEARCH bridge，以及 block 4
-  後續外部地圖／返回世界 handoff；不要以「READY spec 數量」估算完成率。
+  為權威路由。P0 是火刀戰後第一個外部地圖 handoff 的 DOS 目的地 producer→
+  `CALL 2E10h` redraw／位置 consumer、騎士後 `(13,10)` 到 E2 `(8,15)` 的
+  secret-door／SEARCH bridge，以及 block 4 後續外部地圖／返回世界 handoff；不要
+  以「READY spec 數量」估算完成率。
 - PC-98 `PC98-GAME.EXE` SHA-256
   `8bca0b50f47b5a41193584d3d4d1cd7361562ca3daf5360d3691620cc1b752c0` 的
   overlay-local 證據：`MOVEMENT` `PREMOVEPARTY` 的 `S` 只切換目前角色 record
@@ -1608,6 +1611,26 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - `docs/spec/297-fire-knife-hideout-transition.md` 的舊「formal regression crosses
   (8,15)」斷言已移入勘誤並標成 `SUPERSEDED`；`PLAN.md` 的 block 4 完成項也已
   改為未完成。compact 後不得恢復這兩個錯誤結論。
+
+### 第 517 輪逆向缺口盤點與 GEO 斷言勘誤
+
+- 目前以資料流計算，仍有 11 個直接影響正常玩家結果的逆向主題：P0 外部地圖／
+  正常路徑 3 個、P1 ECL／外部 routine 4 個、戰鬥規則／AI 2 個、存檔／AD&D
+  角色規則 2 個；另有 4 個 fidelity／音訊／發行主題。這不是 binary 行數、
+  函式數或 READY spec 數量的完成百分比。
+- 第 517 輪把「GEO component 永久不相連」降級為正確的「GEO2 block 3 在目前
+  第三平面／門狀態未變更時，movement graph 沒有合法路徑」。診斷器把
+  `wall=09/detail=0` 邊暫時視為開啟後找到的路徑，只是秘密門候選，不能直接
+  寫入 movement 或 JSON。
+- PC-98 `S` 仍只精確到 record `+594h` bit 0／`SHOWLOCATION`；`BLOCKCODE`
+  只證明 detail 0 不是普通可走格。CoAB `SearchDungeonLocation` 的 `PRESS`
+  是 remake entry observation，不是原版秘密門 writer 證據；`workplace/`
+  probe 不得移入正式 regression。
+- 下一步先追 DOS ECL2 block 3 `CALL 2E10h` 的 consumer 與前置目的地 producer，
+  並分開追 ECL work `4BF0h／4BF1h` 與 overlay 22 `[di+4BF0h]` indexed table
+  的 projection；只有資料流閉合後才能建立中立
+  `secret_door`／`search` JSON contract。完整盤點見
+  `docs/spec/517-reverse-engineering-gap-inventory.md`。
 
 ## 10. Compact 後恢復工作清單
 
