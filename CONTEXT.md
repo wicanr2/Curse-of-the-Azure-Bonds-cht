@@ -4588,3 +4588,17 @@ Root 受影響套件 `./gamepack ./internal/ecl ./internal/game` 與 nested engi
 完整輸入、證據等級與限制見 `docs/spec/530-dosbox-cheat-assisted-character-creation-evidence.md`。
 正常 copy-protection／冒險入口 trace 仍未完成；下一步不再重複同一啟動嘗試，回到
 已有 JSON／engine 契約或其他可驗證玩家 boundary。
+
+2026-08-10 第五百三十一輪完成角色建立 renderer 的原版風格基線。Docker 使用
+`rich2-go-ebiten:latest` 編譯後，以 `-opening` 建立開場 State，再把 `C` 鍵送到
+實際遊戲窗口；這條輸入抵達 `State.OpenCharacterCreation()`，不是直接注入
+`ModeCharacterCreation` 或座標。640×480 輸出
+`docs/screenshots/character-creation-remake-640.png` 的 SHA-256 為
+`f6ef2f54cf485610a8d62f64b007d06a4e87935e3d76991f22fbfe385abcb6a3`，確認
+`drawCreation` 先繪製本機原版裂紋石框，再使用 `compactFace` 的倚天粗體 16×15
+呈現標題、提示、選項、能力值與操作說明。這是 `layout-reconstructed` 的 remake
+畫面證據；不等於逐像素 DOS exact、完整角色建立、copy-protection 或整作通關。
+`go test ./gamepack ./internal/game ./internal/party` 與 Docker GUI build 均通過；
+正式 `go.mod` 沒有被測試用 local replace 改寫。下一輪仍以正常玩家路徑的 P0
+地圖 handoff／秘密門與未完成戰鬥、翻譯、音效、存檔為主，不要因這張 UI 截圖擴大
+完成聲明。

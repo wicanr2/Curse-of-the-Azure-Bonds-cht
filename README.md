@@ -14,13 +14,16 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 已接通的正常玩家路徑包含提爾佛頓開場、城市設施、城門／盜賊公會、下水道前段、
 火刀戰後的 Myth Drannor handoff，以及部分 Burial Glen／外圍遺跡／眼魔洞窟戰鬥。
 地城移動、ECL continuation、繁中手札、資料驅動選項、戰鬥效果與 640×480 原版
-風格畫面已有多個可重播切片；本輪並將 12 個既有玩家戰鬥法術的 CAST 入口、目標
+風格畫面已有多個可重播切片；角色建立現在也使用原版裂紋石框與倚天粗體 16×15
+密度；本輪並將 12 個既有玩家戰鬥法術的 CAST 入口、目標
 模式、施法時間與訊息 ID 接到 engine＋JSON；路徑仍會在後續區域遇到未完成的功能。
 
 最新完成度與驗證邊界請看
-[專案成果盤點](docs/project-status.md)。第 529 輪完成玩家戰鬥法術的資料契約，
+[專案成果盤點](docs/project-status.md)。第 531 輪完成角色建立的原版石框／中文字級
+版面基線；第 529 輪完成玩家戰鬥法術的資料契約，
 不把法術名稱或劇情塞回 Go；同時保留 P0-2 的 PC-98 MOVEPARTY 靜態證據，沒有猜測
-秘密門規則。詳細證據見[第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
+秘密門規則。詳細證據見[第 531 輪規格](docs/spec/531-character-creation-original-frame-density.md)、
+[第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
 [第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
 [第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
 [反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
@@ -31,6 +34,8 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 對應 spec 為準。
 
 ![繁中冒險畫面](docs/screenshots/gold-box-layout-adventure.png)
+
+![角色建立畫面：原版裂紋石框與 16×15 倚天字級](docs/screenshots/character-creation-remake-640.png)
 
 ![繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)
 

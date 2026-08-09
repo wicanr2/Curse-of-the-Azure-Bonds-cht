@@ -1,6 +1,13 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 531 輪完成角色建立 renderer 的原版風格基線。Docker/Xvfb 從 `-opening` 開場
+初始化後，將 `C` 鍵送到實際遊戲視窗進入角色建立；640×480 截圖確認本機抽出的
+裂紋石框與倚天粗體 16×15 密集選項區已接通。這是 `layout-reconstructed` 的
+remake UI 證據，不是完整角色建立、正常 copy-protection 或整作通關證據；畫面與
+重現命令見 [`docs/spec/531-character-creation-original-frame-density.md`](spec/531-character-creation-original-frame-density.md)，
+截圖為 [`docs/screenshots/character-creation-remake-640.png`](screenshots/character-creation-remake-640.png)。
+
 第 530 輪在 Docker DOSBox 內以原版 `START STING Wooden` 測試模式取得可重現的
 角色建立畫面，截圖確認 `MALE DWARF AGE 54`、能力值、等級、HP、THAC0 與原版
 石框／文字密度。這是 `cheat-assisted／layout-and-data evidence`；它不等於

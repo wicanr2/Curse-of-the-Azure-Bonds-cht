@@ -1813,16 +1813,22 @@ func dungeonDirectionName(direction uint8) string {
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
-	text.Draw(screen, a.state.LocaleText("creation_title"), a.face, 32, 52, cyan)
-	text.Draw(screen, a.state.CreationMessage, a.face, 32, 90, white)
+	// Character creation uses the same full-screen adventure chrome as the
+	// original DOS menus.  Keep the 16x15 CJK face here: the larger display
+	// face is useful for short headings, but makes the original option density
+	// impossible to preserve once Traditional Chinese labels are loaded.
+	a.drawOriginalAdventureFrame(screen)
+	face := a.compactFace
+	text.Draw(screen, a.state.LocaleText("creation_title"), face, 32, 52, cyan)
+	text.Draw(screen, a.state.CreationMessage, face, 32, 90, white)
 	if a.state.CreationEditing {
-		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), a.face, 48, 140, white)
-		text.Draw(screen, a.state.LocaleText("creation_name_help"), a.face, 48, 190, cyan)
+		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), face, 48, 140, white)
+		text.Draw(screen, a.state.LocaleText("creation_name_help"), face, 48, 190, cyan)
 		return
 	}
 	if a.state.CreationEditingAbilities {
 		character := a.state.CreationOptions[a.state.CreationCursor]
-		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_ability_title"), character.Name), a.face, 32, 135, white)
+		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_ability_title"), character.Name), face, 32, 135, white)
 		abilityKeys := []string{"ability_strength", "ability_intelligence", "ability_wisdom", "ability_dexterity", "ability_constitution", "ability_charisma"}
 		for index, key := range abilityKeys {
 			value, _ := character.Abilities.Value(index)
@@ -1831,9 +1837,9 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 				prefix = "> "
 			}
 			label := fmt.Sprintf(a.state.LocaleText("creation_ability_row"), a.state.LocaleText(key), value)
-			text.Draw(screen, prefix+label, a.face, 64, 175+index*25, white)
+			text.Draw(screen, prefix+label, face, 64, 175+index*25, white)
 		}
-		text.Draw(screen, a.state.LocaleText("creation_ability_help"), a.face, 48, 350, cyan)
+		text.Draw(screen, a.state.LocaleText("creation_ability_help"), face, 48, 350, cyan)
 		return
 	}
 	start := a.state.CreationCursor - 3
@@ -1855,11 +1861,11 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		label := prefix + fmt.Sprintf(a.state.LocaleText("creation_option_label"), character.Name,
 			a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
-		text.Draw(screen, label, a.face, 48, 150+(index-start)*32, white)
+		text.Draw(screen, label, face, 48, 150+(index-start)*32, white)
 	}
 	text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
-		len(a.state.CreationOptions), len(a.state.CreationRoster)), a.face, 48, 325, cyan)
-	text.Draw(screen, a.state.LocaleText("creation_help"), a.face, 48, 340, white)
+		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 325, cyan)
+	text.Draw(screen, a.state.LocaleText("creation_help"), face, 48, 340, white)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
