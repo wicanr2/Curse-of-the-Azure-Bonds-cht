@@ -4576,3 +4576,15 @@ Root 受影響套件 `./gamepack ./internal/ecl ./internal/game` 與 nested engi
 本輪沒有縮減 P0-1／P0-2／P0-3 逆向工作，也沒有新增秘密門／地圖規則；完整契約見
 `docs/spec/529-combat-player-spell-data-contract.md`，engine 共用知識庫見
 `golden-box-remake-engine/docs/knowledge/golden-box-player-spell-data-contract.md`。
+
+2026-08-10 第五百三十輪完成一輪有界 DOSBox 原版啟動取證。原始 DOS
+`START.EXE` SHA-256 為 `dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`，
+`GAME.OVR` SHA-256 為
+`53507d95f65e773ebc0934490e8dd180613f10c9cf4bbad3eed1cf90a9858215`；在 Docker
+暫存副本使用遊戲本身的 `START STING Wooden` 第二級測試模式，Space 後進入主選單、
+`C` 進入角色建立。截圖在姓名欄前可見 `MALE DWARF AGE 54`、能力值、`LEVEL 5`、
+`HP 46`、`THAC0 15` 與原版石框。這是 `cheat-assisted／layout-and-data evidence`，
+不是正常玩家路徑，也沒有把測試模式數值當成一般角色生成或地圖 runtime 證據；
+完整輸入、證據等級與限制見 `docs/spec/530-dosbox-cheat-assisted-character-creation-evidence.md`。
+正常 copy-protection／冒險入口 trace 仍未完成；下一步不再重複同一啟動嘗試，回到
+已有 JSON／engine 契約或其他可驗證玩家 boundary。

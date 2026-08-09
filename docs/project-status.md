@@ -1,6 +1,13 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 530 輪在 Docker DOSBox 內以原版 `START STING Wooden` 測試模式取得可重現的
+角色建立畫面，截圖確認 `MALE DWARF AGE 54`、能力值、等級、HP、THAC0 與原版
+石框／文字密度。這是 `cheat-assisted／layout-and-data evidence`；它不等於
+正常玩家路徑、冒險地圖、戰鬥或完整 remake。copy-protection、正常角色建立到
+冒險的 runtime trace 仍未閉合；完整限制與 hash 見
+[`docs/spec/530-dosbox-cheat-assisted-character-creation-evidence.md`](spec/530-dosbox-cheat-assisted-character-creation-evidence.md)。
+
 第 529 輪完成玩家戰鬥法術的 engine＋JSON 資料契約：新增
 `combat_player_spells` schema／validator／stable lookup，CoAB 宣告目前已有
 runtime helper 的 12 個法術，CAST、Quick CAST、pending CAST、目標模式、施法
