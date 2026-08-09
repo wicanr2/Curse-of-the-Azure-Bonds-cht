@@ -1,6 +1,6 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-09（第 517 輪盤點）
+更新日期：2026-08-09（第 518 輪盤點）
 
 本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
@@ -34,6 +34,27 @@
 P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inference`；P0-2、P0-3
 不得再新增直接座標注入。任何 probe 都必須在測試名稱與規格中明寫
 `coordinate-assisted`，不能被算入正常玩家路徑。
+
+### 第 518 輪 P0-1 位址空間排除結果
+
+Docker 內以 IDA Pro 9.4 開啟 `START.EXE.i64` 的 disposable copy，逐一掃描
+`START.EXE` 的 IDA segments。`LE16=2E10h` 唯一命中在 `seg043:0x6634`
+（IDA EA `0x16634`），IDA 將它解成非 code 的長度前綴字串
+`db 16,'. Check install.'`；對候選 EA `0x2E10` 與以 MZ base `0x10000`
+換算的 `0x12E10` 都沒有 direct code xref。完整輸入雜湊、工具版本與 raw bytes
+見 [`spec 518`](../spec/518-dos-start-ecl-call-address-space-audit.md)。
+
+這只排除「在 resident `START.EXE` 直接找 `sub_2E10`」的搜尋路徑；不表示
+`CALL` 沒有經 overlay dispatch、ECL interpreter、far pointer 或 map service
+執行。P0-1 仍須找到目的地 producer → `C04B..C04F`／map service projection
+→ `CALL 2E10h` consumer 的完整橋接，11 個行為逆向主題的數量不變。
+
+同輪在抽出的 `GAME.OVR overlay-02` 看到連續 code：`0x2F23
+sub ax,7FFFh`、`0x2F2C cmp ax,AE11h`、`0x2F39 call far 017F:003Eh`。
+`AE11h` 是 `2E10h−7FFFh` 的 16 位元 dispatch selector；這確認下一步不是
+尋找 `2E10h` literal，而是解析 `017F:003Eh` 的 module／重定位與後續 consumer。
+抽取檔名 `overlay-02` 與公開 reference 的 `ovr003` 標籤尚未證明是同一編號，
+兩者暫不合併。
 
 ### P0-1 的新線索（尚未是結論，也不縮小成 `4BF0h`）
 
@@ -116,11 +137,12 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
 5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
 
-第 517 輪的下一個最有價值工作仍是 P0-1：直接追 DOS ECL2 block 3
-`CALL 2E10h` 的 redraw／位置 consumer，以及它之前的目的地 producer／
-`C04B..C04F` projection；overlay 22
+第 518 輪後的下一個最有價值工作仍是 P0-1：改從 ECL／overlay dispatch 或
+間接 map service 追 DOS ECL2 block 3 `CALL 2E10h` 的 redraw／位置 consumer，
+以及它之前的目的地 producer／`C04B..C04F` projection。overlay 22
 `[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98 `S`／`BDF1`
 目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。在 writer
 閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
 
-最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`。
+最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`；
+本輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`。
