@@ -201,10 +201,11 @@ JSON、movement 特判或直接座標注入。可以移除的錯誤路由是：
 - 不再因 `SEARCHREC`、`SECRET`、`HIDDEN` 名稱存在，就替 `wall=09/detail=0`
   建立可走規則。
 
-下一個窄工作改為：在已閉合的 `LOAD3DMAP／BLOCKCODE` reader 邊界之外，追
-`MOVEPARTY (00C9:0BCCh)`、`SEARCHREC` type/member owner 與第三平面 writer
-之間的 writer→projection→movement consumer；仍須以同版本 DOS／PC-98 runtime
-trace 證明 map state 變更，才可實作正常玩家路徑。
+下一個窄工作改為：在已閉合的 `LOAD3DMAP／BLOCKCODE` reader 邊界之外，只追
+`MOVEPARTY (00C9:0BCCh)` 的 action trigger、map state 變更與
+writer→projection→movement consumer。第 526 輪已由 Borland type／DOS `INT 21h`
+consumer 確認 `SEARCHREC` 是檔案搜尋 record，不再列為地圖 writer owner；仍須以
+同版本 DOS／PC-98 runtime trace 證明 map state 變更，才可實作正常玩家路徑。
 
 ## 驗證命令與結論
 

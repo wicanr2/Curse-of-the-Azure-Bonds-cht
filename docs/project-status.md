@@ -1,8 +1,9 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 525 輪 PC-98 `TEMPSEARCH/BDF1` 暫存狀態／
-`SHOWLOCATION` 邊界（承接第 524 輪 DOS overlay-30 GEO loader／四平面來源、
+本 milestone 的 CoAB 基底：第 526 輪 PC-98 `MOVEPARTY` map-buffer writer／
+`SEARCHREC` 路由勘誤（承接第 525 輪 `TEMPSEARCH/BDF1` 暫存狀態／
+`SHOWLOCATION` 邊界，以及第 524 輪 DOS overlay-30 GEO loader／四平面來源、
 第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
 `DS:7206h` 四平面 writer／暫存 loader）靜態稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
@@ -11,7 +12,7 @@ HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 522–525 輪延續第 517–521 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
+第 522–526 輪延續第 517–521 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
 `START.EXE` database 中沒有找到 `2E10h` 的 resident direct-code handler，唯一
 raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜尋路徑，沒有把
 尚未閉合的 secret-door／外部地圖
@@ -35,7 +36,11 @@ entry；這不等於普通鍵盤 producer、control-loader runtime 或 map hando
 fragments、`DS:5BEEh` area-value input、`0402h` gate 與 GEO2–GEO6 archive
 corpus，精確閉合 decoded payload 的 `+002h` 起四個 `0100h` planes；完整
 `GEO<area>.dax` file-open trace、selector producer、map projection 與 runtime
-handoff 仍未知。
+handoff 仍未知。第 526 輪以 raw overlay-14 bytes 確認 `MOVEPARTY` 會呼叫
+loaded `THE3DMAP+300h` 的 selected 2-bit field writer，並以 Borland type／DOS
+`INT 21h` consumer 確認 `SEARCHREC` 是檔案搜尋 record；這只修正錯誤追查路線，
+沒有新增秘密門或 movement 規則。依使用者目前優先級，後續反組譯只服務正常玩家
+路徑的可玩阻塞點，與遊戲無關的 function 不再深挖。
 剩餘工作按 P0／P1／P2 排序，詳見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
 目前還有 11 個直接影響玩家結果的逆向主題與 4 個 fidelity／發行主題；專案仍是
@@ -52,6 +57,13 @@ handoff 仍未知。
 第 525 輪 `TEMPSEARCH/BDF1` 暫存／`SHOWLOCATION` evidence 見
 [`docs/spec/525-pc98-tempsearch-display-state.md`](spec/525-pc98-tempsearch-display-state.md)。
 
+第 526 輪 raw overlay-14 audit 只確認 `MOVEPARTY` 會呼叫 loaded
+`THE3DMAP+300h` 的 selected 2-bit field writer；Borland type／DOS
+`FINDFIRST/FINDNEXT` consumer 則確認 `SEARCHREC` 是檔案搜尋 record。這是錯誤
+追查路徑的勘誤，不是秘密門或 movement 規則完成；後續只在玩家路徑需要時追
+`MOVEPARTY` action trigger／runtime consumer。完整邊界見
+[`docs/spec/526-pc98-moveparty-map-writer-searchrec-correction.md`](spec/526-pc98-moveparty-map-writer-searchrec-correction.md)。
+
 第 525 輪沿 PC-98 Borland symbol table 重新核對 `TEMPSEARCH (0C29:BDF1h)`。
 overlay-02 local `3BB8h..3BFDh` 會從目前角色 `+594h` 取值、以 `AND FFFDh`
 暫存到 `BDF1`、暫時把角色 `+594h` 寫成 `1`，經中間狀態流程後還原，再呼叫
@@ -61,8 +73,8 @@ overlay-02 local `3BB8h..3BFDh` 會從目前角色 `+594h` 取值、以 `AND FFF
 新增 movement 規則。同輪以 `LOAD3DMAP (017C:1253h)` 的 `0402h` gate、named
 `THE3DMAP (0C29:A2A0h)` 四平面 copy，以及 `BLOCKCODE／WALLCODE` 對
 `+000／+100／+300` 的 mask／座標讀取，關閉了 loader／buffer／普通 movement
-reader 靜態邊界。P0-2 下一步只追 `MOVEPARTY` 的 action transaction、
-`SEARCHREC` owner 是否寫回第三平面，以及同版本 runtime trace。
+reader 靜態邊界。P0-2 下一步只追 `MOVEPARTY` 的 action transaction、第三平面
+writer 的 runtime consumer 與同版本 trace；`SEARCHREC` 不再列為地圖 owner。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到
