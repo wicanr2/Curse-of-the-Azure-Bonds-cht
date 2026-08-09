@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 509 輪 PC-98 Action target／QUICK 清除與第508輪 SCAN producer
+- CoAB 本輪基底：第 510 輪正常新遊戲地城移動交易、第 509 輪 PC-98 Action
+  target／QUICK 清除與第 508 輪 SCAN producer
   milestone
   （本文件所在 commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
 - Engine dependency：`4771299`（GitHub `main` 已核對；含作品中立 game-pack
@@ -409,6 +410,12 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
+- 第 510 輪已把新遊戲進入提爾佛頓後的第一個正常西行輸入收回
+  `State.MoveDungeon`；原始 GEO2 block 1 的起點、雙側牆／門可走性與 ECL
+  register 更新是 `exact`，但 DOS movement loop 的逐幀／逐指令對應仍是
+  `strong inference`。前端與測試不得再各自實作一套座標交易；必須透過此中立
+  方法，事件續跑仍要保留同一 `BlockSession`。這只證明開場後一格正常路徑，
+  不得把它擴大成完整開場到結局或完整地圖。
 - 第 384 輪已接通 Standing Stone→Myth Drannor→ECL6/GEO6 block `0x40`
   的正常玩家路徑。第 385 輪進一步證明 exact 出生點 `(2,15,E)`，修正帶
   文字 `NEWECL` 的 pending 座標 handoff，並沿兩步可通行 GEO 路徑完成
@@ -1440,6 +1447,24 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   分支。敵隊 target 保留、政策關閉時同隊 target 也保留的 regression 需持續存在。
 - 權威規格為 `docs/spec/509-pc98-action-target-quick-clear.md`；movement／flee／guard
   producer、同格排序與完整 AI 仍是後續工作。
+
+### 第 510 輪正常新遊戲地城移動補充
+
+- `GEO2.DAX` block 1 的起點 `(7,13)` 與 `C04B／C04C／C04D = 7／13／1` 是原始
+  bytes／ECL runtime 的 `exact` 證據；西行 direction `6` 的可走性必須由
+  decoded GEO 雙側牆／門資料判定，不能在測試或 State 寫死 Windlord’s Inn
+  座標結果。
+- `State.MoveDungeon` 是正常地城輸入的唯一交易入口：檢查 cardinal delta、依
+  `DungeonGeometryView` 處理 ECL local／combined GEO adapter、wrap 座標、更新
+  wall／roof registers、清除 `7F81h` 單步 guard、送出 step sound，最後才執行
+  per-turn 與 search-location continuation。前端只負責輸入、門選單與 renderer
+  refresh，不得重複呼叫 lifecycle 或直接改寫 `DungeonX／DungeonY`。
+- 這個交易與原 DOS movement loop 的對應目前是 `strong inference`；尚未有
+  DOSBox 逐幀 input／timing capture，因此不能標為 instruction exact。若後續
+  bytes 或實機觀察推翻順序，保留本輪 spec 並追加 supersede 勘誤。
+- 權威規格為 `docs/spec/510-normal-new-game-dungeon-step.md`；正常路徑回歸為
+  `TestRealNewGameBeginsAtGlobalBlockOne`。Windlord’s Inn 的文字期待值仍由
+  game-pack stable message ID 取得，不得複製繁中顯示字串到測試。
 
 ## 10. Compact 後恢復工作清單
 

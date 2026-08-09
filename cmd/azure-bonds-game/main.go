@@ -950,31 +950,29 @@ func (a *app) syncECLCallRequests() {
 }
 
 func (a *app) moveDungeonPreview(dx, dy, direction int) {
-	if a.geoGrid == nil || !a.geoGrid.CanMoveDungeonWrapped(a.dungeonX, a.dungeonY, direction) {
+	if a.geoGrid == nil {
+		return
+	}
+	geometryX, geometryY, facing := a.state.DungeonGeometryView()
+	if a.state.Mode != game.ModeDungeon {
+		// Preview maps have their own cursor; mirror it into State so the same
+		// movement transaction is exercised without an ECL lifecycle.
+		a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, facing)
+		geometryX, geometryY = a.dungeonX, a.dungeonY
+	}
+	if !a.geoGrid.CanMoveDungeonWrapped(geometryX, geometryY, direction) {
 		if flags, ok := a.dungeonDoorFlags(); ok && (flags == 2 || flags == 3) {
 			a.dungeonDoorMenu = true
 			a.state.Message = a.state.DungeonMessageText(game.DungeonMessageLockedPrompt)
 		}
 		return
 	}
-	nextX, nextY := a.dungeonX+dx, a.dungeonY+dy
-	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
-	a.dungeonX = geo.WrapCoordinate(nextX, geo.Width)
-	a.dungeonY = geo.WrapCoordinate(nextY, geo.Height)
-	a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, uint8(direction))
-	a.refreshDungeonPreview()
-	a.playSoundEvent(game.SoundStep)
-	if a.state.Mode == game.ModeDungeon {
-		var err error
-		if exitAttempt {
-			err = a.state.RunDungeonExitLifecycle()
-		} else {
-			err = a.state.RunDungeonLifecycle()
-		}
-		if err != nil {
-			a.state.Message = a.state.DungeonLifecycleErrorText(err)
-		}
+	if err := a.state.MoveDungeon(*a.geoGrid, dx, dy, direction); err != nil {
+		a.state.Message = a.state.DungeonLifecycleErrorText(err)
+		return
 	}
+	a.dungeonX, a.dungeonY, _ = a.state.DungeonGeometryView()
+	a.refreshDungeonPreview()
 }
 
 func (a *app) moveDungeonForward() {

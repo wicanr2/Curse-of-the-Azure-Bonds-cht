@@ -4082,3 +4082,18 @@ far-pointer layout、同格排序、movement／flee／guard producer、完整 AI
 commit 並 push；CoAB Docker／Xvfb
 正式 gate、`coab-audit total=0`、engine 全套 gate 與 `git diff --check` 均已通過；
 本輪程式、文件與兩 repo commit／push 待集中收尾。
+
+2026-08-09 第五百一十輪把正常新遊戲路徑的第一個地城移動交易收回
+`internal/game.State.MoveDungeon`。原本 `TestRealNewGameBeginsAtGlobalBlockOne`
+在證明 GEO2 block 1 `(7,13)` 西側可走後，直接寫入 `(6,13,6)` 再執行 lifecycle；
+現在由原始 decoded GEO grid 的 `MoveDungeon(-1,0,6)` 完成雙側牆／門檢查、16×16
+wrap、`DungeonGeometryView` ECL local projection、wall／roof register 更新、
+`7F81h` 單步 guard 清除、step sound intent 與 per-turn／search continuation。
+Ebiten production movement 改呼叫同一交易，renderer 只在成功後 refresh。從角色建立、
+global ECL opening、Tilverton 起點到 Windlord’s Inn picture／HEAD-BODY／繁中訊息、
+Journal 31 與回到原格的 focused regression 已通過。GEO／ECL source evidence 是
+`exact`；State transaction 對 DOS movement loop 是 `strong inference`，沒有宣稱
+逐幀／逐指令 exact。新 READY spec：
+`docs/spec/510-normal-new-game-dungeon-step.md`；新知識庫：
+`docs/knowledge/golden-box-normal-player-path.md`。下一步必須沿正常輸入擴大
+Tilverton／全作路徑，並保持完整 ECL／戰鬥／中文化缺口清單，不可把本輪當成完整通關。

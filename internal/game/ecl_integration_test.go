@@ -220,19 +220,20 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatal(err)
 	}
 	state.SetTreasureItemBlocks(treasureItems)
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 13, 6
-	state.DungeonWallType, _ = grid.WallWrapped(6, 13, 6)
-	state.DungeonWallRoof = grid.CellWrapped(6, 13).Terrain
-	if state.DungeonWallRoof != 0x86 {
-		t.Fatalf("Windlord's Inn GEO selector=%#x, want 0x86", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
+	if err := state.MoveDungeon(grid, -1, 0, 6); err != nil {
 		t.Fatal(err)
 	}
+	if state.DungeonX != 6 || state.DungeonY != 13 || state.DungeonDirection != 6 ||
+		state.DungeonWallRoof != 0x86 {
+		t.Fatalf("normal west step state=(%d,%d,%d) roof=%#x, want (6,13,6) roof=0x86",
+			state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallRoof)
+	}
+	wantInnWelcome := state.catalog.Text("ecl_tilverton_inn_welcome", "ecl_tilverton_inn_welcome")
+	wantInnScowls := state.catalog.Text("ecl_tilverton_inn_scowls", "ecl_tilverton_inn_scowls")
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 3 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 3 || state.SceneBodyBlock != 3 ||
-		!strings.Contains(state.Message, "歡迎來到美麗的提爾佛頓") ||
-		!strings.Contains(state.Message, "旅店老闆娘") {
+		!strings.Contains(state.Message, wantInnWelcome) ||
+		!strings.Contains(state.Message, wantInnScowls) {
 		registers := make([]uint16, 0, 5)
 		for address := uint16(0xC04B); address <= 0xC04F; address++ {
 			value, _ := state.session.MemoryValue(address)
@@ -256,8 +257,9 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
+	wantInnJournalTrigger := requireGamePackText(t, &state, "journal-trigger.tilverton-inn-31")
 	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "冒險手札") || !strings.Contains(state.Message, "賢者") {
+		!strings.Contains(state.Message, wantInnJournalTrigger) {
 		t.Fatalf("Windlord's Inn journal pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
 	}
 	wantJournal31 := requireGamePackText(t, &state, "journal.31")
