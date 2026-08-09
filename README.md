@@ -10,7 +10,7 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 510
+[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 511
 輪 milestone，獨立 engine 已推送 `4771299`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
@@ -63,6 +63,14 @@ wrap、ECL 座標同步、單步事件 guard 清除與 per-turn／search continu
 正常玩家路徑的 `READY` 邊界，不是完整開場到結局；地城其餘路線、完整 ECL／戰鬥、
 規則、音效與全中文化仍未完成。規格見
 [`docs/spec/510-normal-new-game-dungeon-step.md`](docs/spec/510-normal-new-game-dungeon-step.md)。
+
+第 511 輪沿同一個 `State.MoveDungeon` 交易，從開場中斷休息後的提爾佛頓位置
+逐步走到 Filani、Weaponers、Gond altar、Training Hall、Tavern 與高階祭司所在格；
+招牌／下水道傳聞的繁中訊息改由 locale JSON 取得。這輪也依原始 ECL 的
+`AND 4C03h,7F7Ah,7F79h` 證明招牌與高階祭司共享 `0x80` one-shot 群組：正常重訪
+不重播，未先消耗群組的 fresh session 則完整驗證祭司畫面、手札 19 與離場續跑。
+這是提爾佛頓有界正常路徑 milestone，並非完整通關聲明；規格見
+[`docs/spec/511-normal-tilverton-facility-route.md`](docs/spec/511-normal-tilverton-facility-route.md)。
 
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊

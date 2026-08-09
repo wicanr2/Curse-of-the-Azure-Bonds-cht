@@ -828,6 +828,18 @@ func (s *State) TurnDungeon(delta int) {
 	s.DungeonDirection = uint8(direction)
 }
 
+// TurnDungeonWithGrid rotates the first-person view and refreshes the wall
+// registers for the newly facing cell.  Turning does not run ECL; a later
+// movement or SEARCH action consumes these registers.  Keeping the projection
+// here prevents a renderer from rotating the camera while leaving C04E/C04F
+// describing the previous direction.
+func (s *State) TurnDungeonWithGrid(grid geo.Grid, delta int) {
+	s.TurnDungeon(delta)
+	x, y, direction := s.DungeonGeometryView()
+	s.DungeonWallType, _ = grid.WallWrapped(x, y, int(direction))
+	s.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+}
+
 func (s *State) Apply(action Action) error {
 	switch {
 	case s.Mode == ModeTitle && action == ActionStart:
@@ -5654,6 +5666,11 @@ func localizeECLText(catalog locale.Catalog, texts []string) string {
 	switch {
 	case strings.Contains(joined, "WHAT WILL YOU DRINK"):
 		return catalog.Text("tavern_drink_prompt", "tavern_drink_prompt")
+	case strings.Contains(joined, "YOU SEE A SIGN OVERHEAD") &&
+		strings.Contains(joined, "TEMPLE OF GOND"):
+		return catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
+	case strings.Contains(joined, "WOMAN SCREAMING IN THE SEWERS"):
+		return catalog.Text("ecl_tilverton_sewer_rumor", "ecl_tilverton_sewer_rumor")
 	}
 	localized := make([]string, 0, len(texts))
 	for _, text := range texts {
@@ -5722,6 +5739,8 @@ func localizeECLLine(catalog locale.Catalog, line string) string {
 		return catalog.Text("ecl_tilverton_inn_welcome", "ecl_tilverton_inn_welcome")
 	case "INNKEEPER. THEN SHE NOTICES YOUR COLLECTIVE SCOWLS.":
 		return catalog.Text("ecl_tilverton_inn_scowls", "ecl_tilverton_inn_scowls")
+	case "YOU SEE A SIGN OVERHEAD  TEMPLE OF GOND":
+		return catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
 	case "'PLEASE CALM DOWN WHILE I EXPLAIN.'":
 		return catalog.Text("ecl_tilverton_inn_calm", "ecl_tilverton_inn_calm")
 	case "YOU LISTEN,":

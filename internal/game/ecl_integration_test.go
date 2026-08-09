@@ -288,8 +288,13 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Windlord's Inn continuation mode=%v position=(%d,%d), want same dungeon cell",
 			state.Mode, state.DungeonX, state.DungeonY)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 7, 13, 2
-	state.DungeonWallType, state.DungeonWallRoof = 0, 0
+	if err := state.MoveDungeon(grid, 1, 0, 2); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonX != 7 || state.DungeonY != 13 || state.DungeonDirection != 2 {
+		t.Fatalf("normal east return from inn=(%d,%d,%d), want (7,13,2)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
 	if err := state.EnterDungeonCamp(); err != nil {
 		t.Fatal(err)
 	}
@@ -342,14 +347,54 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	// selector. The truth branch executes real ROB 1,50,0 before revealing
 	// Journal Entry 38.
 	state.partyRoster[0].Gold = 101
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 5, 0
-	state.DungeonWallType, _ = grid.WallWrapped(6, 5, 0)
-	state.DungeonWallRoof = grid.CellWrapped(6, 5).Terrain
+	resumeKnownPathPause := func() {
+		if state.Mode != ModeWilderness {
+			return
+		}
+		wantSign := state.catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
+		wantRumor := state.catalog.Text("ecl_tilverton_sewer_rumor", "ecl_tilverton_sewer_rumor")
+		if (state.Message != wantSign && state.Message != wantRumor) || len(state.Choices) != 1 {
+			t.Fatalf("unexpected normal-path pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("continue past normal-path pause: %v", err)
+		}
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("resume after normal-path pause: %v", err)
+			}
+		}
+	}
+	steps := []struct {
+		dx, dy, direction int
+	}{
+		{0, -1, 0}, // (4,13) -> (4,12), after interrupted unsafe rest
+		{0, -1, 0}, // (4,12) -> (4,11)
+		{0, -1, 0}, // (4,11) -> (4,10)
+		{0, -1, 0}, // (4,10) -> (4,9)
+		{0, -1, 0}, // (4,9) -> (4,8)
+		{0, -1, 0}, // (4,8) -> (4,7)
+		{0, -1, 0}, // (4,7) -> (4,6)
+		{0, -1, 0}, // (4,6) -> (4,5)
+		{1, 0, 2},  // (4,5) -> (5,5)
+		{1, 0, 2},  // (5,5) -> (6,5)
+	}
+	for index, step := range steps {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path step %d (%d,%d,%d): %v", index, step.dx, step.dy, step.direction, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < len(steps) && state.Mode != ModeDungeon {
+			t.Fatalf("normal path step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
+	}
+	if state.DungeonX != 6 || state.DungeonY != 5 || state.DungeonDirection != 2 {
+		t.Fatalf("normal path reached (%d,%d,%d), want (6,5,2)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
 	if state.DungeonWallRoof != 0x8A {
 		t.Fatalf("Filani GEO selector=%#x, want 0x8A", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 5 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 5 || state.SceneBodyBlock != 5 ||
@@ -410,14 +455,32 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	facilityCatalog := trainingTestCatalog(t)
 	state.catalog = facilityCatalog
 	state.partyRoster[0].Platinum = 0xFFFF
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 2, 12, 0
-	state.DungeonWallType, _ = grid.WallWrapped(2, 12, 0)
-	state.DungeonWallRoof = grid.CellWrapped(2, 12).Terrain
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{-1, 0, 6}, // (6,5) -> (5,5)
+		{0, 1, 4},  // (5,5) -> (5,6)
+		{0, 1, 4},  // (5,6) -> (5,7)
+		{0, 1, 4},  // (5,7) -> (5,8)
+		{0, 1, 4},  // (5,8) -> (5,9)
+		{0, 1, 4},  // (5,9) -> (5,10)
+		{0, 1, 4},  // (5,10) -> (5,11)
+		{0, 1, 4},  // (5,11) -> (5,12)
+		{-1, 0, 6}, // (5,12) -> (4,12)
+		{-1, 0, 6}, // (4,12) -> (3,12)
+		{-1, 0, 6}, // (3,12) -> (2,12)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to Weaponers step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 11 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to Weaponers step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
+	}
 	if state.DungeonWallRoof != 0x84 {
 		t.Fatalf("Weaponers GEO selector=%#x, want 0x84", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
@@ -495,14 +558,32 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	state.partyRoster[0].HitPoints = 1
 	state.partyRoster[0].MaxHitPoints = 10
 	state.partyRoster[0].Platinum = 0xFFFF
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 0, 7, 0
-	state.DungeonWallType, _ = grid.WallWrapped(0, 7, 0)
-	state.DungeonWallRoof = grid.CellWrapped(0, 7).Terrain
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{1, 0, 2},  // (2,12) -> (3,12)
+		{0, -1, 0}, // (3,12) -> (3,11)
+		{1, 0, 2},  // (3,11) -> (4,11)
+		{0, -1, 0}, // (4,11) -> (4,10)
+		{0, -1, 0}, // (4,10) -> (4,9)
+		{0, -1, 0}, // (4,9) -> (4,8)
+		{0, -1, 0}, // (4,8) -> (4,7)
+		{-1, 0, 6}, // (4,7) -> (3,7)
+		{-1, 0, 6}, // (3,7) -> (2,7)
+		{-1, 0, 6}, // (2,7) -> (1,7)
+		{-1, 0, 6}, // (1,7) -> (0,7)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to Gond temple step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 11 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to Gond temple step %d stopped at mode=%v position=(%d,%d) choices=%v message=%q",
+				index, state.Mode, state.DungeonX, state.DungeonY, state.Choices, state.Message)
+		}
+	}
 	if state.DungeonWallRoof != 0x92 {
 		t.Fatalf("Gond altar GEO selector=%#x, want 0x92", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 6 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 9 || state.SceneBodyBlock != 6 {
@@ -565,14 +646,31 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	character.HealthStatus = party.HealthStatusOK
 	character.Platinum = 0xFFFF
 	beforeWorth = characterCoinGoldWorth(*character)
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 5, 2, 0
-	state.DungeonWallType, _ = grid.WallWrapped(5, 2, 0)
-	state.DungeonWallRoof = grid.CellWrapped(5, 2).Terrain
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{1, 0, 2},  // (0,7) -> (1,7)
+		{1, 0, 2},  // (1,7) -> (2,7)
+		{1, 0, 2},  // (2,7) -> (3,7)
+		{1, 0, 2},  // (3,7) -> (4,7)
+		{0, -1, 0}, // (4,7) -> (4,6)
+		{0, -1, 0}, // (4,6) -> (4,5)
+		{0, -1, 0}, // (4,5) -> (4,4)
+		{0, -1, 0}, // (4,4) -> (4,3)
+		{1, 0, 2},  // (4,3) -> (5,3)
+		{0, -1, 0}, // (5,3) -> (5,2)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to training hall step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 10 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to training hall step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
+	}
 	if state.DungeonWallRoof != 0x8C {
 		t.Fatalf("training hall GEO selector=%#x, want 0x8C", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
 		!strings.Contains(state.Message, "接受訓練") {
@@ -630,14 +728,30 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if len(state.Choices) != 0 {
 		t.Fatalf("training departure retained stale choices %v", state.Choices)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 6, 10, 0
-	state.DungeonWallType, _ = grid.WallWrapped(6, 10, 0)
-	state.DungeonWallRoof = grid.CellWrapped(6, 10).Terrain
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{0, 1, 4}, // (5,2) -> (5,3)
+		{0, 1, 4}, // (5,3) -> (5,4)
+		{0, 1, 4}, // (5,4) -> (5,5)
+		{0, 1, 4}, // (5,5) -> (5,6)
+		{0, 1, 4}, // (5,6) -> (5,7)
+		{0, 1, 4}, // (5,7) -> (5,8)
+		{0, 1, 4}, // (5,8) -> (5,9)
+		{0, 1, 4}, // (5,9) -> (5,10)
+		{1, 0, 2}, // (5,10) -> (6,10)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to tavern step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 9 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to tavern step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
+	}
 	if state.DungeonWallRoof != 0x88 {
 		t.Fatalf("tavern GEO selector=%#x, want 0x88", state.DungeonWallRoof)
-	}
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
 	}
 	if state.Mode != ModeEvent || !state.PictureRequested || state.PictureBlock != 4 ||
 		!state.SceneCharacterRequested || state.SceneHeadBlock != 4 || state.SceneBodyBlock != 4 ||
@@ -709,54 +823,107 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			state.Mode, state.DungeonX, state.DungeonY, state.PictureRequested, state.PictureBlock,
 			state.Message, state.Choices)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 10, 0
-	state.DungeonWallType, _ = grid.WallWrapped(1, 10, 0)
-	state.DungeonWallRoof = grid.CellWrapped(1, 10).Terrain
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{-1, 0, 6}, // (6,10) -> (5,10)
+		{0, -1, 0}, // (5,10) -> (5,9)
+		{0, -1, 0}, // (5,9) -> (5,8)
+		{0, -1, 0}, // (5,8) -> (5,7)
+		{-1, 0, 6}, // (5,7) -> (4,7)
+		{-1, 0, 6}, // (4,7) -> (3,7)
+		{0, 1, 4},  // (3,7) -> (3,8)
+		{0, 1, 4},  // (3,8) -> (3,9)
+		{0, 1, 4},  // (3,9) -> (3,10)
+		{-1, 0, 6}, // (3,10) -> (2,10)
+		{-1, 0, 6}, // (2,10) -> (1,10)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to high priest step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 11 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to high priest step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
+	}
+	state.TurnDungeonWithGrid(grid, 2) // arrive facing west; rotate to the north-facing shrine
+	if state.DungeonDirection != 0 {
+		t.Fatalf("high priest approach direction=%d, want north after turn", state.DungeonDirection)
+	}
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
-	if state.DungeonWallRoof != 0x8F || state.Mode != ModeEvent || !state.PictureRequested ||
-		state.PictureBlock != 6 || state.SceneHeadBlock != 6 || state.SceneBodyBlock != 6 ||
-		state.Message != requireGamePackText(t, &state, "tilverton.high-priest-intro") {
+	if state.DungeonWallRoof != 0x8F || state.Mode != ModeDungeon || state.PictureRequested {
+		t.Fatalf("normal route revisited high priest group mode=%v picture=%v:%d selector=%#x message=%q",
+			state.Mode, state.PictureRequested, state.PictureBlock, state.DungeonWallRoof, state.Message)
+	}
+	if flag, ok := state.session.MemoryValue(0x4C03); !ok || flag != 0x80 {
+		t.Fatalf("normal route high priest group flag=%#x,%v, want 0x80,true", flag, ok)
+	}
+
+	// The original map intentionally shares the 0x80 one-shot event group
+	// between the temple sign and the high-priest handler.  The normal route
+	// above therefore proves the revisit is silent; exercise the independent
+	// high-priest branch in a fresh ECL session so this long-path test does not
+	// erase the original one-shot semantics just to reach a later assertion.
+	highPriest := NewStateFromECLBlocks(facilityCatalog, all, 0x01)
+	highPriest.Mode = ModeDungeon
+	highPriest.Location = LocationTilverton
+	highPriest.LocationName = highPriest.catalog.Text("tilverton", "tilverton")
+	highPriest.Area.InDungeon = true
+	highPriest.Area.GameArea = 2
+	highPriest.Area.Current3DMapBlockID = 1
+	highPriest.GeoMapSet = 2
+	highPriest.GeoMapBlock = 1
+	highPriest.DungeonX, highPriest.DungeonY, highPriest.DungeonDirection = 1, 10, 0
+	highPriest.DungeonWallType, _ = grid.WallWrapped(1, 10, 0)
+	highPriest.DungeonWallRoof = grid.CellWrapped(1, 10).Terrain
+	if err := highPriest.RunDungeonLifecycle(); err != nil {
+		t.Fatal(err)
+	}
+	if highPriest.DungeonWallRoof != 0x8F || highPriest.Mode != ModeEvent || !highPriest.PictureRequested ||
+		highPriest.PictureBlock != 6 || highPriest.SceneHeadBlock != 6 || highPriest.SceneBodyBlock != 6 ||
+		highPriest.Message != requireGamePackText(t, &highPriest, "tilverton.high-priest-intro") {
 		t.Fatalf("high priest introduction selector=%#x mode=%v picture=%v:%d head/body=%d/%d message=%q",
-			state.DungeonWallRoof, state.Mode, state.PictureRequested, state.PictureBlock,
-			state.SceneHeadBlock, state.SceneBodyBlock, state.Message)
+			highPriest.DungeonWallRoof, highPriest.Mode, highPriest.PictureRequested, highPriest.PictureBlock,
+			highPriest.SceneHeadBlock, highPriest.SceneBodyBlock, highPriest.Message)
 	}
-	if err := state.Continue(); err != nil {
+	if err := highPriest.Continue(); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || len(state.Choices) != 2 ||
-		state.Choices[0] != "是" || state.Choices[1] != "否" {
+	if highPriest.Mode != ModeWilderness || len(highPriest.Choices) != 2 ||
+		highPriest.Choices[0] != "是" || highPriest.Choices[1] != "否" {
 		t.Fatalf("high priest story prompt mode=%v choices=%v message=%q",
-			state.Mode, state.Choices, state.Message)
+			highPriest.Mode, highPriest.Choices, highPriest.Message)
 	}
-	if err := state.Select(0); err != nil {
+	if err := highPriest.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "移除詛咒") || !strings.Contains(state.Message, "第 19 條") {
+	if highPriest.Mode != ModeWilderness || len(highPriest.Choices) != 1 ||
+		!strings.Contains(highPriest.Message, "移除詛咒") || !strings.Contains(highPriest.Message, "第 19 條") {
 		t.Fatalf("high priest remove-curse pause mode=%v choices=%v message=%q",
-			state.Mode, state.Choices, state.Message)
+			highPriest.Mode, highPriest.Choices, highPriest.Message)
 	}
-	foundJournal19 := slices.Contains(state.JournalPages, requireGamePackText(t, &state, "journal.19"))
+	foundJournal19 := slices.Contains(highPriest.JournalPages, requireGamePackText(t, &highPriest, "journal.19"))
 	if !foundJournal19 {
-		t.Fatalf("Journal Entry 19 was not unlocked in-game: pages=%v", state.JournalPages)
+		t.Fatalf("Journal Entry 19 was not unlocked in-game: pages=%v", highPriest.JournalPages)
 	}
-	if err := state.Select(0); err != nil {
+	if err := highPriest.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		!strings.Contains(state.Message, "離開此處") {
+	if highPriest.Mode != ModeWilderness || len(highPriest.Choices) != 1 ||
+		!strings.Contains(highPriest.Message, "離開此處") {
 		t.Fatalf("high priest departure pause mode=%v choices=%v message=%q",
-			state.Mode, state.Choices, state.Message)
+			highPriest.Mode, highPriest.Choices, highPriest.Message)
 	}
-	if err := state.Select(0); err != nil {
+	if err := highPriest.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 1 || state.DungeonY != 10 ||
-		len(state.Choices) != 0 {
+	if highPriest.Mode != ModeDungeon || highPriest.DungeonX != 1 || highPriest.DungeonY != 10 ||
+		len(highPriest.Choices) != 0 {
 		t.Fatalf("high priest continuation mode=%v position=(%d,%d) message=%q choices=%v originals=%v, want same cell",
-			state.Mode, state.DungeonX, state.DungeonY, state.Message, state.Choices, state.currentOriginalChoices)
+			highPriest.Mode, highPriest.DungeonX, highPriest.DungeonY, highPriest.Message, highPriest.Choices, highPriest.currentOriginalChoices)
 	}
 	// Keep the single generated integration-test hero alive across this long
 	// path's many real encounters. A normal campaign has a full party; this
