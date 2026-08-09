@@ -1,11 +1,20 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 510 輪；實際 HEAD 以遠端核對為準）
+本 milestone 的 CoAB 基底：GitHub `main`（第 511 輪；實際 HEAD 以遠端核對為準）
 依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 511 輪沿用 `State.MoveDungeon`，從開場中斷休息後的提爾佛頓座標逐格走到
+Filani、Weaponers、Gond altar、Training Hall、Tavern 與高階祭司所在格；招牌與
+下水道傳聞的繁中顯示已進入 locale JSON。原始 ECL2 block 1 的高階祭司 handler
+在 `+1104h` 以 `AND 4C03h,7F7Ah,7F79h` 非零即退出，正常重訪因此保留招牌先消耗
+的 `0x80` one-shot 群組；fresh session 另驗證高階祭司畫面、YES 分支、手札 19
+與離場續跑。這輪是有界正常路徑與事件群組規格，不是完整通關；權威規格為
+[`docs/spec/511-normal-tilverton-facility-route.md`](spec/511-normal-tilverton-facility-route.md)，
+共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 
 第 510 輪把正常新遊戲路徑的第一個地城移動交易從 Ebiten 前端抽回
 `internal/game.State.MoveDungeon`。`TestRealNewGameBeginsAtGlobalBlockOne` 現在

@@ -4097,3 +4097,21 @@ Journal 31 與回到原格的 focused regression 已通過。GEO／ECL source ev
 `docs/spec/510-normal-new-game-dungeon-step.md`；新知識庫：
 `docs/knowledge/golden-box-normal-player-path.md`。下一步必須沿正常輸入擴大
 Tilverton／全作路徑，並保持完整 ECL／戰鬥／中文化缺口清單，不可把本輪當成完整通關。
+
+2026-08-09 第五百一十一輪接續正常 movement transaction。`State.MoveDungeon` 現在
+被正式新遊戲回歸沿用到提爾佛頓設施路徑：開場中斷休息後由 `(4,13)` 逐格抵達
+Filani `(6,5)`、Weaponers `(2,12)`、Gond altar `(0,7)`、Training Hall `(5,2)`、
+Tavern `(6,10)` 與高階祭司 `(1,10)`；招牌與下水道傳聞的繁中顯示新增
+`ecl_tilverton_temple_sign`／`ecl_tilverton_sewer_rumor` locale IDs。這段的
+正常路徑不再直接寫入設施座標，所有 pause 都要求已知 locale message，未知 ECL
+boundary 會使測試失敗。
+
+本輪同時以原始 ECL2 block 1 payload `+1104h..+110Fh` 閉合高階祭司的
+`AND 4C03h,7F7Ah,7F79h`→非零 `EXIT`。正常路徑先踩 terrain `0x0D` 招牌後，
+runtime `4C03h=0x80`，故 terrain `0x8F` 高階祭司重訪保持靜默；這個共享
+`0x80` one-shot 群組是 `strong inference`，不是可任意清除的 stale flag。未先
+消耗群組的 fresh ECL session 仍完整回歸 PICTURE 6、HEAD6／BODY6、YES／NO、
+Remove Curse、Journal 19 與離場返回。新增權威規格：
+`docs/spec/511-normal-tilverton-facility-route.md`；更新知識庫：
+`docs/knowledge/golden-box-normal-player-path.md`。後續仍需移除更多
+coordinate-assisted path、完成 ECL／戰鬥／全中文化與整作通關，不能把本輪寫成完成。

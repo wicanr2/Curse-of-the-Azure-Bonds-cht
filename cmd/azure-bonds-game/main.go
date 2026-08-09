@@ -934,6 +934,10 @@ func (a *app) refreshDungeonPreview() {
 }
 
 func (a *app) turnDungeonGeometry(delta int) {
+	if a.geoGrid != nil {
+		a.state.TurnDungeonWithGrid(*a.geoGrid, delta)
+		return
+	}
 	x, y, direction := a.state.DungeonGeometryView()
 	direction = uint8((int(direction) + delta + 8) % 8)
 	a.state.SetDungeonGeometryView(x, y, direction)

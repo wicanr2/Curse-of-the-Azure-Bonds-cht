@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 510 輪正常新遊戲地城移動交易、第 509 輪 PC-98 Action
+- CoAB 本輪基底：第 511 輪提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
+  移動交易、第 509 輪 PC-98 Action
   target／QUICK 清除與第 508 輪 SCAN producer
   milestone
   （本文件所在 commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
@@ -1465,6 +1466,25 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 權威規格為 `docs/spec/510-normal-new-game-dungeon-step.md`；正常路徑回歸為
   `TestRealNewGameBeginsAtGlobalBlockOne`。Windlord’s Inn 的文字期待值仍由
   game-pack stable message ID 取得，不得複製繁中顯示字串到測試。
+
+### 第 511 輪提爾佛頓設施正常移動與 one-shot 群組補充
+
+- `TestRealNewGameBeginsAtGlobalBlockOne` 已透過同一個 `State.MoveDungeon` 交易，
+  從開場中斷休息後的位置逐格走到 Filani、Weaponers、Gond altar、Training Hall、
+  Tavern 與高階祭司所在格；招牌／下水道傳聞 pause 必須由 locale JSON stable ID
+  驗證，未知 pause 不得靜默吞掉。
+- 原始 ECL2 block 1 SearchLocation 先以 terrain 得到 `7F7Ah`；高階祭司 handler
+  `+1104h..+110Fh` 的 `AND 4C03h,7F7Ah,7F79h` 非零即 `EXIT`。正常路徑先經
+  terrain `0x0D` 招牌後，`4C03h=0x80` 使 terrain `0x8F` 的高階祭司重訪保持
+  靜默。這是 raw ECL `exact`、跨 handler 的「共用 `0x80` one-shot 群組」則是
+  `strong inference`；不可為了讓後續 assertion 通過而清除 `4C03h`。
+- 高階祭司本身以未先消耗該群組的 fresh ECL session 驗證 PICTURE 6、HEAD6／BODY6、
+  YES／NO、Remove Curse、Journal 19 與離場 continuation；這不等同於把獨立
+  direct-entry branch 冒稱成同一條正常玩家路徑。
+- `TurnDungeonWithGrid` 只更新面向與 wall／roof 投影，不自行執行 ECL；後續
+  movement／SEARCH 才消費新面向。權威規格為
+  `docs/spec/511-normal-tilverton-facility-route.md`，知識庫為
+  `docs/knowledge/golden-box-normal-player-path.md`。
 
 ## 10. Compact 後恢復工作清單
 
