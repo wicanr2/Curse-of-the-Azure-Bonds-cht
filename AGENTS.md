@@ -380,9 +380,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
   移動交易、第 509 輪 PC-98 Action
   target／QUICK 清除與第 508 輪 SCAN producer
-  milestone
-  （本文件所在 commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`4771299`（GitHub `main` 已核對；含作品中立 game-pack
+  milestone；本輪另完成第 516 輪反組譯斷言盤點與 worklist，兩個 repository 的
+  實際 HEAD／remote 才是最終版本依據。
+- Engine dependency：`3bf5f0541cf46285f0fe824edb89caebaf954d9e`（第 515 輪
+  GitHub `main` checkpoint；含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -1580,6 +1581,33 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 權威規格為 `docs/spec/514-normal-tilverton-sewer-entry-route.md`，知識庫為
   `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
   不得擴大成完整下水道、完整戰鬥、完整中文化或整作通關。
+
+### 第 516 輪反組譯盤點與斷言清理補充
+
+- 剩餘反組譯工作以 `docs/knowledge/golden-box-reverse-engineering-worklist.md`
+  為權威路由。P0 是火刀戰後第一個外部地圖 handoff 的 DOS writer→consumer、
+  騎士後 `(13,10)` 到 E2 `(8,15)` 的 secret-door／SEARCH bridge，以及 block 4
+  後續外部地圖／返回世界 handoff；不要以「READY spec 數量」估算完成率。
+- PC-98 `PC98-GAME.EXE` SHA-256
+  `8bca0b50f47b5a41193584d3d4d1cd7361562ca3daf5360d3691620cc1b752c0` 的
+  overlay-local 證據：`MOVEMENT` `PREMOVEPARTY` 的 `S` 只切換目前角色 record
+  `+594h` bit 0，再呼叫 `014A:00DE` TPOV stub；typed resolver 對應 overlay 24
+  entry 38、handler `2E8Ch` `SHOWLOCATION`。目前沒有 S→第三平面 writer 的閉合證據，
+  不能把攻略 `~` 或 wall detail 0 當作可走秘密門。
+- `BLOCKCODE` `017C:04DE` 已 exact 證明 wall type 09/detail 0 不是普通可走格；
+  P／K／B action 與 detail=1 的雙側門狀態另有明確 writer。這些 movement bytes
+  只能描述 PC-98；不能把同數值映射成 DOS `4C28h` 或 `4BF0h` consumer。
+- DOS extracted overlays 的 raw little-endian 掃描未找到 literal `4C28h`，只表示
+  沒有直接 literal 命中，不表示 `4C28h` 沒有經指標／通用 interpreter 使用。這項
+  負面結果不可寫成「未使用」。
+- 已移除錯誤位址基準的 `pc98_generic_local_audit.idc` 與重複 candidate／xref
+  誤導風險高的 `dos_map_workcell_audit.idc`；保留的 `pc98_overlay14_pre_move_audit.idc`、
+  `pc98_overlay24_generic_audit.idc`、`pc98_overlay2_search_state_audit.idc`、
+  `pc98_overlay7_specials_audit.idc` 與 `dos_map_workcell_raw_audit.idc` 只輸出
+  可回查的 raw bytes／候選，不能自動升格語意。
+- `docs/spec/297-fire-knife-hideout-transition.md` 的舊「formal regression crosses
+  (8,15)」斷言已移入勘誤並標成 `SUPERSEDED`；`PLAN.md` 的 block 4 完成項也已
+  改為未完成。compact 後不得恢復這兩個錯誤結論。
 
 ## 10. Compact 後恢復工作清單
 

@@ -15,8 +15,9 @@ game-pack：公會首領問候／簡報、側門爆破、火刀命令、淬毒�
 - 原始 `ECL2.DAX` block 2 驅動公會事件、四名友軍盜賊對十三名敵人的混合戰，
   戰後續跑至手札 4；其位址與 team write 證據仍以 READY spec 293 為準。
 - 同一真實 image integration session 續跑豎琴半身人、犬舍與三個房間事件，
-  再經 block 3 下水道轉入 block 4；`NEWECL`、GEO 與 LOAD PIECES contract 仍以
-  READY spec 297 為準。
+  並保存 block 3／block 4 的 `NEWECL`、GEO 與 LOAD PIECES boundary；當時的測試
+  對深層座標使用 coordinate-assisted entry，不能把它寫成正常步行已完成。E2／
+  `NEWECL 4` 的邊界證據改以已勘誤的 spec 297 及第 516 輪 worklist 為準。
 - 十四個畫面文字均以 `requireGamePackText` 取得正式 stable ID 期望；測試不再
   複製繁中片段。公會突襲六個連續 pause 逐段驗證，避免只靠盲目選擇抵達戰鬥。
 
@@ -30,7 +31,8 @@ game-pack：公會首領問候／簡報、側門爆破、火刀命令、淬毒�
 - `TestTilvertonGuildAndHideoutTransitionIsGamePackDriven`：十四條規則的 en／zh-TW
   stable ID、非空訊息與無誤掛手札。
 - `TestRealNewGameBeginsAtGlobalBlockOne`：真實 image session 的十四個畫面 boundary、
-  兩場戰鬥、手札 4、block 2→3→4 continuation 與 GEO／LOAD PIECES handoff。
+  兩場戰鬥、手札 4，以及以座標輔助探測的 block／GEO／LOAD PIECES boundary；
+  它不單獨證明 block 2→3→4 的正常玩家步行路徑。
 - Go 漢字字串基線：`594 → 580`；`localization_debt 99 → 85`，frontend 135、
   runtime 360 不變。
 

@@ -305,8 +305,9 @@ game-pack。正常路徑同時驗證 roster、三類裝備銷毀、戰鬥 contin
 
 第 471 輪再把提爾佛頓盜賊公會、犬舍、訪客簿、下水道與火刀據點入口十四個
 文字 boundary 移入 game-pack。真實 image 長回歸逐段驗證公會突襲六個 pause、
-兩場實際戰鬥、手札 4 與 ECL block 2→3→4 handoff；Go 漢字基線由 594 降至
-580。詳見
+兩場實際戰鬥、手札 4 與 block boundary；其中深層 block 2→3→4 仍含
+coordinate-assisted 定位，不能當正常步行完成。Go 漢字基線由 594 降至 580。
+詳見
 [`docs/spec/471-tilverton-guild-hideout-game-pack.md`](docs/spec/471-tilverton-guild-hideout-game-pack.md)。
 
 第 472 輪完成火刀據點內刀刃屏障、凝固房、辦公室及五個灰燼房間共十一個文字
@@ -1375,9 +1376,10 @@ Standing Stone 起始長路徑載入真正 MON6 提朗瑟克斯，終戰會排�
 時間碼仍待補，詳見
 [`spec 415`](docs/spec/415-pc98-monster-lightning-runtime.md)。
 
-- 下水道 E2 `(8,15)` 已接通原版 boundary sentinel 與 `NEWECL 4`。正式流程會由
-  ECL 自行調整到 GEO2 block 4 `(6,1,S)`，載入 `LOAD PIECES 1,2,4`，並顯示
-  「你們進入了火刀據點」；不是 renderer 直接指定下一張地圖。
+- 下水道 E2 `(8,15)` 的原版 boundary sentinel、`CALL 0xC01E`、`X-2`、
+  `NEWECL 4` 與 block 4 初始化已由 direct-entry probe／ECL bytes 驗證；目前
+  尚未由正常玩家輸入抵達 E2，因此不能宣稱正式流程已正常進入 GEO2 block 4
+  `(6,1,S)`。這段仍是 P0 worklist，不能把座標輔助當成 renderer 以外的完成證據。
 - ECL `LOAD PIECES` 保存三個 selector；可重用 engine 的 `graphics` package 解析
   indexed picture／WALLDEF／8X8D、global symbol offset 與 wall stamps，
   CoAB 只把 DAX blocks 轉成 `ID → bytes` 並由 JSON 指定資源檔名。
@@ -1607,4 +1609,4 @@ Combat Action Timeline 實作。
 
 目前地城 preview 已提供 locked-door menu，以及 P 撬鎖、K Knock、B 撞門：依 detail 2/3 與隊伍能力過濾選項，成功後對 GEO 門雙側解鎖；完整 DOS 視窗樣式、door graphics 與從劇情抵達門的流程仍未完成。
 
-更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/)；可跨 Gold Box 沿用的 ECL 指令集整理見 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md)，存檔欄位與年齡修改邊界見 [`gold-box-save-format.md`](docs/knowledge/gold-box-save-format.md)，remake session transaction 見 [`gold-box-remake-save-session.md`](docs/knowledge/gold-box-remake-save-session.md)，以及 [`docs/history.md`](docs/history.md)。
+更多證據與規格請見 [`CONTEXT.md`](CONTEXT.md)、[`docs/spec/`](docs/spec/)、[`docs/manual/`](docs/manual/)、[`docs/knowledge/`](docs/knowledge/)；反組譯剩餘範圍與推論邊界見 [`golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)，可跨 Gold Box 沿用的 ECL 指令集整理見 [`gold-box-ecl-command-set.md`](docs/knowledge/gold-box-ecl-command-set.md)，存檔欄位與年齡修改邊界見 [`gold-box-save-format.md`](docs/knowledge/gold-box-save-format.md)，remake session transaction 見 [`gold-box-remake-save-session.md`](docs/knowledge/gold-box-remake-save-session.md)，以及 [`docs/history.md`](docs/history.md)。

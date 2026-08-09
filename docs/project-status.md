@@ -1,12 +1,17 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 514 輪；實際 HEAD 以遠端核對為準）
-依賴的 Golden Box engine checkpoint：`4771299`（本輪新增位置轉移契約後，以
-本輪 engine commit 為準）
+本 milestone 的 CoAB 基底：第 515 輪火刀戰後第一個地圖位置轉移契約；實際
+HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
+依賴的 Golden Box engine checkpoint：第 515 輪 `3bf5f0541cf46285f0fe824edb89caebaf954d9e`。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 516 輪先做反組譯盤點與斷言清理，沒有把尚未閉合的 secret-door／外部地圖
+假說升格成 runtime 規則。剩餘工作按 P0／P1／P2 排序，詳見
+[`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
+目前專案仍是多個可重播 vertical slice，不是完整可通關 remake。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到

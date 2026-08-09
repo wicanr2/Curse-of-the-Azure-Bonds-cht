@@ -1,0 +1,106 @@
+# SSI Golden Box 反組譯工作清單與證據邊界
+
+更新日期：2026-08-09（第 516 輪盤點）
+
+本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
+每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
+分類方式，但位址、雜湊、版本與劇情資料必須各自保存，不能跨遊戲套用。
+
+## 先看結論
+
+目前不需要把整個 `START.EXE`、`GAME.OVR` 或 `PC98-GAME.EXE` 逐行翻成中文。
+真正缺的是「會改變玩家可玩結果」的資料流：輸入／ECL opcode → 外部 routine 或
+地圖服務 → state／renderer／戰鬥／存檔 consumer → 可重播的 runtime 結果。
+
+目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
+已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
+所有外部 routine、所有分支或整條開場到結局路徑都已反組完成。`PLAN.md` 目前只有
+4 個明確未勾選項目，但它是歷史累積計畫，不足以代表全部逆向缺口；本頁的優先級
+才是接下來的實際順序。
+
+## P0：先關閉目前正常玩家路徑的三個阻塞點
+
+| 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
+|---|---|---|---|
+| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；同一次 remake trace 沒有 `C04Bh/C04Ch` 寫入；`GEO2.DAX` 兩個 component 不相連。現行 JSON `set_map_position` 是可重播的 `strong inference` | 找到 DOS `4BF0h／4BF1h` 或等價 producer 的完整 writer → external service → consumer，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器 |
+| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明 wall type 09/detail 0 不能普通通過；`S` 只切換角色 record `+594h` bit 0，再呼叫 PC-98 `014A:00DE` TPOV stub → overlay 24 `SHOWLOCATION` `2E8Ch`。目前沒有 S → 第三平面 writer 的閉合證據；攻略的 `~` 只能算 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能只因 BFS 路徑漂亮就放行 detail 0，也不能直接寫入 `(8,15)` |
+| P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
+
+P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inference`；P0-2、P0-3
+不得再新增直接座標注入。任何 probe 都必須在測試名稱與規格中明寫
+`coordinate-assisted`，不能被算入正常玩家路徑。
+
+## P1：可重用引擎與完整遊戲行為
+
+### ECL 與外部 routine
+
+- 盤點所有 `CALL`、`NEWECL`、`LOAD FILES`、`LOAD PIECES`、`PROGRAM`、`COMBAT`、
+  `TREASURE`、`INPUT STRING` 的 producer／consumer；優先處理會改變 block、地圖、
+  party、旗標或 continuation 的 routine。
+- 對每個 work address 保留 ECL work、file offset、overlay-local offset、
+  Borland `segment:offset` 與 runtime linear address 的分開欄位。相同十六進位數字
+  不能跨位址空間合併。
+- 已讀取的 ECL bytes 只能證明 opcode 與寫入值；要命名為年齡、命中、AC、地圖
+  開關或劇情旗標，仍要找到 reader／consumer 或 runtime 效果。
+- 對尚未覆蓋的 random encounter、FLEE／交涉、NPC 離隊、物品與劇情 flag，採
+  「一個玩家 boundary 一份 spec」；不要為了追求全 binary 函式名稱而製作沒有
+  consumer 的名義索引。
+
+### 戰鬥規則與 AI
+
+- 敵我選敵 producer、視線／射程／方向 tie、FLEE／GUARD／HELD action 與敵方
+  Quick AI 的完整 caller chain。
+- 弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud、Cloudkill
+  等逐項追 caster windup、travel、impact、save、damage、death、persistent
+  effect、sound cue 與 ECL handoff；現有共用 timeline 不能取代逐法術 oracle。
+- 反組譯與公開影片只能互補：影片證明看見的演出與時間順序，數值、旗標與 RNG
+  必須回到原始 bytes／DOSBox。
+
+### 存檔、角色與規則
+
+- `SAVGAM?.DAT` 尚未知欄位、完整 sidecar、副職業、delete／rename semantics、
+  player serialization 與跨作品角色轉移。
+- AD&D 全規則仍需從 player／monster／spell records 的 consumer 追出，尤其
+  age effect、class limit、alignment、特殊能力與戰後恢復不能只靠攻略數字。
+
+## P2：原版 fidelity 與發行
+
+- DOS 地城斜牆／階梯、door／roof overlay、城市／AREA／WILDERNESS 與每張地圖的
+  幾何及畫面逐像素校準。
+- DOS combat frame 的動態 placement、八方向小人、完整 sprite frame timing，
+  以及原版 UI／字型密度的逐狀態對照。
+- PC Speaker／Tandy、PC-98 YM2203／MSCDRV 的真實 runtime save/resume、CPU／OPN
+  共時 phase、analog mixer gain 與完整音效 producer；已有的合成器測試不代表
+  原硬體 cycle-exact。
+- 三平台打包、長時間遊玩、完整正常路徑與 release 驗收。
+
+## 本輪移除或降級的錯誤斷言
+
+1. `docs/spec/297-fire-knife-hideout-transition.md` 原本把測試中的直接
+   `(8,15)` 寫入描述成「正式 regression crosses `(8,15)`」。這不成立；文件保留
+   E2／`NEWECL 4` 的歷史證據，但現行狀態改為 `SUPERSEDED`，正常路徑改由本頁
+   P0-2／P0-3 管理。
+2. `PLAN.md` 原本把 block 4 `(6,1,S)` 勾成完成；改為未完成，並明示那只是
+   direct-entry／coordinate-assisted boundary。`docs/spec/471` 的文字資料化測試
+   同樣不再暗示 block 2→3→4 已是正常步行路徑。
+3. 移除未能正確表達位址基準的 `scripts/ida/pc98_generic_local_audit.idc`，
+   以及重複且容易被誤讀成 instruction xref 的
+   `scripts/ida/dos_map_workcell_audit.idc`。保留的 raw candidate scanner 與
+   overlay dump 只輸出候選／連續 bytes，不自動升格語意。
+4. DOS overlay raw little-endian 掃描目前沒有在已抽出的 overlay 找到 literal
+   `4C28h`；這只能表示「沒有直接 literal 命中」，不能表示沒有經指標或通用
+   interpreter 的 consumer。此結果不得寫成「4C28 未使用」。
+
+## 每項反組譯工作的完成門檻
+
+只有同時具備下列資料，才能從 `DRAFT` 升為 `READY`：
+
+1. 輸入檔名、SHA-256、平台／版本、工具版本與位址空間。
+2. 連續 raw bytes、operand decoding、caller／reader／writer 或等價 runtime trace。
+3. 明確的推論等級：`exact`、`strong inference`、`hypothesis`、`unknown`。
+4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
+5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
+
+下一個最有價值的工作是 P0-2：先用既有 PC-98 `MOVEMENT`／ECL2 證據確認秘密門
+writer 是否存在，再決定是否需要 DOSBox runtime capture；在此之前不改 movement
+規則、不把 detail 0 泛化成可走門。

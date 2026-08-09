@@ -1299,12 +1299,13 @@ ModeDungeon；重訪同 terrain 已驗證不重播。新增 READY spec 296，知
 multi-pause dialogue 必須保存 pending PC、plot mutation 可能延後到最後 Continue、
 localized label 不可取代 script key 的共用契約。
 
-第二百九十七輪成果：追蹤 ECL2 block 3 entry 0 後確認，下水道邊界除了
+第二百九十七輪成果（第 516 輪勘誤後的歷史紀錄）：追蹤 ECL2 block 3 entry 0 後確認，下水道邊界除了
 `0x7ED5` 還會先檢查 engine movement sentinel `0x7EC9`；公會轉場留下的 `0xFF`
 若未在新步伐清除，會取消 exit attempt，接著把 E2 格誤派成 Otyugh 房間。
 `RunDungeonExitLifecycle` 現在先同步 combined GEO、清除 stale sentinel、再交回
-原始 ECL。正式新遊戲 regression 已從騎士分支走到 `(8,15,S)`，由 script 執行
-`CALL 0xC01E → Y=0 → X-2 → NEWECL 4`，進入 GEO2 block 4 `(6,1,S)`。
+原始 ECL。當時的 regression 是從騎士分支以 script 直接寫入 `(8,15,S)`，再執行
+`CALL 0xC01E → Y=0 → X-2 → NEWECL 4`，因此只證明 direct-entry 的 GEO2 block 4
+`(6,1,S)` 初始化，不證明正常玩家已走到 E2；該正常路徑宣稱已由第 516 輪撤回。
 target initial entry 的 `LOAD FILES 4,2,0xFF`、`LOAD PIECES 1,2,4` 與
 `YOU ARE ENTERING THE HIDEOUT` 均在同一 session 聚合，入口文字已繁中化。
 新增 READY spec 297，Gold Box 知識庫補上 boundary work flag 與 movement sentinel
@@ -4175,3 +4176,18 @@ JSON 以 `ECL block 3`、`7F72h=FDh`、`4C2Bh=1` 的戰後 predicate 宣告
 第二個 `(8,15)`→block 4 handoff、完整下水道與整作通關仍未完成。權威 spec：
 `docs/spec/515-fire-knife-map-position-transition.md`；engine 知識庫：
 `golden-box-remake-engine/docs/knowledge/golden-box-map-position-transition.md`。
+
+2026-08-09 第五百一十六輪先做反組譯盤點與斷言清理，沒有新增未閉合的劇情
+規則。`docs/knowledge/golden-box-reverse-engineering-worklist.md` 將缺口分為
+P0／P1／P2：P0 是 DOS `CALL 2E10h` 外部地圖 handoff 的 writer→consumer、
+騎士後 `(13,10)` 到 E2 `(8,15)` 的 secret-door／SEARCH bridge，以及 block 4
+後續外部地圖／返回世界 handoff；P1 是 ECL 外部 routine、戰鬥 AI／效果、存檔與
+角色規則；P2 是幾何／畫面／音訊 fidelity 與發行。這不是按 binary 行數估算，
+而是按會改變正常玩家結果的資料流估算。
+
+本輪勘誤：spec 297 舊版把測試直接寫入 `(8,15,S)` 再呼叫
+`RunDungeonExitLifecycle` 說成 formal regression 已跨入 block 4，該斷言不成立；
+文件現標 `SUPERSEDED`，歷史 E2／`NEWECL 4` bytes 保留但正常路徑列為未完成。
+`PLAN.md` 的對應完成項已取消。PC-98 `S` 的 exact 證據目前只到 record `+594h`
+bit 0 與 `SHOWLOCATION`，`BLOCKCODE` 也只證明 wall detail 0 不是普通可走格；
+不得把攻略秘密門符號或跨版本相同數字升格為 writer／consumer。
