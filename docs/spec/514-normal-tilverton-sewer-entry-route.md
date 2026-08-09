@@ -12,9 +12,9 @@
 正式 `SEARCH` 交易，才觸發火刀要求投降的事件。
 
 本輪終點是 `tilverton.sewers-checkpoint` 的雙選項事件，以及拒絕投降後的五名
-火刀實戰與 `tilverton.sewers-hide-bodies` 戰後 continuation。火刀戰後通往
-迷斯卓諾騎士的 `(13,10)`、騎士後續與 block 4 離場仍是後續工作；本規格不把
-既有座標輔助段落包裝成完整下水道路徑。
+火刀實戰與 `tilverton.sewers-hide-bodies` 戰後 continuation。第 515 輪已另以
+資料驅動 map-position contract 關閉第一個 `(13,10)` handoff；本規格仍只記錄
+第 514 輪的入口／檢查站邊界，不把後續騎士、block 4 或完整下水道包裝成完成。
 
 ## 證據與位址空間
 
@@ -100,11 +100,14 @@ go test -buildvcs=false -count=1 ./gamepack ./internal/game \
 `coab-audit` 與 `git diff --check`；本輪若只有 locale／正常路徑與既有戰鬥接線變更，
 不得把 focused 結果擴大寫成完整 combat gate。
 
-## 未完成邊界
+## 後續勘誤與未完成邊界
 
-- 火刀檢查站勝利後，現有測試仍直接把 block 3 位置設為 `(13,10)` 以驗證騎士
-  三段對話；block 3 靜態 GEO 的入口 component 與該事件格不是可直接宣稱相連的
-  開路路徑，後續要以 ECL／地圖轉移證據找出真正玩家路徑，不得用 BFS 結果硬穿牆。
+- 第 514 輪原本直接把 block 3 位置設為 `(13,10)` 的測試輔助，已由第 515 輪
+  `set_map_position` event 取代；其 predicate、raw ECL `CALL 2E10h`、PC-98
+  `MOVEFORWARD` 對照與 confidence 見
+  [`docs/spec/515-fire-knife-map-position-transition.md`](515-fire-knife-map-position-transition.md)。
+  這是 `strong inference` 的外部 handoff，不是 DOS writer→consumer 的
+  `exact` 完成；仍不得用 BFS 穿牆。
 - 騎士後的選項、下水道南界、block 4 火刀據點入口與返回世界地圖仍未改成正常
   `MoveDungeon`／exit transaction。
 - 完整 ECL、戰鬥特殊能力、遠程／法術／死亡演出、音效、UI pixel parity、全翻譯

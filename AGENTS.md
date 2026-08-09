@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 514 輪提爾佛頓下水道入口至火刀檢查站正常 GEO 路徑、
+- CoAB 本輪基底：第 515 輪火刀戰後第一個地圖位置轉移資料契約、第 514 輪
+  提爾佛頓下水道入口至火刀檢查站正常 GEO 路徑、
   第 513 輪提爾佛頓盜賊公會內部正常 GEO 路徑、第 512 輪
   提爾佛頓城門／皇家馬車正常 GEO 路徑、第 511 輪
   提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
@@ -405,7 +406,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `combat_affect_rules` schema／loader、`combat/posthit`、
   `combat_post_hit_rules` schema／loader、`combat/quicktarget`、
   `combat_ai_target_rules` schema／loader、`combat/targetselect`、
-  `combat_target_rules`／`combat_action_rules` schema／loader 與繁中傷害效果知識庫）。
+  `combat_target_rules`／`combat_action_rules` schema／loader、作品中立
+  `MapPositionTransition`／`set_map_position` schema／runtime 與繁中地圖位置轉移知識庫）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
@@ -1537,6 +1539,25 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
   不得擴大成完整公會、完整戰鬥、完整中文化或整作通關。
 
+### 第 515 輪火刀戰後地圖位置轉移補充
+
+- 火刀檢查站勝利後，玩家按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL
+  同一 session 續跑到 block 3 `+1B5Bh` 的 `CALL 2E10h`。目前 remake 的
+  `RunResult` 沒有 `C04Bh／C04Ch` `SaveWrites`，若只續跑 bytecode 會停在
+  `(1,8,S)`；不能把這種外部 runtime 缺口誤判成 ECL 沒有後續。
+- Engine 的 `set_map_position`／`Runtime.MapPositions` 是作品中立 contract。
+  CoAB JSON predicate（`ECL block 3`、`7F72h=FDh`、`4C2Bh=1`）才宣告目前
+  `(1,8)`→`(13,10,E)` handoff；State adapter 投影 GEO set/block、wall／roof
+  與 `C04B..C04F`。這筆轉移是 `strong inference`，不是 DOS `4BF0h／4BF1h`
+  writer→consumer 的 `exact` 結論。
+- `Select` 不得在 `CombatRequested` 時先套用 data-pack event；拒絕投降必須先
+  建立五名 Fire Knife 戰鬥，只有戰勝後的 PRESS continuation 才能觸發位置事件。
+- 第 515 輪已把測試中第一個直接座標注入移除。第二個 `(8,15)`→block 4
+  外部 handoff、騎士後續、完整下水道與整作正常玩家路徑仍未完成；不可因本輪
+  regression 通過宣稱完整 remake。權威規格為
+  `docs/spec/515-fire-knife-map-position-transition.md`，engine 知識庫為
+  `golden-box-remake-engine/docs/knowledge/golden-box-map-position-transition.md`。
+
 ### 第 514 輪提爾佛頓下水道入口正常路徑補充
 
 - block 3 入口回返 `(0,1,S)` 到火刀檢查站 `(1,8,S)` 必須逐格呼叫
@@ -1552,9 +1573,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 檢查站拒絕分支保留五名 `FIRE KNIFE` 的真正 `CombatAct` 回合與
   `tilverton.sewers-hide-bodies` 戰後 pause；文字與期待值走 game-pack stable ID，
   不在測試複製繁中顯示字串。
-- 火刀戰後的 `(13,10)` 騎士事件仍為 coordinate-assisted；block 3 的靜態 GEO
-  component 不可用 BFS 穿牆假造相連。下一步先追 ECL／NEWECL／邊界 handoff，再
-  接正常 movement；不得因已知目標座標就寫入 `DungeonX／DungeonY`。
+- 第 514 輪原本的火刀戰後 `(13,10)` 騎士座標輔助已由第 515 輪
+  `set_map_position` event 取代；該外部 handoff 仍標為 `strong inference`。
+  block 3 的靜態 GEO component 不可用 BFS 穿牆假造相連；騎士後到 block 4 的
+  第二個 handoff 仍須追 ECL／NEWECL／邊界 evidence，不得再新增直接座標注入。
 - 權威規格為 `docs/spec/514-normal-tilverton-sewer-entry-route.md`，知識庫為
   `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
   不得擴大成完整下水道、完整戰鬥、完整中文化或整作通關。

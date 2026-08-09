@@ -3175,6 +3175,33 @@
   ],
   "events": [
     {
+      "id": "tilverton.sewers.fire-knife-victory-handoff",
+      "once": true,
+      "when": {
+        "ecl_block": 3,
+        "memory": {
+          "0x7F72": 253,
+          "0x4C2B": 1
+        }
+      },
+      "actions": [
+        {
+          "type": "set_map_position",
+          "mode": "dungeon",
+          "position": {
+            "map_kind": "first_person",
+            "area_id": 2,
+            "geometry_block": 3,
+            "x": 13,
+            "y": 10,
+            "direction": 2,
+            "wall_type": 15,
+            "wall_roof": 131
+          }
+        }
+      ]
+    },
+    {
       "id": "pit-of-moander.departure",
       "once": true,
       "when": {

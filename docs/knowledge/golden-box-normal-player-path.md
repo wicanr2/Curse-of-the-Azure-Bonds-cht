@@ -156,10 +156,13 @@ per-turn text、按鍵 continuation 與 explicit SEARCH 是三個可追蹤的交
 
 拒絕檢查站投降後，五名 Fire Knife 由真正 combat turns 完成，勝利後再按下
 `tilverton.sewers-hide-bodies` 才返回相同地城 session。這一段證明的是入口到
-檢查站與戰後 boundary；火刀戰後的 `(13,10)` 騎士事件目前仍是座標輔助，不能
-只因看見同一張 GEO map 就假設左右兩個幾何 component 有開路相連。要進一步改成
-正常玩家路徑，必須先以 ECL／NEWECL／exit evidence 找出真正的 map handoff，
-不可用 BFS 穿過實心牆或將目標座標硬塞回 State。
+檢查站與戰後 boundary。第 515 輪已把火刀戰後第一個 `(1,8)`→`(13,10)`
+handoff 移入 engine `MapPositionTransition` 與 CoAB JSON event；State 不再由
+測試直接寫入騎士座標。這筆轉移目前是 `strong inference`：raw ECL
+`CALL 2E10h`、PC-98 movement service、GEO component 分析與既有事件路徑一致，
+但 DOS `4BF0h／4BF1h` writer→consumer 尚未 exact 閉合。不能只因看見同一張
+GEO map 就假設左右 component 有開路相連，也不可用 BFS 穿過實心牆。騎士後到
+block 4 `(8,15)` 的第二個外部 handoff 仍待證據與正常輸入驗證。
 
 ## 目前 CoAB checkpoint
 

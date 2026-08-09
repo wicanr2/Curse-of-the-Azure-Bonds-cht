@@ -4160,3 +4160,18 @@ README、`docs/project-status.md`、`docs/spec/README.md`、正常路徑知識�
 靜態 GEO 的兩個 component 不能靠 BFS 穿牆，下一輪要先追 ECL／NEWECL／map exit
 handoff。第 514 輪程式與文件目前尚未 commit／push，需先移除臨時 probe／診斷輸出，
 再跑 focused 與正式 gate 後集中收尾；完整下水道、音效、UI、全中文化與整作通關仍未完成。
+2026-08-09 第五百一十五輪關閉火刀戰後第一個外部地圖位置 handoff。原始 DOS
+ECL2 block 3 在 `+1B5Bh` 清理 branch 續跑 `CALL 2E10h`；remake runtime
+抽樣得到同一 `PC=1B5Bh`、無 `C04Bh／C04Ch` `SaveWrites`，若只續跑 ECL 會停在
+`(1,8,S)`。`GEO2.DAX` block 3 的 `(1,8)` 與 Myth Drannor 騎士格 `(13,10)`
+不在同一可走 component；PC-98 `MOVEFORWARD` 只作跨版本 movement-service
+對照，不能把位址直接合併。Engine 新增作品中立
+`MapPositionTransition`／`set_map_position`／`Runtime.MapPositions`；CoAB
+JSON 以 `ECL block 3`、`7F72h=FDh`、`4C2Bh=1` 的戰後 predicate 宣告
+`(13,10,E)` 與 `wall=0Fh／roof=83h`，State adapter 投影
+`GeoMapSet／GeoMapBlock`、`C04B..C04F`。拒絕投降仍先進五名 Fire Knife 戰鬥，
+只有勝利後 PRESS 才套用 event；focused regression 通過並移除第一個測試座標
+注入。此 handoff 是 `strong inference`，DOS `4BF0h／4BF1h` writer→consumer、
+第二個 `(8,15)`→block 4 handoff、完整下水道與整作通關仍未完成。權威 spec：
+`docs/spec/515-fire-knife-map-position-transition.md`；engine 知識庫：
+`golden-box-remake-engine/docs/knowledge/golden-box-map-position-transition.md`。

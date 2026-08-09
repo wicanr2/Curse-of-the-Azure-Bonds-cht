@@ -1,11 +1,23 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 513 輪；實際 HEAD 以遠端核對為準）
-依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
+本 milestone 的 CoAB 基底：GitHub `main`（第 514 輪；實際 HEAD 以遠端核對為準）
+依賴的 Golden Box engine checkpoint：`4771299`（本輪新增位置轉移契約後，以
+本輪 engine commit 為準）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
+勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到
+`CALL 2E10h`；CoAB game-pack predicate 依戰後 raw memory 宣告
+`set_map_position`，engine `Runtime.MapPositions` 再由 State adapter 設定
+GEO2 block 3 `(13,10,E)`、wall／roof registers 與下一次 lifecycle。拒絕投降仍先
+建立五名 Fire Knife 戰鬥，故不會在戰鬥入口提前轉移。這個外部 handoff 是
+`strong inference`，不是 DOS `4BF0h／4BF1h` writer→consumer 的 exact 完成；
+第二個 `(8,15)`→block 4 handoff、完整下水道與完整通關仍未完成。權威規格為
+[`docs/spec/515-fire-knife-map-position-transition.md`](spec/515-fire-knife-map-position-transition.md)，
+共用 engine 知識庫為 `golden-box-remake-engine/docs/knowledge/golden-box-map-position-transition.md`。
 
 第 514 輪把提爾佛頓 block 3 下水道入口後的第一段座標輔助改成正常玩家交易。
 從 `tilverton.sewers-entry` 回返位置 `(0,1,S)` 沿 decoded `GEO2.DAX` block 3
@@ -13,7 +25,7 @@ commit 內保存不可能自我引用的 hash。
 `tilverton.sewers.guild-battle-echoes` PRESS，按鍵後由正式 `SearchDungeonLocation`
 交易觸發火刀檢查站。拒絕投降分支以真正五名 Fire Knife combat turns 完成，並回歸
 `tilverton.sewers-hide-bodies`。這是 `READY` 的有界正常路徑，不是完整下水道或整作
-完成聲明；戰後 `(13,10)` 騎士事件與 block 4 仍是座標輔助。權威規格為
+完成聲明；第 515 輪已關閉第一個 `(13,10)` handoff，騎士後段與 block 4 仍是座標輔助。權威規格為
 [`docs/spec/514-normal-tilverton-sewer-entry-route.md`](spec/514-normal-tilverton-sewer-entry-route.md)，
 共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 
@@ -23,7 +35,7 @@ commit 內保存不可能自我引用的 hash。
 多道 detail `2` 鎖門、公會內部回廊與下水道門，路途中遇到的奔逃盜賊、火刀、刺客、
 野獸搏鬥與戰後屍體文字均由 game-pack stable ID 的 `en`／`zh-TW` 資料驅動；犬舍與
 隨機遭遇以真正 combat turns 完成。這是 `READY` 的有界正常玩家路徑，不是整作完成
-聲明。block 3 入口後仍有座標輔助下水道檢查點，完整 ECL／戰鬥／音效／UI／中文化／
+聲明。block 3 入口後的第一段已由第 514 輪關閉，戰後外部 handoff 仍需逐段驗證；完整 ECL／戰鬥／音效／UI／中文化／
 結局尚未完成。權威規格為
 [`docs/spec/513-normal-tilverton-guild-interior-route.md`](spec/513-normal-tilverton-guild-interior-route.md)，
 共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
