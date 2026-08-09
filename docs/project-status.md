@@ -1,14 +1,14 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 520 輪 DOS movement／overlay cell-layer bridge 靜態稽核；實際
+本 milestone 的 CoAB 基底：第 521 輪 DOS `GetMem` buffer owner 靜態稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 依賴的 Golden Box engine checkpoint：目前遠端 HEAD `d08bc402d0f1ef5b635ed5369b9db539ffdaec3c`。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 520 輪延續第 517–519 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
+第 521 輪延續第 517–520 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
 `START.EXE` database 中沒有找到 `2E10h` 的 resident direct-code handler，唯一
 raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜尋路徑，沒有把
 尚未閉合的 secret-door／外部地圖
@@ -20,7 +20,10 @@ raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜�
 與 runtime consumer 仍未知。第 520 輪又從 overlay-07 `1B3Fh` 證明
 `DS:720F／7210` 的 `0..0Fh` 循環更新，以及 vector 6／4 的結果欄位
 `DS:7213／7212`；overlay-28 另以 vector 7 `0841h` 分流。這仍是 static
-bridge，不是 normal input、map handoff 或 secret-door 完成。剩餘工作按 P0／P1／P2 排序，詳見
+bridge，不是 normal input、map handoff 或 secret-door 完成。第 521 輪再將
+`0A54:0329h` 精確對到 resident Borland `GetMem(Pointer &,Word)`；
+`DS:7206h + 0400h` 可標為 1 KiB buffer owner 的 `strong inference`，但 buffer
+plane／填入者／map projection 仍未知。剩餘工作按 P0／P1／P2 排序，詳見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
 目前還有 11 個直接影響玩家結果的逆向主題與 4 個 fidelity／發行主題；專案仍是
 多個可重播 vertical slice，不是完整可通關 remake。第 517 輪另修正「GEO component
@@ -28,7 +31,8 @@ bridge，不是 normal input、map handoff 或 secret-door 完成。剩餘工作
 找到。完整盤點見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](spec/517-reverse-engineering-gap-inventory.md)；
 第 518 輪位址空間證據見 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](spec/518-dos-start-ecl-call-address-space-audit.md)，
 第 519 輪 static overlay evidence 見 [`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](spec/519-dos-overlay-vector-to-cell-layer-accessor.md)，
-第 520 輪 movement／consumer bridge 見 [`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](spec/520-dos-movement-to-overlay-cell-layer-bridge.md)。
+第 520 輪 movement／consumer bridge 見 [`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](spec/520-dos-movement-to-overlay-cell-layer-bridge.md)，
+第 521 輪 `GetMem` owner evidence 見 [`docs/spec/521-dos-getmem-buffer-owner.md`](spec/521-dos-getmem-buffer-owner.md)。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到

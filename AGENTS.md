@@ -1692,8 +1692,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   對 local `1B3Fh` 的 direct IDA code xref 為 0，不能因此宣稱正常輸入已接通。
 - `overlay-11` local `00E9h` 把 `DS:7206h` 與 `0400h` 傳給
   `0A54:0329h`；`03F2..03FCh`／`078Eh..0798h` 寫入 `DS:720F=07h`、
-  `DS:7210=0Dh`、`DS:7211=00h／02h`。這是 writer／call-site exact，callee
-  呼叫慣例與 buffer 語意仍 unknown。
+  `DS:7210=0Dh`、`DS:7211=00h／02h`。這是 writer／call-site exact；第 521 輪
+  已閉合 callee 為 Borland `GetMem(Pointer &,Word)`，配置後 buffer 語意仍未知。
 - `overlay-30` vector 4 `017F:0034h → 06BDh` 讀 `+000h／+100h` 的 high／low
   nibble；vector 6 `017F:003Eh → 07C6h` 讀 `+200h` byte。`overlay-28:00CCh`
   呼叫 vector 6 並比較 `DS:7213h` 與 `7Fh`，稍後另呼叫
@@ -1709,6 +1709,31 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `scripts/ida/dos_overlay07_movement_audit.idc`、
   `scripts/ida/dos_overlay_ds_field_audit.idc`、
   `scripts/ida/dos_overlay_ds_context_audit.idc`。
+
+### 第 521 輪 DOS `0A54:0329h` GetMem buffer owner
+
+- Docker 內以 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610` 分析原始
+  `START.EXE` 與唯讀 baseline database。`START.EXE` SHA-256 為
+  `dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`，baseline
+  `START.EXE.i64` 為
+  `9df802ee4ef71fb2eda83257e0ed2d87adf0ee2d10241d3bdbdc6bc369fe47eb`。
+- segment inventory 顯示 runtime selector `0A54h` 在此 IDA baseline 的
+  `+1000h` paragraph mapping 下對到 IDA selector `1A54h`；runtime
+  `0A54:0329h` 是 `seg050`／IDA EA `0x1A869`。入口 raw／IDA bytes、原始
+  Borland symbol `@GetMem$qm7Pointer4Word; GetMem(Pointer &,Word)` 與 direct
+  callers 見 `docs/spec/521-dos-getmem-buffer-owner.md`。
+- 因此 `overlay-11:00E9h` 的 `DS:7206h`＋`0400h` call-site 已可標為由
+  `GetMem` 接收 1 KiB size 的 pointer-buffer owner `strong inference`；但這
+  不得把 buffer 命名成 GEO、wall、terrain 或 secret-door plane。
+- 當前仍未知的是配置後 buffer writer／清除時機／`+000/+100/+200/+300` plane
+  layout、overlay-07 `1B3Fh` 的正常或間接 entry、`DS:7212／7213` 與 vector 7
+  `0841h` consumer、`C04B..C04F` projection，以及 DOSBox runtime handoff。
+- 版本化腳本為 `scripts/ida/dos_start_segment_inventory.idc` 與
+  `scripts/ida/dos_start_0a54_call_audit.idc`；只操作 disposable database，
+  不改原始 binary／baseline `.i64`。本輪沒有修改 engine、JSON、movement
+  predicate 或 secret-door 規則；11 個行為主題與 4 個 fidelity／發行主題不變。
+- 不得再把 `0A54:0329h` 當成「callee 完全未知」；也不得因 GetMem 名稱把
+  `DS:7206h` 直接升格成地圖 buffer、GEO plane 或已完成 map handoff。
 
 ## 10. Compact 後恢復工作清單
 

@@ -26,8 +26,10 @@ ECL `2E10h` 的 vector 6 target。
 
 這輪仍不能把欄位命名成座標、牆、地形、秘密門或劇情旗標，也沒有修改 engine／
 JSON。overlay-07 local `1B3F` 在該 overlay 的 direct IDA code xref 為零，
-其正常輸入 caller／indirect entry 仍需追；`DS:7206h` 的外部 service、
-`C04B..C04F` projection 與 DOSBox runtime handoff 也仍未閉合。
+其正常輸入 caller／indirect entry 仍需追；第 521 輪已將 `DS:7206h` 的
+`0A54:0329h` owner 對到 Borland `GetMem(Pointer &,Word)`，但配置後 buffer
+的填入／plane layout、`C04B..C04F` projection 與 DOSBox runtime handoff 仍未
+閉合。
 
 ## 輸入與工具 provenance
 
@@ -124,8 +126,10 @@ overlay-11 local `00E9..00F5`：
 00F2  9A 29 03 54 0A              call far 0A54:0329h
 ```
 
-這只能證明 `DS:7206h` 位址與 `0400h` 參數被傳給該外部 routine；callee 的
-呼叫慣例與「配置／載入／清除」語意仍未知。相鄰初始化 block 在
+這只能證明當時 call-site 把 `DS:7206h` 位址與 `0400h` 參數傳給該外部 routine；
+第 521 輪已由 resident IDA symbol／入口 bytes 確認 target 是 Borland
+`GetMem(Pointer &,Word)`，因此「呼叫慣例／owner 完全未知」不再是當前斷言。
+配置後 buffer 的填入、清除時機與內容語意仍未知。相鄰初始化 block 在
 `03F2..03FC` 及 `078E..0798` 寫入：
 
 ```text
@@ -202,14 +206,25 @@ secret-door plane。
 
 ### `unknown`
 
-- `DS:7206` 的實際 owner、初始化 callee `0A54:0329h` 的呼叫慣例與 buffer plane
-  layout。
+- `DS:7206` 配置後 buffer 的實際 writer、清除時機與 `+000/+100/+200/+300`
+  plane layout。
 - overlay-07 `1B3Fh` 的 normal input caller／indirect dispatch。
 - `DS:7212／7213` 對應的正式規則、`7Fh` sentinel 意義、`C04B..C04F` projection、
   ECL external handoff 與 DOSBox runtime 結果。
 
 因此 11 個行為逆向主題與 4 個 fidelity／發行主題數量不變；本輪只縮小 P0-1
-的欄位資料流。下一步是追 `0A54:0329h`、overlay-07 的間接 entry、overlay-14
-`+300h` writer 與原版 DOSBox map／座標／方向 trace。在這些證據閉合前，不新增
+的欄位資料流。下一步是追 `GetMem` 後的 buffer writer／plane、overlay-07 的
+間接 entry、overlay-14 `+300h` writer 與原版 DOSBox map／座標／方向 trace。在
+這些證據閉合前，不新增
 secret-door／search JSON、不改 movement predicate，也不把已有 coordinate-assisted
 handoff 升格成 exact。
+
+## 第 521 輪狀態修訂
+
+第 521 輪已把本規格原本的「`0A54:0329h` callee 呼叫慣例未知」縮小：在
+`START.EXE.i64` 的 `+1000h` selector mapping 下，該 target 是 IDA
+`seg050:1A54:0329h`／EA `0x1A869`，原始符號為 Borland
+`GetMem(Pointer &,Word)`。overlay-11 的 `DS:7206h`＋`0400h` 因而可標成
+`GetMem` 配置 1 KiB pointer 的 `strong inference`；buffer writer／plane layout／
+map projection 仍未知。完整 evidence 見
+[`spec 521`](./521-dos-getmem-buffer-owner.md)。

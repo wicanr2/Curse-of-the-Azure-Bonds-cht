@@ -10,25 +10,28 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 520
-輪反組譯盤點 milestone；本輪沿 DOS overlay 的 DS 欄位追出 movement update、
-vector 6／4 consumer 與獨立 vector 7 `0841h` 路徑，並保留所有位址空間邊界。
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 521
+輪反組譯盤點 milestone；本輪將 `0A54:0329h` 對到 resident Borland
+`GetMem(Pointer &,Word)`，確認 `DS:7206h` 的 `0400h` buffer owner 邊界，並保留
+所有位址空間邊界。
 獨立 engine 已包含前一輪資料驅動轉場變更；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
-第 520 輪延續第 517–519 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，
+第 521 輪延續第 517–520 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，
 並保留 `overlay [di+4BF0h]` 只是獨立位址空間候選的勘誤。`START.EXE` 的
 control block raw `0x1FA0` 顯示 vector 6 bytes `CD 3F C6 07 00`，與
 `GAME.OVR` overlay-30 offset `0x3DF87`／length `0x147F` 吻合；local `07C6h`
 只證明兩個 word 的 bounded 16×16 indexed read、`DS:7206h` far pointer 與
 `ES:[DI+0200h]`，另有 overlay-07 `1B3Fh` 的 16×16 欄位循環與
-`DS:7213／7212` consumer；不證明 map plane、座標規則或 secret-door。完整工作路由見
+`DS:7213／7212` consumer；`DS:7206h` 現確認由 Borland `GetMem` 接收
+`0400h` size，但不證明 buffer plane、座標規則或 secret-door。完整工作路由見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)，
 證據見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](docs/spec/517-reverse-engineering-gap-inventory.md)、
 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](docs/spec/518-dos-start-ecl-call-address-space-audit.md) 與
 [`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md)、
-[`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md)。
+[`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md) 與
+[`docs/spec/521-dos-getmem-buffer-owner.md`](docs/spec/521-dos-getmem-buffer-owner.md)。
 
 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7` 重試
 範圍、priority `7` 起始與逐級降低資料化到 engine `combat/quicktarget`。CoAB 的

@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百二十一輪 DOS `0A54:0329h` 的 `GetMem` buffer owner](./521-dos-getmem-buffer-owner.md)（`READY`：`DS:7206h`＋`0400h` 的 Borland `GetMem` 位址／呼叫邊界；不含 buffer plane／map handoff）
 - [第五百二十輪 DOS movement state → overlay cell-layer bridge](./520-dos-movement-to-overlay-cell-layer-bridge.md)（`READY`：`DS:720F／7210` 更新、vector 6／4 consumer 與 `0841h` 分流；不含正常輸入／map handoff）
 - [第五百一十九輪 DOS overlay vector → 16×16 cell-layer accessor](./519-dos-overlay-vector-to-cell-layer-accessor.md)（`READY`：`017F:003Eh` → vector 6 → overlay-30 `07C6h` 靜態邊界；不含 map plane／writer／runtime handoff）
 - [第五百一十八輪 DOS `CALL 2E10h` 位址空間稽核](./518-dos-start-ecl-call-address-space-audit.md)（`READY`：`START.EXE` resident direct-code 候選排除；不含 external handler／地圖 handoff）
