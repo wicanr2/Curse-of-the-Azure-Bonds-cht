@@ -115,14 +115,20 @@ overlay 24 `SHOWLOCATION` `0x2E8Ch`。它再次支持顯示／位置狀態回饋
   `4C28h`、ECL work `4BF0h／4BF1h` 或 CoAB GEO 欄位；DOS overlay 22 的
   `[di+4BF0h]` 也必須先解決自己的 DS／indexed-table 位址空間。
 
-## 下一個窄工作
+## 下一個窄工作（第 525 輪勘誤後）
 
-1. 以 `BDF1` overlay-2 consumer 的 caller／前後資料流為入口，找是否有 map
-   service 的 address-taken writer；先查 writer，再查名字。
-2. 若 PC-98 仍只有顯示／record state，轉回 DOS `GAME.OVR` 的 `2E10h` caller，
-   先追 consumer 讀取的 register／map state，再找其前置 producer；ECL work
-   `4BF0h／4BF1h` 與 overlay 22 `[di+4BF0h]` 間接取址的 projection／runtime
-   DOSBox trace 必須分開記錄。
+第 525 輪已完成原本第 1 項的 `BDF1` state-flow 抽樣：它是目前角色 `+594h` 的
+暫存／還原，尾端進入 `SHOWLOCATION`，目前沒有證據是 map service writer。因此
+不再把 BDF1 當成秘密門 writer 的先驗入口。
+
+1. 追 PC-98 `MOVEPARTY (00C9:0BCCh)` 與 named `SEARCHREC` type/member owner；
+   `LOAD3DMAP／BLOCKCODE` 的 loader／普通 reader 靜態邊界已由第 525 輪閉合，
+   下一步只確認 `wall=09/detail=0` 的 map record 是否有真正 writer，再追 movement
+   consumer。
+2. 若 PC-98 仍只有 loader／display／record state，轉回 DOS `GAME.OVR` 的
+   `2E10h` caller，先追 consumer 讀取的 register／map state，再找其前置 producer；
+   ECL work `4BF0h／4BF1h` 與 overlay 22 `[di+4BF0h]` 間接取址的
+   projection／runtime DOSBox trace 必須分開記錄。
 3. 只有找到 writer→projection→movement consumer 後，才新增資料驅動
    `secret_door`／`search` contract；在此之前保持 `MoveDungeon` fail-closed。
 

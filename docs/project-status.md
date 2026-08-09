@@ -1,17 +1,17 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 524 輪 DOS overlay-30 GEO loader／四平面來源
-（承接第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
-`DS:7206h` 四平面 writer／暫存 loader）靜態
-稽核；實際
+本 milestone 的 CoAB 基底：第 525 輪 PC-98 `TEMPSEARCH/BDF1` 暫存狀態／
+`SHOWLOCATION` 邊界（承接第 524 輪 DOS overlay-30 GEO loader／四平面來源、
+第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
+`DS:7206h` 四平面 writer／暫存 loader）靜態稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 依賴的 Golden Box engine checkpoint：目前遠端 HEAD `d08bc402d0f1ef5b635ed5369b9db539ffdaec3c`。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 522–524 輪延續第 517–521 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
+第 522–525 輪延續第 517–521 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
 `START.EXE` database 中沒有找到 `2E10h` 的 resident direct-code handler，唯一
 raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜尋路徑，沒有把
 尚未閉合的 secret-door／外部地圖
@@ -48,7 +48,21 @@ handoff 仍未知。
 第 521 輪 `GetMem` owner evidence 見 [`docs/spec/521-dos-getmem-buffer-owner.md`](spec/521-dos-getmem-buffer-owner.md)，
 第 522 輪四平面 writer／loader evidence 見 [`docs/spec/522-dos-buffer-four-plane-fill.md`](spec/522-dos-buffer-four-plane-fill.md)，
 第 523 輪 control vector／dispatcher evidence 見 [`docs/spec/523-dos-overlay07-vector26-entry.md`](spec/523-dos-overlay07-vector26-entry.md)，
-第 524 輪 GEO loader／payload evidence 見 [`docs/spec/524-dos-overlay30-geo-loader-source.md`](spec/524-dos-overlay30-geo-loader-source.md)。
+第 524 輪 GEO loader／payload evidence 見 [`docs/spec/524-dos-overlay30-geo-loader-source.md`](spec/524-dos-overlay30-geo-loader-source.md)，
+第 525 輪 `TEMPSEARCH/BDF1` 暫存／`SHOWLOCATION` evidence 見
+[`docs/spec/525-pc98-tempsearch-display-state.md`](spec/525-pc98-tempsearch-display-state.md)。
+
+第 525 輪沿 PC-98 Borland symbol table 重新核對 `TEMPSEARCH (0C29:BDF1h)`。
+overlay-02 local `3BB8h..3BFDh` 會從目前角色 `+594h` 取值、以 `AND FFFDh`
+暫存到 `BDF1`、暫時把角色 `+594h` 寫成 `1`，經中間狀態流程後還原，再呼叫
+`014A:00DEh`；TPOV resolver 將該 stub 對到 overlay-24 `SHOWLOCATION` local
+`2E8Ch`。overlay-11 local `06BEh..06CDh` 則只負責 `BDF1..BDF4` 初始清零。
+因此「BDF1 是秘密門第三平面 writer」已被移除；這不等於秘密門不存在，也沒有
+新增 movement 規則。同輪以 `LOAD3DMAP (017C:1253h)` 的 `0402h` gate、named
+`THE3DMAP (0C29:A2A0h)` 四平面 copy，以及 `BLOCKCODE／WALLCODE` 對
+`+000／+100／+300` 的 mask／座標讀取，關閉了 loader／buffer／普通 movement
+reader 靜態邊界。P0-2 下一步只追 `MOVEPARTY` 的 action transaction、
+`SEARCHREC` owner 是否寫回第三平面，以及同版本 runtime trace。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到
