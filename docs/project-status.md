@@ -1,8 +1,17 @@
 # 專案成果盤點
 
-更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 526 輪 PC-98 `MOVEPARTY` map-buffer writer／
-`SEARCHREC` 路由勘誤（承接第 525 輪 `TEMPSEARCH/BDF1` 暫存狀態／
+更新日期：2026-08-10
+第 527 輪在 PC-98 overlay-14 raw 副本中閉合 MOVEPARTY 的 B／P／K token
+dispatch、local 0x02F5／0x05B4／0x0714 helper target，以及兩種
+THE3DMAP +300h selected 2-bit field writer：local 0x014C 將 selected
+field 寫成 raw 01，B／P helper 各有兩個直接 call；local 0x003E 在
+movement-result 分支清除 selected field。這些是 exact raw operation／call-site，
+不是開門／關門語意；action 成功 predicate、BLOCKCODE consumer、ECL flag、
+另一側 cell、重訪／save-load 與 (13,10)→(8,15) 正常 runtime 仍未完成。
+本輪沒有新增 movement／secret-door JSON。完整證據見
+docs/spec/527-pc98-moveparty-action-writer-boundary.md。
+本 milestone 的 CoAB 基底：第 527 輪 PC-98 `MOVEPARTY` action／map-field writer
+邊界（承接第 526 輪 `SEARCHREC` 路由勘誤、第 525 輪 `TEMPSEARCH/BDF1` 暫存狀態／
 `SHOWLOCATION` 邊界，以及第 524 輪 DOS overlay-30 GEO loader／四平面來源、
 第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
 `DS:7206h` 四平面 writer／暫存 loader）靜態稽核；實際

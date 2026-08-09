@@ -4509,3 +4509,27 @@ Borland type 與 DOS `FINDFIRST/FINDNEXT` consumer 證明是檔案搜尋 record�
 `README-history.md` 歷史檔；全域 `~/.codex/AGENTS.md` 與專案 `AGENTS.md` 都已
 記錄同一條可玩性優先規則。下一步回到 engine＋CoAB JSON 的可玩路徑串接，不再擴大
 PC-98 檔案服務研究。
+
+2026-08-10 第五百二十七輪沿 P0-2 只追查直接影響正常玩家路徑的 PC-98
+overlay-14 MOVEPARTY action／map-field writer。既有 raw 副本
+workplace/ida406/pc98-overlays/overlay-14.bin 的 SHA-256 為
+a8e03ba9a5381c3a9f7ab411ced3262b21e0b65b948160d614386d677610e7b9；
+新增的唯讀交叉驗證工具是
+scripts/research/pc98_overlay14_action_writer_audit.py。本輪精確確認：
+
+- MOVEPARTY local 0x0BCC 的 B／P／K token bytes 分別呼叫 local
+  0x02F5／0x05B4／0x0714。
+- local 0x014C 讀取 THE3DMAP+300h，依方向保留 3Fh／CFh／F3h／FCh
+  後 OR 入 40h／10h／04h／01h，即 selected 2-bit field 的 raw 01；
+  0x02F5 與 0x05B4 各有兩個直接 set-writer call。
+- local 0x003E 以相同方向 mask 清除 selected field；MOVEPARTY 0x0CD4
+  有一個直接 clear-writer call，前置 local flag 語意仍 unknown。
+
+這些只閉合 raw operation／caller／writer boundary，不能命名成暗門、detail、
+開門／關門、ECL flag 或另一側 cell，也沒有新增 movement／secret-door JSON。
+PC-98 使用者 FDD 仍未在 NP2kai 完整通過遊戲 loader，因此本輪沒有 runtime
+trace；下一步必須以同版本 DOS／PC-98 oracle 記錄 action 前後 THE3DMAP+300h、
+BLOCKCODE 結果、重訪／save-load 與 ECL continuation，再決定是否能進入
+engine＋game-pack 實作。完整邊界見
+docs/spec/527-pc98-moveparty-action-writer-boundary.md；compact 後不要把
+raw 01 重新命名成 detail=1 或 door_open。
