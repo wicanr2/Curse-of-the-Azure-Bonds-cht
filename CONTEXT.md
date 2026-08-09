@@ -4291,8 +4291,34 @@ JSON 或 movement predicate。新增 `docs/spec/520-dos-movement-to-overlay-cell
 `scripts/ida/dos_overlay07_movement_audit.idc`、
 `scripts/ida/dos_overlay_ds_field_audit.idc`、
 `scripts/ida/dos_overlay_ds_context_audit.idc`，並更新 worklist、spec index、
-README、`docs/project-status.md` 與 AGENTS。下一步追 `0A54:0329h` owner／
-呼叫慣例、overlay-07 間接 entry、`DS:7212／7213` 正式 consumer、
+README、`docs/project-status.md` 與 AGENTS。第 520 輪當時的下一步是追
+`0A54:0329h` owner／呼叫慣例；第 521 輪已把該邊界對到 `GetMem`，目前改追
+配置後 buffer、overlay-07 間接 entry、`DS:7212／7213` 正式 consumer、
 `C04B..C04F` projection 與 DOSBox runtime；在資料流閉合前不新增
 secret-door／search JSON。完整規格見
 `docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`。
+
+2026-08-09 第五百二十一輪把第 520 輪仍未閉合的 `0A54:0329h` callee 邊界縮小。
+Docker 內以 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610` 分析原始
+`START.EXE`（SHA-256
+`dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`）與 baseline
+`START.EXE.i64`（SHA-256
+`9df802ee4ef71fb2eda83257e0ed2d87adf0ee2d10241d3bdbdc6bc369fe47eb`）。segment
+inventory 顯示 runtime selector `0A54h` 在此 IDA baseline 的 `+1000h` paragraph
+mapping 下對到 IDA selector `1A54h`，所以 runtime `0A54:0329h` 是 `seg050`／
+IDA EA `0x1A869`；其原始 Borland symbol 為
+`@GetMem$qm7Pointer4Word; GetMem(Pointer &,Word)`，入口 bytes 與 direct callers
+見 `docs/spec/521-dos-getmem-buffer-owner.md`。
+
+因此 overlay-11 的 `DS:7206h`＋`0400h` call-site 可標為由 Borland `GetMem` 接收
+1 KiB size 的 pointer-buffer owner `strong inference`。這只移除「callee 完全未知」
+的錯誤現況描述；配置後 buffer writer／清除時機／`+000/+100/+200/+300` plane
+layout、overlay-07 `1B3Fh` 正常或間接 entry、`DS:7212／7213`／vector 7 `0841h`
+consumer、`C04B..C04F` projection 與 DOSBox runtime handoff 仍未完成。不要因
+GetMem 名稱把 `DS:7206h` 直接命名成 GEO、wall、terrain 或 secret-door plane，
+也沒有新增 engine／JSON／movement predicate 規則。新增可重現腳本
+`scripts/ida/dos_start_segment_inventory.idc` 與
+`scripts/ida/dos_start_0a54_call_audit.idc`；完整證據見
+`docs/spec/521-dos-getmem-buffer-owner.md`。第 521 輪後仍是 11 個行為逆向主題與
+4 個 fidelity／發行主題；下一步先追 GetMem 後的 buffer fill／plane，再追正常
+輸入 entry、欄位 consumer、projection 與 DOSBox runtime trace。
