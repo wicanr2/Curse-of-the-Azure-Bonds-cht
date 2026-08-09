@@ -4067,4 +4067,18 @@ State 正式 game pack 且有 provider 時將一般 enemy turn 接入，舊 synt
 保留相容 fallback。新增 engine／combat／State regression，證明牆面第一輪無候選、
 第二輪重建及不可見候選移除；這仍不是完整 movement、persistent target、flee／guard、
 AI、方向 tie、戰鬥動畫音效或完整遊戲通關。engine 已以 `011dd91` commit 並 push；
-CoAB root 已通過 Docker／Xvfb 正式 gate，剩餘只是本輪文件與 root commit／push 收尾。
+CoAB root 已通過 Docker／Xvfb 正式 gate。
+
+2026-08-09 第五百零九輪接續已 READY 的 PC-98 QUICK target pointer 邊界。engine
+`combat/action.State` 新增 `ActionTargetID`，與延遲法術 `TargetID`／格點 target
+分離；`SetActionTarget`／`ClearActionTarget` 不解讀隊伍，完整 clear／死亡／Guard
+才清整筆 action。CoAB game-pack 的 `combat_action_rules` 新增
+`clear_same_team_on_quick=true`，State QUICK／ALT+Q 依 JSON policy 清除同隊 target、
+保留敵隊 target；engine／combat／State focused tests 通過。證據沿用 overlay 24
+`2A5Bh..2AADh`、overlay 8 `1375h..140Fh` 的 PC-98 raw／IDA READY spec，raw
+far-pointer layout、同格排序、movement／flee／guard producer、完整 AI 與完整通關
+仍未完成。權威規格：`docs/spec/509-pc98-action-target-quick-clear.md`；engine
+知識庫：`docs/knowledge/golden-box-action-target-lifecycle.md`。engine 已以 `4771299`
+commit 並 push；CoAB Docker／Xvfb
+正式 gate、`coab-audit total=0`、engine 全套 gate 與 `git diff --check` 均已通過；
+本輪程式、文件與兩 repo commit／push 待集中收尾。

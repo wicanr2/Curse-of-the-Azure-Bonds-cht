@@ -1,8 +1,8 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 508 輪；實際 HEAD 以遠端核對為準）
-依賴的 Golden Box engine checkpoint：`011dd91`（GitHub `main` 已核對）
+本 milestone 的 CoAB 基底：GitHub `main`（第 509 輪；實際 HEAD 以遠端核對為準）
+依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -31,6 +31,15 @@ caller audit 保留 overlay-09 `014A:00C0h` raw far-call 與位址空間，但�
 對應與 direction comparator 仍是 `strong inference／hypothesis`，移動、flee／guard、
 persistent action target、完整 AI、動畫音效與整作通關仍未完成。權威規格為
 [`docs/spec/508-pc98-general-target-scan-producer.md`](spec/508-pc98-general-target-scan-producer.md)。
+
+第 509 輪把 PC-98 per-action target 的 typed projection 接入共用 engine
+`combat/action.State.ActionTargetID`，與延遲法術 `TargetID`／格點 target 分離。
+CoAB game pack 以 `combat_action_rules.clear_same_team_on_quick` 宣告 QUICK／ALT+Q policy；正式路徑只
+清除同隊 action target，敵隊 target 保留。engine／CoAB focused tests 與既有延遲
+施法測試均通過；raw far pointer layout、同格排序、完整 movement／flee／guard、AI
+與整作通關仍未完成。Docker／Xvfb CoAB 正式 gate、`coab-audit total=0` 與 engine
+全套 `go test ./...` 均已通過。權威規格為
+[`docs/spec/509-pc98-action-target-quick-clear.md`](spec/509-pc98-action-target-quick-clear.md)。
 
 第 505 輪補上 PC-98 Quick target 的 caller 邊界：IDA／TPOV resolver 證明
 `04CCh` 是 overlay 09 entry 4，但其唯一直接 caller `0164h` 是通用戰鬥 action

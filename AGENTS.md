@@ -373,9 +373,10 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 508 輪 PC-98 一般敵方選敵 SCAN producer 與有限抽樣 milestone
+- CoAB 本輪基底：第 509 輪 PC-98 Action target／QUICK 清除與第508輪 SCAN producer
+  milestone
   （本文件所在 commit 完成）；兩個 repository 的實際 HEAD／remote 才是最終版本依據。
-- Engine dependency：`011dd91`（GitHub `main` 已核對；含作品中立 game-pack
+- Engine dependency：`4771299`（GitHub `main` 已核對；含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，
   以及 YM2203 opaque full-state／PCM
   resampler snapshot，以及 `combat/effecttime`、`combat/scan` 的
@@ -383,7 +384,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   inclusive 扇區、`combat/scanorder`
   的三 byte record 原版排序、`combat/sleep` 的 `4d4`／
   ordered HD capacity filter、`combat/action` 的 delayed
-  spell `TargetID`／point-target transaction 與 interruption clear、
+  spell `TargetID`／point-target transaction、`ActionTargetID` 與 interruption clear、
   `combat/initiative`、
   `combat/quickspell`、`randomstream`，以及 game-pack
   `presentation.scene_character` native geometry、繁中人物版面知識庫、
@@ -399,7 +400,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `combat_affect_rules` schema／loader、`combat/posthit`、
   `combat_post_hit_rules` schema／loader、`combat/quicktarget`、
   `combat_ai_target_rules` schema／loader、`combat/targetselect`、
-  `combat_target_rules` schema／loader 與繁中傷害效果知識庫）。
+  `combat_target_rules`／`combat_action_rules` schema／loader 與繁中傷害效果知識庫）。
 - 本文件所在 commit 會晚於上述 CoAB 基底；compact 後永遠先以兩個 repo 的
   實際 HEAD／remote 為準，不要把文件內 hash 當成可自我引用的 latest hash。
 - GUI 原版石框、人物／3D／PIC 分離舞台、16×15 倚天與 PC-98 typography
@@ -1422,9 +1423,23 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   producer；舊 synthetic 測試可保留 bounded fallback，但正式玩家路徑應讓
   producer／map 錯誤 fail-closed，不可靜默回到 party[0]。
 - 本輪只關閉候選 producer、visibility remove 與第二輪 wall-bypass；方向 tie、
-  persistent `Action.target`、movement／flee／guard、完整 monster AI、法術／
+  raw persistent Action target layout、movement／flee／guard、完整 monster AI、法術／
   近戰逐幀動畫與音效仍不可宣稱完成。權威規格為
   `docs/spec/508-pc98-general-target-scan-producer.md`。
+
+### 第 509 輪 Action target／QUICK 補充
+
+- PC-98 overlay 8 local `1375h..140Fh` 的 Quick setter 在同隊 target 時清除
+  target far pointer；這是已證實的控制流，但 `Action+06h` 與完整 pointer layout
+  仍未知。不要用同一數值或 IDA rename 替 raw offset 命名。
+- engine `combat/action` 將目前 action 的 `ActionTargetID` 與延遲法術的
+  `TargetID`、格點 target 分開；`TakeTargetedSpell`／`InterruptSpell` 不得誤清
+  action target。stable ID 只是 `strong inference` typed projection。
+- `combat_action_rules.clear_same_team_on_quick` 是 game-pack policy；State
+  正式 JSON 路徑依它呼叫 Battle Quick，不能把同隊清除寫死在 renderer 或劇情
+  分支。敵隊 target 保留、政策關閉時同隊 target 也保留的 regression 需持續存在。
+- 權威規格為 `docs/spec/509-pc98-action-target-quick-clear.md`；movement／flee／guard
+  producer、同格排序與完整 AI 仍是後續工作。
 
 ## 10. Compact 後恢復工作清單
 

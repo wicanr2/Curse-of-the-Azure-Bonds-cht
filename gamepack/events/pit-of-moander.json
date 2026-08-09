@@ -1450,6 +1450,12 @@
       "retry_with_xray": true
     }
   ],
+  "combat_action_rules": [
+    {
+      "id": "coab.pc98.combat-action",
+      "clear_same_team_on_quick": true
+    }
+  ],
   "combat_visuals": [
     {
       "id": "coab.arrow",
