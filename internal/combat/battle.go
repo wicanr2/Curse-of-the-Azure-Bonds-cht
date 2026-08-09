@@ -1167,13 +1167,50 @@ func (b *Battle) GuardAction(fighterID string) error {
 	return nil
 }
 
-// SetQuickFight gives one combatant to the AI. The original also clears a
-// same-team per-action target; that target pointer is not yet represented by
-// the typed ActionState and remains an explicit adapter gap.
-func (b *Battle) SetQuickFight(fighterID string) error {
+// SetActionTarget stores a title-resolved target pointer for the current
+// action. Team semantics are checked by the caller that owns the legacy rule.
+func (b *Battle) SetActionTarget(fighterID, targetID string) error {
+	if b == nil {
+		return fmt.Errorf("battle is nil")
+	}
 	fighter, ok := b.fighters[fighterID]
 	if !ok {
 		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if fighter.HitPoints <= 0 {
+		return fmt.Errorf("dead fighter %q cannot receive an action target", fighterID)
+	}
+	target, ok := b.fighters[targetID]
+	if !ok {
+		return fmt.Errorf("unknown action target %q", targetID)
+	}
+	if target.HitPoints <= 0 {
+		return fmt.Errorf("dead action target %q is not selectable", targetID)
+	}
+	if !fighter.CombatAction.SetActionTarget(targetID) {
+		return fmt.Errorf("empty action target for fighter %q", fighterID)
+	}
+	b.fighters[fighterID] = fighter
+	return nil
+}
+
+// SetQuickFight gives one combatant to the AI using the PC-98 default policy.
+func (b *Battle) SetQuickFight(fighterID string) error {
+	return b.SetQuickFightWithPolicy(fighterID, true)
+}
+
+// SetQuickFightWithPolicy gives one combatant to the AI. When enabled, a
+// target belonging to the same combat team is cleared, matching the verified
+// ALT+Q setter while leaving opposing-team targets intact.
+func (b *Battle) SetQuickFightWithPolicy(fighterID string, clearSameTeamTarget bool) error {
+	fighter, ok := b.fighters[fighterID]
+	if !ok {
+		return fmt.Errorf("unknown fighter %q", fighterID)
+	}
+	if clearSameTeamTarget && fighter.CombatAction.ActionTargetID != "" {
+		if target, exists := b.fighters[fighter.CombatAction.ActionTargetID]; exists && target.Side == fighter.Side {
+			fighter.CombatAction.ClearActionTarget()
+		}
 	}
 	fighter.QuickFight = true
 	b.fighters[fighterID] = fighter
@@ -1185,6 +1222,12 @@ func (b *Battle) SetQuickFight(fighterID string) error {
 // delegated through the same per-fighter Quick setter.  The 20 marker is a
 // handoff state, not a new initiative tier.
 func (b *Battle) SetAllQuickFight(currentID string) error {
+	return b.SetAllQuickFightWithPolicy(currentID, true)
+}
+
+// SetAllQuickFightWithPolicy applies the same title-owned target policy to
+// every TeamList combatant during the ALT+Q handoff.
+func (b *Battle) SetAllQuickFightWithPolicy(currentID string, clearSameTeamTarget bool) error {
 	if b == nil {
 		return fmt.Errorf("battle is nil")
 	}
@@ -1195,7 +1238,7 @@ func (b *Battle) SetAllQuickFight(currentID string) error {
 	current.CombatAction.Delay = 20
 	b.fighters[currentID] = current
 	for _, fighterID := range b.fighterOrder {
-		if err := b.SetQuickFight(fighterID); err != nil {
+		if err := b.SetQuickFightWithPolicy(fighterID, clearSameTeamTarget); err != nil {
 			return err
 		}
 	}

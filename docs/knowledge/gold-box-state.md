@@ -164,9 +164,14 @@ Monster 的攻擊次數也不再完全依賴 synthetic default：reference `load
 PC-98 `TACTICALMAP／SCAN` producer、`LegacyObjectID` 投影、20 次不可見移除與第二輪
 `XRay` wall-bypass。engine `combat/targetselect` 只負責有序 stable ID 的有限抽樣，
 CoAB adapter 負責 terrain／footprint／visibility；同一 enemy turn 仍固定已選 target。
-方向 comparator、persistent `Action.target`、AI spell priority、movement、flee／guard
-與完整動畫音效仍未關閉，不能把這個 bounded producer 接線說成完整 monster AI。
-詳細證據見 `docs/spec/508-pc98-general-target-scan-producer.md`。
+方向 comparator、AI spell priority、movement、flee／guard 與完整動畫音效仍未關閉，
+不能把這個 bounded producer 接線說成完整 monster AI。第509輪已將 typed
+`ActionTargetID` 與延遲法術 `TargetID` 分離；正式 game pack 以
+`combat_action_rules.clear_same_team_on_quick` 宣告 QUICK 是否清除同隊 action target，
+敵隊 target 保留。
+原始 far-pointer layout 與同格多目標排序仍未知。詳細證據見
+`docs/spec/508-pc98-general-target-scan-producer.md` 與
+`docs/spec/509-pc98-action-target-quick-clear.md`。
 
 玩家輸入造成的 combat error 也應是可恢復 transaction：input adapter 將 `ValidateAttack`／彈藥／target selection 的 error 送到 localized message presenter，保留目前 Mode、turn、HP 與 inventory，不能直接結束 Ebiten game loop。`combat.ErrAdjacentMissileTarget` 可作為跨作品共用的規則錯誤識別；啟動／資料載入錯誤則仍可向上回報。
 

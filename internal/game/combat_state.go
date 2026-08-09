@@ -1011,6 +1011,24 @@ const quickTargetRuleID = "coab.pc98.quick-target-candidate-chain"
 
 const enemyPhysicalTargetRuleID = "coab.pc98.enemy-physical-target"
 
+const combatActionRuleID = "coab.pc98.combat-action"
+
+func (s *State) clearSameTeamActionTargetOnQuick() (bool, error) {
+	if s.dataPack == nil {
+		// Synthetic states from before the game-pack rule retain the verified
+		// CoAB default; production packs must declare the policy explicitly.
+		return true, nil
+	}
+	definition, found := s.dataPack.FindCombatActionRule(combatActionRuleID)
+	if !found {
+		return false, fmt.Errorf("combat action game-pack rule %q is unavailable", combatActionRuleID)
+	}
+	if err := definition.Validate(); err != nil {
+		return false, err
+	}
+	return definition.ClearSameTeamOnQuick, nil
+}
+
 func (s *State) selectEnemyPhysicalTarget(attackerID string, targetSide combat.Side) (combat.Fighter, bool, error) {
 	if s.combatScanMapProvider == nil || s.dataPack == nil {
 		// Synthetic tests and packs from before the target producer rule retain
@@ -2850,7 +2868,11 @@ func (s *State) CombatQuick() error {
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
-	if err := s.battle.SetQuickFight(fighter.ID); err != nil {
+	clearSameTeamTarget, err := s.clearSameTeamActionTargetOnQuick()
+	if err != nil {
+		return err
+	}
+	if err := s.battle.SetQuickFightWithPolicy(fighter.ID, clearSameTeamTarget); err != nil {
 		return err
 	}
 	return s.advanceCombatToParty()
@@ -2868,7 +2890,11 @@ func (s *State) CombatQuickAll() error {
 	if !ok {
 		return fmt.Errorf("it is not a living party turn")
 	}
-	if err := s.battle.SetAllQuickFight(fighter.ID); err != nil {
+	clearSameTeamTarget, err := s.clearSameTeamActionTargetOnQuick()
+	if err != nil {
+		return err
+	}
+	if err := s.battle.SetAllQuickFightWithPolicy(fighter.ID, clearSameTeamTarget); err != nil {
 		return err
 	}
 	s.combatMessage = s.catalog.Text("combat_quick_all", "combat_quick_all")

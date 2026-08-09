@@ -10,8 +10,8 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 508
-輪 milestone，獨立 engine 已推送 `011dd91`；實際
+[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 509
+輪 milestone，獨立 engine 已推送 `4771299`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
@@ -54,6 +54,13 @@ consumer 的 deterministic order，沒有把 `BuildNearTargets` 的可達／visi
 target-producer milestone，不是完整 enemy AI、移動、方向 tie、動畫音效或整作
 通關聲明。原始 caller 與推論等級見
 [`docs/spec/508-pc98-general-target-scan-producer.md`](docs/spec/508-pc98-general-target-scan-producer.md)。
+
+第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
+正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊
+target、保留敵隊 target；engine、JSON、Battle、State 與 Docker regression 均通過。
+這只關閉 action target lifecycle 的 bounded 邊界，raw far pointer layout、移動／
+逃跑／守備、完整 AI 與整作通關仍未完成。規格見
+[`docs/spec/509-pc98-action-target-quick-clear.md`](docs/spec/509-pc98-action-target-quick-clear.md)。
 
 第 492 輪把反組譯、PC-98 音樂／音效、VFD、overlay、Borland symbol 與 DOS
 角色工具的最後 77 次 Go 漢字 literal 移入 `internal/tooltext` 的繁中 JSON
