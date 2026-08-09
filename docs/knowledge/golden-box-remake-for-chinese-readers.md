@@ -101,6 +101,17 @@ renderer 應先裁切到 panel，再以 cover/contain contract 放置：
 - 每項反組譯結論的證據、地址、截圖與 confidence。
 - 原版對照、remake 實機截圖與尚未完成的差異。
 
+### 選項文字也必須只有一份真相
+
+即使選項只是三個短按鈕，也不能在 State、測試與 JSON 各放一份目前顯示的
+中文。正確分層是：原版來源 token 保留為穩定身份，game-pack 的
+`option_rule` 指向 locale `message_id`，engine resolver 負責查詢，產品測試
+則用 stable rule ID 取得期望值。這樣改譯文只需要校對資料，不會讓驗證資料與
+遊戲畫面分裂；未知 token 應原樣保留並列為資料缺口，不能猜譯成最接近的按鈕。
+
+本作第 532 輪以 `ENTER CITY`、`JOURNEY ON`、`CAMP` 的開場／荒野／讀檔／
+紮營返回路徑實作此邊界，並保留原始 token，不把它們誤當成新的劇情規則。
+
 ## 7. 完成標準
 
 一個畫面不能只因「能顯示」就算完成。每個 milestone 至少要回答：

@@ -28,21 +28,41 @@ func testCatalog() locale.Catalog {
 	}}
 }
 
+func optionTextFromPack(t *testing.T, state State, optionRuleID string) string {
+	t.Helper()
+	if state.dataPack == nil {
+		t.Fatalf("game pack is unavailable while resolving option rule %q", optionRuleID)
+	}
+	for _, rule := range state.dataPack.OptionRules {
+		if rule.ID != optionRuleID {
+			continue
+		}
+		value, ok := state.dataPack.Text(rule.MessageID, state.catalog.Language)
+		if !ok {
+			t.Fatalf("option rule %q message %q has no locale value", rule.ID, rule.MessageID)
+		}
+		return value
+	}
+	t.Fatalf("option rule %q is missing from the game pack", optionRuleID)
+	return ""
+}
+
 func TestLocalizedOpeningFlow(t *testing.T) {
 	state := NewState(testCatalog())
+	wantEnterCity := optionTextFromPack(t, state, "ecl-option.enter-city")
 	if state.Title != "青色枷的詛咒" || state.Mode != ModeTitle {
 		t.Fatalf("initial state=%#v", state)
 	}
 	if err := state.Apply(ActionStart); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeWilderness || state.Choices[0] != "進入城市" {
+	if state.Mode != ModeWilderness || state.Choices[0] != wantEnterCity {
 		t.Fatalf("opening state=%#v", state)
 	}
 	if err := state.Apply(ActionEnterCity); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeEvent || state.Message != "進入城市" {
+	if state.Mode != ModeEvent || state.Message != wantEnterCity {
 		t.Fatalf("event state=%#v", state)
 	}
 }

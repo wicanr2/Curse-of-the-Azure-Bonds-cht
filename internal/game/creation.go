@@ -228,7 +228,7 @@ func (s *State) FinishCharacterCreation() error {
 		// verified block-0x01 path below.
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("party_ready", "party_ready")
-		s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
+		s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 		return nil
 	}
@@ -452,7 +452,7 @@ func (s *State) LoadSAVGAMSlot(directory string, key byte) error {
 	s.partyRoster = roster
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("party_ready", "party_ready")
-	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
+	s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
@@ -759,7 +759,7 @@ func (s *State) LoadPartyFile(path string) error {
 		return fmt.Errorf("game save mode is combat but no active-combat snapshot is present")
 	}
 	s.Prompt = s.catalog.Text("party_ready", "party_ready")
-	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
+	s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
@@ -935,7 +935,7 @@ func (s *State) LoadDOSCharacterFiles(id string, files party.DOSPlayerFiles) err
 	s.partyRoster = party.Roster{character}
 	s.Mode = ModeWilderness
 	s.Prompt = s.catalog.Text("party_ready", "party_ready")
-	s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
+	s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	return nil
 }
