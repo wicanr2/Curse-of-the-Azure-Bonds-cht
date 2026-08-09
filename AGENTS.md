@@ -320,6 +320,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   catalog。除非測試目標就是 schema／parser 的最小合成資料，否則應載入
   版本化 game pack，再以 stable ID 找資料；合成 fixture 也只能斷言結構，
   不可冒充 CoAB 正式內容。
+- 玩家戰鬥法術的 CAST／Quick／pending 入口使用 `combat_player_spells` 的
+  stable `id`／原始 `spell_id`／`target_mode`／`message_id`；
+  `combat_ai_spells` 只負責 Quick metadata。新增法術時先更新 engine schema
+  與 game-pack JSON，再接既有或已證據支持的 adapter behavior；不可把法術名、
+  目標或劇情重新塞回 State，也不可把 `behavior` token 當成原版完整規則證明。
 
 - 只有重大、已測試、可展示的 milestone 才集中 commit＋push；不要每個小改
   都提交。
@@ -382,6 +387,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   target／QUICK 清除與第 508 輪 SCAN producer
   milestone；本輪另完成第 517 輪反組譯缺口盤點與 worklist，兩個 repository 的
   實際 HEAD／remote 才是最終版本依據。
+- 第 529 輪最新 engine 依賴已推送為
+  `29362ef269fa75f3b33b7f283dcf724d67601589`，root `go.mod` 鎖定
+  `v0.0.0-20260809195616-29362ef269fa`；前述較早 checkpoint 只保留為歷史基線，
+  compact 後以兩個 repository 的實際 HEAD／`go.mod` 為準。此版本新增
+  `combat_player_spells`，但不代表完整法術表或完整 remake 已完成。
 - Engine dependency：`3bf5f0541cf46285f0fe824edb89caebaf954d9e`（第 515 輪
   GitHub `main` checkpoint；含作品中立 game-pack
   `character_creation.templates` schema／validation、繁中角色建立知識庫，

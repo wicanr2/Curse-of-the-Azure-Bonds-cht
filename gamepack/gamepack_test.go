@@ -168,6 +168,28 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		fireballAI.MinRange != 3 {
 		t.Fatalf("Fireball quick AI metadata=%+v found=%v", fireballAI, found)
 	}
+	if len(pack.CombatPlayerSpells) != 12 {
+		t.Fatalf("combat player spells=%d, want 12", len(pack.CombatPlayerSpells))
+	}
+	playerSpellIDs := make(map[string]bool, len(pack.CombatPlayerSpells))
+	for _, playerSpell := range pack.CombatPlayerSpells {
+		if playerSpell.ID == "" || playerSpell.SpellID == 0 || playerSpell.CasterClass == "" ||
+			playerSpell.Behavior == "" || playerSpell.MessageID == "" || playerSpellIDs[playerSpell.ID] {
+			t.Fatalf("invalid or duplicate combat player spell=%+v", playerSpell)
+		}
+		playerSpellIDs[playerSpell.ID] = true
+		for _, language := range []string{"en", "zh-TW"} {
+			if text, ok := pack.Text(playerSpell.MessageID, language); !ok || text == "" {
+				t.Fatalf("player spell %q message %q missing from %s", playerSpell.ID, playerSpell.MessageID, language)
+			}
+		}
+	}
+	magicMissilePlayer, found := pack.FindCombatPlayerSpell(0x0F, "magic_user")
+	if !found || magicMissilePlayer.ID != "coab.spell.magic-missile" ||
+		magicMissilePlayer.TargetMode != "enemy" || magicMissilePlayer.Behavior != "magic_missile" ||
+		magicMissilePlayer.MessageID != "spell_magic_user_7" || magicMissilePlayer.CastingTime != 1 {
+		t.Fatalf("Magic Missile player contract=%+v found=%v", magicMissilePlayer, found)
+	}
 	arrow, found := pack.FindCombatVisual("missile", "travel")
 	if !found || arrow.ID != "coab.arrow" || arrow.Scale != 2 ||
 		arrow.ReferenceDelay != 10 || len(arrow.Frames) != 8 {
@@ -952,7 +974,7 @@ func TestPackAndUILocaleSharedStableIDsDoNotDrift(t *testing.T) {
 			t.Fatalf("shared stable ID %q drifted: pack=%q ui=%q", messageID, packValue, uiValue)
 		}
 	}
-	if compared != 65 {
-		t.Fatalf("shared stable IDs compared=%d, want the 65 current pack/UI overlaps", compared)
+	if compared != 77 {
+		t.Fatalf("shared stable IDs compared=%d, want the 77 current pack/UI overlaps", compared)
 	}
 }
