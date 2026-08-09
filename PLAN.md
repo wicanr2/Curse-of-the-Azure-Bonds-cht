@@ -12,6 +12,23 @@
 4. 每輪更新 Markdown、`CONTEXT.md`，commit 並 push 到 GitHub。
 5. 原始遊戲映像與掃描手冊只作本地分析素材，不預設重新散布到 repository。
 
+## 第 516 輪：反組譯盤點與工作路由（2026-08-09）
+
+目前不要用「已建立多少 READY spec」估算反組譯完成率；`READY` 多半是窄行為
+契約，不代表所有 ECL 外部 routine、地圖服務或玩家路徑已閉合。明確未完成的
+反組譯優先級與證據門檻集中在
+[`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
+
+本輪先處理 P0：
+
+1. DOS 火刀戰後 `CALL 2E10h` 的外部地圖 handoff writer→consumer。
+2. 騎士後 `(13,10)` 到 E2 `(8,15)` 的 secret-door／SEARCH bridge；不得把
+   wall detail `0` 泛化成可走格。
+3. block 4 入口後的外部地圖與返回世界 handoff。
+
+每一項都必須有原始 bytes、呼叫／資料流、推論等級與正常輸入 runtime trace；
+`direct-entry` 只能作 probe，不能勾成正常玩家路徑。
+
 ## 分階段
 
 | 階段 | 產出 | 狀態 |
@@ -438,9 +455,10 @@
   拒絕投降後完成五名 FIRE KNIFE 戰鬥、繁中勝利 continuation 與 `-sewers` 入口。
 - [x] 接續正式下水道流程至 `(13,10)` terrain `0x83`，完成迷斯卓諾騎士出場、
   三項效忠選單與娜卡西亞公主友善分支；最後 Continue 返回地城，重訪不再重播。
-- [x] 修正 boundary movement 的 stale `0x7EC9` sentinel，讓下水道 E2 `(8,15)`
-  依原始 entry 0 執行 `CALL 0xC01E → X-2 → NEWECL 4`；正式流程進入 GEO2
-  block 4 `(6,1,S)`、套用 pieces `1,2,4` 並顯示繁中火刀據點入口。
+- [ ] 修正 boundary movement 的 stale `0x7EC9` sentinel，並以正常玩家輸入讓
+  下水道 E2 `(8,15)` 依原始 entry 0 執行 `CALL 0xC01E → X-2 → NEWECL 4`；
+  目前只完成 direct-entry／coordinate-assisted 的 E2→block 4 boundary，
+  尚不能勾選正式進入 GEO2 block 4 `(6,1,S)`、套用 pieces `1,2,4` 的正常路徑。
 - [x] 反組 ECL2 block 4 SearchLocation dispatch，確認 terrain `0x99`／selector
   `0x19` 是旋轉刀刃屏障；接入三項繁中選單與 WAIT 無傷害消散分支，並鎖定
   640×480、24px 中文／整數倍原圖的事件版面契約。

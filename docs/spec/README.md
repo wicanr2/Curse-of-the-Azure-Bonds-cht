@@ -309,7 +309,7 @@
 - [第二百九十六輪下水道迷斯卓諾騎士](./296-sewers-myth-drannor-knight.md)（`READY`：限 terrain `0x83`、效忠選單、娜卡西亞友善分支與重訪狀態）
 - [第三百八十四輪世界路線圖與 Burial Glen 入口](./384-world-route-graph-and-burial-glen-entry.md)（`READY`：14×4 adjacency、AREA 抵達 ABI、ECL6/GEO6 `0x40` 正常玩家路徑）
 - [第三百八十五輪 Burial Glen 精靈幽魂與手札 25](./385-burial-glen-elf-spirit-journal-25.md)（`READY`：exact `(2,15,E)`、兩步 GEO 路徑、PICTURE 72、三分支與 JSON Journal 25）
-- [第二百九十七輪火刀據點轉場](./297-fire-knife-hideout-transition.md)（`READY`：限下水道 E2、movement sentinel、NEWECL 4 與據點初始化）
+- [第二百九十七輪火刀據點轉場](./297-fire-knife-hideout-transition.md)（`SUPERSEDED`：E2、movement sentinel、NEWECL 4 與據點初始化仍有效；原正常路徑宣稱已勘誤）
 - [第二百九十八輪火刀據點刀刃屏障](./298-fire-knife-blade-barrier.md)（`READY`：限 terrain `0x99`、三項選單、等待分支與 640×480 中文事件版面）
 - [第二百九十九輪環境全隊傷害](./299-automatic-environmental-damage.md)（`READY`：限刀刃 `0xE0`／8d8、全隊 HP transaction 與 exactly-once consume）
 - [第三百輪火刀定身房與手札 26](./300-fire-knife-frozen-room.md)（`READY`：限 terrain `0x9A`、三分支、一次性旗標與事件後手札解鎖）
@@ -448,12 +448,13 @@
 - [第四百六十八輪摩貢祭壇與摩安德之坑結局資料化](./468-pit-mogion-finale-game-pack.md)（`READY`：十八個畫面邊界、兩場戰鬥、護手、祭壇財寶、手札 20 與離場阻擊）
 - [第四百六十九輪散提爾堡 stable-ID 與實戰玩家路徑](./469-zhentil-stable-id-combat-path.md)（`READY`：城門至眼魔洞窟 stable-ID 驗收、手札 7／12／30／32／50／51 與兩場非強制勝利戰鬥）
 - [第四百七十輪阿沙本福德與立石群事件資料化](./470-ashabenford-standing-stone-game-pack.md)（`READY`：十一條雙語規則、兩場正常戰鬥、城市音樂返回、灰袍提示與 Essembra／Hap 路線）
-- [第四百七十一輪提爾佛頓公會至火刀據點文字資料化](./471-tilverton-guild-hideout-game-pack.md)（`READY`：十四條雙語規則、公會六段連續 pause、兩場實戰與 block 2→3→4 handoff）
+- [第四百七十一輪提爾佛頓公會至火刀據點文字資料化](./471-tilverton-guild-hideout-game-pack.md)（`READY`：十四條雙語規則、公會六段連續 pause 與兩場實戰；block 2→3→4 仍含座標輔助，不是正常步行完成）
 - [第四百七十二輪火刀據點房間事件資料化](./472-fire-knife-hideout-rooms-game-pack.md)（`READY`：十一條雙語規則、刀刃屏障、凝固房、辦公室財寶與五個一次性房間）
 - [第四百七十三輪皇家馬車與提爾佛頓下水道資料化](./473-tilverton-carriage-sewers-game-pack.md)（`READY`：十五條雙語規則、皇家衛兵與火刀實戰、監牢救援及騎士三段對話）
 - [第四百七十四輪青色印記夢境與提爾佛頓返城資料化](./474-bond-dream-tilverton-return-game-pack.md)（`READY`：七條雙語規則、高階祭司、四段夢境、禁止返城與世界旅行續跑）
 - [第四百七十五輪艾森布拉傳聞與 State 中文 fallback 清理](./475-essembra-tavern-tales-state-fallbacks.md)（`READY`：Tale 44／60 真實酒館鏈、兩條雙語規則與 27 筆 Go 譯文副本移除）
 - [第四百七十六輪紮營與 ALTER 介面資料分離](./476-camp-alter-locale-data-separation.md)（`READY`：正式 catalog、128 筆 Go 漢字移除與 Engine checkpoint 修正）
+- [第五百一十六輪火刀據點外部地圖／秘密門 handoff 盤點](./516-fire-knife-external-map-handoff-audit.md)（`DRAFT`：DOS／PC-98 writer、`S`／`+594h`、`BDF0/BDF1` 與錯誤斷言勘誤）
 - [第四百七十七輪 PROGRAM 終局介面資料分離](./477-program-terminal-locale-data-separation.md)（`READY`：全滅／勝利／存檔 stable IDs、兩條終局 transaction 與 37 人正常終戰）
 - [第四百九十四輪 PC-98 Quick Fireball 範圍落點與延遲交接](./494-pc98-quick-fireball-area-target.md)（`READY`：Quick Fireball bounded area center、pending point handoff、逐目標 visual／slot regression；候選 tie／random 與其他 Quick Area 仍未完成）
 - [第四百九十五輪 PC-98 Quick 毒雲術／死亡雲範圍交接](./495-pc98-quick-poison-cloud-area-target.md)（`READY`：Stinking Cloud／Cloudkill bounded area center、persistent effect、pending point 與低 HD／中斷 regression；候選 tie／random、完整 area-safety 與 Lightning Bolt line target 仍未完成）
