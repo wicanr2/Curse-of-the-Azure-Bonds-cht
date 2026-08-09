@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百三十一輪角色建立原版石框與繁中字級](./531-character-creation-original-frame-density.md)（`READY`：640×480 原版石框、倚天粗體 16×15、正常 `C` 鍵進入的 remake layout；不含完整角色建立／整作通關）
 - [第五百三十輪 DOSBox 測試模式角色建立與年齡畫面證據](./530-dosbox-cheat-assisted-character-creation-evidence.md)（`READY`：限原版角色建立畫面／資料可見性；`cheat-assisted`，不含正常玩家路徑）
 - [第五百二十九輪玩家戰鬥法術資料契約](./529-combat-player-spell-data-contract.md)（`READY`：`combat_player_spells`、target mode、locale message ID、AI／player timing 一致性；不含完整法術規則與原版逐幀演出）
 - [第五百二十八輪 PC-98 `MOVEPARTY` result／action transaction 邊界](./528-pc98-moveparty-action-transaction-boundary.md)（READY：`AL=1／2／3` 分流、B/P/K input、共同續跑 call-site；不含秘密門、成功語意／正常路徑）
