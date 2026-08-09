@@ -1,6 +1,13 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 529 輪完成玩家戰鬥法術的 engine＋JSON 資料契約：新增
+`combat_player_spells` schema／validator／stable lookup，CoAB 宣告目前已有
+runtime helper 的 12 個法術，CAST、Quick CAST、pending CAST、目標模式、施法
+時間與 locale message ID 都從同一份 pack 讀取。engine 與 root 受影響套件在
+Docker 通過；這是可重播的資料分層 milestone，不是完整法術表、完整戰鬥或完整
+通關。原版法術公式、全量動畫／音效與仍未接入的 spell 行為保持未完成。
+
 第 528 輪沿 P0-2 在 PC-98 overlay-14 raw 副本中閉合 `MOVEPARTY` 的
 `017C:0039` `AL=1／2／3` result 分流、`0164:0039` action input、B／P／K
 dispatch、P 路徑第二次 map-cell service call，以及非零結果到 local `0x0807`
@@ -24,7 +31,8 @@ docs/spec/527-pc98-moveparty-action-writer-boundary.md。
 第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
 `DS:7206h` 四平面 writer／暫存 loader）靜態稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
-依賴的 Golden Box engine checkpoint：目前遠端 HEAD `d08bc402d0f1ef5b635ed5369b9db539ffdaec3c`。
+依賴的 Golden Box engine checkpoint：目前遠端 HEAD
+`29362ef269fa75f3b33b7f283dcf724d67601589`（已推送）。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。

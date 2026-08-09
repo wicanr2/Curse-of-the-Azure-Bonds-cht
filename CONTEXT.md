@@ -4556,3 +4556,23 @@ selector 與 Disk 1 file-selection 畫面，但開啟後沒有可用遊戲 loade
 寫入正常路徑。下一步仍需同版本 DOS／PC-98 oracle 的 action 前後
 `THE3DMAP+300h`、`BLOCKCODE`、重訪／save-load 與 ECL continuation trace。權威
 規格為 `docs/spec/528-pc98-moveparty-action-transaction-boundary.md`。
+
+2026-08-10 第五百二十九輪依使用者的「引擎＋JSON、不要把資料塞回 Go」要求，
+完成玩家戰鬥法術資料契約。Golden Box engine 新增 `combat_player_spells`，包含
+stable `id`、原始 `spell_id`、`caster_class`、engine target mode、作品
+`behavior` token、locale `message_id` 與 `casting_time`；schema、Pack validator
+與 lookup 都保留跨作品邊界。若同一 `spell_id` 同時出現在 `combat_ai_spells`，
+validator 會拒絕兩份 timing 漂移。CoAB game pack 宣告目前已有 helper／回歸的
+12 個法術；State 的手動 CAST、Quick CAST、pending CAST、區域／直線目標移動與
+施法訊息改讀該契約，效果 helper 仍是 CoAB adapter。
+
+本輪證據等級：engine schema／唯一性／locale／timing validator 與 Docker 測試是
+`exact`；behavior token 到既有 CoAB helper 的映射是 remake contract 的
+`strong inference`，不等於 DOS／PC-98 完整法術公式、亂數、動畫或音效已證明。
+Root 受影響套件 `./gamepack ./internal/ecl ./internal/game` 與 nested engine
+`go test ./...` 均在 Docker 通過。root 驗證期間使用暫時 local replace，未把模組
+邊界偷偷改掉；engine push 後才更新 root dependency 到已推送 commit。
+
+本輪沒有縮減 P0-1／P0-2／P0-3 逆向工作，也沒有新增秘密門／地圖規則；完整契約見
+`docs/spec/529-combat-player-spell-data-contract.md`，engine 共用知識庫見
+`golden-box-remake-engine/docs/knowledge/golden-box-player-spell-data-contract.md`。

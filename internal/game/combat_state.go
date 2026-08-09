@@ -17,6 +17,7 @@ import (
 	enginequicktarget "github.com/wicanr2/golden-box-remake-engine/combat/quicktarget"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 	enginescan "github.com/wicanr2/golden-box-remake-engine/combat/scan"
+	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
 // StartCombat creates the first playable battle adapter. Party and encounter
@@ -910,32 +911,35 @@ func (s *State) CombatSpellTargetPoint() (combat.TilePoint, bool) {
 }
 
 func (s *State) CombatSpellTargets() []combat.Fighter {
-	switch s.combatCastingSpell {
-	case CureLightWoundsSpellID:
+	definition, found := s.combatPlayerSpellDefinition(s.combatCastingSpell)
+	if !found {
+		return nil
+	}
+	switch definition.Behavior {
+	case "cure_light_wounds":
 		return s.combatHealingTargets()
-	case MagicMissileSpellID:
-		return s.livingBySide(combat.SideEnemy)
-	case ProtectionFromGoodSpellID:
+	case "protection_from_good":
 		caster, ok := s.combatPartyTurn()
 		if !ok {
 			return nil
 		}
 		return s.protectionFromGoodTargets(caster)
-	case CurseSpellID:
-		return s.livingBySide(combat.SideEnemy)
-	case CauseLightWoundsSpellID:
+	case "cause_light_wounds":
 		caster, ok := s.combatPartyTurn()
 		if !ok {
 			return nil
 		}
 		return s.causeLightWoundsTargets(caster)
-	case ProtectionFromEvilSpellID:
+	case "protection_from_evil":
 		caster, ok := s.combatPartyTurn()
 		if !ok {
 			return nil
 		}
 		return s.protectionFromEvilTargets(caster)
 	default:
+		if definition.TargetMode == "enemy" {
+			return s.livingBySide(combat.SideEnemy)
+		}
 		return nil
 	}
 }
@@ -1196,6 +1200,26 @@ func (s *State) selectQuickTargetOne(targets []combat.Fighter) (combat.Fighter, 
 	return target, true, nil
 }
 
+func (s *State) combatPlayerSpellDefinition(spellID uint8) (goldenbox.CombatPlayerSpellDefinition, bool) {
+	if s.dataPack == nil {
+		return goldenbox.CombatPlayerSpellDefinition{}, false
+	}
+	return s.dataPack.FindCombatPlayerSpell(spellID, "")
+}
+
+// combatPlayerSpellLabel keeps combat messages on the same stable message ID
+// as the game-pack spell contract. The first-level camp catalog remains the
+// compatibility fallback for imported packs created before this field existed.
+func (s *State) combatPlayerSpellLabel(spellID uint8) string {
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if found && definition.MessageID != "" {
+		if localized := s.catalog.Text(definition.MessageID, ""); localized != "" {
+			return localized
+		}
+	}
+	return campSpellLabel(s.catalog, party.ClassCleric, spellID)
+}
+
 func (s *State) quickSpellPriority(spellID uint8) (uint8, error) {
 	if s.dataPack == nil {
 		return 0, fmt.Errorf("Quick spell game-pack metadata is unavailable")
@@ -1385,64 +1409,75 @@ func (s *State) quickSleepAreaTarget(caster combat.Fighter, minRange uint8) (com
 	return s.quickAreaSpellTarget(caster, SleepSpellID, minRange)
 }
 
-// CombatSpellTargetsEnemy follows the global spell-table identity stored in
-// player records. Magic Missile is 0x0F; cleric Protection from Good is 0x07.
+// CombatSpellTargetsEnemy follows the target mode declared by the game pack,
+// while the original numeric SpellID remains available for effect rules.
 func (s *State) CombatSpellTargetsEnemy() bool {
-	switch s.combatCastingSpell {
-	case MagicMissileSpellID:
-		return true
-	case CurseSpellID, CauseLightWoundsSpellID:
-		return true
-	default:
-		return false
-	}
+	definition, found := s.combatPlayerSpellDefinition(s.combatCastingSpell)
+	return found && definition.TargetMode == "enemy"
 }
 
 // BeginCombatCast enters the RuleBook CAST target step without consuming a
 // spell. Enter confirms it; Escape can cancel it in the renderer.
 func (s *State) BeginCombatCast(spellID uint8) error {
-	if spellID == BlessSpellID && !s.CombatCanCastBless() {
-		return fmt.Errorf("Bless is unavailable")
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X is not declared in combat_player_spells", spellID)
 	}
-	if spellID == CurseSpellID && !s.CombatCanCastCurse() {
-		return fmt.Errorf("Curse is unavailable")
-	}
-	if spellID == CauseLightWoundsSpellID && !s.CombatCanCastCauseLightWounds() {
-		return fmt.Errorf("Cause Light Wounds is unavailable")
-	}
-	if spellID == ProtectionFromEvilSpellID && !s.CombatCanCastProtectionFromEvil() {
-		return fmt.Errorf("Protection from Evil is unavailable")
-	}
-	if spellID == MagicMissileSpellID && !s.CombatCanCastMagicMissile() {
-		return fmt.Errorf("Magic Missile is unavailable")
-	}
-	if spellID == SleepSpellID && !s.CombatCanCastSleep() {
-		return fmt.Errorf("Sleep is unavailable")
-	}
-	if spellID == ProtectionFromGoodSpellID && !s.CombatCanCastProtectionFromGood() {
-		return fmt.Errorf("Protection from Good is unavailable")
-	}
-	if spellID == FireballSpellID && !s.CombatCanCastFireball() {
-		return fmt.Errorf("Fireball is unavailable")
-	}
-	if spellID == LightningBoltSpellID && !s.CombatCanCastLightningBolt() {
-		return fmt.Errorf("Lightning Bolt is unavailable")
-	}
-	if spellID == StinkingCloudSpellID && !s.CombatCanCastStinkingCloud() {
-		return fmt.Errorf("Stinking Cloud is unavailable")
-	}
-	if spellID == CloudkillSpellID && !s.CombatCanCastCloudkill() {
-		return fmt.Errorf("Cloudkill is unavailable")
-	}
-	if spellID == CureLightWoundsSpellID && !s.CombatCanCastCureLightWounds() {
-		return fmt.Errorf("Cure Light Wounds is unavailable")
-	}
-	if spellID != BlessSpellID && spellID != CurseSpellID && spellID != CauseLightWoundsSpellID && spellID != ProtectionFromEvilSpellID && spellID != ProtectionFromGoodSpellID && spellID != MagicMissileSpellID && spellID != SleepSpellID && spellID != StinkingCloudSpellID && spellID != CloudkillSpellID && spellID != FireballSpellID && spellID != LightningBoltSpellID && spellID != CureLightWoundsSpellID {
-		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
+	switch definition.Behavior {
+	case "bless":
+		if !s.CombatCanCastBless() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "curse":
+		if !s.CombatCanCastCurse() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "cause_light_wounds":
+		if !s.CombatCanCastCauseLightWounds() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "protection_from_evil":
+		if !s.CombatCanCastProtectionFromEvil() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "protection_from_good":
+		if !s.CombatCanCastProtectionFromGood() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "magic_missile":
+		if !s.CombatCanCastMagicMissile() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "sleep":
+		if !s.CombatCanCastSleep() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "fireball":
+		if !s.CombatCanCastFireball() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "lightning_bolt":
+		if !s.CombatCanCastLightningBolt() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "stinking_cloud":
+		if !s.CombatCanCastStinkingCloud() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "cloudkill":
+		if !s.CombatCanCastCloudkill() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	case "cure_light_wounds":
+		if !s.CombatCanCastCureLightWounds() {
+			return fmt.Errorf("%s is unavailable", s.combatPlayerSpellLabel(spellID))
+		}
+	default:
+		return fmt.Errorf("spell 0x%02X uses unsupported combat behavior %q", spellID, definition.Behavior)
 	}
 	s.combatCastingSpell = spellID
 	s.combatSpellTargetsPoint = false
-	if spellID == ProtectionFromGoodSpellID {
+	if definition.Behavior == "protection_from_good" {
 		_, ok := s.combatPartyTurn()
 		if !ok {
 			return fmt.Errorf("it is not a living party turn")
@@ -1451,35 +1486,19 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetIndex = 0
 		return nil
 	}
-	if spellID == BlessSpellID {
+	if definition.TargetMode == "none" {
 		s.combatSpellTargetIndex = 0
 		return nil
 	}
-	if spellID == CurseSpellID {
-		targets := s.livingBySide(combat.SideEnemy)
+	if definition.TargetMode == "enemy" {
+		targets := s.CombatSpellTargets()
 		if s.combatTargetIndex >= len(targets) {
 			s.combatTargetIndex = 0
 		}
 		s.combatSpellTargetIndex = s.combatTargetIndex
 		return nil
 	}
-	if spellID == CauseLightWoundsSpellID {
-		s.combatSpellTargetIndex = 0
-		return nil
-	}
-	if spellID == ProtectionFromEvilSpellID {
-		s.combatSpellTargetIndex = 0
-		return nil
-	}
-	if spellID == MagicMissileSpellID {
-		targets := s.livingBySide(combat.SideEnemy)
-		if s.combatTargetIndex >= len(targets) {
-			s.combatTargetIndex = 0
-		}
-		s.combatSpellTargetIndex = s.combatTargetIndex
-		return nil
-	}
-	if spellID == SleepSpellID || spellID == StinkingCloudSpellID || spellID == CloudkillSpellID || spellID == FireballSpellID || spellID == LightningBoltSpellID {
+	if definition.TargetMode == "area_point" || definition.TargetMode == "line" {
 		targets := s.livingBySide(combat.SideEnemy)
 		if len(targets) == 0 {
 			return fmt.Errorf("combat has no living enemies")
@@ -1492,12 +1511,17 @@ func (s *State) BeginCombatCast(spellID uint8) error {
 		s.combatSpellTargetsPoint = true
 		return nil
 	}
-	targets := s.combatHealingTargets()
+	if definition.TargetMode != "party_member" {
+		return fmt.Errorf("spell 0x%02X uses unsupported target mode %q", spellID, definition.TargetMode)
+	}
+	targets := s.CombatSpellTargets()
 	s.combatSpellTargetIndex = 0
-	for index, target := range targets {
-		if target.HitPoints < target.MaxHitPoints {
-			s.combatSpellTargetIndex = index
-			break
+	if definition.Behavior == "cure_light_wounds" {
+		for index, target := range targets {
+			if target.HitPoints < target.MaxHitPoints {
+				s.combatSpellTargetIndex = index
+				break
+			}
 		}
 	}
 	return nil
@@ -1545,7 +1569,8 @@ func (s *State) CombatSelectSpellTarget(delta int) error {
 // combat map. It is separate from fighter target cycling because Fireball may
 // intentionally be centered on an empty tile and can harm either side.
 func (s *State) CombatMoveSpellTarget(dx, dy int) error {
-	if (s.combatCastingSpell != SleepSpellID && s.combatCastingSpell != StinkingCloudSpellID && s.combatCastingSpell != CloudkillSpellID && s.combatCastingSpell != FireballSpellID && s.combatCastingSpell != LightningBoltSpellID) || !s.combatSpellTargetsPoint {
+	definition, found := s.combatPlayerSpellDefinition(s.combatCastingSpell)
+	if !found || (definition.TargetMode != "area_point" && definition.TargetMode != "line") || !s.combatSpellTargetsPoint {
 		return fmt.Errorf("no area spell target is being selected")
 	}
 	next := combat.TilePoint{X: s.combatSpellTargetPoint.X + dx, Y: s.combatSpellTargetPoint.Y + dy}
@@ -1575,7 +1600,7 @@ func (s *State) ConfirmCombatCast(terrain combat.LineTerrain) error {
 	if s.dataPack == nil {
 		return fmt.Errorf("combat spell casting metadata is unavailable")
 	}
-	definition, found := s.dataPack.FindCombatAISpell(spellID)
+	definition, found := s.combatPlayerSpellDefinition(spellID)
 	if !found {
 		return fmt.Errorf("spell 0x%02X has no casting metadata", spellID)
 	}
@@ -1613,7 +1638,7 @@ func (s *State) ConfirmCombatCast(terrain combat.LineTerrain) error {
 	s.combatTurnIndex++
 	s.combatMessage = fmt.Sprintf(s.catalog.Text(
 		"combat_quick_magic_casting", "combat_quick_magic_casting",
-	), caster.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
+	), caster.Name, s.combatPlayerSpellLabel(spellID))
 	return s.advanceCombatToParty()
 }
 
@@ -1623,44 +1648,44 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 	if !s.CombatActive() {
 		return fmt.Errorf("combat is not active")
 	}
-	if spellID == BlessSpellID {
-		return s.combatCastBless()
-	}
-	if spellID == CurseSpellID {
-		return s.combatCastCurse()
-	}
-	if spellID == CauseLightWoundsSpellID {
-		return s.combatCastCauseLightWounds()
-	}
-	if spellID == ProtectionFromEvilSpellID {
-		return s.combatCastProtectionFromEvil()
-	}
-	if spellID == ProtectionFromGoodSpellID && s.combatSpellIsProtectionFromGood() {
-		return s.combatCastProtectionFromGood()
-	}
-	if spellID == CureLightWoundsSpellID {
-		return s.combatCastCureLightWounds()
-	}
-	if spellID == FireballSpellID {
-		return s.combatCastFireball()
-	}
-	if spellID == SleepSpellID {
-		return s.combatCastSleep()
-	}
-	if spellID == LightningBoltSpellID {
-		return s.combatCastLightningBolt(terrain)
-	}
-	if spellID == StinkingCloudSpellID {
-		return s.combatCastStinkingCloud(terrain)
-	}
-	if spellID == CloudkillSpellID {
-		return s.combatCastCloudkill(terrain)
+	definition, found := s.combatPlayerSpellDefinition(spellID)
+	if !found {
+		return fmt.Errorf("spell 0x%02X is not declared in combat_player_spells", spellID)
 	}
 	if s.combatCastingSpell != 0 && s.combatCastingSpell != spellID {
 		return fmt.Errorf("a different spell target is being selected")
 	}
-	if spellID != MagicMissileSpellID {
-		return fmt.Errorf("spell 0x%02X is not implemented in combat", spellID)
+	switch definition.Behavior {
+	case "bless":
+		return s.combatCastBless()
+	case "curse":
+		return s.combatCastCurse()
+	case "cause_light_wounds":
+		return s.combatCastCauseLightWounds()
+	case "protection_from_evil":
+		return s.combatCastProtectionFromEvil()
+	case "protection_from_good":
+		if !s.combatSpellIsProtectionFromGood() {
+			return fmt.Errorf("%s requires a cleric caster", s.combatPlayerSpellLabel(spellID))
+		}
+		return s.combatCastProtectionFromGood()
+	case "cure_light_wounds":
+		return s.combatCastCureLightWounds()
+	case "fireball":
+		return s.combatCastFireball()
+	case "sleep":
+		return s.combatCastSleep()
+	case "lightning_bolt":
+		return s.combatCastLightningBolt(terrain)
+	case "stinking_cloud":
+		return s.combatCastStinkingCloud(terrain)
+	case "cloudkill":
+		return s.combatCastCloudkill(terrain)
+	case "magic_missile":
+		// The effect helper below still consumes the original spell-table ID;
+		// the game-pack behavior token only selects this verified path.
+	default:
+		return fmt.Errorf("spell 0x%02X uses unsupported combat behavior %q", spellID, definition.Behavior)
 	}
 	caster, ok := s.combatPartyTurn()
 	if !ok {
@@ -1684,7 +1709,7 @@ func (s *State) CombatCastWithTerrain(spellID uint8, terrain combat.LineTerrain)
 		}
 	}
 	if spellIndex < 0 {
-		return fmt.Errorf("caster %q has no memorized Magic Missile", caster.ID)
+		return fmt.Errorf("caster %q has no memorized spell 0x%02X", caster.ID, spellID)
 	}
 	enemies := s.livingBySide(combat.SideEnemy)
 	if len(enemies) == 0 {
@@ -3243,43 +3268,46 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			}, ok
 		},
 		func(spell enginequickspell.Spell, minimumPriority uint8) (bool, error) {
-			if spell.ID == LightningBoltSpellID {
+			playerSpell, playerSpellFound := s.combatPlayerSpellDefinition(spell.ID)
+			if !playerSpellFound {
+				return false, fmt.Errorf("quick spell 0x%02X is not declared in combat_player_spells", spell.ID)
+			}
+			if playerSpell.TargetMode == "line" {
 				ok, err := s.quickLineSpellHasTarget()
 				return ok, err
 			}
-			if spell.MinRange != 0 || spell.ID == StinkingCloudSpellID || spell.ID == CloudkillSpellID {
-				switch spell.ID {
-				case SleepSpellID, FireballSpellID, StinkingCloudSpellID, CloudkillSpellID:
-					ok, err := s.quickAreaSpellHasTarget(fighter, spell.ID, spell.MinRange)
-					return ok, err
-				}
+			if playerSpell.TargetMode == "area_point" {
+				ok, err := s.quickAreaSpellHasTarget(fighter, spell.ID, spell.MinRange)
+				return ok, err
+			}
+			if spell.MinRange != 0 {
 				return false, fmt.Errorf(
 					"quick spell 0x%02X requires unresolved area-safety predicate %d",
 					spell.ID, spell.MinRange,
 				)
 			}
-			if spell.ID == BlessSpellID {
+			if playerSpell.Behavior == "bless" {
 				return s.CombatCanCastBless(), nil
 			}
-			if spell.ID == CureLightWoundsSpellID {
+			if playerSpell.Behavior == "cure_light_wounds" {
 				_, ok := s.quickCureTarget(fighter)
 				return ok && s.CombatCanCastCureLightWounds(), nil
 			}
-			switch spell.ID {
-			case CurseSpellID:
+			switch playerSpell.Behavior {
+			case "curse":
 				ok, err := s.quickTargetedSpellHasTarget(fighter, spell.ID)
 				return ok && s.CombatCanCastCurse(), err
-			case CauseLightWoundsSpellID:
+			case "cause_light_wounds":
 				ok, err := s.quickTargetedSpellHasTarget(fighter, spell.ID)
 				return ok && s.CombatCanCastCauseLightWounds(), err
-			case ProtectionFromEvilSpellID:
+			case "protection_from_evil":
 				ok, err := s.quickTargetedSpellHasTarget(fighter, spell.ID)
 				return ok && s.CombatCanCastProtectionFromEvil(), err
-			case ProtectionFromGoodSpellID:
+			case "protection_from_good":
 				ok, err := s.quickTargetedSpellHasTarget(fighter, spell.ID)
 				return ok && s.CombatCanCastProtectionFromGood(), err
 			}
-			if spell.ID != MagicMissileSpellID {
+			if playerSpell.Behavior != "magic_missile" {
 				// Preserve the original choice probability. Unsupported cast
 				// handoff is handled after selection instead of silently making
 				// the spell unsuitable and changing later PRNG traffic.
@@ -3303,9 +3331,13 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 	if !found {
 		return false, nil
 	}
-	definition, _ := s.dataPack.FindCombatAISpell(spellID)
-	selected := enginequickspell.Spell{CastingTime: definition.CastingTime}
-	if spellID == BlessSpellID || spellID == CureLightWoundsSpellID {
+	aiDefinition, _ := s.dataPack.FindCombatAISpell(spellID)
+	playerDefinition, playerFound := s.combatPlayerSpellDefinition(spellID)
+	if !playerFound {
+		return false, fmt.Errorf("quick spell 0x%02X is not declared in combat_player_spells", spellID)
+	}
+	selected := enginequickspell.Spell{CastingTime: playerDefinition.CastingTime}
+	if playerDefinition.Behavior == "bless" || playerDefinition.Behavior == "cure_light_wounds" {
 		if err := s.BeginCombatCast(spellID); err != nil {
 			return false, err
 		}
@@ -3329,12 +3361,11 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 		s.combatTurnIndex++
 		s.combatMessage = fmt.Sprintf(s.catalog.Text(
 			"combat_quick_magic_casting", "combat_quick_magic_casting",
-		), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
+		), fighter.Name, s.combatPlayerSpellLabel(spellID))
 		return true, nil
 	}
-	if spellID == SleepSpellID || spellID == FireballSpellID ||
-		spellID == StinkingCloudSpellID || spellID == CloudkillSpellID {
-		center, ok, err := s.quickAreaSpellTarget(fighter, spellID, definition.MinRange)
+	if playerDefinition.TargetMode == "area_point" {
+		center, ok, err := s.quickAreaSpellTarget(fighter, spellID, aiDefinition.MinRange)
 		if err != nil {
 			return false, err
 		}
@@ -3364,13 +3395,13 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.combatTurnIndex++
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_casting", "combat_quick_magic_casting",
-			), fighter.Name, campSpellLabel(s.catalog, party.ClassMagicUser, spellID))
+			), fighter.Name, s.combatPlayerSpellLabel(spellID))
 			return true, nil
 		}
 		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 	}
-	if spellID == CurseSpellID || spellID == CauseLightWoundsSpellID ||
-		spellID == ProtectionFromEvilSpellID || spellID == ProtectionFromGoodSpellID {
+	if (playerDefinition.TargetMode == "enemy" || playerDefinition.TargetMode == "party_member") &&
+		playerDefinition.Behavior != "magic_missile" {
 		target, ok, err := s.quickTargetedSpellTarget(fighter, spellID)
 		if err != nil {
 			return false, err
@@ -3411,12 +3442,12 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.combatTurnIndex++
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_casting", "combat_quick_magic_casting",
-			), fighter.Name, campSpellLabel(s.catalog, party.ClassCleric, spellID))
+			), fighter.Name, s.combatPlayerSpellLabel(spellID))
 			return true, nil
 		}
 		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 	}
-	if spellID == LightningBoltSpellID {
+	if playerDefinition.TargetMode == "line" {
 		point, ok, err := s.quickLineSpellTarget(fighter)
 		if err != nil {
 			return false, err
@@ -3443,12 +3474,12 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 			s.combatTurnIndex++
 			s.combatMessage = fmt.Sprintf(s.catalog.Text(
 				"combat_quick_magic_casting", "combat_quick_magic_casting",
-			), fighter.Name, campSpellLabel(s.catalog, party.ClassMagicUser, spellID))
+			), fighter.Name, s.combatPlayerSpellLabel(spellID))
 			return true, nil
 		}
 		return true, s.CombatCastWithTerrain(spellID, s.combatLineTerrain)
 	}
-	if spellID != MagicMissileSpellID {
+	if playerDefinition.Behavior != "magic_missile" {
 		if fighter.ControlMorale < 0x80 {
 			s.battle.SetPlayerCharactersManual()
 			s.syncPartyFromBattle()
@@ -3486,11 +3517,7 @@ func (s *State) tryQuickSpell(fighter combat.Fighter) (bool, error) {
 
 func (s *State) resolvePendingSpell(fighter combat.Fighter) error {
 	spellID := fighter.CombatAction.SpellID
-	switch spellID {
-	case BlessSpellID, CurseSpellID, CureLightWoundsSpellID, CauseLightWoundsSpellID,
-		ProtectionFromEvilSpellID, ProtectionFromGoodSpellID, FireballSpellID,
-		LightningBoltSpellID, CloudkillSpellID, SleepSpellID:
-	default:
+	if _, found := s.combatPlayerSpellDefinition(spellID); !found {
 		return fmt.Errorf("pending spell 0x%02X is not implemented", spellID)
 	}
 	if err := s.BeginCombatCast(spellID); err != nil {
