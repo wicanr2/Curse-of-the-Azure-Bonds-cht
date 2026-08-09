@@ -1,14 +1,17 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 521 輪 DOS `GetMem` buffer owner 靜態稽核；實際
+本 milestone 的 CoAB 基底：第 524 輪 DOS overlay-30 GEO loader／四平面來源
+（承接第 523 輪 control vector 26／overlay-07 靜態 dispatcher，以及第 522 輪
+`DS:7206h` 四平面 writer／暫存 loader）靜態
+稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 依賴的 Golden Box engine checkpoint：目前遠端 HEAD `d08bc402d0f1ef5b635ed5369b9db539ffdaec3c`。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 521 輪延續第 517–520 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
+第 522–524 輪延續第 517–521 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
 `START.EXE` database 中沒有找到 `2E10h` 的 resident direct-code handler，唯一
 raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜尋路徑，沒有把
 尚未閉合的 secret-door／外部地圖
@@ -16,14 +19,24 @@ raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜�
 `sub ax,7FFFh`→`cmp ax,AE11h`→far call `017F:003Eh` 的 dispatch 形狀；第 519
 輪再由 `START.EXE` control block 精確解出 vector 6 → overlay-30 local `07C6h`，
 並確認該 routine 是 `retf 4`、16×16 bounded index、`DS:7206h` far pointer、
-`ES:[DI+0200h]` byte read。map plane、work-cell writer、`C04B..C04F` projection
-與 runtime consumer 仍未知。第 520 輪又從 overlay-07 `1B3Fh` 證明
+`ES:[DI+0200h]` byte read；**在第 519 輪當時** map plane、work-cell writer、
+`C04B..C04F` projection 與 runtime consumer 仍未知。第 520 輪又從 overlay-07 `1B3Fh` 證明
 `DS:720F／7210` 的 `0..0Fh` 循環更新，以及 vector 6／4 的結果欄位
 `DS:7213／7212`；overlay-28 另以 vector 7 `0841h` 分流。這仍是 static
 bridge，不是 normal input、map handoff 或 secret-door 完成。第 521 輪再將
-`0A54:0329h` 精確對到 resident Borland `GetMem(Pointer &,Word)`；
-`DS:7206h + 0400h` 可標為 1 KiB buffer owner 的 `strong inference`，但 buffer
-plane／填入者／map projection 仍未知。剩餘工作按 P0／P1／P2 排序，詳見
+`0A54:0329h` 精確對到 resident Borland `GetMem(Pointer &,Word)`；第 522 輪再
+由 overlay-30 的四次 `Move` 精確證明 `DS:7206h` 的
+`+000/+100/+200/+300` 各接收 `0100h` bytes，並由 `FreeMem` 回收暫存 pointer。
+第 523 輪再由 `START.EXE` control block raw `0x0F02` 的 vector 26 bytes
+`CD 3F 3F 1B 00`，以及 overlay-02 local `3002h` 的
+`call far 006B:00A2h`，精確閉合 overlay-07 local `1B3Fh` 的靜態 dispatcher
+entry；這不等於普通鍵盤 producer、control-loader runtime 或 map handoff。
+第 524 輪又以 overlay-30 local `1310h`／`1314h` 的 `GEO`／`.dax` Pascal
+fragments、`DS:5BEEh` area-value input、`0402h` gate 與 GEO2–GEO6 archive
+corpus，精確閉合 decoded payload 的 `+002h` 起四個 `0100h` planes；完整
+`GEO<area>.dax` file-open trace、selector producer、map projection 與 runtime
+handoff 仍未知。
+剩餘工作按 P0／P1／P2 排序，詳見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
 目前還有 11 個直接影響玩家結果的逆向主題與 4 個 fidelity／發行主題；專案仍是
 多個可重播 vertical slice，不是完整可通關 remake。第 517 輪另修正「GEO component
@@ -32,7 +45,10 @@ plane／填入者／map projection 仍未知。剩餘工作按 P0／P1／P2 排�
 第 518 輪位址空間證據見 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](spec/518-dos-start-ecl-call-address-space-audit.md)，
 第 519 輪 static overlay evidence 見 [`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](spec/519-dos-overlay-vector-to-cell-layer-accessor.md)，
 第 520 輪 movement／consumer bridge 見 [`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](spec/520-dos-movement-to-overlay-cell-layer-bridge.md)，
-第 521 輪 `GetMem` owner evidence 見 [`docs/spec/521-dos-getmem-buffer-owner.md`](spec/521-dos-getmem-buffer-owner.md)。
+第 521 輪 `GetMem` owner evidence 見 [`docs/spec/521-dos-getmem-buffer-owner.md`](spec/521-dos-getmem-buffer-owner.md)，
+第 522 輪四平面 writer／loader evidence 見 [`docs/spec/522-dos-buffer-four-plane-fill.md`](spec/522-dos-buffer-four-plane-fill.md)，
+第 523 輪 control vector／dispatcher evidence 見 [`docs/spec/523-dos-overlay07-vector26-entry.md`](spec/523-dos-overlay07-vector26-entry.md)，
+第 524 輪 GEO loader／payload evidence 見 [`docs/spec/524-dos-overlay30-geo-loader-source.md`](spec/524-dos-overlay30-geo-loader-source.md)。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到

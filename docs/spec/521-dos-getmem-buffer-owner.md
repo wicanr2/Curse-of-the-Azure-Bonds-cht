@@ -154,3 +154,22 @@ overlay-11 local `00E9..00F5` 的 bytes／IDA 指令為：
 engine、JSON、movement predicate 或 secret-door。下一個窄工作是追 `DS:7206`
 配置後的 writer／plane fill，以及把 `DS:7212／7213` 與同一 buffer 的讀取端
 對上；仍需以 DOSBox 原版狀態驗證，不能只靠 GetMem 名稱完成 map handoff。
+
+## 第 522 輪 current-state addendum
+
+上面的「配置後 writer、plane offset 定義仍未知」是第 521 輪結束時的歷史狀態，
+不是目前工作清單的現行斷言。第 522 輪已由 overlay-30 local `133Ah..1475h`
+的四次 resident `Move` 閉合 `DS:7206h +000/+100/+200/+300` 各接收
+`0100h` bytes，並由 `FreeMem` 閉合暫存 pointer 回收；詳見
+[`spec 522`](./522-dos-buffer-four-plane-fill.md)。目前仍未知的是四個 offset 的
+runtime consumer／map projection、正常 input、欄位 projection 與 DOSBox runtime
+handoff；overlay-30 GEO path 的 `.dax` record／四平面格式已由
+[`spec 524`](./524-dos-overlay30-geo-loader-source.md) 補上，不能再把該來源／格式
+當成完全未知。這個 addendum 不改寫第 521 輪的原始證據，只標示新證據已 supersede
+的狀態描述。
+
+第 523 輪又補上 overlay-07 `1B3Fh` 的靜態 control-vector／dispatcher entry：
+`START.EXE` 的 `006B:00A2h` vector 26 bytes `CD 3F 3F 1B 00`，並由 overlay-02
+`401Fh` branch 呼叫。故目前「正常 input」應拆成「static vector／caller 已 exact」
+與「普通鍵盤 producer、control-loader runtime、欄位 projection／DOSBox handoff
+仍 unknown」；詳見 [`spec 523`](./523-dos-overlay07-vector26-entry.md)。

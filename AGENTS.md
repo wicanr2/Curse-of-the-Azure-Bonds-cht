@@ -1725,15 +1725,102 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 因此 `overlay-11:00E9h` 的 `DS:7206h`＋`0400h` call-site 已可標為由
   `GetMem` 接收 1 KiB size 的 pointer-buffer owner `strong inference`；但這
   不得把 buffer 命名成 GEO、wall、terrain 或 secret-door plane。
-- 當前仍未知的是配置後 buffer writer／清除時機／`+000/+100/+200/+300` plane
-  layout、overlay-07 `1B3Fh` 的正常或間接 entry、`DS:7212／7213` 與 vector 7
-  `0841h` consumer、`C04B..C04F` projection，以及 DOSBox runtime handoff。
+- 在第 521 輪當時仍未知的是配置後 buffer writer／清除時機／
+  `+000/+100/+200/+300` plane layout、overlay-07 `1B3Fh` 的正常或間接 entry、
+  `DS:7212／7213` 與 vector 7 `0841h` consumer、`C04B..C04F` projection，以及
+  DOSBox runtime handoff；第 522 輪已補上其中的 writer 幾何與暫存 pointer 回收，
+  第 523 輪再補上 control vector／靜態 dispatcher entry。
 - 版本化腳本為 `scripts/ida/dos_start_segment_inventory.idc` 與
   `scripts/ida/dos_start_0a54_call_audit.idc`；只操作 disposable database，
   不改原始 binary／baseline `.i64`。本輪沒有修改 engine、JSON、movement
   predicate 或 secret-door 規則；11 個行為主題與 4 個 fidelity／發行主題不變。
 - 不得再把 `0A54:0329h` 當成「callee 完全未知」；也不得因 GetMem 名稱把
   `DS:7206h` 直接升格成地圖 buffer、GEO plane 或已完成 map handoff。
+
+### 第 522 輪 DOS `DS:7206h` 四平面 writer／暫存 loader
+
+- Docker 內以 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610`，在
+  `START.EXE`／`overlay-30.bin` 的 disposable database 上重新輸出連續 raw bytes、
+  原始 IDA symbol、function end 與 direct caller；原始 bytes、baseline `.i64`、
+  overlay-local offset、resident EA 與 runtime selector 必須保持分開。完整來源、
+  hash、報告與工具見 `docs/spec/522-dos-buffer-four-plane-fill.md`。
+- `overlay-30:133Ah..1475h` 的四次 resident `@Move$qm3Anyt14Word` call 是
+  `exact`：來源分別為暫存 pointer `+002h/+102h/+202h/+302h`，目的為
+  `DS:7206h +000h/+100h/+200h/+300h`，每次 `0100h` bytes。最後同一暫存
+  pointer 與返回 word 傳給 `@FreeMem$qm7Pointer4Word`，所以暫存配置的回收也是
+  `exact`；不得再把「writer／四平面幾何完全未知」當成目前斷言。
+- runtime `0636:08DEh` 在此 baseline 的 IDA EA `0x16C3E` 原始名稱仍是
+  `sub_16C3E`；function dump 可證明 `BlockRead`、暫存配置、資料轉換／展開候選
+  與暫存釋放；第 524 輪已由 overlay-30 `GEO`／`.dax` source fragments、
+  `0402h` gate 與 GEO corpus 補上 decoded record／四平面 payload 對照，但
+  `DS:5BEEh` 正式欄位、selector producer 與 runtime map projection 仍是
+  `strong inference／unknown`。前置 `Store string`／`Concat` 的
+  stack cleanup 與 target `retf 12h` 閉合；不能因表面三組 push 誤判成另一個
+  routine，也不能因 `.dax` literal 直接命名 GEO block。
+- 本輪後仍未閉合 overlay-07 `1B3Fh` 的普通鍵盤 producer／control-loader runtime、
+  `DS:7212／7213`／vector 7 `0841h` consumer、`C04B..C04F` projection 或 DOSBox
+  runtime handoff；第 523 輪已補上其 control vector／靜態 dispatcher entry。11 個
+  行為主題與 4 個 fidelity／發行主題數量不變。沒有修改 engine、JSON、movement
+  predicate 或 secret-door 規則。
+- 版本化腳本為 `scripts/ida/dos_overlay30_buffer_copy_audit.idc` 與
+  `scripts/ida/dos_start_buffer_routines_audit.idc`；只操作 disposable database，
+  不改原始 binary／baseline `.i64`。第 522 輪後優先追 `.dax` record／解碼輸出與
+  正式 plane consumer，再追正常 input／欄位 projection／DOSBox trace；第 524 輪
+  已補上 GEO source／decoded payload，後續不重做同一份 DAX header／plane scan。
+
+### 第 523 輪 DOS control vector 26／overlay-07 靜態 dispatcher entry
+
+- Docker 內以 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610`，在
+  `START.EXE.i64`、`overlay-02.bin`、`overlay-07.bin` 的 disposable copy 上保留
+  raw file offset、runtime selector、IDA EA 與 overlay-local offset 分離；完整
+  provenance、hash、bytes 與信心等級見 `docs/spec/523-dos-overlay07-vector26-entry.md`。
+- `START.EXE` MZ header 是 `0x07B0`；control block raw `0x0E60` 對應 runtime
+  selector `006Bh`，vector table 從 `006B:0020h` 開始、每項 5 bytes。vector 26
+  位於 runtime `006B:00A2h`／raw `0x0F02`／IDA EA `0x10752`，bytes
+  `CD 3F 3F 1B 00`，target 是 overlay-07 local `1B3Fh`。這是 `exact` 的
+  control-vector／local-target 對照，不是推測性 rename。
+- overlay-02 local `2FFD..3007` 的連續 bytes 是 `cmp ax,401Fh`、成功後
+  `call far 006B:00A2h`；因此 `401Fh` branch 到 vector 26 的靜態 caller 也是
+  `exact`。既有 ECL `C01Eh` 對照仍是 `strong inference`，不能把 `401Fh` 單獨
+  寫成普通鍵盤「向前」事件。
+- overlay-07 自身的 `direct_cref_count=0`、`raw_LE16_target_1B3F_count=0` 只
+  適用 local code／literal 有界掃描；它不能再被寫成「整個程式沒有 caller」。
+  間接 audit 只列真正 `FF` memory-form call／jump；loader 以 register／pointer
+  形成的 runtime call 仍未知。`DS:7212／7213` 正式 consumer、正常輸入 producer、
+  `C04B..C04F` projection、目的地／座標／方向／重繪仍未閉合。
+- 本輪沒有修改 engine、CoAB JSON、movement graph、`set_map_position` adapter 或
+  secret-door 規則；11 個行為主題與 4 個 fidelity／發行主題不變。下一個最小工作
+  是追 `006B` loader／DOSBox 實際鍵盤 trace，再接 `.dax` record、欄位 consumer
+  與 map projection，不可用 direct-entry 取代正常路徑。
+- 版本化工具為 `scripts/ida/dos_start_overlay07_vector26_audit.idc`、
+  `scripts/ida/dos_overlay02_call_dispatch_audit.idc` 與
+  `scripts/ida/dos_overlay07_indirect_dispatch_audit.idc`；原始 binary／baseline
+  `.i64` 未被修改。
+
+### 第 524 輪 DOS overlay-30 `GEO<區域>.dax` loader／四平面來源
+
+- Docker 內以 `ida-pro-9.4-ver2:uidfix-v1`／IDA Pro `9.4.0.260610` 分析 extracted
+  `overlay-30.bin` 的 disposable database；原始 overlay、START／GAME.OVR 與
+  baseline `.i64` 均未修改。完整 provenance、hash、raw bytes、推論分層見
+  `docs/spec/524-dos-overlay30-geo-loader-source.md`。
+- overlay-30 local `1310h`／`1314h` 的 raw Pascal fragments 是 `03 'GEO'` 與
+  `04 '.dax'`；local `1341h` 讀 `DS:5BEEh`，以 width `1` 呼叫 resident
+  `0A54:12ABh` numeric-to-string helper，`1361h`／`137Bh` 再以 resident
+  `Store string`／`Concat` 組合。完整 `GEO<區域值>.dax` 路徑仍因缺 runtime
+  file-open trace 標為 `strong inference`；不得把 `DS:5BEEh` 直接改名成已證實
+  的 global area 欄位。
+- local `1385..1393h` 將 `[bp+6]` selector、output word／pointer 傳給
+  `0636:08DEh`；`1398..13A3h` 只讓 decoded size `0402h` 進入成功分支。既有
+  DOS archive 的 `GEO2.DAX` block 1／3／4 都是 raw `1026=0402h`，GEO3–GEO6
+  也相同；output `+002h` 後四段各 `0100h` 正好對上既有 round 56 parser 的
+  four-plane layout。此來源／payload 格式對照達 `exact`，不是新猜的地圖規則。
+- 第 524 輪清除「此 loader 的 DAX record／0402h／四平面格式完全未知」的現行
+  斷言；仍未閉合 `[bp+6]` selector producer、`DS:7206h`／`DS:7212／7213` 正式
+  consumer、`C04B..C04F` projection、普通鍵盤／control-loader runtime 與
+  DOSBox 地圖 handoff。沒有修改 engine、JSON、movement graph 或 secret-door。
+- 版本化工具為 `scripts/ida/dos_overlay30_geo_loader_audit.idc`；本輪不重做已由
+  round 56／spec 524 閉合的 GEO DAX header／plane parser，下一步只追 selector→
+  consumer→runtime。
 
 ## 10. Compact 後恢復工作清單
 
