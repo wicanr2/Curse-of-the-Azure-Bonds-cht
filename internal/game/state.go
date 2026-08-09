@@ -367,16 +367,7 @@ func (s *State) initializeECL() {
 				for _, option := range result.Menus[0].Options {
 					s.OriginalChoices = append(s.OriginalChoices, option)
 					s.currentOriginalChoices = append(s.currentOriginalChoices, option)
-					switch option {
-					case "ENTER CITY":
-						s.Choices = append(s.Choices, s.catalog.Text("enter_city", "Enter city"))
-					case "JOURNEY ON":
-						s.Choices = append(s.Choices, s.catalog.Text("journey_on", "Journey on"))
-					case "CAMP":
-						s.Choices = append(s.Choices, s.catalog.Text("camp", "Camp"))
-					default:
-						s.Choices = append(s.Choices, option)
-					}
+					s.Choices = append(s.Choices, s.localizeOption(option))
 				}
 			}
 		}
@@ -852,8 +843,8 @@ func (s *State) Apply(action Action) error {
 		s.Prompt = s.catalog.Text("you_are_at_the_edge_of", "You are at the edge of")
 		if len(s.Choices) == 0 {
 			s.Choices = []string{
-				s.catalog.Text("enter_city", "Enter city"),
-				s.catalog.Text("journey_on", "Journey on"),
+				s.localizeOption("ENTER CITY"),
+				s.localizeOption("JOURNEY ON"),
 			}
 		}
 		s.Message = ""
@@ -1125,16 +1116,7 @@ func (s *State) Select(index int) error {
 	if len(s.eclBlock) > 0 {
 		s.Message = s.Choices[index]
 	} else {
-		switch index {
-		case 0:
-			s.Message = s.catalog.Text("enter_city", "Enter city")
-		case 1:
-			s.Message = s.catalog.Text("journey_on", "Journey on")
-		case 2:
-			s.Message = s.catalog.Text("camp", "Camp")
-		default:
-			s.Message = s.Choices[index]
-		}
+		s.Message = s.localizeOption(originalChoice)
 	}
 	if len(s.eclBlock) > 0 {
 		if !whoSelecting {
@@ -3003,7 +2985,7 @@ func (s *State) selectCamp(index int, originalChoice string) error {
 		}
 		s.Mode = ModeWilderness
 		s.Prompt = s.catalog.Text("press_button", "press_button")
-		s.Choices = []string{s.catalog.Text("enter_city", "enter_city"), s.catalog.Text("journey_on", "journey_on"), s.catalog.Text("camp", "camp")}
+		s.Choices = []string{s.localizeOption("ENTER CITY"), s.localizeOption("JOURNEY ON"), s.localizeOption("CAMP")}
 		s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 		s.Message = ""
 		return nil
@@ -5693,9 +5675,9 @@ func (s *State) leaveLocation() {
 func (s *State) restoreWildernessMenu() {
 	s.Mode = ModeWilderness
 	s.Choices = []string{
-		s.catalog.Text("enter_city", "enter_city"),
-		s.catalog.Text("journey_on", "journey_on"),
-		s.catalog.Text("camp", "camp"),
+		s.localizeOption("ENTER CITY"),
+		s.localizeOption("JOURNEY ON"),
+		s.localizeOption("CAMP"),
 	}
 	s.currentOriginalChoices = []string{"ENTER CITY", "JOURNEY ON", "CAMP"}
 	s.Prompt = s.catalog.Text("press_button", "press_button")
@@ -5705,6 +5687,12 @@ func (s *State) restoreWildernessMenu() {
 func (s *State) localizeOption(option string) string {
 	if s != nil && s.dataPack != nil {
 		if value, ok := s.dataPack.LocalizeOption(option, s.catalog.Language); ok {
+			return value
+		}
+	}
+	if s != nil {
+		catalogKey := strings.ToLower(strings.ReplaceAll(strings.TrimSpace(option), " ", "_"))
+		if value, ok := s.catalog.Strings[catalogKey]; ok && value != "" {
 			return value
 		}
 	}

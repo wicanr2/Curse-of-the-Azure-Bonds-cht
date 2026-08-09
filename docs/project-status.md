@@ -1,6 +1,16 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 532 輪完成開場／荒野選項的資料邊界收斂。`ENTER CITY`、`JOURNEY ON` 與 `CAMP`
+在 ECL 初始化、開場 fallback、角色建立／讀檔／紮營返回及世界地圖預覽等產品路徑，
+現在統一透過 engine `Pack.LocalizeOption` 解析 CoAB game-pack 的 stable
+`option_rule` 與 locale；測試以 `ecl-option.enter-city` 查詢實際 pack，不再複製
+繁中文字串。這是 `engine＋JSON` 的低風險資料分層 milestone，不是完整中文化、
+完整開場到結局或正常玩家路徑全數閉合證據。完整邊界見
+[`docs/spec/532-option-rule-localization-boundary.md`](spec/532-option-rule-localization-boundary.md)。
+P0-1／P0-2／P0-3 的地圖與 external routine 缺口沒有被本輪縮減；秘密門仍無正式
+movement JSON。
+
 第 531 輪完成角色建立 renderer 的原版風格基線。Docker/Xvfb 從 `-opening` 開場
 初始化後，將 `C` 鍵送到實際遊戲視窗進入角色建立；640×480 截圖確認本機抽出的
 裂紋石框與倚天粗體 16×15 密集選項區已接通。這是 `layout-reconstructed` 的

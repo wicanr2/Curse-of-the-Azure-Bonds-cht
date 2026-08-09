@@ -4602,3 +4602,19 @@ Root 受影響套件 `./gamepack ./internal/ecl ./internal/game` 與 nested engi
 正式 `go.mod` 沒有被測試用 local replace 改寫。下一輪仍以正常玩家路徑的 P0
 地圖 handoff／秘密門與未完成戰鬥、翻譯、音效、存檔為主，不要因這張 UI 截圖擴大
 完成聲明。
+
+2026-08-10 第五百三十二輪依使用者的「引擎＋JSON、不要把資料塞回 Go」要求，
+完成開場／荒野選項資料邊界的低風險收斂。CoAB game-pack 原有的
+`ecl-option.enter-city`、`ecl-option.journey-on`、`ecl-option.camp` 及其
+`en／zh-TW` locale 現在由 ECL 初始化、開場 fallback、角色建立完成、DOS／
+自訂存檔載入、紮營返回與世界地圖預覽共用 engine `Pack.LocalizeOption`；
+State 不再保存三個 token 的專用顯示 switch。來源 `ENTER CITY` 等仍只是原版
+選項身份，未知 token 仍原樣保留，沒有新增中文第二份真相。
+
+`TestLocalizedOpeningFlow` 改以 stable `ecl-option.enter-city` 從實際 game-pack
+解析期望值，不再把目前的「進入城市」貼進測試。Docker 無網路受影響測試
+`go test -modfile=workplace/coab-test.mod ./gamepack ./internal/game` 通過；
+本輪沒有執行長時間完整測試，也沒有新增地圖／秘密門／ECL 規則。證據與邊界見
+`docs/spec/532-option-rule-localization-boundary.md`。P0-1 DOS selector／
+consumer／runtime、P0-2 PC-98 MOVEPARTY／秘密門及 P0-3 後續 external routine
+仍未完成；compact 後不要把本輪資料分層測試誤讀成整作中文化或完整可通關。

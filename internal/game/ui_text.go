@@ -294,9 +294,9 @@ func (s *State) PrepareWorldMapPreview() {
 	s.Location = LocationStandingStone
 	s.LocationName = s.catalog.Text("standing_stone", "standing_stone")
 	s.Choices = []string{
-		s.catalog.Text("enter_city", "enter_city"),
-		s.catalog.Text("journey_on", "journey_on"),
-		s.catalog.Text("camp", "camp"),
+		s.localizeOption("ENTER CITY"),
+		s.localizeOption("JOURNEY ON"),
+		s.localizeOption("CAMP"),
 	}
 	s.Prompt = s.catalog.Text("press_button", "press_button")
 }
