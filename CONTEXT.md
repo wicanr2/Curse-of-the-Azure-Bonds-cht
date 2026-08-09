@@ -4115,3 +4115,15 @@ Remove Curse、Journal 19 與離場返回。新增權威規格：
 `docs/spec/511-normal-tilverton-facility-route.md`；更新知識庫：
 `docs/knowledge/golden-box-normal-player-path.md`。後續仍需移除更多
 coordinate-assisted path、完成 ECL／戰鬥／全中文化與整作通關，不能把本輪寫成完成。
+
+2026-08-09 第五百一十二輪把高階祭司後到提爾佛頓城門的 coordinate-assisted 段落
+改成正常 GEO 移動。從 `(1,10)` 沿 `GEO2.DAX` block 1 的 16 步可行路徑逐格走到
+`(1,0,W)`，最後一步由原始 ECL 觸發 `tilverton.carriage-gate-closed`；按鍵後回到
+同格，轉向北方再執行 lifecycle 才進入皇家馬車 `PICTURE 11`。同一個 ECL session
+回歸青色枷強制攻擊、皇家衛兵戰、入獄、盜賊 `PICTURE 2` 救援與公會 block 2
+handoff。新增 `tilverton.green-robes-rumor` game-pack text rule，把遇到的英文
+片段與繁中翻譯從 State fallback 移到資料層。路徑／事件 boundary 是 `exact` 的
+remake regression，State transaction 對 DOS 逐幀 movement 仍是 `strong inference`；
+公會／下水道內部、完整 ECL／戰鬥／中文化與整作通關仍未完成。新增規格：
+`docs/spec/512-normal-tilverton-city-gate-route.md`；更新知識庫、README、狀態表與
+`AGENTS.md`。本輪尚未 commit／push，需完成正式 Docker gate 後集中收尾。

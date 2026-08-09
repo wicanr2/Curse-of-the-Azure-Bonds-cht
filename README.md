@@ -10,7 +10,7 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 511
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 512
 輪 milestone，獨立 engine 已推送 `4771299`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
@@ -71,6 +71,14 @@ wrap、ECL 座標同步、單步事件 guard 清除與 per-turn／search continu
 不重播，未先消耗群組的 fresh session 則完整驗證祭司畫面、手札 19 與離場續跑。
 這是提爾佛頓有界正常路徑 milestone，並非完整通關聲明；規格見
 [`docs/spec/511-normal-tilverton-facility-route.md`](docs/spec/511-normal-tilverton-facility-route.md)。
+
+第 512 輪再把高階祭司後的城門段落改成真正的 GEO 步行：從 `(1,10)` 逐格走到
+`(1,0)`，最後一步由原始 ECL 觸發城門封路，按鍵返回同格後轉向北方進入皇家馬車
+`PICTURE 11`。同一 session 已回歸青色枷強制攻擊、皇家衛兵戰、入獄、盜賊
+`PICTURE 2` 救援與盜賊公會 block 2 handoff；綠袍女人傳聞也已移入 game-pack
+`text_rules`，State 不再增加該事件的中文 fallback。這是正常玩家路徑的有界
+`READY` milestone，尚未代表公會／下水道以至結局全部可通關；規格見
+[`docs/spec/512-normal-tilverton-city-gate-route.md`](docs/spec/512-normal-tilverton-city-gate-route.md)。
 
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊

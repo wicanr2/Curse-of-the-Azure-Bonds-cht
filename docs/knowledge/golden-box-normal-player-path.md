@@ -70,12 +70,35 @@ altar、Training Hall、Tavern 與高階祭司所在格；途中招牌與下水�
 狀態已閉合，但 `4C03h` 在所有 SSI 作品的泛用名稱、存檔格式與所有城市事件仍未
 完整解出。不要把 `0x80` 直接寫成跨作品固定劇情旗標。
 
+## 城門封路與皇家馬車的移動邊界
+
+第 512 輪把高階祭司後的城門段落接回同一個正常移動交易。decoded `GEO2.DAX`
+block 1 證明 `(1,10)` 到 `(1,0)` 有一條 16 步可行路徑：向東兩格、向北三格、
+向東一格、向北七格，再向西三格。測試逐次呼叫 `State.MoveDungeon`，不設定目標
+座標、不注入 ECL PC，也不在最後一格手動呼叫城門事件。
+
+最後一個西行步驟抵達 `(1,0,W)` 時，原始事件產生
+`tilverton.carriage-gate-closed`。這是移動途中發生的 boundary；按下唯一繼續
+選項後仍留在同一格，接著只轉向北方，再執行 lifecycle，才會得到皇家馬車的
+`PICTURE 11`。因此不要把「先轉身、再執行 lifecycle」誤寫成第二次城門觸發，也
+不要在測試中把封路訊息吞成任意按鍵。
+
+城門後的事件鏈仍沿同一 `BlockSession`：皇家馬車喊話、青色枷強制攻擊、皇家衛兵
+戰鬥、紅袍人綁走假國王、投降／入獄與盜賊 `PICTURE 2` 救援，最後轉入盜賊公會
+地城 block 2。這證明了本段的 ECL continuation，但不代表公會與下水道內部已經
+全部改成正常移動。
+
+本輪遇到的綠袍女人傳聞也正式放入 CoAB game-pack `text_rules`：英文片段、
+`tilverton.green-robes-rumor` stable ID 與繁中 locale 同時保存。這是把事件文字
+從 State fallback 拉回資料層的範例；後續新事件應沿用此方式，不在 State 或測試中
+新增中文劇情字串。
+
 ## 目前 CoAB checkpoint
 
 已由新遊戲進入提爾佛頓 GEO2 block 1，使用原始 west step 抵達 Windlord’s Inn，
 並回歸圖片、HEAD／BODY 舞台、繁中訊息與 Journal 31。第 511 輪再從正常地城
-狀態逐步走過提爾佛頓多個設施，記錄招牌／祭司共享 one-shot 群組，並以 fresh
-session 回歸高階祭司完整分支。這段 map／ECL integration 是 `exact`（remake
-對原始資料）；State movement transaction 與 DOS 逐幀 loop 的對應仍是
-`strong inference`。其餘由 Tilverton 到結局的路徑仍必須逐段建立，不能把本頁的
-checkpoint 寫成完整通關。
+狀態逐步走過提爾佛頓多個設施，記錄招牌／祭司共享 one-shot 群組；第 512 輪
+接續真正 GEO 步行到城門，回歸封路、皇家馬車、衛兵戰與盜賊救援的 continuation。
+這段 map／ECL integration 是 `exact`（remake 對原始資料）；State movement
+transaction 與 DOS 逐幀 loop 的對應仍是 `strong inference`。其餘由 Tilverton
+到結局的路徑仍必須逐段建立，不能把本頁的 checkpoint 寫成完整通關。

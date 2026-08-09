@@ -347,14 +347,33 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	// selector. The truth branch executes real ROB 1,50,0 before revealing
 	// Journal Entry 38.
 	state.partyRoster[0].Gold = 101
+	cityGateClosedDuringWalk := false
 	resumeKnownPathPause := func() {
 		if state.Mode != ModeWilderness {
 			return
 		}
+		wantGateClosed := requireGamePackText(t, &state, "tilverton.carriage-gate-closed")
+		if state.Message == wantGateClosed {
+			if state.DungeonX != 1 || state.DungeonY != 0 || state.DungeonDirection != 6 || len(state.Choices) != 1 {
+				t.Fatalf("unexpected city-gate pause mode=%v position=(%d,%d,%d) choices=%v message=%q",
+					state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection, state.Choices, state.Message)
+			}
+			cityGateClosedDuringWalk = true
+			if err := state.Select(0); err != nil {
+				t.Fatalf("continue past city-gate pause: %v", err)
+			}
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("resume after city-gate pause: %v", err)
+				}
+			}
+			return
+		}
 		wantSign := state.catalog.Text("ecl_tilverton_temple_sign", "ecl_tilverton_temple_sign")
 		wantRumor := state.catalog.Text("ecl_tilverton_sewer_rumor", "ecl_tilverton_sewer_rumor")
-		if (state.Message != wantSign && state.Message != wantRumor) || len(state.Choices) != 1 {
-			t.Fatalf("unexpected normal-path pause mode=%v choices=%v message=%q", state.Mode, state.Choices, state.Message)
+		wantGreenRobesRumor := requireGamePackText(t, &state, "tilverton.green-robes-rumor")
+		if (state.Message != wantSign && state.Message != wantRumor && state.Message != wantGreenRobesRumor) || len(state.Choices) != 1 {
+			t.Fatalf("unexpected normal-path pause mode=%v position=(%d,%d,%d) choices=%v message=%q", state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection, state.Choices, state.Message)
 		}
 		if err := state.Select(0); err != nil {
 			t.Fatalf("continue past normal-path pause: %v", err)
@@ -937,23 +956,48 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.SetParty([]combat.Fighter{hero}); err != nil {
 		t.Fatal(err)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 0, 0
-	state.DungeonWallType, _ = grid.WallWrapped(1, 0, 0)
-	state.DungeonWallRoof = grid.CellWrapped(1, 0).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{1, 0, 2},  // (1,10) -> (2,10)
+		{1, 0, 2},  // (2,10) -> (3,10)
+		{0, -1, 0}, // (3,10) -> (3,9)
+		{0, -1, 0}, // (3,9) -> (3,8)
+		{0, -1, 0}, // (3,8) -> (3,7)
+		{1, 0, 2},  // (3,7) -> (4,7)
+		{0, -1, 0}, // (4,7) -> (4,6)
+		{0, -1, 0}, // (4,6) -> (4,5)
+		{0, -1, 0}, // (4,5) -> (4,4)
+		{0, -1, 0}, // (4,4) -> (4,3)
+		{0, -1, 0}, // (4,3) -> (4,2)
+		{0, -1, 0}, // (4,2) -> (4,1)
+		{0, -1, 0}, // (4,1) -> (4,0)
+		{-1, 0, 6}, // (4,0) -> (3,0)
+		{-1, 0, 6}, // (3,0) -> (2,0)
+		{-1, 0, 6}, // (2,0) -> (1,0)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to city gate step %d: %v", index, err)
+		}
+		resumeKnownPathPause()
+		if index+1 < 16 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to city gate step %d stopped at mode=%v position=(%d,%d)",
+				index, state.Mode, state.DungeonX, state.DungeonY)
+		}
 	}
-	if state.Mode != ModeWilderness || len(state.Choices) != 1 ||
-		state.Message != requireGamePackText(t, &state, "tilverton.carriage-gate-closed") {
-		t.Fatalf("first city-gate block mode=%v choices=%v message=%q",
-			state.Mode, state.Choices, state.Message)
+	if !cityGateClosedDuringWalk {
+		t.Fatal("normal path did not trigger the city-gate closure")
 	}
-	if err := state.Select(0); err != nil {
-		t.Fatal(err)
+	if state.DungeonX != 1 || state.DungeonY != 0 || state.DungeonDirection != 6 {
+		t.Fatalf("normal path reached city gate (%d,%d,%d), want (1,0,6)",
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
-	if state.Mode != ModeDungeon || state.DungeonX != 1 || state.DungeonY != 0 {
-		t.Fatalf("first city-gate return mode=%v position=(%d,%d)",
-			state.Mode, state.DungeonX, state.DungeonY)
+	if state.Mode != ModeDungeon {
+		t.Fatalf("normal city-gate continuation mode=%v, want dungeon", state.Mode)
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	if state.DungeonDirection != 0 {
+		t.Fatalf("city gate approach direction=%d, want north after turn", state.DungeonDirection)
 	}
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
