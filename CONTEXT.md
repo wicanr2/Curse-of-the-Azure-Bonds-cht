@@ -4533,3 +4533,26 @@ BLOCKCODE 結果、重訪／save-load 與 ECL continuation，再決定是否能�
 engine＋game-pack 實作。完整邊界見
 docs/spec/527-pc98-moveparty-action-writer-boundary.md；compact 後不要把
 raw 01 重新命名成 detail=1 或 door_open。
+
+2026-08-10 第五百二十八輪沿 P0-2 繼續追查同一份 PC-98 overlay-14
+`MOVEPARTY` 的連續 raw bytes。overlay-14 SHA-256 仍為
+`a8e03ba9a5381c3a9f7ab411ced3262b21e0b65b948160d614386d677610e7b9`；唯讀 audit
+`scripts/research/pc98_overlay14_action_transaction_audit.py` 的 SHA-256 為
+`2eab1dfcf0826afcba98a1bce60d36b1f9bf4fc0296467c43ca9366861adf65d`。
+
+本輪以 raw bytes 精確閉合：local `0x0C06` 的 far `017C:0039` call；`AL=1`
+寫入 local success byte；`AL=2／3` 共同進入後續流程；local `0x0D0F` 的
+`0164:0039` action input；B／P／K token 與 `0x02F5／0x05B4／0x0714`
+helper；P 路徑 local `0x0D37` 再呼叫 `017C:0039` 並只在 `AL=2` 呼叫
+`0x05B4`；非零結果呼叫 local `0x0807`，最後所有分支到 `014A:00DE`。
+這些只代表 exact control flow／call-site，不是秘密門、開門、技能、detail、
+ECL flag、另一側 cell 或重繪語意。`017C:0039` 不得直接合併成 overlay-30
+local `0039`／`BLOCKCODE`。第 527 輪規格內 B helper 第二個 caller 的 `0x05A5`
+已修正為 raw near-call 位址 `0x05A4`。
+
+本輪在既有 `coab-np2kai:20260729` Docker image 內可重現 BIOS、NP2 menu、FDD
+selector 與 Disk 1 file-selection 畫面，但開啟後沒有可用遊戲 loader／地城 trace；
+因此沒有新增 runtime／movement／secret-door JSON，也沒有把 `(13,10)`→`(8,15)`
+寫入正常路徑。下一步仍需同版本 DOS／PC-98 oracle 的 action 前後
+`THE3DMAP+300h`、`BLOCKCODE`、重訪／save-load 與 ECL continuation trace。權威
+規格為 `docs/spec/528-pc98-moveparty-action-transaction-boundary.md`。

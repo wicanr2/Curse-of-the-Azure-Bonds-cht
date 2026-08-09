@@ -1,6 +1,14 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 528 輪沿 P0-2 在 PC-98 overlay-14 raw 副本中閉合 `MOVEPARTY` 的
+`017C:0039` `AL=1／2／3` result 分流、`0164:0039` action input、B／P／K
+dispatch、P 路徑第二次 map-cell service call，以及非零結果到 local `0x0807`
+與共同 `014A:00DE` tail 的 exact call-site。第 527 輪規格的 B helper 第二個
+caller typo 已由 `0x05A5` 修正為 `0x05A4`。這仍不是秘密門／開門語意，也沒有
+新增 movement／secret-door JSON；NP2kai 只取得 BIOS／menu／FDD selector，尚未
+取得可用原版遊戲 loader 或地城 runtime trace。完整證據見
+`docs/spec/528-pc98-moveparty-action-transaction-boundary.md`。
 第 527 輪在 PC-98 overlay-14 raw 副本中閉合 MOVEPARTY 的 B／P／K token
 dispatch、local 0x02F5／0x05B4／0x0714 helper target，以及兩種
 THE3DMAP +300h selected 2-bit field writer：local 0x014C 將 selected

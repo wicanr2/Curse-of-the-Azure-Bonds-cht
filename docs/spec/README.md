@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百二十八輪 PC-98 `MOVEPARTY` result／action transaction 邊界](./528-pc98-moveparty-action-transaction-boundary.md)（READY：`AL=1／2／3` 分流、B/P/K input、共同續跑 call-site；不含秘密門、成功語意／正常路徑）
 - [第五百二十七輪 PC-98 MOVEPARTY action 與 map-field writer 邊界](./527-pc98-moveparty-action-writer-boundary.md)（READY：B/P/K dispatch、第三平面 raw set／clear writer 與 call-site；不含秘密門、成功規則／正常路徑）
 - [第五百二十六輪 PC-98 `MOVEPARTY` map-buffer writer 與 `SEARCHREC` 勘誤](./526-pc98-moveparty-map-writer-searchrec-correction.md)（`READY`：靜態 bytes／Borland type 邊界；不含秘密門、正常路徑或完整 action 語意）
 - [第五百二十五輪 PC-98 `TEMPSEARCH/BDF1` 暫存狀態與 `SHOWLOCATION` 邊界](./525-pc98-tempsearch-display-state.md)（`READY`：`BDF1` 的暫存／還原與初始化；不含秘密門 writer／正常路徑）
