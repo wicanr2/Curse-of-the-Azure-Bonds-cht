@@ -137,6 +137,30 @@ remake 需保留 caller 的 dungeon return context，並在勝利後明確 `Cont
 入口 handoff；現有測試在 `(1,8)` 與更深處仍使用座標輔助，因此後續要從 block 3
 入口以相同移動交易重新建立完整下水道路徑，不能把本輪標成下水道完成。
 
+## 下水道入口到火刀檢查站
+
+第 514 輪把上述「更深處」的第一段改回正常玩家交易。block 3 入口回返為
+`(0,1,S)`，decoded GEO 的合法路徑是：
+
+```text
+(0,1) → (1,1) → (1,2) → (1,3) → (1,4)
+      → (0,4) → (0,5) → (0,6) → (1,6) → (1,7) → (1,8)
+```
+
+每一步都經 `State.MoveDungeon`；不能因已知終點而直接寫入 `(1,8)`。最後一步的
+per-turn 邊界會先顯示 `tilverton.sewers.guild-battle-echoes`，中文為「你們仍不時
+聽見公會大廳傳來戰鬥聲」。這不是檢查站選單：PRESS 返回地城後，玩家再使用
+正式 `SearchDungeonLocation`，才會看到 `tilverton.sewers-checkpoint`。因此
+per-turn text、按鍵 continuation 與 explicit SEARCH 是三個可追蹤的交易階段，
+不能在 renderer 或測試中合併成一次自動觸發。
+
+拒絕檢查站投降後，五名 Fire Knife 由真正 combat turns 完成，勝利後再按下
+`tilverton.sewers-hide-bodies` 才返回相同地城 session。這一段證明的是入口到
+檢查站與戰後 boundary；火刀戰後的 `(13,10)` 騎士事件目前仍是座標輔助，不能
+只因看見同一張 GEO map 就假設左右兩個幾何 component 有開路相連。要進一步改成
+正常玩家路徑，必須先以 ECL／NEWECL／exit evidence 找出真正的 map handoff，
+不可用 BFS 穿過實心牆或將目標座標硬塞回 State。
+
 ## 目前 CoAB checkpoint
 
 已由新遊戲進入提爾佛頓 GEO2 block 1，使用原始 west step 抵達 Windlord’s Inn，

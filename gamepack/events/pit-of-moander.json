@@ -491,6 +491,7 @@
       ,"tilverton.guild-guest-book": "An open guest book ends with: 'Olive Ruskettle, Bard of the Realms—touch the harp at your peril.'"
       ,"tilverton.guild-sewer-traces": "Green slimy marks on the floor become more distinct near the door."
       ,"tilverton.sewers-entry": "You enter Tilverton's foul-smelling, slime-covered sewers. The slick floor and low ceiling will make fighting awkward."
+      ,"tilverton.sewers.guild-battle-echoes": "You still hear the occasional sounds of battle echoing from the guild hall."
       ,"fire-knife.hideout-entry": "You are entering the Fire Knife hideout."
       ,"fire-knife.blade-barrier": "A cloud of whirling blades fills the doorway, its metallic whine drowning out nearly every other sound. What will you do?"
       ,"fire-knife.blade-barrier-damage": "The whirling blades tear into you."
@@ -1067,6 +1068,7 @@
       ,"tilverton.guild-guest-book": "桌上攤著一本訪客簿，最後一筆寫著：「奧莉芙・拉斯凱托，國度吟遊詩人——碰豎琴者，小心你的手。」"
       ,"tilverton.guild-sewer-traces": "地面留有綠色黏液痕跡，越靠近門越清晰。"
       ,"tilverton.sewers-entry": "你們進入提爾佛頓惡臭撲鼻、覆滿黏液的下水道。地面濕滑、天花板低矮，顯然很難在這裡靈活作戰。"
+      ,"tilverton.sewers.guild-battle-echoes": "你們仍不時聽見公會大廳傳來戰鬥聲。"
       ,"fire-knife.hideout-entry": "你們進入了火刀據點。"
       ,"fire-knife.blade-barrier": "你們在房間入口停下。前方有一團刀刃彼此盤旋，尖銳的金屬嗡鳴幾乎蓋過所有聲音。你們要怎麼做？"
       ,"fire-knife.blade-barrier-damage": "旋轉刀刃狠狠撕裂了你們！"
@@ -3117,6 +3119,7 @@
     {"id": "tilverton.guild-guest-book", "all_contains": ["OPEN GUEST BOOK", "O.RUSKETTLE"], "message_id": "tilverton.guild-guest-book"},
     {"id": "tilverton.guild-sewer-traces", "all_contains": ["GREEN SLIMY MARKS", "MORE DISTINCT NEAR THE DOOR"], "message_id": "tilverton.guild-sewer-traces"},
     {"id": "tilverton.sewers-entry", "all_contains": ["FOUL SMELLING, SLIME COVERED", "FIGHTING WILL BE", "AWKWARD"], "message_id": "tilverton.sewers-entry"},
+    {"id": "tilverton.sewers.guild-battle-echoes", "all_contains": ["YOU STILL HEAR THE OCCASIONAL SOUNDS OF BATTLE", "ECHOING FROM THE GUILD HALL"], "message_id": "tilverton.sewers.guild-battle-echoes"},
     {"id": "fire-knife.hideout-entry", "all_contains": ["YOU ARE ENTERING THE HIDEOUT"], "message_id": "fire-knife.hideout-entry"},
     {"id": "fire-knife.blade-barrier-fades", "all_contains": ["BLADES SLOW DOWN", "FADE AWAY"], "message_id": "fire-knife.blade-barrier-fades"},
     {"id": "fire-knife.blade-barrier", "all_contains": ["CLOUD OF BLADES WHIRLING", "METALLIC WHINE"], "message_id": "fire-knife.blade-barrier"},
