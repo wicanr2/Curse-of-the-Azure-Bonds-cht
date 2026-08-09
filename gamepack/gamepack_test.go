@@ -742,6 +742,7 @@ func TestTilvertonGuildAndHideoutTransitionIsGamePackDriven(t *testing.T) {
 		{"tilverton.guild-guest-book", []string{"OPEN GUEST BOOK", "O.RUSKETTLE"}},
 		{"tilverton.guild-sewer-traces", []string{"GREEN SLIMY MARKS", "MORE DISTINCT NEAR THE DOOR"}},
 		{"tilverton.sewers-entry", []string{"FOUL SMELLING, SLIME COVERED", "FIGHTING WILL BE", "AWKWARD"}},
+		{"tilverton.sewers.guild-battle-echoes", []string{"YOU STILL HEAR THE OCCASIONAL SOUNDS OF BATTLE", "ECHOING FROM THE GUILD HALL"}},
 		{"fire-knife.hideout-entry", []string{"YOU ARE ENTERING THE HIDEOUT"}},
 	}
 	for _, test := range tests {

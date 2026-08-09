@@ -1509,11 +1509,38 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 1, 8, 2
-	state.DungeonWallType, _ = sewerGrid.WallWrapped(1, 8, 2)
-	state.DungeonWallRoof = sewerGrid.CellWrapped(1, 8).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{1, 0, 2},  // (0,1) -> (1,1)
+		{0, 1, 4},  // (1,1) -> (1,2)
+		{0, 1, 4},  // (1,2) -> (1,3)
+		{0, 1, 4},  // (1,3) -> (1,4)
+		{-1, 0, 6}, // (1,4) -> (0,4)
+		{0, 1, 4},  // (0,4) -> (0,5)
+		{0, 1, 4},  // (0,5) -> (0,6)
+		{1, 0, 2},  // (0,6) -> (1,6)
+		{0, 1, 4},  // (1,6) -> (1,7)
+		{0, 1, 4},  // (1,7) -> (1,8)
+	} {
+		if err := state.MoveDungeon(sewerGrid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to sewer checkpoint step %d: %v", index, err)
+		}
+	}
+	if state.MessageContainsGamePackText("tilverton.sewers.guild-battle-echoes") {
+		if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+			t.Fatalf("continue sewer guild battle echoes: %v", err)
+		}
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("resume after sewer guild battle echoes: %v", err)
+			}
+		}
+		if state.Mode == ModeDungeon {
+			if err := state.SearchDungeonLocation(); err != nil {
+				t.Fatalf("search sewer checkpoint after guild battle echoes: %v", err)
+			}
+		}
 	}
 	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.sewers-checkpoint") ||
 		len(state.Choices) != 2 {

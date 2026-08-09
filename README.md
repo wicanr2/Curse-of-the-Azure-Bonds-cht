@@ -89,6 +89,14 @@ coordinate-assisted checkpoint，完整戰鬥、音效、UI、中文化與結局
 沒有新增 README 截圖。規格見
 [`docs/spec/513-normal-tilverton-guild-interior-route.md`](docs/spec/513-normal-tilverton-guild-interior-route.md)。
 
+第 514 輪把 block 3 下水道入口後的第一段座標輔助移除：從 `(0,1,S)` 以 10 步
+正常 `MoveDungeon` 抵達 `(1,8,S)`，先處理公會大廳戰鬥聲 PRESS，再以正式 `SEARCH`
+交易觸發五名火刀的檢查站與實戰拒絕分支。新增訊息
+`tilverton.sewers.guild-battle-echoes` 已由 game-pack `en`／`zh-TW` 提供。這是
+有界 `READY` milestone；火刀戰後通往騎士的 `(13,10)` 仍未證明為可由同一 GEO
+component 正常抵達，完整下水道與整作通關仍未完成。規格見
+[`docs/spec/514-normal-tilverton-sewer-entry-route.md`](docs/spec/514-normal-tilverton-sewer-entry-route.md)。
+
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊
 target、保留敵隊 target；engine、JSON、Battle、State 與 Docker regression 均通過。

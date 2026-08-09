@@ -7,6 +7,16 @@
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
+第 514 輪把提爾佛頓 block 3 下水道入口後的第一段座標輔助改成正常玩家交易。
+從 `tilverton.sewers-entry` 回返位置 `(0,1,S)` 沿 decoded `GEO2.DAX` block 3
+逐格走 10 步到 `(1,8,S)`；最後一格先觸發新增的
+`tilverton.sewers.guild-battle-echoes` PRESS，按鍵後由正式 `SearchDungeonLocation`
+交易觸發火刀檢查站。拒絕投降分支以真正五名 Fire Knife combat turns 完成，並回歸
+`tilverton.sewers-hide-bodies`。這是 `READY` 的有界正常路徑，不是完整下水道或整作
+完成聲明；戰後 `(13,10)` 騎士事件與 block 4 仍是座標輔助。權威規格為
+[`docs/spec/514-normal-tilverton-sewer-entry-route.md`](spec/514-normal-tilverton-sewer-entry-route.md)，
+共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
+
 第 513 輪接續第 512 輪的公會 block 2 handoff，將盜賊公會入口後到下水道痕跡事件
 改成真正的正常 GEO 移動。`TestRealNewGameBeginsAtGlobalBlockOne` 以同一個
 `State.MoveDungeon`／`TurnDungeonWithGrid` session 通過訪客簿、半身人、犬舍、猴籠、

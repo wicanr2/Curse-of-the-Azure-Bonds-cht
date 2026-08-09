@@ -4145,3 +4145,18 @@ focused regression 與 `git diff --check` 也已通過；marker 為
 `ROUND513_FORMAL_EXIT=0`。接下來以一個重大 milestone commit＋push 收尾。block 3
 入口後的 `(1,8)` 與深層下水道仍是下一輪的 coordinate-assisted 邊界；完整 ECL、
 戰鬥、音效、UI、全中文化與整作通關仍未完成。
+
+2026-08-09 第五百一十四輪接續 block 3 下水道入口。由
+`tilverton.sewers-entry` 回返的 `(0,1,S)` 沿 decoded `GEO2.DAX` block 3 逐格
+走 10 步到 `(1,8,S)`，不再直接設定檢查站座標。最後一步先出現原始
+「YOU STILL HEAR THE OCCASIONAL SOUNDS OF BATTLE ECHOING FROM THE GUILD HALL.」
+PRESS，新增 game-pack stable ID `tilverton.sewers.guild-battle-echoes` 與繁中翻譯；
+按鍵返回地城後由正式 `SearchDungeonLocation` 觸發火刀檢查站。拒絕投降分支建立五名
+Fire Knife，實際 `CombatAct` 勝利並回歸 `tilverton.sewers-hide-bodies`。
+
+新增 READY spec `docs/spec/514-normal-tilverton-sewer-entry-route.md`，並更新
+README、`docs/project-status.md`、`docs/spec/README.md`、正常路徑知識庫與
+`AGENTS.md`。火刀戰後 `(13,10)` 騎士事件仍是 coordinate-assisted；block 3
+靜態 GEO 的兩個 component 不能靠 BFS 穿牆，下一輪要先追 ECL／NEWECL／map exit
+handoff。第 514 輪程式與文件目前尚未 commit／push，需先移除臨時 probe／診斷輸出，
+再跑 focused 與正式 gate 後集中收尾；完整下水道、音效、UI、全中文化與整作通關仍未完成。

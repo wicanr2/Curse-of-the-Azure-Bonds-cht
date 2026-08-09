@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 513 輪提爾佛頓盜賊公會內部正常 GEO 路徑、第 512 輪
+- CoAB 本輪基底：第 514 輪提爾佛頓下水道入口至火刀檢查站正常 GEO 路徑、
+  第 513 輪提爾佛頓盜賊公會內部正常 GEO 路徑、第 512 輪
   提爾佛頓城門／皇家馬車正常 GEO 路徑、第 511 輪
   提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
   移動交易、第 509 輪 PC-98 Action
@@ -1535,6 +1536,28 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `docs/spec/513-normal-tilverton-guild-interior-route.md`，知識庫為
   `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
   不得擴大成完整公會、完整戰鬥、完整中文化或整作通關。
+
+### 第 514 輪提爾佛頓下水道入口正常路徑補充
+
+- block 3 入口回返 `(0,1,S)` 到火刀檢查站 `(1,8,S)` 必須逐格呼叫
+  `State.MoveDungeon`：`E、S×3、W、S×2、E、S×2`。途中 `(1,6)` terrain
+  `0x8D` 與終點 `(1,8)` terrain `0x81` 是 GEO cell 識別，不得直接把 terrain
+  數字命名成劇情旗標。
+- 最後一步的 per-turn 結果會先產生
+  `tilverton.sewers.guild-battle-echoes` PRESS。它含 meaningful text 時，
+  lifecycle 不會在同一次呼叫中假設 SearchLocation 已完成；按下
+  `ecl-option.press-button-or-return-to-continue` 返回地城後，玩家再以正式
+  `SearchDungeonLocation` 觸發檢查站。不能把 PRESS 與檢查站 menu 合併，或重跑
+  block 起點掩蓋 pending continuation。
+- 檢查站拒絕分支保留五名 `FIRE KNIFE` 的真正 `CombatAct` 回合與
+  `tilverton.sewers-hide-bodies` 戰後 pause；文字與期待值走 game-pack stable ID，
+  不在測試複製繁中顯示字串。
+- 火刀戰後的 `(13,10)` 騎士事件仍為 coordinate-assisted；block 3 的靜態 GEO
+  component 不可用 BFS 穿牆假造相連。下一步先追 ECL／NEWECL／邊界 handoff，再
+  接正常 movement；不得因已知目標座標就寫入 `DungeonX／DungeonY`。
+- 權威規格為 `docs/spec/514-normal-tilverton-sewer-entry-route.md`，知識庫為
+  `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
+  不得擴大成完整下水道、完整戰鬥、完整中文化或整作通關。
 
 ## 10. Compact 後恢復工作清單
 
