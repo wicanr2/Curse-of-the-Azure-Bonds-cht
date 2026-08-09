@@ -8,10 +8,13 @@ HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 516 輪先做反組譯盤點與斷言清理，沒有把尚未閉合的 secret-door／外部地圖
+第 517 輪先做反組譯缺口盤點與斷言清理，沒有把尚未閉合的 secret-door／外部地圖
 假說升格成 runtime 規則。剩餘工作按 P0／P1／P2 排序，詳見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
-目前專案仍是多個可重播 vertical slice，不是完整可通關 remake。
+目前還有 11 個直接影響玩家結果的逆向主題與 4 個 fidelity／發行主題；專案仍是
+多個可重播 vertical slice，不是完整可通關 remake。第 517 輪另修正「GEO component
+永久不相連」的過度說法：目前只能確認關閉狀態可行圖無路徑，秘密門 writer 尚未
+找到。完整盤點見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](spec/517-reverse-engineering-gap-inventory.md)。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到
@@ -19,7 +22,8 @@ commit 內保存不可能自我引用的 hash。
 `set_map_position`，engine `Runtime.MapPositions` 再由 State adapter 設定
 GEO2 block 3 `(13,10,E)`、wall／roof registers 與下一次 lifecycle。拒絕投降仍先
 建立五名 Fire Knife 戰鬥，故不會在戰鬥入口提前轉移。這個外部 handoff 是
-`strong inference`，不是 DOS `4BF0h／4BF1h` writer→consumer 的 exact 完成；
+`strong inference`；DOS ECL work address 與 overlay 22 `[di+4BF0h]` indexed table
+的 writer→projection→consumer 尚未 exact 閉合；
 第二個 `(8,15)`→block 4 handoff、完整下水道與完整通關仍未完成。權威規格為
 [`docs/spec/515-fire-knife-map-position-transition.md`](spec/515-fire-knife-map-position-transition.md)，
 共用 engine 知識庫為 `golden-box-remake-engine/docs/knowledge/golden-box-map-position-transition.md`。
