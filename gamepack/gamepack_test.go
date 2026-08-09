@@ -280,6 +280,14 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if !result.Matched || result.RuleID != "zhentil.patrol_pass" || result.Message != wantPatrol {
 		t.Fatalf("text result=%+v", result)
 	}
+	greenRobes := pack.MatchText([]string{
+		"AS YOU ARE PASSING THROUGH THE CROWDS, YOU HEAR,",
+		"THE WOMAN IN THE GREEN ROBES -- EYES OF A FANATIC.",
+	}, "zh-TW")
+	wantGreenRobes, _ := pack.Text("tilverton.green-robes-rumor", "zh-TW")
+	if !greenRobes.Matched || greenRobes.RuleID != "tilverton.green-robes-rumor" || greenRobes.Message != wantGreenRobes {
+		t.Fatalf("green-robes text result=%+v", greenRobes)
+	}
 	dimswart := pack.MatchText([]string{
 		"YOU SEE AN OLD MAN IN THE CELL.",
 		"HE INTRODUCES HIMSELF AND YOU RECORD HIS REMARKS AS JOURNAL ENTRY 12.",

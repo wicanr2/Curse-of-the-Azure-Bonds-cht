@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百一十二輪提爾佛頓城門與皇家馬車正常 GEO 路徑](./512-normal-tilverton-city-gate-route.md)（`READY`：16 步正常 GEO 移動、城門封路、皇家馬車／衛兵戰／盜賊救援續跑與綠袍傳聞 game-pack 資料分層；不含公會／下水道完整正常移動與逐幀 DOS exact）
 - [第五百一十一輪提爾佛頓設施正常移動路徑與事件群組邊界](./511-normal-tilverton-facility-route.md)（`READY`：同一 State movement transaction、設施間正常步行、招牌／高階祭司 `0x80` one-shot 群組與 fresh-session 分支；不含完整地城／整作路徑與逐幀 DOS exact）
 - [第五百一十輪正常新遊戲地城移動交易](./510-normal-new-game-dungeon-step.md)（`READY`：原始 GEO2 起點西行、State／Ebiten 共用移動交易與 Windlord’s Inn continuation；不含完整地城／整作路徑與逐幀 DOS exact）
 - [第五百零八輪 PC-98 一般敵方選敵 SCAN producer 與有限抽樣](./508-pc98-general-target-scan-producer.md)（`READY`：地形／footprint producer、20 次可見性抽樣與第二輪 `XRay` handoff；不含完整 AI／移動／方向 comparator／動畫音效）

@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 511 輪提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
+- CoAB 本輪基底：第 512 輪提爾佛頓城門／皇家馬車正常 GEO 路徑、第 511 輪
+  提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
   移動交易、第 509 輪 PC-98 Action
   target／QUICK 清除與第 508 輪 SCAN producer
   milestone
@@ -1485,6 +1486,27 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   movement／SEARCH 才消費新面向。權威規格為
   `docs/spec/511-normal-tilverton-facility-route.md`，知識庫為
   `docs/knowledge/golden-box-normal-player-path.md`。
+
+### 第 512 輪提爾佛頓城門／皇家馬車正常路徑補充
+
+- 高階祭司後到城門必須沿 decoded `GEO2.DAX` block 1 的 16 步可行路徑，逐次呼叫
+  `State.MoveDungeon`：`(1,10)` → `(1,0)`，不能直接寫入城門座標或在測試中
+  注入 ECL boundary。最後西行步驟在 `(1,0,W)` 觸發
+  `tilverton.carriage-gate-closed`，選項續跑後仍在同格。
+- 城門封路是在正常移動途中發生，不是路徑結束後可任意重播的提示。續跑後只以
+  `TurnDungeonWithGrid` 轉向北方，再執行 lifecycle，才進入皇家馬車 `PICTURE 11`。
+  此順序要保留同一 `BlockSession`，不可用兩次 lifecycle 製造同一事件。
+- 皇家馬車段的穩定驗收依序包含強制攻擊、皇家衛兵戰、紅袍人綁走假國王、投降／
+  入獄、盜賊 `PICTURE 2` 救援與公會 block 2 handoff；這只證明本段 continuation，
+  不代表公會／下水道內部已完成正常移動。
+- 綠袍女人傳聞已移入 CoAB game-pack `text_rules`，ID 為
+  `tilverton.green-robes-rumor`，英文片段與繁中 locale 必須同時保存。State 不應
+  再增加該事件的中文 fallback；測試用 game-pack resolver 取得期待值，不能複製繁中
+  顯示字串。
+- 權威規格為 `docs/spec/512-normal-tilverton-city-gate-route.md`，知識庫為
+  `docs/knowledge/golden-box-normal-player-path.md`。本輪的 GEO／ECL／remake
+  boundary 是 `exact`；State movement 對 DOS 逐幀／逐指令的對應仍是
+  `strong inference`，不可擴大成整作通關或 DOS pixel exact。
 
 ## 10. Compact 後恢復工作清單
 

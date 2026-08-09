@@ -1,11 +1,21 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 511 輪；實際 HEAD 以遠端核對為準）
+本 milestone 的 CoAB 基底：GitHub `main`（第 512 輪；實際 HEAD 以遠端核對為準）
 依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 512 輪把高階祭司後的提爾佛頓城門段落接回正常 GEO 移動：由 `(1,10)` 沿
+`GEO2.DAX` 逐格走到 `(1,0)`，最後一步實際觸發
+`tilverton.carriage-gate-closed`，按鍵返回同格、轉向北方後進入皇家馬車
+`PICTURE 11`。同一個 ECL session 已驗證青色枷強制攻擊、皇家衛兵戰、入獄、盜賊
+`PICTURE 2` 救援與盜賊公會 block 2 handoff；綠袍女人傳聞也由 game-pack
+`text_rules` 與 `tilverton.green-robes-rumor` stable ID 提供繁中。這輪關閉的是
+一段正常玩家路徑與資料分層缺口，不是完整通關；權威規格為
+[`docs/spec/512-normal-tilverton-city-gate-route.md`](spec/512-normal-tilverton-city-gate-route.md)，
+共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 
 第 511 輪沿用 `State.MoveDungeon`，從開場中斷休息後的提爾佛頓座標逐格走到
 Filani、Weaponers、Gond altar、Training Hall、Tavern 與高階祭司所在格；招牌與

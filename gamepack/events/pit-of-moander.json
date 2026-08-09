@@ -497,6 +497,7 @@
       ,"fire-knife.burned-lab": "This room was once a laboratory. Fierce flames swept through it, and nothing escaped destruction."
       ,"fire-knife.shrouded-bodies": "Two rows of shrouded bodies lie here. Signs mark one row 'to be raised' and the other 'to be buried.'"
       ,"tilverton.carriage-gate-closed": "Royal guards tell you this way is closed because the royal carriage is coming soon, and send you back into the city."
+      ,"tilverton.green-robes-rumor": "As you pass through the crowds, you hear, 'The woman in the green robes—eyes of a fanatic.'"
       ,"tilverton.carriage-make-way": "Royal guards shout, 'Make way for the royal carriage!'"
       ,"tilverton.carriage-bond-compulsion": "The king's voice comes from the carriage. Your azure bonds flare, and an irresistible compulsion forces you to attack."
       ,"tilverton.carriage-false-king": "As the carriage withdraws, a young man cries that he is not really the king. Seeing your azure markings, he gasps, 'Oh no! Not again!' and faints as the glow fades."
@@ -1065,6 +1066,7 @@
       ,"fire-knife.burned-lab": "這裡原是一間實驗室，同樣遭猛烈烈焰席捲，沒有任何東西逃過毀滅。"
       ,"fire-knife.shrouded-bodies": "房裡有兩排覆著裹屍布的遺體。每排前方各有標牌，一面寫著「待復活」，另一面寫著「待埋葬」。"
       ,"tilverton.carriage-gate-closed": "你們遇上一隊皇家衛兵。他們說國王的馬車即將抵達，此路暫時封閉，並把你們遣回城內。"
+      ,"tilverton.green-robes-rumor": "穿過人群時，你們聽見：「那個穿綠袍的女人……眼神像個狂熱信徒。」"
       ,"tilverton.carriage-make-way": "你們再次遇上皇家衛兵。他們高喊：「讓路！皇家馬車即將通過！」"
       ,"tilverton.carriage-bond-compulsion": "國王的聲音從馬車裡傳來。你們手臂上的青色印記突然發出強光，一股無法抗拒的力量迫使你們攻擊皇家馬車！"
       ,"tilverton.carriage-false-king": "馬車撤退時，一名年輕男子探出身子，沙啞地喊：「別殺我，我不是真正的國王！」他看見你們的青色印記後驚叫：「不！怎麼又來了！」隨即昏倒在車內，印記的光芒也逐漸消退。"
@@ -3107,6 +3109,7 @@
     {"id": "fire-knife.burned-lab", "all_contains": ["ONCE A LAB", "NOTHING ESCAPED DESTRUCTION"], "message_id": "fire-knife.burned-lab"},
     {"id": "fire-knife.shrouded-bodies", "all_contains": ["TWO ROWS OF SHROUDED BODIES", "TO BE RAISED"], "message_id": "fire-knife.shrouded-bodies"},
     {"id": "tilverton.carriage-gate-closed", "all_contains": ["THIS WAY IS CLOSED", "ROYAL CARRIAGE IS COMING SOON"], "message_id": "tilverton.carriage-gate-closed"},
+    {"id": "tilverton.green-robes-rumor", "all_contains": ["AS YOU ARE PASSING THROUGH THE CROWDS", "WOMAN IN THE GREEN ROBES", "EYES OF A FANATIC"], "message_id": "tilverton.green-robes-rumor"},
     {"id": "tilverton.carriage-make-way", "all_contains": ["MAKE WAY FOR THE ROYAL CARRIAGE"], "message_id": "tilverton.carriage-make-way"},
     {"id": "tilverton.carriage-bond-compulsion", "all_contains": ["KING'S VOICE COMING FROM THE CARRIAGE", "COMPULSION TO ATTACK"], "message_id": "tilverton.carriage-bond-compulsion"},
     {"id": "tilverton.carriage-false-king", "all_contains": ["I'M NOT REALLY THE KING", "OH NO! NOT AGAIN"], "message_id": "tilverton.carriage-false-king"},
