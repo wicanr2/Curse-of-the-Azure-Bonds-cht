@@ -159,6 +159,7 @@ type State struct {
 	eclStringMaxLength      int
 	pendingDungeonEntry     bool
 	dungeonBoundaryAttempt  bool
+	dungeonLifecycleActive  bool
 	pendingWorldDestination uint8
 	pendingWorldTravel      bool
 	dataPack                *goldenbox.Pack
@@ -4802,6 +4803,8 @@ func (s *State) SearchDungeonLocation() error {
 	s.syncDungeonECLRegisters()
 	s.session.SetMemoryValue(0x7ECA, 1)
 	defer s.session.SetMemoryValue(0x7ECA, 0)
+	s.dungeonLifecycleActive = true
+	defer func() { s.dungeonLifecycleActive = false }()
 	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
 		1, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
@@ -4821,6 +4824,14 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	if s.session == nil {
 		return fmt.Errorf("dungeon lifecycle requires an ECL session")
 	}
+	s.dungeonLifecycleActive = true
+	defer func() { s.dungeonLifecycleActive = false }()
+	// SearchLocation may dispatch a random encounter after a previous event
+	// continuation reset the generic return fields.  The dungeon movement
+	// owner is the authoritative caller here, so a combat opened by this
+	// lifecycle must resume in the same dungeon rather than the wilderness UI.
+	s.eclMenuReturnMode = ModeDungeon
+	s.eventReturnMode = ModeDungeon
 	// A new movement transaction must not inherit text or menu labels from the
 	// previous terrain boundary. Some original events deliberately emit an
 	// empty PRESS pause; leaving Message untouched would display stale combat
@@ -4860,6 +4871,12 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 		handled, err := s.applyDungeonLifecycleResult(result)
 		if err != nil {
 			return err
+		}
+		if s.Mode == ModeCombat && s.battle != nil {
+			// applyDungeonLifecycleResult may traverse an engine-only CALL
+			// before creating the encounter, so preserve the caller-owned
+			// dungeon return mode after the battle object exists.
+			s.combatReturnMode = ModeDungeon
 		}
 		// The reference loop always runs SearchLocation after a quiet
 		// per-turn invocation. Some CALL-only entries retain an empty packed

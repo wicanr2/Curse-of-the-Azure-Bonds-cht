@@ -1,11 +1,22 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 512 輪；實際 HEAD 以遠端核對為準）
+本 milestone 的 CoAB 基底：GitHub `main`（第 513 輪；實際 HEAD 以遠端核對為準）
 依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 513 輪接續第 512 輪的公會 block 2 handoff，將盜賊公會入口後到下水道痕跡事件
+改成真正的正常 GEO 移動。`TestRealNewGameBeginsAtGlobalBlockOne` 以同一個
+`State.MoveDungeon`／`TurnDungeonWithGrid` session 通過訪客簿、半身人、犬舍、猴籠、
+多道 detail `2` 鎖門、公會內部回廊與下水道門，路途中遇到的奔逃盜賊、火刀、刺客、
+野獸搏鬥與戰後屍體文字均由 game-pack stable ID 的 `en`／`zh-TW` 資料驅動；犬舍與
+隨機遭遇以真正 combat turns 完成。這是 `READY` 的有界正常玩家路徑，不是整作完成
+聲明。block 3 入口後仍有座標輔助下水道檢查點，完整 ECL／戰鬥／音效／UI／中文化／
+結局尚未完成。權威規格為
+[`docs/spec/513-normal-tilverton-guild-interior-route.md`](spec/513-normal-tilverton-guild-interior-route.md)，
+共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 
 第 512 輪把高階祭司後的提爾佛頓城門段落接回正常 GEO 移動：由 `(1,10)` 沿
 `GEO2.DAX` 逐格走到 `(1,0)`，最後一步實際觸發

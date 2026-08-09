@@ -199,7 +199,7 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		return fmt.Errorf("ECL result does not request combat")
 	}
 	s.combatReturnMode = ModeWilderness
-	if s.eclMenuReturnMode == ModeDungeon || s.eventReturnMode == ModeDungeon {
+	if s.dungeonLifecycleActive || s.Area.InDungeon || s.Mode == ModeDungeon || s.eclMenuReturnMode == ModeDungeon || s.eventReturnMode == ModeDungeon {
 		s.combatReturnMode = ModeDungeon
 	}
 	// Monster IDs use the same global chapter ranges as ECL block IDs, but a

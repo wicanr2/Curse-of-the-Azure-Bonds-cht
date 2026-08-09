@@ -373,7 +373,8 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 ### 本 milestone 基底
 
 - 工作已於 2026-07-29 恢復，不再遵守舊的「暫停新增功能」文字。
-- CoAB 本輪基底：第 512 輪提爾佛頓城門／皇家馬車正常 GEO 路徑、第 511 輪
+- CoAB 本輪基底：第 513 輪提爾佛頓盜賊公會內部正常 GEO 路徑、第 512 輪
+  提爾佛頓城門／皇家馬車正常 GEO 路徑、第 511 輪
   提爾佛頓設施正常移動路徑、第 510 輪正常新遊戲地城
   移動交易、第 509 輪 PC-98 Action
   target／QUICK 清除與第 508 輪 SCAN producer
@@ -1507,6 +1508,33 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `docs/knowledge/golden-box-normal-player-path.md`。本輪的 GEO／ECL／remake
   boundary 是 `exact`；State movement 對 DOS 逐幀／逐指令的對應仍是
   `strong inference`，不可擴大成整作通關或 DOS pixel exact。
+
+### 第 513 輪提爾佛頓盜賊公會內部正常移動補充
+
+- 公會 block 2 handoff 後到 `tilverton.guild-sewer-traces` 必須沿 decoded
+  `GEO2.DAX` 的雙側 wall／detail 資料逐格走，使用 `State.MoveDungeon`；不能把
+  `(11,7)`、`(15,7)`、`(10,13)` 或事件終點直接寫入 `DungeonX／DungeonY` 再跑
+  lifecycle。`TurnDungeonWithGrid` 只轉向，不能代替移動交易。
+- 本輪已證明 `(13,7)` 東側是 GEO 實心牆，不是遺漏的門；正常路徑要繞過回廊。
+  四道 detail `2` 鎖門分別由測試用 deterministic bash fixture 開啟後，以
+  `UnlockDoorWrapped` 更新兩側 detail。力量 25 只是一個可重播的測試輸入，不能
+  被寫成原版開門規則或作品劇情常數。
+- 新增公會內部文字／選項必須走 game-pack stable IDs：
+  `tilverton.running-thieves`、`tilverton.option.remain-calm`、
+  `tilverton.running-thieves-warning`、`tilverton.fire-knives-spot-you`、
+  `tilverton.guild-assassins-attack`、`tilverton.guild-metal-and-animals`、
+  `tilverton.guild-bodies-after-battle`；測試由 `option_rules` 解析原始選項，
+  不得複製目前繁中顯示字串。
+- 犬舍與路途中隨機遭遇要以真正 `CombatAct` 回合完成。生命週期可能先經過
+  engine-only `CALL` 才建立 encounter；`dungeonLifecycleActive` 與
+  `combatReturnMode=ModeDungeon` 用來保存 remake caller context，戰鬥勝利後若
+  暫停在 `ModeEvent`，必須依同一 session `Continue()` 回地城，不能重跑 block
+  起點或直接設座標掩蓋 continuation 遺失。
+- 本輪終點只到 block 3 的 sewer traces；入口後 `(1,8)` 檢查點、騎士／火刀事件、
+  深層下水道與返回世界地圖仍有 coordinate-assisted 段落。權威規格為
+  `docs/spec/513-normal-tilverton-guild-interior-route.md`，知識庫為
+  `docs/knowledge/golden-box-normal-player-path.md`。本輪是 `READY` 有界路徑，
+  不得擴大成完整公會、完整戰鬥、完整中文化或整作通關。
 
 ## 10. Compact 後恢復工作清單
 

@@ -4127,3 +4127,21 @@ remake regression，State transaction 對 DOS 逐幀 movement 仍是 `strong inf
 公會／下水道內部、完整 ECL／戰鬥／中文化與整作通關仍未完成。新增規格：
 `docs/spec/512-normal-tilverton-city-gate-route.md`；更新知識庫、README、狀態表與
 `AGENTS.md`。本輪尚未 commit／push，需完成正式 Docker gate 後集中收尾。
+
+2026-08-09 第五百一十三輪接續公會 block 2 handoff，將盜賊公會入口至
+`tilverton.guild-sewer-traces` 的 coordinate-assisted 段落改成正常 GEO 移動。
+`TestRealNewGameBeginsAtGlobalBlockOne` 使用同一個 `State.MoveDungeon`／
+`TurnDungeonWithGrid` 逐格經過訪客簿、半身人、犬舍、猴籠、四道 detail `2` 鎖門、
+公會內部回廊與下水道門；`(13,7)` 東側實心牆也由 decoded `GEO2.DAX` 路徑證明，
+不能誤走直線。犬舍與隨機遭遇用真正 `CombatAct` 回合完成，新增的奔逃盜賊、
+`REMAIN CALM`、火刀、刺客、野獸搏鬥與戰後屍體文字／選項均由 game-pack stable
+IDs 與 `en`／`zh-TW` locale 驅動。runtime 另修正 engine-only `CALL` 建立戰鬥後
+仍保留 dungeon return mode 的 remake lifecycle 邊界。
+
+本輪新規格為 `docs/spec/513-normal-tilverton-guild-interior-route.md`，知識庫、
+README、`docs/project-status.md`、`docs/spec/README.md` 與 `AGENTS.md` 已同步更新。
+移除測試診斷輸出後，Docker／Xvfb 正式 package gate 已通過，`coab-audit total=0`，
+focused regression 與 `git diff --check` 也已通過；marker 為
+`ROUND513_FORMAL_EXIT=0`。接下來以一個重大 milestone commit＋push 收尾。block 3
+入口後的 `(1,8)` 與深層下水道仍是下一輪的 coordinate-assisted 邊界；完整 ECL、
+戰鬥、音效、UI、全中文化與整作通關仍未完成。

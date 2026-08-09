@@ -2,6 +2,7 @@ package game
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"path/filepath"
 	"reflect"
@@ -25,6 +26,21 @@ func requireGamePackText(t *testing.T, state *State, messageID string) string {
 		t.Fatalf("game-pack message %q is unavailable for locale %q", messageID, state.catalog.Language)
 	}
 	return value
+}
+
+func requireGamePackOptionIndex(t *testing.T, state *State, optionID string) int {
+	t.Helper()
+	for _, rule := range state.dataPack.OptionRules {
+		if rule.ID != optionID {
+			continue
+		}
+		if index, ok := state.OriginalChoiceIndex(rule.Source); ok {
+			return index
+		}
+		t.Fatalf("game-pack option %q source %q is not an active choice: %v", optionID, rule.Source, state.currentOriginalChoices)
+	}
+	t.Fatalf("game-pack option %q is unavailable", optionID)
+	return 0
 }
 
 func requireCombatantName(t *testing.T, state *State, source string) string {
@@ -1101,13 +1117,7 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("guild script-to-geometry view=(%d,%d,%d), want (9,3,4)",
 			geometryX, geometryY, geometryDirection)
 	}
-	state.SetDungeonGeometryView(geometryX, geometryY, geometryDirection)
-	if state.DungeonX != 1 || state.DungeonY != 12 || state.DungeonDirection != 0 {
-		t.Fatalf("guild geometry-to-script inverse=(%d,%d,%d), want (1,12,0)",
-			state.DungeonX, state.DungeonY, state.DungeonDirection)
-	}
-	state.DungeonWallType, _ = grid.WallWrapped(geometryX, geometryY, int(geometryDirection))
-	state.DungeonWallRoof = grid.CellWrapped(geometryX, geometryY).Terrain
+	state.TurnDungeonWithGrid(grid, 0)
 	if err := state.RunDungeonLifecycle(); err != nil {
 		t.Fatal(err)
 	}
@@ -1177,11 +1187,90 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.SetDungeonGeometryView(11, 7, 0)
-	state.DungeonWallType, _ = grid.WallWrapped(11, 7, 0)
-	state.DungeonWallRoof = grid.CellWrapped(11, 7).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	if geometryX, geometryY, geometryDirection := state.DungeonGeometryView(); geometryX != 9 || geometryY != 3 || geometryDirection != 2 {
+		t.Fatalf("guild battle return geometry=(%d,%d,%d), want (9,3,2)", geometryX, geometryY, geometryDirection)
+	}
+	guestBookSeen := false
+	runningThievesWarningSeen := false
+	fireKnivesSpotSeen := false
+	assassinsAttackSeen := false
+	metalAndAnimalsSeen := false
+	bodiesAfterBattleSeen := false
+	finishDungeonEncounter := func(context string) {
+		if state.Mode != ModeCombat {
+			return
+		}
+		if !state.CombatActive() {
+			t.Fatalf("%s entered inactive combat", context)
+		}
+		for turn := 0; turn < 100 && state.CombatActive(); turn++ {
+			if err := state.CombatAct(); err != nil {
+				t.Fatalf("%s turn %d: %v", context, turn, err)
+			}
+		}
+		if state.Mode == ModeEvent && state.CombatStatus() == combat.StatusPartyWon && state.eventReturnMode == ModeDungeon {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("%s resume: %v", context, err)
+			}
+		}
+		if state.CombatStatus() != combat.StatusPartyWon || state.Mode != ModeDungeon {
+			t.Fatalf("%s status=%v mode=%v return=%v eclReturn=%v eventReturn=%v inDungeon=%v message=%q choices=%v",
+				context, state.CombatStatus(), state.Mode, state.combatReturnMode, state.eclMenuReturnMode, state.eventReturnMode, state.Area.InDungeon, state.Message, state.Choices)
+		}
+	}
+	continueDungeonPress := func(context string) {
+		if state.Mode != ModeWilderness || len(state.currentOriginalChoices) != 1 {
+			return
+		}
+		if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+			t.Fatalf("%s press continuation: %v", context, err)
+		}
+		if state.Mode == ModeEvent && state.eventReturnMode == ModeDungeon {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("%s press resume: %v", context, err)
+			}
+		}
+	}
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{1, 0, 2}, // (9,3) -> (10,3)
+		{1, 0, 2}, // (10,3) -> (11,3)
+		{0, 1, 4}, // (11,3) -> (11,4)
+		{0, 1, 4}, // (11,4) -> (11,5)
+		{0, 1, 4}, // (11,5) -> (11,6)
+		{0, 1, 4}, // (11,6) -> (11,7)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to guild halfling step %d: %v", index, err)
+		}
+		finishDungeonEncounter(fmt.Sprintf("normal guild interior random encounter step %d", index))
+		if state.Mode != ModeDungeon && index+1 == 6 {
+			if state.Message != requireGamePackText(t, &state, "tilverton.guild-halfling") || len(state.Choices) != 1 {
+				t.Fatalf("normal path to guild halfling final pause mode=%v message=%q choices=%v",
+					state.Mode, state.Message, state.Choices)
+			}
+		} else if state.Mode != ModeDungeon {
+			if state.Message != requireGamePackText(t, &state, "tilverton.guild-guest-book") || len(state.Choices) != 1 {
+				t.Fatalf("normal path to guild halfling step %d unexpected pause mode=%v message=%q choices=%v",
+					index, state.Mode, state.Message, state.Choices)
+			}
+			guestBookSeen = true
+			if err := state.Select(0); err != nil {
+				t.Fatalf("continue past normal guild guest book: %v", err)
+			}
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("resume after normal guild guest book: %v", err)
+				}
+			}
+		}
+		if index+1 < 6 && state.Mode != ModeDungeon {
+			t.Fatalf("normal path to guild halfling step %d stopped at mode=%v geometry=%v message=%q choices=%v", index, state.Mode, func() string {
+				x, y, direction := state.DungeonGeometryView()
+				return fmt.Sprintf("(%d,%d,%d)", x, y, direction)
+			}(), state.Message, state.Choices)
+		}
 	}
 	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-halfling") {
 		t.Fatalf("guild halfling event mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
@@ -1189,10 +1278,16 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.SetDungeonGeometryView(12, 7, 0)
-	state.DungeonWallType, _ = grid.WallWrapped(12, 7, 0)
-	state.DungeonWallRoof = grid.CellWrapped(12, 7).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
+	doorFlags, doorFlagsOK := grid.WallDoorFlagsWrapped(11, 7, 2)
+	if !doorFlagsOK || doorFlags != 2 {
+		t.Fatalf("guild kennel doorway flags=%d found=%v, want locked detail 2", doorFlags, doorFlagsOK)
+	}
+	state.partyRoster[0].Abilities.StrengthFull = 25
+	doorResult := state.BashDungeonDoor(doorFlags)
+	if !doorResult.Opened || !grid.UnlockDoorWrapped(11, 7, 2) {
+		t.Fatalf("guild kennel doorway bash result=%+v", doorResult)
+	}
+	if err := state.MoveDungeon(grid, 1, 0, 2); err != nil {
 		t.Fatal(err)
 	}
 	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-kennel-intro") {
@@ -1241,11 +1336,40 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.SetDungeonGeometryView(15, 7, 0)
-	state.DungeonWallType, _ = grid.WallWrapped(15, 7, 0)
-	state.DungeonWallRoof = grid.CellWrapped(15, 7).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	if geometryX, geometryY, geometryDirection := state.DungeonGeometryView(); geometryX != 12 || geometryY != 7 || geometryDirection != 2 {
+		t.Fatalf("guild kennel return geometry=(%d,%d,%d), want (12,7,2)", geometryX, geometryY, geometryDirection)
+	}
+	state.TurnDungeonWithGrid(grid, -2)
+	secondDoorFlags, secondDoorFlagsOK := grid.WallDoorFlagsWrapped(12, 7, 0)
+	if !secondDoorFlagsOK || secondDoorFlags != 2 {
+		t.Fatalf("guild cages north doorway flags=%d found=%v, want locked detail 2", secondDoorFlags, secondDoorFlagsOK)
+	}
+	secondDoorResult := state.BashDungeonDoor(secondDoorFlags)
+	if !secondDoorResult.Opened || !grid.UnlockDoorWrapped(12, 7, 0) {
+		t.Fatalf("guild cages north doorway bash result=%+v", secondDoorResult)
+	}
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{0, -1, 0}, // (12,7) -> (12,6)
+		{0, -1, 0}, // (12,6) -> (12,5)
+		{0, -1, 0}, // (12,5) -> (12,4)
+	} {
+		if err := state.MoveDungeon(grid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal path to guild cages north corridor step %d: %v", index, err)
+		}
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	for index := 0; index < 3; index++ {
+		if err := state.MoveDungeon(grid, 1, 0, 2); err != nil {
+			t.Fatalf("normal path to guild cages east corridor step %d: %v", index, err)
+		}
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	for index := 0; index < 3; index++ {
+		if err := state.MoveDungeon(grid, 0, 1, 4); err != nil {
+			t.Fatalf("normal path to guild cages south corridor step %d: %v", index, err)
+		}
 	}
 	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-monkey-cages") {
 		t.Fatalf("guild cages mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
@@ -1253,23 +1377,105 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	state.SetDungeonGeometryView(11, 3, 0)
-	state.DungeonWallType, _ = grid.WallWrapped(11, 3, 0)
-	state.DungeonWallRoof = grid.CellWrapped(11, 3).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	if !guestBookSeen {
+		t.Fatal("normal guild interior path did not visit the guest book")
 	}
-	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, &state, "tilverton.guild-guest-book") {
-		t.Fatalf("guild guestbook mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	if geometryX, geometryY, geometryDirection := state.DungeonGeometryView(); geometryX != 15 || geometryY != 7 || geometryDirection != 4 {
+		t.Fatalf("guild cages return geometry=(%d,%d,%d), want (15,7,4)", geometryX, geometryY, geometryDirection)
 	}
-	if err := state.Select(0); err != nil {
-		t.Fatal(err)
+	walkGuildInterior := func(context string, dx, dy, direction int) {
+		if err := state.MoveDungeon(grid, dx, dy, direction); err != nil {
+			t.Fatalf("%s: %v", context, err)
+		}
+		assassinsAttackSeen = assassinsAttackSeen || state.MessageContainsGamePackText("tilverton.guild-assassins-attack")
+		metalAndAnimalsSeen = metalAndAnimalsSeen || state.MessageContainsGamePackText("tilverton.guild-metal-and-animals")
+		bodiesAfterBattleSeen = bodiesAfterBattleSeen || state.MessageContainsGamePackText("tilverton.guild-bodies-after-battle")
+		if state.Mode == ModeWilderness && state.MessageContainsGamePackText("tilverton.running-thieves") {
+			if len(state.currentOriginalChoices) != 3 {
+				t.Fatalf("%s running-thieves choices=%v", context, state.currentOriginalChoices)
+			}
+			if err := state.Select(requireGamePackOptionIndex(t, &state, "tilverton.option.remain-calm")); err != nil {
+				t.Fatalf("%s remain-calm selection: %v", context, err)
+			}
+			if !state.MessageContainsGamePackText("tilverton.running-thieves-warning") {
+				t.Fatalf("%s remain-calm warning was not resolved through game-pack: message=%q", context, state.Message)
+			}
+			runningThievesWarningSeen = true
+			continueDungeonPress(context + " remain-calm")
+		}
+		if state.Mode == ModeWilderness && state.MessageContainsGamePackText("tilverton.fire-knives-spot-you") {
+			fireKnivesSpotSeen = true
+		}
+		continueDungeonPress(context)
+		finishDungeonEncounter(context)
+		if state.Mode != ModeDungeon {
+			t.Fatalf("%s stopped at mode=%v geometry=(%d,%d,%d) originalEvent=%q originalChoices=%v currentOriginalChoices=%v message=%q choices=%v", context, state.Mode,
+				func() int { x, _, _ := state.DungeonGeometryView(); return x }(),
+				func() int { _, y, _ := state.DungeonGeometryView(); return y }(),
+				func() uint8 { _, _, direction := state.DungeonGeometryView(); return direction }(), state.OriginalEvent, state.OriginalChoices, state.currentOriginalChoices, state.Message, state.Choices)
+		}
 	}
-	state.SetDungeonGeometryView(10, 15, 4)
-	state.DungeonWallType, _ = grid.WallWrapped(10, 15, 4)
-	state.DungeonWallRoof = grid.CellWrapped(10, 15).Terrain
-	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatal(err)
+	state.TurnDungeonWithGrid(grid, -4)
+	exitDoorFlags, exitDoorFlagsOK := grid.WallDoorFlagsWrapped(15, 7, 0)
+	if !exitDoorFlagsOK || exitDoorFlags != 2 {
+		t.Fatalf("guild exit doorway flags=%d found=%v, want locked detail 2", exitDoorFlags, exitDoorFlagsOK)
+	}
+	exitDoorResult := state.BashDungeonDoor(exitDoorFlags)
+	if !exitDoorResult.Opened || !grid.UnlockDoorWrapped(15, 7, 0) {
+		t.Fatalf("guild exit doorway bash result=%+v", exitDoorResult)
+	}
+	for index := 0; index < 3; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages north step %d", index), 0, -1, 0)
+	}
+	state.TurnDungeonWithGrid(grid, -2)
+	for index := 0; index < 3; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages west step %d", index), -1, 0, 6)
+	}
+	state.TurnDungeonWithGrid(grid, -2)
+	for index := 0; index < 3; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages south step %d", index), 0, 1, 4)
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	walkGuildInterior("normal path from guild cages to central corridor", -1, 0, 6)
+	state.TurnDungeonWithGrid(grid, -2)
+	for index := 0; index < 2; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages lower corridor step %d", index), 0, 1, 4)
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	walkGuildInterior("normal path from guild cages west return", -1, 0, 6)
+	state.TurnDungeonWithGrid(grid, 2)
+	for index := 0; index < 3; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages upper corridor step %d", index), 0, -1, 0)
+	}
+	state.TurnDungeonWithGrid(grid, 0)
+	for index := 0; index < 2; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages west hall step %d", index), -1, 0, 6)
+	}
+	state.TurnDungeonWithGrid(grid, -2)
+	for index := 0; index < 6; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages south hall step %d", index), 0, 1, 4)
+	}
+	state.TurnDungeonWithGrid(grid, -2)
+	for index := 0; index < 2; index++ {
+		walkGuildInterior(fmt.Sprintf("normal path from guild cages east hall step %d", index), 1, 0, 2)
+	}
+	state.TurnDungeonWithGrid(grid, 2)
+	sewerDoorFlags, sewerDoorFlagsOK := grid.WallDoorFlagsWrapped(10, 13, 4)
+	if !sewerDoorFlagsOK || sewerDoorFlags != 2 {
+		t.Fatalf("guild sewer doorway flags=%d found=%v, want locked detail 2", sewerDoorFlags, sewerDoorFlagsOK)
+	}
+	sewerDoorResult := state.BashDungeonDoor(sewerDoorFlags)
+	if !sewerDoorResult.Opened || !grid.UnlockDoorWrapped(10, 13, 4) {
+		t.Fatalf("guild sewer doorway bash result=%+v", sewerDoorResult)
+	}
+	walkGuildInterior("normal path to guild sewer approach", 0, 1, 4)
+	walkGuildInterior("normal path through guild sewer doorway", 0, 1, 4)
+	if err := state.MoveDungeon(grid, 0, 1, 4); err != nil {
+		t.Fatalf("normal path into guild sewer event: %v", err)
+	}
+	if !runningThievesWarningSeen || !fireKnivesSpotSeen || !assassinsAttackSeen || !metalAndAnimalsSeen || !bodiesAfterBattleSeen {
+		t.Fatalf("normal guild interior path warning coverage running-thieves=%v fire-knives=%v assassins=%v metal-and-animals=%v bodies=%v",
+			runningThievesWarningSeen, fireKnivesSpotSeen, assassinsAttackSeen, metalAndAnimalsSeen, bodiesAfterBattleSeen)
 	}
 	if state.Mode != ModeEvent || state.Message != requireGamePackText(t, &state, "tilverton.guild-sewer-traces") {
 		t.Fatalf("guild sewer door mode=%v message=%q", state.Mode, state.Message)
