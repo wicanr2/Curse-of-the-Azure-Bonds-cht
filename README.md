@@ -17,8 +17,10 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 風格畫面已有多個可重播切片；路徑仍會在後續區域遇到未完成的功能。
 
 最新完成度與驗證邊界請看
-[專案成果盤點](docs/project-status.md)。本輪只修正 PC-98 反組譯的錯誤追查路徑，
-並把可玩性優先原則寫入[反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
+[專案成果盤點](docs/project-status.md)。本輪沿 P0-2 收斂 PC-98 MOVEPARTY 的
+B/P/K action dispatch 與第三平面 raw set／clear writer 邊界；沒有猜測秘密門
+規則。詳細證據見[第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)
+與[反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
 
 ## 畫面預覽
 

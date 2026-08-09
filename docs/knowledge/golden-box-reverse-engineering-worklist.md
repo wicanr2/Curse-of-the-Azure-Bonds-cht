@@ -39,6 +39,16 @@ fragment、`0402h` gate 與既有 GEO corpus 閉合來源 record／四平面 pay
 owner；完整證據見 `docs/spec/525-pc98-tempsearch-display-state.md` 與
 `docs/spec/526-pc98-moveparty-map-writer-searchrec-correction.md`。
 
+第 527 輪沿同一 P0-2 資料流追查 overlay-14 的 MOVEPARTY action branch。raw
+bytes 精確保留 B／P／K token 與 local 0x02F5／0x05B4／0x0714 helper call；
+local 0x014C 會把 THE3DMAP +300h 的 selected 2-bit field 寫成 raw 01，且
+B／P helper 各有兩個直接 call；local 0x003E 則是 movement-result 分支使用的
+field-clear writer。這仍不能命名成開門／關門或新增 secret-door，因 action
+predicate、BLOCKCODE consumer、ECL flag、重訪／存檔持久性與同版本 runtime
+trace 尚未閉合。完整靜態邊界見
+docs/spec/527-pc98-moveparty-action-writer-boundary.md；可重現 audit 為
+scripts/research/pc98_overlay14_action_writer_audit.py。
+
 目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
 已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
 所有外部 routine、所有分支或整條開場到結局路徑都已反組完成。`PLAN.md` 目前只有
