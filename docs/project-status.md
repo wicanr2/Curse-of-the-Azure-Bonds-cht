@@ -1,26 +1,30 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：第 518 輪 DOS `CALL 2E10h` 位址空間稽核；實際
+本 milestone 的 CoAB 基底：第 519 輪 DOS overlay vector／cell-layer 靜態邊界稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 依賴的 Golden Box engine checkpoint：目前遠端 HEAD `d08bc402d0f1ef5b635ed5369b9db539ffdaec3c`。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
 
-第 518 輪延續第 517 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
+第 519 輪延續第 517／518 輪的反組譯缺口盤點與斷言清理；IDA Pro 9.4 在原始
 `START.EXE` database 中沒有找到 `2E10h` 的 resident direct-code handler，唯一
 raw 命中是 `seg043:0x16634` 的非 code 字串資料。這只排除一條搜尋路徑，沒有把
 尚未閉合的 secret-door／外部地圖
 假說升格成 runtime 規則；同輪在 extracted `GAME.OVR overlay-02` 閉合
-`sub ax,7FFFh`→`cmp ax,AE11h`→far call `017F:003Eh` 的 dispatch 形狀，但
-handler／map consumer 仍未知。剩餘工作按 P0／P1／P2 排序，詳見
+`sub ax,7FFFh`→`cmp ax,AE11h`→far call `017F:003Eh` 的 dispatch 形狀；第 519
+輪再由 `START.EXE` control block 精確解出 vector 6 → overlay-30 local `07C6h`，
+並確認該 routine 是 `retf 4`、16×16 bounded index、`DS:7206h` far pointer、
+`ES:[DI+0200h]` byte read。map plane、work-cell writer、`C04B..C04F` projection
+與 runtime consumer 仍未知。剩餘工作按 P0／P1／P2 排序，詳見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](knowledge/golden-box-reverse-engineering-worklist.md)。
 目前還有 11 個直接影響玩家結果的逆向主題與 4 個 fidelity／發行主題；專案仍是
 多個可重播 vertical slice，不是完整可通關 remake。第 517 輪另修正「GEO component
 永久不相連」的過度說法：目前只能確認關閉狀態可行圖無路徑，秘密門 writer 尚未
 找到。完整盤點見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](spec/517-reverse-engineering-gap-inventory.md)；
-第 518 輪位址空間證據見 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](spec/518-dos-start-ecl-call-address-space-audit.md)。
+第 518 輪位址空間證據見 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](spec/518-dos-start-ecl-call-address-space-audit.md)，
+第 519 輪 static overlay evidence 見 [`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](spec/519-dos-overlay-vector-to-cell-layer-accessor.md)。
 
 第 515 輪把提爾佛頓 block 3 火刀戰後的第一段座標輔助改成資料驅動正常玩家交易。
 勝利後按下 `tilverton.sewers-hide-bodies` 的 PRESS，ECL 同一 session 續跑到

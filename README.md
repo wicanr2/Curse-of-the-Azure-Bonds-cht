@@ -10,21 +10,23 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 518
-輪反組譯盤點 milestone；本輪再以 IDA Pro 排除了在 resident `START.EXE`
-直接尋找 `sub_2E10` 的錯誤路徑。獨立 engine 已包含前一輪資料驅動轉場變更；實際
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 519
+輪反組譯盤點 milestone；本輪以 IDA Pro／DOS MZ control block 將
+`017F:003Eh` 靜態對到 overlay-30 local `07C6h`，並修正 vector 對齊與 routine
+返回／plane offset 的臨時誤讀。獨立 engine 已包含前一輪資料驅動轉場變更；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
-第 518 輪延續第 517 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，並移除
-「GEO component 永久不相連」及「overlay `[di+4BF0h]` 就是 ECL 地圖欄位」等
-過度斷言。IDA Pro 9.4 在 DOS overlay 22 找到的是 indexed far-pointer table
-候選；同輪對 `START.EXE` 的 `2E10h` direct-code 候選只找到非 code 字串資料，
-並在 extracted `GAME.OVR overlay-02` 找到 `2E10h−7FFFh=AE11h` 及下一個
-far-call `017F:003Eh`；handler 尚未解析、尚未接入遊戲規則；完整工作路由見
+第 519 輪延續第 517／518 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，
+並保留 `overlay [di+4BF0h]` 只是獨立位址空間候選的勘誤。`START.EXE` 的
+control block raw `0x1FA0` 顯示 vector 6 bytes `CD 3F C6 07 00`，與
+`GAME.OVR` overlay-30 offset `0x3DF87`／length `0x147F` 吻合；local `07C6h`
+只證明兩個 word 的 bounded 16×16 indexed read、`DS:7206h` far pointer 與
+`ES:[DI+0200h]`，不證明 map plane、座標 writer 或 secret-door。完整工作路由見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)，
-證據見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](docs/spec/517-reverse-engineering-gap-inventory.md) 與
-[`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](docs/spec/518-dos-start-ecl-call-address-space-audit.md)。
+證據見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](docs/spec/517-reverse-engineering-gap-inventory.md)、
+[`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](docs/spec/518-dos-start-ecl-call-address-space-audit.md) 與
+[`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md)。
 
 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7` 重試
 範圍、priority `7` 起始與逐級降低資料化到 engine `combat/quicktarget`。CoAB 的

@@ -70,11 +70,15 @@ local 0x2FFD  3D 1F 40                 cmp ax, 401Fh
 
 `0x2E10 - 0x7FFF (mod 0x10000) = 0xAE11`，所以這段 code 精確支持
 「ECL `CALL` operand 先被轉成 dispatch selector」；它也說明 handler 不會在
-overlay-02 內以 `2E10h` literal 出現。`0x2F39` 的 far pointer
-`017F:003Eh` 是下一個可回查的外部 target，但目前只證明 call-site operand，
-尚未證明該 segment 的模組、重定位後 linear address 或 map side effect。抽取
-檔名 `overlay-02` 與公開 reference 的 `ovr003` 標籤也暫不強行合併；兩者的
-編號橋接要另以 loader／overlay header 證明。
+overlay-02 內以 `2E10h` literal 出現。第 518 輪報告產出時，`0x2F39` 的 far
+pointer `017F:003Eh` 仍只證明 call-site operand，尚未證明其 control block、
+重定位後 code offset 或 map side effect。第 519 輪已用 `START.EXE` 的 MZ
+control block 與 `GAME.OVR` raw offset 閉合其**靜態** module 對應：它是 vector
+6，指向 extracted overlay-30 local `07C6h`。完整 bytes、vector 對齊與該
+routine 的存取邊界見
+[`spec 519`](./519-dos-overlay-vector-to-cell-layer-accessor.md)。抽取檔名
+`overlay-02` 與公開 reference 的 `ovr003` 標籤仍不強行合併；兩者的編號橋接
+尚需 loader／overlay header 證明。
 
 ## 可證明與不可證明
 
@@ -90,8 +94,9 @@ overlay-02 內以 `2E10h` literal 出現。`0x2F39` 的 far pointer
 
 - `CALL 2E10h` 的真正 overlay／interpreter dispatch、目的地 producer、
   `C04B..C04F` projection 與 redraw／map consumer。
-- `017F:003Eh` 所屬 module、重定位後位址與 consumer；overlay numbering
-  `overlay-02` ↔ public `ovr003` 的橋接。
+- `017F:003Eh` 對應 routine 的 map plane、DS work-cell writer／consumer 與
+  runtime side effect；overlay numbering `overlay-02` ↔ public `ovr003` 的
+  橋接仍未證明。
 - 是否有經暫存器、far pointer、table index 或 runtime service 完成的間接讀寫。
 
 因此本輪不能把 `2E10h` 改名成地圖座標 writer，也不能把 overlay 22 的
@@ -102,6 +107,21 @@ overlay-02 內以 `2E10h` literal 出現。`0x2F39` 的 far pointer
 ## 對工作清單的影響
 
 11 個行為逆向主題與 4 個 fidelity／發行主題的數量不變；本輪把 P0-1 的搜尋
-邊界縮小為「ECL／overlay dispatch 的 `017F:003Eh` 或後續間接 map service」，
-不是完成一個主題。若後續文件出現「`START.EXE` 有 `sub_2E10`」或把
-`0x16634` 當成 handler，應以本規格訂正。
+邊界已縮小為「overlay vector 之後的 map service／runtime handoff」，不是完成
+一個主題。若後續文件出現「`START.EXE` 有 `sub_2E10`」、把 `0x16634` 當成
+handler，或把 `017F:003Eh` 直接命名成秘密門／座標 writer，應以本規格與
+[`spec 519`](./519-dos-overlay-vector-to-cell-layer-accessor.md) 訂正。
+
+## 第 519 輪狀態修訂
+
+第 519 輪以 raw control block `017F`、vector table 與 extracted overlay-30
+長度／offset 重新核對，確認 `017F:003Eh` 的 vector index 是 **6**，bytes 為
+`CD 3F C6 07 00`，目標為 overlay-30 local `07C6h`。相鄰 vector 7 的
+`CD 3F 41 08 00` 才是 `0841h`；`0841h` 不是本次 ECL `2E10h` target。
+
+`07C6h` 的目前 exact 邊界是：兩個 word 參數、`0..0Fh` bounded 16×16 index、
+`DS:7206h` far pointer、`ES:[DI+0200h]` byte read，以及 `retf 4`。若交接摘要
+或臨時筆記出現 `retf 6` 或 `+0100h` 的描述，均以本節與 spec 519 的 raw bytes
+勘誤；該描述沒有進入正式 JSON、engine 或正常路徑 regression。這個 accessor
+仍只屬 `strong inference` 的 cell-layer candidate，不能升格成 wall／terrain／
+secret-door 語意。
