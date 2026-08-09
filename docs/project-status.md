@@ -1,11 +1,22 @@
 # 專案成果盤點
 
 更新日期：2026-08-09
-本 milestone 的 CoAB 基底：GitHub `main`（第 509 輪；實際 HEAD 以遠端核對為準）
+本 milestone 的 CoAB 基底：GitHub `main`（第 510 輪；實際 HEAD 以遠端核對為準）
 依賴的 Golden Box engine checkpoint：`4771299`（GitHub `main` 已核對）
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
+
+第 510 輪把正常新遊戲路徑的第一個地城移動交易從 Ebiten 前端抽回
+`internal/game.State.MoveDungeon`。`TestRealNewGameBeginsAtGlobalBlockOne` 現在
+由角色建立、開場 ECL、提爾佛頓起點 `(7,13,E)` 發出原始 GEO2 block 1 允許的西行，
+以同一筆交易抵達 `(6,13,W)`，再由 per-turn／search ECL continuation 進入
+Windlord’s Inn，驗證原始圖片 block、HEAD／BODY 人物舞台、繁中訊息、手札 31 與
+返回原格。`GEO2.DAX` 的牆／門與起始暫存器是 `exact`；平台中立交易與 DOS
+movement loop 的對應是 `strong inference`，因尚未做逐幀 DOSBox 對照，不宣稱
+pixel／instruction exact。這輪只關閉一段正常路徑，專案仍不是完整可通關 remake。
+權威規格為 [`docs/spec/510-normal-new-game-dungeon-step.md`](spec/510-normal-new-game-dungeon-step.md)，
+知識庫為 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 
 第 506 輪把 PC-98 `PICKTARGET` 的 bounded 證據落到 ranged target consumer：
 同距離候選若都有非零 `LegacyObjectID`，依原始一基底 combat-object 身分排序；

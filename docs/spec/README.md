@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百一十輪正常新遊戲地城移動交易](./510-normal-new-game-dungeon-step.md)（`READY`：原始 GEO2 起點西行、State／Ebiten 共用移動交易與 Windlord’s Inn continuation；不含完整地城／整作路徑與逐幀 DOS exact）
 - [第五百零八輪 PC-98 一般敵方選敵 SCAN producer 與有限抽樣](./508-pc98-general-target-scan-producer.md)（`READY`：地形／footprint producer、20 次可見性抽樣與第二輪 `XRay` handoff；不含完整 AI／移動／方向 comparator／動畫音效）
 - [第五百零九輪 PC-98 Action target／QUICK 清除](./509-pc98-action-target-quick-clear.md)（`READY`：typed per-action target 與延遲法術 target 分離、game-pack policy、同隊清除／敵隊保留 regression；raw pointer layout、movement／flee／guard producer 與完整 AI 仍未完成）
 

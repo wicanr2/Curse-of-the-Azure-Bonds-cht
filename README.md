@@ -10,7 +10,7 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
-[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 509
+[`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 510
 輪 milestone，獨立 engine 已推送 `4771299`；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
@@ -54,6 +54,15 @@ consumer 的 deterministic order，沒有把 `BuildNearTargets` 的可達／visi
 target-producer milestone，不是完整 enemy AI、移動、方向 tie、動畫音效或整作
 通關聲明。原始 caller 與推論等級見
 [`docs/spec/508-pc98-general-target-scan-producer.md`](docs/spec/508-pc98-general-target-scan-producer.md)。
+
+第 510 輪把新遊戲進入提爾佛頓後的第一個真正地城移動交易收回平台中立
+`State.MoveDungeon`：前端與回歸測試共用原始 `GEO2.DAX` 雙側牆／門檢查、16×16
+wrap、ECL 座標同步、單步事件 guard 清除與 per-turn／search continuation。原本
+測試在確認 `(7,13)` 西側可走後直接改寫 `(6,13)`，現在由正常西行輸入抵達同一格，
+並以 `Windlord’s Inn` 的圖片、人物舞台、繁中訊息與手札 31 作為事件結果。這是
+正常玩家路徑的 `READY` 邊界，不是完整開場到結局；地城其餘路線、完整 ECL／戰鬥、
+規則、音效與全中文化仍未完成。規格見
+[`docs/spec/510-normal-new-game-dungeon-step.md`](docs/spec/510-normal-new-game-dungeon-step.md)。
 
 第 509 輪把 PC-98 per-action target 的 typed projection 與延遲法術 target 分離。
 正式 `combat_action_rules.clear_same_team_on_quick=true` 驅動 QUICK／ALT+Q 清除同隊

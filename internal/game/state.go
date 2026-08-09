@@ -4999,6 +4999,55 @@ func (s *State) SetDungeonGeometryView(x, y int, direction uint8) {
 	}
 }
 
+// MoveDungeon performs one player-issued cardinal step against the decoded
+// original GEO grid.  The frontend supplies the same movement delta and
+// direction that the DOS 3-D loop receives; this method owns the transaction
+// boundary so tests, Ebiten and future frontends cannot silently diverge:
+// validate the wrapped wall, update the ECL-facing coordinates, refresh the
+// current wall registers, clear the per-step event guard, and run the normal
+// per-turn/search continuation.  A preview may call this while the state is
+// not in ModeDungeon; in that case only geometry and sound state are changed.
+func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
+	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
+		return fmt.Errorf("invalid dungeon movement direction %d", direction)
+	}
+	wantDX, wantDY := 0, 0
+	switch direction {
+	case 0:
+		wantDY = -1
+	case 2:
+		wantDX = 1
+	case 4:
+		wantDY = 1
+	case 6:
+		wantDX = -1
+	}
+	if dx != wantDX || dy != wantDY {
+		return fmt.Errorf("dungeon movement delta (%d,%d) disagrees with direction %d", dx, dy, direction)
+	}
+	x, y, _ := s.DungeonGeometryView()
+	if !grid.CanMoveDungeonWrapped(x, y, direction) {
+		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
+	}
+	nextX, nextY := x+dx, y+dy
+	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
+	s.SetDungeonGeometryView(
+		geo.WrapCoordinate(nextX, geo.Width),
+		geo.WrapCoordinate(nextY, geo.Height),
+		uint8(direction),
+	)
+	s.DungeonWallType, _ = grid.WallWrapped(nextX, nextY, direction)
+	s.DungeonWallRoof = grid.CellWrapped(nextX, nextY).Terrain
+	s.requestSound(SoundStep)
+	if s.Mode != ModeDungeon {
+		return nil
+	}
+	if exitAttempt {
+		return s.RunDungeonExitLifecycle()
+	}
+	return s.RunDungeonLifecycle()
+}
+
 func (s *State) applyDungeonLifecycleResult(result ecl.RunResult) (bool, error) {
 	s.applyGeoMapLoad(result)
 	s.applyLoadPieces(result)
