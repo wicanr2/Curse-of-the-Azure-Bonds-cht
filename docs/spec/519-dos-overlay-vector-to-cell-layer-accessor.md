@@ -223,3 +223,11 @@ report: /tmp/dos-start-dseg-offsets.txt
 
 兩個腳本都只在 disposable database 上解碼／匯出，不改名、不 patch、不回寫
 原始 binary 或 baseline `.i64`。
+
+## 第 520 輪狀態修訂
+
+第 519 輪所寫的「尚未找到 `DS:720F／7210` 真正 writer」是當時的盤點邊界，
+不是永久結論。第 520 輪在 overlay-07 local `1B3Fh` 找到 exact 的欄位更新與
+vector 6／4 call-site；overlay-11 也找到初始化 call-site。map plane、正式欄位
+語意、`DS:7212／7213` consumer 與 runtime handoff 仍未知，詳細 evidence 轉見
+[`spec 520`](./520-dos-movement-to-overlay-cell-layer-bridge.md)。

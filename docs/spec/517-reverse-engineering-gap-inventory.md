@@ -126,3 +126,9 @@ offset 閉合。`07C6h` 只精確到兩個 word 參數、16×16 bounded index、
    重評估 `secret_door`／`search` JSON；本輪不新增 movement 特判。
 
 完整證據見 [`spec 519`](./519-dos-overlay-vector-to-cell-layer-accessor.md)。
+
+第 520 輪已補上 `DS:720F／7210` 的 overlay-07 raw writer、overlay-11 初始化與
+overlay-28 vector 6 consumer；本盤點中「目的地 writer／consumer 未閉合」應理解
+為完整語意／projection／runtime bridge 未閉合，不是「沒有任何 raw writer」。
+vector 7 `0841h` 仍是獨立 path。詳細報告見
+[`spec 520`](./520-dos-movement-to-overlay-cell-layer-bridge.md)。

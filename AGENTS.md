@@ -1683,6 +1683,33 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `scripts/ida/dos_start_dseg_offset_audit.idc`；只操作 disposable database，
   不改原始 binary／baseline `.i64`。完整 hash／report 見 spec 519。
 
+### 第 520 輪 DOS movement／overlay cell-layer bridge
+
+- `overlay-07` local `1B3Fh` 的 raw／IDA code exact：讀 `DS:7211h` 的
+  `0／2／4／6`，把 `DS:720Fh／7210h` 各自以 `0..0Fh` 循環更新；接著
+  `call far 017F:003Eh`，AL 寫入 `DS:7213h`，再以三參數
+  `call far 017F:0034h`，AL 寫入 `DS:7212h`，最後 `DS:8B68h=1`。此 overlay
+  對 local `1B3Fh` 的 direct IDA code xref 為 0，不能因此宣稱正常輸入已接通。
+- `overlay-11` local `00E9h` 把 `DS:7206h` 與 `0400h` 傳給
+  `0A54:0329h`；`03F2..03FCh`／`078Eh..0798h` 寫入 `DS:720F=07h`、
+  `DS:7210=0Dh`、`DS:7211=00h／02h`。這是 writer／call-site exact，callee
+  呼叫慣例與 buffer 語意仍 unknown。
+- `overlay-30` vector 4 `017F:0034h → 06BDh` 讀 `+000h／+100h` 的 high／low
+  nibble；vector 6 `017F:003Eh → 07C6h` 讀 `+200h` byte。`overlay-28:00CCh`
+  呼叫 vector 6 並比較 `DS:7213h` 與 `7Fh`，稍後另呼叫
+  `017F:0043h → overlay-30:0841h`。因此 `0841h` 是 vector 7 的獨立 routine，
+  永遠不能當成 vector 6／ECL `2E10h` target。
+- `overlay-14` control segment `00D2h` 的 vector 4 `003Eh` 另有
+  `ES:[DI+300h]` mask read/write（`FC／F3／CF／3F`）；不能與 overlay-30
+  `+000／+100` 或 ECL `4BF0h` 跨位址空間合併。
+- 本輪只縮小 P0-1 的 DS／vector bridge；11 個行為主題與 4 個 fidelity／發行
+  主題數量不變。不得新增 secret-door／search JSON、movement 特判或把
+  `DS:7212／7213` 命名成正式規則。完整 report／hash 見
+  `docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`，腳本為
+  `scripts/ida/dos_overlay07_movement_audit.idc`、
+  `scripts/ida/dos_overlay_ds_field_audit.idc`、
+  `scripts/ida/dos_overlay_ds_context_audit.idc`。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。
