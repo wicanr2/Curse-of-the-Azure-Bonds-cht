@@ -1632,6 +1632,26 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `secret_door`／`search` JSON contract。完整盤點見
   `docs/spec/517-reverse-engineering-gap-inventory.md`。
 
+### 第 518 輪 DOS `CALL 2E10h` 位址空間稽核
+
+- IDA Pro 9.4 在 `START.EXE.i64` 的 disposable copy 中逐一掃描所有 resident
+  segments；`LE16=2E10h` 唯一命中為 `seg043:0x6634`／IDA EA `0x16634` 的
+  `db 16,'. Check install.'` 非 code 字串，對 `0x2E10` 與 MZ base 換算的
+  `0x12E10` 都沒有 direct code xref。這是位址空間排除，不是「CALL 沒有
+  handler」的結論。
+- 不得把這個 raw 字串命中當成 `sub_2E10`，也不得因此把 overlay／ECL／far
+  pointer 間接路徑刪掉；`CALL 2E10h` 仍要追 ECL／overlay dispatch 或 map
+  service 的 producer→projection→consumer。完整 hash、raw bytes、工具版本與
+  可重現腳本見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`。
+- 抽出的 `GAME.OVR overlay-02` 在 local `0x2F23` 執行 `sub ax,7FFFh`，
+  local `0x2F2C` 比較 `AE11h`，local `0x2F39` 以 raw far pointer
+  `017F:003Eh` 呼叫外部 target。這只證明 ECL operand 的 dispatch normalization
+  與 call-site；`017F:003Eh` 的 module／重定位／consumer 尚未閉合。不要把
+  `overlay-02` 與 public `ovr003` 編號直接合併。
+- 第 518 輪沒有減少 11 個行為逆向主題或新增 secret-door 規則；下一步仍是
+  P0-1 的間接 dispatch／runtime trace，所有 `unknown／hypothesis` 仍須維持原
+  推論等級。
+
 ## 10. Compact 後恢復工作清單
 
 1. 讀本檔、`CLAUDE.md`、`docs/project-status.md` 與 `CONTEXT.md` 尾端。

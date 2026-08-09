@@ -4211,3 +4211,27 @@ block 3 `CALL 2E10h` 的 redraw／位置 consumer 與前置目的地 producer，
 解析 ECL work address 與 overlay 22 `[di+4BF0h]` indexed table 的 projection。
 完整盤點見
 `docs/spec/517-reverse-engineering-gap-inventory.md`。
+
+2026-08-09 第五百一十八輪完成 DOS `CALL 2E10h` resident 位址空間稽核。Docker
+內以 `ida-pro-9.4-ver2:uidfix-v1` 的 IDA Pro 9.4 開啟 `START.EXE.i64` disposable
+copy，輸入 `START.EXE` SHA-256 為
+`dd79b58f872f6f2fae94b96d20b9f82b25dfd33c38e0f9b886891c4994a0e3c5`，baseline
+database SHA-256 為
+`9df802ee4ef71fb2eda83257e0ed2d87adf0ee2d10241d3bdbdc6bc369fe47eb`。全 segment
+掃描的 `LE16=2E10h` 唯一命中為 `seg043` IDA EA `0x16634`，連續 bytes
+`10 2E 20 43 68 65 63 6B 20 69 6E 73 74 61 6C 6C`，IDA item 是非 code
+長度前綴字串 `db 16,'. Check install.'`；`0x2E10` 與 MZ base 換算的
+`0x12E10` 都沒有 direct code xref。這只排除「在 resident START.EXE 找
+sub_2E10」的搜尋路徑，不表示 external handler、overlay dispatch、far pointer
+或 map service 不存在。
+
+第 518 輪沒有新增 secret-door／movement 特判，也沒有減少 11 個行為逆向主題與
+4 個 fidelity／發行主題。新增 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`、
+`scripts/ida/dos_start_2e10_candidate_audit.idc` 與
+`scripts/ida/dos_overlay02_call_dispatch_audit.idc`；worklist、README、狀態表與
+AGENTS 已同步。另在 extracted `GAME.OVR overlay-02` 的 local `0x2F23`、
+`0x2F2C`、`0x2F39` 證明 `sub ax,7FFFh`→`cmp ax,AE11h`→far call
+`017F:003Eh` 的 dispatch 形狀；這是 exact call-site，尚非 handler／地圖語意。
+下一步仍追 ECL／overlay 間接 dispatch 的目的地 producer→
+`C04B..C04F`／map service projection→`CALL 2E10h` consumer，保持 P0-1 的
+`strong inference` 與未知邊界。
