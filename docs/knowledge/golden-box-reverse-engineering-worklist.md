@@ -2,6 +2,12 @@
 
 更新日期：2026-08-10（第 529 輪盤點）
 
+第 530 輪新增一條有界 DOSBox 取證：原版 `START STING Wooden` 可在 Docker
+暫存副本穩定抵達角色建立，截圖可見年齡與原版資訊列；這只支持角色建立畫面
+與資料可見性，不縮小 P0-1／P0-2／P0-3 的正常玩家路徑缺口。測試模式可能
+改變啟動／亂數／作弊狀態，故其 trace 不可直接升格為 normal-path evidence。
+權威規格為 [`docs/spec/530-dosbox-cheat-assisted-character-creation-evidence.md`](../spec/530-dosbox-cheat-assisted-character-creation-evidence.md)。
+
 本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
 分類方式，但位址、雜湊、版本與劇情資料必須各自保存，不能跨遊戲套用。

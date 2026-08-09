@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百三十輪 DOSBox 測試模式角色建立與年齡畫面證據](./530-dosbox-cheat-assisted-character-creation-evidence.md)（`READY`：限原版角色建立畫面／資料可見性；`cheat-assisted`，不含正常玩家路徑）
 - [第五百二十九輪玩家戰鬥法術資料契約](./529-combat-player-spell-data-contract.md)（`READY`：`combat_player_spells`、target mode、locale message ID、AI／player timing 一致性；不含完整法術規則與原版逐幀演出）
 - [第五百二十八輪 PC-98 `MOVEPARTY` result／action transaction 邊界](./528-pc98-moveparty-action-transaction-boundary.md)（READY：`AL=1／2／3` 分流、B/P/K input、共同續跑 call-site；不含秘密門、成功語意／正常路徑）
 - [第五百二十七輪 PC-98 MOVEPARTY action 與 map-field writer 邊界](./527-pc98-moveparty-action-writer-boundary.md)（READY：B/P/K dispatch、第三平面 raw set／clear writer 與 call-site；不含秘密門、成功規則／正常路徑）
