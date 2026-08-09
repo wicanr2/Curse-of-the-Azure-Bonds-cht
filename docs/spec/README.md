@@ -11,7 +11,10 @@
 
 目前規格：
 
-- [第五百二十一輪 DOS `0A54:0329h` 的 `GetMem` buffer owner](./521-dos-getmem-buffer-owner.md)（`READY`：`DS:7206h`＋`0400h` 的 Borland `GetMem` 位址／呼叫邊界；不含 buffer plane／map handoff）
+- [第五百二十四輪 DOS overlay-30 `GEO<區域>.dax` loader 與四平面來源](./524-dos-overlay30-geo-loader-source.md)（`READY`：`GEO`／`.dax` source fragments、`0402h` decoded-size gate、`+002h` 四平面 payload；不含 selector producer／正常移動 handoff）
+- [第五百二十三輪 DOS control vector 26 → overlay-07 `1B3Fh`](./523-dos-overlay07-vector26-entry.md)（`READY`：`006B:00A2h`、vector bytes 與 overlay-02 `401Fh` 靜態 dispatcher caller；不含普通鍵盤 producer／loader runtime／地圖 handoff）
+- [第五百二十二輪 DOS `DS:7206h` 四平面填入與暫存 loader 邊界](./522-dos-buffer-four-plane-fill.md)（`READY`：四次 `Move` 的 `+000/+100/+200/+300` destination、每段 `0100h` 與暫存 `FreeMem`；不含正式 map plane 語意／正常 handoff）
+- [第五百二十一輪 DOS `0A54:0329h` 的 `GetMem` buffer owner](./521-dos-getmem-buffer-owner.md)（`READY`：`DS:7206h`＋`0400h` 的 Borland `GetMem` 位址／呼叫邊界；四平面 writer 由第 522 輪另行補充）
 - [第五百二十輪 DOS movement state → overlay cell-layer bridge](./520-dos-movement-to-overlay-cell-layer-bridge.md)（`READY`：`DS:720F／7210` 更新、vector 6／4 consumer 與 `0841h` 分流；不含正常輸入／map handoff）
 - [第五百一十九輪 DOS overlay vector → 16×16 cell-layer accessor](./519-dos-overlay-vector-to-cell-layer-accessor.md)（`READY`：`017F:003Eh` → vector 6 → overlay-30 `07C6h` 靜態邊界；不含 map plane／writer／runtime handoff）
 - [第五百一十八輪 DOS `CALL 2E10h` 位址空間稽核](./518-dos-start-ecl-call-address-space-audit.md)（`READY`：`START.EXE` resident direct-code 候選排除；不含 external handler／地圖 handoff）

@@ -1,6 +1,6 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-09（第 521 輪盤點）
+更新日期：2026-08-09（第 524 輪盤點）
 
 本頁是工作清單，不是「已完成」清單。它回答目前還需要解讀哪些反組譯資料、
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
@@ -17,14 +17,18 @@
 規則 2 個；另有 4 個以 fidelity／音訊／發行為主的主題。這些是工作流數量，
 不是函式數量或完成百分比；詳見 `docs/spec/517-reverse-engineering-gap-inventory.md`。
 
-第 519–521 輪已連續關閉 P0-1 的三個靜態子邊界：ECL selector 已可由
+第 519–524 輪已連續關閉 P0-1 的六個靜態子邊界：ECL selector 已可由
 `017F:003Eh` 對到 START control vector 6 與 overlay-30 local `07C6h`，確認
 兩參數的 16×16 indexed layer read；第 520 輪補上 `DS:720F／7210` 的 movement
 欄位 bridge；第 521 輪再把 `0A54:0329h` 對到 resident Borland
-`GetMem(Pointer &,Word)`。仍未閉合的是配置後 buffer 的填入／plane layout、正常
-輸入 entry、欄位 consumer、`C04B..C04F` projection 與 runtime redraw／位置
-consumer，所以 11＋4 的工作流數量不變，也沒有資格新增 secret-door 或 movement
-規則。
+`GetMem(Pointer &,Word)`；第 522 輪再以 `Move`／`FreeMem`／`sub_16C3E` 閉合
+`DS:7206h` 四個 `0100h` destination plane 的 writer 幾何與暫存生命週期；第 523
+輪又以 `START.EXE` control vector 26 與 overlay-02 `401Fh` branch 閉合
+overlay-07 `1B3Fh` 的靜態 dispatcher entry；第 524 輪再以 `GEO`／`.dax` source
+fragment、`0402h` gate 與既有 GEO corpus 閉合來源 record／四平面 payload 格式。
+仍未閉合的是 selector producer、正常鍵盤輸入與 loader runtime、欄位 consumer、
+`C04B..C04F` projection 與 runtime redraw／位置 consumer，所以 11＋4 的工作流
+數量不變，也沒有資格新增 secret-door 或 movement 規則。
 
 目前可可靠宣稱的範圍是：ECL1–ECL6 的 25 個 block、125 個 initialization entry
 已通過無 unsupported-opcode 的邊界 corpus；大量窄規格也已經 `READY`。這不等於
@@ -38,11 +42,15 @@ consumer，所以 11＋4 的工作流數量不變，也沒有資格新增 secret
 
 目前仍需解讀的範圍是 **11 個行為資料流主題**與 **4 個 fidelity／發行主題**，
 不是 15 個函式，也不是 15 個完成百分點。就目前最急迫的 P0-1 而言，`GetMem`
-owner 已不再是缺口，剩餘可拆成五個可驗證邊界：
+owner、四平面 writer 幾何、GEO DAX source／decoded layout 已不再是缺口；剩餘仍
+可拆成五個可驗證 runtime 邊界，其中第一項只剩 selector producer／正式 map
+consumer：
 
-1. 配置後 `DS:7206h` buffer 的 writer、`+000/+100/+200/+300` plane layout
-   與內容來源。
-2. overlay-07 `1B3Fh` 的正常鍵盤／間接 dispatch entry。
+1. `DS:7206h` 四平面的 selector producer、正式 runtime consumer 與 map projection；
+   `.dax` source、`0402h` decoded record 與四個 `0100h` payload plane 已由第 524
+   輪 `READY` spec 精確閉合。
+2. overlay-07 `1B3Fh` 的正常鍵盤 producer／control-loader runtime；其
+   control vector 26 與 overlay-02 `401Fh` 靜態 caller 已由第 523 輪閉合。
 3. `DS:7212／7213`、`7Fh` sentinel 與 vector 7 `0841h` 的正式 consumer。
 4. ECL `CALL 2E10h`、`C04B..C04F` 與 map service 之間的 projection／位置
    handoff。
@@ -53,7 +61,7 @@ routine 4、戰鬥／AI 2、存檔／AD&D 規則 2）尚未因本輪靜態稽核
 
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
-| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。overlay-07 local `1B3F` 已精確找到 `DS:720F／7210` 的 `0..0Fh` 循環更新與 vector 6／4 呼叫；overlay-11 已精確找到 `DS:7206h`＋`0400h` 的 Borland `GetMem(Pointer &,Word)` call-site 及初始 `7／0Dh／0或2`。overlay-30 vector 6 仍只精確到 `ES:[DI+0200h]` byte read，overlay-28 另有 `DS:7213h` consumer 與獨立 vector 7 `0841h` 路徑；buffer writer／plane layout／map rule／runtime consumer 仍未知。既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 追 `DS:7206h` 配置後的 buffer fill／plane layout、overlay-07 `1B3Fh` 的正常／間接 entry、DS:7212／7213 的正式 consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `+300h` 或 `4BF0h`，必須先證明其所屬位址空間與實際 consumer |
+| P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。overlay-07 local `1B3F` 已精確找到 `DS:720F／7210` 的 `0..0Fh` 循環更新與 vector 6／4 呼叫；overlay-11 已精確找到 `DS:7206h`＋`0400h` 的 Borland `GetMem(Pointer &,Word)` call-site 及初始 `7／0Dh／0或2`。第 522 輪又以 overlay-30 `133Ah..1475h` 的四次 `Move` 精確閉合 `DS:7206h +000/+100/+200/+300` 各 `0100h` 的 destination 幾何，並確認暫存 pointer 由 `FreeMem` 回收；第 523 輪再證明 `START.EXE` 的 `006B:00A2h` 是 vector 26，entry bytes `CD 3F 3F 1B 00` 指向 overlay-07 local `1B3Fh`，overlay-02 local `3002h` 在 `401Fh` branch 呼叫該 entry；第 524 輪以 overlay-30 local `1310h` 的 `GEO`／`.dax` Pascal fragments、`DS:5BEEh` area-value input、`0402h` gate 與 GEO2–GEO6 decoded corpus 閉合 `GEO<area>.dax` source／四平面 payload layout。仍未閉合的是 selector producer、正常鍵盤 producer／control-loader runtime、欄位 consumer、map projection 與 runtime consumer。overlay-30 vector 6 仍只精確到 `ES:[DI+0200h]` byte read，overlay-28 另有 `DS:7213h` consumer 與獨立 vector 7 `0841h` 路徑；既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 追 `DS:5BEEh`／`[bp+6]` 的 selector producer、`006B` control-loader 與正常鍵盤 producer、DS:7212／7213 的正式 consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `+300h` 或 `4BF0h`，必須先證明其所屬位址空間與實際 consumer |
 | P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `MOVEMENT` 的 `BLOCKCODE` 證明抽樣的 `wall=09/detail=0` 不能普通通過；`S` 只精確到目前角色 record `+594h` bit 0 與 `SHOWLOCATION`。診斷器把該 `wall=09` 邊暫視為開啟後可得到候選路徑，但沒有找到第三平面 writer；攻略的 `~` 仍只有 `layout-only` | DOS／PC-98 任一同版本的 secret-door/search writer、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；不能把 static BFS 失敗寫成永久不相連，也不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
@@ -114,7 +122,8 @@ overlay-30 local `07C6h` 的 raw／IDA 連續指令顯示 `retf 4`，不是 `ret
 - `overlay-11:00E9h` 把 `DS:7206h` 與 `0400h` 傳給 `0A54:0329h`；
   `03F2..03FCh`／`078Eh..0798h` 將兩欄初始化為 `07h／0Dh`，方向欄為
   `00h／02h`。這是 call-site／writer exact；第 521 輪已將 callee 對到
-  `GetMem(Pointer &,Word)`，但尚不代表 buffer 內容語意已知。
+  `GetMem(Pointer &,Word)`，第 522 輪再由 `Move`／`FreeMem` 閉合四平面
+  destination 的 offset／count；buffer 內容的 `.dax` record 與正式 map 語意仍未知。
 - `overlay-30:06BDh`（vector 4）讀取 `+000h／+100h` 的高低 nibble；
   `07C6h`（vector 6）讀取 `+200h` byte。`overlay-28:00CCh` 呼叫 vector 6、
   比較 `DS:7213h` 與 `7Fh`，稍後另呼叫 vector 7 `017F:0043h → 0841h`。
@@ -135,6 +144,57 @@ overlay-30 local `07C6h` 的 raw／IDA 連續指令顯示 `retf 4`，不是 `ret
 完全未知」的錯誤現況描述，但仍不能把 buffer 直接命名成 GEO、wall、terrain 或
 secret-door plane。詳細位址、hash、入口 bytes 與 direct xrefs 見
 [`spec 521`](../spec/521-dos-getmem-buffer-owner.md)。
+
+### 第 522 輪 P0-1 四平面 writer 邊界
+
+第 522 輪已把「配置後 writer／四平面 layout 完全未知」從目前斷言中移除。IDA
+在 overlay-30 local `133Ah..1475h` 證明四次 `Move` 的 source 是暫存 pointer
+`+002h/+102h/+202h/+302h`，destination 是 `DS:7206h` 的
+`+000h/+100h/+200h/+300h`，每次 `0100h` bytes；隨後同一暫存 pointer 與返回
+word 傳給 resident `FreeMem`。`0636:08DEh` 在 IDA `0x16C3E` 的原始名稱仍是
+`sub_16C3E`，但 function dump 已證明它會做 `BlockRead`、暫存配置／資料轉換／
+釋放；前置 `Store string`／`Concat` 的 stack cleanup 也與其 `retf 12h` 閉合。
+這使 writer 幾何與暫存生命週期達 `exact`，但不替四個 offset 命名成 wall、door、
+terrain 或 secret-door。完整 hash／位址空間見
+[`spec 522`](../spec/522-dos-buffer-four-plane-fill.md)；工具為
+`scripts/ida/dos_overlay30_buffer_copy_audit.idc` 與
+`scripts/ida/dos_start_buffer_routines_audit.idc`。
+
+### 第 523 輪 P0-1 control vector／dispatcher entry 邊界
+
+第 523 輪修正「overlay-07 `1B3Fh` 沒有 direct xref，所以 entry 仍完全未知」的
+目前斷言。`START.EXE` control block raw `0x0E60` 對應 runtime selector `006Bh`；
+其 vector table 從 `006B:0020h` 開始，每項 5 bytes。vector 26 位於
+`006B:00A2h`／raw `0x0F02`／IDA EA `0x10752`，連續 bytes 為
+`CD 3F 3F 1B 00`，local target 是 overlay-07 `1B3Fh`。overlay-02 local
+`2FFD..3007` 另有 `cmp ax,401Fh` 後的 `call far 006B:00A2h`。因此
+control vector 與靜態 dispatcher caller 已達 `exact`。
+
+這不等於已找到普通鍵盤 producer：`401Fh` 與既有 ECL `C01Eh` 的對照目前仍是
+`strong inference`，`006B` loader 如何在 runtime 執行 `CD 3F`、相鄰按鍵如何
+進入其他 selector、`DS:7212／7213` 如何被正式 consumer 使用，都仍是
+`unknown`。overlay-07 自身的 `direct_cref_count=0` 與
+`raw_LE16_target_1B3F_count=0` 只能表示沒有本地 literal／direct xref，不能再
+被寫成「沒有 caller」。完整位址空間、hash、bytes 與推論分層見
+[`spec 523`](../spec/523-dos-overlay07-vector26-entry.md)。
+
+### 第 524 輪 P0-1 GEO source／decoded payload 邊界
+
+第 524 輪把「overlay-30 只知道某個 `.dax`、`0402h` 與四個 plane 的正式來源／
+格式未知」從現行斷言移除。IDA raw bytes 在 overlay-30 local `1310h`／`1314h`
+是 Pascal `GEO`／`.dax` fragments；local `1341h` 讀 `DS:5BEEh` 並以 width `1`
+呼叫 resident numeric-to-string helper；local `1361h`／`137Bh` 以
+`Store string`／`Concat` 組合；local `1393h` 把 `[bp+6]`、output pointer 與
+decoded-size word 傳給 `0636:08DEh`。local `139Eh` 只讓 `0402h` 通過，成功後從
+output `+002h` 將四段各 `0100h` 搬到 `DS:7206h +000/+100/+200/+300`。
+
+同一份 archive 的 `GEO2.DAX` 三個 block 全部 decoded `0x402` bytes；`GEO3`–
+`GEO6` 也相同。既有 round 56 parser 已以 real corpus 閉合前 2-byte prefix＋四
+個 `0x100` plane 的格式與 plane 語意。因此目前應寫成：`GEO` source／`0402h`
+decoded payload／四平面 layout `exact`；`GEO<DS:5BEEh 十進位值>.dax` 完整 file-open
+trace、`DS:5BEEh` 正式欄位名、`[bp+6]` selector producer、runtime consumer 與
+map projection 仍是 `strong inference／unknown`。完整 hash／raw bytes／工具見
+[`spec 524`](../spec/524-dos-overlay30-geo-loader-source.md)。
 
 ### P0-1 的新線索（尚未是結論，也不縮小成 `4BF0h`）
 
@@ -206,6 +266,16 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 4. DOS overlay raw little-endian 掃描目前沒有在已抽出的 overlay 找到 literal
    `4C28h`；這只能表示「沒有直接 literal 命中」，不能表示沒有經指標或通用
    interpreter 的 consumer。此結果不得寫成「4C28 未使用」。
+5. 本輪取代「overlay-07 `1B3Fh` 沒有 direct xref，所以沒有 caller／entry 仍未知」
+   的現行斷言：`START.EXE` control vector 26 與 overlay-02 `401Fh` branch 已
+   精確證明一條靜態 dispatcher entry；但普通鍵盤 producer、control-loader
+   runtime 與返回資料流仍是 `unknown`。`raw_LE16_target_1B3F_count=0` 只適用
+   overlay-07 自身的有界掃描，不得外推成整個程式沒有 caller。
+6. 本輪取代「overlay-30 的 `.dax` record／`0402h`／四個 plane 來源完全未知」的
+   現行斷言：raw `GEO`／`.dax` fragments、`0402h` gate、`+002h` payload 與
+   GEO2–GEO6 corpus 已閉合 source／format；只保留完整 file-open trace、區域欄位
+   正式命名、selector producer 與 runtime map consumer 的未知，不得再重做同一份
+   `.dax` header／四平面掃描。
 
 ## 每項反組譯工作的完成門檻
 
@@ -217,18 +287,22 @@ P0-1 的 map writer 假設前移；完整 bytes、hash、工具版本與位址�
 4. 正常玩家輸入抵達 boundary；direct-entry 只能作縮小問題的 probe。
 5. 對應的 engine／game-pack JSON contract、stable ID 測試與失敗即關閉行為。
 
-第 521 輪後的下一個最有價值工作仍是 P0-1，但範圍已由「解析 vector target」
-縮小為「解析配置後 buffer 的資料流與 runtime handoff」：先追
-`DS:7206h` 的 buffer fill／plane、overlay-07 `1B3Fh` 的 entry、
-`DS:7212／7213` consumer，再追
-`C04B..C04F` projection 與 DOSBox map／座標／方向 trace。overlay 22
-`[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98 `S`／`BDF1`
-目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。在 writer
-閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
+第 524 輪後的下一個最有價值工作仍是 P0-1，但不再重做 vector target 或 GEO
+`.dax` payload：先追 overlay-30 `[bp+6]` selector／`DS:5BEEh` producer 與
+`DS:7206h` 四平面 runtime consumer，再以原版 DOSBox 實際鍵盤輸入追 `006B`
+control-loader、`401Fh` 與相鄰 selector，最後閉合 `DS:7212／7213` consumer、
+`C04B..C04F` projection，以及目的 map、座標、方向、重繪與戰後續跑 trace。
+overlay 22 `[di+4BF0h]` 只作獨立的位址空間候選，不再把它當成先驗入口。PC-98
+`S`／`BDF1` 目前只有顯示／record state 證據，沒有理由繼續擴大 raw word 掃描。
+在正式 consumer 與 runtime 閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
 
 最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`；
 第 518 輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`；
 第 519 輪 overlay vector／cell-layer 邊界見
 `docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`；第 520 輪 movement／
 consumer bridge 見 `docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`；
-第 521 輪 GetMem owner 見 `docs/spec/521-dos-getmem-buffer-owner.md`。
+第 521 輪 GetMem owner 見 `docs/spec/521-dos-getmem-buffer-owner.md`；第 522 輪
+四平面 writer 見 `docs/spec/522-dos-buffer-four-plane-fill.md`；第 523 輪
+control vector／dispatcher entry 見
+`docs/spec/523-dos-overlay07-vector26-entry.md`；第 524 輪 GEO loader source／
+四平面 payload 見 `docs/spec/524-dos-overlay30-geo-loader-source.md`。

@@ -10,28 +10,39 @@
 ## 目前成果
 
 截至 2026-08-09 的完整「已完成／未完成／驗證方式」盤點見
- [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 521
-輪反組譯盤點 milestone；本輪將 `0A54:0329h` 對到 resident Borland
-`GetMem(Pointer &,Word)`，確認 `DS:7206h` 的 `0400h` buffer owner 邊界，並保留
-所有位址空間邊界。
+ [`docs/project-status.md`](docs/project-status.md)。目前 GitHub `main` 為第 524
+輪反組譯盤點 milestone；第 522 輪在第 521 輪 `GetMem(Pointer &,Word)` owner
+之上，由 resident `Move`／`FreeMem` 與 overlay-30 call-site 證明 `DS:7206h` 的
+`+000/+100/+200/+300` 四段各接收 `0100h` bytes；第 523 輪再由 `START.EXE`
+control vector 26 與 overlay-02 `401Fh` branch 精確接到 overlay-07 local
+`1B3Fh` 的靜態 dispatcher entry；第 524 輪再確認 overlay-30 以
+`GEO`／`.dax` source fragments、`0402h` decoded-size gate 與四個 `0100h`
+payload planes 載入 GEO map。上述結論都保留所有位址空間邊界。
 獨立 engine 已包含前一輪資料驅動轉場變更；實際
 最新版本以 GitHub `main`／本文件所在 commit 為準。這是可執行的多垂直切片 prototype，
 尚未宣稱完整可通關。
 
-第 521 輪延續第 517–520 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，
+第 522–524 輪延續第 517–521 輪整理出的 11 個行為逆向主題與 4 個 fidelity／發行主題，
 並保留 `overlay [di+4BF0h]` 只是獨立位址空間候選的勘誤。`START.EXE` 的
 control block raw `0x1FA0` 顯示 vector 6 bytes `CD 3F C6 07 00`，與
 `GAME.OVR` overlay-30 offset `0x3DF87`／length `0x147F` 吻合；local `07C6h`
 只證明兩個 word 的 bounded 16×16 indexed read、`DS:7206h` far pointer 與
 `ES:[DI+0200h]`，另有 overlay-07 `1B3Fh` 的 16×16 欄位循環與
 `DS:7213／7212` consumer；`DS:7206h` 現確認由 Borland `GetMem` 接收
-`0400h` size，但不證明 buffer plane、座標規則或 secret-door。完整工作路由見
+`0400h` size，且四平面 writer 幾何已由 `Move` 精確閉合；但 `.dax` record、正式
+ map plane、座標規則或 secret-door 仍未完成。另一本輪的 `006B:00A2h` 是
+vector 26 的 control entry，entry bytes `CD 3F 3F 1B 00` 指向 overlay-07
+local `1B3Fh`；這只閉合靜態 dispatcher，不等於普通鍵盤 producer 或 runtime
+地圖 handoff。完整工作路由見
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)，
 證據見 [`docs/spec/517-reverse-engineering-gap-inventory.md`](docs/spec/517-reverse-engineering-gap-inventory.md)、
 [`docs/spec/518-dos-start-ecl-call-address-space-audit.md`](docs/spec/518-dos-start-ecl-call-address-space-audit.md) 與
 [`docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md`](docs/spec/519-dos-overlay-vector-to-cell-layer-accessor.md)、
 [`docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md`](docs/spec/520-dos-movement-to-overlay-cell-layer-bridge.md) 與
-[`docs/spec/521-dos-getmem-buffer-owner.md`](docs/spec/521-dos-getmem-buffer-owner.md)。
+[`docs/spec/521-dos-getmem-buffer-owner.md`](docs/spec/521-dos-getmem-buffer-owner.md) 及
+[`docs/spec/522-dos-buffer-four-plane-fill.md`](docs/spec/522-dos-buffer-four-plane-fill.md) 及
+[`docs/spec/523-dos-overlay07-vector26-entry.md`](docs/spec/523-dos-overlay07-vector26-entry.md) 及
+[`docs/spec/524-dos-overlay30-geo-loader-source.md`](docs/spec/524-dos-overlay30-geo-loader-source.md)。
 
 第 504 輪沿用 PC-98 overlay 09 `04CCh..0624h` 的連續控制流，將 `1..7` 重試
 範圍、priority `7` 起始與逐級降低資料化到 engine `combat/quicktarget`。CoAB 的

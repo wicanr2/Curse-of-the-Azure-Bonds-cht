@@ -111,9 +111,11 @@ IDA 解出的連續 bytes 為：
 - `strong inference`：因為 `DS:720F／7210` 具有 16×16 邊界、初始值為 `7／0Dh`，
   且直接作為 vector 6 的兩參數，兩欄很可能是 map index／座標；目前仍不把它們
   命名成 X／Y，也不把 direction code 直接命名成北東南西。
-- `unknown`：`1B3Fh` 的正常輸入 caller／indirect entry。此 overlay 的 direct
-  IDA code xref report 對 target `1B3Fh` 為 `0`，所以不能只靠這個 routine 宣稱
-  已完成 DOSBox 正常移動路徑。
+- `unknown`（第 520 輪當時）：`1B3Fh` 的正常輸入 caller／indirect entry。當時此
+  overlay 的 direct IDA code xref report 對 target `1B3Fh` 為 `0`，所以不能只靠
+  這個 routine 宣稱已完成 DOSBox 正常移動路徑。第 523 輪已在
+  `docs/spec/523-dos-overlay07-vector26-entry.md` 補上 control vector 26 與
+  overlay-02 靜態 caller；本 spec 不再把「無 direct xref」解讀成「無 caller」。
 
 ## overlay-11 初始化：buffer candidate 與起始欄位
 
@@ -208,13 +210,14 @@ secret-door plane。
 
 - `DS:7206` 配置後 buffer 的實際 writer、清除時機與 `+000/+100/+200/+300`
   plane layout。
-- overlay-07 `1B3Fh` 的 normal input caller／indirect dispatch。
+- overlay-07 `1B3Fh` 的 normal input producer／control-loader runtime；第 523 輪
+  已關閉 static vector／dispatcher entry，但本輪仍未取得正常鍵盤 trace。
 - `DS:7212／7213` 對應的正式規則、`7Fh` sentinel 意義、`C04B..C04F` projection、
   ECL external handoff 與 DOSBox runtime 結果。
 
 因此 11 個行為逆向主題與 4 個 fidelity／發行主題數量不變；本輪只縮小 P0-1
 的欄位資料流。下一步是追 `GetMem` 後的 buffer writer／plane、overlay-07 的
-間接 entry、overlay-14 `+300h` writer 與原版 DOSBox map／座標／方向 trace。在
+control-loader／正常輸入 trace、overlay-14 `+300h` writer 與原版 DOSBox map／座標／方向 trace。在
 這些證據閉合前，不新增
 secret-door／search JSON、不改 movement predicate，也不把已有 coordinate-assisted
 handoff 升格成 exact。
