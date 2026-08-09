@@ -89,7 +89,7 @@ local 0x014C 的四個方向分支會讀取 THE3DMAP 的 +300h，使用方向對
 | caller | 所在 action helper | 目前可證明的內容 | 推論等級 |
 |---:|---:|---|---|
 | 0x0566 | 0x02F5 | 第一次 set-field call | exact |
-| 0x05A5 | 0x02F5 | 第二次 set-field call | exact |
+| 0x05A4 | 0x02F5 | 第二次 set-field call | exact |
 | 0x062F | 0x05B4 | 第一次 set-field call | exact |
 | 0x066D | 0x05B4 | 第二次 set-field call | exact |
 

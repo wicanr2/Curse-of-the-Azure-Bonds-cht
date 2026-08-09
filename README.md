@@ -18,9 +18,11 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 
 最新完成度與驗證邊界請看
 [專案成果盤點](docs/project-status.md)。本輪沿 P0-2 收斂 PC-98 MOVEPARTY 的
-B/P/K action dispatch 與第三平面 raw set／clear writer 邊界；沒有猜測秘密門
-規則。詳細證據見[第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)
-與[反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
+B/P/K action dispatch、`AL=1／2／3` result 分流與共同續跑 call-site；沒有猜測
+秘密門規則。第 527 輪的第三平面 raw set／clear writer 仍保留為獨立證據。詳細
+證據見[第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
+[第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
+[反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
 
 ## 畫面預覽
 
