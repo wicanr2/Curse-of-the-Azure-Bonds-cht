@@ -1,9 +1,19 @@
 # 專案成果盤點
 
-更新日期：2026-08-10
+更新日期：2026-08-11
 
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
+
+第 542 輪把第 541 輪的世界點位／路網 baseline 接成一條真正由新遊戲開始的正常
+主線骨架：同一 ECL session 從火刀首領勝利後的 `PATROL FOREST`、世界旅行、
+阿沙本福德城內 Tavern Tale 28、立石群提爾隘口戰鬥與尋紅線索，走到艾森布拉城外。
+測試選項使用 game-pack stable ID；`PATROL FOREST` 的分支差異確認是前置
+提爾佛頓事件留下的 `4C03=0x80` 共享旗標，不是應清掉的 stale state。這是目前最長
+的正常主線 handoff，不能宣稱全城市／全房間／完整結局；固定整合測試涵蓋的哈普、
+熔岩洞、法師塔、希爾斯法、尤拉什、摩安德之坑、散提爾堡與 Myth Drannor 仍須與
+正常新遊戲 session 分開標示。完整邊界見
+[`spec 542`](spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。
 
 第 541 輪完成 ECL 外部 routine 的 engine／CoAB adapter 分層，並修正荒野抵達時
 `4C9B` 原生目的地在 ECL1 arrival entry 前後的提交時序。新增
@@ -14,6 +24,9 @@
 通關。完整決策與未下沉到獨立 engine 的地址語意見
 [`spec 541`](spec/541-ecl-external-routine-engine-boundary.md)。
 
+第 542 輪的正常 session 延伸不會覆寫第 541 輪的限制：14 點可抵達與路網可達只證明
+世界圖邊界；城市設施、地城房間、主線分支與結局仍需逐項事件證據。
+
 第 540 輪完成原始 ECL corpus 的 parser／控制流稽核：`ECL1..6.DAX` 共 25 個
 block、125 個 lifecycle entry 均能由 `EntryPoints` 取得，所有靜態可達指令都有
 command metadata；同時 game-pack 宣告原始 `GEO2..6.DAX` 的 16 個 geometry block，
@@ -23,12 +36,13 @@ command metadata；同時 game-pack 宣告原始 `GEO2..6.DAX` 的 16 個 geomet
 不是完整 ECL side effects、全地圖正常路徑、完整戰鬥或原機音效完成聲明；完整邊界見
 [`docs/spec/540-ecl-map-combat-audio-corpus-closure.md`](spec/540-ecl-map-combat-audio-corpus-closure.md)。
 
-第 538 輪把火刀據點的正常玩家路徑從 E2 block 4 `(6,1,S)` 延伸到首領戰前。
+第 538 輪把火刀據點的正常玩家路徑從 E2 block 4 `(6,1,S)` 延伸到首領戰前；
+第 542 輪再以同一正常 session 接到首領後世界選單、阿沙本福德、立石群與艾森布拉城外。
 `TestRealNewGameBeginsAtGlobalBlockOne` 以同一個 ECL／地城 session 逐格通過
 terrain `0x99` 刀刃區、`0x9A` 冰凍房、`0x94／0x95` 相位蜘蛛區，抵達
 `(3,13)` terrain `0x87`，再以 stable message ID 與 combat object 資料確認 20 名
-火刀加首領的 21 名敵人。這是 `layout／route reconstructed` 的正常路徑證據，尚未
-包含所有可選房間或首領勝利後出口；完整邊界見
+火刀加首領的 21 名敵人。這是 `layout／route reconstructed` 的正常路徑證據，仍未
+包含所有可選房間、完整重訪與最終結局；入口至首領的局部邊界見
 [`docs/spec/538-fire-knife-normal-leader-route.md`](spec/538-fire-knife-normal-leader-route.md)。
 
 第 539 輪修正中文 GUI 溢框：renderer 依倚天字形實際 glyph advance 做 rune-safe
@@ -44,8 +58,8 @@ Golden Box engine schema／CoAB JSON 宣告，發現的 edge ID 保存於 remake
 Docker 正常路徑由 `(13,10)` 逐格經 `(10,12)` 的 wall=09 候選、`(8,15,S)` E2
 進入 block 4，再經火刀北側 E1 候選 `(8,0,N)` 回到下水道 `(10,15,N)`；沒有
 直接設定座標或手動呼叫出口生命週期。火刀首領勝利後的 ECL 夢境、Tilverton
-世界地圖邊界與存檔重訪已有固定首領 fixture／切片測試；第 538 輪另完成正常入口
-到首領戰前，但完整 session 的戰後出口分支仍待閉合。wall writer 與三個 E1 座標仍
+世界地圖邊界與存檔重訪已有固定首領 fixture／切片測試；第 542 輪補上正常 session
+的戰後出口與城市 handoff。wall writer 與三個 E1 座標仍
 是 `strong inference`，不是原版逐指令 `exact`；完整邊界見
 [`docs/spec/537-search-look-e2-fire-knife-normal-route.md`](spec/537-search-look-e2-fire-knife-normal-route.md)。
 
