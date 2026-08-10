@@ -26,17 +26,24 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 與四個 set-writer caller；第 534 輪再由中文說明書確認 `Move characters where?`
 是《光芒之池》／《青色枷的詛咒》／《幽城寶藏》之間的角色轉移，不是秘密門；
 第 535 輪又以攻略核對 `(13,10)` 騎士事件與 E2 火刀據點出口，將
-`(13,10)→(8,15)` 的工作方向改成外部地圖邊界轉場，但正常 wall／出口輸入仍未完成；
+`(13,10)→(8,15)` 的工作方向改成外部地圖邊界轉場；第 536 輪以原始 GEO2 block 3
+重生出中間 `wall=09/detail=0` 的唯一候選橋接，並核對手冊確認原版 `SEARCH` 是
+持續開關、`LOOK` 才是單次搜尋，但正常 wall／Search／E2 出口輸入仍未完成；
 第 529 輪完成玩家戰鬥法術的資料契約，
 不把法術名稱或劇情塞回 Go。詳細證據見[第 534 輪規格](docs/spec/534-chinese-manual-moveparty-character-transfer.md)、
 [第 533 輪規格](docs/spec/533-pc98-moveparty-helper-gate.md)、
 [第 532 輪規格](docs/spec/532-option-rule-localization-boundary.md)、
 [第 531 輪規格](docs/spec/531-character-creation-original-frame-density.md)、
+[第 536 輪規格](docs/spec/536-tilverton-sewers-e2-search-route.md)、
 [第 535 輪規格](docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md)、
 [第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
 [第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
 [第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
 [反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
+
+E2 路徑的唯讀 GEO 稽核工具為
+[`tilverton_e2_route_audit.py`](scripts/research/tilverton_e2_route_audit.py)；它只列出
+原始 record 的普通圖與 `wall=09` 候選圖，不會把未證實的秘密門語意寫入遊戲。
 
 ## 畫面預覽
 

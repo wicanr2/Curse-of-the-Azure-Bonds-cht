@@ -587,11 +587,16 @@ dispatch。火刀據點後半可重用的定位如下：
 
 #### Explicit dungeon SEARCH
 
-SEARCH 不是每步自動搜尋。作品 UI 在玩家按 `S` 時暫時寫 `7ECA=1`，只執行
-SearchLocation entry，結束後清回 0。火刀辦公室 `0x1B` 展示標準多階段模式：
-首次普通進入將 `4C10` 從 0 設成 1；只有 `4C10==1 && 7ECA==1` 才搜索抽屜，
-接著先設 `4C10=2` 與 `4CFE|=0x80`，再顯示文件、手札與寶物。不能把 SEARCH
-簡化成 renderer 額外文字，也不能在每次 movement 永久維持 `7ECA=1`。
+原版手冊中的 `SEARCH` 是持續開／關模式：開啟後每次前進都以較長時間與較高
+機率檢查秘密門；`LOOK` 才是只檢查目前格子一次。remake 目前的
+`State.SearchDungeonLocation()` 是一個可追蹤的 `7ECA=1` 單次 ECL service boundary，
+適合承接 `LOOK` 或既有事件測試，但不能再描述成完整的原版 Search mode。提爾佛頓
+E2 的 `wall=09/detail=0` 候選橋接尤其需要先分離「Search toggle」與「Look once」
+輸入，再用同版 runtime 的 before／after detail trace 決定是否由 Search 發現。
+火刀辦公室 `0x1B` 仍展示標準多階段模式：首次普通進入將 `4C10` 從 0 設成 1；
+只有 `4C10==1 && 7ECA==1` 才搜索抽屜，接著先設 `4C10=2` 與 `4CFE|=0x80`，再
+顯示文件、手札與寶物。不能把 SEARCH 簡化成 renderer 額外文字，也不能因目前的
+單次 service 就宣稱 toggle、秘密門 writer 或每步 Search 已完成。
 
 `CLEARMONSTERS → TREASURE → COMBAT` 是原引擎 treasure-service dispatch。
 若 `TREASURE` 已產生可領取物，State 必須先開 treasure UI，而不是因看見
