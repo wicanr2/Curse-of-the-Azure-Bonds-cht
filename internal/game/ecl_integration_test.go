@@ -344,8 +344,8 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("unsafe interrupted rest mode=%v camp=%v message=%q",
 			state.Mode, state.campMenu, state.Message)
 	}
-	if clock := state.GameTimeDisplay(); clock.Hour != 1 || clock.Minute != 0 {
-		t.Fatalf("unsafe interrupted rest clock=%+v, want exactly one completed hour", clock)
+	if clock := state.GameTimeDisplay(); clock.Hour != 1 || clock.Minute != 2 {
+		t.Fatalf("unsafe interrupted rest clock=%+v, want one hour plus two SEARCH-off dungeon minutes", clock)
 	}
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
@@ -1621,11 +1621,51 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("sewer knight revisit mode=%v message=%q choices=%v, want consumed event",
 			state.Mode, state.Message, state.Choices)
 	}
-	state.DungeonX, state.DungeonY, state.DungeonDirection = 8, 15, 4
-	state.DungeonWallType, _ = sewerGrid.WallWrapped(8, 15, 4)
-	state.DungeonWallRoof = sewerGrid.CellWrapped(8, 15).Terrain
-	if err := state.RunDungeonExitLifecycle(); err != nil {
-		t.Fatal(err)
+	if err := state.ToggleDungeonSearch(); err != nil {
+		t.Fatalf("enable persistent sewer SEARCH: %v", err)
+	}
+	if !state.DungeonSearchActive() {
+		t.Fatal("persistent sewer SEARCH did not turn on")
+	}
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{-1, 0, 6}, // (13,10) -> (12,10)
+		{-1, 0, 6}, // (12,10) -> (11,10)
+		{-1, 0, 6}, // (11,10) -> (10,10)
+		{0, 1, 4},  // (10,10) -> (10,11)
+		{0, 1, 4},  // (10,11) -> (10,12)
+		{-1, 0, 6}, // searched wall=09: (10,12) -> (9,12)
+		{0, 1, 4},  // (9,12) -> (9,13)
+		{0, 1, 4},  // (9,13) -> (9,14)
+		{0, 1, 4},  // (9,14) -> (9,15)
+		{-1, 0, 6}, // (9,15) -> (8,15)
+	} {
+		if err := state.MoveDungeon(sewerGrid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal sewer Search route step %d: %v", index, err)
+		}
+	}
+	if !state.dungeonSearchEdges["tilverton.sewers.wall-09-west"] {
+		t.Fatalf("wall=09 was not discovered by persistent SEARCH: edges=%v", state.dungeonSearchEdges)
+	}
+	if state.Mode != ModeDungeon {
+		if len(state.Choices) == 0 {
+			t.Fatalf("sewer route pause at external-exit source has no continuation: mode=%v message=%q", state.Mode, state.Message)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("continue sewer external-exit source event: %v", err)
+		}
+		if state.Mode == ModeEvent {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("resume sewer external-exit source event: %v", err)
+			}
+		}
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("sewer route did not return to dungeon before external exit: mode=%v message=%q choices=%v", state.Mode, state.Message, state.Choices)
+	}
+	if err := state.MoveDungeon(sewerGrid, 0, 1, 4); err != nil {
+		t.Fatalf("normal sewer E2 external exit: %v", err)
 	}
 	if state.Mode != ModeWilderness || state.session.CurrentBlockID() != 4 ||
 		state.GeoMapSet != 2 || state.GeoMapBlock != 4 ||
@@ -1636,6 +1676,69 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
 			state.DungeonDirection, state.GeoMapSet, state.GeoMapBlock, state.LoadPieces,
 			state.Message, state.Choices)
+	}
+	if len(state.Choices) == 0 {
+		t.Fatalf("Fire Knife hideout entry has no normal-player continuation: message=%q", state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("enter Fire Knife hideout from E2 handoff: %v", err)
+	}
+	if state.Mode != ModeDungeon {
+		t.Fatalf("Fire Knife hideout did not enter dungeon mode: mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.Choices)
+	}
+	hideoutGrid, ok := geoCatalog.Lookup(geo.MapRef{Set: 2, BlockID: 4})
+	if !ok {
+		t.Fatal("Fire Knife hideout GEO2 block 4 is absent")
+	}
+	continueHideoutEvent := func(step int) {
+		for pause := 0; state.Mode != ModeDungeon; pause++ {
+			if pause >= 8 || len(state.Choices) == 0 {
+				t.Fatalf("Fire Knife hideout event did not resume at step %d: mode=%v message=%q choices=%v",
+					step, state.Mode, state.Message, state.Choices)
+			}
+			choice := 0
+			if state.Message == requireGamePackText(t, &state, "fire-knife.blade-barrier") {
+				choice = requireGamePackOptionIndex(t, &state, "ecl-option.wait")
+			}
+			if err := state.Select(choice); err != nil {
+				t.Fatalf("continue Fire Knife hideout event at step %d: %v", step, err)
+			}
+			if state.Mode == ModeEvent {
+				if err := state.Continue(); err != nil {
+					t.Fatalf("resume Fire Knife hideout event at step %d: %v", step, err)
+				}
+			}
+		}
+	}
+	for index, step := range []struct {
+		dx, dy, direction int
+	}{
+		{0, 1, 4},  // (6,1) -> (6,2)
+		{1, 0, 2},  // (6,2) -> (7,2), blade barrier
+		{0, -1, 0}, // (7,2) -> (7,1)
+		{0, -1, 0}, // (7,1) -> (7,0)
+		{1, 0, 2},  // (7,0) -> (8,0), E1 north exit
+		{0, -1, 0}, // (8,0) -> north boundary, E1 handoff
+	} {
+		if err := state.MoveDungeon(hideoutGrid, step.dx, step.dy, step.direction); err != nil {
+			t.Fatalf("normal Fire Knife hideout exit route step %d: %v", index, err)
+		}
+		continueHideoutEvent(index)
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 3 ||
+		state.GeoMapSet != 2 || state.GeoMapBlock != 3 ||
+		state.DungeonX != 10 || state.DungeonY != 15 || state.DungeonDirection != 0 {
+		registers := make(map[uint16]uint16)
+		for _, address := range []uint16{0xC04B, 0xC04C, 0xC04D, 0xC04E, 0xC04F, 0x7EC9, 0x7ED5, 0x7ECA} {
+			if value, found := state.session.MemoryValue(address); found {
+				registers[address] = value
+			}
+		}
+		t.Fatalf("Fire Knife E1 exit did not return to Tilverton sewers: mode=%v block=%#x geo=%d/%d dungeon=(%d,%d,%d) wall=(%#x,%#x) message=%q choices=%v registers=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallType,
+			state.DungeonWallRoof, state.Message, state.Choices, registers)
 	}
 }
 
@@ -2198,7 +2301,14 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	state.selectionSequence = []uint16{0}
 	state.eclMenuReturnMode = ModeDungeon
 	state.eventReturnMode = ModeDungeon
-	state.partyRoster = party.Roster{{ID: "hero", Name: "英雄", HitPoints: 10, MaxHitPoints: 10}}
+	state.partyRoster = party.Roster{{
+		ID: "hero", Name: "英雄", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, HitPoints: 10, MaxHitPoints: 10,
+		Abilities: party.Abilities{
+			Strength: 10, Intelligence: 10, Wisdom: 10,
+			Dexterity: 10, Constitution: 10, Charisma: 10,
+		},
+	}}
 	state.applyECLTreasureSignals(encounter)
 	treasureItems, err := ParseTreasureItemBlocks(map[uint8][]byte{
 		1: zipData(t, image, "ITEM1.DAX"),
@@ -2370,6 +2480,22 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
 		state.Message != requireGamePackText(t, &state, "tilverton.edge") {
 		t.Fatalf("Tilverton edge mode=%v choices=%#v message=%q", state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	savePath := filepath.Join(t.TempDir(), "fire-knife-world-edge.json")
+	if err := state.SavePartyFile(savePath); err != nil {
+		t.Fatalf("save after Fire Knife world-map return: %v", err)
+	}
+	loaded := NewStateFromECLBlocks(trainingTestCatalog(t), allBlocks, session.CurrentBlockID())
+	if err := loaded.LoadPartyFile(savePath); err != nil {
+		t.Fatalf("load after Fire Knife world-map return: %v", err)
+	}
+	if loaded.Mode != ModeWilderness || loaded.Location != LocationTilverton ||
+		loaded.session == nil || loaded.session.CurrentBlockID() != session.CurrentBlockID() ||
+		!reflect.DeepEqual(loaded.currentOriginalChoices, state.currentOriginalChoices) ||
+		!reflect.DeepEqual(loaded.Choices, state.Choices) {
+		t.Fatalf("Fire Knife world-map save revisit mode=%v/%v location=%v/%v block=%#x/%#x choices=%#v/%#v localized=%#v",
+			loaded.Mode, state.Mode, loaded.Location, state.Location, loaded.session.CurrentBlockID(), session.CurrentBlockID(),
+			loaded.currentOriginalChoices, state.currentOriginalChoices, loaded.Choices)
 	}
 	for address, want := range map[uint16]uint16{0x4CFF: 1, 0x4C2A: 1, 0x7F12: 1} {
 		if got, ok := session.MemoryValue(address); !ok || got != want {
@@ -2676,7 +2802,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if state.Mode != ModeDungeon || state.Prompt != "哈普村　↑：前進　K／M：轉向　S：搜索　E：紮營" ||
+	if state.Mode != ModeDungeon || state.Prompt != "哈普村　↑：前進　K／M：轉向　S：搜尋　L：查看　E：紮營" ||
 		state.LoadPieces != [3]uint16{12, 0xFF, 0xFF} {
 		t.Fatalf("Hap dungeon mode=%v prompt=%q pieces=%v", state.Mode, state.Prompt, state.LoadPieces)
 	}

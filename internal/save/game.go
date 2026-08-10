@@ -3,6 +3,7 @@ package save
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/area"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/audiostate"
@@ -13,7 +14,7 @@ import (
 )
 
 // CurrentGameVersion is the version of the remake's resumable game save.
-const CurrentGameVersion = 11
+const CurrentGameVersion = 12
 
 type MusicSnapshot struct {
 	TrackID string                            `json:"track_id"`
@@ -58,25 +59,27 @@ type CombatSnapshot struct {
 // the remake can currently restore. Numeric mode/location values are kept
 // here to avoid coupling the save package to the game UI package.
 type GameFile struct {
-	Version           int                  `json:"version"`
-	Characters        party.Roster         `json:"characters"`
-	Area              area.State           `json:"area"`
-	Mode              uint8                `json:"mode"`
-	Location          uint8                `json:"location"`
-	MapX              int                  `json:"map_x"`
-	MapY              int                  `json:"map_y"`
-	DungeonX          int                  `json:"dungeon_x"`
-	DungeonY          int                  `json:"dungeon_y"`
-	DungeonDir        uint8                `json:"dungeon_direction"`
-	DungeonWallType   uint8                `json:"dungeon_wall_type"`
-	DungeonWallRoof   uint8                `json:"dungeon_wall_roof"`
-	GameTime          [7]uint16            `json:"game_time"`
-	GameAgeCycles     uint32               `json:"game_age_cycles"`
-	ECLSession        *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
-	Combat            *CombatSnapshot      `json:"combat,omitempty"`
-	Music             *MusicSnapshot       `json:"music,omitempty"`
-	OneShotAudio      *audiostate.Snapshot `json:"one_shot_audio,omitempty"`
-	JournalMessageIDs []string             `json:"journal_message_ids,omitempty"`
+	Version            int                  `json:"version"`
+	Characters         party.Roster         `json:"characters"`
+	Area               area.State           `json:"area"`
+	Mode               uint8                `json:"mode"`
+	Location           uint8                `json:"location"`
+	MapX               int                  `json:"map_x"`
+	MapY               int                  `json:"map_y"`
+	DungeonX           int                  `json:"dungeon_x"`
+	DungeonY           int                  `json:"dungeon_y"`
+	DungeonDir         uint8                `json:"dungeon_direction"`
+	DungeonWallType    uint8                `json:"dungeon_wall_type"`
+	DungeonWallRoof    uint8                `json:"dungeon_wall_roof"`
+	GameTime           [7]uint16            `json:"game_time"`
+	GameAgeCycles      uint32               `json:"game_age_cycles"`
+	ECLSession         *ecl.SessionSnapshot `json:"ecl_session,omitempty"`
+	Combat             *CombatSnapshot      `json:"combat,omitempty"`
+	Music              *MusicSnapshot       `json:"music,omitempty"`
+	OneShotAudio       *audiostate.Snapshot `json:"one_shot_audio,omitempty"`
+	JournalMessageIDs  []string             `json:"journal_message_ids,omitempty"`
+	DungeonSearch      bool                 `json:"dungeon_search,omitempty"`
+	DungeonSearchEdges []string             `json:"dungeon_search_edges,omitempty"`
 }
 
 func EncodeGame(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY int) ([]byte, error) {
@@ -133,10 +136,21 @@ func EncodeGameWithAudioState(roster party.Roster, areaState area.State, mode, l
 // localized page text, allowing translation updates and locale changes after
 // a save was written.
 func EncodeGameWithJournalState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot, oneShots *audiostate.Snapshot, journalMessageIDs []string) ([]byte, error) {
+	return EncodeGameWithAdventureState(roster, areaState, mode, location, mapX, mapY, dungeonX, dungeonY, dungeonDirection, dungeonWallType, dungeonWallRoof, gameTime, gameAgeCycles, session, activeCombat, music, oneShots, journalMessageIDs, false, nil)
+}
+
+// EncodeGameWithAdventureState adds remake-owned dungeon interaction state to
+// the stable-ID save. The edge IDs come from the loaded game pack; this save
+// layer does not know whether an edge is a secret passage, a door, or another
+// title-owned map mutation.
+func EncodeGameWithAdventureState(roster party.Roster, areaState area.State, mode, location uint8, mapX, mapY, dungeonX, dungeonY int, dungeonDirection, dungeonWallType, dungeonWallRoof uint8, gameTime [7]uint16, gameAgeCycles uint32, session *ecl.SessionSnapshot, activeCombat *CombatSnapshot, music *MusicSnapshot, oneShots *audiostate.Snapshot, journalMessageIDs []string, dungeonSearch bool, dungeonSearchEdges []string) ([]byte, error) {
 	if err := roster.Validate(); err != nil {
 		return nil, err
 	}
 	if err := validateJournalMessageIDs(journalMessageIDs); err != nil {
+		return nil, err
+	}
+	if err := validateDungeonSearchEdges(dungeonSearchEdges); err != nil {
 		return nil, err
 	}
 	if oneShots != nil {
@@ -153,7 +167,9 @@ func EncodeGameWithJournalState(roster party.Roster, areaState area.State, mode,
 		DungeonWallType: dungeonWallType, DungeonWallRoof: dungeonWallRoof,
 		GameTime: gameTime, GameAgeCycles: gameAgeCycles, ECLSession: session,
 		Combat: activeCombat, Music: music, OneShotAudio: oneShots,
-		JournalMessageIDs: append([]string(nil), journalMessageIDs...),
+		JournalMessageIDs:  append([]string(nil), journalMessageIDs...),
+		DungeonSearch:      dungeonSearch,
+		DungeonSearchEdges: append([]string(nil), dungeonSearchEdges...),
 	}, "", "  ")
 }
 
@@ -167,6 +183,20 @@ func validateJournalMessageIDs(messageIDs []string) error {
 			return fmt.Errorf("duplicate journal message ID %q", messageID)
 		}
 		seen[messageID] = true
+	}
+	return nil
+}
+
+func validateDungeonSearchEdges(edgeIDs []string) error {
+	seen := make(map[string]bool, len(edgeIDs))
+	for index, edgeID := range edgeIDs {
+		if strings.TrimSpace(edgeID) == "" {
+			return fmt.Errorf("dungeon search edge ID %d is empty", index)
+		}
+		if seen[edgeID] {
+			return fmt.Errorf("duplicate dungeon search edge ID %q", edgeID)
+		}
+		seen[edgeID] = true
 	}
 	return nil
 }
@@ -212,6 +242,17 @@ func DecodeGame(data []byte) (GameFile, error) {
 		if err := validateJournalMessageIDs(file.JournalMessageIDs); err != nil {
 			return GameFile{}, fmt.Errorf("game save journal: %w", err)
 		}
+	}
+	if len(file.DungeonSearchEdges) > 0 {
+		if file.Version < 12 {
+			return GameFile{}, fmt.Errorf("game save version %d cannot contain dungeon search edges", file.Version)
+		}
+		if err := validateDungeonSearchEdges(file.DungeonSearchEdges); err != nil {
+			return GameFile{}, fmt.Errorf("game save dungeon search: %w", err)
+		}
+	}
+	if file.DungeonSearch && file.Version < 12 {
+		return GameFile{}, fmt.Errorf("game save version %d cannot contain dungeon search state", file.Version)
 	}
 	if err := file.Characters.Validate(); err != nil {
 		return GameFile{}, err

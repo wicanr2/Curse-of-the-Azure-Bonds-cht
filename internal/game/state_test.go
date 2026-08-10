@@ -504,6 +504,66 @@ func TestPartySaveLoadRoundTripRestoresDungeonViewState(t *testing.T) {
 	}
 }
 
+func TestPartySaveLoadRoundTripRestoresDungeonSearchState(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.partyRoster = party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter, Level: 1,
+		Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	state.DungeonSearchEnabled = true
+	state.dungeonSearchEdges["tilverton.sewers.wall-09-west"] = true
+	state.Mode = ModeDungeon
+	path := t.TempDir() + "/search-state.json"
+	if err := state.SavePartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	loaded := NewState(trainingTestCatalog(t))
+	if err := loaded.LoadPartyFile(path); err != nil {
+		t.Fatal(err)
+	}
+	if !loaded.DungeonSearchEnabled || !loaded.dungeonSearchEdges["tilverton.sewers.wall-09-west"] ||
+		!loaded.DungeonSearchActive() {
+		t.Fatalf("loaded dungeon search state enabled=%v edges=%v", loaded.DungeonSearchEnabled, loaded.dungeonSearchEdges)
+	}
+}
+
+func TestDungeonSearchToggleDoesNotConsumeTurn(t *testing.T) {
+	state := NewState(testCatalog())
+	state.Mode = ModeDungeon
+	if err := state.ToggleDungeonSearch(); err != nil {
+		t.Fatal(err)
+	}
+	if !state.DungeonSearchActive() {
+		t.Fatal("SEARCH toggle did not enable persistent mode")
+	}
+	if err := state.ToggleDungeonSearch(); err != nil {
+		t.Fatal(err)
+	}
+	if state.DungeonSearchActive() {
+		t.Fatal("SEARCH toggle did not disable persistent mode")
+	}
+}
+
+func TestDungeonSearchPolicyControlsMovementMinutes(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.Mode = ModeDungeon
+	if got, ok := state.dungeonMoveMinutes(); !ok || got != 1 {
+		t.Fatalf("SEARCH-off movement minutes=%d found=%v, want 1,true", got, ok)
+	}
+	if err := state.ToggleDungeonSearch(); err != nil {
+		t.Fatal(err)
+	}
+	if got, ok := state.dungeonMoveMinutes(); !ok || got != 10 {
+		t.Fatalf("SEARCH-on movement minutes=%d found=%v, want 10,true", got, ok)
+	}
+	if err := state.advanceDungeonMoveTime(); err != nil {
+		t.Fatal(err)
+	}
+	if slots := state.GameTimeSlots(); slots[1] != 0 || slots[2] != 1 {
+		t.Fatalf("SEARCH-on movement clock=%v, want ten minutes", slots)
+	}
+}
+
 func TestPartySaveRestoresJournalByStableIDInCurrentLocale(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.partyRoster = party.Roster{{

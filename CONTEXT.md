@@ -4731,3 +4731,27 @@ wall／action trace。
 與本段規格；這是 DRAFT 證據／記憶 milestone，不是 P0-2 或整作完成。compact 後
 先讀本段、第 536／535 spec 與 P0-2 worklist；不要把 `wall=09` 候選橋接、一次性
 Search service 或 coordinate-assisted block 4 測試誤讀成正常玩家已能進入火刀據點。
+
+2026-08-10 第五百三十七輪已取代上述「尚未接通」的 remake 狀態。engine
+`Pack.Search`、`MapDefinition.SearchEdges`、`MapDefinition.ExternalExits` 與
+JSON schema 已推送前的工作樹實作完成；CoAB `pit-of-moander.json` 宣告
+`tilverton.sewers.wall-09-west`、`tilverton.sewers.e2-south-boundary` 與火刀北側
+三個 E1 候選，所有未閉合原版語意仍標 `strong inference`。生產 `S` 只切換
+persistent `DungeonSearchEnabled`，`L` 呼叫一次性 `LookDungeonLocation`；舊的
+`SearchDungeonLocation` 只保留相容 wrapper。save v12 保存 discovered edge ID，
+舊 save v1–v11 仍以關閉 Search／空 edge 載入。
+
+Docker 正常玩家測試已由角色建立／開場開始，逐格通過 `(13,10)`→`(10,12)`、
+wall=09 候選、`(8,15,S)` E2，進入 ECL2 block 4 `(6,1,S)`；處理安靜／刀刃事件後
+由 `(8,0,N)` 再北行越界，ECL 返回 block 3 `(10,15,N)`。同一輪的
+`TestFireKnifeLeaderStateVictoryReturnsToTilverton` 驗證首領勝利後夢境、Tilverton
+世界地圖選單與 save/load session；`TestPartySaveLoadRoundTripRestoresDungeonSearchState`
+驗證 Search toggle／edge ID 存檔重訪。權威文件是
+`docs/spec/537-search-look-e2-fire-knife-normal-route.md`；第 536／516 spec 已標
+`SUPERSEDED`（原版證據仍保留）。
+
+本輪尚未完成：原版 wall=09 writer／第三平面 before-after／成功率、火刀入口到首領
+的完整逐房間正常路徑與戰後旗標、全 ECL／全地圖、完整戰鬥 AI／法術效果／動畫、
+音樂音效與完整中文化。不要把 deterministic 首領 fixture 或本輪 vertical slice
+宣稱為整作通關。engine 知識庫新增
+`golden-box-remake-engine/docs/knowledge/golden-box-search-look-map-edges.md`。

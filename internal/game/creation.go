@@ -282,7 +282,7 @@ func (s *State) SavePartyFile(path string) error {
 	if err != nil {
 		return err
 	}
-	data, err := partySave.EncodeGameWithJournalState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot(), s.journalMessageIDs)
+	data, err := partySave.EncodeGameWithAdventureState(s.partyRoster, areaState, uint8(s.Mode), uint8(s.Location), s.MapX, s.MapY, s.DungeonX, s.DungeonY, s.DungeonDirection, s.DungeonWallType, s.DungeonWallRoof, s.gameClock, s.gameAgeCycles, sessionSnapshot, combatSnapshot, s.musicSnapshot(), s.oneShotSnapshot(), s.journalMessageIDs, s.DungeonSearchEnabled, s.dungeonSearchEdgeIDs())
 	if err != nil {
 		return err
 	}
@@ -297,6 +297,15 @@ func (s *State) activeCombatSnapshot() (*partySave.CombatSnapshot, error) {
 		return nil, nil
 	}
 	if s.Mode != ModeCombat {
+		// The original flow keeps the completed Battle object around so callers
+		// can inspect its final status while ECL continues through treasure,
+		// journal and world-map handoff. Once that handoff is complete, the
+		// completed battle is no longer a resumable save boundary; serializing it
+		// would make LoadPartyFile reject the otherwise valid wilderness save.
+		if s.battle.Status() != combat.StatusActive &&
+			!s.treasureMenu && !s.treasureTakeMenu && len(s.pendingTreasureItems) == 0 && !s.treasureResumeECL {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("active battle cannot be saved from mode %d", s.Mode)
 	}
 	battleSnapshot, err := s.battle.Snapshot()
@@ -650,6 +659,13 @@ func (s *State) LoadPartyFile(path string) error {
 	}
 	if err := s.SetPartyRoster(file.Characters); err != nil {
 		return err
+	}
+	s.DungeonSearchEnabled = false
+	s.dungeonSearchEdges = make(map[string]bool)
+	if file.Version >= 12 {
+		if err := s.restoreDungeonSearchState(file.DungeonSearch, file.DungeonSearchEdges); err != nil {
+			return err
+		}
 	}
 	if err := s.restoreJournalMessageIDs(file.JournalMessageIDs); err != nil {
 		return err

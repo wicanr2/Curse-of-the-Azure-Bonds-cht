@@ -57,9 +57,10 @@ evidence，不是把 raw wall nibble 命名成秘密門的證據。正常玩家�
 2. 走到 `(8,15)` 後如何發出 E2 boundary attempt；
 3. block 4 初始化、返回與 save-load 持久性。
 
-原版手冊的 `SEARCH` 是持續 toggle，`LOOK` 是目前格子的單次檢查；目前 remake
-的 `SearchDungeonLocation()` 仍是單次 `7ECA=1` service，故只能作 LOOK-like
-boundary。不要只因 `S` 有按鍵處理，就把秘密門或 E2 正常路徑標成完成。
+原版手冊的 `SEARCH` 是持續 toggle，`LOOK` 是目前格子的單次檢查；第 537 輪
+remake 已以 `ToggleDungeonSearch`／`LookDungeonLocation` 分離兩個 service，並
+把發現的 edge ID 存入 save v12。不要把 `wall=09` 的原版 writer 或 E1 座標的
+`strong inference` 誤寫成原版 `exact`；remake 正常路徑的完成證據見第 537 輪規格。
 
 ## 測試規則
 
@@ -172,9 +173,10 @@ remake 需保留 caller 的 dungeon return context，並在勝利後明確 `Cont
 每一步都經 `State.MoveDungeon`；不能因已知終點而直接寫入 `(1,8)`。最後一步的
 per-turn 邊界會先顯示 `tilverton.sewers.guild-battle-echoes`，中文為「你們仍不時
 聽見公會大廳傳來戰鬥聲」。這不是檢查站選單：PRESS 返回地城後，玩家再使用
-正式 `SearchDungeonLocation`，才會看到 `tilverton.sewers-checkpoint`。因此
-per-turn text、按鍵 continuation 與 explicit SEARCH 是三個可追蹤的交易階段，
-不能在 renderer 或測試中合併成一次自動觸發。
+正式 `LookDungeonLocation`，才會看到 `tilverton.sewers-checkpoint`；舊的
+`SearchDungeonLocation` 名稱只保留相容 wrapper。因此 per-turn text、按鍵
+continuation 與 explicit LOOK 是三個可追蹤的交易階段，不能在 renderer 或測試中
+合併成一次自動觸發。
 
 拒絕檢查站投降後，五名 Fire Knife 由真正 combat turns 完成，勝利後再按下
 `tilverton.sewers-hide-bodies` 才返回相同地城 session。這一段證明的是入口到
@@ -185,7 +187,30 @@ handoff 移入 engine `MapPositionTransition` 與 CoAB JSON event；State 不再
 但 DOS ECL work address 與 overlay 22 `[di+4BF0h]` indexed table 的
 writer→projection→consumer 尚未 exact 閉合。不能只因看見同一張
 GEO map 就假設左右 component 有開路相連，也不可用 BFS 穿過實心牆。騎士後到
-block 4 `(8,15)` 的第二個外部 handoff 仍待證據與正常輸入驗證。
+block 4 `(8,15)` 的第二個外部 handoff 已由 engine＋JSON 的 `strong inference`
+external-exit 候選接成正常玩家路徑；原版 wall writer 仍未 exact 閉合。
+
+## 下水道 E2 與火刀 E1 回返
+
+第 537 輪以 persistent `S` 搜尋模式沿同一 `BlockSession` 完成：
+
+```text
+(13,10) W→(12,10) W→(11,10) W→(10,10)
+         S→(10,11) S→(10,12)
+         W→(9,12)  ← game-pack wall=09 候選，搜尋後可走
+         S→(9,13) S→(9,14) S→(9,15) W→(8,15)
+         S→E2 → block 4 (6,1,S)
+```
+
+E2 不是前端先包裝的 teleport：`MoveDungeon` 先驗證 pack external exit，再把
+邊界嘗試交給 ECL；block 4 入口會保留 `LOAD PIECES 1,2,4`。火刀據點北側
+`(8,0,N)` 是第一個短路 E1 候選，玩家先正常處理安靜／刀刃事件，再北行越界，
+ECL 回到下水道 `(10,15,N)`。`(11,0,N)` 與 `(13,0,N)` 也已放入同一資料契約，
+但目前只以 `strong inference` 標記，沒有宣稱三個原版座標逐像素／逐指令 exact。
+
+火刀首領勝利後的夢境、Tilverton 城外世界選單與 save v12 重訪另有 State integration
+回歸；該測試的首領戰是 deterministic fixture，不冒稱已從所有火刀房間逐格走到
+首領。完整證據見 [`docs/spec/537-search-look-e2-fire-knife-normal-route.md`](../spec/537-search-look-e2-fire-knife-normal-route.md)。
 
 ## 目前 CoAB checkpoint
 
