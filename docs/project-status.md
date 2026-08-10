@@ -5,6 +5,15 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 541 輪完成 ECL 外部 routine 的 engine／CoAB adapter 分層，並修正荒野抵達時
+`4C9B` 原生目的地在 ECL1 arrival entry 前後的提交時序。新增
+`TestRealOverlandArrivalAndRouteGraphCoverage`：從原始 ECL1–ECL6 執行全部 14 個
+`moonsea.overland` native location arrival，驗證所有 JSON directed adjacency 的
+目的地均已宣告，且從 Tilverton 可達全點。這是世界點位／路網與 arrival boundary
+的 `READY` gate；不是所有城市、地城、隨機遭遇、房間事件、出口、重訪旗標或整作
+通關。完整決策與未下沉到獨立 engine 的地址語意見
+[`spec 541`](spec/541-ecl-external-routine-engine-boundary.md)。
+
 第 540 輪完成原始 ECL corpus 的 parser／控制流稽核：`ECL1..6.DAX` 共 25 個
 block、125 個 lifecycle entry 均能由 `EntryPoints` 取得，所有靜態可達指令都有
 command metadata；同時 game-pack 宣告原始 `GEO2..6.DAX` 的 16 個 geometry block，

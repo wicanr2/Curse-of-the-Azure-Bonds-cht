@@ -657,6 +657,16 @@ world location values 不只三座早期城市。`4C9B=4` 是 Standing Stone；�
 明確 value→Location table 投影，而不是把超過 3 的值忽略、也不能與 remake
 內部 `LocationTilverton` enum 數字混為一談。
 
+第 541 輪補上荒野抵達的時序規則：當 `AREA` 已選定 native destination 後，CoAB
+adapter 要在 ECL1 arrival entry 前先提交 `4C9B`，讓 location-specific dispatcher
+讀到正確的目前地點；entry 返回後再提交一次，避免 ECL1 暫時重用舊 route row 導致
+部分世界點位顯示 Tilverton／早期城市的目的地。`4C9C` 仍是本作的 arrival／dispatch
+selector；兩者都是 CoAB ECL work address，不是共用 engine 的固定欄位。Docker
+`TestRealOverlandArrivalAndRouteGraphCoverage` 已對原始 ECL1–ECL6 執行
+`moonsea.overland` 全部 14 個 native location arrival，並以 JSON directed graph
+驗證從 Tilverton 可達全點；這個 gate 不取代每個城市事件、地城房間、隨機遭遇與
+重訪旗標的正常玩家驗證。
+
 `PROGRAM` ID 也不是全域單義。Ashabenford HALL 再次證實 PROGRAM 0 必須和
 玩家剛選的場所 context 配對為 training service；只有其他 start-menu context
 才回標題。可重用 VM 應輸出 routine boundary，語意由作品 State 的 caller context

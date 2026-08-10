@@ -4808,3 +4808,26 @@ focused 與正式受影響套件 gate 已在 Docker 通過（`azure-bonds-game` 
 Xvfb 啟動）；全 ECL side effects、全地圖正常路徑、完整戰鬥／音效與整作通關仍未
 完成。權威規格為
 `docs/spec/540-ecl-map-combat-audio-corpus-closure.md`。
+
+2026-08-11 第五百四十一輪完成 ECL 外部 routine 副作用的分層決策與全世界旅行
+基線。`CALL` 的有序 raw request、`NEWECL` resume、`PROGRAM` boundary、
+`LOAD FILES／LOAD PIECES` 資源 selector 與 `DAMAGE／TREASURE／NPC／SAVE／CLOCK`
+等 typed request 保留為可重用 engine 機制；`0x2E10`、`0xC01E`、`0xB200` 的地址
+語意、`PROGRAM 0/3/8/9` caller context、CoAB work address、劇情旗標與城市／地城
+文字不下沉到獨立 engine。沒有第二款 SSI 遊戲的 producer→consumer 第一級證據，
+本輪不新增跨作品 external-address API。完整矩陣與 confidence 見
+`docs/spec/541-ecl-external-routine-engine-boundary.md`。
+
+本輪修正 `internal/game/state.go` 的 `arriveAtWorldLocation`：荒野抵達交易在
+ECL1 arrival entry 前先提交 native destination 到 `4C9B`，entry 返回後再提交一次，
+避免部分地點沿用舊城市的 route row。新增
+`internal/game/world_travel_test.go` 的正式回歸，從原始 ECL1–ECL6 執行
+`moonsea.overland` 全部 14 個 native location arrival，驗證 JSON directed adjacency
+的目的地完整宣告，且從 Tilverton 可達全部 14 點。這只關閉世界點位／路網／arrival
+boundary；不等於所有城市事件、地城房間、隨機遭遇、出口、重訪或整作通關完成。
+
+本輪 Docker focused tests 通過；獨立 engine repo 沒有修改。compact 後先讀
+`WORKLIST.md`、第 541 輪 spec 與本段，再沿同一 ECL session 追火刀首領勝利後
+block 50 的 `PATROL FOREST` 世界出口，並逐點補齊尚未覆蓋的正常地圖事件；不要把
+路網 gate 當成全地圖事件完成，也不要因 external routine 尚未跨作品證明就新增
+engine address mapping。
