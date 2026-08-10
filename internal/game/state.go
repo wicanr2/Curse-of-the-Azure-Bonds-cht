@@ -88,25 +88,26 @@ const (
 )
 
 type State struct {
-	Mode             Mode
-	Title            string
-	Prompt           string
-	Choices          []string
-	Message          string
-	Location         Location
-	LocationName     string
-	MapX             int
-	MapY             int
-	DungeonX         int
-	DungeonY         int
-	DungeonDirection uint8
-	DungeonWallType  uint8
-	DungeonWallRoof  uint8
-	WildernessFloor  mapdata.WildernessFloor
-	Area             area.State
-	GeoMapSet        uint8
-	GeoMapBlock      uint8
-	LoadPieces       [3]uint16
+	Mode                 Mode
+	Title                string
+	Prompt               string
+	Choices              []string
+	Message              string
+	Location             Location
+	LocationName         string
+	MapX                 int
+	MapY                 int
+	DungeonX             int
+	DungeonY             int
+	DungeonDirection     uint8
+	DungeonWallType      uint8
+	DungeonWallRoof      uint8
+	DungeonSearchEnabled bool
+	WildernessFloor      mapdata.WildernessFloor
+	Area                 area.State
+	GeoMapSet            uint8
+	GeoMapBlock          uint8
+	LoadPieces           [3]uint16
 
 	// OriginalOpening records the English sentence found in the ECL payload.
 	// It is evidence that the opening state was sourced from the original data,
@@ -165,6 +166,7 @@ type State struct {
 	dataPack                *goldenbox.Pack
 	dataPackError           error
 	appliedDataPackEvents   map[string]bool
+	dungeonSearchEdges      map[string]bool
 	newGameEntryActive      bool
 	eclMenuReturnMode       Mode
 	party                   []combat.Fighter
@@ -391,6 +393,7 @@ func NewState(catalog locale.Catalog) State {
 		dataPack:               dataPack,
 		dataPackError:          dataPackErr,
 		appliedDataPackEvents:  make(map[string]bool),
+		dungeonSearchEdges:     make(map[string]bool),
 		barTales: []string{
 			catalog.Text("bar_tale_1", "bar_tale_1"),
 			catalog.Text("bar_tale_2", "bar_tale_2"),
@@ -4777,16 +4780,46 @@ func (s *State) RunDungeonLifecycle() error {
 	return s.runDungeonLifecycle(false)
 }
 
-// SearchDungeonLocation mirrors the explicit dungeon SEARCH command. The
-// reference engine exposes that action through work flag 0x7ECA while running
-// SearchLocation; ordinary movement keeps the flag clear.
+// ToggleDungeonSearch changes the persistent SEARCH mode. SEARCH is a
+// movement policy; it does not immediately consume a turn. LOOK remains the
+// one-cell action below and is deliberately separate from this toggle.
+func (s *State) ToggleDungeonSearch() error {
+	if s.Mode != ModeDungeon {
+		return fmt.Errorf("dungeon search toggle is invalid in mode %d", s.Mode)
+	}
+	s.DungeonSearchEnabled = !s.DungeonSearchEnabled
+	return nil
+}
+
+// DungeonSearchActive reports the remake-owned persistent SEARCH state for a
+// renderer or another frontend. The game pack supplies the timing policy;
+// this accessor exposes only the current toggle.
+func (s *State) DungeonSearchActive() bool {
+	return s.DungeonSearchEnabled
+}
+
+// LookDungeonLocation mirrors the original one-cell LOOK action. The ECL
+// SearchLocation entry still receives 0x7ECA=1, but the persistent toggle is
+// not changed by LOOK.
+func (s *State) LookDungeonLocation() error {
+	return s.runDungeonSearch("look")
+}
+
+// SearchDungeonLocation is retained as a source-compatible name for focused
+// oracle tests and older frontends. New input paths must use LOOK for this
+// one-shot operation and ToggleDungeonSearch for persistent SEARCH.
 func (s *State) SearchDungeonLocation() error {
+	return s.LookDungeonLocation()
+}
+
+func (s *State) runDungeonSearch(discovery string) error {
 	if s.Mode != ModeDungeon {
 		return fmt.Errorf("dungeon search is invalid in mode %d", s.Mode)
 	}
 	if s.session == nil {
 		return fmt.Errorf("dungeon search requires an ECL session")
 	}
+	s.discoverDungeonSearchEdges(discovery)
 	s.syncDungeonECLRegisters()
 	s.session.SetMemoryValue(0x7ECA, 1)
 	defer s.session.SetMemoryValue(0x7ECA, 0)
@@ -4827,6 +4860,7 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	s.Choices = nil
 	s.currentOriginalChoices = nil
 	s.syncDungeonECLRegisters()
+	defer s.session.SetMemoryValue(0x7ECA, 0)
 	if exitAttempt {
 		s.dungeonBoundaryAttempt = true
 		x, y, direction := s.DungeonGeometryView()
@@ -4840,12 +4874,21 @@ func (s *State) runDungeonLifecycle(exitAttempt bool) error {
 	}
 
 	for _, entry := range []int{0, 1} {
+		if entry == 1 && s.DungeonSearchEnabled {
+			s.discoverDungeonSearchEdges("search")
+			s.session.SetMemoryValue(0x7ECA, 1)
+		} else {
+			s.session.SetMemoryValue(0x7ECA, 0)
+		}
 		blockBefore := s.session.CurrentBlockID()
 		result, err := s.session.RunEntrySeedWithPartyContext(
 			entry, 500, nil, nil, s.eclSeed, s.eclPartyContext(),
 		)
 		if err != nil {
 			return err
+		}
+		if entry == 1 {
+			s.session.SetMemoryValue(0x7ECA, 0)
 		}
 		if s.session.CurrentBlockID() != blockBefore {
 			s.syncDungeonStateFromECLRegisters()
@@ -5015,6 +5058,147 @@ func (s *State) SetDungeonGeometryView(x, y int, direction uint8) {
 	}
 }
 
+func (s *State) dungeonMapDefinition() (goldenbox.MapDefinition, bool) {
+	if s.dataPack == nil {
+		return goldenbox.MapDefinition{}, false
+	}
+	if definition, found := s.dataPack.FindMapByKindLocation("first_person", s.GeoMapSet, s.GeoMapBlock); found {
+		return definition, true
+	}
+	return s.dataPack.FindMap(s.GeoMapSet, s.GeoMapBlock)
+}
+
+func (s *State) dungeonSearchEdge(x, y int, direction uint8) (goldenbox.SearchEdgeDefinition, bool) {
+	if s.dataPack == nil {
+		return goldenbox.SearchEdgeDefinition{}, false
+	}
+	return s.dataPack.FindSearchEdge(s.GeoMapSet, s.GeoMapBlock, x, y, direction)
+}
+
+func (s *State) dungeonMoveMinutes() (int, bool) {
+	if s.dataPack == nil || s.dataPack.Search == nil {
+		return 0, false
+	}
+	if s.DungeonSearchEnabled {
+		return s.dataPack.Search.MoveMinutesOn, true
+	}
+	return s.dataPack.Search.MoveMinutesOff, true
+}
+
+func (s *State) advanceDungeonMoveTime() error {
+	minutes, found := s.dungeonMoveMinutes()
+	if !found || minutes == 0 {
+		return nil
+	}
+	if minutes < 0 || minutes > 0xFFFF {
+		return fmt.Errorf("dungeon move minutes %d are outside uint16 range", minutes)
+	}
+	// Reference Area1 stores minute-sized movement time in slot 1. The pack
+	// owns the off/on policy; State only applies the already-decoded duration.
+	return s.AdvanceGameTime(1, uint16(minutes))
+}
+
+func (s *State) dungeonExternalExit(x, y int, direction uint8) (goldenbox.ExternalExitDefinition, bool) {
+	if s.dataPack == nil {
+		return goldenbox.ExternalExitDefinition{}, false
+	}
+	return s.dataPack.FindExternalExit(s.GeoMapSet, s.GeoMapBlock, x, y, direction)
+}
+
+func (s *State) discoverDungeonSearchEdges(discovery string) {
+	definition, found := s.dungeonMapDefinition()
+	if !found {
+		return
+	}
+	if s.dungeonSearchEdges == nil {
+		s.dungeonSearchEdges = make(map[string]bool)
+	}
+	x, y, _ := s.DungeonGeometryView()
+	for _, edge := range definition.SearchEdges {
+		if edge.X != x || edge.Y != y {
+			continue
+		}
+		if edge.Discovery != discovery && edge.Discovery != "search_or_look" {
+			continue
+		}
+		s.dungeonSearchEdges[edge.ID] = true
+	}
+}
+
+func (s *State) searchEdgeDiscovered(x, y int, direction uint8) bool {
+	edge, found := s.dungeonSearchEdge(x, y, direction)
+	if !found || s.dungeonSearchEdges == nil || !s.dungeonSearchEdges[edge.ID] {
+		return false
+	}
+	// A hypothesis may guide research but must not silently become a playable
+	// rule. Only exact or strong-inference entries are executable candidates.
+	return edge.Confidence == "exact" || edge.Confidence == "strong inference"
+}
+
+func (s *State) dungeonSearchEdgeIDs() []string {
+	if len(s.dungeonSearchEdges) == 0 {
+		return nil
+	}
+	ids := make([]string, 0, len(s.dungeonSearchEdges))
+	for id, discovered := range s.dungeonSearchEdges {
+		if discovered {
+			ids = append(ids, id)
+		}
+	}
+	slices.Sort(ids)
+	return ids
+}
+
+func (s *State) restoreDungeonSearchState(enabled bool, edgeIDs []string) error {
+	s.DungeonSearchEnabled = enabled
+	if len(edgeIDs) == 0 {
+		return nil
+	}
+	if s.dataPack == nil {
+		return fmt.Errorf("game save contains dungeon search edges but no game pack is loaded")
+	}
+	for _, edgeID := range edgeIDs {
+		found := false
+		for _, definition := range s.dataPack.Maps {
+			for _, edge := range definition.SearchEdges {
+				if edge.ID == edgeID {
+					found = true
+					break
+				}
+			}
+			if found {
+				break
+			}
+		}
+		if !found {
+			return fmt.Errorf("game save contains unknown dungeon search edge %q", edgeID)
+		}
+		s.dungeonSearchEdges[edgeID] = true
+	}
+	return nil
+}
+
+// CanMoveDungeon is the State-owned movement predicate used by frontends.
+// It layers pack-declared discovered edges and external exits over the raw
+// two-sided GEO wall check without changing the geometry decoder.
+func (s *State) CanMoveDungeon(grid geo.Grid, dx, dy, direction int) bool {
+	if direction != 0 && direction != 2 && direction != 4 && direction != 6 {
+		return false
+	}
+	x, y, _ := s.DungeonGeometryView()
+	nextX, nextY := x+dx, y+dy
+	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
+	if exitAttempt {
+		if _, found := s.dungeonExternalExit(x, y, uint8(direction)); found {
+			return true
+		}
+	}
+	if grid.CanMoveDungeonWrapped(x, y, direction) {
+		return true
+	}
+	return s.searchEdgeDiscovered(x, y, uint8(direction))
+}
+
 // MoveDungeon performs one player-issued cardinal step against the decoded
 // original GEO grid.  The frontend supplies the same movement delta and
 // direction that the DOS 3-D loop receives; this method owns the transaction
@@ -5042,11 +5226,28 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 		return fmt.Errorf("dungeon movement delta (%d,%d) disagrees with direction %d", dx, dy, direction)
 	}
 	x, y, _ := s.DungeonGeometryView()
-	if !grid.CanMoveDungeonWrapped(x, y, direction) {
-		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
-	}
 	nextX, nextY := x+dx, y+dy
 	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
+	_, hasExternalExit := s.dungeonExternalExit(x, y, uint8(direction))
+	if !s.CanMoveDungeon(grid, dx, dy, direction) {
+		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
+	}
+	if exitAttempt && hasExternalExit {
+		// The boundary attempt is consumed at the source cell. Do not wrap to
+		// the opposite edge first: ECL2 reads C04B/C04C/C04D to decide which
+		// external handoff is being requested.
+		s.SetDungeonGeometryView(x, y, uint8(direction))
+		s.DungeonWallType, _ = grid.WallWrapped(x, y, direction)
+		s.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+		s.requestSound(SoundStep)
+		if s.Mode != ModeDungeon {
+			return nil
+		}
+		if err := s.advanceDungeonMoveTime(); err != nil {
+			return err
+		}
+		return s.RunDungeonExitLifecycle()
+	}
 	s.SetDungeonGeometryView(
 		geo.WrapCoordinate(nextX, geo.Width),
 		geo.WrapCoordinate(nextY, geo.Height),
@@ -5057,6 +5258,9 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	s.requestSound(SoundStep)
 	if s.Mode != ModeDungeon {
 		return nil
+	}
+	if err := s.advanceDungeonMoveTime(); err != nil {
+		return err
 	}
 	if exitAttempt {
 		return s.RunDungeonExitLifecycle()

@@ -1,7 +1,11 @@
 # 第五百三十六輪：提爾佛頓下水道 E2 路徑與 Search 模式勘誤
 
-狀態：`DRAFT`（GEO 路徑已可重生；`wall=09` 的原版觸發／寫入仍未閉合）
+狀態：`SUPERSEDED`（實作與目前 remake 狀態改由第 537 輪規格管理；本檔證據仍有效）
 日期：2026-08-10
+
+> 本檔保留第 536 輪「尚未實作」時的 GEO／手冊盤點。第 537 輪已把 Search／Look
+> 與 E2 transaction 接入 engine＋JSON；這不會把本檔的原版 wall writer 缺口
+> 升格成 `exact`。
 
 ## 結論先行
 

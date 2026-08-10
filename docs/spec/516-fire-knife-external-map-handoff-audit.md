@@ -1,7 +1,11 @@
 # 第 516 輪：火刀據點外部地圖／秘密門 handoff 反組譯盤點
 
-狀態：`DRAFT`（證據盤點；沒有新增遊戲規則）
+狀態：`SUPERSEDED`（原版證據缺口仍保留；remake 正常路徑狀態改由第 537 輪規格管理）
 日期：2026-08-09
+
+> 第 537 輪已以 `strong inference` game-pack external-exit 候選與 Docker 正常
+> 玩家路徑接通 E1／E2。這只更新 remake 可玩性，不改寫本檔對 DOS／PC-98 原始
+> writer、projection 與 consumer 尚未 exact 閉合的結論。
 
 ## 目的
 

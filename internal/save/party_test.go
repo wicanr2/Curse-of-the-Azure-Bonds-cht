@@ -156,7 +156,7 @@ func TestGameVersionNineRoundTripsMusicContinuation(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.Music, want) {
 		t.Fatalf("decoded music=%+v want=%+v", file.Music, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 7`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 12`), []byte(`"version": 7`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 7 music continuation unexpectedly decoded")
 	}
@@ -186,7 +186,7 @@ func TestGameVersionNineRoundTripsBoundedOneShotAudio(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.OneShotAudio, want) {
 		t.Fatalf("decoded one-shot audio=%+v want=%+v", file.OneShotAudio, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 8`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 12`), []byte(`"version": 8`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 8 one-shot continuation unexpectedly decoded")
 	}
@@ -214,11 +214,34 @@ func TestCurrentGameVersionStoresStableJournalMessageIDs(t *testing.T) {
 	if file.Version != CurrentGameVersion || !reflect.DeepEqual(file.JournalMessageIDs, want) {
 		t.Fatalf("decoded journal IDs=%v want=%v", file.JournalMessageIDs, want)
 	}
-	legacy := bytes.Replace(data, []byte(`"version": 11`), []byte(`"version": 9`), 1)
+	legacy := bytes.Replace(data, []byte(`"version": 12`), []byte(`"version": 9`), 1)
 	if _, err := DecodeGame(legacy); err == nil {
 		t.Fatal("version 9 journal message IDs unexpectedly decoded")
 	}
 	if _, err := EncodeGameWithJournalState(roster, area.State{}, 3, 1, 0, 0, 7, 13, 0, 0, 0, [7]uint16{}, 0, nil, nil, nil, nil, []string{"journal.31", "journal.31"}); err == nil {
 		t.Fatal("duplicate journal message IDs unexpectedly encoded")
+	}
+}
+
+func TestCurrentGameVersionStoresDungeonSearchState(t *testing.T) {
+	roster := party.Roster{{
+		ID: "p1", Name: "阿勇", Race: party.RaceHuman, Class: party.ClassFighter,
+		Level: 1, Abilities: party.Abilities{Strength: 16, Intelligence: 10, Wisdom: 10, Dexterity: 12, Constitution: 14, Charisma: 10},
+	}}
+	wantEdges := []string{"tilverton.sewers.wall-09-west"}
+	data, err := EncodeGameWithAdventureState(roster, area.State{GameArea: 2, InDungeon: true}, 3, 4, 8, 15, 8, 15, 4, 12, 0, [7]uint16{}, 0, nil, nil, nil, nil, nil, true, wantEdges)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, err := DecodeGame(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if file.Version != CurrentGameVersion || !file.DungeonSearch || !reflect.DeepEqual(file.DungeonSearchEdges, wantEdges) {
+		t.Fatalf("decoded dungeon search state=%+v want enabled=%v edges=%v", file, true, wantEdges)
+	}
+	legacy := bytes.Replace(data, []byte(`"version": 12`), []byte(`"version": 11`), 1)
+	if _, err := DecodeGame(legacy); err == nil {
+		t.Fatal("version 11 dungeon search state unexpectedly decoded")
 	}
 }

@@ -13,6 +13,11 @@
       "clip": {"x": 27, "y": 22, "width": 90, "height": 90}
     }
   },
+  "search": {
+    "move_minutes_off": 1,
+    "move_minutes_on": 10,
+    "look_uses_search": true
+  },
   "locales": {
     "en": {
       "music.pc98.00.title": "Title",
@@ -1709,6 +1714,87 @@
       "wrap": true,
       "scale": 2,
       "spawn": {"x": 7, "y": 13, "direction": 0}
+    },
+    {
+      "id": "tilverton.sewers.first-person",
+      "kind": "first_person",
+      "area_id": 2,
+      "script_block": 3,
+      "geometry_block": 3,
+      "geometry_file": "GEO2.DAX",
+      "wall_file": "WALLDEF2.DAX",
+      "symbol_file": "8X8D2.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "indoor_sky_color": 0,
+      "wrap": true,
+      "scale": 2,
+      "search_edges": [
+        {
+          "id": "tilverton.sewers.wall-09-west",
+          "x": 10,
+          "y": 12,
+          "direction": 6,
+          "wall_type": 9,
+          "discovery": "search_or_look",
+          "confidence": "strong inference"
+        }
+      ],
+      "external_exits": [
+        {
+          "id": "tilverton.sewers.e2-south-boundary",
+          "x": 8,
+          "y": 15,
+          "direction": 4,
+          "wall_type": 12,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        }
+      ]
+    },
+    {
+      "id": "tilverton.fire-knife-hideout.first-person",
+      "kind": "first_person",
+      "area_id": 2,
+      "script_block": 4,
+      "geometry_block": 4,
+      "geometry_file": "GEO2.DAX",
+      "wall_file": "WALLDEF2.DAX",
+      "symbol_file": "8X8D2.DAX",
+      "sky_file": "SKY.DAX",
+      "sky_blocks": [250, 251, 252],
+      "indoor_sky_color": 0,
+      "wrap": true,
+      "scale": 2,
+      "external_exits": [
+        {
+          "id": "tilverton.fire-knife-hideout.e1-north-west",
+          "x": 8,
+          "y": 0,
+          "direction": 0,
+          "wall_type": 7,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "tilverton.fire-knife-hideout.e1-north-centre",
+          "x": 11,
+          "y": 0,
+          "direction": 0,
+          "wall_type": 7,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        },
+        {
+          "id": "tilverton.fire-knife-hideout.e1-north-east",
+          "x": 13,
+          "y": 0,
+          "direction": 0,
+          "wall_type": 6,
+          "event_id": "ecl-boundary",
+          "confidence": "strong inference"
+        }
+      ]
     },
     {
       "id": "tilverton.area-map",

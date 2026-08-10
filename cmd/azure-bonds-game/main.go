@@ -451,7 +451,10 @@ func (a *app) Update() error {
 				return a.state.EnterDungeonCamp()
 			}
 			if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-				return a.state.SearchDungeonLocation()
+				return a.state.ToggleDungeonSearch()
+			}
+			if inpututil.IsKeyJustPressed(ebiten.KeyL) {
+				return a.state.LookDungeonLocation()
 			}
 		} else {
 			if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
@@ -964,7 +967,7 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 		a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, facing)
 		geometryX, geometryY = a.dungeonX, a.dungeonY
 	}
-	if !a.geoGrid.CanMoveDungeonWrapped(geometryX, geometryY, direction) {
+	if !a.state.CanMoveDungeon(*a.geoGrid, dx, dy, direction) {
 		if flags, ok := a.dungeonDoorFlags(); ok && (flags == 2 || flags == 3) {
 			a.dungeonDoorMenu = true
 			a.state.Message = a.state.DungeonMessageText(game.DungeonMessageLockedPrompt)

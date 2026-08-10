@@ -1,17 +1,20 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
-第 536 輪以 Docker 內唯讀 route audit 重生 `GEO2.DAX` block 3：關閉 `wall=09`
-候選橋接時，`(13,10)` 到 `(8,15)` 不可達；只允許 `(10,12)↔(9,12)` 雙側
-`wall=09/detail=0` 候選邊時，才可沿十步抵達 `(8,15)`。之後南向仍遇到
-`wall=0C/detail=0` 的 E2 邊界。這把 P0-2 從「是否為傳送門」縮小為「Search／
-秘密門橋接」與「E2 boundary input」兩項，但沒有把 `wall=09` writer、成功率或
-正常玩家路徑標成完成。完整證據見
-[`docs/spec/536-tilverton-sewers-e2-search-route.md`](spec/536-tilverton-sewers-e2-search-route.md)。
+第 537 輪完成 Search／Look 分離與下水道至火刀據點的正常玩家 vertical slice。
+`S` 現在切換持續 `DungeonSearchEnabled`，`L` 是不改開關的一次性
+`LookDungeonLocation`；兩者、可發現 wall=09 候選邊與外部出口都由獨立
+Golden Box engine schema／CoAB JSON 宣告，發現的 edge ID 保存於 remake save v12。
+Docker 正常路徑由 `(13,10)` 逐格經 `(10,12)` 的 wall=09 候選、`(8,15,S)` E2
+進入 block 4，再經火刀北側 E1 候選 `(8,0,N)` 回到下水道 `(10,15,N)`；沒有
+直接設定座標或手動呼叫出口生命週期。火刀首領勝利後的 ECL 夢境、Tilverton
+世界地圖邊界與存檔重訪也已通過同一 session 測試。wall writer 與三個 E1 座標仍
+是 `strong inference`，不是原版逐指令 `exact`；完整邊界見
+[`docs/spec/537-search-look-e2-fire-knife-normal-route.md`](spec/537-search-look-e2-fire-knife-normal-route.md)。
 
-同輪重新核對原始 DOS 手冊：`SEARCH` 是持續開／關模式，`LOOK` 才是目前格子的
-單次搜尋；remake 目前的 `S` 仍呼叫一次性 `SearchDungeonLocation()`，所以是
-LOOK-like 暫時邊界，不是原版 Search toggle 完成。
+第 536 輪的 GEO／手冊盤點保留於
+[`docs/spec/536-tilverton-sewers-e2-search-route.md`](spec/536-tilverton-sewers-e2-search-route.md)，
+目前標為 `SUPERSEDED`，不再代表生產 `S` 行為。
 
 第 535 輪以公開英文攻略與本機 ECL／GEO 交叉核對 P0-2：攻略把 `(13,10)` 定位為
 提爾佛頓下水道的迷斯卓諾騎士事件，並把 `E2` 定義為通往火刀據點的出口；本機
@@ -95,7 +98,7 @@ docs/spec/527-pc98-moveparty-action-writer-boundary.md。
 `DS:7206h` 四平面 writer／暫存 loader）靜態稽核；實際
 HEAD／GitHub `main` 以本輪集中提交後的遠端核對為準。
 依賴的 Golden Box engine checkpoint：目前遠端 HEAD
-`29362ef269fa75f3b33b7f283dcf724d67601589`（已推送）。
+`b11d41ed7858d823cdf1fa6afe1a65dd5ffc06e7`（已推送）。
 
 實際最新 CoAB 版本以本文件所在 commit／GitHub `main` 為準，避免在同一個
 commit 內保存不可能自我引用的 hash。
@@ -182,7 +185,8 @@ GEO2 block 3 `(13,10,E)`、wall／roof registers 與下一次 lifecycle。拒絕
 `tilverton.sewers.guild-battle-echoes` PRESS，按鍵後由正式 `SearchDungeonLocation`
 交易觸發火刀檢查站。拒絕投降分支以真正五名 Fire Knife combat turns 完成，並回歸
 `tilverton.sewers-hide-bodies`。這是 `READY` 的有界正常路徑，不是完整下水道或整作
-完成聲明；第 515 輪已關閉第一個 `(13,10)` handoff，騎士後段與 block 4 仍是座標輔助。權威規格為
+完成聲明；第 515 輪當時的騎士後段與 block 4 座標輔助，已由第 537 輪的 Search／
+Look、E2、火刀 E1 正常玩家路徑取代；原版 wall writer 仍未 exact。權威規格為
 [`docs/spec/514-normal-tilverton-sewer-entry-route.md`](spec/514-normal-tilverton-sewer-entry-route.md)，
 共用路徑知識見 [`docs/knowledge/golden-box-normal-player-path.md`](knowledge/golden-box-normal-player-path.md)。
 

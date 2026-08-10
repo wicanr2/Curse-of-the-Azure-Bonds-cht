@@ -28,12 +28,15 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 第 535 輪又以攻略核對 `(13,10)` 騎士事件與 E2 火刀據點出口，將
 `(13,10)→(8,15)` 的工作方向改成外部地圖邊界轉場；第 536 輪以原始 GEO2 block 3
 重生出中間 `wall=09/detail=0` 的唯一候選橋接，並核對手冊確認原版 `SEARCH` 是
-持續開關、`LOOK` 才是單次搜尋，但正常 wall／Search／E2 出口輸入仍未完成；
+持續開關、`LOOK` 才是單次搜尋；第 537 輪已把兩者分離接到 engine＋JSON，並由
+正常玩家路徑通過 wall=09、E2、火刀 E1 回下水道，另驗證首領勝利後世界地圖
+與 save/load 重訪。wall writer 與 E1 座標仍以 `strong inference` 標示；
 第 529 輪完成玩家戰鬥法術的資料契約，
 不把法術名稱或劇情塞回 Go。詳細證據見[第 534 輪規格](docs/spec/534-chinese-manual-moveparty-character-transfer.md)、
 [第 533 輪規格](docs/spec/533-pc98-moveparty-helper-gate.md)、
 [第 532 輪規格](docs/spec/532-option-rule-localization-boundary.md)、
 [第 531 輪規格](docs/spec/531-character-creation-original-frame-density.md)、
+[第 537 輪規格](docs/spec/537-search-look-e2-fire-knife-normal-route.md)、
 [第 536 輪規格](docs/spec/536-tilverton-sewers-e2-search-route.md)、
 [第 535 輪規格](docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md)、
 [第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
