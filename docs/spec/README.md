@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百四十輪 ECL corpus、全 GEO 宣告與戰鬥音效邊界](./540-ecl-map-combat-audio-corpus-closure.md)（`READY`：25 個 ECL block／125 個 entry 的 parser／控制流稽核、16 個原始 GEO block 的 game-pack identity、戰鬥開始／隊伍全滅 semantic sound intent；不含完整 ECL side effects、全地圖、完整戰鬥或原機音效）
 - [第五百三十九輪繁中 GUI 寬度與溢框修正](./539-cjk-gui-width-clipping.md)（`READY`：依實際 glyph advance 的 rune-safe 換行／裁切、640×480 代表畫面；不含所有狀態逐像素 exact）
 - [第五百三十八輪火刀據點入口至首領正常路徑](./538-fire-knife-normal-leader-route.md)（`READY`：真實開場 session 從 E2 block 4 `(6,1,S)` 逐格到 `(3,13)` 首領戰前；不含所有可選房間與戰後出口）
 - [第五百三十七輪 SEARCH／LOOK、E2 與火刀 E1 正常路徑](./537-search-look-e2-fire-knife-normal-route.md)（`READY`：engine＋JSON、正常玩家路徑、world-map save/load；原版 wall writer 仍為 `strong inference`）

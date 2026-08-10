@@ -45,7 +45,7 @@ func TestDOSIDKeepsPlatformMappingSeparateFromSemanticEvents(t *testing.T) {
 		{"lightning", Lightning},
 		{"swish", Miss},
 		{"step", Step},
-		{"fireball", Sound10},
+		{"fireball", Sound10}, {"combat", Combat}, {"crash", Crash},
 		{"overture", Start},
 	}
 	for _, test := range tests {
@@ -54,8 +54,10 @@ func TestDOSIDKeepsPlatformMappingSeparateFromSemanticEvents(t *testing.T) {
 			t.Errorf("DOSID(%q)=(%d,%v), want (%d,true)", test.event, got, ok, test.want)
 		}
 	}
-	if _, ok := DOSID("combat"); ok {
-		t.Fatal("unmapped DOS combat event was accepted")
+	for _, id := range []ID{Combat, Crash} {
+		if _, ok := AssetName(id); ok {
+			t.Fatalf("DOS selector %d has no extracted reference asset", id)
+		}
 	}
 }
 

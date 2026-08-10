@@ -4299,6 +4299,9 @@ func TestStartEncounterBuildsBattleFromECLAndMonsterRecord(t *testing.T) {
 	if !state.CombatActive() || len(enemies) != 1 || enemies[0].Name != "BUGBEAR" || enemies[0].SpriteSet != 1 || enemies[0].SpriteBlock != 0x35 || enemies[0].AnimationBlock != 0x09 || !enemies[0].HasAnimation {
 		t.Fatalf("state=%#v enemies=%#v", state, enemies)
 	}
+	if got := state.ConsumeSoundEvents(); len(got) == 0 || got[0] != SoundCombat {
+		t.Fatalf("ECL combat sound events=%v, want %v at transition start", got, SoundCombat)
+	}
 	for _, fighter := range state.CombatFighters() {
 		if fighter.Side == combat.SideParty && fighter.IconDirection != 7 {
 			t.Fatalf("party icon direction=%d, want 7", fighter.IconDirection)

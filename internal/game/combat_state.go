@@ -258,7 +258,18 @@ func (s *State) StartEncounterWithAffects(result ecl.RunResult, records map[uint
 		}
 		index++
 	}
-	return s.StartCombat(party, enemies, seed)
+	pendingSoundStart := len(s.pendingSoundEvents)
+	if err := s.StartCombat(party, enemies, seed); err != nil {
+		return err
+	}
+	// PC-98 GAME.EXE names this transition COMBATFX (selector 14). The DOS
+	// resource set has no corresponding extracted WAV, so the platform adapter
+	// may safely ignore it while the semantic event remains available to exact
+	// PC-98 SOUNDFX playback.
+	s.pendingSoundEvents = append(s.pendingSoundEvents, SoundEvent(""))
+	copy(s.pendingSoundEvents[pendingSoundStart+1:], s.pendingSoundEvents[pendingSoundStart:])
+	s.pendingSoundEvents[pendingSoundStart] = SoundCombat
+	return nil
 }
 
 func (s *State) CombatActive() bool { return s.battle != nil && s.Mode == ModeCombat }

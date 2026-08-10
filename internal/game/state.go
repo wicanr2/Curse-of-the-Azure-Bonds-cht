@@ -3449,6 +3449,7 @@ func (s *State) applyECLProgram(result ecl.RunResult) (bool, error) {
 		s.enterProgramTitle(s.catalog.Text("program_main_menu", "program_main_menu"))
 		return true, nil
 	case 3:
+		s.requestSound(SoundCrash)
 		s.partyKilled = true
 		s.programEndMenu = true
 		s.Mode = ModeWilderness

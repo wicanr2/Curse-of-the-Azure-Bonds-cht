@@ -1,6 +1,8 @@
 package gamepack
 
 import (
+	"archive/zip"
+	"io"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -8,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/locale"
 	enginedamage "github.com/wicanr2/golden-box-remake-engine/combat/damage"
 	enginemodifier "github.com/wicanr2/golden-box-remake-engine/combat/modifier"
@@ -15,6 +18,63 @@ import (
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
 )
+
+func TestPackDeclaresEveryOriginalGEOBlock(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	archive, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Skipf("original image is unavailable: %v", err)
+	}
+	defer archive.Close()
+
+	declared := make(map[[2]uint8]bool)
+	for _, definition := range pack.Maps {
+		if definition.Kind != "first_person" {
+			continue
+		}
+		declared[[2]uint8{definition.AreaID, definition.GeometryBlock}] = true
+	}
+	for index, member := range []string{"GEO2.DAX", "GEO3.DAX", "GEO4.DAX", "GEO5.DAX", "GEO6.DAX"} {
+		data := originalMapMember(t, archive, member)
+		blocks, err := dax.Parse(data)
+		if err != nil {
+			t.Fatalf("%s: %v", member, err)
+		}
+		set := uint8(index + 2)
+		for _, block := range blocks {
+			if !declared[[2]uint8{set, block.Entry.ID}] {
+				t.Fatalf("GEO%d block 0x%02X has no first-person game-pack declaration", set, block.Entry.ID)
+			}
+		}
+	}
+	if len(declared) < 16 {
+		t.Fatalf("declared first-person geometry blocks=%d, want at least 16 original blocks", len(declared))
+	}
+}
+
+func originalMapMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
+	t.Helper()
+	for _, file := range archive.File {
+		if file.Name != name {
+			continue
+		}
+		reader, err := file.Open()
+		if err != nil {
+			t.Fatal(err)
+		}
+		data, readErr := io.ReadAll(reader)
+		closeErr := reader.Close()
+		if readErr != nil || closeErr != nil {
+			t.Fatalf("read %s: read=%v close=%v", name, readErr, closeErr)
+		}
+		return data
+	}
+	t.Fatalf("archive member %q not found", name)
+	return nil
+}
 
 func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	pack, err := Default()
