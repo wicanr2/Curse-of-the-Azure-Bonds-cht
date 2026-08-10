@@ -1,6 +1,7 @@
 package game
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
@@ -87,6 +88,9 @@ func TestApplyECLProgramPartyKilled(t *testing.T) {
 		state.Message != catalog.Text("program_party_killed_message", "") {
 		t.Fatalf("PROGRAM 3 localized terminal=%q choices=%v message=%q",
 			state.Prompt, state.Choices, state.Message)
+	}
+	if got, want := state.ConsumeSoundEvents(), []SoundEvent{SoundCrash}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("PROGRAM 3 sound events=%v, want %v", got, want)
 	}
 	if err := state.Select(0); err != nil || state.Mode != ModeTitle {
 		t.Fatalf("PROGRAM 3 title choice: mode=%v err=%v", state.Mode, err)

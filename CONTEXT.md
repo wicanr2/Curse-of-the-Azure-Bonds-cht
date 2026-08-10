@@ -4792,3 +4792,19 @@ save/load 測試加入原始地點回歸；正常完整 session 的 block 50 分
 本輪 Docker focused Fire Knife group 與 GUI／gamepack 測試通過；提交前必須再跑
 受影響 repo 的正式套件、`git diff --check`，只集中提交本輪程式、規格、工作清單與
 目前截圖。不要 stage `workplace/`，也不要把以上未完成項目寫成 remake 已完成。
+
+2026-08-10 第五百四十輪完成一個可驗收的 coverage／audio intent milestone。原始
+`ECL1..6.DAX` 共 25 個 block／125 個 lifecycle entry 由
+`internal/ecl/corpus_coverage_test.go` 逐一建立 `TraceGraph`；所有靜態可達
+instruction 都有 `KnownCommands` metadata，並另驗證 `0x00..0x40` command table。
+另有 reachable audit 確認 `0x0F／0x1F／0x23` 沒有從本作 125 個 lifecycle entry
+抵達；它們仍保留在通用 command table。這是 parser／控制流 gate，不是完整 opcode
+side effect 或 external routine。game-pack
+新增原始 `GEO2..6.DAX` 16 個 block 的 first-person declarations，ECL3 block `0x12`
+共用 GEO3 `0x11` 的 script／geometry identity 分離也有測試。ECL encounter 進入
+`StartEncounterWithAffects` 排入 `SoundCombat`，`PROGRAM 3` 排入 `SoundCrash`；
+DOS selector 14／15 沒有抽取 WAV 時安全略過，PC-98 selector 由 adapter 解析。
+focused 與正式受影響套件 gate 已在 Docker 通過（`azure-bonds-game` 另以明確
+Xvfb 啟動）；全 ECL side effects、全地圖正常路徑、完整戰鬥／音效與整作通關仍未
+完成。權威規格為
+`docs/spec/540-ecl-map-combat-audio-corpus-closure.md`。

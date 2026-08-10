@@ -5,6 +5,15 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 540 輪完成原始 ECL corpus 的 parser／控制流稽核：`ECL1..6.DAX` 共 25 個
+block、125 個 lifecycle entry 均能由 `EntryPoints` 取得，所有靜態可達指令都有
+command metadata；同時 game-pack 宣告原始 `GEO2..6.DAX` 的 16 個 geometry block，
+保留 ECL script 與 GEO geometry identity 的分離。ECL encounter 開始與 `PROGRAM 3`
+隊伍全滅也分別排入 `SoundCombat`／`SoundCrash`，PC-98 selector 交由 sound adapter
+解析。這是 corpus／資源 identity／semantic audio intent 的 `READY` milestone，
+不是完整 ECL side effects、全地圖正常路徑、完整戰鬥或原機音效完成聲明；完整邊界見
+[`docs/spec/540-ecl-map-combat-audio-corpus-closure.md`](spec/540-ecl-map-combat-audio-corpus-closure.md)。
+
 第 538 輪把火刀據點的正常玩家路徑從 E2 block 4 `(6,1,S)` 延伸到首領戰前。
 `TestRealNewGameBeginsAtGlobalBlockOne` 以同一個 ECL／地城 session 逐格通過
 terrain `0x99` 刀刃區、`0x9A` 冰凍房、`0x94／0x95` 相位蜘蛛區，抵達
@@ -1136,8 +1145,10 @@ marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／�
 
 ## 尚未完成
 
-- 全部 ECL opcode、外部 routine、副作用及由開場到結局的完整可通關流程。
-- 所有城市、地城、門、屋頂、斜向視角與每張地圖的 DOS 像素級校準。
+- 全部 ECL opcode 的執行副作用、外部 routine、資料 consumer 及由開場到結局的
+  完整可通關流程；目前只有 25 block／125 entry 的 parser／控制流 corpus gate。
+- 所有城市、地城、門、屋頂、斜向視角、16 個 GEO block 的房間事件與每張地圖的
+  DOS 像素級校準。
 - 戰鬥畫面的完整 DOS oracle 校準、弓箭／法術 projectile 的逐距離 timing、
   所有方向 placement、Fireball 牆面阻擋／同距排序、Lightning Bolt
   牆角／多次反彈 runtime oracle、毒雲每回合重複判定與魔法保護例外、AI、
@@ -1146,7 +1157,8 @@ marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／�
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal、Tavern Tales、
   Clue Book／攻略的完整繁中化。
-- 原版音樂與 PC Speaker／Tandy 音效的完整還原；PC-98 12 首 YM2203
+- 原版音樂與 PC Speaker／Tandy 音效的完整還原；目前 ECL 戰鬥開始／隊伍全滅的
+  semantic intent 已接通，但 PC-98 12 首 YM2203
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
   已證明；PC-98 正常短音效的 42 個 GAME.OVR caller、selector 分布、
   音序表與 port `37h` pulse 程式也已證明並可由本機 GAME.EXE 匯入，

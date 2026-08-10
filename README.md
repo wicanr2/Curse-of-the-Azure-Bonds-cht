@@ -44,11 +44,15 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 [第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
 [反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
 
-第 538 輪再由同一個正常開場 session 逐格走完 E2 block 4 到火刀首領戰前；第 539
+第 540 輪完成原始 ECL1–6 的 25 block／125 entry parser／控制流稽核、16 個原始
+GEO block 的 game-pack identity 宣告，並接上 ECL 戰鬥開始／隊伍全滅的 semantic
+音效 intent。這些是資料覆蓋與生命週期基線，不等於完整 ECL、全地圖、完整戰鬥或
+原機音效完成。第 538 輪再由同一個正常開場 session 逐格走完 E2 block 4 到火刀首領戰前；第 539
 輪修正以倚天字形實際字寬換行／裁切造成的中文溢框，並用 Docker／Xvfb 重新產生
 下方代表畫面。這些畫面證明目前版面的可用性與原版風格基線，不代表整作已通關或
 所有戰鬥／地圖狀態已逐像素還原；請以[工作清單](WORKLIST.md)的未完成項目為準。
-規格見[火刀正常路徑](docs/spec/538-fire-knife-normal-leader-route.md)與[中文 GUI 寬度契約](docs/spec/539-cjk-gui-width-clipping.md)。
+規格見[第 540 輪 ECL／GEO／音效邊界](docs/spec/540-ecl-map-combat-audio-corpus-closure.md)、
+[火刀正常路徑](docs/spec/538-fire-knife-normal-leader-route.md)與[中文 GUI 寬度契約](docs/spec/539-cjk-gui-width-clipping.md)。
 
 E2 路徑的唯讀 GEO 稽核工具為
 [`tilverton_e2_route_audit.py`](scripts/research/tilverton_e2_route_audit.py)；它只列出

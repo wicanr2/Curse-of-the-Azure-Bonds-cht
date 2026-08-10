@@ -20,6 +20,8 @@ const (
 	Step      ID = 10
 	Sound10   ID = 11
 	Start     ID = 13
+	Combat    ID = 14
+	Crash     ID = 15
 )
 
 // Event is the platform-neutral sound vocabulary accepted by adapters.
@@ -42,6 +44,8 @@ func DOSID(event Event) (ID, bool) {
 		"swish":     Miss,
 		"step":      Step,
 		"fireball":  Sound10,
+		"combat":    Combat,
+		"crash":     Crash,
 		"overture":  Start,
 	}
 	id, ok := ids[event]

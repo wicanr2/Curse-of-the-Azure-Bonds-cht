@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-10（第 539 輪後盤點）
+更新日期：2026-08-10（第 540 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -11,8 +11,10 @@
 
 重製尚未完成整作通關。現在已經有多條可重播的正常玩家垂直切片，並完成
 `SEARCH`／`LOOK`、wall=09 候選橋接、E2、火刀 E1、戰後世界地圖與 save/load
-的 engine＋JSON 接線；還缺火刀據點完整逐房間路徑、全 ECL／全地圖、完整戰鬥、
-音樂音效、全量繁中校對、完整存檔相容與三平台發行。
+的 engine＋JSON 接線；本輪再完成 25 個 ECL block／125 個 entry 的 parser／控制流
+稽核、16 個原始 GEO block 的 game-pack 宣告，以及 ECL 戰鬥開始／隊伍全滅音效
+意圖。仍缺完整 ECL side effects／外部 routine、全地圖正常路徑、完整戰鬥與原機
+音訊、全量繁中校對、完整存檔相容與三平台發行。
 
 ## 狀態與證據規則
 
@@ -23,6 +25,16 @@
 - `待實作`：目前玩家路徑或產品功能仍未完成。
 - `待研究`：只有在要支援該功能或原版 fidelity 時才逆向；不可先把假說寫入
   正式規則。
+
+## 第 540 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| ECL corpus parser／控制流稽核 | 原始 `ECL1..6.DAX` 的 25 個 block／125 個 lifecycle entry 都可由 `EntryPoints` 取得並交給 `TraceGraph`；靜態可達 opcode 都有 command metadata，`0x00..0x40` table 也有 coverage。這不是完整 opcode side effect、外部 routine 或整作通關。 |
+| 全原始 GEO block 的 game-pack identity | 16 個原始 `GEO2..6.DAX` block 都有 first-person declaration，且 `script_block`／`geometry_block` 分離；ECL3 `0x12` 共用 GEO3 `0x11` 的幾何也有明確映射。這不是所有地形事件、出口、世界旅行或持久重訪。 |
+| 戰鬥開始／隊伍全滅音效 intent | ECL encounter 進入戰鬥排入 `SoundCombat`，`PROGRAM 3` 排入 `SoundCrash`；PC-98 selector 對應留在 adapter，DOS 缺少 14／15 WAV 時安全略過。這不是完整原機音效、混音、時序或全場景音樂。 |
+
+權威規格：[`第五百四十輪 ECL／GEO／戰鬥音效邊界`](docs/spec/540-ecl-map-combat-audio-corpus-closure.md)。
 
 ## 第 539 輪已關閉的工作
 
@@ -62,12 +74,12 @@
 
 | 工作 | 目前缺口 | 驗收方向 |
 |---|---|---|
-| 全 ECL 與外部 routine | opcode corpus 已有大量 `READY` 邊界，但 `CALL`、`NEWECL`、地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 仍有未接 consumer。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
-| 全地圖與世界旅行 | 目前只有多個 GEO／ECL 區段和世界地圖切片；仍缺全 GEO／AREA／WILDERNESS、所有入口出口、地形事件、持久 map state 與錯誤出生點稽核。 | 建立全地圖可達性與邊界表；逐區以原始資料和正常移動驗證，不把攻略座標直接寫成規則。 |
-| 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法與 12 個玩家法術入口；仍缺完整敵我 AI、遠程／弓箭、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
+| 全 ECL 與外部 routine | 25 個 block／125 個 entry 的 parser／控制流 corpus gate 已完成；`CALL`、`NEWECL`、地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 的完整 consumer 仍未閉合。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
+| 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告並通過原始 DAX 對照；仍缺全 GEO／AREA／WILDERNESS 的房間事件、所有入口出口、世界旅行、持久 map state 與錯誤出生點稽核。 | 建立全地圖可達性與邊界表；逐區以原始資料和正常移動驗證，不把攻略座標直接寫成規則。 |
+| 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法、12 個玩家法術入口與視覺時間軸；ECL 戰鬥開始／隊伍全滅音效 intent 已接通，仍缺完整敵我 AI、弓箭／投射物、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與原機音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件。 |
-| 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥事件同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
+| 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
 | UI、素材與原版 fidelity | 本輪補上依實際 glyph advance 的中文換行／裁切，並重新驗證原版裂紋石框、640×480 第一人稱與右側 party/status；README 代表圖已換成目前版本。冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、左上場景填格與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
 
 ### P2：完成後才做的發行工作
@@ -115,5 +127,6 @@
    再集中 commit＋push 兩個 repository。
 
 下一個最小可重現工作：先追火刀首領勝利後 block 50 的 `PATROL FOREST` 正常
-世界出口分支，再補入口至首領路線上尚未覆蓋的房間；完成後再更新本檔、
-`docs/project-status.md`、詳細 worklist 與 `CONTEXT.md`，不要先擴大到無關反組譯。
+世界出口分支，並把這條 session 的 ECL／地圖 service boundary 接回同一份
+player state；完成後再補入口至首領路線上尚未覆蓋的房間。不要把本輪 static
+corpus gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的反組譯。
