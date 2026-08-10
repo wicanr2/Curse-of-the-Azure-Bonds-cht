@@ -230,6 +230,39 @@ save／world state 又可能殘留 dispatcher 暫存值。這項時序是 CoAB a
 入口／出口、世界 travel branch、save／revisit 與劇情旗標仍須由正常玩家 session
 逐一驗證；現有事件測試不能被這個 graph gate 取代。
 
+## 從新遊戲接到城市／主線 handoff
+
+第 542 輪提供目前最長的同一 session 範例：
+
+```text
+火刀首領勝利
+  → PATROL FOREST（保留前置 4C03=0x80）
+  → JOURNEY ON → 阿沙本福德
+  → ENTER CITY → BAR → RELAX → Tavern Tale 28 → EXIT → LEAVE
+  → THE STANDING STONE → TRAIL／提爾隘口戰鬥
+  → 灰袍男子 → THANK HIM → 尋紅線索
+  → JOURNEY ON → ESSEMBRA → TRAIL → 艾森布拉城外
+```
+
+這段的重點不是選項名稱，而是 handoff 的狀態連續性：首領戰後的 block 50 menu
+由前置城市事件的共享工作旗標決定；固定只建立首領狀態的測試可能看到
+`ENTER CITY`，不能因此清除正常 session 的 `4C03`。城市／世界選項必須從
+game-pack stable ID 解析，測試期待值不能複製 locale 顯示文字。
+
+事件驗收要把三種證據分開：
+
+1. **正常 session**：從 `ActionStart`／角色建立或正式 save 開始，沿 `MoveDungeon`
+   與世界旅行輸入抵達。
+2. **固定 ECL fixture**：只驗證某個 raw block、flag 或戰鬥的 producer／consumer；
+   可加速研究，但不得算進「新隊伍從開場到結局」。
+3. **coordinate-assisted**：為了縮小地圖事件直接設定座標／旗標；名稱要明示，
+   只能作研究或 branch regression，不能寫進 P0 正常路徑完成數。
+
+第 542 輪後，正常骨架已到艾森布拉城外；哈普、熔岩洞、法師塔、尤拉什、摩安德
+之坑、散提爾堡與 Myth Drannor 的既有測試仍須逐段轉成同一 session，最後才可宣稱
+完整主線。完整證據見
+[`第 542 輪正常主線與城市／地城 handoff`](../spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。
+
 ## 目前 CoAB checkpoint
 
 已由新遊戲進入提爾佛頓 GEO2 block 1，使用原始 west step 抵達 Windlord’s Inn，

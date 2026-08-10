@@ -4768,6 +4768,13 @@ func (s *State) finishNewGameEntry() {
 	s.Location = LocationTilverton
 	s.LocationName = s.catalog.Text("tilverton", "tilverton")
 	s.OriginalLocation = "TILVERTON"
+	// AREA's initial world-location slot is the native Tilverton value.  The
+	// first dungeon has no route-selection branch yet, but later NEWECL back to
+	// ECL1 reads the same slot; leaving it unknown makes a real post-dungeon
+	// return choose the wrong world menu.
+	s.Area.CurrentCity = 0
+	s.session.SetMemoryValue(0x4C9B, 0)
+	s.session.SetMemoryValue(0x4C9C, 0)
 	s.Mode = ModeDungeon
 	s.Choices = nil
 	s.Prompt = s.catalog.Text("dungeon_prompt", "dungeon_prompt")

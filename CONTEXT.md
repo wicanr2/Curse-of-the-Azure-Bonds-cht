@@ -4831,3 +4831,23 @@ boundary；不等於所有城市事件、地城房間、隨機遭遇、出口、
 block 50 的 `PATROL FOREST` 世界出口，並逐點補齊尚未覆蓋的正常地圖事件；不要把
 路網 gate 當成全地圖事件完成，也不要因 external routine 尚未跨作品證明就新增
 engine address mapping。
+
+2026-08-11 第五百四十二輪完成第 541 輪後的正常主線延伸。`internal/game/state.go`
+ 的 `finishNewGameEntry` 現在明確初始化 `Area.CurrentCity=0` 與 ECL `4C9B／4C9C=0`，
+避免新遊戲第一次世界選單沿用測試／舊狀態的城市列。`TestRealNewGameBeginsAtGlobalBlockOne`
+在同一 ECL session 載入 `MON1CHA.DAX` 後，從火刀首領勝利完成 `PATROL FOREST`
+戰鬥續跑、`JOURNEY ON`、阿沙本福德城內 `BAR→RELAX→Tavern Tale 28`、離城、
+立石群提爾隘口戰鬥、灰袍男子／尋紅線索，最後抵達艾森布拉城外。所有新增選項都
+由 game-pack stable option ID 解析；固定夾具的 `ENTER CITY` 與正常 session 的
+`PATROL FOREST` 差異已確認來自前置提爾佛頓 `4C03=0x80` 共享 one-shot 旗標，不能
+清掉旗標來統一畫面。權威規格為
+`docs/spec/542-normal-campaign-spine-and-city-dungeon-handoff.md`；第 538 輪規格的
+舊 blocker 已勘誤並由第 542 輪接續。
+
+本輪 Docker focused gate 通過：正常新遊戲主線測試、火刀房間／首領固定回歸，以及
+`./cmd/... ./gamepack ./internal/...` 的非 Ebiten 套件均通過；Ebiten 套件在沒有
+Xvfb／DISPLAY 的一次容器 gate 中失敗，不能當成程式回歸，提交前要以有界 Xvfb 重新
+驗證。目前工作樹正式修改為 `internal/game/state.go`、
+`internal/game/ecl_integration_test.go` 與第 542 輪文件；`workplace/` 仍不可提交。
+下一輪從艾森布拉城外沿同一 session 接哈普、熔岩洞與法師塔，並建立城市／GEO
+事件 coverage matrix；不要把本輪正常骨架或既有固定測試擴大宣稱成完整結局。

@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 541 輪後盤點）
+更新日期：2026-08-11（第 542 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -13,9 +13,10 @@
 `SEARCH`／`LOOK`、wall=09 候選橋接、E2、火刀 E1、戰後世界地圖與 save/load
 的 engine＋JSON 接線；本輪再完成 25 個 ECL block／125 個 entry 的 parser／控制流
 稽核、16 個原始 GEO block 的 game-pack 宣告、ECL 戰鬥開始／隊伍全滅音效意圖，
-以及 14 個世界點位的 ECL1 到達／JSON 有向路網基線。仍缺完整 ECL side effects／
-外部 routine、所有地圖事件與正常路徑、完整戰鬥與原機音訊、全量繁中校對、完整
-存檔相容與三平台發行。
+以及 14 個世界點位的 ECL1 到達／JSON 有向路網基線；第 542 輪再把同一新遊戲
+session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉城外。仍缺完整 ECL
+side effects／外部 routine、全城市／全房間 coverage、完整結局同 session、完整
+戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
 
 ## 狀態與證據規則
 
@@ -49,6 +50,17 @@
 旗標與完整主線仍要沿正常輸入逐區驗證；既有城市事件測試與後續 vertical slice
 繼續累積，不能用路網可達性替代劇情事件證據。
 
+## 第 542 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| 火刀首領後正常世界出口 | 同一新遊戲 ECL session 完成戰後夢境、`PATROL FOREST` 戰鬥續跑、`JOURNEY ON` 與阿沙本福德抵達；`4C03=0x80` 的前置共享旗標被保留，沒有用 frontend 特判清除。 |
+| 阿沙本福德正常城市 handoff | 正常抵達後進城、進河畔酒館、選 `RELAX` 觸發 Tavern Tale 28、按鍵續跑、離開酒館與離城均由 game-pack stable option ID 驅動。 |
+| 立石群／艾森布拉正常主線骨架 | 阿沙本福德離城後沿 `THE STANDING STONE`，完成提爾隘口戰鬥、灰袍男子／尋紅線索，再沿 `ESSEMBRA` 到達城外 edge；同一 ECL session 未重播 block 起點。 |
+| 固定事件與正常路徑的證據分層 | 長固定整合測試仍涵蓋哈普、熔岩洞、法師塔、希爾斯法、尤拉什、摩安德之坑、散提爾堡等大量事件；第 542 輪規格明確標出它們不能取代一條從新遊戲到結局的正常 session。 |
+
+權威規格：[`第 542 輪正常主線與城市／地城 handoff`](docs/spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。
+
 ## 第 539 輪已關閉的工作
 
 | 項目 | 目前可宣稱的範圍 |
@@ -79,16 +91,16 @@
 
 | 工作 | 現況 | 下一個可驗收成果 |
 |---|---|---|
-| 火刀據點完整正常路徑 | 已由 `(6,1,S)` 的正式 ECL continuation 逐格抵達首領戰前，必要房間事件與戰鬥可續跑；尚未覆蓋所有可選房間、首領勝利後的同一 session 出口與完整重訪。 | 補齊剩餘房間的正常輸入、旗標、寶物、戰後 continuation，再把同一 session 從首領勝利走到出口並重訪。 |
-| 火刀據點出口、返回世界地圖與重訪 | 固定首領 fixture 已有世界地圖／save/load 切片；本輪正常入口已到首領戰前，但完整 session 勝利後的 raw `PATROL FOREST` 選單分支仍未與正常出口契約接起來，不能宣稱完成。 | 追 `block 50` 勝利後的 raw menu／flag producer，完成不注入座標的「入口→首領→出口→世界地圖→存檔→重載→重訪」測試；同時保留 `LoadPartyFile` 的地點投影回歸。 |
-| 開場到結局的正常玩家主線 | ECL1–ECL6 的許多 block 與窄事件已可讀、也有多個正常路徑切片；完整章節 handoff、外部 routine、分支與結局尚未串完。 | 依章節建立可中斷／可存檔的 vertical slice，最後由新隊伍或正式角色檔從開場走到結局；未支援的 boundary 必須明確 fail-closed。 |
+| 火刀據點完整正常路徑 | 入口→首領→戰後世界→阿沙本福德→立石群→艾森布拉城外的正常 session 已接通；仍未覆蓋所有可選房間、全部寶物、失敗／重訪分支。 | 以原始 GEO 路徑補齊火刀可選房間與重訪，再把可驗收結果寫入 coverage matrix。 |
+| 火刀據點出口、返回世界地圖與重訪 | 正常 session 的 `PATROL FOREST`、`JOURNEY ON`、阿沙本福德抵達與後續城市 handoff 已閉合；Tilverton 固定 fixture 的 save/load 回歸仍保留。 | 將同一正常 session 的存檔／重載與重訪延伸到世界路由，並分離固定夾具與正常主線證據。 |
+| 開場到結局的正常玩家主線 | 已從開場走到艾森布拉城外；固定事件測試另覆蓋哈普、法師塔、摩安德之坑、散提爾堡與 Myth Drannor 局部，但完整章節 handoff、最終戰與結局尚未串完。 | 沿同一 session 續接哈普→熔岩洞→法師塔→尤拉什／摩安德之坑→散提爾堡→Myth Drannor，最後加入 `PROGRAM 8` 結局與 save/reload gate；未支援 boundary 必須明確 fail-closed。 |
 
 ### P1：補齊可玩規則、資料與原版行為
 
 | 工作 | 目前缺口 | 驗收方向 |
 |---|---|---|
 | 全 ECL 與外部 routine | 25 個 block／125 個 entry 的 parser／控制流 corpus gate 已完成；`CALL`、`NEWECL`、地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 的完整 consumer 仍未閉合。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
-| 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達與 Tilverton→全點 directed adjacency 已有 Docker gate。仍缺所有城市／地城房間事件、TRAIL／WILDERNESS／EXIT 分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 依地圖／章節以正常移動執行每個事件與分支，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
+| 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
 | 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法、12 個玩家法術入口與視覺時間軸；ECL 戰鬥開始／隊伍全滅音效 intent 已接通，仍缺完整敵我 AI、弓箭／投射物、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與原機音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件。 |
@@ -139,7 +151,8 @@
 4. Docker 內完成受影響套件、代表性正常玩家路徑、save round-trip、截圖／包裝 smoke；
    再集中 commit＋push 兩個 repository。
 
-下一個最小可重現工作：沿同一個 ECL session 追火刀首領勝利後 block 50 的 `PATROL FOREST` 正常
-世界出口分支，並把這條 session 的 ECL／地圖 service boundary 接回同一份
-player state；接著按世界路網逐點補齊尚未覆蓋的城市／地城事件。不要把本輪 static
-corpus／路網 gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的反組譯。
+下一個最小可重現工作：沿第 542 輪同一個 ECL session 從艾森布拉城外續接哈普、熔岩洞
+與法師塔，先把「正常主線骨架」延伸到下一個 artifact handoff；同時建立城市／GEO
+事件 coverage matrix，逐項標示 normal、fixed fixture 或 coordinate-assisted。
+不要把 static corpus／路網 gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的
+反組譯。

@@ -167,6 +167,19 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		guardRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(2, guardRecords)
+	patrolBlocks, err := dax.Parse(zipData(t, image, "MON1CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	patrolRecords := make(map[uint8]monster.Record, len(patrolBlocks))
+	for _, block := range patrolBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		patrolRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(1, patrolRecords)
 	if err := state.Apply(ActionStart); err != nil {
 		t.Fatal(err)
 	}
@@ -1700,6 +1713,20 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if !ok {
 		t.Fatal("Fire Knife hideout GEO2 block 4 is absent")
 	}
+	// Keep the route itself normal while giving the single opening character a
+	// deterministic combat fixture strong enough to finish the leader battle.
+	// This changes no map position, ECL flag, or story choice; it only keeps the
+	// long integration test bounded before the real post-victory continuation.
+	for index := range state.party {
+		state.party[index].HitPoints = 10000
+		state.party[index].MaxHitPoints = 10000
+		state.party[index].AttackBonus = 100
+		state.party[index].DamageDiceCount = 1
+		state.party[index].DamageDiceSides = 1
+		state.party[index].DamageBonus = 100
+		state.party[index].AttacksPerTurn = 8
+		state.party[index].InitiativeBonus = 100
+	}
 	continueHideoutEvent := func(step int) {
 		if state.Mode == ModeCombat {
 			finishDungeonEncounter(fmt.Sprintf("normal Fire Knife hideout combat step %d", step))
@@ -1804,6 +1831,203 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	}
 	if leaderEnemies != 21 {
 		t.Fatalf("normal Fire Knife leader route enemies=%d fighters=%v, want 21", leaderEnemies, state.CombatFighters())
+	}
+	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("normal Fire Knife leader victory turn %d: %v", turn, err)
+		}
+	}
+	if state.CombatStatus() != combat.StatusPartyWon {
+		t.Fatalf("normal Fire Knife leader status=%v mode=%v message=%q choices=%v",
+			state.CombatStatus(), state.Mode, state.Message, state.Choices)
+	}
+	if !state.treasureMenu || len(state.Choices) < 1 {
+		t.Fatalf("normal Fire Knife leader victory did not expose loot service: mode=%v choices=%v message=%q",
+			state.Mode, state.Choices, state.Message)
+	}
+	if err := state.Select(len(state.Choices) - 1); err != nil {
+		t.Fatalf("close normal Fire Knife leader loot service: %v", err)
+	}
+	for step := 0; step < 6; step++ {
+		if state.PictureRequested {
+			if err := state.Continue(); err != nil {
+				t.Fatalf("continue Fire Knife post-victory picture %d: %v", step, err)
+			}
+		}
+		if state.Mode != ModeWilderness || len(state.Choices) == 0 {
+			t.Fatalf("Fire Knife post-victory continuation %d mode=%v choices=%v message=%q picture=%v:%d",
+				step, state.Mode, state.Choices, state.Message, state.PictureRequested, state.PictureBlock)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("continue Fire Knife post-victory choice %d: %v", step, err)
+		}
+	}
+	if !state.PictureRequested || !state.BigPictureRequested || state.PictureBlock != 121 {
+		t.Fatalf("Fire Knife post-victory world edge picture=%v big=%v block=%d message=%q choices=%v",
+			state.PictureRequested, state.BigPictureRequested, state.PictureBlock, state.Message, state.Choices)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatalf("continue Fire Knife post-victory world edge: %v", err)
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationTilverton || state.Area.InDungeon ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Fire Knife post-victory world return mode=%v location=%v area=%+v choices=%v",
+			state.Mode, state.Location, state.Area, state.currentOriginalChoices)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("continue Tilverton patrol choice: %v", err)
+	}
+	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("normal Fire Knife patrol victory turn %d: %v", turn, err)
+		}
+	}
+	if state.Mode != ModeWilderness || !reflect.DeepEqual(state.currentOriginalChoices, []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}) {
+		t.Fatalf("Tilverton patrol continuation mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatalf("continue Tilverton journey choice: %v", err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"SHADOWDALE", "ASHABENFORD", "DAGGER FALLS"}) {
+		t.Fatalf("post-Fire-Knife journey destinations=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(1); err != nil {
+		t.Fatalf("select Ashabenford after Fire Knife: %v", err)
+	}
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"TRAIL", "WILDERNESS", "EXIT"}) {
+		t.Fatalf("Ashabenford route choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("select Ashabenford trail after Fire Knife: %v", err)
+	}
+	if state.Message != requireGamePackText(t, &state, "ashabenford.tilvers-gap") ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"PRESS BUTTON OR RETURN TO CONTINUE."}) {
+		t.Fatalf("Tilver's Gap continuation choices=%#v message=%q",
+			state.currentOriginalChoices, state.Message)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("start Tilver's Gap combat after Fire Knife: %v", err)
+	}
+	if state.Mode != ModeCombat || len(state.CombatFighters()) != 9 {
+		t.Fatalf("Tilver's Gap combat mode=%v fighters=%d message=%q",
+			state.Mode, len(state.CombatFighters()), state.Message)
+	}
+	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("Tilver's Gap victory turn %d: %v", turn, err)
+		}
+	}
+	if state.Mode != ModeWilderness || state.Location != LocationAshabenford ||
+		!reflect.DeepEqual(state.currentOriginalChoices, []string{"ENTER CITY", "JOURNEY ON", "CAMP"}) ||
+		state.Message != requireGamePackText(t, &state, "ashabenford.edge") {
+		t.Fatalf("Ashabenford arrival mode=%v location=%v choices=%#v message=%q",
+			state.Mode, state.Location, state.currentOriginalChoices, state.Message)
+	}
+	for address, want := range map[uint16]uint16{0x4C83: 1, 0x4C9B: 2, 0x4CA1: 2} {
+		if got, ok := state.session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("Ashabenford memory[%#x]=%#x,%v want %#x", address, got, ok, want)
+		}
+	}
+
+	// Continue the same new-game session through an actual city visit and the
+	// next main-line world handoff.  The fixed fixture below covers the larger
+	// city/event corpus; this normal-session tail proves that the Fire Knife
+	// victory does not strand the player at the first Ashabenford edge.
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.enter-city")); err != nil {
+		t.Fatalf("enter Ashabenford after Fire Knife: %v", err)
+	}
+	if !state.PictureRequested || state.Message != requireGamePackText(t, &state, "ashabenford.places") {
+		t.Fatalf("Ashabenford places picture=%v block=%d message=%q",
+			state.PictureRequested, state.PictureBlock, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatalf("continue Ashabenford places: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.bar")); err != nil {
+		t.Fatalf("visit Ashabenford ale house: %v", err)
+	}
+	if state.Message != requireGamePackText(t, &state, "ashabenford.ale-house") {
+		t.Fatalf("Ashabenford ale house message=%q choices=%v", state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.relax")); err != nil {
+		t.Fatalf("relax in Ashabenford ale house: %v", err)
+	}
+	if state.Message != requireGamePackText(t, &state, "ashabenford.tavern-tale-28") {
+		t.Fatalf("Ashabenford Tavern Tale 28 message=%q", state.Message)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+		t.Fatalf("continue Ashabenford Tavern Tale 28: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.exit")); err != nil {
+		t.Fatalf("leave Ashabenford ale house: %v", err)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Ashabenford places after ale house: %v", err)
+		}
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.leave")); err != nil {
+		t.Fatalf("leave Ashabenford city: %v", err)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Ashabenford world edge: %v", err)
+		}
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.journey-on")); err != nil {
+		t.Fatalf("journey on from Ashabenford: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.the-standing-stone")); err != nil {
+		t.Fatalf("travel to Standing Stone: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.trail")); err != nil {
+		t.Fatalf("take Standing Stone trail: %v", err)
+	}
+	if state.Message != requireGamePackText(t, &state, "shadow-gap.fire-knives-patrol") {
+		t.Fatalf("Standing Stone patrol message=%q choices=%v", state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+		t.Fatalf("continue Standing Stone patrol warning: %v", err)
+	}
+	if state.Mode != ModeCombat || len(state.CombatFighters()) != 7 {
+		t.Fatalf("Standing Stone patrol mode=%v fighters=%d message=%q",
+			state.Mode, len(state.CombatFighters()), state.Message)
+	}
+	for turn := 0; turn < 100 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("Standing Stone patrol turn %d: %v", turn, err)
+		}
+	}
+	if state.Message != requireGamePackText(t, &state, "standing-stone.grey-man") {
+		t.Fatalf("Standing Stone grey-man message=%q choices=%v", state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+		t.Fatalf("continue Standing Stone grey-man: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.thank-him")); err != nil {
+		t.Fatalf("hear Standing Stone masters: %v", err)
+	}
+	if state.Message != requireGamePackText(t, &state, "standing-stone.seek-red") {
+		t.Fatalf("Standing Stone red clue message=%q choices=%v", state.Message, state.currentOriginalChoices)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.press-button-or-return-to-continue")); err != nil {
+		t.Fatalf("continue Standing Stone red clue: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.journey-on")); err != nil {
+		t.Fatalf("journey on from Standing Stone: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.essembra")); err != nil {
+		t.Fatalf("travel to Essembra: %v", err)
+	}
+	if err := state.Select(requireGamePackOptionIndex(t, &state, "ecl-option.trail")); err != nil {
+		t.Fatalf("take Essembra trail: %v", err)
+	}
+	if state.Location != LocationEssembra || state.Message != requireGamePackText(t, &state, "essembra.edge") {
+		t.Fatalf("normal main-line Essembra arrival location=%v message=%q choices=%v",
+			state.Location, state.Message, state.currentOriginalChoices)
 	}
 }
 
