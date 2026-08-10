@@ -128,6 +128,14 @@ menu。bounded VM 現在保存 `RunResult.CallAddresses`，並從下一個 instr
 繼續，讓後續中文事件可以被觀察；真正 routine 的 DOS memory、UI、sound 或
 combat side effect 仍由後續 adapter 實作。
 
+第 541 輪的 engine 邊界決策是：共用 engine 可以保存 `CallRequest` 的 raw address、
+PC、block 與順序，也可以提供 `NEWECL`／`PROGRAM` pause、資源 selector 與 typed
+side-effect request；但不能把 CoAB 的 `0x2E10`、`0xC01E`、`0xB200` 命名成跨作品
+固定 routine。`0x2E10` 的 map projection、`0xC01E` 的 forced movement、`0xB200`
+的 sound A/B、`PROGRAM 0/3/8/9` 的 caller context 與 `0x7F6C／0x7EE2` work memory
+都留在 CoAB adapter／game pack。除非第二款 SSI Gold Box 以 producer→consumer raw
+與 runtime trace 證明相同語意，否則不新增 external-address API 到獨立 engine。
+
 State 現在會把已驗證的 ECL3 Yulash smoke text 經 zh-TW catalog 顯示為繁中訊息，
 未知 segment 保留原文，且 raw `RunResult.Text` 不變，方便後續逐段翻譯與對照原版。
 

@@ -54,6 +54,13 @@ GEO block 的 game-pack identity 宣告，並接上 ECL 戰鬥開始／隊伍全
 規格見[第 540 輪 ECL／GEO／音效邊界](docs/spec/540-ecl-map-combat-audio-corpus-closure.md)、
 [火刀正常路徑](docs/spec/538-fire-knife-normal-leader-route.md)與[中文 GUI 寬度契約](docs/spec/539-cjk-gui-width-clipping.md)。
 
+第 541 輪完成 ECL 外部 routine 的 engine／CoAB adapter 分層：共用 engine 保留
+有序 `CALL`／`NEWECL`／`PROGRAM` boundary、資源 selector 與 typed side-effect
+request，但沒有把 CoAB 的 `0x2E10`、`0xC01E`、`0xB200` 地址語意硬編成跨作品
+規則。同輪以原始 ECL1–ECL6 執行 `moonsea.overland` 全部 14 個世界點位的
+arrival entry，並驗證從 Tilverton 可達 JSON directed adjacency 全部節點；這是
+世界路網／抵達基線，不是所有城市事件、地城房間或整作通關。詳見[第 541 輪規格](docs/spec/541-ecl-external-routine-engine-boundary.md)。
+
 E2 路徑的唯讀 GEO 稽核工具為
 [`tilverton_e2_route_audit.py`](scripts/research/tilverton_e2_route_audit.py)；它只列出
 原始 record 的普通圖與 `wall=09` 候選圖，不會把未證實的秘密門語意寫入遊戲。

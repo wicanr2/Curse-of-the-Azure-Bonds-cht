@@ -1882,3 +1882,18 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 5. 若本節「未提交 milestone」仍存在，先延續它；完成後再把成果移入
    `CONTEXT.md` 並刷新本節。
 6. 更新計畫，繼續縮短完整可通關與完整中文化的真實差距。
+
+## 11. 第 541 輪交接：外部 routine 與世界旅行
+
+- 共用 engine 只保存 ECL 的有序 raw／typed boundary、續跑、資源 selector、map
+  graph 與事件契約；`0x2E10`、`0xC01E`、`0xB200`、`PROGRAM` caller context、
+  CoAB work address 與劇情旗標不得因本作證據直接變成跨作品 engine API。
+- `arriveAtWorldLocation` 的荒野抵達交易必須在 ECL1 arrival entry 前後提交
+  native destination `4C9B`；`4C9C` 是本作 dispatch selector。兩個位址都是
+  CoAB 位址空間，不能在 engine 文件改名成通用欄位。
+- `TestRealOverlandArrivalAndRouteGraphCoverage` 只證明 14 個世界點位到達與
+  JSON directed adjacency 可達；它不證明所有城市／地城事件、房間、隨機遭遇、
+  出口、重訪或整作通關。事件仍要由正常 ECL session 驗證。
+- 交接入口：`docs/spec/541-ecl-external-routine-engine-boundary.md`、
+  `WORKLIST.md`、`CONTEXT.md` 尾端。若沒有第二款 SSI 遊戲的 producer→consumer
+  證據，不要新增 external-address mapping 到獨立 engine。

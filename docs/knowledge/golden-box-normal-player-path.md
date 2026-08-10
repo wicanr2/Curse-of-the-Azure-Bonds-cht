@@ -212,6 +212,24 @@ ECL 回到下水道 `(10,15,N)`。`(11,0,N)` 與 `(13,0,N)` 也已放入同一�
 回歸；該測試的首領戰是 deterministic fixture，不冒稱已從所有火刀房間逐格走到
 首領。完整證據見 [`docs/spec/537-search-look-e2-fire-knife-normal-route.md`](../spec/537-search-look-e2-fire-knife-normal-route.md)。
 
+## 世界地圖 14 點 arrival／路網基線
+
+第 541 輪新增 `TestRealOverlandArrivalAndRouteGraphCoverage`，將原始 ECL1–ECL6
+載入同一個測試 session，逐一執行 `moonsea.overland` 的 14 個 native location
+arrival。測試同時驗證 JSON directed adjacency 的每個目的地都已宣告，並以 Tilverton
+為起點做可達性走訪；這不是把世界地圖當作任意座標游標，也不使用翻譯後文字當
+真相來源。
+
+荒野抵達的 adapter 需要在 ECL1 arrival entry 前後提交 `4C9B` native destination，
+`4C9C` 則保留為 CoAB arrival selector。若只在 entry 後更新，部分 location 的
+route menu 會沿用舊 current-location row；若只在 entry 前更新，ECL 返回後的
+save／world state 又可能殘留 dispatcher 暫存值。這項時序是 CoAB adapter contract，
+不是獨立 engine 的固定位址語意。
+
+本基線只證明「14 點能抵達、路網不丟點」。各城市的設施、事件、隨機遭遇、地城
+入口／出口、世界 travel branch、save／revisit 與劇情旗標仍須由正常玩家 session
+逐一驗證；現有事件測試不能被這個 graph gate 取代。
+
 ## 目前 CoAB checkpoint
 
 已由新遊戲進入提爾佛頓 GEO2 block 1，使用原始 west step 抵達 Windlord’s Inn，

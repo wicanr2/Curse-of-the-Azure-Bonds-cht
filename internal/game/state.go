@@ -5572,6 +5572,10 @@ func (s *State) arriveAtWorldLocation(destination uint8) error {
 	if s.session == nil {
 		return fmt.Errorf("world arrival requires an ECL session")
 	}
+	// Arrival is a new world-location transaction, not an ordinary route
+	// selector. Publish the native destination before ECL1 entry 1 so its
+	// location-specific dispatcher can choose the correct next menu.
+	s.session.SetMemoryValue(0x4C9B, uint16(destination))
 	s.session.SetMemoryValue(0x4C9C, uint16(destination))
 	blockBefore := s.session.CurrentBlockID()
 	result, err := s.session.RunEntrySeedWithPartyContext(
@@ -5582,6 +5586,11 @@ func (s *State) arriveAtWorldLocation(destination uint8) error {
 	}
 	s.requestMusicIfBlockChanged(blockBefore)
 	s.eclBlock = s.session.CurrentData()
+	// The Wilderness transaction has already selected the destination before
+	// entering the ECL arrival entry.  ECL1 may reuse 4C9B while dispatching
+	// route-side effects, so commit the selected native location after the
+	// entry returns, matching the normal Select/JOURNEY ON transaction.
+	s.session.SetMemoryValue(0x4C9B, uint16(destination))
 	s.setWorldLocation(uint16(destination))
 	s.Area.GameArea = 1
 	s.Area.InDungeon = false
