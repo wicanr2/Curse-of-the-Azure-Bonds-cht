@@ -4618,3 +4618,41 @@ State 不再保存三個 token 的專用顯示 switch。來源 `ENTER CITY` 等�
 `docs/spec/532-option-rule-localization-boundary.md`。P0-1 DOS selector／
 consumer／runtime、P0-2 PC-98 MOVEPARTY／秘密門及 P0-3 後續 external routine
 仍未完成；compact 後不要把本輪資料分層測試誤讀成整作中文化或完整可通關。
+
+2026-08-10 第五百三十三輪沿 P0-2 追查 PC-98 overlay-14 的 `MOVEPARTY` helper
+邊界。以原始 overlay
+`a8e03ba9a5381c3a9f7ab411ced3262b21e0b65b948160d614386d677610e7b9` 的 Docker
+內 IDA Pro 9.4 disposable database，補出 `DS:7F27h==4`、`DS:7F09h` 指標所指
+record 的 `+592h` gate、`017C:0039h` 的 `AL=1／2／3` 分流，以及 B／P／K
+helper 的連續 raw 操作。B／P 的四個 `0x014C` set-writer caller 是
+`0x0566`、`0x05A4`、`0x062F`、`0x066D`；共同 helper 的 `+5AAh` writer、
+`+489Eh／+48A7h` 座標算術與 K 的 `+1Eh` clear 也已保存原始位址。證據與可重生
+IDA 稽核腳本見 `docs/spec/533-pc98-moveparty-helper-gate.md` 與
+`scripts/ida/pc98_overlay14_action_helpers_audit.idc`；腳本 SHA-256 為
+`24b022ed516001fe40522e974087ccac9ed21a72b5f9fd6ad90a65d117d00499`。
+
+本輪所有欄位的正式語意仍是 `unknown`，沒有新增秘密門／search／movement
+JSON，也沒有把 `(13,10)`→`(8,15)` 寫入正常玩家路徑。一次性 remake
+post-knight `SearchDungeonLocation` probe 沒有產生出口事件，已還原且不列為
+原版 oracle。P0-2 仍需要同版本 DOS／PC-98 runtime 的 helper return、
+`THE3DMAP+300h` before／after、`BLOCKCODE`、重訪／save-load 與 ECL continuation
+證據；compact 後不可把本輪 static call-site 閉合誤讀成秘密門已完成。
+
+2026-08-10 第五百三十四輪重新讀取使用者提供的中文《青色枷的詛咒》說明書，
+確認先前對 `MOVEPARTY` 的工作路由需要勘誤。原始 RAR SHA-256 為
+`63b75989f3e2472fddd7e2e89676580f99a6125470a1501049ca0f09c92eeb5c`；Docker
+內使用 `unar 1.10.1` 從 Big5 掃描檔讀出頁面。印刷頁 3–4 的「四、傳送人物」
+直接列出 `Move characters where?`，並列出 Pool of Radiance↔Hillsfar、
+Pool of Radiance→Curse、Curse→Hillsfar、Hillsfar→Curse 四個角色轉移方向；
+印刷頁 12 的 `ADD CHARACTER` 列出 `FROM WHERE: CURSE POOL HILLSFAR EXIT`，
+並要求外部角色先經「傳送人物程式」處理。頁面雜湊與完整中文轉移證據見
+`docs/spec/534-chinese-manual-moveparty-character-transfer.md`。
+
+因此 `MOVEPARTY=00C9:0BCCh` 與中文手冊功能的對應升為 `strong inference`，
+但 B／P／K、`+592h`／`+5AAh` 與 PC-98 record 的一對一 runtime mapping 仍是
+`unknown`。第 527–533 輪保存的 raw bytes／call-site 仍有效，然而把
+`MOVEPARTY` 當秘密門、地圖特殊移動或騎士後 `(13,10)`→`(8,15)` handoff 的
+先驗已 `SUPERSEDED`。P0-2 改追真正的 external map／wall interaction consumer、
+ECL predicate 與 runtime state；角色轉移另建中立 `character_transfer`／JSON
+資料邊界，未取得角色檔案 round-trip 前不實作猜測規則。compact 後不可把本輪
+手冊證據誤讀成整個跨遊戲存檔或完整 Gold Box transfer 已在 remake 完成。
