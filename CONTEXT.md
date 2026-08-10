@@ -4687,3 +4687,47 @@ https://www.weekendwastemonster.net/crpgs/curse/cotab_maps.html 。
 下一個最小工作見 `docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md`；
 compact 後先讀本段、該 spec 與 P0-2 worklist，再決定是否進入同版本 runtime 的
 wall／action trace。
+
+2026-08-10 第五百三十六輪把第 535 輪的「外部地圖出口」假說再縮小。Docker 內以
+原始 `curseoftheazurebonds.zip`（SHA-256
+`c98698a6271c17177dfdb27f34b0389b7d34f58ef206e92575393f4655f5b26d`）執行版控工具
+`scripts/research/tilverton_e2_route_audit.py`，解碼 `GEO2.DAX` block 3 的四個
+`+000/+100/+200/+300` plane。普通 movement contract 下，`(13,10)` 到 `(8,15)`
+不可達；只把雙側 `(10,12)↔(9,12)` 的 `wall=09/detail=0` 暫時視為候選橋接時，
+可重生十步路徑：
+
+```text
+(13,10) W→ (12,10) W→ (11,10) W→ (10,10)
+         S→ (10,11) S→ (10,12) W→ (9,12)
+         S→ (9,13) S→ (9,14) S→ (9,15) W→ (8,15)
+         S→ E2 boundary
+```
+
+`(9,13)→(9,14)` 的雙側 `wall=0F/detail=1` 已被現行 geometry contract 判定可走；
+`(8,15,S)` 的雙側 `wall=0C/detail=0` 則是另一個 E2 邊界，不能與中間橋接合併。
+這證明 `(13,10)→(8,15)` 不是目前資料能支持的單純 teleport，但 `wall=09` 是否
+是秘密門、Search 如何發現、是否把第三平面改成 detail `1`、成功率與存檔持久性仍是
+`unknown`／`strong inference` 候選，未新增 `secret_door` JSON，也沒有放寬所有
+`wall=09`。完整分級見 `docs/spec/536-tilverton-sewers-e2-search-route.md`。
+
+同輪重新核對本機 DOS 手冊 `Curse-of-the-Azure-Bonds_Manual_DOS_EN.pdf`
+（SHA-256 `d4a3fc873a983cd7c1b84414caf3f8aad77bce1e3518ebccac7d77f80f73ff8c`）與
+公開手冊文字：原版 `SEARCH` 是持續開／關模式，開啟後每次前進增加發現秘密門／
+隨機遭遇機率；`LOOK` 才是目前格子的單次搜尋。故目前 remake 生產 `S` 直接執行
+一次性 `State.SearchDungeonLocation()` 只能稱為 LOOK-like service boundary，
+不是完整 Search toggle。後續要把 Search／Look 分離，再用同版 runtime trace 閉合
+`wall=09` before／after detail；不能因按鍵存在就把秘密門完成。
+
+本輪在 `ida-pro-9.4-ver3:latest` 的 Docker disposable overlay-07 副本重跑既有
+`scripts/ida/dos_overlay07_movement_audit.idc`：輸入 overlay SHA-256
+`5483c71f98c5dc668d7d307c18a6b071dcfcba9d62eccb657600e7265125`，確認 local `1B3Fh`
+保留 `DS:720F/7210` 四向 wrap/update，呼叫 `017F:003Eh` 寫 `DS:7213h`、再呼叫
+`017F:0034h` 寫 `DS:7212h`。這只補強 movement result accessor 的 static boundary，
+沒有找到 wall=09 writer／Search consumer；原始 binary 與 baseline `.i64` 未修改。
+
+第 536 輪已更新 `README.md`、`docs/project-status.md`、`docs/spec/README.md`、
+`docs/knowledge/golden-box-reverse-engineering-worklist.md`、
+`docs/knowledge/gold-box-state.md`、`docs/knowledge/golden-box-normal-player-path.md`
+與本段規格；這是 DRAFT 證據／記憶 milestone，不是 P0-2 或整作完成。compact 後
+先讀本段、第 536／535 spec 與 P0-2 worklist；不要把 `wall=09` 候選橋接、一次性
+Search service 或 coordinate-assisted block 4 測試誤讀成正常玩家已能進入火刀據點。

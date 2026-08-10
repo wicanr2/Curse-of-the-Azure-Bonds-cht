@@ -1,6 +1,18 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 536 輪以 Docker 內唯讀 route audit 重生 `GEO2.DAX` block 3：關閉 `wall=09`
+候選橋接時，`(13,10)` 到 `(8,15)` 不可達；只允許 `(10,12)↔(9,12)` 雙側
+`wall=09/detail=0` 候選邊時，才可沿十步抵達 `(8,15)`。之後南向仍遇到
+`wall=0C/detail=0` 的 E2 邊界。這把 P0-2 從「是否為傳送門」縮小為「Search／
+秘密門橋接」與「E2 boundary input」兩項，但沒有把 `wall=09` writer、成功率或
+正常玩家路徑標成完成。完整證據見
+[`docs/spec/536-tilverton-sewers-e2-search-route.md`](spec/536-tilverton-sewers-e2-search-route.md)。
+
+同輪重新核對原始 DOS 手冊：`SEARCH` 是持續開／關模式，`LOOK` 才是目前格子的
+單次搜尋；remake 目前的 `S` 仍呼叫一次性 `SearchDungeonLocation()`，所以是
+LOOK-like 暫時邊界，不是原版 Search toggle 完成。
+
 第 535 輪以公開英文攻略與本機 ECL／GEO 交叉核對 P0-2：攻略把 `(13,10)` 定位為
 提爾佛頓下水道的迷斯卓諾騎士事件，並把 `E2` 定義為通往火刀據點的出口；本機
 ECL2 block 3 的南側 boundary branch 也已精確保存 `NEWECL 4` 與 block 4 初始化。

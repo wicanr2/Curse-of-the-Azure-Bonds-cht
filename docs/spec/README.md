@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百三十六輪下水道 E2 路徑與 Search 模式勘誤](./536-tilverton-sewers-e2-search-route.md)（`DRAFT`：GEO2 `wall=09` 唯一橋接與 E2 邊界證據；不含秘密門 writer／Search toggle 實作）
 - [第五百三十五輪攻略與地圖交叉核對下水道 E2 邊界](./535-walkthrough-tilverton-sewers-e2-boundary.md)（`DRAFT`：`(13,10)` 騎士事件、E2 外部出口語意與本機 block 3→4 邊界；不含 `(8,15)` 正常輸入／wall trigger）
 - [第五百三十四輪中文說明書確認 `MOVEPARTY`／跨遊戲角色轉移](./534-chinese-manual-moveparty-character-transfer.md)（`READY`：`Move characters where?`、四個跨遊戲方向與 `ADD CHARACTER` 來源選單；不等於 PC-98 helper 已完成一對一 runtime 閉合）
 - [第五百三十三輪 PC-98 `MOVEPARTY` helper gate 與結果欄位](./533-pc98-moveparty-helper-gate.md)（`READY`：前置 gate、B／P／K helper 與四個 set-writer caller；第 534 輪已將產品語意改列為角色轉移候選，不含地圖秘密門／正常路徑）

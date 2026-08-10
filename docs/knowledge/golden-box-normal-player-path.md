@@ -39,6 +39,28 @@ player input
 script 空間；日後其他 Gold Box 作品若有不同鏡像／局部地圖，只新增 typed adapter，
 不要在劇情 State 內寫一個座標特例。
 
+### 提爾佛頓 E2：橋接牆與外部邊界要分開
+
+第 536 輪以原始 `GEO2.DAX` block 3 重生出下列候選路徑：
+
+```text
+(13,10) → (12,10) → (11,10) → (10,10) → (10,11) → (10,12)
+        -- wall=09/detail=0 候選橋接 --
+        → (9,12) → (9,13) → (9,14) → (9,15) → (8,15)
+        -- (8,15,S) wall=0C/detail=0 的 E2 boundary --
+```
+
+關閉 `wall=09` 候選時，GEO 普通圖不可達；開啟候選時才可到達。這是 route
+evidence，不是把 raw wall nibble 命名成秘密門的證據。正常玩家驗收必須分成：
+
+1. Search／Look 輸入如何讓 `(10,12)↔(9,12)` 成為可走邊；
+2. 走到 `(8,15)` 後如何發出 E2 boundary attempt；
+3. block 4 初始化、返回與 save-load 持久性。
+
+原版手冊的 `SEARCH` 是持續 toggle，`LOOK` 是目前格子的單次檢查；目前 remake
+的 `SearchDungeonLocation()` 仍是單次 `7ECA=1` service，故只能作 LOOK-like
+boundary。不要只因 `S` 有按鍵處理，就把秘密門或 E2 正常路徑標成完成。
+
 ## 測試規則
 
 - 最強的路徑測試從 `ActionStart`、角色建立或版本化 save 開始，使用正式 game pack
