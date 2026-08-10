@@ -1,6 +1,13 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 535 輪以公開英文攻略與本機 ECL／GEO 交叉核對 P0-2：攻略把 `(13,10)` 定位為
+提爾佛頓下水道的迷斯卓諾騎士事件，並把 `E2` 定義為通往火刀據點的出口；本機
+ECL2 block 3 的南側 boundary branch 也已精確保存 `NEWECL 4` 與 block 4 初始化。
+因此 `(13,10)→(8,15)` 的正確工作名稱改為「外部地圖出口／邊界轉場」，不是
+`MOVEPARTY` 或已證實的秘密門。攻略不單獨證明本機 `(8,15)` 的 wall producer、
+按鍵與正常輸入；現有 block 4 測試仍是 coordinate-assisted。完整證據見
+[`docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md`](spec/535-walkthrough-tilverton-sewers-e2-boundary.md)。
 第 534 輪以使用者提供的中文說明書掃描頁確認 `MOVEPARTY` 的產品功能邊界：
 印刷頁 3–4 明列 `Move characters where?` 與四個 SSI Gold Box 跨遊戲角色轉移
 方向，印刷頁 12 的 `ADD CHARACTER` 又列出 `CURSE／POOL／HILLSFAR` 來源選單。

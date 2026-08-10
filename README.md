@@ -25,11 +25,14 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 第 533 輪以 P0-2 raw audit 補出 PC-98 `MOVEPARTY` 的前置 gate、B／P／K helper
 與四個 set-writer caller；第 534 輪再由中文說明書確認 `Move characters where?`
 是《光芒之池》／《青色枷的詛咒》／《幽城寶藏》之間的角色轉移，不是秘密門；
+第 535 輪又以攻略核對 `(13,10)` 騎士事件與 E2 火刀據點出口，將
+`(13,10)→(8,15)` 的工作方向改成外部地圖邊界轉場，但正常 wall／出口輸入仍未完成；
 第 529 輪完成玩家戰鬥法術的資料契約，
 不把法術名稱或劇情塞回 Go。詳細證據見[第 534 輪規格](docs/spec/534-chinese-manual-moveparty-character-transfer.md)、
 [第 533 輪規格](docs/spec/533-pc98-moveparty-helper-gate.md)、
 [第 532 輪規格](docs/spec/532-option-rule-localization-boundary.md)、
 [第 531 輪規格](docs/spec/531-character-creation-original-frame-density.md)、
+[第 535 輪規格](docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md)、
 [第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
 [第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
 [第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
