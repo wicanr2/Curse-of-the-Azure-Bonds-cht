@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百三十四輪中文說明書確認 `MOVEPARTY`／跨遊戲角色轉移](./534-chinese-manual-moveparty-character-transfer.md)（`READY`：`Move characters where?`、四個跨遊戲方向與 `ADD CHARACTER` 來源選單；不等於 PC-98 helper 已完成一對一 runtime 閉合）
+- [第五百三十三輪 PC-98 `MOVEPARTY` helper gate 與結果欄位](./533-pc98-moveparty-helper-gate.md)（`READY`：前置 gate、B／P／K helper 與四個 set-writer caller；第 534 輪已將產品語意改列為角色轉移候選，不含地圖秘密門／正常路徑）
 - [第五百三十二輪開場與荒野選項 JSON／引擎資料邊界](./532-option-rule-localization-boundary.md)（`READY`：stable `option_rule`、locale resolver 與產品測試資料分層；不含完整劇情／通關）
 - [第五百三十一輪角色建立原版石框與繁中字級](./531-character-creation-original-frame-density.md)（`READY`：640×480 原版石框、倚天粗體 16×15、正常 `C` 鍵進入的 remake layout；不含完整角色建立／整作通關）
 - [第五百三十輪 DOSBox 測試模式角色建立與年齡畫面證據](./530-dosbox-cheat-assisted-character-creation-evidence.md)（`READY`：限原版角色建立畫面／資料可見性；`cheat-assisted`，不含正常玩家路徑）

@@ -1,6 +1,26 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+第 534 輪以使用者提供的中文說明書掃描頁確認 `MOVEPARTY` 的產品功能邊界：
+印刷頁 3–4 明列 `Move characters where?` 與四個 SSI Gold Box 跨遊戲角色轉移
+方向，印刷頁 12 的 `ADD CHARACTER` 又列出 `CURSE／POOL／HILLSFAR` 來源選單。
+這是 `exact` 手冊證據；PC-98 raw helper 與該工具的一對一 runtime 對應仍是
+`strong inference`，尚未新增 transfer JSON。先前把 `MOVEPARTY` 放在秘密門／
+地圖 P0-2 路由的標籤已勘誤；騎士事件後 `(13,10)`→`(8,15)` 仍是另一個未解的
+外部地圖 handoff，不可用角色轉移函式代替。完整證據見
+[`docs/spec/534-chinese-manual-moveparty-character-transfer.md`](spec/534-chinese-manual-moveparty-character-transfer.md)。
+
+第 533 輪沿 P0-2 以 IDA Pro 9.4 的 disposable PC-98 overlay-14 副本補出
+`MOVEPARTY` 的前置 gate 與 helper 邊界：`DS:7F27h==4`、`DS:7F09h` 指標的
+`+592h` 檢查、`017C:0039h` 的 `AL=1／2／3` 分流，以及 B／P／K helper 的
+`0x014C` 四個 set-writer caller。這是 `exact` raw operation／call-site，
+不等於秘密門、detail `1`、開門或 `(13,10)`→`(8,15)` 正常路徑。一次性
+post-knight SEARCH probe 在 remake 沒有產生出口事件，且已還原，不列為 regression。
+完整證據見 [`docs/spec/533-pc98-moveparty-helper-gate.md`](spec/533-pc98-moveparty-helper-gate.md)。
+這些 raw bytes 仍有效，但第 534 輪中文手冊勘誤後，`MOVEPARTY` 改列為跨遊戲
+角色轉移候選，不再作為 P0-2 地圖 consumer 的先驗。真正的 P0-2 runtime consumer、
+ECL flag、重訪／存檔與 PC-98／DOS 原版動態 trace 仍未完成。
+
 第 532 輪完成開場／荒野選項的資料邊界收斂。`ENTER CITY`、`JOURNEY ON` 與 `CAMP`
 在 ECL 初始化、開場 fallback、角色建立／讀檔／紮營返回及世界地圖預覽等產品路徑，
 現在統一透過 engine `Pack.LocalizeOption` 解析 CoAB game-pack 的 stable

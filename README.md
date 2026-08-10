@@ -20,11 +20,15 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 
 最新完成度與驗證邊界請看
 [專案成果盤點](docs/project-status.md)。第 531 輪完成角色建立的原版石框／中文字級
-版面基線；第 532 輪再將開場、荒野、讀檔、紮營返回與世界地圖預覽的選項顯示統一
+版面基線；第 532 輪將開場、荒野、讀檔、紮營返回與世界地圖預覽的選項顯示統一
 交給 game-pack `option_rules` 與 engine resolver，測試以 stable ID 取得期望值；
+第 533 輪以 P0-2 raw audit 補出 PC-98 `MOVEPARTY` 的前置 gate、B／P／K helper
+與四個 set-writer caller；第 534 輪再由中文說明書確認 `Move characters where?`
+是《光芒之池》／《青色枷的詛咒》／《幽城寶藏》之間的角色轉移，不是秘密門；
 第 529 輪完成玩家戰鬥法術的資料契約，
-不把法術名稱或劇情塞回 Go；同時保留 P0-2 的 PC-98 MOVEPARTY 靜態證據，沒有猜測
-秘密門規則。詳細證據見[第 532 輪規格](docs/spec/532-option-rule-localization-boundary.md)、
+不把法術名稱或劇情塞回 Go。詳細證據見[第 534 輪規格](docs/spec/534-chinese-manual-moveparty-character-transfer.md)、
+[第 533 輪規格](docs/spec/533-pc98-moveparty-helper-gate.md)、
+[第 532 輪規格](docs/spec/532-option-rule-localization-boundary.md)、
 [第 531 輪規格](docs/spec/531-character-creation-original-frame-density.md)、
 [第 529 輪規格](docs/spec/529-combat-player-spell-data-contract.md)、
 [第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
