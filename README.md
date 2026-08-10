@@ -30,7 +30,7 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 重生出中間 `wall=09/detail=0` 的唯一候選橋接，並核對手冊確認原版 `SEARCH` 是
 持續開關、`LOOK` 才是單次搜尋；第 537 輪已把兩者分離接到 engine＋JSON，並由
 正常玩家路徑通過 wall=09、E2、火刀 E1 回下水道，另驗證首領勝利後世界地圖
-與 save/load 重訪。wall writer 與 E1 座標仍以 `strong inference` 標示；
+與 save/load 重訪的固定首領 fixture。wall writer 與 E1 座標仍以 `strong inference` 標示；
 第 529 輪完成玩家戰鬥法術的資料契約，
 不把法術名稱或劇情塞回 Go。詳細證據見[第 534 輪規格](docs/spec/534-chinese-manual-moveparty-character-transfer.md)、
 [第 533 輪規格](docs/spec/533-pc98-moveparty-helper-gate.md)、
@@ -43,6 +43,12 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 [第 528 輪規格](docs/spec/528-pc98-moveparty-action-transaction-boundary.md)、
 [第 527 輪規格](docs/spec/527-pc98-moveparty-action-writer-boundary.md)與
 [反組譯工作清單](docs/knowledge/golden-box-reverse-engineering-worklist.md)。
+
+第 538 輪再由同一個正常開場 session 逐格走完 E2 block 4 到火刀首領戰前；第 539
+輪修正以倚天字形實際字寬換行／裁切造成的中文溢框，並用 Docker／Xvfb 重新產生
+下方代表畫面。這些畫面證明目前版面的可用性與原版風格基線，不代表整作已通關或
+所有戰鬥／地圖狀態已逐像素還原；請以[工作清單](WORKLIST.md)的未完成項目為準。
+規格見[火刀正常路徑](docs/spec/538-fire-knife-normal-leader-route.md)與[中文 GUI 寬度契約](docs/spec/539-cjk-gui-width-clipping.md)。
 
 E2 路徑的唯讀 GEO 稽核工具為
 [`tilverton_e2_route_audit.py`](scripts/research/tilverton_e2_route_audit.py)；它只列出

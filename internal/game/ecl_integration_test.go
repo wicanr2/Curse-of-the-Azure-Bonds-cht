@@ -1687,11 +1687,23 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		t.Fatalf("Fire Knife hideout did not enter dungeon mode: mode=%v message=%q choices=%v",
 			state.Mode, state.Message, state.Choices)
 	}
+	// SEARCH was needed to discover the sewer wall=09.  Turn it off here using
+	// the same player command a campaign would use, so the interior route is
+	// deterministic and only exercises the room events that the player walks
+	// through.
+	if state.DungeonSearchActive() {
+		if err := state.ToggleDungeonSearch(); err != nil {
+			t.Fatalf("disable persistent SEARCH before Fire Knife interior route: %v", err)
+		}
+	}
 	hideoutGrid, ok := geoCatalog.Lookup(geo.MapRef{Set: 2, BlockID: 4})
 	if !ok {
 		t.Fatal("Fire Knife hideout GEO2 block 4 is absent")
 	}
 	continueHideoutEvent := func(step int) {
+		if state.Mode == ModeCombat {
+			finishDungeonEncounter(fmt.Sprintf("normal Fire Knife hideout combat step %d", step))
+		}
 		for pause := 0; state.Mode != ModeDungeon; pause++ {
 			if pause >= 8 || len(state.Choices) == 0 {
 				t.Fatalf("Fire Knife hideout event did not resume at step %d: mode=%v message=%q choices=%v",
@@ -1711,34 +1723,87 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 			}
 		}
 	}
+	// This is the raw GEO2 block-4 route from the E2 entrance at (6,1) to
+	// terrain 87 at (3,13), the Fire Knife leader encounter.  It intentionally
+	// crosses the blade barrier and frozen-room cells instead of injecting a
+	// coordinate or ECL selector, so every transition is driven by MoveDungeon
+	// and the normal SEARCH/LOOK lifecycle.
 	for index, step := range []struct {
 		dx, dy, direction int
 	}{
 		{0, 1, 4},  // (6,1) -> (6,2)
-		{1, 0, 2},  // (6,2) -> (7,2), blade barrier
-		{0, -1, 0}, // (7,2) -> (7,1)
-		{0, -1, 0}, // (7,1) -> (7,0)
-		{1, 0, 2},  // (7,0) -> (8,0), E1 north exit
-		{0, -1, 0}, // (8,0) -> north boundary, E1 handoff
+		{-1, 0, 6}, // (6,2) -> (5,2), blade barrier
+		{-1, 0, 6}, // (5,2) -> (4,2), frozen room
+		{0, 1, 4},  // (4,2) -> (4,3)
+		{-1, 0, 6}, // (4,3) -> (3,3), frozen room
+		{0, 1, 4},  // (3,3) -> (3,4)
+		{1, 0, 2},  // (3,4) -> (4,4)
+		{0, 1, 4},  // (4,4) -> (4,5)
+		{1, 0, 2},  // (4,5) -> (5,5)
+		{0, 1, 4},  // (5,5) -> (5,6)
+		{0, 1, 4},  // (5,6) -> (5,7)
+		{1, 0, 2},  // (5,7) -> (6,7)
+		{1, 0, 2},  // (6,7) -> (7,7)
+		{1, 0, 2},  // (7,7) -> (8,7)
+		{1, 0, 2},  // (8,7) -> (9,7)
+		{0, 1, 4},  // (9,7) -> (9,8)
+		{1, 0, 2},  // (9,8) -> (10,8)
+		{0, 1, 4},  // (10,8) -> (10,9)
+		{0, 1, 4},  // (10,9) -> (10,10)
+		{0, 1, 4},  // (10,10) -> (10,11)
+		{-1, 0, 6}, // (10,11) -> (9,11)
+		{0, 1, 4},  // (9,11) -> (9,12)
+		{-1, 0, 6}, // (9,12) -> (8,12)
+		{-1, 0, 6}, // (8,12) -> (7,12)
+		{-1, 0, 6}, // (7,12) -> (6,12)
+		{-1, 0, 6}, // (6,12) -> (5,12)
+		{-1, 0, 6}, // (5,12) -> (4,12)
+		{0, 1, 4},  // (4,12) -> (4,13)
+		{-1, 0, 6}, // (4,13) -> (3,13), leader
 	} {
 		if err := state.MoveDungeon(hideoutGrid, step.dx, step.dy, step.direction); err != nil {
-			t.Fatalf("normal Fire Knife hideout exit route step %d: %v", index, err)
+			t.Fatalf("normal Fire Knife hideout leader route step %d: %v", index, err)
 		}
-		continueHideoutEvent(index)
+		if index+1 < 29 {
+			continueHideoutEvent(index)
+		}
 	}
-	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 3 ||
-		state.GeoMapSet != 2 || state.GeoMapBlock != 3 ||
-		state.DungeonX != 10 || state.DungeonY != 15 || state.DungeonDirection != 0 {
-		registers := make(map[uint16]uint16)
-		for _, address := range []uint16{0xC04B, 0xC04C, 0xC04D, 0xC04E, 0xC04F, 0x7EC9, 0x7ED5, 0x7ECA} {
-			if value, found := state.session.MemoryValue(address); found {
-				registers[address] = value
-			}
+	if state.Mode == ModeEvent {
+		if state.Message != requireGamePackText(t, &state, "journal-trigger.fire-knives-leader-11") {
+			t.Fatalf("normal Fire Knife leader pre-combat pause message=%q choices=%v picture=%v:%d",
+				state.Message, state.Choices, state.PictureRequested, state.PictureBlock)
 		}
-		t.Fatalf("Fire Knife E1 exit did not return to Tilverton sewers: mode=%v block=%#x geo=%d/%d dungeon=(%d,%d,%d) wall=(%#x,%#x) message=%q choices=%v registers=%v",
-			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
-			state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallType,
-			state.DungeonWallRoof, state.Message, state.Choices, registers)
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Fire Knife leader journal pause: %v", err)
+		}
+	}
+	for pause := 0; state.Mode != ModeCombat; pause++ {
+		if pause >= 3 {
+			t.Fatalf("normal Fire Knife leader did not reach combat: mode=%v message=%q choices=%v",
+				state.Mode, state.Message, state.Choices)
+		}
+		if len(state.Choices) == 0 {
+			t.Fatalf("normal Fire Knife leader continuation has no input: mode=%v message=%q",
+				state.Mode, state.Message)
+		}
+		if err := state.Select(0); err != nil {
+			t.Fatalf("continue Fire Knife leader pre-combat choice: %v", err)
+		}
+	}
+	if state.Mode != ModeCombat || !state.CombatActive() || state.DungeonX != 3 || state.DungeonY != 13 ||
+		state.DungeonWallRoof != 0x87 {
+		t.Fatalf("normal Fire Knife leader route mode=%v active=%v position=(%d,%d) terrain=%#x message=%q choices=%v",
+			state.Mode, state.CombatActive(), state.DungeonX, state.DungeonY,
+			state.DungeonWallRoof, state.Message, state.Choices)
+	}
+	leaderEnemies := 0
+	for _, fighter := range state.CombatFighters() {
+		if fighter.Side == combat.SideEnemy {
+			leaderEnemies++
+		}
+	}
+	if leaderEnemies != 21 {
+		t.Fatalf("normal Fire Knife leader route enemies=%d fighters=%v, want 21", leaderEnemies, state.CombatFighters())
 	}
 }
 
@@ -2491,6 +2556,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	}
 	if loaded.Mode != ModeWilderness || loaded.Location != LocationTilverton ||
 		loaded.session == nil || loaded.session.CurrentBlockID() != session.CurrentBlockID() ||
+		loaded.OriginalLocation != state.OriginalLocation ||
 		!reflect.DeepEqual(loaded.currentOriginalChoices, state.currentOriginalChoices) ||
 		!reflect.DeepEqual(loaded.Choices, state.Choices) {
 		t.Fatalf("Fire Knife world-map save revisit mode=%v/%v location=%v/%v block=%#x/%#x choices=%#v/%#v localized=%#v",

@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-10（第 537 輪後盤點）
+更新日期：2026-08-10（第 539 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -24,6 +24,17 @@
 - `待研究`：只有在要支援該功能或原版 fidelity 時才逆向；不可先把假說寫入
   正式規則。
 
+## 第 539 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| 火刀據點入口→首領戰前正常路徑 | `TestRealNewGameBeginsAtGlobalBlockOne` 從真實開場、下水道、E2 block 4 `(6,1,S)` 出發，以同一個 `MoveDungeon`／ECL session 走 29 步到 `(3,13)`、terrain `0x87` 的首領事件；路徑實際經過 `0x99` 刀刃區、`0x9A` 冰凍房與 `0x94／0x95` 相位蜘蛛區，完成必要的選單／戰鬥／續跑後抵達首領戰前。測試以 stable message ID 與敵方物件資料驗證 20 名火刀＋首領，共 21 名敵人；沒有直接注入座標或直接進入首領。原版對照等級是 `layout／route reconstructed`，不是整張地圖 pixel-exact。 |
+| 中文 GUI 溢框修正 | renderer 現在依倚天字形的實際 glyph advance 做 rune-safe 換行與單行裁切，主要冒險、地城、事件、手札、建立角色與戰鬥欄位都使用明確可用寬度；中文字不再以固定英文字元數硬塞。Docker／Xvfb 重新產生 640×480 冒險與第一人稱截圖，並替換 README 仍引用的舊版代表圖。這是 `layout-reconstructed`，不是所有狀態逐像素 exact。 |
+| 讀檔位置投影 | `LoadPartyFile` 依保存的 `Area.CurrentCity` 重建 `LocationName`／`OriginalLocation`，不再只恢復數字 enum；火刀首領固定 fixture 的 save/load 另驗證原始地點保留。正常完整 session 的戰後世界選單尚未因此宣稱閉合。 |
+
+權威規格：[`第 538 輪火刀入口至首領路徑`](docs/spec/538-fire-knife-normal-leader-route.md)、
+[`第 539 輪中文 GUI 寬度與溢框`](docs/spec/539-cjk-gui-width-clipping.md)。
+
 ## 第 537 輪已關閉的工作
 
 | 項目 | 目前可宣稱的範圍 |
@@ -31,7 +42,7 @@
 | engine＋JSON 的 `SEARCH`／`LOOK` 分離 | `S` 持續切換 `DungeonSearchEnabled`，`L` 是一次性 `LookDungeonLocation`；地圖 edge、external exit、locale 與 save v12 均有資料契約。這是重製契約已完成；原版 Search 成功率與 wall writer 仍未 exact。 |
 | 下水道至 E2 | 從 `(13,10)` 正常逐格移動，經 wall=09 候選橋接抵達 `(8,15,S)`，再由 E2 進 ECL2 block 4；未用直接設定座標完成這條重製路徑。 |
 | 火刀 E1 回返 | block 4 北側 E1 候選可由正常移動越界，回到下水道 `(10,15,N)`；三個 E1 座標仍屬 `strong inference`。 |
-| 戰後 handoff 與存檔 | 首領勝利後的 ECL 夢境、Tilverton 世界地圖選單與 Search／edge 狀態 save/load 已有回歸；首領測試的固定戰鬥 fixture 不等於從入口逐房間打到首領。 |
+| 戰後 handoff 與存檔 | 首領勝利後的 ECL 夢境、Tilverton 世界地圖選單與 Search／edge 狀態 save/load 已有固定 fixture 回歸；第 539 輪另外完成入口到首領戰前的正常路徑，但完整 session 在首領戰後仍會出現原始 `PATROL FOREST／JOURNEY ON／CAMP` 分支，尚未與預期的世界地圖出口契約閉合。 |
 | 既有資料分層 | 開場選項、玩家法術入口與多個事件已使用 stable ID、locale JSON 與 engine resolver；不能因此宣稱全量中文化。 |
 | UI 基線 | 640×480、原版裂紋石框、倚天粗體 16×15、人物 HEAD／BODY 分層與多張對照截圖已建立；目前多為 `layout-reconstructed`，不是所有狀態逐像素 exact。 |
 
@@ -43,8 +54,8 @@
 
 | 工作 | 現況 | 下一個可驗收成果 |
 |---|---|---|
-| 火刀據點完整正常路徑 | 已能由 E2 進入 block 4，並能驗證部分安靜／刀刃事件與 E1 回返；入口到首領仍不是完整逐房間正常路徑。 | 從 `(6,1,S)` 的正式 ECL continuation 出發，逐房間以 `MoveDungeon`／互動／戰鬥抵達首領；每段保存事件旗標、戰後 continuation、寶物與重訪結果。 |
-| 火刀據點出口、返回世界地圖與重訪 | 世界地圖與戰後 save/load 的切片已通；完整出口條件、移除 Bond 後的封閉／開放狀態、重訪與失敗分支仍需接齊。 | 新建一條不注入座標的「入口→首領→出口→世界地圖→存檔→重載→重訪」測試，並以 game-pack stable ID 驗證旗標與文字。 |
+| 火刀據點完整正常路徑 | 已由 `(6,1,S)` 的正式 ECL continuation 逐格抵達首領戰前，必要房間事件與戰鬥可續跑；尚未覆蓋所有可選房間、首領勝利後的同一 session 出口與完整重訪。 | 補齊剩餘房間的正常輸入、旗標、寶物、戰後 continuation，再把同一 session 從首領勝利走到出口並重訪。 |
+| 火刀據點出口、返回世界地圖與重訪 | 固定首領 fixture 已有世界地圖／save/load 切片；本輪正常入口已到首領戰前，但完整 session 勝利後的 raw `PATROL FOREST` 選單分支仍未與正常出口契約接起來，不能宣稱完成。 | 追 `block 50` 勝利後的 raw menu／flag producer，完成不注入座標的「入口→首領→出口→世界地圖→存檔→重載→重訪」測試；同時保留 `LoadPartyFile` 的地點投影回歸。 |
 | 開場到結局的正常玩家主線 | ECL1–ECL6 的許多 block 與窄事件已可讀、也有多個正常路徑切片；完整章節 handoff、外部 routine、分支與結局尚未串完。 | 依章節建立可中斷／可存檔的 vertical slice，最後由新隊伍或正式角色檔從開場走到結局；未支援的 boundary 必須明確 fail-closed。 |
 
 ### P1：補齊可玩規則、資料與原版行為
@@ -57,7 +68,7 @@
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥事件同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
-| UI、素材與原版 fidelity | 目前有 640×480、石框、字型、人物舞台與數張截圖；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、左上場景填格與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
+| UI、素材與原版 fidelity | 本輪補上依實際 glyph advance 的中文換行／裁切，並重新驗證原版裂紋石框、640×480 第一人稱與右側 party/status；README 代表圖已換成目前版本。冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、左上場景填格與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
 
 ### P2：完成後才做的發行工作
 
@@ -103,6 +114,6 @@
 4. Docker 內完成受影響套件、代表性正常玩家路徑、save round-trip、截圖／包裝 smoke；
    再集中 commit＋push 兩個 repository。
 
-下一個最小可重現工作：從已完成的 E2 `(8,15,S)`／block 4 `(6,1,S)` session
-開始，接通火刀據點第一個尚未完成的逐房間 ECL boundary；完成後再更新本檔、
+下一個最小可重現工作：先追火刀首領勝利後 block 50 的 `PATROL FOREST` 正常
+世界出口分支，再補入口至首領路線上尚未覆蓋的房間；完成後再更新本檔、
 `docs/project-status.md`、詳細 worklist 與 `CONTEXT.md`，不要先擴大到無關反組譯。

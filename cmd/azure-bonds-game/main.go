@@ -960,12 +960,11 @@ func (a *app) moveDungeonPreview(dx, dy, direction int) {
 	if a.geoGrid == nil {
 		return
 	}
-	geometryX, geometryY, facing := a.state.DungeonGeometryView()
+	_, _, facing := a.state.DungeonGeometryView()
 	if a.state.Mode != game.ModeDungeon {
 		// Preview maps have their own cursor; mirror it into State so the same
 		// movement transaction is exercised without an ECL lifecycle.
 		a.state.SetDungeonGeometryView(a.dungeonX, a.dungeonY, facing)
-		geometryX, geometryY = a.dungeonX, a.dungeonY
 	}
 	if !a.state.CanMoveDungeon(*a.geoGrid, dx, dy, direction) {
 		if flags, ok := a.dungeonDoorFlags(); ok && (flags == 2 || flags == 3) {
@@ -1184,10 +1183,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		return
 	}
 	if a.state.RenameEditing() {
-		text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
-		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
-		text.Draw(screen, a.state.RenameInputText(), a.face, 56, 220, cyan)
-		text.Draw(screen, a.state.RenameInputHelp(), a.face, 56, 330, white)
+		drawFittedText(screen, a.state.Title, a.face, 32, 52, 576, cyan)
+		drawFittedText(screen, a.state.Prompt, a.face, 32, 130, 576, white)
+		drawFittedText(screen, a.state.RenameInputText(), a.face, 56, 220, 520, cyan)
+		drawFittedText(screen, a.state.RenameInputHelp(), a.face, 56, 330, 520, white)
 		return
 	}
 	if a.state.ECLStringEditing() {
@@ -1195,17 +1194,17 @@ func (a *app) Draw(screen *ebiten.Image) {
 			a.drawDungeonGame(screen, white, cyan)
 			ebitenutil.DrawRect(screen, 8, 290, 624, 190, color.RGBA{0, 0, 0, 255})
 			drawWrappedText(screen, a.state.Message, a.compactFace, 16, 316, 36, 20, 2, cyan)
-			text.Draw(screen, a.state.ECLStringInputText(), a.compactFace, 16, 360, white)
-			text.Draw(screen, a.state.ECLStringInputHelp(), a.compactFace, 16, 438, cyan)
+			drawFittedText(screen, a.state.ECLStringInputText(), a.compactFace, 16, 360, 608, white)
+			drawFittedText(screen, a.state.ECLStringInputHelp(), a.compactFace, 16, 438, 608, cyan)
 			a.drawOriginalAdventureFrame(screen)
 			return
 		}
-		text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
-		text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
-		text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
+		drawFittedText(screen, a.state.Title, a.face, 32, 52, 576, cyan)
+		drawFittedText(screen, a.state.LocationName, a.face, 32, 90, 576, cyan)
+		drawFittedText(screen, a.state.Prompt, a.face, 32, 130, 576, white)
 		drawWrappedText(screen, a.state.Message, a.face, 56, 190, 22, 32, 4, cyan)
-		text.Draw(screen, a.state.ECLStringInputText(), a.face, 56, 340, white)
-		text.Draw(screen, a.state.ECLStringInputHelp(), a.face, 56, 410, cyan)
+		drawFittedText(screen, a.state.ECLStringInputText(), a.face, 56, 340, 520, white)
+		drawFittedText(screen, a.state.ECLStringInputHelp(), a.face, 56, 410, 520, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeCharacterCreation {
@@ -1213,10 +1212,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		return
 	}
 	if a.state.Mode == game.ModeJournal {
-		text.Draw(screen, a.state.JournalTitle, a.face, 32, 52, cyan)
+		drawFittedText(screen, a.state.JournalTitle, a.face, 32, 52, 576, cyan)
 		drawWrappedText(screen, a.state.JournalText, a.face, 32, 100, 22, 32, 7, white)
-		text.Draw(screen, a.state.JournalPageStatus(), a.face, 32, 350, white)
-		text.Draw(screen, a.state.JournalCloseText, a.face, 32, 390, cyan)
+		drawFittedText(screen, a.state.JournalPageStatus(), a.face, 32, 350, 576, white)
+		drawFittedText(screen, a.state.JournalCloseText, a.face, 32, 390, 576, cyan)
 		return
 	}
 	if a.state.Mode == game.ModeMap {
@@ -1234,10 +1233,10 @@ func (a *app) Draw(screen *ebiten.Image) {
 		a.drawCombat(screen, white, cyan)
 		return
 	}
-	text.Draw(screen, a.state.Title, a.face, 32, 52, cyan)
-	text.Draw(screen, a.state.LocationName, a.face, 32, 90, cyan)
-	text.Draw(screen, a.state.Prompt, a.face, 32, 130, white)
-	text.Draw(screen, a.state.GameTimeText(), a.face, 32, 170, cyan)
+	drawFittedText(screen, a.state.Title, a.face, 32, 52, 576, cyan)
+	drawFittedText(screen, a.state.LocationName, a.face, 32, 90, 576, cyan)
+	drawFittedText(screen, a.state.Prompt, a.face, 32, 130, 576, white)
+	drawFittedText(screen, a.state.GameTimeText(), a.face, 32, 170, 576, cyan)
 	if a.state.Mode == game.ModeWilderness || a.state.Mode == game.ModePlace {
 		choiceTop := 220
 		if a.state.Mode == game.ModeWilderness && a.state.Message != "" {
@@ -1249,21 +1248,21 @@ func (a *app) Draw(screen *ebiten.Image) {
 			if index == a.choiceCursor {
 				prefix = "> "
 			}
-			text.Draw(screen, prefix+choice, a.face, 56, choiceTop+index*40, white)
+			drawFittedText(screen, prefix+choice, a.face, 56, choiceTop+index*40, 520, white)
 		}
 		if a.state.Message == "" {
-			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSelectHelp), a.face, 56, 330, cyan)
-			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSaveLoadHelp), a.face, 56, 370, white)
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSelectHelp), a.face, 56, 330, 520, cyan)
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSaveLoadHelp), a.face, 56, 370, 520, white)
 		}
 	}
 	if a.state.Mode == game.ModeEvent {
 		drawWrappedText(screen, a.revealedMessage(), a.face, 56, 210, 22, 32, 5, cyan)
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 410, white)
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 410, 520, white)
 	}
 	if a.state.Mode == game.ModeMap {
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelShadowdaleMapTitle), a.face, 56, 220, cyan)
-		text.Draw(screen, a.state.AreaMapPositionText(), a.face, 56, 260, white)
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelMapControls), a.face, 56, 330, white)
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelShadowdaleMapTitle), a.face, 56, 220, 520, cyan)
+		drawFittedText(screen, a.state.AreaMapPositionText(), a.face, 56, 260, 520, white)
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelMapControls), a.face, 56, 330, 520, white)
 	}
 }
 
@@ -1310,26 +1309,108 @@ func (a *app) drawOverlandMap(screen *ebiten.Image, white, cyan color.Color) boo
 
 	drawPanelFrame(screen, 8, 264, 624, 184)
 	drawPanelFrame(screen, 8, 448, 624, 28)
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandTitle), a.face, 24, 296, cyan)
-	text.Draw(screen, a.state.OverlandCurrentLocationText(currentName), a.face, 24, 328, white)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandTitle), a.face, 24, 296, 584, cyan)
+	drawFittedText(screen, a.state.OverlandCurrentLocationText(currentName), a.face, 24, 328, 584, white)
 	timeLabel := a.state.OverlandDateText()
-	text.Draw(screen, timeLabel, a.compactFace, 468, 294, cyan)
+	drawFittedText(screen, timeLabel, a.compactFace, 468, 294, 156, cyan)
 	for index, choice := range a.state.Choices {
 		prefix := "  "
 		if index == a.choiceCursor {
 			prefix = "> "
 		}
-		text.Draw(screen, prefix+choice, a.face, 40, 366+index*30, white)
+		drawFittedText(screen, prefix+choice, a.face, 40, 366+index*30, 560, white)
 	}
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, 470, cyan)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelOverlandControls), a.compactFace, 344, 470, 280, cyan)
 	return true
 }
 
 func drawWrappedText(screen *ebiten.Image, value string, face font.Face, x, y, lineRunes, lineHeight, maxLines int, ink color.Color) {
-	lines := wrapTextLines(value, lineRunes, maxLines)
+	lines := wrapTextLinesByWidth(value, face, lineRunes*faceCellWidth(face), maxLines)
 	for index, line := range lines {
 		text.Draw(screen, line, face, x, y+index*lineHeight, ink)
 	}
+}
+
+// drawFittedText is the common single-line renderer for UI labels and choices.
+// The previous renderer measured Chinese text by rune count, while an ETen
+// glyph, a fallback Latin glyph, and punctuation have different advances. A
+// long translated choice could therefore cross a stone divider or the combat
+// status panel. Keep the original baseline and truncate only at a rune
+// boundary when the declared region cannot contain the measured pixels.
+func drawFittedText(screen *ebiten.Image, value string, face font.Face, x, y, maxWidth int, ink color.Color) {
+	text.Draw(screen, fitTextToWidth(value, face, maxWidth), face, x, y, ink)
+}
+
+func faceCellWidth(face font.Face) int {
+	// Probe a representative CJK code point without embedding a localized
+	// player-visible string in Go; all actual UI text still comes from JSON.
+	width := font.MeasureString(face, string(rune(0x4E2D))).Ceil()
+	if width < 1 {
+		width = font.MeasureString(face, "M").Ceil()
+	}
+	if width < 1 {
+		return 1
+	}
+	return width
+}
+
+func fitTextToWidth(value string, face font.Face, maxWidth int) string {
+	if maxWidth <= 0 || value == "" {
+		return ""
+	}
+	if font.MeasureString(face, value).Ceil() <= maxWidth {
+		return value
+	}
+	runes := []rune(value)
+	suffix := "…"
+	suffixWidth := font.MeasureString(face, suffix).Ceil()
+	if suffixWidth > maxWidth {
+		return ""
+	}
+	for count := len(runes); count >= 0; count-- {
+		candidate := string(runes[:count]) + suffix
+		if font.MeasureString(face, candidate).Ceil() <= maxWidth {
+			return candidate
+		}
+	}
+	return suffix
+}
+
+func wrapTextLinesByWidth(value string, face font.Face, maxWidth, maxLines int) []string {
+	if maxWidth < 1 || maxLines < 1 {
+		return nil
+	}
+	lines := make([]string, 0, maxLines)
+	for _, paragraph := range strings.Split(value, "\n") {
+		if len(lines) >= maxLines {
+			break
+		}
+		runes := []rune(paragraph)
+		if len(runes) == 0 {
+			lines = append(lines, "")
+			continue
+		}
+		current := make([]rune, 0, len(runes))
+		for _, r := range runes {
+			candidate := append(append([]rune(nil), current...), r)
+			if len(current) > 0 && font.MeasureString(face, string(candidate)).Ceil() > maxWidth {
+				lines = append(lines, string(current))
+				if len(lines) >= maxLines {
+					return lines
+				}
+				current = []rune{r}
+				continue
+			}
+			current = candidate
+		}
+		if len(current) > 0 {
+			lines = append(lines, string(current))
+		}
+	}
+	if len(lines) > maxLines {
+		return lines[:maxLines]
+	}
+	return lines
 }
 
 func wrapTextLines(value string, lineRunes, maxLines int) []string {
@@ -1390,11 +1471,11 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, 600, color.RGBA{255, 255, 255, 255})
 			return
 		}
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelSceneCharacterMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSceneCharacterMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, 520, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	if a.state.BigPictureRequested {
@@ -1407,18 +1488,18 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			op.GeoM.Translate(float64((logicalWidth-sprite.Bounds().Dx()*pixelScale)/2), 44)
 			screen.DrawImage(sprite, op)
 			a.drawPictureMessage(screen)
-			text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureContinue), a.face, 56, 446, color.RGBA{255, 255, 255, 255})
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureContinue), a.face, 56, 446, 520, color.RGBA{255, 255, 255, 255})
 			return
 		}
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelBigPictureMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, 520, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	key := fmt.Sprintf("pic%d-block-%02X", a.state.Area.GameArea, a.state.PictureBlock)
 	frames := a.combatAnimations[key]
 	if len(frames) == 0 {
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelPictureMissing), a.face, 56, 220, color.RGBA{255, 220, 100, 255})
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, color.RGBA{255, 255, 255, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelPictureMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.face, 56, 330, 520, color.RGBA{255, 255, 255, 255})
 		return
 	}
 	frame := frames[0]
@@ -1432,7 +1513,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, color.RGBA{255, 255, 255, 255})
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, 600, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
@@ -1539,17 +1620,17 @@ func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
 	ebitenutil.DrawRect(screen, 0, 0, 640, 480, color.RGBA{A: 255})
 	a.drawOriginalAdventureFrame(screen)
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, color.RGBA{232, 238, 255, 255})
-	text.Draw(screen, "AC", a.compactFace, 528, 38, color.RGBA{232, 238, 255, 255})
-	text.Draw(screen, "HP", a.compactFace, 600, 38, color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, 240, color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, "AC", a.compactFace, 528, 38, 64, color.RGBA{232, 238, 255, 255})
+	drawFittedText(screen, "HP", a.compactFace, 600, 38, 32, color.RGBA{232, 238, 255, 255})
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
 		ink := color.RGBA{R: 92, G: 220, B: 255, A: 255}
-		text.Draw(screen, fighter.Name, a.compactFace, 280, 68+index*20, ink)
-		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, ink)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, ink)
+		drawFittedText(screen, fighter.Name, a.compactFace, 280, 68+index*20, 240, ink)
+		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, 64, ink)
+		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, 32, ink)
 	}
 }
 
@@ -1771,30 +1852,30 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	a.drawFirstPersonStageFrame(screen)
 
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, white)
-	text.Draw(screen, "AC", a.compactFace, 528, 38, white)
-	text.Draw(screen, "HP", a.compactFace, 600, 38, white)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, 240, white)
+	drawFittedText(screen, "AC", a.compactFace, 528, 38, 64, white)
+	drawFittedText(screen, "HP", a.compactFace, 600, 38, 32, white)
 	for index, fighter := range a.state.PartyFighters() {
 		if index >= 8 {
 			break
 		}
-		text.Draw(screen, fighter.Name, a.compactFace, 280, 68+index*20, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, cyan)
-		text.Draw(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, cyan)
+		drawFittedText(screen, fighter.Name, a.compactFace, 280, 68+index*20, 240, cyan)
+		drawFittedText(screen, strconv.Itoa(fighter.ArmorClass), a.compactFace, 532, 68+index*20, 64, cyan)
+		drawFittedText(screen, strconv.Itoa(fighter.HitPoints), a.compactFace, 604, 68+index*20, 32, cyan)
 	}
 
 	status := fmt.Sprintf("(%d,%d) %s %02d:%02d", a.dungeonX, a.dungeonY,
 		dungeonDirectionName(direction), a.state.GameTimeDisplay().Hour, a.state.GameTimeDisplay().Minute)
-	text.Draw(screen, status, a.compactFace, 280, 254, cyan)
+	drawFittedText(screen, status, a.compactFace, 280, 254, 344, cyan)
 	if a.state.Message != "" {
 		drawWrappedText(screen, a.state.Message, a.compactFace, 24, 282, 36, 24, 6, white)
 	} else {
-		text.Draw(screen, a.state.LocationName, a.compactFace, 24, 282, cyan)
+		drawFittedText(screen, a.state.LocationName, a.compactFace, 24, 282, 584, cyan)
 	}
 	if a.dungeonDoorMenu {
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonDoorHelp), a.compactFace, 8, 430, color.RGBA{255, 255, 82, 255})
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonDoorHelp), a.compactFace, 8, 430, 624, color.RGBA{255, 255, 82, 255})
 	}
-	text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, 468, cyan)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, 468, 624, cyan)
 	a.drawOriginalAdventureFrame(screen)
 }
 
@@ -1822,16 +1903,16 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 	// impossible to preserve once Traditional Chinese labels are loaded.
 	a.drawOriginalAdventureFrame(screen)
 	face := a.compactFace
-	text.Draw(screen, a.state.LocaleText("creation_title"), face, 32, 52, cyan)
-	text.Draw(screen, a.state.CreationMessage, face, 32, 90, white)
+	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 52, 576, cyan)
+	drawFittedText(screen, a.state.CreationMessage, face, 32, 90, 576, white)
 	if a.state.CreationEditing {
-		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), face, 48, 140, white)
-		text.Draw(screen, a.state.LocaleText("creation_name_help"), face, 48, 190, cyan)
+		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), face, 48, 140, 544, white)
+		drawFittedText(screen, a.state.LocaleText("creation_name_help"), face, 48, 190, 544, cyan)
 		return
 	}
 	if a.state.CreationEditingAbilities {
 		character := a.state.CreationOptions[a.state.CreationCursor]
-		text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_ability_title"), character.Name), face, 32, 135, white)
+		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_ability_title"), character.Name), face, 32, 135, 576, white)
 		abilityKeys := []string{"ability_strength", "ability_intelligence", "ability_wisdom", "ability_dexterity", "ability_constitution", "ability_charisma"}
 		for index, key := range abilityKeys {
 			value, _ := character.Abilities.Value(index)
@@ -1840,9 +1921,9 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 				prefix = "> "
 			}
 			label := fmt.Sprintf(a.state.LocaleText("creation_ability_row"), a.state.LocaleText(key), value)
-			text.Draw(screen, prefix+label, face, 64, 175+index*25, white)
+			drawFittedText(screen, prefix+label, face, 64, 175+index*25, 512, white)
 		}
-		text.Draw(screen, a.state.LocaleText("creation_ability_help"), face, 48, 350, cyan)
+		drawFittedText(screen, a.state.LocaleText("creation_ability_help"), face, 48, 350, 544, cyan)
 		return
 	}
 	start := a.state.CreationCursor - 3
@@ -1864,11 +1945,11 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		label := prefix + fmt.Sprintf(a.state.LocaleText("creation_option_label"), character.Name,
 			a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
-		text.Draw(screen, label, face, 48, 150+(index-start)*32, white)
+		drawFittedText(screen, label, face, 48, 150+(index-start)*32, 544, white)
 	}
-	text.Draw(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
-		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 325, cyan)
-	text.Draw(screen, a.state.LocaleText("creation_help"), face, 48, 340, white)
+	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
+		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 325, 544, cyan)
+	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 48, 340, 544, white)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
@@ -1927,11 +2008,11 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	}
 	drawWrappedText(screen, combatMessage, a.compactFace, 8, 392, 39, 20, 3, white)
 	if a.state.CombatViewActive() {
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewTitle), a.face, 64, 145, cyan)
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewTitle), a.face, 64, 145, 512, cyan)
 		for index, line := range a.state.CombatViewLines() {
-			text.Draw(screen, line, a.face, 64, 185+index*30, white)
+			drawFittedText(screen, line, a.face, 64, 185+index*30, 512, white)
 		}
-		text.Draw(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewReturn), a.face, 64, 350, cyan)
+		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCombatViewReturn), a.face, 64, 350, 512, cyan)
 		return
 	}
 	active, activeOK := a.state.CombatActiveFighter()
@@ -2058,14 +2139,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if activeOK {
 		statusGreen := color.RGBA{R: 92, G: 255, B: 92, A: 255}
 		statusYellow := color.RGBA{R: 255, G: 255, B: 82, A: 255}
-		text.Draw(screen, active.Name, a.compactFace, 370, 30, cyan)
-		text.Draw(screen, a.state.CombatHitPointsLabel(), a.compactFace, 370, 62, statusGreen)
-		text.Draw(screen, strconv.Itoa(active.HitPoints), a.compactFace, 450, 62, statusYellow)
-		text.Draw(screen, a.state.CombatArmorClassLabel(), a.compactFace, 370, 94, statusGreen)
-		text.Draw(screen, strconv.Itoa(active.ArmorClass), a.compactFace, 466, 94, statusYellow)
+		drawFittedText(screen, active.Name, a.compactFace, 370, 30, 246, cyan)
+		drawFittedText(screen, a.state.CombatHitPointsLabel(), a.compactFace, 370, 62, 72, statusGreen)
+		drawFittedText(screen, strconv.Itoa(active.HitPoints), a.compactFace, 450, 62, 54, statusYellow)
+		drawFittedText(screen, a.state.CombatArmorClassLabel(), a.compactFace, 370, 94, 72, statusGreen)
+		drawFittedText(screen, strconv.Itoa(active.ArmorClass), a.compactFace, 466, 94, 54, statusYellow)
 	}
 	if prompt, selecting := a.state.CombatSelectionPrompt(); selecting {
-		text.Draw(screen, prompt, a.face, 32, 350, cyan)
+		drawFittedText(screen, prompt, a.face, 32, 350, 576, cyan)
 		return
 	}
 	spellHints := a.state.CombatQuickSpellHints()
@@ -2073,16 +2154,16 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
 		footerStatus = a.state.CombatTargetStatus(targets[a.state.CombatTargetIndex()].Name)
 	}
-	text.Draw(screen, footerStatus, a.compactFace, 8, 462, color.RGBA{R: 255, G: 82, B: 255, A: 255})
+	drawFittedText(screen, footerStatus, a.compactFace, 8, 462, 624, color.RGBA{R: 255, G: 82, B: 255, A: 255})
 	combatMenu := a.state.CombatMainMenuText()
 	if a.combatSpeedMenu {
 		combatMenu = a.state.CombatSpeedMenuText()
 	} else if a.combatDoneMenu {
 		combatMenu = a.state.CombatDoneMenuText()
 	}
-	text.Draw(screen, combatMenu, a.compactFace, 8, 478, cyan)
+	drawFittedText(screen, combatMenu, a.compactFace, 8, 478, 624, cyan)
 	if len(spellHints) > 0 {
-		text.Draw(screen, a.state.CombatQuickStatus(spellHints), a.compactFace, 378, 340, cyan)
+		drawFittedText(screen, a.state.CombatQuickStatus(spellHints), a.compactFace, 378, 340, 246, cyan)
 	}
 }
 

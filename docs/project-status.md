@@ -5,6 +5,20 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 538 輪把火刀據點的正常玩家路徑從 E2 block 4 `(6,1,S)` 延伸到首領戰前。
+`TestRealNewGameBeginsAtGlobalBlockOne` 以同一個 ECL／地城 session 逐格通過
+terrain `0x99` 刀刃區、`0x9A` 冰凍房、`0x94／0x95` 相位蜘蛛區，抵達
+`(3,13)` terrain `0x87`，再以 stable message ID 與 combat object 資料確認 20 名
+火刀加首領的 21 名敵人。這是 `layout／route reconstructed` 的正常路徑證據，尚未
+包含所有可選房間或首領勝利後出口；完整邊界見
+[`docs/spec/538-fire-knife-normal-leader-route.md`](spec/538-fire-knife-normal-leader-route.md)。
+
+第 539 輪修正中文 GUI 溢框：renderer 依倚天字形實際 glyph advance 做 rune-safe
+換行與單行裁切，並對冒險、地城、事件、手札、角色建立與戰鬥欄位提供明確寬度。
+Docker／Xvfb 重新產生 640×480 代表畫面並替換 README 使用的舊截圖。這是
+`layout-reconstructed`，不是所有狀態逐像素 exact；完整契約見
+[`docs/spec/539-cjk-gui-width-clipping.md`](spec/539-cjk-gui-width-clipping.md)。
+
 第 537 輪完成 Search／Look 分離與下水道至火刀據點的正常玩家 vertical slice。
 `S` 現在切換持續 `DungeonSearchEnabled`，`L` 是不改開關的一次性
 `LookDungeonLocation`；兩者、可發現 wall=09 候選邊與外部出口都由獨立
@@ -12,7 +26,8 @@ Golden Box engine schema／CoAB JSON 宣告，發現的 edge ID 保存於 remake
 Docker 正常路徑由 `(13,10)` 逐格經 `(10,12)` 的 wall=09 候選、`(8,15,S)` E2
 進入 block 4，再經火刀北側 E1 候選 `(8,0,N)` 回到下水道 `(10,15,N)`；沒有
 直接設定座標或手動呼叫出口生命週期。火刀首領勝利後的 ECL 夢境、Tilverton
-世界地圖邊界與存檔重訪也已通過同一 session 測試。wall writer 與三個 E1 座標仍
+世界地圖邊界與存檔重訪已有固定首領 fixture／切片測試；第 538 輪另完成正常入口
+到首領戰前，但完整 session 的戰後出口分支仍待閉合。wall writer 與三個 E1 座標仍
 是 `strong inference`，不是原版逐指令 `exact`；完整邊界見
 [`docs/spec/537-search-look-e2-fire-knife-normal-route.md`](spec/537-search-look-e2-fire-knife-normal-route.md)。
 

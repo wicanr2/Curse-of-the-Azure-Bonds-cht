@@ -11,6 +11,8 @@
 
 目前規格：
 
+- [第五百三十九輪繁中 GUI 寬度與溢框修正](./539-cjk-gui-width-clipping.md)（`READY`：依實際 glyph advance 的 rune-safe 換行／裁切、640×480 代表畫面；不含所有狀態逐像素 exact）
+- [第五百三十八輪火刀據點入口至首領正常路徑](./538-fire-knife-normal-leader-route.md)（`READY`：真實開場 session 從 E2 block 4 `(6,1,S)` 逐格到 `(3,13)` 首領戰前；不含所有可選房間與戰後出口）
 - [第五百三十七輪 SEARCH／LOOK、E2 與火刀 E1 正常路徑](./537-search-look-e2-fire-knife-normal-route.md)（`READY`：engine＋JSON、正常玩家路徑、world-map save/load；原版 wall writer 仍為 `strong inference`）
 - [第五百三十六輪下水道 E2 路徑與 Search 模式勘誤](./536-tilverton-sewers-e2-search-route.md)（`SUPERSEDED`：保留 GEO／手冊證據，實作狀態見第 537 輪）
 - [第五百三十五輪攻略與地圖交叉核對下水道 E2 邊界](./535-walkthrough-tilverton-sewers-e2-boundary.md)（`DRAFT`：`(13,10)` 騎士事件、E2 外部出口語意與本機 block 3→4 邊界；不含 `(8,15)` 正常輸入／wall trigger）
