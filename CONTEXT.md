@@ -4755,3 +4755,14 @@ wall=09 候選、`(8,15,S)` E2，進入 ECL2 block 4 `(6,1,S)`；處理安靜／
 音樂音效與完整中文化。不要把 deterministic 首領 fixture 或本輪 vertical slice
 宣稱為整作通關。engine 知識庫新增
 `golden-box-remake-engine/docs/knowledge/golden-box-search-look-map-edges.md`。
+
+2026-08-10 第五百三十八輪完成文件盤點與交接整理。新增根目錄
+`WORKLIST.md` 作為 compact 後的目前工作單一摘要入口，明確把第 537 輪已完成的
+Search／Look、wall=09 候選、E2、火刀 E1、戰後世界地圖與 save/load，和仍未完成的
+火刀據點逐房間路徑、全 ECL／全地圖、戰鬥 AI／法術效果／動畫、存檔／角色轉移、
+全量繁中、音樂音效、UI fidelity 與三平台發行分開。同步更新
+`docs/knowledge/golden-box-reverse-engineering-worklist.md`、
+`docs/project-status.md` 與 `README.md` 的入口連結；舊輪次的 11＋4 工作流數量
+只保留歷史索引，不再當成當前完成度。下一個最小工作是從 block 4 `(6,1,S)` 的
+正常 ECL session 逐房間接通火刀據點第一個未支援 boundary；不再深挖與玩家結果
+無關的 function，也不可把 deterministic 首領 fixture 宣稱成整作通關。

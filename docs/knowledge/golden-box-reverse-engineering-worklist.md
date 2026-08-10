@@ -1,6 +1,10 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-10（第 536 輪盤點）
+更新日期：2026-08-10（第 537 輪成果／第 538 輪文件盤點）
+
+目前摘要以根目錄 [`WORKLIST.md`](../../WORKLIST.md) 為準；本檔保留完整的反組譯
+證據邊界、歷史勘誤與可重生研究入口。若本檔的舊輪次表格與根目錄摘要看似衝突，
+以最新的第 537 輪 spec、目前 worktree 與 root `WORKLIST.md` 為準。
 
 第 537 輪已把 P0-2 的 remake 可玩邊界接通：engine＋JSON 分離持續 `SEARCH`、
 一次性 `LOOK`、可發現 wall=09 候選邊與外部出口；正常玩家由 `(13,10)` 經
@@ -49,6 +53,12 @@ overlay-14 副本補出 `MOVEPARTY` 的 mode／`+592h` gate、B／P／K helper �
 每項工作要閉合什麼證據，以及哪些舊斷言已被降級。後續 Gold Box 作品可以沿用
 分類方式，但位址、雜湊、版本與劇情資料必須各自保存，不能跨遊戲套用。
 
+第 537 輪已把「重製正常路徑」與「原版 exact parity」分開：Search／Look、wall=09
+候選橋接、E2、火刀 E1、戰後世界地圖與 save/load 已有 CoAB 正常玩家垂直切片；
+原版 wall writer、第三平面 before／after、E1 精確座標、完整火刀房間路徑與整作
+通關仍未完成。不要再把第 536 輪以前表格裡的「正常輸入未知」讀成目前 remake
+完全沒有 E2 路徑。
+
 第 529 輪沒有擴大反組譯範圍；先把目前已可玩的 12 個玩家法術接成共用
 engine＋JSON contract，並保留原始 `spell_id`、locale message ID 與驗證邊界。
 P0-1／P0-2／P0-3 的逆向缺口數量不變；後續仍只追會阻塞正常玩家路徑的資料流，
@@ -60,10 +70,11 @@ P0-1／P0-2／P0-3 的逆向缺口數量不變；後續仍只追會阻塞正常�
 真正缺的是「會改變玩家可玩結果」的資料流：輸入／ECL opcode → 外部 routine 或
 地圖服務 → state／renderer／戰鬥／存檔 consumer → 可重播的 runtime 結果。
 
-以資料流為單位，目前還有 11 個直接影響正常玩家結果的逆向主題：P0 外部地圖／
-正常路徑 3 個、P1 ECL／外部 routine 4 個、戰鬥規則／AI 2 個、存檔／AD&D 角色
-規則 2 個；另有 4 個以 fidelity／音訊／發行為主的主題。這些是工作流數量，
-不是函式數量或完成百分比；詳見 `docs/spec/517-reverse-engineering-gap-inventory.md`。
+第 517 輪所列的「11 個行為主題＋4 個 fidelity／發行主題」是當時的工作流盤點，
+不是目前的完成百分比，也不再作為新的 blocker 計數。第 537 輪已關閉其中的
+CoAB Search／Look 與 E2／E1 remake integration；目前剩餘工作依玩家結果拆成
+「火刀據點與主線正常路徑、全 ECL／全地圖、戰鬥、存檔／角色、中文化、音訊、UI
+fidelity、發行」八個工作流，詳細優先順序改由根目錄 `WORKLIST.md` 維護。
 
 第 519–524 輪已連續關閉 P0-1 的六個靜態子邊界：ECL selector 已可由
 `017F:003Eh` 對到 START control vector 6 與 overlay-30 local `07C6h`，確認
@@ -118,8 +129,8 @@ audit 為 `scripts/research/pc98_overlay14_action_transaction_audit.py`。
 
 ### 目前剩餘的反組譯量（以資料流工作單位計）
 
-目前仍需解讀的範圍是 **11 個行為資料流主題**與 **4 個 fidelity／發行主題**，
-不是 15 個函式，也不是 15 個完成百分點。就目前最急迫的 P0-1 而言，`GetMem`
+目前仍需解讀的範圍不是固定函式數，也不是完成百分點。第 517 輪的 11＋4
+只保留作歷史索引；就目前最急迫的原版 parity 而言，`GetMem`
 owner、四平面 writer 幾何、GEO DAX source／decoded layout 已不再是缺口；剩餘仍
 可拆成五個可驗證 runtime 邊界，其中第一項只剩 selector producer／正式 map
 consumer：
@@ -136,6 +147,10 @@ consumer：
 
 P0-2 與 P0-3 各自仍是完整的正常路徑資料流缺口；P1 的 8 個主題（ECL／外部
 routine 4、戰鬥／AI 2、存檔／AD&D 規則 2）尚未因本輪靜態稽核而縮減。
+
+> 下表保留原版外部地圖／PC-98 static audit 的歷史資料流，並不是目前 CoAB
+> 正常玩家實作的唯一狀態表。第 537 輪已完成的 remake integration、剩餘產品工作
+> 與下一個最小步驟，請先看根目錄 [`WORKLIST.md`](../../WORKLIST.md)。
 
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
@@ -392,6 +407,19 @@ selector／record round-trip；`SEARCHREC` 不再列為 map owner，`BDF1` 只�
 顯示狀態證據。
 overlay 22 `[di+4BF0h]` 仍只作獨立的位址空間候選，不把它當成先驗入口。
 在正式 consumer 與 runtime 閉合前不改 movement 規則、不把 detail 0 泛化成可走門。
+
+## 第 537 輪後的目前交接
+
+目前不要把下列歷史文字當作新 blocker：`(13,10)`→`(8,15,S)` 的 CoAB remake 路徑
+已由 Search／Look、wall=09 候選 edge、E2 external exit 與正常 `MoveDungeon` session
+接通；第 536／516 spec 的 coordinate-assisted 描述已標為 `SUPERSEDED`。仍保留的
+原版研究問題是 wall=09 第三平面 writer、成功率、精確 E1 座標與 DOS／PC-98 runtime
+consumer，證據等級仍是 `strong inference／unknown`，不應回填成正式原版規則。
+
+下一個最小實作不是再掃 `BDF1`、`SEARCHREC` 或無關 overlay，而是從 block 4
+入口 `(6,1,S)` 的同一 ECL session，逐房間完成火刀據點第一個未支援的 boundary；
+完成後再以正常輸入驗證首領、出口、世界地圖與存檔重訪。每輪只在有重大、可展示、
+已測試成果時集中 commit／push。
 
 最新完整盤點與 GEO 勘誤見 `docs/spec/517-reverse-engineering-gap-inventory.md`；
 第 518 輪位址空間稽核見 `docs/spec/518-dos-start-ecl-call-address-space-audit.md`；

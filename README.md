@@ -76,6 +76,8 @@ theme 與日後美化 theme 分開維護。
 
 ## 開發與研究文件
 
+- [目前工作清單](WORKLIST.md)：compact 後的第一入口，列出已完成基線、剩餘工作、
+  反組譯範圍與完成門檻。
 - [專案狀態](docs/project-status.md)：目前已完成、未完成與驗證方式。
 - [正常玩家路徑](docs/knowledge/golden-box-normal-player-path.md)：只記錄真正由輸入
   抵達的路徑；座標輔助會明確標示。

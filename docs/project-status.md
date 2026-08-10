@@ -1,6 +1,10 @@
 # 專案成果盤點
 
 更新日期：2026-08-10
+
+目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
+逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
+
 第 537 輪完成 Search／Look 分離與下水道至火刀據點的正常玩家 vertical slice。
 `S` 現在切換持續 `DungeonSearchEnabled`，`L` 是不改開關的一次性
 `LookDungeonLocation`；兩者、可發現 wall=09 候選邊與外部出口都由獨立
