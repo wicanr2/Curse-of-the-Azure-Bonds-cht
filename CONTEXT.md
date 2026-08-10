@@ -4766,3 +4766,29 @@ Search／Look、wall=09 候選、E2、火刀 E1、戰後世界地圖與 save/loa
 只保留歷史索引，不再當成當前完成度。下一個最小工作是從 block 4 `(6,1,S)` 的
 正常 ECL session 逐房間接通火刀據點第一個未支援 boundary；不再深挖與玩家結果
 無關的 function，也不可把 deterministic 首領 fixture 宣稱成整作通關。
+
+2026-08-10 第五百三十八輪完成火刀據點入口至首領戰前的正常玩家路徑。以
+`TestRealNewGameBeginsAtGlobalBlockOne` 從真實開場、下水道、E2 block 4 `(6,1,S)`
+開始，使用同一個 `MoveDungeon`／ECL session 逐格抵達 `(3,13)` terrain `0x87`；
+路徑穿過 `0x99` 刀刃區、`0x9A` 冰凍房與 `0x94／0x95` 相位蜘蛛區，並以正式
+選單、戰鬥與 continuation 完成必要事件。首領戰前以 game-pack stable message ID
+`journal-trigger.fire-knives-leader-11` 與 combat object 資料確認 20 名火刀加首領，
+共 21 名敵人。這是正常路徑 `READY` 證據，不包含所有可選房間或戰後出口；正常
+完整 session 打完首領後目前仍觀察到 block 50 的 raw `PATROL FOREST／JOURNEY ON／CAMP`
+分支，不能拿固定首領 fixture 的世界地圖結果代替，待後續追 ECL producer／consumer。
+權威規格為 `docs/spec/538-fire-knife-normal-leader-route.md`。
+
+2026-08-10 第五百三十九輪修正繁中 GUI 溢框。`cmd/azure-bonds-game` 新增依實際
+font face glyph advance 的 rune-safe `wrapTextLinesByWidth` 與 `drawFittedText`，
+主要冒險、地城、事件、手札、角色建立與戰鬥欄位都傳入明確最大寬度；中文不再以
+固定英文字元數換行，也不會切斷多位元組字元。Docker／Xvfb 使用倚天粗體 16×15
+重新驗證 640×480 畫面，並替換 README 引用的 `gold-box-layout-adventure.png`、
+`tilverton-inn.png`、`tilverton-first-person-remake.png`。證據等級是
+`layout-reconstructed`，不是所有狀態逐像素 exact；規格為
+`docs/spec/539-cjk-gui-width-clipping.md`。`LoadPartyFile` 也新增由
+`Area.CurrentCity` 重建 `OriginalLocation`／`LocationName` 的投影，固定首領
+save/load 測試加入原始地點回歸；正常完整 session 的 block 50 分支仍未閉合。
+
+本輪 Docker focused Fire Knife group 與 GUI／gamepack 測試通過；提交前必須再跑
+受影響 repo 的正式套件、`git diff --check`，只集中提交本輪程式、規格、工作清單與
+目前截圖。不要 stage `workplace/`，也不要把以上未完成項目寫成 remake 已完成。

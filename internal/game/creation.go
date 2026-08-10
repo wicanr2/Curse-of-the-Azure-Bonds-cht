@@ -704,6 +704,15 @@ func (s *State) LoadPartyFile(path string) error {
 	if file.Location <= uint8(LocationMythDrannor) {
 		s.Location = Location(file.Location)
 	}
+	// World-map saves store the original ECL selector in Area.CurrentCity.
+	// Rebuild the name/source projection only for world-map modes; dungeon and
+	// combat saves may retain a stale/default CurrentCity while Location is a
+	// meaningful interior location, and must not be overwritten by selector 0.
+	if file.Mode == uint8(ModeWilderness) || file.Mode == uint8(ModeMap) {
+		if s.Location != LocationWilderness && file.Area.CurrentCity <= 13 {
+			s.setWorldLocation(uint16(file.Area.CurrentCity))
+		}
+	}
 	if file.Version == 1 {
 		// Legacy party.json had no adventure-state fields.
 		s.Mode = ModeWilderness

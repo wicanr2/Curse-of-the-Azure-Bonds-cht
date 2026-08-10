@@ -10,6 +10,8 @@ import (
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/gamepack"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/combat"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/mapdata"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
 )
 
 func TestCombatSpeedElapsedMatchesReferenceMultiplier(t *testing.T) {
@@ -272,6 +274,25 @@ func TestWrapTextLinesUsesUnicodeRunesAndLineLimit(t *testing.T) {
 	want := []string{"熔岩池中", "有火蜥蜴", "第二段"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("wrapTextLines()=%q, want %q", got, want)
+	}
+}
+
+func TestWrapTextLinesByWidthUsesFaceAdvance(t *testing.T) {
+	face := basicfont.Face7x13
+	cell := font.MeasureString(face, "A").Ceil()
+	got := wrapTextLinesByWidth("ABCD", face, cell*2, 3)
+	want := []string{"AB", "CD"}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("wrapTextLinesByWidth()=%q, want %q", got, want)
+	}
+}
+
+func TestFitTextToWidthKeepsSingleLineInsideDeclaredRegion(t *testing.T) {
+	face := basicfont.Face7x13
+	maxWidth := font.MeasureString(face, "ABC").Ceil()
+	got := fitTextToWidth("ABCDEFGHI", face, maxWidth)
+	if got == "ABCDEFGHI" || font.MeasureString(face, got).Ceil() > maxWidth {
+		t.Fatalf("fitTextToWidth()=%q width=%d max=%d", got, font.MeasureString(face, got).Ceil(), maxWidth)
 	}
 }
 
