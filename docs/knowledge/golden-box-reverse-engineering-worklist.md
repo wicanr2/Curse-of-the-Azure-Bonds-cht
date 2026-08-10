@@ -1,6 +1,15 @@
 # SSI Golden Box 反組譯工作清單與證據邊界
 
-更新日期：2026-08-10（第 534 輪盤點）
+更新日期：2026-08-10（第 535 輪盤點）
+
+第 535 輪以公開英文攻略與本機 ECL／GEO 規格交叉核對 P0-2：攻略明確把
+`(13,10)` 定位為下水道的 Knights of Myth Drannor 騎士事件，並把 `E2` 定義為
+通往 Fire Knife Hideout 的出口；本機 ECL2 block 3 也已精確保存南側 boundary
+進入 `NEWECL 4`、block 4 火刀據點初始化的 branch。因此使用者所說的
+`(13,10) → (8,15)` 應先記為「外部地圖出口／邊界轉場」，不是 `MOVEPARTY`，也不
+先命名成秘密門。攻略不單獨證明本機 `(8,15)` 的 wall producer、按鍵或觸發條件；
+正常玩家仍未完成。完整證據見
+[`docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md`](../spec/535-walkthrough-tilverton-sewers-e2-boundary.md)。
 
 第 534 輪以中文說明書掃描頁完成關鍵勘誤：印刷頁 3–4 的 `Move characters where?`
 列出《光芒之池》／《青色枷的詛咒》／《幽城寶藏》的四個跨遊戲角色轉移方向，
@@ -120,7 +129,7 @@ routine 4、戰鬥／AI 2、存檔／AD&D 規則 2）尚未因本輪靜態稽核
 | 優先 | 工作 | 目前證據 | 還缺什麼才可標 `exact` |
 |---|---|---|---|
 | P0-1 | 火刀戰後 `(1,8)` → `(13,10)` 的 DOS 外部地圖 handoff | ECL2 block 3 `+1B5Bh` 會 `CALL 2E10h`；overlay-02 local `2F23／2F2C` 將 selector 正規化為 `AE11h`，local `2F39` 呼叫 `017F:003Eh`；START control block raw `0x1FA0` 的 vector 6 bytes `CD 3F C6 07 00` 精確對到 overlay-30 local `07C6h`。overlay-07 local `1B3F` 已精確找到 `DS:720F／7210` 的 `0..0Fh` 循環更新與 vector 6／4 呼叫；overlay-11 已精確找到 `DS:7206h`＋`0400h` 的 Borland `GetMem(Pointer &,Word)` call-site 及初始 `7／0Dh／0或2`。第 522 輪又以 overlay-30 `133Ah..1475h` 的四次 `Move` 精確閉合 `DS:7206h +000/+100/+200/+300` 各 `0100h` 的 destination 幾何，並確認暫存 pointer 由 `FreeMem` 回收；第 523 輪再證明 `START.EXE` 的 `006B:00A2h` 是 vector 26，entry bytes `CD 3F 3F 1B 00` 指向 overlay-07 local `1B3Fh`，overlay-02 local `3002h` 在 `401Fh` branch 呼叫該 entry；第 524 輪以 overlay-30 local `1310h` 的 `GEO`／`.dax` Pascal fragments、`DS:5BEEh` area-value input、`0402h` gate 與 GEO2–GEO6 decoded corpus 閉合 `GEO<area>.dax` source／四平面 payload layout。仍未閉合的是 selector producer、正常鍵盤 producer／control-loader runtime、欄位 consumer、map projection 與 runtime consumer。overlay-30 vector 6 仍只精確到 `ES:[DI+0200h]` byte read，overlay-28 另有 `DS:7213h` consumer 與獨立 vector 7 `0841h` 路徑；既有 remake trace 沒有 `C04Bh/C04Ch` 寫入；GEO2 block 3 的**關閉狀態 movement graph**沒有合法路徑。overlay 22 `[di+4BF0h]` 仍是獨立 indexed far-pointer table candidate，不能當成 ECL handoff。現行 JSON `set_map_position` 是可重播的 `strong inference` | 追 `DS:5BEEh`／`[bp+6]` 的 selector producer、`006B` control-loader 與正常鍵盤 producer、DS:7212／7213 的正式 consumer、`C04B..C04F`／map service projection 與 `CALL 2E10h` runtime consumer 的完整橋接，並以 DOSBox／runtime trace 對上目的 map、座標、方向與暫存器；若引用 `+300h` 或 `4BF0h`，必須先證明其所屬位址空間與實際 consumer |
-| P0-2 | 騎士事件後從 `(13,10)` 到 block 4 E2 `(8,15)` 的正常輸入 | PC-98 `LOAD3DMAP (017C:1253h)` 已精確以 `0402h` gate 將四個 `0100h` plane 複製到 named `THE3DMAP (0C29:A2A0h)`；`BLOCKCODE／WALLCODE` 已精確讀取 `THE3DMAP` 的 `+000／+100／+300` 與 mask／座標公式。第 528／533 輪精確保存 `MOVEPARTY` 的 `AL=1／2／3` 分流、`0164:0039` action input、B/P/K helper、共同續跑 call-site 與 writer；第 534 輪中文說明書則把它的產品語意改列為跨遊戲角色轉移候選，不再把它當作地圖秘密門／P0-2 movement consumer。`wall=09/detail=0` 仍不能普通通過，真正的地圖 action、external map consumer 與 runtime state 未知。`S`、`TEMPSEARCH/BDF1`、`SEARCHREC` 的既有邊界仍不等於第三平面 writer。NP2kai FDD selector 尚未產生遊戲 loader／地城 trace | DOS／PC-98 任一同版本的地圖 wall interaction、external map handoff、ECL flag predicate 與移動後 map state 必須在同一條 trace 閉合；`MOVEPARTY` 另需角色資料檔／selector／record round-trip 證據，不能直接寫入 `(8,15)` |
+| P0-2 | 騎士事件後從 `(13,10)` 到本機候選 E2 `(8,15)` 的正常輸入／外部出口 | GameFAQs 攻略明確把 `(13,10)` 定位為 Knights of Myth Drannor 騎士事件，並把 E2 定義為通往 Fire Knife Hideout 的出口；本機 ECL2 block 3 的南側 branch 精確進入 `NEWECL 4`，block 4 初始化也已可回歸。這支持「外部地圖出口／邊界交易」的類型，但攻略不單獨證明本機 `(8,15)` 的 exact producer。PC-98 `LOAD3DMAP (017C:1253h)` 已精確以 `0402h` gate 將四個 `0100h` plane 複製到 named `THE3DMAP (0C29:A2A0h)`；`BLOCKCODE／WALLCODE` 已精確讀取 `THE3DMAP` 的 `+000／+100／+300` 與 mask／座標公式。第 528／533 輪精確保存 `MOVEPARTY` 的 `AL=1／2／3` 分流、`0164:0039` action input、B/P/K helper、共同續跑 call-site 與 writer；第 534 輪中文說明書把它改列為跨遊戲角色轉移候選，不再把它當作地圖秘密門／P0-2 movement consumer。`wall=09/detail=0` 仍不能普通通過，真正的地圖 action、external map consumer、runtime state 與正常輸入未知。`S`、`TEMPSEARCH/BDF1`、`SEARCHREC` 的既有邊界仍不等於第三平面 writer。NP2kai FDD selector 尚未產生遊戲 loader／地城 trace | DOS／PC-98 任一同版本的地圖 wall interaction、external map handoff、ECL flag predicate、來源／目的座標與重訪／存檔狀態必須在同一條 trace 閉合；`MOVEPARTY` 另需角色資料檔／selector／record round-trip 證據，不能直接寫入 `(8,15)` |
 | P0-3 | block 4 入口後至火刀據點出口／返回世界的外部 handoff | block 4 初始 `LOAD FILES 4,2,FFh`、`LOAD PIECES 1,2,4` 與入口文字已解讀；正常玩家抵達 block 4 仍未取代座標輔助 | 按 terrain／boundary 分段找出 `NEWECL`、地圖服務、返回 world map 的 writer／consumer，並以同一 ECL session 驗證重訪與旗標副作用 |
 
 P0-1 的 remake adapter 可以暫時保留，因為它已標註 `strong inference`；P0-2、P0-3

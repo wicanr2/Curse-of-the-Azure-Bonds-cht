@@ -4656,3 +4656,34 @@ Pool of Radiance→Curse、Curse→Hillsfar、Hillsfar→Curse 四個角色轉�
 ECL predicate 與 runtime state；角色轉移另建中立 `character_transfer`／JSON
 資料邊界，未取得角色檔案 round-trip 前不實作猜測規則。compact 後不可把本輪
 手冊證據誤讀成整個跨遊戲存檔或完整 Gold Box transfer 已在 remake 完成。
+
+2026-08-10 第五百三十五輪依使用者建議上網查閱攻略，重新核對騎士事件後的
+`(13,10) → (8,15)`。`GameFAQs` 的 Tilverton Sewers 章節把地圖標為 `ECL Script 3`，
+明確列出 `(13,10)` 的 Knights of Myth Drannor 騎士事件，並將 `E2` 定義為通往
+Fire Knife Hideout 的出口；同一攻略也說明 Fire Knife Bond 移除後 E1／E2 會封閉並
+導向 World Map。這些是攻略來源文本的 `exact` 地點／玩家可見語意，不是 raw
+ECL writer 證據；按本專案跨來源驗收分類應記為 `nearby`，不能代替本機 `exact`。
+來源：
+https://gamefaqs.gamespot.com/pc/564786-curse-of-the-azure-bonds/faqs/78365 。
+
+`GameBanshee` 另把 Fire Knife Hideout 內的 secret passage 與通往 Tilverton
+Sewers 的入口分開描述，支持不要把「secret passage」套到 P0-2；來源：
+https://www.gamebanshee.com/curseoftheazurebonds/walkthrough/firekniveshideout.php 。
+Weekend Waste Monster 只作地圖索引／版面參考，本輪其 PNG 快取未取得，沒有把它
+當座標證據：
+https://www.weekendwastemonster.net/crpgs/curse/cotab_maps.html 。
+
+本機證據仍以 `GEO2.DAX`、ECL2 block 3／4 raw branch 與 Docker remake trace 為
+準：南側 E2 boundary 的 `0xC01E`、`Y=0`、`X-=2`、`NEWECL 4` 以及 block 4 的
+`LOAD FILES 4,2,FFh`／`LOAD PIECES 1,2,4` 已是 `exact`；在目前第三平面／門狀態
+下，普通 movement graph 沒有從 `(13,10)` 到本機候選 `(8,15)` 的合法路徑，且既有
+測試是直接設定 `(8,15,S)` 後呼叫 `RunDungeonExitLifecycle`，所以仍是
+`coordinate-assisted`。攻略支持「E2 外部地圖出口」的功能類型，但不單獨證明
+本機 `(8,15)` 的 wall producer、按鍵、ECL flag 或 runtime consumer。
+
+本輪正式勘誤：P0-2 的工作名稱改為「外部地圖出口／邊界轉場」，不再使用祕密門作為
+先驗；`MOVEPARTY` 維持中文說明書所支持的跨遊戲角色轉移候選，不能代替 E2。沒有
+新增 `secret_door`／movement JSON，也沒有宣稱正常玩家已走到 `(8,15)`。完整分級與
+下一個最小工作見 `docs/spec/535-walkthrough-tilverton-sewers-e2-boundary.md`；
+compact 後先讀本段、該 spec 與 P0-2 worklist，再決定是否進入同版本 runtime 的
+wall／action trace。
