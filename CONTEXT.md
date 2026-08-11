@@ -4917,3 +4917,17 @@ golden-box engine 新增中立 `set_memory`／`Runtime.MemoryWrites`，CoAB JSON
 但不能因此刪除其他區域已由正常玩家結果證明的 raw 劇情寫入；那些仍以未命名
 作品資料保存，只有影響玩家結果時才列為 remake 依賴。權威規格仍為
 `docs/spec/545-normal-beholder-cave-teleport.md` 的第 546 輪勘誤。
+
+2026-08-11 第五百四十七輪以 IDA Pro 9.4 的 DOS overlay-07 disposable copy
+補上 ECL 虛擬地圖暫存器 bridge。原始 setter 的 `C04B/C04C/C04D` 分別更新
+`DS:720F/7210/7211`，getter 的 `C04E/C04F` 讀回 `DS:7212/7213`；既有 vector
+4／6 與 GEO 四平面證據將後者接到 wall／terrain cache。這推翻了第 544／545 輪
+把 Cave E1 寫成 `(4,5,N)` 的結論：正常新遊戲 session 的 E1 anchor 改為
+`(5,7,W)`，再由普通 `MoveDungeon` 走至 `(5,9)`，原始 ECL4 block `0x22` 寫出
+`C04B/C04C/C04D=13/1/3`，CoAB JSON 才以中立 `set_map_position` 投影到
+`(13,1,W)`。目的地的原始 GEO `wall=08`／`terrain=C0` 一起保存，避免重繪沿用
+傳送前 cache；回歸驗證 event exactly-once 與 `C04B..C04F`。沒有新增 `0x4C00`
+寫入或命名。Dexam、出口、重訪與完整結局仍不是正常 session；下一步從 `(13,1,W)`
+用正常輸入接通，不得用 `(15,1)` coordinate-assisted fixture 冒充。權威規格為
+`docs/spec/547-normal-beholder-cave-presentation-state.md`，IDA 腳本為
+`scripts/ida/dos_overlay07_c04bf_projection_audit.idc`。

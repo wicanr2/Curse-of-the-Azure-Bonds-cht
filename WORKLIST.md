@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 546 輪後盤點）
+更新日期：2026-08-11（第 547 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -19,23 +19,14 @@ session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉
 完整 ECL side effects／外部 routine、全城市／全房間 coverage、完整結局同
 session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
 
-第 545 輪把 Dexam 洞穴出生後的第一段正常內部傳送接上：同一 session 從
-`(4,5,N)` 逐格抵達 terrain `0xA2`，由 ECL4 block `0x22` 的位置交易經 JSON
-`set_map_position` 落到 `(13,1,W)`；其他地圖沒有套用通用 raw 暫存器同步。從
-`(13,1)` 到 `(15,1)` 目前 GEO block 沒有一般可走路徑，故不以攻略座標或猜測
-秘密門填補。洞穴 Dexam 雙戰、其他傳送／隨機事件、出口與重訪仍待正常路徑驗證。
-
-第 546 輪完成一項範圍勘誤：Dexam 聚焦測試移除直接 `0x4C00=1` 後，Dexam 揭露、
-兩場戰鬥、戰利品、戰後續跑、洞穴出口與世界地圖回返仍通過。因此 `0x4C00` 不
-是這段 D&D／玩家流程的必要欄位，維持 `unknown`，不再為它追查無關的完整
-consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由時才保留，不把它
-命名成規則欄位。
-
-第 544 輪把反組譯範圍收斂到玩家結果：`0x4C00` 沒有 D&D 規則證據，不再深挖或
-命名；只新增 engine＋JSON 的中立 `set_memory` route contract，讓散提爾堡 Olive
-路徑不需要測試直接注入。正常新遊戲 session 已驗證抵達 Dexam 洞穴入口
-`(4,5,N)`；第 545 輪再接上第一段洞穴內傳送，Dexam 雙戰／隨機遭遇／出口仍是
-下一個可見玩家 milestone。
+第 547 輪以 DOS IDA Pro 原始 bytes 閉合 `C04B..C04F` 的虛擬地圖 bridge：
+`C04B/C04C/C04D` 是 live map 位置／half-facing 的 ECL adapter，`C04E/C04F` 是
+wall／terrain cache 的讀取介面。這修正先前錯誤的 Cave E1 `(4,5,N)` 錨點：同一
+新遊戲 session 現在由 E1 `(5,7,W)` 一般走格到 `(5,9)`，再由 ECL4 block `0x22`
+的位置交易及 JSON `set_map_position` 抵達死精靈格 `(13,1,W)`，保留原始
+`wall=08`／`terrain=C0`。這不是完整洞穴：Dexam、其他傳送／隨機事件、出口與
+重訪仍待正常路徑驗證；`0x4C00` 仍是與目前玩家結果無關的 `unknown`，不列為
+remake blocker。
 
 ## 狀態與證據規則
 
@@ -84,7 +75,7 @@ consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由�
 
 | 項目 | 目前可宣稱的範圍 |
 |---|---|
-| Hap／熔岩洞／法師塔正常 session | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 從第 542 輪的艾森布拉城外沿正常世界路由進入 Hap，以 `MoveDungeon` 逐格完成民宅、阿卡巴、旅店、伊弗利特與村落出口；經 JSON external exit 進入熔岩洞，完成伏擊／守門戰；到 `(6,15,W)` 進巫師塔，完成庭院、德拉坎德羅斯、黑龍敘事、攻擊巫師與屋頂 CAVES 回程；同一 session 再完成熔岩池 `WAIT→PARLAY_NICE`、重訪 `COMBAT`、15 隻火蜥蜴、防火桶 WHO 與耐熱失敗，並沿正常故事 handoff 抵達散提爾堡 Dexam 洞穴入口 `(4,5,N)`。未直接寫入劇情旗標、未 direct-entry 戰鬥；洞穴內部傳送／隨機事件尚未納入此 gate。 |
+| Hap／熔岩洞／法師塔正常 session | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 從第 542 輪的艾森布拉城外沿正常世界路由進入 Hap，以 `MoveDungeon` 逐格完成民宅、阿卡巴、旅店、伊弗利特與村落出口；經 JSON external exit 進入熔岩洞，完成伏擊／守門戰；到 `(6,15,W)` 進巫師塔，完成庭院、德拉坎德羅斯、黑龍敘事、攻擊巫師與屋頂 CAVES 回程；同一 session 再完成熔岩池 `WAIT→PARLAY_NICE`、重訪 `COMBAT`、15 隻火蜥蜴、防火桶 WHO 與耐熱失敗，並沿正常故事 handoff 經 Cave E1 `(5,7,W)` 到死精靈格 `(13,1,W)`。未直接寫入劇情旗標、未 direct-entry 戰鬥；Dexam／洞穴其他事件尚未納入此 gate。 |
 | ECL 故事重繪座標邊界 | `original.geo5.block-33` 由 JSON 宣告 `spawn=(7,15,W)`；engine 以 map anchor 保留地城 live cursor，避免同區塊 ECL redraw 的暫存 `C04B/C04C/C04D` 改寫玩家位置。這是可重用契約，不是 CoAB 座標特判。 |
 | 外部出口 presentation selector | 獨立 engine 新增 `ExternalExitDefinition.RoofType` 與 schema；CoAB Hap `(15,5,E)` 宣告 `roof_type=2`，正常邊界使用 `wall_type`／`roof_type` 而不把原始 GEO terrain 假稱 exact。engine 本地提交為 `9cf5fa5`；GitHub push 需待外部目的地審核通過。 |
 | 正常路徑與固定夾具分層 | 新增 spec 543，明確把同一 session coverage 與既有固定 Hap／Myth Drannor／`PROGRAM 8` fixture 分開；目前仍不能宣稱全城市、全地城或整作結局。 |
@@ -96,11 +87,21 @@ consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由�
 | 項目 | 目前可宣稱的範圍 |
 |---|---|
 | opaque raw memory engine contract | Golden Box engine 新增 `set_memory`／`Runtime.MemoryWrites`／schema validation；CoAB JSON 宣告 `zhentil-keep.inner-city.route-memory-reset`。`0x4C00` 原版語意仍是 `unknown`，不列為 D&D 規則，也不再為它建立反組譯 blocker。 |
-| 散提爾堡至 Dexam 洞穴入口 | 同一正常新遊戲 session 通過 Olive、暗神殿、Dimswart、hooded woman 與 block `0x22`／GEO4 `0x25` handoff，抵達 JSON spawn `(4,5,N)`；測試已移除 `0x4C00`／`4BF2` 直接注入。 |
-| 洞穴驗收邊界 | 依公開攻略只保留傳送／隨機事件作 nearby 導航線索；未把攻略座標直接寫成 GEO edge，洞穴內部房間、戰鬥續跑與出口不宣稱完成。 |
+| 散提爾堡至眼魔洞穴死精靈格 | 同一正常新遊戲 session 通過 Olive、暗神殿、Dimswart、hooded woman 與 block `0x22`／GEO4 `0x25` handoff，抵達 Cave E1 `(5,7,W)`，再以 ECL 的 `C04B/C04C/C04D=13/1/3` 位置交易到 `(13,1,W)`；測試沒有 `0x4C00`／`4BF2` 直接注入。 |
+| 洞穴驗收邊界 | 依公開攻略只保留 Dexam／傳送／隨機事件作 nearby 導航線索；未把攻略座標直接寫成 GEO edge，洞穴內部房間、戰鬥續跑與出口不宣稱完成。 |
 | 角色 saving throw 資料分層 | 五欄 saving throw threshold 已由 character template JSON、engine schema 與 State projection 驗證；不與 `0x4C00` 混為同一語意問題。 |
 
 權威規格：[`第五百四十四輪 raw memory route boundary／Dexam 洞穴入口`](docs/spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
+
+## 第 547 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| DOS `C04B..C04F` virtual-map bridge | IDA overlay-07 原始 bytes 證明 setter 將 `C04B/C04C/C04D` 對應到 `DS:720F/7210/7211`，getter 將 `C04E/C04F` 讀回 `DS:7212/7213`；既有 vector 4／6 與 GEO four-plane evidence 將後兩者接到 wall／terrain cache。這消除玩家路徑所需的 map-register blocker，但不宣稱每個 renderer dirty flag 或 DOS redraw 都已 pixel-exact。 |
+| E1 至死精靈格正常 handoff | 正常新遊戲 session 由 `(5,7,W)` 一般走到 source cell `(5,9)`，game-pack 只投影原始 ECL position transaction，最終為 `(13,1,W)`、`wall=08`、`terrain=C0`，並驗證 `C04B..C04F`／event exactly-once。這不含 Dexam 雙戰、出口、重訪或完整通關。 |
+| `0x4C00` 範圍 | 本輪沒有新增 `0x4C00` 逆向或命名；依第 546 輪結果維持 `unknown`，只要不影響玩家可見 D&D 規則／路由／存檔，就不列為 remake blocker。 |
+
+權威規格：[`第五百四十七輪洞穴位置交易畫面狀態`](docs/spec/547-normal-beholder-cave-presentation-state.md)。
 
 ## 第 539 輪已關閉的工作
 
@@ -134,13 +135,13 @@ consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由�
 |---|---|---|
 | 火刀據點完整正常路徑 | 入口→首領→戰後世界→阿沙本福德→立石群→艾森布拉城外的正常 session 已接通；仍未覆蓋所有可選房間、全部寶物、失敗／重訪分支。 | 以原始 GEO 路徑補齊火刀可選房間與重訪，再把可驗收結果寫入 coverage matrix。 |
 | 火刀據點出口、返回世界地圖與重訪 | 正常 session 的 `PATROL FOREST`、`JOURNEY ON`、阿沙本福德抵達與後續城市 handoff 已閉合；Tilverton 固定 fixture 的 save/load 回歸仍保留。 | 將同一正常 session 的存檔／重載與重訪延伸到世界路由，並分離固定夾具與正常主線證據。 |
-| 開場到結局的正常玩家主線 | 已從開場走到艾森布拉城外；固定事件測試另覆蓋哈普、法師塔、摩安德之坑、散提爾堡與 Myth Drannor 局部，但完整章節 handoff、最終戰與結局尚未串完。 | 沿同一 session 續接哈普→熔岩洞→法師塔→尤拉什／摩安德之坑→散提爾堡→Myth Drannor，最後加入 `PROGRAM 8` 結局與 save/reload gate；未支援 boundary 必須明確 fail-closed。 |
+| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴死精靈格 `(13,1,W)`；固定事件測試另覆蓋哈普、法師塔、摩安德之坑、散提爾堡與 Myth Drannor 局部，但 Dexam 正常 handoff、完整章節、最終戰與結局尚未串完。 | 先從 `(13,1,W)` 以正常輸入接通 Dexam 與洞穴出口，再沿同一 session 續接尤拉什／摩安德之坑→散提爾堡→Myth Drannor，最後加入 `PROGRAM 8` 結局與 save/reload gate；未支援 boundary 必須明確 fail-closed。 |
 
 ### P1：補齊可玩規則、資料與原版行為
 
 | 工作 | 目前缺口 | 驗收方向 |
 |---|---|---|
-| 全 ECL 與外部 routine | 25 個 block／125 個 entry 的 parser／控制流 corpus gate 已完成；`CALL`、`NEWECL`、地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 的完整 consumer 仍未閉合。與玩家結果無關的 raw work address（目前如 `0x4C00`）不列為 blocker。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
+| 全 ECL 與外部 routine | 25 個 block／125 個 entry 的 parser／控制流 corpus gate 已完成；`C04B..C04F` virtual-map adapter 已閉合，但 `CALL`、`NEWECL`、剩餘地圖服務、劇情旗標、NPC 離隊、輸入與 continuation 的完整 consumer 仍未閉合。與玩家結果無關的 raw work address（目前如 `0x4C00`）不列為 blocker。 | 只逆向會改變玩家結果的 producer→state→consumer；每個完成事件都要有 raw bytes／runtime trace、JSON contract、stable ID 測試與正常輸入路徑。 |
 | 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
 | 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法、12 個玩家法術入口與視覺時間軸；ECL 戰鬥開始／隊伍全滅音效 intent 已接通，仍缺完整敵我 AI、弓箭／投射物、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與原機音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
@@ -163,9 +164,9 @@ consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由�
 1. `wall=09` 第三平面 before／after writer、Search 成功率、原版 E1 精確座標與
    同版重訪 trace。現有 CoAB edge 是 `strong inference`，不要擴大成所有
    `wall=09` 都可走。
-2. DOS `CALL 2E10h` 到 map service 的 selector producer、`DS:7206h`／
-   `DS:7212／7213` consumer、`C04B..C04F` projection 與原版 redraw／位置 trace。
-   這是原版 fidelity 稽核；除非某個玩家結果被阻塞，不再逐行追無關 overlay。
+2. DOS `CALL 2E10h` 的剩餘 redraw／dirty-flag 時序與 runtime pixel trace。第 547
+   輪已關閉 `C04B..C04F` 對 `DS:720F..7213` 的 adapter；這項只屬原版 fidelity
+   稽核，除非某個玩家結果被阻塞，不再逐行追無關 overlay。
 3. PC-98 `MOVEPARTY` 的角色轉移 selector／record／save round-trip。中文說明書
    已證明產品功能邊界，但尚未證明每個 raw helper 與 transfer record 的一對一
    runtime 對應。
@@ -193,9 +194,10 @@ consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由�
    再集中 commit＋push 兩個 repository。
 
 下一個最小可重現工作：沿第 543 輪同一個 ECL session 從防火桶返回的熔岩洞續接
-尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；先從 Dexam 洞穴入口建立洞內
-正常移動／傳送／隨機遭遇的 coverage，再建立城市／GEO 事件 coverage
-matrix，逐項標示 normal、fixed fixture 或 coordinate-assisted。不要把本輪
+尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；同時從 Dexam 洞穴 `(13,1,W)`
+以原版 ECL selector／正常輸入建立死精靈、皮袋與手札 59 的 coverage，再建立
+城市／GEO 事件 coverage matrix，逐項標示 normal、fixed fixture 或
+coordinate-assisted。不要把本輪
 Hap／巫師塔局部路徑或既有 `PROGRAM 8` fixture 擴大解讀成完整結局。
 不要把 static corpus／路網 gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的
 反組譯。

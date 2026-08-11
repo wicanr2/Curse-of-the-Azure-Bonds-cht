@@ -1,5 +1,10 @@
 # 第五百二十三輪：DOS control vector 26 → overlay-07 `1B3Fh`
 
+> 更新（第 547 輪）：本檔的 `C04B..C04F` projection `unknown` 已由同一
+> overlay 的 ECL virtual-map setter／getter 稽核 supersede；目前結論見
+> [`spec 547`](./547-normal-beholder-cave-presentation-state.md)。vector 26 的
+> normal-input producer／完整 redraw 時序仍不因此宣稱完成。
+
 狀態：`READY`（僅限 control vector 與 overlay-02 靜態 caller；不是正常鍵盤輸入、
 地圖移動或 runtime handoff 完成）
 日期：2026-08-09

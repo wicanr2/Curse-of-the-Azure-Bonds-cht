@@ -1929,7 +1929,7 @@
       "sky_blocks": [250, 251, 252],
       "wrap": true,
       "scale": 2,
-      "spawn": {"x": 4, "y": 5, "direction": 0}
+      "spawn": {"x": 5, "y": 7, "direction": 6}
     },
     {
       "id": "original.geo3.block-10",
@@ -3557,7 +3557,9 @@
             "geometry_block": 37,
             "x": 13,
             "y": 1,
-            "direction": 6
+            "direction": 6,
+            "wall_type": 8,
+            "wall_roof": 192
           }
         }
       ]

@@ -1,5 +1,11 @@
 # 第五百四十三輪：正常主線 coverage 盤點與 IDA 地圖 cell 稽核
 
+> 更新（第 547 輪）：本檔保留的 `C04B..C04F` map projection gap 已由 DOS
+> overlay-07 原始 setter／getter bytes 補齊；目前的 Cave E1 anchor 是
+> `(5,7,W)`，不是本檔歷史記錄的 `(4,5,N)`。完整勘誤見
+> [`spec 547`](./547-normal-beholder-cave-presentation-state.md)。本檔仍不宣稱
+> DOS redraw／完整地城 coverage 已完成。
+
 狀態：`READY`（本輪只封存正常主線的 Hap／熔岩洞／法師塔 coverage，不宣稱全城市、全地城或完整結局）
 
 ## 本輪結論

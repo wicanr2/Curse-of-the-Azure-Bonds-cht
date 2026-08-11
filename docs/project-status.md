@@ -5,25 +5,32 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 547 輪以 DOS overlay-07 的 IDA Pro 原始 bytes 閉合 ECL `C04B..C04F` 與 live
+map byte 的 bridge：前面三個是位置／half-facing 的 writer，後兩個是 wall／terrain
+cache 的 getter。這修正了洞穴 E1 的錯誤錨點：同一新遊戲 session 從 `(5,7,W)`
+一般走格到 `(5,9)`，由 ECL4 block `0x22` 的位置交易透過 JSON
+`set_map_position` 到 `(13,1,W)`，並保存原始 `wall=08`、`terrain=0xC0`。回歸
+驗證 ECL virtual registers、event exactly-once 與畫面 cache，沒有座標注入。
+這是 `normal-path／engine＋JSON／DOS map adapter` 的 `READY` milestone；Dexam、
+其他洞穴事件、出口、重訪與完整結局仍未完成。`0x4C00` 維持 `unknown`，不影響
+本輪實作。完整證據見
+[`spec 547`](spec/547-normal-beholder-cave-presentation-state.md)。
+
 第 546 輪完成 `0x4C00` 範圍勘誤：移除 Dexam 聚焦夾具的直接 `0x4C00=1` 前置值後，
 Docker 仍通過 Dexam 揭露、兩場戰鬥、戰後續跑、洞穴出口與世界地圖回返。這只
 證明該段玩家流程不依賴 `0x4C00`，不代表可刪除其他已由玩家結果證明的 raw 劇情
 寫入；目前仍維持 `unknown`，不追查其 D&D 以外的完整語意。完整規格見
 [`spec 545`](spec/545-normal-beholder-cave-teleport.md) 的第 546 輪勘誤。
 
-第 545 輪完成眼魔洞穴第一段正常內部傳送：同一新遊戲 session 從 Dexam 洞穴
-出生點 `(4,5,N)` 逐格抵達 GEO4 block `0x25` 的 terrain `0xA2`，由 ECL4 block
-`0x22` 的已觀察位置交易透過 CoAB JSON `set_map_position` 落到 `(13,1,W)`。
-這是 `normal-path／engine＋JSON` 的 `READY` milestone；目前 GEO 在 `(13,1)`
-到 Dexam 入口 `(15,1)` 沒有一般可走路徑，因此沒有把攻略座標或未證實的秘密門
-硬接成路網。完整洞穴事件、Dexam 雙戰、出口與重訪仍未完成。完整證據見
-[`spec 545`](spec/545-normal-beholder-cave-teleport.md)。
+第 545 輪的洞穴傳送切片由第 547 輪 supersede：它保留 `0x4C00` 範圍勘誤，
+但舊的 `(4,5,N)` 出生點與未閉合的 map-register 假設均不再是目前結論。完整
+更新見 [`spec 547`](spec/547-normal-beholder-cave-presentation-state.md)。
 
 第 544 輪收斂了反組譯與 engine 邊界：`0x4C00` 沒有被命名成 D&D 規則欄位，
 只以作品包的 `set_memory` action 保存玩家可見的散提爾堡故事轉移依賴；engine
 提供可重用的 raw memory write，CoAB JSON 宣告觸發條件與數值。新增的正常 session
-測試從 Hap／熔岩洞／法師塔續跑至 Dexam 洞穴入口 `(4,5,N)`，並明確停在已證實
-邊界；洞穴內的傳送、隨機遭遇與出口尚未以猜測的圖邊連線取代。這是
+測試從 Hap／熔岩洞／法師塔續跑至 Cave E1 `(5,7,W)`；第 547 輪再接到死精靈格
+`(13,1,W)`，但 Dexam、隨機遭遇與出口尚未以猜測的圖邊連線取代。這是
 `engine＋JSON／normal-path boundary` 的 `READY` milestone，不是完整 ECL 或整作
 通關。完整證據見 [`spec 544`](spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
 

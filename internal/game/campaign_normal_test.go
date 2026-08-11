@@ -40,6 +40,7 @@ type normalCampaignObserver struct {
 	stopAtWorldEdge       bool
 	nextWorldDestinations []string
 	stopAtMessageID       string
+	stopAtDataPackEventID string
 }
 
 func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserver {
@@ -191,6 +192,11 @@ func (o *normalCampaignObserver) observe() {
 	}
 }
 
+func (o *normalCampaignObserver) stoppedAtDataPackEvent() bool {
+	return o != nil && o.state != nil && o.stopAtDataPackEventID != "" &&
+		o.state.appliedDataPackEvents[o.stopAtDataPackEventID]
+}
+
 func (o *normalCampaignObserver) selectOption(t *testing.T, optionID string) bool {
 	t.Helper()
 	index, found := findGamePackOptionIndex(o.state, optionID)
@@ -232,6 +238,9 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 	t.Helper()
 	for attempt := 0; attempt < 160; attempt++ {
 		o.observe()
+		if o.stoppedAtDataPackEvent() {
+			return
+		}
 		if o.stopAtWorldEdge && o.state.Mode == ModeWilderness &&
 			o.state.Message == requireGamePackText(t, o.state, "essembra.edge") {
 			return
@@ -629,6 +638,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 		initialBlock = state.session.CurrentBlockID()
 	}
 	for hop := 0; hop < geo.Width*geo.Height*4 && (state.DungeonX != targetX || state.DungeonY != targetY); hop++ {
+		if observer.stoppedAtDataPackEvent() {
+			return
+		}
 		start := normalDungeonPoint{state.DungeonX, state.DungeonY}
 		queue := []normalDungeonPoint{start}
 		previous := map[normalDungeonPoint]struct {
@@ -752,6 +764,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 						nextDoor.source.x, nextDoor.source.y, err)
 				}
 				observer.resolveDungeonBoundary(t)
+				if observer.stoppedAtDataPackEvent() {
+					return
+				}
 				if state.session != nil && state.session.CurrentBlockID() != initialBlock {
 					return
 				}
@@ -783,6 +798,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 		}
 		step := path[0]
 		observer.resolveDungeonBoundary(t)
+		if observer.stoppedAtDataPackEvent() {
+			return
+		}
 		if (observer.stopAtWorldEdge || observer.stopAtMessageID != "") && state.Mode != ModeDungeon {
 			return
 		}
@@ -798,6 +816,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 		if state.session != nil && state.session.CurrentBlockID() != initialBlock {
 			return
 		}
+	}
+	if observer.stoppedAtDataPackEvent() {
+		return
 	}
 	if state.DungeonX != targetX || state.DungeonY != targetY {
 		t.Fatalf("normal dungeon route did not reach (%d,%d), ended at (%d,%d)",
@@ -1332,29 +1353,34 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
 	}
-	// The normal player path is proven through the data-declared cave entry.
-	// The cave's internal teleporter/random-event route remains a separate
-	// player-visible milestone and is not replaced by a guessed graph edge.
-	if state.DungeonX != 4 || state.DungeonY != 5 || state.DungeonDirection != 0 {
+	// E1 is the original Cave of the Beholder entrance. It is a distinct
+	// player-visible anchor from the later dead-elf teleporter destination;
+	// the normal ECL transaction below connects the two in a separate step.
+	if state.DungeonX != 5 || state.DungeonY != 7 || state.DungeonDirection != 6 {
 		t.Fatalf("normal Beholder Cave spawn mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
 	}
 	caveGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x25)
-	for _, direction := range []int{4, 6, 6, 6, 0, 0, 0, 6, 4, 4, 4, 4, 2, 4, 4, 4, 2, 0, 2, 2, 2} {
-		observer.resolveDungeonBoundary(t)
-		deltaX, deltaY := normalDungeonDelta(direction)
-		if err := state.MoveDungeon(caveGrid, deltaX, deltaY, direction); err != nil {
-			t.Fatalf("normal cave path step direction=%d: %v", direction, err)
-		}
-		observer.resolveDungeonBoundary(t)
-	}
-	if state.Mode != ModeDungeon || state.GeoMapSet != 4 || state.GeoMapBlock != 0x25 ||
+	observer.stopAtDataPackEventID = "zhentil-keep.beholder-cave.same-block-launch"
+	// The source cell is reached by ordinary GEO movement.  The ECL transaction
+	// then writes the destination through C04B/C04C/C04D; the title pack only
+	// projects that original virtual-map handoff back into State.
+	walkNormalDungeonTo(t, state, &caveGrid, 5, 9, observer)
+	if !observer.stoppedAtDataPackEvent() || state.Mode != ModeDungeon ||
 		state.DungeonX != 13 || state.DungeonY != 1 || state.DungeonDirection != 6 ||
-		!state.appliedDataPackEvents["zhentil-keep.beholder-cave.same-block-launch"] {
-		t.Fatalf("normal Beholder Cave same-block launch mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) applied=%v",
-			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
-			state.DungeonX, state.DungeonY, state.DungeonDirection,
-			state.appliedDataPackEvents["zhentil-keep.beholder-cave.same-block-launch"])
+		state.DungeonWallType != 8 || state.DungeonWallRoof != 0xC0 {
+		t.Fatalf("normal Beholder Cave teleporter mode=%v pos=(%d,%d,%d) wall=%#x roof=%#x applied=%v coverage=%v",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.DungeonWallType, state.DungeonWallRoof,
+			state.appliedDataPackEvents[observer.stopAtDataPackEventID], observer.seen)
+	}
+	for address, want := range map[uint16]uint16{
+		0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0xC04E: 8, 0xC04F: 0xC0,
+	} {
+		got, ok := state.session.MemoryValue(address)
+		if !ok || got != want {
+			t.Fatalf("normal Beholder Cave teleporter memory[%#x]=%#x ok=%v, want %#x", address, got, ok, want)
+		}
 	}
 }

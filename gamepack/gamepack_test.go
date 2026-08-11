@@ -338,9 +338,31 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 	if !found || cave.ID != "zhentil-keep.beholder-cave" ||
 		cave.GeometryFile != "GEO4.DAX" || cave.ScriptBlock == nil ||
 		*cave.ScriptBlock != 0x22 || cave.GeometryBlock != 0x25 ||
-		cave.Spawn == nil || cave.Spawn.X != 4 || cave.Spawn.Y != 5 ||
-		cave.Spawn.Direction != 0 {
+		cave.Spawn == nil || cave.Spawn.X != 5 || cave.Spawn.Y != 7 ||
+		cave.Spawn.Direction != 6 {
 		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)
+	}
+	var caveTeleportFound bool
+	for _, event := range pack.Events {
+		if event.ID != "zhentil-keep.beholder-cave.same-block-launch" {
+			continue
+		}
+		caveTeleportFound = true
+		if !event.Once || event.When.ECLBlock == nil || *event.When.ECLBlock != 0x22 ||
+			event.When.Memory["0xC04B"] != 13 || event.When.Memory["0xC04C"] != 1 ||
+			event.When.Memory["0xC04D"] != 3 || len(event.Actions) != 1 ||
+			event.Actions[0].Type != "set_map_position" || event.Actions[0].Position == nil {
+			t.Fatalf("Beholder Cave teleporter event=%+v", event)
+		}
+		position := event.Actions[0].Position
+		if position.AreaID != 4 || position.GeometryBlock != 0x25 || position.X != 13 ||
+			position.Y != 1 || position.Direction != 6 || position.WallType == nil ||
+			*position.WallType != 8 || position.WallRoof == nil || *position.WallRoof != 0xC0 {
+			t.Fatalf("Beholder Cave teleporter position=%+v", position)
+		}
+	}
+	if !caveTeleportFound {
+		t.Fatal("missing Beholder Cave teleporter event")
 	}
 	hap, found := pack.FindMapByKindScript("first_person", 5, 0x31)
 	if !found || hap.ID != "original.geo5.block-31" || hap.GeometryFile != "GEO5.DAX" ||
