@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 542 輪後盤點）
+更新日期：2026-08-11（第 543 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -13,10 +13,11 @@
 `SEARCH`／`LOOK`、wall=09 候選橋接、E2、火刀 E1、戰後世界地圖與 save/load
 的 engine＋JSON 接線；本輪再完成 25 個 ECL block／125 個 entry 的 parser／控制流
 稽核、16 個原始 GEO block 的 game-pack 宣告、ECL 戰鬥開始／隊伍全滅音效意圖，
-以及 14 個世界點位的 ECL1 到達／JSON 有向路網基線；第 542 輪再把同一新遊戲
-session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉城外。仍缺完整 ECL
-side effects／外部 routine、全城市／全房間 coverage、完整結局同 session、完整
-戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
+以及 14 個世界點位的 ECL1 到達／JSON 有向路網基線；第 542 輪把同一新遊戲
+session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉城外；第 543 輪再把
+同一 session 接到 Hap 村落、熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥。仍缺
+完整 ECL side effects／外部 routine、全城市／全房間 coverage、完整結局同
+session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
 
 ## 狀態與證據規則
 
@@ -60,6 +61,17 @@ side effects／外部 routine、全城市／全房間 coverage、完整結局同
 | 固定事件與正常路徑的證據分層 | 長固定整合測試仍涵蓋哈普、熔岩洞、法師塔、希爾斯法、尤拉什、摩安德之坑、散提爾堡等大量事件；第 542 輪規格明確標出它們不能取代一條從新遊戲到結局的正常 session。 |
 
 權威規格：[`第 542 輪正常主線與城市／地城 handoff`](docs/spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。
+
+## 第 543 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| Hap／熔岩洞／法師塔正常 session | `TestRealNewGameContinuesFromHapToDracolichCave` 從第 542 輪的艾森布拉城外沿正常世界路由進入 Hap，以 `MoveDungeon` 逐格完成民宅、阿卡巴、旅店、伊弗利特與村落出口；經 JSON external exit 進入熔岩洞，完成伏擊／守門戰；到 `(6,15,W)` 進巫師塔，完成庭院、德拉坎德羅斯、黑龍敘事、攻擊巫師與屋頂 CAVES 回程；同一 session 再完成熔岩池 `WAIT→PARLAY_NICE`、重訪 `COMBAT`、15 隻火蜥蜴、防火桶 WHO 與耐熱失敗。未直接寫入劇情旗標、未 direct-entry 戰鬥。 |
+| ECL 故事重繪座標邊界 | `original.geo5.block-33` 由 JSON 宣告 `spawn=(7,15,W)`；engine 以 map anchor 保留地城 live cursor，避免同區塊 ECL redraw 的暫存 `C04B/C04C/C04D` 改寫玩家位置。這是可重用契約，不是 CoAB 座標特判。 |
+| 外部出口 presentation selector | 獨立 engine 新增 `ExternalExitDefinition.RoofType` 與 schema；CoAB Hap `(15,5,E)` 宣告 `roof_type=2`，正常邊界使用 `wall_type`／`roof_type` 而不把原始 GEO terrain 假稱 exact。engine 本地提交為 `9cf5fa5`；GitHub push 需待外部目的地審核通過。 |
+| 正常路徑與固定夾具分層 | 新增 spec 543，明確把同一 session coverage 與既有固定 Hap／Myth Drannor／`PROGRAM 8` fixture 分開；目前仍不能宣稱全城市、全地城或整作結局。 |
+
+權威規格：[`第五百四十三輪正常主線 Hap／熔岩洞／法師塔 coverage`](docs/spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md)。
 
 ## 第 539 輪已關閉的工作
 
@@ -151,8 +163,9 @@ side effects／外部 routine、全城市／全房間 coverage、完整結局同
 4. Docker 內完成受影響套件、代表性正常玩家路徑、save round-trip、截圖／包裝 smoke；
    再集中 commit＋push 兩個 repository。
 
-下一個最小可重現工作：沿第 542 輪同一個 ECL session 從艾森布拉城外續接哈普、熔岩洞
-與法師塔，先把「正常主線骨架」延伸到下一個 artifact handoff；同時建立城市／GEO
-事件 coverage matrix，逐項標示 normal、fixed fixture 或 coordinate-assisted。
+下一個最小可重現工作：沿第 543 輪同一個 ECL session 從防火桶返回的熔岩洞續接
+尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；同時建立城市／GEO 事件 coverage
+matrix，逐項標示 normal、fixed fixture 或 coordinate-assisted。不要把本輪
+Hap／巫師塔局部路徑或既有 `PROGRAM 8` fixture 擴大解讀成完整結局。
 不要把 static corpus／路網 gate 擴大解讀成完整 ECL，也不要先深挖與玩家結果無關的
 反組譯。

@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百四十三輪正常主線 Hap／熔岩洞／法師塔 coverage 與地圖 cell 稽核](./543-normal-campaign-coverage-and-ida-map-cell-audit.md)（`READY`：同一新遊戲 session 接通 Hap 村落、熔岩洞、巫師塔與回洞穴的正常路徑；`spawn` map anchor／外部出口 `roof_type` 已資料化；不含全城市、全地城或完整結局）
 - [第五百四十二輪正常主線與城市／地城 handoff](./542-normal-campaign-spine-and-city-dungeon-handoff.md)（`READY`：同一新遊戲 session 從火刀首領後經阿沙本福德、立石群到艾森布拉城外；不含全城市／全房間／完整結局 gate）
 - [第五百四十一輪 ECL 外部 routine、engine 邊界與全世界旅行](./541-ecl-external-routine-engine-boundary.md)（`READY`：外部 routine 副作用分層、14 個原生世界點位到達、JSON 有向路網可達性；不含所有城市／地城事件與整作通關）
 - [第五百四十輪 ECL corpus、全 GEO 宣告與戰鬥音效邊界](./540-ecl-map-combat-audio-corpus-closure.md)（`READY`：25 個 ECL block／125 個 entry 的 parser／控制流稽核、16 個原始 GEO block 的 game-pack identity、戰鬥開始／隊伍全滅 semantic sound intent；不含完整 ECL side effects、全地圖、完整戰鬥或原機音效）

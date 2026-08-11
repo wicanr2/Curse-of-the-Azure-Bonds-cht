@@ -5,6 +5,16 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 543 輪把第 542 輪的正常新遊戲 session 延伸到 Hap、熔岩洞與法師塔：同一條
+`TestRealNewGameContinuesFromHapToDracolichCave` 逐格完成 Hap 村落主要事件、
+JSON 外部出口、熔岩洞入口／守門戰、巫師塔德拉坎德羅斯／黑龍事件、回洞穴、
+熔岩池友善交涉後重訪戰鬥與防火桶耐熱失敗。新增的 `original.geo5.block-33`
+`spawn=(7,15,W)` 是資料驅動的地圖錨點，用來避免 ECL 故事重繪的暫存座標覆蓋
+地城游標；外部出口 `roof_type` 也已加入獨立 Golden Box engine schema。這是
+正常主線局部 `READY` coverage，不是全城市／全房間／完整結局；固定的
+`PROGRAM 8` 終戰 fixture 仍不能代替同一新遊戲 session。完整邊界見
+[`spec 543`](spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md)。
+
 第 542 輪把第 541 輪的世界點位／路網 baseline 接成一條真正由新遊戲開始的正常
 主線骨架：同一 ECL session 從火刀首領勝利後的 `PATROL FOREST`、世界旅行、
 阿沙本福德城內 Tavern Tale 28、立石群提爾隘口戰鬥與尋紅線索，走到艾森布拉城外。

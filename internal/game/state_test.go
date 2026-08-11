@@ -115,6 +115,26 @@ func TestECLClockAdvancesSharedGameTime(t *testing.T) {
 	}
 }
 
+func TestAdvanceGameTimeMirrorsClockIntoECLWorkMemory(t *testing.T) {
+	session, err := ecl.NewBlockSession(map[uint8][]byte{0x42: {0, 0}}, 0x42)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := NewState(testCatalog())
+	state.session = session
+	state.gameClock = [7]uint16{0, 4, 5, 13, 7, 2, 9}
+	if err := state.AdvanceGameTime(1, 1); err != nil {
+		t.Fatal(err)
+	}
+	want := [7]uint16{0, 5, 5, 13, 7, 2, 9}
+	for index, expected := range want {
+		got, ok := session.MemoryValue(eclClockBaseAddress + uint16(index))
+		if !ok || got != expected {
+			t.Fatalf("ECL clock slot %d=%#x,%v, want %#x,true", index, got, ok, expected)
+		}
+	}
+}
+
 func TestGameTimeDisplayUsesReferenceArea1Mapping(t *testing.T) {
 	catalog := combatVisualCatalog(t)
 	state := NewState(catalog)

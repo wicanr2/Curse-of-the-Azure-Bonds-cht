@@ -4851,3 +4851,29 @@ Xvfb／DISPLAY 的一次容器 gate 中失敗，不能當成程式回歸，提�
 `internal/game/ecl_integration_test.go` 與第 542 輪文件；`workplace/` 仍不可提交。
 下一輪從艾森布拉城外沿同一 session 接哈普、熔岩洞與法師塔，並建立城市／GEO
 事件 coverage matrix；不要把本輪正常骨架或既有固定測試擴大宣稱成完整結局。
+
+2026-08-11 第五百四十三輪完成 Hap／熔岩洞／法師塔的同一新遊戲正常 session
+coverage。新增 `internal/game/campaign_normal_test.go` 的
+`TestRealNewGameContinuesFromHapToDracolichCave`：由第 542 輪艾森布拉城外沿正常
+世界路由進入 Hap，以 `MoveDungeon` 逐格完成民宅、阿卡巴、旅店、伊弗利特解放、
+村落外部出口、熔岩洞入口／伏擊／守門戰、巫師塔庭院／德拉坎德羅斯／黑龍／攻擊巫師、
+屋頂 CAVES 回程，再於熔岩池完成 `WAIT→PARLAY_NICE`、同格重訪 `COMBAT`、15 隻
+火蜥蜴、防火桶 WHO 與耐熱失敗。選項由 game-pack stable ID 解析；沒有把劇情旗標
+貼入測試，也沒有 direct-entry 戰鬥。測試在 Docker 的 local nested engine replace
+下通過。
+
+本輪修正 `internal/game/state.go` 的 generic ECL redraw 座標邊界：
+`gamepack/events/pit-of-moander.json` 的 `original.geo5.block-33` 宣告
+`spawn=(7,15,W)`；有 spawn 的 map 會保留 live dungeon cursor，避免巫師塔故事
+分支在同區塊 `CALL 2E10h` 前寫入的 scratch `C04B/C04C/C04D` 把玩家位置投影到
+錯誤座標。Hap `(15,5,E)` external exit 的 `roof_type=2` 由獨立 engine schema
+與 CoAB JSON 驅動；engine 本地重大提交為 `9cf5fa5`，因外部目的地審核尚未允許
+push，compact 後必須先檢查 engine repo status／remote，再決定如何完成推送，不能
+把本地 commit 當成 GitHub 已完成。
+
+第 543 輪靜態補充仍遵守「不因 direct xref 0 就宣稱無 writer」：START `4BC9` audit
+的 direct resident data xref 為 0，故 `4BC9` 的時間 mirror 只維持
+`strong inference`（由 ECL／runtime／公開 reference 交叉支持），完整
+`C04E/C04F` producer→buffer→SearchLocation 尚未 exact。READY spec 為
+`docs/spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md`；固定
+`PROGRAM 8`／Myth Drannor fixture 仍不能代替從新遊戲到結局的正常 session。
