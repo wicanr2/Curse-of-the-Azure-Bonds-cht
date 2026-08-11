@@ -1,5 +1,10 @@
 # 第五百二十輪：DOS movement state → overlay cell-layer bridge
 
+> 更新（第 547 輪）：本檔當時保留的 `C04B..C04F` projection gap 已由 DOS
+> overlay-07 setter／getter 的原始 bytes 補齊；目前可執行結論見
+> [`spec 547`](./547-normal-beholder-cave-presentation-state.md)。本檔仍保留
+> vector／cell-layer 的原始證據與尚未完成的 redraw fidelity 範圍。
+
 狀態：`READY`（僅限靜態欄位／vector bridge；不是正常玩家路徑或秘密門完成）
 日期：2026-08-09
 

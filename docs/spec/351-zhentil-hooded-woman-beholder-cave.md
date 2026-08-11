@@ -2,6 +2,12 @@
 
 Status: `READY`
 
+> 第 547 輪勘誤：本檔原先將洞穴可操作錨點寫成 `(4,5,N)`，那是尚未閉合 DOS
+> virtual-map register bridge 時留下的 prototype 座標。現以 Cave E1 `(5,7,W)`
+> 為正常轉場結果；原始證據、推論等級與後續 `(13,1,W)` 同區塊位置交易，見
+> [`547-normal-beholder-cave-presentation-state.md`](./547-normal-beholder-cave-presentation-state.md)。
+> 本檔其餘兜帽女子至護符離場的事件順序仍有效。
+
 ## 目標
 
 延續迪姆斯沃特 story escort：在幽暗神殿答應兜帽女子帶路，經歷德克薩姆與
@@ -21,8 +27,9 @@ Status: `READY`
   - 玩家尚未行動，弗佐爾率眾闖入並解鎖手札 7。
   - 德克薩姆殺死弗佐爾；PICTURE 33 顯示弗佐爾枷印消退。
   - 德克薩姆帶走護符，兩派人馬混戰，最後回到 `ModeDungeon`。
-- runtime 最終狀態為 ECL4 block `0x22`、`GEO4/0x25 (4,5,N)`。作品 pack
-  必須宣告該 map，否則跨 block 聚合會殘留來源 GEO `0x21`。
+- remake 正常轉場最終狀態為 ECL4 block `0x22`、`GEO4/0x25 (5,7,W)`；Cave E1
+  的命名與幾何錨點為 `strong inference`，詳見 spec 547。作品 pack 必須宣告該
+  map，否則跨 block 聚合會殘留來源 GEO `0x21`。
 
 ## 交叉參考
 
@@ -59,7 +66,8 @@ Status: `READY`
 4. 真實 `0x21→0x22` 後顯示德克薩姆、牛頭人與手札 30 兩頁。
 5. 五項 encounter menu 與迪姆斯沃特護符提示為繁中。
 6. 解鎖手札 7 兩頁，顯示弗佐爾死亡與枷印消退。
-7. 完成護符離場／混戰後，回到 `GEO4/0x25 (4,5,N)`。
+7. 完成護符離場／混戰後，回到 `GEO4/0x25 (5,7,W)`；再以一般 GEO 走格抵達
+   同區塊的後續位置交易。
 8. focused real-image test、game-pack test 與完整 Docker/Xvfb regression 通過。
 
 ## 本輪邊界

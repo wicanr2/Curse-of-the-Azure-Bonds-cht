@@ -1,14 +1,15 @@
 # 第五百四十五輪：眼魔洞穴正常傳送與位置交易
 
-狀態：`READY`（限本輪已驗證的正常玩家路徑；不是完整洞穴或整作通關）
+狀態：`SUPERSEDED`（第 547 輪已用 DOS overlay 的 C04B..C04F bridge 校正入口
+錨點；本檔保留第 545／546 輪的歷史與 `0x4C00` 勘誤）
 
 ## 結論
 
-第 543／544 輪的同一新遊戲 session 現在能從散提爾堡正常進入眼魔洞穴，
-再由洞穴出生點 `(4,5,N)` 逐格走到 GEO4 block `0x25` 的 `(5,9)`、terrain
-`0xA2`。原始 ECL4 block `0x22` 的同區塊事件會把位置交易寫成另一個洞穴座標；
-CoAB game-pack 現在以 `set_map_position` 宣告這個已驗證的玩家可見結果，正常
-路徑最後落在 `(13,1,W)`。
+第 543／544 輪的同一新遊戲 session 現在能從散提爾堡正常進入眼魔洞穴。
+第 547 輪已校正洞穴出生點為 Cave E1 `(5,7,W)`，再由一般走格抵達 GEO4
+block `0x25` 的 `(5,9)`、terrain `0xA2`。原始 ECL4 block `0x22` 的同區塊
+事件把位置交易寫成另一個洞穴座標；CoAB game-pack 以 `set_map_position` 宣告
+這個已驗證的玩家可見結果，正常路徑最後落在 `(13,1,W)`。
 
 這項修正不是 `0x4C00` 規則解碼，也沒有把 `0x4C00` 命名成 D&D 欄位。只要
 某個 raw work address 不改變玩家可見位置、D&D 數值、戰鬥、存檔相容或其他規則
@@ -32,7 +33,7 @@ CoAB game-pack 現在以 `set_map_position` 宣告這個已驗證的玩家可見
 |---|---|---|
 | 原始輸入 | `curseoftheazurebonds.zip`，SHA-256 `c98698a6271c17177dfdb27f34b0389b7d34f58ef206e92575393f4655f5b26d` | `exact`（輸入識別） |
 | ECL 資源 | `ECL4.DAX`，script block `0x22`；這是 DAX block／ECL 位址空間，不是檔案 offset | `exact`（資源選擇） |
-| GEO 資源 | `GEO4.DAX`，geometry block `0x25`；出生 `(4,5,N)` 與觸發候選 `(5,9)` terrain `0xA2` | `exact`（解碼資料／重製地圖） |
+| GEO 資源 | `GEO4.DAX`，geometry block `0x25`；Cave E1 `(5,7)` 與觸發候選 `(5,9)` terrain `0xA2` | GEO／normal path `exact`；E1 座標／朝向詳見 spec 547 的 `strong inference` |
 | ECL work position | VM 事件後觀察到 `C04B=13`、`C04C=1`、`C04D=3`；`C04D` 的 raw half-direction 由 CoAB adapter 投影成畫面方向 `6`（西） | `strong inference`（位置交易）；不可外推為 D&D 欄位 |
 | player-visible result | 同一正常 session 的 `State` 最終為 area `4`、GEO `0x25`、`(13,1,W)`，且 JSON event exactly-once 已套用 | `exact`（remake contract） |
 
@@ -40,6 +41,11 @@ CoAB game-pack 現在以 `set_map_position` 宣告這個已驗證的玩家可見
 diagnostic 與 Go normal-path test。ECL decoded payload offset、ECL code address、
 ECL work address、GEO cell 與檔案 offset 維持不同位址空間；本文件不以相同的
 十六進位數字合併它們。
+
+DOS overlay 的 virtual-map setter／getter 已在
+[`spec 547`](./547-normal-beholder-cave-presentation-state.md) 以 IDA Pro 原始
+bytes 閉合；本檔原先只將位置交易標成 `strong inference` 的限制因此由較新的
+規格取代。
 
 ## 實作邊界
 
