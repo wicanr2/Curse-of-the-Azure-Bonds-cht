@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 547 輪後盤點）
+更新日期：2026-08-12（第 549 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -19,14 +19,20 @@ session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉
 完整 ECL side effects／外部 routine、全城市／全房間 coverage、完整結局同
 session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
 
-第 547 輪以 DOS IDA Pro 原始 bytes 閉合 `C04B..C04F` 的虛擬地圖 bridge：
-`C04B/C04C/C04D` 是 live map 位置／half-facing 的 ECL adapter，`C04E/C04F` 是
-wall／terrain cache 的讀取介面。這修正先前錯誤的 Cave E1 `(4,5,N)` 錨點：同一
-新遊戲 session 現在由 E1 `(5,7,W)` 一般走格到 `(5,9)`，再由 ECL4 block `0x22`
-的位置交易及 JSON `set_map_position` 抵達死精靈格 `(13,1,W)`，保留原始
-`wall=08`／`terrain=C0`。這不是完整洞穴：Dexam、其他傳送／隨機事件、出口與
-重訪仍待正常路徑驗證；`0x4C00` 仍是與目前玩家結果無關的 `unknown`，不列為
-remake blocker。
+第 548 輪保留 DOS IDA Pro 已證實的 `C04B..C04F` 虛擬地圖 bridge，並更正 A2
+事件時序：同一新遊戲 session 由 E1 `(5,7,W)` 走到 `(5,9)` 後，先經原始砲擊
+敘事的三次 `PRESS` boundary，才在 ECL4 block `0x22 +061B` 寫入
+`C04B/C04C/C04D=13/1/3` 與 `4C06=1`。中立 engine 的 `continue_result` 使 JSON
+`set_map_position` 投影 `(13,1,W)`、`wall=08`、`terrain=C0` 時保留同一份死精靈
+選單 continuation；它不攜帶 CoAB 劇情。這不是完整洞穴：Dexam、其他傳送／隨機
+事件、出口與重訪仍待正常路徑驗證；`0x4C00` 仍是與目前玩家結果無關的 `unknown`，
+不列為 remake blocker。
+
+第 549 輪已將 README 五張代表圖逐張重拍與校正：冒險文字／命令列、角色建立的
+錯誤分欄、倚天 ASCII／全形標點 fallback、戰鬥 footer 與第一人稱 stage 都有
+明確 contract；角色建立現在使用原版單一大面板。這是目前 UI 的
+`material-exact/layout-reconstructed` 基線，仍不等於所有畫面、戰鬥演出或整作
+fidelity 完成。
 
 ## 狀態與證據規則
 
@@ -93,26 +99,27 @@ remake blocker。
 
 權威規格：[`第五百四十四輪 raw memory route boundary／Dexam 洞穴入口`](docs/spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
 
-## 第 547 輪已關閉的工作
+## 第 548 輪已關閉的工作
 
 | 項目 | 目前可宣稱的範圍 |
 |---|---|
 | DOS `C04B..C04F` virtual-map bridge | IDA overlay-07 原始 bytes 證明 setter 將 `C04B/C04C/C04D` 對應到 `DS:720F/7210/7211`，getter 將 `C04E/C04F` 讀回 `DS:7212/7213`；既有 vector 4／6 與 GEO four-plane evidence 將後兩者接到 wall／terrain cache。這消除玩家路徑所需的 map-register blocker，但不宣稱每個 renderer dirty flag 或 DOS redraw 都已 pixel-exact。 |
-| E1 至死精靈格正常 handoff | 正常新遊戲 session 由 `(5,7,W)` 一般走到 source cell `(5,9)`，game-pack 只投影原始 ECL position transaction，最終為 `(13,1,W)`、`wall=08`、`terrain=C0`，並驗證 `C04B..C04F`／event exactly-once。這不含 Dexam 雙戰、出口、重訪或完整通關。 |
+| E1／A2 至死精靈選單正常 handoff | 正常新遊戲 session 由 `(5,7,W)` 一般走到 source cell `(5,9)`，先完成 A2 的三次 `PRESS`，再由原始 ECL `+061B` 寫入位置。game-pack 只投影該交易，最終為 `(13,1,W)`、`wall=08`、`terrain=C0`，並以 `continue_result` 保住死精靈選單與 `C04B..C04F`／event exactly-once。這不含完整洞穴、出口、重訪或完整通關。 |
 | `0x4C00` 範圍 | 本輪沒有新增 `0x4C00` 逆向或命名；依第 546 輪結果維持 `unknown`，只要不影響玩家可見 D&D 規則／路由／存檔，就不列為 remake blocker。 |
 
-權威規格：[`第五百四十七輪洞穴位置交易畫面狀態`](docs/spec/547-normal-beholder-cave-presentation-state.md)。
+權威規格：[`第五百四十八輪 A2 續跑與地圖 handoff`](docs/spec/548-ecl4-cave-a2-continuation.md)。
 
 ## 第 539 輪已關閉的工作
 
 | 項目 | 目前可宣稱的範圍 |
 |---|---|
 | 火刀據點入口→首領戰前正常路徑 | `TestRealNewGameBeginsAtGlobalBlockOne` 從真實開場、下水道、E2 block 4 `(6,1,S)` 出發，以同一個 `MoveDungeon`／ECL session 走 29 步到 `(3,13)`、terrain `0x87` 的首領事件；路徑實際經過 `0x99` 刀刃區、`0x9A` 冰凍房與 `0x94／0x95` 相位蜘蛛區，完成必要的選單／戰鬥／續跑後抵達首領戰前。測試以 stable message ID 與敵方物件資料驗證 20 名火刀＋首領，共 21 名敵人；沒有直接注入座標或直接進入首領。原版對照等級是 `layout／route reconstructed`，不是整張地圖 pixel-exact。 |
-| 中文 GUI 溢框修正 | renderer 現在依倚天字形的實際 glyph advance 做 rune-safe 換行與單行裁切，主要冒險、地城、事件、手札、建立角色與戰鬥欄位都使用明確可用寬度；中文字不再以固定英文字元數硬塞。Docker／Xvfb 重新產生 640×480 冒險與第一人稱截圖，並替換 README 仍引用的舊版代表圖。這是 `layout-reconstructed`，不是所有狀態逐像素 exact。 |
+| 中文 GUI 與截圖校正 | renderer 依倚天字形實際 glyph advance 做 rune-safe 換行與單行裁切；第 549 輪再修正 frame 合成順序、角色建立原版單一面板、ASCII／全形標點 companion raster、戰鬥 footer 與 README 五張圖。這是 `material-exact/layout-reconstructed`，不是所有狀態逐像素 exact。 |
 | 讀檔位置投影 | `LoadPartyFile` 依保存的 `Area.CurrentCity` 重建 `LocationName`／`OriginalLocation`，不再只恢復數字 enum；火刀首領固定 fixture 的 save/load 另驗證原始地點保留。正常完整 session 的戰後世界選單尚未因此宣稱閉合。 |
 
 權威規格：[`第 538 輪火刀入口至首領路徑`](docs/spec/538-fire-knife-normal-leader-route.md)、
-[`第 539 輪中文 GUI 寬度與溢框`](docs/spec/539-cjk-gui-width-clipping.md)。
+[`第 539 輪中文 GUI 寬度與溢框`](docs/spec/539-cjk-gui-width-clipping.md)、
+[`第 549 輪角色建立與截圖校正`](docs/spec/549-dos-character-creation-and-screenshot-polish.md)。
 
 ## 第 537 輪已關閉的工作
 
@@ -147,7 +154,7 @@ remake blocker。
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
 | 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
-| UI、素材與原版 fidelity | 本輪補上依實際 glyph advance 的中文換行／裁切，並重新驗證原版裂紋石框、640×480 第一人稱與右側 party/status；README 代表圖已換成目前版本。冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、左上場景填格與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
+| UI、素材與原版 fidelity | 第 549 輪已校正 README 圖、原版裂紋石框、單一角色建立面板、640×480 第一人稱／右側 party/status 與 88×88 PIC stage；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
 
 ### P2：完成後才做的發行工作
 

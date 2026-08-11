@@ -2,6 +2,11 @@
 
 狀態：`READY`（renderer 版面契約；不是所有畫面逐像素 exact）
 
+> 2026-08-12 更新：第 549 輪以新 Docker/Xvfb 截圖發現並修正 frame 合成順序、
+> 角色建立誤用 adventure 分欄、倚天 ASCII／全形標點 fallback 與 combat footer。
+> 本規格的 rune-safe 寬度契約仍有效；目前代表畫面與單一面板來源證據請見
+> [第 549 輪](549-dos-character-creation-and-screenshot-polish.md)。
+
 ## 問題
 
 README 舊截圖顯示中文訊息、地點名與選項以英文固定字元數換行，長字串會突出

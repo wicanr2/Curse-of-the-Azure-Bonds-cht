@@ -27,10 +27,11 @@ Status: READY
    Until a local DOS combat capture is available, compose combat's measured
    `x=176` divider geometry from these oracle-sampled stone strips. Label it
    material-exact/layout-reconstructed; do not call it an exact combat raster.
-3. Adventure scene and event/character pictures use cover scaling and
-   clipping inside the complete upper-left interior `(16,16,240,240)` at
-   remake resolution. Preserve aspect ratio; crop overflow instead of leaving
-   an empty letterbox. Draw the original chrome after scene content.
+3. 一般 PIC／第一人稱的原始可見內容是 88×88，不是整個左上 stone panel。
+   依第 406 輪 raw runtime 量測，以 2× nearest-neighbour 放在 remake
+   `(48,48)..(223,223)` 並裁切；其周圍灰色 stage 是原始框線，不能為了「填滿」
+   而改成非整數縮放。HEAD／BODY 人物另依專用舞台契約處理。過去
+   `(16,16,240,240)` 的泛稱已被此精確量測取代。
 4. When `-eten-font` is supplied, use the bold 16×15 face for ordinary
    narrative, roster, status, and command text. Reserve the 24px face for
    headings and explicit emphasis screens.

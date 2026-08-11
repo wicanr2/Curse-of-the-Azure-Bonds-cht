@@ -48,68 +48,71 @@ import (
 )
 
 const (
-	logicalWidth  = 640
-	logicalHeight = 480
+	logicalWidth             = 640
+	logicalHeight            = 480
+	adventureMessageBaseline = 300 // Leave a clear CJK leading below the DOS divider at y=256..271.
+	adventureCommandBaseline = 478 // Extended DOS command interior is y=464..479.
 )
 
 type app struct {
-	state                 game.State
-	imagePath             string
-	face                  font.Face
-	compactFace           font.Face
-	choiceCursor          int
-	partyPath             string
-	savgamDir             string
-	savgamSlot            byte
-	savgamSlotSave        bool
-	tilePreview           bool
-	tileImages            []*ebiten.Image
-	geoPreview            bool
-	areaMapPreview        bool
-	areaMapSymbols        []*ebiten.Image
-	skyImages             [3]*ebiten.Image
-	geoGrid               *geo.Grid
-	geoX                  int
-	geoY                  int
-	geoLabel              string
-	geoCatalog            geo.Catalog
-	geoSet                uint8
-	geoBlock              uint8
-	dungeonPreview        bool
-	dungeonFloor          *mapdata.DungeonFloor
-	dungeonX              int
-	dungeonY              int
-	dungeonDoorMenu       bool
-	pieceSets             map[uint8]gfx.PieceSet
-	pieceLabel            string
-	wallPreview           []wallPreviewStamp
-	combatSprites         map[string]*ebiten.Image
-	combatSpriteIDs       []string
-	combatTerrain         map[string][]*ebiten.Image
-	combatTerrainMode     string
-	combatPreviewFocus    uint8
-	gamePack              *goldenengine.Pack
-	combatFrame           *ebiten.Image
-	adventureFrame        *ebiten.Image
-	characterStageFrame   *ebiten.Image
-	firstPersonStageFrame *ebiten.Image
-	combatAnimations      map[string][]combatAnimation
-	animationStart        time.Time
-	deathOverlayStarted   map[string]time.Time
-	combatVisualSerial    uint64
-	combatVisualStarted   time.Time
-	combatVisualBase      time.Duration
-	combatVisualElapsed   time.Duration
-	combatDoneMenu        bool
-	combatSpeedMenu       bool
-	messageSnapshot       string
-	messageStart          time.Time
-	soundPlayer           *sound.Player
-	pc98MusicDriver       []byte
-	currentMusicTrack     string
-	screenshotPath        string
-	screenshotDone        bool
-	screenshotFrames      int
+	state                  game.State
+	imagePath              string
+	face                   font.Face
+	compactFace            font.Face
+	choiceCursor           int
+	partyPath              string
+	savgamDir              string
+	savgamSlot             byte
+	savgamSlotSave         bool
+	tilePreview            bool
+	tileImages             []*ebiten.Image
+	geoPreview             bool
+	areaMapPreview         bool
+	areaMapSymbols         []*ebiten.Image
+	skyImages              [3]*ebiten.Image
+	geoGrid                *geo.Grid
+	geoX                   int
+	geoY                   int
+	geoLabel               string
+	geoCatalog             geo.Catalog
+	geoSet                 uint8
+	geoBlock               uint8
+	dungeonPreview         bool
+	dungeonFloor           *mapdata.DungeonFloor
+	dungeonX               int
+	dungeonY               int
+	dungeonDoorMenu        bool
+	pieceSets              map[uint8]gfx.PieceSet
+	pieceLabel             string
+	wallPreview            []wallPreviewStamp
+	combatSprites          map[string]*ebiten.Image
+	combatSpriteIDs        []string
+	combatTerrain          map[string][]*ebiten.Image
+	combatTerrainMode      string
+	combatPreviewFocus     uint8
+	gamePack               *goldenengine.Pack
+	combatFrame            *ebiten.Image
+	adventureFrame         *ebiten.Image
+	characterCreationFrame *ebiten.Image
+	characterStageFrame    *ebiten.Image
+	firstPersonStageFrame  *ebiten.Image
+	combatAnimations       map[string][]combatAnimation
+	animationStart         time.Time
+	deathOverlayStarted    map[string]time.Time
+	combatVisualSerial     uint64
+	combatVisualStarted    time.Time
+	combatVisualBase       time.Duration
+	combatVisualElapsed    time.Duration
+	combatDoneMenu         bool
+	combatSpeedMenu        bool
+	messageSnapshot        string
+	messageStart           time.Time
+	soundPlayer            *sound.Player
+	pc98MusicDriver        []byte
+	currentMusicTrack      string
+	screenshotPath         string
+	screenshotDone         bool
+	screenshotFrames       int
 }
 
 type combatAnimation struct {
@@ -1471,7 +1474,7 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 			a.drawSceneCharacter(screen, sprite)
 			a.drawOriginalAdventureFrame(screen)
 			a.drawPictureMessage(screen)
-			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, 600, color.RGBA{255, 255, 255, 255})
+			drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, adventureCommandBaseline, 600, color.RGBA{255, 255, 255, 255})
 			return
 		}
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelSceneCharacterMissing), a.face, 56, 220, 520, color.RGBA{255, 220, 100, 255})
@@ -1509,11 +1512,15 @@ func (a *app) drawPictureAnimation(screen *ebiten.Image) {
 		frame = animationFrame(frames, time.Since(a.animationStart))
 	}
 	a.drawAdventureChrome(screen)
+	// DOS runtime measurement fixes the visible PIC field at native
+	// (24,24)..(111,111): 88x88 source pixels at a strict 2x scale. The grey
+	// frame includes a separate six-pixel margin, so enlarging this to its full
+	// transparent void would invent fractional scaling and alter source pixels.
 	drawImageCover(screen, frame.image, image.Rect(48, 48, 224, 224))
 	a.drawFirstPersonStageFrame(screen)
 	a.drawOriginalAdventureFrame(screen)
 	a.drawPictureMessage(screen)
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, 468, 600, color.RGBA{255, 255, 255, 255})
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelContinueHelp), a.compactFace, 24, adventureCommandBaseline, 600, color.RGBA{255, 255, 255, 255})
 }
 
 func (a *app) drawSceneCharacter(screen, sprite *ebiten.Image) {
@@ -1563,11 +1570,15 @@ func drawImageCover(screen, source *ebiten.Image, destination image.Rectangle) {
 	}
 	sourceWidth, sourceHeight := source.Bounds().Dx(), source.Bounds().Dy()
 	scale, translateX, translateY := imageCoverTransform(sourceWidth, sourceHeight, destination)
+	// A cover transform deliberately exceeds one axis. Draw through the exact
+	// stage rectangle so a cropped PIC cannot overwrite roster or narrative
+	// pixels outside its original inset.
+	target := screen.SubImage(destination).(*ebiten.Image)
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(translateX, translateY)
-	screen.DrawImage(source, op)
+	op.GeoM.Translate(translateX-float64(destination.Min.X), translateY-float64(destination.Min.Y))
+	target.DrawImage(source, op)
 }
 
 func imageCoverTransform(sourceWidth, sourceHeight int, destination image.Rectangle) (scale, x, y float64) {
@@ -1583,7 +1594,7 @@ func imageCoverTransform(sourceWidth, sourceHeight int, destination image.Rectan
 func (a *app) drawPictureMessage(screen *ebiten.Image) {
 	drawWrappedText(
 		screen, a.revealedMessage(), a.compactFace,
-		24, 282, 36, 24, 6, color.RGBA{92, 220, 255, 255},
+		24, adventureMessageBaseline, 36, 24, 6, color.RGBA{92, 220, 255, 255},
 	)
 }
 
@@ -1615,6 +1626,16 @@ func (a *app) drawOriginalAdventureFrame(screen *ebiten.Image) {
 	op.Filter = ebiten.FilterNearest
 	op.GeoM.Scale(2, 2)
 	screen.DrawImage(a.adventureFrame, op)
+}
+
+func (a *app) drawCharacterCreationFrame(screen *ebiten.Image) {
+	if a.characterCreationFrame == nil {
+		return
+	}
+	op := &ebiten.DrawImageOptions{}
+	op.Filter = ebiten.FilterNearest
+	op.GeoM.Scale(2, 2)
+	screen.DrawImage(a.characterCreationFrame, op)
 }
 
 func (a *app) drawAdventureChrome(screen *ebiten.Image) {
@@ -1851,6 +1872,11 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		screen.DrawImage(stamp.image, op)
 	}
 	a.drawFirstPersonStageFrame(screen)
+	// The extended DOS chrome owns an opaque command strip at y=448..479.
+	// It must be composited before the CJK roster, narrative, and command
+	// text; drawing it last hid the lower glyph rows and made the screenshot
+	// look as though the text had escaped or fallen behind the stone frame.
+	a.drawOriginalAdventureFrame(screen)
 
 	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelCharacterNameHeader), a.compactFace, 280, 38, 240, white)
 	drawFittedText(screen, "AC", a.compactFace, 528, 38, 64, white)
@@ -1868,15 +1894,14 @@ func (a *app) drawDungeonGame(screen *ebiten.Image, white, cyan color.Color) {
 		dungeonDirectionName(direction), a.state.GameTimeDisplay().Hour, a.state.GameTimeDisplay().Minute)
 	drawFittedText(screen, status, a.compactFace, 280, 254, 344, cyan)
 	if a.state.Message != "" {
-		drawWrappedText(screen, a.state.Message, a.compactFace, 24, 282, 36, 24, 6, white)
+		drawWrappedText(screen, a.state.Message, a.compactFace, 24, adventureMessageBaseline, 36, 24, 6, white)
 	} else {
-		drawFittedText(screen, a.state.LocationName, a.compactFace, 24, 282, 584, cyan)
+		drawFittedText(screen, a.state.LocationName, a.compactFace, 24, adventureMessageBaseline, 584, cyan)
 	}
 	if a.dungeonDoorMenu {
 		drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonDoorHelp), a.compactFace, 8, 430, 624, color.RGBA{255, 255, 82, 255})
 	}
-	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, 468, 624, cyan)
-	a.drawOriginalAdventureFrame(screen)
+	drawFittedText(screen, a.state.PlayerUILabel(game.PlayerUILabelDungeonExploreHelp), a.compactFace, 8, adventureCommandBaseline, 624, cyan)
 }
 
 func dungeonSkyColor(areaState area.State, wallRoof uint8) color.RGBA {
@@ -1897,14 +1922,13 @@ func dungeonDirectionName(direction uint8) string {
 }
 
 func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
-	// Character creation uses the same full-screen adventure chrome as the
-	// original DOS menus.  Keep the 16x15 CJK face here: the larger display
-	// face is useful for short headings, but makes the original option density
-	// impossible to preserve once Traditional Chinese labels are loaded.
-	a.drawOriginalAdventureFrame(screen)
+	// The DOS character-creation sheet is a single full-width panel, unlike
+	// the adventure viewport plus roster. Keep the 16x15 CJK face here: the
+	// larger display face makes the original option density impossible.
+	a.drawCharacterCreationFrame(screen)
 	face := a.compactFace
-	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 52, 576, cyan)
-	drawFittedText(screen, a.state.CreationMessage, face, 32, 90, 576, white)
+	drawFittedText(screen, a.state.LocaleText("creation_title"), face, 32, 46, 576, cyan)
+	drawFittedText(screen, a.state.CreationMessage, face, 32, 82, 576, white)
 	if a.state.CreationEditing {
 		drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_name_input"), a.state.CreationName), face, 48, 140, 544, white)
 		drawFittedText(screen, a.state.LocaleText("creation_name_help"), face, 48, 190, 544, cyan)
@@ -1926,14 +1950,15 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		drawFittedText(screen, a.state.LocaleText("creation_ability_help"), face, 48, 350, 544, cyan)
 		return
 	}
-	start := a.state.CreationCursor - 3
+	const visibleCreationOptions = 7
+	start := a.state.CreationCursor - visibleCreationOptions/2
 	if start < 0 {
 		start = 0
 	}
-	if maxStart := len(a.state.CreationOptions) - 5; start > maxStart && maxStart > 0 {
+	if maxStart := len(a.state.CreationOptions) - visibleCreationOptions; start > maxStart && maxStart > 0 {
 		start = maxStart
 	}
-	end := start + 5
+	end := start + visibleCreationOptions
 	if end > len(a.state.CreationOptions) {
 		end = len(a.state.CreationOptions)
 	}
@@ -1945,11 +1970,11 @@ func (a *app) drawCreation(screen *ebiten.Image, white, cyan color.Color) {
 		}
 		label := prefix + fmt.Sprintf(a.state.LocaleText("creation_option_label"), character.Name,
 			a.state.CharacterRaceName(character.Race), a.state.CharacterClassName(character.Class))
-		drawFittedText(screen, label, face, 48, 150+(index-start)*32, 544, white)
+		drawFittedText(screen, label, face, 48, 128+(index-start)*28, 544, white)
 	}
 	drawFittedText(screen, fmt.Sprintf(a.state.LocaleText("creation_progress"), a.state.CreationCursor+1,
-		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 325, 544, cyan)
-	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 48, 340, 544, white)
+		len(a.state.CreationOptions), len(a.state.CreationRoster)), face, 48, 402, 544, cyan)
+	drawFittedText(screen, a.state.LocaleText("creation_help"), face, 24, adventureCommandBaseline, 600, white)
 }
 
 func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
@@ -1962,6 +1987,8 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 		battlefieldSize = 336
 		combatLogY      = 368
 		combatFooterY   = 448
+		combatStatusY   = 456
+		combatMenuY     = 474
 	)
 	battlefield := ebiten.NewImage(battlefieldSize, battlefieldSize)
 	battlefield.Fill(color.RGBA{R: 82, G: 82, B: 82, A: 255})
@@ -2154,14 +2181,14 @@ func (a *app) drawCombat(screen *ebiten.Image, white, cyan color.Color) {
 	if len(targets) > 0 && a.state.CombatTargetIndex() < len(targets) {
 		footerStatus = a.state.CombatTargetStatus(targets[a.state.CombatTargetIndex()].Name)
 	}
-	drawFittedText(screen, footerStatus, a.compactFace, 8, 462, 624, color.RGBA{R: 255, G: 82, B: 255, A: 255})
+	drawFittedText(screen, footerStatus, a.compactFace, 8, combatStatusY, 624, color.RGBA{R: 255, G: 82, B: 255, A: 255})
 	combatMenu := a.state.CombatMainMenuText()
 	if a.combatSpeedMenu {
 		combatMenu = a.state.CombatSpeedMenuText()
 	} else if a.combatDoneMenu {
 		combatMenu = a.state.CombatDoneMenuText()
 	}
-	drawFittedText(screen, combatMenu, a.compactFace, 8, 478, 624, cyan)
+	drawFittedText(screen, combatMenu, a.compactFace, 8, combatMenuY, 624, cyan)
 	if len(spellHints) > 0 {
 		drawFittedText(screen, a.state.CombatQuickStatus(spellHints), a.compactFace, 378, 340, 246, cyan)
 	}
@@ -2906,6 +2933,7 @@ func main() {
 	fontPath := flag.String("font", "", "TrueType/OpenType font path; required for Chinese glyphs")
 	etenFontPath := flag.String("eten-font", "", "ETen STDFONT.15 path; uses bold 16x15 Chinese glyphs")
 	etenSymbolPath := flag.String("eten-symbol-font", "", "optional ETen SPCFONT.15 path for full-width punctuation")
+	etenASCIIFontPath := flag.String("eten-ascii-font", "", "optional ETen ASCFONT.15 path; defaults to ascfont.15 beside -eten-font")
 	localePath := flag.String("locale", "assets/locale/zh-TW.json", "locale JSON path")
 	imagePath := flag.String("image", "curseoftheazurebonds.zip", "original DOS image ZIP")
 	geoSet := flag.Int("geo-set", 2, "GEO DAX set/chapter (2..6) used by the map preview")
@@ -2914,6 +2942,7 @@ func main() {
 	dungeonYOverride := flag.Int("dungeon-y", -1, "override dungeon Y (0..15) for deterministic visual verification")
 	encounter := flag.Bool("encounter", false, "start a decoded ECL encounter directly")
 	opening := flag.Bool("opening", false, "start at the formal new-game opening with one generated character")
+	characterCreation := flag.Bool("character-creation", false, "show the opening character-creation command as a deterministic renderer checkpoint")
 	tilvertonDungeon := flag.Bool("tilverton-dungeon", false, "enter Tilverton's first-person map through the formal new-game flow")
 	inn := flag.Bool("inn", false, "start at the first Windlord's Inn event through the formal new-game flow")
 	filani := flag.Bool("filani", false, "start at sage Filani through the formal Tilverton ECL flow")
@@ -3410,6 +3439,16 @@ func main() {
 				log.Fatal("-wizard-tower-parlay did not reach the original successful parlay text")
 			}
 		}
+	} else if *characterCreation {
+		if len(state.PartyFighters()) != 0 {
+			log.Fatal("-character-creation cannot be combined with a loaded party")
+		}
+		// This is the same State command reached by START at the party-less
+		// opening. It exists only to make renderer evidence deterministic when
+		// an isolated Docker/Xvfb capture cannot inject a physical C key.
+		if err := state.OpenCharacterCreation(); err != nil {
+			log.Fatal(err)
+		}
 	} else if *opening || *tilvertonDungeon || *inn || *filani || *weaponShop || *temple || *training || *tavern || *highPriest || *carriage || *guildmaster || *sewers {
 		if len(state.PartyFighters()) != 0 {
 			log.Fatal("story preview flags cannot be combined with a loaded party")
@@ -3494,7 +3533,14 @@ func main() {
 	regularFace := loadFace(*fontPath, 24)
 	compactFace := loadFace(*fontPath, 16)
 	if *etenFontPath != "" {
-		etenFace, err := etenfont.Load(*etenFontPath, *etenSymbolPath, compactFace, true)
+		asciiFontPath := *etenASCIIFontPath
+		if asciiFontPath == "" {
+			candidate := filepath.Join(filepath.Dir(*etenFontPath), "ascfont.15")
+			if _, statErr := os.Stat(candidate); statErr == nil {
+				asciiFontPath = candidate
+			}
+		}
+		etenFace, err := etenfont.LoadWithASCII(*etenFontPath, *etenSymbolPath, asciiFontPath, compactFace, true)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -3513,7 +3559,7 @@ func main() {
 		visualSerial = event.Serial
 		visualStarted = time.Now().Add(-offset)
 	}
-	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
+	gameApp := &app{state: state, imagePath: *imagePath, face: regularFace, compactFace: compactFace, partyPath: *partyPath, savgamDir: *savgamDir, savgamSlot: loadedSAVGAMSlot, savgamSlotSave: loadedSAVGAMSlot != 0, soundPlayer: soundPlayer, pc98MusicDriver: pc98MusicDriver, tileImages: tileImages, areaMapSymbols: areaMapSymbols, skyImages: skyImages, geoGrid: geoGrid, areaMapPreview: *areaMapPreview, dungeonFloor: dungeonFloor, dungeonX: dungeonX, dungeonY: dungeonY, geoLabel: geoLabel, geoCatalog: geoCatalog, geoSet: geoRef.Set, geoBlock: geoRef.BlockID, pieceSets: make(map[uint8]gfx.PieceSet), combatSprites: combatSprites, combatSpriteIDs: combatSpriteIDs, combatTerrain: combatTerrain, combatTerrainMode: *combatTerrainMode, gamePack: pack, combatFrame: ebiten.NewImageFromImage(gfx.CombatFrame()), adventureFrame: ebiten.NewImageFromImage(gfx.ExtendedAdventureFrame()), characterCreationFrame: ebiten.NewImageFromImage(gfx.ExtendedCharacterCreationFrame()), characterStageFrame: ebiten.NewImageFromImage(gfx.CharacterStageFrame()), firstPersonStageFrame: ebiten.NewImageFromImage(gfx.FirstPersonStageFrame()), combatAnimations: combatAnimations, animationStart: time.Now(), combatVisualSerial: visualSerial, combatVisualStarted: visualStarted, combatVisualElapsed: time.Since(visualStarted), screenshotPath: *screenshotPath}
 	if *innerFinalBattle && *screenshotPath != "" {
 		// Capture-only boss observation camera. Formal play keeps the RuleBook
 		// active-fighter camera established above.

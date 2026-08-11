@@ -12,7 +12,11 @@ func TestFirstPersonStageFrameRetainsInsetAndClearsScene(t *testing.T) {
 			t.Fatalf("inset point %v is transparent", point)
 		}
 	}
-	if _, _, _, alpha := frame.At(24, 24).RGBA(); alpha != 0 {
-		t.Fatalf("scene interior alpha=%04x, want transparent", alpha)
+	for y := 24; y <= 111; y++ {
+		for x := 24; x <= 111; x++ {
+			if _, _, _, alpha := frame.At(x, y).RGBA(); alpha != 0 {
+				t.Fatalf("scene interior (%d,%d) alpha=%04x, want transparent", x, y, alpha)
+			}
+		}
 	}
 }

@@ -269,6 +269,85 @@ func TestRealECL1WorldDispatcherBuildsPostWizardDracolich(t *testing.T) {
 	t.Fatal("ECL1 block 0x50 is absent")
 }
 
+func TestRealECL4CaveA2CannonContinuesToDeadElfHandler(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL4.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var caveBlock []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 0x22 {
+			caveBlock = block.Data
+			break
+		}
+	}
+	if len(caveBlock) == 0 {
+		t.Fatal("ECL4 block 0x22 is absent")
+	}
+
+	// This is a continuation, not a direct-entry shortcut: terrain A2 first
+	// shows three PRESS boundaries before falling through to the dead-elf
+	// handler at +061B. Started preserves the supplied raw work memory.
+	runtime := NewRuntimeState(0x050A)
+	runtime.Started = true
+	runtime.Memory[0xC04F] = 0xA2
+	runtime.Memory[0x4C03] = 1
+	wantPages := [][]string{
+		{"A GUT WRENCHING JERK SLAMS YOUR STOMACH TO YOUR", "SPINE.  YOU FEEL AS IF YOU WERE PROPELLED FROM A", "CANNON."},
+		{"YOU SEE THE WALLS AROUND BLUR TO A GRAY SMEAR."},
+		{"YOU ARE SUDDENLY SLAMMED AGAINST A WALL."},
+		{"YOU SEE THE REMAINS OF AN ELF FIGHTER.", "WHAT DO YOU DO?"},
+	}
+	wantPC := []int{0x14D5, 0x14D5, 0x14D5, 0x0675}
+	var result RunResult
+	for step, wantText := range wantPages {
+		selections := []uint16(nil)
+		if step > 0 {
+			selections = []uint16{0} // PRESS BUTTON OR RETURN TO CONTINUE.
+		}
+		result, err = runSubsetWithState(caveBlock, 0x050A, 500, selections, true, 1, runtime)
+		if err != nil {
+			t.Fatalf("A2 continuation step %d: %v", step, err)
+		}
+		if !result.WaitingForMenu || result.PC != wantPC[step] || !reflect.DeepEqual(result.Text, wantText) {
+			t.Fatalf("A2 continuation step %d result=%+v text=%q, want pc=+%04X text=%q", step, result, result.Text, wantPC[step], wantText)
+		}
+	}
+	if !reflect.DeepEqual(result.CallAddresses, []uint16{0x2E10}) ||
+		!reflect.DeepEqual(result.SaveWrites, []MemoryWrite{
+			{Address: 0xC04B, Value: 13, PC: 0x061B},
+			{Address: 0xC04C, Value: 1, PC: 0x0621},
+			{Address: 0xC04D, Value: 3, PC: 0x0627},
+			{Address: 0x4C06, Value: 1, PC: 0x066B},
+		}) {
+		t.Fatalf("dead-elf position transaction calls=%#v writes=%+v", result.CallAddresses, result.SaveWrites)
+	}
+	for address, want := range map[uint16]uint16{0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0x4C03: 1, 0x4C06: 1} {
+		if got := runtime.Memory[address]; got != want {
+			t.Fatalf("dead-elf raw memory[%#x]=%#x, want %#x", address, got, want)
+		}
+	}
+	if len(result.Menus) == 0 || !reflect.DeepEqual(result.Menus[len(result.Menus)-1].Options, []string{"EXAMINE REMAINS", "LEAVE"}) {
+		t.Fatalf("dead-elf menu=%+v", result.Menus)
+	}
+
+	leave, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{1}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if leave.PC != 0x0E49 || leave.WaitingForMenu || len(leave.Text) != 0 || len(leave.SaveWrites) != 0 {
+		t.Fatalf("dead-elf LEAVE result=%+v", leave)
+	}
+	if runtime.Memory[0x4C03] != 1 || runtime.Memory[0x4C06] != 1 {
+		t.Fatalf("dead-elf LEAVE unexpectedly changed raw guard values: 4C03=%#x 4C06=%#x", runtime.Memory[0x4C03], runtime.Memory[0x4C06])
+	}
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {

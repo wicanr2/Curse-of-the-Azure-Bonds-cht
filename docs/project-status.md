@@ -1,20 +1,27 @@
 # 專案成果盤點
 
-更新日期：2026-08-11
+更新日期：2026-08-12
 
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
-第 547 輪以 DOS overlay-07 的 IDA Pro 原始 bytes 閉合 ECL `C04B..C04F` 與 live
-map byte 的 bridge：前面三個是位置／half-facing 的 writer，後兩個是 wall／terrain
-cache 的 getter。這修正了洞穴 E1 的錯誤錨點：同一新遊戲 session 從 `(5,7,W)`
-一般走格到 `(5,9)`，由 ECL4 block `0x22` 的位置交易透過 JSON
-`set_map_position` 到 `(13,1,W)`，並保存原始 `wall=08`、`terrain=0xC0`。回歸
-驗證 ECL virtual registers、event exactly-once 與畫面 cache，沒有座標注入。
-這是 `normal-path／engine＋JSON／DOS map adapter` 的 `READY` milestone；Dexam、
-其他洞穴事件、出口、重訪與完整結局仍未完成。`0x4C00` 維持 `unknown`，不影響
-本輪實作。完整證據見
-[`spec 547`](spec/547-normal-beholder-cave-presentation-state.md)。
+第 548 輪保留第 547 輪 DOS overlay-07 `C04B..C04F` map-register bridge，但以原始
+ECL4 trace 更正洞穴 A2 時序：同一新遊戲 session 從 `(5,7,W)` 走至 `(5,9)` 後，
+先顯示砲擊敘事並經三次 `PRESS`，才在 block `0x22 +061B` 寫入
+`C04B/C04C/C04D=13/1/3`、`4C06=1`，並續跑同一份死精靈選單。JSON 的
+`set_map_position` 使用 engine 中立 `continue_result` 保留 continuation，不把
+CoAB 座標或文字塞進 engine。這是 `normal-path／engine＋JSON／DOS map adapter`
+的 `READY` milestone；Dexam、其他洞穴事件、出口、重訪與完整結局仍未完成。
+`0x4C00` 維持 `unknown`，不影響本輪實作。完整證據見
+[`spec 548`](spec/548-ecl4-cave-a2-continuation.md)；第 547 輪的 route 敘述已
+標為 superseded。
+
+第 549 輪重新稽核 README 畫面並修正真實 renderer 缺陷：敘事／命令不再壓到
+stone divider，角色建立改回 DOS 原版單一大面板，倚天 `ASCFONT.15` 補上 ASCII
+與常見全形標點，戰鬥 footer 留出底緣。五張 640×480 截圖均由 Docker/Xvfb 重新
+生成、記錄雜湊並替換 README；這只證明目前 `material-exact/layout-reconstructed`
+畫面契約，不是完整戰鬥或整作通關。完整證據見
+[`spec 549`](spec/549-dos-character-creation-and-screenshot-polish.md)。
 
 第 546 輪完成 `0x4C00` 範圍勘誤：移除 Dexam 聚焦夾具的直接 `0x4C00=1` 前置值後，
 Docker 仍通過 Dexam 揭露、兩場戰鬥、戰後續跑、洞穴出口與世界地圖回返。這只

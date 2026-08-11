@@ -17,6 +17,7 @@ import (
 	enginespell "github.com/wicanr2/golden-box-remake-engine/combat/monsterspell"
 	engineposthit "github.com/wicanr2/golden-box-remake-engine/combat/posthit"
 	engineresistance "github.com/wicanr2/golden-box-remake-engine/combat/resistance"
+	goldenbox "github.com/wicanr2/golden-box-remake-engine/engine"
 )
 
 func TestPackDeclaresEveryOriginalGEOBlock(t *testing.T) {
@@ -339,7 +340,12 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		cave.GeometryFile != "GEO4.DAX" || cave.ScriptBlock == nil ||
 		*cave.ScriptBlock != 0x22 || cave.GeometryBlock != 0x25 ||
 		cave.Spawn == nil || cave.Spawn.X != 5 || cave.Spawn.Y != 7 ||
-		cave.Spawn.Direction != 6 {
+		cave.Spawn.Direction != 6 || len(cave.SearchEdges) != 1 ||
+		cave.SearchEdges[0].ID != "zhentil-keep.beholder-cave.dexam-east" ||
+		cave.SearchEdges[0].X != 14 || cave.SearchEdges[0].Y != 1 ||
+		cave.SearchEdges[0].Direction != 2 || cave.SearchEdges[0].WallType != 9 ||
+		cave.SearchEdges[0].Discovery != "search_or_look" ||
+		cave.SearchEdges[0].Confidence != "strong inference" {
 		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)
 	}
 	var caveTeleportFound bool
@@ -427,6 +433,31 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		dexam.Message != wantDexam || len(dexam.JournalPages) != 2 ||
 		dexam.JournalPages[1] != wantJournal302 {
 		t.Fatalf("Dexam text result=%+v", dexam)
+	}
+}
+
+func TestBeholderCaveMapHandoffContinuesSameECLResult(t *testing.T) {
+	pack, err := Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime := &goldenbox.Runtime{
+		ECLBlock: 0x22,
+		Memory: map[uint16]uint16{
+			0xC04B: 13,
+			0xC04C: 1,
+			0xC04D: 3,
+			0x4C06: 1,
+		},
+		Locale: "zh-TW",
+	}
+	result, err := pack.ApplyFirst(runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !result.Applied || result.EventID != "zhentil-keep.beholder-cave.same-block-launch" ||
+		!runtime.ContinueResult || runtime.Mode != "dungeon" || len(runtime.MapPositions) != 1 {
+		t.Fatalf("beholder-cave handoff result=%+v runtime=%+v", result, runtime)
 	}
 }
 
@@ -1042,8 +1073,17 @@ func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
 			}
 		}
 	}
-	if len(pack.OptionRules) != 109 {
-		t.Fatalf("option rules=%d, want the current 109 stable rules", len(pack.OptionRules))
+	// The title pack may legitimately gain options as another ECL menu becomes
+	// data-driven. Verify the actual stable-ID binding instead of freezing a
+	// historical rule count that would reject a valid new menu.
+	for _, rule := range pack.OptionRules {
+		for _, language := range []string{"en", "zh-TW"} {
+			want, present := pack.Locales[language][rule.MessageID]
+			got, found := pack.LocalizeOption(rule.Source, language)
+			if !present || !found || got != want || got == "" {
+				t.Fatalf("option rule %q source=%q language=%s resolved=%q found=%v want=%q present=%v", rule.ID, rule.Source, language, got, found, want, present)
+			}
+		}
 	}
 }
 
