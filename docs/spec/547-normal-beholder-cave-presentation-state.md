@@ -1,8 +1,15 @@
 # 第五百四十七輪：DOS 虛擬地圖暫存器與眼魔洞穴 E1 傳送
 
-狀態：`READY`（限 `C04B..C04F` 的原始分派，以及 E1 → 死精靈格的正常玩家
-路徑；不是完整眼魔洞穴或整作通關）
+狀態：`SUPERSEDED`（`C04B..C04F` 的 raw bridge 仍有效；A2 事件時序、同一 ECL
+result 的 continuation 與目前玩家路徑請見第 548 輪）
 日期：2026-08-11
+
+> 2026-08-12 勘誤：本規格把 A2 觸發後的 `C04B/C04C/C04D=13/1/3` 誤寫成
+> 立即 position transaction。原始 ECL4 trace 證明玩家必須先經三次 `PRESS`
+> boundary，才在 `+061B` 寫入座標並進死精靈選單；初始 `4C03=1` 也不會在
+> `LEAVE` 時清除。舊的 raw IDA map-register bridge 保留可回查，但洞穴 route
+> 與驗收敘述已由
+> [第 548 輪](548-ecl4-cave-a2-continuation.md)取代。
 
 ## 結論與勘誤
 

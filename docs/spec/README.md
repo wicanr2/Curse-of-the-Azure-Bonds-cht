@@ -11,7 +11,9 @@
 
 目前規格：
 
-- [第五百四十七輪 DOS 虛擬地圖暫存器與眼魔洞穴 E1 傳送](./547-normal-beholder-cave-presentation-state.md)（`READY`：IDA 原始 bytes 閉合 `C04B..C04F` map bridge；同一正常 session 由 Cave E1 `(5,7,W)` 經原始 ECL position transaction 到 `(13,1,W)`，保留 `wall=08`／`terrain=C0`；不含 Dexam、出口或完整主線）
+- [第五百四十九輪 DOS 角色建立單一面板與 README 截圖校正](./549-dos-character-creation-and-screenshot-polish.md)（`READY`：原版單一角色建立面板、倚天 `ASCFONT.15` fallback、命令／敘事／footer 版面校正，以及五張 Docker/Xvfb 代表圖；不含所有 UI state 或完整戰鬥 fidelity）
+- [第五百四十八輪眼魔洞穴 A2 續跑與資料驅動地圖 handoff](./548-ecl4-cave-a2-continuation.md)（`READY`：A2 的三次 `PRESS`、`+061B` map 寫入、死精靈選單同一 ECL result 續跑；不含完整洞穴、出口或主線結局）
+- [第五百四十七輪 DOS 虛擬地圖暫存器與眼魔洞穴 E1 傳送](./547-normal-beholder-cave-presentation-state.md)（`SUPERSEDED`：保留 IDA `C04B..C04F` raw bridge；A2 時序與目前驗收請見第 548 輪）
 - [第五百四十五／五百四十六輪眼魔洞穴正常傳送與位置交易](./545-normal-beholder-cave-teleport.md)（`SUPERSEDED`：保留 `0x4C00` 範圍勘誤；入口錨點與 map-register bridge 的目前結論見第 547 輪）
 - [第五百四十四輪 raw memory route boundary／Dexam 洞穴入口](./544-opaque-memory-route-boundary-and-cave-entry.md)（`READY`：`0x4C00` 保留為不命名的作品資料依賴、engine＋JSON `set_memory`；洞穴入口段落已由第 547 輪勘誤）
 - [第五百四十三輪正常主線 Hap／熔岩洞／法師塔 coverage 與地圖 cell 稽核](./543-normal-campaign-coverage-and-ida-map-cell-audit.md)（`READY`：同一新遊戲 session 接通 Hap 村落、熔岩洞、巫師塔與回洞穴的正常路徑；`spawn` map anchor／外部出口 `roof_type` 已資料化；不含全城市、全地城或完整結局）

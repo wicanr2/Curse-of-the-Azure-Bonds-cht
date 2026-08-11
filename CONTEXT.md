@@ -4931,3 +4931,25 @@ golden-box engine 新增中立 `set_memory`／`Runtime.MemoryWrites`，CoAB JSON
 用正常輸入接通，不得用 `(15,1)` coordinate-assisted fixture 冒充。權威規格為
 `docs/spec/547-normal-beholder-cave-presentation-state.md`，IDA 腳本為
 `scripts/ida/dos_overlay07_c04bf_projection_audit.idc`。
+
+2026-08-12 第五百四十八輪勘誤第 547 輪的洞穴 route 時序。第 547 輪的
+`C04B..C04F` IDA bridge 仍有效，但新的原始 `ECL4.DAX` block `0x22` session
+trace 證明 terrain `A2` 不會立刻寫入 `13/1/3`：先顯示砲擊文字、經三次
+`PRESS`，才在 `+061B` 寫入 `C04B=13`、`C04C=1`、`C04D=3`、`4C06=1`，並進入
+死精靈 `EXAMINE REMAINS／LEAVE` 選單。初始 `4C03=1` 在 `LEAVE` 後保持，不能
+再寫成 handler 清零。engine `set_map_position` 的中立 `continue_result` 僅讓
+data-pack 投影座標後保留同一 ECL result；CoAB JSON 保有所有座標／劇情資料。
+`TestRealECL4CaveA2CannonContinuesToDeadElfHandler`、
+`TestBeholderCaveMapHandoffContinuesSameECLResult` 與
+`TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 在 Docker 通過。第 547
+輪 route 敘述已由 `docs/spec/548-ecl4-cave-a2-continuation.md` supersede。
+
+2026-08-12 第五百四十九輪重新稽核 README 五張截圖，不把舊 PNG 當作目前
+renderer 證據。修正冒險 frame 合成順序、敘事／命令 baseline、戰鬥 footer、倚天
+`ASCFONT.15` ASCII／全形標點 fallback，以及誤用冒險左右分欄的角色建立畫面。
+角色建立現在由本機 DOS `character-age-create.png` 的單一大面板 chrome 抽出，
+原始 88×88 PIC／第一人稱 stage 維持嚴格 2×而非非整數放大。五張 Docker/Xvfb
+PNG 已重拍、人工檢視並替換 README；畫面與雜湊在
+`docs/spec/549-dos-character-creation-and-screenshot-polish.md`。這是
+material-exact/layout-reconstructed UI 基線，不代表完整戰鬥、所有 UI state 或
+整作通關。

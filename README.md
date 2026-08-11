@@ -67,18 +67,20 @@ E2 路徑的唯讀 GEO 稽核工具為
 
 ## 畫面預覽
 
-以下是目前 remake 的代表性畫面；每張圖的來源平台與 fidelity 等級以成果盤點和
-對應 spec 為準。
+以下是目前 remake 的代表性畫面。2026-08-12 已在 Docker/Xvfb 重新產生、逐張檢視
+並替換舊圖；石框／88×88 場景是原始素材證據，640×480 中文延伸與完整戰鬥畫面仍是
+`layout-reconstructed`，不能據此宣稱整作完成。細節與畫面雜湊見
+[第 549 輪規格](docs/spec/549-dos-character-creation-and-screenshot-polish.md)。
 
-![繁中冒險畫面](docs/screenshots/gold-box-layout-adventure.png)
+![旅店人物事件：DOS 石框、HEAD／BODY 舞台與繁中敘事](docs/screenshots/gold-box-layout-adventure.png)
 
-![角色建立畫面：原版裂紋石框與 16×15 倚天字級](docs/screenshots/character-creation-remake-640.png)
+![角色建立：原版單一大面板與 16×15 倚天字級](docs/screenshots/character-creation-remake-640.png)
 
-![繁中戰鬥畫面](docs/screenshots/gold-box-layout-combat.png)
+![繁中戰鬥：原版石框、CPIC 小人與分離的訊息／命令列](docs/screenshots/gold-box-layout-combat.png)
 
-![提爾佛頓第一人稱畫面](docs/screenshots/tilverton-first-person-remake.png)
+![提爾佛頓第一人稱：原版 88×88 場景內框與右側隊伍欄](docs/screenshots/tilverton-first-person-remake.png)
 
-![Burial Glen 戰鬥畫面](docs/screenshots/burial-glen-red-web-spiders.png)
+![Burial Glen 紅網戰鬥：原版地城素材與戰鬥 footer](docs/screenshots/burial-glen-red-web-spiders.png)
 
 更多地圖、人物舞台、戰鬥時間軸與素材圖在[截圖目錄](docs/screenshots/)；原版忠實
 theme 與日後美化 theme 分開維護。

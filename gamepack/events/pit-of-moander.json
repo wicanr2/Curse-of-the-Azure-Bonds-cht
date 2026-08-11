@@ -120,6 +120,15 @@
       ,"dexam.departure.dimswart": "“Dimswart, you come with me. A man from Shadowdale has some questions for you.” Olive and Dimswart leave."
       ,"dexam.departure.gharri": "You see a rider in the distance. He stops suddenly, and a moment later you hear something like “Gharriiii” drifting through the air."
       ,"dexam.departure.riders": "The rider changes direction and gallops to a woman dressed in purple. They embrace; she climbs onto the horse, and they ride away."
+      ,"dexam.dead-elf.remains": "You see the remains of an elf fighter."
+      ,"dexam.dead-elf.pouch": "Buried beneath the moldering clothing, you find a leather pouch."
+      ,"dexam.dead-elf.pouch-moves": "The pouch moves. You hear the crackling of something like paper and the clink of metal."
+      ,"dexam.dead-elf.map": "You discover a map. It marks Dexam's altar."
+      ,"dexam.dead-elf.drop-pouch": "You drop the pouch and leave."
+      ,"dexam.dead-elf.option.examine-remains": "Examine remains"
+      ,"dexam.dead-elf.option.pick-up-pouch": "Pick up pouch"
+      ,"dexam.dead-elf.option.poke-pouch": "Poke at pouch"
+      ,"dexam.dead-elf.option.find-trap": "Cast Find Trap"
       ,"world.shadowdale.edge": "You are at the edge of Shadowdale. Will you enter or continue your journey?"
       ,"journal.30.1": "Journal Entry 30 (1/2): Dexam says, “So, these are Fzoul's little secret. Very interesting. As the representative of the TRUE priests of Bane, I shall deliver you to Mulmaster and the grand Imperceptor.”"
       ,"journal.30.2": "Journal Entry 30 (2/2): “In Mulmaster I will examine these bonds in my laboratory—to your extreme discomfort. During the final procedure, the one resulting in your death, the pain should last no more than two or perhaps three weeks. Once I uncover their secret, the Imperceptor will be most angry with dear little Fzoul, and we may finally be rid of this heretic and his precious mages.”"
@@ -717,6 +726,15 @@
       ,"dexam.departure.dimswart": "「迪姆斯沃特，跟我來。暗影谷有個人想問你幾個問題。」奧莉芙與迪姆斯沃特隨即離去。"
       ,"dexam.departure.gharri": "你們看見遠處有一名騎士。他忽然停下；片刻後，一聲彷彿「嘉莉——」的呼喊隨風傳來。"
       ,"dexam.departure.riders": "騎士改變方向，策馬奔向一名身穿紫衣的女子。兩人相擁；女子躍上馬背，隨後一同遠去。"
+      ,"dexam.dead-elf.remains": "你們看見一名精靈戰士的遺骸。"
+      ,"dexam.dead-elf.pouch": "在發霉的衣物下，你們找到一個皮袋。"
+      ,"dexam.dead-elf.pouch-moves": "皮袋動了。你們聽見紙張般的窸窣聲，以及金屬碰撞的輕響。"
+      ,"dexam.dead-elf.map": "你們發現一張地圖；上面標示著德克薩姆的祭壇。"
+      ,"dexam.dead-elf.drop-pouch": "你們丟下皮袋，轉身離開。"
+      ,"dexam.dead-elf.option.examine-remains": "檢查遺骸"
+      ,"dexam.dead-elf.option.pick-up-pouch": "拿起皮袋"
+      ,"dexam.dead-elf.option.poke-pouch": "戳戳皮袋"
+      ,"dexam.dead-elf.option.find-trap": "施放「尋找陷阱」"
       ,"world.shadowdale.edge": "你們來到暗影谷外。要進城，還是繼續旅程？"
       ,"journal.30.1": "手札條目 30（1/2）：德克薩姆說：「原來這就是弗佐爾藏著的小祕密。有意思。身為貝恩正統祭司的代表，我要把你們送到穆爾馬斯特，交給總督察長。」"
       ,"journal.30.2": "手札條目 30（2/2）：「到了穆爾馬斯特，我會在實驗室研究這些枷印——只怕你們會非常不舒服。最後一道程序將奪走你們的性命；放心，痛苦頂多持續兩三個星期。等我揭開枷印的祕密，總督察長必會對他親愛的小弗佐爾大發雷霆，我們也終於能除掉這名異端和他珍愛的法師。」"
@@ -1929,6 +1947,17 @@
       "sky_blocks": [250, 251, 252],
       "wrap": true,
       "scale": 2,
+      "search_edges": [
+        {
+          "id": "zhentil-keep.beholder-cave.dexam-east",
+          "x": 14,
+          "y": 1,
+          "direction": 2,
+          "wall_type": 9,
+          "discovery": "search_or_look",
+          "confidence": "strong inference"
+        }
+      ],
       "spawn": {"x": 5, "y": 7, "direction": 6}
     },
     {
@@ -2241,6 +2270,10 @@
     {"id": "ecl-option.greet", "source": "GREET", "message_id": "greet"},
     {"id": "ecl-option.leave", "source": "LEAVE", "message_id": "leave"},
     {"id": "ecl-option.leave-title-case", "source": "Leave", "message_id": "leave"},
+    {"id": "dexam.dead-elf.examine-remains", "source": "EXAMINE REMAINS", "message_id": "dexam.dead-elf.option.examine-remains"},
+    {"id": "dexam.dead-elf.pick-up-pouch", "source": "PICK UP POUCH", "message_id": "dexam.dead-elf.option.pick-up-pouch"},
+    {"id": "dexam.dead-elf.poke-pouch", "source": "POKE AT POUCH", "message_id": "dexam.dead-elf.option.poke-pouch"},
+    {"id": "dexam.dead-elf.find-trap", "source": "CAST FIND TRAP", "message_id": "dexam.dead-elf.option.find-trap"},
     {"id": "ecl-option.examine-corpse", "source": "EXAMINE CORPSE", "message_id": "examine_corpse"},
     {"id": "ecl-option.shadowdale", "source": "SHADOWDALE", "message_id": "shadowdale"},
     {"id": "ecl-option.ashabenford", "source": "ASHABENFORD", "message_id": "ashabenford"},
@@ -3233,6 +3266,31 @@
       "message_id": "dexam.arrival"
     },
     {
+      "id": "dexam.dead-elf.remains",
+      "all_contains": ["REMAINS OF AN ELF FIGHTER"],
+      "message_id": "dexam.dead-elf.remains"
+    },
+    {
+      "id": "dexam.dead-elf.pouch",
+      "all_contains": ["BURIED BENEATH THE MOLDERING CLOTHING", "LEATHER POUCH"],
+      "message_id": "dexam.dead-elf.pouch"
+    },
+    {
+      "id": "dexam.dead-elf.pouch-moves",
+      "all_contains": ["THE POUCH MOVES", "PAPER-LIKE SUBSTANCE"],
+      "message_id": "dexam.dead-elf.pouch-moves"
+    },
+    {
+      "id": "dexam.dead-elf.map",
+      "all_contains": ["YOU DISCOVER A MAP"],
+      "message_id": "dexam.dead-elf.map"
+    },
+    {
+      "id": "dexam.dead-elf.drop-pouch",
+      "all_contains": ["DROP THE POUCH AND LEAVE"],
+      "message_id": "dexam.dead-elf.drop-pouch"
+    },
+    {
       "id": "dexam.journal_30",
       "all_contains": ["DEXAM SPEAKS", "JOURNAL ENTRY 30"],
       "message_id": "dexam.journal_30",
@@ -3544,13 +3602,15 @@
         "memory": {
           "0xC04B": 13,
           "0xC04C": 1,
-          "0xC04D": 3
+          "0xC04D": 3,
+          "0x4C06": 1
         }
       },
       "actions": [
         {
           "type": "set_map_position",
           "mode": "dungeon",
+          "continue_result": true,
           "position": {
             "map_kind": "first_person",
             "area_id": 4,

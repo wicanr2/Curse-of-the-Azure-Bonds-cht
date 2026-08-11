@@ -1600,8 +1600,10 @@ func (s *State) Select(index int) error {
 			s.currentOriginalChoices = nil
 			return nil
 		}
-		if len(result.Text) > 0 {
+		if hasMeaningfulECLText(result.Text) {
 			s.OriginalEvent = result.Text[len(result.Text)-1]
+			s.Mode = ModeEvent
+			return nil
 		}
 	}
 	if s.Location != LocationWilderness && originalChoice == "WILDERNESS" &&
@@ -5647,6 +5649,13 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 		return true, fmt.Errorf("data-pack event %q returned unsupported mode %q", applied.EventID, runtime.Mode)
 	}
 	if runtime.Mode == "dungeon" {
+		if runtime.ContinueResult {
+			// The title pack projected a real coordinate handoff, but the
+			// original VM has player-visible work remaining in this same result.
+			// Keep its BlockSession and let the generic ECL result pipeline show
+			// the text, picture, string input, or menu without restarting it.
+			return false, nil
+		}
 		return true, nil
 	}
 	s.currentOriginalChoices = []string{"PRESS BUTTON OR RETURN TO CONTINUE."}
@@ -5670,6 +5679,7 @@ func (s *State) applyDataPackMapPositions(positions []goldenbox.MapPositionTrans
 			position.Direction != 4 && position.Direction != 6 {
 			return fmt.Errorf("map position direction %d is not cardinal", position.Direction)
 		}
+		moved := s.DungeonX != position.X || s.DungeonY != position.Y
 		s.Area.GameArea = position.AreaID
 		s.Area.InDungeon = true
 		s.Area.Current3DMapBlockID = position.GeometryBlock
@@ -5693,6 +5703,12 @@ func (s *State) applyDataPackMapPositions(positions []goldenbox.MapPositionTrans
 			s.session.SetMemoryValue(0xC04D, uint16(position.Direction/2))
 			s.session.SetMemoryValue(0xC04E, uint16(s.DungeonWallType))
 			s.session.SetMemoryValue(0xC04F, uint16(s.DungeonWallRoof))
+			if moved {
+				// set_map_position is a real coordinate handoff, not a redraw or
+				// menu continuation. SearchLocation's per-step guard must clear so
+				// the destination cell can process its own LOOK / terrain event.
+				s.session.SetMemoryValue(0x7F81, 0)
+			}
 		}
 	}
 	return nil
