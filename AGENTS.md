@@ -427,6 +427,22 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 主要缺口見 `docs/project-status.md`：完整 ECL/external routines、開場到結局
   玩家路徑、戰鬥規則/AI/法術/戰後、全地圖、全翻譯、音樂音效、完整 save、
   三平台發行與長時間回歸。
+- 第 543 輪已把同一新遊戲 session 從第 542 輪的艾森布拉城外接到 Hap 村落、
+  熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥／防火桶分支；正式測試為
+  `internal/game/campaign_normal_test.go` 的
+  `TestRealNewGameContinuesFromHapToDracolichCave`。測試只用正常
+  `MoveDungeon`、game-pack stable option ID 與同一 ECL continuation，不能因這條
+  路徑通過就宣稱全城市、全地城或完整結局。
+- 第 543 輪的巫師塔座標修正是 engine＋JSON 通用邊界：
+  `original.geo5.block-33` 的 JSON `spawn=(7,15,W)` 表示目的地錨點；有 spawn 的
+  map 會保留 live dungeon cursor，避免同區塊 ECL redraw 前的 scratch
+  `C04B/C04C/C04D` 覆蓋玩家座標。Hap external exit 的 `roof_type=2` 已加入
+  engine schema。engine 本地提交 `9cf5fa5` 若尚未能推送到 remote，不得寫成 GitHub
+  已完成；compact 後先查兩個 repo 的實際 status／remote。
+- 第 543 輪 READY 規格為
+  `docs/spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md`；固定
+  `PROGRAM 8` 與 Myth Drannor 終戰 fixture 仍只能算局部／coordinate-assisted
+  證據，下一步須沿同一 session 接尤拉什、摩安德之坑、散提爾堡與結局。
 - 第 510 輪已把新遊戲進入提爾佛頓後的第一個正常西行輸入收回
   `State.MoveDungeon`；原始 GEO2 block 1 的起點、雙側牆／門可走性與 ECL
   register 更新是 `exact`，但 DOS movement loop 的逐幀／逐指令對應仍是

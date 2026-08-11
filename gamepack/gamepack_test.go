@@ -342,6 +342,19 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		cave.Spawn.Direction != 0 {
 		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)
 	}
+	hap, found := pack.FindMapByKindScript("first_person", 5, 0x31)
+	if !found || hap.ID != "original.geo5.block-31" || hap.GeometryFile != "GEO5.DAX" ||
+		hap.GeometryBlock != 0x32 || hap.ScriptBlock == nil || *hap.ScriptBlock != 0x31 {
+		t.Fatalf("Hap script-to-geometry map definition=%+v found=%v", hap, found)
+	}
+	if len(hap.ExternalExits) != 1 || hap.ExternalExits[0].ID != "hap.village.east-to-dracolich-cave" ||
+		hap.ExternalExits[0].RoofType == nil || *hap.ExternalExits[0].RoofType != 2 {
+		t.Fatalf("Hap external exit definition=%+v", hap.ExternalExits)
+	}
+	tower, found := pack.FindMapByKindScript("first_person", 5, 0x33)
+	if !found || tower.Spawn == nil || tower.Spawn.X != 7 || tower.Spawn.Y != 15 || tower.Spawn.Direction != 6 {
+		t.Fatalf("Hap wizard-tower spawn definition=%+v found=%v", tower, found)
+	}
 	overland, found := pack.FindMapByKind("overland")
 	if !found || overland.ImageFile != "BIGPIC1.DAX" ||
 		overland.GeometryBlock != 0x79 || len(overland.Locations) != 14 ||

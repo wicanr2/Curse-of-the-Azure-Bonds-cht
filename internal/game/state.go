@@ -1259,11 +1259,19 @@ func (s *State) Select(index int) error {
 			s.Area.InDungeon && s.Area.GameArea == 5 {
 			currentBlock := s.session.CurrentBlockID()
 			if currentBlock == 0x31 || currentBlock == 0x32 || currentBlock == 0x33 {
-				// Hap village, caves, and wizard-tower roof use matching
+				// Hap village, caves, and wizard-tower roof may use different
 				// ECL/GEO block IDs. Resolve the destination after LOAD FILES
-				// aggregation, which can still contain the source block.
+				// aggregation, which can still contain the source block. The
+				// title pack is authoritative when it declares a mapping; the
+				// same-number fallback preserves older packs that omit it.
 				s.GeoMapSet = s.Area.GameArea
-				s.GeoMapBlock = currentBlock
+				if definition, found := s.dataPack.FindMapByKindScript(
+					"first_person", s.Area.GameArea, currentBlock,
+				); found {
+					s.GeoMapBlock = definition.GeometryBlock
+				} else {
+					s.GeoMapBlock = currentBlock
+				}
 				s.geoMapPending = true
 			}
 		}
@@ -3572,6 +3580,19 @@ func (s *State) projectFreshDungeonCoordinatesBeforeCall(
 	result ecl.RunResult,
 	call ecl.CallRequest,
 ) {
+	// A map declaration with a spawn is a destination anchor, not a signal
+	// that every same-block redraw CALL owns the party position.  Some ECL
+	// narrative branches use C04B/C04C/C04D as scratch operands immediately
+	// before the redraw routine; the map's declared anchor keeps those values
+	// out of the live dungeon cursor.  Titles that genuinely move the party
+	// keep Spawn nil and continue to use the verified register transaction.
+	if s.dataPack != nil && s.session != nil {
+		if definition, found := s.dataPack.FindMapByKindScript(
+			"first_person", s.Area.GameArea, s.session.CurrentBlockID(),
+		); found && definition.Spawn != nil {
+			return
+		}
+	}
 	var mask uint8
 	var x, y uint16
 	var direction uint16
@@ -5236,7 +5257,7 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	x, y, _ := s.DungeonGeometryView()
 	nextX, nextY := x+dx, y+dy
 	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
-	_, hasExternalExit := s.dungeonExternalExit(x, y, uint8(direction))
+	externalExit, hasExternalExit := s.dungeonExternalExit(x, y, uint8(direction))
 	if !s.CanMoveDungeon(grid, dx, dy, direction) {
 		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
 	}
@@ -5247,6 +5268,16 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 		s.SetDungeonGeometryView(x, y, uint8(direction))
 		s.DungeonWallType, _ = grid.WallWrapped(x, y, direction)
 		s.DungeonWallRoof = grid.CellWrapped(x, y).Terrain
+		// The original renderer can pass a boundary presentation selector to
+		// ECL that is not the raw GEO wall/terrain byte. Keep that title-owned
+		// projection in JSON; the engine still owns only the generic exit
+		// transaction. Existing exits omit these overrides and retain raw GEO.
+		if externalExit.WallType != nil {
+			s.DungeonWallType = *externalExit.WallType
+		}
+		if externalExit.RoofType != nil {
+			s.DungeonWallRoof = *externalExit.RoofType
+		}
 		s.requestSound(SoundStep)
 		if s.Mode != ModeDungeon {
 			return nil

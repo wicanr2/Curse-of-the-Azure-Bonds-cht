@@ -43,6 +43,19 @@ func requireGamePackOptionIndex(t *testing.T, state *State, optionID string) int
 	return 0
 }
 
+func findGamePackOptionIndex(state *State, optionID string) (int, bool) {
+	if state == nil || state.dataPack == nil {
+		return 0, false
+	}
+	for _, rule := range state.dataPack.OptionRules {
+		if rule.ID != optionID {
+			continue
+		}
+		return state.OriginalChoiceIndex(rule.Source)
+	}
+	return 0, false
+}
+
 func requireCombatantName(t *testing.T, state *State, source string) string {
 	t.Helper()
 	value, ok := state.dataPack.LocalizeCombatantName(source, state.catalog.Language)
@@ -136,10 +149,11 @@ func TestRealECLJourneyDispatchesGeneralStoreService(t *testing.T) {
 	}
 }
 
-func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
+func runNormalNewGameToEssembra(t *testing.T) *State {
 	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
 	if err != nil {
 		t.Skipf("original image is unavailable: %v", err)
+		return nil
 	}
 	defer image.Close()
 
@@ -180,6 +194,19 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 		patrolRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(1, patrolRecords)
+	hapBlocks, err := dax.Parse(zipData(t, image, "MON5CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	hapRecords := make(map[uint8]monster.Record, len(hapBlocks))
+	for _, block := range hapBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		hapRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(5, hapRecords)
 	if err := state.Apply(ActionStart); err != nil {
 		t.Fatal(err)
 	}
@@ -2028,6 +2055,133 @@ func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
 	if state.Location != LocationEssembra || state.Message != requireGamePackText(t, &state, "essembra.edge") {
 		t.Fatalf("normal main-line Essembra arrival location=%v message=%q choices=%v",
 			state.Location, state.Message, state.currentOriginalChoices)
+	}
+	return &state
+}
+
+func TestRealNewGameBeginsAtGlobalBlockOne(t *testing.T) {
+	runNormalNewGameToEssembra(t)
+}
+
+func TestRealNewGameContinuesIntoHapByDungeonMovement(t *testing.T) {
+	state := runNormalNewGameToEssembra(t)
+	if state == nil {
+		return
+	}
+	selectOption := func(id string) {
+		t.Helper()
+		if err := state.Select(requireGamePackOptionIndex(t, state, id)); err != nil {
+			t.Fatalf("select %s: %v", id, err)
+		}
+	}
+	selectOption("ecl-option.journey-on")
+	selectOption("ecl-option.hap")
+	selectOption("ecl-option.trail")
+	selectOption("ecl-option.press-button-or-return-to-continue")
+	for turn := 0; turn < 128 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("Hap travel combat turn %d: %v", turn, err)
+		}
+	}
+	if state.Mode == ModeEvent {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Hap travel combat: %v", err)
+		}
+	}
+	selectOption("ecl-option.enter-city")
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Hap entry picture: %v", err)
+		}
+	}
+	selectOption("ecl-option.press-button-or-return-to-continue")
+	if state.Mode != ModeDungeon || state.session == nil || state.session.CurrentBlockID() != 0x31 ||
+		state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 {
+		t.Fatalf("Hap dungeon entry mode=%v block=%#x geo=%d/%#x message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock, state.Message)
+	}
+	image, err := zip.OpenReader(filepath.Join("..", "..", "curseoftheazurebonds.zip"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer image.Close()
+	geoCatalog := geo.NewCatalog()
+	if err := geoCatalog.AddDAX(5, zipData(t, image, "GEO5.DAX")); err != nil {
+		t.Fatal(err)
+	}
+	grid, ok := geoCatalog.Lookup(geo.MapRef{Set: 5, BlockID: 0x32})
+	if !ok {
+		t.Fatal("missing Hap GEO5 block 0x32")
+	}
+
+	resolveBoundary := func() {
+		t.Helper()
+		for attempt := 0; attempt < 16 && state.Mode != ModeDungeon; attempt++ {
+			switch state.Mode {
+			case ModeCombat:
+				if err := state.CombatAct(); err != nil {
+					t.Fatalf("Hap patrol combat: %v", err)
+				}
+			case ModeEvent:
+				if state.PictureRequested {
+					if err := state.Continue(); err != nil {
+						t.Fatalf("continue Hap event picture: %v", err)
+					}
+					continue
+				}
+				if len(state.Choices) > 0 {
+					if err := state.Select(0); err != nil {
+						t.Fatalf("continue Hap event menu: %v", err)
+					}
+				} else if err := state.Continue(); err != nil {
+					t.Fatalf("continue Hap event: %v", err)
+				}
+			case ModeWilderness:
+				if index, found := findGamePackOptionIndex(state, "option.flee"); found {
+					if err := state.Select(index); err != nil {
+						t.Fatalf("flee Hap encounter menu: %v", err)
+					}
+					continue
+				}
+				if index, found := findGamePackOptionIndex(state, "ecl-option.press-button-or-return-to-continue"); found {
+					if err := state.Select(index); err != nil {
+						t.Fatalf("continue Hap wilderness event: %v", err)
+					}
+					continue
+				}
+				t.Fatalf("unexpected Hap wilderness boundary choices=%v message=%q block=%#x pos=(%d,%d,%d) eclReturn=%v eventReturn=%v",
+					state.currentOriginalChoices, state.Message, state.session.CurrentBlockID(),
+					state.DungeonX, state.DungeonY, state.DungeonDirection,
+					state.eclMenuReturnMode, state.eventReturnMode)
+			default:
+				t.Fatalf("unexpected Hap boundary mode=%v", state.Mode)
+			}
+		}
+		if state.Mode != ModeDungeon {
+			t.Fatalf("Hap boundary did not return to dungeon: mode=%v block=%#x choices=%v message=%q",
+				state.Mode, state.session.CurrentBlockID(), state.currentOriginalChoices, state.Message)
+		}
+	}
+
+	for index, step := range [][3]int{
+		{0, 1, 4}, {0, 1, 4}, {-1, 0, 6}, {0, 1, 4}, {0, 1, 4},
+		{0, 1, 4}, {1, 0, 2}, {0, 1, 4}, {0, 1, 4}, {0, 1, 4},
+		{0, 1, 4}, {0, 1, 4}, {0, 1, 4}, {0, 1, 4}, {0, 1, 4},
+		{1, 0, 2},
+	} {
+		if state.Mode != ModeDungeon {
+			t.Fatalf("Hap route before step %d mode=%v choices=%v message=%q",
+				index, state.Mode, state.currentOriginalChoices, state.Message)
+		}
+		if err := state.MoveDungeon(grid, step[0], step[1], step[2]); err != nil {
+			t.Fatalf("Hap route step %d from (%d,%d): %v", index,
+				state.DungeonX, state.DungeonY, err)
+		}
+		resolveBoundary()
+	}
+	if state.DungeonX != 4 || state.DungeonY != 13 || state.Mode != ModeDungeon {
+		t.Fatalf("Hap route endpoint mode=%v position=(%d,%d,%d) message=%q",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection, state.Message)
 	}
 }
 
@@ -3970,7 +4124,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(0); err != nil {
 		t.Fatal(err)
 	}
-	if session.CurrentBlockID() != 0x31 || state.GeoMapBlock != 0x31 {
+	if session.CurrentBlockID() != 0x31 || state.GeoMapBlock != 0x32 {
 		t.Fatalf("wizard-tower village return block=%#x geo=%#x mode=%v message=%q",
 			session.CurrentBlockID(), state.GeoMapBlock, state.Mode, state.Message)
 	}

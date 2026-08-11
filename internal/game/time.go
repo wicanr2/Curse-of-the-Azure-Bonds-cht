@@ -11,6 +11,14 @@ import (
 // are kept as raw units so callers can preserve the original rest/map clock.
 var referenceTimeScales = [...]uint16{10, 10, 6, 24, 30, 12, 0x100}
 
+// eclClockBaseAddress is the verified Golden Box Area1 work-memory mirror for
+// the seven raw clock slots.  The 4BC6..4BCC mapping is kept at the adapter
+// boundary: story data must not copy clock values into a plot-specific field.
+// The 4BC9 -> hour part is currently a strong inference from the existing
+// Area1 clock spec and cross-implementation mapping; its direct DOS writer is
+// still not closed by IDA xrefs.
+const eclClockBaseAddress uint16 = 0x4BC6
+
 // GameTimeDisplay is the renderer-neutral view of the reference Area1 clock.
 // The raw order is deliberately kept in GameTimeSlots; this view only applies
 // the reference field mapping used by the map-position display.
@@ -59,6 +67,7 @@ func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 	}
 	s.addGameClock(timeSlot, amount)
 	s.Area.GameTime = s.gameClock
+	s.syncECLClockMemory()
 	ticks, err := engineeffecttime.DurationTicks(engineeffecttime.Unit(timeSlot), amount)
 	if err != nil {
 		return err
@@ -72,6 +81,19 @@ func (s *State) AdvanceGameTime(timeSlot int, amount uint16) error {
 		ticks -= chunk
 	}
 	return nil
+}
+
+// syncECLClockMemory projects the renderer-neutral clock into the raw ECL
+// work-memory addresses consumed by original scripts.  It is deliberately
+// generic and runs after every clock advance, including movement, SEARCH,
+// REST, and ECL CLOCK requests.
+func (s *State) syncECLClockMemory() {
+	if s.session == nil {
+		return
+	}
+	for index, value := range s.gameClock {
+		s.session.SetMemoryValue(eclClockBaseAddress+uint16(index), value)
+	}
 }
 
 // AdvanceGameTimeHours is the REST-facing adapter. Reference rest_time uses
