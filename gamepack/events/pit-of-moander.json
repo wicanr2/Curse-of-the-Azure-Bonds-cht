@@ -3537,6 +3537,32 @@
       ]
     },
     {
+      "id": "zhentil-keep.beholder-cave.same-block-launch",
+      "once": true,
+      "when": {
+        "ecl_block": 34,
+        "memory": {
+          "0xC04B": 13,
+          "0xC04C": 1,
+          "0xC04D": 3
+        }
+      },
+      "actions": [
+        {
+          "type": "set_map_position",
+          "mode": "dungeon",
+          "position": {
+            "map_kind": "first_person",
+            "area_id": 4,
+            "geometry_block": 37,
+            "x": 13,
+            "y": 1,
+            "direction": 6
+          }
+        }
+      ]
+    },
+    {
       "id": "pit-of-moander.departure",
       "once": true,
       "when": {
