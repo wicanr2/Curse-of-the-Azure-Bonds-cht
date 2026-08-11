@@ -109,6 +109,11 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   什麼」，不能單憑文字或攻略把該位址命名成命中、AC、年齡等規則欄位。
   必須再找到讀取端／consumer、角色資料投影或原版 runtime 效果；在此之前
   schema、spec 與測試都要標為 `hypothesis`，不得先把推測做成正式規則。
+- 若某個 raw work address 只影響作品情節的轉移／一次性 gate，且沒有證據顯示它
+  影響 AD&D 數值、戰鬥、存檔相容或玩家可見的規則結果，不得為了替它取名字而
+  深挖完整 consumer。需要維持正常玩家路徑時，使用 engine 的中立 raw memory
+  action，由 CoAB JSON 宣告 address／value／觸發條件；文件同時標示「原版語意
+  未知」與「remake route contract 已驗證」。`0x4C00` 是本作目前的例子。
 - IDA 沒有找到某個位址的 literal xref，不代表該欄位未使用；ECL work
   memory 常由基底指標、索引或通用 interpreter 間接存取。反過來，找到一個
   raw little-endian byte pattern 也不等於找到 consumer。必須區分 code
@@ -320,6 +325,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   catalog。除非測試目標就是 schema／parser 的最小合成資料，否則應載入
   版本化 game pack，再以 stable ID 找資料；合成 fixture 也只能斷言結構，
   不可冒充 CoAB 正式內容。
+
+- 角色建立的 D&D saving throw 閾值是 game-pack 資料，不得在 Go 內按職業名稱
+  推算或在測試複製顯示文字；使用 template stable ID 的 `saving_throws` 五欄，
+  由 engine schema 驗證，State 只投影到角色 record。缺欄位應 fail-closed，不能
+  用預設值掩蓋資料缺口。
 - 玩家戰鬥法術的 CAST／Quick／pending 入口使用 `combat_player_spells` 的
   stable `id`／原始 `spell_id`／`target_mode`／`message_id`；
   `combat_ai_spells` 只負責 Quick metadata。新增法術時先更新 engine schema
@@ -430,7 +440,7 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 第 543 輪已把同一新遊戲 session 從第 542 輪的艾森布拉城外接到 Hap 村落、
   熔岩洞、巫師塔、回洞穴與熔岩池第二次戰鬥／防火桶分支；正式測試為
   `internal/game/campaign_normal_test.go` 的
-  `TestRealNewGameContinuesFromHapToDracolichCave`。測試只用正常
+  `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`。測試只用正常
   `MoveDungeon`、game-pack stable option ID 與同一 ECL continuation，不能因這條
   路徑通過就宣稱全城市、全地城或完整結局。
 - 第 543 輪的巫師塔座標修正是 engine＋JSON 通用邊界：
@@ -443,6 +453,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   `docs/spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md`；固定
   `PROGRAM 8` 與 Myth Drannor 終戰 fixture 仍只能算局部／coordinate-assisted
   證據，下一步須沿同一 session 接尤拉什、摩安德之坑、散提爾堡與結局。
+- 第 544 輪新增 engine `set_memory`／`Runtime.MemoryWrites`，CoAB JSON 以
+  `zhentil-keep.inner-city.route-memory-reset` 保存 `0x4C00` 的 raw route
+  dependency；這不是 D&D 規則欄位，也沒有替它建立語意名稱。正常 session 測試
+  已改名為 `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`，只驗證到
+  Dexam 洞穴入口 `(4,5,N)`；洞穴內部路徑仍是下一個玩家可見 milestone。
 - 第 510 輪已把新遊戲進入提爾佛頓後的第一個正常西行輸入收回
   `State.MoveDungeon`；原始 GEO2 block 1 的起點、雙側牆／門可走性與 ECL
   register 更新是 `exact`，但 DOS movement loop 的逐幀／逐指令對應仍是

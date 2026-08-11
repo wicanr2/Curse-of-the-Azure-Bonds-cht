@@ -8,7 +8,7 @@
 GEO5 block `0x32` 逐格完成民宅／阿卡巴／旅店／伊弗利特解放，經外部出口進入
 熔岩洞，打贏守門巡邏，走到熔岩池，經巫師塔入口、德拉坎德羅斯與黑龍事件返回
 洞穴，再完成「友善交涉→同格重訪→15 隻火蜥蜴→防火桶耐熱失敗」分支。測試使用
-`internal/game/campaign_normal_test.go` 的 `TestRealNewGameContinuesFromHapToDracolichCave`；
+`internal/game/campaign_normal_test.go` 的 `TestRealNewGameContinuesFromHapToBeholderCaveEntrance`；
 選項由 game-pack stable ID 解析，移動由 `MoveDungeon` 執行，沒有注入劇情旗標或
 直接切入戰鬥。這是本輪第一條把 Hap／熔岩洞／法師塔接在同一 session 的正常
 玩家路徑證據。

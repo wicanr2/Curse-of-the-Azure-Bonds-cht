@@ -1079,7 +1079,11 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			selectedTeamListIndex = int(value & 0x7F)
 			// LOAD CHARACTER selects an absolute TeamList slot. The player
 			// memory window at +0x100 does not contain a stored byte: the
-			// reference getter projects in_combat as 1 (or 0x80 when absent).
+			// reference getter projects in_combat as 1 for an existing TeamList
+			// slot and 0 for an absent selector. ECL room scanners compare this
+			// value with zero to terminate their zero-based LOAD CHARACTER loop;
+			// 0x80 is reserved for the selected player's quick-fight team byte at
+			// +0x10C.
 			// Guild block 2 relies on this probe before assigning four loaded
 			// thieves to our quick-fight team.
 			teamCount := len(result.MonsterSpawns)
@@ -1096,7 +1100,7 @@ func runSubsetWithStateContextAndInputs(block []byte, start, maxSteps int, selec
 			if selectedTeamListIndex >= 0 && selectedTeamListIndex < teamCount {
 				memory[0x7D00] = 1
 			} else {
-				memory[0x7D00] = 0x80
+				memory[0x7D00] = 0
 			}
 			if workingPartyContext != nil {
 				playerIndex := int(value & 0x7F)

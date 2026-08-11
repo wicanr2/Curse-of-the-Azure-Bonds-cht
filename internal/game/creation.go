@@ -38,10 +38,14 @@ func starterCharacters(pack *goldenbox.Pack, language string) ([]party.Character
 			ID: "creation." + template.ID, Name: name,
 			Race: party.Race(template.RaceID), Class: party.Class(template.PrimaryClassID),
 			RawClassID: template.RawClassID, Level: int(template.Level), ClassLevels: levels,
+			SavingThrows: append([]uint8(nil), template.SavingThrows...),
 			Abilities: party.Abilities{
 				Strength: abilities[0], Intelligence: abilities[1], Wisdom: abilities[2],
 				Dexterity: abilities[3], Constitution: abilities[4], Charisma: abilities[5],
 			},
+		}
+		if len(character.SavingThrows) != 5 {
+			return nil, fmt.Errorf("character creation template %q must provide five saving throws", template.ID)
 		}
 		if _, err := party.StartingAgeSpecFor(character.Race, character.Class); err != nil {
 			return nil, fmt.Errorf("character creation template %q age: %w", template.ID, err)

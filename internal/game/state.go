@@ -964,6 +964,9 @@ func (s *State) BeginAdventure() error {
 }
 
 func (s *State) enterECLMenu(menu ecl.Menu) {
+	if declared, ok := s.declaredWorldDestinationOptions(menu.Options); ok {
+		menu.Options = declared
+	}
 	if slices.Equal(menu.Options, []string{"PATROL", "FOREST", "JOURNEY ON", "CAMP"}) {
 		menu.Options = []string{"PATROL FOREST", "JOURNEY ON", "CAMP"}
 	}
@@ -1027,6 +1030,79 @@ func (s *State) syncWorldDestinationSelectors(options []string) {
 	}
 }
 
+// syncWorldDestinationRow publishes the current location's JSON route row
+// before ECL1 dispatches JOURNEY ON. A dungeon departure can return to a
+// world menu without running the ordinary AREA arrival transaction; in that
+// case the legacy selector cells may still contain the previous city's row.
+// The pack owns the destination graph, while State only mirrors its bounded
+// four-cell ABI into the title's ECL memory.
+func (s *State) syncWorldDestinationRow() {
+	if s.session == nil || s.dataPack == nil {
+		return
+	}
+	definition, found := s.dataPack.FindMapByKind("overland")
+	if !found {
+		return
+	}
+	for _, point := range definition.Locations {
+		if point.Value != s.Area.CurrentCity {
+			continue
+		}
+		for index, destination := range point.Destinations {
+			if index >= 4 {
+				break
+			}
+			s.session.SetMemoryValue(0x4C02+uint16(index), uint16(destination))
+		}
+		return
+	}
+}
+
+// declaredWorldDestinationOptions replaces a stale ECL destination list only
+// when every raw option is recognizably a world point. This keeps ordinary
+// route/exit menus untouched while allowing the title-owned JSON graph to
+// repair a legacy selector row after a dungeon departure.
+func (s *State) declaredWorldDestinationOptions(options []string) ([]string, bool) {
+	if s.session == nil || s.dataPack == nil ||
+		(s.session.CurrentBlockID() != 0x50 && s.session.CurrentBlockID() != 0x51) ||
+		len(options) == 0 || slices.Contains(options, "ENTER CITY") {
+		return nil, false
+	}
+	definition, found := s.dataPack.FindMapByKind("overland")
+	if !found {
+		return nil, false
+	}
+	var current goldenbox.MapPoint
+	for _, point := range definition.Locations {
+		if point.Value == s.Area.CurrentCity {
+			current = point
+			break
+		}
+	}
+	if len(current.Destinations) == 0 {
+		return nil, false
+	}
+	for _, option := range options {
+		if _, ok := s.worldPointForOriginalOption(definition, option); !ok {
+			return nil, false
+		}
+	}
+	english := s.dataPack.Locales["en"]
+	declared := make([]string, 0, len(current.Destinations))
+	for _, destination := range current.Destinations {
+		for _, point := range definition.Locations {
+			if point.Value == destination {
+				declared = append(declared, strings.ToUpper(strings.TrimSpace(english[point.MessageID])))
+				break
+			}
+		}
+	}
+	if len(declared) != len(current.Destinations) {
+		return nil, false
+	}
+	return declared, true
+}
+
 func (s *State) worldPointForOriginalOption(definition goldenbox.MapDefinition, option string) (goldenbox.MapPoint, bool) {
 	english := s.dataPack.Locales["en"]
 	for _, point := range definition.Locations {
@@ -1051,6 +1127,10 @@ func (s *State) Select(index int) error {
 	if index < len(s.currentOriginalChoices) {
 		originalChoice = s.currentOriginalChoices[index]
 	}
+	locationBeforeSelection := s.Location
+	locationNameBeforeSelection := s.LocationName
+	originalLocationBeforeSelection := s.OriginalLocation
+	currentCityBeforeSelection := s.Area.CurrentCity
 	messageBeforeSelection := s.Message
 	if s.dataPack != nil {
 		if definition, found := s.dataPack.FindMapByKind("overland"); found {
@@ -1064,6 +1144,14 @@ func (s *State) Select(index int) error {
 		// AREA publishes the selected destination through this separate
 		// arrival cell. ECL may overwrite 4C9B while dispatching the route.
 		s.session.SetMemoryValue(0x4C9C, uint16(s.pendingWorldDestination))
+	}
+	if originalChoice == "JOURNEY ON" {
+		// This menu can be reached directly from a dungeon departure. Publish
+		// the current JSON route row before ECL1 reads its legacy selectors;
+		// otherwise a previous city's row can leak into the next destination
+		// menu even though Location and CurrentCity already agree.
+		s.pendingWorldTravel = false
+		s.syncWorldDestinationRow()
 	}
 	if s.treasureMenu {
 		return s.selectTreasure(index, originalChoice)
@@ -1197,17 +1285,6 @@ func (s *State) Select(index int) error {
 				s.session.SetMemoryValue(0x7ED5, 0)
 				s.session.SetMemoryValue(0x7EC9, 0)
 			}
-			if blockBefore == 0x11 && s.session.CurrentBlockID() == 0x12 &&
-				s.Area.InDungeon && s.Area.GameArea == 3 {
-				// Pit of Moander levels share GEO3 block 0x11. The
-				// destination ECL initial entry places the party on the
-				// lower-level landing at (15,14), facing south.
-				s.DungeonX, s.DungeonY, s.DungeonDirection = 15, 14, 4
-				s.MapX, s.MapY = 15, 14
-				s.session.SetMemoryValue(0xC04B, 15)
-				s.session.SetMemoryValue(0xC04C, 14)
-				s.session.SetMemoryValue(0xC04D, 2)
-			}
 			if s.dungeonBoundaryAttempt &&
 				(blockBefore != currentBlock || result.Exited) {
 				// The resumed source-map branch has consumed its boundary
@@ -1296,9 +1373,16 @@ func (s *State) Select(index int) error {
 		s.applyECLTreasureSignals(result)
 		s.applyECLRobSignals(result)
 		if !result.CombatRequested {
-			if handled, err := s.applyDataPackEvent(result); handled || err != nil {
+			handled, err := s.applyDataPackEvent(result)
+			if handled || err != nil {
+				if err == nil && s.session != nil && blockBefore != s.session.CurrentBlockID() {
+					s.applyDeclaredDungeonSpawn()
+				}
 				return err
 			}
+		}
+		if s.session != nil && blockBefore != s.session.CurrentBlockID() {
+			s.applyDeclaredDungeonSpawn()
 		}
 		treasureReady := false
 		if len(result.TreasureRequests) > 0 {
@@ -1337,6 +1421,15 @@ func (s *State) Select(index int) error {
 			s.session.SetMemoryValue(0x4C9B, uint16(s.pendingWorldDestination))
 		}
 		s.applyCitySelection()
+		if originalChoice == "JOURNEY ON" && !s.pendingWorldTravel {
+			// ECL1 may reuse 4C9B/4C9C as route work cells while building
+			// the next destination menu. Preserve the already established
+			// world location until a real destination is selected.
+			s.Location = locationBeforeSelection
+			s.LocationName = locationNameBeforeSelection
+			s.OriginalLocation = originalLocationBeforeSelection
+			s.Area.CurrentCity = currentCityBeforeSelection
+		}
 		if len(result.Text) > 0 {
 			s.unlockJournalEntries(result.Text)
 			s.Message = s.localizeECLText(result.Text)
@@ -5134,6 +5227,50 @@ func (s *State) dungeonExternalExit(x, y int, direction uint8) (goldenbox.Extern
 	return s.dataPack.FindExternalExit(s.GeoMapSet, s.GeoMapBlock, x, y, direction)
 }
 
+// dungeonWrapEnabled reads the title-owned map contract instead of inferring
+// boundary behavior from a particular coordinate.  Older synthetic preview
+// states do not carry a pack entry; retaining the historical wrapped default
+// keeps those renderer-only callers compatible while production maps are
+// governed by JSON.
+func (s *State) dungeonWrapEnabled() bool {
+	if s.dataPack == nil {
+		return true
+	}
+	definition, found := s.dungeonMapDefinition()
+	if !found {
+		return true
+	}
+	return definition.Wrap
+}
+
+// applyDeclaredDungeonSpawn applies the destination anchor declared by the
+// current first-person map.  ECL blocks may switch only after an interactive
+// continuation has finished, so this is intentionally called after the raw
+// result signals have been applied rather than tied to one menu branch.
+func (s *State) applyDeclaredDungeonSpawn() bool {
+	if s.session == nil || s.dataPack == nil {
+		return false
+	}
+	definition, found := s.dataPack.FindMapByKindScript(
+		"first_person", s.Area.GameArea, s.session.CurrentBlockID(),
+	)
+	if !found || definition.Spawn == nil {
+		return false
+	}
+	spawn := definition.Spawn
+	s.Area.GameArea = definition.AreaID
+	s.Area.InDungeon = true
+	s.GeoMapSet = definition.AreaID
+	s.GeoMapBlock = definition.GeometryBlock
+	s.geoMapPending = true
+	s.DungeonX, s.DungeonY, s.DungeonDirection = spawn.X, spawn.Y, spawn.Direction
+	s.MapX, s.MapY = spawn.X, spawn.Y
+	s.session.SetMemoryValue(0xC04B, uint16(spawn.X))
+	s.session.SetMemoryValue(0xC04C, uint16(spawn.Y))
+	s.session.SetMemoryValue(0xC04D, uint16(spawn.Direction/2))
+	return true
+}
+
 func (s *State) discoverDungeonSearchEdges(discovery string) {
 	definition, found := s.dungeonMapDefinition()
 	if !found {
@@ -5221,6 +5358,9 @@ func (s *State) CanMoveDungeon(grid geo.Grid, dx, dy, direction int) bool {
 		if _, found := s.dungeonExternalExit(x, y, uint8(direction)); found {
 			return true
 		}
+		if !s.dungeonWrapEnabled() {
+			return false
+		}
 	}
 	if grid.CanMoveDungeonWrapped(x, y, direction) {
 		return true
@@ -5258,6 +5398,9 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	nextX, nextY := x+dx, y+dy
 	exitAttempt := nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height
 	externalExit, hasExternalExit := s.dungeonExternalExit(x, y, uint8(direction))
+	if exitAttempt && !hasExternalExit && !s.dungeonWrapEnabled() {
+		return fmt.Errorf("dungeon boundary from (%d,%d) toward %d is not a declared exit or wrapped edge", x, y, direction)
+	}
 	if !s.CanMoveDungeon(grid, dx, dy, direction) {
 		return fmt.Errorf("dungeon step from (%d,%d) toward %d is blocked", x, y, direction)
 	}
@@ -5301,7 +5444,7 @@ func (s *State) MoveDungeon(grid geo.Grid, dx, dy, direction int) error {
 	if err := s.advanceDungeonMoveTime(); err != nil {
 		return err
 	}
-	if exitAttempt {
+	if exitAttempt && !s.dungeonWrapEnabled() {
 		return s.RunDungeonExitLifecycle()
 	}
 	return s.RunDungeonLifecycle()
@@ -5451,6 +5594,9 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 	if !applied.Applied {
 		return false, nil
 	}
+	for address, value := range runtime.MemoryWrites {
+		s.session.SetMemoryValue(address, value)
+	}
 
 	removedIDs := make(map[string]bool, len(runtime.RemovedMembers))
 	for _, id := range runtime.RemovedMembers {
@@ -5474,7 +5620,9 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 	if err := s.applyDataPackMapPositions(runtime.MapPositions); err != nil {
 		return true, fmt.Errorf("data-pack event %q position: %w", applied.EventID, err)
 	}
-	s.Message = runtime.Message
+	if runtime.Message != "" {
+		s.Message = runtime.Message
+	}
 	switch runtime.Mode {
 	case "world_menu":
 		s.Mode = ModeEvent
@@ -5492,6 +5640,9 @@ func (s *State) applyDataPackEvent(result ecl.RunResult) (bool, error) {
 		s.currentOriginalChoices = nil
 		s.Choices = nil
 		s.Prompt = ""
+	case "":
+		// Actions such as set_memory can update opaque title work words without
+		// changing the current player-facing mode or map.
 	default:
 		return true, fmt.Errorf("data-pack event %q returned unsupported mode %q", applied.EventID, runtime.Mode)
 	}
@@ -5821,6 +5972,14 @@ func (s *State) applyCitySelection() {
 		(s.session.CurrentBlockID() == 0x50 || s.session.CurrentBlockID() == 0x51) {
 		if s.pendingWorldTravel {
 			s.setWorldLocation(uint16(s.pendingWorldDestination))
+			s.Area.GameArea = 1
+			s.Area.InDungeon = false
+			return
+		}
+		// A normal JOURNEY ON menu is not an arrival transaction. If the
+		// party already has a concrete world location, do not reinterpret
+		// route-selector work cells as a new city.
+		if s.Location != LocationWilderness {
 			s.Area.GameArea = 1
 			s.Area.InDungeon = false
 			return

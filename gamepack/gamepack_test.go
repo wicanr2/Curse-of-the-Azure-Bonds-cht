@@ -620,6 +620,7 @@ func TestAreaFiveDepartureIsGamePackDriven(t *testing.T) {
 		fragments []string
 	}{
 		{"area5.depart-akabar", []string{"YOUR HELP WAS INVALUABLE TO ME", "BUSINESS TO ATTEND TO"}},
+		{"area5.depart-akabar-reluctant", []string{"AKABAR FROWNS AT YOU", "MUST FREE THIS TOWN FROM THE WIZARD'S TYRANY", "HE STAMPS OFF"}},
 		{"area5.dark-elf-gear-decays", []string{"DARK ELF", "DECAY TO USELESSNESS"}},
 		{"post-wizard.dracolich", []string{"OUT OF A COPSE OF TREES COMES A SKELETAL", "YOU HAVE DEPRIVED ME OF MY TUTOR", "I CAN AVENGE MYSELF"}},
 		{"essembra.edge", []string{"YOU ARE AT THE EDGE OF ESSEMBRA"}},
@@ -746,6 +747,7 @@ func TestPitMogionFinaleIsGamePackDriven(t *testing.T) {
 		fragments []string
 	}{
 		{"pit.mogion-altar", []string{"YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY", "CULTISTS CHANTING IN A LOW DRONE"}},
+		{"pit.mogion-self-identifies", []string{"I AM MOGION"}},
 		{"pit.alias-identifies-mogion", []string{"ALIAS MUTTERS", "PRIESTESS OF MOANDER", "SPITS ON THE GROUND"}},
 		{"pit.mogion-greeting", []string{"MOGION SAYS", "PROPER TOOLS", "WHAT DO YOU DO"}},
 		{"pit.bond-paralysis", []string{"BEFORE YOU CAN ACT", "BLUE FLASH", "YOU CANNOT MOVE"}},
@@ -1018,8 +1020,8 @@ func TestAllLegacyECLMenuTokensAreGamePackDriven(t *testing.T) {
 			}
 		}
 	}
-	if len(pack.OptionRules) != 106 {
-		t.Fatalf("option rules=%d, want 26 existing + 80 migrated", len(pack.OptionRules))
+	if len(pack.OptionRules) != 109 {
+		t.Fatalf("option rules=%d, want the current 109 stable rules", len(pack.OptionRules))
 	}
 }
 

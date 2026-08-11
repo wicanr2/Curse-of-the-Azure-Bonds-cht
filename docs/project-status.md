@@ -5,8 +5,16 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 544 輪收斂了反組譯與 engine 邊界：`0x4C00` 沒有被命名成 D&D 規則欄位，
+只以作品包的 `set_memory` action 保存玩家可見的散提爾堡故事轉移依賴；engine
+提供可重用的 raw memory write，CoAB JSON 宣告觸發條件與數值。新增的正常 session
+測試從 Hap／熔岩洞／法師塔續跑至 Dexam 洞穴入口 `(4,5,N)`，並明確停在已證實
+邊界；洞穴內的傳送、隨機遭遇與出口尚未以猜測的圖邊連線取代。這是
+`engine＋JSON／normal-path boundary` 的 `READY` milestone，不是完整 ECL 或整作
+通關。完整證據見 [`spec 544`](spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
+
 第 543 輪把第 542 輪的正常新遊戲 session 延伸到 Hap、熔岩洞與法師塔：同一條
-`TestRealNewGameContinuesFromHapToDracolichCave` 逐格完成 Hap 村落主要事件、
+`TestRealNewGameContinuesFromHapToBeholderCaveEntrance` 逐格完成 Hap 村落主要事件、
 JSON 外部出口、熔岩洞入口／守門戰、巫師塔德拉坎德羅斯／黑龍事件、回洞穴、
 熔岩池友善交涉後重訪戰鬥與防火桶耐熱失敗。新增的 `original.geo5.block-33`
 `spawn=(7,15,W)` 是資料驅動的地圖錨點，用來避免 ECL 故事重繪的暫存座標覆蓋
