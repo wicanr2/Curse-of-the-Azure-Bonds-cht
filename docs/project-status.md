@@ -5,6 +5,12 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 546 輪完成 `0x4C00` 範圍勘誤：移除 Dexam 聚焦夾具的直接 `0x4C00=1` 前置值後，
+Docker 仍通過 Dexam 揭露、兩場戰鬥、戰後續跑、洞穴出口與世界地圖回返。這只
+證明該段玩家流程不依賴 `0x4C00`，不代表可刪除其他已由玩家結果證明的 raw 劇情
+寫入；目前仍維持 `unknown`，不追查其 D&D 以外的完整語意。完整規格見
+[`spec 545`](spec/545-normal-beholder-cave-teleport.md) 的第 546 輪勘誤。
+
 第 545 輪完成眼魔洞穴第一段正常內部傳送：同一新遊戲 session 從 Dexam 洞穴
 出生點 `(4,5,N)` 逐格抵達 GEO4 block `0x25` 的 terrain `0xA2`，由 ECL4 block
 `0x22` 的已觀察位置交易透過 CoAB JSON `set_map_position` 落到 `(13,1,W)`。

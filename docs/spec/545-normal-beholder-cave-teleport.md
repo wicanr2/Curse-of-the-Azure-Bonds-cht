@@ -14,6 +14,18 @@ CoAB game-pack 現在以 `set_map_position` 宣告這個已驗證的玩家可見
 某個 raw work address 不改變玩家可見位置、D&D 數值、戰鬥、存檔相容或其他規則
 結果，就維持 `unknown`，不列為 remake blocker。
 
+## 第五百四十六輪勘誤：Dexam 聚焦夾具不需要 `0x4C00`
+
+原本的 `TestRealBeholderCaveDexamAndZhentilBattles` 曾為了模擬較早的散提爾堡
+狀態，直接寫入 `0x4C00=1`。本輪移除這個前置值後，在 Docker 中重新驗證同一
+個聚焦玩家結果：Dexam 揭露、兩場戰鬥、戰利品、戰後 ECL continuation、洞穴
+出口與回到世界地圖仍通過；測試只保留該夾具真正需要的 `0x4C01` escort state。
+
+這項結果只證明 `0x4C00` 不是 Dexam 這段 D&D／玩家流程的必要輸入，不是把它
+全作所有事件的 raw writer 刪除。其他已證明會影響劇情靜默、儀式完成或路由的
+事件，仍可保留未命名的 raw write；只要沒有玩家結果或 D&D 規則證據，就不再為
+`0x4C00` 追查完整 consumer，也不把它命名為年齡、能力值或其他規則欄位。
+
 ## 證據與位址空間
 
 | 項目 | 結果 | 推論等級 |

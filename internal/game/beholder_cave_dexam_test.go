@@ -52,9 +52,7 @@ func TestRealBeholderCaveDexamAndZhentilBattles(t *testing.T) {
 	}
 
 	state := NewStateFromECLBlocks(testCatalog(), all, 0x22)
-	// Carry the real Shrine path state into this focused cave regression:
-	// 4C00 marks the Olive path and 4C01 marks Dimswart's escort.
-	state.session.SetMemoryValue(0x4C00, 1)
+	// Carry the Dimswart escort state into this focused cave regression.
 	state.session.SetMemoryValue(0x4C01, 1)
 	state.SetMonsterRecordsForECL(4, records)
 	testParty := make([]combat.Fighter, 6)
