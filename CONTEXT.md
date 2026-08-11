@@ -4892,3 +4892,19 @@ golden-box engine 新增中立 `set_memory`／`Runtime.MemoryWrites`，CoAB JSON
 不直接轉成 native GEO edge。engine 全套測試與 CoAB `gamepack ./internal/...`
 全量測試在 Docker 通過；Ebiten command package 需另以有界 Xvfb smoke 驗證。
 權威規格為 `docs/spec/544-opaque-memory-route-boundary-and-cave-entry.md`。
+
+2026-08-11 第五百四十五輪完成 Dexam 洞穴出生後第一段正常內部傳送。新增
+`zhentil-keep.beholder-cave.same-block-launch` game-pack event：當 ECL4 block
+`0x22` 的正常洞穴路徑抵達 GEO4 block `0x25` 的 `(5,9)`／terrain `0xA2`，且
+可觀察位置欄 `C04B/C04C/C04D` 為 `13/1/3` 時，使用既有 engine
+`set_map_position` 將 State 投影到 `(13,1,W)`。這取代了本輪曾試作、但會誤傷
+下水道出口的「所有地城生命週期都同步 C04B..C04D」方案；目前只保留 JSON
+宣告的已驗證位置交易。`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`
+在 Docker 通過，並斷言 event exactly-once 與最終地圖位置；測試中沒有 direct
+座標注入或 `0x4C00` 寫入。
+
+本輪也用限定 `GEO4.DAX` block `0x25` 的 path diagnostic 確認 `(13,1)` 到
+`(15,1)` 目前不是一般可走路徑，因此沒有把 Dexam 入口或秘密門猜接進引擎。
+這是 `READY` 的洞穴傳送切片，不是 Dexam 雙戰、完整洞穴、出口、重訪或整作
+通關。權威規格為 `docs/spec/545-normal-beholder-cave-teleport.md`。`0x4C00`
+仍維持 `unknown`；後續只有在玩家結果或 D&D 規則被阻塞時才重新評估。

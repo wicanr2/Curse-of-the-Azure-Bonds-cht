@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 544 輪後盤點）
+更新日期：2026-08-11（第 545 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -19,10 +19,17 @@ session 從火刀首領後接到阿沙本福德城內、立石群與艾森布拉
 完整 ECL side effects／外部 routine、全城市／全房間 coverage、完整結局同
 session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容與三平台發行。
 
+第 545 輪把 Dexam 洞穴出生後的第一段正常內部傳送接上：同一 session 從
+`(4,5,N)` 逐格抵達 terrain `0xA2`，由 ECL4 block `0x22` 的位置交易經 JSON
+`set_map_position` 落到 `(13,1,W)`；其他地圖沒有套用通用 raw 暫存器同步。從
+`(13,1)` 到 `(15,1)` 目前 GEO block 沒有一般可走路徑，故不以攻略座標或猜測
+秘密門填補。洞穴 Dexam 雙戰、其他傳送／隨機事件、出口與重訪仍待正常路徑驗證。
+
 第 544 輪把反組譯範圍收斂到玩家結果：`0x4C00` 沒有 D&D 規則證據，不再深挖或
 命名；只新增 engine＋JSON 的中立 `set_memory` route contract，讓散提爾堡 Olive
-路徑不需要測試直接注入。正常新遊戲 session 現在已驗證抵達 Dexam 洞穴入口
-`(4,5,N)`；洞穴內傳送／隨機遭遇／出口仍是下一個可見玩家 milestone。
+路徑不需要測試直接注入。正常新遊戲 session 已驗證抵達 Dexam 洞穴入口
+`(4,5,N)`；第 545 輪再接上第一段洞穴內傳送，Dexam 雙戰／隨機遭遇／出口仍是
+下一個可見玩家 milestone。
 
 ## 狀態與證據規則
 

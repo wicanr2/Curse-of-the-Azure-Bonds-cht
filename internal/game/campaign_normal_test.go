@@ -1340,4 +1340,21 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
 	}
+	caveGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x25)
+	for _, direction := range []int{4, 6, 6, 6, 0, 0, 0, 6, 4, 4, 4, 4, 2, 4, 4, 4, 2, 0, 2, 2, 2} {
+		observer.resolveDungeonBoundary(t)
+		deltaX, deltaY := normalDungeonDelta(direction)
+		if err := state.MoveDungeon(caveGrid, deltaX, deltaY, direction); err != nil {
+			t.Fatalf("normal cave path step direction=%d: %v", direction, err)
+		}
+		observer.resolveDungeonBoundary(t)
+	}
+	if state.Mode != ModeDungeon || state.GeoMapSet != 4 || state.GeoMapBlock != 0x25 ||
+		state.DungeonX != 13 || state.DungeonY != 1 || state.DungeonDirection != 6 ||
+		!state.appliedDataPackEvents["zhentil-keep.beholder-cave.same-block-launch"] {
+		t.Fatalf("normal Beholder Cave same-block launch mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) applied=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.appliedDataPackEvents["zhentil-keep.beholder-cave.same-block-launch"])
+	}
 }

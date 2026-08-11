@@ -5,6 +5,14 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 545 輪完成眼魔洞穴第一段正常內部傳送：同一新遊戲 session 從 Dexam 洞穴
+出生點 `(4,5,N)` 逐格抵達 GEO4 block `0x25` 的 terrain `0xA2`，由 ECL4 block
+`0x22` 的已觀察位置交易透過 CoAB JSON `set_map_position` 落到 `(13,1,W)`。
+這是 `normal-path／engine＋JSON` 的 `READY` milestone；目前 GEO 在 `(13,1)`
+到 Dexam 入口 `(15,1)` 沒有一般可走路徑，因此沒有把攻略座標或未證實的秘密門
+硬接成路網。完整洞穴事件、Dexam 雙戰、出口與重訪仍未完成。完整證據見
+[`spec 545`](spec/545-normal-beholder-cave-teleport.md)。
+
 第 544 輪收斂了反組譯與 engine 邊界：`0x4C00` 沒有被命名成 D&D 規則欄位，
 只以作品包的 `set_memory` action 保存玩家可見的散提爾堡故事轉移依賴；engine
 提供可重用的 raw memory write，CoAB JSON 宣告觸發條件與數值。新增的正常 session
