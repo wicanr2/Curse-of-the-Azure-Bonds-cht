@@ -51,6 +51,9 @@
       "zhentil.guards_question": "The guards take the party aside for questioning and record Journal Entry 32.",
       "zhentil.guards_warning": "A guard says the party matches the little thief's description; the commander says they will get theirs inside.",
       "zhentil.inner_city": "You join the teeming masses of the inner city.",
+      "zhentil.fritz-accusation": "A legless soldier points at you and shouts, 'Yulash! You are the ones who killed Fritz!' He starts grunting incoherently and pushing himself down the street. What do you do?",
+      "zhentil.fritz-killed": "You kill the soldier in cold blood. The crowd gasps and starts edging away.",
+      "zhentil.fritz-let-go": "He continues down the street. The crowds have thinned out a bit.",
       "journal.32": "Journal Entry 32: Two guards and their commander compile a detailed file on the party and insist that it is strictly routine.",
       "zhentil.olive_appears": "A female halfling appears from a hidden niche. You enter her statement as Journal Entry 50.",
       "zhentil.olive_follow": "Do you follow her?",
@@ -338,6 +341,7 @@
       ,"patrol_forest": "PATROL FOREST"
       ,"thank_him": "THANK HIM"
       ,"attack": "ATTACK"
+      ,"evade": "EVADE"
       ,"remain_calm": "REMAIN CALM"
       ,"enter_it": "ENTER IT"
       ,"speak": "SPEAK"
@@ -366,6 +370,8 @@
       ,"go_with_guards": "GO WITH GUARDS"
       ,"fight_the_men": "FIGHT THE MEN"
       ,"let_them_go": "LET THEM GO"
+      ,"kill_him": "KILL HIM"
+      ,"let_him_go": "LET HIM GO"
       ,"tell_her_your_story": "TELL HER YOUR STORY"
       ,"tell_her_hunting_cultists": "TELL HER YOU'RE HUNTING CULTISTS"
       ,"tell_her_none_of_affair": "TELL HER IT'S NONE OF HER AFFAIR"
@@ -423,6 +429,7 @@
       ,"lava-tube.fireproof-casks": "Among the lava pools stand six fireproof casks. Will someone try to open one?"
       ,"lava-tube.cask-heat-retreat": "The heat is too intense and the volunteer retreats. Does anyone want to try again?"
       ,"area5.depart-akabar": "Akabar says your help was invaluable, wishes you well, and leaves the party to attend to other business."
+      ,"area5.depart-akabar-reluctant": "Akabar frowns and says he is sure you have your reasons to leave, but he must free Haptooth from the wizard's tyranny. He stamps off."
       ,"area5.dark-elf-gear-decays": "In sunlight, the dark-elven weapons and armor you carry decay to uselessness."
       ,"post-wizard.dracolich": "A skeletal figure emerges from a copse. You recognize the voice as it vows revenge for the tutor you deprived it of."
       ,"essembra.edge": "You are at the edge of Essembra. Will you enter the city or continue your journey?"
@@ -461,6 +468,7 @@
       ,"pit.dead-zhentrim": "You find the mangled remains of a dead Zhentrim fighter. What will you do?"
       ,"pit.zhentrim-scroll": "A formal document bearing Zhentil Keep's seal is clenched in the fighter's fist. You copy it as Journal Entry 46."
       ,"pit.mogion-altar": "A priestess turns and smiles wickedly before an altar while cultists chant in a low drone."
+      ,"pit.mogion-self-identifies": "I am Mogion."
       ,"pit.alias-identifies-mogion": "Alias mutters that this is Moander's high priestess. The priestess turns and spits on the ground."
       ,"pit.mogion-greeting": "Mogion welcomes you and remarks that nothing can be accomplished without the proper tools. What will you do?"
       ,"pit.bond-paralysis": "Before you can act, the bonds on your arms flash blue and surround the party. You cannot move."
@@ -640,6 +648,9 @@
       "zhentil.guards_question": "「站住！到這裡來！我們有些問題要問你們！」衛兵把隊伍帶到一旁盤問；你們將此事記入冒險手札第 32 條。",
       "zhentil.guards_warning": "離開時，你們聽見一名衛兵說：「果然和那個小賊說的一樣。」指揮官回答：「別擔心，他們進城後自然會吃到苦頭。」",
       "zhentil.inner_city": "你們匯入熙來攘往的人群，進入散提爾堡內城。",
+      "zhentil.fritz-accusation": "一名失去雙腿、坐在小車上的士兵指著你們大喊：「尤拉什！就是你們……你們殺了弗里茲！」他開始含糊嘟囔，推著小車沿街離去。你們要怎麼做？",
+      "zhentil.fritz-killed": "你們冷血地殺死那名士兵。人群一陣驚呼，紛紛向後退開；外圍的人更開始拔腿逃跑。",
+      "zhentil.fritz-let-go": "他繼續沿街離去，街上的人群也稍稍散開了。",
       "journal.32": "手札條目 32：兩名衛兵與指揮官盤問你們。每回答一次「是」，其中一名衛兵便冷笑著記入冊中；每回答一次「否」，另一名衛兵便哼聲記在不同的簿冊。指揮官詳細抄下全隊的姓名、來歷與各項資料。每當有人追問盤查的理由，三人便一同冷笑；指揮官只說：「我們正在建立你們的檔案，這只是例行公事。」",
       "zhentil.olive_appears": "一名半身人女子從隱密壁龕中現身。你們將她的話記入冒險手札第 50 條。",
       "zhentil.olive_follow": "要跟她走嗎？",
@@ -927,6 +938,7 @@
       ,"patrol_forest": "巡查森林"
       ,"thank_him": "向他道謝"
       ,"attack": "攻擊"
+      ,"evade": "迴避"
       ,"remain_calm": "保持冷靜"
       ,"enter_it": "走進去"
       ,"speak": "說話"
@@ -955,6 +967,8 @@
       ,"go_with_guards": "跟衛兵走"
       ,"fight_the_men": "攔下他們戰鬥"
       ,"let_them_go": "放他們離開"
+      ,"kill_him": "殺了他"
+      ,"let_him_go": "放他走"
       ,"tell_her_your_story": "告訴她你們的經歷"
       ,"tell_her_hunting_cultists": "告訴她你們正在追捕邪教徒"
       ,"tell_her_none_of_affair": "告訴她這不關她的事"
@@ -1012,6 +1026,7 @@
       ,"lava-tube.fireproof-casks": "熔岩池之間放著六只防火桶。要派人前去打開其中一只嗎？"
       ,"lava-tube.cask-heat-retreat": "熱度過於猛烈，他只得退回來。要換另一個人再試一次嗎？"
       ,"area5.depart-akabar": "阿卡巴說：「你們給我的幫助無可估量。祝各位任務順利；我恐怕另有要事必須處理。」說完，他便離隊而去。"
+      ,"area5.depart-akabar-reluctant": "阿卡巴皺起眉頭說：「我相信你們一定有離開的理由，但我必須解放哈普村，讓它擺脫巫師的暴政。祝你們好運。」說完便氣沖沖地離開了。"
       ,"area5.dark-elf-gear-decays": "在日光下過了一會兒，你們攜帶的黑暗精靈武器與護甲開始腐朽，最後完全失去作用。"
       ,"post-wizard.dracolich": "一具骷髏般的身影從樹叢中現身。恐懼攫住你們的心，因為你們認出了那個聲音：「你們奪走了我的導師。可我仍能親手復仇！」"
       ,"essembra.edge": "你們來到艾森布拉城外。要進城，還是繼續旅程？"
@@ -1050,6 +1065,7 @@
       ,"pit.dead-zhentrim": "你們看見一名死去的散塔林戰士，遺體已殘破不堪。要怎麼做？"
       ,"pit.zhentrim-scroll": "戰士緊握的拳中有一卷正式文書，上面蓋著散提爾堡的印璽。你們將內容抄錄為冒險手札第 46 條。"
       ,"pit.mogion-altar": "你們看見一名女祭司轉身陰險地微笑。她站在祭壇前，四周的摩安德教徒正低聲吟唱。"
+      ,"pit.mogion-self-identifies": "「我是摩貢。」"
       ,"pit.alias-identifies-mogion": "愛麗雅絲低聲說：「她就是摩安德的大祭司。」女祭司轉頭朝地上啐了一口。"
       ,"pit.mogion-greeting": "摩貢說：「真高興你們終於到了。沒有合適的工具，想完成任何大事都很困難，不是嗎？」你們要怎麼做？"
       ,"pit.bond-paralysis": "你們尚未來得及行動，手臂上的枷印便迸出藍光，將全隊籠罩其中；所有人頓時動彈不得。"
@@ -1200,46 +1216,46 @@
   },
   "character_creation": {
     "templates": [
-      {"id":"human.fighter","display_id":"creation.class.fighter","race_id":5,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"human.cleric","display_id":"creation.class.cleric","race_id":5,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"human.magic-user","display_id":"creation.class.magic-user","race_id":5,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
-      {"id":"human.ranger","display_id":"creation.class.ranger","race_id":5,"primary_class_id":2,"raw_class_id":4,"level":1,"class_levels":[0,0,0,0,1,0,0,0],"base_abilities":[14,13,14,12,14,10]},
-      {"id":"human.paladin","display_id":"creation.class.paladin","race_id":5,"primary_class_id":3,"raw_class_id":3,"level":1,"class_levels":[0,0,0,1,0,0,0,0],"base_abilities":[16,10,14,12,14,17]},
-      {"id":"human.thief","display_id":"creation.class.thief","race_id":5,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"dwarf.fighter","display_id":"creation.class.fighter","race_id":0,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"dwarf.thief","display_id":"creation.class.thief","race_id":0,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"elf.fighter","display_id":"creation.class.fighter","race_id":1,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"elf.magic-user","display_id":"creation.class.magic-user","race_id":1,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
-      {"id":"elf.thief","display_id":"creation.class.thief","race_id":1,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"gnome.fighter","display_id":"creation.class.fighter","race_id":2,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"gnome.thief","display_id":"creation.class.thief","race_id":2,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"half-elf.cleric","display_id":"creation.class.cleric","race_id":3,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-elf.fighter","display_id":"creation.class.fighter","race_id":3,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-elf.magic-user","display_id":"creation.class.magic-user","race_id":3,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12]},
-      {"id":"half-elf.thief","display_id":"creation.class.thief","race_id":3,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"halfling.fighter","display_id":"creation.class.fighter","race_id":4,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"halfling.thief","display_id":"creation.class.thief","race_id":4,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"half-orc.cleric","display_id":"creation.class.cleric","race_id":6,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-orc.fighter","display_id":"creation.class.fighter","race_id":6,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-orc.thief","display_id":"creation.class.thief","race_id":6,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10]},
-      {"id":"dwarf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":0,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":1,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":1,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":1,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":1,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12]},
-      {"id":"gnome.fighter-thief","display_id":"creation.class.fighter-thief","race_id":2,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-elf.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":3,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-elf.cleric-ranger","display_id":"creation.class.cleric-ranger","race_id":3,"primary_class_id":0,"raw_class_id":10,"level":1,"class_levels":[1,0,0,0,1,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-elf.cleric-fighter-magic-user","display_id":"creation.class.cleric-fighter-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":9,"level":1,"class_levels":[1,0,1,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-elf.cleric-magic-user","display_id":"creation.class.cleric-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":11,"level":1,"class_levels":[1,0,0,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":3,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":3,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":3,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":3,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12]},
-      {"id":"halfling.fighter-thief","display_id":"creation.class.fighter-thief","race_id":4,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]},
-      {"id":"half-orc.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":6,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-orc.cleric-thief","display_id":"creation.class.cleric-thief","race_id":6,"primary_class_id":0,"raw_class_id":12,"level":1,"class_levels":[1,0,0,0,0,0,1,0],"base_abilities":[10,10,16,10,14,10]},
-      {"id":"half-orc.fighter-thief","display_id":"creation.class.fighter-thief","race_id":6,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10]}
+      {"id":"human.fighter","display_id":"creation.class.fighter","race_id":5,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"human.cleric","display_id":"creation.class.cleric","race_id":5,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"human.magic-user","display_id":"creation.class.magic-user","race_id":5,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12],"saving_throws":[14,11,13,15,12]},
+      {"id":"human.ranger","display_id":"creation.class.ranger","race_id":5,"primary_class_id":2,"raw_class_id":4,"level":1,"class_levels":[0,0,0,0,1,0,0,0],"base_abilities":[14,13,14,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"human.paladin","display_id":"creation.class.paladin","race_id":5,"primary_class_id":3,"raw_class_id":3,"level":1,"class_levels":[0,0,0,1,0,0,0,0],"base_abilities":[16,10,14,12,14,17],"saving_throws":[14,16,15,17,17]},
+      {"id":"human.thief","display_id":"creation.class.thief","race_id":5,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"dwarf.fighter","display_id":"creation.class.fighter","race_id":0,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"dwarf.thief","display_id":"creation.class.thief","race_id":0,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"elf.fighter","display_id":"creation.class.fighter","race_id":1,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"elf.magic-user","display_id":"creation.class.magic-user","race_id":1,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12],"saving_throws":[14,11,13,15,12]},
+      {"id":"elf.thief","display_id":"creation.class.thief","race_id":1,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"gnome.fighter","display_id":"creation.class.fighter","race_id":2,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"gnome.thief","display_id":"creation.class.thief","race_id":2,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"half-elf.cleric","display_id":"creation.class.cleric","race_id":3,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-elf.fighter","display_id":"creation.class.fighter","race_id":3,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-elf.magic-user","display_id":"creation.class.magic-user","race_id":3,"primary_class_id":4,"raw_class_id":5,"level":1,"class_levels":[0,0,0,0,0,1,0,0],"base_abilities":[8,16,10,14,10,12],"saving_throws":[14,11,13,15,12]},
+      {"id":"half-elf.thief","display_id":"creation.class.thief","race_id":3,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"halfling.fighter","display_id":"creation.class.fighter","race_id":4,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"halfling.thief","display_id":"creation.class.thief","race_id":4,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"half-orc.cleric","display_id":"creation.class.cleric","race_id":6,"primary_class_id":0,"raw_class_id":0,"level":1,"class_levels":[1,0,0,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-orc.fighter","display_id":"creation.class.fighter","race_id":6,"primary_class_id":1,"raw_class_id":2,"level":1,"class_levels":[0,0,1,0,0,0,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-orc.thief","display_id":"creation.class.thief","race_id":6,"primary_class_id":5,"raw_class_id":6,"level":1,"class_levels":[0,0,0,0,0,0,1,0],"base_abilities":[10,12,10,16,12,10],"saving_throws":[13,14,12,16,15]},
+      {"id":"dwarf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":0,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":1,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":1,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":1,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":1,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12],"saving_throws":[14,11,13,15,12]},
+      {"id":"gnome.fighter-thief","display_id":"creation.class.fighter-thief","race_id":2,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-elf.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":3,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-elf.cleric-ranger","display_id":"creation.class.cleric-ranger","race_id":3,"primary_class_id":0,"raw_class_id":10,"level":1,"class_levels":[1,0,0,0,1,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-elf.cleric-fighter-magic-user","display_id":"creation.class.cleric-fighter-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":9,"level":1,"class_levels":[1,0,1,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-elf.cleric-magic-user","display_id":"creation.class.cleric-magic-user","race_id":3,"primary_class_id":0,"raw_class_id":11,"level":1,"class_levels":[1,0,0,0,0,1,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-elf.fighter-magic-user","display_id":"creation.class.fighter-magic-user","race_id":3,"primary_class_id":1,"raw_class_id":13,"level":1,"class_levels":[0,0,1,0,0,1,0,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-elf.fighter-thief","display_id":"creation.class.fighter-thief","race_id":3,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-elf.fighter-magic-user-thief","display_id":"creation.class.fighter-magic-user-thief","race_id":3,"primary_class_id":1,"raw_class_id":15,"level":1,"class_levels":[0,0,1,0,0,1,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-elf.magic-user-thief","display_id":"creation.class.magic-user-thief","race_id":3,"primary_class_id":4,"raw_class_id":16,"level":1,"class_levels":[0,0,0,0,0,1,1,0],"base_abilities":[8,16,10,14,10,12],"saving_throws":[14,11,13,15,12]},
+      {"id":"halfling.fighter-thief","display_id":"creation.class.fighter-thief","race_id":4,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]},
+      {"id":"half-orc.cleric-fighter","display_id":"creation.class.cleric-fighter","race_id":6,"primary_class_id":0,"raw_class_id":8,"level":1,"class_levels":[1,0,1,0,0,0,0,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-orc.cleric-thief","display_id":"creation.class.cleric-thief","race_id":6,"primary_class_id":0,"raw_class_id":12,"level":1,"class_levels":[1,0,0,0,0,0,1,0],"base_abilities":[10,10,16,10,14,10],"saving_throws":[10,14,13,16,15]},
+      {"id":"half-orc.fighter-thief","display_id":"creation.class.fighter-thief","race_id":6,"primary_class_id":1,"raw_class_id":14,"level":1,"class_levels":[0,0,1,0,0,0,1,0],"base_abilities":[16,10,10,12,14,10],"saving_throws":[14,16,15,17,17]}
     ]
   },
   "music_tracks": [
@@ -1928,7 +1944,8 @@
       "sky_blocks": [250, 251, 252],
       "indoor_sky_color": 0,
       "wrap": true,
-      "scale": 2
+      "scale": 2,
+      "spawn": {"x": 0, "y": 3, "direction": 2}
     },
     {
       "id": "original.geo3.block-11-level-1",
@@ -1958,7 +1975,8 @@
       "sky_blocks": [250, 251, 252],
       "indoor_sky_color": 0,
       "wrap": true,
-      "scale": 2
+      "scale": 2,
+      "spawn": {"x": 15, "y": 14, "direction": 4}
     },
     {
       "id": "original.geo3.block-15",
@@ -2215,6 +2233,7 @@
     {"id": "ecl-option.patrol-forest", "source": "PATROL FOREST", "message_id": "patrol_forest"},
     {"id": "ecl-option.thank-him", "source": "THANK HIM", "message_id": "thank_him"},
     {"id": "ecl-option.attack", "source": "ATTACK", "message_id": "attack"},
+    {"id": "ecl-option.evade", "source": "EVADE", "message_id": "evade"},
     {"id": "tilverton.option.remain-calm", "source": "REMAIN CALM", "message_id": "remain_calm"},
     {"id": "ecl-option.enter-it", "source": "ENTER IT", "message_id": "enter_it"},
     {"id": "ecl-option.speak", "source": "SPEAK", "message_id": "speak"},
@@ -2244,6 +2263,8 @@
     {"id": "ecl-option.go-with-guards", "source": "GO WITH GUARDS", "message_id": "go_with_guards"},
     {"id": "ecl-option.fight-the-men", "source": "FIGHT THE MEN", "message_id": "fight_the_men"},
     {"id": "ecl-option.let-them-go", "source": "LET THEM GO", "message_id": "let_them_go"},
+    {"id": "ecl-option.kill-him", "source": "KILL HIM", "message_id": "kill_him"},
+    {"id": "ecl-option.let-him-go", "source": "LET HIM GO", "message_id": "let_him_go"},
     {"id": "ecl-option.tell-her-your-story", "source": "TELL HER YOUR STORY", "message_id": "tell_her_your_story"},
     {"id": "ecl-option.tell-her-you-re-hunting-cultists", "source": "TELL HER YOU'RE HUNTING CULTISTS", "message_id": "tell_her_hunting_cultists"},
     {"id": "ecl-option.tell-her-it-s-none-of-her-affair", "source": "TELL HER IT'S NONE OF HER AFFAIR", "message_id": "tell_her_none_of_affair"},
@@ -3084,6 +3105,30 @@
       "message_id": "zhentil.inner_city"
     },
     {
+      "id": "zhentil.fritz-accusation",
+      "all_contains": [
+        "YOU KILLED FRITZ",
+        "WHAT DO YOU DO"
+      ],
+      "message_id": "zhentil.fritz-accusation"
+    },
+    {
+      "id": "zhentil.fritz-killed",
+      "all_contains": [
+        "YOU KILL THE SOLDIER IN COLD BLOOD",
+        "THE CROWD GASPS"
+      ],
+      "message_id": "zhentil.fritz-killed"
+    },
+    {
+      "id": "zhentil.fritz-let-go",
+      "all_contains": [
+        "HE CONTINUES DOWN THE STREET",
+        "CROWDS HAVE THINNED OUT"
+      ],
+      "message_id": "zhentil.fritz-let-go"
+    },
+    {
       "id": "zhentil.olive_appears",
       "all_contains": [
         "A FEMALE HALFLING APPEARS FROM A HIDDEN NICHE",
@@ -3305,6 +3350,7 @@
     {"id": "lava-tube.fireproof-casks", "all_contains": ["AMONGST THE POOLS OF LAVA", "SIX FIREPROOF CASKS", "OPEN ONE"], "message_id": "lava-tube.fireproof-casks"},
     {"id": "lava-tube.cask-heat-retreat", "all_contains": ["THE HEAT IS TOO INTENSE", "DOES ANYONE WANT TO TRY AGAIN"], "message_id": "lava-tube.cask-heat-retreat"},
     {"id": "area5.depart-akabar", "all_contains": ["YOUR HELP WAS INVALUABLE TO ME", "BUSINESS TO ATTEND TO"], "message_id": "area5.depart-akabar"},
+    {"id": "area5.depart-akabar-reluctant", "all_contains": ["AKABAR FROWNS AT YOU", "MUST FREE THIS TOWN FROM THE WIZARD'S TYRANY", "HE STAMPS OFF"], "message_id": "area5.depart-akabar-reluctant"},
     {"id": "area5.dark-elf-gear-decays", "all_contains": ["DARK ELF", "DECAY TO USELESSNESS"], "message_id": "area5.dark-elf-gear-decays"},
     {"id": "post-wizard.dracolich", "all_contains": ["OUT OF A COPSE OF TREES COMES A SKELETAL", "YOU HAVE DEPRIVED ME OF MY TUTOR", "I CAN AVENGE MYSELF"], "message_id": "post-wizard.dracolich"},
     {"id": "essembra.edge", "all_contains": ["YOU ARE AT THE EDGE OF ESSEMBRA"], "message_id": "essembra.edge"},
@@ -3343,6 +3389,7 @@
     {"id": "pit.dead-zhentrim", "all_contains": ["MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER", "WHAT DO YOU DO"], "message_id": "pit.dead-zhentrim"},
     {"id": "pit.zhentrim-scroll", "all_contains": ["GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"], "message_id": "pit.zhentrim-scroll"},
     {"id": "pit.mogion-altar", "all_contains": ["YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY", "CULTISTS CHANTING IN A LOW DRONE"], "message_id": "pit.mogion-altar"},
+    {"id": "pit.mogion-self-identifies", "all_contains": ["I AM MOGION"], "message_id": "pit.mogion-self-identifies"},
     {"id": "pit.alias-identifies-mogion", "all_contains": ["ALIAS MUTTERS", "PRIESTESS OF MOANDER", "SPITS ON THE GROUND"], "message_id": "pit.alias-identifies-mogion"},
     {"id": "pit.mogion-greeting", "all_contains": ["MOGION SAYS", "PROPER TOOLS", "WHAT DO YOU DO"], "message_id": "pit.mogion-greeting"},
     {"id": "pit.bond-paralysis", "all_contains": ["BEFORE YOU CAN ACT", "BLUE FLASH", "YOU CANNOT MOVE"], "message_id": "pit.bond-paralysis"},
@@ -3469,6 +3516,23 @@
             "wall_type": 15,
             "wall_roof": 131
           }
+        }
+      ]
+    },
+    {
+      "id": "zhentil-keep.inner-city.route-memory-reset",
+      "once": true,
+      "when": {
+        "ecl_block": 32,
+        "memory": {
+          "0x4C00": 2
+        }
+      },
+      "actions": [
+        {
+          "type": "set_memory",
+          "address": "0x4C00",
+          "value": 0
         }
       ]
     },

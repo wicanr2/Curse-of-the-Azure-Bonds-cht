@@ -3,21 +3,43 @@ package game
 import (
 	"archive/zip"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/geo"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/monster"
 )
 
 type normalDungeonPoint struct {
 	x, y int
 }
 
+func normalDungeonDelta(direction int) (int, int) {
+	switch direction {
+	case 0:
+		return 0, -1
+	case 2:
+		return 1, 0
+	case 4:
+		return 0, 1
+	case 6:
+		return -1, 0
+	default:
+		return 0, 0
+	}
+}
+
 type normalCampaignObserver struct {
-	state         *State
-	seen          map[string]bool
-	lavaPoolsPass int
-	towerGrid     geo.Grid
-	towerReady    bool
+	state                 *State
+	seen                  map[string]bool
+	lavaPoolsPass         int
+	towerGrid             geo.Grid
+	towerReady            bool
+	towerReturnOption     string
+	stopAtWorldEdge       bool
+	nextWorldDestinations []string
+	stopAtMessageID       string
 }
 
 func newNormalCampaignObserver(t *testing.T, state *State) *normalCampaignObserver {
@@ -49,6 +71,100 @@ func (o *normalCampaignObserver) observe() {
 		"lava-tube.intense-heat",
 		"lava-tube.fireproof-casks",
 		"lava-tube.cask-heat-retreat",
+		"area5.depart-akabar",
+		"area5.depart-akabar-reluctant",
+		"area5.dark-elf-gear-decays",
+		"post-wizard.dracolich",
+		"essembra.edge",
+		"hillsfar.edge",
+		"hillsfar.places",
+		"hillsfar.dockside-bar",
+		"hillsfar.red-plumes-spill-drinks",
+		"yulash.edge",
+		"yulash.entry",
+		"yulash.riders-burst-out",
+		"yulash.checkpoint-halt",
+		"yulash.see-commander",
+		"yulash.waiting-room",
+		"yulash.zhentarim-spies",
+		"yulash.led-to-commander",
+		"yulash.commander-business",
+		"journal-trigger.yulash-commander-22",
+		"yulash.commander-side-door",
+		"yulash.pit-entrance",
+		"zhentil.patrol_pass",
+		"zhentil.edge",
+		"zhentil.guards_question",
+		"zhentil.guards_warning",
+		"zhentil.inner_city",
+		"zhentil.fritz-accusation",
+		"zhentil.fritz-killed",
+		"zhentil.fritz-let-go",
+		"zhentil.olive_appears",
+		"zhentil.olive_follow",
+		"zhentil.dark_shrine_entry",
+		"zhentil.olive_explains",
+		"zhentil.dimswart_door",
+		"zhentil.olive_leaves",
+		"zhentil.olive_cell_hint",
+		"zhentil.olive_repeats_dimswart",
+		"zhentil.dimswart_appears",
+		"zhentil.dimswart_join",
+		"zhentil.hooded_offer",
+		"zhentil.hooded_follow",
+		"zhentil.fzoul_interrupts",
+		"zhentil.fzoul_retreats",
+		"dexam.arrival",
+		"dexam.journal_30",
+		"dexam.amulet_choice",
+		"dexam.fzoul_journal_7",
+		"dexam.kills_fzoul",
+		"dexam.fzoul_bond_fades",
+		"dexam.kill_order",
+		"dexam.amulet_rises",
+		"dexam.altar_melee",
+		"dexam.departure.olive",
+		"dexam.departure.dimswart",
+		"dexam.departure.gharri",
+		"dexam.departure.riders",
+		"pit.alias-dragonbait-meet",
+		"pit.alias-bonded-reaction",
+		"pit.alias-dragonbait-introduction",
+		"journal-trigger.alias-story-3",
+		"pit.alias-dragonbait-join",
+		"pit.alias-dragonbait-joined",
+		"pit.stairs-down",
+		"pit.stairs-up",
+		"pit.dead-zhentrim",
+		"pit.zhentrim-scroll",
+		"pit.mogion-altar",
+		"pit.mogion-self-identifies",
+		"pit.alias-identifies-mogion",
+		"pit.mogion-greeting",
+		"pit.opening-dead-cultists",
+		"pit.opening-chosen",
+		"pit.trapped",
+		"pit.cleric-dies",
+		"pit.ambience",
+		"pit.bond-paralysis",
+		"pit.alias-dragonbait-tendrils",
+		"pit.mogion-ritual",
+		"pit.dimensional-window",
+		"pit.moander-returns",
+		"pit.bond-fades",
+		"pit.bond-broken",
+		"pit.alias-attack-mogion",
+		"pit.rift-closes",
+		"pit.remnants-scream",
+		"pit.remnants-attack",
+		"pit.gauntlet",
+		"pit.priest-flees",
+		"pit.altar-treasure",
+		"pit.exit-last-stand",
+		"standing-stone.grey-man",
+		"standing-stone.four-masters",
+		"standing-stone.seek-red",
+		"myth-drannor.tyranthraxus-reveal",
 		"wizard-tower.courtyard",
 		"wizard-tower.dracandros.arrival",
 		"wizard-tower.dracandros.freezes-party",
@@ -68,7 +184,8 @@ func (o *normalCampaignObserver) observe() {
 		"wizard-tower.dragon-heart-acid",
 		"wizard-tower.roof-exit",
 	} {
-		if value, ok := o.state.dataPack.Text(messageID, o.state.catalog.Language); ok && o.state.Message == value {
+		if value, ok := o.state.dataPack.Text(messageID, o.state.catalog.Language); ok &&
+			(o.state.Message == value || strings.Contains(o.state.Message, value)) {
 			o.seen[messageID] = true
 		}
 	}
@@ -91,15 +208,49 @@ func (o *normalCampaignObserver) hasOption(optionID string) bool {
 	return found
 }
 
+func (o *normalCampaignObserver) isWorldMenuBlock() bool {
+	if o.state == nil || o.state.session == nil {
+		return false
+	}
+	block := o.state.session.CurrentBlockID()
+	return block == 0x50 || block == 0x51
+}
+
+func (o *normalCampaignObserver) selectNextWorldDestination(t *testing.T) bool {
+	if len(o.nextWorldDestinations) == 0 || !o.hasOption(o.nextWorldDestinations[0]) {
+		return false
+	}
+	optionID := o.nextWorldDestinations[0]
+	o.nextWorldDestinations = o.nextWorldDestinations[1:]
+	return o.selectOption(t, optionID)
+}
+
 // resolveDungeonBoundary consumes only interactions that are reachable on the
 // normal Hap route.  It deliberately fails closed when a new event or menu is
 // encountered instead of silently selecting an unrelated branch.
 func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 	t.Helper()
-	for attempt := 0; attempt < 96; attempt++ {
+	for attempt := 0; attempt < 160; attempt++ {
 		o.observe()
+		if o.stopAtWorldEdge && o.state.Mode == ModeWilderness &&
+			o.state.Message == requireGamePackText(t, o.state, "essembra.edge") {
+			return
+		}
+		if o.stopAtMessageID != "" && o.state.Mode == ModeWilderness &&
+			o.state.Message == requireGamePackText(t, o.state, o.stopAtMessageID) {
+			return
+		}
 		switch o.state.Mode {
 		case ModeDungeon:
+			if o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
+				!o.towerReady {
+				o.state.TurnDungeonWithGrid(o.towerGrid, (2-int(o.state.DungeonDirection)+8)%8)
+				if err := o.state.RunDungeonLifecycle(); err != nil {
+					t.Fatalf("run wizard-tower entry lifecycle: %v", err)
+				}
+				o.towerReady = true
+				continue
+			}
 			return
 		case ModeCombat:
 			if err := o.state.CombatAct(); err != nil {
@@ -111,6 +262,19 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			}
 		case ModeWilderness:
 			switch {
+			case o.state.treasureMenu:
+				index, found := o.state.OriginalChoiceIndex("TREASURE_EXIT")
+				if !found {
+					t.Fatalf("normal campaign treasure menu has no exit: %v", o.state.currentOriginalChoices)
+				}
+				if err := o.state.Select(index); err != nil {
+					t.Fatalf("leave normal campaign treasure menu: %v", err)
+				}
+			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x22 &&
+				o.selectOption(t, "ecl-option.leave"):
+				// The cave route can cross an optional random beholder event.
+				// LEAVE is the original safe branch; use the stable option ID so
+				// this observer does not depend on the English prompt text.
 			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
 				o.selectOption(t, "wizard-tower.option.attack-wizard"):
 				// Use the smallest verified tower combat branch; the branch key
@@ -121,8 +285,42 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 					t.Fatalf("wizard-tower arrival WAIT option unavailable: %v", o.state.currentOriginalChoices)
 				}
 			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
-				o.selectOption(t, "ecl-option.caves"):
-				// The tower roof returns through the original CAVES branch.
+				o.hasOption("ecl-option.caves") && o.hasOption("ecl-option.wilderness"):
+				optionID := o.towerReturnOption
+				if optionID == "" {
+					optionID = "ecl-option.caves"
+				}
+				if !o.selectOption(t, optionID) {
+					t.Fatalf("wizard-tower return option %s unavailable: %v", optionID, o.state.currentOriginalChoices)
+				}
+				if optionID == "ecl-option.wilderness" {
+					// WILDERNESS returns to the tower's exit cell first; the
+					// following dungeon lifecycle exposes VILLAGE/DEPART.
+					o.towerReady = false
+				}
+				// The tower roof can return through the original CAVES or
+				// WILDERNESS branch; the choice is data-driven for this path.
+			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x33 &&
+				o.towerReturnOption == "ecl-option.wilderness" &&
+				o.selectOption(t, "ecl-option.depart"):
+				// DEPART continues through the original Area5 farewell before
+				// handing control back to the world route.
+			case o.state.Message == requireGamePackText(t, o.state, "zhentil.edge"):
+				if !o.selectOption(t, "ecl-option.enter-city") {
+					t.Fatalf("Zhentil ENTER CITY option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "zhentil.fritz-accusation"):
+				if !o.selectOption(t, "ecl-option.let-him-go") {
+					t.Fatalf("Zhentil Fritz LET HIM GO option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.isWorldMenuBlock() &&
+				o.selectNextWorldDestination(t):
+			case o.isWorldMenuBlock() &&
+				o.selectOption(t, "ecl-option.journey-on"):
+			case o.isWorldMenuBlock() &&
+				o.selectOption(t, "ecl-option.essembra"):
+			case o.isWorldMenuBlock() &&
+				o.selectOption(t, "ecl-option.trail"):
 			case o.state.session != nil && o.state.session.CurrentBlockID() == 0x32 &&
 				o.hasOption("ecl-option.combat") && o.hasOption("ecl-option.wait"):
 				// The picture/press boundary is followed by the original encounter
@@ -148,6 +346,77 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				if !o.selectOption(t, "option.no") {
 					t.Fatalf("Hap inn option unavailable: %v", o.state.currentOriginalChoices)
 				}
+			case o.state.Message == requireGamePackText(t, o.state, "standing-stone.four-masters"):
+				if !o.selectOption(t, "ecl-option.thank-him") {
+					t.Fatalf("Standing Stone THANK HIM option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "yulash.checkpoint-halt"):
+				if !o.selectOption(t, "ecl-option.parlay") {
+					t.Fatalf("Yulash checkpoint PARLAY option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "yulash.see-commander"):
+				if !o.selectOption(t, "ecl-option.go-with-guards") {
+					t.Fatalf("Yulash GO WITH GUARDS option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "yulash.zhentarim-spies"):
+				if !o.selectOption(t, "ecl-option.fight-the-men") {
+					t.Fatalf("Yulash FIGHT THE MEN option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "yulash.commander-business"):
+				if !o.selectOption(t, "ecl-option.parlay-nice") {
+					t.Fatalf("Yulash PARLAY_NICE option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_follow"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.hooded_follow"):
+				if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Zhentil follow YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "zhentil.dimswart_join"):
+				if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Dimswart join YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "dexam.amulet_choice"):
+				if !o.selectOption(t, "ecl-option.combat") {
+					t.Fatalf("Dexam amulet COMBAT option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.alias-bonded-reaction"):
+				if !o.selectOption(t, "ecl-option.parlay") {
+					t.Fatalf("Pit Alias PARLAY option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.mogion-greeting") &&
+				o.hasOption("ecl-option.parlay"):
+				if !o.selectOption(t, "ecl-option.parlay") {
+					t.Fatalf("Pit Mogion PARLAY option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.alias-attack-mogion"):
+				if !o.selectOption(t, "ecl-option.attack") {
+					t.Fatalf("Pit Alias attack option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.stairs-down"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.stairs-up"):
+				if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Pit stair YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.dead-zhentrim"):
+				if !o.selectOption(t, "ecl-option.examine-corpse") {
+					t.Fatalf("Pit Zhentil corpse EXAMINE option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.alias-dragonbait-introduction"):
+				if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+					t.Fatalf("Pit Alias introduction continuation unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "journal-trigger.alias-story-3"):
+				if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
+					t.Fatalf("Pit Alias story continuation unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.state.Message == requireGamePackText(t, o.state, "pit.alias-dragonbait-join"):
+				if !o.selectOption(t, "option.yes") {
+					t.Fatalf("Pit Alias join YES option unavailable: %v", o.state.currentOriginalChoices)
+				}
+			case o.hasOption("ecl-option.tell-her-your-story"):
+				if !o.selectOption(t, "ecl-option.tell-her-your-story") {
+					t.Fatalf("Pit Alias story option unavailable: %v", o.state.currentOriginalChoices)
+				}
 			case o.state.Message == requireGamePackText(t, o.state, "hap.efreet-barn"),
 				o.state.Message == requireGamePackText(t, o.state, "hap.efreet-threat"),
 				o.state.Message == requireGamePackText(t, o.state, "hap.liberated-crowd"),
@@ -158,7 +427,78 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				o.state.Message == requireGamePackText(t, o.state, "lava-tube.ambush"),
 				o.state.Message == requireGamePackText(t, o.state, "lava-tube.guarded-door"),
 				o.state.Message == requireGamePackText(t, o.state, "lava-tube.dream-warning"),
-				o.state.Message == requireGamePackText(t, o.state, "lava-tube.intense-heat"):
+				o.state.Message == requireGamePackText(t, o.state, "lava-tube.intense-heat"),
+				o.state.Message == requireGamePackText(t, o.state, "area5.depart-akabar"),
+				o.state.Message == requireGamePackText(t, o.state, "area5.depart-akabar-reluctant"),
+				o.state.Message == requireGamePackText(t, o.state, "area5.dark-elf-gear-decays"),
+				o.state.Message == requireGamePackText(t, o.state, "post-wizard.dracolich"),
+				o.state.Message == requireGamePackText(t, o.state, "standing-stone.grey-man"),
+				o.state.Message == requireGamePackText(t, o.state, "standing-stone.seek-red"),
+				o.state.Message == requireGamePackText(t, o.state, "myth-drannor.tyranthraxus-reveal"),
+				o.state.Message == requireGamePackText(t, o.state, "yulash.riders-burst-out"),
+				o.state.Message == requireGamePackText(t, o.state, "yulash.waiting-room"),
+				o.state.Message == requireGamePackText(t, o.state, "yulash.led-to-commander"),
+				o.state.Message == requireGamePackText(t, o.state, "journal-trigger.yulash-commander-22"),
+				o.state.Message == requireGamePackText(t, o.state, "yulash.commander-side-door"),
+				o.state.Message == requireGamePackText(t, o.state, "yulash.pit-entrance"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.alias-dragonbait-meet"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.alias-dragonbait-joined"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.zhentrim-scroll"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.mogion-altar"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.mogion-self-identifies"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.alias-identifies-mogion"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.opening-dead-cultists"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.opening-chosen"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.trapped"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.cleric-dies"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.ambience"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.bond-paralysis"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.alias-dragonbait-tendrils"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.mogion-ritual"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.dimensional-window"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.moander-returns"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.bond-fades"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.bond-broken"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.rift-closes"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.remnants-scream"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.remnants-attack"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.gauntlet"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.priest-flees"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.altar-treasure"),
+				o.state.Message == requireGamePackText(t, o.state, "pit.exit-last-stand"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.patrol_pass"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.guards_question"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.guards_warning"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.inner_city"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.fritz-killed"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.fritz-let-go"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_appears"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.dark_shrine_entry"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_explains"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.dimswart_door"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_leaves"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_cell_hint"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.olive_repeats_dimswart"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.dimswart_appears"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.hooded_offer"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.fzoul_interrupts"),
+				o.state.Message == requireGamePackText(t, o.state, "zhentil.fzoul_retreats"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.arrival"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.journal_30"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.fzoul_journal_7"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.kills_fzoul"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.fzoul_bond_fades"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.kill_order"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.amulet_rises"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.altar_melee"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.final_reveal"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.attack"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.amulet_retrieved"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.zhentil_attack"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.departure.olive"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.departure.dimswart"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.departure.gharri"),
+				o.state.Message == requireGamePackText(t, o.state, "dexam.departure.riders"):
 				if !o.selectOption(t, "ecl-option.press-button-or-return-to-continue") {
 					t.Fatalf("press continuation unavailable for message=%q choices=%v",
 						o.state.Message, o.state.currentOriginalChoices)
@@ -213,11 +553,19 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 				}
 			case o.selectOption(t, "ecl-option.parlay-nice"):
 			case o.selectOption(t, "option.no"):
+			case o.selectOption(t, "ecl-option.evade"):
 			case o.selectOption(t, "option.flee"):
 			case o.selectOption(t, "ecl-option.press-button-or-return-to-continue"):
 			default:
-				t.Fatalf("unexpected normal campaign wilderness boundary mode=%v message=%q choices=%v position=(%d,%d,%d)",
-					o.state.Mode, o.state.Message, o.state.currentOriginalChoices,
+				route := []uint16{}
+				if o.state.session != nil {
+					for address := uint16(0x4C02); address <= 0x4C05; address++ {
+						value, _ := o.state.session.MemoryValue(address)
+						route = append(route, value)
+					}
+				}
+				t.Fatalf("unexpected normal campaign wilderness boundary mode=%v city=%d message=%q choices=%v route=%v position=(%d,%d,%d)",
+					o.state.Mode, o.state.Area.CurrentCity, o.state.Message, o.state.currentOriginalChoices, route,
 					o.state.DungeonX, o.state.DungeonY, o.state.DungeonDirection)
 			}
 		default:
@@ -231,22 +579,55 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 		o.state.DungeonDirection)
 }
 
-func loadGeo5CampaignGrid(t *testing.T, image *zip.ReadCloser, blockID uint8) geo.Grid {
+func loadGeoCampaignGrid(t *testing.T, image *zip.ReadCloser, set uint8, filename string, blockID uint8) geo.Grid {
 	t.Helper()
 	catalog := geo.NewCatalog()
-	if err := catalog.AddDAX(5, zipData(t, image, "GEO5.DAX")); err != nil {
+	if err := catalog.AddDAX(set, zipData(t, image, filename)); err != nil {
 		t.Fatal(err)
 	}
-	grid, ok := catalog.Lookup(geo.MapRef{Set: 5, BlockID: blockID})
+	grid, ok := catalog.Lookup(geo.MapRef{Set: set, BlockID: blockID})
 	if !ok {
-		t.Fatalf("missing GEO5 block %#x", blockID)
+		t.Fatalf("missing GEO%d block %#x", set, blockID)
 	}
 	return grid
 }
 
-func walkNormalDungeonTo(t *testing.T, state *State, grid geo.Grid, targetX, targetY int, observer *normalCampaignObserver) {
+func loadGeo5CampaignGrid(t *testing.T, image *zip.ReadCloser, blockID uint8) geo.Grid {
+	t.Helper()
+	return loadGeoCampaignGrid(t, image, 5, "GEO5.DAX", blockID)
+}
+
+func openNormalDungeonDoor(t *testing.T, state *State, grid *geo.Grid) {
+	t.Helper()
+	_, _, direction := state.DungeonGeometryView()
+	flags, ok := grid.WallDoorFlagsWrapped(state.DungeonX, state.DungeonY, int(direction))
+	if !ok || (flags != 2 && flags != 3) {
+		t.Fatalf("normal dungeon expected locked door at (%d,%d,%d), flags=%#x ok=%v",
+			state.DungeonX, state.DungeonY, direction, flags, ok)
+	}
+	options := state.DungeonDoorMenuOptions(flags)
+	if !options.Bash {
+		t.Fatalf("normal dungeon locked door has no Bash action: flags=%#x options=%#v", flags, options)
+	}
+	result := state.BashDungeonDoor(flags)
+	if !result.Opened {
+		t.Fatalf("normal dungeon Bash failed at (%d,%d,%d): result=%#v options=%#v",
+			state.DungeonX, state.DungeonY, direction, result, options)
+	}
+	if !grid.UnlockDoorWrapped(state.DungeonX, state.DungeonY, int(direction)) {
+		t.Fatalf("normal dungeon Bash succeeded but GEO door did not unlock at (%d,%d,%d)",
+			state.DungeonX, state.DungeonY, direction)
+	}
+	state.DungeonWallType, _ = grid.WallWrapped(state.DungeonX, state.DungeonY, int(direction))
+}
+
+func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, targetY int, observer *normalCampaignObserver) {
 	t.Helper()
 	target := normalDungeonPoint{targetX, targetY}
+	initialBlock := uint8(0xFF)
+	if state.session != nil {
+		initialBlock = state.session.CurrentBlockID()
+	}
 	for hop := 0; hop < geo.Width*geo.Height*4 && (state.DungeonX != targetX || state.DungeonY != targetY); hop++ {
 		start := normalDungeonPoint{state.DungeonX, state.DungeonY}
 		queue := []normalDungeonPoint{start}
@@ -258,24 +639,20 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid geo.Grid, targetX, tar
 			current := queue[0]
 			queue = queue[1:]
 			for _, direction := range []int{0, 2, 4, 6} {
-				nextX, nextY := current.x, current.y
-				switch direction {
-				case 0:
-					nextY--
-				case 2:
-					nextX++
-				case 4:
-					nextY++
-				case 6:
-					nextX--
-				}
-				if nextX < 0 || nextX >= geo.Width || nextY < 0 || nextY >= geo.Height {
+				if _, external := state.dungeonExternalExit(current.x, current.y, uint8(direction)); external {
 					continue
 				}
+				deltaX, deltaY := normalDungeonDelta(direction)
+				nextX := geo.WrapCoordinate(current.x+deltaX, geo.Width)
+				nextY := geo.WrapCoordinate(current.y+deltaY, geo.Height)
 				next := normalDungeonPoint{nextX, nextY}
-				// Keep the route on the deterministic story corridor; these cells
-				// are optional random-encounter cells, not required rooms.
-				if next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) {
+				// Keep the route on the deterministic story corridor in maps where
+				// the known random cells are not needed for the main path. The
+				// Zhentil shrine route is deliberately left connected: its prison
+				// corridor crosses one of these cells in the original GEO.
+				if !(state.GeoMapSet == 4 && state.GeoMapBlock == 0x21) &&
+					(next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) ||
+						next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
 					continue
 				}
 				if _, found := previous[next]; found || !grid.CanMoveDungeonWrapped(current.x, current.y, direction) {
@@ -289,7 +666,104 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid geo.Grid, targetX, tar
 			}
 		}
 		if _, found := previous[target]; !found {
-			t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d)", targetX, targetY, start.x, start.y)
+			type lockedEdge struct {
+				source    normalDungeonPoint
+				direction int
+				distance  int
+			}
+			var nextDoor lockedEdge
+			hasNextDoor := false
+			for y := 0; y < geo.Height; y++ {
+				for x := 0; x < geo.Width; x++ {
+					if _, reachable := previous[normalDungeonPoint{x, y}]; !reachable {
+						continue
+					}
+					for _, direction := range []int{0, 2, 4, 6} {
+						if _, external := state.dungeonExternalExit(x, y, uint8(direction)); external {
+							continue
+						}
+						deltaX, deltaY := normalDungeonDelta(direction)
+						nextX := geo.WrapCoordinate(x+deltaX, geo.Width)
+						nextY := geo.WrapCoordinate(y+deltaY, geo.Height)
+						next := normalDungeonPoint{nextX, nextY}
+						if !(state.GeoMapSet == 4 && state.GeoMapBlock == 0x21) &&
+							(next == (normalDungeonPoint{10, 2}) || next == (normalDungeonPoint{8, 11}) ||
+								next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
+							continue
+						}
+						if _, alreadyReachable := previous[next]; alreadyReachable {
+							continue
+						}
+						if grid.CanMoveDungeonWrapped(x, y, direction) {
+							continue
+						}
+						flags, _ := grid.WallDoorFlagsWrapped(x, y, direction)
+						if flags != 2 && flags != 3 {
+							continue
+						}
+						distance := nextX - targetX
+						if distance < 0 {
+							distance = -distance
+						}
+						distanceY := nextY - targetY
+						if distanceY < 0 {
+							distanceY = -distanceY
+						}
+						distance += distanceY
+						if !hasNextDoor || distance < nextDoor.distance {
+							nextDoor = lockedEdge{
+								source:    normalDungeonPoint{x, y},
+								direction: direction,
+								distance:  distance,
+							}
+							hasNextDoor = true
+						}
+					}
+				}
+			}
+			if !hasNextDoor {
+				t.Fatalf("normal dungeon target (%d,%d) is unreachable from (%d,%d) and no locked door leads onward",
+					targetX, targetY, start.x, start.y)
+			}
+			current := nextDoor.source
+			doorPath := make([]struct {
+				point     normalDungeonPoint
+				direction int
+			}, 0)
+			for current != start {
+				edge := previous[current]
+				doorPath = append(doorPath, struct {
+					point     normalDungeonPoint
+					direction int
+				}{point: current, direction: edge.direction})
+				current = edge.point
+			}
+			for left, right := 0, len(doorPath)-1; left < right; left, right = left+1, right-1 {
+				doorPath[left], doorPath[right] = doorPath[right], doorPath[left]
+			}
+			for _, step := range doorPath {
+				observer.resolveDungeonBoundary(t)
+				if state.Mode != ModeDungeon {
+					t.Fatalf("normal dungeon route to locked door mode=%v message=%q", state.Mode, state.Message)
+				}
+				deltaX, deltaY := normalDungeonDelta(step.direction)
+				if err := state.MoveDungeon(*grid, deltaX, deltaY, step.direction); err != nil {
+					t.Fatalf("normal dungeon route to locked door (%d,%d): %v",
+						nextDoor.source.x, nextDoor.source.y, err)
+				}
+				observer.resolveDungeonBoundary(t)
+				if state.session != nil && state.session.CurrentBlockID() != initialBlock {
+					return
+				}
+			}
+			if state.DungeonX != nextDoor.source.x || state.DungeonY != nextDoor.source.y {
+				t.Fatalf("normal dungeon did not reach locked door source (%d,%d), ended at (%d,%d)",
+					nextDoor.source.x, nextDoor.source.y, state.DungeonX, state.DungeonY)
+			}
+			state.TurnDungeonWithGrid(*grid,
+				(nextDoor.direction-int(state.DungeonDirection)+8)%8)
+			openNormalDungeonDoor(t, state, grid)
+			continue
 		}
 		current := target
 		path := make([]struct {
@@ -309,15 +783,21 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid geo.Grid, targetX, tar
 		}
 		step := path[0]
 		observer.resolveDungeonBoundary(t)
+		if (observer.stopAtWorldEdge || observer.stopAtMessageID != "") && state.Mode != ModeDungeon {
+			return
+		}
 		if state.Mode != ModeDungeon {
 			t.Fatalf("normal dungeon route before hop %d mode=%v message=%q", hop, state.Mode, state.Message)
 		}
-		if err := state.MoveDungeon(grid,
-			step.point.x-state.DungeonX, step.point.y-state.DungeonY, step.direction); err != nil {
+		deltaX, deltaY := normalDungeonDelta(step.direction)
+		if err := state.MoveDungeon(*grid, deltaX, deltaY, step.direction); err != nil {
 			t.Fatalf("normal dungeon hop %d toward (%d,%d) from (%d,%d): %v", hop, targetX, targetY,
 				state.DungeonX, state.DungeonY, err)
 		}
 		observer.resolveDungeonBoundary(t)
+		if state.session != nil && state.session.CurrentBlockID() != initialBlock {
+			return
+		}
 	}
 	if state.DungeonX != targetX || state.DungeonY != targetY {
 		t.Fatalf("normal dungeon route did not reach (%d,%d), ended at (%d,%d)",
@@ -325,7 +805,7 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid geo.Grid, targetX, tar
 	}
 }
 
-func TestRealNewGameContinuesFromHapToDracolichCave(t *testing.T) {
+func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 	state := runNormalNewGameToEssembra(t)
 	if state == nil {
 		return
@@ -368,12 +848,37 @@ func TestRealNewGameContinuesFromHapToDracolichCave(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer image.Close()
+	treasureItems, err := ParseTreasureItemBlocks(map[uint8][]byte{
+		1: zipData(t, image, "ITEM1.DAX"),
+		2: zipData(t, image, "ITEM2.DAX"),
+		3: zipData(t, image, "ITEM3.DAX"),
+		4: zipData(t, image, "ITEM4.DAX"),
+		5: zipData(t, image, "ITEM5.DAX"),
+		6: zipData(t, image, "ITEM6.DAX"),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.SetTreasureItemBlocks(treasureItems)
+	monster4Blocks, err := dax.Parse(zipData(t, image, "MON4CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	monster4Records := make(map[uint8]monster.Record, len(monster4Blocks))
+	for _, block := range monster4Blocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		monster4Records[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(4, monster4Records)
 	grid := loadGeo5CampaignGrid(t, image, 0x32)
 	towerGrid := loadGeo5CampaignGrid(t, image, 0x33)
 	observer := newNormalCampaignObserver(t, state)
 	observer.towerGrid = towerGrid
 	for _, target := range []normalDungeonPoint{{4, 10}, {9, 10}, {3, 13}, {15, 5}} {
-		walkNormalDungeonTo(t, state, grid, target.x, target.y, observer)
+		walkNormalDungeonTo(t, state, &grid, target.x, target.y, observer)
 	}
 	if !observer.seen["hap.peasants-flee"] || !observer.seen["hap.akabar-join"] ||
 		!observer.seen["hap.efreet-map"] {
@@ -397,12 +902,12 @@ func TestRealNewGameContinuesFromHapToDracolichCave(t *testing.T) {
 			state.DungeonX, state.DungeonY, state.DungeonDirection, state.Mode, observer.seen)
 	}
 
-	walkNormalDungeonTo(t, state, grid, 9, 10, observer)
+	walkNormalDungeonTo(t, state, &grid, 9, 10, observer)
 	if !observer.seen["lava-tube.guarded-door"] || state.Mode != ModeDungeon {
 		t.Fatalf("normal lava guarded-door route mode=%v coverage=%v position=(%d,%d,%d)",
 			state.Mode, observer.seen, state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
-	walkNormalDungeonTo(t, state, grid, 0, 5, observer)
+	walkNormalDungeonTo(t, state, &grid, 0, 5, observer)
 	// The original ECL5 pool branch is time-gated. Advance the shared clock
 	// through the engine time service, equivalent to a normal CAMP/REST period;
 	// do not write 4BC9 directly in this normal-session test.
@@ -447,6 +952,392 @@ func TestRealNewGameContinuesFromHapToDracolichCave(t *testing.T) {
 		state.session.CurrentBlockID() != 0x32 || state.GeoMapSet != 5 || state.GeoMapBlock != 0x32 {
 		t.Fatalf("normal Hap-to-tower round trip block=%#x geo=%d/%#x mode=%v position=(%d,%d,%d) coverage=%v",
 			state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock, state.Mode,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
+	}
+
+	// Continue the same player session through the verified WILDERNESS roof
+	// exit, Area5 farewell and world route.  This intentionally stops at the
+	// Essembra world edge; the optional post-wizard encounter is flag-gated and
+	// remains covered by its separate source-oracle regression.
+	observer.towerReturnOption = "ecl-option.wilderness"
+	observer.towerReady = false
+	observer.stopAtWorldEdge = true
+	walkNormalDungeonTo(t, state, &grid, 6, 15, observer)
+	area5DepartureSeen := observer.seen["area5.depart-akabar"] || observer.seen["area5.depart-akabar-reluctant"]
+	if state.Mode != ModeWilderness ||
+		state.Message != requireGamePackText(t, state, "essembra.edge") ||
+		!area5DepartureSeen {
+		t.Fatalf("normal tower-to-world route mode=%v location=%v block=%#x message=%q coverage=%v position=(%d,%d,%d)",
+			state.Mode, state.Location, state.session.CurrentBlockID(), state.Message, observer.seen,
+			state.DungeonX, state.DungeonY, state.DungeonDirection)
+	}
+
+	// From Essembra, continue along the directed world graph to Hillsfar and
+	// stop at its edge. The route choice and destination remain game-pack IDs;
+	// the travel encounter, if any, is resolved by the same observer.
+	observer.stopAtWorldEdge = false
+	observer.stopAtMessageID = "hillsfar.edge"
+	observer.nextWorldDestinations = []string{"ecl-option.the-standing-stone", "ecl-option.hillsfar"}
+	if !observer.selectOption(t, "ecl-option.journey-on") {
+		t.Fatalf("Essembra JOURNEY ON option unavailable: %v", state.currentOriginalChoices)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeWilderness || state.Location != LocationHillsfar ||
+		state.Message != requireGamePackText(t, state, "hillsfar.edge") {
+		t.Fatalf("normal Essembra-to-Hillsfar route mode=%v location=%v block=%#x message=%q choices=%v coverage=%v",
+			state.Mode, state.Location, state.session.CurrentBlockID(), state.Message,
+			state.currentOriginalChoices, observer.seen)
+	}
+
+	// Enter Hillsfar, resolve the dockside-bar provocation, then leave through
+	// the original place menu. This keeps city services and the world edge in
+	// the same ECL session instead of switching to a fixture state.
+	if !observer.selectOption(t, "ecl-option.enter-city") {
+		t.Fatalf("Hillsfar ENTER CITY option unavailable: %v", state.currentOriginalChoices)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Hillsfar entry picture: %v", err)
+		}
+	}
+	if !observer.selectOption(t, "ecl-option.bar") {
+		t.Fatalf("Hillsfar BAR option unavailable: %v", state.currentOriginalChoices)
+	}
+	if !observer.selectOption(t, "ecl-option.relax") {
+		t.Fatalf("Hillsfar RELAX option unavailable: %v", state.currentOriginalChoices)
+	}
+	if !observer.selectOption(t, "option.no") {
+		t.Fatalf("Hillsfar refuse provocation option unavailable: %v", state.currentOriginalChoices)
+	}
+	for turn := 0; turn < 32 && state.Mode == ModeCombat; turn++ {
+		if err := state.CombatAct(); err != nil {
+			t.Fatalf("Hillsfar dockside combat turn %d: %v", turn, err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != requireGamePackText(t, state, "hillsfar.dockside-bar") {
+		t.Fatalf("Hillsfar dockside victory mode=%v message=%q choices=%v coverage=%v",
+			state.Mode, state.Message, state.currentOriginalChoices, observer.seen)
+	}
+	if !observer.selectOption(t, "ecl-option.exit") {
+		t.Fatalf("Hillsfar bar EXIT option unavailable: %v", state.currentOriginalChoices)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Hillsfar bar exit picture: %v", err)
+		}
+	}
+	if !observer.selectOption(t, "ecl-option.leave") {
+		t.Fatalf("Hillsfar places LEAVE option unavailable: %v", state.currentOriginalChoices)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Hillsfar world-edge picture: %v", err)
+		}
+	}
+	if state.Mode != ModeWilderness ||
+		state.Message != requireGamePackText(t, state, "hillsfar.edge") {
+		t.Fatalf("Hillsfar city exit mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
+	}
+
+	observer.stopAtMessageID = "yulash.edge"
+	observer.nextWorldDestinations = []string{"ecl-option.yulash"}
+	if !observer.selectOption(t, "ecl-option.journey-on") {
+		t.Fatalf("Hillsfar JOURNEY ON option unavailable: %v", state.currentOriginalChoices)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeWilderness || state.Location != LocationYulash || state.Area.CurrentCity != 10 ||
+		state.Message != requireGamePackText(t, state, "yulash.edge") {
+		t.Fatalf("normal Hillsfar-to-Yulash route mode=%v location=%v block=%#x message=%q choices=%v coverage=%v",
+			state.Mode, state.Location, state.session.CurrentBlockID(), state.Message,
+			state.currentOriginalChoices, observer.seen)
+	}
+
+	// Enter Yulash through the same world-menu destination and ask permission.
+	// The guards, spies, commander negotiation and side door are all resolved by
+	// stable game-pack option IDs; no story text or flag is injected here.
+	if !observer.selectOption(t, "ecl-option.enter-city") {
+		t.Fatalf("Yulash ENTER CITY option unavailable: %v", state.currentOriginalChoices)
+	}
+	if state.PictureRequested {
+		if err := state.Continue(); err != nil {
+			t.Fatalf("continue Yulash entry picture: %v", err)
+		}
+	}
+	observer.observe()
+	if !observer.seen["yulash.entry"] {
+		t.Fatalf("Yulash entry message was not observed: %q", state.Message)
+	}
+	if !observer.selectOption(t, "ecl-option.ask-permission") {
+		t.Fatalf("Yulash ASK PERMISSION option unavailable: %v", state.currentOriginalChoices)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x10 ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x10 ||
+		state.DungeonX != 0 || state.DungeonY != 3 || state.DungeonDirection != 2 {
+		t.Fatalf("normal Yulash entry mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
+	}
+	for _, messageID := range []string{
+		"yulash.riders-burst-out",
+		"yulash.checkpoint-halt",
+		"yulash.see-commander",
+		"yulash.waiting-room",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Yulash entry did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+
+	yulashGrid := loadGeoCampaignGrid(t, image, 3, "GEO3.DAX", 0x10)
+	walkNormalDungeonTo(t, state, &yulashGrid, 1, 3, observer)
+	for _, messageID := range []string{
+		"yulash.zhentarim-spies",
+		"yulash.led-to-commander",
+		"yulash.commander-business",
+		"journal-trigger.yulash-commander-22",
+		"yulash.commander-side-door",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Yulash commander route did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+	openNormalDungeonDoor(t, state, &yulashGrid)
+	walkNormalDungeonTo(t, state, &yulashGrid, 11, 0, observer)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x10 {
+		t.Fatalf("normal Yulash route before Pit exit mode=%v block=%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, observer.seen)
+	}
+	if !observer.seen["yulash.pit-entrance"] {
+		t.Fatalf("normal Yulash route did not reach Pit entrance: %v", observer.seen)
+	}
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatalf("normal Yulash-to-Pit exit lifecycle: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x11 ||
+		state.GeoMapSet != 3 || state.GeoMapBlock != 0x11 ||
+		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 {
+		t.Fatalf("normal Pit entry mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
+	}
+	for _, messageID := range []string{
+		"pit.opening-dead-cultists",
+		"pit.opening-chosen",
+		"pit.trapped",
+		"pit.cleric-dies",
+		"pit.ambience",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Pit entry did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+
+	pitGrid := loadGeoCampaignGrid(t, image, 3, "GEO3.DAX", 0x11)
+	walkNormalDungeonTo(t, state, &pitGrid, 1, 4, observer)
+	for _, messageID := range []string{
+		"pit.alias-dragonbait-meet",
+		"pit.alias-bonded-reaction",
+		"pit.alias-dragonbait-introduction",
+		"journal-trigger.alias-story-3",
+		"pit.alias-dragonbait-join",
+		"pit.alias-dragonbait-joined",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Pit Alias route did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+	if len(state.partyRoster) != 3 || state.partyRoster[1].ScriptName != "ALIAS" ||
+		state.partyRoster[2].ScriptName != "DRAGONBAIT" {
+		t.Fatalf("normal Pit Alias route party=%#v", state.partyRoster)
+	}
+
+	walkNormalDungeonTo(t, state, &pitGrid, 15, 11, observer)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x12 ||
+		state.DungeonX != 15 || state.DungeonY != 14 || state.DungeonDirection != 4 {
+		t.Fatalf("normal Pit stairs-down mode=%v block=%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, observer.seen)
+	}
+
+	walkNormalDungeonTo(t, state, &pitGrid, 11, 3, observer)
+	for _, messageID := range []string{
+		"pit.stairs-down",
+		"pit.mogion-altar",
+		"pit.alias-identifies-mogion",
+		"pit.mogion-greeting",
+		"pit.bond-paralysis",
+		"pit.alias-dragonbait-tendrils",
+		"pit.mogion-ritual",
+		"pit.dimensional-window",
+		"pit.moander-returns",
+		"pit.bond-fades",
+		"pit.bond-broken",
+		"pit.alias-attack-mogion",
+		"pit.rift-closes",
+		"pit.remnants-scream",
+		"pit.remnants-attack",
+		"pit.gauntlet",
+		"pit.priest-flees",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Pit Mogion route did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+
+	walkNormalDungeonTo(t, state, &pitGrid, 12, 0, observer)
+	if err := state.SearchDungeonLocation(); err != nil {
+		t.Fatalf("normal Pit altar search: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if !observer.seen["pit.altar-treasure"] || state.Mode != ModeDungeon {
+		t.Fatalf("normal Pit altar search mode=%v message=%q choices=%v coverage=%v",
+			state.Mode, state.Message, state.currentOriginalChoices, observer.seen)
+	}
+
+	walkNormalDungeonTo(t, state, &pitGrid, 15, 14, observer)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x11 ||
+		state.DungeonX != 0 || state.DungeonY != 0 || state.DungeonDirection != 2 {
+		t.Fatalf("normal Pit stairs-up mode=%v block=%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, observer.seen)
+	}
+
+	observer.stopAtMessageID = "yulash.edge"
+	walkNormalDungeonTo(t, state, &pitGrid, 0, 12, observer)
+	// The last-stand encounter occupies (0,12); the actual Yulash boundary
+	// handler is the adjacent (0,11,W) cell after that battle returns.
+	walkNormalDungeonTo(t, state, &pitGrid, 0, 11, observer)
+	state.TurnDungeonWithGrid(pitGrid, (6-int(state.DungeonDirection)+8)%8)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("normal Pit final exit lifecycle: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeWilderness || state.Location != LocationYulash ||
+		state.Message != requireGamePackText(t, state, "yulash.edge") ||
+		!observer.seen["pit.exit-last-stand"] {
+		current, currentOK := state.session.MemoryValue(0x4C9B)
+		destination, destinationOK := state.session.MemoryValue(0x4C9C)
+		t.Fatalf("normal Pit exit mode=%v location=%v city=%d block=%#x message=%q 4C9B=%#x/%v 4C9C=%#x/%v choices=%v coverage=%v",
+			state.Mode, state.Location, state.Area.CurrentCity, state.session.CurrentBlockID(), state.Message,
+			current, currentOK, destination, destinationOK, state.currentOriginalChoices, observer.seen)
+	}
+
+	// Continue the same session through Zhentil Keep.  The destination queue is
+	// expressed as game-pack option IDs; the observer still has to consume the
+	// ordinary JOURNEY ON and TRAIL menus before the city patrol appears.
+	observer.stopAtMessageID = ""
+	observer.nextWorldDestinations = []string{"ecl-option.zhentil-keep", "ecl-option.trail"}
+	observer.resolveDungeonBoundary(t)
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x20 ||
+		state.GeoMapSet != 4 || state.GeoMapBlock != 0x20 ||
+		state.DungeonX != 2 || state.DungeonY != 0 || state.DungeonDirection != 4 {
+		route := []uint16{}
+		for address := uint16(0x4C02); address <= 0x4C05; address++ {
+			value, _ := state.session.MemoryValue(address)
+			route = append(route, value)
+		}
+		t.Fatalf("normal Zhentil entry mode=%v city=%d block=%#x geo=%d/%#x pos=(%d,%d,%d) route=%v message=%q choices=%v coverage=%v",
+			state.Mode, state.Area.CurrentCity, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, route, state.Message,
+			state.currentOriginalChoices, observer.seen)
+	}
+	zhentilGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x20)
+	walkNormalDungeonTo(t, state, &zhentilGrid, 10, 11, observer)
+	// The ECL cell contract is position plus facing: Olive appears at
+	// (10,11,N).  Approach it from the southern neighbor so the normal move,
+	// rather than a direct coordinate assignment or same-cell redraw, supplies
+	// the north-facing trigger.
+	walkNormalDungeonTo(t, state, &zhentilGrid, 10, 12, observer)
+	state.TurnDungeonWithGrid(zhentilGrid, (0-int(state.DungeonDirection)+8)%8)
+	if err := state.MoveDungeon(zhentilGrid, 0, -1, 0); err != nil {
+		t.Fatalf("normal Zhentil Olive north-facing approach: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	for _, messageID := range []string{
+		"zhentil.olive_appears",
+		"zhentil.olive_follow",
+		"zhentil.dark_shrine_entry",
+		"zhentil.olive_explains",
+		"zhentil.dimswart_door",
+		"zhentil.olive_leaves",
+	} {
+		if !observer.seen[messageID] {
+			guard, _ := state.session.MemoryValue(0x7F81)
+			t.Fatalf("normal Zhentil Olive route did not cover %s: mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) roof=%#x wall=%#x guard=%#x message=%q choices=%v coverage=%v", messageID, state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock, state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallRoof, state.DungeonWallType, guard, state.Message, state.currentOriginalChoices, observer.seen)
+		}
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x21 ||
+		state.GeoMapSet != 4 || state.GeoMapBlock != 0x21 {
+		t.Fatalf("normal Dark Shrine transition mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
+	}
+	shrineGrid := loadGeoCampaignGrid(t, image, 4, "GEO4.DAX", 0x21)
+	walkNormalDungeonTo(t, state, &shrineGrid, 6, 13, observer)
+	state.TurnDungeonWithGrid(shrineGrid, (0-int(state.DungeonDirection)+8)%8)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("normal Dimswart cell hint lifecycle: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	walkNormalDungeonTo(t, state, &shrineGrid, 2, 14, observer)
+	state.TurnDungeonWithGrid(shrineGrid, (0-int(state.DungeonDirection)+8)%8)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("normal Dimswart cell lifecycle: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	for _, messageID := range []string{
+		"zhentil.dimswart_appears",
+		"zhentil.dimswart_join",
+	} {
+		if !observer.seen[messageID] {
+			t.Fatalf("normal Dimswart route did not cover %s: %v", messageID, observer.seen)
+		}
+	}
+	walkNormalDungeonTo(t, state, &shrineGrid, 4, 12, observer)
+	state.TurnDungeonWithGrid(shrineGrid, (0-int(state.DungeonDirection)+8)%8)
+	if err := state.RunDungeonLifecycle(); err != nil {
+		t.Fatalf("normal hooded woman lifecycle: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	for _, messageID := range []string{
+		"zhentil.hooded_offer",
+		"zhentil.hooded_follow",
+		"zhentil.fzoul_interrupts",
+		"zhentil.fzoul_retreats",
+		"dexam.arrival",
+		"dexam.journal_30",
+		"dexam.amulet_choice",
+		"dexam.fzoul_journal_7",
+		"dexam.kills_fzoul",
+		"dexam.fzoul_bond_fades",
+		"dexam.kill_order",
+		"dexam.amulet_rises",
+		"dexam.altar_melee",
+	} {
+		if !observer.seen[messageID] {
+			boundary, _ := state.session.MemoryValue(0x7ED5)
+			forcedMove, _ := state.session.MemoryValue(0x7EC9)
+			previousBlock, _ := state.session.MemoryValue(0x4BF2)
+			t.Fatalf("normal Zhentil Shrine route did not cover %s: mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) roof=%#x wall=%#x 7ED5=%#x 7EC9=%#x 4BF2=%#x message=%q coverage=%v", messageID, state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock, state.DungeonX, state.DungeonY, state.DungeonDirection, state.DungeonWallRoof, state.DungeonWallType, boundary, forcedMove, previousBlock, state.Message, observer.seen)
+		}
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x22 ||
+		state.GeoMapSet != 4 || state.GeoMapBlock != 0x25 {
+		t.Fatalf("normal Beholder Cave transition mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
+			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
+	}
+	// The normal player path is proven through the data-declared cave entry.
+	// The cave's internal teleporter/random-event route remains a separate
+	// player-visible milestone and is not replaced by a guessed graph edge.
+	if state.DungeonX != 4 || state.DungeonY != 5 || state.DungeonDirection != 0 {
+		t.Fatalf("normal Beholder Cave spawn mode=%v block=%#x geo=%d/%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.GeoMapSet, state.GeoMapBlock,
 			state.DungeonX, state.DungeonY, state.DungeonDirection, observer.seen)
 	}
 }

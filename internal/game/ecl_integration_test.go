@@ -207,6 +207,45 @@ func runNormalNewGameToEssembra(t *testing.T) *State {
 		hapRecords[block.Entry.ID] = record
 	}
 	state.SetMonsterRecordsForECL(5, hapRecords)
+	yulashBlocks, err := dax.Parse(zipData(t, image, "MON3CHA.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	yulashRecords := make(map[uint8]monster.Record, len(yulashBlocks))
+	for _, block := range yulashBlocks {
+		record, parseErr := monster.Parse(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		yulashRecords[block.Entry.ID] = record
+	}
+	state.SetMonsterRecordsForECL(3, yulashRecords)
+	yulashAffectBlocks, err := dax.Parse(zipData(t, image, "MON3SPC.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	yulashAffects := make(map[uint8][]monster.AffectRecord, len(yulashAffectBlocks))
+	for _, block := range yulashAffectBlocks {
+		affects, parseErr := monster.ParseAffects(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		yulashAffects[block.Entry.ID] = affects
+	}
+	state.SetMonsterAffectsForECL(3, yulashAffects)
+	yulashItemBlocks, err := dax.Parse(zipData(t, image, "MON3ITM.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	yulashItems := make(map[uint8][]monster.ItemRecord, len(yulashItemBlocks))
+	for _, block := range yulashItemBlocks {
+		items, parseErr := monster.ParseItems(block.Data)
+		if parseErr != nil {
+			t.Fatal(parseErr)
+		}
+		yulashItems[block.Entry.ID] = items
+	}
+	state.SetMonsterItemsForECL(3, yulashItems)
 	if err := state.Apply(ActionStart); err != nil {
 		t.Fatal(err)
 	}
@@ -3161,7 +3200,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR"}) {
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR", "MYTH DRANNOR"}) {
 		t.Fatalf("Standing Stone destinations=%#v", state.currentOriginalChoices)
 	}
 	if err := state.Select(1); err != nil {
@@ -4420,7 +4459,7 @@ func TestFireKnifeLeaderStateVictoryReturnsToTilverton(t *testing.T) {
 	if err := state.Select(1); err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR"}) {
+	if !reflect.DeepEqual(state.currentOriginalChoices, []string{"ASHABENFORD", "ESSEMBRA", "HILLSFAR", "MYTH DRANNOR"}) {
 		t.Fatalf("Standing Stone destinations for Hillsfar=%#v message=%q",
 			state.currentOriginalChoices, state.Message)
 	}

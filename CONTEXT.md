@@ -4854,7 +4854,7 @@ Xvfb／DISPLAY 的一次容器 gate 中失敗，不能當成程式回歸，提�
 
 2026-08-11 第五百四十三輪完成 Hap／熔岩洞／法師塔的同一新遊戲正常 session
 coverage。新增 `internal/game/campaign_normal_test.go` 的
-`TestRealNewGameContinuesFromHapToDracolichCave`：由第 542 輪艾森布拉城外沿正常
+`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`：由第 542 輪艾森布拉城外沿正常
 世界路由進入 Hap，以 `MoveDungeon` 逐格完成民宅、阿卡巴、旅店、伊弗利特解放、
 村落外部出口、熔岩洞入口／伏擊／守門戰、巫師塔庭院／德拉坎德羅斯／黑龍／攻擊巫師、
 屋頂 CAVES 回程，再於熔岩池完成 `WAIT→PARLAY_NICE`、同格重訪 `COMBAT`、15 隻
@@ -4877,3 +4877,18 @@ push，compact 後必須先檢查 engine repo status／remote，再決定如何�
 `C04E/C04F` producer→buffer→SearchLocation 尚未 exact。READY spec 為
 `docs/spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md`；固定
 `PROGRAM 8`／Myth Drannor fixture 仍不能代替從新遊戲到結局的正常 session。
+
+2026-08-11 第五百四十四輪依使用者範圍收斂反組譯：`0x4C00` 若沒有證據影響
+D&D 數值、戰鬥、存檔相容或其他規則結果，就不再追查完整 consumer，也不替它
+取名。它目前只保留 `unknown` raw 位址；為了讓正常散提爾堡路徑可玩，獨立
+golden-box engine 新增中立 `set_memory`／`Runtime.MemoryWrites`，CoAB JSON 宣告
+`zhentil-keep.inner-city.route-memory-reset` 的 raw route contract。這不是
+`0x4C00` 語意已解碼，也不是 D&D 規則 API。
+
+同輪清除了 campaign normal test 的 `SetMemoryValue(0x4C00, 0)`、`4BF2` 直接注入、
+洞穴內盲走／重試與診斷日誌；正常 session 測試改名為
+`TestRealNewGameContinuesFromHapToBeholderCaveEntrance`，只驗證到 Dexam 洞穴入口
+`(4,5,N)`。GameFAQs／GameBanshee 攻略只作洞穴傳送／隨機遭遇的 nearby 導航線索，
+不直接轉成 native GEO edge。engine 全套測試與 CoAB `gamepack ./internal/...`
+全量測試在 Docker 通過；Ebiten command package 需另以有界 Xvfb smoke 驗證。
+權威規格為 `docs/spec/544-opaque-memory-route-boundary-and-cave-entry.md`。

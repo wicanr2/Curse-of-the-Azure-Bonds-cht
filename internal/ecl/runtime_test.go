@@ -408,6 +408,27 @@ func TestRunSubsetRecordsLoadCharacterAndContinues(t *testing.T) {
 	}
 }
 
+func TestRunSubsetLoadCharacterAbsentSlotTerminatesRosterScan(t *testing.T) {
+	// LOAD CHARACTER [7F79]; compare the selected-player +0x100 probe with
+	// zero; return when the zero-based TeamList slot is absent; otherwise loop.
+	// The real dungeon room scanners use this exact termination shape. An
+	// absent slot must project zero, not the unrelated 0x80 quick-fight value.
+	block := []byte{0, 0,
+		0x0A, 0x01, 0x79, 0x7F,
+		0x03, 0x00, 0x00, 0x01, 0x00, 0x7D,
+		0x16,
+		0x13,
+		0x01, 0x01, 0x00, 0x80,
+	}
+	result, err := RunSubsetInteractiveSeedWithPartyContext(block, 0, 32, nil, 1, PartyContext{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Steps >= 32 || len(result.LoadCharacterRequests) != 1 {
+		t.Fatalf("result=%+v, want one absent-slot probe and a bounded return", result)
+	}
+}
+
 func TestRunSubsetDecodesLoadCharacterPlayerSelector(t *testing.T) {
 	block := []byte{0, 0,
 		0x0A, 0x02, 0x81, 0x00,
