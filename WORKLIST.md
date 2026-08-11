@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-11（第 545 輪後盤點）
+更新日期：2026-08-11（第 546 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -24,6 +24,12 @@ session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容�
 `set_map_position` 落到 `(13,1,W)`；其他地圖沒有套用通用 raw 暫存器同步。從
 `(13,1)` 到 `(15,1)` 目前 GEO block 沒有一般可走路徑，故不以攻略座標或猜測
 秘密門填補。洞穴 Dexam 雙戰、其他傳送／隨機事件、出口與重訪仍待正常路徑驗證。
+
+第 546 輪完成一項範圍勘誤：Dexam 聚焦測試移除直接 `0x4C00=1` 後，Dexam 揭露、
+兩場戰鬥、戰利品、戰後續跑、洞穴出口與世界地圖回返仍通過。因此 `0x4C00` 不
+是這段 D&D／玩家流程的必要欄位，維持 `unknown`，不再為它追查無關的完整
+consumer；其他區域只有在 raw write 已證明改變劇情或玩家路由時才保留，不把它
+命名成規則欄位。
 
 第 544 輪把反組譯範圍收斂到玩家結果：`0x4C00` 沒有 D&D 規則證據，不再深挖或
 命名；只新增 engine＋JSON 的中立 `set_memory` route contract，讓散提爾堡 Olive

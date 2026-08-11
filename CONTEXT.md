@@ -4908,3 +4908,12 @@ golden-box engine 新增中立 `set_memory`／`Runtime.MemoryWrites`，CoAB JSON
 這是 `READY` 的洞穴傳送切片，不是 Dexam 雙戰、完整洞穴、出口、重訪或整作
 通關。權威規格為 `docs/spec/545-normal-beholder-cave-teleport.md`。`0x4C00`
 仍維持 `unknown`；後續只有在玩家結果或 D&D 規則被阻塞時才重新評估。
+
+2026-08-11 第五百四十六輪完成 `0x4C00` 範圍勘誤。原本的
+`TestRealBeholderCaveDexamAndZhentilBattles` 曾直接寫入 `0x4C00=1`，本輪移除
+後在 Docker 重新通過 Dexam 揭露、兩場戰鬥、戰利品、戰後 ECL continuation、
+洞穴出口與回到世界地圖；聚焦夾具只保留 `0x4C01` 的 escort state。這證明
+`0x4C00` 不影響該段 D&D／玩家流程，不需要再追查它的完整 consumer 或替它命名。
+但不能因此刪除其他區域已由正常玩家結果證明的 raw 劇情寫入；那些仍以未命名
+作品資料保存，只有影響玩家結果時才列為 remake 依賴。權威規格仍為
+`docs/spec/545-normal-beholder-cave-teleport.md` 的第 546 輪勘誤。
