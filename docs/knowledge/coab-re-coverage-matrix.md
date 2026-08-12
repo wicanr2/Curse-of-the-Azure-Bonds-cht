@@ -62,6 +62,11 @@ State 再按固定類別順序套用。這不能保證重建原始 opcode 的跨
 戰鬥／寶物／Journal、寫入欄位、resume PC、重訪結果與目前 R1–R5。corpus parser
 gate 只能作輸入，不等於此清冊已完成。
 
+第 557 輪已完成第一層靜態清冊：6 個 DAX、25 個 block、125 個 lifecycle entry、
+1,355 個不重複靜態可達 instruction 與 33 個跨 effect-kind 直線候選均可由原始 archive
+重生。仍缺動態 branch、座標／terrain、條件旗標、consumer、resume 與 R1–R5 回填，
+所以 P0-RE-2 維持 `局部`，不能標成全事件閉合。
+
 ### P0-RE-3：文件證據可重現性
 
 - 所有現行 spec 必須有明確 `READY／DRAFT／SUPERSEDED` 與限定範圍。
@@ -75,8 +80,8 @@ gate 只能作輸入，不等於此清冊已完成。
 |---|---|---|---|---|
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
-| ECL framing／控制流 | 25 block／125 entry 靜態可達 opcode 有 metadata | 局部 | 動態 branch、間接 dispatch、外部 boundary 與錯誤路徑不能只靠 graph | `ecl-event-catalog` |
-| ECL 副作用／時序 | typed signal 與多個 adapter 已存在 | **待逆向／待規格** | 全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
+| ECL framing／控制流 | 第 557 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊 | 局部 | 33 個候選仍缺動態 branch、間接 dispatch、外部 boundary 與錯誤路徑；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
+| ECL 副作用／時序 | typed signal、多個 adapter 與 33 個跨 effect-kind 靜態候選 | **待逆向／待規格** | 先閉合三組 `TREASURE → COMBAT`，再完成全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
 | External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
 | GEO 幾何／四平面 | 16 個原始 block 已宣告；loader／部分 plane consumer 有證據 | 局部 | 所有 plane 欄位、wall/door/roof/terrain interaction、wrapped edge、視覺 consumer | `geo-block-and-cell-schema` |
@@ -141,10 +146,13 @@ save/reload`。
 
 ## 第一批執行順序
 
-1. 建立 `ecl-event-catalog`，從全 corpus 列出每個 entry 的 opcode 與 boundary。
-2. 以 catalog 找出所有跨類型 effect sequence，完成 `ecl-ordered-effects` 規格。
-3. 建立 `external-call-registry`，只追玩家可見副作用的 producer→consumer。
-4. 建立 `area-event-coverage`，先盤點而不是立刻補 Go 特判。
+1. 靜態 `ecl-event-catalog` 已完成；先對三組 `TREASURE → COMBAT` 候選取得原始
+   branch／commit／resume trace，建立最小 ordered-effect transaction。
+2. 將動態 edge、條件與 continuation 回填 catalog，完成 `ecl-ordered-effects` 規格。
+3. 建立 `external-call-registry`，從 23 個靜態可達 CALL 只追玩家可見副作用的
+   producer→consumer。
+4. 建立 `area-event-coverage`，把清冊與 GEO cell／terrain／正常路徑合併；先盤點，
+   不立刻補 Go 特判。
 5. 再依矩陣順序閉合戰鬥、存檔、音訊與畫面；只有 R1–R3 足夠的項目才交給
    engine／JSON 實作。
 

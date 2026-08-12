@@ -18,16 +18,22 @@ coverage 代替全系統閉合。
 
 第一批工作依序是：
 
-1. `P0-RE-1`：建立 ECL ordered effects／exactly-once 規格，修正目前分類 signal
-   固定順序可能遺失原始 opcode 交錯的隱性 ABI。
-2. `P0-RE-2`：由 25 個 ECL block／125 個 lifecycle entry 產生全事件清冊，逐筆
-   記錄 PC、條件、外部 routine、副作用、resume 與 R1–R5。
+1. `P0-RE-1`：第 557 輪已從清冊找出 33 個跨 effect-kind 候選；先閉合三組
+   `TREASURE → COMBAT` 的原版 branch、commit、pause／resume，再建立 ECL ordered
+   effects／exactly-once 規格，修正分類 signal 固定順序的隱性 ABI。
+2. `P0-RE-2`：靜態層已完成 6 DAX／25 block／125 entry／1,355 instruction 的可重生
+   清冊；下一步回填動態 edge、條件旗標、座標／terrain、external routine、resume
+   與每項 R1–R5，不把 33 個靜態候選冒稱 runtime order。
 3. `P0-RE-3`：統一 spec 狀態、IDA 腳本引用與可重生報告；舊逐輪文章只作歷史。
 4. 建立 external-call registry 與逐區 `area-event-coverage`，再依矩陣補戰鬥、存檔、
    音訊、畫面與中文內容。
 
 只有不影響玩家可見結果的 compiler/runtime helper 可列為 `不阻塞`；這項收斂不
 允許略過 D&D 規則、事件分支、戰鬥、畫面、聲音、存檔或正常路徑所需的 consumer。
+
+第 557 輪權威規格：
+[`ECL 全事件靜態清冊與有序副作用稽核`](docs/spec/557-ecl-event-catalog-and-ordered-effects-audit.md)；
+生成物在 [`docs/audit/ecl-event-catalog.md`](docs/audit/ecl-event-catalog.md)。
 
 ## 一句話結論
 

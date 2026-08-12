@@ -16,6 +16,13 @@ ECL 事件清冊，再建 external-call registry 和逐區 coverage；R1–R3 �
 以 frontend／State 特判推進主線。與玩家可見結果無關的 compiler/runtime helper
 維持不阻塞，不做無限深挖。
 
+第 557 輪已把全事件清冊的靜態層版本化：6 DAX／25 block／125 lifecycle entry／
+1,355 靜態可達 instruction，另列 33 個跨 effect-kind 直線候選。生成物是
+`docs/audit/ecl-event-catalog.{json,md}`，規格是
+`docs/spec/557-ecl-event-catalog-and-ordered-effects-audit.md`。下一個最小工作不是再掃
+opcode table，而是閉合 ECL3/0x15、ECL4/0x25、ECL6/0x45 三組
+`TREASURE → COMBAT` 的原版 branch、commit 與 resume。
+
 ## 架構轉向：獨立 Golden Box engine + JSON game pack
 
 使用者要求停止把 CoAB 劇情資料直接 hardcode 在 `internal/game/state.go`。

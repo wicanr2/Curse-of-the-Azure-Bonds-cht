@@ -3,6 +3,17 @@
 本目錄保存機械產生、可由正式測試驗證的技術債基線。它不是豁免清單，也不是
 允許 Go 保留固定數量中文的「額度」。
 
+## ECL 全事件靜態清冊
+
+[`ecl-event-catalog.json`](ecl-event-catalog.json) 與
+[`ecl-event-catalog.md`](ecl-event-catalog.md) 由 `cmd/ecl-event-catalog` 從原始
+`curseoftheazurebonds.zip` 重生。它保存六個 ECL DAX、25 個 block、125 個 lifecycle
+entry、靜態可達 instruction／edge 與跨 effect-kind 候選。這是 parser／控制流 inventory，
+不是完整 runtime side effects；限制與驗證見
+[`spec 557`](../spec/557-ecl-event-catalog-and-ordered-effects-audit.md)。
+
+JSON 對 packed text operand 只保存長度與 SHA-256，不複製原文 payload。
+
 ## Go 漢字字串基線
 
 `go-han-literals-baseline.json` 由 `cmd/coab-audit` 使用 Go AST 產生，只掃正式
