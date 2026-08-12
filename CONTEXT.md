@@ -4989,3 +4989,16 @@ Markdown。實際稽核目前 worktree、`workplace/` 與完整 Git 歷史後，
 59 的 OCR 圖例在 `workplace/journal-ocr-406.txt`，但幾何圖像未保存。AGENTS.md
 已補上這些入口與限制。若完整中文 Markdown 曾由其他 session 產生，它目前沒有
 進入此 repo／Git 歷史，後續找回時應另檔納入，不可再把摘要誤認為完整手冊。
+
+2026-08-12 第五百五十三輪依使用者提供的《軟體世界》掃描重建冒險手札 Markdown。
+`docs/manual/adventurers-journal-zh-TW.md` 現索引三份分冊的 1–59 校訂摘要；每則
+保留掃描頁、敘事、遊戲提示與 confidence，並明確不是逐字翻印。手札 1 在現有
+中文掃描與英文 OCR 均未找到，因此保留 `unknown`。中文掃描 `084.jpg`／印刷頁
+52 已人工確認有完整手札 59 地圖，圖例包含門、拱門與神壇，並標出德克薩姆神殿、
+牛頭人／喊叫聲、兩處獸聲、出口與未知區；先前「repo 只有 OCR、沒有幾何圖」的
+說法已由 spec 553 勘誤。此圖只能作 `layout-only` 的相對拓撲，不能直接宣稱
+`(14,1,E)`、`wall=09` 或 `SEARCH／LOOK`。眼魔洞穴現有靜態證據已分別定位正常
+手札取得點 `(13,1,W)`、德克薩姆 terrain `90h/8Fh` 的 `(15,1)/(15,2)` 與出口
+terrain `93h` 的 `(6,3)`；缺口是三者間的正常 route。下一輪先做手札拓撲、GEO
+cell graph、ECL producer／consumer 的唯一解對位；只有仍有多解才以原版存檔副本
+跳到候選邊，受控抽樣 MOVE／LOOK／SEARCH、before／after 與重載，不從頭通關。

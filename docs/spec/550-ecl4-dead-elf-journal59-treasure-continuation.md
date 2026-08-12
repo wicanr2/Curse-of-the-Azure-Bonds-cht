@@ -40,8 +40,9 @@ runtime trace。
 地圖原文明說「標出 Dexam 的祭壇與似乎通往外面的路徑」，並把它放入 Journal
 Entry 59。原始 Adventurer's Journal 的條目 59 地圖圖例還列出門、拱門、動物聲響、
 牛頭人聲響、Dexam 的神殿與祭壇。這些圖例文字以 PDF 與既有 OCR 交叉讀取；文字
-手札的描述標為 `strong inference`，因為原始地圖 bitmap 尚未接入遊戲內 Journal
-renderer。地圖 bitmap／實際出口 route 仍是後續 P0 工作，不能由描述反推坐標或牆值。
+第 553 輪已在中文掃描 `084.jpg` 人工確認完整地圖；標籤與圖例為 `exact`，相對
+拓撲為 `layout-only`。原始地圖仍尚未接入遊戲內 Journal renderer；實際出口 route
+也不能由圖面直接反推座標或牆值。
 
 `4C03h=1` 在這條 trace 中保持不變；本規格只記錄該路徑的 raw state，未替其命名。
 同樣地，`4C07h=80h` 只記錄事件寫入，尚未宣稱它是全局地圖或戰鬥規則欄位。

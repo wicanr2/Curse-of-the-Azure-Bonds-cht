@@ -11,6 +11,7 @@
 
 目前規格：
 
+- [第五百五十三輪中文冒險手札重建與靜態地圖抽樣準則](./553-chinese-journal-reconstruction-and-static-map-sampling.md)（`READY`：手札 1–59 可追溯繁中摘要、手札 59 完整掃描圖證據及 GEO／ECL／必要 runtime 抽樣門檻）
 - [第五百五十輪眼魔洞穴死精靈、手札 59 與戰利品續跑](./550-ecl4-dead-elf-journal59-treasure-continuation.md)（`READY`：正常新遊戲 session 經死精靈皮袋、氣體陷阱、手札 59 與無生怪戰利品服務回到同一洞穴格；不含 Dexam、洞穴出口或完整主線）
 - [第五百四十九輪 DOS 角色建立單一面板與 README 截圖校正](./549-dos-character-creation-and-screenshot-polish.md)（`READY`：原版單一角色建立面板、倚天 `ASCFONT.15` fallback、命令／敘事／footer 版面校正，以及五張 Docker/Xvfb 代表圖；不含所有 UI state 或完整戰鬥 fidelity）
 - [第五百四十八輪眼魔洞穴 A2 續跑與資料驅動地圖 handoff](./548-ecl4-cave-a2-continuation.md)（`READY`：A2 的三次 `PRESS`、`+061B` map 寫入、死精靈選單同一 ECL result 續跑；不含完整洞穴、出口或主線結局）
