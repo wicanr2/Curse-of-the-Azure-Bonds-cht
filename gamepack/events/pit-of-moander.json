@@ -3618,6 +3618,11 @@
       },
       "actions": [
         {
+          "type": "set_memory",
+          "address": "0x4C03",
+          "value": 0
+        },
+        {
           "type": "set_map_position",
           "mode": "dungeon",
           "continue_result": true,

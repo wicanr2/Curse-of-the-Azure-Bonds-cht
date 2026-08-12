@@ -356,11 +356,13 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		caveTeleportFound = true
 		if !event.Once || event.When.ECLBlock == nil || *event.When.ECLBlock != 0x22 ||
 			event.When.Memory["0xC04B"] != 13 || event.When.Memory["0xC04C"] != 1 ||
-			event.When.Memory["0xC04D"] != 3 || len(event.Actions) != 1 ||
-			event.Actions[0].Type != "set_map_position" || event.Actions[0].Position == nil {
+			event.When.Memory["0xC04D"] != 3 || len(event.Actions) != 2 ||
+			event.Actions[0].Type != "set_memory" || event.Actions[0].Address != "0x4C03" ||
+			event.Actions[0].Value == nil || *event.Actions[0].Value != 0 ||
+			event.Actions[1].Type != "set_map_position" || event.Actions[1].Position == nil {
 			t.Fatalf("Beholder Cave teleporter event=%+v", event)
 		}
-		position := event.Actions[0].Position
+		position := event.Actions[1].Position
 		if position.AreaID != 4 || position.GeometryBlock != 0x25 || position.X != 13 ||
 			position.Y != 1 || position.Direction != 6 || position.WallType == nil ||
 			*position.WallType != 8 || position.WallRoof == nil || *position.WallRoof != 0xC0 {

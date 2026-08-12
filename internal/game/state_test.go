@@ -564,6 +564,18 @@ func TestDungeonSearchToggleDoesNotConsumeTurn(t *testing.T) {
 	}
 }
 
+func TestDiscoveredDungeonSearchEdgeIsPassableFromBothSides(t *testing.T) {
+	state := NewState(trainingTestCatalog(t))
+	state.GeoMapSet, state.GeoMapBlock = 4, 0x25
+	state.dungeonSearchEdges["zhentil-keep.beholder-cave.dexam-east"] = true
+	if !state.searchEdgeDiscovered(14, 1, 2) {
+		t.Fatal("declared search edge was not passable from its discovery side")
+	}
+	if !state.searchEdgeDiscovered(15, 1, 6) {
+		t.Fatal("one physical search edge was not passable from its opposite side")
+	}
+}
+
 func TestDungeonSearchPolicyControlsMovementMinutes(t *testing.T) {
 	state := NewState(trainingTestCatalog(t))
 	state.Mode = ModeDungeon

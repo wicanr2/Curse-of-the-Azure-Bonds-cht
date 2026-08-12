@@ -159,6 +159,12 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   `docs/manual/adventurers-journal-zh-TW.md`。三份分冊保存條目編號、掃描頁、
   遊戲提示與 confidence；它們是摘要／重述，不是逐字翻印。手札 1 在現有掃描與
   英文 OCR 均未找到，維持 `unknown`。
+- 第 554 輪已將同一新遊戲 session 由手札 59 延伸到 `(14,1,E)` LOOK 通路、
+  Dexam 兩場決戰、戰利品／護符與戰後回洞穴。ECL4 `22h:+0B8Ah` 證明
+  `4C03h>=1` 會略過 Dexam；前一 shrine block 的同位址值以 CoAB JSON 不透明
+  `set_memory` 在 cave handoff 歸零，僅為 `strong inference` 的 map-local bank
+  重建，不可命名成全域劇情或規則欄位。已揭露秘密 edge 必須雙向可走。
+  `(15,1)` 到 terrain `93h`／`(6,3)` 出口仍未閉合，不得宣稱整洞完成或串猜多道牆。
 - 《軟體世界》中文說明書的原始掃描仍在
   `珍020-青色枷的詛咒.rar`；第 534 輪只把 `MOVEPARTY` 相關頁面與雜湊整理進
   `docs/spec/534-chinese-manual-moveparty-character-transfer.md`。使用者記憶中

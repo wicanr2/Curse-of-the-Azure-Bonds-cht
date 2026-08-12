@@ -39,6 +39,7 @@ func main() {
 	pc98DAX := flag.Bool("pc98-dax", false, tooltext.Text("azure_bonds.pc98_dax"))
 	geoGrid := flag.Bool("geo-grid", false, tooltext.Text("azure_bonds.geo_grid"))
 	geoPath := flag.String("geo-path", "", tooltext.Text("azure_bonds.geo_path"))
+	geoPathDoors := flag.Bool("geo-path-open-doors", false, "allow ordinary detail 2/3 doors in -geo-path diagnostics")
 	monsterRecord := flag.Bool("monster-record", false, "decode the selected block as a MON*CHA record")
 	monsterItems := flag.Bool("monster-items", false, "decode the selected block as MON*ITM records")
 	monsterAffects := flag.Bool("monster-affects", false, "decode the selected block as MON*SPC records")
@@ -263,7 +264,7 @@ func main() {
 					if pathErr != nil {
 						log.Fatal(pathErr)
 					}
-					path, found := shortestGEOPath(grid, start, target)
+					path, found := shortestGEOPathWithDoors(grid, start, target, *geoPathDoors)
 					if !found {
 						fmt.Printf("  GEO path (%d,%d) -> (%d,%d): unreachable\n",
 							start.X, start.Y, target.X, target.Y)
@@ -271,7 +272,11 @@ func main() {
 						fmt.Printf("  GEO path (%d,%d) -> (%d,%d): %d steps",
 							start.X, start.Y, target.X, target.Y, len(path)-1)
 						for _, step := range path {
-							fmt.Printf(" (%d,%d,%s)", step.X, step.Y, directionName(step.Direction))
+							marker := ""
+							if step.Door {
+								marker = "/DOOR"
+							}
+							fmt.Printf(" (%d,%d,%s%s)", step.X, step.Y, directionName(step.Direction), marker)
 						}
 						fmt.Println()
 					}
@@ -528,6 +533,7 @@ type geoPathStep struct {
 	X         int
 	Y         int
 	Direction int
+	Door      bool
 }
 
 func parseGEOPathRequest(raw string) (geoPathStep, geoPathStep, error) {
@@ -559,6 +565,14 @@ func parseGEOPathRequest(raw string) (geoPathStep, geoPathStep, error) {
 }
 
 func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, bool) {
+	return shortestGEOPathWithDoors(grid, start, target, false)
+}
+
+// shortestGEOPathWithDoors distinguishes currently open movement from a route
+// that only needs ordinary detail 2/3 doors. It deliberately does not treat a
+// detail-0 wall, SEARCH edge, external handoff, or title-specific transition
+// as passable; those require separate evidence.
+func shortestGEOPathWithDoors(grid geo.Grid, start, target geoPathStep, allowDoors bool) ([]geoPathStep, bool) {
 	type coordinate struct {
 		X int
 		Y int
@@ -569,6 +583,7 @@ func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, b
 	visited := map[coordinate]bool{startCoordinate: true}
 	previous := make(map[coordinate]coordinate)
 	arrivalDirection := make(map[coordinate]int)
+	arrivalDoor := make(map[coordinate]bool)
 	deltas := []struct {
 		Direction int
 		DX        int
@@ -586,7 +601,14 @@ func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, b
 			break
 		}
 		for _, delta := range deltas {
-			if !grid.CanMoveDungeonWrapped(current.X, current.Y, delta.Direction) {
+			passable := grid.CanMoveDungeonWrapped(current.X, current.Y, delta.Direction)
+			door := false
+			if !passable && allowDoors {
+				flags, ok := grid.WallDoorFlagsWrapped(current.X, current.Y, delta.Direction)
+				door = ok && (flags == 2 || flags == 3)
+				passable = door
+			}
+			if !passable {
 				continue
 			}
 			next := coordinate{
@@ -599,6 +621,7 @@ func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, b
 			visited[next] = true
 			previous[next] = current
 			arrivalDirection[next] = delta.Direction
+			arrivalDoor[next] = door
 			queue = append(queue, next)
 		}
 	}
@@ -609,6 +632,7 @@ func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, b
 		X:         targetCoordinate.X,
 		Y:         targetCoordinate.Y,
 		Direction: arrivalDirection[targetCoordinate],
+		Door:      arrivalDoor[targetCoordinate],
 	}}
 	for current := targetCoordinate; current != startCoordinate; {
 		current = previous[current]
@@ -616,6 +640,7 @@ func shortestGEOPath(grid geo.Grid, start, target geoPathStep) ([]geoPathStep, b
 			X:         current.X,
 			Y:         current.Y,
 			Direction: arrivalDirection[current],
+			Door:      arrivalDoor[current],
 		})
 	}
 	path := make([]geoPathStep, len(reversed))
