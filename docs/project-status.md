@@ -13,6 +13,14 @@
 registry 與逐區 coverage，再繼續擴張主線 remake。這不否定既有 READY 垂直切片，
 但禁止把它們加總成「完整 ECL／全地圖／完整戰鬥」聲明。
 
+第 557 輪已完成全 ECL 事件清冊的靜態第一層：`cmd/ecl-event-catalog` 可從原始
+archive 重生 6 個 ECL DAX、25 個 block、125 個 lifecycle entry、1,355 個不重複
+靜態可達 instruction 與 33 個跨 effect-kind 直線候選。JSON 保存原始 archive／
+member SHA-256、位址、operand metadata、直接 edge 與 lifecycle reachability；packed
+text 只保存長度與 hash。這是 `READY` corpus inventory，不是 runtime order。
+下一步優先閉合三組 `TREASURE → COMBAT` 候選，再設計 ordered transaction。
+完整證據見 [`spec 557`](spec/557-ecl-event-catalog-and-ordered-effects-audit.md)。
+
 第 553 輪已從使用者提供的《軟體世界》中文掃描重建手札 1–59 的繁中校訂摘要，
 入口為 [`adventurers-journal-zh-TW.md`](manual/adventurers-journal-zh-TW.md)。中文
 掃描 `084.jpg`／印刷頁 52 也已確認保存手札 59 完整地圖；標籤與圖例為 `exact`，

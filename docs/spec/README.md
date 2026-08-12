@@ -18,6 +18,7 @@
 
 目前規格：
 
+- [第五百五十七輪 ECL 全事件靜態清冊與有序副作用稽核](./557-ecl-event-catalog-and-ordered-effects-audit.md)（`READY`：限 6 DAX／25 block／125 entry／1,355 靜態 instruction inventory 與 33 個 audit candidates；ordered runtime semantics 仍未完成）
 - [第五百五十四輪眼魔洞穴 LOOK 與 Dexam 雙戰正常路徑](./554-normal-beholder-cave-dexam-route.md)（`READY`：同一新遊戲 session 經手札 59、LOOK 秘密通路、Dexam 雙戰與戰後回洞穴；不含 `(6,3)` 出口）
 - [第五百五十三輪中文冒險手札重建與靜態地圖抽樣準則](./553-chinese-journal-reconstruction-and-static-map-sampling.md)（`READY`：手札 1–59 可追溯繁中摘要、手札 59 完整掃描圖證據及 GEO／ECL／必要 runtime 抽樣門檻）
 - [第五百五十輪眼魔洞穴死精靈、手札 59 與戰利品續跑](./550-ecl4-dead-elf-journal59-treasure-continuation.md)（`READY`：正常新遊戲 session 經死精靈皮袋、氣體陷阱、手札 59 與無生怪戰利品服務回到同一洞穴格；不含 Dexam、洞穴出口或完整主線）
