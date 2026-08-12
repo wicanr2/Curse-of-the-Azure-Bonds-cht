@@ -20,6 +20,8 @@ github.com/wicanr2/golden-box-remake-engine v0.0.0-20260811103620-8da0efdd00e8 h
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260811103620-8da0efdd00e8/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260811220856-576853974f92 h1:jTUlxCA9Az5E7DiJ+328BJ6If60tBETB91fAhBoC31I=
 github.com/wicanr2/golden-box-remake-engine v0.0.0-20260811220856-576853974f92/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
+github.com/wicanr2/golden-box-remake-engine v0.0.0-20260812123252-2d7b09dc27ee h1:77FJDXLeTN8RGUMnDYdkvBx9+az1iQMY55oDOe8SJfI=
+github.com/wicanr2/golden-box-remake-engine v0.0.0-20260812123252-2d7b09dc27ee/go.mod h1:mZHE7q+UII7/ipMWG8ak9XEFt5nVed+19qWRU396vog=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=

@@ -103,6 +103,7 @@ type app struct {
 	combatVisualStarted    time.Time
 	combatVisualBase       time.Duration
 	combatVisualElapsed    time.Duration
+	journalDisplayPage     int
 	combatDoneMenu         bool
 	combatSpeedMenu        bool
 	messageSnapshot        string
@@ -615,15 +616,26 @@ func (a *app) Update() error {
 			return a.state.CloseJournal()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-			return a.state.NextJournalPage()
+			pages := journalDisplayPages(a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
+			if a.journalDisplayPage+1 < len(pages) {
+				a.journalDisplayPage++
+			}
+			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-			return a.state.PreviousJournalPage()
+			if a.journalDisplayPage > 0 {
+				a.journalDisplayPage--
+			}
+			return nil
 		}
 		return nil
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyJ) {
-		return a.state.OpenJournal()
+		if err := a.state.OpenJournal(); err != nil {
+			return err
+		}
+		a.journalDisplayPage = 0
+		return nil
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyF5) {
 		if err := a.saveCurrentGame(); err != nil {
@@ -1215,9 +1227,17 @@ func (a *app) Draw(screen *ebiten.Image) {
 		return
 	}
 	if a.state.Mode == game.ModeJournal {
+		pages := journalDisplayPages(a.state.JournalPages, a.state.JournalText, a.face, 22*faceCellWidth(a.face), 7)
+		if a.journalDisplayPage >= len(pages) {
+			a.journalDisplayPage = max(0, len(pages)-1)
+		}
+		pageText := a.state.JournalText
+		if len(pages) > 0 {
+			pageText = pages[a.journalDisplayPage]
+		}
 		drawFittedText(screen, a.state.JournalTitle, a.face, 32, 52, 576, cyan)
-		drawWrappedText(screen, a.state.JournalText, a.face, 32, 100, 22, 32, 7, white)
-		drawFittedText(screen, a.state.JournalPageStatus(), a.face, 32, 350, 576, white)
+		drawWrappedText(screen, pageText, a.face, 32, 100, 22, 32, 7, white)
+		drawFittedText(screen, a.state.JournalDisplayPageStatus(a.journalDisplayPage+1, len(pages)), a.face, 32, 350, 576, white)
 		drawFittedText(screen, a.state.JournalCloseText, a.face, 32, 390, 576, cyan)
 		return
 	}
@@ -1414,6 +1434,31 @@ func wrapTextLinesByWidth(value string, face font.Face, maxWidth, maxLines int) 
 		return lines[:maxLines]
 	}
 	return lines
+}
+
+func journalDisplayPages(sourcePages []string, emptyText string, face font.Face, maxWidth, maxLines int) []string {
+	if maxWidth < 1 || maxLines < 1 {
+		return nil
+	}
+	if len(sourcePages) == 0 {
+		sourcePages = []string{emptyText}
+	}
+	pages := make([]string, 0, len(sourcePages))
+	for _, source := range sourcePages {
+		// At most one output line can be created per source rune plus explicit
+		// paragraph breaks. Keep allocation bounded instead of using MaxInt as
+		// an artificial "unlimited" capacity.
+		lineLimit := len([]rune(source)) + strings.Count(source, "\n") + 1
+		lines := wrapTextLinesByWidth(source, face, maxWidth, lineLimit)
+		if len(lines) == 0 {
+			lines = []string{""}
+		}
+		for start := 0; start < len(lines); start += maxLines {
+			end := min(start+maxLines, len(lines))
+			pages = append(pages, strings.Join(lines[start:end], "\n"))
+		}
+	}
+	return pages
 }
 
 func wrapTextLines(value string, lineRunes, maxLines int) []string {
@@ -2370,7 +2415,10 @@ func (a *app) drawCombatVisual(screen *ebiten.Image, event combat.VisualEvent, f
 		}
 	case combat.VisualImpact:
 		if event.Kind == combat.VisualTwinkle {
-			drawCombatTwinkle(screen, toX, toY, frame.Progress)
+			definition, found := a.findCombatVisual("sleep", "impact")
+			if found && definition.Generator == "pc98.twinkle" {
+				drawCombatTwinkle(screen, toX, toY, frame.Progress)
+			}
 			break
 		}
 		if (event.Kind == combat.VisualMagicMissile || event.Kind == combat.VisualAreaSpell ||

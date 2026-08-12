@@ -490,6 +490,7 @@
 - [第四百七十六輪紮營與 ALTER 介面資料分離](./476-camp-alter-locale-data-separation.md)（`READY`：正式 catalog、128 筆 Go 漢字移除與 Engine checkpoint 修正）
 - [第五百五十一輪 locale drift／orphan 稽核](./551-locale-drift-orphan-audit.md)（`READY`：只限兩層 locale 引用、對稱性與 stable binding；靜態 orphan 僅資訊）
 - [第五百五十二輪 README 截圖證據 manifest](./552-screenshot-evidence-manifest.md)（`READY`：只限五張現有 PNG 的尺寸、雜湊與證據索引；不代表 UI fidelity）
+- [第五百五十六輪手札長文分頁與睡眠術視覺資料契約](./556-journal-pagination-and-sleep-visual-binding.md)（`READY`：長文不裁切、手札 46 真實事件解鎖、PC-98 睡眠術 generated visual）
 - [第五百一十六輪火刀據點外部地圖／秘密門 handoff 盤點](./516-fire-knife-external-map-handoff-audit.md)（`DRAFT`：DOS／PC-98 writer、`S`／`+594h`、`BDF0/BDF1` 與證據邊界）
 - [第五百一十七輪逆向缺口盤點與 GEO 斷言勘誤](./517-reverse-engineering-gap-inventory.md)（`READY`：11 個行為逆向主題、4 個 fidelity／發行主題與 static GEO 斷言修正）
 - [第四百七十七輪 PROGRAM 終局介面資料分離](./477-program-terminal-locale-data-separation.md)（`READY`：全滅／勝利／存檔 stable IDs、兩條終局 transaction 與 37 人正常終戰）

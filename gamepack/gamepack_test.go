@@ -806,7 +806,12 @@ func TestPitOpeningAndCompanionsAreGamePackDriven(t *testing.T) {
 		for _, language := range []string{"en", "zh-TW"} {
 			t.Run(test.id+"/"+language, func(t *testing.T) {
 				result := pack.MatchText(test.fragments, language)
-				if !result.Matched || result.RuleID != test.id || result.Message == "" || len(result.JournalPages) != 0 {
+				wantJournalIDs := []string(nil)
+				if test.id == "pit.zhentrim-scroll" {
+					wantJournalIDs = []string{"journal.46"}
+				}
+				if !result.Matched || result.RuleID != test.id || result.Message == "" ||
+					!reflect.DeepEqual(result.JournalMessageIDs, wantJournalIDs) || len(result.JournalPages) != len(wantJournalIDs) {
 					t.Fatalf("result=%+v", result)
 				}
 			})

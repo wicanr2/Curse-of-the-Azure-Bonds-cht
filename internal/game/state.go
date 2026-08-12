@@ -4196,6 +4196,16 @@ func (s *State) JournalPageStatus() string {
 	return fmt.Sprintf(s.catalog.Text("journal_page_status", "journal_page_status"), s.JournalPage+1, len(s.JournalPages))
 }
 
+// JournalDisplayPageStatus formats renderer-derived pages without changing the
+// stable source-entry IDs stored in saves. A long translated entry may occupy
+// several display pages while remaining one journal record.
+func (s *State) JournalDisplayPageStatus(page, total int) string {
+	if total < 1 || page < 1 {
+		return ""
+	}
+	return fmt.Sprintf(s.catalog.Text("journal_display_page_status", "journal_display_page_status"), page, total)
+}
+
 func (s *State) NextJournalPage() error {
 	if s.Mode != ModeJournal {
 		return fmt.Errorf("journal is not open")

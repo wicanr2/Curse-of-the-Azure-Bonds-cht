@@ -310,6 +310,7 @@
       ,"journal.56": "Journal Entry 56: The man refuses to give his name, saying that names are labels for things people do not understand. He knows of the bonds and the party's struggle because he helped create the first bonds long ago. The final bond, Tyranthraxus's, is the most dangerous: Tyranthraxus no longer shares control and can devote his full fury to preventing escape. The party must surprise and defeat him before he invokes the bonds. The man's clan is resting here for several mortal lifetimes, but Tyranthraxus stole their followers and threatened them. They hate him yet cannot attack his temple directly. When the party attacks, the clan will reclaim its followers, perhaps weakening Tyranthraxus enough for victory."
       ,"journal.57": "Journal Entry 57: “It is good to speak with those with confidence enough to deal. My clan has taken this spot as a place to rest for a few mortal lifetimes. But Tyranthraxus, the Flamed One, has stolen our followers and threatened my clan. His power is such that we cannot attack his temple directly, though we hate him with great passion. Now to our deal. You wear the Flamed One's mark, but I have been told you are his enemy. When you attack his temple we will bend our power to reclaim our followers. That may weaken him enough for you to be victorious.”"
       ,"journal.48": "Journal Entry 48: “You have done well, my pets. The three artifacts that can harm me are now in my possession. More importantly, the bonds you wear can act as the Pool of Radiance does. Through them I can transfer into any of your bodies and use it for as long as I need. If that body is killed, I can transfer through the bond back to the Pool—or into another one of you. I must thank you for the freedom you have given me. Now come along, and we will dispose of those dangerous objects.”"
+      ,"journal.46": "Journal Entry 46: Fzoul Chembryl orders Mogion not to destroy the test subjects before the experiment is complete. If she disobeys, he, Dracandros, and Lord T will hunt her down. A correction adds that the three gauntlets—not Moander's physical form—can consume the Pool of Radiance."
       ,"journal.5": "Journal Entry 5: “We rakshasas are very fond of gambling. I suffered a streak of bad luck and lost most of my possessions. Recently I discovered that Birsheya had been cheating, but the clan lord will not act without proof. Birsheya guards the clan storehouse, and I know evidence is hidden there. Help me break in and you may choose whatever you want from the storehouse; I want only proof of Birsheya's cheating.”"
       ,"creation.class.cleric": "Cleric"
       ,"creation.class.fighter": "Fighter"
@@ -918,6 +919,7 @@
       ,"journal.56": "手札條目 56：那人說：「別問我的名字；名字不過是人們貼在自己無法理解之物上的標籤。我知道你們身上的枷印，也知道你們為了重獲自由所作的掙扎，因為在彷彿已十分久遠的往昔，我曾協助創造最初的枷印。你們最後一道枷印——烈焰之主提朗瑟克斯的枷印——是最危險的一道。不論你們是否明白，如今你們比以往任何時候都更接近永恆的奴役；提朗瑟克斯不必再與其他人分享對你們的控制權，他能以全部怒火阻止你們逃脫。你們唯一的希望，是攻其不備，在烈焰之主來得及喚起枷印力量前解決他。能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
       ,"journal.57": "手札條目 57：「能與有足夠自信談成交易的人交談，實在令人愉快。我的族群將此地當作休憩數個凡人生命週期的場所；然而烈焰之主提朗瑟克斯奪走了我們的追隨者，還威脅我的族群。他力量強大，我們雖對他恨之入骨，卻無法直接攻打他的神殿。現在談談我們的交易。你們身上帶著烈焰之主的印記，但我聽說你們是他的敵人。當你們攻打他的神殿時，我們會運用力量奪回自己的追隨者；那或許能削弱他，讓你們取得勝利。」"
       ,"journal.48": "手札條目 48：「做得很好，我的寵物們。那三件能傷害我的神器，如今都已落入我的掌握。更重要的是，你們身上的枷印能發揮與光芒之池相同的作用；我可以透過枷印轉移到你們任何一人的身體裡，想用多久便用多久。即使那具身體遭到殺害，我也能沿著枷印返回光芒之池，或轉入你們另一人的身體。我得感謝你們賜予我如此自由。現在跟我來，我們要處理掉那些危險物品。」"
+      ,"journal.46": "手札條目 46：弗佐爾．錢布瑞爾命令摩貢，在實驗完成以前不得消滅受試者；若她違命，他、德拉坎卓斯與 T 大人將聯手追殺她。信末另有更正：能吞噬光芒之池的是三件護手，而不是摩安德的肉身。"
       ,"journal.5": "手札條目 5：「我們羅剎妖非常熱衷賭博。我先前手氣連番不順，幾乎輸光了所有財物。最近，我發現貝爾雪雅一直在賭局中作弊；然而沒有證據，氏族領主便不肯處置他。貝爾雪雅負責看守氏族倉庫，我知道裡面藏著能證明他作弊的證據。只要協助我闖進去，你們可從倉庫任取所需；我只要貝爾雪雅作弊的證據。」"
       ,"creation.class.cleric": "牧師"
       ,"creation.class.fighter": "戰士"
@@ -1572,6 +1574,13 @@
         {"direction": 6, "source_file": "COMSPR.DAX", "block": 130},
         {"direction": 7, "source_file": "COMSPR.DAX", "block": 1, "flip_x": true}
       ]
+    },
+    {
+      "id": "coab.sleep-twinkle",
+      "trigger": "sleep",
+      "phase": "impact",
+      "duration_ms": 1440,
+      "generator": "pc98.twinkle"
     },
     {
       "id": "coab.generic-spell-missile",
@@ -3464,7 +3473,7 @@
     {"id": "pit.stairs-down", "all_contains": ["YOU SEE STAIRS LEADING DOWN TO THE SOUTH", "DO YOU WISH TO GO DOWN"], "message_id": "pit.stairs-down"},
     {"id": "pit.stairs-up", "all_contains": ["YOU SEE STAIRS GOING UP IN THE NORTH WALL", "DO YOU WISH TO GO UP"], "message_id": "pit.stairs-up"},
     {"id": "pit.dead-zhentrim", "all_contains": ["MANGLED REMAINS OF A DEAD ZHENTRIM FIGHTER", "WHAT DO YOU DO"], "message_id": "pit.dead-zhentrim"},
-    {"id": "pit.zhentrim-scroll", "all_contains": ["GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"], "message_id": "pit.zhentrim-scroll"},
+    {"id": "pit.zhentrim-scroll", "all_contains": ["GRASPED IN THE FIGHTER'S FIST", "SEAL OF ZHENTIL", "JOURNAL ENTRY 46"], "message_id": "pit.zhentrim-scroll", "journal_message_ids": ["journal.46"]},
     {"id": "pit.mogion-altar", "all_contains": ["YOU SEE A PRIESTESS TURN AND SMILE WICKEDLY", "CULTISTS CHANTING IN A LOW DRONE"], "message_id": "pit.mogion-altar"},
     {"id": "pit.mogion-self-identifies", "all_contains": ["I AM MOGION"], "message_id": "pit.mogion-self-identifies"},
     {"id": "pit.alias-identifies-mogion", "all_contains": ["ALIAS MUTTERS", "PRIESTESS OF MOANDER", "SPITS ON THE GROUND"], "message_id": "pit.alias-identifies-mogion"},
