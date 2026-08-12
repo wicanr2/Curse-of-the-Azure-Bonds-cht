@@ -340,12 +340,17 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		cave.GeometryFile != "GEO4.DAX" || cave.ScriptBlock == nil ||
 		*cave.ScriptBlock != 0x22 || cave.GeometryBlock != 0x25 ||
 		cave.Spawn == nil || cave.Spawn.X != 5 || cave.Spawn.Y != 7 ||
-		cave.Spawn.Direction != 6 || len(cave.SearchEdges) != 1 ||
+		cave.Spawn.Direction != 6 || len(cave.SearchEdges) != 2 ||
 		cave.SearchEdges[0].ID != "zhentil-keep.beholder-cave.dexam-east" ||
 		cave.SearchEdges[0].X != 14 || cave.SearchEdges[0].Y != 1 ||
 		cave.SearchEdges[0].Direction != 2 || cave.SearchEdges[0].WallType != 9 ||
 		cave.SearchEdges[0].Discovery != "search_or_look" ||
-		cave.SearchEdges[0].Confidence != "strong inference" {
+		cave.SearchEdges[0].Confidence != "strong inference" ||
+		cave.SearchEdges[1].ID != "zhentil-keep.beholder-cave.dexam-shrine-east" ||
+		cave.SearchEdges[1].X != 15 || cave.SearchEdges[1].Y != 1 ||
+		cave.SearchEdges[1].Direction != 2 || cave.SearchEdges[1].WallType != 9 ||
+		cave.SearchEdges[1].Discovery != "search_or_look" ||
+		cave.SearchEdges[1].Confidence != "strong inference" {
 		t.Fatalf("Zhentil beholder cave map definition=%+v found=%v", cave, found)
 	}
 	var caveTeleportFound bool

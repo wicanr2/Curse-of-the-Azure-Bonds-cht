@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-12（第 552 輪後盤點）
+更新日期：2026-08-12（第 555 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -171,7 +171,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 |---|---|---|
 | 火刀據點完整正常路徑 | 入口→首領→戰後世界→阿沙本福德→立石群→艾森布拉城外的正常 session 已接通；仍未覆蓋所有可選房間、全部寶物、失敗／重訪分支。 | 以原始 GEO 路徑補齊火刀可選房間與重訪，再把可驗收結果寫入 coverage matrix。 |
 | 火刀據點出口、返回世界地圖與重訪 | 正常 session 的 `PATROL FOREST`、`JOURNEY ON`、阿沙本福德抵達與後續城市 handoff 已閉合；Tilverton 固定 fixture 的 save/load 回歸仍保留。 | 將同一正常 session 的存檔／重載與重訪延伸到世界路由，並分離固定夾具與正常主線證據。 |
-| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴手札 59，以 LOOK 穿過 `(14,1,E)` 通路並完成 Dexam 兩場決戰、護符與戰後回洞穴；固定事件另覆蓋 `(6,3)` 離場，但 Dexam 到出口的正常 route、後續完整章節、最終戰與結局尚未串完。 | 以 GEO 可達區邊界、手札 59 房間拓撲與 ECL terrain handler 對位 `(15,1)→(6,3)`；多解時才作受控 DOSBox 抽樣，不串猜多道牆。之後沿同一 session 續接後續章節與 `PROGRAM 8` 結局／save-reload gate。 |
+| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴手札 59、Dexam 雙戰；第 555 輪再由神殿東門沿十二步普通移動／開門抵達 `(6,3)`，完成離場並回到散提爾堡世界選單。後續完整章節、最終戰與結局尚未串完。 | 從散提爾堡世界選單沿同一 session 續接下一個主線章節，最終閉合 `PROGRAM 8` 結局與 save/reload gate。 |
 
 ### P1：補齊可玩規則、資料與原版行為
 

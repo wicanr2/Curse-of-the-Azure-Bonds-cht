@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""唯讀列出 GEO2 指定 block 的可行走元件與邊界候選。
+"""唯讀列出指定 GEO set／block 的可行走元件與邊界候選。
 
 這個工具只使用目前已核對的雙側 wall/detail movement contract；不會把
 wall=09、detail=0 或任何邊界自動命名成秘密門。輸出供後續正常玩家路徑
@@ -39,9 +39,10 @@ def decode_rle(packed: bytes, expected_size: int) -> bytes:
     return bytes(output)
 
 
-def read_block(archive: Path, block_id: int) -> bytes:
+def read_block(archive: Path, geo_set: int, block_id: int) -> bytes:
     with zipfile.ZipFile(archive) as source:
-        raw = source.read("GEO2.DAX")
+        member = f"GEO{geo_set}.DAX"
+        raw = source.read(member)
     header_size = struct.unpack_from("<H", raw)[0]
     data_offset = header_size + 2
     for offset in range(2, data_offset, 9):
@@ -55,7 +56,7 @@ def read_block(archive: Path, block_id: int) -> bytes:
         if len(decoded) != GEO_BLOCK_SIZE:
             raise ValueError(f"block={block_id} size={len(decoded)}")
         return decoded[2:]
-    raise ValueError(f"GEO2.DAX block {block_id} not found")
+    raise ValueError(f"{member} block {block_id} not found")
 
 
 def edge(payload: bytes, x: int, y: int, direction: int) -> tuple[int, int]:
@@ -73,36 +74,48 @@ def delta(direction: int) -> tuple[int, int]:
     return {0: (0, -1), 2: (1, 0), 4: (0, 1), 6: (-1, 0)}[direction]
 
 
-def neighbors(payload: bytes, source: tuple[int, int]):
+def neighbors(payload: bytes, source: tuple[int, int], open_doors: bool = False):
     x, y = source
     for direction in (0, 2, 4, 6):
         dx, dy = delta(direction)
         target = ((x + dx) % WIDTH, (y + dy) % HEIGHT)
         wall, detail = edge(payload, x, y, direction)
         other_wall, other_detail = edge(payload, *target, (direction + 4) % 8)
-        if (wall == 0 or detail == 1) and (other_wall == 0 or other_detail == 1):
+        source_open = wall == 0 or detail == 1 or (open_doors and detail in (2, 3))
+        target_open = other_wall == 0 or other_detail == 1 or (
+            open_doors and other_detail in (2, 3)
+        )
+        if source_open and target_open:
             yield target, direction, wall, detail, other_wall, other_detail
 
 
-def component(payload: bytes, start: tuple[int, int]) -> set[tuple[int, int]]:
+def component(
+    payload: bytes, start: tuple[int, int], open_doors: bool = False
+) -> set[tuple[int, int]]:
     visited = {start}
     queue = deque([start])
     while queue:
         source = queue.popleft()
-        for target, *_ in neighbors(payload, source):
+        for target, *_ in neighbors(payload, source, open_doors):
             if target not in visited:
                 visited.add(target)
                 queue.append(target)
     return visited
 
 
-def shortest_path(payload: bytes, start: tuple[int, int], target: tuple[int, int], avoid_special: bool):
+def shortest_path(
+    payload: bytes,
+    start: tuple[int, int],
+    target: tuple[int, int],
+    avoid_special: bool,
+    open_doors: bool = False,
+):
     queue = deque([start])
     previous: dict[tuple[int, int], tuple[tuple[int, int], tuple[int, int, int, int, int, int]]] = {}
     visited = {start}
     while queue and target not in visited:
         source = queue.popleft()
-        for candidate in neighbors(payload, source):
+        for candidate in neighbors(payload, source, open_doors):
             destination, direction, wall, detail, other_wall, other_detail = candidate
             if avoid_special and destination != target:
                 terrain = payload[0x200 + destination[1] * WIDTH + destination[0]]
@@ -128,21 +141,28 @@ def shortest_path(payload: bytes, start: tuple[int, int], target: tuple[int, int
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("archive", type=Path)
+    parser.add_argument("--set", type=int, default=2, dest="geo_set")
     parser.add_argument("--block", type=int, required=True)
     parser.add_argument("--start", type=int, nargs=2, required=True, metavar=("X", "Y"))
     parser.add_argument("--target", type=int, nargs=2, metavar=("X", "Y"))
     parser.add_argument("--avoid-special", action="store_true")
+    parser.add_argument("--open-doors", action="store_true")
     args = parser.parse_args()
     digest = hashlib.sha256(args.archive.read_bytes()).hexdigest()
-    payload = read_block(args.archive, args.block)
+    payload = read_block(args.archive, args.geo_set, args.block)
     start = tuple(args.start)
-    cells = component(payload, start)
+    cells = component(payload, start, args.open_doors)
     print(f"input={args.archive}")
     print(f"sha256={digest}")
-    print(f"block={args.block} start={start} reachable_cells={len(cells)}")
+    print(
+        f"set={args.geo_set} block={args.block} start={start} "
+        f"reachable_cells={len(cells)}"
+    )
     if args.target is not None:
         target = tuple(args.target)
-        path = shortest_path(payload, start, target, args.avoid_special)
+        path = shortest_path(
+            payload, start, target, args.avoid_special, args.open_doors
+        )
         print(f"target={target} path_length={len(path) if path is not None else 'unreachable'}")
         if path is not None:
             for index, (source, candidate) in enumerate(path, start=1):

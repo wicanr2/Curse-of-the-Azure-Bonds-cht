@@ -164,7 +164,10 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   `4C03h>=1` 會略過 Dexam；前一 shrine block 的同位址值以 CoAB JSON 不透明
   `set_memory` 在 cave handoff 歸零，僅為 `strong inference` 的 map-local bank
   重建，不可命名成全域劇情或規則欄位。已揭露秘密 edge 必須雙向可走。
-  `(15,1)` 到 terrain `93h`／`(6,3)` 出口仍未閉合，不得宣稱整洞完成或串猜多道牆。
+  第 555 輪再依中文手札 59 明示的神殿東門、GEO4/25 wrapped edge 與普通門路網，
+  以 `(15,1,E)` LOOK 後十二步正常移動抵達 terrain `93h`／`(6,3)`，完成離場
+  敘事並回到散提爾堡世界選單。東門仍是 `strong inference`，不可升格成原版
+  SEARCH writer exact；洞內全支線、重訪與後續主線仍未完成。
 - 《軟體世界》中文說明書的原始掃描仍在
   `珍020-青色枷的詛咒.rar`；第 534 輪只把 `MOVEPARTY` 相關頁面與雜湊整理進
   `docs/spec/534-chinese-manual-moveparty-character-transfer.md`。使用者記憶中
