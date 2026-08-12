@@ -2,8 +2,10 @@
 
 本檔是 compact／交接後的第一閱讀入口，也是 agent 工作規則的單一權威來源。
 它已融合 `CLAUDE.md` 中仍有效的原始需求；後者只保留人類可讀的目標與資料
-索引，不應再複製易過期的 checkpoint。詳細歷史在 `CONTEXT.md`，可驗證完成度
-在 `docs/project-status.md`。若文件衝突，以目前 worktree、原始 bytes／實機
+索引，不應再複製易過期的 checkpoint。詳細歷史在 `CONTEXT.md`；全遊戲 RE 與
+重建完整度的單一權威入口是
+`docs/knowledge/coab-re-coverage-matrix.md`，逐輪成果在 `docs/project-status.md`。
+若文件衝突，以目前 worktree、原始 bytes／實機
 證據與較新的 READY spec 為準，並主動修掉被推翻的舊斷言。
 
 ## 1. 不可縮減的最終目標

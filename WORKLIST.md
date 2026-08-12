@@ -2,10 +2,32 @@
 
 更新日期：2026-08-12（第 555 輪後盤點）
 
-本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
+本檔是 compact、交接與每輪開工時的執行順序入口。全遊戲 RE／重建完整度以
+[`docs/knowledge/coab-re-coverage-matrix.md`](docs/knowledge/coab-re-coverage-matrix.md)
+為單一權威矩陣；詳細反組譯歷史仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
 可驗證的歷史與每輪規格見 [`docs/project-status.md`](docs/project-status.md)。
 本檔只保留目前有效的工作，不把歷史輪次的舊 blocker 當成現況。
+
+## 目前階段：先封閉知識庫，再擴張 remake
+
+2026-08-12 稽核確認：現有研究足以支援多個真實資料垂直切片，但不足以保證
+整作重建。接下來先依完整度矩陣補 R1–R3（原始定位、原版語意、READY 規格），
+再進 R4–R5（engine＋JSON、正常玩家驗證）；停止用固定 fixture 或局部 parser
+coverage 代替全系統閉合。
+
+第一批工作依序是：
+
+1. `P0-RE-1`：建立 ECL ordered effects／exactly-once 規格，修正目前分類 signal
+   固定順序可能遺失原始 opcode 交錯的隱性 ABI。
+2. `P0-RE-2`：由 25 個 ECL block／125 個 lifecycle entry 產生全事件清冊，逐筆
+   記錄 PC、條件、外部 routine、副作用、resume 與 R1–R5。
+3. `P0-RE-3`：統一 spec 狀態、IDA 腳本引用與可重生報告；舊逐輪文章只作歷史。
+4. 建立 external-call registry 與逐區 `area-event-coverage`，再依矩陣補戰鬥、存檔、
+   音訊、畫面與中文內容。
+
+只有不影響玩家可見結果的 compiler/runtime helper 可列為 `不阻塞`；這項收斂不
+允許略過 D&D 規則、事件分支、戰鬥、畫面、聲音、存檔或正常路徑所需的 consumer。
 
 ## 一句話結論
 

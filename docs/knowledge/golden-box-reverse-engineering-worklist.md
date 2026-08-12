@@ -2,9 +2,11 @@
 
 更新日期：2026-08-10（第 537 輪成果／第 538 輪文件盤點）
 
-目前摘要以根目錄 [`WORKLIST.md`](../../WORKLIST.md) 為準；本檔保留完整的反組譯
-證據邊界、歷史勘誤與可重生研究入口。若本檔的舊輪次表格與根目錄摘要看似衝突，
-以最新的第 537 輪 spec、目前 worktree 與 root `WORKLIST.md` 為準。
+本檔是歷史反組譯工作紀錄，不再作為目前完成度或優先順序的權威來源。全遊戲
+RE／重建完整度先查
+[`coab-re-coverage-matrix.md`](coab-re-coverage-matrix.md)，目前執行順序查根目錄
+[`WORKLIST.md`](../../WORKLIST.md)；本檔只保留證據邊界、歷史勘誤與可重生研究入口。
+若舊輪次表格與上述文件衝突，以原始證據、較新 READY spec 與完整度矩陣為準。
 
 第 537 輪已把 P0-2 的 remake 可玩邊界接通：engine＋JSON 分離持續 `SEARCH`、
 一次性 `LOOK`、可發現 wall=09 候選邊與外部出口；正常玩家由 `(13,10)` 經

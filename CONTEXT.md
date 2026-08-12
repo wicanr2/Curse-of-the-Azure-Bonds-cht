@@ -1,6 +1,20 @@
 # 專案現況
 
-更新日期：2026-07-28
+更新日期：2026-08-12
+
+## 目前交接：先封閉 RE 知識庫
+
+2026-08-12 全庫稽核確認：現有 IDA／ECL／地圖／戰鬥／存檔／音訊研究足以支援
+多個真實資料垂直切片，但不足以保證整作重建。全遊戲完成度改由
+[`docs/knowledge/coab-re-coverage-matrix.md`](docs/knowledge/coab-re-coverage-matrix.md)
+統一管理；根目錄 `WORKLIST.md` 只排執行順序，`docs/project-status.md` 與本檔
+保存歷史。
+
+首要 blocker 是 ECL typed signals 目前按類型保存、State 固定分類套用，可能遺失
+原始 opcode 的跨類型時序。下一步先建立 ordered effects／exactly-once 規格與全
+ECL 事件清冊，再建 external-call registry 和逐區 coverage；R1–R3 未閉合前，不再
+以 frontend／State 特判推進主線。與玩家可見結果無關的 compiler/runtime helper
+維持不阻塞，不做無限深挖。
 
 ## 架構轉向：獨立 Golden Box engine + JSON game pack
 

@@ -7,7 +7,7 @@
 
 | 任務關鍵字 | 第一入口 | 必要時再讀 |
 |---|---|---|
-| CoAB、Gold Box、ECL、DAX、GEO、SAVE、戰鬥、IDA | `reverse-engineer-retro-game-remake` skill | `docs/knowledge/gold-box-state.md`、對應 `docs/spec/` READY 規格 |
+| CoAB、Gold Box、ECL、DAX、GEO、SAVE、戰鬥、IDA | `reverse-engineer-retro-game-remake` skill | 先讀 `docs/knowledge/coab-re-coverage-matrix.md`，再依缺口讀對應 `docs/spec/` READY 規格；`gold-box-state.md` 只作主題／歷史補充 |
 | PC-98、640×400、16×15、中文字級、版面 | `research-pc98-golden-box-ui` skill | `docs/spec/348-original-dos-frame-pc98-type-density.md` |
 | 配樂、音效、YM2203、S98、推廣片音樂 | `compose-rpg-remake-music` skill | `docs/knowledge/golden-box-audio-architecture-zh-tw.md` 與對應音訊 spec |
 | GUI、石框、人物頭身、3D viewport、戰鬥 HUD | `research-pc98-golden-box-ui` 後接 `reverse-engineer-retro-game-remake` | `docs/spec/391-dos-head-body-character-stage.md`、`docs/spec/406-dos-gui-draw-contract.md` |
