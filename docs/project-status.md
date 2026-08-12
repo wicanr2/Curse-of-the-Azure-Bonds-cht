@@ -2,8 +2,16 @@
 
 更新日期：2026-08-12
 
-目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
-逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
+目前執行順序入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；全遊戲 RE／重建
+完整度以
+[`coab-re-coverage-matrix.md`](knowledge/coab-re-coverage-matrix.md) 為單一權威
+矩陣。本檔只保留逐輪成果、證據等級與歷史勘誤，不取代前兩者。
+
+2026-08-12 文件稽核確認現有知識庫尚不足以保證整作重建。最優先問題是 ECL
+`RunResult` 依 signal 類型保存、State 以固定類別順序套用，可能遺失原始 opcode
+的跨類型先後順序；後續先建立 ordered effects、全 ECL 事件清冊、external-call
+registry 與逐區 coverage，再繼續擴張主線 remake。這不否定既有 READY 垂直切片，
+但禁止把它們加總成「完整 ECL／全地圖／完整戰鬥」聲明。
 
 第 553 輪已從使用者提供的《軟體世界》中文掃描重建手札 1–59 的繁中校訂摘要，
 入口為 [`adventurers-journal-zh-TW.md`](manual/adventurers-journal-zh-TW.md)。中文

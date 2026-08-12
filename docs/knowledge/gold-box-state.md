@@ -1,5 +1,9 @@
 # Gold Box 共用 state／城市 service 知識
 
+> 本檔是跨輪累積的主題筆記，不是目前完成度或工作優先順序。引用前先查
+> [`coab-re-coverage-matrix.md`](coab-re-coverage-matrix.md) 與對應 READY spec；
+> 若本文舊段落與新證據衝突，以完整度矩陣、較新 spec 與原始 bytes／runtime 為準。
+
 ## Dungeon boss continuation ownership
 
 Dungeon boss battle 的返回 owner 必須在建立 Battle 時 snapshot。哈普伊弗利特
