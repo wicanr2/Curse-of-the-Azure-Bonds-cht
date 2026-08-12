@@ -155,6 +155,10 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
   `docs/manual/curse-of-the-azure-bonds-zh-TW.md`。注意：這份檔案是 remake
   操作／背景摘要，並非《軟體世界》中文說明書或全部冒險手札的逐頁轉錄；
   不得因檔名是 `manual` 就誤認其中已包含手札 59 地圖。
+- 第 553 輪已另行重建冒險手札 1–59 的繁中校訂摘要入口：
+  `docs/manual/adventurers-journal-zh-TW.md`。三份分冊保存條目編號、掃描頁、
+  遊戲提示與 confidence；它們是摘要／重述，不是逐字翻印。手札 1 在現有掃描與
+  英文 OCR 均未找到，維持 `unknown`。
 - 《軟體世界》中文說明書的原始掃描仍在
   `珍020-青色枷的詛咒.rar`；第 534 輪只把 `MOVEPARTY` 相關頁面與雜湊整理進
   `docs/spec/534-chinese-manual-moveparty-character-transfer.md`。使用者記憶中
@@ -166,7 +170,9 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - Clue Book：`Curse-of-the-Azure-Bonds_Misc_DOS_EN_Clue-Book.pdf`
 - 工作資料：`workplace/`
 - 英文 Adventurer's Journal 的既有 OCR：`workplace/journal-ocr-406.txt`；其中
-  有手札 59 圖例文字，但 OCR 不保留可靠地圖幾何，不能取代原始頁面圖像。
+  有手札 59 圖例文字，但 OCR 不保留可靠地圖幾何。中文掃描 `084.jpg`／印刷頁
+  52 已確認保存完整手札 59 圖；可作 `layout-only` 拓撲證據，不能單獨換算 GEO
+  座標、牆型或 `SEARCH／LOOK` 行為。
 - IDA Pro：`/home/anr2/ida_94_official/dist`
 - 倚天字型：`/home/anr2/cht/etan_font/stdfont.15`
 - 倚天粗體參考：`/home/anr2/scummvm/monkey_island2`

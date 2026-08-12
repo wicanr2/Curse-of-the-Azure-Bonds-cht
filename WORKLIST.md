@@ -181,7 +181,7 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 | 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
 | 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法、12 個玩家法術入口與視覺時間軸；ECL 戰鬥開始／隊伍全滅音效 intent 已接通，仍缺完整敵我 AI、弓箭／投射物、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與原機音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
-| 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；第 550 輪新增手札 59 的遊戲內繁中摘要。仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合；手札 59 的原圖也尚未顯示。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件；逐頁抽取並驗證原始圖文後再加入 Journal renderer。 |
+| 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；第 553 輪重建手札 1–59 的可追溯繁中摘要，並確認中文掃描 `084.jpg` 有完整手札 59 地圖。仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁、所有條目的 stable-ID 遊戲內接線與手札地圖 renderer。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；把三份摘要逐條接入遊戲內 Journal，不要求玩家查外部文件；手札 59 原圖依來源與版面規格加入 renderer。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
 | UI、素材與原版 fidelity | 第 549 輪已校正 README 圖、原版裂紋石框、單一角色建立面板、640×480 第一人稱／右側 party/status 與 88×88 PIC stage；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
 
@@ -239,8 +239,10 @@ audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
    再集中 commit＋push 兩個 repository。
 
 下一個最小可重現工作：沿第 543 輪同一個 ECL session 從防火桶返回的熔岩洞續接
-尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；同時從 Dexam 洞穴 `(13,1,W)`
-以原版 ECL selector／正常輸入建立死精靈、皮袋與手札 59 的 coverage，再建立
+尤拉什、摩安德之坑、散提爾堡與 Myth Drannor；同時以手札 59 的房間鄰接圖、
+GEO4/25 cell graph 與 ECL4/22 producer／consumer 對位，閉合 `(13,1,W)` 到
+德克薩姆及 `(6,3)` 出口的唯一正常 route；只有靜態證據仍有多解時才用修改存檔
+做受控 DOSBox 抽樣。之後建立
 城市／GEO 事件 coverage matrix，逐項標示 normal、fixed fixture 或
 coordinate-assisted。不要把本輪
 Hap／巫師塔局部路徑或既有 `PROGRAM 8` fixture 擴大解讀成完整結局。

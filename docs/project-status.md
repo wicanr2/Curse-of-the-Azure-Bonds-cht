@@ -5,6 +5,14 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 553 輪已從使用者提供的《軟體世界》中文掃描重建手札 1–59 的繁中校訂摘要，
+入口為 [`adventurers-journal-zh-TW.md`](manual/adventurers-journal-zh-TW.md)。中文
+掃描 `084.jpg`／印刷頁 52 也已確認保存手札 59 完整地圖；標籤與圖例為 `exact`，
+相對房間拓撲為 `layout-only`。此圖尚未接入遊戲 renderer，也不能單獨證明 GEO
+座標或 `SEARCH／LOOK`。眼魔洞穴下一步採手札拓撲＋GEO4/25＋ECL4/22 靜態閉環；
+只有仍有多個候選解時，才用修改後的原版存檔做受控 DOSBox 抽樣。完整方法見
+[`spec 553`](spec/553-chinese-journal-reconstruction-and-static-map-sampling.md)。
+
 第 550 輪把同一條新遊戲 normal session 從眼魔洞穴 A2 的死精靈提示延伸至
 `EXAMINE REMAINS → PICK UP POUCH`。原始 ECL4 block `0x22` 依序產生皮袋、氣體
 陷阱、手札 59 地圖與無 monster spawn 的 `COMBAT` request；CoAB game-pack 以 stable
@@ -1233,8 +1241,9 @@ marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／�
   Cloudkill DOS 動態時間碼、其餘法術、物品、
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
-- 全英文文本、59 則 Journal、Tavern Tales、
-  Clue Book／攻略的完整繁中化。
+- 全英文文本、59 則 Journal、Tavern Tales、Clue Book／攻略的完整遊戲內繁中化。
+  手札 1–59 的文件級校訂摘要已完成，但尚未全部轉成 stable-ID game-pack 內容並
+  接入 Journal renderer；手札 1 仍因來源未找到而標為 `unknown`。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；目前 ECL 戰鬥開始／隊伍全滅的
   semantic intent 已接通，但 PC-98 12 首 YM2203
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop
