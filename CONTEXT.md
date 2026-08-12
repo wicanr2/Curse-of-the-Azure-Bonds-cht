@@ -4980,3 +4980,12 @@ SHA-256 通過，正常 VIEW／AREA／overland／法術關鍵幀仍是 planned�
 不改戰鬥規則、翻譯內容、renderer 或 P0 主線，也不把 source AST callsite 當作
 原版 exact 證據。公開 GameBanshee 地圖只支持死精靈、單向傳送、Dexam 與出口的
 相對區域；它不足以證明 `(14,1,E)` 搜尋邊，因此 P0 維持 fail-closed。
+
+2026-08-12 手冊入口勘誤：使用者提醒先前曾將《軟體世界》中文說明書整理成
+Markdown。實際稽核目前 worktree、`workplace/` 與完整 Git 歷史後，只找到
+`docs/manual/curse-of-the-azure-bonds-zh-TW.md` 的 remake 八頁操作摘要；該檔從
+建立時就不是原版逐頁轉錄，也沒有手札 59 地圖。《軟體世界》原始掃描仍在
+`珍020-青色枷的詛咒.rar`，第 534 輪只版本化 `MOVEPARTY` 頁面證據；英文手札
+59 的 OCR 圖例在 `workplace/journal-ocr-406.txt`，但幾何圖像未保存。AGENTS.md
+已補上這些入口與限制。若完整中文 Markdown 曾由其他 session 產生，它目前沒有
+進入此 repo／Git 歷史，後續找回時應另檔納入，不可再把摘要誤認為完整手冊。
