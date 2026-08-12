@@ -4968,3 +4968,15 @@ material-exact/layout-reconstructed UI 基線，不代表完整戰鬥、所有 U
 現維持 `strong inference`，不可拿來當 Dexam 或洞穴出口證據。權威規格為
 `docs/spec/550-ecl4-dead-elf-journal59-treasure-continuation.md`；接下來先以原始
 GEO4／ECL4／手札圖與 DOS runtime 找出可證實的洞穴出口，再由普通輸入續接。
+
+2026-08-12 第五百五十一至五十二輪改採 mentor／低成本模型分層。三個
+`gpt-5.6-luna` 工作者分別完成玩家法術 coverage、locale drift／orphan 與 README
+截圖證據 manifest；主 agent 覆核原始碼、修正重複 spec 編號，並在既有
+`nectaris-ebiten-test:20260812-v2`、`--network none` Docker 工具鏈重跑 focused
+tests 與三個正式命令。結果為：12 個正式玩家法術中僅 2 個同時有可觀察
+handler／visual／sound 接線、10 個 incomplete；locale 硬性 violation 為 0，
+靜態 orphan 因動態 key 可能性只可視為資訊；README 五張現有圖的 640×480 與
+SHA-256 通過，正常 VIEW／AREA／overland／法術關鍵幀仍是 planned。這些 audit
+不改戰鬥規則、翻譯內容、renderer 或 P0 主線，也不把 source AST callsite 當作
+原版 exact 證據。公開 GameBanshee 地圖只支持死精靈、單向傳送、Dexam 與出口的
+相對區域；它不足以證明 `(14,1,E)` 搜尋邊，因此 P0 維持 fail-closed。

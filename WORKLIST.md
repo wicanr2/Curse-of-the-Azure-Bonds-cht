@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-12（第 550 輪後盤點）
+更新日期：2026-08-12（第 552 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -41,6 +41,16 @@ fidelity 完成。
 續跑，沒有座標注入或推測性搜尋邊。手札文字、陷阱與選項均由 CoAB JSON stable ID
 解析；原始手札地圖 bitmap 尚未放入 renderer。舊 `(15,1)` 搜尋邊只保留為
 `strong inference`，不再當作 Dexam 或洞穴出口的正常路徑證據。
+
+第 551–552 輪建立低成本模型可安全承接的三個機器稽核。locale audit 證實
+目前正式 UI literal key、game-pack `en／zh-TW` 對稱、`message_id` 與 stable
+option binding 沒有硬性違約；靜態 orphan 只列資訊，不能冒稱未使用。玩家戰鬥
+法術 audit 將 12 個正式 stable spell ID 對照目前 remake handler／visual／sound
+callsite，只有 2 筆達到三者皆可觀察，另外 10 筆如實列為 incomplete；這不是
+原版規則或逐幀 fidelity 證據。截圖 manifest 鎖定 README 五張 640×480 圖的
+SHA-256、生成模式與證據等級，並把正常 `VIEW`、`AREA`、overland 與法術關鍵幀
+保留為 planned 缺口。三項 focused Docker gate 均通過；P0 洞穴正常路徑沒有因
+audit 而假接，仍須先證明手札 59 後到 Dexam 的原版可走 route。
 
 ## 狀態與證據規則
 
@@ -174,6 +184,15 @@ fidelity 完成。
 | 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；第 550 輪新增手札 59 的遊戲內繁中摘要。仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合；手札 59 的原圖也尚未顯示。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件；逐頁抽取並驗證原始圖文後再加入 Journal renderer。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
 | UI、素材與原版 fidelity | 第 549 輪已校正 README 圖、原版裂紋石框、單一角色建立面板、640×480 第一人稱／右側 party/status 與 88×88 PIC stage；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
+
+第 551–552 輪新增的工作分派基線：
+
+- 便宜模型可承接：stable-ID coverage、locale reference/drift、截圖檔案完整性、
+  bounded schema／validator、已有 contract 的測試補強與素材索引。
+- mentor／高階模型保留：原版 bytes／runtime 的語意升級、洞穴 route、AI 選敵與
+  RNG、逐幀時序、音效來源、架構／玩家體驗取捨，以及所有完成聲明與合併。
+- 子代理不得自行 commit／push；mentor 覆核 diff、修正整合衝突、跑正式 gate，
+  再按重大 milestone 集中提交。
 
 ### P2：完成後才做的發行工作
 
