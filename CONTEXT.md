@@ -4953,3 +4953,18 @@ PNG 已重拍、人工檢視並替換 README；畫面與雜湊在
 `docs/spec/549-dos-character-creation-and-screenshot-polish.md`。這是
 material-exact/layout-reconstructed UI 基線，不代表完整戰鬥、所有 UI state 或
 整作通關。
+
+2026-08-12 第五百五十輪把正常新遊戲 session 從眼魔洞穴 A2 的死精靈提示延伸到
+`EXAMINE REMAINS → PICK UP POUCH`。原始 `ECL4.DAX` block `0x22` bounded trace
+依序證明皮袋文字、四選項、氣體陷阱（`+08A6` 寫 `7F79h=0`）、手札 59 地圖／
+`1d12` 傷害／`+09AC` 寫 `4C07h=80h`，以及後續 `+089C` 無 monster spawn 的
+`COMBAT` request。CoAB game-pack 新增 `dexam.dead-elf.gas-trap`、
+`dexam.dead-elf.map` 的 `journal_message_ids=[journal.59]` 與繁中手札摘要；State
+以既有 treasure-service boundary 處理該 request，正常 session 在 `TREASURE_EXIT`
+後回到同一 `(13,1,W)` 地城 lifecycle，沒有座標／戰鬥注入。`4C03h=1` 只保留為
+本 trace raw state，未命名。原始 Adventurer's Journal PDF 是條目 59 地圖與圖例的
+來源；目前只完成可讀文字摘要，未把 bitmap 偽造成遊戲內地圖。第 548 輪曾把
+`(15,1)` 搜尋邊放入 normal-path 描述；該邊沒有 GEO movement／DOS runtime 閉合，
+現維持 `strong inference`，不可拿來當 Dexam 或洞穴出口證據。權威規格為
+`docs/spec/550-ecl4-dead-elf-journal59-treasure-continuation.md`；接下來先以原始
+GEO4／ECL4／手札圖與 DOS runtime 找出可證實的洞穴出口，再由普通輸入續接。

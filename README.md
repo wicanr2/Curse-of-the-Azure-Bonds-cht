@@ -19,7 +19,9 @@ ECL／DAX／GEO／戰鬥／存檔引擎位於獨立的
 模式、施法時間與訊息 ID 接到 engine＋JSON；路徑仍會在後續區域遇到未完成的功能。
 
 最新完成度與驗證邊界請看
-[專案成果盤點](docs/project-status.md)。第 531 輪完成角色建立的原版石框／中文字級
+[專案成果盤點](docs/project-status.md)。第 550 輪已把同一新遊戲 session 延伸到
+眼魔洞穴死精靈的皮袋、氣體陷阱與手札 59；原始地圖圖像與洞穴出口仍待證實，
+不把推測性搜尋邊當成主線。第 531 輪完成角色建立的原版石框／中文字級
 版面基線；第 532 輪將開場、荒野、讀檔、紮營返回與世界地圖預覽的選項顯示統一
 交給 game-pack `option_rules` 與 engine resolver，測試以 stable ID 取得期望值；
 第 533 輪以 P0-2 raw audit 補出 PC-98 `MOVEPARTY` 的前置 gate、B／P／K helper

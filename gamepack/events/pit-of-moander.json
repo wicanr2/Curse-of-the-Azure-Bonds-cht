@@ -123,12 +123,14 @@
       ,"dexam.dead-elf.remains": "You see the remains of an elf fighter."
       ,"dexam.dead-elf.pouch": "Buried beneath the moldering clothing, you find a leather pouch."
       ,"dexam.dead-elf.pouch-moves": "The pouch moves. You hear the crackling of something like paper and the clink of metal."
+      ,"dexam.dead-elf.gas-trap": "A gas trap goes off!"
       ,"dexam.dead-elf.map": "You discover a map. It marks Dexam's altar."
       ,"dexam.dead-elf.drop-pouch": "You drop the pouch and leave."
       ,"dexam.dead-elf.option.examine-remains": "Examine remains"
       ,"dexam.dead-elf.option.pick-up-pouch": "Pick up pouch"
       ,"dexam.dead-elf.option.poke-pouch": "Poke at pouch"
       ,"dexam.dead-elf.option.find-trap": "Cast Find Trap"
+      ,"journal.59": "Journal Entry 59: A map of the Cave of the Beholder. Its key marks doors, arched doorways, animal noises, minotaur grunts or shouts, Dexam's Shrine, and the altar. The original map image is preserved in the Adventurer's Journal."
       ,"world.shadowdale.edge": "You are at the edge of Shadowdale. Will you enter or continue your journey?"
       ,"journal.30.1": "Journal Entry 30 (1/2): Dexam says, “So, these are Fzoul's little secret. Very interesting. As the representative of the TRUE priests of Bane, I shall deliver you to Mulmaster and the grand Imperceptor.”"
       ,"journal.30.2": "Journal Entry 30 (2/2): “In Mulmaster I will examine these bonds in my laboratory—to your extreme discomfort. During the final procedure, the one resulting in your death, the pain should last no more than two or perhaps three weeks. Once I uncover their secret, the Imperceptor will be most angry with dear little Fzoul, and we may finally be rid of this heretic and his precious mages.”"
@@ -729,12 +731,14 @@
       ,"dexam.dead-elf.remains": "你們看見一名精靈戰士的遺骸。"
       ,"dexam.dead-elf.pouch": "在發霉的衣物下，你們找到一個皮袋。"
       ,"dexam.dead-elf.pouch-moves": "皮袋動了。你們聽見紙張般的窸窣聲，以及金屬碰撞的輕響。"
+      ,"dexam.dead-elf.gas-trap": "氣體陷阱爆發了！"
       ,"dexam.dead-elf.map": "你們發現一張地圖；上面標示著德克薩姆的祭壇。"
       ,"dexam.dead-elf.drop-pouch": "你們丟下皮袋，轉身離開。"
       ,"dexam.dead-elf.option.examine-remains": "檢查遺骸"
       ,"dexam.dead-elf.option.pick-up-pouch": "拿起皮袋"
       ,"dexam.dead-elf.option.poke-pouch": "戳戳皮袋"
       ,"dexam.dead-elf.option.find-trap": "施放「尋找陷阱」"
+      ,"journal.59": "手札條目 59：眼魔洞穴地圖。圖例標出門、拱門、動物聲響、牛頭人的咕噥或呼喊、德克薩姆的神殿與祭壇；原始地圖圖像保存於《冒險者手札》。"
       ,"world.shadowdale.edge": "你們來到暗影谷外。要進城，還是繼續旅程？"
       ,"journal.30.1": "手札條目 30（1/2）：德克薩姆說：「原來這就是弗佐爾藏著的小祕密。有意思。身為貝恩正統祭司的代表，我要把你們送到穆爾馬斯特，交給總督察長。」"
       ,"journal.30.2": "手札條目 30（2/2）：「到了穆爾馬斯特，我會在實驗室研究這些枷印——只怕你們會非常不舒服。最後一道程序將奪走你們的性命；放心，痛苦頂多持續兩三個星期。等我揭開枷印的祕密，總督察長必會對他親愛的小弗佐爾大發雷霆，我們也終於能除掉這名異端和他珍愛的法師。」"
@@ -3281,9 +3285,15 @@
       "message_id": "dexam.dead-elf.pouch-moves"
     },
     {
+      "id": "dexam.dead-elf.gas-trap",
+      "all_contains": ["A GAS TRAP GOES OFF"],
+      "message_id": "dexam.dead-elf.gas-trap"
+    },
+    {
       "id": "dexam.dead-elf.map",
-      "all_contains": ["YOU DISCOVER A MAP"],
-      "message_id": "dexam.dead-elf.map"
+      "all_contains": ["YOU DISCOVER A MAP", "JOURNAL AS ENTRY 59"],
+      "message_id": "dexam.dead-elf.map",
+      "journal_message_ids": ["journal.59"]
     },
     {
       "id": "dexam.dead-elf.drop-pouch",

@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-12（第 549 輪後盤點）
+更新日期：2026-08-12（第 550 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的目前摘要入口。詳細的反組譯證據仍在
 [`docs/knowledge/golden-box-reverse-engineering-worklist.md`](docs/knowledge/golden-box-reverse-engineering-worklist.md)；
@@ -33,6 +33,14 @@ session、完整戰鬥與原機音訊、全量繁中校對、完整存檔相容�
 明確 contract；角色建立現在使用原版單一大面板。這是目前 UI 的
 `material-exact/layout-reconstructed` 基線，仍不等於所有畫面、戰鬥演出或整作
 fidelity 完成。
+
+第 550 輪把同一新遊戲 session 從洞穴 A2 的死精靈提示延伸至
+`EXAMINE REMAINS → PICK UP POUCH`：原始 ECL4 block `0x22` 依序顯示皮袋、
+氣體陷阱、標有 Dexam 祭壇與外出路徑的地圖，解鎖遊戲內手札 59，再進入無生怪
+`COMBAT`／戰利品服務。選擇離開戰利品後，session 以同一 `(13,1,W)` 地城狀態
+續跑，沒有座標注入或推測性搜尋邊。手札文字、陷阱與選項均由 CoAB JSON stable ID
+解析；原始手札地圖 bitmap 尚未放入 renderer。舊 `(15,1)` 搜尋邊只保留為
+`strong inference`，不再當作 Dexam 或洞穴出口的正常路徑證據。
 
 ## 狀態與證據規則
 
@@ -109,6 +117,17 @@ fidelity 完成。
 
 權威規格：[`第五百四十八輪 A2 續跑與地圖 handoff`](docs/spec/548-ecl4-cave-a2-continuation.md)。
 
+## 第 550 輪已關閉的工作
+
+| 項目 | 目前可宣稱的範圍 |
+|---|---|
+| 死精靈皮袋至手札 59 的正常續跑 | 同一新遊戲 session 在 `(13,1,W)` 選擇 `EXAMINE REMAINS → PICK UP POUCH`，依原始 ECL 先看到氣體陷阱，再取得手札 59。`dexam.dead-elf.gas-trap`、`dexam.dead-elf.map` 與 `journal.59` 均由 game-pack stable ID／locale resolver 驅動，沒有把中文文字塞入 State。 |
+| 無生怪 `COMBAT`／戰利品服務 | 原始 ECL 的 `COMBAT` request 在這段沒有 monster spawn；remake 以既有 service boundary 提供兩件 pending item 與 `TREASURE_EXIT`。離開後地城 lifecycle 清空暫存狀態並留在 `(13,1,W)`，正常 session 沒有遺失 ECL continuation。 |
+| 手札地圖的資料誠實性 | 遊戲內先提供繁中圖例摘要並指向原始 Adventurer's Journal；原始 PDF bitmap 尚未嵌入 Journal renderer，故不能宣稱遊戲內地圖圖像或出口 route 已完成。 |
+| 搜尋邊勘誤 | `(15,1)` 的搜尋邊沒有被當作 normal-path evidence；它維持 `strong inference`，Dexam 固定夾具也繼續明確區分為局部 regression。 |
+
+權威規格：[`第五百五十輪死精靈、手札 59 與戰利品續跑`](docs/spec/550-ecl4-dead-elf-journal59-treasure-continuation.md)。
+
 ## 第 539 輪已關閉的工作
 
 | 項目 | 目前可宣稱的範圍 |
@@ -142,7 +161,7 @@ fidelity 完成。
 |---|---|---|
 | 火刀據點完整正常路徑 | 入口→首領→戰後世界→阿沙本福德→立石群→艾森布拉城外的正常 session 已接通；仍未覆蓋所有可選房間、全部寶物、失敗／重訪分支。 | 以原始 GEO 路徑補齊火刀可選房間與重訪，再把可驗收結果寫入 coverage matrix。 |
 | 火刀據點出口、返回世界地圖與重訪 | 正常 session 的 `PATROL FOREST`、`JOURNEY ON`、阿沙本福德抵達與後續城市 handoff 已閉合；Tilverton 固定 fixture 的 save/load 回歸仍保留。 | 將同一正常 session 的存檔／重載與重訪延伸到世界路由，並分離固定夾具與正常主線證據。 |
-| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴死精靈格 `(13,1,W)`；固定事件測試另覆蓋哈普、法師塔、摩安德之坑、散提爾堡與 Myth Drannor 局部，但 Dexam 正常 handoff、完整章節、最終戰與結局尚未串完。 | 先從 `(13,1,W)` 以正常輸入接通 Dexam 與洞穴出口，再沿同一 session 續接尤拉什／摩安德之坑→散提爾堡→Myth Drannor，最後加入 `PROGRAM 8` 結局與 save/reload gate；未支援 boundary 必須明確 fail-closed。 |
+| 開場到結局的正常玩家主線 | 已從開場走到眼魔洞穴 `(13,1,W)` 的死精靈皮袋、氣體陷阱、手札 59 與戰利品服務；固定事件測試另覆蓋哈普、法師塔、摩安德之坑、散提爾堡與 Myth Drannor 局部，但 Dexam 正常 route、洞穴出口、完整章節、最終戰與結局尚未串完。 | 先以原始 GEO／ECL／手札圖與 DOS runtime 找出可證實的洞穴正常出口，再由普通輸入接通 Dexam；之後沿同一 session 續接尤拉什／摩安德之坑→散提爾堡→Myth Drannor，最後加入 `PROGRAM 8` 結局與 save/reload gate。未支援 boundary 必須明確 fail-closed。 |
 
 ### P1：補齊可玩規則、資料與原版行為
 
@@ -152,7 +171,7 @@ fidelity 完成。
 | 全地圖與世界旅行 | 16 個原始 GEO block 已在 game-pack 宣告；14 個世界點位的 ECL1 到達、Tilverton→全點 directed adjacency，以及新遊戲→阿沙本福德→立石群→艾森布拉的正常主線已通過 Docker gate。仍缺所有城市／地城房間 coverage、TRAIL／WILDERNESS／EXIT 全分支、隨機遭遇、所有入口出口、持久 map state 與原版 fidelity。 | 建立每座城市／每個 GEO block 的正常事件 coverage matrix，保存 flag／座標／資源 handoff，並補全世界旅行與重訪回歸；不把攻略座標直接寫成規則。 |
 | 戰鬥規則、AI、法術效果與動畫 | 已有部分 AD&D 數值、敵方選敵、延後施法、12 個玩家法術入口與視覺時間軸；ECL 戰鬥開始／隊伍全滅音效 intent 已接通，仍缺完整敵我 AI、弓箭／投射物、法術逐項效果、saving throw、持續區域、死亡動畫、回合節奏與原機音效 cue。 | 對近戰、弓箭、Magic Missile、Fireball、Lightning Bolt、Stinking Cloud／Cloudkill 等分開驗收 windup、travel、impact、damage、save、death、persistent effect、聲音與 ECL handoff；影片只能證明演出，數值要回 bytes／DOSBox。 |
 | 存檔、角色規則與跨遊戲轉移 | remake save v12 已保存 Search／edge；DOS／PC-98 `SAVGAM`、角色 sidecar、完整 record、年齡／職業／特殊能力、刪除／改名與 `MOVEPARTY` 跨遊戲 transfer 尚未完整 round-trip。 | 先完成版本化 parser／serializer 與 save mutation diff，再以角色檔跨 Gold Box 來源做 stable transfer contract；不能把 `MOVEPARTY` 靜態 helper 直接當秘密門。 |
-| 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件。 |
+| 全量繁體中文化與遊戲內手札 | 多個事件、選項、手札與攻略已資料化；第 550 輪新增手札 59 的遊戲內繁中摘要。仍缺全 ECL／物品／法術／怪物／地名／UI 字串、中文校對、長文分頁與所有原版需查手冊的內容整合；手札 59 的原圖也尚未顯示。 | 以 stable `message_id` 做 coverage／orphan／source-drift audit；玩家可在遊戲內讀手札，不要求查外部文件才能通過事件；逐頁抽取並驗證原始圖文後再加入 Journal renderer。 |
 | 音樂與音效 | YM2203、S98、PC98 sound BIOS、cycle PCM 等 engine 知識與部分合成測試已有；戰鬥開始／隊伍全滅 semantic intent 已接通，但完整 DOS／PC-98 producer、播放生命週期、音效與戰鬥 phase 同步仍未完成。 | 先完成每個場景／戰鬥 cue 的資料綁定與可重播播放，再用 DOS／PC-98 runtime 對照 phase、音量、音效次序；合成器測試不能冒稱硬體 exact。 |
 | UI、素材與原版 fidelity | 第 549 輪已校正 README 圖、原版裂紋石框、單一角色建立面板、640×480 第一人稱／右側 party/status 與 88×88 PIC stage；冒險／戰鬥／地圖／對話／頭像的所有狀態仍未逐張比對，palette cycle、sprite timing、完整戰鬥地形與 PC-98 密度仍需抽樣校準。 | 每張對照標示平台、狀態、save／seed、theme 與 `exact`／`nearby`／`layout-only`；原版 theme 與美化 theme 分開，先完成原版忠實驗收。 |
 

@@ -434,6 +434,23 @@ func TestEmbeddedPackValidatesAndOwnsZhentilText(t *testing.T) {
 		dexam.JournalPages[1] != wantJournal302 {
 		t.Fatalf("Dexam text result=%+v", dexam)
 	}
+	deadElfMap := pack.MatchText([]string{
+		"YOU DISCOVER A MAP.  ON IT, YOU SEE DEXAMS ALTAR",
+		"INDICATED AND A PATH THAT SEEMS TO LEAD OUTSIDE.",
+		"YOU PLACE IT IN YOUR JOURNAL AS ENTRY 59.",
+	}, "zh-TW")
+	wantDeadElfMap, _ := pack.Text("dexam.dead-elf.map", "zh-TW")
+	wantJournal59, _ := pack.Text("journal.59", "zh-TW")
+	if !deadElfMap.Matched || deadElfMap.RuleID != "dexam.dead-elf.map" ||
+		deadElfMap.Message != wantDeadElfMap || len(deadElfMap.JournalPages) != 1 ||
+		deadElfMap.JournalPages[0] != wantJournal59 {
+		t.Fatalf("dead-elf Journal 59 result=%+v", deadElfMap)
+	}
+	gasTrap := pack.MatchText([]string{"A GAS TRAP GOES OFF!"}, "zh-TW")
+	wantGasTrap, _ := pack.Text("dexam.dead-elf.gas-trap", "zh-TW")
+	if !gasTrap.Matched || gasTrap.RuleID != "dexam.dead-elf.gas-trap" || gasTrap.Message != wantGasTrap {
+		t.Fatalf("dead-elf gas trap result=%+v", gasTrap)
+	}
 }
 
 func TestBeholderCaveMapHandoffContinuesSameECLResult(t *testing.T) {
