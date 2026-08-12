@@ -1960,6 +1960,15 @@
           "wall_type": 9,
           "discovery": "search_or_look",
           "confidence": "strong inference"
+        },
+        {
+          "id": "zhentil-keep.beholder-cave.dexam-shrine-east",
+          "x": 15,
+          "y": 1,
+          "direction": 2,
+          "wall_type": 9,
+          "discovery": "search_or_look",
+          "confidence": "strong inference"
         }
       ],
       "spawn": {"x": 5, "y": 7, "direction": 6}

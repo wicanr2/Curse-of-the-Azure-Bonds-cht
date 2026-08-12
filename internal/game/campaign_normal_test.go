@@ -250,7 +250,7 @@ func (o *normalCampaignObserver) resolveDungeonBoundary(t *testing.T) {
 			o.state.Message == requireGamePackText(t, o.state, "essembra.edge") {
 			return
 		}
-		if o.stopAtMessageID != "" && o.state.Mode == ModeWilderness &&
+		if o.stopAtMessageID != "" &&
 			o.state.Message == requireGamePackText(t, o.state, o.stopAtMessageID) {
 			return
 		}
@@ -1520,5 +1520,106 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 	if !state.CanMoveDungeon(caveGrid, -1, 0, 6) {
 		t.Fatalf("normal Beholder Cave cannot return through revealed Dexam wall: edges=%v",
 			state.dungeonSearchEdgeIDs())
+	}
+
+	// The original Chinese Journal 59 map draws a second door on the east side
+	// of Dexam's shrine. GEO4/25 stores it as wall 09/detail 0 at the wrapped
+	// (15,1,E)->(0,1,W) edge; after revealing it, every remaining edge on the
+	// route to terrain 93 is an ordinary door, archway, or open corridor.
+	state.TurnDungeonWithGrid(caveGrid, (2-int(state.DungeonDirection)+8)%8)
+	if state.CanMoveDungeon(caveGrid, 1, 0, 2) {
+		t.Fatal("normal Beholder Cave shrine east wall was passable before LOOK")
+	}
+	if err := state.LookDungeonLocation(); err != nil {
+		t.Fatalf("normal Beholder Cave LOOK at shrine east wall: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if !state.CanMoveDungeon(caveGrid, 1, 0, 2) {
+		t.Fatalf("normal Beholder Cave LOOK did not reveal shrine east wall: edges=%v",
+			state.dungeonSearchEdgeIDs())
+	}
+	if err := state.MoveDungeon(caveGrid, 1, 0, 2); err != nil {
+		t.Fatalf("normal Beholder Cave leave shrine through east wall: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if state.DungeonX != 0 || state.DungeonY != 1 {
+		t.Fatalf("normal Beholder Cave shrine east wrap ended at (%d,%d), want (0,1)",
+			state.DungeonX, state.DungeonY)
+	}
+	for stepIndex, direction := range []int{4, 2, 2, 4, 4, 2, 2, 2, 2, 2, 0, 6} {
+		observer.resolveDungeonBoundary(t)
+		if state.Mode != ModeDungeon {
+			t.Fatalf("normal Beholder Cave exit path step %d mode=%v message=%q",
+				stepIndex+1, state.Mode, state.Message)
+		}
+		state.TurnDungeonWithGrid(caveGrid,
+			(direction-int(state.DungeonDirection)+8)%8)
+		deltaX, deltaY := normalDungeonDelta(direction)
+		if !state.CanMoveDungeon(caveGrid, deltaX, deltaY, direction) {
+			flags, _ := caveGrid.WallDoorFlagsWrapped(
+				state.DungeonX, state.DungeonY, direction)
+			if flags != 2 && flags != 3 {
+				t.Fatalf("normal Beholder Cave exit path step %d blocked at (%d,%d,%d), flags=%#x",
+					stepIndex+1, state.DungeonX, state.DungeonY, direction, flags)
+			}
+			openNormalDungeonDoor(t, state, &caveGrid)
+		}
+		if err := state.MoveDungeon(caveGrid, deltaX, deltaY, direction); err != nil {
+			t.Fatalf("normal Beholder Cave exit path step %d from (%d,%d,%d): %v",
+				stepIndex+1, state.DungeonX, state.DungeonY, direction, err)
+		}
+		observer.resolveDungeonBoundary(t)
+	}
+	if state.Mode != ModeDungeon || state.DungeonX != 6 || state.DungeonY != 3 ||
+		state.DungeonWallRoof != 0x93 {
+		t.Fatalf("normal Beholder Cave exit route mode=%v pos=(%d,%d,%d) terrain=%#x message=%q",
+			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
+			state.DungeonWallRoof, state.Message)
+	}
+	state.TurnDungeonWithGrid(caveGrid, (2-int(state.DungeonDirection)+8)%8)
+	if err := state.RunDungeonExitLifecycle(); err != nil {
+		t.Fatalf("normal Beholder Cave exit lifecycle: %v", err)
+	}
+	observer.observe()
+	if state.Message != requireGamePackText(t, state, "dexam.departure.olive") {
+		t.Fatalf("normal Beholder Cave departure Olive message=%q", state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatalf("continue normal Beholder Cave departure picture: %v", err)
+	}
+	for _, messageID := range []string{
+		"dexam.departure.dimswart",
+		"dexam.departure.gharri",
+		"dexam.departure.riders",
+	} {
+		if err := state.Select(0); err != nil {
+			t.Fatalf("select normal Beholder Cave departure %s: %v", messageID, err)
+		}
+		observer.observe()
+		if state.Message != requireGamePackText(t, state, messageID) {
+			t.Fatalf("normal Beholder Cave departure %s message=%q", messageID, state.Message)
+		}
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("leave normal Beholder Cave departure scene: %v", err)
+	}
+	if err := state.Select(0); err != nil {
+		t.Fatalf("continue normal Beholder Cave world handoff: %v", err)
+	}
+	observer.observe()
+	if state.Mode != ModeEvent || state.session.CurrentBlockID() != 0x51 ||
+		state.Area.InDungeon || state.Area.GameArea != 1 ||
+		state.Message != requireGamePackText(t, state, "zhentil.edge") {
+		t.Fatalf("normal Beholder Cave world return mode=%v block=%#x area=%+v message=%q",
+			state.Mode, state.session.CurrentBlockID(), state.Area, state.Message)
+	}
+	if err := state.Continue(); err != nil {
+		t.Fatalf("continue normal Beholder Cave Shadowdale edge: %v", err)
+	}
+	if state.Mode != ModeWilderness ||
+		!observer.hasOption("ecl-option.enter-city") ||
+		!observer.hasOption("ecl-option.journey-on") {
+		t.Fatalf("normal Beholder Cave Shadowdale menu mode=%v choices=%v message=%q",
+			state.Mode, state.currentOriginalChoices, state.Message)
 	}
 }

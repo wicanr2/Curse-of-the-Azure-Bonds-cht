@@ -1,4 +1,68 @@
 {
   "schema_version": 1,
-  "findings": null
+  "findings": [
+    {
+      "path": "cmd/locale-drift-audit/main.go",
+      "function": "main",
+      "sha256": "5f5ebcca8586b6b6edda024a534b95501d4bc1997517af85cd73923391f5b72e",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/screenshot-audit/main.go",
+      "function": "fail",
+      "sha256": "2ae6e26c8170f589a34b970cce4e4ddae38924d005dfa35b8528ca91bbb536d7",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "cmd/screenshot-audit/main.go",
+      "function": "main",
+      "sha256": "a91cf8eb75e4f84f311eb70c4f9f4697bd0656f1cffd893edef50cbc7ed5d2f2",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/localeaudit/audit.go",
+      "function": "referencedMessageIDs",
+      "sha256": "c7a03000c80032da7f100d96e9fae2347189c30c3f9daece62ab0f28685ab5c0",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/spellcoverage/audit.go",
+      "function": "Build",
+      "sha256": "1e920b3167caffbdb3d0c7d7577f8a17cd0107b44dac09305f42419c383cf1fb",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/spellcoverage/audit.go",
+      "function": "Build",
+      "sha256": "3093991dae14da9efbd5d6dd6e1b6ca0e3619b3aa8281a9e79052c68f110d7ce",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/spellcoverage/audit.go",
+      "function": "Build",
+      "sha256": "4050dedd47a56b4f96d7cb9cd4bc13924fd69fc57748f3e7f1b48dace80caae9",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/spellcoverage/audit.go",
+      "function": "Build",
+      "sha256": "56f3ba8061362decd1d5202025d5901134cfc603d7874e5d62ac3cbd9d2e8027",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    },
+    {
+      "path": "internal/spellcoverage/audit.go",
+      "function": "Build",
+      "sha256": "d66e10677b708ff7265c27d02c266882c778d621d9c67b3703010e603f2be9de",
+      "occurrences": 1,
+      "category": "runtime_ui_debt"
+    }
+  ]
 }

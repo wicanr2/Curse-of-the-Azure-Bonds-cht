@@ -5012,3 +5012,17 @@ inference，不命名欄位。observer 補齊四個 Dexam stable ID，秘密通�
 改為揭露後雙向可走。正常 session 已完成兩場決戰、戰利品、護符與戰後回洞穴；
 `(15,1)` 到 terrain `93h`／`(6,3)` 的出口 route 仍未閉合，禁止宣稱整洞或主線完成。
 權威規格為 `docs/spec/554-normal-beholder-cave-dexam-route.md`。
+
+2026-08-12 第五百五十五輪關閉 Dexam 戰後至世界地圖的正常玩家路徑。中文
+《軟體世界》掃描 `084.jpg`／印刷頁 52 的手札 59 清楚畫出 Dexam 神殿東、西
+兩門；GEO4/25 的 `(15,1,E)` wrapped 到 `(0,1,W)` 為 `wall=09/detail=0`，故以
+CoAB JSON `strong inference` SEARCH edge 表示，沒有寫入 State 座標特判。原始
+GEO4 bytes 在允許普通 detail 2/3 門後，證明 `(0,1)` 到 terrain `93h`／`(6,3)`
+的十二步路徑 `S,E,E,S,S,E,E,E,E,E,N,W`；正常新遊戲 session 以 LOOK、一般
+移動與開門完成四段離場敘事，回到 `CurrentCity=12` 的散提爾堡世界選單。局部
+Dexam fixture 的暗影谷目的地是缺少完整 world-state 的預設，不能推翻正常 session。
+權威規格為 `docs/spec/555-beholder-cave-east-door-and-world-return.md`；下一個 P0 是
+從散提爾堡世界選單沿同一 session 接續後續章節，而非再深挖洞穴外無關函式。
+正式 gate 同時發現第 551–552 輪新增 audit 程式後，漢字 literal baseline 仍是
+空值；本輪以 `coab-audit -write-baseline` 補入九筆 `runtime_ui_debt` 精確 AST
+雜湊。這是先前 milestone 漏更新的審計帳，不是本輪新增產品 UI 中文常數。
