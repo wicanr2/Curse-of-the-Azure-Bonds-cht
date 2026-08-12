@@ -1245,8 +1245,9 @@ marker 為 `ROUND500_FORMAL_EXIT=0`、`coab-audit total=0`；文件、README／�
   特殊能力、逃跑／交涉與戰後流程。
 - 全角色／怪物／物品／法術 AD&D 規則及完整多職業、alignment、升級規則。
 - 全英文文本、59 則 Journal、Tavern Tales、Clue Book／攻略的完整遊戲內繁中化。
-  手札 1–59 的文件級校訂摘要已完成，但尚未全部轉成 stable-ID game-pack 內容並
-  接入 Journal renderer；手札 1 仍因來源未找到而標為 `unknown`。
+  手札 1–59 的文件級校訂摘要已完成；第 556 輪修正 Journal 七行裁切並接通手札
+  46，目前 31 則有 stable-ID game-pack 內容與事件解鎖，仍有 28 則待從真實
+  producer 接線；手札 1 仍因來源未找到而標為 `unknown`。
 - 原版音樂與 PC Speaker／Tandy 音效的完整還原；目前 ECL 戰鬥開始／隊伍全滅的
   semantic intent 已接通，但 PC-98 12 首 YM2203
   曲目已可由本機 driver 合成播放，正常 stop→800ms→play 與無限 loop

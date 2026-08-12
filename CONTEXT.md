@@ -5026,3 +5026,13 @@ Dexam fixture 的暗影谷目的地是缺少完整 world-state 的預設，不�
 正式 gate 同時發現第 551–552 輪新增 audit 程式後，漢字 literal baseline 仍是
 空值；本輪以 `coab-audit -write-baseline` 補入九筆 `runtime_ui_debt` 精確 AST
 雜湊。這是先前 milestone 漏更新的審計帳，不是本輪新增產品 UI 中文常數。
+
+2026-08-12 第五百五十六輪依使用者優先順序轉向「全量繁中／手札」與「完整
+戰鬥／音效」。Journal renderer 原本只畫七行，現依實際字型 advance 自動分頁，
+顯示頁完整串回來源內容且不改變 save 中的 `journal.*` stable ID。摩安德之坑
+`pit.zhentrim-scroll` 的真實 `JOURNAL ENTRY 46` producer 已解鎖校訂後的 en／
+zh-TW `journal.46`；目前 59 則中 31 則已接線，28 則仍待 producer，手札 1 維持
+unknown。Engine `2d7b09d` 新增互斥 `frames／generator` 戰鬥視覺契約；睡眠術
+以 `sleep／impact → pc98.twinkle` JSON 綁定既有 1440 ms PC-98 動態效果，法術
+coverage 由 2/12 升至 3/12。下一步是六個牧師法術的原版可證視覺，以及 Magic
+Missile／Stinking Cloud／Cloudkill 的資料化音效 phase；不可把 3/12 寫成完整戰鬥。

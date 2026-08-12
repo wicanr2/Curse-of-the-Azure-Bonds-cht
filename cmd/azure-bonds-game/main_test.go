@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -284,6 +285,34 @@ func TestWrapTextLinesByWidthUsesFaceAdvance(t *testing.T) {
 	want := []string{"AB", "CD"}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("wrapTextLinesByWidth()=%q, want %q", got, want)
+	}
+}
+
+func TestJournalDisplayPagesPreserveEverySourceEntryWithoutClipping(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry := pack.Locales["zh-TW"]["journal.48"]
+	pages := journalDisplayPages([]string{entry}, "", basicfont.Face7x13, font.MeasureString(basicfont.Face7x13, "AAAAAA").Ceil(), 3)
+	if len(pages) < 2 {
+		t.Fatalf("long stable journal entry produced %d display page(s)", len(pages))
+	}
+	got := strings.ReplaceAll(strings.Join(pages, ""), "\n", "")
+	want := strings.ReplaceAll(entry, "\n", "")
+	if got != want {
+		t.Fatal("display pagination dropped or duplicated journal text")
+	}
+}
+
+func TestSleepTwinkleUsesGeneratedVisualBinding(t *testing.T) {
+	pack, err := gamepack.Default()
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition, found := pack.FindCombatVisual("sleep", "impact")
+	if !found || definition.Generator != "pc98.twinkle" || len(definition.Frames) != 0 {
+		t.Fatalf("sleep visual=%+v found=%v", definition, found)
 	}
 }
 
