@@ -5,6 +5,15 @@
 目前剩餘工作的單一摘要入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；本檔保留
 逐輪成果、證據等級與歷史勘誤，不取代該清單的目前優先順序。
 
+第 550 輪把同一條新遊戲 normal session 從眼魔洞穴 A2 的死精靈提示延伸至
+`EXAMINE REMAINS → PICK UP POUCH`。原始 ECL4 block `0x22` 依序產生皮袋、氣體
+陷阱、手札 59 地圖與無 monster spawn 的 `COMBAT` request；CoAB game-pack 以 stable
+`message_id` 解鎖可在遊戲內閱讀的繁中手札 59，State 在 `TREASURE_EXIT` 後保留同一
+洞穴 `(13,1,W)`，沒有座標注入或推測性搜尋邊。原始地圖 bitmap 尚未接入 Journal
+renderer，Dexam、出口與後續主線也尚未在同一 session 閉合。舊 `(15,1)` 搜尋邊維持
+`strong inference`，不再列為 normal-path 證據。完整範圍見
+[`spec 550`](spec/550-ecl4-dead-elf-journal59-treasure-continuation.md)。
+
 第 548 輪保留第 547 輪 DOS overlay-07 `C04B..C04F` map-register bridge，但以原始
 ECL4 trace 更正洞穴 A2 時序：同一新遊戲 session 從 `(5,7,W)` 走至 `(5,9)` 後，
 先顯示砲擊敘事並經三次 `PRESS`，才在 block `0x22 +061B` 寫入

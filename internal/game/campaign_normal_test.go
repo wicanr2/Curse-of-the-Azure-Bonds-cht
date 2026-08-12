@@ -3,6 +3,7 @@ package game
 import (
 	"archive/zip"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -1391,58 +1392,63 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 		t.Fatalf("normal Beholder Cave dead-elf prompt message=%q choices=%v originals=%v",
 			state.Message, state.Choices, state.currentOriginalChoices)
 	}
-	if err := state.Select(requireGamePackOptionIndex(t, state, "ecl-option.leave")); err != nil {
-		t.Fatalf("normal Beholder Cave leave dead-elf remains: %v", err)
-	}
-	if state.Mode != ModeDungeon {
-		t.Fatalf("normal Beholder Cave leave dead-elf remains mode=%v message=%q choices=%v",
+	selectOption("dexam.dead-elf.examine-remains")
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, state, "dexam.dead-elf.pouch") ||
+		!observer.hasOption("ecl-option.press-button-or-return-to-continue") {
+		t.Fatalf("normal Beholder Cave pouch discovery mode=%v message=%q choices=%v",
 			state.Mode, state.Message, state.currentOriginalChoices)
 	}
-	if value, ok := state.session.MemoryValue(0x4C03); !ok || value != 1 {
-		t.Fatalf("normal Beholder Cave raw 4C03=%#x ok=%v, want preserved through the original dead-elf handler", value, ok)
+	selectOption("ecl-option.press-button-or-return-to-continue")
+	if state.Mode != ModeWilderness || !observer.hasOption("dexam.dead-elf.pick-up-pouch") ||
+		!observer.hasOption("dexam.dead-elf.poke-pouch") || !observer.hasOption("dexam.dead-elf.find-trap") ||
+		!observer.hasOption("ecl-option.leave") {
+		t.Fatalf("normal Beholder Cave pouch menu mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
 	}
-	// The initial four-cell island has a wall=09 edge at (14,1,E).  The
-	// original GEO plus the public cave map makes this the only direct bridge
-	// from the teleporter's dead-elf room into the Dexam chamber.  It is
-	// declared as a title-owned search edge, so the player must issue LOOK or
-	// enable SEARCH before attempting that wall.
-	observer.stopAtDataPackEventID = ""
-	if err := state.MoveDungeon(caveGrid, 1, 0, 2); err != nil {
-		t.Fatalf("normal Beholder Cave teleporter room east step: %v", err)
+	selectOption("dexam.dead-elf.pick-up-pouch")
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, state, "dexam.dead-elf.gas-trap") ||
+		!observer.hasOption("ecl-option.press-button-or-return-to-continue") {
+		t.Fatalf("normal Beholder Cave gas-trap warning mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
 	}
-	observer.resolveDungeonBoundary(t)
-	if state.Mode != ModeDungeon || state.DungeonX != 14 || state.DungeonY != 1 {
-		t.Fatalf("normal Beholder Cave secret-wall source mode=%v pos=(%d,%d,%d) message=%q choices=%v",
-			state.Mode, state.DungeonX, state.DungeonY, state.DungeonDirection,
-			state.Message, state.currentOriginalChoices)
+	selectOption("ecl-option.press-button-or-return-to-continue")
+	if state.Mode != ModeWilderness || state.Message != requireGamePackText(t, state, "dexam.dead-elf.map") ||
+		!observer.hasOption("ecl-option.press-button-or-return-to-continue") {
+		t.Fatalf("normal Beholder Cave Journal 59 mode=%v message=%q choices=%v",
+			state.Mode, state.Message, state.currentOriginalChoices)
 	}
-	if err := state.LookDungeonLocation(); err != nil {
-		t.Fatalf("normal Beholder Cave LOOK for Dexam passage: %v", err)
+	if !slices.Contains(state.JournalPages, requireGamePackText(t, state, "journal.59")) {
+		t.Fatalf("normal Beholder Cave Journal 59 was not unlocked: %v", state.JournalPages)
 	}
-	observer.resolveDungeonBoundary(t)
-	if !state.dungeonSearchEdges["zhentil-keep.beholder-cave.dexam-east"] {
-		t.Fatalf("normal Beholder Cave LOOK did not discover Dexam wall=09: edges=%v", state.dungeonSearchEdges)
+	for address, want := range map[uint16]uint16{0x4C03: 1, 0x4C07: 0x80} {
+		if got, ok := state.session.MemoryValue(address); !ok || got != want {
+			t.Fatalf("normal Beholder Cave raw memory[%#x]=%#x ok=%v, want %#x", address, got, ok, want)
+		}
 	}
-	if err := state.MoveDungeon(caveGrid, 1, 0, 2); err != nil {
-		t.Fatalf("normal Beholder Cave searched Dexam passage: %v", err)
+	selectOption("ecl-option.press-button-or-return-to-continue")
+	treasureExit, hasTreasureExit := state.OriginalChoiceIndex("TREASURE_EXIT")
+	if state.Mode != ModeWilderness || !state.treasureMenu || state.CombatActive() ||
+		len(state.PendingTreasureItems()) != 2 ||
+		!hasTreasureExit {
+		t.Fatalf("normal Beholder Cave post-map treasure boundary mode=%v treasure=%v combat=%v event=%q message=%q choices=%v items=%v",
+			state.Mode, state.treasureMenu, state.CombatActive(), state.OriginalEvent, state.Message,
+			state.currentOriginalChoices, state.PendingTreasureItems())
 	}
-	// This normal route has already resolved the Dexam confrontation before it
-	// reaches Cave E1.  Crossing the searched wall must therefore not replay
-	// the one-shot encounter; the virgin-state Dexam battle remains covered by
-	// the focused raw-ECL regression.
-	state.TurnDungeonWithGrid(caveGrid, (0-int(state.DungeonDirection)+8)%8)
+	if err := state.Select(treasureExit); err != nil {
+		t.Fatalf("normal Beholder Cave leave Journal 59 treasure: %v", err)
+	}
 	if err := state.RunDungeonLifecycle(); err != nil {
-		t.Fatalf("normal Beholder Cave north-facing Dexam lifecycle: %v", err)
+		t.Fatalf("normal Beholder Cave lifecycle after Journal 59 treasure: %v", err)
 	}
-	if state.Mode != ModeDungeon || state.PictureRequested || state.Message != "" ||
-		state.DungeonX != 15 || state.DungeonY != 1 || state.DungeonDirection != 0 {
-		guard, _ := state.session.MemoryValue(0x7F81)
-		terrain, _ := state.session.MemoryValue(0xC04F)
-		dimswart, _ := state.session.MemoryValue(0x4C01)
-		t.Fatalf("normal Beholder Cave Dexam replay mode=%v picture=%v/%d pos=(%d,%d,%d) wall=%#x roof=%#x C04F=%#x 7F81=%#x 4C01=%#x message=%q choices=%v",
-			state.Mode, state.PictureRequested, state.PictureBlock,
-			state.DungeonX, state.DungeonY, state.DungeonDirection,
-			state.DungeonWallType, state.DungeonWallRoof, terrain, guard, dimswart,
-			state.Message, state.currentOriginalChoices)
+	if state.Mode != ModeDungeon || state.CombatActive() || state.treasureMenu ||
+		len(state.PendingTreasureItems()) != 0 || state.Message != "" || len(state.currentOriginalChoices) != 0 ||
+		state.DungeonX != 13 || state.DungeonY != 1 || state.DungeonDirection != 6 {
+		t.Fatalf("normal Beholder Cave post-treasure lifecycle mode=%v combat=%v treasure=%v message=%q choices=%v items=%v pos=(%d,%d,%d)",
+			state.Mode, state.CombatActive(), state.treasureMenu, state.Message, state.currentOriginalChoices,
+			state.PendingTreasureItems(), state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
+
+	// The Journal 59 page is a player-visible map clue. The next PRESS reaches
+	// the original no-spawn COMBAT/treasure service boundary; its loot and the
+	// route that follows must still be closed from this same normal session.
 }

@@ -42,7 +42,7 @@ Go frontend。
 | `4C03=1` 在 `LEAVE` 後保留 | 同一 raw session 的 state assertion | `exact`（本 trace） |
 | C04 map-register 寫入投影 | 第 547 輪 DOS overlay-07 IDA bridge | `exact`（writer/getter bridge） |
 | `(13,1,W)` map cache | 原始 GEO4 block `0x25` | `exact` |
-| 玩家由 E1 到 A2、三次續跑、秘密邊後不重播一次性事件 | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` | `exact`（remake normal path） |
+| 玩家由 E1 到 A2、三次續跑並在同一 result 抵達死精靈提示 | `TestRealNewGameContinuesFromHapToBeholderCaveEntrance` | `exact`（remake normal path） |
 
 Docker focused gate：
 
@@ -60,8 +60,17 @@ go test ./gamepack \
 - 這只證明 A2 事件的文字、位置 handoff 與死精靈選單 continuation；不等於
   Dexam、所有洞穴房間、出口、重訪或完整主線已完成。
 - `0x4C00` 仍是與這條玩家結果無關的 `unknown`；不因本輪被命名或列為阻塞。
-- `(15,1)` 的資料驅動搜尋邊不會重新播放已經處理的一次性故事事件；它不能被
-  當作另一條 direct-entry 驗收捷徑。
+- `(15,1)` 的資料驅動搜尋邊仍只是 `strong inference`；它不是這條正常玩家
+  路徑的證據，也不能被當作 Dexam 或出口的 direct-entry 驗收捷徑。
+
+## 第 550 輪勘誤
+
+第 548 輪一度把死精靈後的搜尋邊寫入同一條 normal-path 敘述。那條邊沒有原始
+GEO movement／runtime 閉合，只能保留為後續研究候選。第 550 輪的正常 session
+改為在死精靈的皮袋、氣體陷阱、手札 59 與後續戰利品服務結束後，回到同一洞穴
+座標；詳細 bytes、game-pack 資料契約與範圍見
+[`spec 550`](550-ecl4-dead-elf-journal59-treasure-continuation.md)。本規格其餘 A2
+map-register 與 continuation 證據仍然有效。
 
 第 547 輪的 raw map-register 證據仍有效，但洞穴 route 時序與完成敘述由本規格
 取代。

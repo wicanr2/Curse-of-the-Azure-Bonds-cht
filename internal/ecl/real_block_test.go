@@ -348,6 +348,105 @@ func TestRealECL4CaveA2CannonContinuesToDeadElfHandler(t *testing.T) {
 	}
 }
 
+func TestRealECL4CaveDeadElfPouchUnlocksJournal59AndRequestsCombat(t *testing.T) {
+	archive, err := zip.OpenReader("../../curseoftheazurebonds.zip")
+	if err != nil {
+		t.Skipf("original image unavailable: %v", err)
+	}
+	defer archive.Close()
+	blocks, err := dax.Parse(realZipMember(t, archive, "ECL4.DAX"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var caveBlock []byte
+	for _, block := range blocks {
+		if block.Entry.ID == 0x22 {
+			caveBlock = block.Data
+			break
+		}
+	}
+	if len(caveBlock) == 0 {
+		t.Fatal("ECL4 block 0x22 is absent")
+	}
+
+	runtime := NewRuntimeState(0x050A)
+	runtime.Started = true
+	runtime.Memory[0xC04F] = 0xA2
+	runtime.Memory[0x4C03] = 1
+	for step := 0; step < 4; step++ {
+		selections := []uint16(nil)
+		if step > 0 {
+			selections = []uint16{0}
+		}
+		result, runErr := runSubsetWithState(caveBlock, 0x050A, 500, selections, true, 1, runtime)
+		if runErr != nil {
+			t.Fatalf("reach dead-elf step %d: %v", step, runErr)
+		}
+		if !result.WaitingForMenu {
+			t.Fatalf("reach dead-elf step %d result=%+v", step, result)
+		}
+	}
+
+	pouch, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pouch.PC != 0x14D5 || !pouch.WaitingForMenu || !reflect.DeepEqual(pouch.Text, []string{
+		"BURIED BENEATH THE MOLDERING CLOTHING,  YOU FIND A",
+		"LEATHER POUCH.",
+	}) {
+		t.Fatalf("dead-elf pouch=%+v", pouch)
+	}
+
+	pouchMenu, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pouchMenu.PC != 0x06D7 || !pouchMenu.WaitingForMenu || len(pouchMenu.Menus) == 0 ||
+		!reflect.DeepEqual(pouchMenu.Menus[len(pouchMenu.Menus)-1].Options, []string{
+			"PICK UP POUCH", "POKE AT POUCH", "CAST FIND TRAP", "LEAVE",
+		}) {
+		t.Fatalf("dead-elf pouch menu=%+v", pouchMenu)
+	}
+
+	gasTrap, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gasTrap.PC != 0x14D5 || !gasTrap.WaitingForMenu ||
+		!reflect.DeepEqual(gasTrap.Text, []string{"A GAS TRAP GOES OFF!"}) ||
+		!reflect.DeepEqual(gasTrap.SaveWrites, []MemoryWrite{{Address: 0x7F79, Value: 0, PC: 0x08A6}}) {
+		t.Fatalf("dead-elf gas trap=%+v", gasTrap)
+	}
+
+	mapResult, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if mapResult.PC != 0x14D5 || !mapResult.WaitingForMenu ||
+		!reflect.DeepEqual(mapResult.Text, []string{
+			"YOU DISCOVER A MAP.  ON IT, YOU SEE DEXAMS ALTAR",
+			"INDICATED AND A PATH THAT SEEMS TO LEAD OUTSIDE.",
+			"YOU PLACE IT IN YOUR JOURNAL AS ENTRY 59.",
+		}) ||
+		!reflect.DeepEqual(mapResult.DamageRequests, []DamageRequest{{Flags: 0xC0, DiceCount: 1, DiceSize: 12, SaveFlags: 3}}) ||
+		!reflect.DeepEqual(mapResult.SaveWrites, []MemoryWrite{{Address: 0x4C07, Value: 0x80, PC: 0x09AC}}) {
+		t.Fatalf("dead-elf Journal 59 map=%+v", mapResult)
+	}
+	if runtime.Memory[0x4C03] != 1 || runtime.Memory[0x4C07] != 0x80 {
+		t.Fatalf("dead-elf map raw guards: 4C03=%#x 4C07=%#x", runtime.Memory[0x4C03], runtime.Memory[0x4C07])
+	}
+
+	combatResult, err := runSubsetWithState(caveBlock, 0x050A, 500, []uint16{0}, true, 1, runtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if combatResult.PC != 0x089C || !combatResult.CombatRequested || combatResult.WaitingForMenu ||
+		len(combatResult.Text) != 0 || len(combatResult.SaveWrites) != 0 {
+		t.Fatalf("dead-elf post-map combat=%+v", combatResult)
+	}
+}
+
 func realZipMember(t *testing.T, archive *zip.ReadCloser, name string) []byte {
 	t.Helper()
 	for _, entry := range archive.File {
