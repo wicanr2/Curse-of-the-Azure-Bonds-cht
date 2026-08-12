@@ -40,3 +40,23 @@ func TestShortestGEOPathUsesWrappedDungeonMovement(t *testing.T) {
 		t.Fatalf("path=%+v, want %+v", path, want)
 	}
 }
+
+func TestShortestGEOPathWithDoorsDoesNotInventDetailZeroPassage(t *testing.T) {
+	grid := geo.Grid{}
+	for y := 0; y < geo.Height; y++ {
+		for x := 0; x < geo.Width; x++ {
+			for direction := range grid.Cells[y][x].WallDirections {
+				grid.Cells[y][x].WallDirections[direction] = 9
+			}
+		}
+	}
+	if _, found := shortestGEOPathWithDoors(grid, geoPathStep{X: 0, Y: 0}, geoPathStep{X: 1, Y: 0}, true); found {
+		t.Fatal("detail-zero wall became passable")
+	}
+	grid.Cells[0][0].DetailDirections[1] = 2
+	grid.Cells[0][1].DetailDirections[3] = 2
+	path, found := shortestGEOPathWithDoors(grid, geoPathStep{X: 0, Y: 0}, geoPathStep{X: 1, Y: 0}, true)
+	if !found || len(path) != 2 || !path[1].Door {
+		t.Fatalf("ordinary locked-door path=%+v found=%v", path, found)
+	}
+}

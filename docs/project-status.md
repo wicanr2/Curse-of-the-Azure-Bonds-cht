@@ -54,7 +54,8 @@ Docker 仍通過 Dexam 揭露、兩場戰鬥、戰後續跑、洞穴出口與世
 只以作品包的 `set_memory` action 保存玩家可見的散提爾堡故事轉移依賴；engine
 提供可重用的 raw memory write，CoAB JSON 宣告觸發條件與數值。新增的正常 session
 測試從 Hap／熔岩洞／法師塔續跑至 Cave E1 `(5,7,W)`；第 547 輪再接到死精靈格
-`(13,1,W)`，但 Dexam、隨機遭遇與出口尚未以猜測的圖邊連線取代。這是
+`(13,1,W)`，第 554 輪已由 LOOK 通路完成 Dexam 雙戰與戰後回洞穴；但
+`(15,1)` 到 `(6,3)` 出口仍未以串猜多道圖邊取代。這是
 `engine＋JSON／normal-path boundary` 的 `READY` milestone，不是完整 ECL 或整作
 通關。完整證據見 [`spec 544`](spec/544-opaque-memory-route-boundary-and-cave-entry.md)。
 
@@ -73,7 +74,8 @@ JSON 外部出口、熔岩洞入口／守門戰、巫師塔德拉坎德羅斯／
 阿沙本福德城內 Tavern Tale 28、立石群提爾隘口戰鬥與尋紅線索，走到艾森布拉城外。
 測試選項使用 game-pack stable ID；`PATROL FOREST` 的分支差異確認是前置
 提爾佛頓事件留下的 `4C03=0x80` 共享旗標，不是應清掉的 stale state。這是目前最長
-的正常主線 handoff，不能宣稱全城市／全房間／完整結局；固定整合測試涵蓋的哈普、
+的正常主線 handoff；第 554 輪已進一步延伸至眼魔洞穴 Dexam 雙戰。仍不能宣稱
+全城市／全房間／完整結局；固定整合測試涵蓋的哈普、
 熔岩洞、法師塔、希爾斯法、尤拉什、摩安德之坑、散提爾堡與 Myth Drannor 仍須與
 正常新遊戲 session 分開標示。完整邊界見
 [`spec 542`](spec/542-normal-campaign-spine-and-city-dungeon-handoff.md)。

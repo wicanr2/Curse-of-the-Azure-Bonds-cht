@@ -125,6 +125,10 @@ func (o *normalCampaignObserver) observe() {
 		"dexam.kill_order",
 		"dexam.amulet_rises",
 		"dexam.altar_melee",
+		"dexam.final_reveal",
+		"dexam.attack",
+		"dexam.amulet_retrieved",
+		"dexam.zhentil_attack",
 		"dexam.departure.olive",
 		"dexam.departure.dimswart",
 		"dexam.departure.gharri",
@@ -668,7 +672,9 @@ func walkNormalDungeonTo(t *testing.T, state *State, grid *geo.Grid, targetX, ta
 						next == (normalDungeonPoint{8, 15}) || next == (normalDungeonPoint{12, 10})) {
 					continue
 				}
-				if _, found := previous[next]; found || !grid.CanMoveDungeonWrapped(current.x, current.y, direction) {
+				if _, found := previous[next]; found ||
+					(!grid.CanMoveDungeonWrapped(current.x, current.y, direction) &&
+						!state.searchEdgeDiscovered(current.x, current.y, uint8(direction))) {
 					continue
 				}
 				previous[next] = struct {
@@ -1377,7 +1383,7 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 			state.appliedDataPackEvents[observer.stopAtDataPackEventID], observer.seen)
 	}
 	for address, want := range map[uint16]uint16{
-		0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0xC04E: 8, 0xC04F: 0xC0,
+		0xC04B: 13, 0xC04C: 1, 0xC04D: 3, 0xC04E: 8, 0xC04F: 0xC0, 0x4C03: 0,
 	} {
 		got, ok := state.session.MemoryValue(address)
 		if !ok || got != want {
@@ -1420,7 +1426,7 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 	if !slices.Contains(state.JournalPages, requireGamePackText(t, state, "journal.59")) {
 		t.Fatalf("normal Beholder Cave Journal 59 was not unlocked: %v", state.JournalPages)
 	}
-	for address, want := range map[uint16]uint16{0x4C03: 1, 0x4C07: 0x80} {
+	for address, want := range map[uint16]uint16{0x4C03: 0, 0x4C07: 0x80} {
 		if got, ok := state.session.MemoryValue(address); !ok || got != want {
 			t.Fatalf("normal Beholder Cave raw memory[%#x]=%#x ok=%v, want %#x", address, got, ok, want)
 		}
@@ -1448,7 +1454,71 @@ func TestRealNewGameContinuesFromHapToBeholderCaveEntrance(t *testing.T) {
 			state.PendingTreasureItems(), state.DungeonX, state.DungeonY, state.DungeonDirection)
 	}
 
-	// The Journal 59 page is a player-visible map clue. The next PRESS reaches
-	// the original no-spawn COMBAT/treasure service boundary; its loot and the
-	// route that follows must still be closed from this same normal session.
+	// Journal 59 supplies the player-visible topology; GEO4/25 independently
+	// proves that (14,1,E) is the sole detail-zero wall isolating Dexam.  The
+	// original SEARCH/LOOK writer is not yet exact, so the game-pack keeps this
+	// executable reconstruction explicitly graded as strong inference.
+	observer.stopAtDataPackEventID = ""
+	walkNormalDungeonTo(t, state, &caveGrid, 14, 1, observer)
+	if value, _ := state.session.MemoryValue(0x4C03); value != 0 {
+		t.Fatalf("normal Beholder Cave route to Dexam wall changed 4C03=%#x", value)
+	}
+	state.TurnDungeonWithGrid(caveGrid, (2-int(state.DungeonDirection)+8)%8)
+	if state.CanMoveDungeon(caveGrid, 1, 0, 2) {
+		t.Fatal("normal Beholder Cave Dexam wall was passable before LOOK")
+	}
+	if err := state.LookDungeonLocation(); err != nil {
+		t.Fatalf("normal Beholder Cave LOOK at Dexam wall: %v", err)
+	}
+	observer.resolveDungeonBoundary(t)
+	if value, _ := state.session.MemoryValue(0x4C03); value != 0 {
+		t.Fatalf("normal Beholder Cave LOOK changed 4C03=%#x", value)
+	}
+	if !state.CanMoveDungeon(caveGrid, 1, 0, 2) {
+		t.Fatalf("normal Beholder Cave LOOK did not reveal Dexam wall: edges=%v",
+			state.dungeonSearchEdgeIDs())
+	}
+	if err := state.MoveDungeon(caveGrid, 1, 0, 2); err != nil {
+		t.Fatalf("normal Beholder Cave enter Dexam chamber: %v", err)
+	}
+	if value, _ := state.session.MemoryValue(0x4C03); value != 1 {
+		t.Fatalf("normal Beholder Cave Dexam handler guard=%#x, want 1", value)
+	}
+	// The original fixed encounter is keyed to the chamber's north-facing
+	// presentation. Entering from the west is normal movement; turning north
+	// is a second ordinary player action, not a direct ECL entry.
+	if state.Mode == ModeDungeon {
+		state.TurnDungeonWithGrid(caveGrid, (0-int(state.DungeonDirection)+8)%8)
+		if err := state.RunDungeonLifecycle(); err != nil {
+			t.Fatalf("normal Beholder Cave face Dexam encounter: %v", err)
+		}
+	}
+	observer.resolveDungeonBoundary(t)
+	for _, messageID := range []string{
+		"dexam.final_reveal",
+		"dexam.attack",
+		"dexam.amulet_retrieved",
+		"dexam.zhentil_attack",
+	} {
+		if !observer.seen[messageID] {
+			guard, _ := state.session.MemoryValue(0x7F81)
+			terrain, _ := state.session.MemoryValue(0xC04F)
+			flag03, _ := state.session.MemoryValue(0x4C03)
+			flag07, _ := state.session.MemoryValue(0x4C07)
+			t.Fatalf("normal Beholder Cave Dexam route did not cover %s: mode=%v pos=(%d,%d,%d) wall=%#x roof=%#x C04F=%#x 7F81=%#x 4C03=%#x 4C07=%#x coverage=%v",
+				messageID, state.Mode, state.DungeonX, state.DungeonY,
+				state.DungeonDirection, state.DungeonWallType, state.DungeonWallRoof,
+				terrain, guard, flag03, flag07, observer.seen)
+		}
+	}
+	if state.Mode != ModeDungeon || state.session.CurrentBlockID() != 0x22 ||
+		state.DungeonX != 15 || state.DungeonY != 1 {
+		t.Fatalf("normal Beholder Cave after Dexam mode=%v block=%#x pos=(%d,%d,%d) coverage=%v",
+			state.Mode, state.session.CurrentBlockID(), state.DungeonX, state.DungeonY,
+			state.DungeonDirection, observer.seen)
+	}
+	if !state.CanMoveDungeon(caveGrid, -1, 0, 6) {
+		t.Fatalf("normal Beholder Cave cannot return through revealed Dexam wall: edges=%v",
+			state.dungeonSearchEdgeIDs())
+	}
 }

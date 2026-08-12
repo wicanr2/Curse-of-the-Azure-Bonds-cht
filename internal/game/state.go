@@ -5294,6 +5294,35 @@ func (s *State) discoverDungeonSearchEdges(discovery string) {
 }
 
 func (s *State) searchEdgeDiscovered(x, y int, direction uint8) bool {
+	if s.searchEdgeDefinitionDiscovered(x, y, direction) {
+		return true
+	}
+	// A GEO wall is one physical edge even though the two cells store separate
+	// directional bytes. Once LOOK/SEARCH reveals that edge from one side, the
+	// party must be able to walk back through it without discovering a second
+	// title-owned event. Resolve the opposite declaration at the neighbouring
+	// cell instead of requiring duplicate JSON records.
+	dx, dy := 0, 0
+	switch direction {
+	case 0:
+		dy = -1
+	case 2:
+		dx = 1
+	case 4:
+		dy = 1
+	case 6:
+		dx = -1
+	default:
+		return false
+	}
+	return s.searchEdgeDefinitionDiscovered(
+		geo.WrapCoordinate(x+dx, geo.Width),
+		geo.WrapCoordinate(y+dy, geo.Height),
+		(direction+4)%8,
+	)
+}
+
+func (s *State) searchEdgeDefinitionDiscovered(x, y int, direction uint8) bool {
 	edge, found := s.dungeonSearchEdge(x, y, direction)
 	if !found || s.dungeonSearchEdges == nil || !s.dungeonSearchEdges[edge.ID] {
 		return false

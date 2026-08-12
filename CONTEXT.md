@@ -5002,3 +5002,13 @@ Markdown。實際稽核目前 worktree、`workplace/` 與完整 Git 歷史後，
 terrain `93h` 的 `(6,3)`；缺口是三者間的正常 route。下一輪先做手札拓撲、GEO
 cell graph、ECL producer／consumer 的唯一解對位；只有仍有多解才以原版存檔副本
 跳到候選邊，受控抽樣 MOVE／LOOK／SEARCH、before／after 與重載，不從頭通關。
+2026-08-12 第五百五十四輪把同一新遊戲 session 延伸至 Dexam 雙戰。GEO4/25
+與手札 59 拓撲支持 `(14,1,E)` 的 `wall=09/detail=0` 為 Dexam 唯一入口；玩家以
+LOOK 揭露後普通移動進 `(15,1)`。ECL4 block `22h:+0B8Ah` 證明 `4C03h>=1`
+會略過事件，`+0B95h` 才在正常進房時加一；前一 shrine block `21h:+0832h`
+寫入的同位址值不能因 remake 全域共享 work memory 洩漏至新 map-local bank，故
+CoAB JSON 在既有 same-block handoff 以不透明 `set_memory` 歸零，信心為 strong
+inference，不命名欄位。observer 補齊四個 Dexam stable ID，秘密通路同一物理 edge
+改為揭露後雙向可走。正常 session 已完成兩場決戰、戰利品、護符與戰後回洞穴；
+`(15,1)` 到 terrain `93h`／`(6,3)` 的出口 route 仍未閉合，禁止宣稱整洞或主線完成。
+權威規格為 `docs/spec/554-normal-beholder-cave-dexam-route.md`。
