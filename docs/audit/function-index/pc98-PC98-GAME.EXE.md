@@ -200,19 +200,19 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
 | `19791` | sub_19791 | — | 44 | 20 | 2 | 1 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>第四種 SJIS→JIS,位元組與 17186h 那三份不同但**功能等價**:區號算 (ah-70h)×2 再視情況 -1(那三份算 (ah-71h)×2+1,恆等);低位元組 >= 9Eh 時 sub 5Eh 之後會**接著**走到共用的 sub 1Fh,合計 -7Dh。已逐碼點驗算 81h..9Fh + E0h..FCh 全部合法碼點,不一致 0 筆。⚠ 差別在守衛:ah = 80h 或 ah >= F0h 時原樣返回不轉換——這是首位元組界線的第三種(另兩種是 FCh 與 F7h) | — |
 | `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>畫之前先做**有號**範圍檢查(jl):dl < cl 或 dh < ch 就返回,所以座標是有號量、負值被擋掉。al <> 0 時存 cx/dx 到 word_280E8h/280EAh、呼叫 <sub_19825> 與 <sub_198AE>,並把 ch 設成 dh-al+1;最後一律 <sub_19840> | — |
-| `197EF` | sub_197EF | — | 54 | 31 | 1 | 4 |  | 待解讀 | — | — | — |
-| `19825` | sub_19825 | — | 27 | 13 | 2 | 0 |  | 待解讀 | — | — | — |
+| `197EF` | sub_197EF | — | 54 | 31 | 1 | 4 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>與 197BDh 幾乎相同(同樣的有號範圍檢查與收尾 sub_19840),差三處:座標先 dec dh 與 dec ch、中間呼叫 sub_19947 而非 sub_198AE、收尾算式是 dh := ch + al - 1 而非 ch := dh - al + 1 | — |
+| `19825` | sub_19825 | — | 27 | 13 | 2 | 0 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>把矩形兩個角換算成起點與長寬:dx -= cx、dx += 101h(兩個 byte 各自加一的寫法)、dh -= al,再重排成 al=左、cx=高、dx=寬、bx=al、di=al+ch。⚠ 101h 是 word 加法,低位元組為 0FFh 時進位會跑進高位元組多加一列;sub dx,cx 的借位同理 | — |
 | `19840` | sub_19840 | — | 110 | 56 | 4 | 4 |  | 待解讀 | — | — | — |
 | `198AE` | sub_198AE | — | 153 | 83 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19947` | sub_19947 | — | 174 | 93 | 1 | 4 |  | 待解讀 | — | — | — |
 | `199F5` | sub_199F5 | — | 18 | 12 | 3 | 0 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>文字 VRAM 位址計算:di := ((di × 50h) + dx) × 2 ⇒ 每列 80 欄、每格 2 bytes | — |
 | `19A07` | sub_19A07 | — | 9 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=06h、DL=07h,前後保存 DX | — |
-| `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
+| `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>if 0000:071Bh = 0 then 設成 1 並 int 18h(AH=11h)。先寫旗標再呼叫 BIOS,這支沒有對應的關閉路徑;旗標放在 BIOS 工作區而不是自己的資料段 | — |
+| `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>把 word_280F9h 寫進 BIOS 工作區:列不超過 0000:0712h(上限)時直接寫 0710h/071Ch;超出時夾成上限,而且**把欄一起歸零**——游標會跳到該列最左邊而不是留在原欄 | — |
 | `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作) | — |
 | `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳 | — |
 | `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>讀 0000:0712h 的 BIOS 計時位元組加一,與 dh 比較;不同就更新 dh | — |
-| `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
+| `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>從 PC-98 BIOS 工作區讀回游標:low(word_280F9h) := 0000:071Ch、high := 0000:0710h。與 19A29h 方向相反,兩支合起來確定 word_280F9h 高位元組是列、低位元組是欄 | — |
 | `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19AC2` | sub_19AC2 | — | 12 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完） | — |
 | `19ACE` | sub_19ACE | — | 50 | 27 | 1 | 1 |  | 待解讀 | — | — | — |

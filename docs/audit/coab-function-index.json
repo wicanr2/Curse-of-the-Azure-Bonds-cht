@@ -23545,7 +23545,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/661-cursor-and-bios-work-area.md",
+   "note": "與 197BDh 幾乎相同(同樣的有號範圍檢查與收尾 sub_19840),差三處:座標先 dec dh 與 dec ch、中間呼叫 sub_19947 而非 sub_198AE、收尾算式是 dh := ch + al - 1 而非 ch := dh - al + 1"
   },
   {
    "platform": "pc98",
@@ -23557,7 +23560,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/661-cursor-and-bios-work-area.md",
+   "note": "把矩形兩個角換算成起點與長寬:dx -= cx、dx += 101h(兩個 byte 各自加一的寫法)、dh -= al,再重排成 al=左、cx=高、dx=寬、bx=al、di=al+ch。⚠ 101h 是 word 加法,低位元組為 0FFh 時進位會跑進高位元組多加一列;sub dx,cx 的借位同理"
   },
   {
    "platform": "pc98",
@@ -23635,7 +23641,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/661-cursor-and-bios-work-area.md",
+   "note": "if 0000:071Bh = 0 then 設成 1 並 int 18h(AH=11h)。先寫旗標再呼叫 BIOS,這支沒有對應的關閉路徑;旗標放在 BIOS 工作區而不是自己的資料段"
   },
   {
    "platform": "pc98",
@@ -23647,7 +23656,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/661-cursor-and-bios-work-area.md",
+   "note": "把 word_280F9h 寫進 BIOS 工作區:列不超過 0000:0712h(上限)時直接寫 0710h/071Ch;超出時夾成上限,而且**把欄一起歸零**——游標會跳到該列最左邊而不是留在原欄"
   },
   {
    "platform": "pc98",
@@ -23704,7 +23716,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/661-cursor-and-bios-work-area.md",
+   "note": "從 PC-98 BIOS 工作區讀回游標:low(word_280F9h) := 0000:071Ch、high := 0000:0710h。與 19A29h 方向相反,兩支合起來確定 word_280F9h 高位元組是列、低位元組是欄"
   },
   {
    "platform": "pc98",
@@ -44826,9 +44841,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 177,
+   "Read": 182,
    "NotBlocking": 29,
-   "Todo": 105,
+   "Todo": 100,
    "Fragment": 22,
    "CodeBytes": 25067,
    "Undefined": 0,
