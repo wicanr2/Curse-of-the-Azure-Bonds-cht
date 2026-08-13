@@ -305,11 +305,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 已解讀 | exact | docs/spec/667-longint-to-decimal.md<br>32-bit 整數轉十進位字串:負數先取二補數並輸出 '-';用 CS:123Bh 起的十的冪次表,**不用除法而是「一直減到借位再加回來」**數出每一位(16-bit 機器上比 32-bit 除法便宜);mov al,2Fh + inc al 得到 '0',讓「至少加一次」自然成立。表在 linear 1B88Bh,正好是本支結尾,十筆已逐一驗證為 10^9..10^0。⚠ -2147483648 取二補數後仍是自己,這支對該值會輸出錯誤結果 | — |
 | `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |
 | `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes） | — |
-| `1B9C7` | sub_1B9C7 | — | 69 | 37 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1B9C7` | sub_1B9C7 | — | 69 | 37 | 4 | 1 |  | 已解讀 | exact | docs/spec/668-turbo-pascal-textrec-rtl.md<br>Turbo Pascal 的 Assign:逐欄位建立 TextRec,順序就是佈局——Handle/Mode(fmClosed=0D7B0h)/BufSize=80h/Private/BufPos/BufEnd/BufPtr(= 基底+80h)/OpenFunc(CS:148Ch),再清 +14h..+2Fh,最後把名字截到 4Fh(79)字寫進 +30h 並補 NUL。這由完整建構順序確認 TextRec 佈局,把 spec 659 的推論升為 exact | — |
 | `1BA37` | sub_1BA37 | — | 5 | 2 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B1h`（body 共 5 bytes，已逐條讀完） | — |
 | `1BA3C` | sub_1BA3C | — | 5 | 2 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B2h`（body 共 5 bytes，已逐條讀完） | — |
-| `1BA41` | sub_1BA41 | — | 75 | 27 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BA90` | sub_1BA90 | — | 59 | 19 | 5 | 2 |  | 待解讀 | — | — | — |
+| `1BA41` | sub_1BA41 | — | 75 | 27 | 1 | 3 |  | 已解讀 | exact | docs/spec/668-turbo-pascal-textrec-rtl.md<br>Reset/Rewrite 的共同部分:mode 是 fmInput/fmOutput 就先呼叫 1BA90h 關掉,不是 fmClosed 則設 word_23B08h(InOutRes) := 66h(錯誤 102)。之後 Mode := fmInOut、BufPos/BufEnd 清 0,再用 <sub_1BACBh>(bx=10h) 呼叫 OpenFunc;失敗就把 Mode 設回 fmClosed。bx 是欄位偏移 | — |
+| `1BA90` | sub_1BA90 | — | 59 | 19 | 5 | 2 |  | 已解讀 | exact | docs/spec/668-turbo-pascal-textrec-rtl.md<br>Close:fmOutput 時先 <sub_1BACBh>(bx=14h) 呼叫 InOutFunc 把緩衝寫出;非 fmInput/fmOutput 則設 word_23B08h := 67h(錯誤 103)。最後 <sub_1BACBh>(bx=1Ch) 呼叫 CloseFunc 並把 Mode 設成 fmClosed | — |
 | `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08 | — |
 | `1BB5E` | sub_1BB5E | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1BC46` | sub_1BC46 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |

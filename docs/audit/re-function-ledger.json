@@ -15305,6 +15305,33 @@
    "level": "exact",
    "spec": "docs/spec/667-longint-to-decimal.md",
    "note": "把 dword_23AF0h 正規化成「段落 + 段內偏移」並夾住下限 (word_23AECh, word_23AEEh):比較是先比段落、相等才比偏移的兩段式。與 1A9E1h/1ABE0h 用同一組界線"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113095,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/668-turbo-pascal-textrec-rtl.md",
+   "note": "Turbo Pascal 的 Assign:逐欄位建立 TextRec,順序就是佈局——Handle/Mode(fmClosed=0D7B0h)/BufSize=80h/Private/BufPos/BufEnd/BufPtr(= 基底+80h)/OpenFunc(CS:148Ch),再清 +14h..+2Fh,最後把名字截到 4Fh(79)字寫進 +30h 並補 NUL。這由完整建構順序確認 TextRec 佈局,把 spec 659 的推論升為 exact"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113217,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/668-turbo-pascal-textrec-rtl.md",
+   "note": "Reset/Rewrite 的共同部分:mode 是 fmInput/fmOutput 就先呼叫 1BA90h 關掉,不是 fmClosed 則設 word_23B08h(InOutRes) := 66h(錯誤 102)。之後 Mode := fmInOut、BufPos/BufEnd 清 0,再用 <sub_1BACBh>(bx=10h) 呼叫 OpenFunc;失敗就把 Mode 設回 fmClosed。bx 是欄位偏移"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113296,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/668-turbo-pascal-textrec-rtl.md",
+   "note": "Close:fmOutput 時先 <sub_1BACBh>(bx=14h) 呼叫 InOutFunc 把緩衝寫出;非 fmInput/fmOutput 則設 word_23B08h := 67h(錯誤 103)。最後 <sub_1BACBh>(bx=1Ch) 呼叫 CloseFunc 並把 Mode 設成 fmClosed"
   }
  ]
 }
