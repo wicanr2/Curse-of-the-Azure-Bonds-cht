@@ -171,16 +171,16 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18E44` | sub_18E44 | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
 | `18E59` | sub_18E59 | — | 113 | 50 | 2 | 3 |  | 待解讀 | — | — | — |
 | `18ECA` | sub_18ECA | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助,與 DOS START.EXE:19A94h 逐指令相同 | — |
-| `18EE0` | sub_18EE0 | — | 48 | 24 | 1 | 4 |  | 待解讀 | — | — | — |
+| `18EE0` | sub_18EE0 | — | 48 | 24 | 1 | 4 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>() | — |
 | `18F10` | sub_18F10 | — | 146 | 53 | 1 | 5 |  | 待解讀 | — | — | — |
-| `18FA3` | sub_18FA3 | — | 34 | 17 | 4 | 1 |  | 待解讀 | — | — | — |
-| `18FC5` | sub_18FC5 | — | 31 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18FA3` | sub_18FA3 | — | 34 | 17 | 4 | 1 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>打包 → PC-98 屬性:colour := <19E98h>(AL and 7) 放 bit 7..5,其餘 ((AL and 0F0h) shr 3) or 1 放 bit 4..0。⚠ bit 0 一定被設成 1 | — |
+| `18FC5` | sub_18FC5 | — | 31 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>PC-98 屬性 → 打包,與 18FA3h 互為反向:colour := <19E98h>((AL and 0E0h) shr 5),其餘 (AL and 1Eh) shl 3。⚠ and 1Eh 只取 bit 4..1,bit 0 在還原時被丟掉,所以往返一次不會完全還原 | — |
 | `18FE4` | sub_18FE4 | — | 17 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出 | — |
 | `18FF5` | sub_18FF5 | — | 114 | 41 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19085` | sub_19085 | — | 141 | 54 | 2 | 10 |  | 待解讀 | — | — | — |
 | `19112` | sub_19112 | — | 21 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>從 CS:247h 起以 INT 29h(fast putchar)輸出 5 個字元 | — |
-| `1917C` | sub_1917C | — | 31 | 9 | 2 | 2 |  | 待解讀 | — | — | — |
-| `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1917C` | sub_1917C | — | 31 | 9 | 2 | 2 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>BH := byte_280C6h;把 word_280C8h/280CAh 各存一份到 word_280E8h/280EAh;再 <sub_19840>() 與 <sub_19604>(word_280C8h) | — |
+| `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br><sub_195FC>() 後取 byte_280C6h 與 word_280C8h 的低位元組,把當時的 DH 存進 CH,再讀 word_280CAh 覆蓋 DX,最後比較 CH 與 DH——比的是新舊兩個 DH,相等回 0、不等回 1 | — |
 | `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
 | `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dx 與 ax 為計數的空迴圈(jcxz/loop),不做任何資料處理 ⇒ 忙碌延遲 | — |
 | `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2) | — |
@@ -226,7 +226,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 待解讀 | — | — | — |
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 待解讀 | — | — | — |
 | `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 64 bytes，已逐條讀完） | — |
-| `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX | — |
+| `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX。表的內容見 docs/spec/658-color-bit-swap-and-attribute-codec.md:seg050 基底 18EE0h 故表在 19EA0h(緊接本支 retn 之後),8 筆是 [0,1,4,5,2,3,6,7]——bit 1 與 bit 2 互換、bit 0 不動,即 PC-98 的 G-R-B 與一般 R-G-B 的互換;且為自反(T[T[i]]=i),故編碼解碼共用同一張表 | — |
 | `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
 | `19EC4` | sub_19EC4 | — | 186 | 71 | 1 | 5 |  | 待解讀 | — | — | — |
 | `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 12 bytes，已逐條讀完） | — |

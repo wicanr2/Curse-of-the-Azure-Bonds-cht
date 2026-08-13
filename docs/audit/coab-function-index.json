@@ -23129,7 +23129,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 \u003csub_192D2\u003e,再分別交給 \u003csub_1BA37\u003e 與 \u003csub_1BA3C\u003e(相差 5 bytes,多半是同一支的兩個入口)。開頭先 \u003csub_18F10\u003e()"
   },
   {
    "platform": "pc98",
@@ -23153,7 +23156,10 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "打包 → PC-98 屬性:colour := \u003c19E98h\u003e(AL and 7) 放 bit 7..5,其餘 ((AL and 0F0h) shr 3) or 1 放 bit 4..0。⚠ bit 0 一定被設成 1"
   },
   {
    "platform": "pc98",
@@ -23165,7 +23171,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "PC-98 屬性 → 打包,與 18FA3h 互為反向:colour := \u003c19E98h\u003e((AL and 0E0h) shr 5),其餘 (AL and 1Eh) shl 3。⚠ and 1Eh 只取 bit 4..1,bit 0 在還原時被丟掉,所以往返一次不會完全還原"
   },
   {
    "platform": "pc98",
@@ -23231,7 +23240,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "BH := byte_280C6h;把 word_280C8h/280CAh 各存一份到 word_280E8h/280EAh;再 \u003csub_19840\u003e() 與 \u003csub_19604\u003e(word_280C8h)"
   },
   {
    "platform": "pc98",
@@ -23243,7 +23255,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "\u003csub_195FC\u003e() 後取 byte_280C6h 與 word_280C8h 的低位元組,把當時的 DH 存進 CH,再讀 word_280CAh 覆蓋 DX,最後比較 CH 與 DH——比的是新舊兩個 DH,相等回 0、不等回 1"
   },
   {
    "platform": "pc98",
@@ -23844,7 +23859,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX"
+   "note": "以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX。表的內容見 docs/spec/658-color-bit-swap-and-attribute-codec.md:seg050 基底 18EE0h 故表在 19EA0h(緊接本支 retn 之後),8 筆是 [0,1,4,5,2,3,6,7]——bit 1 與 bit 2 互換、bit 0 不動,即 PC-98 的 G-R-B 與一般 R-G-B 的互換;且為自反(T[T[i]]=i),故編碼解碼共用同一張表"
   },
   {
    "platform": "pc98",
@@ -44790,9 +44805,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 165,
+   "Read": 170,
    "NotBlocking": 29,
-   "Todo": 117,
+   "Todo": 112,
    "Fragment": 22,
    "CodeBytes": 25067,
    "Undefined": 0,
