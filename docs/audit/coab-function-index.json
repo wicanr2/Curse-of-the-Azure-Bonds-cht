@@ -22364,7 +22364,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
-   "note": "三個參數都是兩層間接。if arg_C^^[0] = 0FFh then \u003csub_1C15D\u003e(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else \u003csub_17DD5\u003e(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 是「短格式」的標記"
+   "note": "三個參數都是兩層間接。if arg_C^^[0] = 0FFh then \u003csub_1C15D\u003e(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else \u003csub_17DD5\u003e(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 代表「未壓縮」——另一條走的 sub_17DD5 是 RLE 解壓縮器(spec 653)"
   },
   {
    "platform": "pc98",
@@ -22445,7 +22445,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/653-rle-decompressor.md",
+   "note": "文字輸出核心的第二份,與 16966h 同一種寫法(呼叫 sub_17D95 判首位元組、sub_17DA9 做 SJIS→JIS)。全形字佔相鄰兩格,左半 and 7Fh、右半 or 80h,区號減 20h;半形則高位元組填 0。CX 是格數不是字數"
   },
   {
    "platform": "pc98",
@@ -22502,7 +22505,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/653-rle-decompressor.md",
+   "note": "RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI \u003e= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現"
   },
   {
    "platform": "pc98",
@@ -44743,9 +44749,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 150,
+   "Read": 152,
    "NotBlocking": 29,
-   "Todo": 133,
+   "Todo": 131,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,

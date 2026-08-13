@@ -117,17 +117,17 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1741D` | sub_1741D | — | 569 | 231 | 1 | 10 |  | 待解讀 | — | — | — |
 | `17656` | sub_17656 | — | 104 | 42 | 3 | 5 |  | 待解讀 | — | — | — |
 | `177BD` | sub_177BD | — | 48 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>第三份 Shift-JIS 首位元組判斷:81h..9Fh 或 E0h..FCh 回 1,回傳值放 AL。與 14342h 同一族(上界 FCh),不是 169D9h 那族(F7h、clc)。實際畫字走的是 F7h 那族 | — |
-| `1790D` | sub_1790D | — | 83 | 31 | 1 | 3 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>三個參數都是兩層間接。if arg_C^^[0] = 0FFh then <sub_1C15D>(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else <sub_17DD5>(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 是「短格式」的標記 | — |
+| `1790D` | sub_1790D | — | 83 | 31 | 1 | 3 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>三個參數都是兩層間接。if arg_C^^[0] = 0FFh then <sub_1C15D>(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else <sub_17DD5>(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 代表「未壓縮」——另一條走的 sub_17DD5 是 RLE 解壓縮器(spec 653) | — |
 | `17960` | sub_17960 | — | 215 | 99 | 1 | 7 |  | 待解讀 | — | — | — |
 | `17A37` | sub_17A37 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br><sub_1BF69>(arg_4) 後再 <sub_1BF69>(arg_0)——同一支 routine 用兩個參數各叫一次,arg_4 先 | — |
 | `17A54` | sub_17A54 | — | 609 | 227 | 2 | 12 |  | 待解讀 | — | — | — |
 | `17CD7` | sub_17CD7 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17CE9` | sub_17CE9 | — | 57 | 28 | 2 | 2 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>與 1692Dh 逐位元組完全相同的文字 VRAM 定址(57 bytes),差別只在下游:這支叫 sub_17D22/sub_17D72,那支叫 sub_16966/sub_169B6。remake 不必複製這個重複,但兩條路徑的下游要各自確認 | — |
-| `17D22` | sub_17D22 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
+| `17D22` | sub_17D22 | — | 80 | 42 | 1 | 3 |  | 已解讀 | exact | docs/spec/653-rle-decompressor.md<br>文字輸出核心的第二份,與 16966h 同一種寫法(呼叫 sub_17D95 判首位元組、sub_17DA9 做 SJIS→JIS)。全形字佔相鄰兩格,左半 and 7Fh、右半 or 80h,区號減 20h;半形則高位元組填 0。CX 是格數不是字數 | — |
 | `17D72` | sub_17D72 | — | 35 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>填 PC-98 文字屬性平面(0A200h):屬性 byte := (arg[bp+0Ch] shl 5) or 1,若 arg[bp+0Ah] 非零再 or 4;rep stosw,CX 與 DI 由呼叫端 17CE9h 先算好 | — |
 | `17D95` | sub_17D95 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
 | `17DA9` | sub_17DA9 | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>與 17186h 逐位元組完全相同的 Shift-JIS → JIS 換算(同一段程式碼的第二份) | — |
-| `17DD5` | sub_17DD5 | — | 86 | 44 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17DD5` | sub_17DD5 | — | 86 | 44 | 1 | 1 |  | 已解讀 | exact | docs/spec/653-rle-decompressor.md<br>RLE 解壓縮器。串流前兩個 byte 不是資料:第一個被完全略過(沒有任何指令讀它)、第二個是預設填充 byte DH。控制 byte 三種形式:bit7=0 → 原樣複製 CL 個;bit7=1 且 bit6=1 → 重複 DH,長度 (CL and 3Fh)+2;bit7=1 且 bit6=0 → 重複下一個 byte,長度 (CL and 3Fh)+3。兩種重複的起始長度不同(2 與 3),指令數就差在 inc cl 的次數。結束條件是來源用完(SI >= 起點+arg_0),不檢查目的緩衝大小,輸出溢位不會被發現 | — |
 | `17EA7` | sub_17EA7 | — | 363 | 152 | 1 | 11 |  | 待解讀 | — | — | — |
 | `18036` | sub_18036 | — | 193 | 66 | 6 | 7 |  | 待解讀 | — | — | — |
 | `180F7` | sub_180F7 | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>repeat:<sub_19293>() 回 0 就結束,否則呼叫 <sub_18036>() 再回頭。sub_18036 的回傳值存進區域變數後沒有再讀,是死存 | — |
