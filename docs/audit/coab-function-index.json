@@ -15631,7 +15631,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/705-duration-formula-and-save-roll.md",
+   "note": "持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × \u003coverlay-24 entry#36\u003e(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲",
+   "citations": [
+    "spec/705-duration-formula-and-save-roll.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16725,7 +16731,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/705-duration-formula-and-save-roll.md",
+   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × \u003coverlay-25 entry#10\u003e(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v\u003ebase → 門檻 := (v−base)×5 + 50;v\u003cbase → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) \u003c= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base \u003e= 42 時 \u003e=260 → 存成 4,幾乎必定失敗;base−v \u003e 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
+   "citations": [
+    "spec/705-duration-formula-and-save-roll.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17129,6 +17141,7 @@
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "用哨兵值判斷下游有沒有動過:sub_F06h(DS:6F97h,0,0,0,8,空字串) → p := DS:6506h^[18Dh]^[0Ah] → **DS:6F93h := 40h(哨兵)** → \u003coverlay-23 entry#4\u003e(p, 9) → 若 DS:6F93h 仍是 40h 才 \u003coverlay-23 entry#2\u003e(0, [bp−4], [bp−2], DS:6506h, 40h)。⚠ **[bp−4] 與 [bp−2] 整支函式沒有任何一條指令寫過**(bp−9 是拼接緩衝、bp−8..bp−5 存 p),傳出去的是堆疊殘值;同一支 entry#2 在 262Fh 的同樣兩個位置推的是明確的 0。需實機驗證再決定 remake 怎麼寫",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/704-dispel-and-the-missing-fill.md"
    ]
@@ -17149,6 +17162,7 @@
    "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
    "note": "兩條路:目標^[0E5h] \u003e= 6(有號)時 \u003coverlay-24 entry#20\u003e(目標, 'smashes them flat' CS:42FFh, 0Ah, 1);否則 n := \u003coverlay-24 entry#36\u003e(DS:6F97h),\u003csub_F06h\u003e(DS:6F97h, n, 0, 0, 8, 空字串 CS:42FEh),再用 \u003coverlay-24 entry#27\u003e(目標, 3, @node) 找節點,找到才 \u003coverlay-23 entry#2\u003e(0, node, 目標, 3)。⚠ 這支給出了 spec 703 裡 4289h 那兩個未初始化區域**應該**是什麼:最後兩條 push 兩支逐位元組相同(ff76fe + ff76fc),差別只在 4311h 先用 entry#27 把 far 指標填進去。CS:42FEh/42FFh 又是緊鄰的兩條字串",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/704-dispel-and-the-missing-fill.md"
    ]
   },
@@ -17792,9 +17806,9 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-index/pc98-overlay-24.md",
-    "knowledge/gold-box-ecl-interpreter.md",
-    "spec/579-character-status-fields.md"
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -17837,7 +17851,8 @@
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/578-effect-node-list.md",
-    "spec/702-more-overlay22-spell-handlers.md"
+    "spec/702-more-overlay22-spell-handlers.md",
+    "spec/705-duration-formula-and-save-roll.md"
    ]
   },
   {
@@ -19268,7 +19283,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/705-duration-formula-and-save-roll.md"
    ]
   },
   {
@@ -41518,9 +41534,9 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-index/pc98-overlay-24.md",
-    "knowledge/gold-box-ecl-interpreter.md",
-    "spec/579-character-status-fields.md"
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -41565,7 +41581,8 @@
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
     "spec/578-effect-node-list.md",
-    "spec/702-more-overlay22-spell-handlers.md"
+    "spec/702-more-overlay22-spell-handlers.md",
+    "spec/705-duration-formula-and-save-roll.md"
    ]
   },
   {
@@ -42059,7 +42076,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/string-pairs.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md"
+    "spec/576-adnd-strength-encoding-and-effect-removal.md",
+    "spec/705-duration-formula-and-save-roll.md"
    ]
   },
   {
@@ -45545,9 +45563,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 66,
+   "Read": 68,
    "NotBlocking": 0,
-   "Todo": 47,
+   "Todo": 45,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
