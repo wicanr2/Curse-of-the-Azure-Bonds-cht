@@ -428,15 +428,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 10560,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Ch 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 10958,
    "state": "待解讀",
    "level": "",
@@ -12007,6 +11998,15 @@
    "level": "strong inference",
    "spec": "docs/spec/599-ecl-select-member-and-0c.md",
    "note": "與 pc98 overlay-02:29FBh 助憶碼序列完全相同（61 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 32h(查全隊有沒有某物品):READVAR(1);先清空六個比較旗標並預設 DS:A88Bh:=1(沒有),再走角色鏈 + 每人的物品鏈(+14Eh,next 在 +52h),物品 +56h 命中就設 A88Ah:=1、A88Bh:=0 並讓兩層迴圈都提早結束。借用比較旗標,所以後面接 16h 是「有」、17h 是「沒有」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 10560,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/599-ecl-select-member-and-0c.md",
+   "note": "ECL opcode 2Ch(四選一選單):READVAR(6);前四個 operand 取值當候選,兩段資料從 DS:00ACh/00F2h 複製到 DS:A33Fh/A335h,呼叫 far 0062:0084 取得選擇,直接以它索引候選陣列(沒有範圍檢查)後 STOREVALUE 到第五個 operand 指定的位址。第六個 operand 在 body 裡沒有被用到"
   }
  ]
 }
