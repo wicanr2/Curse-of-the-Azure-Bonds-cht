@@ -311,12 +311,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BA41` | sub_1BA41 | — | 75 | 27 | 1 | 3 |  | 已解讀 | exact | docs/spec/668-turbo-pascal-textrec-rtl.md<br>Reset/Rewrite 的共同部分:mode 是 fmInput/fmOutput 就先呼叫 1BA90h 關掉,不是 fmClosed 則設 word_23B08h(InOutRes) := 66h(錯誤 102)。之後 Mode := fmInOut、BufPos/BufEnd 清 0,再用 <sub_1BACBh>(bx=10h) 呼叫 OpenFunc;失敗就把 Mode 設回 fmClosed。bx 是欄位偏移 | — |
 | `1BA90` | sub_1BA90 | — | 59 | 19 | 5 | 2 |  | 已解讀 | exact | docs/spec/668-turbo-pascal-textrec-rtl.md<br>Close:fmOutput 時先 <sub_1BACBh>(bx=14h) 呼叫 InOutFunc 把緩衝寫出;非 fmInput/fmOutput 則設 word_23B08h := 67h(錯誤 103)。最後 <sub_1BACBh>(bx=1Ch) 呼叫 CloseFunc 並把 Mode 設成 fmClosed | — |
 | `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08 | — |
-| `1BB5E` | sub_1BB5E | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1BC46` | sub_1BC46 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1BB5E` | sub_1BB5E | — | 90 | 40 | 1 | 1 |  | 已解讀 | exact | docs/spec/669-text-file-buffer-and-truncate.md<br>依 ^Z 截斷文字檔:seek 到「檔尾減 128」(不足 128 則從頭)讀進 TextRec 的 Buffer,掃 1Ah;找到就 seek 到相對檔尾的負位移再用 AH=40h/CX=0 寫 0 bytes 達成截斷,找不到就不動。⚠ 只看最後 128 bytes,^Z 在更前面時找不到 | — |
+| `1BC46` | sub_1BC46 | — | 36 | 10 | 4 | 1 |  | 已解讀 | exact | docs/spec/669-text-file-buffer-and-truncate.md<br>輸入模式檢查:InOutRes = 0 且 Mode <> fmInput 時設 word_23B08h := 68h(錯誤 104);⚠ 錯誤路徑 jmp 回同一段載入程式碼——設完錯誤碼還是照樣載入 bx=BufPos、dx=BufEnd、es:di=BufPtr 並返回 | — |
 | `1BC6A` | sub_1BC6A | — | 28 | 14 | 5 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__GetChar` 逐位元組相同（28 bytes） | — |
-| `1BC86` | sub_1BC86 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BCAA` | sub_1BCAA | — | 15 | 7 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BCB9` | sub_1BCB9 | — | 49 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1BC86` | sub_1BC86 | — | 36 | 10 | 4 | 1 |  | 已解讀 | exact | docs/spec/669-text-file-buffer-and-truncate.md<br>輸出模式檢查:Mode <> fmOutput 時設 word_23B08h := 69h(錯誤 105),同樣照常載入。與 1BC46h 的差別是 dx 取的欄位:輸入取 BufEnd(+0Ah)、輸出取 BufSize(+4) | — |
+| `1BCAA` | sub_1BCAA | — | 15 | 7 | 4 | 1 |  | 已解讀 | exact | docs/spec/669-text-file-buffer-and-truncate.md<br>放一個字元進緩衝(es:[bx+di] := al、bx++),bx = dx(BufSize)時才沖出去:回寫 BufPos、call dword ptr es:[di+14h](InOutFunc)、把回傳值記進 word_23B08h(InOutRes),再把 ax/bx/dx/es:di 四個全部重新載入(InOutFunc 可能改動 BufPos/BufPtr)。錯誤只記錄不中止。完整範圍 1BCAAh..1BCE9h,IDA 在 1BCB9h 切開了 | — |
+| `1BCB9` | sub_1BCB9 | — | 49 | 24 | 2 | 1 |  | 邊界碎片 | — | docs/spec/669-text-file-buffer-and-truncate.md<br>不是函式起點:1BCAAh 那一支的中段(bx = dx 時的落點),沒有 prologue 也不是呼叫目標 | — |
 | `1BCEA` | sub_1BCEA | — | 41 | 20 | 1 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@ReadLn$qm4Text` 逐位元組相同（41 bytes） | — |
 | `1BD13` | sub_1BD13 | — | 31 | 14 | 3 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@WriteLn$qm4Text` 逐位元組相同（31 bytes） | — |
 | `1BD32` | sub_1BD32 | — | 38 | 14 | 4 | 1 |  | 待解讀 | — | — | — |
