@@ -365,33 +365,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 11407,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 31h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 11445,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 34h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 11498,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 33h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 11541,
    "state": "待解讀",
    "level": "",
@@ -775,33 +748,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 11782,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 31h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 11820,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 34h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 11873,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 33h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -11962,6 +11908,60 @@
    "level": "strong inference",
    "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
    "note": "與 dos overlay-24:18BEh 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 11782,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "ECL opcode 31h 的 handler:無 operand(只 ECL_PC++);DS:BDF7h 非 0 時設 DS:A66Ch=1、呼叫 far 0172:0025、清 DS:BDF7h 與 DS:BDF4h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 11873,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "ECL opcode 33h 的 handler:無 operand;DS:BDF3h 非 0 就清掉,兩個分支都設 DS:9636h=1 並把 DS:9637h 加一。DS:9637h 是 PUTDAMAGE 的訊息停留時間全域,所以效果是把後續訊息延長一格"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 11820,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "ECL opcode 34h 的 handler:READVAR(2) 後把兩個 ADDRESSVALUE 結果原樣交給 far 0105:002A,自己不做判斷"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11407,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "與 pc98 overlay-02:2E06h 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 31h 的 handler:無 operand(只 ECL_PC++);DS:BDF7h 非 0 時設 DS:A66Ch=1、呼叫 far 0172:0025、清 DS:BDF7h 與 DS:BDF4h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11498,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "與 pc98 overlay-02:2E61h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 33h 的 handler:無 operand;DS:BDF3h 非 0 就清掉,兩個分支都設 DS:9636h=1 並把 DS:9637h 加一。DS:9637h 是 PUTDAMAGE 的訊息停留時間全域,所以效果是把後續訊息延長一格 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11445,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
+   "note": "與 pc98 overlay-02:2E2Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 34h 的 handler:READVAR(2) 後把兩個 ADDRESSVALUE 結果原樣交給 far 0105:002A,自己不做判斷 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
