@@ -39,7 +39,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18EC` | sub_18EC | — | 96 | 32 | 2 | 1 |  | 待解讀 | — | — | — |
 | `194C` | sub_194C | HORZMSG | 92 | 46 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `19A8` | sub_19A8 | CHARMSG | 34 | 14 | 4 | 1 | ✓ | 待解讀 | — | — | — |
-| `19CA` | sub_19CA | — | 198 | 94 | 2 | 4 |  | 待解讀 | — | — | — |
+| `19CA` | sub_19CA | — | 198 | 94 | 2 | 4 |  | 待解讀 | — | — | audit/function-triage.md |
 | `1A90` | sub_1A90 | CLEARMSGWINDOW | 50 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1AC2` | sub_1AC2 | PRINTCHARNAME | 109 | 41 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1B2F` | sub_1B2F | COPYSPRITE | 287 | 113 | 1 | 2 | ✓ | 待解讀 | — | — | — |

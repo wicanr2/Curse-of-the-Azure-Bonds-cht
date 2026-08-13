@@ -2296,6 +2296,33 @@
    "level": "",
    "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
    "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@UpCase$q4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 4968,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count<=0 回 0"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 4991,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDICE(count,sides):與 PC-98 同構;亂數 far call 0A54:1105 = @Random$q4Word(image offset B645h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 5043,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解"
   }
  ]
 }

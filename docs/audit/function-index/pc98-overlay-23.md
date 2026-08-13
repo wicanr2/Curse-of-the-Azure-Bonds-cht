@@ -10,14 +10,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `00C9` | sub_C9 | CALLEFFECT | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `010E` | sub_10E | SPELLOFF | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `0269` | sub_269 | — | 405 | 139 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `03FE` | sub_3FE | CHECKFX | 2287 | 1050 | 6 | 2 | ✓ | 待解讀 | — | — | — |
+| `03FE` | sub_3FE | CHECKFX | 2287 | 1050 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0CED` | sub_CED | — | 251 | 97 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0E32` | sub_E32 | CHECKTERRAINFX | 914 | 399 | 0 | 11 | ✓ | 待解讀 | — | — | — |
 | `11C4` | sub_11C4 | TRYTOHIT | 104 | 41 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `12D8` | sub_12D8 | MAKESAVE | 144 | 56 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `1368` | sub_1368 | ROLLDICE | 75 | 29 | 5 | 1 | ✓ | 待解讀 | — | — | — |
-| `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1368` | sub_1368 | ROLLDICE | 75 | 29 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count<=0 回 0 | spec/568-rolldice-and-original-rng-entry.md |
+| `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 | spec/568-rolldice-and-original-rng-entry.md |
 | `13D7` | sub_13D7 | ADDEFFECT | 175 | 58 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1486` | sub_1486 | LOSEDUDE | 138 | 51 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `1510` | sub_1510 | — | 21 | 7 | 2 | 1 |  | 待解讀 | — | — | — |
@@ -28,7 +28,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `155B` | sub_155B | — | 47 | 21 | 2 | 4 |  | 待解讀 | — | — | — |
 | `158A` | sub_158A | REMOVEFX | 98 | 39 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `15EC` | sub_15EC | ROUTINGREMOVEFX | 55 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1627` | sub_1627 | — | 1 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
+| `1627` | sub_1627 | — | 1 | 1 | 1 | 0 |  | 待解讀 | — | — | audit/function-triage.md |
 | `1630` | sub_1630 | CUREEFFECT | 99 | 41 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `1693` | sub_1693 | CONVERTSTRTOSPEC | 41 | 17 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `16BC` | sub_16BC | CONVERTSPECTOSTR | 81 | 30 | 1 | 1 | ✓ | 待解讀 | — | — | — |
@@ -38,7 +38,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18F3` | sub_18F3 | RECALCULATESTATS | 18 | 6 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `1905` | sub_1905 | — | 7 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1919` | sub_1919 | — | 6 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `19CA` | sub_19CA | — | 1501 | 563 | 2 | 7 |  | 待解讀 | — | — | — |
+| `19CA` | sub_19CA | — | 1501 | 563 | 2 | 7 |  | 待解讀 | — | — | audit/function-triage.md |
 | `1FFD` | sub_1FFD | PUTDAMAGE | 787 | 304 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `2325` | sub_2325 | PUTEFFECT | 212 | 87 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `2419` | sub_2419 | HEALDUDE | 209 | 71 | 0 | 2 | ✓ | 待解讀 | — | — | — |

@@ -19,7 +19,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A1E` | sub_A1E | ONVISSCREEN | 49 | 18 | 6 | 1 | ✓ | 待解讀 | — | — | — |
 | `0A4F` | sub_A4F | ONSCREEN | 186 | 79 | 6 | 4 | ✓ | 待解讀 | — | — | — |
 | `0B09` | sub_B09 | — | 450 | 167 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `0CCB` | sub_CCB | REFRESHCOMBATMAP | 1321 | 579 | 3 | 8 | ✓ | 待解讀 | — | — | — |
+| `0CCB` | sub_CCB | REFRESHCOMBATMAP | 1321 | 579 | 3 | 8 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `11F4` | sub_11F4 | DOCOMBATSHAPE | 247 | 101 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 待解讀 | — | — | — |
