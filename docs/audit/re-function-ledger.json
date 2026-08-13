@@ -212,15 +212,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 8006,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 28h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 8326,
    "state": "待解讀",
    "level": "",
@@ -325,15 +316,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 27h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 8485,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 28h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12025,6 +12007,24 @@
    "level": "exact",
    "spec": "docs/spec/606-ecl-redraw-dispatch.md",
    "note": "ECL opcode 24h(重繪畫面分派):無 operand;依 bank1^[6D8h]/[5C4h] 選三種畫面模式之一(選中的旗標會被清零),再依 bank0^[1CCh] 是否為 0 選兩支收尾常式。每個動作都包在DS:8B5Ah 的前後包夾裡(非 0 做前置 0893:0000、為 0 做後置 0893:010Dh),這個包夾出現12 次。第二段用與 0Ch 相同的方式從地圖座標算值,但對 bank1^[582h] 取較大者(0Ch 取較小)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 8485,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/607-ecl-percentage-scale.md",
+   "note": "ECL opcode 28h(依百分比縮放):READVAR(3);operand1 為 0 只對 DS:9594h(目前目標)、非 0 則走遍整條角色鏈(不排除任何人);係數是 Real(100-pct)/100.0 的浮點除法——除數 100.0 由 cx=87h/si=0/di=4800h 三個暫存器組成(TP 6-byte Real:2^(135-129) x 1.5625 = 100),不是整數運算。全隊分支裡 item := node^[14Eh] 取出後完全沒被讀,是 INTERPET 裡第二個死變數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 8006,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/607-ecl-percentage-scale.md",
+   "note": "與 pc98 overlay-02:2125h 助憶碼序列完全相同（78 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 28h(依百分比縮放):READVAR(3);operand1 為 0 只對 DS:9594h(目前目標)、非 0 則走遍整條角色鏈(不排除任何人);係數是 Real(100-pct)/100.0 的浮點除法——除數 100.0 由 cx=87h/si=0/di=4800h 三個暫存器組成(TP 6-byte Real:2^(135-129) x 1.5625 = 100),不是整數運算。全隊分支裡 item := node^[14Eh] 取出後完全沒被讀,是 INTERPET 裡第二個死變數 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

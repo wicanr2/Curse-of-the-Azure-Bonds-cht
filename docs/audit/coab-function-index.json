@@ -5723,9 +5723,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 28h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/607-ecl-percentage-scale.md",
+   "note": "與 pc98 overlay-02:2125h 助憶碼序列完全相同（78 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 28h(依百分比縮放):READVAR(3);operand1 為 0 只對 DS:9594h(目前目標)、非 0 則走遍整條角色鏈(不排除任何人);係數是 Real(100-pct)/100.0 的浮點除法——除數 100.0 由 cx=87h/si=0/di=4800h 三個暫存器組成(TP 6-byte Real:2^(135-129) x 1.5625 = 100),不是整數運算。全隊分支裡 item := node^[14Eh] 取出後完全沒被讀,是 INTERPET 裡第二個死變數 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -26015,11 +26016,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 28h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/607-ecl-percentage-scale.md",
+   "note": "ECL opcode 28h(依百分比縮放):READVAR(3);operand1 為 0 只對 DS:9594h(目前目標)、非 0 則走遍整條角色鏈(不排除任何人);係數是 Real(100-pct)/100.0 的浮點除法——除數 100.0 由 cx=87h/si=0/di=4800h 三個暫存器組成(TP 6-byte Real:2^(135-129) x 1.5625 = 100),不是整數運算。全隊分支裡 item := node^[14Eh] 取出後完全沒被讀,是 INTERPET 裡第二個死變數",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/607-ecl-percentage-scale.md"
    ]
   },
   {
@@ -42763,9 +42766,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 30,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 32,
+   "Todo": 31,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43318,9 +43321,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 48,
+   "Read": 49,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
