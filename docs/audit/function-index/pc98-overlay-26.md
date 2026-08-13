@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 176h:57h 後交給 19Ah:2Ah | audit/embedded-strings.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
-| `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
+| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 176h:57h 後交給 19Ah:2Ah | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
+| `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
 | `0073` | sub_73 | ITEMCOUNT | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00B4` | sub_B4 | — | 93 | 41 | 1 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0133` | sub_133 | MENU | 1771 | 581 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
