@@ -28,6 +28,18 @@
 far call 目標是 **`ECL2` control block 的 stub offset**，不是 code offset；
 兩平台的 stub offset 與 entry index 相同，只有 code offset 不同。
 
+## script 的檔頭（`exact`）
+
+`INITECL` 把 `ECL_PC` 設成 `8000h`（bank 3 起點）後**連續讀五個 operand**，
+依序存進 `DS:7F17h`／`7F19h`／`7F1Bh`／`7F1Dh`／`7F1Fh`。所以 **script 的檔頭
+就是五個進入點位址**，長度不固定（取決於各 operand 的 code）。
+
+**在 script 裡的順序與執行順序不同**：第 5 個（`7F1Fh`）進場最先跑，第 1 個
+（`7F17h`）是主迴圈每輪、第 2 個（`7F19h`）只在地圖座標變動時。
+
+`INITECL` 同時清空 GOSUB 堆疊與六個比較旗標，所以每個 script 開始時兩者必為
+空／0。見 [spec 618](../spec/618-ecl-script-header.md)。
+
 ## 執行迴圈（`exact`）
 
 ```text
