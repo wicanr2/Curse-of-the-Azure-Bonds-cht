@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADEFFPROCS | 27 | 9 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>unit 初始化:依序呼叫四個本 overlay 內的 routine | spec/569-small-function-batch-reading.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
+| `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害取消 routine(spec 412 稱 Protected):參數非 0 且等於 DS:A02Dh 時,把 DS:A02Eh 與 DS:A02Dh 都歸零 ⇒ A02Dh 是傷害來源 ID、A02Eh 是傷害值 | audit/function-index/pc98-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 待解讀 | — | — | — |
 | `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
 | `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
@@ -18,7 +18,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `01E6` | sub_1E6 | — | 71 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `022D` | sub_22D | — | 55 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0264` | sub_264 | — | 55 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `029B` | sub_29B | — | 37 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `029B` | sub_29B | — | 37 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3 | spec/573-effprocs-effect-handlers-first-batch.md |
 | `02C0` | sub_2C0 | — | 193 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0381` | sub_381 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `0397` | sub_397 | — | 60 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -37,11 +37,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `07F6` | sub_7F6 | — | 32 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三 | spec/573-effprocs-effect-handlers-first-batch.md |
 | `0829` | sub_829 | — | 171 | 54 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `08DF` | sub_8DF | — | 181 | 59 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `0994` | sub_994 | — | 37 | 11 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0994` | sub_994 | — | 37 | 11 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4 | spec/573-effprocs-effect-handlers-first-batch.md |
 | `09B9` | sub_9B9 | — | 57 | 23 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0A32` | sub_A32 | — | 406 | 167 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0BC8` | sub_BC8 | — | 19 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
-| `0BDB` | sub_BDB | — | 34 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `0BDB` | sub_BDB | — | 34 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh | spec/573-effprocs-effect-handlers-first-batch.md |
 | `0C0C` | sub_C0C | — | 93 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0C82` | sub_C82 | — | 718 | 268 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0F5B` | sub_F5B | — | 113 | 41 | 3 | 3 | ✓ | 待解讀 | — | — | — |
@@ -57,7 +57,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12A0` | sub_12A0 | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `12D3` | sub_12D3 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `12DC` | sub_12DC | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完） | — |
-| `12FD` | sub_12FD | — | 34 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `12FD` | sub_12FD | — | 34 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0 | spec/573-effprocs-effect-handlers-first-batch.md |
 | `131F` | sub_131F | — | 32 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437 | spec/573-effprocs-effect-handlers-first-batch.md |
 | `133F` | sub_133F | — | 87 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1396` | sub_1396 | — | 91 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -82,7 +82,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `158F` | sub_158F | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `15A5` | sub_15A5 | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `15BB` | sub_15BB | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
-| `15D1` | sub_15D1 | — | 36 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `15D1` | sub_15D1 | — | 36 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>以 (8, 2, arg_6, arg_8) 呼叫 far routine,回傳值零延伸後與 0 一起傳給 sub_151F | spec/573-effprocs-effect-handlers-first-batch.md |
 | `1621` | sub_1621 | — | 1 | 1 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 1Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1627` | sub_1627 | — | 155 | 54 | 2 | 3 |  | 待解讀 | — | — | audit/function-triage.md |
@@ -123,7 +123,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `243A` | sub_243A | — | 23 | 13 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
 | `2451` | sub_2451 | — | 16 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完） | — |
 | `2461` | sub_2461 | — | 25 | 13 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
-| `247A` | sub_247A | — | 35 | 16 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `247A` | sub_247A | — | 35 | 16 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h | spec/573-effprocs-effect-handlers-first-batch.md |
 | `249D` | sub_249D | — | 25 | 13 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) | spec/573-effprocs-effect-handlers-first-batch.md |
 | `24B6` | sub_24B6 | — | 69 | 27 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `24FB` | sub_24FB | — | 32 | 15 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半) | spec/573-effprocs-effect-handlers-first-batch.md |
@@ -139,7 +139,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `289D` | sub_289D | — | 38 | 20 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `28C3` | sub_28C3 | — | 49 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `290C` | sub_290C | — | 230 | 91 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `29F2` | sub_29F2 | — | 34 | 16 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `29F2` | sub_29F2 | — | 34 | 16 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) | spec/573-effprocs-effect-handlers-first-batch.md |
 | `2A14` | sub_2A14 | — | 144 | 46 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2AA4` | sub_2AA4 | — | 124 | 50 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2B20` | sub_2B20 | — | 46 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |

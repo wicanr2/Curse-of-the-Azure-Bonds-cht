@@ -9262,6 +9262,78 @@
    "level": "exact",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 27,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害取消 routine(spec 412 稱 Protected):參數非 0 且等於 DS:A02Dh 時,把 DS:A02Eh 與 DS:A02Dh 都歸零 ⇒ A02Dh 是傷害來源 ID、A02Eh 是傷害值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 3035,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4861,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10738,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9338,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5585,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "以 (8, 2, arg_6, arg_8) 呼叫 far routine,回傳值零延伸後與 0 一起傳給 sub_151F"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 667,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 2452,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4"
   }
  ]
 }

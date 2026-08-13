@@ -58,7 +58,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12B1` | sub_12B1 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `12BA` | sub_12BA | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完） | — |
 | `12DB` | sub_12DB | — | 34 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `12FD` | sub_12FD | — | 32 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `12FD` | sub_12FD | — | 32 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | spec/573-effprocs-effect-handlers-first-batch.md |
 | `131D` | sub_131D | — | 87 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1374` | sub_1374 | — | 91 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `13CF` | sub_13CF | — | 70 | 30 | 0 | 4 | ✓ | 待解讀 | — | — | — |
