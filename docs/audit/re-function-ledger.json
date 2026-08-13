@@ -15152,6 +15152,42 @@
    "level": "exact",
    "spec": "docs/spec/663-orphan-half-cleanup.md",
    "note": "游標形狀:byte_280FFh := al;al 的 bit 0 為 0 時送 <sub_1977Bh>(AH=12h),否則送 (AH=10h, AL=al shr 1) 再送 (AH=11h)。11h 與 19A10h 用的是同一個功能碼"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107238,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/664-overlay-manager-stub-patching.md",
+   "note": "overlay 載入後把 stub 改寫成直接 far jump:es:[20h] 已是 0EAh 就返回;否則對 es:[0Ch] 個入口,每筆寫入 0EAh + 原 offset(es:[di+2]) + 載入後的 segment(es:[10h]),共 5 bytes"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107292,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/664-overlay-manager-stub-patching.md",
+   "note": "overlay 卸載時把 stub 還原:es:[20h] 已是 0CDh 就返回;否則每筆寫入 3FCDh(little-endian 即 CD 3F = INT 3Fh)+ 目前 offset(es:[di+1]),並把 es:[2] 清 0。兩支讀 offset 的位置差一,正因為 EA 是 1 byte opcode + 4 bytes 運算元而 CD 3F 是 2 + 2"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107162,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/664-overlay-manager-stub-patching.md",
+   "note": "釋放 overlay 到夠為止:word_23AE2h 為 0 就把 word_23ADEh 重設為 word_23ADCh;否則走 es:[14h] 串鏈,逐個接回鏈頭、呼叫 sub_1A3FCh 並從 word_23ADEh 扣掉回傳值、再 sub_1A34Fh。cx 進外層迴圈前是 1,實際跑幾次取決於內層小迴圈數到多少"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106571,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/664-overlay-manager-stub-patching.md",
+   "note": "設定前四道檢查:word_23AE4h 或 word_23AE2h 非 0、或 (word_23AEAh - word_23AEEh) or word_23AECh 非 0 → 回 0FFFFh(狀態不允許);位址低於 word_23AD6h 也回 0FFFFh;加上 word_23ADCh 後進位或超過 word_23B04h^[2] → 回 0FFFDh(範圍問題)。溢位單獨用進位抓,上界在加完之後才檢查"
   }
  ]
 }

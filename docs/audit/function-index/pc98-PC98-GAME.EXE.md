@@ -234,14 +234,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19FC5` | sub_19FC5 | — | 88 | 48 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 88 bytes，已逐條讀完） | — |
 | `1A01D` | sub_1A01D | — | 27 | 14 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |
 | `1A038` | sub_1A038 | — | 19 | 11 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完） | — |
-| `1A04B` | sub_1A04B | — | 88 | 30 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1A04B` | sub_1A04B | — | 88 | 30 | 1 | 2 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>設定前四道檢查:word_23AE4h 或 word_23AE2h 非 0、或 (word_23AEAh - word_23AEEh) or word_23AECh 非 0 → 回 0FFFFh(狀態不允許);位址低於 word_23AD6h 也回 0FFFFh;加上 word_23ADCh 後進位或超過 word_23B04h^[2] → 回 0FFFDh(範圍問題)。溢位單獨用進位抓,上界在加完之後才檢查 | — |
 | `1A0A3` | sub_1A0A3 | — | 11 | 4 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 word_23AE0 − word_23ADC 的差值呼叫 sub_1A10C | — |
 | `1A0FF` | sub_1A0FF | — | 13 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併:AX := (AX >> 4) or (ror(DX,4) and 0F000h) | — |
 | `1A10C` | sub_1A10C | — | 13 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 拆解:rol(AX,4) 後 AX 取高 12 位、DX 取低 4 位 | — |
 | `1A1E9` | sub_1A1E9 | — | 177 | 64 | 2 | 9 |  | 待解讀 | — | — | — |
-| `1A29A` | sub_1A29A | — | 76 | 30 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1A2E6` | sub_1A2E6 | — | 54 | 20 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1A31C` | sub_1A31C | — | 51 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1A29A` | sub_1A29A | — | 76 | 30 | 1 | 3 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>釋放 overlay 到夠為止:word_23AE2h 為 0 就把 word_23ADEh 重設為 word_23ADCh;否則走 es:[14h] 串鏈,逐個接回鏈頭、呼叫 sub_1A3FCh 並從 word_23ADEh 扣掉回傳值、再 sub_1A34Fh。cx 進外層迴圈前是 1,實際跑幾次取決於內層小迴圈數到多少 | — |
+| `1A2E6` | sub_1A2E6 | — | 54 | 20 | 1 | 2 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>overlay 載入後把 stub 改寫成直接 far jump:es:[20h] 已是 0EAh 就返回;否則對 es:[0Ch] 個入口,每筆寫入 0EAh + 原 offset(es:[di+2]) + 載入後的 segment(es:[10h]),共 5 bytes | — |
+| `1A31C` | sub_1A31C | — | 51 | 19 | 2 | 2 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>overlay 卸載時把 stub 還原:es:[20h] 已是 0CDh 就返回;否則每筆寫入 3FCDh(little-endian 即 CD 3F = INT 3Fh)+ 目前 offset(es:[di+1]),並把 es:[2] 清 0。兩支讀 offset 的位置差一,正因為 EA 是 1 byte opcode + 4 bytes 運算元而 CD 3F 是 2 + 2 | — |
 | `1A34F` | sub_1A34F | — | 72 | 32 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A397` | sub_1A397 | — | 32 | 14 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A3B7` | sub_1A3B7 | — | 12 | 5 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_1A3C3 取得 bx;bx 非 0 時把 cx 與 ss:[bx+2] 互換 | — |
