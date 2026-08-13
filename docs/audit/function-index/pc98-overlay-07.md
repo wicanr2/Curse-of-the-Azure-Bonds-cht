@@ -20,23 +20,23 @@ offset（base 0），resident executable 為 IDA linear address。
 | `08BD` | sub_8BD | CHECKSPECIALS | 875 | 292 | 1 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md<br>spec/565-ecl-memory-read-path-and-asymmetry.md<br>spec/567-ecl-packed-text-and-bank1-field-map.md |
 | `0C28` | sub_C28 | STORESPECIALS | 515 | 163 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0E2B` | sub_E2B | STOREVALUE | 465 | 162 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化 | spec/562-ecl2-helper-api-and-operand-audit.md |
-| `0FFC` | sub_FFC | GETVALUE | 30 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/565-ecl-memory-read-path-and-asymmetry.md<br>ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h | spec/565-ecl-memory-read-path-and-asymmetry.md |
-| `101A` | sub_101A | — | 302 | 115 | 2 | 2 |  | 待解讀 | — | — | audit/function-index/pc98-overlay-07.md |
+| `0FFC` | sub_FFC | GETVALUE | 30 | 12 | 1 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | spec/565-ecl-memory-read-path-and-asymmetry.md |
+| `101A` | sub_101A | — | 302 | 115 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1148` | sub_1148 | STORESTRING | 540 | 189 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1364` | sub_1364 | FINDSTR | 147 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | spec/567-ecl-packed-text-and-bank1-field-map.md |
 | `13F7` | sub_13F7 | GETSTR | 480 | 186 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `142D` | sub_142D | — | 83 | 30 | 2 | 2 |  | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md |
 | `147D` | sub_147D | — | 31 | 13 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1669` | sub_1669 | — | 23 | 8 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `1669` | sub_1669 | — | 23 | 8 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_2], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 174 | 70 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1745` | sub_1745 | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1745` | sub_1745 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `174A` | sub_174A | — | 30 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1780` | sub_1780 | ECLMENUH | 20 | 10 | 0 | 0 | ✓ | 待解讀 | — | — | — |
-| `1794` | sub_1794 | — | 10 | 4 | 2 | 0 |  | 待解讀 | — | — | — |
-| `179E` | sub_179E | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `17A3` | sub_17A3 | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1780` | sub_1780 | ECLMENUH | 20 | 10 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 28h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完） | — |
+| `1794` | sub_1794 | — | 10 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `179E` | sub_179E | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `17A3` | sub_17A3 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `17A8` | sub_17A8 | — | 72 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
-| `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 待解讀 | — | — | — |
+| `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1808` | sub_1808 | — | 130 | 43 | 2 | 5 |  | 待解讀 | — | — | — |
 | `188A` | sub_188A | ECLMENUV | 158 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1928` | sub_1928 | CHECKSTRING | 81 | 36 | 0 | 0 | ✓ | 待解讀 | — | — | — |

@@ -20,13 +20,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1061` | sub_1061 | LOADACTIVEICON | 498 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1261` | sub_1261 | DELETECHARACTER | 289 | 117 | 2 | 0 | ✓ | 待解讀 | — | — | — |
 | `1437` | sub_1437 | — | 70 | 23 | 1 | 0 |  | 待解讀 | — | — | — |
-| `14C9` | sub_14C9 | SAVECHARACTER | 26 | 12 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `14C9` | sub_14C9 | SAVECHARACTER | 26 | 12 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:649h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 26 bytes，已逐條讀完） | — |
 | `15A1` | sub_15A1 | — | 90 | 39 | 2 | 3 |  | 待解讀 | — | — | — |
 | `15F5` | sub_15F5 | — | 50 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1627` | sub_1627 | — | 1221 | 480 | 2 | 5 |  | 待解讀 | — | — | audit/function-triage.md |
-| `166F` | sub_166F | — | 10 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1679` | sub_1679 | — | 5 | 3 | 5 | 0 |  | 待解讀 | — | — | — |
-| `167E` | sub_167E | — | 11 | 3 | 6 | 0 |  | 待解讀 | — | — | — |
+| `166F` | sub_166F | — | 10 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `1679` | sub_1679 | — | 5 | 3 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push cs`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `167E` | sub_167E | — | 11 | 3 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 723h:48Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1B0D` | sub_1B0D | — | 264 | 109 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1C15` | sub_1C15 | — | 1152 | 449 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2095` | sub_2095 | — | 374 | 112 | 3 | 1 |  | 待解讀 | — | — | — |
@@ -45,7 +45,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4961` | sub_4961 | LOADALL | 17 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_49C6`（body 共 17 bytes，已逐條讀完） | — |
 | `49C6` | sub_49C6 | LOADGAME | 1183 | 458 | 2 | 9 | ✓ | 待解讀 | — | — | — |
 | `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_4], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `5008` | sub_5008 | SAVEGAME | 718 | 296 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |

@@ -41,7 +41,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `11430` | sub_11430 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `114F0` | sub_114F0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `11620` | sub_11620 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
-| `11638` | sub_11638 | — | 23 | 12 | 1 | 1 |  | 待解讀 | — | — | — |
+| `11638` | sub_11638 | — | 23 | 12 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `int 3Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `11690` | sub_11690 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `1169F` | sub_1169F | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `11720` | sub_11720 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
@@ -173,15 +173,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19DAA` | @KEYPRESSED$qv | — | 18 | 8 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@KEYPRESSED$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19DBC` | @READKEY$qv | — | 34 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@READKEY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19DDE` | @ASSIGNCRT$qm4TEXT | — | 43 | 13 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ASSIGNCRT$qm4TEXT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `19F24` | sub_19F24 | — | 7 | 3 | 2 | 1 |  | 待解讀 | — | — | — |
+| `19F24` | sub_19F24 | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19F2B` | sub_19F2B | — | 89 | 43 | 8 | 5 |  | 待解讀 | — | — | — |
 | `19F84` | sub_19F84 | — | 33 | 14 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19FA5` | sub_19FA5 | — | 7 | 3 | 5 | 1 |  | 待解讀 | — | — | — |
-| `19FAC` | sub_19FAC | — | 7 | 3 | 4 | 1 |  | 待解讀 | — | — | — |
+| `19FA5` | sub_19FA5 | — | 7 | 3 | 5 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 3`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
+| `19FAC` | sub_19FAC | — | 7 | 3 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 2`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
 | `19FB3` | sub_19FB3 | — | 157 | 73 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A050` | sub_1A050 | — | 104 | 56 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 待解讀 | — | — | — |
-| `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1A611`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完） | — |
 | `1A160` | sub_1A160 | — | 58 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -196,14 +196,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 待解讀 | — | — | — |
+| `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A61C`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A618` | @Halt$q4Word | — | 188 | 79 | 4 | 6 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Halt$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A6D4` | sub_1A6D4 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A6E2` | sub_1A6E2 | — | 12 | 5 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A6EE` | sub_1A6EE | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A6FC` | sub_1A6FC | — | 7 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A703` | sub_1A703 | — | 11 | 6 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A70E` | sub_1A70E | — | 8 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A6FC` | sub_1A6FC | — | 7 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
+| `1A703` | sub_1A703 | — | 11 | 6 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
+| `1A70E` | sub_1A70E | — | 8 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add al, 7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `1A716` | sub_1A716 | — | 7 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
 | `1A747` | @IOResult$qv | — | 7 | 3 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@IOResult$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A74E` | @__IOCheck$qv | — | 14 | 5 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__IOCheck$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

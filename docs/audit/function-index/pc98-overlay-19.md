@@ -14,33 +14,33 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0E8E` | sub_E8E | — | 247 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1074` | sub_1074 | VIEWITEM | 144 | 70 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1154` | sub_1154 | — | 65 | 33 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1195` | sub_1195 | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `119A` | sub_119A | — | 15 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
-| `11A9` | sub_11A9 | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `11AE` | sub_11AE | — | 6 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
-| `142D` | sub_142D | — | 10 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1437` | sub_1437 | — | 48 | 21 | 3 | 0 |  | 待解讀 | — | — | — |
-| `146E` | sub_146E | — | 10 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1478` | sub_1478 | — | 5 | 2 | 15 | 0 |  | 待解讀 | — | — | — |
+| `1195` | sub_1195 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `119A` | sub_119A | — | 15 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 418h:0D17h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
+| `11A9` | sub_11A9 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `11AE` | sub_11AE | — | 6 | 4 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
+| `142D` | sub_142D | — | 10 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `1437` | sub_1437 | — | 48 | 21 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完） | — |
+| `146E` | sub_146E | — | 10 | 7 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `1478` | sub_1478 | — | 5 | 2 | 15 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `147D` | sub_147D | — | 63 | 26 | 2 | 0 |  | 待解讀 | — | — | — |
-| `14E3` | sub_14E3 | — | 5 | 2 | 4 | 0 |  | 待解讀 | — | — | — |
-| `14E8` | sub_14E8 | — | 5 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
-| `150B` | sub_150B | — | 3 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1515` | sub_1515 | — | 8 | 2 | 5 | 0 |  | 待解讀 | — | — | — |
-| `156A` | sub_156A | — | 14 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1578` | sub_1578 | ITEMS | 1 | 1 | 2 | 0 | ✓ | 待解讀 | — | — | — |
-| `1579` | sub_1579 | — | 10 | 3 | 6 | 0 |  | 待解讀 | — | — | — |
-| `1583` | sub_1583 | — | 5 | 2 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1588` | sub_1588 | — | 25 | 8 | 5 | 0 |  | 待解讀 | — | — | — |
+| `14E3` | sub_14E3 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `14E8` | sub_14E8 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and ds:9320h, al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `150B` | sub_150B | — | 3 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr loc_1B2D+1`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
+| `1515` | sub_1515 | — | 8 | 2 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and word ptr [di-7Dh], 0FF80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
+| `156A` | sub_156A | — | 14 | 5 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `test ax, 4881h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
+| `1578` | sub_1578 | ITEMS | 1 | 1 | 2 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
+| `1579` | sub_1579 | — | 10 | 3 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, ds:9594h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `1583` | sub_1583 | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-3Fh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `1588` | sub_1588 | — | 25 | 8 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ax, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |
 | `15A1` | sub_15A1 | — | 125 | 42 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1604` | sub_1604 | — | 15 | 5 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1613` | sub_1613 | — | 9 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1622` | sub_1622 | — | 6 | 1 | 5 | 0 |  | 待解讀 | — | — | — |
-| `1683` | sub_1683 | — | 9 | 2 | 4 | 0 |  | 待解讀 | — | — | — |
+| `1604` | sub_1604 | — | 15 | 5 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A335h, 52h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
+| `1613` | sub_1613 | — | 9 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+197h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
+| `1622` | sub_1622 | — | 6 | 1 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp word ptr es:[di+1CAh], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
+| `1683` | sub_1683 | — | 9 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+196h], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `174A` | sub_174A | — | 109 | 41 | 2 | 3 |  | 待解讀 | — | — | — |
 | `17B7` | sub_17B7 | — | 617 | 261 | 2 | 13 |  | 待解讀 | — | — | — |
-| `18C4` | sub_18C4 | — | 7 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `19CA` | sub_19CA | — | 23 | 11 | 2 | 1 |  | 待解讀 | — | — | audit/function-triage.md |
+| `18C4` | sub_18C4 | — | 7 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
+| `19CA` | sub_19CA | — | 23 | 11 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/function-triage.md |
 | `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 待解讀 | — | — | — |
 | `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 待解讀 | — | — | — |

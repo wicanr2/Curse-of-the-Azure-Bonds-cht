@@ -133,8 +133,8 @@ type outFunction struct {
 }
 
 type moduleStat struct {
-	Platform, Module, Unit             string
-	Functions, Read, NotBlocking, Todo int
+	Platform, Module, Unit                       string
+	Functions, Read, NotBlocking, Todo, Fragment int
 	CodeBytes, Undefined, SegmentBytes int
 	Instructions                       int
 	SHA256                             string
@@ -326,6 +326,10 @@ func main() {
 					stat.Read++
 				case "不阻塞":
 					stat.NotBlocking++
+				case "邊界碎片":
+					// IDA 在 raw overlay 上建錯的函式邊界；不是真的函式，
+					// 單獨計數才不會讓分母與待解讀數失真。
+					stat.Fragment++
 				default:
 					stat.Todo++
 				}
@@ -351,15 +355,16 @@ func main() {
 	die(os.MkdirAll(*outDetail, 0o755))
 	writeMarkdown(*outMD, *outDetail, stats, functions)
 
-	var total, read, notBlocking, todo int
+	var total, read, notBlocking, todo, fragment int
 	for _, stat := range stats {
 		total += stat.Functions
 		read += stat.Read
 		notBlocking += stat.NotBlocking
 		todo += stat.Todo
+		fragment += stat.Fragment
 	}
-	fmt.Fprintf(os.Stderr, "functions=%d 已解讀=%d 不阻塞=%d 待解讀=%d → %s\n",
-		total, read, notBlocking, todo, *outMD)
+	fmt.Fprintf(os.Stderr, "functions=%d 已解讀=%d 不阻塞=%d 邊界碎片=%d 待解讀=%d → %s\n",
+		total, read, notBlocking, fragment, todo, *outMD)
 }
 
 func uniqueStrings(values []string) []string {
@@ -396,27 +401,29 @@ func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []
 		if len(indexes) == 0 {
 			continue
 		}
-		var functionCount, read, notBlocking, todo, code, undefined int
+		var functionCount, read, notBlocking, todo, fragment, code, undefined int
 		for _, i := range indexes {
 			functionCount += stats[i].Functions
 			read += stats[i].Read
 			notBlocking += stats[i].NotBlocking
 			todo += stats[i].Todo
+			fragment += stats[i].Fragment
 			code += stats[i].CodeBytes
 			undefined += stats[i].Undefined
 		}
 		fmt.Fprintf(&builder, "## %s\n\n", strings.ToUpper(platform))
-		fmt.Fprintf(&builder, "模組 %d／函式 %d：已解讀 %d、不阻塞 %d、待解讀 %d；"+
-			"已定義程式碼 %d bytes，未定義 %d bytes。\n\n",
-			len(indexes), functionCount, read, notBlocking, todo, code, undefined)
-		builder.WriteString("| 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |\n")
-		builder.WriteString("|---|---|---:|---:|---:|---:|---:|---:|---|\n")
+		fmt.Fprintf(&builder, "模組 %d／函式 %d：已解讀 %d、不阻塞 %d、邊界碎片 %d、"+
+			"待解讀 %d；已定義程式碼 %d bytes，未定義 %d bytes。\n\n",
+			len(indexes), functionCount, read, notBlocking, fragment, todo, code, undefined)
+		builder.WriteString("| 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |\n")
+		builder.WriteString("|---|---|---:|---:|---:|---:|---:|---:|---:|---|\n")
 		for _, i := range indexes {
 			stat := stats[i]
 			detail := fmt.Sprintf("%s-%s.md", stat.Platform, stat.Module)
-			fmt.Fprintf(&builder, "| %s | %s | %d | %d | %d | %d | %d | %d | [明細](function-index/%s) |\n",
+			fmt.Fprintf(&builder, "| %s | %s | %d | %d | %d | %d | %d | %d | %d | [明細](function-index/%s) |\n",
 				stat.Module, orDash(stat.Unit), stat.Functions, stat.Read,
-				stat.NotBlocking, stat.Todo, stat.CodeBytes, stat.Undefined, detail)
+				stat.NotBlocking, stat.Fragment, stat.Todo, stat.CodeBytes,
+				stat.Undefined, detail)
 		}
 		builder.WriteString("\n")
 	}
