@@ -5266,9 +5266,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Ch 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "與 pc98 overlay-02:1294h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -25626,11 +25627,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Ch 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/596-ecl-party-item-sweep.md"
    ]
   },
   {
@@ -42722,9 +42725,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 38,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43277,9 +43280,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 32,
+   "Read": 33,
    "NotBlocking": 0,
-   "Todo": 31,
+   "Todo": 30,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
