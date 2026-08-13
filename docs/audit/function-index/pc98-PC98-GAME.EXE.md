@@ -63,7 +63,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12340` | sub_12340 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `1234F` | sub_1234F | — | 2 | 1 | 40 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `1259F` | sub_1259F | — | 1244 | 502 | 1 | 27 |  | 待解讀 | — | — | — |
-| `12A80` | sub_12A80 | — | 24 | 10 | 1 | 0 |  | 待解讀 | — | — | — |
+| `12A80` | sub_12A80 | — | 24 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>byte_241E2 := byte_241E3;byte_241E3 := arg_0——一格深度的歷史(舊值挪成「前一個」再寫新值),順序不能顛倒 | — |
 | `12E3D` | sub_12E3D | — | 580 | 211 | 2 | 2 |  | 待解讀 | — | — | — |
 | `13231` | sub_13231 | — | 133 | 54 | 2 | 0 |  | 待解讀 | — | — | — |
 | `139DD` | sub_139DD | — | 376 | 145 | 2 | 4 |  | 待解讀 | — | — | — |
@@ -77,19 +77,19 @@ offset（base 0），resident executable 為 IDA linear address。
 | `140C7` | sub_140C7 | — | 106 | 48 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 106 bytes，已逐條讀完） | — |
 | `14131` | sub_14131 | — | 77 | 36 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 77 bytes，已逐條讀完） | — |
 | `14180` | sub_14180 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `14187` | sub_14187 | — | 25 | 11 | 1 | 0 |  | 待解讀 | — | — | — |
+| `14187` | sub_14187 | — | 25 | 11 | 1 | 0 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>word_241DE := 0A800h + arg_0 × 800h。arg_0 = 0/1/2 得 A800h/B000h/B800h,正是 PC-98 圖形 VRAM 的三個顏色平面;arg_0 = 3 得 C000h 不是標準平面位址(第四平面在 E000h),而函式沒有做範圍檢查 | — |
 | `141A0` | sub_141A0 | — | 164 | 77 | 4 | 4 |  | 待解讀 | — | — | — |
 | `142B9` | sub_142B9 | — | 137 | 62 | 3 | 2 |  | 待解讀 | — | — | — |
-| `14342` | sub_14342 | — | 48 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
+| `14342` | sub_14342 | — | 48 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>Shift-JIS 首位元組判斷:回傳 1 的條件是 81h..9Fh 或 0E0h..0FCh。⚠ 中文化必改——Big5 的首位元組是 A1h..F9h,而 A1h..DFh 在 Shift-JIS 是單位元組半形片假名,沿用會把中文字切成兩個單位元組(畫面是亂碼不是缺字) | — |
 | `14372` | sub_14372 | — | 600 | 238 | 1 | 1 |  | 待解讀 | — | — | — |
 | `145CA` | sub_145CA | — | 2253 | 814 | 2 | 4 |  | 待解讀 | — | — | — |
 | `14E97` | sub_14E97 | — | 142 | 61 | 4 | 4 |  | 待解讀 | — | — | — |
 | `152D0` | sub_152D0 | — | 265 | 123 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1546F` | sub_1546F | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1562A` | sub_1562A | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1562A` | sub_1562A | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br><sub_19259>((byte_241A6 × word_280BA) div 2)。乘除都是無號,除數固定 2 | — |
 | `15647` | sub_15647 | — | 257 | 132 | 2 | 3 |  | 待解讀 | — | — | — |
 | `1691B` | sub_1691B | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `1692D` | sub_1692D | — | 57 | 28 | 3 | 2 |  | 待解讀 | — | — | — |
+| `1692D` | sub_1692D | — | 57 | 28 | 3 | 2 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>文字 VRAM 定址:DS := arg_2;DI := (arg_A × 50h + arg_C) × 2;CX := byte(arg_4);SI := arg_0;再呼叫 sub_16966 與 sub_169B6。50h = 80 是欄數,每格兩個 byte——與 spec 636 由 FillChar 長度換算的結論一致。進出成對保存 SS/DS/旗標並 cld。retn 0Eh = 7 個 word 參數 | — |
 | `16966` | sub_16966 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
 | `169B6` | sub_169B6 | — | 35 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
 | `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |

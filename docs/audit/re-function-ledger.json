@@ -14495,6 +14495,51 @@
    "level": "strong inference",
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
    "note": "與 pc98 overlay-24:0E02h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：for i := 1 to 4:if <sub_25CD>(arg_0,arg_2,byte[49D3h + i],@var_6) <> 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 76416,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "byte_241E2 := byte_241E3;byte_241E3 := arg_0——一格深度的歷史(舊值挪成「前一個」再寫新值),順序不能顛倒"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82311,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "word_241DE := 0A800h + arg_0 × 800h。arg_0 = 0/1/2 得 A800h/B000h/B800h,正是 PC-98 圖形 VRAM 的三個顏色平面;arg_0 = 3 得 C000h 不是標準平面位址(第四平面在 E000h),而函式沒有做範圍檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82754,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "Shift-JIS 首位元組判斷:回傳 1 的條件是 81h..9Fh 或 0E0h..0FCh。⚠ 中文化必改——Big5 的首位元組是 A1h..F9h,而 A1h..DFh 在 Shift-JIS 是單位元組半形片假名,沿用會把中文字切成兩個單位元組(畫面是亂碼不是缺字)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 87594,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "<sub_19259>((byte_241A6 × word_280BA) div 2)。乘除都是無號,除數固定 2"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92461,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "文字 VRAM 定址:DS := arg_2;DI := (arg_A × 50h + arg_C) × 2;CX := byte(arg_4);SI := arg_0;再呼叫 sub_16966 與 sub_169B6。50h = 80 是欄數,每格兩個 byte——與 spec 636 由 FillChar 長度換算的結論一致。進出成對保存 SS/DS/旗標並 cld。retn 0Eh = 7 個 word 參數"
   }
  ]
 }

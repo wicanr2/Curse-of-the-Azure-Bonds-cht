@@ -38,8 +38,15 @@ def main():
 
     path = os.path.join(SWEEP, platform, "overlays", "prologue",
                         "%s-%s.json" % (platform, module))
-    if not os.path.exists(path):
-        path = os.path.join(SWEEP, platform, "small", module + ".json")
+    if module.endswith(".EXE") or not os.path.exists(path):
+        # resident 執行檔不走 prologue 邊界（第 644 輪：271 支只有 85 支對得上，
+        # 手寫組語的 RTL 與 TPOV stub 都沒有標準 prologue）。改用 IDA 邊界，
+        # 並在每支結尾標出最後一條是不是 return。
+        for candidate in (module + ".json", module + ".big.json"):
+            trial = os.path.join(SWEEP, platform, "small", candidate)
+            if os.path.exists(trial):
+                path = trial
+                break
     dumped = json.load(open(path, encoding="utf-8"))["functions"]
     items = {}
     for function in dumped:
@@ -78,10 +85,14 @@ def main():
     for function in todo:
         ea, size = function["ea"], function.get("size") or 0
         end = next_prologue(ea) if blob else ea + size
-        print("\n=== %04Xh  IDA size=%d，印到下一個 prologue %04Xh ===" % (ea, size, end))
-        for address in sorted(items):
-            if not ea <= address < end:
-                continue
+        inside = [a for a in sorted(items) if ea <= a < end]
+        tail = ""
+        if not blob and inside:
+            last = re.sub(r"\s*;.*$", "", items[inside[-1]]["disasm"].strip())
+            if not re.match(r"(ret[nf]?|jmp|iret)\b", last):
+                tail = "  ⚠ 結尾不是 return，IDA 範圍可能不完整"
+        print("\n=== %04Xh  IDA size=%d，讀到 %04Xh ===%s" % (ea, size, end, tail))
+        for address in inside:
             item = items[address]
             text = re.sub(r"\s*;.*$", "", item["disasm"].strip())
             match = re.match(r"bf(..)(..)", item["bytes"])
