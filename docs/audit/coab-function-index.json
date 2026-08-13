@@ -23270,7 +23270,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/659-console-raw-mode-and-textrec.md",
+   "note": "參數為 0 直接返回;否則無號除以 word_280D2h 再呼叫 \u003csub_19271\u003e"
   },
   {
    "platform": "pc98",
@@ -23327,7 +23330,10 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/659-console-raw-mode-and-textrec.md",
+   "note": "鍵盤讀取:byte_280E4h 有留值就回傳並清掉;否則迴圈 \u003csub_19085\u003e → int 18h AH=1(有無按鍵)→ int 18h AH=0(取鍵)。AL \u003c\u003e 0 直接回;AL = 0(特殊鍵)則把掃描碼 AH 存進 byte_280E4h 留給下一次——特殊鍵要讀兩次才拿得到掃描碼。remake 換成事件式輸入時這個「兩次」協定會影響呼叫端"
   },
   {
    "platform": "pc98",
@@ -23339,7 +23345,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/659-console-raw-mode-and-textrec.md",
+   "note": "TextRec 初始化:[di+2] := 0D7B0h(Turbo Pascal 的 fmClosed)、[di+4] := 80h(BufSize)、[di+0Ch/0Eh] := 緩衝指標 @[di+80h]、[di+10h/12h] := 函式指標 loc_19329、[di+30h] := 0。後半用 byte_28102h 當旗標做一次性初始化:word_280D8h := ((high(word_280F9h) × byte_280DAh) + low) × 2,且 byte_280DAh \u003c\u003e 50h(80 欄)時再乘一次 2"
   },
   {
    "platform": "pc98",
@@ -23351,7 +23360,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/659-console-raw-mode-and-textrec.md",
+   "note": "開 CS:4E9h 的檔名(內容是 \"CON\")用 int 21h AX=3D00h,handle 存進**程式碼段**的 cs:word_193CDh;再用 IOCTL AX=4400h 取裝置資訊,DL bit 5(二進位/raw 模式)沒設就用 AX=4401h 設上——之後從 CON 讀進來不再被 DOS 做 ASCII 加工。seg050 基底 18EE0h 由 18EE0h+4EDh = word_193CD 互相印證"
   },
   {
    "platform": "pc98",
@@ -44805,9 +44817,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 170,
+   "Read": 174,
    "NotBlocking": 29,
-   "Todo": 112,
+   "Todo": 108,
    "Fragment": 22,
    "CodeBytes": 25067,
    "Undefined": 0,
