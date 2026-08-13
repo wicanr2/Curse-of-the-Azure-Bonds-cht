@@ -11962,6 +11962,24 @@
    "level": "strong inference",
    "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
    "note": "與 pc98 overlay-02:0C26h 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 8112,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/591-skip-arity-crosscheck.md",
+   "note": "ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 8181,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/591-skip-arity-crosscheck.md",
+   "note": "ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」"
   }
  ]
 }

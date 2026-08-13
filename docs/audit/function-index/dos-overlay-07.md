@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BE0` | sub_1BE0 | — | 566 | 194 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1E16` | sub_1E16 | — | 303 | 82 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1F45` | sub_1F45 | — | 176 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1FF5` | sub_1FF5 | — | 322 | 139 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1FF5` | sub_1FF5 | — | 322 | 139 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/591-skip-arity-crosscheck.md<br>ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」 | spec/591-skip-arity-crosscheck.md |
 | `2137` | sub_2137 | — | 205 | 76 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2252` | sub_2252 | — | 335 | 134 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `23A1` | sub_23A1 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

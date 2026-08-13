@@ -47,7 +47,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B89` | sub_1B89 | GODUEL | 584 | 201 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1DD1` | sub_1DD1 | ROBDOUGH | 303 | 82 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1F00` | sub_1F00 | ROBSTUFF | 176 | 62 | 0 | 3 | ✓ | 待解讀 | — | — | spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
-| `1FB0` | sub_1FB0 | NONEXT | 277 | 138 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1FB0` | sub_1FB0 | NONEXT | 277 | 138 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/591-skip-arity-crosscheck.md<br>ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」 | spec/591-skip-arity-crosscheck.md |
 | `20C5` | sub_20C5 | CHARSPEED | 205 | 76 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2235` | sub_2235 | KILLTHEDUDE | 516 | 208 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2439` | sub_2439 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
