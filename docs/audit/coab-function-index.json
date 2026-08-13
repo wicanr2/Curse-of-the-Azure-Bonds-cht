@@ -4707,7 +4707,8 @@
    "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/602-ecl-party-power-score.md"
    ]
   },
   {
@@ -5287,9 +5288,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Dh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/602-ecl-party-power-score.md",
+   "note": "與 pc98 overlay-02:12F7h 助憶碼序列完全相同（120 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -25660,11 +25662,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Dh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/602-ecl-party-power-score.md",
+   "note": "ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/602-ecl-party-power-score.md"
    ]
   },
   {
@@ -26241,6 +26245,7 @@
    "note": "ECL opcode 3Bh:READVAR(3);在全隊每名角色的 +1Eh 位元組陣列(索引 1..100)裡找第一個等於 operand1 的格子,把格號寫進 operand2 指定的位址(找不到為 FFh)、命中角色的 0-based 序號寫進 operand3 指定的位址。該陣列與掛在 +14Eh 的物品鏈是兩套不同的東西——一個定長、一個動態鏈",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/601-ecl-slot-search.md"
    ]
   },
@@ -42737,9 +42742,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 28,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 34,
+   "Todo": 33,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43292,9 +43297,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 42,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
