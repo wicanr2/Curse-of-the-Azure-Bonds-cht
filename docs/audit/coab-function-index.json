@@ -25247,7 +25247,10 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/670-file-ops-and-standard-handles.md",
+   "note": "Flush:先看 es:[di+1Ah](FlushFunc 指標的 **segment** 部分)是否為 0——offset 為 0 但 segment 非 0 仍算有效;再看 InOutRes 是否已有錯;都通過才 call dword ptr es:[di+18h],回傳非 0 就記進 InOutRes"
   },
   {
    "platform": "pc98",
@@ -25355,7 +25358,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/670-file-ops-and-standard-handles.md",
+   "note": "Close:通過 \u003csub_1BF8Eh\u003e 檢查後,**Handle \u003e 4 才呼叫 int 21h AH=3Eh 關閉**——0..4 是 DOS 標準 handle(stdin/stdout/stderr/aux/prn),關掉會影響整個行程。但不論有沒有真的關,Mode 都會被設成 fmClosed"
   },
   {
    "platform": "pc98",
@@ -25394,7 +25400,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/670-file-ops-and-standard-handles.md",
+   "note": "Seek:用兩次 16×16 乘法拼成 32-bit 位移(低位取整個 dx:ax、高位只取 ax 加進 cx),再 int 21h AX=4200h。⚠ 高位乘法的 dx 被丟掉,記錄編號 × RecSize 超過 4GB 時會靜默回捲。es:[di+4] 是 FileRec.RecSize,與 TextRec 的 BufSize 同一個位置"
   },
   {
    "platform": "pc98",
@@ -25406,7 +25415,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/670-file-ops-and-standard-handles.md",
+   "note": "取得位置與大小:Mode 必須是 fmInOut,否則設 InOutRes := 67h、清 dx:ax 並**設進位**返回。做法是 4201h 取目前位置 → 4202h 取檔尾(即大小)→ 4200h 移回原處。回傳分兩組:dx:ax 是還原後的位置、bx:cx 是檔案大小"
   },
   {
    "platform": "pc98",
@@ -44942,9 +44954,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 215,
+   "Read": 219,
    "NotBlocking": 29,
-   "Todo": 66,
+   "Todo": 62,
    "Fragment": 23,
    "CodeBytes": 25067,
    "Undefined": 0,
