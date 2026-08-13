@@ -410,24 +410,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 286,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 03h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 439,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 602,
    "state": "待解讀",
    "level": "",
@@ -11980,6 +11962,24 @@
    "level": "exact",
    "spec": "docs/spec/591-skip-arity-crosscheck.md",
    "note": "ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 439,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/592-ecl-arithmetic-and-compare.md",
+   "note": "ECL opcode 04h~07h(四則運算)共用的 handler:READVAR(3),前兩個 operand 取值、第三個當目的位址,重讀 DS:A891h 分辨。04h=v1+v2、05h=v2-v1(順序相反)、06h=v1 div v2 且餘數存 bank1^[67Eh](div 執行兩次)、07h=v1*v2。除法與乘法都是無號,乘法只取低 16 位"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 286,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/592-ecl-arithmetic-and-compare.md",
+   "note": "ECL opcode 03h(COMPARE):READVAR(2);任一 operand code >= 80h 就走字串比較——先用 far 0418:044A 從 DS:A9DAh 與 DS:AADAh 兩個 packed text 緩衝區解出字串,再呼叫 far 0062:008E;否則取兩個值走數值比較 far 0062:0093"
   }
  ]
 }
