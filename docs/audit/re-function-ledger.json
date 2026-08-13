@@ -14103,6 +14103,150 @@
    "level": "strong inference",
    "spec": "docs/spec/640-save-for-half-and-damage-global.md",
    "note": "與 pc98 overlay-12:1A34h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) 或 (and 2) then:<far 013E:0028>(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] <> 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD&D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 568,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 PC-98 overlay-12:022Dh（entry#13）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD&D 的 Protection from Evil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 623,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 PC-98 overlay-12:0264h（entry#14）助憶碼序列完全相同，語意同該筆：if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1145,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 PC-98 overlay-12:0470h（entry#23）助憶碼序列完全相同，語意同該筆：p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 <> 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1831,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 PC-98 overlay-12:072Eh（entry#29）助憶碼序列完全相同，語意同該筆：與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 <> 0 then inc DS:0A039h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4683,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 PC-98 overlay-12:126Dh（entry#51）助憶碼序列完全相同，語意同該筆：if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4734,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 PC-98 overlay-12:12A0h（entry#52）助憶碼序列完全相同，語意同該筆：與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6509,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "與 PC-98 overlay-12:19B3h（entry#78）助憶碼序列完全相同，語意同該筆：DS:0A02Fh := 9;<far 013E:0064>(arg_6^[18Eh]^[0Ah], ROLLDICE(2,0Ah)=2d10, 0, 0)。與 19E8h 逐指令相同,只差 DS:0A02Fh 的值與骰子 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6562,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "與 PC-98 overlay-12:19E8h（entry#79）助憶碼序列完全相同，語意同該筆：DS:0A02Fh := 10h;<far 013E:0064>(arg_6^[18Eh]^[0Ah], ROLLDICE(1,4)=1d4, 0, 0)。與 19B3h 成對 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 3126,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "與 PC-98 overlay-32:12EBh（entry#15）助憶碼序列完全相同，語意同該筆：i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 3166,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "與 PC-98 overlay-32:1313h（entry#16）助憶碼序列完全相同，語意同該筆：同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 3206,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "與 PC-98 overlay-32:133Bh（entry#17）助憶碼序列完全相同，語意同該筆：同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 6523,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/593-ecl-comparison-flags.md",
+   "note": "與 PC-98 overlay-07:1928h（entry#22）助憶碼序列完全相同，語意同該筆：ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5071,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 PC-98 overlay-12:13F1h（entry#59）助憶碼序列完全相同，語意同該筆：13F1h..1434h(retf 0Ah)的完整一支:if <sub_3C>(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) <> 0 且 <far 013E:008E>(arg_A:arg_8, 1, 1) <> 0 then <far 014A:00B1>(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 3093,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "與 PC-98 overlay-02:0C81h（entry#23）助憶碼序列完全相同，語意同該筆：ECL opcode 21h 與 37h 共用的 handler(真實範圍 0C81h..0E0Dh 共 396 bytes,IDA 標 53)。靠 cmp ds:A891h, 21h 再讀一次 dispatcher 的 opcode 全域來分辨自己被哪個 opcode 呼叫。READVAR(3) 後三個 operand 存 [bp-3..bp-1];FFh 與 7Fh 是哨兵值。21h 半設 DS:789Bh、37h 半設 DS:789Ah,兩個都為真才執行結尾收尾。IDA 漏認的兩段(0CB6h/0D22h)正好是 opcode 二次判讀與 37h 分支開頭 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 3603,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "與 PC-98 overlay-02:0E7Fh（entry#25）助憶碼序列完全相同，語意同該筆：ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 5142,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
+   "note": "與 PC-98 overlay-02:149Ch（entry#31）助憶碼序列完全相同，語意同該筆：ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

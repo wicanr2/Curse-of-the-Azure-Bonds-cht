@@ -41,6 +41,16 @@ def entries(platform, module):
 
 
 def small(platform, module):
+    """函式本體，優先取 prologue 匯出。
+
+    `small/` 匯出並不完整（`overlay-07` 缺 14 支、`overlay-22` 缺 16 支），
+    缺的那些會被算成「缺匯出」而整批放棄轉移。prologue 匯出以 `55 89 e5`／
+    `55 8b ec` 為界，涵蓋整個模組。
+    """
+    path = os.path.join(SWEEP, platform, "overlays", "prologue",
+                        "%s-%s.json" % (platform, module))
+    if os.path.exists(path):
+        return {f["ea"]: f for f in json.load(open(path, encoding="utf-8"))["functions"]}
     path = os.path.join(SWEEP, platform, "small", module + ".bin.json")
     if not os.path.exists(path):
         return {}
