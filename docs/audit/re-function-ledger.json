@@ -1351,7 +1351,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX"
+   "note": "以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX。表的內容見 docs/spec/658-color-bit-swap-and-attribute-codec.md:seg050 基底 18EE0h 故表在 19EA0h(緊接本支 retn 之後),8 筆是 [0,1,4,5,2,3,6,7]——bit 1 與 bit 2 互換、bit 0 不動,即 PC-98 的 G-R-B 與一般 R-G-B 的互換;且為自反(T[T[i]]=i),故編碼解碼共用同一張表"
   },
   {
    "platform": "pc98",
@@ -14918,6 +14918,51 @@
    "level": "",
    "spec": "docs/spec/657-dos-alloc-and-device-command.md",
    "note": "不是函式起點:以 jb 開頭、沒有 prologue,而前一支在 18C94h 就以 retf 10h 結束,中間沒有被認出的函式。內容是 ASCIIZ 轉 Pascal 短字串(repne scasb 求長度後 std + rep movsb 就地右移一格再 stosb 補長度);⚠ cx 上限 100h,字串超過 256 bytes 沒有結尾 0 時 not cl 會得到 0,長度變成 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102307,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "打包 → PC-98 屬性:colour := <19E98h>(AL and 7) 放 bit 7..5,其餘 ((AL and 0F0h) shr 3) or 1 放 bit 4..0。⚠ bit 0 一定被設成 1"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102341,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "PC-98 屬性 → 打包,與 18FA3h 互為反向:colour := <19E98h>((AL and 0E0h) shr 5),其餘 (AL and 1Eh) shl 3。⚠ and 1Eh 只取 bit 4..1,bit 0 在還原時被丟掉,所以往返一次不會完全還原"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102112,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "兩塊相隔 100h 的緩衝(byte_2810Eh 與 byte_2820Eh)各先過 <sub_192D2>,再分別交給 <sub_1BA37> 與 <sub_1BA3C>(相差 5 bytes,多半是同一支的兩個入口)。開頭先 <sub_18F10>()"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102780,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "BH := byte_280C6h;把 word_280C8h/280CAh 各存一份到 word_280E8h/280EAh;再 <sub_19840>() 與 <sub_19604>(word_280C8h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102850,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/658-color-bit-swap-and-attribute-codec.md",
+   "note": "<sub_195FC>() 後取 byte_280C6h 與 word_280C8h 的低位元組,把當時的 DH 存進 CH,再讀 word_280CAh 覆蓋 DX,最後比較 CH 與 DH——比的是新舊兩個 DH,相等回 0、不等回 1"
   }
  ]
 }
