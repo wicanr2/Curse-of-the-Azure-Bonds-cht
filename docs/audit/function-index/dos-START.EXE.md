@@ -135,44 +135,44 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1974A` | sub_1974A | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
 | `197B4` | sub_197B4 | — | 20 | 12 | 1 | 0 |  | 待解讀 | — | — | — |
 | `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
-| `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 待解讀 | — | — | — |
-| `197FB` | @INTR$q4BYTEm9REGISTERS | — | 58 | 40 | 8 | 0 |  | 待解讀 | — | — | — |
-| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 待解讀 | — | — | — |
-| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 待解讀 | — | — | — |
-| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 待解讀 | — | — | — |
-| `198CE` | @DiskFree$q4Byte | — | 25 | 12 | 0 | 1 |  | 待解讀 | — | — | — |
-| `198E7` | @DiskSize$q4Byte | — | 27 | 13 | 0 | 1 |  | 待解讀 | — | — | — |
-| `19902` | @FINDFIRST$q7PATHSTR4WORDm9SEARCHREC | — | 62 | 33 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19940` | @FINDNEXT$qm9SEARCHREC | — | 26 | 13 | 0 | 1 |  | 待解讀 | — | — | — |
+| `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `197FB` | @INTR$q4BYTEm9REGISTERS | — | 58 | 40 | 8 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `198CE` | @DiskFree$q4Byte | — | 25 | 12 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskFree$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `198E7` | @DiskSize$q4Byte | — | 27 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskSize$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19902` | @FINDFIRST$q7PATHSTR4WORDm9SEARCHREC | — | 62 | 33 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDFIRST$q7PATHSTR4WORDm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19940` | @FINDNEXT$qm9SEARCHREC | — | 26 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDNEXT$qm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1995A` | sub_1995A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1997D` | @FEXPAND$q7PATHSTR | — | 197 | 104 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19A42` | @FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr | — | 82 | 37 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1997D` | @FEXPAND$q7PATHSTR | — | 197 | 104 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FEXPAND$q7PATHSTR`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19A42` | @FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr | — | 82 | 37 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19A94` | sub_19A94 | — | 18 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19AB0` | @__CRTInit$qv | — | 48 | 24 | 1 | 4 |  | 待解讀 | — | — | — |
+| `19AB0` | @__CRTInit$qv | — | 48 | 24 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__CRTInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19AE0` | unknown_libname_1 | — | 105 | 45 | 1 | 5 |  | 待解讀 | — | — | — |
 | `19B49` | sub_19B49 | — | 78 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19B97` | sub_19B97 | — | 72 | 30 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19BF5` | sub_19BF5 | — | 61 | 23 | 2 | 5 |  | 待解讀 | — | — | — |
-| `19C32` | @WINDOW$q4BYTEt1t1t1 | — | 64 | 23 | 0 | 2 |  | 待解讀 | — | — | — |
-| `19C72` | @CLRSCR$qv | — | 26 | 8 | 1 | 2 |  | 待解讀 | — | — | — |
-| `19C8C` | @CLREOL$qv | — | 20 | 7 | 0 | 2 |  | 待解讀 | — | — | — |
-| `19CA0` | @INSLINE$qv | — | 37 | 15 | 0 | 3 |  | 待解讀 | — | — | — |
-| `19CC5` | @GOTOXY$q4BYTEt1 | — | 44 | 15 | 0 | 2 |  | 待解讀 | — | — | — |
-| `19CF1` | @WHEREX$qv | — | 12 | 5 | 0 | 1 |  | 待解讀 | — | — | — |
-| `19CFD` | @WHEREY$qv | — | 12 | 5 | 0 | 1 |  | 待解讀 | — | — | — |
-| `19D09` | @TEXTCOLOR$q4BYTE | — | 26 | 9 | 0 | 1 |  | 待解讀 | — | — | — |
-| `19D23` | @TEXTBACKGROUND$q4BYTE | — | 24 | 8 | 0 | 0 |  | 待解讀 | — | — | — |
-| `19D3B` | @LOWVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 待解讀 | — | — | — |
-| `19D41` | @HIGHVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 待解讀 | — | — | — |
-| `19D47` | @NORMVIDEO$qv | — | 7 | 3 | 0 | 0 |  | 待解讀 | — | — | — |
+| `19C32` | @WINDOW$q4BYTEt1t1t1 | — | 64 | 23 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WINDOW$q4BYTEt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19C72` | @CLRSCR$qv | — | 26 | 8 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLRSCR$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19C8C` | @CLREOL$qv | — | 20 | 7 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLREOL$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19CA0` | @INSLINE$qv | — | 37 | 15 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INSLINE$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19CC5` | @GOTOXY$q4BYTEt1 | — | 44 | 15 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GOTOXY$q4BYTEt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19CF1` | @WHEREX$qv | — | 12 | 5 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WHEREX$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19CFD` | @WHEREY$qv | — | 12 | 5 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WHEREY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19D09` | @TEXTCOLOR$q4BYTE | — | 26 | 9 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@TEXTCOLOR$q4BYTE`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19D23` | @TEXTBACKGROUND$q4BYTE | — | 24 | 8 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@TEXTBACKGROUND$q4BYTE`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19D3B` | @LOWVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@LOWVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19D41` | @HIGHVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@HIGHVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19D47` | @NORMVIDEO$qv | — | 7 | 3 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@NORMVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19D4E` | @DELAY$q4WORD | — | 32 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
 | `19D6E` | sub_19D6E | — | 8 | 4 | 3 | 1 |  | 待解讀 | — | — | — |
 | `19D76` | @SOUND$q4WORD | — | 45 | 20 | 0 | 1 |  | 待解讀 | — | — | — |
 | `19DA3` | @NOSOUND$qv | — | 7 | 4 | 0 | 0 |  | 待解讀 | — | — | — |
-| `19DAA` | @KEYPRESSED$qv | — | 18 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
-| `19DBC` | @READKEY$qv | — | 34 | 14 | 3 | 2 |  | 待解讀 | — | — | — |
-| `19DDE` | @ASSIGNCRT$qm4TEXT | — | 43 | 13 | 1 | 0 |  | 待解讀 | — | — | — |
+| `19DAA` | @KEYPRESSED$qv | — | 18 | 8 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@KEYPRESSED$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19DBC` | @READKEY$qv | — | 34 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@READKEY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19DDE` | @ASSIGNCRT$qm4TEXT | — | 43 | 13 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ASSIGNCRT$qm4TEXT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19F24` | sub_19F24 | — | 7 | 3 | 2 | 1 |  | 待解讀 | — | — | — |
 | `19F2B` | sub_19F2B | — | 89 | 43 | 8 | 5 |  | 待解讀 | — | — | — |
 | `19F84` | sub_19F84 | — | 33 | 14 | 2 | 2 |  | 待解讀 | — | — | — |
@@ -182,22 +182,22 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A050` | sub_1A050 | — | 104 | 56 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 待解讀 | — | — | — |
 | `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A160` | sub_1A160 | — | 58 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A19A` | sub_1A19A | — | 87 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A1F1` | sub_1A1F1 | — | 24 | 13 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1A209` | @OVRSETBUF$q7LONGINT | — | 99 | 36 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A26C` | @OVRGETBUF$qv | — | 20 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1A280` | @OVRCLEARBUF$qv | — | 47 | 19 | 0 | 2 |  | 待解讀 | — | — | — |
+| `1A209` | @OVRSETBUF$q7LONGINT | — | 99 | 36 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRSETBUF$q7LONGINT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A26C` | @OVRGETBUF$qv | — | 20 | 8 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRGETBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A280` | @OVRCLEARBUF$qv | — | 47 | 19 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRCLEARBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 待解讀 | — | — | — |
-| `1A618` | @Halt$q4Word | — | 188 | 79 | 4 | 6 |  | 待解讀 | — | — | — |
+| `1A618` | @Halt$q4Word | — | 188 | 79 | 4 | 6 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Halt$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A6D4` | sub_1A6D4 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A6E2` | sub_1A6E2 | — | 12 | 5 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A6EE` | sub_1A6EE | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -205,23 +205,23 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A703` | sub_1A703 | — | 11 | 6 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A70E` | sub_1A70E | — | 8 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A716` | sub_1A716 | — | 7 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1A747` | @IOResult$qv | — | 7 | 3 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1A74E` | @__IOCheck$qv | — | 14 | 5 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1A75C` | @__RangeCheck$q7Longintpa2$7Longint | — | 40 | 15 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1A784` | @__StackCheck$q4Word | — | 25 | 10 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1A79D` | @$basg$qm3Anyt14Word | — | 24 | 9 | 6 | 0 |  | 待解讀 | — | — | — |
-| `1A7B5` | @Sqr$q7Longint | — | 4 | 2 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1A7B9` | @$brmul$q7Longintt1 | — | 27 | 16 | 7 | 0 |  | 待解讀 | — | — | — |
-| `1A7D4` | @$brdiv$q7Longintt1 | — | 110 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A842` | @$brrsh$q7Longint7Integer | — | 12 | 6 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1A84E` | @$brlsh$q7Longint7Integer | — | 12 | 6 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1A85A` | @Abs$q7Longint | — | 15 | 7 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1A869` | @GetMem$qm7Pointer4Word | — | 59 | 24 | 3 | 3 |  | 待解讀 | — | — | — |
-| `1A8A4` | @FreeMem$qm7Pointer4Word | — | 32 | 13 | 4 | 3 |  | 待解讀 | — | — | — |
-| `1A8C4` | @Mark$qm7Pointer | — | 22 | 7 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1A8DA` | @Release$qm7Pointer | — | 27 | 9 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1A8F5` | @MemAvail$qv | — | 68 | 26 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1A939` | @MaxAvail$qv | — | 77 | 31 | 0 | 3 |  | 待解讀 | — | — | — |
+| `1A747` | @IOResult$qv | — | 7 | 3 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@IOResult$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A74E` | @__IOCheck$qv | — | 14 | 5 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__IOCheck$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A75C` | @__RangeCheck$q7Longintpa2$7Longint | — | 40 | 15 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__RangeCheck$q7Longintpa2$7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A784` | @__StackCheck$q4Word | — | 25 | 10 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__StackCheck$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A79D` | @$basg$qm3Anyt14Word | — | 24 | 9 | 6 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm3Anyt14Word`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1A7B5` | @Sqr$q7Longint | — | 4 | 2 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sqr$q7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A7B9` | @$brmul$q7Longintt1 | — | 27 | 16 | 7 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmul$q7Longintt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1A7D4` | @$brdiv$q7Longintt1 | — | 110 | 55 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brdiv$q7Longintt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1A842` | @$brrsh$q7Longint7Integer | — | 12 | 6 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brrsh$q7Longint7Integer`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1A84E` | @$brlsh$q7Longint7Integer | — | 12 | 6 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brlsh$q7Longint7Integer`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1A85A` | @Abs$q7Longint | — | 15 | 7 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Abs$q7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A869` | @GetMem$qm7Pointer4Word | — | 59 | 24 | 3 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetMem$qm7Pointer4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A8A4` | @FreeMem$qm7Pointer4Word | — | 32 | 13 | 4 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FreeMem$qm7Pointer4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A8C4` | @Mark$qm7Pointer | — | 22 | 7 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Mark$qm7Pointer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A8DA` | @Release$qm7Pointer | — | 27 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Release$qm7Pointer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A8F5` | @MemAvail$qv | — | 68 | 26 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MemAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1A939` | @MaxAvail$qv | — | 77 | 31 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MaxAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A986` | sub_1A986 | — | 156 | 62 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -229,104 +229,104 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AB57` | sub_1AB57 | — | 14 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1AB65` | sub_1AB65 | — | 15 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1AB74` | @$basg$qm6Stringt1 | — | 26 | 12 | 15 | 0 |  | 待解讀 | — | — | — |
-| `1AB8E` | @$basg$qm6Stringt14Byte | — | 36 | 16 | 26 | 1 |  | 待解讀 | — | — | — |
-| `1ABB2` | @Length$qm6String | — | 14 | 5 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1ABC0` | @Copy$qm6Stringt17Integert3 | — | 65 | 29 | 5 | 1 |  | 待解讀 | — | — | — |
-| `1AC01` | @Concat$qm6Stringt1 | — | 44 | 19 | 8 | 1 |  | 待解讀 | — | — | — |
-| `1AC2D` | @Pos$qm6Stringt1 | — | 55 | 31 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1AC64` | @$bsub$qm6Stringt1 | — | 43 | 20 | 6 | 1 |  | 待解讀 | — | — | — |
-| `1AC8F` | @$basg$qm6String4Char | — | 18 | 8 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1ACA1` | @$basg$qm6Stringn4Char4Byte | — | 27 | 11 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1ACBC` | @Insert$qm6Stringt14Word7Integer | — | 84 | 43 | 0 | 3 |  | 待解讀 | — | — | — |
-| `1AD10` | @Delete$qm6String7Integert2 | — | 86 | 43 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1AD66` | @Set@$bctr$qn4Byte4Word | — | 42 | 18 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1AD90` | @Set@Clear$qv | — | 15 | 7 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1AD9F` | @Set@$brplu$q4Byte | — | 33 | 13 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1ADC0` | @Set@$brplu$q4Bytet1 | — | 52 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1ADF4` | @Set@$bctr$qm3Set4Word | — | 32 | 13 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1AE14` | @Set@MemberOf$q4Byte | — | 33 | 13 | 7 | 0 |  | 待解讀 | — | — | — |
-| `1AE35` | @$brplu$qm3Sett1 | — | 28 | 12 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1AE51` | @$brmin$qm3Sett1 | — | 30 | 13 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1AE6F` | @$brmul$qm3Sett1 | — | 28 | 12 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1AE8B` | @$beql$qm3Sett1 | — | 23 | 9 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1AEA2` | @$bgeq$qm3Sett1 | — | 30 | 13 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1AEC0` | __RealSub | — | 4 | 1 | 6 | 0 |  | 待解讀 | — | — | — |
-| `1AEC4` | __RealAdd | — | 214 | 105 | 9 | 1 |  | 待解讀 | — | — | — |
-| `1AF9A` | __RealMul | — | 125 | 63 | 8 | 2 |  | 待解讀 | — | — | — |
-| `1B017` | __RealDiv | — | 137 | 74 | 5 | 2 |  | 待解讀 | — | — | — |
+| `1AB74` | @$basg$qm6Stringt1 | — | 26 | 12 | 15 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AB8E` | @$basg$qm6Stringt14Byte | — | 36 | 16 | 26 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt14Byte`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1ABB2` | @Length$qm6String | — | 14 | 5 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Length$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1ABC0` | @Copy$qm6Stringt17Integert3 | — | 65 | 29 | 5 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Copy$qm6Stringt17Integert3`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AC01` | @Concat$qm6Stringt1 | — | 44 | 19 | 8 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Concat$qm6Stringt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AC2D` | @Pos$qm6Stringt1 | — | 55 | 31 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Pos$qm6Stringt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AC64` | @$bsub$qm6Stringt1 | — | 43 | 20 | 6 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$bsub$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AC8F` | @$basg$qm6String4Char | — | 18 | 8 | 3 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6String4Char`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1ACA1` | @$basg$qm6Stringn4Char4Byte | — | 27 | 11 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringn4Char4Byte`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1ACBC` | @Insert$qm6Stringt14Word7Integer | — | 84 | 43 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Insert$qm6Stringt14Word7Integer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AD10` | @Delete$qm6String7Integert2 | — | 86 | 43 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Delete$qm6String7Integert2`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AD66` | @Set@$bctr$qn4Byte4Word | — | 42 | 18 | 3 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$bctr$qn4Byte4Word`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AD90` | @Set@Clear$qv | — | 15 | 7 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@Clear$qv`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AD9F` | @Set@$brplu$q4Byte | — | 33 | 13 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$brplu$q4Byte`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1ADC0` | @Set@$brplu$q4Bytet1 | — | 52 | 21 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$brplu$q4Bytet1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1ADF4` | @Set@$bctr$qm3Set4Word | — | 32 | 13 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$bctr$qm3Set4Word`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AE14` | @Set@MemberOf$q4Byte | — | 33 | 13 | 7 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@MemberOf$q4Byte`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AE35` | @$brplu$qm3Sett1 | — | 28 | 12 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AE51` | @$brmin$qm3Sett1 | — | 30 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmin$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AE6F` | @$brmul$qm3Sett1 | — | 28 | 12 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmul$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AE8B` | @$beql$qm3Sett1 | — | 23 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$beql$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AEA2` | @$bgeq$qm3Sett1 | — | 30 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$bgeq$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼 | — |
+| `1AEC0` | __RealSub | — | 4 | 1 | 6 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealSub`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AEC4` | __RealAdd | — | 214 | 105 | 9 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealAdd`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1AF9A` | __RealMul | — | 125 | 63 | 8 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealMul`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B017` | __RealDiv | — | 137 | 74 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealDiv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B0A0` | sub_1B0A0 | — | 35 | 18 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B0C3` | __RealCmp | — | 23 | 14 | 3 | 2 |  | 待解讀 | — | — | — |
+| `1B0C3` | __RealCmp | — | 23 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealCmp`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B0DA` | sub_1B0DA | — | 19 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1B0ED` | __RealFloat | — | 63 | 30 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1B12C` | __RealTrunc | — | 92 | 44 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B188` | @$brplu$q4Realt1 | — | 76 | 35 | 0 | 9 |  | 待解讀 | — | — | — |
+| `1B0ED` | __RealFloat | — | 63 | 30 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealFloat`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B12C` | __RealTrunc | — | 92 | 44 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealTrunc`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B188` | @$brplu$q4Realt1 | — | 76 | 35 | 0 | 9 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$q4Realt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
 | `1B1D4` | sub_1B1D4 | — | 10 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1B1DE` | sub_1B1DE | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B1E8` | sub_1B1E8 | — | 10 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1B1F2` | sub_1B1F2 | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B1FC` | @Int$q4Real | — | 81 | 39 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1B24D` | @Frac$q4Real | — | 20 | 13 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1B261` | @Sqrt$q4Real | — | 93 | 43 | 0 | 5 |  | 待解讀 | — | — | — |
-| `1B2BE` | @Sin$q4Real | — | 116 | 52 | 0 | 9 |  | 待解讀 | — | — | — |
-| `1B405` | @Exp$q4Real | — | 115 | 56 | 0 | 8 |  | 待解讀 | — | — | — |
-| `1B4A8` | @ArcTan$q4Real | — | 225 | 98 | 0 | 8 |  | 待解讀 | — | — | — |
+| `1B1FC` | @Int$q4Real | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Int$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B24D` | @Frac$q4Real | — | 20 | 13 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Frac$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B261` | @Sqrt$q4Real | — | 93 | 43 | 0 | 5 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sqrt$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B2BE` | @Sin$q4Real | — | 116 | 52 | 0 | 9 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sin$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B405` | @Exp$q4Real | — | 115 | 56 | 0 | 8 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Exp$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B4A8` | @ArcTan$q4Real | — | 225 | 98 | 0 | 8 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ArcTan$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B5D7` | sub_1B5D7 | — | 31 | 18 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1B5F6` | sub_1B5F6 | — | 79 | 33 | 2 | 3 |  | 待解讀 | — | — | — |
 | `1B645` | @Random$q4Word | — | 22 | 10 | 5 | 2 |  | 待解讀 | — | — | — |
-| `1B65B` | @Random__Real$qv | — | 29 | 13 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1B678` | @Random__Extended$qv | — | 26 | 8 | 0 | 1 |  | 待解讀 | — | — | — |
+| `1B65B` | @Random__Real$qv | — | 29 | 13 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Real$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B678` | @Random__Extended$qv | — | 26 | 8 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Extended$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B694` | sub_1B694 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1B6CC` | @Randomize$qv | — | 13 | 5 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1B6D9` | __Int2Str | — | 82 | 37 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B753` | __Str2Int | — | 152 | 74 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B7EB` | @Str$q7Longint4Wordm6String4Byte | — | 75 | 39 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1B836` | @Val__Longint$qm6Stringm7Integer | — | 49 | 22 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1B867` | @Assign$qm4Textm6String | — | 69 | 37 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1B8AC` | @SetTextBuf$qm4Textm3Any4Word | — | 43 | 12 | 0 | 0 |  | 待解讀 | — | — | — |
-| `1B8D7` | @Reset$qm4Text | — | 5 | 2 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1B8DC` | @Rewrite$qm4Text | — | 80 | 29 | 4 | 3 |  | 待解讀 | — | — | — |
-| `1B92C` | @Flush$qm4Text | — | 4 | 2 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1B930` | @Close$qm4Text | — | 59 | 19 | 5 | 2 |  | 待解讀 | — | — | — |
+| `1B6D9` | __Int2Str | — | 82 | 37 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Int2Str`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B753` | __Str2Int | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Str2Int`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B7EB` | @Str$q7Longint4Wordm6String4Byte | — | 75 | 39 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Str$q7Longint4Wordm6String4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B836` | @Val__Longint$qm6Stringm7Integer | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Val__Longint$qm6Stringm7Integer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B867` | @Assign$qm4Textm6String | — | 69 | 37 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Assign$qm4Textm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B8AC` | @SetTextBuf$qm4Textm3Any4Word | — | 43 | 12 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTextBuf$qm4Textm3Any4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B8D7` | @Reset$qm4Text | — | 5 | 2 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Reset$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B8DC` | @Rewrite$qm4Text | — | 80 | 29 | 4 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rewrite$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B92C` | @Flush$qm4Text | — | 4 | 2 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Flush$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1B930` | @Close$qm4Text | — | 59 | 19 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B96B` | sub_1B96B | — | 17 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B9FE` | sub_1B9FE | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1BAE6` | __GetEntry | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BB0A` | __GetChar | — | 28 | 14 | 4 | 2 |  | 待解讀 | — | — | — |
-| `1BB26` | __PutEntry | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BB4A` | __PutChar | — | 15 | 7 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1BAE6` | __GetEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BB0A` | __GetChar | — | 28 | 14 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BB26` | __PutEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BB4A` | __PutChar | — | 15 | 7 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB59` | sub_1BB59 | — | 49 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1BB8A` | @ReadLn$qm4Text | — | 41 | 20 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1BBB3` | @WriteLn$qm4Text | — | 31 | 14 | 3 | 4 |  | 待解讀 | — | — | — |
-| `1BBD2` | @Write$qm4Text | — | 38 | 14 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1BBF8` | @Read$qm4Text4Char | — | 30 | 15 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BC16` | @Write$qm4Text4Char4Word | — | 45 | 20 | 2 | 3 |  | 待解讀 | — | — | — |
-| `1BC43` | @Read$qm4Textm6String4Word | — | 56 | 29 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BC7B` | @Write$qm4Textm6String4Word | — | 62 | 32 | 3 | 3 |  | 待解讀 | — | — | — |
-| `1BCB9` | @Read$qm4Text7Longint | — | 88 | 42 | 0 | 4 |  | 待解讀 | — | — | — |
-| `1BD11` | @Write$qm4Text7Longint4Word | — | 73 | 34 | 2 | 4 |  | 待解讀 | — | — | — |
-| `1BD5A` | @Assign$qm4Filem6String | — | 46 | 23 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1BD88` | @Reset$qm4File4Word | — | 101 | 42 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1BDED` | @Truncate$qm4File | — | 28 | 11 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1BE09` | @Close$qm4File | — | 37 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
+| `1BB8A` | @ReadLn$qm4Text | — | 41 | 20 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ReadLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BBB3` | @WriteLn$qm4Text | — | 31 | 14 | 3 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WriteLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BBD2` | @Write$qm4Text | — | 38 | 14 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BBF8` | @Read$qm4Text4Char | — | 30 | 15 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Text4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BC16` | @Write$qm4Text4Char4Word | — | 45 | 20 | 2 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text4Char4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BC43` | @Read$qm4Textm6String4Word | — | 56 | 29 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Textm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BC7B` | @Write$qm4Textm6String4Word | — | 62 | 32 | 3 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Textm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BCB9` | @Read$qm4Text7Longint | — | 88 | 42 | 0 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Text7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BD11` | @Write$qm4Text7Longint4Word | — | 73 | 34 | 2 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text7Longint4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BD5A` | @Assign$qm4Filem6String | — | 46 | 23 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Assign$qm4Filem6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BD88` | @Reset$qm4File4Word | — | 101 | 42 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Reset$qm4File4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BDED` | @Truncate$qm4File | — | 28 | 11 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Truncate$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BE09` | @Close$qm4File | — | 37 | 13 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BE2E` | sub_1BE2E | — | 15 | 4 | 5 | 1 |  | 待解讀 | — | — | — |
-| `1BE3D` | @Read$qm4Filem3Any | — | 54 | 25 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1BE73` | @BlockRead$qm4Filem3Any4Wordm4Word | — | 104 | 45 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1BEDB` | @Seek$qm4File7Longint | — | 48 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1BF0B` | @FilePos$qm4File | — | 23 | 9 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BF22` | @FileSize$qm4File | — | 27 | 11 | 0 | 3 |  | 待解讀 | — | — | — |
-| `1BF3D` | @Eof$qm4File | — | 21 | 9 | 0 | 2 |  | 待解讀 | — | — | — |
+| `1BE3D` | @Read$qm4Filem3Any | — | 54 | 25 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Filem3Any`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BE73` | @BlockRead$qm4Filem3Any4Wordm4Word | — | 104 | 45 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@BlockRead$qm4Filem3Any4Wordm4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BEDB` | @Seek$qm4File7Longint | — | 48 | 19 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Seek$qm4File7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BF0B` | @FilePos$qm4File | — | 23 | 9 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FilePos$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BF22` | @FileSize$qm4File | — | 27 | 11 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FileSize$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BF3D` | @Eof$qm4File | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Eof$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BF52` | sub_1BF52 | — | 69 | 32 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1BF97` | @Erase$qm4File | — | 23 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1BFAE` | @Rename$qm4Filem6String | — | 79 | 42 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1BFFD` | @Move$qm3Anyt14Word | — | 35 | 16 | 26 | 1 |  | 待解讀 | — | — | — |
-| `1C020` | @FillChar$qm3Any4Word4Byte | — | 20 | 7 | 19 | 0 |  | 待解讀 | — | — | — |
-| `1C034` | @ParamStr$qm6String4Word | — | 79 | 38 | 4 | 2 |  | 待解讀 | — | — | — |
-| `1C083` | @ParamCount$qv | — | 7 | 4 | 0 | 1 |  | 待解讀 | — | — | — |
+| `1BF97` | @Erase$qm4File | — | 23 | 10 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Erase$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BFAE` | @Rename$qm4Filem6String | — | 79 | 42 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rename$qm4Filem6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1BFFD` | @Move$qm3Anyt14Word | — | 35 | 16 | 26 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Move$qm3Anyt14Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C020` | @FillChar$qm3Any4Word4Byte | — | 20 | 7 | 19 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FillChar$qm3Any4Word4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C034` | @ParamStr$qm6String4Word | — | 79 | 38 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamStr$qm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C083` | @ParamCount$qv | — | 7 | 4 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamCount$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C08A` | sub_1C08A | — | 50 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1C0BC` | @GetDir$q4Bytem6String4Word | — | 81 | 40 | 0 | 1 |  | 待解讀 | — | — | — |
-| `1C10D` | @ChDir$qm6String | — | 65 | 27 | 0 | 3 |  | 待解讀 | — | — | — |
-| `1C14E` | @MkDir$qm6String | — | 21 | 9 | 0 | 2 |  | 待解讀 | — | — | — |
-| `1C163` | @RmDir$qm6String | — | 21 | 9 | 0 | 2 |  | 待解讀 | — | — | — |
+| `1C0BC` | @GetDir$q4Bytem6String4Word | — | 81 | 40 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDir$q4Bytem6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C10D` | @ChDir$qm6String | — | 65 | 27 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ChDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C14E` | @MkDir$qm6String | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MkDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1C163` | @RmDir$qm6String | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@RmDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C178` | sub_1C178 | — | 27 | 17 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1C193` | sub_1C193 | — | 15 | 9 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1C1A2` | @UpCase$q4Char | — | 19 | 8 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1C1A2` | @UpCase$q4Char | — | 19 | 8 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@UpCase$q4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

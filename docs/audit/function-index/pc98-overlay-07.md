@@ -21,7 +21,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C28` | sub_C28 | STORESPECIALS | 515 | 163 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E2B` | sub_E2B | STOREVALUE | 465 | 162 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0FFC` | sub_FFC | GETVALUE | 30 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/565-ecl-memory-read-path-and-asymmetry.md<br>ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h | spec/565-ecl-memory-read-path-and-asymmetry.md |
-| `101A` | sub_101A | — | 302 | 115 | 2 | 2 |  | 待解讀 | — | — | — |
+| `101A` | sub_101A | — | 302 | 115 | 2 | 2 |  | 待解讀 | — | — | audit/function-index/pc98-overlay-07.md |
 | `1148` | sub_1148 | STORESTRING | 540 | 189 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1364` | sub_1364 | FINDSTR | 147 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `13F7` | sub_13F7 | GETSTR | 480 | 186 | 1 | 2 | ✓ | 待解讀 | — | — | — |
