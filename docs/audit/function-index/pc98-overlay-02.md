@@ -45,7 +45,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0F29` | sub_F29 | — | 47 | 15 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_66B+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md<br>audit/embedded-strings.md |
 | `107A` | sub_107A | — | 13 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
 | `10C2` | sub_10C2 | — | 466 | 179 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Bh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `1294` | sub_1294 | — | 99 | 37 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `1294` | sub_1294 | — | 99 | 37 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/596-ecl-party-item-sweep.md<br>ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 | audit/ecl-opcode-dispatch.md<br>spec/596-ecl-party-item-sweep.md |
 | `12F7` | sub_12F7 | — | 325 | 120 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Dh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `143C` | sub_143C | — | 96 | 33 | 3 | 0 | ✓ | 待解讀 | — | — | — |
 | `149C` | sub_149C | — | 76 | 28 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |

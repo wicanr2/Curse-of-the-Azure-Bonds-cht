@@ -185,15 +185,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 4622,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Ch 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 4721,
    "state": "待解讀",
    "level": "",
@@ -415,15 +406,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 4756,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Ch 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "exact",
    "spec": "docs/spec/596-ecl-party-item-sweep.md",
    "note": "ECL opcode 3Eh:無 operand;把目前目標記到 DS:789Dh、開視窗,然後先把 DS:7F34h 設為 1,沿角色鏈掃描——任一角色狀態 +196h 為 0 或 4 且 +0F7h 為 0 就把 DS:7F34h 清 0 並提早結束(迴圈條件帶著該旗標)。所以 DS:7F34h=1 代表全隊都不能行動"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 4756,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 4622,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "與 pc98 overlay-02:1294h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

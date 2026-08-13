@@ -38,7 +38,8 @@ while node <> nil do
 | `+14Eh` | 物品鏈頭 | 本輪 |
 | `+18Ah` | 下一名角色 | [spec 577](577-attempttohit-and-effect-chain-walk.md) |
 
-物品節點目前確定兩個欄位：`+52h` next、`+56h` 類型 id。
+物品節點是 **`67h`＝103 bytes**（`1Ch` 的 `Dispose(node, 67h)` 直接給的），
+目前確定兩個欄位：`+52h` next、`+56h` 類型 id。
 
 `DS:9598h`（角色鏈頭）與 `DS:9594h`（目前目標，
 [spec 595](595-ecl-target-selection-and-effect-query.md)）是相鄰的兩個 far
@@ -65,7 +66,25 @@ while node <> nil and DS:7F34h <> 0 do
 
 `DS:7F34h` 的語意因此是「全隊都不能行動」——1 代表沒人可動。
 
+## `1Ch`（`1294h`）：清空一整條物品鏈
+
+```text
+ECL_PC := ECL_PC + 1                      ← 沒有 operand
+DS:789Ch := 0 ; DS:BDFBh := 0 ; DS:A895h := 8
+FillChar(DS:A00Ah, 1Ch, 0)                ← 清 28 bytes
+while DS:A026h <> nil do
+    next := node^[52h]
+    Dispose(node, 67h)                    ← 節點 103 bytes
+    DS:A026h := next
+```
+
+`DS:A026h` 是另一條物品鏈的鏈頭（**不是**掛在角色身上的那條），next 偏移
+同樣是 `+52h`，所以兩者是同一種節點。節點大小 `67h` 由 `Dispose` 的參數直接
+給出。
+
 ## 明確不宣稱
 
-- 物品節點的大小與其餘欄位。
+- 物品節點 103 bytes 裡除了 `+52h`／`+56h` 之外的欄位。
+- `DS:A026h` 這條鏈裝的是什麼（地上的物品？遭遇的戰利品？）。
+- `DS:A00Ah` 那 28 bytes 與 `DS:A895h := 8` 的語意。
 - `014A:0075`（移除）與 `014A:0043`（每名角色的收尾）的本體。

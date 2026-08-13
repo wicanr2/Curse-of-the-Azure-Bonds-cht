@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0EBD` | sub_EBD | — | 82 | 29 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 15h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0F0F` | sub_F0F | — | 13 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_6D6+4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
 | `1082` | sub_1082 | — | 396 | 161 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Bh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `120E` | sub_120E | — | 99 | 37 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `120E` | sub_120E | — | 99 | 37 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/596-ecl-party-item-sweep.md<br>與 pc98 overlay-02:1294h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/ecl-opcode-dispatch.md |
 | `1271` | sub_1271 | — | 325 | 120 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Dh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `13B6` | sub_13B6 | — | 96 | 33 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1416` | sub_1416 | — | 382 | 141 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
