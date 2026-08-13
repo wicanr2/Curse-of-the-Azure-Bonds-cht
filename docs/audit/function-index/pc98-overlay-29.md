@@ -5,9 +5,9 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADPORTRAIT | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完） | — |
+| `0000` | sub_0 | LOADPORTRAIT | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完） | — |
 | `000C` | sub_C | SHOWPORTRAIT | 133 | 51 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `0091` | sub_91 | SHOWHEAD | 34 | 17 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0091` | sub_91 | SHOWHEAD | 34 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完） | — |
 | `00B3` | sub_B3 | SHOWBODY | 37 | 18 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `010B` | sub_10B | LOADSEQUENCE | 847 | 340 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `045A` | sub_45A | DISPOSESEQUENCE | 109 | 42 | 2 | 1 | ✓ | 待解讀 | — | — | — |

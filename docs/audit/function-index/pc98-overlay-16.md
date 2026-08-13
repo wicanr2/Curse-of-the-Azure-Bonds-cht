@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `424A` | sub_424A | — | 51 | 27 | 2 | 0 | ✓ | 待解讀 | — | — | — |
 | `42FE` | sub_42FE | LOADSAVEDGAME | 772 | 317 | 0 | 12 | ✓ | 待解讀 | — | — | — |
 | `46CE` | sub_46CE | SAVECURRENTGAME | 659 | 279 | 0 | 11 | ✓ | 待解讀 | — | — | — |
-| `4961` | sub_4961 | LOADALL | 17 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `4961` | sub_4961 | LOADALL | 17 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_49C6`（body 共 17 bytes，已逐條讀完） | — |
 | `49C6` | sub_49C6 | LOADGAME | 1183 | 458 | 2 | 9 | ✓ | 待解讀 | — | — | — |
 | `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 待解讀 | — | — | — |

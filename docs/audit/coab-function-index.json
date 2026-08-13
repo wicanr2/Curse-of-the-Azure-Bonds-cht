@@ -1384,7 +1384,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -1726,7 +1729,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2372,7 +2378,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3412,7 +3421,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealAdd`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3424,7 +3436,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealSub`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3436,7 +3451,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealMul`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3448,7 +3466,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealDiv`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5878,7 +5899,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "spec/569-small-function-batch-reading.md"
    ]
@@ -8914,7 +8935,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9258,7 +9282,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call sub_1454`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_1454`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9323,7 +9347,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9716,7 +9743,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F39`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9742,7 +9772,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9755,7 +9788,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9794,7 +9830,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -10132,7 +10171,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14249,7 +14291,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14291,7 +14336,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14307,7 +14355,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14323,7 +14374,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is cold-resistant」（unk_1E3C，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is cold-resistant」（unk_1E3C，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14407,7 +14461,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14462,7 +14519,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14478,7 +14538,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14533,7 +14596,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is invisible」（unk_2675，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is invisible」（unk_2675，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14549,7 +14615,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14578,7 +14647,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14646,7 +14718,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is blind」（unk_2F9B，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is blind」（unk_2F9B，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14675,7 +14750,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_2FD1`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_2FD1`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14691,7 +14766,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is diseased」（unk_3087，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is diseased」（unk_3087，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14759,7 +14837,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14775,7 +14856,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14869,7 +14953,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14950,7 +15037,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14979,7 +15069,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15151,7 +15244,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15167,7 +15263,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15274,7 +15373,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15316,7 +15418,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_563A，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_563A，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15332,7 +15437,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_5668，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_5668，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15348,7 +15456,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_5696，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_5696，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15769,7 +15880,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_15A1`，參數原樣傳遞（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_15A1`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17016,7 +17127,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17259,7 +17373,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 297h:1110h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 297h:1110h`（body 共 28 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17389,7 +17503,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17415,7 +17529,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -18196,7 +18313,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -20110,7 +20227,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call sub_18878`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_18878`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -20455,7 +20572,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AC99`（body 共 26 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21079,7 +21199,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21235,7 +21358,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21259,7 +21385,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22015,7 +22144,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE4`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22027,7 +22159,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE0`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22039,7 +22174,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B0A7`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22051,7 +22189,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -23559,7 +23700,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr loc_689+2`，參數原樣傳遞（body 共 9 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr loc_689+2`（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -24085,7 +24226,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "spec/569-small-function-batch-reading.md"
    ]
@@ -27523,7 +27664,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27809,7 +27953,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27822,7 +27969,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27835,7 +27985,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27848,7 +28001,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27929,7 +28085,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28296,7 +28455,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F5B`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28322,7 +28484,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28335,7 +28500,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28374,7 +28542,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28715,7 +28886,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -31127,7 +31301,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_49C6`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34206,7 +34383,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は呪いを受けた。」（unk_1F7A，長度 16）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は呪いを受けた。」（unk_1F7A，長度 16）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34248,7 +34428,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は魔法にかかった。」（unk_202A，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は魔法にかかった。」（unk_202A，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34290,7 +34473,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は冷気に対する防護を得た。」（unk_20A4，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は冷気に対する防護を得た。」（unk_20A4，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34384,7 +34570,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は魔法の楯に守られた。」（unk_24AA，長度 22）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は魔法の楯に守られた。」（unk_24AA，長度 22）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34439,7 +34628,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は火炎に対する防護を得た。」（unk_26E1，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は火炎に対する防護を得た。」（unk_26E1，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34455,7 +34647,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は沈黙した。」（unk_2729，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は沈黙した。」（unk_2729，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34510,7 +34705,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は透明になった。」（unk_2922，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は透明になった。」（unk_2922，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34526,7 +34724,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「こんこん」（unk_2960，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「こんこん」（unk_2960，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34555,7 +34756,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は弱くなった。」（unk_29F5，長度 14）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は弱くなった。」（unk_29F5，長度 14）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34623,7 +34827,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は視力を奪われた。」（unk_3260，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は視力を奪われた。」（unk_3260，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34652,7 +34859,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_32A0`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_32A0`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34668,7 +34875,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は病いに冒された。」（unk_3356，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は病いに冒された。」（unk_3356，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34737,7 +34947,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は呪われた！」（unk_3976，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は呪われた！」（unk_3976，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34753,7 +34966,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は点滅している。」（unk_39B0，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は点滅している。」（unk_39B0，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34847,7 +35063,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は減速された。」（unk_3F99，長度 14）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は減速された。」（unk_3F99，長度 14）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34928,7 +35147,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は麻痺した。」（unk_4306，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は麻痺した。」（unk_4306，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34957,7 +35179,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35129,7 +35354,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「に光がまとわりついた。」（unk_4A16，長度 22）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「に光がまとわりついた。」（unk_4A16，長度 22）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35145,7 +35373,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は透明になった。」（unk_4A4D，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は透明になった。」（unk_4A4D，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35252,7 +35483,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「は守られた。」（unk_5291，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「は守られた。」（unk_5291，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35323,7 +35557,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_59D7，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_59D7，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35339,7 +35576,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_5A05，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_5A05，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35355,7 +35595,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "常數字串：以固定字串「」（unk_5A33，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
+   "note": "常數字串：以固定字串「」（unk_5A33，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/spell-status-message-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37571,7 +37814,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 2A8h:0A86h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 2A8h:0A86h`（body 共 28 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37653,7 +37896,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37681,7 +37924,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38530,7 +38776,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38700,9 +38946,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 56,
+   "Read": 63,
    "NotBlocking": 133,
-   "Todo": 136,
+   "Todo": 129,
    "CodeBytes": 23290,
    "Undefined": 0,
    "SegmentBytes": 96208,
@@ -38882,9 +39128,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 151,
-   "Read": 8,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 143,
+   "Todo": 136,
    "CodeBytes": 12855,
    "Undefined": 455,
    "SegmentBytes": 13683,
@@ -39078,9 +39324,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "CodeBytes": 4571,
    "Undefined": 163,
    "SegmentBytes": 4756,
@@ -39120,9 +39366,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "CodeBytes": 2102,
    "Undefined": 114,
    "SegmentBytes": 2217,
@@ -39218,9 +39464,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 64,
+   "Read": 72,
    "NotBlocking": 0,
-   "Todo": 269,
+   "Todo": 261,
    "CodeBytes": 25067,
    "Undefined": 0,
    "SegmentBytes": 115552,
@@ -39400,9 +39646,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 149,
-   "Read": 6,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 143,
+   "Todo": 132,
    "CodeBytes": 13004,
    "Undefined": 578,
    "SegmentBytes": 13835,
@@ -39456,9 +39702,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 46,
+   "Todo": 45,
    "CodeBytes": 18585,
    "Undefined": 1552,
    "SegmentBytes": 22383,
@@ -39638,9 +39884,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "CodeBytes": 1846,
    "Undefined": 114,
    "SegmentBytes": 1961,

@@ -106,7 +106,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1637D` | sub_1637D | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1639A` | sub_1639A | — | 110 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
 | `16408` | sub_16408 | — | 112 | 44 | 1 | 3 |  | 待解讀 | — | — | — |
-| `16478` | sub_16478 | — | 32 | 17 | 1 | 1 |  | 待解讀 | — | — | — |
+| `16478` | sub_16478 | — | 32 | 17 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完） | — |
 | `16498` | sub_16498 | — | 90 | 48 | 2 | 4 |  | 待解讀 | — | — | — |
 | `16566` | sub_16566 | — | 75 | 32 | 1 | 6 |  | 待解讀 | — | — | — |
 | `16645` | sub_16645 | — | 538 | 219 | 1 | 11 |  | 待解讀 | — | — | — |
@@ -134,7 +134,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `196E0` | sub_196E0 | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1974A` | sub_1974A | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
 | `197B4` | sub_197B4 | — | 20 | 12 | 1 | 0 |  | 待解讀 | — | — | — |
-| `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
+| `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完） | — |
 | `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `197FB` | @INTR$q4BYTEm9REGISTERS | — | 58 | 40 | 8 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -183,7 +183,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 待解讀 | — | — | — |
 | `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完） | — |
 | `1A160` | sub_1A160 | — | 58 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A19A` | sub_1A19A | — | 87 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A1F1` | sub_1A1F1 | — | 24 | 13 | 3 | 0 |  | 待解讀 | — | — | — |
@@ -261,10 +261,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B0ED` | __RealFloat | — | 63 | 30 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealFloat`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B12C` | __RealTrunc | — | 92 | 44 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealTrunc`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B188` | @$brplu$q4Realt1 | — | 76 | 35 | 0 | 9 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$q4Realt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
-| `1B1D4` | sub_1B1D4 | — | 10 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1B1DE` | sub_1B1DE | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B1E8` | sub_1B1E8 | — | 10 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1B1F2` | sub_1B1F2 | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B1D4` | sub_1B1D4 | — | 10 | 8 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call __RealAdd`（body 共 10 bytes，已逐條讀完） | — |
+| `1B1DE` | sub_1B1DE | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call __RealSub`（body 共 10 bytes，已逐條讀完） | — |
+| `1B1E8` | sub_1B1E8 | — | 10 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call __RealMul`（body 共 10 bytes，已逐條讀完） | — |
+| `1B1F2` | sub_1B1F2 | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call __RealDiv`（body 共 10 bytes，已逐條讀完） | — |
 | `1B1FC` | @Int$q4Real | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Int$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B24D` | @Frac$q4Real | — | 20 | 13 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Frac$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B261` | @Sqrt$q4Real | — | 93 | 43 | 0 | 5 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sqrt$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
