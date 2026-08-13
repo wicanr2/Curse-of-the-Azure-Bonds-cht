@@ -87,6 +87,20 @@ if arg <> 0 and DS:A02Dh = arg then
 
 所有 handler 的呼叫慣例一致：`retf 0Ah`（5 個 word 參數）。
 
+## 百分比抗性的形狀
+
+`2414h` 與 `289Dh` 揭示效果如何做機率判定：
+
+```text
+roll := d100                 ← ROLLDICE(count=1, sides=64h)
+if roll <= 門檻 then
+    1Bh(來源A); 1Bh(來源B)   ← 取消這兩類傷害
+```
+
+`2414h` 的門檻是 `5Ah`（90），`289Dh` 是 `1Eh`（30）。**機率寫死在 handler 裡，
+不是查表**；同一支 handler 一次可取消兩種來源。這與 spec 412 提到的
+「`6Ah` 是 15% base 魔法抗性 wrapper」是同一族做法。
+
 ## 這份規格明確不宣稱
 
 - **`DS:A02Ch`／`A02Eh`／`A030h`／`A035h`／`A03Ch` 的欄位語意**。本輪只描述
