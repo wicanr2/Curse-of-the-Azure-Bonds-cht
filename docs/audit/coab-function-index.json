@@ -12743,6 +12743,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/string-pairs.md",
     "spec/612-ecl-main-loop.md"
    ]
@@ -12758,7 +12759,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-02.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13696,6 +13700,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md",
     "spec/612-ecl-main-loop.md"
    ]
   },
@@ -13712,7 +13717,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -26335,6 +26341,8 @@
    "note": "執行 ECL 的兩段進入點:呼叫 RUN_ECL(DS:7F1Bh),之後取得一個旗標,非 0 才再呼叫 RUN_ECL(DS:7F1Dh);收尾設 DS:A66Ch:=1、呼叫 far 0172:0025、清 DS:8CF7h。38h(9) 是它的呼叫者之一",
    "citations": [
     "audit/ecl-external-call-registry.md",
+    "audit/function-index/pc98-overlay-02.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/612-ecl-main-loop.md"
    ]
   },
@@ -26349,9 +26357,15 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表",
    "citations": [
-    "spec/525-pc98-tempsearch-display-state.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "spec/525-pc98-tempsearch-display-state.md",
+    "spec/612-ecl-main-loop.md",
+    "spec/613-ecl-scene-lifecycle.md"
    ]
   },
   {
@@ -26514,7 +26528,13 @@
    "callers": 0,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/613-ecl-scene-lifecycle.md",
+   "note": "ECL 場景的完整生命週期(INTERPET 最外層入口):初始化一批旗標、設 DS:7F27h、進場執行 RUN_ECL(DS:7F1Fh),然後進主迴圈——每輪檢查存檔、DS:7F34h 為 0 時執行 RUN_ECL(DS:7F17h)、記下地圖座標 bank0^[1E0h]/[1E2h]、動作後比對,座標變動才執行 RUN_ECL(DS:7F19h)(「踏上新格子」的事件)。DS:7897h 非 0 時轉去場景主迴圈 327Eh。主迴圈由 DS:7F34h 終止,離開前清零",
+   "citations": [
+    "spec/613-ecl-scene-lifecycle.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33871,6 +33891,7 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/string-pairs.md",
     "spec/612-ecl-main-loop.md"
    ]
@@ -33886,7 +33907,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-02.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34486,6 +34510,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/pc98-overlay-02.md",
     "spec/612-ecl-main-loop.md"
    ]
   },
@@ -35379,6 +35404,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md",
     "spec/612-ecl-main-loop.md"
    ]
   },
@@ -35520,6 +35546,7 @@
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-02.md",
     "spec/612-ecl-main-loop.md"
    ]
   },
@@ -43371,9 +43398,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 56,
+   "Read": 58,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 0,
    "Fragment": 28,
    "CodeBytes": 14044,
    "Undefined": 266,

@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 32 | 10 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md<br>spec/612-ecl-main-loop.md |
-| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 32 | 10 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-02.md<br>audit/string-pairs.md<br>spec/612-ecl-main-loop.md |
+| `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-02.md |
 | `008D` | sub_8D | — | 966 | 385 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0453` | sub_453 | — | 375 | 169 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0643` | sub_643 | — | 936 | 381 | 4 | 3 | ✓ | 待解讀 | — | — | — |

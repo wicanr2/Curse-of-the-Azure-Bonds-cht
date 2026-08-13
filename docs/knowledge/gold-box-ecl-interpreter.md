@@ -44,6 +44,9 @@ RUN_ECL(pc):                              ← PC-98 overlay-02:39A5h
 
 **迴圈本身不推進 PC**，由各 handler 自己推；忘記推就是無窮迴圈。
 
+**進入點是 `DS:7F17h` 起的五格 word 表**，由場景主迴圈（`327Eh`）與
+`3237h` 分別取用；`DS:7897h` 非 0 表示「整輪重來」。
+
 見 [spec 612](../spec/612-ecl-main-loop.md)。
 
 ## 指令分派（`exact`）
@@ -268,6 +271,16 @@ Random(n) := if n = 0 then 0 else (RandSeed shr 16) mod n
 bank 分類的**形狀**很可能是 Gold Box 共用的；但**每一個常數都必須各作品重解**：
 bank 邊界、helper 的 stub offset、selector 集合、DS 目的位址在 CoAB 的兩個
 平台之間就已經不同。沿用結構、重解數值。
+
+## `INTERPET`（overlay-02）的解讀狀態
+
+PC-98 側 **86 個函式全部處理完畢**：58 已解讀、28 是 IDA 切出的邊界碎片、
+0 待解讀。涵蓋 52 個 opcode handler、dispatcher、執行迴圈
+（[612](../spec/612-ecl-main-loop.md)）與場景生命週期
+（[613](../spec/613-ecl-scene-lifecycle.md)）。
+
+DOS 側因為部分 handler 的指令序列與 PC-98 不同（英文有單複數分歧等），
+跨平台配對無法全部轉移，仍有一批待讀。
 
 ## 尚未解出
 
