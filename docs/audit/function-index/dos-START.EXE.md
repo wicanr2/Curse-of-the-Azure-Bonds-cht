@@ -65,8 +65,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1236C` | sub_1236C | — | 1537 | 609 | 1 | 37 |  | 待解讀 | — | — | — |
 | `12970` | sub_12970 | — | 123 | 47 | 1 | 1 |  | 待解讀 | — | — | — |
 | `129EB` | sub_129EB | — | 92 | 41 | 4 | 2 |  | 待解讀 | — | — | — |
-| `12A47` | sub_12A47 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
-| `12A77` | sub_12A77 | — | 15 | 9 | 1 | 1 |  | 待解讀 | — | — | — |
+| `12A47` | sub_12A47 | — | 48 | 19 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>設定 BIOS 顯示模式:把 Registers record 的 AH=0、AL=arg_0 後呼叫 INTR(10h) ⇒ INT 10h AH=00h;呼叫前把 byte_211A5 存進 byte_211A4(前一個模式),呼叫後把 arg_0 記進 byte_211A5 | — |
+| `12A77` | sub_12A77 | — | 15 | 9 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47 | — |
 | `12C1D` | sub_12C1D | — | 1611 | 617 | 1 | 5 |  | 待解讀 | — | — | — |
 | `133E2` | sub_133E2 | — | 133 | 54 | 2 | 0 |  | 待解讀 | — | — | — |
 | `13467` | sub_13467 | — | 141 | 49 | 2 | 0 |  | 待解讀 | — | — | — |
@@ -87,7 +87,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 待解讀 | — | — | — |
 | `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 待解讀 | — | — | — |
 | `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
-| `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
+| `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes) | — |
 | `154DD` | sub_154DD | — | 188 | 89 | 4 | 4 |  | 待解讀 | — | — | — |
 | `15606` | sub_15606 | — | 299 | 126 | 3 | 6 |  | 待解讀 | — | — | — |
 | `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 待解讀 | — | — | — |
@@ -96,14 +96,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
 | `15B42` | sub_15B42 | — | 401 | 171 | 1 | 10 |  | 待解讀 | — | — | — |
 | `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
-| `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
+| `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @DELAY(byte_21169 × 100) | — |
 | `15F6A` | sub_15F6A | — | 470 | 207 | 2 | 3 |  | 待解讀 | — | — | — |
 | `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16147` | sub_16147 | — | 159 | 78 | 1 | 1 |  | 待解讀 | — | — | — |
 | `161E6` | sub_161E6 | — | 96 | 46 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16246` | sub_16246 | — | 271 | 131 | 1 | 1 |  | 待解讀 | — | — | — |
-| `16360` | sub_16360 | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1637D` | sub_1637D | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
+| `16360` | sub_16360 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊 | — |
+| `1637D` | sub_1637D | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊 | — |
 | `1639A` | sub_1639A | — | 110 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
 | `16408` | sub_16408 | — | 112 | 44 | 1 | 3 |  | 待解讀 | — | — | — |
 | `16478` | sub_16478 | — | 32 | 17 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完） | — |
@@ -114,7 +114,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `168A9` | sub_168A9 | — | 207 | 82 | 1 | 5 |  | 待解讀 | — | — | — |
 | `16A62` | sub_16A62 | — | 194 | 83 | 1 | 3 |  | 待解讀 | — | — | — |
 | `16B24` | sub_16B24 | — | 243 | 109 | 1 | 7 |  | 待解讀 | — | — | — |
-| `16C17` | sub_16C17 | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
+| `16C17` | sub_16C17 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>依序 @Close 兩個 File 參數(先 arg_4 再 arg_0) | — |
 | `16C3E` | sub_16C3E | — | 559 | 235 | 2 | 17 |  | 待解讀 | — | — | — |
 | `16E8F` | sub_16E8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16EA0` | sub_16EA0 | — | 81 | 28 | 2 | 5 |  | 待解讀 | — | — | — |
@@ -124,7 +124,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 待解讀 | — | — | — |
 | `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 待解讀 | — | — | — |
-| `17240` | sub_17240 | — | 16 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
+| `17240` | sub_17240 | — | 16 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 dword_21154 所指的 word 清成 0 | — |
 | `19320` | sub_19320 | — | 53 | 24 | 1 | 0 |  | 待解讀 | — | — | — |
 | `19355` | sub_19355 | — | 57 | 27 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1941B` | sub_1941B | — | 117 | 40 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -133,14 +133,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `195AF` | sub_195AF | — | 305 | 121 | 1 | 1 |  | 待解讀 | — | — | — |
 | `196E0` | sub_196E0 | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1974A` | sub_1974A | — | 106 | 43 | 2 | 1 |  | 待解讀 | — | — | — |
-| `197B4` | sub_197B4 | — | 20 | 12 | 1 | 0 |  | 待解讀 | — | — | — |
+| `197B4` | sub_197B4 | — | 20 | 12 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>跨段寫入:切到 seg045 後把 arg_0 寫進 byte_17286,再還原 DS(前後以 push/pop 保存 AX 與 DS) | — |
 | `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完） | — |
 | `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `197FB` | @INTR$q4BYTEm9REGISTERS | — | 58 | 40 | 8 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 GetDate 實作:INT 21h AH=2Ah,把年/月/日/星期分別 stosw 到四個 var 參數 | — |
+| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 SetDate 實作:INT 21h AH=2Bh | — |
+| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 GetTime 實作:INT 21h AH=2Ch,把時/分/秒/百分秒 stosw 到四個 var 參數 | — |
+| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 SetTime 實作:INT 21h AH=2Dh | — |
 | `198CE` | @DiskFree$q4Byte | — | 25 | 12 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskFree$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `198E7` | @DiskSize$q4Byte | — | 27 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskSize$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19902` | @FINDFIRST$q7PATHSTR4WORDm9SEARCHREC | — | 62 | 33 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDFIRST$q7PATHSTR4WORDm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -166,41 +166,41 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19D3B` | @LOWVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@LOWVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19D41` | @HIGHVIDEO$qv | — | 6 | 2 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@HIGHVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19D47` | @NORMVIDEO$qv | — | 7 | 3 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@NORMVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `19D4E` | @DELAY$q4WORD | — | 32 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
-| `19D6E` | sub_19D6E | — | 8 | 4 | 3 | 1 |  | 待解讀 | — | — | — |
-| `19D76` | @SOUND$q4WORD | — | 45 | 20 | 0 | 1 |  | 待解讀 | — | — | — |
-| `19DA3` | @NOSOUND$qv | — | 7 | 4 | 0 | 0 |  | 待解讀 | — | — | — |
+| `19D4E` | @DELAY$q4WORD | — | 32 | 13 | 3 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>@DELAY 實作:取毫秒參數後反覆讀 0000:0000 的 BIOS timer 位元組,每次變動遞減計數(輔助迴圈在 sub_19D6E) | — |
+| `19D6E` | sub_19D6E | — | 8 | 4 | 3 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>@DELAY 的忙碌等待迴圈:比較 al 與 es:[di] 的 BIOS timer 位元組,相同就 loop | — |
+| `19D76` | @SOUND$q4WORD | — | 45 | 20 | 0 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>@SOUND 實作:divisor := 1234DDh ÷ 頻率(頻率 <= 12h 直接返回);in 61h 開喇叭閘、out 43h 送 0B6h(PIT ch2 方波)、分兩次 out 42h 送 divisor 高低位元組 | — |
+| `19DA3` | @NOSOUND$qv | — | 7 | 4 | 0 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>@NOSOUND 實作:in 61h 後 and 0FCh 再 out 61h,關閉 PC 喇叭的閘門與計時器輸出 | — |
 | `19DAA` | @KEYPRESSED$qv | — | 18 | 8 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@KEYPRESSED$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19DBC` | @READKEY$qv | — | 34 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@READKEY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19DDE` | @ASSIGNCRT$qm4TEXT | — | 43 | 13 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ASSIGNCRT$qm4TEXT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19F24` | sub_19F24 | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19F2B` | sub_19F2B | — | 89 | 43 | 8 | 5 |  | 待解讀 | — | — | — |
-| `19F84` | sub_19F84 | — | 33 | 14 | 2 | 2 |  | 待解讀 | — | — | — |
+| `19F84` | sub_19F84 | — | 33 | 14 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>捲動一行:若 dh+1 超過 word_24E64 高位元組(視窗下界)則以 INT 10h AX=0601h 上捲一行,屬性取 byte_24E60、範圍取 word_24E62/word_24E64 | — |
 | `19FA5` | sub_19FA5 | — | 7 | 3 | 5 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 3`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
 | `19FAC` | sub_19FAC | — | 7 | 3 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 2`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
 | `19FB3` | sub_19FB3 | — | 157 | 73 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A050` | sub_1A050 | — | 104 | 56 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 待解讀 | — | — | — |
+| `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口 | — |
 | `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1A611`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完） | — |
 | `1A160` | sub_1A160 | — | 58 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A19A` | sub_1A19A | — | 87 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1A1F1` | sub_1A1F1 | — | 24 | 13 | 3 | 0 |  | 待解讀 | — | — | — |
+| `1A1F1` | sub_1A1F1 | — | 24 | 13 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>開檔:把 Pascal 字串複製成 ASCIIZ 到堆疊緩衝(lodsb 取長度後 rep movsb 再補 0),再以 INT 21h AX=3D00h 唯讀開啟 | — |
 | `1A209` | @OVRSETBUF$q7LONGINT | — | 99 | 36 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRSETBUF$q7LONGINT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A26C` | @OVRGETBUF$qv | — | 20 | 8 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRGETBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A280` | @OVRCLEARBUF$qv | — | 47 | 19 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRCLEARBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 待解讀 | — | — | — |
-| `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
+| `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數 | — |
 | `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A61C`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A618` | @Halt$q4Word | — | 188 | 79 | 4 | 6 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Halt$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A6D4` | sub_1A6D4 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A6E2` | sub_1A6E2 | — | 12 | 5 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A6EE` | sub_1A6EE | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A6D4` | sub_1A6D4 | — | 14 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 sub_1A716 輸出並前進 | — |
+| `1A6E2` | sub_1A6E2 | — | 12 | 5 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出三位十進位數:以除數 100 與 10 呼叫 sub_1A6EE 印百位與十位,再續印個位 | — |
+| `1A6EE` | sub_1A6EE | — | 14 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出一位十進位數字:al := ax ÷ cl,加 30h 轉 ASCII 後呼叫 sub_1A716 輸出,並把餘數(ah)移回 al 供下一位使用 | — |
 | `1A6FC` | sub_1A6FC | — | 7 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1A703` | sub_1A703 | — | 11 | 6 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A70E` | sub_1A70E | — | 8 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add al, 7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |

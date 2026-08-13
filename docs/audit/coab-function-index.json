@@ -888,7 +888,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "設定 BIOS 顯示模式:把 Registers record 的 AH=0、AL=arg_0 後呼叫 INTR(10h) ⇒ INT 10h AH=00h;呼叫前把 byte_211A5 存進 byte_211A4(前一個模式),呼叫後把 arg_0 記進 byte_211A5"
   },
   {
    "platform": "dos",
@@ -900,7 +903,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47"
   },
   {
    "platform": "dos",
@@ -1155,7 +1161,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "word_211A0 := (arg_0 \u003c\u003c 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes)"
   },
   {
    "platform": "dos",
@@ -1263,7 +1272,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @DELAY(byte_21169 × 100)"
   },
   {
    "platform": "dos",
@@ -1338,7 +1350,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊"
   },
   {
    "platform": "dos",
@@ -1350,7 +1365,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊"
   },
   {
    "platform": "dos",
@@ -1485,7 +1503,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "依序 @Close 兩個 File 參數(先 arg_4 再 arg_0)"
   },
   {
    "platform": "dos",
@@ -1611,7 +1632,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 dword_21154 所指的 word 清成 0"
   },
   {
    "platform": "dos",
@@ -1719,7 +1743,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "跨段寫入:切到 seg045 後把 arg_0 寫進 byte_17286,再還原 DS(前後以 push/pop 保存 AX 與 DS)"
   },
   {
    "platform": "dos",
@@ -1775,8 +1802,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
-   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "Turbo Pascal Dos 單元的 GetDate 實作:INT 21h AH=2Ah,把年/月/日/星期分別 stosw 到四個 var 參數"
   },
   {
    "platform": "dos",
@@ -1789,8 +1816,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
-   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "Turbo Pascal Dos 單元的 SetDate 實作:INT 21h AH=2Bh"
   },
   {
    "platform": "dos",
@@ -1803,8 +1830,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
-   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "Turbo Pascal Dos 單元的 GetTime 實作:INT 21h AH=2Ch,把時/分/秒/百分秒 stosw 到四個 var 參數"
   },
   {
    "platform": "dos",
@@ -1817,8 +1844,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
-   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "Turbo Pascal Dos 單元的 SetTime 實作:INT 21h AH=2Dh"
   },
   {
    "platform": "dos",
@@ -2168,7 +2195,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@DELAY 實作:取毫秒參數後反覆讀 0000:0000 的 BIOS timer 位元組,每次變動遞減計數(輔助迴圈在 sub_19D6E)"
   },
   {
    "platform": "dos",
@@ -2180,7 +2210,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@DELAY 的忙碌等待迴圈:比較 al 與 es:[di] 的 BIOS timer 位元組,相同就 loop"
   },
   {
    "platform": "dos",
@@ -2192,7 +2225,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@SOUND 實作:divisor := 1234DDh ÷ 頻率(頻率 \u003c= 12h 直接返回);in 61h 開喇叭閘、out 43h 送 0B6h(PIT ch2 方波)、分兩次 out 42h 送 divisor 高低位元組"
   },
   {
    "platform": "dos",
@@ -2204,7 +2240,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@NOSOUND 實作:in 61h 後 and 0FCh 再 out 61h,關閉 PC 喇叭的閘門與計時器輸出"
   },
   {
    "platform": "dos",
@@ -2284,7 +2323,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "捲動一行:若 dh+1 超過 word_24E64 高位元組(視窗下界)則以 INT 10h AX=0601h 上捲一行,屬性取 byte_24E60、範圍取 word_24E62/word_24E64"
   },
   {
    "platform": "dos",
@@ -2350,7 +2392,10 @@
    "callers": 11,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口"
   },
   {
    "platform": "dos",
@@ -2429,7 +2474,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "開檔:把 Pascal 字串複製成 ASCIIZ 到堆疊緩衝(lodsb 取長度後 rep movsb 再補 0),再以 INT 21h AX=3D00h 唯讀開啟"
   },
   {
    "platform": "dos",
@@ -2495,7 +2543,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "回傳 (es:[8] + 0Fh) \u003e\u003e 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數"
   },
   {
    "platform": "dos",
@@ -2586,7 +2637,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 sub_1A716 輸出並前進"
   },
   {
    "platform": "dos",
@@ -2598,7 +2652,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出三位十進位數:以除數 100 與 10 呼叫 sub_1A6EE 印百位與十位,再續印個位"
   },
   {
    "platform": "dos",
@@ -2610,7 +2667,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 轉 ASCII 後呼叫 sub_1A716 輸出,並把餘數(ah)移回 al 供下一位使用"
   },
   {
    "platform": "dos",
@@ -39799,9 +39859,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 66,
+   "Read": 86,
    "NotBlocking": 133,
-   "Todo": 120,
+   "Todo": 100,
    "Fragment": 6,
    "CodeBytes": 23290,
    "Undefined": 0,
