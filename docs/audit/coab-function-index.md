@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 339、不阻塞 133、邊界碎片 244、待解讀 670；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 344、不阻塞 133、邊界碎片 244、待解讀 665；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -26,7 +26,7 @@
 | overlay-09 | COMPTACT | 38 | 2 | 0 | 22 | 14 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 4 | 0 | 14 | 20 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 1 | 0 | 0 | 3 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
-| overlay-12 | EFFPROCS | 152 | 56 | 0 | 27 | 69 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
+| overlay-12 | EFFPROCS | 152 | 61 | 0 | 27 | 64 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 58 | 1 | 0 | 16 | 41 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 2 | 0 | 0 | 12 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 5 | 0 | 11 | 26 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 437、不阻塞 29、邊界碎片 336、待解讀 686；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 444、不阻塞 29、邊界碎片 336、待解讀 679；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -70,7 +70,7 @@
 | overlay-09 | COMPTACT | 36 | 3 | 0 | 20 | 13 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 2 | 0 | 12 | 21 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
 | overlay-11 | INIT | 6 | 2 | 0 | 0 | 4 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
-| overlay-12 | EFFPROCS | 150 | 69 | 0 | 19 | 62 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
+| overlay-12 | EFFPROCS | 150 | 76 | 0 | 19 | 55 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 3 | 0 | 28 | 41 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 2 | 0 | 0 | 12 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
 | overlay-15 | CAMP | 45 | 4 | 0 | 15 | 26 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
