@@ -16541,6 +16541,26 @@
    "spec": "docs/spec/694-add-1e-ability-tables.md",
    "note": "敏捷遠程命中調整(讀 角色^[17h])。0..2→−4、3→−3、4→−2、5→−1、6..15→0、16→+1、17→+2、18→+3,與 AD&D 1e 遠程命中調整吻合;19..20→+3、21..23→+4、24..25→+5 是本作自己補的",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 5862,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/695-inventory-list-node.md",
+   "note": "把來源物品**複製一份**掛到角色物品鏈尾:GetMem(node, 3Fh)→Move(來源^, node^, 3Fh)→node^[2Ah] := NIL(複製過來的 next 一定要蓋掉)→鏈頭在角色紀錄 +14Dh,為 NIL 就直接掛,否則從頭線性走到底再接(O(n))。節點 3Fh=63 bytes、next 在 +2Ah。⚠ GetMem 的結果沒有檢查。0A54:0329h/0364h/1ABDh 分別是 GetMem/FreeMem/Move(前兩者傳的是指標變數的位址,var 參數)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 5631,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/695-inventory-list-node.md",
+   "note": "從角色物品鏈(+14Dh)摘掉並 FreeMem(物品, 3Fh)。物品為 NIL 顯示 CS:15C4h 'Nil Item pointer...';找不到顯示 CS:15D8h \"Tried to Lose item & couldn't find it!\"。⚠ 兩個錯誤分支都只是顯示訊息然後**正常返回**,呼叫端拿不到失敗訊號。⚠ 這兩則是開發用訊息卻留在零售版裡。參數實際位移是 [bp+0Ah]=角色、[bp+6]=物品(IDA 的 arg_N 標籤在這裡對不上)",
+   "bounds": "prologue"
   }
  ]
 }
