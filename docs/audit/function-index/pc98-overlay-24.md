@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `046C` | sub_46C | PRINTITEMNAME | 1087 | 417 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0917` | sub_917 | SHOWALL | 549 | 229 | 3 | 5 | ✓ | 待解讀 | — | — | — |
 | `0B41` | sub_B41 | PRINTAC | 146 | 61 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0BD5` | sub_BD5 | PRINTHP | 99 | 38 | 2 | 2 | ✓ | 已解讀 | exact | docs/spec/643-hp-fields-and-slot-array.md<br>顯示 HP:if arg_6^[1A5h](目前 HP)< arg_6^[78h] then v := 6 else v := 0Ah;arg_0 非零則 v := 0Dh;再用 <sub_12E5>(Str 的 byte 版)把 HP 轉成字串連同 v 傳給顯示 routine,接上一個空白後 <far 0418:0D17h>。這確認 +78h 是 HP 上限(DOS 20FAh 的夾限是另一條證據,兩平台同偏移) | spec/643-hp-fields-and-slot-array.md<br>spec/684-biased-modifier-display.md |
+| `0BD5` | sub_BD5 | PRINTHP | 99 | 38 | 2 | 2 | ✓ | 已解讀 | exact | docs/spec/643-hp-fields-and-slot-array.md<br>顯示 HP:if arg_6^[1A5h](目前 HP)< arg_6^[78h] then v := 6 else v := 0Ah;arg_0 非零則 v := 0Dh;再用 <sub_12E5>(Str 的 byte 版)把 HP 轉成字串連同 v 傳給顯示 routine,接上一個空白後 <far 0418:0D17h>。這確認 +78h 是 HP 上限(DOS 20FAh 的夾限是另一條證據,兩平台同偏移) | audit/function-index/dos-overlay-24.md<br>spec/643-hp-fields-and-slot-array.md<br>spec/684-biased-modifier-display.md |
 | `0C53` | sub_C53 | SHOWINFO | 431 | 196 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0E02` | sub_E02 | HELPLESS | 69 | 28 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/643-hp-fields-and-slot-array.md<br>for i := 1 to 4:if <sub_25CD>(arg_0,arg_2,byte[49D3h + i],@var_6) <> 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3 | audit/function-index/dos-overlay-24.md<br>spec/643-hp-fields-and-slot-array.md |
 | `0E47` | sub_E47 | DOCOM | 1182 | 390 | 0 | 9 | ✓ | 待解讀 | — | — | — |

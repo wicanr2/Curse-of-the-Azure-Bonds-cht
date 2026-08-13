@@ -4713,15 +4713,17 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 03h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
+   "note": "ECL 比較的分派:先 \u003cfar 013Eh:06DAh\u003e(2) 取兩個運算元,再看 DS:7686h/7687h 兩個型別 byte——**只要其中一個 \u003e= 80h,兩個就都當字串**(不是各自依型別),走 013Eh:073Eh 比較兩個 256 bytes 緩衝(DS:7748h 與 DS:7848h,相隔 100h);否則呼叫 013Eh:06D5h 兩次取值再 013Eh:0743h 比較。⚠ 數值比較的參數順序是 (b, a),第二個運算元先傳",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/592-ecl-arithmetic-and-compare.md"
+    "spec/592-ecl-arithmetic-and-compare.md",
+    "spec/685-dos-ecl-compare-dispatch.md"
    ]
   },
   {
@@ -4852,7 +4854,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:25Dh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:25Dh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "spec/685-dos-ecl-compare-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4955,12 +4960,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Dh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
+   "note": "堆疊彈出:DS:4F9Dh^[582h] \u003e 0 時**先減再用**,所以傳給 \u003cloc_6F5h\u003e 的是彈出後的新深度而不是被彈出那格的索引;計數是 word 但只取低 byte 傳下去,深度超過 255 會截斷。DS:4FB4h 的遞增在條件外面,堆疊空時也照加",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "spec/685-dos-ecl-compare-dispatch.md"
    ]
   },
   {
@@ -25841,7 +25848,8 @@
     "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/592-ecl-arithmetic-and-compare.md"
+    "spec/592-ecl-arithmetic-and-compare.md",
+    "spec/685-dos-ecl-compare-dispatch.md"
    ]
   },
   {
@@ -41937,6 +41945,7 @@
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
    "note": "顯示 HP:if arg_6^[1A5h](目前 HP)\u003c arg_6^[78h] then v := 6 else v := 0Ah;arg_0 非零則 v := 0Dh;再用 \u003csub_12E5\u003e(Str 的 byte 版)把 HP 轉成字串連同 v 傳給顯示 routine,接上一個空白後 \u003cfar 0418:0D17h\u003e。這確認 +78h 是 HP 上限(DOS 20FAh 的夾限是另一條證據,兩平台同偏移)",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/643-hp-fields-and-slot-array.md",
     "spec/684-biased-modifier-display.md"
    ]
@@ -44693,9 +44702,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 36,
+   "Read": 38,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 23,
    "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
