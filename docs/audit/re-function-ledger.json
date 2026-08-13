@@ -1072,6 +1072,24 @@
    "level": "exact",
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 142,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
+   "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 52,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
+   "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)"
   }
  ]
 }

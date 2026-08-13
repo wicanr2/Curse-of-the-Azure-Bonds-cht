@@ -5893,11 +5893,11 @@
    "state": "待解讀",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md"
+    "spec/521-dos-getmem-buffer-owner.md"
    ]
   },
   {
@@ -5911,7 +5911,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
+   "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
     "context/50-log-2026-08-09-13.md",
@@ -6142,6 +6145,7 @@
    "is_overlay_entry": false,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
    ]
   },
@@ -15431,7 +15435,8 @@
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/525-pc98-tempsearch-display-state.md",
+    "spec/564-ecl-operand-decoding-and-arity-validation.md"
    ]
   },
   {
@@ -23830,11 +23835,11 @@
    "state": "待解讀",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md"
+    "spec/521-dos-getmem-buffer-owner.md"
    ]
   },
   {
@@ -23849,10 +23854,14 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
+   "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
     "project-status.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
+    "spec/564-ecl-operand-decoding-and-arity-validation.md",
     "spec/README.md"
    ]
   },
@@ -34957,7 +34966,8 @@
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/525-pc98-tempsearch-display-state.md",
+    "spec/564-ecl-operand-decoding-and-arity-validation.md"
    ]
   },
   {
@@ -37561,9 +37571,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 37,
+   "Todo": 36,
    "CodeBytes": 8745,
    "Undefined": 191,
    "SegmentBytes": 9128,
@@ -38079,9 +38089,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 42,
+   "Todo": 41,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
