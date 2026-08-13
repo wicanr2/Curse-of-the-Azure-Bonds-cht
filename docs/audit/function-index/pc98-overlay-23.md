@@ -7,14 +7,14 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADEFFECTS | 18 | 5 | 0 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1627`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | knowledge/gold-box-ecl-interpreter.md |
 | `0016` | sub_16 | KILLDUDE | 179 | 64 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `00C9` | sub_C9 | CALLEFFECT | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
-| `010E` | sub_10E | SPELLOFF | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |
-| `0269` | sub_269 | — | 405 | 139 | 1 | 6 | ✓ | 待解讀 | — | — | — |
+| `00C9` | sub_C9 | CALLEFFECT | 69 | 27 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>CALLEFFECT:DS:A66Eh 非零時一律 far call DS:A28Ch(忽略 id);否則以 id*4 索引 DS:A040h 起的 far pointer 表分派。五個參數原樣轉傳 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `010E` | sub_10E | SPELLOFF | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `0269` | sub_269 | — | 405 | 139 | 1 | 6 | ✓ | 已解讀 | exact | docs/spec/577-attempttohit-and-effect-chain-walk.md<br>effect 鏈遍歷入口(161 個呼叫者):先查 subject 自身;未命中且 id 屬於集合 {15h,2Dh,2Eh,31h}(函式前方 32 bytes 的 Turbo Pascal set 常數,兩平台逐位元組相同)才沿 DS:9598h 的鏈以 +18Ah 走訪,期間借用 DS:9F31h 起 0D8h bytes 並在前後 Move 備份/還原;命中則呼叫 CALLEFFECT 分派 | spec/577-attempttohit-and-effect-chain-walk.md |
 | `03FE` | sub_3FE | CHECKFX | 2287 | 1050 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/571-trytohit-attack-resolution.md |
 | `0CED` | sub_CED | — | 251 | 97 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0E32` | sub_E32 | CHECKTERRAINFX | 914 | 399 | 0 | 11 | ✓ | 待解讀 | — | — | — |
-| `11C4` | sub_11C4 | TRYTOHIT | 104 | 41 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/571-trytohit-attack-resolution.md<br>TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於) | spec/571-trytohit-attack-resolution.md |
-| `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | spec/571-trytohit-attack-resolution.md |
+| `11C4` | sub_11C4 | TRYTOHIT | 104 | 41 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/571-trytohit-attack-resolution.md<br>TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於) | audit/function-index/dos-overlay-23.md<br>spec/571-trytohit-attack-resolution.md |
+| `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/577-attempttohit-and-effect-chain-walk.md<br>ATTEMPTTOHIT(need, attacker, target):d20 存進全域 DS:A039h,<=1 必失手、=20 改成 100;呼叫 CHECKFX(0Ah,target) 與 CHECKFX(10h,attacker)(兩者可改寫該全域);依 target^[198h] 取 bank1^[6E2h] 或 [6E0h];A039h<0 再失手一次;命中條件 A039h + target^[19Ah] + v >= need | spec/571-trytohit-attack-resolution.md<br>spec/577-attempttohit-and-effect-chain-walk.md |
 | `12D8` | sub_12D8 | MAKESAVE | 144 | 56 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1368` | sub_1368 | ROLLDICE | 75 | 29 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count<=0 回 0 | spec/568-rolldice-and-original-rng-entry.md |
 | `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 | audit/function-index/dos-overlay-23.md<br>spec/568-rolldice-and-original-rng-entry.md |
@@ -26,14 +26,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `154C` | sub_154C | — | 6 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | — |
 | `1552` | sub_1552 | REMOVEINVIS | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `155B` | sub_155B | — | 47 | 21 | 2 | 4 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 47 bytes，已逐條讀完） | — |
-| `158A` | sub_158A | REMOVEFX | 98 | 39 | 3 | 3 | ✓ | 待解讀 | — | — | — |
-| `15EC` | sub_15EC | ROUTINGREMOVEFX | 55 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `158A` | sub_158A | REMOVEFX | 98 | 39 | 3 | 3 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>REMOVEFX:以 1..19 索引 DS:159Dh 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0);之後查找 effect 4Dh,命中且 char^[0F7h]=0B3h 時把 char^[198h] 清零。清單內容在 DS,未定位 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `15EC` | sub_15EC | ROUTINGREMOVEFX | 55 | 24 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>ROUTINGREMOVEFX:以 1..4 索引 DS:15B1h 起的位元組表逐一呼叫 SPELLOFF(char, id, 0, 0)。清單內容在 DS,未定位 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
 | `1627` | sub_1627 | — | 1 | 1 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | audit/function-triage.md |
-| `1630` | sub_1630 | CUREEFFECT | 99 | 41 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `1693` | sub_1693 | CONVERTSTRTOSPEC | 41 | 17 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `16BC` | sub_16BC | CONVERTSPECTOSTR | 81 | 30 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `170D` | sub_170D | DONEWSTRENGTH | 73 | 28 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1756` | sub_1756 | — | 79 | 26 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1630` | sub_1630 | CUREEFFECT | 99 | 41 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>CUREEFFECT(id, char):查不到該 effect 回 false;否則格式化輸出、停頓(1,10)、呼叫 SPELLOFF 解除,回 true | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `1693` | sub_1693 | CONVERTSTRTOSPEC | 41 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>CONVERTSTRTOSPEC(percentile, str):str=18 回 percentile+1(1..101),否則回 str+100(103..118)。與 CONVERTSPECTOSTR 互逆 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `16BC` | sub_16BC | CONVERTSPECTOSTR | 81 | 30 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>CONVERTSPECTOSTR(rec, out_pct, out_str):取 rec^[3] and 7Fh;<=101 則 str=18、pct=值-1;否則 str=值-100、pct=0。角色記錄 +3 是力量編碼欄位,最高位是旗標 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `170D` | sub_170D | DONEWSTRENGTH | 73 | 28 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>DONEWSTRENGTH:新力量 > char^[10h],或(新力量=18 且新百分位 > char^[1Dh])時,把 CONVERTSTRTOSPEC 的結果寫進 out^ 並回 true。釘死 +10h=力量、+1Dh=百分位、12h=18 | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
+| `1756` | sub_1756 | — | 79 | 26 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>同 DONEWSTRENGTH 的比較規則,對 SS 上的區域結構操作:p[-2]:p[-1] 為力量、p[-4]:p[-3] 為百分位,較大者寫回 p[-1]/p[-3](當前值同步到最大值欄位) | audit/function-index/dos-overlay-23.md<br>spec/576-adnd-strength-encoding-and-effect-removal.md |
 | `17A5` | sub_17A5 | — | 330 | 120 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `18F3` | sub_18F3 | RECALCULATESTATS | 18 | 6 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_4], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
 | `1905` | sub_1905 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
