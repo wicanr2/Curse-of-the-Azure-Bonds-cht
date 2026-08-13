@@ -40,26 +40,53 @@ import idautils
 import idc
 
 
+def segments():
+    """所有 code segment 的 [start, end)。
+
+    原本只取 `get_first_seg()`——raw overlay 只有一段所以看不出問題，但
+    `PC98-GAME.EXE` 這種多段的 MZ 檔會**只匯出開頭那一段**（實測只出來 2 支
+    函式），而輸出本身沒有任何異狀。
+    """
+    out = []
+    segment = ida_segment.get_first_seg()
+    while segment is not None:
+        if segment.end_ea > segment.start_ea:
+            out.append((segment.start_ea, segment.end_ea))
+        segment = ida_segment.get_next_seg(segment.start_ea)
+    return out
+
+
 def main():
     out_path = sys.argv[1]
     ida_auto.auto_wait()
-    segment = ida_segment.get_first_seg()
-    base, end = segment.start_ea, segment.end_ea
-    blob = ida_bytes.get_bytes(base, end - base) or b""
 
-    starts = set()
-    for pattern in (b"\x55\x89\xe5", b"\x55\x8b\xec"):
-        index = blob.find(pattern)
-        while index >= 0:
-            starts.add(base + index)
-            index = blob.find(pattern, index + 3)
-    starts = sorted(starts)
-    if not starts or starts[0] != base:
-        starts.insert(0, base)          # 有些 overlay 的第一支不以標準 prologue 開頭
+    starts, spans = [], segments()
+    for base, end in spans:
+        blob = ida_bytes.get_bytes(base, end - base) or b""
+        found = set()
+        for pattern in (b"\x55\x89\xe5", b"\x55\x8b\xec"):
+            index = blob.find(pattern)
+            while index >= 0:
+                found.add(base + index)
+                index = blob.find(pattern, index + 3)
+        found = sorted(found)
+        if not found or found[0] != base:
+            found.insert(0, base)       # 有些段的第一支不以標準 prologue 開頭
+        starts.extend(found)
+    starts.sort()
+
+    # 每一支的終點：下一個 prologue，但不得跨出所屬 segment。
+    end_of = {}
+    for base, end in spans:
+        for start in starts:
+            if base <= start < end:
+                end_of[start] = end
 
     functions = []
     for position, start in enumerate(starts):
-        stop = starts[position + 1] if position + 1 < len(starts) else end
+        stop = end_of[start]
+        if position + 1 < len(starts):
+            stop = min(stop, starts[position + 1])
         items, gaps, ea, gap_start = [], [], start, None
         while ea < stop:
             if ida_bytes.is_code(ida_bytes.get_flags(ea)):
