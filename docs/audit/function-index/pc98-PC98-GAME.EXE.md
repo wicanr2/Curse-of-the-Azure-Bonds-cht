@@ -319,7 +319,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BCB9` | sub_1BCB9 | — | 49 | 24 | 2 | 1 |  | 邊界碎片 | — | docs/spec/669-text-file-buffer-and-truncate.md<br>不是函式起點:1BCAAh 那一支的中段(bx = dx 時的落點),沒有 prologue 也不是呼叫目標 | — |
 | `1BCEA` | sub_1BCEA | — | 41 | 20 | 1 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@ReadLn$qm4Text` 逐位元組相同（41 bytes） | — |
 | `1BD13` | sub_1BD13 | — | 31 | 14 | 3 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@WriteLn$qm4Text` 逐位元組相同（31 bytes） | — |
-| `1BD32` | sub_1BD32 | — | 38 | 14 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1BD32` | sub_1BD32 | — | 38 | 14 | 4 | 1 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>Flush:先看 es:[di+1Ah](FlushFunc 指標的 **segment** 部分)是否為 0——offset 為 0 但 segment 非 0 仍算有效;再看 InOutRes 是否已有錯;都通過才 call dword ptr es:[di+18h],回傳非 0 就記進 InOutRes | — |
 | `1BD58` | sub_1BD58 | — | 30 | 15 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Text4Char` 逐位元組相同（30 bytes） | — |
 | `1BD76` | sub_1BD76 | — | 45 | 20 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text4Char4Word` 逐位元組相同（45 bytes） | — |
 | `1BDA3` | sub_1BDA3 | — | 56 | 29 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Textm6String4Word` 逐位元組相同（56 bytes） | — |
@@ -327,11 +327,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BE71` | sub_1BE71 | — | 73 | 34 | 2 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text7Longint4Word` 逐位元組相同（73 bytes） | — |
 | `1BEBA` | sub_1BEBA | — | 46 | 23 | 3 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Assign$qm4Filem6String` 逐位元組相同（46 bytes） | — |
 | `1BEE8` | sub_1BEE8 | — | 101 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1BF69` | sub_1BF69 | — | 37 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
+| `1BF69` | sub_1BF69 | — | 37 | 13 | 3 | 2 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>Close:通過 <sub_1BF8Eh> 檢查後,**Handle > 4 才呼叫 int 21h AH=3Eh 關閉**——0..4 是 DOS 標準 handle(stdin/stdout/stderr/aux/prn),關掉會影響整個行程。但不論有沒有真的關,Mode 都會被設成 fmClosed | — |
 | `1BF8E` | sub_1BF8E | — | 15 | 4 | 5 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義 | — |
 | `1BFD3` | sub_1BFD3 | — | 104 | 45 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1C03B` | sub_1C03B | — | 48 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1C0B2` | sub_1C0B2 | — | 69 | 32 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1C03B` | sub_1C03B | — | 48 | 19 | 2 | 2 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>Seek:用兩次 16×16 乘法拼成 32-bit 位移(低位取整個 dx:ax、高位只取 ax 加進 cx),再 int 21h AX=4200h。⚠ 高位乘法的 dx 被丟掉,記錄編號 × RecSize 超過 4GB 時會靜默回捲。es:[di+4] 是 FileRec.RecSize,與 TextRec 的 BufSize 同一個位置 | — |
+| `1C0B2` | sub_1C0B2 | — | 69 | 32 | 3 | 1 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>取得位置與大小:Mode 必須是 fmInOut,否則設 InOutRes := 67h、清 dx:ax 並**設進位**返回。做法是 4201h 取目前位置 → 4202h 取檔尾(即大小)→ 4200h 移回原處。回傳分兩組:dx:ax 是還原後的位置、bx:cx 是檔案大小 | — |
 | `1C0F7` | sub_1C0F7 | — | 23 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1C15D` | sub_1C15D | — | 35 | 16 | 27 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes） | — |
 | `1C180` | sub_1C180 | — | 20 | 7 | 13 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes） | — |
