@@ -4708,6 +4708,8 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-02.md",
     "spec/602-ecl-party-power-score.md"
    ]
   },
@@ -5307,7 +5309,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
+   "note": "與 pc98 overlay-02:143Ch 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：overlay-02 內部共用常式:拿 caller 的 bp 當參數,直接讀 caller frame 上 [bp-11h]/[bp-10h]/[bp-0Fh]/[bp-0Ah] 四個值,分別 STOREVALUE 到 [bp-13h]/[bp-15h]/[bp-17h]/[bp-19h] 存的四個 ECL 位址。偏移是硬編碼的,改動呼叫端的區域變數配置就會壞 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -25668,6 +25673,7 @@
    "note": "ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/602-ecl-party-power-score.md"
    ]
   },
@@ -25682,7 +25688,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
+   "note": "overlay-02 內部共用常式:拿 caller 的 bp 當參數,直接讀 caller frame 上 [bp-11h]/[bp-10h]/[bp-0Fh]/[bp-0Ah] 四個值,分別 STOREVALUE 到 [bp-13h]/[bp-15h]/[bp-17h]/[bp-19h] 存的四個 ECL 位址。偏移是硬編碼的,改動呼叫端的區域變數配置就會壞"
   },
   {
    "platform": "pc98",
@@ -25695,11 +25704,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Eh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
+   "note": "ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/603-ecl-party-stat-aggregate.md"
    ]
   },
   {
@@ -42742,9 +42753,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 29,
+   "Read": 30,
    "NotBlocking": 0,
-   "Todo": 33,
+   "Todo": 32,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43297,9 +43308,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 43,
+   "Read": 45,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 18,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
