@@ -16975,6 +16975,26 @@
    "spec": "docs/spec/707-raise-dead-and-area-effect.md",
    "note": "兩段互相獨立:<overlay-32 entry#9>(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a>0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b>0 且 b<>arg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 17845,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/708-slay-living-and-missile-count.md",
+   "note": "豁免失敗即死:先 DS:6F95h:=40h(傷害旗標)、DS:6F94h:=43h(傷害值),呼叫 <overlay-23 entry#4>(p, 9),**回頭看 DS:6F94h 有沒有被清成 0**(哨兵手法,同 spec 703 的 4289h):為 0 → 'is unaffected';否則 <overlay-23 entry#8>(p,4,0) 回 0 → <overlay-23 entry#1>(p, 6, 'is slain') 即死;回非 0 → 改 DS:6F95h:=8,d := ROLLDAMAGEDICE(2,8)+1,<overlay-23 entry#20>(d,0,0)。「豁免失敗即死、成功承受 2d8+1」是 AD&D Slay Living 的招牌數字(身分為推論)。⚠ 兩種傷害旗標在同一支先後出現,是隨結果換的不是進來就決定的",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 21739,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/708-slay-living-and-missile-count.md",
+   "note": "⚠ **數量減半但傷害用沒減半的值**:<overlay-24 entry#36>(DS:6F97h) 被呼叫兩次,第一次結果存 bp−6(n)、第二次 +1 後 cwd/idiv 2 存 bp−5(half,下限夾 1)。half 只餵給 <sub_175Bh>(a, b, DS:7559h, DS:755Ah, 2, half),而傷害是 ROLLDAMAGEDICE(n, 4) + n 用 n。兩個區域變數位移相鄰(bp−6/bp−5),反組譯裡極容易看成同一個;改寫時只留一個變數兩邊都會錯",
+   "bounds": "prologue"
   }
  ]
 }
