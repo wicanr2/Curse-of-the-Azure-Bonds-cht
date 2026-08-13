@@ -94,4 +94,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3621` | sub_3621 | — | 112 | 39 | 3 | 3 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `3691` | sub_3691 | — | 225 | 70 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `3772` | sub_3772 | — | 679 | 205 | 0 | 12 | ✓ | 待解讀 | — | — | — |
-| `3A19` | sub_3A19 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `3A19` | sub_3A19 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

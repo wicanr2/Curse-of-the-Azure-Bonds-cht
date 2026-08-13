@@ -77,7 +77,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3223` | sub_3223 | — | 61 | 25 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `3273` | sub_3273 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `32A0` | sub_32A0 | — | 165 | 52 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `3345` | sub_3345 | — | 17 | 9 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `3345` | sub_3345 | — | 17 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call near ptr sub_32A0`，參數原樣傳遞（body 共 17 bytes，已逐條讀完） | — |
 | `3369` | sub_3369 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `3396` | sub_3396 | — | 178 | 67 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `345B` | sub_345B | — | 922 | 346 | 0 | 6 | ✓ | 待解讀 | — | — | — |
@@ -142,4 +142,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `6535` | sub_6535 | LOSESCROLLSPELL | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `65C9` | sub_65C9 | CHARSPELLMSG | 290 | 131 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `66EB` | sub_66EB | INITSPELLS | 1434 | 443 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `6C85` | sub_6C85 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `6C85` | sub_6C85 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

@@ -16,4 +16,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `07C6` | sub_7C6 | — | 123 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/517-reverse-engineering-gap-inventory.md<br>spec/518-dos-start-ecl-call-address-space-audit.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md |
 | `104C` | sub_104C | — | 708 | 282 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `133A` | sub_133A | — | 318 | 125 | 0 | 1 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/521-dos-getmem-buffer-owner.md<br>spec/522-dos-buffer-four-plane-fill.md<br>spec/524-dos-overlay30-geo-loader-source.md |
-| `1478` | sub_1478 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | spec/519-dos-overlay-vector-to-cell-layer-accessor.md |
+| `1478` | sub_1478 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | spec/519-dos-overlay-vector-to-cell-layer-accessor.md |

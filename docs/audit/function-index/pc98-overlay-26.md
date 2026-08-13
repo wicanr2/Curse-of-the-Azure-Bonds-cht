@@ -24,4 +24,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `129D` | sub_129D | YESNO | 130 | 61 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `131F` | sub_131F | BUILDMENULIST | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `13C7` | sub_13C7 | DISPOSEMENULIST | 88 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `141F` | sub_141F | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `141F` | sub_141F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

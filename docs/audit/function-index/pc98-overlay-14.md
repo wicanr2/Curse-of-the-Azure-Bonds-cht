@@ -18,4 +18,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0807` | sub_807 | — | 203 | 73 | 1 | 1 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/528-pc98-moveparty-action-transaction-boundary.md<br>spec/533-pc98-moveparty-helper-gate.md |
 | `08E4` | sub_8E4 | PREMOVEPARTY | 699 | 267 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0BCC` | sub_BCC | MOVEPARTY | 471 | 190 | 0 | 8 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/526-pc98-moveparty-map-writer-searchrec-correction.md<br>spec/527-pc98-moveparty-action-writer-boundary.md<br>spec/533-pc98-moveparty-helper-gate.md<br>spec/534-chinese-manual-moveparty-character-transfer.md |
-| `0DA3` | sub_DA3 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0DA3` | sub_DA3 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

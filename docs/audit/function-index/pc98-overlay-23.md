@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADEFFECTS | 18 | 5 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADEFFECTS | 18 | 5 | 0 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md |
 | `0016` | sub_16 | KILLDUDE | 179 | 64 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `00C9` | sub_C9 | CALLEFFECT | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `010E` | sub_10E | SPELLOFF | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |
@@ -23,7 +23,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1510` | sub_1510 | — | 21 | 7 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1529` | sub_1529 | — | 25 | 7 | 4 | 3 |  | 待解讀 | — | — | — |
 | `1542` | sub_1542 | — | 6 | 2 | 3 | 0 |  | 待解讀 | — | — | — |
-| `154C` | sub_154C | — | 6 | 3 | 4 | 0 |  | 待解讀 | — | — | — |
+| `154C` | sub_154C | — | 6 | 3 | 4 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完） | — |
 | `1552` | sub_1552 | REMOVEINVIS | 9 | 4 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `155B` | sub_155B | — | 47 | 21 | 2 | 4 |  | 待解讀 | — | — | — |
 | `158A` | sub_158A | REMOVEFX | 98 | 39 | 3 | 3 | ✓ | 待解讀 | — | — | — |
@@ -43,4 +43,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2325` | sub_2325 | PUTEFFECT | 212 | 87 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `2419` | sub_2419 | HEALDUDE | 209 | 71 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `251A` | sub_251A | STANDUP | 201 | 75 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `25E3` | sub_25E3 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `25E3` | sub_25E3 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

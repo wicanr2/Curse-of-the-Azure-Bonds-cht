@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `01CB` | sub_1CB | — | 115 | 42 | 3 | 2 |  | 待解讀 | — | — | — |
 | `023E` | sub_23E | — | 68 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
-| `03A9` | nullsub_1 | — | 3 | 1 | 0 | 0 |  | 待解讀 | — | — | — |
+| `03A9` | nullsub_1 | — | 3 | 1 | 0 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完） | — |
 | `04CB` | sub_4CB | — | 182 | 77 | 1 | 6 |  | 待解讀 | — | — | — |
 | `085C` | sub_85C | — | 155 | 57 | 1 | 1 |  | 待解讀 | — | — | — |
 | `0942` | sub_942 | — | 439 | 180 | 1 | 6 |  | 待解讀 | — | — | — |
@@ -38,4 +38,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2255` | sub_2255 | — | 180 | 63 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2309` | sub_2309 | — | 164 | 68 | 1 | 9 | ✓ | 待解讀 | — | — | — |
 | `23FC` | sub_23FC | — | 485 | 206 | 0 | 11 | ✓ | 待解讀 | — | — | — |
-| `25E1` | sub_25E1 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `25E1` | sub_25E1 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

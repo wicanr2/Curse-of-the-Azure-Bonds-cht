@@ -21,4 +21,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1679` | sub_1679 | — | 10 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
 | `1683` | sub_1683 | — | 7 | 2 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1775` | sub_1775 | DOPOSTCOMBAT | 558 | 192 | 0 | 6 | ✓ | 待解讀 | — | — | spec/558-pc98-ecl-treasure-combat-boundary.md |
-| `19A3` | sub_19A3 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `19A3` | sub_19A3 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

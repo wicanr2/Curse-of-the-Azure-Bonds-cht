@@ -77,7 +77,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2F5E` | sub_2F5E | — | 61 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2FA4` | sub_2FA4 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2FD1` | sub_2FD1 | — | 165 | 61 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `3076` | sub_3076 | — | 17 | 9 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `3076` | sub_3076 | — | 17 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call near ptr sub_2FD1`，參數原樣傳遞（body 共 17 bytes，已逐條讀完） | — |
 | `3093` | sub_3093 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `30C0` | sub_30C0 | — | 178 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `317E` | sub_317E | — | 932 | 349 | 0 | 6 | ✓ | 待解讀 | — | — | — |
@@ -140,4 +140,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `617B` | sub_617B | — | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `6209` | sub_6209 | — | 258 | 119 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `68A5` | sub_68A5 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `68A5` | sub_68A5 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
