@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》全遊戲逆向工程完整度矩陣
 
-狀態日期：2026-08-12
+狀態日期：2026-08-13
 
 ## 結論
 
@@ -41,6 +41,12 @@
 State 再按固定類別順序套用。這不能保證重建原始 opcode 的跨類型先後順序，也是
 「單點測試通過、正常流程仍卡住」的首要嫌疑。
 
+第 558 輪已排除一個錯誤 blocker：三組 `TREASURE → COMBAT` 早已有 pending
+treasure→combat／service→victory→loot→resume 的第 255／257／258 輪 READY
+transaction，本輪以 PC-98 IDA 與三段 DOS 真實 DAX continuation 補強並在清冊標成
+`covered/exact`。這不消除全域缺口；只是下一個 probe 應改查真正未審查的
+`COMBAT → text`，而不是為已閉合案例重寫 State。
+
 閉合要求：
 
 1. 從原始 ECL trace 建立 opcode 當下的 ordered effect record。
@@ -80,8 +86,8 @@ gate 只能作輸入，不等於此清冊已完成。
 |---|---|---|---|---|
 | 原始檔與平台 inventory | DOS 主檔多有 hash；PC-98 VFD 有缺 sector | 局部 | 建立 DOS／PC-98 executable、overlay、DAX、GEO、save、音訊與手冊的單一 manifest；標示 pristine／derived | `coab-source-manifest` |
 | DAX container／壓縮 | 多種真實資產已可抽取 | 局部 | 對所有實際成員補 record count、bounds、round-trip 與 malformed gate；區分不同 DAX payload | `dax-corpus-matrix` |
-| ECL framing／控制流 | 第 557 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊 | 局部 | 33 個候選仍缺動態 branch、間接 dispatch、外部 boundary 與錯誤路徑；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
-| ECL 副作用／時序 | typed signal、多個 adapter 與 33 個跨 effect-kind 靜態候選 | **待逆向／待規格** | 先閉合三組 `TREASURE → COMBAT`，再完成全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
+| ECL framing／控制流 | 第 557／558 輪已版本化 6 DAX／25 block／125 entry／1,355 instruction 靜態清冊與穩定 candidate ID | 局部 | 33 個候選中 3 個已審查；其餘 30 個與動態 branch、間接 dispatch、外部 boundary、錯誤路徑仍缺；graph 不代表 runtime | `ecl-event-catalog` 靜態層已完成；續建動態 edge／事件 metadata |
+| ECL 副作用／時序 | typed signal、多個 adapter；3 個 `TREASURE → COMBAT` 候選已 `covered/exact` | **待逆向／待規格** | 從 `COMBAT → text` 開始閉合其餘 30 個候選，再完成全域 ordered event log、commit phase、exactly-once、跨 boundary continuation | `ecl-ordered-effects` READY spec＋trace corpus |
 | External `CALL` | `2E10／C01E／B200` 等有局部證據 | 待逆向 | 實際使用地址全集；每址的 caller、operand、state projection、consumer、返回與未知 fallback | `external-call-registry` |
 | `NEWECL／PROGRAM` | boundary ID 與部分 context 已知 | 局部 | 全 context 的 area/resource/map/save/ending 副作用與 resume ownership | `program-newecl-context-matrix` |
 | GEO 幾何／四平面 | 16 個原始 block 已宣告；loader／部分 plane consumer 有證據 | 局部 | 所有 plane 欄位、wall/door/roof/terrain interaction、wrapped edge、視覺 consumer | `geo-block-and-cell-schema` |
@@ -146,9 +152,11 @@ save/reload`。
 
 ## 第一批執行順序
 
-1. 靜態 `ecl-event-catalog` 已完成；先對三組 `TREASURE → COMBAT` 候選取得原始
-   branch／commit／resume trace，建立最小 ordered-effect transaction。
-2. 將動態 edge、條件與 continuation 回填 catalog，完成 `ecl-ordered-effects` 規格。
+1. 靜態 `ecl-event-catalog` 已完成；三組 `TREASURE → COMBAT` 已由第 558 輪閉合並
+   寫入 fail-closed review ledger。下一個 probe 是 ECL2 block `0x02` 的
+   `COMBAT → text` 戰後續跑。
+2. 將已驗證的動態 edge、條件與 continuation 回填 catalog，逐步完成
+   `ecl-ordered-effects` 規格；未審查候選維持 unknown，不因相似序列批次升格。
 3. 建立 `external-call-registry`，從 23 個靜態可達 CALL 只追玩家可見副作用的
    producer→consumer。
 4. 建立 `area-event-coverage`，把清冊與 GEO cell／terrain／正常路徑合併；先盤點，

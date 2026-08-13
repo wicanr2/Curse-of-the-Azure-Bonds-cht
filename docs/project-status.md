@@ -1,6 +1,6 @@
 # 專案成果盤點
 
-更新日期：2026-08-12
+更新日期：2026-08-13
 
 目前執行順序入口是根目錄 [`WORKLIST.md`](../WORKLIST.md)；全遊戲 RE／重建
 完整度以
@@ -18,8 +18,17 @@ archive 重生 6 個 ECL DAX、25 個 block、125 個 lifecycle entry、1,355 �
 靜態可達 instruction 與 33 個跨 effect-kind 直線候選。JSON 保存原始 archive／
 member SHA-256、位址、operand metadata、直接 edge 與 lifecycle reachability；packed
 text 只保存長度與 hash。這是 `READY` corpus inventory，不是 runtime order。
-下一步優先閉合三組 `TREASURE → COMBAT` 候選，再設計 ordered transaction。
+第 558 輪已確認三組 `TREASURE → COMBAT` 候選由第 255／257／258 輪既有
+transaction 覆蓋，補上 PC-98 IDA、真實 DAX pause／resume 回歸、穩定 candidate ID
+與 fail-closed review ledger；下一步改查未審查的 `COMBAT → text`。
 完整證據見 [`spec 557`](spec/557-ecl-event-catalog-and-ordered-effects-audit.md)。
+
+第 558 輪另記錄一項位址勘誤：Borland `segment:handler offset`、resident control
+stub 與 overlay-local code offset 不可混用。PC-98 `INTERPET` dispatcher 的 opcode
+`24h → local 1820h`、`27h → local 1BEAh` 已由 IDA Pro 9.4 raw bytes 閉合；三段
+DOS 真實 ECL 則分別保存 treasure、monster descriptor、COMBAT 後 PC 與續跑結果。
+這是三個候選的 `covered/exact`，不是全域 ordered event log 完成。詳見
+[`spec 558`](spec/558-pc98-ecl-treasure-combat-boundary.md)。
 
 第 553 輪已從使用者提供的《軟體世界》中文掃描重建手札 1–59 的繁中校訂摘要，
 入口為 [`adventurers-journal-zh-TW.md`](manual/adventurers-journal-zh-TW.md)。中文
