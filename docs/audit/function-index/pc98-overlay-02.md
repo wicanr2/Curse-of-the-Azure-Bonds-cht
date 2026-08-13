@@ -36,7 +36,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B49` | sub_B49 | — | 101 | 40 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 14h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0BAE` | sub_BAE | — | 120 | 42 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 16h／17h／18h／19h／1Ah／1Bh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0C26` | sub_C26 | — | 91 | 33 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 20h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `0C81` | sub_C81 | — | 53 | 19 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 21h／37h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `0C81` | sub_C81 | — | 53 | 19 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 21h／37h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>spec/586-ecl-handlers-31-33-34.md |
 | `0CBF` | sub_CBF | — | 99 | 29 | 2 | 3 |  | 待解讀 | — | — | — |
 | `0D2F` | sub_D2F | — | 223 | 74 | 3 | 5 |  | 待解讀 | — | — | — |
 | `0E10` | sub_E10 | — | 39 | 15 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:0A99Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 39 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md |
@@ -72,9 +72,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `29FB` | sub_29FB | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 32h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh | audit/ecl-opcode-dispatch.md<br>audit/function-index/dos-overlay-02.md |
 | `2ACE` | sub_2ACE | — | 824 | 294 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `2E06` | sub_2E06 | — | 38 | 12 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 31h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `2E2C` | sub_2E2C | — | 53 | 22 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 34h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `2E61` | sub_2E61 | — | 43 | 14 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 33h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `2E06` | sub_2E06 | — | 38 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/586-ecl-handlers-31-33-34.md<br>ECL opcode 31h 的 handler:無 operand(只 ECL_PC++);DS:BDF7h 非 0 時設 DS:A66Ch=1、呼叫 far 0172:0025、清 DS:BDF7h 與 DS:BDF4h | audit/ecl-opcode-dispatch.md<br>spec/586-ecl-handlers-31-33-34.md |
+| `2E2C` | sub_2E2C | — | 53 | 22 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/586-ecl-handlers-31-33-34.md<br>ECL opcode 34h 的 handler:READVAR(2) 後把兩個 ADDRESSVALUE 結果原樣交給 far 0105:002A,自己不做判斷 | audit/ecl-opcode-dispatch.md<br>spec/586-ecl-handlers-31-33-34.md |
+| `2E61` | sub_2E61 | — | 43 | 14 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/586-ecl-handlers-31-33-34.md<br>ECL opcode 33h 的 handler:無 operand;DS:BDF3h 非 0 就清掉,兩個分支都設 DS:9636h=1 並把 DS:9637h 加一。DS:9637h 是 PUTDAMAGE 的訊息停留時間全域,所以效果是把後續訊息延長一格 | audit/ecl-opcode-dispatch.md<br>spec/586-ecl-handlers-31-33-34.md |
 | `2E8C` | sub_2E8C | — | 78 | 24 | 1 | 5 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Dh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |
 | `2EDA` | sub_2EDA | — | 133 | 56 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 39h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2F5F` | sub_2F5F | — | 123 | 42 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 36h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
