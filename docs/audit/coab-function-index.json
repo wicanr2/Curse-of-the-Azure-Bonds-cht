@@ -15509,6 +15509,8 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
@@ -16502,6 +16504,7 @@
    "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
    "note": "先發訊息再套效果:\u003csub_F06h\u003e(DS:6F97h, 0, 1, 0, 0, 空字串 CS:262Eh);再 \u003coverlay-23 entry#2\u003e(17h, DS:7435h 的目標, 0(dword), 0)。⚠ sub_F06h 的第三/第四個參數與 spec 701 致傷三支不同(那裡是 0 與傷害量,這裡是 1 與 0),所以它有模式之分",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/702-more-overlay22-spell-handlers.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md"
    ]
@@ -16668,7 +16671,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
+   "note": "解除效果:整段期間 DS:6F9Ch:=1,離開歸 0。用 \u003coverlay-23 entry#16\u003e(目標, id) 查 22h/2Bh/32h 三個編號,查到就把回傳值設 1;但**解掉的是不同的編號**——2Bh 命中解 2Ch 與 1Fh、32h 命中解 39h、22h 只回報不解。這是一張寫死的對應表,不是「有什麼解什麼」;寫成後者會讓 2Bh/32h 留在身上而 2Ch/1Fh/39h 不被清掉",
+   "citations": [
+    "spec/704-dispel-and-the-missing-fill.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17120,7 +17129,8 @@
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "用哨兵值判斷下游有沒有動過:sub_F06h(DS:6F97h,0,0,0,8,空字串) → p := DS:6506h^[18Dh]^[0Ah] → **DS:6F93h := 40h(哨兵)** → \u003coverlay-23 entry#4\u003e(p, 9) → 若 DS:6F93h 仍是 40h 才 \u003coverlay-23 entry#2\u003e(0, [bp−4], [bp−2], DS:6506h, 40h)。⚠ **[bp−4] 與 [bp−2] 整支函式沒有任何一條指令寫過**(bp−9 是拼接緩衝、bp−8..bp−5 存 p),傳出去的是堆疊殘值;同一支 entry#2 在 262Fh 的同樣兩個位置推的是明確的 0。需實機驗證再決定 remake 怎麼寫",
    "citations": [
-    "spec/703-item-effect-slots-and-uninitialised-args.md"
+    "spec/703-item-effect-slots-and-uninitialised-args.md",
+    "spec/704-dispel-and-the-missing-fill.md"
    ]
   },
   {
@@ -17134,7 +17144,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
+   "note": "兩條路:目標^[0E5h] \u003e= 6(有號)時 \u003coverlay-24 entry#20\u003e(目標, 'smashes them flat' CS:42FFh, 0Ah, 1);否則 n := \u003coverlay-24 entry#36\u003e(DS:6F97h),\u003csub_F06h\u003e(DS:6F97h, n, 0, 0, 8, 空字串 CS:42FEh),再用 \u003coverlay-24 entry#27\u003e(目標, 3, @node) 找節點,找到才 \u003coverlay-23 entry#2\u003e(0, node, 目標, 3)。⚠ 這支給出了 spec 703 裡 4289h 那兩個未初始化區域**應該**是什麼:最後兩條 push 兩支逐位元組相同(ff76fe + ff76fc),差別只在 4311h 先用 entry#27 把 far 指標填進去。CS:42FEh/42FFh 又是緊鄰的兩條字串",
+   "citations": [
+    "spec/704-dispel-and-the-missing-fill.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17685,6 +17701,7 @@
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "從物品身上拔掉一個效果:掃 物品^[3Ch..3Eh] 三個槽(and 7Fh 後比對 arg_0,**不提早跳出,取最後一個符合的**),找到就清 0、物品^[30h] 減 1,遞減後**小於 0D2h(無號)**才呼叫 overlay-24 entry#17 把物品移除並釋放(spec 695)。那三個槽正好是 spec 696 建構子最後三個參數的落點,低 7 位是編號、最高位是旗標;+30h 是次數。⚠ 0D2h..0FFh 這段遞減後仍不觸發移除,當成「用完就沒了」會提早銷毀物品",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md"
    ]
   },
@@ -39221,6 +39238,8 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
@@ -43012,7 +43031,8 @@
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
    "note": "與 DOS overlay-24:2543h（entry#29）助憶碼序列完全相同，語意同該筆：依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 \u003c17D6h\u003e(角色, s, 0Ah, 1);DS:4FBAh \u003c\u003e 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -45525,9 +45545,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 64,
+   "Read": 66,
    "NotBlocking": 0,
-   "Todo": 49,
+   "Todo": 47,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
