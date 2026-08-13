@@ -15530,7 +15530,8 @@
    "state": "待解讀",
    "citations": [
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -16683,7 +16684,8 @@
    "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
    "note": "解除效果:整段期間 DS:6F9Ch:=1,離開歸 0。用 \u003coverlay-23 entry#16\u003e(目標, id) 查 22h/2Bh/32h 三個編號,查到就把回傳值設 1;但**解掉的是不同的編號**——2Bh 命中解 2Ch 與 1Fh、32h 命中解 39h、22h 只回報不解。這是一張寫死的對應表,不是「有什麼解什麼」;寫成後者會讓 2Bh/32h 留在身上而 2Ch/1Fh/39h 不被清掉",
    "citations": [
-    "spec/704-dispel-and-the-missing-fill.md"
+    "spec/704-dispel-and-the-missing-fill.md",
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -16880,7 +16882,13 @@
    "callers": 5,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/707-raise-dead-and-area-effect.md",
+   "note": "兩段互相獨立:\u003coverlay-32 entry#9\u003e(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a\u003e0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b\u003e0 且 b\u003c\u003earg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
+   "citations": [
+    "spec/707-raise-dead-and-area-effect.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17255,7 +17263,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/707-raise-dead-and-area-effect.md",
+   "note": "復活:四道門檻(狀態 +195h 必須是 6 或 1、+18h 必須 \u003e 0(無號)、+74h 不能是 2),**三個是 early return,不過連訊息都不顯示**。通過後在 DS:6F9Ch:=1 期間解除效果 20h 與 37h,然後 +195h:=0、+196h:=1、**+18h 減 1(次數不可逆,沒有地方加回去)**、\u003coverlay-23 entry#24\u003e(p,4)、**+1A4h := 1(HP 設成 1,不是上限)**,最後顯示 'is raised'(CS:44C9h)。漏掉 +18h 的遞減會變成可以無限復活",
+   "citations": [
+    "spec/707-raise-dead-and-area-effect.md"
+   ]
   },
   {
    "platform": "dos",
@@ -33213,7 +33227,8 @@
    "note": "傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數)",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md"
+    "spec/573-effprocs-effect-handlers-first-batch.md",
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -39285,7 +39300,8 @@
    "state": "待解讀",
    "citations": [
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -45574,9 +45590,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 69,
+   "Read": 71,
    "NotBlocking": 0,
-   "Todo": 44,
+   "Todo": 42,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,

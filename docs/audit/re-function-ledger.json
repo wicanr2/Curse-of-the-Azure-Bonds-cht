@@ -16955,6 +16955,26 @@
    "spec": "docs/spec/706-temporary-field-adjust.md",
    "bounds": "prologue",
    "note": "暫時改欄位再還原:先存 舊值 := 目標^[0E3h],依 目標^[75h] 調整(0 → 減 1、5 → 加 4、其他 → 加 2),接著 <sub_F06h>(DS:6F97h,0,0,0,0,空字串) 與 <overlay-24 entry#27>(目標, 44h, @node),找到就 <overlay-23 entry#2>(44h, 目標, 0, 0),**最後一定把 目標^[0E3h] 還原成舊值**。⚠ 修改與還原之間隔著三個呼叫,還原在最尾端且兩條路徑都會經過——只讀前半段會得出「永久調整」的相反結論。下游在這段期間讀該欄位會拿到臨時值,改寫成傳參數行為會不同(原作是任何讀該欄位的程式碼都看得到)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 17619,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/707-raise-dead-and-area-effect.md",
+   "note": "復活:四道門檻(狀態 +195h 必須是 6 或 1、+18h 必須 > 0(無號)、+74h 不能是 2),**三個是 early return,不過連訊息都不顯示**。通過後在 DS:6F9Ch:=1 期間解除效果 20h 與 37h,然後 +195h:=0、+196h:=1、**+18h 減 1(次數不可逆,沒有地方加回去)**、<overlay-23 entry#24>(p,4)、**+1A4h := 1(HP 設成 1,不是上限)**,最後顯示 'is raised'(CS:44C9h)。漏掉 +18h 的遞減會變成可以無限復活",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 14663,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/707-raise-dead-and-area-effect.md",
+   "note": "兩段互相獨立:<overlay-32 entry#9>(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a>0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b>0 且 b<>arg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
+   "bounds": "prologue"
   }
  ]
 }
