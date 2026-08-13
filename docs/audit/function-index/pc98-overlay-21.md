@@ -34,4 +34,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19CA` | sub_19CA | — | 12 | 3 | 1 | 0 |  | 待解讀 | — | — | audit/function-triage.md |
 | `19E0` | sub_19E0 | — | 31 | 14 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1A3E` | sub_1A3E | APPRAISE | 2263 | 151 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `2315` | sub_2315 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `2315` | sub_2315 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

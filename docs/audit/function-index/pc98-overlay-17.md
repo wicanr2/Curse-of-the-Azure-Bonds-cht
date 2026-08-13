@@ -58,4 +58,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `52D0` | sub_52D0 | — | 98 | 38 | 3 | 2 |  | 待解讀 | — | — | — |
 | `5420` | sub_5420 | TRAINCHARACTER | 72 | 25 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `546F` | sub_546F | — | 2527 | 935 | 1 | 9 |  | 待解讀 | — | — | audit/function-triage.md |
-| `5E57` | sub_5E57 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `5E57` | sub_5E57 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

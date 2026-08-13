@@ -32,7 +32,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1558` | sub_1558 | — | 35 | 13 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `1679` | sub_1679 | — | 7 | 2 | 6 | 0 |  | 待解讀 | — | — | — |
 | `1688` | sub_1688 | — | 13 | 3 | 5 | 0 |  | 待解讀 | — | — | — |
-| `1697` | sub_1697 | — | 2 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1697` | sub_1697 | — | 2 | 2 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 2 bytes，已逐條讀完） | — |
 | `1699` | sub_1699 | — | 251 | 79 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1794` | sub_1794 | — | 5 | 1 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1799` | sub_1799 | — | 9 | 4 | 2 | 0 |  | 待解讀 | — | — | — |
@@ -49,4 +49,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `22BC` | sub_22BC | — | 180 | 63 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `2370` | sub_2370 | — | 164 | 68 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `2457` | sub_2457 | DOCAMP | 481 | 198 | 0 | 15 | ✓ | 待解讀 | — | — | — |
-| `2638` | sub_2638 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `2638` | sub_2638 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

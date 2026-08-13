@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `0007` | sub_7 | — | 46 | 15 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0035` | sub_35 | — | 360 | 148 | 1 | 1 |  | 待解讀 | — | — | — |
 | `019D` | sub_19D | — | 169 | 58 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -13,4 +13,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03EA` | sub_3EA | — | 352 | 144 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `054A` | sub_54A | — | 921 | 411 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `08E3` | sub_8E3 | — | 717 | 294 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `0BB0` | sub_BB0 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0BB0` | sub_BB0 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

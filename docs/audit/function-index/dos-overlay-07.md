@@ -31,7 +31,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16D3` | sub_16D3 | — | 173 | 68 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `1775` | sub_1775 | — | 5 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
 | `177A` | sub_177A | — | 63 | 25 | 2 | 0 |  | 待解讀 | — | — | — |
-| `17C4` | sub_17C4 | — | 6 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
+| `17C4` | sub_17C4 | — | 6 | 3 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完） | — |
 | `17EA` | sub_17EA | — | 58 | 27 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1824` | sub_1824 | — | 13 | 6 | 3 | 1 |  | 待解讀 | — | — | — |
 | `18EE` | sub_18EE | — | 141 | 67 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -45,4 +45,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1FF5` | sub_1FF5 | — | 322 | 139 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2137` | sub_2137 | — | 205 | 76 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2252` | sub_2252 | — | 335 | 134 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `23A1` | sub_23A1 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `23A1` | sub_23A1 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

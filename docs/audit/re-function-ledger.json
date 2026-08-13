@@ -2323,6 +2323,1914 @@
    "level": "exact",
    "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
    "note": "ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66480,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66528,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66533,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66592,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66597,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66602,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66928,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66933,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 66992,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67104,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67216,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67280,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67488,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67600,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67712,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67872,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67877,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67882,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67887,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 67936,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 68656,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 68928,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69040,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69232,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69376,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69381,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69401,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69520,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69616,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69792,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 69920,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 70080,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 70704,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 70896,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71200,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71327,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71456,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71600,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71696,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71706,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71751,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71776,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71824,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 71904,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 72064,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 72112,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 72160,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 73893,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 73936,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 73951,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 84812,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 90432,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 93839,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94498,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 14873,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-03",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 4127,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 6393,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-06",
+   "ea": 2413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 6084,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 9121,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 4965,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 7601,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 908,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 988,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1091,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4785,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5178,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5515,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call sub_1454`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5989,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11827,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 6468,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 3771,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 937,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 9697,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 17413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 5616,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 14691,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 3720,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 8775,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 12406,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_2FD1`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 26789,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 5465,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_15A1`，參數原樣傳遞（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 13359,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 3153,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 1 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 5096,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 4749,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-27",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-27",
+   "ea": 99,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 297h:1110h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-27",
+   "ea": 127,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 439,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 5240,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 2992,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 5057,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-33",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-34",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-34",
+   "ea": 2311,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-35",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-35",
+   "ea": 707,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66336,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66384,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66389,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66448,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66453,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66458,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66784,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66848,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66960,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67072,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67136,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67344,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67456,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67568,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67728,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67733,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67738,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67743,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67792,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68512,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68784,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68896,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69088,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69163,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69296,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69301,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69321,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69456,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69568,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69744,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69872,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70032,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70167,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70656,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70848,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71152,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71264,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71294,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71408,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71488,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71552,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71648,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71658,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71703,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71728,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71776,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71856,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 72032,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 72080,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 72128,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 74510,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 74560,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 74575,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 81435,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82304,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92443,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94752,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94768,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 97495,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 98605,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 98857,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call sub_18878`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 99690,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100925,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101263,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 6167,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr loc_689+2`，參數原樣傳遞（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-03",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 4567,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 6563,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-06",
+   "ea": 2639,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 9273,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 7139,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "ea": 1894,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 897,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 979,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1082,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4819,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6057,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11979,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 4521,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 5477,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 18744,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 3491,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 5783,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 2 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 9784,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 21889,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 24151,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 5974,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 15319,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 8981,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 13125,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_32A0`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 27781,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 5452,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 9699,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 13952,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5360,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 5151,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-27",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-27",
+   "ea": 99,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 2A8h:0A86h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-27",
+   "ea": 127,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-28",
+   "ea": 189,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 4961,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 2981,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 6777,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-33",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-34",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-34",
+   "ea": 7,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-35",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
   }
  ]
 }

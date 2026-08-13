@@ -42,4 +42,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `198A` | sub_198A | — | 25 | 12 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19A3` | sub_19A3 | — | 73 | 30 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1C3E` | sub_1C3E | — | 371 | 130 | 0 | 10 | ✓ | 待解讀 | — | — | — |
-| `1DB1` | sub_1DB1 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `1DB1` | sub_1DB1 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

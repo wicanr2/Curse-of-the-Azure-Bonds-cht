@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 待解讀 | — | — | spec/569-small-function-batch-reading.md |
 | `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 待解讀 | — | — | — |
 | `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 待解讀 | — | — | — |
 | `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -20,11 +20,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `026F` | sub_26F | — | 55 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `02A6` | sub_2A6 | — | 37 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `02CB` | sub_2CB | — | 193 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `038C` | sub_38C | — | 9 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `038C` | sub_38C | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `03A0` | sub_3A0 | — | 60 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `03DC` | sub_3DC | — | 9 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `03DC` | sub_3DC | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `03E5` | sub_3E5 | — | 94 | 36 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `0443` | sub_443 | — | 9 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0443` | sub_443 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `044C` | sub_44C | — | 45 | 14 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0479` | sub_479 | — | 52 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `04AD` | sub_4AD | — | 43 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -55,7 +55,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1200` | sub_1200 | — | 75 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `124B` | sub_124B | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `127E` | sub_127E | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `12B1` | sub_12B1 | — | 9 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `12B1` | sub_12B1 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `12BA` | sub_12BA | — | 33 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `12DB` | sub_12DB | — | 34 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `12FD` | sub_12FD | — | 32 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -64,7 +64,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `13CF` | sub_13CF | — | 70 | 30 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `1415` | sub_1415 | — | 32 | 14 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1435` | sub_1435 | — | 5 | 2 | 8 | 1 |  | 待解讀 | — | — | — |
-| `143A` | sub_143A | — | 4 | 2 | 4 | 0 |  | 待解讀 | — | — | — |
+| `143A` | sub_143A | — | 4 | 2 | 4 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完） | — |
 | `1454` | sub_1454 | — | 6 | 3 | 4 | 0 | ✓ | 待解讀 | — | — | — |
 | `145D` | sub_145D | — | 5 | 1 | 15 | 0 |  | 待解讀 | — | — | — |
 | `1462` | sub_1462 | — | 6 | 2 | 6 | 0 |  | 待解讀 | — | — | — |
@@ -82,7 +82,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1569` | sub_1569 | — | 9 | 4 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1572` | sub_1572 | — | 7 | 4 | 4 | 1 |  | 待解讀 | — | — | — |
 | `157F` | sub_157F | — | 3 | 2 | 0 | 0 | ✓ | 待解讀 | — | — | — |
-| `158B` | sub_158B | — | 10 | 5 | 2 | 1 |  | 待解讀 | — | — | — |
+| `158B` | sub_158B | — | 10 | 5 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call sub_1454`，參數原樣傳遞（body 共 10 bytes，已逐條讀完） | — |
 | `1595` | sub_1595 | — | 6 | 3 | 3 | 0 | ✓ | 待解讀 | — | — | — |
 | `15AB` | sub_15AB | — | 30 | 15 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `15E6` | sub_15E6 | — | 115 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -91,7 +91,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16D8` | sub_16D8 | — | 19 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `16EB` | sub_16EB | — | 48 | 23 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `1729` | sub_1729 | — | 60 | 28 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `1765` | sub_1765 | — | 12 | 6 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `1765` | sub_1765 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完） | — |
 | `1771` | sub_1771 | — | 87 | 32 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `17C8` | sub_17C8 | — | 52 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1809` | sub_1809 | — | 165 | 52 | 0 | 3 | ✓ | 待解讀 | — | — | — |
@@ -154,5 +154,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2C94` | sub_2C94 | — | 57 | 17 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2CD9` | sub_2CD9 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2D7D` | sub_2D7D | — | 182 | 71 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `2E33` | sub_2E33 | — | 9 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `2E33` | sub_2E33 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `2E3C` | sub_2E3C | — | 1840 | 569 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |

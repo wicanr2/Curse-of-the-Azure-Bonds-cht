@@ -6,61 +6,61 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `1002F` | PROGRAM | — | 50 | 10 | 0 | 10 |  | 待解讀 | — | — | — |
-| `103B0` | sub_103B0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `103E0` | sub_103E0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `103E5` | sub_103E5 | — | 2 | 1 | 2 | 0 |  | 待解讀 | — | — | — |
-| `10420` | sub_10420 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10425` | sub_10425 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1042A` | sub_1042A | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10570` | sub_10570 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10575` | sub_10575 | — | 2 | 1 | 3 | 0 |  | 待解讀 | — | — | — |
-| `105B0` | sub_105B0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10620` | sub_10620 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10690` | sub_10690 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `106D0` | sub_106D0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `107A0` | sub_107A0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10810` | sub_10810 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10880` | sub_10880 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10920` | sub_10920 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10925` | sub_10925 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1092A` | sub_1092A | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1092F` | sub_1092F | — | 2 | 1 | 2 | 0 |  | 待解讀 | — | — | — |
-| `10960` | sub_10960 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10C30` | sub_10C30 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10D40` | sub_10D40 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10DB0` | sub_10DB0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10E70` | sub_10E70 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10F00` | sub_10F00 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10F05` | sub_10F05 | — | 2 | 1 | 2 | 0 |  | 待解讀 | — | — | — |
-| `10F19` | sub_10F19 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10F90` | sub_10F90 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `10FF0` | sub_10FF0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `110A0` | sub_110A0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11120` | sub_11120 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `111C0` | sub_111C0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11430` | sub_11430 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `114F0` | sub_114F0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11620` | sub_11620 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
+| `103B0` | sub_103B0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `103E0` | sub_103E0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `103E5` | sub_103E5 | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10420` | sub_10420 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10425` | sub_10425 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `1042A` | sub_1042A | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10570` | sub_10570 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10575` | sub_10575 | — | 2 | 1 | 3 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `105B0` | sub_105B0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10620` | sub_10620 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10690` | sub_10690 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `106D0` | sub_106D0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `107A0` | sub_107A0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10810` | sub_10810 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10880` | sub_10880 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10920` | sub_10920 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10925` | sub_10925 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `1092A` | sub_1092A | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `1092F` | sub_1092F | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10960` | sub_10960 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10C30` | sub_10C30 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10D40` | sub_10D40 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10DB0` | sub_10DB0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10E70` | sub_10E70 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10F00` | sub_10F00 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10F05` | sub_10F05 | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10F19` | sub_10F19 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10F90` | sub_10F90 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `10FF0` | sub_10FF0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `110A0` | sub_110A0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11120` | sub_11120 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `111C0` | sub_111C0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11430` | sub_11430 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `114F0` | sub_114F0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11620` | sub_11620 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `11638` | sub_11638 | — | 23 | 12 | 1 | 1 |  | 待解讀 | — | — | — |
-| `11690` | sub_11690 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1169F` | sub_1169F | — | 2 | 1 | 2 | 0 |  | 待解讀 | — | — | — |
-| `11720` | sub_11720 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11770` | sub_11770 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `117B0` | sub_117B0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11810` | sub_11810 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1181A` | sub_1181A | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11847` | sub_11847 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11860` | sub_11860 | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11890` | sub_11890 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `118E0` | sub_118E0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `11980` | sub_11980 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `119B0` | sub_119B0 | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
-| `119E0` | sub_119E0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
+| `11690` | sub_11690 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `1169F` | sub_1169F | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11720` | sub_11720 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11770` | sub_11770 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `117B0` | sub_117B0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11810` | sub_11810 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `1181A` | sub_1181A | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11847` | sub_11847 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11860` | sub_11860 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `11890` | sub_11890 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `118E0` | sub_118E0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `11980` | sub_11980 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `119B0` | sub_119B0 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `119E0` | sub_119E0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `11A00` | sub_11A00 | — | 66 | 32 | 4 | 3 |  | 待解讀 | — | — | — |
 | `11ECD` | sub_11ECD | — | 472 | 205 | 3 | 3 |  | 待解讀 | — | — | — |
-| `120A5` | sub_120A5 | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
-| `120D0` | sub_120D0 | — | 2 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `120DF` | sub_120DF | — | 2 | 1 | 24 | 0 |  | 待解讀 | — | — | — |
+| `120A5` | sub_120A5 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `120D0` | sub_120D0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
+| `120DF` | sub_120DF | — | 2 | 1 | 24 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `12110` | sub_12110 | — | 111 | 44 | 1 | 7 |  | 待解讀 | — | — | — |
 | `1236C` | sub_1236C | — | 1537 | 609 | 1 | 37 |  | 待解讀 | — | — | — |
 | `12970` | sub_12970 | — | 123 | 47 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -73,7 +73,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `134F4` | sub_134F4 | — | 49 | 20 | 2 | 0 |  | 待解讀 | — | — | — |
 | `145C9` | sub_145C9 | — | 192 | 72 | 2 | 3 |  | 待解讀 | — | — | — |
 | `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
-| `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
+| `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `14B53` | sub_14B53 | — | 135 | 49 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14BDA` | sub_14BDA | — | 148 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14C6E` | sub_14C6E | — | 357 | 136 | 1 | 3 |  | 待解讀 | — | — | — |
@@ -98,7 +98,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
 | `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
 | `15F6A` | sub_15F6A | — | 470 | 207 | 2 | 3 |  | 待解讀 | — | — | — |
-| `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
+| `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16147` | sub_16147 | — | 159 | 78 | 1 | 1 |  | 待解讀 | — | — | — |
 | `161E6` | sub_161E6 | — | 96 | 46 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16246` | sub_16246 | — | 271 | 131 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -116,12 +116,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16B24` | sub_16B24 | — | 243 | 109 | 1 | 7 |  | 待解讀 | — | — | — |
 | `16C17` | sub_16C17 | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16C3E` | sub_16C3E | — | 559 | 235 | 2 | 17 |  | 待解讀 | — | — | — |
-| `16E8F` | sub_16E8F | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
+| `16E8F` | sub_16E8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16EA0` | sub_16EA0 | — | 81 | 28 | 2 | 5 |  | 待解讀 | — | — | — |
 | `16F03` | sub_16F03 | — | 122 | 51 | 1 | 4 |  | 待解讀 | — | — | — |
 | `16FAD` | sub_16FAD | — | 319 | 116 | 6 | 12 |  | 待解讀 | — | — | — |
 | `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 待解讀 | — | — | — |
-| `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 待解讀 | — | — | — |
+| `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17150` | sub_17150 | — | 182 | 79 | 10 | 6 |  | 待解讀 | — | — | — |
 | `17206` | sub_17206 | — | 58 | 25 | 7 | 4 |  | 待解讀 | — | — | — |
 | `17240` | sub_17240 | — | 16 | 8 | 1 | 0 |  | 待解讀 | — | — | — |

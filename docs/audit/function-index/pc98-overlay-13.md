@@ -18,7 +18,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0FB1` | sub_FB1 | TRYTOSWEEP | 108 | 35 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `101A` | sub_101A | — | 396 | 146 | 2 | 4 |  | 待解讀 | — | — | — |
 | `119F` | sub_119F | — | 3 | 1 | 2 | 1 |  | 待解讀 | — | — | — |
-| `11A9` | sub_11A9 | — | 6 | 3 | 3 | 0 |  | 待解讀 | — | — | — |
+| `11A9` | sub_11A9 | — | 6 | 3 | 3 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完） | — |
 | `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `11C7` | sub_11C7 | — | 5 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
 | `11CC` | sub_11CC | — | 140 | 46 | 2 | 3 |  | 待解讀 | — | — | — |
@@ -33,7 +33,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1542` | sub_1542 | — | 6 | 2 | 2 | 0 |  | 待解讀 | — | — | — |
 | `155B` | sub_155B | — | 5 | 2 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1560` | sub_1560 | — | 5 | 2 | 9 | 0 |  | 待解讀 | — | — | — |
-| `1565` | sub_1565 | — | 4 | 2 | 6 | 0 |  | 待解讀 | — | — | — |
+| `1565` | sub_1565 | — | 4 | 2 | 6 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完） | — |
 | `1569` | sub_1569 | — | 1 | 1 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `156A` | sub_156A | — | 11 | 4 | 10 | 0 |  | 待解讀 | — | — | — |
 | `1622` | sub_1622 | — | 7 | 4 | 4 | 1 |  | 待解讀 | — | — | — |
@@ -75,4 +75,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `453D` | sub_453D | EFF139 | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4671` | sub_4671 | EFF144 | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4876` | sub_4876 | KILLTHEBASTARDS | 194 | 67 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `4938` | sub_4938 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `4938` | sub_4938 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
