@@ -15522,6 +15522,54 @@
    "level": "exact",
    "spec": "docs/spec/675-horizontal-mirror-pair.md",
    "note": "blit 前的參數計算:arg_A shl 3(×8,一個 byte 裝 8 個像素);src^[2] 與 dst^[2] 是各自的每列位元組數,var_12 = src stride - dst stride - arg_C 即每列要跳過多少;var_10/14/12/C 最後都乘 2,所以 sub_15329 以 word 為單位前進。dst^[11h] 與 14689h 算釋放大小用的是同一個欄位。參數靠 bx/cx 與一整片區域變數傳,不是堆疊參數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 232,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 <far 013Eh:043Fh>(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 392,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "依 RACETYPE(+11Ah,兩平台同偏移)給加成:0Ah→1、9 或 0Ch→2、4→3、其餘→0(case 有 else,無未初始化問題);同一個加成同時加到 DS:6F9Fh 與 DS:6F94h(傷害值),再把 DS:6F95h 整個覆寫成 9。種族 9 與 0Ch 共用結果",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 997,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "兩道條件:<sub_3C>(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 <far 014Ah:0494h>;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 988,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "與 dos overlay-12:03E5h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩道條件:<sub_3C>(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 <far 014Ah:0494h>;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 227,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "與 dos overlay-12:00E8h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 <far 013Eh:043Fh>(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
