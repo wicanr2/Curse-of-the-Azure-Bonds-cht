@@ -26,5 +26,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 待解讀 | — | — | — |
 | `191E` | sub_191E | — | 51 | 23 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1951` | sub_1951 | — | 40 | 22 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1979` | sub_1979 | — | 12 | 8 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `1979` | sub_1979 | — | 12 | 8 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98 | — |
 | `1985` | sub_1985 | — | 16 | 10 | 1 | 0 | ✓ | 待解讀 | — | — | — |
