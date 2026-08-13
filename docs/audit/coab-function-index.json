@@ -27760,7 +27760,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/593-ecl-comparison-flags.md",
+   "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致",
    "citations": [
     "spec/593-ecl-comparison-flags.md"
    ]
@@ -43322,9 +43325,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 27,
+   "Todo": 26,
    "Fragment": 10,
    "CodeBytes": 8889,
    "Undefined": 363,
