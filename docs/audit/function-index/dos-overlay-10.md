@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `050E` | sub_50E | — | 478 | 197 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `06EC` | sub_6EC | — | 477 | 186 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `08C9` | sub_8C9 | — | 196 | 89 | 1 | 7 | ✓ | 待解讀 | — | — | — |
-| `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | spec/572-resident-service-functions.md |
+| `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | audit/function-index/pc98-overlay-10.md<br>spec/572-resident-service-functions.md |
 | `09A8` | sub_9A8 | — | 86 | 36 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `09FE` | sub_9FE | — | 268 | 115 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0B0A` | sub_B0A | — | 407 | 171 | 1 | 2 | ✓ | 待解讀 | — | — | — |
