@@ -16905,6 +16905,26 @@
    "level": "strong inference",
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "與 DOS overlay-22:617Bh（entry#7）助憶碼序列完全相同，語意同該筆：從物品身上拔掉一個效果:掃 物品^[3Ch..3Eh] 三個槽(and 7Fh 後比對 arg_0,**不提早跳出,取最後一個符合的**),找到就清 0、物品^[30h] 減 1,遞減後**小於 0D2h(無號)**才呼叫 overlay-24 entry#17 把物品移除並釋放(spec 695)。那三個槽正好是 spec 696 建構子最後三個參數的落點,低 7 位是編號、最高位是旗標;+30h 是次數。⚠ 0D2h..0FFh 這段遞減後仍不觸發移除,當成「用完就沒了」會提早銷毀物品 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 12241,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
+   "note": "解除效果:整段期間 DS:6F9Ch:=1,離開歸 0。用 <overlay-23 entry#16>(目標, id) 查 22h/2Bh/32h 三個編號,查到就把回傳值設 1;但**解掉的是不同的編號**——2Bh 命中解 2Ch 與 1Fh、32h 命中解 39h、22h 只回報不解。這是一張寫死的對應表,不是「有什麼解什麼」;寫成後者會讓 2Bh/32h 留在身上而 2Ch/1Fh/39h 不被清掉",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 17169,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
+   "note": "兩條路:目標^[0E5h] >= 6(有號)時 <overlay-24 entry#20>(目標, 'smashes them flat' CS:42FFh, 0Ah, 1);否則 n := <overlay-24 entry#36>(DS:6F97h),<sub_F06h>(DS:6F97h, n, 0, 0, 8, 空字串 CS:42FEh),再用 <overlay-24 entry#27>(目標, 3, @node) 找節點,找到才 <overlay-23 entry#2>(0, node, 目標, 3)。⚠ 這支給出了 spec 703 裡 4289h 那兩個未初始化區域**應該**是什麼:最後兩條 push 兩支逐位元組相同(ff76fe + ff76fc),差別只在 4311h 先用 entry#27 把 far 指標填進去。CS:42FEh/42FFh 又是緊鄰的兩條字串",
+   "bounds": "prologue"
   }
  ]
 }
