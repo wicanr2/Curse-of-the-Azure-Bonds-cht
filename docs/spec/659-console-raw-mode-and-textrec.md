@@ -62,8 +62,9 @@ if byte_280E4h <> 0 then
 ```
 
 `0D7B0h` 是 Turbo Pascal `TextRec.Mode` 的 `fmClosed`，`+4` 是 `BufSize`、
-`+0Ch` 是 `BufPtr`、`+10h` 是 `OpenFunc`——欄位位置與 Turbo Pascal 的 `TextRec`
-一致。等級 `strong inference`（沒有型別表可對，是由常數與位置推的）。
+`+0Ch` 是 `BufPtr`、`+10h` 是 `OpenFunc`。完整佈局由
+[spec 668](668-turbo-pascal-textrec-rtl.md) 的 `Assign` 逐欄位建構確認，等級
+`exact`。
 
 後半是**一次性初始化**（`byte_28102h` 當旗標）：
 
