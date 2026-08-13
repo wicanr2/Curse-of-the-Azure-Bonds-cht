@@ -27725,13 +27725,14 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
-   "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "ECL 位址分類器:4B00h..4EFFh→0、7C00h..7FFFh→1、7A00h..7BFFh→2、8000h..9E40h→3、其餘→4。四段互不重疊。class 3 上界 9E40h 與 spec 563 從 New 參數量到的 bank 3 大小 1E41h 完全吻合",
    "citations": [
     "audit/function-index/pc98-overlay-07.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md",
-    "spec/616-ecl2-string-sources.md"
+    "spec/616-ecl2-string-sources.md",
+    "spec/625-ecl-address-class-and-bank-wrap.md"
    ]
   },
   {
@@ -27748,12 +27749,13 @@
    "is_overlay_entry": true,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
-   "note": "FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "INDEXOF(node):從 DS:9598h 串列頭走 +18Ah next 指標,數到 node 為止回傳索引 byte。找不到會回傳整串長度,呼叫端分不出「找不到」與「最後一個的下一格」。這確認角色紀錄 +18Ah 是 next 指標",
    "citations": [
     "audit/function-index/dos-overlay-07.md",
     "spec/615-ecl2-findguy-maxrange.md",
-    "spec/624-ecl-special-address-space.md"
+    "spec/624-ecl-special-address-space.md",
+    "spec/625-ecl-address-class-and-bank-wrap.md"
    ]
   },
   {
@@ -27868,7 +27870,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "STORESTRING(s,addr):用 0801h 分類後把字元逐個存進對應 bank——class 0/1/2 每字元一個 word,class 3 一個 byte,寫完補一個 0 當終止符;class 4 靜默不做事。位址不先減區間起點,靠 16-bit 回捲,而四個 bank 常數(6A00h/800h/0C00h/8000h)正好等於 10000h 減「起點×寬度」——刻意讓起點落在 offset 0。特例:addr=7C00h 不進迴圈,直接把字串寫進 DS:9594h 角色紀錄 offset 0,上限 0Fh(15)",
+   "citations": [
+    "spec/625-ecl-address-class-and-bank-wrap.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43944,9 +43952,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
