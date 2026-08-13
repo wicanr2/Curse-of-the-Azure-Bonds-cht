@@ -8668,6 +8668,15 @@
    "level": "",
    "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
    "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 4548,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/571-trytohit-attack-resolution.md",
+   "note": "TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於)"
   }
  ]
 }

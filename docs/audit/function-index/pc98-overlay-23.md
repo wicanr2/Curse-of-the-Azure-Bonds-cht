@@ -10,11 +10,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `00C9` | sub_C9 | CALLEFFECT | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `010E` | sub_10E | SPELLOFF | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `0269` | sub_269 | — | 405 | 139 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `03FE` | sub_3FE | CHECKFX | 2287 | 1050 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `03FE` | sub_3FE | CHECKFX | 2287 | 1050 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/571-trytohit-attack-resolution.md |
 | `0CED` | sub_CED | — | 251 | 97 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0E32` | sub_E32 | CHECKTERRAINFX | 914 | 399 | 0 | 11 | ✓ | 待解讀 | — | — | — |
-| `11C4` | sub_11C4 | TRYTOHIT | 104 | 41 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `11C4` | sub_11C4 | TRYTOHIT | 104 | 41 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/571-trytohit-attack-resolution.md<br>TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於) | spec/571-trytohit-attack-resolution.md |
+| `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | spec/571-trytohit-attack-resolution.md |
 | `12D8` | sub_12D8 | MAKESAVE | 144 | 56 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1368` | sub_1368 | ROLLDICE | 75 | 29 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count<=0 回 0 | spec/568-rolldice-and-original-rng-entry.md |
 | `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 | spec/568-rolldice-and-original-rng-entry.md |

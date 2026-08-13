@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `00C9` | sub_C9 | — | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `010E` | sub_10E | — | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `0269` | sub_269 | — | 405 | 139 | 1 | 7 | ✓ | 待解讀 | — | — | — |
-| `03FE` | sub_3FE | — | 2313 | 1051 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `03FE` | sub_3FE | — | 2313 | 1051 | 6 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/571-trytohit-attack-resolution.md |
 | `0D07` | sub_D07 | — | 252 | 97 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0E45` | sub_E45 | — | 914 | 399 | 0 | 12 | ✓ | 待解讀 | — | — | — |
 | `11D7` | sub_11D7 | — | 104 | 41 | 0 | 3 | ✓ | 待解讀 | — | — | — |
