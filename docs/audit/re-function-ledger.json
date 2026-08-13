@@ -16680,6 +16680,35 @@
    "level": "strong inference",
    "spec": "docs/spec/696-item-node-layout-and-bandage.md",
    "note": "與 DOS overlay-24:3387h（entry#47）助憶碼序列完全相同，語意同該筆：包紮:走隊伍鏈(DS:650Ah,next +189h),對 p^[18Dh]^[13h]=0 且 p^[197h]=0 且 p^[195h]=5 的成員設 found:=1;arg_0 非零時再把 p^[195h] 由 5 降為 4、清 p^[18Dh]^[0Eh]、顯示「<名字> is bandaged」(CS:337Bh),然後 **arg_0 := 0**。⚠ 所以一次只處理第一個符合的成員,「回傳 1」不等於已經包紮,只表示還有人符合條件。arg_0 同時當「要不要真的做」與「還沒做過」兩個用途 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4933,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/697-strength-hit-table-and-weapon-select.md",
+   "note": "力量命中調整,13FDh(傷害)的雙生子:閘門同為 角色^[125h] <> 0,索引同樣來自 129Ah。i=1..3→−3、4..5→−2、6..7→−1、8..16→0、17..19→+1、20..22→+2、23..25→+3、26..27→+4、28..30→i−23。換算回力量值後與 AD&D 1e 命中調整**十八格全中**(18/00→+3、19→+3 … 25→+7),只有力量 1 併進 2 的格子。129Ah + 13FDh + 1345h 三支合起來就是完整的 1e 力量表",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 12448,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/697-strength-hit-table-and-weapon-select.md",
+   "note": "決定實際生效的武器:f := byte [5D04h + 角色^[151h]^[2Eh] shl 4](spec 691 那張表的格內 +2,是 bitfield);f and 10h → 結果 := 角色^[151h];f and 08h 時,f and 01h → 結果 := 角色^[17Dh]、f and 80h → 結果 := 角色^[181h]。回傳 (結果 <> NIL) 或 **f = 0Ah(整個 byte 相等,不是遮罩比較)**。⚠ 三個 if 是依序覆蓋不是互斥分支,同時成立時最後留下 +181h;武器從 var 參數帶出去,回傳值只是有沒有找到",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 13244,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/697-strength-hit-table-and-weapon-select.md",
+   "note": "與 DOS overlay-24:30A0h（entry#43）助憶碼序列完全相同，語意同該筆：決定實際生效的武器:f := byte [5D04h + 角色^[151h]^[2Eh] shl 4](spec 691 那張表的格內 +2,是 bitfield);f and 10h → 結果 := 角色^[151h];f and 08h 時,f and 01h → 結果 := 角色^[17Dh]、f and 80h → 結果 := 角色^[181h]。回傳 (結果 <> NIL) 或 **f = 0Ah(整個 byte 相等,不是遮罩比較)**。⚠ 三個 if 是依序覆蓋不是互斥分支,同時成立時最後留下 +181h;武器從 var 參數帶出去,回傳值只是有沒有找到 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
