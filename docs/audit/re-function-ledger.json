@@ -11386,6 +11386,69 @@
    "level": "exact",
    "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
    "note": "以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92633,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94578,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 97685,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111162,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "多欄位相等比較,與 DOS START.EXE:1B0DAh 逐指令相同"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109305,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "以 dword_2097E 為來源指標連續四次 movsw 複製 8 bytes(48-bit Real 加尾隨),之後 di 回退 8 並更新來源指標"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102674,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "從 CS:247h 起以 INT 29h(fast putchar)輸出 5 個字元"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111533,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0"
   }
  ]
 }

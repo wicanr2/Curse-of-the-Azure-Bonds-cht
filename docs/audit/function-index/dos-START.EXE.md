@@ -225,7 +225,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A986` | sub_1A986 | — | 156 | 62 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>以 dword_2097E 為來源指標連續四次 movsw 複製 8 bytes(48-bit Real 加尾隨),之後 di 回退 8 並更新來源指標 | — |
 | `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AB57` | sub_1AB57 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh | — |
 | `1AB65` | sub_1AB65 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位 | — |

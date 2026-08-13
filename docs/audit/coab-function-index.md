@@ -9,11 +9,11 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 248、不阻塞 133、邊界碎片 208、待解讀 755；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 249、不阻塞 133、邊界碎片 208、待解讀 754；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| START.EXE | — | 325 | 93 | 133 | 17 | 82 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
+| START.EXE | — | 325 | 94 | 133 | 17 | 81 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 1 | 0 | 0 | 0 | 1 | 58 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 3 | 0 | 0 | 0 | 3 | 1504 | 405 | [明細](function-index/dos-overlay-01.md) |
 | overlay-02 | INTERPET | 90 | 8 | 0 | 28 | 54 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
@@ -53,11 +53,11 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 267、不阻塞 29、邊界碎片 280、待解讀 905；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 273、不阻塞 29、邊界碎片 280、待解讀 899；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| PC98-GAME.EXE | — | 333 | 105 | 29 | 21 | 178 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
+| PC98-GAME.EXE | — | 333 | 111 | 29 | 21 | 172 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 1 | 1 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 1 | 3 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
 | overlay-02 | INTERPET | 85 | 6 | 0 | 23 | 56 | 14037 | 266 | [明細](function-index/pc98-overlay-02.md) |
