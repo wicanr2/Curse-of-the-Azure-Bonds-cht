@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADLOADSAVE | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | LOADLOADSAVE | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>spec/612-ecl-main-loop.md |
 | `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `0079` | sub_79 | — | 214 | 84 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `0164` | sub_164 | — | 1176 | 456 | 1 | 3 | ✓ | 待解讀 | — | — | — |
@@ -47,7 +47,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_4], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `5008` | sub_5008 | SAVEGAME | 718 | 296 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | spec/612-ecl-main-loop.md |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 待解讀 | — | — | — |

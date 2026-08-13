@@ -7010,6 +7010,7 @@
    "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-07.md",
     "spec/547-normal-beholder-cave-presentation-state.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
@@ -12742,7 +12743,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -13693,7 +13695,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -25727,6 +25730,7 @@
    "note": "ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/pc98-overlay-02.md",
     "spec/603-ecl-party-stat-aggregate.md"
    ]
   },
@@ -26325,9 +26329,13 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "執行 ECL 的兩段進入點:呼叫 RUN_ECL(DS:7F1Bh),之後取得一個旗標,非 0 才再呼叫 RUN_ECL(DS:7F1Dh);收尾設 DS:A66Ch:=1、呼叫 far 0172:0025、清 DS:8CF7h。38h(9) 是它的呼叫者之一",
    "citations": [
-    "audit/ecl-external-call-registry.md"
+    "audit/ecl-external-call-registry.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -26482,11 +26490,16 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "ECL 主執行迴圈 RUN_ECL(pc):設 ECL_PC、清 DS:7896h,然後 while DS:7896h=0 且 DS:7F34h=0 反覆——把 DS:A891h 抄到 DS:A890h(保留上一個 opcode)、從 bank3 取新 opcode 存進 DS:A891h、呼叫 dispatcher(sub_373Eh)。兩個終止條件:停止旗標與「全隊不能行動」(全滅會直接中止執行迴圈)。迴圈不推進 PC,由各 handler 自己推",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/525-pc98-tempsearch-display-state.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -26514,7 +26527,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "空函式:原始位元組 55 89 e5 89 ec 5d cb = push bp/mov bp,sp/mov sp,bp/pop bp/retf,沒有呼叫者。IDA 把 89 ec 的第二個位元組單獨當成 ec(in al,dx)——看起來像 I/O 存取的假指令是位元組邊界錯位的典型症狀。同形的 7-byte 空函式在 overlay-16:5581h、overlay-18:1756h 也出現過",
+   "citations": [
+    "spec/612-ecl-main-loop.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27870,6 +27889,7 @@
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致",
    "citations": [
+    "audit/function-index/pc98-overlay-07.md",
     "spec/593-ecl-comparison-flags.md"
    ]
   },
@@ -33851,7 +33871,8 @@
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -34463,7 +34484,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "spec/612-ecl-main-loop.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35354,7 +35378,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -35494,7 +35519,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -43345,9 +43371,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 53,
+   "Read": 56,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 2,
    "Fragment": 28,
    "CodeBytes": 14044,
    "Undefined": 266,
