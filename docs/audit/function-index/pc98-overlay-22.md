@@ -138,7 +138,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `61AD` | sub_61AD | — | 277 | 105 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `62D7` | sub_62D7 | — | 229 | 102 | 0 | 10 | ✓ | 待解讀 | — | — | — |
 | `63D4` | sub_63D4 | — | 276 | 108 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `64E8` | sub_64E8 | ISASCROLL | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `64E8` | sub_64E8 | ISASCROLL | 77 | 29 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/700-pascal-parameter-order-rule.md<br>與 DOS overlay-22:612Eh（entry#6）助憶碼序列完全相同，語意同該筆：物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 < v < 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `6535` | sub_6535 | LOSESCROLLSPELL | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `65C9` | sub_65C9 | CHARSPELLMSG | 290 | 131 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `66EB` | sub_66EB | INITSPELLS | 1434 | 443 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |

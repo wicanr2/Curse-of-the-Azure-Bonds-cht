@@ -16931,7 +16931,8 @@
    "note": "治療 opcode(2d8+1):DS:7434h 為 0 時整支什麼都不做(連訊息都沒有);否則 量 := ROLLDICE(2,8)+1,HEALDUDE(DS:7435h/7437h 組成的目標角色, 量, 0),成功才呼叫 overlay-24 entry#29 顯示 is fully/partially healed。第三個參數固定 0 = 滿血也照治,但 HEALDUDE 內部仍會因狀態不在 {0,1,4,5} 而回 false",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
-    "spec/700-pascal-parameter-order-rule.md"
+    "spec/700-pascal-parameter-order-rule.md",
+    "spec/701-cure-cause-wounds-ladder.md"
    ]
   },
   {
@@ -16996,7 +16997,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/701-cure-cause-wounds-ladder.md",
+   "note": "治療 2d4+2:量 := ROLLDICE(2,4)+2,HEALDUDE(DS:7435h/7437h 的目標, 量, 0),成功則 \u003coverlay-24 entry#26\u003e(目標, 1, 'is Healed'(CS:4070h))。與 3F23h/43A7h 同族但訊息路徑不同",
+   "citations": [
+    "spec/701-cure-cause-wounds-ladder.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17028,9 +17035,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/701-cure-cause-wounds-ladder.md",
+   "note": "致傷 2d4+2:sub_F06h(DS:6F97h, 0, 0, ROLLDAMAGEDICE(2,4)+2, 8, 空字串 CS:4102h)。與 407Ah 骰子相同、方向相反(Cause 對 Cure)",
    "citations": [
-    "spec/700-pascal-parameter-order-rule.md"
+    "spec/700-pascal-parameter-order-rule.md",
+    "spec/701-cure-cause-wounds-ladder.md"
    ]
   },
   {
@@ -17044,7 +17055,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/701-cure-cause-wounds-ladder.md",
+   "note": "致傷 2d8+1:sub_F06h(DS:6F97h, 0, 0, ROLLDAMAGEDICE(2,8)+1, 8, 空字串 CS:413Eh)。⚠ 明確推入只有 5 個 word,而 sub_F06h 是 retf 0Eh = 7 個——差的兩個是 0A54:0634h 留在堆疊上的字串結果。**這是 spec 690 那條殘留規則第一次被 retf N 獨立驗證**",
+   "citations": [
+    "spec/701-cure-cause-wounds-ladder.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17101,7 +17118,8 @@
    "spec": "docs/spec/700-pascal-parameter-order-rule.md",
    "note": "治療 opcode(3d8+3):與 3F23h 完全同構,只有骰子不同。配上 1d8 那支就是 AD\u0026D 治療三階(輕傷/重傷/危傷)",
    "citations": [
-    "spec/700-pascal-parameter-order-rule.md"
+    "spec/700-pascal-parameter-order-rule.md",
+    "spec/701-cure-cause-wounds-ladder.md"
    ]
   },
   {
@@ -17115,7 +17133,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/701-cure-cause-wounds-ladder.md",
+   "note": "致傷 3d8+3:sub_F06h(DS:6F97h, 0, 0, ROLLDAMAGEDICE(3,8)+3, 8, 空字串 CS:43E9h)。與 43A7h 骰子相同、方向相反",
+   "citations": [
+    "spec/701-cure-cause-wounds-ladder.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41298,7 +41322,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/700-pascal-parameter-order-rule.md",
+   "note": "與 DOS overlay-22:612Eh（entry#6）助憶碼序列完全相同，語意同該筆：物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 \u003c v \u003c 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -45424,9 +45451,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 53,
+   "Read": 57,
    "NotBlocking": 0,
-   "Todo": 60,
+   "Todo": 56,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -45979,9 +46006,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 54,
+   "Read": 55,
    "NotBlocking": 0,
-   "Todo": 57,
+   "Todo": 56,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
