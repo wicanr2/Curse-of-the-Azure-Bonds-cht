@@ -66,11 +66,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/spell-status-message-strings.md |
 | `2494` | sub_2494 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `24CD` | sub_24CD | — | 168 | 73 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `2580` | sub_2580 | — | 174 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2580` | sub_2580 | — | 174 | 67 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/630-spell-target-array.md<br>與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget >= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `262F` | sub_262F | — | 70 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2682` | sub_2682 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_2675，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `26BB` | sub_26BB | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `26F6` | sub_26F6 | — | 82 | 39 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `26F6` | sub_26F6 | — | 82 | 39 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/629-spell-pack-idiom-and-uninit.md<br>與 pc98 overlay-22:29A3h 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：v := (ROLLDICE(1,4) shl 4) or <far 014A:00D4>(DS:0A031h)——高 4 bit 放數量、低 4 bit 放另一個值,是打包不是乘法;再推入 DS:0A031h、v、三個 0,備妥「は分身した。」呼叫 <sub_F62>。1d4 個分身與 AD&D Mirror Image 一致(推論,不寫進結論)。與 3804h 用同一套打包寫法 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2754` | sub_2754 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2799` | sub_2799 | — | 1120 | 433 | 0 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2BF9` | sub_2BF9 | — | 433 | 148 | 0 | 4 | ✓ | 待解讀 | — | — | — |
@@ -87,7 +87,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `36A7` | sub_36A7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `36E0` | sub_36E0 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `370E` | sub_370E | — | 246 | 103 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | spec/628-spell-effect-wrappers.md |
+| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-22.md<br>spec/628-spell-effect-wrappers.md<br>spec/629-spell-pack-idiom-and-uninit.md |
 | `391D` | sub_391D | — | 42 | 20 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:3BCBh 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3947` | sub_3947 | — | 188 | 71 | 5 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A03` | sub_3A03 | — | 661 | 263 | 4 | 8 | ✓ | 待解讀 | — | — | — |
