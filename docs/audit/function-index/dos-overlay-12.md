@@ -156,3 +156,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2D7D` | sub_2D7D | — | 182 | 71 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E33` | sub_2E33 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `2E3C` | sub_2E3C | — | 1840 | 569 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `356C` | sub_356C | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |

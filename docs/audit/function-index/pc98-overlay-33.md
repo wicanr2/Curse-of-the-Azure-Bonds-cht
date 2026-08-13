@@ -11,3 +11,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `02E8` | sub_2E8 | DISPOSEFIGURE | 116 | 48 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `038F` | sub_38F | LOADFIGURE | 1050 | 451 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `07A9` | sub_7A9 | PUTFIGURE | 285 | 114 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `08C6` | sub_8C6 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |

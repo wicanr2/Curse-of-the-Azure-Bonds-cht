@@ -5,10 +5,17 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
+| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0011` | sub_11 | — | 928 | 101 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `03B1` | sub_3B1 | — | 704 | 169 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0671` | sub_671 | — | 370 | 103 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `07E3` | sub_7E3 | — | 757 | 187 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `0AD8` | sub_AD8 | — | 426 | 151 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0C51` | nullsub_1 | — | 1 | 1 | 0 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 1 bytes，已逐條讀完） | — |
-| `0EE1` | sub_EE1 | — | 945 | 360 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0D2F` | sub_D2F | — | 434 | 148 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `0EE1` | sub_EE1 | — | 945 | 360 | 0 | 8 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1292` | sub_1292 | — | 92 | 33 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `12EE` | sub_12EE | — | 92 | 33 | 3 | 1 | ✓ | 待解讀 | — | — | — |
+| `12EE` | sub_12EE | — | 92 | 33 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `134A` | sub_134A | — | 80 | 29 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `139A` | sub_139A | — | 34 | 14 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `13BC` | sub_13BC | — | 44 | 18 | 2 | 2 | ✓ | 待解讀 | — | — | — |

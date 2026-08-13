@@ -70,7 +70,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A4F` | sub_1A4F | — | 76 | 24 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 76 bytes，已逐條讀完） | — |
 | `1A9B` | sub_1A9B | — | 149 | 57 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 25h／26h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `1B53` | sub_1B53 | — | 1011 | 398 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 27h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `1F46` | sub_1F46 | — | 227 | 78 | 1 | 3 |  | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 28h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `1F46` | sub_1F46 | — | 227 | 78 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 28h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2086` | sub_2086 | — | 1791 | 649 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 29h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>audit/function-triage.md |
 | `27A8` | sub_27A8 | — | 159 | 66 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>audit/embedded-strings.md |
 | `2847` | sub_2847 | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 32h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |

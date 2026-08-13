@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
-| `000C` | sub_C | — | 133 | 51 | 3 | 1 |  | 待解讀 | — | — | audit/embedded-strings.md |
+| `000C` | sub_C | — | 133 | 51 | 3 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0091` | sub_91 | — | 34 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完） | — |
 | `00B3` | sub_B3 | — | 37 | 18 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `010B` | sub_10B | — | 1104 | 453 | 0 | 2 | ✓ | 待解讀 | — | — | — |

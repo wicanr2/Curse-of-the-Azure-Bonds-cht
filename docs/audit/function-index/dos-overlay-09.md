@@ -42,3 +42,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18A9` | sub_18A9 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1921` | sub_1921 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1926` | sub_1926 | — | 664 | 206 | 2 | 6 |  | 待解讀 | — | — | — |
+| `1BC6` | sub_1BC6 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |
