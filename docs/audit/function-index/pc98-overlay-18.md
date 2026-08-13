@@ -23,7 +23,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18C0` | sub_18C0 | — | 39 | 23 | 1 | 3 |  | 待解讀 | — | — | — |
 | `18E7` | sub_18E7 | — | 16 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面 | audit/function-index/pc98-overlay-18.md |
 | `18F7` | sub_18F7 | — | 17 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本) | — |
-| `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 si 從 0 起、每次加 2B67h 並 and 7FFFh,重複 8000h 次呼叫 sub_191E ⇒ 對 32KB 平面做打散順序的逐格處理 | spec/575-random-core-and-pc98-vram.md |
 | `191E` | sub_191E | — | 51 | 23 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1951` | sub_1951 | — | 40 | 22 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1979` | sub_1979 | — | 12 | 8 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98 | — |
