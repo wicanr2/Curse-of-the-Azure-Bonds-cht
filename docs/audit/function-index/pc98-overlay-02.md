@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0E10` | sub_E10 | — | 39 | 15 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:0A99Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 39 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md |
 | `0E7F` | sub_E7F | — | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ah 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0EDD` | sub_EDD | — | 76 | 29 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 35h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `0F29` | sub_F29 | — | 47 | 15 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_66B+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md<br>audit/embedded-strings.md |
+| `0F29` | sub_F29 | — | 47 | 15 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_66B+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md<br>audit/embedded-strings.md |
 | `107A` | sub_107A | — | 13 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
 | `10C2` | sub_10C2 | — | 466 | 179 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Bh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `1294` | sub_1294 | — | 99 | 37 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
@@ -90,3 +90,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `373E` | sub_373E | — | 615 | 289 | 1 | 53 | ✓ | 已解讀 | exact | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode dispatcher；由 ds:0A891h 讀 opcode，00h..40h 中除 1Fh 外共 64 個 opcode 對應 52 個 handler | audit/ecl-opcode-dispatch.md<br>audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `39A5` | sub_39A5 | — | 72 | 24 | 3 | 2 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `3A21` | sub_3A21 | GOECL | 693 | 212 | 0 | 11 | ✓ | 待解讀 | — | — | — |
+| `3CE4` | sub_3CE4 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |

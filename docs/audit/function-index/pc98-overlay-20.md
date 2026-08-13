@@ -20,3 +20,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B37` | sub_B37 | — | 177 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0BE8` | sub_BE8 | — | 178 | 65 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0CD0` | sub_CD0 | REST | 492 | 196 | 0 | 8 | ✓ | 待解讀 | — | — | — |
+| `0EBC` | sub_EBC | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

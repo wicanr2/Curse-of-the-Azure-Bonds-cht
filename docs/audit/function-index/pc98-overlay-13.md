@@ -74,5 +74,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `426B` | sub_426B | EFF87 | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `453D` | sub_453D | EFF139 | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4671` | sub_4671 | EFF144 | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `478B` | sub_478B | EFF96 | 235 | 75 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4876` | sub_4876 | KILLTHEBASTARDS | 194 | 67 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4938` | sub_4938 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

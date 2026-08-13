@@ -58,6 +58,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1FA0` | sub_1FA0 | — | 304 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
 | `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完） | — |
+| `21C7` | sub_21C7 | — | 95 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `22B4` | sub_22B4 | — | 310 | 122 | 0 | 4 | ✓ | 待解讀 | — | — | — |
@@ -122,6 +123,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4DA0` | sub_4DA0 | — | 275 | 132 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `4EB4` | sub_4EB4 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4EB3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `4EF7` | sub_4EF7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
+| `4F3E` | sub_4F3E | — | 1453 | 548 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `54EB` | sub_54EB | — | 164 | 72 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `5590` | sub_5590 | — | 170 | 70 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `563B` | sub_563B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_563A，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
@@ -140,4 +142,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `617B` | sub_617B | — | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `6209` | sub_6209 | — | 258 | 119 | 1 | 5 | ✓ | 待解讀 | — | — | — |
+| `630B` | sub_630B | — | 1434 | 158 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `68A5` | sub_68A5 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

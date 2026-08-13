@@ -21,11 +21,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `142D` | sub_142D | — | 10 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `1437` | sub_1437 | — | 48 | 21 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完） | — |
 | `146E` | sub_146E | — | 10 | 7 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
-| `1478` | sub_1478 | — | 5 | 2 | 15 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
+| `1478` | sub_1478 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `147D` | sub_147D | — | 63 | 26 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 63 bytes，已逐條讀完） | — |
 | `14E3` | sub_14E3 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `14E8` | sub_14E8 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and ds:9320h, al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `150B` | sub_150B | — | 3 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr loc_1B2D+1`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
+| `150B` | sub_150B | — | 3 | 1 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr loc_1B2D+1`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
 | `1515` | sub_1515 | — | 8 | 2 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and word ptr [di-7Dh], 0FF80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `156A` | sub_156A | — | 14 | 5 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `test ax, 4881h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
 | `1578` | sub_1578 | ITEMS | 1 | 1 | 2 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
@@ -33,7 +33,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1583` | sub_1583 | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-3Fh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1588` | sub_1588 | — | 25 | 8 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ax, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |
 | `15A1` | sub_15A1 | — | 125 | 42 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1604` | sub_1604 | — | 15 | 5 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A335h, 52h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
+| `1604` | sub_1604 | — | 15 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A335h, 52h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
 | `1613` | sub_1613 | — | 9 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+197h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 6 | 1 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp word ptr es:[di+1CAh], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1683` | sub_1683 | — | 9 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+196h], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
@@ -41,7 +41,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17B7` | sub_17B7 | — | 617 | 261 | 2 | 13 |  | 待解讀 | — | — | — |
 | `18C4` | sub_18C4 | — | 7 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 23 | 11 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/function-triage.md |
-| `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `1A8F` | sub_1A8F | — | 1055 | 342 | 1 | 6 | ✓ | 待解讀 | — | — | — |
+| `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-7]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 64 bytes，已逐條讀完） | — |
 | `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完） | — |
 | `2102` | sub_2102 | — | 166 | 61 | 1 | 6 | ✓ | 待解讀 | — | — | — |
@@ -55,7 +56,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `32B7` | sub_32B7 | OVERLOADED | 132 | 45 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `333B` | sub_333B | ACTIVECHAR | 207 | 71 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `340A` | sub_340A | CASH | 117 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `34E4` | sub_34E4 | PICKSPELL | 372 | 157 | 2 | 5 | ✓ | 待解讀 | — | — | — |
+| `34E4` | sub_34E4 | PICKSPELL | 372 | 157 | 2 | 6 | ✓ | 待解讀 | — | — | — |
 | `3658` | sub_3658 | CANDOHEAL | 101 | 37 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `36BD` | sub_36BD | CANDOCURE | 89 | 30 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `37AB` | sub_37AB | DOHEAL | 373 | 156 | 1 | 7 | ✓ | 待解讀 | — | — | — |
