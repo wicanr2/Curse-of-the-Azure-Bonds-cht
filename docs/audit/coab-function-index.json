@@ -8954,7 +8954,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/string-pairs.md",
     "spec/569-small-function-batch-reading.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md"
+    "spec/573-effprocs-effect-handlers-first-batch.md",
+    "spec/641-dos-field-offset-shift.md"
    ]
   },
   {
@@ -10504,7 +10505,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh)",
+   "citations": [
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10517,7 +10524,14 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh",
+   "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10530,7 +10544,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4)",
+   "citations": [
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10572,7 +10592,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1",
+   "citations": [
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10585,7 +10611,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表)",
+   "citations": [
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10611,7 +10643,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同",
+   "citations": [
+    "spec/641-dos-field-offset-shift.md"
+   ]
   },
   {
    "platform": "dos",
@@ -25848,6 +25886,7 @@
    "note": "ECL opcode 21h 與 37h 共用的 handler(真實範圍 0C81h..0E0Dh 共 396 bytes,IDA 標 53)。靠 cmp ds:A891h, 21h 再讀一次 dispatcher 的 opcode 全域來分辨自己被哪個 opcode 呼叫。READVAR(3) 後三個 operand 存 [bp-3..bp-1];FFh 與 7Fh 是哨兵值。21h 半設 DS:789Bh、37h 半設 DS:789Ah,兩個都為真才執行結尾收尾。IDA 漏認的兩段(0CB6h/0D22h)正好是 opcode 二次判讀與 37h 分支開頭",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "spec/586-ecl-handlers-31-33-34.md",
     "spec/587-ecl-handler-21-37-shared.md"
@@ -25920,7 +25959,8 @@
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md"
    ]
   },
   {
@@ -26075,6 +26115,7 @@
    "note": "ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "spec/603-ecl-party-stat-aggregate.md"
    ]
@@ -27722,11 +27763,11 @@
    "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-07.md",
     "audit/function-index/pc98-overlay-07.md",
     "project-status.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
-    "spec/564-ecl-operand-decoding-and-arity-validation.md",
-    "spec/627-spell-cure-family.md"
+    "spec/564-ecl-operand-decoding-and-arity-validation.md"
    ]
   },
   {
@@ -28348,6 +28389,7 @@
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "audit/function-index/pc98-overlay-07.md",
     "spec/593-ecl-comparison-flags.md"
    ]
@@ -30132,7 +30174,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/string-pairs.md",
     "spec/569-small-function-batch-reading.md",
-    "spec/573-effprocs-effect-handlers-first-batch.md"
+    "spec/573-effprocs-effect-handlers-first-batch.md",
+    "spec/641-dos-field-offset-shift.md"
    ]
   },
   {
@@ -31131,6 +31174,7 @@
    "note": "13F1h..1434h(retf 0Ah)的完整一支:if \u003csub_3C\u003e(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) \u003c\u003e 0 且 \u003cfar 013E:008E\u003e(arg_A:arg_8, 1, 1) \u003c\u003e 0 then \u003cfar 014A:00B1\u003e(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
@@ -31195,6 +31239,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "不是函式起點:落在 13F1h..1434h 那一支的中段(IDA 幻影函式)。判讀見該支",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md",
     "spec/639-overlay12-poison-and-race-gates.md"
@@ -31614,7 +31659,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
-    "spec/640-save-for-half-and-damage-global.md"
+    "spec/640-save-for-half-and-damage-global.md",
+    "spec/641-dos-field-offset-shift.md"
    ]
   },
   {
@@ -31786,7 +31832,8 @@
    "note": "if (DS:0A02Fh and 1) 或 (and 2) then:\u003cfar 013E:0028\u003e(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] \u003c\u003e 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD\u0026D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/640-save-for-half-and-damage-global.md"
+    "spec/640-save-for-half-and-damage-global.md",
+    "spec/641-dos-field-offset-shift.md"
    ]
   },
   {
@@ -44138,9 +44185,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 71,
+   "Read": 77,
    "NotBlocking": 0,
-   "Todo": 54,
+   "Todo": 48,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,

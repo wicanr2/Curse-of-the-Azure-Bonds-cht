@@ -1,0 +1,1183 @@
+{
+ "schema": "coab-cross-platform-field-offsets/1",
+ "min_signature_length": 12,
+ "pairs": 190,
+ "offsets": [
+  {
+   "pc98": 10,
+   "dos": 10,
+   "delta": 0,
+   "votes": 52,
+   "total": 52
+  },
+  {
+   "pc98": 12,
+   "dos": 12,
+   "delta": 0,
+   "votes": 27,
+   "total": 27
+  },
+  {
+   "pc98": 14,
+   "dos": 14,
+   "delta": 0,
+   "votes": 10,
+   "total": 10
+  },
+  {
+   "pc98": 15,
+   "dos": 15,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 16,
+   "dos": 16,
+   "delta": 0,
+   "votes": 10,
+   "total": 10
+  },
+  {
+   "pc98": 17,
+   "dos": 17,
+   "delta": 0,
+   "votes": 17,
+   "total": 17
+  },
+  {
+   "pc98": 18,
+   "dos": 18,
+   "delta": 0,
+   "votes": 8,
+   "total": 8
+  },
+  {
+   "pc98": 19,
+   "dos": 19,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 20,
+   "dos": 20,
+   "delta": 0,
+   "votes": 14,
+   "total": 14
+  },
+  {
+   "pc98": 21,
+   "dos": 21,
+   "delta": 0,
+   "votes": 8,
+   "total": 8
+  },
+  {
+   "pc98": 22,
+   "dos": 22,
+   "delta": 0,
+   "votes": 9,
+   "total": 9
+  },
+  {
+   "pc98": 23,
+   "dos": 23,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 28,
+   "dos": 28,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 29,
+   "dos": 29,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 30,
+   "dos": 30,
+   "delta": 0,
+   "votes": 16,
+   "total": 16
+  },
+  {
+   "pc98": 81,
+   "dos": 41,
+   "delta": 40,
+   "votes": 10,
+   "total": 10
+  },
+  {
+   "pc98": 82,
+   "dos": 42,
+   "delta": 40,
+   "votes": 49,
+   "total": 49
+  },
+  {
+   "pc98": 84,
+   "dos": 44,
+   "delta": 40,
+   "votes": 21,
+   "total": 21
+  },
+  {
+   "pc98": 86,
+   "dos": 46,
+   "delta": 40,
+   "votes": 13,
+   "total": 13
+  },
+  {
+   "pc98": 87,
+   "dos": 47,
+   "delta": 40,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 88,
+   "dos": 48,
+   "delta": 40,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 89,
+   "dos": 49,
+   "delta": 40,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 90,
+   "dos": 50,
+   "delta": 40,
+   "votes": 10,
+   "total": 10
+  },
+  {
+   "pc98": 91,
+   "dos": 51,
+   "delta": 40,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 92,
+   "dos": 52,
+   "delta": 40,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 94,
+   "dos": 54,
+   "delta": 40,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 95,
+   "dos": 55,
+   "delta": 40,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 97,
+   "dos": 57,
+   "delta": 40,
+   "votes": 15,
+   "total": 15
+  },
+  {
+   "pc98": 99,
+   "dos": 59,
+   "delta": 40,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 100,
+   "dos": 60,
+   "delta": 40,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 101,
+   "dos": 61,
+   "delta": 40,
+   "votes": 9,
+   "total": 9
+  },
+  {
+   "pc98": 102,
+   "dos": 62,
+   "delta": 40,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 114,
+   "dos": 114,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 116,
+   "dos": 116,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 117,
+   "dos": 117,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 118,
+   "dos": 118,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 120,
+   "dos": 120,
+   "delta": 0,
+   "votes": 14,
+   "total": 14
+  },
+  {
+   "pc98": 221,
+   "dos": 221,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 222,
+   "dos": 222,
+   "delta": 0,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 227,
+   "dos": 227,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 228,
+   "dos": 228,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 229,
+   "dos": 229,
+   "delta": 0,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 230,
+   "dos": 230,
+   "delta": 0,
+   "votes": 9,
+   "total": 9
+  },
+  {
+   "pc98": 231,
+   "dos": 231,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 232,
+   "dos": 232,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 233,
+   "dos": 233,
+   "delta": 0,
+   "votes": 9,
+   "total": 9
+  },
+  {
+   "pc98": 235,
+   "dos": 235,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 242,
+   "dos": 242,
+   "delta": 0,
+   "votes": 19,
+   "total": 19
+  },
+  {
+   "pc98": 244,
+   "dos": 244,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 247,
+   "dos": 247,
+   "delta": 0,
+   "votes": 21,
+   "total": 21
+  },
+  {
+   "pc98": 251,
+   "dos": 251,
+   "delta": 0,
+   "votes": 11,
+   "total": 11
+  },
+  {
+   "pc98": 253,
+   "dos": 253,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 255,
+   "dos": 255,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 257,
+   "dos": 257,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 259,
+   "dos": 259,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 261,
+   "dos": 261,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 263,
+   "dos": 263,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 265,
+   "dos": 265,
+   "delta": 0,
+   "votes": 30,
+   "total": 30
+  },
+  {
+   "pc98": 267,
+   "dos": 267,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 268,
+   "dos": 268,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 269,
+   "dos": 269,
+   "delta": 0,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 270,
+   "dos": 270,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 271,
+   "dos": 271,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 273,
+   "dos": 273,
+   "delta": 0,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 275,
+   "dos": 275,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 276,
+   "dos": 276,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 277,
+   "dos": 277,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 278,
+   "dos": 278,
+   "delta": 0,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 279,
+   "dos": 279,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 282,
+   "dos": 282,
+   "delta": 0,
+   "votes": 10,
+   "total": 10
+  },
+  {
+   "pc98": 283,
+   "dos": 283,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 285,
+   "dos": 285,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 295,
+   "dos": 295,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 297,
+   "dos": 297,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 300,
+   "dos": 300,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 301,
+   "dos": 301,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 304,
+   "dos": 304,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 305,
+   "dos": 305,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 332,
+   "dos": 331,
+   "delta": 1,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 333,
+   "dos": 332,
+   "delta": 1,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 334,
+   "dos": 333,
+   "delta": 1,
+   "votes": 20,
+   "total": 20
+  },
+  {
+   "pc98": 336,
+   "dos": 335,
+   "delta": 1,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 338,
+   "dos": 337,
+   "delta": 1,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 340,
+   "dos": 339,
+   "delta": 1,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 346,
+   "dos": 345,
+   "delta": 1,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 348,
+   "dos": 347,
+   "delta": 1,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 390,
+   "dos": 389,
+   "delta": 1,
+   "votes": 1,
+   "total": 2
+  },
+  {
+   "pc98": 392,
+   "dos": 391,
+   "delta": 1,
+   "votes": 5,
+   "total": 6
+  },
+  {
+   "pc98": 394,
+   "dos": 393,
+   "delta": 1,
+   "votes": 56,
+   "total": 56
+  },
+  {
+   "pc98": 396,
+   "dos": 395,
+   "delta": 1,
+   "votes": 13,
+   "total": 13
+  },
+  {
+   "pc98": 398,
+   "dos": 397,
+   "delta": 1,
+   "votes": 106,
+   "total": 107
+  },
+  {
+   "pc98": 400,
+   "dos": 399,
+   "delta": 1,
+   "votes": 1,
+   "total": 2
+  },
+  {
+   "pc98": 402,
+   "dos": 401,
+   "delta": 1,
+   "votes": 2,
+   "total": 3
+  },
+  {
+   "pc98": 406,
+   "dos": 405,
+   "delta": 1,
+   "votes": 21,
+   "total": 21
+  },
+  {
+   "pc98": 407,
+   "dos": 406,
+   "delta": 1,
+   "votes": 16,
+   "total": 16
+  },
+  {
+   "pc98": 408,
+   "dos": 407,
+   "delta": 1,
+   "votes": 32,
+   "total": 32
+  },
+  {
+   "pc98": 409,
+   "dos": 408,
+   "delta": 1,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 410,
+   "dos": 409,
+   "delta": 1,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 411,
+   "dos": 410,
+   "delta": 1,
+   "votes": 8,
+   "total": 8
+  },
+  {
+   "pc98": 412,
+   "dos": 411,
+   "delta": 1,
+   "votes": 7,
+   "total": 7
+  },
+  {
+   "pc98": 413,
+   "dos": 412,
+   "delta": 1,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 414,
+   "dos": 413,
+   "delta": 1,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 416,
+   "dos": 415,
+   "delta": 1,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 418,
+   "dos": 417,
+   "delta": 1,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 421,
+   "dos": 420,
+   "delta": 1,
+   "votes": 22,
+   "total": 22
+  },
+  {
+   "pc98": 422,
+   "dos": 421,
+   "delta": 1,
+   "votes": 12,
+   "total": 12
+  },
+  {
+   "pc98": 460,
+   "dos": 460,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 473,
+   "dos": 221,
+   "delta": 252,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 484,
+   "dos": 484,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 502,
+   "dos": 502,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 512,
+   "dos": 512,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 834,
+   "dos": 834,
+   "delta": 0,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 1022,
+   "dos": 1022,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1420,
+   "dos": 1420,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1428,
+   "dos": 1428,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1430,
+   "dos": 1430,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1450,
+   "dos": 1450,
+   "delta": 0,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 1474,
+   "dos": 1474,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1638,
+   "dos": 1638,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1660,
+   "dos": 1660,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1706,
+   "dos": 694,
+   "delta": 1012,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 1760,
+   "dos": 1760,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1762,
+   "dos": 1762,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1764,
+   "dos": 1764,
+   "delta": 0,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1774,
+   "dos": 762,
+   "delta": 1012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1853,
+   "dos": 841,
+   "delta": 1012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1857,
+   "dos": 845,
+   "delta": 1012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1862,
+   "dos": 850,
+   "delta": 1012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 1883,
+   "dos": 871,
+   "delta": 1012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 4948,
+   "dos": 2072,
+   "delta": 2876,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 4956,
+   "dos": 2080,
+   "delta": 2876,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 5533,
+   "dos": 2607,
+   "delta": 2926,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 5644,
+   "dos": 2632,
+   "delta": 3012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 5676,
+   "dos": 2664,
+   "delta": 3012,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 5804,
+   "dos": 2776,
+   "delta": 3028,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 5814,
+   "dos": 2786,
+   "delta": 3028,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 5824,
+   "dos": 2796,
+   "delta": 3028,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 7238,
+   "dos": 3234,
+   "delta": 4004,
+   "votes": 4,
+   "total": 4
+  },
+  {
+   "pc98": 18406,
+   "dos": 9560,
+   "delta": 8846,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 18590,
+   "dos": 9876,
+   "delta": 8714,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 18599,
+   "dos": 9885,
+   "delta": 8714,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 18604,
+   "dos": 9890,
+   "delta": 8714,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 18605,
+   "dos": 9891,
+   "delta": 8714,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 18606,
+   "dos": 9892,
+   "delta": 8714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 18607,
+   "dos": 9893,
+   "delta": 8714,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 18860,
+   "dos": 10146,
+   "delta": 8714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 18861,
+   "dos": 10147,
+   "delta": 8714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 18899,
+   "dos": 10185,
+   "delta": 8714,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 25012,
+   "dos": 14298,
+   "delta": 10714,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 25013,
+   "dos": 14299,
+   "delta": 10714,
+   "votes": 9,
+   "total": 9
+  },
+  {
+   "pc98": 25014,
+   "dos": 14300,
+   "delta": 10714,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 25015,
+   "dos": 14301,
+   "delta": 10714,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 25018,
+   "dos": 14304,
+   "delta": 10714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 25020,
+   "dos": 14306,
+   "delta": 10714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 25022,
+   "dos": 14308,
+   "delta": 10714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 25026,
+   "dos": 14312,
+   "delta": 10714,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 26628,
+   "dos": 15914,
+   "delta": 10714,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 27136,
+   "dos": 27136,
+   "delta": 0,
+   "votes": 2,
+   "total": 2
+  },
+  {
+   "pc98": 28476,
+   "dos": 16040,
+   "delta": 12436,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 28493,
+   "dos": 16057,
+   "delta": 12436,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 29478,
+   "dos": 17041,
+   "delta": 12437,
+   "votes": 3,
+   "total": 3
+  },
+  {
+   "pc98": 29480,
+   "dos": 17043,
+   "delta": 12437,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 31672,
+   "dos": 19170,
+   "delta": 12502,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 31705,
+   "dos": 19195,
+   "delta": 12510,
+   "votes": 5,
+   "total": 5
+  },
+  {
+   "pc98": 31782,
+   "dos": 19272,
+   "delta": 12510,
+   "votes": 6,
+   "total": 6
+  },
+  {
+   "pc98": 31866,
+   "dos": 19356,
+   "delta": 12510,
+   "votes": 11,
+   "total": 11
+  },
+  {
+   "pc98": 31950,
+   "dos": 19440,
+   "delta": 12510,
+   "votes": 1,
+   "total": 1
+  },
+  {
+   "pc98": 31952,
+   "dos": 19442,
+   "delta": 12510,
+   "votes": 1,
+   "total": 1
+  }
+ ]
+}
