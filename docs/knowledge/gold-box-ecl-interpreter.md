@@ -126,6 +126,13 @@ opcode → arity 對照表，與各 handler 自己的 `READVAR(n)` 比對後 42 
 
 `14h` 也走同一組旗標，但只設得出 `A88Ah`／`A88Bh`（它比較的是兩對 word）。
 
+## 目前目標
+
+`DS:9594h`（far pointer）是 ECL 當前操作的對象。`39h` 讓玩家從選單挑一個並
+寫回這裡；`3Fh`、`sub_269`、`KILLDUDE` 尾段、`3Dh` 都從這裡取對象。
+**選單取消會直接結束整個 script**（走 opcode `00h`）。
+見 [spec 595](../spec/595-ecl-target-selection-and-effect-query.md)。
+
 ## 記憶體模型（`exact`）
 
 讀寫共用同一個位址分類器（PC-98 `overlay-07:0801h`／DOS `0735h`）：
