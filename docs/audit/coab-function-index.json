@@ -22784,7 +22784,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/656-heap-linked-list-ops.md",
+   "note": "接到串列尾端:bx-1 退回標頭後,從 dx 沿 +4 一路走到尾,把新節點接上並設好 +2(前一個)與 +4(後一個)。每次接尾都要走完整條串列,是 O(n)。這也補出標頭的 +2/+4 是雙向串列的前後指標"
   },
   {
    "platform": "pc98",
@@ -22796,7 +22799,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/656-heap-linked-list-ops.md",
+   "note": "從雙向串列移除:next := +4、prev := +2,再互相接起來。⚠ 兩邊都沒有檢查是不是 0——移除頭節點時 prev=0 會寫進 0000:0004、移除尾節點時 next=0 會寫進 0000:0002,那裡是中斷向量表。需 runtime 驗證呼叫端是否保證節點永遠在中間"
   },
   {
    "platform": "pc98",
@@ -22853,7 +22859,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/656-heap-linked-list-ops.md",
+   "note": "pushf + std(本體沒有字串指令,方向旗標是設給被呼叫者用的);es:[di] := 0,以 arg 的大小呼叫 \u003csub_18612\u003e,把結果存 es:[di+2];bx = 0(失敗)時 ax := 0 並把 \u003csub_18862\u003e 連叫兩次;最後 popf"
   },
   {
    "platform": "pc98",
@@ -22880,7 +22889,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/656-heap-linked-list-ops.md",
+   "note": "呼叫 \u003c186FFh\u003e(最大可用塊)後把 AX/BX/DX 分別回填到 es:[di]、[di+2]、[di+6]——+4 沒有寫,回填的是不連續的三格"
   },
   {
    "platform": "pc98",
@@ -44767,9 +44779,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 158,
+   "Read": 162,
    "NotBlocking": 29,
-   "Todo": 125,
+   "Todo": 121,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
