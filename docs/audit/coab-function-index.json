@@ -21614,7 +21614,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "byte_241E2 := byte_241E3;byte_241E3 := arg_0——一格深度的歷史(舊值挪成「前一個」再寫新值),順序不能顛倒"
   },
   {
    "platform": "pc98",
@@ -21794,7 +21797,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "word_241DE := 0A800h + arg_0 × 800h。arg_0 = 0/1/2 得 A800h/B000h/B800h,正是 PC-98 圖形 VRAM 的三個顏色平面;arg_0 = 3 得 C000h 不是標準平面位址(第四平面在 E000h),而函式沒有做範圍檢查"
   },
   {
    "platform": "pc98",
@@ -21830,7 +21836,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "Shift-JIS 首位元組判斷:回傳 1 的條件是 81h..9Fh 或 0E0h..0FCh。⚠ 中文化必改——Big5 的首位元組是 A1h..F9h,而 A1h..DFh 在 Shift-JIS 是單位元組半形片假名,沿用會把中文字切成兩個單位元組(畫面是亂碼不是缺字)"
   },
   {
    "platform": "pc98",
@@ -21902,7 +21911,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "\u003csub_19259\u003e((byte_241A6 × word_280BA) div 2)。乘除都是無號,除數固定 2"
   },
   {
    "platform": "pc98",
@@ -21941,7 +21953,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/645-pc98-text-layer-primitives.md",
+   "note": "文字 VRAM 定址:DS := arg_2;DI := (arg_A × 50h + arg_C) × 2;CX := byte(arg_4);SI := arg_0;再呼叫 sub_16966 與 sub_169B6。50h = 80 是欄數,每格兩個 byte——與 spec 636 由 FillChar 長度換算的結論一致。進出成對保存 SS/DS/旗標並 cld。retn 0Eh = 7 個 word 參數"
   },
   {
    "platform": "pc98",
@@ -44650,9 +44665,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 119,
+   "Read": 124,
    "NotBlocking": 29,
-   "Todo": 164,
+   "Todo": 159,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
