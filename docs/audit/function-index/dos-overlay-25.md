@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/583-ledger-denominator-repair.md |
 | `0011` | sub_11 | — | 928 | 101 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `03B1` | sub_3B1 | — | 704 | 169 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0671` | sub_671 | — | 370 | 103 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

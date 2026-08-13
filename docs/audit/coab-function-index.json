@@ -7663,7 +7663,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/508-pc98-general-target-scan-producer.md"
+    "spec/508-pc98-general-target-scan-producer.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -12093,7 +12094,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -17650,7 +17652,13 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/581-putdamage-pipeline.md",
+   "note": "與 pc98 overlay-23:2325h 助憶碼序列完全相同（87 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 \u003e 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/581-putdamage-pipeline.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18499,7 +18507,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -28184,7 +28193,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/508-pc98-general-target-scan-producer.md"
+    "spec/508-pc98-general-target-scan-producer.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -32965,7 +32975,8 @@
    "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/string-pairs.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -39697,7 +39708,13 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/581-putdamage-pipeline.md",
+   "note": "PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 \u003e 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域",
+   "citations": [
+    "spec/581-putdamage-pipeline.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40740,7 +40757,8 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/583-ledger-denominator-repair.md"
    ]
   },
   {
@@ -42838,9 +42856,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 10,
    "CodeBytes": 9183,
    "Undefined": 376,
@@ -43393,9 +43411,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 11,
    "CodeBytes": 9201,
    "Undefined": 458,

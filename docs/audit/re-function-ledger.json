@@ -11863,6 +11863,24 @@
    "level": "exact",
    "spec": "docs/spec/582-makesave-and-losedude.md",
    "note": "LOSEDUDE(msg,?,new_state,char):+197h=0 直接返回;否則顯示訊息、+197h=0、+196h=new_state,狀態非 3 時 +1A5h 歸零(3 是唯一保留 HP 的例外),清 DS:[9740h+idx*4],條件成立則 REMOVEFX。真實範圍 1486h..1551h,IDA 只認到 150Ch"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 8997,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/581-putdamage-pipeline.md",
+   "note": "PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 > 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 8967,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/581-putdamage-pipeline.md",
+   "note": "與 pc98 overlay-23:2325h 助憶碼序列完全相同（87 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 > 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
