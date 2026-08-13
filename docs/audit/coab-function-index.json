@@ -3065,7 +3065,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位"
   },
   {
    "platform": "dos",
@@ -4172,7 +4175,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_20996 設為 67h"
   },
   {
    "platform": "dos",
@@ -5695,9 +5701,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Ah 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -21860,7 +21867,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作)"
   },
   {
    "platform": "pc98",
@@ -22717,7 +22727,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 AX 拆成兩個 nibble:DX := AX \u003e\u003e 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義"
   },
   {
    "platform": "pc98",
@@ -22729,7 +22742,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併;與 DOS START.EXE:1AB65h 同義"
   },
   {
    "platform": "pc98",
@@ -23421,7 +23437,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義"
   },
   {
    "platform": "pc98",
@@ -24747,9 +24766,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Ah 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -33827,7 +33847,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面"
   },
   {
    "platform": "pc98",
@@ -33908,7 +33931,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8"
   },
   {
    "platform": "pc98",
@@ -40582,9 +40608,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 88,
+   "Read": 90,
    "NotBlocking": 133,
-   "Todo": 87,
+   "Todo": 85,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -40627,9 +40653,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 56,
+   "Todo": 55,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -41137,9 +41163,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 93,
+   "Read": 97,
    "NotBlocking": 29,
-   "Todo": 190,
+   "Todo": 186,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -41182,9 +41208,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 85,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 58,
+   "Todo": 57,
    "Fragment": 23,
    "CodeBytes": 14037,
    "Undefined": 266,
@@ -41422,9 +41448,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 2,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 18,
    "Fragment": 1,
    "CodeBytes": 4957,
    "Undefined": 1311,

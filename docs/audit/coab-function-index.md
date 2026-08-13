@@ -9,14 +9,14 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 224、不阻塞 133、邊界碎片 208、待解讀 779；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 227、不阻塞 133、邊界碎片 208、待解讀 776；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| START.EXE | — | 325 | 88 | 133 | 17 | 87 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
+| START.EXE | — | 325 | 90 | 133 | 17 | 85 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 1 | 0 | 0 | 0 | 1 | 58 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 3 | 0 | 0 | 0 | 3 | 1504 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 6 | 0 | 28 | 56 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 7 | 0 | 28 | 55 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 9 | 1 | 0 | 1 | 7 | 2107 | 334 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 2 | 0 | 2 | 13 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
@@ -53,14 +53,14 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 228、不阻塞 29、邊界碎片 280、待解讀 944；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 235、不阻塞 29、邊界碎片 280、待解讀 937；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| PC98-GAME.EXE | — | 333 | 93 | 29 | 21 | 190 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
+| PC98-GAME.EXE | — | 333 | 97 | 29 | 21 | 186 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 1 | 1 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 1 | 3 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
-| overlay-02 | INTERPET | 85 | 4 | 0 | 23 | 58 | 14037 | 266 | [明細](function-index/pc98-overlay-02.md) |
+| overlay-02 | INTERPET | 85 | 5 | 0 | 23 | 57 | 14037 | 266 | [明細](function-index/pc98-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 0 | 2 | 745 | 276 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 1 | 0 | 9 | 13 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 1 | 0 | 4 | 12 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
@@ -76,7 +76,7 @@
 | overlay-15 | CAMP | 45 | 2 | 0 | 12 | 31 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
 | overlay-16 | LOADSAVE | 47 | 2 | 0 | 11 | 34 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 2 | 0 | 26 | 26 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
-| overlay-18 | ENDSTUFF | 23 | 2 | 0 | 1 | 20 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
+| overlay-18 | ENDSTUFF | 23 | 4 | 0 | 1 | 18 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
 | overlay-19 | LIBRARY | 56 | 2 | 0 | 26 | 28 | 11564 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 15 | 0 | 0 | 0 | 15 | 3548 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 2 | 0 | 5 | 23 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
