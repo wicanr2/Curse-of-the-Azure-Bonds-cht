@@ -6,7 +6,7 @@
 
 ## 欄位配置
 
-角色紀錄（`1A7h` bytes，[spec 563](563-ecl-memory-model-and-operand-resolution.md)）
+角色紀錄（PC-98 `1A7h` bytes、DOS `1A6h`，見 [spec 626](626-goduel-and-charrec-size.md)）
 的 `+FBh` 起是**七個 word**：
 
 | offset | 內容 | 證據等級 |

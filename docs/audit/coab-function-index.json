@@ -27689,7 +27689,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/626-goduel-and-charrec-size.md",
+   "note": "視窗繪製:state 是 2-byte 記錄([0]=sprite 已載入、[1]=圖片已載入),依 bank0^[1CCh] 與 DS:7F27h=4 決定是否載入 'SPRIT'(sub_1794 第二參數 1、索引 arg_8);圖片側 bank1^[5C2h]=0FFh 走 'PIC'(第二參數 0、索引 arg_6),否則改走 sub_64C。資源名內嵌在 code 段 0681h/0687h/1B7Dh。DS:0A2A8h 在函式頭尾成對存回",
+   "citations": [
+    "spec/626-goduel-and-charrec-size.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28258,7 +28264,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/626-goduel-and-charrec-size.md",
+   "note": "GODUEL(mode):先把角色鏈上「名字不等於目前角色」者的 +197h 清 0(比名字不比指標);mode\u003c\u003e0 才複製——New(1A7h)+Move 整份複製目前角色接在鏈尾,改名『ロルフ』(上限 15)、+0F7h:=0B2h、清掉 +0F2h effect 鏈與 +14Eh 物品鏈,再逐件複製物品(插在頭部所以順序反過來)。⚠ 物品迴圈每一輪末端對 @clone^[14Eh] 呼叫 Dispose(67h),把剛建好的節點釋放掉,收尾時該指標指向已釋放記憶體——原作行為,需 runtime 驗證",
+   "citations": [
+    "spec/626-goduel-and-charrec-size.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43952,9 +43964,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 28,
+   "Read": 30,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 0,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
