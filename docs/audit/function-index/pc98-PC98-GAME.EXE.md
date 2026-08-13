@@ -109,7 +109,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `171DF` | sub_171DF | — | 63 | 27 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17220` | sub_17220 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17230` | sub_17230 | — | 9 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
-| `17239` | sub_17239 | — | 23 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
+| `17239` | sub_17239 | — | 23 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>把 arg_2 指向的 far pointer 設為 A800:0000 ⇒ PC-98 圖形 VRAM 起始段 | — |
 | `17250` | sub_17250 | — | 80 | 36 | 1 | 2 |  | 待解讀 | — | — | — |
 | `172A0` | sub_172A0 | — | 53 | 26 | 1 | 1 |  | 待解讀 | — | — | — |
 | `172D5` | sub_172D5 | — | 90 | 48 | 1 | 4 |  | 待解讀 | — | — | — |
@@ -153,7 +153,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1886D` | sub_1886D | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_18571 回傳 0 時才呼叫 18862h 發出 BEL | — |
 | `18878` | sub_18878 | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_185EA 回傳非 0 時才呼叫 18862h 發出 BEL | — |
 | `18883` | sub_18883 | — | 46 | 19 | 1 | 3 |  | 待解讀 | — | — | — |
-| `188B1` | sub_188B1 | — | 23 | 10 | 1 | 3 |  | 待解讀 | — | — | — |
+| `188B1` | sub_188B1 | — | 23 | 10 | 1 | 3 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>取 [bp+4] 的參數呼叫 sub_18683;回傳 0 時呼叫 18862h 發出 BEL | — |
 | `188C8` | sub_188C8 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `188E3` | sub_188E3 | — | 35 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
 | `18930` | sub_18930 | — | 269 | 100 | 3 | 4 |  | 待解讀 | — | — | — |
@@ -182,7 +182,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1917C` | sub_1917C | — | 31 | 9 | 2 | 2 |  | 待解讀 | — | — | — |
 | `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
-| `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dx 與 ax 為計數的空迴圈(jcxz/loop),不做任何資料處理 ⇒ 忙碌延遲 | — |
 | `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2) | — |
 | `19293` | sub_19293 | — | 13 | 7 | 3 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 鍵盤 BIOS:INT 18h AH=01h(鍵盤狀態偵測),BH 非零時回傳 1 否則 0 | — |
 | `192A0` | sub_192A0 | — | 50 | 22 | 4 | 2 |  | 待解讀 | — | — | — |
@@ -211,7 +211,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
 | `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作) | — |
 | `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳 | — |
-| `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
+| `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>讀 0000:0712h 的 BIOS 計時位元組加一,與 dh 比較;不同就更新 dh | — |
 | `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19AC2` | sub_19AC2 | — | 12 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完） | — |
@@ -249,7 +249,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A3E1` | sub_1A3E1 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A3FC` | sub_1A3FC | — | 12 | 5 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即位元組數無條件進位換算成 paragraph;與 DOS START.EXE:1A42Ch 同義 | — |
 | `1A410` | sub_1A410 | — | 97 | 34 | 1 | 5 |  | 待解讀 | — | — | — |
-| `1A485` | sub_1A485 | — | 22 | 12 | 1 | 0 |  | 待解讀 | — | — | — |
+| `1A485` | sub_1A485 | — | 22 | 12 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>EMS 偵測:INT 21h AX=3567h 取 INT 67h 向量,再把該處理常式起始 8 bytes 與 CS:558h 的簽章 repe cmpsb 比對 | — |
 | `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A4DA` | sub_1A4DA | — | 106 | 47 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A544` | sub_1A544 | — | 68 | 32 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -273,7 +273,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AA72` | sub_1AA72 | — | 187 | 79 | 2 | 4 |  | 待解讀 | — | — | — |
 | `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,來源指標為 dword_23AF0;與 DOS START.EXE:1AAF9h 逐指令相同 | — |
 | `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義 | — |
 | `1AC70` | sub_1AC70 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併;與 DOS START.EXE:1AB65h 同義 | — |
@@ -300,7 +300,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0 | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 待解讀 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀 | — |
+| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(內部 LCG 為 sub_1B7F4) | — |
 | `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |

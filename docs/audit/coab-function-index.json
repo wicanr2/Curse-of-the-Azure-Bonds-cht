@@ -3031,8 +3031,8 @@
    "is_overlay_entry": false,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
-   "note": "以 dword_2097E 為來源指標連續四次 movsw 複製 8 bytes(48-bit Real 加尾隨),之後 di 回退 8 並更新來源指標"
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "以 dword_2097E 為來源連續四次 movsw 複製 8 bytes,之後 di 回退 8 並更新來源指標"
   },
   {
    "platform": "dos",
@@ -3703,7 +3703,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "@Random(n) 本體:呼叫 sub_1B694 取得 32-bit 亂數,參數 n 為 0 時回傳 0,否則以 n 做除法並回傳餘數(xchg/div/xchg 把餘數搬進 ax)"
   },
   {
    "platform": "dos",
@@ -4610,9 +4613,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 02h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "ECL opcode 02h(GOSUB)的 handler:以參數 1 呼叫兩個 far routine",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md",
@@ -20688,7 +20692,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "把 arg_2 指向的 far pointer 設為 A800:0000 ⇒ PC-98 圖形 VRAM 起始段"
   },
   {
    "platform": "pc98",
@@ -21240,7 +21247,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "取 [bp+4] 的參數呼叫 sub_18683;回傳 0 時呼叫 18862h 發出 BEL"
   },
   {
    "platform": "pc98",
@@ -21616,7 +21626,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "以 dx 與 ax 為計數的空迴圈(jcxz/loop),不做任何資料處理 ⇒ 忙碌延遲"
   },
   {
    "platform": "pc98",
@@ -21999,7 +22012,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "讀 0000:0712h 的 BIOS 計時位元組加一,與 dh 比較;不同就更新 dh"
   },
   {
    "platform": "pc98",
@@ -22493,7 +22509,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "EMS 偵測:INT 21h AX=3567h 取 INT 67h 向量,再把該處理常式起始 8 bytes 與 CS:558h 的簽章 repe cmpsb 比對"
   },
   {
    "platform": "pc98",
@@ -22805,7 +22824,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "同上,來源指標為 dword_23AF0;與 DOS START.EXE:1AAF9h 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -23179,9 +23201,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀",
-   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
-   "note": "Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(內部 LCG 為 sub_1B7F4)"
   },
   {
    "platform": "pc98",
@@ -34039,7 +34062,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "以 si 從 0 起、每次加 2B67h 並 and 7FFFh,重複 8000h 次呼叫 sub_191E ⇒ 對 32KB 平面做打散順序的逐格處理",
+   "citations": [
+    "spec/575-random-core-and-pc98-vram.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40798,9 +40827,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 94,
+   "Read": 95,
    "NotBlocking": 133,
-   "Todo": 81,
+   "Todo": 80,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -40843,9 +40872,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 54,
+   "Todo": 53,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -41353,9 +41382,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 111,
+   "Read": 118,
    "NotBlocking": 29,
-   "Todo": 172,
+   "Todo": 165,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -41638,9 +41667,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 1,
    "CodeBytes": 4957,
    "Undefined": 1311,
