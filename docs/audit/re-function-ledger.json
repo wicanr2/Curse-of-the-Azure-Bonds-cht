@@ -16925,6 +16925,26 @@
    "spec": "docs/spec/704-dispel-and-the-missing-fill.md",
    "note": "兩條路:目標^[0E5h] >= 6(有號)時 <overlay-24 entry#20>(目標, 'smashes them flat' CS:42FFh, 0Ah, 1);否則 n := <overlay-24 entry#36>(DS:6F97h),<sub_F06h>(DS:6F97h, n, 0, 0, 8, 空字串 CS:42FEh),再用 <overlay-24 entry#27>(目標, 3, @node) 找節點,找到才 <overlay-23 entry#2>(0, node, 目標, 3)。⚠ 這支給出了 spec 703 裡 4289h 那兩個未初始化區域**應該**是什麼:最後兩條 push 兩支逐位元組相同(ff76fe + ff76fc),差別只在 4311h 先用 entry#27 把 far 指標填進去。CS:42FEh/42FFh 又是緊鄰的兩條字串",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 3431,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/705-duration-formula-and-save-roll.md",
+   "note": "持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × <overlay-24 entry#36>(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 12480,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/705-duration-formula-and-save-roll.md",
+   "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × <overlay-25 entry#10>(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v>base → 門檻 := (v−base)×5 + 50;v<base → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) <= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base >= 42 時 >=260 → 存成 4,幾乎必定失敗;base−v > 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
+   "bounds": "prologue"
   }
  ]
 }
