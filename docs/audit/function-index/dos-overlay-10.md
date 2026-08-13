@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 72 | 18 | 0 | 10 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 72 | 18 | 0 | 10 | ✓ | 待解讀 | — | — | spec/572-resident-service-functions.md |
 | `0048` | sub_48 | — | 132 | 55 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `00CC` | sub_CC | — | 554 | 208 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02F6` | sub_2F6 | — | 130 | 49 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `050E` | sub_50E | — | 478 | 197 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `06EC` | sub_6EC | — | 477 | 186 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `08C9` | sub_8C9 | — | 196 | 89 | 1 | 7 | ✓ | 待解讀 | — | — | — |
-| `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | — |
+| `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | spec/572-resident-service-functions.md |
 | `09A8` | sub_9A8 | — | 86 | 36 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `09FE` | sub_9FE | — | 268 | 115 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0B0A` | sub_B0A | — | 407 | 171 | 1 | 2 | ✓ | 待解讀 | — | — | — |
