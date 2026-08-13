@@ -110,9 +110,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17220` | sub_17220 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17230` | sub_17230 | — | 9 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `17239` | sub_17239 | — | 23 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>把 arg_2 指向的 far pointer 設為 A800:0000 ⇒ PC-98 圖形 VRAM 起始段 | — |
-| `17250` | sub_17250 | — | 80 | 36 | 1 | 2 |  | 待解讀 | — | — | — |
-| `172A0` | sub_172A0 | — | 53 | 26 | 1 | 1 |  | 待解讀 | — | — | — |
-| `172D5` | sub_172D5 | — | 90 | 48 | 1 | 4 |  | 待解讀 | — | — | — |
+| `17250` | sub_17250 | — | 80 | 36 | 1 | 2 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>把 Pascal 短字串複製進區域(<sub_1AC99>,上限 0FFh)後,取第一個 byte 當格數,傳**內容起點**(var_FF 而非長度所在的 var_100)給 <17CE9h>,列 = arg_6、格欄 = arg_8 × 2(全形字佔兩格) | — |
+| `172A0` | sub_172A0 | — | 53 | 26 | 1 | 1 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>[var_1] := 0DBh(半形實心方塊)後呼叫 <17CE9h>,格數由 arg_0 給。⚠ 來源緩衝只有一個 byte 而 172D5h 傳的格數是 50h(整列 80 格);繪製迴圈 lodsb 逐 byte 前進,停在讀到 0 或格數用完,緩衝之後是堆疊上的 saved BP 與返回位址——第一格必定是 0DBh,之後畫什麼取決於堆疊內容。需 runtime 驗證 | — |
+| `172D5` | sub_172D5 | — | 90 | 48 | 1 | 4 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>畫訊息並等待:複製字串(上限 50h)→ <172A0h>(50h,0,18h,0) 在第 24 列鋪滿方塊 → <17250h> 在同列畫字串 → <sub_18036>()(回傳值沒再讀)→ 再鋪一次方塊擦掉。第 18h 列是訊息列 | — |
 | `173A1` | sub_173A1 | — | 75 | 32 | 1 | 6 |  | 待解讀 | — | — | — |
 | `1741D` | sub_1741D | — | 569 | 231 | 1 | 10 |  | 待解讀 | — | — | — |
 | `17656` | sub_17656 | — | 104 | 42 | 3 | 5 |  | 待解讀 | — | — | — |
