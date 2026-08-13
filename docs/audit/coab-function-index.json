@@ -27593,7 +27593,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/619-ecl-script-loading.md",
+   "note": "GETECL(n):先 FillChar 清空整個 script 緩衝區(1E41h=7745 bytes,與 spec 563 的 bank3 範圍 8000h..9E40h 完全一致);迴圈顯示「読みこみ中です」並以 'ECL'+Str(DS:8BF4h)+'.dax' 為檔名讀檔,直到 size\u003e=2 才跳出(沒有錯誤處理也沒有重試上限);Move 從 buf+2 起、長度 size-2——檔案前 2 bytes 不屬於 script 本體,script 的 8000h 對應檔案 offset 2",
+   "citations": [
+    "spec/619-ecl-script-loading.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43881,9 +43887,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
