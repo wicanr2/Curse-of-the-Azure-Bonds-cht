@@ -442,10 +442,15 @@ func writeMarkdown(indexPath, detailDir string, stats []moduleStat, functions []
 			if function.IsEntry {
 				entry = "✓"
 			}
-			note := function.Spec
-			if note == "" {
-				note = function.Note
+			// 規格與理由都要出現：只留其一會讓 opcode binding 這類註記消失。
+			parts := []string{}
+			if function.Spec != "" {
+				parts = append(parts, function.Spec)
 			}
+			if function.Note != "" {
+				parts = append(parts, function.Note)
+			}
+			note := strings.Join(parts, "<br>")
 			fmt.Fprintf(&detail, "| `%04X` | %s | %s | %d | %d | %d | %d | %s | %s | %s | %s | %s |\n",
 				function.EA, function.IDAName, orDash(function.Symbol), function.Size,
 				function.Instr, function.Callers, function.Calls, entry,

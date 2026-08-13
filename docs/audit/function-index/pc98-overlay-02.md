@@ -5,17 +5,17 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADINTERPET | 82 | 20 | 0 | 8 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md<br>spec/523-dos-overlay07-vector26-entry.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `0052` | sub_52 | — | 150 | 49 | 4 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md |
-| `00E8` | sub_E8 | — | 31 | 14 | 1 | 0 | ✓ | 待解讀 | — | — | spec/559-full-module-re-sweep.md |
-| `0107` | sub_107 | — | 23 | 11 | 1 | 0 | ✓ | 待解讀 | — | — | spec/559-full-module-re-sweep.md |
-| `011E` | sub_11E | — | 153 | 62 | 1 | 2 | ✓ | 待解讀 | — | — | spec/559-full-module-re-sweep.md |
-| `01B7` | sub_1B7 | — | 163 | 63 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `025A` | sub_25A | — | 94 | 35 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `02B8` | sub_2B8 | — | 78 | 30 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0306` | sub_306 | — | 218 | 73 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `03E0` | sub_3E0 | — | 168 | 57 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `049C` | sub_49C | — | 452 | 162 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADINTERPET | 82 | 20 | 0 | 8 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md<br>spec/523-dos-overlay07-vector26-entry.md |
+| `0052` | sub_52 | — | 150 | 49 | 4 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 00h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md |
+| `00E8` | sub_E8 | — | 31 | 14 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 01h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>spec/559-full-module-re-sweep.md |
+| `0107` | sub_107 | — | 23 | 11 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 02h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>spec/559-full-module-re-sweep.md |
+| `011E` | sub_11E | — | 153 | 62 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 03h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>spec/559-full-module-re-sweep.md |
+| `01B7` | sub_1B7 | — | 163 | 63 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 04h／05h／06h／07h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `025A` | sub_25A | — | 94 | 35 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 08h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `02B8` | sub_2B8 | — | 78 | 30 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 09h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0306` | sub_306 | — | 218 | 73 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Ah 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `03E0` | sub_3E0 | — | 168 | 57 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Ch 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `049C` | sub_49C | — | 452 | 162 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Bh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `065E` | sub_65E | — | 8 | 2 | 4 | 0 |  | 待解讀 | — | — | — |
 | `06A4` | sub_6A4 | — | 3 | 1 | 4 | 1 |  | 待解讀 | — | — | — |
 | `06BD` | sub_6BD | — | 5 | 3 | 2 | 0 |  | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
@@ -27,66 +27,66 @@ offset（base 0），resident executable 為 IDA linear address。
 | `075D` | sub_75D | — | 114 | 37 | 1 | 2 |  | 待解讀 | — | — | — |
 | `078A` | sub_78A | — | 60 | 22 | 2 | 1 |  | 待解讀 | — | — | — |
 | `07FA` | sub_7FA | — | 52 | 15 | 2 | 1 |  | 待解讀 | — | — | — |
-| `0858` | sub_858 | — | 75 | 27 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `08A7` | sub_8A7 | — | 235 | 77 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `0992` | sub_992 | — | 73 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0858` | sub_858 | — | 75 | 27 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Dh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `08A7` | sub_8A7 | — | 235 | 77 | 1 | 5 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Eh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0992` | sub_992 | — | 73 | 29 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 0Fh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `09DD` | sub_9DD | — | 128 | 54 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0A5D` | sub_A5D | — | 156 | 69 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0AF9` | sub_AF9 | — | 80 | 30 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0B49` | sub_B49 | — | 101 | 40 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0BAE` | sub_BAE | — | 120 | 42 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0C26` | sub_C26 | — | 91 | 33 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0C81` | sub_C81 | — | 53 | 19 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `0BAE` | sub_BAE | — | 120 | 42 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 10h／11h／12h／13h／1Ah／1Bh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0C26` | sub_C26 | — | 91 | 33 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 14h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0C81` | sub_C81 | — | 53 | 19 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 15h／25h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `0CBF` | sub_CBF | — | 99 | 29 | 2 | 3 |  | 待解讀 | — | — | — |
 | `0D2F` | sub_D2F | — | 223 | 74 | 3 | 5 |  | 待解讀 | — | — | — |
-| `0E10` | sub_E10 | — | 39 | 15 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0E7F` | sub_E7F | — | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0EDD` | sub_EDD | — | 76 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0E10` | sub_E10 | — | 39 | 15 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Fh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0E7F` | sub_E7F | — | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ah 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `0EDD` | sub_EDD | — | 76 | 29 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 23h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `0F29` | sub_F29 | — | 47 | 15 | 1 | 0 |  | 待解讀 | — | — | — |
 | `107A` | sub_107A | — | 13 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
-| `10C2` | sub_10C2 | — | 466 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `1294` | sub_1294 | — | 99 | 37 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `12F7` | sub_12F7 | — | 325 | 120 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `10C2` | sub_10C2 | — | 466 | 179 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Bh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `1294` | sub_1294 | — | 99 | 37 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Ch 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `12F7` | sub_12F7 | — | 325 | 120 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Dh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `143C` | sub_143C | — | 96 | 33 | 3 | 0 | ✓ | 待解讀 | — | — | — |
-| `149C` | sub_149C | — | 76 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `149C` | sub_149C | — | 76 | 28 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Eh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `14ED` | sub_14ED | — | 41 | 15 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1547` | sub_1547 | — | 50 | 18 | 4 | 2 |  | 待解讀 | — | — | — |
 | `1579` | sub_1579 | — | 5 | 2 | 5 | 1 |  | 待解讀 | — | — | — |
 | `157E` | sub_157E | — | 11 | 6 | 6 | 0 |  | 待解讀 | — | — | — |
 | `166F` | sub_166F | — | 112 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
-| `16BC` | sub_16BC | — | 138 | 47 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1758` | sub_1758 | — | 45 | 17 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `16BC` | sub_16BC | — | 138 | 47 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 16h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `1758` | sub_1758 | — | 45 | 17 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 17h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `1785` | sub_1785 | — | 16 | 6 | 4 | 1 |  | 待解讀 | — | — | — |
 | `17EA` | sub_17EA | — | 10 | 4 | 2 | 1 |  | 待解讀 | — | — | — |
 | `17F4` | sub_17F4 | — | 10 | 4 | 2 | 1 |  | 待解讀 | — | — | — |
 | `17FE` | sub_17FE | — | 11 | 5 | 3 | 1 |  | 待解讀 | — | — | — |
 | `180D` | sub_180D | — | 10 | 5 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1817` | sub_1817 | — | 9 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1820` | sub_1820 | — | 684 | 182 | 1 | 9 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |
-| `1B28` | sub_1B28 | — | 3 | 2 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `1820` | sub_1820 | — | 684 | 182 | 1 | 9 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 18h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |
+| `1B28` | sub_1B28 | — | 3 | 2 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 19h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `1BEA` | sub_1BEA | — | 94 | 37 | 1 | 3 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |
 | `1C48` | sub_1C48 | — | 1245 | 447 | 3 | 4 |  | 待解讀 | — | — | — |
 | `2125` | sub_2125 | — | 227 | 78 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `222C` | sub_222C | — | 1812 | 668 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `2940` | sub_2940 | — | 187 | 80 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `29FB` | sub_29FB | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `2ACE` | sub_2ACE | — | 824 | 294 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `2E06` | sub_2E06 | — | 38 | 12 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2E2C` | sub_2E2C | — | 53 | 22 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2E61` | sub_2E61 | — | 43 | 14 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `2E8C` | sub_2E8C | — | 78 | 24 | 1 | 5 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `2EDA` | sub_2EDA | — | 133 | 56 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `2F5F` | sub_2F5F | — | 123 | 42 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `2FDA` | sub_2FDA | — | 236 | 83 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `30C6` | sub_30C6 | — | 369 | 124 | 1 | 8 | ✓ | 待解讀 | — | — | — |
+| `2940` | sub_2940 | — | 187 | 80 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ch 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `29FB` | sub_29FB | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 20h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Ah 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2ACE` | sub_2ACE | — | 824 | 294 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Eh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2E06` | sub_2E06 | — | 38 | 12 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Fh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2E2C` | sub_2E2C | — | 53 | 22 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 22h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2E61` | sub_2E61 | — | 43 | 14 | 1 | 1 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 21h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2E8C` | sub_2E8C | — | 78 | 24 | 1 | 5 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Dh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |
+| `2EDA` | sub_2EDA | — | 133 | 56 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 27h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2F5F` | sub_2F5F | — | 123 | 42 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 24h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `2FDA` | sub_2FDA | — | 236 | 83 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Bh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `30C6` | sub_30C6 | — | 369 | 124 | 1 | 8 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Dh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
 | `3237` | sub_3237 | — | 71 | 24 | 2 | 5 | ✓ | 待解讀 | — | — | — |
 | `327E` | sub_327E | — | 225 | 70 | 1 | 5 | ✓ | 待解讀 | — | — | spec/525-pc98-tempsearch-display-state.md |
-| `3393` | sub_3393 | — | 397 | 125 | 1 | 14 | ✓ | 待解讀 | — | — | — |
-| `3520` | sub_3520 | — | 143 | 58 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `35AF` | sub_35AF | — | 156 | 54 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `364B` | sub_364B | — | 84 | 34 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `369F` | sub_369F | — | 159 | 56 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `373E` | sub_373E | — | 615 | 289 | 1 | 53 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md |
-| `39A5` | sub_39A5 | — | 72 | 24 | 3 | 2 | ✓ | 待解讀 | — | — | spec/525-pc98-tempsearch-display-state.md |
+| `3393` | sub_3393 | — | 397 | 125 | 1 | 14 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 26h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `3520` | sub_3520 | — | 143 | 58 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Ch 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `35AF` | sub_35AF | — | 156 | 54 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Eh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `364B` | sub_364B | — | 84 | 34 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Fh 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `369F` | sub_369F | — | 159 | 56 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 28h 的 handler（binding 為 exact，handler 語意尚未解讀） | audit/ecl-opcode-dispatch.md |
+| `373E` | sub_373E | — | 615 | 289 | 1 | 53 | ✓ | 已解讀 | exact | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode dispatcher；由 ds:0A891h 讀 opcode，53 個 opcode 對應 44 個 handler | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md |
+| `39A5` | sub_39A5 | — | 72 | 24 | 3 | 2 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>spec/525-pc98-tempsearch-display-state.md |
 | `3A21` | sub_3A21 | GOECL | 693 | 212 | 0 | 11 | ✓ | 待解讀 | — | — | — |

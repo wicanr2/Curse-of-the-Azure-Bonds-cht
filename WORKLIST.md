@@ -7,9 +7,10 @@
 使用者指示先徹底完成反組譯分析，再繼續 remake。口徑見 `AGENTS.md` §2.5，
 基線與工具見 [`docs/spec/559-full-module-re-sweep.md`](docs/spec/559-full-module-re-sweep.md)。
 
-1. **ECL opcode → handler 全表**（DOS `overlay-02:3377h`／PC-98
-   `overlay-02:373Eh`，各 53 個 call）。逐分支讀完控制流，兩平台對照，
-   不以文字比對硬湊。這是 P0-RE-1／P0-RE-2 的共同前置。
+1. ~~ECL opcode → handler 全表~~ **第 560 輪已完成**：兩平台各 44 個 handler、
+   涵蓋 53 個 opcode、需人工讀 0 個，指令集與分組完全一致。表在
+   [`docs/audit/ecl-opcode-dispatch.md`](docs/audit/ecl-opcode-dispatch.md)。
+   handler 的語意仍全部 `待解讀`。
 2. **`INTERPET` 內部函式盤點**：85（PC-98）／90（DOS）個函式逐一標狀態，
    優先處理 dispatcher 直接呼叫的那 53 個。
 3. **external `CALL` registry**：23 個靜態可達位址的 producer→consumer，
