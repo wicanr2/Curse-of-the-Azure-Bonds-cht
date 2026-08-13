@@ -85,7 +85,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15D1` | sub_15D1 | — | 36 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>以 (8, 2, arg_6, arg_8) 呼叫 far routine,回傳值零延伸後與 0 一起傳給 sub_151F | spec/573-effprocs-effect-handlers-first-batch.md |
 | `1621` | sub_1621 | — | 1 | 1 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 1Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1627` | sub_1627 | — | 155 | 54 | 2 | 3 |  | 待解讀 | — | — | audit/function-triage.md |
+| `1627` | sub_1627 | — | 155 | 54 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1621h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-triage.md |
 | `16C2` | sub_16C2 | — | 59 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `16FD` | sub_16FD | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `1713` | sub_1713 | — | 19 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |

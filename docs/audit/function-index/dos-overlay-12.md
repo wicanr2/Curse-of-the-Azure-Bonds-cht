@@ -95,7 +95,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1771` | sub_1771 | — | 87 | 32 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `17C8` | sub_17C8 | — | 52 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1809` | sub_1809 | — | 165 | 52 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `18AE` | sub_18AE | — | 127 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
+| `18AE` | sub_18AE | — | 127 | 40 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1809h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `192D` | sub_192D | — | 3 | 2 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1930` | sub_1930 | — | 6 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `196D` | sub_196D | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

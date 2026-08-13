@@ -5583,7 +5583,9 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 179Ah 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -6611,7 +6613,9 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -6880,7 +6884,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "與 pc98 overlay-07:064Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -7596,7 +7603,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0B06h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -7652,7 +7661,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FE8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -7902,7 +7913,9 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 09C7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8154,7 +8167,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1542h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8195,7 +8210,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8238,7 +8255,9 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8476,7 +8495,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0CA1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8583,7 +8604,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1370h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8611,7 +8634,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1370h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -8669,7 +8694,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1800h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -10230,7 +10257,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1809h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12400,7 +12429,9 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12472,7 +12503,9 @@
    "callers": 7,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 158Ah 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12904,7 +12937,9 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12947,7 +12982,9 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12960,7 +12997,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -12988,7 +13027,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -13114,7 +13155,9 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 3EDDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -13234,7 +13277,9 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -13247,7 +13292,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -13413,7 +13460,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -13471,7 +13520,9 @@
    "callers": 3,
    "calls": 13,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -14078,7 +14129,9 @@
    "callers": 2,
    "calls": 10,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10ABh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -14151,7 +14204,9 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -14197,7 +14252,9 @@
    "callers": 4,
    "calls": 8,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -14976,7 +15033,9 @@
    "callers": 4,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FEDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -15022,7 +15081,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FEDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -15301,7 +15362,9 @@
    "callers": 6,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1263h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -15494,7 +15557,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 168Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -15610,7 +15675,9 @@
    "callers": 16,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 175Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -17020,7 +17087,9 @@
    "callers": 4,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 5F2Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -17692,7 +17761,9 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18D8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "dos",
@@ -17705,7 +17776,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18D8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -26350,6 +26423,7 @@
    "note": "執行 ECL 的兩段進入點:呼叫 RUN_ECL(DS:7F1Bh),之後取得一個旗標,非 0 才再呼叫 RUN_ECL(DS:7F1Dh);收尾設 DS:A66Ch:=1、呼叫 far 0172:0025、清 DS:8CF7h。38h(9) 是它的呼叫者之一",
    "citations": [
     "audit/ecl-external-call-registry.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/612-ecl-main-loop.md"
@@ -26371,6 +26445,7 @@
    "spec": "docs/spec/612-ecl-main-loop.md",
    "note": "場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/525-pc98-tempsearch-display-state.md",
@@ -26842,7 +26917,9 @@
    "callers": 2,
    "calls": 10,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0F42h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -27488,7 +27565,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3)"
   },
   {
    "platform": "pc98",
@@ -27646,7 +27726,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FFCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -27704,7 +27786,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 13F7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "project-status.md"
@@ -27751,7 +27835,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1669h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -27855,7 +27941,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -27886,7 +27974,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -27976,6 +28066,7 @@
    "spec": "docs/spec/614-ecl2-gosub-push.md",
    "note": "SETUPGOSUBSTACK(n)(ECL2 stub 0098h):配置 6-byte 節點插在 DS:A882h 鏈頭(LIFO),+0 存呼叫當下的 ECL_PC(此時已被 READVAR 推過 operand,所以是下一條指令的位址)、+2 指向舊鏈頭;然後把 ECL_PC 設成 ADDFNC(DS:[A957h+n], DS:[A997h+n])。與 13h(RETURN)從鏈頭彈出完全配對。operand 索引是參數而非固定 1,代表別的指令也能借它做呼叫",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/614-ecl2-gosub-push.md"
    ]
   },
@@ -28341,7 +28432,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0B20h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -28430,7 +28523,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1028h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -28651,7 +28746,9 @@
    "callers": 2,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 09E9h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -28677,7 +28774,9 @@
    "callers": 2,
    "calls": 9,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0DD3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -28940,7 +29039,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 155Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -28981,7 +29082,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 169Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -29365,7 +29468,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1364h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -29456,7 +29561,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 17EEh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -30873,7 +30980,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1621h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -32103,7 +32212,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FB1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -32179,7 +32290,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -32456,7 +32569,9 @@
    "callers": 2,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -32562,7 +32677,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -33501,7 +33618,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FC7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/embedded-strings.md",
     "audit/string-pairs.md"
@@ -33551,7 +33670,9 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FC7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -33577,7 +33698,9 @@
    "callers": 8,
    "calls": 9,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 147Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34182,7 +34305,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 14C9h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -34269,7 +34394,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1C15h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34312,7 +34439,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 2A6Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34840,7 +34969,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34883,7 +35014,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34896,7 +35029,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -34988,7 +35123,9 @@
    "callers": 2,
    "calls": 19,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -35182,7 +35319,9 @@
    "callers": 5,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 3BBDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -35317,7 +35456,9 @@
    "callers": 9,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 4E8Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -35356,7 +35497,9 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 51DAh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -35385,7 +35528,9 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 5420h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -35543,7 +35688,9 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1213h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -35634,7 +35781,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 189Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -35701,7 +35850,9 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 189Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -36179,7 +36330,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -36252,7 +36405,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -36265,7 +36420,9 @@
    "callers": 2,
    "calls": 13,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -37156,7 +37313,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -37184,7 +37343,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -37197,7 +37358,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -37750,7 +37913,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 143Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -39053,7 +39218,9 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 52E0h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -39982,7 +40149,9 @@
    "callers": 2,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18F3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -40444,7 +40613,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1659h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -40606,7 +40777,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 19A8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -40710,7 +40883,9 @@
    "callers": 7,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -40723,7 +40898,9 @@
    "callers": 2,
    "calls": 8,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -40964,7 +41141,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 314Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
   },
   {
    "platform": "pc98",
@@ -42861,8 +43040,8 @@
    "Functions": 90,
    "Read": 33,
    "NotBlocking": 0,
-   "Todo": 29,
-   "Fragment": 28,
+   "Todo": 28,
+   "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
    "SegmentBytes": 14880,
@@ -42906,8 +43085,8 @@
    "Functions": 17,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 12,
-   "Fragment": 2,
+   "Todo": 11,
+   "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
    "SegmentBytes": 6400,
@@ -42934,9 +43113,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -42951,8 +43130,8 @@
    "Functions": 21,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 13,
-   "Fragment": 5,
+   "Todo": 11,
+   "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
    "SegmentBytes": 4972,
@@ -42966,8 +43145,8 @@
    "Functions": 38,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 18,
-   "Fragment": 18,
+   "Todo": 14,
+   "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
    "SegmentBytes": 7117,
@@ -42981,8 +43160,8 @@
    "Functions": 38,
    "Read": 4,
    "NotBlocking": 0,
-   "Todo": 24,
-   "Fragment": 10,
+   "Todo": 20,
+   "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
    "SegmentBytes": 7608,
@@ -43011,8 +43190,8 @@
    "Functions": 152,
    "Read": 48,
    "NotBlocking": 0,
-   "Todo": 78,
-   "Fragment": 26,
+   "Todo": 77,
+   "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
    "SegmentBytes": 13683,
@@ -43056,8 +43235,8 @@
    "Functions": 42,
    "Read": 4,
    "NotBlocking": 0,
-   "Todo": 29,
-   "Fragment": 9,
+   "Todo": 27,
+   "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
    "SegmentBytes": 9704,
@@ -43071,8 +43250,8 @@
    "Functions": 28,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 24,
-   "Fragment": 3,
+   "Todo": 19,
+   "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
    "SegmentBytes": 17420,
@@ -43086,8 +43265,8 @@
    "Functions": 39,
    "Read": 0,
    "NotBlocking": 0,
-   "Todo": 23,
-   "Fragment": 16,
+   "Todo": 19,
+   "Fragment": 20,
    "CodeBytes": 19521,
    "Undefined": 1536,
    "SegmentBytes": 22211,
@@ -43116,8 +43295,8 @@
    "Functions": 42,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 28,
-   "Fragment": 12,
+   "Todo": 25,
+   "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
    "SegmentBytes": 14698,
@@ -43146,8 +43325,8 @@
    "Functions": 27,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 23,
-   "Fragment": 2,
+   "Todo": 21,
+   "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
    "SegmentBytes": 8782,
@@ -43161,8 +43340,8 @@
    "Functions": 139,
    "Read": 32,
    "NotBlocking": 0,
-   "Todo": 86,
-   "Fragment": 21,
+   "Todo": 82,
+   "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
    "SegmentBytes": 26796,
@@ -43176,8 +43355,8 @@
    "Functions": 40,
    "Read": 21,
    "NotBlocking": 0,
-   "Todo": 9,
-   "Fragment": 10,
+   "Todo": 7,
+   "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
    "SegmentBytes": 9661,
@@ -43446,8 +43625,8 @@
    "Functions": 23,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 12,
-   "Fragment": 9,
+   "Todo": 11,
+   "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
    "SegmentBytes": 4574,
@@ -43489,10 +43668,10 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 24,
-   "Fragment": 11,
+   "Todo": 18,
+   "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
@@ -43506,8 +43685,8 @@
    "Functions": 24,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 13,
-   "Fragment": 10,
+   "Todo": 11,
+   "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
    "SegmentBytes": 5069,
@@ -43521,8 +43700,8 @@
    "Functions": 36,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 17,
-   "Fragment": 16,
+   "Todo": 13,
+   "Fragment": 20,
    "CodeBytes": 6325,
    "Undefined": 111,
    "SegmentBytes": 7146,
@@ -43536,8 +43715,8 @@
    "Functions": 35,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 23,
-   "Fragment": 10,
+   "Todo": 21,
+   "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
    "SegmentBytes": 7601,
@@ -43566,8 +43745,8 @@
    "Functions": 150,
    "Read": 54,
    "NotBlocking": 0,
-   "Todo": 78,
-   "Fragment": 18,
+   "Todo": 77,
+   "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
    "SegmentBytes": 13835,
@@ -43581,8 +43760,8 @@
    "Functions": 72,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 45,
-   "Fragment": 24,
+   "Todo": 41,
+   "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
    "SegmentBytes": 18751,
@@ -43611,8 +43790,8 @@
    "Functions": 45,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 30,
-   "Fragment": 12,
+   "Todo": 27,
+   "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
    "SegmentBytes": 9791,
@@ -43626,8 +43805,8 @@
    "Functions": 47,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 33,
-   "Fragment": 11,
+   "Todo": 30,
+   "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
    "SegmentBytes": 22383,
@@ -43641,8 +43820,8 @@
    "Functions": 54,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 25,
-   "Fragment": 26,
+   "Todo": 17,
+   "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
    "SegmentBytes": 24158,
@@ -43656,8 +43835,8 @@
    "Functions": 23,
    "Read": 7,
    "NotBlocking": 0,
-   "Todo": 15,
-   "Fragment": 1,
+   "Todo": 12,
+   "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
    "SegmentBytes": 6549,
@@ -43671,8 +43850,8 @@
    "Functions": 57,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 28,
-   "Fragment": 26,
+   "Todo": 25,
+   "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
    "SegmentBytes": 15326,
@@ -43701,8 +43880,8 @@
    "Functions": 30,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 23,
-   "Fragment": 5,
+   "Todo": 20,
+   "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
    "SegmentBytes": 8988,
@@ -43716,8 +43895,8 @@
    "Functions": 138,
    "Read": 30,
    "NotBlocking": 0,
-   "Todo": 83,
-   "Fragment": 25,
+   "Todo": 81,
+   "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
    "SegmentBytes": 27788,
@@ -43731,8 +43910,8 @@
    "Functions": 39,
    "Read": 24,
    "NotBlocking": 0,
-   "Todo": 4,
-   "Fragment": 11,
+   "Todo": 3,
+   "Fragment": 12,
    "CodeBytes": 9201,
    "Undefined": 458,
    "SegmentBytes": 9706,
@@ -43746,8 +43925,8 @@
    "Functions": 65,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 50,
-   "Fragment": 12,
+   "Todo": 45,
+   "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
    "SegmentBytes": 13959,

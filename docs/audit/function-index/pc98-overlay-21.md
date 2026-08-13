@@ -26,10 +26,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1070` | sub_1070 | CHECKTREASURE | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `10C4` | sub_10C4 | — | 56 | 25 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `10FC` | sub_10FC | CREATERNDTREASURE | 1455 | 538 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `147D` | sub_147D | — | 143 | 51 | 2 | 2 |  | 待解讀 | — | — | — |
+| `147D` | sub_147D | — | 143 | 51 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `151F` | sub_151F | — | 15 | 5 | 5 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 37h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
-| `152E` | sub_152E | — | 115 | 38 | 1 | 2 |  | 待解讀 | — | — | — |
-| `15A1` | sub_15A1 | — | 382 | 141 | 2 | 1 |  | 待解讀 | — | — | — |
+| `152E` | sub_152E | — | 115 | 38 | 1 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
+| `15A1` | sub_15A1 | — | 382 | 141 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1683` | sub_1683 | — | 10 | 3 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1695`，控制權轉交後不返回；先設定 `les di, [bp-9]`、`mov byte ptr es:[di+59h], 0D1h`（body 共 10 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 12 | 3 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 39F6h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/function-triage.md |
 | `19E0` | sub_19E0 | — | 31 | 14 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 5A80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |

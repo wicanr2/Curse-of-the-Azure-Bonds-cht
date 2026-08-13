@@ -21,7 +21,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `145D` | sub_145D | — | 5 | 3 | 22 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1462` | sub_1462 | — | 7 | 3 | 14 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:755Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1499` | sub_1499 | — | 5 | 2 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 2Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `149E` | sub_149E | — | 195 | 71 | 6 | 4 |  | 待解讀 | — | — | — |
+| `149E` | sub_149E | — | 195 | 71 | 6 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1263h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1513` | sub_1513 | — | 18 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+9]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1586` | sub_1586 | — | 10 | 6 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `1590` | sub_1590 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:634h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
 | `16A9` | sub_16A9 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `16B8` | sub_16B8 | — | 5 | 2 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `16BD` | sub_16BD | — | 158 | 55 | 2 | 3 |  | 待解讀 | — | — | — |
+| `16BD` | sub_16BD | — | 158 | 55 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 168Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `175B` | sub_175B | — | 324 | 128 | 5 | 4 | ✓ | 待解讀 | — | — | — |
 | `189F` | sub_189F | — | 5 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `18A4` | sub_18A4 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-78h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `190D` | sub_190D | — | 5 | 3 | 8 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-73h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1912` | sub_1912 | — | 11 | 4 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr [bp-72h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `192B` | sub_192B | — | 5 | 2 | 16 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1930` | sub_1930 | — | 405 | 173 | 16 | 6 |  | 待解讀 | — | — | — |
+| `1930` | sub_1930 | — | 405 | 173 | 16 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 175Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `193A` | sub_193A | — | 16 | 6 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, [bp-72h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 16 bytes，已逐條讀完） | — |
 | `1ABF` | sub_1ABF | — | 378 | 143 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1C39` | sub_1C39 | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
@@ -137,7 +137,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5C86` | sub_5C86 | — | 381 | 145 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `5E11` | sub_5E11 | — | 269 | 102 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `5F2F` | sub_5F2F | — | 36 | 12 | 0 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 36 bytes，已逐條讀完） | — |
-| `5F53` | sub_5F53 | — | 185 | 87 | 4 | 6 |  | 待解讀 | — | — | — |
+| `5F53` | sub_5F53 | — | 185 | 87 | 4 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 5F2Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `6022` | sub_6022 | — | 268 | 105 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `617B` | sub_617B | — | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |

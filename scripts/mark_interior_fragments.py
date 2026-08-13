@@ -8,8 +8,8 @@ IDA 會把一支 Turbo Pascal 函式切成好幾塊（共用出口、被 `jmp` �
 
 判準（兩條都要成立）：
 
-1. 該位址落在某支**已解讀**函式的 prologue 區間 `(start, end)` 內，
-   且**不等於 start**。
+1. 該位址落在某支函式的 prologue 區間 `(start, end)` 內，且**不等於 start**。
+   擁有者讀了沒有不影響分類——它本來就不是獨立的一支，只是註記不同。
 2. 它自己**不是** prologue（不以 `55 89 e5` 或 `55 8b ec` 開頭）——是的話它
    就是獨立的一支，不能算碎片。
 
@@ -77,34 +77,38 @@ def main():
                 continue
             if not (start < ea < function["end"]):
                 continue
-            if (platform, module, start) not in read_entries:
-                continue
+            # 擁有者還沒讀也算碎片——它本來就不是獨立的一支，只是狀態註記不同。
+            pass
             ida = function["ida_size"]
             if ida:
                 tail = data[max(0, start + ida - 3):start + ida]
                 if tail[-1:] in (b"\xcb", b"\xc3") or tail[:1] in (b"\xca", b"\xc2"):
                     continue                  # 擁有者以 ret 結束 ⇒ 邊界是真的
-            owner = start
+            owner = (start, (platform, module, start) in read_entries)
             break
         if owner is not None:
             hits.append((entry, owner))
 
-    print("落在已解讀函式內部、且自己不是 prologue 的：%d 筆" % len(hits))
-    for entry, owner in hits[:20]:
-        print("  %-5s %-12s %04Xh ⊂ %04Xh" % (entry["platform"], entry["module"],
-                                              entry["ea"], owner))
+    done = sum(1 for _, (_, r) in hits if r)
+    print("落在某支函式內部、且自己不是 prologue 的：%d 筆（其中擁有者已解讀 %d 筆）"
+          % (len(hits), done))
+    for entry, (owner, was_read) in hits[:20]:
+        print("  %-5s %-12s %04Xh ⊂ %04Xh %s" % (entry["platform"], entry["module"],
+                                                 entry["ea"], owner,
+                                                 "（已讀）" if was_read else "（擁有者未讀）"))
     if not write:
         print("\n（唯讀模式；加 --write 才標成邊界碎片）")
         return 0
 
     lookup = {(e["platform"], e["module"], e["ea"]): o for e, o in hits}
     existing = {(e["platform"], e["module"], e["ea"]) for e in ledger["functions"]}
-    for (platform, module, ea), owner in lookup.items():
+    for (platform, module, ea), (owner, was_read) in lookup.items():
+        note = ("邊界碎片：落在 %04Xh 的 prologue 區間內部，自己不是 prologue。%s"
+                % (owner, "指令已隨該函式讀過。" if was_read
+                   else "所屬函式尚未解讀，讀它時會一併涵蓋。"))
         row = {"platform": platform, "module": module, "ea": ea,
                "state": "邊界碎片", "level": "",
-               "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-               "note": "邊界碎片：落在已解讀函式 %04Xh 的 prologue 區間內部，"
-                       "自己不是 prologue。指令已隨該函式讀過。" % owner}
+               "spec": "docs/spec/587-ecl-handler-21-37-shared.md", "note": note}
         if (platform, module, ea) in existing:
             for e in ledger["functions"]:
                 if (e["platform"], e["module"], e["ea"]) == (platform, module, ea):

@@ -18,7 +18,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1184` | sub_1184 | — | 87 | 39 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 87 bytes，已逐條讀完） | — |
 | `1370` | sub_1370 | — | 246 | 80 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `14AC` | sub_14AC | — | 242 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `15A9` | sub_15A9 | — | 112 | 45 | 5 | 2 |  | 待解讀 | — | — | — |
+| `15A9` | sub_15A9 | — | 112 | 45 | 5 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `169F` | sub_169F | — | 9 | 3 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_15B3`，控制權轉交後不返回；先設定 `mov [bp-4], ax`、`mov [bp-2], dx`（body 共 9 bytes，已逐條讀完） | — |
 | `1736` | sub_1736 | — | 451 | 161 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `18F9` | sub_18F9 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
