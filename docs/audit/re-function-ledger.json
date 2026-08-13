@@ -16411,6 +16411,66 @@
    "spec": "docs/spec/690-status-line-and-string-concat-idiom.md",
    "bounds": "prologue",
    "note": "狀態列(entry#38)。DS:4FBAh=3 直接返回。組字串:bank0^[1F6h]=0 時先放 Str(DS:720Fh)+','+Str(DS:7210h)+' ';接方向名(DS:2540h + DS:7211h*3,一格 3 bytes 的 Pascal 短字串,方向編碼 0/2/4/6);接 h:m,其中 h=bank0^[192h]、m=bank0^[190h]*10+bank0^[18Eh],兩者長度 < 2 時前面補 '0'(比的是長度位元組);DS:4FC1h 非零加 '*';DS:4FBAh=2 加 ' camping',否則 (bank1^[594h] and 1) 非零加 ' search'。緩衝上限 28h=40 字元,畫在 <0542:0352h>(11h, 0Fh, 0Ah, 0, line)。⚠ 三支 resident 字串程序 0A54:0634h(起頭)/06C1h(續接)/064Eh(收尾複製)組成一條鏈,中間結果全程留在堆疊上——這就是 spec 687「0A54:064Eh 有時只被推入 3 個 word」的成因,是 Borland 對 s := a+b+c 的標準產碼,不是特例。數參數時連續 push 的數量不等於被呼叫者的參數個數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 10280,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/691-item-type-table-and-record-pointers.md",
+   "note": "把角色^[18Dh](far 指標)指到的結構清掉四個 byte,順序是 +3、+0、+7、+6,回傳常數 1。四次寫入各自重新載入 arg_0 再解一次 +18Dh,沒有暫存。⚠ DOS 的 +18Dh 對應 PC-98 的 +18Eh(紀錄後段偏移差 1)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 12312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/691-item-type-table-and-record-pointers.md",
+   "note": "角色^[151h] 非 NIL(兩個 word 同時為零才算 NIL)時,取 k := 角色^[151h]^[2Eh],檢查 byte [5D02h + k shl 4] > 1(無號 jbe)。DS:5D02h 是一張 **16 bytes 一格**的表,索引沒有上界檢查。⚠ DOS 的 +151h 對應 PC-98 的 +152h",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 12379,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/691-item-type-table-and-record-pointers.md",
+   "note": "先呼叫 3018h,通過後再重算一次 k,檢查 (byte [5D04h + k shl 4] and 14h) = 14h——**14h 的兩個位元(bit 2 與 bit 4)要同時成立**,寫成 != 0 會多放行一半情況。5D04h 與 5D02h 差 2,是同一格的 +2 欄位",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 9684,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/692-party-tally-and-list-search.md",
+   "note": "依 +197h 統計人數:清 DS:6F90h/6F91h 兩個 byte,走 DS:650Ah 的角色鏈(next 在 +189h),p^[196h] <> 0 者做 byte [6F90h + p^[197h]] += 1(p^[197h] 經 cbw,有號)。⚠ **只清了兩個 byte 卻拿 +197h 當索引,沒有上下界檢查**——值不是 0 或 1 就會寫進別的全域變數。移植時要自己補範圍檢查。+196h 就是 KILLTHEDUDE 裡「等於 6 整支跳過」的那個欄位",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 9110,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/692-party-tally-and-list-search.md",
+   "note": "用 key 找節點:arg_0 是 var 參數(指標的指標),從 arg_6^[0F2h] 起走鏈,節點 +0 是比對用的 key(byte)、+5 是 far next。找到就 found := 1 並停,回傳的只是有沒有找到。⚠ **節點本身是從 arg_0 寫回去的**,只看回傳值拿不到節點;找不到時 arg_0^ 會被留成 NIL 而不是原值",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6826,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/692-party-tally-and-list-search.md",
+   "note": "連續四次 <1975h>(arg_0, a, b, c),參數寫死為 (0,0,0)、(0,1,1)、(1,2,1)、(1,3,0)。第三欄是 0..3,另外兩欄沒有規律(0,0,1,1 與 0,1,1,0)——原始碼是四行手寫呼叫不是迴圈,那兩欄要當資料照抄",
+   "bounds": "prologue"
   }
  ]
 }
