@@ -15107,6 +15107,51 @@
    "level": "exact",
    "spec": "docs/spec/662-cursor-snap-and-clear.md",
    "note": "初始化游標:<19A10h> 開游標、<19A8Bh> 從 BIOS 讀回位置,把 word_280FBh 與 word_280FDh 都設成「目前列 + 欄 0」(兩者初值相同),再從 0000:0712h 抄一份列數上限到 byte_280E5h"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105341,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/663-orphan-half-cleanup.md",
+   "note": "看前一格:不在左界且 es:[di-2] 是全形的**左半**(ah 非 0、ah 與 al 的 bit 7 都沒設)時,把它清成 0020h。與 19B9Ch 成對——寫進全形字的一半會讓另一半落單,這兩支負責清掉"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/663-orphan-half-cleanup.md",
+   "note": "看目前這一格:不在右界(low(word_280EAh) <> 50h)且 es:[di] 是全形的某一半(ah 非 0 且 ah 或 al 的 bit 7 已設)時清成 0020h"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105404,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/663-orphan-half-cleanup.md",
+   "note": "在游標處放一個空白:word_280E8h 與 word_280EAh 都設成目前游標;屬性經 <18FA3h> 換算後寫 es:[bx+di](所以 byte_280C6h 存的是打包格式不是 PC-98 原生屬性);順序是 <19B7Dh> 清前一格 → stosw 寫入 → <19B9Ch> 清後一格"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105585,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/663-orphan-half-cleanup.md",
+   "note": "讀一格:byte_280D0h(雙位元組總開關)開啟且 <sub_1977Eh> 判定為前導時先送第一個 byte 再 bx++,然後一律再送一個。開關關掉時一律只送一個 byte。sub_1977Eh 用進位回答(jnb),與 169D9h 同一種慣例"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105730,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/663-orphan-half-cleanup.md",
+   "note": "游標形狀:byte_280FFh := al;al 的 bit 0 為 0 時送 <sub_1977Bh>(AH=12h),否則送 (AH=10h, AL=al shr 1) 再送 (AH=11h)。11h 與 19A10h 用的是同一個功能碼"
   }
  ]
 }
