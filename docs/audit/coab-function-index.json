@@ -23731,7 +23731,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/662-cursor-snap-and-clear.md",
+   "note": "初始化游標:\u003c19A10h\u003e 開游標、\u003c19A8Bh\u003e 從 BIOS 讀回位置,把 word_280FBh 與 word_280FDh 都設成「目前列 + 欄 0」(兩者初值相同),再從 0000:0712h 抄一份列數上限到 byte_280E5h"
   },
   {
    "platform": "pc98",
@@ -23758,7 +23761,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/662-cursor-snap-and-clear.md",
+   "note": "清畫面:格數 = (low(word_280CAh)+1) × byte_280E5h;屬性寫 0E1h((7 shl 5) or 1,與 spec 658 一致)到 es:[bx+di]、字元寫 0020h 到 ES:DI 並 di += 2——所以 word_280D6h 是兩個平面的位移差"
   },
   {
    "platform": "pc98",
@@ -23770,7 +23776,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/662-cursor-snap-and-clear.md",
+   "note": "全形字的游標吸附:byte_280D0h 為 0 或已在左界就返回;否則算出目前格的 VRAM 位移,若高位元組非 0 且 ah/al 任一 bit 7 已設(是全形的某一半),再看前一格是不是它的左半,成立就 dec dl 把游標左移——避免游標停在一個字的中間。判斷綁在 bit 7 的編碼上,中文版若改存法要跟著改"
   },
   {
    "platform": "pc98",
@@ -23782,7 +23791,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/662-cursor-snap-and-clear.md",
+   "note": "算 VRAM 位移 (dh × byte_280DAh + dl) × 2(不是 80 欄再 ×2)存進 word_280D8h;word_280EDh 非 0 時再加 1000h(區塊切換)但**只用於這次呼叫**,不寫回 word_280D8h;最後 ah := 13h 呼叫 \u003csub_1977B\u003e"
   },
   {
    "platform": "pc98",
@@ -44841,9 +44853,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 182,
+   "Read": 186,
    "NotBlocking": 29,
-   "Todo": 100,
+   "Todo": 96,
    "Fragment": 22,
    "CodeBytes": 25067,
    "Undefined": 0,
