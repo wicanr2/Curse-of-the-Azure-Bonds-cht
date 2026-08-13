@@ -176,24 +176,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 11541,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Dh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 11614,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 39h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 11689,
    "state": "待解讀",
    "level": "",
@@ -208,24 +190,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 38h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 12831,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Ch 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 12881,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Eh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -16386,6 +16350,46 @@
    "level": "exact",
    "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
    "note": "場景切換的分派。GUARD 形狀:`if DS:5BECh<>0 then <0713:0020h>(DS:25AAh)` / f() / `if DS:5BECh=0 then <0713:00D6h>()`——**前後兩半用同一旗標的相反值當閘門**,只會執行其中一個,不是配對的存檔還原。依 [4F9Dh]^[6D8h]=1 / [4F9Dh]^[5C4h]=1 / 其他 分別走 overlay-06(entry#3+#1)、overlay-04(#2+#1)、overlay-05(#2+#1);再依 [4F99h]^[1CCh] 是否為零走 overlay-27 entry#6 或 overlay-30 entry#11。重載路徑(8B69h 或 8B56h 非零)另呼叫 ov08/10/09 e2、ov13 e34、ov32 e23、ov31 e7,並用 MAXRANGE(overlay-07 entry#6)算出的 n **往下夾** bank1^[582h](cmp+jnb,只在 n 較小時寫入)——就是 0801h 每走一步遞減的剩餘步數。⚠ 197Ah 的 `call sub_1953` 是 IDA 攤平造成的假名字,實為 overlay-32 entry#23",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11541,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/688-dos-overlay-02-scene-opcodes.md",
+   "note": "DS:4FB4h++;<resident 01A0:0136>();<overlay-24 entry#2>(DS:6506h 那個 far 指標);<overlay-24 entry#38>();<overlay-29 entry#1>(3, 3, 1, DS:7234h, DS:7232h);<overlay-24 entry#38>();DS:8B6Eh:=0;DS:8B60h:=1。DS:6506h(低)+DS:6508h(高)是一個 far 指標,由 3251h 的 les ax,ds:6506h 證實",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11614,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/688-dos-overlay-02-scene-opcodes.md",
+   "note": "READVAR(1);<far 0542h:0B4Ah>(1, 11h, 26h, 16h) 還原視窗(與 0EBDh 收尾同一支同一組參數);把字串槽 1(DS:7748h)複製到區域緩衝(上限 0FFh);<overlay-24 entry#40>(@緩衝, 0, @DS:6506h)。⚠ 第三個參數推的是 push ds/push di(di=6506h),傳的是**指標的位址**不是指標的值",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 12831,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/688-dos-overlay-02-scene-opcodes.md",
+   "note": "FillChar(DS:8B48h, 2, 0)(0A54h:1AE0h,三參數形狀與 Turbo Pascal FillChar 一致,179Ah 收尾用同一組);DS:8B62h:=0;READVAR(1);<overlay-03 entry#1>();<overlay-24 entry#37>()。sub sp,8 配置的區域空間整支沒用到",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 12881,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/688-dos-overlay-02-scene-opcodes.md",
+   "note": "DS:4FB4h++;<overlay-17 entry#3>(0, 1);把 far 指標 DS:6506h/6508h 整個複製到 DS:47E7h/47E9h;<overlay-24 entry#2>(DS:6506h 那個 far 指標)。sub sp,2 沒有用到",
    "bounds": "prologue"
   }
  ]

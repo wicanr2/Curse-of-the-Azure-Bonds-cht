@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADGEN | 62 | 16 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr sub_15A1`、`call far ptr loc_101A`、`call far ptr sub_11C7`、`call far ptr loc_147C+1`、`call loc_17B4+3`、`call far ptr loc_1981+2`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md |
+| `0000` | sub_0 | LOADGEN | 62 | 16 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr sub_15A1`、`call far ptr loc_101A`、`call far ptr sub_11C7`、`call far ptr loc_147C+1`、`call loc_17B4+3`、`call far ptr loc_1981+2`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md |
 | `003E` | sub_3E | — | 215 | 79 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0115` | sub_115 | — | 107 | 37 | 1 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `02CB` | sub_2CB | DOGEN | 1834 | 676 | 0 | 19 | ✓ | 待解讀 | — | — | audit/function-triage.md |
