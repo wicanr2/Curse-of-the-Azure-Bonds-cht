@@ -242,17 +242,17 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A29A` | sub_1A29A | — | 76 | 30 | 1 | 3 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>釋放 overlay 到夠為止:word_23AE2h 為 0 就把 word_23ADEh 重設為 word_23ADCh;否則走 es:[14h] 串鏈,逐個接回鏈頭、呼叫 sub_1A3FCh 並從 word_23ADEh 扣掉回傳值、再 sub_1A34Fh。cx 進外層迴圈前是 1,實際跑幾次取決於內層小迴圈數到多少 | — |
 | `1A2E6` | sub_1A2E6 | — | 54 | 20 | 1 | 2 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>overlay 載入後把 stub 改寫成直接 far jump:es:[20h] 已是 0EAh 就返回;否則對 es:[0Ch] 個入口,每筆寫入 0EAh + 原 offset(es:[di+2]) + 載入後的 segment(es:[10h]),共 5 bytes | — |
 | `1A31C` | sub_1A31C | — | 51 | 19 | 2 | 2 |  | 已解讀 | exact | docs/spec/664-overlay-manager-stub-patching.md<br>overlay 卸載時把 stub 還原:es:[20h] 已是 0CDh 就返回;否則每筆寫入 3FCDh(little-endian 即 CD 3F = INT 3Fh)+ 目前 offset(es:[di+1]),並把 es:[2] 清 0。兩支讀 offset 的位置差一,正因為 EA 是 1 byte opcode + 4 bytes 運算元而 CD 3F 是 2 + 2 | — |
-| `1A34F` | sub_1A34F | — | 72 | 32 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A397` | sub_1A397 | — | 32 | 14 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1A34F` | sub_1A34F | — | 72 | 32 | 2 | 2 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>搬移 overlay 並修正 stub:先把 es:[10h] 換成新位置,再以 word 為單位搬 es:[8] bytes——**方向依目的在來源之前或之後選**(std/cld),重疊時不會蓋掉還沒搬的部分。搬完若 es:[20h] 不是 0CDh(已改成 far jmp),就從 di=23h 起每 5 bytes 改一個 word——那正是 EA off seg 裡的 segment,offset 不動 | — |
+| `1A397` | sub_1A397 | — | 32 | 14 | 1 | 2 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>接到 overlay 鏈尾:鏈頭在絕對位址 7852h,走訪時把 DS 換成節點 segment、BX 固定 14h,所以同一段程式碼既能讀鏈頭也能讀節點欄位;接上後把 es:[14h] 清 0 | — |
 | `1A3B7` | sub_1A3B7 | — | 12 | 5 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_1A3C3 取得 bx;bx 非 0 時把 cx 與 ss:[bx+2] 互換 | — |
 | `1A3C3` | sub_1A3C3 | — | 30 | 15 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 30 bytes，已逐條讀完） | — |
-| `1A3E1` | sub_1A3E1 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A3E1` | sub_1A3E1 | — | 27 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>算剩餘空間:word_23AE2h 非 0 時先試「第一個 overlay 的 +10h 減目前配置點 word_23ADEh」,借位(會變負)才退回用 word_23AE0h - word_23ADEh | — |
 | `1A3FC` | sub_1A3FC | — | 12 | 5 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即位元組數無條件進位換算成 paragraph;與 DOS START.EXE:1A42Ch 同義 | — |
 | `1A410` | sub_1A410 | — | 97 | 34 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A485` | sub_1A485 | — | 22 | 12 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>EMS 偵測:INT 21h AX=3567h 取 INT 67h 向量,再把該處理常式起始 8 bytes 與 CS:558h 的簽章 repe cmpsb 比對 | — |
-| `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h 段落 = 16KB 正是 EMS 分頁大小);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤) | — |
 | `1A4DA` | sub_1A4DA | — | 106 | 47 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1A544` | sub_1A544 | — | 68 | 32 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A544` | sub_1A544 | — | 68 | 32 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>用 int 67h AX=4400h(對映實體分頁 0)配 DX = word_23AE6h 把 overlay 換進 page frame,同樣用 shl ah,1 + jb 判斷失敗 | — |
 | `1A5F1` | sub_1A5F1 | — | 38 | 19 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A617` | sub_1A617 | — | 29 | 13 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A634` | sub_1A634 | — | 23 | 10 | 2 | 1 |  | 待解讀 | — | — | — |
