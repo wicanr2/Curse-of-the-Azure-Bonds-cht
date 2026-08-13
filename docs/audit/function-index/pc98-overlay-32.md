@@ -8,22 +8,22 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | — |
 | `0011` | sub_11 | CALCBIGOFFSET | 104 | 41 | 7 | 1 | ✓ | 待解讀 | — | — | — |
 | `0079` | sub_79 | CALCSCREENCOORDS | 123 | 51 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
-| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(8,0) 接著 <far 02A8:1392>(0,8)——同一個 routine 連叫兩次,參數對調 | spec/585-ecl-goto-and-display-mode-pair.md<br>spec/635-overlay32-grid-record-array.md |
+| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值 | spec/635-overlay32-grid-record-array.md |
 | `012E` | sub_12E | SHOWCURSOR | 428 | 190 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `02DA` | sub_2DA | — | 409 | 184 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `0473` | sub_473 | HIDECURSOR | 612 | 255 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `06D7` | sub_6D7 | CALCWHOISWHERE | 286 | 122 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `07F5` | sub_7F5 | FINDOBJECT | 111 | 43 | 5 | 1 | ✓ | 待解讀 | — | — | — |
 | `0864` | sub_864 | PUTMAPSYMBOL | 442 | 196 | 3 | 5 | ✓ | 待解讀 | — | — | — |
-| `0A1E` | sub_A1E | ONVISSCREEN | 49 | 18 | 6 | 1 | ✓ | 待解讀 | — | — | — |
+| `0A1E` | sub_A1E | ONVISSCREEN | 49 | 18 | 6 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>回傳 (0 <= arg_2 <= 6) and (0 <= arg_0 <= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 | spec/635-overlay32-grid-record-array.md |
 | `0A4F` | sub_A4F | ONSCREEN | 186 | 79 | 6 | 4 | ✓ | 待解讀 | — | — | — |
 | `0B09` | sub_B09 | — | 450 | 167 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0CCB` | sub_CCB | REFRESHCOMBATMAP | 1321 | 579 | 3 | 8 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `11F4` | sub_11F4 | DOCOMBATSHAPE | 247 | 101 | 0 | 8 | ✓ | 待解讀 | — | — | — |
-| `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 | spec/635-overlay32-grid-record-array.md |
+| `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) | spec/635-overlay32-grid-record-array.md |
+| `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 | spec/635-overlay32-grid-record-array.md |
 | `1363` | sub_1363 | FINDID | 88 | 32 | 9 | 1 | ✓ | 待解讀 | — | — | — |
 | `13BB` | sub_13BB | FINDOBJECTS | 363 | 146 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1526` | sub_1526 | SUBTRACTDUDE | 749 | 296 | 0 | 10 | ✓ | 待解讀 | — | — | — |

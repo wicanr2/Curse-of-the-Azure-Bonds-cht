@@ -13555,6 +13555,177 @@
    "level": "strong inference",
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "與 pc98 overlay-12:09B9h 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<far 013E:002A>(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 4837,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 4897,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 4955,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 10211,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "回傳 (arg_0^[198h] = 0):是則 1、否則 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 10926,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "r := <sub_2A5B>(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 <sub_194C>;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 12519,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "<far 018C:0301>() → <sub_1F6E>() → <sub_18F1>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 10359,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:2AAEh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：r := <sub_2A5B>(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 <sub_194C>;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 9648,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:27E3h 助憶碼序列完全相同（13 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_0^[198h] = 0):是則 1、否則 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4299,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:12E5h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4359,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:1321h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 11781,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:30E7h 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<far 018C:0301>() → <sub_1F6E>() → <sub_18F1>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4417,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:135Bh 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 244,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "<far 02A8:1392>(8,0) 接著 <far 02A8:1392>(0,8)——同一個 routine 連叫兩次,參數對調"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 273,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "<far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 2590,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "回傳 (0 <= arg_2 <= 6) and (0 <= arg_0 <= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 4843,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 4883,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 4923,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 1842,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 <= arg_2 <= 6) and (0 <= arg_0 <= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
