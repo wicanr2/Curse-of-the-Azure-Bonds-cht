@@ -26022,6 +26022,7 @@
    "note": "ECL opcode 28h(依百分比縮放):READVAR(3);operand1 為 0 只對 DS:9594h(目前目標)、非 0 則走遍整條角色鏈(不排除任何人);係數是 Real(100-pct)/100.0 的浮點除法——除數 100.0 由 cx=87h/si=0/di=4800h 三個暫存器組成(TP 6-byte Real:2^(135-129) x 1.5625 = 100),不是整數運算。全隊分支裡 item := node^[14Eh] 取出後完全沒被讀,是 INTERPET 裡第二個死變數",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/607-ecl-percentage-scale.md"
    ]
   },
@@ -26337,11 +26338,13 @@
    "callers": 1,
    "calls": 14,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 38h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/608-ecl-terminate-modes.md",
+   "note": "ECL opcode 38h(結束 script 並指定方式):先在 DS:7898h 非 0 時還原目前目標;READVAR(1)後依值分派——0 走重繪、8 走存檔/資料整理(顯示「データの整理をします」並把 bank0^[3FAh] 與 bank1^[550h] 設為 FFh)、9 先存下 ECL_PC 呼叫 sub_3237 再還原然後結束 script、3 設 DS:7F34h(全隊不能行動)後結束 script,其餘什麼都不做。9 與 3 都轉去執行 opcode 00h 的 handler",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/608-ecl-terminate-modes.md"
    ]
   },
   {
@@ -43321,9 +43324,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 49,
+   "Read": 50,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,

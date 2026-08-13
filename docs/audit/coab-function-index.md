@@ -53,14 +53,14 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 352、不阻塞 29、邊界碎片 280、待解讀 827；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 353、不阻塞 29、邊界碎片 280、待解讀 826；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | PC98-GAME.EXE | — | 333 | 119 | 29 | 21 | 164 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 1 | 1 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 1 | 3 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
-| overlay-02 | INTERPET | 86 | 49 | 0 | 23 | 14 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
+| overlay-02 | INTERPET | 86 | 50 | 0 | 23 | 13 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
 | overlay-03 | PROTECT | 4 | 1 | 0 | 0 | 3 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 2 | 0 | 9 | 12 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 2 | 0 | 4 | 11 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
