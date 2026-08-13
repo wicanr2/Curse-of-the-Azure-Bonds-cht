@@ -22307,7 +22307,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "換片重試迴圈:repeat 指派 'game.ovr' → \u003csub_17656\u003e 開檔;失敗就顯示 byte_17380(32 bytes 的 Pascal 短字串「ゲームディスクＡを入れてください」)、\u003csub_1BD13\u003e、\u003csub_18036\u003e,然後整個重來(連檔名字串都重新指派)。沒有重試上限也沒有放棄出口"
   },
   {
    "platform": "pc98",
@@ -22343,7 +22346,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "第三份 Shift-JIS 首位元組判斷:81h..9Fh 或 E0h..FCh 回 1,回傳值放 AL。與 14342h 同一族(上界 FCh),不是 169D9h 那族(F7h、clc)。實際畫字走的是 F7h 那族"
   },
   {
    "platform": "pc98",
@@ -22355,7 +22361,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "三個參數都是兩層間接。if arg_C^^[0] = 0FFh then \u003csub_1C15D\u003e(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else \u003csub_17DD5\u003e(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 是「短格式」的標記"
   },
   {
    "platform": "pc98",
@@ -22379,7 +22388,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "\u003csub_1BF69\u003e(arg_4) 後再 \u003csub_1BF69\u003e(arg_0)——同一支 routine 用兩個參數各叫一次,arg_4 先"
   },
   {
    "platform": "pc98",
@@ -44731,9 +44743,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 146,
+   "Read": 150,
    "NotBlocking": 29,
-   "Todo": 137,
+   "Todo": 133,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
