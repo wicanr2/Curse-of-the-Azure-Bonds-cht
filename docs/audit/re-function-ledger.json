@@ -9181,6 +9181,87 @@
    "level": "exact",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "unit 初始化:依序呼叫四個本 overlay 內的 routine"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 358,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 176,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 2038,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4895,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5140,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "以 (arg, 1) 呼叫 far sub_146E,回傳非零才續行後段處理"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8236,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 0 非零時,DS:A02Eh 有號除以 2(減半)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9467,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9724,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半)"
   }
  ]
 }

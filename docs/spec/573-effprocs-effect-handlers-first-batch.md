@@ -25,6 +25,22 @@
 對應效果證據，不命名**。三者命中時都以參數 `0` 呼叫同一個 routine
 （overlay-12 local `1Bh`）。
 
+**三、`DS:A02Eh` 是傷害值（`strong inference`）。** 同一組傷害旗標位元有兩種
+不同的 handler：
+
+| 位元 | 「保護」handler | 「減半」handler |
+|---|---|---|
+| bit 0 | `249Dh` → `1Bh(0)` | `202Ch` → `DS:A02Eh ÷ 2` |
+| bit 1 | `2461h` → `1Bh(0)` | `25FCh` → `DS:A02Eh ÷ 2` |
+| bit 2 | `2B87h` → `1Bh(0)` | `24FBh` → `DS:A02Eh ÷ 2` |
+
+一個位元同時有「完全保護」與「減半」兩種效果，正好對應 `AGENTS.md` 強調的
+「`half` 與 `immune` 必須是不同結果」。被減半的那個全域就是傷害值。
+另有 `07F6h` 取四分之三、`1A1Dh` 無條件減半。
+
+仍標 `strong inference` 而非 `exact`：還缺「誰寫入 `DS:A02Eh`」與「誰在最後
+把它套到目標 HP」這兩段資料流。
+
 ## 逐一內容
 
 | 位址 | 內容 |
@@ -41,6 +57,13 @@
 | `243Ah` | 依序以常數 `0Bh` 與 `35h` 呼叫 `1Bh` |
 | `2BA0h` | 經兩層 far pointer（`arg_6` → `+18Eh`）把目標 record 的 `+6` 清 0 |
 | `0075h` | 以 `arg_6`／`arg_8` 呼叫外部 routine 並檢查回傳值 |
+| `0000h` | unit 初始化：依序呼叫四個本 overlay 內的 routine |
+| `0166h` | `DS:9594h` 所指 record 的 `+14Ch` bit 0 為 1 時，`DS:A039h` 減 7 |
+| `00B0h` | `DS:A03Ch` 小於 5 時歸零，否則減 5；`DS:A039h` 減一 |
+| `07F6h` | `DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4)`（取四分之三） |
+| `131Fh` | 以 `(0, 0FFh, 0, 62h, arg_6, arg_8)` 呼叫 `sub_1437` |
+| `1414h` | 以 `(arg, 1)` 呼叫 far `sub_146E`，回傳非零才續行 |
+| `202Ch`／`24FBh`／`25FCh` | 傷害旗標 bit 0／2／1 非零時把 `DS:A02Eh` 有號減半 |
 
 所有 handler 的呼叫慣例一致：`retf 0Ah`（5 個 word 參數）。
 
