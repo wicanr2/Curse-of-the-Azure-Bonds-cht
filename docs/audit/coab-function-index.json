@@ -1802,8 +1802,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 GetDate 實作:INT 21h AH=2Ah,把年/月/日/星期分別 stosw 到四個 var 參數"
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   },
   {
    "platform": "dos",
@@ -1816,8 +1816,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 SetDate 實作:INT 21h AH=2Bh"
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   },
   {
    "platform": "dos",
@@ -1830,8 +1830,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 GetTime 實作:INT 21h AH=2Ch,把時/分/秒/百分秒 stosw 到四個 var 參數"
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   },
   {
    "platform": "dos",
@@ -1844,8 +1844,8 @@
    "calls": 0,
    "is_overlay_entry": false,
    "state": "不阻塞",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 SetTime 實作:INT 21h AH=2Dh"
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   },
   {
    "platform": "dos",
@@ -2435,10 +2435,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完）"
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 11 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4408,7 +4407,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4420,7 +4421,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5319,7 +5322,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6152,7 +6157,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6410,7 +6417,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化(LOADSHOP):依序 far call 依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器"
   },
   {
    "platform": "dos",
@@ -6652,7 +6662,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "字元碼調整:arg \u003c= 1Fh 時回傳 arg + 40h,否則原樣回傳(控制字元映射到 40h 之後)"
   },
   {
    "platform": "dos",
@@ -7588,7 +7601,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 38 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8033,7 +8048,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte"
   },
   {
    "platform": "dos",
@@ -8258,7 +8276,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 25 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8415,7 +8435,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化(LOADINIT):依序 far call 八個依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -13181,7 +13204,9 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -19878,7 +19903,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 60 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -19890,7 +19917,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 106 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -19902,7 +19931,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 77 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21795,10 +21826,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21810,7 +21840,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 59 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21822,7 +21854,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 88 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21834,7 +21868,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -21846,7 +21882,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -23153,7 +23191,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -23165,7 +23205,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -25879,7 +25921,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 30 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -26869,7 +26913,9 @@
    "callers": 9,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -36987,7 +37033,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 47 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37678,7 +37726,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -39859,10 +39909,10 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 86,
+   "Read": 85,
    "NotBlocking": 133,
-   "Todo": 100,
-   "Fragment": 6,
+   "Todo": 98,
+   "Fragment": 9,
    "CodeBytes": 23290,
    "Undefined": 0,
    "SegmentBytes": 96208,
@@ -39906,8 +39956,8 @@
    "Functions": 90,
    "Read": 6,
    "NotBlocking": 0,
-   "Todo": 68,
-   "Fragment": 16,
+   "Todo": 67,
+   "Fragment": 17,
    "CodeBytes": 14062,
    "Undefined": 292,
    "SegmentBytes": 14880,
@@ -39936,8 +39986,8 @@
    "Functions": 9,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 8,
-   "Fragment": 0,
+   "Todo": 7,
+   "Fragment": 1,
    "CodeBytes": 2107,
    "Undefined": 334,
    "SegmentBytes": 4134,
@@ -39964,9 +40014,9 @@
    "Module": "overlay-06",
    "Unit": "SHOP",
    "Functions": 6,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 2146,
    "Undefined": 274,
@@ -39979,9 +40029,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 31,
+   "Todo": 30,
    "Fragment": 3,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -40011,8 +40061,8 @@
    "Functions": 37,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 19,
-   "Fragment": 17,
+   "Todo": 18,
+   "Fragment": 18,
    "CodeBytes": 7212,
    "Undefined": 92,
    "SegmentBytes": 7117,
@@ -40024,10 +40074,10 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 30,
-   "Fragment": 6,
+   "Todo": 28,
+   "Fragment": 7,
    "CodeBytes": 6727,
    "Undefined": 43,
    "SegmentBytes": 7608,
@@ -40039,9 +40089,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 2,
-   "Read": 0,
+   "Read": 1,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 563,
    "Undefined": 743,
@@ -40161,8 +40211,8 @@
    "Functions": 42,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 32,
-   "Fragment": 9,
+   "Todo": 31,
+   "Fragment": 10,
    "CodeBytes": 13042,
    "Undefined": 1293,
    "SegmentBytes": 14698,
@@ -40414,10 +40464,10 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 75,
+   "Read": 74,
    "NotBlocking": 29,
-   "Todo": 222,
-   "Fragment": 7,
+   "Todo": 213,
+   "Fragment": 17,
    "CodeBytes": 25067,
    "Undefined": 0,
    "SegmentBytes": 115552,
@@ -40536,8 +40586,8 @@
    "Functions": 46,
    "Read": 6,
    "NotBlocking": 0,
-   "Todo": 32,
-   "Fragment": 8,
+   "Todo": 31,
+   "Fragment": 9,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
@@ -40566,8 +40616,8 @@
    "Functions": 36,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 19,
-   "Fragment": 15,
+   "Todo": 18,
+   "Fragment": 16,
    "CodeBytes": 6325,
    "Undefined": 111,
    "SegmentBytes": 7146,
@@ -40776,8 +40826,8 @@
    "Functions": 39,
    "Read": 5,
    "NotBlocking": 0,
-   "Todo": 25,
-   "Fragment": 9,
+   "Todo": 24,
+   "Fragment": 10,
    "CodeBytes": 9201,
    "Undefined": 458,
    "SegmentBytes": 9706,
@@ -40791,8 +40841,8 @@
    "Functions": 65,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 58,
-   "Fragment": 6,
+   "Todo": 57,
+   "Fragment": 7,
    "CodeBytes": 13567,
    "Undefined": 376,
    "SegmentBytes": 13959,

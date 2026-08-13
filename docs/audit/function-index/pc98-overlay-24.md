@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1794` | sub_1794 | — | 12 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add word ptr [bx+di-7Dh], 43h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
 | `17D1` | sub_17D1 | LOSEITEM | 154 | 58 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1865` | sub_1865 | — | 52 | 19 | 4 | 1 |  | 待解讀 | — | — | — |
-| `186A` | sub_186A | — | 31 | 14 | 2 | 1 |  | 待解讀 | — | — | — |
+| `186A` | sub_186A | — | 31 | 14 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 31 bytes，已逐條讀完） | — |
 | `18B8` | sub_18B8 | GAINITEM | 52 | 22 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `18EC` | sub_18EC | — | 96 | 32 | 2 | 1 |  | 待解讀 | — | — | — |
 | `194C` | sub_194C | HORZMSG | 92 | 46 | 1 | 1 | ✓ | 待解讀 | — | — | — |

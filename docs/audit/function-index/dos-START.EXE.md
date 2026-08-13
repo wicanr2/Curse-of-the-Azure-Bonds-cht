@@ -137,10 +137,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `197D0` | sub_197D0 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完） | — |
 | `197F0` | @MSDOS$qm9REGISTERS | — | 11 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `197FB` | @INTR$q4BYTEm9REGISTERS | — | 58 | 40 | 8 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 GetDate 實作:INT 21h AH=2Ah,把年/月/日/星期分別 stosw 到四個 var 參數 | — |
-| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 SetDate 實作:INT 21h AH=2Bh | — |
-| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 GetTime 實作:INT 21h AH=2Ch,把時/分/秒/百分秒 stosw 到四個 var 參數 | — |
-| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/572-resident-service-functions.md<br>Turbo Pascal Dos 單元的 SetTime 實作:INT 21h AH=2Dh | — |
+| `1985C` | @GetDate$qm4Wordt1t1t1 | — | 34 | 18 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `1987E` | @SetDate$q4Wordt1t1 | — | 20 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `19892` | @GetTime$qm4Wordt1t1t1 | — | 37 | 19 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
+| `198B7` | @SetTime$q4Wordt1t1t1 | — | 23 | 10 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `198CE` | @DiskFree$q4Byte | — | 25 | 12 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskFree$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `198E7` | @DiskSize$q4Byte | — | 27 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskSize$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19902` | @FINDFIRST$q7PATHSTR4WORDm9SEARCHREC | — | 62 | 33 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDFIRST$q7PATHSTR4WORDm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -183,7 +183,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口 | — |
 | `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1A611`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A0E8` | @OVRINIT$q6String | — | 109 | 46 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完） | — |
+| `1A155` | sub_1A155 | — | 11 | 7 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 11 bytes，已逐條讀完） | — |
 | `1A160` | sub_1A160 | — | 58 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A19A` | sub_1A19A | — | 87 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A1F1` | sub_1A1F1 | — | 24 | 13 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>開檔:把 Pascal 字串複製成 ASCIIZ 到堆疊緩衝(lodsb 取長度後 rep movsb 再補 0),再以 INT 21h AX=3D00h 唯讀開啟 | — |
@@ -327,6 +327,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C10D` | @ChDir$qm6String | — | 65 | 27 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ChDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C14E` | @MkDir$qm6String | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MkDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1C163` | @RmDir$qm6String | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@RmDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1C178` | sub_1C178 | — | 27 | 17 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1C193` | sub_1C193 | — | 15 | 9 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1C178` | sub_1C178 | — | 27 | 17 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |
+| `1C193` | sub_1C193 | — | 15 | 9 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完） | — |
 | `1C1A2` | @UpCase$q4Char | — | 19 | 8 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@UpCase$q4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

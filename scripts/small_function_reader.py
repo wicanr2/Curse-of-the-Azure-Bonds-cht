@@ -115,6 +115,14 @@ def classify(function):
                             "這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀"
                             % (lines[-1] if lines else "(空)"))
 
+    # 分割續段：函式沒有 `sub sp, N` 配置區域變數，卻讀寫 `[bp-N]`。
+    # 那個框架不是它建立的 ⇒ 它是別的函式被 IDA 切開的後半段，不是完整函式。
+    allocates = any(SUB_SP.match(line) for line in lines)
+    uses_locals = any(re.search(r"\[bp-[0-9A-Fa-f]", line) for line in lines)
+    if uses_locals and not allocates:
+        return "邊界碎片", ("讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；"
+                            "這是別的函式被切開的後半段，不是完整函式")
+
     core = [line for line in core_instructions(function["items"])
             if line not in NOISE]
 
