@@ -15656,6 +15656,44 @@
    "level": "strong inference",
    "spec": "docs/spec/678-dodge-and-once-only-marker.md",
    "note": "與 pc98 overlay-12:0C0Ch 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4241,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/679-stat-drain-with-floor.md",
+   "note": "if <sub_3C>(3Ch, arg_2^[3], 2Bh, arg_6) <> 0:arg_6^[11h] > 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 <sub_1437>(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4379,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/679-stat-drain-with-floor.md",
+   "note": "與 1091h 同骨架:if <sub_3C>(0Ah, arg_2^[3], 2Ch, arg_6) <> 0:arg_6^[1A5h](目前 HP)> 1 時 DS:0A02Fh := 0、<far 014Ah:0464h>(arg_6,0,0,1),且 DS:7F27h <> 5 時再呼叫 <far 014Ah:04CAh>;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4207,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/679-stat-drain-with-floor.md",
+   "note": "與 pc98 overlay-12:1091h 助憶碼序列完全相同（60 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <sub_3C>(3Ch, arg_2^[3], 2Bh, arg_6) <> 0:arg_6^[11h] > 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 <sub_1437>(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4345,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/679-stat-drain-with-floor.md",
+   "note": "與 pc98 overlay-12:111Bh 助憶碼序列完全相同（59 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 1091h 同骨架:if <sub_3C>(0Ah, arg_2^[3], 2Ch, arg_6) <> 0:arg_6^[1A5h](目前 HP)> 1 時 DS:0A02Fh := 0、<far 014Ah:0464h>(arg_6,0,0,1),且 DS:7F27h <> 5 時再呼叫 <far 014Ah:04CAh>;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
