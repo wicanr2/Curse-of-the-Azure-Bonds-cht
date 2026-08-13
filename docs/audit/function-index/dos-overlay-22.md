@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 32 | 10 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
+| `0000` | sub_0 | — | 32 | 10 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完） | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
 | `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
 | `0219` | sub_219 | — | 470 | 194 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `03F5` | sub_3F5 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | spec/517-reverse-engineering-gap-inventory.md |

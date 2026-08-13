@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19CB` | sub_19CB | NEWATTACKER | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | — |
 | `1A59` | sub_1A59 | ATTACKE | 707 | 242 | 6 | 9 | ✓ | 待解讀 | — | — | — |
 | `1D1C` | sub_1D1C | CALCRANGEMODS | 187 | 76 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `1DD7` | sub_1DD7 | LOADCOMSTUFF | 57 | 15 | 0 | 7 | ✓ | 待解讀 | — | — | — |
+| `1DD7` | sub_1DD7 | LOADCOMSTUFF | 57 | 15 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr sub_101A`、`call far ptr sub_1883`、`call sub_1923`、`call loc_1982+1`、`call far ptr loc_15A0+1`、`call far ptr sub_11C7`（body 共 57 bytes，已逐條讀完） | — |
 | `1E30` | sub_1E30 | COMPTARGCURE | 537 | 195 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2049` | sub_2049 | — | 482 | 169 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `225F` | sub_225F | WHOZAP | 1300 | 483 | 0 | 6 | ✓ | 待解讀 | — | — | — |

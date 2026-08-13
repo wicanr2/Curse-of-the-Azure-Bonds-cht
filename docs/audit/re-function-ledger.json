@@ -2066,6 +2066,276 @@
   {
    "platform": "dos",
    "module": "START.EXE",
+   "ea": 112332,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@Randomize 實作:INT 21h AH=2Ch 取系統時間,把 CX:DX 存進 dword_20998 ⇒ dword_20998 就是 Turbo Pascal 的 RandSeed(原版隨機序列的種子來源)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109399,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6521,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 103059,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "PC-98 鍵盤 BIOS:INT 18h AH=01h(鍵盤狀態偵測),BH 非零時回傳 1 否則 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105065,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106751,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併:AX := (AX >> 4) or (ror(DX,4) and 0F000h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106764,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 拆解:rol(AX,4) 後 AX 取高 12 位、DX 取低 4 位"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 103354,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 CS:word_193CD 的 handle 呼叫 INT 21h AH=3Eh 關閉檔案,前後保存 AX/BX"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108520,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 1A82Ah 輸出;與 DOS START.EXE:1A6D4h 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108546,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 後呼叫 1A82Ah,餘數移回 al;與 DOS START.EXE:1A6EEh 同義"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114222,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_20996 設為 67h"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109666,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109680,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併;與 DOS START.EXE:1AB65h 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114574,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105049,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6375,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6533,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 10919,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 10483,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113003,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113355,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6319,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6391,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
    "ea": 65583,
    "state": "邊界碎片",
    "level": "",
@@ -2804,6 +3074,15 @@
   {
    "platform": "dos",
    "module": "overlay-02",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_104A`、`call sub_17E7`、`call far ptr sub_19A3`、`call loc_10B4`、`call far ptr loc_16BB+2`、`call loc_EB4+2`（body 共 82 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
    "ea": 1749,
    "state": "邊界碎片",
    "level": "",
@@ -3128,6 +3407,15 @@
   {
    "platform": "dos",
    "module": "overlay-05",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr unk_104A`、`call loc_770`、`call far ptr sub_1184`、`call far ptr loc_16BC+1`、`call loc_69D+2`、`call far ptr loc_15CF+2`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
    "ea": 4454,
    "state": "邊界碎片",
    "level": "",
@@ -3169,6 +3457,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3245,6 +3542,15 @@
   {
    "platform": "dos",
    "module": "overlay-08",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
    "ea": 2181,
    "state": "邊界碎片",
    "level": "",
@@ -3304,6 +3610,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3475,6 +3790,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 10h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4073,11 +4397,29 @@
   {
    "platform": "dos",
    "module": "overlay-13",
+   "ea": 7581,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
    "ea": 18866,
    "state": "邊界碎片",
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 0FDh:7Ah`、`call far ptr 175h:2Ah`、`call loc_EB2+4`、`call far ptr 196h:43h`（body 共 62 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4397,6 +4739,15 @@
   {
    "platform": "dos",
    "module": "overlay-19",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
    "ea": 4549,
    "state": "邊界碎片",
    "level": "",
@@ -4514,11 +4865,29 @@
   {
    "platform": "dos",
    "module": "overlay-20",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ch:2Ah`、`call far ptr 11Ah:57h`、`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 167h:4Dh`（body 共 32 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
    "ea": 3720,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4546,6 +4915,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5018,6 +5396,15 @@
   {
    "platform": "dos",
    "module": "overlay-23",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
    "ea": 5277,
    "state": "邊界碎片",
    "level": "",
@@ -5104,6 +5491,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+3Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_19A2+1`、`call loc_19E9+1`、`call loc_17E7`、`call sub_177A`、`call sub_16BD`、`call far ptr loc_1655+2`（body 共 37 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5203,6 +5599,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 196h:43h`、`call far ptr 19Ch:2Ah`、`call far ptr 179h:57h`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6188,6 +6593,15 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_1019+1`、`call far ptr loc_17B6+1`、`call far ptr loc_197F+4`、`call far ptr loc_1083+1`、`call loc_1694+3`、`call far ptr loc_E26`（body 共 82 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
    "ea": 1630,
    "state": "邊界碎片",
    "level": "",
@@ -6422,6 +6836,15 @@
   {
    "platform": "pc98",
    "module": "overlay-04",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
    "ea": 1700,
    "state": "邊界碎片",
    "level": "",
@@ -6512,6 +6935,15 @@
   {
    "platform": "pc98",
    "module": "overlay-05",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
    "ea": 4521,
    "state": "邊界碎片",
    "level": "",
@@ -6553,6 +6985,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-06",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call far ptr 10Dh:84h`、`call far ptr 0FAh:7Ah`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call sub_6E0`、`call far ptr 19Ah:2Ah`（body 共 37 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -6683,6 +7124,15 @@
   {
    "platform": "pc98",
    "module": "overlay-08",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
    "ea": 2981,
    "state": "邊界碎片",
    "level": "",
@@ -6769,6 +7219,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A339h, 44h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1018+2`、`call far ptr loc_187F+4`、`call sub_1923`、`call far ptr loc_1817`、`call far ptr loc_1695+2`、`call far ptr sub_15A1`（body 共 62 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -6935,6 +7394,15 @@
   {
    "platform": "pc98",
    "module": "overlay-10",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
    "ea": 3146,
    "state": "邊界碎片",
    "level": "",
@@ -7021,6 +7489,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 8 個呼叫，沒有其他動作：`call far ptr 0C9h:2Fh`、`call far ptr 117h:57h`、`call far ptr 232h:34h`、`call far ptr 194h:43h`、`call far ptr 176h:57h`、`call far ptr 8Bh:2Ah`（body 共 47 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -7565,6 +8042,15 @@
   {
    "platform": "pc98",
    "module": "overlay-13",
+   "ea": 7639,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr sub_101A`、`call far ptr sub_1883`、`call sub_1923`、`call loc_1982+1`、`call far ptr loc_15A0+1`、`call far ptr sub_11C7`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
    "ea": 18744,
    "state": "已解讀",
    "level": "exact",
@@ -7574,11 +8060,29 @@
   {
    "platform": "pc98",
    "module": "overlay-14",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 0FAh:7Ah`、`call far ptr 172h:2Ah`、`call far ptr 0DCh:66h`、`call far ptr 194h:43h`（body 共 62 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
    "ea": 3491,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -7709,6 +8213,15 @@
   {
    "platform": "pc98",
    "module": "overlay-16",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
    "ea": 3790,
    "state": "邊界碎片",
    "level": "",
@@ -7822,6 +8335,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr sub_15A1`、`call far ptr loc_101A`、`call far ptr sub_11C7`、`call far ptr loc_147C+1`、`call loc_17B4+3`、`call far ptr loc_1981+2`（body 共 62 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -8096,6 +8618,15 @@
   {
    "platform": "pc98",
    "module": "overlay-19",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
    "ea": 4436,
    "state": "邊界碎片",
    "level": "",
@@ -8347,6 +8878,15 @@
   },
   {
    "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ah:2Ah`、`call far ptr 117h:57h`、`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 164h:57h`（body 共 32 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
    "module": "overlay-21",
    "ea": 0,
    "state": "邊界碎片",
@@ -8407,6 +8947,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -9005,6 +9554,15 @@
   {
    "platform": "pc98",
    "module": "overlay-24",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
    "ea": 5587,
    "state": "邊界碎片",
    "level": "",
@@ -9167,6 +9725,15 @@
   {
    "platform": "pc98",
    "module": "overlay-28",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call far ptr 194h:43h`、`call far ptr 19Ah:2Ah`、`call far ptr 176h:57h`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-28",
    "ea": 189,
    "state": "已解讀",
    "level": "exact",
@@ -9203,6 +9770,15 @@
   {
    "platform": "pc98",
    "module": "overlay-30",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call far ptr 232h:34h`、`call far ptr 19Ah:2Ah`（body 共 17 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
    "ea": 4961,
    "state": "已解讀",
    "level": "exact",
@@ -9226,6 +9802,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -10729,276 +11314,6 @@
    "level": "",
    "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
    "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 112332,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "@Randomize 實作:INT 21h AH=2Ch 取系統時間,把 CX:DX 存進 dword_20998 ⇒ dword_20998 就是 Turbo Pascal 的 RandSeed(原版隨機序列的種子來源)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 109399,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-18",
-   "ea": 6521,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=0C000h(CRT 顯示模式設定)。⚠ IDA 的 TRANSFER TO ROM BASIC 註解是 IBM PC 語意,不適用 PC-98"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 103059,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "PC-98 鍵盤 BIOS:INT 18h AH=01h(鍵盤狀態偵測),BH 非零時回傳 1 否則 0"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 105065,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 106751,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "nibble 合併:AX := (AX >> 4) or (ror(DX,4) and 0F000h)"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 106764,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "nibble 拆解:rol(AX,4) 後 AX 取高 12 位、DX 取低 4 位"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 103354,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 CS:word_193CD 的 handle 呼叫 INT 21h AH=3Eh 關閉檔案,前後保存 AX/BX"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 108520,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 1A82Ah 輸出;與 DOS START.EXE:1A6D4h 同義"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 108546,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 後呼叫 1A82Ah,餘數移回 al;與 DOS START.EXE:1A6EEh 同義"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 109413,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 114222,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_20996 設為 67h"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 109666,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 109680,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "nibble 合併;與 DOS START.EXE:1AB65h 同義"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 114574,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 105049,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作)"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-18",
-   "ea": 6375,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-18",
-   "ea": 6533,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 10919,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 10483,
-   "state": "已解讀",
-   "level": "strong inference",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 113003,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 113355,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-26",
-   "ea": 0,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-30",
-   "ea": 0,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-32",
-   "ea": 0,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-25",
-   "ea": 0,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-26",
-   "ea": 0,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah"
-  },
-  {
-   "platform": "pc98",
-   "module": "PC98-GAME.EXE",
-   "ea": 102372,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-18",
-   "ea": 6319,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-18",
-   "ea": 6391,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本)"
   }
  ]
 }

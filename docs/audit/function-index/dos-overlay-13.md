@@ -35,7 +35,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | — |
 | `19D8` | sub_19D8 | — | 778 | 268 | 6 | 7 | ✓ | 待解讀 | — | — | — |
 | `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 待解讀 | — | — | — |
+| `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | — |
 | `1DF6` | sub_1DF6 | — | 537 | 195 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `200F` | sub_200F | — | 507 | 176 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md |

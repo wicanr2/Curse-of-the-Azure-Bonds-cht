@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 57 | 15 | 0 | 6 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 57 | 15 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完） | — |
 | `0083` | sub_83 | — | 1300 | 535 | 4 | 6 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0597` | sub_597 | — | 183 | 79 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `0698` | sub_698 | — | 786 | 332 | 1 | 1 | ✓ | 待解讀 | — | — | — |

@@ -21,7 +21,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17F3` | sub_17F3 | — | 170 | 80 | 1 | 4 |  | 待解讀 | — | — | — |
 | `18AF` | sub_18AF | — | 17 | 11 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔 | — |
 | `18C0` | sub_18C0 | — | 39 | 23 | 1 | 3 |  | 待解讀 | — | — | — |
-| `18E7` | sub_18E7 | — | 16 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面 | — |
+| `18E7` | sub_18E7 | — | 16 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面 | audit/function-index/pc98-overlay-18.md |
 | `18F7` | sub_18F7 | — | 17 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本) | — |
 | `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 待解讀 | — | — | — |
 | `191E` | sub_191E | — | 51 | 23 | 1 | 0 |  | 待解讀 | — | — | — |
