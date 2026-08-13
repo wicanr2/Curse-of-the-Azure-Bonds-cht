@@ -155,17 +155,17 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18883` | sub_18883 | — | 46 | 19 | 1 | 3 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>pushf + std(本體沒有字串指令,方向旗標是設給被呼叫者用的);es:[di] := 0,以 arg 的大小呼叫 <sub_18612>,把結果存 es:[di+2];bx = 0(失敗)時 ax := 0 並把 <sub_18862> 連叫兩次;最後 popf | — |
 | `188B1` | sub_188B1 | — | 23 | 10 | 1 | 3 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>取 [bp+4] 的參數呼叫 sub_18683;回傳 0 時呼叫 18862h 發出 BEL | — |
 | `188C8` | sub_188C8 | — | 27 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>呼叫 <186FFh>(最大可用塊)後把 AX/BX/DX 分別回填到 es:[di]、[di+2]、[di+6]——+4 沒有寫,回填的是不連續的三格 | — |
-| `188E3` | sub_188E3 | — | 35 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
+| `188E3` | sub_188E3 | — | 35 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/657-dos-alloc-and-device-command.md<br>向 DOS 要記憶體(int 21h AH=48h,BX 段落數):失敗時把 AX 直接覆寫成 0——DOS 回傳的錯誤碼被丟掉,呼叫端只知道成功與否;結果存 es:[di+2],再用 or al,ah 設 ZF 供判斷 | — |
 | `18930` | sub_18930 | — | 269 | 100 | 3 | 4 |  | 待解讀 | — | — | — |
 | `18A3D` | sub_18A3D | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `18A44` | sub_18A44 | — | 74 | 29 | 1 | 4 |  | 待解讀 | — | — | — |
-| `18A8E` | sub_18A8E | — | 25 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
+| `18A44` | sub_18A44 | — | 74 | 29 | 1 | 4 |  | 已解讀 | exact | docs/spec/657-dos-alloc-and-device-command.md<br>byte_24E73h = 1 是總開關,直接跳過;值沒變也不做。否則先呼叫 18A8Eh(送出「舊值 + 1」)、<sub_19259>(320h)、再把 byte_241C9h := 0、byte_241C8h := 新值,送 <sub_18BDB>(DS:@byte_241C8h, 7Eh)。241C8h/241C9h 是相鄰兩 byte,整組當一個命令送。「先送 1 再送 0、中間插延遲」是對硬體送命令的典型形狀 | — |
+| `18A8E` | sub_18A8E | — | 25 | 12 | 3 | 1 |  | 已解讀 | exact | docs/spec/657-dos-alloc-and-device-command.md<br>byte_241C9h := 1 後送 <sub_18BDB>(DS:@byte_241C8h, 7Eh)。不動 byte_241C8h,所以送出的是「上一次的值 + 1」 | — |
 | `18AA7` | sub_18AA7 | — | 232 | 95 | 1 | 3 |  | 待解讀 | — | — | — |
 | `18B8F` | sub_18B8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `18BB1` | sub_18BB1 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AC99`（body 共 26 bytes，已逐條讀完） | — |
 | `18BDB` | sub_18BDB | — | 58 | 40 | 3 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@INTR$q4BYTEm9REGISTERS` 逐位元組相同（58 bytes） | — |
 | `18C72` | sub_18C72 | — | 37 | 19 | 2 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@GetTime$qm4Wordt1t1t1` 逐位元組相同（37 bytes） | — |
-| `18D3A` | sub_18D3A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
+| `18D3A` | sub_18D3A | — | 35 | 21 | 2 | 1 |  | 邊界碎片 | — | docs/spec/657-dos-alloc-and-device-command.md<br>不是函式起點:以 jb 開頭、沒有 prologue,而前一支在 18C94h 就以 retf 10h 結束,中間沒有被認出的函式。內容是 ASCIIZ 轉 Pascal 短字串(repne scasb 求長度後 std + rep movsb 就地右移一格再 stosb 補長度);⚠ cx 上限 100h,字串超過 256 bytes 沒有結尾 0 時 not cl 會得到 0,長度變成 0 | — |
 | `18D5D` | sub_18D5D | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定:al 無 bit7 → 非雙位元組;81h..9Fh 與 E0h..FCh → 前導位元組;A0h..DFh(半形片假名)與 FDh 以上 → 非前導 | — |
 | `18D70` | sub_18D70 | — | 212 | 113 | 1 | 2 |  | 待解讀 | — | — | — |
 | `18E44` | sub_18E44 | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
