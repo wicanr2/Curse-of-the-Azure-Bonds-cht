@@ -148,7 +148,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1995A` | sub_1995A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1997D` | @FEXPAND$q7PATHSTR | — | 197 | 104 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FEXPAND$q7PATHSTR`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19A42` | @FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr | — | 82 | 37 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `19A94` | sub_19A94 | — | 18 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19A94` | sub_19A94 | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助:長度夾到 bx 上限後 stosb 寫長度,再 rep movsb 複製內容並更新來源指標 | — |
 | `19AB0` | @__CRTInit$qv | — | 48 | 24 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__CRTInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19AE0` | unknown_libname_1 | — | 105 | 45 | 1 | 5 |  | 待解讀 | — | — | — |
 | `19B49` | sub_19B49 | — | 78 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
@@ -257,7 +257,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B017` | __RealDiv | — | 137 | 74 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealDiv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B0A0` | sub_1B0A0 | — | 35 | 18 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B0C3` | __RealCmp | — | 23 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealCmp`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1B0DA` | sub_1B0DA | — | 19 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1B0DA` | sub_1B0DA | — | 19 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>多欄位相等比較:依序比較 al/cl、dx/di、bx/si、ah/ch,任一不等就提前返回 | — |
 | `1B0ED` | __RealFloat | — | 63 | 30 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealFloat`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B12C` | __RealTrunc | — | 92 | 44 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealTrunc`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B188` | @$brplu$q4Realt1 | — | 76 | 35 | 0 | 9 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$q4Realt1`，`$b` 前綴是 Borland 的運算子編碼 | — |

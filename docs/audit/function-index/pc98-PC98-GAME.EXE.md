@@ -166,11 +166,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18BDB` | sub_18BDB | — | 58 | 40 | 3 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@INTR$q4BYTEm9REGISTERS` 逐位元組相同（58 bytes） | — |
 | `18C72` | sub_18C72 | — | 37 | 19 | 2 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@GetTime$qm4Wordt1t1t1` 逐位元組相同（37 bytes） | — |
 | `18D3A` | sub_18D3A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
-| `18D5D` | sub_18D5D | — | 19 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18D5D` | sub_18D5D | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定:al 無 bit7 → 非雙位元組;81h..9Fh 與 E0h..FCh → 前導位元組;A0h..DFh(半形片假名)與 FDh 以上 → 非前導 | — |
 | `18D70` | sub_18D70 | — | 212 | 113 | 1 | 2 |  | 待解讀 | — | — | — |
-| `18E44` | sub_18E44 | — | 19 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18E44` | sub_18E44 | — | 19 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
 | `18E59` | sub_18E59 | — | 113 | 50 | 2 | 3 |  | 待解讀 | — | — | — |
-| `18ECA` | sub_18ECA | — | 18 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18ECA` | sub_18ECA | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助,與 DOS START.EXE:19A94h 逐指令相同 | — |
 | `18EE0` | sub_18EE0 | — | 48 | 24 | 1 | 4 |  | 待解讀 | — | — | — |
 | `18F10` | sub_18F10 | — | 146 | 53 | 1 | 5 |  | 待解讀 | — | — | — |
 | `18FA3` | sub_18FA3 | — | 34 | 17 | 4 | 1 |  | 待解讀 | — | — | — |
@@ -193,11 +193,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
 | `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
 | `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_19A8B 後把 word_280F9 載入 DX 回傳 | — |
-| `19604` | sub_19604 | — | 18 | 7 | 7 | 3 |  | 待解讀 | — | — | — |
+| `19604` | sub_19604 | — | 18 | 7 | 7 | 3 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29 | — |
 | `19616` | sub_19616 | — | 179 | 69 | 1 | 8 |  | 待解讀 | — | — | — |
 | `196C9` | sub_196C9 | — | 178 | 83 | 1 | 6 |  | 待解讀 | — | — | — |
 | `1977B` | sub_1977B | — | 3 | 2 | 5 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>int 18h 後返回。⚠ IDA 的註解寫 TRANSFER TO ROM BASIC 是 IBM PC 的語意;PC-98 的 INT 18h 是螢幕／鍵盤 BIOS,不可沿用該註解 | — |
-| `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 待解讀 | — | — | — |
+| `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
 | `19791` | sub_19791 | — | 44 | 20 | 2 | 1 |  | 待解讀 | — | — | — |
 | `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
 | `197EF` | sub_197EF | — | 54 | 31 | 1 | 4 |  | 待解讀 | — | — | — |
@@ -205,7 +205,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19840` | sub_19840 | — | 110 | 56 | 4 | 4 |  | 待解讀 | — | — | — |
 | `198AE` | sub_198AE | — | 153 | 83 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19947` | sub_19947 | — | 174 | 93 | 1 | 4 |  | 待解讀 | — | — | — |
-| `199F5` | sub_199F5 | — | 18 | 12 | 3 | 0 |  | 待解讀 | — | — | — |
+| `199F5` | sub_199F5 | — | 18 | 12 | 3 | 0 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>文字 VRAM 位址計算:di := ((di × 50h) + dx) × 2 ⇒ 每列 80 欄、每格 2 bytes | — |
 | `19A07` | sub_19A07 | — | 9 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=06h、DL=07h,前後保存 DX | — |
 | `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |

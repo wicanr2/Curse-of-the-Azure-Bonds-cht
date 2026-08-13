@@ -1961,7 +1961,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "字串搬移輔助:長度夾到 bx 上限後 stosb 寫長度,再 rep movsb 複製內容並更新來源指標"
   },
   {
    "platform": "dos",
@@ -3470,7 +3473,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "多欄位相等比較:依序比較 al/cl、dx/di、bx/si、ah/ch,任一不等就提前返回"
   },
   {
    "platform": "dos",
@@ -7202,7 +7208,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-08.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21388,7 +21397,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定:al 無 bit7 → 非雙位元組;81h..9Fh 與 E0h..FCh → 前導位元組;A0h..DFh(半形片假名)與 FDh 以上 → 非前導"
   },
   {
    "platform": "pc98",
@@ -21412,7 +21424,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -21436,7 +21451,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "字串搬移輔助,與 DOS START.EXE:19A94h 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -21729,7 +21747,10 @@
    "callers": 7,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29"
   },
   {
    "platform": "pc98",
@@ -21780,7 +21801,10 @@
    "callers": 6,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -21876,7 +21900,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "文字 VRAM 位址計算:di := ((di × 50h) + dx) × 2 ⇒ 每列 80 欄、每格 2 bytes"
   },
   {
    "platform": "pc98",
@@ -26667,7 +26694,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-08.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40747,9 +40777,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 91,
+   "Read": 93,
    "NotBlocking": 133,
-   "Todo": 84,
+   "Todo": 82,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -41302,9 +41332,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 99,
+   "Read": 105,
    "NotBlocking": 29,
-   "Todo": 184,
+   "Todo": 178,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
