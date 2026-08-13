@@ -26117,11 +26117,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/609-ecl-area-effect-and-wipeout.md",
+   "note": "ECL opcode 2Eh(範圍效果與全滅判定):READVAR(5);operand1 是位元旗標(10h/20h/40h 各控一段流程),amount = loc_142D(b,a) + c 且每次施加前重算(共三處)。結尾把 DS:7F34h 設 1 再走全隊鏈,任一角色 +197h 非 0 就清掉(迴圈不提早結束);仍為 1 表示全滅——設 DS:9636h/9637h 為 2、顯示「パーティーは全滅した！」、延遲 0BB8h(3000)。DS:9594h 進來存、離開還原",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/609-ecl-area-effect-and-wipeout.md"
    ]
   },
   {
@@ -43324,9 +43326,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 50,
+   "Read": 51,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
