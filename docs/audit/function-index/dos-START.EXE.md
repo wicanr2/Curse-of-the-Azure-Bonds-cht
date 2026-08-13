@@ -69,12 +69,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12A77` | sub_12A77 | — | 15 | 9 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47 | — |
 | `12C1D` | sub_12C1D | — | 1611 | 617 | 1 | 5 |  | 待解讀 | — | — | — |
 | `133E2` | sub_133E2 | — | 133 | 54 | 2 | 0 |  | 已解讀 | exact | docs/spec/674-ega-pixel-mask-and-bit-reverse.md<br>byte 位元反轉:八段固定的 and + shl/shr(bit0→7、1→6、…、7→0)。已對 0..255 全部逐值驗算,與位元字串反轉不一致 0 筆。第一段沒有先 and 1,直接 shl 7 靠「只存回 byte」把其餘位元擠掉,其他七段都有遮罩 | — |
-| `13467` | sub_13467 | — | 141 | 49 | 2 | 0 |  | 待解讀 | — | — | — |
+| `13467` | sub_13467 | — | 141 | 49 | 2 | 0 |  | 已解讀 | exact | docs/spec/675-horizontal-mirror-pair.md<br>16-bit 裡 8 組兩位元的順序反轉:遮罩取自 DS:1E73Dh 起的八個 word,實際讀出是 C000h/3000h/0C00h/0300h/00C0h/0030h/000Ch/0003h(八組互不重疊的兩位元),移位量 ±14/±10/±6/±2。已對 0..65535 全部逐值驗算,不一致 0 筆。與 133E2h(1-bit 版)成一套——同一個水平鏡射在兩種像素深度下的兩個版本。遮罩放資料段可由資料改變,133E2h 的則是寫死的立即值 | — |
 | `134F4` | sub_134F4 | — | 49 | 20 | 2 | 0 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>交換一個 byte 的高低 nibble:(arg_0 shl 4) + ((arg_0 and 0F0h) shr 4)。用 add 而非 or(兩半不重疊結果相同);shl 後存進 byte 變數,高位自然被截掉不需額外遮罩 | — |
 | `145C9` | sub_145C9 | — | 192 | 72 | 2 | 3 |  | 待解讀 | — | — | — |
 | `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>釋放主記錄與附帶緩衝:size := byte(p^[8]) × word(p^[11h])(記錄自己記著「幾筆 × 每筆多大」);p^[13h] 的 far pointer 非 nil 時先 FreeMem(@p^[13h], size),再 FreeMem(主記錄, size + 17h)(前 17h bytes 是標頭,+13h..+16h 就是那個指標),最後把呼叫端指標清成 nil。兩塊用同一個 size。用的是 Turbo Pascal 的 FreeMem,不是 spec 655 那套自製配置器 | — |
 | `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `14B53` | sub_14B53 | — | 135 | 49 | 1 | 1 |  | 待解讀 | — | — | — |
+| `14B53` | sub_14B53 | — | 135 | 49 | 1 | 1 |  | 已解讀 | exact | docs/spec/675-horizontal-mirror-pair.md<br>blit 前的參數計算:arg_A shl 3(×8,一個 byte 裝 8 個像素);src^[2] 與 dst^[2] 是各自的每列位元組數,var_12 = src stride - dst stride - arg_C 即每列要跳過多少;var_10/14/12/C 最後都乘 2,所以 sub_15329 以 word 為單位前進。dst^[11h] 與 14689h 算釋放大小用的是同一個欄位。參數靠 bx/cx 與一整片區域變數傳,不是堆疊參數 | — |
 | `14BDA` | sub_14BDA | — | 148 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14C6E` | sub_14C6E | — | 357 | 136 | 1 | 3 |  | 待解讀 | — | — | — |
 | `14DD3` | sub_14DD3 | — | 143 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
