@@ -116,6 +116,12 @@ def classify(function):
                             "這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀"
                             % (lines[-1] if lines else "(空)"))
 
+    # 分割續段（第二型）：有 `pop bp` 收尾卻沒有 `push bp` 開頭——它在還原一個
+    # 不是自己建立的 frame，同樣是被切開的後半段。
+    if any(line == "pop bp" for line in lines) and (not lines or lines[0] != "push bp"):
+        return "邊界碎片", ("有 `pop bp` 收尾卻沒有 `push bp` 開頭；"
+                            "還原的是別人建立的 frame，屬被切開的後半段")
+
     # 分割續段：函式沒有 `sub sp, N` 配置區域變數，卻讀寫 `[bp-N]`。
     # 那個框架不是它建立的 ⇒ 它是別的函式被 IDA 切開的後半段，不是完整函式。
     allocates = any(SUB_SP.match(line) for line in lines)

@@ -20,7 +20,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C7B` | sub_C7B | — | 41 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 41 bytes，已逐條讀完） | — |
 | `0CB7` | sub_CB7 | — | 228 | 75 | 3 | 7 |  | 待解讀 | — | — | — |
 | `0DB1` | sub_DB1 | — | 1043 | 349 | 1 | 15 | ✓ | 待解讀 | — | — | — |
-| `11CF` | sub_11CF | — | 38 | 15 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 38 bytes，已逐條讀完） | — |
+| `11CF` | sub_11CF | — | 38 | 15 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完） | — |
 | `1201` | sub_1201 | — | 95 | 31 | 5 | 4 | ✓ | 待解讀 | — | — | — |
 | `1273` | sub_1273 | — | 248 | 84 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `1388` | sub_1388 | — | 197 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |

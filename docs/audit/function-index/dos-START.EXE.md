@@ -192,7 +192,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A280` | @OVRCLEARBUF$qv | — | 47 | 19 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRCLEARBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數 | — |
-| `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 93 bytes，已逐條讀完） | — |
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
