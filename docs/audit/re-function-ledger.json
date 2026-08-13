@@ -17035,6 +17035,16 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "把物品身上還有效的效果收成一張表。先依 <overlay-24 entry#27>(DS:6506h, 10h)、DS:6506h^[109h] > 0、DS:6506h^[111h] > DS:6506h^[0E6h] 與 [5CF6h + DS:729Ch^[2Eh]×16] = 0Ch 決定要不要把 DS:729Ch^[35h] 清成 0;**+35h 不為 0 就整支不做事**。否則掃三個效果槽 DS:729Ch^[3Ch..3Eh](spec 703):arg_0 非 0 收 slot > 80h(無號 ja,**80h 本身不算**,改寫成 (slot and 80h) <> 0 會多收)、arg_0 為 0 收 slot > 0;收的話呼叫 <sub_3F5h>(slot) 並把 DS:729Ch 存進 far [4BF0h + byte[4CB4h]×4],4CB4h 加 1。⚠ 只加不清且**沒有上界檢查**,而 4CB5h 正是 spec 705 的擲骰門檻,溢出會直接寫壞它",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 18466,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/711-target-count-clamp-and-callee-arity.md",
+   "bounds": "prologue",
+   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h > n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := <overlay-23 entry#8>(p, 4, 0)、r := <sub_E11h>(p, 23h, 52h)、<overlay-23 entry#21 PUTEFFECT>(r, 0, 0, 1, s, 'is affected' CS:4816h)。由多個呼叫點的推入數量收斂出:entry#8 四個 word、entry#20 五個、entry#21 七個、sub_E11h 四個"
   }
  ]
 }

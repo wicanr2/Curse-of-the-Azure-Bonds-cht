@@ -16138,6 +16138,7 @@
    "spec": "docs/spec/709-target-array.md",
    "note": "把不符合的目標從清單裡拿掉。⚠ **DS:7431h 是 far 指標陣列(一格 4 bytes、1-based),DS:7434h 是筆數,而一路被當成「目標」的 DS:7435h/7437h 就是它的第 1 格**(7431h+1×4=7435h)。所以 `if DS:7434h \u003c\u003e 0` 其實是「目標清單非空」。迴圈:清掉 := (p^[197h] \u003c\u003e arg_4) 或 (相符 且 DS:6F97h=1 且 DS:4FBAh=5 且 \u003coverlay-24 entry#32\u003e(p,1) \u003e 0)——**類別相符的反而可能被清掉**;清掉是把該格寫成 NIL,**筆數不變**,下游必須自己檢查 NIL。最後 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,緩衝)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
     "spec/710-effect-collection-and-leftover-target.md"
    ]
@@ -16907,7 +16908,8 @@
    "spec": "docs/spec/707-raise-dead-and-area-effect.md",
    "note": "兩段互相獨立:\u003coverlay-32 entry#9\u003e(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a\u003e0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b\u003e0 且 b\u003c\u003earg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
    "citations": [
-    "spec/707-raise-dead-and-area-effect.md"
+    "spec/707-raise-dead-and-area-effect.md",
+    "spec/711-target-count-clamp-and-callee-arity.md"
    ]
   },
   {
@@ -17254,7 +17256,8 @@
    "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
    "note": "三段接力:r := \u003csub_E11h\u003e(DS:6506h, 4, 49h) → \u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0,0,0,0, 空字串 CS:4425h) → \u003csub_F06h\u003e(DS:6F97h, 0,0,0,0, 'is affected' CS:4426h)。⚠ CS:4425h 與 CS:4426h 緊鄰(前者長度 0、後者長度 11),反組譯裡兩個 offset 只差 1 很容易看成同一個字串的偏移",
    "citations": [
-    "spec/703-item-effect-slots-and-uninitialised-args.md"
+    "spec/703-item-effect-slots-and-uninitialised-args.md",
+    "spec/711-target-count-clamp-and-callee-arity.md"
    ]
   },
   {
@@ -17310,7 +17313,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/708-slay-living-and-missile-count.md",
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/711-target-count-clamp-and-callee-arity.md"
    ]
   },
   {
@@ -17394,7 +17398,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/711-target-count-clamp-and-callee-arity.md",
+   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is affected' CS:4816h)。由多個呼叫點的推入數量收斂出:entry#8 四個 word、entry#20 五個、entry#21 七個、sub_E11h 四個",
+   "citations": [
+    "spec/711-target-count-clamp-and-callee-arity.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17531,7 +17541,8 @@
    "spec": "docs/spec/706-temporary-field-adjust.md",
    "note": "暫時改欄位再還原:先存 舊值 := 目標^[0E3h],依 目標^[75h] 調整(0 → 減 1、5 → 加 4、其他 → 加 2),接著 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,空字串) 與 \u003coverlay-24 entry#27\u003e(目標, 44h, @node),找到就 \u003coverlay-23 entry#2\u003e(44h, 目標, 0, 0),**最後一定把 目標^[0E3h] 還原成舊值**。⚠ 修改與還原之間隔著三個呼叫,還原在最尾端且兩條路徑都會經過——只讀前半段會得出「永久調整」的相反結論。下游在這段期間讀該欄位會拿到臨時值,改寫成傳參數行為會不同(原作是任何讀該欄位的程式碼都看得到)",
    "citations": [
-    "spec/706-temporary-field-adjust.md"
+    "spec/706-temporary-field-adjust.md",
+    "spec/711-target-count-clamp-and-callee-arity.md"
    ]
   },
   {
@@ -17607,7 +17618,8 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
-    "spec/710-effect-collection-and-leftover-target.md"
+    "spec/710-effect-collection-and-leftover-target.md",
+    "spec/711-target-count-clamp-and-callee-arity.md"
    ]
   },
   {
@@ -44756,6 +44768,7 @@
    "note": "\u003cfar 02A8:1392\u003e(0,0) 接著 \u003cfar 02A8:1392\u003e(8,8)——同一個 routine 連叫兩次,成對的極值",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-22.md",
     "spec/635-overlay32-grid-record-array.md",
     "spec/710-effect-collection-and-leftover-target.md"
    ]
@@ -45631,9 +45644,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 77,
+   "Read": 78,
    "NotBlocking": 0,
-   "Todo": 36,
+   "Todo": 35,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
