@@ -356,15 +356,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 13016,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 40h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 12034,
    "state": "已解讀",
    "level": "exact",
@@ -568,15 +559,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 3Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 13983,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 40h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "strong inference",
    "spec": "docs/spec/595-ecl-target-selection-and-effect-query.md",
    "note": "與 pc98 overlay-02:364Bh 助憶碼序列完全相同（34 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 3Fh(查詢效果):先清空 DS:A88Ah 六個比較旗標,READVAR(1);以 far 014A:00A7(sub_269 用的同一支效果查找)查 DS:9594h 身上有沒有該 effect id,有設 A88Ah、沒有設 A88Bh。借用比較旗標,所以後面接 16h 是「有」、17h 是「沒有」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 13983,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "ECL opcode 40h:READVAR(1);沿 DS:9598h 的角色鏈(next 在 +18Ah)逐一走訪,對每名角色再沿 +14Eh 的物品鏈(next 在 +52h)走訪,物品 +56h 等於該 id 就呼叫 far 014A:0075 移除,每名角色處理完呼叫 014A:0043 收尾。內層迴圈先取 next 再移除,所以鏈不會斷"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 13016,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "與 pc98 overlay-02:369Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 40h:READVAR(1);沿 DS:9598h 的角色鏈(next 在 +18Ah)逐一走訪,對每名角色再沿 +14Eh 的物品鏈(next 在 +52h)走訪,物品 +56h 等於該 id 就呼叫 far 014A:0075 移除,每名角色處理完呼叫 014A:0043 收尾。內層迴圈先取 next 再移除,所以鏈不會斷 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
