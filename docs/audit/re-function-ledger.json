@@ -15450,6 +15450,24 @@
    "level": "exact",
    "spec": "docs/spec/671-dos-video-page-and-dead-bounds.md",
    "note": "交換一個 byte 的高低 nibble:(arg_0 shl 4) + ((arg_0 and 0F0h) shr 4)。用 add 而非 or(兩半不重疊結果相同);shl 後存進 byte 變數,高位自然被截掉不需額外遮罩"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 74000,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/672-numeric-menu-input-and-nibble-array.md",
+   "note": "數字選單輸入:迴圈 ReadKey,兩道檢查——字元要在 CS:byte_120F0h 寫死的集合裡、(c-30h) 要落在 [arg_0..arg_2](用 Pascal 的集合 + 運算建子範圍);任一不過就回到 ReadKey。⚠ 回顯在兩道檢查之後,所以按錯鍵完全沒有回饋、不合法的按鍵永遠不會顯示出來。通過才 Write 並回傳 c-30h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 76267,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/672-numeric-menu-input-and-nibble-array.md",
+   "note": "從 arg_0 指的 8 bytes(= 16 個 nibble)取第 arg_4 個:奇數索引取低 nibble、偶數取高 nibble——**高 nibble 在前**。奇偶判斷用 shr al,1 看進位,但商下面又用 idiv 2 重算一次,同一個除法做了兩遍"
   }
  ]
 }

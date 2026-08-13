@@ -38,20 +38,27 @@ def main():
 
     path = os.path.join(SWEEP, platform, "overlays", "prologue",
                         "%s-%s.json" % (platform, module))
+    paths = []
     if module.endswith(".EXE") or not os.path.exists(path):
         # resident 執行檔不走 prologue 邊界（第 644 輪：271 支只有 85 支對得上，
         # 手寫組語的 RTL 與 TPOV stub 都沒有標準 prologue）。改用 IDA 邊界，
         # 並在每支結尾標出最後一條是不是 return。
+        #
+        # ⚠ `small/` 底下可能同時有 `X.EXE.json` 與 `X.EXE.big.json`，而且**函式數
+        # 不同**（DOS 側 260 對 325）。只挑其中一份，另一份才有的函式會印出空白且
+        # 沒有任何警告。所以兩份都讀進來合併。
         for candidate in (module + ".json", module + ".big.json"):
             trial = os.path.join(SWEEP, platform, "small", candidate)
             if os.path.exists(trial):
-                path = trial
-                break
-    dumped = json.load(open(path, encoding="utf-8"))["functions"]
+                paths.append(trial)
+    else:
+        paths.append(path)
+
     items = {}
-    for function in dumped:
-        for item in function["items"]:
-            items.setdefault(item["ea"], item)
+    for one in paths:
+        for function in json.load(open(one, encoding="utf-8"))["functions"]:
+            for item in function["items"]:
+                items.setdefault(item["ea"], item)
 
     blob_path = os.path.join(SWEEP, platform, "overlays", module + ".bin")
     blob = open(blob_path, "rb").read() if os.path.exists(blob_path) else b""
@@ -87,6 +94,8 @@ def main():
         end = next_prologue(ea) if blob else ea + size
         inside = [a for a in sorted(items) if ea <= a < end]
         tail = ""
+        if not inside:
+            tail = "  ⚠ 這個範圍在匯出裡沒有任何指令"
         if not blob and inside:
             last = re.sub(r"\s*;.*$", "", items[inside[-1]]["disasm"].strip())
             if not re.match(r"(ret[nf]?|jmp|iret)\b", last):
