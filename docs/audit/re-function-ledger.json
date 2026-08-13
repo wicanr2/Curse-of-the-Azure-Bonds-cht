@@ -14540,6 +14540,33 @@
    "level": "exact",
    "spec": "docs/spec/645-pc98-text-layer-primitives.md",
    "note": "文字 VRAM 定址:DS := arg_2;DI := (arg_A × 50h + arg_C) × 2;CX := byte(arg_4);SI := arg_0;再呼叫 sub_16966 與 sub_169B6。50h = 80 是欄數,每格兩個 byte——與 spec 636 由 FillChar 長度換算的結論一致。進出成對保存 SS/DS/旗標並 cld。retn 0Eh = 7 個 word 參數"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94598,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/646-sjis-to-jis-conversion.md",
+   "note": "Shift-JIS → JIS(区点)換算,輸入輸出都在 AX。用三個已知碼點驗算全部對上:8140h→2121h(全形空白)、889Fh→3021h(亜)、82A0h→2422h(あ)。JIS 碼是 PC-98 漢字 ROM 的索引,所以這支與 14342h(首位元組判斷)合起來是整條日文顯示路徑的入口。⚠ 中文化不能只改常數——漢字 ROM 沒有繁體字集,要整條換成自備字型"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/646-sjis-to-jis-conversion.md",
+   "note": "字表線性查詢:表格格式是「一個 byte 的筆數 + 連續的 word」,在 ES:BX 指的表裡找 DX,回傳 1 起算的序號,找不到回 0。因為 0 專門表示找不到,表最多 255 筆。比較是 16-bit 整字比不是逐 byte"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94687,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/646-sjis-to-jis-conversion.md",
+   "note": "把七個參數全部搬進固定全域(dword_16A19、byte_16C25、byte_16C24、word_16A1D/1F/21)再呼叫 sub_16E70——被呼叫端從全域讀不從堆疊讀。⚠ arg_4 進 16C25h、arg_6 進 16C24h,順序是反的"
   }
  ]
 }
