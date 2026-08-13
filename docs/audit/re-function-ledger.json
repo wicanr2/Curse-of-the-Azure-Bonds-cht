@@ -15570,6 +15570,54 @@
    "level": "strong inference",
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "與 dos overlay-12:00E8h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 <far 013Eh:043Fh>(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 387,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "DOS 0188h 的 PC-98 對應:同樣的 RACETYPE case(0Ah→1、9/0Ch→2、4→3、其餘→0),加成同時寫進 DS:0A039h 與 DS:0A02Eh(傷害值),再把 DS:0A02Fh 覆寫成 9。**由這對同構函式新定出全域對照 DS:6F9Fh ↔ DS:0A039h**",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1356,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 <sub_140Fh>(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1907,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1897,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "與 pc98 overlay-12:0773h 助憶碼序列完全相同（55 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1354,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "與 pc98 overlay-12:054Ch 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 <sub_140Fh>(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

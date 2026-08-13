@@ -9132,6 +9132,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 \u003cfar 013Eh:043Fh\u003e(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/585-ecl-goto-and-display-mode-pair.md",
     "spec/676-dos-overlay12-effects.md"
    ]
@@ -9171,7 +9172,8 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "依 RACETYPE(+11Ah,兩平台同偏移)給加成:0Ah→1、9 或 0Ch→2、4→3、其餘→0(case 有 else,無未初始化問題);同一個加成同時加到 DS:6F9Fh 與 DS:6F94h(傷害值),再把 DS:6F95h 整個覆寫成 9。種族 9 與 0Ch 共用結果",
    "citations": [
-    "spec/676-dos-overlay12-effects.md"
+    "spec/676-dos-overlay12-effects.md",
+    "spec/677-pc98-overlay12-twins.md"
    ]
   },
   {
@@ -9318,6 +9320,7 @@
    "spec": "docs/spec/676-dos-overlay12-effects.md",
    "note": "兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/676-dos-overlay12-effects.md"
    ]
   },
@@ -9419,7 +9422,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "與 pc98 overlay-12:054Ch 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 \u003csub_140Fh\u003e(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9477,7 +9483,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "與 pc98 overlay-12:0773h 助憶碼序列完全相同（55 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -30731,7 +30740,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "DOS 0188h 的 PC-98 對應:同樣的 RACETYPE case(0Ah→1、9/0Ch→2、4→3、其餘→0),加成同時寫進 DS:0A039h 與 DS:0A02Eh(傷害值),再把 DS:0A02Fh 覆寫成 9。**由這對同構函式新定出全域對照 DS:6F9Fh ↔ DS:0A039h**",
+   "citations": [
+    "spec/677-pc98-overlay12-twins.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31003,7 +31018,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 \u003csub_140Fh\u003e(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事",
+   "citations": [
+    "spec/677-pc98-overlay12-twins.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31072,7 +31093,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/677-pc98-overlay12-twins.md",
+   "note": "n := (arg_2^[3] div 16) + 1(取效果節點 +3 的高 4 bit 再加一),r := ROLLDICE(1, n)——**面數由資料算出**不是常數,可以是 1d1 到 1d16;高 nibble 為 0 時 1d1 結果恆為 1。除法用 cwd + idiv 但輸入先零延伸,實際是無號。+3 的低 nibble 另有用途(1222h 取它的 bit 4)",
+   "citations": [
+    "spec/677-pc98-overlay12-twins.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31394,7 +31421,8 @@
    "note": "v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/638-overlay12-effect-batch2.md"
+    "spec/638-overlay12-effect-batch2.md",
+    "spec/677-pc98-overlay12-twins.md"
    ]
   },
   {
@@ -31698,7 +31726,8 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];\u003cfar 013E:0028\u003e(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ \u003cfar 0418:14AAh\u003e → \u003csub_1437\u003e(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD\u0026D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住",
    "citations": [
-    "spec/639-overlay12-poison-and-race-gates.md"
+    "spec/639-overlay12-poison-and-race-gates.md",
+    "spec/677-pc98-overlay12-twins.md"
    ]
   },
   {
@@ -44653,9 +44682,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 84,
+   "Read": 86,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 39,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -45208,9 +45237,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 92,
+   "Read": 95,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 36,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
