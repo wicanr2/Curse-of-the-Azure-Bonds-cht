@@ -338,15 +338,6 @@
   {
    "platform": "pc98",
    "module": "overlay-07",
-   "ea": 2049,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
-   "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-07",
    "ea": 3627,
    "state": "已解讀",
    "level": "exact",
@@ -12956,15 +12947,6 @@
   {
    "platform": "pc98",
    "module": "overlay-07",
-   "ea": 2140,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
-   "note": "FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-07",
    "ea": 1469,
    "state": "已解讀",
    "level": "exact",
@@ -13150,6 +13132,33 @@
    "level": "exact",
    "spec": "docs/spec/624-ecl-special-address-space.md",
    "note": "STORESPECIALS(value,addr):寫入側,只有 18 個入口——比讀側的 27 個少,延續 spec 565 的讀寫不對稱。含區間 7C20h..7C70h → char^[1Eh+(addr-1Fh)](81 個連號位址);7CB8h 寫入前若 value>0B2h 先減 32h;7C00h 只在值為 0 時才動作;7F22h/7F24h/7F26h 三者只差 sub_1808 的第一個參數(1/2/3),且值<=80h 靜默不做事"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2049,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "ECL 位址分類器:4B00h..4EFFh→0、7C00h..7FFFh→1、7A00h..7BFFh→2、8000h..9E40h→3、其餘→4。四段互不重疊。class 3 上界 9E40h 與 spec 563 從 New 參數量到的 bank 3 大小 1E41h 完全吻合"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2140,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "INDEXOF(node):從 DS:9598h 串列頭走 +18Ah next 指標,數到 node 為止回傳索引 byte。找不到會回傳整串長度,呼叫端分不出「找不到」與「最後一個的下一格」。這確認角色紀錄 +18Ah 是 next 指標"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 4424,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
+   "note": "STORESTRING(s,addr):用 0801h 分類後把字元逐個存進對應 bank——class 0/1/2 每字元一個 word,class 3 一個 byte,寫完補一個 0 當終止符;class 4 靜默不做事。位址不先減區間起點,靠 16-bit 回捲,而四個 bank 常數(6A00h/800h/0C00h/8000h)正好等於 10000h 減「起點×寬度」——刻意讓起點落在 offset 0。特例:addr=7C00h 不進迴圈,直接把字串寫進 DS:9594h 角色紀錄 offset 0,上限 0Fh(15)"
   }
  ]
 }
