@@ -11430,7 +11430,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/575-random-core-and-pc98-vram.md",
-   "note": "@Random(n) 本體:呼叫 sub_1B694 取得 32-bit 亂數,參數 n 為 0 時回傳 0,否則以 n 做除法並回傳餘數(xchg/div/xchg 把餘數搬進 ax)"
+   "note": "@Random(n) 本體:呼叫 LCG 後 xor ax,ax 丟棄低位字,n 為 0 回 0,否則回傳 (RandSeed shr 16) mod n"
   },
   {
    "platform": "pc98",
@@ -11439,7 +11439,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/575-random-core-and-pc98-vram.md",
-   "note": "@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(內部 LCG 為 sub_1B7F4)"
+   "note": "@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(LCG 為 sub_1B7F4);回傳 (RandSeed shr 16) mod n"
   },
   {
    "platform": "dos",
@@ -11521,6 +11521,24 @@
    "level": "exact",
    "spec": "docs/spec/575-random-core-and-pc98-vram.md",
    "note": "ECL opcode 02h(GOSUB)的 handler:以參數 1 呼叫兩個 far routine"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112276,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "Turbo Pascal RTL 的 LCG:RandSeed := RandSeed*134775813 + 1 (mod 2^32);高位乘數 0808h 由 shl/add ch,cl/add dh,bl 湊出,只有低位 8405h 是常數(cs:word_1B6CA);已用 20 萬組種子數值驗證等價"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 112628,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
+   "note": "同上,種子為 dword_23B0A、常數為 cs:word_1B82A(同樣 8405h);與 DOS sub_1B694 逐指令相同"
   }
  ]
 }

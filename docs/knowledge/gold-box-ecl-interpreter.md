@@ -187,7 +187,17 @@ ROLLDICE(count, sides) = Σ_{i=1..count} (Random(sides) + 1)   ← 回傳 byte
 
 `Random` 是 Turbo Pascal RTL 的 `Random(n)`，已由位址換算證明
 （DOS far call `0A54:1105` ＝ `@Random$q4Word`）。**沒有重骰、沒有上下限修正、
-沒有爆擊特例**；要對齊原版隨機序列必須另外重現 `Random` 的 LCG 與種子行為。
+沒有爆擊特例**。
+
+亂數本體已完整解出（[spec 575](../spec/575-random-core-and-pc98-vram.md)，`exact`）：
+
+```text
+RandSeed := (RandSeed * 134775813 + 1) mod 2^32
+Random(n) := if n = 0 then 0 else (RandSeed shr 16) mod n
+```
+
+**只取高 16 位**，且對非 2 冪的 `n` 有取模偏差——這是原版行為。remake 照抄
+這兩行就能重現原版的整條骰子序列。
 
 ## 跨作品沿用
 
