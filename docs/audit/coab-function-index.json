@@ -8983,9 +8983,13 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:003Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 \u003csub_1437\u003e(arg_8,arg_6,arg_4,arg_0,arg_2,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
   {
@@ -9214,7 +9218,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:0397h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9363,7 +9370,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:06F9h 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9460,7 +9470,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:09B9h 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -30030,9 +30043,13 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 \u003csub_1437\u003e(arg_8,arg_6,arg_4,arg_0,arg_2,1)",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
   {
@@ -30185,7 +30202,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD\u0026D 的 Protection from Evil",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30198,7 +30221,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30260,7 +30289,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效)",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30337,7 +30372,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 \u003c\u003e 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30408,7 +30449,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30421,7 +30468,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 \u003c\u003e 0 then inc DS:0A039h",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30513,7 +30566,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id",
+   "citations": [
+    "spec/633-alignment-encoding-and-effect-callbacks.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38541,6 +38600,8 @@
    "note": "力量法術:先把 DS:7D93h 設 12h、DS:7D94h 設 0,再依 \u003cfar 014A:00D4\u003e(DS:0A031h) 的回傳 1..0Bh 改其一——case 1..6 改百分比(0/1/33h/4Ch/5Bh/64h = 0/1/51/76/91/100)、case 7..0Bh 改力量值(13h..16h = 19..22)。換成十進位就是 AD\u0026D 的特例力量 18/xx,級距切在 01/51/76/91/00。兩組互斥一次只改一個,且 case 有預設值所以沒有未初始化問題。之後 \u003cfar 013E:007F\u003e 非 0 才印「は強くなった。」否則印「は影響を受けなかった。」",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/631-strength-spell-exceptional.md"
    ]
   },
@@ -39218,7 +39279,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/631-strength-spell-exceptional.md",
-   "note": "與 222Ah 同一族的力量法術入口:if \u003cfar 013E:007F\u003e(t,0,15h,@var_1) \u003c\u003e 0 則備妥「は強くなった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),\u003cfar 013E:0057\u003e(t,92h,n,var_1,1),最後 \u003cfar 013E:0098\u003e(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的"
+   "note": "與 222Ah 同一族的力量法術入口:if \u003cfar 013E:007F\u003e(t,0,15h,@var_1) \u003c\u003e 0 則備妥「は強くなった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),\u003cfar 013E:0057\u003e(t,92h,n,var_1,1),最後 \u003cfar 013E:0098\u003e(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43665,9 +43729,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 48,
+   "Read": 52,
    "NotBlocking": 0,
-   "Todo": 77,
+   "Todo": 73,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -44220,9 +44284,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 54,
+   "Read": 62,
    "NotBlocking": 0,
-   "Todo": 77,
+   "Todo": 69,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,

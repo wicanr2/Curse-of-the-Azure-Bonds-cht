@@ -13447,6 +13447,114 @@
    "level": "strong inference",
    "spec": "docs/spec/631-strength-spell-exceptional.md",
    "note": "與 pc98 overlay-22:423Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 222Ah 同一族的力量法術入口:if <far 013E:007F>(t,0,15h,@var_1) <> 0 則備妥「は強くなった。」呼叫 <far 014A:0084>(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),<far 013E:0057>(t,92h,n,var_1,1),最後 <far 013E:0098>(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 557,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD&D 的 Protection from Evil"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 612,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 60,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 <sub_1437>(arg_8,arg_6,arg_4,arg_0,arg_2,1)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 919,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 <far 013E:0005>(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1136,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 <> 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1838,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 <> 0 then inc DS:0A039h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1785,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "if arg_0 = 0 且 <sub_1547>(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 2489,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "<far 013E:002A>(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1778,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:06F9h 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_0 = 0 且 <sub_1547>(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 928,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:0397h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 <far 013E:0005>(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 60,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:003Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 <sub_1437>(arg_8,arg_6,arg_4,arg_0,arg_2,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2471,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
+   "note": "與 pc98 overlay-12:09B9h 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<far 013E:002A>(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
