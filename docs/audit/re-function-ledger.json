@@ -17015,6 +17015,26 @@
    "spec": "docs/spec/709-target-array.md",
    "note": "狀態 1 時直接把目標陣列第 1 格清成 NIL(不動筆數);否則若 <overlay-24 entry#27>(p, 37h, @node) 找到,先在 p^[1A4h]=0 時補成 1(同 spec 707 復活那支的模式),再 <sub_F06h>(DS:6F97h, 0FFh, 1, 0, 0, 'is affected')、<overlay-23 entry#2>(4Eh, p, 0, 1)、<overlay-23 entry#11>(p, 0Fh, 0Ah, 0FFh, 1)。效果編號 37h 在復活流程裡也被解除,是死亡相關的效果。⚠ sub_F06h 的第二、三個參數這次是 0FFh 與 1,與先前看過的組合都不同,那幾個欄位是模式選擇不是固定值",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 22212,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
+   "note": "對整個目標陣列施加 6d6:先 <sub_175Bh>(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);<overlay-23 entry#20>(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 2209,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
+   "note": "把物品身上還有效的效果收成一張表。先依 <overlay-24 entry#27>(DS:6506h, 10h)、DS:6506h^[109h] > 0、DS:6506h^[111h] > DS:6506h^[0E6h] 與 [5CF6h + DS:729Ch^[2Eh]×16] = 0Ch 決定要不要把 DS:729Ch^[35h] 清成 0;**+35h 不為 0 就整支不做事**。否則掃三個效果槽 DS:729Ch^[3Ch..3Eh](spec 703):arg_0 非 0 收 slot > 80h(無號 ja,**80h 本身不算**,改寫成 (slot and 80h) <> 0 會多收)、arg_0 為 0 收 slot > 0;收的話呼叫 <sub_3F5h>(slot) 並把 DS:729Ch 存進 far [4BF0h + byte[4CB4h]×4],4CB4h 加 1。⚠ 只加不清且**沒有上界檢查**,而 4CB5h 正是 spec 705 的擲骰門檻,溢出會直接寫壞它",
+   "bounds": "prologue"
   }
  ]
 }
