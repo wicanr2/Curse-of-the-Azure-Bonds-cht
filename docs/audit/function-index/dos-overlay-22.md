@@ -95,18 +95,18 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3CED` | sub_3CED | — | 46 | 21 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `3D27` | sub_3D27 | — | 433 | 158 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3EE2` | sub_3EE2 | — | 65 | 32 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `3F23` | sub_3F23 | — | 64 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `3F23` | sub_3F23 | — | 64 | 26 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/700-pascal-parameter-order-rule.md<br>治療 opcode(2d8+1):DS:7434h 為 0 時整支什麼都不做(連訊息都沒有);否則 量 := ROLLDICE(2,8)+1,HEALDUDE(DS:7435h/7437h 組成的目標角色, 量, 0),成功才呼叫 overlay-24 entry#29 顯示 is fully/partially healed。第三個參數固定 0 = 滿血也照治,但 HEALDUDE 內部仍會因狀態不在 {0,1,4,5} 而回 false | audit/function-index/dos-overlay-22.md<br>spec/700-pascal-parameter-order-rule.md |
 | `3F6F` | sub_3F6F | — | 133 | 56 | 0 | 4 | ✓ | 已解讀 | strong inference | docs/spec/631-strength-spell-exceptional.md<br>與 pc98 overlay-22:423Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 222Ah 同一族的力量法術入口:if <far 013E:007F>(t,0,15h,@var_1) <> 0 則備妥「は強くなった。」呼叫 <far 014A:0084>(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),<far 013E:0057>(t,92h,n,var_1,1),最後 <far 013E:0098>(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3FF4` | sub_3FF4 | — | 66 | 37 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:42C4h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `4043` | sub_4043 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `407A` | sub_407A | — | 78 | 33 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `40D5` | sub_40D5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `4103` | sub_4103 | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `4103` | sub_4103 | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | spec/700-pascal-parameter-order-rule.md |
 | `413F` | sub_413F | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4194` | sub_4194 | — | 244 | 95 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4289` | sub_4289 | — | 117 | 48 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4311` | sub_4311 | — | 150 | 64 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `43A7` | sub_43A7 | — | 66 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `43A7` | sub_43A7 | — | 66 | 26 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/700-pascal-parameter-order-rule.md<br>治療 opcode(3d8+3):與 3F23h 完全同構,只有骰子不同。配上 1d8 那支就是 AD&D 治療三階(輕傷/重傷/危傷) | spec/700-pascal-parameter-order-rule.md |
 | `43EA` | sub_43EA | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4432` | sub_4432 | — | 96 | 50 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4493` | sub_4493 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4492，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
@@ -139,7 +139,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5F2F` | sub_5F2F | — | 36 | 12 | 0 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 36 bytes，已逐條讀完） | audit/function-index/dos-overlay-22.md |
 | `5F53` | sub_5F53 | — | 185 | 87 | 4 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 5F2Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `6022` | sub_6022 | — | 268 | 105 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/700-pascal-parameter-order-rule.md<br>物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 < v < 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正 | spec/700-pascal-parameter-order-rule.md |
 | `617B` | sub_617B | — | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `6209` | sub_6209 | — | 258 | 119 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `630B` | sub_630B | — | 1434 | 158 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:7332h, dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1434 bytes，已逐條讀完） | — |
