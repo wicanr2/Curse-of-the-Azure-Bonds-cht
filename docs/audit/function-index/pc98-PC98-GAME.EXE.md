@@ -250,12 +250,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A3FC` | sub_1A3FC | — | 12 | 5 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即位元組數無條件進位換算成 paragraph;與 DOS START.EXE:1A42Ch 同義 | — |
 | `1A410` | sub_1A410 | — | 97 | 34 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A485` | sub_1A485 | — | 22 | 12 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>EMS 偵測:INT 21h AX=3567h 取 INT 67h 向量,再把該處理常式起始 8 bytes 與 CS:558h 的簽章 repe cmpsb 比對 | — |
-| `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h 段落 = 16KB 正是 EMS 分頁大小);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤) | — |
+| `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h = 16384 bytes = 16KB 正是 EMS 分頁大小,故 es:[8] 是位元組數);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤) | — |
 | `1A4DA` | sub_1A4DA | — | 106 | 47 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A544` | sub_1A544 | — | 68 | 32 | 1 | 1 |  | 已解讀 | exact | docs/spec/665-ems-and-overlay-relocation.md<br>用 int 67h AX=4400h(對映實體分頁 0)配 DX = word_23AE6h 把 overlay 換進 page frame,同樣用 shl ah,1 + jb 判斷失敗 | — |
-| `1A5F1` | sub_1A5F1 | — | 38 | 19 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A617` | sub_1A617 | — | 29 | 13 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1A634` | sub_1A634 | — | 23 | 10 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1A5F1` | sub_1A5F1 | — | 38 | 19 | 1 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>EMS page frame 偵測:int 67h AX=4100h 取段位址,**只在 BX 等於 0B000h**(PC-98 的圖形 VRAM 平面)且 AX=7000h 成功時,才把可用旗標 cs:byte_1A64Bh 設成 1。旗標存在程式碼段。判斷寫死成等於 B000h 而不是與 VRAM 範圍重疊,page frame 在別處時整組功能不啟用 | — |
+| `1A617` | sub_1A617 | — | 29 | 13 | 2 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>若 cs:byte_1A64Bh = 1:int 67h AX=7000h 讀出目前狀態存進 cs:byte_1A64Ch,再 AX=7001h/BL=0 設成 0。與 1A634h 是「先讀存起來、事後寫回」的配對(7000h/7001h 不是標準 EMS 功能碼,是驅動擴充) | — |
+| `1A634` | sub_1A634 | — | 23 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>若 cs:byte_1A64Bh = 1:int 67h AX=7001h,BL 取 cs:byte_1A64Ch 寫回——1A617h 的還原對應 | — |
 | `1A650` | sub_1A650 | — | 157 | 72 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A72A`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A726` | sub_1A726 | — | 194 | 83 | 3 | 6 |  | 待解讀 | — | — | — |
@@ -269,10 +269,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes） | — |
 | `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes） | — |
 | `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A9E1` | sub_1A9E1 | — | 68 | 26 | 1 | 3 |  | 待解讀 | — | — | — |
+| `1A9E1` | sub_1A9E1 | — | 68 | 26 | 1 | 3 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>以 16 為底的兩段式加減:ax 維持在 0..0Fh、dx 每滿 16 進一(段落 + 段內偏移,一段落 16 bytes),每次加減都手動處理進借位而不用 32-bit 運算。走訪 dword_23AF0h 指的陣列,每筆 8 bytes,用到 +0/+2/+4/+6 四個 word | — |
 | `1AA72` | sub_1AA72 | — | 187 | 79 | 2 | 4 |  | 待解讀 | — | — | — |
 | `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 <= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致 | — |
 | `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,來源指標為 dword_23AF0;與 DOS START.EXE:1AAF9h 逐指令相同 | — |
 | `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義 | — |

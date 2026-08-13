@@ -15233,6 +15233,51 @@
    "level": "exact",
    "spec": "docs/spec/665-ems-and-overlay-relocation.md",
    "note": "算剩餘空間:word_23AE2h 非 0 時先試「第一個 overlay 的 +10h 減目前配置點 word_23ADEh」,借位(會變負)才退回用 word_23AE0h - word_23ADEh"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108017,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "EMS page frame 偵測:int 67h AX=4100h 取段位址,**只在 BX 等於 0B000h**(PC-98 的圖形 VRAM 平面)且 AX=7000h 成功時,才把可用旗標 cs:byte_1A64Bh 設成 1。旗標存在程式碼段。判斷寫死成等於 B000h 而不是與 VRAM 範圍重疊,page frame 在別處時整組功能不啟用"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108055,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "若 cs:byte_1A64Bh = 1:int 67h AX=7000h 讀出目前狀態存進 cs:byte_1A64Ch,再 AX=7001h/BL=0 設成 0。與 1A634h 是「先讀存起來、事後寫回」的配對(7000h/7001h 不是標準 EMS 功能碼,是驅動擴充)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108084,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "若 cs:byte_1A64Bh = 1:int 67h AX=7001h,BL 取 cs:byte_1A64Ch 寫回——1A617h 的還原對應"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109025,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "以 16 為底的兩段式加減:ax 維持在 0..0Fh、dx 每滿 16 進一(段落 + 段內偏移,一段落 16 bytes),每次加減都手動處理進借位而不用 32-bit 運算。走訪 dword_23AF0h 指的陣列,每筆 8 bytes,用到 +0/+2/+4/+6 四個 word"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 <= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致"
   }
  ]
 }
