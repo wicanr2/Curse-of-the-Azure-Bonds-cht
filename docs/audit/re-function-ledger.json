@@ -13321,6 +13321,69 @@
    "level": "strong inference",
    "spec": "docs/spec/628-spell-effect-wrappers.md",
    "note": "與 pc98 overlay-22:1F53h 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 9872,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
+   "note": "case DS:0A520h of 1:(DS:0A031h=17h ? 0FEh : 0FDh) 2:0FFh 3,4:0——**沒有 else**,落在 1..4 以外時傳給 <sub_1D0B> 的 v 是未初始化的堆疊殘值(與 spec 624 的 7D0Dh 同一類原作行為)。訊息「は金縛りにあった。」"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 10659,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
+   "note": "v := (ROLLDICE(1,4) shl 4) or <far 014A:00D4>(DS:0A031h)——高 4 bit 放數量、低 4 bit 放另一個值,是打包不是乘法;再推入 DS:0A031h、v、三個 0,備妥「は分身した。」呼叫 <sub_F62>。1d4 個分身與 AD&D Mirror Image 一致(推論,不寫進結論)。與 3804h 用同一套打包寫法"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 10102,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
+   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息(呼叫端不檢查會拿到 nil);否則 <far 014A:00A7>(37h,t,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,不是治療,活著的人不會加血),備妥「は魔法にかかった。」呼叫 <sub_F62>,最後 <far 013E:002A>(4Eh,t,0,1)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 9974,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
+   "note": "與 pc98 overlay-22:29A3h 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：v := (ROLLDICE(1,4) shl 4) or <far 014A:00D4>(DS:0A031h)——高 4 bit 放數量、低 4 bit 放另一個值,是打包不是乘法;再推入 DS:0A031h、v、三個 0,備妥「は分身した。」呼叫 <sub_F62>。1d4 個分身與 AD&D Mirror Image 一致(推論,不寫進結論)。與 3804h 用同一套打包寫法 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 10285,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/630-spell-target-array.md",
+   "note": "挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget >= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 8519,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/630-spell-target-array.md",
+   "note": "t := DS:0A521h;免疫條件是 t^[11Ah](RACETYPE)>1 或 t^[0DEh]>1(是大於 1 不是等於某值),命中就備妥「は影響を受けなかった。」呼叫 <far 014A:0084>(1,0Ah);否則 n := (signext(DS:9594h^[198h]) shl 7) + <far 014A:00D4>(DS:0A031h,DS:0A031h),備妥「は魅了された。」呼叫 <sub_F62>,再 <far 014A:00A7>(0Bh,t,@var_4) 非 0 時 <far 013E:002A>(0Bh,t,var_4,0)。移位量是 7,與 29A3h/3804h 的 4 不同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 9600,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/630-spell-target-array.md",
+   "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget >= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
