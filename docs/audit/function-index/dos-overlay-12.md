@@ -6,11 +6,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 待解讀 | — | — | spec/569-small-function-batch-reading.md |
-| `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 待解讀 | — | — | — |
+| `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 待解讀 | — | — | spec/573-effprocs-effect-handlers-first-batch.md |
 | `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 待解讀 | — | — | — |
-| `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `009E` | sub_9E | — | 18 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 待解讀 | — | — | spec/573-effprocs-effect-handlers-first-batch.md |
+| `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 待解讀 | — | — | spec/573-effprocs-effect-handlers-first-batch.md |
+| `009E` | sub_9E | — | 18 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | spec/573-effprocs-effect-handlers-first-batch.md |
 | `00B0` | sub_B0 | — | 32 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `00E8` | sub_E8 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `016B` | sub_16B | — | 29 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |

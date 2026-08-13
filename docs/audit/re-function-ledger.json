@@ -9073,6 +9073,114 @@
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 141,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 158,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 3016,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5907,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 4205,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A030h := DS:A030h ÷ 2(有號)(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6685,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9313,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9373,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11143,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "傷害旗標 DS:A02Fh bit 2(依 spec 412 為 Electricity)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9274,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11168,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 117,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數)"
   }
  ]
 }
