@@ -16264,6 +16264,7 @@
    "spec": "docs/spec/682-dos-spell-power-calc.md",
    "note": "n := \u003cfar 013Eh:05A4h\u003e(DS:6F97h) + 1;v := \u003csub_1462\u003e(DS:6F97h, 0, 0, n div 2, 4);再**重算一次** n div 2 當加項,\u003csub_F06\u003e(8, v + n div 2, 空字串)。同一個除法算兩遍,與 129EBh 的重複除法同一種寫法",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/682-dos-spell-power-calc.md"
    ]
   },
@@ -16303,6 +16304,7 @@
    "note": "⚠ 推六個但 sub_1462 只吃五個:最前面那個 DS:6F97h 留在堆疊上,呼叫後用 pop dx 取回來當加項。這是刻意把「要傳的參數」與「事後要用的值」用同一個推入完成——照「呼叫前的推入都是參數」去數,會把 sub_1462 算成 6 個參數。中間還有巢狀呼叫 \u003cfar loc_15A3h\u003e(DS:6F97h)。字串同樣是空的",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/682-dos-spell-power-calc.md"
    ]
   },
@@ -18306,7 +18308,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/683-encumbrance-movement.md",
+   "note": "負重決定移動力:byte[arg_0^[2Eh]×16 + 5CF6h] = 2 才生效;w := arg_0^[37h](有號),0..96h(150)用基準值 arg_4^[0E4h]、97h..18Fh(151..399)設 9、其餘設 6;之後 arg_0^[32h] 非 0 且值 \u003c= 9 時再加 3(最多補到 12,正好是 AD\u0026D 未負重的移動力)。**無條件覆寫**",
+   "citations": [
+    "spec/683-encumbrance-movement.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18332,7 +18340,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/683-encumbrance-movement.md",
+   "note": "w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果",
+   "citations": [
+    "spec/683-encumbrance-movement.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41809,7 +41823,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/683-encumbrance-movement.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41835,7 +41852,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/683-encumbrance-movement.md",
+   "note": "與 dos overlay-24:03C5h 助憶碼序列完全相同（52 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/683-encumbrance-movement.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44981,9 +45004,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 11,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 42,
+   "Todo": 40,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -45536,9 +45559,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 36,
+   "Todo": 35,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
