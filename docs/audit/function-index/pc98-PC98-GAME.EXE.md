@@ -122,18 +122,18 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17A37` | sub_17A37 | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17A54` | sub_17A54 | — | 609 | 227 | 2 | 12 |  | 待解讀 | — | — | — |
 | `17CD7` | sub_17CD7 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `17CE9` | sub_17CE9 | — | 57 | 28 | 2 | 2 |  | 待解讀 | — | — | — |
+| `17CE9` | sub_17CE9 | — | 57 | 28 | 2 | 2 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>與 1692Dh 逐位元組完全相同的文字 VRAM 定址(57 bytes),差別只在下游:這支叫 sub_17D22/sub_17D72,那支叫 sub_16966/sub_169B6。remake 不必複製這個重複,但兩條路徑的下游要各自確認 | — |
 | `17D22` | sub_17D22 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
-| `17D72` | sub_17D72 | — | 35 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17D72` | sub_17D72 | — | 35 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>填 PC-98 文字屬性平面(0A200h):屬性 byte := (arg[bp+0Ch] shl 5) or 1,若 arg[bp+0Ah] 非零再 or 4;rep stosw,CX 與 DI 由呼叫端 17CE9h 先算好 | — |
 | `17D95` | sub_17D95 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
-| `17DA9` | sub_17DA9 | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17DA9` | sub_17DA9 | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>與 17186h 逐位元組完全相同的 Shift-JIS → JIS 換算(同一段程式碼的第二份) | — |
 | `17DD5` | sub_17DD5 | — | 86 | 44 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17EA7` | sub_17EA7 | — | 363 | 152 | 1 | 11 |  | 待解讀 | — | — | — |
 | `18036` | sub_18036 | — | 193 | 66 | 6 | 7 |  | 待解讀 | — | — | — |
-| `180F7` | sub_180F7 | — | 28 | 13 | 3 | 3 |  | 待解讀 | — | — | — |
+| `180F7` | sub_180F7 | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>repeat:<sub_19293>() 回 0 就結束,否則呼叫 <sub_18036>() 再回頭。sub_18036 的回傳值存進區域變數後沒有再讀,是死存 | — |
 | `1812D` | sub_1812D | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `18194` | sub_18194 | — | 51 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
-| `181C7` | sub_181C7 | — | 40 | 26 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18194` | sub_18194 | — | 51 | 27 | 1 | 2 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>out 6Ah,1 開類比模式;arg_0 非零取 CS:304h、為零取 CS:334h(兩張表相鄰各 48 bytes,線性位址 18134h 與 18164h),呼叫 181C7h 寫入;再 int 18h(AH=42h,CH=80h)設模式、out 68h,8、int 18h(AH=40h)顯示開、int 18h(AH=12h) | — |
+| `181C7` | sub_181C7 | — | 40 | 26 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>寫 PC-98 16 色類比調色盤:out A8h 索引、out AAh/ACh/AEh 依序寫綠紅藍(PC-98 的順序是 G-R-B 不是 R-G-B),每色 4 bit 故值域 0..0Fh;索引由 0Fh 遞減到 0,每筆讀 3 bytes,資料在 CS:SI | — |
 | `18229` | sub_18229 | — | 10 | 6 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_18878`（body 共 10 bytes，已逐條讀完） | — |
 | `18233` | sub_18233 | — | 351 | 124 | 1 | 4 |  | 待解讀 | — | — | — |
 | `18392` | sub_18392 | — | 77 | 32 | 1 | 2 |  | 待解讀 | — | — | — |
