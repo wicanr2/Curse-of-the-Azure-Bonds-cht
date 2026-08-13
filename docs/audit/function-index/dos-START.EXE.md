@@ -61,10 +61,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `120A5` | sub_120A5 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `120D0` | sub_120D0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `120DF` | sub_120DF | — | 2 | 1 | 24 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
-| `12110` | sub_12110 | — | 111 | 44 | 1 | 7 |  | 待解讀 | — | — | — |
+| `12110` | sub_12110 | — | 111 | 44 | 1 | 7 |  | 已解讀 | exact | docs/spec/672-numeric-menu-input-and-nibble-array.md<br>數字選單輸入:迴圈 ReadKey,兩道檢查——字元要在 CS:byte_120F0h 寫死的集合裡、(c-30h) 要落在 [arg_0..arg_2](用 Pascal 的集合 + 運算建子範圍);任一不過就回到 ReadKey。⚠ 回顯在兩道檢查之後,所以按錯鍵完全沒有回饋、不合法的按鍵永遠不會顯示出來。通過才 Write 並回傳 c-30h | — |
 | `1236C` | sub_1236C | — | 1537 | 609 | 1 | 37 |  | 待解讀 | — | — | — |
 | `12970` | sub_12970 | — | 123 | 47 | 1 | 1 |  | 待解讀 | — | — | — |
-| `129EB` | sub_129EB | — | 92 | 41 | 4 | 2 |  | 待解讀 | — | — | — |
+| `129EB` | sub_129EB | — | 92 | 41 | 4 | 2 |  | 已解讀 | exact | docs/spec/672-numeric-menu-input-and-nibble-array.md<br>從 arg_0 指的 8 bytes(= 16 個 nibble)取第 arg_4 個:奇數索引取低 nibble、偶數取高 nibble——**高 nibble 在前**。奇偶判斷用 shr al,1 看進位,但商下面又用 idiv 2 重算一次,同一個除法做了兩遍 | — |
 | `12A47` | sub_12A47 | — | 48 | 19 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>設定 BIOS 顯示模式:把 Registers record 的 AH=0、AL=arg_0 後呼叫 INTR(10h) ⇒ INT 10h AH=00h;呼叫前把 byte_211A5 存進 byte_211A4(前一個模式),呼叫後把 arg_0 記進 byte_211A5 | — |
 | `12A77` | sub_12A77 | — | 15 | 9 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47 | — |
 | `12C1D` | sub_12C1D | — | 1611 | 617 | 1 | 5 |  | 待解讀 | — | — | — |
