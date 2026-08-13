@@ -1,0 +1,8311 @@
+{
+ "schema": "coab-embedded-strings/1",
+ "min_length": 4,
+ "modules": {
+  "dos": {
+   "overlay-00": [
+    {
+     "offset": 0,
+     "length": 22,
+     "text": "Time to save your game"
+    }
+   ],
+   "overlay-01": [
+    {
+     "offset": 81,
+     "length": 36,
+     "text": "based on the tsr novel \"azure bonds\""
+    },
+    {
+     "offset": 122,
+     "length": 10,
+     "text": "kate novak"
+    },
+    {
+     "offset": 137,
+     "length": 10,
+     "text": "jeff grubb"
+    },
+    {
+     "offset": 148,
+     "length": 20,
+     "text": "scenario created by:"
+    },
+    {
+     "offset": 169,
+     "length": 9,
+     "text": "tsr, inc."
+    },
+    {
+     "offset": 183,
+     "length": 17,
+     "text": "george mac donald"
+    },
+    {
+     "offset": 201,
+     "length": 16,
+     "text": "game created by:"
+    },
+    {
+     "offset": 218,
+     "length": 20,
+     "text": "ssi special projects"
+    },
+    {
+     "offset": 239,
+     "length": 15,
+     "text": "project leader:"
+    },
+    {
+     "offset": 255,
+     "length": 12,
+     "text": "programming:"
+    },
+    {
+     "offset": 268,
+     "length": 12,
+     "text": "scot bayless"
+    },
+    {
+     "offset": 281,
+     "length": 10,
+     "text": "russ brown"
+    },
+    {
+     "offset": 292,
+     "length": 15,
+     "text": "michael mancuso"
+    },
+    {
+     "offset": 308,
+     "length": 12,
+     "text": "development:"
+    },
+    {
+     "offset": 321,
+     "length": 13,
+     "text": "david shelley"
+    },
+    {
+     "offset": 335,
+     "length": 11,
+     "text": "oran kangas"
+    },
+    {
+     "offset": 347,
+     "length": 13,
+     "text": "graphic arts:"
+    },
+    {
+     "offset": 361,
+     "length": 8,
+     "text": "tom wahl"
+    },
+    {
+     "offset": 370,
+     "length": 10,
+     "text": "fred butts"
+    },
+    {
+     "offset": 381,
+     "length": 12,
+     "text": "susan manley"
+    },
+    {
+     "offset": 394,
+     "length": 12,
+     "text": "mark johnson"
+    },
+    {
+     "offset": 407,
+     "length": 9,
+     "text": "cyrus lum"
+    },
+    {
+     "offset": 417,
+     "length": 12,
+     "text": "playtesting:"
+    },
+    {
+     "offset": 430,
+     "length": 12,
+     "text": "jim jennings"
+    },
+    {
+     "offset": 443,
+     "length": 12,
+     "text": "james kucera"
+    },
+    {
+     "offset": 456,
+     "length": 10,
+     "text": "rick white"
+    },
+    {
+     "offset": 467,
+     "length": 11,
+     "text": "robert daly"
+    },
+    {
+     "offset": 1582,
+     "length": 5,
+     "text": "title"
+    }
+   ],
+   "overlay-02": [
+    {
+     "offset": 1121,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 4151,
+     "length": 35,
+     "text": "PRESS BUTTON OR RETURN TO CONTINUE."
+    },
+    {
+     "offset": 4187,
+     "length": 34,
+     "text": "PRESS <ENTER>/<RETURN> TO CONTINUE"
+    },
+    {
+     "offset": 6960,
+     "length": 4,
+     "text": "ITEM"
+    },
+    {
+     "offset": 6965,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 6970,
+     "length": 24,
+     "text": "Unable to find item file"
+    },
+    {
+     "offset": 8233,
+     "length": 27,
+     "text": "~COMBAT ~WAIT ~FLEE ~PARLAY"
+    },
+    {
+     "offset": 8261,
+     "length": 28,
+     "text": "~COMBAT ~WAIT ~FLEE ~ADVANCE"
+    },
+    {
+     "offset": 8290,
+     "length": 16,
+     "text": "Both sides wait."
+    },
+    {
+     "offset": 8307,
+     "length": 18,
+     "text": "The monsters flee."
+    },
+    {
+     "offset": 10117,
+     "length": 34,
+     "text": "~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE"
+    },
+    {
+     "offset": 10499,
+     "length": 27,
+     "text": "The entire party is killed!"
+    },
+    {
+     "offset": 10527,
+     "length": 34,
+     "text": "press <enter>/<return> to continue"
+    },
+    {
+     "offset": 12474,
+     "length": 34,
+     "text": "You've won. Save before quitting? "
+    }
+   ],
+   "overlay-03": [
+    {
+     "offset": 12,
+     "length": 5,
+     "text": "tiles"
+    },
+    {
+     "offset": 18,
+     "length": 34,
+     "text": "Align the espruar and dethek runes"
+    },
+    {
+     "offset": 53,
+     "length": 33,
+     "text": "shown below, on translation wheel"
+    },
+    {
+     "offset": 87,
+     "length": 10,
+     "text": "like this:"
+    },
+    {
+     "offset": 98,
+     "length": 9,
+     "text": "-..-..-.."
+    },
+    {
+     "offset": 108,
+     "length": 9,
+     "text": "- - - - -"
+    },
+    {
+     "offset": 118,
+     "length": 9,
+     "text": "........."
+    },
+    {
+     "offset": 128,
+     "length": 33,
+     "text": "Type the character in box number "
+    },
+    {
+     "offset": 162,
+     "length": 10,
+     "text": "under the "
+    },
+    {
+     "offset": 173,
+     "length": 5,
+     "text": "path."
+    },
+    {
+     "offset": 181,
+     "length": 33,
+     "text": "type character and press return: "
+    },
+    {
+     "offset": 215,
+     "length": 24,
+     "text": "Sorry, that's incorrect."
+    },
+    {
+     "offset": 240,
+     "length": 41,
+     "text": "An unseen force hurls you into the abyss!"
+    }
+   ],
+   "overlay-04": [
+    {
+     "offset": 52,
+     "length": 18,
+     "text": "cast cure anyway: "
+    },
+    {
+     "offset": 170,
+     "length": 16,
+     "text": " will only cost "
+    },
+    {
+     "offset": 187,
+     "length": 13,
+     "text": " gold pieces."
+    },
+    {
+     "offset": 201,
+     "length": 13,
+     "text": "pay for cure "
+    },
+    {
+     "offset": 215,
+     "length": 17,
+     "text": "Not enough money."
+    },
+    {
+     "offset": 233,
+     "length": 9,
+     "text": "is cured."
+    },
+    {
+     "offset": 611,
+     "length": 13,
+     "text": "is not blind."
+    },
+    {
+     "offset": 625,
+     "length": 14,
+     "text": "Cure Blindness"
+    },
+    {
+     "offset": 774,
+     "length": 16,
+     "text": "is not Diseased."
+    },
+    {
+     "offset": 791,
+     "length": 12,
+     "text": "Cure Disease"
+    },
+    {
+     "offset": 1021,
+     "length": 17,
+     "text": "Cure Light Wounds"
+    },
+    {
+     "offset": 1039,
+     "length": 19,
+     "text": "Cure Serious Wounds"
+    },
+    {
+     "offset": 1059,
+     "length": 20,
+     "text": "Cure Critical Wounds"
+    },
+    {
+     "offset": 1080,
+     "length": 4,
+     "text": "Heal"
+    },
+    {
+     "offset": 1574,
+     "length": 12,
+     "text": "is not dead."
+    },
+    {
+     "offset": 1587,
+     "length": 10,
+     "text": "Raise Dead"
+    },
+    {
+     "offset": 2159,
+     "length": 16,
+     "text": "is not poisoned."
+    },
+    {
+     "offset": 2176,
+     "length": 17,
+     "text": "Neutralize Poison"
+    },
+    {
+     "offset": 2399,
+     "length": 14,
+     "text": "is not cursed."
+    },
+    {
+     "offset": 2414,
+     "length": 12,
+     "text": "Remove Curse"
+    },
+    {
+     "offset": 2629,
+     "length": 14,
+     "text": "is not stoned."
+    },
+    {
+     "offset": 2644,
+     "length": 14,
+     "text": "Stone to Flesh"
+    },
+    {
+     "offset": 2800,
+     "length": 22,
+     "text": ", how can we help you?"
+    },
+    {
+     "offset": 2824,
+     "length": 9,
+     "text": "Heal Exit"
+    },
+    {
+     "offset": 3340,
+     "length": 39,
+     "text": "Heal View Take Pool Share Appraise Exit"
+    },
+    {
+     "offset": 3380,
+     "length": 28,
+     "text": "Heal View Pool Appraise Exit"
+    },
+    {
+     "offset": 3410,
+     "length": 8,
+     "text": "~Yes ~No"
+    },
+    {
+     "offset": 3419,
+     "length": 74,
+     "text": "As you leave a priest says, \"Excuse me but you have left some money here\" "
+    },
+    {
+     "offset": 3494,
+     "length": 47,
+     "text": "Do you want to go back and retrieve your money?"
+    }
+   ],
+   "overlay-05": [
+    {
+     "offset": 2468,
+     "length": 19,
+     "text": "The party has fled."
+    },
+    {
+     "offset": 2488,
+     "length": 24,
+     "text": "You have lost the fight."
+    },
+    {
+     "offset": 2513,
+     "length": 22,
+     "text": "You have won the duel."
+    },
+    {
+     "offset": 2536,
+     "length": 18,
+     "text": "The party has won."
+    },
+    {
+     "offset": 2555,
+     "length": 29,
+     "text": "The party has found Treasure!"
+    },
+    {
+     "offset": 2585,
+     "length": 21,
+     "text": "The duelist receives "
+    },
+    {
+     "offset": 2607,
+     "length": 24,
+     "text": "Each character receives "
+    },
+    {
+     "offset": 2632,
+     "length": 18,
+     "text": "experience points."
+    },
+    {
+     "offset": 2651,
+     "length": 34,
+     "text": "press <enter>/<return> to continue"
+    },
+    {
+     "offset": 3289,
+     "length": 7,
+     "text": "Items: "
+    },
+    {
+     "offset": 3297,
+     "length": 4,
+     "text": "Take"
+    },
+    {
+     "offset": 3775,
+     "length": 6,
+     "text": "Take: "
+    },
+    {
+     "offset": 3782,
+     "length": 16,
+     "text": "Money Items Exit"
+    },
+    {
+     "offset": 4045,
+     "length": 14,
+     "text": "View Pool Exit"
+    },
+    {
+     "offset": 4060,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 4066,
+     "length": 12,
+     "text": " Detect Exit"
+    },
+    {
+     "offset": 4079,
+     "length": 20,
+     "text": "View Take Pool Share"
+    },
+    {
+     "offset": 4100,
+     "length": 14,
+     "text": "View Take Pool"
+    },
+    {
+     "offset": 4115,
+     "length": 8,
+     "text": "~Yes ~No"
+    },
+    {
+     "offset": 4124,
+     "length": 31,
+     "text": "There is still treasure left.  "
+    },
+    {
+     "offset": 4156,
+     "length": 47,
+     "text": "Do you want to go back and claim your treasure?"
+    },
+    {
+     "offset": 5222,
+     "length": 17,
+     "text": " takes and hides "
+    },
+    {
+     "offset": 5244,
+     "length": 7,
+     "text": " share."
+    },
+    {
+     "offset": 5257,
+     "length": 34,
+     "text": "press <enter>/<return> to continue"
+    },
+    {
+     "offset": 5862,
+     "length": 53,
+     "text": "The monsters rejoice for the party has been destroyed"
+    },
+    {
+     "offset": 5916,
+     "length": 25,
+     "text": "Press any key to continue"
+    }
+   ],
+   "overlay-06": [
+    {
+     "offset": 37,
+     "length": 30,
+     "text": "                              "
+    },
+    {
+     "offset": 68,
+     "length": 7,
+     "text": "Items: "
+    },
+    {
+     "offset": 842,
+     "length": 10,
+     "text": "OverLoaded"
+    },
+    {
+     "offset": 1122,
+     "length": 17,
+     "text": "Not enough Money."
+    },
+    {
+     "offset": 1580,
+     "length": 38,
+     "text": "Buy View Take Pool Share Appraise Exit"
+    },
+    {
+     "offset": 1619,
+     "length": 27,
+     "text": "Buy View Pool Appraise Exit"
+    },
+    {
+     "offset": 1647,
+     "length": 8,
+     "text": "~Yes ~No"
+    },
+    {
+     "offset": 1656,
+     "length": 82,
+     "text": "As you Leave the Shopkeeper says, \"Excuse me but you have Left Some Money here.\"  "
+    },
+    {
+     "offset": 1739,
+     "length": 42,
+     "text": "Do you want to go back and get your Money?"
+    }
+   ],
+   "overlay-07": [
+    {
+     "offset": 865,
+     "length": 21,
+     "text": "Loading...Please Wait"
+    },
+    {
+     "offset": 891,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 1415,
+     "length": 5,
+     "text": "SPRIT"
+    },
+    {
+     "offset": 7126,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 7131,
+     "length": 4,
+     "text": "ROLF"
+    },
+    {
+     "offset": 8711,
+     "length": 7,
+     "text": " dies. "
+    },
+    {
+     "offset": 8719,
+     "length": 12,
+     "text": " is hit FOR "
+    },
+    {
+     "offset": 8732,
+     "length": 18,
+     "text": " points of Damage."
+    },
+    {
+     "offset": 8751,
+     "length": 34,
+     "text": "press <enter>/<return> to continue"
+    }
+   ],
+   "overlay-08": [
+    {
+     "offset": 944,
+     "length": 8,
+     "text": "Magic On"
+    },
+    {
+     "offset": 953,
+     "length": 9,
+     "text": "Magic Off"
+    },
+    {
+     "offset": 963,
+     "length": 17,
+     "text": "That doesn't work"
+    },
+    {
+     "offset": 1791,
+     "length": 5,
+     "text": "Move "
+    },
+    {
+     "offset": 1797,
+     "length": 9,
+     "text": "View Aim "
+    },
+    {
+     "offset": 1807,
+     "length": 4,
+     "text": "Use "
+    },
+    {
+     "offset": 1812,
+     "length": 5,
+     "text": "Cast "
+    },
+    {
+     "offset": 1818,
+     "length": 5,
+     "text": "Turn "
+    },
+    {
+     "offset": 1824,
+     "length": 10,
+     "text": "Quick Done"
+    },
+    {
+     "offset": 2415,
+     "length": 22,
+     "text": "Your Teammate is Dying"
+    },
+    {
+     "offset": 2438,
+     "length": 16,
+     "text": "Continue Battle:"
+    },
+    {
+     "offset": 2772,
+     "length": 25,
+     "text": "Move/Attack, Move Left = "
+    },
+    {
+     "offset": 2801,
+     "length": 5,
+     "text": "Flee:"
+    },
+    {
+     "offset": 2807,
+     "length": 14,
+     "text": "can't go there"
+    },
+    {
+     "offset": 3796,
+     "length": 20,
+     "text": "Not with that weapon"
+    },
+    {
+     "offset": 4001,
+     "length": 6,
+     "text": "Guard "
+    },
+    {
+     "offset": 4008,
+     "length": 11,
+     "text": "Delay Quit "
+    },
+    {
+     "offset": 4020,
+     "length": 8,
+     "text": "Bandage "
+    },
+    {
+     "offset": 4029,
+     "length": 10,
+     "text": "Speed Exit"
+    },
+    {
+     "offset": 4536,
+     "length": 11,
+     "text": "GameSpeed ("
+    },
+    {
+     "offset": 4554,
+     "length": 7,
+     "text": "Slower "
+    },
+    {
+     "offset": 4562,
+     "length": 7,
+     "text": "Faster "
+    },
+    {
+     "offset": 4570,
+     "length": 4,
+     "text": "Exit"
+    }
+   ],
+   "overlay-09": [
+    {
+     "offset": 62,
+     "length": 14,
+     "text": "flees in panic"
+    },
+    {
+     "offset": 2475,
+     "length": 25,
+     "text": "Move/Attack, Move Left = "
+    },
+    {
+     "offset": 4704,
+     "length": 8,
+     "text": "Magic On"
+    },
+    {
+     "offset": 4713,
+     "length": 9,
+     "text": "Magic Off"
+    },
+    {
+     "offset": 4971,
+     "length": 17,
+     "text": "is forced to flee"
+    },
+    {
+     "offset": 4989,
+     "length": 10,
+     "text": "Surrenders"
+    }
+   ],
+   "overlay-10": [
+    {
+     "offset": 4119,
+     "length": 7,
+     "text": "DungCom"
+    },
+    {
+     "offset": 4127,
+     "length": 7,
+     "text": "WildCom"
+    },
+    {
+     "offset": 4135,
+     "length": 7,
+     "text": "RandCom"
+    },
+    {
+     "offset": 7211,
+     "length": 18,
+     "text": "A battle begins..."
+    }
+   ],
+   "overlay-11": [
+    {
+     "offset": 47,
+     "length": 21,
+     "text": "Loading...Please Wait"
+    },
+    {
+     "offset": 69,
+     "length": 6,
+     "text": "COMSPR"
+    },
+    {
+     "offset": 80,
+     "length": 5,
+     "text": "ITEMS"
+    }
+   ],
+   "overlay-12": [
+    {
+     "offset": 208,
+     "length": 23,
+     "text": "is fighting with snakes"
+    },
+    {
+     "offset": 917,
+     "length": 10,
+     "text": "Suffocates"
+    },
+    {
+     "offset": 1240,
+     "length": 11,
+     "text": "is silenced"
+    },
+    {
+     "offset": 1337,
+     "length": 16,
+     "text": "dies from poison"
+    },
+    {
+     "offset": 1448,
+     "length": 13,
+     "text": "Gains an item"
+    },
+    {
+     "offset": 1883,
+     "length": 13,
+     "text": "lost an image"
+    },
+    {
+     "offset": 2060,
+     "length": 11,
+     "text": "is coughing"
+    },
+    {
+     "offset": 2243,
+     "length": 9,
+     "text": "collapses"
+    },
+    {
+     "offset": 2528,
+     "length": 9,
+     "text": "runs away"
+    },
+    {
+     "offset": 2538,
+     "length": 11,
+     "text": "is confused"
+    },
+    {
+     "offset": 2550,
+     "length": 12,
+     "text": "goes berserk"
+    },
+    {
+     "offset": 2563,
+     "length": 10,
+     "text": "is enraged"
+    },
+    {
+     "offset": 3044,
+     "length": 4,
+     "text": "ages"
+    },
+    {
+     "offset": 3142,
+     "length": 26,
+     "text": "The air clears a little..."
+    },
+    {
+     "offset": 3887,
+     "length": 9,
+     "text": "Avoids it"
+    },
+    {
+     "offset": 4195,
+     "length": 11,
+     "text": "is weakened"
+    },
+    {
+     "offset": 5182,
+     "length": 11,
+     "text": "is Poisoned"
+    },
+    {
+     "offset": 5194,
+     "length": 9,
+     "text": "is killed"
+    },
+    {
+     "offset": 5356,
+     "length": 12,
+     "text": "is Paralyzed"
+    },
+    {
+     "offset": 5583,
+     "length": 9,
+     "text": "is stupid"
+    },
+    {
+     "offset": 5593,
+     "length": 12,
+     "text": "lost a spell"
+    },
+    {
+     "offset": 5915,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 6140,
+     "length": 12,
+     "text": "goes berzerk"
+    },
+    {
+     "offset": 6725,
+     "length": 8,
+     "text": "gazes..."
+    },
+    {
+     "offset": 6734,
+     "length": 12,
+     "text": "reflects it!"
+    },
+    {
+     "offset": 6747,
+     "length": 9,
+     "text": "is Stoned"
+    },
+    {
+     "offset": 7387,
+     "length": 26,
+     "text": "The air clears a little..."
+    },
+    {
+     "offset": 8241,
+     "length": 10,
+     "text": "Falls dead"
+    },
+    {
+     "offset": 9804,
+     "length": 10,
+     "text": "Spits Acid"
+    },
+    {
+     "offset": 10101,
+     "length": 12,
+     "text": "is paralyzed"
+    },
+    {
+     "offset": 10374,
+     "length": 8,
+     "text": "gazes..."
+    },
+    {
+     "offset": 10383,
+     "length": 12,
+     "text": "is paralyzed"
+    },
+    {
+     "offset": 11469,
+     "length": 11,
+     "text": "gets zapped"
+    },
+    {
+     "offset": 11612,
+     "length": 12,
+     "text": "is dispelled"
+    },
+    {
+     "offset": 11625,
+     "length": 19,
+     "text": "resists dispel evil"
+    }
+   ],
+   "overlay-13": [
+    {
+     "offset": 598,
+     "length": 11,
+     "text": "-Backstabs-"
+    },
+    {
+     "offset": 610,
+     "length": 14,
+     "text": "slays helpless"
+    },
+    {
+     "offset": 625,
+     "length": 7,
+     "text": "Attacks"
+    },
+    {
+     "offset": 633,
+     "length": 14,
+     "text": "(from behind) "
+    },
+    {
+     "offset": 648,
+     "length": 19,
+     "text": "with one cruel blow"
+    },
+    {
+     "offset": 668,
+     "length": 12,
+     "text": "Hitting for "
+    },
+    {
+     "offset": 681,
+     "length": 7,
+     "text": " point "
+    },
+    {
+     "offset": 689,
+     "length": 8,
+     "text": " points "
+    },
+    {
+     "offset": 698,
+     "length": 9,
+     "text": "of damage"
+    },
+    {
+     "offset": 708,
+     "length": 10,
+     "text": "and Misses"
+    },
+    {
+     "offset": 719,
+     "length": 12,
+     "text": "lost a spell"
+    },
+    {
+     "offset": 732,
+     "length": 9,
+     "text": "goes down"
+    },
+    {
+     "offset": 742,
+     "length": 12,
+     "text": "and is Dying"
+    },
+    {
+     "offset": 787,
+     "length": 9,
+     "text": "is killed"
+    },
+    {
+     "offset": 3329,
+     "length": 8,
+     "text": "Got Away"
+    },
+    {
+     "offset": 3338,
+     "length": 17,
+     "text": "Escape is blocked"
+    },
+    {
+     "offset": 3903,
+     "length": 6,
+     "text": "sweeps"
+    },
+    {
+     "offset": 4589,
+     "length": 15,
+     "text": "turns undead..."
+    },
+    {
+     "offset": 4605,
+     "length": 9,
+     "text": "is turned"
+    },
+    {
+     "offset": 4615,
+     "length": 12,
+     "text": "Is destroyed"
+    },
+    {
+     "offset": 4628,
+     "length": 18,
+     "text": "Nothing Happens..."
+    },
+    {
+     "offset": 8714,
+     "length": 21,
+     "text": "Already been targeted"
+    },
+    {
+     "offset": 10043,
+     "length": 15,
+     "text": "Camp Only Spell"
+    },
+    {
+     "offset": 10059,
+     "length": 14,
+     "text": "Begins Casting"
+    },
+    {
+     "offset": 12078,
+     "length": 13,
+     "text": "Attack Ally: "
+    },
+    {
+     "offset": 12297,
+     "length": 8,
+     "text": "Range = "
+    },
+    {
+     "offset": 12309,
+     "length": 7,
+     "text": "Target "
+    },
+    {
+     "offset": 12317,
+     "length": 17,
+     "text": "Next Prev Manual "
+    },
+    {
+     "offset": 12335,
+     "length": 11,
+     "text": "Center Exit"
+    },
+    {
+     "offset": 12347,
+     "length": 4,
+     "text": "Aim:"
+    },
+    {
+     "offset": 13177,
+     "length": 8,
+     "text": "Range = "
+    },
+    {
+     "offset": 13189,
+     "length": 11,
+     "text": "Center Exit"
+    },
+    {
+     "offset": 13201,
+     "length": 7,
+     "text": "Target "
+    },
+    {
+     "offset": 13209,
+     "length": 18,
+     "text": "(Use Cursor keys) "
+    },
+    {
+     "offset": 16438,
+     "length": 8,
+     "text": "engulfs "
+    },
+    {
+     "offset": 17030,
+     "length": 24,
+     "text": "fires a disintegrate ray"
+    },
+    {
+     "offset": 17055,
+     "length": 17,
+     "text": "is disintergrated"
+    },
+    {
+     "offset": 17073,
+     "length": 26,
+     "text": "fires a stone to flesh ray"
+    },
+    {
+     "offset": 17100,
+     "length": 9,
+     "text": "is Stoned"
+    },
+    {
+     "offset": 17110,
+     "length": 17,
+     "text": "fires a death ray"
+    },
+    {
+     "offset": 17128,
+     "length": 9,
+     "text": "is killed"
+    },
+    {
+     "offset": 17138,
+     "length": 10,
+     "text": "wounds you"
+    },
+    {
+     "offset": 18443,
+     "length": 5,
+     "text": "hugs "
+    },
+    {
+     "offset": 18632,
+     "length": 19,
+     "text": "The Gods intervene!"
+    }
+   ],
+   "overlay-14": [
+    {
+     "offset": 2305,
+     "length": 8,
+     "text": "Not Here"
+    },
+    {
+     "offset": 2958,
+     "length": 4,
+     "text": "Bash"
+    },
+    {
+     "offset": 2963,
+     "length": 5,
+     "text": " Pick"
+    },
+    {
+     "offset": 2969,
+     "length": 6,
+     "text": " Knock"
+    },
+    {
+     "offset": 2976,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 2982,
+     "length": 8,
+     "text": "Locked. "
+    }
+   ],
+   "overlay-15": [
+    {
+     "offset": 807,
+     "length": 31,
+     "text": "cannot cast spells in this area"
+    },
+    {
+     "offset": 839,
+     "length": 22,
+     "text": "is in no condition to "
+    },
+    {
+     "offset": 862,
+     "length": 15,
+     "text": "cast any spells"
+    },
+    {
+     "offset": 878,
+     "length": 15,
+     "text": "memorize spells"
+    },
+    {
+     "offset": 894,
+     "length": 18,
+     "text": "scribe any scrolls"
+    },
+    {
+     "offset": 1203,
+     "length": 23,
+     "text": "has no spells memorized"
+    },
+    {
+     "offset": 1411,
+     "length": 13,
+     "text": "can memorize:"
+    },
+    {
+     "offset": 1425,
+     "length": 18,
+     "text": "    Cleric Spells:"
+    },
+    {
+     "offset": 1444,
+     "length": 18,
+     "text": "     Druid Spells:"
+    },
+    {
+     "offset": 1463,
+     "length": 18,
+     "text": "Magic-User Spells:"
+    },
+    {
+     "offset": 2295,
+     "length": 23,
+     "text": "Memorize These Spells? "
+    },
+    {
+     "offset": 2319,
+     "length": 26,
+     "text": "cannot memorize any spells"
+    },
+    {
+     "offset": 2346,
+     "length": 23,
+     "text": "Memorize these spells? "
+    },
+    {
+     "offset": 2809,
+     "length": 21,
+     "text": "Scribe These Spells? "
+    },
+    {
+     "offset": 2831,
+     "length": 23,
+     "text": "has no copyable scrolls"
+    },
+    {
+     "offset": 2855,
+     "length": 27,
+     "text": "You already know that spell"
+    },
+    {
+     "offset": 2883,
+     "length": 34,
+     "text": "You are already scibing that spell"
+    },
+    {
+     "offset": 2918,
+     "length": 30,
+     "text": "You can not scribe that spell."
+    },
+    {
+     "offset": 2949,
+     "length": 21,
+     "text": "Scribe these spells? "
+    },
+    {
+     "offset": 3822,
+     "length": 7,
+     "text": "Funky--"
+    },
+    {
+     "offset": 3830,
+     "length": 11,
+     "text": "Dispel Evil"
+    },
+    {
+     "offset": 3842,
+     "length": 11,
+     "text": "Faerie Fire"
+    },
+    {
+     "offset": 3854,
+     "length": 8,
+     "text": "Fumbling"
+    },
+    {
+     "offset": 3863,
+     "length": 8,
+     "text": "Helpless"
+    },
+    {
+     "offset": 3872,
+     "length": 8,
+     "text": "Confused"
+    },
+    {
+     "offset": 3881,
+     "length": 13,
+     "text": "Cause Disease"
+    },
+    {
+     "offset": 3895,
+     "length": 15,
+     "text": "Hot Fire Shield"
+    },
+    {
+     "offset": 3911,
+     "length": 16,
+     "text": "Cold Fire Shield"
+    },
+    {
+     "offset": 3928,
+     "length": 8,
+     "text": "Poisoned"
+    },
+    {
+     "offset": 3937,
+     "length": 12,
+     "text": "Regenerating"
+    },
+    {
+     "offset": 3950,
+     "length": 15,
+     "text": "Fire Resistance"
+    },
+    {
+     "offset": 3966,
+     "length": 30,
+     "text": "Minor Globe of Invulnerability"
+    },
+    {
+     "offset": 3997,
+     "length": 9,
+     "text": "enfeebled"
+    },
+    {
+     "offset": 4007,
+     "length": 20,
+     "text": "invisible to animals"
+    },
+    {
+     "offset": 4028,
+     "length": 9,
+     "text": "Invisible"
+    },
+    {
+     "offset": 4038,
+     "length": 11,
+     "text": "Camouflaged"
+    },
+    {
+     "offset": 4050,
+     "length": 28,
+     "text": "protected from dragon breath"
+    },
+    {
+     "offset": 4079,
+     "length": 7,
+     "text": "berserk"
+    },
+    {
+     "offset": 4087,
+     "length": 9,
+     "text": "Displaced"
+    },
+    {
+     "offset": 4097,
+     "length": 19,
+     "text": " <No Spell Effects>"
+    },
+    {
+     "offset": 6132,
+     "length": 13,
+     "text": "Party Order: "
+    },
+    {
+     "offset": 6178,
+     "length": 17,
+     "text": "has been selected"
+    },
+    {
+     "offset": 6446,
+     "length": 13,
+     "text": "quit TO DOS: "
+    },
+    {
+     "offset": 6460,
+     "length": 12,
+     "text": "will be gone"
+    },
+    {
+     "offset": 6473,
+     "length": 17,
+     "text": "Drop from party? "
+    },
+    {
+     "offset": 6491,
+     "length": 17,
+     "text": "bids you farewell"
+    },
+    {
+     "offset": 6509,
+     "length": 20,
+     "text": "is dumped in a ditch"
+    },
+    {
+     "offset": 6530,
+     "length": 25,
+     "text": "Breathes A sigh of relief"
+    },
+    {
+     "offset": 6886,
+     "length": 13,
+     "text": "Game Speed = "
+    },
+    {
+     "offset": 6900,
+     "length": 22,
+     "text": " (0=fastest 9=slowest)"
+    },
+    {
+     "offset": 6923,
+     "length": 7,
+     "text": " Faster"
+    },
+    {
+     "offset": 6931,
+     "length": 7,
+     "text": " Slower"
+    },
+    {
+     "offset": 6939,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 6945,
+     "length": 11,
+     "text": "Game Speed:"
+    },
+    {
+     "offset": 7369,
+     "length": 7,
+     "text": "Alter: "
+    },
+    {
+     "offset": 7377,
+     "length": 9,
+     "text": "Pics on  "
+    },
+    {
+     "offset": 7387,
+     "length": 14,
+     "text": "Animation on  "
+    },
+    {
+     "offset": 7402,
+     "length": 15,
+     "text": "Animation off  "
+    },
+    {
+     "offset": 7418,
+     "length": 10,
+     "text": "Pics off  "
+    },
+    {
+     "offset": 7429,
+     "length": 4,
+     "text": "Exit"
+    },
+    {
+     "offset": 9133,
+     "length": 23,
+     "text": "The party makes camp..."
+    },
+    {
+     "offset": 9189,
+     "length": 5,
+     "text": "Camp:"
+    },
+    {
+     "offset": 9195,
+     "length": 12,
+     "text": "Quit TO DOS "
+    }
+   ],
+   "overlay-16": [
+    {
+     "offset": 119,
+     "length": 4,
+     "text": ".SAV"
+    },
+    {
+     "offset": 124,
+     "length": 16,
+     "text": "from saved game "
+    },
+    {
+     "offset": 1083,
+     "length": 5,
+     "text": "*.guy"
+    },
+    {
+     "offset": 1089,
+     "length": 5,
+     "text": "*.cha"
+    },
+    {
+     "offset": 1095,
+     "length": 5,
+     "text": "*.sav"
+    },
+    {
+     "offset": 1101,
+     "length": 5,
+     "text": "*.hil"
+    },
+    {
+     "offset": 1482,
+     "length": 5,
+     "text": "CURSE"
+    },
+    {
+     "offset": 1488,
+     "length": 17,
+     "text": "Put save disk in "
+    },
+    {
+     "offset": 1508,
+     "length": 27,
+     "text": "Is your save disk in drive "
+    },
+    {
+     "offset": 1540,
+     "length": 30,
+     "text": "Unexpected error during save: "
+    },
+    {
+     "offset": 2674,
+     "length": 5,
+     "text": "CHEAD"
+    },
+    {
+     "offset": 2680,
+     "length": 5,
+     "text": "CBODY"
+    },
+    {
+     "offset": 3184,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 3189,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 3355,
+     "length": 34,
+     "text": "Can't save.  No room on this disk."
+    },
+    {
+     "offset": 3390,
+     "length": 16,
+     "text": "Lose character? "
+    },
+    {
+     "offset": 3407,
+     "length": 20,
+     "text": "Ok  Try another disk"
+    },
+    {
+     "offset": 3428,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 3435,
+     "length": 4,
+     "text": ".sav"
+    },
+    {
+     "offset": 3472,
+     "length": 17,
+     "text": "Put save disk in "
+    },
+    {
+     "offset": 3492,
+     "length": 30,
+     "text": "Unexpected error during save: "
+    },
+    {
+     "offset": 3523,
+     "length": 10,
+     "text": "Overwrite "
+    },
+    {
+     "offset": 3537,
+     "length": 15,
+     "text": "New file name: "
+    },
+    {
+     "offset": 3553,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 8746,
+     "length": 17,
+     "text": "Put save disk in "
+    },
+    {
+     "offset": 8766,
+     "length": 21,
+     "text": "Loading...Please Wait"
+    },
+    {
+     "offset": 8788,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 8795,
+     "length": 4,
+     "text": ".cha"
+    },
+    {
+     "offset": 8800,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 8809,
+     "length": 4,
+     "text": ".spc"
+    },
+    {
+     "offset": 12848,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 12853,
+     "length": 22,
+     "text": "Unable to load monster"
+    },
+    {
+     "offset": 13591,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 14036,
+     "length": 6,
+     "text": "savgam"
+    },
+    {
+     "offset": 14043,
+     "length": 4,
+     "text": ".dat"
+    },
+    {
+     "offset": 14050,
+     "length": 17,
+     "text": "Load Which Game: "
+    },
+    {
+     "offset": 14100,
+     "length": 17,
+     "text": "Put save disk in "
+    },
+    {
+     "offset": 14118,
+     "length": 21,
+     "text": "Loading...Please Wait"
+    },
+    {
+     "offset": 14142,
+     "length": 4,
+     "text": ".sav"
+    },
+    {
+     "offset": 14147,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 15865,
+     "length": 17,
+     "text": "Save Which Game: "
+    },
+    {
+     "offset": 15883,
+     "length": 19,
+     "text": "A B C D E F G H I J"
+    },
+    {
+     "offset": 15935,
+     "length": 6,
+     "text": "savgam"
+    },
+    {
+     "offset": 15942,
+     "length": 4,
+     "text": ".dat"
+    },
+    {
+     "offset": 15947,
+     "length": 34,
+     "text": "Can't save.  No room on this disk."
+    },
+    {
+     "offset": 16014,
+     "length": 17,
+     "text": "Put save disk in "
+    },
+    {
+     "offset": 16034,
+     "length": 30,
+     "text": "Unexpected error during save: "
+    },
+    {
+     "offset": 16065,
+     "length": 20,
+     "text": "Saving...Please Wait"
+    },
+    {
+     "offset": 16086,
+     "length": 6,
+     "text": "CHRDAT"
+    }
+   ],
+   "overlay-17": [
+    {
+     "offset": 277,
+     "length": 18,
+     "text": "Choose a function "
+    },
+    {
+     "offset": 360,
+     "length": 37,
+     "text": "You've already defeated Tyranthraxus."
+    },
+    {
+     "offset": 398,
+     "length": 12,
+     "text": "Quit to DOS "
+    },
+    {
+     "offset": 411,
+     "length": 30,
+     "text": "Game not saved.  Quit anyway? "
+    },
+    {
+     "offset": 442,
+     "length": 16,
+     "text": "Free training on"
+    },
+    {
+     "offset": 459,
+     "length": 17,
+     "text": "Free training off"
+    },
+    {
+     "offset": 1788,
+     "length": 9,
+     "text": "Pick Race"
+    },
+    {
+     "offset": 1802,
+     "length": 6,
+     "text": "Select"
+    },
+    {
+     "offset": 1809,
+     "length": 11,
+     "text": "Pick Gender"
+    },
+    {
+     "offset": 1821,
+     "length": 10,
+     "text": "Pick Class"
+    },
+    {
+     "offset": 1832,
+     "length": 14,
+     "text": "Pick Alignment"
+    },
+    {
+     "offset": 1881,
+     "length": 14,
+     "text": "Reroll stats? "
+    },
+    {
+     "offset": 1896,
+     "length": 16,
+     "text": "Character name: "
+    },
+    {
+     "offset": 1913,
+     "length": 5,
+     "text": "Save "
+    },
+    {
+     "offset": 9639,
+     "length": 5,
+     "text": "Drop "
+    },
+    {
+     "offset": 9645,
+     "length": 10,
+     "text": " forever? "
+    },
+    {
+     "offset": 9656,
+     "length": 14,
+     "text": "Are you sure? "
+    },
+    {
+     "offset": 9671,
+     "length": 9,
+     "text": "You dump "
+    },
+    {
+     "offset": 9681,
+     "length": 10,
+     "text": " out back."
+    },
+    {
+     "offset": 9692,
+     "length": 19,
+     "text": " bids you farewell."
+    },
+    {
+     "offset": 9712,
+     "length": 27,
+     "text": " breathes a sigh of relief."
+    },
+    {
+     "offset": 10305,
+     "length": 19,
+     "text": " can't be modified."
+    },
+    {
+     "offset": 10325,
+     "length": 8,
+     "text": "Modify: "
+    },
+    {
+     "offset": 10334,
+     "length": 9,
+     "text": "Keep Exit"
+    },
+    {
+     "offset": 13798,
+     "length": 16,
+     "text": "Add from where? "
+    },
+    {
+     "offset": 13815,
+     "length": 24,
+     "text": "Curse Pool Hillsfar Exit"
+    },
+    {
+     "offset": 13840,
+     "length": 17,
+     "text": "Add a character: "
+    },
+    {
+     "offset": 13858,
+     "length": 4,
+     "text": "Add "
+    },
+    {
+     "offset": 13866,
+     "length": 35,
+     "text": "paladins do not join with evil scum"
+    },
+    {
+     "offset": 13902,
+     "length": 25,
+     "text": "too many rangers in party"
+    },
+    {
+     "offset": 13928,
+     "length": 23,
+     "text": " will tolerate no evil!"
+    },
+    {
+     "offset": 15989,
+     "length": 14,
+     "text": "ready   action"
+    },
+    {
+     "offset": 16008,
+     "length": 5,
+     "text": "Small"
+    },
+    {
+     "offset": 16014,
+     "length": 5,
+     "text": "Large"
+    },
+    {
+     "offset": 16021,
+     "length": 17,
+     "text": "Sorry, not in CGA"
+    },
+    {
+     "offset": 16039,
+     "length": 4,
+     "text": "Hair"
+    },
+    {
+     "offset": 16044,
+     "length": 4,
+     "text": "Face"
+    },
+    {
+     "offset": 16081,
+     "length": 17,
+     "text": "Is this icon ok? "
+    },
+    {
+     "offset": 19562,
+     "length": 30,
+     "text": "we only train conscious people"
+    },
+    {
+     "offset": 19593,
+     "length": 23,
+     "text": "Training costs 1000 gp."
+    },
+    {
+     "offset": 19617,
+     "length": 30,
+     "text": "We don't train that class here"
+    },
+    {
+     "offset": 19648,
+     "length": 21,
+     "text": "Not Enough Experience"
+    },
+    {
+     "offset": 19670,
+     "length": 13,
+     "text": " will become:"
+    },
+    {
+     "offset": 19684,
+     "length": 12,
+     "text": "    a level "
+    },
+    {
+     "offset": 19699,
+     "length": 12,
+     "text": "and a level "
+    },
+    {
+     "offset": 19712,
+     "length": 22,
+     "text": "Do you wish to train? "
+    },
+    {
+     "offset": 19735,
+     "length": 18,
+     "text": "Congratulations..."
+    }
+   ],
+   "overlay-18": [
+    {
+     "offset": 3178,
+     "length": 46,
+     "text": "Tyranthraxus' spirit coalesces over the slain "
+    },
+    {
+     "offset": 3225,
+     "length": 52,
+     "text": "storm giant. 'You have defeated me. Were it not for "
+    },
+    {
+     "offset": 3278,
+     "length": 53,
+     "text": "the Amulet of Lythander, I could possess you and rob "
+    },
+    {
+     "offset": 3332,
+     "length": 57,
+     "text": "you of your victory. Still I can escape through the pool."
+    },
+    {
+     "offset": 3390,
+     "length": 26,
+     "text": "Press any key to continue."
+    },
+    {
+     "offset": 3417,
+     "length": 48,
+     "text": "As you reach for the Pool of Radiance, he cries "
+    },
+    {
+     "offset": 3466,
+     "length": 56,
+     "text": "out, 'Keep the Gauntlet of Moander away from there, you "
+    },
+    {
+     "offset": 3523,
+     "length": 52,
+     "text": "will unleash dangerous energies. Stay back!' As the "
+    },
+    {
+     "offset": 3576,
+     "length": 57,
+     "text": "gauntlet contacts the pool, it contracts and shatters it."
+    },
+    {
+     "offset": 3634,
+     "length": 49,
+     "text": "'I am trapped without escape, you have succeeded "
+    },
+    {
+     "offset": 3684,
+     "length": 57,
+     "text": "where armies have not. Gloat while you may, Tyranthraxus "
+    },
+    {
+     "offset": 3742,
+     "length": 54,
+     "text": "is slain this day.' Before your eyes he crumbles into "
+    },
+    {
+     "offset": 3797,
+     "length": 12,
+     "text": "nothingness."
+    },
+    {
+     "offset": 3810,
+     "length": 45,
+     "text": "You are certain he is destroyed because your "
+    },
+    {
+     "offset": 3856,
+     "length": 52,
+     "text": "final bond fades away. The Curse of the Azure Bonds "
+    },
+    {
+     "offset": 3909,
+     "length": 50,
+     "text": "has finally been lifted from you! You are free at "
+    },
+    {
+     "offset": 3960,
+     "length": 5,
+     "text": "last!"
+    },
+    {
+     "offset": 3966,
+     "length": 38,
+     "text": "The Knights of Myth Drannor rush in, '"
+    },
+    {
+     "offset": 4005,
+     "length": 52,
+     "text": "Congratulations, you have destroyed the Flamed One. "
+    },
+    {
+     "offset": 4058,
+     "length": 50,
+     "text": "With the power of Elminster, let us take you from "
+    },
+    {
+     "offset": 4109,
+     "length": 35,
+     "text": "this  foul place, to a fine feast.'"
+    },
+    {
+     "offset": 4145,
+     "length": 52,
+     "text": "You are teleported to Shadowdale, where festivities "
+    },
+    {
+     "offset": 4198,
+     "length": 58,
+     "text": "have already begun. A huge cheer goes up at your arrival. "
+    },
+    {
+     "offset": 4257,
+     "length": 53,
+     "text": "Gharri and Nacacia, arm in arm, yell congratulations "
+    },
+    {
+     "offset": 4311,
+     "length": 39,
+     "text": "from the nearby stands. 'You have won!'"
+    }
+   ],
+   "overlay-19": [
+    {
+     "offset": 57,
+     "length": 5,
+     "text": "(NPC)"
+    },
+    {
+     "offset": 63,
+     "length": 4,
+     "text": "Age "
+    },
+    {
+     "offset": 68,
+     "length": 4,
+     "text": "STR "
+    },
+    {
+     "offset": 73,
+     "length": 4,
+     "text": "INT "
+    },
+    {
+     "offset": 78,
+     "length": 4,
+     "text": "WIS "
+    },
+    {
+     "offset": 83,
+     "length": 4,
+     "text": "DEX "
+    },
+    {
+     "offset": 88,
+     "length": 4,
+     "text": "CON "
+    },
+    {
+     "offset": 93,
+     "length": 4,
+     "text": "CHA "
+    },
+    {
+     "offset": 98,
+     "length": 5,
+     "text": "Level"
+    },
+    {
+     "offset": 106,
+     "length": 4,
+     "text": "Exp "
+    },
+    {
+     "offset": 111,
+     "length": 6,
+     "text": "Weapon"
+    },
+    {
+     "offset": 118,
+     "length": 5,
+     "text": "Armor"
+    },
+    {
+     "offset": 124,
+     "length": 6,
+     "text": "Status"
+    },
+    {
+     "offset": 1614,
+     "length": 6,
+     "text": "AC    "
+    },
+    {
+     "offset": 1621,
+     "length": 6,
+     "text": "HP    "
+    },
+    {
+     "offset": 1628,
+     "length": 8,
+     "text": "THAC0   "
+    },
+    {
+     "offset": 1643,
+     "length": 14,
+     "text": "Damage        "
+    },
+    {
+     "offset": 1658,
+     "length": 17,
+     "text": "Encumbrance      "
+    },
+    {
+     "offset": 1676,
+     "length": 11,
+     "text": "Movement   "
+    },
+    {
+     "offset": 2856,
+     "length": 6,
+     "text": "Items "
+    },
+    {
+     "offset": 2863,
+     "length": 7,
+     "text": "Spells "
+    },
+    {
+     "offset": 2871,
+     "length": 6,
+     "text": "Trade "
+    },
+    {
+     "offset": 2878,
+     "length": 5,
+     "text": "Drop "
+    },
+    {
+     "offset": 2884,
+     "length": 5,
+     "text": "Heal "
+    },
+    {
+     "offset": 2890,
+     "length": 5,
+     "text": "Cure "
+    },
+    {
+     "offset": 2896,
+     "length": 4,
+     "text": "Exit"
+    },
+    {
+     "offset": 3701,
+     "length": 17,
+     "text": "Must be unreadied"
+    },
+    {
+     "offset": 3719,
+     "length": 37,
+     "text": " was going to scribe from that scroll"
+    },
+    {
+     "offset": 3757,
+     "length": 23,
+     "text": "is it Okay to lose it? "
+    },
+    {
+     "offset": 4028,
+     "length": 14,
+     "text": "itemptr:      "
+    },
+    {
+     "offset": 4043,
+     "length": 14,
+     "text": "namenum(1):   "
+    },
+    {
+     "offset": 4058,
+     "length": 14,
+     "text": "namenum(2):   "
+    },
+    {
+     "offset": 4073,
+     "length": 14,
+     "text": "namenum(3):   "
+    },
+    {
+     "offset": 4088,
+     "length": 14,
+     "text": "plus:         "
+    },
+    {
+     "offset": 4103,
+     "length": 14,
+     "text": "plussave:     "
+    },
+    {
+     "offset": 4118,
+     "length": 14,
+     "text": "ready:        "
+    },
+    {
+     "offset": 4133,
+     "length": 14,
+     "text": "identified:   "
+    },
+    {
+     "offset": 4148,
+     "length": 14,
+     "text": "cursed:       "
+    },
+    {
+     "offset": 4163,
+     "length": 14,
+     "text": "value:        "
+    },
+    {
+     "offset": 4178,
+     "length": 14,
+     "text": "special(1):   "
+    },
+    {
+     "offset": 4193,
+     "length": 14,
+     "text": "special(2):   "
+    },
+    {
+     "offset": 4208,
+     "length": 14,
+     "text": "special(3):   "
+    },
+    {
+     "offset": 4223,
+     "length": 15,
+     "text": "dice large:    "
+    },
+    {
+     "offset": 4239,
+     "length": 15,
+     "text": "sides large:   "
+    },
+    {
+     "offset": 4255,
+     "length": 11,
+     "text": "press a key"
+    },
+    {
+     "offset": 5395,
+     "length": 5,
+     "text": "Ready"
+    },
+    {
+     "offset": 5401,
+     "length": 4,
+     "text": " Use"
+    },
+    {
+     "offset": 5406,
+     "length": 6,
+     "text": " Trade"
+    },
+    {
+     "offset": 5413,
+     "length": 5,
+     "text": " Drop"
+    },
+    {
+     "offset": 5419,
+     "length": 6,
+     "text": " Halve"
+    },
+    {
+     "offset": 5426,
+     "length": 5,
+     "text": " Join"
+    },
+    {
+     "offset": 5432,
+     "length": 5,
+     "text": " Sell"
+    },
+    {
+     "offset": 5442,
+     "length": 5,
+     "text": "Items"
+    },
+    {
+     "offset": 5448,
+     "length": 10,
+     "text": "Ready Item"
+    },
+    {
+     "offset": 5459,
+     "length": 15,
+     "text": "Must be Readied"
+    },
+    {
+     "offset": 5475,
+     "length": 5,
+     "text": "Your "
+    },
+    {
+     "offset": 5481,
+     "length": 20,
+     "text": "will be gone forever"
+    },
+    {
+     "offset": 5502,
+     "length": 9,
+     "text": "Drop It? "
+    },
+    {
+     "offset": 7853,
+     "length": 11,
+     "text": "It's Cursed"
+    },
+    {
+     "offset": 7865,
+     "length": 11,
+     "text": "Wrong Class"
+    },
+    {
+     "offset": 7877,
+     "length": 14,
+     "text": "already using "
+    },
+    {
+     "offset": 7892,
+     "length": 20,
+     "text": "Your hands are full!"
+    },
+    {
+     "offset": 8480,
+     "length": 16,
+     "text": "Trade with Whom?"
+    },
+    {
+     "offset": 8497,
+     "length": 10,
+     "text": "Overloaded"
+    },
+    {
+     "offset": 8674,
+     "length": 16,
+     "text": "Can't halve that"
+    },
+    {
+     "offset": 9332,
+     "length": 12,
+     "text": "uses an item"
+    },
+    {
+     "offset": 9345,
+     "length": 5,
+     "text": "Item:"
+    },
+    {
+     "offset": 9351,
+     "length": 5,
+     "text": "oops!"
+    },
+    {
+     "offset": 10099,
+     "length": 14,
+     "text": "I'll give you "
+    },
+    {
+     "offset": 10114,
+     "length": 22,
+     "text": " gold pieces for your "
+    },
+    {
+     "offset": 10137,
+     "length": 14,
+     "text": "Is It a Deal? "
+    },
+    {
+     "offset": 10152,
+     "length": 5,
+     "text": "Sold!"
+    },
+    {
+     "offset": 10158,
+     "length": 39,
+     "text": "Overloaded.  Money will be put in pool."
+    },
+    {
+     "offset": 10680,
+     "length": 39,
+     "text": "For 200 gold pieces I'll identify your "
+    },
+    {
+     "offset": 10720,
+     "length": 14,
+     "text": "Is It a Deal? "
+    },
+    {
+     "offset": 10735,
+     "length": 16,
+     "text": "Not Enough Money"
+    },
+    {
+     "offset": 10752,
+     "length": 37,
+     "text": "I can't tell anything new about your "
+    },
+    {
+     "offset": 10790,
+     "length": 27,
+     "text": "It looks like some sort of "
+    },
+    {
+     "offset": 11283,
+     "length": 9,
+     "text": "Trade to?"
+    },
+    {
+     "offset": 11295,
+     "length": 20,
+     "text": "Select type of coin "
+    },
+    {
+     "offset": 11316,
+     "length": 7,
+     "text": " Select"
+    },
+    {
+     "offset": 11324,
+     "length": 9,
+     "text": "How much "
+    },
+    {
+     "offset": 11334,
+     "length": 16,
+     "text": "will you trade? "
+    },
+    {
+     "offset": 12146,
+     "length": 20,
+     "text": "Select type of coin "
+    },
+    {
+     "offset": 12167,
+     "length": 7,
+     "text": " Select"
+    },
+    {
+     "offset": 12175,
+     "length": 9,
+     "text": "How much "
+    },
+    {
+     "offset": 12185,
+     "length": 15,
+     "text": "will you drop? "
+    },
+    {
+     "offset": 13345,
+     "length": 9,
+     "text": "in Memory"
+    },
+    {
+     "offset": 13355,
+     "length": 11,
+     "text": "in Grimoire"
+    },
+    {
+     "offset": 13367,
+     "length": 9,
+     "text": "on Scroll"
+    },
+    {
+     "offset": 13377,
+     "length": 10,
+     "text": "on Scrolls"
+    },
+    {
+     "offset": 13388,
+     "length": 9,
+     "text": "to Choose"
+    },
+    {
+     "offset": 13398,
+     "length": 11,
+     "text": "to Memorize"
+    },
+    {
+     "offset": 13410,
+     "length": 9,
+     "text": "to Scribe"
+    },
+    {
+     "offset": 13420,
+     "length": 7,
+     "text": "Spells "
+    },
+    {
+     "offset": 13999,
+     "length": 11,
+     "text": "Heal whom? "
+    },
+    {
+     "offset": 14011,
+     "length": 13,
+     "text": " feels better"
+    },
+    {
+     "offset": 14025,
+     "length": 14,
+     "text": " is unaffected"
+    },
+    {
+     "offset": 14264,
+     "length": 11,
+     "text": "Cure whom? "
+    },
+    {
+     "offset": 14276,
+     "length": 15,
+     "text": "is not diseased"
+    },
+    {
+     "offset": 14292,
+     "length": 13,
+     "text": "cure anyway: "
+    },
+    {
+     "offset": 14306,
+     "length": 9,
+     "text": " is cured"
+    }
+   ],
+   "overlay-20": [
+    {
+     "offset": 1479,
+     "length": 10,
+     "text": "Rest Time:"
+    },
+    {
+     "offset": 1739,
+     "length": 38,
+     "text": "Rest Days Hours Mins Add Subtract Exit"
+    },
+    {
+     "offset": 2120,
+     "length": 25,
+     "text": "The Whole Party Is Healed"
+    },
+    {
+     "offset": 2319,
+     "length": 13,
+     "text": "has memorized"
+    },
+    {
+     "offset": 2515,
+     "length": 11,
+     "text": "has scribed"
+    },
+    {
+     "offset": 3176,
+     "length": 14,
+     "text": "Stop Resting? "
+    },
+    {
+     "offset": 3191,
+     "length": 36,
+     "text": "Your repose is suddenly interrupted!"
+    }
+   ],
+   "overlay-21": [
+    {
+     "offset": 500,
+     "length": 39,
+     "text": "Overloaded.  Money will be put in Pool."
+    },
+    {
+     "offset": 1120,
+     "length": 10,
+     "text": "Overloaded"
+    },
+    {
+     "offset": 2687,
+     "length": 10,
+     "text": "Overloaded"
+    },
+    {
+     "offset": 2904,
+     "length": 5,
+     "text": "Gems "
+    },
+    {
+     "offset": 2910,
+     "length": 5,
+     "text": "Gold "
+    },
+    {
+     "offset": 2916,
+     "length": 9,
+     "text": "Platinum "
+    },
+    {
+     "offset": 2926,
+     "length": 9,
+     "text": "electrum "
+    },
+    {
+     "offset": 2936,
+     "length": 7,
+     "text": "silver "
+    },
+    {
+     "offset": 2944,
+     "length": 7,
+     "text": "Copper "
+    },
+    {
+     "offset": 2952,
+     "length": 8,
+     "text": "Jewelry "
+    },
+    {
+     "offset": 3258,
+     "length": 20,
+     "text": "Select type of coin "
+    },
+    {
+     "offset": 3279,
+     "length": 6,
+     "text": "Select"
+    },
+    {
+     "offset": 3286,
+     "length": 9,
+     "text": "How much "
+    },
+    {
+     "offset": 3296,
+     "length": 15,
+     "text": "will you take? "
+    },
+    {
+     "offset": 6330,
+     "length": 18,
+     "text": "No Gems or Jewelry"
+    },
+    {
+     "offset": 6349,
+     "length": 4,
+     "text": " Gem"
+    },
+    {
+     "offset": 6354,
+     "length": 5,
+     "text": " Gems"
+    },
+    {
+     "offset": 6360,
+     "length": 17,
+     "text": " piece of Jewelry"
+    },
+    {
+     "offset": 6378,
+     "length": 18,
+     "text": " pieces of Jewelry"
+    },
+    {
+     "offset": 6397,
+     "length": 30,
+     "text": "You have a fine collection of:"
+    },
+    {
+     "offset": 6428,
+     "length": 6,
+     "text": "  Gems"
+    },
+    {
+     "offset": 6435,
+     "length": 9,
+     "text": "  Jewelry"
+    },
+    {
+     "offset": 6445,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 6451,
+     "length": 11,
+     "text": "Appraise : "
+    },
+    {
+     "offset": 6463,
+     "length": 21,
+     "text": "The Gem is Valued at "
+    },
+    {
+     "offset": 6485,
+     "length": 4,
+     "text": " gp."
+    },
+    {
+     "offset": 6490,
+     "length": 4,
+     "text": "Sell"
+    },
+    {
+     "offset": 6495,
+     "length": 9,
+     "text": "Sell Keep"
+    },
+    {
+     "offset": 6505,
+     "length": 10,
+     "text": "You can : "
+    },
+    {
+     "offset": 6516,
+     "length": 23,
+     "text": "The Jewel is Valued at "
+    }
+   ],
+   "overlay-22": [
+    {
+     "offset": 399,
+     "length": 4,
+     "text": "Cast"
+    },
+    {
+     "offset": 404,
+     "length": 8,
+     "text": "Memorize"
+    },
+    {
+     "offset": 413,
+     "length": 6,
+     "text": "Scribe"
+    },
+    {
+     "offset": 420,
+     "length": 5,
+     "text": "Learn"
+    },
+    {
+     "offset": 458,
+     "length": 14,
+     "text": "Choose Spell: "
+    },
+    {
+     "offset": 4287,
+     "length": 18,
+     "text": "Cast Spell on whom"
+    },
+    {
+     "offset": 4588,
+     "length": 21,
+     "text": "can't be cast here..."
+    },
+    {
+     "offset": 4610,
+     "length": 9,
+     "text": "Lose it? "
+    },
+    {
+     "offset": 4620,
+     "length": 9,
+     "text": "That Item"
+    },
+    {
+     "offset": 4630,
+     "length": 24,
+     "text": "is a combat-only item..."
+    },
+    {
+     "offset": 4655,
+     "length": 8,
+     "text": "Use it? "
+    },
+    {
+     "offset": 4664,
+     "length": 8,
+     "text": "miscasts"
+    },
+    {
+     "offset": 4673,
+     "length": 5,
+     "text": "casts"
+    },
+    {
+     "offset": 4679,
+     "length": 13,
+     "text": "Abort Spell? "
+    },
+    {
+     "offset": 4693,
+     "length": 13,
+     "text": "Spell Aborted"
+    },
+    {
+     "offset": 7406,
+     "length": 10,
+     "text": "is Blessed"
+    },
+    {
+     "offset": 7456,
+     "length": 9,
+     "text": "is Cursed"
+    },
+    {
+     "offset": 7625,
+     "length": 11,
+     "text": "is affected"
+    },
+    {
+     "offset": 7682,
+     "length": 12,
+     "text": "is protected"
+    },
+    {
+     "offset": 7740,
+     "length": 17,
+     "text": "is cold-resistant"
+    },
+    {
+     "offset": 7856,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 7870,
+     "length": 10,
+     "text": "is charmed"
+    },
+    {
+     "offset": 8070,
+     "length": 11,
+     "text": "is stronger"
+    },
+    {
+     "offset": 8082,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 8400,
+     "length": 16,
+     "text": "has been reduced"
+    },
+    {
+     "offset": 8564,
+     "length": 11,
+     "text": "is friendly"
+    },
+    {
+     "offset": 8742,
+     "length": 11,
+     "text": "is shielded"
+    },
+    {
+     "offset": 8871,
+     "length": 12,
+     "text": "falls asleep"
+    },
+    {
+     "offset": 9194,
+     "length": 7,
+     "text": "is held"
+    },
+    {
+     "offset": 9289,
+     "length": 17,
+     "text": "is fire resistant"
+    },
+    {
+     "offset": 9352,
+     "length": 11,
+     "text": "is silenced"
+    },
+    {
+     "offset": 9409,
+     "length": 11,
+     "text": "is affected"
+    },
+    {
+     "offset": 9589,
+     "length": 10,
+     "text": "is charmed"
+    },
+    {
+     "offset": 9845,
+     "length": 12,
+     "text": "is invisible"
+    },
+    {
+     "offset": 9903,
+     "length": 11,
+     "text": "Knock-Knock"
+    },
+    {
+     "offset": 9960,
+     "length": 13,
+     "text": "is duplicated"
+    },
+    {
+     "offset": 10056,
+     "length": 11,
+     "text": "is weakened"
+    },
+    {
+     "offset": 10113,
+     "length": 23,
+     "text": "Creates a noxious cloud"
+    },
+    {
+     "offset": 11690,
+     "length": 11,
+     "text": "is animated"
+    },
+    {
+     "offset": 12118,
+     "length": 7,
+     "text": "can see"
+    },
+    {
+     "offset": 12187,
+     "length": 8,
+     "text": "is blind"
+    },
+    {
+     "offset": 12423,
+     "length": 11,
+     "text": "is diseased"
+    },
+    {
+     "offset": 12658,
+     "length": 11,
+     "text": "is affected"
+    },
+    {
+     "offset": 13602,
+     "length": 10,
+     "text": "is praying"
+    },
+    {
+     "offset": 13686,
+     "length": 12,
+     "text": "is un-cursed"
+    },
+    {
+     "offset": 13699,
+     "length": 21,
+     "text": "has an item un-cursed"
+    },
+    {
+     "offset": 13974,
+     "length": 16,
+     "text": "has been cursed!"
+    },
+    {
+     "offset": 14036,
+     "length": 11,
+     "text": "is blinking"
+    },
+    {
+     "offset": 14611,
+     "length": 9,
+     "text": "is Hasted"
+    },
+    {
+     "offset": 15587,
+     "length": 9,
+     "text": "is Slowed"
+    },
+    {
+     "offset": 15643,
+     "length": 11,
+     "text": "is restored"
+    },
+    {
+     "offset": 16088,
+     "length": 9,
+     "text": "is Speedy"
+    },
+    {
+     "offset": 16227,
+     "length": 11,
+     "text": "is stronger"
+    },
+    {
+     "offset": 16438,
+     "length": 12,
+     "text": "is paralyzed"
+    },
+    {
+     "offset": 16496,
+     "length": 9,
+     "text": "is Healed"
+    },
+    {
+     "offset": 16584,
+     "length": 12,
+     "text": "is invisible"
+    },
+    {
+     "offset": 16760,
+     "length": 13,
+     "text": "is unpoisoned"
+    },
+    {
+     "offset": 16774,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 17151,
+     "length": 17,
+     "text": "smashes them flat"
+    },
+    {
+     "offset": 17446,
+     "length": 11,
+     "text": "is affected"
+    },
+    {
+     "offset": 17609,
+     "length": 9,
+     "text": "is raised"
+    },
+    {
+     "offset": 17822,
+     "length": 8,
+     "text": "is slain"
+    },
+    {
+     "offset": 17831,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 18021,
+     "length": 12,
+     "text": "is entangled"
+    },
+    {
+     "offset": 18205,
+     "length": 14,
+     "text": "is highlighted"
+    },
+    {
+     "offset": 18252,
+     "length": 12,
+     "text": "is invisible"
+    },
+    {
+     "offset": 18310,
+     "length": 10,
+     "text": "is charmed"
+    },
+    {
+     "offset": 18454,
+     "length": 11,
+     "text": "is confused"
+    },
+    {
+     "offset": 18650,
+     "length": 9,
+     "text": "teleports"
+    },
+    {
+     "offset": 19058,
+     "length": 14,
+     "text": "runs in terror"
+    },
+    {
+     "offset": 19073,
+     "length": 13,
+     "text": "is unaffected"
+    },
+    {
+     "offset": 19379,
+     "length": 12,
+     "text": "flame type: "
+    },
+    {
+     "offset": 19392,
+     "length": 8,
+     "text": "Hot Cold"
+    },
+    {
+     "offset": 19401,
+     "length": 12,
+     "text": "is protected"
+    },
+    {
+     "offset": 19415,
+     "length": 13,
+     "text": "Abort spell? "
+    },
+    {
+     "offset": 19429,
+     "length": 6,
+     "text": "Yes No"
+    },
+    {
+     "offset": 19852,
+     "length": 9,
+     "text": "is clumsy"
+    },
+    {
+     "offset": 19862,
+     "length": 9,
+     "text": "is slowed"
+    },
+    {
+     "offset": 20202,
+     "length": 12,
+     "text": "is protected"
+    },
+    {
+     "offset": 20260,
+     "length": 25,
+     "text": "Creates a poisonous cloud"
+    },
+    {
+     "offset": 22401,
+     "length": 9,
+     "text": "is Healed"
+    },
+    {
+     "offset": 22489,
+     "length": 9,
+     "text": "Breathes!"
+    },
+    {
+     "offset": 22867,
+     "length": 10,
+     "text": "Spits Acid"
+    },
+    {
+     "offset": 22878,
+     "length": 21,
+     "text": "Spits Acid and Misses"
+    },
+    {
+     "offset": 23194,
+     "length": 13,
+     "text": "breathes acid"
+    },
+    {
+     "offset": 23672,
+     "length": 13,
+     "text": "breathes fire"
+    },
+    {
+     "offset": 24067,
+     "length": 13,
+     "text": "Breathes Fire"
+    },
+    {
+     "offset": 24350,
+     "length": 16,
+     "text": "throws lightning"
+    },
+    {
+     "offset": 24588,
+     "length": 8,
+     "text": "gazes..."
+    },
+    {
+     "offset": 24597,
+     "length": 12,
+     "text": "is paralyzed"
+    },
+    {
+     "offset": 25076,
+     "length": 13,
+     "text": "Casts a Spell"
+    },
+    {
+     "offset": 25090,
+     "length": 6,
+     "text": "Spell:"
+    }
+   ],
+   "overlay-23": [
+    {
+     "offset": 3587,
+     "length": 15,
+     "text": "starts to cough"
+    },
+    {
+     "offset": 3603,
+     "length": 27,
+     "text": "chokes and gags from nausea"
+    },
+    {
+     "offset": 3631,
+     "length": 11,
+     "text": "is Poisoned"
+    },
+    {
+     "offset": 3643,
+     "length": 9,
+     "text": "is killed"
+    },
+    {
+     "offset": 5690,
+     "length": 8,
+     "text": "is Cured"
+    },
+    {
+     "offset": 7961,
+     "length": 6,
+     "text": "takes "
+    },
+    {
+     "offset": 7968,
+     "length": 18,
+     "text": " points of damage "
+    },
+    {
+     "offset": 7987,
+     "length": 24,
+     "text": "takes 1 point of damage "
+    },
+    {
+     "offset": 8012,
+     "length": 9,
+     "text": "from Fire"
+    },
+    {
+     "offset": 8022,
+     "length": 9,
+     "text": "from Cold"
+    },
+    {
+     "offset": 8032,
+     "length": 16,
+     "text": "from Electricity"
+    },
+    {
+     "offset": 8049,
+     "length": 9,
+     "text": "from Acid"
+    },
+    {
+     "offset": 8059,
+     "length": 10,
+     "text": "from Magic"
+    },
+    {
+     "offset": 8070,
+     "length": 12,
+     "text": "lost a spell"
+    },
+    {
+     "offset": 8083,
+     "length": 9,
+     "text": "Goes Down"
+    },
+    {
+     "offset": 8093,
+     "length": 14,
+     "text": ", and is Dying"
+    },
+    {
+     "offset": 8140,
+     "length": 9,
+     "text": "is killed"
+    },
+    {
+     "offset": 8953,
+     "length": 13,
+     "text": "is Unaffected"
+    },
+    {
+     "offset": 9420,
+     "length": 19,
+     "text": "stands up and grins"
+    },
+    {
+     "offset": 9440,
+     "length": 12,
+     "text": "gets back up"
+    }
+   ],
+   "overlay-24": [
+    {
+     "offset": 1106,
+     "length": 6,
+     "text": " Yes  "
+    },
+    {
+     "offset": 1113,
+     "length": 6,
+     "text": " No   "
+    },
+    {
+     "offset": 1929,
+     "length": 4,
+     "text": "Name"
+    },
+    {
+     "offset": 1934,
+     "length": 6,
+     "text": "AC  HP"
+    },
+    {
+     "offset": 2588,
+     "length": 9,
+     "text": "Hitpoints"
+    },
+    {
+     "offset": 2601,
+     "length": 10,
+     "text": "(Helpless)"
+    },
+    {
+     "offset": 5572,
+     "length": 19,
+     "text": "Nil Item pointer..."
+    },
+    {
+     "offset": 5592,
+     "length": 38,
+     "text": "Tried to Lose item & couldn't find it!"
+    },
+    {
+     "offset": 9503,
+     "length": 15,
+     "text": "is fully healed"
+    },
+    {
+     "offset": 9519,
+     "length": 19,
+     "text": "is partially healed"
+    },
+    {
+     "offset": 10350,
+     "length": 8,
+     "text": "Guarding"
+    },
+    {
+     "offset": 11161,
+     "length": 8,
+     "text": " camping"
+    },
+    {
+     "offset": 11170,
+     "length": 7,
+     "text": " search"
+    },
+    {
+     "offset": 11835,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 11875,
+     "length": 6,
+     "text": "Select"
+    },
+    {
+     "offset": 13179,
+     "length": 11,
+     "text": "is bandaged"
+    }
+   ],
+   "overlay-25": [
+    {
+     "offset": 3745,
+     "length": 14,
+     "text": "Pick New Class"
+    },
+    {
+     "offset": 3760,
+     "length": 17,
+     "text": " doesn't qualify."
+    },
+    {
+     "offset": 3779,
+     "length": 6,
+     "text": "Select"
+    },
+    {
+     "offset": 3786,
+     "length": 20,
+     "text": " is now a 1st level "
+    }
+   ],
+   "overlay-26": [
+    {
+     "offset": 3559,
+     "length": 5,
+     "text": " Next"
+    },
+    {
+     "offset": 3565,
+     "length": 5,
+     "text": " Prev"
+    },
+    {
+     "offset": 3571,
+     "length": 5,
+     "text": " Exit"
+    },
+    {
+     "offset": 4355,
+     "length": 6,
+     "text": "Yes No"
+    }
+   ],
+   "overlay-29": [
+    {
+     "offset": 216,
+     "length": 21,
+     "text": "Loading...Please Wait"
+    },
+    {
+     "offset": 242,
+     "length": 5,
+     "text": "FINAL"
+    },
+    {
+     "offset": 248,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 253,
+     "length": 13,
+     "text": "PIC not found"
+    },
+    {
+     "offset": 1476,
+     "length": 4,
+     "text": "HEAD"
+    },
+    {
+     "offset": 1481,
+     "length": 14,
+     "text": "head not found"
+    },
+    {
+     "offset": 1496,
+     "length": 4,
+     "text": "BODY"
+    },
+    {
+     "offset": 1845,
+     "length": 30,
+     "text": "Illegal range in Show3DSprite."
+    },
+    {
+     "offset": 2060,
+     "length": 6,
+     "text": "bigpic"
+    }
+   ],
+   "overlay-30": [
+    {
+     "offset": 4095,
+     "length": 7,
+     "text": "WALLDEF"
+    },
+    {
+     "offset": 4103,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 4108,
+     "length": 15,
+     "text": "Unable to load "
+    },
+    {
+     "offset": 4124,
+     "length": 13,
+     "text": " from WALLDEF"
+    },
+    {
+     "offset": 4884,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 4889,
+     "length": 32,
+     "text": "Unable to load geo in Load3DMap."
+    }
+   ],
+   "overlay-33": [
+    {
+     "offset": 12,
+     "length": 33,
+     "text": "Start range error in Load24x24Set"
+    },
+    {
+     "offset": 444,
+     "length": 5,
+     "text": "CHEAD"
+    },
+    {
+     "offset": 450,
+     "length": 5,
+     "text": "CBODY"
+    },
+    {
+     "offset": 456,
+     "length": 6,
+     "text": "COMSPR"
+    },
+    {
+     "offset": 463,
+     "length": 4,
+     "text": "ICON"
+    }
+   ],
+   "overlay-34": [
+    {
+     "offset": 7,
+     "length": 4,
+     "text": "EXIT"
+    },
+    {
+     "offset": 12,
+     "length": 4,
+     "text": "GOTO"
+    },
+    {
+     "offset": 17,
+     "length": 5,
+     "text": "GOSUB"
+    },
+    {
+     "offset": 23,
+     "length": 7,
+     "text": "COMPARE"
+    },
+    {
+     "offset": 35,
+     "length": 7,
+     "text": "SUBTRAT"
+    },
+    {
+     "offset": 43,
+     "length": 6,
+     "text": "DIVIDE"
+    },
+    {
+     "offset": 50,
+     "length": 8,
+     "text": "MULTIPLY"
+    },
+    {
+     "offset": 59,
+     "length": 6,
+     "text": "RANDOM"
+    },
+    {
+     "offset": 66,
+     "length": 4,
+     "text": "SAVE"
+    },
+    {
+     "offset": 71,
+     "length": 14,
+     "text": "LOAD CHARACTER"
+    },
+    {
+     "offset": 86,
+     "length": 12,
+     "text": "LOAD MONSTER"
+    },
+    {
+     "offset": 99,
+     "length": 13,
+     "text": "SETUP MONSTER"
+    },
+    {
+     "offset": 113,
+     "length": 8,
+     "text": "APPROACH"
+    },
+    {
+     "offset": 122,
+     "length": 7,
+     "text": "PICTURE"
+    },
+    {
+     "offset": 130,
+     "length": 12,
+     "text": "INPUT NUMBER"
+    },
+    {
+     "offset": 143,
+     "length": 12,
+     "text": "INPUT STRING"
+    },
+    {
+     "offset": 156,
+     "length": 5,
+     "text": "PRINT"
+    },
+    {
+     "offset": 162,
+     "length": 10,
+     "text": "PRINTCLEAR"
+    },
+    {
+     "offset": 173,
+     "length": 6,
+     "text": "RETURN"
+    },
+    {
+     "offset": 180,
+     "length": 11,
+     "text": "COMPARE AND"
+    },
+    {
+     "offset": 192,
+     "length": 13,
+     "text": "VERTICAL MENU"
+    },
+    {
+     "offset": 206,
+     "length": 5,
+     "text": "IF = "
+    },
+    {
+     "offset": 212,
+     "length": 5,
+     "text": "IF <>"
+    },
+    {
+     "offset": 218,
+     "length": 4,
+     "text": "IF <"
+    },
+    {
+     "offset": 223,
+     "length": 4,
+     "text": "IF >"
+    },
+    {
+     "offset": 228,
+     "length": 5,
+     "text": "IF <="
+    },
+    {
+     "offset": 234,
+     "length": 5,
+     "text": "IF >="
+    },
+    {
+     "offset": 240,
+     "length": 13,
+     "text": "CLEARMONSTERS"
+    },
+    {
+     "offset": 254,
+     "length": 13,
+     "text": "PARTYSTRENGTH"
+    },
+    {
+     "offset": 268,
+     "length": 10,
+     "text": "CHECKPARTY"
+    },
+    {
+     "offset": 279,
+     "length": 6,
+     "text": "NEWECL"
+    },
+    {
+     "offset": 286,
+     "length": 10,
+     "text": "LOAD FILES"
+    },
+    {
+     "offset": 297,
+     "length": 11,
+     "text": "LOAD PIECES"
+    },
+    {
+     "offset": 309,
+     "length": 14,
+     "text": "PARTY SURPRISE"
+    },
+    {
+     "offset": 324,
+     "length": 8,
+     "text": "SURPRISE"
+    },
+    {
+     "offset": 333,
+     "length": 6,
+     "text": "COMBAT"
+    },
+    {
+     "offset": 340,
+     "length": 7,
+     "text": "ON GOTO"
+    },
+    {
+     "offset": 348,
+     "length": 8,
+     "text": "ON GOSUB"
+    },
+    {
+     "offset": 357,
+     "length": 8,
+     "text": "TREASURE"
+    },
+    {
+     "offset": 370,
+     "length": 14,
+     "text": "ENCOUNTER MENU"
+    },
+    {
+     "offset": 385,
+     "length": 8,
+     "text": "GETTABLE"
+    },
+    {
+     "offset": 394,
+     "length": 15,
+     "text": "HORIZONTAL MENU"
+    },
+    {
+     "offset": 410,
+     "length": 6,
+     "text": "PARLAY"
+    },
+    {
+     "offset": 417,
+     "length": 4,
+     "text": "CALL"
+    },
+    {
+     "offset": 422,
+     "length": 6,
+     "text": "DAMAGE"
+    },
+    {
+     "offset": 436,
+     "length": 10,
+     "text": "SPRITE OFF"
+    },
+    {
+     "offset": 447,
+     "length": 9,
+     "text": "FIND ITEM"
+    },
+    {
+     "offset": 457,
+     "length": 12,
+     "text": "PRINT RETURN"
+    },
+    {
+     "offset": 470,
+     "length": 9,
+     "text": "ECL CLOCK"
+    },
+    {
+     "offset": 480,
+     "length": 10,
+     "text": "SAVE TABLE"
+    },
+    {
+     "offset": 491,
+     "length": 7,
+     "text": "ADD NPC"
+    },
+    {
+     "offset": 499,
+     "length": 7,
+     "text": "PROGRAM"
+    },
+    {
+     "offset": 511,
+     "length": 5,
+     "text": "DELAY"
+    },
+    {
+     "offset": 517,
+     "length": 5,
+     "text": "SPELL"
+    },
+    {
+     "offset": 523,
+     "length": 10,
+     "text": "PROTECTION"
+    },
+    {
+     "offset": 534,
+     "length": 9,
+     "text": "CLEAR BOX"
+    },
+    {
+     "offset": 544,
+     "length": 4,
+     "text": "DUMP"
+    },
+    {
+     "offset": 549,
+     "length": 12,
+     "text": "FIND SPECIAL"
+    },
+    {
+     "offset": 562,
+     "length": 13,
+     "text": "DESTROY ITEMS"
+    }
+   ],
+   "overlay-35": [
+    {
+     "offset": 39,
+     "length": 4,
+     "text": "8x8d"
+    },
+    {
+     "offset": 44,
+     "length": 15,
+     "text": "Unable to load "
+    },
+    {
+     "offset": 60,
+     "length": 10,
+     "text": " from 8x8D"
+    },
+    {
+     "offset": 336,
+     "length": 34,
+     "text": "Bad symbol number in Put8x8Symbol."
+    }
+   ]
+  },
+  "pc98": {
+   "overlay-00": [
+    {
+     "offset": 0,
+     "length": 26,
+     "text": "ゲームをセーブしてください"
+    }
+   ],
+   "overlay-01": [
+    {
+     "offset": 81,
+     "length": 36,
+     "text": "BASED ON THE TSR NOVEL \"AZURE BONDS\""
+    },
+    {
+     "offset": 122,
+     "length": 10,
+     "text": "Kate Novak"
+    },
+    {
+     "offset": 137,
+     "length": 10,
+     "text": "Jeff Grubb"
+    },
+    {
+     "offset": 148,
+     "length": 20,
+     "text": "SCENARIO CREATED BY:"
+    },
+    {
+     "offset": 169,
+     "length": 8,
+     "text": "TSR,INC."
+    },
+    {
+     "offset": 182,
+     "length": 28,
+     "text": "Jeff Grubb,George Mac Donald"
+    },
+    {
+     "offset": 211,
+     "length": 16,
+     "text": "GAME CREATED BY:"
+    },
+    {
+     "offset": 228,
+     "length": 20,
+     "text": "SSI SPECIAL PROJECTS"
+    },
+    {
+     "offset": 249,
+     "length": 15,
+     "text": "PROJECT LEADER:"
+    },
+    {
+     "offset": 265,
+     "length": 17,
+     "text": "George Mac Donald"
+    },
+    {
+     "offset": 283,
+     "length": 12,
+     "text": "PROGRAMMING:"
+    },
+    {
+     "offset": 296,
+     "length": 12,
+     "text": "Scot Bayless"
+    },
+    {
+     "offset": 309,
+     "length": 10,
+     "text": "Russ Brown"
+    },
+    {
+     "offset": 320,
+     "length": 15,
+     "text": "Michael Mancuso"
+    },
+    {
+     "offset": 336,
+     "length": 12,
+     "text": "DEVELOPMENT:"
+    },
+    {
+     "offset": 349,
+     "length": 13,
+     "text": "David Shelley"
+    },
+    {
+     "offset": 363,
+     "length": 11,
+     "text": "Oran Kangas"
+    },
+    {
+     "offset": 375,
+     "length": 13,
+     "text": "GRAPHIC ARTS:"
+    },
+    {
+     "offset": 389,
+     "length": 8,
+     "text": "Tom Wahl"
+    },
+    {
+     "offset": 398,
+     "length": 10,
+     "text": "Fred Butts"
+    },
+    {
+     "offset": 409,
+     "length": 12,
+     "text": "Susan Manley"
+    },
+    {
+     "offset": 422,
+     "length": 12,
+     "text": "Mark Johnson"
+    },
+    {
+     "offset": 435,
+     "length": 9,
+     "text": "Cyrus Lum"
+    },
+    {
+     "offset": 445,
+     "length": 12,
+     "text": "PLAYTESTING:"
+    },
+    {
+     "offset": 458,
+     "length": 12,
+     "text": "Jim Jennings"
+    },
+    {
+     "offset": 471,
+     "length": 12,
+     "text": "James Kucera"
+    },
+    {
+     "offset": 484,
+     "length": 10,
+     "text": "Rick White"
+    },
+    {
+     "offset": 495,
+     "length": 11,
+     "text": "Robert Daly"
+    },
+    {
+     "offset": 507,
+     "length": 28,
+     "text": "GAME CONVERTED BY PONYCANYON"
+    },
+    {
+     "offset": 536,
+     "length": 55,
+     "text": " ＳＰＥＣＩＡＬ　ＰＲＯＪＥＣＴＳ　ＶＥＲＳＩＯＮ１．２"
+    },
+    {
+     "offset": 592,
+     "length": 16,
+     "text": " PONYCANYON INC."
+    },
+    {
+     "offset": 609,
+     "length": 16,
+     "text": " Kunihiko Kagawa"
+    },
+    {
+     "offset": 626,
+     "length": 19,
+     "text": " Yoshiaki Matsumoto"
+    },
+    {
+     "offset": 646,
+     "length": 10,
+     "text": " Group SNE"
+    },
+    {
+     "offset": 657,
+     "length": 15,
+     "text": " Hitoshi Yasuda"
+    },
+    {
+     "offset": 673,
+     "length": 17,
+     "text": " Miyuki Kiyomatsu"
+    },
+    {
+     "offset": 691,
+     "length": 7,
+     "text": " S.R.S."
+    },
+    {
+     "offset": 699,
+     "length": 14,
+     "text": " Seishi Yokota"
+    },
+    {
+     "offset": 714,
+     "length": 18,
+     "text": " MUSIC COMPOSED BY"
+    },
+    {
+     "offset": 733,
+     "length": 15,
+     "text": " Takeshi Yasuda"
+    },
+    {
+     "offset": 749,
+     "length": 15,
+     "text": "Marionette Inc."
+    },
+    {
+     "offset": 765,
+     "length": 18,
+     "text": "Yoshiaki Sakaguchi"
+    },
+    {
+     "offset": 784,
+     "length": 16,
+     "text": "Masato Kobayashi"
+    },
+    {
+     "offset": 2352,
+     "length": 5,
+     "text": "title"
+    }
+   ],
+   "overlay-02": [
+    {
+     "offset": 162,
+     "length": 6,
+     "text": "┴t.ﾄ>"
+    },
+    {
+     "offset": 1160,
+     "length": 14,
+     "text": "読み込み中です"
+    },
+    {
+     "offset": 1175,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 4259,
+     "length": 30,
+     "text": "リターン・キーを押してください"
+    },
+    {
+     "offset": 7101,
+     "length": 4,
+     "text": "ITEM"
+    },
+    {
+     "offset": 7106,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 7111,
+     "length": 34,
+     "text": "アイテム・ファイルが見つかりません"
+    },
+    {
+     "offset": 8712,
+     "length": 22,
+     "text": "お互いに様子を見ている"
+    },
+    {
+     "offset": 8735,
+     "length": 12,
+     "text": "相手は逃げた"
+    },
+    {
+     "offset": 10935,
+     "length": 22,
+     "text": "パーティーは全滅した！"
+    },
+    {
+     "offset": 13151,
+     "length": 51,
+     "text": "データの整理をします リターン・キーを押してください"
+    },
+    {
+     "offset": 14829,
+     "length": 51,
+     "text": "データの整理をします リターン・キーを押してください"
+    }
+   ],
+   "overlay-03": [
+    {
+     "offset": 30,
+     "length": 5,
+     "text": "tiles"
+    },
+    {
+     "offset": 36,
+     "length": 58,
+     "text": "次のエスプルーアー文字とデテーク文字とを合わせてください。"
+    },
+    {
+     "offset": 95,
+     "length": 18,
+     "text": "－・・－・・－・・"
+    },
+    {
+     "offset": 114,
+     "length": 18,
+     "text": "－　－　－　－　－"
+    },
+    {
+     "offset": 133,
+     "length": 18,
+     "text": "‥‥‥‥‥‥‥‥‥"
+    },
+    {
+     "offset": 152,
+     "length": 18,
+     "text": "で示された経路の、"
+    },
+    {
+     "offset": 171,
+     "length": 28,
+     "text": "番のマスには何とありますか？"
+    },
+    {
+     "offset": 202,
+     "length": 44,
+     "text": "１文字入力してリターン・キーを押してください"
+    },
+    {
+     "offset": 247,
+     "length": 12,
+     "text": "間違ってます"
+    },
+    {
+     "offset": 260,
+     "length": 44,
+     "text": "目に見えぬ力が、きみを〈奈落〉に放りこんだ！"
+    }
+   ],
+   "overlay-04": [
+    {
+     "offset": 52,
+     "length": 28,
+     "text": "それでもかけてもらいますか？"
+    },
+    {
+     "offset": 180,
+     "length": 4,
+     "text": "は、"
+    },
+    {
+     "offset": 185,
+     "length": 26,
+     "text": "ｇｐでかけてあげましょう。"
+    },
+    {
+     "offset": 212,
+     "length": 20,
+     "text": "かけてもらいますか？"
+    },
+    {
+     "offset": 233,
+     "length": 16,
+     "text": "お金が足りません"
+    },
+    {
+     "offset": 250,
+     "length": 8,
+     "text": "は治った"
+    },
+    {
+     "offset": 627,
+     "length": 24,
+     "text": "は盲目ではありませんよ。"
+    },
+    {
+     "offset": 652,
+     "length": 22,
+     "text": "キュア・ブラインドネス"
+    },
+    {
+     "offset": 809,
+     "length": 30,
+     "text": "は病いに冒されてはいませんよ。"
+    },
+    {
+     "offset": 840,
+     "length": 18,
+     "text": "キュア・ディジーズ"
+    },
+    {
+     "offset": 1076,
+     "length": 24,
+     "text": "キュア・ライト・ウーンズ"
+    },
+    {
+     "offset": 1101,
+     "length": 26,
+     "text": "キュア・シリアス・ウーンズ"
+    },
+    {
+     "offset": 1128,
+     "length": 30,
+     "text": "キュア・クリティカル・ウーンズ"
+    },
+    {
+     "offset": 1159,
+     "length": 6,
+     "text": "ヒール"
+    },
+    {
+     "offset": 1649,
+     "length": 20,
+     "text": "は死んではいませんよ"
+    },
+    {
+     "offset": 1670,
+     "length": 18,
+     "text": "は生き返りませんよ"
+    },
+    {
+     "offset": 1689,
+     "length": 14,
+     "text": "レイズ・デッド"
+    },
+    {
+     "offset": 2314,
+     "length": 24,
+     "text": "は毒を受けてはいませんよ"
+    },
+    {
+     "offset": 2339,
+     "length": 26,
+     "text": "ニュートラライズ・ポイズン"
+    },
+    {
+     "offset": 2571,
+     "length": 22,
+     "text": "は呪われてはいませんよ"
+    },
+    {
+     "offset": 2594,
+     "length": 16,
+     "text": "リムーブ・カース"
+    },
+    {
+     "offset": 2813,
+     "length": 24,
+     "text": "は石になってはいませんよ"
+    },
+    {
+     "offset": 2838,
+     "length": 26,
+     "text": "ストーン・トゥ・フレッシュ"
+    },
+    {
+     "offset": 3006,
+     "length": 36,
+     "text": "さん。どのような治療をお望みですか？"
+    },
+    {
+     "offset": 3043,
+     "length": 6,
+     "text": " 治療 "
+    },
+    {
+     "offset": 3050,
+     "length": 6,
+     "text": "やめる"
+    },
+    {
+     "offset": 3058,
+     "length": 12,
+     "text": "治療　やめる"
+    },
+    {
+     "offset": 3632,
+     "length": 80,
+     "text": "     治療  ｷｬﾗｸﾀｰ 金戻す 金集ﾒﾙ 金分ｹﾙ    見積る                      やめる    "
+    },
+    {
+     "offset": 3713,
+     "length": 80,
+     "text": "     治療  ｷｬﾗｸﾀｰ        金集ﾒﾙ           見積る                      やめる    "
+    },
+    {
+     "offset": 3795,
+     "length": 14,
+     "text": " はい 　いいえ"
+    },
+    {
+     "offset": 3810,
+     "length": 66,
+     "text": "きみたちが行こうとすると、僧侶が呼び止めた。「お金をお忘れですよ」"
+    },
+    {
+     "offset": 3877,
+     "length": 28,
+     "text": "引き返してお金を取りますか？"
+    }
+   ],
+   "overlay-05": [
+    {
+     "offset": 2448,
+     "length": 20,
+     "text": "パーティーは逃げた。"
+    },
+    {
+     "offset": 2469,
+     "length": 24,
+     "text": "きみたちは戦いに敗れた。"
+    },
+    {
+     "offset": 2494,
+     "length": 20,
+     "text": "きみは決闘に勝った。"
+    },
+    {
+     "offset": 2515,
+     "length": 20,
+     "text": "パーティーは勝った。"
+    },
+    {
+     "offset": 2536,
+     "length": 28,
+     "text": "パーティーは宝物を見つけた！"
+    },
+    {
+     "offset": 2565,
+     "length": 8,
+     "text": "決闘者は"
+    },
+    {
+     "offset": 2574,
+     "length": 16,
+     "text": "各キャラクターは"
+    },
+    {
+     "offset": 2591,
+     "length": 18,
+     "text": "点の経験点を得た。"
+    },
+    {
+     "offset": 2610,
+     "length": 40,
+     "text": "リターン・キーを押してください          "
+    },
+    {
+     "offset": 3284,
+     "length": 6,
+     "text": " 取る "
+    },
+    {
+     "offset": 3291,
+     "length": 8,
+     "text": "アイテム"
+    },
+    {
+     "offset": 3300,
+     "length": 4,
+     "text": "取る"
+    },
+    {
+     "offset": 3807,
+     "length": 6,
+     "text": "取る："
+    },
+    {
+     "offset": 3814,
+     "length": 40,
+     "text": "   お金   ｱｲﾃﾑ                やめる    "
+    },
+    {
+     "offset": 4120,
+     "length": 6,
+     "text": "ｷｬﾗｸﾀｰ"
+    },
+    {
+     "offset": 4127,
+     "length": 6,
+     "text": "金集ﾒﾙ"
+    },
+    {
+     "offset": 4134,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 4141,
+     "length": 6,
+     "text": "ﾃﾞｨﾃｸﾄ"
+    },
+    {
+     "offset": 4148,
+     "length": 6,
+     "text": " 取る "
+    },
+    {
+     "offset": 4155,
+     "length": 6,
+     "text": "金分ｹﾙ"
+    },
+    {
+     "offset": 4162,
+     "length": 22,
+     "text": "まだ宝物が残っている。"
+    },
+    {
+     "offset": 4185,
+     "length": 24,
+     "text": "戻って宝物を取りますか？"
+    },
+    {
+     "offset": 5309,
+     "length": 30,
+     "text": "は自分の分け前を取り、隠した。"
+    },
+    {
+     "offset": 5340,
+     "length": 40,
+     "text": "リターン・キーを押してください          "
+    },
+    {
+     "offset": 5933,
+     "length": 46,
+     "text": "モンスターはパーティーを全滅させ、喜んでいる。"
+    },
+    {
+     "offset": 5980,
+     "length": 24,
+     "text": "何かキーを押してください"
+    }
+   ],
+   "overlay-06": [
+    {
+     "offset": 37,
+     "length": 6,
+     "text": " 買う "
+    },
+    {
+     "offset": 44,
+     "length": 10,
+     "text": "アイテム："
+    },
+    {
+     "offset": 915,
+     "length": 12,
+     "text": "持ちすぎです"
+    },
+    {
+     "offset": 1197,
+     "length": 16,
+     "text": "お金が足りません"
+    },
+    {
+     "offset": 1654,
+     "length": 80,
+     "text": "     買う  ｷｬﾗｸﾀｰ 金戻す 金集ﾒﾙ 金分ｹﾙ    見積る                      抜ける    "
+    },
+    {
+     "offset": 1735,
+     "length": 80,
+     "text": "     買う  ｷｬﾗｸﾀｰ        金集ﾒﾙ           見積る                      抜ける    "
+    },
+    {
+     "offset": 1816,
+     "length": 66,
+     "text": "きみたちが行こうとすると、店主が呼び止めた。「お金をお忘れですよ」"
+    },
+    {
+     "offset": 1883,
+     "length": 28,
+     "text": "引き返してお金を取りますか？"
+    }
+   ],
+   "overlay-07": [
+    {
+     "offset": 52,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 58,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 69,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 80,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 95,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 111,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 1153,
+     "length": 14,
+     "text": "読みこみ中です"
+    },
+    {
+     "offset": 1172,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 1665,
+     "length": 5,
+     "text": "SPRIT"
+    },
+    {
+     "offset": 7037,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 7042,
+     "length": 6,
+     "text": "ロルフ"
+    },
+    {
+     "offset": 8594,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 8600,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 8611,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 8622,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 8637,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 8653,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 8690,
+     "length": 8,
+     "text": "死んだ。"
+    },
+    {
+     "offset": 8699,
+     "length": 26,
+     "text": "ポイントのダメージを受けた"
+    },
+    {
+     "offset": 8726,
+     "length": 30,
+     "text": "リターン・キーを押してください"
+    }
+   ],
+   "overlay-08": [
+    {
+     "offset": 1024,
+     "length": 8,
+     "text": "魔法使用"
+    },
+    {
+     "offset": 1033,
+     "length": 10,
+     "text": "魔法不使用"
+    },
+    {
+     "offset": 1820,
+     "length": 6,
+     "text": " 移動 "
+    },
+    {
+     "offset": 1827,
+     "length": 6,
+     "text": "ｷｬﾗｸﾀｰ"
+    },
+    {
+     "offset": 1834,
+     "length": 6,
+     "text": " 照準 "
+    },
+    {
+     "offset": 1841,
+     "length": 6,
+     "text": " 使う "
+    },
+    {
+     "offset": 1848,
+     "length": 6,
+     "text": " 魔ｶｹﾙ"
+    },
+    {
+     "offset": 1855,
+     "length": 6,
+     "text": " 退散 "
+    },
+    {
+     "offset": 1862,
+     "length": 6,
+     "text": " 自動 "
+    },
+    {
+     "offset": 1869,
+     "length": 6,
+     "text": "その他"
+    },
+    {
+     "offset": 2425,
+     "length": 24,
+     "text": "瀕死のキャラクターがいる"
+    },
+    {
+     "offset": 2450,
+     "length": 18,
+     "text": "戦闘を続けますか？"
+    },
+    {
+     "offset": 2789,
+     "length": 24,
+     "text": "移動／攻撃，残り移動力＝"
+    },
+    {
+     "offset": 2818,
+     "length": 12,
+     "text": "逃げますか？"
+    },
+    {
+     "offset": 2831,
+     "length": 16,
+     "text": "そこへは行けない"
+    },
+    {
+     "offset": 3846,
+     "length": 16,
+     "text": "そこへは進めない"
+    },
+    {
+     "offset": 4047,
+     "length": 6,
+     "text": " 防御 "
+    },
+    {
+     "offset": 4054,
+     "length": 6,
+     "text": " 待機 "
+    },
+    {
+     "offset": 4061,
+     "length": 6,
+     "text": " 完了 "
+    },
+    {
+     "offset": 4068,
+     "length": 6,
+     "text": "手当て"
+    },
+    {
+     "offset": 4075,
+     "length": 6,
+     "text": " 速度 "
+    },
+    {
+     "offset": 4082,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 4121,
+     "length": 14,
+     "text": "効果がなかった"
+    },
+    {
+     "offset": 4652,
+     "length": 6,
+     "text": "速さ（"
+    },
+    {
+     "offset": 4662,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 4671,
+     "length": 6,
+     "text": " 遅く "
+    },
+    {
+     "offset": 4678,
+     "length": 6,
+     "text": " 速く "
+    }
+   ],
+   "overlay-09": [
+    {
+     "offset": 62,
+     "length": 30,
+     "text": "は恐慌にとらわれ、逃げ出した。"
+    },
+    {
+     "offset": 2509,
+     "length": 24,
+     "text": "移動／攻撃，残り移動力＝"
+    },
+    {
+     "offset": 4738,
+     "length": 8,
+     "text": "魔法使用"
+    },
+    {
+     "offset": 4747,
+     "length": 10,
+     "text": "魔法不使用"
+    },
+    {
+     "offset": 4997,
+     "length": 18,
+     "text": "は退散させられた。"
+    },
+    {
+     "offset": 5016,
+     "length": 12,
+     "text": "は降伏した。"
+    }
+   ],
+   "overlay-10": [
+    {
+     "offset": 4107,
+     "length": 7,
+     "text": "DungCom"
+    },
+    {
+     "offset": 4115,
+     "length": 7,
+     "text": "WildCom"
+    },
+    {
+     "offset": 4123,
+     "length": 7,
+     "text": "RandCom"
+    },
+    {
+     "offset": 7193,
+     "length": 14,
+     "text": "戦いが始まった"
+    }
+   ],
+   "overlay-11": [
+    {
+     "offset": 47,
+     "length": 14,
+     "text": "読みこみ中です"
+    },
+    {
+     "offset": 66,
+     "length": 5,
+     "text": "ITEMS"
+    },
+    {
+     "offset": 1281,
+     "length": 6,
+     "text": "COMSPR"
+    }
+   ],
+   "overlay-12": [
+    {
+     "offset": 208,
+     "length": 18,
+     "text": "は蛇と戦っている。"
+    },
+    {
+     "offset": 906,
+     "length": 12,
+     "text": "は窒息した。"
+    },
+    {
+     "offset": 1231,
+     "length": 18,
+     "text": "は沈黙させられた。"
+    },
+    {
+     "offset": 1335,
+     "length": 20,
+     "text": "は毒のために死んだ。"
+    },
+    {
+     "offset": 1450,
+     "length": 18,
+     "text": "はアイテムを得た。"
+    },
+    {
+     "offset": 1890,
+     "length": 16,
+     "text": "は幻影を失った。"
+    },
+    {
+     "offset": 2070,
+     "length": 18,
+     "text": "は咳きこんでいる。"
+    },
+    {
+     "offset": 2260,
+     "length": 10,
+     "text": "は倒れた。"
+    },
+    {
+     "offset": 2546,
+     "length": 14,
+     "text": "は逃げ去った。"
+    },
+    {
+     "offset": 2561,
+     "length": 12,
+     "text": "は混乱した。"
+    },
+    {
+     "offset": 2574,
+     "length": 14,
+     "text": "は狂暴化した。"
+    },
+    {
+     "offset": 2589,
+     "length": 20,
+     "text": "は怒りに我を忘れた。"
+    },
+    {
+     "offset": 3069,
+     "length": 14,
+     "text": "は歳をとった。"
+    },
+    {
+     "offset": 3177,
+     "length": 24,
+     "text": "空気は多少きれいになった"
+    },
+    {
+     "offset": 3920,
+     "length": 10,
+     "text": "は避けた。"
+    },
+    {
+     "offset": 4228,
+     "length": 12,
+     "text": "は弱まった。"
+    },
+    {
+     "offset": 5216,
+     "length": 14,
+     "text": "は毒を受けた。"
+    },
+    {
+     "offset": 5231,
+     "length": 10,
+     "text": "は死んだ。"
+    },
+    {
+     "offset": 5394,
+     "length": 12,
+     "text": "は麻痺した。"
+    },
+    {
+     "offset": 5621,
+     "length": 16,
+     "text": "は愚かになった。"
+    },
+    {
+     "offset": 5638,
+     "length": 26,
+     "text": "は呪文を唱えきれなかった。"
+    },
+    {
+     "offset": 5974,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 6208,
+     "length": 14,
+     "text": "は狂暴化した。"
+    },
+    {
+     "offset": 6795,
+     "length": 10,
+     "text": "は睨んだ。"
+    },
+    {
+     "offset": 6806,
+     "length": 22,
+     "text": "は視線をはねかえした！"
+    },
+    {
+     "offset": 6829,
+     "length": 14,
+     "text": "は石になった。"
+    },
+    {
+     "offset": 7493,
+     "length": 24,
+     "text": "空気は多少きれいになった"
+    },
+    {
+     "offset": 8345,
+     "length": 16,
+     "text": "は倒れ、死んだ。"
+    },
+    {
+     "offset": 9902,
+     "length": 14,
+     "text": "は酸を吹いた。"
+    },
+    {
+     "offset": 10211,
+     "length": 12,
+     "text": "は麻痺した。"
+    },
+    {
+     "offset": 10484,
+     "length": 10,
+     "text": "は睨んだ。"
+    },
+    {
+     "offset": 10495,
+     "length": 12,
+     "text": "は麻痺した。"
+    },
+    {
+     "offset": 11589,
+     "length": 16,
+     "text": "は報復を受けた。"
+    },
+    {
+     "offset": 11737,
+     "length": 22,
+     "text": "は異界に送り返された。"
+    },
+    {
+     "offset": 11760,
+     "length": 36,
+     "text": "は「ディスペル・イービル」に耐えた。"
+    }
+   ],
+   "overlay-13": [
+    {
+     "offset": 598,
+     "length": 28,
+     "text": "はバックスタッブを行ない、　"
+    },
+    {
+     "offset": 627,
+     "length": 8,
+     "text": "は無力な"
+    },
+    {
+     "offset": 636,
+     "length": 10,
+     "text": "は攻撃し、"
+    },
+    {
+     "offset": 650,
+     "length": 6,
+     "text": "の背後"
+    },
+    {
+     "offset": 657,
+     "length": 22,
+     "text": "無慈悲な一撃を加えた。"
+    },
+    {
+     "offset": 680,
+     "length": 8,
+     "text": "命中して"
+    },
+    {
+     "offset": 689,
+     "length": 28,
+     "text": "ポイントのダメージを与えた。"
+    },
+    {
+     "offset": 718,
+     "length": 26,
+     "text": "はダメージを受けなかった。"
+    },
+    {
+     "offset": 745,
+     "length": 14,
+     "text": "にかわされた。"
+    },
+    {
+     "offset": 760,
+     "length": 20,
+     "text": "は呪文を無駄にした。"
+    },
+    {
+     "offset": 781,
+     "length": 10,
+     "text": "は倒れた。"
+    },
+    {
+     "offset": 792,
+     "length": 14,
+     "text": "瀕死の状態だ。"
+    },
+    {
+     "offset": 839,
+     "length": 16,
+     "text": "そして、死んだ。"
+    },
+    {
+     "offset": 3425,
+     "length": 14,
+     "text": "は逃げきった。"
+    },
+    {
+     "offset": 3440,
+     "length": 16,
+     "text": "逃げられなかった"
+    },
+    {
+     "offset": 4004,
+     "length": 12,
+     "text": "なぎ払った。"
+    },
+    {
+     "offset": 4696,
+     "length": 26,
+     "text": "アンデッドの退散を試みた。"
+    },
+    {
+     "offset": 4723,
+     "length": 18,
+     "text": "は退散させられた。"
+    },
+    {
+     "offset": 4742,
+     "length": 14,
+     "text": "は破壊された。"
+    },
+    {
+     "offset": 4757,
+     "length": 18,
+     "text": "何も起こらなかった"
+    },
+    {
+     "offset": 8772,
+     "length": 26,
+     "text": "すでに目標として選んである"
+    },
+    {
+     "offset": 10099,
+     "length": 24,
+     "text": "キャンプでのみ使う呪文だ"
+    },
+    {
+     "offset": 10124,
+     "length": 20,
+     "text": "は呪文を唱え始めた。"
+    },
+    {
+     "offset": 11680,
+     "length": 24,
+     "text": "味方を攻撃するのですか？"
+    },
+    {
+     "offset": 11910,
+     "length": 6,
+     "text": "距離＝"
+    },
+    {
+     "offset": 11920,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 11927,
+     "length": 6,
+     "text": " 次順 "
+    },
+    {
+     "offset": 11934,
+     "length": 6,
+     "text": " 前順 "
+    },
+    {
+     "offset": 11941,
+     "length": 6,
+     "text": " 手動 "
+    },
+    {
+     "offset": 11948,
+     "length": 6,
+     "text": " 中央 "
+    },
+    {
+     "offset": 11955,
+     "length": 6,
+     "text": "やめる"
+    },
+    {
+     "offset": 12897,
+     "length": 6,
+     "text": "距離＝"
+    },
+    {
+     "offset": 12907,
+     "length": 6,
+     "text": " 中央 "
+    },
+    {
+     "offset": 12914,
+     "length": 6,
+     "text": "やめる"
+    },
+    {
+     "offset": 12921,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 12928,
+     "length": 30,
+     "text": "（テン・キーを使ってください）"
+    },
+    {
+     "offset": 16226,
+     "length": 14,
+     "text": "を包みこんだ。"
+    },
+    {
+     "offset": 16868,
+     "length": 26,
+     "text": "は原子分解光線を発射した。"
+    },
+    {
+     "offset": 16895,
+     "length": 16,
+     "text": "は粉々になった。"
+    },
+    {
+     "offset": 16912,
+     "length": 22,
+     "text": "は石化光線を発射した。"
+    },
+    {
+     "offset": 16935,
+     "length": 14,
+     "text": "は石になった。"
+    },
+    {
+     "offset": 16950,
+     "length": 22,
+     "text": "は殺人光線を発射した。"
+    },
+    {
+     "offset": 16973,
+     "length": 10,
+     "text": "は死んだ。"
+    },
+    {
+     "offset": 16984,
+     "length": 18,
+     "text": "はきみを傷つけた。"
+    },
+    {
+     "offset": 18300,
+     "length": 14,
+     "text": "を絞めつけた。"
+    },
+    {
+     "offset": 18535,
+     "length": 14,
+     "text": "神々の介入だ！"
+    }
+   ],
+   "overlay-14": [
+    {
+     "offset": 2259,
+     "length": 16,
+     "text": "ここではできない"
+    },
+    {
+     "offset": 2975,
+     "length": 6,
+     "text": "蹴破る"
+    },
+    {
+     "offset": 2982,
+     "length": 6,
+     "text": "鍵開け"
+    },
+    {
+     "offset": 2989,
+     "length": 6,
+     "text": "ノック"
+    },
+    {
+     "offset": 2996,
+     "length": 6,
+     "text": "やめる"
+    },
+    {
+     "offset": 3003,
+     "length": 16,
+     "text": "鍵がかかっている"
+    }
+   ],
+   "overlay-15": [
+    {
+     "offset": 807,
+     "length": 24,
+     "text": "ここでは、魔法が使えない"
+    },
+    {
+     "offset": 832,
+     "length": 12,
+     "text": "状態ではない"
+    },
+    {
+     "offset": 845,
+     "length": 18,
+     "text": "は呪文を唱えられる"
+    },
+    {
+     "offset": 864,
+     "length": 18,
+     "text": "は魔法を記憶できる"
+    },
+    {
+     "offset": 883,
+     "length": 18,
+     "text": "は魔法を書き写せる"
+    },
+    {
+     "offset": 1187,
+     "length": 30,
+     "text": "は呪文をまったく覚えていない。"
+    },
+    {
+     "offset": 1402,
+     "length": 30,
+     "text": "は次の数だけ呪文を記憶できる。"
+    },
+    {
+     "offset": 1433,
+     "length": 16,
+     "text": "　　　僧侶魔法："
+    },
+    {
+     "offset": 1450,
+     "length": 16,
+     "text": "ドルイド僧魔法："
+    },
+    {
+     "offset": 1467,
+     "length": 16,
+     "text": "　魔法使い魔法："
+    },
+    {
+     "offset": 2297,
+     "length": 26,
+     "text": "これらの呪文を覚えますか？"
+    },
+    {
+     "offset": 2324,
+     "length": 24,
+     "text": "は呪文の記憶はできない。"
+    },
+    {
+     "offset": 2793,
+     "length": 30,
+     "text": "これらの呪文を書き写しますか？"
+    },
+    {
+     "offset": 2824,
+     "length": 32,
+     "text": "は書き写せる巻物を持っていない。"
+    },
+    {
+     "offset": 2857,
+     "length": 28,
+     "text": "その魔法はすでに知っている。"
+    },
+    {
+     "offset": 2886,
+     "length": 38,
+     "text": "その魔法はすでに書き写そうとしている。"
+    },
+    {
+     "offset": 2925,
+     "length": 24,
+     "text": "その魔法は書き写せない。"
+    },
+    {
+     "offset": 3801,
+     "length": 10,
+     "text": "怯えている"
+    },
+    {
+     "offset": 3812,
+     "length": 8,
+     "text": "悪の退散"
+    },
+    {
+     "offset": 3821,
+     "length": 20,
+     "text": "フェアリー・ファイア"
+    },
+    {
+     "offset": 3842,
+     "length": 4,
+     "text": "遅鈍"
+    },
+    {
+     "offset": 3847,
+     "length": 4,
+     "text": "無力"
+    },
+    {
+     "offset": 3852,
+     "length": 4,
+     "text": "混乱"
+    },
+    {
+     "offset": 3857,
+     "length": 4,
+     "text": "病い"
+    },
+    {
+     "offset": 3862,
+     "length": 22,
+     "text": "熱いファイア・シールド"
+    },
+    {
+     "offset": 3885,
+     "length": 24,
+     "text": "冷たいファイア・シールド"
+    },
+    {
+     "offset": 3913,
+     "length": 6,
+     "text": "再生中"
+    },
+    {
+     "offset": 3920,
+     "length": 12,
+     "text": "炎からの防護"
+    },
+    {
+     "offset": 3933,
+     "length": 10,
+     "text": "低呪文封じ"
+    },
+    {
+     "offset": 3944,
+     "length": 4,
+     "text": "暗愚"
+    },
+    {
+     "offset": 3949,
+     "length": 16,
+     "text": "動物に対する透明"
+    },
+    {
+     "offset": 3966,
+     "length": 4,
+     "text": "透明"
+    },
+    {
+     "offset": 3971,
+     "length": 4,
+     "text": "偽装"
+    },
+    {
+     "offset": 3976,
+     "length": 18,
+     "text": "竜の息吹よりの防護"
+    },
+    {
+     "offset": 3995,
+     "length": 6,
+     "text": "狂暴化"
+    },
+    {
+     "offset": 4002,
+     "length": 14,
+     "text": "位置のごまかし"
+    },
+    {
+     "offset": 4017,
+     "length": 20,
+     "text": "〈魔法の影響はない〉"
+    },
+    {
+     "offset": 6082,
+     "length": 8,
+     "text": "並び順："
+    },
+    {
+     "offset": 6123,
+     "length": 10,
+     "text": "を選んだ。"
+    },
+    {
+     "offset": 6430,
+     "length": 22,
+     "text": "ゲームを終わりますか？"
+    },
+    {
+     "offset": 6453,
+     "length": 20,
+     "text": "は完全にいなくなる。"
+    },
+    {
+     "offset": 6474,
+     "length": 24,
+     "text": "かまわず離脱させますか？"
+    },
+    {
+     "offset": 6499,
+     "length": 16,
+     "text": "は別れを告げた。"
+    },
+    {
+     "offset": 6516,
+     "length": 20,
+     "text": "はドブに捨てられた。"
+    },
+    {
+     "offset": 6537,
+     "length": 26,
+     "text": "は安堵のため息をもらした。"
+    },
+    {
+     "offset": 6968,
+     "length": 6,
+     "text": "速さ＝"
+    },
+    {
+     "offset": 6975,
+     "length": 24,
+     "text": "　（０＝速い　９＝遅い）"
+    },
+    {
+     "offset": 7000,
+     "length": 6,
+     "text": " 速く "
+    },
+    {
+     "offset": 7007,
+     "length": 6,
+     "text": " 遅く "
+    },
+    {
+     "offset": 7014,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 7021,
+     "length": 6,
+     "text": "速度："
+    },
+    {
+     "offset": 7434,
+     "length": 6,
+     "text": " 順序 "
+    },
+    {
+     "offset": 7441,
+     "length": 6,
+     "text": " 離脱 "
+    },
+    {
+     "offset": 7448,
+     "length": 6,
+     "text": " 速度 "
+    },
+    {
+     "offset": 7455,
+     "length": 6,
+     "text": " ｱｲｺﾝ "
+    },
+    {
+     "offset": 7462,
+     "length": 6,
+     "text": " ｱﾆﾒ無"
+    },
+    {
+     "offset": 7469,
+     "length": 6,
+     "text": " ｱﾆﾒ有"
+    },
+    {
+     "offset": 7476,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 7483,
+     "length": 16,
+     "text": "は変更できない。"
+    },
+    {
+     "offset": 9236,
+     "length": 30,
+     "text": "パーティーはキャンプを張った。"
+    }
+   ],
+   "overlay-16": [
+    {
+     "offset": 335,
+     "length": 4,
+     "text": ".SAV"
+    },
+    {
+     "offset": 1532,
+     "length": 5,
+     "text": "*.guy"
+    },
+    {
+     "offset": 1538,
+     "length": 5,
+     "text": "*.cha"
+    },
+    {
+     "offset": 1544,
+     "length": 5,
+     "text": "*.sav"
+    },
+    {
+     "offset": 1550,
+     "length": 5,
+     "text": "*.hil"
+    },
+    {
+     "offset": 2006,
+     "length": 5,
+     "text": "*.hil"
+    },
+    {
+     "offset": 2105,
+     "length": 40,
+     "text": "   はい                       いいえ    "
+    },
+    {
+     "offset": 2146,
+     "length": 31,
+     "text": "セーブディスクを作成しますか？ "
+    },
+    {
+     "offset": 2178,
+     "length": 28,
+     "text": "セーブディスクを作成中です。"
+    },
+    {
+     "offset": 2207,
+     "length": 68,
+     "text": "セーブディスクの作成に失敗しました。リターン・キーを押してください。"
+    },
+    {
+     "offset": 2729,
+     "length": 26,
+     "text": "ディスクに異常があります。"
+    },
+    {
+     "offset": 2756,
+     "length": 44,
+     "text": "ドライブ２にセーブ・ディスクを入れてください"
+    },
+    {
+     "offset": 2801,
+     "length": 30,
+     "text": "セーブ中にエラーが発生しました"
+    },
+    {
+     "offset": 2864,
+     "length": 30,
+     "text": "ロード中にエラーが発生しました"
+    },
+    {
+     "offset": 4181,
+     "length": 5,
+     "text": "CHEAD"
+    },
+    {
+     "offset": 4187,
+     "length": 5,
+     "text": "CBODY"
+    },
+    {
+     "offset": 4691,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 4696,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 4994,
+     "length": 28,
+     "text": "ディスクを交換してください。"
+    },
+    {
+     "offset": 5023,
+     "length": 48,
+     "text": "ディスクに余裕がありませんので、セーブできません"
+    },
+    {
+     "offset": 5072,
+     "length": 30,
+     "text": "キャラクターをあきらめますか？"
+    },
+    {
+     "offset": 5103,
+     "length": 40,
+     "text": "   ｱｷﾗﾒﾙ                      別ﾃｨｽｸ    "
+    },
+    {
+     "offset": 5144,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 5151,
+     "length": 4,
+     "text": ".sav"
+    },
+    {
+     "offset": 5156,
+     "length": 28,
+     "text": "同名のキャラクターがいます。"
+    },
+    {
+     "offset": 5185,
+     "length": 16,
+     "text": "上書きしますか？"
+    },
+    {
+     "offset": 5202,
+     "length": 14,
+     "text": "新しい名前は？"
+    },
+    {
+     "offset": 5217,
+     "length": 36,
+     "text": "ライトプロテクトをはずしてください。"
+    },
+    {
+     "offset": 5254,
+     "length": 26,
+     "text": "ディスクに異常があります。"
+    },
+    {
+     "offset": 5281,
+     "length": 30,
+     "text": "セーブ中にエラーが発生しました"
+    },
+    {
+     "offset": 5312,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 10733,
+     "length": 44,
+     "text": "ドライブ２にセーブ・ディスクを入れてください"
+    },
+    {
+     "offset": 10778,
+     "length": 14,
+     "text": "読みこみ中です"
+    },
+    {
+     "offset": 10793,
+     "length": 4,
+     "text": ".GUY"
+    },
+    {
+     "offset": 10798,
+     "length": 4,
+     "text": ".CHA"
+    },
+    {
+     "offset": 10803,
+     "length": 4,
+     "text": ".guy"
+    },
+    {
+     "offset": 10810,
+     "length": 4,
+     "text": ".cha"
+    },
+    {
+     "offset": 10815,
+     "length": 4,
+     "text": ".swg"
+    },
+    {
+     "offset": 10824,
+     "length": 4,
+     "text": ".spc"
+    },
+    {
+     "offset": 14955,
+     "length": 6,
+     "text": "MONCHA"
+    },
+    {
+     "offset": 14962,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 14967,
+     "length": 34,
+     "text": "モンスターをロードできませんでした"
+    },
+    {
+     "offset": 15002,
+     "length": 6,
+     "text": "MONSPC"
+    },
+    {
+     "offset": 15009,
+     "length": 6,
+     "text": "MONITM"
+    },
+    {
+     "offset": 15866,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 16729,
+     "length": 12,
+     "text": "SaveList.EST"
+    },
+    {
+     "offset": 16742,
+     "length": 44,
+     "text": "ドライブ２にセーブ・ディスクを入れてください"
+    },
+    {
+     "offset": 17021,
+     "length": 6,
+     "text": "savgam"
+    },
+    {
+     "offset": 17028,
+     "length": 4,
+     "text": ".dat"
+    },
+    {
+     "offset": 17040,
+     "length": 28,
+     "text": "どのデータを読みこみますか？"
+    },
+    {
+     "offset": 17102,
+     "length": 12,
+     "text": "パーティーは"
+    },
+    {
+     "offset": 17115,
+     "length": 6,
+     "text": "ます。"
+    },
+    {
+     "offset": 17122,
+     "length": 10,
+     "text": "にいます。"
+    },
+    {
+     "offset": 17133,
+     "length": 16,
+     "text": "よろしいですか？"
+    },
+    {
+     "offset": 17922,
+     "length": 80,
+     "text": "      ①     ②     ③     ④     ⑤        ⑥     ⑦     ⑧     ⑨     ⑩      "
+    },
+    {
+     "offset": 18003,
+     "length": 22,
+     "text": "どこにセーブしますか？"
+    },
+    {
+     "offset": 18061,
+     "length": 26,
+     "text": "番は既に登録されています。"
+    },
+    {
+     "offset": 18088,
+     "length": 16,
+     "text": "よろしいですか？"
+    },
+    {
+     "offset": 18105,
+     "length": 20,
+     "text": "ゲームを終わりますか"
+    },
+    {
+     "offset": 18802,
+     "length": 6,
+     "text": "savgam"
+    },
+    {
+     "offset": 18809,
+     "length": 4,
+     "text": ".dat"
+    },
+    {
+     "offset": 18814,
+     "length": 44,
+     "text": "ドライブ２にセーブ・ディスクを入れてください"
+    },
+    {
+     "offset": 18859,
+     "length": 14,
+     "text": "読みこみ中です"
+    },
+    {
+     "offset": 18876,
+     "length": 4,
+     "text": ".sav"
+    },
+    {
+     "offset": 18881,
+     "length": 4,
+     "text": "CPIC"
+    },
+    {
+     "offset": 20290,
+     "length": 6,
+     "text": "savgam"
+    },
+    {
+     "offset": 20297,
+     "length": 4,
+     "text": ".dat"
+    },
+    {
+     "offset": 20302,
+     "length": 48,
+     "text": "ディスクに余裕がありませんので、セーブできません"
+    },
+    {
+     "offset": 20383,
+     "length": 36,
+     "text": "ライトプロテクトをはずしてください。"
+    },
+    {
+     "offset": 20420,
+     "length": 32,
+     "text": "セーブ中にエラーが発生しました－"
+    },
+    {
+     "offset": 20453,
+     "length": 12,
+     "text": "SaveList.EST"
+    },
+    {
+     "offset": 20466,
+     "length": 14,
+     "text": "書きこみ中です"
+    },
+    {
+     "offset": 20481,
+     "length": 6,
+     "text": "CHRDAT"
+    }
+   ],
+   "overlay-17": [
+    {
+     "offset": 417,
+     "length": 18,
+     "text": "誰を消去しますか？"
+    },
+    {
+     "offset": 436,
+     "length": 18,
+     "text": "誰を調整しますか？"
+    },
+    {
+     "offset": 455,
+     "length": 18,
+     "text": "誰を訓練しますか？"
+    },
+    {
+     "offset": 474,
+     "length": 18,
+     "text": "誰を変更しますか？"
+    },
+    {
+     "offset": 493,
+     "length": 40,
+     "text": "このキャラクターはクラス変更できません。"
+    },
+    {
+     "offset": 534,
+     "length": 20,
+     "text": "誰の詳細を見ますか？"
+    },
+    {
+     "offset": 555,
+     "length": 20,
+     "text": "誰を離脱させますか？"
+    },
+    {
+     "offset": 576,
+     "length": 20,
+     "text": "きみたちは勝利した。"
+    },
+    {
+     "offset": 597,
+     "length": 40,
+     "text": "ゲームを終わる前にセーブしておきますか？"
+    },
+    {
+     "offset": 638,
+     "length": 22,
+     "text": "ゲームを終わりますか？"
+    },
+    {
+     "offset": 661,
+     "length": 30,
+     "text": "データがセーブされていません。"
+    },
+    {
+     "offset": 692,
+     "length": 22,
+     "text": "それでも終わりますか？"
+    },
+    {
+     "offset": 2549,
+     "length": 20,
+     "text": "種族を選んでください"
+    },
+    {
+     "offset": 2573,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 2580,
+     "length": 4,
+     "text": "決定"
+    },
+    {
+     "offset": 2585,
+     "length": 20,
+     "text": "性別を選んでください"
+    },
+    {
+     "offset": 2606,
+     "length": 22,
+     "text": "クラスを選んでください"
+    },
+    {
+     "offset": 2629,
+     "length": 6,
+     "text": "Select"
+    },
+    {
+     "offset": 2636,
+     "length": 30,
+     "text": "アラインメントを選んでください"
+    },
+    {
+     "offset": 2701,
+     "length": 26,
+     "text": "能力値を決めなおしますか？"
+    },
+    {
+     "offset": 2728,
+     "length": 22,
+     "text": "キャラクターの名前は？"
+    },
+    {
+     "offset": 2751,
+     "length": 38,
+     "text": "このキャラクタ名は受け付けられません。"
+    },
+    {
+     "offset": 2790,
+     "length": 18,
+     "text": "をセーブしますか？"
+    },
+    {
+     "offset": 10259,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 10265,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 10276,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 10287,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 10302,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 10318,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 10349,
+     "length": 26,
+     "text": "は永遠にいなくなりますよ？"
+    },
+    {
+     "offset": 10378,
+     "length": 20,
+     "text": "かまわないのですね？"
+    },
+    {
+     "offset": 10399,
+     "length": 10,
+     "text": "きみたちは"
+    },
+    {
+     "offset": 10410,
+     "length": 8,
+     "text": "を捨てた"
+    },
+    {
+     "offset": 10419,
+     "length": 20,
+     "text": "はさようならを言った"
+    },
+    {
+     "offset": 10440,
+     "length": 24,
+     "text": "は安堵のため息をもらした"
+    },
+    {
+     "offset": 10974,
+     "length": 40,
+     "text": "   はい                       いいえ    "
+    },
+    {
+     "offset": 11178,
+     "length": 20,
+     "text": "名前を変更しますか？"
+    },
+    {
+     "offset": 11199,
+     "length": 15,
+     "text": "               "
+    },
+    {
+     "offset": 11215,
+     "length": 14,
+     "text": "新しい名前は？"
+    },
+    {
+     "offset": 11230,
+     "length": 38,
+     "text": "このキャラクタ名は受け付けられません。"
+    },
+    {
+     "offset": 11269,
+     "length": 22,
+     "text": "これでよろしいですか？"
+    },
+    {
+     "offset": 11858,
+     "length": 20,
+     "text": "の数値は変更できない"
+    },
+    {
+     "offset": 11879,
+     "length": 10,
+     "text": "数値調整："
+    },
+    {
+     "offset": 11890,
+     "length": 40,
+     "text": "   決定　                     やめる    "
+    },
+    {
+     "offset": 15091,
+     "length": 20,
+     "text": "どこから加えますか？"
+    },
+    {
+     "offset": 15112,
+     "length": 40,
+     "text": "  カース プール ﾋﾙｽﾞﾌｧ        やめる    "
+    },
+    {
+     "offset": 15153,
+     "length": 6,
+     "text": "加える"
+    },
+    {
+     "offset": 15160,
+     "length": 18,
+     "text": "キャラクター参加："
+    },
+    {
+     "offset": 15179,
+     "length": 14,
+     "text": "加える　やめる"
+    },
+    {
+     "offset": 15197,
+     "length": 32,
+     "text": "聖騎士は邪悪なクズとは同行しない"
+    },
+    {
+     "offset": 15230,
+     "length": 26,
+     "text": "レンジャーの数が多すぎます"
+    },
+    {
+     "offset": 15257,
+     "length": 16,
+     "text": "は邪悪を許さない"
+    },
+    {
+     "offset": 15274,
+     "length": 15,
+     "text": "               "
+    },
+    {
+     "offset": 17709,
+     "length": 12,
+     "text": "古いアイコン"
+    },
+    {
+     "offset": 17722,
+     "length": 27,
+     "text": " 準備状態　　　　　行動状態"
+    },
+    {
+     "offset": 17750,
+     "length": 15,
+     "text": " 新しいアイコン"
+    },
+    {
+     "offset": 17766,
+     "length": 6,
+     "text": "  小  "
+    },
+    {
+     "offset": 17773,
+     "length": 6,
+     "text": "  大  "
+    },
+    {
+     "offset": 17845,
+     "length": 26,
+     "text": "このアイコンでいいですか？"
+    },
+    {
+     "offset": 21298,
+     "length": 38,
+     "text": "意識のあるかたでないと訓練はできません"
+    },
+    {
+     "offset": 21337,
+     "length": 24,
+     "text": "訓練料は１０００ｇｐです"
+    },
+    {
+     "offset": 21362,
+     "length": 36,
+     "text": "ここではそのクラスの訓練はできません"
+    },
+    {
+     "offset": 21399,
+     "length": 30,
+     "text": "あなたは十分に成長しています。"
+    },
+    {
+     "offset": 21430,
+     "length": 30,
+     "text": "もうこれ以上訓練はできません。"
+    },
+    {
+     "offset": 21461,
+     "length": 20,
+     "text": "経験が不足しています"
+    },
+    {
+     "offset": 21485,
+     "length": 8,
+     "text": "レベルの"
+    },
+    {
+     "offset": 21496,
+     "length": 10,
+     "text": "になれます"
+    },
+    {
+     "offset": 21510,
+     "length": 14,
+     "text": "訓練しますか？"
+    },
+    {
+     "offset": 21525,
+     "length": 10,
+     "text": "おめでとう"
+    }
+   ],
+   "overlay-18": [
+    {
+     "offset": 2956,
+     "length": 4,
+     "text": ".DAX"
+    },
+    {
+     "offset": 2961,
+     "length": 8,
+     "text": "CED9.DAX"
+    },
+    {
+     "offset": 3347,
+     "length": 66,
+     "text": "ティランスラクサスの霊体がストーム・ジャイアントの死体に重なった。"
+    },
+    {
+     "offset": 3414,
+     "length": 78,
+     "text": "「よくぞ余を倒した。『ラサンダーの魔除け』さえなければ、汝らの身体を乗っ取り、"
+    },
+    {
+     "offset": 3493,
+     "length": 34,
+     "text": "勝利をもぎとることもできたのだが。"
+    },
+    {
+     "offset": 3528,
+     "length": 50,
+     "text": "しかし、まだ〈プール〉を通じて逃げることはできる」"
+    },
+    {
+     "offset": 3579,
+     "length": 24,
+     "text": "何かキーを押してください"
+    },
+    {
+     "offset": 3604,
+     "length": 82,
+     "text": "きみたちが〈プール・オブ・レイディアンス〉に近づくと、ティランスラクサスは叫んだ。"
+    },
+    {
+     "offset": 3687,
+     "length": 84,
+     "text": "「『モーンダーの篭手』を近づけるな！　危険なエネルギーを解放しようとしているのだぞ！"
+    },
+    {
+     "offset": 3772,
+     "length": 66,
+     "text": "　篭手が〈プール〉に触れた瞬間、〈プール〉は収縮し、篭手は砕けた。"
+    },
+    {
+     "offset": 3840,
+     "length": 30,
+     "text": "「余は、逃れることができぬか。"
+    },
+    {
+     "offset": 3871,
+     "length": 52,
+     "text": "汝らは軍隊でも成しえなかったことを成し遂げたわけだ。"
+    },
+    {
+     "offset": 3924,
+     "length": 34,
+     "text": "喜ぶがよい。笑みを浮かべるがよい。"
+    },
+    {
+     "offset": 3959,
+     "length": 92,
+     "text": "この日、ティランスラクサスは滅した」　きみたちの前で、ティランスラクサスは縮み、姿を消した。"
+    },
+    {
+     "offset": 4052,
+     "length": 46,
+     "text": "ティランスラクサスが倒れたことは間違いがない。"
+    },
+    {
+     "offset": 4099,
+     "length": 68,
+     "text": "というのも、きみたちの最後の〈紺青の呪縛〉がついに消え去ったからだ。"
+    },
+    {
+     "offset": 4168,
+     "length": 30,
+     "text": "きみたちはついに、解放された！"
+    },
+    {
+     "offset": 4199,
+     "length": 52,
+     "text": "ミス・ドラノールの騎士たちが部屋になだれこんできた。"
+    },
+    {
+     "offset": 4252,
+     "length": 56,
+     "text": "「おめでとう。きみたちはついに『炎のもの』を打ち倒したな"
+    },
+    {
+     "offset": 4309,
+     "length": 70,
+     "text": "エルミンスターの力をもって、この忌まわしい場所から脱出させてあげよう。"
+    },
+    {
+     "offset": 4380,
+     "length": 14,
+     "text": "そして、宴だ」"
+    },
+    {
+     "offset": 4395,
+     "length": 44,
+     "text": "きみたちはシャドウデイルへとテレポートした。"
+    },
+    {
+     "offset": 4440,
+     "length": 80,
+     "text": "そこでは、すでに祭宴が始まっていた。きみたちが着くと、大きな喚声が巻き起こった。"
+    },
+    {
+     "offset": 4521,
+     "length": 80,
+     "text": "近くのさじきから、ジャーリーとナカシアが腕を組み、きみたちにおめでとうを叫んだ。"
+    },
+    {
+     "offset": 4602,
+     "length": 24,
+     "text": "きみたちは勝利したのだ！"
+    }
+   ],
+   "overlay-19": [
+    {
+     "offset": 57,
+     "length": 10,
+     "text": "（ＮＰＣ）"
+    },
+    {
+     "offset": 68,
+     "length": 5,
+     "text": "年齢 "
+    },
+    {
+     "offset": 74,
+     "length": 6,
+     "text": "体力度"
+    },
+    {
+     "offset": 81,
+     "length": 6,
+     "text": "知識度"
+    },
+    {
+     "offset": 88,
+     "length": 6,
+     "text": "賢明度"
+    },
+    {
+     "offset": 95,
+     "length": 6,
+     "text": "敏捷度"
+    },
+    {
+     "offset": 102,
+     "length": 6,
+     "text": "耐久度"
+    },
+    {
+     "offset": 109,
+     "length": 6,
+     "text": "魅力度"
+    },
+    {
+     "offset": 116,
+     "length": 10,
+     "text": "経験レベル"
+    },
+    {
+     "offset": 129,
+     "length": 7,
+     "text": "経験点 "
+    },
+    {
+     "offset": 137,
+     "length": 4,
+     "text": "武器"
+    },
+    {
+     "offset": 142,
+     "length": 4,
+     "text": " 鎧 "
+    },
+    {
+     "offset": 147,
+     "length": 4,
+     "text": "状態"
+    },
+    {
+     "offset": 1646,
+     "length": 4,
+     "text": "ＡＣ"
+    },
+    {
+     "offset": 1651,
+     "length": 4,
+     "text": "ＨＰ"
+    },
+    {
+     "offset": 1656,
+     "length": 10,
+     "text": "ＴＨＡＣ０"
+    },
+    {
+     "offset": 1673,
+     "length": 8,
+     "text": "ダメージ"
+    },
+    {
+     "offset": 1682,
+     "length": 4,
+     "text": "荷重"
+    },
+    {
+     "offset": 1687,
+     "length": 6,
+     "text": "移動力"
+    },
+    {
+     "offset": 2481,
+     "length": 4,
+     "text": "００"
+    },
+    {
+     "offset": 2865,
+     "length": 6,
+     "text": " ｱｲﾃﾑ "
+    },
+    {
+     "offset": 2872,
+     "length": 6,
+     "text": " 魔法 "
+    },
+    {
+     "offset": 2879,
+     "length": 6,
+     "text": " 渡す "
+    },
+    {
+     "offset": 2886,
+     "length": 6,
+     "text": "捨てる"
+    },
+    {
+     "offset": 2893,
+     "length": 6,
+     "text": " 回復 "
+    },
+    {
+     "offset": 2900,
+     "length": 6,
+     "text": " 治療 "
+    },
+    {
+     "offset": 2907,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 3619,
+     "length": 22,
+     "text": "装備をはずしてください"
+    },
+    {
+     "offset": 3642,
+     "length": 44,
+     "text": "はその巻物から呪文を書き写そうとしています。"
+    },
+    {
+     "offset": 3687,
+     "length": 38,
+     "text": "この巻物からの書き写しを中止しますか？"
+    },
+    {
+     "offset": 3973,
+     "length": 14,
+     "text": "itemptr:      "
+    },
+    {
+     "offset": 3988,
+     "length": 14,
+     "text": "namenum(1):   "
+    },
+    {
+     "offset": 4003,
+     "length": 14,
+     "text": "namenum(2):   "
+    },
+    {
+     "offset": 4018,
+     "length": 14,
+     "text": "namenum(3):   "
+    },
+    {
+     "offset": 4033,
+     "length": 14,
+     "text": "plus:         "
+    },
+    {
+     "offset": 4048,
+     "length": 14,
+     "text": "plussave:     "
+    },
+    {
+     "offset": 4063,
+     "length": 14,
+     "text": "ready:        "
+    },
+    {
+     "offset": 4078,
+     "length": 14,
+     "text": "identified:   "
+    },
+    {
+     "offset": 4093,
+     "length": 14,
+     "text": "cursed:       "
+    },
+    {
+     "offset": 4108,
+     "length": 14,
+     "text": "value:        "
+    },
+    {
+     "offset": 4123,
+     "length": 14,
+     "text": "special(1):   "
+    },
+    {
+     "offset": 4138,
+     "length": 14,
+     "text": "special(2):   "
+    },
+    {
+     "offset": 4153,
+     "length": 14,
+     "text": "special(3):   "
+    },
+    {
+     "offset": 4168,
+     "length": 15,
+     "text": "dice large:    "
+    },
+    {
+     "offset": 4184,
+     "length": 15,
+     "text": "sides large:   "
+    },
+    {
+     "offset": 4200,
+     "length": 11,
+     "text": "press a key"
+    },
+    {
+     "offset": 5340,
+     "length": 6,
+     "text": " 準備 "
+    },
+    {
+     "offset": 5347,
+     "length": 6,
+     "text": " 使う "
+    },
+    {
+     "offset": 5354,
+     "length": 6,
+     "text": " 渡す "
+    },
+    {
+     "offset": 5361,
+     "length": 6,
+     "text": "捨てる"
+    },
+    {
+     "offset": 5368,
+     "length": 6,
+     "text": "分ける"
+    },
+    {
+     "offset": 5375,
+     "length": 6,
+     "text": " ﾏﾄﾒﾙ "
+    },
+    {
+     "offset": 5382,
+     "length": 6,
+     "text": " 売る "
+    },
+    {
+     "offset": 5389,
+     "length": 6,
+     "text": " 鑑定 "
+    },
+    {
+     "offset": 5396,
+     "length": 8,
+     "text": "アイテム"
+    },
+    {
+     "offset": 5405,
+     "length": 18,
+     "text": "準備する　アイテム"
+    },
+    {
+     "offset": 5424,
+     "length": 18,
+     "text": "装備をしてください"
+    },
+    {
+     "offset": 5443,
+     "length": 8,
+     "text": "あなたの"
+    },
+    {
+     "offset": 5452,
+     "length": 22,
+     "text": "は永遠になくなります。"
+    },
+    {
+     "offset": 5475,
+     "length": 20,
+     "text": "それでも捨てますか？"
+    },
+    {
+     "offset": 7781,
+     "length": 14,
+     "text": "呪われています"
+    },
+    {
+     "offset": 7796,
+     "length": 20,
+     "text": "クラスが一致しません"
+    },
+    {
+     "offset": 7817,
+     "length": 6,
+     "text": "すでに"
+    },
+    {
+     "offset": 7824,
+     "length": 12,
+     "text": "を使用中です"
+    },
+    {
+     "offset": 7837,
+     "length": 16,
+     "text": "手がいっぱいです"
+    },
+    {
+     "offset": 8420,
+     "length": 16,
+     "text": "誰に渡しますか？"
+    },
+    {
+     "offset": 8437,
+     "length": 12,
+     "text": "持ちすぎです"
+    },
+    {
+     "offset": 8616,
+     "length": 28,
+     "text": "それは分けることはできません"
+    },
+    {
+     "offset": 9286,
+     "length": 20,
+     "text": "はアイテムを使った。"
+    },
+    {
+     "offset": 9307,
+     "length": 10,
+     "text": "アイテム："
+    },
+    {
+     "offset": 9318,
+     "length": 8,
+     "text": "うわっ！"
+    },
+    {
+     "offset": 10116,
+     "length": 18,
+     "text": "ｇｐで引き取ろう。"
+    },
+    {
+     "offset": 10135,
+     "length": 16,
+     "text": "それでいいかね？"
+    },
+    {
+     "offset": 10152,
+     "length": 14,
+     "text": "毎度ありがとう"
+    },
+    {
+     "offset": 10167,
+     "length": 36,
+     "text": "持ちすぎだ。お金は地面に置いておくよ"
+    },
+    {
+     "offset": 10686,
+     "length": 24,
+     "text": "の鑑定料は２００ｇｐだ。"
+    },
+    {
+     "offset": 10711,
+     "length": 16,
+     "text": "それでいいかね？"
+    },
+    {
+     "offset": 10728,
+     "length": 16,
+     "text": "お金が足りません"
+    },
+    {
+     "offset": 10745,
+     "length": 4,
+     "text": "その"
+    },
+    {
+     "offset": 10750,
+     "length": 40,
+     "text": "については、特に目新しい事実はないですな"
+    },
+    {
+     "offset": 10791,
+     "length": 10,
+     "text": "のようです"
+    },
+    {
+     "offset": 11284,
+     "length": 18,
+     "text": "誰にわたしますか？"
+    },
+    {
+     "offset": 11306,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 11313,
+     "length": 26,
+     "text": "貨幣の種類を選んでください"
+    },
+    {
+     "offset": 11340,
+     "length": 4,
+     "text": "決定"
+    },
+    {
+     "offset": 11345,
+     "length": 8,
+     "text": "どれだけ"
+    },
+    {
+     "offset": 11354,
+     "length": 14,
+     "text": "わたしますか？"
+    },
+    {
+     "offset": 12200,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 12207,
+     "length": 26,
+     "text": "貨幣の種類を選んでください"
+    },
+    {
+     "offset": 12234,
+     "length": 4,
+     "text": "決定"
+    },
+    {
+     "offset": 12239,
+     "length": 8,
+     "text": "どれだけ"
+    },
+    {
+     "offset": 12248,
+     "length": 12,
+     "text": "捨てますか？"
+    },
+    {
+     "offset": 13439,
+     "length": 6,
+     "text": "記憶内"
+    },
+    {
+     "offset": 13446,
+     "length": 8,
+     "text": "魔法書上"
+    },
+    {
+     "offset": 13455,
+     "length": 6,
+     "text": "巻物上"
+    },
+    {
+     "offset": 13462,
+     "length": 14,
+     "text": "選んでください"
+    },
+    {
+     "offset": 13477,
+     "length": 28,
+     "text": "記憶する魔法を選んでください"
+    },
+    {
+     "offset": 13506,
+     "length": 28,
+     "text": "書きこむ魔法を選んでください"
+    },
+    {
+     "offset": 13535,
+     "length": 4,
+     "text": "呪文"
+    },
+    {
+     "offset": 14102,
+     "length": 20,
+     "text": "誰を回復させますか？"
+    },
+    {
+     "offset": 14123,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 14129,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 14140,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 14151,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 14166,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 14182,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 14213,
+     "length": 18,
+     "text": "は気分がよくなった"
+    },
+    {
+     "offset": 14232,
+     "length": 18,
+     "text": "には影響がなかった"
+    },
+    {
+     "offset": 14624,
+     "length": 18,
+     "text": "誰を治療しますか？"
+    },
+    {
+     "offset": 14643,
+     "length": 22,
+     "text": "は病気にかかっていない"
+    },
+    {
+     "offset": 14666,
+     "length": 22,
+     "text": "それでも治療しますか？"
+    },
+    {
+     "offset": 14689,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 14695,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 14706,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 14717,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 14732,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 14748,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 14779,
+     "length": 14,
+     "text": "は治療を受けた"
+    }
+   ],
+   "overlay-20": [
+    {
+     "offset": 1479,
+     "length": 8,
+     "text": "休息時間"
+    },
+    {
+     "offset": 1737,
+     "length": 80,
+     "text": "      日     時     分    休む            増やす 減らす               やめる    "
+    },
+    {
+     "offset": 2179,
+     "length": 20,
+     "text": "パーティーは回復した"
+    },
+    {
+     "offset": 2373,
+     "length": 8,
+     "text": "を覚えた"
+    },
+    {
+     "offset": 2564,
+     "length": 12,
+     "text": "を書き写した"
+    },
+    {
+     "offset": 3226,
+     "length": 20,
+     "text": "休息を中断しますか？"
+    },
+    {
+     "offset": 3247,
+     "length": 32,
+     "text": "休んでいるどころではなくなった！"
+    }
+   ],
+   "overlay-21": [
+    {
+     "offset": 499,
+     "length": 36,
+     "text": "持ちすぎです。お金は地面に置きますよ"
+    },
+    {
+     "offset": 1144,
+     "length": 12,
+     "text": "持ちすぎです"
+    },
+    {
+     "offset": 2713,
+     "length": 12,
+     "text": "持ちすぎです"
+    },
+    {
+     "offset": 2932,
+     "length": 8,
+     "text": "宝石飾り"
+    },
+    {
+     "offset": 2941,
+     "length": 4,
+     "text": "宝石"
+    },
+    {
+     "offset": 2946,
+     "length": 4,
+     "text": "ｇｐ"
+    },
+    {
+     "offset": 2951,
+     "length": 4,
+     "text": "ｐｐ"
+    },
+    {
+     "offset": 2956,
+     "length": 4,
+     "text": "ｅｐ"
+    },
+    {
+     "offset": 2961,
+     "length": 4,
+     "text": "ｓｐ"
+    },
+    {
+     "offset": 2966,
+     "length": 4,
+     "text": "ｃｐ"
+    },
+    {
+     "offset": 3493,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 3500,
+     "length": 26,
+     "text": "貨幣の種類を選んでください"
+    },
+    {
+     "offset": 3527,
+     "length": 4,
+     "text": "決定"
+    },
+    {
+     "offset": 3532,
+     "length": 8,
+     "text": "どれだけ"
+    },
+    {
+     "offset": 3541,
+     "length": 18,
+     "text": "持っていきますか？"
+    },
+    {
+     "offset": 6472,
+     "length": 32,
+     "text": "宝石も宝石飾りも持っていませんよ"
+    },
+    {
+     "offset": 6505,
+     "length": 4,
+     "text": "宝石"
+    },
+    {
+     "offset": 6510,
+     "length": 8,
+     "text": "宝石飾り"
+    },
+    {
+     "offset": 6519,
+     "length": 30,
+     "text": "あなたのお持ちになっているのは"
+    },
+    {
+     "offset": 6550,
+     "length": 6,
+     "text": " 宝石 "
+    },
+    {
+     "offset": 6557,
+     "length": 6,
+     "text": "宝石飾"
+    },
+    {
+     "offset": 6564,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 6571,
+     "length": 8,
+     "text": "見積る："
+    },
+    {
+     "offset": 6580,
+     "length": 12,
+     "text": "宝石の値段は"
+    },
+    {
+     "offset": 6593,
+     "length": 10,
+     "text": "ｇｐです。"
+    },
+    {
+     "offset": 6604,
+     "length": 40,
+     "text": "   売る                                 "
+    },
+    {
+     "offset": 6645,
+     "length": 40,
+     "text": "   売る　                      売ﾗﾅｲ    "
+    },
+    {
+     "offset": 6686,
+     "length": 14,
+     "text": "どうしますか？"
+    },
+    {
+     "offset": 6701,
+     "length": 16,
+     "text": "宝石飾りの値段は"
+    }
+   ],
+   "overlay-22": [
+    {
+     "offset": 431,
+     "length": 20,
+     "text": "呪文を選んでください"
+    },
+    {
+     "offset": 452,
+     "length": 6,
+     "text": "かける"
+    },
+    {
+     "offset": 459,
+     "length": 6,
+     "text": "記憶ｽﾙ"
+    },
+    {
+     "offset": 466,
+     "length": 6,
+     "text": " 書ｷｺﾑ"
+    },
+    {
+     "offset": 473,
+     "length": 6,
+     "text": " 学ぶ "
+    },
+    {
+     "offset": 480,
+     "length": 6,
+     "text": "      "
+    },
+    {
+     "offset": 4379,
+     "length": 16,
+     "text": "誰にかけますか？"
+    },
+    {
+     "offset": 5012,
+     "length": 24,
+     "text": "はここではかけられない。"
+    },
+    {
+     "offset": 5037,
+     "length": 18,
+     "text": "無駄に使いますか？"
+    },
+    {
+     "offset": 5056,
+     "length": 14,
+     "text": "そのアイテムは"
+    },
+    {
+     "offset": 5071,
+     "length": 12,
+     "text": "戦闘専用だ。"
+    },
+    {
+     "offset": 5084,
+     "length": 20,
+     "text": "それでも使いますか？"
+    },
+    {
+     "offset": 5105,
+     "length": 20,
+     "text": "は呪文を唱えそこねた"
+    },
+    {
+     "offset": 5126,
+     "length": 16,
+     "text": "の呪文をかけた。"
+    },
+    {
+     "offset": 5143,
+     "length": 20,
+     "text": "呪文を中断しますか？"
+    },
+    {
+     "offset": 5164,
+     "length": 16,
+     "text": "呪文は中断された"
+    },
+    {
+     "offset": 8002,
+     "length": 16,
+     "text": "は祝福を受けた。"
+    },
+    {
+     "offset": 8058,
+     "length": 16,
+     "text": "は呪いを受けた。"
+    },
+    {
+     "offset": 8234,
+     "length": 18,
+     "text": "は魔法にかかった。"
+    },
+    {
+     "offset": 8298,
+     "length": 12,
+     "text": "は守られた。"
+    },
+    {
+     "offset": 8356,
+     "length": 26,
+     "text": "は冷気に対する防護を得た。"
+    },
+    {
+     "offset": 8481,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 8504,
+     "length": 14,
+     "text": "は魅了された。"
+    },
+    {
+     "offset": 8708,
+     "length": 14,
+     "text": "は強くなった。"
+    },
+    {
+     "offset": 8723,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 9037,
+     "length": 16,
+     "text": "は小さくなった。"
+    },
+    {
+     "offset": 9201,
+     "length": 18,
+     "text": "は友好的になった。"
+    },
+    {
+     "offset": 9386,
+     "length": 22,
+     "text": "は魔法の楯に守られた。"
+    },
+    {
+     "offset": 9526,
+     "length": 16,
+     "text": "は眠りに落ちた。"
+    },
+    {
+     "offset": 9853,
+     "length": 18,
+     "text": "は金縛りにあった。"
+    },
+    {
+     "offset": 9953,
+     "length": 26,
+     "text": "は火炎に対する防護を得た。"
+    },
+    {
+     "offset": 10025,
+     "length": 12,
+     "text": "は沈黙した。"
+    },
+    {
+     "offset": 10083,
+     "length": 18,
+     "text": "は魔法にかかった。"
+    },
+    {
+     "offset": 10270,
+     "length": 14,
+     "text": "は魅了された。"
+    },
+    {
+     "offset": 10530,
+     "length": 16,
+     "text": "は透明になった。"
+    },
+    {
+     "offset": 10592,
+     "length": 8,
+     "text": "こんこん"
+    },
+    {
+     "offset": 10646,
+     "length": 12,
+     "text": "は分身した。"
+    },
+    {
+     "offset": 10741,
+     "length": 14,
+     "text": "は弱くなった。"
+    },
+    {
+     "offset": 10801,
+     "length": 32,
+     "text": "はひどい臭いのガスを作り出した。"
+    },
+    {
+     "offset": 12387,
+     "length": 14,
+     "text": "は動き始めた。"
+    },
+    {
+     "offset": 12818,
+     "length": 16,
+     "text": "の視力は戻った。"
+    },
+    {
+     "offset": 12896,
+     "length": 18,
+     "text": "は視力を奪われた。"
+    },
+    {
+     "offset": 13142,
+     "length": 18,
+     "text": "は病いに冒された。"
+    },
+    {
+     "offset": 13384,
+     "length": 18,
+     "text": "は魔法にかかった。"
+    },
+    {
+     "offset": 14325,
+     "length": 14,
+     "text": "は祈っている。"
+    },
+    {
+     "offset": 14413,
+     "length": 16,
+     "text": "の呪いはとけた。"
+    },
+    {
+     "offset": 14430,
+     "length": 26,
+     "text": "のアイテムの呪いは消えた。"
+    },
+    {
+     "offset": 14710,
+     "length": 12,
+     "text": "は呪われた！"
+    },
+    {
+     "offset": 14768,
+     "length": 16,
+     "text": "は点滅している。"
+    },
+    {
+     "offset": 15292,
+     "length": 14,
+     "text": "は加速された。"
+    },
+    {
+     "offset": 16281,
+     "length": 14,
+     "text": "は減速された。"
+    },
+    {
+     "offset": 16342,
+     "length": 20,
+     "text": "はレベルを回復した。"
+    },
+    {
+     "offset": 16796,
+     "length": 18,
+     "text": "はすばやくなった。"
+    },
+    {
+     "offset": 16944,
+     "length": 14,
+     "text": "は強くなった。"
+    },
+    {
+     "offset": 17158,
+     "length": 12,
+     "text": "は麻痺した。"
+    },
+    {
+     "offset": 17216,
+     "length": 12,
+     "text": "は回復した。"
+    },
+    {
+     "offset": 17307,
+     "length": 16,
+     "text": "は透明になった。"
+    },
+    {
+     "offset": 17487,
+     "length": 16,
+     "text": "の毒は拭われた。"
+    },
+    {
+     "offset": 17504,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 17890,
+     "length": 14,
+     "text": "は叩きつけた。"
+    },
+    {
+     "offset": 18182,
+     "length": 18,
+     "text": "は魔法にかかった。"
+    },
+    {
+     "offset": 18352,
+     "length": 12,
+     "text": "は蘇生した。"
+    },
+    {
+     "offset": 18568,
+     "length": 10,
+     "text": "は死んだ。"
+    },
+    {
+     "offset": 18579,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 18778,
+     "length": 16,
+     "text": "は絡みつかれた。"
+    },
+    {
+     "offset": 18966,
+     "length": 22,
+     "text": "に光がまとわりついた。"
+    },
+    {
+     "offset": 19021,
+     "length": 16,
+     "text": "は透明になった。"
+    },
+    {
+     "offset": 19083,
+     "length": 14,
+     "text": "は魅了された。"
+    },
+    {
+     "offset": 19231,
+     "length": 12,
+     "text": "は混乱した。"
+    },
+    {
+     "offset": 19428,
+     "length": 18,
+     "text": "はテレポートした。"
+    },
+    {
+     "offset": 19845,
+     "length": 28,
+     "text": "は恐怖にかられ、逃げ出した。"
+    },
+    {
+     "offset": 19874,
+     "length": 22,
+     "text": "は影響を受けなかった。"
+    },
+    {
+     "offset": 20189,
+     "length": 12,
+     "text": "炎の種別は？"
+    },
+    {
+     "offset": 20202,
+     "length": 40,
+     "text": "    熱                          冷      "
+    },
+    {
+     "offset": 20243,
+     "length": 12,
+     "text": "は守られた。"
+    },
+    {
+     "offset": 20257,
+     "length": 20,
+     "text": "呪文を中断しますか？"
+    },
+    {
+     "offset": 20278,
+     "length": 40,
+     "text": "   はい                       いいえ    "
+    },
+    {
+     "offset": 20773,
+     "length": 18,
+     "text": "はのろまになった。"
+    },
+    {
+     "offset": 20792,
+     "length": 14,
+     "text": "は減速された。"
+    },
+    {
+     "offset": 21137,
+     "length": 12,
+     "text": "は守られた。"
+    },
+    {
+     "offset": 21195,
+     "length": 20,
+     "text": "は毒雲を作り出した。"
+    },
+    {
+     "offset": 23326,
+     "length": 12,
+     "text": "は回復した。"
+    },
+    {
+     "offset": 23417,
+     "length": 22,
+     "text": "は致命の息吹を吹いた！"
+    },
+    {
+     "offset": 23816,
+     "length": 14,
+     "text": "は酸を吹いた。"
+    },
+    {
+     "offset": 24099,
+     "length": 14,
+     "text": "は酸を吹いた。"
+    },
+    {
+     "offset": 24586,
+     "length": 14,
+     "text": "は炎を吹いた。"
+    },
+    {
+     "offset": 24990,
+     "length": 14,
+     "text": "は炎を吹いた。"
+    },
+    {
+     "offset": 25282,
+     "length": 20,
+     "text": "は電光を投げつけた。"
+    },
+    {
+     "offset": 25532,
+     "length": 10,
+     "text": "は睨んだ。"
+    },
+    {
+     "offset": 25543,
+     "length": 12,
+     "text": "は麻痺した。"
+    },
+    {
+     "offset": 26030,
+     "length": 16,
+     "text": "は呪文を唱えた。"
+    },
+    {
+     "offset": 26047,
+     "length": 4,
+     "text": "呪文"
+    },
+    {
+     "offset": 26052,
+     "length": 4,
+     "text": "は、"
+    }
+   ],
+   "overlay-23": [
+    {
+     "offset": 3560,
+     "length": 18,
+     "text": "は咳きこみ始めた。"
+    },
+    {
+     "offset": 3579,
+     "length": 28,
+     "text": "は窒息し、喉をかきむしった。"
+    },
+    {
+     "offset": 3608,
+     "length": 14,
+     "text": "は毒を受けた。"
+    },
+    {
+     "offset": 3623,
+     "length": 10,
+     "text": "は死んだ。"
+    },
+    {
+     "offset": 5667,
+     "length": 12,
+     "text": "は呪われた。"
+    },
+    {
+     "offset": 7954,
+     "length": 28,
+     "text": "ポイントのダメージを受けた。"
+    },
+    {
+     "offset": 7983,
+     "length": 12,
+     "text": "は火によって"
+    },
+    {
+     "offset": 7996,
+     "length": 14,
+     "text": "は冷気によって"
+    },
+    {
+     "offset": 8011,
+     "length": 14,
+     "text": "は電撃によって"
+    },
+    {
+     "offset": 8026,
+     "length": 12,
+     "text": "は酸によって"
+    },
+    {
+     "offset": 8039,
+     "length": 14,
+     "text": "は魔法によって"
+    },
+    {
+     "offset": 8054,
+     "length": 28,
+     "text": "は呪文を唱えられなくなった。"
+    },
+    {
+     "offset": 8083,
+     "length": 10,
+     "text": "は倒れた。"
+    },
+    {
+     "offset": 8094,
+     "length": 22,
+     "text": "そして、瀕死の状態だ。"
+    },
+    {
+     "offset": 8149,
+     "length": 10,
+     "text": "は死んだ。"
+    },
+    {
+     "offset": 8160,
+     "length": 28,
+     "text": "は、ダメージを受けなかった。"
+    },
+    {
+     "offset": 8976,
+     "length": 20,
+     "text": "には影響がなかった。"
+    },
+    {
+     "offset": 9450,
+     "length": 30,
+     "text": "は立ち上がり、ニヤリと笑った。"
+    },
+    {
+     "offset": 9481,
+     "length": 16,
+     "text": "は起き上がった。"
+    }
+   ],
+   "overlay-24": [
+    {
+     "offset": 1106,
+     "length": 9,
+     "text": " 装備中  "
+    },
+    {
+     "offset": 1116,
+     "length": 9,
+     "text": " 　　　  "
+    },
+    {
+     "offset": 2219,
+     "length": 4,
+     "text": "名前"
+    },
+    {
+     "offset": 2224,
+     "length": 12,
+     "text": "ＡＣ　　ＨＰ"
+    },
+    {
+     "offset": 2237,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 2243,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 2254,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 2265,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 2280,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 2296,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 3130,
+     "length": 14,
+     "text": "ヒットポイント"
+    },
+    {
+     "offset": 3145,
+     "length": 4,
+     "text": "ＡＣ"
+    },
+    {
+     "offset": 3150,
+     "length": 4,
+     "text": "無力"
+    },
+    {
+     "offset": 6010,
+     "length": 32,
+     "text": "アイテム・ポインターがありません"
+    },
+    {
+     "offset": 10070,
+     "length": 16,
+     "text": "は完全に回復した"
+    },
+    {
+     "offset": 10087,
+     "length": 14,
+     "text": "は少し回復した"
+    },
+    {
+     "offset": 10913,
+     "length": 12,
+     "text": "防御している"
+    },
+    {
+     "offset": 11894,
+     "length": 10,
+     "text": "キャンプ中"
+    },
+    {
+     "offset": 11905,
+     "length": 10,
+     "text": "捜索モード"
+    },
+    {
+     "offset": 12573,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 12580,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 13765,
+     "length": 18,
+     "text": "は手当てを受けた。"
+    }
+   ],
+   "overlay-25": [
+    {
+     "offset": 3721,
+     "length": 28,
+     "text": "新しいクラスを選んでください"
+    },
+    {
+     "offset": 3750,
+     "length": 5,
+     "text": "ALIAS"
+    },
+    {
+     "offset": 3756,
+     "length": 10,
+     "text": "エイリアス"
+    },
+    {
+     "offset": 3767,
+     "length": 10,
+     "text": "DRAGONBAIT"
+    },
+    {
+     "offset": 3778,
+     "length": 14,
+     "text": "ドラゴンベイト"
+    },
+    {
+     "offset": 3793,
+     "length": 15,
+     "text": "AKABAR BEL AKAS"
+    },
+    {
+     "offset": 3809,
+     "length": 30,
+     "text": "アーカバー・ベル・アーカッシュ"
+    },
+    {
+     "offset": 3840,
+     "length": 12,
+     "text": "は不適格です"
+    },
+    {
+     "offset": 3853,
+     "length": 6,
+     "text": " 決定 "
+    },
+    {
+     "offset": 3861,
+     "length": 4,
+     "text": "決定"
+    },
+    {
+     "offset": 3866,
+     "length": 16,
+     "text": "は１経験レベルの"
+    },
+    {
+     "offset": 3883,
+     "length": 4,
+     "text": "です"
+    }
+   ],
+   "overlay-26": [
+    {
+     "offset": 2129,
+     "length": 6,
+     "text": "      "
+    },
+    {
+     "offset": 2200,
+     "length": 4,
+     "text": "    "
+    },
+    {
+     "offset": 2208,
+     "length": 7,
+     "text": "       "
+    },
+    {
+     "offset": 3742,
+     "length": 6,
+     "text": "　次　"
+    },
+    {
+     "offset": 3781,
+     "length": 6,
+     "text": "　前　"
+    },
+    {
+     "offset": 3788,
+     "length": 6,
+     "text": "抜ける"
+    },
+    {
+     "offset": 4692,
+     "length": 40,
+     "text": "   はい                       いいえ    "
+    }
+   ],
+   "overlay-29": [
+    {
+     "offset": 216,
+     "length": 14,
+     "text": "読みこみ中です"
+    },
+    {
+     "offset": 235,
+     "length": 5,
+     "text": "FINAL"
+    },
+    {
+     "offset": 241,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 246,
+     "length": 14,
+     "text": "PIC not found "
+    },
+    {
+     "offset": 261,
+     "length": 5,
+     "text": "SPRIT"
+    },
+    {
+     "offset": 1223,
+     "length": 4,
+     "text": "HEAD"
+    },
+    {
+     "offset": 1228,
+     "length": 14,
+     "text": "head not found"
+    },
+    {
+     "offset": 1243,
+     "length": 4,
+     "text": "BODY"
+    },
+    {
+     "offset": 1613,
+     "length": 30,
+     "text": "Illegal range in Show3DSprite."
+    },
+    {
+     "offset": 1828,
+     "length": 6,
+     "text": "bigpic"
+    }
+   ],
+   "overlay-30": [
+    {
+     "offset": 3908,
+     "length": 7,
+     "text": "WALLDEF"
+    },
+    {
+     "offset": 3916,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 3921,
+     "length": 15,
+     "text": "Unable to load "
+    },
+    {
+     "offset": 3937,
+     "length": 13,
+     "text": " from WALLDEF"
+    },
+    {
+     "offset": 4653,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 4658,
+     "length": 32,
+     "text": "Unable to load geo in Load3DMap."
+    }
+   ],
+   "overlay-33": [
+    {
+     "offset": 12,
+     "length": 33,
+     "text": "Start range error in Load24x24Set"
+    },
+    {
+     "offset": 46,
+     "length": 7,
+     "text": "DungCom"
+    },
+    {
+     "offset": 54,
+     "length": 7,
+     "text": "WildCom"
+    },
+    {
+     "offset": 62,
+     "length": 7,
+     "text": "RandCom"
+    },
+    {
+     "offset": 70,
+     "length": 5,
+     "text": "tiles"
+    },
+    {
+     "offset": 860,
+     "length": 5,
+     "text": "CHEAD"
+    },
+    {
+     "offset": 866,
+     "length": 5,
+     "text": "CBODY"
+    },
+    {
+     "offset": 872,
+     "length": 6,
+     "text": "COMSPR"
+    }
+   ],
+   "overlay-35": [
+    {
+     "offset": 39,
+     "length": 4,
+     "text": "8x8d"
+    },
+    {
+     "offset": 44,
+     "length": 4,
+     "text": ".dax"
+    },
+    {
+     "offset": 49,
+     "length": 15,
+     "text": "Unable to load "
+    },
+    {
+     "offset": 65,
+     "length": 10,
+     "text": " from 8x8D"
+    },
+    {
+     "offset": 775,
+     "length": 34,
+     "text": "Bad symbol number in Put8x8Symbol."
+    }
+   ]
+  }
+ }
+}
