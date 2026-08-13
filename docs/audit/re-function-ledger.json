@@ -320,15 +320,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 4290,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 6176,
    "state": "待解讀",
    "level": "",
@@ -12025,6 +12016,15 @@
    "level": "exact",
    "spec": "docs/spec/604-ecl-spawn-monsters.md",
    "note": "ECL opcode 0Bh(產生 N 個角色/怪物):真實範圍 049Ch..0857h 共 952 bytes(IDA 標 452)。名額上限 63(DS:789Ch),迴圈中每次重新檢查——名額不足時產生部分而非全部放棄。角色/怪物記錄 1A7h=423 bytes(New/Move 的參數直接給的)。複製範本的物品(67h)與 effect(9)節點時插在鏈頭,所以複製出來的鏈順序與範本相反——與 ADDEFFECT 接鏈尾不同。DS:9594h 進來存、離開還原;DS:A895h 是群組編號,寫進每個新記錄的 +143h,整批做完才加一"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 4290,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/605-ecl-horizontal-menu.md",
+   "note": "ECL opcode 2Bh(HORIZONTAL MENU):READVAR(2)固定前綴後,以 ADDRESSVALUE(2)取得選項數 n,ECL_PC 回退一格再 READVAR(n)——變長指令模式的直接證據。n=1 是特例,改顯示「リターン・キーを押してください」。選項文字解到 DS:A8DAh 起、stride 100h 的槽位,熱鍵是 i+40h(第一個是 'A');短標籤在 DS:A339h 起、stride 7。選擇結果 STOREVALUE 到 operand 1 指定的位址"
   }
  ]
 }
