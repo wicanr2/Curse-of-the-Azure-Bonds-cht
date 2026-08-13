@@ -18449,7 +18449,10 @@
    "callers": 3,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/689-dos-party-roster-render.md",
+   "note": "隊伍名單繪製(entry#2,參數是一個 far 指標=選中的角色)。DS:4FBAh=3 時什麼都不畫;起始欄 x 為 1 或 11h(依 4FBAh 是否為 0);畫表頭 'Name'(CS:0789h)與 'AC  HP'(CS:078Eh),然後從 DS:650Ah 走角色鏈(next 在 +189h,終止看兩個 word 同時為零),每人一列:選中者用顏色 0Fh 直接畫、其餘走 18F3h,再畫 AC 欄(0939h)與 HP 欄(09C1h,兩者見 spec 684)。⚠ 那兩段看似分類的範圍比較鏈其實是**右對齊補位**:k = 3 − 顯示字元數,欄位 = 20h+k / 24h+k。把 +19Ah(AC,顯示值=60−儲存值)與 +1A4h(目前 HP)的公式代進去,兩張表都精確等於位數。拿分桶邊界去推狀態語意會整段推錯",
    "citations": [
     "spec/689-dos-party-roster-render.md"
    ]
@@ -45188,9 +45191,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 38,
+   "Todo": 37,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,

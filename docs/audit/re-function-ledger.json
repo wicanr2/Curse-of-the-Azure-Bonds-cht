@@ -16391,6 +16391,16 @@
    "spec": "docs/spec/688-dos-overlay-02-scene-opcodes.md",
    "note": "DS:4FB4h++;<overlay-17 entry#3>(0, 1);把 far 指標 DS:6506h/6508h 整個複製到 DS:47E7h/47E9h;<overlay-24 entry#2>(DS:6506h 那個 far 指標)。sub sp,2 沒有用到",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 1941,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/689-dos-party-roster-render.md",
+   "bounds": "prologue",
+   "note": "隊伍名單繪製(entry#2,參數是一個 far 指標=選中的角色)。DS:4FBAh=3 時什麼都不畫;起始欄 x 為 1 或 11h(依 4FBAh 是否為 0);畫表頭 'Name'(CS:0789h)與 'AC  HP'(CS:078Eh),然後從 DS:650Ah 走角色鏈(next 在 +189h,終止看兩個 word 同時為零),每人一列:選中者用顏色 0Fh 直接畫、其餘走 18F3h,再畫 AC 欄(0939h)與 HP 欄(09C1h,兩者見 spec 684)。⚠ 那兩段看似分類的範圍比較鏈其實是**右對齊補位**:k = 3 − 顯示字元數,欄位 = 20h+k / 24h+k。把 +19Ah(AC,顯示值=60−儲存值)與 +1A4h(目前 HP)的公式代進去,兩張表都精確等於位數。拿分桶邊界去推狀態語意會整段推錯"
   }
  ]
 }
