@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 22 | 8 | 0 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md |
+| `0000` | sub_0 | — | 22 | 8 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完） | knowledge/gold-box-ecl-interpreter.md |
 | `0016` | sub_16 | — | 179 | 64 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `00C9` | sub_C9 | — | 69 | 27 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `010E` | sub_10E | — | 315 | 115 | 6 | 3 | ✓ | 待解讀 | — | — | — |

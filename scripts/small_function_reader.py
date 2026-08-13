@@ -200,6 +200,13 @@ def classify(function):
         if allowed and len(offsets) == 1:
             return "常數字串", "unk_%s" % offsets.pop()
 
+    # 呼叫序列：body 只有一連串 call，沒有任何資料處理。overlay 的 unit
+    # 初始化就是這個形狀（依序呼叫依賴單元的初始化 entry）。
+    calls_only = [l for l in core if CALL_ANY.match(l)]
+    if len(calls_only) >= 2 and len(calls_only) == len(core):
+        return "呼叫序列", "依序執行 %d 個呼叫，沒有其他動作：%s" % (
+            len(calls_only), "、".join("`%s`" % l for l in calls_only[:6]))
+
     # 單一呼叫包裝：整個 body 只有「準備參數」與一個 call／jmp。
     # 允許的準備動作限定為：推參數、推立即數、推全域、載入 far pointer、
     # 暫存搬移與對應的 pop。只要出現算術、比較、分支就不算。
