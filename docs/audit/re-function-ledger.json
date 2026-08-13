@@ -13139,8 +13139,8 @@
    "ea": 2049,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
-   "note": "ECL 位址分類器:4B00h..4EFFh→0、7C00h..7FFFh→1、7A00h..7BFFh→2、8000h..9E40h→3、其餘→4。四段互不重疊。class 3 上界 9E40h 與 spec 563 從 New 參數量到的 bank 3 大小 1E41h 完全吻合"
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ECL 位址 bank 分類器:0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘。class 3 上界 9E40h 與同 spec 由 New 參數量到的 bank 3 大小 1E41h 互相吻合;各 class 到 bank 的定址常數見 docs/spec/625-ecl-address-class-and-bank-wrap.md"
   },
   {
    "platform": "pc98",
@@ -13148,8 +13148,8 @@
    "ea": 2140,
    "state": "已解讀",
    "level": "exact",
-   "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
-   "note": "INDEXOF(node):從 DS:9598h 串列頭走 +18Ah next 指標,數到 node 為止回傳索引 byte。找不到會回傳整串長度,呼叫端分不出「找不到」與「最後一個的下一格」。這確認角色紀錄 +18Ah 是 next 指標"
+   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
+   "note": "FINDGUY(ptr):沿 DS:9598h 角色鏈(next 指標在 +18Ah)找出 ptr 的 0-based 序號。找不到不是回 FFh而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向。spec 624 的特殊位址 7EB1h/7EB4h 就是拿 DS:9594h 查這支"
   },
   {
    "platform": "pc98",
