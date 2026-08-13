@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0939` | sub_939 | — | 136 | 57 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `09C1` | sub_9C1 | — | 89 | 34 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0A34` | sub_A34 | — | 431 | 196 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `0BE3` | sub_BE3 | — | 69 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0BE3` | sub_BE3 | — | 69 | 28 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/643-hp-fields-and-slot-array.md<br>與 pc98 overlay-24:0E02h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：for i := 1 to 4:if <sub_25CD>(arg_0,arg_2,byte[49D3h + i],@var_6) <> 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
 | `0C28` | sub_C28 | — | 1187 | 391 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `10CB` | sub_10CB | — | 60 | 28 | 4 | 0 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:12E5h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1107` | sub_1107 | — | 58 | 27 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:1321h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
@@ -26,7 +26,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1345` | sub_1345 | — | 184 | 69 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `13FD` | sub_13FD | — | 146 | 55 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `148F` | sub_148F | — | 244 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `1583` | sub_1583 | — | 65 | 24 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1583` | sub_1583 | — | 65 | 24 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/643-hp-fields-and-slot-array.md<br>與 pc98 overlay-24:1739h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `15FF` | sub_15FF | — | 157 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1652` | sub_1652 | — | 8 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `169F` | sub_169F | — | 18 | 7 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
