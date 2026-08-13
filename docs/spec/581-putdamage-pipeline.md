@@ -79,6 +79,37 @@ PUTDAMAGE(has_save, save_kind, damage, target)
   （[spec 579](579-character-status-fields.md)）是同一組，兩處各自的 32 bytes
   set 常數逐位元組相同——互相印證。
 
+## `PUTEFFECT`：施加效果的入口
+
+PC-98 `2325h`／DOS `2307h`，20 bytes 參數。
+
+```text
+PUTEFFECT(msg, …, param, id, target)
+    DS:A02Dh := id
+    CHECKFX(09h, target)                     ← 可把 id 改成 0 來攔截
+    if DS:A02Dh = 0 or (arg_4 <> 0 and arg_6 = 1) then
+        <顯示>「には影響がなかった。」／`is Unaffected`
+    else
+        if <查找>(@node, id, target) and node^[1] > 0 then
+            SPELLOFF(node, id, target)       ← 同 id 先移除
+        ADDEFFECT(…, param, id, target)
+        if msg <> '' then <顯示>(msg, target)
+```
+
+**同一個 id 的效果是取代不是疊加**：掛新節點前先把舊的摘掉。判斷「舊的算數」
+的條件是節點 `+1` 那個 word 參數大於 0。
+
+於是三個相鄰全域的分工確定了：
+
+| 全域 | 內容 | 誰設 |
+|---|---|---|
+| `DS:A02Dh` | effect id | `PUTEFFECT` |
+| `DS:A02Eh` | 傷害值 | `PUTDAMAGE` |
+| `DS:A02Fh` | 傷害屬性位元 | 呼叫端 |
+
+三者都在對應的 `CHECKFX` 之後才被讀取，所以 effect 可以攔截「要施加什麼」、
+「打多少」、「什麼屬性」全部三件事。
+
 ## 明確不宣稱
 
 - `<扣血>`（`014A:00AC`）內部怎麼把 `DS:A02Eh` 套進 `+1A5h`。
