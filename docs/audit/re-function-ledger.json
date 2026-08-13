@@ -15751,6 +15751,26 @@
    "level": "strong inference",
    "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
    "note": "與 pc98 overlay-22:1FB6h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 8417,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/681-dos-target-array-and-reduce.md",
+   "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 <loc_1456h>(0,4,p) 等於 0、第四道要 <loc_1573h>(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 <far loc_14A4h> 並印英文原文 'has been reduced'",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 5627,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/681-dos-target-array-and-reduce.md",
+   "note": "四個 byte 參數各自 cbw(有號)擴成 word,依序寫進 ss:[arg_0-1Ch/-1Ah/-18h/-16h],再把該塊位址傳給 <far loc_1898h>。arg_0 是**呼叫端的 BP**(用 ss: 定址),所以這支直接寫進呼叫端的區域變數區而不是自己的 frame;參數順序在傳遞時反過來(arg_8 放最前)",
+   "bounds": "prologue"
   }
  ]
 }
