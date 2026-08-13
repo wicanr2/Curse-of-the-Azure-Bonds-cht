@@ -14064,6 +14064,45 @@
    "level": "strong inference",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "與 pc98 overlay-12:176Dh 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 20h <> 0 then <sub_1B>(0) 並備妥「は影響を受けなかった。」呼叫 <far 014A:0024>(arg_6,arg_8,訊息,1,0Ah) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6579,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "DS:0A02Fh := 9;<far 013E:0064>(arg_6^[18Eh]^[0Ah], ROLLDICE(2,0Ah)=2d10, 0, 0)。與 19E8h 逐指令相同,只差 DS:0A02Fh 的值與骰子",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6632,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "DS:0A02Fh := 10h;<far 013E:0064>(arg_6^[18Eh]^[0Ah], ROLLDICE(1,4)=1d4, 0, 0)。與 19B3h 成對",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6708,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "if (DS:0A02Fh and 1) 或 (and 2) then:<far 013E:0028>(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] <> 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD&D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6638,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/640-save-for-half-and-damage-global.md",
+   "note": "與 pc98 overlay-12:1A34h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) 或 (and 2) then:<far 013E:0028>(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] <> 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD&D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

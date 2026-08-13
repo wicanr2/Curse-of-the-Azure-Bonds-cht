@@ -62,12 +62,25 @@ def main():
             return None
         return text if all(c.isprintable() for c in text) else None
 
+    def next_prologue(ea):
+        """下一支的起點，用原始位元組找 prologue。
+
+        不能用索引裡的 `size`：那來自 IDA，而 IDA 會低估（`overlay-12:147Ah`
+        說 86 bytes、實際 155）。用 size 當上界會**在半途停住而且看起來像印完
+        了**——這正是第 639 輪踩到的坑。
+        """
+        hits = [blob.find(pattern, ea + 3)
+                for pattern in (b"\x55\x89\xe5", b"\x55\x8b\xec")]
+        hits = [h for h in hits if h > 0]
+        return min(hits) if hits else len(blob)
+
     print("%s %s：待解讀且 <= %d bytes 共 %d 支" % (platform, module, limit, len(todo)))
     for function in todo:
         ea, size = function["ea"], function.get("size") or 0
-        print("\n=== %04Xh  size=%d ===" % (ea, size))
+        end = next_prologue(ea) if blob else ea + size
+        print("\n=== %04Xh  IDA size=%d，印到下一個 prologue %04Xh ===" % (ea, size, end))
         for address in sorted(items):
-            if not ea <= address < ea + size:
+            if not ea <= address < end:
                 continue
             item = items[address]
             text = re.sub(r"\s*;.*$", "", item["disasm"].strip())
