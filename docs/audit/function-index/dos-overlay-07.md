@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0173` | sub_173 | — | 137 | 58 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDRESSVALUE(i)：陣列在 7685/76C5/7705，分支與 PC-98 相同 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `01FC` | sub_1FC | — | 357 | 133 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0380` | sub_380 | — | 214 | 92 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `0456` | sub_456 | — | 103 | 36 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `0456` | sub_456 | — | 103 | 36 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/617-ecl2-move-and-map-model.md<br>與 pc98 overlay-07:0556h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：GETMONSTERS:把輸出指標清 nil,New(1A7h)配置 423 bytes 記錄(與 0Bh 同一種),載入指定 id 的資料後處理其 +14Eh 物品鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `04BD` | sub_4BD | — | 149 | 53 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0552` | sub_552 | — | 53 | 22 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/614-ecl2-gosub-push.md<br>與 pc98 overlay-07:064Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0591` | sub_591 | — | 343 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

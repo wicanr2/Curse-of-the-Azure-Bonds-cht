@@ -210,8 +210,11 @@ opcode → arity 對照表，與各 handler 自己的 `READVAR(n)` 比對後 42 
 | `C04Eh`／`C04Fh` | 零延伸 | ✗ | `DS:A2ACh`／`A2ADh` | `DS:7212h`／`7213h` |
 | `C059h` | no-op | ✓ | `DS:A87Ah` | — |
 
-`C04Dh` 的 `×2`／`÷2` 互為反向，**對 ECL 而言 round-trip 一致**；係數只有直接
-讀該 DS 位址的繪圖端看得到。`C04Bh`／`C04Ch` 讀取是 `cbw` 符號延伸。
+`C04Dh` 的 `×2`／`÷2` 互為反向，**對 ECL 而言 round-trip 一致**。實體值就是
+`0`／`2`／`4`／`6`（`MOVEFORWARD` 與 `MAXRANGE` 都用這組），ECL 看到的是 `0..3`。
+`C04Bh` 是 **x**、`C04Ch` 是 **y**、`C04Dh` 是**方向**；地圖 16×16，座標 `0..0Fh`
+且**走出邊界會環繞到另一端**（[spec 617](../spec/617-ecl2-move-and-map-model.md)）。
+`C04Bh`／`C04Ch` 讀取是 `cbw` 符號延伸。
 
 ## external `CALL`（opcode `2Dh`，`exact`）
 

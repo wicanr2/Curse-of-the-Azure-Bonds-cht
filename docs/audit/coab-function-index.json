@@ -6862,7 +6862,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "與 pc98 overlay-07:0556h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：GETMONSTERS:把輸出指標清 nil,New(1A7h)配置 423 bytes 記錄(與 0Bh 同一種),載入指定 id 的資料後處理其 +14Eh 物品鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -27600,11 +27603,15 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "GETMONSTERS:把輸出指標清 nil,New(1A7h)配置 423 bytes 記錄(與 0Bh 同一種),載入指定 id 的資料後處理其 +14Eh 物品鏈",
    "citations": [
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
+    "spec/617-ecl2-move-and-map-model.md"
    ]
   },
   {
@@ -27698,6 +27705,7 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘",
    "citations": [
+    "audit/function-index/pc98-overlay-07.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md",
     "spec/616-ecl2-string-sources.md"
@@ -28187,7 +28195,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "MOVEFORWARD:依 DS:A2ABh(方向,實體值 0/2/4/6)更新 DS:A2A9h(x)或 DS:A2AAh(y),範圍 0..0Fh 且走出邊界會環繞到另一端(不是被擋住);之後更新 DS:A2ADh(由 x,y 算)與 DS:A2ACh(由方向,x,y 算),並把 DS:BDFAh 設為 1。地圖是 16x16 環繞",
+   "citations": [
+    "spec/617-ecl2-move-and-map-model.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43307,9 +43321,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -43862,9 +43876,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 16,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 12,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
