@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 176h:57h 後交給 19Ah:2Ah | — |
 | `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | — |
 | `0073` | sub_73 | ITEMCOUNT | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00B4` | sub_B4 | — | 93 | 41 | 1 | 0 | ✓ | 待解讀 | — | — | — |

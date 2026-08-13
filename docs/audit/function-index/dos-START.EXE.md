@@ -288,7 +288,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B8DC` | @Rewrite$qm4Text | — | 80 | 29 | 4 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rewrite$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B92C` | @Flush$qm4Text | — | 4 | 2 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Flush$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B930` | @Close$qm4Text | — | 59 | 19 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1B96B` | sub_1B96B | — | 17 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B96B` | sub_1B96B | — | 17 | 11 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996 | — |
 | `1B9FE` | sub_1B9FE | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1BAE6` | __GetEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB0A` | __GetChar | — | 28 | 14 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

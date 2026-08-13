@@ -10909,6 +10909,96 @@
    "level": "strong inference",
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113003,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113355,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6319,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6391,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本)"
   }
  ]
 }

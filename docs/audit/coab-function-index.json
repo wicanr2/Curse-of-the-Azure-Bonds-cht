@@ -3901,7 +3901,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996"
   },
   {
    "platform": "dos",
@@ -17732,7 +17735,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器"
   },
   {
    "platform": "dos",
@@ -18347,7 +18353,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
@@ -18680,7 +18689,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah"
   },
   {
    "platform": "dos",
@@ -21439,7 +21451,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出"
   },
   {
    "platform": "pc98",
@@ -23203,7 +23218,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08"
   },
   {
    "platform": "pc98",
@@ -24771,7 +24789,8 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md"
    ]
   },
   {
@@ -33821,7 +33840,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔"
   },
   {
    "platform": "pc98",
@@ -33863,7 +33885,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本)"
   },
   {
    "platform": "pc98",
@@ -38951,7 +38976,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h"
   },
   {
    "platform": "pc98",
@@ -39147,7 +39175,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah"
   },
   {
    "platform": "pc98",
@@ -40608,9 +40639,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 90,
+   "Read": 91,
    "NotBlocking": 133,
-   "Todo": 85,
+   "Todo": 84,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -41013,9 +41044,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -41073,9 +41104,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 12,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 3146,
    "Undefined": 84,
@@ -41103,9 +41134,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -41163,9 +41194,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 97,
+   "Read": 99,
    "NotBlocking": 29,
-   "Todo": 186,
+   "Todo": 184,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -41448,9 +41479,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 4,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 16,
    "Fragment": 1,
    "CodeBytes": 4957,
    "Undefined": 1311,
@@ -41553,9 +41584,9 @@
    "Module": "overlay-25",
    "Unit": "TRAINING",
    "Functions": 14,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 0,
    "CodeBytes": 5200,
    "Undefined": 167,
@@ -41568,9 +41599,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,

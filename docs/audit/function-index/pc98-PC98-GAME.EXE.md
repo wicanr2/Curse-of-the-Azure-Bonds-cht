@@ -175,7 +175,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18F10` | sub_18F10 | — | 146 | 53 | 1 | 5 |  | 待解讀 | — | — | — |
 | `18FA3` | sub_18FA3 | — | 34 | 17 | 4 | 1 |  | 待解讀 | — | — | — |
 | `18FC5` | sub_18FC5 | — | 31 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
-| `18FE4` | sub_18FE4 | — | 17 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
+| `18FE4` | sub_18FE4 | — | 17 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出 | — |
 | `18FF5` | sub_18FF5 | — | 114 | 41 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19085` | sub_19085 | — | 141 | 54 | 2 | 10 |  | 待解讀 | — | — | — |
 | `19112` | sub_19112 | — | 21 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -310,7 +310,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BA3C` | sub_1BA3C | — | 5 | 2 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B2h`（body 共 5 bytes，已逐條讀完） | — |
 | `1BA41` | sub_1BA41 | — | 75 | 27 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1BA90` | sub_1BA90 | — | 59 | 19 | 5 | 2 |  | 待解讀 | — | — | — |
-| `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>與 DOS START.EXE:1B96Bh 同義,結果存進 word_23B08 | — |
 | `1BB5E` | sub_1BB5E | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1BC46` | sub_1BC46 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
 | `1BC6A` | sub_1BC6A | — | 28 | 14 | 5 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__GetChar` 逐位元組相同（28 bytes） | — |

@@ -70,7 +70,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `222C` | sub_222C | — | 1812 | 668 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 29h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>audit/function-triage.md |
 | `2940` | sub_2940 | — | 187 | 80 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `29FB` | sub_29FB | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 32h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh | audit/ecl-opcode-dispatch.md |
+| `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh | audit/ecl-opcode-dispatch.md<br>audit/function-index/dos-overlay-02.md |
 | `2ACE` | sub_2ACE | — | 824 | 294 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2E06` | sub_2E06 | — | 38 | 12 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 31h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2E2C` | sub_2E2C | — | 53 | 22 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 34h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
