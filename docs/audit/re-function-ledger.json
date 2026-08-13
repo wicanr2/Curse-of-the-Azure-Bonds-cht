@@ -16501,6 +16501,46 @@
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
    "note": "依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 <17D6h>(角色, s, 0Ah, 1);DS:4FBAh <> 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4762,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/694-add-1e-ability-tables.md",
+   "note": "把力量壓成 0..30 的索引:s := 角色^[11h];0..17 回傳 s;s=18 時依 角色^[1Ch] 的百分位分成 0/1-50/51-75/76-90/91-99/100 → 18/19/20/21/22/23;19..25 回傳 s+5(→24..30)。⚠ **有兩條路徑不寫入回傳變數**(s 在 0..25 之外且不等於 18、以及 s=18 但 p>100),回傳堆疊殘值,移植要補預設。⚠ 力量有兩組欄位:本支用 +11h/+1Ch,而 DONEWSTRENGTH(overlay-23,兩平台逐指令對讀過位移相同)比的是 +10h/+1Dh",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 5117,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/694-add-1e-ability-tables.md",
+   "note": "傷害調整,就是 AD&D 1st edition 的力量表。角色^[125h]=0 時直接回 0;否則 i := 129Ah(角色),i=1..2→−2、3..5→−1、6..15→0、16→+1、17→+1、18→+2、19→+3、20..29→i−17、30→+14。換算回力量值後與 1e 逐格對照**十九格全中**(18/01-50→+3 … 25→+14),唯一差別是力量 1 併進 2 的格子給 −2(1e 是 −4)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4474,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/694-add-1e-ability-tables.md",
+   "note": "敏捷防禦調整(讀 角色^[17h])。回傳值取負號後與 AD&D 1e 防禦調整逐格吻合:3→+4、4→+3、5→+2、6→+1、7..14→0、15→−1、16→−2、17→−3、18→−4;19..20→−4、21..23→−5、24..25→−6 是本作自己補的。低於下界一律夾成最極端那格(1..3 同值)。**九格連續吻合**是「+17h 是敏捷」的依據",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 4618,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/694-add-1e-ability-tables.md",
+   "note": "敏捷遠程命中調整(讀 角色^[17h])。0..2→−4、3→−3、4→−2、5→−1、6..15→0、16→+1、17→+2、18→+3,與 AD&D 1e 遠程命中調整吻合;19..20→+3、21..23→+4、24..25→+5 是本作自己補的",
+   "bounds": "prologue"
   }
  ]
 }
