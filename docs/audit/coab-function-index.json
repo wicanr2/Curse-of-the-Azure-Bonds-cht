@@ -5892,12 +5892,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-handler-operand-audit.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md",
-    "spec/523-dos-overlay07-vector26-entry.md"
+    "spec/522-dos-buffer-four-plane-fill.md"
    ]
   },
   {
@@ -5913,12 +5913,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-handler-operand-audit.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/536-tilverton-sewers-e2-search-route.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -5932,7 +5932,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDRESSVALUE(i)：陣列在 7685/76C5/7705，分支與 PC-98 相同",
+   "citations": [
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6023,7 +6029,13 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDFNC：與 PC-98 逐指令相同",
+   "citations": [
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6049,7 +6061,13 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh",
+   "citations": [
+    "spec/563-ecl-memory-model-and-operand-resolution.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6101,9 +6119,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後",
    "citations": [
-    "spec/547-normal-beholder-cave-presentation-state.md"
+    "spec/547-normal-beholder-cave-presentation-state.md",
+    "spec/562-ecl2-helper-api-and-operand-audit.md",
+    "spec/563-ecl-memory-model-and-operand-resolution.md"
    ]
   },
   {
@@ -6117,7 +6140,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/563-ecl-memory-model-and-operand-resolution.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21806,7 +21832,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
    ]
   },
   {
@@ -23802,12 +23829,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-handler-operand-audit.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md",
-    "spec/523-dos-overlay07-vector26-entry.md"
+    "spec/522-dos-buffer-four-plane-fill.md"
    ]
   },
   {
@@ -23825,6 +23852,7 @@
    "state": "待解讀",
    "citations": [
     "project-status.md",
+    "spec/562-ecl2-helper-api-and-operand-audit.md",
     "spec/README.md"
    ]
   },
@@ -23840,7 +23868,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDRESSVALUE(i)：解第 i 個 operand；三個 64 byte 平行陣列 A917/A957/A997；code 00h/01h/03h/80h/02h/81h 分支",
+   "citations": [
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -23943,7 +23977,13 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDFNC：byte pair 併成 word，回傳 (b\u003c\u003c8)+a；不是算術加法",
+   "citations": [
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -23957,7 +23997,13 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘",
+   "citations": [
+    "spec/563-ecl-memory-model-and-operand-resolution.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -24013,7 +24059,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化",
+   "citations": [
+    "spec/562-ecl2-helper-api-and-operand-audit.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37509,9 +37561,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 0,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 37,
    "CodeBytes": 8745,
    "Undefined": 191,
    "SegmentBytes": 9128,
@@ -38027,9 +38079,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 0,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 46,
+   "Todo": 42,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
