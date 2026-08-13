@@ -2,9 +2,12 @@
 
 本檔是 compact／交接後的第一閱讀入口，也是 agent 工作規則的單一權威來源。
 它已融合 `CLAUDE.md` 中仍有效的原始需求；後者只保留人類可讀的目標與資料
-索引，不應再複製易過期的 checkpoint。詳細歷史在 `CONTEXT.md`；全遊戲 RE 與
+索引，不應再複製易過期的 checkpoint。現況與真相來源優先序在 `CONTEXT.md`
+（2026-08-13 已瘦身，歷史逐行分冊到 `docs/context/`）；全遊戲 RE 與
 重建完整度的單一權威入口是
-`docs/knowledge/coab-re-coverage-matrix.md`，逐輪成果在 `docs/project-status.md`。
+`docs/knowledge/coab-re-coverage-matrix.md`（系統層）與
+`docs/audit/coab-function-index.md`（模組／函式層），逐輪成果在
+`docs/project-status.md`。
 若文件衝突，以目前 worktree、原始 bytes／實機
 證據與較新的 READY spec 為準，並主動修掉被推翻的舊斷言。
 
@@ -41,6 +44,26 @@ Prototype、單一 vertical slice、測試通過或幾張截圖都不等於完�
 - 若 game pack 無法描述某行為，先擴充 engine schema/runtime，再用 CoAB
   JSON 宣告；不能為趕進度 hardcode 本作情節。
 - 不得把 nested engine 加成 CoAB gitlink，也不得把 engine source 複製進來。
+
+## 2.5 反組譯的驗收口徑（2026-08-13 使用者決定）
+
+先前的做法是「遇到問題才反組譯那一段」，結果是 64 支一次性 audit 腳本、
+沒有任何全模組清冊，也答不出「還剩多少沒看」。現在改成**先徹底盤點、
+再逐系統語意閉合**：
+
+- **全函式覆蓋台帳**：DOS 與 PC-98 的每一個函式都必須在
+  [`docs/audit/coab-function-index.md`](docs/audit/coab-function-index.md)
+  裡有狀態，三選一：
+  - `已解讀`：附推論等級（`exact`／`strong inference`／`hypothesis`）與引用規格。
+  - `不阻塞`：附**具體理由**（如 Turbo Pascal RTL、字串格式化、heap 配置器），
+    不是「看起來不重要」。判定要能被下一個人推翻。
+  - `待解讀`：預設值。
+- **兩平台都全掃**：同一機制在 DOS 與 PC-98 的證據分開記錄。PC-98 的 Borland
+  符號名可作候選語意，但不自動成為 DOS 的事實。
+- **不再以「這一輪玩家路徑用不到」當作跳過盤點的理由**。盤點（R1）與語意
+  閉合（R2）是兩件事：盤點必須完整，語意閉合才依玩家可見性排序。
+- 台帳與 IDA 匯出都必須可重生：換一台機器重跑 `tools/re-sweep.sh` 要得到
+  同樣的函式數與雜湊；差異即代表流程有未記錄的手動步驟。
 
 ## 3. Spec-driven development 與證據標準
 
@@ -198,6 +221,30 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
 流程；IDA 結論仍須依本文件第 3 節，以原始 bytes、runtime trace 或另一項
 權威證據交叉驗證。
 
+### 反組譯工具鏈（第 559 輪起的固定入口）
+
+| 工具 | 用途 |
+|---|---|
+| `tools/ida.sh` | IDA headless 唯一入口（固定 `ida-pro-9.4-idapython:py312-v1`） |
+| `tools/go.sh` | Docker 內 Go 工具鏈（主機不裝 Go；`.git` 在 workplace 故帶 `-buildvcs=false`） |
+| `tools/re-sweep.sh` | 一個平台的全模組建庫＋匯出：manifest → resident → 36 段 overlay |
+| `tools/ida/export_module.py` | 匯出一個 database 的函式／xref／字串／segment／未定義區 |
+| `tools/ida/analyze_overlay.py` | raw overlay 建庫：強制 16-bit、種子 entry point、再匯出 |
+| `cmd/ovr-manifest` | TPOV 容器結構清冊（每段 code offset／size／entry stub／fixup） |
+| `cmd/borland-symbols` | Borland 除錯符號 → JSON，並把 segment 對回 overlay module |
+
+**raw overlay 不能直接丟進 IDA。** DOS `GAME.OVR` 整檔載入只會得到 **1 個
+函式**（實測），因為 TPOV code 沒有 MZ header 也沒有 entry point。entry point
+全部來自 resident 的 `CD 3F` five-byte stub（見下方 TPOV 段），必須先由
+`cmd/ovr-manifest` 匯出再當種子；另外 unit 初始化固定在 code offset 0，
+不在 stub 表內，要單獨補。忘記種子的症狀是「這段 overlay 好像沒有程式碼」。
+
+**PC-98 `GAME.EXE` 帶完整 Borland 除錯符號**（1,725 symbols／53 modules／
+1,531 types／641 members），符號位址的 segment 等於 overlay control segment、
+offset 等於 overlay-local code offset，可直接對上 IDA 函式起點。DOS
+`START.EXE` **沒有**這張表。因此：PC-98 是語意骨幹，DOS 是行為 oracle；把
+PC-98 的名字搬到 DOS 之前必須另行證明結構對應，不得因偏移相近就套用。
+
 ### IDA 非破壞性語意註記
 
 - 本節已參考 `/home/anr2/cht/大時代的故事/CLAUDE.md` 的實務經驗；來源檔只作
@@ -270,9 +317,21 @@ executable 是行為 oracle；網路資料不能取代可取得的本機實機�
   `CD 3F + handler-local u16 + flags` 五 byte entry stubs；code 後 relocation
   是嚴格遞增 `u16` fixup offsets。新分析應使用 typed resolver，且仍須同時
   證明 control segment；不得退回以 raw addend 或相同數字猜 handler。
-- 目前 `ida-pro-9.4-ver2` image 的 IDAPython 會受主機 Python 路徑影響；本專案
-  已驗證 IDC 可用。headless 稽核腳本必須把結果寫入明確檔案並檢查內容，不能
-  只依賴 `Message()`／stdout 或 exit code 0 判定成功。
+- **IDAPython 可用，但只在 `ida-pro-9.4-idapython:py312-v1` 這顆 image 上**
+  （2026-08-13 實測，取代先前「只驗證 IDC 可用」的舊斷言）。基底 image
+  （`ver2`／`ver3`）跑 IDAPython 是**零輸出、零訊息**的靜默失敗，看起來與
+  「腳本寫錯」「IDA 沒裝 Python」一模一樣；根因是缺 `libpython3.12t64`，以及
+  `idapyswitch` 把選定 interpreter 寫進執行身分的 `$HOME/.idapro`。新腳本一律
+  優先寫 IDAPython（有 `idautils`／`ida_funcs`／`ida_xref`），IDC 只當退路。
+  一律經 `tools/ida.sh` 呼叫，不要手寫 `docker run`。
+- headless 稽核腳本必須把結果寫入明確檔案並檢查內容，不能只依賴
+  `Message()`／`print`／stdout 或 exit code 判定成功。**exit code 完全不可信**：
+  同一種「沒有輸出」的失敗在不同 image 分別回 0 與 1。唯一可信訊號是輸出檔。
+  IDAPython 腳本要把 traceback 也寫進 `<輸出路徑>.error.log`，否則失敗是靜默的。
+- 被 import 的 IDA 腳本不得在 module 層執行 `main()`／`ida_pro.qexit()`：
+  一次實際事故是 `analyze_overlay.py` import `export_module.py` 時觸發它的
+  main，把 `sys.argv[1]`（overlay manifest）當輸出路徑覆寫掉。收工動作一律包在
+  `if __name__ == "__main__":` 內。
 - 來源專案仍在試驗的自動語意 dump／反向索引方法，不因看起來有用就升格為
   本專案硬規則。只有在本專案以實際誤判案例、round-trip 與持續回歸證明有效
   後，才可另行納入工具鏈；未驗證前只能是候選方法。
@@ -368,7 +427,11 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   都提交。
 - 兩個 repo 各自 commit／push，歷史保持獨立。
 - CoAB 使用：
-  `git --git-dir=/tmp/azure-bonds-git --work-tree=.`
+  `git --git-dir=workplace/azure-bonds-git --work-tree=.`
+  （2026-08-13 由 `/tmp/azure-bonds-git` 搬入 repo 底下並列入 `.gitignore`；
+  原位置一次重開機就會連同未推送的 commit 全部消失。根目錄的 `.git` 是
+  root 擁有的空目錄，不要當成本 repo 的 git 目錄，也因此 Go 建置要帶
+  `-buildvcs=false`。）
 - Engine 使用：
   `git -C golden-box-remake-engine`
 - 不丟棄使用者或不相關變更；先檢查 dirty worktree。
@@ -1977,3 +2040,25 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
   continuation 是 `COMBAT +12A2 → +12A3 → GOTO +1529 → CALL 2E10h → EXIT +1534`。
 - 權威規格：`docs/spec/558-pc98-ecl-treasure-combat-boundary.md`；第 557 輪原始
   優先排序已在原文件追加勘誤，不能只讀舊表格第一列。
+
+## 13. 第 559 輪交接：全模組全掃與函式覆蓋台帳
+
+- **先盤點、再語意**。使用者 2026-08-13 指示先徹底完成反組譯分析，避免邊做
+  邊分析。驗收口徑見 §2.5；方法與基線見
+  `docs/spec/559-full-module-re-sweep.md`。
+- 基線：DOS 37 模組／1,344 函式，PC-98 37 模組／1,481 函式，共 2,825 個，
+  **全部 `待解讀`**。這個數字是刻意的誠實起點，不要用關鍵字比對把它調低。
+  進度只透過 `docs/audit/re-function-ledger.json` 的明確記錄變動，改完重跑
+  `cmd/re-ledger`。
+- **不要重跑一次性 IDC 去回答「這個 overlay 有什麼」**。全掃結果已在
+  `workplace/re-sweep/<平台>/out/<模組>.json`：函式、chunk、xref、字串、
+  具名資料、未定義區都在裡面。要逐指令證據用 `tools/ida/dump_function.py`。
+- 重建全掃：`tools/re-sweep.sh dos|pc98 <exe> <ovr>`（約各數分鐘，JOBS 預設 4，
+  這台機器同時有別的工作，超過一半核心不要用）。
+- overlay 對應：PC-98 的 36 個原始 Turbo Pascal 單元名見 spec 559 表；29／36
+  段的 entry_count 與 DOS 相同。這只是 **module 級對應假說**，個別函式位址
+  必須各自證明，不得把 PC-98 符號名直接寫成 DOS 的事實。
+- 下一批第一項是 ECL opcode → handler 全表（PC-98 `overlay-02:373Eh` 讀
+  `ds:0A891h`、DOS `overlay-02:3377h` 讀 `ds:75FFh`，各 53 個 call）。
+  dispatcher 位置已確認，**表本身尚未完成**；只有 31 個 opcode 能由單層 `cmp`
+  對上，其餘在巢狀條件內，必須讀完控制流才能定案。不得用文字比對硬湊。
