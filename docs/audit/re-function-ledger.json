@@ -15468,6 +15468,24 @@
    "level": "exact",
    "spec": "docs/spec/672-numeric-menu-input-and-nibble-array.md",
    "note": "從 arg_0 指的 8 bytes(= 16 個 nibble)取第 arg_4 個:奇數索引取低 nibble、偶數取高 nibble——**高 nibble 在前**。奇偶判斷用 shr al,1 看進位,但商下面又用 idiv 2 重算一次,同一個除法做了兩遍"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 87072,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/673-ega-graphics-controller-reset.md",
+   "note": "把 EGA/VGA 繪圖暫存器設回預設:Graphics Controller(3CEh/3CFh)索引 0..5 全寫 0、7 寫 0Fh、8 寫 0FFh,Sequencer(3C4h/3C5h)索引 2 寫 0Fh(四平面全開)。索引 6(Miscellaneous)被跳過——模式本身由別處設定,這裡只清理繪圖行為。⚠ DOS 版走 EGA/VGA 平面圖形,與 PC-98 版的文字 VRAM + 三平面是兩套顯示模型,繪圖程式碼不可能共用"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 83593,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/673-ega-graphics-controller-reset.md",
+   "note": "釋放主記錄與附帶緩衝:size := byte(p^[8]) × word(p^[11h])(記錄自己記著「幾筆 × 每筆多大」);p^[13h] 的 far pointer 非 nil 時先 FreeMem(@p^[13h], size),再 FreeMem(主記錄, size + 17h)(前 17h bytes 是標頭,+13h..+16h 就是那個指標),最後把呼叫端指標清成 nil。兩塊用同一個 size。用的是 Turbo Pascal 的 FreeMem,不是 spec 655 那套自製配置器"
   }
  ]
 }
