@@ -14684,6 +14684,33 @@
    "level": "exact",
    "spec": "docs/spec/649-japanese-input-buffer.md",
    "note": "把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94495,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/650-input-table-lookup-pair.md",
+   "note": "表查詢的 byte 版:表格式是「一個 byte 的筆數 + n 個 byte」,呼叫端把表放 DX、值放 BX(進來 xchg bx,dx對調),回傳 1 起算序號、找不到回 0。與 17148h(word 版)是同一種表的兩個寬度版本"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94405,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/650-input-table-lookup-pair.md",
+   "note": "把輸入緩衝轉成輸出字串:先在目標寫一個結尾 0,再逐字搬——高位元組為 0 直接搬一個 byte;否則用整個 word 查 2AE2h 得序號 i,再取 word[2AAEh + (i-1)×2] 寫兩個 byte。⚠ 兩張表平行:2AE2h 存緩衝表示法、2AAEh 存輸出用的 Shift-JIS 碼,所以緩衝裡存的不是最終碼。查表失敗(i=0)時 (i-1)×2 = -2 會讀到 2AAEh 前面兩個 byte——函式沒有檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94159,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/650-input-table-lookup-pair.md",
+   "note": "清文字屬性平面 0A200h:ax 由 byte_1ED35 重複兩次,cx := byte_1ED34 × 2(每字佔兩格),rep stosw。屬性值直接取全域,不像 17D72h/169B6h 現算"
   }
  ]
 }
