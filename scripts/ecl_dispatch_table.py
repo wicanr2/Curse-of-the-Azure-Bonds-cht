@@ -18,7 +18,7 @@ import re
 import sys
 
 # 只支援這幾種：其餘一律視為「需要人工讀」。
-CMP_RE = re.compile(r"^cmp\s+(al|ax),\s*([0-9A-Fa-f]+)h?$")
+CMP_RE = re.compile(r"^cmp\s+(al|ax),\s*([0-9A-Fa-f]+h|[0-9]+)$")
 JCC_RE = re.compile(r"^(jz|jnz|je|jne)\s+short\s+\S+$")
 JMP_RE = re.compile(r"^jmp\s+(?:short\s+)?\S+$")
 CALL_RE = re.compile(r"^call\s+(?:near ptr\s+)?(\S+)$")
@@ -29,12 +29,15 @@ EPILOGUE = ("mov sp, bp", "pop bp", "retn", "leave", "ret")
 
 
 def parse_immediate(text):
+    """IDA 的立即數：帶 `h` 後綴是十六進位，沒有後綴才是十進位（只出現在 0–9）。
+
+    ⚠ 這裡曾經有 bug：正規表示式先把 `h` 吃掉，`cmp ax, 3201h` 於是被當成
+    十進位 3201（＝0C81h）。凡是全為數字的十六進位值（10h、20h、3201h…）
+    都會被算錯，而且錯得很像對的。後綴必須留給本函式判斷。
+    """
     if text.endswith("h"):
         return int(text[:-1], 16)
-    # IDA 對純十進位可讀值不加 h，例如 `cmp al, 0`
-    if re.fullmatch(r"[0-9]+", text):
-        return int(text, 10)
-    return int(text, 16)
+    return int(text, 10)
 
 
 def load(path):

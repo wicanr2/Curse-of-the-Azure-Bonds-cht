@@ -9,14 +9,14 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 1、不阻塞 0、待解讀 1343；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 2、不阻塞 0、待解讀 1342；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | START.EXE | — | 325 | 0 | 0 | 325 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 1 | 0 | 0 | 1 | 58 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 3 | 0 | 0 | 3 | 1504 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 1 | 0 | 89 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 2 | 0 | 88 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 0 | 0 | 3 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 9 | 0 | 0 | 9 | 2107 | 334 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 0 | 0 | 17 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
@@ -53,14 +53,14 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 1、不阻塞 0、待解讀 1480；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 2、不阻塞 0、待解讀 1479；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | PC98-GAME.EXE | — | 333 | 0 | 0 | 333 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 2 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 4 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
-| overlay-02 | INTERPET | 85 | 1 | 0 | 84 | 14037 | 266 | [明細](function-index/pc98-overlay-02.md) |
+| overlay-02 | INTERPET | 85 | 2 | 0 | 83 | 14037 | 266 | [明細](function-index/pc98-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 0 | 0 | 3 | 745 | 276 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 0 | 0 | 23 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 0 | 0 | 17 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |

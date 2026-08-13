@@ -12,9 +12,12 @@
    [`docs/audit/ecl-opcode-dispatch.md`](docs/audit/ecl-opcode-dispatch.md)。
    handler 的語意仍全部 `待解讀`。
 2. **`INTERPET` 內部函式盤點**：85（PC-98）／90（DOS）個函式逐一標狀態，
-   優先處理 dispatcher 直接呼叫的那 53 個。
-3. **external `CALL` registry**：23 個靜態可達位址的 producer→consumer，
-   現在可在全掃結果上直接查 caller，不必再寫一次性腳本。
+   優先處理 dispatcher 直接呼叫的那 52 個 handler。
+3. ~~external `CALL` registry~~ **第 561 輪已完成 selector 層**：engine 認得
+   7 個 external routine（兩平台相同），CoAB corpus 只靜態使用其中 2 個
+   （`2E10h`×12、`6803h`×11＝23 個 CALL）。表在
+   [`docs/audit/ecl-external-call-registry.md`](docs/audit/ecl-external-call-registry.md)。
+   **剩下的是每個 routine 的實際效果**（7 個分支主體全部 `待解讀`）。
 4. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes，逐段判定是字串表、
    常數表或未觸及的程式碼；是資料就要接回 DAX／GEO／文字來源。
 5. 之後才回到下方 P0/P1 的玩家路徑工作。
