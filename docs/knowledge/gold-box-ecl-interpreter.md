@@ -154,6 +154,19 @@ opcode → arity 對照表，與各 handler 自己的 `READVAR(n)` 比對後 42 
 **選單取消會直接結束整個 script**（走 opcode `00h`）。
 見 [spec 595](../spec/595-ecl-target-selection-and-effect-query.md)。
 
+## 字串的兩種來源（`exact`）
+
+| 來源 | 常式 | 形式 |
+|---|---|---|
+| ECL bytecode 內嵌 | `FINDSTR`（`overlay-07:1364h`） | 長度由呼叫端給，內容是 `n` 個連續 byte，每讀一個 `ECL_PC` 前進一格 |
+| ECL 記憶體 bank | `GETSTR`（`13F7h`） | 依 bank 用各自的基底與位移，**以 0 結尾** |
+
+兩者都寫進 `DS:A8DAh` 起、stride `100h` 的槽位——與 `2Bh`／`29h` 的選項緩衝區
+共用，指令之間因此有隱含的先後依賴。
+
+`GETSTR` 對 `addr = 7C00h` 有特例：不走 bank 1 陣列，改從 `DS:9594h`（目前
+目標）的記錄取字串。見 [spec 616](../spec/616-ecl2-string-sources.md)。
+
 ## 記憶體模型（`exact`）
 
 讀寫共用同一個位址分類器（PC-98 `overlay-07:0801h`／DOS `0735h`）：
