@@ -98,15 +98,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `423F` | sub_423F | — | 133 | 56 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `42C4` | sub_42C4 | — | 66 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4313` | sub_4313 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は麻痺した。」（unk_4306，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `434D` | sub_434D | — | 78 | 33 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `434D` | sub_434D | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := ROLLDICE(2,4)+2 (2d4+2);<far 013E:008E>(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | spec/627-spell-cure-family.md |
 | `43AC` | sub_43AC | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `43DA` | sub_43DA | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `43DA` | sub_43DA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 <sub_F62>(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0 | spec/627-spell-cure-family.md |
 | `4416` | sub_4416 | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4477` | sub_4477 | — | 244 | 57 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `456C` | sub_456C | — | 81 | 34 | 0 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1414`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
 | `45F1` | sub_45F1 | — | 150 | 64 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `4687` | sub_4687 | — | 66 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數 | spec/627-spell-cure-family.md |
 | `4719` | sub_4719 | — | 96 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `477A` | sub_477A | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4779，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `47BD` | sub_47BD | — | 203 | 38 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -130,7 +130,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5A06` | sub_5A06 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5A05，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `5A34` | sub_5A34 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5A33，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `5A61` | sub_5A61 | — | 189 | 75 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `5B2B` | sub_5B2B | — | 78 | 33 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `5B2B` | sub_5B2B | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,<far 013E:008E>(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | spec/627-spell-cure-family.md |
 | `5B90` | sub_5B90 | — | 376 | 161 | 0 | 11 | ✓ | 待解讀 | — | — | — |
 | `5D17` | sub_5D17 | — | 268 | 102 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `5E32` | sub_5E32 | — | 472 | 176 | 0 | 9 | ✓ | 待解讀 | — | — | — |

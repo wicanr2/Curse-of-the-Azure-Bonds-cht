@@ -13177,6 +13177,42 @@
    "level": "exact",
    "spec": "docs/spec/626-goduel-and-charrec-size.md",
    "note": "視窗繪製:state 是 2-byte 記錄([0]=sprite 已載入、[1]=圖片已載入),依 bank0^[1CCh] 與 DS:7F27h=4 決定是否載入 'SPRIT'(sub_1794 第二參數 1、索引 arg_8);圖片側 bank1^[5C2h]=0FFh 走 'PIC'(第二參數 0、索引 arg_6),否則改走 sub_64C。資源名內嵌在 code 段 0681h/0687h/1B7Dh。DS:0A2A8h 在函式頭尾成對存回"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 17229,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := ROLLDICE(2,4)+2 (2d4+2);<far 013E:008E>(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 23339,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,<far 013E:008E>(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 17370,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := <far 013E:0052>(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 <sub_F62>(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 18122,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數"
   }
  ]
 }
