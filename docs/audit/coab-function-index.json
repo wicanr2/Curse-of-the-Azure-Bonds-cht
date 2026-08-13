@@ -17047,7 +17047,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/string-pairs.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "spec/584-checkfx-timing-table.md"
    ]
   },
   {
@@ -17143,10 +17144,14 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/584-checkfx-timing-table.md",
+   "note": "CHECKFX(timing, subject):純分派表,24 個 timing(00h..17h)各對應一組 effect id,逐一交給 sub_269 做 effect 鏈遍歷。2,287 bytes 裡沒有任何算術或記憶體存取——161 個 mov al,N 對上 161 個 call,也對上解析出的 161 個 effect id,三個數字相等。timing 00h 什麼都不做。完整表見 docs/audit/checkfx-timing-table.md",
    "citations": [
     "audit/function-triage.md",
-    "spec/571-trytohit-attack-resolution.md"
+    "spec/571-trytohit-attack-resolution.md",
+    "spec/584-checkfx-timing-table.md"
    ]
   },
   {
@@ -39045,7 +39050,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/string-pairs.md",
-    "knowledge/gold-box-ecl-interpreter.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "spec/584-checkfx-timing-table.md"
    ]
   },
   {
@@ -39145,10 +39151,14 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/584-checkfx-timing-table.md",
+   "note": "CHECKFX(timing, subject):純分派表,24 個 timing(00h..17h)各對應一組 effect id,逐一交給 sub_269 做 effect 鏈遍歷。2,287 bytes 裡沒有任何算術或記憶體存取——161 個 mov al,N 對上 161 個 call,也對上解析出的 161 個 effect id,三個數字相等。timing 00h 什麼都不做。完整表見 docs/audit/checkfx-timing-table.md",
    "citations": [
     "audit/function-triage.md",
-    "spec/571-trytohit-attack-resolution.md"
+    "spec/571-trytohit-attack-resolution.md",
+    "spec/584-checkfx-timing-table.md"
    ]
   },
   {
@@ -39713,6 +39723,7 @@
    "spec": "docs/spec/581-putdamage-pipeline.md",
    "note": "PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 \u003e 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/581-putdamage-pipeline.md"
    ]
   },
@@ -42856,9 +42867,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 20,
+   "Read": 21,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 10,
    "CodeBytes": 9183,
    "Undefined": 376,
@@ -43411,9 +43422,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 11,
    "CodeBytes": 9201,
    "Undefined": 458,

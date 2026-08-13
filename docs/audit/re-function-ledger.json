@@ -11881,6 +11881,24 @@
    "level": "strong inference",
    "spec": "docs/spec/581-putdamage-pipeline.md",
    "note": "與 pc98 overlay-23:2325h 助憶碼序列完全相同（87 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：PUTEFFECT:effect id 存進全域 DS:A02Dh,CHECKFX(9) 可把它改成 0 攔截;id 為 0 或(arg_4 非 0 且 arg_6=1)時只顯示「には影響がなかった。」/is Unaffected;否則先查目標身上是否已有同 id 且節點 +1 的 word 參數 > 0,有就先 SPELLOFF 移除(同 id 取代而非疊加),再 ADDEFFECT 掛上新節點,訊息非空才顯示。與 PUTDAMAGE 的 DS:A02Eh(傷害值)、DS:A02Fh(屬性位元)是同一組全域 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 1022,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/584-checkfx-timing-table.md",
+   "note": "CHECKFX(timing, subject):純分派表,24 個 timing(00h..17h)各對應一組 effect id,逐一交給 sub_269 做 effect 鏈遍歷。2,287 bytes 裡沒有任何算術或記憶體存取——161 個 mov al,N 對上 161 個 call,也對上解析出的 161 個 effect id,三個數字相等。timing 00h 什麼都不做。完整表見 docs/audit/checkfx-timing-table.md"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 1022,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/584-checkfx-timing-table.md",
+   "note": "CHECKFX(timing, subject):純分派表,24 個 timing(00h..17h)各對應一組 effect id,逐一交給 sub_269 做 effect 鏈遍歷。2,287 bytes 裡沒有任何算術或記憶體存取——161 個 mov al,N 對上 161 個 call,也對上解析出的 161 個 effect id,三個數字相等。timing 00h 什麼都不做。完整表見 docs/audit/checkfx-timing-table.md"
   }
  ]
 }
