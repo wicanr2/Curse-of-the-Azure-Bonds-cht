@@ -96,7 +96,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3D27` | sub_3D27 | — | 433 | 158 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3EE2` | sub_3EE2 | — | 65 | 32 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3F23` | sub_3F23 | — | 64 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `3F6F` | sub_3F6F | — | 133 | 56 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `3F6F` | sub_3F6F | — | 133 | 56 | 0 | 4 | ✓ | 已解讀 | strong inference | docs/spec/631-strength-spell-exceptional.md<br>與 pc98 overlay-22:423Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 222Ah 同一族的力量法術入口:if <far 013E:007F>(t,0,15h,@var_1) <> 0 則備妥「は強くなった。」呼叫 <far 014A:0084>(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),<far 013E:0057>(t,92h,n,var_1,1),最後 <far 013E:0098>(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3FF4` | sub_3FF4 | — | 66 | 37 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:42C4h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `4043` | sub_4043 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `407A` | sub_407A | — | 78 | 33 | 0 | 4 | ✓ | 待解讀 | — | — | — |
