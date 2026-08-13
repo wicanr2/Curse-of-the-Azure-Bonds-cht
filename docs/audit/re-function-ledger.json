@@ -617,15 +617,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 3201,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 21h／37h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 3711,
    "state": "待解讀",
    "level": "",
@@ -11962,6 +11953,15 @@
    "level": "strong inference",
    "spec": "docs/spec/586-ecl-handlers-31-33-34.md",
    "note": "與 pc98 overlay-02:2E2Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 34h 的 handler:READVAR(2) 後把兩個 ADDRESSVALUE 結果原樣交給 far 0105:002A,自己不做判斷 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3201,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "ECL opcode 21h 與 37h 共用的 handler(真實範圍 0C81h..0E0Dh 共 396 bytes,IDA 標 53)。靠 cmp ds:A891h, 21h 再讀一次 dispatcher 的 opcode 全域來分辨自己被哪個 opcode 呼叫。READVAR(3) 後三個 operand 存 [bp-3..bp-1];FFh 與 7Fh 是哨兵值。21h 半設 DS:789Bh、37h 半設 DS:789Ah,兩個都為真才執行結尾收尾。IDA 漏認的兩段(0CB6h/0D22h)正好是 opcode 二次判讀與 37h 分支開頭"
   }
  ]
 }
