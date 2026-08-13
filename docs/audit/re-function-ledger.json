@@ -14882,6 +14882,42 @@
    "level": "exact",
    "spec": "docs/spec/656-heap-linked-list-ops.md",
    "note": "呼叫 <186FFh>(最大可用塊)後把 AX/BX/DX 分別回填到 es:[di]、[di+2]、[di+6]——+4 沒有寫,回填的是不連續的三格"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100579,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/657-dos-alloc-and-device-command.md",
+   "note": "向 DOS 要記憶體(int 21h AH=48h,BX 段落數):失敗時把 AX 直接覆寫成 0——DOS 回傳的錯誤碼被丟掉,呼叫端只知道成功與否;結果存 es:[di+2],再用 or al,ah 設 ZF 供判斷"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100932,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/657-dos-alloc-and-device-command.md",
+   "note": "byte_24E73h = 1 是總開關,直接跳過;值沒變也不做。否則先呼叫 18A8Eh(送出「舊值 + 1」)、<sub_19259>(320h)、再把 byte_241C9h := 0、byte_241C8h := 新值,送 <sub_18BDB>(DS:@byte_241C8h, 7Eh)。241C8h/241C9h 是相鄰兩 byte,整組當一個命令送。「先送 1 再送 0、中間插延遲」是對硬體送命令的典型形狀"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101006,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/657-dos-alloc-and-device-command.md",
+   "note": "byte_241C9h := 1 後送 <sub_18BDB>(DS:@byte_241C8h, 7Eh)。不動 byte_241C8h,所以送出的是「上一次的值 + 1」"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101690,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/657-dos-alloc-and-device-command.md",
+   "note": "不是函式起點:以 jb 開頭、沒有 prologue,而前一支在 18C94h 就以 retf 10h 結束,中間沒有被認出的函式。內容是 ASCIIZ 轉 Pascal 短字串(repne scasb 求長度後 std + rep movsb 就地右移一格再 stosb 補長度);⚠ cx 上限 100h,字串超過 256 bytes 沒有結尾 0 時 not cl 會得到 0,長度變成 0"
   }
  ]
 }
