@@ -25,6 +25,11 @@ PC-98 `GAME.EXE` 沒有可被 FLIRT 辨識的 RTL 名稱（333 個函式只有 `
 
 依既有規則它**不標不阻塞**，維持 `待解讀`（見 spec 566）。
 
+**種子來源也已讀出**（第 572 輪）：DOS `@Randomize`（`START.EXE:1B6CCh`）以
+`INT 21h AH=2Ch` 取系統時間，把 `CX:DX` 存進 `dword_20998`——**那就是 Turbo
+Pascal 的 `RandSeed`**。要重現原版隨機序列，需要的是這個種子加上 `Random` 的
+LCG，兩邊都已定位。
+
 ## 為什麼這是硬證據
 
 同一段 bytes 在 8086 上就是同一段行為。它不依賴名稱相似、位址推算或

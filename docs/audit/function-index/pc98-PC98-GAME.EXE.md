@@ -184,11 +184,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
 | `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2) | — |
-| `19293` | sub_19293 | — | 13 | 7 | 3 | 1 |  | 待解讀 | — | — | — |
+| `19293` | sub_19293 | — | 13 | 7 | 3 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 鍵盤 BIOS:INT 18h AH=01h(鍵盤狀態偵測),BH 非零時回傳 1 否則 0 | — |
 | `192A0` | sub_192A0 | — | 50 | 22 | 4 | 2 |  | 待解讀 | — | — | — |
 | `192D2` | sub_192D2 | — | 87 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
 | `19386` | sub_19386 | — | 52 | 25 | 1 | 1 |  | 待解讀 | — | — | — |
-| `193BA` | sub_193BA | — | 14 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
+| `193BA` | sub_193BA | — | 14 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 CS:word_193CD 的 handle 呼叫 INT 21h AH=3Eh 關閉檔案,前後保存 AX/BX | — |
 | `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
 | `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
@@ -210,7 +210,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
 | `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 待解讀 | — | — | — |
-| `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 待解讀 | — | — | — |
+| `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳 | — |
 | `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
 | `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 待解讀 | — | — | — |
@@ -236,8 +236,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A038` | sub_1A038 | — | 19 | 11 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完） | — |
 | `1A04B` | sub_1A04B | — | 88 | 30 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A0A3` | sub_1A0A3 | — | 11 | 4 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 word_23AE0 − word_23ADC 的差值呼叫 sub_1A10C | — |
-| `1A0FF` | sub_1A0FF | — | 13 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1A10C` | sub_1A10C | — | 13 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1A0FF` | sub_1A0FF | — | 13 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併:AX := (AX >> 4) or (ror(DX,4) and 0F000h) | — |
+| `1A10C` | sub_1A10C | — | 13 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 拆解:rol(AX,4) 後 AX 取高 12 位、DX 取低 4 位 | — |
 | `1A1E9` | sub_1A1E9 | — | 177 | 64 | 2 | 9 |  | 待解讀 | — | — | — |
 | `1A29A` | sub_1A29A | — | 76 | 30 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1A2E6` | sub_1A2E6 | — | 54 | 20 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -259,9 +259,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A650` | sub_1A650 | — | 157 | 72 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A72A`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A726` | sub_1A726 | — | 194 | 83 | 3 | 6 |  | 待解讀 | — | — | — |
-| `1A7E8` | sub_1A7E8 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1A7E8` | sub_1A7E8 | — | 14 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 1A82Ah 輸出;與 DOS START.EXE:1A6D4h 同義 | — |
 | `1A7F6` | sub_1A7F6 | — | 12 | 5 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1A806`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
-| `1A802` | sub_1A802 | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A802` | sub_1A802 | — | 14 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出一位十進位數字:al := ax ÷ cl,加 30h 後呼叫 1A82Ah,餘數移回 al;與 DOS START.EXE:1A6EEh 同義 | — |
 | `1A810` | sub_1A810 | — | 7 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1A817` | sub_1A817 | — | 11 | 6 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A822` | sub_1A822 | — | 8 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add al, 7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
