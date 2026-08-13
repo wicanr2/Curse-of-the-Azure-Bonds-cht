@@ -77,15 +77,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 580,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 08h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 752,
    "state": "待解讀",
    "level": "",
@@ -172,15 +163,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 3697,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 35h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -410,15 +392,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 602,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 08h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 774,
    "state": "待解讀",
    "level": "",
@@ -460,15 +433,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 3805,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 35h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -11998,6 +11962,51 @@
    "level": "exact",
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 602,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 08h(RANDOM):READVAR(2);上界 n 先加一(除非已是 FFh)才呼叫 RTL 的 @Random,所以 ECL 的 RANDOM(6) 得到 0..6 含上界;結果經兩個 RTL 常式轉成 byte 後 STOREVALUE 到 operand 2 指定的位址"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3805,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 35h(索引寫入):READVAR(3);第一個 operand 是值,第二個(ADDFNC)與第三個相加才是目的位址,即 ECL[base+index] := value"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 580,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "與 pc98 overlay-02:025Ah 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 08h(RANDOM):READVAR(2);上界 n 先加一(除非已是 FFh)才呼叫 RTL 的 @Random,所以 ECL 的 RANDOM(6) 得到 0..6 含上界;結果經兩個 RTL 常式轉成 byte 後 STOREVALUE 到 operand 2 指定的位址 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 3697,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "與 pc98 overlay-02:0EDDh 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 35h(索引寫入):READVAR(3);第一個 operand 是值,第二個(ADDFNC)與第三個相加才是目的位址,即 ECL[base+index] := value ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 6737,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/593-ecl-comparison-flags.md",
+   "note": "與 pc98 overlay-07:19FEh 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
