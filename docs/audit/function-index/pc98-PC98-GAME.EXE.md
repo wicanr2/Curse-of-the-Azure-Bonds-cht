@@ -95,9 +95,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 **clc**(進位清除)表示前導,否則 stc。方向由呼叫端 16966h 確認——那裡 call 之後是 jb(進位置起才跳)而跳去的是半形路徑。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |
 | `169ED` | sub_169ED | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>SJIS→JIS 換算,與 17186h、17DA9h 三者逐位元組完全相同 | — |
 | `16E70` | sub_16E70 | — | 94 | 48 | 2 | 7 |  | 待解讀 | — | — | — |
-| `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 待解讀 | — | — | — |
-| `16F2B` | sub_16F2B | — | 86 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
-| `16F81` | sub_16F81 | — | 78 | 45 | 1 | 4 |  | 待解讀 | — | — | — |
+| `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>從輸入緩衝(DS:28A4h,每字一 word)尾端往回掃,跳過為 0 的格子,回傳最後一個非 0 格的 1 起算序號;全為 0 回 0。掃描上限是 byte_1ED34(容量) | — |
+| `16F2B` | sub_16F2B | — | 86 | 33 | 1 | 3 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>插入一個字,可能與前一字合成:容量滿了就不收;<sub_1711F>(si,2AAAh) 成立且已有字且前一字的高位元組為 0 時,再查 <17148h>(前一字, 2AE2h),成立就把新 byte 寫進**前一字的高位元組**——字數不變,兩個 byte 併成一個 Shift-JIS 碼(日文把濁點併進前一個假名的做法);否則才寫新格並把字數加一。注意 es:[dword_1EB2D]^ 兩條路徑都加一,所以它數的是 byte 數不是字數 | — |
+| `16F81` | sub_16F81 | — | 78 | 45 | 1 | 4 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例 | — |
 | `16FCF` | sub_16FCF | — | 29 | 17 | 1 | 0 |  | 待解讀 | — | — | — |
 | `16FEC` | sub_16FEC | — | 110 | 63 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1705A` | sub_1705A | — | 107 | 61 | 1 | 3 |  | 待解讀 | — | — | — |

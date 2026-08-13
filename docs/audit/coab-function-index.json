@@ -22043,7 +22043,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/649-japanese-input-buffer.md",
+   "note": "從輸入緩衝(DS:28A4h,每字一 word)尾端往回掃,跳過為 0 的格子,回傳最後一個非 0 格的 1 起算序號;全為 0 回 0。掃描上限是 byte_1ED34(容量)"
   },
   {
    "platform": "pc98",
@@ -22055,7 +22058,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/649-japanese-input-buffer.md",
+   "note": "插入一個字,可能與前一字合成:容量滿了就不收;\u003csub_1711F\u003e(si,2AAAh) 成立且已有字且前一字的高位元組為 0 時,再查 \u003c17148h\u003e(前一字, 2AE2h),成立就把新 byte 寫進**前一字的高位元組**——字數不變,兩個 byte 併成一個 Shift-JIS 碼(日文把濁點併進前一個假名的做法);否則才寫新格並把字數加一。注意 es:[dword_1EB2D]^ 兩條路徑都加一,所以它數的是 byte 數不是字數"
   },
   {
    "platform": "pc98",
@@ -22067,7 +22073,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/649-japanese-input-buffer.md",
+   "note": "把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例"
   },
   {
    "platform": "pc98",
@@ -44704,9 +44713,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 137,
+   "Read": 140,
    "NotBlocking": 29,
-   "Todo": 146,
+   "Todo": 143,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
