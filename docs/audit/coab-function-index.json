@@ -18473,6 +18473,7 @@
    "spec": "docs/spec/684-biased-modifier-display.md",
    "note": "顯示一個偏移 60 的修正值:v := |arg_4^[19Ah] - 3Ch| 轉成字串,而負號**由獨立的一次比較**決定(arg_4^[19Ah] \u003e 3Ch 才加 '-')。所以顯示值 = 60 - 儲存值,儲存得越大顯示越負——是「數字越小越好」的欄位用偏移量存的做法。⚠ 只看 sub + neg 那段會得到相反結論",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/684-biased-modifier-display.md",
     "spec/689-dos-party-roster-render.md"
    ]
@@ -18493,6 +18494,7 @@
    "spec": "docs/spec/684-biased-modifier-display.md",
    "note": "與 PC-98 0BD5h(spec 643)結構完全相同的 HP 顯示:arg_6^[1A4h] \u003c arg_6^[78h](上限)時取一個參數、否則取另一個,arg_0 非 0 再覆蓋成第三個。⚠ 三個常數裡「受傷」不同:DOS 是 0Eh、PC-98 是 6(滿血 0Ah 與覆蓋 0Dh 兩平台相同)。兩邊的顏色編號本來就不是同一套,相同的兩個是巧合",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/684-biased-modifier-display.md",
     "spec/689-dos-party-roster-render.md"
    ]
@@ -18823,6 +18825,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/689-dos-party-roster-render.md"
    ]
   },
@@ -19052,9 +19055,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/690-status-line-and-string-concat-idiom.md",
+   "note": "狀態列(entry#38)。DS:4FBAh=3 直接返回。組字串:bank0^[1F6h]=0 時先放 Str(DS:720Fh)+','+Str(DS:7210h)+' ';接方向名(DS:2540h + DS:7211h*3,一格 3 bytes 的 Pascal 短字串,方向編碼 0/2/4/6);接 h:m,其中 h=bank0^[192h]、m=bank0^[190h]*10+bank0^[18Eh],兩者長度 \u003c 2 時前面補 '0'(比的是長度位元組);DS:4FC1h 非零加 '*';DS:4FBAh=2 加 ' camping',否則 (bank1^[594h] and 1) 非零加 ' search'。緩衝上限 28h=40 字元,畫在 \u003c0542:0352h\u003e(11h, 0Fh, 0Ah, 0, line)。⚠ 三支 resident 字串程序 0A54:0634h(起頭)/06C1h(續接)/064Eh(收尾複製)組成一條鏈,中間結果全程留在堆疊上——這就是 spec 687「0A54:064Eh 有時只被推入 3 個 word」的成因,是 Borland 對 s := a+b+c 的標準產碼,不是特例。數參數時連續 push 的數量不等於被呼叫者的參數個數",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/690-status-line-and-string-concat-idiom.md"
    ]
   },
   {
@@ -45191,9 +45198,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 37,
+   "Todo": 36,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,

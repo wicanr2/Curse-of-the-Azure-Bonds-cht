@@ -16401,6 +16401,16 @@
    "spec": "docs/spec/689-dos-party-roster-render.md",
    "bounds": "prologue",
    "note": "隊伍名單繪製(entry#2,參數是一個 far 指標=選中的角色)。DS:4FBAh=3 時什麼都不畫;起始欄 x 為 1 或 11h(依 4FBAh 是否為 0);畫表頭 'Name'(CS:0789h)與 'AC  HP'(CS:078Eh),然後從 DS:650Ah 走角色鏈(next 在 +189h,終止看兩個 word 同時為零),每人一列:選中者用顏色 0Fh 直接畫、其餘走 18F3h,再畫 AC 欄(0939h)與 HP 欄(09C1h,兩者見 spec 684)。⚠ 那兩段看似分類的範圍比較鏈其實是**右對齊補位**:k = 3 − 顯示字元數,欄位 = 20h+k / 24h+k。把 +19Ah(AC,顯示值=60−儲存值)與 +1A4h(目前 HP)的公式代進去,兩張表都精確等於位數。拿分桶邊界去推狀態語意會整段推錯"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 11178,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/690-status-line-and-string-concat-idiom.md",
+   "bounds": "prologue",
+   "note": "狀態列(entry#38)。DS:4FBAh=3 直接返回。組字串:bank0^[1F6h]=0 時先放 Str(DS:720Fh)+','+Str(DS:7210h)+' ';接方向名(DS:2540h + DS:7211h*3,一格 3 bytes 的 Pascal 短字串,方向編碼 0/2/4/6);接 h:m,其中 h=bank0^[192h]、m=bank0^[190h]*10+bank0^[18Eh],兩者長度 < 2 時前面補 '0'(比的是長度位元組);DS:4FC1h 非零加 '*';DS:4FBAh=2 加 ' camping',否則 (bank1^[594h] and 1) 非零加 ' search'。緩衝上限 28h=40 字元,畫在 <0542:0352h>(11h, 0Fh, 0Ah, 0, line)。⚠ 三支 resident 字串程序 0A54:0634h(起頭)/06C1h(續接)/064Eh(收尾複製)組成一條鏈,中間結果全程留在堆疊上——這就是 spec 687「0A54:064Eh 有時只被推入 3 個 word」的成因,是 Borland 對 s := a+b+c 的標準產碼,不是特例。數參數時連續 push 的數量不等於被呼叫者的參數個數"
   }
  ]
 }
