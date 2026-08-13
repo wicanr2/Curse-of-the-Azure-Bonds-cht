@@ -16,5 +16,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0710` | sub_710 | SPECIALCODE | 123 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `078B` | sub_78B | BUILDVIEW | 1977 | 825 | 0 | 6 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0F8F` | sub_F8F | LOADWALLSET | 666 | 268 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1253` | sub_1253 | LOAD3DMAP | 270 | 105 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |
+| `1253` | sub_1253 | LOAD3DMAP | 270 | 105 | 0 | 1 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |
 | `1361` | sub_1361 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/524-dos-overlay30-geo-loader-source.md |
