@@ -428,15 +428,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 5820,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 22h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 6176,
    "state": "待解讀",
    "level": "",
@@ -12007,6 +11998,15 @@
    "level": "strong inference",
    "spec": "docs/spec/596-ecl-party-item-sweep.md",
    "note": "與 pc98 overlay-02:1294h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Ch:無 operand;清掉 DS:789Ch/BDFBh、設 DS:A895h:=8、FillChar(DS:A00Ah,1Ch,0),然後 while 迴圈沿 DS:A026h 的鏈逐一 Dispose(67h)清空。節點 103 bytes、next 在 +52h,與角色 +14Eh 那條物品鏈是同一種節點 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 5820,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/597-ecl-opcode-22-dead-output.md",
+   "note": "ECL opcode 22h:READVAR(2);沿角色鏈找有沒有成員的 +75h 等於 4 或 0Ah,有就把第一個輸出設為 1(迴圈不提早結束)。⚠ 迴圈設定的是 var_5 與 var_7,但寫出去的是 var_5 與 var_6——var_6 從未被設定,所以第二個輸出永遠是 0,var_7 則被設定卻從未被讀。這是原版的行為,remake「修好」它會產生原版沒有的值"
   }
  ]
 }
