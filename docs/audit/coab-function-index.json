@@ -3965,12 +3965,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/523-dos-overlay07-vector26-entry.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/523-dos-overlay07-vector26-entry.md"
    ]
   },
   {
@@ -3985,7 +3985,10 @@
    "calls": 1,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 00h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md"
    ]
@@ -4002,7 +4005,10 @@
    "calls": 2,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 01h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -4018,7 +4024,10 @@
    "calls": 2,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 02h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -4034,7 +4043,10 @@
    "calls": 3,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 03h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -4049,7 +4061,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4062,7 +4079,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 08h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4075,7 +4097,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 09h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4088,7 +4115,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4101,7 +4133,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4114,7 +4151,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4218,7 +4260,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4232,13 +4279,15 @@
    "calls": 8,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/518-dos-start-ecl-call-address-space-audit.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
   {
@@ -4252,7 +4301,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4317,7 +4371,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 10h／11h／12h／13h／1Ah／1Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4330,7 +4389,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 14h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4343,7 +4407,12 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 15h／25h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4382,7 +4451,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4408,7 +4482,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4421,7 +4500,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 23h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4460,7 +4544,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4473,7 +4562,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4486,7 +4580,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4512,7 +4611,12 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4578,7 +4682,10 @@
    "calls": 1,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 16h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md"
    ]
   },
@@ -4606,7 +4713,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 17h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4632,7 +4744,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 18h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4814,7 +4931,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 19h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4866,7 +4988,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4879,7 +5006,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 20h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4892,7 +5024,12 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4905,7 +5042,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4918,7 +5060,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4931,7 +5078,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 22h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4944,7 +5096,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 21h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4957,7 +5114,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4970,7 +5132,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 27h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4983,7 +5150,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 24h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4996,7 +5168,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5009,7 +5186,12 @@
    "callers": 1,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5035,7 +5217,12 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 26h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5048,7 +5235,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5061,7 +5253,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5074,7 +5271,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5087,7 +5289,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 28h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5100,8 +5307,12 @@
    "callers": 1,
    "calls": 53,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode dispatcher；由 ds:75FFh 讀 opcode，53 個 opcode 對應 44 個 handler",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md"
    ]
@@ -5117,7 +5328,10 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21436,12 +21650,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/523-dos-overlay07-vector26-entry.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/523-dos-overlay07-vector26-entry.md"
    ]
   },
   {
@@ -21456,7 +21670,10 @@
    "calls": 2,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 00h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md"
    ]
@@ -21473,7 +21690,10 @@
    "calls": 0,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 01h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -21489,7 +21709,10 @@
    "calls": 0,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 02h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -21505,7 +21728,10 @@
    "calls": 2,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 03h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/559-full-module-re-sweep.md"
    ]
   },
@@ -21520,7 +21746,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21533,7 +21764,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 08h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21546,7 +21782,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 09h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21559,7 +21800,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21572,7 +21818,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21585,7 +21836,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21747,7 +22003,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21760,7 +22021,12 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21773,7 +22039,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 0Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21838,7 +22109,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 10h／11h／12h／13h／1Ah／1Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21851,7 +22127,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 14h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21864,7 +22145,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 15h／25h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21903,7 +22189,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21916,7 +22207,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21929,7 +22225,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 23h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21968,7 +22269,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21981,7 +22287,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -21994,7 +22305,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22020,7 +22336,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22098,7 +22419,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 16h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22111,7 +22437,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 17h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22203,7 +22534,10 @@
    "calls": 9,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 18h 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
     "spec/558-pc98-ecl-treasure-combat-boundary.md"
@@ -22220,7 +22554,12 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 19h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22290,7 +22629,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22303,7 +22647,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 20h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22316,7 +22665,12 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Ah 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22329,7 +22683,12 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22342,7 +22701,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 1Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22355,7 +22719,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 22h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22368,7 +22737,12 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 21h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22382,7 +22756,10 @@
    "calls": 5,
    "is_overlay_entry": true,
    "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
     "spec/525-pc98-tempsearch-display-state.md"
@@ -22399,7 +22776,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 27h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22412,7 +22794,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 24h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22425,7 +22812,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Bh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22438,7 +22830,12 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 2Dh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22480,7 +22877,12 @@
    "callers": 1,
    "calls": 14,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 26h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22493,7 +22895,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Ch 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22506,7 +22913,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Eh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22519,7 +22931,12 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 3Fh 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22532,7 +22949,12 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode 28h 的 handler（binding 為 exact，handler 語意尚未解讀）",
+   "citations": [
+    "audit/ecl-opcode-dispatch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -22545,8 +22967,12 @@
    "callers": 1,
    "calls": 53,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
+   "note": "ECL opcode dispatcher；由 ds:0A891h 讀 opcode，53 個 opcode 對應 44 個 handler",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md"
    ]
@@ -22564,6 +22990,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/ecl-opcode-dispatch.md",
     "spec/525-pc98-tempsearch-display-state.md"
    ]
   },
@@ -36908,9 +37335,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 0,
+   "Read": 1,
    "NotBlocking": 0,
-   "Todo": 90,
+   "Todo": 89,
    "CodeBytes": 14062,
    "Undefined": 292,
    "SegmentBytes": 14880,
@@ -37426,9 +37853,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 85,
-   "Read": 0,
+   "Read": 1,
    "NotBlocking": 0,
-   "Todo": 85,
+   "Todo": 84,
    "CodeBytes": 14037,
    "Undefined": 266,
    "SegmentBytes": 15595,
