@@ -16995,6 +16995,26 @@
    "spec": "docs/spec/708-slay-living-and-missile-count.md",
    "note": "⚠ **數量減半但傷害用沒減半的值**:<overlay-24 entry#36>(DS:6F97h) 被呼叫兩次,第一次結果存 bp−6(n)、第二次 +1 後 cwd/idiv 2 存 bp−5(half,下限夾 1)。half 只餵給 <sub_175Bh>(a, b, DS:7559h, DS:755Ah, 2, half),而傷害是 ROLLDAMAGEDICE(n, 4) + n 用 n。兩個區域變數位移相鄰(bp−6/bp−5),反組譯裡極容易看成同一個;改寫時只留一個變數兩邊都會錯",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 7225,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/709-target-array.md",
+   "note": "把不符合的目標從清單裡拿掉。⚠ **DS:7431h 是 far 指標陣列(一格 4 bytes、1-based),DS:7434h 是筆數,而一路被當成「目標」的 DS:7435h/7437h 就是它的第 1 格**(7431h+1×4=7435h)。所以 `if DS:7434h <> 0` 其實是「目標清單非空」。迴圈:清掉 := (p^[197h] <> arg_4) 或 (相符 且 DS:6F97h=1 且 DS:4FBAh=5 且 <overlay-24 entry#32>(p,1) > 0)——**類別相符的反而可能被清掉**;清掉是把該格寫成 NIL,**筆數不變**,下游必須自己檢查 NIL。最後 <sub_F06h>(DS:6F97h,0,0,0,0,緩衝)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 9421,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/709-target-array.md",
+   "note": "狀態 1 時直接把目標陣列第 1 格清成 NIL(不動筆數);否則若 <overlay-24 entry#27>(p, 37h, @node) 找到,先在 p^[1A4h]=0 時補成 1(同 spec 707 復活那支的模式),再 <sub_F06h>(DS:6F97h, 0FFh, 1, 0, 0, 'is affected')、<overlay-23 entry#2>(4Eh, p, 0, 1)、<overlay-23 entry#11>(p, 0Fh, 0Ah, 0FFh, 1)。效果編號 37h 在復活流程裡也被解除,是死亡相關的效果。⚠ sub_F06h 的第二、三個參數這次是 0FFh 與 1,與先前看過的組合都不同,那幾個欄位是模式選擇不是固定值",
+   "bounds": "prologue"
   }
  ]
 }

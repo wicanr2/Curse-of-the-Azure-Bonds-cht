@@ -16127,7 +16127,13 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/709-target-array.md",
+   "note": "把不符合的目標從清單裡拿掉。⚠ **DS:7431h 是 far 指標陣列(一格 4 bytes、1-based),DS:7434h 是筆數,而一路被當成「目標」的 DS:7435h/7437h 就是它的第 1 格**(7431h+1×4=7435h)。所以 `if DS:7434h \u003c\u003e 0` 其實是「目標清單非空」。迴圈:清掉 := (p^[197h] \u003c\u003e arg_4) 或 (相符 且 DS:6F97h=1 且 DS:4FBAh=5 且 \u003coverlay-24 entry#32\u003e(p,1) \u003e 0)——**類別相符的反而可能被清掉**;清掉是把該格寫成 NIL,**筆數不變**,下游必須自己檢查 NIL。最後 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,緩衝)",
+   "citations": [
+    "spec/709-target-array.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16478,7 +16484,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/709-target-array.md",
+   "note": "狀態 1 時直接把目標陣列第 1 格清成 NIL(不動筆數);否則若 \u003coverlay-24 entry#27\u003e(p, 37h, @node) 找到,先在 p^[1A4h]=0 時補成 1(同 spec 707 復活那支的模式),再 \u003csub_F06h\u003e(DS:6F97h, 0FFh, 1, 0, 0, 'is affected')、\u003coverlay-23 entry#2\u003e(4Eh, p, 0, 1)、\u003coverlay-23 entry#11\u003e(p, 0Fh, 0Ah, 0FFh, 1)。效果編號 37h 在復活流程裡也被解除,是死亡相關的效果。⚠ sub_F06h 的第二、三個參數這次是 0FFh 與 1,與先前看過的組合都不同,那幾個欄位是模式選擇不是固定值",
+   "citations": [
+    "spec/709-target-array.md"
+   ]
   },
   {
    "platform": "dos",
@@ -40152,7 +40164,8 @@
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
     "audit/spell-status-message-strings.md",
-    "spec/703-item-effect-slots-and-uninitialised-args.md"
+    "spec/703-item-effect-slots-and-uninitialised-args.md",
+    "spec/709-target-array.md"
    ]
   },
   {
@@ -45603,9 +45616,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 73,
+   "Read": 75,
    "NotBlocking": 0,
-   "Todo": 40,
+   "Todo": 38,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
