@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0037` | sub_37 | — | 860 | 364 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03A0` | sub_3A0 | GIVEITEM | 269 | 96 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `04BE` | sub_4BE | — | 440 | 166 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `06A4` | nullsub_1 | — | 1 | 1 | 1 | 0 |  | 待解讀 | — | — | — |
-| `06E0` | sub_6E0 | — | 22 | 10 | 1 | 0 |  | 待解讀 | — | — | — |
+| `06A4` | nullsub_1 | — | 1 | 1 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
+| `06E0` | sub_6E0 | — | 22 | 10 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | — |
 | `0778` | sub_778 | SHOPMAINMENU | 727 | 307 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0A4F` | sub_A4F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

@@ -40,6 +40,9 @@ EPILOGUE_TAIL = re.compile(r"^ret[fn]?( [0-9A-Fa-f]+h?)?$")
 MOV_IMM = re.compile(r"^mov (al|ax), ([0-9A-Fa-f]+h|[0-9]+)$")
 MOV_LOAD = re.compile(r"^mov (al|ax), ds:([0-9A-Fa-f]+h)$")
 MOV_STORE = re.compile(r"^mov ds:([0-9A-Fa-f]+h), (al|ax)$")
+# IDA 對 resident 的具名資料會印成 `mov al, byte_24E6A` 而不是 `ds:XXXX`。
+NAMED_LOAD = re.compile(r"^mov (al|ax), ([A-Za-z_][A-Za-z0-9_]*)$")
+NAMED_STORE = re.compile(r"^mov ([A-Za-z_][A-Za-z0-9_]*), (al|ax)$")
 MOV_ARG = re.compile(r"^mov (al|ax), \[bp\+arg_[0-9A-Fa-f]+\]$")
 MOV_VAR_SET = re.compile(r"^mov \[bp\+var_[0-9A-Fa-f]+\], (al|ax)$")
 MOV_VAR_GET = re.compile(r"^mov (al|ax), \[bp\+var_[0-9A-Fa-f]+\]$")
@@ -49,6 +52,18 @@ LEA_LOCAL = re.compile(r"^lea di, \[bp\+var_[0-9A-Fa-f]+\]$")
 JMP_ANY = re.compile(r"^jmp .+$")
 NOISE = {"push cs", "nop", "xor ah, ah", "cbw", "mov sp, bp", "pop bp",
          "push bp", "leave"}
+
+
+SELF_XOR = re.compile(r"^xor (\w+), (\w+)$")
+
+
+def is_setup(line):
+    """只認資料搬移與自我清零；出現運算、比較、分支就不算參數準備。"""
+    mnemonic = line.split()[0]
+    if mnemonic in ("mov", "push", "pop", "lea", "les", "lds", "nop"):
+        return True
+    match = SELF_XOR.match(line)
+    return bool(match and match.group(1) == match.group(2))
 
 
 def clean(text):
@@ -80,17 +95,41 @@ def classify(function):
         return "overlay stub", ("Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），"
                                 "由 overlay manager 轉派，不含遊戲邏輯")
 
-    # ⚠ 沒有 ret 就不能宣稱「讀完了」：IDA 的函式邊界會建錯，被切短的函式
-    # 看起來就像空函式（實測 ON GOTO handler 被切成 3 bytes）。
+    # 尾呼叫：最後一條是無條件跳躍，控制權交給別的函式後不再返回。
+    # ⚠ 仍要求**前面每一條都是參數準備**（資料搬移或自我清零），否則就不是
+    # 「整個 body 都被解釋掉」，一律留待解讀。
+    if lines and JMP_ANY.match(lines[-1]) and not any(
+            EPILOGUE_TAIL.match(line) for line in lines):
+        setup = lines[:-1]
+        if all(is_setup(line) for line in setup):
+            detail = ("；先設定 %s" % "、".join("`%s`" % l for l in setup)) if setup else ""
+            return "尾呼叫", "最後一條是 `%s`，控制權轉交後不返回%s" % (lines[-1], detail)
+        return None, None
+
+    # ⚠ 沒有 ret 也沒有尾跳躍 ⇒ 這不是完整函式，是 IDA 在 raw overlay 上
+    # 建錯的邊界碎片（實測 ON GOTO handler 被切成 3 bytes）。標成獨立狀態，
+    # 不混進待解讀，也不冒稱已解讀。
     has_return = any(EPILOGUE_TAIL.match(line) for line in lines)
     if not has_return:
-        return None, None
+        return "邊界碎片", ("body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `%s`；"
+                            "這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀"
+                            % (lines[-1] if lines else "(空)"))
 
     core = [line for line in core_instructions(function["items"])
             if line not in NOISE]
 
     if not core:
         return "空函式", "prologue／epilogue 之外沒有任何指令，呼叫即返回"
+
+    # 全域搬移：把一個具名／固定位址的值搬到另一個，沒有其他動作。
+    named_loads = [NAMED_LOAD.match(l) or MOV_LOAD.match(l) for l in core]
+    named_stores = [NAMED_STORE.match(l) or MOV_STORE.match(l) for l in core]
+    if (any(named_loads) and any(named_stores)
+            and all(named_loads[i] or named_stores[i] or MOV_VAR_SET.match(core[i])
+                    or MOV_VAR_GET.match(core[i]) for i in range(len(core)))):
+        source = next(m.group(2) for m in named_loads if m)
+        destination = next(m.group(1) for m in named_stores if m)
+        return "全域搬移", "把 %s 的值搬到 %s（兩者語意另計）" % (source, destination)
 
     # 常數
     if len(core) <= 3 and all(MOV_IMM.match(l) or MOV_VAR_SET.match(l)
@@ -176,13 +215,22 @@ def decode_string(blob, marker, platform):
 
 def main():
     write = "--write" in sys.argv
+    # 已由別的規格判定過的函式不覆蓋：那些條目帶著各自的證據（例如 RTL 的
+    # Borland 名稱、跨平台位元組比對），本腳本的形狀判定資訊量較低。
+    existing = {}
+    if os.path.exists(LEDGER):
+        for entry in json.load(open(LEDGER, encoding="utf-8"))["functions"]:
+            if entry.get("spec") and entry["spec"] != SPEC:
+                existing[(entry["platform"], entry["module"], entry["ea"])] = entry["spec"]
     entries = []
     counts = collections.Counter()
     unmatched = collections.Counter()
 
     for platform in ("dos", "pc98"):
         for path in sorted(glob.glob(os.path.join(SWEEP, platform, "small", "*.json"))):
-            if path.endswith(".error.log"):
+            # `*.big.json` 是為跨平台位元組比對另存的全量匯出（上限 4096），
+            # 與同名的小函式檔重複，模組名也對不上台帳，必須排除。
+            if path.endswith(".error.log") or path.endswith(".big.json"):
                 continue
             module = os.path.basename(path)[:-5].replace(".bin", "")
             blob = None
@@ -190,6 +238,9 @@ def main():
             if os.path.exists(binary):
                 blob = open(binary, "rb").read()
             for function in json.load(open(path, encoding="utf-8"))["functions"]:
+                if (platform, module, function["ea"]) in existing:
+                    counts["已由其他規格判定"] += 1
+                    continue
                 kind, note = classify(function)
                 if kind == "常數字串":
                     note = decode_string(blob, note, platform)
@@ -199,9 +250,11 @@ def main():
                     unmatched[core[0] if core else "(空)"] += 1
                     continue
                 counts[kind] += 1
+                state = "邊界碎片" if kind == "邊界碎片" else "已解讀"
                 entries.append({
                     "platform": platform, "module": module, "ea": function["ea"],
-                    "state": "已解讀", "level": "exact", "spec": SPEC,
+                    "state": state, "level": "" if state != "已解讀" else "exact",
+                    "spec": SPEC,
                     "note": "%s：%s（body 共 %d bytes，已逐條讀完）"
                             % (kind, note, function["size"]),
                 })

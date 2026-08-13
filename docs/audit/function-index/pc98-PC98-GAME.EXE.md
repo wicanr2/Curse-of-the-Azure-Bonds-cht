@@ -56,9 +56,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `11960` | sub_11960 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `11990` | sub_11990 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `119C0` | sub_119C0 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
-| `119E0` | sub_119E0 | — | 66 | 32 | 3 | 3 |  | 待解讀 | — | — | — |
+| `119E0` | sub_119E0 | — | 66 | 32 | 3 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1234F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 66 bytes，已逐條讀完） | — |
 | `12095` | sub_12095 | — | 373 | 179 | 5 | 2 |  | 待解讀 | — | — | — |
-| `1224A` | sub_1224A | — | 66 | 32 | 1 | 3 |  | 待解讀 | — | — | — |
+| `1224A` | sub_1224A | — | 66 | 32 | 1 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1234F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 66 bytes，已逐條讀完） | — |
 | `1230E` | sub_1230E | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `12340` | sub_12340 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `1234F` | sub_1234F | — | 2 | 1 | 40 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
@@ -189,7 +189,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `192D2` | sub_192D2 | — | 87 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
 | `19386` | sub_19386 | — | 52 | 25 | 1 | 1 |  | 待解讀 | — | — | — |
 | `193BA` | sub_193BA | — | 14 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
 | `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
 | `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 待解讀 | — | — | — |
@@ -257,14 +257,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A617` | sub_1A617 | — | 29 | 13 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A634` | sub_1A634 | — | 23 | 10 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1A650` | sub_1A650 | — | 157 | 72 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 待解讀 | — | — | — |
+| `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A72A`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A726` | sub_1A726 | — | 194 | 83 | 3 | 6 |  | 待解讀 | — | — | — |
 | `1A7E8` | sub_1A7E8 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A7F6` | sub_1A7F6 | — | 12 | 5 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A802` | sub_1A802 | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A810` | sub_1A810 | — | 7 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A817` | sub_1A817 | — | 11 | 6 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A822` | sub_1A822 | — | 8 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A810` | sub_1A810 | — | 7 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
+| `1A817` | sub_1A817 | — | 11 | 6 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
+| `1A822` | sub_1A822 | — | 8 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add al, 7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `1A82A` | sub_1A82A | — | 7 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
 | `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes） | — |
 | `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes） | — |
@@ -284,7 +284,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AD84` | sub_1AD84 | — | 43 | 20 | 71 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$bsub$qm6Stringt1` 逐位元組相同（43 bytes） | — |
 | `1ADAF` | sub_1ADAF | — | 18 | 8 | 1 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6String4Char` 逐位元組相同（18 bytes） | — |
 | `1AF34` | sub_1AF34 | — | 33 | 13 | 3 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Set@MemberOf$q4Byte` 逐位元組相同（33 bytes） | — |
-| `1AFE0` | sub_1AFE0 | — | 4 | 1 | 5 | 0 |  | 待解讀 | — | — | — |
+| `1AFE0` | sub_1AFE0 | — | 4 | 1 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor di, 8000h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 4 bytes，已逐條讀完） | — |
 | `1AFE4` | sub_1AFE4 | — | 195 | 97 | 11 | 2 |  | 待解讀 | — | — | — |
 | `1B0A7` | sub_1B0A7 | — | 261 | 123 | 7 | 2 |  | 待解讀 | — | — | — |
 | `1B1AC` | sub_1B1AC | — | 119 | 58 | 5 | 2 |  | 待解讀 | — | — | — |
@@ -306,8 +306,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |
 | `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes） | — |
 | `1B9C7` | sub_1B9C7 | — | 69 | 37 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BA37` | sub_1BA37 | — | 5 | 2 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1BA3C` | sub_1BA3C | — | 5 | 2 | 4 | 1 |  | 待解讀 | — | — | — |
+| `1BA37` | sub_1BA37 | — | 5 | 2 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B1h`（body 共 5 bytes，已逐條讀完） | — |
+| `1BA3C` | sub_1BA3C | — | 5 | 2 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B2h`（body 共 5 bytes，已逐條讀完） | — |
 | `1BA41` | sub_1BA41 | — | 75 | 27 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1BA90` | sub_1BA90 | — | 59 | 19 | 5 | 2 |  | 待解讀 | — | — | — |
 | `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
