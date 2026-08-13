@@ -15332,6 +15332,52 @@
    "level": "exact",
    "spec": "docs/spec/668-turbo-pascal-textrec-rtl.md",
    "note": "Close:fmOutput 時先 <sub_1BACBh>(bx=14h) 呼叫 InOutFunc 把緩衝寫出;非 fmInput/fmOutput 則設 word_23B08h := 67h(錯誤 103)。最後 <sub_1BACBh>(bx=1Ch) 呼叫 CloseFunc 並把 Mode 設成 fmClosed"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113834,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/669-text-file-buffer-and-truncate.md",
+   "bounds": "prologue",
+   "note": "放一個字元進緩衝(es:[bx+di] := al、bx++),bx = dx(BufSize)時才沖出去:回寫 BufPos、call dword ptr es:[di+14h](InOutFunc)、把回傳值記進 word_23B08h(InOutRes),再把 ax/bx/dx/es:di 四個全部重新載入(InOutFunc 可能改動 BufPos/BufPtr)。錯誤只記錄不中止。完整範圍 1BCAAh..1BCE9h,IDA 在 1BCB9h 切開了"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113849,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/669-text-file-buffer-and-truncate.md",
+   "note": "不是函式起點:1BCAAh 那一支的中段(bx = dx 時的落點),沒有 prologue 也不是呼叫目標"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113734,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/669-text-file-buffer-and-truncate.md",
+   "note": "輸入模式檢查:InOutRes = 0 且 Mode <> fmInput 時設 word_23B08h := 68h(錯誤 104);⚠ 錯誤路徑 jmp 回同一段載入程式碼——設完錯誤碼還是照樣載入 bx=BufPos、dx=BufEnd、es:di=BufPtr 並返回"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113798,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/669-text-file-buffer-and-truncate.md",
+   "note": "輸出模式檢查:Mode <> fmOutput 時設 word_23B08h := 69h(錯誤 105),同樣照常載入。與 1BC46h 的差別是 dx 取的欄位:輸入取 BufEnd(+0Ah)、輸出取 BufSize(+4)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113502,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/669-text-file-buffer-and-truncate.md",
+   "note": "依 ^Z 截斷文字檔:seek 到「檔尾減 128」(不足 128 則從頭)讀進 TextRec 的 Buffer,掃 1Ah;找到就 seek 到相對檔尾的負位移再用 AH=40h/CX=0 寫 0 bytes 達成截斷,找不到就不動。⚠ 只看最後 128 bytes,^Z 在更前面時找不到"
   }
  ]
 }
