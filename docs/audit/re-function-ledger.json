@@ -15798,12 +15798,534 @@
   },
   {
    "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8804,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 PC98 overlay-12:22C6h（entry#95）助憶碼序列完全相同，語意同該筆：if <far 0176:0473>(arg_6, arg_6^[78h]) = 0 then <sub_3C>(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-00",
+   "ea": 0,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-11",
+   "ea": 86,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:7214h, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1666 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 62,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_14D`（body 共 277 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 477,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 25355,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:7332h, dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1434 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 17,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr dword_3C+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 928 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 945,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 704 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 65536,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_10320`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 250 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 65786,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_101F5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 518 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66304,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 48 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66352,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66416,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 336 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66752,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66816,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 66928,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67040,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67104,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 208 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67424,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 160 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67696,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 67760,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 720 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68480,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 272 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68752,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 68864,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69056,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 208 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69264,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 160 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69424,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 176 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69712,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 128 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 69840,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 160 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70000,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 624 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70624,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 192 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 70816,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 304 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71120,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71232,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 144 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71376,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 80 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71456,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71520,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 96 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71616,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 112 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71744,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 80 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 71824,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 176 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 72000,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 80 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 72096,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 74528,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 64 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 74592,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 575 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 81426,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 97482,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "全域搬移：把 byte_24E85 的值搬到 byte_24E84（兩者語意另計）（body 共 13 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 97840,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 119 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 98800,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101280,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 17 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106903,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 835 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108112,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 1932 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115344,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 49360 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 164704,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `(空)`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 16384 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-00",
+   "ea": 0,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov si, 0B382h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 27 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 62,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `jmp loc_146`（body 共 270 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
    "module": "overlay-02",
    "ea": 286,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
-   "note": "ECL 比較的分派:先 <far 013Eh:06DAh>(2) 取兩個運算元,再看 DS:7686h/7687h 兩個型別 byte——**只要其中一個 >= 80h,兩個就都當字串**(不是各自依型別),走 013Eh:073Eh 比較兩個 256 bytes 緩衝(DS:7748h 與 DS:7848h,相隔 100h);否則呼叫 013Eh:06D5h 兩次取值再 013Eh:0743h 比較。⚠ 數值比較的參數順序是 (b, a),第二個運算元先傳",
+   "note": "ECL 比較的分派:READVAR(2) 取兩個運算元,再看 DS:7685h[k] 的型別 byte——**只要其中一個 >= 80h,兩個就都當字串**(不是各自依型別),走 overlay-07 entry#22(字串比較,RTL 逐段比)比較兩個 256 bytes 緩衝(DS:7748h 與 DS:7848h);否則 ADDRESSVALUE 取值兩次再 overlay-07 entry#23(數值比較)。兩支比較程序都把六個結果旗標(=、<>、<、>、<=、>=)寫進 DS:75F8h..75FDh,六個比較全是無號。⚠ 數值比較的參數順序是 (b, a),第二個運算元先傳",
    "bounds": "prologue"
   },
   {
@@ -15813,7 +16335,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
-   "note": "堆疊彈出:DS:4F9Dh^[582h] > 0 時**先減再用**,所以傳給 <loc_6F5h> 的是彈出後的新深度而不是被彈出那格的索引;計數是 word 但只取低 byte 傳下去,深度超過 255 會截斷。DS:4FB4h 的遞增在條件外面,堆疊空時也照加",
+   "note": "走一步並重畫:bank1^[582h] > 0 時**先減再用**,再呼叫 overlay-07 entry#8(視窗繪製,依 bank0^[1CCh] 與 DS:7F27h 決定要不要載入 SPRIT/PIC)。bank1^[582h] 是 MAXRANGE 寫入的**剩餘可走步數**,不是呼叫堆疊深度。計數是 word 但只取低 byte 傳下去,超過 255 會截斷。DS:4FB4h 的遞增在條件外面,步數用完時也照加",
    "bounds": "prologue"
   },
   {
@@ -15823,7 +16345,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
-   "note": "讀一個數值寫回運算元 2:<far 06DAh>(2) 取運算元 → dst := <06FDh>(DS:76C7h, DS:7707h) → value := <far 0542h:08B3h>(0, 0Ah, @buf)(0Ah 是輸入長度上限) → <071Bh>(dst, value)。運算元描述是三個平行陣列 DS:7685h/76C5h/7705h(各 64 bytes,1-based,相差 40h),寫回順序是 (handle, value)",
+   "note": "讀一個數值寫回運算元 2:READVAR(2) → dst := ADDFNC(DS:7707h, DS:76C7h) → value := <far 0542h:08B3h>(0, 0Ah, @buf)(0Ah 是輸入長度上限) → STOREVALUE(dst, value)。運算元描述是三個平行陣列 DS:7685h(型別)/76C5h(位址高位元組)/7705h(低位元組),各 64 bytes、1-based、相差 40h,對應 PC-98 的 A917h/A957h/A997h——兩平台各自獨立讀出的結論一致",
    "bounds": "prologue"
   },
   {
@@ -15833,7 +16355,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
-   "note": "把 6 元素旗標陣列的查表展開成六段 cmp/jnz:v := DS:75FFh,若 v 在 16h..1Bh 且 DS:[75F8h+(v-16h)] = 0 則呼叫 <far 0761h>()——**六個分支呼叫的是同一支且無參數**,差別只在哪個旗標當閘門;v 在範圍外什麼都不做。開頭 DS:4FB4h++",
+   "note": "ECL 的條件分支:v := DS:75FFh,若 v 在 16h..1Bh 且 DS:[75F8h+(v-16h)] = 0(該比較不成立)則呼叫 overlay-07 entry#29 **跳過下一條 ECL 指令**(它查 opcode→arity 表再 READVAR 把運算元吃掉)。那六個旗標正是 entry#22/#23 兩支比較程序寫出的 =、<>、<、>、<=、>=。六個分支呼叫同一支且無參數,差別只在讀哪個旗標;v 在範圍外不跳也不執行。開頭 DS:4FB4h++",
    "bounds": "prologue"
   },
   {
@@ -15843,7 +16365,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
-   "note": "選單/清單選取 opcode。⚠ **取運算元的次數不固定**:先固定取 3 個,讀出第 3 個的值當項目數 n,再取 n 個——靜態切 opcode 邊界會在這裡切錯。配置 n 個節點後,逐個從 DS:[7648h + i shl 8](i 從 1 起,256 bytes 一格,槽 1=7748h、槽 2=7848h,正好是 spec 685 字串比較的那兩個緩衝)複製 40 bytes 當項目文字。節點版面:+00h Pascal 字串(長度 byte + 最多 40 字元)、+29h 旗標(建立時 0)、+2Ah far next。迴圈終止是同時檢查 far 指標兩個 word 是否為零,不是只看 segment。結果經 <071Bh> 寫回運算元 1",
+   "note": "選單/清單選取 opcode(轉呼叫 overlay-07 entry#21 = ECLMENUV)。⚠ **取運算元的次數不固定**:先 READVAR(3),用 ADDRESSVALUE(3) 讀出項目數 n,再 READVAR(n)——靜態切 opcode 邊界會在這裡切錯。以 overlay-26 entry#7 配置 n 個節點,逐個從 DS:[7648h + i shl 8](i 從 1 起,256 bytes 一格,槽 1=7748h、槽 2=7848h,正是 spec 685 字串比較的那兩個緩衝)複製 40 bytes 當項目文字。節點版面:+00h Pascal 字串(長度 byte + 最多 40 字元)、+29h 旗標(建立時 0)、+2Ah far next。迴圈終止同時檢查 far 指標兩個 word 是否為零。結果經 STOREVALUE 寫回運算元 1,清單由 overlay-26 entry#8 釋放",
    "bounds": "prologue"
   },
   {
@@ -15853,7 +16375,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
-   "note": "讀一行字串寫回運算元 2:<far 0542h:0722h> 讀入(28h=40 字元上限),複製到 text(上限 0FFh),若 text 的長度位元組為 0 則改填 CS:0970h 的預設字串,再 <006B:0025h>(dst, @text)。⚠ 09B8h 的 0A54h:064Eh 只被推入 3 個 word(同一支在 09D3h 是 5 個)——差的 2 個是前一個 far call 留在堆疊上的殘留。單看前面連續幾個 push 會把參數數到短兩個且整組錯位",
+   "note": "讀一行字串寫回運算元 2:<far 0542h:0722h> 讀入(28h=40 字元上限),複製到 text(上限 0FFh),若 text 的長度位元組為 0 則改填 CS:0970h 的預設字串,再 STORESTRING(dst, @text)(overlay-07 entry#17)。⚠ 推入順序是位址在前、字串在後,與 PC-98 那筆記的 (s, addr) 相反,引用前要回去對位元組。⚠ 09B8h 的 0A54h:064Eh 只被推入 3 個 word(同一支在 09D3h 是 5 個)——差的 2 個是前一個 far call 留在堆疊上的殘留",
    "bounds": "prologue"
   },
   {
@@ -15863,7 +16385,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
-   "note": "場景切換的分派。GUARD 形狀:`if DS:5BECh<>0 then <0713:0020h>(DS:25AAh)` / f() / `if DS:5BECh=0 then <0713:00D6h>()`——**前後兩半用同一旗標的相反值當閘門**,只會執行其中一個,不是配對的存檔還原。依 [4F9Dh]^[6D8h]=1 / [4F9Dh]^[5C4h]=1 / 其他 分別走 overlay-06(entry#3+#1)、overlay-04(#2+#1)、overlay-05(#2+#1);再依 [4F99h]^[1CCh] 是否為零走 overlay-27 entry#6 或 overlay-30 entry#11。重載路徑(8B69h 或 8B56h 非零)另呼叫 ov08/10/09 e2、ov13 e34、ov32 e23、ov31 e7,並用 overlay-07 entry#6 算出的 n **往下夾** [4F9Dh]^[582h](cmp+jnb,只在 n 較小時寫入)——就是 0801h 遞減的那個堆疊深度。⚠ 197Ah 的 `call sub_1953` 是 IDA 攤平造成的假名字,實為 overlay-32 entry#23",
+   "note": "場景切換的分派。GUARD 形狀:`if DS:5BECh<>0 then <0713:0020h>(DS:25AAh)` / f() / `if DS:5BECh=0 then <0713:00D6h>()`——**前後兩半用同一旗標的相反值當閘門**,只會執行其中一個,不是配對的存檔還原。依 [4F9Dh]^[6D8h]=1 / [4F9Dh]^[5C4h]=1 / 其他 分別走 overlay-06(entry#3+#1)、overlay-04(#2+#1)、overlay-05(#2+#1);再依 [4F99h]^[1CCh] 是否為零走 overlay-27 entry#6 或 overlay-30 entry#11。重載路徑(8B69h 或 8B56h 非零)另呼叫 ov08/10/09 e2、ov13 e34、ov32 e23、ov31 e7,並用 MAXRANGE(overlay-07 entry#6)算出的 n **往下夾** bank1^[582h](cmp+jnb,只在 n 較小時寫入)——就是 0801h 每走一步遞減的剩餘步數。⚠ 197Ah 的 `call sub_1953` 是 IDA 攤平造成的假名字,實為 overlay-32 entry#23",
    "bounds": "prologue"
   }
  ]

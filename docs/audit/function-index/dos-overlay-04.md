@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 71 | 16 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | — | 71 | 16 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/string-pairs.md |
 | `0047` | sub_47 | — | 172 | 50 | 6 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `00F3` | sub_F3 | — | 397 | 143 | 7 | 1 | ✓ | 待解讀 | — | — | — |
 | `0280` | sub_280 | — | 134 | 53 | 1 | 3 | ✓ | 待解讀 | — | — | — |

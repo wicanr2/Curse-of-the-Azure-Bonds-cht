@@ -110,12 +110,13 @@ entry#3 而不是 entry#2。
 overlay-13 e34、overlay-32 e23、overlay-31 e7，然後：
 
 ```text
-n := <overlay-07 entry#6 @04BDh>(DS:7211h, DS:7210h, DS:720Fh)
-if n < [4F9Dh]^[582h] then [4F9Dh]^[582h] := n      ← 只會把值**調小**
+n := MAXRANGE(DS:7211h, DS:7210h, DS:720Fh)         ← overlay-07 entry#6 @04BDh
+if n < bank1^[582h] then bank1^[582h] := n          ← 只會把值**調小**
 ```
 
 比較是 `cmp ax, [582h]` ＋ `jnb`，所以只在 `n` 比現值小的時候才寫入——是往下
-夾，不是設定。`[4F9Dh]^[582h]` 正是 spec 685 裡 `0801h` 遞減的那個堆疊深度。
+夾，不是設定。`bank1^[582h]` 是**剩餘可走步數**：`MAXRANGE` 在非地城時直接填
+2，`0801h`（spec 685）每走一步遞減一次。
 
 收尾（`1A4Fh`）：
 
@@ -130,14 +131,18 @@ DS:8B62h := 0
 ## 五、`overlay-02:0972h`：讀一行字串寫回運算元 2
 
 ```text
-<far 006B:002Ah>(2)
+READVAR(2)                                     ← overlay-07 entry#2
 buf := 0
-dst := <006B:004Dh>(DS:76C7h, DS:7707h)        ← 運算元 2（spec 686 的描述表）
+dst := ADDFNC(DS:7707h, DS:76C7h)              ← 運算元 2 的位址（spec 686）
 <far 0542h:0722h>(@line, @buf, 0Ah, 0, 28h)    ← 讀入，28h = 40 字元上限
 複製（前一呼叫留下的來源）→ text，上限 0FFh
 if text 的長度位元組 = 0 then 複製 CS:0970h → text    ← 空輸入時填預設字串
-<006B:0025h>(dst, @text)
+STORESTRING(dst, @text)                        ← overlay-07 entry#17
 ```
+
+⚠ 推入順序是**位址在前、字串在後**。PC-98 側那筆的記法寫成 `STORESTRING(s, addr)`，
+順序相反；本輪讀到的 DOS 位元組是 `push [bp+var_4]`（位址）再 `push @text`。
+兩者必有一邊的記法寫顛倒，引用前要回去對 PC-98 的位元組。
 
 空字串的判斷是 `cmp [bp+var_104], 0`——**讀的是 Pascal 字串的長度位元組**。
 

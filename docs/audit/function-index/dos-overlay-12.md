@@ -115,7 +115,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `212C` | sub_212C | — | 169 | 61 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `21D5` | sub_21D5 | — | 61 | 29 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/642-overlay12-damage-modifiers.md<br>與 pc98 overlay-12:2237h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then <sub_1437>(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2212` | sub_2212 | — | 82 | 37 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/642-overlay12-damage-modifiers.md<br>與 pc98 overlay-12:2274h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 014A:00A7>(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then <sub_1437>(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `2264` | sub_2264 | — | 63 | 26 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `2264` | sub_2264 | — | 63 | 26 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/642-overlay12-damage-modifiers.md<br>與 PC98 overlay-12:22C6h（entry#95）助憶碼序列完全相同，語意同該筆：if <far 0176:0473>(arg_6, arg_6^[78h]) = 0 then <sub_3C>(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `22A3` | sub_22A3 | — | 123 | 48 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `231E` | sub_231E | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F39`（body 共 22 bytes，已逐條讀完） | — |
 | `2334` | sub_2334 | — | 94 | 40 | 2 | 3 | ✓ | 待解讀 | — | — | — |

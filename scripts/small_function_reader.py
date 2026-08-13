@@ -256,19 +256,30 @@ def main():
     existing = {}
     if os.path.exists(LEDGER):
         for entry in json.load(open(LEDGER, encoding="utf-8"))["functions"]:
-            if entry.get("spec") and entry["spec"] != SPEC:
-                existing[(entry["platform"], entry["module"], entry["ea"])] = entry["spec"]
+            # 只要已經分類過就不再碰，**包含本規格自己寫過的**。原本只排除
+            # 「別的規格判定過的」，於是重跑會把自己上一輪的條目整批覆寫掉，
+            # 而覆寫前後統計數字一樣，看不出發生過。
+            if entry["state"] != "待解讀":
+                existing[(entry["platform"], entry["module"], entry["ea"])] = \
+                    entry.get("spec") or SPEC
     entries = []
     counts = collections.Counter()
     unmatched = collections.Counter()
 
     for platform in ("dos", "pc98"):
-        for path in sorted(glob.glob(os.path.join(SWEEP, platform, "small", "*.json"))):
-            # `*.big.json` 是為跨平台位元組比對另存的全量匯出（上限 4096），
-            # 與同名的小函式檔重複，模組名也對不上台帳，必須排除。
+        # overlay 一律走 prologue 匯出。`small/` 底下的匯出**不完整**（`overlay-07`
+        # 缺 14 支、`overlay-22` 缺 16 支），而缺的那些不會有任何提示——它們只是
+        # 不出現，統計看起來一樣正常。resident（`.EXE`）沒有 prologue 匯出，維持
+        # 讀 `small/`。
+        sources = sorted(glob.glob(os.path.join(
+            SWEEP, platform, "overlays", "prologue", "*.json")))
+        sources += sorted(glob.glob(os.path.join(SWEEP, platform, "small", "*.EXE*.json")))
+        for path in sources:
             if path.endswith(".error.log") or path.endswith(".big.json"):
                 continue
             module = os.path.basename(path)[:-5].replace(".bin", "")
+            if module.startswith(platform + "-"):
+                module = module[len(platform) + 1:]
             blob = None
             binary = os.path.join(SWEEP, platform, "overlays", module + ".bin")
             if os.path.exists(binary):
@@ -292,7 +303,8 @@ def main():
                     "state": state, "level": "" if state != "已解讀" else "exact",
                     "spec": SPEC,
                     "note": "%s：%s（body 共 %d bytes，已逐條讀完）"
-                            % (kind, note, function["size"]),
+                            % (kind, note, function.get("size") or
+                               sum(len(i["bytes"]) // 2 for i in function["items"])),
                 })
 
     print("可判定並標為已解讀：%d" % len(entries))

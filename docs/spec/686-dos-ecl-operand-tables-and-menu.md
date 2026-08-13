@@ -17,14 +17,21 @@
 **1-based**。取值一律成對：
 
 ```text
-handle := <近呼叫 06FDh>(DS:76C5h[k], DS:7705h[k])   ← 取得第 k 個運算元的存放位置
-<近呼叫 071Bh>(handle, value)                        ← 把值寫回去
+addr  := ADDFNC(DS:7705h[k], DS:76C5h[k])      ← overlay-07 entry#9
+STOREVALUE(addr, value)                        ← overlay-07 entry#15
 ```
 
-注意寫回的參數順序是 **`(handle, value)`**——位置在前、值在後。`0EBDh` 與
-`092Ch` 兩支都是這個順序。
+`ADDFNC` 在 PC-98 側已讀完：**不是算術加法**，是把兩個 byte 併成一個 word，
+回傳 `(第二參數 shl 8) + 第一參數`。所以
 
-`DS:7685h[k]` 則是型別標記（`>= 80h` 代表字串，見 spec 685）。
+> **`DS:76C5h[k]` 是運算元位址的高位元組，`DS:7705h[k]` 是低位元組。**
+
+寫回的參數順序是 **`(addr, value)`**——位址在前、值在後，`0EBDh` 與 `092Ch`
+兩支一致，也和 PC-98 側 `STOREVALUE(addr, value)` 的記法一致。
+
+`DS:7685h[k]` 則是型別標記（`>= 80h` 代表字串，見 spec 685）。三個陣列在 PC-98
+的對應是 `A917h`／`A957h`／`A997h`，同樣相差 40h、同樣 1-based——**兩平台各自
+獨立讀出來的結論一致**。
 
 ## 字串槽：`DS:7648h + k×100h`
 
@@ -37,13 +44,13 @@ handle := <近呼叫 06FDh>(DS:76C5h[k], DS:7705h[k])   ← 取得第 k 個運�
 
 ```text
 DS:8B66h := 0
-<far 06DAh>(3)                                   ← 先取 3 個運算元
-dst := <06FDh>(DS:76C6h, DS:7706h)               ← 結果要寫回運算元 1
+READVAR(3)                                   ← 先取 3 個運算元
+dst := ADDFNC(DS:7706h, DS:76C6h)                ← 結果要寫回運算元 1 指到的位址
 title := 複製 DS:7748h（上限 0FFh）
-n := <far 06D5h>(3)                              ← 運算元 3 的值 = 項目數
+n := ADDRESSVALUE(3)                             ← 運算元 3 的值 = 項目數
 DS:4FB4h := DS:4FB4h − 1
-<far 06DAh>(n)                                   ← ⚠ 再取 n 個運算元，數量由資料決定
-list := <far 16B3h>(n)                           ← 配置 n 個節點
+READVAR(n)                                   ← ⚠ 再取 n 個運算元，數量由資料決定
+list := <overlay-26 entry#7>(n)                           ← 配置 n 個節點
 head := list
 DS:65A0h := 1；DS:65A1h := 11h
 <far 0542h:04A4h>(1, 11h, 26h, 16h, 0Ah, 0, 1, @title)   ← 開視窗
@@ -55,9 +62,9 @@ while list <> NIL do
     i := i + 1
 list := head
 choice := 0
-<far 0739h>(@list, @choice, @flag, 0, list, 16h, 26h, DS:65A1h+1, 1, 0Fh, 0Ah, 0Dh, @x, @x)
-<071Bh>(dst, choice)                             ← 寫回運算元 1
-<far 16B8h>(@list)                               ← 釋放清單
+<overlay-07 entry#21>  ; ECLMENUV(@list, @choice, @flag, 0, list, 16h, 26h, DS:65A1h+1, 1, 0Fh, 0Ah, 0Dh, @x, @x)
+STOREVALUE(dst, choice)                             ← 寫回運算元 1
+<overlay-26 entry#8>(@list)                               ← 釋放清單
 <far 0542h:0B4Ah>(16h, 26h, 11h, 1)              ← 還原視窗底下的畫面
 ```
 
@@ -78,32 +85,39 @@ choice := 0
 ## `092Ch`：讀一個數值寫回運算元 2
 
 ```text
-<far 06DAh>(2)
+READVAR(2)
 buf := 0
-dst := <06FDh>(DS:76C7h, DS:7707h)
+dst := ADDFNC(DS:7707h, DS:76C7h)
 value := <far 0542h:08B3h>(0, 0Ah, @buf)
-<071Bh>(dst, value)
+STOREVALUE(dst, value)
 ```
 
 `0Ah` 是輸入長度上限。
 
-## `0B3Bh`：把索引查表寫成六段比較鏈
+## `0B3Bh`：條件不成立就跳過下一條 ECL 指令
 
 ```text
 DS:4FB4h := DS:4FB4h + 1
 v := DS:75FFh
 if v 在 16h..1Bh 之間 且 DS:[75F8h + (v − 16h)] = 0 then
-    <far 0761h>()                ← 六個分支呼叫的是同一支，且無參數
+    <overlay-07 entry#29>()      ← 六個分支呼叫的是同一支，且無參數
 ```
 
-原始碼想必是「查一個 6 元素的旗標陣列」，編譯後展開成六段 `cmp`／`jnz`。
-六個分支的目標位址完全相同（`loc_75E+3`），差別只在哪個旗標當閘門。
-`v` 落在 `16h..1Bh` 之外就什麼都不做。
+`DS:75F8h..75FDh` 這六個 byte 就是 spec 685 裡兩支比較程序（`overlay-07`
+entry#22／#23）寫出的六個結果旗標：`=`、`<>`、`<`、`>`、`<=`、`>=`。
+`overlay-07` entry#29 在 PC-98 側已讀完，是**跳過下一條 ECL 指令**——它從
+bank3 讀出下一個 opcode，查內建的 opcode→arity 表，呼叫 `READVAR(n)` 把該指令
+的運算元吃掉。
+
+所以整條的語意是：**opcode `16h..1Bh` 各對應一種比較，對應的旗標為 0（條件不
+成立）就跳過下一條指令**。這是 ECL 的條件分支。
+
+編譯後展開成六段 `cmp`／`jnz`，六個分支的目標位址完全相同，差別只在讀哪一個
+旗標。`v` 落在 `16h..1Bh` 之外就什麼都不做（不跳，也不執行）。
 
 ## 明確不宣稱
 
-- `06DAh`／`06D5h`／`06FDh`／`071Bh`／`0739h`／`16B3h`／`16B8h`／`0542h:04A4h`／
-  `0542h:08B3h`／`0542h:0B4Ah`／`0761h` 各自的內部行為。
+- `0542h:04A4h`／`0542h:08B3h`／`0542h:0B4Ah` 這幾支 resident 的內部行為。
 - `DS:4FB4h` 數的是什麼（各 opcode 有增有減）。
 - `DS:65A0h`／`65A1h` 的單位。
 - `DS:75F8h..75FDh` 這六個旗標代表什麼。

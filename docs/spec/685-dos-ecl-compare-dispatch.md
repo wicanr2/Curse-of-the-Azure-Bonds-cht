@@ -6,15 +6,15 @@
 ## `011Eh`：用 `80h` 當「這是字串」的判準
 
 ```text
-<far 013Eh:06DAh>(2)                          ← 先取兩個運算元
+READVAR(2)                          ← 先取兩個運算元
 if DS:7686h >= 80h 或 DS:7687h >= 80h then
     s1 := 複製 DS:7748h（上限 0FFh）
     s2 := 複製 DS:7848h（上限 0FFh）
-    <far 013Eh:073Eh>(s1, s2)                  ← 字串比較
+    <overlay-07 entry#22>(s1, s2)                  ← 字串比較
 else
-    a := <far 013Eh:06D5h>(1)
-    b := <far 013Eh:06D5h>(2)
-    <far 013Eh:0743h>(b, a)                    ← 數值比較
+    a := <overlay-07 entry#1>(1)   ; ADDRESSVALUE
+    b := <overlay-07 entry#1>(2)
+    <overlay-07 entry#23>(b, a)                    ← 數值比較
 ```
 
 **只要兩個運算元其中一個的型別 byte `>= 80h`，兩個就都當字串處理**——不是「各自
@@ -28,25 +28,26 @@ else
 
 注意數值比較的參數順序是 **`(b, a)`**——第二個運算元先傳。
 
-## `0801h`：堆疊彈出
+## `0801h`：走一步並重畫
 
 ```text
-if DS:4F9Dh^[582h] > 0 then
-    DS:4F9Dh^[582h] := DS:4F9Dh^[582h] − 1     ← 先減
-    <loc_6F5h>(DS:8B48h, byte(DS:4F9Dh^[582h]), DS:7602h, DS:7601h)
-DS:4FB4h := DS:4FB4h + 1                        ← 無條件
+if bank1^[582h] > 0 then
+    bank1^[582h] := bank1^[582h] − 1                 ← 先減
+    <overlay-07 entry#8>(DS:8B48h, byte(bank1^[582h]), DS:7602h, DS:7601h)
+DS:4FB4h := DS:4FB4h + 1                             ← 無條件
 ```
 
-`DS:4F9Dh^[582h]` 是一個 word 計數。**先減再用**，所以傳下去的是減完之後的值——
-也就是「彈出後的新深度」而不是被彈出那一格的索引。
+`bank1^[582h]` 就是 `MAXRANGE` 寫入的那個值（非地城時直接填 2）——**剩餘可走
+步數**，不是呼叫堆疊深度。`overlay-07 entry#8` 是視窗繪製（依 `bank0^[1CCh]`
+與 `DS:7F27h` 決定要不要載入 `SPRIT`／`PIC`）。所以這條是「還有步數就走一步並
+重畫畫面」。
 
-`DS:4FB4h` 的遞增**在條件外面**：堆疊空的時候也照加。
-
-計數是 word 但傳下去時只取低 byte（`mov al, es:[di+582h]`），所以深度超過 255 會
+**先減再用**，傳下去的是減完之後的值。`DS:4FB4h` 的遞增在條件外面：步數用完時
+也照加。計數是 word 但傳下去只取低 byte（`mov al, es:[di+582h]`），超過 255 會
 截斷。
 
 ## 明確不宣稱
 
-- `013Eh:06DAh`／`06D5h`／`073Eh`／`0743h`／`loc_6F5h` 的行為。
+- `overlay-07 entry#2`（`READVAR`）／`06D5h`／`073Eh`／`0743h`／`loc_6F5h` 的行為。
 - `DS:4FB4h` 數的是什麼。
 - 型別 byte `>= 80h` 以外的值各代表什麼型別。

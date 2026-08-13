@@ -6,8 +6,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/583-ledger-denominator-repair.md |
-| `0011` | sub_11 | — | 928 | 101 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `03B1` | sub_3B1 | — | 704 | 169 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0011` | sub_11 | — | 928 | 101 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr dword_3C+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 928 bytes，已逐條讀完） | audit/embedded-strings.md |
+| `03B1` | sub_3B1 | — | 704 | 169 | 1 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `iret`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 704 bytes，已逐條讀完） | — |
 | `0671` | sub_671 | — | 370 | 103 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `07E3` | sub_7E3 | — | 757 | 187 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `0AD8` | sub_AD8 | — | 426 | 151 | 2 | 2 | ✓ | 待解讀 | — | — | — |

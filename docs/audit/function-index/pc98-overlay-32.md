@@ -5,11 +5,11 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | — |
-| `0011` | sub_11 | CALCBIGOFFSET | 104 | 41 | 7 | 1 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | audit/function-index/dos-overlay-02.md |
+| `0011` | sub_11 | CALCBIGOFFSET | 104 | 41 | 7 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-02.md |
 | `0079` | sub_79 | CALCSCREENCOORDS | 123 | 51 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(8,0) 接著 <far 02A8:1392>(0,8)——同一個 routine 連叫兩次,參數對調 | spec/585-ecl-goto-and-display-mode-pair.md<br>spec/635-overlay32-grid-record-array.md |
-| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值 | spec/635-overlay32-grid-record-array.md |
+| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值 | audit/function-index/dos-overlay-02.md<br>spec/635-overlay32-grid-record-array.md |
 | `012E` | sub_12E | SHOWCURSOR | 428 | 190 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `02DA` | sub_2DA | — | 409 | 184 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `0473` | sub_473 | HIDECURSOR | 612 | 255 | 1 | 5 | ✓ | 待解讀 | — | — | — |
