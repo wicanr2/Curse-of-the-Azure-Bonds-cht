@@ -13132,6 +13132,24 @@
    "level": "exact",
    "spec": "docs/spec/623-killthedude-damage-message.md",
    "note": "KILLTHEDUDE(char,?,damage):+196h=6 整支跳過;取紀錄 offset 0 的名字(上限 30),若 +0F7h<>0 則用整串比對把 ALIAS/DRAGONBAIT/AKABAR BEL AKAS 三個英文名換成片假名(對照表硬寫在 2192h 起的字串鏈);傷害 > +1A5h + 10 印「死んだ。」否則印「N ポイントのダメージを受けた」——即 AD&D 的 HP 降到 -10 即死,故 +1A5h 是目前 HP;DS:9637h>16h 時印換頁提示並重設 11h;實際扣血在 far 014A:00ACh;最後 +196h=5 改成 4。arg_2 從未被讀取"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2237,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/624-ecl-special-address-space.md",
+   "note": "CHECKSPECIALS(flag_ptr,?,addr):addr-=7C00h 後 27 個入口的比對鏈,把 ECL 特殊位址讀成角色紀錄(DS:9594h)欄位或全域旗標。flag_ptr^ 進函式設 1、鏈全落空才設 0,呼叫端靠它分辨是否特殊位址。含一個區間 7CA5h..7CACh → +0E9h+(addr-0A4h);五個硬幣是五個連號位址(佐證 spec 622);7D00h 讀一次會清掉 DS:0BDFFh;7D0Dh 命中卻不設值,回傳未初始化的 var_2(原作行為要照抄)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 3112,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/624-ecl-special-address-space.md",
+   "note": "STORESPECIALS(value,addr):寫入側,只有 18 個入口——比讀側的 27 個少,延續 spec 565 的讀寫不對稱。含區間 7C20h..7C70h → char^[1Eh+(addr-1Fh)](81 個連號位址);7CB8h 寫入前若 value>0B2h 先減 32h;7C00h 只在值為 0 時才動作;7F22h/7F24h/7F26h 三者只差 sub_1808 的第一個參數(1/2/3),且值<=80h 靜默不做事"
   }
  ]
 }
