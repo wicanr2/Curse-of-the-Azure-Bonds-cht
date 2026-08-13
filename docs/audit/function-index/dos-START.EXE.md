@@ -273,10 +273,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B4A8` | @ArcTan$q4Real | — | 225 | 98 | 0 | 8 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ArcTan$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B5D7` | sub_1B5D7 | — | 31 | 18 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp __RealMul`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1B5F6` | sub_1B5F6 | — | 79 | 33 | 2 | 3 |  | 待解讀 | — | — | — |
-| `1B645` | @Random$q4Word | — | 22 | 10 | 5 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體:呼叫 sub_1B694 取得 32-bit 亂數,參數 n 為 0 時回傳 0,否則以 n 做除法並回傳餘數(xchg/div/xchg 把餘數搬進 ax) | — |
+| `1B645` | @Random$q4Word | — | 22 | 10 | 5 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體:呼叫 LCG 後 xor ax,ax 丟棄低位字,n 為 0 回 0,否則回傳 (RandSeed shr 16) mod n | — |
 | `1B65B` | @Random__Real$qv | — | 29 | 13 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Real$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B678` | @Random__Extended$qv | — | 26 | 8 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Extended$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1B694` | sub_1B694 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
+| `1B694` | sub_1B694 | — | 54 | 22 | 3 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>Turbo Pascal RTL 的 LCG:RandSeed := RandSeed*134775813 + 1 (mod 2^32);高位乘數 0808h 由 shl/add ch,cl/add dh,bl 湊出,只有低位 8405h 是常數(cs:word_1B6CA);已用 20 萬組種子數值驗證等價 | — |
 | `1B6CC` | @Randomize$qv | — | 13 | 5 | 0 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>@Randomize 實作:INT 21h AH=2Ch 取系統時間,把 CX:DX 存進 dword_20998 ⇒ dword_20998 就是 Turbo Pascal 的 RandSeed(原版隨機序列的種子來源) | — |
 | `1B6D9` | __Int2Str | — | 82 | 37 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Int2Str`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B753` | __Str2Int | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Str2Int`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

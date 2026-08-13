@@ -300,8 +300,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0 | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(內部 LCG 為 sub_1B7F4) | — |
-| `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
+| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(LCG 為 sub_1B7F4);回傳 (RandSeed shr 16) mod n | — |
+| `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,種子為 dword_23B0A、常數為 cs:word_1B82A(同樣 8405h);與 DOS sub_1B694 逐指令相同 | — |
 | `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |
 | `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes） | — |
