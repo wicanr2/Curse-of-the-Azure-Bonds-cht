@@ -15618,6 +15618,44 @@
    "level": "strong inference",
    "spec": "docs/spec/677-pc98-overlay12-twins.md",
    "note": "與 pc98 overlay-12:054Ch 助憶碼序列完全相同（39 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：效果 id 37h(與 147Ah 的毒同一個)存在時印「は毒のために死んだ。」——與 147Ah 的「は毒を受けた。」+「は死んだ。」是兩條不同的毒死路徑、訊息不同。之後 DS:0A036h 設 1、呼叫 <sub_140Fh>(arg_6,arg_8,0Fh,0)、再設回 0。⚠ 003Ch(spec 633)正是查這個旗標決定要不要動作,所以只有在這段中間 003Ch 才會真的做事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 3931,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/678-dodge-and-once-only-marker.md",
+   "note": "閃避判定三道條件:DS:9594h^[152h] far pointer 非 nil、<far 014Ah:0565h> 回傳**大於 1**(等於 1 也擋)、ROLLDICE(1,100) <= arg_0(arg_0 直接是成功百分比,0 時永遠失敗、>=100 永遠成功)。閃過就印「は避けた。」並把 DS:0A02Eh(傷害)歸零、DS:0A039h **整個覆寫成 0FFh**(別處是加減用的,同一變數兩種用法)、DS:0A03Ah 減一",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 3084,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/678-dodge-and-once-only-marker.md",
+   "note": "用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 3897,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/678-dodge-and-once-only-marker.md",
+   "note": "與 pc98 overlay-12:0F5Bh 助憶碼序列完全相同（41 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：閃避判定三道條件:DS:9594h^[152h] far pointer 非 nil、<far 014Ah:0565h> 回傳**大於 1**(等於 1 也擋)、ROLLDICE(1,100) <= arg_0(arg_0 直接是成功百分比,0 時永遠失敗、>=100 永遠成功)。閃過就印「は避けた。」並把 DS:0A02Eh(傷害)歸零、DS:0A039h **整個覆寫成 0FFh**(別處是加減用的,同一變數兩種用法)、DS:0A03Ah 減一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 3049,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/678-dodge-and-once-only-marker.md",
+   "note": "與 pc98 overlay-12:0C0Ch 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：用 arg_2^[3] 的 bit 4 當「已套用過」標記:未設時才設上、印「は歳をとった。」並讓 arg_6^[76h](word)加一;DS:0A030h × 2 在條件外面每次都做(只存回 byte,第 8 次之後固定是 0)。⚠ bit 4 同時屬於高 4 bit,而 0773h 取高 4 bit 當骰子面數——這支執行過的節點會讓那邊的面數多 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
