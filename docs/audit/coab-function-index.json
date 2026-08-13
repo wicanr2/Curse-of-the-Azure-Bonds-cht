@@ -27549,7 +27549,7 @@
     "project-status.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
     "spec/564-ecl-operand-decoding-and-arity-validation.md",
-    "spec/README.md"
+    "spec/627-spell-cure-family.md"
    ]
   },
   {
@@ -39135,7 +39135,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := ROLLDICE(2,4)+2 (2d4+2);\u003cfar 013E:008E\u003e(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。",
+   "citations": [
+    "spec/627-spell-cure-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39167,7 +39173,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := \u003cfar 013E:0052\u003e(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 \u003csub_F62\u003e(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0",
+   "citations": [
+    "spec/627-spell-cure-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39247,7 +39259,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "n := \u003cfar 013E:0052\u003e(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD\u0026D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 \u003csub_F62\u003e(8,n,空字串)。與 43DAh 只差三個常數",
+   "citations": [
+    "spec/627-spell-cure-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39609,7 +39627,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/627-spell-cure-family.md",
+   "note": "與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,\u003cfar 013E:008E\u003e(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。",
+   "citations": [
+    "spec/627-spell-cure-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44189,9 +44213,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 30,
+   "Read": 34,
    "NotBlocking": 0,
-   "Todo": 81,
+   "Todo": 77,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
