@@ -149,15 +149,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 2538,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 11h／12h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 2774,
    "state": "待解讀",
    "level": "",
@@ -509,29 +500,11 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 2653,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 11h／12h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 2889,
    "state": "待解讀",
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 14h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 2990,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 16h／17h／18h／19h／1Ah／1Bh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -11962,6 +11935,33 @@
    "level": "strong inference",
    "spec": "docs/spec/588-ecl-return-and-gosub-stack.md",
    "note": "與 pc98 overlay-02:0052h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 00h(結束 script):清掉數個旗標、FillChar(DS:BDDAh,2,0)、ECL_PC++,然後 while 迴圈逐一 Dispose(6) 清空整個 GOSUB 堆疊,最後把 DS:9637h(訊息停留時間)重設為 11h。RETURN 在堆疊空時轉來這裡,理由就在這 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 2990,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/589-ecl-text-and-flag-handlers.md",
+   "note": "ECL opcode 16h~1Bh 共用的 handler:無 operand;重讀 DS:A891h 取得 opcode,以 (op-16h) 索引 DS:A88Ah 起的六個連續旗標位元組,該旗標為 0 才呼叫同一支 far 0062:00B1。六個分支完全對稱"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 2653,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/589-ecl-text-and-flag-handlers.md",
+   "note": "ECL opcode 11h/12h 共用的 handler(顯示文字):READVAR(1);operand code[1] < 80h 才取字串並複製到共用文字緩衝區 DS:A9DAh(>= 80h 表示 packed text 已在該緩衝區);之後重讀 DS:A891h 分辨——11h 與 12h 只差倒數第二個參數 0 vs 1,且 12h 會先把 DS:9637h 重設為 11h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2538,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/589-ecl-text-and-flag-handlers.md",
+   "note": "與 pc98 overlay-02:0A5Dh 助憶碼序列完全相同（69 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 11h/12h 共用的 handler(顯示文字):READVAR(1);operand code[1] < 80h 才取字串並複製到共用文字緩衝區 DS:A9DAh(>= 80h 表示 packed text 已在該緩衝區);之後重讀 DS:A891h 分辨——11h 與 12h 只差倒數第二個參數 0 vs 1,且 12h 會先把 DS:9637h 重設為 11h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

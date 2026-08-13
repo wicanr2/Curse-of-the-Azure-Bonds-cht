@@ -9,14 +9,14 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 282、不阻塞 133、邊界碎片 208、待解讀 763；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 283、不阻塞 133、邊界碎片 208、待解讀 762；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | START.EXE | — | 325 | 96 | 133 | 17 | 79 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 0 | 2 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 0 | 4 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 16 | 0 | 28 | 46 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 17 | 0 | 28 | 45 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 1 | 0 | 1 | 12 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 3 | 0 | 2 | 12 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
@@ -53,14 +53,14 @@
 
 ## PC98
 
-模組 37／函式 1489：已解讀 317、不阻塞 29、邊界碎片 280、待解讀 863；已定義程式碼 270359 bytes，未定義 20321 bytes。
+模組 37／函式 1489：已解讀 319、不阻塞 29、邊界碎片 280、待解讀 861；已定義程式碼 270359 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | PC98-GAME.EXE | — | 333 | 119 | 29 | 21 | 164 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 1 | 1 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 1 | 3 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
-| overlay-02 | INTERPET | 86 | 17 | 0 | 23 | 46 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
+| overlay-02 | INTERPET | 86 | 19 | 0 | 23 | 44 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
 | overlay-03 | PROTECT | 4 | 1 | 0 | 0 | 3 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 2 | 0 | 9 | 12 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 2 | 0 | 4 | 11 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
