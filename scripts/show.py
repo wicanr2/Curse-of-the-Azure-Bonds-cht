@@ -7,7 +7,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SWEEP = os.path.join(ROOT, "workplace", "re-sweep")
 
 def load(platform, module):
-    for base in (os.path.join(SWEEP, platform, "overlays", "full"),
+    # prologue 匯出優先：它以 `55 89 e5` 為界，區間內所有已定義的指令都在，
+    # 不像 IDA 的函式清單會漏掉「是 code 但不屬於任何 chunk」的位元組。
+    for base in (os.path.join(SWEEP, platform, "overlays", "prologue"),
+                 os.path.join(SWEEP, platform, "overlays", "full"),
                  os.path.join(SWEEP, platform, "full")):
         p = os.path.join(base, "%s-%s.json" % (platform, module))
         if os.path.exists(p):

@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B9B` | sub_B9B | — | 376 | 163 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1213` | sub_1213 | FINAL | 870 | 437 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `167E` | sub_167E | — | 216 | 105 | 3 | 4 |  | 待解讀 | — | — | — |
-| `1756` | sub_1756 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md |
+| `1756` | sub_1756 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>退回待解讀:當初依 IDA 的 7 bytes 判讀,但 prologue 區間內在那之後還有 277 條指令。要用 scripts/show.py --whole 重讀。原判讀:空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `175D` | sub_175D | — | 67 | 30 | 3 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add bh, 8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 67 bytes，已逐條讀完） | — |
 | `17AA` | sub_17AA | — | 73 | 35 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `17F3` | sub_17F3 | — | 170 | 80 | 1 | 4 |  | 待解讀 | — | — | — |
