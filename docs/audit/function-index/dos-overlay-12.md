@@ -12,7 +12,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:008Dh（entry#6）助憶碼序列完全相同，語意同該筆：DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `009E` | sub_9E | — | 18 | 7 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:009Eh（entry#7）助憶碼序列完全相同，語意同該筆：DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `00B0` | sub_B0 | — | 32 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:00B0h（entry#8）助憶碼序列完全相同，語意同該筆：DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `00E8` | sub_E8 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `00E8` | sub_E8 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
 | `016B` | sub_16B | — | 29 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
 | `0188` | sub_188 | — | 105 | 35 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `01F1` | sub_1F1 | — | 71 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -139,7 +139,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2782` | sub_2782 | — | 120 | 47 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `27FA` | sub_27FA | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `282F` | sub_282F | — | 38 | 20 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 <= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
-| `2855` | sub_2855 | — | 49 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `2855` | sub_2855 | — | 49 | 24 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h | audit/embedded-strings.md<br>spec/585-ecl-goto-and-display-mode-pair.md |
 | `289C` | sub_289C | — | 222 | 88 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `297A` | sub_297A | — | 34 | 16 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:29F2h（entry#121）助憶碼序列完全相同，語意同該筆：DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `299C` | sub_299C | — | 144 | 46 | 0 | 2 | ✓ | 待解讀 | — | — | — |

@@ -4631,13 +4631,16 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 01h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "ECL opcode 01h(GOTO)handler:READVAR(1) 後把 ADDFNC(high[1],low[1]) 直接寫進 ECL PC(DS:4FB4h)。跳躍目標是 script 內的絕對位移,不加 base",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
   {
@@ -8957,7 +8960,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10803,9 +10809,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
   {
@@ -13671,9 +13681,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "依 DS:4FE6h(1 或 2)選一對顯示常式:模式 1 走 0297:2171、模式 2 走 0297:21B0,中間各夾一次 09AB:029E(1)",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
   {
@@ -17046,6 +17060,8 @@
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/584-checkfx-timing-table.md"
@@ -18140,7 +18156,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1)",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19772,7 +19794,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上形狀,參數為 (0Fh,8)/(8,0) 等;兩個分支的參數順序不對稱,照抄",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19785,7 +19813,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上形狀,參數為 (0,0)/(8,8)",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "dos",
@@ -24856,13 +24890,16 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 01h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上,ECL PC 為 DS:7F21h、operand 陣列為 DS:A958h/A998h",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
   {
@@ -31381,7 +31418,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -35142,7 +35182,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39049,6 +39092,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1627`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/584-checkfx-timing-table.md"
@@ -40322,7 +40367,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "與 dos overlay-24:18BEh 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -41996,7 +42044,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/585-ecl-goto-and-display-mode-pair.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42552,9 +42603,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 53,
+   "Todo": 52,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -42702,9 +42753,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 47,
+   "Read": 48,
    "NotBlocking": 0,
-   "Todo": 79,
+   "Todo": 78,
    "Fragment": 26,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -42792,9 +42843,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -42882,9 +42933,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 51,
+   "Todo": 50,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -43002,9 +43053,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 2,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 20,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -43107,9 +43158,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 56,
+   "Todo": 55,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
@@ -43257,9 +43308,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 53,
+   "Read": 54,
    "NotBlocking": 0,
-   "Todo": 79,
+   "Todo": 78,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
@@ -43437,9 +43488,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 51,
+   "Todo": 50,
    "Fragment": 12,
    "CodeBytes": 13567,
    "Undefined": 376,

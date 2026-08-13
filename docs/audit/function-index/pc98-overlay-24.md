@@ -40,7 +40,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `194C` | sub_194C | HORZMSG | 92 | 46 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `19A8` | sub_19A8 | CHARMSG | 34 | 14 | 4 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short loc_1A16`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 34 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 198 | 94 | 2 | 4 |  | 待解讀 | — | — | audit/function-triage.md |
-| `1A90` | sub_1A90 | CLEARMSGWINDOW | 50 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `1A90` | sub_1A90 | CLEARMSGWINDOW | 50 | 26 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>與 dos overlay-24:18BEh 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1AC2` | sub_1AC2 | PRINTCHARNAME | 109 | 41 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1B2F` | sub_1B2F | COPYSPRITE | 287 | 113 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1C48` | sub_1C48 | — | 40 | 15 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:1B0Dh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 40 bytes，已逐條讀完） | — |

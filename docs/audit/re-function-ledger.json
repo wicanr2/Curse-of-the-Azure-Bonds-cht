@@ -68,15 +68,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 232,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 01h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 286,
    "state": "待解讀",
    "level": "",
@@ -505,15 +496,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 00h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 232,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 01h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -11899,6 +11881,87 @@
    "level": "exact",
    "spec": "docs/spec/584-checkfx-timing-table.md",
    "note": "CHECKFX(timing, subject):純分派表,24 個 timing(00h..17h)各對應一組 effect id,逐一交給 sub_269 做 effect 鏈遍歷。2,287 bytes 裡沒有任何算術或記憶體存取——161 個 mov al,N 對上 161 個 call,也對上解析出的 161 個 effect id,三個數字相等。timing 00h 什麼都不做。完整表見 docs/audit/checkfx-timing-table.md"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 232,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "ECL opcode 01h(GOTO)handler:READVAR(1) 後把 ADDFNC(high[1],low[1]) 直接寫進 ECL PC(DS:4FB4h)。跳躍目標是 script 內的絕對位移,不加 base"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 232,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上,ECL PC 為 DS:7F21h、operand 陣列為 DS:A958h/A998h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 106,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "依 DS:4FE6h(1 或 2)選一對顯示常式:模式 1 走 0297:2171、模式 2 走 0297:21B0,中間各夾一次 09AB:029E(1)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 244,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上形狀,參數為 (0Fh,8)/(8,0) 等;兩個分支的參數順序不對稱,照抄"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 308,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "同上形狀,參數為 (0,0)/(8,8)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10325,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6334,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10435,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 6800,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
+   "note": "與 dos overlay-24:18BEh 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

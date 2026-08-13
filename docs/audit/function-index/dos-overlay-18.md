@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 50 | 19 | 3 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0032` | sub_32 | — | 56 | 21 | 3 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `006A` | sub_6A | — | 82 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `006A` | sub_6A | — | 82 | 37 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>依 DS:4FE6h(1 或 2)選一對顯示常式:模式 1 走 0297:2171、模式 2 走 0297:21B0,中間各夾一次 09AB:029E(1) | audit/embedded-strings.md<br>spec/585-ecl-goto-and-display-mode-pair.md |
 | `00BC` | sub_BC | — | 1059 | 382 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `04DF` | sub_4DF | — | 673 | 234 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0780` | sub_780 | — | 195 | 75 | 1 | 3 | ✓ | 待解讀 | — | — | — |
