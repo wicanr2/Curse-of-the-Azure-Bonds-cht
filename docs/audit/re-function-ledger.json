@@ -15196,7 +15196,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/665-ems-and-overlay-relocation.md",
-   "note": "用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h 段落 = 16KB 正是 EMS 分頁大小);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤)"
+   "note": "用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h = 16384 bytes = 16KB 正是 EMS 分頁大小,故 es:[8] 是位元組數);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤)"
   },
   {
    "platform": "pc98",
