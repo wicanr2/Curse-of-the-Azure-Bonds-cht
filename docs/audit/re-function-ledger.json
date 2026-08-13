@@ -311,15 +311,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 8748,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 29h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 12486,
    "state": "已解讀",
    "level": "exact",
@@ -12025,6 +12016,78 @@
    "level": "exact",
    "spec": "docs/spec/610-ecl-load-encounter-items.md",
    "note": "ECL opcode 27h(載入物品清單):真實範圍 1BEAh 起 1,339 bytes(IDA 標 94)。READVAR(8),前 6 個 operand 存進 DS:A00Ah 起 stride 4 的陣列;從檔案讀資料後反覆建立 103-byte 物品節點掛進 DS:A026h 鏈(鏈空/非空兩段程式碼逐條相同,編譯器沒合併),填 +0/+51h/+52h(next)/+56h(類型)/+57h(3 bytes)/+5Ah..5Eh/+5Fh/+61h/+62h;另有一張顯示符號對應表(5..7→'#'、8→'\"'、9→'%'、0Ah→'&'、5Bh..5Eh→'I');最後走遍鏈對每個節點呼叫 014A:0025"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 8748,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/611-ecl-parlay.md",
+   "note": "ECL opcode 29h(PARLAY/交涉):READVAR(0Eh)——14 個 operand,全模組最多。operand 5..9 是五個結果碼(對應同模組字串 ~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE)、10..12 是三行提示文字(解到 DS:A8DAh 起 stride 100h 的槽位,與 2Bh 共用)、13/14 是門檻。選單結果為 3 但條件不成立時會被改派成 4;結果碼 4 會遞減 bank1^[582h] 並重新顯示,次數用完才寫回 3。訊息含「相手は逃げた」「お互いに様子を見ている」。DS:A2A8h 進來存、離開還原"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 3736,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 0D70h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 1885,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 049Ch 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3263,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 0C81h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3375,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 0C81h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 5743,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 149Ch 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 7240,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 1BEAh 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6521,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在已解讀函式 1928h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
   }
  ]
 }
