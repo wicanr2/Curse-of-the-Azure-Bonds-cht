@@ -8990,6 +8990,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
@@ -9793,7 +9794,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 pc98 overlay-12:133Fh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10196,7 +10200,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 pc98 overlay-12:16C2h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10212,7 +10219,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10257,7 +10267,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 pc98 overlay-12:176Dh 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10286,7 +10299,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 pc98 overlay-12:17B5h 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10299,7 +10315,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "與 pc98 overlay-12:180Ch 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -30108,6 +30127,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
@@ -30254,6 +30274,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -30485,6 +30506,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -30531,7 +30553,8 @@
    "note": "if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/633-alignment-encoding-and-effect-callbacks.md"
+    "spec/633-alignment-encoding-and-effect-callbacks.md",
+    "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
   {
@@ -30847,6 +30870,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -30885,6 +30909,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -30904,6 +30929,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -30923,6 +30949,7 @@
    "spec": "docs/spec/638-overlay12-effect-batch2.md",
    "note": "與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/638-overlay12-effect-batch2.md"
    ]
   },
@@ -31009,7 +31036,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31163,7 +31196,13 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];\u003cfar 013E:0028\u003e(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ \u003cfar 0418:14AAh\u003e → \u003csub_1437\u003e(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD\u0026D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31432,7 +31471,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31500,7 +31545,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah)",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31529,7 +31580,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31542,7 +31599,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31568,7 +31631,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "if \u003cfar 0176:0473\u003e(byte(arg_6^[1A5h]), arg_6) = 0 then \u003csub_3C\u003e(1, arg_2^[3], 4Eh, arg_6)",
+   "citations": [
+    "spec/639-overlay12-poison-and-race-gates.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43975,9 +44044,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 56,
+   "Read": 61,
    "NotBlocking": 0,
-   "Todo": 69,
+   "Todo": 64,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -44530,9 +44599,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 69,
+   "Read": 76,
    "NotBlocking": 0,
-   "Todo": 62,
+   "Todo": 55,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
