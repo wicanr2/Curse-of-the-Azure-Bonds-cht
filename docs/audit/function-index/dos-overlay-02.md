@@ -74,7 +74,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2086` | sub_2086 | — | 1791 | 649 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 29h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>audit/function-triage.md |
 | `27A8` | sub_27A8 | — | 159 | 66 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2847` | sub_2847 | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 32h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `28F3` | sub_28F3 | — | 16 | 7 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Ah 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `28F3` | sub_28F3 | — | 16 | 7 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/572-resident-service-functions.md<br>與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應) | audit/ecl-opcode-dispatch.md |
 | `2942` | sub_2942 | — | 845 | 305 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2C8F` | sub_2C8F | — | 38 | 12 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 31h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2CB5` | sub_2CB5 | — | 53 | 22 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 34h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |

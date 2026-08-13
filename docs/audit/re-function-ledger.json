@@ -374,15 +374,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 10483,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Ah 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 10562,
    "state": "待解讀",
    "level": "",
@@ -811,15 +802,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 32h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 10919,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Ah 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -10837,6 +10819,96 @@
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 後呼叫 1A82Ah,餘數移回 al;與 DOS START.EXE:1A6EEh 同義"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114222,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_20996 設為 67h"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109666,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109680,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "nibble 合併;與 DOS START.EXE:1AB65h 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114574,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105049,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6375,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6533,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "PC-98 螢幕 BIOS:INT 18h AH=42h、CX=8000h(另一種 CRT 模式),再 out 68h, 8"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 10919,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "ECL opcode 3Ah 的 handler:把 DS:7F21h(ECL PC)加一後 far call 418h:14AAh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 10483,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "與 PC-98 overlay-02:2AA7h 同形的 handler:把 DS:4FB4h 加一後 far call ⇒ 4FB4h 應為 DOS 的 ECL PC(strong inference,結構對應)"
   }
  ]
 }

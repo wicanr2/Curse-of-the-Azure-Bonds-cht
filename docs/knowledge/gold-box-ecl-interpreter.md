@@ -72,7 +72,9 @@ for i = 1..n:
     if code[i] in {1,2,3}: PC += 1; high[i] = script[PC]
 ```
 
-ECL PC 是 `DS:7F21h`；script 緩衝區是下方的 bank 3。
+ECL PC 是 `DS:7F21h`（PC-98，`exact`）。DOS 側對應為 `DS:4FB4h`
+（`strong inference`）：`overlay-02` 的 `3Ah` handler 在兩平台同形，PC-98 版
+`inc DS:7F21h`、DOS 版 `inc DS:4FB4h`。script 緩衝區是下方的 bank 3。
 
 **`READVAR` 的參數就是該指令的 arity。** 用它驗證 `internal/ecl` 的
 `KnownCommands`：64 個 opcode 中 62 個吻合（PC-98），其餘 4 個是變長指令。

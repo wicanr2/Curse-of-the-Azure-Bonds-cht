@@ -228,7 +228,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AB57` | sub_1AB57 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh | — |
-| `1AB65` | sub_1AB65 | — | 15 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1AB65` | sub_1AB65 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併:rol(DX,4) 後把高 12 位併進 AX、DX 留低 4 位 | — |
 | `1AB74` | @$basg$qm6Stringt1 | — | 26 | 12 | 15 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼 | — |
 | `1AB8E` | @$basg$qm6Stringt14Byte | — | 36 | 16 | 26 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt14Byte`，`$b` 前綴是 Borland 的運算子編碼 | — |
 | `1ABB2` | @Length$qm6String | — | 14 | 5 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Length$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -308,7 +308,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BD88` | @Reset$qm4File4Word | — | 101 | 42 | 1 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Reset$qm4File4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BDED` | @Truncate$qm4File | — | 28 | 11 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Truncate$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BE09` | @Close$qm4File | — | 37 | 13 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1BE2E` | sub_1BE2E | — | 15 | 4 | 5 | 1 |  | 待解讀 | — | — | — |
+| `1BE2E` | sub_1BE2E | — | 15 | 4 | 5 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_20996 設為 67h | — |
 | `1BE3D` | @Read$qm4Filem3Any | — | 54 | 25 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Filem3Any`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BE73` | @BlockRead$qm4Filem3Any4Wordm4Word | — | 104 | 45 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@BlockRead$qm4Filem3Any4Wordm4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BEDB` | @Seek$qm4File7Longint | — | 48 | 19 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Seek$qm4File7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

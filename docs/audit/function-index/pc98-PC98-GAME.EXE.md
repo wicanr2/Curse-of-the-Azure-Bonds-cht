@@ -209,7 +209,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A07` | sub_19A07 | — | 9 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=06h、DL=07h,前後保存 DX | — |
 | `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
-| `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 待解讀 | — | — | — |
+| `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 byte_280E5 寫回 0000:0712h 的 BIOS 資料區位元組(19A69h 的反向操作) | — |
 | `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳 | — |
 | `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
 | `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
@@ -275,8 +275,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1AC70` | sub_1AC70 | — | 15 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義 | — |
+| `1AC70` | sub_1AC70 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併;與 DOS START.EXE:1AB65h 同義 | — |
 | `1AC7F` | sub_1AC7F | — | 26 | 12 | 10 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt1` 逐位元組相同（26 bytes） | — |
 | `1AC99` | sub_1AC99 | — | 36 | 16 | 102 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt14Byte` 逐位元組相同（36 bytes） | — |
 | `1ACCB` | sub_1ACCB | — | 65 | 29 | 8 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Copy$qm6Stringt17Integert3` 逐位元組相同（65 bytes） | — |
@@ -328,7 +328,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BEBA` | sub_1BEBA | — | 46 | 23 | 3 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Assign$qm4Filem6String` 逐位元組相同（46 bytes） | — |
 | `1BEE8` | sub_1BEE8 | — | 101 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1BF69` | sub_1BF69 | — | 37 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
-| `1BF8E` | sub_1BF8E | — | 15 | 4 | 5 | 1 |  | 待解讀 | — | — | — |
+| `1BF8E` | sub_1BF8E | — | 15 | 4 | 5 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>檢查 es:[di+2] 是否為 0D7B3h 簽章;不符時把 word_23B08 設為 67h;與 DOS START.EXE:1BE2Eh 同義 | — |
 | `1BFD3` | sub_1BFD3 | — | 104 | 45 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1C03B` | sub_1C03B | — | 48 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1C0B2` | sub_1C0B2 | — | 69 | 32 | 3 | 1 |  | 待解讀 | — | — | — |
