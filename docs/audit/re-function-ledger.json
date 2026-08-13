@@ -15838,6 +15838,26 @@
    "level": "strong inference",
    "spec": "docs/spec/683-encumbrance-movement.md",
    "note": "與 dos overlay-24:03C5h 助憶碼序列完全相同（52 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：w := arg_0^[187h] - <sub_148F>(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 2361,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/684-biased-modifier-display.md",
+   "note": "顯示一個偏移 60 的修正值:v := |arg_4^[19Ah] - 3Ch| 轉成字串,而負號**由獨立的一次比較**決定(arg_4^[19Ah] > 3Ch 才加 '-')。所以顯示值 = 60 - 儲存值,儲存得越大顯示越負——是「數字越小越好」的欄位用偏移量存的做法。⚠ 只看 sub + neg 那段會得到相反結論",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 2497,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/684-biased-modifier-display.md",
+   "note": "與 PC-98 0BD5h(spec 643)結構完全相同的 HP 顯示:arg_6^[1A4h] < arg_6^[78h](上限)時取一個參數、否則取另一個,arg_0 非 0 再覆蓋成第三個。⚠ 三個常數裡「受傷」不同:DOS 是 0Eh、PC-98 是 6(滿血 0Ah 與覆蓋 0Dh 兩平台相同)。兩邊的顏色編號本來就不是同一套,相同的兩個是巧合",
+   "bounds": "prologue"
   }
  ]
 }
