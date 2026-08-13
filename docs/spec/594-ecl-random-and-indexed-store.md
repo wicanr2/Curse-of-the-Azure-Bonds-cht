@@ -38,6 +38,37 @@ push 時第一個推的是**和**（位址）、第二個是 `ADDRESSVALUE(1)`�
 系列則是第一個推 `ADDFNC(operand 3)`（位址）、第二個推運算結果（值）。
 兩者的 operand 編號分工不同，但 `STOREVALUE` 的參數順序一致。
 
+## `2Ah`：索引讀取，與 `35h` 對稱
+
+```text
+READVAR(3)
+base  := ADDFNC(high[1], low[1])
+index := ADDRESSVALUE(2)
+dest  := ADDFNC(high[2], low[2])          ← 同一個 operand 再取一次 raw word
+v := <far 0062:0070>(base + index)        ← 讀出來
+STOREVALUE(dest, v)
+```
+
+`ECL[dest] := ECL[base + index]`——`35h` 是索引寫入，這支是索引讀取。
+
+operand 2 被用了兩次：一次經 `ADDRESSVALUE` 取值當索引，一次取原始 word 當
+目的位址。這印證了「`ADDRESSVALUE` 的呼叫次數與 arity 無關」
+（[spec 564](564-ecl-operand-decoding-and-arity-validation.md)）——**要驗
+arity 一律看 `READVAR` 的參數**。
+
+宣稱的 arity 是 3，但**第三個 operand 在 body 裡沒有被用到**。
+
+## `3Dh`（`2E8Ch`）：無 operand 的重繪
+
+```text
+ECL_PC := ECL_PC + 1
+<far 019E:014A>() ; <far 019E:0268>()
+<far 014A:002A>(DS:9594h) ; <far 014A:00DE>()
+<far 0176:0025>(DS:A2CDh, 3, 3, 3)
+<far 014A:00DE>()
+DS:BE00h := 0 ; DS:BDF2h := 1
+```
+
 ## 明確不宣稱
 
 - `0A65:0CBEh`／`0A65:0CC2h` 這兩個緊接在 `Random` 之後的 RTL 呼叫做什麼
