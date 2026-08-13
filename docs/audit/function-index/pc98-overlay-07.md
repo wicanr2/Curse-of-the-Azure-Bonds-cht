@@ -5,10 +5,10 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADECL2 | 52 | 14 | 0 | 8 | ✓ | 已解讀 | strong inference | docs/spec/569-small-function-batch-reading.md<br>與 dos overlay-07:0000h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完） ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/ecl-handler-operand-audit.md<br>audit/function-index/pc98-overlay-07.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
-| `008E` | sub_8E | READVAR | 520 | 206 | 2 | 4 | ✓ | 已解讀 | exact | docs/spec/564-ecl-operand-decoding-and-arity-validation.md<br>READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3) | project-status.md<br>spec/562-ecl2-helper-api-and-operand-audit.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md<br>spec/README.md |
+| `0000` | sub_0 | LOADECL2 | 52 | 14 | 0 | 8 | ✓ | 已解讀 | strong inference | docs/spec/569-small-function-batch-reading.md<br>與 dos overlay-07:0000h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完） ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/ecl-handler-operand-audit.md<br>audit/embedded-strings.md<br>audit/function-index/pc98-overlay-07.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
+| `008E` | sub_8E | READVAR | 520 | 206 | 2 | 4 | ✓ | 已解讀 | exact | docs/spec/564-ecl-operand-decoding-and-arity-validation.md<br>READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3) | audit/embedded-strings.md<br>project-status.md<br>spec/562-ecl2-helper-api-and-operand-audit.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md<br>spec/README.md |
 | `0296` | sub_296 | ADDRESSVALUE | 129 | 57 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDRESSVALUE(i)：解第 i 個 operand；三個 64 byte 平行陣列 A917/A957/A997；code 00h/01h/03h/80h/02h/81h 分支 | spec/562-ecl2-helper-api-and-operand-audit.md |
-| `0317` | sub_317 | INITECL | 362 | 134 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `0317` | sub_317 | INITECL | 362 | 134 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0499` | sub_499 | GETECL | 189 | 84 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0556` | sub_556 | GETMONSTERS | 103 | 36 | 0 | 1 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
 | `05BD` | sub_5BD | MAXRANGE | 143 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `07DC` | sub_7DC | ADDFNC | 37 | 16 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDFNC：byte pair 併成 word，回傳 (b<<8)+a；不是算術加法 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0801` | sub_801 | WHICHAREA | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘 | knowledge/gold-box-ecl-interpreter.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |
 | `085C` | sub_85C | FINDGUY | 97 | 35 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `08BD` | sub_8BD | CHECKSPECIALS | 875 | 292 | 1 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md<br>spec/565-ecl-memory-read-path-and-asymmetry.md<br>spec/567-ecl-packed-text-and-bank1-field-map.md |
+| `08BD` | sub_8BD | CHECKSPECIALS | 875 | 292 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>knowledge/gold-box-ecl-interpreter.md<br>spec/565-ecl-memory-read-path-and-asymmetry.md<br>spec/567-ecl-packed-text-and-bank1-field-map.md |
 | `0C28` | sub_C28 | STORESPECIALS | 515 | 163 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0E2B` | sub_E2B | STOREVALUE | 465 | 162 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0FFC` | sub_FFC | GETVALUE | 30 | 12 | 1 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | spec/565-ecl-memory-read-path-and-asymmetry.md |
@@ -36,7 +36,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `179E` | sub_179E | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `17A3` | sub_17A3 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `17A8` | sub_17A8 | — | 72 | 31 | 2 | 2 |  | 待解讀 | — | — | — |
-| `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
+| `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1808` | sub_1808 | — | 130 | 43 | 2 | 5 |  | 待解讀 | — | — | — |
 | `188A` | sub_188A | ECLMENUV | 158 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1928` | sub_1928 | CHECKSTRING | 81 | 36 | 0 | 0 | ✓ | 待解讀 | — | — | — |

@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_19A2+1`、`call loc_19E9+1`、`call loc_17E7`、`call sub_177A`、`call sub_16BD`、`call far ptr loc_1655+2`（body 共 37 bytes，已逐條讀完） | context/50-log-2026-08-09-13.md<br>spec/507-pc98-general-target-object-order-projection.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/516-fire-knife-external-map-handoff-audit.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
+| `0000` | sub_0 | — | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_19A2+1`、`call loc_19E9+1`、`call loc_17E7`、`call sub_177A`、`call sub_16BD`、`call far ptr loc_1655+2`（body 共 37 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>context/50-log-2026-08-09-13.md<br>spec/507-pc98-general-target-object-order-projection.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/516-fire-knife-external-map-handoff-audit.md |
+| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
 | `021D` | sub_21D | — | 138 | 45 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02A7` | sub_2A7 | — | 286 | 104 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03C5` | sub_3C5 | — | 141 | 52 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0939` | sub_939 | — | 136 | 57 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `09C1` | sub_9C1 | — | 89 | 34 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0A34` | sub_A34 | — | 431 | 196 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `0BE3` | sub_BE3 | — | 69 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `0BE3` | sub_BE3 | — | 69 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0C28` | sub_C28 | — | 1187 | 391 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `10CB` | sub_10CB | — | 60 | 28 | 4 | 0 | ✓ | 待解讀 | — | — | — |
 | `1107` | sub_1107 | — | 58 | 27 | 1 | 0 | ✓ | 待解讀 | — | — | — |
@@ -31,8 +31,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1652` | sub_1652 | — | 8 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `169F` | sub_169F | — | 18 | 7 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
 | `16BD` | sub_16BD | — | 41 | 15 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 41 bytes，已逐條讀完） | — |
-| `16E6` | sub_16E6 | — | 148 | 54 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `177A` | sub_177A | — | 92 | 46 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `16E6` | sub_16E6 | — | 148 | 54 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `177A` | sub_177A | — | 92 | 46 | 2 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `17D6` | sub_17D6 | — | 232 | 108 | 4 | 4 | ✓ | 待解讀 | — | — | — |
 | `18BE` | sub_18BE | — | 50 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `18F3` | sub_18F3 | — | 130 | 53 | 2 | 1 | ✓ | 待解讀 | — | — | — |
@@ -49,9 +49,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `274C` | sub_274C | — | 220 | 81 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2828` | sub_2828 | — | 70 | 20 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `2877` | sub_2877 | — | 60 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `28B3` | sub_28B3 | — | 438 | 149 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `28B3` | sub_28B3 | — | 438 | 149 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2A6D` | sub_2A6D | — | 290 | 113 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `2BAA` | sub_2BAA | — | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `2BAA` | sub_2BAA | — | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2E05` | sub_2E05 | — | 54 | 22 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2E6A` | sub_2E6A | — | 430 | 163 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `3018` | sub_3018 | — | 67 | 23 | 1 | 1 | ✓ | 待解讀 | — | — | — |

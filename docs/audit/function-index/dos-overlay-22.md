@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 32 | 10 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完） | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
+| `0000` | sub_0 | — | 32 | 10 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
 | `0020` | sub_20 | — | 367 | 125 | 1 | 2 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |
 | `0219` | sub_219 | — | 470 | 194 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `03F5` | sub_3F5 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | spec/517-reverse-engineering-gap-inventory.md |
@@ -15,14 +15,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `09FC` | sub_9FC | — | 875 | 326 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0D67` | sub_D67 | — | 170 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E11` | sub_E11 | — | 245 | 100 | 10 | 3 | ✓ | 待解讀 | — | — | — |
-| `0F06` | sub_F06 | — | 441 | 168 | 47 | 6 | ✓ | 待解讀 | — | — | — |
+| `0F06` | sub_F06 | — | 441 | 168 | 47 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `10D2` | sub_10D2 | — | 282 | 102 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1263` | sub_1263 | — | 663 | 266 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `145D` | sub_145D | — | 5 | 3 | 22 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1462` | sub_1462 | — | 7 | 3 | 14 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:755Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1499` | sub_1499 | — | 5 | 2 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 2Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `149E` | sub_149E | — | 195 | 71 | 6 | 4 |  | 待解讀 | — | — | — |
-| `1513` | sub_1513 | — | 18 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+9]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
+| `1513` | sub_1513 | — | 18 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+9]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1586` | sub_1586 | — | 10 | 6 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `1590` | sub_1590 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:634h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1595` | sub_1595 | — | 5 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -59,10 +59,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完） | — |
 | `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `22B4` | sub_22B4 | — | 310 | 122 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `23F2` | sub_23F2 | — | 87 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
+| `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/spell-status-message-strings.md |
 | `2494` | sub_2494 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `24CD` | sub_24CD | — | 168 | 73 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2580` | sub_2580 | — | 174 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -71,7 +71,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `26BB` | sub_26BB | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `26F6` | sub_26F6 | — | 82 | 39 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2754` | sub_2754 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `2799` | sub_2799 | — | 1120 | 433 | 0 | 6 | ✓ | 待解讀 | — | — | — |
+| `2799` | sub_2799 | — | 1120 | 433 | 0 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2BF9` | sub_2BF9 | — | 433 | 148 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2DB6` | sub_2DB6 | — | 416 | 137 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `2F5E` | sub_2F5E | — | 61 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -110,7 +110,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4432` | sub_4432 | — | 96 | 50 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4493` | sub_4493 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4492，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `44D3` | sub_44D3 | — | 203 | 72 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `45B5` | sub_45B5 | — | 176 | 72 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `45B5` | sub_45B5 | — | 176 | 72 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `4672` | sub_4672 | — | 171 | 72 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `472C` | sub_472C | — | 32 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `4759` | sub_4759 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |

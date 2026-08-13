@@ -4499,7 +4499,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4512,7 +4515,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -4557,11 +4563,11 @@
    "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_104A`、`call sub_17E7`、`call far ptr sub_19A3`、`call loc_10B4`、`call far ptr loc_16BB+2`、`call loc_EB4+2`（body 共 82 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/gold-box-ecl-interpreter.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -4643,6 +4649,7 @@
    "note": "ECL opcode 03h 的 handler（binding exact，語意未解讀）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md"
    ]
@@ -4662,7 +4669,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -4953,7 +4961,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 11h／12h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -5025,7 +5034,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 20h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -5074,7 +5084,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 85 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 85 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5091,7 +5104,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 27 bytes，已逐條讀完）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -5124,7 +5138,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -5388,7 +5403,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -5692,7 +5710,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ch 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -6101,6 +6120,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/569-small-function-batch-reading.md"
    ]
   },
@@ -6252,7 +6272,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6268,7 +6292,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr unk_104A`、`call loc_770`、`call far ptr sub_1184`、`call far ptr loc_16BC+1`、`call loc_69D+2`、`call far ptr loc_15CF+2`（body 共 57 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr unk_104A`、`call loc_770`、`call far ptr sub_1184`、`call far ptr loc_16BC+1`、`call loc_69D+2`、`call far ptr loc_15CF+2`（body 共 57 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6281,7 +6308,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6504,6 +6534,8 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "unit 初始化(LOADSHOP):依序 far call 依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "spec/572-resident-service-functions.md"
    ]
   },
@@ -6518,7 +6550,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6592,11 +6627,11 @@
    "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -6616,11 +6651,11 @@
    "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
   {
@@ -6718,7 +6753,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6774,6 +6812,7 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh",
    "citations": [
+    "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
    ]
@@ -6815,7 +6854,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -6833,6 +6875,7 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/547-normal-beholder-cave-presentation-state.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
@@ -6978,7 +7021,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7090,12 +7136,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/518-dos-start-ecl-call-address-space-audit.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
   {
@@ -7206,7 +7252,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7343,7 +7393,11 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7469,7 +7523,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7503,6 +7560,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "spec/508-pc98-general-target-scan-producer.md"
    ]
@@ -7544,7 +7602,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7596,7 +7657,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7736,7 +7800,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7810,7 +7877,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+2Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+2Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8030,6 +8100,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "spec/572-resident-service-functions.md"
    ]
   },
@@ -8313,7 +8385,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8471,7 +8546,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [di+30Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [di+30Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8563,12 +8641,12 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "unit 初始化(LOADINIT):依序 far call 八個依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/525-pc98-tempsearch-display-state.md",
-    "spec/572-resident-service-functions.md"
+    "spec/525-pc98-tempsearch-display-state.md"
    ]
   },
   {
@@ -8600,7 +8678,9 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "與 PC-98 overlay-12:0000h（entry#2）助憶碼序列完全相同，語意同該筆：unit 初始化:依序呼叫四個本 overlay 內的 routine ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/string-pairs.md",
     "spec/569-small-function-batch-reading.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -8637,7 +8717,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8746,7 +8829,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8952,7 +9038,11 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9114,7 +9204,10 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9430,7 +9523,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9700,7 +9796,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9945,7 +10044,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9973,7 +10075,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10506,7 +10611,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10535,7 +10643,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10548,7 +10659,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10790,7 +10904,11 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10803,7 +10921,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10993,7 +11114,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11171,7 +11295,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11333,7 +11460,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11577,12 +11707,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 0FDh:7Ah`、`call far ptr 175h:2Ah`、`call loc_EB2+4`、`call far ptr 196h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/528-pc98-moveparty-action-transaction-boundary.md"
+    "spec/527-pc98-moveparty-action-writer-boundary.md"
    ]
   },
   {
@@ -11598,12 +11728,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md"
+    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
    ]
   },
   {
@@ -11630,7 +11760,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11714,6 +11847,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
@@ -11742,7 +11876,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11784,7 +11921,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11882,7 +12022,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12123,7 +12266,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12676,7 +12822,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr loc_15D2+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr loc_15D2+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12979,7 +13128,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13088,7 +13240,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13101,7 +13256,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13114,7 +13272,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13240,7 +13401,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13321,7 +13486,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13822,7 +13990,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ch:2Ah`、`call far ptr 11Ah:57h`、`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 167h:4Dh`（body 共 32 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ch:2Ah`、`call far ptr 11Ah:57h`、`call far ptr 141h:9Dh`、`call far ptr 14Dh:101h`、`call far ptr 167h:4Dh`（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13874,7 +14046,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13939,7 +14114,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14036,7 +14214,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14062,7 +14244,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14075,7 +14260,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14218,7 +14406,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14244,7 +14435,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14311,7 +14505,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 39h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 45 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 39h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 45 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14386,6 +14583,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr sub_15D1`、`call loc_1656+1`、`call far ptr loc_14AB+2`、`call sub_16BD`、`call loc_19E7+3`（body 共 32 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
    ]
@@ -14528,7 +14727,11 @@
    "callers": 47,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14627,7 +14830,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+9]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+9]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15185,7 +15391,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15229,6 +15438,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/spell-status-message-strings.md"
    ]
   },
@@ -15371,7 +15581,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15926,7 +16139,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16378,6 +16594,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 3 個呼叫，沒有其他動作：`call loc_15D0+1`、`call far ptr sub_19EA`、`call loc_1657`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
@@ -16397,6 +16615,7 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "與 pc98 overlay-23:0016h 助憶碼序列完全相同（64 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -16416,6 +16635,7 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "與 pc98 overlay-23:00C9h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：CALLEFFECT:DS:A66Eh 非零時一律 far call DS:A28Ch(忽略 id);否則以 id*4 索引 DS:A040h 起的 far pointer 表分派。五個參數原樣轉傳 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
@@ -16536,6 +16756,7 @@
    "spec": "docs/spec/577-attempttohit-and-effect-chain-walk.md",
    "note": "與 pc98 overlay-23:122Ch 助憶碼序列完全相同（65 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ATTEMPTTOHIT(need, attacker, target):d20 存進全域 DS:A039h,\u003c=1 必失手、=20 改成 100;呼叫 CHECKFX(0Ah,target) 與 CHECKFX(10h,attacker)(兩者可改寫該全域);依 target^[198h] 取 bank1^[6E2h] 或 [6E0h];A039h\u003c0 再失手一次;命中條件 A039h + target^[19Ah] + v \u003e= need ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/577-attempttohit-and-effect-chain-walk.md"
    ]
   },
@@ -16664,7 +16885,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 19h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 19h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16865,7 +17089,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16880,7 +17107,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+34h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+34h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16910,7 +17140,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+3Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+3Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17021,11 +17254,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_19A2+1`、`call loc_19E9+1`、`call loc_17E7`、`call sub_177A`、`call sub_16BD`、`call far ptr loc_1655+2`（body 共 37 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "context/50-log-2026-08-09-13.md",
     "spec/507-pc98-general-target-object-order-projection.md",
     "spec/508-pc98-general-target-scan-producer.md",
-    "spec/516-fire-knife-external-map-handoff-audit.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/516-fire-knife-external-map-handoff-audit.md"
    ]
   },
   {
@@ -17041,6 +17275,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
     "spec/525-pc98-tempsearch-display-state.md",
@@ -17162,7 +17397,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17379,7 +17617,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17392,7 +17633,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17620,7 +17864,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17649,7 +17896,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17798,7 +18048,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17895,7 +18148,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器"
+   "note": "unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17908,7 +18164,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17921,7 +18180,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18080,7 +18342,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18093,7 +18358,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18145,7 +18413,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18352,7 +18623,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18365,7 +18640,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18518,12 +18796,12 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md",
-    "spec/524-dos-overlay30-geo-loader-source.md"
+    "spec/522-dos-buffer-four-plane-fill.md"
    ]
   },
   {
@@ -18539,6 +18817,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/README.md"
@@ -18557,6 +18836,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
@@ -18620,6 +18900,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
@@ -19170,7 +19451,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19183,7 +19467,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19196,7 +19483,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19251,7 +19541,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19266,6 +19559,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-triage.md"
    ]
   },
@@ -19299,7 +19593,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19312,7 +19609,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23836,7 +24136,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -23901,11 +24204,11 @@
    "note": "呼叫序列：依序執行 15 個呼叫，沒有其他動作：`call far ptr loc_1019+1`、`call far ptr loc_17B6+1`、`call far ptr loc_197F+4`、`call far ptr loc_1083+1`、`call loc_1694+3`、`call far ptr loc_E26`（body 共 82 bytes，已逐條讀完）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/gold-box-ecl-interpreter.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -23987,6 +24290,7 @@
    "note": "ECL opcode 03h 的 handler（binding exact，語意未解讀）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md"
    ]
@@ -24062,6 +24366,7 @@
    "note": "ECL opcode 0Ah 的 handler（binding exact，語意未解讀）",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
@@ -24322,7 +24627,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 0Fh 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -24377,7 +24683,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 13h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -24547,7 +24854,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_66B+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md"
    ]
   },
   {
@@ -24709,7 +25017,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -24803,7 +25114,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25323,6 +25637,7 @@
    "note": "ECL opcode dispatcher；由 ds:0A891h 讀 opcode，00h..40h 中除 1Fh 外共 64 個 opcode 對應 52 個 handler",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
@@ -25378,6 +25693,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/569-small-function-batch-reading.md"
    ]
   },
@@ -25393,7 +25709,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25424,7 +25743,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25437,7 +25760,10 @@
    "callers": 6,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25556,7 +25882,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25749,7 +26078,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25762,7 +26094,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25827,7 +26162,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25868,7 +26206,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, 0A35Bh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 32 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, 0A35Bh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25909,7 +26250,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -25991,6 +26335,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call far ptr 10Dh:84h`、`call far ptr 0FAh:7Ah`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call sub_6E0`、`call far ptr 19Ah:2Ah`（body 共 37 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "spec/572-resident-service-functions.md"
    ]
   },
@@ -26112,11 +26458,11 @@
    "note": "與 dos overlay-07:0000h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_EB3+3`、`call far ptr unk_17E7`、`call loc_14AD`、`call far ptr sub_177A`、`call loc_1049+1`、`call loc_15D0+1`（body 共 52 bytes，已逐條讀完） ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-handler-operand-audit.md",
+    "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -26136,6 +26482,7 @@
    "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
    "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
+    "audit/embedded-strings.md",
     "project-status.md",
     "spec/562-ecl2-helper-api-and-operand-audit.md",
     "spec/564-ecl-operand-decoding-and-arity-validation.md",
@@ -26174,7 +26521,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26320,6 +26670,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
     "spec/567-ecl-packed-text-and-bank1-field-map.md"
@@ -26616,7 +26967,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26832,7 +27186,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26875,7 +27233,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26888,7 +27249,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -26927,7 +27291,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27071,7 +27438,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27174,6 +27544,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1018+2`、`call far ptr loc_187F+4`、`call sub_1923`、`call far ptr loc_1817`、`call far ptr loc_1695+2`、`call far ptr sub_15A1`（body 共 62 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "spec/508-pc98-general-target-scan-producer.md"
    ]
@@ -27190,7 +27561,10 @@
    "callers": 0,
    "calls": 14,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27254,6 +27628,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
     "spec/493-pc98-quick-sleep-area-target.md",
@@ -27674,7 +28049,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27709,6 +28087,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "spec/572-resident-service-functions.md"
    ]
   },
@@ -27827,7 +28207,10 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27869,7 +28252,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28031,7 +28417,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1587`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 38 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1587`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 38 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28089,7 +28478,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_155A+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_155A+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28195,12 +28587,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 8 個呼叫，沒有其他動作：`call far ptr 0C9h:2Fh`、`call far ptr 117h:57h`、`call far ptr 232h:34h`、`call far ptr 194h:43h`、`call far ptr 176h:57h`、`call far ptr 8Bh:2Ah`（body 共 47 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/525-pc98-tempsearch-display-state.md",
-    "spec/572-resident-service-functions.md"
+    "spec/525-pc98-tempsearch-display-state.md"
    ]
   },
   {
@@ -28297,7 +28689,9 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "unit 初始化:依序呼叫四個本 overlay 內的 routine",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/string-pairs.md",
     "spec/569-small-function-batch-reading.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -28334,7 +28728,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28827,7 +29224,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28980,7 +29380,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29164,7 +29567,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29347,7 +29753,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29795,7 +30204,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30024,6 +30436,7 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "擲 d100(count=1,sides=64h);結果 \u003c= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "spec/573-effprocs-effect-handlers-first-batch.md"
    ]
@@ -30574,7 +30987,11 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30588,7 +31005,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30643,7 +31063,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30699,7 +31122,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30713,7 +31139,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30757,7 +31186,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30904,7 +31336,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30934,7 +31369,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30994,7 +31432,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31157,7 +31598,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31170,7 +31614,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31595,12 +32042,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 0FAh:7Ah`、`call far ptr 172h:2Ah`、`call far ptr 0DCh:66h`、`call far ptr 194h:43h`（body 共 62 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/528-pc98-moveparty-action-transaction-boundary.md"
+    "spec/527-pc98-moveparty-action-writer-boundary.md"
    ]
   },
   {
@@ -31616,12 +32063,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md"
+    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
    ]
   },
   {
@@ -31739,12 +32186,12 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/528-pc98-moveparty-action-transaction-boundary.md"
+    "spec/527-pc98-moveparty-action-writer-boundary.md"
    ]
   },
   {
@@ -31758,7 +32205,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31847,7 +32297,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31860,7 +32314,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31886,7 +32343,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32047,7 +32507,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 50h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 50h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32075,7 +32538,11 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32090,7 +32557,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32289,7 +32759,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32468,7 +32941,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32591,7 +33068,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_F0E`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 46 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_F0E`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 46 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32605,7 +33085,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32620,7 +33103,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 94 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 94 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32634,7 +33120,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32709,7 +33198,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 50 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 50 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33133,7 +33625,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr sub_15A1`、`call far ptr loc_101A`、`call far ptr sub_11C7`、`call far ptr loc_147C+1`、`call loc_17B4+3`、`call far ptr loc_1981+2`（body 共 62 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call far ptr sub_15A1`、`call far ptr loc_101A`、`call far ptr sub_11C7`、`call far ptr loc_147C+1`、`call loc_17B4+3`、`call far ptr loc_1981+2`（body 共 62 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33146,7 +33641,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33159,7 +33657,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33237,7 +33738,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33312,7 +33816,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33327,7 +33834,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 81Fh:1A2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 81Fh:1A2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33342,7 +33852,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33426,7 +33939,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33563,7 +34079,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-55h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 82 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-55h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 82 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33591,7 +34110,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33720,7 +34242,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -33920,7 +34445,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34054,7 +34582,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34191,7 +34722,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34253,7 +34787,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_1695+2`、`call far ptr sub_17B7`、`call far ptr loc_11C4+3`、`call sub_147D`、`call far ptr sub_1154`、`call far ptr loc_1083+1`（body 共 57 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34267,7 +34805,10 @@
    "callers": 4,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34323,7 +34864,10 @@
    "callers": 0,
    "calls": 13,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34410,7 +34954,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34515,7 +35062,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35063,7 +35613,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ah:2Ah`、`call far ptr 117h:57h`、`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 164h:57h`（body 共 32 bytes，已逐條讀完）"
+   "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ah:2Ah`、`call far ptr 117h:57h`、`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 164h:57h`（body 共 32 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35116,7 +35670,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35181,7 +35738,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35220,7 +35780,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35263,7 +35826,11 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35291,7 +35858,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35305,7 +35875,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35361,7 +35934,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35375,7 +35951,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35459,7 +36038,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35502,7 +36084,11 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35516,7 +36102,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35698,6 +36287,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call sub_15A1`、`call far ptr loc_1625+2`、`call far ptr loc_147C+1`、`call far ptr loc_1696+1`、`call loc_19CA`（body 共 32 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
    ]
@@ -35744,7 +36335,11 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35824,7 +36419,11 @@
    "callers": 10,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35865,7 +36464,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36061,7 +36663,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36091,7 +36696,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1687+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1687+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36218,7 +36826,10 @@
    "callers": 5,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36415,7 +37026,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36475,6 +37089,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "常數字串：以固定字串「は魔法の楯に守られた。」（unk_24AA，長度 22）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/spell-status-message-strings.md"
    ]
   },
@@ -37723,6 +38338,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1627`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
@@ -37743,6 +38360,7 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -37763,6 +38381,7 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "CALLEFFECT:DS:A66Eh 非零時一律 far call DS:A28Ch(忽略 id);否則以 id*4 索引 DS:A040h 起的 far pointer 表分派。五個參數原樣轉傳",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
@@ -37852,7 +38471,10 @@
    "callers": 0,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37892,6 +38514,7 @@
    "spec": "docs/spec/577-attempttohit-and-effect-chain-walk.md",
    "note": "ATTEMPTTOHIT(need, attacker, target):d20 存進全域 DS:A039h,\u003c=1 必失手、=20 改成 100;呼叫 CHECKFX(0Ah,target) 與 CHECKFX(10h,attacker)(兩者可改寫該全域);依 target^[198h] 取 bank1^[6E2h] 或 [6E0h];A039h\u003c0 再失手一次;命中條件 A039h + target^[19Ah] + v \u003e= need",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/571-trytohit-attack-resolution.md",
     "spec/577-attempttohit-and-effect-chain-walk.md"
@@ -37985,7 +38608,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38030,7 +38656,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Ch]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Ch]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38045,7 +38674,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38238,7 +38870,9 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "同 DONEWSTRENGTH 的比較規則,對 SS 上的區域結構操作:p[-2]:p[-1] 為力量、p[-4]:p[-3] 為百分位,較大者寫回 p[-1]/p[-3](當前值同步到最大值欄位)",
    "citations": [
+    "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "audit/string-pairs.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
@@ -38329,7 +38963,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/581-putdamage-pipeline.md",
+   "note": "PUTDAMAGE:傷害進 DS:A02Eh 後 CHECKFX(06h);有豁免時 kind=1 歸零、kind=2 有號減半,無豁免時改走 CHECKFX(14h);零傷害顯示 is Unaffected。訊息前綴用 DS:A02Fh 的完整值比較(01h Fire/02h Cold/04h Electricity/10h Acid,08h 需其餘位元全 0 才算 Magic),混合屬性不顯示前綴。扣血後在 DS:7F27h=5 時處理失去法術;+197h=0 才走倒下/瀕死/死亡訊息(死亡是覆寫不是附加),死亡狀態集合 {6,7,8} 與 KILLDUDE 的 32 bytes set 常數逐位元組相同",
+   "citations": [
+    "spec/581-putdamage-pipeline.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38362,6 +39002,7 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "HEALDUDE(only_if_hurt,amount,char):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh)",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -38382,6 +39023,7 @@
    "spec": "docs/spec/579-character-status-fields.md",
    "note": "STANDUP(hp,char):先過一道檢定,通過才把 +196h 設 0(可行動)、+197h=1、+1A5h=hp;依 +198h 是否為 1 選兩則訊息之一顯示。訊息是 Pascal 短字串,直接嵌在 overlay code 段(PC-98 為 Shift-JIS)",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -38418,11 +39060,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md",
     "context/50-log-2026-08-09-13.md",
     "spec/507-pc98-general-target-object-order-projection.md",
     "spec/508-pc98-general-target-scan-producer.md",
-    "spec/516-fire-knife-external-map-handoff-audit.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/516-fire-knife-external-map-handoff-audit.md"
    ]
   },
   {
@@ -38438,6 +39081,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
     "spec/525-pc98-tempsearch-display-state.md",
@@ -38635,7 +39279,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38676,7 +39323,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39097,7 +39747,11 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39370,7 +40024,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h"
+   "note": "unit 初始化:far call 19Ah:2Ah 與 164h:57h",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39383,7 +40040,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39411,7 +40071,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39439,7 +40102,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39508,7 +40174,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39569,7 +40238,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah"
+   "note": "unit 初始化:far call 176h:57h 後交給 19Ah:2Ah",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39583,7 +40255,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39610,7 +40285,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39747,7 +40425,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39774,7 +40455,10 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39832,7 +40516,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39979,7 +40666,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md",
+    "audit/string-pairs.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39993,7 +40684,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40156,12 +40850,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call far ptr 232h:34h`、`call far ptr 19Ah:2Ah`（body 共 17 bytes，已逐條讀完）",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md",
-    "spec/524-dos-overlay30-geo-loader-source.md"
+    "spec/522-dos-buffer-four-plane-fill.md"
    ]
   },
   {
@@ -40177,6 +40871,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/README.md"
@@ -40196,6 +40891,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
    ]
   },
@@ -40240,7 +40936,10 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40339,6 +41038,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/embedded-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
@@ -40867,7 +41567,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40954,7 +41657,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40970,7 +41676,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40987,7 +41696,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/embedded-strings.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41954,9 +42666,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 11,
    "CodeBytes": 9201,
    "Undefined": 458,

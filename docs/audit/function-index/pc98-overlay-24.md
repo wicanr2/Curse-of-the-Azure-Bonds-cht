@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADGENERIC | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完） | context/50-log-2026-08-09-13.md<br>spec/507-pc98-general-target-object-order-projection.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/516-fire-knife-external-map-handoff-audit.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
+| `0000` | sub_0 | LOADGENERIC | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_1982+1`、`call sub_19CA`、`call far ptr loc_17B7`、`call loc_1749+1`、`call sub_1697`、`call loc_1626+1`（body 共 37 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>context/50-log-2026-08-09-13.md<br>spec/507-pc98-general-target-object-order-projection.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/516-fire-knife-external-map-handoff-audit.md |
+| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
 | `021D` | sub_21D | — | 138 | 45 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02A7` | sub_2A7 | — | 286 | 104 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03C5` | sub_3C5 | — | 141 | 52 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -20,10 +20,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12E5` | sub_12E5 | BYTETOSTR | 60 | 28 | 4 | 0 | ✓ | 待解讀 | — | — | — |
 | `1321` | sub_1321 | WORDTOSTR | 58 | 27 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `135B` | sub_135B | LONGTOSTR | 57 | 25 | 0 | 0 | ✓ | 待解讀 | — | — | — |
-| `1394` | sub_1394 | DEXDEFBONUS | 130 | 54 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1394` | sub_1394 | DEXDEFBONUS | 130 | 54 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1416` | sub_1416 | DEXRABONUS | 130 | 54 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1498` | sub_1498 | — | 152 | 62 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `1530` | sub_1530 | STRHITBONUS | 163 | 67 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `1530` | sub_1530 | STRHITBONUS | 163 | 67 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `15D3` | sub_15D3 | STRDAMBONUS | 79 | 31 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jb short loc_1633`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 79 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 55 | 23 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完） | — |
 | `1659` | sub_1659 | STRWGTBONUS | 22 | 9 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+var_3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | — |
@@ -52,7 +52,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `25CD` | sub_25CD | SPELLON | 107 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `2658` | sub_2658 | SAVEDAMAGE | 254 | 80 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2776` | sub_2776 | HEALMSG | 109 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `27E3` | sub_27E3 | ENEMYOF | 36 | 13 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `27E3` | sub_27E3 | ENEMYOF | 36 | 13 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `2807` | sub_2807 | FIGGOODBAD | 84 | 29 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `285B` | sub_285B | FINDFOES | 292 | 110 | 0 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md |
 | `297F` | sub_297F | FIGRANGE | 220 | 81 | 0 | 3 | ✓ | 待解讀 | — | — | — |

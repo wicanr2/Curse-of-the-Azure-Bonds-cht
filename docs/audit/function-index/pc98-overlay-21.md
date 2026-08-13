@@ -5,25 +5,25 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
+| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `001B` | sub_1B | MAXIUMWEIGHT | 32 | 12 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `003B` | sub_3B | LOSEWEIGHT | 28 | 10 | 3 | 0 | ✓ | 待解讀 | — | — | — |
-| `0057` | sub_57 | GAINWEIGHT | 28 | 10 | 4 | 0 | ✓ | 待解讀 | — | — | — |
+| `003B` | sub_3B | LOSEWEIGHT | 28 | 10 | 3 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0057` | sub_57 | GAINWEIGHT | 28 | 10 | 4 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0073` | sub_73 | TOOHEAVY | 84 | 31 | 3 | 2 | ✓ | 待解讀 | — | — | — |
 | `00C7` | sub_C7 | CASHPOOL | 129 | 51 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0148` | sub_148 | CHANGECHARMONEY | 85 | 31 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `019D` | sub_19D | CHANGEPOOLMONEY | 86 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `0218` | sub_218 | ADDPLATINUM | 145 | 53 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `019D` | sub_19D | CHANGEPOOLMONEY | 86 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0218` | sub_218 | ADDPLATINUM | 145 | 53 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `02AB` | sub_2AB | GETMONEYINPUT | 461 | 203 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0485` | sub_485 | GIVEMONEY | 188 | 71 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0541` | sub_541 | POOLMONEY | 210 | 79 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0613` | sub_613 | NUMOFPCS | 86 | 30 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0669` | sub_669 | SHAREPOOL | 948 | 382 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `0A1D` | sub_A1D | DROPCASH | 124 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `0A1D` | sub_A1D | DROPCASH | 124 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0AA6` | sub_AA6 | — | 206 | 87 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0B9B` | sub_B9B | GETMONEYTYPE | 520 | 219 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0DE8` | sub_DE8 | TAKEMONEY | 12 | 4 | 0 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
-| `1070` | sub_1070 | CHECKTREASURE | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `0DE8` | sub_DE8 | TAKEMONEY | 12 | 4 | 0 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `1070` | sub_1070 | CHECKTREASURE | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `10C4` | sub_10C4 | — | 56 | 25 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `10FC` | sub_10FC | CREATERNDTREASURE | 1455 | 538 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `147D` | sub_147D | — | 143 | 51 | 2 | 2 |  | 待解讀 | — | — | — |
