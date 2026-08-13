@@ -134,7 +134,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1812D` | sub_1812D | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `18194` | sub_18194 | — | 51 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
 | `181C7` | sub_181C7 | — | 40 | 26 | 1 | 1 |  | 待解讀 | — | — | — |
-| `18229` | sub_18229 | — | 10 | 6 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call sub_18878`，參數原樣傳遞（body 共 10 bytes，已逐條讀完） | — |
+| `18229` | sub_18229 | — | 10 | 6 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_18878`（body 共 10 bytes，已逐條讀完） | — |
 | `18233` | sub_18233 | — | 351 | 124 | 1 | 4 |  | 待解讀 | — | — | — |
 | `18392` | sub_18392 | — | 77 | 32 | 1 | 2 |  | 待解讀 | — | — | — |
 | `18407` | sub_18407 | — | 311 | 129 | 2 | 12 |  | 待解讀 | — | — | — |
@@ -162,7 +162,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18A8E` | sub_18A8E | — | 25 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
 | `18AA7` | sub_18AA7 | — | 232 | 95 | 1 | 3 |  | 待解讀 | — | — | — |
 | `18B8F` | sub_18B8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `18BB1` | sub_18BB1 | — | 26 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
+| `18BB1` | sub_18BB1 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AC99`（body 共 26 bytes，已逐條讀完） | — |
 | `18BDB` | sub_18BDB | — | 58 | 40 | 3 | 0 |  | 待解讀 | — | — | — |
 | `18C72` | sub_18C72 | — | 37 | 19 | 2 | 0 |  | 待解讀 | — | — | — |
 | `18D3A` | sub_18D3A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
@@ -214,7 +214,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 待解讀 | — | — | — |
 | `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19AC2` | sub_19AC2 | — | 12 | 10 | 2 | 1 |  | 待解讀 | — | — | — |
+| `19AC2` | sub_19AC2 | — | 12 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完） | — |
 | `19ACE` | sub_19ACE | — | 50 | 27 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19B00` | sub_19B00 | — | 79 | 36 | 2 | 1 |  | 待解讀 | — | — | — |
 | `19B4F` | sub_19B4F | — | 46 | 19 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -227,9 +227,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 待解讀 | — | — | — |
 | `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
-| `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
 | `19EC4` | sub_19EC4 | — | 186 | 71 | 1 | 5 |  | 待解讀 | — | — | — |
-| `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完） | — |
 | `19F8A` | sub_19F8A | — | 59 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
 | `19FC5` | sub_19FC5 | — | 88 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A01D` | sub_1A01D | — | 27 | 14 | 3 | 0 |  | 待解讀 | — | — | — |
@@ -292,10 +292,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B23A` | sub_1B23A | — | 19 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1B24D` | sub_1B24D | — | 63 | 30 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1B28C` | sub_1B28C | — | 92 | 44 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B334` | sub_1B334 | — | 10 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1B33E` | sub_1B33E | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B348` | sub_1B348 | — | 10 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1B352` | sub_1B352 | — | 10 | 8 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B334` | sub_1B334 | — | 10 | 8 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE4`（body 共 10 bytes，已逐條讀完） | — |
+| `1B33E` | sub_1B33E | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE0`（body 共 10 bytes，已逐條讀完） | — |
+| `1B348` | sub_1B348 | — | 10 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B0A7`（body 共 10 bytes，已逐條讀完） | — |
+| `1B352` | sub_1B352 | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完） | — |
 | `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 待解讀 | — | — | — |

@@ -11,7 +11,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `00D5` | sub_D5 | — | 240 | 92 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `01E5` | sub_1E5 | — | 431 | 180 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03D4` | sub_3D4 | — | 1041 | 365 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `07E5` | sub_7E5 | — | 24 | 14 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `07E5` | sub_7E5 | — | 24 | 14 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完） | — |
 | `07FD` | sub_7FD | — | 141 | 52 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `09C4` | sub_9C4 | — | 76 | 31 | 2 | 1 | ✓ | 待解讀 | — | — | — |

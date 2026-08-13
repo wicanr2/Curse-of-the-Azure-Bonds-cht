@@ -61,7 +61,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17F4` | sub_17F4 | — | 10 | 4 | 2 | 1 |  | 待解讀 | — | — | — |
 | `17FE` | sub_17FE | — | 11 | 5 | 3 | 1 |  | 待解讀 | — | — | — |
 | `180D` | sub_180D | — | 10 | 5 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1817` | sub_1817 | — | 9 | 4 | 4 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call far ptr loc_689+2`，參數原樣傳遞（body 共 9 bytes，已逐條讀完） | — |
+| `1817` | sub_1817 | — | 9 | 4 | 4 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr loc_689+2`（body 共 9 bytes，已逐條讀完） | — |
 | `1820` | sub_1820 | — | 684 | 182 | 1 | 9 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 24h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |
 | `1B28` | sub_1B28 | — | 3 | 2 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 25h／26h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `1BEA` | sub_1BEA | — | 94 | 37 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 27h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |

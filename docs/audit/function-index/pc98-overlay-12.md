@@ -56,7 +56,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `126D` | sub_126D | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `12A0` | sub_12A0 | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `12D3` | sub_12D3 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
-| `12DC` | sub_12DC | — | 33 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `12DC` | sub_12DC | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完） | — |
 | `12FD` | sub_12FD | — | 34 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `131F` | sub_131F | — | 32 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `133F` | sub_133F | — | 87 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -78,16 +78,16 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1551` | sub_1551 | — | 10 | 3 | 2 | 0 |  | 待解讀 | — | — | — |
 | `155B` | sub_155B | — | 10 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1565` | sub_1565 | — | 6 | 2 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1574` | sub_1574 | — | 27 | 12 | 2 | 1 |  | 待解讀 | — | — | — |
-| `158F` | sub_158F | — | 22 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `15A5` | sub_15A5 | — | 22 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `15BB` | sub_15BB | — | 22 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1574` | sub_1574 | — | 27 | 12 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 27 bytes，已逐條讀完） | — |
+| `158F` | sub_158F | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
+| `15A5` | sub_15A5 | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
+| `15BB` | sub_15BB | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `15D1` | sub_15D1 | — | 36 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1621` | sub_1621 | — | 1 | 1 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1622` | sub_1622 | — | 5 | 2 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1627` | sub_1627 | — | 155 | 54 | 2 | 3 |  | 待解讀 | — | — | audit/function-triage.md |
 | `16C2` | sub_16C2 | — | 59 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `16FD` | sub_16FD | — | 22 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `16FD` | sub_16FD | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `1713` | sub_1713 | — | 19 | 7 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1726` | sub_1726 | — | 48 | 23 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `176D` | sub_176D | — | 60 | 28 | 0 | 3 | ✓ | 待解讀 | — | — | — |
@@ -115,13 +115,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2274` | sub_2274 | — | 82 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `22C6` | sub_22C6 | — | 63 | 26 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2305` | sub_2305 | — | 123 | 48 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2380` | sub_2380 | — | 22 | 11 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2380` | sub_2380 | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F5B`（body 共 22 bytes，已逐條讀完） | — |
 | `2396` | sub_2396 | — | 94 | 40 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `23F4` | sub_23F4 | — | 16 | 9 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `2404` | sub_2404 | — | 16 | 9 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `23F4` | sub_23F4 | — | 16 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完） | — |
+| `2404` | sub_2404 | — | 16 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完） | — |
 | `2414` | sub_2414 | — | 38 | 20 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `243A` | sub_243A | — | 23 | 13 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `2451` | sub_2451 | — | 16 | 9 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2451` | sub_2451 | — | 16 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完） | — |
 | `2461` | sub_2461 | — | 25 | 13 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `247A` | sub_247A | — | 35 | 16 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `249D` | sub_249D | — | 25 | 13 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -147,7 +147,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2B87` | sub_2B87 | — | 25 | 13 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2BA0` | sub_2BA0 | — | 22 | 8 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `2BB6` | sub_2BB6 | — | 240 | 73 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2CA6` | sub_2CA6 | — | 33 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2CA6` | sub_2CA6 | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完） | — |
 | `2CC7` | sub_2CC7 | — | 69 | 28 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2D0C` | sub_2D0C | — | 57 | 17 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2D56` | sub_2D56 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |

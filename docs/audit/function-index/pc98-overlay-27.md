@@ -8,5 +8,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0000` | sub_0 | LOADOVERLAND | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `0007` | sub_7 | INITWILDCURSOR | 43 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `0032` | sub_32 | SHOWWILDCURSOR | 49 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | — |
-| `0063` | sub_63 | HIDEWILDCURSOR | 28 | 10 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call far ptr 2A8h:0A86h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完） | — |
+| `0063` | sub_63 | HIDEWILDCURSOR | 28 | 10 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 2A8h:0A86h`（body 共 28 bytes，已逐條讀完） | — |
 | `007F` | sub_7F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

@@ -21,7 +21,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `13EE` | sub_13EE | — | 175 | 58 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `149D` | sub_149D | — | 95 | 38 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `1540` | sub_1540 | — | 21 | 5 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1559` | sub_1559 | — | 16 | 7 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call near ptr sub_15A1`，參數原樣傳遞（body 共 16 bytes，已逐條讀完） | — |
+| `1559` | sub_1559 | — | 16 | 7 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_15A1`（body 共 16 bytes，已逐條讀完） | — |
 | `1569` | sub_1569 | — | 14 | 6 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `1577` | sub_1577 | — | 5 | 3 | 8 | 0 |  | 待解讀 | — | — | — |
 | `157C` | sub_157C | — | 22 | 9 | 2 | 2 |  | 待解讀 | — | — | — |

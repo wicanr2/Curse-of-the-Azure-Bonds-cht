@@ -2813,6 +2813,15 @@
   {
    "platform": "dos",
    "module": "START.EXE",
+   "ea": 91256,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
    "ea": 93839,
    "state": "已解讀",
    "level": "exact",
@@ -2830,6 +2839,60 @@
   },
   {
    "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104400,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：字串指派：把字面值「Wooden」寫入目的字串變數（body 共 26 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106837,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111060,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealAdd`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111070,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealSub`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111080,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealMul`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111090,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealDiv`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
    "module": "overlay-02",
    "ea": 14873,
    "state": "已解讀",
@@ -2844,7 +2907,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2948,6 +3011,15 @@
   {
    "platform": "dos",
    "module": "overlay-12",
+   "ea": 4794,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
    "ea": 5178,
    "state": "已解讀",
    "level": "exact",
@@ -2961,7 +3033,16 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call sub_1454`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_1454`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5826,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2971,6 +3052,51 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8990,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F39`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9106,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9122,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2334`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9199,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11310,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr loc_1466+1`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3168,7 +3294,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_2FD1`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_2FD1`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3294,7 +3420,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_15A1`，參數原樣傳遞（body 共 16 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_15A1`（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3326,6 +3452,15 @@
   {
    "platform": "dos",
    "module": "overlay-26",
+   "ea": 2021,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
    "ea": 4749,
    "state": "已解讀",
    "level": "exact",
@@ -3348,7 +3483,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 297h:1110h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 297h:1110h`（body 共 28 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3375,7 +3510,16 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 145,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3420,7 +3564,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ch:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4005,7 +4149,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call sub_18878`，參數原樣傳遞（body 共 10 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_18878`（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4036,12 +4180,84 @@
   },
   {
    "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101297,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AC99`（body 共 26 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 105154,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106160,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106366,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111412,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE4`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111422,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE0`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111432,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B0A7`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111442,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
    "module": "overlay-02",
    "ea": 6167,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr loc_689+2`，參數原樣傳遞（body 共 9 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr loc_689+2`（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4050,7 +4266,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4145,11 +4361,110 @@
   {
    "platform": "pc98",
    "module": "overlay-12",
+   "ea": 4828,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5492,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 27 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5519,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5541,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5563,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5885,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
    "ea": 6057,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9088,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_F5B`（body 共 22 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9204,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9220,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_2396`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9297,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1B`（body 共 16 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11430,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4213,6 +4528,15 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 18785,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_49C6`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4356,7 +4680,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call near ptr sub_32A0`，參數原樣傳遞（body 共 17 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_32A0`（body 共 17 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4536,7 +4860,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 2A8h:0A86h`，參數原樣傳遞（body 共 28 bytes，已逐條讀完）"
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 2A8h:0A86h`（body 共 28 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4563,7 +4887,16 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 145,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4608,7 +4941,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：唯一實質動作是 `call far ptr 19Ah:2Ah`，參數原樣傳遞（body 共 12 bytes，已逐條讀完）"
+   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",

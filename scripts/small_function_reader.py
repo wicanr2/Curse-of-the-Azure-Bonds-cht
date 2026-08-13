@@ -132,13 +132,29 @@ def classify(function):
         if allowed and len(offsets) == 1:
             return "常數字串", "unk_%s" % offsets.pop()
 
-    # 轉呼叫：唯一的實質動作是一個 call／jmp
+    # 單一呼叫包裝：整個 body 只有「準備參數」與一個 call／jmp。
+    # 允許的準備動作限定為：推參數、推立即數、推全域、載入 far pointer、
+    # 暫存搬移與對應的 pop。只要出現算術、比較、分支就不算。
     calls = [l for l in core if CALL_ANY.match(l) or JMP_ANY.match(l)]
-    if len(calls) == 1 and all(
-            CALL_ANY.match(l) or JMP_ANY.match(l) or MOV_ARG.match(l)
-            or MOV_VAR_SET.match(l) or MOV_VAR_GET.match(l)
-            or l.startswith("push ") for l in core):
-        return "轉呼叫", "唯一實質動作是 `%s`，參數原樣傳遞" % calls[0]
+    if len(calls) == 1:
+        prepare = (MOV_ARG, MOV_VAR_SET, MOV_VAR_GET, MOV_IMM, MOV_LOAD, LEA_LOCAL)
+        if all(CALL_ANY.match(l) or JMP_ANY.match(l)
+               or any(pattern.match(l) for pattern in prepare)
+               or l.startswith(("push ", "pop ", "les ", "lea ", "mov di,", "mov si,"))
+               for l in core):
+            kind = "單一呼叫包裝" if len(core) > 2 else "轉呼叫"
+            # 字串指派：IDA 已在反組譯行尾以 `; "…"` 標出字面值，直接引用它，
+            # 不要自己去 overlay 內重算位址（那是另一個位址空間的問題）。
+            if "basg" in calls[0]:
+                literals = []
+                for item in function["items"]:
+                    match = re.search(r';\s*"([^"]*)"', item["disasm"])
+                    if match:
+                        literals.append(match.group(1))
+                if literals:
+                    return kind, ("字串指派：把字面值「%s」寫入目的字串變數"
+                                  % "」「".join(literals))
+            return kind, "整個 body 只準備參數並執行 `%s`" % calls[0]
 
     return None, None
 
