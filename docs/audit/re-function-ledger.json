@@ -13213,6 +13213,114 @@
    "level": "exact",
    "spec": "docs/spec/627-spell-cure-family.md",
    "note": "n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 8019,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "<sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 15307,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "<sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 12835,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "if <far 013E:0070>(21h, DS:0A521h:0A523h) <> 0 then <far 014A:00A2>(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 16815,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 14340,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "x := <far 014A:00D4>(DS:0A031h, DS:0A031h);n := (signext(DS:9594h^[198h]) shl 4) + x——把 [198h] 放高 4 bit、x 放低位打包成一個 word(不是相加),再推入 n 與三個 0、備妥 'は祈っている。' 呼叫 <sub_F62>"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 17092,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 13613,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:3804h 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：x := <far 014A:00D4>(DS:0A031h, DS:0A031h);n := (signext(DS:9594h^[198h]) shl 4) + x——把 [198h] 放高 4 bit、x 放低位打包成一個 word(不是相加),再推入 n 與三個 0、備妥 'は祈っている。' 呼叫 <sub_F62> ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 14621,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:3BCBh 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 16098,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 16372,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:42C4h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 12126,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:3223h 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(21h, DS:0A521h:0A523h) <> 0 then <far 014A:00A2>(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 7417,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/628-spell-effect-wrappers.md",
+   "note": "與 pc98 overlay-22:1F53h 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

@@ -46,7 +46,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `193A` | sub_193A | — | 16 | 6 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, [bp-72h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 16 bytes，已逐條讀完） | — |
 | `1ABF` | sub_1ABF | — | 378 | 143 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1C39` | sub_1C39 | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `1CF9` | sub_1CF9 | — | 39 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1CF9` | sub_1CF9 | — | 39 | 18 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:1F53h 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1D2A` | sub_1D2A | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1D55` | sub_1D55 | — | 61 | 24 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `1D93` | sub_1D93 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1D92，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
@@ -75,29 +75,29 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2799` | sub_2799 | — | 1120 | 433 | 0 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2BF9` | sub_2BF9 | — | 433 | 148 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2DB6` | sub_2DB6 | — | 416 | 137 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `2F5E` | sub_2F5E | — | 61 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2F5E` | sub_2F5E | — | 61 | 25 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:3223h 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(21h, DS:0A521h:0A523h) <> 0 then <far 014A:00A2>(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2FA4` | sub_2FA4 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blind」（unk_2F9B，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2FD1` | sub_2FD1 | — | 165 | 61 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `3076` | sub_3076 | — | 17 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_2FD1`（body 共 17 bytes，已逐條讀完） | — |
 | `3093` | sub_3093 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is diseased」（unk_3087，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `30C0` | sub_30C0 | — | 178 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `317E` | sub_317E | — | 932 | 349 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `352D` | sub_352D | — | 73 | 35 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `352D` | sub_352D | — | 73 | 35 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:3804h 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：x := <far 014A:00D4>(DS:0A031h, DS:0A031h);n := (signext(DS:9594h^[198h]) shl 4) + x——把 [198h] 放高 4 bit、x 放低位打包成一個 word(不是相加),再推入 n 與三個 0、備妥 'は祈っている。' 呼叫 <sub_F62> ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3599` | sub_3599 | — | 253 | 87 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `36A7` | sub_36A7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `36E0` | sub_36E0 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `370E` | sub_370E | — | 246 | 103 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `391D` | sub_391D | — | 42 | 20 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | spec/628-spell-effect-wrappers.md |
+| `391D` | sub_391D | — | 42 | 20 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:3BCBh 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3947` | sub_3947 | — | 188 | 71 | 5 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A03` | sub_3A03 | — | 661 | 263 | 4 | 8 | ✓ | 待解讀 | — | — | — |
 | `3C98` | sub_3C98 | — | 75 | 39 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3CED` | sub_3CED | — | 46 | 21 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `3D27` | sub_3D27 | — | 433 | 158 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `3EE2` | sub_3EE2 | — | 65 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `3EE2` | sub_3EE2 | — | 65 | 32 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3F23` | sub_3F23 | — | 64 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3F6F` | sub_3F6F | — | 133 | 56 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `3FF4` | sub_3FF4 | — | 66 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `3FF4` | sub_3FF4 | — | 66 | 37 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:42C4h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `4043` | sub_4043 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `407A` | sub_407A | — | 78 | 33 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `40D5` | sub_40D5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
