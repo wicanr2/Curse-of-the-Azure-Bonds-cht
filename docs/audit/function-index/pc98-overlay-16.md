@@ -50,5 +50,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/function-index/pc98-overlay-02.md<br>spec/612-ecl-main-loop.md |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0 | spec/636-pc98-text-vram-and-disk-bios.md |
-| `574F` | sub_574F | — | 31 | 18 | 3 | 0 |  | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數 | spec/636-pc98-text-vram-and-disk-bios.md |
+| `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0 | audit/function-index/pc98-overlay-16.md<br>spec/636-pc98-text-vram-and-disk-bios.md |
+| `574F` | sub_574F | — | 31 | 18 | 3 | 0 |  | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數 | audit/function-index/pc98-overlay-16.md<br>spec/636-pc98-text-vram-and-disk-bios.md |

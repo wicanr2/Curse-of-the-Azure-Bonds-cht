@@ -7,7 +7,7 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADEFFPROCS | 27 | 9 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>unit 初始化:依序呼叫四個本 overlay 內的 routine | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>audit/string-pairs.md<br>spec/569-small-function-batch-reading.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害取消 routine(spec 412 稱 Protected):參數非 0 且等於 DS:A02Dh 時,把 DS:A02Eh 與 DS:A02Dh 都歸零 ⇒ A02Dh 是傷害來源 ID、A02Eh 是傷害值 | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 <sub_1437>(arg_8,arg_6,arg_4,arg_0,arg_2,1) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md |
+| `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 <sub_1437>(arg_8,arg_6,arg_4,arg_0,arg_2,1) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md<br>spec/638-overlay12-effect-batch2.md |
 | `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `009E` | sub_9E | — | 18 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `00E3` | sub_E3 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `0166` | sub_166 | — | 29 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `0183` | sub_183 | — | 99 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `01E6` | sub_1E6 | — | 71 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `01E6` | sub_1E6 | — | 71 | 21 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>兩個欄位各自夾上限:if arg_6^[19Bh] < 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61 | spec/638-overlay12-effect-batch2.md |
 | `022D` | sub_22D | — | 55 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD&D 的 Protection from Evil | audit/function-index/pc98-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md |
 | `0264` | sub_264 | — | 55 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補 | audit/function-index/pc98-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md |
 | `029B` | sub_29B | — | 37 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
@@ -28,7 +28,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0443` | sub_443 | — | 45 | 14 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零 | audit/function-index/dos-overlay-12.md |
 | `0470` | sub_470 | — | 52 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 <> 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit | audit/function-index/pc98-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md |
 | `04A4` | sub_4A4 | — | 43 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 | audit/function-index/dos-overlay-12.md |
-| `04E2` | sub_4E2 | — | 85 | 30 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `04E2` | sub_4E2 | — | 85 | 30 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>if arg_6^[18Eh]^[2] <> 0 則備妥「は沈黙させられた。」呼叫 <far 014A:0024>(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清 | spec/638-overlay12-effect-batch2.md |
 | `054C` | sub_54C | — | 94 | 39 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `05BD` | sub_5BD | — | 316 | 108 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `06F9` | sub_6F9 | — | 53 | 20 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/633-alignment-encoding-and-effect-callbacks.md<br>if arg_0 = 0 且 <sub_1547>(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4 | audit/function-index/dos-overlay-12.md<br>spec/633-alignment-encoding-and-effect-callbacks.md |
@@ -46,15 +46,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C82` | sub_C82 | — | 718 | 268 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0F5B` | sub_F5B | — | 113 | 41 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `0FCC` | sub_FCC | — | 27 | 9 | 7 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `or ax, es:[di+154h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 27 bytes，已逐條讀完） | — |
-| `1030` | sub_1030 | — | 61 | 25 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `1030` | sub_1030 | — | 61 | 25 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>if <sub_FCC>(DS:9594h) <> nil 且其 ^[5Ah] = 0 則 <sub_F5B>(arg_6,arg_8,64h)。⚠ sub_FCC 用同樣參數呼叫了兩次,結果沒有暫存 | spec/638-overlay12-effect-batch2.md |
 | `106D` | sub_106D | — | 23 | 11 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A030h := DS:A030h ÷ 2(有號)(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `1091` | sub_1091 | — | 138 | 60 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `111B` | sub_111B | — | 145 | 59 | 0 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `11AC` | sub_11AC | — | 77 | 24 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `11AC` | sub_11AC | — | 77 | 24 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標 | spec/638-overlay12-effect-batch2.md |
 | `11F9` | sub_11F9 | — | 41 | 14 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4 | audit/function-index/dos-overlay-12.md |
-| `1222` | sub_1222 | — | 75 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `126D` | sub_126D | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `12A0` | sub_12A0 | — | 51 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1222` | sub_1222 | — | 75 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then <sub_8D>(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch | spec/638-overlay12-effect-batch2.md |
+| `126D` | sub_126D | — | 51 | 21 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式 | spec/638-overlay12-effect-batch2.md |
+| `12A0` | sub_12A0 | — | 51 | 21 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/638-overlay12-effect-batch2.md<br>與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h | spec/638-overlay12-effect-batch2.md |
 | `12D3` | sub_12D3 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `12DC` | sub_12DC | — | 33 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 33 bytes，已逐條讀完） | — |
 | `12FD` | sub_12FD | — | 34 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |

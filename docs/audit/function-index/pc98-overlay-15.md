@@ -40,7 +40,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A4` | sub_19A4 | — | 404 | 160 | 1 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1B94` | sub_1B94 | — | 184 | 71 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1D4C` | sub_1D4C | — | 506 | 204 | 1 | 10 | ✓ | 待解讀 | — | — | — |
-| `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條) | audit/function-index/dos-overlay-15.md |
 | `1F69` | sub_1F69 | — | 183 | 73 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2020` | sub_2020 | — | 117 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 61 bytes，已逐條讀完） | — |
