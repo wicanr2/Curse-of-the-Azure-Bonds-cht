@@ -28015,7 +28015,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零"
   },
   {
    "platform": "pc98",
@@ -28041,7 +28044,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3"
   },
   {
    "platform": "pc98",
@@ -28385,7 +28391,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4"
   },
   {
    "platform": "pc98",
@@ -28610,7 +28619,10 @@
    "callers": 15,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0)"
   },
   {
    "platform": "pc98",
@@ -29377,7 +29389,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "擲 d100(count=1,sides=64h);結果 \u003c= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害",
+   "citations": [
+    "spec/573-effprocs-effect-handlers-first-batch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29640,7 +29658,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "擲 d100;結果 \u003c= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消",
+   "citations": [
+    "spec/573-effprocs-effect-handlers-first-batch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -29724,7 +29748,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0)"
   },
   {
    "platform": "pc98",
@@ -40872,9 +40899,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 149,
-   "Read": 46,
+   "Read": 53,
    "NotBlocking": 0,
-   "Todo": 87,
+   "Todo": 80,
    "Fragment": 16,
    "CodeBytes": 13004,
    "Undefined": 578,
