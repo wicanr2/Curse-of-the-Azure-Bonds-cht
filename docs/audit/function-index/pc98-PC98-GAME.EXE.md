@@ -274,7 +274,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 <= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致 | — |
 | `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,來源指標為 dword_23AF0;與 DOS START.EXE:1AAF9h 逐指令相同 | — |
-| `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 已解讀 | exact | docs/spec/667-longint-to-decimal.md<br>把 dword_23AF0h 正規化成「段落 + 段內偏移」並夾住下限 (word_23AECh, word_23AEEh):比較是先比段落、相等才比偏移的兩段式。與 1A9E1h/1ABE0h 用同一組界線 | — |
 | `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把 AX 拆成兩個 nibble:DX := AX >> 4、AX := AX and 0Fh;與 DOS START.EXE:1AB57h 同義 | — |
 | `1AC70` | sub_1AC70 | — | 15 | 7 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>nibble 合併;與 DOS START.EXE:1AB65h 同義 | — |
 | `1AC7F` | sub_1AC7F | — | 26 | 12 | 10 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt1` 逐位元組相同（26 bytes） | — |
@@ -299,10 +299,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes） | — |
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0 | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
-| `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
+| `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 已解讀 | exact | docs/spec/667-longint-to-decimal.md<br>走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h | — |
 | `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體,與 DOS START.EXE:1B645h 逐指令相同(LCG 為 sub_1B7F4);回傳 (RandSeed shr 16) mod n | — |
 | `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,種子為 dword_23B0A、常數為 cs:word_1B82A(同樣 8405h);與 DOS sub_1B694 逐指令相同 | — |
-| `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 已解讀 | exact | docs/spec/667-longint-to-decimal.md<br>32-bit 整數轉十進位字串:負數先取二補數並輸出 '-';用 CS:123Bh 起的十的冪次表,**不用除法而是「一直減到借位再加回來」**數出每一位(16-bit 機器上比 32-bit 除法便宜);mov al,2Fh + inc al 得到 '0',讓「至少加一次」自然成立。表在 linear 1B88Bh,正好是本支結尾,十筆已逐一驗證為 10^9..10^0。⚠ -2147483648 取二補數後仍是自己,這支對該值會輸出錯誤結果 | — |
 | `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |
 | `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes） | — |
 | `1B9C7` | sub_1B9C7 | — | 69 | 37 | 4 | 1 |  | 待解讀 | — | — | — |
