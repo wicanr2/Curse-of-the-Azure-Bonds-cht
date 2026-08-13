@@ -13726,6 +13726,42 @@
    "level": "strong inference",
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 <= arg_2 <= 6) and (0 <= arg_0 <= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 16970,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "FillChar(0A000h:0A00h,500h,0) 與 FillChar(0A200h:0A00h,500h,1)——PC-98 文字 VRAM 的字元碼平面與屬性平面。位移 0A00h ÷2 = 第 1280 格 = 第 16 列(80 欄),長度 500h ÷2 = 640 格 = 8 列,所以清的是第 16..23 列的訊息區。⚠ 中文化不能沿用這條路徑:漢字 ROM 沒有繁體字集"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 20069,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "repeat until <sub_B4F>(0) <> 0 的純忙碌等待(jz 跳回迴圈開頭 4E68h,每輪重新推入參數 0,中間沒有延遲也沒有讓出),之後 <sub_5008>(0,4Bh)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 22328,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 22351,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數"
   }
  ]
 }

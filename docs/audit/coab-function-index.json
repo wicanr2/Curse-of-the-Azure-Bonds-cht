@@ -34909,7 +34909,13 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "FillChar(0A000h:0A00h,500h,0) 與 FillChar(0A200h:0A00h,500h,1)——PC-98 文字 VRAM 的字元碼平面與屬性平面。位移 0A00h ÷2 = 第 1280 格 = 第 16 列(80 欄),長度 500h ÷2 = 640 格 = 8 列,所以清的是第 16..23 列的訊息區。⚠ 中文化不能沿用這條路徑:漢字 ROM 沒有繁體字集",
+   "citations": [
+    "spec/636-pc98-text-vram-and-disk-bios.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34982,7 +34988,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "repeat until \u003csub_B4F\u003e(0) \u003c\u003e 0 的純忙碌等待(jz 跳回迴圈開頭 4E68h,每輪重新推入參數 0,中間沒有延遲也沒有讓出),之後 \u003csub_5008\u003e(0,4Bh)",
+   "citations": [
+    "spec/636-pc98-text-vram-and-disk-bios.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35070,7 +35082,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0",
+   "citations": [
+    "spec/636-pc98-text-vram-and-disk-bios.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35083,7 +35101,13 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
+   "note": "al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數",
+   "citations": [
+    "spec/636-pc98-text-vram-and-disk-bios.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43222,6 +43246,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/635-overlay32-grid-record-array.md"
    ]
   },
@@ -43300,6 +43325,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "i := \u003csub_1363\u003e(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/635-overlay32-grid-record-array.md"
    ]
   },
@@ -43320,6 +43346,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h)",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/635-overlay32-grid-record-array.md"
    ]
   },
@@ -43340,6 +43367,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/635-overlay32-grid-record-array.md"
    ]
   },
@@ -44451,9 +44479,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 3,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 30,
+   "Todo": 26,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
