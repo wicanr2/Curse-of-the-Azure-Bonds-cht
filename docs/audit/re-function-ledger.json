@@ -16709,6 +16709,16 @@
    "level": "strong inference",
    "spec": "docs/spec/697-strength-hit-table-and-weapon-select.md",
    "note": "與 DOS overlay-24:30A0h（entry#43）助憶碼序列完全相同，語意同該筆：決定實際生效的武器:f := byte [5D04h + 角色^[151h]^[2Eh] shl 4](spec 691 那張表的格內 +2,是 bitfield);f and 10h → 結果 := 角色^[151h];f and 08h 時,f and 01h → 結果 := 角色^[17Dh]、f and 80h → 結果 := 角色^[181h]。回傳 (結果 <> NIL) 或 **f = 0Ah(整個 byte 相等,不是遮罩比較)**。⚠ 三個 if 是依序覆蓋不是互斥分支,同時成立時最後留下 +181h;武器從 var 參數帶出去,回傳值只是有沒有找到 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 9249,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/698-set-membership-polarity-and-damage.md",
+   "bounds": "prologue",
+   "note": "扣血並決定狀態:剩餘/溢出兩個變數,溢出 > 9(HP <= −10)→狀態 6;剩餘=0 且原狀態=1 →狀態 6;溢出 1..9 →狀態 5,且**只在 DS:4FBAh=5 時**把溢出記進 角色^[18Dh]^[0Eh](spec 696 包紮會清掉它);剩餘=0 →狀態 4;其餘不變。最後用**更新後**的狀態測 CS:2401h 的集合 {0,1}:在集合裡才寫回剩餘 HP,否則 角色^[196h]:=0、HP 歸零,且 DS:4FBAh=5 時把 byte [6F90h + 角色^[197h]] 減 1(spec 692 的統計陣列)並清 18Dh^[3]。⚠ 0A54:08D4h 是 Pascal 的 in(32 bytes 位元集合),call 後直接接 jz/jnz 沒有 or al,al——極性由 overlay-26:06B5h 的字元集合 {空白,0-9,A-Z} 定死:**ZF=1 是「不在集合裡」**"
   }
  ]
 }
