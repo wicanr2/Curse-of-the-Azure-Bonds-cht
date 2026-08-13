@@ -25016,6 +25016,7 @@
    "note": "ECL opcode 08h(RANDOM):READVAR(2);上界 n 先加一(除非已是 FFh)才呼叫 RTL 的 @Random,所以 ECL 的 RANDOM(6) 得到 0..6 含上界;結果經兩個 RTL 常式轉成 byte 後 STOREVALUE 到 operand 2 指定的位址",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/594-ecl-random-and-indexed-store.md"
    ]
   },
@@ -25532,9 +25533,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -25555,7 +25557,8 @@
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "ECL opcode 35h(索引寫入):READVAR(3);第一個 operand 是值,第二個(ADDFNC)與第三個相加才是目的位址,即 ECL[base+index] := value",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md"
    ]
   },
   {
@@ -26144,14 +26147,16 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Dh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 3Dh:無 operand;連續呼叫 019E:014A、019E:0268、014A:002A(DS:9594h)、014A:00DE、0176:0025(DS:A2CDh,3,3,3)、014A:00DE,最後 DS:BE00h:=0、DS:BDF2h:=1",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
     "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "spec/525-pc98-tempsearch-display-state.md",
+    "spec/594-ecl-random-and-indexed-store.md"
    ]
   },
   {
@@ -27807,6 +27812,7 @@
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、\u003c\u003e、\u003c、\u003e、\u003c=、\u003e= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/593-ecl-comparison-flags.md"
    ]
   },
@@ -43259,9 +43265,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 26,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 37,
+   "Todo": 35,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,

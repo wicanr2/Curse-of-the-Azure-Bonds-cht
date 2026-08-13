@@ -428,15 +428,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 3711,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 4290,
    "state": "待解讀",
    "level": "",
@@ -541,15 +532,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 11916,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Dh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "strong inference",
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "與 pc98 overlay-07:19FEh 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3711,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 11916,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
+   "note": "ECL opcode 3Dh:無 operand;連續呼叫 019E:014A、019E:0268、014A:002A(DS:9594h)、014A:00DE、0176:0025(DS:A2CDh,3,3,3)、014A:00DE,最後 DS:BE00h:=0、DS:BDF2h:=1"
   }
  ]
 }
