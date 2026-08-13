@@ -167,15 +167,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 4721,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Dh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 5142,
    "state": "待解讀",
    "level": "",
@@ -343,15 +334,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 4855,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 1Dh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "strong inference",
    "spec": "docs/spec/601-ecl-slot-search.md",
    "note": "與 pc98 overlay-02:2FDAh 助憶碼序列完全相同（83 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 3Bh:READVAR(3);在全隊每名角色的 +1Eh 位元組陣列(索引 1..100)裡找第一個等於 operand1 的格子,把格號寫進 operand2 指定的位址(找不到為 FFh)、命中角色的 0-based 序號寫進 operand3 指定的位址。該陣列與掛在 +14Eh 的物品鏈是兩套不同的東西——一個定長、一個動態鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 4855,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/602-ecl-party-power-score.md",
+   "note": "ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 4721,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/602-ecl-party-power-score.md",
+   "note": "與 pc98 overlay-02:12F7h 助憶碼序列完全相同（120 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 1Dh(全隊戰力評分):沿角色鏈對每人算 (HP + max(0,[19Bh]-60)*5 + max(0,[19Ah]-39)*5 + c*8 + d*4) div 10,其中 c=lvl*[116h]+[10Eh]、d=lvl*[111h]+[109h],lvl 由 far 015D:0052 算(呼叫兩次)。每人各自除完才累加(不是先加總再除),除法是有號;累加變數是 byte,超過 255 會環繞。結果 STOREVALUE 到 operand 1 指定的位址 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
