@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
-| `0011` | sub_11 | — | 99 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
+| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 179h:57h 後交給 19Ch:2Ah 的 overlay 載入器 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-24.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
+| `0011` | sub_11 | — | 99 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/686-dos-ecl-operand-tables-and-menu.md |
 | `0074` | sub_74 | — | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `00D5` | sub_D5 | — | 240 | 92 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `01E5` | sub_1E5 | — | 431 | 180 | 1 | 1 | ✓ | 待解讀 | — | — | — |

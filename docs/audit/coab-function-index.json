@@ -5033,7 +5033,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
-   "note": "讀一行字串寫回運算元 2:\u003cfar 0542h:0722h\u003e 讀入(28h=40 字元上限),複製到 text(上限 0FFh),若 text 的長度位元組為 0 則改填 CS:0970h 的預設字串,再 STORESTRING(dst, @text)(overlay-07 entry#17)。⚠ 推入順序是位址在前、字串在後,與 PC-98 那筆記的 (s, addr) 相反,引用前要回去對位元組。⚠ 09B8h 的 0A54h:064Eh 只被推入 3 個 word(同一支在 09D3h 是 5 個)——差的 2 個是前一個 far call 留在堆疊上的殘留",
+   "note": "讀一行字串寫回運算元 2:\u003cfar 0542h:0722h\u003e 讀入(28h=40 字元上限),複製到 text(上限 0FFh),若 text 的長度位元組為 0 則改填 CS:0970h 的預設字串,再 STORESTRING(dst, @text)(overlay-07 entry#17)。⚠ 推入順序是位址在前、字串在後,與 PC-98 那筆記的 (addr, s) 相反,引用前要回去對位元組。⚠ 09B8h 的 0A54h:064Eh 只被推入 3 個 word(同一支在 09D3h 是 5 個)——差的 2 個是前一個 far call 留在堆疊上的殘留 ⚠ 參數順序已於 spec 700 更正:Pascal 先推的參數在最高位址,宣告順序照 [bp+0Ah]→[bp+8]→[bp+6] 讀",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "spec/687-far-call-flattening-and-stack-leftover.md"
@@ -16925,7 +16925,14 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/700-pascal-parameter-order-rule.md",
+   "note": "治療 opcode(2d8+1):DS:7434h 為 0 時整支什麼都不做(連訊息都沒有);否則 量 := ROLLDICE(2,8)+1,HEALDUDE(DS:7435h/7437h 組成的目標角色, 量, 0),成功才呼叫 overlay-24 entry#29 顯示 is fully/partially healed。第三個參數固定 0 = 滿血也照治,但 HEALDUDE 內部仍會因狀態不在 {0,1,4,5} 而回 false",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md",
+    "spec/700-pascal-parameter-order-rule.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17021,7 +17028,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/700-pascal-parameter-order-rule.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17086,7 +17096,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/700-pascal-parameter-order-rule.md",
+   "note": "治療 opcode(3d8+3):與 3F23h 完全同構,只有骰子不同。配上 1d8 那支就是 AD\u0026D 治療三階(輕傷/重傷/危傷)",
+   "citations": [
+    "spec/700-pascal-parameter-order-rule.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17573,7 +17589,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/700-pascal-parameter-order-rule.md",
+   "note": "物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 \u003c v \u003c 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正",
+   "citations": [
+    "spec/700-pascal-parameter-order-rule.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18292,9 +18314,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/579-character-status-fields.md",
-   "note": "與 pc98 overlay-23:2419h 助憶碼序列完全相同（71 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：HEALDUDE(only_if_hurt,amount,char):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "note": "與 pc98 overlay-23:2419h 助憶碼序列完全相同（71 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：HEALDUDE(char,amount,only_if_hurt):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 ⚠ 參數順序已於 spec 700 更正:Pascal 先推的參數在最高位址,宣告順序照 [bp+0Ah]→[bp+8]→[bp+6] 讀",
    "citations": [
-    "spec/579-character-status-fields.md"
+    "spec/579-character-status-fields.md",
+    "spec/700-pascal-parameter-order-rule.md"
    ]
   },
   {
@@ -18748,7 +18771,8 @@
    "note": "從角色物品鏈(+14Dh)摘掉並 FreeMem(物品, 3Fh)。物品為 NIL 顯示 CS:15C4h 'Nil Item pointer...';找不到顯示 CS:15D8h \"Tried to Lose item \u0026 couldn't find it!\"。⚠ 兩個錯誤分支都只是顯示訊息然後**正常返回**,呼叫端拿不到失敗訊號。⚠ 這兩則是開發用訊息卻留在零售版裡。參數實際位移是 [bp+0Ah]=角色、[bp+6]=物品(IDA 的 arg_N 標籤在這裡對不上)",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/695-inventory-list-node.md"
+    "spec/695-inventory-list-node.md",
+    "spec/700-pascal-parameter-order-rule.md"
    ]
   },
   {
@@ -19004,6 +19028,7 @@
    "spec": "docs/spec/698-set-membership-polarity-and-damage.md",
    "note": "扣血並決定狀態:剩餘/溢出兩個變數,溢出 \u003e 9(HP \u003c= −10)→狀態 6;剩餘=0 且原狀態=1 →狀態 6;溢出 1..9 →狀態 5,且**只在 DS:4FBAh=5 時**把溢出記進 角色^[18Dh]^[0Eh](spec 696 包紮會清掉它);剩餘=0 →狀態 4;其餘不變。最後用**更新後**的狀態測 CS:2401h 的集合 {0,1}:在集合裡才寫回剩餘 HP,否則 角色^[196h]:=0、HP 歸零,且 DS:4FBAh=5 時把 byte [6F90h + 角色^[197h]] 減 1(spec 692 的統計陣列)並清 18Dh^[3]。⚠ 0A54:08D4h 是 Pascal 的 in(32 bytes 位元集合),call 後直接接 jz/jnz 沒有 or al,al——極性由 overlay-26:06B5h 的字元集合 {空白,0-9,A-Z} 定死:**ZF=1 是「不在集合裡」**",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/698-set-membership-polarity-and-damage.md"
    ]
   },
@@ -19087,7 +19112,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/699-lookup-with-save-restore-buffer.md",
+   "note": "借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 \u003coverlay-31 entry#6\u003e(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入",
+   "citations": [
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/699-lookup-with-save-restore-buffer.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19223,7 +19255,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/691-item-type-table-and-record-pointers.md",
-   "note": "角色^[151h] 非 NIL(兩個 word 同時為零才算 NIL)時,取 k := 角色^[151h]^[2Eh],檢查 byte [5D02h + k shl 4] \u003e 1(無號 jbe)。DS:5D02h 是一張 **16 bytes 一格**的表,索引沒有上界檢查。⚠ DOS 的 +151h 對應 PC-98 的 +152h",
+   "note": "角色^[151h] 非 NIL(兩個 word 同時為零才算 NIL)時,取 k := 角色^[151h]^[2Eh],檢查 byte [5D02h + k shl 4] \u003e 1(無號 jbe)。表基底是 DS:5CF6h(spec 700 更正,5D02h 是格內 +0Ch),**16 bytes 一格**,索引沒有上界檢查。⚠ DOS 的 +151h 對應 PC-98 的 +152h",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
@@ -19577,6 +19609,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
    ]
   },
@@ -19595,6 +19628,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
    ]
   },
@@ -20476,7 +20511,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20601,7 +20639,8 @@
    "spec": "docs/spec/572-resident-service-functions.md",
    "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah",
    "citations": [
-    "audit/function-index/dos-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -20617,7 +20656,9 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -28853,9 +28894,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/625-ecl-address-class-and-bank-wrap.md",
-   "note": "STORESTRING(s,addr):用 0801h 分類後把字元逐個存進對應 bank——class 0/1/2 每字元一個 word,class 3 一個 byte,寫完補一個 0 當終止符;class 4 靜默不做事。位址不先減區間起點,靠 16-bit 回捲,而四個 bank 常數(6A00h/800h/0C00h/8000h)正好等於 10000h 減「起點×寬度」——刻意讓起點落在 offset 0。特例:addr=7C00h 不進迴圈,直接把字串寫進 DS:9594h 角色紀錄 offset 0,上限 0Fh(15)",
+   "note": "STORESTRING(addr,s):用 0801h 分類後把字元逐個存進對應 bank——class 0/1/2 每字元一個 word,class 3 一個 byte,寫完補一個 0 當終止符;class 4 靜默不做事。位址不先減區間起點,靠 16-bit 回捲,而四個 bank 常數(6A00h/800h/0C00h/8000h)正好等於 10000h 減「起點×寬度」——刻意讓起點落在 offset 0。特例:addr=7C00h 不進迴圈,直接把字串寫進 DS:9594h 角色紀錄 offset 0,上限 0Fh(15) ⚠ 參數順序已於 spec 700 更正:Pascal 先推的參數在最高位址,宣告順序照 [bp+0Ah]→[bp+8]→[bp+6] 讀",
    "citations": [
-    "spec/625-ecl-address-class-and-bank-wrap.md"
+    "spec/625-ecl-address-class-and-bank-wrap.md",
+    "spec/700-pascal-parameter-order-rule.md"
    ]
   },
   {
@@ -42041,7 +42083,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/579-character-status-fields.md",
-   "note": "HEALDUDE(only_if_hurt,amount,char):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh)",
+   "note": "HEALDUDE(char,amount,only_if_hurt):狀態 +196h 不在 {0,1,4,5}(函式前方 32 bytes 的 Pascal set 常數,兩平台相同)就回 false;only_if_hurt 非 0 且已滿血也回 false;否則 +1A5h += amount 並以 +78h(最大 HP)為上限;+197h=0 時狀態 5 降為 4,狀態 4 且 DS:7F27h\u003c\u003e5 觸發 CALLEFFECT(...,4Eh) ⚠ 參數順序已於 spec 700 更正:Pascal 先推的參數在最高位址,宣告順序照 [bp+0Ah]→[bp+8]→[bp+6] 讀",
    "citations": [
     "audit/function-index/dos-overlay-23.md",
     "spec/579-character-status-fields.md"
@@ -42851,7 +42893,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/698-set-membership-polarity-and-damage.md",
+   "note": "與 DOS overlay-24:2421h（entry#28）助憶碼序列完全相同，語意同該筆：扣血並決定狀態:剩餘/溢出兩個變數,溢出 \u003e 9(HP \u003c= −10)→狀態 6;剩餘=0 且原狀態=1 →狀態 6;溢出 1..9 →狀態 5,且**只在 DS:4FBAh=5 時**把溢出記進 角色^[18Dh]^[0Eh](spec 696 包紮會清掉它);剩餘=0 →狀態 4;其餘不變。最後用**更新後**的狀態測 CS:2401h 的集合 {0,1}:在集合裡才寫回剩餘 HP,否則 角色^[196h]:=0、HP 歸零,且 DS:4FBAh=5 時把 byte [6F90h + 角色^[197h]] 減 1(spec 692 的統計陣列)並清 18Dh^[3]。⚠ 0A54:08D4h 是 Pascal 的 in(32 bytes 位元集合),call 後直接接 jz/jnz 沒有 or al,al——極性由 overlay-26:06B5h 的字元集合 {空白,0-9,A-Z} 定死:**ZF=1 是「不在集合裡」** ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -42868,7 +42913,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
-   "note": "與 DOS overlay-24:2543h（entry#29）助憶碼序列完全相同，語意同該筆：依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 \u003c17D6h\u003e(角色, s, 0Ah, 1);DS:4FBAh \u003c\u003e 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 DOS overlay-24:2543h（entry#29）助憶碼序列完全相同，語意同該筆：依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 \u003c17D6h\u003e(角色, s, 0Ah, 1);DS:4FBAh \u003c\u003e 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/dos-overlay-22.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42940,7 +42988,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/699-lookup-with-save-restore-buffer.md",
+   "note": "與 DOS overlay-24:274Ch（entry#33）助憶碼序列完全相同，語意同該筆：借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 \u003coverlay-31 entry#6\u003e(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -43423,6 +43474,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
    ]
   },
@@ -43442,6 +43494,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/686-dos-ecl-operand-tables-and-menu.md"
    ]
   },
@@ -43626,7 +43680,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44282,7 +44339,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44414,7 +44474,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-index/dos-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -44431,7 +44492,9 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-02.md"
+    "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -45361,9 +45424,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 50,
+   "Read": 53,
    "NotBlocking": 0,
-   "Todo": 63,
+   "Todo": 60,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -45391,9 +45454,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 37,
+   "Read": 38,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -45946,9 +46009,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 25,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 21,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
