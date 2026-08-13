@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0FF5` | sub_FF5 | — | 9 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr es:[di+10Eh], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `11F7` | sub_11F7 | — | 652 | 246 | 2 | 6 |  | 待解讀 | — | — | — |
 | `1467` | sub_1467 | — | 280 | 107 | 2 | 4 |  | 待解讀 | — | — | — |
-| `14FF` | sub_14FF | — | 47 | 15 | 2 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr loc_15D2+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完） | — |
+| `14FF` | sub_14FF | — | 47 | 15 | 2 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr loc_15D2+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1522` | sub_1522 | — | 48 | 19 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [di+4060h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完） | — |
 | `15D1` | sub_15D1 | — | 81 | 28 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short sub_1625`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
 | `1625` | sub_1625 | — | 5 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 6`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -31,7 +31,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2868` | sub_2868 | — | 3454 | 1290 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `3680` | sub_3680 | — | 982 | 378 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `3A56` | sub_3A56 | — | 323 | 104 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `3B99` | sub_3B99 | — | 223 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `3B99` | sub_3B99 | — | 223 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `3C78` | sub_3C78 | — | 15 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov cl, 3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
 | `3EE3` | sub_3EE3 | — | 1798 | 708 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `45E9` | sub_45E9 | — | 259 | 93 | 3 | 1 | ✓ | 待解讀 | — | — | — |

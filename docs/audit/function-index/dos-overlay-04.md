@@ -13,4 +13,4 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B12` | sub_B12 | — | 506 | 220 | 1 | 6 |  | 待解讀 | — | — | — |
 | `0DD6` | sub_DD6 | — | 563 | 243 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `1009` | sub_1009 | — | 22 | 8 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 22 bytes，已逐條讀完） | — |
-| `101F` | sub_101F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `101F` | sub_101F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |

@@ -5,13 +5,13 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 57 | 15 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完） | — |
+| `0000` | sub_0 | — | 57 | 15 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_16BB+2`、`call far ptr loc_17E5+2`、`call far ptr loc_11F6+1`、`call far ptr loc_14AC+1`、`call far ptr loc_1183+1`、`call far ptr loc_10B2+2`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0083` | sub_83 | — | 1300 | 535 | 4 | 6 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0597` | sub_597 | — | 183 | 79 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `0698` | sub_698 | — | 786 | 332 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `09B3` | sub_9B3 | — | 341 | 135 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0B75` | sub_B75 | — | 768 | 303 | 0 | 14 | ✓ | 待解讀 | — | — | — |
-| `0EC5` | sub_EC5 | — | 247 | 101 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `0EC5` | sub_EC5 | — | 247 | 101 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `10AB` | sub_10AB | — | 282 | 138 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `11C5` | sub_11C5 | — | 6 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `11E3` | sub_11E3 | — | 24 | 13 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:634h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 24 bytes，已逐條讀完） | — |

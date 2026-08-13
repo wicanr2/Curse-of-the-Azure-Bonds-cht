@@ -5,12 +5,12 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADCOMPTACT | 62 | 16 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1018+2`、`call far ptr loc_187F+4`、`call sub_1923`、`call far ptr loc_1817`、`call far ptr loc_1695+2`、`call far ptr sub_15A1`（body 共 62 bytes，已逐條讀完） | context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md |
-| `005D` | sub_5D | COMPUTERCONTROL | 530 | 191 | 0 | 14 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADCOMPTACT | 62 | 16 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1018+2`、`call far ptr loc_187F+4`、`call sub_1923`、`call far ptr loc_1817`、`call far ptr loc_1695+2`、`call far ptr sub_15A1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md |
+| `005D` | sub_5D | COMPUTERCONTROL | 530 | 191 | 0 | 14 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `026F` | sub_26F | — | 100 | 33 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `02D3` | sub_2D3 | — | 256 | 96 | 1 | 3 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/493-pc98-quick-sleep-area-target.md |
 | `03D3` | sub_3D3 | — | 249 | 97 | 2 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/493-pc98-quick-sleep-area-target.md<br>spec/503-pc98-quick-target-object-chain-boundary.md |
-| `04CC` | sub_4CC | — | 347 | 122 | 1 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/493-pc98-quick-sleep-area-target.md<br>spec/503-pc98-quick-target-object-chain-boundary.md |
+| `04CC` | sub_4CC | — | 347 | 122 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/493-pc98-quick-sleep-area-target.md<br>spec/503-pc98-quick-target-object-chain-boundary.md |
 | `0627` | sub_627 | — | 304 | 111 | 1 | 3 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/493-pc98-quick-sleep-area-target.md |
 | `0757` | sub_757 | — | 630 | 246 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `09E9` | sub_9E9 | — | 494 | 178 | 2 | 6 | ✓ | 待解讀 | — | — | — |
@@ -39,5 +39,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15AB` | sub_15AB | — | 126 | 45 | 2 | 1 |  | 待解讀 | — | — | — |
 | `169E` | sub_169E | — | 606 | 217 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `1900` | sub_1900 | — | 35 | 12 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [bp-4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 35 bytes，已逐條讀完） | — |
-| `1923` | sub_1923 | — | 689 | 215 | 2 | 4 |  | 待解讀 | — | — | — |
+| `1923` | sub_1923 | — | 689 | 215 | 2 | 4 |  | 待解讀 | — | — | audit/embedded-strings.md |
 | `1BE3` | sub_1BE3 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

@@ -179,7 +179,24 @@ DOS 沒有符號表，名稱依 **entry index** 對應過去（`strong inference
 `ROLLDAMAGEDICE`、`ADDEFFECT`、`REMOVEFX`、`CUREEFFECT`、`PUTDAMAGE`、
 `RECALCULATESTATS`、`CONVERTSTRTOSPEC`／`CONVERTSPECTOSTR` 等 21 個。
 
-已讀完的只有骰子（[spec 568](../spec/568-rolldice-and-original-rng-entry.md)）：
+### 已讀完的部分
+
+| 主題 | 規格 |
+|---|---|
+| 骰子 | [568](../spec/568-rolldice-and-original-rng-entry.md) |
+| 18/xx 力量的 byte 編碼、effect 移除 | [576](../spec/576-adnd-strength-encoding-and-effect-removal.md) |
+| 命中判定完整式、effect 鏈遍歷 | [577](../spec/577-attempttohit-and-effect-chain-walk.md) |
+| effect 節點鏈（9 bytes／掛在角色 `+0F2h`） | [578](../spec/578-effect-node-list.md) |
+| 角色狀態欄位 | [579](../spec/579-character-status-fields.md) |
+| `PUTDAMAGE` 傷害管線與傷害屬性位元 | [581](../spec/581-putdamage-pipeline.md) |
+
+角色記錄目前確定的欄位：`+78h` 最大 HP、`+0F2h` effect 鏈頭、`+196h` 狀態碼、
+`+197h`／`+198h` 旗標、`+19Ah` 命中修正、`+1A5h` 目前 HP、`+3` 力量編碼。
+
+傷害屬性 `DS:A02Fh`：bit 0 Fire、bit 1 Cold、bit 2 Electricity、bit 3 Magic、
+bit 4 Acid。
+
+### 骰子
 
 ```text
 ROLLDICE(count, sides) = Σ_{i=1..count} (Random(sides) + 1)   ← 回傳 byte

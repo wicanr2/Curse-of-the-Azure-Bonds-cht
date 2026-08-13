@@ -5,10 +5,10 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 176h:57h 後交給 19Ah:2Ah | — |
-| `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADMENUS | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 176h:57h 後交給 19Ah:2Ah | audit/embedded-strings.md |
+| `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0073` | sub_73 | ITEMCOUNT | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `00B4` | sub_B4 | — | 93 | 41 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `00B4` | sub_B4 | — | 93 | 41 | 1 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0133` | sub_133 | MENU | 1771 | 581 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `081E` | sub_81E | CLEARMENU | 51 | 27 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `0858` | sub_858 | INIMNUBUF | 64 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -18,10 +18,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0BA9` | sub_BA9 | — | 85 | 34 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0BFE` | sub_BFE | — | 146 | 58 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0C90` | sub_C90 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0D70` | sub_D70 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0D70` | sub_D70 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0E02` | sub_E02 | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0ED3` | sub_ED3 | VERTICALLIST | 897 | 360 | 0 | 10 | ✓ | 待解讀 | — | — | — |
+| `0ED3` | sub_ED3 | VERTICALLIST | 897 | 360 | 0 | 10 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `129D` | sub_129D | YESNO | 130 | 61 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `131F` | sub_131F | BUILDMENULIST | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `13C7` | sub_13C7 | DISPOSEMENULIST | 88 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `141F` | sub_141F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `141F` | sub_141F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md |

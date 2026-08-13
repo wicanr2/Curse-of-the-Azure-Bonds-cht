@@ -5,10 +5,10 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完） | — |
+| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 4 個呼叫，沒有其他動作：`call far ptr loc_16BC+1`、`call far ptr loc_15CF+2`、`call far ptr loc_14AC+1`、`call loc_19E9+1`（body 共 27 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `001B` | sub_1B | — | 32 | 12 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `003B` | sub_3B | — | 28 | 10 | 3 | 0 | ✓ | 待解讀 | — | — | — |
-| `0057` | sub_57 | — | 28 | 10 | 4 | 0 | ✓ | 待解讀 | — | — | — |
+| `003B` | sub_3B | — | 28 | 10 | 3 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0057` | sub_57 | — | 28 | 10 | 4 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0073` | sub_73 | — | 84 | 31 | 5 | 2 | ✓ | 待解讀 | — | — | — |
 | `00C7` | sub_C7 | — | 130 | 51 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0149` | sub_149 | — | 85 | 31 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -19,14 +19,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0527` | sub_527 | — | 210 | 79 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `05F9` | sub_5F9 | — | 86 | 30 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `064F` | sub_64F | — | 948 | 382 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `0A03` | sub_A03 | — | 124 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `0A03` | sub_A03 | — | 124 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0A8A` | sub_A8A | — | 206 | 87 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0B91` | sub_B91 | — | 295 | 125 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0B91` | sub_B91 | — | 295 | 125 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0CF0` | sub_CF0 | — | 619 | 243 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0F5B` | sub_F5B | — | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0FAF` | sub_FAF | — | 62 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `145D` | sub_145D | — | 180 | 59 | 18 | 3 |  | 待解讀 | — | — | — |
-| `1513` | sub_1513 | — | 45 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 39h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 45 bytes，已逐條讀完） | — |
+| `1513` | sub_1513 | — | 45 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 39h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 45 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `154F` | sub_154F | — | 15 | 6 | 5 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `imul cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
 | `155E` | sub_155E | — | 277 | 99 | 2 | 1 |  | 待解讀 | — | — | — |
 | `198C` | sub_198C | — | 133 | 40 | 0 | 2 | ✓ | 待解讀 | — | — | — |

@@ -108,6 +108,10 @@ if roll <= 門檻 then
   consumer，這正是 `AGENTS.md` 反覆強調的那條線。
 - **`1Bh` 這個 routine 的實作**。第 412 輪稱它為 `Protected`，本輪只確認
   三個傷害屬性分支都以參數 `0` 呼叫它。
-- **`DS:A02Fh` bit 1 的屬性**。有位元、沒有對應效果證據就不命名。
+- ~~`DS:A02Fh` bit 1 的屬性~~ → 已解出。五個位元分別是
+  bit 0 Fire、bit 1 Cold、bit 2 Electricity、bit 3 Magic、bit 4 Acid，
+  由 `PUTDAMAGE` 的訊息前綴釘死（[spec 581](581-putdamage-pipeline.md)）。
+  注意兩邊的判定方式不同：這裡的免疫檢查是逐位元 `and`，`PUTDAMAGE` 選訊息
+  用的是完整值比較。
 - **哪個 `MON*SPC` 效果編號對應哪個 handler**。entry index 與效果編號的對應在
   spec 412 有部分結果，本輪沒有擴充。

@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
 | `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | — |
@@ -20,7 +20,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1433` | sub_1433 | — | 18 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
 | `1476` | sub_1476 | — | 31 | 12 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `14E8` | sub_14E8 | — | 34 | 10 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:75D7h, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 34 bytes，已逐條讀完） | — |
-| `1513` | sub_1513 | — | 12 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
+| `1513` | sub_1513 | — | 12 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+14h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `156D` | sub_156D | — | 8 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+18Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `1590` | sub_1590 | — | 8 | 2 | 9 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+1A4h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `159A` | sub_159A | — | 10 | 6 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
@@ -32,7 +32,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1921` | sub_1921 | — | 5 | 2 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1926` | sub_1926 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1944` | sub_1944 | — | 6 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | — |
-| `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | — |
+| `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `19D8` | sub_19D8 | — | 778 | 268 | 6 | 7 | ✓ | 待解讀 | — | — | — |
 | `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | — |
@@ -44,7 +44,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2F3C` | sub_2F3C | — | 205 | 67 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3040` | sub_3040 | — | 432 | 177 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `31F0` | sub_31F0 | — | 361 | 132 | 2 | 10 | ✓ | 待解讀 | — | — | — |

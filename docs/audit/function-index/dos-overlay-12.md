@@ -5,15 +5,15 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0000h（entry#2）助憶碼序列完全相同，語意同該筆：unit 初始化:依序呼叫四個本 overlay 內的 routine ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/569-small-function-batch-reading.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
+| `0000` | sub_0 | — | 27 | 9 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0000h（entry#2）助憶碼序列完全相同，語意同該筆：unit 初始化:依序呼叫四個本 overlay 內的 routine ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-12.md<br>audit/string-pairs.md<br>spec/569-small-function-batch-reading.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `001B` | sub_1B | — | 33 | 12 | 17 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:001Bh（entry#3）助憶碼序列完全相同，語意同該筆：傷害取消 routine(spec 412 稱 Protected):參數非 0 且等於 DS:A02Dh 時,把 DS:A02Eh 與 DS:A02Dh 都歸零 ⇒ A02Dh 是傷害來源 ID、A02Eh 是傷害值 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 待解讀 | — | — | — |
+| `003C` | sub_3C | — | 57 | 22 | 6 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0075` | sub_75 | — | 24 | 10 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0075h（entry#5）助憶碼序列完全相同，語意同該筆：以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `008D` | sub_8D | — | 17 | 7 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:008Dh（entry#6）助憶碼序列完全相同，語意同該筆：DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `009E` | sub_9E | — | 18 | 7 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:009Eh（entry#7）助憶碼序列完全相同，語意同該筆：DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `00B0` | sub_B0 | — | 32 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:00B0h（entry#8）助憶碼序列完全相同，語意同該筆：DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `00E8` | sub_E8 | — | 131 | 49 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `016B` | sub_16B | — | 29 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
+| `016B` | sub_16B | — | 29 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
 | `0188` | sub_188 | — | 105 | 35 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `01F1` | sub_1F1 | — | 71 | 21 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0238` | sub_238 | — | 55 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -27,7 +27,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0443` | sub_443 | — | 9 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | audit/function-index/dos-overlay-12.md |
 | `044C` | sub_44C | — | 45 | 14 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0443h（entry#22）助憶碼序列完全相同，語意同該筆：目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0479` | sub_479 | — | 52 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `04AD` | sub_4AD | — | 43 | 18 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
+| `04AD` | sub_4AD | — | 43 | 18 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `04E4` | sub_4E4 | — | 85 | 30 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `054A` | sub_54A | — | 94 | 39 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `05B6` | sub_5B6 | — | 316 | 108 | 0 | 5 | ✓ | 待解讀 | — | — | — |
@@ -39,7 +39,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `08CD` | sub_8CD | — | 181 | 59 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0982` | sub_982 | — | 37 | 11 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0994h（entry#35）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `09A7` | sub_9A7 | — | 57 | 23 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `0A0E` | sub_A0E | — | 417 | 168 | 0 | 8 | ✓ | 待解讀 | — | — | — |
+| `0A0E` | sub_A0E | — | 417 | 168 | 0 | 8 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0BAF` | sub_BAF | — | 19 | 7 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0BC8h（entry#38）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0BC2` | sub_BC2 | — | 34 | 11 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:0BDBh（entry#39）助憶碼序列完全相同，語意同該筆：若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0BE9` | sub_BE9 | — | 93 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -61,7 +61,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12FD` | sub_12FD | — | 32 | 16 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:131Fh（entry#56）助憶碼序列完全相同，語意同該筆：以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `131D` | sub_131D | — | 87 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1374` | sub_1374 | — | 91 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `13CF` | sub_13CF | — | 70 | 30 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `13CF` | sub_13CF | — | 70 | 30 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1415` | sub_1415 | — | 32 | 14 | 0 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push cs`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 32 bytes，已逐條讀完） | — |
 | `1435` | sub_1435 | — | 5 | 2 | 8 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `143A` | sub_143A | — | 4 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完） | — |
@@ -79,7 +79,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1545` | sub_1545 | — | 5 | 1 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1572`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `154A` | sub_154A | — | 8 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr ds:6FA3h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `1554` | sub_1554 | — | 6 | 3 | 19 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
-| `1569` | sub_1569 | — | 9 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
+| `1569` | sub_1569 | — | 9 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1572` | sub_1572 | — | 7 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1454`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `157F` | sub_157F | — | 3 | 2 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完） | — |
 | `158B` | sub_158B | — | 10 | 5 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 10 bytes，已逐條讀完） | — |
@@ -96,9 +96,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17C8` | sub_17C8 | — | 52 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1809` | sub_1809 | — | 165 | 52 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `18AE` | sub_18AE | — | 127 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
-| `192D` | sub_192D | — | 3 | 2 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完） | — |
+| `192D` | sub_192D | — | 3 | 2 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1930` | sub_1930 | — | 6 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
-| `196D` | sub_196D | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `196D` | sub_196D | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `19A2` | sub_19A2 | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `19D7` | sub_19D7 | — | 23 | 11 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:1A1Dh（entry#80）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `19EE` | sub_19EE | — | 87 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -136,10 +136,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `25BA` | sub_25BA | — | 76 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2606` | sub_2606 | — | 70 | 26 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2657` | sub_2657 | — | 286 | 109 | 0 | 10 | ✓ | 待解讀 | — | — | — |
-| `2782` | sub_2782 | — | 120 | 47 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `2782` | sub_2782 | — | 120 | 47 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `27FA` | sub_27FA | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `282F` | sub_282F | — | 38 | 20 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 <= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `2855` | sub_2855 | — | 49 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `282F` | sub_282F | — | 38 | 20 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 <= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
+| `2855` | sub_2855 | — | 49 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `289C` | sub_289C | — | 222 | 88 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `297A` | sub_297A | — | 34 | 16 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:29F2h（entry#121）助憶碼序列完全相同，語意同該筆：DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `299C` | sub_299C | — | 144 | 46 | 0 | 2 | ✓ | 待解讀 | — | — | — |

@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTEMPLE | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完） | — |
-| `0051` | sub_51 | — | 99 | 42 | 6 | 0 | ✓ | 待解讀 | — | — | — |
+| `0000` | sub_0 | LOADTEMPLE | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call far ptr loc_1153+1`、`call far ptr sub_101A`、`call far ptr 164h:57h`、`call far ptr 14Ah:101h`、`call loc_6DC+4`、`call far ptr 19Ah:2Ah`（body 共 52 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0051` | sub_51 | — | 99 | 42 | 6 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0103` | sub_103 | — | 368 | 139 | 7 | 3 | ✓ | 待解讀 | — | — | — |
 | `02A3` | sub_2A3 | — | 134 | 53 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `035B` | sub_35B | — | 217 | 75 | 1 | 3 | ✓ | 待解讀 | — | — | — |
@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `06A8` | sub_6A8 | — | 610 | 192 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `093E` | sub_93E | — | 205 | 77 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0A33` | sub_A33 | — | 202 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0B31` | sub_B31 | — | 141 | 46 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0B31` | sub_B31 | — | 141 | 46 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0BFF` | sub_BFF | — | 561 | 240 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `0F42` | sub_F42 | GOTEMPLE | 217 | 86 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0FD9` | sub_FD9 | — | 25 | 11 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:262h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |
