@@ -113,13 +113,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17250` | sub_17250 | — | 80 | 36 | 1 | 2 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>把 Pascal 短字串複製進區域(<sub_1AC99>,上限 0FFh)後,取第一個 byte 當格數,傳**內容起點**(var_FF 而非長度所在的 var_100)給 <17CE9h>,列 = arg_6、格欄 = arg_8 × 2(全形字佔兩格) | — |
 | `172A0` | sub_172A0 | — | 53 | 26 | 1 | 1 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>[var_1] := 0DBh(半形實心方塊)後呼叫 <17CE9h>,格數由 arg_0 給。⚠ 來源緩衝只有一個 byte 而 172D5h 傳的格數是 50h(整列 80 格);繪製迴圈 lodsb 逐 byte 前進,停在讀到 0 或格數用完,緩衝之後是堆疊上的 saved BP 與返回位址——第一格必定是 0DBh,之後畫什麼取決於堆疊內容。需 runtime 驗證 | — |
 | `172D5` | sub_172D5 | — | 90 | 48 | 1 | 4 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>畫訊息並等待:複製字串(上限 50h)→ <172A0h>(50h,0,18h,0) 在第 24 列鋪滿方塊 → <17250h> 在同列畫字串 → <sub_18036>()(回傳值沒再讀)→ 再鋪一次方塊擦掉。第 18h 列是訊息列 | — |
-| `173A1` | sub_173A1 | — | 75 | 32 | 1 | 6 |  | 待解讀 | — | — | — |
+| `173A1` | sub_173A1 | — | 75 | 32 | 1 | 6 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>換片重試迴圈:repeat 指派 'game.ovr' → <sub_17656> 開檔;失敗就顯示 byte_17380(32 bytes 的 Pascal 短字串「ゲームディスクＡを入れてください」)、<sub_1BD13>、<sub_18036>,然後整個重來(連檔名字串都重新指派)。沒有重試上限也沒有放棄出口 | — |
 | `1741D` | sub_1741D | — | 569 | 231 | 1 | 10 |  | 待解讀 | — | — | — |
 | `17656` | sub_17656 | — | 104 | 42 | 3 | 5 |  | 待解讀 | — | — | — |
-| `177BD` | sub_177BD | — | 48 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1790D` | sub_1790D | — | 83 | 31 | 1 | 3 |  | 待解讀 | — | — | — |
+| `177BD` | sub_177BD | — | 48 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>第三份 Shift-JIS 首位元組判斷:81h..9Fh 或 E0h..FCh 回 1,回傳值放 AL。與 14342h 同一族(上界 FCh),不是 169D9h 那族(F7h、clc)。實際畫字走的是 F7h 那族 | — |
+| `1790D` | sub_1790D | — | 83 | 31 | 1 | 3 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>三個參數都是兩層間接。if arg_C^^[0] = 0FFh then <sub_1C15D>(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else <sub_17DD5>(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 是「短格式」的標記 | — |
 | `17960` | sub_17960 | — | 215 | 99 | 1 | 7 |  | 待解讀 | — | — | — |
-| `17A37` | sub_17A37 | — | 29 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17A37` | sub_17A37 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br><sub_1BF69>(arg_4) 後再 <sub_1BF69>(arg_0)——同一支 routine 用兩個參數各叫一次,arg_4 先 | — |
 | `17A54` | sub_17A54 | — | 609 | 227 | 2 | 12 |  | 待解讀 | — | — | — |
 | `17CD7` | sub_17CD7 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17CE9` | sub_17CE9 | — | 57 | 28 | 2 | 2 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>與 1692Dh 逐位元組完全相同的文字 VRAM 定址(57 bytes),差別只在下游:這支叫 sub_17D22/sub_17D72,那支叫 sub_16966/sub_169B6。remake 不必複製這個重複,但兩條路徑的下游要各自確認 | — |

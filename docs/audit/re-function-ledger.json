@@ -14738,6 +14738,42 @@
    "level": "exact",
    "spec": "docs/spec/651-text-draw-wrappers.md",
    "note": "畫訊息並等待:複製字串(上限 50h)→ <172A0h>(50h,0,18h,0) 在第 24 列鋪滿方塊 → <17250h> 在同列畫字串 → <sub_18036>()(回傳值沒再讀)→ 再鋪一次方塊擦掉。第 18h 列是訊息列"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 95137,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "換片重試迴圈:repeat 指派 'game.ovr' → <sub_17656> 開檔;失敗就顯示 byte_17380(32 bytes 的 Pascal 短字串「ゲームディスクＡを入れてください」)、<sub_1BD13>、<sub_18036>,然後整個重來(連檔名字串都重新指派)。沒有重試上限也沒有放棄出口"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 96189,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "第三份 Shift-JIS 首位元組判斷:81h..9Fh 或 E0h..FCh 回 1,回傳值放 AL。與 14342h 同一族(上界 FCh),不是 169D9h 那族(F7h、clc)。實際畫字走的是 F7h 那族"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 96525,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "三個參數都是兩層間接。if arg_C^^[0] = 0FFh then <sub_1C15D>(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else <sub_17DD5>(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 是「短格式」的標記"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 96823,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/652-disk-swap-loop-and-third-leadbyte.md",
+   "note": "<sub_1BF69>(arg_4) 後再 <sub_1BF69>(arg_0)——同一支 routine 用兩個參數各叫一次,arg_4 先"
   }
  ]
 }
