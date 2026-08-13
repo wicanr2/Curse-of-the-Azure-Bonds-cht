@@ -29,7 +29,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `159A` | sub_159A | — | 11 | 5 | 6 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `15CC` | sub_15CC | — | 5 | 1 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call loc_153C+4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `15D1` | sub_15D1 | — | 7 | 2 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_13FE`，控制權轉交後不返回；先設定 `mov byte ptr [bp-1], 0`（body 共 7 bytes，已逐條讀完） | — |
-| `15FB` | sub_15FB | — | 67 | 26 | 3 | 1 | ✓ | 待解讀 | — | — | — |
+| `15FB` | sub_15FB | — | 67 | 26 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/681-dos-target-array-and-reduce.md<br>四個 byte 參數各自 cbw(有號)擴成 word,依序寫進 ss:[arg_0-1Ch/-1Ah/-18h/-16h],再把該塊位址傳給 <far loc_1898h>。arg_0 是**呼叫端的 BP**(用 ss: 定址),所以這支直接寫進呼叫端的區域變數區而不是自己的 frame;參數順序在傳遞時反過來(arg_8 放最前) | spec/681-dos-target-array-and-reduce.md |
 | `163E` | sub_163E | — | 77 | 27 | 2 | 1 | ✓ | 已解讀 | strong inference | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>與 pc98 overlay-22:1897h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | audit/function-index/dos-overlay-22.md |
 | `16A9` | sub_16A9 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
@@ -56,7 +56,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1E7C` | sub_1E7C | — | 52 | 27 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1E7B，長度 0）呼叫訊息 routine（body 共 52 bytes，已逐條讀完） | — |
 | `1EC9` | sub_1EC9 | — | 6 | 3 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 16h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1FA0` | sub_1FA0 | — | 304 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
-| `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/681-dos-target-array-and-reduce.md<br>p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 <loc_1456h>(0,4,p) 等於 0、第四道要 <loc_1573h>(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 <far loc_14A4h> 並印英文原文 'has been reduced' | spec/681-dos-target-array-and-reduce.md |
 | `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完） | — |
 | `21C7` | sub_21C7 | — | 95 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |

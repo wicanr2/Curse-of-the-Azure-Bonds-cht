@@ -11,7 +11,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0462` | sub_462 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0621` | sub_621 | — | 749 | 291 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `090E` | sub_90E | — | 224 | 76 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `09EE` | sub_9EE | — | 123 | 44 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 | spec/680-overlay22-clamp-and-cure1d8.md |
+| `09EE` | sub_9EE | — | 123 | 44 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 | audit/function-index/dos-overlay-22.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `0A69` | sub_A69 | BUILDSPELLLIST | 866 | 325 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0DCB` | sub_DCB | FIGSPELLRANGE | 170 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E75` | sub_E75 | — | 237 | 99 | 10 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
@@ -39,14 +39,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1622` | sub_1622 | — | 6 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1679` | sub_1679 | — | 11 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-4], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1854` | sub_1854 | — | 28 | 11 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 28 bytes，已逐條讀完） | — |
-| `1897` | sub_1897 | — | 77 | 27 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 | spec/680-overlay22-clamp-and-cure1d8.md |
+| `1897` | sub_1897 | — | 77 | 27 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 | audit/function-index/dos-overlay-22.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `18E4` | sub_18E4 | — | 208 | 74 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `19B4` | sub_19B4 | — | 855 | 358 | 5 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1D0B` | sub_1D0B | — | 386 | 146 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1E8D` | sub_1E8D | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `1F53` | sub_1F53 | — | 39 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br><sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 | audit/function-index/dos-overlay-22.md<br>spec/628-spell-effect-wrappers.md |
 | `1F8B` | sub_1F8B | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は呪いを受けた。」（unk_1F7A，長度 16）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `1FB6` | sub_1FB6 | — | 61 | 24 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 | spec/680-overlay22-clamp-and-cure1d8.md |
+| `1FB6` | sub_1FB6 | — | 61 | 24 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 | audit/function-index/dos-overlay-22.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `1FF4` | sub_1FF4 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1FF3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `203D` | sub_203D | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は魔法にかかった。」（unk_202A，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2077` | sub_2077 | — | 30 | 17 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, offset unk_206A`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
@@ -101,12 +101,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `434D` | sub_434D | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := ROLLDICE(2,4)+2 (2d4+2);if <far 013E:008E>(t, n, 0) <> 0 則 <far 014A:00A2>(t,1,「は回復した。」),t 是 DS:0A521h。⚠ 參數交錯推入:t 先推(外層的第一個參數),2/4 是內層 ROLLDICE 的。與 5B2Bh 逐指令相同,只差字串常數位址而兩處內容相同——同一段程式碼編譯了兩次 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `43AC` | sub_43AC | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `43DA` | sub_43DA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 <sub_F62>(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
-| `4416` | sub_4416 | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
+| `4416` | sub_4416 | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `4477` | sub_4477 | — | 244 | 57 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `456C` | sub_456C | — | 81 | 34 | 0 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1414`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
 | `45F1` | sub_45F1 | — | 150 | 64 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `4687` | sub_4687 | — | 66 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
+| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數 | audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `4719` | sub_4719 | — | 96 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `477A` | sub_477A | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4779，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `47BD` | sub_47BD | — | 203 | 38 | 0 | 2 | ✓ | 待解讀 | — | — | — |

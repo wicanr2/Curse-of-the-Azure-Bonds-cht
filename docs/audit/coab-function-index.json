@@ -15793,7 +15793,13 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/681-dos-target-array-and-reduce.md",
+   "note": "四個 byte 參數各自 cbw(有號)擴成 word,依序寫進 ss:[arg_0-1Ch/-1Ah/-18h/-16h],再把該塊位址傳給 \u003cfar loc_1898h\u003e。arg_0 是**呼叫端的 BP**(用 ss: 定址),所以這支直接寫進呼叫端的區域變數區而不是自己的 frame;參數順序在傳遞時反過來(arg_8 放最前)",
+   "citations": [
+    "spec/681-dos-target-array-and-reduce.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16218,7 +16224,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/681-dos-target-array-and-reduce.md",
+   "note": "p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 \u003cloc_1456h\u003e(0,4,p) 等於 0、第四道要 \u003cloc_1573h\u003e(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 \u003cfar loc_14A4h\u003e 並印英文原文 'has been reduced'",
+   "citations": [
+    "spec/681-dos-target-array-and-reduce.md"
+   ]
   },
   {
    "platform": "dos",
@@ -38839,6 +38851,7 @@
    "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
    "note": "清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),\u003csub_64E8\u003e(p) 非 0 時呼叫 \u003csub_90E\u003e(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
@@ -39272,6 +39285,7 @@
    "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
    "note": "把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
@@ -39385,6 +39399,7 @@
    "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
    "note": "DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 \u003cfar 013Eh:008Eh\u003e(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 \u003cfar 014Ah:054Fh\u003e(t)。1d8 正是 AD\u0026D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
@@ -40325,6 +40340,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/627-spell-cure-family.md",
     "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
@@ -40399,6 +40416,7 @@
    "spec": "docs/spec/627-spell-cure-family.md",
    "note": "n := \u003cfar 013E:0052\u003e(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD\u0026D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 \u003csub_F62\u003e(8,n,空字串)。與 43DAh 只差三個常數",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "spec/627-spell-cure-family.md",
     "spec/680-overlay22-clamp-and-cure1d8.md"
@@ -44915,9 +44933,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 46,
+   "Read": 48,
    "NotBlocking": 0,
-   "Todo": 68,
+   "Todo": 66,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
