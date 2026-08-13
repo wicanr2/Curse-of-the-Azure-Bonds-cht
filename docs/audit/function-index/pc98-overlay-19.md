@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B82` | sub_B82 | VIEWACTIVECHAR | 673 | 262 | 0 | 13 | ✓ | 待解讀 | — | — | — |
 | `0E8E` | sub_E8E | — | 247 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1074` | sub_1074 | VIEWITEM | 144 | 70 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1154` | sub_1154 | — | 65 | 33 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1154` | sub_1154 | — | 65 | 33 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 65 bytes，已逐條讀完） | — |
 | `1195` | sub_1195 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `119A` | sub_119A | — | 15 | 5 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 418h:0D17h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
 | `11A9` | sub_11A9 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -22,7 +22,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1437` | sub_1437 | — | 48 | 21 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_14F2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完） | — |
 | `146E` | sub_146E | — | 10 | 7 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `1478` | sub_1478 | — | 5 | 2 | 15 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `147D` | sub_147D | — | 63 | 26 | 2 | 0 |  | 待解讀 | — | — | — |
+| `147D` | sub_147D | — | 63 | 26 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 63 bytes，已逐條讀完） | — |
 | `14E3` | sub_14E3 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [bp-7D99h], cl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `14E8` | sub_14E8 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and ds:9320h, al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `150B` | sub_150B | — | 3 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr loc_1B2D+1`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
@@ -42,8 +42,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18C4` | sub_18C4 | — | 7 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:62Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19CA` | sub_19CA | — | 23 | 11 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/function-triage.md |
 | `1EAE` | sub_1EAE | READYITEM | 423 | 148 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 待解讀 | — | — | — |
-| `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 待解讀 | — | — | — |
+| `2055` | sub_2055 | — | 64 | 28 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-7]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 64 bytes，已逐條讀完） | — |
+| `2095` | sub_2095 | — | 79 | 29 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 79 bytes，已逐條讀完） | — |
 | `2102` | sub_2102 | — | 166 | 61 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `21C5` | sub_21C5 | — | 176 | 66 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `2275` | sub_2275 | — | 465 | 154 | 1 | 2 | ✓ | 待解讀 | — | — | — |

@@ -33,7 +33,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `163E` | sub_163E | — | 77 | 27 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
 | `16A9` | sub_16A9 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
-| `16B8` | sub_16B8 | — | 5 | 2 | 2 | 1 |  | 待解讀 | — | — | — |
+| `16B8` | sub_16B8 | — | 5 | 2 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `16BD` | sub_16BD | — | 158 | 55 | 2 | 3 |  | 待解讀 | — | — | — |
 | `175B` | sub_175B | — | 324 | 128 | 5 | 4 | ✓ | 待解讀 | — | — | — |
 | `189F` | sub_189F | — | 5 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -49,15 +49,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1CF9` | sub_1CF9 | — | 39 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1D2A` | sub_1D2A | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1D55` | sub_1D55 | — | 61 | 24 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `1D93` | sub_1D93 | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1D93` | sub_1D93 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1D92，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `1DD5` | sub_1DD5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1E0F` | sub_1E0F | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1E4E` | sub_1E4E | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is cold-resistant」（unk_1E3C，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `1E7C` | sub_1E7C | — | 52 | 27 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1E7C` | sub_1E7C | — | 52 | 27 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1E7B，長度 0）呼叫訊息 routine（body 共 52 bytes，已逐條讀完） | — |
 | `1EC9` | sub_1EC9 | — | 6 | 3 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 16h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1FA0` | sub_1FA0 | — | 304 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
 | `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完） | — |
 | `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `22B4` | sub_22B4 | — | 310 | 122 | 0 | 4 | ✓ | 待解讀 | — | — | — |
@@ -108,7 +108,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `43A7` | sub_43A7 | — | 66 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `43EA` | sub_43EA | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4432` | sub_4432 | — | 96 | 50 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `4493` | sub_4493 | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `4493` | sub_4493 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4492，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `44D3` | sub_44D3 | — | 203 | 72 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `45B5` | sub_45B5 | — | 176 | 72 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4672` | sub_4672 | — | 171 | 72 | 0 | 4 | ✓ | 待解讀 | — | — | — |
@@ -120,7 +120,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4A8F` | sub_4A8F | — | 292 | 115 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `4BEC` | sub_4BEC | — | 416 | 194 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `4DA0` | sub_4DA0 | — | 275 | 132 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `4EB4` | sub_4EB4 | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `4EB4` | sub_4EB4 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4EB3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `4EF7` | sub_4EF7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `54EB` | sub_54EB | — | 164 | 72 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `5590` | sub_5590 | — | 170 | 70 | 0 | 3 | ✓ | 待解讀 | — | — | — |

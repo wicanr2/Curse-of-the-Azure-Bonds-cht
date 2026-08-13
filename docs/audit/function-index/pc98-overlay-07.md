@@ -26,7 +26,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1364` | sub_1364 | FINDSTR | 147 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | spec/567-ecl-packed-text-and-bank1-field-map.md |
 | `13F7` | sub_13F7 | GETSTR | 480 | 186 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `142D` | sub_142D | — | 83 | 30 | 2 | 2 |  | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md |
-| `147D` | sub_147D | — | 31 | 13 | 2 | 1 |  | 待解讀 | — | — | — |
+| `147D` | sub_147D | — | 31 | 13 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1423`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1669` | sub_1669 | — | 23 | 8 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_2], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 174 | 70 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1745` | sub_1745 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |

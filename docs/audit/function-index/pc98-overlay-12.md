@@ -89,7 +89,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16C2` | sub_16C2 | — | 59 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `16FD` | sub_16FD | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_147A`（body 共 22 bytes，已逐條讀完） | — |
 | `1713` | sub_1713 | — | 19 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `1726` | sub_1726 | — | 48 | 23 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1726` | sub_1726 | — | 48 | 23 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>擲 d100;結果 <= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果 | audit/function-index/dos-overlay-12.md |
 | `176D` | sub_176D | — | 60 | 28 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `17A9` | sub_17A9 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完） | — |
 | `17B5` | sub_17B5 | — | 87 | 32 | 0 | 1 | ✓ | 待解讀 | — | — | — |

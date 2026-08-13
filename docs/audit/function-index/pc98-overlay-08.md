@@ -24,7 +24,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C45` | sub_C45 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `0F17` | sub_F17 | — | 184 | 67 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0FD9` | sub_FD9 | — | 5 | 2 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1028` | sub_1028 | — | 82 | 32 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1028` | sub_1028 | — | 82 | 32 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 82 bytes，已逐條讀完） | — |
 | `107A` | sub_107A | — | 14 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:0A339h, 44h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
 | `11C7` | sub_11C7 | — | 263 | 105 | 2 | 3 |  | 待解讀 | — | — | — |
 | `124D` | sub_124D | — | 296 | 123 | 1 | 1 | ✓ | 待解讀 | — | — | — |
