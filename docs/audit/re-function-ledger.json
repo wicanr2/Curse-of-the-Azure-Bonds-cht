@@ -15188,6 +15188,51 @@
    "level": "exact",
    "spec": "docs/spec/664-overlay-manager-stub-patching.md",
    "note": "設定前四道檢查:word_23AE4h 或 word_23AE2h 非 0、或 (word_23AEAh - word_23AEEh) or word_23AECh 非 0 → 回 0FFFFh(狀態不允許);位址低於 word_23AD6h 也回 0FFFFh;加上 word_23ADCh 後進位或超過 word_23B04h^[2] → 回 0FFFDh(範圍問題)。溢位單獨用進位抓,上界在加完之後才檢查"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107675,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/665-ems-and-overlay-relocation.md",
+   "note": "用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h 段落 = 16KB 正是 EMS 分頁大小);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH >= 80h 即錯誤)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107844,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/665-ems-and-overlay-relocation.md",
+   "note": "用 int 67h AX=4400h(對映實體分頁 0)配 DX = word_23AE6h 把 overlay 換進 page frame,同樣用 shl ah,1 + jb 判斷失敗"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107343,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/665-ems-and-overlay-relocation.md",
+   "note": "搬移 overlay 並修正 stub:先把 es:[10h] 換成新位置,再以 word 為單位搬 es:[8] bytes——**方向依目的在來源之前或之後選**(std/cld),重疊時不會蓋掉還沒搬的部分。搬完若 es:[20h] 不是 0CDh(已改成 far jmp),就從 di=23h 起每 5 bytes 改一個 word——那正是 EA off seg 裡的 segment,offset 不動"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107415,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/665-ems-and-overlay-relocation.md",
+   "note": "接到 overlay 鏈尾:鏈頭在絕對位址 7852h,走訪時把 DS 換成節點 segment、BX 固定 14h,所以同一段程式碼既能讀鏈頭也能讀節點欄位;接上後把 es:[14h] 清 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 107489,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/665-ems-and-overlay-relocation.md",
+   "note": "算剩餘空間:word_23AE2h 非 0 時先試「第一個 overlay 的 +10h 減目前配置點 word_23ADEh」,借位(會變負)才退回用 word_23AE0h - word_23ADEh"
   }
  ]
 }
