@@ -40,8 +40,13 @@ overlay-07（ECL2）另有這些具名 routine 可直接使用：`INITECL`、`GE
 工作得到的，從未與原版 handler 對照過。本輪第一次做這件事：數每個 handler
 呼叫 `ADDRESSVALUE` 幾次，與宣稱的 arity 比對。
 
-結果：**64 個 opcode 中 35 個一致**，29 個不一致，清單見
+⚠ **本節使用的訊號已被第 564 輪取代。** 當時數的是 `ADDRESSVALUE` 的呼叫
+次數（64 個中 35 個一致），但那個訊號本身是錯的：`ADDRESSVALUE(i)` 是取用
+第 i 個**已解好**的 operand，同一個 operand 可被取用零次或多次。正確訊號是
+`READVAR(n)` 的參數，換過去之後是 62／64 吻合。結論與現行表格見
+[`spec 564`](564-ecl-operand-decoding-and-arity-validation.md) 與
 [`docs/audit/ecl-handler-operand-audit.md`](../audit/ecl-handler-operand-audit.md)。
+本節保留的仍然有效的部分是下方的 helper 名稱解析鏈。
 
 不一致**不等於 remake 的 arity 錯**。已可看出至少兩種合法的差異來源：
 

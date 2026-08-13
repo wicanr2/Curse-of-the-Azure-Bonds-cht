@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 6、不阻塞 0、待解讀 1338；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 7、不阻塞 0、待解讀 1337；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
@@ -21,7 +21,7 @@
 | overlay-04 | TEMPLE | 9 | 0 | 0 | 9 | 2107 | 334 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 0 | 0 | 17 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
 | overlay-06 | SHOP | 6 | 0 | 0 | 6 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
-| overlay-07 | ECL2 | 41 | 4 | 0 | 37 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
+| overlay-07 | ECL2 | 41 | 5 | 0 | 36 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 0 | 0 | 21 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
 | overlay-09 | COMPTACT | 37 | 0 | 0 | 37 | 7212 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 0 | 0 | 38 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 6、不阻塞 0、待解讀 1475；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 7、不阻塞 0、待解讀 1474；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
@@ -65,7 +65,7 @@
 | overlay-04 | TEMPLE | 23 | 0 | 0 | 23 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 0 | 0 | 17 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
 | overlay-06 | SHOP | 8 | 0 | 0 | 8 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
-| overlay-07 | ECL2 | 46 | 4 | 0 | 42 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
+| overlay-07 | ECL2 | 46 | 5 | 0 | 41 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 0 | 0 | 24 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 0 | 0 | 36 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 0 | 0 | 35 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |

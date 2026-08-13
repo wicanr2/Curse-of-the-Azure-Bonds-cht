@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADECL2 | 52 | 14 | 0 | 8 | ✓ | 待解讀 | — | — | audit/ecl-handler-operand-audit.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md<br>spec/522-dos-buffer-four-plane-fill.md |
-| `008E` | sub_8E | READVAR | 520 | 206 | 2 | 4 | ✓ | 待解讀 | — | — | project-status.md<br>spec/562-ecl2-helper-api-and-operand-audit.md<br>spec/README.md |
+| `0000` | sub_0 | LOADECL2 | 52 | 14 | 0 | 8 | ✓ | 待解讀 | — | — | audit/ecl-handler-operand-audit.md<br>audit/function-index/pc98-overlay-07.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md |
+| `008E` | sub_8E | READVAR | 520 | 206 | 2 | 4 | ✓ | 已解讀 | exact | docs/spec/564-ecl-operand-decoding-and-arity-validation.md<br>READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3) | project-status.md<br>spec/562-ecl2-helper-api-and-operand-audit.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md<br>spec/README.md |
 | `0296` | sub_296 | ADDRESSVALUE | 129 | 57 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDRESSVALUE(i)：解第 i 個 operand；三個 64 byte 平行陣列 A917/A957/A997；code 00h/01h/03h/80h/02h/81h 分支 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0317` | sub_317 | INITECL | 362 | 134 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0499` | sub_499 | GETECL | 189 | 84 | 0 | 2 | ✓ | 待解讀 | — | — | — |
