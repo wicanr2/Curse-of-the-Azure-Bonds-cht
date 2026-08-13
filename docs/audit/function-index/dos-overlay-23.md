@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `123F` | sub_123F | — | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `12EB` | sub_12EB | — | 148 | 57 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `137F` | sub_137F | — | 75 | 29 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDICE(count,sides):與 PC-98 同構;亂數 far call 0A54:1105 = @Random$q4Word(image offset B645h) | spec/568-rolldice-and-original-rng-entry.md |
-| `13CA` | sub_13CA | — | 36 | 16 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `13CA` | sub_13CA | — | 36 | 16 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/568-rolldice-and-original-rng-entry.md<br>與 PC-98 overlay-23:13B3h（entry#10）助憶碼序列完全相同，語意同該筆：ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `13EE` | sub_13EE | — | 175 | 58 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `149D` | sub_149D | — | 95 | 38 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `1540` | sub_1540 | — | 21 | 5 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1599+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 21 bytes，已逐條讀完） | — |

@@ -9397,6 +9397,312 @@
    "level": "exact",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 141,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:008Dh（entry#6）助憶碼序列完全相同，語意同該筆：DS:A02Ch 加一、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 158,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:009Eh（entry#7）助憶碼序列完全相同，語意同該筆：DS:A03Ch 加 5、DS:A039h(命中骰)加一(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2991,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0BC8h（entry#38）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、DS:A02Ch 減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 5848,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:1713h（entry#70）助憶碼序列完全相同，語意同該筆：DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4172,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:106Dh（entry#45）助憶碼序列完全相同，語意同該筆：DS:A030h := DS:A030h ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6615,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:1A1Dh（entry#80）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9215,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:2461h（entry#104）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時呼叫 overlay-12 local 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9275,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:249Dh（entry#106）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0(依 spec 412 為 Fire)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11023,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:2B87h（entry#126）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2(依 spec 412 為 Electricity)非零時呼叫 1Bh(0)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9176,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:243Ah（entry#102）助憶碼序列完全相同，語意同該筆：依序以常數 0Bh 與 35h 呼叫 overlay-12 local 1Bh(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11048,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:2BA0h（entry#127）助憶碼序列完全相同，語意同該筆：經兩層 far pointer(arg_6 → +18Eh)把目標 record 的 +6 清 0(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 117,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0075h（entry#5）助憶碼序列完全相同，語意同該筆：以 arg_6／arg_8 呼叫外部 routine 並檢查回傳值(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0000h（entry#2）助憶碼序列完全相同，語意同該筆：unit 初始化:依序呼叫四個本 overlay 內的 routine ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 363,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0166h（entry#10）助憶碼序列完全相同，語意同該筆：若 DS:9594h 所指 record 的 +14Ch bit0 為 1,則 DS:A039h(命中骰)減 7 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 176,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:00B0h（entry#8）助憶碼序列完全相同，語意同該筆：DS:A03Ch 小於 5 時歸零,否則減 5;並將 DS:A039h(命中骰)減一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2028,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:07F6h（entry#32）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh − (DS:A02Eh ÷ 4) ⇒ 取四分之三 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4861,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:131Fh（entry#56）助憶碼序列完全相同，語意同該筆：以 (0, 0FFh, 0, 62h, arg_6, arg_8) 呼叫 sub_1437 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8132,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:202Ch（entry#87）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 0 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9369,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:24FBh（entry#108）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 2 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9626,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:25FCh（entry#112）助憶碼序列完全相同，語意同該筆：傷害旗標 DS:A02Fh bit 1 非零時,DS:A02Eh 有號除以 2(減半) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 27,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:001Bh（entry#3）助憶碼序列完全相同，語意同該筆：傷害取消 routine(spec 412 稱 Protected):參數非 0 且等於 DS:A02Dh 時,把 DS:A02Eh 與 DS:A02Dh 都歸零 ⇒ A02Dh 是傷害來源 ID、A02Eh 是傷害值 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 3010,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0BDBh（entry#39）助憶碼序列完全相同，語意同該筆：若 arg_6 → +18Eh 所指 record 的 +3 為 0,則 DS:A035h := 1 且 DS:A039h(命中骰) := 0FFh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4827,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:12FDh（entry#55）助憶碼序列完全相同，語意同該筆：把 arg_6 → +18Eh 所指 record 的 +6 清 0;若 DS:A034h 非零則 DS:A030h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10618,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:29F2h（entry#121）助憶碼序列完全相同，語意同該筆：DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9240,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:247Ah（entry#105）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(37h) 與 1Bh(34h);若 DS:A041h 為 0 則 DS:A02Ch := 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 678,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:029Bh（entry#15）助憶碼序列完全相同，語意同該筆：傷害旗標 bit 1 非零時:DS:A02Eh 有號減半,並把 DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2434,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0994h（entry#35）助憶碼序列完全相同，語意同該筆：DS:A039h(命中骰)減 4、arg_6 所指 record 的 +19Bh 與 +19Ch 各減 4、DS:A02Ch 減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9138,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:2414h（entry#101）助憶碼序列完全相同，語意同該筆：擲 d100(count=1,sides=64h);結果 <= 5Ah(90) 時依序呼叫 1Bh(35h) 與 1Bh(0Bh) ⇒ 90% 機率取消這兩類傷害 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10287,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:289Dh（entry#118）助憶碼序列完全相同，語意同該筆：擲 d100;結果 <= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 4567,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:11F9h（entry#49）助憶碼序列完全相同，語意同該筆：DS:9594h 所指 record 的 +11Ah 等於 1、且 +0DEh 的低 7 位元等於 2 時,DS:A039h(命中骰)減 4 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1197,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:04A4h（entry#24）助憶碼序列完全相同，語意同該筆：arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 1100,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:0443h（entry#22）助憶碼序列完全相同，語意同該筆：目標 record 的 +19Bh 小於 39h 時夾到 39h,並把 DS:A02Ch 加一;若 DS:A031h 等於 0Fh 則 DS:A02Eh 歸零 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10920,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:2B20h（entry#124）助憶碼序列完全相同，語意同該筆：依序呼叫 1Bh(8Eh)、1Bh(1Dh)、1Bh(44h);傷害旗標 bit 6 非零時再呼叫 1Bh(0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 5066,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "與 PC-98 overlay-23:13B3h（entry#10）助憶碼序列完全相同，語意同該筆：ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
