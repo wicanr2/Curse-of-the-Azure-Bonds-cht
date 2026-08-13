@@ -12133,6 +12133,42 @@
    "level": "exact",
    "spec": "docs/spec/613-ecl-scene-lifecycle.md",
    "note": "ECL 場景的完整生命週期(INTERPET 最外層入口):初始化一批旗標、設 DS:7F27h、進場執行 RUN_ECL(DS:7F1Fh),然後進主迴圈——每輪檢查存檔、DS:7F34h 為 0 時執行 RUN_ECL(DS:7F17h)、記下地圖座標 bank0^[1E0h]/[1E2h]、動作後比對,座標變動才執行 RUN_ECL(DS:7F19h)(「踏上新格子」的事件)。DS:7897h 非 0 時轉去場景主迴圈 327Eh。主迴圈由 DS:7F34h 終止,離開前清零"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6758,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "SETUPGOSUBSTACK(n)(ECL2 stub 0098h):配置 6-byte 節點插在 DS:A882h 鏈頭(LIFO),+0 存呼叫當下的 ECL_PC(此時已被 READVAR 推過 operand,所以是下一條指令的位址)、+2 指向舊鏈頭;然後把 ECL_PC 設成 ADDFNC(DS:[A957h+n], DS:[A997h+n])。與 13h(RETURN)從鏈頭彈出完全配對。operand 索引是參數而非固定 1,代表別的指令也能借它做呼叫"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 13969,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "與 pc98 overlay-02:327Eh 助憶碼序列完全相同（70 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 12403,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "與 pc98 overlay-02:3237h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：執行 ECL 的兩段進入點:呼叫 RUN_ECL(DS:7F1Bh),之後取得一個旗標,非 0 才再呼叫 RUN_ECL(DS:7F1Dh);收尾設 DS:A66Ch:=1、呼叫 far 0172:0025、清 DS:8CF7h。38h(9) 是它的呼叫者之一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 6841,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "與 pc98 overlay-07:1A66h 助憶碼序列完全相同（50 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SETUPGOSUBSTACK(n)(ECL2 stub 0098h):配置 6-byte 節點插在 DS:A882h 鏈頭(LIFO),+0 存呼叫當下的 ECL_PC(此時已被 READVAR 推過 operand,所以是下一條指令的位址)、+2 指向舊鏈頭;然後把 ECL_PC 設成 ADDFNC(DS:[A957h+n], DS:[A997h+n])。與 13h(RETURN)從鏈頭彈出完全配對。operand 索引是參數而非固定 1,代表別的指令也能借它做呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

@@ -37,7 +37,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18EE` | sub_18EE | — | 141 | 67 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `197B` | sub_197B | — | 214 | 86 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1A51` | sub_1A51 | — | 104 | 37 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/593-ecl-comparison-flags.md<br>與 pc98 overlay-07:19FEh 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `1AB9` | sub_1AB9 | — | 134 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1AB9` | sub_1AB9 | — | 134 | 50 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/614-ecl2-gosub-push.md<br>與 pc98 overlay-07:1A66h 助憶碼序列完全相同（50 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SETUPGOSUBSTACK(n)(ECL2 stub 0098h):配置 6-byte 節點插在 DS:A882h 鏈頭(LIFO),+0 存呼叫當下的 ECL_PC(此時已被 READVAR 推過 operand,所以是下一條指令的位址)、+2 指向舊鏈頭;然後把 ECL_PC 設成 ADDFNC(DS:[A957h+n], DS:[A997h+n])。與 13h(RETURN)從鏈頭彈出完全配對。operand 索引是參數而非固定 1,代表別的指令也能借它做呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1B3F` | sub_1B3F | — | 151 | 53 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/518-dos-start-ecl-call-address-space-audit.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md |
 | `1BE0` | sub_1BE0 | — | 566 | 194 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1E16` | sub_1E16 | — | 303 | 82 | 0 | 0 | ✓ | 待解讀 | — | — | — |
