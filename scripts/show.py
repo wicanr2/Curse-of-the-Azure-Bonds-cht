@@ -14,7 +14,29 @@ def load(platform, module):
             return {f["ea"]: f for f in json.load(open(p, encoding="utf-8"))["functions"]}
     raise SystemExit("找不到 full 匯出：%s %s" % (platform, module))
 
+def show_range(platform, module, start, end):
+    """把落在 [start, end) 的所有指令依位址接回來。
+
+    IDA 的函式邊界不可信：Turbo Pascal 的共用 epilogue（`mov sp,bp / pop bp /
+    retf N`）與被 `jmp` 跳過的中段，常被切成獨立「函式」。要讀完整的一支，
+    唯一可靠的做法是走位址範圍。
+    """
+    fns = load(platform, module)
+    items = [it for f in fns.values() for it in f["items"] if start <= it["ea"] < end]
+    items.sort(key=lambda it: it["ea"])
+    print("=== %s %s %04Xh..%04Xh  共 %d 條指令" % (platform, module, start, end, len(items)))
+    previous = None
+    for it in items:
+        if previous is not None and it["ea"] != previous:
+            print("  ---- %04Xh..%04Xh 沒有匯出（IDA 未認成指令）----" % (previous, it["ea"]))
+        print("  %04X  %-16s %s" % (it["ea"], it["bytes"], it["disasm"]))
+        previous = it["ea"] + len(it["bytes"]) // 2
+
+
 def main():
+    if sys.argv[1] == "--range":
+        show_range(sys.argv[2], sys.argv[3], int(sys.argv[4], 16), int(sys.argv[5], 16))
+        return
     platform, module = sys.argv[1], sys.argv[2]
     fns = load(platform, module)
     for arg in sys.argv[3:]:
@@ -30,3 +52,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# --- 位址範圍模式 ---------------------------------------------------------
+# IDA 的函式邊界不可信：Turbo Pascal 的共用 epilogue 與被跳過的中段常被切成
+# 獨立「函式」。要讀完整的一支，用位址範圍把所有落在區間內的指令接回來。
+#   python3 scripts/show.py --range <platform> <module> <start16> <end16>
