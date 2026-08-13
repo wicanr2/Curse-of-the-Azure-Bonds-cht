@@ -1090,6 +1090,15 @@
    "level": "exact",
    "spec": "docs/spec/564-ecl-operand-decoding-and-arity-validation.md",
    "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 4092,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/565-ecl-memory-read-path-and-asymmetry.md",
+   "note": "ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h"
   }
  ]
 }

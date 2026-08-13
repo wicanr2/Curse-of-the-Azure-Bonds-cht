@@ -21,9 +21,13 @@
    （`2E10h`×12、`6803h`×11＝23 個 CALL）。表在
    [`docs/audit/ecl-external-call-registry.md`](docs/audit/ecl-external-call-registry.md)。
    **剩下的是每個 routine 的實際效果**（7 個分支主體全部 `待解讀`）。
-4. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes，逐段判定是字串表、
+4. **`code = 80h`（packed text）長度規則與 bank 1 計算 routine**：第 563–565 輪
+   已閉合 ECL 的分派、operand 編碼、記憶體讀寫與 bank 圖，整理在
+   [`docs/knowledge/gold-box-ecl-interpreter.md`](docs/knowledge/gold-box-ecl-interpreter.md)。
+   剩下這兩條就補齊 VM 核心。
+5. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes，逐段判定是字串表、
    常數表或未觸及的程式碼；是資料就要接回 DAX／GEO／文字來源。
-5. 之後才回到下方 P0/P1 的玩家路徑工作。
+6. 之後才回到下方 P0/P1 的玩家路徑工作。
 
 每完成一批就更新 `docs/audit/re-function-ledger.json` 並重跑 `cmd/re-ledger`；
 台帳裡的 `待解讀` 數字是這個階段唯一的進度指標。

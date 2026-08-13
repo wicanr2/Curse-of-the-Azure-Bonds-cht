@@ -30,6 +30,8 @@
 | 主題 | 入口 | 注意事項 |
 |---|---|---|
 | ECL 指令與 VM | [`gold-box-ecl-command-set.md`](gold-box-ecl-command-set.md) | parser coverage 不等於副作用完整；跨類型時序尚待有序事件紀錄閉合。 |
+| **ECL 直譯器內部構造** | [`gold-box-ecl-interpreter.md`](gold-box-ecl-interpreter.md) | 原版反組譯讀出的分派、operand 編碼、記憶體 bank 與 helper API；結構可跨作品沿用，**常數必須各作品重解**。 |
+| **全函式覆蓋台帳** | [`../audit/coab-function-index.md`](../audit/coab-function-index.md) | 模組／函式層完整度；狀態只來自人工台帳，預設 `待解讀`。 |
 | ECL／城市／地圖狀態 | [`gold-box-state.md`](gold-box-state.md) | 長期累積文章；先看完整度矩陣再引用其中段落。 |
 | 正常玩家路徑 | [`golden-box-normal-player-path.md`](golden-box-normal-player-path.md) | direct-entry 與固定 fixture 不算正常路徑。 |
 | 戰鬥效果 | [`gold-box-combat-effects.md`](gold-box-combat-effects.md) | 數值、AI、動畫、聲音與 continuation 必須分別驗收。 |

@@ -3969,8 +3969,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -4268,7 +4268,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 0Dh 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -5364,6 +5365,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md"
    ]
@@ -5895,9 +5897,9 @@
     "audit/ecl-handler-operand-audit.md",
     "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/521-dos-getmem-buffer-owner.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -6069,6 +6071,7 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh",
    "citations": [
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
    ]
   },
@@ -21737,8 +21740,8 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "knowledge/gold-box-ecl-interpreter.md",
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -23108,6 +23111,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
     "spec/560-ecl-opcode-dispatch-table.md"
    ]
@@ -23837,9 +23841,9 @@
     "audit/ecl-handler-operand-audit.md",
     "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
-    "spec/521-dos-getmem-buffer-owner.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
    ]
   },
   {
@@ -24011,6 +24015,7 @@
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
    "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘",
    "citations": [
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/563-ecl-memory-model-and-operand-resolution.md"
    ]
   },
@@ -24040,7 +24045,11 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "knowledge/gold-box-ecl-interpreter.md",
+    "spec/565-ecl-memory-read-path-and-asymmetry.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -24088,7 +24097,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/565-ecl-memory-read-path-and-asymmetry.md",
+   "note": "ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h",
+   "citations": [
+    "spec/565-ecl-memory-read-path-and-asymmetry.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38089,9 +38104,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 40,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
