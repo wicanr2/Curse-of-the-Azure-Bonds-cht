@@ -14247,6 +14247,66 @@
    "level": "strong inference",
    "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
    "note": "與 PC-98 overlay-02:149Ch（entry#31）助憶碼序列完全相同，語意同該筆：ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 7196,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "if DS:6F95h and 4 <> 0 then <sub_1B>(0)、<far 013E:007D>(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 7247,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "p := <sub_FAA>(DS:6506h);if p <> nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 7312,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8164,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "p := <sub_FAA>(DS:6506h);if p <> nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) <> 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8252,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "arg_2^[4] := 0;if arg_6^[196h] <> 0 then 備妥 'Falls dead' 呼叫 <far 013E:0005>(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8442,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同",
+   "bounds": "prologue"
   }
  ]
 }
