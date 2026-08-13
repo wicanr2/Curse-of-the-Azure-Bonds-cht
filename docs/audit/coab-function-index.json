@@ -958,7 +958,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/671-dos-video-page-and-dead-bounds.md",
+   "note": "交換一個 byte 的高低 nibble:(arg_0 shl 4) + ((arg_0 and 0F0h) shr 4)。用 add 而非 or(兩半不重疊結果相同);shl 後存進 byte 變數,高位自然被截掉不需額外遮罩"
   },
   {
    "platform": "dos",
@@ -1155,7 +1158,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/671-dos-video-page-and-dead-bounds.md",
+   "note": "切換 BIOS 顯示頁:把 Registers.AH := 5、AL := arg_0 後呼叫 Turbo Pascal 的 Intr(10h, Regs);同時自己算好 word_2119Eh := (arg_0 shl 9) + 0A000h——shl 9 是 ×512 段落 = 8KB,所以那是該頁的段位址"
   },
   {
    "platform": "dos",
@@ -1206,7 +1212,10 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/671-dos-video-page-and-dead-bounds.md",
+   "note": "範圍檢查後呼叫 \u003csub_15606\u003e(1,20h,arg_0,arg_2,arg_2,arg_4,arg_6)(arg_2 被推入兩次)。上限 27h(39)與 18h(24)即 40 欄 × 25 列。⚠ 兩個下限檢查(cmp x,0 + jb)是死碼——無號比較,任何值都不小於 0;是原作的冗餘不是判讀不確定,remake 直接寫上限即可"
   },
   {
    "platform": "dos",
@@ -25430,7 +25439,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/670-file-ops-and-standard-handles.md",
+   "note": "Erase:dx := 記錄位址 + 30h(Name 欄位,與 TextRec 同一個偏移,見 spec 668)後 int 21h AH=41h 刪檔;失敗把 AX 記進 word_23B08h(InOutRes)。DS 進出成對保存"
   },
   {
    "platform": "pc98",
@@ -44399,9 +44411,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 96,
+   "Read": 99,
    "NotBlocking": 133,
-   "Todo": 79,
+   "Todo": 76,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -44954,9 +44966,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 219,
+   "Read": 220,
    "NotBlocking": 29,
-   "Todo": 62,
+   "Todo": 61,
    "Fragment": 23,
    "CodeBytes": 25067,
    "Undefined": 0,
