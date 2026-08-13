@@ -1,10 +1,13 @@
 # 第六百二十五輪：ECL 位址分類器 —— bank 常數是刻意讓區間起點落在 offset 0
 
 狀態：`READY`。等級：`exact`。日期：2026-08-14
-位置：PC-98 `overlay-07:0801h`（分類器，91 bytes）、`overlay-07:085Ch`（隊伍
-索引，97 bytes）、`overlay-07:1148h`（`STORESTRING`，540 bytes）。
+位置：PC-98 `overlay-07:1148h`（`STORESTRING`，540 bytes）。
 
-## 位址分類器（`0801h`）
+本輪要處理的是一個先前留著的缺口：分類器（`0801h`，[spec 563](563-ecl-memory-model-and-operand-resolution.md)）
+與 `FINDGUY`（`085Ch`，[spec 615](615-ecl2-findguy-maxrange.md)）都已判讀，但
+**類別怎麼變成實際位址**一直沒有解釋——`6A00h` 這些常數只能當魔術數字抄。
+
+## 位址分類器回顧（`0801h`，spec 563）
 
 輸入一個 ECL 位址，回傳一個 byte 類別：
 
@@ -18,9 +21,9 @@
 
 四段互不重疊，所以鏈上的先後順序不影響結果。
 
-類別 3 的上界 `9E40h` 與 [spec 563](563-ecl-memory-model-and-operand-resolution.md)
-從 `New` 參數量到的 bank 3 大小（`1E41h` = `8000h..9E40h`）**完全吻合**——那邊是
-配置大小，這邊是位址判斷，兩條互相獨立。
+類別 3 的上界 `9E40h` 與同 spec 從 `New` 參數量到的 bank 3 大小
+（`1E41h` = `8000h..9E40h`）**完全吻合**——那邊是配置大小，這邊是位址判斷，兩條
+互相獨立。
 
 類別 1 就是 [spec 624](624-ecl-special-address-space.md) 的特殊位址空間。
 
@@ -84,23 +87,13 @@ mov  ax, 0Fh                 ; 上限 15
 看到同一個位置）。**寫入上限是 15，讀取上限是 30**——兩邊不一樣，中文化取較嚴的
 15 bytes 為準。
 
-## 隊伍索引（`085Ch`）
+## 順帶補上的一筆：角色鏈的 next 指標
 
-```text
-INDEXOF(node):
-    p := DS:9598h                  ← 串列頭
-    i := 0
-    while p <> nil and 未找到 do
-        if p = node then 找到
-        else i := i + 1; p := p^[18Ah]
-    return byte(i)
-```
-
-角色紀錄的 **`+18Ah` 是 next 指標**，串列頭在 `DS:9598h`。找不到就回傳整串長度
-（迴圈自然結束，`i` 已經數完），呼叫端分不出「找不到」與「最後一個的下一格」。
+`FINDGUY`（[spec 615](615-ecl2-findguy-maxrange.md)）走的那條鏈，next 指標在角色
+紀錄的 **`+18Ah`**，串列頭在 `DS:9598h`。
 
 [spec 624](624-ecl-special-address-space.md) 的 `7EB1h`／`7EB4h` 兩個特殊位址就是
-拿 `DS:9594h`（目前角色）去查這個索引——也就是**目前角色在隊伍中的位置**。
+拿 `DS:9594h`（目前角色）去查 `FINDGUY`——也就是**目前角色在隊伍中的位置**。
 
 ## 明確不宣稱
 
