@@ -31,8 +31,11 @@ def next_start(platform, module, ea):
         fns = sorted(load(platform, module))
         later = [f for f in fns if f > ea]
         return later[0] if later else ea + 0x1000
-    index = blob.find(b"\x55\x89\xe5", ea + 3)
-    return index if index > 0 else len(blob)
+    # 兩種 prologue 都要找：`55 89 e5`（Turbo Pascal）與 `55 8b ec`（組語常式）。
+    # 只找前者會把組語函式併進前一支，區間憑空變大好幾百 bytes。
+    hits = [blob.find(p, ea + 3) for p in (b"\x55\x89\xe5", b"\x55\x8b\xec")]
+    hits = [h for h in hits if h > 0]
+    return min(hits) if hits else len(blob)
 
 
 def show_range(platform, module, start, end):

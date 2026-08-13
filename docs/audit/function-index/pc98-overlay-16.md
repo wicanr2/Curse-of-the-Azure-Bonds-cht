@@ -47,7 +47,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_4], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `5008` | sub_5008 | SAVEGAME | 718 | 296 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>退回待解讀:當初依 IDA 的 7 bytes 判讀,但 prologue 區間內在那之後還有 213 條指令。要用 scripts/show.py --whole 重讀。原判讀:空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
+| `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 待解讀 | — | — | — |
