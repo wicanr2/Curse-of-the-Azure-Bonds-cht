@@ -39,16 +39,16 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3FB7` | sub_3FB7 | — | 115 | 53 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `402A` | sub_402A | — | 303 | 120 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `4193` | sub_4193 | — | 183 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `424A` | sub_424A | — | 51 | 27 | 2 | 0 | ✓ | 待解讀 | — | — | — |
+| `424A` | sub_424A | — | 51 | 27 | 2 | 0 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>FillChar(0A000h:0A00h,500h,0) 與 FillChar(0A200h:0A00h,500h,1)——PC-98 文字 VRAM 的字元碼平面與屬性平面。位移 0A00h ÷2 = 第 1280 格 = 第 16 列(80 欄),長度 500h ÷2 = 640 格 = 8 列,所以清的是第 16..23 列的訊息區。⚠ 中文化不能沿用這條路徑:漢字 ROM 沒有繁體字集 | spec/636-pc98-text-vram-and-disk-bios.md |
 | `42FE` | sub_42FE | LOADSAVEDGAME | 772 | 317 | 0 | 12 | ✓ | 待解讀 | — | — | — |
 | `46CE` | sub_46CE | SAVECURRENTGAME | 659 | 279 | 0 | 11 | ✓ | 待解讀 | — | — | — |
 | `4961` | sub_4961 | LOADALL | 17 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_49C6`（body 共 17 bytes，已逐條讀完） | — |
 | `49C6` | sub_49C6 | LOADGAME | 1183 | 458 | 2 | 9 | ✓ | 待解讀 | — | — | — |
-| `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `4E65` | sub_4E65 | SAVEALL | 28 | 17 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>repeat until <sub_B4F>(0) <> 0 的純忙碌等待(jz 跳回迴圈開頭 4E68h,每輪重新推入參數 0,中間沒有延遲也沒有讓出),之後 <sub_5008>(0,4Bh) | spec/636-pc98-text-vram-and-disk-bios.md |
 | `4E81` | sub_4E81 | — | 23 | 9 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_4], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | — |
 | `5008` | sub_5008 | SAVEGAME | 718 | 296 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/function-index/pc98-overlay-02.md<br>spec/612-ecl-main-loop.md |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `574F` | sub_574F | — | 31 | 18 | 3 | 0 |  | 待解讀 | — | — | — |
+| `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0 | spec/636-pc98-text-vram-and-disk-bios.md |
+| `574F` | sub_574F | — | 31 | 18 | 3 | 0 |  | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數 | spec/636-pc98-text-vram-and-disk-bios.md |
