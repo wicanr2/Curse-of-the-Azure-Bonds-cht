@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 263、不阻塞 133、邊界碎片 208、待解讀 740；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 268、不阻塞 133、邊界碎片 208、待解讀 735；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -37,7 +37,7 @@
 | overlay-20 | CLOCK | 16 | 2 | 0 | 0 | 14 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
 | overlay-21 | MONEY | 26 | 2 | 0 | 2 | 22 | 4559 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 136 | 32 | 0 | 21 | 83 | 22254 | 2174 | [明細](function-index/dos-overlay-22.md) |
-| overlay-23 | EFFECTS | 39 | 14 | 0 | 10 | 15 | 9176 | 376 | [明細](function-index/dos-overlay-23.md) |
+| overlay-23 | EFFECTS | 39 | 19 | 0 | 10 | 10 | 9176 | 376 | [明細](function-index/dos-overlay-23.md) |
 | overlay-24 | GENERIC | 56 | 2 | 0 | 3 | 51 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
 | overlay-25 | TRAINING | 8 | 2 | 0 | 0 | 6 | 1295 | 733 | [明細](function-index/dos-overlay-25.md) |
 | overlay-26 | MENUS | 21 | 3 | 0 | 0 | 18 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 295、不阻塞 29、邊界碎片 280、待解讀 877；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 300、不阻塞 29、邊界碎片 280、待解讀 872；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -81,7 +81,7 @@
 | overlay-20 | CLOCK | 15 | 1 | 0 | 0 | 14 | 3548 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 2 | 0 | 5 | 23 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 30 | 0 | 25 | 83 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
-| overlay-23 | EFFECTS | 39 | 14 | 0 | 11 | 14 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
+| overlay-23 | EFFECTS | 39 | 19 | 0 | 11 | 9 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
 | overlay-24 | GENERIC | 65 | 2 | 0 | 12 | 51 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
 | overlay-25 | TRAINING | 14 | 2 | 0 | 0 | 12 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
 | overlay-26 | MENUS | 20 | 2 | 0 | 0 | 18 | 4937 | 183 | [明細](function-index/pc98-overlay-26.md) |
