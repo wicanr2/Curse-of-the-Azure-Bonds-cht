@@ -106,6 +106,26 @@ READVAR(固定前綴) → ADDRESSVALUE(某 operand) 取得 N → dec PC → READ
 | `25h`／`26h` | ON GOTO／ON GOSUB | 2 |
 | `2Bh` | HORIZONTAL MENU | 2 |
 
+## 條件分支（`exact`）
+
+`03h`（`COMPARE`）一次算出六個結果，放進 `DS:A88Ah..A88Fh`（DOS 的對應位址
+未確認）；`16h`～`1Bh` 各檢查其中一個，**旗標為 0 就跳過下一條指令**。
+
+| opcode | 條件 | opcode | 條件 |
+|---:|---|---:|---|
+| `16h` | `=` | `19h` | `>` |
+| `17h` | `<>` | `1Ah` | `<=` |
+| `18h` | `<` | `1Bh` | `>=` |
+
+**六個比較全是無號的。** ECL 的值是 16 位元，`FFFFh` 比 `0001h` 大。
+
+「跳過下一條」由 `ECL2` 的 `SKIP`（stub `00B1h`）實作，它內建一張
+opcode → arity 對照表，與各 handler 自己的 `READVAR(n)` 比對後 42 個一致、
+2 個不一致（`34h`／`36h`，原版自己的問題）、`1Fh` 有 arity 卻沒有 handler。
+見 [spec 591](../spec/591-skip-arity-crosscheck.md)。
+
+`14h` 也走同一組旗標，但只設得出 `A88Ah`／`A88Bh`（它比較的是兩對 word）。
+
 ## 記憶體模型（`exact`）
 
 讀寫共用同一個位址分類器（PC-98 `overlay-07:0801h`／DOS `0735h`）：

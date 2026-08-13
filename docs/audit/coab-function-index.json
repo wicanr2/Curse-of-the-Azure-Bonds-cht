@@ -6772,7 +6772,7 @@
     "audit/function-index/dos-overlay-07.md",
     "audit/function-index/pc98-overlay-07.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "knowledge/gold-box-ecl-interpreter.md"
    ]
   },
   {
@@ -17104,6 +17104,7 @@
    "note": "與 pc98 overlay-23:0016h 助憶碼序列完全相同（64 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-23.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -27759,7 +27760,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/593-ecl-comparison-flags.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27786,7 +27790,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/593-ecl-comparison-flags.md",
+   "note": "ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、\u003c\u003e、\u003c、\u003e、\u003c=、\u003e= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整",
+   "citations": [
+    "spec/593-ecl-comparison-flags.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39195,6 +39205,7 @@
    "note": "KILLDUDE(msg,new_state,char):顯示訊息後,狀態 +196h 已是 {6,7,8} 就不覆寫;否則設新狀態、+197h=0、+1A5h(目前 HP)=0,再 REMOVEFX + CHECKFX(0Dh) 與四個 far call 善後",
    "citations": [
     "audit/function-index/dos-overlay-23.md",
+    "knowledge/gold-box-ecl-interpreter.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -43311,9 +43322,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 28,
+   "Todo": 27,
    "Fragment": 10,
    "CodeBytes": 8889,
    "Undefined": 363,
