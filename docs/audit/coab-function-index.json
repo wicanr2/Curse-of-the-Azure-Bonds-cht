@@ -4617,10 +4617,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/588-ecl-return-and-gosub-stack.md"
+    "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
   {
@@ -24905,10 +24905,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/pc98-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/588-ecl-return-and-gosub-stack.md"
+    "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
   {
@@ -26317,11 +26317,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Eh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/596-ecl-party-item-sweep.md",
+   "note": "ECL opcode 3Eh:無 operand;把目前目標記到 DS:789Dh、開視窗,然後先把 DS:7F34h 設為 1,沿角色鏈掃描——任一角色狀態 +196h 為 0 或 4 且 +0F7h 為 0 就把 DS:7F34h 清 0 並提早結束(迴圈條件帶著該旗標)。所以 DS:7F34h=1 代表全隊都不能行動",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/596-ecl-party-item-sweep.md"
    ]
   },
   {
@@ -26362,6 +26364,7 @@
    "note": "ECL opcode 40h:READVAR(1);沿 DS:9598h 的角色鏈(next 在 +18Ah)逐一走訪,對每名角色再沿 +14Eh 的物品鏈(next 在 +52h)走訪,物品 +56h 等於該 id 就呼叫 far 014A:0075 移除,每名角色處理完呼叫 014A:0043 收尾。內層迴圈先取 next 再移除,所以鏈不會斷",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/596-ecl-party-item-sweep.md"
    ]
   },
@@ -43274,9 +43277,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 31,
+   "Read": 32,
    "NotBlocking": 0,
-   "Todo": 32,
+   "Todo": 31,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,

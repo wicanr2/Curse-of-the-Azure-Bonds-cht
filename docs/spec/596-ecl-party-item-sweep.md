@@ -44,6 +44,27 @@ while node <> nil do
 [spec 595](595-ecl-target-selection-and-effect-query.md)）是相鄰的兩個 far
 pointer，一個指鏈頭、一個指當前選中的成員。
 
+## `3Eh`（`35AFh`）：掃全隊看還有沒有人能行動
+
+```text
+ECL_PC := ECL_PC + 1                      ← 沒有 operand
+<far 00E9:002F>(1, 0)
+DS:789Dh := DS:9594h                      ← 記住目前目標
+<far 0418:14C7>(0Fh, 26h, 1, 11h) ; <far 014A:002A>(DS:9594h)
+DS:7F34h := 1                             ← 先假設「沒有」
+node := DS:9598h
+while node <> nil and DS:7F34h <> 0 do
+    if (node^[196h] = 0 or node^[196h] = 4) and node^[0F7h] = 0 then
+        DS:7F34h := 0                     ← 找到一個就停
+    node := node^[18Ah]
+```
+
+狀態 `0` 是可行動、`4` 是加血後回復的狀態
+（[spec 579](579-character-status-fields.md)）。迴圈條件帶著 `DS:7F34h <> 0`，
+所以**找到第一個就提早結束**。
+
+`DS:7F34h` 的語意因此是「全隊都不能行動」——1 代表沒人可動。
+
 ## 明確不宣稱
 
 - 物品節點的大小與其餘欄位。
