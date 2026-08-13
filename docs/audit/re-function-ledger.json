@@ -12115,6 +12115,24 @@
    "level": "exact",
    "spec": "docs/spec/612-ecl-main-loop.md",
    "note": "空函式:原始位元組 55 89 e5 89 ec 5d cb = push bp/mov bp,sp/mov sp,bp/pop bp/retf,沒有呼叫者。IDA 把 89 ec 的第二個位元組單獨當成 ec(in al,dx)——看起來像 I/O 存取的假指令是位元組邊界錯位的典型症狀。同形的 7-byte 空函式在 overlay-16:5581h、overlay-18:1756h 也出現過"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 12926,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "場景主迴圈:每輪先初始化畫面、清 DS:A31Ch/設 DS:A326h=FFh/清 DS:7897h、由地圖座標算 DS:A2ADh、把目前目標存進 DS:789Dh,然後依序 RUN_ECL(DS:7F1Fh)→(DS:7F17h)→(DS:7F19h),每段之後檢查 DS:7897h 非 0 就跳過後續;全部走完才還原目標。DS:7897h 非 0 時整輪重來。加上 3237h 用的 7F1Bh/7F1Dh,ECL 進入點是 DS:7F17h 起的五格 word 表"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 14881,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/613-ecl-scene-lifecycle.md",
+   "note": "ECL 場景的完整生命週期(INTERPET 最外層入口):初始化一批旗標、設 DS:7F27h、進場執行 RUN_ECL(DS:7F1Fh),然後進主迴圈——每輪檢查存檔、DS:7F34h 為 0 時執行 RUN_ECL(DS:7F17h)、記下地圖座標 bank0^[1E0h]/[1E2h]、動作後比對,座標變動才執行 RUN_ECL(DS:7F19h)(「踏上新格子」的事件)。DS:7897h 非 0 時轉去場景主迴圈 327Eh。主迴圈由 DS:7F34h 終止,離開前清零"
   }
  ]
 }

@@ -46,8 +46,44 @@ if flag <> 0 then
 DS:A66Ch := 1 ; <far 0172:0025>() ; DS:8CF7h := 0
 ```
 
-**`DS:7F1Bh` 與 `DS:7F1Dh` 是兩個 ECL 進入點位址**，相差 2 bytes，形狀是同一
-張表的兩欄。
+## 進入點是一張五格的表
+
+`327Eh`（場景主迴圈）用到另外三個：
+
+```text
+repeat
+    <初始化畫面>(DS:A2C6h)
+    DS:A31Ch := 0 ; DS:A326h := FFh ; DS:7897h := 0
+    DS:A2ADh := <由地圖座標算>(DS:A2AAh, DS:A2A9h)
+    bank1^[5AAh] := 0
+    DS:789Dh := DS:9594h                       ← 記住目前目標
+    RUN_ECL(DS:7F1Fh)
+    if DS:7897h = 0 then
+        bank0^[1E4h] := DS:BDF0h
+        <條件成立時 far 0172:0025>()
+        DS:7897h := 0
+        RUN_ECL(DS:7F17h)
+        if DS:7897h = 0 then
+            RUN_ECL(DS:7F19h)
+            if DS:7897h = 0 then
+                DS:9594h := DS:789Dh           ← 還原目標
+                <far 014A:002A>(DS:9594h)
+until DS:7897h = 0
+DS:7F28h := DS:7F27h
+```
+
+把兩支加起來，**ECL 的進入點是 `DS:7F17h` 起的五格 word 表**：
+
+| 位址 | 由誰執行 |
+|---|---|
+| `DS:7F17h` | `327Eh` 第二段 |
+| `DS:7F19h` | `327Eh` 第三段 |
+| `DS:7F1Bh` | `3237h` 第一段 |
+| `DS:7F1Dh` | `3237h` 第二段 |
+| `DS:7F1Fh` | `327Eh` 第一段 |
+
+**`DS:7897h` 是「重跑這一輪」的旗標**：非 0 就跳回迴圈開頭重新初始化畫面並
+從 `7F1Fh` 再來一次；每段 `RUN_ECL` 之後都檢查它，非 0 就跳過後續各段。
 
 ## `3CE4h` 是空函式
 
