@@ -22682,7 +22682,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/654-overlay-heap-manager.md",
+   "note": "釋放 DOS 記憶體塊(int 21h AH=49h),對象是 word_24182h;為 0 時直接回 0FFFFh。⚠ 先把 word_24182h 清成 0 再檢查進位旗標——釋放失敗時全域已被清掉,同一塊再也不會被嘗試釋放。回傳慣例與同批另兩支相反:0 成功、0FFFFh 失敗"
   },
   {
    "platform": "pc98",
@@ -22718,7 +22721,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/654-overlay-heap-manager.md",
+   "note": "回傳串列裡最大的一塊,DX 帶回 word_24186h。⚠ 起始值是 word_24188h - 1,所以串列全部比它小時回傳的是那個減一後的值而不是實際最大值"
   },
   {
    "platform": "pc98",
@@ -22730,7 +22736,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/654-overlay-heap-manager.md",
+   "note": "最佳適配配置:走 word_2418Eh 起的串列(節點以 segment 串接,+0 是大小、+4 是下一塊),剛好夠就立刻採用不再往下找,否則挑剩最少的。找不到時回 0(bx 初值 0FFFFh 加一);找到則回「節點 segment + 1」。無號比較"
   },
   {
    "platform": "pc98",
@@ -44749,9 +44758,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 152,
+   "Read": 155,
    "NotBlocking": 29,
-   "Todo": 131,
+   "Todo": 128,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
