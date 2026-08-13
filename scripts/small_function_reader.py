@@ -131,6 +131,20 @@ def classify(function):
         destination = next(m.group(1) for m in named_stores if m)
         return "全域搬移", "把 %s 的值搬到 %s（兩者語意另計）" % (source, destination)
 
+    # VAR 參數存取：Pascal 的 var 參數是 far pointer，先 `les di, [bp+arg]`
+    # 再對 `es:[di+N]` 讀或寫。整個 body 只有這件事才算。
+    les_arg = re.compile(r"^les di, \[bp\+(arg_[0-9A-Fa-f]+|6|8|0Ah)\]$")
+    es_access = re.compile(r"^mov (es:\[di[^\]]*\], (al|ax)|(al|ax), es:\[di[^\]]*\])$")
+    if any(les_arg.match(l) for l in core) and any(es_access.match(l) for l in core):
+        if all(les_arg.match(l) or es_access.match(l) or MOV_ARG.match(l)
+               or MOV_VAR_SET.match(l) or MOV_VAR_GET.match(l) or MOV_IMM.match(l)
+               or MOV_LOAD.match(l) for l in core):
+            writes = [l for l in core if es_access.match(l) and l.startswith("mov es:")]
+            action = "寫入" if writes else "讀取"
+            fields = [l.split("[di")[1].split("]")[0] for l in core if es_access.match(l)]
+            return "VAR 參數存取", "對 var 參數指向的 record %s 欄位 %s" % (
+                action, "、".join("+0" if f == "" else f for f in fields))
+
     # 常數
     if len(core) <= 3 and all(MOV_IMM.match(l) or MOV_VAR_SET.match(l)
                               or MOV_VAR_GET.match(l) for l in core):

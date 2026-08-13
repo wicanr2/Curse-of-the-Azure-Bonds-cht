@@ -16052,7 +16052,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/571-trytohit-attack-resolution.md"
    ]
   },
   {
@@ -36688,7 +36689,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/571-trytohit-attack-resolution.md"
    ]
   },
   {
@@ -36730,7 +36732,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/571-trytohit-attack-resolution.md",
+   "note": "TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier \u003e target^[19Bh](嚴格大於)",
+   "citations": [
+    "spec/571-trytohit-attack-resolution.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36744,7 +36752,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/571-trytohit-attack-resolution.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40703,9 +40714,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 26,
+   "Todo": 25,
    "Fragment": 9,
    "CodeBytes": 9201,
    "Undefined": 458,
