@@ -22379,7 +22379,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "與 1692Dh 逐位元組完全相同的文字 VRAM 定址(57 bytes),差別只在下游:這支叫 sub_17D22/sub_17D72,那支叫 sub_16966/sub_169B6。remake 不必複製這個重複,但兩條路徑的下游要各自確認"
   },
   {
    "platform": "pc98",
@@ -22403,7 +22406,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "填 PC-98 文字屬性平面(0A200h):屬性 byte := (arg[bp+0Ch] shl 5) or 1,若 arg[bp+0Ah] 非零再 or 4;rep stosw,CX 與 DI 由呼叫端 17CE9h 先算好"
   },
   {
    "platform": "pc98",
@@ -22430,7 +22436,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "與 17186h 逐位元組完全相同的 Shift-JIS → JIS 換算(同一段程式碼的第二份)"
   },
   {
    "platform": "pc98",
@@ -22478,7 +22487,10 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "repeat:\u003csub_19293\u003e() 回 0 就結束,否則呼叫 \u003csub_18036\u003e() 再回頭。sub_18036 的回傳值存進區域變數後沒有再讀,是死存"
   },
   {
    "platform": "pc98",
@@ -22505,7 +22517,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "out 6Ah,1 開類比模式;arg_0 非零取 CS:304h、為零取 CS:334h(兩張表相鄰各 48 bytes,線性位址 18134h 與 18164h),呼叫 181C7h 寫入;再 int 18h(AH=42h,CH=80h)設模式、out 68h,8、int 18h(AH=40h)顯示開、int 18h(AH=12h)"
   },
   {
    "platform": "pc98",
@@ -22517,7 +22532,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/647-pc98-palette-and-attribute.md",
+   "note": "寫 PC-98 16 色類比調色盤:out A8h 索引、out AAh/ACh/AEh 依序寫綠紅藍(PC-98 的順序是 G-R-B 不是 R-G-B),每色 4 bit 故值域 0..0Fh;索引由 0Fh 遞減到 0,每筆讀 3 bytes,資料在 CS:SI"
   },
   {
    "platform": "pc98",
@@ -44674,9 +44692,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 127,
+   "Read": 133,
    "NotBlocking": 29,
-   "Todo": 156,
+   "Todo": 150,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
