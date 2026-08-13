@@ -16468,7 +16468,8 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "spec/628-spell-effect-wrappers.md",
-    "spec/629-spell-pack-idiom-and-uninit.md"
+    "spec/629-spell-pack-idiom-and-uninit.md",
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
@@ -38522,9 +38523,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/631-strength-spell-exceptional.md",
+   "note": "力量法術:先把 DS:7D93h 設 12h、DS:7D94h 設 0,再依 \u003cfar 014A:00D4\u003e(DS:0A031h) 的回傳 1..0Bh 改其一——case 1..6 改百分比(0/1/33h/4Ch/5Bh/64h = 0/1/51/76/91/100)、case 7..0Bh 改力量值(13h..16h = 19..22)。換成十進位就是 AD\u0026D 的特例力量 18/xx,級距切在 01/51/76/91/00。兩組互斥一次只改一個,且 case 有預設值所以沒有未初始化問題。之後 \u003cfar 013E:007F\u003e 非 0 才印「は強くなった。」否則印「は影響を受けなかった。」",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
@@ -38631,7 +38636,8 @@
    "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
    "note": "case DS:0A520h of 1:(DS:0A031h=17h ? 0FEh : 0FDh) 2:0FFh 3,4:0——**沒有 else**,落在 1..4 以外時傳給 \u003csub_1D0B\u003e 的 v 是未初始化的堆疊殘值(與 spec 624 的 7D0Dh 同一類原作行為)。訊息「は金縛りにあった。」",
    "citations": [
-    "spec/629-spell-pack-idiom-and-uninit.md"
+    "spec/629-spell-pack-idiom-and-uninit.md",
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
@@ -38708,6 +38714,7 @@
    "spec": "docs/spec/630-spell-target-array.md",
    "note": "挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget \u003e= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/630-spell-target-array.md"
    ]
   },
@@ -38781,6 +38788,7 @@
    "note": "v := (ROLLDICE(1,4) shl 4) or \u003cfar 014A:00D4\u003e(DS:0A031h)——高 4 bit 放數量、低 4 bit 放另一個值,是打包不是乘法;再推入 DS:0A031h、v、三個 0,備妥「は分身した。」呼叫 \u003csub_F62\u003e。1d4 個分身與 AD\u0026D Mirror Image 一致(推論,不寫進結論)。與 3804h 用同一套打包寫法",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/629-spell-pack-idiom-and-uninit.md"
    ]
   },
@@ -38974,7 +38982,8 @@
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "spec/628-spell-effect-wrappers.md",
-    "spec/629-spell-pack-idiom-and-uninit.md"
+    "spec/629-spell-pack-idiom-and-uninit.md",
+    "spec/631-strength-spell-exceptional.md"
    ]
   },
   {
@@ -44328,9 +44337,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 45,
+   "Read": 46,
    "NotBlocking": 0,
-   "Todo": 66,
+   "Todo": 65,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

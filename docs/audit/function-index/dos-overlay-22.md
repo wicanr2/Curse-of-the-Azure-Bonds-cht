@@ -87,7 +87,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `36A7` | sub_36A7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `36E0` | sub_36E0 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `370E` | sub_370E | — | 246 | 103 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-22.md<br>spec/628-spell-effect-wrappers.md<br>spec/629-spell-pack-idiom-and-uninit.md |
+| `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-22.md<br>spec/628-spell-effect-wrappers.md<br>spec/629-spell-pack-idiom-and-uninit.md<br>spec/631-strength-spell-exceptional.md |
 | `391D` | sub_391D | — | 42 | 20 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:3BCBh 助憶碼序列完全相同（20 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `3947` | sub_3947 | — | 188 | 71 | 5 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A03` | sub_3A03 | — | 661 | 263 | 4 | 8 | ✓ | 待解讀 | — | — | — |

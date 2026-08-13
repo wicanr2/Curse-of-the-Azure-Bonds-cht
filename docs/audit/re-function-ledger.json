@@ -13384,6 +13384,15 @@
    "level": "strong inference",
    "spec": "docs/spec/630-spell-target-array.md",
    "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget >= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 8746,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/631-strength-spell-exceptional.md",
+   "note": "力量法術:先把 DS:7D93h 設 12h、DS:7D94h 設 0,再依 <far 014A:00D4>(DS:0A031h) 的回傳 1..0Bh 改其一——case 1..6 改百分比(0/1/33h/4Ch/5Bh/64h = 0/1/51/76/91/100)、case 7..0Bh 改力量值(13h..16h = 19..22)。換成十進位就是 AD&D 的特例力量 18/xx,級距切在 01/51/76/91/00。兩組互斥一次只改一個,且 case 有預設值所以沒有未初始化問題。之後 <far 013E:007F> 非 0 才印「は強くなった。」否則印「は影響を受けなかった。」"
   }
  ]
 }
