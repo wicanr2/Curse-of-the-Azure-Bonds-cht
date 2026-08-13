@@ -30,8 +30,8 @@ push word ptr [di-5AE3h]    ; 陣列[i] 的 offset
 ```text
 備妥 'は魅了された。'，<sub_1D0B>(0, 訊息)      ← 迴圈之外，只印一次
 for i := 1 to DS:0A520h do
-    if <far 014Ah:00A7h>(0Bh, 陣列[i], @var) <> 0 then
-        <far 013Eh:002Ah>(0Bh, 陣列[i], var, 0)
+    if <far 014Ah:00A7h>(陣列[i], 0Bh, @var) <> 0 then
+        <far 013Eh:002Ah>(0, var, 陣列[i], 0Bh)
 ```
 
 訊息**在迴圈外面**，效果在裡面——不管命中幾個目標，訊息只出現一次。

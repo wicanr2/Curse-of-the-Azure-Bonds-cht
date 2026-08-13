@@ -17,6 +17,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER = os.path.join(ROOT, "docs", "audit", "re-function-ledger.json")
+INDEX = os.path.join(ROOT, "docs", "audit", "coab-function-index.json")
 
 
 def main():
@@ -24,6 +25,19 @@ def main():
     rows = json.load(sys.stdin)
     ledger = json.load(open(LEDGER, encoding="utf-8"))
     existing = {(e["platform"], e["module"], e["ea"]): e for e in ledger["functions"]}
+
+    index = json.load(open(INDEX, encoding="utf-8"))
+    known = {(f["platform"], f["module"], f["ea"])
+             for f in (index.get("functions") or index)}
+    unknown = [r for r in rows
+               if (r["platform"], r["module"], r["ea"]) not in known]
+    if unknown:
+        # 位址打錯時條目會接不上索引：台帳裡多一列、統計卻不動，
+        # 從進度數字上完全看不出來。所以這裡直接擋，不給 --force 繞過。
+        print("以下位址不在函式索引裡（多半是 ea 打錯）：")
+        for row in unknown:
+            print("  %-5s %-12s %04Xh" % (row["platform"], row["module"], row["ea"]))
+        return 2
 
     clash = []
     for row in rows:

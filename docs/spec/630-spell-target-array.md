@@ -67,8 +67,8 @@ else
     x := <far 014Ah:00D4h>(DS:0A031h, DS:0A031h)
     n := (signext(DS:9594h^[198h]) shl 7) + x
     推入 n、1、0、0，備妥 'は魅了された。'，<sub_F62>
-    if <far 014Ah:00A7h>(0Bh, t, @var_4) <> 0 then
-        <far 013Eh:002Ah>(0Bh, t, var_4, 0)
+    if <far 014Ah:00A7h>(t, 0Bh, @var_4) <> 0 then
+        <far 013Eh:002Ah>(0, var_4, t, 0Bh)
 ```
 
 免疫條件是**兩個欄位任一超過 1**：`+11Ah`（`RACETYPE`）與 `+0DEh`。不是等於某個

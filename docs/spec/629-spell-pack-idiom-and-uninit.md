@@ -57,7 +57,7 @@ remake 照抄的話要一併決定怎麼處理，或明確記錄為修正項。
 t := DS:0A521h                                  ← far pointer
 if t^[196h] = 1 then
     DS:0A521h := nil                            ← 直接清掉，不印任何訊息
-else if <far 014Ah:00A7h>(37h, t, @var_4) <> 0 then
+else if <far 014Ah:00A7h>(t, 37h, @var_4) <> 0 then
     if t^[1A5h] = 0 then t^[1A5h] := 1          ← HP 為 0 就拉到 1
     推入 DS:0A031h、0FFh、1、0、0，備妥 'は魔法にかかった。'，<sub_F62>
     <far 013Eh:002Ah>(4Eh, t, 0, 1)

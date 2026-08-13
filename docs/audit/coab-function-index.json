@@ -16599,7 +16599,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/631-strength-spell-exceptional.md",
+   "note": "與 pc98 overlay-22:423Fh 助憶碼序列完全相同（56 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 222Ah 同一族的力量法術入口:if \u003cfar 013E:007F\u003e(t,0,15h,@var_1) \u003c\u003e 0 則備妥「は強くなった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),\u003cfar 013E:0057\u003e(t,92h,n,var_1,1),最後 \u003cfar 013E:0098\u003e(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -38512,8 +38515,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/630-spell-target-array.md",
-   "note": "t := DS:0A521h;免疫條件是 t^[11Ah](RACETYPE)\u003e1 或 t^[0DEh]\u003e1(是大於 1 不是等於某值),命中就備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);否則 n := (signext(DS:9594h^[198h]) shl 7) + \u003cfar 014A:00D4\u003e(DS:0A031h,DS:0A031h),備妥「は魅了された。」呼叫 \u003csub_F62\u003e,再 \u003cfar 014A:00A7\u003e(0Bh,t,@var_4) 非 0 時 \u003cfar 013E:002A\u003e(0Bh,t,var_4,0)。移位量是 7,與 29A3h/3804h 的 4 不同",
+   "note": "t := DS:0A521h;免疫條件是 t^[11Ah](RACETYPE)\u003e1 或 t^[0DEh]\u003e1(是大於 1 不是等於某值),命中就備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);否則 n := (signext(DS:9594h^[198h]) shl 7) + \u003cfar 014A:00D4\u003e(DS:0A031h,DS:0A031h),備妥「は魅了された。」呼叫 \u003csub_F62\u003e,再 \u003cfar 014A:00A7\u003e(t,0Bh,@var_4) 非 0 時 \u003cfar 013E:002A\u003e(0Bh,t,var_4,0)。移位量是 7,與 29A3h/3804h 的 4 不同",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
     "spec/630-spell-target-array.md",
     "spec/632-spell-target-array-loop.md"
@@ -38699,8 +38704,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/629-spell-pack-idiom-and-uninit.md",
-   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息(呼叫端不檢查會拿到 nil);否則 \u003cfar 014A:00A7\u003e(37h,t,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,不是治療,活著的人不會加血),備妥「は魔法にかかった。」呼叫 \u003csub_F62\u003e,最後 \u003cfar 013E:002A\u003e(4Eh,t,0,1)",
+   "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息;否則 \u003cfar 014A:00A7\u003e(t,37h,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,活著的人不會加血),備妥「は魔法にかかった。」呼叫 \u003csub_F62\u003e,最後 \u003cfar 013E:002A\u003e(4Eh,t,0,1)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/629-spell-pack-idiom-and-uninit.md",
     "spec/630-spell-target-array.md",
     "spec/632-spell-target-array-loop.md"
@@ -38872,7 +38879,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/628-spell-effect-wrappers.md",
-   "note": "if \u003cfar 013E:0070\u003e(21h, DS:0A521h:0A523h) \u003c\u003e 0 then \u003cfar 014A:00A2\u003e(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明",
+   "note": "if \u003cfar 013E:0070\u003e(t, 21h) \u003c\u003e 0 then \u003cfar 014A:00A2\u003e(t,1,「の視力は戻った。」),t 是 DS:0A521h。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/628-spell-effect-wrappers.md"
@@ -39177,7 +39184,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/628-spell-effect-wrappers.md",
-   "note": "if \u003cfar 013E:0070\u003e(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速",
+   "note": "if \u003cfar 013E:0070\u003e(t, 2Ah) = 0 then 推入 DS:0A031h 與四個 0、備妥「はすばやくなった。」呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
@@ -39208,7 +39215,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/631-strength-spell-exceptional.md",
+   "note": "與 222Ah 同一族的力量法術入口:if \u003cfar 013E:007F\u003e(t,0,15h,@var_1) \u003c\u003e 0 則備妥「は強くなった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);接著 n := ROLLDICE(1,4)*0Ah + 28h(擲骰乘 10 再加 40),\u003cfar 013E:0057\u003e(t,92h,n,var_1,1),最後 \u003cfar 013E:0098\u003e(t,0)。⚠ 92h 是外層 013E:0057 的參數不是 ROLLDICE 的"
   },
   {
    "platform": "pc98",
@@ -39263,7 +39273,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/627-spell-cure-family.md",
-   "note": "n := ROLLDICE(2,4)+2 (2d4+2);\u003cfar 013E:008E\u003e(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。",
+   "note": "n := ROLLDICE(2,4)+2 (2d4+2);if \u003cfar 013E:008E\u003e(t, n, 0) \u003c\u003e 0 則 \u003cfar 014A:00A2\u003e(t,1,「は回復した。」),t 是 DS:0A521h。⚠ 參數交錯推入:t 先推(外層的第一個參數),2/4 是內層 ROLLDICE 的。與 5B2Bh 逐指令相同,只差字串常數位址而兩處內容相同——同一段程式碼編譯了兩次",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/627-spell-cure-family.md"
@@ -39471,6 +39481,7 @@
    "spec": "docs/spec/632-spell-target-array-loop.md",
    "note": "bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/632-spell-target-array-loop.md"
    ]
   },
@@ -39526,8 +39537,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/632-spell-target-array-loop.md",
-   "note": "對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil",
+   "note": "對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(陣列[i],0Bh,@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/632-spell-target-array-loop.md"
    ]
   },
@@ -39773,7 +39786,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/627-spell-cure-family.md",
-   "note": "與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,\u003cfar 013E:008E\u003e(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。",
+   "note": "與 434Dh 逐指令相同的另一份複本:if \u003cfar 013E:008E\u003e(t, ROLLDICE(2,4)+2, 0) \u003c\u003e 0 則印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "spec/627-spell-cure-family.md"
@@ -43802,9 +43815,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 42,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 72,
+   "Todo": 71,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -44357,9 +44370,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 48,
+   "Read": 49,
    "NotBlocking": 0,
-   "Todo": 63,
+   "Todo": 62,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
