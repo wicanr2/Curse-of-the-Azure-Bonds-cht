@@ -218,13 +218,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19ACE` | sub_19ACE | — | 50 | 27 | 1 | 1 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>清畫面:格數 = (low(word_280CAh)+1) × byte_280E5h;屬性寫 0E1h((7 shl 5) or 1,與 spec 658 一致)到 es:[bx+di]、字元寫 0020h 到 ES:DI 並 di += 2——所以 word_280D6h 是兩個平面的位移差 | — |
 | `19B00` | sub_19B00 | — | 79 | 36 | 2 | 1 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>全形字的游標吸附:byte_280D0h 為 0 或已在左界就返回;否則算出目前格的 VRAM 位移,若高位元組非 0 且 ah/al 任一 bit 7 已設(是全形的某一半),再看前一格是不是它的左半,成立就 dec dl 把游標左移——避免游標停在一個字的中間。判斷綁在 bit 7 的編碼上,中文版若改存法要跟著改 | — |
 | `19B4F` | sub_19B4F | — | 46 | 19 | 1 | 2 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>算 VRAM 位移 (dh × byte_280DAh + dl) × 2(不是 80 欄再 ×2)存進 word_280D8h;word_280EDh 非 0 時再加 1000h(區塊切換)但**只用於這次呼叫**,不寫回 word_280D8h;最後 ah := 13h 呼叫 <sub_1977B> | — |
-| `19B7D` | sub_19B7D | — | 31 | 13 | 6 | 1 |  | 待解讀 | — | — | — |
-| `19B9C` | sub_19B9C | — | 32 | 15 | 6 | 1 |  | 待解讀 | — | — | — |
-| `19BBC` | sub_19BBC | — | 52 | 25 | 1 | 3 |  | 待解讀 | — | — | — |
+| `19B7D` | sub_19B7D | — | 31 | 13 | 6 | 1 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>看前一格:不在左界且 es:[di-2] 是全形的**左半**(ah 非 0、ah 與 al 的 bit 7 都沒設)時,把它清成 0020h。與 19B9Ch 成對——寫進全形字的一半會讓另一半落單,這兩支負責清掉 | — |
+| `19B9C` | sub_19B9C | — | 32 | 15 | 6 | 1 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>看目前這一格:不在右界(low(word_280EAh) <> 50h)且 es:[di] 是全形的某一半(ah 非 0 且 ah 或 al 的 bit 7 已設)時清成 0020h | — |
+| `19BBC` | sub_19BBC | — | 52 | 25 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>在游標處放一個空白:word_280E8h 與 word_280EAh 都設成目前游標;屬性經 <18FA3h> 換算後寫 es:[bx+di](所以 byte_280C6h 存的是打包格式不是 PC-98 原生屬性);順序是 <19B7Dh> 清前一格 → stosw 寫入 → <19B9Ch> 清後一格 | — |
 | `19BF0` | sub_19BF0 | — | 129 | 58 | 1 | 4 |  | 待解讀 | — | — | — |
-| `19C71` | sub_19C71 | — | 32 | 12 | 1 | 3 |  | 待解讀 | — | — | — |
+| `19C71` | sub_19C71 | — | 32 | 12 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>讀一格:byte_280D0h(雙位元組總開關)開啟且 <sub_1977Eh> 判定為前導時先送第一個 byte 再 bx++,然後一律再送一個。開關關掉時一律只送一個 byte。sub_1977Eh 用進位回答(jnb),與 169D9h 同一種慣例 | — |
 | `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 待解讀 | — | — | — |
-| `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 待解讀 | — | — | — |
+| `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>游標形狀:byte_280FFh := al;al 的 bit 0 為 0 時送 <sub_1977Bh>(AH=12h),否則送 (AH=10h, AL=al shr 1) 再送 (AH=11h)。11h 與 19A10h 用的是同一個功能碼 | — |
 | `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 64 bytes，已逐條讀完） | — |
 | `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX。表的內容見 docs/spec/658-color-bit-swap-and-attribute-codec.md:seg050 基底 18EE0h 故表在 19EA0h(緊接本支 retn 之後),8 筆是 [0,1,4,5,2,3,6,7]——bit 1 與 bit 2 互換、bit 0 不動,即 PC-98 的 G-R-B 與一般 R-G-B 的互換;且為自反(T[T[i]]=i),故編碼解碼共用同一張表 | — |
 | `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
