@@ -1000,6 +1000,78 @@
    "level": "exact",
    "spec": "docs/spec/561-ecl-external-call-registry.md",
    "note": "ECL CALL（opcode 2Dh）handler；operand-7FFFh=selector，認得 7 個 external routine：2E10h／6803h／8000h／8001h／B200h／C018h／C01Eh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2012,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDFNC：byte pair 併成 word，回傳 (b<<8)+a；不是算術加法"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 662,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDRESSVALUE(i)：解第 i 個 operand；三個 64 byte 平行陣列 A917/A957/A997；code 00h/01h/03h/80h/02h/81h 分支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2049,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 3627,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1768,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDFNC：與 PC-98 逐指令相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 371,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ADDRESSVALUE(i)：陣列在 7685/76C5/7705，分支與 PC-98 相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1845,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 3440,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
+   "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後"
   }
  ]
 }
