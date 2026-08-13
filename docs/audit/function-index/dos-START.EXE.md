@@ -72,7 +72,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `13467` | sub_13467 | — | 141 | 49 | 2 | 0 |  | 待解讀 | — | — | — |
 | `134F4` | sub_134F4 | — | 49 | 20 | 2 | 0 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>交換一個 byte 的高低 nibble:(arg_0 shl 4) + ((arg_0 and 0F0h) shr 4)。用 add 而非 or(兩半不重疊結果相同);shl 後存進 byte 變數,高位自然被截掉不需額外遮罩 | — |
 | `145C9` | sub_145C9 | — | 192 | 72 | 2 | 3 |  | 待解讀 | — | — | — |
-| `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
+| `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>釋放主記錄與附帶緩衝:size := byte(p^[8]) × word(p^[11h])(記錄自己記著「幾筆 × 每筆多大」);p^[13h] 的 far pointer 非 nil 時先 FreeMem(@p^[13h], size),再 FreeMem(主記錄, size + 17h)(前 17h bytes 是標頭,+13h..+16h 就是那個指標),最後把呼叫端指標清成 nil。兩塊用同一個 size。用的是 Turbo Pascal 的 FreeMem,不是 spec 655 那套自製配置器 | — |
 | `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `14B53` | sub_14B53 | — | 135 | 49 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14BDA` | sub_14BDA | — | 148 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -85,7 +85,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `151B1` | sub_151B1 | — | 376 | 143 | 1 | 3 |  | 待解讀 | — | — | — |
 | `15329` | sub_15329 | — | 95 | 36 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 95 bytes，已逐條讀完） | — |
 | `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 待解讀 | — | — | — |
-| `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 待解讀 | — | — | — |
+| `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>把 EGA/VGA 繪圖暫存器設回預設:Graphics Controller(3CEh/3CFh)索引 0..5 全寫 0、7 寫 0Fh、8 寫 0FFh,Sequencer(3C4h/3C5h)索引 2 寫 0Fh(四平面全開)。索引 6(Miscellaneous)被跳過——模式本身由別處設定,這裡只清理繪圖行為。⚠ DOS 版走 EGA/VGA 平面圖形,與 PC-98 版的文字 VRAM + 三平面是兩套顯示模型,繪圖程式碼不可能共用 | — |
 | `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>切換 BIOS 顯示頁:把 Registers.AH := 5、AL := arg_0 後呼叫 Turbo Pascal 的 Intr(10h, Regs);同時自己算好 word_2119Eh := (arg_0 shl 9) + 0A000h——shl 9 是 ×512 段落 = 8KB,所以那是該頁的段位址 | — |
 | `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes) | — |
 | `154DD` | sub_154DD | — | 188 | 89 | 4 | 4 |  | 待解讀 | — | — | — |
