@@ -40,8 +40,14 @@ def show_range(platform, module, start, end):
     唯一可靠的做法是走位址範圍。
     """
     fns = load(platform, module)
-    items = [it for f in fns.values() for it in f["items"] if start <= it["ea"] < end]
-    items.sort(key=lambda it: it["ea"])
+    # 同一條指令可能同時屬於好幾個 IDA「函式」（共用出口、被切散的中段），
+    # 依位址去重，否則會重複列印並算出負數的缺口。
+    seen = {}
+    for f in fns.values():
+        for it in f["items"]:
+            if start <= it["ea"] < end:
+                seen.setdefault(it["ea"], it)
+    items = [seen[ea] for ea in sorted(seen)]
     print("=== %s %s %04Xh..%04Xh  共 %d 條指令" % (platform, module, start, end, len(items)))
     previous = None
     for it in items:
