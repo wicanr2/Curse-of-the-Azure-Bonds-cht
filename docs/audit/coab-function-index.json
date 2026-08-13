@@ -3029,7 +3029,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "以 dword_2097E 為來源指標連續四次 movsw 複製 8 bytes(48-bit Real 加尾隨),之後 di 回退 8 並更新來源指標"
   },
   {
    "platform": "dos",
@@ -20469,7 +20472,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同"
   },
   {
    "platform": "pc98",
@@ -20613,7 +20619,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -20874,7 +20883,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -21553,7 +21565,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "從 CS:247h 起以 INT 29h(fast putchar)輸出 5 個字元"
   },
   {
    "platform": "pc98",
@@ -23006,7 +23021,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "多欄位相等比較,與 DOS START.EXE:1B0DAh 逐指令相同"
   },
   {
    "platform": "pc98",
@@ -23120,7 +23138,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0"
   },
   {
    "platform": "pc98",
@@ -40777,9 +40798,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 93,
+   "Read": 94,
    "NotBlocking": 133,
-   "Todo": 82,
+   "Todo": 81,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -41332,9 +41353,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 105,
+   "Read": 111,
    "NotBlocking": 29,
-   "Todo": 178,
+   "Todo": 172,
    "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,

@@ -92,7 +92,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1692D` | sub_1692D | — | 57 | 28 | 3 | 2 |  | 待解讀 | — | — | — |
 | `16966` | sub_16966 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
 | `169B6` | sub_169B6 | — | 35 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
-| `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 待解讀 | — | — | — |
+| `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |
 | `169ED` | sub_169ED | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16E70` | sub_16E70 | — | 94 | 48 | 2 | 7 |  | 待解讀 | — | — | — |
 | `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -104,7 +104,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `170C5` | sub_170C5 | — | 90 | 57 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1711F` | sub_1711F | — | 41 | 24 | 3 | 1 |  | 待解讀 | — | — | — |
 | `17148` | sub_17148 | — | 42 | 25 | 4 | 1 |  | 待解讀 | — | — | — |
-| `17172` | sub_17172 | — | 20 | 12 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17172` | sub_17172 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
 | `17186` | sub_17186 | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
 | `171DF` | sub_171DF | — | 63 | 27 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17220` | sub_17220 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
@@ -125,7 +125,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17CE9` | sub_17CE9 | — | 57 | 28 | 2 | 2 |  | 待解讀 | — | — | — |
 | `17D22` | sub_17D22 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
 | `17D72` | sub_17D72 | — | 35 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
-| `17D95` | sub_17D95 | — | 20 | 12 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17D95` | sub_17D95 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
 | `17DA9` | sub_17DA9 | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17DD5` | sub_17DD5 | — | 86 | 44 | 1 | 1 |  | 待解讀 | — | — | — |
 | `17EA7` | sub_17EA7 | — | 363 | 152 | 1 | 11 |  | 待解讀 | — | — | — |
@@ -178,7 +178,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18FE4` | sub_18FE4 | — | 17 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AH=0Ah 呼叫 1977Bh(INT 18h)、輸出 byte_280FF、再以 AH=0Ch 呼叫 1977Bh ⇒ PC-98 螢幕 BIOS 的成對開關包夾一次輸出 | — |
 | `18FF5` | sub_18FF5 | — | 114 | 41 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19085` | sub_19085 | — | 141 | 54 | 2 | 10 |  | 待解讀 | — | — | — |
-| `19112` | sub_19112 | — | 21 | 13 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19112` | sub_19112 | — | 21 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>從 CS:247h 起以 INT 29h(fast putchar)輸出 5 個字元 | — |
 | `1917C` | sub_1917C | — | 31 | 9 | 2 | 2 |  | 待解讀 | — | — | — |
 | `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
@@ -289,7 +289,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B0A7` | sub_1B0A7 | — | 261 | 123 | 7 | 2 |  | 待解讀 | — | — | — |
 | `1B1AC` | sub_1B1AC | — | 119 | 58 | 5 | 2 |  | 待解讀 | — | — | — |
 | `1B223` | sub_1B223 | — | 23 | 14 | 7 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealCmp` 逐位元組相同（23 bytes） | — |
-| `1B23A` | sub_1B23A | — | 19 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1B23A` | sub_1B23A | — | 19 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>多欄位相等比較,與 DOS START.EXE:1B0DAh 逐指令相同 | — |
 | `1B24D` | sub_1B24D | — | 63 | 30 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealFloat` 逐位元組相同（63 bytes） | — |
 | `1B28C` | sub_1B28C | — | 92 | 44 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealTrunc` 逐位元組相同（92 bytes） | — |
 | `1B334` | sub_1B334 | — | 10 | 8 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE4`（body 共 10 bytes，已逐條讀完） | — |
@@ -297,7 +297,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B348` | sub_1B348 | — | 10 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B0A7`（body 共 10 bytes，已逐條讀完） | — |
 | `1B352` | sub_1B352 | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完） | — |
 | `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes） | — |
-| `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>呼叫 sub_1B35C 取得三個回傳值(ax/bx/dx → cx/si/di),還原原參數後呼叫 sub_1AFE0 | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 待解讀 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀 | — |
