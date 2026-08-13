@@ -101,7 +101,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `196D` | sub_196D | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `19A2` | sub_19A2 | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `19D7` | sub_19D7 | — | 23 | 11 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:1A1Dh（entry#80）助憶碼序列完全相同，語意同該筆：DS:A02Eh := DS:A02Eh ÷ 2(有號)(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `19EE` | sub_19EE | — | 87 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `19EE` | sub_19EE | — | 87 | 37 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/640-save-for-half-and-damage-global.md<br>與 pc98 overlay-12:1A34h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) 或 (and 2) then:<far 013E:0028>(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] <> 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD&D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1A65` | sub_1A65 | — | 439 | 162 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `1C1C` | sub_1C1C | — | 51 | 22 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `1C4F` | sub_1C4F | — | 65 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
