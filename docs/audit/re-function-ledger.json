@@ -12169,6 +12169,789 @@
    "level": "strong inference",
    "spec": "docs/spec/614-ecl2-gosub-push.md",
    "note": "與 pc98 overlay-07:1A66h 助憶碼序列完全相同（50 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：SETUPGOSUBSTACK(n)(ECL2 stub 0098h):配置 6-byte 節點插在 DS:A882h 鏈頭(LIFO),+0 存呼叫當下的 ECL_PC(此時已被 READVAR 推過 operand,所以是下一條指令的位址)、+2 指向舊鏈頭;然後把 ECL_PC 設成 ADDFNC(DS:[A957h+n], DS:[A997h+n])。與 13h(RETURN)從鏈頭彈出完全配對。operand 索引是參數而非固定 1,代表別的指令也能借它做呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 6219,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 179Ah 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-05",
+   "ea": 5545,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 3290,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0B06h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 4170,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FE8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 3255,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 09C7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 5595,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1542h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 6215,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 6438,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1681h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 3245,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0CA1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 5585,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1370h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 5821,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1370h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 6215,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1800h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6318,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1809h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 4574,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 5545,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 158Ah 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 5410,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 5806,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 6109,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 6634,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 16278,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 3EDDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 4599,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 5223,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 6119,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 7885,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 5460,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10ABh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 5801,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 6656,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 5213,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FEDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 5470,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FEDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 5278,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1263h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 5821,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 168Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 6448,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 175Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 24403,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 5F2Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 6478,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18D8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 6634,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18D8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 4122,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0F42h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 4122,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FFCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 5165,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 13F7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 5783,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1669h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6056,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6152,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 3101,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0B20h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 4551,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1028h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 3146,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 09E9h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 4072,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0DD3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 5547,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 155Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 6435,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 169Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 5758,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1364h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 6400,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 17EEh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5671,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1621h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 4122,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FB1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 4556,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 5783,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 6435,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1569h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 4228,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FC7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 4551,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0FC7h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 5322,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 147Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 5671,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 14C9h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 8341,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1C15h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 14002,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 2A6Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 4551,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 5422,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 5537,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 5671,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 0AFBh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 15348,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 3BBDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 20119,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 4E8Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 21200,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 51DAh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 21615,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 5420h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 5758,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1213h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6336,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 189Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6430,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 189Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 5537,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 5962,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 6071,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1578h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 5245,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 5422,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 5537,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 5537,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 143Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 22058,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 52E0h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 6602,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 18F3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 5783,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1659h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 6602,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 19A8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 8341,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 8778,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 12982,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
+   "note": "邊界碎片：落在 314Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 1612,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1362,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/614-ecl2-gosub-push.md",
+   "note": "與 pc98 overlay-07:064Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

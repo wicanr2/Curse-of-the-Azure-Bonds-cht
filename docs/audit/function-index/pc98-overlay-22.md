@@ -35,7 +35,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1542` | sub_1542 | — | 9 | 4 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1687+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1556` | sub_1556 | — | 11 | 3 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `156A` | sub_156A | — | 11 | 5 | 6 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jz short loc_15AE`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
-| `15A1` | sub_15A1 | — | 121 | 49 | 2 | 4 |  | 待解讀 | — | — | — |
+| `15A1` | sub_15A1 | — | 121 | 49 | 2 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 143Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1622` | sub_1622 | — | 6 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1679` | sub_1679 | — | 11 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-4], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1854` | sub_1854 | — | 28 | 11 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 28 bytes，已逐條讀完） | — |
@@ -123,7 +123,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `525B` | sub_525B | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_525A，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `529E` | sub_529E | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は守られた。」（unk_5291，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `52E0` | sub_52E0 | — | 1312 | 508 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `562A` | sub_562A | — | 135 | 51 | 3 | 2 |  | 待解讀 | — | — | — |
+| `562A` | sub_562A | — | 135 | 51 | 3 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 52E0h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `5888` | sub_5888 | — | 164 | 72 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `592D` | sub_592D | — | 170 | 70 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `59D8` | sub_59D8 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_59D7，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |

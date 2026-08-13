@@ -19,15 +19,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `149E` | sub_149E | — | 10 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `14A8` | sub_14A8 | — | 6 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1518` | sub_1518 | — | 9 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [si+72h], dl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
-| `1554` | sub_1554 | — | 949 | 374 | 2 | 10 |  | 待解讀 | — | — | — |
+| `1554` | sub_1554 | — | 949 | 374 | 2 | 10 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10ABh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1588` | sub_1588 | — | 33 | 11 | 2 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dx, es`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 33 bytes，已逐條讀完） | — |
 | `15A9` | sub_15A9 | — | 11 | 4 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-37h], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `15B8` | sub_15B8 | — | 32 | 13 | 5 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完） | — |
 | `1643` | sub_1643 | — | 85 | 29 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr ds:4FBAh, 5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 85 bytes，已逐條讀完） | — |
-| `16A9` | sub_16A9 | — | 556 | 229 | 3 | 4 |  | 待解讀 | — | — | — |
+| `16A9` | sub_16A9 | — | 556 | 229 | 3 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `18F9` | sub_18F9 | — | 21 | 7 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1ADB`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 21 bytes，已逐條讀完） | — |
 | `19EA` | sub_19EA | — | 22 | 12 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 16h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | audit/function-triage.md |
-| `1A00` | sub_1A00 | — | 250 | 104 | 4 | 8 |  | 待解讀 | — | — | — |
+| `1A00` | sub_1A00 | — | 250 | 104 | 4 | 8 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1588h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1B00` | sub_1B00 | — | 877 | 320 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `1EE9` | sub_1EE9 | — | 567 | 203 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `213C` | sub_213C | — | 166 | 61 | 1 | 4 | ✓ | 待解讀 | — | — | — |
