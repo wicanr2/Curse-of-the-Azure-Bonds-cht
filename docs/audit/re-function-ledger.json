@@ -16471,6 +16471,36 @@
    "spec": "docs/spec/692-party-tally-and-list-search.md",
    "note": "連續四次 <1975h>(arg_0, a, b, c),參數寫死為 (0,0,0)、(0,1,1)、(1,2,1)、(1,3,0)。第三欄是 0..3,另外兩欄沒有規律(0,0,1,1 與 0,1,1,0)——原始碼是四行手寫呼叫不是迴圈,那兩欄要當資料照抄",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6010,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
+   "note": "在第 24 列顯示一行訊息:複製 arg_0 到區域緩衝(上限 28h=40 字元)→ <01A0:04CDh>(0, 18h, 27h, 18h) 清整列 → <0542:0352h>(0, 18h, 0Ah, 0, 緩衝)→ <0542:0B33h>() 阻塞(推測等按鍵)→ 再清一次。這支同時釘死了 <0542:0352h> 的參數順序是 (x, y, colour, mode, str):清除矩形 (0,18h,27h,18h) 與繪製的前兩個參數是同一組",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6387,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
+   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;而且欄位偏移用的是**長度位元組(位元組數)不是顯示寬度**,Big5 名字會少算一半",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 9539,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
+   "note": "依角色^[1A4h](目前 HP)是否**等於** 角色^[78h](上限,用 jnz 不是 jnb)選 CS:251Fh 'is fully healed' 或 CS:252Fh 'is partially healed',呼叫 <17D6h>(角色, s, 0Ah, 1);DS:4FBAh <> 5 時再用 0795h 重畫名單。⚠ 中文化:主詞由呼叫端補、述部是常數字串;'is partially healed' 長 19,緩衝上限 28h=40",
+   "bounds": "prologue"
   }
  ]
 }
