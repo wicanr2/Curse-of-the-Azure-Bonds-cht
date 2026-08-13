@@ -13,7 +13,23 @@ prologue 匯出把「一支函式」定義成 `[55 89 e5, 下一個 55 89 e5)`�
 其餘全是資料，不是漏讀。真正的漏讀長這樣：`pc98/overlay-18:1756h` 的 IDA size
 是 7 bytes，區間內卻有 **282 條指令**。
 
-所以數「落在 IDA 標的範圍之外、但仍是指令」的條數，超過 `TOLERANCE` 條才算。
+但也不能數區間內**所有**指令：prologue 判準只認 `55 89 e5`（Turbo Pascal），
+組合語言寫的常式用的是 `55 8b ec`，於是那種函式的起點不被認成邊界，前一支的
+區間就一路吃到它後面去。`pc98/overlay-11:0766h` 其實只有 5 條指令
+（`push bp / mov bp,sp / mov sp,bp / pop bp / retf`），後面 96 bytes 是資料、
+再後面 `07CDh` 才是下一支（`55 8b ec` 開頭）。
+
+所以判準是兩條，缺一不可：
+
+1. **IDA 標的範圍如果以 `ret` 結束，就相信 IDA**——那是一支完整的函式。
+   `pc98/overlay-16:5581h` 是 `55 89 e5 89 ec 5d cb`，7 bytes 的空函式，
+   結尾正是 `retf`；它後面既不是 `55 89 e5` 也不是 `55 8b ec`，prologue
+   掃描找不到邊界，區間一路延伸到 494 bytes 外，看起來像漏讀了 213 條指令。
+2. 不以 `ret` 結束的，才用 prologue 區間檢查，而且只數**從起點連續**的指令
+   （遇到第一個 gap 就停）。
+
+第 1 條擋掉「prologue 掃描找不到下一個邊界」造成的高估，第 2 條擋掉
+「IDA 在第一個 `ret` 就截斷」造成的漏讀。
 
 用法：python3 scripts/verify_read_prologue.py [--fix]
 """
@@ -27,6 +43,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SWEEP = os.path.join(ROOT, "workplace", "re-sweep")
 LEDGER = os.path.join(ROOT, "docs", "audit", "re-function-ledger.json")
 TOLERANCE = 3      # 容許幾條落在 IDA 範圍外的指令
+
+
+def last_ea(items):
+    """最後一條指令的結束位址。"""
+    return items[-1]["ea"] + len(items[-1]["bytes"]) // 2
 
 
 def prologue_index():
@@ -55,8 +76,17 @@ def main():
         ida = function["ida_size"]
         if ida is None:
             continue
+        # 只看第一個 gap 之前的指令：gap 之後多半已經是下一支函式或資料。
+        # 第一關：IDA 標的範圍以 ret 結束就是完整的。
+        tail = [i for i in function["items"] if i["ea"] < entry["ea"] + ida]
+        if tail:
+            last = tail[-1]["disasm"].strip().split()[0].lower()
+            if last in ("retf", "retn", "ret") and \
+                    last_ea(tail) == entry["ea"] + ida:
+                continue
+        limit = function["gaps"][0][0] if function["gaps"] else function["end"]
         outside = sum(1 for item in function["items"]
-                      if item["ea"] >= entry["ea"] + ida)
+                      if entry["ea"] + ida <= item["ea"] < limit)
         if outside > TOLERANCE:
             suspect.append((entry, ida, function["size"], outside))
 

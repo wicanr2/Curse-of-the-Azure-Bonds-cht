@@ -7,8 +7,17 @@
 - 更糟的是**有些位元組是 code 卻不屬於任何函式的 chunk**，於是完全不出現在
   匯出裡——逐條讀時看到的是一支空殼，而且沒有任何警告。
 
-改以 prologue 為界之後，「一支函式」＝`[某個 55 89 e5, 下一個 55 89 e5)`，
+改以 prologue 為界之後，「一支函式」＝`[某個 prologue, 下一個 prologue)`，
 區間內**所有已定義的指令**都會被匯出，與 `scripts/show.py --whole` 的口徑一致。
+
+**prologue 有兩種寫法**，兩種都要認：
+
+- `55 89 e5`——Turbo Pascal 編譯器產生的（`push bp` ＋ `mov bp, sp` 的短編碼）
+- `55 8b ec`——組合語言寫的常式（MASM／TASM 的慣用編碼，同樣的兩條指令）
+
+只認前者的話，組語常式的起點不會成為邊界，前一支函式的區間就一路吃到它後面。
+`pc98/overlay-18:1756h` 其實只有 7 bytes（一支空函式），但區間被算到 189Dh，
+看起來像「漏讀了 151 條指令」——**差點因此把正確的判讀退回**。
 
 仍然會有缺口——真正 undefined（IDA 連指令都沒認出來）的位元組。這些在輸出裡
 以 `gaps` 明確列出，不會被靜靜略過。
@@ -38,10 +47,13 @@ def main():
     base, end = segment.start_ea, segment.end_ea
     blob = ida_bytes.get_bytes(base, end - base) or b""
 
-    starts, index = [], blob.find(b"\x55\x89\xe5")
-    while index >= 0:
-        starts.append(base + index)
-        index = blob.find(b"\x55\x89\xe5", index + 3)
+    starts = set()
+    for pattern in (b"\x55\x89\xe5", b"\x55\x8b\xec"):
+        index = blob.find(pattern)
+        while index >= 0:
+            starts.add(base + index)
+            index = blob.find(pattern, index + 3)
+    starts = sorted(starts)
     if not starts or starts[0] != base:
         starts.insert(0, base)          # 有些 overlay 的第一支不以標準 prologue 開頭
 

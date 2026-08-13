@@ -29440,10 +29440,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "退回待解讀:當初依 IDA 的 7 bytes 判讀,但 prologue 區間內在那之後還有 53 條指令。要用 scripts/show.py --whole 重讀。原判讀:空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -30449,10 +30449,10 @@
    "callers": 15,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "退回待解讀:當初依 IDA 的 41 bytes 判讀,但 prologue 區間內在那之後還有 5 條指令。要用 scripts/show.py --whole 重讀。原判讀:DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0)"
+   "note": "DS:A031h 大於 0 時,以 A031h × 10h 為索引查 DS:61B5h 起的表;該項小於 4 就呼叫 1Bh(0)"
   },
   {
    "platform": "pc98",
@@ -34386,10 +34386,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "退回待解讀:當初依 IDA 的 7 bytes 判讀,但 prologue 區間內在那之後還有 213 條指令。要用 scripts/show.py --whole 重讀。原判讀:空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35415,10 +35415,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "退回待解讀:當初依 IDA 的 7 bytes 判讀,但 prologue 區間內在那之後還有 277 條指令。要用 scripts/show.py --whole 重讀。原判讀:空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -43406,9 +43406,9 @@
    "Module": "overlay-11",
    "Unit": "INIT",
    "Functions": 6,
-   "Read": 1,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 1960,
    "Undefined": 128,
@@ -43421,9 +43421,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 53,
+   "Read": 54,
    "NotBlocking": 0,
-   "Todo": 79,
+   "Todo": 78,
    "Fragment": 18,
    "CodeBytes": 13011,
    "Undefined": 578,
@@ -43481,9 +43481,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 34,
+   "Todo": 33,
    "Fragment": 11,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -43511,9 +43511,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 1,
    "CodeBytes": 4957,
    "Undefined": 1311,
