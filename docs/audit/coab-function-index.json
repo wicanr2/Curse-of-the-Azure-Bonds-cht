@@ -24267,7 +24267,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/665-ems-and-overlay-relocation.md",
-   "note": "用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h 段落 = 16KB 正是 EMS 分頁大小);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH \u003e= 80h 即錯誤)"
+   "note": "用 EMS 放 overlay:int 67h AH=41h 取 page frame 存 word_28108h;走描述子鏈把所有 es:[8] 做 32-bit 累加(先塞 3FFFh 再除 4000h,是無條件進位的寫法,4000h = 16384 bytes = 16KB 正是 EMS 分頁大小,故 es:[8] 是位元組數);int 67h AH=43h 配置,成功則把 handle 存進 word_23AE6h。失敗判斷是 shl ah,1 + jb(AH \u003e= 80h 即錯誤)"
   },
   {
    "platform": "pc98",
@@ -24306,7 +24306,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "EMS page frame 偵測:int 67h AX=4100h 取段位址,**只在 BX 等於 0B000h**(PC-98 的圖形 VRAM 平面)且 AX=7000h 成功時,才把可用旗標 cs:byte_1A64Bh 設成 1。旗標存在程式碼段。判斷寫死成等於 B000h 而不是與 VRAM 範圍重疊,page frame 在別處時整組功能不啟用"
   },
   {
    "platform": "pc98",
@@ -24318,7 +24321,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "若 cs:byte_1A64Bh = 1:int 67h AX=7000h 讀出目前狀態存進 cs:byte_1A64Ch,再 AX=7001h/BL=0 設成 0。與 1A634h 是「先讀存起來、事後寫回」的配對(7000h/7001h 不是標準 EMS 功能碼,是驅動擴充)"
   },
   {
    "platform": "pc98",
@@ -24330,7 +24336,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "若 cs:byte_1A64Bh = 1:int 67h AX=7001h,BL 取 cs:byte_1A64Ch 寫回——1A617h 的還原對應"
   },
   {
    "platform": "pc98",
@@ -24522,7 +24531,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "以 16 為底的兩段式加減:ax 維持在 0..0Fh、dx 每滿 16 進一(段落 + 段內偏移,一段落 16 bytes),每次加減都手動處理進借位而不用 32-bit 運算。走訪 dword_23AF0h 指的陣列,每筆 8 bytes,用到 +0/+2/+4/+6 四個 word"
   },
   {
    "platform": "pc98",
@@ -24558,7 +24570,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/666-ems-page-frame-guard.md",
+   "note": "從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 \u003c= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致"
   },
   {
    "platform": "pc98",
@@ -44895,9 +44910,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 200,
+   "Read": 205,
    "NotBlocking": 29,
-   "Todo": 82,
+   "Todo": 77,
    "Fragment": 22,
    "CodeBytes": 25067,
    "Undefined": 0,
