@@ -8,6 +8,8 @@
 | 任務關鍵字 | 第一入口 | 必要時再讀 |
 |---|---|---|
 | CoAB、Gold Box、ECL、DAX、GEO、SAVE、戰鬥、IDA | `reverse-engineer-retro-game-remake` skill | 先讀 `docs/knowledge/coab-re-coverage-matrix.md`，再依缺口讀對應 `docs/spec/` READY 規格；`gold-box-state.md` 只作主題／歷史補充 |
+| ECL VM 內部、operand 編碼、work address、bank、helper、opcode handler | `docs/knowledge/gold-box-ecl-interpreter.md` | 個別函式狀態查 `docs/audit/coab-function-index.md`；要改反組譯流程先讀 `docs/spec/559` |
+| 反組譯 overlay、IDA 建庫、TPOV、entry stub、函式覆蓋台帳 | `docs/spec/559-full-module-re-sweep.md` | 工具在 `tools/re-sweep.sh`、`tools/ida/`；不要重寫一次性 IDC |
 | PC-98、640×400、16×15、中文字級、版面 | `research-pc98-golden-box-ui` skill | `docs/spec/348-original-dos-frame-pc98-type-density.md` |
 | 配樂、音效、YM2203、S98、推廣片音樂 | `compose-rpg-remake-music` skill | `docs/knowledge/golden-box-audio-architecture-zh-tw.md` 與對應音訊 spec |
 | GUI、石框、人物頭身、3D viewport、戰鬥 HUD | `research-pc98-golden-box-ui` 後接 `reverse-engineer-retro-game-remake` | `docs/spec/391-dos-head-body-character-stage.md`、`docs/spec/406-dos-gui-draw-contract.md` |

@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADINTERPET | 82 | 20 | 0 | 8 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/pc98-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
+| `0000` | sub_0 | LOADINTERPET | 82 | 20 | 0 | 8 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/pc98-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>knowledge/golden-box-reverse-engineering-worklist.md |
 | `0052` | sub_52 | — | 150 | 49 | 4 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 00h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `00E8` | sub_E8 | — | 31 | 14 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 01h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `0107` | sub_107 | — | 23 | 11 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 02h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
@@ -87,6 +87,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `35AF` | sub_35AF | — | 156 | 54 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `364B` | sub_364B | — | 84 | 34 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Fh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `369F` | sub_369F | — | 159 | 56 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 40h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `373E` | sub_373E | — | 615 | 289 | 1 | 53 | ✓ | 已解讀 | exact | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode dispatcher；由 ds:0A891h 讀 opcode，00h..40h 中除 1Fh 外共 64 個 opcode 對應 52 個 handler | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
+| `373E` | sub_373E | — | 615 | 289 | 1 | 53 | ✓ | 已解讀 | exact | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode dispatcher；由 ds:0A891h 讀 opcode，00h..40h 中除 1Fh 外共 64 個 opcode 對應 52 個 handler | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>spec/559-full-module-re-sweep.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `39A5` | sub_39A5 | — | 72 | 24 | 3 | 2 | ✓ | 待解讀 | — | — | audit/ecl-opcode-dispatch.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/560-ecl-opcode-dispatch-table.md |
 | `3A21` | sub_3A21 | GOECL | 693 | 212 | 0 | 11 | ✓ | 待解讀 | — | — | — |

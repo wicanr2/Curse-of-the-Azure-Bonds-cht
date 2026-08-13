@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1481：已解讀 7、不阻塞 0、待解讀 1474；已定義程式碼 269027 bytes，未定義 20319 bytes。
+模組 37／函式 1481：已解讀 8、不阻塞 0、待解讀 1473；已定義程式碼 269027 bytes，未定義 20319 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---|
@@ -65,7 +65,7 @@
 | overlay-04 | TEMPLE | 23 | 0 | 0 | 23 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 0 | 0 | 17 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
 | overlay-06 | SHOP | 8 | 0 | 0 | 8 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
-| overlay-07 | ECL2 | 46 | 5 | 0 | 41 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
+| overlay-07 | ECL2 | 46 | 6 | 0 | 40 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 0 | 0 | 24 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 0 | 0 | 36 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 0 | 0 | 35 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |

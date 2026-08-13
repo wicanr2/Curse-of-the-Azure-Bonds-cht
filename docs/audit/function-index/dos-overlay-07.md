@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 52 | 14 | 0 | 5 | ✓ | 待解讀 | — | — | audit/ecl-handler-operand-audit.md<br>audit/function-index/pc98-overlay-07.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md |
+| `0000` | sub_0 | — | 52 | 14 | 0 | 5 | ✓ | 待解讀 | — | — | audit/ecl-handler-operand-audit.md<br>audit/function-index/pc98-overlay-07.md<br>context/50-log-2026-08-09-13.md<br>knowledge/gold-box-ecl-interpreter.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
 | `0034` | sub_34 | — | 319 | 118 | 2 | 4 | ✓ | 已解讀 | exact | docs/spec/564-ecl-operand-decoding-and-arity-validation.md<br>READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3) | audit/ecl-handler-operand-audit.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
 | `0173` | sub_173 | — | 137 | 58 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDRESSVALUE(i)：陣列在 7685/76C5/7705，分支與 PC-98 相同 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `01FC` | sub_1FC | — | 357 | 133 | 0 | 3 | ✓ | 待解讀 | — | — | — |
@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0591` | sub_591 | — | 343 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `06E8` | sub_6E8 | — | 37 | 16 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDFNC：與 PC-98 逐指令相同 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `070D` | sub_70D | — | 40 | 16 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `0735` | sub_735 | — | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh | spec/563-ecl-memory-model-and-operand-resolution.md |
+| `0735` | sub_735 | — | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh | knowledge/gold-box-ecl-interpreter.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |
 | `0790` | sub_790 | — | 97 | 35 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `07F1` | sub_7F1 | — | 892 | 293 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0B6D` | sub_B6D | — | 515 | 163 | 1 | 1 | ✓ | 待解讀 | — | — | — |
