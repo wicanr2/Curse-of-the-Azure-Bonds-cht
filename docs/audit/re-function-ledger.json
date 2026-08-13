@@ -14307,6 +14307,146 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同",
    "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 7353,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C4Fh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := <sub_FAA>(DS:6506h);if p <> nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 7302,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C1Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:6F95h and 4 <> 0 then <sub_1B>(0)、<far 013E:007D>(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8540,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:20FAh 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 7418,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C90h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8362,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:203Ch 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[4] := 0;if arg_6^[196h] <> 0 then 備妥 'Falls dead' 呼叫 <far 013E:0005>(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8268,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1FE4h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := <sub_FAA>(DS:6506h);if p <> nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) <> 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8759,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then <sub_1437>(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8820,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if <far 014A:00A7>(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then <sub_1437>(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8902,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if <far 0176:0473>(arg_6, arg_6^[78h]) = 0 then <sub_3C>(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9398,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh < DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9598,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "p := <sub_FCC>(DS:9594h);if p <> nil 且 p^[5Ah] > 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 < 3),兩者在 1、2 兩個值上重疊",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9300,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:24B6h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh < DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8661,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:2237h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then <sub_1437>(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 8722,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:2274h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if <far 014A:00A7>(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then <sub_1437>(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 9500,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:257Eh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := <sub_FCC>(DS:9594h);if p <> nil 且 p^[5Ah] > 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 < 3),兩者在 1、2 兩個值上重疊 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
