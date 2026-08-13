@@ -18313,6 +18313,8 @@
    "spec": "docs/spec/683-encumbrance-movement.md",
    "note": "負重決定移動力:byte[arg_0^[2Eh]×16 + 5CF6h] = 2 才生效;w := arg_0^[37h](有號),0..96h(150)用基準值 arg_4^[0E4h]、97h..18Fh(151..399)設 9、其餘設 6;之後 arg_0^[32h] 非 0 且值 \u003c= 9 時再加 3(最多補到 12,正好是 AD\u0026D 未負重的移動力)。**無條件覆寫**",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/683-encumbrance-movement.md"
    ]
   },
@@ -18345,6 +18347,7 @@
    "spec": "docs/spec/683-encumbrance-movement.md",
    "note": "w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/683-encumbrance-movement.md"
    ]
   },
@@ -18385,7 +18388,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/684-biased-modifier-display.md",
+   "note": "顯示一個偏移 60 的修正值:v := |arg_4^[19Ah] - 3Ch| 轉成字串,而負號**由獨立的一次比較**決定(arg_4^[19Ah] \u003e 3Ch 才加 '-')。所以顯示值 = 60 - 儲存值,儲存得越大顯示越負——是「數字越小越好」的欄位用偏移量存的做法。⚠ 只看 sub + neg 那段會得到相反結論",
+   "citations": [
+    "spec/684-biased-modifier-display.md"
+   ]
   },
   {
    "platform": "dos",
@@ -18398,7 +18407,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/684-biased-modifier-display.md",
+   "note": "與 PC-98 0BD5h(spec 643)結構完全相同的 HP 顯示:arg_6^[1A4h] \u003c arg_6^[78h](上限)時取一個參數、否則取另一個,arg_0 非 0 再覆蓋成第三個。⚠ 三個常數裡「受傷」不同:DOS 是 0Eh、PC-98 是 6(滿血 0Ah 與覆蓋 0Dh 兩平台相同)。兩邊的顏色編號本來就不是同一套,相同的兩個是巧合",
+   "citations": [
+    "spec/684-biased-modifier-display.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41825,6 +41840,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/683-encumbrance-movement.md"
    ]
   },
@@ -41857,6 +41874,7 @@
    "spec": "docs/spec/683-encumbrance-movement.md",
    "note": "與 dos overlay-24:03C5h 助憶碼序列完全相同（52 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "spec/683-encumbrance-movement.md"
    ]
   },
@@ -41919,7 +41937,8 @@
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
    "note": "顯示 HP:if arg_6^[1A5h](目前 HP)\u003c arg_6^[78h] then v := 6 else v := 0Ah;arg_0 非零則 v := 0Dh;再用 \u003csub_12E5\u003e(Str 的 byte 版)把 HP 轉成字串連同 v 傳給顯示 routine,接上一個空白後 \u003cfar 0418:0D17h\u003e。這確認 +78h 是 HP 上限(DOS 20FAh 的夾限是另一條證據,兩平台同偏移)",
    "citations": [
-    "spec/643-hp-fields-and-slot-array.md"
+    "spec/643-hp-fields-and-slot-array.md",
+    "spec/684-biased-modifier-display.md"
    ]
   },
   {
@@ -45004,9 +45023,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 13,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 40,
+   "Todo": 38,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
