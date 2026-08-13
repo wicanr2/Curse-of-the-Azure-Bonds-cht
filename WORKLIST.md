@@ -1,6 +1,26 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-13（第 558 輪後盤點）
+更新日期：2026-08-13（第 559 輪：轉向全模組反組譯盤點）
+
+## 第 559 輪起的執行順序（優先於下方舊清單）
+
+使用者指示先徹底完成反組譯分析，再繼續 remake。口徑見 `AGENTS.md` §2.5，
+基線與工具見 [`docs/spec/559-full-module-re-sweep.md`](docs/spec/559-full-module-re-sweep.md)。
+
+1. **ECL opcode → handler 全表**（DOS `overlay-02:3377h`／PC-98
+   `overlay-02:373Eh`，各 53 個 call）。逐分支讀完控制流，兩平台對照，
+   不以文字比對硬湊。這是 P0-RE-1／P0-RE-2 的共同前置。
+2. **`INTERPET` 內部函式盤點**：85（PC-98）／90（DOS）個函式逐一標狀態，
+   優先處理 dispatcher 直接呼叫的那 53 個。
+3. **external `CALL` registry**：23 個靜態可達位址的 producer→consumer，
+   現在可在全掃結果上直接查 caller，不必再寫一次性腳本。
+4. **未定義區段判定**：DOS 16,044／PC-98 20,319 bytes，逐段判定是字串表、
+   常數表或未觸及的程式碼；是資料就要接回 DAX／GEO／文字來源。
+5. 之後才回到下方 P0/P1 的玩家路徑工作。
+
+每完成一批就更新 `docs/audit/re-function-ledger.json` 並重跑 `cmd/re-ledger`；
+台帳裡的 `待解讀` 數字是這個階段唯一的進度指標。
+
 
 本檔是 compact、交接與每輪開工時的執行順序入口。全遊戲 RE／重建完整度以
 [`docs/knowledge/coab-re-coverage-matrix.md`](docs/knowledge/coab-re-coverage-matrix.md)
