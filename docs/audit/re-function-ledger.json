@@ -14711,6 +14711,33 @@
    "level": "exact",
    "spec": "docs/spec/650-input-table-lookup-pair.md",
    "note": "清文字屬性平面 0A200h:ax 由 byte_1ED35 重複兩次,cx := byte_1ED34 × 2(每字佔兩格),rep stosw。屬性值直接取全域,不像 17D72h/169B6h 現算"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94800,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/651-text-draw-wrappers.md",
+   "note": "把 Pascal 短字串複製進區域(<sub_1AC99>,上限 0FFh)後,取第一個 byte 當格數,傳**內容起點**(var_FF 而非長度所在的 var_100)給 <17CE9h>,列 = arg_6、格欄 = arg_8 × 2(全形字佔兩格)"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94880,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/651-text-draw-wrappers.md",
+   "note": "[var_1] := 0DBh(半形實心方塊)後呼叫 <17CE9h>,格數由 arg_0 給。⚠ 來源緩衝只有一個 byte 而 172D5h 傳的格數是 50h(整列 80 格);繪製迴圈 lodsb 逐 byte 前進,停在讀到 0 或格數用完,緩衝之後是堆疊上的 saved BP 與返回位址——第一格必定是 0DBh,之後畫什麼取決於堆疊內容。需 runtime 驗證"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94933,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/651-text-draw-wrappers.md",
+   "note": "畫訊息並等待:複製字串(上限 50h)→ <172A0h>(50h,0,18h,0) 在第 24 列鋪滿方塊 → <17250h> 在同列畫字串 → <sub_18036>()(回傳值沒再讀)→ 再鋪一次方塊擦掉。第 18h 列是訊息列"
   }
  ]
 }
