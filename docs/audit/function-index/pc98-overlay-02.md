@@ -67,7 +67,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BEA` | sub_1BEA | — | 94 | 37 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 27h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/558-pc98-ecl-treasure-combat-boundary.md |
 | `1C48` | sub_1C48 | — | 1245 | 447 | 3 | 4 |  | 待解讀 | — | — | — |
 | `2125` | sub_2125 | — | 227 | 78 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 28h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `222C` | sub_222C | — | 1812 | 668 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 29h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
+| `222C` | sub_222C | — | 1812 | 668 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 29h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md<br>audit/function-triage.md |
 | `2940` | sub_2940 | — | 187 | 80 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ch 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `29FB` | sub_29FB | — | 172 | 61 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 32h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `2AA7` | sub_2AA7 | — | 16 | 7 | 1 | 0 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 3Ah 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |

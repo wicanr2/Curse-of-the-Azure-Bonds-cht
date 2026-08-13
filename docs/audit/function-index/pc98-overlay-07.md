@@ -17,13 +17,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `07DC` | sub_7DC | ADDFNC | 37 | 16 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDFNC：byte pair 併成 word，回傳 (b<<8)+a；不是算術加法 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0801` | sub_801 | WHICHAREA | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：0=4B00-4EFF 1=7C00-7FFF 2=7A00-7BFF 3=8000-9E40 4=其餘 | knowledge/gold-box-ecl-interpreter.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |
 | `085C` | sub_85C | FINDGUY | 97 | 35 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `08BD` | sub_8BD | CHECKSPECIALS | 875 | 292 | 1 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md<br>spec/565-ecl-memory-read-path-and-asymmetry.md |
-| `0C28` | sub_C28 | STORESPECIALS | 515 | 163 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `08BD` | sub_8BD | CHECKSPECIALS | 875 | 292 | 1 | 3 | ✓ | 待解讀 | — | — | knowledge/gold-box-ecl-interpreter.md<br>spec/565-ecl-memory-read-path-and-asymmetry.md<br>spec/567-ecl-packed-text-and-bank1-field-map.md |
+| `0C28` | sub_C28 | STORESPECIALS | 515 | 163 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0E2B` | sub_E2B | STOREVALUE | 465 | 162 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>STOREVALUE(addr,value)：依 bank 路由寫入；bank3 為 byte；bank4 具名特例含 C04B/C04C/C04D 與 C04D 的 0/2/4/6 正規化 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `0FFC` | sub_FFC | GETVALUE | 30 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/565-ecl-memory-read-path-and-asymmetry.md<br>ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h | spec/565-ecl-memory-read-path-and-asymmetry.md |
 | `101A` | sub_101A | — | 302 | 115 | 2 | 2 |  | 待解讀 | — | — | audit/function-index/pc98-overlay-07.md |
 | `1148` | sub_1148 | STORESTRING | 540 | 189 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1364` | sub_1364 | FINDSTR | 147 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1364` | sub_1364 | FINDSTR | 147 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | spec/567-ecl-packed-text-and-bank1-field-map.md |
 | `13F7` | sub_13F7 | GETSTR | 480 | 186 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `142D` | sub_142D | — | 83 | 30 | 2 | 2 |  | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md |
 | `147D` | sub_147D | — | 31 | 13 | 2 | 1 |  | 待解讀 | — | — | — |

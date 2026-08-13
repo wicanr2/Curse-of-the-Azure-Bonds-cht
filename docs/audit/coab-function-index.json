@@ -5285,7 +5285,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 29h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/function-triage.md"
    ]
   },
   {
@@ -8216,7 +8217,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9984,7 +9988,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10426,7 +10433,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -10556,7 +10566,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11451,7 +11464,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11568,7 +11584,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11594,7 +11613,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11646,7 +11668,10 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11711,7 +11736,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11958,7 +11986,10 @@
    "callers": 3,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12010,7 +12041,10 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12075,7 +12109,10 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12270,7 +12307,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12309,7 +12349,10 @@
    "callers": 4,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12569,7 +12612,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15238,7 +15284,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15316,7 +15365,13 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDICE(count,sides):與 PC-98 同構;亂數 far call 0A54:1105 = @Random$q4Word(image offset B645h)",
+   "citations": [
+    "spec/568-rolldice-and-original-rng-entry.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15615,7 +15670,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15836,7 +15894,10 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16122,7 +16183,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16282,7 +16346,10 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17845,7 +17912,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21959,7 +22029,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -23012,7 +23085,8 @@
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 29h 的 handler（binding exact，語意未解讀）",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "audit/function-triage.md"
    ]
   },
   {
@@ -24314,7 +24388,8 @@
    "state": "待解讀",
    "citations": [
     "knowledge/gold-box-ecl-interpreter.md",
-    "spec/565-ecl-memory-read-path-and-asymmetry.md"
+    "spec/565-ecl-memory-read-path-and-asymmetry.md",
+    "spec/567-ecl-packed-text-and-bank1-field-map.md"
    ]
   },
   {
@@ -24329,7 +24404,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -24413,7 +24491,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/567-ecl-packed-text-and-bank1-field-map.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27198,7 +27279,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -27848,7 +27932,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28083,7 +28170,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28876,7 +28966,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30129,7 +30222,10 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30234,7 +30330,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30557,7 +30656,10 @@
    "callers": 0,
    "calls": 19,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30596,7 +30698,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30843,7 +30948,10 @@
    "callers": 2,
    "calls": 19,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30986,7 +31094,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31013,7 +31124,10 @@
    "callers": 5,
    "calls": 12,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31080,7 +31194,10 @@
    "callers": 2,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31199,7 +31316,10 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -31988,7 +32108,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32748,7 +32871,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32826,7 +32952,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34416,7 +34545,10 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34667,7 +34799,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34763,7 +34898,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34846,7 +34984,13 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count\u003c=0 回 0",
+   "citations": [
+    "spec/568-rolldice-and-original-rng-entry.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34860,7 +35004,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
+   "note": "ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解",
+   "citations": [
+    "spec/568-rolldice-and-original-rng-entry.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35008,7 +35158,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35143,7 +35296,10 @@
    "callers": 2,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35701,7 +35857,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36395,7 +36554,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37045,7 +37207,10 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37429,7 +37594,10 @@
    "callers": 3,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-triage.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -38079,9 +38247,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 0,
+   "Read": 1,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 38,
    "CodeBytes": 9176,
    "Undefined": 376,
    "SegmentBytes": 9661,
@@ -38597,9 +38765,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 0,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 37,
    "CodeBytes": 9201,
    "Undefined": 458,
    "SegmentBytes": 9706,

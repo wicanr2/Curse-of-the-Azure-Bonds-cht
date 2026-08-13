@@ -23,7 +23,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14C9` | sub_14C9 | SAVECHARACTER | 26 | 12 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `15A1` | sub_15A1 | — | 90 | 39 | 2 | 3 |  | 待解讀 | — | — | — |
 | `15F5` | sub_15F5 | — | 50 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1627` | sub_1627 | — | 1221 | 480 | 2 | 5 |  | 待解讀 | — | — | — |
+| `1627` | sub_1627 | — | 1221 | 480 | 2 | 5 |  | 待解讀 | — | — | audit/function-triage.md |
 | `166F` | sub_166F | — | 10 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1679` | sub_1679 | — | 5 | 3 | 5 | 0 |  | 待解讀 | — | — | — |
 | `167E` | sub_167E | — | 11 | 3 | 6 | 0 |  | 待解讀 | — | — | — |
@@ -31,7 +31,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C15` | sub_1C15 | — | 1152 | 449 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `2095` | sub_2095 | — | 374 | 112 | 3 | 1 |  | 待解讀 | — | — | — |
 | `26CF` | sub_26CF | — | 798 | 241 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `2A6D` | sub_2A6D | LOADCHARACTER | 3141 | 1140 | 1 | 11 | ✓ | 待解讀 | — | — | — |
+| `2A6D` | sub_2A6D | LOADCHARACTER | 3141 | 1140 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `36B2` | sub_36B2 | — | 953 | 346 | 2 | 3 |  | 待解讀 | — | — | — |
 | `3AA8` | sub_3AA8 | LOADMONSTER | 850 | 324 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `3DFF` | sub_3DFF | LOADNPC | 108 | 42 | 0 | 4 | ✓ | 待解讀 | — | — | — |

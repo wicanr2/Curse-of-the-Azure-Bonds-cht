@@ -170,6 +170,23 @@ engine 認得 7 個，兩平台相同：
 DOS 沒有符號表，名稱依 **entry index** 對應過去（`strong inference`）——
 不能用 code offset 對，兩平台的 code offset 不同。
 
+## 相鄰的規則核心：`EFFECTS`（overlay-23）
+
+不屬 ECL 直譯器，但 ECL 的傷害／法術指令最終都會落到這裡。Borland 符號給出
+單元骨架：`TRYTOHIT`、`ATTEMPTTOHIT`、`MAKESAVE`、`ROLLDICE`、
+`ROLLDAMAGEDICE`、`ADDEFFECT`、`REMOVEFX`、`CUREEFFECT`、`PUTDAMAGE`、
+`RECALCULATESTATS`、`CONVERTSTRTOSPEC`／`CONVERTSPECTOSTR` 等 21 個。
+
+已讀完的只有骰子（[spec 568](../spec/568-rolldice-and-original-rng-entry.md)）：
+
+```text
+ROLLDICE(count, sides) = Σ_{i=1..count} (Random(sides) + 1)   ← 回傳 byte
+```
+
+`Random` 是 Turbo Pascal RTL 的 `Random(n)`，已由位址換算證明
+（DOS far call `0A54:1105` ＝ `@Random$q4Word`）。**沒有重骰、沒有上下限修正、
+沒有爆擊特例**；要對齊原版隨機序列必須另外重現 `Random` 的 LCG 與種子行為。
+
 ## 跨作品沿用
 
 指令分派、operand 三陣列、`READVAR`／`ADDRESSVALUE`／`STOREVALUE` 的分工與

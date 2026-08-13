@@ -122,7 +122,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5147` | sub_5147 | — | 275 | 132 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `525B` | sub_525B | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `529E` | sub_529E | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `52E0` | sub_52E0 | — | 1312 | 508 | 0 | 9 | ✓ | 待解讀 | — | — | — |
+| `52E0` | sub_52E0 | — | 1312 | 508 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `562A` | sub_562A | — | 135 | 51 | 3 | 2 |  | 待解讀 | — | — | — |
 | `5888` | sub_5888 | — | 164 | 72 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `592D` | sub_592D | — | 170 | 70 | 0 | 4 | ✓ | 待解讀 | — | — | — |
@@ -141,5 +141,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `64E8` | sub_64E8 | ISASCROLL | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `6535` | sub_6535 | LOSESCROLLSPELL | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `65C9` | sub_65C9 | CHARSPELLMSG | 290 | 131 | 1 | 7 | ✓ | 待解讀 | — | — | — |
-| `66EB` | sub_66EB | INITSPELLS | 1434 | 443 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `66EB` | sub_66EB | INITSPELLS | 1434 | 443 | 0 | 0 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `6C85` | sub_6C85 | — | 7 | 5 | 0 | 0 | ✓ | 待解讀 | — | — | — |

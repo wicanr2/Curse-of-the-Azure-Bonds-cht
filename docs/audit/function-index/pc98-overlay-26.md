@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0011` | sub_11 | LOCATEITEM | 98 | 38 | 5 | 1 | ✓ | 待解讀 | — | — | — |
 | `0073` | sub_73 | ITEMCOUNT | 65 | 25 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00B4` | sub_B4 | — | 93 | 41 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `0133` | sub_133 | MENU | 1771 | 581 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `0133` | sub_133 | MENU | 1771 | 581 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `081E` | sub_81E | CLEARMENU | 51 | 27 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `0858` | sub_858 | INIMNUBUF | 64 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `08AE` | sub_8AE | MKEMNULST | 304 | 126 | 1 | 1 | ✓ | 待解讀 | — | — | — |
