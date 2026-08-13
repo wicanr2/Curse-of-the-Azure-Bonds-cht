@@ -31,7 +31,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `152E` | sub_152E | — | 115 | 38 | 1 | 2 |  | 待解讀 | — | — | — |
 | `15A1` | sub_15A1 | — | 382 | 141 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1683` | sub_1683 | — | 10 | 3 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1695`，控制權轉交後不返回；先設定 `les di, [bp-9]`、`mov byte ptr es:[di+59h], 0D1h`（body 共 10 bytes，已逐條讀完） | — |
-| `19CA` | sub_19CA | — | 12 | 3 | 1 | 0 |  | 待解讀 | — | — | audit/function-triage.md |
-| `19E0` | sub_19E0 | — | 31 | 14 | 2 | 0 |  | 待解讀 | — | — | — |
+| `19CA` | sub_19CA | — | 12 | 3 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 39F6h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/function-triage.md |
+| `19E0` | sub_19E0 | — | 31 | 14 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 5A80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1A3E` | sub_1A3E | APPRAISE | 2263 | 151 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2315` | sub_2315 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

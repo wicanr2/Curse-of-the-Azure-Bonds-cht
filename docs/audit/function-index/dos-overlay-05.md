@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0ED7` | sub_ED7 | — | 79 | 31 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `106C` | sub_106C | — | 250 | 86 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1166` | sub_1166 | — | 30 | 12 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 0FFh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
-| `1184` | sub_1184 | — | 87 | 39 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1184` | sub_1184 | — | 87 | 39 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 87 bytes，已逐條讀完） | — |
 | `1370` | sub_1370 | — | 246 | 80 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `14AC` | sub_14AC | — | 242 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `15A9` | sub_15A9 | — | 112 | 45 | 5 | 2 |  | 待解讀 | — | — | — |

@@ -34,9 +34,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0BBB` | sub_BBB | — | 90 | 33 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 20h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0C15` | sub_C15 | — | 309 | 104 | 1 | 5 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 21h／37h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0D4A` | sub_D4A | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `0D4F` | sub_D4F | — | 85 | 25 | 2 | 4 |  | 待解讀 | — | — | — |
+| `0D4F` | sub_D4F | — | 85 | 25 | 2 | 4 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 85 bytes，已逐條讀完） | — |
 | `0DA4` | sub_DA4 | — | 27 | 11 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 27 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md |
-| `0DBF` | sub_DBF | — | 84 | 32 | 4 | 3 |  | 待解讀 | — | — | — |
+| `0DBF` | sub_DBF | — | 84 | 32 | 4 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 84 bytes，已逐條讀完） | — |
 | `0E13` | sub_E13 | — | 94 | 35 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 2Ah 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0E71` | sub_E71 | — | 76 | 29 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 35h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `0EBD` | sub_EBD | — | 82 | 29 | 1 | 2 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 15h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
@@ -46,10 +46,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1271` | sub_1271 | — | 325 | 120 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Dh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `13B6` | sub_13B6 | — | 96 | 33 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1416` | sub_1416 | — | 382 | 141 | 1 | 6 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 1Eh 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `1577` | sub_1577 | — | 48 | 16 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1577` | sub_1577 | — | 48 | 16 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_152A`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完） | — |
 | `15AE` | sub_15AE | — | 10 | 5 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `15B8` | sub_15B8 | — | 10 | 6 | 2 | 2 |  | 待解讀 | — | — | — |
-| `15D1` | sub_15D1 | — | 76 | 23 | 2 | 2 |  | 待解讀 | — | — | — |
+| `15D1` | sub_15D1 | — | 76 | 23 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_15C3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 76 bytes，已逐條讀完） | — |
 | `1636` | sub_1636 | — | 30 | 11 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_5], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md |
 | `16B8` | sub_16B8 | — | 8 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call loc_718+3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `16D2` | sub_16D2 | — | 165 | 66 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 23h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
@@ -59,14 +59,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17C4` | sub_17C4 | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr sub_184B`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
 | `17DD` | sub_17DD | — | 5 | 1 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 713h:20h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `17E2` | sub_17E2 | — | 5 | 1 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call loc_69E+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `17E7` | sub_17E7 | — | 74 | 19 | 2 | 5 |  | 待解讀 | — | — | — |
+| `17E7` | sub_17E7 | — | 74 | 19 | 2 | 5 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr sub_1953`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 74 bytes，已逐條讀完） | — |
 | `182E` | sub_182E | — | 14 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1843+4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | — |
 | `184B` | sub_184B | — | 222 | 55 | 1 | 5 |  | 待解讀 | — | — | — |
-| `18B3` | sub_18B3 | — | 42 | 11 | 2 | 2 |  | 待解讀 | — | — | — |
+| `18B3` | sub_18B3 | — | 42 | 11 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr sub_1953`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 42 bytes，已逐條讀完） | — |
 | `1953` | sub_1953 | — | 3 | 1 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr sub_1A4F`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
-| `1956` | sub_1956 | — | 77 | 21 | 2 | 8 |  | 待解讀 | — | — | — |
-| `19A3` | sub_19A3 | — | 76 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
-| `19EF` | sub_19EF | — | 91 | 24 | 2 | 4 |  | 待解讀 | — | — | — |
+| `1956` | sub_1956 | — | 77 | 21 | 2 | 8 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 77 bytes，已逐條讀完） | — |
+| `19A3` | sub_19A3 | — | 76 | 19 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, ds:4F99h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 76 bytes，已逐條讀完） | — |
+| `19EF` | sub_19EF | — | 91 | 24 | 2 | 4 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:8B56h, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 91 bytes，已逐條讀完） | — |
 | `1A4F` | sub_1A4F | — | 76 | 24 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A9B` | sub_1A9B | — | 149 | 57 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 25h／26h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `1B53` | sub_1B53 | — | 1011 | 398 | 1 | 4 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 27h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |

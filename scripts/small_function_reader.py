@@ -104,7 +104,8 @@ def classify(function):
         if all(is_setup(line) for line in setup):
             detail = ("；先設定 %s" % "、".join("`%s`" % l for l in setup)) if setup else ""
             return "尾呼叫", "最後一條是 `%s`，控制權轉交後不返回%s" % (lines[-1], detail)
-        return None, None
+        # 前面不是單純的參數準備 ⇒ 不算尾呼叫，但也別直接回未知：
+        # 它同樣沒有 `ret`，應該落到下面的邊界碎片判定。
 
     # ⚠ 沒有 ret 也沒有尾跳躍 ⇒ 這不是完整函式，是 IDA 在 raw overlay 上
     # 建錯的邊界碎片（實測 ON GOTO handler 被切成 3 bytes）。標成獨立狀態，

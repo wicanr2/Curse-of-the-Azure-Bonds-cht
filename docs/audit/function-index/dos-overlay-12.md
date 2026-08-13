@@ -89,7 +89,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1687` | sub_1687 | — | 59 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `16C2` | sub_16C2 | — | 22 | 11 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完） | — |
 | `16D8` | sub_16D8 | — | 19 | 7 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:1713h（entry#70）助憶碼序列完全相同，語意同該筆：DS:A035h := 1、DS:A039h(命中骰)減 4(retf 0Ah,5 個 word 參數) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
-| `16EB` | sub_16EB | — | 48 | 23 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `16EB` | sub_16EB | — | 48 | 23 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>與 PC-98 overlay-12:1726h（entry#71）助憶碼序列完全相同，語意同該筆：擲 d100;結果 <= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1729` | sub_1729 | — | 60 | 28 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `1765` | sub_1765 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 12 bytes，已逐條讀完） | — |
 | `1771` | sub_1771 | — | 87 | 32 | 0 | 3 | ✓ | 待解讀 | — | — | — |

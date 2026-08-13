@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `122C` | sub_122C | ATTEMPTTOHIT | 172 | 65 | 0 | 4 | ✓ | 待解讀 | — | — | spec/571-trytohit-attack-resolution.md |
 | `12D8` | sub_12D8 | MAKESAVE | 144 | 56 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1368` | sub_1368 | ROLLDICE | 75 | 29 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDICE(count,sides)=Σ(Random(sides)+1),回傳 byte;count<=0 回 0 | spec/568-rolldice-and-original-rng-entry.md |
-| `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 | spec/568-rolldice-and-original-rng-entry.md |
+| `13B3` | sub_13B3 | ROLLDAMAGEDICE | 36 | 16 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/568-rolldice-and-original-rng-entry.md<br>ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解 | audit/function-index/dos-overlay-23.md<br>spec/568-rolldice-and-original-rng-entry.md |
 | `13D7` | sub_13D7 | ADDEFFECT | 175 | 58 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `1486` | sub_1486 | LOSEDUDE | 138 | 51 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `1510` | sub_1510 | — | 21 | 7 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 21 bytes，已逐條讀完） | — |

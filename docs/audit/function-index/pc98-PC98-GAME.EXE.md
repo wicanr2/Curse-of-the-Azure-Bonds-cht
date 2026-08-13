@@ -192,11 +192,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
 | `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
-| `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 待解讀 | — | — | — |
+| `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_19A8B 後把 word_280F9 載入 DX 回傳 | — |
 | `19604` | sub_19604 | — | 18 | 7 | 7 | 3 |  | 待解讀 | — | — | — |
 | `19616` | sub_19616 | — | 179 | 69 | 1 | 8 |  | 待解讀 | — | — | — |
 | `196C9` | sub_196C9 | — | 178 | 83 | 1 | 6 |  | 待解讀 | — | — | — |
-| `1977B` | sub_1977B | — | 3 | 2 | 5 | 0 |  | 待解讀 | — | — | — |
+| `1977B` | sub_1977B | — | 3 | 2 | 5 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>int 18h 後返回。⚠ IDA 的註解寫 TRANSFER TO ROM BASIC 是 IBM PC 的語意;PC-98 的 INT 18h 是螢幕／鍵盤 BIOS,不可沿用該註解 | — |
 | `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 待解讀 | — | — | — |
 | `19791` | sub_19791 | — | 44 | 20 | 2 | 1 |  | 待解讀 | — | — | — |
 | `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
@@ -206,7 +206,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `198AE` | sub_198AE | — | 153 | 83 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19947` | sub_19947 | — | 174 | 93 | 1 | 4 |  | 待解讀 | — | — | — |
 | `199F5` | sub_199F5 | — | 18 | 12 | 3 | 0 |  | 待解讀 | — | — | — |
-| `19A07` | sub_19A07 | — | 9 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
+| `19A07` | sub_19A07 | — | 9 | 6 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=06h、DL=07h,前後保存 DX | — |
 | `19A10` | sub_19A10 | — | 25 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `19A29` | sub_19A29 | — | 48 | 19 | 2 | 1 |  | 待解讀 | — | — | — |
 | `19A59` | sub_19A59 | — | 16 | 9 | 1 | 0 |  | 待解讀 | — | — | — |
@@ -226,7 +226,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 待解讀 | — | — | — |
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 待解讀 | — | — | — |
 | `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
+| `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX | — |
 | `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
 | `19EC4` | sub_19EC4 | — | 186 | 71 | 1 | 5 |  | 待解讀 | — | — | — |
 | `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 12 bytes，已逐條讀完） | — |
@@ -260,12 +260,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A72A`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A726` | sub_1A726 | — | 194 | 83 | 3 | 6 |  | 待解讀 | — | — | — |
 | `1A7E8` | sub_1A7E8 | — | 14 | 7 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A7F6` | sub_1A7F6 | — | 12 | 5 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A7F6` | sub_1A7F6 | — | 12 | 5 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1A806`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
 | `1A802` | sub_1A802 | — | 14 | 8 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A810` | sub_1A810 | — | 7 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1A817` | sub_1A817 | — | 11 | 6 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1A822` | sub_1A822 | — | 8 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add al, 7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
-| `1A82A` | sub_1A82A | — | 7 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
+| `1A82A` | sub_1A82A | — | 7 | 4 | 4 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>字元輸出:與 DOS START.EXE:1A716h 逐指令相同(INT 21h AH=06h) | — |
 | `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes） | — |
 | `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes） | — |
 | `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
@@ -298,7 +298,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B352` | sub_1B352 | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完） | — |
 | `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes） | — |
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 待解讀 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀 | — |
 | `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |

@@ -26,13 +26,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `108D` | sub_108D | — | 545 | 190 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `12AE` | sub_12AE | — | 430 | 167 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `145C` | sub_145C | — | 508 | 194 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `1652` | sub_1652 | — | 77 | 31 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1652` | sub_1652 | — | 77 | 31 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 77 bytes，已逐條讀完） | — |
 | `169F` | sub_169F | — | 9 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `16D3` | sub_16D3 | — | 173 | 68 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `1775` | sub_1775 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add di, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `177A` | sub_177A | — | 63 | 25 | 2 | 0 |  | 待解讀 | — | — | — |
+| `177A` | sub_177A | — | 63 | 25 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完） | — |
 | `17C4` | sub_17C4 | — | 6 | 3 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完） | — |
-| `17EA` | sub_17EA | — | 58 | 27 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `17EA` | sub_17EA | — | 58 | 27 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 58 bytes，已逐條讀完） | — |
 | `1824` | sub_1824 | — | 13 | 6 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-12Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
 | `18EE` | sub_18EE | — | 141 | 67 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `197B` | sub_197B | — | 214 | 86 | 0 | 1 | ✓ | 待解讀 | — | — | — |

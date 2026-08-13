@@ -10,7 +10,9 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_120D0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 50 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -771,7 +773,9 @@
    "callers": 4,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_120DF`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 66 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -1113,7 +1117,9 @@
    "callers": 7,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 95 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -1545,7 +1551,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call @Halt$q4Word`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2449,7 +2457,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 58 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2461,7 +2471,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 87 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2723,7 +2735,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "字元輸出:mov dl, al 後以 INT 21h AH=06h(直接主控台輸出)送出。這就是十進位輸出與字串輸出共用的底層 routine"
   },
   {
    "platform": "dos",
@@ -3645,7 +3660,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp __RealMul`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5018,7 +5035,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 85 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5049,7 +5068,9 @@
    "callers": 4,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 84 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5216,7 +5237,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_152A`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 48 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5257,7 +5280,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_15C3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 76 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5417,7 +5442,9 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr sub_1953`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 74 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5458,7 +5485,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr sub_1953`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 42 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5487,7 +5516,9 @@
    "callers": 2,
    "calls": 8,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 77 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5500,7 +5531,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, ds:4F99h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 76 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5513,7 +5546,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:8B56h, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 91 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6320,7 +6355,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 87 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6833,7 +6870,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 77 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6889,7 +6928,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6918,7 +6959,9 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 58 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -7317,7 +7360,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ss`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 83 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8275,7 +8320,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_13A4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8377,7 +8424,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-0Ch]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8405,7 +8454,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr [bp-2], 5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 73 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9737,7 +9788,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "與 PC-98 overlay-12:1726h（entry#71）助憶碼序列完全相同，語意同該筆：擲 d100;結果 \u003c= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -11748,7 +11802,9 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -11817,7 +11873,9 @@
    "callers": 4,
    "calls": 6,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_14DC`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 92 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -12495,7 +12553,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1048`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 62 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -12549,7 +12609,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short near ptr loc_15D2+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 47 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -12577,7 +12639,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short sub_1625`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -12620,7 +12684,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 88 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -13361,7 +13427,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr ds:4FBAh, 5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 85 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -13387,7 +13455,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1ADB`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 21 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14640,7 +14710,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14868,7 +14940,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_1D92，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14938,7 +15013,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_1E7B，長度 0）呼叫訊息 routine（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14995,7 +15073,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15739,7 +15820,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_4492，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15907,7 +15991,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_4EB3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -16407,7 +16494,9 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 95 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -16639,7 +16728,9 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1B1B`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17078,7 +17169,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -21521,7 +21614,10 @@
    "callers": 6,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 sub_19A8B 後把 word_280F9 載入 DX 回傳"
   },
   {
    "platform": "pc98",
@@ -21569,7 +21665,10 @@
    "callers": 5,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "int 18h 後返回。⚠ IDA 的註解寫 TRANSFER TO ROM BASIC 是 IBM PC 的語意;PC-98 的 INT 18h 是螢幕／鍵盤 BIOS,不可沿用該註解"
   },
   {
    "platform": "pc98",
@@ -21689,7 +21788,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出 BEL(07h):INT 21h AH=06h、DL=07h,前後保存 DX"
   },
   {
    "platform": "pc98",
@@ -21932,7 +22034,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX"
   },
   {
    "platform": "pc98",
@@ -22356,7 +22461,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1A806`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22422,7 +22529,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "字元輸出:與 DOS START.EXE:1A716h 逐指令相同(INT 21h AH=06h)"
   },
   {
    "platform": "pc98",
@@ -22858,7 +22968,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp sub_1B0A7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -23819,7 +23931,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_819`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 60 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -23832,7 +23946,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_76B`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -24239,7 +24355,9 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-9], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 50 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -25491,7 +25609,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16C5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -26013,7 +26133,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1423`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -26637,7 +26759,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 82 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27422,7 +27546,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 75 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27539,7 +27665,9 @@
    "callers": 7,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-16h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27552,7 +27680,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1587`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 38 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27578,7 +27708,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -29112,7 +29244,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
+   "note": "擲 d100;結果 \u003c= 5Fh(95) 時以 (0, 0Ch, 1, 19h, arg_6, arg_8) 呼叫 sub_1437 ⇒ 95% 機率套用該效果",
+   "citations": [
+    "audit/function-index/dos-overlay-12.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30352,7 +30490,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_14F4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -30589,7 +30729,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+197h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -30632,7 +30774,9 @@
    "callers": 7,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_17DF`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -31599,7 +31743,9 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_133F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -31860,7 +32006,9 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 61 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32075,7 +32223,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_F0E`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 46 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32102,7 +32252,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 94 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32143,7 +32295,9 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add ah, 82h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 70 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32172,7 +32326,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 90 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32185,7 +32341,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 50 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32738,7 +32896,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32839,7 +32999,9 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-19h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33030,7 +33192,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-55h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 82 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33140,7 +33304,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:262h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33183,7 +33349,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33336,7 +33504,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_FF7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33528,7 +33698,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add bh, 8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 67 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33795,7 +33967,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 65 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -33928,7 +34102,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 63 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34224,7 +34400,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-7]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 64 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34237,7 +34415,9 @@
    "callers": 7,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 79 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35050,7 +35230,9 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀",
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 39F6h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "audit/function-triage.md"
    ]
@@ -35066,7 +35248,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 5A80h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35716,7 +35900,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_1FF3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35795,7 +35982,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_20EC，長度 0）呼叫訊息 routine（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35847,7 +36037,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は友好的になった。」（unk_23F1，長度 18）呼叫訊息 routine（body 共 70 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35995,7 +36188,9 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_140A`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 66 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -36540,7 +36735,9 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1414`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -36605,7 +36802,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_4779，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -36775,7 +36975,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_525A，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37307,6 +37510,7 @@
    "spec": "docs/spec/568-rolldice-and-original-rng-entry.md",
    "note": "ROLLDAMAGEDICE(count,sides):把 count 寫入 DS:A032h 後委派 ROLLDICE;該全域用途未解",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/568-rolldice-and-original-rng-entry.md"
    ]
   },
@@ -37978,7 +38182,9 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jb short loc_1633`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 79 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37991,7 +38197,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38106,7 +38314,9 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 81Fh:1A2h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38135,7 +38345,9 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+54h], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 52 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38148,7 +38360,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 96 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -40302,10 +40516,10 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 85,
+   "Read": 86,
    "NotBlocking": 133,
-   "Todo": 98,
-   "Fragment": 9,
+   "Todo": 90,
+   "Fragment": 16,
    "CodeBytes": 23290,
    "Undefined": 0,
    "SegmentBytes": 96208,
@@ -40349,8 +40563,8 @@
    "Functions": 90,
    "Read": 6,
    "NotBlocking": 0,
-   "Todo": 67,
-   "Fragment": 17,
+   "Todo": 58,
+   "Fragment": 26,
    "CodeBytes": 14062,
    "Undefined": 292,
    "SegmentBytes": 14880,
@@ -40394,8 +40608,8 @@
    "Functions": 17,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 14,
-   "Fragment": 1,
+   "Todo": 13,
+   "Fragment": 2,
    "CodeBytes": 5057,
    "Undefined": 555,
    "SegmentBytes": 6400,
@@ -40424,8 +40638,8 @@
    "Functions": 41,
    "Read": 8,
    "NotBlocking": 0,
-   "Todo": 30,
-   "Fragment": 3,
+   "Todo": 27,
+   "Fragment": 6,
    "CodeBytes": 8745,
    "Undefined": 191,
    "SegmentBytes": 9128,
@@ -40439,8 +40653,8 @@
    "Functions": 21,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 15,
-   "Fragment": 4,
+   "Todo": 14,
+   "Fragment": 5,
    "CodeBytes": 4243,
    "Undefined": 343,
    "SegmentBytes": 4972,
@@ -40469,8 +40683,8 @@
    "Functions": 38,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 28,
-   "Fragment": 7,
+   "Todo": 25,
+   "Fragment": 10,
    "CodeBytes": 6727,
    "Undefined": 43,
    "SegmentBytes": 7608,
@@ -40497,9 +40711,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 151,
-   "Read": 48,
+   "Read": 49,
    "NotBlocking": 0,
-   "Todo": 79,
+   "Todo": 78,
    "Fragment": 24,
    "CodeBytes": 12855,
    "Undefined": 455,
@@ -40544,8 +40758,8 @@
    "Functions": 34,
    "Read": 4,
    "NotBlocking": 0,
-   "Todo": 24,
-   "Fragment": 6,
+   "Todo": 22,
+   "Fragment": 8,
    "CodeBytes": 6009,
    "Undefined": 887,
    "SegmentBytes": 9704,
@@ -40574,8 +40788,8 @@
    "Functions": 34,
    "Read": 0,
    "NotBlocking": 0,
-   "Todo": 22,
-   "Fragment": 12,
+   "Todo": 18,
+   "Fragment": 16,
    "CodeBytes": 15142,
    "Undefined": 1534,
    "SegmentBytes": 22211,
@@ -40604,8 +40818,8 @@
    "Functions": 42,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 31,
-   "Fragment": 10,
+   "Todo": 29,
+   "Fragment": 12,
    "CodeBytes": 13042,
    "Undefined": 1293,
    "SegmentBytes": 14698,
@@ -40647,10 +40861,10 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 136,
-   "Read": 26,
+   "Read": 31,
    "NotBlocking": 0,
-   "Todo": 90,
-   "Fragment": 20,
+   "Todo": 84,
+   "Fragment": 21,
    "CodeBytes": 22254,
    "Undefined": 2174,
    "SegmentBytes": 26796,
@@ -40664,8 +40878,8 @@
    "Functions": 39,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 31,
-   "Fragment": 5,
+   "Todo": 29,
+   "Fragment": 7,
    "CodeBytes": 9176,
    "Undefined": 376,
    "SegmentBytes": 9661,
@@ -40679,8 +40893,8 @@
    "Functions": 56,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 54,
-   "Fragment": 1,
+   "Todo": 53,
+   "Fragment": 2,
    "CodeBytes": 12483,
    "Undefined": 290,
    "SegmentBytes": 13366,
@@ -40857,10 +41071,10 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 74,
+   "Read": 79,
    "NotBlocking": 29,
-   "Todo": 213,
-   "Fragment": 17,
+   "Todo": 206,
+   "Fragment": 19,
    "CodeBytes": 25067,
    "Undefined": 0,
    "SegmentBytes": 115552,
@@ -40904,8 +41118,8 @@
    "Functions": 85,
    "Read": 5,
    "NotBlocking": 0,
-   "Todo": 61,
-   "Fragment": 19,
+   "Todo": 58,
+   "Fragment": 22,
    "CodeBytes": 14037,
    "Undefined": 266,
    "SegmentBytes": 15595,
@@ -40949,8 +41163,8 @@
    "Functions": 17,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 13,
-   "Fragment": 3,
+   "Todo": 12,
+   "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
    "SegmentBytes": 6570,
@@ -40979,8 +41193,8 @@
    "Functions": 46,
    "Read": 6,
    "NotBlocking": 0,
-   "Todo": 31,
-   "Fragment": 9,
+   "Todo": 30,
+   "Fragment": 10,
    "CodeBytes": 8889,
    "Undefined": 363,
    "SegmentBytes": 9280,
@@ -40994,8 +41208,8 @@
    "Functions": 24,
    "Read": 0,
    "NotBlocking": 0,
-   "Todo": 15,
-   "Fragment": 9,
+   "Todo": 14,
+   "Fragment": 10,
    "CodeBytes": 3967,
    "Undefined": 372,
    "SegmentBytes": 5069,
@@ -41024,8 +41238,8 @@
    "Functions": 35,
    "Read": 0,
    "NotBlocking": 0,
-   "Todo": 29,
-   "Fragment": 6,
+   "Todo": 25,
+   "Fragment": 10,
    "CodeBytes": 7373,
    "Undefined": 95,
    "SegmentBytes": 7601,
@@ -41052,9 +41266,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 149,
-   "Read": 53,
+   "Read": 54,
    "NotBlocking": 0,
-   "Todo": 80,
+   "Todo": 79,
    "Fragment": 16,
    "CodeBytes": 13004,
    "Undefined": 578,
@@ -41069,8 +41283,8 @@
    "Functions": 71,
    "Read": 4,
    "NotBlocking": 0,
-   "Todo": 48,
-   "Fragment": 19,
+   "Todo": 45,
+   "Fragment": 22,
    "CodeBytes": 17224,
    "Undefined": 905,
    "SegmentBytes": 18751,
@@ -41099,8 +41313,8 @@
    "Functions": 45,
    "Read": 3,
    "NotBlocking": 0,
-   "Todo": 34,
-   "Fragment": 8,
+   "Todo": 32,
+   "Fragment": 10,
    "CodeBytes": 8121,
    "Undefined": 1126,
    "SegmentBytes": 9791,
@@ -41114,8 +41328,8 @@
    "Functions": 47,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 40,
-   "Fragment": 5,
+   "Todo": 35,
+   "Fragment": 10,
    "CodeBytes": 18585,
    "Undefined": 1552,
    "SegmentBytes": 22383,
@@ -41129,8 +41343,8 @@
    "Functions": 54,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 32,
-   "Fragment": 20,
+   "Todo": 26,
+   "Fragment": 26,
    "CodeBytes": 20976,
    "Undefined": 2752,
    "SegmentBytes": 24158,
@@ -41144,8 +41358,8 @@
    "Functions": 23,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 22,
-   "Fragment": 0,
+   "Todo": 21,
+   "Fragment": 1,
    "CodeBytes": 4957,
    "Undefined": 1311,
    "SegmentBytes": 6549,
@@ -41159,8 +41373,8 @@
    "Functions": 56,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 32,
-   "Fragment": 22,
+   "Todo": 28,
+   "Fragment": 26,
    "CodeBytes": 11564,
    "Undefined": 1629,
    "SegmentBytes": 15326,
@@ -41189,8 +41403,8 @@
    "Functions": 30,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 25,
-   "Fragment": 3,
+   "Todo": 23,
+   "Fragment": 5,
    "CodeBytes": 7968,
    "Undefined": 2243,
    "SegmentBytes": 8988,
@@ -41202,10 +41416,10 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 24,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 92,
-   "Fragment": 22,
+   "Todo": 85,
+   "Fragment": 24,
    "CodeBytes": 25053,
    "Undefined": 2127,
    "SegmentBytes": 27788,
@@ -41234,8 +41448,8 @@
    "Functions": 65,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 57,
-   "Fragment": 7,
+   "Todo": 52,
+   "Fragment": 12,
    "CodeBytes": 13567,
    "Undefined": 376,
    "SegmentBytes": 13959,

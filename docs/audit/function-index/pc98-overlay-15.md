@@ -24,7 +24,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0FFC` | sub_FFC | — | 31 | 10 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
 | `1084` | sub_1084 | — | 306 | 134 | 2 | 3 |  | 待解讀 | — | — | — |
 | `11A9` | sub_11A9 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `11AE` | sub_11AE | — | 12 | 4 | 4 | 1 |  | 待解讀 | — | — | — |
+| `11AE` | sub_11AE | — | 12 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_133F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | — |
 | `11C7` | sub_11C7 | — | 765 | 347 | 2 | 6 |  | 待解讀 | — | — | — |
 | `147B` | sub_147B | — | 85 | 37 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `14CA` | sub_14CA | — | 119 | 53 | 8 | 9 |  | 待解讀 | — | — | — |
@@ -43,7 +43,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1F69` | sub_1F69 | — | 183 | 73 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2020` | sub_2020 | — | 117 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 待解讀 | — | — | — |
+| `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 61 bytes，已逐條讀完） | — |
 | `20D2` | sub_20D2 | — | 90 | 33 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `212C` | sub_212C | — | 400 | 143 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `22BC` | sub_22BC | — | 180 | 63 | 1 | 1 | ✓ | 待解讀 | — | — | — |
