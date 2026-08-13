@@ -59,15 +59,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 286,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 03h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 411,
    "state": "待解讀",
    "level": "",
@@ -91,15 +82,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 2049,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Dh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -15857,6 +15839,26 @@
    "level": "exact",
    "spec": "docs/spec/684-biased-modifier-display.md",
    "note": "與 PC-98 0BD5h(spec 643)結構完全相同的 HP 顯示:arg_6^[1A4h] < arg_6^[78h](上限)時取一個參數、否則取另一個,arg_0 非 0 再覆蓋成第三個。⚠ 三個常數裡「受傷」不同:DOS 是 0Eh、PC-98 是 6(滿血 0Ah 與覆蓋 0Dh 兩平台相同)。兩邊的顏色編號本來就不是同一套,相同的兩個是巧合",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 286,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
+   "note": "ECL 比較的分派:先 <far 013Eh:06DAh>(2) 取兩個運算元,再看 DS:7686h/7687h 兩個型別 byte——**只要其中一個 >= 80h,兩個就都當字串**(不是各自依型別),走 013Eh:073Eh 比較兩個 256 bytes 緩衝(DS:7748h 與 DS:7848h,相隔 100h);否則呼叫 013Eh:06D5h 兩次取值再 013Eh:0743h 比較。⚠ 數值比較的參數順序是 (b, a),第二個運算元先傳",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2049,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
+   "note": "堆疊彈出:DS:4F9Dh^[582h] > 0 時**先減再用**,所以傳給 <loc_6F5h> 的是彈出後的新深度而不是被彈出那格的索引;計數是 word 但只取低 byte 傳下去,深度超過 255 會截斷。DS:4FB4h 的遞增在條件外面,堆疊空時也照加",
    "bounds": "prologue"
   }
  ]
