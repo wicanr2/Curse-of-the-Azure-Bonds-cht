@@ -8989,6 +8989,7 @@
    "note": "與 pc98 overlay-12:003Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 \u003csub_1437\u003e(arg_8,arg_6,arg_4,arg_0,arg_2,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -18190,7 +18191,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:12E5h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -18203,7 +18207,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:1321h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -18216,7 +18223,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:135Bh 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -18554,7 +18564,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:27E3h 助憶碼序列完全相同（13 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_0^[198h] = 0):是則 1、否則 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -18619,7 +18632,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:2AAEh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：r := \u003csub_2A5B\u003e(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 \u003csub_194C\u003e;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -18680,7 +18696,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "與 pc98 overlay-24:30E7h 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：\u003cfar 018C:0301\u003e() → \u003csub_1F6E\u003e() → \u003csub_18F1\u003e(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -20067,7 +20086,8 @@
    "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
    "note": "同上形狀,參數為 (0Fh,8)/(8,0) 等;兩個分支的參數順序不對稱,照抄",
    "citations": [
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/585-ecl-goto-and-display-mode-pair.md",
+    "spec/635-overlay32-grid-record-array.md"
    ]
   },
   {
@@ -20165,7 +20185,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -30049,6 +30072,7 @@
    "note": "if DS:0A036h = 0 則回傳 0 什麼都不做;否則回傳 1 並呼叫 \u003csub_1437\u003e(arg_8,arg_6,arg_4,arg_0,arg_2,1)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30207,6 +30231,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if DS:9594h^[11Bh](ALIGNMENT) in {2,5,8} then DS:0A02Ch += 2、DS:0A039h -= 2。與 0264h({0,3,6})互補——兩組都是每隔 3 取一個,證明陣營是 9 值一維編碼、value mod 3 是善惡軸(0 善 1 中立 2 惡)。中立 {1,4,7} 兩支都不處理。效果 +2/-2 對應 AD\u0026D 的 Protection from Evil",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30226,6 +30251,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if DS:9594h^[11Bh](ALIGNMENT) in {0,3,6} then DS:0A02Ch += 2、DS:0A039h -= 2。針對善,與 022Dh(惡)互補",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30294,6 +30320,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if arg_2^[3] = 0 則備妥「は窒息した。」呼叫 \u003cfar 013E:0005\u003e(arg_6,arg_8,6,訊息),否則 dec arg_2^[3]——+3 是效果節點上的倒數計時器,每次呼叫減 1,歸零那次才發作(不是立刻生效)",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30377,6 +30404,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "p := arg_6^[18Eh]^[0Ah](兩層間接),存進 DS:0A03Dh;if p^[14Ch] and 2 \u003c\u003e 0 then inc DS:0A039h。與 072Eh 逐指令相同,只差遮罩(2 對 4)——+14Ch 是位元旗標欄位,一支查一個 bit",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30454,6 +30482,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30473,6 +30502,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "與 0470h 逐指令相同的另一個遮罩版本:p := arg_6^[18Eh]^[0Ah];if p^[14Ch] and 4 \u003c\u003e 0 then inc DS:0A039h",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -30571,6 +30601,7 @@
    "spec": "docs/spec/633-alignment-encoding-and-effect-callbacks.md",
    "note": "\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md"
    ]
   },
@@ -40978,7 +41009,15 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/634-str-conversion-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40992,7 +41031,15 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/634-str-conversion-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41006,7 +41053,14 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "spec/634-str-conversion-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41508,10 +41562,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "回傳 (arg_0^[198h] = 0):是則 1、否則 0",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md"
+    "audit/function-index/dos-overlay-24.md",
+    "audit/string-pairs.md",
+    "spec/634-str-conversion-family.md"
    ]
   },
   {
@@ -41590,7 +41649,14 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "r := \u003csub_2A5B\u003e(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 \u003csub_194C\u003e;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "spec/634-str-conversion-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41652,7 +41718,14 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/634-str-conversion-family.md",
+   "note": "\u003cfar 018C:0301\u003e() → \u003csub_1F6E\u003e() → \u003csub_18F1\u003e(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md",
+    "spec/634-str-conversion-family.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43020,9 +43093,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "\u003cfar 02A8:1392\u003e(8,0) 接著 \u003cfar 02A8:1392\u003e(0,8)——同一個 routine 連叫兩次,參數對調",
    "citations": [
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/585-ecl-goto-and-display-mode-pair.md",
+    "spec/635-overlay32-grid-record-array.md"
    ]
   },
   {
@@ -43037,7 +43114,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "\u003cfar 02A8:1392\u003e(0,0) 接著 \u003cfar 02A8:1392\u003e(8,8)——同一個 routine 連叫兩次,成對的極值",
+   "citations": [
+    "spec/635-overlay32-grid-record-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43134,7 +43217,13 @@
    "callers": 6,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查",
+   "citations": [
+    "spec/635-overlay32-grid-record-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43206,7 +43295,13 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "i := \u003csub_1363\u003e(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位",
+   "citations": [
+    "spec/635-overlay32-grid-record-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43220,7 +43315,13 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h)",
+   "citations": [
+    "spec/635-overlay32-grid-record-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43234,7 +43335,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/635-overlay32-grid-record-array.md",
+   "note": "同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀",
+   "citations": [
+    "spec/635-overlay32-grid-record-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43909,9 +44016,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 3,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 50,
+   "Todo": 44,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -44029,9 +44136,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -44464,9 +44571,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 3,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 45,
+   "Todo": 39,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
@@ -44584,9 +44691,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 2,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 17,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,

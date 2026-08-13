@@ -17,9 +17,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A34` | sub_A34 | — | 431 | 196 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0BE3` | sub_BE3 | — | 69 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0C28` | sub_C28 | — | 1187 | 391 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `10CB` | sub_10CB | — | 60 | 28 | 4 | 0 | ✓ | 待解讀 | — | — | — |
-| `1107` | sub_1107 | — | 58 | 27 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `1141` | sub_1141 | — | 57 | 25 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `10CB` | sub_10CB | — | 60 | 28 | 4 | 0 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:12E5h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
+| `1107` | sub_1107 | — | 58 | 27 | 1 | 0 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:1321h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
+| `1141` | sub_1141 | — | 57 | 25 | 0 | 0 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:135Bh 助憶碼序列完全相同（25 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `117A` | sub_117A | — | 144 | 55 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `120A` | sub_120A | — | 144 | 55 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `129A` | sub_129A | — | 171 | 64 | 3 | 1 | ✓ | 待解讀 | — | — | — |
@@ -43,16 +43,16 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2396` | sub_2396 | — | 107 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md |
 | `2421` | sub_2421 | — | 254 | 80 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2543` | sub_2543 | — | 109 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `25B0` | sub_25B0 | — | 36 | 13 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `25B0` | sub_25B0 | — | 36 | 13 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:27E3h 助憶碼序列完全相同（13 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_0^[198h] = 0):是則 1、否則 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `25D4` | sub_25D4 | — | 84 | 29 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2628` | sub_2628 | — | 292 | 110 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `274C` | sub_274C | — | 220 | 81 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2828` | sub_2828 | — | 70 | 20 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `2877` | sub_2877 | — | 60 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2877` | sub_2877 | — | 60 | 24 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:2AAEh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：r := <sub_2A5B>(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 <sub_194C>;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `28B3` | sub_28B3 | — | 438 | 149 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2A6D` | sub_2A6D | — | 290 | 113 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `2BAA` | sub_2BAA | — | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `2E05` | sub_2E05 | — | 54 | 22 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2E05` | sub_2E05 | — | 54 | 22 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:30E7h 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<far 018C:0301>() → <sub_1F6E>() → <sub_18F1>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2E6A` | sub_2E6A | — | 430 | 163 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `3018` | sub_3018 | — | 67 | 23 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `305B` | sub_305B | — | 69 | 27 | 0 | 2 | ✓ | 待解讀 | — | — | — |

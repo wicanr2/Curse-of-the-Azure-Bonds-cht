@@ -17,9 +17,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C53` | sub_C53 | SHOWINFO | 431 | 196 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0E02` | sub_E02 | HELPLESS | 69 | 28 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E47` | sub_E47 | DOCOM | 1182 | 390 | 0 | 9 | ✓ | 待解讀 | — | — | — |
-| `12E5` | sub_12E5 | BYTETOSTR | 60 | 28 | 4 | 0 | ✓ | 待解讀 | — | — | — |
-| `1321` | sub_1321 | WORDTOSTR | 58 | 27 | 1 | 0 | ✓ | 待解讀 | — | — | — |
-| `135B` | sub_135B | LONGTOSTR | 57 | 25 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `12E5` | sub_12E5 | BYTETOSTR | 60 | 28 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br>Str 的 byte 版包裝:mov al + xor ah,ah + xor dx,dx 把輸入湊成無號 32-bit,呼叫 0A65h:12FBh(Str),再用 0A65h:649h 把結果指派給呼叫端的字串變數(上限 0FFh)。無號,0FFh 不會印成 -1 | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/634-str-conversion-family.md |
+| `1321` | sub_1321 | WORDTOSTR | 58 | 27 | 1 | 0 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br>Str 的 word 版包裝:mov ax + xor dx,dx(無號),其餘與 12E5h 相同 | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/634-str-conversion-family.md |
+| `135B` | sub_135B | LONGTOSTR | 57 | 25 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br>Str 的 longint 版包裝:直接推 arg_2:arg_0 整個 dword,retf 4;其餘與 12E5h/1321h 相同 | audit/function-index/dos-overlay-24.md<br>spec/634-str-conversion-family.md |
 | `1394` | sub_1394 | DEXDEFBONUS | 130 | 54 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1416` | sub_1416 | DEXRABONUS | 130 | 54 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1498` | sub_1498 | — | 152 | 62 | 3 | 1 | ✓ | 待解讀 | — | — | — |
@@ -52,16 +52,16 @@ offset（base 0），resident executable 為 IDA linear address。
 | `25CD` | sub_25CD | SPELLON | 107 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `2658` | sub_2658 | SAVEDAMAGE | 254 | 80 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `2776` | sub_2776 | HEALMSG | 109 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `27E3` | sub_27E3 | ENEMYOF | 36 | 13 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `27E3` | sub_27E3 | ENEMYOF | 36 | 13 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br>回傳 (arg_0^[198h] = 0):是則 1、否則 0 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md<br>audit/string-pairs.md<br>spec/634-str-conversion-family.md |
 | `2807` | sub_2807 | FIGGOODBAD | 84 | 29 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `285B` | sub_285B | FINDFOES | 292 | 110 | 0 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md |
 | `297F` | sub_297F | FIGRANGE | 220 | 81 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `2A5B` | sub_2A5B | QUIT | 70 | 20 | 1 | 0 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md |
-| `2AAE` | sub_2AAE | GUARD | 60 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `2AAE` | sub_2AAE | GUARD | 60 | 24 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br>r := <sub_2A5B>(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 <sub_194C>;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響 | audit/function-index/dos-overlay-24.md<br>spec/634-str-conversion-family.md |
 | `2AEA` | sub_2AEA | FIGCASTERLEVEL | 438 | 149 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2CA4` | sub_2CA4 | SETUPSCREEN | 456 | 192 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `2E8C` | sub_2E8C | SHOWLOCATION | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/516-fire-knife-external-map-handoff-audit.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `30E7` | sub_30E7 | DOCOMBATSCREEN | 54 | 22 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `30E7` | sub_30E7 | DOCOMBATSCREEN | 54 | 22 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/634-str-conversion-family.md<br><far 018C:0301>() → <sub_1F6E>() → <sub_18F1>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3 | audit/function-index/dos-overlay-24.md<br>spec/634-str-conversion-family.md |
 | `314B` | sub_314B | PICKAPERSON | 374 | 141 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-24.md |
 | `32B6` | sub_32B6 | — | 123 | 41 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 314Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `3334` | sub_3334 | USINGMISSLEWEAPON | 67 | 23 | 1 | 1 | ✓ | 待解讀 | — | — | — |
