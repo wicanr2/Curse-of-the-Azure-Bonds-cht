@@ -958,7 +958,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/675-horizontal-mirror-pair.md",
+   "note": "16-bit 裡 8 組兩位元的順序反轉:遮罩取自 DS:1E73Dh 起的八個 word,實際讀出是 C000h/3000h/0C00h/0300h/00C0h/0030h/000Ch/0003h(八組互不重疊的兩位元),移位量 ±14/±10/±6/±2。已對 0..65535 全部逐值驗算,不一致 0 筆。與 133E2h(1-bit 版)成一套——同一個水平鏡射在兩種像素深度下的兩個版本。遮罩放資料段可由資料改變,133E2h 的則是寫死的立即值"
   },
   {
    "platform": "dos",
@@ -1027,7 +1030,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/675-horizontal-mirror-pair.md",
+   "note": "blit 前的參數計算:arg_A shl 3(×8,一個 byte 裝 8 個像素);src^[2] 與 dst^[2] 是各自的每列位元組數,var_12 = src stride - dst stride - arg_C 即每列要跳過多少;var_10/14/12/C 最後都乘 2,所以 sub_15329 以 word 為單位前進。dst^[11h] 與 14689h 算釋放大小用的是同一個欄位。參數靠 bx/cx 與一整片區域變數傳,不是堆疊參數"
   },
   {
    "platform": "dos",
@@ -44429,9 +44435,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 105,
+   "Read": 107,
    "NotBlocking": 133,
-   "Todo": 70,
+   "Todo": 68,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
