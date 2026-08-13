@@ -47,59 +47,59 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1ABF` | sub_1ABF | — | 378 | 143 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1C39` | sub_1C39 | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `1CF9` | sub_1CF9 | — | 39 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1D2A` | sub_1D2A | — | 43 | 19 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `1D2A` | sub_1D2A | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | — |
 | `1D55` | sub_1D55 | — | 61 | 24 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `1D93` | sub_1D93 | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1DD5` | sub_1DD5 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1E0F` | sub_1E0F | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1E4E` | sub_1E4E | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1DD5` | sub_1DD5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `1E0F` | sub_1E0F | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `1E4E` | sub_1E4E | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is cold-resistant」（unk_1E3C，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `1E7C` | sub_1E7C | — | 52 | 27 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1EC9` | sub_1EC9 | — | 6 | 3 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1FA0` | sub_1FA0 | — | 304 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
 | `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `22B4` | sub_22B4 | — | 310 | 122 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `23F2` | sub_23F2 | — | 87 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `2494` | sub_2494 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `2494` | sub_2494 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `24CD` | sub_24CD | — | 168 | 73 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2580` | sub_2580 | — | 174 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `262F` | sub_262F | — | 70 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2682` | sub_2682 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `26BB` | sub_26BB | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2682` | sub_2682 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_2675，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `26BB` | sub_26BB | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `26F6` | sub_26F6 | — | 82 | 39 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `2754` | sub_2754 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2754` | sub_2754 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `2799` | sub_2799 | — | 1120 | 433 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `2BF9` | sub_2BF9 | — | 433 | 148 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2DB6` | sub_2DB6 | — | 416 | 137 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `2F5E` | sub_2F5E | — | 61 | 25 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `2FA4` | sub_2FA4 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2FA4` | sub_2FA4 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blind」（unk_2F9B，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `2FD1` | sub_2FD1 | — | 165 | 61 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `3076` | sub_3076 | — | 17 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：唯一實質動作是 `call near ptr sub_2FD1`，參數原樣傳遞（body 共 17 bytes，已逐條讀完） | — |
-| `3093` | sub_3093 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `3093` | sub_3093 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is diseased」（unk_3087，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `30C0` | sub_30C0 | — | 178 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `317E` | sub_317E | — | 932 | 349 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `352D` | sub_352D | — | 73 | 35 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `3599` | sub_3599 | — | 253 | 87 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `36A7` | sub_36A7 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `36E0` | sub_36E0 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `36A7` | sub_36A7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `36E0` | sub_36E0 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `370E` | sub_370E | — | 246 | 103 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `3804` | sub_3804 | — | 271 | 109 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `391D` | sub_391D | — | 42 | 20 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `3947` | sub_3947 | — | 188 | 71 | 5 | 3 | ✓ | 待解讀 | — | — | — |
 | `3A03` | sub_3A03 | — | 661 | 263 | 4 | 8 | ✓ | 待解讀 | — | — | — |
 | `3C98` | sub_3C98 | — | 75 | 39 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `3CED` | sub_3CED | — | 46 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `3CED` | sub_3CED | — | 46 | 21 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完） | — |
 | `3D27` | sub_3D27 | — | 433 | 158 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3EE2` | sub_3EE2 | — | 65 | 32 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `3F23` | sub_3F23 | — | 64 | 26 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3F6F` | sub_3F6F | — | 133 | 56 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3FF4` | sub_3FF4 | — | 66 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `4043` | sub_4043 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `4043` | sub_4043 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `407A` | sub_407A | — | 78 | 33 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `40D5` | sub_40D5 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `40D5` | sub_40D5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `4103` | sub_4103 | — | 59 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `413F` | sub_413F | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4194` | sub_4194 | — | 244 | 95 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -112,8 +112,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `44D3` | sub_44D3 | — | 203 | 72 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `45B5` | sub_45B5 | — | 176 | 72 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4672` | sub_4672 | — | 171 | 72 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `472C` | sub_472C | — | 32 | 17 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `4759` | sub_4759 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `472C` | sub_472C | — | 32 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完） | — |
+| `4759` | sub_4759 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `4791` | sub_4791 | — | 133 | 57 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4822` | sub_4822 | — | 184 | 79 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `48E4` | sub_48E4 | — | 398 | 161 | 0 | 7 | ✓ | 待解讀 | — | — | — |
@@ -121,12 +121,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4BEC` | sub_4BEC | — | 416 | 194 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `4DA0` | sub_4DA0 | — | 275 | 132 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `4EB4` | sub_4EB4 | — | 54 | 29 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `4EF7` | sub_4EF7 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `4EF7` | sub_4EF7 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `54EB` | sub_54EB | — | 164 | 72 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `5590` | sub_5590 | — | 170 | 70 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `563B` | sub_563B | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `5669` | sub_5669 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `5697` | sub_5697 | — | 45 | 25 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `563B` | sub_563B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_563A，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `5669` | sub_5669 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5668，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
+| `5697` | sub_5697 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5696，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | — |
 | `56C4` | sub_56C4 | — | 189 | 75 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `578B` | sub_578B | — | 78 | 33 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `57E3` | sub_57E3 | — | 368 | 158 | 0 | 9 | ✓ | 待解讀 | — | — | — |
