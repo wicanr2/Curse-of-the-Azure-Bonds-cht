@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADCOMBAT | 77 | 19 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr 164h:57h`、`call far ptr 184h:43h`、`call far ptr 189h:93h`、`call far ptr 194h:43h`、`call far ptr 14Ah:101h`（body 共 77 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
-| `004D` | sub_4D | — | 246 | 86 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md<br>spec/687-far-call-flattening-and-stack-leftover.md |
+| `004D` | sub_4D | — | 246 | 86 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md |
 | `0143` | sub_143 | GOCOMBAT | 184 | 67 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `01FB` | sub_1FB | — | 192 | 68 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `02BB` | sub_2BB | — | 325 | 102 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

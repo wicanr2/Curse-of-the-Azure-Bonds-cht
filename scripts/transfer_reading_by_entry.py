@@ -12,7 +12,10 @@
 數字。條目註記會明寫這一點。
 
 用法：
-    python3 scripts/transfer_reading_by_entry.py <overlay 模組名> [--write]
+    python3 scripts/transfer_reading_by_entry.py <overlay 模組名> [--write] [--dos-to-pc98]
+
+預設方向是 PC-98 → DOS；加 `--dos-to-pc98` 走反向。兩個方向都要跑，因為兩邊
+各自讀完的函式不一樣，只跑單向會漏掉另一邊已經讀完、這邊還空著的那些。
 """
 
 import json
@@ -63,16 +66,20 @@ def main():
         return 2
     module = sys.argv[1]
     write = "--write" in sys.argv
+    source_platform = "dos" if "--dos-to-pc98" in sys.argv else "pc98"
+    target_platform = "pc98" if source_platform == "dos" else "dos"
 
-    source_entries, target_entries = entries("pc98", module), entries("dos", module)
-    source_small, target_small = small("pc98", module), small("dos", module)
+    source_entries = entries(source_platform, module)
+    target_entries = entries(target_platform, module)
+    source_small = small(source_platform, module)
+    target_small = small(target_platform, module)
     index_of = {offset: index for index, offset in source_entries.items()}
 
     ledger = json.load(open(LEDGER, encoding="utf-8"))
     already = {(e["platform"], e["module"], e["ea"]) for e in ledger["functions"]
                if e["state"] != "待解讀"}
     read_source = [e for e in ledger["functions"]
-                   if e["platform"] == "pc98" and e["module"] == module
+                   if e["platform"] == source_platform and e["module"] == module
                    and e["state"] == "已解讀"]
 
     transferred, mismatched, missing = [], 0, 0
@@ -81,7 +88,7 @@ def main():
         if index is None or index not in target_entries:
             continue
         target_ea = target_entries[index]
-        if ("dos", module, target_ea) in already:
+        if (target_platform, module, target_ea) in already:
             continue
         source = source_small.get(entry["ea"])
         target = target_small.get(target_ea)
@@ -92,11 +99,12 @@ def main():
             mismatched += 1
             continue
         transferred.append({
-            "platform": "dos", "module": module, "ea": target_ea,
+            "platform": target_platform, "module": module, "ea": target_ea,
             "state": "已解讀", "level": "strong inference", "spec": entry["spec"],
-            "note": "與 PC-98 %s:%04Xh（entry#%d）助憶碼序列完全相同，語意同該筆："
+            "note": "與 %s %s:%04Xh（entry#%d）助憶碼序列完全相同，語意同該筆："
                     "%s ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，"
-                    "引用位址前須各自確認" % (module, entry["ea"], index, entry["note"]),
+                    "引用位址前須各自確認" % (source_platform.upper(), module,
+                                             entry["ea"], index, entry["note"]),
         })
 
     print("可轉移：%d；序列不同而略過：%d；缺匯出：%d"
@@ -113,3 +121,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

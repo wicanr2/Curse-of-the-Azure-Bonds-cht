@@ -142,5 +142,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `617B` | sub_617B | — | 121 | 42 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `6209` | sub_6209 | — | 258 | 119 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `630B` | sub_630B | — | 1434 | 158 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `630B` | sub_630B | — | 1434 | 158 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:7332h, dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1434 bytes，已逐條讀完） | — |
 | `68A5` | sub_68A5 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

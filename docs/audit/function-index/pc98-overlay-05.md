@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADPOSTCOM | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md |
-| `0039` | sub_39 | — | 792 | 278 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0000` | sub_0 | LOADPOSTCOM | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr loc_101A`、`call loc_6DF+1`、`call far ptr loc_1151+3`、`call loc_1696+1`、`call loc_60C+3`、`call far ptr loc_15A0+1`（body 共 57 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md |
+| `0039` | sub_39 | — | 792 | 278 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md |
 | `0351` | sub_351 | — | 478 | 165 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `052F` | sub_52F | — | 1121 | 341 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `0A5C` | sub_A5C | — | 632 | 263 | 1 | 2 | ✓ | 待解讀 | — | — | — |

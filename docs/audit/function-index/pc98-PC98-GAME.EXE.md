@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `10000` | start | — | 756 | 219 | 0 | 69 |  | 待解讀 | — | — | — |
+| `10000` | start | — | 756 | 219 | 0 | 69 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_10320`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 250 bytes，已逐條讀完） | — |
 | `10320` | sub_10320 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `10350` | sub_10350 | — | 2 | 1 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
 | `10355` | sub_10355 | — | 2 | 1 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>overlay stub：Borland overlay 呼叫 stub（`int 3Fh` ＋ control 資料），由 overlay manager 轉派，不含遊戲邏輯（body 共 2 bytes，已逐條讀完） | — |
@@ -256,7 +256,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A5F1` | sub_1A5F1 | — | 38 | 19 | 1 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>EMS page frame 偵測:int 67h AX=4100h 取段位址,**只在 BX 等於 0B000h**(PC-98 的圖形 VRAM 平面)且 AX=7000h 成功時,才把可用旗標 cs:byte_1A64Bh 設成 1。旗標存在程式碼段。判斷寫死成等於 B000h 而不是與 VRAM 範圍重疊,page frame 在別處時整組功能不啟用 | — |
 | `1A617` | sub_1A617 | — | 29 | 13 | 2 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>若 cs:byte_1A64Bh = 1:int 67h AX=7000h 讀出目前狀態存進 cs:byte_1A64Ch,再 AX=7001h/BL=0 設成 0。與 1A634h 是「先讀存起來、事後寫回」的配對(7000h/7001h 不是標準 EMS 功能碼,是驅動擴充) | — |
 | `1A634` | sub_1A634 | — | 23 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>若 cs:byte_1A64Bh = 1:int 67h AX=7001h,BL 取 cs:byte_1A64Ch 寫回——1A617h 的還原對應 | — |
-| `1A650` | sub_1A650 | — | 157 | 72 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1A650` | sub_1A650 | — | 157 | 72 | 1 | 4 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 1932 bytes，已逐條讀完） | — |
 | `1A721` | sub_1A721 | — | 4 | 3 | 11 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A72A`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A726` | sub_1A726 | — | 194 | 83 | 3 | 6 |  | 待解讀 | — | — | — |
 | `1A7E8` | sub_1A7E8 | — | 14 | 7 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 1A82Ah 輸出;與 DOS START.EXE:1A6D4h 同義 | — |

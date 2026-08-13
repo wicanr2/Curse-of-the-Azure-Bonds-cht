@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTHREED | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call far ptr 232h:34h`、`call far ptr 19Ah:2Ah`（body 共 17 bytes，已逐條讀完） | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md<br>spec/522-dos-buffer-four-plane-fill.md |
-| `0011` | sub_11 | — | 346 | 150 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md<br>spec/README.md |
+| `0000` | sub_0 | LOADTHREED | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call far ptr 232h:34h`、`call far ptr 19Ah:2Ah`（body 共 17 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md |
+| `0011` | sub_11 | — | 346 | 150 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md<br>spec/README.md |
 | `016B` | sub_16B | SET3DCOLORS | 33 | 13 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md |
 | `018C` | sub_18C | CLEAR3DVIEW | 531 | 206 | 1 | 2 | ✓ | 待解讀 | — | — | spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/687-far-call-flattening-and-stack-leftover.md |
 | `039F` | sub_39F | — | 270 | 108 | 1 | 1 | ✓ | 待解讀 | — | — | — |
