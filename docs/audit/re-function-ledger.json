@@ -16945,6 +16945,16 @@
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
    "note": "擲骰門檻:base := 目標^[10Eh] + 目標^[116h] × <overlay-25 entry#10>(DS:6506h)(兩個欄位都 cbw);v := ss:[arg_0 − 2];v>base → 門檻 := (v−base)×5 + 50;v<base → 門檻 := 50 − (base−v)×2;相等 → 50;回傳 ROLLDICE(1,100) <= 門檻。⚠ **門檻存在一個 byte(4CB5h,base 在 4CB6h),兩個公式都會回捲且方向相反**:v−base >= 42 時 >=260 → 存成 4,幾乎必定失敗;base−v > 25 時為負 → 例如 246,幾乎必定成功。優勢或劣勢拉大到一定程度結果會翻轉。remake 要先決定重不重現,夾成 0..100 會讓極端情況與原作相反",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 21904,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/706-temporary-field-adjust.md",
+   "bounds": "prologue",
+   "note": "暫時改欄位再還原:先存 舊值 := 目標^[0E3h],依 目標^[75h] 調整(0 → 減 1、5 → 加 4、其他 → 加 2),接著 <sub_F06h>(DS:6F97h,0,0,0,0,空字串) 與 <overlay-24 entry#27>(目標, 44h, @node),找到就 <overlay-23 entry#2>(44h, 目標, 0, 0),**最後一定把 目標^[0E3h] 還原成舊值**。⚠ 修改與還原之間隔著三個呼叫,還原在最尾端且兩條路徑都會經過——只讀前半段會得出「永久調整」的相反結論。下游在這段期間讀該欄位會拿到臨時值,改寫成傳參數行為會不同(原作是任何讀該欄位的程式碼都看得到)"
   }
  ]
 }
