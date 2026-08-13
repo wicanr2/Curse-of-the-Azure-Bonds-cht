@@ -491,15 +491,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 12127,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 36h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 12250,
    "state": "待解讀",
    "level": "",
@@ -12007,6 +11998,15 @@
    "level": "exact",
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "ECL opcode 3Ch:FillChar(DS:BDDAh,2,0)、DS:BDF4h:=0、READVAR(1),之後兩次以完全相同的參數呼叫 far 02A8:1174(DS:7F56h, DS:4830h, 0, 0A8h, 2Ah, 0, 0),中間夾 far 004C:0025;再 019E:014A,若 004C:002F 回 0 則呼叫 far 0893:0000(DS:4858h),最後 014A:00D9。指令序列已完整讀過,但幾乎全是外部呼叫,語意需先解出那些常式"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 12127,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/598-ecl-add-npc.md",
+   "note": "ECL opcode 36h(ADD NPC):bank1^[67Ch] > 7 就整條指令什麼都不做(上限 7,且不設任何旗標讓呼叫端知道);否則 READVAR(2),第一個 operand 交給 far 00DC:004D,第二個經有號除 2 再 or 80h 寫進 DS:9594h^[0F7h]——最高位是 NPC 標記。再次確認 handler 是READVAR(2),與 SKIP 表的 arity 1 不一致"
   }
  ]
 }
