@@ -20587,7 +20587,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@INTR$q4BYTEm9REGISTERS` 逐位元組相同（58 bytes）"
   },
   {
    "platform": "pc98",
@@ -20599,7 +20601,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@GetTime$qm4Wordt1t1t1` 逐位元組相同（37 bytes）"
   },
   {
    "platform": "pc98",
@@ -21832,7 +21836,9 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes）"
   },
   {
    "platform": "pc98",
@@ -21844,7 +21850,9 @@
    "callers": 9,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes）"
   },
   {
    "platform": "pc98",
@@ -21964,7 +21972,9 @@
    "callers": 10,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt1` 逐位元組相同（26 bytes）"
   },
   {
    "platform": "pc98",
@@ -21976,7 +21986,9 @@
    "callers": 102,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt14Byte` 逐位元組相同（36 bytes）"
   },
   {
    "platform": "pc98",
@@ -21988,7 +22000,9 @@
    "callers": 8,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Copy$qm6Stringt17Integert3` 逐位元組相同（65 bytes）"
   },
   {
    "platform": "pc98",
@@ -22000,7 +22014,9 @@
    "callers": 8,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Concat$qm6Stringt1` 逐位元組相同（44 bytes）"
   },
   {
    "platform": "pc98",
@@ -22012,7 +22028,9 @@
    "callers": 71,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$bsub$qm6Stringt1` 逐位元組相同（43 bytes）"
   },
   {
    "platform": "pc98",
@@ -22024,7 +22042,9 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6String4Char` 逐位元組相同（18 bytes）"
   },
   {
    "platform": "pc98",
@@ -22036,7 +22056,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Set@MemberOf$q4Byte` 逐位元組相同（33 bytes）"
   },
   {
    "platform": "pc98",
@@ -22096,7 +22118,9 @@
    "callers": 7,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealCmp` 逐位元組相同（23 bytes）"
   },
   {
    "platform": "pc98",
@@ -22120,7 +22144,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealFloat` 逐位元組相同（63 bytes）"
   },
   {
    "platform": "pc98",
@@ -22132,7 +22158,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealTrunc` 逐位元組相同（92 bytes）"
   },
   {
    "platform": "pc98",
@@ -22204,7 +22232,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes）"
   },
   {
    "platform": "pc98",
@@ -22252,7 +22282,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "待解讀",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀"
   },
   {
    "platform": "pc98",
@@ -22288,7 +22320,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes）"
   },
   {
    "platform": "pc98",
@@ -22300,7 +22334,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes）"
   },
   {
    "platform": "pc98",
@@ -22408,7 +22444,9 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__GetChar` 逐位元組相同（28 bytes）"
   },
   {
    "platform": "pc98",
@@ -22456,7 +22494,9 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@ReadLn$qm4Text` 逐位元組相同（41 bytes）"
   },
   {
    "platform": "pc98",
@@ -22468,7 +22508,9 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@WriteLn$qm4Text` 逐位元組相同（31 bytes）"
   },
   {
    "platform": "pc98",
@@ -22492,7 +22534,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Text4Char` 逐位元組相同（30 bytes）"
   },
   {
    "platform": "pc98",
@@ -22504,7 +22548,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text4Char4Word` 逐位元組相同（45 bytes）"
   },
   {
    "platform": "pc98",
@@ -22516,7 +22562,9 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Textm6String4Word` 逐位元組相同（56 bytes）"
   },
   {
    "platform": "pc98",
@@ -22528,7 +22576,9 @@
    "callers": 5,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Textm6String4Word` 逐位元組相同（62 bytes）"
   },
   {
    "platform": "pc98",
@@ -22540,7 +22590,9 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text7Longint4Word` 逐位元組相同（73 bytes）"
   },
   {
    "platform": "pc98",
@@ -22552,7 +22604,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Assign$qm4Filem6String` 逐位元組相同（46 bytes）"
   },
   {
    "platform": "pc98",
@@ -22648,7 +22702,9 @@
    "callers": 27,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes）"
   },
   {
    "platform": "pc98",
@@ -22660,7 +22716,9 @@
    "callers": 13,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes）"
   },
   {
    "platform": "pc98",
@@ -22696,7 +22754,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "不阻塞",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
   },
   {
    "platform": "pc98",
@@ -39465,8 +39525,8 @@
    "Unit": "",
    "Functions": 333,
    "Read": 72,
-   "NotBlocking": 0,
-   "Todo": 261,
+   "NotBlocking": 29,
+   "Todo": 232,
    "CodeBytes": 25067,
    "Undefined": 0,
    "SegmentBytes": 115552,

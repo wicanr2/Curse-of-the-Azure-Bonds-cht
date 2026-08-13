@@ -163,8 +163,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18AA7` | sub_18AA7 | — | 232 | 95 | 1 | 3 |  | 待解讀 | — | — | — |
 | `18B8F` | sub_18B8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `18BB1` | sub_18BB1 | — | 26 | 14 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AC99`（body 共 26 bytes，已逐條讀完） | — |
-| `18BDB` | sub_18BDB | — | 58 | 40 | 3 | 0 |  | 待解讀 | — | — | — |
-| `18C72` | sub_18C72 | — | 37 | 19 | 2 | 0 |  | 待解讀 | — | — | — |
+| `18BDB` | sub_18BDB | — | 58 | 40 | 3 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@INTR$q4BYTEm9REGISTERS` 逐位元組相同（58 bytes） | — |
+| `18C72` | sub_18C72 | — | 37 | 19 | 2 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@GetTime$qm4Wordt1t1t1` 逐位元組相同（37 bytes） | — |
 | `18D3A` | sub_18D3A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
 | `18D5D` | sub_18D5D | — | 19 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
 | `18D70` | sub_18D70 | — | 212 | 113 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -266,8 +266,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A817` | sub_1A817 | — | 11 | 6 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A822` | sub_1A822 | — | 8 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A82A` | sub_1A82A | — | 7 | 4 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 待解讀 | — | — | — |
+| `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes） | — |
+| `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes） | — |
 | `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A9E1` | sub_1A9E1 | — | 68 | 26 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1AA72` | sub_1AA72 | — | 187 | 79 | 2 | 4 |  | 待解讀 | — | — | — |
@@ -277,34 +277,34 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1AC62` | sub_1AC62 | — | 14 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1AC70` | sub_1AC70 | — | 15 | 7 | 2 | 0 |  | 待解讀 | — | — | — |
-| `1AC7F` | sub_1AC7F | — | 26 | 12 | 10 | 0 |  | 待解讀 | — | — | — |
-| `1AC99` | sub_1AC99 | — | 36 | 16 | 102 | 1 |  | 待解讀 | — | — | — |
-| `1ACCB` | sub_1ACCB | — | 65 | 29 | 8 | 1 |  | 待解讀 | — | — | — |
-| `1AD0C` | sub_1AD0C | — | 44 | 19 | 8 | 1 |  | 待解讀 | — | — | — |
-| `1AD84` | sub_1AD84 | — | 43 | 20 | 71 | 1 |  | 待解讀 | — | — | — |
-| `1ADAF` | sub_1ADAF | — | 18 | 8 | 1 | 0 |  | 待解讀 | — | — | — |
-| `1AF34` | sub_1AF34 | — | 33 | 13 | 3 | 0 |  | 待解讀 | — | — | — |
+| `1AC7F` | sub_1AC7F | — | 26 | 12 | 10 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt1` 逐位元組相同（26 bytes） | — |
+| `1AC99` | sub_1AC99 | — | 36 | 16 | 102 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt14Byte` 逐位元組相同（36 bytes） | — |
+| `1ACCB` | sub_1ACCB | — | 65 | 29 | 8 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Copy$qm6Stringt17Integert3` 逐位元組相同（65 bytes） | — |
+| `1AD0C` | sub_1AD0C | — | 44 | 19 | 8 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Concat$qm6Stringt1` 逐位元組相同（44 bytes） | — |
+| `1AD84` | sub_1AD84 | — | 43 | 20 | 71 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$bsub$qm6Stringt1` 逐位元組相同（43 bytes） | — |
+| `1ADAF` | sub_1ADAF | — | 18 | 8 | 1 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6String4Char` 逐位元組相同（18 bytes） | — |
+| `1AF34` | sub_1AF34 | — | 33 | 13 | 3 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Set@MemberOf$q4Byte` 逐位元組相同（33 bytes） | — |
 | `1AFE0` | sub_1AFE0 | — | 4 | 1 | 5 | 0 |  | 待解讀 | — | — | — |
 | `1AFE4` | sub_1AFE4 | — | 195 | 97 | 11 | 2 |  | 待解讀 | — | — | — |
 | `1B0A7` | sub_1B0A7 | — | 261 | 123 | 7 | 2 |  | 待解讀 | — | — | — |
 | `1B1AC` | sub_1B1AC | — | 119 | 58 | 5 | 2 |  | 待解讀 | — | — | — |
-| `1B223` | sub_1B223 | — | 23 | 14 | 7 | 2 |  | 待解讀 | — | — | — |
+| `1B223` | sub_1B223 | — | 23 | 14 | 7 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealCmp` 逐位元組相同（23 bytes） | — |
 | `1B23A` | sub_1B23A | — | 19 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1B24D` | sub_1B24D | — | 63 | 30 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B28C` | sub_1B28C | — | 92 | 44 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B24D` | sub_1B24D | — | 63 | 30 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealFloat` 逐位元組相同（63 bytes） | — |
+| `1B28C` | sub_1B28C | — | 92 | 44 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealTrunc` 逐位元組相同（92 bytes） | — |
 | `1B334` | sub_1B334 | — | 10 | 8 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE4`（body 共 10 bytes，已逐條讀完） | — |
 | `1B33E` | sub_1B33E | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1AFE0`（body 共 10 bytes，已逐條讀完） | — |
 | `1B348` | sub_1B348 | — | 10 | 8 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B0A7`（body 共 10 bytes，已逐條讀完） | — |
 | `1B352` | sub_1B352 | — | 10 | 8 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1B1AC`（body 共 10 bytes，已逐條讀完） | — |
-| `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1B35C` | sub_1B35C | — | 81 | 39 | 1 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes） | — |
 | `1B3AD` | sub_1B3AD | — | 20 | 13 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1B737` | sub_1B737 | — | 31 | 18 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1B756` | sub_1B756 | — | 79 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1B7A5` | sub_1B7A5 | — | 22 | 10 | 2 | 2 |  | 待解讀 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀 | — |
 | `1B7F4` | sub_1B7F4 | — | 54 | 22 | 3 | 0 |  | 待解讀 | — | — | — |
 | `1B839` | sub_1B839 | — | 82 | 37 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1B8B3` | sub_1B8B3 | — | 152 | 74 | 2 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes） | — |
+| `1B996` | sub_1B996 | — | 49 | 22 | 1 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes） | — |
 | `1B9C7` | sub_1B9C7 | — | 69 | 37 | 4 | 1 |  | 待解讀 | — | — | — |
 | `1BA37` | sub_1BA37 | — | 5 | 2 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1BA3C` | sub_1BA3C | — | 5 | 2 | 4 | 1 |  | 待解讀 | — | — | — |
@@ -313,19 +313,19 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BACB` | sub_1BACB | — | 17 | 11 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1BB5E` | sub_1BB5E | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1BC46` | sub_1BC46 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BC6A` | sub_1BC6A | — | 28 | 14 | 5 | 2 |  | 待解讀 | — | — | — |
+| `1BC6A` | sub_1BC6A | — | 28 | 14 | 5 | 2 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__GetChar` 逐位元組相同（28 bytes） | — |
 | `1BC86` | sub_1BC86 | — | 36 | 10 | 4 | 1 |  | 待解讀 | — | — | — |
 | `1BCAA` | sub_1BCAA | — | 15 | 7 | 4 | 1 |  | 待解讀 | — | — | — |
 | `1BCB9` | sub_1BCB9 | — | 49 | 24 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1BCEA` | sub_1BCEA | — | 41 | 20 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1BD13` | sub_1BD13 | — | 31 | 14 | 3 | 4 |  | 待解讀 | — | — | — |
+| `1BCEA` | sub_1BCEA | — | 41 | 20 | 1 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@ReadLn$qm4Text` 逐位元組相同（41 bytes） | — |
+| `1BD13` | sub_1BD13 | — | 31 | 14 | 3 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@WriteLn$qm4Text` 逐位元組相同（31 bytes） | — |
 | `1BD32` | sub_1BD32 | — | 38 | 14 | 4 | 1 |  | 待解讀 | — | — | — |
-| `1BD58` | sub_1BD58 | — | 30 | 15 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BD76` | sub_1BD76 | — | 45 | 20 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BDA3` | sub_1BDA3 | — | 56 | 29 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1BDDB` | sub_1BDDB | — | 62 | 32 | 5 | 3 |  | 待解讀 | — | — | — |
-| `1BE71` | sub_1BE71 | — | 73 | 34 | 2 | 4 |  | 待解讀 | — | — | — |
-| `1BEBA` | sub_1BEBA | — | 46 | 23 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1BD58` | sub_1BD58 | — | 30 | 15 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Text4Char` 逐位元組相同（30 bytes） | — |
+| `1BD76` | sub_1BD76 | — | 45 | 20 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text4Char4Word` 逐位元組相同（45 bytes） | — |
+| `1BDA3` | sub_1BDA3 | — | 56 | 29 | 1 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Textm6String4Word` 逐位元組相同（56 bytes） | — |
+| `1BDDB` | sub_1BDDB | — | 62 | 32 | 5 | 3 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Textm6String4Word` 逐位元組相同（62 bytes） | — |
+| `1BE71` | sub_1BE71 | — | 73 | 34 | 2 | 4 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text7Longint4Word` 逐位元組相同（73 bytes） | — |
+| `1BEBA` | sub_1BEBA | — | 46 | 23 | 3 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Assign$qm4Filem6String` 逐位元組相同（46 bytes） | — |
 | `1BEE8` | sub_1BEE8 | — | 101 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1BF69` | sub_1BF69 | — | 37 | 13 | 3 | 2 |  | 待解讀 | — | — | — |
 | `1BF8E` | sub_1BF8E | — | 15 | 4 | 5 | 1 |  | 待解讀 | — | — | — |
@@ -333,8 +333,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C03B` | sub_1C03B | — | 48 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1C0B2` | sub_1C0B2 | — | 69 | 32 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1C0F7` | sub_1C0F7 | — | 23 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1C15D` | sub_1C15D | — | 35 | 16 | 27 | 1 |  | 待解讀 | — | — | — |
-| `1C180` | sub_1C180 | — | 20 | 7 | 13 | 0 |  | 待解讀 | — | — | — |
+| `1C15D` | sub_1C15D | — | 35 | 16 | 27 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes） | — |
+| `1C180` | sub_1C180 | — | 20 | 7 | 13 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes） | — |
 | `1C250` | sub_1C250 | — | 27 | 17 | 3 | 1 |  | 待解讀 | — | — | — |
 | `1C26B` | sub_1C26B | — | 15 | 9 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1C27A` | sub_1C27A | — | 19 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1C27A` | sub_1C27A | — | 19 | 8 | 3 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes） | — |
