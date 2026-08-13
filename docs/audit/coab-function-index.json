@@ -8992,7 +8992,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
-    "spec/638-overlay12-effect-batch2.md"
+    "spec/638-overlay12-effect-batch2.md",
+    "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
   {
@@ -10221,6 +10222,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1454`（body 共 22 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
@@ -30129,7 +30131,8 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
-    "spec/638-overlay12-effect-batch2.md"
+    "spec/638-overlay12-effect-batch2.md",
+    "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
   {
@@ -30553,6 +30556,7 @@
    "note": "if arg_0 = 0 且 \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1、DS:0A039h -= 4",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
@@ -31041,6 +31045,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
@@ -31068,11 +31073,14 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "13F1h..1434h(retf 0Ah)的完整一支:if \u003csub_3C\u003e(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) \u003c\u003e 0 且 \u003cfar 013E:008E\u003e(arg_A:arg_8, 1, 1) \u003c\u003e 0 then \u003cfar 014A:00B1\u003e(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
   {
@@ -31131,12 +31139,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "以 (arg, 1) 呼叫 far sub_146E,回傳非零才續行後段處理",
+   "state": "邊界碎片",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "不是函式起點:落在 13F1h..1434h 那一支的中段(IDA 幻影函式)。判讀見該支",
    "citations": [
-    "spec/573-effprocs-effect-handlers-first-batch.md"
+    "audit/function-index/pc98-overlay-12.md",
+    "spec/573-effprocs-effect-handlers-first-batch.md",
+    "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
   {
@@ -31476,6 +31485,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if DS:9594h^[11Ah](RACETYPE) = 13h then { if \u003csub_1547\u003e(@var_4,18h,DS:9594h) = 0 then DS:0A035h := 1; DS:0A039h -= 4 }。⚠ 減法那行在內層條件之外(jnz 跳到減法那行不是跳過),與 06F9h 兩行都在條件內不同——差別只有一個跳躍目標",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
@@ -31550,6 +31560,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah)",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
@@ -31585,6 +31596,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 3 then x := \u003cfar 0176:0506\u003e(arg_6)(cbw 有號),DS:0A02Eh := byte(ROLLDICE(1,0Ch)×3 + 4 + x)(1d12×3+4 是 7..40,加 x 後只存低 byte),DS:0A039h += 2",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },
@@ -31604,6 +31616,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if 其 ^[11Ah](RACETYPE) = 8 then DS:0A039h += 3、DS:0A02Eh += 3",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md"
    ]
   },

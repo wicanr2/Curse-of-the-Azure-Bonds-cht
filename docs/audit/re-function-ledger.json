@@ -378,7 +378,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/563-ecl-memory-model-and-operand-resolution.md",
-   "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後"
+   "note": "STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -807,10 +808,10 @@
    "platform": "pc98",
    "module": "overlay-12",
    "ea": 5140,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
-   "note": "以 (arg, 1) 呼叫 far sub_146E,回傳非零才續行後段處理"
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "不是函式起點:落在 13F1h..1434h 那一支的中段(IDA 幻影函式)。判讀見該支"
   },
   {
    "platform": "pc98",
@@ -6936,10 +6937,11 @@
    "platform": "pc98",
    "module": "overlay-12",
    "ea": 5105,
-   "state": "邊界碎片",
-   "level": "",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
+   "note": "13F1h..1434h(retf 0Ah)的完整一支:if <sub_3C>(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) <> 0 且 <far 013E:008E>(arg_A:arg_8, 1, 1) <> 0 then <far 014A:00B1>(arg_A:arg_8)。先前被誤標成邊界碎片,而其中段 1414h 被誤標成已解讀——由 scripts/verify_size_truncation.py 查出",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11250,7 +11252,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/582-makesave-and-losedude.md",
-   "note": "LOSEDUDE(msg,?,new_state,char):+197h=0 直接返回;否則顯示訊息、+197h=0、+196h=new_state,狀態非 3 時 +1A5h 歸零(3 是唯一保留 HP 的例外),清 DS:[9740h+idx*4],條件成立則 REMOVEFX。真實範圍 1486h..1551h,IDA 只認到 150Ch"
+   "note": "LOSEDUDE(msg,?,new_state,char):+197h=0 直接返回;否則顯示訊息、+197h=0、+196h=new_state,狀態非 3 時 +1A5h 歸零(3 是唯一保留 HP 的例外),清 DS:[9740h+idx*4],條件成立則 REMOVEFX。真實範圍 1486h..1551h,IDA 只認到 150Ch",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11430,7 +11433,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "ECL opcode 21h 與 37h 共用的 handler(真實範圍 0C81h..0E0Dh 共 396 bytes,IDA 標 53)。靠 cmp ds:A891h, 21h 再讀一次 dispatcher 的 opcode 全域來分辨自己被哪個 opcode 呼叫。READVAR(3) 後三個 operand 存 [bp-3..bp-1];FFh 與 7Fh 是哨兵值。21h 半設 DS:789Bh、37h 半設 DS:789Ah,兩個都為真才執行結尾收尾。IDA 漏認的兩段(0CB6h/0D22h)正好是 opcode 二次判讀與 37h 分支開頭"
+   "note": "ECL opcode 21h 與 37h 共用的 handler(真實範圍 0C81h..0E0Dh 共 396 bytes,IDA 標 53)。靠 cmp ds:A891h, 21h 再讀一次 dispatcher 的 opcode 全域來分辨自己被哪個 opcode 呼叫。READVAR(3) 後三個 operand 存 [bp-3..bp-1];FFh 與 7Fh 是哨兵值。21h 半設 DS:789Bh、37h 半設 DS:789Ah,兩個都為真才執行結尾收尾。IDA 漏認的兩段(0CB6h/0D22h)正好是 opcode 二次判讀與 37h 分支開頭",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11637,7 +11641,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/593-ecl-comparison-flags.md",
-   "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致"
+   "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11691,7 +11696,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
-   "note": "ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到"
+   "note": "ECL opcode 2Ah(索引讀取):READVAR(3);operand1 的 raw word 當 base、ADDRESSVALUE(2) 當 index,經 far 0062:0070 讀出後 STOREVALUE 到 operand2 的 raw word 指定的位址,即 ECL[dest] := ECL[base+index]。與 35h 的索引寫入對稱。operand 2 被用兩次(取值當索引、取 raw word 當位址),第三個 operand 在 body 裡沒用到",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11781,7 +11787,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/597-ecl-opcode-22-dead-output.md",
-   "note": "ECL opcode 22h:READVAR(2);沿角色鏈找有沒有成員的 +75h 等於 4 或 0Ah,有就把第一個輸出設為 1(迴圈不提早結束)。⚠ 迴圈設定的是 var_5 與 var_7,但寫出去的是 var_5 與 var_6——var_6 從未被設定,所以第二個輸出永遠是 0,var_7 則被設定卻從未被讀。這是原版的行為,remake「修好」它會產生原版沒有的值"
+   "note": "ECL opcode 22h:READVAR(2);沿角色鏈找有沒有成員的 +75h 等於 4 或 0Ah,有就把第一個輸出設為 1(迴圈不提早結束)。⚠ 迴圈設定的是 var_5 與 var_7,但寫出去的是 var_5 與 var_6——var_6 從未被設定,所以第二個輸出永遠是 0,var_7 則被設定卻從未被讀。這是原版的行為,remake「修好」它會產生原版沒有的值",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11916,7 +11923,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
-   "note": "ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護"
+   "note": "ECL opcode 1Eh(全隊屬性統計):READVAR(6);operand1 減 7FFFh 得選擇器(與 external CALL 同一種編碼);8001h 走效果查找,0A5h~0ACh 取 node^[0E9h+(sel-0A4h)](即 +0EAh..+0F1h 共 8 個屬性),9Fh 取 node^[1A6h];沿角色鏈算 min/max/sum/count 後除出平均,再由 sub_143C 寫回四個 ECL 位址。其餘選擇器什麼都不做也不設旗標。隊伍空時會除以零,原版沒有防護",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11943,7 +11951,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/604-ecl-spawn-monsters.md",
-   "note": "ECL opcode 0Bh(產生 N 個角色/怪物):真實範圍 049Ch..0857h 共 952 bytes(IDA 標 452)。名額上限 63(DS:789Ch),迴圈中每次重新檢查——名額不足時產生部分而非全部放棄。角色/怪物記錄 1A7h=423 bytes(New/Move 的參數直接給的)。複製範本的物品(67h)與 effect(9)節點時插在鏈頭,所以複製出來的鏈順序與範本相反——與 ADDEFFECT 接鏈尾不同。DS:9594h 進來存、離開還原;DS:A895h 是群組編號,寫進每個新記錄的 +143h,整批做完才加一"
+   "note": "ECL opcode 0Bh(產生 N 個角色/怪物):真實範圍 049Ch..0857h 共 952 bytes(IDA 標 452)。名額上限 63(DS:789Ch),迴圈中每次重新檢查——名額不足時產生部分而非全部放棄。角色/怪物記錄 1A7h=423 bytes(New/Move 的參數直接給的)。複製範本的物品(67h)與 effect(9)節點時插在鏈頭,所以複製出來的鏈順序與範本相反——與 ADDEFFECT 接鏈尾不同。DS:9594h 進來存、離開還原;DS:A895h 是群組編號,寫進每個新記錄的 +143h,整批做完才加一",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -11961,7 +11970,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/606-ecl-redraw-dispatch.md",
-   "note": "ECL opcode 24h(重繪畫面分派):無 operand;依 bank1^[6D8h]/[5C4h] 選三種畫面模式之一(選中的旗標會被清零),再依 bank0^[1CCh] 是否為 0 選兩支收尾常式。每個動作都包在DS:8B5Ah 的前後包夾裡(非 0 做前置 0893:0000、為 0 做後置 0893:010Dh),這個包夾出現12 次。第二段用與 0Ch 相同的方式從地圖座標算值,但對 bank1^[582h] 取較大者(0Ch 取較小)"
+   "note": "ECL opcode 24h(重繪畫面分派):無 operand;依 bank1^[6D8h]/[5C4h] 選三種畫面模式之一(選中的旗標會被清零),再依 bank0^[1CCh] 是否為 0 選兩支收尾常式。每個動作都包在DS:8B5Ah 的前後包夾裡(非 0 做前置 0893:0000、為 0 做後置 0893:010Dh),這個包夾出現12 次。第二段用與 0Ch 相同的方式從地圖座標算值,但對 bank1^[582h] 取較大者(0Ch 取較小)",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -12006,7 +12016,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/610-ecl-load-encounter-items.md",
-   "note": "ECL opcode 27h(載入物品清單):真實範圍 1BEAh 起 1,339 bytes(IDA 標 94)。READVAR(8),前 6 個 operand 存進 DS:A00Ah 起 stride 4 的陣列;從檔案讀資料後反覆建立 103-byte 物品節點掛進 DS:A026h 鏈(鏈空/非空兩段程式碼逐條相同,編譯器沒合併),填 +0/+51h/+52h(next)/+56h(類型)/+57h(3 bytes)/+5Ah..5Eh/+5Fh/+61h/+62h;另有一張顯示符號對應表(5..7→'#'、8→'\"'、9→'%'、0Ah→'&'、5Bh..5Eh→'I');最後走遍鏈對每個節點呼叫 014A:0025"
+   "note": "ECL opcode 27h(載入物品清單):真實範圍 1BEAh 起 1,339 bytes(IDA 標 94)。READVAR(8),前 6 個 operand 存進 DS:A00Ah 起 stride 4 的陣列;從檔案讀資料後反覆建立 103-byte 物品節點掛進 DS:A026h 鏈(鏈空/非空兩段程式碼逐條相同,編譯器沒合併),填 +0/+51h/+52h(next)/+56h(類型)/+57h(3 bytes)/+5Ah..5Eh/+5Fh/+61h/+62h;另有一張顯示符號對應表(5..7→'#'、8→'\"'、9→'%'、0Ah→'&'、5Bh..5Eh→'I');最後走遍鏈對每個節點呼叫 014A:0025",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -12123,7 +12134,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/613-ecl-scene-lifecycle.md",
-   "note": "ECL 場景的完整生命週期(INTERPET 最外層入口):初始化一批旗標、設 DS:7F27h、進場執行 RUN_ECL(DS:7F1Fh),然後進主迴圈——每輪檢查存檔、DS:7F34h 為 0 時執行 RUN_ECL(DS:7F17h)、記下地圖座標 bank0^[1E0h]/[1E2h]、動作後比對,座標變動才執行 RUN_ECL(DS:7F19h)(「踏上新格子」的事件)。DS:7897h 非 0 時轉去場景主迴圈 327Eh。主迴圈由 DS:7F34h 終止,離開前清零"
+   "note": "ECL 場景的完整生命週期(INTERPET 最外層入口):初始化一批旗標、設 DS:7F27h、進場執行 RUN_ECL(DS:7F1Fh),然後進主迴圈——每輪檢查存檔、DS:7F34h 為 0 時執行 RUN_ECL(DS:7F17h)、記下地圖座標 bank0^[1E0h]/[1E2h]、動作後比對,座標變動才執行 RUN_ECL(DS:7F19h)(「踏上新格子」的事件)。DS:7897h 非 0 時轉去場景主迴圈 327Eh。主迴圈由 DS:7F34h 終止,離開前清零",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -12978,7 +12990,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/616-ecl2-string-sources.md",
-   "note": "GETSTR(?,addr,slot):用位址分類器(overlay-07:0801h)判 bank,再依 bank 0/1/2/3 各自的基底(DS:7F05h/7F09h/7F0Dh/7F12h)與位移(6A00h/800h/0C00h/0)逐 byte 讀出以 0 結尾的字串。bank 與位移與 spec 563 的記憶體模型完全一致。addr 剛好等於 7C00h 時是特例——不走陣列,改從 DS:9594h(目前目標)的記錄取字串"
+   "note": "GETSTR(?,addr,slot):用位址分類器(overlay-07:0801h)判 bank,再依 bank 0/1/2/3 各自的基底(DS:7F05h/7F09h/7F0Dh/7F12h)與位移(6A00h/800h/0C00h/0)逐 byte 讀出以 0 結尾的字串。bank 與位移與 spec 563 的記憶體模型完全一致。addr 剛好等於 7C00h 時是特例——不走陣列,改從 DS:9594h(目前目標)的記錄取字串",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",
@@ -13950,7 +13963,8 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
-   "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];<far 013E:0028>(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ <far 0418:14AAh> → <sub_1437>(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD&D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住"
+   "note": "毒:DS:0A03Dh := arg_4^[18Eh]^[0Ah];<far 013E:0028>(arg_2,0,目標) = 0(豁免失敗)時,依序印「は毒を受けた。」→ <far 0418:14AAh> → <sub_1437>(目標,37h,0,0FFh,0) → 印「は死んだ。」。兩句訊息在同一條路徑上,中毒後沒有再判定就直接死亡(AD&D 的毒,不是逐回合扣血)。⚠ IDA 給的 size 是 86 但實際 retf 6 在 1512h,真長度 155 bytes——只讀 IDA 範圍會在第一句訊息後停住",
+   "bounds": "prologue"
   },
   {
    "platform": "pc98",

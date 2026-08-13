@@ -91,6 +91,24 @@ byte**。
 `133Fh` 的第二個條件在原始碼裡重複檢查了一次 `p <> nil`（`or ax, dx` ＋ `jz`），
 即使第一個條件已經涵蓋——編譯出來是兩次檢查，不是一次。
 
+## 一筆分類錯誤：`1414h` 不是函式起點
+
+`scripts/verify_size_truncation.py`（本輪新增）查出 `overlay-12:1414h` 被標成
+「已解讀」，但它落在 `13F1h..1434h` 那一支的中段——`13F1h` 才有
+`push bp / mov bp, sp`，`1434h` 才是 `retf 0Ah`。
+
+原本的分類**剛好相反**：`13F1h` 被標成邊界碎片、`1414h` 被標成已解讀。兩筆已對調。
+完整的一支是：
+
+```text
+if <sub_3C>(arg_A:arg_8, 3Eh, arg_4^[3], 3Ch) <> 0
+   and <far 013Eh:008Eh>(arg_A:arg_8, 1, 1) <> 0 then
+    <far 014Ah:00B1h>(arg_A:arg_8)
+```
+
+`sub_3C` 的呼叫形狀與 `1973h` 一致（`(far pointer, id, byte, 旗標)`），是同一支
+routine 的第二個呼叫端。
+
 ## 明確不宣稱
 
 - `+5Ah`／`+1A5h` 以外欄位的意義，以及 `DS:0A02Eh`／`DS:0A039h`／`DS:0A035h` 的身分。
