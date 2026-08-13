@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 417、不阻塞 133、邊界碎片 249、待解讀 587；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 418、不阻塞 133、邊界碎片 249、待解讀 586；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -38,7 +38,7 @@
 | overlay-21 | MONEY | 27 | 6 | 0 | 4 | 17 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 50 | 0 | 26 | 63 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
 | overlay-23 | EFFECTS | 40 | 21 | 0 | 12 | 7 | 9183 | 376 | [明細](function-index/dos-overlay-23.md) |
-| overlay-24 | GENERIC | 56 | 15 | 0 | 3 | 38 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
+| overlay-24 | GENERIC | 56 | 16 | 0 | 3 | 37 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
 | overlay-25 | TRAINING | 15 | 2 | 0 | 2 | 11 | 4931 | 733 | [明細](function-index/dos-overlay-25.md) |
 | overlay-26 | MENUS | 21 | 3 | 0 | 0 | 18 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 3 | 0 | 0 | 2 | 134 | 0 | [明細](function-index/dos-overlay-27.md) |
