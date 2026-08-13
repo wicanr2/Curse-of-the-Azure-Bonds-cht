@@ -58,9 +58,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1FA0` | sub_1FA0 | — | 304 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
 | `20E1` | sub_20E1 | — | 147 | 62 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/681-dos-target-array-and-reduce.md<br>p := DS:7435h(far pointer),為 nil 或 DS:7434h(byte 計數)為 0 就返回——這對「計數 + 第 1 筆」與 PC-98 的目標陣列(0A520h/0A521h)同一個形狀,推得 DOS 基底是 7431h(strong inference)。之後四道條件:⚠ 第三道要 <loc_1456h>(0,4,p) 等於 0、第四道要 <loc_1573h>(p,0Ch,@var) 不等於 0,兩道相鄰而方向相反。通過才移除效果 0Ch、呼叫 <far loc_14A4h> 並印英文原文 'has been reduced' | spec/681-dos-target-array-and-reduce.md |
 | `2180` | sub_2180 | — | 70 | 34 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is friendly」（unk_2174，長度 11）呼叫訊息 routine（body 共 70 bytes，已逐條讀完） | — |
-| `21C7` | sub_21C7 | — | 95 | 47 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `21C7` | sub_21C7 | — | 95 | 47 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/682-dos-spell-power-calc.md<br>n := <far 013Eh:05A4h>(DS:6F97h) + 1;v := <sub_1462>(DS:6F97h, 0, 0, n div 2, 4);再**重算一次** n div 2 當加項,<sub_F06>(8, v + n div 2, 空字串)。同一個除法算兩遍,與 129EBh 的重複除法同一種寫法 | spec/682-dos-spell-power-calc.md |
 | `2232` | sub_2232 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `2260` | sub_2260 | — | 71 | 37 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/682-dos-spell-power-calc.md<br>⚠ 推六個但 sub_1462 只吃五個:最前面那個 DS:6F97h 留在堆疊上,呼叫後用 pop dx 取回來當加項。這是刻意把「要傳的參數」與「事後要用的值」用同一個推入完成——照「呼叫前的推入都是參數」去數,會把 sub_1462 算成 6 個參數。中間還有巢狀呼叫 <far loc_15A3h>(DS:6F97h)。字串同樣是空的 | audit/embedded-strings.md<br>spec/682-dos-spell-power-calc.md |
 | `22B4` | sub_22B4 | — | 310 | 122 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `23F2` | sub_23F2 | — | 87 | 36 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `245B` | sub_245B | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/spell-status-message-strings.md |
