@@ -10,13 +10,14 @@
 
 | 平台 | dispatcher | opcode 來源 | handler | 涵蓋 opcode | 需人工讀 |
 |---|---|---|---:|---:|---:|
-| DOS | overlay-02 `3377h..3621h` | `ds:75FFh`（`cmp ax`，先 `xor ah, ah`） | 44 | 53 | 0 |
-| PC-98 | overlay-02 `373Eh..39A5h` | `ds:0A891h`（`cmp al`） | 44 | 53 | 0 |
+| DOS | overlay-02 `3377h..3621h` | `ds:75FFh`（`cmp ax`，先 `xor ah, ah`） | 52 | 64 | 0 |
+| PC-98 | overlay-02 `373Eh..39A5h` | `ds:0A891h`（`cmp al`） | 52 | 64 | 0 |
 
-兩平台的**指令集完全相同**：都是 `00h..28h`、`2Ah..2Fh`、`3Ah..3Fh` 共 53 個
-opcode 有 handler；`29h`、`30h..39h`、`40h` 以上走到函式 epilogue，本 dispatcher
-沒有 handler。共用 handler 的分組也一致（例如 `04h..07h` 共用一個、
-`10h..13h` 與 `1Ah/1Bh` 共用一個）。
+兩平台的**指令集完全相同**：`00h..40h` 之中只有 `1Fh` 沒有 handler，其餘 64 個
+opcode 都有；`41h` 以上一律走到函式 epilogue。共用 handler 的分組也一致
+（例如 `04h..07h` 共用一個、`16h..19h` 共用一個）。涵蓋範圍與
+`internal/ecl/operand.go` 的 `KnownCommands`（`00h..40h`）一致，這是本表的第一個
+獨立佐證。
 
 完整對照表：[`docs/audit/ecl-opcode-dispatch.md`](../audit/ecl-opcode-dispatch.md)。
 
@@ -59,6 +60,21 @@ python3 scripts/ecl_dispatch_table.py --merge \
 同一個 opcode 在兩平台各自的 handler 才是同一件事的兩個實作，而這一點已由
 本表建立。
 
+## 勘誤（2026-08-14）
+
+本規格第一版寫 44 handler／53 opcode，且宣稱 `29h`、`30h..39h`、`40h` 沒有
+handler。那是錯的，原因是 `scripts/ecl_dispatch_table.py` 的正規表示式
+`([0-9A-Fa-f]+)h?` 把立即數的 `h` 後綴吃掉，`cmp al, 10h` 於是被當成十進位
+`10`（＝`0Ah`）。凡是全為數字的十六進位立即數都算錯，錯出來的表看起來仍然
+自洽——「需人工讀 0 個」這個檢查抓不到它。
+
+修正後後綴由 `parse_immediate()` 判斷，並以逐條反組譯手動抽驗
+（`0Ah → 0306h`、`10h → 09DDh`，PC-98）。上表與
+`docs/audit/ecl-opcode-dispatch.md` 均為修正後的值。
+
+教訓寫成規則：**符號執行的自洽性檢查不能證明輸入解析是對的**。凡是把反組譯
+文字轉成數值的地方，都要另外用原始 bytes 抽驗至少兩筆。
+
 ## 這份規格明確不宣稱
 
 - **任何 handler 的語意**。表建立的是「opcode X 由這個位址的函式處理」，
@@ -71,13 +87,15 @@ python3 scripts/ecl_dispatch_table.py --merge \
 - **與既有 ECL 指令表的對應**。`docs/knowledge/gold-box-ecl-command-set.md` 的
   命令語意是另一條證據線；把本表的 handler 綁到那些名稱之前，必須逐一證明，
   不得因 opcode 編號相同就直接套用。
-- **`29h`／`30h..39h`／`40h` 的意義**。本 dispatcher 沒有 handler 是事實；
-  它們是否由別處處理、或根本不是合法 opcode，尚未證明。
+- **`1Fh` 的意義**。它在 `00h..40h` 之中是唯一沒有 handler 的 opcode，這是
+  事實；它是否由別處處理、是保留值、還是根本不會出現在合法 bytecode 裡，
+  尚未證明。獨立佐證是 `docs/audit/ecl-event-catalog.json`：CoAB 的 ECL1–ECL6
+  corpus 從未出現 `1Fh`（corpus 共用到 46 個相異 opcode）。兩者一致，但這是
+  相關性不是證明——「沒有 handler」與「corpus 沒用到」可以有共同原因。
 
 ## 對台帳的影響
 
 - DOS `overlay-02:3377h` 與 PC-98 `overlay-02:373Eh` 由 `待解讀` 升為
   `已解讀`／`exact`（角色：ECL opcode dispatcher）。
-- 88 個 handler（兩平台各 44 個）維持 `待解讀`，但都帶上「服務哪些 opcode」
+- 104 個 handler（兩平台各 52 個）維持 `待解讀`，但都帶上「服務哪些 opcode」
   的註記，作為下一批解讀的排序依據。
-- 台帳總數不變：2,825 個函式中 2 個已解讀、2,823 個待解讀。
