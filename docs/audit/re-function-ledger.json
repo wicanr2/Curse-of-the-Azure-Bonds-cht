@@ -10766,7 +10766,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
-   "note": "Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同"
+   "note": "Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 **clc**(進位清除)表示前導,否則 stc。方向由呼叫端 16966h 確認——那裡 call 之後是 jb(進位置起才跳)而跳去的是半形路徑。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同"
   },
   {
    "platform": "pc98",
@@ -14621,6 +14621,42 @@
    "level": "exact",
    "spec": "docs/spec/647-pc98-palette-and-attribute.md",
    "note": "repeat:<sub_19293>() 回 0 就結束,否則呼叫 <sub_18036>() 再回頭。sub_18036 的回傳值存進區域變數後沒有再讀,是死存"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92518,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/648-pc98-text-draw-core.md",
+   "note": "日文文字輸出核心:ES := 0A000h(字元碼平面),逐 byte 取字,經 169D9h 判定首位元組(clc = 前導)後,雙位元組走 169EDh(SJIS→JIS)、ah -= 20h,再把同一個碼寫進相鄰兩格——左半格低位元組 and 7Fh、右半格 or 80h;半形則高位元組填 0。CX 是剩餘格數不是字數(全形扣 2、半形扣 1),字串以 0 結尾或 CX 用完先到先算。⚠ 中文化必須整支換掉:要改成查自備字庫並畫進圖形平面"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92598,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/648-pc98-text-draw-core.md",
+   "note": "填文字屬性平面 0A200h,與 17D72h 逐位元組完全相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 92653,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/648-pc98-text-draw-core.md",
+   "note": "SJIS→JIS 換算,與 17186h、17DA9h 三者逐位元組完全相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 87151,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/648-pc98-text-draw-core.md",
+   "note": "複製 arg_0 進 50h bytes 的區域緩衝(<sub_1AC99>,80 bytes 正好是文字畫面一整列),再 <sub_142B9>(50h,0,18h,0) 與 <sub_14E97>(緩衝,arg_4,arg_6,18h,0),最後 <sub_18036>()——回傳值存進區域變數後沒再讀,是死存"
   }
  ]
 }

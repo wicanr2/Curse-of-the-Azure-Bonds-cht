@@ -85,15 +85,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `145CA` | sub_145CA | — | 2253 | 814 | 2 | 4 |  | 待解讀 | — | — | — |
 | `14E97` | sub_14E97 | — | 142 | 61 | 4 | 4 |  | 待解讀 | — | — | — |
 | `152D0` | sub_152D0 | — | 265 | 123 | 1 | 5 |  | 待解讀 | — | — | — |
-| `1546F` | sub_1546F | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1546F` | sub_1546F | — | 78 | 40 | 1 | 4 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>複製 arg_0 進 50h bytes 的區域緩衝(<sub_1AC99>,80 bytes 正好是文字畫面一整列),再 <sub_142B9>(50h,0,18h,0) 與 <sub_14E97>(緩衝,arg_4,arg_6,18h,0),最後 <sub_18036>()——回傳值存進區域變數後沒再讀,是死存 | — |
 | `1562A` | sub_1562A | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br><sub_19259>((byte_241A6 × word_280BA) div 2)。乘除都是無號,除數固定 2 | — |
 | `15647` | sub_15647 | — | 257 | 132 | 2 | 3 |  | 待解讀 | — | — | — |
 | `1691B` | sub_1691B | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `1692D` | sub_1692D | — | 57 | 28 | 3 | 2 |  | 已解讀 | exact | docs/spec/645-pc98-text-layer-primitives.md<br>文字 VRAM 定址:DS := arg_2;DI := (arg_A × 50h + arg_C) × 2;CX := byte(arg_4);SI := arg_0;再呼叫 sub_16966 與 sub_169B6。50h = 80 是欄數,每格兩個 byte——與 spec 636 由 FillChar 長度換算的結論一致。進出成對保存 SS/DS/旗標並 cld。retn 0Eh = 7 個 word 參數 | — |
-| `16966` | sub_16966 | — | 80 | 42 | 1 | 3 |  | 待解讀 | — | — | — |
-| `169B6` | sub_169B6 | — | 35 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
-| `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 stc(進位置起)表示前導,否則 clc。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |
-| `169ED` | sub_169ED | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
+| `16966` | sub_16966 | — | 80 | 42 | 1 | 3 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>日文文字輸出核心:ES := 0A000h(字元碼平面),逐 byte 取字,經 169D9h 判定首位元組(clc = 前導)後,雙位元組走 169EDh(SJIS→JIS)、ah -= 20h,再把同一個碼寫進相鄰兩格——左半格低位元組 and 7Fh、右半格 or 80h;半形則高位元組填 0。CX 是剩餘格數不是字數(全形扣 2、半形扣 1),字串以 0 結尾或 CX 用完先到先算。⚠ 中文化必須整支換掉:要改成查自備字庫並畫進圖形平面 | — |
+| `169B6` | sub_169B6 | — | 35 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>填文字屬性平面 0A200h,與 17D72h 逐位元組完全相同 | — |
+| `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 **clc**(進位清除)表示前導,否則 stc。方向由呼叫端 16966h 確認——那裡 call 之後是 jb(進位置起才跳)而跳去的是半形路徑。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |
+| `169ED` | sub_169ED | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>SJIS→JIS 換算,與 17186h、17DA9h 三者逐位元組完全相同 | — |
 | `16E70` | sub_16E70 | — | 94 | 48 | 2 | 7 |  | 待解讀 | — | — | — |
 | `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16F2B` | sub_16F2B | — | 86 | 33 | 1 | 3 |  | 待解讀 | — | — | — |
