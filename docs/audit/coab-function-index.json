@@ -26198,11 +26198,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 36h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/598-ecl-add-npc.md",
+   "note": "ECL opcode 36h(ADD NPC):bank1^[67Ch] \u003e 7 就整條指令什麼都不做(上限 7,且不設任何旗標讓呼叫端知道);否則 READVAR(2),第一個 operand 交給 far 00DC:004D,第二個經有號除 2 再 or 80h 寫進 DS:9594h^[0F7h]——最高位是 NPC 標記。再次確認 handler 是READVAR(2),與 SKIP 表的 arity 1 不一致",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/598-ecl-add-npc.md"
    ]
   },
   {
@@ -43271,9 +43273,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 35,
+   "Read": 36,
    "NotBlocking": 0,
-   "Todo": 28,
+   "Todo": 27,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
