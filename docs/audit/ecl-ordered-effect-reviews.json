@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "reviews": {
+    "ECL3.DAX/0x15/0x050A-0x0578": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "255-ecl-treasure-signal.md",
+        "257-treasure-random-and-pickup.md",
+        "258-treasure-combat-continuation.md",
+        "558-pc98-ecl-treasure-combat-boundary.md"
+      ],
+      "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+    },
+    "ECL4.DAX/0x25/0x1271-0x12A7": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "255-ecl-treasure-signal.md",
+        "257-treasure-random-and-pickup.md",
+        "258-treasure-combat-continuation.md",
+        "558-pc98-ecl-treasure-combat-boundary.md"
+      ],
+      "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+    },
+    "ECL6.DAX/0x45/0x04F6-0x0575": {
+      "status": "covered",
+      "confidence": "exact",
+      "spec_refs": [
+        "255-ecl-treasure-signal.md",
+        "257-treasure-random-and-pickup.md",
+        "258-treasure-combat-continuation.md",
+        "558-pc98-ecl-treasure-combat-boundary.md"
+      ],
+      "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+    }
+  }
+}

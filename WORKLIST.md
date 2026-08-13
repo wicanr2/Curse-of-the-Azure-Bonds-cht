@@ -1,6 +1,6 @@
 # 《青色枷的詛咒》目前工作清單
 
-更新日期：2026-08-12（第 555 輪後盤點）
+更新日期：2026-08-13（第 558 輪後盤點）
 
 本檔是 compact、交接與每輪開工時的執行順序入口。全遊戲 RE／重建完整度以
 [`docs/knowledge/coab-re-coverage-matrix.md`](docs/knowledge/coab-re-coverage-matrix.md)
@@ -18,9 +18,10 @@ coverage 代替全系統閉合。
 
 第一批工作依序是：
 
-1. `P0-RE-1`：第 557 輪已從清冊找出 33 個跨 effect-kind 候選；先閉合三組
-   `TREASURE → COMBAT` 的原版 branch、commit、pause／resume，再建立 ECL ordered
-   effects／exactly-once 規格，修正分類 signal 固定順序的隱性 ABI。
+1. `P0-RE-1`：第 558 輪已確認三組 `TREASURE → COMBAT` 由既有第 255／257／258
+   輪 transaction 覆蓋，並補 PC-98 IDA、真實 DAX pause／resume 與候選審查台帳；
+   下一組改為 ECL2 block `0x02 +04BC..+053A` 的 `COMBAT → text`，再逐步建立全域
+   ordered effects／exactly-once 規格。不得重做已標 `covered/exact` 的三組候選。
 2. `P0-RE-2`：靜態層已完成 6 DAX／25 block／125 entry／1,355 instruction 的可重生
    清冊；下一步回填動態 edge、條件旗標、座標／terrain、external routine、resume
    與每項 R1–R5，不把 33 個靜態候選冒稱 runtime order。
@@ -33,7 +34,10 @@ coverage 代替全系統閉合。
 
 第 557 輪權威規格：
 [`ECL 全事件靜態清冊與有序副作用稽核`](docs/spec/557-ecl-event-catalog-and-ordered-effects-audit.md)；
-生成物在 [`docs/audit/ecl-event-catalog.md`](docs/audit/ecl-event-catalog.md)。
+第 558 輪勘誤：
+[`PC-98 ECL TREASURE／COMBAT 邊界`](docs/spec/558-pc98-ecl-treasure-combat-boundary.md)；
+生成物與審查台帳在 [`docs/audit/ecl-event-catalog.md`](docs/audit/ecl-event-catalog.md)、
+[`docs/audit/ecl-ordered-effect-reviews.json`](docs/audit/ecl-ordered-effect-reviews.json)。
 
 ## 一句話結論
 

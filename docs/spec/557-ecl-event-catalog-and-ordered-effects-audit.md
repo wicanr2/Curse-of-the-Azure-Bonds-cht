@@ -53,11 +53,16 @@
 
 ## P0 ordered-effects 候選
 
+> 第 558 輪勘誤：原列 P0-A 的三組 `TREASURE → COMBAT` 已由第 255／257／258
+> 輪 READY contract 覆蓋，並補上 PC-98 IDA 與真實 DAX continuation 回歸；它們
+> 現在由 review ledger 標成 `covered/exact`，不再是 blocker。下表保留原始排序
+> 形成原因，但目前執行從 P0-B 開始。
+
 33 個候選中，先依玩家結果風險分成下列工作類別：
 
 | 優先級 | 代表候選 | 為何先驗證 |
 |---|---|---|
-| P0-A | ECL3 block `0x15 +050A..+0578`、ECL4 block `0x25 +1271..+12A7`、ECL6 block `0x45 +04F6..+0575` | 都有 `TREASURE → COMBAT`；若 State 固定分類套用，stock／pending treasure、戰鬥 boundary 與戰後 continuation 可能錯序。 |
+| P0-A（已覆蓋） | ECL3 block `0x15 +050A..+0578`、ECL4 block `0x25 +1271..+12A7`、ECL6 block `0x45 +04F6..+0575` | 第 558 輪證明 pending treasure／battle／victory／resume 已由現行 transaction 閉合；不是新增 ordered runtime 的理由。 |
 | P0-B | ECL2 block `0x02 +04BC..+053A` | 靜態上是 `COMBAT → text`，可檢查戰後文字是否依同一 runtime resume，而不是戰前一次套用。 |
 | P0-C | ECL2 block `0x02 +02CB..+0325` | `text → PICTURE → CALL → combat setup`，可驗證畫面 snapshot、外部 routine 與戰鬥資料的 commit phase。 |
 | P0-D | ECL4 block `0x25 +021F..+023B`、ECL5 block `0x30 +0086..+00B0` | `inventory → NEWECL` 與 `NEWECL → LOAD CHARACTER`，可檢查跨 block transaction 是否遺失前後副作用。 |
@@ -82,12 +87,14 @@ go run ./cmd/ecl-event-catalog \
 
 輸出契約：
 
-- deterministic JSON，`format_version=1`；
+- deterministic JSON，`format_version=2`；
 - archive／member SHA-256；
 - member→block→五個 lifecycle entry；
 - 去重 instruction、operand metadata、effect-kind candidate、直接 graph edge；
 - 每筆 instruction／edge／candidate 保存 `reachable_from`；
 - generated Markdown 不手工修改，drift 由 `-check` gate 阻擋。
+- candidate 使用 member／block／range 組成穩定 ID；人工審查只由獨立 review ledger
+  附加，未知／漂移 ID 失敗即關閉。
 
 工具與清冊不依賴中文顯示文字作斷言；JSON 不保存 packed text 原文。
 
@@ -106,7 +113,7 @@ Docker 內以 Go 1.24.13、暫存 `modfile` 將鎖版 private engine dependency 
 
 | 缺口 | 類型 | 是否阻塞玩家 | 下一步 |
 |---|---|---:|---|
-| effect 的全域有序 transaction model | 待逆向／待規格 | 是 | 先對三組 `TREASURE → COMBAT` 候選建立原始 trace 與 commit/resume 表。 |
+| effect 的全域有序 transaction model | 待逆向／待規格 | 是 | 三組 `TREASURE → COMBAT` 已由第 558 輪覆蓋；下一步閉合 P0-B `COMBAT → text` 與其餘未審查候選。 |
 | 動態 `ON GOTO／ON GOSUB` 與 menu branches | 待逆向 | 是 | 把 runtime branch trace 合併回 catalog 的動態 edge 層，不覆寫靜態證據。 |
 | external CALL registry | 待逆向 | 是 | 從 23 個靜態可達 CALL instruction 擷取 operand，逐址閉合 consumer。 |
 | cell／terrain／劇情名稱對應 | 待研究／資料整合 | 視事件而定 | 由 GEO、ECL predicate 與正常路徑回填，不從攻略直接命名。 |

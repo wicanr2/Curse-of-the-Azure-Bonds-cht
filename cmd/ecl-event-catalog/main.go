@@ -12,6 +12,7 @@ import (
 
 func main() {
 	archive := flag.String("archive", "curseoftheazurebonds.zip", "original CoAB archive")
+	reviews := flag.String("reviews", "docs/audit/ecl-ordered-effect-reviews.json", "review overlay for stable candidate IDs; empty disables")
 	output := flag.String("output", "", "write deterministic JSON to this path; stdout when empty")
 	summaryOutput := flag.String("summary-output", "", "write generated Markdown summary to this path")
 	check := flag.String("check", "", "compare deterministic JSON with this committed artifact")
@@ -21,6 +22,15 @@ func main() {
 	catalog, err := eclcatalog.BuildFile(*archive)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if *reviews != "" {
+		reviewData, readErr := os.ReadFile(*reviews)
+		if readErr != nil {
+			log.Fatal(readErr)
+		}
+		if err := eclcatalog.ApplyReviewLedger(&catalog, reviewData); err != nil {
+			log.Fatal(err)
+		}
 	}
 	data, err := eclcatalog.Encode(catalog)
 	if err != nil {

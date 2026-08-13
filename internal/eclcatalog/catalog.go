@@ -18,9 +18,10 @@ import (
 
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/dax"
 	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/ecl"
+	"github.com/wicanr2/Curse-of-the-Azure-Bonds-cht/internal/tooltext"
 )
 
-const FormatVersion = 1
+const FormatVersion = 2
 
 var memberNames = []string{
 	"ECL1.DAX", "ECL2.DAX", "ECL3.DAX", "ECL4.DAX", "ECL5.DAX", "ECL6.DAX",
@@ -103,11 +104,27 @@ type Edge struct {
 }
 
 type OrderedEffectCandidate struct {
+	ID            string            `json:"id"`
 	StartOffset   string            `json:"start_offset"`
 	EndOffset     string            `json:"end_offset"`
 	Effects       []CandidateEffect `json:"effects"`
 	ReachableFrom []string          `json:"reachable_from"`
 	Evidence      string            `json:"evidence"`
+	Review        *CandidateReview  `json:"review,omitempty"`
+}
+
+// CandidateReview is a manually reviewed evidence overlay. It never replaces
+// raw offsets or static classification in the generated catalog.
+type CandidateReview struct {
+	Status     string   `json:"status"`
+	Confidence string   `json:"confidence"`
+	SpecRefs   []string `json:"spec_refs"`
+	Note       string   `json:"note"`
+}
+
+type ReviewLedger struct {
+	FormatVersion int                        `json:"format_version"`
+	Reviews       map[string]CandidateReview `json:"reviews"`
 }
 
 type CandidateEffect struct {
@@ -191,37 +208,81 @@ func Encode(catalog Catalog) ([]byte, error) {
 	return append(data, '\n'), nil
 }
 
+// ApplyReviewLedger attaches reviewed semantics to stable candidate IDs while
+// preserving the generated static evidence. Unknown IDs fail closed so stale
+// offsets cannot silently acquire an unrelated conclusion.
+func ApplyReviewLedger(catalog *Catalog, data []byte) error {
+	var ledger ReviewLedger
+	if err := json.Unmarshal(data, &ledger); err != nil {
+		return fmt.Errorf("decode candidate review ledger: %w", err)
+	}
+	if ledger.FormatVersion != 1 {
+		return fmt.Errorf("candidate review ledger format_version=%d, want 1", ledger.FormatVersion)
+	}
+	found := make(map[string]bool)
+	for memberIndex := range catalog.Members {
+		member := &catalog.Members[memberIndex]
+		for blockIndex := range member.Blocks {
+			block := &member.Blocks[blockIndex]
+			for candidateIndex := range block.OrderedEffectCandidates {
+				candidate := &block.OrderedEffectCandidates[candidateIndex]
+				review, ok := ledger.Reviews[candidate.ID]
+				if !ok {
+					continue
+				}
+				if review.Status != "covered" && review.Status != "partial" && review.Status != "open" {
+					return fmt.Errorf("candidate %s has invalid review status %q", candidate.ID, review.Status)
+				}
+				if review.Confidence == "" || len(review.SpecRefs) == 0 {
+					return fmt.Errorf("candidate %s review requires confidence and spec_refs", candidate.ID)
+				}
+				copy := review
+				copy.SpecRefs = append([]string(nil), review.SpecRefs...)
+				sort.Strings(copy.SpecRefs)
+				candidate.Review = &copy
+				found[candidate.ID] = true
+			}
+		}
+	}
+	for id := range ledger.Reviews {
+		if !found[id] {
+			return fmt.Errorf("candidate review %s does not match the current corpus", id)
+		}
+	}
+	return nil
+}
+
 // EncodeMarkdown produces the human-reviewable companion to the complete JSON
 // artifact. It intentionally lists candidates rather than claiming runtime
 // order or semantic closure.
 func EncodeMarkdown(catalog Catalog) []byte {
 	var output strings.Builder
-	fmt.Fprintln(&output, "# CoAB ECL 全事件靜態清冊摘要")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.title"))
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "> 本檔由 `cmd/ecl-event-catalog` 產生；請勿手動編輯。完整機器資料見")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.generated_notice"))
 	fmt.Fprintln(&output, "> [`ecl-event-catalog.json`](ecl-event-catalog.json)。")
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "## 證據邊界")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.evidence_heading"))
 	fmt.Fprintln(&output)
-	fmt.Fprintf(&output, "- 原始 archive：`%s`\n", catalog.Source.Archive)
+	fmt.Fprintf(&output, tooltext.Text("ecl_catalog.archive_line"), catalog.Source.Archive)
 	fmt.Fprintf(&output, "- SHA-256：`%s`\n", catalog.Source.SHA256)
-	fmt.Fprintln(&output, "- 位址空間：每個 block 解碼 payload offset；`code_address=0x8000+offset`。")
-	fmt.Fprintln(&output, "- 推論等級：靜態 framing／直接 GOTO／GOSUB 可達性為 `exact`；effect kind 與直線序列是 audit 分類候選，不是原版 runtime 語意。")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.address_space_line"))
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.confidence_line"))
 	for _, limitation := range catalog.Limitations {
-		fmt.Fprintf(&output, "- 限制：%s\n", limitation)
+		fmt.Fprintf(&output, tooltext.Text("ecl_catalog.limitation_line"), limitation)
 	}
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "## 摘要")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.summary_heading"))
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "| 項目 | 數量 |")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.summary_header"))
 	fmt.Fprintln(&output, "|---|---:|")
 	fmt.Fprintf(&output, "| ECL DAX member | %d |\n", catalog.Summary.MemberCount)
 	fmt.Fprintf(&output, "| block | %d |\n", catalog.Summary.BlockCount)
 	fmt.Fprintf(&output, "| lifecycle entry | %d |\n", catalog.Summary.LifecycleEntryCount)
-	fmt.Fprintf(&output, "| 不重複靜態可達 instruction | %d |\n", catalog.Summary.UniqueReachableInstructionCount)
-	fmt.Fprintf(&output, "| 跨 effect-kind 直線候選 | %d |\n", catalog.Summary.OrderedEffectCandidateCount)
+	fmt.Fprintf(&output, tooltext.Text("ecl_catalog.instruction_count"), catalog.Summary.UniqueReachableInstructionCount)
+	fmt.Fprintf(&output, tooltext.Text("ecl_catalog.candidate_count"), catalog.Summary.OrderedEffectCandidateCount)
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "## Block 與 lifecycle entry")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.blocks_heading"))
 	fmt.Fprintln(&output)
 	fmt.Fprintln(&output, "| Member | SHA-256 | Block | decoded bytes | lifecycle offsets | instructions | candidates |")
 	fmt.Fprintln(&output, "|---|---|---:|---:|---|---:|---:|")
@@ -237,12 +298,12 @@ func EncodeMarkdown(catalog Catalog) []byte {
 		}
 	}
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "## 跨類型副作用序列候選")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.candidates_heading"))
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "以下每列只證明同一靜態直線區段可看見不同 effect kind。IF、動態選單、")
-	fmt.Fprintln(&output, "CALL consumer、pause commit 與實際分支仍須逐列回到原始 bytes、IDA 與 runtime 閉合。")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.candidates_notice_1"))
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.candidates_notice_2"))
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "| Member／Block | 範圍 | lifecycle | 靜態 effect sequence | 證據 |")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.candidates_header"))
 	fmt.Fprintln(&output, "|---|---|---|---|---|")
 	for _, member := range catalog.Members {
 		for _, block := range member.Blocks {
@@ -251,19 +312,29 @@ func EncodeMarkdown(catalog Catalog) []byte {
 				for _, effect := range candidate.Effects {
 					effects = append(effects, fmt.Sprintf("`%s %s [%s]`", effect.Offset, effect.Name, strings.Join(effect.Kinds, "+")))
 				}
-				fmt.Fprintf(&output, "| `%s/%s` | `%s..%s` | %s | %s | `%s` |\n",
-					member.Name, block.ID, candidate.StartOffset, candidate.EndOffset,
-					strings.Join(candidate.ReachableFrom, ", "), strings.Join(effects, " → "), candidate.Evidence)
+				review := tooltext.Text("ecl_catalog.unreviewed")
+				if candidate.Review != nil {
+					refs := make([]string, 0, len(candidate.Review.SpecRefs))
+					for _, ref := range candidate.Review.SpecRefs {
+						refs = append(refs, fmt.Sprintf("[%s](../spec/%s)", ref, ref))
+					}
+					review = fmt.Sprintf("`%s/%s`%s%s", candidate.Review.Status,
+						candidate.Review.Confidence, tooltext.Text("ecl_catalog.review_separator"),
+						strings.Join(refs, tooltext.Text("ecl_catalog.reference_separator")))
+				}
+				fmt.Fprintf(&output, "| `%s` | %s | %s | %s | `%s` |\n",
+					candidate.ID, strings.Join(candidate.ReachableFrom, ", "),
+					strings.Join(effects, " → "), review, candidate.Evidence)
 			}
 		}
 	}
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "## 使用方式")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.usage_heading"))
 	fmt.Fprintln(&output)
-	fmt.Fprintln(&output, "1. 先以 JSON 的 member／block／offset 回讀原始 bytes 與完整 instruction operands。")
-	fmt.Fprintln(&output, "2. 對候選建立 `re-closure-record-template.md`，補 writer→projection→consumer。")
-	fmt.Fprintln(&output, "3. 以原版 runtime 或等價第一級證據確認實際分支與 commit phase。")
-	fmt.Fprintln(&output, "4. 完成 ordered event contract 後，才將候選升格成 READY 規格與 engine transaction。")
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.usage_1"))
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.usage_2"))
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.usage_3"))
+	fmt.Fprintln(&output, tooltext.Text("ecl_catalog.usage_4"))
 	return []byte(output.String())
 }
 
@@ -360,6 +431,8 @@ func buildBlock(memberName string, rawBlock dax.Block, summary *Summary) (Block,
 	for _, key := range candidateKeys {
 		record := candidates[key]
 		candidate := record.value
+		candidate.ID = fmt.Sprintf("%s/%s/%s-%s", memberName, block.ID,
+			candidate.StartOffset, candidate.EndOffset)
 		candidate.ReachableFrom = sortedKeys(record.from)
 		block.OrderedEffectCandidates = append(block.OrderedEffectCandidates, candidate)
 	}

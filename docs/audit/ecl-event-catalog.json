@@ -1,5 +1,5 @@
 {
-  "format_version": 1,
+  "format_version": 2,
   "generator": "cmd/ecl-event-catalog",
   "source": {
     "archive": "curseoftheazurebonds.zip",
@@ -1095,6 +1095,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL1.DAX/0x50/0x0014-0x006A",
               "start_offset": "0x0014",
               "end_offset": "0x006A",
               "effects": [
@@ -1867,6 +1868,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL1.DAX/0x51/0x0014-0x0050",
               "start_offset": "0x0014",
               "end_offset": "0x0050",
               "effects": [
@@ -3456,6 +3458,7 @@
           "edges": null,
           "ordered_effect_candidates": [
             {
+              "id": "ECL1.DAX/0x52/0x0014-0x0395",
               "start_offset": "0x0014",
               "end_offset": "0x0395",
               "effects": [
@@ -6439,6 +6442,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL2.DAX/0x02/0x021C-0x02CB",
               "start_offset": "0x021C",
               "end_offset": "0x02CB",
               "effects": [
@@ -6489,6 +6493,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL2.DAX/0x02/0x02CB-0x0325",
               "start_offset": "0x02CB",
               "end_offset": "0x0325",
               "effects": [
@@ -6539,6 +6544,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL2.DAX/0x02/0x03FE-0x0486",
               "start_offset": "0x03FE",
               "end_offset": "0x0486",
               "effects": [
@@ -6597,6 +6603,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL2.DAX/0x02/0x04BC-0x053A",
               "start_offset": "0x04BC",
               "end_offset": "0x053A",
               "effects": [
@@ -6647,6 +6654,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL2.DAX/0x02/0x0CCB-0x0CD4",
               "start_offset": "0x0CCB",
               "end_offset": "0x0CD4",
               "effects": [
@@ -10053,6 +10061,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL3.DAX/0x10/0x018C-0x0198",
               "start_offset": "0x018C",
               "end_offset": "0x0198",
               "effects": [
@@ -10088,6 +10097,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x10/0x08D3-0x090F",
               "start_offset": "0x08D3",
               "end_offset": "0x090F",
               "effects": [
@@ -10130,6 +10140,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x10/0x0910-0x0967",
               "start_offset": "0x0910",
               "end_offset": "0x0967",
               "effects": [
@@ -10172,6 +10183,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x10/0x1560-0x15BC",
               "start_offset": "0x1560",
               "end_offset": "0x15BC",
               "effects": [
@@ -11084,6 +11096,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL3.DAX/0x11/0x0597-0x05A3",
               "start_offset": "0x0597",
               "end_offset": "0x05A3",
               "effects": [
@@ -11118,6 +11131,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x11/0x114E-0x1193",
               "start_offset": "0x114E",
               "end_offset": "0x1193",
               "effects": [
@@ -12692,6 +12706,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL3.DAX/0x12/0x026E-0x027A",
               "start_offset": "0x026E",
               "end_offset": "0x027A",
               "effects": [
@@ -12726,6 +12741,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x12/0x06BF-0x0704",
               "start_offset": "0x06BF",
               "end_offset": "0x0704",
               "effects": [
@@ -12776,6 +12792,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x12/0x128E-0x12AF",
               "start_offset": "0x128E",
               "end_offset": "0x12AF",
               "effects": [
@@ -12802,6 +12819,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x12/0x1AFB-0x1B0C",
               "start_offset": "0x1AFB",
               "end_offset": "0x1B0C",
               "effects": [
@@ -14890,6 +14908,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL3.DAX/0x15/0x04CC-0x050A",
               "start_offset": "0x04CC",
               "end_offset": "0x050A",
               "effects": [
@@ -14916,6 +14935,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL3.DAX/0x15/0x050A-0x0578",
               "start_offset": "0x050A",
               "end_offset": "0x0578",
               "effects": [
@@ -14963,7 +14983,18 @@
               "reachable_from": [
                 "camp_interrupted"
               ],
-              "evidence": "static_straight_line_candidate"
+              "evidence": "static_straight_line_candidate",
+              "review": {
+                "status": "covered",
+                "confidence": "exact",
+                "spec_refs": [
+                  "255-ecl-treasure-signal.md",
+                  "257-treasure-random-and-pickup.md",
+                  "258-treasure-combat-continuation.md",
+                  "558-pc98-ecl-treasure-combat-boundary.md"
+                ],
+                "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+              }
             }
           ]
         }
@@ -16777,6 +16808,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL4.DAX/0x21/0x05B5-0x0637",
               "start_offset": "0x05B5",
               "end_offset": "0x0637",
               "effects": [
@@ -17887,6 +17919,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL4.DAX/0x23/0x0130-0x019D",
               "start_offset": "0x0130",
               "end_offset": "0x019D",
               "effects": [
@@ -18932,6 +18965,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL4.DAX/0x25/0x021F-0x023B",
               "start_offset": "0x021F",
               "end_offset": "0x023B",
               "effects": [
@@ -18966,6 +19000,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL4.DAX/0x25/0x1271-0x12A7",
               "start_offset": "0x1271",
               "end_offset": "0x12A7",
               "effects": [
@@ -19013,9 +19048,21 @@
               "reachable_from": [
                 "camp_interrupted"
               ],
-              "evidence": "static_straight_line_candidate"
+              "evidence": "static_straight_line_candidate",
+              "review": {
+                "status": "covered",
+                "confidence": "exact",
+                "spec_refs": [
+                  "255-ecl-treasure-signal.md",
+                  "257-treasure-random-and-pickup.md",
+                  "258-treasure-combat-continuation.md",
+                  "558-pc98-ecl-treasure-combat-boundary.md"
+                ],
+                "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+              }
             },
             {
+              "id": "ECL4.DAX/0x25/0x1529-0x1534",
               "start_offset": "0x1529",
               "end_offset": "0x1534",
               "effects": [
@@ -19681,6 +19728,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL5.DAX/0x30/0x0086-0x00B0",
               "start_offset": "0x0086",
               "end_offset": "0x00B0",
               "effects": [
@@ -21656,6 +21704,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL5.DAX/0x32/0x0774-0x07BA",
               "start_offset": "0x0774",
               "end_offset": "0x07BA",
               "effects": [
@@ -22782,6 +22831,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL5.DAX/0x33/0x0045-0x00FD",
               "start_offset": "0x0045",
               "end_offset": "0x00FD",
               "effects": [
@@ -24645,6 +24695,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL5.DAX/0x35/0x0982-0x0A06",
               "start_offset": "0x0982",
               "end_offset": "0x0A06",
               "effects": [
@@ -26850,6 +26901,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL6.DAX/0x42/0x003F-0x0081",
               "start_offset": "0x003F",
               "end_offset": "0x0081",
               "effects": [
@@ -27821,6 +27873,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL6.DAX/0x43/0x004D-0x008B",
               "start_offset": "0x004D",
               "end_offset": "0x008B",
               "effects": [
@@ -29958,6 +30011,7 @@
           ],
           "ordered_effect_candidates": [
             {
+              "id": "ECL6.DAX/0x45/0x04C5-0x04F6",
               "start_offset": "0x04C5",
               "end_offset": "0x04F6",
               "effects": [
@@ -29984,6 +30038,7 @@
               "evidence": "static_straight_line_candidate"
             },
             {
+              "id": "ECL6.DAX/0x45/0x04F6-0x0575",
               "start_offset": "0x04F6",
               "end_offset": "0x0575",
               "effects": [
@@ -30039,7 +30094,18 @@
               "reachable_from": [
                 "camp_interrupted"
               ],
-              "evidence": "static_straight_line_candidate"
+              "evidence": "static_straight_line_candidate",
+              "review": {
+                "status": "covered",
+                "confidence": "exact",
+                "spec_refs": [
+                  "255-ecl-treasure-signal.md",
+                  "257-treasure-random-and-pickup.md",
+                  "258-treasure-combat-continuation.md",
+                  "558-pc98-ecl-treasure-combat-boundary.md"
+                ],
+                "note": "raw ECL、PC-98 interpreter、VM continuation 與 State 戰後 transaction 已閉合。"
+              }
             }
           ]
         }

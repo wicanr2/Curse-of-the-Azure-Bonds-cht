@@ -1956,3 +1956,24 @@ combat layout reconstructed，尚未宣稱整張 combat frame pixel-exact。
 - 交接入口：`docs/spec/541-ecl-external-routine-engine-boundary.md`、
   `WORKLIST.md`、`CONTEXT.md` 尾端。若沒有第二款 SSI 遊戲的 producer→consumer
   證據，不要新增 external-address mapping 到獨立 engine。
+
+## 12. 第 558 輪交接：ECL 候選審查與位址勘誤
+
+- 第 557 輪列出的三組 `TREASURE → COMBAT` 不是現行 blocker。第 255／257／258
+  輪已完成 raw treasure、戰鬥前 pending、勝利後 loot 與下一條 PC continuation；
+  第 558 輪再以 PC-98 IDA 與三段 DOS 真實 DAX regression 補強。不要 compact 後
+  重寫同一 transaction；下一個 P0 是 ECL2 block `02h +04BC..+053A` 的
+  `COMBAT → text`。
+- `docs/audit/ecl-event-catalog.json` format v2 的 candidate ID 由
+  `member/block/start-end` 組成；人工語意只能放
+  `docs/audit/ecl-ordered-effect-reviews.json`。ledger 中不存在於目前 corpus 的 ID
+  必須失敗即關閉，不可模糊比對或依 opcode 相似度套用舊結論。
+- Borland symbol 的 `segment:handler offset`、resident `CD 3F` stub offset 與
+  overlay-local code offset 是三種位址空間。PC-98 `INTERPET.GOECL=0037:3A21`、
+  `POSTCOM.DOPOSTCOMBAT=0057:1775` 的 offset 是 handler-local；typed resolver 的
+  `overlay 5 stub 0025h → code 1775h` 才是 stub→handler bridge。不得把 handler
+  offset 再拿去當 stub 查詢。
+- ECL4 block `25h` 戰後 `PICTURE FFh` 是清除圖片，不是新的 picture request；
+  continuation 是 `COMBAT +12A2 → +12A3 → GOTO +1529 → CALL 2E10h → EXIT +1534`。
+- 權威規格：`docs/spec/558-pc98-ecl-treasure-combat-boundary.md`；第 557 輪原始
+  優先排序已在原文件追加勘誤，不能只讀舊表格第一列。

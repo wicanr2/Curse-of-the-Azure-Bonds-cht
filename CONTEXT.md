@@ -5057,3 +5057,17 @@ unknown。Engine `2d7b09d` 新增互斥 `frames／generator` 戰鬥視覺契約�
 以 `sleep／impact → pc98.twinkle` JSON 綁定既有 1440 ms PC-98 動態效果，法術
 coverage 由 2/12 升至 3/12。下一步是六個牧師法術的原版可證視覺，以及 Magic
 Missile／Stinking Cloud／Cloudkill 的資料化音效 phase；不可把 3/12 寫成完整戰鬥。
+
+2026-08-13 第五百五十八輪勘誤第 557 輪第一個 P0。三組靜態
+`TREASURE → COMBAT` 候選並非尚未實作：第 255／257／258 輪早已完成 raw treasure、
+有生怪延後至勝利、無生怪 service、loot 後由 COMBAT 下一條 PC 恢復的 transaction。
+本輪以 PC-98 Borland symbol＋typed TPOV resolver＋IDA Pro 9.4 disposable raw database
+閉合 `INTERPET` dispatcher：opcode `24h` 呼叫 overlay-local `1820h`、`27h` 呼叫
+`1BEAh`；後者先取得八個 operand，前者再依 area／party state 派送 service 或戰鬥。
+三段 DOS 真實 DAX regression 分別斷言 ECL3/15h、ECL4/25h、ECL6/45h 的 monster、
+raw treasure、pause PC 與 resume PC。ECL4 的 `PICTURE FFh` 是清圖，曾誤期望為
+picture request，已修正；Borland handler offset 也不得誤當 resident stub offset。
+`ecl-event-catalog` 格式升至 v2，候選有穩定 ID；獨立 review ledger 將這三組標為
+`covered/exact`，未知 ID 失敗即關閉。全域 ordered-effect log 仍未完成；下一個
+P0 是 ECL2/02h `COMBAT → text`，不可 compact 後重做這三組。權威規格為
+`docs/spec/558-pc98-ecl-treasure-combat-boundary.md`。
