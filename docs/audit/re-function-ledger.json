@@ -356,15 +356,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 12932,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Fh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 13016,
    "state": "待解讀",
    "level": "",
@@ -536,15 +527,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 11994,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 39h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 12127,
    "state": "待解讀",
    "level": "",
@@ -586,15 +568,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 3Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 13899,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Fh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11980,33 @@
    "level": "exact",
    "spec": "docs/spec/594-ecl-random-and-indexed-store.md",
    "note": "ECL opcode 3Dh:無 operand;連續呼叫 019E:014A、019E:0268、014A:002A(DS:9594h)、014A:00DE、0176:0025(DS:A2CDh,3,3,3)、014A:00DE,最後 DS:BE00h:=0、DS:BDF2h:=1"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 11994,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/595-ecl-target-selection-and-effect-query.md",
+   "note": "ECL opcode 39h(選目標):READVAR(1);開視窗、把 packed text 解成提示字串,以 far 014A:00E8 讓玩家從 DS:9594h 起選一個;取消(回 nil)時直接走 opcode 00h 的 handler 結束整個 script,否則把選中的寫回 DS:9594h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 13899,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/595-ecl-target-selection-and-effect-query.md",
+   "note": "ECL opcode 3Fh(查詢效果):先清空 DS:A88Ah 六個比較旗標,READVAR(1);以 far 014A:00A7(sub_269 用的同一支效果查找)查 DS:9594h 身上有沒有該 effect id,有設 A88Ah、沒有設 A88Bh。借用比較旗標,所以後面接 16h 是「有」、17h 是「沒有」"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 12932,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/595-ecl-target-selection-and-effect-query.md",
+   "note": "與 pc98 overlay-02:364Bh 助憶碼序列完全相同（34 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 3Fh(查詢效果):先清空 DS:A88Ah 六個比較旗標,READVAR(1);以 far 014A:00A7(sub_269 用的同一支效果查找)查 DS:9594h 身上有沒有該 effect id,有設 A88Ah、沒有設 A88Bh。借用比較旗標,所以後面接 16h 是「有」、17h 是「沒有」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
