@@ -8990,7 +8990,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
-    "spec/633-alignment-encoding-and-effect-callbacks.md"
+    "spec/633-alignment-encoding-and-effect-callbacks.md",
+    "spec/638-overlay12-effect-batch2.md"
    ]
   },
   {
@@ -9132,7 +9133,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 pc98 overlay-12:01E6h 助憶碼序列完全相同（21 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9332,7 +9336,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 pc98 overlay-12:04E2h 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9644,7 +9651,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 pc98 overlay-12:11ACh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -9673,7 +9683,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 pc98 overlay-12:1222h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -12724,7 +12737,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "與 pc98 overlay-15:1F46h 助憶碼序列完全相同（14 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -14836,7 +14852,14 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "與 pc98 overlay-21:001Bh 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 \u003cfar 0176:0A31\u003e(arg_0,arg_2) + 5DCh(1500) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/dos-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14849,9 +14872,15 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "與 pc98 overlay-21:003Bh 助憶碼序列完全相同（10 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[188h] -= arg_0(word)。與 0057h 逐指令相同只差 sub/add,兩支都不做上下限檢查——減到負數會回捲 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
    ]
   },
   {
@@ -14865,9 +14894,15 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "與 pc98 overlay-21:0057h 助憶碼序列完全相同（10 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[188h] += arg_0(word)。與 003Bh 成對 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
    ]
   },
   {
@@ -30073,7 +30108,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
-    "spec/633-alignment-encoding-and-effect-callbacks.md"
+    "spec/633-alignment-encoding-and-effect-callbacks.md",
+    "spec/638-overlay12-effect-batch2.md"
    ]
   },
   {
@@ -30213,7 +30249,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30438,7 +30480,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "if arg_6^[18Eh]^[2] \u003c\u003e 0 則備妥「は沈黙させられた。」呼叫 \u003cfar 014A:0024\u003e(arg_6,訊息,1,0Ah);之後無條件把 ^[2] 與 ^[1] 都清 0——訊息只在 [2] 非 0 時出現,但兩個欄位一律清",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30726,7 +30774,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "if \u003csub_FCC\u003e(DS:9594h) \u003c\u003e nil 且其 ^[5Ah] = 0 則 \u003csub_F5B\u003e(arg_6,arg_8,64h)。⚠ sub_FCC 用同樣參數呼叫了兩次,結果沒有暫存",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30788,7 +30842,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "DS:0A03Dh := arg_6^[18Eh]^[0Ah];if DS:9594h^[11Ah](RACETYPE) in {2,0Ah} 且 (DS:9594h^[0DEh] and 7Fh) = 2 則 DS:0A039h -= 4。+0DEh 比較前先遮掉最高位——那是另一個用途的旗標",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30820,7 +30880,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "v := (arg_2^[3] and 10h) div 10h(取 bit 4 得 0 或 1,編譯成 cwd + idiv 16);if arg_6^[198h] = v then \u003csub_8D\u003e(arg_0,arg_2,arg_6) else dec DS:0A039h 與 dec DS:0A02Ch",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30833,7 +30899,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "if DS:0A02Fh and 2 則 DS:0A02Ch += 2;否則若 (DS:0A02Fh and 1) 且 DS:0A042h = 0 則 DS:0A02Eh := byte(DS:0A02Eh × 2)(shl 後只存回 al,溢位靜默丟掉)。與 12A0h 幾乎鏡像但守門的變數不同(這支看 DS:0A042h、那支看 DS:8CF7h),不能合併成一支帶參數的函式",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -30846,7 +30918,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/638-overlay12-effect-batch2.md",
+   "note": "與 126Dh 對稱:兩個 bit 對調(先看 and 1 再看 and 2),而守門的變數是 DS:8CF7h 不是 DS:0A042h",
+   "citations": [
+    "spec/638-overlay12-effect-batch2.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -34254,7 +34332,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "回傳 (arg_2^[196h] = 0):是則 1、否則 0。+196h 是狀態碼(spec 623 記到 6 與 5→4 兩條)",
+   "citations": [
+    "audit/function-index/dos-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -35087,6 +35171,7 @@
    "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
    "note": "呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/636-pc98-text-vram-and-disk-bios.md"
    ]
   },
@@ -35106,6 +35191,7 @@
    "spec": "docs/spec/636-pc98-text-vram-and-disk-bios.md",
    "note": "al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/636-pc98-text-vram-and-disk-bios.md"
    ]
   },
@@ -37431,7 +37517,14 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "回傳 \u003cfar 0176:0A31\u003e(arg_0,arg_2) + 5DCh(1500)",
+   "citations": [
+    "audit/function-index/dos-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37445,9 +37538,15 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "arg_2^[188h] -= arg_0(word)。與 0057h 逐指令相同只差 sub/add,兩支都不做上下限檢查——減到負數會回捲",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
    ]
   },
   {
@@ -37462,9 +37561,15 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "arg_2^[188h] += arg_0(word)。與 003Bh 成對",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
+    "spec/637-overlay21-small-batch.md"
    ]
   },
   {
@@ -37712,7 +37817,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/637-overlay21-small-batch.md",
+   "note": "r := ROLLDICE(1,14h)(1d20);1..0Eh 回傳 1、0Fh..14h 回傳 2,即 70%/30%。兩個區間剛好把 1..20 分完(無縫隙無重疊),所以回傳值雖無預設值也不會讀到未初始化。比較用無號 jb/ja",
+   "citations": [
+    "spec/637-overlay21-small-batch.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43864,9 +43975,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 52,
+   "Read": 56,
    "NotBlocking": 0,
-   "Todo": 73,
+   "Todo": 69,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -43909,9 +44020,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 27,
+   "Todo": 26,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -43999,9 +44110,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 3,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 17,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -44419,9 +44530,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 62,
+   "Read": 69,
    "NotBlocking": 0,
-   "Todo": 69,
+   "Todo": 62,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
@@ -44464,9 +44575,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 27,
+   "Todo": 26,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -44554,9 +44665,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 3,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 15,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
