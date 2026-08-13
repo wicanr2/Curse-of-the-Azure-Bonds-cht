@@ -112,10 +112,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `4493` | sub_4493 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4492，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `44D3` | sub_44D3 | — | 203 | 72 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `45B5` | sub_45B5 | — | 176 | 72 | 0 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `4672` | sub_4672 | — | 171 | 72 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `4672` | sub_4672 | — | 171 | 72 | 0 | 4 | ✓ | 已解讀 | strong inference | docs/spec/632-spell-target-array-loop.md<br>與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := <far 013E:0048>(0,4,t)、x := <sub_E75>(t,88h,88h),備妥「は絡みつかれた。」呼叫 <far 013E:0089>(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `472C` | sub_472C | — | 32 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `4759` | sub_4759 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `4791` | sub_4791 | — | 133 | 57 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `4791` | sub_4791 | — | 133 | 57 | 0 | 3 | ✓ | 已解讀 | strong inference | docs/spec/632-spell-target-array-loop.md<br>與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆<far 014A:00A7>(0Bh,陣列[i],@var) 非 0 時接 <far 013E:002A>(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `4822` | sub_4822 | — | 184 | 79 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `48E4` | sub_48E4 | — | 398 | 161 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `4A8F` | sub_4A8F | — | 292 | 115 | 0 | 7 | ✓ | 待解讀 | — | — | — |

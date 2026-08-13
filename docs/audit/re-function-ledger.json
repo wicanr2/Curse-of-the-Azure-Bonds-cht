@@ -13393,6 +13393,42 @@
    "level": "exact",
    "spec": "docs/spec/631-strength-spell-exceptional.md",
    "note": "力量法術:先把 DS:7D93h 設 12h、DS:7D94h 設 0,再依 <far 014A:00D4>(DS:0A031h) 的回傳 1..0Bh 改其一——case 1..6 改百分比(0/1/33h/4Ch/5Bh/64h = 0/1/51/76/91/100)、case 7..0Bh 改力量值(13h..16h = 19..22)。換成十進位就是 AD&D 的特例力量 18/xx,級距切在 01/51/76/91/00。兩組互斥一次只改一個,且 case 有預設值所以沒有未初始化問題。之後 <far 013E:007F> 非 0 才印「は強くなった。」否則印「は影響を受けなかった。」"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 19098,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆<far 014A:00A7>(0Bh,陣列[i],@var) 非 0 時接 <far 013E:002A>(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 18795,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := <far 013E:0048>(0,4,t)、x := <sub_E75>(t,88h,88h),備妥「は絡みつかれた。」呼叫 <far 013E:0089>(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 18034,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := <far 013E:0048>(0,4,t)、x := <sub_E75>(t,88h,88h),備妥「は絡みつかれた。」呼叫 <far 013E:0089>(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 18321,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆<far 014A:00A7>(0Bh,陣列[i],@var) 非 0 時接 <far 013E:002A>(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
