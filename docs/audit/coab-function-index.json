@@ -7379,7 +7379,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/620-ecl2-charspeed.md",
+   "note": "與 pc98 overlay-07:20C5h 助憶碼序列完全相同（76 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：CHARSPEED(out_min,out_max):沿角色鏈取 +1A6h(速度),effect 27h 命中則 x2(shl)、否則 2Ah 命中則 /2(有號 idiv)——兩者互斥,同時中只有加速生效;更新 min/max 後回寫。初值取鏈頭角色的未調整速度;隊伍為空時會對空指標解參照,原版沒有防護 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -28114,7 +28117,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/620-ecl2-charspeed.md",
+   "note": "ECLMENUV(垂直選單的包裝層):把兩個字串參數複製到區域緩衝區、經 sub_1669 處理、FillChar(DS:A335h,10,0),然後把 13 個參數原樣轉傳給 far 0164:0043。自己不做判斷"
   },
   {
    "platform": "pc98",
@@ -28291,7 +28297,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/620-ecl2-charspeed.md",
+   "note": "CHARSPEED(out_min,out_max):沿角色鏈取 +1A6h(速度),effect 27h 命中則 x2(shl)、否則 2Ah 命中則 /2(有號 idiv)——兩者互斥,同時中只有加速生效;更新 min/max 後回寫。初值取鏈頭角色的未調整速度;隊伍為空時會對空指標解參照,原版沒有防護",
+   "citations": [
+    "spec/620-ecl2-charspeed.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43332,9 +43344,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -43887,9 +43899,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 20,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 8,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,

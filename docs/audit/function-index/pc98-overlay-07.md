@@ -38,7 +38,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17A8` | sub_17A8 | — | 72 | 31 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1808` | sub_1808 | — | 130 | 43 | 2 | 5 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1780h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `188A` | sub_188A | ECLMENUV | 158 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `188A` | sub_188A | ECLMENUV | 158 | 75 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/620-ecl2-charspeed.md<br>ECLMENUV(垂直選單的包裝層):把兩個字串參數複製到區域緩衝區、經 sub_1669 處理、FillChar(DS:A335h,10,0),然後把 13 個參數原樣轉傳給 far 0164:0043。自己不做判斷 | — |
 | `1928` | sub_1928 | CHECKSTRING | 81 | 36 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/593-ecl-comparison-flags.md<br>ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致 | audit/function-index/pc98-overlay-07.md<br>spec/593-ecl-comparison-flags.md |
 | `1979` | sub_1979 | — | 133 | 50 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在已解讀函式 1928h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。 | — |
 | `19FE` | sub_19FE | CHECKSTATUS | 104 | 37 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/593-ecl-comparison-flags.md<br>ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整 | audit/function-index/dos-overlay-07.md<br>spec/593-ecl-comparison-flags.md |
@@ -48,6 +48,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1DD1` | sub_1DD1 | ROBDOUGH | 303 | 82 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `1F00` | sub_1F00 | ROBSTUFF | 176 | 62 | 0 | 3 | ✓ | 待解讀 | — | — | spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
 | `1FB0` | sub_1FB0 | NONEXT | 277 | 138 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/591-skip-arity-crosscheck.md<br>ECL2 entry#29(stub 00B1h):跳過下一條 ECL 指令——從 bank3 讀下一個 opcode 存進 DS:A891h,依內建的 opcode→arity 對照表呼叫 READVAR(n),arity 0 則只 ECL_PC++。這張表是 arity 的第二個獨立來源:與 handler 自己的 READVAR 參數比對,42 個一致、20 個 arity 0 自洽;1Fh 有 arity 2 卻沒有 handler;34h/36h 兩邊不一致(SKIP 說 1、handler 說 2),是原版自己的不一致。這支確定了 16h~1Bh 是「旗標為 0 就跳過下一條」 | spec/591-skip-arity-crosscheck.md |
-| `20C5` | sub_20C5 | CHARSPEED | 205 | 76 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `20C5` | sub_20C5 | CHARSPEED | 205 | 76 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/620-ecl2-charspeed.md<br>CHARSPEED(out_min,out_max):沿角色鏈取 +1A6h(速度),effect 27h 命中則 x2(shl)、否則 2Ah 命中則 /2(有號 idiv)——兩者互斥,同時中只有加速生效;更新 min/max 後回寫。初值取鏈頭角色的未調整速度;隊伍為空時會對空指標解參照,原版沒有防護 | spec/620-ecl2-charspeed.md |
 | `2235` | sub_2235 | KILLTHEDUDE | 516 | 208 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `2439` | sub_2439 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
