@@ -1099,6 +1099,1203 @@
    "level": "exact",
    "spec": "docs/spec/565-ecl-memory-read-path-and-asymmetry.md",
    "note": "ECL 記憶體讀取:與 STOREVALUE 共用位址分類器,bank 0-3 對稱;bank 1 先算再回退;bank 4 具名特例與寫入端不對稱;C04D 讀取 ÷2。⚠ IDA 函式邊界被切短至 101Ah,實際延伸到 1145h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104432,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MSDOS$qm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104443,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104540,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104574,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104594,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104631,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104654,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskFree$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104679,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskSize$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104706,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDFIRST$q7PATHSTR4WORDm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104768,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDNEXT$qm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104829,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FEXPAND$q7PATHSTR`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105026,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105136,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__CRTInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105522,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WINDOW$q4BYTEt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105586,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLRSCR$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105612,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@CLREOL$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105632,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INSLINE$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105669,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GOTOXY$q4BYTEt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105713,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WHEREX$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105725,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WHEREY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105737,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@TEXTCOLOR$q4BYTE`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105763,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@TEXTBACKGROUND$q4BYTE`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105787,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@LOWVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105793,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@HIGHVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105799,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@NORMVIDEO$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105898,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@KEYPRESSED$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105916,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@READKEY$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105950,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ASSIGNCRT$qm4TEXT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106728,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRINIT$q6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107017,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRSETBUF$q7LONGINT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107116,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRGETBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107136,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRCLEARBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107840,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108056,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Halt$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108359,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@IOResult$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108366,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__IOCheck$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108380,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__RangeCheck$q7Longintpa2$7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108420,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__StackCheck$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108445,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm3Anyt14Word`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108469,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sqr$q7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108473,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmul$q7Longintt1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108500,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brdiv$q7Longintt1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108610,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brrsh$q7Longint7Integer`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108622,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brlsh$q7Longint7Integer`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108634,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Abs$q7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108649,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetMem$qm7Pointer4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108708,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FreeMem$qm7Pointer4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108740,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Mark$qm7Pointer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108762,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Release$qm7Pointer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108789,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MemAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108857,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MaxAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109428,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109454,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringt14Byte`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109490,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Length$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109504,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Copy$qm6Stringt17Integert3`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109569,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Concat$qm6Stringt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109613,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Pos$qm6Stringt1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109668,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$bsub$qm6Stringt1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109711,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6String4Char`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109729,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$basg$qm6Stringn4Char4Byte`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109756,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Insert$qm6Stringt14Word7Integer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109840,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Delete$qm6String7Integert2`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109926,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$bctr$qn4Byte4Word`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109968,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@Clear$qv`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109983,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$brplu$q4Byte`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110016,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$brplu$q4Bytet1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110068,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@$bctr$qm3Set4Word`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110100,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@Set@MemberOf$q4Byte`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110133,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110161,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmin$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110191,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brmul$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110219,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$beql$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110242,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$bgeq$qm3Sett1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110272,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealSub`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110276,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealAdd`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110490,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealMul`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110615,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealDiv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110787,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealCmp`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110829,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealFloat`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110892,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealTrunc`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110984,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal 編譯器運算子輔助：IDA 還原名稱 `@$brplu$q4Realt1`，`$b` 前綴是 Borland 的運算子編碼"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111100,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Int$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111181,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Frac$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111201,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sqrt$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111294,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Sin$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111621,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Exp$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 111784,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ArcTan$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112219,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Real$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112248,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Extended$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112345,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Int2Str`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112467,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__Str2Int`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112619,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Str$q7Longint4Wordm6String4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112694,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Val__Longint$qm6Stringm7Integer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112743,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Assign$qm4Textm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112812,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTextBuf$qm4Textm3Any4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112855,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Reset$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112860,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rewrite$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112940,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Flush$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112944,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113382,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113418,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113446,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113482,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113546,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ReadLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113587,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@WriteLn$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113618,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113656,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Text4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113686,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text4Char4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113731,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Textm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113787,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Textm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113849,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Text7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113937,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Write$qm4Text7Longint4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114010,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Assign$qm4Filem6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114056,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Reset$qm4File4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114157,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Truncate$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114185,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114237,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Read$qm4Filem3Any`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114291,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@BlockRead$qm4Filem3Any4Wordm4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114395,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Seek$qm4File7Longint`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114443,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FilePos$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114466,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FileSize$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114493,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Eof$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114583,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Erase$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114606,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rename$qm4Filem6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114685,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Move$qm3Anyt14Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114720,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FillChar$qm3Any4Word4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114740,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamStr$qm6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114819,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ParamCount$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114876,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDir$q4Bytem6String4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114957,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ChDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 115022,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MkDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 115043,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@RmDir$qm6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 115106,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@UpCase$q4Char`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   }
  ]
 }
