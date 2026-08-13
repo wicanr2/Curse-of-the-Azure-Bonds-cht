@@ -10510,6 +10510,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh)",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10530,6 +10531,7 @@
    "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10549,6 +10551,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4)",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10597,6 +10600,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10616,6 +10620,7 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表)",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10648,6 +10653,8 @@
    "spec": "docs/spec/641-dos-field-offset-shift.md",
    "note": "arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/641-dos-field-offset-shift.md"
    ]
   },
@@ -10675,7 +10682,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:2237h 助憶碼序列完全相同（29 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10688,7 +10698,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:2274h 助憶碼序列完全相同（37 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10884,7 +10897,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:24B6h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -10926,7 +10942,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "與 pc98 overlay-12:257Eh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -31141,7 +31160,8 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
-    "spec/640-save-for-half-and-damage-global.md"
+    "spec/640-save-for-half-and-damage-global.md",
+    "spec/642-overlay12-damage-modifiers.md"
    ]
   },
   {
@@ -31176,7 +31196,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-12.md",
-    "spec/639-overlay12-poison-and-race-gates.md"
+    "spec/639-overlay12-poison-and-race-gates.md",
+    "spec/642-overlay12-damage-modifiers.md"
    ]
   },
   {
@@ -31658,6 +31679,7 @@
    "note": "if DS:0A02Fh and 20h \u003c\u003e 0 then \u003csub_1B\u003e(0) 並備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0024\u003e(arg_6,arg_8,訊息,1,0Ah)",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
     "spec/640-save-for-half-and-damage-global.md",
     "spec/641-dos-field-offset-shift.md"
@@ -31750,7 +31772,8 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if \u003cfar 0176:0473\u003e(byte(arg_6^[1A5h]), arg_6) = 0 then \u003csub_3C\u003e(1, arg_2^[3], 4Eh, arg_6)",
    "citations": [
-    "spec/639-overlay12-poison-and-race-gates.md"
+    "spec/639-overlay12-poison-and-race-gates.md",
+    "spec/642-overlay12-damage-modifiers.md"
    ]
   },
   {
@@ -31832,8 +31855,10 @@
    "note": "if (DS:0A02Fh and 1) 或 (and 2) then:\u003cfar 013E:0028\u003e(0,4,arg_6,arg_8) 非 0(豁免成功)且 byte[DS:0A031h×16 + 61BCh] \u003c\u003e 0 時 DS:0A02Eh := 0(完全免疫),否則 DS:0A02Eh div 2(有號)。⚠ 兩條路徑都減半——豁免失敗也減半,只有「豁免成功且在免疫表裡」才歸零,與 AD\u0026D 慣例不同。DS:61BCh 是 16 bytes 一筆的表,索引取自 DS:0A031h",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/640-save-for-half-and-damage-global.md",
-    "spec/641-dos-field-offset-shift.md"
+    "spec/641-dos-field-offset-shift.md",
+    "spec/642-overlay12-damage-modifiers.md"
    ]
   },
   {
@@ -31860,7 +31885,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C1Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:6F95h and 4 \u003c\u003e 0 then \u003csub_1B\u003e(0)、\u003cfar 013E:007D\u003e(8,1)、arg_6^[1A4h](目前 HP)+= 8,不夾上限(對照 20FAh 有夾)。013E:007D 的回傳值存進區域變數後沒再讀,是死存。與 PC-98 176Dh 同型(DS:6F95h ↔ DS:0A02Fh) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -31873,7 +31901,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C4Fh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 byte[p^[2Eh]×16 + 5CFDh] = 1 then DS:6F94h := 1。DS:5CFDh 是 16 bytes 一筆的表,對應 PC-98 的 DS:61BCh ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -31886,7 +31917,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1C90h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if DS:758Dh = 0 且 DS:6F9Fh = 0 then arg_2^[3] and= 0Fh(清高 nibble);否則若 (arg_2^[3] and 10h) = 0 則 DS:6F9Fh := 0FFh、arg_2^[3] or= 10h(設 bit 4) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -31935,7 +31969,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:1FE4h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：p := \u003csub_FAA\u003e(DS:6506h);if p \u003c\u003e nil 且 (byte[p^[2Eh]×16 + 5CFDh] and 81h) \u003c\u003e 0 then DS:6F94h := DS:6F94h div 2(有號)。與 PC-98 1A34h 同一個動作,故 DS:6F94h ↔ DS:0A02Eh(傷害值)。注意判準與 1C4Fh 不同:這支 and 81h、那支 = 1 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -31948,7 +31985,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:203Ch 助憶碼序列完全相同（23 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_2^[4] := 0;if arg_6^[196h] \u003c\u003e 0 then 備妥 'Falls dead' 呼叫 \u003cfar 013E:0005\u003e(arg_6,訊息,6)。⚠ DOS 的 +196h 對應 PC-98 的 +197h,不是狀態碼——狀態碼在 DOS 是 +195h(見 spec 641 的對照表) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -31974,7 +32014,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/641-dos-field-offset-shift.md",
+   "note": "與 dos overlay-12:20FAh 助憶碼序列完全相同（16 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：arg_6^[1A4h] := min(arg_6^[1A4h] + 3, arg_6^[78h])——加血並夾在上限。⚠ DOS 的 +1A4h 對應 PC-98 的 +1A5h(目前 HP),兩平台紀錄後段偏移差 1;+196h 以前則相同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -32000,7 +32043,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1)",
+   "citations": [
+    "spec/642-overlay12-damage-modifiers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32013,7 +32062,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh",
+   "citations": [
+    "spec/642-overlay12-damage-modifiers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32026,7 +32081,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if \u003cfar 0176:0473\u003e(arg_6, arg_6^[78h]) = 0 then \u003csub_3C\u003e(arg_6,66h,arg_2^[3],1)。sub_3C 的呼叫形狀與 1973h/13F1h 一致(far pointer, id, byte, 旗標)",
+   "citations": [
+    "spec/642-overlay12-damage-modifiers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32230,7 +32291,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號",
+   "citations": [
+    "spec/642-overlay12-damage-modifiers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32276,7 +32343,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/642-overlay12-damage-modifiers.md",
+   "note": "p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊",
+   "citations": [
+    "spec/642-overlay12-damage-modifiers.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44185,9 +44258,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 77,
+   "Read": 81,
    "NotBlocking": 0,
-   "Todo": 48,
+   "Todo": 44,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -44740,9 +44813,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 79,
+   "Read": 90,
    "NotBlocking": 0,
-   "Todo": 52,
+   "Todo": 41,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
