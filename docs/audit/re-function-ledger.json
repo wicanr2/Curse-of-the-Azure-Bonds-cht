@@ -104,15 +104,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 2113,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 2348,
    "state": "待解讀",
    "level": "",
@@ -352,15 +343,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 2215,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Eh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "exact",
    "spec": "docs/spec/599-ecl-select-member-and-0c.md",
    "note": "ECL opcode 2Ch(四選一選單):READVAR(6);前四個 operand 取值當候選,兩段資料從 DS:00ACh/00F2h 複製到 DS:A33Fh/A335h,呼叫 far 0062:0084 取得選擇,直接以它索引候選陣列(沒有範圍檢查)後 STOREVALUE 到第五個 operand 指定的位址。第六個 operand 在 body 裡沒有被用到"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 2215,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/600-ecl-picture.md",
+   "note": "ECL opcode 0Eh(顯示圖片):READVAR(1);operand 為 FFh 是「關閉」的哨兵值,會清掉一組旗標;否則依 bank1^[5C2h] 是否為 FFh 分兩條路,是的話再依編號是否 >= 78h 分兩條——< 78h 帶著函式前方的 'PIC' 字串常數(檔名前綴)呼叫 far 0176:0034/0025,>= 78h 走 0176:004D。同一條 ECL 指令的效果隨狀態而異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2113,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/600-ecl-picture.md",
+   "note": "與 pc98 overlay-02:08A7h 助憶碼序列完全相同（77 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Eh(顯示圖片):READVAR(1);operand 為 FFh 是「關閉」的哨兵值,會清掉一組旗標;否則依 bank1^[5C2h] 是否為 FFh 分兩條路,是的話再依編號是否 >= 78h 分兩條——< 78h 帶著函式前方的 'PIC' 字串常數(檔名前綴)呼叫 far 0176:0034/0025,>= 78h 走 0176:004D。同一條 ECL 指令的效果隨狀態而異 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
