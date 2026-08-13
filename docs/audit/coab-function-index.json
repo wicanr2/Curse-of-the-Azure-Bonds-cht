@@ -14246,7 +14246,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14285,7 +14288,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14298,7 +14304,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14311,7 +14320,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is cold-resistant」（unk_1E3C，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14392,7 +14404,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is shielded」（unk_2226，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14444,7 +14459,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is fire resistant」（unk_2449，長度 17）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14457,7 +14475,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is silenced」（unk_2488，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14509,7 +14530,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is invisible」（unk_2675，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14522,7 +14546,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「Knock-Knock」（unk_26AF，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14548,7 +14575,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is weakened」（unk_2748，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14613,7 +14643,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is blind」（unk_2F9B，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14655,7 +14688,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is diseased」（unk_3087，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14720,7 +14756,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「has been cursed!」（unk_3696，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14733,7 +14772,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is blinking」（unk_36D4，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14824,7 +14866,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is Slowed」（unk_3CE3，長度 9）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14902,7 +14947,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is paralyzed」（unk_4036，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -14928,7 +14976,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is invisible」（unk_40C8，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15097,7 +15148,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is highlighted」（unk_471D，長度 14）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15110,7 +15164,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is invisible」（unk_474C，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15214,7 +15271,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「is protected」（unk_4EEA，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15253,7 +15313,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_563A，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15266,7 +15329,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_5668，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -15279,7 +15345,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_5696，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -34134,7 +34203,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は呪いを受けた。」（unk_1F7A，長度 16）呼叫訊息 routine（body 共 43 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34173,7 +34245,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は魔法にかかった。」（unk_202A，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34212,7 +34287,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は冷気に対する防護を得た。」（unk_20A4，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34303,7 +34381,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は魔法の楯に守られた。」（unk_24AA，長度 22）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34355,7 +34436,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は火炎に対する防護を得た。」（unk_26E1，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34368,7 +34452,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は沈黙した。」（unk_2729，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34420,7 +34507,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は透明になった。」（unk_2922，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34433,7 +34523,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「こんこん」（unk_2960，長度 8）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34459,7 +34552,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は弱くなった。」（unk_29F5，長度 14）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34524,7 +34620,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は視力を奪われた。」（unk_3260，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34566,7 +34665,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は病いに冒された。」（unk_3356，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34632,7 +34734,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は呪われた！」（unk_3976，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34645,7 +34750,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は点滅している。」（unk_39B0，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34736,7 +34844,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は減速された。」（unk_3F99，長度 14）呼叫訊息 routine（body 共 46 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34814,7 +34925,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は麻痺した。」（unk_4306，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34840,7 +34954,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35009,7 +35126,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「に光がまとわりついた。」（unk_4A16，長度 22）呼叫訊息 routine（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35022,7 +35142,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は透明になった。」（unk_4A4D，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35126,7 +35249,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「は守られた。」（unk_5291，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35194,7 +35320,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_59D7，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35207,7 +35336,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_5A05，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35220,7 +35352,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "常數字串：以固定字串「」（unk_5A33，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38887,9 +39022,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 136,
-   "Read": 2,
+   "Read": 25,
    "NotBlocking": 0,
-   "Todo": 134,
+   "Todo": 111,
    "CodeBytes": 22254,
    "Undefined": 2174,
    "SegmentBytes": 26796,
@@ -39405,9 +39540,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 2,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 136,
+   "Todo": 114,
    "CodeBytes": 25053,
    "Undefined": 2127,
    "SegmentBytes": 27788,

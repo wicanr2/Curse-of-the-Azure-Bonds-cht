@@ -44,6 +44,8 @@ MOV_ARG = re.compile(r"^mov (al|ax), \[bp\+arg_[0-9A-Fa-f]+\]$")
 MOV_VAR_SET = re.compile(r"^mov \[bp\+var_[0-9A-Fa-f]+\], (al|ax)$")
 MOV_VAR_GET = re.compile(r"^mov (al|ax), \[bp\+var_[0-9A-Fa-f]+\]$")
 CALL_ANY = re.compile(r"^call .+$")
+STRING_CONST = re.compile(r"^mov di, offset unk_([0-9A-Fa-f]+)$")
+LEA_LOCAL = re.compile(r"^lea di, \[bp\+var_[0-9A-Fa-f]+\]$")
 JMP_ANY = re.compile(r"^jmp .+$")
 NOISE = {"push cs", "nop", "xor ah, ah", "cbw", "mov sp, bp", "pop bp",
          "push bp", "leave"}
@@ -116,6 +118,20 @@ def classify(function):
         if len(addresses) == 1:
             return "寫入器", "把參數寫入 DS:%s（該位址語意另計）" % addresses.pop()
 
+    # 常數字串函式：把一段 Pascal 字串常數複製進區域緩衝，再呼叫一個 routine。
+    # 字串常數就在同一段 overlay 內，可以直接解出來，因此這是完整判讀。
+    consts = [STRING_CONST.match(l) for l in core]
+    if any(consts):
+        allowed = all(
+            consts[i] or LEA_LOCAL.match(core[i]) or CALL_ANY.match(core[i])
+            or MOV_IMM.match(core[i]) or MOV_LOAD.match(core[i])
+            or MOV_ARG.match(core[i]) or MOV_VAR_GET.match(core[i])
+            or MOV_VAR_SET.match(core[i]) or core[i].startswith("push ")
+            for i in range(len(core)))
+        offsets = {m.group(1) for m in consts if m}
+        if allowed and len(offsets) == 1:
+            return "常數字串", "unk_%s" % offsets.pop()
+
     # 轉呼叫：唯一的實質動作是一個 call／jmp
     calls = [l for l in core if CALL_ANY.match(l) or JMP_ANY.match(l)]
     if len(calls) == 1 and all(
@@ -125,6 +141,21 @@ def classify(function):
         return "轉呼叫", "唯一實質動作是 `%s`，參數原樣傳遞" % calls[0]
 
     return None, None
+
+
+def decode_string(blob, marker, platform):
+    """把 `unk_XXXX` 換成實際的 Pascal 字串內容（首位元組是長度）。"""
+    offset = int(marker.split("_")[1], 16)
+    if blob is None or offset >= len(blob):
+        return "字串常數 %s（無法讀取所在 overlay）" % marker
+    length = blob[offset]
+    raw = blob[offset + 1:offset + 1 + length]
+    encoding = "cp932" if platform == "pc98" else "cp437"
+    try:
+        text = raw.decode(encoding)
+    except Exception:
+        text = raw.decode("latin-1", "replace")
+    return "以固定字串「%s」（%s，長度 %d）呼叫訊息 routine" % (text, marker, length)
 
 
 def main():
@@ -138,8 +169,14 @@ def main():
             if path.endswith(".error.log"):
                 continue
             module = os.path.basename(path)[:-5].replace(".bin", "")
+            blob = None
+            binary = os.path.join(SWEEP, platform, "overlays", module + ".bin")
+            if os.path.exists(binary):
+                blob = open(binary, "rb").read()
             for function in json.load(open(path, encoding="utf-8"))["functions"]:
                 kind, note = classify(function)
+                if kind == "常數字串":
+                    note = decode_string(blob, note, platform)
                 if kind is None:
                     counts["待解讀"] += 1
                     core = core_instructions(function["items"])
