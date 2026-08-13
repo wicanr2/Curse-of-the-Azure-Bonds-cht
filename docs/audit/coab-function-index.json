@@ -41419,6 +41419,7 @@
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
    "note": "for i := 1 to 4:if \u003csub_25CD\u003e(arg_0,arg_2,byte[49D3h + i],@var_6) \u003c\u003e 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/643-hp-fields-and-slot-array.md"
    ]
   },
@@ -41659,6 +41660,7 @@
    "spec": "docs/spec/643-hp-fields-and-slot-array.md",
    "note": "在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/643-hp-fields-and-slot-array.md"
    ]
   },
