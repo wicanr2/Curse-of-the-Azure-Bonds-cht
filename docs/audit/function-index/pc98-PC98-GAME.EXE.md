@@ -147,14 +147,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18767` | sub_18767 | — | 67 | 37 | 1 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>最佳適配配置:走 word_2418Eh 起的串列(節點以 segment 串接,+0 是大小、+4 是下一塊),剛好夠就立刻採用不再往下找,否則挑剩最少的。找不到時回 0(bx 初值 0FFFFh 加一);找到則回「節點 segment + 1」。無號比較 | — |
 | `187AA` | sub_187AA | — | 66 | 33 | 1 | 1 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br>由上往下切的配置:ax+1(多要一段放標頭),word_24188h(剩餘段落數)不足就回 0;否則從 word_24186h(下一個可用 segment)切走,標頭寫 +0 = 大小、+6 = 大小副本、+8 = 魔術數 818Eh,回傳 bx+1(跳過標頭)。單向推進,這支沒有回收路徑 | — |
 | `187EC` | sub_187EC | — | 36 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br>驗證區塊:bx-1 退回標頭,檢查 +8 是否為 818Eh、以及 +0 與 +6 兩份大小是否一致;任一不符就設進位表示無效。大小存兩份能抓到「往前寫超出前一塊」的破壞 | — |
-| `18810` | sub_18810 | — | 46 | 25 | 2 | 1 |  | 待解讀 | — | — | — |
-| `1883E` | sub_1883E | — | 36 | 20 | 2 | 0 |  | 待解讀 | — | — | — |
+| `18810` | sub_18810 | — | 46 | 25 | 2 | 1 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>接到串列尾端:bx-1 退回標頭後,從 dx 沿 +4 一路走到尾,把新節點接上並設好 +2(前一個)與 +4(後一個)。每次接尾都要走完整條串列,是 O(n)。這也補出標頭的 +2/+4 是雙向串列的前後指標 | — |
+| `1883E` | sub_1883E | — | 36 | 20 | 2 | 0 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>從雙向串列移除:next := +4、prev := +2,再互相接起來。⚠ 兩邊都沒有檢查是不是 0——移除頭節點時 prev=0 會寫進 0000:0004、移除尾節點時 next=0 會寫進 0000:0002,那裡是中斷向量表。需 runtime 驗證呼叫端是否保證節點永遠在中間 | — |
 | `18862` | sub_18862 | — | 11 | 8 | 4 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=02h(DOS display output)、DL=07h,前後保存 AX/DX | — |
 | `1886D` | sub_1886D | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_18571 回傳 0 時才呼叫 18862h 發出 BEL | — |
 | `18878` | sub_18878 | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_185EA 回傳非 0 時才呼叫 18862h 發出 BEL | — |
-| `18883` | sub_18883 | — | 46 | 19 | 1 | 3 |  | 待解讀 | — | — | — |
+| `18883` | sub_18883 | — | 46 | 19 | 1 | 3 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>pushf + std(本體沒有字串指令,方向旗標是設給被呼叫者用的);es:[di] := 0,以 arg 的大小呼叫 <sub_18612>,把結果存 es:[di+2];bx = 0(失敗)時 ax := 0 並把 <sub_18862> 連叫兩次;最後 popf | — |
 | `188B1` | sub_188B1 | — | 23 | 10 | 1 | 3 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>取 [bp+4] 的參數呼叫 sub_18683;回傳 0 時呼叫 18862h 發出 BEL | — |
-| `188C8` | sub_188C8 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `188C8` | sub_188C8 | — | 27 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/656-heap-linked-list-ops.md<br>呼叫 <186FFh>(最大可用塊)後把 AX/BX/DX 分別回填到 es:[di]、[di+2]、[di+6]——+4 沒有寫,回填的是不連續的三格 | — |
 | `188E3` | sub_188E3 | — | 35 | 14 | 1 | 1 |  | 待解讀 | — | — | — |
 | `18930` | sub_18930 | — | 269 | 100 | 3 | 4 |  | 待解讀 | — | — | — |
 | `18A3D` | sub_18A3D | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
