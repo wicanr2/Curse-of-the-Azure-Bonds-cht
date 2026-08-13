@@ -181,13 +181,13 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19112` | sub_19112 | — | 21 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>從 CS:247h 起以 INT 29h(fast putchar)輸出 5 個字元 | — |
 | `1917C` | sub_1917C | — | 31 | 9 | 2 | 2 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br>BH := byte_280C6h;把 word_280C8h/280CAh 各存一份到 word_280E8h/280EAh;再 <sub_19840>() 與 <sub_19604>(word_280C8h) | — |
 | `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 已解讀 | exact | docs/spec/658-color-bit-swap-and-attribute-codec.md<br><sub_195FC>() 後取 byte_280C6h 與 word_280C8h 的低位元組,把當時的 DH 存進 CH,再讀 word_280CAh 覆蓋 DX,最後比較 CH 與 DH——比的是新舊兩個 DH,相等回 0、不等回 1 | — |
-| `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
+| `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 已解讀 | exact | docs/spec/659-console-raw-mode-and-textrec.md<br>參數為 0 直接返回;否則無號除以 word_280D2h 再呼叫 <sub_19271> | — |
 | `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dx 與 ax 為計數的空迴圈(jcxz/loop),不做任何資料處理 ⇒ 忙碌延遲 | — |
 | `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2) | — |
 | `19293` | sub_19293 | — | 13 | 7 | 3 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>PC-98 鍵盤 BIOS:INT 18h AH=01h(鍵盤狀態偵測),BH 非零時回傳 1 否則 0 | — |
-| `192A0` | sub_192A0 | — | 50 | 22 | 4 | 2 |  | 待解讀 | — | — | — |
-| `192D2` | sub_192D2 | — | 87 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
-| `19386` | sub_19386 | — | 52 | 25 | 1 | 1 |  | 待解讀 | — | — | — |
+| `192A0` | sub_192A0 | — | 50 | 22 | 4 | 2 |  | 已解讀 | exact | docs/spec/659-console-raw-mode-and-textrec.md<br>鍵盤讀取:byte_280E4h 有留值就回傳並清掉;否則迴圈 <sub_19085> → int 18h AH=1(有無按鍵)→ int 18h AH=0(取鍵)。AL <> 0 直接回;AL = 0(特殊鍵)則把掃描碼 AH 存進 byte_280E4h 留給下一次——特殊鍵要讀兩次才拿得到掃描碼。remake 換成事件式輸入時這個「兩次」協定會影響呼叫端 | — |
+| `192D2` | sub_192D2 | — | 87 | 27 | 1 | 2 |  | 已解讀 | exact | docs/spec/659-console-raw-mode-and-textrec.md<br>TextRec 初始化:[di+2] := 0D7B0h(Turbo Pascal 的 fmClosed)、[di+4] := 80h(BufSize)、[di+0Ch/0Eh] := 緩衝指標 @[di+80h]、[di+10h/12h] := 函式指標 loc_19329、[di+30h] := 0。後半用 byte_28102h 當旗標做一次性初始化:word_280D8h := ((high(word_280F9h) × byte_280DAh) + low) × 2,且 byte_280DAh <> 50h(80 欄)時再乘一次 2 | — |
+| `19386` | sub_19386 | — | 52 | 25 | 1 | 1 |  | 已解讀 | exact | docs/spec/659-console-raw-mode-and-textrec.md<br>開 CS:4E9h 的檔名(內容是 "CON")用 int 21h AX=3D00h,handle 存進**程式碼段**的 cs:word_193CDh;再用 IOCTL AX=4400h 取裝置資訊,DL bit 5(二進位/raw 模式)沒設就用 AX=4401h 設上——之後從 CON 讀進來不再被 DOS 做 ASCII 加工。seg050 基底 18EE0h 由 18EE0h+4EDh = word_193CD 互相印證 | — |
 | `193BA` | sub_193BA | — | 14 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 CS:word_193CD 的 handle 呼叫 INT 21h AH=3Eh 關閉檔案,前後保存 AX/BX | — |
 | `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
