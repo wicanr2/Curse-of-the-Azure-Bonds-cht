@@ -18308,7 +18308,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/643-hp-fields-and-slot-array.md",
+   "note": "與 pc98 overlay-24:0E02h 助憶碼序列完全相同（28 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：for i := 1 to 4:if \u003csub_25CD\u003e(arg_0,arg_2,byte[49D3h + i],@var_6) \u003c\u003e 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -18466,7 +18469,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/643-hp-fields-and-slot-array.md",
+   "note": "與 pc98 overlay-24:1739h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -31159,6 +31165,7 @@
    "note": "p := \u003csub_FCC\u003e(DS:9594h);p = nil 或 p^[5Ah] = 0 則 DS:0A02Eh := 0;否則 p^[5Ah] \u003c 3 時 DS:0A02Eh := DS:0A02Eh div 2(有號)。第二個條件又檢查了一次 p \u003c\u003e nil,編譯出來是兩次檢查",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
     "spec/640-save-for-half-and-damage-global.md",
     "spec/642-overlay12-damage-modifiers.md"
@@ -31772,6 +31779,7 @@
    "spec": "docs/spec/639-overlay12-poison-and-race-gates.md",
    "note": "if \u003cfar 0176:0473\u003e(byte(arg_6^[1A5h]), arg_6) = 0 then \u003csub_3C\u003e(1, arg_2^[3], 4Eh, arg_6)",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/639-overlay12-poison-and-race-gates.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
@@ -32048,6 +32056,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if (DS:0A02Fh and 1) = 0 且 (and 10h) = 0 then \u003csub_1437\u003e(arg_8,arg_6,66h,ROLLDICE(3,6)=3d6,0FFh,1)",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
   },
@@ -32067,6 +32076,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if \u003cfar 014A:00A7\u003e(arg_6,arg_8,62h,@var_4) = 0 且 同樣以 3Bh 查也 = 0 then \u003csub_1437\u003e(arg_8,arg_6,3Bh,3,0FFh,1)。連查兩個效果 id,兩個都沒有才施加 3Bh",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
   },
@@ -32296,6 +32306,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "if DS:0A02Fh and 1 then n := DS:0A032h;for i := 1 to n do { dec DS:0A02Eh;if DS:0A02Eh \u003c DS:0A032h then DS:0A02Eh := DS:0A032h }。⚠ 減的次數與下限是同一個變數,而且夾限在迴圈裡面每次都做——等同 max(傷害 - n, n),但兩者在原作裡綁在一起,remake 不能當成兩個獨立參數。n=0 時整段跳過,比較用無號",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
   },
@@ -32348,6 +32359,7 @@
    "spec": "docs/spec/642-overlay12-damage-modifiers.md",
    "note": "p := \u003csub_FCC\u003e(DS:9594h);if p \u003c\u003e nil 且 p^[5Ah] \u003e 0(有號 jle)then DS:0A02Eh div= 2(有號)。與 133Fh 查同一個欄位但門檻不同(那支是 \u003c 3),兩者在 1、2 兩個值上重疊",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/642-overlay12-damage-modifiers.md"
    ]
   },
@@ -41368,7 +41380,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/643-hp-fields-and-slot-array.md",
+   "note": "顯示 HP:if arg_6^[1A5h](目前 HP)\u003c arg_6^[78h] then v := 6 else v := 0Ah;arg_0 非零則 v := 0Dh;再用 \u003csub_12E5\u003e(Str 的 byte 版)把 HP 轉成字串連同 v 傳給顯示 routine,接上一個空白後 \u003cfar 0418:0D17h\u003e。這確認 +78h 是 HP 上限(DOS 20FAh 的夾限是另一條證據,兩平台同偏移)",
+   "citations": [
+    "spec/643-hp-fields-and-slot-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41396,7 +41414,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/643-hp-fields-and-slot-array.md",
+   "note": "for i := 1 to 4:if \u003csub_25CD\u003e(arg_0,arg_2,byte[49D3h + i],@var_6) \u003c\u003e 0 則 result := 1。⚠ 沒有提前結束,第一個成功後剩下三個照跑,副作用會發生四次。索引由 1 到 4 不是 0..3",
+   "citations": [
+    "spec/643-hp-fields-and-slot-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41630,7 +41654,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/643-hp-fields-and-slot-array.md",
+   "note": "在紀錄^[1Eh + 0..53h](84 格)裡找出第一個等於 arg_0 的格子清成 0,然後把迴圈變數設成 54h 提前結束(Pascal 沒有 break 的標準寫法)。只清第一個相符的。這 84 格與 spec 624 的 STORESPECIALS 寫入範圍(+1Fh..+6Fh,81 格)完全吻合,兩邊各自獨立量到同一個陣列",
+   "citations": [
+    "spec/643-hp-fields-and-slot-array.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -44438,9 +44468,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 9,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 44,
+   "Todo": 42,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -44993,9 +45023,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 9,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 36,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
