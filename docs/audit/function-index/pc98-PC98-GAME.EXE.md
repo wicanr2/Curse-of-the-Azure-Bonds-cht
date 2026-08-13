@@ -136,7 +136,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `181C7` | sub_181C7 | — | 40 | 26 | 1 | 1 |  | 已解讀 | exact | docs/spec/647-pc98-palette-and-attribute.md<br>寫 PC-98 16 色類比調色盤:out A8h 索引、out AAh/ACh/AEh 依序寫綠紅藍(PC-98 的順序是 G-R-B 不是 R-G-B),每色 4 bit 故值域 0..0Fh;索引由 0Fh 遞減到 0,每筆讀 3 bytes,資料在 CS:SI | — |
 | `18229` | sub_18229 | — | 10 | 6 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_18878`（body 共 10 bytes，已逐條讀完） | — |
 | `18233` | sub_18233 | — | 351 | 124 | 1 | 4 |  | 待解讀 | — | — | — |
-| `18392` | sub_18392 | — | 77 | 32 | 1 | 2 |  | 待解讀 | — | — | — |
+| `18392` | sub_18392 | — | 77 | 32 | 1 | 2 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br><sub_1C15D>(arg_2^, @var_4, 4) 與 (@var_8, @var_2, 2) 搬完後 <sub_188B1>(var_8),再把 arg_2^[0..3] 清成 0(所有權轉移的寫法),最後 inc word_280B8h。sub_188B1 的回傳值沒再讀 | — |
 | `18407` | sub_18407 | — | 311 | 129 | 2 | 12 |  | 待解讀 | — | — | — |
 | `1856A` | sub_1856A | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `18571` | sub_18571 | — | 121 | 48 | 2 | 1 |  | 待解讀 | — | — | — |
@@ -145,8 +145,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18683` | sub_18683 | — | 124 | 56 | 2 | 4 |  | 待解讀 | — | — | — |
 | `186FF` | sub_186FF | — | 58 | 30 | 2 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>回傳串列裡最大的一塊,DX 帶回 word_24186h。⚠ 起始值是 word_24188h - 1,所以串列全部比它小時回傳的是那個減一後的值而不是實際最大值 | — |
 | `18767` | sub_18767 | — | 67 | 37 | 1 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>最佳適配配置:走 word_2418Eh 起的串列(節點以 segment 串接,+0 是大小、+4 是下一塊),剛好夠就立刻採用不再往下找,否則挑剩最少的。找不到時回 0(bx 初值 0FFFFh 加一);找到則回「節點 segment + 1」。無號比較 | — |
-| `187AA` | sub_187AA | — | 66 | 33 | 1 | 1 |  | 待解讀 | — | — | — |
-| `187EC` | sub_187EC | — | 36 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
+| `187AA` | sub_187AA | — | 66 | 33 | 1 | 1 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br>由上往下切的配置:ax+1(多要一段放標頭),word_24188h(剩餘段落數)不足就回 0;否則從 word_24186h(下一個可用 segment)切走,標頭寫 +0 = 大小、+6 = 大小副本、+8 = 魔術數 818Eh,回傳 bx+1(跳過標頭)。單向推進,這支沒有回收路徑 | — |
+| `187EC` | sub_187EC | — | 36 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br>驗證區塊:bx-1 退回標頭,檢查 +8 是否為 818Eh、以及 +0 與 +6 兩份大小是否一致;任一不符就設進位表示無效。大小存兩份能抓到「往前寫超出前一塊」的破壞 | — |
 | `18810` | sub_18810 | — | 46 | 25 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1883E` | sub_1883E | — | 36 | 20 | 2 | 0 |  | 待解讀 | — | — | — |
 | `18862` | sub_18862 | — | 11 | 8 | 4 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=02h(DOS display output)、DL=07h,前後保存 AX/DX | — |

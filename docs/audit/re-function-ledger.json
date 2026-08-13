@@ -14819,6 +14819,33 @@
    "level": "exact",
    "spec": "docs/spec/654-overlay-heap-manager.md",
    "note": "釋放 DOS 記憶體塊(int 21h AH=49h),對象是 word_24182h;為 0 時直接回 0FFFFh。⚠ 先把 word_24182h 清成 0 再檢查進位旗標——釋放失敗時全域已被清掉,同一塊再也不會被嘗試釋放。回傳慣例與同批另兩支相反:0 成功、0FFFFh 失敗"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100266,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/655-heap-block-header.md",
+   "note": "由上往下切的配置:ax+1(多要一段放標頭),word_24188h(剩餘段落數)不足就回 0;否則從 word_24186h(下一個可用 segment)切走,標頭寫 +0 = 大小、+6 = 大小副本、+8 = 魔術數 818Eh,回傳 bx+1(跳過標頭)。單向推進,這支沒有回收路徑"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 100332,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/655-heap-block-header.md",
+   "note": "驗證區塊:bx-1 退回標頭,檢查 +8 是否為 818Eh、以及 +0 與 +6 兩份大小是否一致;任一不符就設進位表示無效。大小存兩份能抓到「往前寫超出前一塊」的破壞"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 99218,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/655-heap-block-header.md",
+   "note": "<sub_1C15D>(arg_2^, @var_4, 4) 與 (@var_8, @var_2, 2) 搬完後 <sub_188B1>(var_8),再把 arg_2^[0..3] 清成 0(所有權轉移的寫法),最後 inc word_280B8h。sub_188B1 的回傳值沒再讀"
   }
  ]
 }
