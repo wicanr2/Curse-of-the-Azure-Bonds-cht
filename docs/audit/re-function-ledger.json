@@ -11989,6 +11989,15 @@
    "level": "exact",
    "spec": "docs/spec/593-ecl-comparison-flags.md",
    "note": "ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6440,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/593-ecl-comparison-flags.md",
+   "note": "ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致"
   }
  ]
 }
