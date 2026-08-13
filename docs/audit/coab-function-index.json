@@ -4759,9 +4759,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Ah 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/599-ecl-select-member-and-0c.md",
+   "note": "與 pc98 overlay-02:0306h 助憶碼序列完全相同（73 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Ah(選第 N 名隊員):READVAR(1);operand 低 7 位是 0-based 索引、最高位是額外動作的開關;沿角色鏈走 n 步後把 DS:9594h 設為該節點,超出範圍則不改目標、只把 DS:BDFFh 設為 1;最高位為 1 且 DS:BDE4h/BDE5h 都非 0 時另做一段重繪並清掉那兩個旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -25055,13 +25056,15 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Ah 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/599-ecl-select-member-and-0c.md",
+   "note": "ECL opcode 0Ah(選第 N 名隊員):READVAR(1);operand 低 7 位是 0-based 索引、最高位是額外動作的開關;沿角色鏈走 n 步後把 DS:9594h 設為該節點,超出範圍則不改目標、只把 DS:BDFFh 設為 1;最高位為 1 且 DS:BDE4h/BDE5h 都非 0 時另做一段重繪並清掉那兩個旗標",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/599-ecl-select-member-and-0c.md"
    ]
   },
   {
@@ -25075,11 +25078,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Ch 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/599-ecl-select-member-and-0c.md",
+   "note": "ECL opcode 0Ch:存下 DS:A2A8h 再還原;READVAR(3) 後把三個 operand 分別寫進 DS:A893h、bank1^[580h]、DS:A894h;以虛擬地圖暫存器 A2A9h/A2AAh/A2ABh 呼叫 far 0062:003E 算出 bank1^[582h],再以 operand 2 為上限取較小者;最後呼叫 0062:0048。與 0Dh 成對——0Ch 算出這個計數,0Dh 把它遞減",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/599-ecl-select-member-and-0c.md"
    ]
   },
   {
@@ -42718,9 +42723,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 24,
+   "Read": 25,
    "NotBlocking": 0,
-   "Todo": 38,
+   "Todo": 37,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43273,9 +43278,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 36,
+   "Read": 38,
    "NotBlocking": 0,
-   "Todo": 27,
+   "Todo": 25,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
