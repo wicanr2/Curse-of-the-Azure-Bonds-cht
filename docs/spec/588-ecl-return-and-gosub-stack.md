@@ -28,6 +28,43 @@ else
 **堆疊空的 `RETURN` 不是錯誤，而是轉去執行 opcode `00h` 的 handler**
 （`0052h`，分派表對得上）。remake 若在這裡報錯或忽略，行為會與原版不同。
 
+## opcode `00h`（`0052h`）：結束 script
+
+`RETURN` 在堆疊空時轉過來的就是這一支，理由在它的內容裡——**它會把整個
+GOSUB 堆疊清空**。
+
+```text
+if DS:BDF6h <> 0 then <far 019E:014A>()
+if DS:7898h <> 0 then
+    DS:9594h := DS:789Dh                  ← 換一個 far pointer
+    DS:7898h := 0
+FillChar(DS:BDDAh, 2, 0)
+DS:BDF4h := 0 ; DS:BDF6h := 0 ; DS:7896h := 1
+ECL_PC := ECL_PC + 1
+while DS:A882h <> nil do                  ← 逐一釋放整條鏈
+    next := node^[2] ; Dispose(node, 6) ; DS:A882h := next
+DS:9637h := 11h                           ← 訊息停留時間設成 11h
+DS:9636h := 1
+DS:BDF2h := 0
+```
+
+`DS:9637h` 是 `PUTDAMAGE` 的訊息停留時間全域
+（[spec 581](581-putdamage-pipeline.md)），這裡設成 `11h`——而 opcode `33h`
+是把它加一（[spec 586](586-ecl-handlers-31-33-34.md)）。所以 script 結束時
+會把停留時間**重設**成固定值，不是累加。
+
+## opcode `02h`（`0107h`）＝ `GOSUB`
+
+```text
+READVAR(1)
+<far 0062:0098>(1)
+```
+
+handler 本身只有 11 條指令——**推堆疊的動作在 `ECL2` 裡**（`0062:0098` 是
+`ECL2` 控制區塊的 stub offset），對應 Borland 符號表裡的
+`SETUPGOSUBSTACK`。所以 `13h`（`RETURN`）彈出、`ECL2` 推入，兩端分屬不同
+unit。
+
 ## opcode `09h`（`02B8h`）：依 operand code 分兩條路
 
 ```text

@@ -4610,9 +4610,10 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 00h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/588-ecl-return-and-gosub-stack.md",
+   "note": "與 pc98 overlay-02:0052h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 00h(結束 script):清掉數個旗標、FillChar(DS:BDDAh,2,0)、ECL_PC++,然後 while 迴圈逐一 Dispose(6) 清空整個 GOSUB 堆疊,最後把 DS:9637h(訊息停留時間)重設為 11h。RETURN 在堆疊空時轉來這裡,理由就在這 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
@@ -4664,7 +4665,8 @@
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/pc98-overlay-02.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/588-ecl-return-and-gosub-stack.md"
    ]
   },
   {
@@ -24878,9 +24880,10 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 00h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/588-ecl-return-and-gosub-stack.md",
+   "note": "ECL opcode 00h(結束 script):清掉數個旗標、FillChar(DS:BDDAh,2,0)、ECL_PC++,然後 while 迴圈逐一 Dispose(6) 清空整個 GOSUB 堆疊,最後把 DS:9637h(訊息停留時間)重設為 11h。RETURN 在堆疊空時轉來這裡,理由就在這",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "context/50-log-2026-08-09-13.md",
@@ -24925,14 +24928,15 @@
    "calls": 0,
    "is_overlay_entry": true,
    "state": "已解讀",
-   "level": "strong inference",
-   "spec": "docs/spec/575-random-core-and-pc98-vram.md",
-   "note": "與 dos overlay-02:0107h 助憶碼序列完全相同（11 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 02h(GOSUB)的 handler:以參數 1 呼叫兩個 far routine ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "level": "exact",
+   "spec": "docs/spec/588-ecl-return-and-gosub-stack.md",
+   "note": "ECL opcode 02h(GOSUB):只有 READVAR(1) 加一次 far 0062:0098(1)——推堆疊的動作在 ECL2 的 SETUPGOSUBSTACK,不在 handler 裡。與 13h(RETURN)的彈出端分屬不同 unit",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/pc98-overlay-02.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/588-ecl-return-and-gosub-stack.md"
    ]
   },
   {
@@ -25010,6 +25014,7 @@
    "note": "ECL opcode 09h:READVAR(2) 後依 operand code[1](DS:A918h)是否 \u003e= 80h 分兩條路——小於 80h 傳 ADDRESSVALUE(1) 的值,否則傳 packed text 緩衝區 DS:A9DAh 的位址。同一 opcode 依 operand code 走不同路徑",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/588-ecl-return-and-gosub-stack.md"
    ]
   },
@@ -25353,6 +25358,7 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/588-ecl-return-and-gosub-stack.md"
    ]
   },
@@ -42641,9 +42647,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 47,
+   "Todo": 46,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43196,9 +43202,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 47,
+   "Todo": 46,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
