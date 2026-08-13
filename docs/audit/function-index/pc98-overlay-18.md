@@ -19,10 +19,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `175D` | sub_175D | — | 67 | 30 | 3 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add bh, 8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 67 bytes，已逐條讀完） | — |
 | `17AA` | sub_17AA | — | 73 | 35 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `17F3` | sub_17F3 | — | 170 | 80 | 1 | 4 |  | 待解讀 | — | — | — |
-| `18AF` | sub_18AF | — | 17 | 11 | 1 | 0 |  | 待解讀 | — | — | — |
+| `18AF` | sub_18AF | — | 17 | 11 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為資料段、CX 取自 ds:7BCAh 的長度,呼叫 INT 21h AH=3Fh 讀檔 | — |
 | `18C0` | sub_18C0 | — | 39 | 23 | 1 | 3 |  | 待解讀 | — | — | — |
 | `18E7` | sub_18E7 | — | 16 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0 ⇒ 清空 32000 bytes 的顯示平面 | — |
-| `18F7` | sub_18F7 | — | 17 | 10 | 1 | 0 |  | 待解讀 | — | — | — |
+| `18F7` | sub_18F7 | — | 17 | 10 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AX 為段位址,從 offset 0 起 rep stosw 寫入 3E80h 個 0FFFFh ⇒ 把 32000 bytes 的顯示平面填滿(18E7h 的填 0 版本) | — |
 | `1908` | sub_1908 | — | 22 | 9 | 1 | 2 |  | 待解讀 | — | — | — |
 | `191E` | sub_191E | — | 51 | 23 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1951` | sub_1951 | — | 40 | 22 | 1 | 1 | ✓ | 待解讀 | — | — | — |
