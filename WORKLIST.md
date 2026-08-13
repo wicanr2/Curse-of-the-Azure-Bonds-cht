@@ -12,7 +12,10 @@
    [`docs/audit/ecl-opcode-dispatch.md`](docs/audit/ecl-opcode-dispatch.md)。
    handler 的語意仍全部 `待解讀`。
 2. **`INTERPET` 內部函式盤點**：85（PC-98）／90（DOS）個函式逐一標狀態，
-   優先處理 dispatcher 直接呼叫的那 52 個 handler。
+   優先處理 dispatcher 直接呼叫的那 52 個 handler。第 562 輪已把 helper 呼叫
+   解回 ECL2 原始函式名，並產出 arity 交叉稽核（64 個 opcode 中 35 個與
+   `KnownCommands` 一致）。**下一步是逐一讀那 29 筆不一致的 handler**，見
+   [`docs/audit/ecl-handler-operand-audit.md`](docs/audit/ecl-handler-operand-audit.md)。
 3. ~~external `CALL` registry~~ **第 561 輪已完成 selector 層**：engine 認得
    7 個 external routine（兩平台相同），CoAB corpus 只靜態使用其中 2 個
    （`2E10h`×12、`6803h`×11＝23 個 CALL）。表在
