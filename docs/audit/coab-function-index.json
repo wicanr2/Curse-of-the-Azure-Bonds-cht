@@ -27752,7 +27752,8 @@
    "note": "FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向",
    "citations": [
     "audit/function-index/dos-overlay-07.md",
-    "spec/615-ecl2-findguy-maxrange.md"
+    "spec/615-ecl2-findguy-maxrange.md",
+    "spec/624-ecl-special-address-space.md"
    ]
   },
   {
@@ -27767,12 +27768,16 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/624-ecl-special-address-space.md",
+   "note": "CHECKSPECIALS(flag_ptr,?,addr):addr-=7C00h 後 27 個入口的比對鏈,把 ECL 特殊位址讀成角色紀錄(DS:9594h)欄位或全域旗標。flag_ptr^ 進函式設 1、鏈全落空才設 0,呼叫端靠它分辨是否特殊位址。含一個區間 7CA5h..7CACh → +0E9h+(addr-0A4h);五個硬幣是五個連號位址(佐證 spec 622);7D00h 讀一次會清掉 DS:0BDFFh;7D0Dh 命中卻不設值,回傳未初始化的 var_2(原作行為要照抄)",
    "citations": [
     "audit/embedded-strings.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/565-ecl-memory-read-path-and-asymmetry.md",
-    "spec/567-ecl-packed-text-and-bank1-field-map.md"
+    "spec/567-ecl-packed-text-and-bank1-field-map.md",
+    "spec/624-ecl-special-address-space.md"
    ]
   },
   {
@@ -27787,9 +27792,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/624-ecl-special-address-space.md",
+   "note": "STORESPECIALS(value,addr):寫入側,只有 18 個入口——比讀側的 27 個少,延續 spec 565 的讀寫不對稱。含區間 7C20h..7C70h → char^[1Eh+(addr-1Fh)](81 個連號位址);7CB8h 寫入前若 value\u003e0B2h 先減 32h;7C00h 只在值為 0 時才動作;7F22h/7F24h/7F26h 三者只差 sub_1808 的第一個參數(1/2/3),且值\u003c=80h 靜默不做事",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/624-ecl-special-address-space.md"
    ]
   },
   {
@@ -43935,9 +43944,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 25,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 3,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
