@@ -44,7 +44,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19B4` | sub_19B4 | — | 855 | 358 | 5 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `1D0B` | sub_1D0B | — | 386 | 146 | 3 | 7 | ✓ | 待解讀 | — | — | — |
 | `1E8D` | sub_1E8D | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `1F53` | sub_1F53 | — | 39 | 18 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `1F53` | sub_1F53 | — | 39 | 18 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br><sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 | spec/628-spell-effect-wrappers.md |
 | `1F8B` | sub_1F8B | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は呪いを受けた。」（unk_1F7A，長度 16）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1FB6` | sub_1FB6 | — | 61 | 24 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1FF4` | sub_1FF4 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1FF3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
@@ -74,39 +74,39 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A52` | sub_2A52 | — | 1120 | 433 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `2EB2` | sub_2EB2 | — | 433 | 148 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3072` | sub_3072 | — | 416 | 137 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `3223` | sub_3223 | — | 61 | 25 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `3223` | sub_3223 | — | 61 | 25 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br>if <far 013E:0070>(21h, DS:0A521h:0A523h) <> 0 then <far 014A:00A2>(目標,1,'の視力は戻った。')。與 41AFh 分支方向相反,交叉確定 013E:0070 是「目標身上有沒有這個效果」,21h 是失明 | spec/628-spell-effect-wrappers.md |
 | `3273` | sub_3273 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は視力を奪われた。」（unk_3260，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `32A0` | sub_32A0 | — | 165 | 52 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `3345` | sub_3345 | — | 17 | 9 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call near ptr sub_32A0`（body 共 17 bytes，已逐條讀完） | — |
 | `3369` | sub_3369 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は病いに冒された。」（unk_3356，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `3396` | sub_3396 | — | 178 | 67 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `345B` | sub_345B | — | 922 | 346 | 0 | 6 | ✓ | 待解讀 | — | — | — |
-| `3804` | sub_3804 | — | 73 | 35 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `3804` | sub_3804 | — | 73 | 35 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br>x := <far 014A:00D4>(DS:0A031h, DS:0A031h);n := (signext(DS:9594h^[198h]) shl 4) + x——把 [198h] 放高 4 bit、x 放低位打包成一個 word(不是相加),再推入 n 與三個 0、備妥 'は祈っている。' 呼叫 <sub_F62> | spec/628-spell-effect-wrappers.md |
 | `3879` | sub_3879 | SPELL43 | 253 | 85 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `3983` | sub_3983 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は呪われた！」（unk_3976，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `39C1` | sub_39C1 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は点滅している。」（unk_39B0，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `39EF` | sub_39EF | — | 246 | 103 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `3AE5` | sub_3AE5 | — | 215 | 88 | 2 | 4 | ✓ | 待解讀 | — | — | — |
-| `3BCB` | sub_3BCB | — | 42 | 20 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `3BCB` | sub_3BCB | — | 42 | 20 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br><sub_3AE5>(2Ah, DS:9594h^[198h], 'は加速された。')。效果 id 2Ah 與 41AFh 指同一個(加速) | spec/628-spell-effect-wrappers.md |
 | `3BF5` | sub_3BF5 | — | 188 | 71 | 5 | 4 | ✓ | 待解讀 | — | — | — |
 | `3CB1` | sub_3CB1 | — | 669 | 266 | 4 | 7 | ✓ | 待解讀 | — | — | — |
 | `3F4E` | sub_3F4E | — | 75 | 39 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `3FA8` | sub_3FA8 | — | 46 | 21 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は減速された。」（unk_3F99，長度 14）呼叫訊息 routine（body 共 46 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `3FEB` | sub_3FEB | — | 433 | 158 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `41AF` | sub_41AF | — | 65 | 32 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `41AF` | sub_41AF | — | 65 | 32 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br>if <far 013E:0070>(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 <sub_F62>。沒有該效果才施放,故 2Ah 是加速 | spec/628-spell-effect-wrappers.md |
 | `41F0` | sub_41F0 | — | 64 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `423F` | sub_423F | — | 133 | 56 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `42C4` | sub_42C4 | — | 66 | 37 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `42C4` | sub_42C4 | — | 66 | 37 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/628-spell-effect-wrappers.md<br>n := ROLLDICE(1,6) + 14h (1d6+20),接著 <sub_3BF5>(n,4,0,…) 與 <sub_3CB1>(0,4,14h,3)。整支不印任何訊息 | spec/628-spell-effect-wrappers.md |
 | `4313` | sub_4313 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は麻痺した。」（unk_4306，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `434D` | sub_434D | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := ROLLDICE(2,4)+2 (2d4+2);<far 013E:008E>(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | spec/627-spell-cure-family.md |
+| `434D` | sub_434D | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := ROLLDICE(2,4)+2 (2d4+2);<far 013E:008E>(0,n) 非 0 才印「は回復した。」(回 0 時玩家看不到任何回饋)。與 5B2Bh 逐指令相同,只差字串常數位址(4340h vs 5B1Eh),而兩處內容都是同一句——同一段程式碼編譯了兩次。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md |
 | `43AC` | sub_43AC | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は透明になった。」（unk_439B，長度 16）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `43DA` | sub_43DA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 <sub_F62>(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0 | spec/627-spell-cure-family.md |
-| `4416` | sub_4416 | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `43DA` | sub_43DA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 <sub_F62>(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md |
+| `4416` | sub_4416 | — | 57 | 31 | 0 | 2 | ✓ | 待解讀 | — | — | spec/627-spell-cure-family.md |
 | `4477` | sub_4477 | — | 244 | 57 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `456C` | sub_456C | — | 81 | 34 | 0 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_1414`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
 | `45F1` | sub_45F1 | — | 150 | 64 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `4687` | sub_4687 | — | 66 | 26 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數 | spec/627-spell-cure-family.md |
+| `46CA` | sub_46CA | — | 59 | 31 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>n := <far 013E:0052>(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD&D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 <sub_F62>(8,n,空字串)。與 43DAh 只差三個常數 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md |
 | `4719` | sub_4719 | — | 96 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `477A` | sub_477A | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_4779，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `47BD` | sub_47BD | — | 203 | 38 | 0 | 2 | ✓ | 待解讀 | — | — | — |
@@ -130,7 +130,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5A06` | sub_5A06 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5A05，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `5A34` | sub_5A34 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_5A33，長度 0）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `5A61` | sub_5A61 | — | 189 | 75 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `5B2B` | sub_5B2B | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,<far 013E:008E>(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | spec/627-spell-cure-family.md |
+| `5B2B` | sub_5B2B | — | 78 | 33 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/627-spell-cure-family.md<br>與 434Dh 逐指令相同的另一份複本:n := ROLLDICE(2,4)+2,<far 013E:008E>(0,n) 非 0 才印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同。治療類法術。骰子參數順序由 ROBSTUFF 的 (1,64h)=1d100 與本支的 (2,4) 交叉確定為 (顆數,面數)。 | audit/function-index/pc98-overlay-22.md<br>spec/627-spell-cure-family.md |
 | `5B90` | sub_5B90 | — | 376 | 161 | 0 | 11 | ✓ | 待解讀 | — | — | — |
 | `5D17` | sub_5D17 | — | 268 | 102 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `5E32` | sub_5E32 | — | 472 | 176 | 0 | 9 | ✓ | 待解讀 | — | — | — |
