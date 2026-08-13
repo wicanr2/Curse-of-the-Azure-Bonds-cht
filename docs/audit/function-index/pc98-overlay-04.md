@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0A33` | sub_A33 | — | 202 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0B31` | sub_B31 | — | 141 | 46 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0BFF` | sub_BFF | — | 561 | 240 | 1 | 8 | ✓ | 待解讀 | — | — | — |
-| `0F42` | sub_F42 | GOTEMPLE | 217 | 86 | 0 | 3 | ✓ | 待解讀 | — | — | — |
+| `0F42` | sub_F42 | GOTEMPLE | 217 | 86 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-04.md |
 | `0FD9` | sub_FD9 | — | 25 | 11 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:262h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |
 | `101A` | sub_101A | — | 306 | 128 | 2 | 10 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0F42h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1109` | sub_1109 | — | 10 | 7 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |

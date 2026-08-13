@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `003E` | sub_3E | — | 215 | 79 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0115` | sub_115 | — | 107 | 37 | 1 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `02CB` | sub_2CB | DOGEN | 1834 | 676 | 0 | 19 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `0AFB` | sub_AFB | — | 825 | 325 | 1 | 5 | ✓ | 待解讀 | — | — | — |
+| `0AFB` | sub_AFB | — | 825 | 325 | 1 | 5 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-17.md |
 | `0DE5` | sub_DE5 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `0DEA` | sub_DEA | — | 14 | 6 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push di`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 14 bytes，已逐條讀完） | audit/function-triage.md |
 | `0E03` | sub_E03 | — | 15 | 9 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | audit/embedded-strings.md |
@@ -42,7 +42,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2C1C` | sub_2C1C | — | 411 | 184 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `2DB7` | sub_2DB7 | — | 155 | 71 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2E9B` | sub_2E9B | — | 3160 | 1202 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `3BBD` | sub_3BBD | ADDCHARACTERTOPARTY | 55 | 24 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:262h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 55 bytes，已逐條讀完） | — |
+| `3BBD` | sub_3BBD | ADDCHARACTERTOPARTY | 55 | 24 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:262h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 55 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md |
 | `3BF4` | sub_3BF4 | — | 1326 | 517 | 5 | 12 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 3BBDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-triage.md |
 | `4122` | sub_4122 | REMOVECHARACTERFROMPARTY | 347 | 110 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `427D` | sub_427D | — | 61 | 27 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完） | audit/embedded-strings.md |
@@ -51,11 +51,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `45D0` | sub_45D0 | SETACTIVEICON | 1771 | 687 | 2 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `4CBB` | sub_4CBB | CHARCONBONUS | 249 | 92 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `4DB4` | sub_4DB4 | — | 218 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `4E8E` | sub_4E8E | — | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
+| `4E8E` | sub_4E8E | — | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md |
 | `4E97` | sub_4E97 | — | 579 | 238 | 9 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 4E8Eh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `50DA` | sub_50DA | — | 256 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `51DA` | sub_51DA | — | 246 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `51DA` | sub_51DA | — | 246 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-17.md |
 | `52D0` | sub_52D0 | — | 98 | 38 | 3 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 51DAh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `5420` | sub_5420 | TRAINCHARACTER | 72 | 25 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_FF7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完） | — |
+| `5420` | sub_5420 | TRAINCHARACTER | 72 | 25 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_FF7`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 72 bytes，已逐條讀完） | audit/function-index/pc98-overlay-17.md |
 | `546F` | sub_546F | — | 2527 | 935 | 1 | 9 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 5420h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-triage.md |
 | `5E57` | sub_5E57 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

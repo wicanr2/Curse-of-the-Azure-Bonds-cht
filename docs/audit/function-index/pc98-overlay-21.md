@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0DE8` | sub_DE8 | TAKEMONEY | 12 | 4 | 0 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `1070` | sub_1070 | CHECKTREASURE | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `10C4` | sub_10C4 | — | 56 | 25 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `10FC` | sub_10FC | CREATERNDTREASURE | 1455 | 538 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `10FC` | sub_10FC | CREATERNDTREASURE | 1455 | 538 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-21.md<br>audit/function-triage.md |
 | `147D` | sub_147D | — | 143 | 51 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `151F` | sub_151F | — | 15 | 5 | 5 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 37h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
 | `152E` | sub_152E | — | 115 | 38 | 1 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10FCh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |

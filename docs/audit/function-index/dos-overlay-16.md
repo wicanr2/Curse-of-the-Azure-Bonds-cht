@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0C7E` | sub_C7E | — | 157 | 63 | 2 | 0 | ✓ | 待解讀 | — | — | — |
 | `0DEA` | sub_DEA | — | 1436 | 546 | 1 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `1388` | sub_1388 | — | 264 | 109 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1490` | sub_1490 | — | 143 | 49 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `1490` | sub_1490 | — | 143 | 49 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md |
 | `1522` | sub_1522 | — | 348 | 128 | 4 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `169F` | sub_169F | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `16A4` | sub_16A4 | — | 10 | 4 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov dl, [di+3F8Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
@@ -30,6 +30,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `35A8` | sub_35A8 | — | 116 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `3748` | sub_3748 | — | 1520 | 575 | 0 | 10 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `3D38` | sub_3D38 | — | 193 | 64 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `3EDD` | sub_3EDD | — | 185 | 75 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `3EDD` | sub_3EDD | — | 185 | 75 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md |
 | `3F96` | sub_3F96 | — | 1135 | 457 | 2 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 3EDDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `4405` | sub_4405 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

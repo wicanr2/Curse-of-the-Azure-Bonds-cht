@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1769` | sub_1769 | — | 79 | 26 | 2 | 1 | ✓ | 已解讀 | strong inference | docs/spec/576-adnd-strength-encoding-and-effect-removal.md<br>與 pc98 overlay-23:1756h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：同 DONEWSTRENGTH 的比較規則,對 SS 上的區域結構操作:p[-2]:p[-1] 為力量、p[-4]:p[-3] 為百分位,較大者寫回 p[-1]/p[-3](當前值同步到最大值欄位) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `17B8` | sub_17B8 | — | 246 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `18AE` | sub_18AE | — | 42 | 15 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 42 bytes，已逐條讀完） | — |
-| `18D8` | sub_18D8 | — | 1089 | 409 | 1 | 7 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `18D8` | sub_18D8 | — | 1089 | 409 | 1 | 7 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md |
 | `1935` | sub_1935 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+34h], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `193A` | sub_193A | — | 5 | 2 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1B1B`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `193F` | sub_193F | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+3Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | audit/embedded-strings.md |

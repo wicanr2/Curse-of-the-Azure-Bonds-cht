@@ -15,11 +15,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0D81` | sub_D81 | RUNAWAY | 189 | 74 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `0E3E` | sub_E3E | FIGBLOWS | 313 | 105 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0F77` | sub_F77 | ADJUSTBLOWS | 45 | 19 | 2 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0FB1` | sub_FB1 | TRYTOSWEEP | 108 | 35 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0FB1` | sub_FB1 | TRYTOSWEEP | 108 | 35 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md |
 | `101A` | sub_101A | — | 396 | 146 | 2 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0FB1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `119F` | sub_119F | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_1116`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
 | `11A9` | sub_11A9 | — | 6 | 3 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md |
-| `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 待解讀 | — | — | — |
+| `11AF` | sub_11AF | CHECKTARGET | 33 | 13 | 4 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-13.md |
 | `11C7` | sub_11C7 | — | 5 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp dx, [bp+8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `11CC` | sub_11CC | — | 140 | 46 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 11AFh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `12A8` | sub_12A8 | TURNUNDEAD | 487 | 180 | 0 | 9 | ✓ | 待解讀 | — | — | — |
@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `155B` | sub_155B | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short near ptr unk_14F1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1560` | sub_1560 | — | 5 | 2 | 9 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1565` | sub_1565 | — | 4 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完） | — |
-| `1569` | sub_1569 | — | 1 | 1 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | audit/embedded-strings.md |
+| `1569` | sub_1569 | — | 1 | 1 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md |
 | `156A` | sub_156A | — | 11 | 4 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_13], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 7 | 4 | 4 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call near ptr sub_358`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1679` | sub_1679 | — | 19 | 6 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `xor ah, ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 19 bytes，已逐條讀完） | — |

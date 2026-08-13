@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0CF0` | sub_CF0 | — | 619 | 243 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `0F5B` | sub_F5B | — | 84 | 30 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0FAF` | sub_FAF | — | 62 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0FED` | sub_FED | — | 1910 | 669 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `0FED` | sub_FED | — | 1910 | 669 | 0 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-21.md |
 | `145D` | sub_145D | — | 180 | 59 | 4 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0FEDh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1513` | sub_1513 | — | 45 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 39h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 45 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `154F` | sub_154F | — | 15 | 6 | 5 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `imul cx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
