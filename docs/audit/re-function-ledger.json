@@ -4969,6 +4969,276 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101339,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@INTR$q4BYTEm9REGISTERS` 逐位元組相同（58 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101490,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@GetTime$qm4Wordt1t1t1` 逐位元組相同（37 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108722,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 108750,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109695,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt1` 逐位元組相同（26 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109721,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6Stringt14Byte` 逐位元組相同（36 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109771,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Copy$qm6Stringt17Integert3` 逐位元組相同（65 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109836,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Concat$qm6Stringt1` 逐位元組相同（44 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109956,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$bsub$qm6Stringt1` 逐位元組相同（43 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109999,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm6String4Char` 逐位元組相同（18 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 110388,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Set@MemberOf$q4Byte` 逐位元組相同（33 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111139,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealCmp` 逐位元組相同（23 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111181,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealFloat` 逐位元組相同（63 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111244,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__RealTrunc` 逐位元組相同（92 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 111452,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Int$q4Real` 逐位元組相同（81 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 112819,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__Str2Int` 逐位元組相同（152 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113046,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Val__Longint$qm6Stringm7Integer` 逐位元組相同（49 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113770,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `__GetChar` 逐位元組相同（28 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113898,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@ReadLn$qm4Text` 逐位元組相同（41 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 113939,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@WriteLn$qm4Text` 逐位元組相同（31 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114008,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Text4Char` 逐位元組相同（30 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114038,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text4Char4Word` 逐位元組相同（45 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114083,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Read$qm4Textm6String4Word` 逐位元組相同（56 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114139,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Textm6String4Word` 逐位元組相同（62 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114289,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Write$qm4Text7Longint4Word` 逐位元組相同（73 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 114362,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Assign$qm4Filem6String` 逐位元組相同（46 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115037,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115072,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115322,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 112549,
+   "state": "待解讀",
+   "level": "",
+   "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
+   "note": "Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀"
   }
  ]
 }
