@@ -26,7 +26,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1530` | sub_1530 | STRHITBONUS | 163 | 67 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `15D3` | sub_15D3 | STRDAMBONUS | 79 | 31 | 2 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jb short loc_1633`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 79 bytes，已逐條讀完） | — |
 | `1622` | sub_1622 | — | 55 | 23 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完） | — |
-| `1659` | sub_1659 | STRWGTBONUS | 22 | 9 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+var_3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | — |
+| `1659` | sub_1659 | STRWGTBONUS | 22 | 9 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+var_3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完） | audit/function-index/pc98-overlay-24.md |
 | `166F` | sub_166F | — | 40 | 16 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `ja short loc_169F`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 40 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 162 | 64 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1659h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `1739` | sub_1739 | LOSEMEMSPELL | 65 | 24 | 0 | 1 | ✓ | 待解讀 | — | — | — |
@@ -38,14 +38,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18B8` | sub_18B8 | GAINITEM | 52 | 22 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+54h], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 52 bytes，已逐條讀完） | — |
 | `18EC` | sub_18EC | — | 96 | 32 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 96 bytes，已逐條讀完） | — |
 | `194C` | sub_194C | HORZMSG | 92 | 46 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `19A8` | sub_19A8 | CHARMSG | 34 | 14 | 4 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short loc_1A16`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 34 bytes，已逐條讀完） | — |
+| `19A8` | sub_19A8 | CHARMSG | 34 | 14 | 4 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short loc_1A16`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 34 bytes，已逐條讀完） | audit/function-index/pc98-overlay-24.md |
 | `19CA` | sub_19CA | — | 198 | 94 | 2 | 4 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 19A8h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-triage.md |
 | `1A90` | sub_1A90 | CLEARMSGWINDOW | 50 | 26 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>與 dos overlay-24:18BEh 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1AC2` | sub_1AC2 | PRINTCHARNAME | 109 | 41 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1B2F` | sub_1B2F | COPYSPRITE | 287 | 113 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1C48` | sub_1C48 | — | 40 | 15 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A65h:1B0Dh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 40 bytes，已逐條讀完） | — |
 | `1C76` | sub_1C76 | CREATERADIALSPRITE | 77 | 45 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `1CC3` | sub_1CC3 | MOVESPRITE | 978 | 329 | 0 | 9 | ✓ | 待解讀 | — | — | — |
+| `1CC3` | sub_1CC3 | MOVESPRITE | 978 | 329 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-24.md |
 | `2095` | sub_2095 | — | 437 | 142 | 7 | 5 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `224A` | sub_224A | — | 448 | 146 | 2 | 8 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1CC3h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `240A` | sub_240A | TWINKLE | 451 | 162 | 0 | 6 | ✓ | 待解讀 | — | — | — |
@@ -62,7 +62,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2CA4` | sub_2CA4 | SETUPSCREEN | 456 | 192 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `2E8C` | sub_2E8C | SHOWLOCATION | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/516-fire-knife-external-map-handoff-audit.md<br>spec/525-pc98-tempsearch-display-state.md |
 | `30E7` | sub_30E7 | DOCOMBATSCREEN | 54 | 22 | 0 | 3 | ✓ | 待解讀 | — | — | — |
-| `314B` | sub_314B | PICKAPERSON | 374 | 141 | 0 | 5 | ✓ | 待解讀 | — | — | — |
+| `314B` | sub_314B | PICKAPERSON | 374 | 141 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-24.md |
 | `32B6` | sub_32B6 | — | 123 | 41 | 2 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 314Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `3334` | sub_3334 | USINGMISSLEWEAPON | 67 | 23 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3377` | sub_3377 | USINGHURLEDWEAPON | 69 | 27 | 0 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md |

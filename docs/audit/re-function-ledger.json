@@ -12952,6 +12952,33 @@
    "level": "strong inference",
    "spec": "docs/spec/614-ecl2-gosub-push.md",
    "note": "與 pc98 overlay-07:064Ch 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DRAWHEADBODY(a,b):清 DS:BDF5h、把兩個參數分別存進 DS:7F32h 與 DS:7F33h,再以相同兩個值呼叫 far 0176:0043,最後 far 0176:003E(1,3,3) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 2140,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
+   "note": "FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 1469,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
+   "note": "MAXRANGE(dir,x,y):bank0^[1CCh]=0(非地城)時直接回 2 並把 bank1^[582h] 也設為 2;否則以 far 017C:0034 逐格檢查可通行,最多 2 格(上限寫死)。方向編碼是 0/2/4/6 間隔 2——0 與 6 動 y、2 與 4 動 x"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1936,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
+   "note": "與 pc98 overlay-07:085Ch 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

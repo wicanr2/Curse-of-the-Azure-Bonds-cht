@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `06E8` | sub_6E8 | — | 37 | 16 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDFNC：與 PC-98 逐指令相同 | spec/562-ecl2-helper-api-and-operand-audit.md |
 | `070D` | sub_70D | — | 40 | 16 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>字元碼調整:arg <= 1Fh 時回傳 arg + 40h,否則原樣回傳(控制字元映射到 40h 之後) | spec/572-resident-service-functions.md |
 | `0735` | sub_735 | — | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh | audit/embedded-strings.md<br>knowledge/gold-box-ecl-interpreter.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |
-| `0790` | sub_790 | — | 97 | 35 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `0790` | sub_790 | — | 97 | 35 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/615-ecl2-findguy-maxrange.md<br>與 pc98 overlay-07:085Ch 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `07F1` | sub_7F1 | — | 892 | 293 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0B6D` | sub_B6D | — | 515 | 163 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0D70` | sub_D70 | — | 302 | 107 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>STOREVALUE(addr,value)：C04B/C04C/C04D → DS:720F/7210/7211；⚠ IDA 函式邊界被切短至 0E98h，實際延伸到 0F34h 之後 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-07.md<br>spec/547-normal-beholder-cave-presentation-state.md<br>spec/562-ecl2-helper-api-and-operand-audit.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |

@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0E11` | sub_E11 | — | 245 | 100 | 10 | 3 | ✓ | 待解讀 | — | — | — |
 | `0F06` | sub_F06 | — | 441 | 168 | 47 | 6 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `10D2` | sub_10D2 | — | 282 | 102 | 0 | 2 | ✓ | 待解讀 | — | — | — |
-| `1263` | sub_1263 | — | 663 | 266 | 0 | 9 | ✓ | 待解讀 | — | — | — |
+| `1263` | sub_1263 | — | 663 | 266 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md |
 | `145D` | sub_145D | — | 5 | 3 | 22 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1462` | sub_1462 | — | 7 | 3 | 14 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, ds:755Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1499` | sub_1499 | — | 5 | 2 | 10 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp ax, 2Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -31,11 +31,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15D1` | sub_15D1 | — | 7 | 2 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_13FE`，控制權轉交後不返回；先設定 `mov byte ptr [bp-1], 0`（body 共 7 bytes，已逐條讀完） | — |
 | `15FB` | sub_15FB | — | 67 | 26 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `163E` | sub_163E | — | 77 | 27 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
+| `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | audit/function-index/dos-overlay-22.md |
 | `16A9` | sub_16A9 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `16B8` | sub_16B8 | — | 5 | 2 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `16BD` | sub_16BD | — | 158 | 55 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 168Bh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `175B` | sub_175B | — | 324 | 128 | 5 | 4 | ✓ | 待解讀 | — | — | — |
+| `175B` | sub_175B | — | 324 | 128 | 5 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-22.md |
 | `189F` | sub_189F | — | 5 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp+0Ah]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `18A4` | sub_18A4 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-78h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `18A9` | sub_18A9 | — | 6 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr ds:6E94h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
@@ -136,7 +136,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5AA8` | sub_5AA8 | — | 464 | 173 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `5C86` | sub_5C86 | — | 381 | 145 | 0 | 6 | ✓ | 待解讀 | — | — | — |
 | `5E11` | sub_5E11 | — | 269 | 102 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `5F2F` | sub_5F2F | — | 36 | 12 | 0 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 36 bytes，已逐條讀完） | — |
+| `5F2F` | sub_5F2F | — | 36 | 12 | 0 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_6]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 36 bytes，已逐條讀完） | audit/function-index/dos-overlay-22.md |
 | `5F53` | sub_5F53 | — | 185 | 87 | 4 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 5F2Fh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `6022` | sub_6022 | — | 268 | 105 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `612E` | sub_612E | — | 77 | 29 | 1 | 1 | ✓ | 待解讀 | — | — | — |
