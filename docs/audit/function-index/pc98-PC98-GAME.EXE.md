@@ -213,11 +213,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19A69` | sub_19A69 | — | 13 | 7 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>讀 0000:0712h 的 BIOS 資料區位元組並加一後回傳 | — |
 | `19A76` | sub_19A76 | — | 21 | 12 | 3 | 1 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>讀 0000:0712h 的 BIOS 計時位元組加一,與 dh 比較;不同就更新 dh | — |
 | `19A8B` | sub_19A8B | — | 23 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>從 PC-98 BIOS 工作區讀回游標:low(word_280F9h) := 0000:071Ch、high := 0000:0710h。與 19A29h 方向相反,兩支合起來確定 word_280F9h 高位元組是列、低位元組是欄 | — |
-| `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 待解讀 | — | — | — |
+| `19AA2` | sub_19AA2 | — | 32 | 13 | 2 | 2 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>初始化游標:<19A10h> 開游標、<19A8Bh> 從 BIOS 讀回位置,把 word_280FBh 與 word_280FDh 都設成「目前列 + 欄 0」(兩者初值相同),再從 0000:0712h 抄一份列數上限到 byte_280E5h | — |
 | `19AC2` | sub_19AC2 | — | 12 | 10 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_19A29`（body 共 12 bytes，已逐條讀完） | — |
-| `19ACE` | sub_19ACE | — | 50 | 27 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19B00` | sub_19B00 | — | 79 | 36 | 2 | 1 |  | 待解讀 | — | — | — |
-| `19B4F` | sub_19B4F | — | 46 | 19 | 1 | 2 |  | 待解讀 | — | — | — |
+| `19ACE` | sub_19ACE | — | 50 | 27 | 1 | 1 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>清畫面:格數 = (low(word_280CAh)+1) × byte_280E5h;屬性寫 0E1h((7 shl 5) or 1,與 spec 658 一致)到 es:[bx+di]、字元寫 0020h 到 ES:DI 並 di += 2——所以 word_280D6h 是兩個平面的位移差 | — |
+| `19B00` | sub_19B00 | — | 79 | 36 | 2 | 1 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>全形字的游標吸附:byte_280D0h 為 0 或已在左界就返回;否則算出目前格的 VRAM 位移,若高位元組非 0 且 ah/al 任一 bit 7 已設(是全形的某一半),再看前一格是不是它的左半,成立就 dec dl 把游標左移——避免游標停在一個字的中間。判斷綁在 bit 7 的編碼上,中文版若改存法要跟著改 | — |
+| `19B4F` | sub_19B4F | — | 46 | 19 | 1 | 2 |  | 已解讀 | exact | docs/spec/662-cursor-snap-and-clear.md<br>算 VRAM 位移 (dh × byte_280DAh + dl) × 2(不是 80 欄再 ×2)存進 word_280D8h;word_280EDh 非 0 時再加 1000h(區塊切換)但**只用於這次呼叫**,不寫回 word_280D8h;最後 ah := 13h 呼叫 <sub_1977B> | — |
 | `19B7D` | sub_19B7D | — | 31 | 13 | 6 | 1 |  | 待解讀 | — | — | — |
 | `19B9C` | sub_19B9C | — | 32 | 15 | 6 | 1 |  | 待解讀 | — | — | — |
 | `19BBC` | sub_19BBC | — | 52 | 25 | 1 | 3 |  | 待解讀 | — | — | — |
