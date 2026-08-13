@@ -284,15 +284,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 11798,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 12509,
    "state": "待解讀",
    "level": "",
@@ -415,15 +406,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 12250,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 3Bh 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -12007,6 +11989,24 @@
    "level": "strong inference",
    "spec": "docs/spec/600-ecl-picture.md",
    "note": "與 pc98 overlay-02:08A7h 助憶碼序列完全相同（77 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 0Eh(顯示圖片):READVAR(1);operand 為 FFh 是「關閉」的哨兵值,會清掉一組旗標;否則依 bank1^[5C2h] 是否為 FFh 分兩條路,是的話再依編號是否 >= 78h 分兩條——< 78h 帶著函式前方的 'PIC' 字串常數(檔名前綴)呼叫 far 0176:0034/0025,>= 78h 走 0176:004D。同一條 ECL 指令的效果隨狀態而異 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 12250,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/601-ecl-slot-search.md",
+   "note": "ECL opcode 3Bh:READVAR(3);在全隊每名角色的 +1Eh 位元組陣列(索引 1..100)裡找第一個等於 operand1 的格子,把格號寫進 operand2 指定的位址(找不到為 FFh)、命中角色的 0-based 序號寫進 operand3 指定的位址。該陣列與掛在 +14Eh 的物品鏈是兩套不同的東西——一個定長、一個動態鏈"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 11798,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/601-ecl-slot-search.md",
+   "note": "與 pc98 overlay-02:2FDAh 助憶碼序列完全相同（83 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 3Bh:READVAR(3);在全隊每名角色的 +1Eh 位元組陣列(索引 1..100)裡找第一個等於 operand1 的格子,把格號寫進 operand2 指定的位址(找不到為 FFh)、命中角色的 0-based 序號寫進 operand3 指定的位址。該陣列與掛在 +14Eh 的物品鏈是兩套不同的東西——一個定長、一個動態鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
