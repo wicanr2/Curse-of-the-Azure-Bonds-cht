@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16E6` | sub_16E6 | — | 148 | 54 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `177A` | sub_177A | — | 92 | 46 | 2 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `17D6` | sub_17D6 | — | 232 | 108 | 4 | 4 | ✓ | 待解讀 | — | — | — |
-| `18BE` | sub_18BE | — | 50 | 26 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `18BE` | sub_18BE | — | 50 | 26 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1) | spec/585-ecl-goto-and-display-mode-pair.md |
 | `18F3` | sub_18F3 | — | 130 | 53 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1975` | sub_1975 | — | 309 | 123 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `1AAA` | sub_1AAA | — | 77 | 45 | 1 | 1 | ✓ | 待解讀 | — | — | — |

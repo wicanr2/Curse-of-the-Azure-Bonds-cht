@@ -137,7 +137,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `27F0` | sub_27F0 | — | 120 | 47 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `2868` | sub_2868 | — | 53 | 21 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `289D` | sub_289D | — | 38 | 20 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>擲 d100;結果 <= 1Eh(30) 時依序呼叫 1Bh(0Bh) 與 1Bh(35h) ⇒ 30% 機率取消 | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
-| `28C3` | sub_28C3 | — | 49 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `28C3` | sub_28C3 | — | 49 | 24 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/585-ecl-goto-and-display-mode-pair.md<br>與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `290C` | sub_290C | — | 230 | 91 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `29F2` | sub_29F2 | — | 34 | 16 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/573-effprocs-effect-handlers-first-batch.md<br>DS:A02Dh 為 0 且傷害旗標 bit 3 為 0 時直接返回,否則呼叫 1Bh(0) | audit/function-index/dos-overlay-12.md<br>spec/573-effprocs-effect-handlers-first-batch.md |
 | `2A14` | sub_2A14 | — | 144 | 46 | 0 | 4 | ✓ | 待解讀 | — | — | — |

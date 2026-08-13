@@ -8,7 +8,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | — |
 | `0011` | sub_11 | CALCBIGOFFSET | 104 | 41 | 7 | 1 | ✓ | 待解讀 | — | — | — |
 | `0079` | sub_79 | CALCSCREENCOORDS | 123 | 51 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | — |
+| `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
 | `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 待解讀 | — | — | — |
 | `012E` | sub_12E | SHOWCURSOR | 428 | 190 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `02DA` | sub_2DA | — | 409 | 184 | 1 | 6 | ✓ | 待解讀 | — | — | — |
