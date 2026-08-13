@@ -86,33 +86,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 2348,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Fh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 2418,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 10h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 2875,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 16h／17h／18h／19h／1Ah／1Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 3093,
    "state": "待解讀",
    "level": "",
@@ -127,15 +100,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 2Ah 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 3773,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 15h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -163,15 +127,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 23h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 6042,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 24h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -15859,6 +15814,56 @@
    "level": "exact",
    "spec": "docs/spec/685-dos-ecl-compare-dispatch.md",
    "note": "堆疊彈出:DS:4F9Dh^[582h] > 0 時**先減再用**,所以傳給 <loc_6F5h> 的是彈出後的新深度而不是被彈出那格的索引;計數是 word 但只取低 byte 傳下去,深度超過 255 會截斷。DS:4FB4h 的遞增在條件外面,堆疊空時也照加",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2348,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
+   "note": "讀一個數值寫回運算元 2:<far 06DAh>(2) 取運算元 → dst := <06FDh>(DS:76C7h, DS:7707h) → value := <far 0542h:08B3h>(0, 0Ah, @buf)(0Ah 是輸入長度上限) → <071Bh>(dst, value)。運算元描述是三個平行陣列 DS:7685h/76C5h/7705h(各 64 bytes,1-based,相差 40h),寫回順序是 (handle, value)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2875,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
+   "note": "把 6 元素旗標陣列的查表展開成六段 cmp/jnz:v := DS:75FFh,若 v 在 16h..1Bh 且 DS:[75F8h+(v-16h)] = 0 則呼叫 <far 0761h>()——**六個分支呼叫的是同一支且無參數**,差別只在哪個旗標當閘門;v 在範圍外什麼都不做。開頭 DS:4FB4h++",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 3773,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/686-dos-ecl-operand-tables-and-menu.md",
+   "note": "選單/清單選取 opcode。⚠ **取運算元的次數不固定**:先固定取 3 個,讀出第 3 個的值當項目數 n,再取 n 個——靜態切 opcode 邊界會在這裡切錯。配置 n 個節點後,逐個從 DS:[7648h + i shl 8](i 從 1 起,256 bytes 一格,槽 1=7748h、槽 2=7848h,正好是 spec 685 字串比較的那兩個緩衝)複製 40 bytes 當項目文字。節點版面:+00h Pascal 字串(長度 byte + 最多 40 字元)、+29h 旗標(建立時 0)、+2Ah far next。迴圈終止是同時檢查 far 指標兩個 word 是否為零,不是只看 segment。結果經 <071Bh> 寫回運算元 1",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2418,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
+   "note": "讀一行字串寫回運算元 2:<far 0542h:0722h> 讀入(28h=40 字元上限),複製到 text(上限 0FFh),若 text 的長度位元組為 0 則改填 CS:0970h 的預設字串,再 <006B:0025h>(dst, @text)。⚠ 09B8h 的 0A54h:064Eh 只被推入 3 個 word(同一支在 09D3h 是 5 個)——差的 2 個是前一個 far call 留在堆疊上的殘留。單看前面連續幾個 push 會把參數數到短兩個且整組錯位",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 6042,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/687-far-call-flattening-and-stack-leftover.md",
+   "note": "場景切換的分派。GUARD 形狀:`if DS:5BECh<>0 then <0713:0020h>(DS:25AAh)` / f() / `if DS:5BECh=0 then <0713:00D6h>()`——**前後兩半用同一旗標的相反值當閘門**,只會執行其中一個,不是配對的存檔還原。依 [4F9Dh]^[6D8h]=1 / [4F9Dh]^[5C4h]=1 / 其他 分別走 overlay-06(entry#3+#1)、overlay-04(#2+#1)、overlay-05(#2+#1);再依 [4F99h]^[1CCh] 是否為零走 overlay-27 entry#6 或 overlay-30 entry#11。重載路徑(8B69h 或 8B56h 非零)另呼叫 ov08/10/09 e2、ov13 e34、ov32 e23、ov31 e7,並用 overlay-07 entry#6 算出的 n **往下夾** [4F9Dh]^[582h](cmp+jnb,只在 n 較小時寫入)——就是 0801h 遞減的那個堆疊深度。⚠ 197Ah 的 `call sub_1953` 是 IDA 攤平造成的假名字,實為 overlay-32 entry#23",
    "bounds": "prologue"
   }
  ]

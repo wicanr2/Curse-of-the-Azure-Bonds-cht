@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 37 | 11 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 6 個呼叫，沒有其他動作：`call loc_19A2+1`、`call loc_19E9+1`、`call loc_17E7`、`call sub_177A`、`call sub_16BD`、`call far ptr loc_1655+2`（body 共 37 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>context/50-log-2026-08-09-13.md<br>spec/507-pc98-general-target-object-order-projection.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/516-fire-knife-external-map-handoff-audit.md |
-| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md |
+| `0025` | sub_25 | — | 504 | 179 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/564-ecl-operand-decoding-and-arity-validation.md<br>spec/687-far-call-flattening-and-stack-leftover.md |
 | `021D` | sub_21D | — | 138 | 45 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/683-encumbrance-movement.md<br>負重決定移動力:byte[arg_0^[2Eh]×16 + 5CF6h] = 2 才生效;w := arg_0^[37h](有號),0..96h(150)用基準值 arg_4^[0E4h]、97h..18Fh(151..399)設 9、其餘設 6;之後 arg_0^[32h] 非 0 且值 <= 9 時再加 3(最多補到 12,正好是 AD&D 未負重的移動力)。**無條件覆寫** | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>spec/683-encumbrance-movement.md |
 | `02A7` | sub_2A7 | — | 286 | 104 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `03C5` | sub_3C5 | — | 141 | 52 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/683-encumbrance-movement.md<br>w := arg_0^[187h] - <sub_148F>(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 | audit/function-index/pc98-overlay-24.md<br>spec/683-encumbrance-movement.md |
@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2828` | sub_2828 | — | 70 | 20 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `2877` | sub_2877 | — | 60 | 24 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:2AAEh 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：r := <sub_2A5B>(arg_0);arg_0^[18Eh]^[7] := 1;備妥「防御している」呼叫 <sub_194C>;回傳 r。回傳值是進來時就算好的,設旗標與顯示訊息都在那之後,所以不受旗標影響 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `28B3` | sub_28B3 | — | 438 | 149 | 0 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `2A6D` | sub_2A6D | — | 290 | 113 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `2A6D` | sub_2A6D | — | 290 | 113 | 0 | 7 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/687-far-call-flattening-and-stack-leftover.md |
 | `2BAA` | sub_2BAA | — | 603 | 248 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2E05` | sub_2E05 | — | 54 | 22 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/634-str-conversion-family.md<br>與 pc98 overlay-24:30E7h 助憶碼序列完全相同（22 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<far 018C:0301>() → <sub_1F6E>() → <sub_18F1>(DS:9F2Ch^[2]+3, DS:9F2Ch^[3]+3, 0FFh, 8)。兩個 byte 都用 cbw(有號)各加固定的 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `2E6A` | sub_2E6A | — | 430 | 163 | 0 | 3 | ✓ | 待解讀 | — | — | — |
