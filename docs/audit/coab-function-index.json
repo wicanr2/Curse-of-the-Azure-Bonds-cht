@@ -16828,7 +16828,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -16879,7 +16882,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "與 pc98 overlay-22:4A9Ah 助憶碼序列完全相同（57 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -38509,7 +38515,8 @@
    "note": "t := DS:0A521h;免疫條件是 t^[11Ah](RACETYPE)\u003e1 或 t^[0DEh]\u003e1(是大於 1 不是等於某值),命中就備妥「は影響を受けなかった。」呼叫 \u003cfar 014A:0084\u003e(1,0Ah);否則 n := (signext(DS:9594h^[198h]) shl 7) + \u003cfar 014A:00D4\u003e(DS:0A031h,DS:0A031h),備妥「は魅了された。」呼叫 \u003csub_F62\u003e,再 \u003cfar 014A:00A7\u003e(0Bh,t,@var_4) 非 0 時 \u003cfar 013E:002A\u003e(0Bh,t,var_4,0)。移位量是 7,與 29A3h/3804h 的 4 不同",
    "citations": [
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/630-spell-target-array.md"
+    "spec/630-spell-target-array.md",
+    "spec/632-spell-target-array-loop.md"
    ]
   },
   {
@@ -38695,7 +38702,8 @@
    "note": "t := DS:0A521h;若 t^[196h]=1 就把 DS:0A521h 清成 nil 且不印訊息(呼叫端不檢查會拿到 nil);否則 \u003cfar 014A:00A7\u003e(37h,t,@var_4) 非 0 時,若 t^[1A5h]=0 才拉到 1(HP 為 0 才救回,不是治療,活著的人不會加血),備妥「は魔法にかかった。」呼叫 \u003csub_F62\u003e,最後 \u003cfar 013E:002A\u003e(4Eh,t,0,1)",
    "citations": [
     "spec/629-spell-pack-idiom-and-uninit.md",
-    "spec/630-spell-target-array.md"
+    "spec/630-spell-target-array.md",
+    "spec/632-spell-target-array-loop.md"
    ]
   },
   {
@@ -39458,7 +39466,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil",
+   "citations": [
+    "spec/632-spell-target-array-loop.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39509,7 +39523,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/632-spell-target-array-loop.md",
+   "note": "對整個目標陣列施放:訊息「は魅了された。」在迴圈外只印一次,迴圈 for i := 1 to DS:0A520h 內對每筆\u003cfar 014A:00A7\u003e(0Bh,陣列[i],@var) 非 0 時接 \u003cfar 013E:002A\u003e(0Bh,陣列[i],var,0)。數量為 0 時整段跳過。與 2147h 同一套效果接法,差別只在那支處理單一目標。不檢查陣列元素是否為 nil",
+   "citations": [
+    "spec/632-spell-target-array-loop.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43782,9 +43802,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 40,
+   "Read": 42,
    "NotBlocking": 0,
-   "Todo": 74,
+   "Todo": 72,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -44337,9 +44357,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 46,
+   "Read": 48,
    "NotBlocking": 0,
-   "Todo": 65,
+   "Todo": 63,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
