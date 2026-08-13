@@ -311,15 +311,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 7146,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 27h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 8748,
    "state": "待解讀",
    "level": "",
@@ -12025,6 +12016,15 @@
    "level": "exact",
    "spec": "docs/spec/609-ecl-area-effect-and-wipeout.md",
    "note": "ECL opcode 2Eh(範圍效果與全滅判定):READVAR(5);operand1 是位元旗標(10h/20h/40h 各控一段流程),amount = loc_142D(b,a) + c 且每次施加前重算(共三處)。結尾把 DS:7F34h 設 1 再走全隊鏈,任一角色 +197h 非 0 就清掉(迴圈不提早結束);仍為 1 表示全滅——設 DS:9636h/9637h 為 2、顯示「パーティーは全滅した！」、延遲 0BB8h(3000)。DS:9594h 進來存、離開還原"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 7146,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/610-ecl-load-encounter-items.md",
+   "note": "ECL opcode 27h(載入物品清單):真實範圍 1BEAh 起 1,339 bytes(IDA 標 94)。READVAR(8),前 6 個 operand 存進 DS:A00Ah 起 stride 4 的陣列;從檔案讀資料後反覆建立 103-byte 物品節點掛進 DS:A026h 鏈(鏈空/非空兩段程式碼逐條相同,編譯器沒合併),填 +0/+51h/+52h(next)/+56h(類型)/+57h(3 bytes)/+5Ah..5Eh/+5Fh/+61h/+62h;另有一張顯示符號對應表(5..7→'#'、8→'\"'、9→'%'、0Ah→'&'、5Bh..5Eh→'I');最後走遍鏈對每個節點呼叫 014A:0025"
   }
  ]
 }
