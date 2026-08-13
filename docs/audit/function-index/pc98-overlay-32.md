@@ -21,9 +21,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0B09` | sub_B09 | — | 450 | 167 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0CCB` | sub_CCB | REFRESHCOMBATMAP | 1321 | 579 | 3 | 8 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `11F4` | sub_11F4 | DOCOMBATSHAPE | 247 | 101 | 0 | 8 | ✓ | 待解讀 | — | — | — |
-| `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 | audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
-| `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) | audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
-| `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 | audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
+| `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
+| `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
+| `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
 | `1363` | sub_1363 | FINDID | 88 | 32 | 9 | 1 | ✓ | 待解讀 | — | — | — |
 | `13BB` | sub_13BB | FINDOBJECTS | 363 | 146 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1526` | sub_1526 | SUBTRACTDUDE | 749 | 296 | 0 | 10 | ✓ | 待解讀 | — | — | — |
