@@ -53,6 +53,32 @@ DS:A2A8h := saved
 `C04Bh`／`C04Ch`／`C04Dh` 的實體位址（[spec 563](563-ecl-memory-model-and-operand-resolution.md)），
 所以那個值是從**當前地圖座標**算出來的。
 
+## `32h`（`29FBh`）：全隊有沒有某物品
+
+```text
+READVAR(1)
+id := ADDRESSVALUE(1)
+FillChar(DS:A88Ah, 6, 0)
+DS:A88Bh := 1                             ← 預設「沒有」
+node := DS:9598h ; found := false
+while node <> nil and not found do
+    item := node^[14Eh]
+    while item <> nil and not found do
+        if id = item^[56h] then
+            DS:A88Ah := 1 ; DS:A88Bh := 0
+            found := true
+        item := item^[52h]
+    node := node^[18Ah]
+```
+
+與 `3Fh`（查效果，[spec 595](595-ecl-target-selection-and-effect-query.md)）
+一樣**借用比較旗標**，所以後面接 `16h` 是「有」、`17h` 是「沒有」。
+
+兩層迴圈的條件都帶著 `found`，所以**找到第一個就整個停下來**——與 `40h`
+（移除物品，[spec 596](596-ecl-party-item-sweep.md)）走遍全部不同。
+
+物品鏈的欄位與 `40h` 一致：`+52h` next、`+56h` 類型 id，掛在角色 `+14Eh`。
+
 ## 明確不宣稱
 
 - `bank1^[580h]`／`[582h]`、`DS:BDDAh`、`DS:A893h`／`A894h` 的語意。
