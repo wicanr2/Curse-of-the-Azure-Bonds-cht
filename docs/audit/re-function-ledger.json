@@ -12997,6 +12997,33 @@
    "level": "exact",
    "spec": "docs/spec/616-ecl2-string-sources.md",
    "note": "GETSTR(?,addr,slot):用位址分類器(overlay-07:0801h)判 bank,再依 bank 0/1/2/3 各自的基底(DS:7F05h/7F09h/7F0Dh/7F12h)與位移(6A00h/800h/0C00h/0)逐 byte 讀出以 0 結尾的字串。bank 與位移與 spec 563 的記憶體模型完全一致。addr 剛好等於 7C00h 時是特例——不走陣列,改從 DS:9594h(目前目標)的記錄取字串"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 6892,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "MOVEFORWARD:依 DS:A2ABh(方向,實體值 0/2/4/6)更新 DS:A2A9h(x)或 DS:A2AAh(y),範圍 0..0Fh 且走出邊界會環繞到另一端(不是被擋住);之後更新 DS:A2ADh(由 x,y 算)與 DS:A2ACh(由方向,x,y 算),並把 DS:BDFAh 設為 1。地圖是 16x16 環繞"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 1366,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "GETMONSTERS:把輸出指標清 nil,New(1A7h)配置 423 bytes 記錄(與 0Bh 同一種),載入指定 id 的資料後處理其 +14Eh 物品鏈"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 1110,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/617-ecl2-move-and-map-model.md",
+   "note": "與 pc98 overlay-07:0556h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：GETMONSTERS:把輸出指標清 nil,New(1A7h)配置 423 bytes 記錄(與 0Bh 同一種),載入指定 id 的資料後處理其 +14Eh 物品鏈 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }
