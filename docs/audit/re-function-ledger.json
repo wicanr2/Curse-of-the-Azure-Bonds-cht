@@ -149,29 +149,11 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 2774,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 14h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 2875,
    "state": "待解讀",
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 16h／17h／18h／19h／1Ah／1Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
-   "ea": 3003,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 20h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "dos",
@@ -487,33 +469,6 @@
    "level": "",
    "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
    "note": "ECL opcode 0Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 2525,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 10h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 2889,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 14h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
-   "ea": 3110,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 20h 的 handler（binding exact，語意未解讀）"
   },
   {
    "platform": "pc98",
@@ -11962,6 +11917,51 @@
    "level": "strong inference",
    "spec": "docs/spec/589-ecl-text-and-flag-handlers.md",
    "note": "與 pc98 overlay-02:0A5Dh 助憶碼序列完全相同（69 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 11h/12h 共用的 handler(顯示文字):READVAR(1);operand code[1] < 80h 才取字串並複製到共用文字緩衝區 DS:A9DAh(>= 80h 表示 packed text 已在該緩衝區);之後重讀 DS:A891h 分辨——11h 與 12h 只差倒數第二個參數 0 vs 1,且 12h 會先把 DS:9637h 重設為 11h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 2889,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 14h(比較):先 FillChar(DS:A88Ah,6,0)清空六個旗標,READVAR(4)後比較 v1=v2 且 v3=v4——成立設 DS:A88Ah:=1,否則設 DS:A88Bh:=1。這正是 16h~1Bh 檢查的那六個旗標,兩者構成 ECL 的條件分支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 2525,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 10h(輸入字串):READVAR(2);far 0418:1150 讀入最長 28h 字元;輸入為空時填入 unk_9DBh(長度 1 的單一空格,不是空字串);再寫回 operand 2 指定的 ECL 位址"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 3110,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 2774,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "與 pc98 overlay-02:0B49h 助憶碼序列完全相同（40 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 14h(比較):先 FillChar(DS:A88Ah,6,0)清空六個旗標,READVAR(4)後比較 v1=v2 且 v3=v4——成立設 DS:A88Ah:=1,否則設 DS:A88Bh:=1。這正是 16h~1Bh 檢查的那六個旗標,兩者構成 ECL 的條件分支 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 3003,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "與 pc98 overlay-02:0C26h 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

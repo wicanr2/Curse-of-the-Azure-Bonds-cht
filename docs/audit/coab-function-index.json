@@ -5033,9 +5033,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 14h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "與 pc98 overlay-02:0B49h 助憶碼序列完全相同（40 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 14h(比較):先 FillChar(DS:A88Ah,6,0)清空六個旗標,READVAR(4)後比較 v1=v2 且 v3=v4——成立設 DS:A88Ah:=1,否則設 DS:A88Bh:=1。這正是 16h~1Bh 檢查的那六個旗標,兩者構成 ECL 的條件分支 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md"
    ]
@@ -5069,9 +5070,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 20h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "與 pc98 overlay-02:0C26h 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md"
@@ -25315,12 +25317,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 10h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 10h(輸入字串):READVAR(2);far 0418:1150 讀入最長 28h 字元;輸入為空時填入 unk_9DBh(長度 1 的單一空格,不是空字串);再寫回 operand 2 指定的 ECL 位址",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/560-ecl-opcode-dispatch-table.md",
+    "spec/590-ecl-control-flow-if-and-branch.md"
    ]
   },
   {
@@ -25340,6 +25344,7 @@
    "note": "ECL opcode 11h/12h 共用的 handler(顯示文字):READVAR(1);operand code[1] \u003c 80h 才取字串並複製到共用文字緩衝區 DS:A9DAh(\u003e= 80h 表示 packed text 已在該緩衝區);之後重讀 DS:A891h 分辨——11h 與 12h 只差倒數第二個參數 0 vs 1,且 12h 會先把 DS:9637h 重設為 11h",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "spec/589-ecl-text-and-flag-handlers.md"
    ]
   },
@@ -25376,11 +25381,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 14h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 14h(比較):先 FillChar(DS:A88Ah,6,0)清空六個旗標,READVAR(4)後比較 v1=v2 且 v3=v4——成立設 DS:A88Ah:=1,否則設 DS:A88Bh:=1。這正是 16h~1Bh 檢查的那六個旗標,兩者構成 ECL 的條件分支",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/590-ecl-control-flow-if-and-branch.md"
    ]
   },
   {
@@ -25400,7 +25407,8 @@
    "note": "ECL opcode 16h~1Bh 共用的 handler:無 operand;重讀 DS:A891h 取得 opcode,以 (op-16h) 索引 DS:A88Ah 起的六個連續旗標位元組,該旗標為 0 才呼叫同一支 far 0062:00B1。六個分支完全對稱",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
-    "spec/589-ecl-text-and-flag-handlers.md"
+    "spec/589-ecl-text-and-flag-handlers.md",
+    "spec/590-ecl-control-flow-if-and-branch.md"
    ]
   },
   {
@@ -25414,11 +25422,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 20h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/590-ecl-control-flow-if-and-branch.md",
+   "note": "ECL opcode 20h:READVAR(1);先把 DS:BDF0h 的舊值存進 bank0^[1E4h],新值寫入 DS:BDF0h,呼叫 far 0062:0034(v)與 0062:002F,設 DS:7896h/7897h 為 1,最後 FillChar(DS:BDDAh,2,0)",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/590-ecl-control-flow-if-and-branch.md"
    ]
   },
   {
@@ -42652,9 +42662,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 17,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 45,
+   "Todo": 43,
    "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -43207,9 +43217,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 19,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 44,
+   "Todo": 41,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,
