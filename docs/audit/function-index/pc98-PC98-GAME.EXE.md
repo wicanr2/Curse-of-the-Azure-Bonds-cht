@@ -191,15 +191,15 @@ offset（base 0），resident executable 為 IDA linear address。
 | `193BA` | sub_193BA | — | 14 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 CS:word_193CD 的 handle 呼叫 INT 21h AH=3Eh 關閉檔案,前後保存 AX/BX | — |
 | `1948C` | sub_1948C | — | 7 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Ah`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `19493` | sub_19493 | — | 291 | 115 | 5 | 12 |  | 待解讀 | — | — | — |
-| `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
+| `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>捲動邊界調整:<sub_19A69> 後比較新舊 dh,不同時若 byte_280DBh 等於 word_280CAh 高位元組加一就先 dec dh 並回寫,再把 byte_280DBh 設成 dh+1;最後 inc dh 若超過界線就 dec 回來並呼叫 <sub_197BD>。⚠ 最後那個比較是無號(jbe),與 197BDh 的有號比較不同——同一組座標在兩支裡有號性不一樣 | — |
 | `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_19A8B 後把 word_280F9 載入 DX 回傳 | — |
 | `19604` | sub_19604 | — | 18 | 7 | 7 | 3 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29 | — |
 | `19616` | sub_19616 | — | 179 | 69 | 1 | 8 |  | 待解讀 | — | — | — |
 | `196C9` | sub_196C9 | — | 178 | 83 | 1 | 6 |  | 待解讀 | — | — | — |
 | `1977B` | sub_1977B | — | 3 | 2 | 5 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>int 18h 後返回。⚠ IDA 的註解寫 TRANSFER TO ROM BASIC 是 IBM PC 的語意;PC-98 的 INT 18h 是螢幕／鍵盤 BIOS,不可沿用該註解 | — |
 | `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
-| `19791` | sub_19791 | — | 44 | 20 | 2 | 1 |  | 待解讀 | — | — | — |
-| `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 待解讀 | — | — | — |
+| `19791` | sub_19791 | — | 44 | 20 | 2 | 1 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>第四種 SJIS→JIS,位元組與 17186h 那三份不同但**功能等價**:區號算 (ah-70h)×2 再視情況 -1(那三份算 (ah-71h)×2+1,恆等);低位元組 >= 9Eh 時 sub 5Eh 之後會**接著**走到共用的 sub 1Fh,合計 -7Dh。已逐碼點驗算 81h..9Fh + E0h..FCh 全部合法碼點,不一致 0 筆。⚠ 差別在守衛:ah = 80h 或 ah >= F0h 時原樣返回不轉換——這是首位元組界線的第三種(另兩種是 FCh 與 F7h) | — |
+| `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>畫之前先做**有號**範圍檢查(jl):dl < cl 或 dh < ch 就返回,所以座標是有號量、負值被擋掉。al <> 0 時存 cx/dx 到 word_280E8h/280EAh、呼叫 <sub_19825> 與 <sub_198AE>,並把 ch 設成 dh-al+1;最後一律 <sub_19840> | — |
 | `197EF` | sub_197EF | — | 54 | 31 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19825` | sub_19825 | — | 27 | 13 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19840` | sub_19840 | — | 110 | 56 | 4 | 4 |  | 待解讀 | — | — | — |
