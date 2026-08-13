@@ -28,6 +28,13 @@
 far call 目標是 **`ECL2` control block 的 stub offset**，不是 code offset；
 兩平台的 stub offset 與 entry index 相同，只有 code offset 不同。
 
+## script 檔的載入（`exact`）
+
+`GETECL(n)` 從 **`ECL<n>.dax`** 讀入，緩衝區 `1E41h`＝7,745 bytes（＝bank 3 的
+`8000h..9E40h`）。**檔案前 2 bytes 被跳過**——script 的 `8000h` 對應檔案的
+offset 2，remake 不跳過的話所有位址都差 2。讀檔失敗會無限重試，沒有上限。
+見 [spec 619](../spec/619-ecl-script-loading.md)。
+
 ## script 的檔頭（`exact`）
 
 `INITECL` 把 `ECL_PC` 設成 `8000h`（bank 3 起點）後**連續讀五個 operand**，
