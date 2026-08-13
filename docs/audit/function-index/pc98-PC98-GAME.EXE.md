@@ -332,7 +332,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BFD3` | sub_1BFD3 | — | 104 | 45 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1C03B` | sub_1C03B | — | 48 | 19 | 2 | 2 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>Seek:用兩次 16×16 乘法拼成 32-bit 位移(低位取整個 dx:ax、高位只取 ax 加進 cx),再 int 21h AX=4200h。⚠ 高位乘法的 dx 被丟掉,記錄編號 × RecSize 超過 4GB 時會靜默回捲。es:[di+4] 是 FileRec.RecSize,與 TextRec 的 BufSize 同一個位置 | — |
 | `1C0B2` | sub_1C0B2 | — | 69 | 32 | 3 | 1 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>取得位置與大小:Mode 必須是 fmInOut,否則設 InOutRes := 67h、清 dx:ax 並**設進位**返回。做法是 4201h 取目前位置 → 4202h 取檔尾(即大小)→ 4200h 移回原處。回傳分兩組:dx:ax 是還原後的位置、bx:cx 是檔案大小 | — |
-| `1C0F7` | sub_1C0F7 | — | 23 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1C0F7` | sub_1C0F7 | — | 23 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/670-file-ops-and-standard-handles.md<br>Erase:dx := 記錄位址 + 30h(Name 欄位,與 TextRec 同一個偏移,見 spec 668)後 int 21h AH=41h 刪檔;失敗把 AX 記進 word_23B08h(InOutRes)。DS 進出成對保存 | — |
 | `1C15D` | sub_1C15D | — | 35 | 16 | 27 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes） | — |
 | `1C180` | sub_1C180 | — | 20 | 7 | 13 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes） | — |
 | `1C250` | sub_1C250 | — | 27 | 17 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |

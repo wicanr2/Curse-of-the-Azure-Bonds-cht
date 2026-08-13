@@ -70,7 +70,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12C1D` | sub_12C1D | — | 1611 | 617 | 1 | 5 |  | 待解讀 | — | — | — |
 | `133E2` | sub_133E2 | — | 133 | 54 | 2 | 0 |  | 待解讀 | — | — | — |
 | `13467` | sub_13467 | — | 141 | 49 | 2 | 0 |  | 待解讀 | — | — | — |
-| `134F4` | sub_134F4 | — | 49 | 20 | 2 | 0 |  | 待解讀 | — | — | — |
+| `134F4` | sub_134F4 | — | 49 | 20 | 2 | 0 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>交換一個 byte 的高低 nibble:(arg_0 shl 4) + ((arg_0 and 0F0h) shr 4)。用 add 而非 or(兩半不重疊結果相同);shl 後存進 byte 變數,高位自然被截掉不需額外遮罩 | — |
 | `145C9` | sub_145C9 | — | 192 | 72 | 2 | 3 |  | 待解讀 | — | — | — |
 | `14689` | sub_14689 | — | 116 | 42 | 2 | 2 |  | 待解讀 | — | — | — |
 | `14B4C` | sub_14B4C | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
@@ -86,11 +86,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15329` | sub_15329 | — | 95 | 36 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 95 bytes，已逐條讀完） | — |
 | `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 待解讀 | — | — | — |
 | `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 待解讀 | — | — | — |
-| `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
+| `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>切換 BIOS 顯示頁:把 Registers.AH := 5、AL := arg_0 後呼叫 Turbo Pascal 的 Intr(10h, Regs);同時自己算好 word_2119Eh := (arg_0 shl 9) + 0A000h——shl 9 是 ×512 段落 = 8KB,所以那是該頁的段位址 | — |
 | `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes) | — |
 | `154DD` | sub_154DD | — | 188 | 89 | 4 | 4 |  | 待解讀 | — | — | — |
 | `15606` | sub_15606 | — | 299 | 126 | 3 | 6 |  | 待解讀 | — | — | — |
-| `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 待解讀 | — | — | — |
+| `15731` | sub_15731 | — | 65 | 30 | 4 | 2 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>範圍檢查後呼叫 <sub_15606>(1,20h,arg_0,arg_2,arg_2,arg_4,arg_6)(arg_2 被推入兩次)。上限 27h(39)與 18h(24)即 40 欄 × 25 列。⚠ 兩個下限檢查(cmp x,0 + jb)是死碼——無號比較,任何值都不小於 0;是原作的冗餘不是判讀不確定,remake 直接寫上限即可 | — |
 | `15772` | sub_15772 | — | 133 | 53 | 3 | 3 |  | 待解讀 | — | — | — |
 | `157F7` | sub_157F7 | — | 119 | 45 | 3 | 3 |  | 待解讀 | — | — | — |
 | `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 待解讀 | — | — | — |
