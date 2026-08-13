@@ -13087,6 +13087,42 @@
    "level": "strong inference",
    "spec": "docs/spec/621-ecl2-robstuff.md",
    "note": "與 pc98 overlay-07:1F00h 助憶碼序列完全相同（62 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ROBSTUFF(char,chance):走 char^[14Eh] 物品鏈,依物品 +5Fh(價值)調整機率——>255 減 90、>24 減 50,減完不會變負而是歸 0;每件各擲一次 d100(far 013E:004D(1,64h)),roll <= p 才移除。p=0 時永遠偷不走(roll 最小為 1)。先取 next 再移除,與 40h 同一寫法。這確認了物品節點 +5Fh(word)是價值 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 7633,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "ROBDOUGH(char,factor:real):角色紀錄 +FBh/+FDh/+FFh/+101h/+103h/+105h/+107h 七個 word 各自「無號轉 real → 乘 factor(6-byte real,用 arg_4/6/8 三個 word 傳) → 轉回整數 → 存回」。無分支,七個欄位無條件全乘"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 328,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "把 DS:9594h 指向的紀錄設成 arg_0 金額:先用 i=0..4 迴圈把 [di+0FBh+2i] 五個硬幣欄位歸零,再 div 5——商存 +103h、餘存 +101h。這證明 +FBh 起是五元素硬幣陣列(不是五個獨立欄位),且依 AD&D 的 5 gp = 1 pp 定出 +103h 是白金、+101h 是金幣,陣列由低價值排到高價值"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-07",
+   "ea": 7702,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "與 pc98 overlay-07:1DD1h 助憶碼序列完全相同（82 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ROBDOUGH(char,factor:real):角色紀錄 +FBh/+FDh/+FFh/+101h/+103h/+105h/+107h 七個 word 各自「無號轉 real → 乘 factor(6-byte real,用 arg_4/6/8 三個 word 傳) → 轉回整數 → 存回」。無分支,七個欄位無條件全乘 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 329,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "與 pc98 overlay-21:0148h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 DS:9594h 指向的紀錄設成 arg_0 金額:先用 i=0..4 迴圈把 [di+0FBh+2i] 五個硬幣欄位歸零,再 div 5——商存 +103h、餘存 +101h。這證明 +FBh 起是五元素硬幣陣列(不是五個獨立欄位),且依 AD&D 的 5 gp = 1 pp 定出 +103h 是白金、+101h 是金幣,陣列由低價值排到高價值 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

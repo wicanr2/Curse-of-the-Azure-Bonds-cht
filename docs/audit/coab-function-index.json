@@ -7334,7 +7334,10 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "與 pc98 overlay-07:1DD1h 助憶碼序列完全相同（82 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：ROBDOUGH(char,factor:real):角色紀錄 +FBh/+FDh/+FFh/+101h/+103h/+105h/+107h 七個 word 各自「無號轉 real → 乘 factor(6-byte real,用 arg_4/6/8 三個 word 傳) → 轉回整數 → 存回」。無分支,七個欄位無條件全乘 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -14890,7 +14893,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "與 pc98 overlay-21:0148h 助憶碼序列完全相同（31 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 DS:9594h 指向的紀錄設成 arg_0 金額:先用 i=0..4 迴圈把 [di+0FBh+2i] 五個硬幣欄位歸零,再 div 5——商存 +103h、餘存 +101h。這證明 +FBh 起是五元素硬幣陣列(不是五個獨立欄位),且依 AD\u0026D 的 5 gp = 1 pp 定出 +103h 是白金、+101h 是金幣,陣列由低價值排到高價值 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -28249,7 +28255,13 @@
    "callers": 0,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "ROBDOUGH(char,factor:real):角色紀錄 +FBh/+FDh/+FFh/+101h/+103h/+105h/+107h 七個 word 各自「無號轉 real → 乘 factor(6-byte real,用 arg_4/6/8 三個 word 傳) → 轉回整數 → 存回」。無分支,七個欄位無條件全乘",
+   "citations": [
+    "spec/622-character-money-block.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -28268,6 +28280,7 @@
    "spec": "docs/spec/621-ecl2-robstuff.md",
    "note": "ROBSTUFF(char,chance):走 char^[14Eh] 物品鏈,依物品 +5Fh(價值)調整機率——\u003e255 減 90、\u003e24 減 50,減完不會變負而是歸 0;每件各擲一次 d100(far 013E:004D(1,64h)),roll \u003c= p 才移除。p=0 時永遠偷不走(roll 最小為 1)。先取 next 再移除,與 40h 同一寫法。這確認了物品節點 +5Fh(word)是價值",
    "citations": [
+    "audit/function-index/dos-overlay-07.md",
     "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
     "spec/621-ecl2-robstuff.md"
    ]
@@ -37304,7 +37317,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/622-character-money-block.md",
+   "note": "把 DS:9594h 指向的紀錄設成 arg_0 金額:先用 i=0..4 迴圈把 [di+0FBh+2i] 五個硬幣欄位歸零,再 div 5——商存 +103h、餘存 +101h。這證明 +FBh 起是五元素硬幣陣列(不是五個獨立欄位),且依 AD\u0026D 的 5 gp = 1 pp 定出 +103h 是白金、+101h 是金幣,陣列由低價值排到高價值",
+   "citations": [
+    "spec/622-character-money-block.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43353,9 +43372,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -43563,9 +43582,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -43908,9 +43927,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 46,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 16,
    "CodeBytes": 8889,
    "Undefined": 363,
@@ -44118,9 +44137,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 20,
+   "Todo": 19,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
