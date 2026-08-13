@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 77 | 19 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完） | — |
-| `004D` | sub_4D | — | 166 | 62 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `004D` | sub_4D | — | 166 | 62 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md |
 | `00F3` | sub_F3 | — | 184 | 67 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `01AB` | sub_1AB | — | 192 | 68 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `026B` | sub_26B | — | 325 | 102 | 1 | 3 | ✓ | 待解讀 | — | — | — |

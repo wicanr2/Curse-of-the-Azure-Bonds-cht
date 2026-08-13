@@ -11314,6 +11314,78 @@
    "level": "",
    "spec": "docs/spec/570-cross-platform-rtl-byte-match.md",
    "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101725,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定:al 無 bit7 → 非雙位元組;81h..9Fh 與 E0h..FCh → 前導位元組;A0h..DFh(半形片假名)與 FDh 以上 → 非前導"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101956,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 104318,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 104949,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "文字 VRAM 位址計算:di := ((di × 50h) + dx) × 2 ⇒ 每列 80 欄、每格 2 bytes"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105108,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "字串搬移輔助:長度夾到 bx 上限後 stosb 寫長度,再 rep movsb 複製內容並更新來源指標"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 102090,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "字串搬移輔助,與 DOS START.EXE:19A94h 逐指令相同"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110810,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "多欄位相等比較:依序比較 al/cl、dx/di、bx/si、ah/ch,任一不等就提前返回"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 103940,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/574-pc98-shiftjis-and-text-vram.md",
+   "note": "以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29"
   }
  ]
 }
