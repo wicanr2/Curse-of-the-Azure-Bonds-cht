@@ -149,9 +149,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `187EC` | sub_187EC | — | 36 | 21 | 1 | 1 |  | 待解讀 | — | — | — |
 | `18810` | sub_18810 | — | 46 | 25 | 2 | 1 |  | 待解讀 | — | — | — |
 | `1883E` | sub_1883E | — | 36 | 20 | 2 | 0 |  | 待解讀 | — | — | — |
-| `18862` | sub_18862 | — | 11 | 8 | 4 | 0 |  | 待解讀 | — | — | — |
-| `1886D` | sub_1886D | — | 11 | 5 | 1 | 3 |  | 待解讀 | — | — | — |
-| `18878` | sub_18878 | — | 11 | 5 | 1 | 3 |  | 待解讀 | — | — | — |
+| `18862` | sub_18862 | — | 11 | 8 | 4 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>輸出 BEL(07h):INT 21h AH=02h(DOS display output)、DL=07h,前後保存 AX/DX | — |
+| `1886D` | sub_1886D | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_18571 回傳 0 時才呼叫 18862h 發出 BEL | — |
+| `18878` | sub_18878 | — | 11 | 5 | 1 | 3 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>sub_185EA 回傳非 0 時才呼叫 18862h 發出 BEL | — |
 | `18883` | sub_18883 | — | 46 | 19 | 1 | 3 |  | 待解讀 | — | — | — |
 | `188B1` | sub_188B1 | — | 23 | 10 | 1 | 3 |  | 待解讀 | — | — | — |
 | `188C8` | sub_188C8 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -183,7 +183,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `191C2` | sub_191C2 | — | 26 | 10 | 2 | 2 |  | 待解讀 | — | — | — |
 | `19259` | sub_19259 | — | 24 | 9 | 3 | 2 |  | 待解讀 | — | — | — |
 | `19271` | sub_19271 | — | 21 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
-| `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 待解讀 | — | — | — |
+| `19286` | sub_19286 | — | 12 | 4 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2) | — |
 | `19293` | sub_19293 | — | 13 | 7 | 3 | 1 |  | 待解讀 | — | — | — |
 | `192A0` | sub_192A0 | — | 50 | 22 | 4 | 2 |  | 待解讀 | — | — | — |
 | `192D2` | sub_192D2 | — | 87 | 27 | 1 | 2 |  | 待解讀 | — | — | — |
@@ -225,7 +225,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19C71` | sub_19C71 | — | 32 | 12 | 1 | 3 |  | 待解讀 | — | — | — |
 | `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 待解讀 | — | — | — |
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 待解讀 | — | — | — |
-| `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 64 bytes，已逐條讀完） | — |
 | `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX | — |
 | `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
 | `19EC4` | sub_19EC4 | — | 186 | 71 | 1 | 5 |  | 待解讀 | — | — | — |
@@ -235,7 +235,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A01D` | sub_1A01D | — | 27 | 14 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |
 | `1A038` | sub_1A038 | — | 19 | 11 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完） | — |
 | `1A04B` | sub_1A04B | — | 88 | 30 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1A0A3` | sub_1A0A3 | — | 11 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1A0A3` | sub_1A0A3 | — | 11 | 4 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 word_23AE0 − word_23ADC 的差值呼叫 sub_1A10C | — |
 | `1A0FF` | sub_1A0FF | — | 13 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1A10C` | sub_1A10C | — | 13 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
 | `1A1E9` | sub_1A1E9 | — | 177 | 64 | 2 | 9 |  | 待解讀 | — | — | — |
@@ -244,10 +244,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A31C` | sub_1A31C | — | 51 | 19 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A34F` | sub_1A34F | — | 72 | 32 | 2 | 2 |  | 待解讀 | — | — | — |
 | `1A397` | sub_1A397 | — | 32 | 14 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1A3B7` | sub_1A3B7 | — | 12 | 5 | 2 | 2 |  | 待解讀 | — | — | — |
-| `1A3C3` | sub_1A3C3 | — | 30 | 15 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1A3B7` | sub_1A3B7 | — | 12 | 5 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_1A3C3 取得 bx;bx 非 0 時把 cx 與 ss:[bx+2] 互換 | — |
+| `1A3C3` | sub_1A3C3 | — | 30 | 15 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 30 bytes，已逐條讀完） | — |
 | `1A3E1` | sub_1A3E1 | — | 27 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A3FC` | sub_1A3FC | — | 12 | 5 | 3 | 0 |  | 待解讀 | — | — | — |
+| `1A3FC` | sub_1A3FC | — | 12 | 5 | 3 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即位元組數無條件進位換算成 paragraph;與 DOS START.EXE:1A42Ch 同義 | — |
 | `1A410` | sub_1A410 | — | 97 | 34 | 1 | 5 |  | 待解讀 | — | — | — |
 | `1A485` | sub_1A485 | — | 22 | 12 | 1 | 0 |  | 待解讀 | — | — | — |
 | `1A49B` | sub_1A49B | — | 63 | 23 | 1 | 1 |  | 待解讀 | — | — | — |

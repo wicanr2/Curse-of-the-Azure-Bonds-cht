@@ -32,10 +32,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1558` | sub_1558 | — | 35 | 13 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp dx, ds:9596h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 35 bytes，已逐條讀完） | — |
 | `1679` | sub_1679 | — | 7 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:959Ah, dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1688` | sub_1688 | — | 13 | 3 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+18Ch], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
-| `1697` | sub_1697 | — | 2 | 2 | 2 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 2 bytes，已逐條讀完） | — |
+| `1697` | sub_1697 | — | 2 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 2 bytes，已逐條讀完） | — |
 | `1699` | sub_1699 | — | 251 | 79 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1794` | sub_1794 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+18Ah], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1799` | sub_1799 | — | 9 | 4 | 2 | 0 |  | 待解讀 | — | — | — |
+| `1799` | sub_1799 | — | 9 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完） | — |
 | `17F6` | sub_17F6 | — | 296 | 124 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `19A4` | sub_19A4 | — | 404 | 160 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `1B94` | sub_1B94 | — | 184 | 71 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -43,7 +43,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1F46` | sub_1F46 | — | 35 | 14 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `1F69` | sub_1F69 | — | 183 | 73 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2020` | sub_2020 | — | 117 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 61 bytes，已逐條讀完） | — |
+| `2095` | sub_2095 | — | 61 | 24 | 3 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 61 bytes，已逐條讀完） | — |
 | `20D2` | sub_20D2 | — | 90 | 33 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `212C` | sub_212C | — | 400 | 143 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `22BC` | sub_22BC | — | 180 | 63 | 1 | 1 | ✓ | 待解讀 | — | — | — |

@@ -30,7 +30,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15FF` | sub_15FF | — | 157 | 62 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1652` | sub_1652 | — | 8 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `169F` | sub_169F | — | 18 | 7 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完） | — |
-| `16BD` | sub_16BD | — | 41 | 15 | 2 | 0 |  | 待解讀 | — | — | — |
+| `16BD` | sub_16BD | — | 41 | 15 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 41 bytes，已逐條讀完） | — |
 | `16E6` | sub_16E6 | — | 148 | 54 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `177A` | sub_177A | — | 92 | 46 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `17D6` | sub_17D6 | — | 232 | 108 | 4 | 4 | ✓ | 待解讀 | — | — | — |

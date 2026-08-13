@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1FF4` | sub_1FF4 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1FF3，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `203D` | sub_203D | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は魔法にかかった。」（unk_202A，長度 18）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `2077` | sub_2077 | — | 30 | 17 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, offset unk_206A`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
-| `2095` | sub_2095 | — | 15 | 8 | 3 | 1 |  | 待解讀 | — | — | — |
+| `2095` | sub_2095 | — | 15 | 8 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 15 bytes，已逐條讀完） | — |
 | `20BF` | sub_20BF | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「は冷気に対する防護を得た。」（unk_20A4，長度 26）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `20ED` | sub_20ED | — | 52 | 27 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_20EC，長度 0）呼叫訊息 routine（body 共 52 bytes，已逐條讀完） | — |
 | `2147` | sub_2147 | — | 189 | 79 | 0 | 6 | ✓ | 待解讀 | — | — | — |

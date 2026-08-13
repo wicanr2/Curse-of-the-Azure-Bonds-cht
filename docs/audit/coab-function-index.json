@@ -2569,7 +2569,9 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 93 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5037,7 +5039,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 85 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 85 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5070,7 +5072,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 84 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 84 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5267,7 +5269,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5349,7 +5353,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -5561,7 +5565,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 76 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6194,7 +6200,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 22 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -6943,10 +6949,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -7654,7 +7659,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 38 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 38 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -8337,7 +8342,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 25 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 25 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9413,10 +9418,9 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -9684,10 +9688,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call sub_1454`（body 共 10 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 10 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -11098,10 +11101,9 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -11993,7 +11995,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 14 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -13414,7 +13418,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -16524,10 +16528,9 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_15A1`（body 共 16 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 16 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -16570,7 +16573,9 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -16687,7 +16692,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 42 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -17184,7 +17191,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 41 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -21083,7 +21092,10 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出 BEL(07h):INT 21h AH=02h(DOS display output)、DL=07h,前後保存 AX/DX"
   },
   {
    "platform": "pc98",
@@ -21095,7 +21107,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "sub_18571 回傳 0 時才呼叫 18862h 發出 BEL"
   },
   {
    "platform": "pc98",
@@ -21107,7 +21122,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "sub_185EA 回傳非 0 時才呼叫 18862h 發出 BEL"
   },
   {
    "platform": "pc98",
@@ -21504,7 +21522,10 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把堆疊上的 word 參數存進 word_280E6(以 ss:[bx+4] 取參數,retf 2)"
   },
   {
    "platform": "pc98",
@@ -22022,7 +22043,9 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 64 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22158,7 +22181,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "以 word_23AE0 − word_23ADC 的差值呼叫 sub_1A10C"
   },
   {
    "platform": "pc98",
@@ -22266,7 +22292,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 sub_1A3C3 取得 bx;bx 非 0 時把 cx 與 ss:[bx+2] 互換"
   },
   {
    "platform": "pc98",
@@ -22278,7 +22307,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 30 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -22302,7 +22333,10 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "回傳 (es:[8] + 0Fh) \u003e\u003e 4,即位元組數無條件進位換算成 paragraph;與 DOS START.EXE:1A42Ch 同義"
   },
   {
    "platform": "pc98",
@@ -24525,10 +24559,9 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr loc_689+2`（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -26193,7 +26226,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 30 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 30 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27187,7 +27220,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27548,7 +27581,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 75 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 75 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -27710,7 +27743,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 55 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -28855,7 +28888,9 @@
    "callers": 9,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 11 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -29066,10 +29101,9 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1437`（body 共 27 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 27 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -30402,10 +30436,9 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -30625,10 +30658,9 @@
    "callers": 6,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 4 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -31858,10 +31890,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 2 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 2 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -31902,7 +31933,9 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32008,7 +32041,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 61 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 61 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32210,7 +32243,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 24 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32254,7 +32289,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 94 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 94 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -32328,7 +32363,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 90 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 90 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34104,7 +34139,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 63 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 63 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -34417,7 +34452,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 79 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 79 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -35950,7 +35985,9 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "邊界碎片",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37598,10 +37635,9 @@
    "callers": 4,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -37632,7 +37668,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 47 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 47 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38199,7 +38235,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 55 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 55 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38331,7 +38367,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 31 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -38362,7 +38398,7 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 96 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 96 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -40518,8 +40554,8 @@
    "Functions": 325,
    "Read": 86,
    "NotBlocking": 133,
-   "Todo": 90,
-   "Fragment": 16,
+   "Todo": 89,
+   "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
    "SegmentBytes": 96208,
@@ -40563,8 +40599,8 @@
    "Functions": 90,
    "Read": 6,
    "NotBlocking": 0,
-   "Todo": 58,
-   "Fragment": 26,
+   "Todo": 56,
+   "Fragment": 28,
    "CodeBytes": 14062,
    "Undefined": 292,
    "SegmentBytes": 14880,
@@ -40636,10 +40672,10 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 8,
+   "Read": 7,
    "NotBlocking": 0,
    "Todo": 27,
-   "Fragment": 6,
+   "Fragment": 7,
    "CodeBytes": 8745,
    "Undefined": 191,
    "SegmentBytes": 9128,
@@ -40711,10 +40747,10 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 151,
-   "Read": 49,
+   "Read": 47,
    "NotBlocking": 0,
    "Todo": 78,
-   "Fragment": 24,
+   "Fragment": 26,
    "CodeBytes": 12855,
    "Undefined": 455,
    "SegmentBytes": 13683,
@@ -40726,10 +40762,10 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 57,
-   "Read": 1,
+   "Read": 0,
    "NotBlocking": 0,
    "Todo": 41,
-   "Fragment": 15,
+   "Fragment": 16,
    "CodeBytes": 16498,
    "Undefined": 722,
    "SegmentBytes": 18873,
@@ -40758,8 +40794,8 @@
    "Functions": 34,
    "Read": 4,
    "NotBlocking": 0,
-   "Todo": 22,
-   "Fragment": 8,
+   "Todo": 21,
+   "Fragment": 9,
    "CodeBytes": 6009,
    "Undefined": 887,
    "SegmentBytes": 9704,
@@ -40876,10 +40912,10 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 3,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 29,
-   "Fragment": 7,
+   "Todo": 27,
+   "Fragment": 10,
    "CodeBytes": 9176,
    "Undefined": 376,
    "SegmentBytes": 9661,
@@ -40893,8 +40929,8 @@
    "Functions": 56,
    "Read": 1,
    "NotBlocking": 0,
-   "Todo": 53,
-   "Fragment": 2,
+   "Todo": 52,
+   "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
    "SegmentBytes": 13366,
@@ -41071,10 +41107,10 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 79,
+   "Read": 86,
    "NotBlocking": 29,
-   "Todo": 206,
-   "Fragment": 19,
+   "Todo": 197,
+   "Fragment": 21,
    "CodeBytes": 25067,
    "Undefined": 0,
    "SegmentBytes": 115552,
@@ -41116,10 +41152,10 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 85,
-   "Read": 5,
+   "Read": 4,
    "NotBlocking": 0,
    "Todo": 58,
-   "Fragment": 22,
+   "Fragment": 23,
    "CodeBytes": 14037,
    "Undefined": 266,
    "SegmentBytes": 15595,
@@ -41266,10 +41302,10 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 149,
-   "Read": 54,
+   "Read": 53,
    "NotBlocking": 0,
-   "Todo": 79,
-   "Fragment": 16,
+   "Todo": 78,
+   "Fragment": 18,
    "CodeBytes": 13004,
    "Undefined": 578,
    "SegmentBytes": 13835,
@@ -41281,10 +41317,10 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 71,
-   "Read": 4,
+   "Read": 2,
    "NotBlocking": 0,
    "Todo": 45,
-   "Fragment": 22,
+   "Fragment": 24,
    "CodeBytes": 17224,
    "Undefined": 905,
    "SegmentBytes": 18751,
@@ -41311,10 +41347,10 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 3,
+   "Read": 2,
    "NotBlocking": 0,
-   "Todo": 32,
-   "Fragment": 10,
+   "Todo": 31,
+   "Fragment": 12,
    "CodeBytes": 8121,
    "Undefined": 1126,
    "SegmentBytes": 9791,
@@ -41328,8 +41364,8 @@
    "Functions": 47,
    "Read": 2,
    "NotBlocking": 0,
-   "Todo": 35,
-   "Fragment": 10,
+   "Todo": 34,
+   "Fragment": 11,
    "CodeBytes": 18585,
    "Undefined": 1552,
    "SegmentBytes": 22383,
@@ -41418,8 +41454,8 @@
    "Functions": 138,
    "Read": 29,
    "NotBlocking": 0,
-   "Todo": 85,
-   "Fragment": 24,
+   "Todo": 84,
+   "Fragment": 25,
    "CodeBytes": 25053,
    "Undefined": 2127,
    "SegmentBytes": 27788,
@@ -41431,10 +41467,10 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 39,
-   "Read": 5,
+   "Read": 4,
    "NotBlocking": 0,
    "Todo": 24,
-   "Fragment": 10,
+   "Fragment": 11,
    "CodeBytes": 9201,
    "Undefined": 458,
    "SegmentBytes": 9706,
