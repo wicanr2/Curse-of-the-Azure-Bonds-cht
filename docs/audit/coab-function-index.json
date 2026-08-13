@@ -16404,7 +16404,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "套用 'is held'(CS:23EAh):v := DS:7434h;v=1 時再看 DS:6F97h 是否為 17h 決定 r 是 −2 還是 −3;v=2 → −1;v=3 或 4 → 0;**v 為其他值時 r 不被寫入,回傳堆疊殘值**。最後 \u003csub_1ABFh\u003e(r, 訊息)。⚠ DS:7434h 在治療系(spec 700)只當非 0 旗標用,這裡卻是 1..4 的列舉",
+   "citations": [
+    "spec/702-more-overlay22-spell-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16485,7 +16491,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "先發訊息再套效果:\u003csub_F06h\u003e(DS:6F97h, 0, 1, 0, 0, 空字串 CS:262Eh);再 \u003coverlay-23 entry#2\u003e(17h, DS:7435h 的目標, 0(dword), 0)。⚠ sub_F06h 的第三/第四個參數與 spec 701 致傷三支不同(那裡是 0 與傷害量,這裡是 1 與 0),所以它有模式之分",
+   "citations": [
+    "spec/702-more-overlay22-spell-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16864,7 +16876,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "N d6,顆數算出來、面數寫死 6:n := \u003coverlay-24 entry#36\u003e(DS:6F97h);r := ROLLDICE(n, 6);\u003csub_3947h\u003e(DS:7559h, DS:755Ah, r, 4, 0, @區域);\u003csub_3A03h\u003e(7, r, 4, 1)。同一個 r 被兩支下游各用一次但參數位置不同(第三個 vs 第二個)",
+   "citations": [
+    "spec/702-more-overlay22-spell-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17002,7 +17020,9 @@
    "spec": "docs/spec/701-cure-cause-wounds-ladder.md",
    "note": "治療 2d4+2:量 := ROLLDICE(2,4)+2,HEALDUDE(DS:7435h/7437h 的目標, 量, 0),成功則 \u003coverlay-24 entry#26\u003e(目標, 1, 'is Healed'(CS:4070h))。與 3F23h/43A7h 同族但訊息路徑不同",
    "citations": [
-    "spec/701-cure-cause-wounds-ladder.md"
+    "audit/function-index/dos-overlay-22.md",
+    "spec/701-cure-cause-wounds-ladder.md",
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -17118,6 +17138,7 @@
    "spec": "docs/spec/700-pascal-parameter-order-rule.md",
    "note": "治療 opcode(3d8+3):與 3F23h 完全同構,只有骰子不同。配上 1d8 那支就是 AD\u0026D 治療三階(輕傷/重傷/危傷)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/700-pascal-parameter-order-rule.md",
     "spec/701-cure-cause-wounds-ladder.md"
    ]
@@ -17489,7 +17510,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "與 407Ah(spec 701)逐指令相同的第二份治療 2d4+2:ROLLDICE(2,4)+2 → HEALDUDE(目標,量,0) → 成功則 \u003coverlay-24 entry#26\u003e(目標, 1, 'is Healed')。⚠ 差別只有訊息字串位址(407Ah 用 CS:4070h、本支用 CS:5781h),**內容相同的一句話在同一個 overlay 存了兩份**——中文化要兩份都改,只改一份會出現時中時英且難重現",
+   "citations": [
+    "spec/702-more-overlay22-spell-handlers.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17618,6 +17645,7 @@
    "spec": "docs/spec/700-pascal-parameter-order-rule.md",
    "note": "物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 \u003c v \u003c 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/700-pascal-parameter-order-rule.md"
    ]
   },
@@ -17764,7 +17792,8 @@
    "citations": [
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/578-effect-node-list.md"
+    "spec/578-effect-node-list.md",
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -18705,7 +18734,8 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "spec/694-add-1e-ability-tables.md",
-    "spec/697-strength-hit-table-and-weapon-select.md"
+    "spec/697-strength-hit-table-and-weapon-select.md",
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -41477,7 +41507,8 @@
    "citations": [
     "audit/function-index/dos-overlay-23.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/578-effect-node-list.md"
+    "spec/578-effect-node-list.md",
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -45451,9 +45482,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 57,
+   "Read": 61,
    "NotBlocking": 0,
-   "Todo": 56,
+   "Todo": 52,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
