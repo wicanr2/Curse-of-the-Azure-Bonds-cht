@@ -12979,6 +12979,24 @@
    "level": "strong inference",
    "spec": "docs/spec/615-ecl2-findguy-maxrange.md",
    "note": "與 pc98 overlay-07:085Ch 助憶碼序列完全相同（35 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：FINDGUY(ptr):沿 DS:9598h 角色鏈找出 ptr 的 0-based 序號。找不到不是回 FFh 而是回傳鏈長度——呼叫端不另外檢查會把「不存在」當成最後一個之後那一格。與 0Ah(由序號取指標)互為反向 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 4964,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/616-ecl2-string-sources.md",
+   "note": "FINDSTR(slot,n):把 DS:[A8DAh+slot*100h] 清空,然後逐次 ECL_PC++ 並從 bank3 讀一個 byte 接到字串尾——字面字串直接嵌在 ECL bytecode 裡,長度由 n 給出。這是 packed text 之外的第二種文字來源"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
+   "ea": 5111,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/616-ecl2-string-sources.md",
+   "note": "GETSTR(?,addr,slot):用位址分類器(overlay-07:0801h)判 bank,再依 bank 0/1/2/3 各自的基底(DS:7F05h/7F09h/7F0Dh/7F12h)與位移(6A00h/800h/0C00h/0)逐 byte 讀出以 0 結尾的字串。bank 與位移與 spec 563 的記憶體模型完全一致。addr 剛好等於 7C00h 時是特例——不走陣列,改從 DS:9594h(目前目標)的記錄取字串"
   }
  ]
 }
