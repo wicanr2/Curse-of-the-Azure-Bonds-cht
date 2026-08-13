@@ -50,6 +50,18 @@ DOS `START.EXE` 內、形狀不屬第 569 輪可機械判定集合的小函式�
 `GetDate`／`SetDate`／`GetTime`／`SetTime` 實作（`INT 21h AH=2Ah..2Dh`），
 標 `不阻塞`。
 
+## overlay 側的四個完整函式
+
+| 位址 | 內容 |
+|---|---|
+| `overlay-06:0000h` | `LOADSHOP` unit 初始化：依序 far call 依賴單元的初始化 entry，最後呼叫 `19Ch:2Ah` 的 overlay 載入器 |
+| `overlay-11:0000h` | `LOADINIT` unit 初始化：同上，依賴八個單元 |
+| `overlay-07:070Dh` | 字元碼調整：`arg <= 1Fh` 回傳 `arg + 40h`，否則原樣回傳（控制字元映射到 `40h` 之後） |
+| `overlay-10:098Dh` | 表格查詢：以 `ds:4A14h` 為索引，回傳 `DS:352h` 起的表中該項 byte |
+
+其餘 overlay 小函式多數是**分割續段**——讀寫 `[bp-N]` 卻沒有 `sub sp` 配置
+框架，屬第 569 輪定義的 `邊界碎片`。
+
 ## 這份規格明確不宣稱
 
 - 各全域（`byte_211A4`／`word_211A0`／`byte_24E60..64` 等）在遊戲層的語意。

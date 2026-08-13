@@ -53,7 +53,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1636` | sub_1636 | — | 30 | 11 | 1 | 1 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp+var_5], 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | audit/ecl-opcode-dispatch.md<br>context/50-log-2026-08-09-13.md |
 | `16B8` | sub_16B8 | — | 8 | 3 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call loc_718+3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | — |
 | `16D2` | sub_16D2 | — | 165 | 66 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 23h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
-| `177A` | sub_177A | — | 32 | 14 | 2 | 2 |  | 待解讀 | — | — | — |
+| `177A` | sub_177A | — | 32 | 14 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完） | — |
 | `179A` | sub_179A | — | 61 | 18 | 1 | 3 | ✓ | 待解讀 | — | docs/spec/560-ecl-opcode-dispatch-table.md<br>ECL opcode 24h 的 handler（binding exact，語意未解讀） | audit/ecl-opcode-dispatch.md |
 | `17B5` | sub_17B5 | — | 3 | 1 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1956`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |
 | `17C4` | sub_17C4 | — | 3 | 1 | 2 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp near ptr sub_184B`，控制權轉交後不返回（body 共 3 bytes，已逐條讀完） | — |

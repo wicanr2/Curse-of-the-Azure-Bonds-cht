@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0552` | sub_552 | — | 53 | 22 | 1 | 0 | ✓ | 待解讀 | — | — | — |
 | `0591` | sub_591 | — | 343 | 117 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `06E8` | sub_6E8 | — | 37 | 16 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ADDFNC：與 PC-98 逐指令相同 | spec/562-ecl2-helper-api-and-operand-audit.md |
-| `070D` | sub_70D | — | 40 | 16 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `070D` | sub_70D | — | 40 | 16 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>字元碼調整:arg <= 1Fh 時回傳 arg + 40h,否則原樣回傳(控制字元映射到 40h 之後) | — |
 | `0735` | sub_735 | — | 91 | 28 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/563-ecl-memory-model-and-operand-resolution.md<br>ECL 位址 bank 分類器：與 PC-98 相同，唯 bank3 上界為 9DFFh | knowledge/gold-box-ecl-interpreter.md<br>spec/563-ecl-memory-model-and-operand-resolution.md |
 | `0790` | sub_790 | — | 97 | 35 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `07F1` | sub_7F1 | — | 892 | 293 | 1 | 3 | ✓ | 待解讀 | — | — | — |

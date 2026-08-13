@@ -1074,6 +1074,195 @@
    "note": "Turbo Pascal @Random$q4Word:body 與 DOS START.EXE:1B645h 逐位元組相同 ⇒ 兩平台亂數演算法一致。影響玩家可見結果,依 spec 566 保留待解讀"
   },
   {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 4548,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/571-trytohit-attack-resolution.md",
+   "note": "TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 76359,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "設定 BIOS 顯示模式:把 Registers record 的 AH=0、AL=arg_0 後呼叫 INTR(10h) ⇒ INT 10h AH=00h;呼叫前把 byte_211A5 存進 byte_211A4(前一個模式),呼叫後把 arg_0 記進 byte_211A5"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 76407,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 87236,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 89939,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @DELAY(byte_21169 × 100)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 90976,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 91005,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 93207,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "依序 @Close 兩個 File 參數(先 arg_4 再 arg_0)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94784,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "把 dword_21154 所指的 word 清成 0"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "跨段寫入:切到 seg045 後把 arg_0 寫進 byte_17286,再還原 DS(前後以 push/pop 保存 AX 與 DS)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105806,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@DELAY 實作:取毫秒參數後反覆讀 0000:0000 的 BIOS timer 位元組,每次變動遞減計數(輔助迴圈在 sub_19D6E)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105838,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@DELAY 的忙碌等待迴圈:比較 al 與 es:[di] 的 BIOS timer 位元組,相同就 loop"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105846,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@SOUND 實作:divisor := 1234DDh ÷ 頻率(頻率 <= 12h 直接返回);in 61h 開喇叭閘、out 43h 送 0B6h(PIT ch2 方波)、分兩次 out 42h 送 divisor 高低位元組"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105891,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "@NOSOUND 實作:in 61h 後 and 0FCh 再 out 61h,關閉 PC 喇叭的閘門與計時器輸出"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106372,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "捲動一行:若 dh+1 超過 word_24E64 高位元組(視窗下界)則以 INT 10h AX=0601h 上捲一行,屬性取 byte_24E60、範圍取 word_24E62/word_24E64"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106680,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106993,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "開檔:把 Pascal 字串複製成 ASCIIZ 到堆疊緩衝(lodsb 取長度後 rep movsb 再補 0),再以 INT 21h AX=3D00h 唯讀開啟"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107564,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108244,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 sub_1A716 輸出並前進"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108258,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出三位十進位數:以除數 100 與 10 呼叫 sub_1A6EE 印百位與十位,再續印個位"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108270,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/572-resident-service-functions.md",
+   "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 轉 ASCII 後呼叫 sub_1A716 輸出,並把餘數(ah)移回 al 供下一位使用"
+  },
+  {
    "platform": "dos",
    "module": "START.EXE",
    "ea": 66480,
@@ -1644,10 +1833,10 @@
    "platform": "dos",
    "module": "START.EXE",
    "ea": 106837,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
+   "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A1F1`（body 共 11 bytes，已逐條讀完）"
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 11 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -1720,6 +1909,24 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call __RealDiv`（body 共 10 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 115064,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 115091,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -1841,6 +2048,15 @@
   {
    "platform": "dos",
    "module": "overlay-02",
+   "ea": 6010,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
    "ea": 6069,
    "state": "已解讀",
    "level": "exact",
@@ -1918,6 +2134,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 4105,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 22 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -2102,6 +2327,15 @@
   {
    "platform": "dos",
    "module": "overlay-09",
+   "ea": 4559,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 38 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
    "ea": 5188,
    "state": "邊界碎片",
    "level": "",
@@ -2242,6 +2476,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr [bp-7], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 6119,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 25 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -3115,6 +3358,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-37h], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 5560,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 32 bytes，已逐條讀完）"
   },
   {
    "platform": "dos",
@@ -4343,6 +4595,33 @@
   {
    "platform": "pc98",
    "module": "PC98-GAME.EXE",
+   "ea": 82059,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 60 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82119,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 106 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 82225,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 77 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
    "ea": 82304,
    "state": "已解讀",
    "level": "exact",
@@ -4470,10 +4749,46 @@
    "platform": "pc98",
    "module": "PC98-GAME.EXE",
    "ea": 106366,
-   "state": "已解讀",
-   "level": "exact",
+   "state": "邊界碎片",
+   "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完）"
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106378,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 59 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106437,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 88 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106525,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 106552,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4573,6 +4888,24 @@
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "尾呼叫：最後一條是 `jmp short loc_1BA44`，控制權轉交後不返回；先設定 `mov dx, 0D7B2h`（body 共 5 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115280,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 115307,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -4982,6 +5315,15 @@
   {
    "platform": "pc98",
    "module": "overlay-07",
+   "ea": 5962,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 30 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-07",
    "ea": 6016,
    "state": "邊界碎片",
    "level": "",
@@ -5194,6 +5536,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_143A+2`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 5462,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 9 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -6944,6 +7295,15 @@
   {
    "platform": "pc98",
    "module": "overlay-23",
+   "ea": 5467,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 47 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
    "ea": 5671,
    "state": "邊界碎片",
    "level": "",
@@ -7021,6 +7381,15 @@
    "level": "",
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `add word ptr [bx+di-7Dh], 43h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 6250,
+   "state": "邊界碎片",
+   "level": "",
+   "spec": "docs/spec/569-small-function-batch-reading.md",
+   "note": "邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 31 bytes，已逐條讀完）"
   },
   {
    "platform": "pc98",
@@ -7228,6 +7597,42 @@
    "level": "",
    "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
    "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@INTR$q4BYTEm9REGISTERS`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104540,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetDate$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104574,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetDate$q4Wordt1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104594,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@GetTime$qm4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104631,
+   "state": "不阻塞",
+   "level": "",
+   "spec": "docs/spec/566-turbo-pascal-rtl-not-blocking.md",
+   "note": "Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@SetTime$q4Wordt1t1t1`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則"
   },
   {
    "platform": "dos",
@@ -8634,229 +9039,40 @@
    "note": "Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes）"
   },
   {
-   "platform": "pc98",
-   "module": "overlay-23",
-   "ea": 4548,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/571-trytohit-attack-resolution.md",
-   "note": "TRYTOHIT(modifier,target):d20 存全域 DS:A039h;自然 1 必失手、自然 20 改記為 100;CHECKFX(10h,target) 可改寫該全域;命中條件是 骰值+modifier > target^[19Bh](嚴格大於)"
-  },
-  {
    "platform": "dos",
-   "module": "START.EXE",
-   "ea": 76359,
+   "module": "overlay-06",
+   "ea": 0,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "設定 BIOS 顯示模式:把 Registers record 的 AH=0、AL=arg_0 後呼叫 INTR(10h) ⇒ INT 10h AH=00h;呼叫前把 byte_211A5 存進 byte_211A4(前一個模式),呼叫後把 arg_0 記進 byte_211A5"
+   "note": "unit 初始化(LOADSHOP):依序 far call 依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器"
   },
   {
    "platform": "dos",
-   "module": "START.EXE",
-   "ea": 76407,
+   "module": "overlay-11",
+   "ea": 0,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "還原先前的 BIOS 顯示模式:以 byte_211A4(前一個模式)呼叫 sub_12A47"
+   "note": "unit 初始化(LOADINIT):依序 far call 八個依賴單元的初始化 entry,最後呼叫 19Ch:2Ah 的 overlay 載入器"
   },
   {
    "platform": "dos",
-   "module": "START.EXE",
-   "ea": 87236,
+   "module": "overlay-07",
+   "ea": 1805,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes)"
+   "note": "字元碼調整:arg <= 1Fh 時回傳 arg + 40h,否則原樣回傳(控制字元映射到 40h 之後)"
   },
   {
    "platform": "dos",
-   "module": "START.EXE",
-   "ea": 89939,
+   "module": "overlay-10",
+   "ea": 2445,
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "呼叫 RTL @DELAY(byte_21169 × 100)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 90976,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 91005,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 93207,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "依序 @Close 兩個 File 參數(先 arg_4 再 arg_0)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 94784,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "把 dword_21154 所指的 word 清成 0"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 104372,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "跨段寫入:切到 seg045 後把 arg_0 寫進 byte_17286,再還原 DS(前後以 push/pop 保存 AX 與 DS)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 104540,
-   "state": "不阻塞",
-   "level": "",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 GetDate 實作:INT 21h AH=2Ah,把年/月/日/星期分別 stosw 到四個 var 參數"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 104574,
-   "state": "不阻塞",
-   "level": "",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 SetDate 實作:INT 21h AH=2Bh"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 104594,
-   "state": "不阻塞",
-   "level": "",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 GetTime 實作:INT 21h AH=2Ch,把時/分/秒/百分秒 stosw 到四個 var 參數"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 104631,
-   "state": "不阻塞",
-   "level": "",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "Turbo Pascal Dos 單元的 SetTime 實作:INT 21h AH=2Dh"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 105806,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "@DELAY 實作:取毫秒參數後反覆讀 0000:0000 的 BIOS timer 位元組,每次變動遞減計數(輔助迴圈在 sub_19D6E)"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 105838,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "@DELAY 的忙碌等待迴圈:比較 al 與 es:[di] 的 BIOS timer 位元組,相同就 loop"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 105846,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "@SOUND 實作:divisor := 1234DDh ÷ 頻率(頻率 <= 12h 直接返回);in 61h 開喇叭閘、out 43h 送 0B6h(PIT ch2 方波)、分兩次 out 42h 送 divisor 高低位元組"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 105891,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "@NOSOUND 實作:in 61h 後 and 0FCh 再 out 61h,關閉 PC 喇叭的閘門與計時器輸出"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 106372,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "捲動一行:若 dh+1 超過 word_24E64 高位元組(視窗下界)則以 INT 10h AX=0601h 上捲一行,屬性取 byte_24E60、範圍取 word_24E62/word_24E64"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 106680,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 106993,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "開檔:把 Pascal 字串複製成 ASCIIZ 到堆疊緩衝(lodsb 取長度後 rep movsb 再補 0),再以 INT 21h AX=3D00h 唯讀開啟"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 107564,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 108244,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "輸出 CS 內的 ASCIIZ 字串:逐字元讀 cs:[bx],非 0 就呼叫 sub_1A716 輸出並前進"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 108258,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "輸出三位十進位數:以除數 100 與 10 呼叫 sub_1A6EE 印百位與十位,再續印個位"
-  },
-  {
-   "platform": "dos",
-   "module": "START.EXE",
-   "ea": 108270,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/572-resident-service-functions.md",
-   "note": "輸出一位十進位數字:al := ax ÷ cl,加 30h 轉 ASCII 後呼叫 sub_1A716 輸出,並把餘數(ah)移回 al 供下一位使用"
+   "note": "表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte"
   }
  ]
 }

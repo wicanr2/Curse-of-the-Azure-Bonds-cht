@@ -73,9 +73,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `13E22` | sub_13E22 | — | 138 | 60 | 1 | 1 |  | 待解讀 | — | — | — |
 | `13EAC` | sub_13EAC | — | 197 | 85 | 1 | 1 |  | 待解讀 | — | — | — |
 | `13F71` | sub_13F71 | — | 282 | 108 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1408B` | sub_1408B | — | 60 | 31 | 1 | 1 |  | 待解讀 | — | — | — |
-| `140C7` | sub_140C7 | — | 106 | 48 | 1 | 1 |  | 待解讀 | — | — | — |
-| `14131` | sub_14131 | — | 77 | 36 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1408B` | sub_1408B | — | 60 | 31 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 60 bytes，已逐條讀完） | — |
+| `140C7` | sub_140C7 | — | 106 | 48 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 106 bytes，已逐條讀完） | — |
+| `14131` | sub_14131 | — | 77 | 36 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 77 bytes，已逐條讀完） | — |
 | `14180` | sub_14180 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `14187` | sub_14187 | — | 25 | 11 | 1 | 0 |  | 待解讀 | — | — | — |
 | `141A0` | sub_141A0 | — | 164 | 77 | 4 | 4 |  | 待解讀 | — | — | — |
@@ -229,11 +229,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 待解讀 | — | — | — |
 | `19EB0` | sub_19EB0 | — | 15 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call sub_1A721`（body 共 15 bytes，已逐條讀完） | — |
 | `19EC4` | sub_19EC4 | — | 186 | 71 | 1 | 5 |  | 待解讀 | — | — | — |
-| `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call sub_1A01D`（body 共 12 bytes，已逐條讀完） | — |
-| `19F8A` | sub_19F8A | — | 59 | 31 | 1 | 2 |  | 待解讀 | — | — | — |
-| `19FC5` | sub_19FC5 | — | 88 | 48 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1A01D` | sub_1A01D | — | 27 | 14 | 3 | 0 |  | 待解讀 | — | — | — |
-| `1A038` | sub_1A038 | — | 19 | 11 | 1 | 1 |  | 待解讀 | — | — | — |
+| `19F7E` | sub_19F7E | — | 12 | 7 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 12 bytes，已逐條讀完） | — |
+| `19F8A` | sub_19F8A | — | 59 | 31 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 59 bytes，已逐條讀完） | — |
+| `19FC5` | sub_19FC5 | — | 88 | 48 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 88 bytes，已逐條讀完） | — |
+| `1A01D` | sub_1A01D | — | 27 | 14 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |
+| `1A038` | sub_1A038 | — | 19 | 11 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 19 bytes，已逐條讀完） | — |
 | `1A04B` | sub_1A04B | — | 88 | 30 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1A0A3` | sub_1A0A3 | — | 11 | 4 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1A0FF` | sub_1A0FF | — | 13 | 6 | 2 | 0 |  | 待解讀 | — | — | — |
@@ -335,6 +335,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C0F7` | sub_1C0F7 | — | 23 | 10 | 1 | 1 |  | 待解讀 | — | — | — |
 | `1C15D` | sub_1C15D | — | 35 | 16 | 27 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@Move$qm3Anyt14Word` 逐位元組相同（35 bytes） | — |
 | `1C180` | sub_1C180 | — | 20 | 7 | 13 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@FillChar$qm3Any4Word4Byte` 逐位元組相同（20 bytes） | — |
-| `1C250` | sub_1C250 | — | 27 | 17 | 3 | 1 |  | 待解讀 | — | — | — |
-| `1C26B` | sub_1C26B | — | 15 | 9 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1C250` | sub_1C250 | — | 27 | 17 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 27 bytes，已逐條讀完） | — |
+| `1C26B` | sub_1C26B | — | 15 | 9 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 15 bytes，已逐條讀完） | — |
 | `1C27A` | sub_1C27A | — | 19 | 8 | 3 | 1 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@UpCase$q4Char` 逐位元組相同（19 bytes） | — |

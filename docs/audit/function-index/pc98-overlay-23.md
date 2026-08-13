@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1542` | sub_1542 | — | 6 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push word ptr [bp+0Ch]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `154C` | sub_154C | — | 6 | 3 | 4 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 6 bytes，已逐條讀完） | — |
 | `1552` | sub_1552 | REMOVEINVIS | 9 | 4 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
-| `155B` | sub_155B | — | 47 | 21 | 2 | 4 |  | 待解讀 | — | — | — |
+| `155B` | sub_155B | — | 47 | 21 | 2 | 4 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 47 bytes，已逐條讀完） | — |
 | `158A` | sub_158A | REMOVEFX | 98 | 39 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `15EC` | sub_15EC | ROUTINGREMOVEFX | 55 | 24 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1627` | sub_1627 | — | 1 | 1 | 1 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | audit/function-triage.md |

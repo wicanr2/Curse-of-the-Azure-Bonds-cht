@@ -12,5 +12,5 @@ offset（base 0），resident executable 為 IDA linear address。
 | `097B` | sub_97B | — | 202 | 72 | 1 | 1 |  | 待解讀 | — | — | — |
 | `0B12` | sub_B12 | — | 506 | 220 | 1 | 6 |  | 待解讀 | — | — | — |
 | `0DD6` | sub_DD6 | — | 563 | 243 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `1009` | sub_1009 | — | 22 | 8 | 1 | 2 |  | 待解讀 | — | — | — |
+| `1009` | sub_1009 | — | 22 | 8 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 22 bytes，已逐條讀完） | — |
 | `101F` | sub_101F | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
