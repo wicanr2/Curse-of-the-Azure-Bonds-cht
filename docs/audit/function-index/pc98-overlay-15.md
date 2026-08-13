@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADCAMP | 52 | 14 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 9 個呼叫，沒有其他動作：`call loc_19C8+2`、`call sub_11C7`、`call far ptr sub_1084`、`call far ptr loc_159F+2`、`call far ptr loc_E22+4`、`call sub_1697`（body 共 52 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md<br>spec/583-ledger-denominator-repair.md |
-| `0034` | sub_34 | — | 340 | 121 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0034` | sub_34 | — | 340 | 121 | 1 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
 | `0188` | sub_188 | — | 67 | 24 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `01CB` | sub_1CB | — | 115 | 42 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `023E` | sub_23E | — | 68 | 27 | 1 | 3 | ✓ | 待解讀 | — | — | — |

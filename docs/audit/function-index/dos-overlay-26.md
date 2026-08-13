@@ -20,7 +20,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0AF8` | sub_AF8 | — | 257 | 111 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0BF9` | sub_BF9 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0CD9` | sub_CD9 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0D6B` | sub_D6B | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0D6B` | sub_D6B | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
 | `0DF9` | sub_DF9 | — | 778 | 312 | 0 | 9 | ✓ | 待解讀 | — | — | — |
 | `112A` | sub_112A | — | 111 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `1199` | sub_1199 | — | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |

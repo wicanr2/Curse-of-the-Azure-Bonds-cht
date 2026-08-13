@@ -16866,6 +16866,45 @@
    "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
    "note": "N d6,顆數算出來、面數寫死 6:n := <overlay-24 entry#36>(DS:6F97h);r := ROLLDICE(n, 6);<sub_3947h>(DS:7559h, DS:755Ah, r, 4, 0, @區域);<sub_3A03h>(7, r, 4, 1)。同一個 r 被兩支下游各用一次但參數位置不同(第三個 vs 第二個)",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 24955,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
+   "note": "從物品身上拔掉一個效果:掃 物品^[3Ch..3Eh] 三個槽(and 7Fh 後比對 arg_0,**不提早跳出,取最後一個符合的**),找到就清 0、物品^[30h] 減 1,遞減後**小於 0D2h(無號)**才呼叫 overlay-24 entry#17 把物品移除並釋放(spec 695)。那三個槽正好是 spec 696 建構子最後三個參數的落點,低 7 位是編號、最高位是旗標;+30h 是次數。⚠ 0D2h..0FFh 這段遞減後仍不觸發移除,當成「用完就沒了」會提早銷毀物品",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 17033,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
+   "note": "用哨兵值判斷下游有沒有動過:sub_F06h(DS:6F97h,0,0,0,8,空字串) → p := DS:6506h^[18Dh]^[0Ah] → **DS:6F93h := 40h(哨兵)** → <overlay-23 entry#4>(p, 9) → 若 DS:6F93h 仍是 40h 才 <overlay-23 entry#2>(0, [bp−4], [bp−2], DS:6506h, 40h)。⚠ **[bp−4] 與 [bp−2] 整支函式沒有任何一條指令寫過**(bp−9 是拼接緩衝、bp−8..bp−5 存 p),傳出去的是堆疊殘值;同一支 entry#2 在 262Fh 的同樣兩個位置推的是明確的 0。需實機驗證再決定 remake 怎麼寫",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 17458,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
+   "note": "三段接力:r := <sub_E11h>(DS:6506h, 4, 49h) → <overlay-23 entry#21 PUTEFFECT>(r, 0,0,0,0, 空字串 CS:4425h) → <sub_F06h>(DS:6F97h, 0,0,0,0, 'is affected' CS:4426h)。⚠ CS:4425h 與 CS:4426h 緊鄰(前者長度 0、後者長度 11),反組譯裡兩個 offset 只差 1 很容易看成同一個字串的偏移",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 25909,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/703-item-effect-slots-and-uninitialised-args.md",
+   "note": "與 DOS overlay-22:617Bh（entry#7）助憶碼序列完全相同，語意同該筆：從物品身上拔掉一個效果:掃 物品^[3Ch..3Eh] 三個槽(and 7Fh 後比對 arg_0,**不提早跳出,取最後一個符合的**),找到就清 0、物品^[30h] 減 1,遞減後**小於 0D2h(無號)**才呼叫 overlay-24 entry#17 把物品移除並釋放(spec 695)。那三個槽正好是 spec 696 建構子最後三個參數的落點,低 7 位是編號、最高位是旗標;+30h 是次數。⚠ 0D2h..0FFh 這段遞減後仍不觸發移除,當成「用完就沒了」會提早銷毀物品 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

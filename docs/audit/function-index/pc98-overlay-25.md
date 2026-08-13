@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03B1` | sub_3B1 | FIGLEVELSTUFF | 704 | 247 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `0671` | sub_671 | ADJUSTCLERICALSPELLS | 370 | 121 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `07E3` | sub_7E3 | SETSAVETHROWS | 737 | 282 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `0AC4` | sub_AC4 | SETTHIEFSKILLS | 595 | 224 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `0AC4` | sub_AC4 | SETTHIEFSKILLS | 595 | 224 | 2 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
 | `0D17` | sub_D17 | — | 370 | 145 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0F30` | sub_F30 | CHANGEHUMANCLASS | 1130 | 437 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `139A` | sub_139A | OLDHUMANCLASS | 92 | 33 | 0 | 1 | ✓ | 待解讀 | — | — | — |
