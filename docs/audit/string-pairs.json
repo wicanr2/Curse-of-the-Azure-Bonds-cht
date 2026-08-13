@@ -1,0 +1,1025 @@
+{
+ "schema": "coab-string-pairs/1",
+ "pairs": [
+  {
+   "module": "overlay-00",
+   "dos_function": 23,
+   "pc98_function": 27,
+   "position": 0,
+   "dos_offset": 0,
+   "pc98_offset": 0,
+   "english": "Time to save your game",
+   "japanese": "ゲームをセーブしてください"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 640,
+   "pc98_function": 675,
+   "position": 0,
+   "dos_offset": 611,
+   "pc98_offset": 627,
+   "english": "is not blind.",
+   "japanese": "は盲目ではありませんよ。"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 640,
+   "pc98_function": 675,
+   "position": 1,
+   "dos_offset": 625,
+   "pc98_offset": 652,
+   "english": "Cure Blindness",
+   "japanese": "キュア・ブラインドネス"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 804,
+   "pc98_function": 859,
+   "position": 0,
+   "dos_offset": 774,
+   "pc98_offset": 809,
+   "english": "is not Diseased.",
+   "japanese": "は病いに冒されてはいませんよ。"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 804,
+   "pc98_function": 859,
+   "position": 1,
+   "dos_offset": 791,
+   "pc98_offset": 840,
+   "english": "Cure Disease",
+   "japanese": "キュア・ディジーズ"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 2194,
+   "pc98_function": 2366,
+   "position": 0,
+   "dos_offset": 2159,
+   "pc98_offset": 2314,
+   "english": "is not poisoned.",
+   "japanese": "は毒を受けてはいませんよ"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 2194,
+   "pc98_function": 2366,
+   "position": 1,
+   "dos_offset": 2176,
+   "pc98_offset": 2339,
+   "english": "Neutralize Poison",
+   "japanese": "ニュートラライズ・ポイズン"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 2427,
+   "pc98_function": 2611,
+   "position": 0,
+   "dos_offset": 2399,
+   "pc98_offset": 2571,
+   "english": "is not cursed.",
+   "japanese": "は呪われてはいませんよ"
+  },
+  {
+   "module": "overlay-04",
+   "dos_function": 2427,
+   "pc98_function": 2611,
+   "position": 1,
+   "dos_offset": 2414,
+   "pc98_offset": 2594,
+   "english": "Remove Curse",
+   "japanese": "リムーブ・カース"
+  },
+  {
+   "module": "overlay-06",
+   "dos_function": 853,
+   "pc98_function": 928,
+   "position": 0,
+   "dos_offset": 842,
+   "pc98_offset": 915,
+   "english": "OverLoaded",
+   "japanese": "持ちすぎです"
+  },
+  {
+   "module": "overlay-06",
+   "dos_function": 1140,
+   "pc98_function": 1214,
+   "position": 1,
+   "dos_offset": 1122,
+   "pc98_offset": 1197,
+   "english": "Not enough Money.",
+   "japanese": "お金が足りません"
+  },
+  {
+   "module": "overlay-08",
+   "dos_function": 3817,
+   "pc98_function": 3863,
+   "position": 0,
+   "dos_offset": 3796,
+   "pc98_offset": 3846,
+   "english": "Not with that weapon",
+   "japanese": "そこへは進めない"
+  },
+  {
+   "module": "overlay-10",
+   "dos_function": 4143,
+   "pc98_function": 4131,
+   "position": 0,
+   "dos_offset": 4119,
+   "pc98_offset": 4107,
+   "english": "DungCom",
+   "japanese": "DungCom"
+  },
+  {
+   "module": "overlay-10",
+   "dos_function": 4143,
+   "pc98_function": 4131,
+   "position": 1,
+   "dos_offset": 4127,
+   "pc98_offset": 4115,
+   "english": "WildCom",
+   "japanese": "WildCom"
+  },
+  {
+   "module": "overlay-10",
+   "dos_function": 4143,
+   "pc98_function": 4131,
+   "position": 2,
+   "dos_offset": 4135,
+   "pc98_offset": 4123,
+   "english": "RandCom",
+   "japanese": "RandCom"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 232,
+   "pc98_function": 227,
+   "position": 0,
+   "dos_offset": 208,
+   "pc98_offset": 208,
+   "english": "is fighting with snakes",
+   "japanese": "は蛇と戦っている。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 928,
+   "pc98_function": 919,
+   "position": 0,
+   "dos_offset": 917,
+   "pc98_offset": 906,
+   "english": "Suffocates",
+   "japanese": "は窒息した。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 1252,
+   "pc98_function": 1250,
+   "position": 0,
+   "dos_offset": 1240,
+   "pc98_offset": 1231,
+   "english": "is silenced",
+   "japanese": "は沈黙させられた。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 1354,
+   "pc98_function": 1356,
+   "position": 0,
+   "dos_offset": 1337,
+   "pc98_offset": 1335,
+   "english": "dies from poison",
+   "japanese": "は毒のために死んだ。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 1462,
+   "pc98_function": 1469,
+   "position": 0,
+   "dos_offset": 1448,
+   "pc98_offset": 1450,
+   "english": "Gains an item",
+   "japanese": "はアイテムを得た。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 1897,
+   "pc98_function": 1907,
+   "position": 0,
+   "dos_offset": 1883,
+   "pc98_offset": 1890,
+   "english": "lost an image",
+   "japanese": "は幻影を失った。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 2072,
+   "pc98_function": 2089,
+   "position": 0,
+   "dos_offset": 2060,
+   "pc98_offset": 2070,
+   "english": "is coughing",
+   "japanese": "は咳きこんでいる。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 2253,
+   "pc98_function": 2271,
+   "position": 0,
+   "dos_offset": 2243,
+   "pc98_offset": 2260,
+   "english": "collapses",
+   "japanese": "は倒れた。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 3049,
+   "pc98_function": 3084,
+   "position": 0,
+   "dos_offset": 3044,
+   "pc98_offset": 3069,
+   "english": "ages",
+   "japanese": "は歳をとった。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 3897,
+   "pc98_function": 3931,
+   "position": 0,
+   "dos_offset": 3887,
+   "pc98_offset": 3920,
+   "english": "Avoids it",
+   "japanese": "は避けた。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 4207,
+   "pc98_function": 4241,
+   "position": 0,
+   "dos_offset": 4195,
+   "pc98_offset": 4228,
+   "english": "is weakened",
+   "japanese": "は弱まった。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 5929,
+   "pc98_function": 5997,
+   "position": 0,
+   "dos_offset": 5915,
+   "pc98_offset": 5974,
+   "english": "is unaffected",
+   "japanese": "は影響を受けなかった。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 8252,
+   "pc98_function": 8362,
+   "position": 0,
+   "dos_offset": 8241,
+   "pc98_offset": 8345,
+   "english": "Falls dead",
+   "japanese": "は倒れ、死んだ。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 10114,
+   "pc98_function": 10224,
+   "position": 0,
+   "dos_offset": 10101,
+   "pc98_offset": 10211,
+   "english": "is paralyzed",
+   "japanese": "は麻痺した。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 11481,
+   "pc98_function": 11606,
+   "position": 0,
+   "dos_offset": 11469,
+   "pc98_offset": 11589,
+   "english": "gets zapped",
+   "japanese": "は報復を受けた。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 11645,
+   "pc98_function": 11797,
+   "position": 0,
+   "dos_offset": 11612,
+   "pc98_offset": 11737,
+   "english": "is dispelled",
+   "japanese": "は異界に送り返された。"
+  },
+  {
+   "module": "overlay-12",
+   "dos_function": 11645,
+   "pc98_function": 11797,
+   "position": 1,
+   "dos_offset": 11625,
+   "pc98_offset": 11760,
+   "english": "resists dispel evil",
+   "japanese": "は「ディスペル・イービル」に耐えた。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 3356,
+   "pc98_function": 3457,
+   "position": 0,
+   "dos_offset": 3329,
+   "pc98_offset": 3425,
+   "english": "Got Away",
+   "japanese": "は逃げきった。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 3356,
+   "pc98_function": 3457,
+   "position": 1,
+   "dos_offset": 3338,
+   "pc98_offset": 3440,
+   "english": "Escape is blocked",
+   "japanese": "逃げられなかった"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 12092,
+   "pc98_function": 11705,
+   "position": 0,
+   "dos_offset": 12078,
+   "pc98_offset": 11680,
+   "english": "Attack Ally: ",
+   "japanese": "味方を攻撃するのですか？"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 0,
+   "dos_offset": 17030,
+   "pc98_offset": 16868,
+   "english": "fires a disintegrate ray",
+   "japanese": "は原子分解光線を発射した。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 1,
+   "dos_offset": 17055,
+   "pc98_offset": 16895,
+   "english": "is disintergrated",
+   "japanese": "は粉々になった。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 2,
+   "dos_offset": 17073,
+   "pc98_offset": 16912,
+   "english": "fires a stone to flesh ray",
+   "japanese": "は石化光線を発射した。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 3,
+   "dos_offset": 17100,
+   "pc98_offset": 16935,
+   "english": "is Stoned",
+   "japanese": "は石になった。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 4,
+   "dos_offset": 17110,
+   "pc98_offset": 16950,
+   "english": "fires a death ray",
+   "japanese": "は殺人光線を発射した。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 5,
+   "dos_offset": 17128,
+   "pc98_offset": 16973,
+   "english": "is killed",
+   "japanese": "は死んだ。"
+  },
+  {
+   "module": "overlay-13",
+   "dos_function": 17149,
+   "pc98_function": 17003,
+   "position": 6,
+   "dos_offset": 17138,
+   "pc98_offset": 16984,
+   "english": "wounds you",
+   "japanese": "はきみを傷つけた。"
+  },
+  {
+   "module": "overlay-15",
+   "dos_function": 1227,
+   "pc98_function": 1218,
+   "position": 0,
+   "dos_offset": 1203,
+   "pc98_offset": 1187,
+   "english": "has no spells memorized",
+   "japanese": "は呪文をまったく覚えていない。"
+  },
+  {
+   "module": "overlay-16",
+   "dos_function": 2686,
+   "pc98_function": 4193,
+   "position": 0,
+   "dos_offset": 2674,
+   "pc98_offset": 4181,
+   "english": "CHEAD",
+   "japanese": "CHEAD"
+  },
+  {
+   "module": "overlay-16",
+   "dos_function": 2686,
+   "pc98_function": 4193,
+   "position": 1,
+   "dos_offset": 2680,
+   "pc98_offset": 4187,
+   "english": "CBODY",
+   "japanese": "CBODY"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 3781,
+   "pc98_function": 3726,
+   "position": 0,
+   "dos_offset": 3701,
+   "pc98_offset": 3619,
+   "english": "Must be unreadied",
+   "japanese": "装備をはずしてください"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 3781,
+   "pc98_function": 3726,
+   "position": 1,
+   "dos_offset": 3719,
+   "pc98_offset": 3642,
+   "english": " was going to scribe from that scroll",
+   "japanese": "はその巻物から呪文を書き写そうとしています。"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 3781,
+   "pc98_function": 3726,
+   "position": 2,
+   "dos_offset": 3757,
+   "pc98_offset": 3687,
+   "english": "is it Okay to lose it? ",
+   "japanese": "この巻物からの書き写しを中止しますか？"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 8508,
+   "pc98_function": 8450,
+   "position": 0,
+   "dos_offset": 8480,
+   "pc98_offset": 8420,
+   "english": "Trade with Whom?",
+   "japanese": "誰に渡しますか？"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 8508,
+   "pc98_function": 8450,
+   "position": 1,
+   "dos_offset": 8497,
+   "pc98_offset": 8437,
+   "english": "Overloaded",
+   "japanese": "持ちすぎです"
+  },
+  {
+   "module": "overlay-19",
+   "dos_function": 8691,
+   "pc98_function": 8645,
+   "position": 0,
+   "dos_offset": 8674,
+   "pc98_offset": 8616,
+   "english": "Can't halve that",
+   "japanese": "それは分けることはできません"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 1492,
+   "pc98_function": 1490,
+   "position": 0,
+   "dos_offset": 1479,
+   "pc98_offset": 1479,
+   "english": "Rest Time:",
+   "japanese": "休息時間"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 2146,
+   "pc98_function": 2200,
+   "position": 0,
+   "dos_offset": 2120,
+   "pc98_offset": 2179,
+   "english": "The Whole Party Is Healed",
+   "japanese": "パーティーは回復した"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 2333,
+   "pc98_function": 2382,
+   "position": 0,
+   "dos_offset": 2319,
+   "pc98_offset": 2373,
+   "english": "has memorized",
+   "japanese": "を覚えた"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 2527,
+   "pc98_function": 2577,
+   "position": 0,
+   "dos_offset": 2515,
+   "pc98_offset": 2564,
+   "english": "has scribed",
+   "japanese": "を書き写した"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 3228,
+   "pc98_function": 3280,
+   "position": 1,
+   "dos_offset": 3176,
+   "pc98_offset": 3226,
+   "english": "Stop Resting? ",
+   "japanese": "休息を中断しますか？"
+  },
+  {
+   "module": "overlay-20",
+   "dos_function": 3228,
+   "pc98_function": 3280,
+   "position": 2,
+   "dos_offset": 3191,
+   "pc98_offset": 3247,
+   "english": "Your repose is suddenly interrupted!",
+   "japanese": "休んでいるどころではなくなった！"
+  },
+  {
+   "module": "overlay-21",
+   "dos_function": 540,
+   "pc98_function": 536,
+   "position": 0,
+   "dos_offset": 500,
+   "pc98_offset": 499,
+   "english": "Overloaded.  Money will be put in Pool.",
+   "japanese": "持ちすぎです。お金は地面に置きますよ"
+  },
+  {
+   "module": "overlay-21",
+   "dos_function": 1131,
+   "pc98_function": 1157,
+   "position": 0,
+   "dos_offset": 1120,
+   "pc98_offset": 1144,
+   "english": "Overloaded",
+   "japanese": "持ちすぎです"
+  },
+  {
+   "module": "overlay-21",
+   "dos_function": 2698,
+   "pc98_function": 2726,
+   "position": 0,
+   "dos_offset": 2687,
+   "pc98_offset": 2713,
+   "english": "Overloaded",
+   "japanese": "持ちすぎです"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 7417,
+   "pc98_function": 8019,
+   "position": 0,
+   "dos_offset": 7406,
+   "pc98_offset": 8002,
+   "english": "is Blessed",
+   "japanese": "は祝福を受けた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 7466,
+   "pc98_function": 8075,
+   "position": 0,
+   "dos_offset": 7456,
+   "pc98_offset": 8058,
+   "english": "is Cursed",
+   "japanese": "は呪いを受けた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 8576,
+   "pc98_function": 9220,
+   "position": 0,
+   "dos_offset": 8564,
+   "pc98_offset": 9201,
+   "english": "is friendly",
+   "japanese": "は友好的になった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 8884,
+   "pc98_function": 9543,
+   "position": 0,
+   "dos_offset": 8871,
+   "pc98_offset": 9526,
+   "english": "falls asleep",
+   "japanese": "は眠りに落ちた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 9600,
+   "pc98_function": 10285,
+   "position": 0,
+   "dos_offset": 9589,
+   "pc98_offset": 10270,
+   "english": "is charmed",
+   "japanese": "は魅了された。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 9974,
+   "pc98_function": 10659,
+   "position": 0,
+   "dos_offset": 9960,
+   "pc98_offset": 10646,
+   "english": "is duplicated",
+   "japanese": "は分身した。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 10137,
+   "pc98_function": 10834,
+   "position": 1,
+   "dos_offset": 10113,
+   "pc98_offset": 10801,
+   "english": "Creates a noxious cloud",
+   "japanese": "はひどい臭いのガスを作り出した。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 11702,
+   "pc98_function": 12402,
+   "position": 0,
+   "dos_offset": 11690,
+   "pc98_offset": 12387,
+   "english": "is animated",
+   "japanese": "は動き始めた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 12126,
+   "pc98_function": 12835,
+   "position": 0,
+   "dos_offset": 12118,
+   "pc98_offset": 12818,
+   "english": "can see",
+   "japanese": "の視力は戻った。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 13613,
+   "pc98_function": 14340,
+   "position": 0,
+   "dos_offset": 13602,
+   "pc98_offset": 14325,
+   "english": "is praying",
+   "japanese": "は祈っている。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 14621,
+   "pc98_function": 15307,
+   "position": 0,
+   "dos_offset": 14611,
+   "pc98_offset": 15292,
+   "english": "is Hasted",
+   "japanese": "は加速された。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 15597,
+   "pc98_function": 16296,
+   "position": 0,
+   "dos_offset": 15587,
+   "pc98_offset": 16281,
+   "english": "is Slowed",
+   "japanese": "は減速された。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 15655,
+   "pc98_function": 16363,
+   "position": 0,
+   "dos_offset": 15643,
+   "pc98_offset": 16342,
+   "english": "is restored",
+   "japanese": "はレベルを回復した。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 16098,
+   "pc98_function": 16815,
+   "position": 0,
+   "dos_offset": 16088,
+   "pc98_offset": 16796,
+   "english": "is Speedy",
+   "japanese": "はすばやくなった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 16239,
+   "pc98_function": 16959,
+   "position": 0,
+   "dos_offset": 16227,
+   "pc98_offset": 16944,
+   "english": "is stronger",
+   "japanese": "は強くなった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 17169,
+   "pc98_function": 17905,
+   "position": 1,
+   "dos_offset": 17151,
+   "pc98_offset": 17890,
+   "english": "smashes them flat",
+   "japanese": "は叩きつけた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 17458,
+   "pc98_function": 18201,
+   "position": 1,
+   "dos_offset": 17446,
+   "pc98_offset": 18182,
+   "english": "is affected",
+   "japanese": "は魔法にかかった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 18034,
+   "pc98_function": 18795,
+   "position": 0,
+   "dos_offset": 18021,
+   "pc98_offset": 18778,
+   "english": "is entangled",
+   "japanese": "は絡みつかれた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 18220,
+   "pc98_function": 18989,
+   "position": 0,
+   "dos_offset": 18205,
+   "pc98_offset": 18966,
+   "english": "is highlighted",
+   "japanese": "に光がまとわりついた。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 18321,
+   "pc98_function": 19098,
+   "position": 0,
+   "dos_offset": 18310,
+   "pc98_offset": 19083,
+   "english": "is charmed",
+   "japanese": "は魅了された。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 18466,
+   "pc98_function": 19244,
+   "position": 0,
+   "dos_offset": 18454,
+   "pc98_offset": 19231,
+   "english": "is confused",
+   "japanese": "は混乱した。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 19087,
+   "pc98_function": 19897,
+   "position": 0,
+   "dos_offset": 19058,
+   "pc98_offset": 19845,
+   "english": "runs in terror",
+   "japanese": "は恐怖にかられ、逃げ出した。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 19087,
+   "pc98_function": 19897,
+   "position": 1,
+   "dos_offset": 19073,
+   "pc98_offset": 19874,
+   "english": "is unaffected",
+   "japanese": "は影響を受けなかった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 19872,
+   "pc98_function": 20807,
+   "position": 0,
+   "dos_offset": 19852,
+   "pc98_offset": 20773,
+   "english": "is clumsy",
+   "japanese": "はのろまになった。"
+  },
+  {
+   "module": "overlay-22",
+   "dos_function": 19872,
+   "pc98_function": 20807,
+   "position": 1,
+   "dos_offset": 19862,
+   "pc98_offset": 20792,
+   "english": "is slowed",
+   "japanese": "は減速された。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 3653,
+   "pc98_function": 3634,
+   "position": 1,
+   "dos_offset": 3587,
+   "pc98_offset": 3560,
+   "english": "starts to cough",
+   "japanese": "は咳きこみ始めた。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 3653,
+   "pc98_function": 3634,
+   "position": 3,
+   "dos_offset": 3603,
+   "pc98_offset": 3579,
+   "english": "chokes and gags from nausea",
+   "japanese": "は窒息し、喉をかきむしった。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 3653,
+   "pc98_function": 3634,
+   "position": 4,
+   "dos_offset": 3631,
+   "pc98_offset": 3608,
+   "english": "is Poisoned",
+   "japanese": "は毒を受けた。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 3653,
+   "pc98_function": 3634,
+   "position": 5,
+   "dos_offset": 3643,
+   "pc98_offset": 3623,
+   "english": "is killed",
+   "japanese": "は死んだ。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 5699,
+   "pc98_function": 5680,
+   "position": 0,
+   "dos_offset": 5690,
+   "pc98_offset": 5667,
+   "english": "is Cured",
+   "japanese": "は呪われた。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 8967,
+   "pc98_function": 8997,
+   "position": 0,
+   "dos_offset": 8953,
+   "pc98_offset": 8976,
+   "english": "is Unaffected",
+   "japanese": "には影響がなかった。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 9453,
+   "pc98_function": 9498,
+   "position": 0,
+   "dos_offset": 9420,
+   "pc98_offset": 9450,
+   "english": "stands up and grins",
+   "japanese": "は立ち上がり、ニヤリと笑った。"
+  },
+  {
+   "module": "overlay-23",
+   "dos_function": 9453,
+   "pc98_function": 9498,
+   "position": 1,
+   "dos_offset": 9440,
+   "pc98_offset": 9481,
+   "english": "gets back up",
+   "japanese": "は起き上がった。"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 2612,
+   "pc98_function": 3155,
+   "position": 1,
+   "dos_offset": 2588,
+   "pc98_offset": 3130,
+   "english": "Hitpoints",
+   "japanese": "ヒットポイント"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 2612,
+   "pc98_function": 3155,
+   "position": 3,
+   "dos_offset": 2601,
+   "pc98_offset": 3150,
+   "english": "(Helpless)",
+   "japanese": "無力"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 9539,
+   "pc98_function": 10102,
+   "position": 0,
+   "dos_offset": 9503,
+   "pc98_offset": 10070,
+   "english": "is fully healed",
+   "japanese": "は完全に回復した"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 9539,
+   "pc98_function": 10102,
+   "position": 1,
+   "dos_offset": 9519,
+   "pc98_offset": 10087,
+   "english": "is partially healed",
+   "japanese": "は少し回復した"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 10359,
+   "pc98_function": 10926,
+   "position": 0,
+   "dos_offset": 10350,
+   "pc98_offset": 10913,
+   "english": "Guarding",
+   "japanese": "防御している"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 11178,
+   "pc98_function": 11916,
+   "position": 7,
+   "dos_offset": 11161,
+   "pc98_offset": 11894,
+   "english": " camping",
+   "japanese": "キャンプ中"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 11178,
+   "pc98_function": 11916,
+   "position": 8,
+   "dos_offset": 11170,
+   "pc98_offset": 11905,
+   "english": " search",
+   "japanese": "捜索モード"
+  },
+  {
+   "module": "overlay-24",
+   "dos_function": 13191,
+   "pc98_function": 13784,
+   "position": 0,
+   "dos_offset": 13179,
+   "pc98_offset": 13765,
+   "english": "is bandaged",
+   "japanese": "は手当てを受けた。"
+  },
+  {
+   "module": "overlay-29",
+   "dos_function": 1876,
+   "pc98_function": 1644,
+   "position": 1,
+   "dos_offset": 1845,
+   "pc98_offset": 1613,
+   "english": "Illegal range in Show3DSprite.",
+   "japanese": "Illegal range in Show3DSprite."
+  }
+ ]
+}
