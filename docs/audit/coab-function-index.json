@@ -9127,9 +9127,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 \u003cfar 013Eh:043Fh\u003e(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致",
    "citations": [
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/585-ecl-goto-and-display-mode-pair.md",
+    "spec/676-dos-overlay12-effects.md"
    ]
   },
   {
@@ -9162,7 +9166,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "依 RACETYPE(+11Ah,兩平台同偏移)給加成:0Ah→1、9 或 0Ch→2、4→3、其餘→0(case 有 else,無未初始化問題);同一個加成同時加到 DS:6F9Fh 與 DS:6F94h(傷害值),再把 DS:6F95h 整個覆寫成 9。種族 9 與 0Ch 共用結果",
+   "citations": [
+    "spec/676-dos-overlay12-effects.md"
+   ]
   },
   {
    "platform": "dos",
@@ -9303,7 +9313,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫",
+   "citations": [
+    "spec/676-dos-overlay12-effects.md"
+   ]
   },
   {
    "platform": "dos",
@@ -30679,7 +30695,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "與 dos overlay-12:00E8h 助憶碼序列完全相同（49 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：total := arg_6^[19Dh] + arg_6^[19Ch](兩欄位相加當一個總量);arg_2^[3] 嚴格大於 total 才直接扣,相等或不足改呼叫 \u003cfar 013Eh:043Fh\u003e(arg_6,3,0)。之後備妥英文原文 'is fighting with snakes' 顯示。⚠ 這兩個欄位對應 PC-98 的 +19Bh/+19Ch,差 1,與 spec 641 對照表一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -30731,7 +30750,8 @@
    "note": "兩個欄位各自夾上限:if arg_6^[19Bh] \u003c 3Ah then += 2 else := 3Ch,+19Ch 同樣做一次。門檻 58、上限 60,所以 58/59 都會被拉到 60 而不是 60/61",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
-    "spec/638-overlay12-effect-batch2.md"
+    "spec/638-overlay12-effect-batch2.md",
+    "spec/676-dos-overlay12-effects.md"
    ]
   },
   {
@@ -30872,7 +30892,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/676-dos-overlay12-effects.md",
+   "note": "與 dos overlay-12:03E5h 助憶碼序列完全相同（36 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：兩道條件:\u003csub_3C\u003e(0Ah, arg_2^[3], 0Fh, arg_6) 非 0,且 arg_6^[1A4h](目前 HP,= PC-98 的 +1A5h)**嚴格大於 1**(jbe,等於 1 也不動手)。通過後 DS:6F95h := 0 並呼叫 \u003cfar 014Ah:0494h\u003e;最後 DS:4FBAh = 5 的檢查在動作之後,只跳過最後一個呼叫 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -44630,9 +44653,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 81,
+   "Read": 84,
    "NotBlocking": 0,
-   "Todo": 44,
+   "Todo": 41,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
@@ -45185,9 +45208,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 150,
-   "Read": 90,
+   "Read": 92,
    "NotBlocking": 0,
-   "Todo": 41,
+   "Todo": 39,
    "Fragment": 19,
    "CodeBytes": 13011,
    "Undefined": 578,
