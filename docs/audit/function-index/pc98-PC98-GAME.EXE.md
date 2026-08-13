@@ -98,11 +98,11 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>從輸入緩衝(DS:28A4h,每字一 word)尾端往回掃,跳過為 0 的格子,回傳最後一個非 0 格的 1 起算序號;全為 0 回 0。掃描上限是 byte_1ED34(容量) | — |
 | `16F2B` | sub_16F2B | — | 86 | 33 | 1 | 3 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>插入一個字,可能與前一字合成:容量滿了就不收;<sub_1711F>(si,2AAAh) 成立且已有字且前一字的高位元組為 0 時,再查 <17148h>(前一字, 2AE2h),成立就把新 byte 寫進**前一字的高位元組**——字數不變,兩個 byte 併成一個 Shift-JIS 碼(日文把濁點併進前一個假名的做法);否則才寫新格並把字數加一。注意 es:[dword_1EB2D]^ 兩條路徑都加一,所以它數的是 byte 數不是字數 | — |
 | `16F81` | sub_16F81 | — | 78 | 45 | 1 | 4 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例 | — |
-| `16FCF` | sub_16FCF | — | 29 | 17 | 1 | 0 |  | 待解讀 | — | — | — |
+| `16FCF` | sub_16FCF | — | 29 | 17 | 1 | 0 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>清文字屬性平面 0A200h:ax 由 byte_1ED35 重複兩次,cx := byte_1ED34 × 2(每字佔兩格),rep stosw。屬性值直接取全域,不像 17D72h/169B6h 現算 | — |
 | `16FEC` | sub_16FEC | — | 110 | 63 | 1 | 3 |  | 待解讀 | — | — | — |
 | `1705A` | sub_1705A | — | 107 | 61 | 1 | 3 |  | 待解讀 | — | — | — |
-| `170C5` | sub_170C5 | — | 90 | 57 | 1 | 2 |  | 待解讀 | — | — | — |
-| `1711F` | sub_1711F | — | 41 | 24 | 3 | 1 |  | 待解讀 | — | — | — |
+| `170C5` | sub_170C5 | — | 90 | 57 | 1 | 2 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>把輸入緩衝轉成輸出字串:先在目標寫一個結尾 0,再逐字搬——高位元組為 0 直接搬一個 byte;否則用整個 word 查 2AE2h 得序號 i,再取 word[2AAEh + (i-1)×2] 寫兩個 byte。⚠ 兩張表平行:2AE2h 存緩衝表示法、2AAEh 存輸出用的 Shift-JIS 碼,所以緩衝裡存的不是最終碼。查表失敗(i=0)時 (i-1)×2 = -2 會讀到 2AAEh 前面兩個 byte——函式沒有檢查 | — |
+| `1711F` | sub_1711F | — | 41 | 24 | 3 | 1 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>表查詢的 byte 版:表格式是「一個 byte 的筆數 + n 個 byte」,呼叫端把表放 DX、值放 BX(進來 xchg bx,dx對調),回傳 1 起算序號、找不到回 0。與 17148h(word 版)是同一種表的兩個寬度版本 | — |
 | `17148` | sub_17148 | — | 42 | 25 | 4 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>字表線性查詢:表格格式是「一個 byte 的筆數 + 連續的 word」,在 ES:BX 指的表裡找 DX,回傳 1 起算的序號,找不到回 0。因為 0 專門表示找不到,表最多 255 筆。比較是 16-bit 整字比不是逐 byte | — |
 | `17172` | sub_17172 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
 | `17186` | sub_17186 | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>Shift-JIS → JIS(区点)換算,輸入輸出都在 AX。用三個已知碼點驗算全部對上:8140h→2121h(全形空白)、889Fh→3021h(亜)、82A0h→2422h(あ)。JIS 碼是 PC-98 漢字 ROM 的索引,所以這支與 14342h(首位元組判斷)合起來是整條日文顯示路徑的入口。⚠ 中文化不能只改常數——漢字 ROM 沒有繁體字集,要整條換成自備字型 | — |

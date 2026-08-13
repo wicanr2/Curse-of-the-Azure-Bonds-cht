@@ -19,7 +19,7 @@
 ```text
 if es:[dword_1EB2D]^ >= byte_1ED34 then return       ← 滿了就不收
 si := 28A4h + byte_1EB33 × 2
-if <sub_1711F>(si, 2AAAh) <> 0
+if <1711Fh>(bl, 2AAAh) <> 0        ← byte 版表查詢
    and byte_1EB33 <> 0
    and [si−1] = 0 then                                ← 前一字還沒有附加記號
     bl 暫存到 bh
@@ -33,9 +33,9 @@ else
 inc es:[dword_1EB2D]^
 ```
 
-兩張表在 `DS:2AAAh` 與 `DS:2AE2h`，都用
-[spec 646](646-sjis-to-jis-conversion.md) 的 `17148h` 格式（一個 byte 的筆數 ＋
-連續 word）查。
+兩張表在 `DS:2AAAh` 與 `DS:2AE2h`。`2AAAh` 用 **byte 版**查（`1711Fh`）、
+`2AE2h` 用 **word 版**查（`17148h`，[spec 646](646-sjis-to-jis-conversion.md)）——
+兩支是同一種表格式的兩個寬度版本，見 [spec 650](650-input-table-lookup-pair.md)。
 
 合成成立時**字數不變**——新輸入的 byte 被寫進**前一個字的高位元組**（`[si−1]`），
 把兩個 byte 併成一個 Shift-JIS 碼。這正是日文輸入把濁點／半濁點併進前一個假名的
