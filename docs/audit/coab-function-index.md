@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1344：已解讀 186、不阻塞 133、邊界碎片 160、待解讀 865；已定義程式碼 238602 bytes，未定義 16044 bytes。
+模組 37／函式 1344：已解讀 220、不阻塞 133、邊界碎片 160、待解讀 831；已定義程式碼 238602 bytes，未定義 16044 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -26,7 +26,7 @@
 | overlay-09 | COMPTACT | 37 | 1 | 0 | 18 | 18 | 7212 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 3 | 0 | 7 | 28 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 2 | 1 | 0 | 0 | 1 | 563 | 743 | [明細](function-index/dos-overlay-11.md) |
-| overlay-12 | EFFPROCS | 151 | 15 | 0 | 24 | 112 | 12855 | 455 | [明細](function-index/dos-overlay-12.md) |
+| overlay-12 | EFFPROCS | 151 | 48 | 0 | 24 | 79 | 12855 | 455 | [明細](function-index/dos-overlay-12.md) |
 | overlay-13 | COMSTUFF | 57 | 1 | 0 | 15 | 41 | 16498 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 1 | 0 | 0 | 13 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 34 | 4 | 0 | 6 | 24 | 6009 | 887 | [明細](function-index/dos-overlay-15.md) |
@@ -37,7 +37,7 @@
 | overlay-20 | CLOCK | 16 | 1 | 0 | 0 | 15 | 3536 | 191 | [明細](function-index/dos-overlay-20.md) |
 | overlay-21 | MONEY | 26 | 1 | 0 | 2 | 23 | 4559 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 136 | 26 | 0 | 20 | 90 | 22254 | 2174 | [明細](function-index/dos-overlay-22.md) |
-| overlay-23 | EFFECTS | 39 | 2 | 0 | 5 | 32 | 9176 | 376 | [明細](function-index/dos-overlay-23.md) |
+| overlay-23 | EFFECTS | 39 | 3 | 0 | 5 | 31 | 9176 | 376 | [明細](function-index/dos-overlay-23.md) |
 | overlay-24 | GENERIC | 56 | 1 | 0 | 1 | 54 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
 | overlay-25 | TRAINING | 8 | 2 | 0 | 0 | 6 | 1295 | 733 | [明細](function-index/dos-overlay-25.md) |
 | overlay-26 | MENUS | 21 | 2 | 0 | 0 | 19 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
