@@ -79,6 +79,25 @@ while node <> nil and not found do
 
 物品鏈的欄位與 `40h` 一致：`+52h` next、`+56h` 類型 id，掛在角色 `+14Eh`。
 
+## `2Ch`（`2940h`）：四選一的選單
+
+```text
+READVAR(6)
+for i := 0 to 3 do v[i] := ADDRESSVALUE(i + 1)    ← 前四個 operand 是候選值
+Move(DS:00ACh, DS:A33Fh, 46h)                     ← 兩段從 DS 複製過去的資料
+Move(DS:00F2h, DS:A335h, 0Ah)
+choice := <far 0062:0084>(1, 0, 0, 0Fh, 0Ah, 0Dh, @buf, @buf)
+dest := ADDFNC(high[5], low[5])
+STOREVALUE(dest, v[choice])
+<far 0064:003E>()
+```
+
+**前四個 operand 是候選值、第五個是目的位址**；宣稱 arity 6，但**第六個
+operand 在 body 裡沒有被用到**（與 `2Ah` 一樣，[spec 594](594-ecl-random-and-indexed-store.md)）。
+
+`choice` 直接當索引取 `v[choice]`，**沒有範圍檢查**——選單常式回傳 0..3 之外
+的值就會讀到 frame 上的其他位元組。
+
 ## 明確不宣稱
 
 - `bank1^[580h]`／`[582h]`、`DS:BDDAh`、`DS:A893h`／`A894h` 的語意。
