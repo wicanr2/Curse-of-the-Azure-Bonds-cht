@@ -25109,11 +25109,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/604-ecl-spawn-monsters.md",
+   "note": "ECL opcode 0Bh(產生 N 個角色/怪物):真實範圍 049Ch..0857h 共 952 bytes(IDA 標 452)。名額上限 63(DS:789Ch),迴圈中每次重新檢查——名額不足時產生部分而非全部放棄。角色/怪物記錄 1A7h=423 bytes(New/Move 的參數直接給的)。複製範本的物品(67h)與 effect(9)節點時插在鏈頭,所以複製出來的鏈順序與範本相反——與 ADDEFFECT 接鏈尾不同。DS:9594h 進來存、離開還原;DS:A895h 是群組編號,寫進每個新記錄的 +143h,整批做完才加一",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/604-ecl-spawn-monsters.md"
    ]
   },
   {
@@ -25691,7 +25693,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
-   "note": "overlay-02 內部共用常式:拿 caller 的 bp 當參數,直接讀 caller frame 上 [bp-11h]/[bp-10h]/[bp-0Fh]/[bp-0Ah] 四個值,分別 STOREVALUE 到 [bp-13h]/[bp-15h]/[bp-17h]/[bp-19h] 存的四個 ECL 位址。偏移是硬編碼的,改動呼叫端的區域變數配置就會壞"
+   "note": "overlay-02 內部共用常式:拿 caller 的 bp 當參數,直接讀 caller frame 上 [bp-11h]/[bp-10h]/[bp-0Fh]/[bp-0Ah] 四個值,分別 STOREVALUE 到 [bp-13h]/[bp-15h]/[bp-17h]/[bp-19h] 存的四個 ECL 位址。偏移是硬編碼的,改動呼叫端的區域變數配置就會壞",
+   "citations": [
+    "audit/function-index/dos-overlay-02.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -43308,9 +43313,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 86,
-   "Read": 45,
+   "Read": 46,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 23,
    "CodeBytes": 14044,
    "Undefined": 266,

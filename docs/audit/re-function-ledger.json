@@ -320,15 +320,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 1180,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 0Bh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 4290,
    "state": "待解讀",
    "level": "",
@@ -12025,6 +12016,15 @@
    "level": "strong inference",
    "spec": "docs/spec/603-ecl-party-stat-aggregate.md",
    "note": "與 pc98 overlay-02:143Ch 助憶碼序列完全相同（33 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：overlay-02 內部共用常式:拿 caller 的 bp 當參數,直接讀 caller frame 上 [bp-11h]/[bp-10h]/[bp-0Fh]/[bp-0Ah] 四個值,分別 STOREVALUE 到 [bp-13h]/[bp-15h]/[bp-17h]/[bp-19h] 存的四個 ECL 位址。偏移是硬編碼的,改動呼叫端的區域變數配置就會壞 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 1180,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/604-ecl-spawn-monsters.md",
+   "note": "ECL opcode 0Bh(產生 N 個角色/怪物):真實範圍 049Ch..0857h 共 952 bytes(IDA 標 452)。名額上限 63(DS:789Ch),迴圈中每次重新檢查——名額不足時產生部分而非全部放棄。角色/怪物記錄 1A7h=423 bytes(New/Move 的參數直接給的)。複製範本的物品(67h)與 effect(9)節點時插在鏈頭,所以複製出來的鏈順序與範本相反——與 ADDEFFECT 接鏈尾不同。DS:9594h 進來存、離開還原;DS:A895h 是群組編號,寫進每個新記錄的 +143h,整批做完才加一"
   }
  ]
 }
