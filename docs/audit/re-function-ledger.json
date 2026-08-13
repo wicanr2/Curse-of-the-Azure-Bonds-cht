@@ -329,15 +329,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 10958,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 2Eh 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 12486,
    "state": "已解讀",
    "level": "exact",
@@ -12025,6 +12016,15 @@
    "level": "exact",
    "spec": "docs/spec/608-ecl-terminate-modes.md",
    "note": "ECL opcode 38h(結束 script 並指定方式):先在 DS:7898h 非 0 時還原目前目標;READVAR(1)後依值分派——0 走重繪、8 走存檔/資料整理(顯示「データの整理をします」並把 bank0^[3FAh] 與 bank1^[550h] 設為 FFh)、9 先存下 ECL_PC 呼叫 sub_3237 再還原然後結束 script、3 設 DS:7F34h(全隊不能行動)後結束 script,其餘什麼都不做。9 與 3 都轉去執行 opcode 00h 的 handler"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 10958,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/609-ecl-area-effect-and-wipeout.md",
+   "note": "ECL opcode 2Eh(範圍效果與全滅判定):READVAR(5);operand1 是位元旗標(10h/20h/40h 各控一段流程),amount = loc_142D(b,a) + c 且每次施加前重算(共三處)。結尾把 DS:7F34h 設 1 再走全隊鏈,任一角色 +197h 非 0 就清掉(迴圈不提早結束);仍為 1 表示全滅——設 DS:9636h/9637h 為 2、顯示「パーティーは全滅した！」、延遲 0BB8h(3000)。DS:9594h 進來存、離開還原"
   }
  ]
 }
