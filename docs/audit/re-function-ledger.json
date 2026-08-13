@@ -15278,6 +15278,33 @@
    "level": "exact",
    "spec": "docs/spec/666-ems-page-frame-guard.md",
    "note": "從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 <= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 112697,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/667-longint-to-decimal.md",
+   "note": "32-bit 整數轉十進位字串:負數先取二補數並輸出 '-';用 CS:123Bh 起的十的冪次表,**不用除法而是「一直減到借位再加回來」**數出每一位(16-bit 機器上比 32-bit 除法便宜);mov al,2Fh + inc al 得到 '0',讓「至少加一次」自然成立。表在 linear 1B88Bh,正好是本支結尾,十筆已逐一驗證為 10^9..10^0。⚠ -2147483648 取二補數後仍是自己,這支對該值會輸出錯誤結果"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 112470,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/667-longint-to-decimal.md",
+   "note": "走 6-byte 一筆的表:三個暫存器一組(CX:SI:DI 正是 Turbo Pascal 6-byte real 的傳遞方式),每筆呼叫 <sub_1AFE4h> 與 <sub_1B0A7h>,收尾用 (81h,0,0) 再呼叫一次 sub_1AFE4h"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109593,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/667-longint-to-decimal.md",
+   "note": "把 dword_23AF0h 正規化成「段落 + 段內偏移」並夾住下限 (word_23AECh, word_23AEEh):比較是先比段落、相等才比偏移的兩段式。與 1A9E1h/1ABE0h 用同一組界線"
   }
  ]
 }
