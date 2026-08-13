@@ -103,10 +103,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1705A` | sub_1705A | — | 107 | 61 | 1 | 3 |  | 待解讀 | — | — | — |
 | `170C5` | sub_170C5 | — | 90 | 57 | 1 | 2 |  | 待解讀 | — | — | — |
 | `1711F` | sub_1711F | — | 41 | 24 | 3 | 1 |  | 待解讀 | — | — | — |
-| `17148` | sub_17148 | — | 42 | 25 | 4 | 1 |  | 待解讀 | — | — | — |
+| `17148` | sub_17148 | — | 42 | 25 | 4 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>字表線性查詢:表格格式是「一個 byte 的筆數 + 連續的 word」,在 ES:BX 指的表裡找 DX,回傳 1 起算的序號,找不到回 0。因為 0 專門表示找不到,表最多 255 筆。比較是 16-bit 整字比不是逐 byte | — |
 | `17172` | sub_17172 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導判定(第二族),與 169D9h 逐指令相同 | — |
-| `17186` | sub_17186 | — | 33 | 16 | 1 | 1 |  | 待解讀 | — | — | — |
-| `171DF` | sub_171DF | — | 63 | 27 | 1 | 1 |  | 待解讀 | — | — | — |
+| `17186` | sub_17186 | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>Shift-JIS → JIS(区点)換算,輸入輸出都在 AX。用三個已知碼點驗算全部對上:8140h→2121h(全形空白)、889Fh→3021h(亜)、82A0h→2422h(あ)。JIS 碼是 PC-98 漢字 ROM 的索引,所以這支與 14342h(首位元組判斷)合起來是整條日文顯示路徑的入口。⚠ 中文化不能只改常數——漢字 ROM 沒有繁體字集,要整條換成自備字型 | — |
+| `171DF` | sub_171DF | — | 63 | 27 | 1 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>把七個參數全部搬進固定全域(dword_16A19、byte_16C25、byte_16C24、word_16A1D/1F/21)再呼叫 sub_16E70——被呼叫端從全域讀不從堆疊讀。⚠ arg_4 進 16C25h、arg_6 進 16C24h,順序是反的 | — |
 | `17220` | sub_17220 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `17230` | sub_17230 | — | 9 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 9 bytes，已逐條讀完） | — |
 | `17239` | sub_17239 | — | 23 | 8 | 1 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>把 arg_2 指向的 far pointer 設為 A800:0000 ⇒ PC-98 圖形 VRAM 起始段 | — |
