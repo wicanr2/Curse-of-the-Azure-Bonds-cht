@@ -39,7 +39,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `17F4` | sub_17F4 | — | 11 | 6 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `1808` | sub_1808 | — | 130 | 43 | 2 | 5 |  | 待解讀 | — | — | — |
 | `188A` | sub_188A | ECLMENUV | 158 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1928` | sub_1928 | CHECKSTRING | 81 | 36 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/593-ecl-comparison-flags.md<br>ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致 | spec/593-ecl-comparison-flags.md |
+| `1928` | sub_1928 | CHECKSTRING | 81 | 36 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/593-ecl-comparison-flags.md<br>ECL2 stub 008Eh(字串比較):把兩個字串各複製一份到區域緩衝區,FillChar(DS:A88Ah,6,0),然後呼叫六次 RTL 字串比較(0A65:0734),用與數值比較完全相同的 jnz/jz/jnb/jbe/ja/jb 分別設定六個旗標。所以 16h~1Bh 對字串與數值的語意一致 | audit/function-index/pc98-overlay-07.md<br>spec/593-ecl-comparison-flags.md |
 | `1979` | sub_1979 | — | 133 | 50 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在已解讀函式 1928h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。 | — |
 | `19FE` | sub_19FE | CHECKSTATUS | 104 | 37 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/593-ecl-comparison-flags.md<br>ECL2 stub 0093h(數值比較):進來先 FillChar(DS:A88Ah,6,0)清空六個旗標,再用六次 cmp 分別設定 =、<>、<、>、<=、>= 六個結果到 DS:A88Ah..A88Fh。六個比較全是無號(jnb/jbe/ja/jb)。配上 16h~1Bh 的「旗標為 0 就跳過下一條」,ECL 的條件式完整 | audit/function-index/dos-overlay-07.md<br>spec/593-ecl-comparison-flags.md |
 | `1A66` | sub_1A66 | SETUPGOSUBSTACK | 134 | 50 | 0 | 2 | ✓ | 待解讀 | — | — | — |

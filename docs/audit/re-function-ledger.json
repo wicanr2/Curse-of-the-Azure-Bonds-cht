@@ -12088,6 +12088,33 @@
    "level": "",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
    "note": "邊界碎片：落在已解讀函式 1928h 的 prologue 區間內部，自己不是 prologue。指令已隨該函式讀過。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 14757,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "ECL 主執行迴圈 RUN_ECL(pc):設 ECL_PC、清 DS:7896h,然後 while DS:7896h=0 且 DS:7F34h=0 反覆——把 DS:A891h 抄到 DS:A890h(保留上一個 opcode)、從 bank3 取新 opcode 存進 DS:A891h、呼叫 dispatcher(sub_373Eh)。兩個終止條件:停止旗標與「全隊不能行動」(全滅會直接中止執行迴圈)。迴圈不推進 PC,由各 handler 自己推"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 12855,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "執行 ECL 的兩段進入點:呼叫 RUN_ECL(DS:7F1Bh),之後取得一個旗標,非 0 才再呼叫 RUN_ECL(DS:7F1Dh);收尾設 DS:A66Ch:=1、呼叫 far 0172:0025、清 DS:8CF7h。38h(9) 是它的呼叫者之一"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 15588,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/612-ecl-main-loop.md",
+   "note": "空函式:原始位元組 55 89 e5 89 ec 5d cb = push bp/mov bp,sp/mov sp,bp/pop bp/retf,沒有呼叫者。IDA 把 89 ec 的第二個位元組單獨當成 ec(in al,dx)——看起來像 I/O 存取的假指令是位元組邊界錯位的典型症狀。同形的 7-byte 空函式在 overlay-16:5581h、overlay-18:1756h 也出現過"
   }
  ]
 }

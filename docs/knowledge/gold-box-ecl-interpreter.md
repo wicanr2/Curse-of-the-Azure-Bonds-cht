@@ -28,6 +28,24 @@
 far call 目標是 **`ECL2` control block 的 stub offset**，不是 code offset；
 兩平台的 stub offset 與 entry index 相同，只有 code offset 不同。
 
+## 執行迴圈（`exact`）
+
+```text
+RUN_ECL(pc):                              ← PC-98 overlay-02:39A5h
+    ECL_PC := pc ; DS:7896h := 0
+    while DS:7896h = 0 and DS:7F34h = 0 do
+        DS:A890h := DS:A891h              ← 上一個 opcode
+        DS:A891h := script[ECL_PC]        ← 從 bank 3 取
+        <dispatcher>()
+```
+
+**兩個終止條件**：停止旗標 `DS:7896h`（opcode `00h` 設 1），以及
+`DS:7F34h`——「全隊都不能行動」。全滅會直接中止執行迴圈，不必等 `00h`。
+
+**迴圈本身不推進 PC**，由各 handler 自己推；忘記推就是無窮迴圈。
+
+見 [spec 612](../spec/612-ecl-main-loop.md)。
+
 ## 指令分派（`exact`）
 
 | 平台 | dispatcher | opcode 來源 |
