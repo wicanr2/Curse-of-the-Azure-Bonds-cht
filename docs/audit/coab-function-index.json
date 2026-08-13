@@ -871,7 +871,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/674-ega-pixel-mask-and-bit-reverse.md",
+   "note": "算「哪幾個像素等於某顏色」的 8-bit 遮罩:4 bytes = 8 個 4-bit 像素,每個 byte 先比高 nibble 後比低 nibble,命中就把目前的 bit 加進遮罩(bit 由 80h 起每次右移一位)。bit 7 對應第 0 個像素。正好餵給 EGA 的 Bit Mask 暫存器(3CEh 索引 8,見 spec 673)。高 nibble 在前的順序與 129EBh 一致"
   },
   {
    "platform": "dos",
@@ -940,7 +943,10 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/674-ega-pixel-mask-and-bit-reverse.md",
+   "note": "byte 位元反轉:八段固定的 and + shl/shr(bit0→7、1→6、…、7→0)。已對 0..255 全部逐值驗算,與位元字串反轉不一致 0 筆。第一段沒有先 and 1,直接 shl 7 靠「只存回 byte」把其餘位元擠掉,其他七段都有遮罩"
   },
   {
    "platform": "dos",
@@ -44423,9 +44429,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 103,
+   "Read": 105,
    "NotBlocking": 133,
-   "Todo": 72,
+   "Todo": 70,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,

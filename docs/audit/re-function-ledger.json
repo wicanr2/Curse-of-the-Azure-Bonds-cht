@@ -15486,6 +15486,24 @@
    "level": "exact",
    "spec": "docs/spec/673-ega-graphics-controller-reset.md",
    "note": "釋放主記錄與附帶緩衝:size := byte(p^[8]) × word(p^[11h])(記錄自己記著「幾筆 × 每筆多大」);p^[13h] 的 far pointer 非 nil 時先 FreeMem(@p^[13h], size),再 FreeMem(主記錄, size + 17h)(前 17h bytes 是標頭,+13h..+16h 就是那個指標),最後把呼叫端指標清成 nil。兩塊用同一個 size。用的是 Turbo Pascal 的 FreeMem,不是 spec 655 那套自製配置器"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 76144,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/674-ega-pixel-mask-and-bit-reverse.md",
+   "note": "算「哪幾個像素等於某顏色」的 8-bit 遮罩:4 bytes = 8 個 4-bit 像素,每個 byte 先比高 nibble 後比低 nibble,命中就把目前的 bit 加進遮罩(bit 由 80h 起每次右移一位)。bit 7 對應第 0 個像素。正好餵給 EGA 的 Bit Mask 暫存器(3CEh 索引 8,見 spec 673)。高 nibble 在前的順序與 129EBh 一致"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 78818,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/674-ega-pixel-mask-and-bit-reverse.md",
+   "note": "byte 位元反轉:八段固定的 and + shl/shr(bit0→7、1→6、…、7→0)。已對 0..255 全部逐值驗算,與位元字串反轉不一致 0 筆。第一段沒有先 and 1,直接 shl 7 靠「只存回 byte」把其餘位元擠掉,其他七段都有遮罩"
   }
  ]
 }
