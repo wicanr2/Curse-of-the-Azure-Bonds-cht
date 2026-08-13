@@ -320,15 +320,6 @@
   {
    "platform": "pc98",
    "module": "overlay-02",
-   "ea": 6176,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 24h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-02",
    "ea": 7146,
    "state": "待解讀",
    "level": "",
@@ -12025,6 +12016,15 @@
    "level": "exact",
    "spec": "docs/spec/605-ecl-horizontal-menu.md",
    "note": "ECL opcode 2Bh(HORIZONTAL MENU):READVAR(2)固定前綴後,以 ADDRESSVALUE(2)取得選項數 n,ECL_PC 回退一格再 READVAR(n)——變長指令模式的直接證據。n=1 是特例,改顯示「リターン・キーを押してください」。選項文字解到 DS:A8DAh 起、stride 100h 的槽位,熱鍵是 i+40h(第一個是 'A');短標籤在 DS:A339h 起、stride 7。選擇結果 STOREVALUE 到 operand 1 指定的位址"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-02",
+   "ea": 6176,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/606-ecl-redraw-dispatch.md",
+   "note": "ECL opcode 24h(重繪畫面分派):無 operand;依 bank1^[6D8h]/[5C4h] 選三種畫面模式之一(選中的旗標會被清零),再依 bank0^[1CCh] 是否為 0 選兩支收尾常式。每個動作都包在DS:8B5Ah 的前後包夾裡(非 0 做前置 0893:0000、為 0 做後置 0893:010Dh),這個包夾出現12 次。第二段用與 0Ch 相同的方式從地圖座標算值,但對 bank1^[582h] 取較大者(0Ch 取較小)"
   }
  ]
 }
