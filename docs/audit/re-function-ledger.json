@@ -16826,6 +16826,46 @@
    "level": "strong inference",
    "spec": "docs/spec/700-pascal-parameter-order-rule.md",
    "note": "與 DOS overlay-22:612Eh（entry#6）助憶碼序列完全相同，語意同該筆：物品類別是否落在 11..13:物品為 NIL 回 0;否則 v := byte [5CF6h + 物品^[2Eh]×16](16 bytes 一格,格內 +0),回傳 (10 < v < 14)。兩個比較都是無號(jbe/jnb),0Ah 與 0Eh 是開區間兩端,成立的只有 11/12/13。⚠ 表的基底是 DS:5CF6h 不是 5D02h(5D02h 是格內 +0Ch、5D04h 是 +0Eh),spec 691 已更正 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 22411,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "與 407Ah(spec 701)逐指令相同的第二份治療 2d4+2:ROLLDICE(2,4)+2 → HEALDUDE(目標,量,0) → 成功則 <overlay-24 entry#26>(目標, 1, 'is Healed')。⚠ 差別只有訊息字串位址(407Ah 用 CS:4070h、本支用 CS:5781h),**內容相同的一句話在同一個 overlay 存了兩份**——中文化要兩份都改,只改一份會出現時中時英且難重現",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 9202,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "套用 'is held'(CS:23EAh):v := DS:7434h;v=1 時再看 DS:6F97h 是否為 17h 決定 r 是 −2 還是 −3;v=2 → −1;v=3 或 4 → 0;**v 為其他值時 r 不被寫入,回傳堆疊殘值**。最後 <sub_1ABFh>(r, 訊息)。⚠ DS:7434h 在治療系(spec 700)只當非 0 旗標用,這裡卻是 1..4 的列舉",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 9775,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "先發訊息再套效果:<sub_F06h>(DS:6F97h, 0, 1, 0, 0, 空字串 CS:262Eh);再 <overlay-23 entry#2>(17h, DS:7435h 的目標, 0(dword), 0)。⚠ sub_F06h 的第三/第四個參數與 spec 701 致傷三支不同(那裡是 0 與傷害量,這裡是 1 與 0),所以它有模式之分",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 15512,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/702-more-overlay22-spell-handlers.md",
+   "note": "N d6,顆數算出來、面數寫死 6:n := <overlay-24 entry#36>(DS:6F97h);r := ROLLDICE(n, 6);<sub_3947h>(DS:7559h, DS:755Ah, r, 4, 0, @區域);<sub_3A03h>(7, r, 4, 1)。同一個 r 被兩支下游各用一次但參數位置不同(第三個 vs 第二個)",
+   "bounds": "prologue"
   }
  ]
 }
