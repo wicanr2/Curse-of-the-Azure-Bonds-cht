@@ -9,19 +9,19 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 299、不阻塞 133、邊界碎片 209、待解讀 745；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 302、不阻塞 133、邊界碎片 209、待解讀 742；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | START.EXE | — | 325 | 96 | 133 | 17 | 79 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 0 | 0 | 0 | 2 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 0 | 0 | 0 | 4 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
-| overlay-02 | INTERPET | 90 | 31 | 0 | 28 | 31 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
+| overlay-02 | INTERPET | 90 | 33 | 0 | 28 | 29 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 1 | 0 | 1 | 12 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 3 | 0 | 2 | 12 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
 | overlay-06 | SHOP | 6 | 2 | 0 | 0 | 4 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
-| overlay-07 | ECL2 | 41 | 10 | 0 | 8 | 23 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
+| overlay-07 | ECL2 | 41 | 11 | 0 | 8 | 22 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 3 | 0 | 5 | 13 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
 | overlay-09 | COMPTACT | 38 | 2 | 0 | 18 | 18 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 4 | 0 | 10 | 24 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 361、不阻塞 29、邊界碎片 286、待解讀 812；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 362、不阻塞 29、邊界碎片 286、待解讀 811；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -65,7 +65,7 @@
 | overlay-04 | TEMPLE | 23 | 2 | 0 | 9 | 12 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 2 | 0 | 4 | 11 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
 | overlay-06 | SHOP | 8 | 2 | 0 | 2 | 4 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
-| overlay-07 | ECL2 | 46 | 10 | 0 | 11 | 25 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
+| overlay-07 | ECL2 | 46 | 11 | 0 | 11 | 24 | 8889 | 363 | [明細](function-index/pc98-overlay-07.md) |
 | overlay-08 | COMBAT | 24 | 1 | 0 | 10 | 13 | 3967 | 372 | [明細](function-index/pc98-overlay-08.md) |
 | overlay-09 | COMPTACT | 36 | 3 | 0 | 16 | 17 | 6325 | 111 | [明細](function-index/pc98-overlay-09.md) |
 | overlay-10 | COMPREP | 35 | 2 | 0 | 10 | 23 | 7373 | 95 | [明細](function-index/pc98-overlay-10.md) |
