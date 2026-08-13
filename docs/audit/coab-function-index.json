@@ -15523,7 +15523,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:09EEh 助憶碼序列完全相同（44 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),\u003csub_64E8\u003e(p) 非 0 時呼叫 \u003csub_90E\u003e(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -15803,7 +15806,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:1897h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -16076,7 +16082,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:1FB6h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 \u003cfar 013Eh:008Eh\u003e(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 \u003cfar 014Ah:054Fh\u003e(t)。1d8 正是 AD\u0026D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -31201,6 +31210,7 @@
    "note": "\u003cfar 013E:002A\u003e(arg_0,arg_2,arg_4,arg_6,arg_8,2Bh) 後再以同一組參數呼叫一次,id 換成 2Ch——同一組參數連續套用兩個相鄰的 id",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/633-alignment-encoding-and-effect-callbacks.md",
     "spec/679-stat-drain-with-floor.md"
    ]
@@ -31384,6 +31394,8 @@
    "spec": "docs/spec/679-stat-drain-with-floor.md",
    "note": "if \u003csub_3C\u003e(3Ch, arg_2^[3], 2Bh, arg_6) \u003c\u003e 0:arg_6^[11h] \u003e 3 時印「は弱まった。」並減一(下限 3);否則查目標有無效果 1Fh,沒有才 \u003csub_1437\u003e(arg_6,1Fh,0,0FFh,0)。與 111Bh 的下半段一字不差",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/679-stat-drain-with-floor.md"
    ]
   },
@@ -31404,6 +31416,8 @@
    "note": "與 1091h 同骨架:if \u003csub_3C\u003e(0Ah, arg_2^[3], 2Ch, arg_6) \u003c\u003e 0:arg_6^[1A5h](目前 HP)\u003e 1 時 DS:0A02Fh := 0、\u003cfar 014Ah:0464h\u003e(arg_6,0,0,1),且 DS:7F27h \u003c\u003e 5 時再呼叫 \u003cfar 014Ah:04CAh\u003e;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/679-stat-drain-with-floor.md"
    ]
   },
@@ -38820,7 +38834,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),\u003csub_64E8\u003e(p) 非 0 時呼叫 \u003csub_90E\u003e(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源",
+   "citations": [
+    "spec/680-overlay22-clamp-and-cure1d8.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39247,7 +39267,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端",
+   "citations": [
+    "spec/680-overlay22-clamp-and-cure1d8.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -39354,7 +39380,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 \u003cfar 013Eh:008Eh\u003e(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 \u003cfar 014Ah:054Fh\u003e(t)。1d8 正是 AD\u0026D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了",
+   "citations": [
+    "spec/680-overlay22-clamp-and-cure1d8.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40236,7 +40268,8 @@
    "note": "n := ROLLDICE(2,4)+2 (2d4+2);if \u003cfar 013E:008E\u003e(t, n, 0) \u003c\u003e 0 則 \u003cfar 014A:00A2\u003e(t,1,「は回復した。」),t 是 DS:0A521h。⚠ 參數交錯推入:t 先推(外層的第一個參數),2/4 是內層 ROLLDICE 的。與 5B2Bh 逐指令相同,只差字串常數位址而兩處內容相同——同一段程式碼編譯了兩次",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
-    "spec/627-spell-cure-family.md"
+    "spec/627-spell-cure-family.md",
+    "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
   {
@@ -40275,7 +40308,8 @@
    "note": "n := \u003cfar 013E:0052\u003e(DS:0A031h,0,0,2,4)+2 → 2d4+2,再 \u003csub_F62\u003e(8,n,空字串)。與 46CAh 除了三個常數(2/4/+2 對 3/8/+3)以外逐指令相同;訊息由 sub_F62 自己組,呼叫端給的字串長度為 0",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
-    "spec/627-spell-cure-family.md"
+    "spec/627-spell-cure-family.md",
+    "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
   {
@@ -40291,7 +40325,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "spec/627-spell-cure-family.md"
+    "spec/627-spell-cure-family.md",
+    "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
   {
@@ -40365,7 +40400,8 @@
    "note": "n := \u003cfar 013E:0052\u003e(DS:0A031h,0,0,3,8)+3 → 3d8+3(正好是 AD\u0026D 的 Cure Critical Wounds,但對應法術名稱不寫進結論),再 \u003csub_F62\u003e(8,n,空字串)。與 43DAh 只差三個常數",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
-    "spec/627-spell-cure-family.md"
+    "spec/627-spell-cure-family.md",
+    "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
   {
@@ -40749,7 +40785,8 @@
    "note": "與 434Dh 逐指令相同的另一份複本:if \u003cfar 013E:008E\u003e(t, ROLLDICE(2,4)+2, 0) \u003c\u003e 0 則印「は回復した。」。字串常數在 5B1Eh(434Dh 用 4340h),內容相同",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
-    "spec/627-spell-cure-family.md"
+    "spec/627-spell-cure-family.md",
+    "spec/680-overlay22-clamp-and-cure1d8.md"
    ]
   },
   {
@@ -44878,9 +44915,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 43,
+   "Read": 46,
    "NotBlocking": 0,
-   "Todo": 71,
+   "Todo": 68,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -45433,9 +45470,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 49,
+   "Read": 52,
    "NotBlocking": 0,
-   "Todo": 62,
+   "Todo": 59,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,

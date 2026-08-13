@@ -15694,6 +15694,63 @@
    "level": "strong inference",
    "spec": "docs/spec/679-stat-drain-with-floor.md",
    "note": "與 pc98 overlay-12:111Bh 助憶碼序列完全相同（59 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：與 1091h 同骨架:if <sub_3C>(0Ah, arg_2^[3], 2Ch, arg_6) <> 0:arg_6^[1A5h](目前 HP)> 1 時 DS:0A02Fh := 0、<far 014Ah:0464h>(arg_6,0,0,1),且 DS:7F27h <> 5 時再呼叫 <far 014Ah:04CAh>;否則同樣改施加效果 1Fh。⚠ 下限是 1 不是 0——這支自己不會把角色降到死亡,死亡由 1Fh 那邊處理。2Bh 與 2Ch 相鄰,對應 09B9h 那支「同一組參數連續套用兩個 id」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 6295,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 2542,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 8118,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 2433,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:09EEh 助憶碼序列完全相同（44 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 5694,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:1897h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 7509,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/680-overlay22-clamp-and-cure1d8.md",
+   "note": "與 pc98 overlay-22:1FB6h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   }
  ]
 }

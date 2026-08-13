@@ -11,7 +11,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03F5` | sub_3F5 | — | 436 | 168 | 1 | 1 | ✓ | 待解讀 | — | — | spec/517-reverse-engineering-gap-inventory.md |
 | `05B4` | sub_5B4 | — | 749 | 291 | 1 | 2 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md |
 | `08A1` | sub_8A1 | — | 224 | 76 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `0981` | sub_981 | — | 123 | 44 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0981` | sub_981 | — | 123 | 44 | 1 | 3 | ✓ | 已解讀 | strong inference | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>與 pc98 overlay-22:09EEh 助憶碼序列完全相同（44 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `09FC` | sub_9FC | — | 875 | 326 | 0 | 5 | ✓ | 待解讀 | — | — | — |
 | `0D67` | sub_D67 | — | 170 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0E11` | sub_E11 | — | 245 | 100 | 10 | 3 | ✓ | 待解讀 | — | — | — |
@@ -30,7 +30,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `15CC` | sub_15CC | — | 5 | 1 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call loc_153C+4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `15D1` | sub_15D1 | — | 7 | 2 | 3 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_13FE`，控制權轉交後不返回；先設定 `mov byte ptr [bp-1], 0`（body 共 7 bytes，已逐條讀完） | — |
 | `15FB` | sub_15FB | — | 67 | 26 | 3 | 1 | ✓ | 待解讀 | — | — | — |
-| `163E` | sub_163E | — | 77 | 27 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `163E` | sub_163E | — | 77 | 27 | 2 | 1 | ✓ | 已解讀 | strong inference | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>與 pc98 overlay-22:1897h 助憶碼序列完全相同（27 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：把 arg_8^ 夾在 0..31h(49)、arg_4^ 夾在 0..18h(24),即 50 × 25。用 jle/jge(**有號**)所以負值真的會被夾到 0——與 spec 671 的 15731h 對照,那支用無號 jb 所以下限判斷是死碼,同一專案裡兩種寫法都有。參數是指標,夾限結果寫回呼叫端 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `168B` | sub_168B | — | 30 | 13 | 1 | 3 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | audit/function-index/dos-overlay-22.md |
 | `16A9` | sub_16A9 | — | 7 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ss:[di-1Dh], al`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `16B8` | sub_16B8 | — | 5 | 2 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1748`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
@@ -48,7 +48,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1C39` | sub_1C39 | — | 181 | 75 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `1CF9` | sub_1CF9 | — | 39 | 18 | 0 | 1 | ✓ | 已解讀 | strong inference | docs/spec/628-spell-effect-wrappers.md<br>與 pc98 overlay-22:1F53h 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：<sub_1E8D>(DS:9594h^[198h], 'は祝福を受けた。')——薄包裝,除了取欄位與備妥字串外沒有其他動作 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1D2A` | sub_1D2A | — | 43 | 19 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is Cursed」（unk_1D20，長度 9）呼叫訊息 routine（body 共 43 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
-| `1D55` | sub_1D55 | — | 61 | 24 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `1D55` | sub_1D55 | — | 61 | 24 | 0 | 4 | ✓ | 已解讀 | strong inference | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>與 pc98 overlay-22:1FB6h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：DS:0A520h(選定目標數)為 0 就直接返回,連骰都不擲;否則 <far 013Eh:008Eh>(t, ROLLDICE(1,8), 0) 非 0 時再呼叫 <far 014Ah:054Fh>(t)。1d8 正是 AD&D 的 Cure Light Wounds——加上 4416h 的 2d8+1 與 46CAh 的 3d8+3,cure 系列三個標準級距都齊了 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `1D93` | sub_1D93 | — | 54 | 29 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「」（unk_1D92，長度 0）呼叫訊息 routine（body 共 54 bytes，已逐條讀完） | — |
 | `1DD5` | sub_1DD5 | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is affected」（unk_1DC9，長度 11）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
 | `1E0F` | sub_1E0F | — | 45 | 25 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>常數字串：以固定字串「is protected」（unk_1E02，長度 12）呼叫訊息 routine（body 共 45 bytes，已逐條讀完） | audit/spell-status-message-strings.md |
