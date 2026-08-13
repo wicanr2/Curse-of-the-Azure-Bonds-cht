@@ -15529,6 +15529,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/707-raise-dead-and-area-effect.md"
@@ -17153,7 +17154,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md",
     "spec/704-dispel-and-the-missing-fill.md",
-    "spec/706-temporary-field-adjust.md"
+    "spec/706-temporary-field-adjust.md",
+    "spec/708-slay-living-and-missile-count.md"
    ]
   },
   {
@@ -17282,9 +17284,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/708-slay-living-and-missile-count.md",
+   "note": "豁免失敗即死:先 DS:6F95h:=40h(傷害旗標)、DS:6F94h:=43h(傷害值),呼叫 \u003coverlay-23 entry#4\u003e(p, 9),**回頭看 DS:6F94h 有沒有被清成 0**(哨兵手法,同 spec 703 的 4289h):為 0 → 'is unaffected';否則 \u003coverlay-23 entry#8\u003e(p,4,0) 回 0 → \u003coverlay-23 entry#1\u003e(p, 6, 'is slain') 即死;回非 0 → 改 DS:6F95h:=8,d := ROLLDAMAGEDICE(2,8)+1,\u003coverlay-23 entry#20\u003e(d,0,0)。「豁免失敗即死、成功承受 2d8+1」是 AD\u0026D Slay Living 的招牌數字(身分為推論)。⚠ 兩種傷害旗標在同一支先後出現,是隨結果換的不是進來就決定的",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/708-slay-living-and-missile-count.md"
    ]
   },
   {
@@ -17481,7 +17487,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/708-slay-living-and-missile-count.md",
+   "note": "⚠ **數量減半但傷害用沒減半的值**:\u003coverlay-24 entry#36\u003e(DS:6F97h) 被呼叫兩次,第一次結果存 bp−6(n)、第二次 +1 後 cwd/idiv 2 存 bp−5(half,下限夾 1)。half 只餵給 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 2, half),而傷害是 ROLLDAMAGEDICE(n, 4) + n 用 n。兩個區域變數位移相鄰(bp−6/bp−5),反組譯裡極容易看成同一個;改寫時只留一個變數兩邊都會錯",
+   "citations": [
+    "spec/708-slay-living-and-missile-count.md"
+   ]
   },
   {
    "platform": "dos",
@@ -39299,6 +39311,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
     "spec/707-raise-dead-and-area-effect.md"
@@ -45590,9 +45603,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 71,
+   "Read": 73,
    "NotBlocking": 0,
-   "Todo": 42,
+   "Todo": 40,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
