@@ -19647,8 +19647,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
-    "spec/748-cloud-effect-dispel-pair.md",
-    "spec/999-noxious-cloud-and-effect-node-constructor.md"
+    "spec/1003-poisonous-cloud-3x3.md",
+    "spec/748-cloud-effect-dispel-pair.md"
    ]
   },
   {
@@ -20685,9 +20685,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
+   "note": "毒雲：3×3（原地＋八方向）、效果碼 5Bh、地圖值 1Ch、鏈頭 DS:755Fh；與毒霧共用機制",
    "citations": [
     "audit/function-strings.md",
+    "spec/1003-poisonous-cloud-3x3.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/999-noxious-cloud-and-effect-node-constructor.md"
    ]
@@ -47527,11 +47531,15 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
+   "note": "DOS 04F3Eh 的對應（相似度 0.999）",
    "citations": [
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1003-poisonous-cloud-3x3.md"
    ]
   },
   {
@@ -52668,9 +52676,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 113,
+   "Read": 114,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -53223,9 +53231,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 109,
+   "Read": 110,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
