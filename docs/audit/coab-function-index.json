@@ -27597,7 +27597,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "957",
+   "note": "spec 951 的 Ctrl-O(0Fh)處理(far)：byte_24E73h = 1 時只設 byte_24E71h := 0FFh 並叫 sub_18A8Eh 就離開；byte_241B7h ∈ [1,5,7] 也直接離開。否則依 byte_28080h(機種/音源識別碼)映到 byte_24E83h——01h/31h → 3；11h/12h/21h/22h/23h/15h/43h/45h → 4；50h/51h → byte_241A1h ≠ 0 ? 6 : 5；20h/23h/40h/42h → 8；02h/10h/05h/35h → 9；03h/04h/25h/32h/33h → 0Ch；30h 不改直接往下；其餘離開不呼叫。最後叫 sub_18A44h(byte_24E83h)。★byte_28080h 的取值分成 0x/1x/2x/3x/4x/5x 六大類，形狀上是機種或音源板識別碼；⚠23h 同時出現在『→ 4』與『→ 8』兩組，由上往下比會先命中前者，第四組裡的 23h 永遠到不了(原版重複)。本規格沒讀 sub_18A44h/sub_18A8Eh 也沒找到 byte_28080h 的寫入端，不宣稱它就是音源選擇"
   },
   {
    "platform": "pc98",
@@ -52377,9 +52380,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 257,
+   "Read": 258,
    "NotBlocking": 29,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
