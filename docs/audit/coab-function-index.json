@@ -11571,6 +11571,8 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/1005-effect-dispatch-table.md"
    ]
@@ -11613,6 +11615,8 @@
    "note": "效果碼 65 的處理常式（overlay entry stub 的目標，起點確定）。\u003csub_1454\u003e(角色, 節點, 4)——與 01569h/01595h 是同一支的三個包裝，只差常數。⚠ 原標「邊界碎片」是未補洞匯出造成的誤判，補洞匯出裡是完整的 retf 0Ah 函式（spec 988 的規則）",
    "citations": [
     "audit/effect-dispatch-table.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/1005-effect-dispatch-table.md"
    ]
   },
@@ -13113,6 +13117,7 @@
    "spec": "docs/spec/1005-effect-dispatch-table.md",
    "note": "效果分派表的初始化：569 條全部是直線賦值，把 141 個 far pointer 寫進 DS:6FAAh 起的表（PC-98 DS:A044h）。每個 far pointer 都精確落在某個 overlay entry stub 上(段 0094h/00C1h 皆為 CODE，位移間隔 5)。消費端是 overlay-23:00C9h(CALLEFFECT)，call dword ptr [di+6FA6h]、di=效果碼*4 ⇒ 效果碼 1..147。效果碼 86/88/90/128/131/132 六格兩平台都沒被指定，維持 NIL",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "audit/function-triage.md",
     "spec/1005-effect-dispatch-table.md"
    ]
@@ -21462,10 +21467,10 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/1005-effect-dispatch-table.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/864-cloud-tick-and-hd-field.md"
+    "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
   {
@@ -21754,6 +21759,8 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "spec/1005-effect-dispatch-table.md"
    ]
   },
@@ -24581,7 +24588,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "781",
-   "note": "畫 11×11 的自動地圖(retf 6，(中心y, 中心x, 隊伍朝向))：視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(x, y, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合，畫在 (欄+2, 列+2)。最後在偏移位置畫 100h + 朝向 div 2（四個方向箭頭）",
+   "note": "畫 11×11 的自動地圖(retf 6，宣告順序 (中心欄, 中心列, 隊伍朝向)——第一個參數餵給 sub_6BDh 的欄位，見 spec 1006)。視窗起點 = clamp(中心 − 5, 0, 5)（16×16 地圖上的 11×11 視窗），標記偏移 = 中心 − 起點。每格叫四次 sub_6BDh(欄, 列, 方向 0/2/4/6) 取牆面，四個方向各加 1/2/4/8，圖磚編號 = 104h + 位元組合",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -24758,14 +24765,17 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1006-first-person-view-geometry.md",
+   "note": "第一人稱視野主程序(retf 6，宣告順序 (欄, 列, 方向))：DS:720Eh(PC-98 DS:0A2A8h) 非 0 就改叫 sub_11h 畫自動地圖。否則 sub_18Ch 畫面板，取左=(方向+6)mod 8、後=+4、右=+2，中心先移到前方兩格，for 深度 := 2 downto 0 每層左右兩趟對稱掃描(4/4/3/3、3/3、2/2 格)，畫完退一格；由遠而近的畫家演算法。每次貼圖是 sub_448h(欄, 列, 圖號, 牆位)，欄基準表 DS:0AF6h(word)、列基準表 DS:0B0Ah(byte 筆距 2)各 10 筆(PC-98 DS:16CAh／DS:16DEh，值相同)。牆位 0..9 的寬×高相加正好 156 = sub_448h 來源陣列的列距。牆位 9 是一段正面牆結束時的收邊柱。⚠ 匯出在 0AF6h..0AFDh 與 0B05h..0B2Fh 沒反組譯，已直接讀原始位元組補上(皆為程式碼)；IDA 把 mov ax,[DS:0AF6h] 的運算元誤命名成 overlay 本地的 word_AF6，是假交叉參照",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
+    "spec/1006-first-person-view-geometry.md",
     "spec/517-reverse-engineering-gap-inventory.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
+    "spec/518-dos-start-ecl-call-address-space-audit.md"
    ]
   },
   {
@@ -39819,6 +39829,8 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-12.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/1005-effect-dispatch-table.md"
    ]
@@ -48513,10 +48525,10 @@
    "citations": [
     "audit/effect-dispatch-table.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-23.md",
     "spec/1005-effect-dispatch-table.md",
-    "spec/576-adnd-strength-encoding-and-effect-removal.md",
-    "spec/864-cloud-tick-and-hd-field.md"
+    "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
   {
@@ -51811,9 +51823,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1006-first-person-view-geometry.md",
+   "note": "第一人稱視野主程序(retf 6，宣告順序 (欄, 列, 方向))：DS:720Eh(PC-98 DS:0A2A8h) 非 0 就改叫 sub_11h 畫自動地圖。否則 sub_18Ch 畫面板，取左=(方向+6)mod 8、後=+4、右=+2，中心先移到前方兩格，for 深度 := 2 downto 0 每層左右兩趟對稱掃描(4/4/3/3、3/3、2/2 格)，畫完退一格；由遠而近的畫家演算法。每次貼圖是 sub_448h(欄, 列, 圖號, 牆位)，欄基準表 DS:0AF6h(word)、列基準表 DS:0B0Ah(byte 筆距 2)各 10 筆(PC-98 DS:16CAh／DS:16DEh，值相同)。牆位 0..9 的寬×高相加正好 156 = sub_448h 來源陣列的列距。牆位 9 是一段正面牆結束時的收邊柱。與 dos overlay-30:00841h 助憶碼序列完全相同(825 條；DOS 側匯出少 20 條是兩個未反組譯的洞)，差異只有 DS 位址",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1006-first-person-view-geometry.md"
    ]
   },
   {
@@ -53327,9 +53343,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -53882,9 +53898,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 4851,
    "Undefined": 117,
