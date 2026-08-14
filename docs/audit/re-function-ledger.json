@@ -21370,6 +21370,24 @@
    "level": "exact",
    "spec": "docs/spec/831-morale-failure-table.md",
    "note": "士氣失敗的四種結果：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。r := <far 145Dh>(1, 64h) 擲 1..100。1..10 → <far 143Eh+1>(角色, 23h, longint 0)、+18Eh^[10h] := 1、+199h := 1、+0F7h <= 7Fh 時補成 0B3h（上限 102 的編碼）、清掉 +18Eh^[0Ah] 目標、<far 1499h>(角色, 8Eh, 0Ah, 0, 1, 1, 0, 名字+'runs away'(9))；11..60 → <far 1572h>(角色, 1, 名字+'is confused'(11))、<far 1558h+1>、本模組 0075h(0, 參數2, 參數4, 角色)；61..80 → <far 1499h>(角色, 89h, 1, 角色^[197h], 1, 1, 0, 名字+'goes berserk'(12))、本模組 143Ah(0, longint 0, 角色, 89h)；81..100 → <far 1572h>(角色, 1, 名字+'is enraged'(10))、<far 1558h+1>。四段機率 10/50/20/20，沒有落空的骰值。最後不論哪一段都問 <far 1457h+1>(角色, 4, 0FEh)，成立就再 <far 143Eh+1>(角色, 23h, longint 0)。spec 831 PC-98 的四段比較改用無號跳躍（jnb/jbe/jb/ja），DOS 用有號並多一條 xor ah,ah；骰值 1..100 兩者結果相同，是編譯器差異。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 6757,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
+   "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；<far 1554h>(角色, 名字+'gazes...'(8), 0Ah, 0)、<far 1566h+2>(12h)、<far 156Ch+1>(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；<far 1576h+1>(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:6FA3h^[14Dh] 物品鏈（next +2Ah）：+34h <> 0（裝備中）且 (+2Fh 或 +30h 或 +31h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:6FA3h := 角色**（反射回發動者）；找到一件就停。收尾：if not <far 1457h+1>(DS:6FA3h, 0, 1) then <far 1435h>(DS:6FA3h, 7, 名字+'is Stoned'(9))。物品 +2Fh/+30h/+31h 是三個屬性槽，值 76h 表示會反射凝視。spec 832"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6844,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/832-gaze-attack-and-mirror-item.md",
+   "note": "凝視石化攻擊（含反射）：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；<far 1554h>(角色, 名字+'gazes...'(8), 0Ah, 0)、<far 1566h+2>(12h)、<far 156Ch+1>(取x(角色),取y(角色),取x(目標),取y(目標),4,2Dh)；<far 1576h+1>(角色, 7Fh, @暫存) 為假就直接跳到收尾。否則掃 DS:0A03Dh^[14Dh] 物品鏈（next +52h）：+5Ch <> 0（裝備中）且 (+57h 或 +58h 或 +59h) = 76h 時 顯示 名字+'reflects it!'(12)、反向重播動畫、換過 := 1、**DS:0A03Dh := 角色**（反射回發動者）；找到一件就停。收尾：if not <far 1457h+1>(DS:0A03Dh, 0, 1) then <far 1435h>(DS:0A03Dh, 7, 名字+'is Stoned'(9))。物品 +57h/+58h/+59h 是三個屬性槽，值 76h 表示會反射凝視。spec 832 PC-98 另有三處不同：兩段多出 xor ah,ah / mov cx,0Ah / imul cx（乘 10），第三個 76h 的判斷改成 jz + jmp（分支結構不同）——本支兩平台需各自判讀。"
   }
  ]
 }
