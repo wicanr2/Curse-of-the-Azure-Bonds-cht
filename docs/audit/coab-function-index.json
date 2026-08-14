@@ -23852,6 +23852,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-26.md",
+    "spec/1023-scrolling-list-menu.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
@@ -24077,10 +24078,14 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1023-scrolling-list-menu.md",
+   "note": "捲動清單選單(＝ overlay-26 entry#5)，商店(spec 1013)／轉職(spec 1021)／物品選單共用。★★ 它是 entry#3(選項行選單)的外層：清單鏈頭為 NIL 就回 0；否則 DS:7294h := 1，數「可選數」(從鏈頭數到第一個 +29h = 0)與「總數」(整條鏈)，把捲動位置 DS:7292h 夾進範圍，然後把 ' Next'(CS:0DE7h)／' Prev'(CS:0DEDh)／' Exit'(CS:0DF3h) 依情況接到呼叫端給的選項行後面，再交給 entry#3。⇒ 這三個選項是執行期接上去的，呼叫端只給自己那幾個；熱鍵一樣藏在大寫 N/P/E。★★ 兩套按鍵模式：游標模式 DOS 用 47h Home(移到最前)／4Fh End(最後)／49h PgUp(上一頁)／51h PgDn(下一頁)，PC-98 改用 NEC 鍵盤的 32h('2')／33h('3')／38h('8')／39h('9')；字母模式兩平台相同：'P' 上一頁、'N' 下一頁、1Bh(ESC)／'E'／0 離開(結果清 0) —— ★ ESC 與 E 等價。★★★ PC-98 把三個選項寫進兩張平行表且索引完全對齊：Prev 文字 DS:0A369h(i=7)／熱鍵 DS:0A33Bh(i=7)、Next DS:0A370h／DS:0A33Ch(i=8)、Exit DS:0A37Eh／DS:0A33Eh(i=10)—— entry#5 自己就會填熱鍵表，呼叫端不必管(spec 755 的版面，第四個實例)。⚠ 三個字串各 5 字元，PC-98 那邊是 6 bytes = 3 全形字；中文「下頁」「上頁」「離開」塞得下",
    "citations": [
     "audit/function-strings.md",
-    "spec/1013-shop-list-line-and-price.md"
+    "spec/1013-shop-list-line-and-price.md",
+    "spec/1023-scrolling-list-menu.md"
    ]
   },
   {
@@ -51113,10 +51118,10 @@
    "citations": [
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-06.md",
     "audit/function-index/pc98-overlay-08.md",
-    "spec/1008-combat-move-command.md",
-    "spec/1013-shop-list-line-and-price.md"
+    "audit/function-index/pc98-overlay-14.md"
    ]
   },
   {
@@ -51287,10 +51292,14 @@
    "callers": 0,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1023-scrolling-list-menu.md",
+   "note": "捲動清單選單(＝ overlay-26 entry#5)，商店(spec 1013)／轉職(spec 1021)／物品選單共用。★★ 它是 entry#3(選項行選單)的外層：清單鏈頭為 NIL 就回 0；否則 DS:7294h := 1，數「可選數」(從鏈頭數到第一個 +29h = 0)與「總數」(整條鏈)，把捲動位置 DS:7292h 夾進範圍，然後把 ' Next'(CS:0DE7h)／' Prev'(CS:0DEDh)／' Exit'(CS:0DF3h) 依情況接到呼叫端給的選項行後面，再交給 entry#3。⇒ 這三個選項是執行期接上去的，呼叫端只給自己那幾個；熱鍵一樣藏在大寫 N/P/E。★★ 兩套按鍵模式：游標模式 DOS 用 47h Home(移到最前)／4Fh End(最後)／49h PgUp(上一頁)／51h PgDn(下一頁)，PC-98 改用 NEC 鍵盤的 32h('2')／33h('3')／38h('8')／39h('9')；字母模式兩平台相同：'P' 上一頁、'N' 下一頁、1Bh(ESC)／'E'／0 離開(結果清 0) —— ★ ESC 與 E 等價。★★★ PC-98 把三個選項寫進兩張平行表且索引完全對齊：Prev 文字 DS:0A369h(i=7)／熱鍵 DS:0A33Bh(i=7)、Next DS:0A370h／DS:0A33Ch(i=8)、Exit DS:0A37Eh／DS:0A33Eh(i=10)—— entry#5 自己就會填熱鍵表，呼叫端不必管(spec 755 的版面，第四個實例)。⚠ 三個字串各 5 字元，PC-98 那邊是 6 bytes = 3 全形字；中文「下頁」「上頁」「離開」塞得下",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1023-scrolling-list-menu.md"
    ]
   },
   {
@@ -53460,9 +53469,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -54015,9 +54024,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
