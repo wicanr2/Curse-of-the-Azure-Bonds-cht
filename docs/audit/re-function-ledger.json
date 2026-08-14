@@ -20020,6 +20020,60 @@
    "level": "exact",
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
    "note": "retf 0Ah：與 DOS overlay-29:000Ch 51 條同形，DS:7F05h、緩衝 DS:165Ch/166Ch、resident 呼叫改為 2A8h:0C32h/77Dh/0B7Dh/0A86h(差異 10 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 540,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "拿不動的錢放進 Pool(retf 2)：本模組 0073h(@餘裕, 數量, DS:6506h) 為真時顯示 CS:01F4h 'Overloaded.  Money will be put in Pool.'(兩個空白)、只把餘裕加進 DS:6506h^[103h] 並叫 0057h，其餘 (數量−餘裕) 以 32-bit 加到 DS:6F80h；否則全部加進 +103h。可證 +0FBh 的第 4 格(即 +103h)與 DS:6F70h 的第 4 格(即 6F80h)、名稱表 DS:0F93h 的第 4 筆 Platinum 是同一套索引，DS:6F70h 就是隊伍 Pool"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 536,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "拿不動的錢放進 Pool(retf 2)：與 DOS overlay-21:021Ch 53 條同形，訊息 CS:01F3h '持ちすぎです。お金は地面に置きますよ'、Pool 在 DS:0A01Ah(差異 17 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 6474,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 > 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 6603,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "轉向要轉幾格(retf 8)：與 DOS overlay-13:194Ah 53 條同形，戰鬥狀態在 +18Eh(差異 5 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 72,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "把一格寫進螢幕緩衝(retf 6)：x := 5*有號(DS:4A0Dh) + 6*有號(DS:4A0Ch) + 15h + x位移、y := y位移 + 5*有號(DS:4A0Dh) + 0Ah；在 0..31h × 0..18h 內才寫 緩衝^[y*32h + x + 7] := 磚+1。是 spec 776 視野掃描的四支巢狀繪圖之一，spec 771 那八組寫死的參數就是傳給它的。投影式顯示每格佔 6 欄 × 5 列、中心在 (21, 10)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 72,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "把一格寫進螢幕緩衝(retf 6)：與 DOS overlay-10:0048h 55 條同形，計數器 DS:7AC2h/7AC3h、緩衝 DS:9F2Ch(差異 4 條，已逐條列出)"
   }
  ]
 }

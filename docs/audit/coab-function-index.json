@@ -6481,6 +6481,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
     "spec/785-cross-platform-pairs-third-batch.md"
    ]
@@ -6498,6 +6499,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-04.md",
     "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
@@ -6517,6 +6519,7 @@
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
    "note": "Cure Blindness(retf，無參數)：\u003c014Dh:00A7h\u003e(@暫存, 21h, DS:6506h) 為假時顯示 CS:0263h 'is not blind.' 並用 本模組 0047h 問 Y/N；答 Y 才顯示 CS:0271h 'Cure Blindness' 並叫 本模組 00F3h(3E8h=1000)，再答 Y 就 \u003c0141h:002Fh\u003e(0, 0, 21h, DS:6506h) 移除效果 21h。與 spec 763 石化解除同一個模子(那支用 7D0h)",
    "citations": [
+    "audit/function-index/pc98-overlay-04.md",
     "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
@@ -8720,11 +8723,15 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "把一格寫進螢幕緩衝(retf 6)：x := 5*有號(DS:4A0Dh) + 6*有號(DS:4A0Ch) + 15h + x位移、y := y位移 + 5*有號(DS:4A0Dh) + 0Ah；在 0..31h × 0..18h 內才寫 緩衝^[y*32h + x + 7] := 磚+1。是 spec 776 視野掃描的四支巢狀繪圖之一，spec 771 那八組寫死的參數就是傳給它的。投影式顯示每格佔 6 欄 × 5 列、中心在 (21, 10)",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -12541,9 +12548,13 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "轉向要轉幾格(retf 8)：inc(p^[18Dh]^[0Fh])；目標 := 本模組 29A2h(x, y, p)；差 := (目標 − p^[18Dh]^[09h] + 8) mod 8，差 \u003e 4 時取 8 − 差(最短轉法 0..4)；p^[18Dh]^[12h] := (p^[18Dh]^[12h] + 差) mod 8。戰鬥狀態 +09h 是目前面向、+0Fh 是動作計數、+12h 是對 8 取餘的累計轉向量(不是單調成本)",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -12692,7 +12703,8 @@
    "citations": [
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
-    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -16157,7 +16169,8 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -16179,7 +16192,8 @@
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -16244,7 +16258,13 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "拿不動的錢放進 Pool(retf 2)：本模組 0073h(@餘裕, 數量, DS:6506h) 為真時顯示 CS:01F4h 'Overloaded.  Money will be put in Pool.'(兩個空白)、只把餘裕加進 DS:6506h^[103h] 並叫 0057h，其餘 (數量−餘裕) 以 32-bit 加到 DS:6F80h；否則全部加進 +103h。可證 +0FBh 的第 4 格(即 +103h)與 DS:6F70h 的第 4 格(即 6F80h)、名稱表 DS:0F93h 的第 4 筆 Platinum 是同一套索引，DS:6F70h 就是隊伍 Pool",
+   "citations": [
+    "spec/786-money-pool-overflow-and-turn-cost.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21758,9 +21778,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-29.md",
+    "audit/function-index/pc98-overlay-29.md",
     "spec/753-small-utility-routines.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -22401,6 +22421,7 @@
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
    "note": "重算所有戰鬥員的螢幕座標(retf，無參數)：for i := 1 to DS:66A6h — byte[67C6h+i] := byte[66A3h+i*4] − 地圖^[2]、byte[680Eh+i] := byte[66A4h+i*4] − 地圖^[3]。可證戰鬥員記錄每筆 4 bytes、基底 DS:66A3h、1 起算(+0 世界 x、+1 世界 y、+3 是 spec 772 歸零的那個 byte，且與計數 DS:66A6h 同址)；螢幕座標在 DS:67C6h/DS:680Eh 兩個 byte 陣列。⚠ byte 相減沒有夾制",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
@@ -32309,11 +32330,15 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "把一格寫進螢幕緩衝(retf 6)：與 DOS overlay-10:0048h 55 條同形，計數器 DS:7AC2h/7AC3h、緩衝 DS:9F2Ch(差異 4 條，已逐條列出)",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
-    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -36415,7 +36440,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "轉向要轉幾格(retf 8)：與 DOS overlay-13:194Ah 53 條同形，戰鬥狀態在 +18Eh(差異 5 條，已逐條列出)"
   },
   {
    "platform": "pc98",
@@ -41094,7 +41122,8 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/637-overlay21-small-batch.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -41117,7 +41146,8 @@
     "audit/function-index/pc98-overlay-21.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/762-ega-glyph-blit-and-movement-rate.md"
+    "spec/762-ega-glyph-blit-and-movement-rate.md",
+    "spec/786-money-pool-overflow-and-turn-cost.md"
    ]
   },
   {
@@ -41188,7 +41218,10 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/786-money-pool-overflow-and-turn-cost.md",
+   "note": "拿不動的錢放進 Pool(retf 2)：與 DOS overlay-21:021Ch 53 條同形，訊息 CS:01F3h '持ちすぎです。お金は地面に置きますよ'、Pool 在 DS:0A01Ah(差異 17 條，已逐條列出)",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -46592,9 +46625,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-29.md",
+    "audit/function-index/pc98-overlay-29.md",
     "spec/753-small-utility-routines.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -47249,6 +47282,7 @@
    "spec": "docs/spec/785-cross-platform-pairs-third-batch.md",
    "note": "重算所有戰鬥員的螢幕座標(retf)：與 DOS overlay-32:0079h 51 條同形，計數 DS:9740h、地圖 DS:9F2Ch、記錄 [di−68C3h]、輸出 [di−67A0h] 與 [di−6758h](差異 7 條，已逐條列出)",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/785-cross-platform-pairs-third-batch.md"
    ]
   },
@@ -48024,9 +48058,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -48069,9 +48103,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 31,
+   "Todo": 30,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -48189,9 +48223,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -48579,9 +48613,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -48624,9 +48658,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 33,
+   "Todo": 32,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -48744,9 +48778,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
