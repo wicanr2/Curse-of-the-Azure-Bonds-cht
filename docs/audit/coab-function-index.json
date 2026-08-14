@@ -15936,10 +15936,14 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1038",
+   "note": "角色檔讀取(retf 0Ch)，台帳裡最大的一對函式之一(1460 條)。★★★ 一個角色 = 五個檔：.guy/.cha(角色本體)、.swg(物品鏈，一筆 3Fh=63 bytes ⇒ 第六次確認 DOS 物品節點大小)、.fx 與 .spc(各一筆 9 bytes ⇒ 效果節點 9 bytes，新結論)。三條鏈的讀法相同：GetMem→BlockRead→接鏈，最後把多配的一個 FreeMem。★★★ DS:7584h 是存檔格式代號：0 讀 1A6h(422) 直接就位；1 讀 11Dh(285)、2 讀 0BCh(188)，後兩者先進暫存區再由 sub_1490 之類轉成現行版面 ⇒ 遊戲帶著兩代舊存檔的轉換路徑。★★ 三個分支都把四個遠指標欄位歸零：+0F2h、+14Dh(物品鏈頭)、+189h(隊伍 next)、+18Dh —— 遠指標不能持久化，載入後清 NIL 再由三個鏈檔重建；remake 的序列化必須排除這四格。檔名組法：DS:7584h=0 時先 Pos('.')+Delete(...,4) 切掉舊副檔名再接。磁片提示表 DS:25AEh 筆距 1Eh(30)、索引 = DS:5BEEh(資料片編號)，五筆對到磁片 B/B/C/C/D；另有 'Put save disk in '(17)+磁碟機字母+':'、'Loading...Please Wait'(21)。⚠ 五個副檔名同時是字串常數與檔名組成，不可翻",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1038-character-save-load.md"
    ]
   },
   {
@@ -16654,6 +16658,7 @@
    "spec": "1037",
    "note": "角色圖示(icon)編輯畫面。圖示欄位：+141h 頭/髮型索引(0..0Dh，14 種，Next/Prev 環繞)、+142h 武器索引(0..1Fh，32 種)、+143h 一個顏色(重畫前暫設 0Ch 再還原)、+144h 大小(1 小/2 大)、+145h..+14Ah 六個部位各一 byte = 兩個 4-bit 顏色(低 nibble 第一色、高 nibble 第二色)。進畫面把 +145h 起 6 bytes 整組備份(0A54:025Dh)，按 E/#0 離開時連 +141h/+142h/+144h 一起還原。部位碼 B=1 A=2 L=3 H/F=4 S=5 W=6(即 +144h+部位 正好落在 +145h..+14Ah)。選項行表在 DS:721h 筆距 29h(41)，五筆：'Parts 1st-color 2nd-color Size Exit'(35)/'Head Weapon Exit'(16)/'Weapon Body xxxx Shield Arm Leg Exit'(36)/' Keep Exit'(10)/'Next Prev Keep Exit'(19)。★★★ 'xxxx' 不是沒改完的佔位字串，是寬度固定 4 的就地替換槽：DS:721h+2*29h = DS:79Ch 就是第 3 筆，選 1st-color 時 Delete(s,13,4)+Insert('Hair',s,13)、2nd-color 時換成 'Face'(0A54:07D0h/0A54:077Ch)；第 13 字元起正好是 xxxx，這也解釋了熱鍵為何 H 與 F 兩個都收。⚠ 中文化必須在同一位元組位置保留同寬度的槽，否則 Delete/Insert 會把 Big5 雙位元組切一半；要換寬度得同時改選項行與兩個位置參數。⚠ byte_4FE6 = 0 時兩個顏色入口都只印 'Sorry, not in CGA'(17) —— CGA 模式關掉顏色編輯，DOS 專屬。顏色加減：加是 mod 16、減是 and 0Fh，兩邊都環繞。字串 'old'(3)/'new'(3)/'ready   action'(14，中間三個空白排版)/'Small'/'Large'/'Hair'/'Face'",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
     "spec/1037-icon-editor.md"
@@ -42090,6 +42095,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
@@ -42443,11 +42449,15 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1038",
+   "note": "角色檔讀取，同 DOS overlay-16:0228Eh(1486 條)。★★★ 長度對照：現行角色記錄 1A7h(423) vs DOS 1A6h(422) 差 1；★ 兩代舊格式 11Dh(285) 與 0BCh(188) 兩平台完全相同 —— 那是磁碟上的舊版面，PC-98 沒有跟著加寬；物品節點 67h(103) vs 3Fh(63) 差 28h；★★ 效果節點 .fx/.spc 兩平台都是 9 bytes，沒有跟著物品節點加寬。四個歸零的遠指標欄位：+0F2h(相同)、+14Eh、+18Ah、+18Eh(後三個各 +1，與 spec 1034 收窄過的邊界一致)。★ PC-98 另有大寫的 '.GUY'/'.CHA' 兩個字串(DOS 只有小寫)，其餘副檔名相同。載入提示是「読みこみ中です」(14)，與 spec 1029 同一句",
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1038-character-save-load.md"
    ]
   },
   {
@@ -53452,9 +53462,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -54007,9 +54017,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
