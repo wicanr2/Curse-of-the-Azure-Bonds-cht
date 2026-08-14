@@ -27741,7 +27741,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "946",
+   "note": "PC-98 的 Crt 單元初始化(near)：byte_280D0h := 1 開啟雙位元組處理(spec 945)、word_280D2h := 4Ch、清六個旗標(含寫進 code segment 的 cs:byte_193C8h)、四個設 1；int 21h AX=2506h 掛 INT 06h handler(cs:0196h)；把覆疊向量 dword_23AFAh 存進 dword_280DCh；取列數存 byte_280E5h、叫 sub_18FE4h 與 sub_18FF5h(spec 944 的視窗參數)。★word_280D4h := 0A000h、word_280D6h := 2000h → PC-98 文字 VRAM 在 A000:0000、屬性平面在 +2000h，兩者共用同一個位移(word_280D8h)，與 IBM PC 的字碼屬性交錯完全不同；設完會實際讀一個 byte 探測。最後 sub_18FC5h 的回傳同時寫進 byte_280E0h/280C6h/280F7h/280F8h"
   },
   {
    "platform": "pc98",
@@ -27813,7 +27816,10 @@
    "callers": 2,
    "calls": 10,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "946",
+   "note": "Ctrl-Break 處理(far, retf 2)：byte_280E2h = 0 就直接返回、byte_280C0h = 0 回 3；否則用 int 21h AH=6 DL=0FFh 清空輸入，再用 int 18h AH=1/AH=0 把鍵盤緩衝吃乾淨。⚠IDA 把 int 18h 註解成 IBM PC 的 ROM BASIC，那是錯的——PC-98 的 int 18h 是 CRT/鍵盤 BIOS。接著印 '^C'、叫 sub_1948Ch/sub_19AC2h、執行 int 23h(DOS Ctrl-C 離開位址)。回來後清 word_280F9h/word_280D8h/byte_280D0h，用 sub_19ACEh 取畫面模式：≤ 3 才重新開啟雙位元組處理(高解析才支援全形)，bit 0 決定列數 18h(24) 或 13h(19)，再叫 sub_18FE4h/sub_18FF5h/sub_19A59h 重算視窗參數"
   },
   {
    "platform": "pc98",
@@ -52305,9 +52311,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 233,
+   "Read": 235,
    "NotBlocking": 29,
-   "Todo": 46,
+   "Todo": 44,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
