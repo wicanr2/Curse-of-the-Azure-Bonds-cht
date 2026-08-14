@@ -26397,7 +26397,10 @@
    "callers": 4,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "954",
+   "note": "清一個圖形矩形(far, retf 0Ch = (填值, 平面, 下, 右, 上, 左)，六個 byte)：起位移 = longint(上 × 50h) shl 3 + 左、行數 = ((下 − 上 + 1) shl 3) − 1；先存 byte_241E0h(目前平面)、叫 sub_14187h(平面) 與 sub_14180h，逐行叫 sub_1C180h(word_241DEh : 起位移, 右 − 左 + 1, 填值) 並讓位移 += 50h，收尾還原平面。★50h = 80 bytes/掃描線 → PC-98 圖形是 640 像素寬、每平面 1 bit/像素；shl 3 表示一個『列』仍是 8 條掃描線，與 spec 937/940/942/949 的縱向單位一致。⚠起位移用 32 位元算但只送低位字——640×400 單平面 32000 bytes 在 16 bits 內，不會溢位"
   },
   {
    "platform": "pc98",
@@ -29205,7 +29208,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "954",
+   "note": "從 free list 配置(near)，與 DOS 的 1A986h(spec 931)同骨架但多一層重試：掃 dword_23AF0h 找夠大的一筆就切走(用光就 sub_1AC04h 移除)、否則看配置指標 word_23AECh/word_23AEEh 上面夠不夠，都不行就★呼叫 dword_23AF6h(Turbo Pascal 的 HeapError 向量)——回 0 就 stc 失敗、回 1 就把 bx 設 0(New 回 nil 但不報錯)、其他值表示已騰出空間就整支重試。DOS 版沒有這一段，找不到就直接失敗；PC-98 版多掛 HeapError，與 spec 951 的覆疊 LRU 同一個方向——對記憶體壓力做了更多處理"
   },
   {
    "platform": "pc98",
@@ -52359,9 +52365,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 251,
+   "Read": 253,
    "NotBlocking": 29,
-   "Todo": 28,
+   "Todo": 26,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
