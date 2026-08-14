@@ -7736,6 +7736,7 @@
    "spec": "docs/spec/992-dos-findstr-six-bit-packing.md",
    "note": "FINDSTR 的 DOS 版：6-bit 壓縮（每 3 bytes 4 字），字元集就是字型的 64 格；PC-98 為了日文改成逐 byte",
    "citations": [
+    "spec/616-ecl2-string-sources.md",
     "spec/992-dos-findstr-six-bit-packing.md"
    ]
   },
@@ -7804,7 +7805,8 @@
     "audit/function-index/dos-overlay-07.md",
     "spec/769-combat-main-loop.md",
     "spec/977-savelist-menu-ranges-and-combat-icon.md",
-    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
+    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -7840,7 +7842,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:64Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -22381,7 +22384,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/693-text-draw-signature-and-english-grammar.md",
-    "spec/983-same-text-primitive-both-platforms.md"
+    "spec/983-same-text-primitive-both-platforms.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -23379,7 +23383,8 @@
    "note": "把熱鍵字串切成每項的欄位範圍：英數字為起點、下一個熱鍵前兩格為終點，最多 20 項",
    "citations": [
     "spec/977-savelist-menu-ranges-and-combat-icon.md",
-    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
+    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -23393,7 +23398,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/993-foreground-background-settled.md",
+   "note": "選單整行逐字元三色繪製：目前項反白、熱鍵字元 +0Eh、一般字元 +10h；建表/查表/用表三支到齊",
+   "citations": [
+    "spec/993-foreground-background-settled.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23534,7 +23545,8 @@
    "citations": [
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
     "spec/977-savelist-menu-ranges-and-combat-icon.md",
-    "spec/983-same-text-primitive-both-platforms.md"
+    "spec/983-same-text-primitive-both-platforms.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -23554,7 +23566,8 @@
    "note": "反白版的清單單項重畫：項目 +29h（PC-98 +51h）在視窗 +22h/+24h 兩個顏色間選",
    "citations": [
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
-    "spec/983-same-text-primitive-both-platforms.md"
+    "spec/983-same-text-primitive-both-platforms.md",
+    "spec/993-foreground-background-settled.md"
    ]
   },
   {
@@ -52601,9 +52614,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,

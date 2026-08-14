@@ -25240,6 +25240,15 @@
    "level": "exact",
    "spec": "docs/spec/992-dos-findstr-six-bit-packing.md",
    "note": "FINDSTR 的 DOS 版：6-bit 壓縮（每 3 bytes 4 字），字元集就是字型的 64 格；PC-98 為了日文改成逐 byte"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 485,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/993-foreground-background-settled.md",
+   "note": "選單整行逐字元三色繪製：目前項反白、熱鍵字元 +0Eh、一般字元 +10h；建表/查表/用表三支到齊"
   }
  ]
 }
