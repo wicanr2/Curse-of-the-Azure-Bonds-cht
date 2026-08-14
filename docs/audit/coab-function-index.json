@@ -11973,6 +11973,7 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "分段加成:DS:6FA7h 等於 4 或 2 時,依 角色^[19h] 取 bonus(4..6→1、7..10→2、0Bh..0Dh→3、0Eh..11h→4、12h..14h→5),DS:6F92h += bonus。⚠ **v 不在 4..20 時 bonus 從頭到尾沒有被賦值**,加進去的是堆疊殘值——這是第三處同型問題(spec 694 的 129Ah、spec 702 的 23F2h),共同形狀是「一串 if 範圍 then 賦值、沒有 else、區域變數也沒初始化」。remake 要補預設值但補什麼要另外決定,原作行為隨堆疊內容而定。分段長度 3/4/3/4/3 不是等距",
    "citations": [
+    "audit/function-index/pc98-overlay-12.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md",
     "spec/970-pc98-name-colour-and-segmented-bonus.md"
    ]
@@ -23739,7 +23740,8 @@
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/973-pc98-text-print-signature.md"
    ]
   },
   {
@@ -23943,7 +23945,9 @@
    "note": "同 PC-98 overlay-29:0045Ah（逐項釋放後清空，retf 4）。DOS 版：n := p^[0]，n \u003c 1 就跳過；i 由 1 遞增到 n，逐項對 p + 8i − 2 叫 297h:1D19h；收尾 FillChar(p^, 42h, 0)、DS:7278h:=0、DS:728Ah:=0FFh。★與 PC-98 的差異：方向相反（DOS inc、PC-98 dec）、元素位移 8i−2 vs 8i−1、FillChar 42h vs 43h——後兩者正是 PC-98 記錄大 1 byte 的老差異，釋放的元素集合相同",
    "citations": [
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/750-combat-setup.md"
+    "spec/750-combat-setup.md",
+    "spec/971-bigpic-loader-dos.md",
+    "spec/973-pc98-text-print-signature.md"
    ]
   },
   {
@@ -23964,7 +23968,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-29.md",
     "audit/function-strings.md",
-    "spec/874-two-slot-resource-cache.md"
+    "spec/874-two-slot-resource-cache.md",
+    "spec/971-bigpic-loader-dos.md"
    ]
   },
   {
@@ -24017,9 +24022,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/971-bigpic-loader-dos.md",
+   "note": "bigpic 載入器：資源快取第三格（DS:728Ch 指標／DS:7290h 編號哨兵），定案 0297h:011Bh 參數順序",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/971-bigpic-loader-dos.md"
    ]
   },
   {
@@ -37699,6 +37708,7 @@
    "spec": "970",
    "note": "分段加成(retf 0Ah)，DOS 對應是 spec 741 的 02078h：DS:0A041h 為 4 或 2 時，把 角色^[19h] 依 4..6/7..0Ah/0Bh..0Dh/0Eh..11h/12h..14h 五段分別給加成 1..5，再加進 DS:0A02Ch。⚠加成在 v \u003c 4 或 v \u003e 14h 時從頭到尾沒有被賦值，加進去的是堆疊殘值——與 DOS 版完全相同的缺陷，PC-98 沒有修。11 個差異區塊全是 spec 783 類別 (c) 的編譯器碼型(DOS 有號 jl/jg、PC-98 無號 jb/ja)，值域內等價",
    "citations": [
+    "spec/741-on-hit-effects-and-third-uninitialised.md",
     "spec/970-pc98-name-colour-and-segmented-bonus.md"
    ]
   },
@@ -41017,7 +41027,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/973-pc98-text-print-signature.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41517,7 +41530,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "兩欄十列清單重畫：DS:0A648h 起 10 筆 29h bytes 字串，欄 0／20、列 5..13、顏色 0Ah",
+   "citations": [
+    "spec/973-pc98-text-print-signature.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48507,7 +48526,8 @@
    "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
    "note": "畫出 AC(retf 8)：v := |p^[19Bh] − 3Ch| 轉成字串後接上 CS:0B3Ch(長度 2 的兩個半形空白)；p^[19Bh] \u003e 3Ch(無號)時再在前面補 CS:0B3Fh 的 '-'；最後 0418h:0D17h(@字串, 0, 0Ah, x, y)。確認顯示值 = 60 − 儲存值 且負值以獨立的 '-' 字元前綴。⚠ 兩個尾隨空白是常數的一部分，用來蓋掉上次較長的數字，中文化不能刪",
    "citations": [
-    "spec/767-ac-display-sign-and-trade-overload.md"
+    "spec/767-ac-display-sign-and-trade-overload.md",
+    "spec/973-pc98-text-print-signature.md"
    ]
   },
   {
@@ -49934,9 +49954,13 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/972-pc98-ring-slot-repaint.md",
+   "note": "巢狀程序：換格時把父層兩塊 12 bytes 寫回 DS:15C0h 十格環狀表的槽緩衝",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/972-pc98-ring-slot-repaint.md"
    ]
   },
   {
@@ -49953,7 +49977,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/972-pc98-ring-slot-repaint.md"
    ]
   },
   {
@@ -50078,7 +50103,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "重畫清單裡的一項：列＝視窗^[1Ch]+(項次−DS:0A32Ch)，顏色由項目 +51h 在視窗 +22h/+24h 之間選",
+   "citations": [
+    "spec/973-pc98-text-print-signature.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50373,13 +50404,17 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "單邊（DOS 無）：在迷宮就更新視野三參數並重畫，否則顯示 bigpic 121 世界地圖",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/973-pc98-text-print-signature.md"
    ]
   },
   {
@@ -50529,7 +50564,9 @@
     "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-29.md",
     "spec/758-morale-field-0f7h-round-trip.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md",
+    "spec/971-bigpic-loader-dos.md",
+    "spec/973-pc98-text-print-signature.md"
    ]
   },
   {
@@ -50607,7 +50644,8 @@
    "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
    "note": "載入 bigpic(retf 2)：先叫本模組 045Ah(@DS:0A2C6h)；DS:0A327h 非 NIL 就離開；否則組出 CS:0724h 的 'bigpic' 字串，叫 02A8h:025Bh(參數, 0, 0, @DS:0A327h, 0)，最後 DS:0A32Bh := 參數(該指標的哨兵 byte)",
    "citations": [
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/971-bigpic-loader-dos.md"
    ]
   },
   {
@@ -52328,9 +52366,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 1,
    "CodeBytes": 2102,
    "Undefined": 114,
@@ -52688,9 +52726,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -52838,9 +52876,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 15,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
@@ -52868,9 +52906,9 @@
    "Module": "overlay-28",
    "Unit": "DRAWWIN",
    "Functions": 3,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 196,
    "Undefined": 0,

@@ -24835,6 +24835,51 @@
    "level": "exact",
    "spec": "970",
    "note": "分段加成(retf 0Ah)，DOS 對應是 spec 741 的 02078h：DS:0A041h 為 4 或 2 時，把 角色^[19h] 依 4..6/7..0Ah/0Bh..0Dh/0Eh..11h/12h..14h 五段分別給加成 1..5，再加進 DS:0A02Ch。⚠加成在 v < 4 或 v > 14h 時從頭到尾沒有被賦值，加進去的是堆疊殘值——與 DOS 版完全相同的缺陷，PC-98 沒有修。11 個差異區塊全是 spec 783 類別 (c) 的編譯器碼型(DOS 有號 jl/jg、PC-98 無號 jb/ja)，值域內等價"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 2067,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/971-bigpic-loader-dos.md",
+   "note": "bigpic 載入器：資源快取第三格（DS:728Ch 指標／DS:7290h 編號哨兵），定案 0297h:011Bh 參數順序"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 180,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/972-pc98-ring-slot-repaint.md",
+   "note": "巢狀程序：換格時把父層兩塊 12 bytes 寫回 DS:15C0h 十格環狀表的槽緩衝"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 16311,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "兩欄十列清單重畫：DS:0A648h 起 10 筆 29h bytes 字串，欄 0／20、列 5..13、顏色 0Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 3070,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "重畫清單裡的一項：列＝視窗^[1Ch]+(項次−DS:0A32Ch)，顏色由項目 +51h 在視窗 +22h/+24h 之間選"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-28",
+   "ea": 22,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/973-pc98-text-print-signature.md",
+   "note": "單邊（DOS 無）：在迷宮就更新視野三參數並重畫，否則顯示 bigpic 121 世界地圖"
   }
  ]
 }
