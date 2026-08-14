@@ -6594,9 +6594,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/821-raise-dead-and-con-loss.md",
+   "note": "Raise Dead：retf。p := DS:6506h；(p^[195h] = 6) 或 = 1 才算死亡（可 := 1）；可 = 0 時顯示 名字+'is not dead.'(12) 並用 本模組 0047h 再確認。答 'Y' 才顯示 'Raise Dead'(10)、本模組 00F3h(157Ch = 5500) 再問一次；答 Y 且 可 \u003c\u003e 0 才動手。DS:6F9Ch := 1、\u003c0141h:002Fh\u003e(p,20h,longint 0)、(p,37h,longint 0)、DS:6F9Ch := 0；p^[1A4h] := 1（目前 HP）、p^[195h] := 0、p^[196h] := 1、p^[19h]（體質）\u003e 0 就減 1。接著重算最大 HP：損 := max(0, p^[78h] − p^[12Ch]（不含體質加成的基礎 HP）)；體質 \u003c 0Eh 就離開；和 := Σ(c=0..7, p^[109h+c] \u003e 0) —— c=2（戰士）用 等級*(體質−0Eh)、體質 \u003e 0Fh 用 等級*2、否則 等級；和 \u003e 0 時 損 := 損 div 和（有號）；除非 體質 \u003e= 11h 且 +10Bh \u003c= 0 且 +10Bh \u003c= +0E6h，否則 p^[78h] -= 損。三個門檻 0Eh/0Fh/11h 對上 AD\u0026D 體質 HP 加成表。spec 821",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/821-raise-dead-and-con-loss.md"
    ]
   },
   {
@@ -10940,7 +10944,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-13.md"
    ]
   },
   {
@@ -10986,7 +10991,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 10 bytes，已逐條讀完）"
+   "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 10 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11230,6 +11238,7 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov bp, sp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 3 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/819-spits-acid-special-attack.md"
    ]
   },
@@ -30715,7 +30724,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/821-raise-dead-and-con-loss.md",
+   "note": "Raise Dead：retf。p := DS:9594h；(p^[195h] = 6) 或 = 1 才算死亡（可 := 1）；可 = 0 時顯示 名字+'は死んではいませんよ'(20 bytes) 並用 本模組 0047h 再確認。答 'Y' 才顯示 'レイズ・デッド'(14 bytes)、本模組 00F3h(157Ch = 5500) 再問一次；答 Y 且 可 \u003c\u003e 0 才動手。DS:0A036h := 1、\u003c013Eh:002Fh\u003e(p,20h,longint 0)、(p,37h,longint 0)、DS:0A036h := 0；p^[1A4h] := 1（目前 HP）、p^[195h] := 0、p^[196h] := 1、p^[19h]（體質）\u003e 0 就減 1。接著重算最大 HP：損 := max(0, p^[78h] − p^[12Ch]（不含體質加成的基礎 HP）)；體質 \u003c 0Eh 就離開；和 := Σ(c=0..7, p^[109h+c] \u003e 0) —— c=2（戰士）用 等級*(體質−0Eh)、體質 \u003e 0Fh 用 等級*2、否則 等級；和 \u003e 0 時 損 := 損 div 和（有號）；除非 體質 \u003e= 11h 且 +10Bh \u003c= 0 且 +10Bh \u003c= +0E6h，否則 p^[78h] -= 損。三個門檻 0Eh/0Fh/11h 對上 AD\u0026D 體質 HP 加成表。spec 821 PC-98 另外多一道 DOS 沒有的檢查：已死時若 (p^[197h] = 8) 或 (p^[74h] = 2) 就顯示 名字+'は生き返りませんよ'(18 bytes) 並再確認一次。",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -31423,11 +31435,11 @@
    "note": "READVAR(n)：operand 解碼器，從 ECL PC(DS:7F21h)解 n 個 operand 進三個平行陣列;索引從 1 起;佈局 [code][low](+[high] 當 code 為 1/2/3)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-07.md",
-    "project-status.md",
-    "spec/562-ecl2-helper-api-and-operand-audit.md",
-    "spec/564-ecl-operand-decoding-and-arity-validation.md"
+    "project-status.md"
    ]
   },
   {
@@ -35529,7 +35541,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 1Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub sp, 1Ch`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36500,7 +36515,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/585-ecl-goto-and-display-mode-pair.md",
-   "note": "與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 dos overlay-12:2855h 助憶碼序列完全相同（24 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：連續四次 sub_1B(0Bh/35h/34h/37h),之後 DS:6FA7h 為 0 時把 DS:6F92h 設為 64h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41213,6 +41231,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-strings.md"
    ]
   },
@@ -49596,9 +49615,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 14,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 1,
    "CodeBytes": 3435,
    "Undefined": 340,
@@ -50151,9 +50170,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
