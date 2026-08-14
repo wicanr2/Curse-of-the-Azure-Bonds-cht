@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
-| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md<br>spec/790-attack-ally-confirm-and-counter-animation.md |
+| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-13.md<br>spec/750-combat-setup.md<br>spec/790-attack-ally-confirm-and-counter-animation.md |
 | `074F` | sub_74F | — | 523 | 193 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `095A` | sub_95A | — | 935 | 334 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0D1C` | sub_D1C | — | 189 | 74 | 0 | 5 | ✓ | 待解讀 | — | — | — |

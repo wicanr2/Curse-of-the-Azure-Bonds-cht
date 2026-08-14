@@ -20150,24 +20150,6 @@
   {
    "platform": "dos",
    "module": "overlay-15",
-   "ea": 642,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
-   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號，查法術屬性表 DS:37DAh + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-15",
-   "ea": 642,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
-   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號，查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788（PC-98：角色表 DS:9594h）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-15",
    "ea": 8789,
    "state": "已解讀",
    "level": "exact",
@@ -20254,6 +20236,96 @@
    "level": "exact",
    "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
    "note": "數字往上跳的動畫：把 DS:7F05h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790（兩平台只差這個基底）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 427,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "挑出 +18Dh^[3] 最大的角色（同值時比 <0141h:004Dh>(1,64h) 的 1..100 隨機骰）：掃 DS:650Ah 鏈，每個角色都擲一次骰；v > 最佳值時先把最佳骰換成本次骰，故值大者必勝；選中就把角色遠指標寫進 arg_0^。迴圈後最佳值仍為 0 則寫 NIL。retf 4。spec 791"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 507,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "挑出 +18Eh^[3] 最大的角色（同值時比 <013Eh:004Dh>(1,64h) 的 1..100 隨機骰）：掃 DS:9598h 鏈，每個角色都擲一次骰；v > 最佳值時先把最佳骰換成本次骰，故值大者必勝；選中就把角色遠指標寫進 arg_0^。迴圈後最佳值仍為 0 則寫 NIL。retf 4。spec 791"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 2821,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "每拍遞減 DS:7573h + i（i 由 1 起算跟著 DS:650Ah 鏈）：> 0 就 dec；若 DS:7573h+i = 0 且 角色 +72h = 0，則 旗標:=0、r := 本模組 09DFh(角色,@旗標)、r=0 再試 091Dh，byte[7573h+i] := r*3。與 0BB6h（每 12 拍、旗標初值 1）是同一組的兩半。retf。spec 791"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 2871,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "每拍遞減 DS:0A65Fh + i（i 由 1 起算跟著 DS:9598h 鏈）：> 0 就 dec；若 DS:0A65Fh+i = 0 且 角色 +72h = 0，則 旗標:=0、r := 本模組 0A11h(角色,@旗標)、r=0 再試 094Eh，byte[0A65Fh+i] := r*3。與 0BE8h（每 12 拍、旗標初值 1）是同一組的兩半。retf。spec 791"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 2333,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "記憶法術的完成／查詢：retf 8 = (arg_4 角色遠指標, arg_0 旗標遠指標)。掃 角色^[1Eh + i]（i = 0..53h），最高位為 1（還在記憶中）者：旗標^<>0 時回傳 byte[37DBh + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 時把最高位清掉（記好了）、呼叫 本模組 05D4h(0)、顯示 角色名+'has memorized'+法術名、呼叫 <011Ah:0048h>(值)、旗標^:=1 後繼續掃。回傳值被呼叫端寫成 byte[7573h+i] := 等級*3，即記完下一個法術所需拍數。spec 792"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 2382,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "記憶法術的完成／查詢：retf 8 = (arg_4 角色遠指標, arg_0 旗標遠指標)。掃 角色^[1Eh + i]（i = 0..53h），最高位為 1（還在記憶中）者：旗標^<>0 時回傳 byte[61B5h + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 時把最高位清掉（記好了）、呼叫 本模組 05D2h(0)、顯示 角色名+'を覚えた'(8 bytes)+法術名、呼叫 <0117h:0048h>(值)、旗標^:=1 後繼續掃。回傳值被呼叫端寫成 byte[0A65Fh+i] := 等級*3，即記完下一個法術所需拍數。spec 792"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 8969,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "巢狀程序組成的流程（每個呼叫多推 bp 當靜態鏈）：輸出^:=0；2069h 回 0 就離開；呼叫 1EFDh；再問 2069h，回 0 走 <14F8h+2>(DS:6506h)+<15ADh+1>；否則 Move(DS:7566h→暫存,0Eh)、20C5h、輸出^ := <10AEh+1>(0)；輸出^=0 時 1FB9h、2255h、<14F8h+2>+<15ADh+1>，並 Move(暫存→DS:7566h,0Eh) 還原（回非 0 就不還原）。retf 4。spec 792"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 9072,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "巢狀程序組成的流程（每個呼叫多推 bp 當靜態鏈）：輸出^:=0；20D2h 回 0 就離開；呼叫 1F69h；再問 20D2h，回 0 走 <14F8h+2>(DS:9594h)+<15ADh+1>；否則 Move(DS:0A652h→暫存,0Eh)、212Ch、輸出^ := <10AEh+1>(0)；輸出^=0 時 2020h、22BCh、<14F8h+2>+<15ADh+1>，並 Move(暫存→DS:0A652h,0Eh) 還原（回非 0 就不還原）。retf 4。spec 792"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 642,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號（最高位＝還在記憶中，見 spec 792），查法術屬性表 DS:37DAh + s*10h 的 +1(等級) 與 +0(職業)，相符就計數（不分最高位）；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。retf 4。spec 788／792"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 642,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號（最高位＝還在記憶中，見 spec 792），查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數（不分最高位）；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。retf 4。spec 788／792（PC-98：角色表 DS:9594h）"
   }
  ]
 }
