@@ -25780,6 +25780,24 @@
    "level": "exact",
    "spec": "docs/spec/1023-scrolling-list-menu.md",
    "note": "捲動清單選單(＝ overlay-26 entry#5)，商店(spec 1013)／轉職(spec 1021)／物品選單共用。★★ 它是 entry#3(選項行選單)的外層：清單鏈頭為 NIL 就回 0；否則 DS:7294h := 1，數「可選數」(從鏈頭數到第一個 +29h = 0)與「總數」(整條鏈)，把捲動位置 DS:7292h 夾進範圍，然後把 ' Next'(CS:0DE7h)／' Prev'(CS:0DEDh)／' Exit'(CS:0DF3h) 依情況接到呼叫端給的選項行後面，再交給 entry#3。⇒ 這三個選項是執行期接上去的，呼叫端只給自己那幾個；熱鍵一樣藏在大寫 N/P/E。★★ 兩套按鍵模式：游標模式 DOS 用 47h Home(移到最前)／4Fh End(最後)／49h PgUp(上一頁)／51h PgDn(下一頁)，PC-98 改用 NEC 鍵盤的 32h('2')／33h('3')／38h('8')／39h('9')；字母模式兩平台相同：'P' 上一頁、'N' 下一頁、1Bh(ESC)／'E'／0 離開(結果清 0) —— ★ ESC 與 E 等價。★★★ PC-98 把三個選項寫進兩張平行表且索引完全對齊：Prev 文字 DS:0A369h(i=7)／熱鍵 DS:0A33Bh(i=7)、Next DS:0A370h／DS:0A33Ch(i=8)、Exit DS:0A37Eh／DS:0A33Eh(i=10)—— entry#5 自己就會填熱鍵表，呼叫端不必管(spec 755 的版面，第四個實例)。⚠ 三個字串各 5 字元，PC-98 那邊是 6 bytes = 3 全形字；中文「下頁」「上頁」「離開」塞得下"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 12884,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1024-monster-data-loading.md",
+   "note": "怪物資料載入：一隻怪物要讀三個 .dax 檔。DOS 把檔名組成 'MON' + Str(DS:5BEEh 磁碟/資料片編號) + 'CHA'/'SPC'/'ITM' + '.dax'；⚠ PC-98 沒有插編號，用寫死的 'MONCHA'/'MONSPC'/'MONITM'。讀不到就顯示 'Unable to load monster'(22)(PC-98「モンスターをロードできませんでした」34 bytes)並走 far 06EA:0000h。★★ 三種紀錄的大小：CHA 怪物範本 DOS 1A6h(422) / PC-98 1A7h(423) bytes，用 Move 進呼叫端緩衝（★ PC-98 大 1 byte，與 spec 1010/1017 的角色記錄 +1 位移一致，和物品節點的 +28h 是兩種規則）；SPC 特殊攻擊節點 GetMem 9 bytes 串成鏈；ITM 物品節點 GetMem 3Fh(63，PC-98 103) 串成鏈★★★ 這是物品節點 63/103 bytes 的第四個獨立確認(前三個在 spec 1011/1013、1018、1019)。⚠ 'MON'/'CHA'/'SPC'/'ITM'/'.dax' 是檔名不可翻；DOS 是三段拼的、PC-98 是整條，中文化要分別處理"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 15016,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1024-monster-data-loading.md",
+   "note": "怪物資料載入：一隻怪物要讀三個 .dax 檔。DOS 把檔名組成 'MON' + Str(DS:5BEEh 磁碟/資料片編號) + 'CHA'/'SPC'/'ITM' + '.dax'；⚠ PC-98 沒有插編號，用寫死的 'MONCHA'/'MONSPC'/'MONITM'。讀不到就顯示 'Unable to load monster'(22)(PC-98「モンスターをロードできませんでした」34 bytes)並走 far 06EA:0000h。★★ 三種紀錄的大小：CHA 怪物範本 DOS 1A6h(422) / PC-98 1A7h(423) bytes，用 Move 進呼叫端緩衝（★ PC-98 大 1 byte，與 spec 1010/1017 的角色記錄 +1 位移一致，和物品節點的 +28h 是兩種規則）；SPC 特殊攻擊節點 GetMem 9 bytes 串成鏈；ITM 物品節點 GetMem 3Fh(63，PC-98 103) 串成鏈★★★ 這是物品節點 63/103 bytes 的第四個獨立確認(前三個在 spec 1011/1013、1018、1019)。⚠ 'MON'/'CHA'/'SPC'/'ITM'/'.dax' 是檔名不可翻；DOS 是三段拼的、PC-98 是整條，中文化要分別處理"
   }
  ]
 }
