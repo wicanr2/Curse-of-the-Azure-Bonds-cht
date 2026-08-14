@@ -14444,10 +14444,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1026-open-doors-table.md",
+   "note": "撞門判定：走隊伍鏈 DS:650Ah(next 在 +189h)，每個隊員各擲一次、任何一人成功就停；地形碼由 overlay-30 entry#5(DS:720Fh, DS:7210h, DS:7211h) 取得，= 3 走「上鎖」欄、其餘走「一般」欄。判定用角色的 +11h(力量，即 +10h + i×2 那組屬性的第 0 項)與 +1Ch(18/xx 百分位)。★★★ 一般門：力量 15→1d6=1(1/6)、16-17→1d6\u003c=2、18 且百分位\u003c=50→\u003c=3、18 且 51-99→\u003c=4、18 且 100→\u003c=5、19-20→1d8\u003c=7、21→1d10\u003c=9、22-23→1d12\u003c=11、24→1d20\u003c=19 —— AD\u0026D 1e PHB 力量表的 Open Doors 欄一格不差。★★★ 上鎖／頂住的門：18 且百分位 91-99→1d6=1、18 且 100→\u003c=2、18 其餘百分位→直接打不開(DS:7588h := 0，連骰都不骰)、19-20→1d6\u003c=3、21-22→\u003c=4、23→\u003c=5、24→1d8\u003c=7 —— 就是 1e 的括號欄(locked/barred/magically held)。⚠ 兩平台的門檻與骰子完全相同，差異只在位址(720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh，同 spec 1022)。本支沒有字串",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
+    "spec/1026-open-doors-table.md",
     "spec/844-locked-door-menu.md"
    ]
   },
@@ -24693,7 +24697,7 @@
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/1026-open-doors-table.md"
    ]
   },
   {
@@ -40836,14 +40840,17 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1026-open-doors-table.md",
+   "note": "撞門判定：走隊伍鏈 DS:650Ah(next 在 +189h)，每個隊員各擲一次、任何一人成功就停；地形碼由 overlay-30 entry#5(DS:720Fh, DS:7210h, DS:7211h) 取得，= 3 走「上鎖」欄、其餘走「一般」欄。判定用角色的 +11h(力量，即 +10h + i×2 那組屬性的第 0 項)與 +1Ch(18/xx 百分位)。★★★ 一般門：力量 15→1d6=1(1/6)、16-17→1d6\u003c=2、18 且百分位\u003c=50→\u003c=3、18 且 51-99→\u003c=4、18 且 100→\u003c=5、19-20→1d8\u003c=7、21→1d10\u003c=9、22-23→1d12\u003c=11、24→1d20\u003c=19 —— AD\u0026D 1e PHB 力量表的 Open Doors 欄一格不差。★★★ 上鎖／頂住的門：18 且百分位 91-99→1d6=1、18 且 100→\u003c=2、18 其餘百分位→直接打不開(DS:7588h := 0，連骰都不骰)、19-20→1d6\u003c=3、21-22→\u003c=4、23→\u003c=5、24→1d8\u003c=7 —— 就是 1e 的括號欄(locked/barred/magically held)。⚠ 兩平台的門檻與骰子完全相同，差異只在位址(720Fh/7210h/7211h↔0A2A9h/0A2AAh/0A2ABh，同 spec 1022)。本支沒有字串",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
+    "spec/1026-open-doors-table.md",
     "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md",
-    "spec/528-pc98-moveparty-action-transaction-boundary.md"
+    "spec/527-pc98-moveparty-action-writer-boundary.md"
    ]
   },
   {
@@ -51862,7 +51869,7 @@
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "spec/1026-open-doors-table.md"
    ]
   },
   {
@@ -53307,9 +53314,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 3735,
    "Undefined": 308,
@@ -53862,9 +53869,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
