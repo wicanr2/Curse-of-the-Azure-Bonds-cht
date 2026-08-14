@@ -17866,7 +17866,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
     "spec/725-breath-acid-area.md",
-    "spec/729-beam-walk-and-target-collect.md"
+    "spec/729-beam-walk-and-target-collect.md",
+    "spec/735-breath-fire-vs-acid.md"
    ]
   },
   {
@@ -17880,7 +17881,13 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/735-breath-fire-vs-acid.md",
+   "note": "噴火(區域),spec 725 吐酸的姊妹支。次數同樣在 arg_2^[3](DS:758Dh=0 時重設成 3、最後才扣);傷害旗標 DS:6F95h := 21h(吐酸是 30h);用 [DS:72A0h] 第 0 項模式碼 3Dh 選目標,\u003csub_175Bh\u003e(x, y, DS:7559h, DS:755Ah, **3, 9**)(吐酸是 1, 6);訊息 '\u003c名字\u003e breathes fire'(CS:5C78h);走目標陣列(**有 NIL 檢查**),s := \u003coverlay-23 entry#8\u003e(p, 3, 0)、\u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s)。⚠ **最實質的差別:吐酸有同類檢查(範圍內混進不同陣營就整次取消),噴火沒有——火會燒到自己人**",
+   "citations": [
+    "spec/735-breath-fire-vs-acid.md"
+   ]
   },
   {
    "platform": "dos",
@@ -45894,9 +45901,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 99,
+   "Read": 100,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
