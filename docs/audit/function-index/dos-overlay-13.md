@@ -35,14 +35,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1944` | sub_1944 | — | 6 | 3 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 6 bytes，已逐條讀完） | — |
 | `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `19D8` | sub_19D8 | — | 778 | 268 | 6 | 7 | ✓ | 待解讀 | — | — | — |
-| `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := <呼叫>(a, b, 角色)；<呼叫>(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m > 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch | spec/771-extra-attacks-and-weapon-class-whitelist.md |
 | `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `1DF6` | sub_1DF6 | — | 537 | 195 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `200F` | sub_200F | — | 507 | 176 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md<br>audit/function-triage.md<br>spec/769-combat-main-loop.md |
 | `275A` | sub_275A | — | 361 | 132 | 0 | 7 | ✓ | 待解讀 | — | — | — |
-| `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 待解讀 | — | — | — |
-| `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
+| `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 已解讀 | exact | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] | spec/771-extra-attacks-and-weapon-class-whitelist.md |
+| `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | spec/771-extra-attacks-and-weapon-class-whitelist.md |
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |

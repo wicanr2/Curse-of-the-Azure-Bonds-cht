@@ -8653,7 +8653,10 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8729,7 +8732,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "八組寫死的參數(retf 2)：DS:4A0Eh = 1 時叫 本模組 0048h 四次 —(3,0,5)、(4,0,5)、(3,1,0Ah)、(4,1,0Ah)；否則四組第三欄全用 16h。原始碼是八行手寫呼叫不是迴圈，這 24 個數字要當資料照抄",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12451,7 +12460,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := \u003c呼叫\u003e(a, b, 角色)；\u003c呼叫\u003e(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m \u003e 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12541,7 +12556,13 @@
    "callers": 3,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h]",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12554,7 +12575,10 @@
    "callers": 6,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "dos",
@@ -12888,11 +12912,11 @@
    "note": "清掉一個方向的牆面位元(retf 6)：格 := DS:7206h^[300h + (row shl 4) + col]；dir=6 → and 3Fh、4 → and 0CFh、2 → and 0F3h、0 → and 0FCh。每列 16 格、每格 1 byte、四個方向各 2 bits。case 沒有 else，奇數方向碼整支不做事。⚠ 先前 spec 569 的註記(「只準備參數並執行 jmp」)是根據被截斷成 6 條指令的匯出寫的，已由補洞重匯出更正(見 spec 761)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -13145,10 +13169,10 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md",
-    "spec/770-party-step-and-hug-attack.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -20255,7 +20279,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
   {
@@ -21909,12 +21934,12 @@
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
    "note": "讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(\u003e0Fh→0、\u003c0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來",
    "citations": [
+    "audit/function-index/dos-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/517-reverse-engineering-gap-inventory.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md",
-    "spec/519-dos-overlay-vector-to-cell-layer-accessor.md"
+    "spec/518-dos-start-ecl-call-address-space-audit.md"
    ]
   },
   {
@@ -32046,7 +32071,10 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -32122,7 +32150,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/771-extra-attacks-and-weapon-class-whitelist.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36566,11 +36597,11 @@
    "note": "清掉一個方向的牆面位元(retf 6)：地圖在 DS:0A2A0h^[300h + (row shl 4) + col]，位元遮罩與 DOS overlay-14:003Eh 相同；唯一差別是用 cmp al,6 取代 xor ah,ah + cmp ax,6。同樣更正自被截斷的舊匯出",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-14.md",
     "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "project-status.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -36839,10 +36870,10 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md",
-    "spec/770-party-step-and-hug-attack.md"
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -37402,6 +37433,7 @@
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
    "note": "三級治療量累加(retf 2，SS 相對記錄)：ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，總量加到 ss:[p−2]。沒有任何上限檢查(理論上限 13260，word 裝得下)。⚠ IDA 把同一個位移 8b7e06 印成 arg_2 與 [bp+6] 兩種名字，判參數要看位移位元組",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
     "spec/770-party-step-and-hug-attack.md"
    ]
@@ -47628,9 +47660,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -47673,9 +47705,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 7,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 35,
+   "Todo": 33,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,

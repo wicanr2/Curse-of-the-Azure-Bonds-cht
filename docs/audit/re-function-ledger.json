@@ -19489,6 +19489,33 @@
    "level": "exact",
    "spec": "docs/spec/770-party-step-and-hug-attack.md",
    "note": "三級治療量累加(retf 2，SS 相對記錄)：70 條指令的助憶碼與 PC-98 overlay-15:2020h(spec 763)完全相同 — ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，累加到 ss:[p−2]"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 7394,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := <呼叫>(a, b, 角色)；<呼叫>(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m > 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 10435,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h]"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 1169,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
+   "note": "八組寫死的參數(retf 2)：DS:4A0Eh = 1 時叫 本模組 0048h 四次 —(3,0,5)、(4,0,5)、(3,1,0Ah)、(4,1,0Ah)；否則四組第三欄全用 16h。原始碼是八行手寫呼叫不是迴圈，這 24 個數字要當資料照抄"
   }
  ]
 }
