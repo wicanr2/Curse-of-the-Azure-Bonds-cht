@@ -21364,6 +21364,7 @@
    "spec": "825",
    "note": "戰鬥中的角色狀態面板(retf 4)：DS:75E5h 為 0 就不畫。依序印名字、'Hitpoints'、'AC'、裝備武器（+151h 非 NIL 才畫），行號累加後存進 DS:65A1h。★不能行動時（+196h = 0）印 DS:0FE0h + 狀態 × 0Dh 的狀態名稱——那張表就是 +195h 的一手對照：0 Okay／1 Animated／2 tempgone／3 Running／4 Unconscious／5 Dying／6 Dead／7 Stoned／8 Gone",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "audit/function-strings.md",
     "audit/resident-data-tables.md",
     "spec/825-round-end-bleeding-out.md"
@@ -24024,7 +24025,10 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "擦掉戰鬥員佔的格子（重畫地形）(retf 6，(索引, 列, 欄))：索引為 0 時先用 sub_509h 由螢幕座標反查戰鬥員。仍為 0 就只重畫那一格；否則取 DS:67C6h/680Eh 的螢幕相對座標與 DS:66A6h+idx*4 的體型，用 sub_11h(k=0..3, 體型) 展開最多四格，每格過 sub_732h 的可見判定後以地形表 DS:26A2h 的 +3 欄圖磚重畫（畫面座標 ×3）。★是 spec 852 佔位圖建立端的擦除對應",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "spec/808-attacks-per-round-and-facing-redraw.md"
@@ -50032,7 +50036,10 @@
    "callers": 3,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "852",
+   "note": "同 DOS overlay-32:00578h（module_align 對齊，助憶碼序列完全相同）。16 條差異全是位址：DS:9F2Ch↔6E92h、[di−67A0h/6758h/68C0h]↔[di+67C6h/680Eh/66A6h]、DS:48AFh↔26A5h 與呼叫目標",
    "citations": [
     "audit/function-index/pc98-overlay-32.md"
    ]
@@ -51037,9 +51044,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -51592,9 +51599,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
