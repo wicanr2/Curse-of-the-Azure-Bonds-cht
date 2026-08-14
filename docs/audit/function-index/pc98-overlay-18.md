@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0026` | sub_26 | — | 950 | 343 | 1 | 2 | ✓ | 待解讀 | — | — | spec/585-ecl-goto-and-display-mode-pair.md |
 | `03DC` | sub_3DC | — | 678 | 235 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 已解讀 | exact | 867<br>同 DOS overlay-18:00780h，但★兩處真的不同：可見上界 41h↔42h、送出改叫 sub_175D 並多傳一個常數 1(DOS 是 本模組 0000h 三參數)。其餘 7 條差異是位址 | spec/867-ending-animation-frame.md |
-| `0748` | sub_748 | — | 419 | 154 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `0748` | sub_748 | — | 419 | 154 | 1 | 4 | ✓ | 已解讀 | exact | 895<br>同 DOS overlay-18:00843h，但★延遲值改用 DS:7F16h(＝DOS 的 DS:4FA9h 遊戲速度)，DOS 是固定 0Fh——這是速度值的第三個消費端，也是唯一一個 DOS 根本不看它的地方，所以 DOS 版結局動畫不受速度設定影響。另外可見上界 41h↔42h(同 spec 867)、多一段 ×14h(20) 換算、畫格呼叫多一個參數 | spec/895-ballistic-object-move.md |
 | `08EB` | sub_8EB | — | 384 | 150 | 1 | 4 | ✓ | 已解讀 | exact | 1<br>同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標 | — |
 | `0A6F` | sub_A6F | — | 281 | 114 | 2 | 2 | ✓ | 已解讀 | exact | 881<br>同 DOS overlay-18:00B5Fh，但★算門檻時多乘一個全域 DS:0BE2Ah(形狀上是機種時鐘校正係數，PC-98 機種頻率差異大)。DOS 沒有這個倍率，remake 的節拍公式要各做一套。DS:4FA9h↔DS:7F16h | audit/function-strings.md<br>spec/881-animation-player-and-speed.md |
 | `0B9B` | sub_B9B | — | 376 | 163 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |

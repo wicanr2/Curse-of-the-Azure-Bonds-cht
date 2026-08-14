@@ -23485,6 +23485,42 @@
    "level": "exact",
    "spec": "894",
    "note": "同 DOS overlay-24:02E6Ah，但★把 PC-98 選單陣列的版面直接寫了出來：標籤欄位陣列基底 DS:0A338h、每欄 7 bytes(string[6])；熱鍵字元陣列基底 DS:0A334h、每項 1 byte，兩者同索引。先前 spec 865/879/885 看到的散落位址(0A33Ah/0A33Bh/0A33Ch/0A33Eh/0A369h/0A370h/0A37Eh)全部整除對得上。★標籤只有 6 bytes = 三個全形字，中文同樣三個字，超過放不下"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 2115,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "895",
+   "note": "結局動畫的拋物線移動(retf 14h，四個 var 參數)：座標用 shl 5 / idiv 20h 做 1/32 格定點，每步 fx += 速度x、fy += 速度y + 1 並 inc(速度y)——等加速度＝重力，速度是 var 參數所以可分段呼叫；要畫時先還原舊格、記下新格、再畫 Random(7)+8 的字元，延遲固定 0Fh；可見範圍 8 < y < 41h(同 spec 867)。最後再算一步但不畫"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 1864,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "895",
+   "note": "同 DOS overlay-18:00843h，但★延遲值改用 DS:7F16h(＝DOS 的 DS:4FA9h 遊戲速度)，DOS 是固定 0Fh——這是速度值的第三個消費端，也是唯一一個 DOS 根本不看它的地方，所以 DOS 版結局動畫不受速度設定影響。另外可見上界 41h↔42h(同 spec 867)、多一段 ×14h(20) 換算、畫格呼叫多一個參數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 3334,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "896",
+   "note": "探一步(retf 16h，五個 var 參數)：用 0CAEh 取得自己是誰，從 DS:66A3h 座標快取取基準座標與體型，對最多 4 格各算『方向位移(2694h/269Dh) + 格偏移 + 基準』，叫 0509h 查地形與佔用者；佔用者不是自己就回填『撞到誰』；地形 0 代表不能通行(整步作廢)、1Eh/1Ch 各回填一個旗標(就是 spec 862 的兩種雲)、其餘取 DS:26A2h 地形表 +0 移動成本的最大值回填『最貴地形』"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 5051,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "896",
+   "note": "同 DOS overlay-32:00D06h，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；11 條是表基底位址(66A3h↔−68C3h、2694h↔489Eh、26A2h↔48ACh)"
   }
  ]
 }
