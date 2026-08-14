@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
 | `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
 | `1363` | sub_1363 | FINDID | 88 | 32 | 9 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同 | audit/function-index/pc98-overlay-32.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
-| `13BB` | sub_13BB | FINDOBJECTS | 363 | 146 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `13BB` | sub_13BB | FINDOBJECTS | 363 | 146 | 1 | 4 | ✓ | 已解讀 | exact | 896<br>同 DOS overlay-32:00D06h，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；11 條是表基底位址(66A3h↔−68C3h、2694h↔489Eh、26A2h↔48ACh) | spec/896-probe-next-step.md |
 | `1526` | sub_1526 | SUBTRACTDUDE | 749 | 296 | 0 | 10 | ✓ | 待解讀 | — | — | — |
 | `1813` | sub_1813 | ADDDUDE | 506 | 197 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `1A0D` | sub_1A0D | SHOWFIG | 108 | 41 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/783-cross-platform-pairs-first-batch.md<br>暫時改地圖表頭再畫(retf 8)：與 DOS overlay-32:1355h 41 條同形，位址為 DS:9F2Ch(地圖)、DS:0A878h(旗標)、[di−68C0h](陣列)，近呼叫目標對應改變(差異 10 條，已逐條列出) | — |

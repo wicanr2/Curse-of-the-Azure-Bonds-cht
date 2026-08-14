@@ -6511,9 +6511,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-strings.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "audit/function-strings.md"
    ]
   },
   {
@@ -15182,7 +15182,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cbw`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-24.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16153,7 +16156,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-18.md",
     "audit/function-index/pc98-overlay-02.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/754-small-predicates-and-wrappers.md",
+    "spec/895-ballistic-object-move.md"
    ]
   },
   {
@@ -16173,7 +16177,8 @@
    "note": "依 DS:4FE6h(1 或 2)選一對顯示常式:模式 1 走 0297:2171、模式 2 走 0297:21B0,中間各夾一次 09AB:029E(1)",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/585-ecl-goto-and-display-mode-pair.md",
+    "spec/895-ballistic-object-move.md"
    ]
   },
   {
@@ -16237,7 +16242,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "895",
+   "note": "結局動畫的拋物線移動(retf 14h，四個 var 參數)：座標用 shl 5 / idiv 20h 做 1/32 格定點，每步 fx += 速度x、fy += 速度y + 1 並 inc(速度y)——等加速度＝重力，速度是 var 參數所以可分段呼叫；要畫時先還原舊格、記下新格、再畫 Random(7)+8 的字元，延遲固定 0Fh；可見範圍 8 \u003c y \u003c 41h(同 spec 867)。最後再算一步但不畫",
+   "citations": [
+    "spec/895-ballistic-object-move.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16482,6 +16493,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "spec/893-spell-source-caption.md"
    ]
   },
@@ -16980,6 +16992,7 @@
    "spec": "893",
    "note": "法術來源標題(retf 0Ch，arg_A=來源碼 0..6)：依來源碼指派標題字串('in Memory'/'in Grimoire'/'on Scroll'/'on Scrolls'/'to Choose'/'to Memorize'/第七句，其他給空字串，上限 28h)；arg_0^ := 11C9h+1(來源碼)，為 0 就回 0；否則依 DS:4FBAh=5 或 arg_8 走三種前置，再叫 155Eh、印 常數＋標題、542h:352h，最後回 11C5h(arg_4, arg_8)",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/893-spell-source-caption.md"
    ]
@@ -21910,6 +21923,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_16E0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 18 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/894-party-member-picker.md"
    ]
   },
@@ -22410,6 +22424,7 @@
    "spec": "894",
    "note": "隊員選擇器(retf 0Ah，(提示字串, 可不可以離開, var 選中的角色))：迴圈裡畫出目前選中的、組『提示＋常數』與『'Select'＋(' Exit')』、叫 169Fh 收鍵；4Fh(End) 走 +189h 到下一個(NIL 就繞回 DS:650Ah)、47h(Home) 從頭走找前一個(已在第一個就整條走到最後)；可以離開時按 'E' 或 0 把選中設 NIL。單向鏈沒有 prev，上一個是 O(n)",
    "citations": [
+    "audit/function-index/pc98-overlay-24.md",
     "audit/function-strings.md",
     "spec/894-party-member-picker.md"
    ]
@@ -24361,7 +24376,8 @@
    "note": "讀戰場兩個平面(retf 0Ch)：座標在 0..31h × 0..18h(即 50×25)時 輸出A^ := 地圖^[y*32h+x+7]、輸出B^ := byte[6857h + y*32h + x]，否則兩者都設 0。可證 DS:6857h 起有一塊與地圖同尺寸(1250 bytes)的靜態陣列，索引式相同但沒有 7 bytes 表頭",
    "citations": [
     "audit/function-index/pc98-overlay-32.md",
-    "spec/784-cross-platform-pairs-second-batch.md"
+    "spec/784-cross-platform-pairs-second-batch.md",
+    "spec/896-probe-next-step.md"
    ]
   },
   {
@@ -24589,7 +24605,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "896",
+   "note": "探一步(retf 16h，五個 var 參數)：用 0CAEh 取得自己是誰，從 DS:66A3h 座標快取取基準座標與體型，對最多 4 格各算『方向位移(2694h/269Dh) + 格偏移 + 基準』，叫 0509h 查地形與佔用者；佔用者不是自己就回填『撞到誰』；地形 0 代表不能通行(整步作廢)、1Eh/1Ch 各回填一個旗標(就是 spec 862 的兩種雲)、其餘取 DS:26A2h 地形表 +0 移動成本的最大值回填『最貴地形』",
+   "citations": [
+    "spec/896-probe-next-step.md"
+   ]
   },
   {
    "platform": "dos",
@@ -42162,7 +42184,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "895",
+   "note": "同 DOS overlay-18:00843h，但★延遲值改用 DS:7F16h(＝DOS 的 DS:4FA9h 遊戲速度)，DOS 是固定 0Fh——這是速度值的第三個消費端，也是唯一一個 DOS 根本不看它的地方，所以 DOS 版結局動畫不受速度設定影響。另外可見上界 41h↔42h(同 spec 867)、多一段 ×14h(20) 換算、畫格呼叫多一個參數",
+   "citations": [
+    "spec/895-ballistic-object-move.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50828,7 +50856,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "896",
+   "note": "同 DOS overlay-32:00D06h，只差一條 xor ah,ah(DOS 零擴充後 cmp ax、PC-98 cmp al)；11 條是表基底位址(66A3h↔−68C3h、2694h↔489Eh、26A2h↔48ACh)",
+   "citations": [
+    "spec/896-probe-next-step.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51442,9 +51476,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -51652,9 +51686,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -51997,9 +52031,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
@@ -52207,9 +52241,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
