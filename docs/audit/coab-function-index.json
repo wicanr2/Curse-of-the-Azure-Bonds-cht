@@ -1377,7 +1377,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "942",
+   "note": "清一個矩形(retf 8 = (下, 右, 上, 左)，四個都是有號 byte，座標是『一格 = 8 條掃描線』的格線系)：依 byte_211A6h 分三路——模式 0(CGA)每列 50h bytes、兩個半頁 0B800h/0BA00h、起迄線 = 上 shl 2 .. (下 shl 2)+3、寬 = (右−左+1) shl 1、欄位移 左 × 2；模式 1 委派給 sub_154DDh(0, 平面, 下, 右, 上, 左) 呼叫兩次(平面 0 與 1)；模式 2(Tandy)每列 0A0h bytes、四個半頁 0B800h/0BA00h/0BC00h/0BE00h、起迄線 = 上 shl 1 .. (下 shl 1)+1、寬 = (右−左+1) shl 2、欄位移 左 shl 2。★模式 0 是 4 線 × 2 半頁、模式 2 是 2 線 × 4 半頁，兩者都是每格 8 條掃描線，與 spec 935/938/940 一致。⚠兩個迴圈的邊界判斷方向不同但等價，都是無號比較——上/下 為負時 shl 後變成極大無號數而整個跳過，不會越界寫入"
   },
   {
    "platform": "dos",
@@ -51717,9 +51720,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 166,
+   "Read": 167,
    "NotBlocking": 133,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
