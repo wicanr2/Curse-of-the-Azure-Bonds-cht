@@ -7778,10 +7778,15 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+   "note": "ECL 文字轉「本文＋熱鍵表」：英數字 +20h 轉小寫，'~' 標記的字元刪標記後轉大寫並收進輸出（上限 40）",
    "citations": [
     "audit/function-index/dos-overlay-07.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
    ]
   },
   {
@@ -23299,7 +23304,8 @@
    "spec": "docs/spec/977-savelist-menu-ranges-and-combat-icon.md",
    "note": "把熱鍵字串切成每項的欄位範圍：英數字為起點、下一個熱鍵前兩格為終點，最多 20 項",
    "citations": [
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
    ]
   },
   {
@@ -25126,10 +25132,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-16.md",
+    "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
-    "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/749-combat-teardown-and-battlefield-grid.md"
    ]
   },
   {
@@ -41068,9 +41074,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/978-tilde-hotkey-marker-and-underscore-to-space.md",
+   "note": "把 '_' 全部換成半形空白；回傳字串的函式（@結果留在堆疊）；迴圈計數器用全域 DS:0A9D9h 不可重入",
    "citations": [
-    "spec/973-pc98-text-print-signature.md"
+    "spec/973-pc98-text-print-signature.md",
+    "spec/978-tilde-hotkey-marker-and-underscore-to-space.md"
    ]
   },
   {
@@ -52125,9 +52135,9 @@
    "Module": "overlay-07",
    "Unit": "ECL2",
    "Functions": 41,
-   "Read": 28,
+   "Read": 29,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 8,
    "CodeBytes": 8745,
    "Undefined": 191,
@@ -52815,9 +52825,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
