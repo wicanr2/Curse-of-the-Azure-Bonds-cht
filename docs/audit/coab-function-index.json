@@ -6662,7 +6662,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -6766,7 +6767,8 @@
    "note": "戰利品的 Take: 選單(retf 8，兩個遠指標都指向計數 byte)：任一為 0 就走各自的離開路徑；否則迴圈組出 CS:0EBFh 'Take: '(6 字元含尾隨空白) 與 CS:0EC6h 'Money Items Exit'(單一 16 字元字串)，依按鍵 'M'/'I'/'E' 或 #0 分派，'G'(47h)/'O'(4Fh) 走同一支；每輪結尾更新後，兩個計數任一歸零就結束。⚠ 熱鍵是寫死的 ASCII 大寫字母，選項字面換成中文後會與熱鍵脫節。補洞前這支匯出位移不可靠(spec 756 曾列為未判讀)",
    "citations": [
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/775-take-menu-and-palette-writer.md"
+    "spec/775-take-menu-and-palette-writer.md",
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -22020,12 +22022,16 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
+   "note": "讀迷宮某方向的 4-bit 碼(retf 6，宣告順序 (x, y, 方向))：先 0556h 範圍檢查、不在 0..15 且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則環繞；索引 := (y shl 4) + x；方向 0 取 DS:7206h^[索引] 的高 nibble、2 取低 nibble、4 取 +100h 的高 nibble、6 取 +100h 的低 nibble。與 spec 761/763 合起來可證地圖是四個 256-byte 平面(+000h/+100h 每格兩個 4-bit 碼、+200h 整 byte、+300h 四個 2-bit 欄位)",
    "citations": [
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/519-dos-overlay-vector-to-cell-layer-accessor.md",
-    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md"
+    "spec/520-dos-movement-to-overlay-cell-layer-bridge.md",
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -29924,7 +29930,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
    ]
   },
   {
@@ -30022,7 +30029,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
+   "note": "取る：戰利品選單(retf 8)：與 DOS overlay-05:0ED7h(spec 775)同結構。提示 CS:0EDFh '取る：'、選項 CS:0EE6h '   お金   ｱｲﾃﾑ                やめる    '(40 bytes，靠半形空白排版)。⚠ 熱鍵仍是 ASCII 的 'M'/'I'/'E'，標籤換成日文而比對不動 — 中文版可照此作法；捲動鍵 DOS 用 'G'/'O'(Home/End 掃描碼)，PC-98 改用 '8'/'2'(數字鍵盤上下)",
+   "citations": [
+    "spec/778-map-four-planes-and-pc98-take-menu.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48142,9 +48155,9 @@
    "Module": "overlay-30",
    "Unit": "THREED",
    "Functions": 13,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 5205,
    "Undefined": 84,
@@ -48322,9 +48335,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,

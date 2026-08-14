@@ -19741,6 +19741,24 @@
    "level": "exact",
    "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
    "note": "範圍法術的豁免掃描(retf 8)：施法者陣營(DS:6506h^[197h])為 0 時修正 −2、否則 +8；先叫掃描程序(地圖 DS:6E92h, 1, 0FFh, byte[37E9h + 法術*10h], y, x)，再對 DS:6E96h 筆結果逐一取 byte[6E94h + i*3] 當索引、由 DS:6D35h 取戰鬥員；只處理不同陣營且 byte[37E2h + 法術*10h] <> 1 的目標，<豁免>(修正, byte[37E3h + 法術*10h], 目標) 回 0 就把結果設 true。⚠ 豁免修正取決於施法者陣營，兩邊不對稱"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 1725,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
+   "note": "讀迷宮某方向的 4-bit 碼(retf 6，宣告順序 (x, y, 方向))：先 0556h 範圍檢查、不在 0..15 且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則環繞；索引 := (y shl 4) + x；方向 0 取 DS:7206h^[索引] 的高 nibble、2 取低 nibble、4 取 +100h 的高 nibble、6 取 +100h 的低 nibble。與 spec 761/763 合起來可證地圖是四個 256-byte 平面(+000h/+100h 每格兩個 4-bit 碼、+200h 整 byte、+300h 四個 2-bit 欄位)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-05",
+   "ea": 3855,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/778-map-four-planes-and-pc98-take-menu.md",
+   "note": "取る：戰利品選單(retf 8)：與 DOS overlay-05:0ED7h(spec 775)同結構。提示 CS:0EDFh '取る：'、選項 CS:0EE6h '   お金   ｱｲﾃﾑ                やめる    '(40 bytes，靠半形空白排版)。⚠ 熱鍵仍是 ASCII 的 'M'/'I'/'E'，標籤換成日文而比對不動 — 中文版可照此作法；捲動鍵 DOS 用 'G'/'O'(Home/End 掃描碼)，PC-98 改用 '8'/'2'(數字鍵盤上下)"
   }
  ]
 }
