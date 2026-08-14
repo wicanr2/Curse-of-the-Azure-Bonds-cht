@@ -25267,6 +25267,24 @@
    "level": "exact",
    "spec": "docs/spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
    "note": "dos 00320h 的對應（配對工具漏判）；補齊 DS:9F2Ch/9DCFh/9860h/98A8h 四組跨平台對應；DS:48AFh 是地磚查表"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 1107,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/995-file-pattern-scan-and-rename.md",
+   "note": "依 DS:7584h 掃 *.guy／*.cha＋*.sav／*.hil；DS:50Fh 是每筆記錄大小，模式 0 的 1A6h ＝ 角色記錄 ⇒ .guy 是角色檔"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 11292,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/995-file-pattern-scan-and-rename.md",
+   "note": "改名流程：名字上限 15 個半形字元（中文 7 字）；確認答 N 等於放棄不是重輸；寫回角色記錄 +0"
   }
  ]
 }

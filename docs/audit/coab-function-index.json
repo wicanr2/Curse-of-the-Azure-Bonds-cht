@@ -15259,7 +15259,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
   {
@@ -15273,9 +15274,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/995-file-pattern-scan-and-rename.md",
+   "note": "依 DS:7584h 掃 *.guy／*.cha＋*.sav／*.hil；DS:50Fh 是每筆記錄大小，模式 0 的 1A6h ＝ 角色記錄 ⇒ .guy 是角色檔",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
   {
@@ -15291,7 +15296,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
   {
@@ -24827,6 +24833,7 @@
    "note": "重畫戰場一格的戰鬥員圖示；定案 overlay-33 entry#6 的推疊順序；DS:6D35h/67C6h/680Eh 三張表",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
+    "audit/function-index/pc98-overlay-32.md",
     "spec/888-move-and-redraw.md",
     "spec/977-savelist-menu-ranges-and-combat-icon.md",
     "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
@@ -35455,6 +35462,7 @@
    "spec": "docs/spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
    "note": "戰場地形隨機鋪設：五段累加權重的 1d100，每種地磚兩個變體；寫入 地圖^[7+列×50+欄]",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
@@ -42565,7 +42573,8 @@
    "citations": [
     "audit/function-strings.md",
     "spec/972-pc98-ring-slot-repaint.md",
-    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+    "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
   {
@@ -42579,9 +42588,13 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/995-file-pattern-scan-and-rename.md",
+   "note": "改名流程：名字上限 15 個半形字元（中文 7 字）；確認答 N 等於放棄不是重輸；寫回角色記錄 +0",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/995-file-pattern-scan-and-rename.md"
    ]
   },
   {
@@ -52484,9 +52497,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -53054,9 +53067,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
