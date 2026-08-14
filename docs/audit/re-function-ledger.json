@@ -26464,6 +26464,15 @@
    "level": "exact",
    "spec": "1089",
    "note": "DOS 開機序列 + 首次設定畫面(retf)。OvrInit(GAME.OVR)、FExpand(*.exe)+FSplit 推導路徑：首字 >= C 用執行檔目錄、= A 用 B:\\\\、否則 A:\\\\ —— ★與 PC-98(spec 1088)一字不差。★★★curse.cfg 不存在時才進設定：Rewrite 失敗(磁片防寫)就印 Sorry, disk A can't be write-protected. + DISKCOPY 建議後 Halt；否則依序問 GRAPHICS ADAPTER(CGA/EGA/Tandy → 寫 C/E/T)、SOUND TYPE(PC/Tandy 1000/Silent → 寫 P/T/S)、存檔路徑(預設 工作路徑+SAVE，輸入要長度>=4、第 2 字元是 :、首字在集合 CS:122B4h=[A..P] 且不等於工作碟；集合 CS:12294h=[A,B])。之後印 TANDY 1000 USERS - Make sure NUMLOCK is on.、重讀 curse.cfg、用 INTR 實測顯示卡校正、MemAvail−OvrGetBuf 不夠就印 Not enough memory 並 Halt。resident 反組譯帶 Borland demangled RTL 名稱"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 76829,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1090",
+   "note": "圖片展開成顯示卡格式(retf 0Eh，(來源緩衝遠指標, 來源位移, 未用, byte, 圖片結構遠指標))，resident 段位址 1297:02ADh。三層迴圈 張(圖^[8]) x 寬(圖^[0]−1) x 高(圖^[2]−1)，一次 Move 4 bytes = 8 個 4-bit 像素。★★★圖^[13h] 是遮罩平面、圖^[17h] 是色彩平面(spec 1074/880 的產生端確認)；遮罩位元查 DS:257Dh(word 表)、色彩查 DS:2592h + 槽*4 + 位元(byte 表)，槽由 near 129EBh 用 圖^[9] 起的調色資料算出。★★★unk_211A6h 把整支切成兩段各自完整的展開碼(12C4Bh 與 12F78h)，第二套用 FillChar 清遮罩；形狀上是顯示卡型別(CGA/EGA/Tandy，spec 1037 的 DS:4FE6h、spec 1089 的 curse.cfg 選項)的 resident 副本 —— ⚠未宣稱是同一格，也未宣稱哪一套對哪一種卡"
   }
  ]
 }

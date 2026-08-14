@@ -937,7 +937,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1090",
+   "note": "圖片展開成顯示卡格式(retf 0Eh，(來源緩衝遠指標, 來源位移, 未用, byte, 圖片結構遠指標))，resident 段位址 1297:02ADh。三層迴圈 張(圖^[8]) x 寬(圖^[0]−1) x 高(圖^[2]−1)，一次 Move 4 bytes = 8 個 4-bit 像素。★★★圖^[13h] 是遮罩平面、圖^[17h] 是色彩平面(spec 1074/880 的產生端確認)；遮罩位元查 DS:257Dh(word 表)、色彩查 DS:2592h + 槽*4 + 位元(byte 表)，槽由 near 129EBh 用 圖^[9] 起的調色資料算出。★★★unk_211A6h 把整支切成兩段各自完整的展開碼(12C4Bh 與 12F78h)，第二套用 FillChar 清遮罩；形狀上是顯示卡型別(CGA/EGA/Tandy，spec 1037 的 DS:4FE6h、spec 1089 的 curse.cfg 選項)的 resident 副本 —— ⚠未宣稱是同一格，也未宣稱哪一套對哪一種卡"
   },
   {
    "platform": "dos",
@@ -18337,9 +18340,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/1087-ecl-handlers-six.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -18360,10 +18363,10 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-21.md",
     "audit/function-index/pc98-overlay-26.md",
-    "spec/1036-random-item-builder.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/1036-random-item-builder.md"
    ]
   },
   {
@@ -18385,9 +18388,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/1036-random-item-builder.md",
-    "spec/1087-ecl-handlers-six.md"
+    "spec/1036-random-item-builder.md"
    ]
   },
   {
@@ -18409,9 +18412,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-21.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-21.md"
    ]
   },
   {
@@ -45867,9 +45870,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/1087-ecl-handlers-six.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -45891,10 +45894,10 @@
    "citations": [
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-21.md",
     "audit/function-index/pc98-overlay-26.md",
-    "spec/1036-random-item-builder.md",
-    "spec/637-overlay21-small-batch.md"
+    "spec/1036-random-item-builder.md"
    ]
   },
   {
@@ -45917,9 +45920,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/1036-random-item-builder.md",
-    "spec/1087-ecl-handlers-six.md"
+    "spec/1036-random-item-builder.md"
    ]
   },
   {
@@ -45942,9 +45945,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-21.md",
-    "audit/function-index/pc98-overlay-26.md"
+    "audit/function-index/pc98-overlay-21.md"
    ]
   },
   {
@@ -53535,9 +53538,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 171,
+   "Read": 172,
    "NotBlocking": 133,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
