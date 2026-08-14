@@ -7091,6 +7091,7 @@
    "note": "戰利品(寶物)分配畫面。★★★ Detect 選項條件：掃目前角色 DS:6506h 的 +1Eh 起 84 格記憶法術，若含 5／0Bh／4Dh 任一且 +196h≠0(可行動)就接上 ' Detect Exit' 並記住法術編號。查 DS:37DAh：5=牧師1環、11=法師1環、77=德魯伊1環 —— 正是 AD\u0026D 1e 的 Detect Magic 三個版本，一個不多一個不少；同時獨立確認法術屬性表基底是 37DAh(不是 37DBh)與職業編碼 0牧師/1德魯伊/2法師(spec 1016)。選項行接法：預設 'View Pool Exit'；有錢→'View Take Pool Share'＋尾巴；否則有物品→'View Take Pool'＋尾巴。★★ 三個字串常式串成一條，完整攤開 spec 1030/1031 的產碼慣例：0A54:0634h(目的,來源)指派只彈來源、0A54:06C1h(堆疊上的目的,來源)串接只彈來源、0A54:064Eh(來源,目的,上限)全彈 —— 最後一支只推目的＋上限，來源是前面留下的指標。第一個參數(空字串)用 mov [bp+var_108],0。分支 V/T/P/S/D/E/G/O，D 走 overlay-22 entry#5(偵測法術,0,0,@旗標)。離開訊息 'There is still treasure left.  '(31，結尾兩空白)＋'Do you want to go back and claim your treasure?'(47)＋'~Yes ~No'",
    "citations": [
     "audit/function-index/dos-overlay-05.md",
+    "audit/function-index/pc98-overlay-05.md",
     "audit/function-strings.md",
     "spec/1032-treasure-division-menu.md",
     "spec/891-battle-teardown.md"
@@ -7265,10 +7266,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-06.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -18752,10 +18753,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -25791,10 +25792,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1033",
+   "note": "圖組槽載入(名稱: 字串, 編號: byte, 槽: byte)，retf 8。目的地是『一槽兩個遠指標』的表 DS:65D6h(+4=65DAh)，索引 槽×8；第二個指標一律用『編號＋80h』載入。四條路：①Copy(名稱,1,5) 是 'CHEAD'/'CBODY' → 尾字 UpCase 為 'T' 時編號+40h，再去掉最後一個字元；②名稱整串等於 'COMSPR'/'ICON' → 直接載，且 ICON 額外做兩次換色(0297:1626h，表 DS:0B1Eh 與 DS:0B3Eh)；③其他名稱 → Str(DS:5BEEh) 把資料片編號接到名字後面再載，換色用 DS:0B2Eh。⇒ 那四個名稱是不分資料片的共用資源，與 spec 892/1029 的檔名組法同一套。★★ 三張 16 色對照表(靜態內容)：0B1Eh 與 0B2Eh 都是恆等 00..0F，0B3Eh 把顏色 0Ch 映成 0 —— 只有 ICON 走 0B3Eh。⚠ DS:65D6h 靜態全 0FFh，執行期才填。載入 = far 0297:011Bh、換色 = far 0297:1626h、收尾 = far 06EA:024Ch。⚠ 'CHEAD'/'CBODY'/'COMSPR'/'ICON' 同時是檔名前綴與比較字串，不可翻",
    "citations": [
     "audit/function-index/dos-overlay-16.md",
     "audit/function-strings.md",
+    "spec/1033-sprite-slot-loader.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
@@ -33545,10 +33550,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-06.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -33568,11 +33573,11 @@
    "note": "商店「買」清單(retf 10h，四個遠指標參數；bp+12h 收選單鍵、bp+0Eh 收選到的商品)。走 DS:6F8Ch 的存貨鏈，每件排成「名稱靠左、價格靠右」的一行。★★ 價格 = 物品^.value(+3Ah，spec 1011 的欄位名) 依 遠指標(DS:4F9Dh)^[6DAh] 這個單一位元旗標乘除：1→÷16、2→÷8、4→÷4、8→÷2、20h→×2、40h→×4、80h→×8、其餘→×1(10h 沒用到)，七檔每檔差一倍。⚠ value = 0 會被就地改成 1。⚠⚠ 排好的行直接寫回物品節點的名稱欄位(原名沒了)，選單關掉後最後一段再走一次鏈，對每件叫 overlay-24 entry#1(0,0,0,0,物品,0) 重建名稱(形狀上是依 namenum(1..3) 組回顯示名，那一支未讀)。★★ 物品節點 +0 是 Pascal 短字串，+2Ah 是鏈的 next。★★★ +28h 位移的由來：PC-98 把名稱欄位加大 40 bytes —— 行寬 1Eh→23h、複製長度 28h→50h、寫回長度 1Eh→46h、鏈 next +2Ah→+52h(差正好 28h)。spec 1011 量到的「物品節點 13 個欄位整體 +28h」原因就在這裡。Shift-JIS 一字兩 byte 所以日文版必須加寬，Big5 完全一樣 ⇒ 中文化要跟 PC-98 的版面。★★★ 熱鍵：DOS 用 'Buy' 的大寫 B；PC-98 把「 買う 」(6 bytes = 3 全形字)寫進 DS:0A362h(=0A338h+6×7)、熱鍵 42h('B') 另外寫進 DS:0A33Ah(=0A334h+6)，兩邊索引都是 6，與 spec 755／1012 同構；PC-98 也先叫一次 overlay-26 entry#3 @0858h(十筆欄位初始化)。⚠ 右對齊是 緩衝[行寬−長度+i] 逐 byte 搬的，沒有 DBCS 概念：名稱的 byte 長度要是偶數才不會劈開漢字。位址：6F8Ch↔0A026h、7294h↔0A32Eh。字串 DOS 'Items: '/'Buy'/30 空白；PC-98「アイテム：」/「 買う 」",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-19.md",
-    "audit/function-strings.md"
+    "audit/function-index/pc98-overlay-04.md"
    ]
   },
   {
@@ -46115,10 +46120,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -46482,12 +46487,12 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 39 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-05.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "audit/resident-data-tables.md",
-    "spec/846-teleport-and-linked-effect-cleanup.md",
-    "spec/847-dragon-breath.md"
+    "spec/846-teleport-and-linked-effect-cleanup.md"
    ]
   },
   {
@@ -51221,6 +51226,7 @@
    "spec": "docs/spec/990-pc98-menu-line-assembler-and-slot-layout.md",
    "note": "十格選單的選項行組裝：一格 7 欄（6 字元＋1 空白）、第 5 格後多 3 欄、全行 80 欄；DS:0A33Fh 起十個 7-byte 字串",
    "citations": [
+    "audit/function-index/pc98-overlay-05.md",
     "audit/function-strings.md",
     "spec/1032-treasure-division-menu.md",
     "spec/990-pc98-menu-line-assembler-and-slot-layout.md"
@@ -52975,9 +52981,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1033",
+   "note": "圖組槽載入，同 DOS overlay-33:001D4h（四條路相同）。目的表在 DS:0966Ch(+4=09670h)，組語寫成 [di−6994h]。★★★ 多一整段 DOS 沒有的前置：槽\u003c=7 或 槽 in {13..25}(集合常數 CS:036Fh，@Set@MemberOf 0A65:08E4h)時，兩個指標直接從靜態表抄 —— 1722h−16FAh=28h=5×8，兩段其實是同一張 21 筆的表(槽 0..7 取第 0..7 筆、槽 0Dh..19h 取第 8..20 筆)；其餘的槽先清 NIL 再叫 02A8:0F5Dh(…,1,1,6,18h) 配置兩個緩衝並把『要配置』旗標設 1。★ 範圍判斷的 cmp al,0/jb 對 byte 永遠不成立，是廢碼。★ DS:1722h 每筆兩組 4 bytes，前 2 bytes 進高 word、後 2 bytes 進低 word(與一般 Intel 遠指標擺法相反)；合成後 42 個值以固定 0257h(599) 等差遞增，起點 0ABF00h ——⚠ 沒有宣稱指向什麼、也沒有宣稱執行期是否被覆寫。★ 載入路徑也整個換掉：02A8:025Bh→02A8:0601h→02A8:10D5h 搭一個暫存緩衝，並把『要配置』旗標傳給 02A8:0601h ⇒ 已從靜態表拿到指標的槽走不同分支",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1033-sprite-slot-loader.md"
    ]
   },
   {
@@ -53660,9 +53670,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 1515,
    "Undefined": 57,
@@ -54215,9 +54225,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 2106,
    "Undefined": 146,
