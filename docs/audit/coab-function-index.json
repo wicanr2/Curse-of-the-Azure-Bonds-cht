@@ -6630,9 +6630,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/dos-overlay-26.md",
-    "audit/function-index/pc98-overlay-04.md"
+    "audit/function-index/dos-overlay-26.md"
    ]
   },
   {
@@ -16649,10 +16649,14 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1037",
+   "note": "角色圖示(icon)編輯畫面。圖示欄位：+141h 頭/髮型索引(0..0Dh，14 種，Next/Prev 環繞)、+142h 武器索引(0..1Fh，32 種)、+143h 一個顏色(重畫前暫設 0Ch 再還原)、+144h 大小(1 小/2 大)、+145h..+14Ah 六個部位各一 byte = 兩個 4-bit 顏色(低 nibble 第一色、高 nibble 第二色)。進畫面把 +145h 起 6 bytes 整組備份(0A54:025Dh)，按 E/#0 離開時連 +141h/+142h/+144h 一起還原。部位碼 B=1 A=2 L=3 H/F=4 S=5 W=6(即 +144h+部位 正好落在 +145h..+14Ah)。選項行表在 DS:721h 筆距 29h(41)，五筆：'Parts 1st-color 2nd-color Size Exit'(35)/'Head Weapon Exit'(16)/'Weapon Body xxxx Shield Arm Leg Exit'(36)/' Keep Exit'(10)/'Next Prev Keep Exit'(19)。★★★ 'xxxx' 不是沒改完的佔位字串，是寬度固定 4 的就地替換槽：DS:721h+2*29h = DS:79Ch 就是第 3 筆，選 1st-color 時 Delete(s,13,4)+Insert('Hair',s,13)、2nd-color 時換成 'Face'(0A54:07D0h/0A54:077Ch)；第 13 字元起正好是 xxxx，這也解釋了熱鍵為何 H 與 F 兩個都收。⚠ 中文化必須在同一位元組位置保留同寬度的槽，否則 Delete/Insert 會把 Big5 雙位元組切一半；要換寬度得同時改選項行與兩個位置參數。⚠ byte_4FE6 = 0 時兩個顏色入口都只印 'Sorry, not in CGA'(17) —— CGA 模式關掉顏色編輯，DOS 專屬。顏色加減：加是 mod 16、減是 and 0Fh，兩邊都環繞。字串 'old'(3)/'new'(3)/'ready   action'(14，中間三個空白排版)/'Small'/'Large'/'Hair'/'Face'",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1037-icon-editor.md"
    ]
   },
   {
@@ -18628,6 +18632,7 @@
    "note": "隨機物品產生器 造物品(節點: 遠指標, 類別: byte)，retf 6。FillChar(節點,3Fh,0) ⇒ DOS 物品節點 63 bytes；next=NIL、ready=0、identified(+35h)=6(⚠ 不是布林)、cursed=0、itemptr=類別、namenum(1..3) 清 0。★★ 名稱是三段索引：預設 namenum(3)=類別、namenum(2)=plus+0A1h ⇒ 名稱表第 0A1h(161)筆起是『＋N』後綴，中文化這段是組字不能整句翻；類別 32h/33h/34h/35h..3Ah 改成 namenum(2)='1'/'2'/'0' 且 namenum(1)=plus+0A1h、identified:=4；4Dh 特別：plus:=plus*2+2 再依 4/6 給 namenum(1)=0DDh/0DEh。★★★ +37h(word)=重量，其中 34h→200、26h/35h→250、37h→300、39h→350、36h/38h→400、3Ah→450 正是 AD\u0026D 1e 的護甲重量一個不差 ⇒ +37h 是重量不是價格。★★ +3Ah(word)=價值=plus×係數：3Bh→2500、1Ch/49h→150、35h/36h/4Dh→3000、37h/38h→3500、39h→4000、3Ah→5000、其他→2000。★★★ 卷軸(類別 3Dh/3Eh)：ROLLDICE(1,3) 決定 1..3 個法術，namenum(3)=0D1h/0D0h、namenum(2)=法術數+0D1h，每個法術先擲 1d5 決定環再擲區間 —— 3Dh: 1d13+8 / 1d7+28 / 1d11+44 / 1d9+80 / 1d4+90；3Eh: 1d8+0 / 1d7+21 / 1d8+36 / 1d5+65 / 1d6+70；法術編號存進 special(1..3)(+3Ch..+3Eh)，價值 += 環×300。★★★ 特殊物品範本表 DS:82Ch 是 word 陣列(shl di,1)，一筆 8 word、索引從 1 起(1,9,17,25,33,41,49)：namenum(1..3)、重量、價值、special(1..3)。索引 1(類別 47h 且 1d8=6..8)、9(54h/5Ch)、17(47h 且 1d8=1..5)、33(4Eh/4Fh)、41(3Fh/43h)、49(15h 且 1d5=5)；⚠ 索引 25 本支沒用到。六筆的 namenum(2) 都是 167(形狀上是共用連接詞 of) ⇒ 中文語序要倒過來，三段組法本身可能要改",
    "citations": [
     "audit/function-index/dos-overlay-21.md",
+    "audit/function-index/pc98-overlay-21.md",
     "spec/1036-random-item-builder.md"
    ]
   },
@@ -43573,10 +43578,14 @@
    "callers": 2,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1037",
+   "note": "角色圖示編輯畫面，同 DOS overlay-17:03EE3h(圖示欄位、部位碼、五個子選單狀態、備份還原邏輯相同)。★★★ 完全不用 DOS 的 DS:721h 選項行表，也沒有任何 Delete/Insert 呼叫(0A65h 的呼叫只有 Move 0262h、字串指派 062Fh/0649h、@Set@MemberOf 08E4h)：改照 spec 1030/1032 的作法逐格寫兩張表，文字進 DS:0A338h+i*7、熱鍵進 DS:0A334h+i(例如「  小  」配 DS:0A336h='S'、「  大  」配 'L') ⇒ PC-98 天生沒有 'xxxx' 就地替換的問題，中文化跟 PC-98 比較安全。⚠ 沒有 CGA 分支(PC-98 無 CGA)，因此沒有 'Sorry, not in CGA'。字串：古いアイコン(12)/ 新しいアイコン(15)/ 準備状態　　　　　行動状態(27)/  小  (6)/  大  (6)/このアイコンでいいですか？(26，DOS 沒有的確認句)",
    "citations": [
     "audit/function-strings.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1037-icon-editor.md"
    ]
   },
   {
@@ -44794,6 +44803,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp al, 59h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "audit/function-triage.md"
    ]
   },
@@ -46065,6 +46075,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp near ptr 39F6h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/pc98-overlay-21.md",
     "audit/function-triage.md",
     "spec/1036-random-item-builder.md"
    ]
@@ -53456,9 +53467,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -54011,9 +54022,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
