@@ -6606,9 +6606,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/dos-overlay-25.md"
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -6849,6 +6849,7 @@
    "spec": "1030",
    "note": "營地(Camp)主選單。DS:4FBAh:=1；FillChar(DS:6F70h,1Ch,0)(公用池 7 個 longint 每次進營地歸零)；迴圈裡先 overlay-21 entry#14 問公用池有沒有錢，據此在 'Heal View Take Pool Share Appraise Exit'(39)與 'Heal View Pool Appraise Exit'(28)之間二選一，交給 overlay-26:003D4h。分支：H=sub_B12、V=overlay-19 entry#5(spec 1028)、T=overlay-21 entry#8、P=entry#5(spec 798)、S=entry#7(spec 858)、A=entry#19(spec 1018)、G/O=overlay-19 entry#10 換角色(spec 794)、E=離開。★★★ 離開時若公用池還有錢，印兩句祭司訊息('As you leave a priest says…'74 + 'Do you want to go back…'47，分兩次呼叫不是一句)再問 '~Yes ~No' —— ★★★ 波浪號標記熱鍵，是 DOS 側第二套熱鍵慣例，與大寫字母那套並存。回應=1 才離開 ⇒ 提示回傳 0 起算索引(0=Yes=留下、1=No=離開)，中斷同 Yes。★★ 被呼叫端 retf 16h 但呼叫端只看得到 18 bytes 推入：0A54:0634h 把來源寫進先前推入的目的位址、只彈掉來源，把目的指標留在堆疊當外層第一個參數 —— Turbo Pascal 傳暫存字串參數的產碼慣例，只數呼叫端推入次數會少算 4 bytes。選單本身收兩行選項(各上限 40)＋5 個 byte＋1 個輸出旗標",
    "citations": [
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-strings.md",
     "spec/1030-camp-menu.md"
@@ -7084,10 +7085,14 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1032",
+   "note": "戰利品(寶物)分配畫面。★★★ Detect 選項條件：掃目前角色 DS:6506h 的 +1Eh 起 84 格記憶法術，若含 5／0Bh／4Dh 任一且 +196h≠0(可行動)就接上 ' Detect Exit' 並記住法術編號。查 DS:37DAh：5=牧師1環、11=法師1環、77=德魯伊1環 —— 正是 AD\u0026D 1e 的 Detect Magic 三個版本，一個不多一個不少；同時獨立確認法術屬性表基底是 37DAh(不是 37DBh)與職業編碼 0牧師/1德魯伊/2法師(spec 1016)。選項行接法：預設 'View Pool Exit'；有錢→'View Take Pool Share'＋尾巴；否則有物品→'View Take Pool'＋尾巴。★★ 三個字串常式串成一條，完整攤開 spec 1030/1031 的產碼慣例：0A54:0634h(目的,來源)指派只彈來源、0A54:06C1h(堆疊上的目的,來源)串接只彈來源、0A54:064Eh(來源,目的,上限)全彈 —— 最後一支只推目的＋上限，來源是前面留下的指標。第一個參數(空字串)用 mov [bp+var_108],0。分支 V/T/P/S/D/E/G/O，D 走 overlay-22 entry#5(偵測法術,0,0,@旗標)。離開訊息 'There is still treasure left.  '(31，結尾兩空白)＋'Do you want to go back and claim your treasure?'(47)＋'~Yes ~No'",
    "citations": [
     "audit/function-index/dos-overlay-05.md",
     "audit/function-strings.md",
+    "spec/1032-treasure-division-menu.md",
     "spec/891-battle-teardown.md"
    ]
   },
@@ -7348,6 +7353,7 @@
    "spec": "1031",
    "note": "商店版營地選單，與 spec 1030 的 overlay-04:00DD6h 同一支版面(逐條比對只差開頭一段與字串)：'Heal'→'Buy'(熱鍵 H→B)、'Exit' 的日文由「やめる」改「抜ける」、說話的人由 priest 改 Shopkeeper。★ 多出來的前置：走公用池第 8 格 DS:6F8Ch 的物品鏈，每個叫 overlay-24 entry#1(0,0,0,0,物品,0)，next 在 +2Ah(PC-98 +52h，差 28h) —— 第三次確認物品節點 DOS 63/PC-98 103 bytes；也確認 DS:6F70h 八格是『七種貨幣 longint ＋ 第八格物品鏈頭』。★★ 這支用 mov [bp+var_2B],0 在迴圈外把空字串的長度 byte 設 0，推入次數與被呼叫端 retf 16h 直接對得上 —— 獨立確認 spec 1030 那條『0A54:0634h 把目的指標留在堆疊當第一個參數』的產碼慣例，選單參數表 ＝ 兩行選項字串 ＋ 5 個 byte ＋ 1 個輸出旗標。字串：'Buy View Take Pool Share Appraise Exit'(38)／'Buy View Pool Appraise Exit'(27)／'~Yes ~No'(8)／'As you Leave the Shopkeeper says, \"Excuse me but you have Left Some Money here.\"  '(82，結尾兩個空白)／'Do you want to go back and get your Money?'(42)",
    "citations": [
+    "audit/function-index/pc98-overlay-06.md",
     "audit/function-strings.md",
     "spec/1031-shop-camp-menu.md"
    ]
@@ -23886,6 +23892,7 @@
     "audit/function-index/dos-overlay-26.md",
     "spec/1023-scrolling-list-menu.md",
     "spec/1030-camp-menu.md",
+    "spec/1032-treasure-division-menu.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
@@ -32793,9 +32800,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-23.md",
-    "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/dos-overlay-25.md"
+    "audit/function-index/dos-overlay-24.md"
    ]
   },
   {
@@ -33372,9 +33379,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1032",
+   "note": "戰利品分配畫面，同 DOS overlay-05:0106Ch。★★★ PC-98 不傳選項字串，改成先 overlay-26 entry#3 十格初始化，再逐格寫兩張表，六組索引在同一支函式裡全部同時成立：槽1 文字 DS:0A33Fh／熱鍵 DS:0A335h='T'(「 取る 」)、槽2 0A346h/0A336h='V'(ｷｬﾗｸﾀｰ)、槽4 0A354h/0A338h='P'(金集ﾒﾙ)、槽5 0A35Bh/0A339h='S'(金分ｹﾙ)、槽6 0A362h/0A33Ah='D'(ﾃﾞｨﾃｸﾄ)、槽10 0A37Eh/0A33Eh='E'(抜ける) —— 完全符合 文字=0A338h+i*7、熱鍵=0A334h+i；每次複製的上限參數都是 6，確認一格容量 6 bytes=3 全形字。★★ 原作瑕疵(PC-98 才有)：11DF 的 jz 落在 11F4『設熱鍵[1]:=T』而不是跳過它 ⇒ 公用池既沒錢也沒物品時，槽1 文字是空的、熱鍵卻仍是 T(DOS 對應字串 'View Pool Exit' 沒有 Take)。未實機驗證按下去會怎樣。★ 第三種 Yes/No 常數塊 DS:05E8h(選項70)/DS:062Eh(熱鍵 A…B)，空槽直接填 00(空字串) —— 對照營地 06+半形空白×6、商店 06+全形空白×3 ⇒ 7 bytes 欄位要讀成『1 長度 byte ＋ 6 bytes 容量』，長度 byte 是實際長度不是固定 06。選單改叫 overlay-26 entry#2 @08AEh(只收 3 word)。訊息「まだ宝物が残っている。」(22)＋「戻って宝物を取りますか？」(24)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1032-treasure-division-menu.md"
    ]
   },
   {
@@ -51211,6 +51222,7 @@
    "note": "十格選單的選項行組裝：一格 7 欄（6 字元＋1 空白）、第 5 格後多 3 欄、全行 80 欄；DS:0A33Fh 起十個 7-byte 字串",
    "citations": [
     "audit/function-strings.md",
+    "spec/1032-treasure-division-menu.md",
     "spec/990-pc98-menu-line-assembler-and-slot-layout.md"
    ]
   },
@@ -53228,9 +53240,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 3,
    "CodeBytes": 5057,
    "Undefined": 555,
@@ -53783,9 +53795,9 @@
    "Module": "overlay-05",
    "Unit": "POSTCOM",
    "Functions": 17,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 4,
    "CodeBytes": 5212,
    "Undefined": 458,
