@@ -13510,6 +13510,7 @@
    "spec": "842",
    "note": "眼魔(Beholder)眼柄光線：分解/石化/死亡/傷害四道 + Fear(84)/Slow(55)/Sleep(21) 三個法術，用過旗標保證每種一回合一次，剩=4 上限。1434h+1(目標,狀態碼,訊息) 狀態碼 8/7/6 對上 spec 840 的集合 {6,7,8}。原文兩處有誤：'is disintergrated'、'stone to flesh' 寫反",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "audit/function-strings.md",
     "spec/832-gaze-attack-and-mirror-item.md",
     "spec/842-beholder-eye-rays.md"
@@ -14208,9 +14209,13 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov di, [bp+arg_2]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 63 bytes，已逐條讀完）"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "巢狀程序『加一行』(retf 8, (屬性, 字串) + 靜態鏈)：Copy 到 28h 字元、GetMem 2Eh 的節點、+00h 文字 / +29h 屬性 / +2Ah next。尾指標存在外層 frame 的 -0Ch",
+   "citations": [
+    "spec/843-effect-line-list-node.md"
+   ]
   },
   {
    "platform": "dos",
@@ -14231,7 +14236,8 @@
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "audit/function-strings.md",
-    "spec/816-camp-menu-and-pointer-pair-free.md"
+    "spec/816-camp-menu-and-pointer-pair-free.md",
+    "spec/843-effect-line-list-node.md"
    ]
   },
   {
@@ -38917,7 +38923,13 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "843",
+   "note": "同 DOS overlay-15:00E69h。PC-98 字串上限 3Ch(60)、節點 56h(86)、+51h 屬性 / +52h next——比 DOS 大，中文化一行可放 30 個全形字",
+   "citations": [
+    "spec/843-effect-line-list-node.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50127,10 +50139,10 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 24,
+   "Read": 25,
    "NotBlocking": 0,
    "Todo": 7,
-   "Fragment": 11,
+   "Fragment": 10,
    "CodeBytes": 8139,
    "Undefined": 898,
    "SegmentBytes": 9704,
@@ -50682,9 +50694,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 22,
+   "Read": 23,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,

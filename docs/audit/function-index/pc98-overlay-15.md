@@ -18,7 +18,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `085E` | sub_85E | — | 155 | 57 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>與 DOS overlay-15:085Ch（entry#12）助憶碼序列完全相同，語意同該筆：把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `092D` | sub_92D | — | 444 | 181 | 1 | 10 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0B86` | sub_B86 | — | 673 | 255 | 1 | 9 | ✓ | 已解讀 | exact | 841<br>同 DOS overlay-15:00B9Bh。52 條差異全是位址與字串；PC-98 把 DOS 兩句只差大小寫的提示合併成同一個字串（loc_AE9 出現兩次），並修掉 'scibing' 錯字 | audit/function-strings.md<br>spec/841-scribe-scrolls-menu.md |
-| `0E54` | sub_E54 | — | 131 | 49 | 1 | 0 | ✓ | 待解讀 | — | — | — |
+| `0E54` | sub_E54 | — | 131 | 49 | 1 | 0 | ✓ | 已解讀 | exact | 843<br>同 DOS overlay-15:00E69h。PC-98 字串上限 3Ch(60)、節點 56h(86)、+51h 屬性 / +52h next——比 DOS 大，中文化一行可放 30 個全形字 | spec/843-effect-line-list-node.md |
 | `0FC7` | sub_FC7 | — | 21 | 9 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 81Fh:43h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 21 bytes，已逐條讀完） | audit/function-index/pc98-overlay-15.md<br>audit/function-strings.md |
 | `0FF2` | sub_FF2 | — | 10 | 6 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 50h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `0FFC` | sub_FFC | — | 31 | 10 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-0Eh], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
