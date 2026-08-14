@@ -16489,7 +16489,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
-   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;而且欄位偏移用的是**長度位元組(位元組數)不是顯示寬度**,Big5 名字會少算一半",
+   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ spec 726 更正:欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄),先前寫「會少算一半」是錯的;真正的問題只剩 's 這個後綴中文沒有",
    "bounds": "prologue"
   },
   {
@@ -17165,6 +17165,16 @@
    "spec": "docs/spec/725-breath-acid-area.md",
    "bounds": "prologue",
    "note": "區域吐酸 '<名字> breathes acid'(CS:5A9Ah)。次數在 arg_2^[3](DS:758Dh=0 時重設成 3),**扣的動作在最後**所以中途 return 都不消耗次數。用 [DS:72A0h] 第 0 項模式碼 3Dh 選區域;cls := <overlay-24 entry#30>(攻擊者),**只要目標陣列裡有一格 +197h 不等於 cls 就整次取消**。傷害迴圈 <overlay-23 entry#20>(p, arg_6^[78h], 2, s),傷害參數與 spec 723 單體吐酸相同。⚠ **同一支裡兩個迴圈的 NIL 檢查不一致**:類別比對那個直接取欄位、傷害那個先檢查。所以「有沒有檢查 NIL」不是函式的性質而是每段迴圈各自的性質——spec 716 以函式為單位的掃描會漏掉這種"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 25097,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/726-spell-name-table.md",
+   "bounds": "prologue",
+   "note": "顯示施法訊息。**DS:27BDh 是法術名稱表,一格 29h=41 bytes(長度位元組 + 最多 40 字元),索引是法術編號**;表在 resident 資料段不在 overlay 裡,所以 scan_pascal_strings.py 掃不到,中文化要另外處理。DS:4FBAh=5 時:顯示 '<名字> Casts a Spell'(CS:61F4h)、清第 23 列、在 (0,17h) 畫 'Spell:'(CS:6202h)+法術名;否則:清一塊、用 <overlay-24 entry#22(18F3h)> 在 (1,13h) 畫施法者名字、在 (施法者^[0]+2, 13h) 接訊息、在 (0,14h) 畫法術名、<0542:0B33h> 等按鍵、<overlay-24 entry#21>()。⚠ 兩種模式版面不同,只改一種會讓另一種錯位"
   }
  ]
 }
