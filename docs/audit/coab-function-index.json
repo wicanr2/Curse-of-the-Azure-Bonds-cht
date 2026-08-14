@@ -24376,9 +24376,9 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -24400,9 +24400,9 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -26825,7 +26825,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1048",
+   "note": "清除矩形區域 PC-98 側(左,上,右,下 四個 byte，retf 8，373 bytes、179 條)，DOS 對側 START.EXE:11ECDh(spec 1046)，參數完全相同。★ PC-98 常駐段 objdump 換算：file = ea − 10000h + 2464(PC-98 MZ 標頭)，12095h→2A35h 開頭 55 89 e5 對上。★★ 三個圖形平面 A800h(藍)/B000h(紅)/B800h(綠)：for 列:=上 to 下、for 子列:=0 to 7，位址 = (列×8+子列)×50h + 左×2、長度 = (右−左+1)×2 ⇒ 每條掃描列 80 bytes=640 像素、每欄 2 bytes=16 像素、每列 8 條掃描列；⚠ E000h 輝度平面沒有被清。★★ 文字層另外清 A000h(字碼)與 A200h(屬性)：位址 = 列×0A0h + 左×4、長度 = (右−左+1)×4 ⇒ 一列 160 bytes=80 個文字格×2 bytes、一欄 4 bytes=2 個文字格，與圖形側的 16 像素對上。★★★ 一個『欄』在 PC-98 是 16 像素、DOS 是 8 像素 ⇒ 同一組參數 PC-98 蓋掉的寬度是 DOS 兩倍，這正是 PC-98 能直接放全形字而 DOS 不能的原因；中文全形字在 PC-98 佔 1 欄×2 列、DOS 佔 2 欄×2 列。⚠ 圖形側每列只走 8 條掃描列，與 PC-98 640×400 的半形文字格 8×16 對不上，本規格不解釋"
   },
   {
    "platform": "pc98",
@@ -51682,9 +51685,9 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/overlay-init-graph.md",
-    "context/50-log-2026-08-09-13.md"
+    "audit/overlay-init-graph.md"
    ]
   },
   {
@@ -51707,9 +51710,9 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-28.md",
+    "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "spec/754-small-predicates-and-wrappers.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/754-small-predicates-and-wrappers.md"
    ]
   },
   {
@@ -53809,9 +53812,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 271,
+   "Read": 272,
    "NotBlocking": 29,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
