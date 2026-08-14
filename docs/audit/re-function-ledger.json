@@ -20956,6 +20956,60 @@
    "level": "exact",
    "spec": "docs/spec/812-coin-values-and-class-name-table.md",
    "note": "取鏈上第 N 個節點：retf 6，宣告順序 (索引, 串列頭)，回傳 dx:ax。n := 0；while (p <> NIL) and (n <> 索引) do p := p^[52h]、inc(n)；n = 索引 才回 p，否則回 NIL。串列比索引短時也回 NIL，呼叫端分不出兩種情形。spec 812（差異只在 mov/les 的等價碼型）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 52,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/813-rest-time-formula.md",
+   "note": "算出休息時間：retf 4 = 角色遠指標，回傳 ax（分鐘）。掃角色 +1Eh 起 84 格，值 > 7Fh（還在記憶中）者取 lv := byte[37DBh + (值 and 7Fh)*10h]，最高A 取最大、總A 累加（byte 加法，會迴繞）；再掃 +14Dh 物品鏈（next +2Ah），<far 11DEh>(物品) 成立時對三個效果槽 +3Ch/+3Dh/+3Eh 同樣統計出 最高B／總B。d := 0；(總A > 0) 或 (總B > 0) → d := 4；(最高A > 2) 或 (最高B > 2) → d := 6；角色^[72h] := d。結果 := 總A*0Fh + d*3Ch + 總B*0Fh，即「每個法術等級 15 分鐘 + 休息 4 或 6 小時」。由此定下 +72h 是休息小時數的倒數，配合 spec 789 每 12 拍減 1 → 12 拍 = 一小時。spec 813 註：DOS 匯出在 0068h／0082h／00FCh 三處錯位（in al,0C4h、hlt×2），原始位元組與 PC-98 完全相同，以 PC-98 的解碼為準（spec 811）。"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 52,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/813-rest-time-formula.md",
+   "note": "算出休息時間：retf 4 = 角色遠指標，回傳 ax（分鐘）。掃角色 +1Eh 起 84 格，值 > 7Fh（還在記憶中）者取 lv := byte[61B5h + (值 and 7Fh)*10h]，最高A 取最大、總A 累加（byte 加法，會迴繞）；再掃 +14Eh 物品鏈（next +52h），<far 11AEh>(物品) 成立時對三個效果槽 +64h/+65h/+66h 同樣統計出 最高B／總B。d := 0；(總A > 0) 或 (總B > 0) → d := 4；(最高A > 2) 或 (最高B > 2) → d := 6；角色^[72h] := d。結果 := 總A*0Fh + d*3Ch + 總B*0Fh，即「每個法術等級 15 分鐘 + 休息 4 或 6 小時」。由此定下 +72h 是休息小時數的倒數，配合 spec 789 每 12 拍減 1 → 12 拍 = 一小時。spec 813 PC-98 側匯出解碼正確。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 1970,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "休息的主流程：retf 4 = 輸出 byte 的遠指標。掃 DS:650Ah 鏈，對每人呼叫 本模組 0034h(p)（spec 813，回傳分鐘），取全隊最大值（無號）；DS:756Ch := 最大 div 3Ch（時）、DS:756Ah := (最大 − 時*3Ch) div 0Ah（十分鐘）、DS:7568h := 最大 mod 0Ah（分）——索引 0 與 4（日）都不寫；輸出^ := <far 10AEh+1>(1)（休息迴圈本體）；回來後 FillChar(DS:7566h, 0Eh, 0) 清掉整組，再 <far 014Dh:00DEh>。註：DOS 匯出把 0850h 起解成 or bl,[bp+si+arg_D8]／dec bp，原始位元組 9A E0 1A 54 0A 9A DE 00 4D 01 ＝ call far 0A54h:1AE0h 與 call far 014Dh:00DEh（spec 811）。spec 814"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 1972,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "休息的主流程：retf 4 = 輸出 byte 的遠指標。掃 DS:9598h 鏈，對每人呼叫 本模組 0034h(p)（spec 813，回傳分鐘），取全隊最大值（無號）；DS:0A658h := 最大 div 3Ch（時）、DS:0A656h := (最大 − 時*3Ch) div 0Ah（十分鐘）、DS:0A654h := 最大 mod 0Ah（分）——索引 0 與 4（日）都不寫；輸出^ := <far 10AEh+1>(1)（休息迴圈本體）；回來後 FillChar(DS:0A652h, 0Eh, 0) 清掉整組，再 <far 014Ah:00DEh>。註：DOS 匯出把 0850h 起解成 or bl,[bp+si+arg_D8]／dec bp，原始位元組 9A E0 1A 54 0A 9A DE 00 4D 01 ＝ call far 0A65h:1B30h 與 call far 014Ah:00DEh（spec 811）。spec 814 PC-98 側匯出解碼正確。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 199,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "Pool 值多少金幣：retf 4 = 遠指標，回傳 dx:ax。Move(來源^, 暫存, 1Ch)（28 bytes = 7 個 longint，先抄再算，不動原資料）；總 := Σ(j=0..4) <0A54h:0279h>(暫存[j], longint@(0CA2h + j*4))；結果 := <0A54h:0294h>(總 + 64h, longint@0CAEh)。與 spec 812 的 overlay-19:33ABh 是同一條式子，差別只在來源每格是 longint 而非 word；同樣只算前 5 種幣別。spec 814"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 199,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/814-rest-driver-and-pool-worth.md",
+   "note": "Pool 值多少金幣：retf 4 = 遠指標，回傳 dx:ax。Move(來源^, 暫存, 1Ch)（28 bytes = 7 個 longint，先抄再算，不動原資料）；總 := Σ(j=0..4) <0A65h:0279h>(暫存[j], longint@(1C46h + j*4))；結果 := <0A65h:0294h>(總 + 64h, longint@1C52h)。與 spec 812 的 overlay-19:33ABh 是同一條式子，差別只在來源每格是 longint 而非 word；同樣只算前 5 種幣別。spec 814（差異只在 mov/les 的等價碼型）"
   }
  ]
 }
