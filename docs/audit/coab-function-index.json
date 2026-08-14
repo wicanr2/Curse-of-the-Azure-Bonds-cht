@@ -26316,7 +26316,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "960",
+   "note": "帶裁切的三平面貼圖(near, retn 14h = (目的表面, 來源表面, 旗標, 張號, 上下, 左右, @結果))：上下/左右是有號座標(cmp ax,8000h; ja 判負)，上下的單位是 8 條掃描線(shl 3)；四邊各算裁切量後用無號比較確認不是完全在畫面外；遮罩取自 來源^[13h]、位移 來源^[0] × 來源^[2] × 張號(一張遮罩三平面共用，同 spec 956)；來源位移 來源^[11h] × 張號。★把裁切後實際的高與寬寫回 @結果——DOS 的 spec 940 沒有這個參數。★旗標 bit 0 = 0 走 sub_14131h(無遮罩)、= 1 走 sub_140C7h(有遮罩)；★旗標 bit 2 在 DOS 只是設 var_1A 給內迴圈看，在 PC-98 變成另外呼叫一支 sub_1408Bh——同一個位元兩平台實作方式不同"
   },
   {
    "platform": "pc98",
@@ -52389,9 +52392,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 261,
+   "Read": 262,
    "NotBlocking": 29,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
