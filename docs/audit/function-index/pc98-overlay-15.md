@@ -15,7 +15,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `04C2` | sub_4C2 | DOCASTSPELL | 182 | 77 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `05CC` | sub_5CC | — | 488 | 207 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `07B4` | sub_7B4 | — | 170 | 66 | 2 | 3 | ✓ | 待解讀 | — | — | — |
-| `085E` | sub_85E | — | 155 | 57 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `085E` | sub_85E | — | 155 | 57 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>與 DOS overlay-15:085Ch（entry#12）助憶碼序列完全相同，語意同該筆：把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `092D` | sub_92D | — | 444 | 181 | 1 | 10 | ✓ | 待解讀 | — | — | — |
 | `0B86` | sub_B86 | — | 673 | 255 | 1 | 9 | ✓ | 待解讀 | — | — | — |
 | `0E54` | sub_E54 | — | 131 | 49 | 1 | 0 | ✓ | 待解讀 | — | — | — |

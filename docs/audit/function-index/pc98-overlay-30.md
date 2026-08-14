@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `04AD` | sub_4AD | — | 49 | 18 | 4 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>範圍判斷(retf 4)：兩個有號參數都落在 0..15 才回 1。與 DOS overlay-30:0556h 同 | audit/embedded-strings.md<br>spec/754-small-predicates-and-wrappers.md |
 | `04DE` | sub_4DE | BLOCKCODE | 303 | 122 | 0 | 3 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/525-pc98-tempsearch-display-state.md<br>spec/528-pc98-moveparty-action-transaction-boundary.md |
 | `060D` | sub_60D | WALLCODE | 259 | 105 | 3 | 2 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/525-pc98-tempsearch-display-state.md |
-| `0710` | sub_710 | SPECIALCODE | 123 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `0710` | sub_710 | SPECIALCODE | 123 | 46 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>與 DOS overlay-30:07C6h（entry#6）助憶碼序列完全相同，語意同該筆：讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(>0Fh→0、<0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `078B` | sub_78B | BUILDVIEW | 1977 | 825 | 0 | 6 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `0F8F` | sub_F8F | LOADWALLSET | 666 | 268 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `1253` | sub_1253 | LOAD3DMAP | 270 | 105 | 0 | 1 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/525-pc98-tempsearch-display-state.md |

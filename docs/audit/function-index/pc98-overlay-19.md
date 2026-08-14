@@ -53,7 +53,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A32` | sub_2A32 | — | 482 | 199 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2C69` | sub_2C69 | — | 828 | 321 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `2FE5` | sub_2FE5 | — | 722 | 283 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `32B7` | sub_32B7 | OVERLOADED | 132 | 45 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `32B7` | sub_32B7 | OVERLOADED | 132 | 45 | 1 | 3 | ✓ | 已解讀 | strong inference | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>與 DOS overlay-19:3258h（entry#9）助憶碼序列完全相同，語意同該筆：拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `333B` | sub_333B | ACTIVECHAR | 207 | 71 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `340A` | sub_340A | CASH | 117 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `34E4` | sub_34E4 | PICKSPELL | 372 | 157 | 2 | 6 | ✓ | 待解讀 | — | — | — |
