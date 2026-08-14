@@ -31084,7 +31084,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 19 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 19 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/pc98-overlay-16.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42240,6 +42243,7 @@
    "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
    "note": "繪圖頁 1 上跑完 5674h 後切回頁 0；FindFirst(前綴+'*.hil')，DosError=0 就回 7",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "audit/function-strings.md",
     "spec/1080-pc98-disk-bios-format-and-id.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
@@ -42967,6 +42971,7 @@
    "spec": "1080",
    "note": "格式化存檔磁片(retf 2，不用 bp 框架，狀態放 0ABF0h:0/1/2)。⚠int 1Bh 是 PC-98 磁碟 BIOS，IDA 註成 CTRL-BREAK 是 IBM PC 的意思。AH=7 磁頭復歸、AH=5Dh 逐軌格式化：77 柱面 x 2 磁頭 x 8 磁區 x 1024 bytes = 標準 2HD。之後 AH=55h 寫 11 個磁區手工鋪 FAT：第 0 磁區寫 0C29h:0BA5h 的 71 bytes 簽章、第 1 與第 3 磁區開頭 0FFFEh、其餘清 0。回 0 成功 1 失敗。★這支沒有匯出到 prologue(無標準開場)，要讀 overlays/full",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "spec/1080-pc98-disk-bios-format-and-id.md"
    ]
   },
@@ -50551,9 +50556,14 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1081",
+   "note": "戰術地圖彈道動畫 PC-98 側(retf 0Ch)，spec 1078 的對側。助憶碼序列 586 vs 617、相似度 0.9742，只有一個差異塊：PC-98 進門多 31 條把四個座標夾進 0..31h / 0..18h，並且★把延遲 0 改成 1 ⇒ DOS 的快速模式(只畫非格心點、終點精靈不擦)在 PC-98 執行不到。全域對照：視窗原點 DS:9F2Ch、方向表 DS:489Eh/48A7h、目的畫布 DS:7F56h(168x42)、精靈 DS:0A872h、擦除來源 DS:7F5Ah(88x22) ⇒ 與 spec 1074 配置的兩張圖對上",
    "citations": [
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/1078-tacmap-projectile-animation-dos.md",
+    "spec/1081-tacmap-projectile-animation-pc98.md"
    ]
   },
   {
@@ -54381,9 +54391,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 47,
+   "Read": 48,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
