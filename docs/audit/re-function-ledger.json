@@ -23053,6 +23053,42 @@
    "level": "exact",
    "spec": "870",
    "note": "同 DOS overlay-19:036D8h，但★多一段 NPC 名字對照：目標 +0F7h > 80h 時，用 0A65h:734h 比對名字，ALIAS→エイリアス、DRAGONBAIT→ドラゴンベイト、AKABAR BEL AKAS→アーカバー・ベル・アーカッシュ，再用 0A65h:649h(上限 0FFh)指派。同一段在隔壁 039CAh 又出現一次。★角色記錄裡存的是英文名，PC-98 在顯示層逐處硬做替換，沒有改記錄"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 6196,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "871",
+   "note": "隊伍順序選單(retf，無參數)：頁 0/1 各取 DS:4A4h + 頁*29h 的選單字串('Select Exit'/'Place Exit')，169Dh+2 畫選單收鍵；選中時頁 0 叫 1022h、頁 1 依鍵 47h(Home)/4Fh(End) 叫 158Ah/16CBh，之後都叫 14F8h+2。切換鍵翻頁，翻到頁 1 印 '<名字> has been selected'"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 6134,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "871",
+   "note": "同 DOS overlay-15:01834h 的流程，但★三處真的不同：(1)迴圈開頭多一段熱鍵字串指派(兩頁各一份 10 bytes 寫進 DS:0A335h)——選單標籤 '   選択…抜ける    ' 是固定欄位排版、不含可按字母，這是該模式的第五個出現點；(2)鍵碼 47h/4Fh↔38h/32h；(3)169Dh+2 第四個參數 1↔0。選單字串 stride 29h↔51h。⚠PC-98 側 IDA 在 retf 之後越界解進字串表，判讀以 retf 為止"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 14934,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "872",
+   "note": "把 遠指標(DS:6506h) 那個角色移出隊伍並釋放(retf 4，(不減人數, 要釋放圖像))：分鏈頭/非鏈頭兩條路徑從 DS:650Ah 鏈上摘掉，叫 overlay-17:0003Eh(spec 849 解構子)整筆釋放，再把 DS:6506h 移到前一個/下一個、都不行就退回鏈頭(所以呼叫端拿到的選中者永遠有效)；不減人數=0 時 遠指標(DS:4F9Dh)^[67Ch] 減 1。要釋放圖像≠0 時先叫 1994h(角色^[143h])"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 16674,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "872",
+   "note": "同 DOS overlay-17:03A56h，但★兩處 1994h 的呼叫都多包一層 if 角色^[143h] > 7(無號)——+143h ≤ 7 的角色在 PC-98 不走那一步。真的邏輯差異(spec 783 第 d 類)。其餘 33 條是位址與 +189h↔+18Ah 的 1 byte 位移"
   }
  ]
 }
