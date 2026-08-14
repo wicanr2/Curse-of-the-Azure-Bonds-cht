@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `090E` | sub_90E | — | 224 | 76 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `09EE` | sub_9EE | — | 123 | 44 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/680-overlay22-clamp-and-cure1d8.md<br>清 DS:7CCEh 起每筆 4 bytes 的 far pointer 陣列(後測迴圈,i 走 0..30h 共 **49 筆**不是 48),再把 DS:7D92h 清 0;之後走 DS:9594h^[14Eh] 物品鏈(next 在 +52h),<sub_64E8>(p) 非 0 時呼叫 <sub_90E>(arg_0)——注意那支只吃 arg_0 不吃目前這個物品,作用對象另有來源 | audit/function-index/dos-overlay-22.md<br>spec/680-overlay22-clamp-and-cure1d8.md |
 | `0A69` | sub_A69 | BUILDSPELLLIST | 866 | 325 | 0 | 5 | ✓ | 待解讀 | — | — | — |
-| `0DCB` | sub_DCB | FIGSPELLRANGE | 170 | 67 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `0DCB` | sub_DCB | FIGSPELLRANGE | 170 | 67 | 0 | 2 | ✓ | 已解讀 | strong inference | docs/spec/705-duration-formula-and-save-roll.md<br>與 DOS overlay-22:0D67h（entry#3）助憶碼序列完全相同，語意同該筆：持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × <overlay-24 entry#36>(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `0E75` | sub_E75 | — | 237 | 99 | 10 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0F62` | sub_F62 | — | 441 | 156 | 47 | 5 | ✓ | 待解讀 | — | — | — |
 | `112C` | sub_112C | GETSPELLTARGETS | 283 | 103 | 0 | 1 | ✓ | 待解讀 | — | — | — |
