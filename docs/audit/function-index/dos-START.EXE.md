@@ -104,10 +104,10 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16246` | sub_16246 | — | 271 | 131 | 1 | 1 |  | 待解讀 | — | — | — |
 | `16360` | sub_16360 | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @FreeMem(ptr, (size+7) and 0FFF8h) ⇒ 釋放對齊到 8 bytes 的區塊 | — |
 | `1637D` | sub_1637D | — | 29 | 13 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @GetMem(ptr, (size+7) and 0FFF8h) ⇒ 配置對齊到 8 bytes 的區塊 | — |
-| `1639A` | sub_1639A | — | 110 | 40 | 2 | 2 |  | 待解讀 | — | — | — |
-| `16408` | sub_16408 | — | 112 | 44 | 1 | 3 |  | 待解讀 | — | — | — |
+| `1639A` | sub_1639A | — | 110 | 40 | 2 | 2 |  | 已解讀 | exact | 932<br>低階寫一個字元(retf 0Ah = (字元, 次數, 顏色, 列, 欄))：填 Turbo Pascal 的 Registers record(byte_2118Ah/Bh = AX.lo/hi、2118Ch/Dh = BX.lo/hi、word_2118Eh = CX、21190h/91h = DX.lo/hi)，先 Intr(10h) 以 AH=02h 設游標，再以 AH=09h 寫字元與屬性。★byte_211A6h = 0 時顏色要先過 DS:256Dh 的轉換表(形狀上是單色/CGA 的調色盤映射) | — |
+| `16408` | sub_16408 | — | 112 | 44 | 1 | 3 |  | 已解讀 | exact | 932<br>低階寫一個字串(retf 0Ah = (字串, 顏色, 列, 欄))：把字串限長 0FFh 複製到本地後逐字元叫 1639Ah 並讓欄遞增——整行是 2 × 長度 次 BIOS 呼叫。這與 spec 930/931 那條『累積成一段再 rep movsw 直接寫顯示記憶體』的 Crt 路徑是兩套並存的輸出層 | — |
 | `16478` | sub_16478 | — | 32 | 17 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完） | — |
-| `16498` | sub_16498 | — | 90 | 48 | 2 | 4 |  | 待解讀 | — | — | — |
+| `16498` | sub_16498 | — | 90 | 48 | 2 | 4 |  | 已解讀 | exact | 932<br>底列提示(retf 6 = (字串, 顏色))：字串限長 28h = 40 欄，先用 sub_16478h(28h, 0, 18h, 0) 清第 24 列，寫字串，叫 sub_16FADh 等一次按鍵，再清掉。⚠按鍵回傳值存進區域變數後沒有再用，呼叫端無法知道玩家按了什麼。18h = 80×25 的最後一列；字串限長 40 表示這一層假設 40 欄 | — |
 | `16566` | sub_16566 | — | 75 | 32 | 1 | 6 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>等待 overlay 磁片(retf)：反覆用 1685Fh 檢查 'game.ovr' 是否存在，不在就印 'Please insert overlay disk.' 加換行、等一個按鍵再試。⚠ 沒有離開的出口 | — |
 | `16645` | sub_16645 | — | 538 | 219 | 1 | 11 |  | 待解讀 | — | — | — |
 | `1685F` | sub_1685F | — | 74 | 33 | 4 | 3 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 <> 0)。word_24E58 是 DosError | — |
@@ -118,7 +118,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16C3E` | sub_16C3E | — | 559 | 235 | 2 | 17 |  | 待解讀 | — | — | — |
 | `16E8F` | sub_16E8F | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `16EA0` | sub_16EA0 | — | 81 | 28 | 2 | 5 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call @Halt$q4Word`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |
-| `16F03` | sub_16F03 | — | 122 | 51 | 1 | 4 |  | 待解讀 | — | — | — |
+| `16F03` | sub_16F03 | — | 122 | 51 | 1 | 4 |  | 已解讀 | exact | 932<br>除錯用的效果鏈傾印(retf 4 = 角色遠指標)：走 角色^[0F2h] 鏈(next 在 +5)，每個節點印 'who: ' + 角色^(當 Pascal 字串) + '  sp#: ' + longint(節點^[0]) 再換行，輸出到 Output 不是遊戲畫面。★三件事同時確認：+0F2h 鏈與 next 在 +5 吻合 spec 849；節點 +0 是法術編號(原版自己印成 sp#)；角色記錄 +0 起就是名字 | — |
 | `16FAD` | sub_16FAD | — | 319 | 116 | 6 | 12 |  | 待解讀 | — | — | — |
 | `170EC` | sub_170EC | — | 28 | 13 | 3 | 3 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>清空鍵盤緩衝區(retf，無參數)：while KEYPRESSED do 讀一個鍵丟掉(以 push cs + call near 呼叫 sub_16FADh) | — |
 | `17122` | sub_17122 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
