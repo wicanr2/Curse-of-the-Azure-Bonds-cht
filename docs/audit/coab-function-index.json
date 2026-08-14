@@ -1757,7 +1757,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "929",
+   "note": "音樂引擎的 PC speaker 輸出(無 Pascal 序言、retn 收尾)：word_1C308 = 0 就只關喇叭閘門；否則以 byte_1C2E2 = 4 掃四個聲道(基底 DS:0176h、每聲道 30h bytes，頻率表基底 DS:02F6h 寫進 word_1C30E)，對每個有效聲道叫 1951Eh 更新，再挑第一個仍有效的聲道把 [si+8] 送 out 42h 設 PIT 分頻、[si+0Ah] and 3 併進 out 61h 的閘門位元"
   },
   {
    "platform": "dos",
@@ -1769,7 +1772,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "929",
+   "note": "音樂引擎的 Tandy/PCjr SN76496 輸出(無序言、retn)：同 1941Bh 的骨架但基底是 DS:0310h、頻率表 DS:0490h；先掃四聲道叫 1951Eh 更新，再逐聲道把 [si+8] 拆成 SN76496 的兩個 byte(dl 從 80h 起、每聲道 +20h)送 out 0C0h，音量由 0FFFFh − [si+0Ah] 右移四位得出。word_1C308 = 0 或 byte_1C316 = 0 時改送四個靜音命令 9Fh/0BFh/0DFh/0FFh"
   },
   {
    "platform": "dos",
@@ -1781,7 +1787,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "929",
+   "note": "音樂引擎的每格聲道更新(無序言、retn)：頻率滑音 +0Ah += +0Ch、音量包絡 +4 += +6、顫音(相位 +1Eh += +20h、超過週期 +24h 就回繞、查波形表 +1Ch、乘深度 +22h)得出本格輸出 +8；滑音倒數 +14h 歸零就重設 +18h/+1Ah；音長 [si] 倒數歸零就叫 195AFh 取下一個音符；包絡倒數 +1Ah 歸零就走 4 bytes 一筆的包絡表(+16h 基底 + +18h 位移，+2 = 0FFFFh 是『設頻率』那一型)。★聲道狀態 30h bytes 的 19 個欄位版面見 spec 929"
   },
   {
    "platform": "dos",
@@ -1793,7 +1802,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "929",
+   "note": "音樂資料流直譯器(無序言、retn)：從 [si+2] 取指標逐 byte 讀，≥ 0FAh 走 DS:016Ah 的六筆跳表(迴圈/切換聲道/設參數/返回/呼叫/再讀一個 byte)，否則當音符。★音符是兩個 byte——第一個高 3 bits 選聲道、低 5 bits 查 DS:0157h 的音長表再乘速度 [si+0Eh]；第二個 bit 7 = 最後一個音符、低 7 bits 是音高(7Fh = 休止符)。★音高換算就是 12 平均律：加移調 +12h 後反覆減 0Ch 求八度，餘數查 word_1C30E 那張 12 筆頻率表，再右移八度數。⚠196BFh 的 cmp di, 3A0h(Tandy 噪音聲道)被一條位移為 0 的 jnz short $+2 吃掉，特例等於不存在"
   },
   {
    "platform": "dos",
@@ -2074,7 +2086,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "930",
+   "note": "Turbo Pascal Crt 單元的顯示初始化(無序言、retn)：int 10h AH=0Fh 取模式，非 7 且 \u003e 3 就拉回 3；AH=08h 取屬性存進 byte_24E6A/byte_24E60；用 BIOS 計時器 0040:006Ch 校時算出 word_24E66(每計時單位的空轉次數，Delay 用)；最後 int 21h AX=251Bh 掛 INT 1Bh handler"
   },
   {
    "platform": "dos",
@@ -2415,7 +2430,10 @@
    "callers": 8,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "930",
+   "note": "Turbo Pascal Crt 單元的輸出一個字元(無序言、retn)：BEL(7) 走 int 10h AH=0Eh、BS(8) 退一欄(不越左界 word_24E62)、CR(0Dh) 回左界、LF(0Ah) 捲一行；其餘用 int 10h AH=09h 以屬性 byte_24E60 寫一次並前進，超過右界 word_24E64 就折行。前後各叫 sub_19FA5/sub_19FAC 取寫游標"
   },
   {
    "platform": "dos",
@@ -2484,7 +2502,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "930",
+   "note": "Turbo Pascal Crt 單元的文字模式區塊搬移(無序言、retn)：si = di 就直接離開；長度 = di − si，由 BIOS 資料區取每列欄數 0040:004Ah 算目的位移、取 CRTC 基底埠 0040:0063h + 6 當狀態暫存器(等 retrace)、依 0040:0049h 是否為 7 選 0B000h 單色或 0B800h 彩色段。⚠本規格只讀到參數準備完畢，其後是標準 rep movsw"
   },
   {
    "platform": "dos",
@@ -51618,9 +51639,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 136,
+   "Read": 143,
    "NotBlocking": 133,
-   "Todo": 39,
+   "Todo": 32,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
