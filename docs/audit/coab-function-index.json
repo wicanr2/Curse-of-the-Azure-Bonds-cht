@@ -25793,8 +25793,8 @@
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-33.md",
-    "audit/function-strings.md"
+    "audit/function-index/pc98-overlay-32.md",
+    "audit/function-index/pc98-overlay-33.md"
    ]
   },
   {
@@ -42713,9 +42713,13 @@
    "callers": 0,
    "calls": 11,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1057",
+   "note": "存檔槽選單(retf，279 條)。★★★ 十個槽的版面：選項行 CS:4602h(128 bytes)='      ① ② ③ ④ ⑤   ⑥ ⑦ ⑧ ⑨ ⑩ '(圈號是 Shift-JIS 87 40..87 49)、熱鍵塊 DS:0DB8h(10 bytes)='ABCDEFGHIJ'、每槽一行在 DS:0A64Dh+槽×29h(41 bytes/筆，與 spec 1037 同筆距)、每槽一個 byte 在 DS:0A80Ah+槽。★★★ 選中的槽前面標「☆」：就地把該行前兩個 byte 寫成 81 99(Shift-JIS ☆)，換槽時舊的改寫成 81 40(全形空白) ⇒ ⚠ 中文化必須讓每行前兩個 byte 保持是一個完整雙位元組字，也不能換成單位元組符號。流程：sub_B4Fh(0) 不成立就離開；DS:0A385h := 目前槽(形狀上是選單初始游標位置 —— spec 1032/1043 一直沒宣稱的那一格)；迴圈印「どこにセーブしますか？」(22)、Move(DS:0DB8h → DS:0A335h, 0Ah)、叫 overlay-26 entry#5，直到鍵 in 集合常數 CS:466Bh = {#0,'A'..'J'}；鍵=0 離開；DS:0A816h:=0(檔案類別 0 = '*.guy'，spec 1043)；槽 := 鍵−40h；byte[0A80Ah+槽] \u003c\u003e 5 時印『?＋Str(槽)＋番は既に登録されています。』(26)；問「よろしいですか？」(16) 要 'Y'；確認後舊槽的 ☆ 改回全形空白、DS:0A670h := 槽、byte[0A80Ah+槽] := DS:0BDF0h",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1057-save-slot-menu.md"
    ]
   },
   {
@@ -54098,9 +54102,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 26,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
