@@ -1557,7 +1557,10 @@
    "callers": 1,
    "calls": 11,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "943",
+   "note": "開檔並處理換片(retf 0Eh = (檔案變數, 不提示, 換片提示前綴, 檔名)，回 al 成功與否)：FSplit 拆出目錄/主檔名/副檔名，目錄為空就用 byte_210B2h；用 sub_1685Fh 試開。★找不到且目錄等於 byte_210B2h 時，把 byte_210B2h 與 byte_21102h 兩個 80 bytes 的路徑全域『對調』再試一次——對調是永久的，所以玩家換過一次片後續會優先從同一片找。★仍失敗且 arg_4 = 0 時依目錄第一個字元選訊息：\u003c 'C'(43h) 當軟碟，印 提示前綴 + byte_21152h(磁碟機代號) + ':'；否則印 \"Couldn't find \" + 主檔名 + 副檔名 + \". Check install.\"，都用 spec 932 的 sub_16498h 印在第 24 列等按鍵，然後重試。arg_4 ≠ 0 時不提示也不重試(spec 939 走這條)。成功就 Assign + Reset(檔, 1)"
   },
   {
    "platform": "dos",
@@ -51720,9 +51723,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 167,
+   "Read": 168,
    "NotBlocking": 133,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
