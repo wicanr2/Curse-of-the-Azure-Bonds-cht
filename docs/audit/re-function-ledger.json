@@ -24241,6 +24241,33 @@
    "level": "exact",
    "spec": "932",
    "note": "除錯用的效果鏈傾印(retf 4 = 角色遠指標)：走 角色^[0F2h] 鏈(next 在 +5)，每個節點印 'who: ' + 角色^(當 Pascal 字串) + '  sp#: ' + longint(節點^[0]) 再換行，輸出到 Output 不是遊戲畫面。★三件事同時確認：+0F2h 鏈與 next 在 +5 吻合 spec 849；節點 +0 是法術編號(原版自己印成 sp#)；角色記錄 +0 起就是名字"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 84954,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "933",
+   "note": "blit 設定層(retn 0Eh = (目的表面, 來源表面, arg_8, arg_A, arg_C))：備妥 1Ch×2 bytes 的區域與 push ss/ds 之後叫內迴圈 sub_15388h(見 spec 931，做 and/or 遮罩合成)。位移量 n = 1(每像素 ×2)：var_C/var_14/var_12 各左移 1，var_6 = var_14 shl 1，var_10 = 來源^[2] shl 1；讀表面的 +13h/+15h 當遮罩來源。⚠三支之中只有本支進來不做 cld，方向旗標依賴呼叫端"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 85459,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "933",
+   "note": "blit 設定層(retn 0Eh，簽章同 14BDAh)：位移量 n = 2(每像素 ×4)，var_6 = var_14 不移，叫內迴圈 sub_15329h。★不讀表面的 +13h/+15h → 這一條路沒有遮罩，是純複製。進來先 cld"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 85602,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "933",
+   "note": "blit 設定層(retn 0Eh，簽章同 14BDAh)：位移量 n = 2(每像素 ×4)、進來先 cld，但讀表面的 +13h/+15h 並叫有遮罩的 sub_15388h。與 14BDAh(n=1、有遮罩)、14DD3h(n=2、無遮罩)構成 2×2 組合裡的三格"
   }
  ]
 }
