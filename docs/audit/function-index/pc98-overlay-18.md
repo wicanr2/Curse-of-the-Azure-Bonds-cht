@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03DC` | sub_3DC | — | 678 | 235 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0682` | sub_682 | — | 198 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0748` | sub_748 | — | 419 | 154 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `08EB` | sub_8EB | — | 384 | 150 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `08EB` | sub_8EB | — | 384 | 150 | 1 | 4 | ✓ | 已解讀 | exact | 1<br>同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標 | — |
 | `0A6F` | sub_A6F | — | 281 | 114 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0B9B` | sub_B9B | — | 376 | 163 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `1213` | sub_1213 | FINAL | 870 | 437 | 0 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-18.md<br>audit/function-strings.md |

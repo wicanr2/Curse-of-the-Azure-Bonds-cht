@@ -22423,6 +22423,24 @@
    "level": "exact",
    "spec": "848",
    "note": "同 DOS overlay-26:0088Ah（module_align 對齊，相似度 0.996）。★一處真差異：補空白時 DOS 傳顏色 0、PC-98 傳外層的 +22h（實際顏色）。其餘是位址（節點 +51h/+52h↔+29h/+2Ah）與多一條 mov di,[bp+arg_0]"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 2523,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "結局動畫的主迴圈(retf，無參數)：GetMem(DS:4ACEh, 0AC8h=2760) → 迴圈直到 KeyPressed(9ABh:2FAh) 為真才 ReadKey 存進 DS:4AE2h 離開 → FreeMem。每一輪先 Random(2710h) 需 < 1 才動作（1/10000）；FillChar(DS:4AE3h, 3, 1)；筆數 = Random(2)+1，每筆 DS:4AE3h+i := Random(5)+2；起點固定 (41h, 41h)，終點 DS:4AEBh := Random(14h)+23h、DS:4AEDh := −(Random(5)+32h)（另存一份到 4AEFh/4AF1h）；接著以模式 0 呼叫 sub_843h + sub_BCh，還原座標後再以模式 1 呼叫 sub_843h + sub_780h——擦掉再畫上的兩段式更新"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 2283,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標"
   }
  ]
 }

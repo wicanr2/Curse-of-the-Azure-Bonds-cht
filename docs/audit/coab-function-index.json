@@ -15879,7 +15879,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "1",
-   "note": "付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD\u0026D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零"
+   "note": "付錢與找零(retf 8，(角色, 金額 longint))：金額先 × 0C8h(200) 換成銅幣（AD\u0026D 1 gp = 200 cp）。第一段 i 由 0 往上，每種幣值取 min(金額 div 幣值[i] + 1, 持有量) 扣掉——+1 造成刻意多付；第二段若金額變負就取絕對值，i 由 4 往下把差額以大面額找回。幣值表是 DS:0CA2h（1/10/100/200/1000 銅幣）。⚠ 角色身上錢不夠時 n 恆為 0、金額不減，i 會一路遞增讀出幣值表外，可能除以零",
+   "citations": [
+    "audit/function-index/pc98-overlay-17.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16044,7 +16047,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "結局動畫的主迴圈(retf，無參數)：GetMem(DS:4ACEh, 0AC8h=2760) → 迴圈直到 KeyPressed(9ABh:2FAh) 為真才 ReadKey 存進 DS:4AE2h 離開 → FreeMem。每一輪先 Random(2710h) 需 \u003c 1 才動作（1/10000）；FillChar(DS:4AE3h, 3, 1)；筆數 = Random(2)+1，每筆 DS:4AE3h+i := Random(5)+2；起點固定 (41h, 41h)，終點 DS:4AEBh := Random(14h)+23h、DS:4AEDh := −(Random(5)+32h)（另存一份到 4AEFh/4AF1h）；接著以模式 0 呼叫 sub_843h + sub_BCh，還原座標後再以模式 1 呼叫 sub_843h + sub_780h——擦掉再畫上的兩段式更新"
   },
   {
    "platform": "dos",
@@ -22628,6 +22634,7 @@
    "spec": "848",
    "note": "捲動清單的重繪（巢狀程序，retf 4，(靜態鏈, 頂端行號)）：先用外層 frame 的 +18h/+1Ah/+1Ch/+1Eh 設視窗，sub_11h 取第 n 個節點，逐行畫到 +18h 為止。節點屬性 +29h ≠ 0 用顏色 +24h、否則 +22h（與 spec 848 的『屬性 0 就停』同一格）。文字比欄寬 外^[−54h] 短時再用空白補滿右側",
    "citations": [
+    "audit/function-index/pc98-overlay-26.md",
     "spec/848-scroll-list-widget.md"
    ]
   },
@@ -41574,7 +41581,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1",
+   "note": "同 DOS overlay-18:009DBh（module_align 對齊，助憶碼序列完全相同）。只差兩條：DS:7BA4h↔4ACEh 與 GetMem 呼叫目標"
   },
   {
    "platform": "pc98",
@@ -50663,9 +50673,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -51218,9 +51228,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
