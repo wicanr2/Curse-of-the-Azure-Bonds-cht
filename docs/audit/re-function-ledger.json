@@ -20848,6 +20848,42 @@
    "level": "exact",
    "spec": "docs/spec/807-drop-item-scribe-warning.md",
    "note": "丟棄物品前的關卡：retf 4 = 物品遠指標，回傳 al。物品^[34h] <> 0（裝備中）→ 顯示 '装備をはずしてください'(22 bytes) 並 <far loc_151D+2>，回 0；<far sub_11AEh>(物品) 為假 → 直接回 1；否則三個效果槽 +64h/+65h/+66h 任一 > 7Fh（還沒抄完，spec 803 的編碼）→ <far loc_152C+2>(0,15h,1,DS:9594h)、DS:9636h := DS:9594h^[0] + 2（名字長度）、DS:9637h := 15h、<0418h:0E6Ah>(1,15h,26h,16h,0Eh,0,0, 名字+'はその巻物から呪文を書き写そうとしています。'(44 bytes))、<far loc_1686+2>(0Fh,0Ah,0Dh,'この巻物からの書き写しを中止しますか？'(38 bytes)) 回 'Y' 才回 1；其餘回 1。最後一律 <sub_2095>(16h,26h,15h,1)。門檻 > 7Fh 與抄寫程序的 > 80h 差一個值：值恰為 80h 的槽會被這裡擋、卻永遠抄不到。spec 807"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 3545,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "算出本回合的 +19Ch（spec 806 回合初始化的第一個呼叫）：舊 := 角色^[19Ch]；角色^[19Ch] := 角色^[11Ch]（基礎值）；<far 15BCh+1>(角色) 與 <far 15C6h+1>(角色, @彈藥) 都成立時 遠程 := 1、v := byte[5CFBh + 角色^[151h]^[2Eh]*10h]（物品類型表 +5）夾到 >= 2、DS:6F96h := v；否則 DS:6F96h := 角色^[19Ch]。DS:6F9Ah := 0；<far 1442h+2>(角色, 12h)；n := 本模組 0F12h(DS:6F96h)。遠程且 彈藥 <> NIL 時 m := max(1, 彈藥^[39h]（數量）)，(m < n) 且 彈藥^[39h] > 0 才 n := m。最後 +18Dh^[8] = 0，或 n < 舊，或 (有號(n) < 有號(舊)*2 且非遠程) 時才寫回 角色^[19Ch] := n。retf 4。spec 808"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 3646,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "算出本回合的 +19Dh（spec 806 回合初始化的第一個呼叫）：舊 := 角色^[19Ch]；角色^[19Ch] := 角色^[11Ch]（基礎值）；<far 158Bh+2>(角色) 與 <far 1594h+3>(角色, @彈藥) 都成立時 遠程 := 1、v := byte[8D8Fh + 角色^[151h]^[2Eh]*10h]（物品類型表 +5）夾到 >= 2、DS:0A030h := v；否則 DS:0A030h := 角色^[19Ch]。DS:0A034h := 0；<far 1413h+1>(角色, 12h)；n := 本模組 0F12h(DS:0A030h)。遠程且 彈藥 <> NIL 時 m := max(1, 彈藥^[39h]（數量）)，(m < n) 且 彈藥^[39h] > 0 才 n := m。最後 +18Eh^[8] = 0，或 n < 舊，或 (有號(n) < 有號(舊)*2 且非遠程) 時才寫回 角色^[19Ch] := n。retf 4。spec 808"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 2879,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "轉向並視需要重畫：retf 0Ah，宣告順序 (角色, 新面向, 參數2, 參數0)。i := 本模組 0CAEh(角色)；(not 本模組 0763h(1, 角色)) 且 DS:75E6h <> 0 時呼叫 本模組 09DFh(8, 3, 0C5Eh(角色), 0C36h(角色))；除非「有號(新面向) div 4 = 有號(角色^[18Dh]^[9]) div 4 且 參數2 = 0 且 參數0 = 0」，且 DS:75E6h <> 0 時呼叫 本模組 0578h(i, 0, 0)（面向只分 0..3／4..7 兩半，同側轉向不換圖）；角色^[18Dh]^[9] := 新面向（無條件）；參數0 = 0 且 本模組 0763h(0, 角色) 且 DS:75E6h <> 0 時 <0196h:003Eh>(byte[67C6h+i], byte[680Eh+i], 新面向, 參數2, 角色^[143h]) 與 <0297h:1316h>。spec 808"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 4596,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "轉向並視需要重畫：retf 0Ah，宣告順序 (角色, 新面向, 參數2, 參數0)。i := 本模組 1363h(角色)；(not 本模組 0A4Fh(1, 角色)) 且 DS:0A878h <> 0 時呼叫 本模組 0CCBh(8, 3, 1313h(角色), 12EBh(角色))；除非「有號(新面向) div 4 = 有號(角色^[18Dh]^[9]) div 4 且 參數2 = 0 且 參數0 = 0」，且 DS:0A878h <> 0 時呼叫 本模組 0864h(i, 0, 0)（面向只分 0..3／4..7 兩半，同側轉向不換圖）；角色^[18Dh]^[9] := 新面向（無條件）；參數0 = 0 且 本模組 0A4Fh(0, 角色) 且 DS:0A878h <> 0 時 <0196h:003Eh>(byte[9860h+i], byte[98A8h+i], 新面向, 參數2, 角色^[143h]) 與 <0297h:1316h>。spec 808"
   }
  ]
 }
