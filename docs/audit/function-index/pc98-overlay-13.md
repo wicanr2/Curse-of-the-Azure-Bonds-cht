@@ -69,7 +69,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3A74` | sub_3A74 | VIEWDUDES | 779 | 303 | 1 | 11 | ✓ | 待解讀 | — | — | — |
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `3F71` | sub_3F71 | EFF57 | 327 | 128 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `40B8` | sub_40B8 | — | 114 | 42 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `40B8` | sub_40B8 | — | 114 | 42 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差 | spec/760-item-effect-flag-clear-and-file-exists.md |
 | `412A` | sub_412A | — | 186 | 63 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `426B` | sub_426B | EFF87 | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `453D` | sub_453D | EFF139 | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |

@@ -8,7 +8,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0000` | sub_0 | LOADLOADSAVE | 32 | 10 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C9+1`、`call sub_1627`、`call far ptr loc_147D`、`call sub_15A1`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-00.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-15.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md |
 | `0020` | sub_20 | — | 87 | 36 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標 | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-16.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0079` | sub_79 | — | 214 | 84 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `0164` | sub_164 | — | 1176 | 456 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-25.md |
+| `0164` | sub_164 | — | 1176 | 456 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-25.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `0614` | sub_614 | LOADCHARLIST | 450 | 204 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `07DC` | sub_7DC | — | 93 | 40 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `08E4` | sub_8E4 | — | 453 | 198 | 1 | 4 | ✓ | 待解讀 | — | — | — |
@@ -34,7 +34,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A6D` | sub_2A6D | LOADCHARACTER | 3141 | 1140 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-16.md<br>audit/function-triage.md |
 | `36B2` | sub_36B2 | — | 953 | 346 | 2 | 3 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 2A6Dh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `3AA8` | sub_3AA8 | LOADMONSTER | 850 | 324 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `3DFF` | sub_3DFF | LOADNPC | 108 | 42 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `3DFF` | sub_3DFF | LOADNPC | 108 | 42 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>載入 CPIC(retf 2)：與 DOS overlay-16:351Ch(spec 756)同流程(DS:7F09h^[67Ch] > 7 就不做、GetMem 後填 +126h、組 CS:3DFAh 的 'CPIC'、最後叫 (參數, p^[143h]))。⚠ 配置大小 DOS 1A6h、PC-98 1A7h，多一個 byte | spec/760-item-effect-flag-clear-and-file-exists.md |
 | `3E8B` | sub_3E8B | ATTACHCHARACTER | 300 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `3FB7` | sub_3FB7 | — | 115 | 53 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `402A` | sub_402A | — | 303 | 120 | 2 | 2 | ✓ | 待解讀 | — | — | — |

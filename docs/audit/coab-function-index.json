@@ -5826,6 +5826,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr ds:8B56h, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 91 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -6286,11 +6287,11 @@
    "note": "ECL opcode dispatcher；由 ds:75FFh 讀 opcode，00h..40h 中除 1Fh 外共 64 個 opcode 對應 52 個 handler",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/gold-box-ecl-interpreter.md",
     "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/560-ecl-opcode-dispatch-table.md"
    ]
   },
   {
@@ -12646,7 +12647,8 @@
    "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
    "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據",
    "citations": [
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -13035,7 +13037,8 @@
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-23.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -13071,11 +13074,15 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "清掉物品三個效果槽的旗標位元(retf 4)：走角色 +14Dh 的物品鏈，本模組 11DEh(p) 為真時把 p^[3Ch]/[3Dh]/[3Eh] 各 and 7Fh(保留效果 ID、清掉最高位旗標)，next 在 +2Ah。呼叫端是 overlay-15:023Eh(spec 755)",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -13095,7 +13102,8 @@
    "note": "整隊清理(retf，無參數)：從 DS:650Ah 沿 +189h 走隊伍鏈，對每個成員叫本模組 0188h 與 01CBh",
    "citations": [
     "audit/function-index/pc98-overlay-15.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -13283,7 +13291,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1016h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13978,7 +13989,8 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] \u003e 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -20057,6 +20069,7 @@
    "spec": "docs/spec/692-party-tally-and-list-search.md",
    "note": "連續四次 \u003c1975h\u003e(arg_0, a, b, c),參數寫死為 (0,0,0)、(0,1,1)、(1,2,1)、(1,3,0)。第三欄是 0..3,另外兩欄沒有規律(0,0,1,1 與 0,1,1,0)——原始碼是四行手寫呼叫不是迴圈,那兩欄要當資料照抄",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
@@ -20075,6 +20088,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-triage.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
@@ -20833,9 +20847,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
-    "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
   },
   {
@@ -22237,6 +22251,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "在指標表裡找索引(retf 4)：從 1 起逐格比對 DS:6D35h + i*4 這個遠指標是否等於參數，相等回索引；走到 DS:66A6h(項數)還沒找到回 0",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
@@ -22368,6 +22383,7 @@
    "note": "用 bit 7 選資源(retf 8)：代碼 \u003e 7Fh 時 0297h:08F8h(遠指標@DS:4FE8h, 遠指標@DS:65D2h, a, 代碼 and 7Fh, b, c)，否則同一支但用 DS:65CEh 與未遮罩的代碼。bit 7 是分頁選擇、低 7 位是頁內索引，無號比較",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-33.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -24153,7 +24169,10 @@
    "callers": 3,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "檔案是否存在(retf 4)：StoreString(參數, 緩衝, 50h)、InOutRes(word_23B08):=0、Assign+Reset(f,1)，成功就 Close 並回 true，否則 false，離開前再清一次 InOutRes。⚠ DOS 對應的 START.EXE:1685Fh 是用 FindFirst + DosError，兩者對唯讀/被開啟中的檔案行為不同"
   },
   {
    "platform": "pc98",
@@ -29223,11 +29242,15 @@
    "callers": 6,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "一句 Y/N 詢問(retf 4)：StoreString(參數, 緩衝, 0FFh)；014Ah:0084h(遠指標@DS:9594h, @緩衝, 0, 0)；組出 CS:0034h 的 'それでもかけてもらいますか？'(28 bytes Shift-JIS)；結果 := 0164h:0048h(0Dh, 0Ah, 0Fh)；014Ah:0089h()。該字串是 overlay 內嵌常數，不在字串表裡",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/pc98-overlay-02.md"
+    "audit/function-index/pc98-overlay-02.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -36163,7 +36186,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差",
+   "citations": [
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36580,7 +36609,8 @@
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-23.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -36616,11 +36646,15 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "清掉物品三個效果槽的旗標位元(retf 4)：鏈頭 +14Eh、槽在 +64h/+65h/+66h、next 在 +52h — PC-98 物品節點配置與 DOS 不同，其餘同 DOS overlay-15:01CBh",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-15.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -36640,7 +36674,8 @@
    "note": "整隊清理(retf)：鏈頭 DS:9598h、next 在 +18Ah，其餘同 DOS overlay-15:023Eh",
    "citations": [
     "audit/function-index/pc98-overlay-15.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -37308,7 +37343,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/pc98-overlay-25.md"
+    "audit/function-index/pc98-overlay-25.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -37714,7 +37750,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "載入 CPIC(retf 2)：與 DOS overlay-16:351Ch(spec 756)同流程(DS:7F09h^[67Ch] \u003e 7 就不做、GetMem 後填 +126h、組 CS:3DFAh 的 'CPIC'、最後叫 (參數, p^[143h]))。⚠ 配置大小 DOS 1A6h、PC-98 1A7h，多一個 byte",
+   "citations": [
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42291,6 +42333,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -42307,6 +42350,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
   },
@@ -45017,6 +45061,7 @@
    "spec": "docs/spec/691-item-type-table-and-record-pointers.md",
    "note": "與 DOS overlay-24:305Bh（entry#42）助憶碼序列完全相同，語意同該筆：先呼叫 3018h,通過後再重算一次 k,檢查 (byte [5D04h + k shl 4] and 14h) = 14h——**14h 的兩個位元(bit 2 與 bit 4)要同時成立**,寫成 != 0 會多放行一半情況。5D04h 與 5D02h 差 2,是同一格的 +2 欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-02.md",
     "context/50-log-2026-08-09-13.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
    ]
@@ -45970,10 +46015,14 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/760-item-effect-flag-clear-and-file-exists.md",
+   "note": "逐項釋放後清空(retf 4)：p^[0] 為 0 就離開；否則由高索引往低，對 p + 8i − 1 叫 02A8h:10D5h，最後 FillChar(p^, 43h, 0)、DS:0A313h:=0、DS:0A325h:=0FFh。⚠ 計數器用全域 DS:0A9D9h 而非 local，不可重入",
    "citations": [
     "audit/function-index/pc98-overlay-29.md",
-    "spec/758-morale-field-0f7h-round-trip.md"
+    "spec/758-morale-field-0f7h-round-trip.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -46061,7 +46110,8 @@
    "spec": "docs/spec/753-small-utility-routines.md",
    "note": "retf，無參數：019Eh:0384h() 後 02A8h:0A86h(1, 1, 遠指標@DS:0A327h)，再 02A8h:10D5h(@DS:0A327h)。最後這一步 DOS 版沒有",
    "citations": [
-    "spec/753-small-utility-routines.md"
+    "spec/753-small-utility-routines.md",
+    "spec/760-item-effect-flag-clear-and-file-exists.md"
    ]
   },
   {
@@ -47377,9 +47427,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 22,
+   "Todo": 21,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -47692,9 +47742,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 220,
+   "Read": 221,
    "NotBlocking": 29,
-   "Todo": 59,
+   "Todo": 58,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
@@ -47767,9 +47817,9 @@
    "Module": "overlay-04",
    "Unit": "TEMPLE",
    "Functions": 23,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 10,
    "CodeBytes": 3710,
    "Undefined": 830,
@@ -47902,9 +47952,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 39,
+   "Todo": 38,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -47932,9 +47982,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -47947,9 +47997,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 24,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -48142,9 +48192,9 @@
    "Module": "overlay-29",
    "Unit": "PORTRAIT",
    "Functions": 12,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 1,
    "CodeBytes": 1846,
    "Undefined": 114,

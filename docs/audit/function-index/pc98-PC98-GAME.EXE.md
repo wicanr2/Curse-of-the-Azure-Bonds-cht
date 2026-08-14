@@ -115,7 +115,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `172D5` | sub_172D5 | — | 90 | 48 | 1 | 4 |  | 已解讀 | exact | docs/spec/651-text-draw-wrappers.md<br>畫訊息並等待:複製字串(上限 50h)→ <172A0h>(50h,0,18h,0) 在第 24 列鋪滿方塊 → <17250h> 在同列畫字串 → <sub_18036>()(回傳值沒再讀)→ 再鋪一次方塊擦掉。第 18h 列是訊息列 | — |
 | `173A1` | sub_173A1 | — | 75 | 32 | 1 | 6 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>換片重試迴圈:repeat 指派 'game.ovr' → <sub_17656> 開檔;失敗就顯示 byte_17380(32 bytes 的 Pascal 短字串「ゲームディスクＡを入れてください」)、<sub_1BD13>、<sub_18036>,然後整個重來(連檔名字串都重新指派)。沒有重試上限也沒有放棄出口 | — |
 | `1741D` | sub_1741D | — | 569 | 231 | 1 | 10 |  | 待解讀 | — | — | — |
-| `17656` | sub_17656 | — | 104 | 42 | 3 | 5 |  | 待解讀 | — | — | — |
+| `17656` | sub_17656 | — | 104 | 42 | 3 | 5 |  | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>檔案是否存在(retf 4)：StoreString(參數, 緩衝, 50h)、InOutRes(word_23B08):=0、Assign+Reset(f,1)，成功就 Close 並回 true，否則 false，離開前再清一次 InOutRes。⚠ DOS 對應的 START.EXE:1685Fh 是用 FindFirst + DosError，兩者對唯讀/被開啟中的檔案行為不同 | — |
 | `177BD` | sub_177BD | — | 48 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>第三份 Shift-JIS 首位元組判斷:81h..9Fh 或 E0h..FCh 回 1,回傳值放 AL。與 14342h 同一族(上界 FCh),不是 169D9h 那族(F7h、clc)。實際畫字走的是 F7h 那族 | — |
 | `1790D` | sub_1790D | — | 83 | 31 | 1 | 3 |  | 已解讀 | exact | docs/spec/652-disk-swap-loop-and-third-leadbyte.md<br>三個參數都是兩層間接。if arg_C^^[0] = 0FFh then <sub_1C15D>(arg_4^, arg_8^^, arg_C^^ + 1)(跳過標記那個 byte)else <sub_17DD5>(arg_4^, arg_8^^ dword, arg_C^^ dword)。兩條路徑的參數形狀不同,0FFh 代表「未壓縮」——另一條走的 sub_17DD5 是 RLE 解壓縮器(spec 653) | — |
 | `17960` | sub_17960 | — | 215 | 99 | 1 | 7 |  | 待解讀 | — | — | — |

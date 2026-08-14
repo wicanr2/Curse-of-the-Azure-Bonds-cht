@@ -26,7 +26,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1F21` | sub_1F21 | — | 777 | 234 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `228E` | sub_228E | — | 3994 | 1460 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `3254` | sub_3254 | — | 707 | 275 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `351C` | sub_351C | — | 108 | 29 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] > 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `351C` | sub_351C | — | 108 | 29 | 0 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>載入 CPIC(retf 2)：DS:4F9Dh^[67Ch] > 7(無號)就整支不做；否則 GetMem(p, 1A6h)、本模組 3254h(參數, p)、p^[126h] := 參數、本模組 35A8h(p)，組出 CS:3517h 的 'CPIC' 字串後叫 overlay-33 entry#5 @01D4h(參數, p^[143h])。⚠ 匯出漏了 21h bytes，本判讀由原始 bytes 補回 | spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `35A8` | sub_35A8 | — | 116 | 37 | 2 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>spec/758-morale-field-0f7h-round-trip.md |
 | `3748` | sub_3748 | — | 1520 | 575 | 0 | 10 | ✓ | 待解讀 | — | — | audit/function-triage.md |
 | `3D38` | sub_3D38 | — | 193 | 64 | 1 | 1 | ✓ | 待解讀 | — | — | — |
