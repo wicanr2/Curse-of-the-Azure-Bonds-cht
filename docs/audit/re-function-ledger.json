@@ -26239,6 +26239,15 @@
    "level": "exact",
    "spec": "1062",
    "note": "防拷轉輪(translation wheel)檢查，318 條。載入 'tiles' 資源的兩組字模(overlay-33 entry#2，espruar 1Ah=26 個、dethek 16h=22 個，第二組索引要 +1Ah)；espruar:=Random(26)、dethek:=Random(22) 各畫一個；路徑:=Random(3) 選 '-..-..-..'/'- - - - -'/'.........'(各 9)；方框:=Random(6)，畫面顯示 6−方框(即 1..6)。★★★ 答案公式：索引 := (espruar + 22h − dethek) + 路徑×0Ch + (5−方框)×2，再用 while ±24h 夾到 0..35；答案 := byte[DS:0000h + 方框×25h + 索引 + 1](25h=37，+1 是因為每列第 0 格是佔位的 '$')。★★★★ 答案表 DS:0000h 共 6 列×37 bytes：列0 $CWLNRTESSCEDCSHSISERRRNSHSSTSSNNHSHN、列1 $LAASRDAIILIDSUGADAEEOEGRLSELIITESOIO、列2 $LRUNIMMORIIGRRIUPTIIUELIMLHMIXACGRIL、列3 $Z0LIOHEUVNODSGEOGXYWISIOCRARLRARRHOI、列4 $AMTELRLUIYNAEOOITOUELRREREUIMADPPFAB、列5 $ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 —— 這就是轉輪的全部資料，remake 有這張表與公式就能完整重現或跳過，不需要實體轉輪。答錯顯示 \"Sorry, that's incorrect.\"(24) 與 'An unseen force hurls you into the abyss!'(41)。⚠ 答案表是 ASCII 大寫字母與數字，中文化不能動；'espruar'/'dethek' 是專有名詞；三個路徑圖樣是畫面圖形不可翻。⚠ 答錯之後 03CEh→03ECh→0446h 中間 30+90 bytes 匯出沒有反組譯，那一段不宣稱"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-03",
+   "ea": 305,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1063",
+   "note": "防拷轉輪 PC-98 側(310 條)，DOS 對側 overlay-03:0011Ah(spec 1062)。★★★ 公式逐條相同：(espruar + 22h − dethek) + 路徑×0Ch + (5−方框)×2，用 while ±24h 夾到 0..35，答案 := byte[表 + 方框×25h + 索引 + 1]；Random 上界 1Ah/16h/3/6 與第二組符文索引 +1Ah 也相同。★★★ 答案表基底是 DS:00FCh(DOS 是 DS:0000h)，6×37 的內容與 DOS 逐 byte 相同 ⇒ 轉輪防拷在兩平台是同一份資料，remake 只需實作一次。★★ PC-98 看得到重試上限：cmp var_1,2 / ja ⇒ 第 3 次錯就不再重來(DOS 的上限判斷落在未反組譯的區段)；失敗三次後叫 far 0893:0000h 兩次(參數 DS:483Ch 與 DS:4844h)、DS:7F16h:=9、顯示「目に見えぬ力が、きみを〈奈落〉に放りこんだ！」(44)、Delay(3E8h)、far 07E3:0077h。★★★ 中文化參考：PC-98 把三個路徑圖樣改成全形符號(「－・・－・・－・・」「－　－　－　－　－」「‥‥‥‥‥‥‥‥‥」各 18) —— 圖樣本身被翻譯了，因為它是文字不是圖形；語序也整個重排成數字在前(「N 番のマスには何とありますか？」)"
   }
  ]
 }

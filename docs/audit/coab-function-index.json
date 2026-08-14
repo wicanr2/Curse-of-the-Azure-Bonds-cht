@@ -4871,9 +4871,9 @@
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/dos-overlay-06.md"
+    "audit/function-index/dos-overlay-05.md"
    ]
   },
   {
@@ -6574,9 +6574,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/overlay-init-graph.md",
     "spec/1062-copy-protection-code-wheel.md",
-    "spec/569-small-function-batch-reading.md"
+    "spec/1063-copy-protection-pc98.md"
    ]
   },
   {
@@ -25786,11 +25787,11 @@
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-33.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-33.md"
    ]
   },
   {
@@ -31135,9 +31136,9 @@
     "audit/ecl-opcode-dispatch.md",
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/dos-overlay-06.md"
+    "audit/function-index/dos-overlay-05.md"
    ]
   },
   {
@@ -32824,9 +32825,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/overlay-init-graph.md",
     "spec/1062-copy-protection-code-wheel.md",
-    "spec/569-small-function-batch-reading.md"
+    "spec/1063-copy-protection-pc98.md"
    ]
   },
   {
@@ -32848,7 +32850,9 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-03.md",
     "spec/1062-copy-protection-code-wheel.md",
+    "spec/1063-copy-protection-pc98.md",
     "spec/753-small-utility-routines.md"
    ]
   },
@@ -32864,9 +32868,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1063",
+   "note": "防拷轉輪 PC-98 側(310 條)，DOS 對側 overlay-03:0011Ah(spec 1062)。★★★ 公式逐條相同：(espruar + 22h − dethek) + 路徑×0Ch + (5−方框)×2，用 while ±24h 夾到 0..35，答案 := byte[表 + 方框×25h + 索引 + 1]；Random 上界 1Ah/16h/3/6 與第二組符文索引 +1Ah 也相同。★★★ 答案表基底是 DS:00FCh(DOS 是 DS:0000h)，6×37 的內容與 DOS 逐 byte 相同 ⇒ 轉輪防拷在兩平台是同一份資料，remake 只需實作一次。★★ PC-98 看得到重試上限：cmp var_1,2 / ja ⇒ 第 3 次錯就不再重來(DOS 的上限判斷落在未反組譯的區段)；失敗三次後叫 far 0893:0000h 兩次(參數 DS:483Ch 與 DS:4844h)、DS:7F16h:=9、顯示「目に見えぬ力が、きみを〈奈落〉に放りこんだ！」(44)、Delay(3E8h)、far 07E3:0077h。★★★ 中文化參考：PC-98 把三個路徑圖樣改成全形符號(「－・・－・・－・・」「－　－　－　－　－」「‥‥‥‥‥‥‥‥‥」各 18) —— 圖樣本身被翻譯了，因為它是文字不是圖形；語序也整個重排成數字在前(「N 番のマスには何とありますか？」)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1062-copy-protection-code-wheel.md",
+    "spec/1063-copy-protection-pc98.md"
    ]
   },
   {
@@ -53071,11 +53080,11 @@
    "note": "轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ah:2Ah`（body 共 12 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
     "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-33.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/pc98-overlay-33.md"
    ]
   },
   {
@@ -53942,9 +53951,9 @@
    "Module": "overlay-03",
    "Unit": "PROTECT",
    "Functions": 4,
-   "Read": 3,
+   "Read": 4,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 752,
    "Undefined": 278,

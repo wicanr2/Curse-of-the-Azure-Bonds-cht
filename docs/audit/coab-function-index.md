@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1103、不阻塞 29、邊界碎片 338、待解讀 18；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1104、不阻塞 29、邊界碎片 338、待解讀 17；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -61,7 +61,7 @@
 | overlay-00 | MEMORY | 2 | 1 | 0 | 1 | 0 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
 | overlay-01 | INTRO | 4 | 3 | 0 | 1 | 0 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
 | overlay-02 | INTERPET | 86 | 58 | 0 | 28 | 0 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
-| overlay-03 | PROTECT | 4 | 3 | 0 | 0 | 1 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
+| overlay-03 | PROTECT | 4 | 4 | 0 | 0 | 0 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 13 | 0 | 10 | 0 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 13 | 0 | 4 | 0 | 5212 | 458 | [明細](function-index/pc98-overlay-05.md) |
 | overlay-06 | SHOP | 8 | 6 | 0 | 2 | 0 | 2363 | 283 | [明細](function-index/pc98-overlay-06.md) |
