@@ -17474,6 +17474,26 @@
    "spec": "docs/spec/743-berserk-and-two-factions.md",
    "note": "用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 <overlay-23 entry#3>(目標, id, 0);套用走 <overlay-23 entry#11>(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** <overlay-23 entry#2>(id, 目標, 0, 0)。開頭 DS:7582h := 0",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2253,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
+   "note": "操縱屍體的解除程序(對應 spec 734 的 2DB6h)。⚠ **角色^[197h] := 節點^[3] div 16 還原陣營**——這解掉 spec 724 留的一格:PUTEFFECT 的**第四個參數會被存進效果節點的 +3**。DS:6F9Ch = 0 時才顯示 '<名字> collapses'(CS:08C3h)。⚠ 與套用**不對稱**:+0E9h 套用寫 2、解除寫 0;+0E4h 套用寫 6、解除寫 0Ch;兩邊都不看原值,所以活人被操縱再解除後這兩個欄位會停在解除值上。+0DDh := 角色^[10Bh] + 角色^[113h] × <overlay-25 entry#10>(角色) 是第四對平行職業欄位(spec 728 模板)",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 2072,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
+   "note": "AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '<名字> is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],<overlay-24 entry#7>(角色);**+19Bh > 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 <overlay-24 entry#5>。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10",
+   "bounds": "prologue"
   }
  ]
 }
