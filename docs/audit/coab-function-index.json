@@ -26613,7 +26613,10 @@
    "callers": 2,
    "calls": 7,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "945",
+   "note": "按鍵分派迴圈(far)：叫 sub_1705Ah 與 sub_16ECEh(結果存 byte_16A23h)後進入迴圈——sub_16F81h、int 21h AH=7 直接讀鍵不回顯，先用 sub_1711Fh 比對 遠指標(dword_16A19h) 那張表，命中就叫 sub_16F2Bh 後繼續；否則比對固定的 ds:2AA6h，命中就用 ds:2D1Eh 的近指標跳表 call word ptr [2D1Eh + (結果−1)×2] 分派，處理常式回 0 就繼續等鍵、非 0 就把值 +1 交給 sub_170C5h 並結束"
   },
   {
    "platform": "pc98",
@@ -27258,7 +27261,10 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "945",
+   "note": "抓走最大的一塊 DOS 記憶體(near)：先清四個全域，int 21h AH=48h BX=0FFFFh 故意失敗以取得最大可用段數存 word_24184h，再用那個大小真的配置；失敗或 AX ≤ 2 就回 0。成功則 word_24182h = 池起始段、word_24186h = 起始 + 2、word_24188h = 段數 − 2、word_2418Ah/word_2418Eh 是兩個池的表頭段(各把 +0..+6 四個 word 清 0 = 空鏈)"
   },
   {
    "platform": "pc98",
@@ -27285,7 +27291,10 @@
    "callers": 2,
    "calls": 5,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "945",
+   "note": "在兩個記憶體池之間搬區塊(near)：用 sub_18767h 找一塊、sub_187AAh 另尋，sub_1883Eh 掛到 word_2418Eh 那個池、sub_18810h 掛到 word_2418Ah；每次都從區塊前一段(MCB)的 +0 讀大小去加減 word_2418Ch/word_24190h 兩個計數。搬進 word_2418Eh 那個池時在 MCB 的 +8 寫魔數 818Eh。兩個池構成『使用中/可回收』的雙鏈"
   },
   {
    "platform": "pc98",
@@ -28469,7 +28478,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "945",
+   "note": "★會處理全形字的退格(near)：先把 byte_280E3h 清 0，再從頭掃到倒數第二個位元組，用 sub_1977Eh 逐位元組判前導/後續(ah 是前導旗標)，據此判斷最後一個字是單位元組還是全形的後半。單位元組送 BS/' '/BS 並 dec bx；★全形則先把 cs:byte_19D01h 設 1(self-modifying 旗標)送一個 BS、清回 0、再送兩個 ' ' 與兩個 BS，並 dec bx 兩次。byte_280D0h = 0 時完全不做雙位元組判定。Big5 與 Shift-JIS 同為雙位元組，繁中版可照抄此結構只換前導判定範圍；DOS 版的輸入欄(spec 941)沒有這一層"
   },
   {
    "platform": "pc98",
@@ -52293,9 +52305,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 229,
+   "Read": 233,
    "NotBlocking": 29,
-   "Todo": 50,
+   "Todo": 46,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,

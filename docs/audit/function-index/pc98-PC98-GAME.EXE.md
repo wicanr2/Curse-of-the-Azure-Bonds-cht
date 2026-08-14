@@ -94,7 +94,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `169B6` | sub_169B6 | — | 35 | 21 | 1 | 1 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>填文字屬性平面 0A200h,與 17D72h 逐位元組完全相同 | — |
 | `169D9` | sub_169D9 | — | 20 | 12 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定(第二族):81h..9Fh 或 E0h..F7h 時 **clc**(進位清除)表示前導,否則 stc。方向由呼叫端 16966h 確認——那裡 call 之後是 jb(進位置起才跳)而跳去的是半形路徑。⚠ 上界是 F7h,與 18D5Dh 那族的 FCh 不同 | — |
 | `169ED` | sub_169ED | — | 33 | 16 | 1 | 1 |  | 已解讀 | exact | docs/spec/648-pc98-text-draw-core.md<br>SJIS→JIS 換算,與 17186h、17DA9h 三者逐位元組完全相同 | — |
-| `16E70` | sub_16E70 | — | 94 | 48 | 2 | 7 |  | 待解讀 | — | — | — |
+| `16E70` | sub_16E70 | — | 94 | 48 | 2 | 7 |  | 已解讀 | exact | 945<br>按鍵分派迴圈(far)：叫 sub_1705Ah 與 sub_16ECEh(結果存 byte_16A23h)後進入迴圈——sub_16F81h、int 21h AH=7 直接讀鍵不回顯，先用 sub_1711Fh 比對 遠指標(dword_16A19h) 那張表，命中就叫 sub_16F2Bh 後繼續；否則比對固定的 ds:2AA6h，命中就用 ds:2D1Eh 的近指標跳表 call word ptr [2D1Eh + (結果−1)×2] 分派，處理常式回 0 就繼續等鍵、非 0 就把值 +1 交給 sub_170C5h 並結束 | — |
 | `16ECE` | sub_16ECE | — | 39 | 22 | 1 | 1 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>從輸入緩衝(DS:28A4h,每字一 word)尾端往回掃,跳過為 0 的格子,回傳最後一個非 0 格的 1 起算序號;全為 0 回 0。掃描上限是 byte_1ED34(容量) | — |
 | `16F2B` | sub_16F2B | — | 86 | 33 | 1 | 3 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>插入一個字,可能與前一字合成:容量滿了就不收;<sub_1711F>(si,2AAAh) 成立且已有字且前一字的高位元組為 0 時,再查 <17148h>(前一字, 2AE2h),成立就把新 byte 寫進**前一字的高位元組**——字數不變,兩個 byte 併成一個 Shift-JIS 碼(日文把濁點併進前一個假名的做法);否則才寫新格並把字數加一。注意 es:[dword_1EB2D]^ 兩條路徑都加一,所以它數的是 byte 數不是字數 | — |
 | `16F81` | sub_16F81 | — | 78 | 45 | 1 | 4 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例 | — |
@@ -139,9 +139,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18392` | sub_18392 | — | 77 | 32 | 1 | 2 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br><sub_1C15D>(arg_2^, @var_4, 4) 與 (@var_8, @var_2, 2) 搬完後 <sub_188B1>(var_8),再把 arg_2^[0..3] 清成 0(所有權轉移的寫法),最後 inc word_280B8h。sub_188B1 的回傳值沒再讀 | — |
 | `18407` | sub_18407 | — | 311 | 129 | 2 | 12 |  | 待解讀 | — | — | — |
 | `1856A` | sub_1856A | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `18571` | sub_18571 | — | 121 | 48 | 2 | 1 |  | 待解讀 | — | — | — |
+| `18571` | sub_18571 | — | 121 | 48 | 2 | 1 |  | 已解讀 | exact | 945<br>抓走最大的一塊 DOS 記憶體(near)：先清四個全域，int 21h AH=48h BX=0FFFFh 故意失敗以取得最大可用段數存 word_24184h，再用那個大小真的配置；失敗或 AX ≤ 2 就回 0。成功則 word_24182h = 池起始段、word_24186h = 起始 + 2、word_24188h = 段數 − 2、word_2418Ah/word_2418Eh 是兩個池的表頭段(各把 +0..+6 四個 word 清 0 = 空鏈) | — |
 | `185EA` | sub_185EA | — | 40 | 18 | 2 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>釋放 DOS 記憶體塊(int 21h AH=49h),對象是 word_24182h;為 0 時直接回 0FFFFh。⚠ 先把 word_24182h 清成 0 再檢查進位旗標——釋放失敗時全域已被清掉,同一塊再也不會被嘗試釋放。回傳慣例與同批另兩支相反:0 成功、0FFFFh 失敗 | — |
-| `18612` | sub_18612 | — | 113 | 52 | 2 | 5 |  | 待解讀 | — | — | — |
+| `18612` | sub_18612 | — | 113 | 52 | 2 | 5 |  | 已解讀 | exact | 945<br>在兩個記憶體池之間搬區塊(near)：用 sub_18767h 找一塊、sub_187AAh 另尋，sub_1883Eh 掛到 word_2418Eh 那個池、sub_18810h 掛到 word_2418Ah；每次都從區塊前一段(MCB)的 +0 讀大小去加減 word_2418Ch/word_24190h 兩個計數。搬進 word_2418Eh 那個池時在 MCB 的 +8 寫魔數 818Eh。兩個池構成『使用中/可回收』的雙鏈 | — |
 | `18683` | sub_18683 | — | 124 | 56 | 2 | 4 |  | 待解讀 | — | — | — |
 | `186FF` | sub_186FF | — | 58 | 30 | 2 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>回傳串列裡最大的一塊,DX 帶回 word_24186h。⚠ 起始值是 word_24188h - 1,所以串列全部比它小時回傳的是那個減一後的值而不是實際最大值 | — |
 | `18767` | sub_18767 | — | 67 | 37 | 1 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>最佳適配配置:走 word_2418Eh 起的串列(節點以 segment 串接,+0 是大小、+4 是下一塊),剛好夠就立刻採用不再往下找,否則挑剩最少的。找不到時回 0(bx 初值 0FFFFh 加一);找到則回「節點 segment + 1」。無號比較 | — |
@@ -223,7 +223,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19BBC` | sub_19BBC | — | 52 | 25 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>在游標處放一個空白:word_280E8h 與 word_280EAh 都設成目前游標;屬性經 <18FA3h> 換算後寫 es:[bx+di](所以 byte_280C6h 存的是打包格式不是 PC-98 原生屬性);順序是 <19B7Dh> 清前一格 → stosw 寫入 → <19B9Ch> 清後一格 | — |
 | `19BF0` | sub_19BF0 | — | 129 | 58 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19C71` | sub_19C71 | — | 32 | 12 | 1 | 3 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>讀一格:byte_280D0h(雙位元組總開關)開啟且 <sub_1977Eh> 判定為前導時先送第一個 byte 再 bx++,然後一律再送一個。開關關掉時一律只送一個 byte。sub_1977Eh 用進位回答(jnb),與 169D9h 同一種慣例 | — |
-| `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 待解讀 | — | — | — |
+| `19C91` | sub_19C91 | — | 112 | 51 | 1 | 3 |  | 已解讀 | exact | 945<br>★會處理全形字的退格(near)：先把 byte_280E3h 清 0，再從頭掃到倒數第二個位元組，用 sub_1977Eh 逐位元組判前導/後續(ah 是前導旗標)，據此判斷最後一個字是單位元組還是全形的後半。單位元組送 BS/' '/BS 並 dec bx；★全形則先把 cs:byte_19D01h 設 1(self-modifying 旗標)送一個 BS、清回 0、再送兩個 ' ' 與兩個 BS，並 dec bx 兩次。byte_280D0h = 0 時完全不做雙位元組判定。Big5 與 Shift-JIS 同為雙位元組，繁中版可照抄此結構只換前導判定範圍；DOS 版的輸入欄(spec 941)沒有這一層 | — |
 | `19D02` | sub_19D02 | — | 28 | 13 | 4 | 2 |  | 已解讀 | exact | docs/spec/663-orphan-half-cleanup.md<br>游標形狀:byte_280FFh := al;al 的 bit 0 為 0 時送 <sub_1977Bh>(AH=12h),否則送 (AH=10h, AL=al shr 1) 再送 (AH=11h)。11h 與 19A10h 用的是同一個功能碼 | — |
 | `19D1E` | sub_19D1E | — | 64 | 32 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 64 bytes，已逐條讀完） | — |
 | `19E98` | sub_19E98 | — | 8 | 5 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 AL 查 CS:0FC0h 起的轉換表(xlat),前後保存 BX。表的內容見 docs/spec/658-color-bit-swap-and-attribute-codec.md:seg050 基底 18EE0h 故表在 19EA0h(緊接本支 retn 之後),8 筆是 [0,1,4,5,2,3,6,7]——bit 1 與 bit 2 互換、bit 0 不動,即 PC-98 的 G-R-B 與一般 R-G-B 的互換;且為自反(T[T[i]]=i),故編碼解碼共用同一張表 | — |
