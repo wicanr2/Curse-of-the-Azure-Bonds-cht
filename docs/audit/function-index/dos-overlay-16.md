@@ -10,7 +10,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `008D` | sub_8D | — | 966 | 385 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `0453` | sub_453 | — | 375 | 169 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `0643` | sub_643 | — | 936 | 381 | 4 | 3 | ✓ | 待解讀 | — | — | — |
-| `09EB` | sub_9EB | — | 135 | 50 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `09EB` | sub_9EB | — | 135 | 50 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md<br>兩筆記錄的合併(retf 8)：n := 來源^[11h] − 1；for i := 0 to n 做 目的^[17h+i] |= 來源^[17h+i]、目的^[13h]^[i] &= 來源^[13h]^[i]。同一迴圈一個取聯集一個取交集。⚠ 來源^[11h] 為 0 時 n = 0FFFFh，迴圈會跑 65536 次 | spec/764-fsplit-dbcs-and-eight-slot-longint-table.md |
 | `0A7E` | sub_A7E | — | 498 | 183 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0C7E` | sub_C7E | — | 157 | 63 | 2 | 0 | ✓ | 待解讀 | — | — | — |
 | `0DEA` | sub_DEA | — | 1436 | 546 | 1 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md |

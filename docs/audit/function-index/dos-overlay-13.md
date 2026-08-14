@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
-| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md |
+| `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
 | `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
@@ -45,7 +45,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
-| `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個 | audit/embedded-strings.md<br>spec/762-ega-glyph-blit-and-movement-rate.md |
+| `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `2F3C` | sub_2F3C | — | 205 | 67 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3040` | sub_3040 | — | 432 | 177 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `31F0` | sub_31F0 | — | 361 | 132 | 2 | 10 | ✓ | 待解讀 | — | — | — |

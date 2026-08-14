@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | INITDUDE | 292 | 94 | 0 | 7 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
-| `0124` | sub_124 | FIGMOVE | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：+1A6h/+198h/DS:7F09h/DS:0A034h/DS:0A030h，其餘同 DOS overlay-13:0124h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md |
+| `0124` | sub_124 | FIGMOVE | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：+1A6h/+198h/DS:7F09h/DS:0A034h/DS:0A030h，其餘同 DOS overlay-13:0124h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `0192` | sub_192 | CALCWEAPDAMAGE | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md |
 | `0358` | sub_358 | DESCRIBEWEAPONATTACK | 812 | 326 | 3 | 4 | ✓ | 待解讀 | — | — | — |
 | `0684` | sub_684 | — | 266 | 98 | 1 | 7 | ✓ | 待解讀 | — | — | — |
@@ -59,7 +59,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `29F4` | sub_29F4 | FIGDIR | 126 | 43 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `2A72` | sub_2A72 | SHOWARROW | 546 | 223 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `2D1E` | sub_2D1E | FASTESTENEMY | 130 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `2D1E` | sub_2D1E | FASTESTENEMY | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h | spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `2DB9` | sub_2DB9 | CHECKBETRAYAL | 205 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 待解讀 | — | — | — |

@@ -19228,6 +19228,78 @@
    "level": "exact",
    "spec": "docs/spec/762-ega-glyph-blit-and-movement-rate.md",
    "note": "拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 1990,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(>0Fh→0、<0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 2865,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "石化解除(retf，無參數)：DS:9594h^[196h] 不等於 7 時先顯示 CS:0AFDh 'は石になってはいませんよ' 並用本模組 0051h 問「それでもかけてもらいますか？」；答 Y 才顯示 CS:0B16h 'ストーン・トゥ・フレッシュ' 並叫 本模組 0103h(7D0h)；再答 Y 且仍是 7 就把 +196h 設 0、+197h 設 1、+1A5h(目前 HP)設 1。可證狀態欄位值 7 = 石化"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 11550,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 8224,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
+   "note": "三級治療量累加(retf 2，SS 相對記錄)：ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，總量加到 ss:[p−2]。沒有任何上限檢查(理論上限 13260，word 裝得下)。⚠ IDA 把同一個位移 8b7e06 印成 arg_2 與 [bp+6] 兩種名字，判參數要看位移位元組"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 101977,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "DBCS 版 FSplit(retf 10h，四個遠指標)：三個輸出上限 43h/8/4 正是 Turbo Pascal 的 DirStr/NameStr/ExtStr。掃描時每個位元組先叫 sub_18E44h，回 CF(前導位元組)就連下一個一起跳過，再判 '\\' 與 ':'。原版 RTL 沒有這一步，會把 Shift-JIS 後續位元組 0x5C 誤當分隔字元。⚠ Big5 後續位元組同樣涵蓋 0x5C，中文版一樣需要，但判定範圍要重寫"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 2563,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "扣一筆並累計(retf 8)：p^[0FBh + idx*2] -= 數量(word，⚠ 沒有下限檢查，不足會迴繞)；叫本模組 003Bh(數量, p)；DS:4FBAh 為 6 或 1 時再把數量以 32-bit 加到 DS:6F70h + idx*4。DS:6F70h 這八格至此有三種互相衝突的型別用法(遠指標/商餘/累加器)，見 spec 764"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 2589,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "扣一筆並累計(retf 8)：與 DOS overlay-21:0A03h 助憶碼 50 條完全相同，表在 DS:0A00Ah、狀態變數 DS:7F27h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 2539,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+   "note": "兩筆記錄的合併(retf 8)：n := 來源^[11h] − 1；for i := 0 to n 做 目的^[17h+i] |= 來源^[17h+i]、目的^[13h]^[i] &= 來源^[13h]^[i]。同一迴圈一個取聯集一個取交集。⚠ 來源^[11h] 為 0 時 n = 0FFFFh，迴圈會跑 65536 次"
   }
  ]
 }
