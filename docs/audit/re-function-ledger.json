@@ -20830,6 +20830,24 @@
    "level": "exact",
    "spec": "docs/spec/799-show3dsprite-named-and-escape-check.md",
    "note": "逃跑判定：retf 4 = 一個角色遠指標。<far 1560h>(角色, 0FFh) 為假就直接算逃掉；否則 半 := 有號(本模組 0124h(角色)) div 2、v := 本模組 2D1Eh(角色)，v < 半（無號）算逃掉，v = 半 時再擲 <far 142Bh+2>(2,1)，回 1 才算逃掉（平手偏向失敗）。逃掉走 <far 143Bh+1>(角色, 3, 名字+'は逃げきった。'(14 bytes))，否則 <far 151Bh+4>('逃げられなかった'(16 bytes))。回傳的是 <far 156Ah>(角色) 的結果，不是逃跑成敗。spec 799／806"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 3781,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/807-drop-item-scribe-warning.md",
+   "note": "丟棄物品前的關卡：retf 4 = 物品遠指標，回傳 al。物品^[34h] <> 0（裝備中）→ 顯示 'Must be unreadied'(17) 並 <far 154Fh>，回 0；<far 11DBh+3>(物品) 為假 → 直接回 1；否則三個效果槽 +3Ch/+3Dh/+3Eh 任一 > 7Fh（還沒抄完，spec 803 的編碼）→ <far 155Eh>(0,15h,1,DS:6506h)、DS:65A0h := DS:6506h^[0] + 2（名字長度）、DS:65A1h := 15h、<0542h:04A4h>(1,15h,26h,16h,0Eh,0,0, 名字+' was going to scribe from that scroll'(37，開頭空白))、<far 16ABh+3>(0Fh,0Ah,0Dh,'is it Okay to lose it? '(23，結尾空白)) 回 'Y' 才回 1；其餘回 1。最後一律 <far 1ECDh>(16h,26h,15h,1)。門檻 > 7Fh 與抄寫程序的 > 80h 差一個值：值恰為 80h 的槽會被這裡擋、卻永遠抄不到。spec 807"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 3726,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/807-drop-item-scribe-warning.md",
+   "note": "丟棄物品前的關卡：retf 4 = 物品遠指標，回傳 al。物品^[34h] <> 0（裝備中）→ 顯示 '装備をはずしてください'(22 bytes) 並 <far loc_151D+2>，回 0；<far sub_11AEh>(物品) 為假 → 直接回 1；否則三個效果槽 +64h/+65h/+66h 任一 > 7Fh（還沒抄完，spec 803 的編碼）→ <far loc_152C+2>(0,15h,1,DS:9594h)、DS:9636h := DS:9594h^[0] + 2（名字長度）、DS:9637h := 15h、<0418h:0E6Ah>(1,15h,26h,16h,0Eh,0,0, 名字+'はその巻物から呪文を書き写そうとしています。'(44 bytes))、<far loc_1686+2>(0Fh,0Ah,0Dh,'この巻物からの書き写しを中止しますか？'(38 bytes)) 回 'Y' 才回 1；其餘回 1。最後一律 <sub_2095>(16h,26h,15h,1)。門檻 > 7Fh 與抄寫程序的 > 80h 差一個值：值恰為 80h 的槽會被這裡擋、卻永遠抄不到。spec 807"
   }
  ]
 }

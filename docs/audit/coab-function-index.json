@@ -12334,6 +12334,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/806-initiative-and-combat-state-layout.md"
    ]
   },
@@ -12353,6 +12354,7 @@
    "spec": "docs/spec/754-small-predicates-and-wrappers.md",
    "note": "依相位進位的折半(retf 2)：f(x: byte) = (x + (DS:758Dh and 1)) div 2。shr 只用來取 bit 0 進 CF，值本身丟掉。DS:758Dh 在戰鬥開場(spec 750)被設 0",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/754-small-predicates-and-wrappers.md",
     "spec/806-initiative-and-combat-state-layout.md"
@@ -15506,9 +15508,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/807-drop-item-scribe-warning.md",
+   "note": "丟棄物品前的關卡：retf 4 = 物品遠指標，回傳 al。物品^[34h] \u003c\u003e 0（裝備中）→ 顯示 'Must be unreadied'(17) 並 \u003cfar 154Fh\u003e，回 0；\u003cfar 11DBh+3\u003e(物品) 為假 → 直接回 1；否則三個效果槽 +3Ch/+3Dh/+3Eh 任一 \u003e 7Fh（還沒抄完，spec 803 的編碼）→ \u003cfar 155Eh\u003e(0,15h,1,DS:6506h)、DS:65A0h := DS:6506h^[0] + 2（名字長度）、DS:65A1h := 15h、\u003c0542h:04A4h\u003e(1,15h,26h,16h,0Eh,0,0, 名字+' was going to scribe from that scroll'(37，開頭空白))、\u003cfar 16ABh+3\u003e(0Fh,0Ah,0Dh,'is it Okay to lose it? '(23，結尾空白)) 回 'Y' 才回 1；其餘回 1。最後一律 \u003cfar 1ECDh\u003e(16h,26h,15h,1)。門檻 \u003e 7Fh 與抄寫程序的 \u003e 80h 差一個值：值恰為 80h 的槽會被這裡擋、卻永遠抄不到。spec 807",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/807-drop-item-scribe-warning.md"
    ]
   },
   {
@@ -32494,7 +32500,11 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+13h], 5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `cmp byte ptr es:[di+13h], 5`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36327,7 +36337,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-13.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -36347,6 +36360,7 @@
    "note": "依相位進位的折半(retf 2)：f(x) = (x + (DS:0A81Fh and 1)) div 2，與 DOS overlay-13:0F12h 同",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/754-small-predicates-and-wrappers.md"
    ]
   },
@@ -40514,7 +40528,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/807-drop-item-scribe-warning.md",
+   "note": "丟棄物品前的關卡：retf 4 = 物品遠指標，回傳 al。物品^[34h] \u003c\u003e 0（裝備中）→ 顯示 '装備をはずしてください'(22 bytes) 並 \u003cfar loc_151D+2\u003e，回 0；\u003cfar sub_11AEh\u003e(物品) 為假 → 直接回 1；否則三個效果槽 +64h/+65h/+66h 任一 \u003e 7Fh（還沒抄完，spec 803 的編碼）→ \u003cfar loc_152C+2\u003e(0,15h,1,DS:9594h)、DS:9636h := DS:9594h^[0] + 2（名字長度）、DS:9637h := 15h、\u003c0418h:0E6Ah\u003e(1,15h,26h,16h,0Eh,0,0, 名字+'はその巻物から呪文を書き写そうとしています。'(44 bytes))、\u003cfar loc_1686+2\u003e(0Fh,0Ah,0Dh,'この巻物からの書き写しを中止しますか？'(38 bytes)) 回 'Y' 才回 1；其餘回 1。最後一律 \u003csub_2095\u003e(16h,26h,15h,1)。門檻 \u003e 7Fh 與抄寫程序的 \u003e 80h 差一個值：值恰為 80h 的槽會被這裡擋、卻永遠抄不到。spec 807"
   },
   {
    "platform": "pc98",
@@ -48799,9 +48816,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -49354,9 +49371,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
