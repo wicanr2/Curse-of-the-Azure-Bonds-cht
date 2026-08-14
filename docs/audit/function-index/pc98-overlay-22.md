@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0E75` | sub_E75 | — | 237 | 99 | 10 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
 | `0F62` | sub_F62 | — | 441 | 156 | 47 | 5 | ✓ | 待解讀 | — | — | — |
 | `112C` | sub_112C | GETSPELLTARGETS | 283 | 103 | 0 | 1 | ✓ | 待解讀 | — | — | — |
-| `1247` | sub_1247 | TARGETDIR | 333 | 117 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `1247` | sub_1247 | TARGETDIR | 333 | 117 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/733-cast-driver.md |
 | `140A` | sub_140A | — | 1 | 1 | 8 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `hlt`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1 bytes，已逐條讀完） | — |
 | `140F` | sub_140F | — | 5 | 1 | 7 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `sub byte ptr [bx+di-507Eh], 82h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1414` | sub_1414 | — | 5 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `adc al, 8Eh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
