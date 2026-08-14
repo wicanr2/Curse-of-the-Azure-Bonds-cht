@@ -23784,15 +23784,6 @@
    "note": "神殿治療選單(retf，無參數)：167h:43h 建 10 個節點，每個填 DS:0BBh + i*29h 的選單字串(Cure Blindness/Cure Disease/Cure Light|Serious|Critical Wounds/Heal/Neutralize Poison/Raise Dead/Remove Curse/Stone to Flesh/Exit)；標題 名字＋', how can we help you?'；167h:39h 收鍵，48h 或 0Dh 時依索引分派 0280h/0324h/043Dh(1..4)/0892h/063Eh/097Bh/0A63h，索引 0Ah 結束；最後 167h:48h 釋放"
   },
   {
-   "platform": "pc98",
-   "module": "overlay-04",
-   "ea": 3071,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "911",
-   "note": "同 DOS overlay-04:00B12h。選單表 DS:0BBh(每筆 29h)↔DS:18Fh(每筆 51h)，PC-98 每一筆用全形空白把價格對齊到右邊(1000/1000/100/350/600/5000/5500/1000/3500/2000)，DOS 每筆不含價格。★⚠第 7/8 項順序相反：DOS 是 Neutralize Poison/Raise Dead，PC-98 是 レイズ・デッド/ニュートラライズ・ポイズン，而 case 分派是依索引寫死的——要嘛 PC-98 連 0892h/063Eh 的內容也對調了，要嘛是在地化 bug，中文化前必須先確認。另多兩格熱鍵 0A33Fh/0A335h='H'、0A37Eh/0A33Eh='E'"
-  },
-  {
    "platform": "dos",
    "module": "overlay-25",
    "ea": 2776,
@@ -23809,6 +23800,15 @@
    "level": "exact",
    "spec": "912",
    "note": "同 DOS overlay-25:00AD8h。表基底 3EBEh↔6F53h、3F1Eh↔6FB3h；物品節點 +3Eh/+34h/+2Ah↔+66h/+5Ch/+52h。★PC-98 側是正確的反組譯，用來校正 DOS 兩段錯位(正確是 jns/neg ax/add ax,bx 的有號比較與加總)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 3071,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "911",
+   "note": "同 DOS overlay-04:00B12h。選單表 DS:0BBh(每筆 29h)↔DS:18Fh(每筆 51h)，PC-98 每一筆用全形空白把價格對齊到右邊(1000/1000/100/350/600/5000/5500/1000/3500/2000)，DOS 每筆不含價格。★第 7/8 項順序與 DOS 相反(レイズ・デッド/ニュートラライズ・ポイズン)，但★分派也跟著換了：PC-98 索引 6 叫 06A8h(=DOS 063Eh Raise Dead)、索引 7 叫 093Eh(=DOS 0892h Neutralize Poison)，兩平台各自自洽，不是在地化 bug。另多兩格熱鍵 0A33Fh/0A335h='H'、0A37Eh/0A33Eh='E'"
   }
  ]
 }
