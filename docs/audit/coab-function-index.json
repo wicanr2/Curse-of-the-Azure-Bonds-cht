@@ -26409,7 +26409,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "950",
+   "note": "清掉幾個格(far, retf 8 = (格數, 列, 欄))：欄 \u003e 27h 或 列 \u003e 18h 就離開(無號)；位移 = (列 × 50h + 欄 × 2) × 2，用 sub_1C180h 對 0A000h:位移 與 0A200h:位移 各填 格數 shl 2 個 0。★三件事一次對上：座標上界 39 欄 × 24 列 = spec 937 的 40 欄格線座標系；欄 × 2 表示一個格線欄佔文字畫面兩個格(40 欄鋪滿 80 欄畫面)，清除長度 格數 shl 2 = 每格 4 bytes；0A200h 就是屬性平面(0A200h×16 = 0A000h×16 + 2000h，spec 946 的另一種寫法)"
   },
   {
    "platform": "pc98",
@@ -26694,7 +26697,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "950",
+   "note": "按鍵表的第二段轉譯(near)：把 ds:29A4h 起 byte_1ED34h 個 word 清 0，再走 byte_1EB33h 次——從 ds:28A4h(spec 949 的第一張表)逐 word 取出，hi ≠ 0 的雙 byte 項用 sub_17148h 在 ds:2AE2h 查編號後取 word[2AAEh + (k−1)×2]，單 byte 項用 sub_1711Fh 在 ds:2C52h 查編號後取 word[2B18h + (k−1)×2]，寫進 ds:29A4h。★按鍵對應是『設定字串 → 第一張 word 表 → 第二張 word 表』的兩段轉譯，全部資料驅動。⚠清空長度用 byte_1ED34h、走訪次數用 byte_1EB33h，兩者不一致時尾端會留 0"
   },
   {
    "platform": "pc98",
@@ -52335,9 +52341,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 243,
+   "Read": 245,
    "NotBlocking": 29,
-   "Todo": 36,
+   "Todo": 34,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
