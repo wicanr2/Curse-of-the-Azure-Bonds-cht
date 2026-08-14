@@ -7,8 +7,8 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 62 | 17 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 11 個相依 unit 的 0000h — overlay-24、overlay-19、overlay-22、overlay-23、overlay-29、overlay-33、overlay-16、overlay-26、overlay-32、overlay-34、overlay-25。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-25.md |
 | `003E` | sub_3E | — | 415 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-19.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-25.md<br>audit/function-index/dos-overlay-32.md |
-| `01DD` | sub_1DD | — | 1445 | 363 | 0 | 11 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完） | — |
-| `0782` | sub_782 | — | 2622 | 999 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-17.md<br>audit/function-triage.md |
+| `01DD` | sub_1DD | — | 1445 | 363 | 0 | 11 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完） | audit/function-strings.md |
+| `0782` | sub_782 | — | 2622 | 999 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-17.md<br>audit/function-strings.md<br>audit/function-triage.md |
 | `0E93` | sub_E93 | — | 62 | 15 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1048`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 62 bytes，已逐條讀完） | — |
 | `0FF5` | sub_FF5 | — | 9 | 2 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr es:[di+10Eh], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `11F7` | sub_11F7 | — | 652 | 246 | 2 | 6 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
@@ -29,18 +29,18 @@ offset（base 0），resident executable 為 IDA linear address。
 | `199E` | sub_199E | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [di+4124h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1ECD` | sub_1ECD | — | 1608 | 600 | 3 | 13 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-index/dos-overlay-19.md<br>audit/function-triage.md |
 | `2515` | sub_2515 | — | 146 | 53 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `260C` | sub_260C | — | 278 | 111 | 1 | 6 | ✓ | 待解讀 | — | — | — |
+| `260C` | sub_260C | — | 278 | 111 | 1 | 6 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2724` | sub_2724 | — | 285 | 121 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `2868` | sub_2868 | — | 3454 | 1290 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `3680` | sub_3680 | — | 982 | 378 | 1 | 8 | ✓ | 待解讀 | — | — | — |
+| `2868` | sub_2868 | — | 3454 | 1290 | 1 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
+| `3680` | sub_3680 | — | 982 | 378 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `3A56` | sub_3A56 | — | 323 | 104 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `3B99` | sub_3B99 | — | 223 | 101 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `3C78` | sub_3C78 | — | 15 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov cl, 3`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 15 bytes，已逐條讀完） | — |
-| `3EE3` | sub_3EE3 | — | 1798 | 708 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-triage.md |
+| `3EE3` | sub_3EE3 | — | 1798 | 708 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |
 | `45E9` | sub_45E9 | — | 259 | 93 | 3 | 1 | ✓ | 待解讀 | — | — | — |
 | `46EC` | sub_46EC | — | 218 | 88 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `47C6` | sub_47C6 | — | 588 | 242 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `4A12` | sub_4A12 | — | 256 | 98 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `4B12` | sub_4B12 | — | 344 | 126 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `4D2A` | sub_4D2A | — | 2450 | 756 | 2 | 10 | ✓ | 待解讀 | — | — | — |
+| `4D2A` | sub_4D2A | — | 2450 | 756 | 2 | 10 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `56BC` | sub_56BC | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | spec/752-empty-procedures.md |

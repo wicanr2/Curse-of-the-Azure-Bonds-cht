@@ -21154,6 +21154,24 @@
    "level": "exact",
    "spec": "docs/spec/819-spits-acid-special-attack.md",
    "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；<far 145Dh>(64h,1) 擲 1..100 > 19h（25）就離開；<far 1595h>(目標, 角色) >= 4（無號）也離開——兩道門檻都不印訊息。否則 <far 1598h+2>(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、<far 1554h>(1,0Ah)、<far 1566h+2>(17h)、<far 156Ch+1>(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、<far 1494h>(<far 1457h+1>(0,3,目標,2), <far 1462h>(4,8,目標))、<far 143Eh+1>(角色, 79h, longint(參數4:參數2))、<far 143Eh+1>(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 1085,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/820-temple-cure-services.md",
+   "note": "神殿的四種治療：retf 2 = 服務編號 1..4。1 顯示 'Cure Light Wounds'(17)、本模組 00F3h(64h=100) 回 'Y' 才 <0141h:008Eh>(0, <0141h:004Dh>(1,8), DS:6506h)；2 'Cure Serious Wounds'(19)、15Eh=350、(2,8)+1；3 'Cure Critical Wounds'(20)、258h=600、(3,8)+3；4 'Heal'(4)、1388h=5000：r := (1,4)、n := 角色^[78h] − 角色^[1A4h] − r（byte 相減無夾制，缺量小於 1d4 會迴繞）、<0141h:008Eh>(0,n,DS:6506h)，再 <0141h:002Fh> 清掉 21h（失明）、byte[0DDh+1..6]（六個疾病碼）、44h，最後 <0141h:0098h>(DS:6506h,1) 與 (DS:6506h,2)。三個治癒術的骰數與 spec 815 戰鬥中施法相同。註：DOS 匯出把最後一次 0098h 解成 add dl,[bx+si-66h]／cbw／add [bx+di+1],al，原始位元組 B0 02 50 9A 98 00 41 01 ＝ mov al,2 / push ax / call far 0141h:0098h（PC-98 解對）。spec 820"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-04",
+   "ea": 1166,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/820-temple-cure-services.md",
+   "note": "神殿的四種治療：retf 2 = 服務編號 1..4。1 顯示 'キュア・ライト・ウーンズ'(24 bytes)、本模組 00F3h(64h=100) 回 'Y' 才 <013Eh:008Eh>(0, <013Eh:004Dh>(1,8), DS:9594h)；2 'キュア・シリアス・ウーンズ'(26 bytes)、15Eh=350、(2,8)+1；3 'キュア・クリティカル・ウーンズ'、258h=600、(3,8)+3；4 'ヒール'、1388h=5000：r := (1,4)、n := 角色^[78h] − 角色^[1A4h] − r（byte 相減無夾制，缺量小於 1d4 會迴繞）、<013Eh:008Eh>(0,n,DS:9594h)，再 <013Eh:002Fh> 清掉 21h（失明）、byte[1D9h+1..6]（六個疾病碼）、44h，最後 <013Eh:0098h>(DS:9594h,1) 與 (DS:9594h,2)。三個治癒術的骰數與 spec 815 戰鬥中施法相同。註：DOS 匯出把最後一次 0098h 解成 add dl,[bx+si-66h]／cbw／add [bx+di+1],al，原始位元組 B0 02 50 9A 98 00 41 01 ＝ mov al,2 / push ax / call far 013Eh:0098h（PC-98 解對）。spec 820"
   }
  ]
 }
