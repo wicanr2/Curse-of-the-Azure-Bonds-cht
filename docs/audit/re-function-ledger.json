@@ -25330,6 +25330,24 @@
    "level": "exact",
    "spec": "docs/spec/998-character-sheet-layout.md",
    "note": "DOS 00083h 的對應（相似度 0.998）；版面常數與五張表 stride 完全相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 10137,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/999-noxious-cloud-and-effect-node-constructor.md",
+   "note": "毒雲：2×2 格、30 bytes 節點鏈（頭在 DS:755Bh）、地圖值 1Eh；定案效果節點建構子與九格方向表"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 10834,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/999-noxious-cloud-and-effect-node-constructor.md",
+   "note": "DOS 02799h 的對應，助憶碼序列完全相同（相似度 1.000）"
   }
  ]
 }

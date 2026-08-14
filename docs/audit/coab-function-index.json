@@ -16660,6 +16660,7 @@
    "spec": "docs/spec/998-character-sheet-layout.md",
    "note": "角色資料畫面：完整版面＋六個標籤；定名 +74h 種族、+11Bh 陣營、+76h 年齡；五張名稱表的 stride",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
     "spec/870-lay-on-hands-and-npc-name-mapping.md",
@@ -19631,12 +19632,16 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/999-noxious-cloud-and-effect-node-constructor.md",
+   "note": "毒雲：2×2 格、30 bytes 節點鏈（頭在 DS:755Bh）、地圖值 1Eh；定案效果節點建構子與九格方向表",
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
     "audit/function-strings.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "spec/748-cloud-effect-dispel-pair.md",
+    "spec/999-noxious-cloud-and-effect-node-constructor.md"
    ]
   },
   {
@@ -20676,7 +20681,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-strings.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "spec/748-cloud-effect-dispel-pair.md",
+    "spec/999-noxious-cloud-and-effect-node-constructor.md"
    ]
   },
   {
@@ -46509,9 +46515,13 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/999-noxious-cloud-and-effect-node-constructor.md",
+   "note": "DOS 02799h 的對應，助憶碼序列完全相同（相似度 1.000）",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/999-noxious-cloud-and-effect-node-constructor.md"
    ]
   },
   {
@@ -52616,9 +52626,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 112,
+   "Read": 113,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 25,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -53171,9 +53181,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 108,
+   "Read": 109,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
