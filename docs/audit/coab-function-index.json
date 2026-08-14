@@ -15687,8 +15687,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/string-pairs.md",
-    "spec/716-nil-slot-hazard.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -16009,8 +16008,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
-    "audit/function-index/dos-overlay-22.md",
-    "spec/716-nil-slot-hazard.md"
+    "audit/function-index/dos-overlay-22.md"
    ]
   },
   {
@@ -16144,10 +16142,7 @@
    "callers": 3,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "citations": [
-    "spec/716-nil-slot-hazard.md"
-   ]
+   "state": "待解讀"
   },
   {
    "platform": "dos",
@@ -16559,10 +16554,7 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/630-spell-target-array.md",
-   "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget \u003e= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
-   "citations": [
-    "spec/716-nil-slot-hazard.md"
-   ]
+   "note": "與 pc98 overlay-22:282Dh 助憶碼序列完全相同（67 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：挑目標填進陣列:budget := DS:9594h^[1A5h](存 DS:7D93h),掃 DS:9598h 角色鏈,+11Ah(RACETYPE)=0Eh 且 budget \u003e= p^[1A5h] 時扣掉該值、inc DS:0A520h、把 far pointer 存進 [0A51Dh + 4×索引]。索引由 1 開始,所以 DS:0A521h 就是第 1 筆——這解釋了其他法術函式都在讀的那個位址。逐個扣預算不是固定選 N 個,扣不動的整個跳過(不會部分影響),而且預算歸零後仍走完整條鏈。訊息「は魅了された。」 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -16925,7 +16917,6 @@
    "spec": "docs/spec/717-area-target-selection.md",
    "note": "範圍法術:n := (DS:6F97h = 40h) ? ROLLDICE(1,3)×2+1(值域只有 3/5/7) : \u003coverlay-24 entry#36\u003e(DS:6F97h)。**只有 [4F99h]^[1CCh] = 0 時才重選目標**:\u003coverlay-31 entry#6\u003e(DS:7559h, DS:755Ah, 2, 0FFh, 1, DS:6E92h) 填 DS:6E97h 起的 3 bytes 記錄(筆數 DS:6E96h、每筆 +0 是 DS:6D35h 指標表的索引),再把那些指標搬進 DS:7431h 目標陣列並 DS:7434h := DS:6E96h。否則整段跳過,沿用上一條 opcode 留下的清單(可能含 NIL)。接著 \u003coverlay-32 entry#13\u003e(DS:7559h, DS:755Ah, 0, 8)、d := ROLLDAMAGEDICE(n, 6)、\u003csub_F06h\u003e(DS:6F97h, 0, 0, d, 9, 空字串)。⚠ 筆數是整個換掉不是累加,超出新筆數的舊格子不會被清只是走不到。這一段補完 spec 699:那裡是借同一片緩衝查完還原,這裡才是正常用途",
    "citations": [
-    "spec/716-nil-slot-hazard.md",
     "spec/717-area-target-selection.md"
    ]
   },
@@ -17427,10 +17418,7 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/632-spell-target-array-loop.md",
-   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
-   "citations": [
-    "spec/716-nil-slot-hazard.md"
-   ]
+   "note": "與 pc98 overlay-22:496Bh 助憶碼序列完全相同（72 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：bank0^[1CCh] 非 0 就直接結束;否則 for i := 1 to DS:0A520h,**逐筆檢查 nil** 後 v := \u003cfar 013E:0048\u003e(0,4,t)、x := \u003csub_E75\u003e(t,88h,88h),備妥「は絡みつかれた。」呼叫 \u003cfar 013E:0089\u003e(v,1,0,0,x,訊息)。與 4A9Ah 相反,這支會檢查 nil——而 2776h 確實會把陣列第 1 筆清成 nil ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "dos",
@@ -17741,8 +17729,7 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
-    "spec/710-effect-collection-and-leftover-target.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/710-effect-collection-and-leftover-target.md"
    ]
   },
   {
@@ -17830,10 +17817,7 @@
    "callers": 0,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "citations": [
-    "spec/716-nil-slot-hazard.md"
-   ]
+   "state": "待解讀"
   },
   {
    "platform": "dos",
@@ -17962,7 +17946,13 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/726-spell-name-table.md",
+   "note": "顯示施法訊息。**DS:27BDh 是法術名稱表,一格 29h=41 bytes(長度位元組 + 最多 40 字元),索引是法術編號**;表在 resident 資料段不在 overlay 裡,所以 scan_pascal_strings.py 掃不到,中文化要另外處理。DS:4FBAh=5 時:顯示 '\u003c名字\u003e Casts a Spell'(CS:61F4h)、清第 23 列、在 (0,17h) 畫 'Spell:'(CS:6202h)+法術名;否則:清一塊、用 \u003coverlay-24 entry#22(18F3h)\u003e 在 (1,13h) 畫施法者名字、在 (施法者^[0]+2, 13h) 接訊息、在 (0,14h) 畫法術名、\u003c0542:0B33h\u003e 等按鍵、\u003coverlay-24 entry#21\u003e()。⚠ 兩種模式版面不同,只改一種會讓另一種錯位",
+   "citations": [
+    "spec/726-spell-name-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19243,7 +19233,8 @@
    "note": "依條件呼叫 loc_1ECC+1:一邊傳 (15h,...),另一邊傳 (16h,26h,12h,1)",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/585-ecl-goto-and-display-mode-pair.md"
+    "spec/585-ecl-goto-and-display-mode-pair.md",
+    "spec/726-spell-name-table.md"
    ]
   },
   {
@@ -19260,12 +19251,13 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/693-text-draw-signature-and-english-grammar.md",
-   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;而且欄位偏移用的是**長度位元組(位元組數)不是顯示寬度**,Big5 名字會少算一半",
+   "note": "畫角色名字(名字是紀錄 +0 起的 Pascal 字串)。顏色:+196h=0 → 0Ch;否則 +197h=1 → 0Eh;其餘 0Bh(0795h 對選中者不走這支,直接用 0Fh)。arg_0 非零時,在 arg_4 + 角色^[0](名字長度位元組)的欄位再畫 CS:18F0h = \"'s\"。⚠ 中文化:英文所有格是用「畫在名字後面」硬接的,中文沒有對應後綴,這條路徑要整段改;⚠ spec 726 更正:欄位偏移用長度位元組**對 Big5 是成立的**(全形字佔 2 位元組也佔 2 欄),先前寫「會少算一半」是錯的;真正的問題只剩 's 這個後綴中文沒有",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-23.md",
     "spec/689-dos-party-roster-render.md",
-    "spec/693-text-draw-signature-and-english-grammar.md"
+    "spec/693-text-draw-signature-and-english-grammar.md",
+    "spec/726-spell-name-table.md"
    ]
   },
   {
@@ -45822,9 +45814,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 90,
+   "Read": 91,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
