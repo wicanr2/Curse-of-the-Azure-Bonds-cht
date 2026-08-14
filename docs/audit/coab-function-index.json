@@ -18907,6 +18907,7 @@
    "note": "射線走訪與目標收集(retf 0Ch,約 880 bytes),3947h/4A8Fh/54EBh/56C4h/5AA8h 共同的底層。四段:(1) 用 \u003coverlay-31 entry#3\u003e 收集方向序列;(2) 沿序列走,**射程參數先乘 2、正交方向成本 2、斜向成本 3**——所以距離單位是半格、斜向算 1.5 格,正好對上 spec 699/720 那個「除以 2」的距離;地圖邊界 x∈1..48、y∈1..23;dx/dy 表在 DS:2694h/269Dh(**在 resident 資料段,不在 overlay-22.bin 裡**);⚠ 方向序列走完會繞回開頭重用,射線可以比序列長;(3) 用 \u003coverlay-31 entry#5\u003e 蒐集沿途單位,去重是線性比對整個清單且長度無上限檢查;(4) 依 arg_0 (\u003e1、\u003e2 兩個門檻)畫效果,再填 DS:7431h 目標陣列並設 DS:7434h。⚠ **施法者自己會被排除**(兩個 word 都相等才跳過),而且寫入索引與讀取索引是兩個計數器,所以陣列不會留空洞",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/729-beam-walk-and-target-collect.md",
     "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
@@ -20860,11 +20861,11 @@
    "note": "區域吐酸 '\u003c名字\u003e breathes acid'(CS:5A9Ah)。次數在 arg_2^[3](DS:758Dh=0 時重設成 3),**扣的動作在最後**所以中途 return 都不消耗次數。用 [DS:72A0h] 第 0 項模式碼 3Dh 選區域;cls := \u003coverlay-24 entry#30\u003e(攻擊者),**只要目標陣列裡有一格 +197h 不等於 cls 就整次取消**。傷害迴圈 \u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s),傷害參數與 spec 723 單體吐酸相同。⚠ **同一支裡兩個迴圈的 NIL 檢查不一致**:類別比對那個直接取欄位、傷害那個先檢查。所以「有沒有檢查 NIL」不是函式的性質而是每段迴圈各自的性質——spec 716 以函式為單位的掃描會漏掉這種",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
     "spec/725-breath-acid-area.md",
     "spec/729-beam-walk-and-target-collect.md",
-    "spec/735-breath-fire-vs-acid.md",
-    "spec/989-pc98-beam-walk-and-acid-area.md"
+    "spec/735-breath-fire-vs-acid.md"
    ]
   },
   {
@@ -50288,9 +50289,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/990-pc98-menu-line-assembler-and-slot-layout.md",
+   "note": "十格選單的選項行組裝：一格 7 欄（6 字元＋1 空白）、第 5 格後多 3 欄、全行 80 欄；DS:0A33Fh 起十個 7-byte 字串",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/990-pc98-menu-line-assembler-and-slot-layout.md"
    ]
   },
   {
@@ -53139,9 +53144,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
