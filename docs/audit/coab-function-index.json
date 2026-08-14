@@ -8261,9 +8261,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "879",
+   "note": "遊戲速度選單(retf，無參數)：標題 'GameSpeed (' ＋ 14Dh:52h(DS:4FA9h) ＋ ') :'；選項動態串接——DS:4FA9h \u003c 9 才接 'Slower '、\u003e 0 才接 'Faster '、最後接 'Exit'(每次上限 28h)；167h:2Fh 收鍵，'S' inc、'F' dec。DS:4FA9h 值域 0..9，值越大越慢，邊界靠選項消失而不是按鍵無效",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/879-game-speed-menu.md"
    ]
   },
   {
@@ -17204,6 +17208,7 @@
    "spec": "877",
    "note": "休息時間設定(retf，無參數，回 al)：選單字串 'Rest Days Hours Mins Add Subtract Exit'。欄 2/3/4 = 分/小時/天，方向鍵左右換欄(2..4 循環)、上下轉成 A/S；D/H/M 直接跳欄，A 加(欄 2 是 DS:7568h+=5，其餘 inc word[7566h+欄*2])、S 叫 045Eh(欄, 1) 或 045Eh(1, 5)，Enter 或 R 設 確定:=1。★三欄的單位由 DS:3E2Ah 進位表(索引 3 上限 24=小時→天、索引 4 上限 30=天→月)反推，不靠字串猜。⚠加減沒有做進位檢查",
    "citations": [
+    "audit/function-index/pc98-overlay-20.md",
     "audit/function-strings.md",
     "spec/877-rest-duration-setter.md"
    ]
@@ -23855,12 +23860,12 @@
    "spec": "878",
    "note": "Load3DMap(retf 2，編號)：★錯誤訊息 'Unable to load geo in Load3DMap.' 直接給出原始函式名。檔名 'GEO'＋Str(DS:5BEEh) 的一位數＋'.dax'，用 636h:8DEh 讀入；大小必須是 402h(=1026=2＋4×256)否則走錯誤路徑；跳過 2 bytes 標頭後分四次 Move 各 100h 進 DS:7206h，再 FreeMem(檔案, 大小)，最後把編號記進 遠指標(DS:4F99h)^[18Ah]",
    "citations": [
+    "audit/function-index/pc98-overlay-30.md",
     "audit/function-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/521-dos-getmem-buffer-owner.md",
-    "spec/522-dos-buffer-four-plane-fill.md",
-    "spec/524-dos-overlay30-geo-loader-source.md"
+    "spec/522-dos-buffer-four-plane-fill.md"
    ]
   },
   {
@@ -24639,10 +24644,14 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "880",
+   "note": "複製一張圖再貼上(retf 0Ah，(組, 編號, 模式, 座標A, 座標B))：從二維圖庫表 遠指標(DS:65D6h + 組*8 + 編號*4) 取原圖(NIL 就離開)，用 297h:1C59h 依 +0/+2 尺寸建新圖；模式 \u003e 3 走 297h:0BB5h 轉換複製，否則兩次 Move 各 p^[11h] 搬 +17h 起的第一平面與 +13h 指到的第二平面；再叫 297h:9E4h 貼到 遠指標(DS:4FE8h)(座標各乘 3)，最後 297h:1D19h 釋放",
    "citations": [
     "audit/function-strings.md",
-    "spec/749-combat-teardown-and-battlefield-grid.md"
+    "spec/749-combat-teardown-and-battlefield-grid.md",
+    "spec/880-sprite-copy-and-blit.md"
    ]
   },
   {
@@ -33590,9 +33599,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "879",
+   "note": "同 DOS overlay-08:011DFh 的功能，但★不做字串串接，改成固定欄位＋把熱鍵字元逐個寫進固定位置：DS:0A33Eh:='E'、DS:0A33Bh:='S'、DS:0A33Ah:='F'(與 spec 865/871/877 的 DS:0A335h 熱鍵緩衝是同一塊)。標籤 '速さ（'/'）'/' 遅く '/' 速く '/'抜ける' 完全不含 S/F/E，所以熱鍵只能另外指定。★這是該模式最直接的證據",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/879-game-speed-menu.md"
    ]
   },
   {
@@ -50787,7 +50800,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "880",
+   "note": "同 DOS overlay-33:00508h，但★第二次 Move 的長度改用 p^[0] × p^[2](寬高相乘)，DOS 兩次都用 p^[11h]——兩台機器圖形平面配置不同(PC-98 planar / DOS packed)，第二塊大小關係不一樣。其餘 14 條是位址",
+   "citations": [
+    "spec/880-sprite-copy-and-blit.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51065,9 +51084,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 21,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
@@ -51440,9 +51459,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 1515,
    "Undefined": 57,
@@ -51620,9 +51639,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 24,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
@@ -51995,9 +52014,9 @@
    "Module": "overlay-33",
    "Unit": "SQRPAK24",
    "Functions": 7,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 2106,
    "Undefined": 146,
