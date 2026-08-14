@@ -7315,8 +7315,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-06.md",
-    "audit/function-index/pc98-overlay-19.md"
+    "audit/function-index/dos-overlay-26.md",
+    "audit/function-index/pc98-overlay-06.md"
    ]
   },
   {
@@ -18277,10 +18277,10 @@
    "citations": [
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
+    "audit/function-index/pc98-overlay-26.md",
     "spec/1036-random-item-builder.md",
     "spec/637-overlay21-small-batch.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -18328,7 +18328,7 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/1035-appraise-keep-chain-bug.md"
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -22250,9 +22250,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1061",
+   "note": "傷害訊息(retf，309 條)。DS:6F94h := arg_4(傷害量)；arg_0\u003c\u003e0(有做存活檢定)時依 arg_2：1→傷害歸 0(全免)、2→div 2(減半)；傷害 \u003c=0 就什麼都不顯示。★★ 單複數是兩句完整字串：=1 時 'takes 1 point of damage '(24，整句)，否則 'takes '(6)+數字+' points of damage '(18) —— 中文可合併(同 spec 1018 的 ' Gem'/' Gems')。★★★ 五種傷害來源(DS:6F95h and 0F7h，比對相等不是測位元)：1→'from Fire'(9)、2→'from Cold'(9)、4→'from Electricity'(16)、10h→'from Acid'(9)、其他→'from Magic'(10)；⚠ and 0F7h 把 bit 3(08h)清掉，那一位是另一件事。★★ 掉法術：DS:4FBAh=5(戰鬥)時把 角色^[18Dh]^[1] 清 0，若 角色^[18Dh]^[0] \u003e 0 就顯示 'lost a spell'(12)、叫 overlay-24 entry#16 再清 0 —— 角色^[18Dh] 正是 spec 1038 記的『載入後要歸零的四個遠指標』之一。★★★ 倒下/瀕死/死亡：角色^[196h]=0(不能行動)時訊息 'Goes Down'(9)；+195h=5 再接 ', and is Dying'(14)；+195h in 集合常數 CS:1FACh={0} 時整句換成 'is killed'(9) ⇒ +196h=能不能行動、+195h=狀態碼(0 死亡、5 瀕死)。⚠ 這與台帳裡 STANDUP(overlay-23:24EDh)記的『+195h:=0、+196h:=1』看起來相衝，本規格只宣稱這一支觀察到的對應，一致性要另外對照 STANDUP 再判。⚠ 中文語序要把來源挪到傷害前面(『受到 N 點火焰傷害』)",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1061-damage-message.md"
    ]
   },
   {
@@ -22312,6 +22316,7 @@
    "note": "STANDUP(hp, char)：先過一道檢定，通過才把 +195h(狀態) 設 0、★ +196h 設 1(＝站著、能行動)、+1A4h := hp；依 +197h 是否為 1 選兩則訊息之一顯示。訊息是 Pascal 短字串，直接嵌在 overlay code 段(PC-98 為 Shift-JIS)。⚠ 先前的註記把 +195h:=0 與 +196h:=1 混成「+196h 設 0(可行動)」，已依 252Ch 的原始指令更正；spec 1008／1010 兩處呼叫端都要求 +196h 非 0 才繼續",
    "citations": [
     "spec/1008-combat-move-command.md",
+    "spec/1061-damage-message.md",
     "spec/579-character-status-fields.md"
    ]
   },
@@ -24331,6 +24336,7 @@
    "note": "兩次繪製(retf，無參數)：0297h:0EFFh(DS:8C78h, DS:8C7Ah, 遠指標@DS:65CAh) 與 0297h:1110h(DS:8C78h, DS:8C7Ah, 遠指標@DS:8C7Ch)。參數形狀由推入順序解出：末兩個 word 先高後低＝一個遠指標",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-26.md",
     "audit/function-index/pc98-overlay-27.md",
     "spec/1060-option-row-menu-core.md",
     "spec/753-small-utility-routines.md"
@@ -24547,9 +24553,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-26.md",
     "audit/function-index/dos-overlay-29.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-29.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -45688,10 +45694,10 @@
    "citations": [
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
+    "audit/function-index/pc98-overlay-26.md",
     "spec/1036-random-item-builder.md",
     "spec/637-overlay21-small-batch.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md"
    ]
   },
   {
@@ -45741,7 +45747,7 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-04.md",
     "audit/function-index/pc98-overlay-21.md",
-    "spec/1035-appraise-keep-chain-bug.md"
+    "audit/function-index/pc98-overlay-26.md"
    ]
   },
   {
@@ -51673,6 +51679,7 @@
    "note": "兩次繪製(retf，無參數)：02A8h:098Fh(DS:0BE04h, DS:0BE06h, 遠指標@DS:9660h) 與 02A8h:0A86h(…, 遠指標@DS:0BE08h)。與 DOS overlay-27:0032h 同形",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-26.md",
     "audit/function-index/pc98-overlay-27.md",
     "spec/1060-option-row-menu-core.md",
     "spec/753-small-utility-routines.md"
@@ -51825,9 +51832,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-17.md",
+    "audit/function-index/dos-overlay-26.md",
     "audit/function-index/dos-overlay-29.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-29.md"
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -53672,9 +53679,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 26,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
