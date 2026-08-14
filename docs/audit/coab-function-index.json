@@ -28088,7 +28088,10 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "952",
+   "note": "★輸出一段字串(near；es:di 來源、cx 長度、dl 目前欄)：byte_280ECh 是跨字元保留的前導旗標(初值來自 byte_280E3h)。後半位元組時 dl 一次加 2(★全形佔兩欄)、超過右界(word_280CAh 低位)就沖出換行；★遇到前導位元組先檢查 dl \u003e= 右界——放不下就整個字移到下一行，不會把全形字拆在兩行。控制字元 07h/08h/0Ah/0Dh 各自先沖出再處理。累積的一段由 sub_196C9h 實際寫進 VRAM。與 spec 945(退格)、spec 948(字元寫入)合起來，PC-98 的輸入/編輯/輸出三個環節都認得雙位元組，DOS 版三個都沒有"
   },
   {
    "platform": "pc98",
@@ -29208,7 +29211,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "952",
+   "note": "把一段還回 free list(near)，與 DOS 的 1AA22h(spec 931)結構逐條對應：ax = 0 直接返回；用 sub_1AC62h 取配置指標並做 seg:para 進位正規化；區間不在 [word_23AE8h/word_23AEAh, word_23AECh/word_23AEEh] 之內就 stc 失敗；掃 dword_23AF0h 的 free list(每筆 8 bytes：+0/+2 起、+4/+6 迄)與相鄰項合併、被吃掉的用 sub_1AC04h 移除；還的正好是配置指標下緣就把指標往回退，否則用 sub_1ABE0h 取新位置寫入。全域位址不同、邏輯相同"
   },
   {
    "platform": "pc98",
@@ -52347,9 +52353,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 247,
+   "Read": 249,
    "NotBlocking": 29,
-   "Todo": 32,
+   "Todo": 30,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,

@@ -24601,6 +24601,24 @@
    "level": "exact",
    "spec": "951",
    "note": "覆疊段的載入與淘汰(near)：inc word_23AC8h(請求計數)；es^[10h] ≠ 0 表示已在記憶體，只把 es^[12h] 設 1 就收尾。否則 inc word_23ACAh(實際載入計數)、算出需要的段數((es^[0Ah]+0Fh) shr 4 + sub_1A3FCh)，★走 word_23AE2h 的鏈(next 在 +14h)做 second-chance 淘汰——+12h = 0 就叫 sub_1A31Ch 丟掉並把 +10h 清 0，≠ 0 就 dec 一次留著(降一級)，直到騰出足夠空間。接著把 +10h 設成 word_23ADEh、叫 dword_28104h 讀進來，失敗就跳 sub_19EB0h。★+12h 是 clock 演算法的參照位元、+10h 是在不在記憶體、+0Ah 是段大小；word_23AC8h/word_23ACAh 相除就是覆疊快取命中率，原版自己有在數"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 103958,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "952",
+   "note": "★輸出一段字串(near；es:di 來源、cx 長度、dl 目前欄)：byte_280ECh 是跨字元保留的前導旗標(初值來自 byte_280E3h)。後半位元組時 dl 一次加 2(★全形佔兩欄)、超過右界(word_280CAh 低位)就沖出換行；★遇到前導位元組先檢查 dl >= 右界——放不下就整個字移到下一行，不會把全形字拆在兩行。控制字元 07h/08h/0Ah/0Dh 各自先沖出再處理。累積的一段由 sub_196C9h 實際寫進 VRAM。與 spec 945(退格)、spec 948(字元寫入)合起來，PC-98 的輸入/編輯/輸出三個環節都認得雙位元組，DOS 版三個都沒有"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 109357,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "952",
+   "note": "把一段還回 free list(near)，與 DOS 的 1AA22h(spec 931)結構逐條對應：ax = 0 直接返回；用 sub_1AC62h 取配置指標並做 seg:para 進位正規化；區間不在 [word_23AE8h/word_23AEAh, word_23AECh/word_23AEEh] 之內就 stc 失敗；掃 dword_23AF0h 的 free list(每筆 8 bytes：+0/+2 起、+4/+6 迄)與相鄰項合併、被吃掉的用 sub_1AC04h 移除；還的正好是配置指標下緣就把指標往回退，否則用 sub_1ABE0h 取新位置寫入。全域位址不同、邏輯相同"
   }
  ]
 }

@@ -194,7 +194,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `195B6` | sub_195B6 | — | 70 | 29 | 2 | 4 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>捲動邊界調整:<sub_19A69> 後比較新舊 dh,不同時若 byte_280DBh 等於 word_280CAh 高位元組加一就先 dec dh 並回寫,再把 byte_280DBh 設成 dh+1;最後 inc dh 若超過界線就 dec 回來並呼叫 <sub_197BD>。⚠ 最後那個比較是無號(jbe),與 197BDh 的有號比較不同——同一組座標在兩支裡有號性不一樣 | — |
 | `195FC` | sub_195FC | — | 8 | 3 | 6 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 sub_19A8B 後把 word_280F9 載入 DX 回傳 | — |
 | `19604` | sub_19604 | — | 18 | 7 | 7 | 3 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>以 dx 呼叫 sub_19B00 與 sub_19B4F,結果存進 word_280F9 後呼叫 sub_19A29 | — |
-| `19616` | sub_19616 | — | 179 | 69 | 1 | 8 |  | 待解讀 | — | — | — |
+| `19616` | sub_19616 | — | 179 | 69 | 1 | 8 |  | 已解讀 | exact | 952<br>★輸出一段字串(near；es:di 來源、cx 長度、dl 目前欄)：byte_280ECh 是跨字元保留的前導旗標(初值來自 byte_280E3h)。後半位元組時 dl 一次加 2(★全形佔兩欄)、超過右界(word_280CAh 低位)就沖出換行；★遇到前導位元組先檢查 dl >= 右界——放不下就整個字移到下一行，不會把全形字拆在兩行。控制字元 07h/08h/0Ah/0Dh 各自先沖出再處理。累積的一段由 sub_196C9h 實際寫進 VRAM。與 spec 945(退格)、spec 948(字元寫入)合起來，PC-98 的輸入/編輯/輸出三個環節都認得雙位元組，DOS 版三個都沒有 | — |
 | `196C9` | sub_196C9 | — | 178 | 83 | 1 | 6 |  | 待解讀 | — | — | — |
 | `1977B` | sub_1977B | — | 3 | 2 | 5 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>int 18h 後返回。⚠ IDA 的註解寫 TRANSFER TO ROM BASIC 是 IBM PC 的語意;PC-98 的 INT 18h 是螢幕／鍵盤 BIOS,不可沿用該註解 | — |
 | `1977E` | sub_1977E | — | 19 | 11 | 6 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>Shift-JIS 前導位元組判定,與 18D5Dh 逐指令相同 | — |
@@ -271,7 +271,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 已解讀 | exact | 947<br>32 位元有號除法(far)：bx:cx ÷ dx:ax，★商在 dx:ax、餘數在 bx:cx——這就是專案裡 0A65h:0299h / 0A54h:0294h 那個約定的實作，spec 913/925 用到的除法語意由此確認。除數為 0 時 ax := 0C8h(200 = Turbo Pascal 的 Division by zero 執行期錯誤)並跳 sub_1A721h。本體是記正負、取絕對值、跑 33 次(bp = 21h) restoring division(rcl/sub/sbb，不夠減就加回、cmc 後 rcl 進商)，最後依原正負把商與餘數各自取負 | — |
 | `1A9E1` | sub_1A9E1 | — | 68 | 26 | 1 | 3 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>以 16 為底的兩段式加減:ax 維持在 0..0Fh、dx 每滿 16 進一(段落 + 段內偏移,一段落 16 bytes),每次加減都手動處理進借位而不用 32-bit 運算。走訪 dword_23AF0h 指的陣列,每筆 8 bytes,用到 +0/+2/+4/+6 四個 word | — |
 | `1AA72` | sub_1AA72 | — | 187 | 79 | 2 | 4 |  | 待解讀 | — | — | — |
-| `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 已解讀 | exact | 952<br>把一段還回 free list(near)，與 DOS 的 1AA22h(spec 931)結構逐條對應：ax = 0 直接返回；用 sub_1AC62h 取配置指標並做 seg:para 進位正規化；區間不在 [word_23AE8h/word_23AEAh, word_23AECh/word_23AEEh] 之內就 stc 失敗；掃 dword_23AF0h 的 free list(每筆 8 bytes：+0/+2 起、+4/+6 迄)與相鄰項合併、被吃掉的用 sub_1AC04h 移除；還的正好是配置指標下緣就把指標往回退，否則用 sub_1ABE0h 取新位置寫入。全域位址不同、邏輯相同 | — |
 | `1ABE0` | sub_1ABE0 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>從 dword_23AF0h 陣列尾端退一筆(offset 減 8):減到 0 或換算後的段落位址 <= word_23AEEh 時設進位返回(進位表示失敗)。di shr 4 把 offset 換成段落數再加 segment,與 1A9E1h 的兩段式表示一致 | — |
 | `1AC04` | sub_1AC04 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>同上,來源指標為 dword_23AF0;與 DOS START.EXE:1AAF9h 逐指令相同 | — |
 | `1AC19` | sub_1AC19 | — | 73 | 27 | 3 | 1 |  | 已解讀 | exact | docs/spec/667-longint-to-decimal.md<br>把 dword_23AF0h 正規化成「段落 + 段內偏移」並夾住下限 (word_23AECh, word_23AEEh):比較是先比段落、相等才比偏移的兩段式。與 1A9E1h/1ABE0h 用同一組界線 | — |
