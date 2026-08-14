@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 1001、不阻塞 133、邊界碎片 237、待解讀 15；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 1002、不阻塞 133、邊界碎片 237、待解讀 14；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -30,7 +30,7 @@
 | overlay-13 | COMSTUFF | 58 | 43 | 0 | 15 | 0 | 17022 | 722 | [明細](function-index/dos-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 14 | 0 | 0 | 0 | 3735 | 308 | [明細](function-index/dos-overlay-14.md) |
 | overlay-15 | CAMP | 42 | 32 | 0 | 10 | 0 | 8139 | 898 | [明細](function-index/dos-overlay-15.md) |
-| overlay-16 | LOADSAVE | 28 | 17 | 0 | 8 | 3 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
+| overlay-16 | LOADSAVE | 28 | 18 | 0 | 8 | 2 | 16063 | 787 | [明細](function-index/dos-overlay-16.md) |
 | overlay-17 | GEN | 39 | 15 | 0 | 21 | 3 | 19521 | 1536 | [明細](function-index/dos-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 11 | 10 | 0 | 0 | 1 | 4446 | 1177 | [明細](function-index/dos-overlay-18.md) |
 | overlay-19 | LIBRARY | 42 | 27 | 0 | 15 | 0 | 13042 | 1293 | [明細](function-index/dos-overlay-19.md) |
