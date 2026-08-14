@@ -21552,7 +21552,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+14Dh], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-index/dos-overlay-13.md"
+    "audit/function-index/dos-overlay-13.md",
+    "spec/855-caster-level.md"
    ]
   },
   {
@@ -21961,13 +21962,17 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "855",
+   "note": "施法者等級(retf 2，法術編號)：依法術屬性表 +0 的類別取不同職業等級——0 牧師取 max(Cleric, Paladin−8)、1 德魯伊取 Ranger−7（負值夾 0）、2 法師取 max(Magic-User, Ranger−8)、3 固定 12。三條扣減與 AD\u0026D 一格不差。完全不會施法的角色預設 6；DS:7563h ≠ 0 時除類別 3 外一律壓成 6",
    "citations": [
     "audit/embedded-strings.md",
     "spec/705-duration-formula-and-save-roll.md",
     "spec/712-duration-table.md",
     "spec/719-spell-targeting-mode.md",
-    "spec/728-can-cast-check.md"
+    "spec/728-can-cast-check.md",
+    "spec/855-caster-level.md"
    ]
   },
   {
@@ -47966,7 +47971,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "855",
+   "note": "同 DOS overlay-24:028B3h（module_align 對齊，助憶碼序列完全相同）。13 條差異全是位址：DS:9594h/9596h↔6506h/6508h、法術屬性表 DS:61B4h↔37DAh、呼叫目標",
+   "citations": [
+    "spec/855-caster-level.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50773,9 +50784,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 41,
+   "Read": 42,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -51328,9 +51339,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 34,
+   "Read": 35,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
