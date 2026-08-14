@@ -30,7 +30,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1510` | sub_1510 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1538` | sub_1538 | — | 8 | 3 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `153D` | sub_153D | — | 5 | 1 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+0E9h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
-| `1542` | sub_1542 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md |
+| `1542` | sub_1542 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-09.md |
 | `155B` | sub_155B | — | 5 | 2 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short near ptr unk_14F1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1560` | sub_1560 | — | 5 | 2 | 9 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov sp, bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1565` | sub_1565 | — | 4 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 4 bytes，已逐條讀完） | — |
@@ -60,7 +60,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A72` | sub_2A72 | SHOWARROW | 546 | 223 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/784-cross-platform-pairs-second-batch.md<br>隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出) | — |
 | `2D1E` | sub_2D1E | FASTESTENEMY | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h | spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
-| `2DB9` | sub_2DB9 | CHECKBETRAYAL | 205 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `2DB9` | sub_2DB9 | CHECKBETRAYAL | 205 | 67 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/790-attack-ally-confirm-and-counter-animation.md<br>同 DOS，欄位各 +1（+198h 陣營、+199h、+196h 狀態、+18Eh 戰鬥狀態、+18Ah next）；全域 DS:0A81Eh / DS:7F09h / DS:9598h；訊息 '味方を攻撃するのですか？'(24 bytes)。spec 790 | — |
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | — |
 | `30D8` | sub_30D8 | — | 361 | 132 | 2 | 9 | ✓ | 待解讀 | — | — | — |
 | `329F` | sub_329F | — | 1353 | 521 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
@@ -70,7 +70,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `3D7F` | sub_3D7F | PICKTARGET | 480 | 159 | 2 | 4 | ✓ | 待解讀 | — | — | — |
 | `3F71` | sub_3F71 | EFF57 | 327 | 128 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `40B8` | sub_40B8 | — | 114 | 42 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/760-item-effect-flag-clear-and-file-exists.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：結構與 DOS overlay-13:4162h(spec 759)逐條相同，但最後一個參數 DOS 是常數 1Eh、PC-98 是 DS:7F16h * 7(有號乘法)。真實平台差異，非匯出誤差 | spec/760-item-effect-flag-clear-and-file-exists.md<br>spec/783-cross-platform-pairs-first-batch.md |
-| `412A` | sub_412A | — | 186 | 63 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `412A` | sub_412A | — | 186 | 63 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/788-memorised-spell-slots-identified.md<br>戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788（PC-98：DS:9F2Ch/9F2Eh，欄位 +1） | — |
 | `426B` | sub_426B | EFF87 | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `453D` | sub_453D | EFF139 | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4671` | sub_4671 | EFF144 | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |

@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `11C5` | sub_11C5 | — | 6 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `11E3` | sub_11E3 | — | 24 | 13 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr 0A54h:634h`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 24 bytes，已逐條讀完） | — |
 | `1494` | sub_1494 | — | 10 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr unk_1522`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
-| `149E` | sub_149E | — | 10 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
+| `149E` | sub_149E | — | 10 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0Fh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | audit/function-index/dos-overlay-15.md<br>spec/789-heal-budget-tick-and-halve-stack.md |
 | `14A8` | sub_14A8 | — | 6 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, 0`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1518` | sub_1518 | — | 9 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `and [si+72h], dl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完） | — |
 | `1554` | sub_1554 | — | 949 | 374 | 2 | 10 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 10ABh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
@@ -31,7 +31,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B00` | sub_1B00 | — | 877 | 320 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `1EE9` | sub_1EE9 | — | 567 | 203 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `213C` | sub_213C | — | 166 | 61 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/767-ac-display-sign-and-trade-overload.md<br>交易給誰(retf 4)：以 DS:4AF8h 記住上次選的人當預設，用 CS:2120h 'Trade with Whom?' 選人；取消就離開；否則寫回 DS:4AF8h，用 overlay-19:3258h(spec 762)判超重 — 超重就顯示 CS:2131h 'Overloaded'，否則做三個呼叫(從物品端移除、加到 DS:6506h、更新對象) | audit/function-index/pc98-overlay-19.md<br>spec/767-ac-display-sign-and-trade-overload.md |
-| `21F3` | sub_21F3 | — | 176 | 66 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `21F3` | sub_21F3 | — | 176 | 66 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/789-heal-budget-tick-and-halve-stack.md<br>物品堆對半分：半 := 有號(節點^[39h]) div 2；半 > 0（無號比較）才做。GetMem(新,3Fh) + Move(節點^,新^,3Fh) 複製整個 63-byte 節點，新^[39h]:=半、新^[34h]:=0、新^[2Ah]:=節點^[2Ah]、節點^[39h]:=數量−半、節點^[2Ah]:=新（插在原節點後）。否則顯示 'Can't halve that'(16)。數量 ≥ 80h 時有號 div 2 為負而無號比較會通過，無防護。retf 4。spec 789 | spec/789-heal-budget-tick-and-halve-stack.md |
 | `22A3` | sub_22A3 | — | 465 | 154 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-12.md |
 | `248D` | sub_248D | — | 742 | 263 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `27D6` | sub_27D6 | — | 482 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | — |

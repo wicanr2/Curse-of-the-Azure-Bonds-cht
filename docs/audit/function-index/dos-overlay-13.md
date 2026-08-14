@@ -9,7 +9,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>加成後夾制再乘 2(retf 4)：v := p^[1A5h]；p^[197h]=0(陣營)時 v += DS:4F9Dh^[6E4h]；DS:6F9Ah:=1；v 不在 1..60h 就設成 1(不是夾到邊界)；DS:6F96h := (v*2) and 0FFh；叫 <呼叫>(p, 12h)；DS:6F9Ah:=0；回傳 DS:6F96h | audit/embedded-strings.md<br>audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/758-morale-field-0f7h-round-trip.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
-| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
+| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md<br>spec/790-attack-ally-confirm-and-counter-animation.md |
 | `074F` | sub_74F | — | 523 | 193 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `095A` | sub_95A | — | 935 | 334 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0D1C` | sub_D1C | — | 189 | 74 | 0 | 5 | ✓ | 待解讀 | — | — | — |
@@ -46,17 +46,17 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/784-cross-platform-pairs-second-batch.md<br>隊伍血量百分比(retf，無參數)：走隊伍鏈，陣營(+197h)為 1 的成員 — +196h 非 0 才把 +1A4h(目前 HP)計入，+78h(最大 HP)一律計入；最大 > 0 時 DS:75D9h := ((目前*14h) div 最大)*5，即 0..100 以 5 為級距。⚠ 最大為 0 時整個不寫，保留舊值；+196h 為 0 的成員會把百分比往下拉 | audit/function-index/pc98-overlay-13.md<br>spec/750-combat-setup.md<br>spec/784-cross-platform-pairs-second-batch.md |
 | `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>取指定陣營中最快的移動速率(retf 4)：走 DS:650Ah 隊伍鏈，<呼叫>(參數) 等於 p^[197h](陣營)且 p^[196h] 非 0 的成員，取 本模組 0124h(p) div 2 的最大值(無號比較)。0124h 回的是速率乘 2，這裡除回來 — 與既有『距離單位是半格』的 2 是同一個 | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
-| `2F3C` | sub_2F3C | — | 205 | 67 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `2F3C` | sub_2F3C | — | 205 | 67 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/790-attack-ally-confirm-and-counter-animation.md<br>Attack Ally 確認：邊 := <far 1584h+2>(參數2,參數0)；(邊 = 目標^[197h]) 或 (目標^[198h] <> 0) 時直接回 1；否則顯示 'Attack Ally: '(13，結尾一空白)，<far 16ADh+1>(0Dh,0Ah,0Fh) 回 'Y' 才回 1。答 Y 時 DS:758Ch:=1、word(DS:4F9Dh^[666h]):=1，並掃 DS:650Ah 角色鏈：+195h=0 且 +0F7h>7Fh（士氣旗標）者 +197h:=1 並把 +18Dh^[0Ah]/[0Ch] 目標遠指標清 0，最後呼叫 <far 158Ah+1>。retf 8。spec 790 | spec/790-attack-ally-confirm-and-counter-animation.md |
 | `3040` | sub_3040 | — | 432 | 177 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `31F0` | sub_31F0 | — | 361 | 132 | 2 | 10 | ✓ | 待解讀 | — | — | — |
 | `33AC` | sub_33AC | — | 1278 | 493 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-triage.md |
-| `38AA` | sub_38AA | — | 161 | 60 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：叫掃描程序(緩衝 DS:6E92h, …, 0FFh, 7Fh, 戰鬥員 y, 戰鬥員 x)後，把筆數 DS:6E96h 存進 ss:[rec−0DAh]，再逐筆 Move(DS:6E94h + i*3 → ss:[rec−0DBh + i*3], 3)。與 spec 777 的 overlay-09:02B1h 用同一組全域。⚠ 呼叫端陣列大小沒有任何檢查 | spec/787-bresenham-record-and-edge-clamp.md |
+| `38AA` | sub_38AA | — | 161 | 60 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/787-bresenham-record-and-edge-clamp.md<br>把掃描結果複製出來(retf 6)：叫掃描程序(緩衝 DS:6E92h, …, 0FFh, 7Fh, 戰鬥員 y, 戰鬥員 x)後，把筆數 DS:6E96h 存進 ss:[rec−0DAh]，再逐筆 Move(DS:6E94h + i*3 → ss:[rec−0DBh + i*3], 3)。與 spec 777 的 overlay-09:02B1h 用同一組全域。⚠ 呼叫端陣列大小沒有任何檢查 | audit/function-index/pc98-overlay-13.md<br>spec/787-bresenham-record-and-edge-clamp.md |
 | `394B` | sub_394B | — | 428 | 142 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `3B37` | sub_3B37 | — | 799 | 315 | 1 | 10 | ✓ | 待解讀 | — | — | — |
-| `3E56` | sub_3E56 | — | 480 | 159 | 2 | 3 | ✓ | 待解讀 | — | — | — |
+| `3E56` | sub_3E56 | — | 480 | 159 | 2 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-13.md<br>audit/function-index/pc98-overlay-13.md<br>spec/788-memorised-spell-slots-identified.md |
 | `403F` | sub_403F | — | 291 | 117 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4162` | sub_4162 | — | 106 | 39 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據 | audit/function-index/pc98-overlay-13.md<br>spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
-| `41CC` | sub_41CC | — | 186 | 63 | 1 | 4 | ✓ | 待解讀 | — | — | — |
+| `41CC` | sub_41CC | — | 186 | 63 | 1 | 4 | ✓ | 已解讀 | exact | docs/spec/788-memorised-spell-slots-identified.md<br>戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788 | spec/788-memorised-spell-slots-identified.md |
 | `42FD` | sub_42FD | — | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `45CF` | sub_45CF | — | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4703` | sub_4703 | — | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |

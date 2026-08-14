@@ -6,18 +6,18 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADCLOCK | 32 | 10 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 5 個呼叫，沒有其他動作：`call far ptr 19Ah:2Ah`、`call far ptr 117h:57h`、`call far ptr 13Eh:9Dh`、`call far ptr 14Ah:101h`、`call far ptr 164h:57h`（body 共 32 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-15.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/754-small-predicates-and-wrappers.md |
-| `0020` | sub_20 | — | 696 | 239 | 1 | 1 | ✓ | 待解讀 | — | — | spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
-| `02D8` | sub_2D8 | — | 173 | 69 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `0020` | sub_20 | — | 696 | 239 | 1 | 1 | ✓ | 待解讀 | — | — | spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>spec/790-attack-ally-confirm-and-counter-animation.md |
+| `02D8` | sub_2D8 | — | 173 | 69 | 2 | 1 | ✓ | 待解讀 | — | — | spec/790-attack-ally-confirm-and-counter-animation.md |
 | `0385` | sub_385 | — | 52 | 20 | 2 | 2 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>上限 99 的累加(retf)：對應位址 0A652h/0A65Ch/680Ch/0A65Ah，與 DOS overlay-20:0385h 同 | audit/function-index/pc98-overlay-20.md<br>spec/754-small-predicates-and-wrappers.md |
-| `03B9` | sub_3B9 | TICKCLOCK | 165 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `03B9` | sub_3B9 | TICKCLOCK | 165 | 67 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/790-attack-ally-confirm-and-counter-animation.md<br>數字往上跳的動畫：把 DS:7F05h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790（兩平台只差這個基底） | audit/embedded-strings.md<br>spec/790-attack-ally-confirm-and-counter-animation.md |
 | `045E` | sub_45E | — | 233 | 92 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0549` | sub_549 | — | 126 | 54 | 1 | 1 | ✓ | 已解讀 | strong inference | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>與 DOS overlay-20:0549h（entry#9）助憶碼序列完全相同，語意同該筆：兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n < 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/function-index/pc98-overlay-20.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
 | `05D2` | sub_5D2 | — | 246 | 110 | 5 | 2 | ✓ | 待解讀 | — | — | — |
 | `073A` | sub_73A | — | 329 | 140 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0898` | sub_898 | — | 173 | 65 | 1 | 2 | ✓ | 已解讀 | strong inference | docs/spec/768-script-arithmetic-opcodes-and-save-size.md<br>與 DOS overlay-20:0862h（entry#12）助憶碼序列完全相同，語意同該筆：每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 <呼叫>(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
-| `094E` | sub_94E | — | 182 | 68 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0A11` | sub_A11 | — | 294 | 105 | 2 | 2 | ✓ | 待解讀 | — | — | — |
+| `094E` | sub_94E | — | 182 | 68 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-20.md |
+| `0A11` | sub_A11 | — | 294 | 105 | 2 | 2 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-20.md |
 | `0B37` | sub_B37 | — | 177 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0BE8` | sub_BE8 | — | 178 | 65 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0BE8` | sub_BE8 | — | 178 | 65 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/789-heal-budget-tick-and-halve-stack.md<br>每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）> 0 就遞減，減到 0 時 旗標:=1，r := 本模組 0A11h(角色,@旗標)，r=0 再試 094Eh，最後 byte[0A65Fh + i] := r*3（i 由 1 起算）。retf 4。spec 789（PC-98：DS:9598h，next +18Ah） | — |
 | `0CD0` | sub_CD0 | REST | 492 | 196 | 0 | 8 | ✓ | 待解讀 | — | — | — |
 | `0EBC` | sub_EBC | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | audit/embedded-strings.md<br>spec/752-empty-procedures.md |

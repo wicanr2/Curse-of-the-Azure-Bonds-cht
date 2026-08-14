@@ -20128,6 +20128,132 @@
    "level": "exact",
    "spec": "docs/spec/787-bresenham-record-and-edge-clamp.md",
    "note": "把掃描結果複製出來(retf 6)：與 DOS overlay-13:38AAh 60 條同形，緩衝 DS:9F2Ch、筆數 DS:9F30h、結果陣列 9F2Eh(差異 9 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 16844,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 16682,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788（PC-98：DS:9F2Ch/9F2Eh，欄位 +1）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 642,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號，查法術屬性表 DS:37DAh + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 642,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/788-memorised-spell-slots-identified.md",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號，查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788（PC-98：角色表 DS:9594h）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 8789,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "把一筆治療額度沿 DS:650Ah 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A4h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 <148Ah:149Eh>(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 8892,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "把一筆治療額度沿 DS:9598h 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A5h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 <far unk_146E>(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789（PC-98 欄位 +1）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 2998,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）> 0 就遞減，減到 0 時 旗標:=1，r := 本模組 09DFh(角色,@旗標)，r=0 再試 091Dh，最後 byte[7573h + i] := r*3（i 由 1 起算）。retf 4。spec 789"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 3048,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）> 0 就遞減，減到 0 時 旗標:=1，r := 本模組 0A11h(角色,@旗標)，r=0 再試 094Eh，最後 byte[0A65Fh + i] := r*3（i 由 1 起算）。retf 4。spec 789（PC-98：DS:9598h，next +18Ah）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 8691,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "物品堆對半分：半 := 有號(節點^[39h]) div 2；半 > 0（無號比較）才做。GetMem(新,3Fh) + Move(節點^,新^,3Fh) 複製整個 63-byte 節點，新^[39h]:=半、新^[34h]:=0、新^[2Ah]:=節點^[2Ah]、節點^[39h]:=數量−半、節點^[2Ah]:=新（插在原節點後）。否則顯示 'Can't halve that'(16)。數量 ≥ 80h 時有號 div 2 為負而無號比較會通過，無防護。retf 4。spec 789"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 8645,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
+   "note": "同 DOS：節點 67h(103) bytes，數量欄 +61h、next +52h、清掉的欄 +5Ch；訊息 'それは分けることはできません'(28 bytes)。spec 789"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 12092,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "Attack Ally 確認：邊 := <far 1584h+2>(參數2,參數0)；(邊 = 目標^[197h]) 或 (目標^[198h] <> 0) 時直接回 1；否則顯示 'Attack Ally: '(13，結尾一空白)，<far 16ADh+1>(0Dh,0Ah,0Fh) 回 'Y' 才回 1。答 Y 時 DS:758Ch:=1、word(DS:4F9Dh^[666h]):=1，並掃 DS:650Ah 角色鏈：+195h=0 且 +0F7h>7Fh（士氣旗標）者 +197h:=1 並把 +18Dh^[0Ah]/[0Ch] 目標遠指標清 0，最後呼叫 <far 158Ah+1>。retf 8。spec 790"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 11705,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "同 DOS，欄位各 +1（+198h 陣營、+199h、+196h 狀態、+18Eh 戰鬥狀態、+18Ah next）；全域 DS:0A81Eh / DS:7F09h / DS:9598h；訊息 '味方を攻撃するのですか？'(24 bytes)。spec 790"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 953,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "數字往上跳的動畫：把 DS:4F99h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 953,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "數字往上跳的動畫：把 DS:7F05h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790（兩平台只差這個基底）"
   }
  ]
 }
