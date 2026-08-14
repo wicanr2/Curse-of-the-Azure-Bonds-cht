@@ -9,13 +9,13 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 873、不阻塞 133、邊界碎片 243、待解讀 137；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 875、不阻塞 133、邊界碎片 243、待解讀 135；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | START.EXE | — | 325 | 136 | 133 | 17 | 39 | 23290 | 0 | [明細](function-index/dos-START.EXE.md) |
 | overlay-00 | MEMORY | 2 | 2 | 0 | 0 | 0 | 78 | 24 | [明細](function-index/dos-overlay-00.md) |
-| overlay-01 | INTRO | 4 | 2 | 0 | 0 | 2 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
+| overlay-01 | INTRO | 4 | 4 | 0 | 0 | 0 | 1511 | 405 | [明細](function-index/dos-overlay-01.md) |
 | overlay-02 | INTERPET | 90 | 55 | 0 | 29 | 6 | 14062 | 292 | [明細](function-index/dos-overlay-02.md) |
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 12 | 0 | 1 | 1 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
@@ -53,13 +53,13 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 954、不阻塞 29、邊界碎片 338、待解讀 167；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 956、不阻塞 29、邊界碎片 338、待解讀 165；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | PC98-GAME.EXE | — | 333 | 224 | 29 | 25 | 55 | 25067 | 0 | [明細](function-index/pc98-PC98-GAME.EXE.md) |
 | overlay-00 | MEMORY | 2 | 1 | 0 | 1 | 0 | 77 | 2 | [明細](function-index/pc98-overlay-00.md) |
-| overlay-01 | INTRO | 4 | 1 | 0 | 1 | 2 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
+| overlay-01 | INTRO | 4 | 3 | 0 | 1 | 0 | 2002 | 726 | [明細](function-index/pc98-overlay-01.md) |
 | overlay-02 | INTERPET | 86 | 58 | 0 | 28 | 0 | 14044 | 266 | [明細](function-index/pc98-overlay-02.md) |
 | overlay-03 | PROTECT | 4 | 3 | 0 | 0 | 1 | 752 | 278 | [明細](function-index/pc98-overlay-03.md) |
 | overlay-04 | TEMPLE | 23 | 12 | 0 | 10 | 1 | 3710 | 830 | [明細](function-index/pc98-overlay-04.md) |
