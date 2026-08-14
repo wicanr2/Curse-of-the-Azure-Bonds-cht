@@ -33,7 +33,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1679` | sub_1679 | — | 7 | 2 | 6 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ds:959Ah, dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `1688` | sub_1688 | — | 13 | 3 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+18Ch], dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完） | — |
 | `1697` | sub_1697 | — | 2 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 2 bytes，已逐條讀完） | — |
-| `1699` | sub_1699 | — | 251 | 79 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `1699` | sub_1699 | — | 251 | 79 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/800-party-reorder-and-footprint-check.md<br>把目前角色 DS:9594h 在隊列中往後移一位：先從 DS:9598h 走一遍找前一位（是隊首時 前 = 自己）；後 := DS:9594h^[189h]；後 = NIL（已在隊尾）則 DS:9594h^[189h] := DS:9598h、DS:9598h := DS:9594h、前^[189h] := NIL（繞回隊首）；否則 DS:9594h^[189h] := 後^[189h]、DS:9598h = DS:9594h 時改指 後、前 <> DS:9594h 時 前^[189h] := 後、後^[189h] := DS:9594h。DS:9594h 本身不變。retf。spec 800 | — |
 | `1794` | sub_1794 | — | 5 | 1 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+18Ah], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1799` | sub_1799 | — | 9 | 4 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 9 bytes，已逐條讀完） | — |
 | `17F6` | sub_17F6 | — | 296 | 124 | 1 | 7 | ✓ | 待解讀 | — | — | — |

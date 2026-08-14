@@ -16,7 +16,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `106C` | sub_106C | — | 250 | 86 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1166` | sub_1166 | — | 30 | 12 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, 0FFh`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 30 bytes，已逐條讀完） | — |
 | `1184` | sub_1184 | — | 87 | 39 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `lea di, [bp-106h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 87 bytes，已逐條讀完） | — |
-| `1370` | sub_1370 | — | 246 | 80 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `1370` | sub_1370 | — | 246 | 80 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/801-take-from-pool-and-combat-state-freed.md<br>戰鬥結束的收尾：word(DS:4F9Dh^[590h]) := 0；掃 DS:650Ah 鏈——p^[18Dh]^[13h] = 1 或 p^[197h] = 1（陣營 1）者：DS:47ECh := 1、p^[196h] <> 1 時計數 +1、先抓 後 := p^[189h] 再把 DS:6506h := p 並呼叫 <far 0F0Dh+2>(1, ord(p^[18Dh]^[13h] = 1))；其餘成員：FreeMem(p^[18Dh], 16h) 並把 +18Dh 清成 NIL——**戰鬥狀態記錄是 22 bytes**。最後 DS:6506h := DS:650Ah。retf。spec 801 | spec/801-take-from-pool-and-combat-state-freed.md |
 | `14AC` | sub_14AC | — | 242 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-05.md |
 | `15A9` | sub_15A9 | — | 112 | 45 | 5 | 2 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 14ACh 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | spec/775-take-menu-and-palette-writer.md |
 | `169F` | sub_169F | — | 9 | 3 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp loc_15B3`，控制權轉交後不返回；先設定 `mov [bp-4], ax`、`mov [bp-2], dx`（body 共 9 bytes，已逐條讀完） | — |
