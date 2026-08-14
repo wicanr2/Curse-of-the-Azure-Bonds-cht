@@ -17434,6 +17434,26 @@
    "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
    "note": "分段加成:DS:6FA7h 等於 4 或 2 時,依 角色^[19h] 取 bonus(4..6→1、7..10→2、0Bh..0Dh→3、0Eh..11h→4、12h..14h→5),DS:6F92h += bonus。⚠ **v 不在 4..20 時 bonus 從頭到尾沒有被賦值**,加進去的是堆疊殘值——這是第三處同型問題(spec 694 的 129Ah、spec 702 的 23F2h),共同形狀是「一串 if 範圍 then 賦值、沒有 else、區域變數也沒初始化」。remake 要補預設值但補什麼要另外決定,原作行為隨堆疊內容而定。分段長度 3/4/3/4/3 不是等距",
    "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 10652,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "特定武器直接讓目標進入狀態 8:<overlay-24 entry#43>(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r<>NIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、<overlay-23 entry#14>(目標)、<overlay-23 entry#4>(目標, 0Dh),目標^[196h]=0 時再 <overlay-32 entry#20>(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11481,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "相鄰時傷害加倍但打的是自己:<overlay-24 entry#33>(arg_6, DS:6506h) < 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '<名字> gets zapped'(CS:2CCDh),**<overlay-23 entry#20> 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一",
+   "bounds": "prologue"
   }
  ]
 }
