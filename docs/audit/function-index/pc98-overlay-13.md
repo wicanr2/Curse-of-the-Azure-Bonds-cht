@@ -58,7 +58,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2915` | sub_2915 | THIEFATTACK | 223 | 73 | 2 | 3 | ✓ | 已解讀 | strong inference | docs/spec/771-extra-attacks-and-weapon-class-whitelist.md<br>與 DOS overlay-13:28C3h（entry#22）助憶碼序列完全相同，語意同該筆：物品類別白名單(retf 8)：(角色^[10Fh] > 0) 或 ((角色^[117h] > 0) 且 <呼叫>(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h < 類別 < 26h)；再要求 行動者^[18Dh]^[0Fh] > 1 且 (行動者^[0DEh] and 7Fh) <= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h] ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `29F4` | sub_29F4 | FIGDIR | 126 | 43 | 6 | 3 | ✓ | 待解讀 | — | — | — |
 | `2A72` | sub_2A72 | SHOWARROW | 546 | 223 | 1 | 5 | ✓ | 待解讀 | — | — | — |
-| `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2C94` | sub_2C94 | SETMORALE | 138 | 49 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/784-cross-platform-pairs-second-batch.md<br>隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出) | — |
 | `2D1E` | sub_2D1E | FASTESTENEMY | 130 | 46 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md<br>取指定陣營中最快的移動速率(retf 4)：與 DOS overlay-13:2EACh(spec 762)逐條同構，欄位為 +198h/+197h/+18Ah、鏈頭 DS:9598h | spec/763-dungeon-map-second-plane-and-stone-to-flesh.md |
 | `2DB9` | sub_2DB9 | CHECKBETRAYAL | 205 | 67 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2EBB` | sub_2EBB | — | 541 | 217 | 1 | 8 | ✓ | 待解讀 | — | — | — |

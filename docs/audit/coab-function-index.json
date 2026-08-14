@@ -8121,6 +8121,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "retf 4：p^[18Dh]^[11h] 非 0 回 false；否則 (p^[109h] \u003c= 0) and (p^[111h] \u003c= p^[0E6h]) 也回 false；再叫一支帶輸出參數的 overlay 函式，回 0 就 false；都通過才叫另一支並回 true。比較都是有號",
    "citations": [
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-09.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
     "spec/783-cross-platform-pairs-first-batch.md"
@@ -8745,10 +8746,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "巢狀的牆面查詢(retf 8 = (x, y, 方向) + 最低位的靜態鏈 word，本體從不讀該 word)：座標在 0..0Fh 時依兩支呼叫的結果回 1/0/3；界外時若 y 等於隊伍 y(DS:7210h)且方向是 2 或 6 回 0，否則回 1。⚠ 界外不是一律當牆。這就是 spec 765 的 0378h 用 push bp 呼叫的那支",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
-    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -8770,7 +8775,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -12702,9 +12708,13 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "隊伍血量百分比(retf，無參數)：走隊伍鏈，陣營(+197h)為 1 的成員 — +196h 非 0 才把 +1A4h(目前 HP)計入，+78h(最大 HP)一律計入；最大 \u003e 0 時 DS:75D9h := ((目前*14h) div 最大)*5，即 0..100 以 5 為級距。⚠ 最大為 0 時整個不寫，保留舊值；+196h 為 0 的成員會把百分比往下拉",
    "citations": [
-    "spec/750-combat-setup.md"
+    "spec/750-combat-setup.md",
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -13060,6 +13070,7 @@
    "note": "隊上有沒有人符合(retf 2)：走 DS:650Ah 隊伍鏈，(角色^[109h+索引] \u003e 0) 或 ((角色^[111h+索引] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立就回 true 並停止。與 spec 756 overlay-19:3656h、spec 757 overlay-09:024Dh 同一個判準；找到就停，不數人數",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-14.md",
     "spec/783-cross-platform-pairs-first-batch.md"
    ]
   },
@@ -15740,12 +15751,12 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "四條件合取(retf 4)：((p^[75h]=3) or ((p^[114h]\u003e0) and \u003coverlay 呼叫\u003e(p))) and (DS:4FBAh\u003c\u003e5) and (p^[195h]=0) and (p^[191h]\u003e0)。DS:4FBAh 就是戰鬥開場(spec 750)結尾設 5 的狀態變數；+114h 有號比較、+191h 無號",
    "citations": [
+    "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-19.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/758-morale-field-0f7h-round-trip.md",
-    "spec/769-combat-main-loop.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/769-combat-main-loop.md"
    ]
   },
   {
@@ -22461,7 +22472,13 @@
    "callers": 4,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "讀戰場兩個平面(retf 0Ch)：座標在 0..31h × 0..18h(即 50×25)時 輸出A^ := 地圖^[y*32h+x+7]、輸出B^ := byte[6857h + y*32h + x]，否則兩者都設 0。可證 DS:6857h 起有一塊與地圖同尺寸(1250 bytes)的靜態陣列，索引式相同但沒有 7 bytes 表頭",
+   "citations": [
+    "spec/784-cross-platform-pairs-second-batch.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22531,6 +22548,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/783-cross-platform-pairs-first-batch.md"
    ]
   },
@@ -22566,6 +22584,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "與 PC-98 overlay-32:12EBh（entry#15）助憶碼序列完全相同，語意同該筆：i := \u003csub_1363\u003e(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/750-combat-setup.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
     "spec/783-cross-platform-pairs-first-batch.md"
@@ -22587,6 +22606,7 @@
    "spec": "docs/spec/635-overlay32-grid-record-array.md",
    "note": "與 PC-98 overlay-32:1313h（entry#16）助憶碼序列完全相同，語意同該筆：同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/dos-overlay-32.md",
     "spec/750-combat-setup.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
     "spec/783-cross-platform-pairs-first-batch.md"
@@ -22625,11 +22645,11 @@
    "note": "在指標表裡找索引(retf 4)：從 1 起逐格比對 DS:6D35h + i*4 這個遠指標是否等於參數，相等回索引；走到 DS:66A6h(項數)還沒找到回 0",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
-    "spec/777-item-append-and-area-save-sweep.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/777-item-append-and-area-save-sweep.md"
    ]
   },
   {
@@ -22687,6 +22707,7 @@
    "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
    "note": "暫時改地圖表頭再畫(retf 8)：地圖^[4] := 參數0、地圖^[5] := byte[66A6h + 本模組 0CAEh(x,y)*4]；DS:75E6h 非 0 時叫 本模組 09DFh(8, 參數2, 0C5Eh(x,y), 0C36h(x,y))；最後把 +4/+5 還原成 (0, 1)。可證地圖表頭 +4/+5 是繪圖期間的暫時狀態(+2/+3 是戰場原點)",
    "citations": [
+    "audit/function-index/pc98-overlay-32.md",
     "spec/783-cross-platform-pairs-first-batch.md"
    ]
   },
@@ -32297,10 +32318,14 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "巢狀的牆面查詢(retf 8)：與 DOS overlay-10:02F6h 49 條同形，隊伍 y 在 DS:0A2AAh(差異 3 條，已逐條列出)",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
-    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
+    "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -32322,7 +32347,8 @@
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-    "spec/776-first-person-view-scan-and-ega-rect-fill.md"
+    "spec/776-first-person-view-scan-and-ega-rect-fill.md",
+    "spec/784-cross-platform-pairs-second-batch.md"
    ]
   },
   {
@@ -36526,7 +36552,10 @@
    "callers": 0,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出)"
   },
   {
    "platform": "pc98",
@@ -47299,7 +47328,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "讀戰場兩個平面(retf 0Ch)：與 DOS overlay-32:0509h 43 條同形，地圖 DS:9F2Ch、靜態陣列 [di−670Fh](＝98F1h)(差異 2 條，已逐條列出)"
   },
   {
    "platform": "pc98",
@@ -47955,9 +47987,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 14,
    "CodeBytes": 6727,
    "Undefined": 43,
@@ -48000,9 +48032,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 32,
+   "Todo": 31,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -48285,9 +48317,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -48510,9 +48542,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -48555,9 +48587,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 34,
+   "Todo": 33,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -48840,9 +48872,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
