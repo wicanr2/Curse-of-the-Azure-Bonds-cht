@@ -10521,9 +10521,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/743-berserk-and-two-factions.md",
+   "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證",
    "citations": [
-    "audit/function-index/dos-overlay-12.md"
+    "audit/function-index/dos-overlay-12.md",
+    "spec/743-berserk-and-two-factions.md"
    ]
   },
   {
@@ -11260,6 +11264,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),\u003coverlay-23 entry#20\u003e(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反)",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/738-effproc-effect-handlers.md",
     "spec/742-vorpal-and-backfire.md"
    ]
@@ -11363,7 +11368,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/743-berserk-and-two-factions.md",
+   "note": "用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 \u003coverlay-23 entry#3\u003e(目標, id, 0);套用走 \u003coverlay-23 entry#11\u003e(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** \u003coverlay-23 entry#2\u003e(id, 目標, 0, 0)。開頭 DS:7582h := 0",
+   "citations": [
+    "spec/743-berserk-and-two-factions.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11497,7 +11508,8 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 \u003e 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果",
    "citations": [
-    "spec/738-effproc-effect-handlers.md"
+    "spec/738-effproc-effect-handlers.md",
+    "spec/743-berserk-and-two-factions.md"
    ]
   },
   {
@@ -19618,12 +19630,13 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/692-party-tally-and-list-search.md",
-   "note": "依 +197h 統計人數:清 DS:6F90h/6F91h 兩個 byte,走 DS:650Ah 的角色鏈(next 在 +189h),p^[196h] \u003c\u003e 0 者做 byte [6F90h + p^[197h]] += 1(p^[197h] 經 cbw,有號)。⚠ **只清了兩個 byte 卻拿 +197h 當索引,沒有上下界檢查**——值不是 0 或 1 就會寫進別的全域變數。移植時要自己補範圍檢查。+196h 就是 KILLTHEDUDE 裡「等於 6 整支跳過」的那個欄位",
+   "note": "依 +197h 統計人數:清 DS:6F90h/6F91h 兩個 byte,走 DS:650Ah 的角色鏈(next 在 +189h),p^[196h] \u003c\u003e 0 者做 byte [6F90h + p^[197h]] += 1(p^[197h] 經 cbw,有號)。⚠ **只清了兩個 byte 卻拿 +197h 當索引,沒有上下界檢查**——值不是 0 或 1 就會寫進別的全域變數。移植時要自己補範圍檢查。+196h 就是 KILLTHEDUDE 裡「等於 6 整支跳過」的那個欄位 ⚠ spec 743:+197h(陣營)只有 0 與 1 兩個值(overlay-12:1809h 用 xor 1 翻轉),所以統計陣列剛好兩格是對的;越界風險仍在但不是原作的日常路徑",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
     "spec/718-generic-affect-n-targets.md",
-    "spec/734-animate-dead-and-faction-field.md"
+    "spec/734-animate-dead-and-faction-field.md",
+    "spec/743-berserk-and-two-factions.md"
    ]
   },
   {
@@ -21195,6 +21208,7 @@
    "note": "unit 初始化:far call 196h:43h 後交給 19Ch:2Ah",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md"
    ]
   },
@@ -21212,6 +21226,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md"
    ]
@@ -45108,6 +45123,7 @@
    "note": "呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md"
    ]
   },
@@ -45126,6 +45142,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md"
    ]
@@ -45909,9 +45926,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 109,
+   "Read": 111,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 14,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
