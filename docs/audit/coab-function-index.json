@@ -10540,12 +10540,13 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/743-berserk-and-two-factions.md",
-   "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證",
+   "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 \u003coverlay-31 entry#6\u003e 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '\u003c名字\u003e goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
     "spec/743-berserk-and-two-factions.md",
-    "spec/745-node-field-packed-differently.md"
+    "spec/745-node-field-packed-differently.md",
+    "spec/746-dispel-evil-and-berserk-sibling.md"
    ]
   },
   {
@@ -11432,7 +11433,8 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果**",
    "citations": [
-    "spec/738-effproc-effect-handlers.md"
+    "spec/738-effproc-effect-handlers.md",
+    "spec/746-dispel-evil-and-berserk-sibling.md"
    ]
   },
   {
@@ -11478,7 +11480,13 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同",
+   "citations": [
+    "spec/746-dispel-evil-and-berserk-sibling.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11566,7 +11574,13 @@
    "callers": 0,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 \u003coverlay-23 entry#8\u003e(p,4,0) 回 0(豁免失敗)時,\u003coverlay-23 entry#1\u003e(p, 8, '\u003c名字\u003e is dispelled' CS:2D5Ch),然後 **\u003coverlay-23 entry#3\u003e(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '\u003c名字\u003e resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3",
+   "citations": [
+    "spec/746-dispel-evil-and-berserk-sibling.md"
+   ]
   },
   {
    "platform": "dos",
@@ -19657,12 +19671,12 @@
    "spec": "docs/spec/692-party-tally-and-list-search.md",
    "note": "依 +197h 統計人數:清 DS:6F90h/6F91h 兩個 byte,走 DS:650Ah 的角色鏈(next 在 +189h),p^[196h] \u003c\u003e 0 者做 byte [6F90h + p^[197h]] += 1(p^[197h] 經 cbw,有號)。⚠ **只清了兩個 byte 卻拿 +197h 當索引,沒有上下界檢查**——值不是 0 或 1 就會寫進別的全域變數。移植時要自己補範圍檢查。+196h 就是 KILLTHEDUDE 裡「等於 6 整支跳過」的那個欄位 ⚠ spec 743:+197h(陣營)只有 0 與 1 兩個值(overlay-12:1809h 用 xor 1 翻轉),所以統計陣列剛好兩格是對的;越界風險仍在但不是原作的日常路徑",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/692-party-tally-and-list-search.md",
     "spec/718-generic-affect-n-targets.md",
     "spec/734-animate-dead-and-faction-field.md",
-    "spec/743-berserk-and-two-factions.md",
-    "spec/745-node-field-packed-differently.md"
+    "spec/743-berserk-and-two-factions.md"
    ]
   },
   {
@@ -45962,9 +45976,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 115,
+   "Read": 117,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 8,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
