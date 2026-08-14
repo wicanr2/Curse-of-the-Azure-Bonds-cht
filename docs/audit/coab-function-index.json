@@ -8124,9 +8124,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-10.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -13294,7 +13294,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1010-attack-of-opportunity.md",
+   "note": "離開接觸時的機會攻擊(retf 6，宣告順序 (角色遠指標, 方向))，spec 1008 的移動指令走一步時叫的 overlay-13 entry#6。★★ 作法是取差集：先用 overlay-24 entry#32(1, 角色) 取現在的相鄰者編號(放 DS:758Eh，1 起算)，把自己在戰鬥員座標陣列 DS:66A3h/66A4h(每人 4 bytes，以 overlay-32 entry#18 的編號索引)的位置暫時加上 dx/dy，再查一次，然後立刻還原；移動後還貼著的從名單劃掉，剩下的就能打你。每個攻擊者要過四關：entry#6=0、sub_1144(角色,打手)≠0、身上沒有效果 4Bh 也沒有 4Ah(entry#27)。★★ 面向檢查用 overlay-31 entry#4(＝spec 1002 的 90° 扇形判斷，簽章 (起點x, 起點y, 目標x, 目標y, 方向))，k 跑 朝向+6..朝向+0Ah、mod 8 ⇒ 朝向 ±2 共五個朝向，任一個看得到就打；但 打手^[18Dh]^[3] \u003e 0 或 ^[0Fh] = 0 時整個面向檢查被跳過。攻擊前選武器槽(+11Ch=0 → 2，再看 +19Bh+j)、寫 +18Dh^[4]；★ 打完把 +18Dh^[0Ah](鎖定目標)還原。★ +196h = 1 是「站著、能行動」(STANDUP 寫 +195h:=0、+196h:=1)。⚠ PC-98 多 11 條：攻擊前多一道「overlay-24 entry#41 成立但 entry#42 不成立就不打」的閘，DOS 沒有。位址對照：758Eh↔0A820h、66A3h/66A4h↔973Dh/973Eh、6D35h↔9DCFh、75E5h/75E6h↔0A877h/0A878h；★ 欄位 +18Dh↔+18Eh、+196h↔+197h、+19Bh↔+19Ch，但 +11Ch 兩平台相同 ⇒ PC-98 的 +1 位移邊界落在 11Ch 之後、18Dh 之前",
+   "citations": [
+    "spec/1010-attack-of-opportunity.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13840,10 +13846,10 @@
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
+    "audit/function-index/pc98-overlay-13.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/1009-spell-targeting-modes.md",
-    "spec/769-combat-main-loop.md"
+    "spec/1009-spell-targeting-modes.md"
    ]
   },
   {
@@ -22153,9 +22159,9 @@
    "calls": 5,
    "is_overlay_entry": true,
    "state": "已解讀",
-   "level": "strong inference",
-   "spec": "docs/spec/579-character-status-fields.md",
-   "note": "與 pc98 overlay-23:251Ah 助憶碼序列完全相同（75 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：STANDUP(hp,char):先過一道檢定,通過才把 +196h 設 0(可行動)、+197h=1、+1A5h=hp;依 +198h 是否為 1 選兩則訊息之一顯示。訊息是 Pascal 短字串,直接嵌在 overlay code 段(PC-98 為 Shift-JIS) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "level": "exact",
+   "spec": "docs/spec/1010-attack-of-opportunity.md",
+   "note": "STANDUP(hp, char)：先過一道檢定，通過才把 +195h(狀態) 設 0、★ +196h 設 1(＝站著、能行動)、+1A4h := hp；依 +197h 是否為 1 選兩則訊息之一顯示。訊息是 Pascal 短字串，直接嵌在 overlay code 段(PC-98 為 Shift-JIS)。⚠ 先前的註記把 +195h:=0 與 +196h:=1 混成「+196h 設 0(可行動)」，已依 252Ch 的原始指令更正；spec 1008／1010 兩處呼叫端都要求 +196h 非 0 才繼續",
    "citations": [
     "spec/579-character-status-fields.md"
    ]
@@ -34463,9 +34469,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-10.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-10.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/748-cloud-effect-dispel-pair.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -39443,7 +39449,13 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1010-attack-of-opportunity.md",
+   "note": "離開接觸時的機會攻擊(retf 6，宣告順序 (角色遠指標, 方向))，spec 1008 的移動指令走一步時叫的 overlay-13 entry#6。★★ 作法是取差集：先用 overlay-24 entry#32(1, 角色) 取現在的相鄰者編號(放 DS:758Eh，1 起算)，把自己在戰鬥員座標陣列 DS:66A3h/66A4h(每人 4 bytes，以 overlay-32 entry#18 的編號索引)的位置暫時加上 dx/dy，再查一次，然後立刻還原；移動後還貼著的從名單劃掉，剩下的就能打你。每個攻擊者要過四關：entry#6=0、sub_1144(角色,打手)≠0、身上沒有效果 4Bh 也沒有 4Ah(entry#27)。★★ 面向檢查用 overlay-31 entry#4(＝spec 1002 的 90° 扇形判斷，簽章 (起點x, 起點y, 目標x, 目標y, 方向))，k 跑 朝向+6..朝向+0Ah、mod 8 ⇒ 朝向 ±2 共五個朝向，任一個看得到就打；但 打手^[18Dh]^[3] \u003e 0 或 ^[0Fh] = 0 時整個面向檢查被跳過。攻擊前選武器槽(+11Ch=0 → 2，再看 +19Bh+j)、寫 +18Dh^[4]；★ 打完把 +18Dh^[0Ah](鎖定目標)還原。★ +196h = 1 是「站著、能行動」(STANDUP 寫 +195h:=0、+196h:=1)。⚠ PC-98 多 11 條：攻擊前多一道「overlay-24 entry#41 成立但 entry#42 不成立就不打」的閘，DOS 沒有。位址對照：758Eh↔0A820h、66A3h/66A4h↔973Dh/973Eh、6D35h↔9DCFh、75E5h/75E6h↔0A877h/0A878h；★ 欄位 +18Dh↔+18Eh、+196h↔+197h、+19Bh↔+19Ch，但 +11Ch 兩平台相同 ⇒ PC-98 的 +1 位移邊界落在 11Ch 之後、18Dh 之前",
+   "citations": [
+    "spec/1010-attack-of-opportunity.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -53119,9 +53131,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 39,
+   "Read": 40,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -53674,9 +53686,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 41,
+   "Read": 42,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
