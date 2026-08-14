@@ -19795,6 +19795,33 @@
    "level": "exact",
    "spec": "docs/spec/779-two-shape-clusters.md",
    "note": "分段查表(retf 4)：與 1394h 同形，輸入區間往下錯一格、後三段輸出各減 1 — 00h..02h → 0FCh、03h..05h → 輸入−06h、10h..12h → 輸入−0Fh、13h..14h → 3、15h..17h → 4、18h..19h → 5、其他 → 0。未涵蓋區間是 06h..0Fh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 1096,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
+   "note": "依形狀表分塊貼圖(retf 8)：三張各 10 bytes 的平行表 DS:0AD8h(起始欄)/0AE2h(高)/0AECh(寬)以第一個參數索引；雙層迴圈逐格取 DS:7202h^[(列−1)*9Ch + 欄]，非 0 且座標在 0..0Ah 內才叫 020Bh:002Fh(y+2, x+2, v, 1, 1)；欄在內圈遞增(資料逐列連續)。超出範圍只跳過不中斷"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 16426,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
+   "note": "清單項目初始化(retf 4)：記錄陣列 DS:0A648h、每筆 29h(41) bytes、索引取自 參數^[0] — 長度 byte 設 14h 並用 ' ' 填滿 20 格、叫本模組 45C9h 後 StoreString(28h)、+09h 填 87h、+0Ah 填 i+3Fh；byte[0A80Ah + i] 不等於 5 時，從 DS:6812h 起每筆 15h bytes 的表搬一段到 +0Dh(長度取自該筆第一個 byte)。⚠ 20 個空白是寫死的欄寬"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-23",
+   "ea": 6053,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/780-submap-blit-entry-init-and-weighted-score.md",
+   "note": "依代碼加權累計(retf 6，第二個參數是 SS 相對記錄)：先以 byte[6F4Dh + 等級] 夾制(n := 上限 − 1，比表上少一)；等級 4 另有一個條件成立就 n+1；等級 2/3/4 走一張權重表(c 在 0Fh..13h → c−0Eh、14h → 5、15h..17h → 6、18h..19h → 7)，其他等級走另一張(c > 0Fh → 2、= 0Fh → 1、< 4 → −2、< 7 → −1)。⚠ imul 是有號的，後兩段會讓累計值減少；累計目標是 byte 加法無上下限；非 2/3/4 等級時 c 在 07h..0Eh 四個條件都不成立"
   }
  ]
 }

@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
-| `0007` | sub_7 | — | 46 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>Sign(x: integer): integer(retf 2)：x<0→−1、x>0→1、x=0→0，有號比較。與 PC-98 同位址那支 45 個 byte 完全相同 | spec/753-small-utility-routines.md |
+| `0000` | sub_0 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-24.md<br>audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0007` | sub_7 | — | 46 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>Sign(x: integer): integer(retf 2)：x<0→−1、x>0→1、x=0→0，有號比較。與 PC-98 同位址那支 45 個 byte 完全相同 | audit/function-index/pc98-overlay-24.md<br>spec/753-small-utility-routines.md |
 | `0035` | sub_35 | — | 360 | 148 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/pc98-overlay-12.md |
 | `019D` | sub_19D | — | 169 | 58 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-12.md<br>audit/function-index/pc98-overlay-12.md |
 | `0246` | sub_246 | — | 420 | 132 | 1 | 1 | ✓ | 待解讀 | — | — | — |
