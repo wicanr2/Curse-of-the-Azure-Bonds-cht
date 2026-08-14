@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 983、不阻塞 133、邊界碎片 237、待解讀 33；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 984、不阻塞 133、邊界碎片 237、待解讀 32；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -39,7 +39,7 @@
 | overlay-22 | SPELLS | 139 | 114 | 0 | 25 | 0 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
 | overlay-23 | EFFECTS | 40 | 26 | 0 | 12 | 2 | 9183 | 376 | [明細](function-index/dos-overlay-23.md) |
 | overlay-24 | GENERIC | 56 | 52 | 0 | 3 | 1 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
-| overlay-25 | TRAINING | 15 | 14 | 0 | 0 | 1 | 4931 | 733 | [明細](function-index/dos-overlay-25.md) |
+| overlay-25 | TRAINING | 15 | 15 | 0 | 0 | 0 | 4931 | 733 | [明細](function-index/dos-overlay-25.md) |
 | overlay-26 | MENUS | 21 | 20 | 0 | 0 | 1 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/dos-overlay-27.md) |
 | overlay-28 | DRAWWIN | 6 | 6 | 0 | 0 | 0 | 446 | 0 | [明細](function-index/dos-overlay-28.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1084、不阻塞 29、邊界碎片 338、待解讀 37；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1085、不阻塞 29、邊界碎片 338、待解讀 36；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -83,7 +83,7 @@
 | overlay-22 | SPELLS | 138 | 110 | 0 | 27 | 1 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
 | overlay-23 | EFFECTS | 39 | 27 | 0 | 12 | 0 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
 | overlay-24 | GENERIC | 65 | 46 | 0 | 17 | 2 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
-| overlay-25 | TRAINING | 14 | 13 | 0 | 0 | 1 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
+| overlay-25 | TRAINING | 14 | 14 | 0 | 0 | 0 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
 | overlay-26 | MENUS | 20 | 19 | 0 | 0 | 1 | 4937 | 183 | [明細](function-index/pc98-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/pc98-overlay-27.md) |
 | overlay-28 | DRAWWIN | 3 | 3 | 0 | 0 | 0 | 196 | 0 | [明細](function-index/pc98-overlay-28.md) |
