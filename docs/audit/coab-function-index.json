@@ -14251,12 +14251,16 @@
    "callers": 1,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "記憶法術選單（與 spec 841 抄寫卷軸同骨架）：'Memorize These Spells? '／'cannot memorize any spells'／'Memorize these spells? '（開頭結尾同樣是只差大小寫的兩句）。選中法術後查 sub_282h(職業, 等級) 還有沒有空位，有就 i := 0 起找第一個 角色^[1Eh+i] = 0 的格子並寫入 法術 + 80h（最高位 = 還在記憶中，證實 spec 788／813）。⚠ 找空格的迴圈沒有上界。★這也證實 spec 836 的 off-by-one：玩家的第一個法術就落在 +1Eh，而 AI 從 +1Fh 才開始掃",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "audit/function-strings.md",
-    "spec/816-camp-menu-and-pointer-pair-free.md"
+    "spec/816-camp-menu-and-pointer-pair-free.md",
+    "spec/836-ai-spell-pick-three-random-per-round.md"
    ]
   },
   {
@@ -21156,9 +21160,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-13.md",
-    "context/50-log-2026-08-09-13.md",
-    "project-status.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -21438,6 +21442,7 @@
    "spec": "docs/spec/694-add-1e-ability-tables.md",
    "note": "敏捷遠程命中調整(讀 角色^[17h])。0..2→−4、3→−3、4→−2、5→−1、6..15→0、16→+1、17→+2、18→+3,與 AD\u0026D 1e 遠程命中調整吻合;19..20→+3、21..23→+4、24..25→+5 是本作自己補的",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/694-add-1e-ability-tables.md"
    ]
   },
@@ -39241,7 +39246,10 @@
    "callers": 1,
    "calls": 10,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "同 DOS overlay-15:00942h（module_align 對齊，相似度 0.997）。唯一序列差異是 PC-98 多一條 mov byte ptr ds:0A385h, 6；其餘是位址與字串（'これらの呪文を覚えますか？'／'は呪文の記憶はできない。'，同樣把 DOS 那兩句只差大小寫的提示合併成一句）",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -47079,9 +47087,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-13.md",
-    "context/50-log-2026-08-09-13.md",
-    "project-status.md"
+    "audit/function-index/pc98-overlay-24.md"
    ]
   },
   {
@@ -48574,6 +48582,7 @@
    "note": "數鏈長(retf 4)：next 在 +52h，與 DOS 的 +2Ah 不同——PC-98 的節點配置重排過，引用位移前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-25.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
@@ -50687,9 +50696,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 26,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 10,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -51242,9 +51251,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 24,
+   "Read": 25,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,

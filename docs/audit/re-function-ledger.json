@@ -22549,6 +22549,24 @@
    "level": "exact",
    "spec": "838",
    "note": "同 DOS overlay-24:00025h（同位址、助憶碼序列完全相同）。差異全是位址：角色 +152h/+19Ah/+1A3h↔+151h/+199h/+1A2h、物品節點 +56h/+5Ah↔+2Eh/+32h、物品類型表 [di−726Eh] 等↔[di+5D04h] 等"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 2370,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "記憶法術選單（與 spec 841 抄寫卷軸同骨架）：'Memorize These Spells? '／'cannot memorize any spells'／'Memorize these spells? '（開頭結尾同樣是只差大小寫的兩句）。選中法術後查 sub_282h(職業, 等級) 還有沒有空位，有就 i := 0 起找第一個 角色^[1Eh+i] = 0 的格子並寫入 法術 + 80h（最高位 = 還在記憶中，證實 spec 788／813）。⚠ 找空格的迴圈沒有上界。★這也證實 spec 836 的 off-by-one：玩家的第一個法術就落在 +1Eh，而 AI 從 +1Fh 才開始掃"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 2349,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "同 DOS overlay-15:00942h（module_align 對齊，相似度 0.997）。唯一序列差異是 PC-98 多一條 mov byte ptr ds:0A385h, 6；其餘是位址與字串（'これらの呪文を覚えますか？'／'は呪文の記憶はできない。'，同樣把 DOS 那兩句只差大小寫的提示合併成一句）"
   }
  ]
 }
