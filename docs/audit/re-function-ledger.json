@@ -22027,6 +22027,60 @@
    "level": "exact",
    "spec": "847",
    "note": "同 DOS overlay-22:057E3h（module_align 對齊，相似度 0.991）。唯一序列差異是多一段 xor ah,ah + mov cx,0Ch + imul cx（乘 12）；其餘 26 條是位址：DS:0A81Fh↔758Dh、DS:0A02Fh↔6F95h、DS:0A645h/0A646h↔7559h/755Ah、DS:0A9D8h↔7746h、DS:0A38Ch↔72A0h。訊息 'は致命の息吹を吹いた！'"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 3065,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：沿清單跳過整頁，節點 +29h（PC-98 +51h，即 spec 843 顯示行節點的屬性）為 0 就停。每次都從鏈頭重走到游標（0011h 取第 n 個節點），O(視窗高 × 游標位置)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 3216,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00BF9h（module_align 對齊，助憶碼序列完全相同）。6 條差異全是位址：節點屬性 +51h↔+29h、DS:0A32Ch↔7292h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 3289,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：翻頁。先記住游標在視窗裡的相對位置，頂端 DS:7292h 加減一整頁後夾限（上界 總筆數−視窗高、下界 0），再把游標放回同一個相對位置。⚠ 總筆數 < 視窗高 時上界為負，頂端會被夾成負值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 3440,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00CD9h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是 DS:0A32Ch↔7292h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 3435,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：游標移一格。走出視窗就繞回另一端（不是捲動視窗），再叫 00BF9h 跳過屬性為 0 的行"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 3586,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00D6Bh（module_align 對齊，助憶碼序列完全相同）。5 條差異全是 DS:0A32Ch↔7292h 與呼叫目標"
   }
  ]
 }

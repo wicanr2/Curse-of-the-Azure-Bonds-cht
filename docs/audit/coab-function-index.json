@@ -20058,6 +20058,7 @@
    "note": "龍息（'Breathes!'）：DS:758Dh 開著時 1d100 \u003c= 50 直接跳過（連訊息都不印）。落點 DS:7559h/755Ah 經 1894h+1 往自己拉回，正右/正下相鄰那一格會再推一格。傷害用 +78h 最大 HP（受傷不減威力）。節點 +3 \u003e 0FDh 減 1、否則移除效果 58h",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/847-dragon-breath.md"
    ]
@@ -22546,7 +22547,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/848-scroll-list-widget.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22624,7 +22628,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：沿清單跳過整頁，節點 +29h（PC-98 +51h，即 spec 843 顯示行節點的屬性）為 0 就停。每次都從鏈頭重走到游標（0011h 取第 n 個節點），O(視窗高 × 游標位置)",
+   "citations": [
+    "spec/848-scroll-list-widget.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22637,9 +22647,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：翻頁。先記住游標在視窗裡的相對位置，頂端 DS:7292h 加減一整頁後夾限（上界 總筆數−視窗高、下界 0），再把游標放回同一個相對位置。⚠ 總筆數 \u003c 視窗高 時上界為負，頂端會被夾成負值",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/848-scroll-list-widget.md"
    ]
   },
   {
@@ -22653,10 +22667,14 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "捲動清單：游標移一格。走出視窗就繞回另一端（不是捲動視窗），再叫 00BF9h 跳過屬性為 0 的行",
    "citations": [
     "audit/duplicate-strings.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/848-scroll-list-widget.md"
    ]
   },
   {
@@ -48489,7 +48507,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00BF9h（module_align 對齊，助憶碼序列完全相同）。6 條差異全是位址：節點屬性 +51h↔+29h、DS:0A32Ch↔7292h",
+   "citations": [
+    "spec/848-scroll-list-widget.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48502,9 +48526,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00CD9h（module_align 對齊，助憶碼序列完全相同）。8 條差異全是 DS:0A32Ch↔7292h",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/848-scroll-list-widget.md"
    ]
   },
   {
@@ -48518,9 +48546,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "848",
+   "note": "同 DOS overlay-26:00D6Bh（module_align 對齊，助憶碼序列完全相同）。5 條差異全是 DS:0A32Ch↔7292h 與呼叫目標",
    "citations": [
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-24.md",
+    "spec/848-scroll-list-widget.md"
    ]
   },
   {
@@ -50556,9 +50588,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 8,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -51111,9 +51143,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 8,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,

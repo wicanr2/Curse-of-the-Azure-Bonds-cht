@@ -13,14 +13,14 @@ offset（base 0），resident executable 為 IDA linear address。
 | `03D4` | sub_3D4 | — | 1041 | 365 | 2 | 3 | ✓ | 待解讀 | — | — | — |
 | `07E5` | sub_7E5 | — | 24 | 14 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call far ptr 542h:311h`（body 共 24 bytes，已逐條讀完） | spec/750-combat-setup.md |
 | `07FD` | sub_7FD | — | 141 | 52 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 待解讀 | — | — | — |
+| `088A` | sub_88A | — | 314 | 121 | 2 | 3 | ✓ | 待解讀 | — | — | spec/848-scroll-list-widget.md |
 | `09C4` | sub_9C4 | — | 76 | 31 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半 | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0A10` | sub_A10 | — | 70 | 29 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算 | audit/function-index/dos-overlay-26.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0A56` | sub_A56 | — | 162 | 71 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0AF8` | sub_AF8 | — | 257 | 111 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `0BF9` | sub_BF9 | — | 224 | 77 | 2 | 2 | ✓ | 待解讀 | — | — | — |
-| `0CD9` | sub_CD9 | — | 146 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
-| `0D6B` | sub_D6B | — | 124 | 44 | 1 | 2 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
+| `0BF9` | sub_BF9 | — | 224 | 77 | 2 | 2 | ✓ | 已解讀 | exact | 848<br>捲動清單：沿清單跳過整頁，節點 +29h（PC-98 +51h，即 spec 843 顯示行節點的屬性）為 0 就停。每次都從鏈頭重走到游標（0011h 取第 n 個節點），O(視窗高 × 游標位置) | spec/848-scroll-list-widget.md |
+| `0CD9` | sub_CD9 | — | 146 | 49 | 1 | 3 | ✓ | 已解讀 | exact | 848<br>捲動清單：翻頁。先記住游標在視窗裡的相對位置，頂端 DS:7292h 加減一整頁後夾限（上界 總筆數−視窗高、下界 0），再把游標放回同一個相對位置。⚠ 總筆數 < 視窗高 時上界為負，頂端會被夾成負值 | audit/embedded-strings.md<br>spec/848-scroll-list-widget.md |
+| `0D6B` | sub_D6B | — | 124 | 44 | 1 | 2 | ✓ | 已解讀 | exact | 848<br>捲動清單：游標移一格。走出視窗就繞回另一端（不是捲動視窗），再叫 00BF9h 跳過屬性為 0 的行 | audit/duplicate-strings.md<br>audit/embedded-strings.md<br>spec/848-scroll-list-widget.md |
 | `0DF9` | sub_DF9 | — | 778 | 312 | 0 | 9 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `112A` | sub_112A | — | 111 | 52 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `1199` | sub_1199 | — | 168 | 59 | 0 | 1 | ✓ | 待解讀 | — | — | — |
