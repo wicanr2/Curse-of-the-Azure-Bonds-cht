@@ -51391,6 +51391,7 @@
    "note": "巢狀程序：換格時把父層兩塊 12 bytes 寫回 DS:15C0h 十格環狀表的槽緩衝",
    "citations": [
     "audit/embedded-strings.md",
+    "spec/1077-menu-core-pc98.md",
     "spec/972-pc98-ring-slot-repaint.md"
    ]
   },
@@ -51406,10 +51407,14 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1077",
+   "note": "PC-98 選單核心(retf 16h)，DOS spec 1060 的對側(retf 值相同)。★★★底部選單列版面定案：DS:15C0h 十筆 x 6 bytes = 屬性 VRAM 遠指標(A200h 段) + 上一格(+4) + 下一格(+5)；十格全在第 24 列，欄 4/11/18/25/32 與 42/49/56/63/70 ⇒ 每格 7 欄(屬性字串 0Eh=14 bytes = Chr(屬性)+#0 x7) ⇒ 中文全形一格最多 3 字。★★★有提示字串時游標下限拉到 6、環狀鏈改接 ⇒ 選項只剩右邊五格。熱鍵空白的格自動跳過。★★★#0 + 62h..6Bh 直接選第 1..10 格(形狀上是機能鍵列) ⇒ PC-98 熱鍵不必出現在文字裡。arg_6=0 時集合 CS:113h=[1,3,7,9] 四個斜角被吃掉。逾時送出的鍵是熱鍵陣列第 0 格 DS:0A334h",
    "citations": [
     "audit/function-triage.md",
     "spec/1030-camp-menu.md",
+    "spec/1077-menu-core-pc98.md",
     "spec/972-pc98-ring-slot-repaint.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
@@ -54382,9 +54387,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,
