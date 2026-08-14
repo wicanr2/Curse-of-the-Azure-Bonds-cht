@@ -59,8 +59,11 @@ CALLEFFECT(a, b, c, d, e, id)                 ← PC-98 00C9h／DOS 00C9h
 ```
 
 `DS:A040h` 起是 **每項 4 bytes 的 far pointer 表**，用 effect 編號索引。
-`DS:A66Eh` 非零時整批改走 `DS:A28Ch` 這一支——攔截後 `id` 不再參與，所以那
-是「不分種類一律做同一件事」的模式（**是什麼模式尚未確認**）。
+表有 **147 項、編號從 1 起算**，內容已在 spec 1005 解碼完（DOS 的同一張表在
+`DS:6FA6h`），對照表見 [`docs/audit/effect-dispatch-table.md`](../audit/effect-dispatch-table.md)。
+
+`DS:A66Eh` 非零時整批改走 `DS:A28Ch` 這一支——那個位址正是**表內編號 147 的那一格**
+（DOS `DS:71F2h`），攔截後 `id` 不再參與（**是什麼模式尚未確認**）。
 
 ```text
 REMOVEFX(char)                                ← PC-98 158Ah／DOS 15A1h
@@ -84,7 +87,8 @@ CUREEFFECT(id, char) -> boolean               ← PC-98 1630h／DOS 1643h
 ## 明確不宣稱
 
 - 兩張移除清單的**內容**。表在 `DS`，不在 overlay code 裡，要另外定位。
-- `DS:A040h` 那張 effect 分派表的**項數與內容**。
+- ~~`DS:A040h` 那張 effect 分派表的項數與內容~~ → spec 1005：147 項、1 起算，
+  內容已全部對回 overlay entry。
 - `DS:A66Eh` 這個攔截旗標代表什麼模式。
 - `REMOVEFX` 尾段 `4Dh`／`0B3h`／`char^[0F7h]`／`char^[198h]` 的語意。
 - `SPELLOFF`（`010Eh`）本體尚未讀。
