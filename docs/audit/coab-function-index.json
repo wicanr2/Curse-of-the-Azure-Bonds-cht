@@ -1105,7 +1105,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "繪圖前置(近呼叫 retn 0Eh)：由兩個點陣圖表頭算出 13 個 local(var_8 := 參數A shl 3、var_C := var_8 * 來源^[2]、var_12 := 來源^[2] − 目的^[2] − 參數B、var_E := 目的^[11h] * 參數C，其餘 shl 2)，設 BX/CX 並把三個 local 歸零後跳進 sub_15329h。兩次 sub sp,1Ch 是兩層 local 分開配置"
   },
   {
    "platform": "dos",
@@ -1117,7 +1120,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "繪圖前置(近呼叫 retn 0Eh)：與 1507Ah 同一組算式，多讀 目的^[13h] 與 目的^[15h] 兩個欄位，最後跳進 sub_15388h"
   },
   {
    "platform": "dos",
@@ -5866,11 +5872,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 25h／26h 的 handler（binding exact，語意未解讀）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "腳本流的選擇分派(retf，無參數)：取得 選擇 與 筆數，dec(DS:4FB4h) 後線性找到 選擇 = i 的那一筆；DS:75FFh 為 '%'(25h)時 DS:4FB4h := \u003c呼叫\u003e(byte[76C5h + i+1], byte[7705h + i+1])(等於跳躍)，否則叫 \u003c呼叫\u003e(i+1)。DS:75FFh/DS:4FB4h 就是 spec 759 的 overlay-02:3621h 那組流位置",
    "citations": [
-    "audit/ecl-opcode-dispatch.md"
+    "audit/ecl-opcode-dispatch.md",
+    "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
    ]
   },
   {
@@ -6319,7 +6327,8 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "spec/560-ecl-opcode-dispatch-table.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+    "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
    ]
   },
   {
@@ -7951,7 +7960,8 @@
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
     "audit/function-index/pc98-overlay-08.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "spec/755-per-character-slots-sound-driver-and-text-io.md",
+    "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
    ]
   },
   {
@@ -8627,6 +8637,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -8646,6 +8657,7 @@
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
    "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對",
    "citations": [
+    "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -12103,7 +12115,13 @@
    "callers": 4,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 \u003c呼叫\u003e(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 \u003c呼叫\u003e(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標",
+   "citations": [
+    "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13233,7 +13251,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
+   "note": "把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束",
+   "citations": [
+    "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
+   ]
   },
   {
    "platform": "dos",
@@ -31951,6 +31975,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -31970,6 +31995,7 @@
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
    "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)",
    "citations": [
+    "audit/function-index/pc98-overlay-10.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -47318,9 +47344,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 129,
+   "Read": 131,
    "NotBlocking": 133,
-   "Todo": 46,
+   "Todo": 44,
    "Fragment": 17,
    "CodeBytes": 23290,
    "Undefined": 0,
@@ -47363,9 +47389,9 @@
    "Module": "overlay-02",
    "Unit": "INTERPET",
    "Functions": 90,
-   "Read": 49,
+   "Read": 50,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 29,
    "CodeBytes": 14062,
    "Undefined": 292,
@@ -47528,9 +47554,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 37,
+   "Todo": 36,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -47558,9 +47584,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 10,
+   "Read": 11,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,

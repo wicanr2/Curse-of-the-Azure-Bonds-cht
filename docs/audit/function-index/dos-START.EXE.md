@@ -80,8 +80,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14DD3` | sub_14DD3 | — | 143 | 52 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14E62` | sub_14E62 | — | 157 | 56 | 1 | 1 |  | 待解讀 | — | — | — |
 | `14EFF` | sub_14EFF | — | 379 | 144 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1507A` | sub_1507A | — | 149 | 54 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1510F` | sub_1510F | — | 162 | 57 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1507A` | sub_1507A | — | 149 | 54 | 1 | 1 |  | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>繪圖前置(近呼叫 retn 0Eh)：由兩個點陣圖表頭算出 13 個 local(var_8 := 參數A shl 3、var_C := var_8 * 來源^[2]、var_12 := 來源^[2] − 目的^[2] − 參數B、var_E := 目的^[11h] * 參數C，其餘 shl 2)，設 BX/CX 並把三個 local 歸零後跳進 sub_15329h。兩次 sub sp,1Ch 是兩層 local 分開配置 | — |
+| `1510F` | sub_1510F | — | 162 | 57 | 1 | 1 |  | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>繪圖前置(近呼叫 retn 0Eh)：與 1507Ah 同一組算式，多讀 目的^[13h] 與 目的^[15h] 兩個欄位，最後跳進 sub_15388h | — |
 | `151B1` | sub_151B1 | — | 376 | 143 | 1 | 3 |  | 待解讀 | — | — | — |
 | `15329` | sub_15329 | — | 95 | 36 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 95 bytes，已逐條讀完） | — |
 | `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 待解讀 | — | — | — |
