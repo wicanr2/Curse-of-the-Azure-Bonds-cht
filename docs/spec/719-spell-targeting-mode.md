@@ -16,7 +16,7 @@ arg_0^ := 1                                           ← 預設「成功」
 模式 = 1：什麼都不做（沿用上面的預設）
 
 模式 = 2：<overlay-24 entry#37>()
-          <overlay-24 entry#40>(@DS:7555h, 1, 'Which target?'（CS:10BFh））
+          <overlay-24 entry#40>(@DS:7555h, 1, 'Cast Spell on whom'（CS:10BFh，長度 18））
           if DS:7555h = NIL then
               DS:7435h := NIL；DS:7434h := 0；arg_0^ := 0     ← 取消
           else
