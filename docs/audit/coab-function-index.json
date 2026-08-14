@@ -26232,7 +26232,10 @@
    "callers": 2,
    "calls": 4,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "968",
+   "note": "★PC-98 的表面配置(far, retf 0Ch = (@表面, 旗標, 張數, 寬, 高))，DOS 對應是 spec 934、釋放端是 spec 947。每張 = 高 × 寬 × 3(三平面)、主資料 = 張數 × 每張、遮罩 = 張數 × 高 × 寬(一張遮罩三平面共用)。★四個特例把遮罩量歸零：寬 \u003e 16h／(寬 16h 高 30h 且旗標 bit0)／(寬 16h 高 28h)／(寬 6 且張數 \u003e 1 且非 bit0)。用 sub_18233h(spec 965)一次要 主資料 + 17h + 遮罩，清 0 後填 +0 高、+2 寬、+11h 每張、+8 張數、+13h 先設 NIL。旗標 bit 0 成立才配遮罩——遮罩量非 0 就用 Move 把 表面 + 17h + 主資料 寫進 +13h(★遮罩接在同一塊後段)，否則另外叫 sub_18233h 配一塊；最後清空遮罩。★這關掉 spec 947 的疑問：PC-98 配置端與釋放端一致，不一致的是 DOS 版(spec 934 另外配遮罩)。⚠訂正：sub_1C15Dh 兩端都是記憶體位址，是 Move 不是 BlockRead，spec 965/966 已改"
   },
   {
    "platform": "pc98",
@@ -52413,9 +52416,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 269,
+   "Read": 270,
    "NotBlocking": 29,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,

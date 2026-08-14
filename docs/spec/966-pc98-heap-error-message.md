@@ -32,7 +32,7 @@ if <sub_188E3h>(要求大小, 檔案) = 0 then begin     { ★ 配置失敗 }
     <sub_1A726h>(1);                               { ★ Runtime error 1，不返回 }
 end;
 
-BlockRead(檔案 ＋ 2, var_6, 2);
+Move((檔案 ＋ 2)^, var_6, 2);                      { <sub_1C15Dh> ＝ Move，見 spec 968 }
 inc(word_280B6h);
 if word_280B2h < var_6 then begin
     word_280B2h := var_6;
