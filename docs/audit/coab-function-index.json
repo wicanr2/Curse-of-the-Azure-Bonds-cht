@@ -42241,6 +42241,7 @@
    "note": "繪圖頁 1 上跑完 5674h 後切回頁 0；FindFirst(前綴+'*.hil')，DosError=0 就回 7",
    "citations": [
     "audit/function-strings.md",
+    "spec/1080-pc98-disk-bios-format-and-id.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
@@ -42961,7 +42962,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1080",
+   "note": "格式化存檔磁片(retf 2，不用 bp 框架，狀態放 0ABF0h:0/1/2)。⚠int 1Bh 是 PC-98 磁碟 BIOS，IDA 註成 CTRL-BREAK 是 IBM PC 的意思。AH=7 磁頭復歸、AH=5Dh 逐軌格式化：77 柱面 x 2 磁頭 x 8 磁區 x 1024 bytes = 標準 2HD。之後 AH=55h 寫 11 個磁區手工鋪 FAT：第 0 磁區寫 0C29h:0BA5h 的 71 bytes 簽章、第 1 與第 3 磁區開頭 0FFFEh、其餘清 0。回 0 成功 1 失敗。★這支沒有匯出到 prologue(無標準開場)，要讀 overlays/full",
+   "citations": [
+    "spec/1080-pc98-disk-bios-format-and-id.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42974,9 +42981,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1080",
+   "note": "磁片種類識別(retf 2)。int 1Bh AH=76h 讀一個磁區到 0ABF0h:0023h，再與 0C29h:0A89h 起、間距 47h 的五個 71-byte 簽章比對，命中回 2..6。★★★第五個簽章 0BA5h 正是 5588h 格式化時寫進去的 ⇒ 自製存檔片被認成 6，對上 spec 1070「類別 0 期望 6」。讀不到回 0、都不合回 1；spec 975 的 007DCh 再依 FindFirst(*.hil) 把結果改成 7 ⇒ 7 不是本支產生的。★同樣要讀 overlays/full",
    "citations": [
     "audit/function-index/pc98-overlay-16.md",
+    "spec/1080-pc98-disk-bios-format-and-id.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
@@ -54250,9 +54261,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 31,
+   "Read": 33,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 0,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
