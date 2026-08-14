@@ -8149,11 +8149,11 @@
    "note": "戰鬥收尾(retf，不收參數)：逐節點清空 DS:755Bh 與 DS:755Fh 兩條雲霧鏈(每個 FreeMem 30 bytes)；FreeMem(DS:6E92h, 4E9h) 並歸零——4E9h=1257 剛好等於 24*50+49+7+1，因此戰場格陣是 50 欄×25 列、前 7 byte 為表頭；呼叫未辨識的 resident 0297:1D19h(@DS:75E0h) 與 overlay-32 entry#5；最後把 DS:72A0h 設回 overlay-22 entry#4 @10D2h(spec 719 的選目標程序)，可見 72A0h slot 0 是可換掉的掛鉤而非唯讀分派表",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-09.md",
     "audit/function-strings.md",
-    "spec/1008-combat-move-command.md",
-    "spec/1015-combat-turn-key-dispatch.md"
+    "spec/1008-combat-move-command.md"
    ]
   },
   {
@@ -8573,11 +8573,11 @@
    "note": "一個戰鬥員的一回合：retf 4 = 角色遠指標。完 := 本模組 1273h(角色)；\u003cfar 16A4h\u003e；\u003cfar 1557h+2\u003e；角色^[196h] = 0 時 完 := \u003cfar 159Ah\u003e(角色)。AI 模式：模式 := 角色^[18Dh]^[15h]；除非（模式 ∈ 1..4 且 \u003cfar 145Bh+2\u003e(4,1) \u003c\u003e 1）否則重骰——先 1d8，= 8 則 1d2+4（5 或 6），否則 1d4（1..4）；寫回 +15h。（模式 1..4 有 3/4 延續、1/4 重骰；5/6 每回合必重骰。第一次 1d8 的點數本身被丟掉。）完 = 0 時 完 := 本模組 1388h(角色)；(+18Dh^[14h] \u003c\u003e 0) 且 (+18Dh^[10h] = 0) 時顯示 名字+'flees in panic'(14)。完 \u003c\u003e 0 就離開。本模組 04AAh(角色) 成立 → 完 := \u003cfar 159Ah\u003e(角色) 並離開；+18Dh^[00h] \u003e 0（正在詠唱，spec 827）→ \u003cfar 11D7h+2\u003e(@完, 1, 1, 法術) 後 完 := \u003cfar 159Ah\u003e(角色) 並離開；024Dh 成立同上；0605h 成立則 完 := 1 並離開；否則 1681h(角色)、完 := 1273h(角色)，while 完 = 0 do if 0CB7h(0,1,0FFh,角色) 且 有號(+18Dh^[3]) \u003e 0 且 +196h \u003c\u003e 0 then 完 := 0DB1h(角色) else 完 := 1201h(角色)。spec 830",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-09.md",
-    "audit/function-index/pc98-overlay-14.md",
-    "audit/function-strings.md"
+    "audit/function-index/pc98-overlay-13.md"
    ]
   },
   {
@@ -17107,9 +17107,13 @@
    "callers": 0,
    "calls": 14,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1028-character-view-menu.md",
+   "note": "角色檢視選單(＝ overlay-19 entry#5)，spec 1015 的 'V' 鍵與 spec 1022 地城主選單 'V' 鍵的入口。DS:4FBAh = 5 時先叫 overlay-32 entry#5；DS:4AF8h 存目前在看的角色；迴圈 until 鍵 in [#0,'E'](集合常數 CS:0B08h)。★★ 七個選項按狀態動態接上：'Items '(6，+14Dh 物品鏈非 NIL)、'Spells '(7，★ +1Eh+i (i=0..53h) 有任一格非 0)、'Trade '(6，有錢且 DS:4FBAh\u003c\u003e5 且 (+0F7h\u003e=80h 或 +196h=0 或 +195h\u003c\u003e1))、'Drop '(5，有錢)、'Heal '(5，sub_35F1 成立)、'Cure '(5，sub_3656 成立)、'Exit'(4，一律)。熱鍵是大寫 I/S/T/D/H/C/E。★★★ 'Spells ' 的條件掃的正是 +1Eh 起的 84 格記憶法術清單 —— 與 spec 1016(重算時掃 0..53h)、spec 1021(轉職時 FillChar(+1Eh, 54h, 0)) 第三次對上。★ 「有錢」是掃 word(角色^[0FBh + i×2]) i=0..6 的七種貨幣(spec 1000 同一組)。★★★ PC-98 七個選項各 6 bytes = 3 全形字(ｱｲﾃﾑ／魔法／渡す／捨てる／回復／治療／抜ける)，熱鍵寫進 DS:0A335h/0A336h/0A337h/0A338h/0A33Bh/0A33Ch/0A33Eh(i = 1,2,3,4,7,8,10)。★ 熱鍵表是 DS:0A334h + i(i=0..10，共 11 bytes 到 0A33Eh)、選項文字是 DS:0A338h + i×7(i=1..10，從 0A33Fh 起)，兩者不重疊 —— spec 755/1012/1013/1022/1023 的版面再確認一次。⚠ 中文各選項也只有 3 個字",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1028-character-view-menu.md"
    ]
   },
   {
@@ -34588,11 +34592,11 @@
    "note": "同 DOS overlay-08:0004Dh（戰鬥收尾）。★PC-98 多一整段（24 條）：走隊伍鏈 DS:9598h，對 +143h \u003c 8 且 +1A5h \u003e 0 且 +197h = 0 的成員把 +197h 設成 1，DOS 完全沒有這一段。其餘是位址：DS:0A647h/0A64Bh↔755Bh/755Fh、DS:9F2Ch↔6E92h",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-08.md",
     "audit/function-index/pc98-overlay-09.md",
     "audit/function-strings.md",
-    "spec/1008-combat-move-command.md",
-    "spec/1015-combat-turn-key-dispatch.md"
+    "spec/1008-combat-move-command.md"
    ]
   },
   {
@@ -44250,10 +44254,14 @@
    "callers": 0,
    "calls": 13,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1028-character-view-menu.md",
+   "note": "角色檢視選單(＝ overlay-19 entry#5)，spec 1015 的 'V' 鍵與 spec 1022 地城主選單 'V' 鍵的入口。DS:4FBAh = 5 時先叫 overlay-32 entry#5；DS:4AF8h 存目前在看的角色；迴圈 until 鍵 in [#0,'E'](集合常數 CS:0B08h)。★★ 七個選項按狀態動態接上：'Items '(6，+14Dh 物品鏈非 NIL)、'Spells '(7，★ +1Eh+i (i=0..53h) 有任一格非 0)、'Trade '(6，有錢且 DS:4FBAh\u003c\u003e5 且 (+0F7h\u003e=80h 或 +196h=0 或 +195h\u003c\u003e1))、'Drop '(5，有錢)、'Heal '(5，sub_35F1 成立)、'Cure '(5，sub_3656 成立)、'Exit'(4，一律)。熱鍵是大寫 I/S/T/D/H/C/E。★★★ 'Spells ' 的條件掃的正是 +1Eh 起的 84 格記憶法術清單 —— 與 spec 1016(重算時掃 0..53h)、spec 1021(轉職時 FillChar(+1Eh, 54h, 0)) 第三次對上。★ 「有錢」是掃 word(角色^[0FBh + i×2]) i=0..6 的七種貨幣(spec 1000 同一組)。★★★ PC-98 七個選項各 6 bytes = 3 全形字(ｱｲﾃﾑ／魔法／渡す／捨てる／回復／治療／抜ける)，熱鍵寫進 DS:0A335h/0A336h/0A337h/0A338h/0A33Bh/0A33Ch/0A33Eh(i = 1,2,3,4,7,8,10)。★ 熱鍵表是 DS:0A334h + i(i=0..10，共 11 bytes 到 0A33Eh)、選項文字是 DS:0A338h + i×7(i=1..10，從 0A33Fh 起)，兩者不重疊 —— spec 755/1012/1013/1022/1023 的版面再確認一次。⚠ 中文各選項也只有 3 個字",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1028-character-view-menu.md"
    ]
   },
   {
@@ -53401,9 +53409,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 26,
+   "Read": 27,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -53956,9 +53964,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,

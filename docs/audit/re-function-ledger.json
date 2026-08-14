@@ -25852,6 +25852,24 @@
    "level": "exact",
    "spec": "docs/spec/1027-attack-target-selection.md",
    "note": "攻擊指令(＝ overlay-13 entry#21)，spec 1015 的 'A' 鍵叫的那一支。★ 攻擊次數：arg_E = 0FFh 時改從第 0 個裝備槽(+151h)的武器類別查 byte[5D02h + itemptr×16] − 1，沒武器就 1；0 或 0FFh 一律夾成 1。5D02h − 5CF6h = 0Ch ⇒ 物品類別表 DS:5CF6h 的 +0Ch 是新欄位(類別表已知七格：+0 槽位、+1 佔手數、+2/+3 對大型目標的骰、+0Ch 本項、+0Dh 可用性遮罩、+0Eh 旗標)。主迴圈用兩個集合常數(@Set@MemberOf，spec 1012 同一支)：CS:3AF7h = [#0,'E'] 離開條件、CS:3B17h = [47h,48h,49h,4Bh,4Dh,4Fh,50h,51h] 八個方向掃描碼。DS:7295h(spec 1015 的方向鍵直接操作旗標) = 0 時自己處理方向鍵，否則把方向鍵丟給 sub_33ACh(spec 1012 的目標游標畫面)。'N'/'P' 換上下一個目標、'C' 把游標拉回自己(entry#13(x, y, 0, 8))。★★★ PC-98 的 cmp al 清單只有 C/M/N/P/T 五個字母、一個方向掃描碼都沒有：移游標改成 'M'(叫 sub_329Fh ＝ spec 1012 的 PC-98 對側)、另加 'T' 指定目標(sub_30D8h)；N/P/C 相同。⇒ 同一個功能 DOS 綁 IBM PC 擴充掃描碼、PC-98 改成字母熱鍵，與 spec 1023 的游標鍵差異同一類。本支沒有字串"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 2933,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1028-character-view-menu.md",
+   "note": "角色檢視選單(＝ overlay-19 entry#5)，spec 1015 的 'V' 鍵與 spec 1022 地城主選單 'V' 鍵的入口。DS:4FBAh = 5 時先叫 overlay-32 entry#5；DS:4AF8h 存目前在看的角色；迴圈 until 鍵 in [#0,'E'](集合常數 CS:0B08h)。★★ 七個選項按狀態動態接上：'Items '(6，+14Dh 物品鏈非 NIL)、'Spells '(7，★ +1Eh+i (i=0..53h) 有任一格非 0)、'Trade '(6，有錢且 DS:4FBAh<>5 且 (+0F7h>=80h 或 +196h=0 或 +195h<>1))、'Drop '(5，有錢)、'Heal '(5，sub_35F1 成立)、'Cure '(5，sub_3656 成立)、'Exit'(4，一律)。熱鍵是大寫 I/S/T/D/H/C/E。★★★ 'Spells ' 的條件掃的正是 +1Eh 起的 84 格記憶法術清單 —— 與 spec 1016(重算時掃 0..53h)、spec 1021(轉職時 FillChar(+1Eh, 54h, 0)) 第三次對上。★ 「有錢」是掃 word(角色^[0FBh + i×2]) i=0..6 的七種貨幣(spec 1000 同一組)。★★★ PC-98 七個選項各 6 bytes = 3 全形字(ｱｲﾃﾑ／魔法／渡す／捨てる／回復／治療／抜ける)，熱鍵寫進 DS:0A335h/0A336h/0A337h/0A338h/0A33Bh/0A33Ch/0A33Eh(i = 1,2,3,4,7,8,10)。★ 熱鍵表是 DS:0A334h + i(i=0..10，共 11 bytes 到 0A33Eh)、選項文字是 DS:0A338h + i×7(i=1..10，從 0A33Fh 起)，兩者不重疊 —— spec 755/1012/1013/1022/1023 的版面再確認一次。⚠ 中文各選項也只有 3 個字"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 2946,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1028-character-view-menu.md",
+   "note": "角色檢視選單(＝ overlay-19 entry#5)，spec 1015 的 'V' 鍵與 spec 1022 地城主選單 'V' 鍵的入口。DS:4FBAh = 5 時先叫 overlay-32 entry#5；DS:4AF8h 存目前在看的角色；迴圈 until 鍵 in [#0,'E'](集合常數 CS:0B08h)。★★ 七個選項按狀態動態接上：'Items '(6，+14Dh 物品鏈非 NIL)、'Spells '(7，★ +1Eh+i (i=0..53h) 有任一格非 0)、'Trade '(6，有錢且 DS:4FBAh<>5 且 (+0F7h>=80h 或 +196h=0 或 +195h<>1))、'Drop '(5，有錢)、'Heal '(5，sub_35F1 成立)、'Cure '(5，sub_3656 成立)、'Exit'(4，一律)。熱鍵是大寫 I/S/T/D/H/C/E。★★★ 'Spells ' 的條件掃的正是 +1Eh 起的 84 格記憶法術清單 —— 與 spec 1016(重算時掃 0..53h)、spec 1021(轉職時 FillChar(+1Eh, 54h, 0)) 第三次對上。★ 「有錢」是掃 word(角色^[0FBh + i×2]) i=0..6 的七種貨幣(spec 1000 同一組)。★★★ PC-98 七個選項各 6 bytes = 3 全形字(ｱｲﾃﾑ／魔法／渡す／捨てる／回復／治療／抜ける)，熱鍵寫進 DS:0A335h/0A336h/0A337h/0A338h/0A33Bh/0A33Ch/0A33Eh(i = 1,2,3,4,7,8,10)。★ 熱鍵表是 DS:0A334h + i(i=0..10，共 11 bytes 到 0A33Eh)、選項文字是 DS:0A338h + i×7(i=1..10，從 0A33Fh 起)，兩者不重疊 —— spec 755/1012/1013/1022/1023 的版面再確認一次。⚠ 中文各選項也只有 3 個字"
   }
  ]
 }
