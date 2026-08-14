@@ -23665,6 +23665,42 @@
    "level": "exact",
    "spec": "903",
    "note": "鑑定物品(retf 8，(var 有沒有鑑定成功, 物品))：14F5h 取顯示名、印 \"For 200 gold pieces I'll identify your \"＋物品名、16ABh+3 追問 'Is It a Deal? '(硬比 'Y')；先用 33ABh 算角色身上的錢，>= 0C8h(200) 就叫 116Bh 扣，不夠才用 1175h 算 DS:6F70h 公用池的總值、>= 200 就叫 1170h 扣，兩邊都不夠印 'Not Enough Money'。成功時 物品^[35h]≠0 才清 0、重取名字、印 'It looks like some sort of '並把 var 旗標設 1；=0 只印 \"I can't tell anything new about your \"。★付款順序角色→公用池。★『200』在字串與程式各寫死一次，改價要同步。⚠=0 那條路一樣扣 200"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 1900,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "905",
+   "note": "戰鬥行動選單(retf 8，(var 選到的鍵, 角色))：依狀態動態串接選項——+18Dh^[6] > 0 接 'Move '、無條件接 'View Aim '、+14Ch > 0 接 'Use '、(掃 +1Eh..+71h 有記憶法術 且 +18Dh^[1]≠0 且 遠指標(DS:4F99h)^[1CAh]=0) 接 'Cast '、(牧師 +109h>0 或 +111h>0 且 160h:52h) 且 +18Dh^[11h]=0 接 'Turn '，最後接 'Quick Done'；167h:2Fh 收鍵，不在合法表就歸 0，直到按到結束鍵。★關掉 spec 834 的 +18Dh^[11h]：那是『這回合已經驅散過』，用過就從選單消失"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 1941,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "905",
+   "note": "同 DOS overlay-08:0076Ch 的功能，但★改成固定欄位：標籤 DS:0A33Fh/0A346h/0A34Dh/0A354h/0A362h(' 移動 '/'ｷｬﾗｸﾀｰ'/' 魔ｶｹﾙ'/' 使う '/…)、熱鍵 DS:0A335h..0A338h/0A33Ah = M/V/C/U/A，與 spec 899 定出的基底(標籤 0A33Fh stride 7、熱鍵 0A335h stride 1)完全吻合。DOS 把 'View Aim ' 兩個選項擠在一個字串，PC-98 拆成兩格；PC-98 的 'Use ' 另判 +14Dh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 19436,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "906",
+   "note": "選火焰種類(retf，無參數)：遠指標(DS:6506h)^[198h] ≠ 0 時★跳過選單改用 1d10 決定(>5 Hot 否則 Cold)，否則用 169Fh 以 'flame type: '/'Hot Cold' 讓玩家選；'H' 掛效果碼 32h、'C' 掛 36h，兩條都再掛共用的 8Fh；按到其他鍵就用 'Abort spell? '/'Yes No' 追問，按 'Y' 才結束、否則回到第一個選單重問"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 20319,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "906",
+   "note": "同 DOS overlay-22:04BECh，但★兩個選單各前面多一段熱鍵字串指派(DS:1589h+1 與 DS:1594h 各 10 bytes → DS:0A335h)，與 spec 865/871/877/879/885 同一模式。角色記錄 +198h↔+199h"
   }
  ]
 }
