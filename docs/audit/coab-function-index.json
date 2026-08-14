@@ -6088,6 +6088,7 @@
    "note": "ECL 29h(PARLAY) DOS 側(2086h..2784h，649 條)，PC-98 對側見 spec 611。★★★ 更正 spec 611：五個結果碼(operand 5..9)對應的是遭遇選單的五個選項，不是交涉態度 —— 實際餵給選單的是 '~COMBAT ~WAIT ~FLEE ~PARLAY'(27，CS:2029h)或 '~COMBAT ~WAIT ~FLEE ~ADVANCE'(28，CS:2045h)，由 bank1^[582h]\u003c\u003e0 且 bank0^[1CCh]\u003c\u003e0 決定第四格顯示哪一個；顯示 PARLAY 那一側再把 choice=3 改派成 4，所以 choice 0..4 = COMBAT/WAIT/FLEE/ADVANCE/PARLAY 各對一個 operand。⚠ '~HAUGHTY ~SLY ~NICE ~MEEK ~ABUSIVE' 在 CS:2785h，落在本函式結束(2784h)之後，屬於下一支函式，spec 611 是相鄰字串的誤認。★★★ 關掉 spec 611 兩個未定項：①bank1^[582h] := \u003coverlay-07 entry#6\u003e(DS:720Fh,7210h,7211h 隊伍座標與朝向) 再被 operand 2(bank1^[580h]) 當上限夾住 ⇒ 是這一格的遭遇數量，結果碼 3/4 每次 dec 一個再重畫，減到 0 才寫回結果；②t1(operand 13)比 var_40B、t2(operand 14)比 var_40A，兩者是進門時 \u003coverlay-07 entry#30\u003e 的兩個輸出。★★ 結果碼與選項是二維分派：結果碼[choice] 決定外層、choice 決定內層(例如 結果碼 0＋FLEE 時 var_40B\u003ct1 ? 1 : 2；結果碼 2＋COMBAT 時 t2\u003evar_40A 才寫 0 並設 DS:65A0h:=1、DS:65A1h:=11h)。★ 四個選項的 ~ 就是 spec 1039 的波浪號熱鍵標記；選項行上限 28h=40 bytes。文字槽 DS:7648h+i*100h 與 spec 1039 的 2Bh 共用。'Both sides wait.'(16) = PC-98「お互いに様子を見ている」",
    "citations": [
     "audit/ecl-opcode-dispatch.md",
+    "audit/function-index/dos-overlay-02.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
     "spec/1041-ecl-parlay-dos.md"
@@ -7400,8 +7401,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -17065,12 +17066,12 @@
    "spec": "docs/spec/998-character-sheet-layout.md",
    "note": "角色資料畫面：完整版面＋六個標籤；定名 +74h 種族、+11Bh 陣營、+76h 年齡；五張名稱表的 stride",
    "citations": [
-    "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-19.md",
     "audit/function-index/pc98-overlay-25.md",
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -17089,7 +17090,6 @@
    "spec": "docs/spec/772-gods-intervene-money-display-and-sound-commands.md",
    "note": "七欄的金錢顯示(retf，無參數)：for i := 6 downto 0，DS:6506h^[0FBh + i*2] \u003e 0(無號)才佔一列 — 名稱取自 DS:0F93h + i*0Bh(每筆 11 bytes 的 Pascal 短字串)、右對齊到第 20 欄(14h − 長度)，數值固定從第 21 欄起，列號從 7 往下遞增。⚠ 右對齊用 byte 數算，全形中文會算錯；名稱表在常駐資料段，scan_pascal_strings.py 掃不到。補記(spec 773)：DS:0F93h 的七個名稱已讀出 — Copper/Silver/Electrum/Gold/Platinum/Gems/Jewelry",
    "citations": [
-    "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-19.md",
     "audit/function-index/pc98-overlay-25.md",
     "spec/772-gods-intervene-money-display-and-sound-commands.md"
@@ -33742,8 +33742,8 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
-    "audit/function-index/pc98-overlay-02.md",
-    "audit/function-index/pc98-overlay-07.md"
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-02.md"
    ]
   },
   {
@@ -40942,8 +40942,8 @@
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
     "spec/1026-open-doors-table.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md"
+    "spec/1042-locked-door-menu.md",
+    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
    ]
   },
   {
@@ -41108,14 +41108,17 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1042",
+   "note": "上鎖的門選單，是 spec 1026 撞門機率表(pc98 overlay-14:002F5h)的呼叫端。畫面模式 DS:7F27h 必須是 4；bank1^[592h] \u003e= 0FFh 就把它清 0 後離開。地形由 \u003coverlay-30 entry#5\u003e(DS:0A2A9h,0A2AAh,0A2ABh 隊伍座標與朝向)查出：1→直接成功，2 或 3→顯示門選單。★★ 三個手段各有旗標與槽：撞「蹴破る」(DS:0A81Ah，文字槽 0A362h/i=6，熱鍵 0A33Ah='B' Bash)、開鎖「鍵開け」(DS:0A81Bh 且 sub_27Bh(6) 成立，0A369h/i=7，0A33Bh='P' Pick)、敲門「ノック」(DS:0A81Ch 且 sub_6C0h(1Fh) 非零，0A370h/i=8，0A33Ch='K' Knock)、離開「やめる」(0A37Eh/i=10，0A33Eh='E')；四個都符合 文字=0A338h+i*7、熱鍵=0A334h+i，且熱鍵仍是英文大寫字母。★★ 三個手段全不可用時連選單都不顯示，直接叫 sub_3Eh(座標,朝向) 就走。分支：'B'→sub_2F5h(★★★ spec 1026 的 AD\u0026D 1e Open Doors 兩欄機率表本體，這是它唯一的呼叫點)、'P'→再查一次地形，不是 2 就把 DS:0A81Bh 關掉、'K'→sub_714h；成功則 sub_807h。提示「鍵がかかっている」(16)。收尾把 DS:0A309h/0A30Eh 設回 0FFh(spec 1029 的哨兵寫法)",
    "citations": [
     "audit/function-index/dos-overlay-14.md",
     "audit/function-strings.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md",
-    "spec/527-pc98-moveparty-action-writer-boundary.md"
+    "spec/1042-locked-door-menu.md",
+    "spec/526-pc98-moveparty-map-writer-searchrec-correction.md"
    ]
   },
   {
@@ -42073,9 +42076,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1043",
+   "note": "依類別掃存檔檔案(retf 8，兩個輸出參數先清 NIL)。DS:0A816h 選副檔名 '*.guy'(0)/'*.cha'(1)/'*.sav'(2)/'*.hil'(3)，同時當三張平行表的索引：表A DS:0BFCh(byte)=00 00 04 F7、表B DS:0BFFh(word)=247/132/19/423、表C DS:0C05h(word)=423/285/188/0。★★★ 表 C 的前三個值正是 spec 1038 的三種角色記錄長度 ⇒ 關掉 spec 1038 的未定項『DS:7584h 由誰設定』：版本就是副檔名(.guy=423 現行、.cha=285、.sav=188)，.hil 那格是 0(不是角色檔)。⚠ 三張表的位址區間互相重疊(0BFFh..0C0Ah 與 0C05h..0C0Ch)，只照組語列基底與位元組，不宣稱是不是同一筆記錄的欄位。.sav 與 .hil 是 spec 1038 沒看到的兩個副檔名。實際掃目錄的是 sub_164h",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/1043-save-file-scan-and-disk-creation.md"
    ]
   },
   {
@@ -42109,11 +42116,15 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1043",
+   "note": "建立存檔磁片。迴圈直到按下 'A'/'J'/#0；★★★ 熱鍵塊 DS:0C0Ch = 00×5 41 00×3 4A ⇒ 槽 6='A'(はい)、槽 10='J'(いいえ)，空槽填 00 —— 這是第四組 Yes/No 熱鍵配對，對照營地 Y/B(spec 1030)、商店 A/B(1031)、戰利品 A/B(1032)：四個提示三種配對，中文化只能照抄各自的常數塊不能統一。★ 選項行是 40 bytes 的整列(「はい」在第 3 byte、「いいえ」在第 30)，與 spec 1030/1031 的 80 bytes 版本並存 —— 兩種寬度都有。DS:0A385h 與 DS:0A386h 這裡都寫 0Ah(spec 1032 看到的是 0A385h:=1)，用途仍不宣稱。選 'A' 才做：顯示「セーブディスクを作成中です。」(28)，sub_5588h() 回 1 就顯示「セーブディスクの作成に失敗しました。リターン・キーを押してください。」(68) 並離開。提問「セーブディスクを作成しますか？ 」(31)",
    "citations": [
     "audit/function-index/pc98-overlay-17.md",
     "audit/function-index/pc98-overlay-33.md",
     "audit/function-strings.md",
+    "spec/1043-save-file-scan-and-disk-creation.md",
     "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
@@ -54003,9 +54014,9 @@
    "Module": "overlay-14",
    "Unit": "MOVEMENT",
    "Functions": 14,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 3435,
    "Undefined": 321,
@@ -54033,9 +54044,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 24,
+   "Read": 26,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,

@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1089、不阻塞 29、邊界碎片 338、待解讀 32；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1092、不阻塞 29、邊界碎片 338、待解讀 29；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -72,9 +72,9 @@
 | overlay-11 | INIT | 6 | 5 | 0 | 0 | 1 | 1960 | 128 | [明細](function-index/pc98-overlay-11.md) |
 | overlay-12 | EFFPROCS | 150 | 132 | 0 | 18 | 0 | 13011 | 578 | [明細](function-index/pc98-overlay-12.md) |
 | overlay-13 | COMSTUFF | 72 | 45 | 0 | 27 | 0 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
-| overlay-14 | MOVEMENT | 14 | 13 | 0 | 0 | 1 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
+| overlay-14 | MOVEMENT | 14 | 14 | 0 | 0 | 0 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
 | overlay-15 | CAMP | 45 | 30 | 0 | 15 | 0 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
-| overlay-16 | LOADSAVE | 47 | 24 | 0 | 14 | 9 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
+| overlay-16 | LOADSAVE | 47 | 26 | 0 | 14 | 7 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
 | overlay-17 | GEN | 54 | 15 | 0 | 34 | 5 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 17 | 0 | 4 | 2 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
 | overlay-19 | LIBRARY | 57 | 28 | 0 | 29 | 0 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
