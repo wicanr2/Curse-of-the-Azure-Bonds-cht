@@ -7838,11 +7838,15 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
+   "note": "回合開始的重設：p^[18Dh] 的 +0Fh（動作計數）、+12h（累計轉向）、+07h 清 0，呼叫 \u003c0141h:0034h\u003e(p, 7)；有號(p^[18Dh]^[3]) \u003c= 0 就離開（此欄即 spec 791 排優先度用的 byte）；= 14h 時壓成 13h；DS:6506h := p；(p^[197h] = 0) 或 \u003c018Ch:005Ch\u003e(0, p) 成立則 DS:75E6h := 1 否則 0；\u003c018Ch:008Eh\u003e(1,2,p)、\u003c014Dh:0043h\u003e(p)、DS:75E5h := 1、\u003c014Dh:0039h\u003e(p)、\u003c0141h:0034h\u003e(p, 0Fh)；p^[18Dh]^[0] = 0 時再 \u003c0141h:0034h\u003e(p, 15h)；有號(+18Dh^[3]) \u003e 0 時 p^[198h] \u003c\u003e 0 走 \u003cfar 0813h+2\u003e(p) 否則 本模組 03D5h(p)；最後 \u003c018Ch:0043h\u003e(\u003c018Ch:006Bh\u003e(p), \u003c018Ch:0070h\u003e(p))。retf 4。spec 804",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/804-bss-boundary-item-type-table-turn-reset.md"
    ]
   },
   {
@@ -7856,7 +7860,10 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/804-bss-boundary-item-type-table-turn-reset.md"
+   ]
   },
   {
    "platform": "dos",
@@ -20219,7 +20226,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
+   "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[5CFCh + 物品^[2Eh]*10h]（物品類型表 DS:5CF6h 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[5CF6h + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:5CF6h 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
+   "citations": [
+    "spec/804-bss-boundary-item-type-table-turn-reset.md"
+   ]
   },
   {
    "platform": "dos",
@@ -31751,7 +31764,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
+   "note": "回合開始的重設：p^[18Dh] 的 +0Fh（動作計數）、+12h（累計轉向）、+07h 清 0，呼叫 \u003c013Eh:0034h\u003e(p, 7)；有號(p^[18Dh]^[3]) \u003c= 0 就離開（此欄即 spec 791 排優先度用的 byte）；= 14h 時壓成 13h；DS:9594h := p；(p^[197h] = 0) 或 \u003c0189h:005Ch\u003e(0, p) 成立則 DS:0A878h := 1 否則 0；\u003c0189h:008Eh\u003e(1,2,p)、\u003c014Ah:0043h\u003e(p)、DS:0A877h := 1、\u003c014Ah:0039h\u003e(p)、\u003c013Eh:0034h\u003e(p, 0Fh)；p^[18Dh]^[0] = 0 時再 \u003c013Eh:0034h\u003e(p, 15h)；有號(+18Eh^[3]) \u003e 0 時 p^[198h] \u003c\u003e 0 走 \u003cfar 0813h+2\u003e(p) 否則 本模組 0414h(p)；最後 \u003c0189h:0043h\u003e(\u003c0189h:006Bh\u003e(p), \u003c0189h:0070h\u003e(p))。retf 4。spec 804",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -45258,7 +45274,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/804-bss-boundary-item-type-table-turn-reset.md",
+   "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[8D90h + 物品^[2Eh]*10h]（物品類型表 DS:8D8Ah 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[8D8Ah + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:8D8Ah 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
+   "citations": [
+    "spec/804-bss-boundary-item-type-table-turn-reset.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48556,9 +48578,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 21,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
@@ -48796,9 +48818,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 38,
+   "Read": 39,
    "NotBlocking": 0,
-   "Todo": 15,
+   "Todo": 14,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -49111,9 +49133,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 24,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
@@ -49351,9 +49373,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 31,
+   "Read": 32,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,
