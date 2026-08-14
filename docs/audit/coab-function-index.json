@@ -19639,6 +19639,7 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/999-noxious-cloud-and-effect-node-constructor.md"
@@ -21916,6 +21917,7 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/683-encumbrance-movement.md",
     "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
@@ -21937,6 +21939,7 @@
    "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[5CFCh + 物品^[2Eh]*10h]（物品類型表 DS:5CF6h 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[5CF6h + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:5CF6h 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
    "citations": [
     "audit/resident-data-tables.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/804-bss-boundary-item-type-table-turn-reset.md"
    ]
   },
@@ -21957,6 +21960,7 @@
    "note": "w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/683-encumbrance-movement.md",
     "spec/974-strength-weight-allowance.md"
    ]
@@ -22096,9 +22100,13 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1000-derived-stats-recalc.md",
+   "note": "角色派生數值重算：+151h 起 13 個裝備槽、DS:5CF6h 類別表決定槽位、七幣包計入總重、5000 負重減免",
    "citations": [
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/1000-derived-stats-recalc.md"
    ]
   },
   {
@@ -22165,6 +22173,7 @@
    "spec": "docs/spec/694-add-1e-ability-tables.md",
    "note": "敏捷防禦調整(讀 角色^[17h])。回傳值取負號後與 AD\u0026D 1e 防禦調整逐格吻合:3→+4、4→+3、5→+2、6→+1、7..14→0、15→−1、16→−2、17→−3、18→−4;19..20→−4、21..23→−5、24..25→−6 是本作自己補的。低於下界一律夾成最極端那格(1..3 同值)。**九格連續吻合**是「+17h 是敏捷」的依據",
    "citations": [
+    "spec/1000-derived-stats-recalc.md",
     "spec/694-add-1e-ability-tables.md"
    ]
   },
@@ -22230,6 +22239,7 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/697-strength-hit-table-and-weapon-select.md",
     "spec/974-strength-weight-allowance.md"
    ]
@@ -22251,6 +22261,7 @@
    "note": "傷害調整,就是 AD\u0026D 1st edition 的力量表。角色^[125h]=0 時直接回 0;否則 i := 129Ah(角色),i=1..2→−2、3..5→−1、6..15→0、16→+1、17→+1、18→+2、19→+3、20..29→i−17、30→+14。換算回力量值後與 1e 逐格對照**十九格全中**(18/01-50→+3 … 25→+14),唯一差別是力量 1 併進 2 的格子給 −2(1e 是 −4)",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/694-add-1e-ability-tables.md",
     "spec/697-strength-hit-table-and-weapon-select.md",
     "spec/974-strength-weight-allowance.md"
@@ -48747,6 +48758,7 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/683-encumbrance-movement.md",
     "spec/762-ega-glyph-blit-and-movement-rate.md"
    ]
@@ -48768,6 +48780,7 @@
    "note": "依物品類型累加：retf 10h，宣告順序 (角色, 物品, 記錄, 輸出) 四個遠指標。v := byte[8D90h + 物品^[2Eh]*10h]（物品類型表 DS:8D8Ah 每筆 16 bytes 的 +6），v \u003c= 7Fh（無號）直接離開；v := v and 7Fh；w := byte[8D8Ah + 物品^[2Eh]*10h]（+0 類別碼）。w=1 → 記錄^[1] := 物品^[32h] + v；v=0 且 w=9 → 記錄^[3] 取 物品^[32h] 的最大值；v=0 且 w\u003c\u003e9 → 記錄^[2] 累加 物品^[32h] 並 角色^[186h] 累加 物品^[33h]；v\u003c\u003e0 → 記錄^[4] 取 物品^[32h]+v 的最大值，且 物品^[32h] \u003e 0 與 w=2 時 輸出^ := 1。DS:8D8Ah 落在 BSS，dump 全 FFh，內容是執行時載入的。spec 804",
    "citations": [
     "audit/resident-data-tables.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/804-bss-boundary-item-type-table-turn-reset.md"
    ]
   },
@@ -48788,6 +48801,7 @@
    "note": "與 dos overlay-24:03C5h 助憶碼序列完全相同（52 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/683-encumbrance-movement.md",
     "spec/974-strength-weight-allowance.md"
    ]
@@ -48923,7 +48937,13 @@
    "callers": 0,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1000-derived-stats-recalc.md",
+   "note": "DOS 00C28h 的對應（相似度 0.988）",
+   "citations": [
+    "spec/1000-derived-stats-recalc.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -52656,9 +52676,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 50,
+   "Read": 51,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -53211,9 +53231,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 44,
+   "Read": 45,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,

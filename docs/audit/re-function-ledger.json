@@ -25348,6 +25348,24 @@
    "level": "exact",
    "spec": "docs/spec/999-noxious-cloud-and-effect-node-constructor.md",
    "note": "DOS 02799h 的對應，助憶碼序列完全相同（相似度 1.000）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 3112,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1000-derived-stats-recalc.md",
+   "note": "角色派生數值重算：+151h 起 13 個裝備槽、DS:5CF6h 類別表決定槽位、七幣包計入總重、5000 負重減免"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 3655,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1000-derived-stats-recalc.md",
+   "note": "DOS 00C28h 的對應（相似度 0.988）"
   }
  ]
 }
