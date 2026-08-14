@@ -23197,6 +23197,42 @@
    "level": "exact",
    "spec": "878",
    "note": "同 DOS overlay-30:0133Ah。★三處不同：檔名不接磁碟編號(只有 'GEO'，與 spec 874 一致)、堆疊框 110h→14h、收尾把 FreeMem 換成 mov al,0 / out 0A6h,al(PC-98 圖形硬體控制，載入器記憶體處理方式不同)。三個字串原樣保留未在地化"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 4575,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "879",
+   "note": "遊戲速度選單(retf，無參數)：標題 'GameSpeed (' ＋ 14Dh:52h(DS:4FA9h) ＋ ') :'；選項動態串接——DS:4FA9h < 9 才接 'Slower '、> 0 才接 'Faster '、最後接 'Exit'(每次上限 28h)；167h:2Fh 收鍵，'S' inc、'F' dec。DS:4FA9h 值域 0..9，值越大越慢，邊界靠選項消失而不是按鍵無效"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 4685,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "879",
+   "note": "同 DOS overlay-08:011DFh 的功能，但★不做字串串接，改成固定欄位＋把熱鍵字元逐個寫進固定位置：DS:0A33Eh:='E'、DS:0A33Bh:='S'、DS:0A33Ah:='F'(與 spec 865/871/877 的 DS:0A335h 熱鍵緩衝是同一塊)。標籤 '速さ（'/'）'/' 遅く '/' 速く '/'抜ける' 完全不含 S/F/E，所以熱鍵只能另外指定。★這是該模式最直接的證據"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-33",
+   "ea": 1288,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "880",
+   "note": "複製一張圖再貼上(retf 0Ah，(組, 編號, 模式, 座標A, 座標B))：從二維圖庫表 遠指標(DS:65D6h + 組*8 + 編號*4) 取原圖(NIL 就離開)，用 297h:1C59h 依 +0/+2 尺寸建新圖；模式 > 3 走 297h:0BB5h 轉換複製，否則兩次 Move 各 p^[11h] 搬 +17h 起的第一平面與 +13h 指到的第二平面；再叫 297h:9E4h 貼到 遠指標(DS:4FE8h)(座標各乘 3)，最後 297h:1D19h 釋放"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-33",
+   "ea": 1961,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "880",
+   "note": "同 DOS overlay-33:00508h，但★第二次 Move 的長度改用 p^[0] × p^[2](寬高相乘)，DOS 兩次都用 p^[11h]——兩台機器圖形平面配置不同(PC-98 planar / DOS packed)，第二塊大小關係不一樣。其餘 14 條是位址"
   }
  ]
 }
