@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 62 | 16 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/583-ledger-denominator-repair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | — | 62 | 16 | 0 | 8 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 11 個呼叫，沒有其他動作：`call loc_1046+4`、`call loc_18B2+1`、`call far ptr loc_1951+2`、`call far ptr sub_1847`、`call far ptr loc_16BC+1`、`call far ptr sub_15D1`（body 共 62 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>context/50-log-2026-08-09-13.md<br>spec/508-pc98-general-target-scan-producer.md<br>spec/583-ledger-denominator-repair.md |
 | `004D` | sub_4D | — | 512 | 186 | 0 | 14 | ✓ | 待解讀 | — | — | — |
 | `024D` | sub_24D | — | 100 | 33 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>retf 4：p^[18Dh]^[11h] 非 0 回 false；否則 (p^[109h] <= 0) and (p^[111h] <= p^[0E6h]) 也回 false；再叫一支帶輸出參數的 overlay 函式，回 0 就 false；都通過才叫另一支並回 true。比較都是有號 | audit/function-index/pc98-overlay-09.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `02B1` | sub_2B1 | — | 256 | 96 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

@@ -58,7 +58,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `340A` | sub_340A | CASH | 117 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `34E4` | sub_34E4 | PICKSPELL | 372 | 157 | 2 | 6 | ✓ | 待解讀 | — | — | — |
 | `3658` | sub_3658 | CANDOHEAL | 101 | 37 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>與 36BDh 成對的判斷(retf 4)：與 DOS overlay-19:35F1h 同 | spec/758-morale-field-0f7h-round-trip.md |
-| `36BD` | sub_36BD | CANDOCURE | 89 | 30 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>四條件合取(retf 4)：對應 DS:7F27h、+196h、+192h，其餘同 DOS overlay-19:3656h | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `36BD` | sub_36BD | CANDOCURE | 89 | 30 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>四條件合取(retf 4)：對應 DS:7F27h、+196h、+192h，其餘同 DOS overlay-19:3656h | audit/function-index/pc98-overlay-19.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `37AB` | sub_37AB | DOHEAL | 373 | 156 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `39CA` | sub_39CA | DOCURE | 525 | 210 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `3BD7` | sub_3BD7 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |

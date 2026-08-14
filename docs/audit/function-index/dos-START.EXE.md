@@ -95,7 +95,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `157F7` | sub_157F7 | — | 119 | 45 | 3 | 3 |  | 待解讀 | — | — | — |
 | `1586E` | sub_1586E | — | 60 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>跳過開頭空白(retf 2)：參數是 SS 相對位址，-103h 是游標、-101h 是長度、-100h 起是內容；游標小於長度且該位置是空白就前進。無號比較 | — |
 | `15B42` | sub_15B42 | — | 401 | 171 | 1 | 10 |  | 待解讀 | — | — | — |
-| `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 待解讀 | — | — | — |
+| `15D66` | sub_15D66 | — | 78 | 40 | 1 | 4 |  | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>顯示一行並等一個鍵(retf 8)：StoreString(參數字串, 緩衝, 28h)；本模組 15731h(0, 18h, 0, 28h)；本模組 15772h(0, 18h, c, b, @緩衝)；ReadKey(結果存進不再讀的 local)。28h/18h 成對，形狀是 40 欄×24 列的文字視窗 | — |
 | `15F53` | sub_15F53 | — | 23 | 11 | 1 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>呼叫 RTL @DELAY(byte_21169 × 100) | — |
 | `15F6A` | sub_15F6A | — | 470 | 207 | 2 | 3 |  | 待解讀 | — | — | — |
 | `16140` | sub_16140 | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
@@ -289,7 +289,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B92C` | @Flush$qm4Text | — | 4 | 2 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Flush$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B930` | @Close$qm4Text | — | 59 | 19 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Close$qm4Text`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B96B` | sub_1B96B | — | 17 | 11 | 2 | 1 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>以 es:[bx+di] 的 far pointer 呼叫例外/結束處理常式(自身的 es:di 傳兩次當參數);回傳非 0 就存進 word_20996 | — |
-| `1B9FE` | sub_1B9FE | — | 90 | 40 | 1 | 1 |  | 待解讀 | — | — | — |
+| `1B9FE` | sub_1B9FE | — | 90 | 40 | 1 | 1 |  | 已解讀 | exact | docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md<br>依 ^Z 截斷文字檔(近呼叫 retn，DI 指向檔案記錄)：seek 檔尾取大小，回退 80h(不足則 0)讀 80h bytes，在其中找第一個 1Ah；找到就以 AX=4202h 相對檔尾往回 seek 到該處，再用 AH=40h 配 CX=0 截斷。找不到就直接返回 | — |
 | `1BAE6` | __GetEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB0A` | __GetChar | — | 28 | 14 | 4 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__GetChar`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BB26` | __PutEntry | — | 36 | 10 | 4 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__PutEntry`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

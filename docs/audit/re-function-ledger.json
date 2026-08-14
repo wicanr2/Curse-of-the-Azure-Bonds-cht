@@ -19057,6 +19057,69 @@
    "level": "exact",
    "spec": "docs/spec/758-morale-field-0f7h-round-trip.md",
    "note": "搬移 overlay 區並改寫 stub(近呼叫 retn)：新段 := word_2096C、舊段 := es:10h；沿鏈把 [bp+4] 等於舊段的節點改成新段；用 std 反向搬 es:8 個 bytes；最後由 di=23h 起、每格前進 5、共 es:0Ch 次寫入新段。與 spec 757 的 1A4E3h 合起來確定 stub 陣列在 +20h、每格 5 bytes、格數在控制區塊 +0Ch；⚠ 兩支寫入位置在 +3 重疊，本輪不宣稱 stub 內部欄位切法"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 16738,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "取兩個戰鬥員的 x/y 後畫(retf 4)：先 overlay-24 entry#24 @1AAAh(參數+0Dh)；再用 overlay-32 entry#15/#16 對 SS 相對記錄的 +0Ch 與 −0Ah 兩個遠指標各取 x、y；最後 overlay-24 entry#25 @1AF7h(x1, y1, x2, y2, 1, 1Eh)。entry#15/#16 = 由 overlay-32:0CAEh 換索引後取 4-byte 記錄的 +0/+1，即戰鬥員座標 — 補上 spec 750「地圖表頭 = 隊伍位置 −3」的機制依據"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-33",
+   "ea": 249,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "用 bit 7 選資源(retf 8)：代碼 > 7Fh 時 0297h:08F8h(遠指標@DS:4FE8h, 遠指標@DS:65D2h, a, 代碼 and 7Fh, b, c)，否則同一支但用 DS:65CEh 與未遮罩的代碼。bit 7 是分頁選擇、低 7 位是頁內索引，無號比較"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-33",
+   "ea": 615,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "用 bit 7 選資源(retf 8)：02A8h:0712h、DS:9668h/DS:9664h、DS:7F56h，其餘同 DOS overlay-33:00F9h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 16206,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "retf，無參數：n := <呼叫>(DS:0A031h)；r := ROLLDICE(n, 6)(n d6)；本模組 3BF5h(DS:0A645h, DS:0A646h, r, 4, 0, @本地)；本模組 3CB1h(7, r, 4, 1)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 89446,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "顯示一行並等一個鍵(retf 8)：StoreString(參數字串, 緩衝, 28h)；本模組 15731h(0, 18h, 0, 28h)；本模組 15772h(0, 18h, c, b, @緩衝)；ReadKey(結果存進不再讀的 local)。28h/18h 成對，形狀是 40 欄×24 列的文字視窗"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 13857,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "逐格前進的迴圈(retf 2)：DS:4FB4h := 參數、DS:47E0h := 0；while DS:47E0h = 0 且 DS:4FC7h = 0 do — DS:75FEh := DS:75FFh(前一個值往後推)、DS:75FFh := DS:4FA5h^[DS:4FB4h − 8000h]，DS:4FC1h 非 0 時再叫本模組 19EFh 與兩支 RTL，每輪結尾叫本模組 3377h。⚠ 離開條件只看兩個全域，迴圈本身不會自己結束"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113150,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+   "note": "依 ^Z 截斷文字檔(近呼叫 retn，DI 指向檔案記錄)：seek 檔尾取大小，回退 80h(不足則 0)讀 80h bytes，在其中找第一個 1Ah；找到就以 AX=4202h 相對檔尾往回 seek 到該處，再用 AH=40h 配 CX=0 截斷。找不到就直接返回"
   }
  ]
 }
