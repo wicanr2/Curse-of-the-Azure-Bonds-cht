@@ -24142,6 +24142,69 @@
    "level": "exact",
    "spec": "930",
    "note": "Turbo Pascal Crt 單元的文字模式區塊搬移(無序言、retn)：si = di 就直接離開；長度 = di − si，由 BIOS 資料區取每列欄數 0040:004Ah 算目的位移、取 CRTC 基底埠 0040:0063h + 6 當狀態暫存器(等 retrace)、依 0040:0049h 是否為 7 選 0B000h 單色或 0B800h 彩色段。⚠本規格只讀到參數準備完畢，其後是標準 rep movsw"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 106419,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "931",
+   "note": "Crt 的緩衝輸出(無序言、retn)：逐字元掃，BEL/BS/LF/CR 各自先把累積的一段用 sub_1A050 沖出再處理，普通字元只前進不搬，超過右界才沖出並捲行——所以整行只做一次 rep movsw。收尾把游標寫回 BIOS 0040:0050h，並依 0040:004Ah 欄數算偏移後直接寫 CRTC 的 0Eh/0Fh 暫存器(不走 int 10h AH=02h)。四處 jmp short $+2 是 8088 的 I/O 延遲慣用法"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107380,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "931",
+   "note": "Turbo Pascal 堆積的釋放與回收(無序言、retn)：走 word_20970h 的已配置區塊鏈(next 在 +14h)，把位置高於目前配置指標 word_2096Ch 的區塊逐一釋放，直到騰出要求的大小；再把剩下的往下搬並修正指標；最後從 bx = 47B0h 沿 +14h 走到 next 為 0 把新區塊接上。位址用 seg:para 兩個 word，到處是 cmp ax,10h / sub ax,10h / inc dx 的進位正規化"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 108934,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "931",
+   "note": "Turbo Pascal 堆積的配置(無序言、retn，用 CF 回報，clc = 成功)：掃 dword_2097Eh 的 free list(每筆 8 bytes：+0/+2 起點 para/段、+4/+6 終點)，找大小足夠的一筆就從起點切走，切完剛好用光就叫 sub_1AAF9h 移除該筆；free list 走完沒找到就從配置指標 word_2097Ah/word_2097Ch 往上切，切前先用 sub_1AB0Eh 確認不超過上界"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109090,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "931",
+   "note": "Turbo Pascal 堆積的釋放併回 free list(無序言、retn)：ax = 0 直接返回；區間不在 [word_20976h/word_20978h, word_2097Ah/word_2097Ch] 之內就 stc 失敗。否則掃 free list 與相鄰項合併(起點接得上就往前延、終點接得上就往後延，被吃掉的那筆用 sub_1AAF9h 移除)；若還的正好是配置指標下緣就直接把指標往回退，否則用 sub_1AAD5h 取一筆新位置寫入"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 110752,
+   "state": "邊界碎片",
+   "level": "exact",
+   "spec": "931",
+   "note": "邊界碎片：以 jb short loc_1B0AD 開頭，沒有序言、進入條件靠呼叫端的旗標，是被切開的後半段(18 條已逐條讀完)。內容是 6-byte real 的符號處理——add al, 80h 測指數位元組，兩邊都無效就把 ax/bx/dx 全清 0 當作零值；否則用 xor cl,dh / not cl / and cl,80h 算出結果符號，並把兩個運算元的最高位補成 1(隱含尾數位)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 104794,
+   "state": "邊界碎片",
+   "level": "exact",
+   "spec": "931",
+   "note": "邊界碎片：以 jb short loc_19979 開頭，沒有序言，是被切開的後半段(21 條已逐條讀完)。內容是在一段位元組前插入一個字元——add di, 1Eh 後用 mov cx,100h / repne scasb 量長度、not cl 換算，再 std / rep movsb 整段右移一格、stosb 補上，最後 word_24E58 := 0"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 86920,
+   "state": "邊界碎片",
+   "level": "exact",
+   "spec": "931",
+   "note": "邊界碎片：整支用 [bp-0Ch]、[bp-0Eh]、[bp-1Ch] 等呼叫端 frame 的區域變數，自己沒有 push bp，而且結尾 jmp sub_15388 尾遞迴回自己——是被切開的內層迴圈(54 條已逐條讀完)。內容是逐列合成：以 bx 為列索引維護 byte[bx+5000h]、word[bx+51F8h]、word[bx+5348h]、word[bx+50A8h] 四張表的上下界，內迴圈對每個位元組做 es:[di+17h] := (es:[di+17h] and 來源A) or 來源B 的遮罩合成，每列處理完 bx 折半加一再遞迴"
   }
  ]
 }

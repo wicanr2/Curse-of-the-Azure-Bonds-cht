@@ -84,7 +84,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1510F` | sub_1510F | — | 162 | 57 | 1 | 1 |  | 已解讀 | exact | docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md<br>繪圖前置(近呼叫 retn 0Eh)：與 1507Ah 同一組算式，多讀 目的^[13h] 與 目的^[15h] 兩個欄位，最後跳進 sub_15388h | — |
 | `151B1` | sub_151B1 | — | 376 | 143 | 1 | 3 |  | 待解讀 | — | — | — |
 | `15329` | sub_15329 | — | 95 | 36 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 95 bytes，已逐條讀完） | — |
-| `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 待解讀 | — | — | — |
+| `15388` | sub_15388 | — | 147 | 54 | 7 | 1 |  | 邊界碎片 | exact | 931<br>邊界碎片：整支用 [bp-0Ch]、[bp-0Eh]、[bp-1Ch] 等呼叫端 frame 的區域變數，自己沒有 push bp，而且結尾 jmp sub_15388 尾遞迴回自己——是被切開的內層迴圈(54 條已逐條讀完)。內容是逐列合成：以 bx 為列索引維護 byte[bx+5000h]、word[bx+51F8h]、word[bx+5348h]、word[bx+50A8h] 四張表的上下界，內迴圈對每個位元組做 es:[di+17h] := (es:[di+17h] and 來源A) or 來源B 的遮罩合成，每列處理完 bx 折半加一再遞迴 | — |
 | `15420` | sub_15420 | — | 115 | 59 | 1 | 0 |  | 已解讀 | exact | docs/spec/673-ega-graphics-controller-reset.md<br>把 EGA/VGA 繪圖暫存器設回預設:Graphics Controller(3CEh/3CFh)索引 0..5 全寫 0、7 寫 0Fh、8 寫 0FFh,Sequencer(3C4h/3C5h)索引 2 寫 0Fh(四平面全開)。索引 6(Miscellaneous)被跳過——模式本身由別處設定,這裡只清理繪圖行為。⚠ DOS 版走 EGA/VGA 平面圖形,與 PC-98 版的文字 VRAM + 三平面是兩套顯示模型,繪圖程式碼不可能共用 | — |
 | `15493` | sub_15493 | — | 49 | 20 | 1 | 1 |  | 已解讀 | exact | docs/spec/671-dos-video-page-and-dead-bounds.md<br>切換 BIOS 顯示頁:把 Registers.AH := 5、AL := arg_0 後呼叫 Turbo Pascal 的 Intr(10h, Regs);同時自己算好 word_2119Eh := (arg_0 shl 9) + 0A000h——shl 9 是 ×512 段落 = 8KB,所以那是該頁的段位址 | — |
 | `154C4` | sub_154C4 | — | 25 | 11 | 2 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>word_211A0 := (arg_0 << 9) + 0A000h ⇒ 由列號算出顯示記憶體的段位址(A000h 起、每單位 512 bytes) | — |
@@ -145,7 +145,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `198E7` | @DiskSize$q4Byte | — | 27 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@DiskSize$q4Byte`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19902` | @FINDFIRST$q7PATHSTR4WORDm9SEARCHREC | — | 62 | 33 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDFIRST$q7PATHSTR4WORDm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19940` | @FINDNEXT$qm9SEARCHREC | — | 26 | 13 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FINDNEXT$qm9SEARCHREC`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1995A` | sub_1995A | — | 35 | 21 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1995A` | sub_1995A | — | 35 | 21 | 2 | 1 |  | 邊界碎片 | exact | 931<br>邊界碎片：以 jb short loc_19979 開頭，沒有序言，是被切開的後半段(21 條已逐條讀完)。內容是在一段位元組前插入一個字元——add di, 1Eh 後用 mov cx,100h / repne scasb 量長度、not cl 換算，再 std / rep movsb 整段右移一格、stosb 補上，最後 word_24E58 := 0 | — |
 | `1997D` | @FEXPAND$q7PATHSTR | — | 197 | 104 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FEXPAND$q7PATHSTR`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19A42` | @FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr | — | 82 | 37 | 2 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FSplit$q7PathStrm6DirStrm7NameStrm6ExtStr`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `19A94` | sub_19A94 | — | 18 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>字串搬移輔助:長度夾到 bx 上限後 stosb 寫長度,再 rep movsb 複製內容並更新來源指標 | — |
@@ -178,7 +178,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19F84` | sub_19F84 | — | 33 | 14 | 2 | 2 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>捲動一行:若 dh+1 超過 word_24E64 高位元組(視窗下界)則以 INT 10h AX=0601h 上捲一行,屬性取 byte_24E60、範圍取 word_24E62/word_24E64 | — |
 | `19FA5` | sub_19FA5 | — | 7 | 3 | 5 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 3`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
 | `19FAC` | sub_19FAC | — | 7 | 3 | 4 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp sub_1A0B8`，控制權轉交後不返回；先設定 `mov ah, 2`、`xor bh, bh`（body 共 7 bytes，已逐條讀完） | — |
-| `19FB3` | sub_19FB3 | — | 157 | 73 | 1 | 4 |  | 待解讀 | — | — | — |
+| `19FB3` | sub_19FB3 | — | 157 | 73 | 1 | 4 |  | 已解讀 | exact | 931<br>Crt 的緩衝輸出(無序言、retn)：逐字元掃，BEL/BS/LF/CR 各自先把累積的一段用 sub_1A050 沖出再處理，普通字元只前進不搬，超過右界才沖出並捲行——所以整行只做一次 rep movsw。收尾把游標寫回 BIOS 0040:0050h，並依 0040:004Ah 欄數算偏移後直接寫 CRTC 的 0Eh/0Fh 暫存器(不走 int 10h AH=02h)。四處 jmp short $+2 是 8088 的 I/O 延遲慣用法 | — |
 | `1A050` | sub_1A050 | — | 104 | 56 | 1 | 1 |  | 已解讀 | exact | 930<br>Turbo Pascal Crt 單元的文字模式區塊搬移(無序言、retn)：si = di 就直接離開；長度 = di − si，由 BIOS 資料區取每列欄數 0040:004Ah 算目的位移、取 CRTC 基底埠 0040:0063h + 6 當狀態暫存器(等 retrace)、依 0040:0049h 是否為 7 選 0B000h 單色或 0B800h 彩色段。⚠本規格只讀到參數準備完畢，其後是標準 rep movsw | — |
 | `1A0B8` | sub_1A0B8 | — | 11 | 10 | 11 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>BIOS 視訊呼叫包裝:保存 si/di/es → int 10h → 還原。被呼叫 18 次,是 CRT 單元對 INT 10h 的統一入口 | — |
 | `1A0D0` | sub_1A0D0 | — | 11 | 4 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call sub_1A611`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完） | — |
@@ -190,7 +190,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A209` | @OVRSETBUF$q7LONGINT | — | 99 | 36 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRSETBUF$q7LONGINT`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A26C` | @OVRGETBUF$qv | — | 20 | 8 | 1 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRGETBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A280` | @OVRCLEARBUF$qv | — | 47 | 19 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@OVRCLEARBUF$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 待解讀 | — | — | — |
+| `1A374` | sub_1A374 | — | 184 | 74 | 1 | 5 |  | 已解讀 | exact | 931<br>Turbo Pascal 堆積的釋放與回收(無序言、retn)：走 word_20970h 的已配置區塊鏈(next 在 +14h)，把位置高於目前配置指標 word_2096Ch 的區塊逐一釋放，直到騰出要求的大小；再把剩下的往下搬並修正指標；最後從 bx = 47B0h 沿 +14h 走到 next 為 0 把新區塊接上。位址用 seg:para 兩個 word，到處是 cmp ax,10h / sub ax,10h / inc dx 的進位正規化 | — |
 | `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數 | — |
 | `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 93 bytes，已逐條讀完） | — |
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>搬移 overlay 區並改寫 stub(近呼叫 retn)：新段 := word_2096C、舊段 := es:10h；沿鏈把 [bp+4] 等於舊段的節點改成新段；用 std 反向搬 es:8 個 bytes；最後由 di=23h 起、每格前進 5、共 es:0Ch 次寫入新段。與 spec 757 的 1A4E3h 合起來確定 stub 陣列在 +20h、每格 5 bytes、格數在控制區塊 +0Ch；⚠ 兩支寫入位置在 +3 重疊，本輪不宣稱 stub 內部欄位切法 | — |
@@ -222,8 +222,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A8DA` | @Release$qm7Pointer | — | 27 | 9 | 0 | 0 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Release$qm7Pointer`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A8F5` | @MemAvail$qv | — | 68 | 26 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MemAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A939` | @MaxAvail$qv | — | 77 | 31 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@MaxAvail$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1A986` | sub_1A986 | — | 156 | 62 | 1 | 4 |  | 待解讀 | — | — | — |
-| `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
+| `1A986` | sub_1A986 | — | 156 | 62 | 1 | 4 |  | 已解讀 | exact | 931<br>Turbo Pascal 堆積的配置(無序言、retn，用 CF 回報，clc = 成功)：掃 dword_2097Eh 的 free list(每筆 8 bytes：+0/+2 起點 para/段、+4/+6 終點)，找大小足夠的一筆就從起點切走，切完剛好用光就叫 sub_1AAF9h 移除該筆；free list 走完沒找到就從配置指標 word_2097Ah/word_2097Ch 往上切，切前先用 sub_1AB0Eh 確認不超過上界 | — |
+| `1AA22` | sub_1AA22 | — | 179 | 66 | 1 | 4 |  | 已解讀 | exact | 931<br>Turbo Pascal 堆積的釋放併回 free list(無序言、retn)：ax = 0 直接返回；區間不在 [word_20976h/word_20978h, word_2097Ah/word_2097Ch] 之內就 stc 失敗。否則掃 free list 與相鄰項合併(起點接得上就往前延、終點接得上就往後延，被吃掉的那筆用 sub_1AAF9h 移除)；若還的正好是配置指標下緣就直接把指標往回退，否則用 sub_1AAD5h 取一筆新位置寫入 | — |
 | `1AAD5` | sub_1AAD5 | — | 36 | 15 | 1 | 1 |  | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>向下配置 8 bytes 並檢查下界(近呼叫，失敗時 CF=1)：di := word[2097Eh]−8，為 0 則失敗；si := (di shr 4) + word[20980h]，si <= word[2097Ch] 則失敗；成功才把 di 寫回。減法未處理借位 | — |
 | `1AAF9` | sub_1AAF9 | — | 21 | 9 | 2 | 0 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>以 dword_2097E 為來源連續四次 movsw 複製 8 bytes,之後 di 回退 8 並更新來源指標 | — |
 | `1AB0E` | sub_1AB0E | — | 73 | 27 | 3 | 1 |  | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>指標正規化與下界夾制(近呼叫 retn)：dword_2097Eh 減 word_20982h，低 4 bits 留 SI、其餘右移 4 加到段值，與 word_2097Ch:word_2097Ah 這個下界比，低於就夾到下界；offset 為 0 有段值 +1000h 的特別路徑。與 spec 753 的 1AAD5h 同族 | — |
@@ -255,7 +255,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1AEC4` | __RealAdd | — | 214 | 105 | 9 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealAdd`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1AF9A` | __RealMul | — | 125 | 63 | 8 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealMul`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B017` | __RealDiv | — | 137 | 74 | 5 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealDiv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1B0A0` | sub_1B0A0 | — | 35 | 18 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1B0A0` | sub_1B0A0 | — | 35 | 18 | 2 | 1 |  | 邊界碎片 | exact | 931<br>邊界碎片：以 jb short loc_1B0AD 開頭，沒有序言、進入條件靠呼叫端的旗標，是被切開的後半段(18 條已逐條讀完)。內容是 6-byte real 的符號處理——add al, 80h 測指數位元組，兩邊都無效就把 ax/bx/dx 全清 0 當作零值；否則用 xor cl,dh / not cl / and cl,80h 算出結果符號，並把兩個運算元的最高位補成 1(隱含尾數位) | — |
 | `1B0C3` | __RealCmp | — | 23 | 14 | 3 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealCmp`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B0DA` | sub_1B0DA | — | 19 | 10 | 1 | 1 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>多欄位相等比較:依序比較 al/cl、dx/di、bx/si、ah/ch,任一不等就提前返回 | — |
 | `1B0ED` | __RealFloat | — | 63 | 30 | 3 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `__RealFloat`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
