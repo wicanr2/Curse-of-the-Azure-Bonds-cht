@@ -19849,6 +19849,15 @@
    "level": "exact",
    "spec": "docs/spec/782-strength-percentile-display.md",
    "note": "力量百分位的顯示(retf 4)：能力值在 DS:6506h^[11h + 索引*2]，畫在 索引+7 列；值 < 0Ah 時欄由 5 改 6 靠右對齊；索引 0 且值 = 12h(18) 且 +1Ch > 0 時再畫 '(' + 百分位 + ')'(CS:09AFh/09B1h)，百分位 < 0Ah 補 CS:09AAh 的 '0'、等於 64h(100) 直接用 CS:09ACh 的 '00' — 即 AD&D 的 18/00 記法。顏色依第一個參數在 0Dh/0Ah 二選一。⚠ 欄位靠硬編碼對齊，沒有量測字串寬度"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 2492,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/782-strength-percentile-display.md",
+   "note": "力量百分位的顯示(retf 4)：135 條指令與 DOS overlay-19:09B3h 逐條同構，角色指標 DS:9594h、繪字 418h:0D17h。⚠ 唯一差別是四條常數換成全形 — CS:09AEh '０'、09B1h '００'、09B6h '（'、09B9h '）'；對齊的程式碼(欄 := 5 或 6、百分位固定第 7 欄第 7 列)一個字都沒改。中文版可照此作法"
   }
  ]
 }

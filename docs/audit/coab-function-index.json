@@ -39859,7 +39859,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/782-strength-percentile-display.md",
+   "note": "力量百分位的顯示(retf 4)：135 條指令與 DOS overlay-19:09B3h 逐條同構，角色指標 DS:9594h、繪字 418h:0D17h。⚠ 唯一差別是四條常數換成全形 — CS:09AEh '０'、09B1h '００'、09B6h '（'、09B9h '）'；對齊的程式碼(欄 := 5 或 6、百分位固定第 7 欄第 7 列)一個字都沒改。中文版可照此作法",
+   "citations": [
+    "spec/782-strength-percentile-display.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48605,9 +48611,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
