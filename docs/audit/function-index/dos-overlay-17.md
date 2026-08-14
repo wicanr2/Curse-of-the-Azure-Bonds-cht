@@ -6,7 +6,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | — | 62 | 17 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 11 個相依 unit 的 0000h — overlay-24、overlay-19、overlay-22、overlay-23、overlay-29、overlay-33、overlay-16、overlay-26、overlay-32、overlay-34、overlay-25。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-16.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/dos-overlay-25.md |
-| `003E` | sub_3E | — | 415 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-22.md |
+| `003E` | sub_3E | — | 415 | 87 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-19.md<br>audit/function-index/dos-overlay-22.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-02.md<br>audit/function-index/pc98-overlay-22.md |
 | `01DD` | sub_1DD | — | 1445 | 363 | 0 | 11 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_1F8`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 1445 bytes，已逐條讀完） | — |
 | `0782` | sub_782 | — | 2622 | 999 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-17.md<br>audit/function-triage.md |
 | `0E93` | sub_E93 | — | 62 | 15 | 2 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_1048`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 62 bytes，已逐條讀完） | — |
@@ -27,7 +27,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18F4` | sub_18F4 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov es:[di+11h], dl`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
 | `1994` | sub_1994 | — | 10 | 4 | 3 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mul dx`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 10 bytes，已逐條讀完） | — |
 | `199E` | sub_199E | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov ax, [di+4124h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
-| `1ECD` | sub_1ECD | — | 1608 | 600 | 3 | 13 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-triage.md |
+| `1ECD` | sub_1ECD | — | 1608 | 600 | 3 | 13 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | audit/function-index/dos-overlay-19.md<br>audit/function-triage.md |
 | `2515` | sub_2515 | — | 146 | 53 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `260C` | sub_260C | — | 278 | 111 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `2724` | sub_2724 | — | 285 | 121 | 1 | 2 | ✓ | 待解讀 | — | — | — |

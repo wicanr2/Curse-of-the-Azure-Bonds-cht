@@ -9583,10 +9583,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -12332,10 +12332,14 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "算出本回合的 +19Ch（spec 806 回合初始化的第一個呼叫）：舊 := 角色^[19Ch]；角色^[19Ch] := 角色^[11Ch]（基礎值）；\u003cfar 15BCh+1\u003e(角色) 與 \u003cfar 15C6h+1\u003e(角色, @彈藥) 都成立時 遠程 := 1、v := byte[5CFBh + 角色^[151h]^[2Eh]*10h]（物品類型表 +5）夾到 \u003e= 2、DS:6F96h := v；否則 DS:6F96h := 角色^[19Ch]。DS:6F9Ah := 0；\u003cfar 1442h+2\u003e(角色, 12h)；n := 本模組 0F12h(DS:6F96h)。遠程且 彈藥 \u003c\u003e NIL 時 m := max(1, 彈藥^[39h]（數量）)，(m \u003c n) 且 彈藥^[39h] \u003e 0 才 n := m。最後 +18Dh^[8] = 0，或 n \u003c 舊，或 (有號(n) \u003c 有號(舊)*2 且非遠程) 時才寫回 角色^[19Ch] := n。retf 4。spec 808",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
-    "spec/806-initiative-and-combat-state-layout.md"
+    "spec/806-initiative-and-combat-state-layout.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -12357,7 +12361,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-13.md",
     "spec/754-small-predicates-and-wrappers.md",
-    "spec/806-initiative-and-combat-state-layout.md"
+    "spec/806-initiative-and-combat-state-layout.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -13209,9 +13214,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-14.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -14663,6 +14668,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-02.md",
@@ -14989,6 +14995,7 @@
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
    "note": "邊界碎片：落在 0782h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-triage.md"
    ]
   },
@@ -22900,7 +22907,10 @@
    "callers": 3,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/808-attacks-per-round-and-facing-redraw.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22938,7 +22948,8 @@
    "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
    "note": "戰鬥員佔地的逐格檢查：i := 本模組 0CAEh(參數2, 參數4)；byte[66A6h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[66A6h+i*4], k, @dx, @dy) then r := 本模組 0732h(byte[67C6h+i] + dx, byte[680Eh+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800",
    "citations": [
-    "spec/800-party-reorder-and-footprint-check.md"
+    "spec/800-party-reorder-and-footprint-check.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -22968,7 +22979,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -22982,9 +22994,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "轉向並視需要重畫：retf 0Ah，宣告順序 (角色, 新面向, 參數2, 參數0)。i := 本模組 0CAEh(角色)；(not 本模組 0763h(1, 角色)) 且 DS:75E6h \u003c\u003e 0 時呼叫 本模組 09DFh(8, 3, 0C5Eh(角色), 0C36h(角色))；除非「有號(新面向) div 4 = 有號(角色^[18Dh]^[9]) div 4 且 參數2 = 0 且 參數0 = 0」，且 DS:75E6h \u003c\u003e 0 時呼叫 本模組 0578h(i, 0, 0)（面向只分 0..3／4..7 兩半，同側轉向不換圖）；角色^[18Dh]^[9] := 新面向（無條件）；參數0 = 0 且 本模組 0763h(0, 角色) 且 DS:75E6h \u003c\u003e 0 時 \u003c0196h:003Eh\u003e(byte[67C6h+i], byte[680Eh+i], 新面向, 參數2, 角色^[143h]) 與 \u003c0297h:1316h\u003e。spec 808",
    "citations": [
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -23006,7 +23022,8 @@
     "audit/function-index/dos-overlay-32.md",
     "spec/750-combat-setup.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -23028,7 +23045,8 @@
     "audit/function-index/dos-overlay-32.md",
     "spec/750-combat-setup.md",
     "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
-    "spec/783-cross-platform-pairs-first-batch.md"
+    "spec/783-cross-platform-pairs-first-batch.md",
+    "spec/808-attacks-per-round-and-facing-redraw.md"
    ]
   },
   {
@@ -33490,10 +33508,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-24.md",
-    "audit/function-index/pc98-overlay-12.md",
-    "audit/function-index/pc98-overlay-22.md"
+    "audit/function-index/pc98-overlay-12.md"
    ]
   },
   {
@@ -33875,7 +33893,8 @@
    "spec": "docs/spec/573-effprocs-effect-handlers-first-batch.md",
    "note": "arg_0 為 0 且傷害旗標 bit 0 非零時:DS:A02Eh 有號減半,DS:A02Ch 加 3",
    "citations": [
-    "audit/function-index/dos-overlay-12.md"
+    "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/dos-overlay-19.md"
    ]
   },
   {
@@ -36337,7 +36356,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "算出本回合的 +19Dh（spec 806 回合初始化的第一個呼叫）：舊 := 角色^[19Ch]；角色^[19Ch] := 角色^[11Ch]（基礎值）；\u003cfar 158Bh+2\u003e(角色) 與 \u003cfar 1594h+3\u003e(角色, @彈藥) 都成立時 遠程 := 1、v := byte[8D8Fh + 角色^[151h]^[2Eh]*10h]（物品類型表 +5）夾到 \u003e= 2、DS:0A030h := v；否則 DS:0A030h := 角色^[19Ch]。DS:0A034h := 0；\u003cfar 1413h+1\u003e(角色, 12h)；n := 本模組 0F12h(DS:0A030h)。遠程且 彈藥 \u003c\u003e NIL 時 m := max(1, 彈藥^[39h]（數量）)，(m \u003c n) 且 彈藥^[39h] \u003e 0 才 n := m。最後 +18Eh^[8] = 0，或 n \u003c 舊，或 (有號(n) \u003c 有號(舊)*2 且非遠程) 時才寫回 角色^[19Ch] := n。retf 4。spec 808",
    "citations": [
     "audit/function-index/pc98-overlay-13.md"
    ]
@@ -37400,9 +37422,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-14.md",
-    "context/50-log-2026-08-09-13.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md"
+    "context/50-log-2026-08-09-13.md"
    ]
   },
   {
@@ -39189,6 +39211,7 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
     "audit/function-index/pc98-overlay-02.md",
@@ -48117,7 +48140,10 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/808-attacks-per-round-and-facing-redraw.md",
+   "note": "轉向並視需要重畫：retf 0Ah，宣告順序 (角色, 新面向, 參數2, 參數0)。i := 本模組 1363h(角色)；(not 本模組 0A4Fh(1, 角色)) 且 DS:0A878h \u003c\u003e 0 時呼叫 本模組 0CCBh(8, 3, 1313h(角色), 12EBh(角色))；除非「有號(新面向) div 4 = 有號(角色^[18Dh]^[9]) div 4 且 參數2 = 0 且 參數0 = 0」，且 DS:0A878h \u003c\u003e 0 時呼叫 本模組 0864h(i, 0, 0)（面向只分 0..3／4..7 兩半，同側轉向不換圖）；角色^[18Dh]^[9] := 新面向（無條件）；參數0 = 0 且 本模組 0A4Fh(0, 角色) 且 DS:0A878h \u003c\u003e 0 時 \u003c0196h:003Eh\u003e(byte[9860h+i], byte[98A8h+i], 新面向, 參數2, 角色^[143h]) 與 \u003c0297h:1316h\u003e。spec 808"
   },
   {
    "platform": "pc98",
@@ -48726,9 +48752,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 23,
+   "Todo": 22,
    "Fragment": 16,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -49011,9 +49037,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -49281,9 +49307,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 25,
+   "Todo": 24,
    "Fragment": 28,
    "CodeBytes": 17459,
    "Undefined": 905,
@@ -49566,9 +49592,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
