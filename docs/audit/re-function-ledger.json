@@ -17125,6 +17125,16 @@
    "spec": "docs/spec/720-breath-weapon.md",
    "bounds": "prologue",
    "note": "龍息 'Breathes Fire'(CS:5E03h)。先做一次**間接 far 呼叫** call dword ptr ds:72A0h(呼叫圖抓不到,overlay_call_graph.py 只認 9A);DS:6FA3h := arg_6^[18Dh]^[0Ah];**ROLLDICE(1,100) > 50 就直接不發動**(五成機率寫死,不查表也不受等級影響);<overlay-24 entry#33(274Ch)>(施法者, 目標) >= 2 也不發動——**這確認 274Ch 回傳的是距離**(spec 699 只讀出機械行為),龍息要相鄰才打得到。⚠ DS:6FA3h 的 NIL 檢查在用過之後,順序反了。之後設 DS:6F95h:=1、顯示訊息、<overlay-24 entry#24>(17h)、用兩組 overlay-32 entry#15/#16 的座標呼叫 entry#25,最後 r := <overlay-23 entry#8>(目標,3,0) 再 <overlay-23 entry#20>(目標, 7, 2, r)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 24610,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/722-gaze-attack-and-slot0-helper.md",
+   "bounds": "prologue",
+   "note": "凝視攻擊:**先把 arg_6^[18Dh]^[0Ah] 清成 NIL**,再 <[DS:72A0h] 第 0 項>(@DS:7746h, 1, 24h) 選目標,結果從那個欄位讀回來(不是回傳值);為 NIL 就返回。顯示 '<名字> gazes...'(CS:600Ch)、<overlay-24 entry#24>(12h)、用兩組 entry#15/#16 座標呼叫 entry#25(…, 4, 2Dh);<overlay-23 entry#8>(p, 1, 0) 非 0(豁免成功)**完全沒事**,沒有減半也沒有替代效果;失敗才 <overlay-23 entry#11>(p, 34h, 3Ch, 0FFh, 0) 並顯示 '<名字> is turned to stone'(CS:6015h)。⚠ 與 spec 720 的 5E11h 結構幾乎相同但**那支呼叫前不清空**,沒選到目標時會讀到上一次留下的值並拿去算距離"
   }
  ]
 }
