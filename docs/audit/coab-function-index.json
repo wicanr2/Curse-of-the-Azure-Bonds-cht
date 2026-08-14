@@ -15974,7 +15974,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "把身上的錢換算成金幣：retf 4 = 角色遠指標，回傳 dx:ax（longint）。總 := Σ(j=0..4) \u003c0A54h:0279h\u003e(longint(角色^[0FBh + j*2]), longint@(0CA2h + j*4))；結果 := \u003c0A54h:0294h\u003e(總 + 64h, longint@0CAEh)。幣值表 DS:0CA2h 五個 longint = 1/10/100/200/1000（單位銅幣，AD\u0026D 一版換算），除數 0CAEh 就是索引 3（金幣）那一格，+64h 是半個除數 → 四捨五入。只算前 5 種幣別，+0FBh 的後兩格（Gems/Jewelry）不計入。spec 812",
+   "citations": [
+    "spec/812-coin-values-and-class-name-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -21360,6 +21366,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/811-derived-stats-and-class-item-mask.md"
    ]
@@ -21377,6 +21385,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-25.md",
     "spec/811-derived-stats-and-class-item-mask.md"
    ]
   },
@@ -21584,7 +21593,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "取鏈上第 N 個節點：retf 6，宣告順序 (索引, 串列頭)，回傳 dx:ax。n := 0；while (p \u003c\u003e NIL) and (n \u003c\u003e 索引) do p := p^[2Ah]、inc(n)；n = 索引 才回 p，否則回 NIL。串列比索引短時也回 NIL，呼叫端分不出兩種情形。spec 812",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -39260,6 +39272,8 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/758-morale-field-0f7h-round-trip.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
    ]
@@ -41248,7 +41262,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "把身上的錢換算成金幣：retf 4 = 角色遠指標，回傳 dx:ax（longint）。總 := Σ(j=0..4) \u003c0A65h:0279h\u003e(longint(角色^[0FBh + j*2]), longint@(1C46h + j*4))；結果 := \u003c0A65h:0294h\u003e(總 + 64h, longint@1C52h)。幣值表 DS:1C46h 五個 longint = 1/10/100/200/1000（單位銅幣，AD\u0026D 一版換算），除數 1C52h 就是索引 3（金幣）那一格，+64h 是半個除數 → 四捨五入。只算前 5 種幣別，+0FBh 的後兩格（Gems/Jewelry）不計入。spec 812（差異只在 mov/les 的等價碼型）"
   },
   {
    "platform": "pc98",
@@ -46572,6 +46589,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
     "spec/811-derived-stats-and-class-item-mask.md"
    ]
@@ -46591,7 +46610,8 @@
    "state": "待解讀",
    "citations": [
     "audit/duplicate-strings.md",
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-25.md"
    ]
   },
   {
@@ -46782,7 +46802,10 @@
    "callers": 5,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "取鏈上第 N 個節點：retf 6，宣告順序 (索引, 串列頭)，回傳 dx:ax。n := 0；while (p \u003c\u003e NIL) and (n \u003c\u003e 索引) do p := p^[52h]、inc(n)；n = 索引 才回 p，否則回 NIL。串列比索引短時也回 NIL，呼叫端分不出兩種情形。spec 812（差異只在 mov/les 的等價碼型）",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
@@ -46810,6 +46833,8 @@
    "note": "數鏈長(retf 4)：next 在 +52h，與 DOS 的 +2Ah 不同——PC-98 的節點配置重排過，引用位移前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-25.md",
+    "audit/function-index/pc98-overlay-25.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
     "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
    ]
@@ -48891,9 +48916,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 16,
+   "Todo": 15,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -48996,9 +49021,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -49446,9 +49471,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -49551,9 +49576,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,

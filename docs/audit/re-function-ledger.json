@@ -20920,6 +20920,42 @@
    "level": "exact",
    "spec": "docs/spec/811-derived-stats-and-class-item-mask.md",
    "note": "升級後重算衍生數值：retf 4 = 角色遠指標。角色^[73h] := 0；for c := 0 to 7 取 L := 角色^[109h+c]，v := byte[6ECCh + c*0Dh + L]（每職業 13 bytes 的攻擊表列，四種進步節奏對上 AD&D 戰士／牧師／盜賊／法師表），取最大寫 +73h；+0E5h 取最大職業等級；c=2 或 3 且 L > 6、c=4 且 L > 7 時 +11Ch := 3（攻擊次數基底，只設不清）。接著 本模組 0011h(角色)（spec 810）、07E3h(角色)、+10Fh > 0 時 0AC4h(角色)。+12Bh := 0，for c 累加 byte[6F34h + c]（職業位元遮罩 02/10/08/40/40/01/04/20；c=3 與 c=4 共用 40h 而累加用 + 不是 or，兩者並存會進位成 80h）。掃 角色^[151h] 起 13 個 4-byte 裝備槽：(byte[8D91h + 物品^[2Eh]*10h]（物品類型表 +0Dh 的職業遮罩） and +12Bh) = 0 且 物品^[36h] = 0（未詛咒）時 物品^[34h] := 0 強制卸下。最後 13BCh(角色) 為假就返回，否則對第二組職業等級 +111h+c 重跑一遍，再檢查 +113h > 6 或 +115h > 7 或 +114h > 6 設 +11Ch := 3，+117h > 0 時 0AC4h(角色)。註：DOS 匯出在 0597h 錯位，0598h..059Eh 是假指令；原始位元組 08 C0 75 03 E9 CF 00 C6 46 FF 00 EB 03 兩平台相同，正確解碼為 or al,al / jnz 59C / jmp 66B / mov [bp-1],0 / jmp 5A5。spec 811（PC-98 側 IDA 解碼正確，247 條）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 13227,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "把身上的錢換算成金幣：retf 4 = 角色遠指標，回傳 dx:ax（longint）。總 := Σ(j=0..4) <0A54h:0279h>(longint(角色^[0FBh + j*2]), longint@(0CA2h + j*4))；結果 := <0A54h:0294h>(總 + 64h, longint@0CAEh)。幣值表 DS:0CA2h 五個 longint = 1/10/100/200/1000（單位銅幣，AD&D 一版換算），除數 0CAEh 就是索引 3（金幣）那一格，+64h 是半個除數 → 四捨五入。只算前 5 種幣別，+0FBh 的後兩格（Gems/Jewelry）不計入。spec 812"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 13322,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "把身上的錢換算成金幣：retf 4 = 角色遠指標，回傳 dx:ax（longint）。總 := Σ(j=0..4) <0A65h:0279h>(longint(角色^[0FBh + j*2]), longint@(1C46h + j*4))；結果 := <0A65h:0294h>(總 + 64h, longint@1C52h)。幣值表 DS:1C46h 五個 longint = 1/10/100/200/1000（單位銅幣，AD&D 一版換算），除數 1C52h 就是索引 3（金幣）那一格，+64h 是半個除數 → 四捨五入。只算前 5 種幣別，+0FBh 的後兩格（Gems/Jewelry）不計入。spec 812（差異只在 mov/les 的等價碼型）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "取鏈上第 N 個節點：retf 6，宣告順序 (索引, 串列頭)，回傳 dx:ax。n := 0；while (p <> NIL) and (n <> 索引) do p := p^[2Ah]、inc(n)；n = 索引 才回 p，否則回 NIL。串列比索引短時也回 NIL，呼叫端分不出兩種情形。spec 812"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 17,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/812-coin-values-and-class-name-table.md",
+   "note": "取鏈上第 N 個節點：retf 6，宣告順序 (索引, 串列頭)，回傳 dx:ax。n := 0；while (p <> NIL) and (n <> 索引) do p := p^[52h]、inc(n)；n = 索引 才回 p，否則回 NIL。串列比索引短時也回 NIL，呼叫端分不出兩種情形。spec 812（差異只在 mov/les 的等價碼型）"
   }
  ]
 }
