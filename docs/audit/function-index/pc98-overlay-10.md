@@ -17,7 +17,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `08BD` | sub_8BD | — | 196 | 89 | 1 | 8 | ✓ | 已解讀 | strong inference | docs/spec/776-first-person-view-scan-and-ega-rect-fill.md<br>與 DOS overlay-10:08C9h（entry#7）助憶碼序列完全相同，語意同該筆：第一人稱視野掃描(retf，無參數)：兩層迴圈以全域 DS:4A0Ch(dx，−6..+6)與 DS:4A0Dh(dy，−2..+2)掃 13×5 = 65 格；每格 x := DS:720Fh + dx、y := DS:7210h + dy，對四個方向(6 西/0 北/2 東/4 南)各叫 本模組 0378h 取牆旗標，分別存進 DS:4A0Eh(北)/4A0Fh(西)/4A10h(東)/4A11h(南)；接著四支巢狀繪圖程序(03ECh/0491h/050Eh/06ECh，都以 push bp 傳靜態鏈)，再 DS:4A15h := <呼叫>(x,y) and 40h、本模組 00CCh()。⚠ 迴圈計數器是全域，不可重入。spec 771 的 0491h 判的 DS:4A0Eh 就是北面牆旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | audit/embedded-strings.md |
 | `0981` | sub_981 | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | strong inference | docs/spec/572-resident-service-functions.md<br>與 dos overlay-10:098Dh 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |
 | `099C` | sub_99C | — | 86 | 36 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>在地圖上補兩格(retf 6)：與 DOS overlay-10:09A8h 同 | spec/758-morale-field-0f7h-round-trip.md |
-| `09F2` | sub_9F2 | — | 268 | 115 | 1 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `09F2` | sub_9F2 | — | 268 | 115 | 1 | 4 | ✓ | 已解讀 | exact | 749<br>同 DOS overlay-10:009FEh（module_align 對齊，助憶碼序列完全相同）。7 條差異全是呼叫目標與 DS:9F2Ch↔6E92h | audit/embedded-strings.md |
 | `0AFE` | sub_AFE | — | 326 | 138 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0C4A` | sub_C4A | — | 75 | 31 | 2 | 3 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 75 bytes，已逐條讀完） | — |
 | `0C95` | sub_C95 | — | 424 | 182 | 1 | 2 | ✓ | 待解讀 | — | — | — |
