@@ -15644,7 +15644,8 @@
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
    "note": "持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × \u003coverlay-24 entry#36\u003e(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲",
    "citations": [
-    "spec/705-duration-formula-and-save-roll.md"
+    "spec/705-duration-formula-and-save-roll.md",
+    "spec/712-duration-table.md"
    ]
   },
   {
@@ -15658,7 +15659,14 @@
    "callers": 10,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/712-duration-table.md",
+   "note": "效果持續時間 sub_E11h(id): retf 2,**只吃一個 word**(先前從呼叫端推成 4 個是錯的)。id=28h → 1d6×10;39h 或 3Dh → 5d4;3Bh → 1d4×10+40;3Fh → DS:4FBAh=5 時 2d10×10、否則 (1d10+10)×10(兩條上限同為 200 但下限差很多);43h → 5A0h=1440=24×60;其他 → 表[id].+5 × \u003coverlay-24 entry#36\u003e(id) + 表[id].+4。表就是 spec 705 的 DS:37DAh(16 bytes 一格),(+2,+3) 與 (+4,+5) 是兩組形狀相同的線性係數,由呼叫端決定用哪組。⚠ 1440 是一天的分鐘數且其餘多為 10 的倍數,單位幾乎確定是分鐘(只有這一條證據,標為推論;AD\u0026D 的 turn=10 分鐘也相容)",
+   "citations": [
+    "spec/711-target-count-clamp-and-callee-arity.md",
+    "spec/712-duration-table.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16908,8 +16916,7 @@
    "spec": "docs/spec/707-raise-dead-and-area-effect.md",
    "note": "兩段互相獨立:\u003coverlay-32 entry#9\u003e(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a\u003e0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b\u003e0 且 b\u003c\u003earg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
    "citations": [
-    "spec/707-raise-dead-and-area-effect.md",
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -17257,7 +17264,8 @@
    "note": "三段接力:r := \u003csub_E11h\u003e(DS:6506h, 4, 49h) → \u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0,0,0,0, 空字串 CS:4425h) → \u003csub_F06h\u003e(DS:6F97h, 0,0,0,0, 'is affected' CS:4426h)。⚠ CS:4425h 與 CS:4426h 緊鄰(前者長度 0、後者長度 11),反組譯裡兩個 offset 只差 1 很容易看成同一個字串的偏移",
    "citations": [
     "spec/703-item-effect-slots-and-uninitialised-args.md",
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/711-target-count-clamp-and-callee-arity.md",
+    "spec/712-duration-table.md"
    ]
   },
   {
@@ -17313,8 +17321,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "spec/708-slay-living-and-missile-count.md",
-    "spec/710-effect-collection-and-leftover-target.md",
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/710-effect-collection-and-leftover-target.md"
    ]
   },
   {
@@ -17401,9 +17408,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/711-target-count-clamp-and-callee-arity.md",
-   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is affected' CS:4816h)。由多個呼叫點的推入數量收斂出:entry#8 四個 word、entry#20 五個、entry#21 七個、sub_E11h 四個",
+   "note": "⚠ **把目標筆數永久夾小**:n := ROLLDICE(2,8);if DS:7434h \u003e n then DS:7434h := n,**沒有還原**(與 spec 706 的 5590h 改完會還原正好相反),所以同一段腳本裡後面的 opcode 看到的是被夾過的清單;陣列本身沒重排,超過的格子還在原地只是走不到。接著走 k=1..DS:7434h,跳過 NIL,s := \u003coverlay-23 entry#8\u003e(p, 4, 0)、r := \u003csub_E11h\u003e(p, 23h, 52h)、\u003coverlay-23 entry#21 PUTEFFECT\u003e(r, 0, 0, 1, s, 'is confused' CS:4816h)。⚠ 參數個數要讀被呼叫者的 retf N,不要從呼叫端推:entry#8 retf 8(4 word)、entry#20 retf 0Ah(5)、**entry#21 retf 14h(10,不是先前推的 7)**、sub_E11h retf 2(1 word)。先前的錯誤推導兩個呼叫點都自洽,因為它們犯了同一個假設 2d8 這個上限與 AD\u0026D 1e Confusion「影響 2d8 個生物」一致,訊息也是 is confused,法術身分幾乎確定(未從法術表反查編號,標為推論)",
    "citations": [
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/711-target-count-clamp-and-callee-arity.md",
+    "spec/712-duration-table.md"
    ]
   },
   {
@@ -17541,6 +17549,7 @@
    "spec": "docs/spec/706-temporary-field-adjust.md",
    "note": "暫時改欄位再還原:先存 舊值 := 目標^[0E3h],依 目標^[75h] 調整(0 → 減 1、5 → 加 4、其他 → 加 2),接著 \u003csub_F06h\u003e(DS:6F97h,0,0,0,0,空字串) 與 \u003coverlay-24 entry#27\u003e(目標, 44h, @node),找到就 \u003coverlay-23 entry#2\u003e(44h, 目標, 0, 0),**最後一定把 目標^[0E3h] 還原成舊值**。⚠ 修改與還原之間隔著三個呼叫,還原在最尾端且兩條路徑都會經過——只讀前半段會得出「永久調整」的相反結論。下游在這段期間讀該欄位會拿到臨時值,改寫成傳參數行為會不同(原作是任何讀該欄位的程式碼都看得到)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/706-temporary-field-adjust.md",
     "spec/711-target-count-clamp-and-callee-arity.md"
    ]
@@ -17618,8 +17627,7 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
-    "spec/710-effect-collection-and-leftover-target.md",
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/710-effect-collection-and-leftover-target.md"
    ]
   },
   {
@@ -19358,7 +19366,8 @@
    "state": "待解讀",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/705-duration-formula-and-save-roll.md"
+    "spec/705-duration-formula-and-save-roll.md",
+    "spec/712-duration-table.md"
    ]
   },
   {
@@ -45644,9 +45653,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 78,
+   "Read": 79,
    "NotBlocking": 0,
-   "Todo": 35,
+   "Todo": 34,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
