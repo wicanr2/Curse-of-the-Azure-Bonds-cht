@@ -24547,6 +24547,24 @@
    "level": "exact",
    "spec": "948",
    "note": "6-byte real 除法(near)：al = 0 走除以零路徑；符號取兩運算元的 xor 只留 bit 15，指數相減，兩邊尾數各補隱含最高位(or 8000h)。本體是 48 bits(bp:bx:ah vs di:si:ch)的 restoring division，rcl dx,1 收商位，dx 滿了就 push 起來換下一段(第三段用 dl := 40h 只收 2 bits)；收尾 ax := dx shl 6，三段商 not 之後組成尾數，指數加 8080h(兩個 80h 偏置)後跳 loc_1B18Ah 做正規化與套符號。⚠IDA 註記 sp-analysis failed，因為 push dx 與收尾的 pop 不在同一路徑；逐條讀是配平的"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 81442,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "949",
+   "note": "★三平面的表面貼圖(near, retn 0Eh = (目的表面, 來源表面, 張號, 列, 欄))：di = 目的 + 17h + (列 shl 3) × 目的^[2] + 欄(列的單位是 8 條掃描線)、si = 來源 + 17h + 來源^[11h] × 張號；三層迴圈——外層固定 3 次(三個平面)、中層 來源^[0] 列、內層 來源^[2] div 2 個 word 逐 word 複製，每列跳 (目的^[2] − 來源^[2])，每個平面跳 目的^[0] × 目的^[2]。目的表面裡三個平面連續存放；來源 si 不重設所以來源的一張圖也是三平面連著。⚠每列以 word 為單位，寬是奇數時最後一個 byte 不會被搬。PC-98 的 16 色是 4 個平面，本支只動三個"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 94298,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "949",
+   "note": "把按鍵設定字串展開成一張 word 表(near)：先把 ds:28A4h 起 byte_1ED34h 個 word 清 0，再走 遠指標(dword_1EB2Dh) 那個長度前綴的位元組串——每項先用 sub_17172h 判單/雙 byte，單 byte 就直接當 word 存(高位補 0)；雙 byte 則取第二個 byte 組成 ax，用 sub_17148h 在 ds:2AADh 查出編號 k，再取 word[2AE3h + (k−1)×2] 存進去並多吃一個 byte。★按鍵對應是資料驅動的，展開後的表就是 spec 945 的 16E70h 分派迴圈所用的那一類"
   }
  ]
 }
