@@ -16125,7 +16125,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
+   "note": "pc98 02DB7h 的對應（配對工具漏判）：名字欄多畫第三次當游標，空白格畫 '%'；PC-98 沒有這段",
+   "citations": [
+    "spec/985-name-edit-cursor-and-surface-composite.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41269,9 +41275,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/985-name-edit-cursor-and-surface-composite.md",
+   "note": "圖層合成：三個像素平面 OR、遮罩平面 AND；平面大小用 +0×+2 算；無邊界檢查、零尺寸會跑 65536 圈",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/985-name-edit-cursor-and-surface-composite.md"
    ]
   },
   {
@@ -42529,7 +42539,8 @@
    "spec": "docs/spec/976-view-refresh-field-redraw-and-los-collect.md",
    "note": "巢狀程序：角色畫面單一欄位重畫（0..5 屬性、6 HP、7 名字），名字底色寬度用半形格數",
    "citations": [
-    "spec/976-view-refresh-field-redraw-and-los-collect.md"
+    "spec/976-view-refresh-field-redraw-and-los-collect.md",
+    "spec/985-name-edit-cursor-and-surface-composite.md"
    ]
   },
   {
@@ -52366,9 +52377,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -52906,9 +52917,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 14,
+   "Todo": 13,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
