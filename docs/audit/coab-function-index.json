@@ -20807,6 +20807,7 @@
    "spec": "docs/spec/723-spits-acid.md",
    "note": "吐酸。骨架與 spec 720 龍息幾乎相同(同樣用 [DS:72A0h] 第 0 項、模式碼 41h 選目標,同樣呼叫前不清空、NIL 檢查在用過之後),四個數字不同:距離上限 \u003e= 7(龍息是 2)、ROLLDICE(1,100) \u003e 30 算未命中(龍息是 \u003e 50)、**未命中有專屬訊息 'Spits Acid and Misses'(CS:595Eh)而龍息是靜默返回**、傳給 \u003coverlay-23 entry#20\u003e 的傷害參數是 **arg_6^[78h](攻擊者 HP 上限)**而龍息是常數 7。所以吐酸的強度隨攻擊者體質變化,龍息不會。命中時顯示 'Spits Acid'(CS:5953h)",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/723-spits-acid.md",
     "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
    ]
@@ -20894,6 +20895,7 @@
    "note": "丟電光 'throws lightning'：DS:758Dh（回合計數）\u003e= 4 就不再發動，選目標模式碼 33h",
    "citations": [
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/918-bouncing-line-projectile.md",
     "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
@@ -20931,11 +20933,11 @@
    "note": "凝視攻擊:**先把 arg_6^[18Dh]^[0Ah] 清成 NIL**,再 \u003c[DS:72A0h] 第 0 項\u003e(@DS:7746h, 1, 24h) 選目標,結果從那個欄位讀回來(不是回傳值);為 NIL 就返回。顯示 '\u003c名字\u003e gazes...'(CS:600Ch)、\u003coverlay-24 entry#24\u003e(12h)、用兩組 entry#15/#16 座標呼叫 entry#25(…, 4, 2Dh);\u003coverlay-23 entry#8\u003e(p, 1, 0) 非 0(豁免成功)**完全沒事**,沒有減半也沒有替代效果;失敗才 \u003coverlay-23 entry#11\u003e(p, 34h, 3Ch, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:6015h,長度 12,所以效果編號 34h 是麻痺)。⚠ 與 spec 720 的 5E11h 結構幾乎相同但**那支呼叫前不清空**,沒選到目標時會讀到上一次留下的值並拿去算距離",
    "citations": [
     "audit/function-index/dos-overlay-12.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/722-gaze-attack-and-slot0-helper.md",
     "spec/723-spits-acid.md",
     "spec/741-on-hit-effects-and-third-uninitialised.md",
-    "spec/747-summoned-item-and-third-gaze.md",
-    "spec/981-lightning-attack-and-pc98-monster-attack-deltas.md"
+    "spec/747-summoned-item-and-third-gaze.md"
    ]
   },
   {
@@ -22349,13 +22351,17 @@
    "callers": 4,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/982-message-box-geometry.md",
+   "note": "entry#20 顯示訊息(角色, 訊息, 列, 要停頓)：戰鬥框欄 23-38×列 10-21（16 欄），非戰鬥框欄 1-38×列 17/18-22",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/693-text-draw-signature-and-english-grammar.md",
     "spec/696-item-node-layout-and-bandage.md",
-    "spec/890-combat-sprite-animation.md"
+    "spec/890-combat-sprite-animation.md",
+    "spec/982-message-box-geometry.md"
    ]
   },
   {
@@ -22376,7 +22382,8 @@
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
     "spec/585-ecl-goto-and-display-mode-pair.md",
-    "spec/726-spell-name-table.md"
+    "spec/726-spell-name-table.md",
+    "spec/982-message-box-geometry.md"
    ]
   },
   {
@@ -49131,7 +49138,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jnz short loc_1A16`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 34 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/982-message-box-geometry.md"
    ]
   },
   {
@@ -52435,9 +52443,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 48,
+   "Read": 49,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,

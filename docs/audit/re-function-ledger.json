@@ -25069,6 +25069,15 @@
    "level": "exact",
    "spec": "docs/spec/981-lightning-attack-and-pc98-monster-attack-deltas.md",
    "note": "麻痺凝視（DOS 06022h／spec 722 的對應）；唯一差異是動畫常數 2Dh → DS:7F16h × 0Ch"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6102,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/982-message-box-geometry.md",
+   "note": "entry#20 顯示訊息(角色, 訊息, 列, 要停頓)：戰鬥框欄 23-38×列 10-21（16 欄），非戰鬥框欄 1-38×列 17/18-22"
   }
  ]
 }
