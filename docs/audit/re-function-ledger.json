@@ -59,15 +59,6 @@
   {
    "platform": "dos",
    "module": "overlay-02",
-   "ea": 411,
-   "state": "待解讀",
-   "level": "",
-   "spec": "docs/spec/560-ecl-opcode-dispatch-table.md",
-   "note": "ECL opcode 04h／05h／06h／07h 的 handler（binding exact，語意未解讀）"
-  },
-  {
-   "platform": "dos",
-   "module": "overlay-02",
    "ea": 970,
    "state": "待解讀",
    "level": "",
@@ -19408,6 +19399,42 @@
    "level": "exact",
    "spec": "docs/spec/767-ac-display-sign-and-trade-overload.md",
    "note": "有欄位上限的繪字(retf 0Ch)：StoreString 進緩衝後，兩個座標參數任一 > 27h(39)就整支不畫(沒有裁切)；叫本模組 145CAh(0, @緩衝, @暫存)就地改寫後重新 StoreString，屬性經 DS:1928h 查表換算，最後 本模組 1692Dh(@緩衝[1], 長度, 參數C, 屬性, 參數E, 參數F*2)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-02",
+   "ea": 411,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "腳本 VM 的四則運算(retf，無參數)：取兩個運算元 A、B 與目的(兩張表 DS:76C5h/7705h 的第 3 格)，依 DS:75FFh 的運算碼 — 4: A+B、5: B−A、6: A div B(無號，餘數存 DS:4F9Dh^[67Eh])、7: A*B。⚠ 減法是 B−A 而除法是 A div B，順序不一致；除法沒有除零檢查；運算碼不在 4..7 時結果 local 未指派"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 15672,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "算整隊要多少 bytes(retf 2，參數沒被讀)：每個角色 1A6h(422)、每件物品 3Fh(63，鏈在 +14Dh/next +2Ah)、+0F2h 那條鏈每個節點 9(next 在 +5)，全部累加成 word 回傳。三個常數與既有的 GetMem 大小、物品節點大小一致。⚠ 沒有溢位檢查，+0F2h 那條鏈沒有已知上限"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 2146,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 <呼叫>(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 17905,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/768-script-arithmetic-opcodes-and-save-size.md",
+   "note": "retf，無參數：DS:0A521h^[0E5h] >= 6(有號)時顯示 CS:45E2h 'は叩きつけた。'；否則以 CS:45E1h(長度 byte 為 0 的空字串)組字串後叫本模組 0F62h，再視 <loc_1546+1>(@暫存, 3, 角色) 的結果叫 sub_140Ah。⚠ 45E1h 與 45E2h 在位元組上重疊相鄰，替換時不能蓋掉 45E1h 的長度 byte"
   }
  ]
 }
