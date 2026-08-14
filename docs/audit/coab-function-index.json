@@ -8925,6 +8925,7 @@
    "citations": [
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
+    "spec/1000-derived-stats-recalc.md",
     "spec/830-monster-ai-turn.md"
    ]
   },
@@ -8996,7 +8997,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+2Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 13 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-09.md"
+    "audit/function-index/dos-overlay-09.md",
+    "spec/1004-auto-equip-best-weapon.md"
    ]
   },
   {
@@ -9151,10 +9153,15 @@
    "callers": 2,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1004-auto-equip-best-weapon.md",
+   "note": "AI 自動換裝：評分挑最佳兩件、詛咒物品不動；證實 +185h ＝ 佔手數（上限 2）與類別表 +1/+0Dh/+0Eh",
    "citations": [
     "audit/function-index/dos-overlay-09.md",
     "audit/function-index/pc98-overlay-09.md",
+    "spec/1000-derived-stats-recalc.md",
+    "spec/1004-auto-equip-best-weapon.md",
     "spec/830-monster-ai-turn.md",
     "spec/838-ai-attack-move-main-loop.md"
    ]
@@ -20690,6 +20697,7 @@
    "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
    "note": "毒雲：3×3（原地＋八方向）、效果碼 5Bh、地圖值 1Ch、鏈頭 DS:755Fh；與毒霧共用機制",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "audit/function-strings.md",
     "spec/1003-poisonous-cloud-3x3.md",
     "spec/748-cloud-effect-dispel-pair.md",
@@ -35131,9 +35139,13 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1004-auto-equip-best-weapon.md",
+   "note": "DOS 01681h 的對應，助憶碼序列完全相同（相似度 1.000）",
    "citations": [
-    "audit/function-index/pc98-overlay-09.md"
+    "audit/function-index/pc98-overlay-09.md",
+    "spec/1004-auto-equip-best-weapon.md"
    ]
   },
   {
@@ -52481,9 +52493,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,
@@ -53036,9 +53048,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 36,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 20,
    "CodeBytes": 6325,
    "Undefined": 111,

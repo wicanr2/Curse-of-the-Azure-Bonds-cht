@@ -25420,6 +25420,24 @@
    "level": "exact",
    "spec": "docs/spec/1003-poisonous-cloud-3x3.md",
    "note": "DOS 04F3Eh 的對應（相似度 0.999）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 5761,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1004-auto-equip-best-weapon.md",
+   "note": "AI 自動換裝：評分挑最佳兩件、詛咒物品不動；證實 +185h ＝ 佔手數（上限 2）與類別表 +1/+0Dh/+0Eh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 5790,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1004-auto-equip-best-weapon.md",
+   "note": "DOS 01681h 的對應，助憶碼序列完全相同（相似度 1.000）"
   }
  ]
 }
