@@ -21866,7 +21866,8 @@
    "note": "w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/683-encumbrance-movement.md"
+    "spec/683-encumbrance-movement.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -22114,10 +22115,10 @@
    "citations": [
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-24.md",
+    "audit/function-index/pc98-overlay-24.md",
     "spec/694-add-1e-ability-tables.md",
     "spec/697-strength-hit-table-and-weapon-select.md",
-    "spec/702-more-overlay22-spell-handlers.md",
-    "spec/727-strength-spell-table.md"
+    "spec/702-more-overlay22-spell-handlers.md"
    ]
   },
   {
@@ -22137,7 +22138,9 @@
    "note": "力量命中調整,13FDh(傷害)的雙生子:閘門同為 角色^[125h] \u003c\u003e 0,索引同樣來自 129Ah。i=1..3→−3、4..5→−2、6..7→−1、8..16→0、17..19→+1、20..22→+2、23..25→+3、26..27→+4、28..30→i−23。換算回力量值後與 AD\u0026D 1e 命中調整**十八格全中**(18/00→+3、19→+3 … 25→+7),只有力量 1 併進 2 的格子。129Ah + 13FDh + 1345h 三支合起來就是完整的 1e 力量表",
    "citations": [
     "audit/function-index/dos-overlay-24.md",
-    "spec/697-strength-hit-table-and-weapon-select.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/697-strength-hit-table-and-weapon-select.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -22158,7 +22161,8 @@
    "citations": [
     "audit/function-index/dos-overlay-24.md",
     "spec/694-add-1e-ability-tables.md",
-    "spec/697-strength-hit-table-and-weapon-select.md"
+    "spec/697-strength-hit-table-and-weapon-select.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -22172,7 +22176,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "AD\u0026D 1e 負重加值表（Weight Allowance），索引來自 129Ah；關掉 spec 683 的未宣稱項",
+   "citations": [
+    "spec/974-strength-weight-allowance.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23391,7 +23401,8 @@
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "第一個非空白的位置(retf 6)：同樣先複製進本地緩衝，再從第 1 個字元往後跳過 20h，回傳位置。與 0A10h 合起來是 trim 的左右兩半",
    "citations": [
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -23411,7 +23422,8 @@
    "note": "裁掉尾端空白後的長度(retf 6)：先用 0A54h:064Eh 把第一個宣告的遠字串參數複製進 40 字元本地緩衝(上限 28h)，再從尾端往回跳過 20h，回傳長度(下限 1)。第二個參數整支沒讀；判準是 ASCII 空白，全形空白不算",
    "citations": [
     "audit/function-index/dos-overlay-26.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -23425,7 +23437,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "pc98 00BFEh 的 DOS 兄弟：只重畫一項的子字串；DS:7292h ↔ pc98 DS:0A32Ch 捲動起點",
+   "citations": [
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+   ]
   },
   {
    "platform": "dos",
@@ -41078,9 +41096,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "繪圖頁 1 上跑完 5674h 後切回頁 0；FindFirst(前綴+'*.hil')，DosError=0 就回 7",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -41097,7 +41119,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/pc98-overlay-33.md",
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -41756,7 +41779,10 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -42372,9 +42398,14 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "はい／いいえ 確認選單：40 格選項行 + DS:11A6h 熱鍵字串（Y 第 6 格、N 第 10 格），只接受 2/8/N/Y",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/972-pc98-ring-slot-repaint.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -48472,7 +48503,8 @@
    "note": "與 dos overlay-24:03C5h 助憶碼序列完全相同（52 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：w := arg_0^[187h] - \u003csub_148F\u003e(arg_0)(32-bit 相減),負值**夾到 0**;0..200h 維持原值、201h..300h → 9、301h..400h → 6、其餘 → 3;⚠ **只在新值更小時才覆寫**(jnb 跳過寫回),所以可以在 021Dh 之後再跑一次而不會把值加回去——兩支的先後順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/pc98-overlay-24.md",
-    "spec/683-encumbrance-movement.md"
+    "spec/683-encumbrance-movement.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -48726,7 +48758,14 @@
    "callers": 3,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "DOS 129Ah 的對應：力量壓成 0..30 索引；定名 +1Ch 為百分位力量；同樣有「沒有預設值」缺陷",
+   "citations": [
+    "spec/857-xp-award-and-ability-layout.md",
+    "spec/974-strength-weight-allowance.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48740,9 +48779,13 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "DOS 1345h 的對應：AD\u0026D 1e 命中調整，二十一個區間逐格相同",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -48795,7 +48838,8 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp+var_3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 22 bytes，已逐條讀完）",
    "citations": [
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-24.md",
+    "spec/974-strength-weight-allowance.md"
    ]
   },
   {
@@ -49978,7 +50022,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-triage.md",
-    "spec/972-pc98-ring-slot-repaint.md"
+    "spec/972-pc98-ring-slot-repaint.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -50108,7 +50153,8 @@
    "spec": "docs/spec/973-pc98-text-print-signature.md",
    "note": "重畫清單裡的一項：列＝視窗^[1Ch]+(項次−DS:0A32Ch)，顏色由項目 +51h 在視窗 +22h/+24h 之間選",
    "citations": [
-    "spec/973-pc98-text-print-signature.md"
+    "spec/973-pc98-text-print-signature.md",
+    "spec/975-pc98-yes-no-menu-and-partial-redraw.md"
    ]
   },
   {
@@ -52291,9 +52337,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 56,
-   "Read": 47,
+   "Read": 48,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 3,
    "CodeBytes": 12483,
    "Undefined": 290,
@@ -52321,9 +52367,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -52726,9 +52772,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 16,
+   "Read": 17,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -52741,9 +52787,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 11,
+   "Read": 12,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
@@ -52846,9 +52892,9 @@
    "Module": "overlay-24",
    "Unit": "GENERIC",
    "Functions": 65,
-   "Read": 41,
+   "Read": 43,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 5,
    "Fragment": 17,
    "CodeBytes": 13567,
    "Undefined": 376,

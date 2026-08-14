@@ -10,8 +10,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0079` | sub_79 | — | 214 | 84 | 2 | 1 | ✓ | 待解讀 | — | — | spec/973-pc98-text-print-signature.md |
 | `0164` | sub_164 | — | 1176 | 456 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-25.md<br>audit/function-strings.md<br>spec/760-item-effect-flag-clear-and-file-exists.md |
 | `0614` | sub_614 | LOADCHARLIST | 450 | 204 | 0 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `07DC` | sub_7DC | — | 93 | 40 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `08E4` | sub_8E4 | — | 453 | 198 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-33.md<br>audit/function-strings.md |
+| `07DC` | sub_7DC | — | 93 | 40 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md<br>繪圖頁 1 上跑完 5674h 後切回頁 0；FindFirst(前綴+'*.hil')，DosError=0 就回 7 | audit/function-strings.md<br>spec/975-pc98-yes-no-menu-and-partial-redraw.md |
+| `08E4` | sub_8E4 | — | 453 | 198 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-33.md<br>audit/function-strings.md<br>spec/975-pc98-yes-no-menu-and-partial-redraw.md |
 | `0B4F` | sub_B4F | CHECKSAVEDRIVE | 920 | 370 | 6 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `0ECE` | sub_ECE | — | 24 | 9 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 24 bytes，已逐條讀完） | — |
 | `0ED3` | sub_ED3 | — | 46 | 18 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_F0E`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 46 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-strings.md |
@@ -49,6 +49,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `5008` | sub_5008 | SAVEGAME | 718 | 296 | 2 | 4 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `5581` | sub_5581 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | audit/function-index/pc98-overlay-02.md<br>spec/612-ecl-main-loop.md |
 | `5588` | sub_5588 | — | 236 | 90 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `5674` | sub_5674 | — | 196 | 93 | 1 | 2 | ✓ | 待解讀 | — | — | spec/975-pc98-yes-no-menu-and-partial-redraw.md |
 | `5738` | sub_5738 | — | 23 | 12 | 1 | 2 | ✓ | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>呼叫 574Fh 算好磁碟機碼後,al := CS:576Eh、ah := 4、int 1Bh(PC-98 磁碟 BIOS);沒進位回 1、有進位回 0 | audit/function-index/pc98-overlay-16.md<br>spec/636-pc98-text-vram-and-disk-bios.md |
 | `574F` | sub_574F | — | 31 | 18 | 3 | 0 |  | 已解讀 | exact | docs/spec/636-pc98-text-vram-and-disk-bios.md<br>al := byte at 0C29h:8BF7h,減 1 再 and 0Fh 再 or 90h,存進 CS:576Eh。90h 是磁碟機類別碼、低 4 bit 是機號,所以 0C29h:8BF7h 存的是 1 起算的機號。與 5738h 靠程式碼段內的變數溝通而不是傳參數 | audit/function-index/pc98-overlay-16.md<br>spec/636-pc98-text-vram-and-disk-bios.md |

@@ -24880,6 +24880,60 @@
    "level": "exact",
    "spec": "docs/spec/973-pc98-text-print-signature.md",
    "note": "單邊（DOS 無）：在迷宮就更新視野三參數並重畫，否則顯示 bigpic 121 世界地圖"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 5263,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "AD&D 1e 負重加值表（Weight Allowance），索引來自 129Ah；關掉 spec 683 的未宣稱項"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 5272,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "DOS 129Ah 的對應：力量壓成 0..30 索引；定名 +1Ch 為百分位力量；同樣有「沒有預設值」缺陷"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-24",
+   "ea": 5424,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/974-strength-weight-allowance.md",
+   "note": "DOS 1345h 的對應：AD&D 1e 命中調整，二十一個區間逐格相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 11047,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "はい／いいえ 確認選單：40 格選項行 + DS:11A6h 熱鍵字串（Y 第 6 格、N 第 10 格），只接受 2/8/N/Y"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-16",
+   "ea": 2012,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "繪圖頁 1 上跑完 5674h 後切回頁 0；FindFirst(前綴+'*.hil')，DosError=0 就回 7"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2646,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md",
+   "note": "pc98 00BFEh 的 DOS 兄弟：只重畫一項的子字串；DS:7292h ↔ pc98 DS:0A32Ch 捲動起點"
   }
  ]
 }
