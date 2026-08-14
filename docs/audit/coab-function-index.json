@@ -15652,6 +15652,7 @@
    "spec": "docs/spec/705-duration-formula-and-save-roll.md",
    "note": "持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × \u003coverlay-24 entry#36\u003e(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲",
    "citations": [
+    "audit/function-index/pc98-overlay-22.md",
     "spec/705-duration-formula-and-save-roll.md",
     "spec/712-duration-table.md"
    ]
@@ -16552,7 +16553,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/709-target-array.md",
     "spec/714-neutralize-poison.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/730-save-selects-which-effect.md"
    ]
   },
   {
@@ -16994,6 +16996,7 @@
    "spec": "docs/spec/707-raise-dead-and-area-effect.md",
    "note": "兩段互相獨立:\u003coverlay-32 entry#9\u003e(@a, @b, arg_A, arg_C) 帶回 a、b。第一段 a\u003e0 且 byte[26A2h + a×4]=0FFh 且 [4F99h]^[1CCh]=1 且 **arg_0^=0** → arg_0^:=1,**否則一律覆寫成 0**(包括本來就是 1 的情況)——是「每次重算」不是「條件成立就設旗標」,而且原本是 1 時前三個條件全過也會被清成 0,這個自我否定結構改寫時很容易被簡化掉。第二段 b\u003e0 且 b\u003c\u003earg_4 時,取 far [6D35h + b×4](spec 699 那張表),在 DS:6F95h:=0Ch(傷害旗標,PC-98 對應 A02Fh)期間呼叫 overlay-23 entry#8 → entry#20 → overlay-24 entry#24(13h),之後歸 0",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/707-raise-dead-and-area-effect.md",
     "spec/729-beam-walk-and-target-collect.md"
    ]
@@ -17079,7 +17082,8 @@
    "note": "與 pc98 overlay-22:41AFh 助憶碼序列完全相同（32 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：if \u003cfar 013E:0070\u003e(2Ah, DS:0A521h:0A523h) = 0 then 推入 DS:0A031h 與四個 0、備妥'はすばやくなった。' 呼叫 \u003csub_F62\u003e。沒有該效果才施放,故 2Ah 是加速 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/effect-id-catalog.md",
-    "spec/716-nil-slot-hazard.md"
+    "spec/716-nil-slot-hazard.md",
+    "spec/730-save-selects-which-effect.md"
    ]
   },
   {
@@ -17552,6 +17556,7 @@
    "spec": "docs/spec/724-fear-and-puteffect-signature.md",
    "note": "恐懼:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 3, 6),再走目標陣列(**無 NIL 檢查**);s := \u003coverlay-23 entry#8\u003e(p, 4, 0),s=0(豁免失敗)時 d := \u003csub_E11h\u003e(54h) 取持續時間,\u003coverlay-23 entry#21 PUTEFFECT\u003e(p, 8Eh, d, 0, 1, 1, s, '\u003c名字\u003e runs in terror' CS:4A72h),然後 p^[18Dh]^[10h]:=1、p^[198h]:=1、p^[0F7h] \u003c= 7Fh 時設成 0B3h、**p^[18Dh]^[0Ah] := NIL**(清掉它鎖定的目標,就是 spec 722 那個欄位);s 非 0 則顯示 'is unaffected'(CS:4A81h)。⚠ 由三個呼叫點定出 PUTEFFECT(目標 far, 效果編號, 持續時間, ?, ?, ?, 豁免結果, 訊息 far)=10 word,而**效果編號與持續時間的 id 是兩個不同的數字**(這裡 8Eh 對 54h、4822h 是 23h 對 52h、4432h 是 4 對 49h)",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
     "spec/724-fear-and-puteffect-signature.md",
     "spec/729-beam-walk-and-target-collect.md"
@@ -17581,9 +17586,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/730-save-selects-which-effect.md",
+   "note": "⚠ **豁免決定的是套哪一個效果,不是有沒有效果**:\u003coverlay-23 entry#8\u003e(p,4,0) 回 0 走 PUTEFFECT(p, 1Bh, sub_E11h(56h), …, 'is clumsy' CS:4D8Ch),回非 0 走 PUTEFFECT(p, 2Ah, 同一個持續時間, …, 'is slowed' CS:4D96h);兩條路接著都用 entry#27 找節點再 entry#2。本作的豁免有三種收場(這裡換效果、spec 722 凝視是完全沒事、spec 708 即死是改成傷害),不能假設「豁免成功 = 沒事」。⚠ 函式尾端**無條件**用 'is clumsy' 呼叫 sub_F06h,即使剛走的是 is slowed 那條;兩個 offset 只差 10,很像複製時忘了改,但 sub_F06h 第四個參數是 1,那個模式下訊息可能根本不顯示,本輪不下定論。⚠ 編號 2Ah 有張力:3EE2h 是「沒有 2Ah 才顯示 is Speedy」,這裡是套 2Ah 顯示 is slowed",
    "citations": [
-    "audit/effect-id-catalog.md"
+    "audit/effect-id-catalog.md",
+    "spec/730-save-selects-which-effect.md"
    ]
   },
   {
@@ -17650,6 +17659,7 @@
    "spec": "docs/spec/708-slay-living-and-missile-count.md",
    "note": "⚠ **數量減半但傷害用沒減半的值**:\u003coverlay-24 entry#36\u003e(DS:6F97h) 被呼叫兩次,第一次結果存 bp−6(n)、第二次 +1 後 cwd/idiv 2 存 bp−5(half,下限夾 1)。half 只餵給 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 2, half),而傷害是 ROLLDAMAGEDICE(n, 4) + n 用 n。兩個區域變數位移相鄰(bp−6/bp−5),反組譯裡極容易看成同一個;改寫時只留一個變數兩邊都會錯",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/708-slay-living-and-missile-count.md",
     "spec/729-beam-walk-and-target-collect.md"
    ]
@@ -17750,6 +17760,7 @@
    "spec": "docs/spec/710-effect-collection-and-leftover-target.md",
    "note": "對整個目標陣列施加 6d6:先 \u003csub_175Bh\u003e(a, b, DS:7559h, DS:755Ah, 1, 3),再走 k=1..DS:7434h,取 far [7431h + k×4],**為 NIL 就跳過**(1C39h 會把格子寫成 NIL 而不動筆數,這支示範下游該怎麼配合);flag := (p^[11Ah]=12h) ? 0 : 1;d := ROLLDAMAGEDICE(6,6);\u003coverlay-23 entry#20\u003e(p, d, byte[3E02h], flag)。⚠ entry#20 的第一個參數 p 是**呼叫端自己推的殘留**(ROLLDAMAGEDICE 只吃兩個 word)——殘留不一定來自 0A54:0634h 那條鏈,往上找時要連更早被推入而沒人消耗的東西一起看",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/710-effect-collection-and-leftover-target.md",
     "spec/729-beam-walk-and-target-collect.md"
    ]
@@ -17824,6 +17835,7 @@
    "spec": "docs/spec/725-breath-acid-area.md",
    "note": "區域吐酸 '\u003c名字\u003e breathes acid'(CS:5A9Ah)。次數在 arg_2^[3](DS:758Dh=0 時重設成 3),**扣的動作在最後**所以中途 return 都不消耗次數。用 [DS:72A0h] 第 0 項模式碼 3Dh 選區域;cls := \u003coverlay-24 entry#30\u003e(攻擊者),**只要目標陣列裡有一格 +197h 不等於 cls 就整次取消**。傷害迴圈 \u003coverlay-23 entry#20\u003e(p, arg_6^[78h], 2, s),傷害參數與 spec 723 單體吐酸相同。⚠ **同一支裡兩個迴圈的 NIL 檢查不一致**:類別比對那個直接取欄位、傷害那個先檢查。所以「有沒有檢查 NIL」不是函式的性質而是每段迴圈各自的性質——spec 716 以函式為單位的掃描會漏掉這種",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "spec/716-nil-slot-hazard.md",
     "spec/725-breath-acid-area.md",
     "spec/729-beam-walk-and-target-collect.md"
@@ -39647,7 +39659,10 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/705-duration-formula-and-save-roll.md",
+   "note": "與 DOS overlay-22:0D67h（entry#3）助憶碼序列完全相同，語意同該筆：持續時間:DS:7563h=0 時 v := 表[arg_0].+3 × \u003coverlay-24 entry#36\u003e(arg_0) + 表[arg_0].+2;**非 0 時等級寫死 6**(不查 entry#36),是卷軸/物品之類的替代路徑,remake 不能只實作前一條。接著 v=0 且 表[arg_0].+6 非零 → v:=1;v=0FFh → v:=1。表在 DS:37DAh,16 bytes 一格(與 DS:5CF6h 的物品表是兩張),已知欄位 +0/+2/+3/+6。乘法是 imul 但兩個運算元零延伸載入,結果只取低 byte,+3×lvl 超過 255 會回捲 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
   },
   {
    "platform": "pc98",
@@ -45841,9 +45856,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 94,
+   "Read": 95,
    "NotBlocking": 0,
-   "Todo": 19,
+   "Todo": 18,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,
@@ -46396,9 +46411,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 138,
-   "Read": 56,
+   "Read": 57,
    "NotBlocking": 0,
-   "Todo": 55,
+   "Todo": 54,
    "Fragment": 27,
    "CodeBytes": 25053,
    "Undefined": 2127,
