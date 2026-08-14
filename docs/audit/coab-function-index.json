@@ -14965,6 +14965,7 @@
    "spec": "1",
    "note": "載入角色圖並套用外觀配色(retf 2)：檔名 'CHEAD'／'CBODY' 各接一個由 DS:0515h[角色^[144h]] 取出的字尾字元，以 1998h+1 載入（圖號來自 +141h/+142h/+143h）。arg_0 非 0 時建兩張 16 格調色盤對照：預設 i→i，再對 i := 1..6 把 角色^[144h+i] 的低 nibble 寫到 DS:3EC0h[i]、高 nibble 寫到 DS:3EC0h[i]+8，最後用 sub_3F96h 對兩張圖做重映射。★角色 +144h..+14Ah 是外觀配色（每 byte 兩組顏色）",
    "citations": [
+    "audit/function-index/pc98-overlay-16.md",
     "audit/function-strings.md"
    ]
   },
@@ -17187,7 +17188,10 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "休息主迴圈(retf 2，(顯示旗標))：先把 DS:7573h+i 逐隊員清 0、FillChar(DS:4AFCh, 48h, 1)。迴圈跑到四個剩餘時間計數器 DS:7568h/756Ah/756Ch/756Eh 全歸零為止；顯示模式下按鍵會問 'Stop Resting? '（PC-98 '休息を中断しますか？'），答 Y 就停。每一圈叫 45Eh(1,5) 推進時間、每 5 圈重繪一次，再走 3B9h/862h/B05h/BB6h。★隨機遭遇：bank^[5A4h] 是檢定週期（DS:4FC3h 計數）、bank^[5A6h] 是 1d100 的機率門檻，中了就印 'Your repose is suddenly interrupted!' 並回傳 1",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -43221,7 +43225,10 @@
    "callers": 0,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "813",
+   "note": "同 DOS overlay-20:00C9Ch（module_align 對齊，助憶碼序列完全相同）。差異全是位址與字串：DS:9598h↔650Ah、[di−59A1h]↔[di+7573h]、DS:7BDAh↔4AFCh、DS:0A66Ah↔757Eh、DS:0A654h/656h/658h/65Ah↔7568h/756Ah/756Ch/756Eh",
    "citations": [
     "audit/function-strings.md"
    ]
@@ -50826,9 +50833,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -51381,9 +51388,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 3,
+   "Todo": 2,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
