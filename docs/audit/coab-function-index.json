@@ -862,7 +862,10 @@
    "callers": 1,
    "calls": 37,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1089",
+   "note": "DOS 開機序列 + 首次設定畫面(retf)。OvrInit(GAME.OVR)、FExpand(*.exe)+FSplit 推導路徑：首字 \u003e= C 用執行檔目錄、= A 用 B:\\\\、否則 A:\\\\ —— ★與 PC-98(spec 1088)一字不差。★★★curse.cfg 不存在時才進設定：Rewrite 失敗(磁片防寫)就印 Sorry, disk A can't be write-protected. + DISKCOPY 建議後 Halt；否則依序問 GRAPHICS ADAPTER(CGA/EGA/Tandy → 寫 C/E/T)、SOUND TYPE(PC/Tandy 1000/Silent → 寫 P/T/S)、存檔路徑(預設 工作路徑+SAVE，輸入要長度\u003e=4、第 2 字元是 :、首字在集合 CS:122B4h=[A..P] 且不等於工作碟；集合 CS:12294h=[A,B])。之後印 TANDY 1000 USERS - Make sure NUMLOCK is on.、重讀 curse.cfg、用 INTR 實測顯示卡校正、MemAvail−OvrGetBuf 不夠就印 Not enough memory 並 Halt。resident 反組譯帶 Borland demangled RTL 名稱"
   },
   {
    "platform": "dos",
@@ -4942,10 +4945,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-07.md",
-    "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/559-full-module-re-sweep.md"
    ]
   },
   {
@@ -31306,10 +31309,10 @@
    "citations": [
     "audit/ecl-opcode-dispatch.md",
     "audit/function-index/dos-overlay-07.md",
+    "audit/function-index/dos-overlay-21.md",
     "audit/function-index/dos-overlay-29.md",
     "audit/function-index/pc98-overlay-07.md",
-    "spec/559-full-module-re-sweep.md",
-    "spec/560-ecl-opcode-dispatch-table.md"
+    "spec/559-full-module-re-sweep.md"
    ]
   },
   {
@@ -53532,9 +53535,9 @@
    "Module": "START.EXE",
    "Unit": "",
    "Functions": 325,
-   "Read": 170,
+   "Read": 171,
    "NotBlocking": 133,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 20,
    "CodeBytes": 23290,
    "Undefined": 0,
