@@ -7751,7 +7751,8 @@
     "audit/function-index/pc98-overlay-08.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/791-priority-pick-and-second-countdown.md"
    ]
   },
   {
@@ -7785,11 +7786,15 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "挑出 +18Dh^[3] 最大的角色（同值時比 \u003c0141h:004Dh\u003e(1,64h) 的 1..100 隨機骰）：掃 DS:650Ah 鏈，每個角色都擲一次骰；v \u003e 最佳值時先把最佳骰換成本次骰，故值大者必勝；選中就把角色遠指標寫進 arg_0^。迴圈後最佳值仍為 0 則寫 NIL。retf 4。spec 791",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
     "audit/function-index/pc98-overlay-08.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/791-priority-pick-and-second-countdown.md"
    ]
   },
   {
@@ -12188,6 +12193,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/750-combat-setup.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
@@ -13382,7 +13388,8 @@
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/788-memorised-spell-slots-identified.md"
+    "spec/788-memorised-spell-slots-identified.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -13444,7 +13451,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/788-memorised-spell-slots-identified.md",
-   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 \u003e 0 者取低 7 位當法術編號，查法術屬性表 DS:37DAh + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 \u003e 0 者取低 7 位當法術編號（最高位＝還在記憶中，見 spec 792），查法術屬性表 DS:37DAh + s*10h 的 +1(等級) 與 +0(職業)，相符就計數（不分最高位）；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。retf 4。spec 788／792",
    "citations": [
     "spec/788-memorised-spell-slots-identified.md"
    ]
@@ -13884,7 +13891,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/792-memorization-timer-closed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13902,7 +13912,8 @@
    "spec": "docs/spec/770-party-step-and-hug-attack.md",
    "note": "三級治療量累加(retf 2，SS 相對記錄)：70 條指令的助憶碼與 PC-98 overlay-15:2020h(spec 763)完全相同 — ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，累加到 ss:[p−2]",
    "citations": [
-    "spec/770-party-step-and-hug-attack.md"
+    "spec/770-party-step-and-hug-attack.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -13936,7 +13947,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/792-memorization-timer-closed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13954,7 +13968,8 @@
    "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
    "note": "把一筆治療額度沿 DS:650Ah 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A4h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 \u003c148Ah:149Eh\u003e(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789",
    "citations": [
-    "spec/789-heal-budget-tick-and-halve-stack.md"
+    "spec/789-heal-budget-tick-and-halve-stack.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -13968,7 +13983,13 @@
    "callers": 1,
    "calls": 9,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "巢狀程序組成的流程（每個呼叫多推 bp 當靜態鏈）：輸出^:=0；2069h 回 0 就離開；呼叫 1EFDh；再問 2069h，回 0 走 \u003c14F8h+2\u003e(DS:6506h)+\u003c15ADh+1\u003e；否則 Move(DS:7566h→暫存,0Eh)、20C5h、輸出^ := \u003c10AEh+1\u003e(0)；輸出^=0 時 1FB9h、2255h、\u003c14F8h+2\u003e+\u003c15ADh+1\u003e，並 Move(暫存→DS:7566h,0Eh) 還原（回非 0 就不還原）。retf 4。spec 792",
+   "citations": [
+    "spec/792-memorization-timer-closed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15922,6 +15943,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
@@ -15939,6 +15962,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
   },
@@ -16030,7 +16055,8 @@
    "citations": [
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
-    "spec/768-script-arithmetic-opcodes-and-save-size.md"
+    "spec/768-script-arithmetic-opcodes-and-save-size.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -16078,10 +16104,15 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "記憶法術的完成／查詢：retf 8 = (arg_4 角色遠指標, arg_0 旗標遠指標)。掃 角色^[1Eh + i]（i = 0..53h），最高位為 1（還在記憶中）者：旗標^\u003c\u003e0 時回傳 byte[37DBh + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 時把最高位清掉（記好了）、呼叫 本模組 05D4h(0)、顯示 角色名+'has memorized'+法術名、呼叫 \u003c011Ah:0048h\u003e(值)、旗標^:=1 後繼續掃。回傳值被呼叫端寫成 byte[7573h+i] := 等級*3，即記完下一個法術所需拍數。spec 792",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
-    "spec/789-heal-budget-tick-and-halve-stack.md"
+    "spec/789-heal-budget-tick-and-halve-stack.md",
+    "spec/791-priority-pick-and-second-countdown.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -16098,7 +16129,8 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
-    "spec/789-heal-budget-tick-and-halve-stack.md"
+    "spec/789-heal-budget-tick-and-halve-stack.md",
+    "spec/791-priority-pick-and-second-countdown.md"
    ]
   },
   {
@@ -16112,7 +16144,14 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "每拍遞減 DS:7573h + i（i 由 1 起算跟著 DS:650Ah 鏈）：\u003e 0 就 dec；若 DS:7573h+i = 0 且 角色 +72h = 0，則 旗標:=0、r := 本模組 09DFh(角色,@旗標)、r=0 再試 091Dh，byte[7573h+i] := r*3。與 0BB6h（每 12 拍、旗標初值 1）是同一組的兩半。retf。spec 791",
+   "citations": [
+    "spec/791-priority-pick-and-second-countdown.md",
+    "spec/792-memorization-timer-closed.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16130,7 +16169,10 @@
    "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
    "note": "每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）\u003e 0 就遞減，減到 0 時 旗標:=1，r := 本模組 09DFh(角色,@旗標)，r=0 再試 091Dh，最後 byte[7573h + i] := r*3（i 由 1 起算）。retf 4。spec 789",
    "citations": [
-    "spec/789-heal-budget-tick-and-halve-stack.md"
+    "audit/function-index/dos-overlay-20.md",
+    "spec/789-heal-budget-tick-and-halve-stack.md",
+    "spec/791-priority-pick-and-second-countdown.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -31459,7 +31501,8 @@
     "audit/function-index/pc98-overlay-08.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
-    "spec/769-combat-main-loop.md"
+    "spec/769-combat-main-loop.md",
+    "spec/791-priority-pick-and-second-countdown.md"
    ]
   },
   {
@@ -31490,7 +31533,10 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "挑出 +18Eh^[3] 最大的角色（同值時比 \u003c013Eh:004Dh\u003e(1,64h) 的 1..100 隨機骰）：掃 DS:9598h 鏈，每個角色都擲一次骰；v \u003e 最佳值時先把最佳骰換成本次骰，故值大者必勝；選中就把角色遠指標寫進 arg_0^。迴圈後最佳值仍為 0 則寫 NIL。retf 4。spec 791",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -37329,7 +37375,8 @@
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/788-memorised-spell-slots-identified.md"
+    "spec/788-memorised-spell-slots-identified.md",
+    "spec/792-memorization-timer-closed.md"
    ]
   },
   {
@@ -37391,7 +37438,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/788-memorised-spell-slots-identified.md",
-   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 \u003e 0 者取低 7 位當法術編號，查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。坐實 +1Eh 那 84 格是記憶中的法術（最高位＝已施放旗標）、+12Ch 是每職業 5 byte 的可記憶數表。retf 4。spec 788（PC-98：角色表 DS:9594h）",
+   "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 \u003e 0 者取低 7 位當法術編號（最高位＝還在記憶中，見 spec 792），查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數（不分最高位）；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。retf 4。spec 788／792（PC-98：角色表 DS:9594h）",
    "citations": [
     "spec/788-memorised-spell-slots-identified.md"
    ]
@@ -37955,7 +38002,10 @@
    "callers": 1,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "巢狀程序組成的流程（每個呼叫多推 bp 當靜態鏈）：輸出^:=0；20D2h 回 0 就離開；呼叫 1F69h；再問 20D2h，回 0 走 \u003c14F8h+2\u003e(DS:9594h)+\u003c15ADh+1\u003e；否則 Move(DS:0A652h→暫存,0Eh)、212Ch、輸出^ := \u003c10AEh+1\u003e(0)；輸出^=0 時 2020h、22BCh、\u003c14F8h+2\u003e+\u003c15ADh+1\u003e，並 Move(暫存→DS:0A652h,0Eh) 還原（回非 0 就不還原）。retf 4。spec 792"
   },
   {
    "platform": "pc98",
@@ -40932,6 +40982,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
@@ -40949,6 +41001,8 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md"
    ]
   },
@@ -41082,7 +41136,10 @@
    "callers": 2,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/792-memorization-timer-closed.md",
+   "note": "記憶法術的完成／查詢：retf 8 = (arg_4 角色遠指標, arg_0 旗標遠指標)。掃 角色^[1Eh + i]（i = 0..53h），最高位為 1（還在記憶中）者：旗標^\u003c\u003e0 時回傳 byte[61B5h + (值 and 7Fh)*10h]（法術等級）並結束；旗標^=0 時把最高位清掉（記好了）、呼叫 本模組 05D2h(0)、顯示 角色名+'を覚えた'(8 bytes)+法術名、呼叫 \u003c0117h:0048h\u003e(值)、旗標^:=1 後繼續掃。回傳值被呼叫端寫成 byte[0A65Fh+i] := 等級*3，即記完下一個法術所需拍數。spec 792",
    "citations": [
     "audit/function-index/pc98-overlay-20.md"
    ]
@@ -41114,7 +41171,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
+   "note": "每拍遞減 DS:0A65Fh + i（i 由 1 起算跟著 DS:9598h 鏈）：\u003e 0 就 dec；若 DS:0A65Fh+i = 0 且 角色 +72h = 0，則 旗標:=0、r := 本模組 0A11h(角色,@旗標)、r=0 再試 094Eh，byte[0A65Fh+i] := r*3。與 0BE8h（每 12 拍、旗標初值 1）是同一組的兩半。retf。spec 791",
    "citations": [
     "audit/embedded-strings.md"
    ]
@@ -41133,7 +41193,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
-   "note": "每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）\u003e 0 就遞減，減到 0 時 旗標:=1，r := 本模組 0A11h(角色,@旗標)，r=0 再試 094Eh，最後 byte[0A65Fh + i] := r*3（i 由 1 起算）。retf 4。spec 789（PC-98：DS:9598h，next +18Ah）"
+   "note": "每呼叫 12 次跑一輪：arg_0 遠指標指向的計數 inc，未達 0Ch 就返回，否則歸零並掃角色鏈；角色 +72h（+1Eh 記憶法術陣列之後那個 byte）\u003e 0 就遞減，減到 0 時 旗標:=1，r := 本模組 0A11h(角色,@旗標)，r=0 再試 094Eh，最後 byte[0A65Fh + i] := r*3（i 由 1 起算）。retf 4。spec 789（PC-98：DS:9598h，next +18Ah）",
+   "citations": [
+    "audit/function-index/pc98-overlay-20.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -48176,9 +48239,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 21,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 7,
    "CodeBytes": 4243,
    "Undefined": 343,
@@ -48281,9 +48344,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 17,
+   "Todo": 16,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -48356,9 +48419,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 7,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -48731,9 +48794,9 @@
    "Module": "overlay-08",
    "Unit": "COMBAT",
    "Functions": 24,
-   "Read": 4,
+   "Read": 5,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 7,
    "Fragment": 12,
    "CodeBytes": 3967,
    "Undefined": 372,
@@ -48836,9 +48899,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 18,
+   "Todo": 17,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
@@ -48911,9 +48974,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 7,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 7,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
