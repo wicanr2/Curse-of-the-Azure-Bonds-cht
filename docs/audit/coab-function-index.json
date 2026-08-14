@@ -15018,9 +15018,13 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "868",
+   "note": "角色檔三件組(retf 4，一個遠指標)：路徑 := DS:5BF0h ＋ 636h:618h(arg_0)，指派給上限 50h 的緩衝，再對 '.guy'/'.swg'/'.fx' 各串一次並叫 636h:192h。前綴只組一次、三個副檔名共用",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/868-character-file-triplet.md"
    ]
   },
   {
@@ -15751,6 +15755,7 @@
    "spec": "866",
    "note": "體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD\u0026D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值",
    "citations": [
+    "audit/function-index/pc98-overlay-17.md",
     "audit/resident-data-tables.md",
     "spec/866-constitution-hp-bonus.md"
    ]
@@ -16019,11 +16024,11 @@
    "note": "送出命令 0Ch(retf 6)：填 DS:4FCAh 起的 16-byte 命令區塊(+1 命令碼=0Ch、+0=第三個參數、+3=0、+4=第一個參數、+6=第二個參數)後呼叫 097Fh:000Bh(@DS:4FCAh, 10h)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-18.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-18.md",
     "audit/overlay-init-graph.md",
-    "spec/612-ecl-main-loop.md",
-    "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -16092,7 +16097,11 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/dos-overlay-18.md",
+    "spec/867-ending-animation-frame.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16105,7 +16114,14 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "867",
+   "note": "結局動畫的一格重畫(retf 0Ch，本體只用 arg_0)：先對 i=1..DS:4AD2h+1 叫巢狀程序 04DFh 推進物件，再掃 行 1..28h × 列 1..3 取 遠指標(DS:4ACEh)+列*398h+行*17h+0FC51h，+2 落在 9..40h(有號)才把 (+0, +2, +11h) 送給 本模組 0000h(命令 0Ch)。★版面 3 列×40 行×23 bytes=2760，與 overlay-18:09DBh 的 GetMem(DS:4ACEh, 0AC8h) 互相夾出。⚠ Move(arg_0^, bp−3, 3) 是死碼",
+   "citations": [
+    "audit/function-index/pc98-overlay-18.md",
+    "spec/867-ending-animation-frame.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16136,7 +16152,9 @@
    "spec": "1",
    "note": "結局動畫的主迴圈(retf，無參數)：GetMem(DS:4ACEh, 0AC8h=2760) → 迴圈直到 KeyPressed(9ABh:2FAh) 為真才 ReadKey 存進 DS:4AE2h 離開 → FreeMem。每一輪先 Random(2710h) 需 \u003c 1 才動作（1/10000）；FillChar(DS:4AE3h, 3, 1)；筆數 = Random(2)+1，每筆 DS:4AE3h+i := Random(5)+2；起點固定 (41h, 41h)，終點 DS:4AEBh := Random(14h)+23h、DS:4AEDh := −(Random(5)+32h)（另存一份到 4AEFh/4AF1h）；接著以模式 0 呼叫 sub_843h + sub_BCh，還原座標後再以模式 1 呼叫 sub_843h + sub_780h——擦掉再畫上的兩段式更新",
    "citations": [
-    "audit/function-index/pc98-overlay-18.md"
+    "audit/function-index/dos-overlay-18.md",
+    "audit/function-index/pc98-overlay-18.md",
+    "spec/867-ending-animation-frame.md"
    ]
   },
   {
@@ -22753,6 +22771,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-26.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
@@ -22791,6 +22810,7 @@
    "spec": "865",
    "note": "找上一個標題行(retf 8，(上限, 鏈頭, 未用))：走 spec 859 的顯示行節點鏈(+29h 標題行旗標、+2Ah next)，在前『上限』行裡回最後一個 +29h≠0 的節點；找不到且鏈頭自己是標題行就回鏈頭(只在上限≤0 時生效)。第三個參數本體沒讀",
    "citations": [
+    "audit/function-index/pc98-overlay-26.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
@@ -22975,6 +22995,7 @@
    "spec": "865",
    "note": "問到合法按鍵為止(retf 0Ah)：把提示字串指派進緩衝(0A54h:64Eh，上限 28h)、DS:7294h:=2，迴圈內組字後叫 03D4h 收鍵，再用 0A54h:8D4h 對合法鍵表以 ZF 檢查，不合法就重問",
    "citations": [
+    "audit/function-index/pc98-overlay-26.md",
     "audit/function-strings.md",
     "spec/865-list-header-lookup-and-key-prompt.md"
    ]
@@ -40288,9 +40309,13 @@
    "callers": 2,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "868",
+   "note": "同 DOS overlay-16:00C7Eh 的功能，但★整段重做三次而且每個副檔名配一個不同的前綴常數(DS:8BF6h ＋ loc_A2Ah+3 / loc_A37h / loc_A28h)——PC-98 把三個檔放在三個不同位置，DOS 三個同目錄。真的邏輯差異(spec 783 第 d 類)，117 對 63 條",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/868-character-file-triplet.md"
    ]
   },
   {
@@ -41777,11 +41802,11 @@
    "note": "retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9)",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-18.md",
     "audit/function-index/pc98-overlay-02.md",
+    "audit/function-index/pc98-overlay-18.md",
     "audit/overlay-init-graph.md",
-    "spec/612-ecl-main-loop.md",
-    "spec/751-overlay-init-chain-dependency-graph.md",
-    "spec/754-small-predicates-and-wrappers.md"
+    "spec/612-ecl-main-loop.md"
    ]
   },
   {
@@ -41824,7 +41849,13 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "867",
+   "note": "同 DOS overlay-18:00780h，但★兩處真的不同：可見上界 41h↔42h、送出改叫 sub_175D 並多傳一個常數 1(DOS 是 本模組 0000h 三參數)。其餘 7 條差異是位址",
+   "citations": [
+    "spec/867-ending-animation-frame.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50999,9 +51030,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 28,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 8,
    "CodeBytes": 16063,
    "Undefined": 787,
@@ -51029,9 +51060,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 11,
-   "Read": 5,
+   "Read": 6,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 4446,
    "Undefined": 1177,
@@ -51554,9 +51585,9 @@
    "Module": "overlay-16",
    "Unit": "LOADSAVE",
    "Functions": 47,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 21,
+   "Todo": 20,
    "Fragment": 14,
    "CodeBytes": 18585,
    "Undefined": 1552,
@@ -51584,9 +51615,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 12,
+   "Read": 13,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
