@@ -25798,8 +25798,8 @@
     "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-33.md"
+    "audit/function-index/pc98-overlay-03.md",
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -43939,8 +43939,12 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1065",
+   "note": "粒子動畫初始化 PC-98 側(retf，343 條)，DOS 對側 overlay-18:000BCh(spec 1064)、動畫每一幀見 spec 1025。DS:7BA8h:=0、FillChar(DS:7BA9h,0Fh,1)，for 列:=1..3 填 byte[7BA4h..7BA8h + 列×5] —— 正好是 spec 1025 記的 PC-98 顏色斜坡表 DS:7BA3h(色階 1..5)。★★★ 完全沒有 DS:4FE6h(顯示卡種類)的判斷，走的就是 DOS 的『非 CGA』那一套：輸入色\u003e1 時 0Fh、恆填 0Fh、輸入色\u003e1 時 輸入色+8、輸入色、1；DOS 382 條 vs PC-98 343 條，差的 39 條幾乎全是 CGA 分支。幀數同樣是 DS:7BA8h := max(自己, Random(14h)+19h)。★ 其餘差異全是 RTL 位址平移：PC-98 的浮點常式一律是 DOS 位址 +50h(0C5Ah→0CAAh、0D7Eh→0DCEh、0C72h→0CC2h、0C6Eh→0CBEh、0D91h→0DE1h)，整數 Random 1105h→1155h、浮點亂數 111Bh→116Bh —— 同一份 Turbo Pascal RTL，連結位置差 80 bytes",
    "citations": [
+    "spec/1065-particle-animation-init-pc98.md",
     "spec/585-ecl-goto-and-display-mode-pair.md"
    ]
   },
@@ -53091,8 +53095,8 @@
     "audit/function-index/dos-overlay-03.md",
     "audit/function-index/dos-overlay-16.md",
     "audit/function-index/dos-overlay-17.md",
-    "audit/function-index/pc98-overlay-16.md",
-    "audit/function-index/pc98-overlay-33.md"
+    "audit/function-index/pc98-overlay-03.md",
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -54184,9 +54188,9 @@
    "Module": "overlay-18",
    "Unit": "ENDSTUFF",
    "Functions": 23,
-   "Read": 17,
+   "Read": 18,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 4,
    "CodeBytes": 4957,
    "Undefined": 1311,
