@@ -20506,6 +20506,78 @@
    "level": "exact",
    "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
    "note": "第一人稱視野的底圖與裝飾（呼叫 sub_48 = overlay-10:0048h，簽名 (x位移, y位移, 磚)）：先 for y := 2 to 4、for x := 0 to 5 寫格(x, y, 16h) 鋪 6x3 的底；DS:7AC5h = 1 時 for k := 2 to 4 寫格(k-1,k,04h)、(k,k,03h)、(k+1,k,0Dh)；DS:7AC5h = 3 時 寫格(1,2,08h)、(5,4,00h)；其他值不畫裝飾。retf 2 的那個 word 本體從不讀（巢狀程序的靜態鏈）。spec 797（兩平台只差這個位址）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 1319,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/798-pool-all-money-and-wall-open-check.md",
+   "note": "把全隊的錢併進 Pool：DS:7564h:=1；掃 DS:650Ah 鏈，+0F7h = 0 或 0B3h（= 80h or 33h，即 spec 758 編碼的上限 102）的角色：for j := 0 to 6 do longint(DS:6F70h + j*4) += 零延伸(角色^[0FBh + j*2]) 並呼叫 本模組 003Bh(金額, 角色)；最後 FillChar(角色^[0FBh], 0Eh, 0)（14 bytes = 7 word，直接證實金錢欄是 7 個 word）。retf。spec 798"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 1345,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/798-pool-all-money-and-wall-open-check.md",
+   "note": "把全隊的錢併進 Pool：DS:0A650h:=1；掃 DS:9598h 鏈，+0F7h = 0 或 0B3h（= 80h or 33h，即 spec 758 編碼的上限 102）的角色：for j := 0 to 6 do longint(DS:0A00Ah + j*4) += 零延伸(角色^[0FBh + j*2]) 並呼叫 本模組 003Bh(金額, 角色)；最後 FillChar(角色^[0FBh], 0Eh, 0)（14 bytes = 7 word，直接證實金錢欄是 7 個 word）。retf。spec 798"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 1512,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/798-pool-all-money-and-wall-open-check.md",
+   "note": "擲百分比成功就打通牆的兩側：掃 DS:650Ah 鏈，每人擲 <0141h:004Dh>(1,64h) 得 1..100，骰 <= 角色^[0EBh]（無號）且 +195h = 0 就成立並停止（後面的人不再擲）；DS:7589h 一律清 0；成立則 本模組 0153h(DS:720Fh, DS:7210h, DS:7211h) 與 0153h(x + byte[2694h+方向], y + byte[269Dh+方向], (方向+4) mod 8) 各呼叫一次（同一道牆的兩側）。回傳 al = 是否成立。retf。spec 798"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 1460,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/798-pool-all-money-and-wall-open-check.md",
+   "note": "擲百分比成功就打通牆的兩側：掃 DS:9598h 鏈，每人擲 <0141h:004Dh>(1,64h) 得 1..100，骰 <= 角色^[0EBh]（無號）且 +196h = 0 就成立並停止（後面的人不再擲）；DS:0A81Bh 一律清 0；成立則 本模組 014Ch(DS:0A2A9h, DS:0A2AAh, DS:0A2ABh) 與 014Ch(x + byte[489Eh+方向], y + byte[48A7h+方向], (方向+4) mod 8) 各呼叫一次（同一道牆的兩側）。回傳 al = 是否成立。retf。spec 798"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 1876,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/799-show3dsprite-named-and-escape-check.md",
+   "note": "Show3DSprite（名稱取自錯誤字串 'Illegal range in Show3DSprite.'(30)，兩平台一字未改）：retf 6，宣告順序 (索引: byte, 表: 遠指標)。Move(表^, 暫存, 42h) 抄 66 bytes；索引 < 1 或 > 3（無號）走 <0297h:0107h> + <0A54h:173Bh>(0,@錯誤字串,@DS:8DB2h) + <0A54h:1673h> + <far 06EAh:0> 中止（不返回）；取 暫存[索引]（每筆 8 bytes）的遠指標 p，p <> NIL 才 <0297h:09E4h>(遠指標@DS:4FE8h, p, 1, 0, p^[6]+2, p^[4]+2) 與 <0297h:1316h>。spec 799"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 1644,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/799-show3dsprite-named-and-escape-check.md",
+   "note": "Show3DSprite（名稱取自錯誤字串 'Illegal range in Show3DSprite.'(30)，兩平台一字未改）：retf 6，宣告順序 (索引: byte, 表: 遠指標)。Move(表^, 暫存, 43h) 抄 67 bytes；索引 < 1 或 > 3（無號）走 <02A8h:0018h> + <0A65h:178Bh>(0,@錯誤字串,@DS:0BF7Eh) + <0A65h:16C3h> + <far 07E3h:0077h> 中止（不返回）；取 暫存[索引]（每筆 8 bytes）的遠指標 p，p <> NIL 才 <02A8h:077Dh>(遠指標@DS:7F56h, p, 1, 0, p^[6]+2, p^[4]+2) 與 <02A8h:0B7Dh>。spec 799"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 3356,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/799-show3dsprite-named-and-escape-check.md",
+   "note": "逃跑判定：<far 1590h>(0FFh, 參數0, 參數2) 為假就直接算逃掉；否則 半 := 有號(本模組 0124h(參數0,參數2)) div 2、v := 本模組 2EACh(參數0,參數2)，v < 半（無號）算逃掉，v = 半 時再擲 <far 145Ah+3>(2,1)，回 1 才算逃掉（平手偏向失敗）。逃掉顯示 名字+'Got Away'(8) 並呼叫 <far 146Bh+1>，否則顯示 'Escape is blocked'(17) 並呼叫 <far 154Ch+3>。最後回傳的是 <far 159Ah>(參數0, 參數2) 的結果，不是逃跑成敗。retf 4。spec 799"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 3457,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/799-show3dsprite-named-and-escape-check.md",
+   "note": "逃跑判定：<far 1560h>(0FFh, 參數0, 參數2) 為假就直接算逃掉；否則 半 := 有號(本模組 0124h(參數0,參數2)) div 2、v := 本模組 2D1Eh(參數0,參數2)，v < 半（無號）算逃掉，v = 半 時再擲 <far 142Bh+2>(2,1)，回 1 才算逃掉（平手偏向失敗）。逃掉顯示 名字+'は逃げきった。'(14 bytes) 並呼叫 <far 143Bh+1>，否則顯示 '逃げられなかった'(16 bytes) 並呼叫 <far 151Bh+4>。最後回傳的是 <far 156Ah>(參數0, 參數2) 的結果，不是逃跑成敗。retf 4。spec 799"
   }
  ]
 }
