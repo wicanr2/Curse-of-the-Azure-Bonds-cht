@@ -21532,6 +21532,24 @@
    "level": "exact",
    "spec": "840",
    "note": "與 DOS 相似度僅 0.597，句型真的改寫：一律插助詞 'に'、'の背後' 改成前置、多一個零傷害分支 'はダメージを受けなかった。'、拿掉單複數 point/points 分支、死亡句改成不帶名字的獨立一行。集合同為 {6,7,8}"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 2971,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "抄寫卷軸選單：物品節點 +3Ch..+3Eh 最高位 = 已排入抄寫（讀 >7Fh、寫 or 80h）。門檻是 +12Ch+職業*5+等級 的可記憶數 > 0。錯字 'scibing'；'Scribe These/these Spells? ' 大小寫重複"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 2950,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "841",
+   "note": "同 DOS overlay-15:00B9Bh。52 條差異全是位址與字串；PC-98 把 DOS 兩句只差大小寫的提示合併成同一個字串（loc_AE9 出現兩次），並修掉 'scibing' 錯字"
   }
  ]
 }
