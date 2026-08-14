@@ -9589,11 +9589,13 @@
    "callers": 1,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "邊界碎片",
-   "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完）",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
+   "note": "pc98 00C95h 的對應（相似度 1.000，只差 DS:6E92h ↔ DS:9F2Ch）；原本誤標為邊界碎片",
    "citations": [
-    "audit/function-index/dos-overlay-10.md"
+    "audit/function-index/dos-overlay-10.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -16231,7 +16233,8 @@
    "note": "畫上下兩塊拼成的圖示（組 19h／0Ch，編號 0/1，座標 B 差 3）；圖庫每組 8 bytes ＝ 每組兩個編號",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/979-mass-cure-effect-and-two-piece-icon.md"
+    "spec/979-mass-cure-effect-and-two-piece-icon.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -24825,7 +24828,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "spec/888-move-and-redraw.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -24891,7 +24895,8 @@
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/808-attacks-per-round-and-facing-redraw.md",
-    "spec/977-savelist-menu-ranges-and-combat-icon.md"
+    "spec/977-savelist-menu-ranges-and-combat-icon.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -35445,7 +35450,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
+   "note": "戰場地形隨機鋪設：五段累加權重的 1d100，每種地磚兩個變體；寫入 地圖^[7+列×50+欄]",
+   "citations": [
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51588,10 +51599,14 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/994-battlefield-terrain-scatter-and-cell-redraw.md",
+   "note": "dos 00320h 的對應（配對工具漏判）；補齊 DS:9F2Ch/9DCFh/9860h/98A8h 四組跨平台對應；DS:48AFh 是地磚查表",
    "citations": [
     "audit/function-index/pc98-overlay-32.md",
-    "spec/888-move-and-redraw.md"
+    "spec/888-move-and-redraw.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -51640,7 +51655,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
-   "note": "讀戰場兩個平面(retf 0Ch)：與 DOS overlay-32:0509h 43 條同形，地圖 DS:9F2Ch、靜態陣列 [di−670Fh](＝98F1h)(差異 2 條，已逐條列出)"
+   "note": "讀戰場兩個平面(retf 0Ch)：與 DOS overlay-32:0509h 43 條同形，地圖 DS:9F2Ch、靜態陣列 [di−670Fh](＝98F1h)(差異 2 條，已逐條列出)",
+   "citations": [
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -51681,7 +51699,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "audit/function-index/pc98-overlay-32.md",
-    "spec/635-overlay32-grid-record-array.md"
+    "spec/635-overlay32-grid-record-array.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -51701,7 +51720,8 @@
    "spec": "docs/spec/800-party-reorder-and-footprint-check.md",
    "note": "戰鬥員佔地的逐格檢查：i := 本模組 1363h(參數2, 參數4)；byte[9740h + i*4]（戰鬥員記錄 +3 = 佔幾格）為 0 直接回 0；否則 for k := 0 to 3 do if 本模組 0011h(byte[9740h+i*4], k, @dx, @dy) then r := 本模組 0A1Eh(byte[9860h+i] + dx, byte[98A8h+i] + dy)；參數0 \u003c\u003e 0 時 r = 0 立刻回 0（每格都要成立），參數0 = 0 時 r \u003c\u003e 0 立刻回 1（任一格成立即可）。retf 6。spec 800（PC-98 位址由 di 的負位移還原：-68C0h/-67A0h/-6758h）",
    "citations": [
-    "audit/function-index/pc98-overlay-32.md"
+    "audit/function-index/pc98-overlay-32.md",
+    "spec/994-battlefield-terrain-scatter-and-cell-redraw.md"
    ]
   },
   {
@@ -52374,10 +52394,10 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 38,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
    "Todo": 1,
-   "Fragment": 14,
+   "Fragment": 13,
    "CodeBytes": 6727,
    "Undefined": 43,
    "SegmentBytes": 7608,
@@ -52929,9 +52949,9 @@
    "Module": "overlay-10",
    "Unit": "COMPREP",
    "Functions": 35,
-   "Read": 21,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 12,
    "CodeBytes": 7373,
    "Undefined": 95,
@@ -53259,9 +53279,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 23,
+   "Read": 24,
    "NotBlocking": 0,
-   "Todo": 2,
+   "Todo": 1,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
