@@ -20221,24 +20221,6 @@
   },
   {
    "platform": "dos",
-   "module": "overlay-20",
-   "ea": 953,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
-   "note": "數字往上跳的動畫：把 DS:4F99h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790"
-  },
-  {
-   "platform": "pc98",
-   "module": "overlay-20",
-   "ea": 953,
-   "state": "已解讀",
-   "level": "exact",
-   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
-   "note": "數字往上跳的動畫：把 DS:7F05h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790（兩平台只差這個基底）"
-  },
-  {
-   "platform": "dos",
    "module": "overlay-08",
    "ea": 427,
    "state": "已解讀",
@@ -20326,6 +20308,60 @@
    "level": "exact",
    "spec": "docs/spec/788-memorised-spell-slots-identified.md",
    "note": "回傳某職業某等級「還能再記幾個法術」：掃角色 +1Eh..+71h 共 84 格，值 > 0 者取低 7 位當法術編號（最高位＝還在記憶中，見 spec 792），查法術屬性表 DS:61B4h + s*10h 的 +1(等級) 與 +0(職業)，相符就計數（不分最高位）；結果 := 角色^[12Ch + 職業*5 + 等級] − 已記數。retf 4。spec 788／792（PC-98：角色表 DS:9594h）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 728,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "遊戲時鐘進位：for i := 0 to 6 do if 時鐘[i] >= word[3E2Ah + i*2]（上限表 10,10,6,24,30,12,256）then i<>6 時 inc(時鐘[i+1]) 並減掉上限；i=6 時掃 DS:650Ah 鏈把每個角色的 word(+76h) 加 1（但時鐘[6] 不歸零，缺陷）。單位：0=1/10分 1=分 2=十分鐘 3=時 4=日 5=月 6=年。每呼叫一次每個單位最多進一位。retf 4（時鐘遠指標）。spec 793"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 728,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "遊戲時鐘進位：for i := 0 to 6 do if 時鐘[i] >= word[6804h + i*2]（上限表 10,10,6,24,30,12,256）then i<>6 時 inc(時鐘[i+1]) 並減掉上限；i=6 時掃 DS:9598h 鏈把每個角色的 word(+76h（next +18Ah）) 加 1（但時鐘[6] 不歸零，缺陷）。單位：0=1/10分 1=分 2=十分鐘 3=時 4=日 5=月 6=年。每呼叫一次每個單位最多進一位。retf 4（時鐘遠指標）。spec 793"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 1131,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "角色之間給錢：retf 0Ch，宣告順序 (給方, 收方, 數量, 幣別)，給方/收方各是指向遠指標的遠指標。上限 := 本模組 001Bh(收方^)；收方^^[187h] + 數量 > 上限（無號）則顯示 名字+'Overloaded'(10)；否則 給方^^[0FBh + 幣別*2] -= 數量、本模組 003Bh(數量, 給方^)、收方^^[0FBh + 幣別*2] += 數量、本模組 0057h(數量, 收方^)。只檢查收方負重，且給方沒有餘額檢查。spec 793"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 1157,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "角色之間給錢：retf 0Ch，宣告順序 (給方, 收方, 數量, 幣別)，給方/收方各是指向遠指標的遠指標。上限 := 本模組 001Bh(收方^)；收方^^[187h] + 數量 > 上限（無號）則顯示 名字+'持ちすぎです'(12 bytes)；否則 給方^^[0FBh + 幣別*2] -= 數量、本模組 003Bh(數量, 給方^)、收方^^[0FBh + 幣別*2] += 數量、本模組 0057h(數量, 收方^)。只檢查收方負重，且給方沒有餘額檢查。spec 793"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 953,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "把遊戲時鐘往前推：讀出 DS:4F99h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 953,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
+   "note": "把遊戲時鐘往前推：讀出 DS:7F05h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793"
   }
  ]
 }

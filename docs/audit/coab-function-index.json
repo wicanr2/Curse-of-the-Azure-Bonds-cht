@@ -13893,6 +13893,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/792-memorization-timer-closed.md"
    ]
   },
@@ -13912,6 +13913,7 @@
    "spec": "docs/spec/770-party-step-and-hug-attack.md",
    "note": "三級治療量累加(retf 2，SS 相對記錄)：70 條指令的助憶碼與 PC-98 overlay-15:2020h(spec 763)完全相同 — ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，累加到 ss:[p−2]",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/770-party-step-and-hug-attack.md",
     "spec/792-memorization-timer-closed.md"
    ]
@@ -13949,6 +13951,7 @@
    "is_overlay_entry": true,
    "state": "待解讀",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/792-memorization-timer-closed.md"
    ]
   },
@@ -13968,6 +13971,7 @@
    "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
    "note": "把一筆治療額度沿 DS:650Ah 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A4h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 \u003c148Ah:149Eh\u003e(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/789-heal-budget-tick-and-halve-stack.md",
     "spec/792-memorization-timer-closed.md"
    ]
@@ -15960,11 +15964,15 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "遊戲時鐘進位：for i := 0 to 6 do if 時鐘[i] \u003e= word[3E2Ah + i*2]（上限表 10,10,6,24,30,12,256）then i\u003c\u003e6 時 inc(時鐘[i+1]) 並減掉上限；i=6 時掃 DS:650Ah 鏈把每個角色的 word(+76h) 加 1（但時鐘[6] 不歸零，缺陷）。單位：0=1/10分 1=分 2=十分鐘 3=時 4=日 5=月 6=年。每呼叫一次每個單位最多進一位。retf 4（時鐘遠指標）。spec 793",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -16001,10 +16009,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
-   "note": "數字往上跳的動畫：把 DS:4F99h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790",
+   "note": "把遊戲時鐘往前推：讀出 DS:4F99h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -16247,7 +16256,8 @@
     "audit/function-index/dos-overlay-21.md",
     "spec/637-overlay21-small-batch.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -16270,7 +16280,8 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/637-overlay21-small-batch.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -16389,7 +16400,8 @@
    "note": "拿不動的錢放進 Pool(retf 2)：本模組 0073h(@餘裕, 數量, DS:6506h) 為真時顯示 CS:01F4h 'Overloaded.  Money will be put in Pool.'(兩個空白)、只把餘裕加進 DS:6506h^[103h] 並叫 0057h，其餘 (數量−餘裕) 以 32-bit 加到 DS:6F80h；否則全部加進 +103h。可證 +0FBh 的第 4 格(即 +103h)與 DS:6F70h 的第 4 格(即 6F80h)、名稱表 DS:0F93h 的第 4 筆 Platinum 是同一套索引，DS:6F70h 就是隊伍 Pool",
    "citations": [
     "audit/function-index/pc98-overlay-21.md",
-    "spec/786-money-pool-overflow-and-turn-cost.md"
+    "spec/786-money-pool-overflow-and-turn-cost.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -16416,7 +16428,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "角色之間給錢：retf 0Ch，宣告順序 (給方, 收方, 數量, 幣別)，給方/收方各是指向遠指標的遠指標。上限 := 本模組 001Bh(收方^)；收方^^[187h] + 數量 \u003e 上限（無號）則顯示 名字+'Overloaded'(10)；否則 給方^^[0FBh + 幣別*2] -= 數量、本模組 003Bh(數量, 給方^)、收方^^[0FBh + 幣別*2] += 數量、本模組 0057h(數量, 收方^)。只檢查收方負重，且給方沒有餘額檢查。spec 793",
+   "citations": [
+    "spec/793-game-clock-units-and-money-transfer.md"
+   ]
   },
   {
    "platform": "dos",
@@ -37905,7 +37923,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37924,6 +37945,7 @@
    "note": "三級治療量累加(retf 2，SS 相對記錄)：ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，總量加到 ss:[p−2]。沒有任何上限檢查(理論上限 13260，word 裝得下)。⚠ IDA 把同一個位移 8b7e06 印成 arg_2 與 [bp+6] 兩種名字，判參數要看位移位元組",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/pc98-overlay-15.md",
     "spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
     "spec/770-party-step-and-hug-attack.md"
    ]
@@ -37959,6 +37981,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "全隊受傷總量(retf 2)：目前 HP 在 +1A5h，其餘同 DOS overlay-15:206Bh",
    "citations": [
+    "audit/function-index/pc98-overlay-15.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md"
    ]
   },
@@ -37973,7 +37996,10 @@
    "callers": 1,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -37989,7 +38015,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/789-heal-budget-tick-and-halve-stack.md",
-   "note": "把一筆治療額度沿 DS:9598h 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A5h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 \u003cfar unk_146E\u003e(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789（PC-98 欄位 +1）"
+   "note": "把一筆治療額度沿 DS:9598h 角色鏈由前往後分配：缺 := +78h(最大HP) − +1A5h(目前HP)，上限為呼叫端框架的 ss:[rec-2] 剩餘額度；呼叫 \u003cfar unk_146E\u003e(角色, byte(缺), 0) 成功才扣額度。順序決定誰拿得到，額度用完的成員拿不到。retf 2。spec 789（PC-98 欄位 +1）",
+   "citations": [
+    "audit/function-index/pc98-overlay-15.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -40999,11 +41028,15 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "遊戲時鐘進位：for i := 0 to 6 do if 時鐘[i] \u003e= word[6804h + i*2]（上限表 10,10,6,24,30,12,256）then i\u003c\u003e6 時 inc(時鐘[i+1]) 並減掉上限；i=6 時掃 DS:9598h 鏈把每個角色的 word(+76h（next +18Ah）) 加 1（但時鐘[6] 不歸零，缺陷）。單位：0=1/10分 1=分 2=十分鐘 3=時 4=日 5=月 6=年。每呼叫一次每個單位最多進一位。retf 4（時鐘遠指標）。spec 793",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -41041,10 +41074,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/790-attack-ally-confirm-and-counter-animation.md",
-   "note": "數字往上跳的動畫：把 DS:7F05h^[18Ch + i*2] 共 7 個 word 抄進區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) end，再原封不動寫回，最後呼叫 本模組 0020h(索引, 次數) 做真正的變更。retf 4 = (索引, 次數)。spec 790（兩平台只差這個基底）",
+   "note": "把遊戲時鐘往前推：讀出 DS:7F05h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/790-attack-ally-confirm-and-counter-animation.md"
+    "spec/790-attack-ally-confirm-and-counter-animation.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -41091,7 +41125,10 @@
    "callers": 5,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "audit/function-index/pc98-overlay-20.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41276,7 +41313,8 @@
     "audit/function-index/dos-overlay-21.md",
     "spec/637-overlay21-small-batch.md",
     "spec/755-per-character-slots-sound-driver-and-text-io.md",
-    "spec/756-map-fill-confirms-grid-and-assorted-routines.md"
+    "spec/756-map-fill-confirms-grid-and-assorted-routines.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -41300,7 +41338,8 @@
     "audit/function-index/dos-overlay-21.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/637-overlay21-small-batch.md",
-    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md"
+    "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
+    "spec/793-game-clock-units-and-money-transfer.md"
    ]
   },
   {
@@ -41455,7 +41494,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/793-game-clock-units-and-money-transfer.md",
+   "note": "角色之間給錢：retf 0Ch，宣告順序 (給方, 收方, 數量, 幣別)，給方/收方各是指向遠指標的遠指標。上限 := 本模組 001Bh(收方^)；收方^^[187h] + 數量 \u003e 上限（無號）則顯示 名字+'持ちすぎです'(12 bytes)；否則 給方^^[0FBh + 幣別*2] -= 數量、本模組 003Bh(數量, 給方^)、收方^^[0FBh + 幣別*2] += 數量、本模組 0057h(數量, 收方^)。只檢查收方負重，且給方沒有餘額檢查。spec 793"
   },
   {
    "platform": "pc98",
@@ -48419,9 +48461,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 3536,
    "Undefined": 191,
@@ -48434,9 +48476,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 27,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 4,
    "CodeBytes": 6469,
    "Undefined": 385,
@@ -48974,9 +49016,9 @@
    "Module": "overlay-20",
    "Unit": "CLOCK",
    "Functions": 16,
-   "Read": 9,
+   "Read": 10,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 3555,
    "Undefined": 225,
@@ -48989,9 +49031,9 @@
    "Module": "overlay-21",
    "Unit": "MONEY",
    "Functions": 30,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 8,
    "CodeBytes": 7968,
    "Undefined": 2243,
