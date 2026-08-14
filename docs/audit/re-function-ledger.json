@@ -17462,7 +17462,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/743-berserk-and-two-factions.md",
-   "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 <overlay-31 entry#6> 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '<名字> goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證",
+   "note": "狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 <overlay-31 entry#6> 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '<名字> goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計",
    "bounds": "prologue"
   },
   {
@@ -17513,6 +17513,26 @@
    "level": "exact",
    "spec": "docs/spec/745-node-field-packed-differently.md",
    "note": "把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] < 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n > 0 且 <overlay-23 entry#23>(角色, n) 成立才 <overlay-23 entry#11>(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、<overlay-23 entry#3>(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11645,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 <overlay-23 entry#8>(p,4,0) 回 0(豁免失敗)時,<overlay-23 entry#1>(p, 8, '<名字> is dispelled' CS:2D5Ch),然後 **<overlay-23 entry#3>(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '<名字> resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3",
+   "bounds": "prologue"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 11070,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同",
    "bounds": "prologue"
   }
  ]
