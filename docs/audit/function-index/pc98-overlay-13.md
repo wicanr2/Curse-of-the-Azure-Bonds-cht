@@ -12,7 +12,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0684` | sub_684 | — | 266 | 98 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `078E` | sub_78E | REALMOVE | 523 | 193 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-24.md<br>spec/787-bresenham-record-and-edge-clamp.md |
 | `0999` | sub_999 | CHECKPARTINGBLOWS | 968 | 345 | 0 | 8 | ✓ | 待解讀 | — | — | — |
-| `0D81` | sub_D81 | RUNAWAY | 189 | 74 | 0 | 6 | ✓ | 待解讀 | — | — | — |
+| `0D81` | sub_D81 | RUNAWAY | 189 | 74 | 0 | 6 | ✓ | 已解讀 | exact | docs/spec/799-show3dsprite-named-and-escape-check.md<br>逃跑判定：<far 1560h>(0FFh, 參數0, 參數2) 為假就直接算逃掉；否則 半 := 有號(本模組 0124h(參數0,參數2)) div 2、v := 本模組 2D1Eh(參數0,參數2)，v < 半（無號）算逃掉，v = 半 時再擲 <far 142Bh+2>(2,1)，回 1 才算逃掉（平手偏向失敗）。逃掉顯示 名字+'は逃げきった。'(14 bytes) 並呼叫 <far 143Bh+1>，否則顯示 '逃げられなかった'(16 bytes) 並呼叫 <far 151Bh+4>。最後回傳的是 <far 156Ah>(參數0, 參數2) 的結果，不是逃跑成敗。retf 4。spec 799 | — |
 | `0E3E` | sub_E3E | FIGBLOWS | 313 | 105 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `0F77` | sub_F77 | ADJUSTBLOWS | 45 | 19 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>依相位進位的折半(retf 2)：f(x) = (x + (DS:0A81Fh and 1)) div 2，與 DOS overlay-13:0F12h 同 | audit/embedded-strings.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0FB1` | sub_FB1 | TRYTOSWEEP | 108 | 35 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/pc98-overlay-13.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |

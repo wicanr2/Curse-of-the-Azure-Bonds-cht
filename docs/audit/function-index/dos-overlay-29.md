@@ -13,7 +13,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `055B` | sub_55B | — | 105 | 41 | 2 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md<br>spec/750-combat-setup.md |
 | `05DD` | sub_5DD | — | 260 | 110 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `06E1` | sub_6E1 | — | 84 | 36 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/758-morale-field-0f7h-round-trip.md<br>兩種畫法的分岔(retf 6)：第一個參數非 0 時叫本模組 0091h(y, x, 遠指標@DS:726Fh) 與 00B3h(y, x, 遠指標@DS:7274h)；為 0 時改叫 000Ch(y, x, 0, 遠指標@DS:726Fh)。確認 spec 754 那兩組「哨兵 byte + 4 bytes」的 4 bytes 是遠指標 | audit/function-index/pc98-overlay-29.md<br>spec/758-morale-field-0f7h-round-trip.md |
-| `0754` | sub_754 | — | 184 | 74 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `0754` | sub_754 | — | 184 | 74 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/799-show3dsprite-named-and-escape-check.md<br>Show3DSprite（名稱取自錯誤字串 'Illegal range in Show3DSprite.'(30)，兩平台一字未改）：retf 6，宣告順序 (索引: byte, 表: 遠指標)。Move(表^, 暫存, 42h) 抄 66 bytes；索引 < 1 或 > 3（無號）走 <0297h:0107h> + <0A54h:173Bh>(0,@錯誤字串,@DS:8DB2h) + <0A54h:1673h> + <far 06EAh:0> 中止（不返回）；取 暫存[索引]（每筆 8 bytes）的遠指標 p，p <> NIL 才 <0297h:09E4h>(遠指標@DS:4FE8h, p, 1, 0, p^[6]+2, p^[4]+2) 與 <0297h:1316h>。spec 799 | spec/799-show3dsprite-named-and-escape-check.md |
 | `0813` | sub_813 | — | 110 | 51 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `0881` | sub_881 | — | 33 | 13 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>retf，無參數：01A0h:0252h() 後 0297h:1110h(1, 1, 遠指標@DS:728Ch)。⚠ PC-98 對應那支多一個 02A8h:10D5h(@DS:0A327h)，已對原始 bytes 確認不是匯出誤差 | spec/753-small-utility-routines.md |
 | `08A2` | sub_8A2 | — | 6 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
