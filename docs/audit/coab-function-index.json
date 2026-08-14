@@ -27667,7 +27667,10 @@
    "callers": 1,
    "calls": 10,
    "is_overlay_entry": false,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1051",
+   "note": "開檔的兩個搜尋路徑(retf 0Eh=14 bytes 對五個參數：+10h 檔名(上限 80)、+0Ch 第二個字串(上限 80)、+0Ah byte 旗標(非 0 時不重試)、+08h/+06h 兩個 word)，569 bytes、231 條，唯一呼叫端 17960h。用 far 08BD:0289h 把檔名拆成 目錄/主檔名/副檔名(形狀上是 FSplit)，目錄為空就補上 DS:8CFCh。★★ 兩條搜尋路徑 DS:8CFCh(目前)與 DS:7EACh(備援)，各上限 43h=67，靜態映像都是 0FFh、執行期才填。★★★ 開不到就把兩條路徑對調再試一次，而且對調是持久的 —— 下次開檔會先試剛才成功的那一條；這是多磁片遊戲『記住玩家把片子放在哪個磁碟機』的機制，與 spec 1038 的 'Insert disk B/C/D in drive ' 是同一組問題的兩半。★ 失敗且旗標=0 時看目錄第一個字元：='B'(42h) 一條路、\u003e'B' 另一條(檔名後面再接 CS:01BCh)，兩條都把樣式參數 0Eh 傳給 sub_7C75h(形狀上是提示視窗)，之後回迴圈頭重試。⚠ CS:01BCh 的內容沒讀到 —— 常駐段是多程式碼段，同 spec 1047 記的邊界，不宣稱"
   },
   {
    "platform": "pc98",
@@ -53818,9 +53821,9 @@
    "Module": "PC98-GAME.EXE",
    "Unit": "",
    "Functions": 333,
-   "Read": 274,
+   "Read": 275,
    "NotBlocking": 29,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 25,
    "CodeBytes": 25067,
    "Undefined": 0,
