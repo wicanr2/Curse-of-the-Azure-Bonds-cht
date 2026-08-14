@@ -9678,7 +9678,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [di+30Eh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 20 bytes，已逐條讀完）",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-10.md"
+    "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -14912,11 +14913,11 @@
    "note": "C 字串轉 Pascal 字串(retf 4)：掃到 0 得長度 n，Move n bytes 進緩衝，緩衝前一個 byte 填 n，再 StoreString 到目的(上限 0FFh)。⚠ 目的指標在 [bp+0Ah]，超出 retf 4 宣告的參數區 — 堆疊殘留當引數，已由原始 bytes(C4 7E 0A + CA 04)確認",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -15745,7 +15746,14 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "866",
+   "note": "體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD\u0026D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值",
+   "citations": [
+    "audit/resident-data-tables.md",
+    "spec/866-constitution-hp-bonus.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17832,7 +17840,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -20657,6 +20665,7 @@
    "spec": "864",
    "note": "站在雲裡的每回合處理(retf 6，(角色, 旗標))：193Fh 以碼 8 回填惡臭/毒殺兩個旗標。前半惡臭——四種免疫碼(1Fh/20h/6Fh/7Dh)任一成立就跳過，12EBh 豁免成功印 'starts to cough' 掛 1Eh、失敗印 'chokes and gags from nausea' 掛 1Fh。後半毒殺——依 +0E5h：≤4 直接死、=5 帶 0FCh(−4) 豁免、=6 無修正豁免、≥7 免疫，死時印 'is Poisoned'＋'is killed'。★+0E5h = 生命骰數(HD)，階梯與 AD\u0026D 一版 Cloudkill 對應；回頭確認 spec 858 的固定值路線是 經驗值 = HD × 100",
    "citations": [
+    "audit/function-index/pc98-overlay-23.md",
     "audit/function-strings.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/864-cloud-tick-and-hd-field.md"
@@ -20714,6 +20723,7 @@
    "spec": "582",
    "note": "同 PC-98 overlay-23:012D8h（MAKESAVE）。唯一序列差異是 DOS 多一條 xor ah, ah，其餘全是位址：DS:6FA8h↔0A042h、DS:6F92h↔0A02Ch、DS:6FA7h↔0A041h、角色 +186h↔+187h",
    "citations": [
+    "audit/function-index/dos-overlay-23.md",
     "spec/582-makesave-and-losedude.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
@@ -21099,6 +21109,7 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/dos-overlay-23.md",
     "spec/864-cloud-tick-and-hd-field.md"
    ]
   },
@@ -22740,7 +22751,10 @@
    "callers": 2,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/865-list-header-lookup-and-key-prompt.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22772,7 +22786,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "找上一個標題行(retf 8，(上限, 鏈頭, 未用))：走 spec 859 的顯示行節點鏈(+29h 標題行旗標、+2Ah next)，在前『上限』行裡回最後一個 +29h≠0 的節點；找不到且鏈頭自己是標題行就回鏈頭(只在上限≤0 時生效)。第三個參數本體沒讀",
+   "citations": [
+    "spec/865-list-header-lookup-and-key-prompt.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22950,9 +22970,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "問到合法按鍵為止(retf 0Ah)：把提示字串指派進緩衝(0A54h:64Eh，上限 28h)、DS:7294h:=2，迴圈內組字後叫 03D4h 收鍵，再用 0A54h:8D4h 對合法鍵表以 ZF 檢查，不合法就重問",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
   {
@@ -40057,11 +40081,11 @@
    "note": "C 字串轉 Pascal 字串(retf 4)：0A65h:1B0Dh(Move)與 0A65h:649h(StoreString)，其餘同 DOS overlay-16:0020h，含同一個超出參數區的目的指標",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
+    "audit/function-index/dos-overlay-23.md",
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-02.md",
     "audit/function-index/pc98-overlay-15.md",
-    "audit/function-index/pc98-overlay-16.md",
-    "spec/755-per-character-slots-sound-driver-and-text-io.md"
+    "audit/function-index/pc98-overlay-16.md"
    ]
   },
   {
@@ -41039,7 +41063,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr loc_1691+1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完）",
+   "citations": [
+    "audit/resident-data-tables.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -41356,9 +41383,13 @@
    "callers": 2,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "866",
+   "note": "同 DOS overlay-17:02515h。DOS 零擴充成 ax 後用有號 jl/jg，PC-98 直接 cmp al 用無號 jb/ja，值域 0..255 結果相同(spec 783 第 c 類)，少一條 xor ah,ah",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/866-constitution-hp-bonus.md"
    ]
   },
   {
@@ -44014,7 +44045,7 @@
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/dos-overlay-22.md",
-    "audit/function-index/dos-overlay-24.md"
+    "audit/function-index/dos-overlay-23.md"
    ]
   },
   {
@@ -48917,7 +48948,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "同 DOS overlay-26:007FDh。差異只有節點位移 +29h↔+51h／+2Ah↔+52h(spec 859 節點放大)與回傳值取法(DOS 兩次 mov、PC-98 les)，行為相同",
+   "citations": [
+    "spec/865-list-header-lookup-and-key-prompt.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -49056,9 +49093,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "同 DOS overlay-26:0112Ah，但★迴圈前多一段三參數字串指派(0A65h:262h，把 DS:1602h 的 10 bytes 指派到 DS:0A335h)——與 spec 817/844/599 同一個模式：PC-98 把熱鍵字元獨立成另一份 ASCII 字串。堆疊框 34h↔56h 是字串緩衝 40→80 的連帶",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/865-list-header-lookup-and-key-prompt.md"
    ]
   },
   {
@@ -50973,9 +51014,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 6,
+   "Read": 7,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
@@ -51108,9 +51149,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 21,
-   "Read": 13,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 4571,
    "Undefined": 163,
@@ -51528,9 +51569,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 54,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 12,
+   "Todo": 11,
    "Fragment": 34,
    "CodeBytes": 20976,
    "Undefined": 2752,
@@ -51663,9 +51704,9 @@
    "Module": "overlay-26",
    "Unit": "MENUS",
    "Functions": 20,
-   "Read": 13,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 4937,
    "Undefined": 183,

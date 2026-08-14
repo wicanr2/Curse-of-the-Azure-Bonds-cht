@@ -22927,6 +22927,60 @@
    "level": "exact",
    "spec": "864",
    "note": "同 DOS overlay-23:00E45h（助憶碼序列完全相同）。差異全是位址與字串：DS:6506h↔9594h、+196h↔+197h、DS:755Bh↔0A647h、DS:27D8h↔49E2h。三句訊息改寫成完整日文句(は咳きこみ始めた。/は窒息し、喉をかきむしった。/は毒を受けた。)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2045,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "找上一個標題行(retf 8，(上限, 鏈頭, 未用))：走 spec 859 的顯示行節點鏈(+29h 標題行旗標、+2Ah next)，在前『上限』行裡回最後一個 +29h≠0 的節點；找不到且鏈頭自己是標題行就回鏈頭(只在上限≤0 時生效)。第三個參數本體沒讀"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2526,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "同 DOS overlay-26:007FDh。差異只有節點位移 +29h↔+51h／+2Ah↔+52h(spec 859 節點放大)與回傳值取法(DOS 兩次 mov、PC-98 les)，行為相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 4394,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "問到合法按鍵為止(retf 0Ah)：把提示字串指派進緩衝(0A54h:64Eh，上限 28h)、DS:7294h:=2，迴圈內組字後叫 03D4h 收鍵，再用 0A54h:8D4h 對合法鍵表以 ZF 檢查，不合法就重問"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 4765,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "865",
+   "note": "同 DOS overlay-26:0112Ah，但★迴圈前多一段三參數字串指派(0A65h:262h，把 DS:1602h 的 10 bytes 指派到 DS:0A335h)——與 spec 817/844/599 同一個模式：PC-98 把熱鍵字元獨立成另一份 ASCII 字串。堆疊框 34h↔56h 是字串緩衝 40→80 的連帶"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 9493,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "866",
+   "note": "體質的 HP 加值(retf 2，職業碼)：讀 遠指標(DS:6506h)^[19h](體質，spec 857)，3→−2、4..6→−1、7..14→0、15→+1、16→+2、17..19→戰士類(職業碼 2/3/4)給 體質−0Eh(即 +3/+4/+5)否則 +2。★與 AD&D 一版逐格相符，同時是 +19h=體質 與那組職業編號的第二份佐證。⚠體質 ≥20 時所有分支都不成立，直接回傳未初始化的堆疊殘值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-17",
+   "ea": 10124,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "866",
+   "note": "同 DOS overlay-17:02515h。DOS 零擴充成 ax 後用有號 jl/jg，PC-98 直接 cmp al 用無號 jb/ja，值域 0..255 結果相同(spec 783 第 c 類)，少一條 xor ah,ah"
   }
  ]
 }
