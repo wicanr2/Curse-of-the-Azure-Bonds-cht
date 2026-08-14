@@ -15510,10 +15510,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -15531,10 +15531,10 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/707-raise-dead-and-area-effect.md",
-    "spec/714-neutralize-poison.md"
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -15725,7 +15725,8 @@
    "state": "待解讀",
    "citations": [
     "audit/effect-id-catalog.md",
-    "audit/function-index/dos-overlay-22.md"
+    "audit/function-index/dos-overlay-22.md",
+    "spec/721-spell-dispatch-table.md"
    ]
   },
   {
@@ -17832,6 +17833,7 @@
    "spec": "docs/spec/720-breath-weapon.md",
    "note": "龍息 'Breathes Fire'(CS:5E03h)。先做一次**間接 far 呼叫** call dword ptr ds:72A0h(呼叫圖抓不到,overlay_call_graph.py 只認 9A);DS:6FA3h := arg_6^[18Dh]^[0Ah];**ROLLDICE(1,100) \u003e 50 就直接不發動**(五成機率寫死,不查表也不受等級影響);\u003coverlay-24 entry#33(274Ch)\u003e(施法者, 目標) \u003e= 2 也不發動——**這確認 274Ch 回傳的是距離**(spec 699 只讀出機械行為),龍息要相鄰才打得到。⚠ DS:6FA3h 的 NIL 檢查在用過之後,順序反了。之後設 DS:6F95h:=1、顯示訊息、\u003coverlay-24 entry#24\u003e(17h)、用兩組 overlay-32 entry#15/#16 的座標呼叫 entry#25,最後 r := \u003coverlay-23 entry#8\u003e(目標,3,0) 再 \u003coverlay-23 entry#20\u003e(目標, 7, 2, r)",
    "citations": [
+    "audit/function-index/dos-overlay-24.md",
     "spec/720-breath-weapon.md"
    ]
   },
@@ -19434,6 +19436,7 @@
    "spec": "docs/spec/699-lookup-with-save-restore-buffer.md",
    "note": "借共用緩衝做查詢再還原:進入時 Move 備份 DS:6E97h 起 216 bytes,設 DS:6E92h^[6]:=1,用 overlay-32 entry#15/#16/#17 取出 a/b/c(DS:973Dh 那張 4 bytes 一格表的 +0/+1/+3),呼叫 \u003coverlay-31 entry#6\u003e(a, b, 0FFh, 0FFh, c, DS:6E92h) 讓它填那片緩衝,清旗標,然後在 3 bytes 一格的表(k 從 1 起,筆數在 DS:6E96h)裡找 far [6D35h + 該筆 +0 欄 ×4] 等於 (arg_0,arg_2) 的那筆,取它的 +1 欄 div 2 當結果,最後 Move 還原緩衝。⚠ **找不到不會有訊號**——迴圈跑到 DS:6E96h 也直接往下走,回傳最後一筆的值。⚠ div 2 是 cwd+idiv(往零取整),不能換成 sar。⚠ 執行期間那片共用緩衝內容是壞的,不能重入 ⚠ spec 720 補上語意:回傳值是**距離**(overlay-22:5E11h 的龍息用 \u003e= 2 判定太遠),因原始欄位除以 2,單位像是半格",
    "citations": [
+    "audit/function-index/dos-overlay-22.md",
     "audit/function-index/pc98-overlay-24.md",
     "spec/699-lookup-with-save-restore-buffer.md",
     "spec/717-area-target-selection.md",
@@ -39468,10 +39471,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-23.md",
+    "audit/function-index/dos-overlay-24.md",
     "audit/function-index/pc98-overlay-23.md",
     "audit/string-pairs.md",
-    "knowledge/golden-box-reverse-engineering-worklist.md",
-    "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md"
+    "knowledge/golden-box-reverse-engineering-worklist.md"
    ]
   },
   {
@@ -39489,10 +39492,10 @@
    "citations": [
     "audit/effect-id-catalog.md",
     "audit/function-index/dos-overlay-22.md",
+    "audit/function-index/dos-overlay-24.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md",
-    "spec/707-raise-dead-and-area-effect.md",
-    "spec/714-neutralize-poison.md"
+    "spec/707-raise-dead-and-area-effect.md"
    ]
   },
   {
@@ -42116,7 +42119,10 @@
    "is_overlay_entry": true,
    "state": "邊界碎片",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）"
+   "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push [bp+arg_4]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 9 bytes，已逐條讀完）",
+   "citations": [
+    "spec/721-spell-dispatch-table.md"
+   ]
   },
   {
    "platform": "pc98",
