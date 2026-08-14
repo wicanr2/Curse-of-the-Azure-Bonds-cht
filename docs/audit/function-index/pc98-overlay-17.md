@@ -38,7 +38,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `197E` | sub_197E | — | 7 | 2 | 5 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+74h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 7 bytes，已逐條讀完） | — |
 | `278C` | sub_278C | — | 135 | 52 | 2 | 1 | ✓ | 已解讀 | exact | 866<br>同 DOS overlay-17:02515h。DOS 零擴充成 ax 後用有號 jl/jg，PC-98 直接 cmp al 用無號 jb/ja，值域 0..255 結果相同(spec 783 第 c 類)，少一條 xor ah,ah | audit/embedded-strings.md<br>spec/866-constitution-hp-bonus.md |
 | `28E1` | sub_28E1 | — | 509 | 213 | 1 | 8 | ✓ | 待解讀 | — | — | audit/function-strings.md |
-| `2B27` | sub_2B27 | — | 131 | 60 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-strings.md |
+| `2B27` | sub_2B27 | — | 131 | 60 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/975-pc98-yes-no-menu-and-partial-redraw.md<br>はい／いいえ 確認選單：40 格選項行 + DS:11A6h 熱鍵字串（Y 第 6 格、N 第 10 格），只接受 2/8/N/Y | audit/function-strings.md<br>spec/972-pc98-ring-slot-repaint.md<br>spec/975-pc98-yes-no-menu-and-partial-redraw.md |
 | `2C1C` | sub_2C1C | — | 411 | 184 | 1 | 7 | ✓ | 待解讀 | — | — | audit/function-strings.md |
 | `2DB7` | sub_2DB7 | — | 155 | 71 | 1 | 5 | ✓ | 待解讀 | — | — | — |
 | `2E9B` | sub_2E9B | — | 3160 | 1202 | 1 | 11 | ✓ | 待解讀 | — | — | audit/function-strings.md<br>audit/function-triage.md |

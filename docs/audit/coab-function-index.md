@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 919、不阻塞 133、邊界碎片 246、待解讀 88；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 921、不阻塞 133、邊界碎片 246、待解讀 86；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -38,9 +38,9 @@
 | overlay-21 | MONEY | 27 | 20 | 0 | 4 | 3 | 6469 | 385 | [明細](function-index/dos-overlay-21.md) |
 | overlay-22 | SPELLS | 139 | 111 | 0 | 26 | 2 | 25236 | 2174 | [明細](function-index/dos-overlay-22.md) |
 | overlay-23 | EFFECTS | 40 | 25 | 0 | 12 | 3 | 9183 | 376 | [明細](function-index/dos-overlay-23.md) |
-| overlay-24 | GENERIC | 56 | 47 | 0 | 3 | 6 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
+| overlay-24 | GENERIC | 56 | 48 | 0 | 3 | 5 | 12483 | 290 | [明細](function-index/dos-overlay-24.md) |
 | overlay-25 | TRAINING | 15 | 13 | 0 | 0 | 2 | 4931 | 733 | [明細](function-index/dos-overlay-25.md) |
-| overlay-26 | MENUS | 21 | 15 | 0 | 0 | 6 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
+| overlay-26 | MENUS | 21 | 16 | 0 | 0 | 5 | 4571 | 163 | [明細](function-index/dos-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/dos-overlay-27.md) |
 | overlay-28 | DRAWWIN | 6 | 5 | 0 | 0 | 1 | 446 | 0 | [明細](function-index/dos-overlay-28.md) |
 | overlay-29 | PORTRAIT | 12 | 10 | 0 | 1 | 1 | 2102 | 114 | [明細](function-index/dos-overlay-29.md) |
@@ -53,7 +53,7 @@
 
 ## PC98
 
-模組 37／函式 1488：已解讀 1020、不阻塞 29、邊界碎片 338、待解讀 101；已定義程式碼 270352 bytes，未定義 20321 bytes。
+模組 37／函式 1488：已解讀 1024、不阻塞 29、邊界碎片 338、待解讀 97；已定義程式碼 270352 bytes，未定義 20321 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -74,15 +74,15 @@
 | overlay-13 | COMSTUFF | 72 | 40 | 0 | 27 | 5 | 17459 | 905 | [明細](function-index/pc98-overlay-13.md) |
 | overlay-14 | MOVEMENT | 14 | 11 | 0 | 0 | 3 | 3435 | 321 | [明細](function-index/pc98-overlay-14.md) |
 | overlay-15 | CAMP | 45 | 30 | 0 | 15 | 0 | 8121 | 1126 | [明細](function-index/pc98-overlay-15.md) |
-| overlay-16 | LOADSAVE | 47 | 16 | 0 | 14 | 17 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
-| overlay-17 | GEN | 54 | 11 | 0 | 34 | 9 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
+| overlay-16 | LOADSAVE | 47 | 17 | 0 | 14 | 16 | 18585 | 1552 | [明細](function-index/pc98-overlay-16.md) |
+| overlay-17 | GEN | 54 | 12 | 0 | 34 | 8 | 20976 | 2752 | [明細](function-index/pc98-overlay-17.md) |
 | overlay-18 | ENDSTUFF | 23 | 15 | 0 | 4 | 4 | 4957 | 1311 | [明細](function-index/pc98-overlay-18.md) |
 | overlay-19 | LIBRARY | 57 | 23 | 0 | 29 | 5 | 12619 | 1629 | [明細](function-index/pc98-overlay-19.md) |
 | overlay-20 | CLOCK | 16 | 16 | 0 | 0 | 0 | 3555 | 225 | [明細](function-index/pc98-overlay-20.md) |
 | overlay-21 | MONEY | 30 | 20 | 0 | 8 | 2 | 7968 | 2243 | [明細](function-index/pc98-overlay-21.md) |
 | overlay-22 | SPELLS | 138 | 95 | 0 | 27 | 16 | 25053 | 2127 | [明細](function-index/pc98-overlay-22.md) |
 | overlay-23 | EFFECTS | 39 | 27 | 0 | 12 | 0 | 9201 | 458 | [明細](function-index/pc98-overlay-23.md) |
-| overlay-24 | GENERIC | 65 | 41 | 0 | 17 | 7 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
+| overlay-24 | GENERIC | 65 | 43 | 0 | 17 | 5 | 13567 | 376 | [明細](function-index/pc98-overlay-24.md) |
 | overlay-25 | TRAINING | 14 | 12 | 0 | 0 | 2 | 5200 | 167 | [明細](function-index/pc98-overlay-25.md) |
 | overlay-26 | MENUS | 20 | 17 | 0 | 0 | 3 | 4937 | 183 | [明細](function-index/pc98-overlay-26.md) |
 | overlay-27 | OVERLAND | 5 | 5 | 0 | 0 | 0 | 134 | 0 | [明細](function-index/pc98-overlay-27.md) |
