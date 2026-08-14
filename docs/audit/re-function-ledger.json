@@ -21991,6 +21991,42 @@
    "level": "exact",
    "spec": "845",
    "note": "同 DOS overlay-22:03D27h（module_align 對齊，助憶碼序列完全相同、0 個差異塊）。13 條差異全是位址：DS:0A521h↔7435h、經驗值表 DS:7326h↔4291h、+1A5h↔+1A4h；訊息 'はレベルを回復した。'"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 18660,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "846",
+   "note": "Teleport（'teleports'）：先要求施法者身上有效果 3Ah；用 18ABh+3 把附近戰鬥員收進 DS:6E92h 緩衝（+4 筆數、+5 起每筆 3 bytes），對每個帶效果 90h 或 8Bh 且施加者是自己的目標，兩個效果一起撤掉。★效果節點 +3 = 施加者的戰鬥員索引（查 DS:6D35h）"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 19447,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "846",
+   "note": "同 DOS overlay-22:048E4h（module_align 對齊，助憶碼序列完全相同、0 個差異塊）。11 條差異全是位址：DS:9594h↔6506h、DS:9F2Ch/9F2Eh/9F30h↔6E92h/6E94h/6E96h、戰鬥員陣列 [di−6231h]↔[di+6D35h]；訊息 'はテレポートした。'"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 22499,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "847",
+   "note": "龍息（'Breathes!'）：DS:758Dh 開著時 1d100 <= 50 直接跳過（連訊息都不印）。落點 DS:7559h/755Ah 經 1894h+1 往自己拉回，正右/正下相鄰那一格會再推一格。傷害用 +78h 最大 HP（受傷不減威力）。節點 +3 > 0FDh 減 1、否則移除效果 58h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 23440,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "847",
+   "note": "同 DOS overlay-22:057E3h（module_align 對齊，相似度 0.991）。唯一序列差異是多一段 xor ah,ah + mov cx,0Ch + imul cx（乘 12）；其餘 26 條是位址：DS:0A81Fh↔758Dh、DS:0A02Fh↔6F95h、DS:0A645h/0A646h↔7559h/755Ah、DS:0A9D8h↔7746h、DS:0A38Ch↔72A0h。訊息 'は致命の息吹を吹いた！'"
   }
  ]
 }
