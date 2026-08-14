@@ -5,11 +5,11 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |
-| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | — |
+| `0666` | sub_666 | — | 233 | 87 | 1 | 6 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `074F` | sub_74F | — | 523 | 193 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `095A` | sub_95A | — | 935 | 334 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `0D1C` | sub_D1C | — | 189 | 74 | 0 | 5 | ✓ | 待解讀 | — | — | — |
@@ -36,7 +36,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `194A` | sub_194A | — | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `19D8` | sub_19D8 | — | 778 | 268 | 6 | 7 | ✓ | 待解讀 | — | — | — |
 | `1CE2` | sub_1CE2 | — | 187 | 76 | 1 | 3 | ✓ | 待解讀 | — | — | — |
-| `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | — |
+| `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `1DF6` | sub_1DF6 | — | 537 | 195 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `200F` | sub_200F | — | 507 | 176 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md |
@@ -44,7 +44,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
 | `2BFB` | sub_2BFB | — | 551 | 216 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | — |
+| `2E22` | sub_2E22 | — | 138 | 49 | 0 | 1 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `2EAC` | sub_2EAC | — | 130 | 46 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `2F3C` | sub_2F3C | — | 205 | 67 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3040` | sub_3040 | — | 432 | 177 | 1 | 6 | ✓ | 待解讀 | — | — | — |

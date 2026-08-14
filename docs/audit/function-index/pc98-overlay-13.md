@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | INITDUDE | 292 | 94 | 0 | 7 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md |
+| `0000` | sub_0 | INITDUDE | 292 | 94 | 0 | 7 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `0124` | sub_124 | FIGMOVE | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0192` | sub_192 | CALCWEAPDAMAGE | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `0358` | sub_358 | DESCRIBEWEAPONATTACK | 812 | 326 | 3 | 4 | ✓ | 待解讀 | — | — | — |
@@ -50,7 +50,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `19CB` | sub_19CB | NEWATTACKER | 142 | 53 | 3 | 2 | ✓ | 待解讀 | — | — | — |
 | `1A59` | sub_1A59 | ATTACKE | 707 | 242 | 6 | 9 | ✓ | 待解讀 | — | — | — |
 | `1D1C` | sub_1D1C | CALCRANGEMODS | 187 | 76 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `1DD7` | sub_1DD7 | LOADCOMSTUFF | 57 | 15 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr sub_101A`、`call far ptr sub_1883`、`call sub_1923`、`call loc_1982+1`、`call far ptr loc_15A0+1`、`call far ptr sub_11C7`（body 共 57 bytes，已逐條讀完） | — |
+| `1DD7` | sub_1DD7 | LOADCOMSTUFF | 57 | 15 | 0 | 7 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call far ptr sub_101A`、`call far ptr sub_1883`、`call sub_1923`、`call loc_1982+1`、`call far ptr loc_15A0+1`、`call far ptr sub_11C7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md |
 | `1E30` | sub_1E30 | COMPTARGCURE | 537 | 195 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `2049` | sub_2049 | — | 482 | 169 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `225F` | sub_225F | WHOZAP | 1300 | 483 | 0 | 6 | ✓ | 待解讀 | — | — | — |

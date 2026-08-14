@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 52 | 14 | 0 | 4 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/string-pairs.md<br>spec/583-ledger-denominator-repair.md |
+| `0000` | sub_0 | — | 52 | 14 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/751-overlay-init-chain-dependency-graph.md<br>unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte) | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/583-ledger-denominator-repair.md |
 | `0034` | sub_34 | — | 340 | 73 | 1 | 1 | ✓ | 待解讀 | — | — | audit/duplicate-strings.md<br>audit/embedded-strings.md |
 | `0188` | sub_188 | — | 67 | 24 | 2 | 1 | ✓ | 待解讀 | — | — | — |
 | `01CB` | sub_1CB | — | 115 | 42 | 2 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

@@ -5,9 +5,9 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md<br>spec/521-dos-getmem-buffer-owner.md |
+| `0000` | sub_0 | — | 17 | 7 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>unit 初始化:far call 20Bh:34h 後交給 19Ch:2Ah | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>spec/520-dos-movement-to-overlay-cell-layer-bridge.md |
 | `0011` | sub_11 | — | 346 | 150 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>context/50-log-2026-08-09-13.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md<br>spec/README.md |
-| `016B` | sub_16B | — | 33 | 13 | 0 | 0 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md |
+| `016B` | sub_16B | — | 33 | 13 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/753-small-utility-routines.md<br>四個 byte 的 setter(retf 8)：四個 word 參數只取低位 byte，依序寫 DS:720Ah/720Bh/720Ch/720Dh(第一個宣告的參數在 [bp+0Ch] → 720Ah) | audit/embedded-strings.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/753-small-utility-routines.md |
 | `018C` | sub_18C | — | 700 | 274 | 1 | 2 | ✓ | 待解讀 | — | — | spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/687-far-call-flattening-and-stack-leftover.md |
 | `0448` | sub_448 | — | 270 | 108 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `0556` | sub_556 | — | 49 | 18 | 4 | 1 | ✓ | 待解讀 | — | — | knowledge/golden-box-reverse-engineering-worklist.md<br>spec/519-dos-overlay-vector-to-cell-layer-accessor.md<br>spec/543-normal-campaign-coverage-and-ida-map-cell-audit.md |

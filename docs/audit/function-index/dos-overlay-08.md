@@ -5,8 +5,8 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 77 | 19 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/string-pairs.md |
-| `004D` | sub_4D | — | 166 | 62 | 1 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md |
+| `0000` | sub_0 | — | 77 | 19 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 14 個呼叫，沒有其他動作：`call far ptr sub_104A`、`call far ptr 167h:4Dh`、`call far ptr 187h:43h`、`call far ptr 18Ch:93h`、`call far ptr 196h:43h`、`call far ptr 14Dh:101h`（body 共 77 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `004D` | sub_4D | — | 166 | 62 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/749-combat-teardown-and-battlefield-grid.md<br>戰鬥收尾(retf，不收參數)：逐節點清空 DS:755Bh 與 DS:755Fh 兩條雲霧鏈(每個 FreeMem 30 bytes)；FreeMem(DS:6E92h, 4E9h) 並歸零——4E9h=1257 剛好等於 24*50+49+7+1，因此戰場格陣是 50 欄×25 列、前 7 byte 為表頭；呼叫未辨識的 resident 0297:1D19h(@DS:75E0h) 與 overlay-32 entry#5；最後把 DS:72A0h 設回 overlay-22 entry#4 @10D2h(spec 719 的選目標程序)，可見 72A0h slot 0 是可換掉的掛鉤而非唯讀分派表 | audit/function-index/dos-overlay-08.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/749-combat-teardown-and-battlefield-grid.md |
 | `00F3` | sub_F3 | — | 184 | 67 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `01AB` | sub_1AB | — | 192 | 68 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `026B` | sub_26B | — | 325 | 102 | 1 | 3 | ✓ | 待解讀 | — | — | — |

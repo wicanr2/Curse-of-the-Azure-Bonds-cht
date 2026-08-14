@@ -17554,6 +17554,546 @@
    "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
    "note": "第三處麻痺凝視:p := 角色^[18Dh]^[0Ah](**直接讀,沒有 NIL 檢查**);顯示 '<名字> gazes...'(CS:2886h)、<overlay-24 entry#24>(12h)、entry#25 畫兩點動畫;<overlay-23 entry#8>(p,1,0) 回 0 才 <overlay-23 entry#11>(p, 34h, **0**, 0FFh, 0) 並顯示 '<名字> is paralyzed'(CS:288Fh)。⚠ 麻痺(34h)三個入口的持續時間參數不同:overlay-22:6022h 是 3Ch、overlay-12 的 2782h 與本支都是 0。兩句訊息在 overlay-22 與 overlay-12 各有一份(跨模組重複),中文化兩邊都要改",
    "bounds": "prologue"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 13828,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/736-phantom-instructions-from-decode-gaps.md",
+   "note": "與 DOS overlay-12:356Ch（entry#0）助憶碼序列完全相同，語意同該筆：**空函式**。原始位元組是 55 89 E5 89 EC 5D CB(push bp / mov bp,sp / mov sp,bp / pop bp / retf)。⚠ 匯出把它讀成 push bp / mov bp,sp / **in al,dx** / pop bp / retf——`89 EC` 被切掉前面的 89,剩下的 EC 正好是 in al,dx。假指令看起來完全合理(硬體存取),照著寫會有人去追不存在的連接埠。全工作區這類位元組缺口共 236 處,1~4 bytes 的有 107 處,見 scripts/decode_gap_scan.py ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9660,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/737-effproc-small-handlers.md",
+   "note": "與 DOS overlay-12:255Ah（entry#111）助憶碼序列完全相同，語意同該筆：某種武器把傷害**覆寫**成 1d6+1:w := DS:6506h^[151h],w 非 NIL 且 w^[2Eh] = 55h 時 DS:6F94h := ROLLDAMAGEDICE(1,6) + 1。⚠ 是指派不是累加,把原本算好的值整個蓋掉 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9832,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/737-effproc-small-handlers.md",
+   "note": "與 DOS overlay-12:2606h（entry#114）助憶碼序列完全相同，語意同該筆：兩種武器類別觸發同一個處理:w^[2Eh] = 57h 或 58h 時 <sub_F39h>(32h, arg_6, arg_8)。兩個類別編號相鄰且共用常數 32h ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9756,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/737-effproc-small-handlers.md",
+   "note": "與 DOS overlay-12:25BAh（entry#113）助憶碼序列完全相同，語意同該筆：打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] > 0 或 施法者^[0E5h] < 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11463,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/737-effproc-small-handlers.md",
+   "note": "與 DOS overlay-12:2C4Fh（entry#130）助憶碼序列完全相同，語意同該筆：+191h := ((v − 1) div 5) + 1,其中 v := 角色^[10Ch] + 角色^[114h] × <overlay-25 entry#10>(角色)。⚠ +10Ch/+114h 正是 spec 728 那組相差 8 的平行職業欄位,而 entry#10 在這裡是被 imul 的**數值不是布林值**(728 只測了零,語意要修正成「第二職業的權重」);spec 705 的 30C0h 用 +10Eh + +116h × entry#10 是同一個模板。⚠ idiv 往零取整,v=0 時算出 1、v 為負時大於 1,不能改寫成無號的 (v+4)/5 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11532,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "與 DOS overlay-12:2C94h（entry#131）助憶碼序列完全相同，語意同該筆：解除恐懼(把 spec 724 的 4A8Fh 做的事還原):arg_0 非 0 時,**+0F7h 正好等於 0B3h 才**清成 0 並把 +198h 設 0;+18Dh^[10h] 則無條件清 0。⚠ +0F7h 的還原有條件——spec 734 的操縱屍體會把它設成 0B2h(原值 > 7Fh 時),那種情況下解除恐懼不會動到它。兩個效果對同一個 byte 的處理不對稱,順序會影響結果 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11086,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "與 DOS overlay-12:2AD6h（entry#125）助憶碼序列完全相同，語意同該筆：對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果** ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10344,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/738-effproc-effect-handlers.md",
+   "note": "與 DOS overlay-12:27FAh（entry#117）助憶碼序列完全相同，語意同該筆：換一種傷害型別再打一次:DS:6F95h := 0Ah,d := ROLLDAMAGEDICE(2,8),<overlay-23 entry#20>(角色^[18Dh]^[0Ah], d, 0, 0)。不動 DS:6F94h 而是直接對目標再結算一次,所以是附加傷害不是修正值。⚠ DS:6F95h 設完沒有還原(與 spec 706 那支相反) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 5014,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "與 DOS overlay-12:1374h（entry#58）助憶碼序列完全相同，語意同該筆：減傷:(DS:6F95h and 1) 非 0 時,以 n := DS:6F98h 為次數,每輪 DS:6F94h -= 2 並夾在 DS:6F98h 以上;之後 DS:6F92h += 4;(DS:6F95h and 8) = 0 時呼叫 <sub_1Bh>(0)。⚠ DS:6F98h **同時是迴圈次數與傷害下限**,兩者不能拆開改。⚠ 夾限用**無號**比較,DS:6F94h 減到負數會回捲成大值而讓夾限失效,要靠 n 夠小才不會出事 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9499,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "與 DOS overlay-12:24B9h（entry#109）助憶碼序列完全相同，語意同該筆：武器決定要不要減半:w := <sub_FAAh>(DS:6506h)(spec 738);t := byte [5CFDh + w^[2Eh]×16](物品屬性表格內 +7,基底 5CF6h);**t = 0 或 (t and 1) 非 0 都減半**,只有「t 非 0 且 bit 0 為 0」不減——寫成單獨判斷 (t and 1) 會漏掉 t = 0 那一半。除法是有號 idiv 往零取整 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 9110,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/739-resistance-and-level-threshold.md",
+   "note": "與 DOS overlay-12:2334h（entry#98）助憶碼序列完全相同，語意同該筆：⚠ **第二個會回捲的百分比門檻**:門檻 := (0Bh − <overlay-24 entry#36>(DS:6F97h)) × 5 + arg_0,存進一個 byte;DS:6F93h 非 0 或 (DS:6F95h and 8) 非 0 時擲 ROLLDICE(1,100),<= 門檻 就呼叫 <sub_1Bh>(0)。等級 > 11 時算式為負,存成 byte 變成很大的值(例如 12 級是 0FBh+arg_0),**高等級反而變成必定觸發**。與 spec 705 的 30C0h 同型同向,應當成本作的共通模式處理而不是兩個獨立 bug ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10224,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
+   "note": "與 DOS overlay-12:2782h（entry#116）助憶碼序列完全相同，語意同該筆：麻痺觸碰:p := 角色^[18Dh]^[0Ah];<overlay-23 entry#8>(p, 0, 0) 回 0(豁免失敗)時 <overlay-23 entry#11>(p, 34h, **0**, 0FFh, 0) 並顯示 '<名字> is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8965,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/741-on-hit-effects-and-third-uninitialised.md",
+   "note": "與 DOS overlay-12:22A3h（entry#96）助憶碼序列完全相同，語意同該筆：三個效果都沒有才加傷害:對 p := 角色^[18Dh]^[0Ah] 依序查 14h、36h、3Dh(三次 <overlay-24 entry#27>,短路),**任何一個成立就完全不加**;都沒有才 DS:6F94h += ROLLDICE(1, 6) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10772,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "與 DOS overlay-12:299Ch（entry#122）助憶碼序列完全相同，語意同該筆：特定武器直接讓目標進入狀態 8:<overlay-24 entry#43>(DS:6506h, @r) 非 0 且 r^[2Eh]=1Ch 且 r<>NIL 且 r^[31h]=87h 時,目標^[195h]:=8、+196h:=0、**+1A4h:=0(HP 歸零)**、<overlay-23 entry#14>(目標)、<overlay-23 entry#4>(目標, 0Dh),目標^[196h]=0 時再 <overlay-32 entry#20>(目標)。**不擲任何骰**。⚠ NIL 檢查排在 r^[2Eh] 解參照之後,順序反了(第三處同型,見 spec 720/723)。⚠ 條件是類別 1Ch **且** +31h=87h 兩個欄位都要對。最後那個 +196h=0 用的是剛被自己清成 0 的欄位 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11606,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/742-vorpal-and-backfire.md",
+   "note": "與 DOS overlay-12:2CD9h（entry#132）助憶碼序列完全相同，語意同該筆：相鄰時傷害加倍但打的是自己:<overlay-24 entry#33>(arg_6, DS:6506h) < 2(相鄰)時,備份 DS:6F94h 與 DS:6F95h,把傷害 shl 1、型別設成 8,顯示 '<名字> gets zapped'(CS:2CCDh),**<overlay-23 entry#20> 的第一個參數是 DS:6506h(攻擊者自己)**,最後兩個全域都還原。⚠ shl 1 之後只存回一個 byte,傷害超過 127 會回捲(第三個 byte 溢位點,但這個是傷害本身不是門檻)。⚠ 這支會還原 DS:6F95h,而 spec 738 的 27FAh 不還原——同模組兩種做法並存,改寫不能統一 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 6223,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/743-berserk-and-two-factions.md",
+   "note": "與 DOS overlay-12:1809h（entry#76）助憶碼序列完全相同，語意同該筆：狂暴(套用與解除共用一支,由 arg_2 切換)。套用:+198h:=1、+0F7h 依三態設成 0B3h 或 0B2h;戰鬥中(DS:4FBAh=5)才繼續——先把 +18Dh^[0Ah] 清成 NIL,用 <overlay-31 entry#6> 重新選一個目標,然後 **角色^[197h] := 新目標^[197h] xor 1**(設成目標陣營的相反),顯示 '<名字> goes berzerk'(CS:17FCh)。⚠ **xor 1 定死了 +197h(陣營)只有 0 與 1 兩個值**——這回頭解釋 spec 692 的統計陣列為何只有兩格。⚠ 解除路徑寫 角色^[197h] := 0,**沒有還原原本的陣營**(對照 spec 734 特地打包保存);若 0 是玩家側,敵方狂暴結束後會變我方,需實機驗證 ⚠ spec 746:姊妹支 2B3Eh 解除時是 角色^[197h] := 節點^[3](從節點取回原陣營),本支寫死 0;而本支的套用路徑也沒把原陣營存進任何地方——兩件事一起漏掉,所以「解除後歸 0」很可能是缺陷不是設計 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 10916,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/743-berserk-and-two-factions.md",
+   "note": "與 DOS overlay-12:2A2Ch（entry#123）助憶碼序列完全相同，語意同該筆：用物品節點第二個效果槽(+3Dh,spec 703)的套用/解除,由 arg_0 切換:解除走 <overlay-23 entry#3>(目標, id, 0);套用走 <overlay-23 entry#11>(目標, id, 0, 0FFh, 1),且**非戰鬥時才多呼叫** <overlay-23 entry#2>(id, 目標, 0, 0)。開頭 DS:7582h := 0 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 2271,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
+   "note": "與 DOS overlay-12:08CDh（entry#34）助憶碼序列完全相同，語意同該筆：操縱屍體的解除程序(對應 spec 734 的 2DB6h)。⚠ **角色^[197h] := 節點^[3] div 16 還原陣營**——這解掉 spec 724 留的一格:PUTEFFECT 的**第四個參數會被存進效果節點的 +3**。DS:6F9Ch = 0 時才顯示 '<名字> collapses'(CS:08C3h)。⚠ 與套用**不對稱**:+0E9h 套用寫 2、解除寫 0;+0E4h 套用寫 6、解除寫 0Ch;兩邊都不看原值,所以活人被操縱再解除後這兩個欄位會停在解除值上。+0DDh := 角色^[10Bh] + 角色^[113h] × <overlay-25 entry#10>(角色) 是第四對平行職業欄位(spec 728 模板) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 2089,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/744-animate-removal-and-ac-fields.md",
+   "note": "與 DOS overlay-12:0818h（entry#33）助憶碼序列完全相同，語意同該筆：AC 每次變差 2 直到 AC 10:角色^[18Dh]^[2] 非 0 時顯示 '<名字> is coughing'(CS:080Ch),清 +18Dh^[2] 與 ^[1],<overlay-24 entry#7>(角色);**+19Bh > 34h 時減 2、否則設成 32h,再整個複製到 +19Ah**;角色 = DS:6506h 時另呼叫 <overlay-24 entry#5>。⚠ **+19Bh 是 AC 基準值、+19Ah 是目前值**(顯示值 = 60 − 儲存值,spec 684/689);所以是顯示 AC 每次加 2(變差),下限 32h = 顯示 AC 10 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 704,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "與 DOS overlay-12:02CBh（entry#16）助憶碼序列完全相同，語意同該筆：魅惑(套用與解除共用一支)。⚠ **效果節點的 +3 用位元欄位打包**:bit 5 = 已套用旗標、bit 6 = 原陣營;套用時 節點^[3] += 20h + (角色^[197h] shl 6) 再取 bit 7 當新陣營,解除時 (節點^[3] and 40h) div 40h 取回原陣營。**這與 spec 744 操縱屍體的 (原陣營 shl 4) + 等級 是同一個 byte 的兩種打包**——沒有共通版面,remake 若替它取名並統一結構兩邊都會壞。bit 5 讓套用具冪等性(重複套用不會把已改掉的陣營當原值存)。改陣營後呼叫 <overlay-24 entry#31>(= spec 692 的 25D4h)重算統計,而 spec 743 的狂暴改陣營後沒有呼叫,兩支不一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 8590,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/745-node-field-packed-differently.md",
+   "note": "與 DOS overlay-12:212Ch（entry#92）助憶碼序列完全相同，語意同該筆：把瀕死的人拉回來:狀態 +195h=5 且 角色^[18Dh]^[0Eh] < 6 時 n := 6 − 欠血;狀態 4 時 n := 6;n > 0 且 <overlay-23 entry#23>(角色, n) 成立才 <overlay-23 entry#11>(角色, 5Fh, ROLLDICE(1,4)+1, 0FFh, 1)、節點^[4] := 0、<overlay-23 entry#3>(角色, 63h, 節點)。兩個判斷是分開的 if 不是 elif,但狀態不可能同時是 4 和 5,實際等價 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11797,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "與 DOS overlay-12:2D7Dh（entry#133）助憶碼序列完全相同，語意同該筆：Dispel Evil:p := 角色^[18Dh]^[0Ah];(p^[14Bh] and 1) 非 0(邪惡)且 <overlay-23 entry#8>(p,4,0) 回 0(豁免失敗)時,<overlay-23 entry#1>(p, 8, '<名字> is dispelled' CS:2D5Ch),然後 **<overlay-23 entry#3>(DS:6506h, 4, 0) 與 (DS:6506h, 91h, 0)——解除的是施法者身上的效果不是目標的**;否則顯示 '<名字> resists dispel evil'(CS:2D69h)。⚠ 兩條失敗路徑(不邪惡、豁免成功)共用同一句訊息,玩家分不出。+14Bh 的 bit 0 是邪惡旗標,而 spec 738 的 2AD6h 用同一個 byte 的 bit 3 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 11190,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
+   "note": "與 DOS overlay-12:2B3Eh（entry#128）助憶碼序列完全相同，語意同該筆：狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 1469,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
+   "note": "與 DOS overlay-12:05B6h（entry#27）助憶碼序列完全相同，語意同該筆：召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 <overlay-24 entry#17> 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] >= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 <overlay-24 entry#18> 掛上鏈(**掛的是複本**),再 <overlay-19 entry#7>,然後 **FreeMem 掉本地那份**,顯示 '<名字> Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 3169,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
+   "note": "雲霧類效果的解除：依(擁有者,key)在 DS:755Bh 鏈上找節點，逐格還原被蓋掉的原磚(有生物站著改畫 1Fh)，unlink 後 FreeMem 30 bytes，再把剩餘節點整條鏈重畫 1Eh。4 格，形狀索引取自 DS:27D8h..27DBh。retf 0Ah＝(擁有者 far, 節點 far, 未用 word)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-12",
+   "ea": 7414,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
+   "note": "與 0C61h 同一段原始碼的第二份實例：268 條助憶碼相同，運算元僅差 13 處(鏈頭 755Fh、字串 1CDBh、形狀表 27DBh、格數 9、磚碼 1Ch)，差異已窮舉於 spec 748"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 3202,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
+   "note": "與 DOS overlay-12:0C61h（entry#41）助憶碼序列完全相同，語意同該筆：雲霧類效果的解除：依(擁有者,key)在 DS:755Bh 鏈上找節點，逐格還原被蓋掉的原磚(有生物站著改畫 1Fh)，unlink 後 FreeMem 30 bytes，再把剩餘節點整條鏈重畫 1Eh。4 格，形狀索引取自 DS:27D8h..27DBh。retf 0Ah＝(擁有者 far, 節點 far, 未用 word) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-12",
+   "ea": 7518,
+   "state": "已解讀",
+   "level": "strong inference",
+   "spec": "docs/spec/748-cloud-effect-dispel-pair.md",
+   "note": "與 DOS overlay-12:1CF6h（entry#86）助憶碼序列完全相同，語意同該筆：與 0C61h 同一段原始碼的第二份實例：268 條助憶碼相同，運算元僅差 13 處(鏈頭 755Fh、字串 1CDBh、形狀表 27DBh、格數 9、磚碼 1Ch)，差異已窮舉於 spec 748 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 77,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/749-combat-teardown-and-battlefield-grid.md",
+   "note": "戰鬥收尾(retf，不收參數)：逐節點清空 DS:755Bh 與 DS:755Fh 兩條雲霧鏈(每個 FreeMem 30 bytes)；FreeMem(DS:6E92h, 4E9h) 並歸零——4E9h=1257 剛好等於 24*50+49+7+1，因此戰場格陣是 50 欄×25 列、前 7 byte 為表頭；呼叫未辨識的 resident 0297:1D19h(@DS:75E0h) 與 overlay-32 entry#5；最後把 DS:72A0h 設回 overlay-22 entry#4 @10D2h(spec 719 的選目標程序)，可見 72A0h slot 0 是可換掉的掛鉤而非唯讀分派表"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 7230,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/750-combat-setup.md",
+   "note": "戰鬥開場(retf，不收參數)：畫出 'A battle begins...'(CS:1C2Bh)；把兩條雲霧鏈頭、DS:650Eh、DS:6E91h 歸零並 FillChar(@DS:6E59h,38h,0)——起點/長度/終點三數咬合，可證戰鬥員陣列上限 8 筆(每筆 7 bytes，計數緊接其後)；寫地圖表頭 +2/+3 = overlay-32 entry#15/#16(隊伍鏈頭) − 3；對每個隊員叫兩次 overlay-23 entry#4(角色, 8) 與 (角色, 16h)；結尾 DS:4FBAh := 5。三支本模組 retf 程序以 push cs + call near 呼叫"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-04",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/751-overlay-init-chain-dependency-graph.md",
+   "note": "unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-21、overlay-19、overlay-26、overlay-24、overlay-07、overlay-34、overlay-22、overlay-23、overlay-25。由原始 bytes 解出(IDA 匯出在此漏 byte)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/751-overlay-init-chain-dependency-graph.md",
+   "note": "unit 初始化段(retf，不收參數)：依序呼叫 9 個相依 unit 的 0000h — overlay-34、overlay-22、overlay-20、overlay-24、overlay-16、overlay-26、overlay-19、overlay-28、overlay-23。由原始 bytes 解出(IDA 匯出在此漏 byte)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-16",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/751-overlay-init-chain-dependency-graph.md",
+   "note": "unit 初始化段(retf，不收參數)：依序呼叫 5 個相依 unit 的 0000h — overlay-33、overlay-34、overlay-25、overlay-23、overlay-24。由原始 bytes 解出(IDA 匯出在此漏 byte)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/751-overlay-init-chain-dependency-graph.md",
+   "note": "unit 初始化段(retf，不收參數)：依序呼叫 11 個相依 unit 的 0000h — overlay-24、overlay-19、overlay-22、overlay-23、overlay-29、overlay-33、overlay-16、overlay-26、overlay-32、overlay-34、overlay-25。由原始 bytes 解出(IDA 匯出在此漏 byte)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/751-overlay-init-chain-dependency-graph.md",
+   "note": "unit 初始化段(retf，不收參數)：依序呼叫 2 個相依 unit 的 0000h — overlay-34、overlay-26。由原始 bytes 解出(IDA 匯出在此漏 byte)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-01",
+   "ea": 1908,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 7110,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-11",
+   "ea": 2268,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-17",
+   "ea": 22204,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-23",
+   "ea": 9654,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-33",
+   "ea": 1566,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-03",
+   "ea": 1020,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 3772,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-33",
+   "ea": 2246,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/752-empty-procedures.md",
+   "note": "空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 7,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "Sign(x: integer): integer(retf 2)：x<0→−1、x>0→1、x=0→0，有號比較。與 PC-98 同位址那支 45 個 byte 完全相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 7,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "Sign(x: integer): integer(retf 2)：x<0→−1、x>0→1、x=0→0，有號比較。與 DOS 同位址那支 45 個 byte 完全相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 5018,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "判斷式(retf 4，一個遠指標參數)：回傳 p^[74h] = 7"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5282,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "判斷式(retf 4，一個遠指標參數)：回傳 p^[74h] = 7，與 DOS overlay-25:139Ah 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 363,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "四個 byte 的 setter(retf 8)：四個 word 參數只取低位 byte，依序寫 DS:720Ah/720Bh/720Ch/720Dh(第一個宣告的參數在 [bp+0Ch] → 720Ah)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 363,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "四個 byte 的 setter(retf 8)：依序寫 DS:0A2A4h..0A2A7h，與 DOS overlay-30:016Bh 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-27",
+   "ea": 7,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "取值(retf，無參數)：q := DS:4F99h^[342h]，把 byte[q+0A48h] 與 byte[q+0A68h](相差 20h)零延伸成 word 存進 DS:8C78h / 8C7Ah"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-27",
+   "ea": 7,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "取值(retf，無參數)：q := DS:7F05h^[342h]，byte[q+160Ch] 與 byte[q+162Ch](相差 20h)→ DS:0BE04h / 0BE06h。與 DOS overlay-27:0007h 同形"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-27",
+   "ea": 50,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "兩次繪製(retf，無參數)：0297h:0EFFh(DS:8C78h, DS:8C7Ah, 遠指標@DS:65CAh) 與 0297h:1110h(DS:8C78h, DS:8C7Ah, 遠指標@DS:8C7Ch)。參數形狀由推入順序解出：末兩個 word 先高後低＝一個遠指標"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-27",
+   "ea": 50,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "兩次繪製(retf，無參數)：02A8h:098Fh(DS:0BE04h, DS:0BE06h, 遠指標@DS:9660h) 與 02A8h:0A86h(…, 遠指標@DS:0BE08h)。與 DOS overlay-27:0032h 同形"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 2177,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "retf，無參數：01A0h:0252h() 後 0297h:1110h(1, 1, 遠指標@DS:728Ch)。⚠ PC-98 對應那支多一個 02A8h:10D5h(@DS:0A327h)，已對原始 bytes 確認不是匯出誤差"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 1911,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "retf，無參數：019Eh:0384h() 後 02A8h:0A86h(1, 1, 遠指標@DS:0A327h)，再 02A8h:10D5h(@DS:0A327h)。最後這一步 DOS 版沒有"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-03",
+   "ea": 12,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "永遠回 1(retf，無參數)：配置 19Ah bytes 的 local 卻一個都沒用到，直接 mov byte [bp-1],1 後回傳"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-00",
+   "ea": 81,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "安裝回呼(retf，無參數)：把遠指標 0039h:0025h 寫進 DS:47C4h；0039h:0025h 是 VROOMM stub → overlay-00 entry#1 @0017h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94444,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "清空鍵盤緩衝區(retf，無參數)：while KEYPRESSED do 讀一個鍵丟掉(以 push cs + call near 呼叫 sub_16FADh)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109269,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/753-small-utility-routines.md",
+   "note": "向下配置 8 bytes 並檢查下界(近呼叫，失敗時 CF=1)：di := word[2097Eh]−8，為 0 則失敗；si := (di shr 4) + word[20980h]，si <= word[2097Ch] 則失敗；成功才把 di 寫回。減法未處理借位"
   }
  ]
 }
