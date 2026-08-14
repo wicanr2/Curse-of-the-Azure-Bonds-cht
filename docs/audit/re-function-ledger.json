@@ -23341,6 +23341,42 @@
    "level": "exact",
    "spec": "886",
    "note": "同 DOS overlay-13:0394Bh，10 條差異全是位址與回傳值取法(DOS 兩次 mov、PC-98 les)。沒有邏輯差異"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-19",
+   "ea": 14316,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "887",
+   "note": "驅除疾病(retf 4，施術者)：15B8h 以 'Cure whom? ' 選人；用 DS:827h 的六個疾病效果碼逐一問 1577h，都沒有就印 'is not diseased' 並用 16ABh+3 追問 'cure anyway: '(答案硬比 'Y')；確定就把 DS:6F9Ch 設 1、對六個碼各叫一次 143Dh+2 清掉、施術者 +191h 減 1、身上沒有 8Dh 就用 1464h+3 掛 2760h(=10080 分=7 天)的冷卻，最後印 ' is cured'。★7 天冷卻＋191h 次數＝AD&D 聖騎士驅病，與隔壁 spec 870 的按手治療是同一組能力。★DS:827h+1..6 = 1F 22 2B 2C 32 39 六個疾病效果碼"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-19",
+   "ea": 14794,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "887",
+   "note": "同 DOS overlay-19:037ECh，多出來的 65 條就是 spec 870 那段 NPC 名字對照(目標 +0F7h > 80h 時把 ALIAS/DRAGONBAIT/AKABAR BEL AKAS 換成片假名)——870 說『同一段在隔壁又出現一次』，這就是那一次。DS:827h↔DS:1363h，六個碼兩平台相同(索引 7 之後不同，確認有效範圍 1..6)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 2527,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "888",
+   "note": "走一格並重畫(retf 8，(方向, 參數, 座標y, 座標x))：新座標 = 舊 + DS:2694h/269Dh 的方向位移(spec 854)；081Dh 成立就掃戰鬥員清單(DS:6D35h 遠指標、DS:66A3h+i*4 的 +3 體型)對符合的叫 196h:3Eh；再叫 0320h，若 0732h 回假就把座標夾在 0..31h(49) × 0..18h(24)——★地圖範圍 50 × 25；最後 0174h + 297h:1316h"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 3275,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "888",
+   "note": "同 DOS overlay-32:009DFh，但★多 437 條的髒區重繪：確認 DS:0BE2Ch 與 DS:8BEEh 後依 DS:0BE2Dh 的值(15h/19h/5Bh/22h/52h/2Fh/29h/2Eh/32h/34h/35h/45h/57h)選一種形狀，對每格叫 02DAh(x,y)——3×3、三格 L 形、±2×±1、±3×±1 等。DOS 沒有這一段：DOS 把文字畫在圖形畫面上整塊重畫，PC-98 是硬體文字層必須自己算髒格(與 spec 876 同一成因)"
   }
  ]
 }

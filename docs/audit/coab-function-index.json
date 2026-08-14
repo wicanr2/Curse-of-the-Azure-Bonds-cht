@@ -12982,6 +12982,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, es:[di+18Dh]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-13.md",
     "spec/886-target-cursor-step.md"
    ]
   },
@@ -13541,6 +13542,7 @@
    "spec": "886",
    "note": "目標游標前後切換(retf 6；arg_0 是父框架指標的巢狀程序，arg_2 要不要動畫，arg_4 步進 ±1)：父框架上放著每筆 3 bytes、第 0 筆當 header 的目標清單(父[−0DBh] 目前索引、父[−0DAh] 筆數)；索引環狀走訪(0→筆數、超過→1)，用 k 去 DS:66A3h+k*4 取座標(spec 860 的戰鬥員座標快取)、DS:6D35h+k*4 取遠指標(spec 852)當回傳值；要動畫就叫 156Dh 把游標從舊格移到新格，否則叫 1901h+2 抹掉",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/886-target-cursor-step.md"
    ]
   },
@@ -14489,6 +14491,7 @@
    "spec": "docs/spec/569-small-function-batch-reading.md",
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp loc_14DC`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 92 bytes，已逐條讀完）",
    "citations": [
+    "audit/function-index/dos-overlay-15.md",
     "spec/885-speed-menu-second-entry.md"
    ]
   },
@@ -14714,6 +14717,7 @@
    "spec": "885",
    "note": "第二個遊戲速度選單(retf，無參數)：標題 'Game Speed = '＋1522h(DS:4FA9h)＋' (0=fastest 9=slowest)'；選項 DS:4FA9h \u003e 0 才接 ' Faster'、\u003c 9 才接 ' Slower'、最後 ' Exit'；169Dh+2 收鍵，方向鍵 50h/48h 帶邊界檢查地 dec/inc，字母 'F'/'S' 則直接 dec/inc。★' (0=fastest 9=slowest)' 是遊戲自己印的字，直接證實 spec 879/881 的『值越大越慢』。⚠字母鍵那條路徑沒有邊界檢查，可把值推出 0..9",
    "citations": [
+    "audit/function-index/pc98-overlay-15.md",
     "audit/function-strings.md",
     "spec/881-animation-player-and-speed.md",
     "spec/885-speed-menu-second-entry.md"
@@ -15136,7 +15140,10 @@
    "is_overlay_entry": false,
    "state": "邊界碎片",
    "spec": "docs/spec/587-ecl-handler-21-37-shared.md",
-   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。"
+   "note": "邊界碎片：落在 1490h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。",
+   "citations": [
+    "audit/function-index/dos-overlay-15.md"
+   ]
   },
   {
    "platform": "dos",
@@ -16323,7 +16330,8 @@
    "citations": [
     "audit/function-strings.md",
     "audit/function-triage.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -16590,7 +16598,8 @@
    "note": "邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-37h], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 11 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -16609,7 +16618,8 @@
    "note": "邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 32 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -17016,9 +17026,13 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "887",
+   "note": "驅除疾病(retf 4，施術者)：15B8h 以 'Cure whom? ' 選人；用 DS:827h 的六個疾病效果碼逐一問 1577h，都沒有就印 'is not diseased' 並用 16ABh+3 追問 'cure anyway: '(答案硬比 'Y')；確定就把 DS:6F9Ch 設 1、對六個碼各叫一次 143Dh+2 清掉、施術者 +191h 減 1、身上沒有 8Dh 就用 1464h+3 掛 2760h(=10080 分=7 天)的冷卻，最後印 ' is cured'。★7 天冷卻＋191h 次數＝AD\u0026D 聖騎士驅病，與隔壁 spec 870 的按手治療是同一組能力。★DS:827h+1..6 = 1F 22 2B 2C 32 39 六個疾病效果碼",
    "citations": [
-    "audit/function-strings.md"
+    "audit/function-strings.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -24228,7 +24242,10 @@
    "callers": 1,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/888-move-and-redraw.md"
+   ]
   },
   {
    "platform": "dos",
@@ -24241,7 +24258,10 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/888-move-and-redraw.md"
+   ]
   },
   {
    "platform": "dos",
@@ -24320,7 +24340,8 @@
    "note": "與 pc98 overlay-32:0A1Eh 助憶碼序列完全相同（18 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：回傳 (0 \u003c= arg_2 \u003c= 6) and (0 \u003c= arg_0 \u003c= 6),用**有號**比較(jl/jg/jle)所以負值被擋掉而不是當成大正數。7×7 = 49 格的座標範圍檢查 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
-    "spec/800-party-reorder-and-footprint-check.md"
+    "spec/800-party-reorder-and-footprint-check.md",
+    "spec/888-move-and-redraw.md"
    ]
   },
   {
@@ -24341,7 +24362,8 @@
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "spec/800-party-reorder-and-footprint-check.md",
-    "spec/808-attacks-per-round-and-facing-redraw.md"
+    "spec/808-attacks-per-round-and-facing-redraw.md",
+    "spec/888-move-and-redraw.md"
    ]
   },
   {
@@ -24360,7 +24382,8 @@
    "spec": "852",
    "note": "戰術地圖捲動＋重繪(retf 6，(半徑, y, x))：視窗左上角是 遠指標(DS:6E92h)^[2]/^[3]，中心 = 左上 + 3。半徑 0FFh 視為 0 並強制捲動；目標已在框內就整支不做。捲動時把中心逐格移向目標並夾在 x 3..2Eh、y 3..15h（配 7 格視窗即 50×25 的地圖，與 spec 749 相符）。重繪 7×7 格，每格畫面座標間隔 3，圖磚取自地形表 DS:26A2h 的 +3 欄。★地形表欄位補完：+0 移動成本(837)、+1/+2 視線(854)、+3 圖磚",
    "citations": [
-    "audit/function-index/pc98-overlay-32.md"
+    "audit/function-index/pc98-overlay-32.md",
+    "spec/888-move-and-redraw.md"
    ]
   },
   {
@@ -24374,11 +24397,15 @@
    "callers": 3,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "888",
+   "note": "走一格並重畫(retf 8，(方向, 參數, 座標y, 座標x))：新座標 = 舊 + DS:2694h/269Dh 的方向位移(spec 854)；081Dh 成立就掃戰鬥員清單(DS:6D35h 遠指標、DS:66A3h+i*4 的 +3 體型)對符合的叫 196h:3Eh；再叫 0320h，若 0732h 回假就把座標夾在 0..31h(49) × 0..18h(24)——★地圖範圍 50 × 25；最後 0174h + 297h:1316h",
    "citations": [
     "audit/function-index/dos-overlay-32.md",
     "spec/783-cross-platform-pairs-first-batch.md",
-    "spec/808-attacks-per-round-and-facing-redraw.md"
+    "spec/808-attacks-per-round-and-facing-redraw.md",
+    "spec/888-move-and-redraw.md"
    ]
   },
   {
@@ -43313,12 +43340,16 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "887",
+   "note": "同 DOS overlay-19:037ECh，多出來的 65 條就是 spec 870 那段 NPC 名字對照(目標 +0F7h \u003e 80h 時把 ALIAS/DRAGONBAIT/AKABAR BEL AKAS 換成片假名)——870 說『同一段在隔壁又出現一次』，這就是那一次。DS:827h↔DS:1363h，六個碼兩平台相同(索引 7 之後不同，確認有效範圍 1..6)",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
-    "spec/870-lay-on-hands-and-npc-name-mapping.md"
+    "spec/870-lay-on-hands-and-npc-name-mapping.md",
+    "spec/887-paladin-cure-disease.md"
    ]
   },
   {
@@ -50431,7 +50462,10 @@
    "callers": 1,
    "calls": 6,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/888-move-and-redraw.md"
+   ]
   },
   {
    "platform": "pc98",
@@ -50571,10 +50605,14 @@
    "callers": 3,
    "calls": 8,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "888",
+   "note": "同 DOS overlay-32:009DFh，但★多 437 條的髒區重繪：確認 DS:0BE2Ch 與 DS:8BEEh 後依 DS:0BE2Dh 的值(15h/19h/5Bh/22h/52h/2Fh/29h/2Eh/32h/34h/35h/45h/57h)選一種形狀，對每格叫 02DAh(x,y)——3×3、三格 L 形、±2×±1、±3×±1 等。DOS 沒有這一段：DOS 把文字畫在圖形畫面上整塊重畫，PC-98 是硬體文字層必須自己算髒格(與 spec 876 同一成因)",
    "citations": [
     "audit/function-index/pc98-overlay-32.md",
-    "audit/function-triage.md"
+    "audit/function-triage.md",
+    "spec/888-move-and-redraw.md"
    ]
   },
   {
@@ -51322,9 +51360,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 42,
-   "Read": 14,
+   "Read": 15,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 15,
    "CodeBytes": 13042,
    "Undefined": 1293,
@@ -51517,9 +51555,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 24,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 6,
+   "Todo": 5,
    "Fragment": 0,
    "CodeBytes": 5064,
    "Undefined": 0,
@@ -51877,9 +51915,9 @@
    "Module": "overlay-19",
    "Unit": "LIBRARY",
    "Functions": 57,
-   "Read": 15,
+   "Read": 16,
    "NotBlocking": 0,
-   "Todo": 13,
+   "Todo": 12,
    "Fragment": 29,
    "CodeBytes": 12619,
    "Undefined": 1629,
@@ -52072,9 +52110,9 @@
    "Module": "overlay-32",
    "Unit": "TACMAP",
    "Functions": 25,
-   "Read": 18,
+   "Read": 19,
    "NotBlocking": 0,
-   "Todo": 7,
+   "Todo": 6,
    "Fragment": 0,
    "CodeBytes": 6784,
    "Undefined": 0,
