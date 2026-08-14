@@ -16543,7 +16543,8 @@
     "audit/function-index/dos-overlay-22.md",
     "spec/702-more-overlay22-spell-handlers.md",
     "spec/703-item-effect-slots-and-uninitialised-args.md",
-    "spec/706-temporary-field-adjust.md"
+    "spec/706-temporary-field-adjust.md",
+    "spec/713-remove-curse.md"
    ]
   },
   {
@@ -16811,7 +16812,13 @@
    "callers": 0,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/713-remove-curse.md",
+   "note": "解除詛咒。身上有效果 24h 時只顯示 '\u003c名字\u003e is un-cursed' 並**完全不碰物品鏈**;否則走 目標^[14Dh] 的物品鏈找第一個 p^[36h] \u003c\u003e 0 的,清 **p^[34h] := 0**,若 p^[3Eh] \u003e 7Fh(第三個效果槽最高位)則 DS:7582h:=1、\u003coverlay-23 entry#2\u003e(p^[3Eh], 目標, p, 1)、並對 k=0..5 各呼叫一次 \u003coverlay-23 entry#24\u003e(目標, k);找到就顯示 '\u003c名字\u003e has an item un-cursed'。⚠ **搜尋鍵是 +36h 但清掉的是 +34h**,+36h 從頭到尾沒被改,所以再施放一次會找到同一件物品並重複顯示訊息。⚠ 一次只解一件(迴圈找到第一個就停)。角色被詛咒與物品被詛咒是兩套互斥機制",
+   "citations": [
+    "spec/713-remove-curse.md"
+   ]
   },
   {
    "platform": "dos",
@@ -17204,7 +17211,8 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/704-dispel-and-the-missing-fill.md",
-    "spec/706-temporary-field-adjust.md"
+    "spec/706-temporary-field-adjust.md",
+    "spec/713-remove-curse.md"
    ]
   },
   {
@@ -17551,7 +17559,8 @@
    "citations": [
     "audit/function-index/dos-overlay-22.md",
     "spec/706-temporary-field-adjust.md",
-    "spec/711-target-count-clamp-and-callee-arity.md"
+    "spec/711-target-count-clamp-and-callee-arity.md",
+    "spec/713-remove-curse.md"
    ]
   },
   {
@@ -45653,9 +45662,9 @@
    "Module": "overlay-22",
    "Unit": "SPELLS",
    "Functions": 139,
-   "Read": 79,
+   "Read": 80,
    "NotBlocking": 0,
-   "Todo": 34,
+   "Todo": 33,
    "Fragment": 26,
    "CodeBytes": 25236,
    "Undefined": 2174,

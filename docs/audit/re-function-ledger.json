@@ -17055,6 +17055,16 @@
    "spec": "docs/spec/712-duration-table.md",
    "bounds": "prologue",
    "note": "效果持續時間 sub_E11h(id): retf 2,**只吃一個 word**(先前從呼叫端推成 4 個是錯的)。id=28h → 1d6×10;39h 或 3Dh → 5d4;3Bh → 1d4×10+40;3Fh → DS:4FBAh=5 時 2d10×10、否則 (1d10+10)×10(兩條上限同為 200 但下限差很多);43h → 5A0h=1440=24×60;其他 → 表[id].+5 × <overlay-24 entry#36>(id) + 表[id].+4。表就是 spec 705 的 DS:37DAh(16 bytes 一格),(+2,+3) 與 (+4,+5) 是兩組形狀相同的線性係數,由呼叫端決定用哪組。⚠ 1440 是一天的分鐘數且其餘多為 10 的倍數,單位幾乎確定是分鐘(只有這一條證據,標為推論;AD&D 的 turn=10 分鐘也相容)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 13721,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/713-remove-curse.md",
+   "bounds": "prologue",
+   "note": "解除詛咒。身上有效果 24h 時只顯示 '<名字> is un-cursed' 並**完全不碰物品鏈**;否則走 目標^[14Dh] 的物品鏈找第一個 p^[36h] <> 0 的,清 **p^[34h] := 0**,若 p^[3Eh] > 7Fh(第三個效果槽最高位)則 DS:7582h:=1、<overlay-23 entry#2>(p^[3Eh], 目標, p, 1)、並對 k=0..5 各呼叫一次 <overlay-23 entry#24>(目標, k);找到就顯示 '<名字> has an item un-cursed'。⚠ **搜尋鍵是 +36h 但清掉的是 +34h**,+36h 從頭到尾沒被改,所以再施放一次會找到同一件物品並重複顯示訊息。⚠ 一次只解一件(迴圈找到第一個就停)。角色被詛咒與物品被詛咒是兩套互斥機制"
   }
  ]
 }
