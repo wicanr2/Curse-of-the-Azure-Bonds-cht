@@ -19723,6 +19723,24 @@
    "level": "strong inference",
    "spec": "docs/spec/763-dungeon-map-second-plane-and-stone-to-flesh.md",
    "note": "與 DOS overlay-30:07C6h（entry#6）助憶碼序列完全相同，語意同該筆：讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(>0Fh→0、<0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-06",
+   "ea": 853,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
+   "note": "把物品複製進背包尾端(retf 8)：<00FDh:004Dh>(物品, DS:6506h) 為真就顯示 CS:034Ah 'OverLoaded' 並把輸出設 1；否則 GetMem 63 bytes、搬進去、next 清 NIL，接在 +14Dh 鏈的**尾端**(空鏈與非空鏈各寫一份程式碼)，最後叫 014Dh:0043h。⚠ 'OverLoaded' 與 overlay-19:2131h 的 'Overloaded' 大小寫不同，是兩條獨立常數"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 689,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
+   "note": "範圍法術的豁免掃描(retf 8)：施法者陣營(DS:6506h^[197h])為 0 時修正 −2、否則 +8；先叫掃描程序(地圖 DS:6E92h, 1, 0FFh, byte[37E9h + 法術*10h], y, x)，再對 DS:6E96h 筆結果逐一取 byte[6E94h + i*3] 當索引、由 DS:6D35h 取戰鬥員；只處理不同陣營且 byte[37E2h + 法術*10h] <> 1 的目標，<豁免>(修正, byte[37E3h + 法術*10h], 目標) 回 0 就把結果設 true。⚠ 豁免修正取決於施法者陣營，兩邊不對稱"
   }
  ]
 }

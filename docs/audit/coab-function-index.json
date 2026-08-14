@@ -6955,7 +6955,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
+   "note": "把物品複製進背包尾端(retf 8)：\u003c00FDh:004Dh\u003e(物品, DS:6506h) 為真就顯示 CS:034Ah 'OverLoaded' 並把輸出設 1；否則 GetMem 63 bytes、搬進去、next 清 NIL，接在 +14Dh 鏈的**尾端**(空鏈與非空鏈各寫一份程式碼)，最後叫 014Dh:0043h。⚠ 'OverLoaded' 與 overlay-19:2131h 的 'Overloaded' 大小寫不同，是兩條獨立常數",
+   "citations": [
+    "spec/777-item-append-and-area-save-sweep.md"
+   ]
   },
   {
    "platform": "dos",
@@ -7720,6 +7726,7 @@
    "note": "戰鬥收尾(retf，不收參數)：逐節點清空 DS:755Bh 與 DS:755Fh 兩條雲霧鏈(每個 FreeMem 30 bytes)；FreeMem(DS:6E92h, 4E9h) 並歸零——4E9h=1257 剛好等於 24*50+49+7+1，因此戰場格陣是 50 欄×25 列、前 7 byte 為表頭；呼叫未辨識的 resident 0297:1D19h(@DS:75E0h) 與 overlay-32 entry#5；最後把 DS:72A0h 設回 overlay-22 entry#4 @10D2h(spec 719 的選目標程序)，可見 72A0h slot 0 是可換掉的掛鉤而非唯讀分派表",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/769-combat-main-loop.md"
@@ -7741,6 +7748,7 @@
    "spec": "docs/spec/769-combat-main-loop.md",
    "note": "戰鬥主迴圈(retf，無參數)：DS:4FBAh := 5、把 DS:72A0h 掛鉤指到 overlay-13 entry#18 @2220h(戰鬥版選目標，spec 749 記錄的收尾會換回 overlay-22 entry#4)；迴圈直到 DS:6F90h 或 DS:6F91h 為 0 或 本模組 0997h 設旗標，每輪走隊伍鏈、清 DS:4F9Dh^[596h]、用 01ABh 取行動者再 026Bh 讓它行動；離開後叫 本模組 004Dh(spec 749 的戰鬥收尾)並設 DS:4FC9h := 1。開場(overlay-10:1C3Eh)、主迴圈、收尾三段至此接成一條鏈",
    "citations": [
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -7758,6 +7766,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -7775,6 +7784,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -7836,6 +7846,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -7906,6 +7917,7 @@
    "note": "尾呼叫：最後一條是 `jmp short loc_CE0`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -7940,6 +7952,7 @@
    "spec": "docs/spec/769-combat-main-loop.md",
    "note": "攻擊前的兩道檢查(retf 0Ch，三個遠指標，第一個是輸出旗標)：\u003c014Dh:00EDh\u003e(攻擊者) 為真且 \u003c014Dh:00F2h\u003e(攻擊者) 為假時顯示 CS:0ED4h 'Not with that weapon'；否則 本模組 0C94h(目標, 攻擊者) 為真才把 攻擊者^[18Dh]^[0Ah] := 目標(⚠ 直接寫入不還原，與 spec 766 的借用後還原不同)，再依 \u003c呼叫\u003e(目標, 攻擊者) 分兩條路",
    "citations": [
+    "audit/function-index/pc98-overlay-08.md",
     "spec/769-combat-main-loop.md"
    ]
   },
@@ -8078,7 +8091,10 @@
    "callers": 0,
    "calls": 14,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "待解讀",
+   "citations": [
+    "spec/777-item-append-and-area-save-sweep.md"
+   ]
   },
   {
    "platform": "dos",
@@ -8111,9 +8127,13 @@
    "callers": 1,
    "calls": 4,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
+   "note": "範圍法術的豁免掃描(retf 8)：施法者陣營(DS:6506h^[197h])為 0 時修正 −2、否則 +8；先叫掃描程序(地圖 DS:6E92h, 1, 0FFh, byte[37E9h + 法術*10h], y, x)，再對 DS:6E96h 筆結果逐一取 byte[6E94h + i*3] 當索引、由 DS:6D35h 取戰鬥員；只處理不同陣營且 byte[37E2h + 法術*10h] \u003c\u003e 1 的目標，\u003c豁免\u003e(修正, byte[37E3h + 法術*10h], 目標) 回 0 就把結果設 true。⚠ 豁免修正取決於施法者陣營，兩邊不對稱",
    "citations": [
-    "audit/embedded-strings.md"
+    "audit/embedded-strings.md",
+    "spec/777-item-append-and-area-save-sweep.md"
    ]
   },
   {
@@ -8682,6 +8702,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -8699,6 +8720,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -8755,6 +8777,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -8775,6 +8798,7 @@
    "note": "八組寫死的參數(retf 2)：DS:4A0Eh = 1 時叫 本模組 0048h 四次 —(3,0,5)、(4,0,5)、(3,1,0Ah)、(4,1,0Ah)；否則四組第三欄全用 16h。原始碼是八行手寫呼叫不是迴圈，這 24 個數字要當資料照抄",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
@@ -8793,6 +8817,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -8810,6 +8835,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -8829,6 +8855,7 @@
    "spec": "docs/spec/776-first-person-view-scan-and-ega-rect-fill.md",
    "note": "第一人稱視野掃描(retf，無參數)：兩層迴圈以全域 DS:4A0Ch(dx，−6..+6)與 DS:4A0Dh(dy，−2..+2)掃 13×5 = 65 格；每格 x := DS:720Fh + dx、y := DS:7210h + dy，對四個方向(6 西/0 北/2 東/4 南)各叫 本模組 0378h 取牆旗標，分別存進 DS:4A0Eh(北)/4A0Fh(西)/4A10h(東)/4A11h(南)；接著四支巢狀繪圖程序(03ECh/0491h/050Eh/06ECh，都以 push bp 傳靜態鏈)，再 DS:4A15h := \u003c呼叫\u003e(x,y) and 40h、本模組 00CCh()。⚠ 迴圈計數器是全域，不可重入。spec 771 的 0491h 判的 DS:4A0Eh 就是北面牆旗標",
    "citations": [
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -9284,6 +9311,7 @@
    "note": "戰鬥開場(retf，不收參數)：畫出 'A battle begins...'(CS:1C2Bh)；把兩條雲霧鏈頭、DS:650Eh、DS:6E91h 歸零並 FillChar(@DS:6E59h,38h,0)——起點/長度/終點三數咬合，可證戰鬥員陣列上限 8 筆(每筆 7 bytes，計數緊接其後)；寫地圖表頭 +2/+3 = overlay-32 entry#15/#16(隊伍鏈頭) − 3；對每個隊員叫兩次 overlay-23 entry#4(角色, 8) 與 (角色, 16h)；結尾 DS:4FBAh := 5。三支本模組 retf 程序以 push cs + call near 呼叫",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/750-combat-setup.md",
@@ -12229,6 +12257,7 @@
    "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
    "note": "暫時借用目前目標欄位(retf 8)：甲為 NIL 回 false、乙=甲 回 true；否則清 DS:6F9Bh、叫 \u003c呼叫\u003e(1, 甲)，未中止就把甲塞進 乙^[18Dh]^[0Ah]、叫 \u003c呼叫\u003e(0, 乙)、再還原，最後回 DS:6F9Bh = 0。⚠ 目前目標欄位同時是參數傳遞通道，中途離開會留下錯誤的目標",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
     "spec/769-combat-main-loop.md"
    ]
@@ -12519,6 +12548,7 @@
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
    "note": "由門檻算出額外攻擊(retf 0Ch，第一個遠指標是輸出累加器)：n := \u003c呼叫\u003e(a, b, 角色)；\u003c呼叫\u003e(角色) 為真時 m := (byte[5D02h + 角色^[151h]^[2Eh]*10h] − 1) div 3，否則 m := n；n−m \u003e 0 時 n -= m 並讓 輸出^ += 2，再判一次 += 3。兩段是先後不是迴圈，最多加兩次。5D02h 是物品屬性表(DS:5CF6h，16 bytes 一筆)的 +0Ch",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -12582,6 +12612,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "audit/function-triage.md",
     "spec/769-combat-main-loop.md"
    ]
@@ -12615,6 +12646,7 @@
    "spec": "docs/spec/771-extra-attacks-and-weapon-class-whitelist.md",
    "note": "物品類別白名單(retf 8)：(角色^[10Fh] \u003e 0) 或 ((角色^[117h] \u003e 0) 且 \u003c呼叫\u003e(角色)) 成立時，裝備 角色^[151h] 為 NIL 或其類別 +2Eh 落在 {7, 8, 23h, 24h, 25h, 61h} 就通過(無號比較，區間是 22h \u003c 類別 \u003c 26h)；再要求 行動者^[18Dh]^[0Fh] \u003e 1 且 (行動者^[0DEh] and 7Fh) \u003c= 1，最後回傳 本模組 29A2h(行動者, 角色) = 行動者^[18Dh]^[09h]",
    "citations": [
+    "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -12632,6 +12664,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -13233,7 +13266,7 @@
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -13403,6 +13436,7 @@
    "spec": "docs/spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md",
    "note": "把 84 格陣列排序(retf，無參數)：對 DS:6506h(目前角色)的 +1Eh 起 84 格做選擇排序，比較時 and 7Fh、交換時整個 byte 一起搬(高位旗標跟著值走)，遞增。固定跑 84×85/2 次比較，沒有提早結束",
    "citations": [
+    "audit/function-index/pc98-overlay-15.md",
     "spec/766-target-swap-idiom-slot-sort-and-percent-opcode.md"
    ]
   },
@@ -15597,8 +15631,10 @@
    "note": "拿不拿得下(retf 8)：角色^[14Ch] \u003e 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] \u003e 0 時再乘上去(單位重量×數量)；上限 := \u003c呼叫\u003e(角色) + 5DCh(1500)；角色^[187h](累計負重) + w \u003e 上限(無號)也算超過",
    "citations": [
     "audit/function-index/dos-overlay-19.md",
+    "audit/function-index/pc98-overlay-19.md",
     "spec/762-ega-glyph-blit-and-movement-rate.md",
-    "spec/767-ac-display-sign-and-trade-overload.md"
+    "spec/767-ac-display-sign-and-trade-overload.md",
+    "spec/777-item-append-and-area-save-sweep.md"
    ]
   },
   {
@@ -15842,6 +15878,7 @@
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
    "note": "兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n \u003c 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致",
    "citations": [
+    "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -15859,6 +15896,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-20.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
   },
@@ -15892,6 +15930,7 @@
    "note": "每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 \u003c呼叫\u003e(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/pc98-overlay-20.md",
     "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
   },
@@ -17862,6 +17901,7 @@
    "note": "解除詛咒。身上有效果 24h 時只顯示 '\u003c名字\u003e is un-cursed' 並**完全不碰物品鏈**;否則走 目標^[14Dh] 的物品鏈找第一個 p^[36h] \u003c\u003e 0 的,清 **p^[34h] := 0**,若 p^[3Eh] \u003e 7Fh(第三個效果槽最高位)則 DS:7582h:=1、\u003coverlay-23 entry#2\u003e(p^[3Eh], 目標, p, 1)、並對 k=0..5 各呼叫一次 \u003coverlay-23 entry#24\u003e(目標, k);找到就顯示 '\u003c名字\u003e has an item un-cursed'。⚠ **搜尋鍵是 +36h 但清掉的是 +34h**,+36h 從頭到尾沒被改,所以再施放一次會找到同一件物品並重複顯示訊息。⚠ 一次只解一件(迴圈找到第一個就停)。角色被詛咒與物品被詛咒是兩套互斥機制",
    "citations": [
     "audit/effect-id-catalog.md",
+    "audit/function-index/pc98-overlay-22.md",
     "spec/713-remove-curse.md"
    ]
   },
@@ -19774,9 +19814,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md",
     "context/50-log-2026-08-09-13.md",
-    "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "project-status.md"
    ]
   },
   {
@@ -22005,11 +22045,11 @@
    "note": "讀迷宮地圖第二平面(retf 4)：先用本模組 0556h 檢查 0..15；不在範圍且 DS:8B5Eh 是 0 或 0Ah 就回 0，否則座標環繞(\u003e0Fh→0、\u003c0→0Fh)後讀 DS:7206h^[200h + (row shl 4) + col]。與 spec 761 的清牆(+300h)共用索引式，兩個平面各 256 bytes 首尾相接。DS:8B5Eh 決定地圖邊界要不要接起來",
    "citations": [
     "audit/function-index/dos-overlay-14.md",
+    "audit/function-index/pc98-overlay-30.md",
     "context/50-log-2026-08-09-13.md",
     "knowledge/golden-box-reverse-engineering-worklist.md",
     "project-status.md",
-    "spec/517-reverse-engineering-gap-inventory.md",
-    "spec/518-dos-start-ecl-call-address-space-audit.md"
+    "spec/517-reverse-engineering-gap-inventory.md"
    ]
   },
   {
@@ -22538,7 +22578,8 @@
     "audit/function-index/dos-overlay-13.md",
     "audit/function-index/pc98-overlay-32.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
-    "spec/759-combatant-xy-lookup-and-bank-select-bit.md"
+    "spec/759-combatant-xy-lookup-and-bank-select-bit.md",
+    "spec/777-item-append-and-area-save-sweep.md"
    ]
   },
   {
@@ -31180,6 +31221,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-08.md",
+    "audit/function-index/pc98-overlay-08.md",
     "spec/748-cloud-effect-dispel-pair.md",
     "spec/749-combat-teardown-and-battlefield-grid.md",
     "spec/769-combat-main-loop.md"
@@ -31829,6 +31871,7 @@
    "note": "士氣判定(retf 4)：兩段訊息 CS:1385h 'は退散させられた。' 與 CS:1398h 'は降伏した。'。p^[18Eh]^[10h] 非 0 走第一條；否則要 p^[0F7h] \u003e 7Fh，取 (and 7Fh)*2(\u003e66h 歸 0)，再與受傷百分比 100−(p^[1A5h]*100 div p^[78h]) 及 100−DS:7F09h^[58Ch] 兩次比較，最後 a \u003c= b div 2 或 p^[13h] \u003e 5 決定結局。兩條路都設 p^[18Eh]^[14h]:=1。⚠ 舊 DS:0A03Ch 存進 [bp-3] 後整支沒再讀(死存放，不會還原)",
    "citations": [
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-09.md",
     "spec/758-morale-field-0f7h-round-trip.md"
    ]
   },
@@ -32150,6 +32193,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md"
    ]
   },
@@ -32167,6 +32211,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -32223,6 +32268,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -32243,6 +32289,7 @@
    "note": "與 DOS overlay-10:0491h（entry#9）助憶碼序列完全相同，語意同該筆：八組寫死的參數(retf 2)：DS:4A0Eh = 1 時叫 本模組 0048h 四次 —(3,0,5)、(4,0,5)、(3,1,0Ah)、(4,1,0Ah)；否則四組第三欄全用 16h。原始碼是八行手寫呼叫不是迴圈，這 24 個數字要當資料照抄 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/771-extra-attacks-and-weapon-class-whitelist.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
@@ -32261,6 +32308,7 @@
    "state": "待解讀",
    "citations": [
     "audit/function-index/dos-overlay-10.md",
+    "audit/function-index/pc98-overlay-10.md",
     "spec/776-first-person-view-scan-and-ega-rect-fill.md"
    ]
   },
@@ -36988,7 +37036,7 @@
     "audit/function-index/dos-overlay-14.md",
     "audit/function-index/dos-overlay-22.md",
     "audit/function-index/dos-overlay-23.md",
-    "spec/760-item-effect-flag-clear-and-file-exists.md"
+    "audit/function-index/pc98-overlay-22.md"
    ]
   },
   {
@@ -40671,6 +40719,7 @@
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
    "note": "與 DOS overlay-20:0549h（entry#9）助憶碼序列完全相同，語意同該筆：兩位數補零(retf 2)：先 14Dh:0052h 把數值轉成字串，n \u003c 0Ah(無號)時在前面接上 CS:0547h 的 '0'，最後 0A54h:0680h(緩衝A, 緩衝B, 1, 2) 取固定寬度再寫回輸出參數。⚠ 補的是 ASCII '0'，換全形數字會讓寬度計算不一致 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "audit/function-index/pc98-overlay-20.md",
     "spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md"
    ]
   },
@@ -44480,9 +44529,9 @@
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-13.md",
+    "audit/function-index/pc98-overlay-13.md",
     "context/50-log-2026-08-09-13.md",
-    "project-status.md",
-    "spec/525-pc98-tempsearch-display-state.md"
+    "project-status.md"
    ]
   },
   {
@@ -47733,9 +47782,9 @@
    "Module": "overlay-06",
    "Unit": "SHOP",
    "Functions": 6,
-   "Read": 2,
+   "Read": 3,
    "NotBlocking": 0,
-   "Todo": 4,
+   "Todo": 3,
    "Fragment": 0,
    "CodeBytes": 2146,
    "Undefined": 274,
@@ -47778,9 +47827,9 @@
    "Module": "overlay-09",
    "Unit": "COMPTACT",
    "Functions": 38,
-   "Read": 7,
+   "Read": 8,
    "NotBlocking": 0,
-   "Todo": 9,
+   "Todo": 8,
    "Fragment": 22,
    "CodeBytes": 7219,
    "Undefined": 92,

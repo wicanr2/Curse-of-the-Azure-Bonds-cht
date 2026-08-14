@@ -9,7 +9,7 @@
 
 ## DOS
 
-模組 37／函式 1386：已解讀 644、不阻塞 133、邊界碎片 249、待解讀 360；已定義程式碼 260651 bytes，未定義 16065 bytes。
+模組 37／函式 1386：已解讀 646、不阻塞 133、邊界碎片 249、待解讀 358；已定義程式碼 260651 bytes，未定義 16065 bytes。
 
 | 模組 | 原始單元 | 函式 | 已解讀 | 不阻塞 | 碎片 | 待解讀 | 程式碼 | 未定義 | 明細 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
@@ -20,10 +20,10 @@
 | overlay-03 | PROTECT | 3 | 1 | 0 | 1 | 1 | 834 | 384 | [明細](function-index/dos-overlay-03.md) |
 | overlay-04 | TEMPLE | 14 | 2 | 0 | 1 | 11 | 3435 | 340 | [明細](function-index/dos-overlay-04.md) |
 | overlay-05 | POSTCOM | 17 | 4 | 0 | 3 | 10 | 5057 | 555 | [明細](function-index/dos-overlay-05.md) |
-| overlay-06 | SHOP | 6 | 2 | 0 | 0 | 4 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
+| overlay-06 | SHOP | 6 | 3 | 0 | 0 | 3 | 2146 | 274 | [明細](function-index/dos-overlay-06.md) |
 | overlay-07 | ECL2 | 41 | 19 | 0 | 8 | 14 | 8745 | 191 | [明細](function-index/dos-overlay-07.md) |
 | overlay-08 | COMBAT | 21 | 7 | 0 | 7 | 7 | 4243 | 343 | [明細](function-index/dos-overlay-08.md) |
-| overlay-09 | COMPTACT | 38 | 7 | 0 | 22 | 9 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
+| overlay-09 | COMPTACT | 38 | 8 | 0 | 22 | 8 | 7219 | 92 | [明細](function-index/dos-overlay-09.md) |
 | overlay-10 | COMPREP | 38 | 11 | 0 | 14 | 13 | 6727 | 43 | [明細](function-index/dos-overlay-10.md) |
 | overlay-11 | INIT | 4 | 2 | 0 | 1 | 1 | 2236 | 743 | [明細](function-index/dos-overlay-11.md) |
 | overlay-12 | EFFPROCS | 152 | 121 | 0 | 27 | 4 | 12862 | 455 | [明細](function-index/dos-overlay-12.md) |

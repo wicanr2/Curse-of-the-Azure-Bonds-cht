@@ -38,7 +38,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `2A42` | sub_2A42 | — | 465 | 193 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `2C57` | sub_2C57 | — | 793 | 307 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `2FA9` | sub_2FA9 | — | 687 | 269 | 1 | 4 | ✓ | 待解讀 | — | — | — |
-| `3258` | sub_3258 | — | 132 | 45 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 | audit/function-index/dos-overlay-19.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/767-ac-display-sign-and-trade-overload.md |
+| `3258` | sub_3258 | — | 132 | 45 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/762-ega-glyph-blit-and-movement-rate.md<br>拿不拿得下(retf 8)：角色^[14Ch] > 0Fh(物品數上限 16)就超過；w := 物品^[37h]，物品^[39h] > 0 時再乘上去(單位重量×數量)；上限 := <呼叫>(角色) + 5DCh(1500)；角色^[187h](累計負重) + w > 上限(無號)也算超過 | audit/function-index/dos-overlay-19.md<br>audit/function-index/pc98-overlay-19.md<br>spec/762-ega-glyph-blit-and-movement-rate.md<br>spec/767-ac-display-sign-and-trade-overload.md<br>spec/777-item-append-and-area-save-sweep.md |
 | `32DC` | sub_32DC | — | 207 | 71 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `33AB` | sub_33AB | — | 118 | 44 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `3474` | sub_3474 | — | 381 | 158 | 2 | 4 | ✓ | 待解讀 | — | — | — |
