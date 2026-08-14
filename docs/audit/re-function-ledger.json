@@ -22693,6 +22693,24 @@
    "level": "exact",
    "spec": "813",
    "note": "同 DOS overlay-20:00C9Ch（module_align 對齊，助憶碼序列完全相同）。差異全是位址與字串：DS:9598h↔650Ah、[di−59A1h]↔[di+7573h]、DS:7BDAh↔4AFCh、DS:0A66Ah↔757Eh、DS:0A654h/656h/658h/65Ah↔7568h/756Ah/756Ch/756Eh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 1871,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "戰鬥員實際移動一格(retf 6，(方向, 角色))：新座標 = DS:66A3h/66A4h 的目前座標 + DS:2694h/269Dh 的方向位移。★花費就是 spec 837 的試算式：地形表 DS:26A2h 的 +0 欄 ×2（正向）／×3（斜向），從 +18Dh^[6] 扣，不夠就歸零。擦掉舊位置、更新 DS:66A3h/66A4h、畫新位置（圖號 3 或 1，看 +198h），全部由 DS:75E6h（spec 839 寫入的顯示旗標）決定要不要畫。移動後清 +18Dh^[0Fh] 與 ^[12h]，最後 +196h = 0 或 150Ah+4 不成立就把移動力歸零"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 1934,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "同 DOS overlay-13:0074Fh（module_align 對齊，助憶碼序列完全相同）。差異全是位址：[di−68C3h/68C2h]↔[di+66A3h/66A4h]、DS:489Eh/48A7h↔2694h/269Dh、DS:48ACh↔26A2h、DS:9F2Ch↔6E92h、+18Eh↔+18Dh、+199h↔+198h、DS:0A878h↔75E6h"
   }
  ]
 }

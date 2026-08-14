@@ -12708,7 +12708,10 @@
    "callers": 0,
    "calls": 3,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "戰鬥員實際移動一格(retf 6，(方向, 角色))：新座標 = DS:66A3h/66A4h 的目前座標 + DS:2694h/269Dh 的方向位移。★花費就是 spec 837 的試算式：地形表 DS:26A2h 的 +0 欄 ×2（正向）／×3（斜向），從 +18Dh^[6] 扣，不夠就歸零。擦掉舊位置、更新 DS:66A3h/66A4h、畫新位置（圖號 3 或 1，看 +198h），全部由 DS:75E6h（spec 839 寫入的顯示旗標）決定要不要畫。移動後清 +18Dh^[0Fh] 與 ^[12h]，最後 +196h = 0 或 150Ah+4 不成立就把移動力歸零"
   },
   {
    "platform": "dos",
@@ -16984,6 +16987,7 @@
    "note": "把遊戲時鐘往前推：讀出 DS:4F99h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-20.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md",
     "spec/793-game-clock-units-and-money-transfer.md"
    ]
@@ -17004,6 +17008,7 @@
    "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
    "note": "倒數扣時間（DS:7566h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:3E2Ah）：索引 1..4 全為 0 就直接返回；數量 \u003e word[7566h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j \u003c 5），j = 5 就 FillChar(DS:7566h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[7566h+k*2])、word[7566h+(k-1)*2] += word[3E2Ah+(k-1)*2]，然後重試；夠減就 word[7566h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
@@ -17083,6 +17088,7 @@
    "note": "每 288 次才做一次的整隊回復(retf 2)：inc(DS:757Ch)，未達 120h(288)就離開；否則走隊伍鏈對每人叫 \u003c呼叫\u003e(1, 角色)，參數非 0 時再叫本模組 05D4h(0)，畫出 CS:0848h 'The Whole Party Is Healed'(25 字元，x=1、y=13h、色 0Ah)，最後計數器歸零。⚠ 訊息寫死在 x=1、沒有先清行，換短的譯文會留下殘影",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-20.md",
     "audit/function-index/pc98-overlay-20.md",
     "spec/768-script-arithmetic-opcodes-and-save-size.md"
    ]
@@ -17150,6 +17156,7 @@
    "spec": "docs/spec/791-priority-pick-and-second-countdown.md",
    "note": "每拍遞減 DS:7573h + i（i 由 1 起算跟著 DS:650Ah 鏈）：\u003e 0 就 dec；若 DS:7573h+i = 0 且 角色 +72h = 0，則 旗標:=0、r := 本模組 09DFh(角色,@旗標)、r=0 再試 091Dh，byte[7573h+i] := r*3。與 0BB6h（每 12 拍、旗標初值 1）是同一組的兩半。retf。spec 791",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
     "spec/791-priority-pick-and-second-countdown.md",
     "spec/792-memorization-timer-closed.md"
    ]
@@ -17193,6 +17200,7 @@
    "spec": "813",
    "note": "休息主迴圈(retf 2，(顯示旗標))：先把 DS:7573h+i 逐隊員清 0、FillChar(DS:4AFCh, 48h, 1)。迴圈跑到四個剩餘時間計數器 DS:7568h/756Ah/756Ch/756Eh 全歸零為止；顯示模式下按鍵會問 'Stop Resting? '（PC-98 '休息を中断しますか？'），答 Y 就停。每一圈叫 45Eh(1,5) 推進時間、每 5 圈重繪一次，再走 3B9h/862h/B05h/BB6h。★隨機遭遇：bank^[5A4h] 是檢定週期（DS:4FC3h 計數）、bank^[5A6h] 是 1d100 的機率門檻，中了就印 'Your repose is suddenly interrupted!' 並回傳 1",
    "citations": [
+    "audit/function-index/pc98-overlay-20.md",
     "audit/function-strings.md"
    ]
   },
@@ -37628,7 +37636,10 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "837",
+   "note": "同 DOS overlay-13:0074Fh（module_align 對齊，助憶碼序列完全相同）。差異全是位址：[di−68C3h/68C2h]↔[di+66A3h/66A4h]、DS:489Eh/48A7h↔2694h/269Dh、DS:48ACh↔26A2h、DS:9F2Ch↔6E92h、+18Eh↔+18Dh、+199h↔+198h、DS:0A878h↔75E6h",
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-24.md",
@@ -43043,6 +43054,7 @@
    "note": "把遊戲時鐘往前推：讀出 DS:7F05h^[18Ch + i*2] 共 7 個 word 到區域陣列（原文 (i+4BC6h)*2+6A00h 在 16 位元下迴繞成 18Ch+i*2），for k := 1 to 次數 do begin inc(暫存[索引]); 本模組 02D8h(@暫存) 正規化進位 end，再把結果寫回全域，最後呼叫 本模組 0020h(索引, 次數)。retf 4 = (索引, 次數)。spec 790／793",
    "citations": [
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-20.md",
     "spec/790-attack-ally-confirm-and-counter-animation.md",
     "spec/793-game-clock-units-and-money-transfer.md"
    ]
@@ -43063,6 +43075,7 @@
    "spec": "docs/spec/802-countdown-clock-and-spell-target-gate.md",
    "note": "倒數扣時間（DS:0A652h 起 7 個 word，單位與 spec 793 的遊戲時鐘相同，共用進位表 DS:6804h）：索引 1..4 全為 0 就直接返回；數量 \u003e word[0A652h+索引*2]（無號）時借位——j 由 索引+1 往上找第一個非 0（上界 j \u003c 5），j = 5 就 FillChar(DS:0A652h, 0Eh, 0) 並把 數量 歸 0，否則 for k := j downto 索引+1 do dec(word[0A652h+k*2])、word[0A652h+(k-1)*2] += word[6804h+(k-1)*2]，然後重試；夠減就 word[0A652h+索引*2] -= 數量 並呼叫 本模組 0385h。retf 4 = (索引, 數量)。spec 802",
    "citations": [
+    "audit/function-index/dos-overlay-20.md",
     "spec/802-countdown-clock-and-spell-target-gate.md"
    ]
   },
@@ -50728,9 +50741,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 58,
-   "Read": 32,
+   "Read": 33,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 15,
    "CodeBytes": 17022,
    "Undefined": 722,
@@ -51283,9 +51296,9 @@
    "Module": "overlay-13",
    "Unit": "COMSTUFF",
    "Functions": 72,
-   "Read": 34,
+   "Read": 35,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 27,
    "CodeBytes": 17459,
    "Undefined": 905,
