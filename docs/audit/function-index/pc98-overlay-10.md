@@ -7,12 +7,12 @@ offset（base 0），resident executable 為 IDA linear address。
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
 | `0000` | sub_0 | LOADCOMPREP | 72 | 18 | 0 | 9 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-23.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md |
 | `0048` | sub_48 | — | 132 | 55 | 4 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/771-extra-attacks-and-weapon-class-whitelist.md |
-| `00CC` | sub_CC | — | 554 | 208 | 1 | 2 | ✓ | 待解讀 | — | — | — |
+| `00CC` | sub_CC | — | 554 | 208 | 1 | 2 | ✓ | 待解讀 | — | — | spec/776-first-person-view-scan-and-ega-rect-fill.md |
 | `02F6` | sub_2F6 | — | 130 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
-| `0378` | sub_378 | — | 116 | 54 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h) | audit/function-index/pc98-overlay-10.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md |
-| `03EC` | sub_3EC | — | 165 | 78 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `0491` | sub_491 | — | 125 | 73 | 1 | 2 | ✓ | 待解讀 | — | — | spec/771-extra-attacks-and-weapon-class-whitelist.md |
-| `050E` | sub_50E | — | 472 | 196 | 1 | 3 | ✓ | 待解讀 | — | — | — |
+| `0378` | sub_378 | — | 116 | 54 | 5 | 1 | ✓ | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序 | audit/function-index/pc98-overlay-10.md<br>spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>spec/776-first-person-view-scan-and-ega-rect-fill.md |
+| `03EC` | sub_3EC | — | 165 | 78 | 1 | 2 | ✓ | 待解讀 | — | — | spec/776-first-person-view-scan-and-ega-rect-fill.md |
+| `0491` | sub_491 | — | 125 | 73 | 1 | 2 | ✓ | 待解讀 | — | — | spec/771-extra-attacks-and-weapon-class-whitelist.md<br>spec/776-first-person-view-scan-and-ega-rect-fill.md |
+| `050E` | sub_50E | — | 472 | 196 | 1 | 3 | ✓ | 待解讀 | — | — | spec/776-first-person-view-scan-and-ega-rect-fill.md |
 | `06E6` | sub_6E6 | — | 471 | 185 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `08BD` | sub_8BD | — | 196 | 89 | 1 | 8 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0981` | sub_981 | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | strong inference | docs/spec/572-resident-service-functions.md<br>與 dos overlay-10:098Dh 助憶碼序列完全相同（12 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認 | — |

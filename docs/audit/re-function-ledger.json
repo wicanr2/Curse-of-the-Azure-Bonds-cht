@@ -19299,7 +19299,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(方向, y, x)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(反向, y2, x2)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對"
+   "note": "牆面從兩側各查一次(retf 6)：反向 := (方向+4) mod 8；a := 巢狀程序 02F6h(x, y, 方向)；x2/y2 := x/y + byte[2694h/269Dh + 方向]；b := 02F6h(x2, y2, 反向)；回 a or b。呼叫多推的 bp 是 Turbo Pascal 巢狀程序的靜態鏈。方向共 8 個，dx/dy 表與 spec 748 雲霧形狀用的是同一對。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序"
   },
   {
    "platform": "pc98",
@@ -19308,7 +19308,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md",
-   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)"
+   "note": "牆面從兩側各查一次(retf 6)：54 條指令與 DOS overlay-10:0378h 只差 dx/dy 表位址(489Eh/48A7h)。更正：本支的宣告順序是 (x, y, 方向)，先前寫成推入順序"
   },
   {
    "platform": "dos",
@@ -19579,6 +19579,24 @@
    "level": "exact",
    "spec": "docs/spec/775-take-menu-and-palette-writer.md",
    "note": "寫入 16 組調色盤(近呼叫 retn，SI 指向 48 bytes 資料)：for i := 0Fh downto 0 — out 0A8h,i 後依序 out 0AAh/0ACh/0AEh(綠紅藍)，SI 往前遞增。⚠ 索引遞減而資料遞增，資料第一組對應索引 15。spec 755 的 overlay-11:07CDh 呼叫的就是這一段"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 2249,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/776-first-person-view-scan-and-ega-rect-fill.md",
+   "note": "第一人稱視野掃描(retf，無參數)：兩層迴圈以全域 DS:4A0Ch(dx，−6..+6)與 DS:4A0Dh(dy，−2..+2)掃 13×5 = 65 格；每格 x := DS:720Fh + dx、y := DS:7210h + dy，對四個方向(6 西/0 北/2 東/4 南)各叫 本模組 0378h 取牆旗標，分別存進 DS:4A0Eh(北)/4A0Fh(西)/4A10h(東)/4A11h(南)；接著四支巢狀繪圖程序(03ECh/0491h/050Eh/06ECh，都以 push bp 傳靜態鏈)，再 DS:4A15h := <呼叫>(x,y) and 40h、本模組 00CCh()。⚠ 迴圈計數器是全域，不可重入。spec 771 的 0491h 判的 DS:4A0Eh 就是北面牆旗標"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 87261,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/776-first-person-view-scan-and-ega-rect-fill.md",
+   "note": "EGA 矩形填色(retf 0Ch)：存下 unk_211A2h(目前色)後設色；位移 := 上列*28h*8 + 左欄、列數 := (下列−上列+1)*8−1；設 Graphics Mode := 2(Write Mode 2)，逐列 FillChar(unk_211A0h:位移, 右欄−左欄+1, 填充值)、位移 += 28h；結束把 Mode 歸零並還原顏色。上下界以字元列為單位(×8 換掃描線)、左右界以位元組為單位，每列 40 bytes(320 像素寬)"
   }
  ]
 }
