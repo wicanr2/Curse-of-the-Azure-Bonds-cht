@@ -19912,6 +19912,60 @@
    "level": "exact",
    "spec": "docs/spec/783-cross-platform-pairs-first-batch.md",
    "note": "隊上有沒有人符合(retf 2)：與 DOS overlay-14:0288h 43 條同形，鏈頭 DS:9598h、next +18Ah、遠呼叫 15Dh:52h(差異 3 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 1289,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "讀戰場兩個平面(retf 0Ch)：座標在 0..31h × 0..18h(即 50×25)時 輸出A^ := 地圖^[y*32h+x+7]、輸出B^ := byte[6857h + y*32h + x]，否則兩者都設 0。可證 DS:6857h 起有一塊與地圖同尺寸(1250 bytes)的靜態陣列，索引式相同但沒有 7 bytes 表頭"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 2037,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "讀戰場兩個平面(retf 0Ch)：與 DOS overlay-32:0509h 43 條同形，地圖 DS:9F2Ch、靜態陣列 [di−670Fh](＝98F1h)(差異 2 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 758,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "巢狀的牆面查詢(retf 8 = (x, y, 方向) + 最低位的靜態鏈 word，本體從不讀該 word)：座標在 0..0Fh 時依兩支呼叫的結果回 1/0/3；界外時若 y 等於隊伍 y(DS:7210h)且方向是 2 或 6 回 0，否則回 1。⚠ 界外不是一律當牆。這就是 spec 765 的 0378h 用 push bp 呼叫的那支"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 758,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "巢狀的牆面查詢(retf 8)：與 DOS overlay-10:02F6h 49 條同形，隊伍 y 在 DS:0A2AAh(差異 3 條，已逐條列出)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 11810,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "隊伍血量百分比(retf，無參數)：走隊伍鏈，陣營(+197h)為 1 的成員 — +196h 非 0 才把 +1A4h(目前 HP)計入，+78h(最大 HP)一律計入；最大 > 0 時 DS:75D9h := ((目前*14h) div 最大)*5，即 0..100 以 5 為級距。⚠ 最大為 0 時整個不寫，保留舊值；+196h 為 0 的成員會把百分比往下拉"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 11412,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/784-cross-platform-pairs-second-batch.md",
+   "note": "隊伍血量百分比(retf)：與 DOS overlay-13:2E22h 49 條同形，欄位全部 +1(+198h/+197h/+1A5h/+18Ah)，結果存 DS:0A86Bh — 即 spec 758 士氣判定讀的那個值(差異 6 條，已逐條列出)"
   }
  ]
 }
