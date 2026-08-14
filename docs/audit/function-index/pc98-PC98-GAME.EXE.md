@@ -70,7 +70,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `13B55` | sub_13B55 | — | 159 | 56 | 1 | 2 |  | 已解讀 | exact | 947<br>釋放一個表面(far, retf 4)：表面指標^ = NIL 就離開；甲 := s^[8] × s^[11h](張數 × 每張位元組)、乙 := s^[0] × s^[2] × s^[8](高 × 寬 × 張數)；(s^[2] > 16h) 且 s^[13h] ≠ NIL 就先 FreeMem 遮罩緩衝 乙 bytes；再 FreeMem(表面, 甲 + 17h + 乙) 並把指標寫回 NIL。標頭 17h 與 +0/+2/+8/+11h/+13h 五個欄位與 spec 934(DOS 配置端)逐格對應。⚠但算式不一樣——DOS 端 GetMem 只算 總量 + 17h，本支多算一個 高×寬×張數，釋放遮罩也多一道 寬 > 16h 的門檻；本規格沒讀 PC-98 側的配置函式，不宣稱兩邊一致 | — |
 | `13BF4` | sub_13BF4 | — | 542 | 224 | 1 | 3 |  | 待解讀 | — | — | — |
 | `13E1B` | sub_13E1B | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
-| `13E22` | sub_13E22 | — | 138 | 60 | 1 | 1 |  | 待解讀 | — | — | — |
+| `13E22` | sub_13E22 | — | 138 | 60 | 1 | 1 |  | 已解讀 | exact | 949<br>★三平面的表面貼圖(near, retn 0Eh = (目的表面, 來源表面, 張號, 列, 欄))：di = 目的 + 17h + (列 shl 3) × 目的^[2] + 欄(列的單位是 8 條掃描線)、si = 來源 + 17h + 來源^[11h] × 張號；三層迴圈——外層固定 3 次(三個平面)、中層 來源^[0] 列、內層 來源^[2] div 2 個 word 逐 word 複製，每列跳 (目的^[2] − 來源^[2])，每個平面跳 目的^[0] × 目的^[2]。目的表面裡三個平面連續存放；來源 si 不重設所以來源的一張圖也是三平面連著。⚠每列以 word 為單位，寬是奇數時最後一個 byte 不會被搬。PC-98 的 16 色是 4 個平面，本支只動三個 | — |
 | `13EAC` | sub_13EAC | — | 197 | 85 | 1 | 1 |  | 待解讀 | — | — | — |
 | `13F71` | sub_13F71 | — | 282 | 108 | 1 | 4 |  | 待解讀 | — | — | — |
 | `1408B` | sub_1408B | — | 60 | 31 | 1 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：讀寫 `[bp-N]` 區域變數但沒有 `sub sp` 配置框架；這是別的函式被切開的後半段，不是完整函式（body 共 60 bytes，已逐條讀完） | — |
@@ -100,7 +100,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16F81` | sub_16F81 | — | 78 | 45 | 1 | 4 |  | 已解讀 | exact | docs/spec/649-japanese-input-buffer.md<br>把緩衝畫到文字 VRAM:bx 由 29A4h(不是輸入緩衝的 28A4h)起,迴圈跑 byte_1ED34 次(容量而非目前字數),為 0 的格子補 8140h(全形空白)故一定畫成固定寬度欄位;每字經 17186h(SJIS→JIS)、ah -= 20h 後寫進相鄰兩格,左半 and 7Fh、右半 or 80h——與 16966h 同一套慣例 | — |
 | `16FCF` | sub_16FCF | — | 29 | 17 | 1 | 0 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>清文字屬性平面 0A200h:ax 由 byte_1ED35 重複兩次,cx := byte_1ED34 × 2(每字佔兩格),rep stosw。屬性值直接取全域,不像 17D72h/169B6h 現算 | — |
 | `16FEC` | sub_16FEC | — | 110 | 63 | 1 | 3 |  | 待解讀 | — | — | — |
-| `1705A` | sub_1705A | — | 107 | 61 | 1 | 3 |  | 待解讀 | — | — | — |
+| `1705A` | sub_1705A | — | 107 | 61 | 1 | 3 |  | 已解讀 | exact | 949<br>把按鍵設定字串展開成一張 word 表(near)：先把 ds:28A4h 起 byte_1ED34h 個 word 清 0，再走 遠指標(dword_1EB2Dh) 那個長度前綴的位元組串——每項先用 sub_17172h 判單/雙 byte，單 byte 就直接當 word 存(高位補 0)；雙 byte 則取第二個 byte 組成 ax，用 sub_17148h 在 ds:2AADh 查出編號 k，再取 word[2AE3h + (k−1)×2] 存進去並多吃一個 byte。★按鍵對應是資料驅動的，展開後的表就是 spec 945 的 16E70h 分派迴圈所用的那一類 | — |
 | `170C5` | sub_170C5 | — | 90 | 57 | 1 | 2 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>把輸入緩衝轉成輸出字串:先在目標寫一個結尾 0,再逐字搬——高位元組為 0 直接搬一個 byte;否則用整個 word 查 2AE2h 得序號 i,再取 word[2AAEh + (i-1)×2] 寫兩個 byte。⚠ 兩張表平行:2AE2h 存緩衝表示法、2AAEh 存輸出用的 Shift-JIS 碼,所以緩衝裡存的不是最終碼。查表失敗(i=0)時 (i-1)×2 = -2 會讀到 2AAEh 前面兩個 byte——函式沒有檢查 | — |
 | `1711F` | sub_1711F | — | 41 | 24 | 3 | 1 |  | 已解讀 | exact | docs/spec/650-input-table-lookup-pair.md<br>表查詢的 byte 版:表格式是「一個 byte 的筆數 + n 個 byte」,呼叫端把表放 DX、值放 BX(進來 xchg bx,dx對調),回傳 1 起算序號、找不到回 0。與 17148h(word 版)是同一種表的兩個寬度版本 | — |
 | `17148` | sub_17148 | — | 42 | 25 | 4 | 1 |  | 已解讀 | exact | docs/spec/646-sjis-to-jis-conversion.md<br>字表線性查詢:表格格式是「一個 byte 的筆數 + 連續的 word」,在 ES:BX 指的表裡找 DX,回傳 1 起算的序號,找不到回 0。因為 0 專門表示找不到,表最多 255 筆。比較是 16-bit 整字比不是逐 byte | — |
