@@ -26446,6 +26446,15 @@
    "level": "exact",
    "spec": "1087",
    "note": "ECL 27h TREASURE：READVAR(8)，operand 2..7 存進 DS:6F70h + i*4(32-bit)。operand8 分三段：<80h 從 ITEM<資料片>.dax 讀第 n 塊，每 3Fh=63 bytes 一筆(物品節點)串進 DS:6F8Ch 鏈(next +2Ah)，讀不到就印 Unable to find item file 並結束程式；=0FFh 什麼都不做；>=80h 隨機產生 n−80h 件(d100 巢狀分段 → 類型碼 → overlay-21 entry#18)。⚠隨機表 56h..5Ch 與 5Bh..62h 兩段重疊，後者實際只涵蓋 93..98"
+  },
+  {
+   "platform": "pc98",
+   "module": "PC98-GAME.EXE",
+   "ea": 75167,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1088",
+   "note": "PC-98 開機序列 + 初期設定畫面(retf)。OvrInit(GAME.OVR) → 依 OvrResult 選 32KB/16KB overlay 緩衝 → OvrSetBuf；不足印「メモリが足りません」、OvrResult 不是 0FFFBh/0 印「オーバーレイ・エラー」。★★★兩片軟碟互為資料碟：FExpand(*.exe) 取路徑，首字 >= C 用執行檔目錄、= A 用 B:\\、否則 A:\\。讀 curse.cfg(兩個字元 + 一行字串)，再用 Ptr(0060h, 6Ch + 磁碟編號) 檢查磁碟機種類必須在 90h..94h。★★★初期設定畫面用 Assign(檔案,'')+Rewrite 寫主控台，PC-98 ANSI 控制碼(ESC= 後兩 byte 是 列+20h/欄+20h)，四個開關 BGM(unk_24E73h)/効果音(unk_24DE8h)/範囲表示(unk_24E7Eh)/液晶(unk_24E82h) 顯示在第 66 欄，迴圈到 Enter。★四個 Ctrl 熱鍵本支不處理 ⇒ 由 resident 取鍵常式 17E3:0206h 全域攔截，遊戲中隨時可切。★resident 也能用 annotated_dump.py，字串用 spec 1046 位移公式從 EXE 取"
   }
  ]
 }
