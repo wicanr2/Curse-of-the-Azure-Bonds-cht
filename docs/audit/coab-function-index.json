@@ -22104,6 +22104,7 @@
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
    "note": "與 pc98 overlay-23:16BCh 助憶碼序列完全相同（30 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：CONVERTSPECTOSTR(rec, out_pct, out_str):取 rec^[3] and 7Fh;\u003c=101 則 str=18、pct=值-1;否則 str=值-100、pct=0。角色記錄 +3 是力量編碼欄位,最高位是旗標 ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
    "citations": [
+    "spec/1079-attribute-recalc-dos.md",
     "spec/576-adnd-strength-encoding-and-effect-removal.md"
    ]
   },
@@ -22140,7 +22141,10 @@
    "state": "已解讀",
    "level": "strong inference",
    "spec": "docs/spec/576-adnd-strength-encoding-and-effect-removal.md",
-   "note": "與 pc98 overlay-23:1756h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：同 DONEWSTRENGTH 的比較規則,對 SS 上的區域結構操作:p[-2]:p[-1] 為力量、p[-4]:p[-3] 為百分位,較大者寫回 p[-1]/p[-3](當前值同步到最大值欄位) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認"
+   "note": "與 pc98 overlay-23:1756h 助憶碼序列完全相同（26 條指令，且該序列在兩邊各自的模組內唯一），語意同該筆：同 DONEWSTRENGTH 的比較規則,對 SS 上的區域結構操作:p[-2]:p[-1] 為力量、p[-4]:p[-3] 為百分位,較大者寫回 p[-1]/p[-3](當前值同步到最大值欄位) ⚠ 運算元中的 DS／overlay-local 位址兩平台不同，引用位址前須各自確認",
+   "citations": [
+    "spec/1079-attribute-recalc-dos.md"
+   ]
   },
   {
    "platform": "dos",
@@ -22158,6 +22162,7 @@
    "spec": "docs/spec/980-constitution-hp-bonus-and-breath-weapon.md",
    "note": "體質 HP 加成累計：DS:3EB9h 是各職業擲骰等級上限（表值−1，AD\u0026D 全中），戰士類 17+ 走高階欄，遊俠多一個骰",
    "citations": [
+    "spec/1079-attribute-recalc-dos.md",
     "spec/980-constitution-hp-bonus-and-breath-weapon.md",
     "spec/989-pc98-beam-walk-and-acid-area.md"
    ]
@@ -22188,10 +22193,14 @@
    "callers": 1,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1079",
+   "note": "屬性重算(retf 6，(屬性: word, 角色: 遠指標))。⚠IDA 把本支當 near，arg_N 編號整體偏移 2。★★★六個屬性欄位成對：+10h+i*2 是基準值、+11h+i*2 是目前值(0 力 1 智 2 睿 3 敏 4 體 5 魅)。走物品鏈套加成：t=5 把力量設成 18..24(3Dh=0 另給百分比 100 = 18/00)、t=8 是通用 +1 且只在基準\u003c18 時生效(3Dh 指定哪個屬性)、t=6 +1 體質 -1 魅力、t=0Ah -2 敏捷、t=2 依基準敏捷分段 +4/+2/+1。★★★力量 18/xx：超過 18 每點換 10 個百分點上限 100，且只有職業槽 2/3/4(戰士/聖騎士/遊俠)有等級才給 ⇒ 第四次確認職業槽順序。★★★屬性 4 連帶重算最大 HP(+78h 基礎 +12Ch、目前 HP +1A4h、名望等級表 DS:3EB9h、多職業取平均)，體質\u003e=20 自動掛效果碼 3Eh(形狀上是再生)、掉回去自動移除",
    "citations": [
     "audit/embedded-strings.md",
-    "audit/function-index/dos-overlay-23.md"
+    "audit/function-index/dos-overlay-23.md",
+    "spec/1079-attribute-recalc-dos.md"
    ]
   },
   {
@@ -53791,9 +53800,9 @@
    "Module": "overlay-23",
    "Unit": "EFFECTS",
    "Functions": 40,
-   "Read": 27,
+   "Read": 28,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 12,
    "CodeBytes": 9183,
    "Undefined": 376,
