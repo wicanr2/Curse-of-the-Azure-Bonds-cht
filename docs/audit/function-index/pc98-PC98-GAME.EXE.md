@@ -67,7 +67,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12E3D` | sub_12E3D | — | 580 | 211 | 2 | 2 |  | 待解讀 | — | — | — |
 | `13231` | sub_13231 | — | 133 | 54 | 2 | 0 |  | 已解讀 | exact | docs/spec/765-bit-reverse-two-sided-wall-check-and-zero-pad.md<br>byte 的位元反轉(retf 2)：八段展開，bit0↔bit7、bit1↔bit6、bit2↔bit5、bit3↔bit4，全部用加法(位元互不重疊)。第一項沒先 and 01h，靠只留 byte 得到同樣結果 | — |
 | `139DD` | sub_139DD | — | 376 | 145 | 2 | 4 |  | 待解讀 | — | — | — |
-| `13B55` | sub_13B55 | — | 159 | 56 | 1 | 2 |  | 待解讀 | — | — | — |
+| `13B55` | sub_13B55 | — | 159 | 56 | 1 | 2 |  | 已解讀 | exact | 947<br>釋放一個表面(far, retf 4)：表面指標^ = NIL 就離開；甲 := s^[8] × s^[11h](張數 × 每張位元組)、乙 := s^[0] × s^[2] × s^[8](高 × 寬 × 張數)；(s^[2] > 16h) 且 s^[13h] ≠ NIL 就先 FreeMem 遮罩緩衝 乙 bytes；再 FreeMem(表面, 甲 + 17h + 乙) 並把指標寫回 NIL。標頭 17h 與 +0/+2/+8/+11h/+13h 五個欄位與 spec 934(DOS 配置端)逐格對應。⚠但算式不一樣——DOS 端 GetMem 只算 總量 + 17h，本支多算一個 高×寬×張數，釋放遮罩也多一道 寬 > 16h 的門檻；本規格沒讀 PC-98 側的配置函式，不宣稱兩邊一致 | — |
 | `13BF4` | sub_13BF4 | — | 542 | 224 | 1 | 3 |  | 待解讀 | — | — | — |
 | `13E1B` | sub_13E1B | — | 7 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
 | `13E22` | sub_13E22 | — | 138 | 60 | 1 | 1 |  | 待解讀 | — | — | — |
@@ -142,7 +142,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `18571` | sub_18571 | — | 121 | 48 | 2 | 1 |  | 已解讀 | exact | 945<br>抓走最大的一塊 DOS 記憶體(near)：先清四個全域，int 21h AH=48h BX=0FFFFh 故意失敗以取得最大可用段數存 word_24184h，再用那個大小真的配置；失敗或 AX ≤ 2 就回 0。成功則 word_24182h = 池起始段、word_24186h = 起始 + 2、word_24188h = 段數 − 2、word_2418Ah/word_2418Eh 是兩個池的表頭段(各把 +0..+6 四個 word 清 0 = 空鏈) | — |
 | `185EA` | sub_185EA | — | 40 | 18 | 2 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>釋放 DOS 記憶體塊(int 21h AH=49h),對象是 word_24182h;為 0 時直接回 0FFFFh。⚠ 先把 word_24182h 清成 0 再檢查進位旗標——釋放失敗時全域已被清掉,同一塊再也不會被嘗試釋放。回傳慣例與同批另兩支相反:0 成功、0FFFFh 失敗 | — |
 | `18612` | sub_18612 | — | 113 | 52 | 2 | 5 |  | 已解讀 | exact | 945<br>在兩個記憶體池之間搬區塊(near)：用 sub_18767h 找一塊、sub_187AAh 另尋，sub_1883Eh 掛到 word_2418Eh 那個池、sub_18810h 掛到 word_2418Ah；每次都從區塊前一段(MCB)的 +0 讀大小去加減 word_2418Ch/word_24190h 兩個計數。搬進 word_2418Eh 那個池時在 MCB 的 +8 寫魔數 818Eh。兩個池構成『使用中/可回收』的雙鏈 | — |
-| `18683` | sub_18683 | — | 124 | 56 | 2 | 4 |  | 待解讀 | — | — | — |
+| `18683` | sub_18683 | — | 124 | 56 | 2 | 4 |  | 已解讀 | exact | 947<br>把區塊還回記憶體池(near)：sub_187ECh 進位就回 0FFFFh；否則用 sub_1883Eh 從池 A(word_2418Ah)摘下、word_2418Ch 扣掉 MCB^[0]。★若區塊尾端剛好等於 word_24186h(池尾)就直接把池邊界往回縮並把段數加回 word_24188h；否則用 sub_18810h 掛到池 B(word_2418Eh)並把大小加進 word_24190h。兩條路都把 MCB^[8] 的魔數 818Eh(spec 945)清成 0。與 spec 945 的 18612h 是一對 | — |
 | `186FF` | sub_186FF | — | 58 | 30 | 2 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>回傳串列裡最大的一塊,DX 帶回 word_24186h。⚠ 起始值是 word_24188h - 1,所以串列全部比它小時回傳的是那個減一後的值而不是實際最大值 | — |
 | `18767` | sub_18767 | — | 67 | 37 | 1 | 1 |  | 已解讀 | exact | docs/spec/654-overlay-heap-manager.md<br>最佳適配配置:走 word_2418Eh 起的串列(節點以 segment 串接,+0 是大小、+4 是下一塊),剛好夠就立刻採用不再往下找,否則挑剩最少的。找不到時回 0(bx 初值 0FFFFh 加一);找到則回「節點 segment + 1」。無號比較 | — |
 | `187AA` | sub_187AA | — | 66 | 33 | 1 | 1 |  | 已解讀 | exact | docs/spec/655-heap-block-header.md<br>由上往下切的配置:ax+1(多要一段放標頭),word_24188h(剩餘段落數)不足就回 0;否則從 word_24186h(下一個可用 segment)切走,標頭寫 +0 = 大小、+6 = 大小副本、+8 = 魔術數 818Eh,回傳 bx+1(跳過標頭)。單向推進,這支沒有回收路徑 | — |
@@ -202,7 +202,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `197BD` | sub_197BD | — | 50 | 29 | 2 | 4 |  | 已解讀 | exact | docs/spec/660-fourth-sjis-variant.md<br>畫之前先做**有號**範圍檢查(jl):dl < cl 或 dh < ch 就返回,所以座標是有號量、負值被擋掉。al <> 0 時存 cx/dx 到 word_280E8h/280EAh、呼叫 <sub_19825> 與 <sub_198AE>,並把 ch 設成 dh-al+1;最後一律 <sub_19840> | — |
 | `197EF` | sub_197EF | — | 54 | 31 | 1 | 4 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>與 197BDh 幾乎相同(同樣的有號範圍檢查與收尾 sub_19840),差三處:座標先 dec dh 與 dec ch、中間呼叫 sub_19947 而非 sub_198AE、收尾算式是 dh := ch + al - 1 而非 ch := dh - al + 1 | — |
 | `19825` | sub_19825 | — | 27 | 13 | 2 | 0 |  | 已解讀 | exact | docs/spec/661-cursor-and-bios-work-area.md<br>把矩形兩個角換算成起點與長寬:dx -= cx、dx += 101h(兩個 byte 各自加一的寫法)、dh -= al,再重排成 al=左、cx=高、dx=寬、bx=al、di=al+ch。⚠ 101h 是 word 加法,低位元組為 0FFh 時進位會跑進高位元組多加一列;sub dx,cx 的借位同理 | — |
-| `19840` | sub_19840 | — | 110 | 56 | 4 | 4 |  | 待解讀 | — | — | — |
+| `19840` | sub_19840 | — | 110 | 56 | 4 | 4 |  | 已解讀 | exact | 947<br>清一個文字矩形(near)：di = (列 × byte_280DAh + 欄) × 2、寬由 dx − cx + 101h 拆出、si = (欄數 − 寬) × 2 是每列要跳過的距離；★byte_280DAh ≠ 50h(40 欄模式)時 di/寬/si 全部再 shl 1。先在字碼平面(es = word_280D4h = A000h)用 rep stosw 填 ' '，每列前後各叫 sub_19B7Dh/sub_19B9Ch；再 di += word_280D6h(2000h)跳到屬性平面，叫 sub_18FA3h(bh) 後用 stosb + inc di 隔一個寫一個——★屬性平面每格也佔兩個 byte 但只有低位有意義。印證 spec 946 的兩平面共用位移 | — |
 | `198AE` | sub_198AE | — | 153 | 83 | 1 | 4 |  | 待解讀 | — | — | — |
 | `19947` | sub_19947 | — | 174 | 93 | 1 | 4 |  | 待解讀 | — | — | — |
 | `199F5` | sub_199F5 | — | 18 | 12 | 3 | 0 |  | 已解讀 | exact | docs/spec/574-pc98-shiftjis-and-text-vram.md<br>文字 VRAM 位址計算:di := ((di × 50h) + dx) × 2 ⇒ 每列 80 欄、每格 2 bytes | — |
@@ -268,7 +268,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A82A` | sub_1A82A | — | 7 | 4 | 4 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>字元輸出:與 DOS START.EXE:1A716h 逐指令相同(INT 21h AH=06h) | — |
 | `1A8B2` | sub_1A8B2 | — | 24 | 9 | 4 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$basg$qm3Anyt14Word` 逐位元組相同（24 bytes） | — |
 | `1A8CE` | sub_1A8CE | — | 27 | 16 | 9 | 0 |  | 不阻塞 | — | docs/spec/570-cross-platform-rtl-byte-match.md<br>Turbo Pascal RTL：body 與 DOS `START.EXE` 的 `@$brmul$q7Longintt1` 逐位元組相同（27 bytes） | — |
-| `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 待解讀 | — | — | — |
+| `1A8E9` | sub_1A8E9 | — | 110 | 55 | 2 | 2 |  | 已解讀 | exact | 947<br>32 位元有號除法(far)：bx:cx ÷ dx:ax，★商在 dx:ax、餘數在 bx:cx——這就是專案裡 0A65h:0299h / 0A54h:0294h 那個約定的實作，spec 913/925 用到的除法語意由此確認。除數為 0 時 ax := 0C8h(200 = Turbo Pascal 的 Division by zero 執行期錯誤)並跳 sub_1A721h。本體是記正負、取絕對值、跑 33 次(bp = 21h) restoring division(rcl/sub/sbb，不夠減就加回、cmc 後 rcl 進商)，最後依原正負把商與餘數各自取負 | — |
 | `1A9E1` | sub_1A9E1 | — | 68 | 26 | 1 | 3 |  | 已解讀 | exact | docs/spec/666-ems-page-frame-guard.md<br>以 16 為底的兩段式加減:ax 維持在 0..0Fh、dx 每滿 16 進一(段落 + 段內偏移,一段落 16 bytes),每次加減都手動處理進借位而不用 32-bit 運算。走訪 dword_23AF0h 指的陣列,每筆 8 bytes,用到 +0/+2/+4/+6 四個 word | — |
 | `1AA72` | sub_1AA72 | — | 187 | 79 | 2 | 4 |  | 待解讀 | — | — | — |
 | `1AB2D` | sub_1AB2D | — | 179 | 66 | 1 | 4 |  | 待解讀 | — | — | — |
