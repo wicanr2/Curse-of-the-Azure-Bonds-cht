@@ -25384,6 +25384,24 @@
    "level": "exact",
    "spec": "docs/spec/1001-character-sheet-combat-block.md",
    "note": "DOS 00698h 的對應（相似度 0.987）"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-31",
+   "ea": 1354,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1002-facing-cone-test.md",
+   "note": "目標在不在朝向的 90° 錐內：頂點是起點前進一格，座標上下界 49×24（50×25 戰場），0FFh ＝ 原地 ＝ 永遠成立"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-31",
+   "ea": 1354,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1002-facing-cone-test.md",
+   "note": "DOS 同位址的對應（相似度 0.999）"
   }
  ]
 }

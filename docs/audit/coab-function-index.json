@@ -16704,6 +16704,7 @@
    "spec": "docs/spec/1001-character-sheet-combat-block.md",
    "note": "角色資料畫面的戰鬥數值區：THAC0 ＝ 60 − +199h、傷害 XdY+Z（+19Eh/+1A0h/+1A2h）、六個帶尾隨空白的標籤",
    "citations": [
+    "audit/function-index/pc98-overlay-19.md",
     "audit/function-strings.md",
     "spec/1001-character-sheet-combat-block.md"
    ]
@@ -17958,6 +17959,7 @@
    "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
    "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用。補記(spec 773)：索引與金錢名稱表(DS:0F93h)同一套，div 5 → Platinum、mod 5 → Gold，即 5 金幣換 1 白金幣",
    "citations": [
+    "audit/function-index/dos-overlay-19.md",
     "audit/function-index/pc98-overlay-21.md",
     "spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
     "spec/764-fsplit-dbcs-and-eight-slot-longint-table.md",
@@ -24675,9 +24677,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1002-facing-cone-test.md",
+   "note": "目標在不在朝向的 90° 錐內：頂點是起點前進一格，座標上下界 49×24（50×25 戰場），0FFh ＝ 原地 ＝ 永遠成立",
    "citations": [
     "audit/function-index/dos-overlay-31.md",
+    "spec/1002-facing-cone-test.md",
     "spec/860-ai-target-reachability-scan.md"
    ]
   },
@@ -51489,9 +51495,13 @@
    "callers": 1,
    "calls": 1,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/1002-facing-cone-test.md",
+   "note": "DOS 同位址的對應（相似度 0.999）",
    "citations": [
     "audit/function-index/dos-overlay-31.md",
+    "spec/1002-facing-cone-test.md",
     "spec/860-ai-target-reachability-scan.md"
    ]
   },
@@ -52793,9 +52803,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 2999,
    "Undefined": 0,
@@ -53348,9 +53358,9 @@
    "Module": "overlay-31",
    "Unit": "LOS",
    "Functions": 9,
-   "Read": 8,
+   "Read": 9,
    "NotBlocking": 0,
-   "Todo": 1,
+   "Todo": 0,
    "Fragment": 0,
    "CodeBytes": 2988,
    "Undefined": 0,
