@@ -17264,6 +17264,16 @@
    "spec": "docs/spec/734-animate-dead-and-faction-field.md",
    "bounds": "prologue",
    "note": "操縱屍體。走 DS:650Ah 全體鏈(不是目標陣列),對 +195h=6(死亡)且 +11Ah=0 的,先把 (原 +197h shl 4) + 等級 打包成 v,再 **p^[197h] := DS:6506h^[197h](改成施法者的)**、+198h:=1、+0E9h:=2、+0DDh:=0、+0E4h:=6、清 +1Eh..+71h 共 84 bytes(上界寫死 53h)、+0F7h := (>7Fh) ? 0B2h : 0B3h、+11Ah:=4,額度減 1,<overlay-23 entry#23> 成功才 <PUTEFFECT>(p, 20h, **持續時間常數 0 = 永久**, v, 1, 0, 0, 'is animated')並把 +195h 設成 1。⚠ **+197h 是陣營**(直接複製施法者的值,原值打包進效果參數以便還原;shl 4 表示陣營與等級各只用 4 位);這與 spec 692 用它當兩格統計索引、spec 709 用它篩選目標一致。⚠ 效果 20h = animated,spec 707 的復活會先解除它。額度是迴圈條件,用完就停(不像 Sleep 會掃完)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-22",
+   "ea": 23686,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/735-breath-fire-vs-acid.md",
+   "bounds": "prologue",
+   "note": "噴火(區域),spec 725 吐酸的姊妹支。次數同樣在 arg_2^[3](DS:758Dh=0 時重設成 3、最後才扣);傷害旗標 DS:6F95h := 21h(吐酸是 30h);用 [DS:72A0h] 第 0 項模式碼 3Dh 選目標,<sub_175Bh>(x, y, DS:7559h, DS:755Ah, **3, 9**)(吐酸是 1, 6);訊息 '<名字> breathes fire'(CS:5C78h);走目標陣列(**有 NIL 檢查**),s := <overlay-23 entry#8>(p, 3, 0)、<overlay-23 entry#20>(p, arg_6^[78h], 2, s)。⚠ **最實質的差別:吐酸有同類檢查(範圍內混進不同陣營就整次取消),噴火沒有——火會燒到自己人**"
   }
  ]
 }
