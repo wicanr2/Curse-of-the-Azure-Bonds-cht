@@ -16749,7 +16749,13 @@
    "callers": 1,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "1055",
+   "note": "HP 上限計算(角色: 遠指標，retf 4，242 條)。for j:=0..7 掃 +109h+j 八個職業槽，等級\u003e0 才算並 inc 職業數；上限表 DS:3EB9h = 10 15 10 10 11 12 11 19。★★★ 等級\u003c上限：總和 += (sub_2515h(j) + 骰面) × 等級 —— 骰面 牧師8/德魯伊8/戰士10/聖騎士10/遊俠8/法師4/盜賊6/武僧4，其中遊俠與武僧用『等級+1』實作『1 級就有 2d8 / 2d4』，八個全部符合 AD\u0026D 1e；每級取骰子最大值 ⇒ 算的是 HP 上限不是擲出來的值。★★★ 等級\u003e=上限：超出 := 等級−上限+1，牧師 超出×2+72(9d8)、德魯伊 固定112(14d8，不再成長)、戰士/聖騎士 超出×3+90(9d10)、遊俠 超出×2+88(11d8)、法師 超出×1+44(11d4)、盜賊 超出×2+60(10d6)、武僧 固定72(18d4，不再成長) —— 一格不差等於 1e，含德魯伊與武僧兩個『到頂就不再長』的特例。★★★ 這一段完全不加 sub_2515h(j)，正是 1e『名望等級之後體質加值不再套用』的規則。★★★ 最後 結果 := 總和 div 職業數 —— 多職業取平均(整數除法)。★ 職業順序(牧師/德魯伊/戰士/聖騎士/遊俠/法師/盜賊/武僧)與 spec 1034 相同，第二次獨立確認",
+   "citations": [
+    "spec/1055-max-hp-calculation.md"
+   ]
   },
   {
    "platform": "dos",
@@ -23885,7 +23891,7 @@
     "audit/function-index/dos-overlay-24.md",
     "audit/function-index/dos-overlay-25.md",
     "audit/function-index/pc98-overlay-04.md",
-    "audit/function-index/pc98-overlay-24.md"
+    "audit/function-index/pc98-overlay-17.md"
    ]
   },
   {
@@ -53546,9 +53552,9 @@
    "Module": "overlay-17",
    "Unit": "GEN",
    "Functions": 39,
-   "Read": 13,
+   "Read": 14,
    "NotBlocking": 0,
-   "Todo": 5,
+   "Todo": 4,
    "Fragment": 21,
    "CodeBytes": 19521,
    "Undefined": 1536,
