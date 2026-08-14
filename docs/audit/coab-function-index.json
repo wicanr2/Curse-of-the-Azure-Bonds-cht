@@ -4748,7 +4748,7 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/dos-overlay-16.md"
+    "audit/function-index/dos-overlay-06.md"
    ]
   },
   {
@@ -7049,10 +7049,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-06.md",
+    "audit/function-index/pc98-overlay-06.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/572-resident-service-functions.md",
-    "spec/823-shop-price-multiplier.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -7070,6 +7070,8 @@
    "citations": [
     "audit/duplicate-strings.md",
     "audit/embedded-strings.md",
+    "audit/function-index/dos-overlay-06.md",
+    "audit/function-index/pc98-overlay-06.md",
     "audit/function-strings.md",
     "spec/823-shop-price-multiplier.md"
    ]
@@ -7090,6 +7092,7 @@
    "spec": "docs/spec/777-item-append-and-area-save-sweep.md",
    "note": "把物品複製進背包尾端(retf 8)：\u003c00FDh:004Dh\u003e(物品, DS:6506h) 為真就顯示 CS:034Ah 'OverLoaded' 並把輸出設 1；否則 GetMem 63 bytes、搬進去、next 清 NIL，接在 +14Dh 鏈的**尾端**(空鏈與非空鏈各寫一份程式碼)，最後叫 014Dh:0043h。⚠ 'OverLoaded' 與 overlay-19:2131h 的 'Overloaded' 大小寫不同，是兩條獨立常數",
    "citations": [
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/pc98-overlay-06.md",
     "spec/777-item-append-and-area-save-sweep.md",
     "spec/823-shop-price-multiplier.md"
@@ -11952,7 +11955,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/819-spits-acid-special-attack.md",
-   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'Spits Acid'(10)、\u003cfar 1554h\u003e(0Ah,1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819",
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:6FA3h；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'Spits Acid'(10)、\u003cfar 1554h\u003e(角色, 角色名+訊息, 0Ah, 1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819",
    "citations": [
     "spec/819-spits-acid-special-attack.md"
    ]
@@ -13833,11 +13836,15 @@
    "callers": 3,
    "calls": 0,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/824-cannot-cast-gate.md",
+   "note": "施法／記憶／抄寫的共同閘門：retf 2 = 動作代碼 1/2/3，回傳 al（1 = 可以、0 = 不行）。緩衝 := ''；動作 = 1 且 word(DS:4F99h^[1CAh]) \u003e 0 → 緩衝 := 'cannot cast spells in this area'(31)；否則 (DS:6506h^[195h] = 1) 或 (DS:6506h^[196h] = 0) → 緩衝 := 'is in no condition to '(22，結尾空白)，再依動作接上 'cast any spells'(15)／'memorize spells'(15)／'scribe any scrolls'(18)。緩衝為空回 1；否則回 0 並 \u003cfar 1554h\u003e(DS:6506h, 緩衝, 0Ah, 1)。四個字串都存進同一個 28h(40) bytes 的區域緩衝。只有動作 1 檢查地點。註：DOS 匯出在 03A9h 解成 retf 1，原始位元組 C4 3E 99 4F 26 83 BD CA 01 00 76 16 ＝ les di,ds:4F99h / cmp word es:[di+1CAh],0 / jbe（PC-98 解對）。spec 824",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-strings.md",
-    "spec/797-cast-loop-and-view-decoration.md"
+    "spec/797-cast-loop-and-view-decoration.md",
+    "spec/824-cannot-cast-gate.md"
    ]
   },
   {
@@ -13854,7 +13861,10 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完）"
+   "note": "空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 3 bytes，已逐條讀完）",
+   "citations": [
+    "spec/824-cannot-cast-gate.md"
+   ]
   },
   {
    "platform": "dos",
@@ -13870,7 +13880,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
-   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:7555h/7557h 清 0、DS:7294h:=1；本模組 0391h(1) 成立才進迴圈。每輪 選 := \u003cfar 102Bh+1\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003c1EC9h+4\u003e(1,11h,26h,16h)、\u003c11D8h+1\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'has no spells memorized'(23，無句點) 並 sub_1554(0Ah,1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 sub_15A9。retf。spec 797",
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:7555h/7557h 清 0、DS:7294h:=1；本模組 0391h(1) 成立才進迴圈。每輪 選 := \u003cfar 102Bh+1\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003c1EC9h+4\u003e(1,11h,26h,16h)、\u003c11D8h+1\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'has no spells memorized'(23，無句點) 並 \u003cfar 1554h\u003e(角色, 名字+訊息, 0Ah, 1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 sub_15A9。retf。spec 797",
    "citations": [
     "audit/function-index/dos-overlay-15.md",
     "audit/function-index/pc98-overlay-15.md",
@@ -14101,7 +14111,11 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/569-small-function-batch-reading.md",
-   "note": "尾呼叫：最後一條是 `jmp short loc_1581`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）"
+   "note": "尾呼叫：最後一條是 `jmp short loc_1581`，控制權轉交後不返回（body 共 2 bytes，已逐條讀完）",
+   "citations": [
+    "spec/797-cast-loop-and-view-decoration.md",
+    "spec/824-cannot-cast-gate.md"
+   ]
   },
   {
    "platform": "dos",
@@ -15752,10 +15766,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -28860,7 +28874,7 @@
     "audit/function-index/dos-overlay-02.md",
     "audit/function-index/dos-overlay-04.md",
     "audit/function-index/dos-overlay-05.md",
-    "audit/function-index/dos-overlay-16.md"
+    "audit/function-index/dos-overlay-06.md"
    ]
   },
   {
@@ -31298,10 +31312,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-02.md",
+    "audit/function-index/dos-overlay-06.md",
+    "audit/function-index/pc98-overlay-06.md",
     "audit/overlay-init-graph.md",
-    "audit/string-pairs.md",
-    "spec/572-resident-service-functions.md",
-    "spec/823-shop-price-multiplier.md"
+    "audit/string-pairs.md"
    ]
   },
   {
@@ -36471,7 +36485,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/819-spits-acid-special-attack.md",
-   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、\u003cfar 1554h\u003e(0Ah,1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
+   "note": "Spits Acid 特殊攻擊：retf 0Ah，宣告順序 (角色, 參數4, 參數2)。目標 := 角色^[18Dh]^[0Ah] 存入 DS:0A03Dh；\u003cfar 145Dh\u003e(1,64h) 擲 1..100 \u003e 19h（25）就離開；\u003cfar 1595h\u003e(目標, 角色) \u003e= 4（無號）也離開——兩道門檻都不印訊息。否則 \u003cfar 1598h+2\u003e(角色)、顯示 角色名+'は酸を吹いた。'(14 bytes)、\u003cfar 1554h\u003e(角色, 角色名+訊息, 0Ah, 1)、\u003cfar 1566h+2\u003e(17h)、\u003cfar 156Ch+1\u003e(取x(角色),取y(角色),取x(目標),取y(目標),1,1Eh)、\u003cfar 1494h\u003e(\u003cfar 1462h\u003e(目標,8,4), \u003cfar 1457h+1\u003e(2,目標,3,0))、\u003cfar 143Eh+1\u003e(角色, 79h, longint(參數4:參數2))、\u003cfar 143Eh+1\u003e(角色, 50h, longint 0)——兩個效果都掛在發動者身上，形狀與 spec 796 的 0141h:002Fh 相同。spec 819 PC-98 另外多一段 xor ah,ah / mov cx,7 / imul cx（把某個 byte 乘 7），DOS 沒有；與 spec 760 的 overlay-13:040B8h 同一種常數／算式差異。"
   },
   {
    "platform": "pc98",
@@ -38493,7 +38507,10 @@
    "callers": 3,
    "calls": 2,
    "is_overlay_entry": true,
-   "state": "待解讀",
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/824-cannot-cast-gate.md",
+   "note": "同 DOS，但**串接方向相反**：PC-98 的共用片段 '状態ではない'(12 bytes) 放在**後面**，三個動作片段 'は呪文を唱えられる'／'は魔法を記憶できる'／'は魔法を書き写せる'（各 18 bytes）放前面——緩衝 := 共用片段、暫存 := 動作片段、緩衝 := 暫存 + 緩衝。DOS 則是共用片段在前。地點訊息是 'ここでは、魔法が使えない'(24 bytes)。全域 DS:7F05h^[1CAh]、DS:9594h^[196h]/[197h]，顯示用 \u003cfar 1524h\u003e。spec 824",
    "citations": [
     "audit/function-index/pc98-overlay-15.md",
     "audit/function-strings.md"
@@ -38514,7 +38531,7 @@
    "state": "已解讀",
    "level": "exact",
    "spec": "docs/spec/797-cast-loop-and-view-decoration.md",
-   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:0A641h/0A643h 清 0、DS:0A32Eh:=1；本模組 0386h(1) 成立才進迴圈。每輪 選 := \u003cfar sub_FFC\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003csub_2095\u003e(1,11h,26h,16h)、\u003cfar sub_11A9\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'は呪文をまったく覚えていない。'(30 bytes，有句點) 並 sub_1524(0Ah,1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 \u003cfar loc_1577+2\u003e。retf。spec 797"
+   "note": "選法術的外迴圈：用過:=0、var_2:=0FFFFh、DS:0A641h/0A643h 清 0、DS:0A32Eh:=1；本模組 0386h(1) 成立才進迴圈。每輪 選 := \u003cfar sub_FFC\u003e(0, 1, @var_2, @var_3)；選\u003c\u003e0 → 用過:=1、\u003csub_2095\u003e(1,11h,26h,16h)、\u003cfar sub_11A9\u003e(選,0,1,@var_5)；選=0 且 var_3\u003c\u003e0 → 用過:=1；兩者皆否 → 顯示 名字+'は呪文をまったく覚えていない。'(30 bytes，有句點) 並 \u003cfar 1524h\u003e(角色, 名字+訊息, 0Ah, 1)。選=0 才離開；離開後 用過\u003c\u003e0 才呼叫 \u003cfar loc_1577+2\u003e。retf。spec 797"
   },
   {
    "platform": "pc98",
@@ -41239,10 +41256,10 @@
    "citations": [
     "audit/embedded-strings.md",
     "audit/function-index/dos-overlay-04.md",
+    "audit/function-index/dos-overlay-06.md",
     "audit/function-index/dos-overlay-12.md",
     "audit/function-index/dos-overlay-15.md",
-    "audit/function-index/dos-overlay-17.md",
-    "audit/overlay-init-graph.md"
+    "audit/function-index/dos-overlay-17.md"
    ]
   },
   {
@@ -49809,9 +49826,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 42,
-   "Read": 21,
+   "Read": 22,
    "NotBlocking": 0,
-   "Todo": 10,
+   "Todo": 9,
    "Fragment": 11,
    "CodeBytes": 8139,
    "Undefined": 898,
@@ -50364,9 +50381,9 @@
    "Module": "overlay-15",
    "Unit": "CAMP",
    "Functions": 45,
-   "Read": 19,
+   "Read": 20,
    "NotBlocking": 0,
-   "Todo": 11,
+   "Todo": 10,
    "Fragment": 15,
    "CodeBytes": 8121,
    "Undefined": 1126,
