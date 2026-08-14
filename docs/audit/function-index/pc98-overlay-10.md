@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADCOMPREP | 72 | 18 | 0 | 9 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | LOADCOMPREP | 72 | 18 | 0 | 9 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call far ptr unk_101A`、`call far ptr loc_1882+1`、`call far ptr loc_1815+2`、`call loc_1922+1`、`call loc_E26`、`call far ptr loc_1694+3`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-23.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md |
 | `0048` | sub_48 | — | 132 | 55 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `00CC` | sub_CC | — | 554 | 208 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `02F6` | sub_2F6 | — | 130 | 49 | 1 | 3 | ✓ | 待解讀 | — | — | — |
@@ -25,7 +25,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0FBB` | sub_FBB | — | 80 | 30 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `1023` | sub_1023 | — | 174 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `10D1` | sub_10D1 | — | 286 | 94 | 1 | 2 | ✓ | 待解讀 | — | — | — |
-| `11EF` | sub_11EF | — | 49 | 18 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `11EF` | sub_11EF | — | 49 | 18 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>判斷式(retf 4)：與 DOS overlay-10:11FBh 相同的「兩個都不在範圍內才回 true」 | spec/754-small-predicates-and-wrappers.md |
 | `1220` | sub_1220 | — | 324 | 138 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `1364` | sub_1364 | — | 902 | 365 | 1 | 4 | ✓ | 待解讀 | — | — | audit/function-index/pc98-overlay-10.md |
 | `142D` | sub_142D | — | 81 | 36 | 7 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-16h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 81 bytes，已逐條讀完） | — |

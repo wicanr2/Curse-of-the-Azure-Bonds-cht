@@ -11,7 +11,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `027B` | sub_27B | — | 122 | 43 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02F5` | sub_2F5 | — | 703 | 299 | 1 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/526-pc98-moveparty-map-writer-searchrec-correction.md<br>spec/527-pc98-moveparty-action-writer-boundary.md<br>spec/528-pc98-moveparty-action-transaction-boundary.md |
 | `05B4` | sub_5B4 | — | 201 | 81 | 1 | 2 | ✓ | 待解讀 | — | — | context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/526-pc98-moveparty-map-writer-searchrec-correction.md<br>spec/527-pc98-moveparty-action-writer-boundary.md<br>spec/528-pc98-moveparty-action-transaction-boundary.md |
-| `067D` | sub_67D | — | 67 | 25 | 2 | 1 | ✓ | 待解讀 | — | — | — |
+| `067D` | sub_67D | — | 67 | 25 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/755-per-character-slots-sound-driver-and-text-io.md<br>找格子(retf 6)：與 DOS overlay-14:06B1h 同 | spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `06C0` | sub_6C0 | — | 84 | 33 | 2 | 2 | ✓ | 待解讀 | — | — | — |
 | `0714` | sub_714 | — | 69 | 29 | 1 | 3 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>context/50-log-2026-08-09-13.md<br>knowledge/golden-box-reverse-engineering-worklist.md<br>project-status.md<br>spec/526-pc98-moveparty-map-writer-searchrec-correction.md<br>spec/527-pc98-moveparty-action-writer-boundary.md |
 | `0759` | sub_759 | — | 174 | 55 | 1 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

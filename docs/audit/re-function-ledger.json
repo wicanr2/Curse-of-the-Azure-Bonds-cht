@@ -18094,6 +18094,411 @@
    "level": "exact",
    "spec": "docs/spec/753-small-utility-routines.md",
    "note": "向下配置 8 bytes 並檢查下界(近呼叫，失敗時 CF=1)：di := word[2097Eh]−8，為 0 則失敗；si := (di shr 4) + word[20980h]，si <= word[2097Ch] 則失敗；成功才把 di 寫回。減法未處理借位"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-30",
+   "ea": 1366,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "範圍判斷(retf 4)：兩個有號參數都落在 0..15(含端點)才回 1，否則 0。範圍是 16×16"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-30",
+   "ea": 1197,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "範圍判斷(retf 4)：兩個有號參數都落在 0..15 才回 1。與 DOS overlay-30:0556h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-10",
+   "ea": 4603,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：if (a>=0) and (a<11) then false else if (b>=0) and (b<6) then false else true。⚠ 是「兩個都不在範圍內才回 true」，不是一般的界內檢查；兩個範圍不同(0..10 與 0..5)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-10",
+   "ea": 4591,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：與 DOS overlay-10:11FBh 相同的「兩個都不在範圍內才回 true」"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 5052,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4，一個遠指標參數)：回傳 本模組 sub_134Ah(p) > p^[0E6h](有號比較)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5316,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "判斷式(retf 4)：回傳 本模組 sub_1452h(p) > p^[0E6h]，與 DOS overlay-25:13BCh 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-29",
+   "ea": 179,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "包裝(retf 8)：f(a: byte, b: byte, p: 遠指標) → 本模組 sub_Ch(a, b+5, 0, p)。兩個 byte 參數零延伸成 word"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-29",
+   "ea": 179,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "包裝(retf 8)：與 DOS overlay-29:00B3h 位元組相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 3858,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "依相位進位的折半(retf 2)：f(x: byte) = (x + (DS:758Dh and 1)) div 2。shr 只用來取 bit 0 進 CF，值本身丟掉。DS:758Dh 在戰鬥開場(spec 750)被設 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-13",
+   "ea": 3959,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "依相位進位的折半(retf 2)：f(x) = (x + (DS:0A81Fh and 1)) div 2，與 DOS overlay-13:0F12h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-20",
+   "ea": 901,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "上限 99 的累加(retf，無參數)：先叫本模組 sub_2D8h(@DS:7566h)；若 DS:7570h>0 則 DS:756Eh += DS:3E32h * DS:7570h、DS:7570h:=0，最後 DS:756Eh 夾到 99。全部無號 word"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-20",
+   "ea": 901,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "上限 99 的累加(retf)：對應位址 0A652h/0A65Ch/680Ch/0A65Ah，與 DOS overlay-20:0385h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 22,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "三項查表(retf 4)：只用第一個宣告的參數([bp+8])，08h→00h、41h→00h、0E8h→0Fh、其他→0Fh。第二個參數整支沒讀；0E8h 分支與 default 同值(多餘的比較)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 79,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "三項查表(retf 4)：08h→08h、41h→07h、0E8h→07h、其他→07h。第二個參數整支沒讀；0E8h 分支與 default 同值"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 88174,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "跳過開頭空白(retf 2)：參數是 SS 相對位址，-103h 是游標、-101h 是長度、-100h 起是內容；游標小於長度且該位置是空白就前進。無號比較"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "送出命令 0Ch(retf 6)：填 DS:4FCAh 起的 16-byte 命令區塊(+1 命令碼=0Ch、+0=第三個參數、+3=0、+4=第一個參數、+6=第二個參數)後呼叫 097Fh:000Bh(@DS:4FCAh, 10h)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-18",
+   "ea": 50,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "送出命令 0Dh(retf 4)：同一個 16-byte 命令區塊，命令碼 0Dh，呼叫後把 DS:4FCAh 當回傳值讀出。全 DOS overlay 只有 overlay-18 這兩支寫 4FCBh、也只有這兩支呼叫 097Fh:000Bh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 0,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "retf，無參數：02A8h:1392h(9, 0Fh)；08EEh:0379h(1)；02A8h:1392h(9, 9)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6481,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/754-small-predicates-and-wrappers.md",
+   "note": "近呼叫 retn 4：把 Pascal 短字串就地改成 NUL 結尾(rep movsb 把內容往前搬一格蓋掉長度 byte，再補 0)，之後 bx:=段、cx:=位移、dl:=另一參數，呼叫 sub_17F3h。⚠ 原字串在呼叫後已被覆寫。同一段匯出後面還接兩支獨立小程序 1979h/1985h(PC-98 INT 18h AH=42h 畫面模式控制，IDA 的 ROM BASIC 註解不適用)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 392,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉超界值(retf 4)：for i:=0 to 53h，若 p^[1Eh+i] > 7Fh(無號)則歸零；最後 p^[72h]:=0。1Eh+53h=71h 與 72h 相接，可證角色記錄 +1Eh 起是 84 格陣列。⚠ IDA 匯出在 01BDh 吃掉 ES 前綴 26h，看似兩平台差異，回查原始 bytes 兩邊相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 392,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉超界值(retf 4)：與 DOS overlay-15:0188h 位元組相同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 1713,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "找格子(retf 6)：f(v: byte, p: 遠指標) 在 p^[1Eh..1Eh+53h] 線性搜尋等於 v 的索引，找不到回 0FFh。與 overlay-15:0188h 同一個 84 格陣列"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 1661,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "找格子(retf 6)：與 DOS overlay-14:06B1h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 574,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "整隊清理(retf，無參數)：從 DS:650Ah 沿 +189h 走隊伍鏈，對每個成員叫本模組 0188h 與 01CBh"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 574,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "整隊清理(retf)：鏈頭 DS:9598h、next 在 +18Ah，其餘同 DOS overlay-15:023Eh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-08",
+   "ea": 4884,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉同陣營的目標(retf 4)：p^[198h]:=1；若 p^[18Dh]^[0Ah](目前目標)非 NIL 且其 +197h(陣營)與 p^[197h] 相同，就把目標設回 NIL"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-08",
+   "ea": 4981,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清掉同陣營的目標(retf 4)：位移各 +1(199h/18Eh/198h)，其餘同 DOS overlay-08:1314h"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 116,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "數鏈長(retf 4)：走遠指標鏈計數，next 在 +2Ah(＝物品節點的 far next)，回傳 word"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 115,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "數鏈長(retf 4)：next 在 +52h，與 DOS 的 +2Ah 不同——PC-98 的節點配置重排過，引用位移前須各自確認"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 4015,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "1d20 兩段分支(retf，無參數)：r := ROLLDICE(1,20)(overlay-23 entry#9)；1..14 回 1、15..20 回 2。⚠ 兩段外的路徑 local 未初始化(1d20 走不到，但值域一改就會回傳堆疊殘值)。14:6 的分法"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-28",
+   "ea": 136,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "三項查表(retf 4)：只用第一個宣告的參數，0Bh→8、9→6、0DBh→6、6→1、其他→6。與 spec 754 的 overlay-28:0016h/004Fh 同族"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 16880,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf，無參數：DS:0A520h 非 0 時，r := ROLLDICE(8,2)，若 overlay-23 entry#22 @2419h(0, r+1) 為真則叫 overlay-24 entry#29 @2776h(遠指標@DS:0A521h)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-22",
+   "ea": 18055,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "與 41F0h 同一段的第二份實例：ROLLDICE(8,3)、r+3，其餘相同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-11",
+   "ea": 1997,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "16 色調色盤設定(retn 2)：out 6Ah,1 切 16 色；依參數選 CS:076Dh(非 0)或 CS:079Dh(0)這兩份 16×3=48 bytes 的調色盤，經 0A8h/0AAh/0ACh/0AEh 寫入(索引/綠/紅/藍，索引遞減)；再 int 18h AH=42h/40h/12h 與 out 68h,8。IDA 的 ROM BASIC 註解是 IBM PC 語意，PC-98 不適用"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2078,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "清最下面一列文字(retf)：0A65h:1B30h(A000h:0F00h, 0A0h, 0) 與 (A200h:0F00h, 0A0h, 0)。參數形狀與效果可認定 0A65h:1B30h 是 FillChar(DOS 對應 0A54h:1AE0h)——注意兩平台 resident 沒有固定位移，不能用位址換算"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2136,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "十筆欄位初始化(retf)：for i:=1 to 10，把 CS:0851h 的 6 bytes 複製到 DS:0A338h+i*7，再把 DS:0A334h+i 設成空白。兩個平行陣列(7 bytes 一筆的記錄 + byte 旗標)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-00",
+   "ea": 23,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf 2：0A54h:0634h(0Eh, 0, @本地緩衝區, CS:0000h)、0542h:0946h()、overlay-16 entry#11()，DS:5CF1h 非 0 時再叫 06EAh:0000h；回傳 [bp-2]。⚠ 本函式沒有任何指令寫過 bp-2，是否為堆疊殘值取決於 0A54h:0634h 實際寫入長度，實作前需實機確認"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-00",
+   "ea": 27,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "retf 2：與 DOS overlay-00:0017h 同構(0A65h:062Fh、0418h:12EFh、overlay-16 entry#11、DS:8CF7h、07E3h:0077h)；同樣回傳未被本函式寫過的 [bp-2]"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 103200,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "聲音驅動安裝(retf)：存 INT 08h 舊向量到 CS:dword_1931Ch，換成 seg045:225Eh；out 43h,0B6h 後把 13B1h(≈236.7 Hz)分兩次寫 port 40h。⚠ 控制字 0B6h 選的是 counter 2，資料卻寫進 counter 0"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 103253,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "聲音驅動卸載(retf)：還原 INT 08h；counter 0 寫回 0FFFFh(18.2 Hz)；in 61h/and 0FCh/out 61h 關喇叭閘；對 port 0C0h 依序寫 9Fh/0BFh/0DFh/0FFh — SN76489(Tandy 三音)四聲道全部最大衰減，即靜音"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 94726,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "依音效裝置決定是否安裝(retf)：dword_21154 := seg045:0124h；byte_21DAB := byte_21DAA；byte_21DAC := 1；byte_21DAA <> 2 時才叫 19320h() 與 196E0h(0)、1974Ah(0)"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 105461,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "Ctrl-Break 處理(retf 2)：byte_24E6C 非 0 才動作 — 清旗標、用 INT 16h 把鍵盤緩衝區抽乾、印 ^C 與換行，然後 INT 23h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 113497,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "Text 檔案的 I/O 派工(近呼叫 retn)：以 Turbo Pascal TextRec 配置對上 — +08h BufPos 先由 BX 寫入，call dword ptr es:[di+14h](InOutFunc)，結果非 0 存進 word_20996(IOResult)，再把 +0Ah BufEnd→AX、+08h BufPos→BX、+04h BufSize→DX、+0Ch BufPtr→ES:DI"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114826,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "掃 PSP 命令列(近呼叫 retn)：從 ES:0080h 起跳過空白(<= 20h)、量一段非空白長度，DX 每數完一段減一，BX 累計段數，SI/DI 留下該段起訖。ParamCount/ParamStr 的掃描核心"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 109326,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/755-per-character-slots-sound-driver-and-text-io.md",
+   "note": "指標正規化與下界夾制(近呼叫 retn)：dword_2097Eh 減 word_20982h，低 4 bits 留 SI、其餘右移 4 加到段值，與 word_2097Ch:word_2097Ah 這個下界比，低於就夾到下界；offset 為 0 有段值 +1000h 的特別路徑。與 spec 753 的 1AAD5h 同族"
   }
  ]
 }

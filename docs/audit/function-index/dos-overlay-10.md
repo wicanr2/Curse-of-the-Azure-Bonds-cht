@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 72 | 18 | 0 | 10 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md<br>spec/748-cloud-effect-dispel-pair.md<br>spec/751-overlay-init-chain-dependency-graph.md |
+| `0000` | sub_0 | — | 72 | 18 | 0 | 10 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 13 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B1+2`、`call far ptr sub_1847`、`call far ptr sub_1953`、`call loc_EB5+1`、`call far ptr sub_16BD`（body 共 72 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md<br>audit/function-index/pc98-overlay-23.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/572-resident-service-functions.md |
 | `0048` | sub_48 | — | 132 | 55 | 4 | 1 | ✓ | 待解讀 | — | — | — |
 | `00CC` | sub_CC | — | 554 | 208 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `02F6` | sub_2F6 | — | 130 | 49 | 1 | 2 | ✓ | 待解讀 | — | — | — |
@@ -25,8 +25,8 @@ offset（base 0），resident executable 為 IDA linear address。
 | `0FC7` | sub_FC7 | — | 80 | 30 | 1 | 3 | ✓ | 待解讀 | — | — | — |
 | `102F` | sub_102F | — | 174 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `10DD` | sub_10DD | — | 286 | 94 | 1 | 2 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
-| `11FB` | sub_11FB | — | 49 | 18 | 2 | 1 | ✓ | 待解讀 | — | — | — |
-| `122C` | sub_122C | — | 324 | 138 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
+| `11FB` | sub_11FB | — | 49 | 18 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>判斷式(retf 4)：if (a>=0) and (a<11) then false else if (b>=0) and (b<6) then false else true。⚠ 是「兩個都不在範圍內才回 true」，不是一般的界內檢查；兩個範圍不同(0..10 與 0..5) | audit/function-index/pc98-overlay-10.md<br>spec/754-small-predicates-and-wrappers.md |
+| `122C` | sub_122C | — | 324 | 138 | 1 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-23.md |
 | `1370` | sub_1370 | — | 519 | 212 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md |
 | `15D1` | sub_15D1 | — | 211 | 86 | 2 | 5 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 1370h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
 | `16A4` | sub_16A4 | — | 25 | 8 | 2 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov byte ptr [bp-7], 1`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |

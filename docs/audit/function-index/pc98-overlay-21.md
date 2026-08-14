@@ -5,11 +5,11 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md |
-| `001B` | sub_1B | MAXIUMWEIGHT | 32 | 12 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 <far 0176:0A31>(arg_0,arg_2) + 5DCh(1500) | audit/function-index/dos-overlay-21.md<br>spec/637-overlay21-small-batch.md |
+| `0000` | sub_0 | LOADMONEY | 23 | 6 | 0 | 4 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `call far ptr sub_19CA`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 23 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-04.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
+| `001B` | sub_1B | MAXIUMWEIGHT | 32 | 12 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>回傳 <far 0176:0A31>(arg_0,arg_2) + 5DCh(1500) | audit/function-index/dos-overlay-21.md<br>spec/637-overlay21-small-batch.md<br>spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `003B` | sub_3B | LOSEWEIGHT | 28 | 10 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>arg_2^[188h] -= arg_0(word)。與 0057h 逐指令相同只差 sub/add,兩支都不做上下限檢查——減到負數會回捲 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-21.md<br>audit/function-index/pc98-overlay-21.md<br>spec/637-overlay21-small-batch.md |
 | `0057` | sub_57 | GAINWEIGHT | 28 | 10 | 4 | 0 | ✓ | 已解讀 | exact | docs/spec/637-overlay21-small-batch.md<br>arg_2^[188h] += arg_0(word)。與 003Bh 成對 | audit/embedded-strings.md<br>audit/function-index/dos-overlay-21.md<br>audit/function-index/pc98-overlay-21.md<br>spec/637-overlay21-small-batch.md |
-| `0073` | sub_73 | TOOHEAVY | 84 | 31 | 3 | 2 | ✓ | 待解讀 | — | — | — |
+| `0073` | sub_73 | TOOHEAVY | 84 | 31 | 3 | 2 | ✓ | 待解讀 | — | — | spec/755-per-character-slots-sound-driver-and-text-io.md |
 | `00C7` | sub_C7 | CASHPOOL | 129 | 51 | 0 | 1 | ✓ | 待解讀 | — | — | — |
 | `0148` | sub_148 | CHANGECHARMONEY | 85 | 31 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/622-character-money-block.md<br>把 DS:9594h 指向的紀錄設成 arg_0 金額:先用 i=0..4 迴圈把 [di+0FBh+2i] 五個硬幣欄位歸零,再 div 5——商存 +103h、餘存 +101h。這證明 +FBh 起是五元素硬幣陣列(不是五個獨立欄位),且依 AD&D 的 5 gp = 1 pp 定出 +103h 是白金、+101h 是金幣,陣列由低價值排到高價值 | audit/function-index/dos-overlay-21.md<br>spec/622-character-money-block.md |
 | `019D` | sub_19D | CHANGEPOOLMONEY | 86 | 34 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |

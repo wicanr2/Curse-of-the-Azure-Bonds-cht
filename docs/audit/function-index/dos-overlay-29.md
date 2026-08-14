@@ -5,10 +5,10 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md |
-| `000C` | sub_C | — | 133 | 51 | 3 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/753-small-utility-routines.md |
+| `0000` | sub_0 | — | 12 | 6 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>轉呼叫：整個 body 只準備參數並執行 `call far ptr 19Ch:2Ah`（body 共 12 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-17.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/754-small-predicates-and-wrappers.md |
+| `000C` | sub_C | — | 133 | 51 | 3 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/function-index/dos-overlay-02.md<br>spec/753-small-utility-routines.md<br>spec/754-small-predicates-and-wrappers.md |
 | `0091` | sub_91 | — | 34 | 17 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_C`（body 共 34 bytes，已逐條讀完） | — |
-| `00B3` | sub_B3 | — | 37 | 18 | 1 | 1 | ✓ | 待解讀 | — | — | — |
+| `00B3` | sub_B3 | — | 37 | 18 | 1 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>包裝(retf 8)：f(a: byte, b: byte, p: 遠指標) → 本模組 sub_Ch(a, b+5, 0, p)。兩個 byte 參數零延伸成 word | audit/function-index/pc98-overlay-29.md<br>spec/754-small-predicates-and-wrappers.md |
 | `010B` | sub_10B | — | 1104 | 453 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `055B` | sub_55B | — | 105 | 41 | 2 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md<br>spec/750-combat-setup.md |
 | `05DD` | sub_5DD | — | 260 | 110 | 0 | 1 | ✓ | 待解讀 | — | — | — |
