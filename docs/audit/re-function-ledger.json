@@ -19462,6 +19462,33 @@
    "level": "exact",
    "spec": "docs/spec/769-combat-main-loop.md",
    "note": "20 個 word 的轉送包裝(retf 28h)：把兩個字串參數複製進上限 28h 與 0FFh 的本地緩衝，其中一個經 本模組 16D3h 處理，再把 16 個參數轉給 loc_16A8+1。⚠ 16D3h 的輸出寫進 var_153，之後整支沒再讀 — 若 16D3h 不是就地改寫型，那次呼叫的結果就被丟掉了(本輪未讀 16D3h，不下結論)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 2108,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/770-party-step-and-hug-attack.md",
+   "note": "隊伍在迷宮裡前進一格(retf，無參數)：DS:720Fh(x) += byte[2694h + DS:7211h(面向)]、DS:7210h(y) += byte[269Dh + 面向]，兩軸各自無條件環繞(<0 → 0Fh、>0Fh → 0，有號比較)；DS:7212h := 017Fh:0034h(x, y, 面向)、FillChar(@DS:7588h, 3, 1)、DS:7213h := 017Fh:003Eh(y, x)；最後依 DS:4F9Dh^[594h] bit 0 二選一叫 0108h:002Ah。⚠ 移動一律環繞，沒有 overlay-30:07C6h 那道 DS:8B5Eh 判斷"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-13",
+   "ea": 18449,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/770-party-step-and-hug-attack.md",
+   "note": "hugs 攻擊(retf 0Ah)：DS:6F9Fh < 12h(有號)就離開；把 攻擊者^[18Dh]^[0Ah] 抄到全域 DS:6FA3h，組出「攻擊者 + CS:480Bh 'hugs ' + 目標名」後顯示；再對目標下 3Ah、對攻擊者自己下 90h 兩個效果碼。⚠ 'hugs ' 的尾隨空白是常數的一部分(長度 byte 為 5)，用來直接接目標名"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 8121,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/770-party-step-and-hug-attack.md",
+   "note": "三級治療量累加(retf 2，SS 相對記錄)：70 條指令的助憶碼與 PC-98 overlay-15:2020h(spec 763)完全相同 — ss:[p−4] 次 1d8、ss:[p−6] 次 2d8+1、ss:[p−8] 次 3d8+3，累加到 ss:[p−2]"
   }
  ]
 }

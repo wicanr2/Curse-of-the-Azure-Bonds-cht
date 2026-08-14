@@ -39,7 +39,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1D9D` | sub_1D9D | — | 57 | 15 | 0 | 5 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 10 個呼叫，沒有其他動作：`call loc_104A`、`call far ptr loc_18B0+3`、`call loc_1953`、`call loc_19A3`、`call far ptr loc_15D0+1`、`call far ptr unk_11F7`（body 共 57 bytes，已逐條讀完） | audit/overlay-init-graph.md<br>spec/751-overlay-init-chain-dependency-graph.md |
 | `1DF6` | sub_1DF6 | — | 537 | 195 | 1 | 2 | ✓ | 待解讀 | — | — | — |
 | `200F` | sub_200F | — | 507 | 176 | 1 | 6 | ✓ | 待解讀 | — | — | — |
-| `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-triage.md<br>spec/769-combat-main-loop.md |
+| `2220` | sub_2220 | — | 1307 | 483 | 0 | 5 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-08.md<br>audit/function-triage.md<br>spec/769-combat-main-loop.md |
 | `275A` | sub_275A | — | 361 | 132 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `28C3` | sub_28C3 | — | 223 | 73 | 3 | 3 | ✓ | 待解讀 | — | — | — |
 | `29A2` | sub_29A2 | — | 601 | 239 | 6 | 2 | ✓ | 待解讀 | — | — | — |
@@ -60,6 +60,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `42FD` | sub_42FD | — | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `45CF` | sub_45CF | — | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
 | `4703` | sub_4703 | — | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `4811` | sub_4811 | — | 183 | 70 | 0 | 2 | ✓ | 待解讀 | — | — | — |
+| `4811` | sub_4811 | — | 183 | 70 | 0 | 2 | ✓ | 已解讀 | exact | docs/spec/770-party-step-and-hug-attack.md<br>hugs 攻擊(retf 0Ah)：DS:6F9Fh < 12h(有號)就離開；把 攻擊者^[18Dh]^[0Ah] 抄到全域 DS:6FA3h，組出「攻擊者 + CS:480Bh 'hugs ' + 目標名」後顯示；再對目標下 3Ah、對攻擊者自己下 90h 兩個效果碼。⚠ 'hugs ' 的尾隨空白是常數的一部分(長度 byte 為 5)，用來直接接目標名 | spec/770-party-step-and-hug-attack.md |
 | `48DC` | sub_48DC | — | 214 | 76 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `49B2` | sub_49B2 | — | 6 | 4 | 0 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `pop bp`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
