@@ -27,7 +27,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `14B4` | sub_14B4 | ANYUNDEAD | 61 | 22 | 1 | 2 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp short loc_14F4`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 61 bytes，已逐條讀完） | — |
 | `14F2` | sub_14F2 | — | 5 | 3 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `14F7` | sub_14F7 | — | 25 | 10 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov [bp-8], ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 25 bytes，已逐條讀完） | — |
-| `1510` | sub_1510 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | — |
+| `1510` | sub_1510 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les di, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | spec/805-combat-state-allocation-and-initial-facing.md |
 | `1538` | sub_1538 | — | 8 | 3 | 3 | 1 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, [bp-3]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 8 bytes，已逐條讀完） | audit/embedded-strings.md |
 | `153D` | sub_153D | — | 5 | 1 | 4 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `mov al, es:[di+0E9h]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 5 bytes，已逐條讀完） | — |
 | `1542` | sub_1542 | — | 6 | 2 | 2 | 0 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `les ax, [bp-8]`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 6 bytes，已逐條讀完） | audit/embedded-strings.md<br>audit/function-index/dos-overlay-09.md |
@@ -73,7 +73,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `412A` | sub_412A | — | 186 | 63 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/788-memorised-spell-slots-identified.md<br>戰鬥判定：ss:[rec-5] 預設 1；先呼叫本模組 3E56h(方向,0,0FFh,ss:[rec+0Ch])，成立才取「目標^[18Dh]^[0Ah]」的 x/y（overlay-32 entry#15/#16），再呼叫掃描程序(取x(rec+0Ch), 取y(rec+0Ch), @x1, @y1, @ss:[rec-3], 遠指標@DS:6E92h)，回非零則 ss:[rec-5] := 0。retf 4。spec 788（PC-98：DS:9F2Ch/9F2Eh，欄位 +1） | — |
 | `426B` | sub_426B | EFF87 | 722 | 312 | 0 | 7 | ✓ | 待解讀 | — | — | — |
 | `453D` | sub_453D | EFF139 | 308 | 111 | 0 | 4 | ✓ | 待解讀 | — | — | — |
-| `4671` | sub_4671 | EFF144 | 264 | 93 | 0 | 4 | ✓ | 待解讀 | — | — | — |
+| `4671` | sub_4671 | EFF144 | 264 | 93 | 0 | 4 | ✓ | 已解讀 | exact | docs/spec/805-combat-state-allocation-and-initial-facing.md<br>暫時改寫攻擊資料後攻擊：目標 := 遠指標(DS:9DCFh + 記錄^[3]*4)（戰鬥員遠指標表），存入 DS:0A03Dh；旗標 <> 0 或 角色^[196h] = 0 或 目標^[196h] = 0 時走 <140Eh+1>(目標, 3Ah, longint 0)，且 旗標 = 0 時再 記錄^[4] := 0 與 <140Eh+1>(角色, 90h, 記錄)；否則 角色^[19Ch]:=1、+19Dh:=0、+19Eh:=2、+1A0h:=8（把 spec 795 的兩組攻擊資料就地改成第 1 組 (2,8)），呼叫 本模組 19D8h(角色, 目標, 1, longint 0, @暫存)、暫存 := <far 159Ah>(角色)；目標^[196h] = 0 時再 <140Eh+1>(角色, 90h, longint 0) 與 <140Eh+1>(目標, 3Ah, longint 0)。retf 0Ah。spec 805 | — |
 | `478B` | sub_478B | EFF96 | 235 | 75 | 0 | 2 | ✓ | 待解讀 | — | — | — |
 | `4876` | sub_4876 | KILLTHEBASTARDS | 194 | 67 | 0 | 3 | ✓ | 待解讀 | — | — | — |
 | `4938` | sub_4938 | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>空函式：prologue／epilogue 之外沒有任何指令，呼叫即返回（body 共 7 bytes，已逐條讀完） | — |
