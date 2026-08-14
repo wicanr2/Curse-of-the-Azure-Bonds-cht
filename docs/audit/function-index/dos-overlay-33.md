@@ -9,6 +9,6 @@ offset（base 0），resident executable 為 IDA linear address。
 | `002E` | sub_2E | — | 203 | 75 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>spec/749-combat-teardown-and-battlefield-grid.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `00F9` | sub_F9 | — | 97 | 39 | 0 | 1 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `015A` | sub_15A | — | 98 | 40 | 0 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md |
-| `01D4` | sub_1D4 | — | 820 | 353 | 0 | 1 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `01D4` | sub_1D4 | — | 820 | 353 | 0 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-16.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0508` | sub_508 | — | 278 | 111 | 0 | 1 | ✓ | 待解讀 | — | — | spec/749-combat-teardown-and-battlefield-grid.md |
 | `061E` | sub_61E | — | 7 | 5 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/752-empty-procedures.md<br>空程序：原始 bytes 就是 55 89 E5 89 EC 5D CB(push bp/mov bp,sp/mov sp,bp/pop bp/retf)，無參數無副作用。IDA 匯出漏 byte 把 89 EC 解成 in al,dx 才看起來像 I/O 讀取 | spec/752-empty-procedures.md |

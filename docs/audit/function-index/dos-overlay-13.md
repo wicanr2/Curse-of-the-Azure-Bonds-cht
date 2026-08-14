@@ -5,7 +5,7 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md |
+| `0000` | sub_0 | — | 292 | 94 | 0 | 5 | ✓ | 待解讀 | — | — | audit/embedded-strings.md<br>audit/overlay-init-graph.md<br>audit/string-pairs.md<br>spec/751-overlay-init-chain-dependency-graph.md<br>spec/754-small-predicates-and-wrappers.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `0124` | sub_124 | — | 110 | 36 | 3 | 2 | ✓ | 待解讀 | — | — | audit/embedded-strings.md |
 | `0192` | sub_192 | — | 196 | 74 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `031D` | sub_31D | — | 841 | 334 | 3 | 4 | ✓ | 待解讀 | — | — | — |

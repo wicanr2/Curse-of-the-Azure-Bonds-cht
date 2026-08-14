@@ -17,12 +17,12 @@ offset（base 0），resident executable 為 IDA linear address。
 | `08C9` | sub_8C9 | — | 196 | 89 | 1 | 7 | ✓ | 待解讀 | — | — | — |
 | `098D` | sub_98D | — | 27 | 12 | 3 | 0 | ✓ | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>表格查詢:以 ds:4A14h 的值為索引,回傳 DS:352h 起的表中該項 byte | audit/function-index/pc98-overlay-10.md<br>spec/572-resident-service-functions.md |
 | `09A8` | sub_9A8 | — | 86 | 36 | 1 | 1 | ✓ | 待解讀 | — | — | — |
-| `09FE` | sub_9FE | — | 268 | 115 | 1 | 3 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `0B0A` | sub_B0A | — | 407 | 171 | 1 | 2 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `09FE` | sub_9FE | — | 268 | 115 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0B0A` | sub_B0A | — | 407 | 171 | 1 | 2 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `0CA1` | sub_CA1 | — | 12 | 7 | 1 | 0 | ✓ | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `push ax`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 12 bytes，已逐條讀完） | audit/function-index/dos-overlay-10.md |
 | `0CAD` | sub_CAD | — | 395 | 169 | 2 | 1 |  | 邊界碎片 | — | docs/spec/587-ecl-handler-21-37-shared.md<br>邊界碎片：落在 0CA1h 的 prologue 區間內部，自己不是 prologue。所屬函式尚未解讀，讀它時會一併涵蓋。 | — |
-| `0E49` | sub_E49 | — | 382 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
-| `0FC7` | sub_FC7 | — | 80 | 30 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>清空戰場地圖(retf，無參數)：FillChar((DS:6E92h+7)^, 4E2h, 17h) — 4E2h=1250=50×25，獨立確認 spec 749 由 FreeMem 4E9h 反推的格陣尺寸與 7 byte 表頭；再抄 DS:4F99h^[342h] 到 DS:4A14h(另兩個 local 指派後沒用)，最後叫本模組 09FEh/0B0Ah/0E49h | spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0E49` | sub_E49 | — | 382 | 183 | 1 | 3 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
+| `0FC7` | sub_FC7 | — | 80 | 30 | 1 | 3 | ✓ | 已解讀 | exact | docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md<br>清空戰場地圖(retf，無參數)：FillChar((DS:6E92h+7)^, 4E2h, 17h) — 4E2h=1250=50×25，獨立確認 spec 749 由 FreeMem 4E9h 反推的格陣尺寸與 7 byte 表頭；再抄 DS:4F99h^[342h] 到 DS:4A14h(另兩個 local 指派後沒用)，最後叫本模組 09FEh/0B0Ah/0E49h | audit/function-index/pc98-overlay-10.md<br>spec/756-map-fill-confirms-grid-and-assorted-routines.md |
 | `102F` | sub_102F | — | 174 | 72 | 1 | 4 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `10DD` | sub_10DD | — | 286 | 94 | 1 | 2 | ✓ | 待解讀 | — | — | spec/750-combat-setup.md |
 | `11FB` | sub_11FB | — | 49 | 18 | 2 | 1 | ✓ | 已解讀 | exact | docs/spec/754-small-predicates-and-wrappers.md<br>判斷式(retf 4)：if (a>=0) and (a<11) then false else if (b>=0) and (b<6) then false else true。⚠ 是「兩個都不在範圍內才回 true」，不是一般的界內檢查；兩個範圍不同(0..10 與 0..5) | audit/function-index/pc98-overlay-10.md<br>spec/754-small-predicates-and-wrappers.md |

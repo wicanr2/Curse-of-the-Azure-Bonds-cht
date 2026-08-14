@@ -5,11 +5,11 @@ offset（base 0），resident executable 為 IDA linear address。
 
 | 位址 | IDA | Borland 符號 | 大小 | 指令 | 被呼叫 | 呼叫 | entry | 狀態 | 等級 | 規格／理由 | 引用 |
 |---|---|---|---:|---:|---:|---:|:-:|---|---|---|---|
-| `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md |
+| `0000` | sub_0 | LOADTACMAP | 17 | 7 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>呼叫序列：依序執行 2 個呼叫，沒有其他動作：`call loc_1982+1`、`call loc_19C8+2`（body 共 17 bytes，已逐條讀完） | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/overlay-init-graph.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `0011` | sub_11 | CALCBIGOFFSET | 104 | 41 | 7 | 1 | ✓ | 待解讀 | — | — | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-12.md<br>audit/function-index/dos-overlay-17.md<br>audit/function-index/dos-overlay-24.md<br>audit/function-index/pc98-overlay-12.md<br>audit/function-index/pc98-overlay-24.md |
 | `0079` | sub_79 | CALCSCREENCOORDS | 123 | 51 | 1 | 1 | ✓ | 待解讀 | — | — | — |
 | `00F4` | sub_F4 | SETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(8,0) 接著 <far 02A8:1392>(0,8)——同一個 routine 連叫兩次,參數對調 | spec/585-ecl-goto-and-display-mode-pair.md<br>spec/635-overlay32-grid-record-array.md |
-| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值 | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-08.md<br>audit/function-index/dos-overlay-22.md<br>spec/635-overlay32-grid-record-array.md<br>spec/710-effect-collection-and-leftover-target.md |
+| `0111` | sub_111 | RESETCOMBATCOLORS | 29 | 15 | 0 | 0 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br><far 02A8:1392>(0,0) 接著 <far 02A8:1392>(8,8)——同一個 routine 連叫兩次,成對的極值 | audit/function-index/dos-overlay-02.md<br>audit/function-index/dos-overlay-08.md<br>audit/function-index/dos-overlay-22.md<br>spec/635-overlay32-grid-record-array.md<br>spec/710-effect-collection-and-leftover-target.md<br>spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `012E` | sub_12E | SHOWCURSOR | 428 | 190 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `02DA` | sub_2DA | — | 409 | 184 | 1 | 6 | ✓ | 待解讀 | — | — | — |
 | `0473` | sub_473 | HIDECURSOR | 612 | 255 | 1 | 5 | ✓ | 待解讀 | — | — | — |
@@ -24,7 +24,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `12EB` | sub_12EB | FINDX | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>i := <sub_1363>(arg_0,arg_2);回傳 byte[973Dh + 4*i + 0]。DS:973Dh 是每筆 4 bytes 的記錄陣列(位移 -68C3h 換成無號即 973Dh),與 1313h/133Bh 只差取哪個欄位 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
 | `1313` | sub_1313 | FINDY | 40 | 17 | 3 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 1](位移 -68C2h) | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
 | `133B` | sub_133B | FINDSIZE | 40 | 17 | 0 | 1 | ✓ | 已解讀 | exact | docs/spec/635-overlay32-grid-record-array.md<br>同 12EBh,但取 byte[973Dh + 4*i + 3](位移 -68C0h)。+2 這三支都沒有讀 | audit/function-index/dos-overlay-32.md<br>audit/function-index/pc98-overlay-32.md<br>spec/635-overlay32-grid-record-array.md |
-| `1363` | sub_1363 | FINDID | 88 | 32 | 9 | 1 | ✓ | 待解讀 | — | — | — |
+| `1363` | sub_1363 | FINDID | 88 | 32 | 9 | 1 | ✓ | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同 | spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md |
 | `13BB` | sub_13BB | FINDOBJECTS | 363 | 146 | 1 | 4 | ✓ | 待解讀 | — | — | — |
 | `1526` | sub_1526 | SUBTRACTDUDE | 749 | 296 | 0 | 10 | ✓ | 待解讀 | — | — | — |
 | `1813` | sub_1813 | ADDDUDE | 506 | 197 | 0 | 4 | ✓ | 待解讀 | — | — | — |

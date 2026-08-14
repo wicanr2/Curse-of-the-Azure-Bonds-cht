@@ -108,9 +108,9 @@ offset（base 0），resident executable 為 IDA linear address。
 | `16408` | sub_16408 | — | 112 | 44 | 1 | 3 |  | 待解讀 | — | — | — |
 | `16478` | sub_16478 | — | 32 | 17 | 1 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>單一呼叫包裝：整個 body 只準備參數並執行 `call near ptr sub_1639A`（body 共 32 bytes，已逐條讀完） | — |
 | `16498` | sub_16498 | — | 90 | 48 | 2 | 4 |  | 待解讀 | — | — | — |
-| `16566` | sub_16566 | — | 75 | 32 | 1 | 6 |  | 待解讀 | — | — | — |
+| `16566` | sub_16566 | — | 75 | 32 | 1 | 6 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>等待 overlay 磁片(retf)：反覆用 1685Fh 檢查 'game.ovr' 是否存在，不在就印 'Please insert overlay disk.' 加換行、等一個按鍵再試。⚠ 沒有離開的出口 | — |
 | `16645` | sub_16645 | — | 538 | 219 | 1 | 11 |  | 待解讀 | — | — | — |
-| `1685F` | sub_1685F | — | 74 | 33 | 4 | 3 |  | 待解讀 | — | — | — |
+| `1685F` | sub_1685F | — | 74 | 33 | 4 | 3 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 <> 0)。word_24E58 是 DosError | — |
 | `168A9` | sub_168A9 | — | 207 | 82 | 1 | 5 |  | 待解讀 | — | — | — |
 | `16A62` | sub_16A62 | — | 194 | 83 | 1 | 3 |  | 待解讀 | — | — | — |
 | `16B24` | sub_16B24 | — | 243 | 109 | 1 | 7 |  | 待解讀 | — | — | — |
@@ -194,7 +194,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1A42C` | sub_1A42C | — | 12 | 5 | 1 | 0 |  | 已解讀 | exact | docs/spec/572-resident-service-functions.md<br>回傳 (es:[8] + 0Fh) >> 4,即把 es:[8] 的位元組數無條件進位換算成 paragraph 數 | — |
 | `1A438` | sub_1A438 | — | 93 | 35 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：有 `pop bp` 收尾卻沒有 `push bp` 開頭；還原的是別人建立的 frame，屬被切開的後半段（body 共 93 bytes，已逐條讀完） | — |
 | `1A495` | sub_1A495 | — | 78 | 38 | 1 | 1 |  | 待解讀 | — | — | — |
-| `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 待解讀 | — | — | — |
+| `1A4E3` | sub_1A4E3 | — | 88 | 35 | 2 | 1 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>重建 VROOMM stub(近呼叫 retn)：從控制區塊 +20h 起、依 es:0Ch 的項數，每項寫 5 bytes = CD 3F(INT 3Fh) + 原本 es:[di+1] 的 2 bytes + 1 個 0。這是 stub 版面的產生端證據(既有結論是由 stub 內容反推) | — |
 | `1A540` | @__SystemInit$qv | — | 157 | 72 | 1 | 4 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@__SystemInit$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1A611` | sub_1A611 | — | 4 | 3 | 13 | 1 |  | 已解讀 | exact | docs/spec/569-small-function-batch-reading.md<br>尾呼叫：最後一條是 `jmp short loc_1A61C`，控制權轉交後不返回；先設定 `pop cx`、`pop bx`（body 共 4 bytes，已逐條讀完） | — |
 | `1A618` | @Halt$q4Word | — | 188 | 79 | 4 | 6 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Halt$q4Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -272,7 +272,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1B405` | @Exp$q4Real | — | 115 | 56 | 0 | 8 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Exp$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B4A8` | @ArcTan$q4Real | — | 225 | 98 | 0 | 8 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@ArcTan$q4Real`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B5D7` | sub_1B5D7 | — | 31 | 18 | 1 | 2 |  | 邊界碎片 | — | docs/spec/569-small-function-batch-reading.md<br>邊界碎片：body 內沒有 `ret` 也沒有尾跳躍，最後一條是 `jmp __RealMul`；這是 IDA 建錯的函式邊界，真正的函式體要以位址範圍重讀（body 共 31 bytes，已逐條讀完） | — |
-| `1B5F6` | sub_1B5F6 | — | 79 | 33 | 2 | 3 |  | 待解讀 | — | — | — |
+| `1B5F6` | sub_1B5F6 | — | 79 | 33 | 2 | 3 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>6-byte real 的 Horner 多項式求值(近呼叫 retn)：入口 AX:BX:DX 是 x、CS:DI 指向係數表、CX 是項數；迴圈用 __RealAdd/__RealMul，最後加上 CX=81h,SI=0,DI=0(Turbo Pascal real 的 1.0)。屬 RTL 數學核心 | — |
 | `1B645` | @Random$q4Word | — | 22 | 10 | 5 | 2 |  | 已解讀 | exact | docs/spec/575-random-core-and-pc98-vram.md<br>@Random(n) 本體:呼叫 LCG 後 xor ax,ax 丟棄低位字,n 為 0 回 0,否則回傳 (RandSeed shr 16) mod n | — |
 | `1B65B` | @Random__Real$qv | — | 29 | 13 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Real$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1B678` | @Random__Extended$qv | — | 26 | 8 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Random__Extended$qv`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
@@ -315,7 +315,7 @@ offset（base 0），resident executable 為 IDA linear address。
 | `1BF0B` | @FilePos$qm4File | — | 23 | 9 | 1 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FilePos$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BF22` | @FileSize$qm4File | — | 27 | 11 | 0 | 3 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@FileSize$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BF3D` | @Eof$qm4File | — | 21 | 9 | 0 | 2 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Eof$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
-| `1BF52` | sub_1BF52 | — | 69 | 32 | 3 | 1 |  | 待解讀 | — | — | — |
+| `1BF52` | sub_1BF52 | — | 69 | 32 | 3 | 1 |  | 已解讀 | exact | docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md<br>取檔案大小(近呼叫 retn)：檔案記錄 +02h 不等於 0D7B3h(fmInOut)就把 word_20996(IOResult) 設 67h(103 檔案未開啟)並回 CF；否則用 INT 21h AH=42h 做 AL=01/02/00 三次 LSEEK(取現位置、取檔尾、移回)，把檔案大小放進 BX:CX | — |
 | `1BF97` | @Erase$qm4File | — | 23 | 10 | 1 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Erase$qm4File`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BFAE` | @Rename$qm4Filem6String | — | 79 | 42 | 0 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Rename$qm4Filem6String`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |
 | `1BFFD` | @Move$qm3Anyt14Word | — | 35 | 16 | 26 | 1 |  | 不阻塞 | — | docs/spec/566-turbo-pascal-rtl-not-blocking.md<br>Turbo Pascal RTL：IDA 依 Borland 簽章還原名稱 `@Move$qm3Anyt14Word`；屬 System／Dos／Crt／Overlay 單元，不實作遊戲規則 | — |

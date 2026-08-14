@@ -18724,6 +18724,213 @@
    "level": "exact",
    "spec": "docs/spec/756-map-fill-confirms-grid-and-assorted-routines.md",
    "note": "CRT 畫面模式設定(近呼叫 retn)：清 0040h:0087h bit 0；模式非 7 且 >=4 就強制成 3 後設模式；再 AX=1112h/BL=0 載入 8×8 字型、AX=1130h 取列數，列數為 2Ah(42)時才設回 0040h:0087h bit 0、設游標形狀(AX=0100h/CX=0600h)與 AH=12h/BL=20h"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 107747,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "重建 VROOMM stub(近呼叫 retn)：從控制區塊 +20h 起、依 es:0Ch 的項數，每項寫 5 bytes = CD 3F(INT 3Fh) + 原本 es:[di+1] 的 2 bytes + 1 個 0。這是 stub 版面的產生端證據(既有結論是由 stub 內容反推)"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6131,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "載入 3 平面圖檔並置中貼上(近呼叫 retn)：out 0A6h,1 後開檔(AH=3Dh)，讀 4 bytes 檔頭(寬像素、高列數)到 0C29h:7BCCh；寬位元組 := (寬+7) div 8，水平置中 (80−寬位元組) div 2、垂直置中 ((400−高) div 2)*80；逐列貼 A800h/0B000h/0B800h 三個平面(每列 80 bytes)。成功回 0、失敗回 0FFFFh。⚠ 只有三平面(8 色)，沒有 E000h；0C29h 是寫死的段值"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-18",
+   "ea": 6058,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "讀一個像素(retn 4，參數 x, y)：位移 := y*80 + x div 8、遮罩 := 80h shr (x and 7)，依序測 A800h/B000h/B800h 三個平面組成 0..7 的值。同樣不含第四平面"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 4846,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：p^[74h] 非 7 回 11h；否則在 p^[109h..10Fh] 找第一個非零，回索引，找不到回 11h。七格全零時索引推到 7 會多讀 p^[110h]，但結果有 > 0 檢查所以不會採用(對比 overlay-25:134Ah 沒有這層檢查)"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-25",
+   "ea": 4754,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：同 12EEh，但掃的是 p^[111h..117h]"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5110,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：掃 p^[109h..10Fh]，與 DOS overlay-25:12EEh 同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-25",
+   "ea": 5018,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "第一個非零職業欄位的索引(retf 4)：掃 p^[111h..117h]，與 DOS overlay-25:1292h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-32",
+   "ea": 3246,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "在指標表裡找索引(retf 4)：從 1 起逐格比對 DS:6D35h + i*4 這個遠指標是否等於參數，相等回索引；走到 DS:66A6h(項數)還沒找到回 0"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-32",
+   "ea": 4963,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "在指標表裡找索引(retf 4)：表 DS:9DCFh、項數 DS:9740h，與 DOS overlay-32:0CAEh 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-14",
+   "ea": 1780,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "找持有某值的隊員(retf 2，回遠指標)：走隊伍鏈，對每個成員叫 06B1h 找格子(v, 成員)，回傳值不是 0FFh 就回傳該成員；走完沒找到回 NIL。spec 756 的 0749h 是其呼叫端"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-14",
+   "ea": 1728,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "找持有某值的隊員(retf 2)：與 DOS overlay-14:06F4h 同"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-15",
+   "ea": 8299,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "全隊受傷總量(retf 2，參數沒被讀)：走隊伍鏈累加 p^[78h] − p^[1A4h](最大 HP 減目前 HP)，回 word。⚠ 兩個 byte 零延伸後相減，目前 HP 大於最大 HP 時會變成很大的正數"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-15",
+   "ea": 8402,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "全隊受傷總量(retf 2)：目前 HP 在 +1A5h，其餘同 DOS overlay-15:206Bh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-09",
+   "ea": 589,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：p^[18Dh]^[11h] 非 0 回 false；否則 (p^[109h] <= 0) and (p^[111h] <= p^[0E6h]) 也回 false；再叫一支帶輸出參數的 overlay 函式，回 0 就 false；都通過才叫另一支並回 true。比較都是有號"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-09",
+   "ea": 623,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：戰鬥狀態在 +18Eh，其餘同 DOS overlay-09:024Dh"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-21",
+   "ea": 414,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "清表並拆商餘(retf 2)：把 DS:6F70h 起 5 格 4-byte 清 0；再把 參數 div 5 寫進第 4 格(DS:6F80h)、參數 mod 5 寫進第 3 格(DS:6F7Ch)，高位字都補 0，除法無號。⚠ 同一塊區域在 overlay-21:0F5Bh 被當成遠指標檢查 NIL，這裡當 32-bit 整數用"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-21",
+   "ea": 413,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "清表並拆商餘(retf 2)：表在 DS:0A00Ah，商寫 DS:0A01Ah、餘寫 DS:0A016h，與 DOS overlay-21:019Eh 同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 5063,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "釋放整條鏈(retf 4)：next 在 +52h、每節點 FreeMem 56h(86 bytes)，離開前有把鏈頭寫回 NIL。⚠ DOS 的對應功能 overlay-26:1241h 是 2Eh(46 bytes)、next +2Ah，而且沒有清鏈頭 — 兩平台在節點大小與收尾行為都不同"
+  },
+  {
+   "platform": "pc98",
+   "module": "overlay-26",
+   "ea": 2985,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "retf 4：參數是 SS 相對的記錄指標；用 +14h 起的遠指標與第二個參數叫本模組 0011h 取得遠指標，再叫 0418h:0D17h(該指標, 0, [+20h], [+1Ch] + (參數 − DS:0A32Ch), [+1Eh])"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 91494,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "等待 overlay 磁片(retf)：反覆用 1685Fh 檢查 'game.ovr' 是否存在，不在就印 'Please insert overlay disk.' 加換行、等一個按鍵再試。⚠ 沒有離開的出口"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 92255,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "檔案是否存在(retf 4)：把參數字串複製進 50h bytes 緩衝，FindFirst(路徑, 0, 記錄)，回傳 (word_24E58 = 0) and (字串長度 <> 0)。word_24E58 是 DosError"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 112118,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "6-byte real 的 Horner 多項式求值(近呼叫 retn)：入口 AX:BX:DX 是 x、CS:DI 指向係數表、CX 是項數；迴圈用 __RealAdd/__RealMul，最後加上 CX=81h,SI=0,DI=0(Turbo Pascal real 的 1.0)。屬 RTL 數學核心"
+  },
+  {
+   "platform": "dos",
+   "module": "START.EXE",
+   "ea": 114514,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/757-vroomm-stub-rebuild-image-blit-and-class-slots.md",
+   "note": "取檔案大小(近呼叫 retn)：檔案記錄 +02h 不等於 0D7B3h(fmInOut)就把 word_20996(IOResult) 設 67h(103 檔案未開啟)並回 CF；否則用 INT 21h AH=42h 做 AL=01/02/00 三次 LSEEK(取現位置、取檔尾、移回)，把檔案大小放進 BX:CX"
   }
  ]
 }
