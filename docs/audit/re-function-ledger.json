@@ -25078,6 +25078,24 @@
    "level": "exact",
    "spec": "docs/spec/982-message-box-geometry.md",
    "note": "entry#20 顯示訊息(角色, 訊息, 列, 要停頓)：戰鬥框欄 23-38×列 10-21（16 欄），非戰鬥框欄 1-38×列 17/18-22"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-26",
+   "ea": 2808,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/983-same-text-primitive-both-platforms.md",
+   "note": "反白版的清單單項重畫：項目 +29h（PC-98 +51h）在視窗 +22h/+24h 兩個顏色間選"
+  },
+  {
+   "platform": "dos",
+   "module": "overlay-24",
+   "ea": 6517,
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/983-same-text-primitive-both-platforms.md",
+   "note": "把圖庫一張圖填進 DS:75E0h 動畫 surface 的第 N 格（像素平面 +17h 與遮罩平面 +13h 各搬一次）"
   }
  ]
 }
