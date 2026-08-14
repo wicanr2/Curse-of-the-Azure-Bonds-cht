@@ -25,7 +25,7 @@ else if (物品^[3Ch] > 7Fh) or (物品^[3Dh] > 7Fh) or (物品^[3Eh] > 7Fh) the
     DS:65A1h := 15h;
     <0542h:04A4h>(1, 15h, 26h, 16h, 0Eh, 0, 0,
                   名字 ＋ ' was going to scribe from that scroll');
-    if <far 16ABh+3>(0Fh, 0Ah, 0Dh, 'is it Okay to lose it? ') = 'Y' then
+    if <far 16ABh+3>(0Dh, 0Ah, 0Fh, 'is it Okay to lose it? ') = 'Y' then
         可 := 1;
 end
 else
