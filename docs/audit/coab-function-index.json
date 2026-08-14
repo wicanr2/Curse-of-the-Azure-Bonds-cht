@@ -9512,7 +9512,13 @@
    "callers": 0,
    "calls": 5,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
+   "note": "召喚物品(套用與解除共用一支)。先在物品鏈找「類別 14h 且 +31h = 0F3h」那一件;arg_0 非 0 走解除(找到就 \u003coverlay-24 entry#17\u003e 移除並釋放);否則:已經有一件就不給、**角色^[14Ch] \u003e= 10h(物品數量上限 16)也不給,而且靜默失敗連訊息都沒有**;通過才 GetMem(3Fh)+FillChar,填 +2Eh=14h、+30h=14h、+31h=0F3h、**+32h=1**(讓 spec 737 的「打不到」規則放行)、+3Dh=17h、+3Eh=0A0h,用 \u003coverlay-24 entry#18\u003e 掛上鏈(**掛的是複本**),再 \u003coverlay-19 entry#7\u003e,然後 **FreeMem 掉本地那份**,顯示 '\u003c名字\u003e Gains an item'(CS:05A8h)。⚠ 這支示範了 spec 695「掛的是複本不是來源」為什麼重要——否則這個 FreeMem 會釋放掉剛掛上去的節點。識別碼是 +2Eh 與 +31h 兩個一起比,只比類別會誤判",
+   "citations": [
+    "spec/747-summoned-item-and-third-gaze.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11218,7 +11224,8 @@
    "spec": "docs/spec/737-effproc-small-handlers.md",
    "note": "打不到的規則:(w = NIL 或 w^[32h] = 0) 且 (施法者^[74h] \u003e 0 或 施法者^[0E5h] \u003c 4) 時 DS:6F94h := 0。⚠ 是把傷害設成 0 不是「不攻擊」,流程仍會往下走",
    "citations": [
-    "spec/737-effproc-small-handlers.md"
+    "spec/737-effproc-small-handlers.md",
+    "spec/747-summoned-item-and-third-gaze.md"
    ]
   },
   {
@@ -11270,7 +11277,8 @@
    "note": "麻痺觸碰:p := 角色^[18Dh]^[0Ah];\u003coverlay-23 entry#8\u003e(p, 0, 0) 回 0(豁免失敗)時 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:2775h)。效果編號與訊息都和 spec 722 的凝視相同,但那裡第三個參數是 3Ch——**同一個麻痺效果有兩種持續時間來源**;entry#8 的第二個參數也不同(這裡 0、凝視 1)",
    "citations": [
     "audit/embedded-strings.md",
-    "spec/741-on-hit-effects-and-third-uninitialised.md"
+    "spec/741-on-hit-effects-and-third-uninitialised.md",
+    "spec/747-summoned-item-and-third-gaze.md"
    ]
   },
   {
@@ -11345,7 +11353,13 @@
    "callers": 0,
    "calls": 7,
    "is_overlay_entry": true,
-   "state": "待解讀"
+   "state": "已解讀",
+   "level": "exact",
+   "spec": "docs/spec/747-summoned-item-and-third-gaze.md",
+   "note": "第三處麻痺凝視:p := 角色^[18Dh]^[0Ah](**直接讀,沒有 NIL 檢查**);顯示 '\u003c名字\u003e gazes...'(CS:2886h)、\u003coverlay-24 entry#24\u003e(12h)、entry#25 畫兩點動畫;\u003coverlay-23 entry#8\u003e(p,1,0) 回 0 才 \u003coverlay-23 entry#11\u003e(p, 34h, **0**, 0FFh, 0) 並顯示 '\u003c名字\u003e is paralyzed'(CS:288Fh)。⚠ 麻痺(34h)三個入口的持續時間參數不同:overlay-22:6022h 是 3Ch、overlay-12 的 2782h 與本支都是 0。兩句訊息在 overlay-22 與 overlay-12 各有一份(跨模組重複),中文化兩邊都要改",
+   "citations": [
+    "spec/747-summoned-item-and-third-gaze.md"
+   ]
   },
   {
    "platform": "dos",
@@ -11433,6 +11447,7 @@
    "spec": "docs/spec/738-effproc-effect-handlers.md",
    "note": "對特定目標的傷害加成:p := 角色^[18Dh]^[0Ah](目前鎖定的目標);(p^[14Bh] and 8) 非 0 時 DS:6F94h += 角色^[10Dh](**累加不是覆寫**)。與 spec 737 的 255Ah(把 DS:6F94h 覆寫成 1d6+1)對照,同一個全域一支覆寫一支累加,**執行順序決定結果**",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/738-effproc-effect-handlers.md",
     "spec/746-dispel-evil-and-berserk-sibling.md"
    ]
@@ -11485,6 +11500,7 @@
    "spec": "docs/spec/746-dispel-evil-and-berserk-sibling.md",
    "note": "狂暴,spec 743 的 1809h 的姊妹支。套用流程幾乎相同(+198h:=1、+0F7h 三態、清掉鎖定目標、用 overlay-31 entry#6 重選、角色^[197h] := 新目標^[197h] xor 1)。⚠ **差別在解除:本支寫 角色^[197h] := 節點^[3](從節點取回原陣營),而 1809h 寫死 0**。姊妹支做對了 1809h 沒有;不過 1809h 的套用路徑也沒把原陣營存進任何地方,兩件事是一起漏掉的。這是 節點^[3] 的第三種打包(整個 byte = 陣營),與 744 的 shl 4、745 的 bit 6 都不同",
    "citations": [
+    "audit/function-index/dos-overlay-12.md",
     "spec/746-dispel-evil-and-berserk-sibling.md"
    ]
   },
@@ -18135,7 +18151,8 @@
    "citations": [
     "spec/722-gaze-attack-and-slot0-helper.md",
     "spec/723-spits-acid.md",
-    "spec/741-on-hit-effects-and-third-uninitialised.md"
+    "spec/741-on-hit-effects-and-third-uninitialised.md",
+    "spec/747-summoned-item-and-third-gaze.md"
    ]
   },
   {
@@ -45976,9 +45993,9 @@
    "Module": "overlay-12",
    "Unit": "EFFPROCS",
    "Functions": 152,
-   "Read": 117,
+   "Read": 119,
    "NotBlocking": 0,
-   "Todo": 8,
+   "Todo": 6,
    "Fragment": 27,
    "CodeBytes": 12862,
    "Undefined": 455,
